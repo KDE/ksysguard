@@ -25,6 +25,7 @@
 #include <qclipboard.h>
 #include <qcursor.h>
 #include <qdragobject.h>
+#include <qlayout.h>
 
 #include <kdebug.h>
 #include <klocale.h>
