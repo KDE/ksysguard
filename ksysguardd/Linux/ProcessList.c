@@ -27,7 +27,6 @@
 #include <string.h>
 #include <sys/time.h>
 #include <sys/resource.h>
-#include <sys/user.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -38,10 +37,6 @@
 #include "ksysguardd.h"
 
 #include "ProcessList.h"
-
-#ifndef PAGE_SIZE /* Needed for SPARC */
-#include <asm/page.h>
-#endif
 
 #define BUFSIZE 1024
 #define TAGSIZE 32
@@ -247,7 +242,7 @@ static int updateProcess( int pid )
   else
     sprintf( ps->status, "Unknown: %c", status );
 
-  ps->vmRss = ( ps->vmRss + 3 ) * PAGE_SIZE;
+  ps->vmRss = ( ps->vmRss + 3 ) * sysconf(_SC_PAGESIZE);
 
   {
     int newCentStamp;
