@@ -38,7 +38,6 @@
 #include <qwidget.h>
 
 #include <ktabctl.h>
-#include <ktablistbox.h>
 
 #include "ProcessList.h"
 #include "ProcListPage.h"

@@ -4,14 +4,16 @@ appsdir = $(kde_appsdir)/System
 # set the include path for X, qt and KDE
 INCLUDES= $(all_includes)
 # claim, which subdirectories you want to install
-SUBDIRS = pics
+SUBDIRS = CContLib ktopd pics
  
 ####### This part is very ktop specific
 # you can add here more. This one gets installed 
 bin_PROGRAMS = 	ktop
 
 # Which sources should be compiled for ktop.
-ktop_SOURCES	= ktop.cpp MainMenu.cpp ProcessMenu.cpp \
+
+ktop_SOURCES = ktop.cpp  DaemonAgent.cpp SensorManager.cpp \
+	MainMenu.cpp ProcessMenu.cpp \
 	TaskMan.cpp \
 	ProcListPage.cpp ProcessList.cpp \
 	OSProcessList.cpp OSProcess.cpp PerfMonPage.cpp \
@@ -27,14 +29,16 @@ ktop_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 ktop_LDADD   =       $(LIB_KDEUI)
 
 # this option you can leave out. Just, if you use "make dist", you need it
-noinst_HEADERS = ktop.h MainMenu.h ProcessMenu.h TaskMan.h \
+noinst_HEADERS = ktop.h DaemonAgent.h SensorManager.h \
+	MainMenu.h ProcessMenu.h TaskMan.h \
 	ProcListPage.h \
 	ProcessList.h OSProcessList.h \
 	PerfMonPage.h FancyPlotter.h MultiMeter.h SignalPlotter.h OSStatus.h \
 	ReniceDlg.h
 
 # just to make sure, automake makes them 
-METASOURCES =	ktop.moc MainMenu.moc ProcessMenu.moc TaskMan.moc ProcListPage.moc ProcessList.moc PerfMonPage.moc FancyPlotter.moc MultiMeter.moc SignalPlotter.moc ReniceDlg.moc
+
+METASOURCES = ktop.moc DaemonAgent.moc SensorManager.moc MainMenu.moc ProcessMenu.moc TaskMan.moc ProcListPage.moc ProcessList.moc PerfMonPage.moc FancyPlotter.moc MultiMeter.moc SignalPlotter.moc ReniceDlg.moc
 
 # make messages.po. Move this one to ../po/ and "make merge" in po
 messages:

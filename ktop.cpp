@@ -37,6 +37,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 
+#include "SensorManager.h"
 #include "OSStatus.h"
 #include "ktop.moc"
 
@@ -200,6 +201,8 @@ main(int argc, char** argv)
 	 * use certain privileges to do it's job.
 	 */
 	OSStatus priv;
+
+	SensorMgr = new SensorManager();
 
 	int i;
 	int sfolder = -1;
