@@ -122,7 +122,6 @@ initLmSensors(void)
 				if (search_ctnr(LmSensors, sensorCmp, p) < 0)
 				{
 					push_ctnr(LmSensors, p);
-					printf("Found '%s'\n", p->fullName);
 					registerMonitor(p->fullName, "float", printLmSensor,
 									printLmSensorInfo);
 				}

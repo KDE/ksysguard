@@ -226,6 +226,7 @@ TopLevel::beATaskManager()
 void 
 TopLevel::connectHost()
 {
+	hostConnector->host->setFocus();
 	if (hostConnector->exec())
 	{
 		QString shell;

@@ -49,10 +49,6 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 								 const char *name)
     : KPanelApplet(configFile, t, actions, parent, name)
 {
-	/* Workaround for a kicker race problem. If we do not show up fast
-	 * enough kicker will not embed the widget, but put it in a "Applet
-	 * proxy" window instead. */
-	show();
 	SensorMgr = new SensorManager();
 	CHECK_PTR(SensorMgr);
 	SensorMgr->engage("localhost", "", "ksysguardd");
@@ -69,10 +65,8 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 	docks[1]->addSensor("localhost", "mem/physical/buf", "Memory");
 	docks[1]->addSensor("localhost", "mem/physical/cached", "Memory");
 
-	for (uint i = 0; i < dockCnt; ++i)
-		docks[i]->show();
-	dockCnt = 0;
 	setAcceptDrops(TRUE);
+	show();
 }
 
 KSysGuardApplet::~KSysGuardApplet()

@@ -45,7 +45,7 @@
 #include "MultiMeter.moc"
 
 MultiMeter::MultiMeter(QWidget* parent, const char* name,
-					   const QString& t, int, int)
+					   const QString& t, double, double)
 	: SensorDisplay(parent, name)
 {
 	frame = new QGroupBox(1, Qt::Vertical, title, this, "meterFrame"); 
@@ -112,13 +112,13 @@ MultiMeter::answerReceived(int id, const QString& answer)
 	}
 	else
 	{
-		long val = answer.toInt();
-		int digits = (int) log10((double) val) + 1;
+		double val = answer.toDouble();
+		int digits = (int) log10(val) + 1;
 		if (digits > 5)
 			lcd->setNumDigits(digits);
 		else
 			lcd->setNumDigits(5);
-		lcd->display((int) val);
+		lcd->display(val);
 		if (lowerLimitActive && val < lowerLimit)
 		{
 			timerOff();
@@ -212,6 +212,7 @@ MultiMeter::settings()
 	mms = new MultiMeterSettings(this, "MultiMeterSettings", TRUE);
 	CHECK_PTR(mms);
 	mms->title->setText(title);
+	mms->title->setFocus();
 	mms->showUnit->setChecked(showUnit);
 	mms->lowerLimitActive->setChecked(lowerLimitActive);
 	mms->lowerLimit->setValue(lowerLimit);

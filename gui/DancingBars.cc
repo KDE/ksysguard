@@ -98,6 +98,7 @@ DancingBars::settings()
 	CHECK_PTR(dbs);
 
 	dbs->title->setText(meterFrame->title());
+	dbs->title->setFocus();
 	dbs->maximumValue->setValue(plotter->getMax());
 	long l, u;
 	bool la, ua;

@@ -128,7 +128,7 @@ printLoadAvg5(const char* c)
 void
 printLoadAvg5Info(const char* c)
 {
-	printf("Load average 5 min\t0\t0\tmin\n");
+	printf("Load average 5 min\t0\t0\t\n");
 }
 
 void
@@ -143,5 +143,5 @@ printLoadAvg15(const char* c)
 void
 printLoadAvg15Info(const char* c)
 {
-	printf("Load average 15 min\t0\t0\tmin\n");
+	printf("Load average 15 min\t0\t0\t\n");
 }

@@ -77,6 +77,7 @@ FancyPlotter::settings()
 	fps = new FancyPlotterSettings(this, "FancyPlotterSettings", true);
 	CHECK_PTR(fps);
 	fps->title->setText(meterFrame->title());
+	fps->title->setFocus();
 	fps->minVal->setText(QString("%1").arg(plotter->getMin()));
 	fps->maxVal->setText(QString("%1").arg(plotter->getMax()));
 	connect(fps->applyButton, SIGNAL(clicked()),
@@ -129,7 +130,7 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 
 	if ((unsigned) beams >= (sizeof(cols) / sizeof(QColor)))
 		return (false);
-#if 0
+
 	if (beams > 0 && hostName != sensors.at(0)->hostName)
 	{
 		KMessageBox::sorry(this, QString(
@@ -140,7 +141,7 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 		 * need to be received in order. */
 		return (false);
 	}
-#endif
+
 	if (!plotter->addBeam(cols[beams]))
 		return (false);
 

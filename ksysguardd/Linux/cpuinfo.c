@@ -33,7 +33,7 @@
 #include "cpuinfo.h"
 
 static int CpuInfoOK = 0;
-static int* Clocks = 0;
+static float* Clocks = 0;
 static int CPUs = 0;
 
 #define CPUINFOBUFSIZE 8192
@@ -84,15 +84,15 @@ processCpuInfo(void)
 					if (Clocks)
 						free(Clocks);
 					CPUs = cpuId + 1;
-					Clocks = malloc(CPUs * sizeof(int));
+					Clocks = malloc(CPUs * sizeof(float));
 					sprintf(cmdName, "cpu%d/clock", cpuId);
-					registerMonitor(cmdName, "integer", printCPUxClock,
+					registerMonitor(cmdName, "float", printCPUxClock,
 							printCPUxClockInfo);
 				}
 			}
 		}
 		else if (strcmp(tag, "cpu MHz") == 0)
-			sscanf(value, "%d", &Clocks[cpuId]);
+			sscanf(value, "%f", &Clocks[cpuId]);
 
 		/* Move cibp to begining of next line, if there is one. */
 		cibp = strchr(cibp, '\n');
@@ -175,7 +175,7 @@ printCPUxClock(const char* cmd)
 		processCpuInfo();
 
 	sscanf(cmd + 3, "%d", &id);
-	printf("%d\n", Clocks[id]);
+	printf("%f\n", Clocks[id]);
 }
 
 void

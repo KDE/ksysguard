@@ -270,10 +270,8 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 	if (displays[r][c]->isA("QGroupBox"))
 	{
 		SensorDisplay* newDisplay = 0;
-		/* Currently we support one specific sensor display for each
-		 * sensor type. This will change for sure and can then be
-		 * handled with a popup menu that lists all possible sensor
-		 * displays for the sensor type. */
+		/* If the sensor type is supported by more than one display type
+		 * we popup a menu so the user can select what display is wanted. */
 		if (sensorType == "integer")
 		{
 			QPopupMenu pm;
@@ -300,7 +298,24 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 			}
 		}
 		else if (sensorType == "float")
-			newDisplay = new FancyPlotter(this, "FancyPlotter", sensorDescr);
+		{
+			QPopupMenu pm;
+			pm.insertItem(i18n("Select a display type"), 0);
+			pm.setItemEnabled(0, FALSE);
+			pm.insertSeparator();
+			pm.insertItem(i18n("&Signal Plotter"), 1);
+			pm.insertItem(i18n("&Multimeter"), 2);
+			switch (pm.exec(QCursor::pos()))
+			{
+			case 1:
+				newDisplay = new FancyPlotter(this, "FancyPlotter",
+											  sensorDescr);
+				break;
+			case 2:
+				newDisplay = new MultiMeter(this, "MultiMeter", sensorDescr);
+				break;
+			}
+		}
 		else if (sensorType == "table")
 			newDisplay = new ProcessController(this);
 		else

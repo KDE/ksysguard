@@ -275,20 +275,37 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	}
 
 	/* Plot stacked values */
+	double scaleFac = (h - 2) / range;
 	for (int i = 0; i < samples; i++)
 	{
-		double bias = 0;
-		double scaleFac = (h - 2) / range;
+		double bias = -minValue;
 		for (int b = 0; b < beams; b++)
 		{
-			if (beamData[b][i] > 0)
+			int start = h - 2 - (int) (bias * scaleFac);
+			int end = h - 2 - (int) ((bias + beamData[b][i]) * scaleFac);
+			/* If the line is longer than 2 pixels we draw only the last
+			 * 2 pixels with the bright color. The rest is painted with
+			 * a 50% darker color. */
+			if (end - start > 2)
+			{
+				p.setPen(beamColor[b].dark(200));
+				p.drawLine(i + 1, start, i + 1, end - 1);
+				p.setPen(beamColor[b]);
+				p.drawLine(i + 1, end - 1, i + 1, end);
+			}
+			else if (start - end > 2)
+			{
+				p.setPen(beamColor[b].dark(200));
+				p.drawLine(i + 1, start, i + 1, end + 1);
+				p.setPen(beamColor[b]);
+				p.drawLine(i + 1, end + 1, i + 1, end);
+			}
+			else
 			{
 				p.setPen(beamColor[b]);
-				p.drawLine(i + 1, h - 2 - (int) (bias * scaleFac),
-						   i + 1, h - 2 -
-						   (int) ((bias + beamData[b][i]) * scaleFac));
-				bias += beamData[b][i];
+				p.drawLine(i + 1, start, i + 1, end);
 			}
+			bias += beamData[b][i];
 		}
 	}
 	
