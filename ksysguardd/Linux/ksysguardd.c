@@ -190,7 +190,8 @@ main(int argc, char* argv[])
 
 	/* initialize all sensors */
 	initCommand();
-	registerCommand("quit", exQuit);
+	if (RunAsDaemon == 1)
+		registerCommand("quit", exQuit);
 	initProcessList();
 	initMemory();
 	initStat();
