@@ -1,6 +1,7 @@
 # KDE Config File 
 [KDE Desktop Entry]
 Name=KTop
+Name[es]=KTop
 Name[de]=KTop
 Name[no]=KTop
 Name[hr]=KTop
@@ -13,6 +14,7 @@ Icon=ktop.xpm
 Type=Application
 DocPath=ktop/ktop.html
 Comment=Performance monitor
+Comment[es]=Monitor de rendimiento
 Comment[de]=Performance-Anzeiger
 Comment[no]=Ytelsesovervåkning
 Comment[fr]=Moniteur de performances système

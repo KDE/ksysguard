@@ -1,6 +1,7 @@
 # KDE Config File
 [KDE Desktop Entry]
 SwallowTitle=xload
+SwallowTitle[es]=xload
 SwallowTitle[hr]=xload
 SwallowTitle[fr]=xload
 SwallowTitle[sk]=xload
@@ -8,6 +9,7 @@ SwallowTitle[pt]=xload
 SwallowTitle[pt_BR]=xload
 SwallowExec=xload -jumpscroll 1 -fg CadetBlue -bg grey76 -nolabel  -geometry 50x50+10000+10000
 Comment=Informations about your system status
+Comment[es]=Información sobre el estado de su sistema
 Comment[de]=Informationen über den Systemstatus
 Comment[no]=Informasjon om systemstatus
 Comment[hr]=Informacije o stanju sistema
