@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE Task Manager
    
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
@@ -23,12 +23,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <sys/types.h>
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <sys/user.h>
 #include <unistd.h>
-#include <pwd.h>
 #include <dirent.h>
 #include <signal.h>
 #include <errno.h>
@@ -36,6 +34,7 @@
 #include "ccont.h"
 #include "Command.h"
 #include "ProcessList.h"
+#include "PWUIDCache.h"
 
 #ifndef PAGE_SIZE /* Needed for SPARC */
 #include <asm/page.h>
@@ -182,7 +181,7 @@ updateProcess(int pid)
 	FILE* fd;
 	char buf[BUFSIZE];
 	int userTime, sysTime;
-	struct passwd* pwent;
+	const char* uName;
 
 	if ((ps = findProcessInList(pid)) == 0)
 	{
@@ -310,13 +309,10 @@ updateProcess(int pid)
 	}
 
 	/* find out user name with the process uid */
-	pwent = getpwuid(ps->uid);
-	if (pwent)
-	{
-		strncpy(ps->userName, pwent->pw_name, sizeof(ps->userName) - 1);
-		ps->userName[sizeof(ps->userName) - 1] = '\0';
-		validateStr(ps->userName);
-	}
+	uName = getCachedPWUID(ps->uid);
+	strncpy(ps->userName, uName, sizeof(ps->userName) - 1);
+	ps->userName[sizeof(ps->userName) - 1] = '\0';
+	validateStr(ps->userName);
 
 	ps->alive = 1;
 
@@ -357,6 +353,8 @@ cleanupProcessList(void)
 void
 initProcessList(void)
 {
+	initPWUIDCache();
+
 	ProcessList = new_ctnr(CT_DLL);
 
 	registerMonitor("pscount", "integer", printProcessCount,
@@ -372,6 +370,7 @@ exitProcessList(void)
 {
 	if (ProcessList)
 		destr_ctnr(ProcessList, free);
+	exitPWUIDCache();
 }
 
 int
