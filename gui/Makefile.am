@@ -34,7 +34,7 @@ noinst_HEADERS = SensorClient.h ktop.h ProcessMenu.h \
 # just to make sure, automake makes them 
 METASOURCES = AUTO
 
-messages:
+messages: rc.cpp
 	$(XGETTEXT) *.cc -o $(podir)/ktop.pot
 
 rcdir = $(kde_datadir)/ktop
