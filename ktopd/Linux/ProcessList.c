@@ -35,6 +35,10 @@
 #include "Command.h"
 #include "ProcessList.h"
 
+#ifndef PAGE_SIZE /* This happens on SPARC */
+#include <asm/page.h>
+#endif
+
 CONTAINER ProcessList = 0;
 
 #define BUFSIZE 1024
