@@ -31,10 +31,10 @@
 #include <qspinbox.h>
 #include <qtabwidget.h>
 
+#include <kaccelmanager.h>
+#include <kcolorbutton.h>
 #include <kcolordialog.h>
 #include <klocale.h>
-
-#include <ColorPicker.h>
 
 #include "StyleSettings.h"
 
@@ -45,23 +45,35 @@ StyleSettings::StyleSettings( QWidget *parent, const char *name )
   QFrame *page = addPage( i18n( "Display Style" ) );
   QGridLayout *layout = new QGridLayout( page, 5, 2, marginHint(), spacingHint() );
 
-  mFirstForegroundColor = new ColorPicker( page );
-  mFirstForegroundColor->setText( i18n( "First foreground color" ) );
-  layout->addMultiCellWidget( mFirstForegroundColor, 0, 0, 0, 1 );
+  QLabel *label = new QLabel( i18n( "First foreground color:" ), page );
+  layout->addWidget( label, 0, 0 );
 
-  mSecondForegroundColor = new ColorPicker( page );
-  mSecondForegroundColor->setText( i18n( "Second foreground color" ) );
-  layout->addMultiCellWidget( mSecondForegroundColor, 1, 1, 0, 1 );
+  mFirstForegroundColor = new KColorButton( page );
+  layout->addWidget( mFirstForegroundColor, 0, 1 );
+  label->setBuddy( mFirstForegroundColor );
 
-  mAlarmColor = new ColorPicker( page );
-  mAlarmColor->setText( i18n( "Alarm color" ) );
-  layout->addMultiCellWidget( mAlarmColor, 2, 2, 0, 1 );
+  label = new QLabel( i18n( "Second foreground color:" ), page );
+  layout->addWidget( label, 1, 0 );
 
-  mBackgroundColor = new ColorPicker( page );
-  mBackgroundColor->setText( i18n( "Background color" ) );
-  layout->addMultiCellWidget( mBackgroundColor, 3, 3, 0, 1 );
+  mSecondForegroundColor = new KColorButton( page );
+  layout->addWidget( mSecondForegroundColor, 1, 1 );
+  label->setBuddy( mSecondForegroundColor );
 
-  QLabel *label = new QLabel( i18n( "Font size:" ), page );
+  label = new QLabel( i18n( "Alarm color:" ), page );
+  layout->addWidget( label, 2, 0 );
+
+  mAlarmColor = new KColorButton( page );
+  layout->addWidget( mAlarmColor, 2, 1 );
+  label->setBuddy( mAlarmColor );
+
+  label = new QLabel( i18n( "Background color:" ), page );
+  layout->addWidget( label, 3, 0 );
+
+  mBackgroundColor = new KColorButton( page );
+  layout->addWidget( mBackgroundColor, 3, 1 );
+  label->setBuddy( mBackgroundColor );
+
+  label = new QLabel( i18n( "Font size:" ), page );
   layout->addWidget( label, 4, 0 );
 
   mFontSize = new QSpinBox( 7, 48, 1, page );
@@ -86,6 +98,8 @@ StyleSettings::StyleSettings( QWidget *parent, const char *name )
            SLOT( editSensorColor() ) );
   connect( mEditColorButton, SIGNAL( clicked() ),
            SLOT( editSensorColor() ) );
+
+  KAcceleratorManager::manage( this );
 }
 
 StyleSettings::~StyleSettings()

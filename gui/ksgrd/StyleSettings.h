@@ -29,7 +29,7 @@
 
 #include <qcolor.h>
 
-class ColorPicker;
+class KColorButton;
 
 class QListBoxItem;
 class QPushButton;
@@ -65,10 +65,10 @@ class StyleSettings : public KDialogBase
     void selectionChanged( QListBoxItem* );
 
   private:
-    ColorPicker *mFirstForegroundColor;
-    ColorPicker *mSecondForegroundColor;
-    ColorPicker *mAlarmColor;
-    ColorPicker *mBackgroundColor;
+    KColorButton *mFirstForegroundColor;
+    KColorButton *mSecondForegroundColor;
+    KColorButton *mAlarmColor;
+    KColorButton *mBackgroundColor;
 
     QSpinBox *mFontSize;
 
