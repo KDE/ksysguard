@@ -107,7 +107,7 @@ LogSensor::answerReceived(int id, const QString& answer)
 				lowerLimitActive = false;
 				lvi->setTextColor(monitor->colorGroup().foreground());
 				lvi->repaint();
-				KNotifyClient::event("sensor_alarm", QString("sensor '%1' at '%2' reached lower limit").arg(sensorName).arg(hostName));
+				KNotifyClient::event(monitor->winId(), "sensor_alarm", QString("sensor '%1' at '%2' reached lower limit").arg(sensorName).arg(hostName));
 				timerOn();
 			} else if (upperLimitActive && value > upperLimit)
 			{
@@ -115,7 +115,7 @@ LogSensor::answerReceived(int id, const QString& answer)
 				upperLimitActive = false;
 				lvi->setTextColor(monitor->colorGroup().foreground());
 				lvi->repaint();
-				KNotifyClient::event("sensor_alarm", QString("sensor '%1' at '%2' reached upper limit").arg(sensorName).arg(hostName));
+				KNotifyClient::event(monitor->winId(), "sensor_alarm", QString("sensor '%1' at '%2' reached upper limit").arg(sensorName).arg(hostName));
 				timerOn();
 			}
 			QDate date = QDateTime::currentDateTime().date();
