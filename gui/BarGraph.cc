@@ -32,12 +32,6 @@
 #include "SensorDisplay.h"
 #include "BarGraph.moc"
 
-static inline int
-min(int a, int b)
-{
-	return (a < b ? a : b);
-}
-
 BarGraph::BarGraph(QWidget* parent, const char* name, int min, int max)
 	: QWidget(parent, name), minValue(min), maxValue(max)
 {
