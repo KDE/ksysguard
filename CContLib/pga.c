@@ -33,11 +33,11 @@
 #define new(a)    malloc(a)
 #define delete(a) free(a)
 
-#define PAGESIZE ((INDEX) 64)	/* should be carefully chosen */
+#define PGA_PAGESIZE ((INDEX) 64)	/* should be carefully chosen */
 
 typedef struct Page
 {
-	void*  objects[PAGESIZE];	/* Pointer to objects */
+	void*  objects[PGA_PAGESIZE];	/* Pointer to objects */
 	struct Page* pred;			/* Pointer to previos page */
 	struct Page* succ;			/* Pointer to next page */
 } PAGE;
@@ -89,11 +89,11 @@ check_pga(void* pga, CHECK_FUNC check)
 		     (page->pred != NIL && page->pred->succ != page) ||
 		     (page->succ != NIL && page->succ->pred != page))
 			return (-1);
-		for (i = 0; i < PAGESIZE && i < pos; i++)
+		for (i = 0; i < PGA_PAGESIZE && i < pos; i++)
 			if (check != NIL)
 				if ((*check)(page->objects[i]) < 0)
 					return (-1);
-		pos -= PAGESIZE;
+		pos -= PGA_PAGESIZE;
 	}
 	return (0);
 }
@@ -108,12 +108,12 @@ destr_pga(void* pga, DESTR_FUNC destr_obj)
 	pos = hndl->count;
 	while ((page = hndl->first) != NIL)
 	{
-		for (i = (INDEX) 0; i < PAGESIZE && i < pos; i++)
+		for (i = (INDEX) 0; i < PGA_PAGESIZE && i < pos; i++)
 			if (page->objects[i] != NIL && destr_obj != NIL)
 				(*destr_obj)(page->objects[i]);
 		hndl->first = page->succ;
 		delete(page);
-		pos -= PAGESIZE;
+		pos -= PGA_PAGESIZE;
 	}
 	delete(hndl);
 }
@@ -134,12 +134,12 @@ find_page(PGA* hndl, INDEX* pos)
 	CACHEMARK* cache;
 	int       i;
 
-	if (*pos < PAGESIZE)
+	if (*pos < PGA_PAGESIZE)
 		return (hndl->first);			/* it's on the first page */
 
-	if (*pos >= (hndl->count / PAGESIZE) * PAGESIZE)
+	if (*pos >= (hndl->count / PGA_PAGESIZE) * PGA_PAGESIZE)
 	{
-		*pos %= PAGESIZE;				/* it's on the last page */
+		*pos %= PGA_PAGESIZE;				/* it's on the last page */
 		return (hndl->last);
 	}
 
@@ -156,8 +156,8 @@ find_page(PGA* hndl, INDEX* pos)
 		}
 	}
 
-	for (page = hndl->first; *pos >= PAGESIZE; 
-	     *pos -= PAGESIZE, page = page->succ)
+	for (page = hndl->first; *pos >= PGA_PAGESIZE; 
+	     *pos -= PGA_PAGESIZE, page = page->succ)
 		;
 	return (page);
 }
@@ -169,7 +169,7 @@ insert_pga(void* pga, void* object, INDEX pos)
 	PAGE* help;
 	PGA*  hndl = (PGA*) pga;
 
-	if (hndl->count % PAGESIZE == 0)	/* All pages full => new's needed */
+	if (hndl->count % PGA_PAGESIZE == 0)	/* All pages full => new's needed */
 	{
 		page = new(sizeof(PAGE));
 		page->succ = NIL;
@@ -187,12 +187,12 @@ insert_pga(void* pga, void* object, INDEX pos)
 	for (help = hndl->last; help != page; help = help->pred)
 	{
 		memmove(&help->objects[1], &help->objects[0],
-		        (PAGESIZE - 1) * sizeof(void*));
-		help->objects[0] = help->pred->objects[PAGESIZE - 1];
+		        (PGA_PAGESIZE - 1) * sizeof(void*));
+		help->objects[0] = help->pred->objects[PGA_PAGESIZE - 1];
 	}
-	if (pos < PAGESIZE - 1)
+	if (pos < PGA_PAGESIZE - 1)
 		memmove(&page->objects[pos + 1], &page->objects[pos],
-		        (PAGESIZE - pos - 1) * sizeof(void*));
+		        (PGA_PAGESIZE - pos - 1) * sizeof(void*));
 
 	page->objects[pos] = object;
 	hndl->count++;
@@ -230,19 +230,19 @@ remove_pga(void* pga, INDEX pos)
 	page = find_page(hndl, &pos);
 	object = page->objects[pos];
 
-	if (pos < PAGESIZE - 1)
+	if (pos < PGA_PAGESIZE - 1)
 		memmove(&page->objects[pos], &page->objects[pos + (INDEX) 1],
-		        (PAGESIZE - pos - 1) * sizeof(void*));
+		        (PGA_PAGESIZE - pos - 1) * sizeof(void*));
 	while (page != hndl->last)
 	{
-		page->objects[PAGESIZE - (INDEX) 1] = page->succ->objects[(INDEX) 0];
+		page->objects[PGA_PAGESIZE - (INDEX) 1] = page->succ->objects[(INDEX) 0];
 		memmove(&page->succ->objects[(INDEX) 0],
 		        &page->succ->objects[(INDEX) 1],
-		        (PAGESIZE - (INDEX) 1) * sizeof(void*));
+		        (PGA_PAGESIZE - (INDEX) 1) * sizeof(void*));
 		page = page->succ;
 	}
 
-	if (--hndl->count % PAGESIZE == 0)
+	if (--hndl->count % PGA_PAGESIZE == 0)
 	{
 		if ((hndl->last = hndl->last->pred) == NIL)
 		{
