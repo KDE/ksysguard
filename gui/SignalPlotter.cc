@@ -84,8 +84,8 @@ SignalPlotter::addSample(int s0, int s1, int s2, int s3, int s4)
 	 * an extreme value. */
 	bool recalc = false;
 	for (int i = 0; i < beams; i++)
-		if (beamData[i][width() - 3] <= minValue ||
-			beamData[i][width() - 3] >= maxValue)
+		if (beamData[i][0] <= minValue ||
+			beamData[i][0] >= maxValue)
 		{
 			recalc = true;
 		}
@@ -123,8 +123,8 @@ SignalPlotter::addSample(int s0, int s1, int s2, int s3, int s4)
 			beamData[4][width() - 3] = s4;
 	}
 	for (int i = 0; i < beams; i++)
-		if (beamData[i][0] <= minValue ||
-			beamData[i][0] >= maxValue)
+		if (beamData[i][width() - 3] <= minValue ||
+			beamData[i][width() - 3] >= maxValue)
 		{
 			recalc = true;
 		}
