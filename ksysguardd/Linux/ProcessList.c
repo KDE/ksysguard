@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE Task Manager
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -43,6 +43,7 @@
 #endif
 
 #define BUFSIZE 1024
+#define TAGSIZE 32
 #define KDEINITLEN strlen("kdeinit: ")
 
 static CONTAINER ProcessList = 0;
@@ -95,12 +96,6 @@ typedef struct
 	 * The amount of physical memory the process currently uses.
 	 */
 	unsigned int vmRss;
-
-	/*
-	 * The amount of memory (shared/swapped/etc) the process shares with
-	 * other processes.
-	 */
-	unsigned int vmLib;
 
 	/*
 	 * The number of 1/100 of a second the process has spend in user space.
@@ -182,6 +177,9 @@ updateProcess(int pid)
 	ProcessInfo* ps;
 	FILE* fd;
 	char buf[BUFSIZE];
+	char tag[TAGSIZE];
+	char format[32];
+	char tagformat[32];
 	int userTime, sysTime;
 	const char* uName;
 	char status;
@@ -208,28 +206,25 @@ updateProcess(int pid)
 		return (-1);
 	}
 
-	fscanf(fd, "%*s %63s", ps->name);
-	validateStr(ps->name);
-	fscanf(fd, "%*s %*c %*s");
-	fscanf(fd, "%*s %*d");
-	fscanf(fd, "%*s %*d");
-	fscanf(fd, "%*s %d %*d %*d %*d", (int*) &ps->uid);
-	fscanf(fd, "%*s %*d %*d %*d %*d");
-	fscanf(fd, "%*s %*d %*d %*d %*d");
-	fscanf(fd, "%*s %*d %*s");	/* VmSize */
-	fscanf(fd, "%*s %*d %*s");	/* VmLck */
-	fscanf(fd, "%*s %*d %*s");	/* VmRSS */
-	fscanf(fd, "%*s %*d %*s");	/* VmData */
-	fscanf(fd, "%*s %*d %*s");	/* VmStk */
-	fscanf(fd, "%*s %*d %*s");	/* VmExe */
-	if (fscanf(fd, "%8s %d %*s", buf, &ps->vmLib) != 2) 	/* VmLib */
-		return (-1);
-	buf[7] = '\0';
-	if (strcmp(buf, "VmLib:") != 0)
-		ps->vmLib = 0;
-	else
-		ps->vmLib *= 1024;
-
+	sprintf(format, "%%%d[^\n]\n", (int) sizeof(buf) - 1);
+	sprintf(tagformat, "%%%ds", (int) sizeof(tag) - 1);
+	for (;;)
+	{
+		if (fscanf(fd, format, buf) != 1)
+			break;
+		buf[sizeof(buf) - 1] = '\0';
+		sscanf(buf, tagformat, tag);
+		tag[sizeof(tag) - 1] = '\0';
+		if (strcmp(tag, "Name:") == 0)
+		{
+			sscanf(buf, "%*s %63s", ps->name);
+			validateStr(ps->name);
+		}
+		else if (strcmp(tag, "Uid:"))
+		{
+			fscanf(fd, "%*s %d %*d %*d %*d", (int*) &ps->uid);
+		}
+	}
 	if (fclose(fd))
 		return (-1);
 
@@ -247,12 +242,19 @@ updateProcess(int pid)
 	if (fclose(fd))
 		return (-1);
 
-	if (status == 'S')
-		strcpy(ps->status, "sleep");
-	else if (status == 'R')
-		strcpy(ps->status, "run");
+	/* status decoding as taken from fs/proc/array.c */
+	if (status == 'R')
+		strcpy(ps->status, "running");
+	else if (status == 'S')
+		strcpy(ps->status, "sleeping");
+	else if (status == 'D')
+		strcpy(ps->status, "disk sleep");
 	else if (status == 'Z')
 		strcpy(ps->status, "zombie");
+	else if (status == 'T')
+		strcpy(ps->status, "stopped");
+	else if (status == 'W')
+		strcpy(ps->status, "paging");
 	else
 		sprintf(ps->status, "Unknown: %c", status);
 
@@ -301,14 +303,14 @@ updateProcess(int pid)
 	if (fclose(fd))
 		return (-1);
 
-	/* Ugly hack to "fix" program name for kdeinit lauched programs. */
+	/* Ugly hack to "fix" program name for kdeinit launched programs. */
 	if (strcmp(ps->name, "kdeinit") == 0 &&
 		strncmp(ps->cmdline, "kdeinit: ", KDEINITLEN) == 0)
 	{
 		size_t len;
 		char* end = strchr(ps->cmdline + KDEINITLEN, ' ');
 		if (end)
-			len = end - ps->cmdline;
+			len = (end - ps->cmdline) - KDEINITLEN;
 		else
 			len = strlen(ps->cmdline + KDEINITLEN);
 		if (len > 0)
@@ -427,8 +429,8 @@ void
 printProcessListInfo(const char* cmd)
 {
 	printf("Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize"
-		   "\tVmRss\tVmLib\tLogin\tCommand\n");
-	printf("s\td\td\td\td\tS\tf\tf\td\td\td\td\ts\ts\n");
+		   "\tVmRss\tLogin\tCommand\n");
+	printf("s\td\td\td\td\tS\tf\tf\td\td\td\ts\ts\n");
 }
 
 void
@@ -443,12 +445,12 @@ printProcessList(const char* cmd)
 	{
 		ProcessInfo* ps = get_ctnr(ProcessList, i);
 
-		printf("%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d\t%d"
+		printf("%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d"
 			   "\t%s\t%s\n",
 			   ps->name, (long) ps->pid, (long) ps->ppid,
 			   (long) ps->uid, (long) ps->gid, ps->status,
 			   ps->userLoad, ps->sysLoad, ps->niceLevel, 
-			   ps->vmSize / 1024, ps->vmRss / 1024, ps->vmLib / 1024,
+			   ps->vmSize / 1024, ps->vmRss / 1024,
 			   ps->userName, ps->cmdline);
 	}
 }
