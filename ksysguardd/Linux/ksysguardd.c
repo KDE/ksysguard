@@ -143,6 +143,8 @@ createLockFile()
 		}
 		fseek(file, 0, SEEK_SET);
 		fprintf(file, "%d\n", getpid());
+		fflush(file);
+		ftruncate(fileno(file), ftell(file));
 	}
 	else
 	{
@@ -332,17 +334,25 @@ createServerSocket()
 
 	setsockopt(newSocket, SOL_SOCKET, SO_REUSEADDR, &i, sizeof(i));
 
-	if ((service = getservbyname("ksysguardd", "tcp")) == NULL) {
-		SocketPort = PORT_NUMBER;
-	} else {
-		SocketPort = service->s_port;
+	/* The -p command line option always overrides the default or the
+	 * service entry. */
+	if (SocketPort == -1)
+	{
+		if ((service = getservbyname("ksysguardd", "tcp")) == NULL)
+		{
+			/* No entry in service directory and no command line request,
+			 * so we take the build-in default (the offical IANA port). */
+			SocketPort = PORT_NUMBER;
+		}
+		else
+			SocketPort = htons(service->s_port);
 	}
 
 	memset(&sin, 0, sizeof(struct sockaddr_in));
 	sin.sin_family = AF_INET;
 	sin.sin_addr.s_addr = htonl(INADDR_ANY);
-	sin.sin_port = SocketPort;
-  
+	sin.sin_port = htons(SocketPort);
+
 	if (bind(newSocket, (struct sockaddr_in*) &sin, sizeof(sin)) < 0)
 	{
 		log_error("Cannot bind to port %d", SocketPort);
