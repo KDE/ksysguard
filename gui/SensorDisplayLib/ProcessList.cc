@@ -891,3 +891,5 @@ ProcessList::selectAllChilds(int pid, bool select)
 		}
 	}
 }
+
+#include "ProcessList.moc"
