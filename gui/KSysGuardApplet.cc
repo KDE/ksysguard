@@ -135,8 +135,6 @@ KSysGuardApplet::preferences()
 	ksgas->dockCnt->setValue(dockCnt);
 	ksgas->ratio->setValue(sizeRatio * 100.0);
 	ksgas->interval->setValue(updateInterval());
-	// quickhack
-	ksgas->interval->setEnabled(false);
 
 	if (ksgas->exec())
 		applySettings();

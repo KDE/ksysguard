@@ -66,20 +66,12 @@ public:
 	SensorBoard() { }
 	virtual ~SensorBoard() { }
 
-	void updateInterval(uint interval) { mUpdateInterval = interval; }
+	void updateInterval(int interval) { mUpdateInterval = interval; }
 
-	uint updateInterval()
-	{
-	/**
-	 * Because of an ugly bug somewhere we return a constant value here.
-	 * It will hopefully be fixed in the next version
-	 */
-		return 2;
-//		return mUpdateInterval;
-	}
+	int updateInterval() {	return mUpdateInterval;	}
 
 private:
-	uint mUpdateInterval;
+	int mUpdateInterval;
 } ;
 
 /**

@@ -121,7 +121,14 @@ SensorDisplay::setupTimer()
 	if (ts->exec()) {
 		if (ts->useGlobalUpdate->isChecked()) {
 			globalUpdateInterval = true;
-			setUpdateInterval(((SensorBoard *)parentWidget())->updateInterval());
+
+			SensorBoard* sb = dynamic_cast<SensorBoard*>(parentWidget());
+			if (!sb) {
+				kdDebug() << "dynamic cast lacks" << endl;
+				setUpdateInterval(2);
+			} else {
+				setUpdateInterval(sb->updateInterval());
+			}
 		} else {
 			globalUpdateInterval = false;
 			setUpdateInterval(ts->interval->text().toInt());
@@ -304,7 +311,14 @@ SensorDisplay::internCreateFromDOM(QDomElement& element)
 		setUpdateInterval(element.attribute("updateInterval", "2").toInt());
 	} else {
 		globalUpdateInterval = true;
-		setUpdateInterval(((SensorBoard *)parentWidget())->updateInterval());
+
+		SensorBoard* sb = dynamic_cast<SensorBoard*>(parentWidget());
+		if (!sb) {
+			kdDebug() << "dynamic cast lacks" << endl;
+			setUpdateInterval(2);
+		} else {
+			setUpdateInterval(sb->updateInterval());
+		}
 	}
 
 	if (element.attribute("pause", "0").toInt() == 0)

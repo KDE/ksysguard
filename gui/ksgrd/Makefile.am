@@ -21,8 +21,9 @@ libksgrd_la_SOURCES = \
 	TimerSettings.ui
 
 ksgrdincludedir = $(includedir)/ksgrd
-ksgrdinclude_HEADERS = SensorDisplay.h SensorManager.h \
-	SensorShellAgent.h SensorSocketAgent.h
+ksgrdinclude_HEADERS = SensorDisplay.h SensorClient.h SensorManager.h \
+	SensorAgent.h SensorShellAgent.h SensorSocketAgent.h \
+	StyleEngine.h ColorPicker.h
 
 # just to make sure, automake makes them 
 libksgrd_la_METASOURCES = AUTO

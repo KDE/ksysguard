@@ -191,7 +191,7 @@ DancingBars::settingsEdit()
 
 	BarGraphSettings* bgs = new BarGraphSettings(
 		this, "BarsGraphSettings", true);
-	Q_CHECK_PTR(dbs);
+	Q_CHECK_PTR(bgs);
 
 	bgs->label->setText(lvi->text(2));
 	if (bgs->exec())
