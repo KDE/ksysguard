@@ -178,7 +178,7 @@ TopLevel::answerReceived(int id, const QString& answer)
 		break;
 	case 3:
 		sFree = answer.toLong();
-		s = i18n("Swap: %1 %2 used, %2 %4 free")
+		s = i18n("Swap: %1 %2 used, %3 %4 free")
 			.arg(sTotal - sFree).arg(unit).arg(sFree).arg(unit);
 		statusbar->changeItem(s, 2);
 		break;
