@@ -26,7 +26,6 @@
 #include <qdom.h>
 #include <qdragobject.h>
 #include <qfile.h>
-#include <qpopupmenu.h>
 #include <qpushbutton.h>
 #include <qspinbox.h>
 #include <qtooltip.h>
@@ -35,6 +34,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
+#include <kpopupmenu.h>
 
 #include <ksgrd/SensorClient.h>
 #include <ksgrd/SensorManager.h>
@@ -112,7 +112,7 @@ void KSysGuardApplet::resizeEvent( QResizeEvent* )
 void KSysGuardApplet::preferences()
 {
   mSettingsDlg = new KSGAppletSettings( this );
-																
+
   connect( mSettingsDlg, SIGNAL( applyClicked() ), SLOT( applySettings() ) );
 
   mSettingsDlg->setNumDisplay( mDockCount );
@@ -188,12 +188,10 @@ void KSysGuardApplet::dropEvent( QDropEvent *e )
     int dock = findDock( e->pos() );
     if ( mDockList[ dock ]->isA( "QFrame" ) ) {
       if ( sensorType == "integer" || sensorType == "float" ) {
-        QPopupMenu popup;
+        KPopupMenu popup;
         QWidget *wdg = 0;
 
-        popup.insertItem( i18n( "Select Display Type" ), 0 );
-        popup.setItemEnabled( 0, false );
-        popup.insertSeparator();
+        popup.insertTitle( i18n( "Select Display Type" ) );
         popup.insertItem( i18n( "&Signal Plotter" ), 1 );
         popup.insertItem( i18n( "&Multimeter" ), 2 );
         popup.insertItem( i18n( "&Dancing Bars" ), 3 );
@@ -242,7 +240,7 @@ void KSysGuardApplet::customEvent( QCustomEvent *e )
 {
   if ( e->type() == QEvent::User ) {
     if ( KMessageBox::warningYesNo( this,
-         i18n( "Do you really want to delete the display?" ) ) ==	KMessageBox::Yes ) {				
+         i18n( "Do you really want to delete the display?" ) ) ==	KMessageBox::Yes ) {
       // SensorDisplays send out this event if they want to be removed.
       removeDisplay( (KSGRD::SensorDisplay*)e->data() );
       save();

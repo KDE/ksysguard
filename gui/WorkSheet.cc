@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
     Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -29,6 +29,7 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kpopupmenu.h>
 
 #include <SensorManager.h>
 
@@ -262,7 +263,7 @@ void WorkSheet::paste()
   QClipboard* clip = QApplication::clipboard();
 
   QDomDocument doc;
-  /* Get text from clipboard and check for a valid XML header and 
+  /* Get text from clipboard and check for a valid XML header and
    * proper document type. */
   if ( !doc.setContent( clip->text() ) || doc.doctype().name() != "KSysGuardDisplay" ) {
     KMessageBox::sorry( this, i18n("The clipboard does not contain a valid display "
@@ -317,10 +318,8 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
      * type we popup a menu so the user can select what display is
      * wanted. */
     if ( sensorType == "integer" || sensorType == "float" ) {
-      QPopupMenu pm;
-      pm.insertItem( i18n( "Select Display Type" ), 0 );
-      pm.setItemEnabled( 0, false );
-      pm.insertSeparator();
+      KPopupMenu pm;
+      pm.insertTitle( i18n( "Select Display Type" ) );
       pm.insertItem( i18n( "&Signal Plotter" ), 1 );
       pm.insertItem( i18n( "&Multimeter" ), 2 );
       pm.insertItem( i18n( "&BarGraph" ), 3 );
