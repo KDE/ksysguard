@@ -39,32 +39,32 @@ SensorLoggerDlg::SensorLoggerDlg( QWidget *parent, const char *name )
   setMainWidget( main );
 }
 
-QString SensorLoggerDlg::fileName()
+QString SensorLoggerDlg::fileName() const
 {
   return m_loggerWidget->fileName();
 }
 
-int SensorLoggerDlg::timerInterval()
+int SensorLoggerDlg::timerInterval() const
 {
   return m_loggerWidget->timerInterval();
 }
 
-bool SensorLoggerDlg::lowerLimitActive()
+bool SensorLoggerDlg::lowerLimitActive() const
 {
   return m_loggerWidget->lowerLimitActive();
 }
 
-bool SensorLoggerDlg::upperLimitActive()
+bool SensorLoggerDlg::upperLimitActive() const
 {
   return m_loggerWidget->upperLimitActive();
 }
 
-double SensorLoggerDlg::lowerLimit()
+double SensorLoggerDlg::lowerLimit() const
 {
   return m_loggerWidget->lowerLimit();
 }
 
-double SensorLoggerDlg::upperLimit()
+double SensorLoggerDlg::upperLimit() const
 {
   return m_loggerWidget->upperLimit();
 }

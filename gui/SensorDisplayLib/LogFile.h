@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
 	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -24,9 +24,10 @@
 
 #define MAXLINES 500
 
+class QFile;
+class QListBox;
+
 #include <qdom.h>
-#include <qfile.h>
-#include <qlistbox.h>
 #include <qpopupmenu.h>
 #include <qstring.h>
 #include <qstringlist.h>
@@ -76,8 +77,6 @@ public slots:
 
 private:
 	LogFileSettings* lfs;
-
-	QFile* logFile;
 	QListBox* monitor;
 	QStringList filterRules;
 

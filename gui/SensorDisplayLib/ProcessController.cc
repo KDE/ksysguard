@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms version 2 of of the GNU General Public
     License as published by the Free Software Foundation.
@@ -36,6 +36,16 @@
 #include "ProcessController.moc"
 #include "SignalIDs.h"
 
+#include <qcheckbox.h>
+#include <qcombobox.h>
+#include <qgroupbox.h>
+#include <qlayout.h>
+
+#include <kapplication.h>
+#include <kpushbutton.h>
+
+
+
 ProcessController::ProcessController(QWidget* parent, const char* name)
 	: KSGRD::SensorDisplay(parent, name)
 {
@@ -55,7 +65,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	dict.insert("Command", new QString(i18n("Command")));
 
 	// Create the table that lists the processes.
-	pList = new ProcessList(this, "pList");    
+	pList = new ProcessList(this, "pList");
 	Q_CHECK_PTR(pList);
 	connect(pList, SIGNAL(killProcess(int, int)),
 			this, SLOT(killProcess(int, int)));
@@ -88,7 +98,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 			this, SLOT(filterModeChanged(int)));
 
 	// Create the 'Refresh' button.
-    bRefresh = new KPushButton( KGuiItem(  i18n( "&Refresh" ), "reload" ), 
+    bRefresh = new KPushButton( KGuiItem(  i18n( "&Refresh" ), "reload" ),
             this, "bRefresh" );
 	Q_CHECK_PTR(bRefresh);
 	bRefresh->setMinimumSize(bRefresh->sizeHint());
@@ -195,8 +205,8 @@ ProcessController::killProcess()
 	}
 	else
 	{
-		QString  msg = i18n("Do you want to kill the selected process?", 
-				"Do you want to kill the %n selected processes?", 
+		QString  msg = i18n("Do you want to kill the selected process?",
+				"Do you want to kill the %n selected processes?",
 				selectedPIds.count());
 		if (KMessageBox::warningContinueCancel(this, msg, kapp->makeStdCaption(i18n("Kill Process")), i18n("&Kill")) != KMessageBox::Continue)
 		{
@@ -209,7 +219,7 @@ ProcessController::killProcess()
 	for (it = selectedPIds.begin(); it != selectedPIds.end(); ++it)
 		sendRequest(sensors().at(0)->hostName(), QString("kill %1 %2" ).arg(*it)
 					.arg(MENU_ID_SIGKILL), 3);
-	
+
 	if ( !timerOn())
 	    // give ksysguardd time to update its proccess list
 	    QTimer::singleShot(3000, this, SLOT(updateList()));

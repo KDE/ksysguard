@@ -36,10 +36,10 @@ class ListViewSettings : public KDialogBase
 
     ListViewSettings( QWidget *parent=0, const char *name=0 );
 
-    QString title();
-    QColor textColor();
-    QColor backgroundColor();
-    QColor gridColor();
+    QString title() const;
+    QColor textColor() const;
+    QColor backgroundColor() const;
+    QColor gridColor() const;
 
     void setTitle( const QString & );
     void setTextColor( const QColor & );

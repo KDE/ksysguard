@@ -36,12 +36,12 @@ class SensorLoggerDlg : public KDialogBase
 
     SensorLoggerDlg( QWidget *parent=0, const char *name=0 );
 
-    QString fileName();
-    int timerInterval();
-    bool lowerLimitActive();
-    bool upperLimitActive();
-    double lowerLimit();
-    double upperLimit();
+    QString fileName() const;
+    int timerInterval() const;
+    bool lowerLimitActive() const;
+    bool upperLimitActive() const;
+    double lowerLimit() const;
+    double upperLimit() const;
 
     void setFileName( const QString & );
     void setTimerInterval( int );

@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
 	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -25,6 +25,9 @@
 #include <qpushbutton.h>
 #include <qregexp.h>
 
+#include <qfile.h>
+#include <qlistbox.h>
+
 #include <kfontdialog.h>
 #include <kdebug.h>
 #include <klocale.h>
@@ -39,7 +42,7 @@ LogFile::LogFile(QWidget *parent, const char *name, const QString& title)
 {
 	monitor = new QListBox(this);
 	Q_CHECK_PTR(monitor);
-	
+
 	setMinimumSize(50, 25);
 
 	setPlotterWidget(monitor);
@@ -81,7 +84,7 @@ void LogFile::configureSettings(void)
 
 	lfs = new LogFileSettings(this);
 	Q_CHECK_PTR(lfs);
-	
+
 	lfs->fgColor->setColor(cgroup.text());
 	lfs->fgColor->setText(i18n("Foreground color:"));
 	lfs->bgColor->setColor(cgroup.base());
@@ -89,7 +92,7 @@ void LogFile::configureSettings(void)
 	lfs->fontButton->setFont(monitor->font());
 	lfs->ruleList->insertStringList(filterRules);
 	lfs->title->setText(title());
-	
+
 	connect(lfs->okButton, SIGNAL(clicked()), lfs, SLOT(accept()));
 	connect(lfs->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
 	connect(lfs->cancelButton, SIGNAL(clicked()), lfs, SLOT(reject()));

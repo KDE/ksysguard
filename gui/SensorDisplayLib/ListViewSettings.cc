@@ -30,22 +30,22 @@ ListViewSettings::ListViewSettings( QWidget *parent, const char *name )
   setMainWidget( m_settingsWidget );
 }
 
-QString ListViewSettings::title()
+QString ListViewSettings::title() const
 {
   return m_settingsWidget->title();
 }
 
-QColor ListViewSettings::textColor()
+QColor ListViewSettings::textColor() const
 {
   return m_settingsWidget->textColor();
 }
 
-QColor ListViewSettings::backgroundColor()
+QColor ListViewSettings::backgroundColor() const
 {
   return m_settingsWidget->backgroundColor();
 }
 
-QColor ListViewSettings::gridColor()
+QColor ListViewSettings::gridColor() const
 {
   return m_settingsWidget->gridColor();
 }

@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -25,19 +25,20 @@
 #ifndef _ProcessController_h_
 #define _ProcessController_h_
 
-#include <qcheckbox.h>
-#include <qcombobox.h>
 #include <qdict.h>
-#include <qgroupbox.h>
-#include <qlayout.h>
 #include <qwidget.h>
 
 #include <kapplication.h>
-#include <kpushbutton.h>
 
 #include <SensorDisplay.h>
 
 #include "ProcessList.h"
+
+class QVBoxLayout;
+class QHBoxLayout;
+class QCheckBox;
+class QComboBox;
+class KPushButton;
 
 extern KApplication* Kapp;
 
@@ -141,7 +142,7 @@ private:
 
 	/// This combo boxes control the process filter.
 	QComboBox* cbFilter;
-	
+
 	/// These buttons force an immedeate refresh or kill a process.
 	KPushButton* bRefresh;
 	KPushButton* bKill;
