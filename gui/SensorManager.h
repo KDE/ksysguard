@@ -39,7 +39,7 @@ class SensorManager : public QObject
 {
 	Q_OBJECT
 
-	friend SensorManagerIterator;
+	friend class SensorManagerIterator;
 
 public:
 	SensorManager();
