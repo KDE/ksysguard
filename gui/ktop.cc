@@ -64,6 +64,8 @@ TopLevel::TopLevel(const char *name, int)
 	splitter = new QSplitter(this, "Splitter");
 	CHECK_PTR(splitter);
 	splitter->setOrientation(Horizontal);
+	splitter->setOpaqueResize(TRUE);
+	QValueList<int> sizes;
 	setView(splitter);
 
 	sb = new SensorBrowser(splitter, SensorMgr, "SensorBrowser");
@@ -72,15 +74,20 @@ TopLevel::TopLevel(const char *name, int)
 	ws = new Workspace(splitter, "Workspace");
 	CHECK_PTR(ws);
 
+	// start with a 30/70 ratio
+	sizes.append(30);
+	sizes.append(70);
+	splitter->setSizes(sizes);
+
 	/* Create the status bar. It displays some information about the
 	 * number of processes and the memory consumption of the local
 	 * host. */
 	statusbar = new KStatusBar(this, "statusbar");
 	CHECK_PTR(statusbar);
-	statusbar->insertItem(i18n("88888 Processes"), 0);
-	statusbar->insertItem(i18n("Memory: 8888888 kB used, "
+	statusbar->insertFixedItem(i18n("88888 Processes"), 0);
+	statusbar->insertFixedItem(i18n("Memory: 8888888 kB used, "
 							   "8888888 kB free"), 1);
-	statusbar->insertItem(i18n("Swap: 8888888 kB used, "
+	statusbar->insertFixedItem(i18n("Swap: 8888888 kB used, "
 							   "8888888 kB free"), 2);
 	setStatusBar(statusbar);
 

@@ -157,7 +157,6 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 		char* aux = new char[buflen + 1];
 		strncpy(aux, buffer, buflen);
 		aux[buflen] = '\0';
-		debug("MSG: %s", aux);
 		answerBuffer += QString(aux);
 		delete [] aux;
 	}
