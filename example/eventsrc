@@ -1,16 +1,41 @@
 [!Global!]
 IconName=ksysguard
 Comment=KDE System Guard
-Comment[de]=KDE-Systemw�chter
+Comment[az]=KDE Sistem Cangüdəni
+Comment[bg]=Cистемен монитор на KDE
+Comment[da]=KDE System Vagt
+Comment[de]=KDE-Systemüberwachung
+Comment[el]=Φρουρός Συστήματος KDE
+Comment[eo]=KDE-Sistemobservilo
+Comment[es]=Guardián del sistema de KDE
+Comment[et]=KDE süsteemi valvur
+Comment[fi]=KDE:n järjestelmänvalvonta
+Comment[fr]=Surveillance du système
+Comment[he]=KDE לש תכרעמה רמשמ
+Comment[hu]=KDE rendszerfigyelő
+Comment[ja]=KDEシステムガード
+Comment[ko]=KDE 시스템 보호
+Comment[lt]=KDE Sistemos apsauga
+Comment[lv]=KDE Sistēmas Sargs
+Comment[mt]=Gwardja tas-Sistema KDE
+Comment[nl]=KDE Systeem Bewaking
+Comment[no_NY]=KDE Systemvakt
+Comment[pl]=KDE Strażnik Systemu
+Comment[pt_BR]=Vigilante do sistema do KDE
+Comment[pt]=Vigilante do sistema do KDE
+Comment[ru]=Cистемный монитор KDE
+Comment[sk]=KDE Strážca Systému
+Comment[sl]=Sistemski varuh KDE
+Comment[sr]=KDE čuvar sistema
+Comment[sv]=KDE Systemövervakare
+Comment[ta]=KDE «¨ÁôÒ ¸¡ôÀ¡Ç÷
+Comment[tr]=KDE Sistem Koruyucu
+Comment[uk]=Системний вартовий KDE
 
 [pattern_match]
 Name=pattern_match
-Name[de]=pattern_match
 Comment=search pattern matched
-Comment[de]=Suchmuster trifft zu
 
 [sensor_alarm]
 Name=sensor_alarm
-Name[de]=sensor_alarm
 Comment=sensor exceted critical limit
-Comment[de]=Sensor hat kritischen Wert �berschritten
