@@ -36,12 +36,6 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
                 <widget class="KURLRequester">
                     <property name="name">
                         <cstring>m_fileName</cstring>
@@ -59,12 +53,6 @@
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
                 </property>
                 <widget class="KIntNumInput">
                     <property name="name">
@@ -95,12 +83,6 @@
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
                 </property>
                 <widget class="QCheckBox">
                     <property name="name">
@@ -167,12 +149,6 @@
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
                 </property>
                 <widget class="QCheckBox">
                     <property name="name">
@@ -277,8 +253,9 @@
     <function specifier="non virtual">setUpperLimitActive( bool b )</function>
     <function specifier="non virtual">setUpperLimit( double d )</function>
 </functions>
-<layoutdefaults spacing="6" margin="0"/>
-<layoutfunctions spacing="KDialog::spacingHint"/>
+
+<layoutdefaults spacing="6" margin="11"/>
+<layoutfunctions spacing="KDialog::spacingHint" margin="KDialog::marginHint"/>
 <includehints>
     <includehint>kurlrequester.h</includehint>
     <includehint>klineedit.h</includehint>

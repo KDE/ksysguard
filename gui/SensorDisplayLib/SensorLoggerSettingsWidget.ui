@@ -176,8 +176,8 @@
     <function specifier="non virtual">setBackgroundColor( const QColor &amp; c )</function>
     <function specifier="non virtual">setAlarmColor( const QColor &amp; c )</function>
 </functions>
-<layoutdefaults spacing="6" margin="0"/>
-<layoutfunctions spacing="KDialog::spacingHint"/>
+<layoutdefaults spacing="6" margin="11"/>
+<layoutfunctions spacing="KDialog::spacingHint" margin="KDialog::marginHint"/>
 <includehints>
     <includehint>colorpicker.h</includehint>
     <includehint>colorpicker.h</includehint>
