@@ -17,6 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <dirent.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
@@ -29,43 +30,17 @@
 
 #include "acpi.h"
 
-static int AcpiOK = 0;
-static int AcpiBatFill = 0;
+#define ACPIFILENAMELENGTHMAX 64
+#define ACPIBATTERYNUMMAX 6
+#define ACPIBATTERYINFOBUFSIZE 1024
+#define ACPIBATTERYSTATEBUFSIZE 512
 
-#define ACPIBATINFOBUFSIZE 1024
-static char AcpiBatInfoBuf[ACPIBATINFOBUFSIZE];
-#define ACPIBATSTATEBUFSIZE 512
-static char AcpiBatStateBuf[ACPIBATSTATEBUFSIZE];
-static int Dirty = 0;
+static int AcpiBatteryOK = 0;
+static int AcpiBatteryNum = 0;
+static char AcpiBatteryNames[ ACPIBATTERYNUMMAX ][ 8 ];
+static int AcpiBatteryCharge[ ACPIBATTERYNUMMAX ];
 
-static void processAcpi(void)
-{
-  char* p;
-  int AcpiBatDesignCapacity = 1;
-  int AcpiBatRemainingCapacity = 0;
 
-  p = AcpiBatInfoBuf;
-  while ( ( p!= NULL ) && ( sscanf( p, "design capacity: %d mWh",
-                            &AcpiBatDesignCapacity ) != 1 ) ) {
-    p = strchr( p, '\n' );
-    if ( p )
-      p++;
-  }
-  p = AcpiBatStateBuf;
-  while ( ( p != NULL ) && ( sscanf( p, "remaining capacity: %d mWh",
-                             &AcpiBatRemainingCapacity ) != 1 ) ) {
-    p = strchr( p, '\n' );
-    if ( p )
-      p++;
-  }
-
-  if ( AcpiBatDesignCapacity > 0 )
-    AcpiBatFill = AcpiBatRemainingCapacity * 100 / AcpiBatDesignCapacity;
-  else
-    AcpiBatFill = 0;
-
-  Dirty = 0;
-}
 
 /*
 ================================ public part =================================
@@ -73,81 +48,115 @@ static void processAcpi(void)
 
 void initAcpi( struct SensorModul* sm )
 {
-  if ( updateAcpi() < 0 ) {
-    AcpiOK = -1;
-    return;
-  } else
-    AcpiOK = 1;
+  DIR *d;
+  struct dirent *de;
+  char s[ ACPIFILENAMELENGTHMAX ];
 
-  registerMonitor( "acpi/batterycharge", "integer", printAcpiBatFill,
-                   printAcpiBatFillInfo, sm );
+  if ( ( d = opendir( "/proc/acpi/battery" ) ) == NULL ) {
+    print_error( "Directory \'/proc/acpi/battery\' does not exist or is not readable.\n"
+                 "Load the battery ACPI kernel module or compile it into your kernel.\n" );
+    AcpiBatteryOK = -1;
+    return;
+  } else {
+    while ( ( de = readdir( d ) ) )
+      if ( ( strcmp( de->d_name, "." ) != 0 ) && ( strcmp( de->d_name, ".." ) != 0 ) ) {
+        strncpy( AcpiBatteryNames[ AcpiBatteryNum ], de->d_name, 8 );
+        snprintf( s, sizeof( s ), "acpi/battery/%d/batterycharge", AcpiBatteryNum );
+        registerMonitor( s, "integer", printAcpiBatFill, printAcpiBatFillInfo, sm );
+        AcpiBatteryCharge[ AcpiBatteryNum ] = 0;
+        AcpiBatteryNum++;
+      }
+
+    AcpiBatteryOK = 1;
+  }
 }
 
 void exitAcpi( void )
 {
-  AcpiOK = -1;
+  AcpiBatteryOK = -1;
 }
 
 int updateAcpi( void )
 {
+  int i, fd;
+  char s[ ACPIFILENAMELENGTHMAX ];
   size_t n;
-  int fd;
-
-  if ( AcpiOK < 0 )
+  char AcpiBatInfoBuf[ ACPIBATTERYINFOBUFSIZE ];
+  char AcpiBatStateBuf[ ACPIBATTERYSTATEBUFSIZE ];
+  char *p;
+  int AcpiBatDesignCapacity = 1;
+  int AcpiBatRemainingCapacity = 0;
+  
+  if ( AcpiBatteryOK < 0 )
     return -1;
 
-  if ( ( fd = open( "/proc/acpi/battery/BAT0/info", O_RDONLY ) ) < 0 ) {
-    if ( AcpiOK != 0 )
-      print_error( "Cannot open file \'/proc/acpi/battery/BAT0/info\'!\n"
+  for ( i = 0; i < AcpiBatteryNum; i++ ) {
+    /* get design capacity */
+    snprintf( s, sizeof( s ), "/proc/acpi/battery/%s/info", AcpiBatteryNames[ i ] );
+    if ( ( fd = open( s, O_RDONLY ) ) < 0 ) {
+      print_error( "Cannot open file \'%s\'!\n"
                    "Load the battery ACPI kernel module or\n"
-                   "compile it into your kernel.\n" );
-    return -1;
-  }
-
-  if ( ( n = read( fd, AcpiBatInfoBuf, ACPIBATINFOBUFSIZE - 1 ) ) ==
-       ACPIBATINFOBUFSIZE - 1 ) {
-    log_error( "Internal buffer too small to read \'/proc/acpi/battery/BAT0/info\'" );
+                   "compile it into your kernel.\n", s );
+      return -1;
+    }
+    if ( ( n = read( fd, AcpiBatInfoBuf, ACPIBATTERYINFOBUFSIZE - 1 ) ) ==
+         ACPIBATTERYINFOBUFSIZE - 1 ) {
+      log_error( "Internal buffer too small to read \'%s\'", s );
+      close( fd );
+      return -1;
+    }
     close( fd );
-    return -1;
-  }
-
-  close( fd );
-  AcpiBatInfoBuf[ n ] = '\0';
-
-  if ( ( fd = open( "/proc/acpi/battery/BAT0/state", O_RDONLY ) ) < 0 ) {
-    if ( AcpiOK != 0 )
-      print_error( "Cannot open file \'/proc/acpi/battery/BAT0/state\'!\n"
+    p = AcpiBatInfoBuf;
+    while ( ( p!= NULL ) && ( sscanf( p, "design capacity: %d ",
+                              &AcpiBatDesignCapacity ) != 1 ) ) {
+      p = strchr( p, '\n' );
+      if ( p )
+        p++;
+    }
+    /* get remaining capacity */
+    snprintf( s, sizeof( s ), "/proc/acpi/battery/%s/state", AcpiBatteryNames[ i ] );
+    if ( ( fd = open( s, O_RDONLY ) ) < 0 ) {
+      print_error( "Cannot open file \'%s\'!\n"
                    "Load the battery ACPI kernel module or\n"
-                   "compile it into your kernel.\n" );
-    return -1;
-  }
-
-  if ( ( n = read( fd, AcpiBatStateBuf, ACPIBATSTATEBUFSIZE - 1 ) ) ==
-       ACPIBATSTATEBUFSIZE - 1 ) {
-    log_error( "Internal buffer too small to read \'/proc/acpi/battery/BAT0/state\'" );
+                   "compile it into your kernel.\n", s );
+      return -1;
+    }
+    if ( ( n = read( fd, AcpiBatStateBuf, ACPIBATTERYSTATEBUFSIZE - 1 ) ) ==
+         ACPIBATTERYSTATEBUFSIZE - 1 ) {
+      log_error( "Internal buffer too small to read \'%s\'", s);
+      close( fd );
+      return -1;
+    }
     close( fd );
-    return -1;
-  }
-
-  close( fd );
-  AcpiBatStateBuf[ n ] = '\0';
-
-  Dirty = 1;
+    p = AcpiBatStateBuf;
+    while ( ( p!= NULL ) && ( sscanf( p, "remaining capacity: %d ",
+                              &AcpiBatRemainingCapacity ) != 1 ) ) {
+      p = strchr( p, '\n' );
+      if ( p )
+        p++;
+    }
+    /* calculate charge rate */
+    if ( AcpiBatDesignCapacity > 0 )
+      AcpiBatteryCharge[ i ] = AcpiBatRemainingCapacity * 100 / AcpiBatDesignCapacity;
+    else
+      AcpiBatteryCharge[ i ] = 0;
+  } 
 
   return 0;
 }
 
-void printAcpiBatFill( const char* c )
+void printAcpiBatFill( const char* cmd )
 {
-  (void)c;
-  if ( Dirty )
-    processAcpi();
+  int i;
 
-  fprintf( CurrentClient, "%d\n", AcpiBatFill );
+  sscanf( cmd + 13, "%d", &i );
+  fprintf( CurrentClient, "%d\n", AcpiBatteryCharge[ i ] );
 }
 
-void printAcpiBatFillInfo( const char* c )
+void printAcpiBatFillInfo( const char* cmd )
 {
-  (void)c;
-  fprintf( CurrentClient, "Battery charge\t0\t100\t%%\n" );
+  int i;
+
+  sscanf( cmd + 13, "%d", &i );
+  fprintf( CurrentClient, "Battery %d charge\t0\t100\t%%\n", i );
 }
