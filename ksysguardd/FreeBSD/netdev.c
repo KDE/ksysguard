@@ -56,14 +56,18 @@ typedef struct {
 
 #define MAXNETDEVS 64
 static NetDevInfo NetDevs[MAXNETDEVS];
+static NetDevInfo NetDevsOld[MAXNETDEVS];
 static int NetDevCnt = 0;
 static struct SensorModul* NetDevSM;
+
+static float elapsed = 0.0;
+static struct timeval old_tv;
 
 char **parseCommand(const char *cmd)
 {
 	char *tmp_cmd = strdup(cmd);
 	char *begin;
-	char *retval = malloc(sizeof(char *)*2);
+	char **retval = malloc(sizeof(char *)*2);
 
 	begin = rindex(tmp_cmd, '/');
 	*begin = '\0';
@@ -114,12 +118,17 @@ void initNetDev(struct SensorModul* sm)
 {
 	int i;
 	char monitor[1024];
+	gettimeofday(&old_tv, (struct timezone *)0);
 
 	NetDevSM = sm;
 
 	updateNetDev();
 	
 	for (i = 0; i < NetDevCnt; i++) {
+		/* init data */
+		NetDevsOld[i] = NetDevs[i];
+
+		/* register monitors */
 		snprintf(monitor, sizeof(monitor), "network/interfaces/%s/receiver/data", NetDevs[i].name);
 		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo, NetDevSM);
 		snprintf(monitor, sizeof(monitor), "network/interfaces/%s/receiver/packets", NetDevs[i].name);
@@ -180,6 +189,7 @@ int updateNetDev(void)
 	int num_iface, i;
 	size_t len;
 	struct ifmibdata ifmd;
+	struct timeval new_tv, tv;
 
 	len = sizeof(num_iface);
 	sysctlbyname("net.link.generic.system.ifcount", &num_iface, &len, NULL, 0);
@@ -196,20 +206,27 @@ int updateNetDev(void)
 		len = sizeof(ifmd);
 		sysctl(name, 6, &ifmd, &len, NULL, 0);
 		if (ifmd.ifmd_flags & IFF_UP) {
+			NetDevsOld[NetDevCnt] = NetDevs[NetDevCnt];
+
 			strlcpy(NetDevs[NetDevCnt].name, ifmd.ifmd_name, sizeof(NetDevs[NetDevCnt].name));
-			NetDevs[NetDevCnt].recBytes = ifmd.ifmd_data.ifi_ibytes - NetDevs[NetDevCnt].recBytes;
-			NetDevs[NetDevCnt].recPacks = ifmd.ifmd_data.ifi_ipackets - NetDevs[NetDevCnt].recPacks;
-			NetDevs[NetDevCnt].recErrs = ifmd.ifmd_data.ifi_ierrors - NetDevs[NetDevCnt].recErrs;
-			NetDevs[NetDevCnt].recDrop = ifmd.ifmd_data.ifi_iqdrops - NetDevs[NetDevCnt].recDrop;
-			NetDevs[NetDevCnt].recMulticast = ifmd.ifmd_data.ifi_imcasts - NetDevs[NetDevCnt].recMulticast;
-			NetDevs[NetDevCnt].sentBytes = ifmd.ifmd_data.ifi_obytes - NetDevs[NetDevCnt].sentBytes;
-			NetDevs[NetDevCnt].sentPacks = ifmd.ifmd_data.ifi_opackets - NetDevs[NetDevCnt].sentPacks;
-			NetDevs[NetDevCnt].sentErrs = ifmd.ifmd_data.ifi_oerrors - NetDevs[NetDevCnt].sentErrs;
-			NetDevs[NetDevCnt].sentMulticast = ifmd.ifmd_data.ifi_omcasts - NetDevs[NetDevCnt].sentMulticast;
-			NetDevs[NetDevCnt].sentColls = ifmd.ifmd_data.ifi_collisions - NetDevs[NetDevCnt].sentColls;
+			NetDevs[NetDevCnt].recBytes = ifmd.ifmd_data.ifi_ibytes;
+			NetDevs[NetDevCnt].recPacks = ifmd.ifmd_data.ifi_ipackets;
+			NetDevs[NetDevCnt].recErrs = ifmd.ifmd_data.ifi_ierrors;
+			NetDevs[NetDevCnt].recDrop = ifmd.ifmd_data.ifi_iqdrops;
+			NetDevs[NetDevCnt].recMulticast = ifmd.ifmd_data.ifi_imcasts;
+			NetDevs[NetDevCnt].sentBytes = ifmd.ifmd_data.ifi_obytes;
+			NetDevs[NetDevCnt].sentPacks = ifmd.ifmd_data.ifi_opackets;
+			NetDevs[NetDevCnt].sentErrs = ifmd.ifmd_data.ifi_oerrors;
+			NetDevs[NetDevCnt].sentMulticast = ifmd.ifmd_data.ifi_omcasts;
+			NetDevs[NetDevCnt].sentColls = ifmd.ifmd_data.ifi_collisions;
 			NetDevCnt++;
 		}
 	}
+
+	gettimeofday(&new_tv, (struct timezone *)0);
+	timersub(&new_tv, &old_tv, &tv);
+	elapsed = tv.tv_sec + (tv.tv_usec * 1e-6);
+	old_tv = new_tv;
 
 	return 0;
 }
@@ -237,15 +254,15 @@ void printNetDevRecBytes(const char *cmd)
 	for (i = 0; i < NetDevCnt; i++) {
 		if (!strcmp(NetDevs[i].name, retval[0])) {
 			if (!strncmp(retval[1], "data", 4))
-				fprintf(CurrentClient, "%lu", NetDevs[i].recBytes);
+				fprintf(CurrentClient, "%lu", (u_long)((NetDevs[i].recBytes - NetDevsOld[i].recBytes) / (1024 * elapsed)));
 			if (!strncmp(retval[1], "packets", 7))
-				fprintf(CurrentClient, "%lu", NetDevs[i].recPacks);
+				fprintf(CurrentClient, "%lu", (u_long)((NetDevs[i].recPacks - NetDevsOld[i].recPacks) / elapsed));
 			if (!strncmp(retval[1], "errors", 6))
-				fprintf(CurrentClient, "%lu", NetDevs[i].recErrs);
+				fprintf(CurrentClient, "%lu", (u_long)((NetDevs[i].recErrs - NetDevsOld[i].recErrs) / elapsed));
 			if (!strncmp(retval[1], "drops", 5))
-				fprintf(CurrentClient, "%lu", NetDevs[i].recDrop);
+				fprintf(CurrentClient, "%lu", (u_long)((NetDevs[i].recDrop - NetDevsOld[i].recDrop) / elapsed));
 			if (!strncmp(retval[1], "multicast", 9))
-				fprintf(CurrentClient, "%lu", NetDevs[i].recMulticast);
+				fprintf(CurrentClient, "%lu", (u_long)((NetDevs[i].recMulticast - NetDevsOld[i].recMulticast) / elapsed));
 		}
 	}
 	free(retval[0]);
@@ -293,15 +310,15 @@ void printNetDevSentBytes(const char *cmd)
 	for (i = 0; i < NetDevCnt; i++) {
 		if (!strcmp(NetDevs[i].name, retval[0])) {
 			if (!strncmp(retval[1], "data", 4))
-				fprintf(CurrentClient, "%lu", NetDevs[i].sentBytes);
+				fprintf(CurrentClient, "%lu", (u_long)((NetDevs[i].sentBytes - NetDevsOld[i].sentBytes) / (1024 * elapsed)));
 			if (!strncmp(retval[1], "packets", 7))
-				fprintf(CurrentClient, "%lu", NetDevs[i].sentPacks);
+				fprintf(CurrentClient, "%lu", (u_long)((NetDevs[i].sentPacks - NetDevsOld[i].sentPacks) / elapsed));
 			if (!strncmp(retval[1], "errors", 6))
-				fprintf(CurrentClient, "%lu", NetDevs[i].sentErrs);
+				fprintf(CurrentClient, "%lu", (u_long)((NetDevs[i].sentErrs - NetDevsOld[i].sentErrs) / elapsed));
 			if (!strncmp(retval[1], "multicast", 9))
-				fprintf(CurrentClient, "%lu", NetDevs[i].sentMulticast);
+				fprintf(CurrentClient, "%lu", (u_long)((NetDevs[i].sentMulticast - NetDevsOld[i].sentMulticast) / elapsed));
 			if (!strncmp(retval[1], "collisions", 10))
-				fprintf(CurrentClient, "%lu", NetDevs[i].sentColls);
+				fprintf(CurrentClient, "%lu", (u_long)((NetDevs[i].sentColls - NetDevsOld[i].sentColls) / elapsed));
 		}
 	}
 	free(retval[0]);
