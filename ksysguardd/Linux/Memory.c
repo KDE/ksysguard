@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "Command.h"
 #include "Memory.h"
@@ -44,24 +45,26 @@ static unsigned long STotal = 0;
 static unsigned long SFree = 0;
 static unsigned long SUsed = 0;
 
+static void 
+scan_one(const char* buff, const char *key, unsigned long int* val)
+{   
+	int o;
+        char *b = strstr(buff, key);
+        if (b)  
+		o = sscanf(b + strlen(key), ": %lu", val);
+}
+
 static void
 processMemInfo()
 {
-	sscanf(MemInfoBuf, "%*[^\n]\n"
-		   "%*s %ld %ld %ld %*d %ld %ld\n"
-		   "%*s %ld %ld %ld\n", 
-		   &Total, &Used, &MFree, &Buffers, &Cached,
-		   &STotal, &SUsed, &SFree);
-
-	Appl = (Used - (Buffers + Cached)) / 1024;
-	Total /= 1024;
-	MFree /= 1024;
-	Used /= 1024;
-	Buffers /= 1024;
-	Cached /= 1024;
-	STotal /= 1024;
-	SFree /= 1024;
-	SUsed /= 1024;
+	scan_one(MemInfoBuf, "MemTotal", &Total);
+	scan_one(MemInfoBuf, "MemFree", &MFree);
+	Used = Total - MFree;
+	scan_one(MemInfoBuf, "Buffers", &Buffers);
+	scan_one(MemInfoBuf, "Cached", &Cached);
+	scan_one(MemInfoBuf, "SwapTotal", &STotal);
+	scan_one(MemInfoBuf, "SwapFree", &SFree);
+        SUsed = STotal - SFree;
 
 	Dirty = 0;
 }
@@ -105,17 +108,28 @@ updateMemory(void)
 	 * The amount of total and used memory is read from the /proc/meminfo.
 	 * It also contains the information about the swap space.
 	 * The 'file' looks like this:
-	 *
-	 *         total:    used:    free:  shared: buffers:  cached:
-	 * Mem:  64593920 60219392  4374528 49426432  6213632 33689600
-	 * Swap: 69636096   761856 68874240
-	 * MemTotal:     63080 kB
-	 * MeMFree:       4272 kB
-	 * MemShared:    48268 kB
-	 * Buffers:       6068 kB
-	 * Cached:       32900 kB
-	 * SwapTotal:    68004 kB
-	 * SwapFree:     67260 kB
+
+	 * MemTotal:       516560 kB
+	 * MemFree:          7812 kB
+	 * MemShared:           0 kB
+	 * Buffers:         80312 kB
+	 * Cached:         236432 kB
+	 * SwapCached:        468 kB
+	 * Active:         291992 kB
+	 * Inactive:       133556 kB
+	 * HighTotal:           0 kB
+	 * HighFree:            0 kB
+	 * LowTotal:       516560 kB
+	 * LowFree:          7812 kB
+	 * SwapTotal:      899632 kB
+	 * SwapFree:       898932 kB
+	 * Dirty:            2736 kB
+	 * Writeback:           0 kB
+	 * Mapped:         155996 kB
+	 * Slab:            73920 kB
+	 * Committed_AS:   315588 kB
+	 * PageTables:       1764 kB
+	 * ReverseMaps:    103458
 	 */
 
 	int fd;
@@ -146,6 +160,8 @@ updateMemory(void)
 void
 printMFree(const char* cmd)
 {
+	(void)cmd;
+
 	if (Dirty)
 		processMemInfo();
 	fprintf(CurrentClient, "%ld\n", MFree);
@@ -154,6 +170,8 @@ printMFree(const char* cmd)
 void
 printMFreeInfo(const char* cmd)
 {
+	(void)cmd;
+
 	if (Dirty)
 		processMemInfo();
 	fprintf(CurrentClient, "Free Memory\t0\t%ld\tKB\n", Total);
@@ -162,6 +180,8 @@ printMFreeInfo(const char* cmd)
 void
 printUsed(const char* cmd)
 {
+	(void)cmd;
+
 	if (Dirty)
 		processMemInfo();
 	fprintf(CurrentClient, "%ld\n", Used);
@@ -170,6 +190,8 @@ printUsed(const char* cmd)
 void
 printUsedInfo(const char* cmd)
 {
+	(void)cmd;
+
 	if (Dirty)
 		processMemInfo();
 	fprintf(CurrentClient, "Used Memory\t0\t%ld\tKB\n", Total);
@@ -178,6 +200,8 @@ printUsedInfo(const char* cmd)
 void
 printAppl(const char* cmd)
 {
+	(void) cmd;
+
 	if (Dirty)
 		processMemInfo();
 	fprintf(CurrentClient, "%ld\n", Appl);
@@ -186,6 +210,7 @@ printAppl(const char* cmd)
 void
 printApplInfo(const char* cmd)
 {
+	(void) cmd;
 	if (Dirty)
 		processMemInfo();
 	fprintf(CurrentClient, "Application Memory\t0\t%ld\tKB\n", Total);
@@ -194,6 +219,7 @@ printApplInfo(const char* cmd)
 void
 printBuffers(const char* cmd)
 {
+	(void) cmd;
 	if (Dirty)
 		processMemInfo();
 	fprintf(CurrentClient, "%ld\n", Buffers);
@@ -202,6 +228,7 @@ printBuffers(const char* cmd)
 void
 printBuffersInfo(const char* cmd)
 {
+	(void) cmd;
 	if (Dirty)
 		processMemInfo();
 	fprintf(CurrentClient, "Buffer Memory\t0\t%ld\tKB\n", Total);
@@ -210,6 +237,7 @@ printBuffersInfo(const char* cmd)
 void
 printCached(const char* cmd)
 {
+	(void) cmd;
 	if (Dirty)
 		processMemInfo();
 	fprintf(CurrentClient, "%ld\n", Cached);
@@ -218,6 +246,7 @@ printCached(const char* cmd)
 void
 printCachedInfo(const char* cmd)
 {
+	(void) cmd;
 	if (Dirty)
 		processMemInfo();
 	fprintf(CurrentClient, "Cached Memory\t0\t%ld\tKB\n", Total);
@@ -226,6 +255,7 @@ printCachedInfo(const char* cmd)
 void
 printSwapUsed(const char* cmd)
 {
+	(void) cmd;
 	if (Dirty)
 		processMemInfo();
 	fprintf(CurrentClient, "%ld\n", SUsed);
@@ -234,6 +264,7 @@ printSwapUsed(const char* cmd)
 void
 printSwapUsedInfo(const char* cmd)
 {
+	(void) cmd;
 	if (Dirty)
 		processMemInfo();
 	fprintf(CurrentClient, "Used Swap Memory\t0\t%ld\tKB\n", STotal);
@@ -242,6 +273,7 @@ printSwapUsedInfo(const char* cmd)
 void
 printSwapFree(const char* cmd)
 {
+	(void) cmd;
 	if (Dirty)
 		processMemInfo();
 	fprintf(CurrentClient, "%ld\n", SFree);
@@ -250,6 +282,7 @@ printSwapFree(const char* cmd)
 void
 printSwapFreeInfo(const char* cmd)
 {
+	(void) cmd;
 	if (Dirty)
 		processMemInfo();
 	fprintf(CurrentClient, "Free Swap Memory\t0\t%ld\tKB\n", STotal);

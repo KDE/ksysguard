@@ -116,7 +116,7 @@ printWelcome(FILE* out)
 			"(c) 1999, 2000, 2001, 2002 Chris Schlaeger <cs@kde.org> and\n"
 			"(c) 2001 Tobias Koenig <tokoe@kde.org>\n"
 			"This program is part of the KDE Project and licensed under\n"
-			"the GNU GPL version 2. See www.kde.org for details!\n", 
+			"the GNU GPL version 2. See http://www.kde.org for details.\n", 
 			KSYSGUARD_VERSION);
 	fflush(out);
 }

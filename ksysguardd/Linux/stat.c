@@ -79,6 +79,7 @@ typedef struct DiskIOInfo
 
 #define STATBUFSIZE 4096
 static char StatBuf[STATBUFSIZE];
+static char VmStatBuf[STATBUFSIZE];
 static int Dirty = 0;
 
 /* We have observed deviations of up to 5% in the accuracy of the timer
@@ -356,6 +357,7 @@ processStat(void)
 	char buf[1024];
 	char tag[32];
 	char* statBufP = StatBuf;
+        char* vmstatBufP = VmStatBuf;
 
 	sprintf(format, "%%%d[^\n]\n", (int) sizeof(buf) - 1);
 	sprintf(tagFormat, "%%%ds", (int) sizeof(tag) - 1);
@@ -426,6 +428,29 @@ processStat(void)
 		}
 	}
 
+        /* Read Linux 2.5.x /proc/vmstat */
+	while (sscanf(vmstatBufP, format, buf) == 1)
+	{
+		buf[sizeof(buf) - 1] = '\0';
+		vmstatBufP += strlen(buf) + 1;	/* move vmstatBufP to next line */
+		sscanf(buf, tagFormat, tag);
+
+		if (strcmp("pgpgin", tag) == 0)
+		{
+			unsigned long v1;
+			sscanf(buf + 7, "%lu", &v1);
+			PageIn = v1 - OldPageIn;
+			OldPageIn = v1;
+                }
+		else if (strcmp("pgpgout", tag) == 0)
+		{
+	                unsigned long v1;
+                        sscanf(buf + 7, "%lu", &v1);
+			PageOut = v1 - OldPageOut;
+			OldPageOut = v1;
+		}
+	}
+
 	/* save exact time inverval between this and the last read of /proc/stat */
 	timeInterval = currSampling.tv_sec - lastSampling.tv_sec +
 		(currSampling.tv_usec - lastSampling.tv_usec) / 1000000.0;
@@ -476,6 +501,7 @@ initStat(struct SensorModul* sm)
 	char buf[1024];
 	char tag[32];
 	char* statBufP = StatBuf;
+	char* vmstatBufP = VmStatBuf;
 
 	StatSM = sm;
 
@@ -602,6 +628,27 @@ initStat(struct SensorModul* sm)
 							printCtxtInfo, StatSM);
 		}
 	}
+
+	while (sscanf(vmstatBufP, format, buf) == 1)
+	{
+		buf[sizeof(buf) - 1] = '\0';
+		vmstatBufP += strlen(buf) + 1;	/* move vmstatBufP to next line */
+		sscanf(buf, tagFormat, tag);
+
+		if (strcmp("pgpgin", tag) == 0)
+		{
+			sscanf(buf + 7, "%lu", &OldPageIn);
+			registerMonitor("cpu/pageIn", "integer", printPageIn,
+							printPageInInfo, StatSM);
+		}
+		else if (strcmp("pgpgout", tag) == 0) 
+		{
+			sscanf(buf + 7, "%lu", &OldPageOut);
+			registerMonitor("cpu/pageOut", "integer", printPageOut,
+							printPageOutInfo, StatSM);
+		}
+	}
+	
 	if (CPUCount > 0)
 		SMPLoad = (CPULoadInfo*) malloc(sizeof(CPULoadInfo) * CPUCount);
 
@@ -647,15 +694,28 @@ updateStat(void)
 	gettimeofday(&currSampling, 0);
 	close(fd);
 	StatBuf[n] = '\0';
-
 	Dirty = 1;
 
-	return (0);
+        VmStatBuf[0] = '\0';
+        if ((fd = open("/proc/vmstat", O_RDONLY)) < 0)
+		return 0; /* failure is okay, only exists for Linux >= 2.5.x */
+           
+        if ((n = read(fd, VmStatBuf, STATBUFSIZE - 1)) == STATBUFSIZE - 1)
+        {
+                log_error("Internal buffer too small to read \'/proc/vmstat\'");
+                close(fd);
+                return (-1);
+        }
+        close(fd);
+	VmStatBuf[n] = '\0';
+
+	return 0;
 }
 
 void
 printCPUUser(const char* cmd)
 {
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	fprintf(CurrentClient, "%d\n", CPULoad.userLoad);
@@ -664,12 +724,14 @@ printCPUUser(const char* cmd)
 void 
 printCPUUserInfo(const char* cmd)
 {
+	(void)cmd;
 	fprintf(CurrentClient, "CPU User Load\t0\t100\t%%\n");
 }
 
 void
 printCPUNice(const char* cmd)
 {
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	fprintf(CurrentClient, "%d\n", CPULoad.niceLoad);
@@ -678,12 +740,14 @@ printCPUNice(const char* cmd)
 void 
 printCPUNiceInfo(const char* cmd)
 {
+	(void)cmd;
 	fprintf(CurrentClient, "CPU Nice Load\t0\t100\t%%\n");
 }
 
 void
 printCPUSys(const char* cmd)
 {
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	fprintf(CurrentClient, "%d\n", CPULoad.sysLoad);
@@ -692,12 +756,14 @@ printCPUSys(const char* cmd)
 void 
 printCPUSysInfo(const char* cmd)
 {
+	(void)cmd;
 	fprintf(CurrentClient, "CPU System Load\t0\t100\t%%\n");
 }
 
 void
 printCPUIdle(const char* cmd)
 {
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	fprintf(CurrentClient, "%d\n", CPULoad.idleLoad);
@@ -706,6 +772,7 @@ printCPUIdle(const char* cmd)
 void 
 printCPUIdleInfo(const char* cmd)
 {
+	(void)cmd;
 	fprintf(CurrentClient, "CPU Idle Load\t0\t100\t%%\n");
 }
 
@@ -714,6 +781,7 @@ printCPUxUser(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 3, "%d", &id);
@@ -725,6 +793,7 @@ printCPUxUserInfo(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	sscanf(cmd + 3, "%d", &id);
 	fprintf(CurrentClient, "CPU%d User Load\t0\t100\t%%\n", id);
 }
@@ -734,6 +803,7 @@ printCPUxNice(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 3, "%d", &id);
@@ -745,6 +815,7 @@ printCPUxNiceInfo(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	sscanf(cmd + 3, "%d", &id);
 	fprintf(CurrentClient, "CPU%d Nice Load\t0\t100\t%%\n", id);
 }
@@ -754,6 +825,7 @@ printCPUxSys(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 3, "%d", &id);
@@ -765,6 +837,7 @@ printCPUxSysInfo(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	sscanf(cmd + 3, "%d", &id);
 	fprintf(CurrentClient, "CPU%d System Load\t0\t100\t%%\n", id);
 }
@@ -774,6 +847,7 @@ printCPUxIdle(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 3, "%d", &id);
@@ -785,6 +859,7 @@ printCPUxIdleInfo(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	sscanf(cmd + 3, "%d", &id);
 	fprintf(CurrentClient, "CPU%d Idle Load\t0\t100\t%%\n", id);
 }
@@ -794,6 +869,7 @@ printDiskTotal(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
@@ -805,6 +881,7 @@ printDiskTotalInfo(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	sscanf(cmd + 9, "%d", &id);
 	fprintf(CurrentClient, "Disk%d Total Load\t0\t0\tkBytes/s\n", id);
 }
@@ -814,6 +891,7 @@ printDiskRIO(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
@@ -825,6 +903,7 @@ printDiskRIOInfo(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	sscanf(cmd + 9, "%d", &id);
 	fprintf(CurrentClient, "Disk%d Read\t0\t0\tkBytes/s\n", id);
 }
@@ -834,6 +913,7 @@ printDiskWIO(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
@@ -845,6 +925,7 @@ printDiskWIOInfo(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	sscanf(cmd + 9, "%d", &id);
 	fprintf(CurrentClient, "Disk%d Write\t0\t0\tkBytes/s\n", id);
 }
@@ -854,6 +935,7 @@ printDiskRBlk(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
@@ -867,6 +949,7 @@ printDiskRBlkInfo(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	sscanf(cmd + 9, "%d", &id);
 	fprintf(CurrentClient, "Disk%d Read Data\t0\t0\tkBytes/s\n", id);
 }
@@ -876,6 +959,7 @@ printDiskWBlk(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
@@ -889,6 +973,7 @@ printDiskWBlkInfo(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	sscanf(cmd + 9, "%d", &id);
 	fprintf(CurrentClient, "Disk%d Write Data\t0\t0\tkBytes/s\n", id);
 }
@@ -896,6 +981,7 @@ printDiskWBlkInfo(const char* cmd)
 void
 printPageIn(const char* cmd)
 {
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	fprintf(CurrentClient, "%lu\n", (unsigned long) (PageIn / timeInterval));
@@ -904,12 +990,14 @@ printPageIn(const char* cmd)
 void
 printPageInInfo(const char* cmd)
 {
+	(void)cmd;
 	fprintf(CurrentClient, "Paged in Pages\t0\t0\t1/s\n");
 }
 
 void
 printPageOut(const char* cmd)
 {
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	fprintf(CurrentClient, "%lu\n", (unsigned long) (PageOut / timeInterval));
@@ -918,6 +1006,7 @@ printPageOut(const char* cmd)
 void
 printPageOutInfo(const char* cmd)
 {
+	(void)cmd;
 	fprintf(CurrentClient, "Paged out Pages\t0\t0\t1/s\n");
 }
 
@@ -926,6 +1015,7 @@ printInterruptx(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	sscanf(cmd + strlen("cpu/interrupts/int"), "%d", &id);
@@ -937,6 +1027,7 @@ printInterruptxInfo(const char* cmd)
 {
 	int id;
 
+	(void)cmd;
 	sscanf(cmd + strlen("cpu/interrupt/int"), "%d", &id);
 	fprintf(CurrentClient, "Interrupt %d\t0\t0\t1/s\n", id);
 }
@@ -944,6 +1035,7 @@ printInterruptxInfo(const char* cmd)
 void
 printCtxt(const char* cmd)
 {
+	(void)cmd;
 	if (Dirty)
 		processStat();
 	fprintf(CurrentClient, "%lu\n", (unsigned long) (Ctxt / timeInterval));
@@ -952,6 +1044,7 @@ printCtxt(const char* cmd)
 void
 printCtxtInfo(const char* cmd)
 {
+	(void)cmd;
 	fprintf(CurrentClient, "Context switches\t0\t0\t1/s\n");
 }
 
