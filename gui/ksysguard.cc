@@ -221,10 +221,8 @@ TopLevel::beATaskManager()
 {
 	ws->showProcesses();
 
-	QValueList<int> sizes;
-	sizes.append(0);
-	sizes.append(100);
-	splitter->setSizes(sizes);
+	// Avoid displaying splitter widget
+	sb->hide();
 
 	// Show window centered on the desktop.
 	KWinModule kwm;
@@ -245,6 +243,8 @@ TopLevel::beATaskManager()
 	showMainToolBar(false);
 
 	dontSaveSession = true;
+
+	stateChanged("showProcessState");
 }
 
 void

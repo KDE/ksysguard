@@ -1,5 +1,22 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="ksysguard" version="3">
+<kpartgui name="ksysguard" version="5">
+<State name="showProcessState">
+  <Disable>
+    <Action name="file_new"/>
+    <Action name="file_open"/>
+    <Action name="file_open_recent"/>
+    <Action name="file_save"/>
+    <Action name="file_save_as"/>
+    <Action name="file_close"/>
+    <Action name="connect_host"/>
+    <Action name="disconnect_host"/>
+    <Action name="edit_copy"/>
+    <Action name="edit_cut"/>
+    <Action name="edit_paste"/>
+    <Action name="configure_sheet"/>
+    <Action name="configure_style"/>
+  </Disable>
+</State>
 <MenuBar>
   <Menu name="file"><text>&amp;File</text>
     <Action name="connect_host"/>
