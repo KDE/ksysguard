@@ -34,9 +34,6 @@ extern CONT_TOOLS Pga_tools;
 ============================ private part ============================
 */
 
-#define FALSE 0
-#define TRUE (!FALSE)
-
 #define new(a)  malloc(a)
 #define delete free
 static int Debuglevel = 1;
