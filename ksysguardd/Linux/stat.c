@@ -176,8 +176,8 @@ processStat(void)
 	char tag[32];
 	char* statBufP = StatBuf;
 
-	sprintf(format, "%%%ld[^\n]\n", sizeof(buf) - 1);
-	sprintf(tagFormat, "%%%lds", sizeof(tag) - 1);
+	sprintf(format, "%%%d[^\n]\n", (int) sizeof(buf) - 1);
+	sprintf(tagFormat, "%%%ds", (int) sizeof(tag) - 1);
 
 	while (sscanf(statBufP, format, buf) == 1)
 	{
@@ -275,7 +275,7 @@ initStat(void)
 	/* Use unbuffered input for /proc/stat file. */
     setvbuf(stat, NULL, _IONBF, 0);
 
-	sprintf(format, "%%%ld[^\n]\n", sizeof(buf) - 1);
+	sprintf(format, "%%%d[^\n]\n", (int) sizeof(buf) - 1);
 
 	while (fscanf(stat, format, buf) == 1)
 	{
@@ -283,7 +283,7 @@ initStat(void)
 		char tagFormat[16];
 		
 		buf[sizeof(buf) - 1] = '\0';
-		sprintf(tagFormat, "%%%lds", sizeof(tag) - 1);
+		sprintf(tagFormat, "%%%ds", (int) sizeof(tag) - 1);
 		sscanf(buf, tagFormat, tag);
 
 		if (strcmp("cpu", tag) == 0)

@@ -29,15 +29,15 @@
 static char MemInfoBuf[MEMINFOBUFSIZE];
 static int Dirty = 0;
 
-static size_t Total = 0;
-static size_t MFree = 0;
-static size_t Appl = 0;
-static size_t Used = 0;
-static size_t Buffers = 0;
-static size_t Cached = 0;
-static size_t STotal = 0;
-static size_t SFree = 0;
-static size_t SUsed = 0;
+static unsigned long Total = 0;
+static unsigned long MFree = 0;
+static unsigned long Appl = 0;
+static unsigned long Used = 0;
+static unsigned long Buffers = 0;
+static unsigned long Cached = 0;
+static unsigned long STotal = 0;
+static unsigned long SFree = 0;
+static unsigned long SUsed = 0;
 
 static void
 processMemInfo()
@@ -117,12 +117,12 @@ updateMemory(void)
 	 */
 
 	FILE* meminfo;
-	size_t n;
+	unsigned long n;
 
 	if ((meminfo = fopen("/proc/meminfo", "r")) == NULL)
 		return (-1);
 
-	n = fread(MemInfoBuf, 1, MEMINFOBUFSIZE - 1, meminfo);
+	n = (unsigned long) fread(MemInfoBuf, 1, MEMINFOBUFSIZE - 1, meminfo);
 	fclose(meminfo);
 	Dirty = 1;
 

@@ -283,7 +283,7 @@ updateProcess(int pid)
 		return (-1);
 
 	ps->cmdline[0] = '\0';
-	sprintf(buf, "%%%ld[^\n]", sizeof(ps->cmdline) - 1);
+	sprintf(buf, "%%%d[^\n]", (int) sizeof(ps->cmdline) - 1);
 	fscanf(fd, buf, ps->cmdline);
 	ps->cmdline[sizeof(ps->cmdline) - 1] = '\0';
 	validateStr(ps->cmdline);
