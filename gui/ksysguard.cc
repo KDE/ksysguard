@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -229,7 +229,7 @@ QStringList
 TopLevel::readListSensor(const QString& sensorLocator)
 {
 	QStringList retval;
-	
+
 	QString host = sensorLocator.left(sensorLocator.find(':'));
 	QString sensor = sensorLocator.right(sensorLocator.length() -
 										 sensorLocator.find(':') - 1);
@@ -307,13 +307,13 @@ TopLevel::initStatusBar()
 						   (KSGRD::SensorClient*) this, 5);
 }
 
-void 
+void
 TopLevel::connectHost()
 {
 	KSGRD::SensorMgr->engageHost("");
 }
 
-void 
+void
 TopLevel::disconnectHost()
 {
 	sb->disconnect();
@@ -339,24 +339,24 @@ TopLevel::showStatusBar()
 		{
 			killTimer(timerId);
 			timerId = -1;
-		} 
+		}
 	}
 }
 
 void
 TopLevel::editToolbars()
 {
+	saveMainWindowSettings(kapp->config());
 	KEditToolbar dlg(actionCollection());
+	connect(&dlg,SIGNAL(newToolbarConfig()),this,SLOT(slotNewToolbarConfig()));
+	dlg.exec();
+}
 
-	bool isHidden = toolBar("mainToolBar")->isHidden();
-
-	// Is it a bug, that createGUI() show the toolbar even when it's hidden?
-	if (dlg.exec())
-	{
-		createGUI();
-		if (isHidden)
-			toolBar("mainToolBar")->hide();
-	}
+void
+TopLevel::slotNewToolbarConfig()
+{
+	createGUI();
+	applyMainWindowSettings(kapp->config());
 }
 
 void
@@ -567,7 +567,7 @@ int
 main(int argc, char** argv)
 {
 	// initpipe is used to keep the parent process around till the child
-	// has registered with dcop. 
+	// has registered with dcop.
 	int initpipe[2];
 	pipe(initpipe);
 
@@ -577,7 +577,7 @@ main(int argc, char** argv)
 	 * now need a ssh with ssh-askpass support to popup an X dialog to
 	 * enter the password. Currently only the original ssh provides this
 	 * but not open-ssh. */
-	 
+
 	pid_t pid;
 	if ((pid = fork()) < 0)
 		return (-1);
@@ -618,7 +618,7 @@ main(int argc, char** argv)
 
 	KCmdLineArgs::init(argc, argv, &aboutData);
 	KCmdLineArgs::addCmdLineOptions(options);
-	
+
 	KApplication::disableAutoDcopRegistration();
 	// initialize KDE application
 	KApplication *a = new KApplication;
