@@ -195,6 +195,12 @@ private:
     psPtr        ps;
     psPtr        ps_list;
 
+#ifdef __FreeBSD__
+    QGroupBox    *mem_detail_box;
+    QLabel       *mem_details[10];
+    QLabel       *l_mem_details[10];
+#endif
+
     static QList<IconListElem> *icons;
 
     virtual void           resizeEvent     ( QResizeEvent* );

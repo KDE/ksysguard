@@ -419,6 +419,38 @@ TaskMan::TaskMan( QWidget *parent, const char *name, int sfolder )
     mem_cur->setBackgroundColor(black);
     memmon = new MemMon (membox1, "memmon", mem_cur);
 
+
+    // set up the memory information box (below the graphical display)
+    // this is currently FreeBSD specific.
+    //
+#ifdef __FreeBSD__
+                                              // memmon will directly update them
+    mem_detail_box = new QGroupBox(p2, "_dmem");
+    CHECK_PTR(mem_detail_box);
+    mem_detail_box->setTitle(ktr("Memory details:"));
+
+    int i = 0;
+    l_mem_details[i++] = new QLabel(ktr("Active:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(ktr("Inactive:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(ktr("Wired:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(ktr("Cache:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(ktr("Buffers:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(ktr("Total physical:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(ktr("Used by kernel:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(ktr("Swap avail:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(ktr("Swap free:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(ktr("Total virtual:"), mem_detail_box);
+
+    for(int i = 0; i < MEM_END; i++) {
+        mem_details[i] = new QLabel("XXXXXXXXX", mem_detail_box);
+        mem_details[i]->adjustSize();
+        mem_details[i]->setAlignment(AlignRight);
+        l_mem_details[i]->adjustSize();
+    }
+    memmon->setTargetLabels(mem_details);      // hand off the QLabel pointers to memmon
+#endif
+
+
     // adjust some geometry
     pList_box->move(5, 5);
     pList_box->resize(380, 380);
@@ -693,6 +725,35 @@ void TaskMan::resizeEvent(QResizeEvent *ev)
     pTree_bKill->setGeometry(w - 90, h - 50, 80, 25);
  
     // performances page
+
+    // Note: FreeBSD support is different. We have additional textual
+    //       information about memory usage, file handles, swapstate etc.
+    //       That is, we need different geometry on the performance page.
+    //
+    
+#ifdef __FreeBSD__
+    int widest_label = l_mem_details[MEM_INACTIVE]->width();
+    
+    cpubox->setGeometry(10, 10, 80, (h / 2) - 60);
+    cpubox1->setGeometry(100, 10, w - 110, (h / 2) - 60);
+    cpu_cur->setGeometry(20, 30, 60, (h / 2) - 90);
+    cpumon->setGeometry(10, 20, cpubox1->width() - 20, cpubox1->height() - 30);
+    membox->setGeometry(10, (h / 2) - 40, 80, (h / 2) - 60);
+    membox1->setGeometry(100, (h / 2) - 40, w - 110, (h / 2) - 60);
+    mem_cur->setGeometry(20, h / 2 - 20, 60, (h / 2) - 90);
+    memmon->setGeometry(10, 20, membox1->width() - 20, membox1->height() - 30);
+    for(int i = 0; i < MEM_PHYS; i++) {
+        l_mem_details[i]->move(10, 15 + i * (l_mem_details[i]->height()));
+        mem_details[i]->move(10 + widest_label + 10, 15 + i * (l_mem_details[i]->height()));
+    }
+    int column2 = 30 + widest_label + mem_details[0]->width();
+    widest_label = l_mem_details[MEM_KERN]->width();
+    for(i = MEM_PHYS; i < MEM_END; i++) {
+        l_mem_details[i]->move(column2, 15 + ( i - MEM_PHYS ) * (l_mem_details[i]->height()));
+        mem_details[i]->move(column2 + 10 + widest_label, 15 + ( i - MEM_PHYS ) * (l_mem_details[i]->height()));
+    }
+    mem_detail_box->setGeometry(10, h - 100, column2 + 20 + widest_label + mem_details[MEM_PHYS]->width(), 95);
+#else
     cpubox->setGeometry(10, 10, 80, (h / 2) - 30);
     cpubox1->setGeometry(100, 10, w - 110, (h / 2) - 30);
     cpu_cur->setGeometry(20, 30, 60, (h / 2) - 60);
@@ -701,6 +762,7 @@ void TaskMan::resizeEvent(QResizeEvent *ev)
     membox1->setGeometry(100, h / 2, w - 110, (h / 2) - 30);
     mem_cur->setGeometry(20, h / 2 + 20, 60, (h / 2) - 60);
     memmon->setGeometry(10, 20, membox1->width() - 20, membox1->height() - 30);
+#endif
 }
 
 /*-----------------------------------------------------------------------------

@@ -80,6 +80,13 @@
 KConfig       *config;
 KApplication  *mykapp;
 
+#ifdef __FreeBSD__
+#include <kvm.h>
+#include <fcntl.h>
+#include <limits.h>
+kvm_t         *kvm;
+#endif
+
 /*=============================================================================
  Class : TopLevel (methods)
  =============================================================================*/
@@ -219,8 +226,13 @@ static void usage(char *name)
 int main( int argc, char ** argv )
 {
     int i, 
-        sfolder=-1;
+    sfolder=-1;
 
+#ifdef __FreeBSD__          // obtain kvm handle for reading kernel data
+    kvm = kvm_open(NULL, NULL, NULL, O_RDONLY, "kvm_open");
+    // we don't have to be sgid anymore
+    setgid(getgid());
+#endif
     for(i=1; i<argc; i++) {
         if( ! strcmp(argv[i],"--help") ) {
 	    usage(argv[0]);
@@ -242,6 +254,18 @@ int main( int argc, char ** argv )
     }
 
     KApplication a( argc, argv, "ktop" );
+#ifdef __FreeBSD__
+    if (kvm == NULL) {
+	QMessageBox::critical(NULL, NULL,
+		i18n("Could not open kernel memory file. "
+		"Make sure your ktop binary is installed sgid kmem.\n\n"
+		"chgrp kmem KDEDIR/bin/ktop\n"
+		"chmod 2555 KDEDIR/bin/ktop"),
+			      i18n("&OK"));
+	
+	exit(1);
+    }
+#endif
     a.enableSessionManagement(true);
     mykapp = &a;
     config = a.getConfig();

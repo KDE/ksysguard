@@ -7,6 +7,9 @@
     Copyright (C) 1998 Nicolas Leclercq
                        nicknet@planete.net
     
+    System-dependent parts for FreeBSD (C) 1998 Alexander Sanda 
+    <as@psa.at> and Hans Petter Bieker <zerium@traad.ml.org>.
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -44,6 +47,7 @@
 #include <time.h>
 #ifdef __FreeBSD__
 #include <machine/param.h>
+#include <limits.h>
 #else
 #include <asm/param.h>
 #endif
@@ -54,17 +58,14 @@
 #include "kconfig.h"
 #include "klocale.h"
 
-#ifdef __FreeBSD__
-#ifndef HZ
-#warning HZ was set to some random value
-#define HZ 64
-#endif
-#endif
-
 /*=============================================================================
   GLOBALs
  =============================================================================*/
 extern KConfig *config;
+
+#ifdef __FreeBSD__
+extern kvm_t *kvm;
+#endif
 
 /*=============================================================================
  Class :  CpuMon (methods)
@@ -90,11 +91,20 @@ CpuMon::CpuMon(QWidget *parent, const char *name, QWidget *child)
     load_values = (unsigned *)malloc(sizeof(unsigned) * intervals);
     memset(load_values, 0, sizeof(unsigned) * intervals);
 
+    // FreeBSD system - dependent parts:
+
 #ifdef __FreeBSD__
-   // this doesn't work yet
    old_nice_ticks = 0;
    old_system_ticks = 0;
    old_idle_ticks = 0;
+
+   kvm_nlist(kvm, nlst);    // init the nlist from kvm data
+   cp_time_offset = nlst[X_CP_TIME].n_value;
+
+   // init cp_time counter
+   kvm_read(kvm, cp_time_offset, (int *)&old_system_ticks, sizeof(old_system_ticks));
+   kvm_read(kvm, nlst[X_HZ].n_value, (int *)&HZ, sizeof(HZ));
+
 #else
     // set up the initial values
     statfile = 0;
@@ -134,6 +144,9 @@ CpuMon::CpuMon(QWidget *parent, const char *name, QWidget *child)
 CpuMon::~CpuMon() 
 {
   killTimer(tid);
+#ifdef __FreeBSD__
+  kvm_close(kvm);
+#endif
   if ( load_values )
        free(load_values);
 }
@@ -210,7 +223,12 @@ void CpuMon::timerEvent(QTimerEvent *)
     memcpy(load_values, &load_values[1], sizeof(unsigned) * (intervals - 1));
 
 #ifdef __FreeBSD__
-    // doesn't work for BSD yet...
+    unsigned long value;
+    kvm_nlist(kvm, nlst);
+    for(int i = 0; i < 5; i++) {
+      kvm_read(kvm, nlst[i].n_value, &value, sizeof(value));
+    }
+    kvm_read(kvm, cp_time_offset, (int *)&system_ticks, sizeof(system_ticks));
 #else
     rewind(statfile);
     fscanf(statfile, "%s %d %d %d %d", buffer, &user_ticks, &nice_ticks
@@ -234,6 +252,11 @@ void CpuMon::timerEvent(QTimerEvent *)
         load_percent = 100;
 
     load_values[intervals - 1] = load_percent;
+
+#if defined(__FreeBSD__) && defined(__DEBUG__)
+    printf("ELAPSED:      %d\n", elapsed_ticks);
+    printf("CP_TIME_DIFF: %d\n", system_ticks - old_system_ticks);
+#endif
 
     old_system_ticks = system_ticks;
     old_nice_ticks = nice_ticks;
