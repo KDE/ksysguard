@@ -104,11 +104,6 @@ public:
 			timerOn();
 	}
 
-	virtual bool hasBeenModified() const
-	{
-		return (modified);
-	}
-
 	virtual bool hasSettingsDialog() const
 	{
 		return (false);
@@ -178,6 +173,15 @@ public slots:
 	virtual void applySettings() { }
 	virtual void applyStyle() { }
 
+	virtual void setModified(bool mfd)
+	{
+		if (mfd != modified)
+		{
+			modified = mfd;
+			emit displayModified(modified);
+		}
+	}
+		
 signals:
 	void showPopupMenu(SensorDisplay* display);
 	void displayModified(bool mfd);
@@ -212,16 +216,6 @@ protected:
 
 	bool modified;
 
-protected slots:
-	virtual void setModified(bool mfd)
-	{
-		if (mfd != modified)
-		{
-			modified = mfd;
-			emit displayModified(modified);
-		}
-	}
-		
 private:
 	int timerId;
 	int timerInterval;

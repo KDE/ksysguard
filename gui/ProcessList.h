@@ -99,11 +99,6 @@ public:
 		return increasing;
 	}
 
-	bool hasBeenModified()
-	{
-		return modified;
-	}
-
 	/**
 	 * This function clears the current selection and sends out a signal.
 	 */
@@ -168,16 +163,6 @@ public slots:
 		setModified(true);
 	}
 
-signals:
-	// This signal is emitted whenever a new process has been selected.
-	void processSelected(int);
-
-	// This signal is emitted when process pid should receive signal sig.
-	void killProcess(int pid, int sig);
-
-	void listModified(bool);
-
-protected slots:
 	virtual void setModified(bool mfd)
 	{
 		if (mfd != modified)
@@ -187,6 +172,15 @@ protected slots:
 		}
 	}
 		
+signals:
+	// This signal is emitted whenever a new process has been selected.
+	void processSelected(int);
+
+	// This signal is emitted when process pid should receive signal sig.
+	void killProcess(int pid, int sig);
+
+	void listModified(bool);
+
 private:
 	// items of table header RMB popup menu
 	enum

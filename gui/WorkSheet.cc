@@ -84,17 +84,6 @@ WorkSheet::~WorkSheet()
 }
 
 bool
-WorkSheet::hasBeenModified() const
-{
-	for (uint i = 0; i < rows; ++i)
-		for (uint j = 0; j < columns; ++j)
-			if (((SensorDisplay*)displays[i][j])->hasBeenModified())
-				return (true);
-
-	return (modified);
-}
-
-bool
 WorkSheet::load(const QString& fN)
 {
 	setModified(false);
@@ -403,6 +392,20 @@ void
 WorkSheet::showPopupMenu(SensorDisplay* display)
 {
 	display->settings();
+}
+
+void
+WorkSheet::setModified(bool mfd)
+{
+	if (mfd != modified)
+	{
+		modified = mfd;
+		if (!mfd)
+			for (uint r = 0; r < rows; ++r)
+				for (uint c = 0; c < columns; ++c)
+					displays[r][c]->setModified(0);
+		emit sheetModified(this);
+	}
 }
 
 void

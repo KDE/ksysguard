@@ -58,7 +58,7 @@ public:
 	void copy();
 	void paste();
 
-	const QString& getFileName()
+	const QString& getFileName() const
 	{
 		return (fileName);
 	}
@@ -69,7 +69,10 @@ public:
 		setModified(true);
 	}
 
-	bool hasBeenModified() const;
+	bool hasBeenModified() const
+	{
+		return modified;
+	}
 
 	SensorDisplay* addDisplay(const QString& hostname,
 							  const QString& monitor,
@@ -79,14 +82,7 @@ public:
 
 public slots:
 	void showPopupMenu(SensorDisplay* display);
-	void setModified(bool mfd)
-	{
-		if (mfd != modified)
-		{
-			modified = mfd;
-			emit sheetModified(this);
-		}
-	}
+	void setModified(bool mfd);
 	void applyStyle();
 
 signals:
