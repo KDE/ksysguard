@@ -46,6 +46,8 @@ public:
 	virtual const char* key(int column, bool) const;
 } ;
 
+class QPopupMenu;
+
 /**
  * This class implements a widget that displays processes in a table. The
  * KTabListBox is used for the handling of the table. The widget has four
@@ -58,12 +60,14 @@ class ProcessList : public QListView
     Q_OBJECT
 
 public:
-	enum rateID
+	// items of "Refresh-Rate" combo box
+	enum
 	{
 		UPDATE_SLOW = 0, 
 		UPDATE_MEDIUM, 
 		UPDATE_FAST   
 	};
+	// items of "Filter" combo box
 	enum
 	{
 		FILTER_ALL = 0,
@@ -147,12 +151,6 @@ public:
 signals:
 	void popupMenu(int, int);
 
-public slots:
-	void hideColumn(int col)
-	{
-		printf("Request to hide columnd %d\n", col);
-	}
-
 protected:
 	virtual void mousePressEvent(QMouseEvent* e);
 
@@ -160,6 +158,14 @@ private slots:
 	void handleRMBPopup(int item);
 
 private:
+	// items of table header RMB popup menu
+	enum
+	{
+		HEADER_REMOVE = 0,
+		HEADER_ADD,
+		HEADER_HELP
+	};
+	// timer multipliers for different refresh rates
     enum
 	{
 		UPDATE_SLOW_VALUE = 20,
@@ -190,15 +196,29 @@ private:
 		timer_id = startTimer(timer_interval);
 	}
 
+	/*
+	 * Since some columns of our process table might be invisible the columns
+	 * of the QListView and the data structure do not match. We have to map
+	 * the visible columns to the table columns (V2T).
+	 */
+	int mapV2T(int vcol);
+
+	/*
+	 * This function maps a table columns index to a visible columns index.
+	 */
+	int mapT2V(int tcol);
+
 	int filtermode;
 	int sortColumn;
 	bool increasing;
 	int update_rate;
+	int currColumn;
 	int timer_interval;
 	int timer_id;
 
 	OSProcessList pl;
     KtopIconList* icons;
+	QPopupMenu* headerPM;
 };
 
 #endif

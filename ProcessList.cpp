@@ -53,7 +53,6 @@ typedef struct
 	bool sortable;
 	int alignment;
 	KeyFunc key;
-	OSProcessList::SORTKEY sortMethod;
 } TABCOLUMN;
 
 static const char* intKey(const char* text);
@@ -75,7 +74,7 @@ static TABCOLUMN TabCol[] =
 	{ "",            0, true, true,  false, 1, 0 },
 	{ "Name",        0, true, true,  true,  1, 0 },
 	{ "PID",         0, true, true,  true,  2, intKey },
-	{ "User ID",     0, true, false, true,  1, 0 },
+	{ "User",        0, true, false, true,  1, 0 },
 	{ "CPU",         0, true, false, true,  2, percentKey },
 	{ "Time",        0, true, false, true,  2, timeKey },
 	{ "Nice",        0, true, false, true,  2, intKey },
@@ -171,6 +170,15 @@ ProcessList::ProcessList(QWidget *parent = 0, const char* name = 0)
 	}
 
 	initTabCol();
+
+	// Create popup menu for RMB clicks on table header
+	headerPM = new QPopupMenu();
+	connect(headerPM, SIGNAL(activated(int)),
+			this, SLOT(handleRMBPopup(int)));
+	
+	headerPM->insertItem(i18n("Remove Column"), HEADER_REMOVE);
+	headerPM->insertItem(i18n("Add Column"), HEADER_ADD);
+	headerPM->insertItem(i18n("Help on Column"), HEADER_HELP);
 }
 
 ProcessList::~ProcessList()
@@ -181,6 +189,8 @@ ProcessList::~ProcessList()
 	// switch off timer
 	if (timer_id != NONE)
 		killTimer(timer_id);
+
+	delete(headerPM);
 }
 
 void 
@@ -217,16 +227,14 @@ ProcessList::setSorting(int column, bool inc)
 	 * columns may be invisible we have to map the view column to the table
 	 * column.
 	 */
-	int tcol, vcol;
-	for (tcol = vcol = 0; vcol < column; tcol++)
-		if (TabCol[tcol].visible)
-			vcol++;
+	int tcol = mapV2T(column);
+
 	if (sortColumn == tcol)
 		increasing = !inc;
 	else
 		sortColumn = tcol;
 
-	QListView::setSorting(vcol, increasing);
+	QListView::setSorting(column, increasing);
 }
 
 void
@@ -244,7 +252,7 @@ ProcessList::setSortColumn(int c, bool inc)
 	increasing = inc;
 }
 
-int 
+int
 ProcessList::setAutoUpdateMode(bool mode)
 {
 	/*
@@ -284,8 +292,6 @@ void
 ProcessList::load()
 {
 	pl.clear();
-
-	pl.setSortCriteria(TabCol[sortColumn].sortMethod);
 
 	// request current list of processes
 	if (!pl.update())
@@ -477,30 +483,70 @@ ProcessList::initTabCol(void)
 	setAllColumnsShowFocus(TRUE);
 }
 
+int 
+ProcessList::mapV2T(int vcol)
+{
+	int tcol;
+	int i = 0;
+	for (tcol = 0; !TabCol[tcol].visible || (i < vcol); tcol++)
+		if (TabCol[tcol].visible)
+			i++;
+
+	return (tcol);
+}
+
+int
+ProcessList::mapT2V(int tcol)
+{
+	int vcol = 0;
+	for (int i = 0; i < tcol; i++)
+		if (TabCol[i].visible)
+			vcol++;
+
+	return (vcol);
+}
+
 void
 ProcessList::handleRMBPopup(int item)
 {
-	printf("Item: %d\n", item);
+	switch (item)
+	{
+	case HEADER_REMOVE:
+		/*
+		 * The icon, name and PID columns cannot be removed, so currColumn
+		 * must be greater than 2.
+		 */
+		if (currColumn > 2)
+		{
+			TabCol[mapV2T(currColumn)].visible = FALSE;
+			update();
+		}
+		break;
+	case HEADER_ADD:
+		break;
+	case HEADER_HELP:
+		break;
+	}
 }
 
 void 
 ProcessList::mousePressEvent(QMouseEvent* e)
 {
+	/*
+	 * I haven't found a better way to catch RMB clicks on the header than
+	 * this hacking of the mousePressEvent function. RMB clicks are dealt
+	 * with, all other events are passed through to the base class
+	 * implementation.
+	 */
 	if (e->button() == RightButton)
 	{
 		if (e->pos().y() <= 0)
 		{
-			printf("Column: %d\n", header()->cellAt(e->pos().x()));
-			QPopupMenu* pm = new QPopupMenu();
-			connect(pm, SIGNAL(activated(int)),
-					this, SLOT(handleRMBPopup(int)));
-
-			pm->insertItem(i18n("Remove Column"));
-			pm->insertItem(i18n("Help on Column"));
-			pm->insertItem(i18n("Add Column"));
-
-			pm->popup(QCursor::pos());
-//			delete pm;
+			/*
+			 * e->pos().y() <= 0 means header.
+			 */
+			currColumn = header()->cellAt(e->pos().x());
+			headerPM->popup(QCursor::pos());
 		}
 		else
 		{
