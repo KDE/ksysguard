@@ -49,7 +49,7 @@ SensorManager::SensorManager()
 
 	dict.setAutoDelete(true);
 	// Fill the sensor description dictionary.
-	dict.insert("cpu", new QString(i18n("CPU Load", "Load")));
+	dict.insert("cpu", new QString(i18n("CPU Load")));
 	dict.insert("idle", new QString(i18n("Idle Load")));
 	dict.insert("sys", new QString(i18n("System Load")));
 	dict.insert("nice", new QString(i18n("Nice Load")));
