@@ -81,7 +81,7 @@ protected:
 private:
 	void setTitle(const QString& t);
 
-	int bars;
+	uint bars;
 
 	BarGraph* plotter;
 

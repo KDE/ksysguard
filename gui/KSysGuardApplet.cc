@@ -40,8 +40,11 @@
 #include "SensorManager.h"
 #include "FancyPlotter.h"
 #include "StyleEngine.h"
-#include "KSysGuardAppletSettings.h"
 #include "KSysGuardApplet.moc"
+#include "KSysGuardAppletSettings.h"
+
+#include <stdio.h>
+#define dbg(x) fprintf(stderr, x); fflush(stderr);
 
 extern "C"
 {
@@ -70,6 +73,7 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 	dockCnt = 1;
 	docks = new QWidget*[dockCnt];
 	docks[0] = new QFrame(this);
+	CHECK_PTR(docks[0]);
 	((QFrame*) docks[0])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
 	QToolTip::add(docks[0],
 				  i18n("Drag sensors from the KDE System Guard into "
@@ -216,6 +220,8 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 			delete docks[dock];
 			docks[dock] = new FancyPlotter(this, "FancyPlotter",
 										   sensorDescr, 100.0, 100.0, true);
+			CHECK_PTR(docks[dock]);
+
 			layout();
 			docks[dock]->show();
 		}
@@ -245,6 +251,7 @@ KSysGuardApplet::removeDisplay(SensorDisplay* sd)
 		{
 			delete docks[i];
 			docks[i] = new QFrame(this);
+			CHECK_PTR(docks[i]);
 			((QFrame*) docks[i])->
 				setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
 			QToolTip::add(docks[i],
@@ -272,6 +279,8 @@ KSysGuardApplet::resizeDocks(uint newDockCnt)
 
 	// Create and initialize new dock array.
 	QWidget** tmp = new QWidget*[newDockCnt];
+	CHECK_PTR(tmp);
+
 	uint i;
 	// Copy old docks into new.
 	for (i = 0; (i < newDockCnt) && (i < dockCnt); ++i)
@@ -279,9 +288,11 @@ KSysGuardApplet::resizeDocks(uint newDockCnt)
 	// Destruct old docks that are not needed anymore.
 	for (i = newDockCnt; i < dockCnt; ++i)
 		delete docks[i];
+
 	for (i = dockCnt; i < newDockCnt; ++i)
 	{
 		tmp[i] = new QFrame(this);
+		CHECK_PTR(tmp[i]);
 		((QFrame*) tmp[i])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
 		QToolTip::add(tmp[i],
 					  i18n("Drag sensors from the KDE System Guard into "
@@ -290,7 +301,7 @@ KSysGuardApplet::resizeDocks(uint newDockCnt)
 			tmp[i]->show();
 	}
 	// Destruct old dock.
-	delete docks;
+	delete [] docks;
 
 	docks = tmp;
 	dockCnt = newDockCnt;

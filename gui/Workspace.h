@@ -60,7 +60,11 @@ public slots:
 		saveWorkSheet((WorkSheet*) currentPage());
 	}
 	void saveWorkSheet(WorkSheet* sheet);
-	void saveWorkSheetAs();
+	void saveWorkSheetAs()
+	{
+		saveWorkSheetAs((WorkSheet*) currentPage());
+	}
+	void saveWorkSheetAs(WorkSheet* sheet);
 	void deleteWorkSheet();
 	void cut();
 	void copy();

@@ -130,7 +130,7 @@ BarGraph::paintEvent(QPaintEvent*)
 	if (bars > 0)
 	{
 		int barWidth = (w - 2) / bars;
-		int b;
+		uint b;
 		/* Labels are only printed underneath the bars if the labels
 		 * for all bars are smaller than the bar width. If a single
 		 * label does not fit no label is shown. */
@@ -144,7 +144,7 @@ BarGraph::paintEvent(QPaintEvent*)
 			barHeight = h - 2 - fm.lineSpacing() - 2;
 		else
 			barHeight = h - 2;
-		for (int b = 0; b < bars; b++)
+		for (uint b = 0; b < bars; b++)
 		{
 			int topVal = (int) ((float) barHeight / maxValue
 								* (samples[b] - minValue));

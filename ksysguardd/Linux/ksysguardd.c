@@ -326,7 +326,7 @@ createServerSocket()
 	setsockopt(newSocket, SOL_SOCKET, SO_REUSEADDR, &i, sizeof(i));
 
 	if ((service = getservbyname("ksysguardd", "tcp")) == NULL) {
-		SocketPort = PORT_NUMBER;
+		SocketPort = htons(PORT_NUMBER);
 	} else {
 		SocketPort = service->s_port;
 	}

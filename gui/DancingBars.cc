@@ -47,7 +47,7 @@
 #include "DancingBars.moc"
 
 DancingBars::DancingBars(QWidget* parent, const char* name,
-						 const QString& title, int min, int max)
+						 const QString& title, int, int)
 	: SensorDisplay(parent, name)
 {
 	if (!title.isEmpty())
@@ -120,7 +120,7 @@ DancingBars::settings()
 	dbs->backgroundColor->setColor(plotter->backgroundColor);
 	dbs->fontSize->setValue(plotter->fontSize);
 
-	for (uint i = bars - 1; i >= 0 && i < bars; i--)
+	for (uint i = bars - 1; i < bars; i--)
 	{
 		QString status = sensors.at(i)->ok ? i18n("Ok") : i18n("Error");
 		QListViewItem* lvi = new QListViewItem(
@@ -168,7 +168,7 @@ DancingBars::applySettings()
     QListViewItemIterator it(dbs->sensorList);
 	/* Iterate through all items of the listview and reverse iterate
 	 * through the registered sensors. */
-	for (int i = 0; i < sensors.count(); i++)
+	for (uint i = 0; i < sensors.count(); i++)
 	{
 		if (it.current() &&
 			it.current()->text(0) == sensors.at(i)->hostName &&
@@ -403,7 +403,7 @@ DancingBars::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 	addColorToDOM(display, "backgroundColor", plotter->backgroundColor);
 	display.setAttribute("fontSize", plotter->fontSize);
 
-	for (int i = 0; i < bars; ++i)
+	for (uint i = 0; i < bars; ++i)
 	{
 		QDomElement beam = doc.createElement("beam");
 		display.appendChild(beam);

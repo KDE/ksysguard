@@ -32,6 +32,7 @@ ksysguard_SOURCES = \
 	ListView.cc \
 	LogFile.cc LogFileSettings.cc \
 	StyleEngine.cc \
+	SensorLogger.cc \
 	SensorBrowser.cc  \
 	SensorManager.cc \
 	SensorAgent.cc SensorShellAgent.cc SensorSocketAgent.cc \
@@ -39,7 +40,7 @@ ksysguard_SOURCES = \
 	ksysguard.cc ksysguard.skel \
 	DancingBarsSettings.ui MultiMeterSettings.ui \
 	FancyPlotterSettings.ui HostConnector.ui WorkSheetSettings.ui \
-	ListViewSettings.ui BarGraphSettings.ui StyleSettings.ui
+	ListViewSettings.ui BarGraphSettings.ui StyleSettings.ui SensorLoggerDlg.ui SensorLoggerSettings.ui
 
 # the library search path
 ksysguard_LDFLAGS = $(all_libraries) $(KDE_RPATH)

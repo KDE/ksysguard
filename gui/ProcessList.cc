@@ -38,7 +38,6 @@
 #include <unistd.h>
 #include <assert.h>
 
-#include <qaccel.h>
 #include <qheader.h>
 #include <qpixmap.h>
 #include <qbitmap.h>
@@ -287,9 +286,6 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	sensorOk = false;
 	killSupported = false;
 	setModified(false);
-
-	QAccel *accel = new QAccel(this);
-	accel->connectItem(accel->insertItem(Key_M+CTRL), this, SLOT(selectCurrent()));
 }
 
 ProcessList::~ProcessList()

@@ -249,13 +249,14 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 										  fileName.findRev('/') - 1);
 		// chop off extension (usually '.sgrd')
 		baseName = baseName.left(baseName.findRev('.'));
-		changeTab(currentPage(), baseName);
+//		changeTab(currentPage(), baseName);
+		changeTab(sheet, baseName);
 	}
 	/* If we cannot save the file is probably write protected. So we need
 	 * to ask the user for a new name. */
 	if (!sheet->save(fileName))
 	{
-		saveWorkSheetAs();
+		saveWorkSheetAs(sheet);
 		return;
 	}
 
@@ -266,9 +267,9 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 }
 
 void
-Workspace::saveWorkSheetAs()
+Workspace::saveWorkSheetAs(WorkSheet* sheet)
 {
-	WorkSheet* sheet = (WorkSheet*) currentPage();
+//	WorkSheet* sheet = (WorkSheet*) currentPage();
 	if (!sheet)
 	{
 		KMessageBox::sorry(
@@ -290,7 +291,7 @@ Workspace::saveWorkSheetAs()
 										  fileName.findRev('/') - 1);
 		// chop off extension (usually '.sgrd')
 		baseName = baseName.left(baseName.findRev('.'));
-		changeTab(currentPage(), baseName);
+		changeTab(sheet, baseName);
 	} while (!sheet->save(fileName));
 
 	/* Add file to recent documents menue. */

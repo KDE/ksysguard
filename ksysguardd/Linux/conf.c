@@ -45,7 +45,7 @@ void parseConfigFile(const char *filename)
 	ConfigLogFile *confLog;
 
 	if ((config = fopen(filename, "r")) == NULL) {
-		printf("can't open %s\n", filename);
+		log_error("can't open config file '%s'", filename);
 		return;
 	}
 

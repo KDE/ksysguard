@@ -91,7 +91,7 @@ private:
 	bool autoRange;
 	QArray<double> samples;
 	QStringList footers;
-	int bars;
+	uint bars;
 	QColor normalColor;
 	QColor alarmColor;
 	QColor backgroundColor;

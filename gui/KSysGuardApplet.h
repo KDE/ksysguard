@@ -23,7 +23,7 @@
 	$Id$
 */
 
-#ifndef __KSysGuardApplet_h_
+#ifndef __KSysGuardApplet_h__
 #define __KSysGuardApplet_h__
 
 #include <kpanelapplet.h>
