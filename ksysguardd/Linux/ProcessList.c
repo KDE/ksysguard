@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -429,9 +429,9 @@ exitProcessList(void)
 void
 printProcessListInfo(const char* cmd)
 {
-	printf("Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize"
+	fprintf(currentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize"
 		   "\tVmRss\tLogin\tCommand\n");
-	printf("s\td\td\td\td\tS\tf\tf\td\td\td\ts\ts\n");
+	fprintf(currentClient, "s\td\td\td\td\tS\tf\tf\td\td\td\ts\ts\n");
 }
 
 void
@@ -446,7 +446,7 @@ printProcessList(const char* cmd)
 	{
 		ProcessInfo* ps = get_ctnr(ProcessList, i);
 
-		printf("%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d"
+		fprintf(currentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d"
 			   "\t%s\t%s\n",
 			   ps->name, (long) ps->pid, (long) ps->ppid,
 			   (long) ps->uid, (long) ps->gid, ps->status,
@@ -462,13 +462,13 @@ printProcessCount(const char* cmd)
 	if ((time(0) - timeStamp) > 2)
 		updateProcessList();
 
-	printf("%d\n", ProcessCount);
+	fprintf(currentClient, "%d\n", ProcessCount);
 }
 
 void
 printProcessCountInfo(const char* cmd)
 {
-	printf("Number of Processes\t0\t0\t\n");
+	fprintf(currentClient, "Number of Processes\t0\t0\t\n");
 }
 
 void
@@ -542,21 +542,22 @@ killProcess(const char* cmd)
 		switch(errno)
 		{
 		case EINVAL:
-			printf("4\n");
+			fprintf(currentClient, "4\n");
 			break;
 		case ESRCH:
-			printf("3\n");
+			fprintf(currentClient, "3\n");
 			break;
 		case EPERM:
-			printf("2\n");
+			fprintf(currentClient, "2\n");
 			break;
 		default:
-			printf("1\n");	/* unkown error */
+			fprintf(currentClient, "1\n");	/* unkown error */
 			break;
 		}
+
 	}
 	else
-		printf("0\n");
+		fprintf(currentClient, "0\n");
 }
 
 void
@@ -570,20 +571,20 @@ setPriority(const char* cmd)
 		switch(errno)
 		{
 		case EINVAL:
-			printf("4\n");
+			fprintf(currentClient, "4\n");
 			break;
 		case ESRCH:
-			printf("3\n");
+			fprintf(currentClient, "3\n");
 			break;
 		case EPERM:
 		case EACCES:
-			printf("2\n");
+			fprintf(currentClient, "2\n");
 			break;
 		default:
-			printf("1\n");	/* unkown error */
+			fprintf(currentClient, "1\n");	/* unkown error */
 			break;
 		}
 	}
 	else
-		printf("0\n");
+		fprintf(currentClient, "0\n");
 }

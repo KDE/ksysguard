@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager
+    KSysGuard, the KDE System Guard
 	   
     Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -18,8 +18,6 @@
 
     $Id$
 */
-
-#include <config.h>
 
 #ifdef HAVE_SENSORS_SENSORS_H
 #include <stdio.h>
@@ -151,12 +149,12 @@ printLmSensor(const char* cmd)
 	if ((s = findMatchingSensor(cmd)) == 0)
 	{
 		/* should never happen */
-		printf("0\n");
+		fprintf(currentClient, "0\n");
 		return;
 	}
 
 	sensors_get_feature(*(s->scn), s->sfd->number, &value);
-	printf("%f\n", value);
+	fprintf(currentClient, "%f\n", value);
 }
 
 void
@@ -167,11 +165,11 @@ printLmSensorInfo(const char* cmd)
 	if ((s = findMatchingSensor(cmd)) == 0)
 	{
 		/* should never happen */
-		printf("0\n");
+		fprintf(currentClient, "0\n");
 		return;
 	}
 	/* TODO: print real name here */
-	printf("Sensor Info\t0\t0\t\n");
+	fprintf(currentClient, "Sensor Info\t0\t0\t\n");
 }
 
 #else /* HAVE_SENSORS_SENSORS_H */

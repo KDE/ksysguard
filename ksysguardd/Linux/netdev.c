@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <Command.h>
+#include "Command.h"
 #include "netdev.h"
 
 /* Special version of perror for use in signal handler functions. */
@@ -309,18 +309,18 @@ printNetDevRecBytes(const char* cmd)
 	for (i = 0; i < MAXNETDEVS; ++i)
 		if (strcmp(NetDevs[i].name, dev) == 0)
 		{
-			printf("%lu\n", (unsigned long)
+			fprintf(currentClient, "%lu\n", (unsigned long)
 				   (NetDevs[i].rxBytes / (1024 * timeInterval)));
 			return;
 		}
 
-	printf("0\n");
+	fprintf(currentClient, "0\n");
 }
 
 void
 printNetDevRecBytesInfo(const char* cmd)
 {
-	printf("Received Bytes\t0\t0\tkBytes/s\n");
+	fprintf(currentClient, "Received Bytes\t0\t0\tkBytes/s\n");
 }
 
 void
@@ -340,16 +340,16 @@ printNetDevSentBytes(const char* cmd)
 	for (i = 0; i < MAXNETDEVS; ++i)
 		if (strcmp(NetDevs[i].name, dev) == 0)
 		{
-			printf("%lu\n", (unsigned long)
+			fprintf(currentClient, "%lu\n", (unsigned long)
 				   (NetDevs[i].txBytes / (1024 * timeInterval)));
 			return;
 		}
 
-	printf("0\n");
+	fprintf(currentClient, "0\n");
 }
 
 void
 printNetDevRecSendInfo(const char* cmd)
 {
-	printf("Send Bytes\t0\t0\tkBytes/s\n");
+	fprintf(currentClient, "Send Bytes\t0\t0\tkBytes/s\n");
 }

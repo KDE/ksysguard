@@ -1,7 +1,7 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -154,7 +154,7 @@ printMFree(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("%ld\n", MFree);
+	fprintf(currentClient, "%ld\n", MFree);
 }
 
 void
@@ -162,7 +162,7 @@ printMFreeInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Free Memory\t0\t%ld\tKB\n", Total);
+	fprintf(currentClient, "Free Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -170,7 +170,7 @@ printUsed(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("%ld\n", Used);
+	fprintf(currentClient, "%ld\n", Used);
 }
 
 void
@@ -178,7 +178,7 @@ printUsedInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Used Memory\t0\t%ld\tKB\n", Total);
+	fprintf(currentClient, "Used Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -186,7 +186,7 @@ printAppl(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("%ld\n", Appl);
+	fprintf(currentClient, "%ld\n", Appl);
 }
 
 void
@@ -194,7 +194,7 @@ printApplInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Application Memory\t0\t%ld\tKB\n", Total);
+	fprintf(currentClient, "Application Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -202,7 +202,7 @@ printBuffers(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("%ld\n", Buffers);
+	fprintf(currentClient, "%ld\n", Buffers);
 }
 
 void
@@ -210,7 +210,7 @@ printBuffersInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Buffer Memory\t0\t%ld\tKB\n", Total);
+	fprintf(currentClient, "Buffer Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -218,7 +218,7 @@ printCached(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("%ld\n", Cached);
+	fprintf(currentClient, "%ld\n", Cached);
 }
 
 void
@@ -226,7 +226,7 @@ printCachedInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Cached Memory\t0\t%ld\tKB\n", Total);
+	fprintf(currentClient, "Cached Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -234,7 +234,7 @@ printSwapUsed(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("%ld\n", SUsed);
+	fprintf(currentClient, "%ld\n", SUsed);
 }
 
 void
@@ -242,7 +242,7 @@ printSwapUsedInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Used Swap Memory\t0\t%ld\tKB\n", STotal);
+	fprintf(currentClient, "Used Swap Memory\t0\t%ld\tKB\n", STotal);
 }
 
 void
@@ -250,7 +250,7 @@ printSwapFree(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("%ld\n", SFree);
+	fprintf(currentClient, "%ld\n", SFree);
 }
 
 void
@@ -258,5 +258,5 @@ printSwapFreeInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Free Swap Memory\t0\t%ld\tKB\n", STotal);
+	fprintf(currentClient, "Free Swap Memory\t0\t%ld\tKB\n", STotal);
 }

@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
     
@@ -20,18 +20,18 @@
 #ifndef _netstat_h_
 #define _netstat_h_
 
-int get_num_sockets(FILE *);
-
 void initNetStat(void);
 void exitNetStat(void);
 
 int updateNetStat(void);
+int updateNetStatTcpUdpRaw(const char *cmd);
+int updateNetStatUnix(void);
 
 void printNetStat(const char* cmd);
 void printNetStatInfo(const char* cmd);
 
-void printNetStatTUR(const char *cmd);
-void printNetStatTURInfo(const char *cmd);
+void printNetStatTcpUdpRaw(const char *cmd);
+void printNetStatTcpUdpRawInfo(const char *cmd);
 
 void printNetStatUnix(const char *cmd);
 void printNetStatUnixInfo(const char *cmd);

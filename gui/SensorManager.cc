@@ -26,6 +26,7 @@
 #include <qradiobutton.h>
 #include <qpushbutton.h>
 #include <qcombobox.h>
+#include <qspinbox.h>
 
 #include <kapp.h>
 #include <klocale.h>
@@ -34,7 +35,8 @@
 #include "ksysguard.h"
 #include "SensorManager.h"
 #include "HostConnector.h"
-#include "SensorAgent.h"
+#include "SensorShellAgent.h"
+#include "SensorSocketAgent.h"
 #include "SensorManager.moc"
 
 SensorManager* SensorMgr;
@@ -154,29 +156,26 @@ SensorManager::engageHost(const QString& hostname)
 		}
 		if (hostConnector->exec())
 		{
-			QString shell;
-			QString command;
+			QString shell = "";
+			QString command = "";
+			int port = -1;
 
+			/* Check which radio button is selected and set parameters
+			 * appropriately. */
 			if (hostConnector->ssh->isChecked())
-			{
 				shell = "ssh";
-				command = "";
-			}
 			else if (hostConnector->rsh->isChecked())
-			{
 				shell = "rsh";
-				command = "";
-			}
+			else if (hostConnector->daemon->isChecked())
+				port = hostConnector->port->text().toInt();
 			else
-			{
-				shell = "";
 				command = hostConnector->command->currentText();
-			}
+
 			if (hostname == "")
 				retVal = engage(hostConnector->host->currentText(), shell,
-								command);
+								command, port);
 			else
-				retVal = engage(hostname, shell, command);
+				retVal = engage(hostname, shell, command, port);
 		}
 	}
 	return (retVal);
@@ -184,15 +183,19 @@ SensorManager::engageHost(const QString& hostname)
 
 bool
 SensorManager::engage(const QString& hostname, const QString& shell,
-					  const QString& command)
+					  const QString& command, int port)
 {
 	SensorAgent* daemon;
 
 	if ((daemon = sensors.find(hostname)) == 0)
 	{
-		daemon = new SensorAgent(this);
+		if (port == -1)
+			daemon = new SensorShellAgent(this);
+		else
+			daemon = new SensorSocketAgent(this);
 		CHECK_PTR(daemon);
-		if (!daemon->start(hostname.ascii(), shell, command))
+
+		if (!daemon->start(hostname.ascii(), shell, command, port))
 		{
 			delete daemon;
 			return (false);
@@ -205,6 +208,19 @@ SensorManager::engage(const QString& hostname, const QString& shell,
 	}
 
 	return (false);
+}
+
+void
+SensorManager::requestDisengage(const SensorAgent* sa)
+{
+	/* When a sensor agent becomes disfunctional it calles this function
+	 * to request that it is being removed from the SensorManager. It must
+	 * not call disengage() directly since it would trigger ~SensorAgent()
+	 * while we are still in a SensorAgent member function.
+	 * So we have to post an event which is later caught by
+	 * SensorManger::customEvent(). */
+	QCustomEvent* ev = new QCustomEvent(QEvent::User, (void*) sa);
+	kapp->postEvent(this, ev);
 }
 
 bool
@@ -246,7 +262,8 @@ SensorManager::resynchronize(const QString& hostname)
 		return (false);
 
 	QString shell, command;
-	getHostInfo(hostname, shell, command);
+	int port;
+	getHostInfo(hostname, shell, command, port);
 	disengage(hostname);
 
 	kdDebug () << "Re-synchronizing connection to " << hostname << endl;
@@ -290,6 +307,18 @@ SensorManager::reconfigure(const SensorAgent*)
 }
 
 bool
+SensorManager::event(QEvent* ev)
+{
+	if (ev->type() == QEvent::User)
+	{
+		disengage((const SensorAgent*) ((QCustomEvent*) ev)->data());
+		return (true);
+	}
+
+	return (false);
+}
+
+bool
 SensorManager::sendRequest(const QString& hostname, const QString& req,
 						   SensorClient* client, int id)
 {
@@ -320,12 +349,12 @@ SensorManager::getHostName(const SensorAgent* sensor) const
 
 bool
 SensorManager::getHostInfo(const QString& hostName, QString& shell,
-						   QString& command)
+						   QString& command, int& port)
 {
 	SensorAgent* daemon;
 	if ((daemon = sensors.find(hostName)) != 0)
 	{
-		daemon->getHostInfo(shell, command);
+		daemon->getHostInfo(shell, command, port);
 		return (true);
 	}
 

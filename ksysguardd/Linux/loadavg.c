@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
@@ -107,13 +107,13 @@ printLoadAvg1(const char* c)
 	if (Dirty)
 		processLoadAvg();
 
-	printf("%f\n", LoadAvg1);
+	fprintf(currentClient, "%f\n", LoadAvg1);
 }
 
 void
 printLoadAvg1Info(const char* c)
 {
-	printf("Load average 1 min\t0\t0\t\n");
+	fprintf(currentClient, "Load average 1 min\t0\t0\t\n");
 }
 
 void
@@ -122,13 +122,13 @@ printLoadAvg5(const char* c)
 	if (Dirty)
 		processLoadAvg();
 
-	printf("%f\n", LoadAvg5);
+	fprintf(currentClient, "%f\n", LoadAvg5);
 }
 
 void
 printLoadAvg5Info(const char* c)
 {
-	printf("Load average 5 min\t0\t0\t\n");
+	fprintf(currentClient, "Load average 5 min\t0\t0\t\n");
 }
 
 void
@@ -137,11 +137,11 @@ printLoadAvg15(const char* c)
 	if (Dirty)
 		processLoadAvg();
 
-	printf("%f\n", LoadAvg15);
+	fprintf(currentClient, "%f\n", LoadAvg15);
 }
 
 void
 printLoadAvg15Info(const char* c)
 {
-	printf("Load average 15 min\t0\t0\t\n");
+	fprintf(currentClient, "Load average 15 min\t0\t0\t\n");
 }

@@ -70,7 +70,6 @@ public slots:
 	void registerRecentURL(const KURL& url);
 
 protected:
-
 	virtual void customEvent(QCustomEvent* e);
 	virtual void timerEvent(QTimerEvent*);
 	virtual bool queryClose();

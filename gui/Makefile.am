@@ -19,11 +19,13 @@ ksysguard_SOURCES = \
 	ProcessController.cc ProcessList.cc \
 	ListView.cc \
 	SensorBrowser.cc  \
-	SensorManager.cc SensorAgent.cc \
+	SensorManager.cc \
+	SensorAgent.cc SensorShellAgent.cc SensorSocketAgent.cc \
 	WorkSheet.cc Workspace.cc \
 	ksysguard.cc ksysguard.skel \
 	DancingBarsSettings.ui MultiMeterSettings.ui \
-	FancyPlotterSettings.ui HostConnector.ui WorkSheetSettings.ui
+	FancyPlotterSettings.ui HostConnector.ui WorkSheetSettings.ui \
+	ListViewSettings.ui
 
 # the library search path
 ksysguard_LDFLAGS = $(all_libraries) $(KDE_RPATH)
@@ -43,7 +45,8 @@ apps_DATA = ksysguard.desktop
 lib_LTLIBRARIES = libksysguardapplet.la
 
 libksysguardapplet_la_SOURCES = KSysGuardApplet.cc SensorManager.cc \
-	SensorAgent.cc FancyPlotter.cc SignalPlotter.cc SensorDisplay.cc \
+	SensorAgent.cc SensorShellAgent.cc SensorSocketAgent.cc \
+	FancyPlotter.cc SignalPlotter.cc SensorDisplay.cc \
 	FancyPlotterSettings.ui HostConnector.ui KSysGuardAppletSettings.ui
 libksysguardapplet_la_METASOURCES = AUTO
 libksysguardapplet_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -module -no-undefined

@@ -1,7 +1,7 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -106,13 +106,13 @@ printApmBatFill(const char* c)
 	if (Dirty)
 		processApm();
 
-	printf("%d\n", BatFill);
+	fprintf(currentClient, "%d\n", BatFill);
 }
 
 void
 printApmBatFillInfo(const char* c)
 {
-	printf("Battery charge\t0\t100\t%%\n");
+	fprintf(currentClient, "Battery charge\t0\t100\t%%\n");
 }
 
 void
@@ -121,11 +121,11 @@ printApmBatTime(const char* c)
 	if (Dirty)
 		processApm();
 
-	printf("%d\n", BatTime);
+	fprintf(currentClient, "%d\n", BatTime);
 }
 
 void
 printApmBatTimeInfo(const char* c)
 {
-	printf("Remaining battery time\t0\t0\tmin\n");
+	fprintf(currentClient, "Remaining battery time\t0\t0\tmin\n");
 }

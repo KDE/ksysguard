@@ -13,8 +13,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>350</width>
-            <height>212</height>
+            <width>391</width>
+            <height>248</height>
         </rect>
     </property>
     <property stdset="1">
@@ -34,6 +34,72 @@
             <name>spacing</name>
             <number>6</number>
         </property>
+        <widget row="0"  column="0" >
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout17</cstring>
+            </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>hostLabel</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Host</string>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QComboBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>host</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>editable</name>
+                        <bool>true</bool>
+                    </property>
+                    <property stdset="1">
+                        <name>maxCount</name>
+                        <number>20</number>
+                    </property>
+                    <property stdset="1">
+                        <name>insertionPolicy</name>
+                        <enum>AtTop</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>autoCompletion</name>
+                        <bool>true</bool>
+                    </property>
+                    <property stdset="1">
+                        <name>duplicatesEnabled</name>
+                        <bool>false</bool>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enter the name of the host you want to connect to.</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
         <widget row="2"  column="0" >
             <class>QLayoutWidget</class>
             <property stdset="1">
@@ -136,140 +202,7 @@
                     <name>spacing</name>
                     <number>6</number>
                 </property>
-                <spacer row="5"  column="1" >
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer7</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Vertical</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget row="3"  column="1"  rowspan="2"  colspan="1" >
-                    <class>QLayoutWidget</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>Layout5</cstring>
-                    </property>
-                    <vbox>
-                        <property stdset="1">
-                            <name>margin</name>
-                            <number>0</number>
-                        </property>
-                        <property stdset="1">
-                            <name>spacing</name>
-                            <number>6</number>
-                        </property>
-                        <widget>
-                            <class>QComboBox</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>command</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>enabled</name>
-                                <bool>false</bool>
-                            </property>
-                            <property stdset="1">
-                                <name>sizePolicy</name>
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                </sizepolicy>
-                            </property>
-                            <property stdset="1">
-                                <name>editable</name>
-                                <bool>true</bool>
-                            </property>
-                            <property stdset="1">
-                                <name>maxCount</name>
-                                <number>20</number>
-                            </property>
-                            <property stdset="1">
-                                <name>insertionPolicy</name>
-                                <enum>AtTop</enum>
-                            </property>
-                            <property stdset="1">
-                                <name>autoCompletion</name>
-                                <bool>true</bool>
-                            </property>
-                            <property stdset="1">
-                                <name>duplicatesEnabled</name>
-                                <bool>false</bool>
-                            </property>
-                            <property>
-                                <name>whatsThis</name>
-                                <string>Enter the command that runs ksysguardd on the host you want to monitor.</string>
-                            </property>
-                        </widget>
-                        <widget>
-                            <class>QLabel</class>
-                            <property stdset="1">
-                                <name>name</name>
-                                <cstring>TextLabel3</cstring>
-                            </property>
-                            <property stdset="1">
-                                <name>text</name>
-                                <string>e. g. ssh -l root remote.host.org ksysguardd</string>
-                            </property>
-                        </widget>
-                    </vbox>
-                </widget>
-                <spacer row="4"  column="0" >
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer10</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Vertical</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <spacer row="2"  column="1" >
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer9</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Vertical</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <spacer row="0"  column="1" >
+                <spacer row="0"  column="2" >
                     <property>
                         <name>name</name>
                         <cstring>Spacer8</cstring>
@@ -290,11 +223,11 @@
                         </size>
                     </property>
                 </spacer>
-                <widget row="1"  column="1" >
+                <widget row="1"  column="0"  rowspan="1"  colspan="3" >
                     <class>QLayoutWidget</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>Layout17</cstring>
+                        <cstring>Layout5</cstring>
                     </property>
                     <hbox>
                         <property stdset="1">
@@ -385,6 +318,42 @@
                             <class>QRadioButton</class>
                             <property stdset="1">
                                 <name>name</name>
+                                <cstring>daemon</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Daemon</string>
+                            </property>
+                            <property>
+                                <name>toolTip</name>
+                                <string>Select this if you want to connect to a ksysguard daemon that is running on the machine you want to connect to and is listening for client requests.</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property>
+                                <name>name</name>
+                                <cstring>Spacer8_2</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>orientation</name>
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property stdset="1">
+                                <name>sizeType</name>
+                                <enum>Expanding</enum>
+                            </property>
+                            <property>
+                                <name>sizeHint</name>
+                                <size>
+                                    <width>20</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget>
+                            <class>QRadioButton</class>
+                            <property stdset="1">
+                                <name>name</name>
                                 <cstring>custom</cstring>
                             </property>
                             <property stdset="1">
@@ -398,18 +367,210 @@
                         </widget>
                     </hbox>
                 </widget>
-                <widget row="1"  column="0" >
+                <widget row="5"  column="1"  rowspan="2"  colspan="2" >
+                    <class>QLayoutWidget</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>Layout5</cstring>
+                    </property>
+                    <vbox>
+                        <property stdset="1">
+                            <name>margin</name>
+                            <number>0</number>
+                        </property>
+                        <property stdset="1">
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <widget>
+                            <class>QComboBox</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>command</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
+                            <property stdset="1">
+                                <name>sizePolicy</name>
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                </sizepolicy>
+                            </property>
+                            <property stdset="1">
+                                <name>editable</name>
+                                <bool>true</bool>
+                            </property>
+                            <property stdset="1">
+                                <name>maxCount</name>
+                                <number>20</number>
+                            </property>
+                            <property stdset="1">
+                                <name>insertionPolicy</name>
+                                <enum>AtTop</enum>
+                            </property>
+                            <property stdset="1">
+                                <name>autoCompletion</name>
+                                <bool>true</bool>
+                            </property>
+                            <property stdset="1">
+                                <name>duplicatesEnabled</name>
+                                <bool>false</bool>
+                            </property>
+                            <property>
+                                <name>whatsThis</name>
+                                <string>Enter the command that runs ksysguardd on the host you want to monitor.</string>
+                            </property>
+                        </widget>
+                        <widget>
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabel3</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>e. g. ssh -l root remote.host.org ksysguardd</string>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget row="3"  column="0" >
                     <class>QLabel</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>TextLabel5</cstring>
+                        <cstring>TextLabel1</cstring>
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Shell</string>
+                        <string>Port</string>
                     </property>
                 </widget>
-                <widget row="3"  column="0" >
+                <spacer row="2"  column="1" >
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer9</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <spacer row="4"  column="1" >
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer9_2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget row="3"  column="2" >
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel2_2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>e.g.  8359</string>
+                    </property>
+                </widget>
+                <spacer row="7"  column="1" >
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer7</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget row="3"  column="1" >
+                    <class>QSpinBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>port</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>enabled</name>
+                        <bool>false</bool>
+                    </property>
+                    <property stdset="1">
+                        <name>maxValue</name>
+                        <number>65535</number>
+                    </property>
+                    <property stdset="1">
+                        <name>minValue</name>
+                        <number>1</number>
+                    </property>
+                    <property stdset="1">
+                        <name>value</name>
+                        <number>8359</number>
+                    </property>
+                    <property>
+                        <name>toolTip</name>
+                        <string>Enter the port number where the ksysguard daemon is listening for connections.</string>
+                    </property>
+                </widget>
+                <spacer row="6"  column="0"  rowspan="2"  colspan="1" >
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer10</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget row="5"  column="0" >
                     <class>QLabel</class>
                     <property stdset="1">
                         <name>name</name>
@@ -428,72 +589,6 @@
                     </property>
                 </widget>
             </grid>
-        </widget>
-        <widget row="0"  column="0" >
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Layout17</cstring>
-            </property>
-            <hbox>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>0</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
-                <widget>
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>hostLabel</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>Host</string>
-                    </property>
-                </widget>
-                <widget>
-                    <class>QComboBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>host</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>sizePolicy</name>
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>0</vsizetype>
-                        </sizepolicy>
-                    </property>
-                    <property stdset="1">
-                        <name>editable</name>
-                        <bool>true</bool>
-                    </property>
-                    <property stdset="1">
-                        <name>maxCount</name>
-                        <number>20</number>
-                    </property>
-                    <property stdset="1">
-                        <name>insertionPolicy</name>
-                        <enum>AtTop</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>autoCompletion</name>
-                        <bool>true</bool>
-                    </property>
-                    <property stdset="1">
-                        <name>duplicatesEnabled</name>
-                        <bool>false</bool>
-                    </property>
-                    <property>
-                        <name>whatsThis</name>
-                        <string>Enter the name of the host you want to connect to.</string>
-                    </property>
-                </widget>
-            </hbox>
         </widget>
     </grid>
 </widget>
@@ -527,6 +622,12 @@
         <signal>clicked()</signal>
         <receiver>HostConnectore</receiver>
         <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>daemon</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>port</receiver>
+        <slot>setEnabled(bool)</slot>
     </connection>
 </connections>
 <tabstops>

@@ -29,24 +29,28 @@
 
 #include <kdebug.h>
 #include <kiconloader.h>
+#include <kcolorbtn.h>
 
 #include "SensorManager.h"
+#include "ListViewSettings.h"
 #include "ListView.moc"
 
-ListViewItem::ListViewItem(QListView *parent)
+ListViewItem::ListViewItem(MyListView *parent)
 	: QListViewItem( parent )
 {
+	gridColor = (QColor)parent->getGridColor();
+	textColor = (QColor)parent->getTextColor();
 }
 
 void ListViewItem::paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment)
 {
 	QColorGroup my_cg(cg);
 
-	my_cg.setColor(QColorGroup::Text, Qt::green);
+	my_cg.setColor(QColorGroup::Text, textColor);
 	my_cg.setColor(QColorGroup::Base, Qt::black);
 
 	QListViewItem::paintCell(p, my_cg, column, width, alignment);
-	p->setPen(Qt::green);
+	p->setPen((QColor)gridColor);
 	p->drawLine(0, height() - 1, width - 1, height() - 1);
 }
 
@@ -58,9 +62,12 @@ void ListViewItem::paintFocus(QPainter *, const QColorGroup &, const QRect &)
 MyListView::MyListView(QWidget *parent)
 	: QListView(parent)
 {
+	gridColor = QColor(Qt::green);
+	textColor = QColor(Qt::green);
+
 	// it's the only way to paint a black background :(
 	QColorGroup cg = this->colorGroup();
-	cg.setBrush(QColorGroup::Base, QColor(0,0,0));
+	cg.setBrush(QColorGroup::Base, Qt::black);
 
 	QPalette pal(cg, cg, cg);
 	
@@ -181,6 +188,8 @@ ListView::load(QDomElement& el)
 	modified = false;
 
 	title = el.attribute("title");
+	mainList->setGridColor(QColor(el.attribute("gridcolor")));
+	mainList->setTextColor(QColor(el.attribute("textcolor")));
 	addSensor(el.attribute("hostName"), el.attribute("sensorName"), "");
 
 	return (TRUE);
@@ -192,9 +201,38 @@ ListView::save(QDomDocument&, QDomElement& display)
 	display.setAttribute("hostName", sensors.at(0)->hostName);
 	display.setAttribute("sensorName", sensors.at(0)->name);
 	display.setAttribute("title", title);
+	display.setAttribute("gridcolor", mainList->getGridColor().name());
+	display.setAttribute("textcolor", mainList->getTextColor().name());
 	modified = FALSE;
 
 	return (TRUE);
+}
+
+void
+ListView::settings()
+{
+	lvs = new ListViewSettings(this, "ListViewSettings", TRUE);
+	CHECK_PTR(lvs);
+	connect(lvs->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
+
+	lvs->gridColorButton->setColor(mainList->getGridColor());
+	lvs->textColorButton->setColor(mainList->getTextColor());
+
+	if (lvs->exec())
+		applySettings();
+
+	delete lvs;
+	lvs = 0;
+}
+
+void
+ListView::applySettings()
+{
+	mainList->setGridColor(lvs->gridColorButton->color());
+	mainList->setTextColor(lvs->textColorButton->color());
+	modified = TRUE;
+
+	mainList->update(mainList->x(), mainList->y(), mainList->width(), mainList->height());
 }
 
 void

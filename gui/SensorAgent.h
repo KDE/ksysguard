@@ -36,24 +36,23 @@ class SensorManager;
  */
 class SensorRequest
 {
-	friend class SensorAgent;
-
 public:
 	SensorRequest(const QString& r, SensorClient* c, int i) :
 		request(r), client(c), id(i) { }
 	~SensorRequest() { }
 
-private:
 	QString request;
 	SensorClient* client;
 	int id;
 } ;
 
 /**
- * The SensorAgent starts a ksysguardd process and handles the asynchronous
- * communication. It keeps a list of pending requests that have not been
- * answered yet by ksysguard. The current implementation only allowes one
- * pending requests. Incoming requests are queued in an input FIFO.
+ * The SensorAgent depending on the type of requested connection
+ * starts a ksysguardd process or connects through a tcp connection to
+ * a running ksysguardd and handles the asynchronous communication. It
+ * keeps a list of pending requests that have not been answered yet by
+ * ksysguardd. The current implementation only allowes one pending
+ * requests. Incoming requests are queued in an input FIFO.
  */
 class SensorAgent : public QObject
 {
@@ -61,10 +60,10 @@ class SensorAgent : public QObject
 
 public:
 	SensorAgent(SensorManager* sm);
-	~SensorAgent();
+	virtual ~SensorAgent();
 
-	bool start(const QString& host, const QString& shell,
-			   const QString& command = "");
+	virtual bool start(const QString& host, const QString& shell,
+					   const QString& command = "", int port = -1) = 0;
 
 	/**
 	 * This function should only be used by the the SensorManager and
@@ -85,32 +84,18 @@ public:
 		return (host);
 	}
 
-	void getHostInfo(QString& sh, QString& cmd) const
-	{
-		sh = shell;
-		cmd = command;
-	}
+	virtual void getHostInfo(QString& sh, QString& cmd, int& port) const = 0;
 
 signals:
 	void reconfigure(const SensorAgent*);
 
-private slots:
-	void msgSent(KProcess*);
-	void msgRcvd(KProcess*, char* buffer, int buflen);
-	void errMsgRcvd(KProcess*, char* buffer, int buflen);
-	void daemonExited(KProcess*);
-
-private:
-	void executeCommand();
+protected:
+	virtual void executeCommand() = 0;
 
 	SensorManager* sensorManager;
 
-	KShellProcess* daemon;
 	bool daemonOnLine;
-	bool pwSent;
 	QString host;
-	QString shell;
-	QString command;
 
 	QList<SensorRequest> inputFIFO;
 	QList<SensorRequest> processingFIFO;

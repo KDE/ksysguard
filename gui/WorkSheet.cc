@@ -156,9 +156,13 @@ WorkSheet::load(const QString& fN)
 	for (i = 0; i < dnList.count(); ++i)
 	{
 		QDomElement element = dnList.item(i).toElement();
+		bool ok;
+		int port = element.attribute("port").toInt(&ok);
+		if (!ok)
+			port = -1;
 		SensorMgr->engage(element.attribute("name"),
 						  element.attribute("shell"),
-						  element.attribute("command"));
+						  element.attribute("command"), port);
 	}
 
 	// Load the displays and place them into the work sheet.
@@ -211,14 +215,16 @@ WorkSheet::save(const QString& fN)
 	for (it = hosts.begin(); it != hosts.end(); ++it)
 	{
 		QString shell, command;
+		int port;
 
-		if (SensorMgr->getHostInfo(*it, shell, command))
+		if (SensorMgr->getHostInfo(*it, shell, command, port))
 		{
 			QDomElement host = doc.createElement("host");
 			ws.appendChild(host);
 			host.setAttribute("name", *it);
 			host.setAttribute("shell", shell);
 			host.setAttribute("command", command);
+			host.setAttribute("port", port);
 		}
 	}
 	

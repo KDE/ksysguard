@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
@@ -457,7 +457,7 @@ initStat(void)
 
 	if ((stat = fopen("/proc/stat", "r")) == NULL)
 	{
-		fprintf(stderr, "ERROR: Cannot open file \'/proc/stat\'!\n"
+		fprintf(currentClient, "ERROR: Cannot open file \'/proc/stat\'!\n"
 				"The kernel needs to be compiled with support\n"
 				"for /proc filesystem enabled!");
 		return;
@@ -646,13 +646,13 @@ printCPUUser(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	printf("%d\n", CPULoad.userLoad);
+	fprintf(currentClient, "%d\n", CPULoad.userLoad);
 }
 
 void 
 printCPUUserInfo(const char* cmd)
 {
-	printf("CPU User Load\t0\t100\t%%\n");
+	fprintf(currentClient, "CPU User Load\t0\t100\t%%\n");
 }
 
 void
@@ -660,13 +660,13 @@ printCPUNice(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	printf("%d\n", CPULoad.niceLoad);
+	fprintf(currentClient, "%d\n", CPULoad.niceLoad);
 }
 
 void 
 printCPUNiceInfo(const char* cmd)
 {
-	printf("CPU Nice Load\t0\t100\t%%\n");
+	fprintf(currentClient, "CPU Nice Load\t0\t100\t%%\n");
 }
 
 void
@@ -674,13 +674,13 @@ printCPUSys(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	printf("%d\n", CPULoad.sysLoad);
+	fprintf(currentClient, "%d\n", CPULoad.sysLoad);
 }
 
 void 
 printCPUSysInfo(const char* cmd)
 {
-	printf("CPU System Load\t0\t100\t%%\n");
+	fprintf(currentClient, "CPU System Load\t0\t100\t%%\n");
 }
 
 void
@@ -688,13 +688,13 @@ printCPUIdle(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	printf("%d\n", CPULoad.idleLoad);
+	fprintf(currentClient, "%d\n", CPULoad.idleLoad);
 }
 
 void 
 printCPUIdleInfo(const char* cmd)
 {
-	printf("CPU Idle Load\t0\t100\t%%\n");
+	fprintf(currentClient, "CPU Idle Load\t0\t100\t%%\n");
 }
 
 void
@@ -705,7 +705,7 @@ printCPUxUser(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 3, "%d", &id);
-	printf("%d\n", SMPLoad[id].userLoad);
+	fprintf(currentClient, "%d\n", SMPLoad[id].userLoad);
 }
 
 void 
@@ -714,7 +714,7 @@ printCPUxUserInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 3, "%d", &id);
-	printf("CPU%d User Load\t0\t100\t%%\n", id);
+	fprintf(currentClient, "CPU%d User Load\t0\t100\t%%\n", id);
 }
 
 void
@@ -725,7 +725,7 @@ printCPUxNice(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 3, "%d", &id);
-	printf("%d\n", SMPLoad[id].niceLoad);
+	fprintf(currentClient, "%d\n", SMPLoad[id].niceLoad);
 }
 
 void 
@@ -734,7 +734,7 @@ printCPUxNiceInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 3, "%d", &id);
-	printf("CPU%d Nice Load\t0\t100\t%%\n", id);
+	fprintf(currentClient, "CPU%d Nice Load\t0\t100\t%%\n", id);
 }
 
 void
@@ -745,7 +745,7 @@ printCPUxSys(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 3, "%d", &id);
-	printf("%d\n", SMPLoad[id].sysLoad);
+	fprintf(currentClient, "%d\n", SMPLoad[id].sysLoad);
 }
 
 void 
@@ -754,7 +754,7 @@ printCPUxSysInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 3, "%d", &id);
-	printf("CPU%d System Load\t0\t100\t%%\n", id);
+	fprintf(currentClient, "CPU%d System Load\t0\t100\t%%\n", id);
 }
 
 void
@@ -765,7 +765,7 @@ printCPUxIdle(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 3, "%d", &id);
-	printf("%d\n", SMPLoad[id].idleLoad);
+	fprintf(currentClient, "%d\n", SMPLoad[id].idleLoad);
 }
 
 void 
@@ -774,7 +774,7 @@ printCPUxIdleInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 3, "%d", &id);
-	printf("CPU%d Idle Load\t0\t100\t%%\n", id);
+	fprintf(currentClient, "CPU%d Idle Load\t0\t100\t%%\n", id);
 }
 
 void
@@ -785,7 +785,7 @@ printDiskTotal(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
-	printf("%lu\n", (unsigned long) (DiskLoad[id].s[0].delta / timeInterval));
+	fprintf(currentClient, "%lu\n", (unsigned long) (DiskLoad[id].s[0].delta / timeInterval));
 }
 
 void
@@ -794,7 +794,7 @@ printDiskTotalInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 9, "%d", &id);
-	printf("Disk%d Total Load\t0\t0\tkBytes/s\n", id);
+	fprintf(currentClient, "Disk%d Total Load\t0\t0\tkBytes/s\n", id);
 }
 
 void
@@ -805,7 +805,7 @@ printDiskRIO(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
-	printf("%lu\n", (unsigned long ) (DiskLoad[id].s[1].delta / timeInterval));
+	fprintf(currentClient, "%lu\n", (unsigned long ) (DiskLoad[id].s[1].delta / timeInterval));
 }
 
 void
@@ -814,7 +814,7 @@ printDiskRIOInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 9, "%d", &id);
-	printf("Disk%d Read\t0\t0\tkBytes/s\n", id);
+	fprintf(currentClient, "Disk%d Read\t0\t0\tkBytes/s\n", id);
 }
 
 void
@@ -825,7 +825,7 @@ printDiskWIO(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
-	printf("%lu\n", (unsigned long) (DiskLoad[id].s[2].delta / timeInterval));
+	fprintf(currentClient, "%lu\n", (unsigned long) (DiskLoad[id].s[2].delta / timeInterval));
 }
 
 void
@@ -834,7 +834,7 @@ printDiskWIOInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 9, "%d", &id);
-	printf("Disk%d Write\t0\t0\tkBytes/s\n", id);
+	fprintf(currentClient, "Disk%d Write\t0\t0\tkBytes/s\n", id);
 }
 
 void
@@ -846,7 +846,7 @@ printDiskRBlk(const char* cmd)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
 	/* a block is 512 bytes or 1/2 kBytes */
-	printf("%lu\n", (unsigned long)
+	fprintf(currentClient, "%lu\n", (unsigned long)
 		   (DiskLoad[id].s[3].delta / timeInterval * 2));
 }
 
@@ -856,7 +856,7 @@ printDiskRBlkInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 9, "%d", &id);
-	printf("Disk%d Read Data\t0\t0\tkBytes/s\n", id);
+	fprintf(currentClient, "Disk%d Read Data\t0\t0\tkBytes/s\n", id);
 }
 
 void
@@ -868,7 +868,7 @@ printDiskWBlk(const char* cmd)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
 	/* a block is 512 bytes or 1/2 kBytes */
-	printf("%lu\n", (unsigned long)
+	fprintf(currentClient, "%lu\n", (unsigned long)
 		   (DiskLoad[id].s[4].delta / timeInterval * 2));
 }
 
@@ -878,7 +878,7 @@ printDiskWBlkInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 9, "%d", &id);
-	printf("Disk%d Write Data\t0\t0\tkBytes/s\n", id);
+	fprintf(currentClient, "Disk%d Write Data\t0\t0\tkBytes/s\n", id);
 }
 
 void
@@ -886,13 +886,13 @@ printPageIn(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	printf("%lu\n", (unsigned long) (PageIn / timeInterval));
+	fprintf(currentClient, "%lu\n", (unsigned long) (PageIn / timeInterval));
 }
 
 void
 printPageInInfo(const char* cmd)
 {
-	printf("Paged in Pages\t0\t0\t1/s\n");
+	fprintf(currentClient, "Paged in Pages\t0\t0\t1/s\n");
 }
 
 void
@@ -900,13 +900,13 @@ printPageOut(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	printf("%lu\n", (unsigned long) (PageOut / timeInterval));
+	fprintf(currentClient, "%lu\n", (unsigned long) (PageOut / timeInterval));
 }
 
 void
 printPageOutInfo(const char* cmd)
 {
-	printf("Paged out Pages\t0\t0\t1/s\n");
+	fprintf(currentClient, "Paged out Pages\t0\t0\t1/s\n");
 }
 
 void
@@ -917,7 +917,7 @@ printInterruptx(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + strlen("cpu/interrupts/int"), "%d", &id);
-	printf("%lu\n", (unsigned long) (Intr[id] / timeInterval));
+	fprintf(currentClient, "%lu\n", (unsigned long) (Intr[id] / timeInterval));
 }
 
 void
@@ -926,7 +926,7 @@ printInterruptxInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + strlen("cpu/interrupt/int"), "%d", &id);
-	printf("Interrupt %d\t0\t0\t1/s\n", id);
+	fprintf(currentClient, "Interrupt %d\t0\t0\t1/s\n", id);
 }
 
 void
@@ -934,13 +934,13 @@ printCtxt(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	printf("%lu\n", (unsigned long) (Ctxt / timeInterval));
+	fprintf(currentClient, "%lu\n", (unsigned long) (Ctxt / timeInterval));
 }
 
 void
 printCtxtInfo(const char* cmd)
 {
-	printf("Context switches\t0\t0\t1/s\n");
+	fprintf(currentClient, "Context switches\t0\t0\t1/s\n");
 }
 
 void
@@ -961,20 +961,20 @@ printDiskIO(const char* cmd)
 		return;
 	}
 	if (strcmp(name, "total") == 0)
-		printf("%lu\n", (unsigned long) (ptr->total.delta / timeInterval));
+		fprintf(currentClient, "%lu\n", (unsigned long) (ptr->total.delta / timeInterval));
 	else if (strcmp(name, "rio") == 0)
-		printf("%lu\n", (unsigned long) (ptr->rio.delta / timeInterval));
+		fprintf(currentClient, "%lu\n", (unsigned long) (ptr->rio.delta / timeInterval));
 	else if (strcmp(name, "wio") == 0)
-		printf("%lu\n", (unsigned long) (ptr->wio.delta / timeInterval));
+		fprintf(currentClient, "%lu\n", (unsigned long) (ptr->wio.delta / timeInterval));
 	else if (strcmp(name, "rblk") == 0)
-		printf("%lu\n", (unsigned long)
+		fprintf(currentClient, "%lu\n", (unsigned long)
 			   (ptr->rblk.delta / (timeInterval * 2)));
 	else if (strcmp(name, "wblk") == 0)
-		printf("%lu\n", (unsigned long)
+		fprintf(currentClient, "%lu\n", (unsigned long)
 			   (ptr->wblk.delta / (timeInterval * 2)));
-	else
-	{
-		printf("0\n");
+	else {
+		fprintf(currentClient, "0\n");
+
 		fprintf(stderr, "ERROR: unknown disk device property %s\n", name);
 	}
 }
@@ -994,25 +994,24 @@ printDiskIOInfo(const char* cmd)
 	if (!ptr)
 	{
 		/* Disk device has disappeared. Print a dummy answer. */
-		printf("Dummy\t0\t0\t\n");
+		fprintf(currentClient, "Dummy\t0\t0\t\n");
 		return;
 	}
 	/* remove trailing '?' */
 	name[strlen(name) - 1] = '\0';
 
 	if (strcmp(name, "total") == 0)
-		printf("Total accesses device %d, %d\t0\t0\t1/s\n", major, minor);
+		fprintf(currentClient, "Total accesses device %d, %d\t0\t0\t1/s\n", major, minor);
 	else if (strcmp(name, "rio") == 0)
-		printf("Read data device %d, %d\t0\t0\t1/s\n", major, minor);
+		fprintf(currentClient, "Read data device %d, %d\t0\t0\t1/s\n", major, minor);
 	else if (strcmp(name, "wio") == 0)
-		printf("Write data device %d, %d\t0\t0\t1/s\n", major, minor);
+		fprintf(currentClient, "Write data device %d, %d\t0\t0\t1/s\n", major, minor);
 	else if (strcmp(name, "rblk") == 0)
-		printf("Read accesses device %d, %d\t0\t0\tkBytes/s\n", major, minor);
+		fprintf(currentClient, "Read accesses device %d, %d\t0\t0\tkBytes/s\n", major, minor);
 	else if (strcmp(name, "wblk") == 0)
-		printf("Write accesses device %d, %d\t0\t0\tkBytes/s\n", major, minor);
-	else
-	{
-		printf("Dummy\t0\t0\t\n");
+		fprintf(currentClient, "Write accesses device %d, %d\t0\t0\tkBytes/s\n", major, minor);
+	else {
+		fprintf(currentClient, "Dummy\t0\t0\t\n");
 		fprintf(stderr, "ERROR: Request for unknown device property %s\n",
 				name);
 	}

@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
-   
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	   
+    Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -15,24 +15,24 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-	$Id$
 */
 
-#ifndef _netdev_h_
-#define _netdev_h_
+#ifndef _diskstat_h_
+#define _diskstat_h_
 
-void initNetDev(void);
+void initDiskStat(void);
+void exitDiskStat(void);
 
-void exitNetDev(void);
+int updateDiskStat(void);
 
-int updateNetDev(void);
+void printDiskStat(const char* cmd);
+void printDiskStatInfo(const char* cmd);
 
-void checkNetDev(void);
-
-void printNetDevRecBytes(const char* cmd);
-void printNetDevRecBytesInfo(const char* cmd);
-void printNetDevSentBytes(const char* cmd);
-void printNetDevSentBytesInfo(const char* cmd);
+void printDiskStatUsed(const char* cmd);
+void printDiskStatUsedInfo(const char* cmd);
+void printDiskStatFree(const char* cmd);
+void printDiskStatFreeInfo(const char* cmd);
+void printDiskStatPercent(const char* cmd);
+void printDiskStatPercentInfo(const char* cmd);
 
 #endif

@@ -53,7 +53,8 @@ public:
 
 	bool engageHost(const QString& hostname);
 	bool engage(const QString& hostname, const QString& shell = "ssh",
-				const QString& command = "");
+				const QString& command = "", int port = -1);
+	void requestDisengage(const SensorAgent* sensor);
 	bool disengage(const SensorAgent* sensor);
 	bool disengage(const QString& hostname);
 	bool resynchronize(const QString& hostname);
@@ -63,12 +64,14 @@ public:
 	{
 		broadcaster = bc;
 	}
+	virtual bool event(QEvent* e);
 
 	bool sendRequest(const QString& hostname, const QString& req,
 					 SensorClient* client, int id = 0);
 
 	const QString getHostName(const SensorAgent* sensor) const;
-	bool getHostInfo(const QString& host, QString& shell, QString& command);
+	bool getHostInfo(const QString& host, QString& shell, QString& command,
+					 int& port);
 
 	const QString& translateUnit(const QString& u) const
 	{

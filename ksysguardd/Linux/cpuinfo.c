@@ -1,7 +1,7 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
-	Copyright (c) 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 2000-2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -175,7 +175,7 @@ printCPUxClock(const char* cmd)
 		processCpuInfo();
 
 	sscanf(cmd + 3, "%d", &id);
-	printf("%f\n", Clocks[id]);
+	fprintf(currentClient, "%f\n", Clocks[id]);
 }
 
 void
@@ -184,5 +184,5 @@ printCPUxClockInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 3, "%d", &id);
-	printf("CPU%d Clock Frequency\t0\t0\tMHz\n", id);
+	fprintf(currentClient, "CPU%d Clock Frequency\t0\t0\tMHz\n", id);
 }

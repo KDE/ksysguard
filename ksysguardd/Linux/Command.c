@@ -1,7 +1,7 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -177,6 +177,7 @@ executeCommand(const char* command)
 
 			/* re-enable timer interrupts again. */
 			sigprocmask(SIG_UNBLOCK, &SignalSet, 0);
+			fflush(currentClient);
 
 			if (ReconfigureFlag)
 			{
@@ -188,7 +189,8 @@ executeCommand(const char* command)
 		}
 	}
 
-	fprintf(stdout, "UNKNOWN COMMAND\n");
+	fprintf(currentClient, "UNKNOWN COMMAND \'%s\'\n", command);
+	fflush(currentClient);
 }
 
 void
@@ -201,7 +203,8 @@ printMonitors(const char* c)
 		Command* cmd = (Command*) get_ctnr(CommandList, i);
 
 		if (cmd->isMonitor)
-			printf("%s\t%s\n", cmd->command, cmd->type);
+			fprintf(currentClient, "%s\t%s\n", cmd->command, cmd->type);
+			fflush(currentClient);
 	}
 }
 
@@ -216,9 +219,11 @@ printTest(const char* c)
 
 		if (strcmp(cmd->command, c + strlen("test ")) == 0)
 		{
-			printf("1\n");
+			fprintf(currentClient, "1\n");
+			fflush(currentClient);
 			return;
 		}
 	}
-	printf("0\n");
+	fprintf(currentClient, "0\n");
+	fflush(currentClient);
 }

@@ -28,25 +28,35 @@
 #include <SensorDisplay.h>
 
 class QLabel;
-class QListView;
-class QListViewItem;
 class QBoxGroup;
-
-class ListViewItem : public QListViewItem
-{
-public:
-	ListViewItem(QListView *parent);
-
-	void paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment);
-	void paintFocus(QPainter *, const QColorGroup &cg, const QRect &r);
-};	
+class ListViewSettings;
 
 class MyListView : public QListView
 {
 public:
 	MyListView(QWidget *parent = 0);
-};
 
+	void setGridColor(QColor color) { gridColor = color; }
+	void setTextColor(QColor color) { textColor = color; }
+	QColor getGridColor(void) { return gridColor; }
+	QColor getTextColor(void) { return textColor; }
+private:
+	QColor gridColor;
+	QColor textColor;
+};	
+
+class ListViewItem : public QListViewItem
+{
+public:
+	ListViewItem(MyListView *parent);
+
+	void paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment);
+	void paintFocus(QPainter *, const QColorGroup &cg, const QRect &r);
+
+private:
+	QColor gridColor;
+	QColor textColor;
+};	
 
 class ListView : public SensorDisplay
 {
@@ -69,7 +79,7 @@ public:
 
 	virtual bool hasSettingsDialog()
 	{
-		return (FALSE);
+		return (TRUE);
 	}
 
 	virtual void timerEvent(QTimerEvent*)
@@ -77,15 +87,21 @@ public:
 		updateList();
 	}
 
+	void settings();
+
 	virtual void sensorError(bool err);
+
+public slots:
+	void applySettings();
 
 private:
 	QFrame* frame;
 	QLabel* errorLabel;
 	MyListView* mainList;
+	ListViewSettings* lvs;
 
 	QString title;
 	bool modified;
-} ;
+};
 
 #endif

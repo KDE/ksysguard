@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 2000 Chris Schlaeger <cs@kde.org>
     
@@ -24,7 +24,7 @@
 #include <pwd.h>
 #include <sys/types.h>
 
-#include <ccont.h>
+#include "ccont.h"
 #include "PWUIDCache.h"
 
 #define TIMEOUT 300 /* Cached values become invalid after 5 minutes */
