@@ -12,13 +12,9 @@ bin_PROGRAMS = 	ktop
 # Which sources should be compiled for ktop.
 
 ktop_SOURCES = ktop.cc  SensorAgent.cc SensorManager.cc \
-    MainMenu.cc \
-	ProcessMenu.cc ReniceDlg.cc
-
-# Those have been forgotten (David)
-#   WorkSheet.cc \
-#	Workspace.cc \
-#   SensorBrowser.cc \
+	MainMenu.cc \
+	ProcessMenu.cc ReniceDlg.cc WorkSheet.cc Workspace.cc \
+	SensorBrowser.cc
 
 #	TaskMan.cc \
 #	ProcListPage.cc ProcessList.cc \

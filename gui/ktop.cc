@@ -36,8 +36,10 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 
+#include "SensorBrowser.h"
 #include "SensorManager.h"
 #include "SensorAgent.h"
+#include "Workspace.h"
 #include "ktop.moc"
 
 #define KTOP_MIN_W	50
@@ -52,7 +54,7 @@ KApplication* Kapp;
  * This is the constructor for the main widget. It sets up the menu and the
  * TaskMan widget.
  */
-TopLevel::TopLevel(const char *name, int sfolder)
+TopLevel::TopLevel(const char *name, int)
 	: KTMainWindow(name)
 {
 	assert(Kapp);
@@ -70,8 +72,8 @@ TopLevel::TopLevel(const char *name, int sfolder)
 	splitter->setOrientation(Horizontal);
 	setView(splitter);
 
-	//sb = new SensorBrowser(splitter, SensorMgr, "SensorBrowser");
-	//ws = new Workspace(splitter, "Workspace");
+	sb = new SensorBrowser(splitter, SensorMgr, "SensorBrowser");
+	ws = new Workspace(splitter, "Workspace");
 
 //	connect(taskman, SIGNAL(enableRefreshMenu(bool)),
 //			menubar, SLOT(enableRefreshMenu(bool)));
@@ -192,15 +194,6 @@ TopLevel::answerReceived(int id, const QString& answer)
 }
 
 /*
- * Print usage information.
- */
-static void 
-usage(char *name) 
-{
-	printf("%s [kdeopts] [--help] [-p (list|perf)]\n", name);
-}
-
-/*
  * Where it all begins.
  */
 int
@@ -209,7 +202,6 @@ main(int argc, char** argv)
 	// initialize KDE application
 	Kapp = new KApplication(argc, argv, "ktop");
 
-	int i;
 	int sfolder = -1;
 
 	SensorMgr = new SensorManager();
