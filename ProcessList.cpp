@@ -45,6 +45,7 @@
 #include <klocale.h>
 #include <kconfig.h>
 #include <kmessagebox.h>
+#include <kstddirs.h>
 
 #include "MainMenu.h"
 #include "OSProcessList.h"
@@ -578,7 +579,14 @@ ProcessList::addProcess(OSProcess* p, ProcessLVI* pli)
 	 * Get icon from icon list that might be appropriate for a process
 	 * with this name.
 	 */
-	QPixmap pix = icons->loadApplicationMiniIcon(QString(p->getName()) + ".xpm", 16, 16);
+	QPixmap pix = icons->loadApplicationMiniIcon(QString(p->getName()) + ".png", 16, 16);
+	if (pix.isNull()) {
+	   QString s = locate("toolbar", QString(p->getName()) + ".png");
+	   debug(QString("using %1...").arg(s));
+	   pix = QPixmap(s);
+	   if (pix.isNull())
+	      pix = icons->loadApplicationMiniIcon("default.png", 16, 16);
+        }
 
 	/*
 	 * We copy the icon into a 24x16 pixmap to add a 4 pixel margin on the
