@@ -48,6 +48,8 @@
 
 CONTAINER ProcessList = 0;
 
+int fscale;
+
 #define BUFSIZE 1024
 
 typedef struct
@@ -170,6 +172,8 @@ updateProcess(int pid)
 	int mib[4];
 	struct kinfo_proc p;
 	size_t len;
+	size_t buflen = 256;
+	char buf[256];
 
 	if ((ps = findProcessInList(pid)) == 0)
 	{
@@ -224,29 +228,35 @@ updateProcess(int pid)
 	strncpy(ps->userName,pwent&&pwent->pw_name? pwent->pw_name:"????",sizeof(ps->userName));
 	ps->userName[sizeof(ps->userName)-1]='\0';
 
+	if (fscale == 0)
+		ps->userLoad = 0;
+	else
 #if __FreeBSD_version >= 500015
-        ps->userLoad = p.ki_pctcpu / 100;
-	ps->vmSize   = (p.ki_vmspace->vm_tsize +
-			p.ki_vmspace->vm_dsize +
-			p.ki_vmspace->vm_ssize) * getpagesize();
-	ps->vmRss    = p.ki_vmspace->vm_rssize * getpagesize();
+		ps->userLoad = 100.0 * (double) p.ki_pctcpu / fscale;
+	ps->vmSize   = p.ki_size;
+	ps->vmRss    = p.ki_rssize * getpagesize();
 	strlcpy(ps->name,p.ki_comm? p.ki_comm:"????",sizeof(ps->name));
 	strcpy(ps->status,(p.ki_stat>=1)&&(p.ki_stat<=5)? statuses[p.ki_stat-1]:"????");
 #else
-        ps->userLoad = p.kp_proc.p_pctcpu / 100;
-	ps->vmSize   = (p.kp_eproc.e_vm.vm_tsize +
-			p.kp_eproc.e_vm.vm_dsize +
-			p.kp_eproc.e_vm.vm_ssize) * getpagesize();
+		ps->userLoad = 100.0 * (double) p.kp_proc.p_pctcpu / fscale;
+	ps->vmSize   = p.kp_eproc.e_vm.vm_map.size;
 	ps->vmRss    = p.kp_eproc.e_vm.vm_rssize * getpagesize();
 	strlcpy(ps->name,p.kp_proc.p_comm ? p.kp_proc.p_comm : "????", sizeof(ps->name));
 	strcpy(ps->status,(p.kp_proc.p_stat>=1)&&(p.kp_proc.p_stat<=5)? statuses[p.kp_proc.p_stat-1]:"????");
 #endif
 
         /* process command line */
-	/* the following line causes segfaults on some FreeBSD systems... why?
-		strncpy(ps->cmdline, p.kp_proc.p_args->ar_args, sizeof(ps->cmdline) - 1);
-	*/
-	strcpy(ps->cmdline, "????");
+	/* do a sysctl to get the command line args. */
+
+	mib[0] = CTL_KERN;
+	mib[1] = KERN_PROC;
+	mib[2] = KERN_PROC_ARGS;
+	mib[3] = pid;
+
+	if ((sysctl(mib, 4, buf, &buflen, 0, 0) == -1) || !buflen)
+		strcpy(ps->cmdline, "????");
+	else
+		strncpy(ps->cmdline, buf, buflen);
 
 	return (0);
 }
@@ -284,6 +294,7 @@ cleanupProcessList(void)
 void
 initProcessList(struct SensorModul* sm)
 {
+	size_t fscalelen;
 	ProcessList = new_ctnr();
 
 	registerMonitor("ps", "table", printProcessList, printProcessListInfo, sm);
@@ -294,6 +305,10 @@ initProcessList(struct SensorModul* sm)
 		registerCommand("kill", killProcess);
 		registerCommand("setpriority", setPriority);
 	}
+
+	fscalelen = sizeof(fscale);
+	if (sysctlbyname("kern.fscale", &fscale, &fscalelen, NULL, 0) == -1)
+		fscale = 0;
 
 	updateProcessList();
 }
