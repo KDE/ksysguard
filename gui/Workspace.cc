@@ -23,6 +23,8 @@
 */
 
 #include <qwhatsthis.h>
+#include <qlineedit.h>
+#include <qspinbox.h>
 
 #include <kmessagebox.h>
 #include <klocale.h>
@@ -34,7 +36,7 @@
 
 #include "Workspace.h"
 #include "WorkSheet.h"
-#include "WorkSheetSetup.h"
+#include "WorkSheetSettings.h"
 #include "Workspace.moc"
 
 Workspace::Workspace(QWidget* parent, const char* name)
@@ -129,17 +131,21 @@ Workspace::newWorkSheet()
 				found = TRUE;
 	} while (found);
 
-	WorkSheetSetup* s = new WorkSheetSetup(sheetName);
-	CHECK_PTR(s);
-	if (s->exec())
+	WorkSheetSettings* wss = new WorkSheetSettings(this, "WorkSheetSettings",
+												   true);
+	CHECK_PTR(wss);
+	wss->sheetName->setText(sheetName);
+	if (wss->exec())
 	{
-		WorkSheet* sheet = new WorkSheet(this, s->getRows(), s->getColumns());
+		WorkSheet* sheet = new WorkSheet(this, wss->rows->text().toUInt(),
+										 wss->columns->text().toUInt(),
+										 wss->interval->text().toUInt());
 		CHECK_PTR(sheet);
-		insertTab(sheet, s->getSheetName());
+		insertTab(sheet, wss->sheetName->text());
 		sheets.append(sheet);
 		showPage(sheet);
 	}
-	delete s;
+	delete wss;
 }
 
 bool
@@ -347,6 +353,32 @@ Workspace::restoreWorkSheet(const QString& fileName, const QString& newName)
 		sheet->setFileName(newName);
 
 	return (TRUE);
+}
+
+void
+Workspace::cut()
+{
+}
+
+void
+Workspace::copy()
+{
+}
+
+void
+Workspace::paste()
+{
+}
+
+void
+Workspace::configure()
+{
+	WorkSheet* current = (WorkSheet*) currentPage();
+
+	if (!current)
+		return;
+
+	current->settings();
 }
 
 void

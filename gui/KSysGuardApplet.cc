@@ -66,6 +66,8 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 	docks = new QWidget*[dockCnt];
 	docks[0] = new QFrame(this);
 	((QFrame*) docks[0])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
+	updateInterval = 2;
+	sizeRatio = 1.0;
 
 	load();
 
@@ -74,6 +76,8 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 
 KSysGuardApplet::~KSysGuardApplet()
 {
+	save();
+
 	delete ksgas;
 	delete SensorMgr;
 }
@@ -81,13 +85,13 @@ KSysGuardApplet::~KSysGuardApplet()
 int
 KSysGuardApplet::widthForHeight(int h) const
 {
-	return (h * dockCnt);
+	return ((int) (h * sizeRatio) * dockCnt);
 }
 
 int
 KSysGuardApplet::heightForWidth(int w) const
 {
-	return (w * dockCnt);
+	return ((int) (w * sizeRatio) * dockCnt);
 }
 
 void
@@ -107,6 +111,8 @@ KSysGuardApplet::preferences()
 			this, SLOT(applySettings()));
 
 	ksgas->dockCnt->setValue(dockCnt);
+	ksgas->ratio->setValue(sizeRatio * 100.0);
+	ksgas->interval->setValue(updateInterval);
 	if (ksgas->exec())
 		applySettings();
 
@@ -119,27 +125,34 @@ KSysGuardApplet::preferences()
 void
 KSysGuardApplet::applySettings()
 {
+	updateInterval = ksgas->interval->text().toUInt();
+	sizeRatio = ksgas->ratio->text().toDouble() / 100.0;
 	resizeDocks(ksgas->dockCnt->text().toUInt());
+
+	for (uint i = 0; i < dockCnt; ++i)
+		((SensorDisplay*) docks[i])->setUpdateInterval(updateInterval);
+
 	save();
 }
 
 void
 KSysGuardApplet::layout()
 {
-	int w = width();
-	int h = height();
-
 	if (orientation() == Horizontal)
 	{
+		int h = height();
+		int w = (int) (h * sizeRatio);
 		for (uint i = 0; i < dockCnt; ++i)
 			if (docks[i])
-				docks[i]->setGeometry(i * h, 0, h, h);
+				docks[i]->setGeometry(i * w, 0, w, h);
 	}
 	else
 	{
+		int w = width();
+		int h = (int) (w * sizeRatio);
 		for (uint i = 0; i < dockCnt; ++i)
 			if (docks[i])
-				docks[i]->setGeometry(0, i * w, w, w);
+				docks[i]->setGeometry(0, i * h, w, h);
 	}
 }
 
@@ -147,9 +160,9 @@ int
 KSysGuardApplet::findDock(const QPoint& p)
 {
 	if (orientation() == Horizontal)
-		return (p.x() / height());
+		return (p.x() / (int) (height() * sizeRatio));
 	else
-		return (p.y() / width());
+		return (p.y() / (int) (width() * sizeRatio));
 }
 
 void
@@ -182,9 +195,8 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 
 		if (!SensorMgr->engageHost(hostName))
 		{
-			/* TODO: This error message is wrong. It needs to be changed
-			 * to "Impossible to connect to ..." after the message freeze. */
-			QString msg = i18n("Unknown hostname \'%1\'!").arg(hostName);
+			QString msg = i18n("Impossible to connect to \'%1\'!")
+				.arg(hostName);
 			KMessageBox::error(this, msg);
 			return;
 		}
@@ -241,7 +253,10 @@ KSysGuardApplet::resizeDocks(uint newDockCnt)
 	 * docks if possible. */
 
 	if (newDockCnt == dockCnt)
+	{
+		emit updateLayout();
 		return;
+	}
 
 	// Create and initialize new dock array.
 	QWidget** tmp = new QWidget*[newDockCnt];
@@ -296,19 +311,25 @@ KSysGuardApplet::load()
 	// Check for proper document type.
 	if (doc.doctype().name() != "KSysGuardApplet")
 	{
-/* TODO: Enable this after message freeze
 		KMessageBox::sorry(
 			this,
 			i18n("The file %1 does not contain a valid applet\n"
 				 "definition, which must have a document type\n"
 				 "'KSysGuardApplet'").arg(fileName));
-*/
 		return (FALSE);
 	}
 
 	QDomElement element = doc.documentElement();
-	bool rowsOk;
-	uint d = element.attribute("dockCnt").toUInt(&rowsOk);
+	bool ok;
+	uint d = element.attribute("dockCnt").toUInt(&ok);
+	if (!ok)
+		d = 1;
+	sizeRatio = element.attribute("sizeRatio").toDouble(&ok);
+	if (!ok)
+		sizeRatio = 1.0;
+	updateInterval = element.attribute("interval").toUInt(&ok);
+	if (!ok)
+		updateInterval = 2;
 	resizeDocks(d);
 
 	/* Load lists of hosts that are needed for the work sheet and try
@@ -349,11 +370,15 @@ KSysGuardApplet::load()
 #endif
 		else
 		{
-			kdDebug () << "Unkown class " <<  classType << endl;
+			KMessageBox::sorry(
+				this,
+				i18n("The KSysGuard applet does not support displaying\n"
+					 "this type of sensors. Please choose another sensor."));
 			return (FALSE);
 		}
 		CHECK_PTR(newDisplay);
 
+		newDisplay->setUpdateInterval(updateInterval);
 		// load display specific settings
 		if (!newDisplay->load(element))
 			return (FALSE);
@@ -376,6 +401,8 @@ KSysGuardApplet::save()
 	QDomElement ws = doc.createElement("WorkSheet");
 	doc.appendChild(ws);
 	ws.setAttribute("dockCnt", dockCnt);
+	ws.setAttribute("sizeRatio", sizeRatio);
+	ws.setAttribute("interval", updateInterval);
 
 	QStringList hosts;
 	uint i;

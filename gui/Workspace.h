@@ -62,6 +62,10 @@ public slots:
 	void saveWorkSheet(WorkSheet* sheet);
 	void saveWorkSheetAs();
 	void deleteWorkSheet();
+	void cut();
+	void copy();
+	void paste();
+	void configure();
 
 signals:
 	void announceRecentURL(const KURL& url);

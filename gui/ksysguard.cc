@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -102,7 +102,7 @@ TopLevel::TopLevel(const char *name)
 
 	timerID = startTimer(2000);
 
-    // setup File menu
+    // create actions for menue entries
     KStdAction::openNew(ws, SLOT(newWorkSheet()), actionCollection());
     KStdAction::open(ws, SLOT(loadWorkSheet()), actionCollection());
 	openRecent = KStdAction::openRecent(ws, SLOT(loadWorkSheet(const KURL&)),
@@ -113,12 +113,18 @@ TopLevel::TopLevel(const char *name)
 	KStdAction::save(ws, SLOT(saveWorkSheet()), actionCollection());
 	KStdAction::quit(this, SLOT(close()), actionCollection());
 
-    (void) new KAction(i18n("C&onnect Host"), "connect_established", 0,
+    (void) new KAction(i18n("C&onnect Host..."), "connect_established", 0,
 					   this, SLOT(connectHost()), actionCollection(),
 					   "connect_host");
     (void) new KAction(i18n("D&isconnect Host"), "connect_no", 0, this,
 					   SLOT(disconnectHost()), actionCollection(),
 					   "disconnect_host");
+	KStdAction::cut(ws, SLOT(cut()), actionCollection());
+	KStdAction::copy(ws, SLOT(cut()), actionCollection());
+	KStdAction::paste(ws, SLOT(cut()), actionCollection());
+	(void) new KAction(i18n("Configure &Worksheet..."), "configure", 0, ws,
+					   SLOT(configure()), actionCollection(),
+					   "configure_sheet");
 	toolbarTog = KStdAction::showToolbar(this, SLOT(toggleMainToolBar()),
 										 actionCollection(), "showtoolbar");
 	toolbarTog->setChecked(FALSE);
@@ -217,31 +223,6 @@ void
 TopLevel::connectHost()
 {
 	SensorMgr->engageHost("");
-#if 0
-	hostConnector->host->setFocus();
-	if (hostConnector->exec())
-	{
-		QString shell;
-		QString command;
-
-		if (hostConnector->ssh->isChecked())
-		{
-			shell = "ssh";
-			command = "";
-		}
-		else if (hostConnector->rsh->isChecked())
-		{
-			shell = "rsh";
-			command = "";
-		}
-		else
-		{
-			shell = "";
-			command = hostConnector->command->currentText();
-		}
-		SensorMgr->engage(hostConnector->host->currentText(), shell, command);
-	}
-#endif
 }
 
 void 
@@ -461,7 +442,7 @@ main(int argc, char** argv)
 	KAboutData aboutData("ksysguard", I18N_NOOP("KDE System Guard"),
 						 KSYSGUARD_VERSION, Description,
 						 KAboutData::License_GPL,
-						 I18N_NOOP("(c) 1996-2000, "
+						 I18N_NOOP("(c) 1996-2001, "
 								   "The KSysGuard Developers"));
 	aboutData.addAuthor("Chris Schlaeger", "Current Maintainer",
 						"cs@kde.org");

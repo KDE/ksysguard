@@ -13,8 +13,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>378</width>
-            <height>210</height>
+            <width>350</width>
+            <height>212</height>
         </rect>
     </property>
     <property stdset="1">
@@ -34,18 +34,7 @@
             <name>spacing</name>
             <number>6</number>
         </property>
-        <widget row="0"  column="0" >
-            <class>QLabel</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>hostLabel</cstring>
-            </property>
-            <property stdset="1">
-                <name>text</name>
-                <string>Host</string>
-            </property>
-        </widget>
-        <widget row="2"  column="0"  rowspan="1"  colspan="2" >
+        <widget row="2"  column="0" >
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
@@ -128,7 +117,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget row="1"  column="0"  rowspan="1"  colspan="2" >
+        <widget row="1"  column="0" >
             <class>QButtonGroup</class>
             <property stdset="1">
                 <name>name</name>
@@ -324,7 +313,7 @@
                             </property>
                             <property stdset="1">
                                 <name>text</name>
-                                <string>ssh</string>
+                                <string>&amp;ssh</string>
                             </property>
                             <property stdset="1">
                                 <name>checked</name>
@@ -364,7 +353,7 @@
                             </property>
                             <property stdset="1">
                                 <name>text</name>
-                                <string>rsh</string>
+                                <string>&amp;rsh</string>
                             </property>
                             <property>
                                 <name>whatsThis</name>
@@ -400,7 +389,7 @@
                             </property>
                             <property stdset="1">
                                 <name>text</name>
-                                <string>Custom command</string>
+                                <string>C&amp;ustom command</string>
                             </property>
                             <property>
                                 <name>whatsThis</name>
@@ -440,43 +429,71 @@
                 </widget>
             </grid>
         </widget>
-        <widget row="0"  column="1" >
-            <class>QComboBox</class>
+        <widget row="0"  column="0" >
+            <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>host</cstring>
+                <cstring>Layout17</cstring>
             </property>
-            <property stdset="1">
-                <name>sizePolicy</name>
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>0</vsizetype>
-                </sizepolicy>
-            </property>
-            <property stdset="1">
-                <name>editable</name>
-                <bool>true</bool>
-            </property>
-            <property stdset="1">
-                <name>maxCount</name>
-                <number>20</number>
-            </property>
-            <property stdset="1">
-                <name>insertionPolicy</name>
-                <enum>AtTop</enum>
-            </property>
-            <property stdset="1">
-                <name>autoCompletion</name>
-                <bool>true</bool>
-            </property>
-            <property stdset="1">
-                <name>duplicatesEnabled</name>
-                <bool>false</bool>
-            </property>
-            <property>
-                <name>whatsThis</name>
-                <string>Enter the name of the host you want to connect to.</string>
-            </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>hostLabel</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Host</string>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QComboBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>host</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>editable</name>
+                        <bool>true</bool>
+                    </property>
+                    <property stdset="1">
+                        <name>maxCount</name>
+                        <number>20</number>
+                    </property>
+                    <property stdset="1">
+                        <name>insertionPolicy</name>
+                        <enum>AtTop</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>autoCompletion</name>
+                        <bool>true</bool>
+                    </property>
+                    <property stdset="1">
+                        <name>duplicatesEnabled</name>
+                        <bool>false</bool>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enter the name of the host you want to connect to.</string>
+                    </property>
+                </widget>
+            </hbox>
         </widget>
     </grid>
 </widget>
@@ -513,7 +530,6 @@
     </connection>
 </connections>
 <tabstops>
-    <tabstop>host</tabstop>
     <tabstop>ssh</tabstop>
     <tabstop>rsh</tabstop>
     <tabstop>custom</tabstop>

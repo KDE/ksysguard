@@ -49,7 +49,8 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 			this, SLOT(newItemSelected(QListViewItem*)));
 
 	addColumn(i18n("Sensor Browser"));
-	QToolTip::add(this, i18n("Drag sensors to empty fields in a work sheet"));
+	QToolTip::add(this, i18n("Drag sensors to empty cells of a work sheet "
+							 "or the panel applet."));
 	setRootIsDecorated(TRUE);
 
 	icons = new KIconLoader();
@@ -61,7 +62,8 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	QWhatsThis::add(this, i18n(
 		"The sensor browser lists the connected hosts and the sensors "
 		"that they provide. Click and drag sensors into drop zones "
-		"of a work sheet. A display will appear the visualizes the "
+		"of a work sheet or the panel applet. A display will appear "
+		"the visualizes the "
 		"values provided by the sensor. Some sensor displays can "
 		"display values of multiple sensors. Simply drag other "
 		"sensors onto the display to add more sensors."));

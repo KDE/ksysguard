@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,6 +27,7 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qpopupmenu.h>
+#include <qspinbox.h>
 #include <qwhatsthis.h>
 
 #include <kmessagebox.h>
@@ -40,6 +40,7 @@
 #include "MultiMeter.h"
 #include "DancingBars.h"
 #include "ProcessController.h"
+#include "WorkSheetSettings.h"
 #include "WorkSheet.moc"
 
 WorkSheet::WorkSheet(QWidget* parent) :
@@ -54,7 +55,7 @@ WorkSheet::WorkSheet(QWidget* parent) :
 	setAcceptDrops(TRUE);
 }
 
-WorkSheet::WorkSheet(QWidget* parent, int r, int c) :
+WorkSheet::WorkSheet(QWidget* parent, uint r, uint c, uint i) :
 	QWidget(parent)
 {
 	lm = 0;
@@ -62,13 +63,14 @@ WorkSheet::WorkSheet(QWidget* parent, int r, int c) :
 	modified = FALSE;
 	fileName = "";
 	createGrid(r, c);
+	updateInterval = i;
 
 	setAcceptDrops(TRUE);
 }
 
 WorkSheet::~WorkSheet()
 {
-	for (int i = 0; i < rows; ++i)
+	for (uint i = 0; i < rows; ++i)
 		delete [] displays[i];
 
 	delete [] displays;
@@ -77,8 +79,8 @@ WorkSheet::~WorkSheet()
 bool
 WorkSheet::hasBeenModified() const
 {
-	for (int i = 0; i < rows; ++i)
-		for (int j = 0; j < columns; ++j)
+	for (uint i = 0; i < rows; ++i)
+		for (uint j = 0; j < columns; ++j)
 			if (((SensorDisplay*)displays[i][j])->hasBeenModified())
 				return (TRUE);
 
@@ -120,6 +122,9 @@ WorkSheet::load(const QString& fN)
 	}
 	// Check for proper size.
 	QDomElement element = doc.documentElement();
+	updateInterval = element.attribute("interval").toUInt();
+	if (updateInterval < 2 || updateInterval > 300)
+		updateInterval = 2;
 	bool rowsOk;
 	uint r = element.attribute("rows").toUInt(&rowsOk);
 	bool columnsOk;
@@ -152,8 +157,8 @@ WorkSheet::load(const QString& fN)
 	for (i = 0; i < dnList.count(); ++i)
 	{
 		QDomElement element = dnList.item(i).toElement();
-		int row = element.attribute("row").toUInt();
-		int column = element.attribute("column").toUInt();
+		uint row = element.attribute("row").toUInt();
+		uint column = element.attribute("column").toUInt();
 		if (row >= rows || column >= columns)
 		{
 			kdDebug () << "Row or Column out of range (" << row << ", "
@@ -177,6 +182,7 @@ WorkSheet::load(const QString& fN)
 			return (FALSE);
 		}
 		CHECK_PTR(newDisplay);
+		newDisplay->setUpdateInterval(updateInterval);
 
 		// load display specific settings
 		if (!newDisplay->load(element))
@@ -201,6 +207,7 @@ WorkSheet::save(const QString& fN)
 	// save work sheet information
 	QDomElement ws = doc.createElement("WorkSheet");
 	doc.appendChild(ws);
+	ws.setAttribute("interval", updateInterval);
 	ws.setAttribute("rows", rows);
 	ws.setAttribute("columns", columns);
 
@@ -223,8 +230,8 @@ WorkSheet::save(const QString& fN)
 		}
 	}
 	
-	for (int i = 0; i < rows; ++i)
-		for (int j = 0; j < columns; ++j)
+	for (uint i = 0; i < rows; ++i)
+		for (uint j = 0; j < columns; ++j)
 			if (!displays[i][j]->isA("QGroupBox"))
 			{
 				SensorDisplay* displayP = (SensorDisplay*) displays[i][j];
@@ -256,13 +263,11 @@ WorkSheet::save(const QString& fN)
 SensorDisplay*
 WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 					  const QString& sensorType, const QString& sensorDescr,
-					  int r, int c)
+					  uint r, uint c)
 {
 	if (!SensorMgr->engageHost(hostName))
 	{
-		/* TODO: This error message is wrong. It needs to be changed
-		 * to "Impossible to connect to ..." after the message freeze. */
-		QString msg = i18n("Unknown hostname \'%1\'!").arg(hostName);
+		QString msg = i18n("Impossible to connect to \'%1\'!").arg(hostName);
 		KMessageBox::error(this, msg);
 		return (0);
 	}
@@ -273,8 +278,9 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 	if (displays[r][c]->isA("QGroupBox"))
 	{
 		SensorDisplay* newDisplay = 0;
-		/* If the sensor type is supported by more than one display type
-		 * we popup a menu so the user can select what display is wanted. */
+		/* If the sensor type is supported by more than one display
+		 * type we popup a menu so the user can select what display is
+		 * wanted. */
 		if (sensorType == "integer")
 		{
 			QPopupMenu pm;
@@ -331,9 +337,34 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 
 	((SensorDisplay*) displays[r][c])->
 		addSensor(hostName, sensorName, sensorDescr);
+	((SensorDisplay*) displays[r][c])->setUpdateInterval(updateInterval);
 
 	modified = TRUE;
 	return ((SensorDisplay*) displays[r][c]);
+}
+
+void
+WorkSheet::settings()
+{
+	WorkSheetSettings* wss = new WorkSheetSettings(this, "WorkSheetSettings",
+												   true);
+	CHECK_PTR(wss);
+	/* The sheet name should be changed with the "Save as..." function,
+	 * so we don't have to display the display frame. */
+	wss->titleFrame->hide();
+	wss->resize(wss->sizeHint());
+
+	wss->rows->setValue(rows);	
+	wss->columns->setValue(columns);
+	wss->interval->setValue(updateInterval);
+
+	if (wss->exec())
+	{
+		updateInterval = wss->interval->text().toUInt();
+		resizeGrid(wss->rows->text().toUInt(),
+				   wss->columns->text().toUInt());
+	}
+	delete wss;
 }
 
 void
@@ -345,8 +376,8 @@ WorkSheet::showPopupMenu(SensorDisplay* display)
 void
 WorkSheet::removeDisplay(SensorDisplay* display)
 {
-	for (int i = 0; i < rows; ++i)
-		for (int j = 0; j < columns; ++j)
+	for (uint i = 0; i < rows; ++i)
+		for (uint j = 0; j < columns; ++j)
 			if (displays[i][j] == display)
 			{
 				delete display;
@@ -385,16 +416,16 @@ WorkSheet::dropEvent(QDropEvent* ev)
 
 		/* Find the sensor display that is supposed to get the drop
 		 * event and replace or add sensor. */
-		for (int i = 0; i < rows; ++i)
-			for (int j = 0; j < columns; ++j)
+		for (uint i = 0; i < rows; ++i)
+			for (uint j = 0; j < columns; ++j)
 				if (displays[i][j]->geometry().contains(ev->pos()))
 				{
 					addDisplay(hostName, sensorName, sensorType,
 							   sensorDescr, i, j);
-
 					// Notify parent about possibly new minimum size.
 					((QWidget*) parent()->parent())->setMinimumSize(
 						((QWidget*) parent()->parent())->sizeHint());
+					lm->invalidate();
 					return;
 				}
 	}
@@ -411,11 +442,11 @@ WorkSheet::customEvent(QCustomEvent* ev)
 }
 
 void
-WorkSheet::insertDummyDisplay(int r, int c)
+WorkSheet::insertDummyDisplay(uint r, uint c)
 {
 	QGroupBox* dummy = new QGroupBox(this, "dummy frame");
-	dummy->setMinimumSize(40, 25);
 	dummy->setTitle(i18n("Drop sensor here"));
+	dummy->setMinimumSize(24, 16);
 	QWhatsThis::add(dummy, i18n(
 		"This is an empty space in a work sheet. Drag a sensor from "
 		"the Sensor Browser and drop it here. A sensor display will "
@@ -424,10 +455,15 @@ WorkSheet::insertDummyDisplay(int r, int c)
 	displays[r][c] = dummy;
 	lm->addWidget(dummy, r, c);
 	displays[r][c]->show();
+
+	// Notify parent about possibly new minimum size.
+	((QWidget*) parent()->parent())->setMinimumSize(
+		((QWidget*) parent()->parent())->sizeHint());
+	lm->invalidate();
 }
 
 void
-WorkSheet::replaceDisplay(int r, int c, SensorDisplay* newDisplay)
+WorkSheet::replaceDisplay(uint r, uint c, SensorDisplay* newDisplay)
 {
 	// remove the old display at this location
 	delete displays[r][c];
@@ -438,13 +474,18 @@ WorkSheet::replaceDisplay(int r, int c, SensorDisplay* newDisplay)
 	displays[r][c] = newDisplay;
 	connect(newDisplay, SIGNAL(showPopupMenu(SensorDisplay*)),
 			this, SLOT(showPopupMenu(SensorDisplay*)));
+
+	// Notify parent about possibly new minimum size.
+	((QWidget*) parent()->parent())->setMinimumSize(
+		((QWidget*) parent()->parent())->sizeHint());
+	lm->invalidate();
 }
 
 void
 WorkSheet::collectHosts(QValueList<QString>& list)
 {
-	for (int r = 0; r < rows; ++r)
-		for (int c = 0; c < columns; ++c)
+	for (uint r = 0; r < rows; ++r)
+		for (uint c = 0; c < columns; ++c)
 			if (!displays[r][c]->isA("QGroupBox"))
 				((SensorDisplay*) displays[r][c])->collectHosts(list);
 }
@@ -463,19 +504,75 @@ WorkSheet::createGrid(uint r, uint c)
 	CHECK_PTR(lm);
 
 	// and fill it with dummy displays
-	int i, j;
 	displays = new QWidget**[rows];
 	CHECK_PTR(displays);
-	for (i = 0; i < rows; ++i)
+	for (r = 0; r < rows; ++r)
 	{
-		lm->setRowStretch(i, 1);
-		displays[i] = new QWidget*[columns];
-		CHECK_PTR(displays[i]);
-		for (j = 0; j < columns; ++j)
-		{
-			lm->setColStretch(j, 1);
-			insertDummyDisplay(i, j);
-		}
+		displays[r] = new QWidget*[columns];
+		CHECK_PTR(displays[r]);
+		for (c = 0; c < columns; ++c)
+			insertDummyDisplay(r, c);
 	}
+	/* set stretch factors for rows and columns */
+	for (r = 0; r < rows; ++r)
+		lm->setRowStretch(r, 1);
+	for (c = 0; c < columns; ++c)
+		lm->setColStretch(c, 1);
+
+	lm->activate();
+}
+
+void
+WorkSheet::resizeGrid(uint newRows, uint newColumns)
+{
+	uint r, c;
+	/* Create new array for display pointers */
+	QWidget*** newDisplays = new QWidget**[newRows];
+	CHECK_PTR(newDisplays);
+	for (r = 0; r < newRows; ++r)
+	{
+		newDisplays[r] = new QWidget*[newColumns];
+		CHECK_PTR(displays[r]);
+		for (c = 0; c < newColumns; ++c)
+			if (c < columns && r < rows)
+				newDisplays[r][c] = displays[r][c];
+	}
+
+	/* remove obsolete displays */
+	for (r = 0; r < rows; ++r)
+	{
+		for (c = 0; c < columns; ++c)
+			if (r >= newRows || c >= newColumns)
+				delete displays[r][c];
+		delete displays[r];
+	}
+	delete displays;
+
+	/* now we make the new display the regular one */
+	displays = newDisplays;
+
+	/* create new displays */
+	for (r = 0; r < newRows; ++r)
+		for (c = 0; c < newColumns; ++c)
+			if (r >= rows || c >= columns)
+				insertDummyDisplay(r, c);
+
+	/* set stretch factors for new rows and columns (if any) */
+	for (r = rows; r < newRows; ++r)
+		lm->setRowStretch(r, 1);
+	for (c = columns; c < newColumns; ++c)
+		lm->setColStretch(c, 1);
+	/* Obviously Qt does not shrink the size of the QGridLayout
+	 * automatically.  So we simply force the rows and columns that
+	 * are no longer used to have a strech factor of 0 and hence be
+	 * invisible. */
+	for (r = newRows; r < rows; ++r)
+		lm->setRowStretch(r, 0);
+	for (c = newColumns; c < columns; ++c)
+		lm->setColStretch(c, 0);
+
+	rows = newRows;
+	columns = newColumns;
+
 	lm->activate();
 }

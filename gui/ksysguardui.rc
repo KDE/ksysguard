@@ -1,15 +1,16 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="ksysguard" version="1">
+<kpartgui name="ksysguard" version="2">
 <MenuBar>
   <Menu name="file"><text>&amp;File</text>
     <Action name="connect_host"/>
     <Action name="disconnect_host"/>
   </Menu>
+  <Menu name="edit"><text>&amp;Edit</text>
+    <Action name="configure_sheet"/>
+  </Menu>
   <Menu name="settings"><text>&amp;Settings</text>
-    <Action name="showmenubar"/>
     <Action name="showtoolbar"/>
     <Action name="showstatusbar"/>
-    <Action name="configureToolbar"/>
   </Menu>
 </MenuBar>
 </kpartgui>

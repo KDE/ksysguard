@@ -13,7 +13,7 @@
             <x>0</x>
             <y>0</y>
             <width>283</width>
-            <height>91</height>
+            <height>146</height>
         </rect>
     </property>
     <property stdset="1">
@@ -29,11 +29,11 @@
             <name>spacing</name>
             <number>6</number>
         </property>
-        <widget row="2"  column="0" >
+        <widget row="3"  column="0" >
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout3</cstring>
+                <cstring>Layout4</cstring>
             </property>
             <hbox>
                 <property stdset="1">
@@ -44,27 +44,6 @@
                     <name>spacing</name>
                     <number>6</number>
                 </property>
-                <spacer>
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer4</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
                 <widget>
                     <class>QPushButton</class>
                     <property stdset="1">
@@ -91,6 +70,27 @@
                         <string>Apply</string>
                     </property>
                 </widget>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer4</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
                 <widget>
                     <class>QPushButton</class>
                     <property stdset="1">
@@ -108,7 +108,7 @@
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout5</cstring>
+                <cstring>Layout10</cstring>
             </property>
             <hbox>
                 <property stdset="1">
@@ -133,7 +133,7 @@
                 <spacer>
                     <property>
                         <name>name</name>
-                        <cstring>Spacer1</cstring>
+                        <cstring>Spacer3</cstring>
                     </property>
                     <property stdset="1">
                         <name>orientation</name>
@@ -165,30 +165,161 @@
                         <name>minValue</name>
                         <number>1</number>
                     </property>
+                    <property stdset="1">
+                        <name>value</name>
+                        <number>1</number>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enter here the number of displays you want to embedd into the panel.</string>
+                    </property>
                 </widget>
             </hbox>
         </widget>
-        <spacer row="1"  column="0" >
-            <property>
+        <widget row="1"  column="0" >
+            <class>QLayoutWidget</class>
+            <property stdset="1">
                 <name>name</name>
-                <cstring>Spacer3</cstring>
+                <cstring>Layout12</cstring>
             </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel3</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Size Ratio [%]</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer4_2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget>
+                    <class>QSpinBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>ratio</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>maxValue</name>
+                        <number>500</number>
+                    </property>
+                    <property stdset="1">
+                        <name>minValue</name>
+                        <number>20</number>
+                    </property>
+                    <property stdset="1">
+                        <name>value</name>
+                        <number>100</number>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>This setting controls the width/height ratio for horizontal panels and the height/width ratio for vertical panels. E. g. to have the displays in a horizontal panel twice as wide as their height enter 200%. To have them half as wide enter 50%.</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget row="2"  column="0" >
+            <class>QLayoutWidget</class>
             <property stdset="1">
-                <name>orientation</name>
-                <enum>Vertical</enum>
+                <name>name</name>
+                <cstring>Layout13</cstring>
             </property>
-            <property stdset="1">
-                <name>sizeType</name>
-                <enum>Expanding</enum>
-            </property>
-            <property>
-                <name>sizeHint</name>
-                <size>
-                    <width>20</width>
-                    <height>20</height>
-                </size>
-            </property>
-        </spacer>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel1</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Update Interval [seconds]</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer5</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget>
+                    <class>QSpinBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>interval</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>maxValue</name>
+                        <number>300</number>
+                    </property>
+                    <property stdset="1">
+                        <name>minValue</name>
+                        <number>2</number>
+                    </property>
+                    <property stdset="1">
+                        <name>value</name>
+                        <number>2</number>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enter here the rate at which displays should be updated.</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
     </grid>
 </widget>
 <connections>
@@ -205,4 +336,12 @@
         <slot>reject()</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>dockCnt</tabstop>
+    <tabstop>ratio</tabstop>
+    <tabstop>interval</tabstop>
+    <tabstop>okButton</tabstop>
+    <tabstop>applyButton</tabstop>
+    <tabstop>cancelButton</tabstop>
+</tabstops>
 </UI>

@@ -1,25 +1,25 @@
 <!DOCTYPE UI><UI>
-<class>FancyPlotterSettings</class>
+<class>WorkSheetSettings</class>
 <author>Chris Schlaeger &lt;cs@kde.org&gt;</author>
 <include location="global">locale.h</include>
 <widget>
     <class>QDialog</class>
     <property stdset="1">
         <name>name</name>
-        <cstring>FancyPlotterSettings</cstring>
+        <cstring>WorkSheetSettings</cstring>
     </property>
     <property stdset="1">
         <name>geometry</name>
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>283</width>
-            <height>197</height>
+            <width>254</width>
+            <height>228</height>
         </rect>
     </property>
     <property stdset="1">
         <name>caption</name>
-        <string>Signal Plotter Settings</string>
+        <string>Work Sheet Settings</string>
     </property>
     <grid>
         <property stdset="1">
@@ -34,7 +34,7 @@
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout5</cstring>
+                <cstring>Layout4</cstring>
             </property>
             <hbox>
                 <property stdset="1">
@@ -53,22 +53,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>&amp;OK</string>
-                    </property>
-                    <property stdset="1">
-                        <name>default</name>
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>applyButton</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>&amp;Apply</string>
+                        <string>OK</string>
                     </property>
                 </widget>
                 <spacer>
@@ -100,7 +85,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>&amp;Cancel</string>
+                        <string>Cancel</string>
                     </property>
                 </widget>
             </hbox>
@@ -109,11 +94,11 @@
             <class>QGroupBox</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>GroupBox9</cstring>
+                <cstring>Properties</cstring>
             </property>
             <property stdset="1">
                 <name>title</name>
-                <string>Display Range</string>
+                <string>Properties</string>
             </property>
             <grid>
                 <property stdset="1">
@@ -124,6 +109,86 @@
                     <name>spacing</name>
                     <number>6</number>
                 </property>
+                <widget row="1"  column="1" >
+                    <class>QSpinBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>columns</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>maxValue</name>
+                        <number>42</number>
+                    </property>
+                    <property stdset="1">
+                        <name>minValue</name>
+                        <number>1</number>
+                    </property>
+                    <property stdset="1">
+                        <name>value</name>
+                        <number>1</number>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enter the number of columns the sheet should have.</string>
+                    </property>
+                </widget>
+                <widget row="2"  column="1" >
+                    <class>QSpinBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>interval</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>maxValue</name>
+                        <number>300</number>
+                    </property>
+                    <property stdset="1">
+                        <name>minValue</name>
+                        <number>2</number>
+                    </property>
+                    <property stdset="1">
+                        <name>value</name>
+                        <number>2</number>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>All displays of the sheet are updated at the rate specified here.</string>
+                    </property>
+                </widget>
+                <widget row="0"  column="1" >
+                    <class>QSpinBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>rows</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>maxValue</name>
+                        <number>42</number>
+                    </property>
+                    <property stdset="1">
+                        <name>minValue</name>
+                        <number>1</number>
+                    </property>
+                    <property stdset="1">
+                        <name>value</name>
+                        <number>1</number>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enter the number of rows the sheet should have.</string>
+                    </property>
+                </widget>
+                <widget row="2"  column="0" >
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel1</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Update Interval</string>
+                    </property>
+                </widget>
                 <widget row="0"  column="0" >
                     <class>QLabel</class>
                     <property stdset="1">
@@ -132,7 +197,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Minimum Value</string>
+                        <string>Rows</string>
                     </property>
                 </widget>
                 <widget row="1"  column="0" >
@@ -143,43 +208,18 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Maximum Value</string>
+                        <string>Columns</string>
                     </property>
                 </widget>
-                <widget row="0"  column="1" >
-                    <class>QLineEdit</class>
+                <widget row="2"  column="2" >
+                    <class>QLabel</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>minVal</cstring>
+                        <cstring>TextLabel5</cstring>
                     </property>
                     <property stdset="1">
-                        <name>alignment</name>
-                        <set>AlignRight</set>
-                    </property>
-                    <property>
-                        <name>hAlign</name>
-                    </property>
-                    <property>
-                        <name>whatsThis</name>
-                        <string>Enter the minimum value for the display here. If both values are 0 automatic range detection is enabled.</string>
-                    </property>
-                </widget>
-                <widget row="1"  column="1" >
-                    <class>QLineEdit</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>maxVal</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>alignment</name>
-                        <set>AlignRight</set>
-                    </property>
-                    <property>
-                        <name>hAlign</name>
-                    </property>
-                    <property>
-                        <name>whatsThis</name>
-                        <string>Enter the maximum value for the display here. If both values are 0 automatic range detection is enabled.</string>
+                        <name>text</name>
+                        <string>Sec.</string>
                     </property>
                 </widget>
             </grid>
@@ -188,7 +228,7 @@
             <class>QGroupBox</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>GroupBox8</cstring>
+                <cstring>titleFrame</cstring>
             </property>
             <property stdset="1">
                 <name>title</name>
@@ -207,11 +247,11 @@
                     <class>QLineEdit</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>title</cstring>
+                        <cstring>sheetName</cstring>
                     </property>
                     <property>
-                        <name>whatsThis</name>
-                        <string>Enter the title of the display here.</string>
+                        <name>toolTip</name>
+                        <string>Enter the title of the work sheet here.</string>
                     </property>
                 </widget>
             </grid>
@@ -222,22 +262,14 @@
     <connection>
         <sender>okButton</sender>
         <signal>clicked()</signal>
-        <receiver>FancyPlotterSettings</receiver>
+        <receiver>WorkSheetSettings</receiver>
         <slot>accept()</slot>
     </connection>
     <connection>
         <sender>cancelButton</sender>
         <signal>clicked()</signal>
-        <receiver>FancyPlotterSettings</receiver>
+        <receiver>WorkSheetSettings</receiver>
         <slot>reject()</slot>
     </connection>
 </connections>
-<tabstops>
-    <tabstop>title</tabstop>
-    <tabstop>minVal</tabstop>
-    <tabstop>maxVal</tabstop>
-    <tabstop>okButton</tabstop>
-    <tabstop>applyButton</tabstop>
-    <tabstop>cancelButton</tabstop>
-</tabstops>
 </UI>

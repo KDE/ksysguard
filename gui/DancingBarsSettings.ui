@@ -13,15 +13,15 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>347</width>
-            <height>171</height>
+            <width>283</width>
+            <height>229</height>
         </rect>
     </property>
     <property stdset="1">
         <name>caption</name>
         <string>Edit BarGraph Preferences</string>
     </property>
-    <vbox>
+    <grid>
         <property stdset="1">
             <name>margin</name>
             <number>11</number>
@@ -30,94 +30,11 @@
             <name>spacing</name>
             <number>6</number>
         </property>
-        <widget>
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Layout4</cstring>
-            </property>
-            <grid>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>0</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
-                <widget row="0"  column="1"  rowspan="1"  colspan="2" >
-                    <class>QLineEdit</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>title</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>sizePolicy</name>
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>0</vsizetype>
-                        </sizepolicy>
-                    </property>
-                    <property>
-                        <name>whatsThis</name>
-                        <string>You can change the label on the display frame here.</string>
-                    </property>
-                </widget>
-                <widget row="1"  column="0"  rowspan="1"  colspan="2" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>TextLabel3</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>Maximum Value:</string>
-                    </property>
-                </widget>
-                <widget row="0"  column="0" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>TextLabel1</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>Title:</string>
-                    </property>
-                </widget>
-                <widget row="1"  column="2" >
-                    <class>QSpinBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>maximumValue</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>sizePolicy</name>
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>0</vsizetype>
-                        </sizepolicy>
-                    </property>
-                    <property stdset="1">
-                        <name>maxValue</name>
-                        <number>999999999</number>
-                    </property>
-                    <property>
-                        <name>whatsThis</name>
-                        <string>Enter the maximum value the bars can reach.</string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget>
+        <widget row="2"  column="0" >
             <class>QGroupBox</class>
             <property stdset="1">
                 <name>name</name>
                 <cstring>GroupBox5</cstring>
-            </property>
-            <property stdset="1">
-                <name>title</name>
-                <string>Alarm</string>
             </property>
             <property stdset="1">
                 <name>sizePolicy</name>
@@ -125,6 +42,10 @@
                     <hsizetype>3</hsizetype>
                     <vsizetype>1</vsizetype>
                 </sizepolicy>
+            </property>
+            <property stdset="1">
+                <name>title</name>
+                <string>Alarm</string>
             </property>
             <grid>
                 <property stdset="1">
@@ -143,7 +64,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Enable Alarm above</string>
+                        <string>&amp;Enable Alarm above</string>
                     </property>
                     <property>
                         <name>whatsThis</name>
@@ -174,13 +95,13 @@
                 </widget>
             </grid>
         </widget>
-        <widget>
+        <widget row="3"  column="0" >
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout5</cstring>
+                <cstring>Layout8</cstring>
             </property>
-            <grid>
+            <hbox>
                 <property stdset="1">
                     <name>margin</name>
                     <number>0</number>
@@ -189,7 +110,7 @@
                     <name>spacing</name>
                     <number>6</number>
                 </property>
-                <widget row="0"  column="1" >
+                <widget>
                     <class>QPushButton</class>
                     <property stdset="1">
                         <name>name</name>
@@ -197,14 +118,14 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Ok</string>
+                        <string>&amp;OK</string>
                     </property>
                     <property stdset="1">
                         <name>default</name>
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget row="0"  column="2" >
+                <widget>
                     <class>QPushButton</class>
                     <property stdset="1">
                         <name>name</name>
@@ -212,10 +133,10 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Apply</string>
+                        <string>&amp;Apply</string>
                     </property>
                 </widget>
-                <spacer row="0"  column="0" >
+                <spacer>
                     <property>
                         <name>name</name>
                         <cstring>Spacer7</cstring>
@@ -236,7 +157,7 @@
                         </size>
                     </property>
                 </spacer>
-                <widget row="0"  column="3" >
+                <widget>
                     <class>QPushButton</class>
                     <property stdset="1">
                         <name>name</name>
@@ -244,12 +165,105 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Cancel</string>
+                        <string>&amp;Cancel</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget row="0"  column="0" >
+            <class>QGroupBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>GroupBox10</cstring>
+            </property>
+            <property stdset="1">
+                <name>title</name>
+                <string>Title</string>
+            </property>
+            <grid>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>11</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget row="0"  column="0" >
+                    <class>QLineEdit</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>title</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>You can change the label on the display frame here.</string>
                     </property>
                 </widget>
             </grid>
         </widget>
-    </vbox>
+        <widget row="1"  column="0" >
+            <class>QGroupBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>GroupBox11</cstring>
+            </property>
+            <property stdset="1">
+                <name>title</name>
+                <string>Display Range</string>
+            </property>
+            <grid>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>11</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget row="0"  column="0" >
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel3</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Maximum Value:</string>
+                    </property>
+                </widget>
+                <widget row="0"  column="1" >
+                    <class>QSpinBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>maximumValue</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>maxValue</name>
+                        <number>999999999</number>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enter the maximum value the bars can reach.</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </grid>
 </widget>
 <connections>
     <connection>

@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -48,7 +48,7 @@ class WorkSheet : public QWidget
 	Q_OBJECT
 public:
 	WorkSheet(QWidget* parent);
-	WorkSheet(QWidget* parent, int rows, int columns);
+	WorkSheet(QWidget* parent, uint rows, uint columns, uint interval);
 	~WorkSheet();
 
 	bool load(const QString& fN);
@@ -70,7 +70,8 @@ public:
 	SensorDisplay* addDisplay(const QString& hostname,
 							  const QString& monitor,
 							  const QString& sensorType,
-							  const QString& sensorDescr, int r, int c);
+							  const QString& sensorDescr, uint r, uint c);
+	void settings();
 
 public slots:
 	void removeDisplay(SensorDisplay* display);
@@ -82,18 +83,21 @@ protected:
 	void customEvent(QCustomEvent* ev);
 
 private:
-	void insertDummyDisplay(int r, int c);
+	void insertDummyDisplay(uint r, uint c);
 
-	void replaceDisplay(int r, int c, SensorDisplay* display);
+	void replaceDisplay(uint r, uint c, SensorDisplay* display);
 
 	void collectHosts(QValueList<QString>& l);
 
 	void createGrid(uint r, uint c);
 
+	void resizeGrid(uint r, uint c);
+
 	QString fileName;
 	bool modified;
-	int rows;
-	int columns;
+	uint rows;
+	uint columns;
+	uint updateInterval;
 	QGridLayout* lm;
 	/* This two dimensional array stores the pointers to the sensor displays
 	 * or if no sensor is present at a position a pointer to a dummy widget.

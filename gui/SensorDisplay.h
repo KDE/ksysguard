@@ -78,6 +78,13 @@ public:
 	 */
 	void sendRequest(const QString& hostName, const QString& cmd, int id);
 
+	void setUpdateInterval(uint i)
+	{
+		timerOff();
+		timerInterval = i * 1000;
+		timerOn();
+	}
+		
 	virtual bool load(QDomElement&)
 	{
 		return (TRUE);
