@@ -78,7 +78,7 @@ public:
 
 	void refreshList(void)
 	{
-		sensorAgent->sendRequest("ps?", (SensorClient*) this, 2);
+		SensorMgr->sendRequest(hostName, "ps?", (SensorClient*) this, 2);
 	}
 
 	virtual bool addSensor(const QString&, const QString&, const QString&);
@@ -87,7 +87,7 @@ public:
 
 	virtual void timerEvent(QTimerEvent*)
 	{
-		sensorAgent->sendRequest("ps", (SensorClient*) this, 2);
+		SensorMgr->sendRequest(hostName, "ps", (SensorClient*) this, 2);
 	}
 
 public slots:
@@ -113,7 +113,7 @@ public slots:
 
 	void updateList()
 	{
-		sensorAgent->sendRequest("ps", this, 2);
+		SensorMgr->sendRequest(hostName, "ps", this, 2);
 	}
 
 signals:
@@ -143,7 +143,7 @@ private:
 	QPushButton* bRefresh;
 	QPushButton* bKill;
 
-	SensorAgent* sensorAgent;
+	QString hostName;
 } ;
 
 #endif

@@ -122,11 +122,15 @@ ProcessController::resizeEvent(QResizeEvent* ev)
 }
 
 bool
-ProcessController::addSensor(const QString& hostName,
+ProcessController::addSensor(const QString& hostname,
 							 const QString& /* sensorName */,
 							 const QString& /* title */)
 {
-	SensorMgr->sendRequest(hostName, "ps?", (SensorClient*) this, 1);
+	hostName = hostname;
+	if (!SensorMgr->sendRequest(hostName, "ps?", (SensorClient*) this, 1))
+	{
+		// The sensor agent died.
+	}
 
 	return (TRUE);
 }
