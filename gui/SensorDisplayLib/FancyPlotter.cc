@@ -243,7 +243,7 @@ FancyPlotter::settingsSetColor()
 		return;
 
 	QColor c = lvi->pixmap(2)->convertToImage().pixel(1, 1);
-	int result = KColorDialog::getColor(c);
+	int result = KColorDialog::getColor(c, this->parentWidget());
 	if (result == KColorDialog::Accepted)
 	{
 		QPixmap newPm(12, 12);
