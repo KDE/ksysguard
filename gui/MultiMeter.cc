@@ -98,7 +98,7 @@ MultiMeter::answerReceived(int id, const QString& answer)
 	else
 	{
 		long val = answer.toInt();
-		int digits = (int) log10(val) + 1;
+		int digits = (int) log10((double) val) + 1;
 		if (digits > 5)
 			lcd->setNumDigits(digits);
 		else
