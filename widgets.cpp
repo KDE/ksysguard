@@ -46,6 +46,8 @@
 #include <sys/user.h>
 #endif
 
+#include <signal.h>
+#include <qevent.h> 
 #include <qpalette.h>
 #include <qcombo.h>
 #include <qpainter.h>
@@ -1861,6 +1863,7 @@ void TaskMan::pTree_readProcDir(  )
         if ( alist ) delete alist;
 	fprintf(stderr,PROC_BASE " is empty (not mounted ???)\n");
 	exit(1);
+    }
 #else
     int num;
     for (num = len / sizeof(struct kinfo_proc) - 1; num > -1; num--) {
@@ -1901,6 +1904,7 @@ void TaskMan::pTree_readProcDir(  )
     pTree_reorder(alist);
     
     delete alist;
+
 }
 
 /*-----------------------------------------------------------------------------
