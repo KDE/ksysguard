@@ -16,7 +16,6 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-    $Id$
 */
 
 #include <kapplication.h>
@@ -167,6 +166,7 @@ void HostConnector::setCurrentHostName( const QString &hostName )
     mHostNames->hide();
     mHostNameLabel->setText( hostName );
     mHostNameLabel->show();
+    enableButtonOK( true );//enable true when mHostNames is empty and hidden fix #66955
   } else {
     mHostNameLabel->hide();
     mHostNames->show();
