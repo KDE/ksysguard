@@ -35,6 +35,8 @@
 
 #include <kiconloader.h>
 
+#include "SensorClient.h"
+
 typedef const char* (*KeyFunc)(const char*);
 
 /**

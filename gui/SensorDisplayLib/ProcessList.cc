@@ -47,7 +47,7 @@
 #include <kmessagebox.h>
 
 #include "ProcessController.h"
-#include "ProcessList.moc"
+#include "ProcessList.h"
 #include "ReniceDlg.h"
 #include "SignalIDs.h"
 
