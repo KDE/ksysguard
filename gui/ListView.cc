@@ -36,6 +36,7 @@
 #include "SensorManager.h"
 #include "ListViewSettings.h"
 #include "ColorPicker.h"
+#include "StyleEngine.h"
 #include "ListView.moc"
 
 ListViewItem::ListViewItem(MyListView *parent)

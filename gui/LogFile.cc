@@ -23,6 +23,7 @@
 
 #include <regex.h>
 
+#include "StyleEngine.h"
 #include "LogFile.moc"
 
 LogFile::LogFile(QWidget *parent, const char *name, const QString&)
