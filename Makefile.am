@@ -31,7 +31,7 @@ ktop_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
 # the libraries to link against. Be aware of the order. First the libraries,
 # that depend on the following ones.
-ktop_LDADD   = -lkfm -lkdeui -lkdecore -lXext $(LIB_QT) $(LIBKVM)
+ktop_LDADD   = -lkfm     $(LIB_KDEUI) $(LIBKVM)
 
 # this option you can leave out. Just, if you use "make dist", you need it
 noinst_HEADERS = ktop.h memory.h settings.h cpu.h widgets.h
