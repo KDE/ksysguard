@@ -25,7 +25,7 @@
 #include <qobject.h>
 #include <qptrlist.h>
 
-#include <ksgrd/SensorAgent.h>
+#include <SensorAgent.h>
 
 class QString;
 class KProcess;

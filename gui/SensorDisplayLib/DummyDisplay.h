@@ -25,7 +25,7 @@
 #ifndef _DummyDisplay_h_
 #define _DummyDisplay_h_
 
-#include <ksgrd/SensorDisplay.h>
+#include <SensorDisplay.h>
 
 class DummyDisplay : public KSGRD::SensorDisplay
 {

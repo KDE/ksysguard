@@ -27,7 +27,7 @@
 
 #include <qlistview.h>
 
-#include <ksgrd/SensorDisplay.h>
+#include <SensorDisplay.h>
 
 #include "BarGraph.h"
 

@@ -28,7 +28,7 @@
 #include <qvaluelist.h>
 #include <qwidget.h>
 
-#include <ksgrd/SensorDisplay.h>
+#include <SensorDisplay.h>
 
 class QGridLayout;
 class QDragEnterEvent;

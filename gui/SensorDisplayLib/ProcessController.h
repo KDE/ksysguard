@@ -35,7 +35,7 @@
 
 #include <kapp.h>
 
-#include <ksgrd/SensorDisplay.h>
+#include <SensorDisplay.h>
 
 #include "ProcessList.h"
 

@@ -31,7 +31,7 @@
 
 #include <kdialogbase.h>
 
-#include <ksgrd/SensorDisplay.h>
+#include <SensorDisplay.h>
 
 #include "SignalPlotter.h"
 

@@ -31,7 +31,7 @@
 #include <qspinbox.h>
 #include <qstring.h>
 
-#include <ksgrd/SensorDisplay.h>
+#include <SensorDisplay.h>
 
 #include "SensorLoggerDlg.h"
 

@@ -25,7 +25,7 @@
 #include <qptrlist.h>
 #include <qsocket.h>
 
-#include <ksgrd/SensorAgent.h>
+#include <SensorAgent.h>
 
 class QString;
 

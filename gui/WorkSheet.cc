@@ -30,7 +30,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 
-#include <ksgrd/SensorManager.h>
+#include <SensorManager.h>
 
 #include "DancingBars.h"
 #include "DummyDisplay.h"

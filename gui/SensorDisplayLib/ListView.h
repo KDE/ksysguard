@@ -28,7 +28,7 @@
 #include <qlistview.h>
 #include <qpainter.h>
 
-#include <ksgrd/SensorDisplay.h>
+#include <SensorDisplay.h>
 
 typedef const char* (*KeyFunc)(const char*);
 

@@ -25,7 +25,7 @@
 #ifndef _MultiMeter_h_
 #define _MultiMeter_h_
 
-#include <ksgrd/SensorDisplay.h>
+#include <SensorDisplay.h>
 
 class QGroupBox;
 class QLCDNumber;

@@ -27,7 +27,7 @@
 
 #include <kconfig.h>
 
-#include <ksgrd/SensorAgent.h>
+#include <SensorAgent.h>
 
 class HostConnector;
 

@@ -31,7 +31,7 @@
 #include <qstring.h>
 #include <qstringlist.h>
 
-#include <ksgrd/SensorDisplay.h>
+#include <SensorDisplay.h>
 
 #include "LogFileSettings.h"
 
