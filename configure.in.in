@@ -1,12 +1,12 @@
-dnl Check whether ktop can run; 
-AC_MSG_CHECKING(if ktop can be compiled)
+dnl Check whether ksysguard can run; 
+AC_MSG_CHECKING(if ksysguard can be compiled)
 case "$host" in 
-  *-*-linux-*) ktop_compile=yes; UNAME='Linux' ;;
-  *-*-freebsd*) ktop_compile=yes; UNAME='FreeBSD' ;;
-  *) ktop_compile=no; UNAME='' ;;
+  *-*-linux-*) ksysguard_compile=yes; UNAME='Linux' ;;
+  *-*-freebsd*) ksysguard_compile=yes; UNAME='FreeBSD' ;;
+  *) ksysguard_compile=no; UNAME='' ;;
 esac
-AC_MSG_RESULT($ktop_compile)
-if test "$ktop_compile" = "no"; then
-  DO_NOT_COMPILE="$DO_NOT_COMPILE ktop"
+AC_MSG_RESULT($ksysguard_compile)
+if test "$ksysguard_compile" = "no"; then
+  DO_NOT_COMPILE="$DO_NOT_COMPILE ksysguard"
 fi
 AC_SUBST(UNAME)
