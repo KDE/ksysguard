@@ -40,6 +40,9 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 							 const char* name) :
 	QListView(parent, name), sensorManager(sm)
 {
+	hostInfos.setAutoDelete(TRUE);
+	dict.setAutoDelete(TRUE);
+
 	connect(sm, SIGNAL(update(void)), this, SLOT(update(void)));
 	connect(this, SIGNAL(selectionChanged(QListViewItem*)),
 			this, SLOT(newItemSelected(QListViewItem*)));
