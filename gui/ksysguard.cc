@@ -51,6 +51,7 @@
 #include <kstdaction.h>
 #include <kwin.h>
 #include <kwinmodule.h>
+#include <kkeydialog.h>
 
 #include "../version.h"
 #include "SensorBrowser.h"
@@ -126,6 +127,8 @@ TopLevel::TopLevel( const char *name )
   mActionStatusBar->setChecked( false );
 
   KStdAction::configureToolbars( this, SLOT( editToolbars() ), actionCollection() );
+  KStdAction::keyBindings( this, SLOT( slotConfigureKeys() ), actionCollection() );
+
   new KAction( i18n( "Configure &Style..." ), "colorize", 0, this,
                SLOT( editStyle() ), actionCollection(), "configure_style" );
 
@@ -136,6 +139,11 @@ TopLevel::TopLevel( const char *name )
 
 TopLevel::~TopLevel()
 {
+}
+
+void TopLevel::slotConfigureKeys()
+{
+  KKeyDialog::configure( actionCollection(), this );
 }
 
 /*

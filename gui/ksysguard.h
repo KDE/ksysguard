@@ -86,6 +86,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
     void editToolbars();
     void editStyle();
     void slotNewToolbarConfig();
+    void slotConfigureKeys();
 
   private:
     QPtrList<DCOPClientTransaction> mDCopFIFO;
