@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
 
-	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
+    Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,10 +16,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+    Please do not commit any changes without consulting me first. Thanks!
 
-	$Id$
+    $Id$
 */
 
 #ifndef _ListView_h_
@@ -49,6 +49,7 @@ public:
 
 private:
 	QValueList<KeyFunc> sortFunc;
+  QStringList mColumnTypes;
 };
 
 class PrivateListViewItem : public QListViewItem

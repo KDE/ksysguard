@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
 
-	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
+    Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,10 +16,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-	Please do not commit any changes without consulting me first. Thanks!
+    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+    Please do not commit any changes without consulting me first. Thanks!
 
-	$Id$
+    $Id$
 */
 
 #include <ctype.h>
@@ -33,7 +33,8 @@
 
 #include <kcolorbutton.h>
 #include <kdebug.h>
-
+#include <kglobal.h>
+#include <klocale.h>
 #include <ksgrd/ColorPicker.h>
 #include <ksgrd/SensorManager.h>
 #include <ksgrd/StyleEngine.h>
@@ -92,12 +93,12 @@ diskStatKey(const char* text)
 {
 	char *number, *dev;
 	char tmp[1024];
-	int i, val;
+	int val;
 	static char key[100];
 
-	strlcpy(tmp, text, sizeof(tmp) - 1);
+	strlcpy( tmp, text, sizeof(tmp) - 1 );
 	number = tmp;
-	for (i = 0; i < strlen(tmp); i++) {
+	for ( uint i = 0; i < strlen(tmp); i++ ) {
 		number++;
 		if (isdigit(tmp[i])) {
 			val = atoi(number);
@@ -151,8 +152,14 @@ void PrivateListView::update(const QString& answer)
 	for (uint i = 0; i < lines.numberOfTokens(); i++) {
 		PrivateListViewItem *item = new PrivateListViewItem(this);
 		KSGRD::SensorTokenizer records(lines[i], '\t');
-		for (uint j = 0; j < records.numberOfTokens(); j++)
-			item->setText(j, records[j]);
+		for (uint j = 0; j < records.numberOfTokens(); j++) {
+      if ( mColumnTypes[ j ] == "f" )
+        item->setText(j, KGlobal::locale()->formatNumber( records[j].toFloat() ) );
+      else if ( mColumnTypes[ j ] == "D" )
+        item->setText(j, KGlobal::locale()->formatNumber( records[j].toDouble(), 0 ) );
+      else
+			  item->setText(j, records[j]);
+    }
 
 		insertItem(item);
 	}
@@ -178,7 +185,7 @@ PrivateListView::addColumn(const QString& label, const QString& type)
 		setColumnAlignment(col, AlignLeft);
 		sortFunc.append(0);
 	}
-	else if (type == "d")
+	else if (type == "d" || type == "D")
 	{
 		setColumnAlignment(col, AlignRight);
 		sortFunc.append(&intKey);
@@ -205,6 +212,8 @@ PrivateListView::addColumn(const QString& label, const QString& type)
 				  << " in ListView!" << endl;
 		return;
 	}
+
+  mColumnTypes.append( type );
 
 	/* Just use some sensible default values as initial setting. */
 	QFontMetrics fm = fontMetrics();
