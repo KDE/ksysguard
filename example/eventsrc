@@ -42,7 +42,6 @@ Comment[vi]=Trình bảo vềEhềEthống KDE
 Comment[xh]=KDE Ukhuselo lendlela yokusebenza
 Comment[xx]=xx
 Comment[zh_CN]=KDE 系统卫士
-Comment[zh_TW]=KDE 系統守護神
 Comment[zu]=Unogada Wendlela ye KDE
 
 [pattern_match]
@@ -69,7 +68,6 @@ Name[sv]=mönsterigenkänning
 Name[xh]=umlinganiselo_thelekisa
 Name[xx]=xx
 Name[zh_CN]=模式匹配
-Name[zh_TW]=比對正確
 Name[zu]=ukufanana_kwephathini
 Comment=search pattern matched
 Comment[af]=soektog patroon ooreengestem
@@ -109,7 +107,6 @@ Comment[uk]=пошук відповідного взірця
 Comment[xh]=phendla umlinganiselo othelekisiweyo
 Comment[xx]=xx
 Comment[zh_CN]=查找匹配的模式
-Comment[zh_TW]=找到比對正確
 Comment[zu]=phenya umlinganiselo othelekisiweyo
 
 [sensor_alarm]
@@ -131,7 +128,6 @@ Name[sv]=sensorlarm
 Name[xh]=uluvo_oluvusayo
 Name[xx]=xx
 Name[zh_CN]=传感器警报
-Name[zh_TW]=感測器通知
 Name[zu]=uluvo_oluxwayisayo
 Comment=sensor exceted critical limit
 Comment[af]=sensor oorskry krities beperk
@@ -164,4 +160,3 @@ Comment[tr]=alıcı kritik limiti geçti
 Comment[xh]=umda wokufumana ingxaki ekhoyo woluvo
 Comment[xx]=xx
 Comment[zh_CN]=传感器超过临界限度
-Comment[zh_TW]=感測器超過臨界限制
