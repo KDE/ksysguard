@@ -139,6 +139,12 @@ void KSysGuardApplet::applySettings()
   save();
 }
 
+void KSysGuardApplet::sensorDisplayModified( bool modified )
+{
+  if ( modified )
+    save();
+}
+
 void KSysGuardApplet::layout()
 {
   if ( orientation() == Horizontal ) {
@@ -216,6 +222,9 @@ void KSysGuardApplet::dropEvent( QDropEvent *e )
           delete mDockList[ dock ];
           mDockList[ dock ] = wdg;
           layout();
+
+          connect( wdg, SIGNAL( modified( bool ) ),
+                   SLOT( sensorDisplayModified( bool ) ) );
 
           mDockList[ dock ]->show();
         }
@@ -387,6 +396,9 @@ bool KSysGuardApplet::load()
 
     delete mDockList[ dock ];
     mDockList[ dock ] = newDisplay;
+
+    connect( newDisplay, SIGNAL( modified( bool ) ),
+             SLOT( sensorDisplayModified( bool ) ) );
   }
 
   return true;

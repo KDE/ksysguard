@@ -61,6 +61,7 @@ class KSysGuardApplet : public KPanelApplet, public KSGRD::SensorBoard
 
   private slots:
     void applySettings();
+    void sensorDisplayModified( bool );
 
   private:
     void layout();
