@@ -116,7 +116,7 @@ TopLevel::TopLevel( const char *name )
   KStdAction::cut( mWorkSpace, SLOT( cut() ), actionCollection() );
   KStdAction::copy( mWorkSpace, SLOT( copy() ), actionCollection() );
   KStdAction::paste( mWorkSpace, SLOT( paste() ), actionCollection() );
-  new KAction( i18n( "&Work Sheet Properties" ), "configure", 0, mWorkSpace,
+  new KAction( i18n( "&Worksheet Properties" ), "configure", 0, mWorkSpace,
                SLOT( configure() ), actionCollection(), "configure_sheet" );
 
   KStdAction::revert( this, SLOT( resetWorkSheets() ), actionCollection() );
