@@ -23,6 +23,8 @@
 
 */
 
+/* $Id$ */
+
 /*=============================================================================
   HEADERs
  =============================================================================*/
@@ -82,6 +84,7 @@
  =============================================================================*/
 #define ktr           klocale->translate
 #ifndef __FreeBSD__
+// Actually it would be muy nifty if we could use getmntent for this :^)
 // BSD doesn't need this, so fail if something tries to use it..
 #define PROC_BASE     "/proc"
 #endif
@@ -89,10 +92,10 @@
 #define KTOP_ICN_DIR  "/share/apps/ktop/pics"
 #define INIT_PID      1
 #define NONE         -1
+
 //-----------------------------------------------------------------------------
 //#define DEBUG_MODE    // uncomment to active "printf lines"
 //-----------------------------------------------------------------------------
-
 
 /*=============================================================================
   GLOBALs
@@ -171,6 +174,7 @@ static const char *col_headers[] = {
 #endif
      0
 };
+
 static const char *dummies[] = {
      "++++"              ,
      "procID++"          ,
