@@ -16,13 +16,15 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+	KSysGuard is currently maintained by Chris Schlaeger
+	<cs@kde.org>. Please do not commit any changes without consulting
+	me first. Thanks!
 
-	Early versions of ktop (<1.0) have been written by Bernd Johannes Wuebben
-    <wuebben@math.cornell.edu> and Nicolas Leclercq <nicknet@planete.net>.
-	While I tried to preserve their original ideas, KTop has been rewritten
-    several times.
+	KSysGuard has been written with some source code and ideas from
+	ktop (<1.0). Early versions of ktop have been written by Bernd
+	Johannes Wuebben <wuebben@math.cornell.edu> and Nicolas Leclercq
+	<nicknet@planete.net>.  While I tried to preserve their original
+	ideas, KSysGuard is a much more powerful tool.
 
 	$Id$
 */
@@ -49,7 +51,7 @@
 #include "Workspace.h"
 #include "HostConnector.h"
 #include "../version.h"
-#include "ktop.moc"
+#include "ksysguard.moc"
 
 static const char* Description = I18N_NOOP("KDE Task Manager");
 TopLevel* Toplevel;
@@ -114,7 +116,7 @@ TopLevel::TopLevel(const char *name)
 											 actionCollection(),
 											 "showstatusbar");
 	statusBarTog->setChecked(FALSE);
-	createGUI("ktop.rc");
+	createGUI("ksysguard.rc");
 
 	// Hide XML GUI generated toolbar.
 	enableToolBar(KToolBar::Hide);
@@ -241,7 +243,7 @@ TopLevel::timerEvent(QTimerEvent*)
 void
 TopLevel::readProperties(KConfig* cfg)
 {
-	cfg->setGroup("KTop Settings");
+	cfg->setGroup("KSysGuard Settings");
 
 	QString geom = cfg->readEntry("Size");
 	if(geom.isEmpty())
@@ -288,7 +290,7 @@ TopLevel::readProperties(KConfig* cfg)
 
 	setMinimumSize(sizeHint());
 
-	SensorMgr->engage("localhost", "", "ktopd");
+	SensorMgr->engage("localhost", "", "ksysguardd");
 	/* Request info about the swapspace size and the units it is measured in.
 	 * The requested info will be received by answerReceived(). */
 	SensorMgr->sendRequest("localhost", "mem/swap?", (SensorClient*) this, 5);
@@ -297,7 +299,7 @@ TopLevel::readProperties(KConfig* cfg)
 void
 TopLevel::saveProperties(KConfig* cfg)
 {
-	cfg->setGroup("KTop Settings");
+	cfg->setGroup("KSysGuard Settings");
 
 	// Save window geometry. TODO: x/y is not exaclty correct. Needs fixing.
 	QString geom = QString("%1:%2").arg(width()).arg(height());
@@ -368,9 +370,11 @@ static const KCmdLineOptions options[] =
 int
 main(int argc, char** argv)
 {
-	KAboutData aboutData("ktop", I18N_NOOP("KDE Task Manager"),
-						 KTOP_VERSION, Description, KAboutData::License_GPL,
-						 I18N_NOOP("(c) 1996-2000, The KTop Developers"));
+	KAboutData aboutData("ksysguard", I18N_NOOP("KDE Task Manager"),
+						 KSYSGUARD_VERSION, Description,
+						 KAboutData::License_GPL,
+						 I18N_NOOP("(c) 1996-2000, "
+								   "The KSysGuard Developers"));
 	aboutData.addAuthor("Chris Schlaeger", "Current Maintainer",
 						"cs@kde.org");
 	aboutData.addAuthor("Nicolas Leclercq", 0, "nicknet@planete.net");

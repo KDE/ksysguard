@@ -27,7 +27,7 @@
 #include <kapp.h>
 #include <klocale.h>
 
-#include "ktop.h"
+#include "ksysguard.h"
 #include "SensorManager.h"
 #include "SensorAgent.h"
 #include "SensorManager.moc"

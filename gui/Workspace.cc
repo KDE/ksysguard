@@ -67,34 +67,36 @@ Workspace::readProperties(KConfig* cfg)
 		 * the first time the user has started KTop. We then "restore" a
 		 * special default configuration. */
 		KStandardDirs* kstd = KGlobal::dirs();
-		kstd->addResourceType("data", "share/apps/ktop");
+		kstd->addResourceType("data", "share/apps/ksysguard");
 
-		QString f = kstd->findResource("data", "SystemLoad.ktop");
+		QString f = kstd->findResource("data", "SystemLoad.sgrd");
 		if (!f.isEmpty())
 			restoreWorkSheet(f);
 
-		f = kstd->findResource("data", "ProcessTable.ktop");
+		f = kstd->findResource("data", "ProcessTable.sgrd");
 		if (!f.isEmpty())
 			restoreWorkSheet(f);
 
 		currentSheet = "SystemLoad";
 
-		workDir = kstd->saveLocation("data", "ktop/");
+		workDir = kstd->saveLocation("data", "ksysguard/");
 	}
 	else
 	{
+		currentSheet = cfg->readEntry("CurrentSheet");
 		QStringList list = cfg->readListEntry("Sheets");
 		for (QStringList::Iterator it = list.begin(); it != list.end(); ++it)
 			restoreWorkSheet(*it);
-
-		currentSheet = cfg->readEntry("CurrentSheet");
 	}
 
 	// Determine visible sheet.
 	QListIterator<WorkSheet> it(sheets);
 	for (; it.current(); ++it)
 		if (currentSheet == tabLabel(*it))
+		{
 			showPage(*it);
+			break;
+		}
 }
 
 void
@@ -157,8 +159,8 @@ Workspace::saveOnQuit()
 void
 Workspace::loadWorkSheet()
 {
-	KFileDialog fd(workDir, "*.ktop", this, "LoadFileDialog", TRUE);
-	QString fileName = fd.getOpenFileName(QString::null, "*.ktop");
+	KFileDialog fd(workDir, "*.sgrd", this, "LoadFileDialog", TRUE);
+	QString fileName = fd.getOpenFileName(QString::null, "*.sgrd");
 	if (fileName.isEmpty())
 		return;
 
@@ -181,15 +183,15 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 	QString fileName = sheet->getFileName();
 	if (fileName.isEmpty())
 	{
-		KFileDialog fd(workDir, "*.ktop", this, "LoadFileDialog", TRUE);
-		fileName = fd.getSaveFileName(QString::null, "*.ktop");
+		KFileDialog fd(workDir, "*.sgrd", this, "LoadFileDialog", TRUE);
+		fileName = fd.getSaveFileName(QString::null, "*.sgrd");
 		if (fileName.isEmpty())
 			return;
 		workDir = fileName.left(fileName.findRev('/'));
 		// extract filename without path
 		QString baseName = fileName.right(fileName.length() -
 										  fileName.findRev('/') - 1);
-		// chop off extension (usually '.ktop')
+		// chop off extension (usually '.sgrd')
 		baseName = baseName.left(baseName.findRev('.'));
 		changeTab(currentPage(), baseName);
 	}
@@ -208,16 +210,16 @@ Workspace::saveWorkSheetAs()
 		return;
 	}
 
-	KFileDialog fd(workDir, "*.ktop", this, "LoadFileDialog", TRUE);
+	KFileDialog fd(workDir, "*.sgrd", this, "LoadFileDialog", TRUE);
 	QString fileName = fd.getSaveFileName(
-		tabLabel(currentPage()) + ".ktop", "*.ktop");
+		tabLabel(currentPage()) + ".sgrd", "*.sgrd");
 	if (fileName.isEmpty())
 		return;
 	workDir = fileName.left(fileName.findRev('/'));
 	// extract filename without path
 	QString baseName = fileName.right(fileName.length() -
 									  fileName.findRev('/') - 1);
-	// chop off extension (usually '.ktop')
+	// chop off extension (usually '.sgrd')
 	baseName = baseName.left(baseName.findRev('.'));
 	changeTab(currentPage(), baseName);
 
@@ -251,7 +253,7 @@ Workspace::restoreWorkSheet(const QString& fileName)
 	// extract filename without path
 	QString baseName = fileName.right(fileName.length() -
 									  fileName.findRev('/') - 1);
-	// chop off extension (usually '.ktop')
+	// chop off extension (usually '.sgrd')
 	baseName = baseName.left(baseName.findRev('.'));
 
 	WorkSheet* sheet = new WorkSheet(this);
@@ -272,12 +274,12 @@ void
 Workspace::showProcesses()
 {
 	KStandardDirs* kstd = KGlobal::dirs();
-	kstd->addResourceType("data", "share/apps/ktop");
+	kstd->addResourceType("data", "share/apps/ksysguard");
 
-	QString f = kstd->findResource("data", "ProcessController.ktop");
+	QString f = kstd->findResource("data", "ProcessController.sgrd");
 	if (!f.isEmpty())
 		restoreWorkSheet(f);
 	else
 		KMessageBox::error(
-			this, i18n("Cannot find file ProcessController.ktop!"));
+			this, i18n("Cannot find file ProcessController.sgrd!"));
 }

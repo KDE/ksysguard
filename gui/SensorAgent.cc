@@ -28,8 +28,7 @@
 
 #include <klocale.h>
 #include <kprocess.h>
-#include <kpassdlg.h>
-
+#include <kpassdlg.h> 
 #include "SensorManager.h"
 #include "SensorAgent.h"
 #include "SensorClient.h"
@@ -38,17 +37,17 @@
 SensorAgent::SensorAgent(SensorManager* sm) :
 	sensorManager(sm)
 {
-	ktopd = 0;
-	ktopdOnLine = false;
+	daemon = 0;
+	daemonOnLine = false;
 	pwSent = false;
 }
 
 SensorAgent::~SensorAgent()
 {
-	ktopd->writeStdin("quit\n", strlen("quit\n"));
+	daemon->writeStdin("quit\n", strlen("quit\n"));
 
-	delete ktopd;
-	ktopd = 0;
+	delete daemon;
+	daemon = 0;
 
 	while (!inputFIFO.isEmpty())
 	{
@@ -66,22 +65,23 @@ bool
 SensorAgent::start(const QString& host_, const QString& shell_,
 				   const QString& command_)
 {
-	ktopd = new KProcess;
-	CHECK_PTR(ktopd);
+	daemon = new KProcess;
+	CHECK_PTR(daemon);
 
 	host = host_;
 	shell = shell_;
 	command = command_;
 
-	connect(ktopd, SIGNAL(processExited(KProcess *)),
-			this, SLOT(ktopdExited(KProcess*)));
-	connect(ktopd, SIGNAL(receivedStdout(KProcess *, char*, int)),
+	connect(daemon, SIGNAL(processExited(KProcess *)),
+			this, SLOT(daemonExited(KProcess*)));
+	connect(daemon, SIGNAL(receivedStdout(KProcess *, char*, int)),
 			this, SLOT(msgRcvd(KProcess*, char*, int)));
-	connect(ktopd, SIGNAL(receivedStderr(KProcess *, char*, int)),
+	connect(daemon, SIGNAL(receivedStderr(KProcess *, char*, int)),
 			this, SLOT(errMsgRcvd(KProcess*, char*, int)));
-	connect(ktopd, SIGNAL(wroteStdin(KProcess*)), this,
+	connect(daemon, SIGNAL(wroteStdin(KProcess*)), this,
 			SLOT(msgSent(KProcess*)));
 
+	QString cmd;
 	if (command != "")
 	{
 		// We assume parameters to be seperated by a single blank.
@@ -92,27 +92,30 @@ SensorAgent::start(const QString& host_, const QString& shell_,
 
 			if ((sep = s.find(' ')) < 0)
 			{
-				*ktopd << s.utf8();
+				*daemon << s.latin1();
+				cmd += s + " ";
 				break;
 			}
 			else
 			{
-				*ktopd << s.left(sep).utf8();
+				*daemon << s.left(sep).latin1();
+				cmd += s.left(sep) + " ";
 				s = s.remove(0, sep + 1);
 			}
 		}
 	}
 	else
 	{
-		*ktopd << shell;
-		*ktopd << host;
-		*ktopd << "ktopd";
+		*daemon << shell;
+		*daemon << host;
+		*daemon << "ksysguardd";
+		cmd = shell + " " + host + " ksysguardd";
 	}
 
-	if (!ktopd->start(KProcess::NotifyOnExit, KProcess::All))
+	if (!daemon->start(KProcess::NotifyOnExit, KProcess::All))
 	{
 		sensorManager->hostLost(this);
-		debug("Can't start ktopd");
+		debug("Command \'%s\' failed", cmd.latin1());
 		return (false);
 	}
 
@@ -125,7 +128,7 @@ SensorAgent::sendRequest(const QString& req, SensorClient* client, int id)
 	/* The request is registered with the FIFO so that the answer can be
 	 * routed back to the requesting client. */
 	inputFIFO.prepend(new SensorRequest(req, client, id));
-	if (ktopdOnLine && (inputFIFO.count() == 1))
+	if (daemonOnLine && (inputFIFO.count() == 1))
 	{
 		executeCommand();
 		return (true);
@@ -166,14 +169,14 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 	}
 
 	int end;
-	while ((end = answerBuffer.find("\nktopd> ")) > 0)
+	while ((end = answerBuffer.find("\nksysguardd> ")) > 0)
 	{
-		if (!ktopdOnLine)
+		if (!daemonOnLine)
 		{
 			debug("Sensor is on-line");
-			/* First '\nktopd> ' signals that ktopd is ready to serve requests
-			 * now. */
-			ktopdOnLine = true;
+			/* First '\nksysguardd> ' signals that daemon is ready to serve
+			 * requests now. */
+			daemonOnLine = true;
 			answerBuffer = QString();
 			if (!inputFIFO.isEmpty())
 			{
@@ -195,7 +198,7 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 		}
 
 		// chop of processed part answer buffer
-		answerBuffer.remove(0, end + strlen("\nktopd> "));
+		answerBuffer.remove(0, end + strlen("\nksysguardd> "));
 	}
 }
 
@@ -223,7 +226,7 @@ SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 			cmdWithNL = password + "\n";
 		else
 			cmdWithNL = "\n";
-		ktopd->writeStdin(cmdWithNL.data(), cmdWithNL.length());
+		daemon->writeStdin(cmdWithNL.data(), cmdWithNL.length());
 		pwSent = true;
 	}
 	else
@@ -233,10 +236,10 @@ SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 }
 
 void
-SensorAgent::ktopdExited(KProcess*)
+SensorAgent::daemonExited(KProcess*)
 {
-	ktopdOnLine = false;
-	debug("ktopd exited");
+	daemonOnLine = false;
+	debug("ksysguardd exited");
 	sensorManager->hostLost(this);
 	sensorManager->disengage(this);
 }
@@ -250,9 +253,9 @@ SensorAgent::executeCommand()
 	// take request for input FIFO
 	SensorRequest* req = inputFIFO.last();
 
-	// send request to ktopd
+	// send request to daemon
 	QString cmdWithNL = req->request + "\n";
-	ktopd->writeStdin(cmdWithNL.ascii(), cmdWithNL.length());
+	daemon->writeStdin(cmdWithNL.ascii(), cmdWithNL.length());
 
 	// add request to processing FIFO
 	processingFIFO.prepend(new SensorRequest(*req));

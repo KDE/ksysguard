@@ -4,7 +4,5 @@ appsdir = $(kde_appsdir)/System
 # claim, which subdirectories you want to install
 SUBDIRS = CContLib ksysguardd gui pics
  
-KDE_ICON = ktop
-
-apps_DATA = ktop.desktop
+KDE_ICON = ksysguard
 

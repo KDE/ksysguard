@@ -72,15 +72,16 @@ main(int argc, const char* argv[])
 	while (!dispatcherReady())
 		;
 
-	printf("ktopd %s  (c) 1999 Chris Schlaeger <cs@kde.org>\n"
-		   "This program may be distributed under the GPL.\n"
-		   "ktopd> ", VERSION);
+	printf("ksysguardd %s  (c) 1999, 2000 Chris Schlaeger <cs@kde.org>\n"
+		   "This program is part of the KDE Project and licensed under\n"
+		   "the GNU GPL version 2. See www.kde.org for details!\n"
+		   "ksysguardd> ", VERSION);
 	fflush(stdout);
 	do
 	{
 		readCommand(cmdBuf);
 		executeCommand(cmdBuf);
-		printf("ktopd> ");
+		printf("ksysguardd> ");
 		fflush(stdout);
 	} while (!QuitApp);
 
@@ -93,4 +94,3 @@ main(int argc, const char* argv[])
 
 	return (0);
 }
-

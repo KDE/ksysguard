@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE Task Manager and Performance Monitor
    
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
     
@@ -71,15 +71,15 @@ main(int argc, const char* argv[])
 	while (!dispatcherReady())
 		;
 
-	printf("ktopd %s  (c) 1999 Chris Schlaeger <cs@kde.org>\n"
+	printf("ksysguardd %s  (c) 1999, 2000 Chris Schlaeger <cs@kde.org>\n"
 		   "This program may be distributed under the GPL.\n"
-		   "ktopd> ", VERSION);
+		   "ksysguardd> ", VERSION);
 	fflush(stdout);
 	do
 	{
 		readCommand(cmdBuf);
 		executeCommand(cmdBuf);
-		printf("ktopd> ");
+		printf("ksysguardd> ");
 		fflush(stdout);
 	} while (!QuitApp);
 

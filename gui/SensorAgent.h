@@ -49,9 +49,9 @@ private:
 } ;
 
 /**
- * The SensorAgent starts a ktopd process and handles the asynchronous
+ * The SensorAgent starts a ksysguardd process and handles the asynchronous
  * communication. It keeps a list of pending requests that have not been
- * answered yet by ktopd. The current implementation only allowes one
+ * answered yet by ksysguard. The current implementation only allowes one
  * pending requests. Incoming requests are queued in an input FIFO.
  */
 class SensorAgent : public QObject
@@ -94,15 +94,15 @@ private slots:
 	void msgSent(KProcess*);
 	void msgRcvd(KProcess*, char* buffer, int buflen);
 	void errMsgRcvd(KProcess*, char* buffer, int buflen);
-	void ktopdExited(KProcess*);
+	void daemonExited(KProcess*);
 
 private:
 	void executeCommand();
 
 	SensorManager* sensorManager;
 
-	KProcess* ktopd;
-	bool ktopdOnLine;
+	KProcess* daemon;
+	bool daemonOnLine;
 	bool pwSent;
 	QString host;
 	QString shell;

@@ -1,1 +1,1 @@
-#define KTOP_VERSION "1.5.0"
+#define KSYSGUARD_VERSION "0.9.8"

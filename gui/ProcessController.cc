@@ -30,7 +30,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 
-#include "ktop.h"
+#include "ksysguard.h"
 #include "SensorManager.h"
 #include "ProcessController.moc"
 
