@@ -81,6 +81,7 @@ first line specifies the name of the columns and the second the type
 of the values in the column.
 
 d: integer value
+D: integer value that should be localized in the frontend
 f: floating point value
 s: string value
 S: string value that needs to be translated

@@ -308,7 +308,7 @@ void
 printProcessListInfo(const char* cmd)
 {
 	fprintf(CurrentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize\tVmRss\tLogin\tCommand\n");
-	fprintf(CurrentClient, "s\td\td\td\td\tS\tf\tf\td\td\td\ts\ts\n");
+	fprintf(CurrentClient, "s\td\td\td\td\tS\tf\tf\td\tD\tD\ts\ts\n");
 }
 
 void
