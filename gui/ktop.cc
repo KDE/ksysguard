@@ -34,21 +34,23 @@
 #include <ktmainwindow.h>
 #include <kconfig.h>
 #include <klocale.h>
+#include <kcmdlineargs.h>
 #include <kmessagebox.h>
 
 #include "SensorBrowser.h"
 #include "SensorManager.h"
 #include "SensorAgent.h"
 #include "Workspace.h"
+#include "version.h"
 #include "ktop.moc"
+
+
+
+static const char *description = 
+	I18N_NOOP("KDE process monitor");
 
 #define KTOP_MIN_W	50
 #define KTOP_MIN_H	50
-
-/*
- * Global variables
- */
-KApplication* Kapp;
 
 /*
  * This is the constructor for the main widget. It sets up the menu and the
@@ -57,7 +59,6 @@ KApplication* Kapp;
 TopLevel::TopLevel(const char *name, int)
 	: KTMainWindow(name)
 {
-	assert(Kapp);
 	setCaption(i18n("KDE Task Manager"));
 
 	// Create main menu
@@ -107,7 +108,7 @@ TopLevel::TopLevel(const char *name, int)
 	 * resize are no problem.
 	 *
 	 * I need to implement a propper session management some day! */
-	QString t = Kapp->config()->readEntry(QString("G_Toplevel"));
+	QString t = kapp->config()->readEntry(QString("G_Toplevel"));
 	if(!t.isNull())
 	{
 		if (t.length() == 19)
@@ -122,7 +123,7 @@ TopLevel::TopLevel(const char *name, int)
 
 	setMinimumSize(sizeHint());
 
-	readProperties(Kapp->config());
+	readProperties(kapp->config());
 
 	timerID = startTimer(2000);
 
@@ -142,9 +143,9 @@ TopLevel::~TopLevel()
 void 
 TopLevel::quitSlot()
 {
-	saveProperties(Kapp->config());
+	saveProperties(kapp->config());
 
-	Kapp->config()->sync();
+	kapp->config()->sync();
 	qApp->quit();
 }
 
@@ -204,9 +205,10 @@ TopLevel::answerReceived(int id, const QString& answer)
 int
 main(int argc, char** argv)
 {
+	KCmdLineArgs::init(argc, argv, "ktop", description, KTOP_VERSION);
+
 	// initialize KDE application
-	Kapp = new KApplication(argc, argv, "ktop");
-	CHECK_PTR(Kapp);
+	KApplication a;
 
 	int sfolder = -1;
 
@@ -216,15 +218,14 @@ main(int argc, char** argv)
 	// create top-level widget
 	TopLevel *toplevel = new TopLevel("TaskManager", sfolder);
 	CHECK_PTR(toplevel);
-	Kapp->setMainWidget(toplevel);
-	Kapp->setTopWidget(toplevel);
+	a.setMainWidget(toplevel);
+	a.setTopWidget(toplevel);
 	toplevel->show();
 
 	// run the application
-	int result = Kapp->exec();
+	int result = a.exec();
 
     delete toplevel;
-	delete Kapp;
 
 	return (result);
 }
