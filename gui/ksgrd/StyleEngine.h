@@ -80,6 +80,6 @@ class StyleEngine : public QObject
 
 extern StyleEngine* Style;
 
-};
+}
 
 #endif
