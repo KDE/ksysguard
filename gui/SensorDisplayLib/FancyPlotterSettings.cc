@@ -82,7 +82,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   boxLayout = new QGridLayout( groupBox->layout(), 2, 5, spacingHint() );
   boxLayout->setColStretch( 2, 1 );
 
-  mUseAutoRange = new QCheckBox( i18n( "Automatic Range detection" ), groupBox );
+  mUseAutoRange = new QCheckBox( i18n( "Automatic range detection" ), groupBox );
   QWhatsThis::add( mUseAutoRange, i18n( "Check this box if you want the display range to adapt dynamically to the currently displayed values. If you don't check this, you have to specify the range you want in the fields below." ) );
   boxLayout->addMultiCellWidget( mUseAutoRange, 0, 0, 0, 4 );
 
