@@ -39,9 +39,13 @@
 #include "MultiMeterSettings.h"
 #include "MultiMeter.moc"
 
+// Use the variables defined in FancyPlotter.cc when
+// compiling with --enable-final to prevent duplicates.
+#ifndef KDE_USE_FINAL
 static const int FrameMargin = 0;
 static const int Margin = 5;
 static const int HeadHeight = 10;
+#endif
 
 MultiMeter::MultiMeter(QWidget* parent, const char* name,
 					   const QString& t, int, int)
