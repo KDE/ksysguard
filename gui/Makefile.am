@@ -34,7 +34,7 @@ ksysguard_SOURCES = \
 ksysguard_LDADD = \
 	ksgrd/libksgrd.la \
 	SensorDisplayLib/libsensordisplays.la \
-	$(LIB_KDEUI) $(LIB_KFILE)
+	$(LIB_KDEUI) $(LIB_KIO)
 ksysguard_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
 kpm_SOURCES = kpm.c
@@ -52,7 +52,7 @@ sysguard_panelapplet_la_SOURCES = \
 sysguard_panelapplet_la_LIBADD = \
 	ksgrd/libksgrd.la \
 	SensorDisplayLib/libsensordisplays.la \
-	$(LIB_KDEUI) $(LIB_KFILE)
+	$(LIB_KDEUI) $(LIB_KIO)
 sysguard_panelapplet_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -module -no-undefined
 
 EXTRA_DIST = $(lnk_DATA)
