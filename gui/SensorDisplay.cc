@@ -44,9 +44,13 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 	timerOn();
 	QWhatsThis::add(this, "dummy");
 
+	frame = new QGroupBox(1, Qt::Vertical, "", this, "displayFrame"); 
+	CHECK_PTR(frame);
+
 	/* Let's call updateWhatsThis() in case the derived class does not do
 	 * this. */
 	updateWhatsThis();
+	setFocusPolicy(QWidget::StrongFocus);
 }
 
 SensorDisplay::~SensorDisplay()
@@ -99,6 +103,11 @@ SensorDisplay::eventFilter(QObject* o, QEvent* e)
 		}
 		return (TRUE);
 	}
+	else if (e->type() == QEvent::MouseButtonRelease &&
+			 ((QMouseEvent*) e)->button() == LeftButton)
+	{
+		setFocus();
+	}
 	return QWidget::eventFilter(o, e);
 }
 
@@ -143,20 +152,6 @@ SensorDisplay::updateWhatsThis()
 		"display box and select the <i>Properties</i> entry from the popup "
 		"menu. Select <i>Remove</i> to delete the display from the work "
 		"sheet.</p>%1</qt>")).arg(additionalWhatsThis()));
-}
-
-bool
-SensorDisplay::loadSensor(QDomElement& /*dolElement*/)
-{
-	// TODO: not sure whether it makes sense to have this function.
-	return (false);
-}
-
-bool
-SensorDisplay::saveSensor(QDomDocument& /*doc*/, QDomElement& /*sensor*/)
-{
-	// TODO: not sure whether it makes sense to have this function.
-	return (false);
 }
 
 void

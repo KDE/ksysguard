@@ -54,13 +54,9 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	dict.insert("Login", new QString(i18n("Login")));
 	dict.insert("Command", new QString(i18n("Command")));
 
-	// Create the box that will contain the other widgets.
-	box = new QGroupBox(this, "pList_box"); 
-	CHECK_PTR(box);
-
 	/* All RMB clicks to the box frame will be handled by 
 	 * SensorDisplay::eventFilter. */
-	box->installEventFilter(this);
+	frame->installEventFilter(this);
 
 	// Create the table that lists the processes.
 	pList = new ProcessList(this, "pList");    
@@ -146,7 +142,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 void
 ProcessController::resizeEvent(QResizeEvent* ev)
 {
-	box->setGeometry(0, 0, width(), height());
+	frame->setGeometry(0, 0, width(), height());
 
     QWidget::resizeEvent(ev);
 }
@@ -160,9 +156,9 @@ ProcessController::addSensor(const QString& hostName,
 	sendRequest(hostName, "ps?", 1);
 
 	if (title.isEmpty())
-		box->setTitle(QString(i18n("%1: Running Processes")).arg(hostName));
+		frame->setTitle(QString(i18n("%1: Running Processes")).arg(hostName));
 	else
-		box->setTitle(title);
+		frame->setTitle(title);
 
 	return (true);
 }
@@ -279,7 +275,7 @@ ProcessController::sensorError(int, bool err)
 }
 
 bool
-ProcessController::load(QDomElement& el)
+ProcessController::createFromDOM(QDomElement& el)
 {
 	bool result = addSensor(el.attribute("hostName"),
 							el.attribute("sensorName"),
@@ -308,7 +304,7 @@ ProcessController::load(QDomElement& el)
 }
 
 bool
-ProcessController::save(QDomDocument& doc, QDomElement& display)
+ProcessController::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 {
 	display.setAttribute("hostName", sensors.at(0)->hostName);
 	display.setAttribute("sensorName", sensors.at(0)->name);
@@ -321,7 +317,8 @@ ProcessController::save(QDomDocument& doc, QDomElement& display)
 	if (!pList->save(doc, display))
 		return (false);
 
-	modified = false;
+	if (save)
+		modified = false;
 
 	return (true);
 }

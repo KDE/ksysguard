@@ -54,6 +54,10 @@ public:
 	bool load(const QString& fN);
 	bool save(const QString& fN);
 
+	void cut();
+	void copy();
+	void paste();
+
 	const QString& getFileName()
 	{
 		return (fileName);
@@ -85,6 +89,8 @@ protected:
 private:
 	void insertDummyDisplay(uint r, uint c);
 
+	bool replaceDisplay(uint r, uint c, QDomElement& element);
+
 	void replaceDisplay(uint r, uint c, SensorDisplay* display);
 
 	void collectHosts(QValueList<QString>& l);
@@ -92,6 +98,12 @@ private:
 	void createGrid(uint r, uint c);
 
 	void resizeGrid(uint r, uint c);
+
+	SensorDisplay* currentDisplay(uint* r = 0, uint* c = 0);
+
+	void fixTabOrder();
+
+	QString currentDisplayAsXML();
 
 	QString fileName;
 	bool modified;
@@ -102,7 +114,7 @@ private:
 	/* This two dimensional array stores the pointers to the sensor displays
 	 * or if no sensor is present at a position a pointer to a dummy widget.
 	 * The size of the array corresponds to the size of the grid layout. */
-	QWidget*** displays;
+	SensorDisplay*** displays;
 } ;
 
 #endif

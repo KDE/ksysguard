@@ -22,67 +22,23 @@
 	$Id$
 */
 
-#ifndef _MultiMeter_h_
-#define _MultiMeter_h_
+#ifndef _DummyDisplay_h_
+#define _DummyDisplay_h_
 
 #include <SensorDisplay.h>
 
-class QGroupBox;
-class QLCDNumber;
-class QLabel;
-class MultiMeterSettings;
-
-class MultiMeter : public SensorDisplay
+class DummyDisplay : public SensorDisplay
 {
 	Q_OBJECT
 
 public:
-	MultiMeter(QWidget* parent = 0, const char* name = 0,
+	DummyDisplay(QWidget* parent = 0, const char* name = 0,
 			   const QString& = QString::null, double min = 0, double max = 0);
-	virtual ~MultiMeter()
+	virtual ~DummyDisplay()
 	{
 	}
 
-	bool addSensor(const QString& hostName, const QString& sensorName,
-				   const QString& sensorDescr);
-	void answerReceived(int id, const QString& answer);
 	void resizeEvent(QResizeEvent*);
-
-	bool createFromDOM(QDomElement& domEl);
-	bool addToDOM(QDomDocument& doc, QDomElement& display, bool save = true);
-
-	virtual bool hasSettingsDialog() const
-	{
-		return (TRUE);
-	}
-
-	virtual bool hasBeenModified() const
-	{
-		return (modified);
-	}
-
-	void settings();
-
-	virtual void sensorError(int, bool err);
-
-public slots:
-	void applySettings();
-
-private:
-	void setTitle(const QString& t, const QString& u);
-
-	QLCDNumber* lcd;
-	QLabel* errorLabel;
-
-	QString title;
-	QString unit;
-	bool modified;
-	MultiMeterSettings* mms;
-	bool showUnit;
-	bool lowerLimitActive;
-	double lowerLimit;
-	bool upperLimitActive;
-	double upperLimit;
 } ;
 
 #endif

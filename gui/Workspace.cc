@@ -358,16 +358,28 @@ Workspace::restoreWorkSheet(const QString& fileName, const QString& newName)
 void
 Workspace::cut()
 {
+	WorkSheet* current = (WorkSheet*) currentPage();
+
+	if (current)
+		current->cut();
 }
 
 void
 Workspace::copy()
 {
+	WorkSheet* current = (WorkSheet*) currentPage();
+
+	if (current)
+		current->copy();
 }
 
 void
 Workspace::paste()
 {
+	WorkSheet* current = (WorkSheet*) currentPage();
+
+	if (current)
+		current->paste();
 }
 
 void

@@ -49,9 +49,6 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 					   const QString& t, double, double)
 	: SensorDisplay(parent, name)
 {
-	frame = new QGroupBox(1, Qt::Vertical, title, this, "meterFrame"); 
-	CHECK_PTR(frame);
-
 	showUnit = TRUE;
 	lowerLimit = upperLimit = 0;
 	lowerLimitActive = upperLimitActive = FALSE;
@@ -180,7 +177,7 @@ MultiMeter::setTitle(const QString& t, const QString& u)
 }
 
 bool
-MultiMeter::load(QDomElement& el)
+MultiMeter::createFromDOM(QDomElement& el)
 {
 	modified = false;
 
@@ -197,7 +194,7 @@ MultiMeter::load(QDomElement& el)
 }
 
 bool
-MultiMeter::save(QDomDocument&, QDomElement& display)
+MultiMeter::addToDOM(QDomDocument&, QDomElement& display, bool save)
 {
 	display.setAttribute("hostName", sensors.at(0)->hostName);
 	display.setAttribute("sensorName", sensors.at(0)->name);
@@ -207,7 +204,9 @@ MultiMeter::save(QDomDocument&, QDomElement& display)
 	display.setAttribute("lowerLimit", (int) lowerLimit);
 	display.setAttribute("upperLimitActive", (int) upperLimitActive);
 	display.setAttribute("upperLimit", (int) upperLimit);
-	modified = FALSE;
+
+	if (save)
+		modified = FALSE;
 
 	return (TRUE);
 }

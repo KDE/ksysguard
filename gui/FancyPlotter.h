@@ -27,6 +27,7 @@
 
 #include <qlabel.h>
 #include <qsize.h>
+#include <qgroupbox.h>
 
 #include <kdialogbase.h>
 
@@ -34,7 +35,6 @@
 #include "SignalPlotter.h"
 
 class FancyPlotterSettings;
-class QGroupBox;
 
 class FancyPlotter : public SensorDisplay
 {
@@ -63,15 +63,16 @@ public:
 
 	virtual QString additionalWhatsThis();
 
-	bool load(QDomElement& el);
-	bool save(QDomDocument& doc, QDomElement& display);
+	virtual bool createFromDOM(QDomElement& el);
+	virtual bool addToDOM(QDomDocument& doc, QDomElement& display,
+						  bool save = true);
 
-	bool hasBeenModified() const
+	virtual bool hasBeenModified() const
 	{
 		return (modified);
 	}
 
-	virtual bool hasSettingsDialog()
+	virtual bool hasSettingsDialog() const
 	{
 		return (TRUE);
 	}
@@ -88,8 +89,6 @@ private:
 	int beams;
 	bool modified;
 	bool noFrame;
-
-	QGroupBox* meterFrame;
 
 	SignalPlotter* plotter;
 

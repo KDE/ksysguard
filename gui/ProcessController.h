@@ -62,9 +62,9 @@ public:
 		pList->clearSelection();
 	}
 
-	bool load(QDomElement& el);
+	bool createFromDOM(QDomElement& el);
 
-	bool save(QDomDocument& doc, QDomElement& display);
+	bool addToDOM(QDomDocument& doc, QDomElement& display, bool save = true);
 
 	bool hasBeenModified() const
 	{
@@ -86,6 +86,13 @@ public:
 	virtual void answerReceived(int id, const QString& answer);
 
 	virtual void sensorError(int, bool err);
+
+	void settings() { }
+
+	virtual bool hasSettingsDialog() const
+	{
+		return (TRUE);
+	}
 
 public slots:
 	void filterModeChanged(int filter)
@@ -123,9 +130,6 @@ private:
 	bool modified;
 
 	QVBoxLayout* gm;
-
-	/// The frame around the other widgets.
-    QGroupBox* box;
 
 	/// The process list.
     ProcessList* pList;

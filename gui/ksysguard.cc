@@ -120,8 +120,8 @@ TopLevel::TopLevel(const char *name)
 					   SLOT(disconnectHost()), actionCollection(),
 					   "disconnect_host");
 	KStdAction::cut(ws, SLOT(cut()), actionCollection());
-	KStdAction::copy(ws, SLOT(cut()), actionCollection());
-	KStdAction::paste(ws, SLOT(cut()), actionCollection());
+	KStdAction::copy(ws, SLOT(copy()), actionCollection());
+	KStdAction::paste(ws, SLOT(paste()), actionCollection());
 	(void) new KAction(i18n("Configure &Worksheet..."), "configure", 0, ws,
 					   SLOT(configure()), actionCollection(),
 					   "configure_sheet");

@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -57,15 +57,15 @@ public:
 
 	virtual void answerReceived(int id, const QString& s);
 
-	bool load(QDomElement& el);
-	bool save(QDomDocument& doc, QDomElement& display);
+	bool createFromDOM(QDomElement& el);
+	bool addToDOM(QDomDocument& doc, QDomElement& display, bool save = true);
 
-	bool hasBeenModified() const
+	virtual bool hasBeenModified() const
 	{
 		return (modified);
 	}
 
-	virtual bool hasSettingsDialog()
+	virtual bool hasSettingsDialog() const
 	{
 		return (TRUE);
 	}
@@ -83,8 +83,6 @@ private:
 
 	int bars;
 	bool modified;
-
-	QGroupBox* meterFrame;
 
 	BarGraph* plotter;
 

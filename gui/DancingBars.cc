@@ -44,15 +44,13 @@ DancingBars::DancingBars(QWidget* parent, const char* name,
 						 const QString& title, int min, int max)
 	: SensorDisplay(parent, name)
 {
-	meterFrame = new QGroupBox(1, Qt::Vertical, title, this, "meterFrame"); 
-	CHECK_PTR(meterFrame);
 	if (!title.isEmpty())
-		meterFrame->setTitle(title);
+		frame->setTitle(title);
 
 	bars = 0;
 	flags = 0;
 
-	plotter = new BarGraph(meterFrame, "signalPlotter", min, max);
+	plotter = new BarGraph(frame, "signalPlotter", min, max);
 	CHECK_PTR(plotter);
 
 	setMinimumSize(sizeHint());
@@ -66,8 +64,6 @@ DancingBars::DancingBars(QWidget* parent, const char* name,
 
 DancingBars::~DancingBars()
 {
-	delete plotter;
-	delete meterFrame;
 }
 
 void
@@ -97,7 +93,7 @@ DancingBars::settings()
 	dbs = new DancingBarsSettings(this, "DancingBarsSettings", true);
 	CHECK_PTR(dbs);
 
-	dbs->title->setText(meterFrame->title());
+	dbs->title->setText(frame->title());
 	dbs->title->setFocus();
 	dbs->maximumValue->setValue(plotter->getMax());
 	long l, u;
@@ -120,7 +116,7 @@ DancingBars::settings()
 void
 DancingBars::applySettings()
 {
-	meterFrame->setTitle(dbs->title->text());
+	frame->setTitle(dbs->title->text());
 	plotter->changeRange(plotter->getMin(),
 						 dbs->maximumValue->text().toLong());
 	if (dbs->enableAlarm->isChecked())
@@ -155,13 +151,13 @@ DancingBars::addSensor(const QString& hostName, const QString& sensorName,
 void
 DancingBars::resizeEvent(QResizeEvent*)
 {
-	meterFrame->setGeometry(0, 0, width(), height());
+	frame->setGeometry(0, 0, width(), height());
 }
 
 QSize
 DancingBars::sizeHint(void)
 {
-	return (meterFrame->sizeHint());
+	return (frame->sizeHint());
 }
 
 void
@@ -199,11 +195,11 @@ DancingBars::answerReceived(int id, const QString& answer)
 }
 
 bool
-DancingBars::load(QDomElement& domElem)
+DancingBars::createFromDOM(QDomElement& domElem)
 {
 	modified = false;
 
-	meterFrame->setTitle(domElem.attribute("title"));
+	frame->setTitle(domElem.attribute("title"));
 
 	plotter->changeRange(domElem.attribute("min").toLong(),
 						 domElem.attribute("max").toLong());
@@ -224,9 +220,9 @@ DancingBars::load(QDomElement& domElem)
 }
 
 bool
-DancingBars::save(QDomDocument& doc, QDomElement& display)
+DancingBars::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 {
-	display.setAttribute("title", meterFrame->title());
+	display.setAttribute("title", frame->title());
 	display.setAttribute("min", (int) plotter->getMin());
 	display.setAttribute("max", (int) plotter->getMax());
 	long l, u;
@@ -245,7 +241,9 @@ DancingBars::save(QDomDocument& doc, QDomElement& display)
 		beam.setAttribute("sensorName", sensors.at(i)->name);
 		beam.setAttribute("sensorDescr", sensors.at(i)->description);
 	}
-	modified = false;
+
+	if (save)
+		modified = false;
 
 	return (true);
 }

@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -27,6 +27,7 @@
 
 #include <qwidget.h>
 #include <qvaluelist.h>
+#include <qgroupbox.h>
 
 #include "SensorClient.h"
 #include "SensorDisplay.h"
@@ -85,24 +86,14 @@ public:
 		timerOn();
 	}
 		
-	virtual bool load(QDomElement&)
-	{
-		return (TRUE);
-	}
-
-	virtual bool save(QDomDocument&, QDomElement&)
-	{
-		return (TRUE);
-	}
-
 	virtual bool hasBeenModified() const
 	{
-		return (TRUE);
+		return (false);
 	}
 
-	virtual bool hasSettingsDialog()
+	virtual bool hasSettingsDialog() const
 	{
-		return (FALSE);
+		return (false);
 	}
 
 	virtual void settings() { }
@@ -121,8 +112,16 @@ public:
 
 	virtual void sensorError(int sensorId, bool mode);
 
-	virtual bool loadSensor(QDomElement& domElem);
-	virtual bool saveSensor(QDomDocument& doc, QDomElement& sensor);
+	virtual bool createFromDOM(QDomElement&)
+	{
+		// should never been used.
+		return (false);
+	}
+	virtual bool addToDOM(QDomDocument&, QDomElement&, bool = true)
+	{
+		// should never been used.
+		return (false);
+	}
 
 	void collectHosts(QValueList<QString>& list);
 
@@ -158,6 +157,8 @@ public slots:
 		emit(showPopupMenu(this));
 	}
 
+	virtual void applySettings() { }
+
 signals:
 	void showPopupMenu(SensorDisplay* display);
 
@@ -168,7 +169,20 @@ protected:
 	void registerSensor(const QString& hostName, const QString& sensorName,
 						const QString& sensorDescr);
 
+	virtual void focusInEvent(QFocusEvent*)
+	{
+		frame->setLineWidth(2);
+	}
+
+	virtual void focusOutEvent(QFocusEvent*)
+	{
+		frame->setLineWidth(1);
+	}
+
 	QList<SensorProperties> sensors;
+
+	/// The frame around the other widgets.
+	QGroupBox* frame;
 
 private:
 	int timerId;

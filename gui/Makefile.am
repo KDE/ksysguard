@@ -10,13 +10,17 @@ INCLUDES= $(all_includes)
 bin_PROGRAMS = 	ksysguard
 
 # Which sources should be compiled for ksysguard.
-ksysguard_SOURCES = ksysguard.cc ksysguard.skel SensorAgent.cc \
-	SensorManager.cc \
-	ProcessMenu.cc ReniceDlg.cc WorkSheet.cc Workspace.cc \
-	SensorBrowser.cc SensorDisplay.cc \
-	FancyPlotter.cc SignalPlotter.cc MultiMeter.cc \
+ksysguard_SOURCES = \
+	SensorDisplay.cc \
+	DummyDisplay.cc \
+	FancyPlotter.cc SignalPlotter.cc \
+	MultiMeter.cc \
 	DancingBars.cc BarGraph.cc \
-	ProcessController.cc ProcessList.cc \
+	ProcessController.cc ProcessList.cc ProcessMenu.cc \
+	SensorBrowser.cc  \
+	SensorManager.cc SensorAgent.cc \
+	WorkSheet.cc Workspace.cc \
+	ksysguard.cc ksysguard.skel \
 	DancingBarsSettings.ui MultiMeterSettings.ui \
 	FancyPlotterSettings.ui HostConnector.ui WorkSheetSettings.ui
 

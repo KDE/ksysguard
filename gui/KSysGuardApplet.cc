@@ -380,7 +380,7 @@ KSysGuardApplet::load()
 
 		newDisplay->setUpdateInterval(updateInterval);
 		// load display specific settings
-		if (!newDisplay->load(element))
+		if (!newDisplay->createFromDOM(element))
 			return (FALSE);
 
 		delete docks[dock];
@@ -434,7 +434,7 @@ KSysGuardApplet::save()
 			display.setAttribute("dock", i);
 			display.setAttribute("class", docks[i]->className());
 
-			((SensorDisplay*) docks[i])->save(doc, display);
+			((SensorDisplay*) docks[i])->addToDOM(doc, display);
 		}	
 
 	KStandardDirs* kstd = KGlobal::dirs();

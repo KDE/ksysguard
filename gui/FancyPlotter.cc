@@ -43,11 +43,8 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 						   bool nf)
 	: SensorDisplay(parent, name), noFrame(nf)
 {
-	meterFrame = new QGroupBox(1, Qt::Vertical, title, this,
-							   "meterFrame"); 
-	CHECK_PTR(meterFrame);
 	if (!title.isEmpty())
-		meterFrame->setTitle(title);
+		frame->setTitle(title);
 
 	beams = 0;
 	flags = 0;
@@ -58,7 +55,7 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 		plotter->setShowTopBar(true);
 	}
 	else
-		plotter = new SignalPlotter(meterFrame, "signalPlotter", min, max);
+		plotter = new SignalPlotter(frame, "signalPlotter", min, max);
 	CHECK_PTR(plotter);
 	if (!title.isEmpty())
 		plotter->setTitle(title);
@@ -81,7 +78,7 @@ FancyPlotter::settings()
 {
 	fps = new FancyPlotterSettings(this, "FancyPlotterSettings", true);
 	CHECK_PTR(fps);
-	fps->title->setText(meterFrame->title());
+	fps->title->setText(frame->title());
 	fps->title->setFocus();
 	fps->minVal->setText(QString("%1").arg(plotter->getMin()));
 	fps->minVal->setValidator(new KFloatValidator(fps->minVal));
@@ -122,7 +119,7 @@ FancyPlotter::sensorError(int sensorId, bool err)
 void
 FancyPlotter::applySettings()
 {
-	meterFrame->setTitle(fps->title->text());
+	frame->setTitle(fps->title->text());
 	plotter->setTitle(fps->title->text());
 	plotter->changeRange(0, fps->minVal->text().toDouble(),
 						 fps->maxVal->text().toDouble());
@@ -170,7 +167,7 @@ FancyPlotter::resizeEvent(QResizeEvent*)
 	if (noFrame)
 		plotter->setGeometry(0, 0, width(), height());
 	else
-		meterFrame->setGeometry(0, 0, width(), height());
+		frame->setGeometry(0, 0, width(), height());
 }
 
 QSize
@@ -179,7 +176,7 @@ FancyPlotter::sizeHint(void)
 	if (noFrame)
 		return (plotter->sizeHint());
 	else
-		return (meterFrame->sizeHint());
+		return (frame->sizeHint());
 }
 
 void
@@ -233,14 +230,14 @@ FancyPlotter::additionalWhatsThis()
 }
 
 bool
-FancyPlotter::load(QDomElement& domElem)
+FancyPlotter::createFromDOM(QDomElement& domElem)
 {
 	modified = false;
 
 	QString title = domElem.attribute("title");
 	if (!title.isEmpty())
 	{
-		meterFrame->setTitle(title);
+		frame->setTitle(title);
 		plotter->setTitle(title);
 	}
 
@@ -258,9 +255,9 @@ FancyPlotter::load(QDomElement& domElem)
 }
 
 bool
-FancyPlotter::save(QDomDocument& doc, QDomElement& display)
+FancyPlotter::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 {
-	display.setAttribute("title", meterFrame->title());
+	display.setAttribute("title", frame->title());
 	display.setAttribute("min", plotter->getMin());
 	display.setAttribute("max", plotter->getMax());
 
@@ -271,7 +268,8 @@ FancyPlotter::save(QDomDocument& doc, QDomElement& display)
 		beam.setAttribute("hostName", sensors.at(i)->hostName);
 		beam.setAttribute("sensorName", sensors.at(i)->name);
 	}
-	modified = false;
+	if (save)
+		modified = false;
 
 	return (true);
 }

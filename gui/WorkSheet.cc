@@ -29,6 +29,7 @@
 #include <qpopupmenu.h>
 #include <qspinbox.h>
 #include <qwhatsthis.h>
+#include <qclipboard.h>
 
 #include <kmessagebox.h>
 #include <klocale.h>
@@ -36,6 +37,7 @@
 
 #include "WorkSheet.h"
 #include "SensorManager.h"
+#include "DummyDisplay.h"
 #include "FancyPlotter.h"
 #include "MultiMeter.h"
 #include "DancingBars.h"
@@ -49,10 +51,10 @@ WorkSheet::WorkSheet(QWidget* parent) :
 	lm = 0;
 	rows = columns = 0;
 	displays = 0;
-	modified = FALSE;
+	modified = false;
 	fileName = "";
 
-	setAcceptDrops(TRUE);
+	setAcceptDrops(true);
 }
 
 WorkSheet::WorkSheet(QWidget* parent, uint r, uint c, uint i) :
@@ -60,12 +62,12 @@ WorkSheet::WorkSheet(QWidget* parent, uint r, uint c, uint i) :
 {
 	lm = 0;
 	displays = 0;
-	modified = FALSE;
+	modified = false;
 	fileName = "";
 	createGrid(r, c);
 	updateInterval = i;
 
-	setAcceptDrops(TRUE);
+	setAcceptDrops(true);
 }
 
 WorkSheet::~WorkSheet()
@@ -82,7 +84,7 @@ WorkSheet::hasBeenModified() const
 	for (uint i = 0; i < rows; ++i)
 		for (uint j = 0; j < columns; ++j)
 			if (((SensorDisplay*)displays[i][j])->hasBeenModified())
-				return (TRUE);
+				return (true);
 
 	return (modified);
 }
@@ -90,17 +92,16 @@ WorkSheet::hasBeenModified() const
 bool
 WorkSheet::load(const QString& fN)
 {
-	modified = FALSE;
+	modified = false;
 
 	QFile file(fileName = fN);
 	if (!file.open(IO_ReadOnly))
 	{
 		KMessageBox::sorry(this, i18n("Can't open the file %1")
 						   .arg(fileName));
-		return (FALSE);
+		return (false);
 	}
 
-	// Parse the XML file.
 	QDomDocument doc;
 	// Read in file and check for a valid XML header.
 	if (!doc.setContent(&file))
@@ -108,7 +109,7 @@ WorkSheet::load(const QString& fN)
 		KMessageBox::sorry(
 			this,
 			i18n("The file %1 does not contain valid XML").arg(fileName));
-		return (FALSE);
+		return (false);
 	}
 	// Check for proper document type.
 	if (doc.doctype().name() != "KSysGuardWorkSheet")
@@ -118,7 +119,7 @@ WorkSheet::load(const QString& fN)
 			i18n("The file %1 does not contain a valid work sheet\n"
 				 "definition, which must have a document type\n"
 				 "'KSysGuardWorkSheet'").arg(fileName));
-		return (FALSE);
+		return (false);
 	}
 	// Check for proper size.
 	QDomElement element = doc.documentElement();
@@ -134,7 +135,7 @@ WorkSheet::load(const QString& fN)
 		KMessageBox::sorry(
 			this, i18n("The file %1 has an invalid work sheet size.")
 			.arg(fileName));
-		return (FALSE);
+		return (false);
 	}
 
 	createGrid(r, c);
@@ -163,43 +164,20 @@ WorkSheet::load(const QString& fN)
 		{
 			kdDebug () << "Row or Column out of range (" << row << ", "
 					   << column << ")" << endl;
-			return (FALSE);
+			return (false);
 		}
 
-		QString classType = element.attribute("class");
-		SensorDisplay* newDisplay;
-		if (classType == "FancyPlotter")
-			newDisplay = new FancyPlotter(this);
-		else if (classType == "MultiMeter")
-			newDisplay = new MultiMeter(this);
-		else if (classType == "DancingBars")
-			newDisplay = new DancingBars(this);
-		else if (classType == "ProcessController")
-			newDisplay = new ProcessController(this);
-		else
-		{
-			kdDebug () << "Unkown class " <<  classType << endl;
-			return (FALSE);
-		}
-		CHECK_PTR(newDisplay);
-		newDisplay->setUpdateInterval(updateInterval);
-
-		// load display specific settings
-		if (!newDisplay->load(element))
-			return (FALSE);
-
-		replaceDisplay(row, column, newDisplay);
+		replaceDisplay(row, column, element);
 	}
 
-	modified = FALSE;
+	modified = false;
 
-	return (TRUE);
+	return (true);
 }
 
 bool
 WorkSheet::save(const QString& fN)
 {
-	// Parse the XML file.
 	QDomDocument doc("KSysGuardWorkSheet");
 	doc.appendChild(doc.createProcessingInstruction(
 		"xml", "version=\"1.0\" encoding=\"UTF-8\""));
@@ -232,7 +210,7 @@ WorkSheet::save(const QString& fN)
 	
 	for (uint i = 0; i < rows; ++i)
 		for (uint j = 0; j < columns; ++j)
-			if (!displays[i][j]->isA("QGroupBox"))
+			if (!displays[i][j]->isA("DummyDisplay"))
 			{
 				SensorDisplay* displayP = (SensorDisplay*) displays[i][j];
 				QDomElement display = doc.createElement("display");
@@ -241,7 +219,7 @@ WorkSheet::save(const QString& fN)
 				display.setAttribute("column", j);
 				display.setAttribute("class", displayP->className());
 
-				displayP->save(doc, display);
+				displayP->addToDOM(doc, display);
 			}	
 
 	QFile file(fileName = fN);
@@ -249,15 +227,59 @@ WorkSheet::save(const QString& fN)
 	{
 		KMessageBox::sorry(this, i18n("Can't save file %1")
 						   .arg(fileName));
-		return (FALSE);
+		return (false);
 	}
 	QTextStream s(&file);
 	s.setEncoding(QTextStream::UnicodeUTF8);
 	s << doc;
 	file.close();
 
-	modified = FALSE;
-	return (TRUE);
+	modified = false;
+	return (true);
+}
+
+void
+WorkSheet::cut()
+{
+	QClipboard* clip = QApplication::clipboard();
+
+	clip->setText(currentDisplayAsXML());
+
+	removeDisplay(currentDisplay());
+}
+
+void
+WorkSheet::copy()
+{
+	QClipboard* clip = QApplication::clipboard();
+
+	clip->setText(currentDisplayAsXML());
+}
+
+void
+WorkSheet::paste()
+{
+	uint r, c;
+	if (!currentDisplay(&r, &c))
+		return;
+
+	QClipboard* clip = QApplication::clipboard();
+	
+	QDomDocument doc;
+	/* Get text from clipboard and check for a valid XML header and 
+	 * proper document type. */
+	if (!doc.setContent(clip->text()) ||
+		doc.doctype().name() != "KSysGuardDisplay")
+	{
+		KMessageBox::sorry(
+			this,
+			i18n("The clipboard does not contain a valid display\n"
+				 "description."));
+		return;
+	}
+
+	QDomElement element = doc.documentElement();
+	replaceDisplay(r, c, element);
 }
 
 SensorDisplay*
@@ -275,7 +297,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 	/* If the by 'r' and 'c' specified display is a QGroupBox dummy
 	 * display we replace the widget. Otherwise we just try to add
 	 * the new sensor to an existing display. */
-	if (displays[r][c]->isA("QGroupBox"))
+	if (displays[r][c]->isA("DummyDisplay"))
 	{
 		SensorDisplay* newDisplay = 0;
 		/* If the sensor type is supported by more than one display
@@ -285,7 +307,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 		{
 			QPopupMenu pm;
 			pm.insertItem(i18n("Select a display type"), 0);
-			pm.setItemEnabled(0, FALSE);
+			pm.setItemEnabled(0, false);
 			pm.insertSeparator();
 			pm.insertItem(i18n("&Signal Plotter"), 1);
 			pm.insertItem(i18n("&Multimeter"), 2);
@@ -310,7 +332,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 		{
 			QPopupMenu pm;
 			pm.insertItem(i18n("Select a display type"), 0);
-			pm.setItemEnabled(0, FALSE);
+			pm.setItemEnabled(0, false);
 			pm.insertSeparator();
 			pm.insertItem(i18n("&Signal Plotter"), 1);
 			pm.insertItem(i18n("&Multimeter"), 2);
@@ -339,7 +361,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 		addSensor(hostName, sensorName, sensorDescr);
 	((SensorDisplay*) displays[r][c])->setUpdateInterval(updateInterval);
 
-	modified = TRUE;
+	modified = true;
 	return ((SensorDisplay*) displays[r][c]);
 }
 
@@ -361,6 +383,10 @@ WorkSheet::settings()
 	if (wss->exec())
 	{
 		updateInterval = wss->interval->text().toUInt();
+		for (uint r = 0; r < rows; ++r)
+			for (uint c = 0; c < columns; ++c)
+				displays[r][c]->setUpdateInterval(updateInterval);
+
 		resizeGrid(wss->rows->text().toUInt(),
 				   wss->columns->text().toUInt());
 	}
@@ -376,13 +402,17 @@ WorkSheet::showPopupMenu(SensorDisplay* display)
 void
 WorkSheet::removeDisplay(SensorDisplay* display)
 {
+	if (!display)
+		return;
+
 	for (uint i = 0; i < rows; ++i)
 		for (uint j = 0; j < columns; ++j)
 			if (displays[i][j] == display)
 			{
 				delete display;
 				insertDummyDisplay(i, j);
-				modified = TRUE;
+				modified = true;
+				return;
 			}
 }
 
@@ -441,25 +471,34 @@ WorkSheet::customEvent(QCustomEvent* ev)
 	}
 }
 
-void
-WorkSheet::insertDummyDisplay(uint r, uint c)
+bool
+WorkSheet::replaceDisplay(uint r, uint c, QDomElement& element)
 {
-	QGroupBox* dummy = new QGroupBox(this, "dummy frame");
-	dummy->setTitle(i18n("Drop sensor here"));
-	dummy->setMinimumSize(24, 16);
-	QWhatsThis::add(dummy, i18n(
-		"This is an empty space in a work sheet. Drag a sensor from "
-		"the Sensor Browser and drop it here. A sensor display will "
-		"appear that allows you to monitor the values of the sensor "
-		"over time."));
-	displays[r][c] = dummy;
-	lm->addWidget(dummy, r, c);
-	displays[r][c]->show();
+	QString classType = element.attribute("class");
+	SensorDisplay* newDisplay;
+	if (classType == "FancyPlotter")
+		newDisplay = new FancyPlotter(this);
+	else if (classType == "MultiMeter")
+		newDisplay = new MultiMeter(this);
+	else if (classType == "DancingBars")
+		newDisplay = new DancingBars(this);
+	else if (classType == "ProcessController")
+		newDisplay = new ProcessController(this);
+	else
+	{
+		kdDebug () << "Unkown class " <<  classType << endl;
+		return (false);
+	}
+	CHECK_PTR(newDisplay);
+	newDisplay->setUpdateInterval(updateInterval);
 
-	// Notify parent about possibly new minimum size.
-	((QWidget*) parent()->parent())->setMinimumSize(
-		((QWidget*) parent()->parent())->sizeHint());
-	lm->invalidate();
+	// load display specific settings
+	if (!newDisplay->createFromDOM(element))
+		return (false);
+
+	replaceDisplay(r, c, newDisplay);
+
+	return (true);
 }
 
 void
@@ -474,6 +513,21 @@ WorkSheet::replaceDisplay(uint r, uint c, SensorDisplay* newDisplay)
 	displays[r][c] = newDisplay;
 	connect(newDisplay, SIGNAL(showPopupMenu(SensorDisplay*)),
 			this, SLOT(showPopupMenu(SensorDisplay*)));
+	fixTabOrder();
+
+	// Notify parent about possibly new minimum size.
+	((QWidget*) parent()->parent())->setMinimumSize(
+		((QWidget*) parent()->parent())->sizeHint());
+	lm->invalidate();
+}
+
+void
+WorkSheet::insertDummyDisplay(uint r, uint c)
+{
+	displays[r][c] = new DummyDisplay(this, "dummy frame");
+	lm->addWidget(displays[r][c], r, c);
+	fixTabOrder();
+	displays[r][c]->show();
 
 	// Notify parent about possibly new minimum size.
 	((QWidget*) parent()->parent())->setMinimumSize(
@@ -486,7 +540,7 @@ WorkSheet::collectHosts(QValueList<QString>& list)
 {
 	for (uint r = 0; r < rows; ++r)
 		for (uint c = 0; c < columns; ++c)
-			if (!displays[r][c]->isA("QGroupBox"))
+			if (!displays[r][c]->isA("DummyDisplay"))
 				((SensorDisplay*) displays[r][c])->collectHosts(list);
 }
 
@@ -504,15 +558,16 @@ WorkSheet::createGrid(uint r, uint c)
 	CHECK_PTR(lm);
 
 	// and fill it with dummy displays
-	displays = new QWidget**[rows];
+	displays = new SensorDisplay**[rows];
 	CHECK_PTR(displays);
 	for (r = 0; r < rows; ++r)
 	{
-		displays[r] = new QWidget*[columns];
+		displays[r] = new SensorDisplay*[columns];
 		CHECK_PTR(displays[r]);
 		for (c = 0; c < columns; ++c)
-			insertDummyDisplay(r, c);
+			displays[r][c] = new DummyDisplay(this, "dummy frame");
 	}
+
 	/* set stretch factors for rows and columns */
 	for (r = 0; r < rows; ++r)
 		lm->setRowStretch(r, 1);
@@ -527,11 +582,11 @@ WorkSheet::resizeGrid(uint newRows, uint newColumns)
 {
 	uint r, c;
 	/* Create new array for display pointers */
-	QWidget*** newDisplays = new QWidget**[newRows];
+	SensorDisplay*** newDisplays = new SensorDisplay**[newRows];
 	CHECK_PTR(newDisplays);
 	for (r = 0; r < newRows; ++r)
 	{
-		newDisplays[r] = new QWidget*[newColumns];
+		newDisplays[r] = new SensorDisplay*[newColumns];
 		CHECK_PTR(displays[r]);
 		for (c = 0; c < newColumns; ++c)
 			if (c < columns && r < rows)
@@ -575,4 +630,54 @@ WorkSheet::resizeGrid(uint newRows, uint newColumns)
 	columns = newColumns;
 
 	lm->activate();
+}
+
+SensorDisplay*
+WorkSheet::currentDisplay(uint* row, uint* column)
+{
+	for (uint r = 0 ; r < rows; ++r)
+		for (uint c = 0 ; c < columns; ++c)
+			if (displays[r][c]->hasFocus())
+			{
+				if (row)
+					*row = r;
+				if (column)
+					*column = c;
+				return (displays[r][c]);
+			}
+
+	return (0);
+}
+
+void
+WorkSheet::fixTabOrder()
+{
+	for (uint r = 0; r < rows; ++r)
+		for (uint c = 0; c < columns; ++c)
+		{
+			if (c + 1 < columns)
+				setTabOrder(displays[r][c], displays[r][c + 1]);
+			else if (r + 1 < rows)
+				setTabOrder(displays[r][c], displays[r + 1][0]);
+		}
+}
+
+QString
+WorkSheet::currentDisplayAsXML()
+{
+	SensorDisplay* display = currentDisplay();
+	if (!display)
+		return QString::null;
+
+	/* We create an XML description of the current display. */
+	QDomDocument doc("KSysGuardDisplay");
+	doc.appendChild(doc.createProcessingInstruction(
+		"xml", "version=\"1.0\" encoding=\"UTF-8\""));
+
+	QDomElement domEl = doc.createElement("display");
+	doc.appendChild(domEl);
+	domEl.setAttribute("class", display->className());
+	display->addToDOM(doc, domEl);
+
+	return doc.toString();
 }
