@@ -73,12 +73,24 @@
  * allow them unless you have _really_ good reasons for doing so.
  */
 
+#include <config.h>
+
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+
 #include <stdlib.h>
 #include <dirent.h>
 
 #include <kapp.h>
 
 #include "OSStatus.h"
+#include <sys/sysctl.h>
+#include <vm/vm_param.h>
+#include <sys/vmmeter.h>
+#include <sys/user.h>
+#include <unistd.h>
+
 
 // uncomment this line to fake SMP reporting on non SMP systems
 // #define FAKE_SMP 1
@@ -424,8 +436,6 @@ OSStatus::getNoProcesses(void)
  * Copyright 1999 Hans Petter Bieker <zerium@webindex.no>.
  */
 
-#include <stdlib.h>
-#include <sys/param.h>
 #include <sys/sysctl.h>
 #include <vm/vm_param.h>
 #include <sys/vmmeter.h>
@@ -503,13 +513,11 @@ OSStatus::getMemoryInfo(int& total, int& mfree, int& used, int& buffers,
 	// mfree
 	mfree = p.t_free * getpagesize() / 1024;
 
-	// used
-	used = p.t_arm * getpagesize() / 1024;
-
 	// buffers
 	len = sizeof (buffers);
 	if ((sysctlbyname("vfs.bufspace", &buffers, &len, NULL, 0) == -1) || !len)
 		buffers = 0; // Doesn't work under FreeBSD v2.2.x
+	buffers /= 1024;
 
 	// cached
 	len = sizeof (cached);
@@ -517,7 +525,8 @@ OSStatus::getMemoryInfo(int& total, int& mfree, int& used, int& buffers,
 		cached = 0; // Doesn't work under FreeBSD v2.2.x
 	cached *= getpagesize() / 1024;
 
-	
+	// used
+	used = p.t_arm * getpagesize() / 1024 + buffers + cached;
 
 	return (true);
 }

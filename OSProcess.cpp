@@ -34,6 +34,10 @@
  */
 
 #include <config.h>
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+#include <sys/param.h>
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -48,6 +52,7 @@
 #endif
 #include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <dirent.h>
 #include <pwd.h>
@@ -224,10 +229,7 @@ OSProcess::read(const void* info)
  * Copyright 1999 Hans Petter Bieker <zerium@webindex.no>.
  */
 
-#include <sys/param.h>
-#include <stdlib.h>
 #include <sys/sysctl.h>
-#include <sys/user.h>                    
 
 OSProcess::OSProcess(const void* info, TimeStampList* /*lastTStamps*/,
                                          TimeStampList* /*newTStamps*/)
