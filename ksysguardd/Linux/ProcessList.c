@@ -138,6 +138,24 @@ typedef struct
 
 static unsigned ProcessCount;
 
+static void
+validateStr(char* str)
+{
+	char* s = str;
+
+	/* All characters that could screw up the communication will be
+	 * removed. */
+	while (*s)
+	{
+		if (*s == '\t' || *s == '\n' || *s == '\r')
+			*s = ' ';
+		++s;
+	}
+	/* Make sure that string contains at least one character (blank). */
+	if (str[0] == '\0')
+		strcpy(str, " ");
+}
+
 static int 
 processCmp(void* p1, void* p2)
 {
@@ -188,6 +206,7 @@ updateProcess(int pid)
 	}
 
 	fscanf(fd, "%*s %63s", ps->name);
+	validateStr(ps->name);
 	fscanf(fd, "%*s %*c %*s");
 	fscanf(fd, "%*s %*d");
 	fscanf(fd, "%*s %*d");
@@ -221,6 +240,11 @@ updateProcess(int pid)
 			   &userTime, &sysTime, &ps->niceLevel, &ps->vmSize,
 			   &ps->vmRss) != 9)
 		return (-1);
+	if (!strchr("SRZTD", ps->status))
+	{
+		/* fprintf(stderr, "Unknown status %c\n", ps->status); */
+		ps->status = '-';
+	}
 
 	ps->vmRss = (ps->vmRss + 3) * PAGE_SIZE;
 
@@ -265,6 +289,7 @@ updateProcess(int pid)
 	sprintf(buf, "%%%d[^\n]", sizeof(ps->cmdline) - 1);
 	fscanf(fd, buf, ps->cmdline);
 	ps->cmdline[sizeof(ps->cmdline) - 1] = '\0';
+	validateStr(ps->cmdline);
 	fclose(fd);
 
 	/* Ugly hack to "fix" program name for kdeinit lauched programs. */
@@ -292,6 +317,7 @@ updateProcess(int pid)
 	{
 		strncpy(ps->userName, pwent->pw_name, sizeof(ps->userName) - 1);
 		ps->userName[sizeof(ps->userName) - 1] = '\0';
+		validateStr(ps->userName);
 	}
 
 	ps->alive = 1;

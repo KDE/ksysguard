@@ -78,11 +78,13 @@ protected slots:
 	void quitApp();
 	void connectHost();
 	void disconnectHost();
-	void showToolBar();
+	void toggleMainToolBar();
 	void showStatusBar();
 	void editToolbars();
 
 private:
+	void showMainToolBar(bool show);
+
 	KStatusBar* statusbar;
 
 	QSplitter* splitter;

@@ -38,6 +38,7 @@
 #include <string.h>
 #include <signal.h>
 #include <unistd.h>
+#include <assert.h>
 
 #include <qheader.h>
 #include <qpixmap.h>
@@ -68,6 +69,10 @@ static const char* floatKey(const char* text);
 static const char*
 intKey(const char* text)
 {
+	// TODO: For some yet unknown reason text is sometimes 0.
+	if (!text)
+		return (FALSE);
+
 	int val;
 	sscanf(text, "%d", &val);
 	static char key[32];
@@ -79,6 +84,10 @@ intKey(const char* text)
 static const char*
 timeKey(const char* text)
 {
+	// TODO: For some yet unknown reason text is sometimes 0.
+	if (!text)
+		return (FALSE);
+
 	int h, m;
 	sscanf(text, "%d:%d", &h, &m);
 	int t = h * 60 + m;
@@ -91,6 +100,10 @@ timeKey(const char* text)
 static const char*
 floatKey(const char* text)
 {
+	// TODO: For some yet unknown reason text is sometimes 0.
+	if (!text)
+		return (FALSE);
+
 	double percent;
 	sscanf(text, "%lf", &percent);
 
@@ -394,8 +407,6 @@ ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 	// icon + process name
 	pli->setPixmap(0, treeViewEnabled ? pix : icon);
 	pli->setText(0, p->getName());
-
-	QString s;
 
 	// insert remaining field into table
 	for (unsigned int col = 1; col < p->numberOfTokens(); col++)

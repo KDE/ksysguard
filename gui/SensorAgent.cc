@@ -161,21 +161,14 @@ SensorAgent::msgSent(KProcess*)
 void 
 SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 {
-	if (buflen > 0)
-	{
-		char* aux = new char[buflen + 1];
-		strncpy(aux, buffer, buflen);
-		aux[buflen] = '\0';
-		answerBuffer += QString(aux);
-		delete [] aux;
-	}
+	QString aux = QString::fromLocal8Bit(buffer, buflen);
+	answerBuffer += aux;
 
 	int end;
 	while ((end = answerBuffer.find("\nksysguardd> ")) > 0)
 	{
 		if (!daemonOnLine)
 		{
-			qDebug("Sensor is on-line");
 			/* First '\nksysguardd> ' signals that daemon is ready to serve
 			 * requests now. */
 			daemonOnLine = true;
@@ -207,16 +200,8 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 void
 SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 {
-	QString errorBuffer;
-	if (buflen > 0)
-	{
-		char* aux = new char[buflen + 1];
-		strncpy(aux, buffer, buflen);
-		aux[buflen] = '\0';
-		errorBuffer = aux;
-		qDebug("ERR: %s", aux);
-		delete [] aux;
-	}
+	QString errorBuffer = QString::fromLocal8Bit(buffer, buflen);
+	qDebug("ERR: %s", errorBuffer.latin1());
 
 	if (errorBuffer.find("assword: ") > 0)
 	{
