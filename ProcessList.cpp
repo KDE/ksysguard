@@ -583,7 +583,7 @@ ProcessList::addProcess(OSProcess* p, ProcessLVI* pli)
 	 * Get icon from icon list that might be appropriate for a process
 	 * with this name.
 	 */
-	QPixmap pix = icons->loadApplicationMiniIcon(p->getName(), 16, 16);
+	QPixmap pix = icons->loadApplicationMiniIcon(QString(p->getName()) + ".xpm", 16, 16);
 
 	/*
 	 * We copy the icon into a 24x16 pixmap to add a 4 pixel margin on the
