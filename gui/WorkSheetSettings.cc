@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
     Copyright (c) 1999 - 2002 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -29,7 +29,6 @@
 
 #include <qgroupbox.h>
 #include <qlabel.h>
-#include <qlayout.h>
 #include <qspinbox.h>
 #include <qlayout.h>
 #include <qtooltip.h>
