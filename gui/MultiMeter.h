@@ -56,11 +56,6 @@ public:
 		return (TRUE);
 	}
 
-	virtual bool hasBeenModified() const
-	{
-		return (modified);
-	}
-
 	void settings();
 
 	virtual void sensorError(int, bool err);
@@ -80,7 +75,6 @@ private:
 
 	QString title;
 	QString unit;
-	bool modified;
 	MultiMeterSettings* mms;
 	bool showUnit;
 	bool lowerLimitActive;

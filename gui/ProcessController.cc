@@ -16,8 +16,8 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+	Please do not commit any changes without consulting me first. Thanks!
 
 	$Id$
 */
@@ -63,6 +63,8 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	CHECK_PTR(pList);
 	connect(pList, SIGNAL(killProcess(int, int)),
 			this, SLOT(killProcess(int, int)));
+	connect(pList, SIGNAL(listModified(bool)),
+			this, SLOT(setModified(bool)));
 
 	/* All RMB clicks to the plist widget will be handled by 
 	 * SensorDisplay::eventFilter. */
@@ -89,7 +91,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	/* When the both cbFilter and pList are constructed we can connect the
 	 * missing link. */
 	connect(cbFilter, SIGNAL(activated(int)),
-			pList, SLOT(setFilterMode(int)));
+			this, SLOT(filterModeChanged(int)));
 
 	// Create the check box to pause the automatic list update.
 	xbPause = new QCheckBox(i18n("&Pause"), this, "xbPause");
@@ -138,8 +140,6 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	gm->activate();
 
 	setMinimumSize(sizeHint());
-
-	modified = false;
 }
 
 void
@@ -248,8 +248,6 @@ ProcessController::answerReceived(int id, const QString& answer)
 			pList->addColumn(header, colTypes[i]);
 		}
 
-		timerOn();
-
 		break;
 	}
 	case 2:
@@ -278,7 +276,8 @@ ProcessController::answerReceived(int id, const QString& answer)
 			break;
 		case 3:
 			SensorMgr->notify(
-				QString(i18n("Process %1 has already disappeared!")).arg(vals[1]));
+				QString(i18n("Process %1 has already disappeared!"))
+				.arg(vals[1]));
 			break;
 		case 4:
 			SensorMgr->notify(i18n("Invalid Signal!"));
@@ -339,7 +338,7 @@ ProcessController::createFromDOM(QDomElement& el)
 
 	pList->setSortColumn(col, inc);
 
-	modified = false;
+	setModified(false);
 
 	return (result);
 }
@@ -359,7 +358,7 @@ ProcessController::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 		return (false);
 
 	if (save)
-		modified = false;
+		setModified(false);
 
 	return (true);
 }

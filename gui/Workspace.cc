@@ -16,8 +16,8 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+	Please do not commit any changes without consulting me first. Thanks!
 
 	$Id$
 */
@@ -33,8 +33,8 @@
 #include <kstddirs.h>
 #include <kurl.h>
 #include <kio/netaccess.h>
+#include <kdebug.h>
 
-#include "Workspace.h"
 #include "WorkSheet.h"
 #include "WorkSheetSettings.h"
 #include "Workspace.moc"
@@ -45,10 +45,23 @@ Workspace::Workspace(QWidget* parent, const char* name)
 	sheets.setAutoDelete(TRUE);
 	autoSave = TRUE;
 
+	connect(this, SIGNAL(currentChanged(QWidget*)),
+			this, SLOT(updateCaption(QWidget*)));
+
 	QWhatsThis::add(this, i18n(
 		"This is your work space. It holds your work sheets. You need "
 		"to create a new work sheet (Menu File->New) before "
 		"you can drag sensors here."));
+}
+
+Workspace::~Workspace()
+{
+	/* This workaround is necessary to prevent a crash when the last
+	 * page is not the current page. It seems like the the signal/slot
+	 * administration data is already deleted but slots are still
+	 * being triggered. TODO: I need to ask the Trolls about this. */
+	disconnect(this, SIGNAL(currentChanged(QWidget*)),
+			   this, SLOT(updateCaption(QWidget*)));
 }
 
 void
@@ -145,6 +158,8 @@ Workspace::newWorkSheet()
 		insertTab(sheet, wss->sheetName->text());
 		sheets.append(sheet);
 		showPage(sheet);
+		connect(sheet, SIGNAL(sheetModified(QWidget*)),
+				this, SLOT(updateCaption(QWidget*)));
 	}
 	delete wss;
 }
@@ -333,7 +348,7 @@ Workspace::restoreWorkSheet(const QString& fileName, const QString& newName)
 
 	// extract filename without path
 	QString baseName = fName.right(fName.length() -
-									  fName.findRev('/') - 1);
+								   fName.findRev('/') - 1);
 	// chop off extension (usually '.sgrd')
 	baseName = baseName.left(baseName.findRev('.'));
 
@@ -347,6 +362,8 @@ Workspace::restoreWorkSheet(const QString& fileName, const QString& newName)
 		return (FALSE);
 	}
 	sheets.append(sheet);
+	connect(sheet, SIGNAL(sheetModified(QWidget*)),
+			this, SLOT(updateCaption(QWidget*)));
 
 	/* Force the file name to be the new name. This also sets the modified
 	 * flag, so that the file will get saved on exit. */
@@ -392,6 +409,16 @@ Workspace::configure()
 		return;
 
 	current->settings();
+}
+
+void
+Workspace::updateCaption(QWidget* ws)
+{
+	if (ws)
+		emit setCaption(tabLabel(ws),
+						((WorkSheet*) ws)->hasBeenModified());
+	else
+		emit setCaption(QString::null, false);
 }
 
 void

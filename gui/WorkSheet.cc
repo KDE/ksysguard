@@ -53,7 +53,7 @@ WorkSheet::WorkSheet(QWidget* parent) :
 	lm = 0;
 	rows = columns = 0;
 	displays = 0;
-	modified = false;
+	setModified(false);
 	fileName = "";
 
 	setAcceptDrops(true);
@@ -65,7 +65,7 @@ WorkSheet::WorkSheet(QWidget* parent, uint rs, uint cs, uint i) :
 	lm = 0;
 	displays = 0;
 	updateInterval = i;
-	modified = false;
+	setModified(false);
 	fileName = "";
 	createGrid(rs, cs);
 
@@ -81,10 +81,6 @@ WorkSheet::WorkSheet(QWidget* parent, uint rs, uint cs, uint i) :
 
 WorkSheet::~WorkSheet()
 {
-	for (uint i = 0; i < rows; ++i)
-		delete [] displays[i];
-
-	delete [] displays;
 }
 
 bool
@@ -101,7 +97,7 @@ WorkSheet::hasBeenModified() const
 bool
 WorkSheet::load(const QString& fN)
 {
-	modified = false;
+	setModified(false);
 
 	QFile file(fileName = fN);
 	if (!file.open(IO_ReadOnly))
@@ -189,7 +185,7 @@ WorkSheet::load(const QString& fN)
 			if (!displays[r][c])
 				replaceDisplay(r, c);
 
-	modified = false;
+	setModified(false);
 
 	return (true);
 }
@@ -255,7 +251,7 @@ WorkSheet::save(const QString& fN)
 	s << doc;
 	file.close();
 
-	modified = false;
+	setModified(false);
 	return (true);
 }
 
@@ -371,7 +367,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 
 	displays[r][c]->addSensor(hostName, sensorName, sensorDescr);
 
-	modified = true;
+	setModified(true);
 	return ((SensorDisplay*) displays[r][c]);
 }
 
@@ -514,6 +510,8 @@ WorkSheet::replaceDisplay(uint r, uint c, SensorDisplay* newDisplay)
 		displays[r][c]->setUpdateInterval(updateInterval);
 		connect(newDisplay, SIGNAL(showPopupMenu(SensorDisplay*)),
 				this, SLOT(showPopupMenu(SensorDisplay*)));
+		connect(newDisplay, SIGNAL(displayModified(bool)),
+				this, SLOT(setModified(bool)));
 	}
 	lm->addWidget(displays[r][c], r, c);	
 	fixTabOrder();
@@ -527,7 +525,7 @@ WorkSheet::replaceDisplay(uint r, uint c, SensorDisplay* newDisplay)
 			((QWidget*) parent()->parent())->sizeHint());
 	}
 
-	modified = true;
+	setModified(true);
 }
 
 void
@@ -541,7 +539,7 @@ WorkSheet::removeDisplay(SensorDisplay* display)
 			if (displays[r][c] == display)
 			{
 				replaceDisplay(r, c);
-				modified = true;
+				setModified(true);
 				return;
 			}
 }

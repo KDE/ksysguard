@@ -20,7 +20,8 @@ public:
 	LogFile(QWidget *parent = 0, const char *name = 0);
 	~LogFile(void);
 
-	bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorDescr);
+	bool addSensor(const QString& hostName, const QString& sensorName,
+				   const QString& sensorDescr);
 	void answerReceived(int id, const QString& answer);
 	void resizeEvent(QResizeEvent*);
 
@@ -41,11 +42,6 @@ public:
 		return (TRUE);
 	}
 
-	virtual bool hasBeenModified() const
-	{
-		return (modified);
-	}
-
 	virtual void sensorError(bool err);
 
 public slots:
@@ -61,8 +57,6 @@ private:
 	QStringList filterRules;
 
 	unsigned long logFileID;
-
-	bool modified;
 };
 
 #endif // _LogFile_h

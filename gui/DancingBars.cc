@@ -63,8 +63,7 @@ DancingBars::DancingBars(QWidget* parent, const char* name,
 	/* All RMB clicks to the plotter widget will be handled by 
 	 * SensorDisplay::eventFilter. */
 	plotter->installEventFilter(this);
-
-	modified = false;
+	setModified(false);
 }
 
 DancingBars::~DancingBars()
@@ -186,7 +185,7 @@ DancingBars::applySettings()
 	}
 
 	repaint();
-	modified = true;
+	setModified(true);
 }
 
 void
@@ -333,8 +332,6 @@ DancingBars::answerReceived(int id, const QString& answer)
 bool
 DancingBars::createFromDOM(QDomElement& domElem)
 {
-	modified = false;
-
 	frame->setTitle(domElem.attribute("title"));
 
 	plotter->changeRange(domElem.attribute("min", "0").toDouble(),
@@ -359,6 +356,8 @@ DancingBars::createFromDOM(QDomElement& domElem)
 		addSensor(el.attribute("hostName"), el.attribute("sensorName"),
 				  el.attribute("sensorDescr"));
 	}
+
+	setModified(false);
 
 	return (true);
 }
@@ -392,7 +391,7 @@ DancingBars::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 	}
 
 	if (save)
-		modified = false;
+		setModified(false);
 
 	return (true);
 }

@@ -92,11 +92,6 @@ public:
 		updateList();
 	}
 
-	virtual bool hasBeenModified() const
-	{
-		return (modified);
-	}
-
 	void settings();
 
 	virtual void sensorError(bool err);
@@ -111,7 +106,6 @@ private:
 	ListViewSettings* lvs;
 
 	QString title;
-	bool modified;
 };
 
 #endif

@@ -87,11 +87,6 @@ public:
 	virtual bool addToDOM(QDomDocument& doc, QDomElement& display,
 						  bool save = true);
 
-	virtual bool hasBeenModified() const
-	{
-		return (modified);
-	}
-
 	virtual bool hasSettingsDialog() const
 	{
 		return (TRUE);

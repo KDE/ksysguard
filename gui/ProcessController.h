@@ -97,16 +97,16 @@ public:
 public slots:
 	void filterModeChanged(int filter)
 	{
-		cbFilter->setCurrentItem(filter);
+		pList->setFilterMode(filter);
 		updateList();
-		modified = TRUE;
+		setModified(true);
 	}
 
 	void setTreeView(bool tv)
 	{
 		pList->setTreeView(tv);
 		updateList();
-		modified = TRUE;
+		setModified(true);
 	}
 
 	void togglePause(bool p)
@@ -115,7 +115,7 @@ public slots:
 			timerOff();
 		else
 			timerOn();
-		modified = TRUE;
+		setModified(true);
 	}
 
 	void killProcess();
@@ -127,8 +127,6 @@ signals:
 	void setFilterMode(int);
 
 private:
-	bool modified;
-
 	QVBoxLayout* gm;
 
 	bool killSupported;

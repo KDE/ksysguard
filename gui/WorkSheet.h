@@ -66,7 +66,7 @@ public:
 	void setFileName(const QString& fN)
 	{
 		fileName = fN;
-		modified = TRUE;
+		setModified(true);
 	}
 
 	bool hasBeenModified() const;
@@ -79,6 +79,17 @@ public:
 
 public slots:
 	void showPopupMenu(SensorDisplay* display);
+	void setModified(bool mfd)
+	{
+		if (mfd != modified)
+		{
+			modified = mfd;
+			emit sheetModified(this);
+		}
+	}
+
+signals:
+	void sheetModified(QWidget* sheet);
 
 protected:
 	void dragEnterEvent(QDragEnterEvent* ev);

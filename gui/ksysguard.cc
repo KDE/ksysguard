@@ -86,6 +86,8 @@ TopLevel::TopLevel(const char *name)
 	CHECK_PTR(ws);
 	connect(ws, SIGNAL(announceRecentURL(const KURL&)),
 			this, SLOT(registerRecentURL(const KURL&)));
+	connect(ws, SIGNAL(setCaption(const QString&, bool)),
+			this, SLOT(setCaption(const QString&, bool)));
 
 	/* Create the status bar. It displays some information about the
 	 * number of processes and the memory consumption of the local

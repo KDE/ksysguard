@@ -151,6 +151,7 @@ public slots:
 	void setFilterMode(int fm)
 	{
 		filterMode = fm;
+		setModified(true);
 	}
 
 	void sortingChanged(int col);
@@ -159,12 +160,12 @@ public slots:
 
 	void sizeChanged(int, int, int)
 	{
-		modified = true;
+		setModified(true);
 	}
 
 	void indexChanged(int, int, int)
 	{
-		modified = true;
+		setModified(true);
 	}
 
 signals:
@@ -174,6 +175,18 @@ signals:
 	// This signal is emitted when process pid should receive signal sig.
 	void killProcess(int pid, int sig);
 
+	void listModified(bool);
+
+protected slots:
+	virtual void setModified(bool mfd)
+	{
+		if (mfd != modified)
+		{
+			modified = mfd;
+			emit listModified(modified);
+		}
+	}
+		
 private:
 	// items of table header RMB popup menu
 	enum

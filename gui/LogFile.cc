@@ -13,7 +13,8 @@ LogFile::LogFile(QWidget *parent, const char *name)
 	CHECK_PTR(monitor);
 	
 	KIconLoader iconLoader;
-	QPixmap errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop, KIcon::SizeSmall);
+	QPixmap errorIcon = iconLoader.loadIcon("connect_creating",
+											KIcon::Desktop, KIcon::SizeSmall);
 
 	errorLabel = new QLabel(monitor);
 	CHECK_PTR(errorLabel);
@@ -27,7 +28,7 @@ LogFile::LogFile(QWidget *parent, const char *name)
 	frame->installEventFilter(this);
 
 	setMinimumSize(50, 25);
-	modified = FALSE;
+	setModified(false);
 }
 
 LogFile::~LogFile(void)
@@ -48,7 +49,7 @@ LogFile::addSensor(const QString& hostName, const QString& sensorName, const QSt
 
 	frame->setTitle(QString("%1:%2").arg(sensors.at(0)->hostName).arg(fileName));
 
-	modified = TRUE;
+	setModified(TRUE);
 	return (TRUE);
 }
 
@@ -83,14 +84,12 @@ void LogFile::applySettings(void)
 	monitor->setFont(lfs->getFont());
 	filterRules = lfs->getFilterRules();
 
-	modified = TRUE;
+	setModified(TRUE);
 }
 
 bool
 LogFile::createFromDOM(QDomElement& element)
 {
-	modified = FALSE;
-
 	QFont font;
 	QColorGroup cgroup = monitor->colorGroup();
 
@@ -111,6 +110,8 @@ LogFile::createFromDOM(QDomElement& element)
 
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), fileName);
 
+	setModified(FALSE);
+
 	return TRUE;
 }
 
@@ -126,14 +127,16 @@ LogFile::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 	addColorToDOM(element, "textColor", monitor->colorGroup().text());
 	addColorToDOM(element, "backgroundColor", monitor->colorGroup().base());
 
-	for (QStringList::Iterator it = filterRules.begin(); it != filterRules.end(); it++) {
+	for (QStringList::Iterator it = filterRules.begin();
+		 it != filterRules.end(); it++)
+	{
 		QDomElement filter = doc.createElement("filter");
 		filter.setAttribute("rule", (*it));
 		element.appendChild(filter);
 	}
 
 	if (save)
-		modified = FALSE;
+		setModified(FALSE);
 
 	return TRUE;
 }
@@ -141,7 +144,8 @@ LogFile::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 void
 LogFile::updateMonitor()
 {
-	sendRequest(sensors.at(0)->hostName, QString("logfiles %1 %2" ).arg(fileName).arg(logFileID), 19);
+	sendRequest(sensors.at(0)->hostName,
+				QString("logfiles %1 %2" ).arg(fileName).arg(logFileID), 19);
 }
 
 void

@@ -16,8 +16,8 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+	Please do not commit any changes without consulting me first. Thanks!
 
 	$Id$
 */
@@ -71,7 +71,7 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 	 * SensorDisplay::eventFilter. */
 	plotter->installEventFilter(this);
 
-	modified = false;
+	setModified(false);
 }
 
 FancyPlotter::~FancyPlotter()
@@ -181,7 +181,7 @@ FancyPlotter::applySettings()
 	}
 
 	plotter->repaint();
-	modified = true;
+	setModified(true);
 }
 
 void
@@ -377,8 +377,6 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 bool
 FancyPlotter::createFromDOM(QDomElement& domElem)
 {
-	modified = false;
-
 	QString title = domElem.attribute("title");
 	if (!title.isEmpty())
 	{
@@ -426,6 +424,8 @@ FancyPlotter::createFromDOM(QDomElement& domElem)
 									  plotter->getDefaultColor(i)));
 	}
 
+	setModified(false);
+
 	return (true);
 }
 
@@ -458,7 +458,7 @@ FancyPlotter::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 		addColorToDOM(beam, "color", plotter->beamColor[i]);
 	}
 	if (save)
-		modified = false;
+		setModified(false);
 
 	return (true);
 }

@@ -16,8 +16,8 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+	Please do not commit any changes without consulting me first. Thanks!
 
 	$Id$
 */
@@ -79,8 +79,7 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 	lcd->installEventFilter(this);
 
 	setMinimumSize(16, 16);
-
-	modified = FALSE;
+	setModified(false);
 }
 
 bool
@@ -93,7 +92,7 @@ MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
 	 * requests we use 100 for info requests. */
 	sendRequest(hostName, sensorName + "?", 100);
 
-	modified = TRUE;
+	setModified(TRUE);
 	return (TRUE);
 }
 
@@ -184,8 +183,6 @@ MultiMeter::setTitle(const QString& t, const QString& u)
 bool
 MultiMeter::createFromDOM(QDomElement& el)
 {
-	modified = false;
-
 	title = el.attribute("title");
 	showUnit = el.attribute("showUnit").toInt();
 	setTitle(title, unit);
@@ -199,6 +196,8 @@ MultiMeter::createFromDOM(QDomElement& el)
 	setBackgroundColor(restoreColorFromDOM(el, "backgroundColor", Qt::black));
 
 	addSensor(el.attribute("hostName"), el.attribute("sensorName"), "");
+
+	setModified(false);
 
 	return (TRUE);
 }
@@ -220,7 +219,7 @@ MultiMeter::addToDOM(QDomDocument&, QDomElement& display, bool save)
 	addColorToDOM(display, "backgroundColor", lcd->backgroundColor());
 
 	if (save)
-		modified = FALSE;
+		setModified(FALSE);
 
 	return (TRUE);
 }
@@ -267,7 +266,7 @@ MultiMeter::applySettings()
 	setBackgroundColor(mms->backgroundColor->getColor());
 
 	repaint();
-	modified = TRUE;
+	setModified(TRUE);
 }
 
 void

@@ -61,11 +61,6 @@ public:
 	bool createFromDOM(QDomElement& el);
 	bool addToDOM(QDomDocument& doc, QDomElement& display, bool save = true);
 
-	virtual bool hasBeenModified() const
-	{
-		return (modified);
-	}
-
 	virtual bool hasSettingsDialog() const
 	{
 		return (TRUE);
@@ -86,7 +81,6 @@ private:
 	void setTitle(const QString& t);
 
 	int bars;
-	bool modified;
 
 	BarGraph* plotter;
 

@@ -284,8 +284,8 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 			this, SLOT(indexChanged(int, int, int)));
 
 	sensorOk = false;
-	modified = false;
 	killSupported = false;
+	setModified(false);
 }
 
 ProcessList::~ProcessList()
@@ -409,7 +409,7 @@ ProcessList::load(QDomElement& el)
 			index[i] = lel.attribute("index").toInt();
 	}
 
-	modified = false;
+	setModified(false);
 
 	return (true);
 }
@@ -426,7 +426,7 @@ ProcessList::save(QDomDocument& doc, QDomElement& display)
 		col.setAttribute("index", header()->mapToIndex(i));
 	}
 
-	modified = false;
+	setModified(false);
 
 	return (true);
 }
@@ -442,7 +442,7 @@ ProcessList::sortingChanged(int col)
 		increasing = true;
 	}
 	setSorting(sortColumn, increasing);
-	modified = true;
+	setModified(true);
 }
 
 bool
@@ -599,6 +599,9 @@ ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 	QString name = p->getName();
 	if (aliases[name])
 		name = *aliases[name];
+
+	/* TODO: This icon handling is pretty much a CPU hog. We need to make
+	 * this more efficient. Probably a local cache will do the job. */
 	/* Get icon from icon list that might be appropriate for a process
 	 * with this name. */
 	QPixmap pix = icons->loadIcon(name, KIcon::Small,

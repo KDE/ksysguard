@@ -95,14 +95,18 @@ public:
 
 	void setUpdateInterval(uint i)
 	{
-		timerOff();
+		bool timerActive = timerId != NONE;
+
+		if (timerActive)
+			timerOff();
 		timerInterval = i * 1000;
-		timerOn();
+		if (timerActive)
+			timerOn();
 	}
-		
+
 	virtual bool hasBeenModified() const
 	{
-		return (false);
+		return (modified);
 	}
 
 	virtual bool hasSettingsDialog() const
@@ -175,6 +179,7 @@ public slots:
 
 signals:
 	void showPopupMenu(SensorDisplay* display);
+	void displayModified(bool mfd);
 
 protected:
 	virtual void timerEvent(QTimerEvent*);
@@ -204,9 +209,25 @@ protected:
 	/// The frame around the other widgets.
 	QGroupBox* frame;
 
+	bool modified;
+
+protected slots:
+	virtual void setModified(bool mfd)
+	{
+		if (mfd != modified)
+		{
+			modified = mfd;
+			emit displayModified(modified);
+		}
+	}
+		
 private:
 	int timerId;
 	int timerInterval;
 } ;
 
 #endif
+
+
+
+

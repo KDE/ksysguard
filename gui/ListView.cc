@@ -108,7 +108,6 @@ ListView::ListView(QWidget* parent, const char* name, const QString& title,
 	frame->installEventFilter(this);
 
 	setMinimumSize(50, 25);
-	modified = FALSE;
 }
 
 bool
@@ -120,7 +119,7 @@ ListView::addSensor(const QString& hostName, const QString& sensorName, const QS
 	 * requests we use 100 for info requests. */
 	sendRequest(hostName, sensorName + "?", 100);
 
-	modified = TRUE;
+	setModified(TRUE);
 	return (TRUE);
 }
 
@@ -193,18 +192,24 @@ ListView::resizeEvent(QResizeEvent*)
 bool
 ListView::createFromDOM(QDomElement& element)
 {
-	modified = FALSE;
-
 	title = element.attribute("title");
-	mainList->setGridColor(restoreColorFromDOM(element, "gridColor", Qt::green));
-	mainList->setTextColor(restoreColorFromDOM(element, "textColor", Qt::green));
-	mainList->setBackgroundColor(restoreColorFromDOM(element, "backgroundColor", Qt::black));
-	addSensor(element.attribute("hostName"), element.attribute("sensorName"), "");
+	mainList->setGridColor(restoreColorFromDOM(element, "gridColor",
+											   Qt::green));
+	mainList->setTextColor(restoreColorFromDOM(element, "textColor",
+											   Qt::green));
+	mainList->setBackgroundColor(
+		restoreColorFromDOM(element, "backgroundColor", Qt::black));
+	addSensor(element.attribute("hostName"),
+			  element.attribute("sensorName"), "");
 
 	QColorGroup colorGroup = mainList->colorGroup();
-	colorGroup.setBrush(QColorGroup::Base, restoreColorFromDOM(element, "backgroundColor", Qt::black));
+	colorGroup.setBrush(QColorGroup::Base,
+						restoreColorFromDOM(element, "backgroundColor",
+											Qt::black));
 	QPalette pal(colorGroup, colorGroup, colorGroup);
 	mainList->setPalette(pal);
+
+	setModified(FALSE);
 
 	return (TRUE);
 }
@@ -221,7 +226,7 @@ ListView::addToDOM(QDomDocument&, QDomElement& element, bool save)
 	addColorToDOM(element, "backgroundColor", mainList->getBackgroundColor());
 
 	if (save)
-		modified = FALSE;
+		setModified(FALSE);
 
 	return (TRUE);
 }
@@ -250,7 +255,7 @@ ListView::applySettings()
 	mainList->setGridColor(lvs->gridColor->getColor());
 	mainList->setTextColor(lvs->textColor->getColor());
 	mainList->setBackgroundColor(lvs->backgroundColor->getColor());
-	modified = TRUE;
+	setModified(TRUE);
 }
 
 void

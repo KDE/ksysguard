@@ -39,7 +39,7 @@ class Workspace : public QTabWidget
 	Q_OBJECT
 public:
 	Workspace(QWidget* parent, const char* name = 0);
-	~Workspace() { }
+	~Workspace();
 
 	void saveProperties(KConfig* cfg);
 	void readProperties(KConfig* cfg);
@@ -66,9 +66,11 @@ public slots:
 	void copy();
 	void paste();
 	void configure();
+	void updateCaption(QWidget*);
 
 signals:
 	void announceRecentURL(const KURL& url);
+	void setCaption(const QString& text, bool modified);
 
 private:
 	QList<WorkSheet> sheets;
