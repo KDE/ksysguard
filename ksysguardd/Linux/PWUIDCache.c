@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE Task Manager
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 2000 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -76,14 +76,18 @@ getCachedPWUID(uid_t uid)
 	long index;
 	time_t stamp;
 
-	/* If a cache entry has not been updated for TIMEOUT seconds the
-	 * entry is removed. */
 	stamp = time(0);
 	if (stamp - lastCleanup > TIMEOUT)
 	{
+		/* Cleanup cache entries every TIMEOUT seconds so that we
+		 * don't pile tons of unused entries, and to make sure that
+		 * our entries are not outdated. */
 		long i;
 		for (i = 0; i < level_ctnr(UIDCache); ++i)
 		{
+			/* If a cache entry has not been updated for TIMEOUT
+			 * seconds the entry is removed. */
+			entry = get_ctnr(UIDCache, i);
 			if (stamp - entry->tStamp > TIMEOUT)
 			{
 				remove_ctnr(UIDCache, i--);
