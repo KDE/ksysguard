@@ -182,7 +182,7 @@ main(int argc, char* argv[])
 				RunAsDaemon = 1;
 				break;
 			case '?':
-				fprintf(stderr, "usage: %s [-d] [-p port]\n", argv[0]);
+				print_error("usage: %s [-d] [-p port]\n", argv[0]);
 				return -1;
 				break;
 		}
@@ -190,7 +190,7 @@ main(int argc, char* argv[])
 
 	/* initialize all sensors */
 	initCommand();
-	if (RunAsDaemon == 1)
+	if (RunAsDaemon == 0)
 		registerCommand("quit", exQuit);
 	initProcessList();
 	initMemory();
@@ -238,11 +238,10 @@ main(int argc, char* argv[])
 			if (select(maxfd + 1, &fds, NULL, NULL, NULL) > 0) {
 				if (FD_ISSET(socket, &fds)) { /* a new connection */
 					if ((conn_socket = accept(socket, &addr, &addr_len)) < 0) {
-						perror("myaccept");
+						perror("accept");
 						exit(1);
 					} else {
 						add_client(conn_socket);
-						printf("add_client with socket %d\n", conn_socket);
 					}
 				}
 
@@ -253,12 +252,10 @@ main(int argc, char* argv[])
 							if (read(curr_socket, cmdBuf, sizeof(cmdBuf)) < 0) {
 								del_client(curr_socket);
 								close(curr_socket);
-								printf("del_client with socket %d\n", curr_socket);
 							} else {
 								if (strstr(cmdBuf, "quit")) {
 									del_client(curr_socket);
 									close(curr_socket);
-									printf("del_client with socket %d\n", curr_socket);
 								} else {
 									if ((currentClient = fdopen(curr_socket, "w+")) == NULL) {
 										perror("fdopen");
@@ -278,17 +275,17 @@ main(int argc, char* argv[])
 	if (RunAsDaemon == 0) {
 		currentClient = stdout;
 		
-	printf("ksysguardd %s  (c) 1999, 2000 Chris Schlaeger <cs@kde.org>\n"
+		printf("ksysguardd %s  (c) 1999, 2000 Chris Schlaeger <cs@kde.org>\n"
 		   "This program is part of the KDE Project and licensed under\n"
 		   "the GNU GPL version 2. See www.kde.org for details!\n"
 		   "ksysguardd> ", VERSION);
-	fflush(stdout);
-		do {
-		readCommand(cmdBuf);
-		executeCommand(cmdBuf);
-		printf("ksysguardd> ");
 		fflush(stdout);
-	} while (!QuitApp);
+		do {
+			readCommand(cmdBuf);
+			executeCommand(cmdBuf);
+			printf("ksysguardd> ");
+			fflush(stdout);
+		} while (!QuitApp);
 	}
 
 	exitDiskStat();

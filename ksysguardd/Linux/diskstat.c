@@ -16,6 +16,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -27,9 +28,6 @@
 #include "Command.h"
 #include "ccont.h"
 #include "diskstat.h"
-
-#define PROC_FS_TYPE 0x9FA0
-#define PTS_FS_TYPE  0x1CD1
 
 typedef struct {
 	char device[256];
@@ -50,13 +48,10 @@ char *getMntPnt(const char *cmd)
 
 	memset(device, 0, sizeof(device));
 	sscanf(cmd, "diskspace%1024s", device);
-	if (!strcmp(device, "/used") || !strcmp(device, "/free") || !strcmp(device, "/percent")) {
-		return "";
-	}
 
 	ptr = (char *)rindex(device, '/');
 	*ptr = '\0';
-
+		
 	return (char *)device;
 }
 
@@ -110,22 +105,23 @@ int updateDiskStat(void)
 	}
 
 	while (fgets(line, sizeof(line), mounts) != NULL) {
-		bzero(mntpnt, sizeof(mntpnt));
-		bzero(device, sizeof(device));
-		bzero(monitor, sizeof(monitor));;
+		memset(mntpnt, 0, sizeof(mntpnt));
+		memset(device, 0, sizeof(device));
+		memset(monitor, 0, sizeof(monitor));;
 		sscanf(line, "%255s %255s", device, mntpnt);
 		if (statfs(mntpnt, &fs_info) < 0)
 			continue;
-		if ((fs_info.f_type != PROC_FS_TYPE) && (fs_info.f_type != PTS_FS_TYPE)) {
+
+		if ((strncmp(mntpnt, "/proc", 5)) && (strncmp(mntpnt, "/dev/", 5))) {
 			percent = (((float)fs_info.f_blocks - (float)fs_info.f_bfree)/(float)fs_info.f_blocks);
 			percent = percent * 100;
 			if ((disk_info = (DiskInfo *)malloc(sizeof(DiskInfo))) == NULL) {
 				continue;
 			}
-			bzero(disk_info, sizeof(DiskInfo));
+			memset(disk_info, 0, sizeof(DiskInfo));
 			strncpy(disk_info->device, device, 255);
 			if (!strcmp(mntpnt, "/")) {
-				strncpy(disk_info->mntpnt, "", 0);
+				strncpy(disk_info->mntpnt, "/root", 6);
 			} else {
 				strncpy(disk_info->mntpnt, mntpnt, 255);
 			}

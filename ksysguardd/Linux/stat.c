@@ -32,9 +32,6 @@
 #include "stat.h"
 #include "Command.h"
 
-/* Special version of perror for use in signal handler functions. */
-#define perror(a) write(STDERR_FILENO, (a), strlen(a))
-
 typedef struct
 {
 	/* A CPU can be loaded with user processes, reniced processes and
@@ -621,14 +618,14 @@ updateStat(void)
 
 	if ((fd = open("/proc/stat", O_RDONLY)) < 0)
 	{
-		perror("ERROR: Cannot open file \'/proc/stat\'!\n"
+		print_error("ERROR: Cannot open file \'/proc/stat\'!\n"
 			   "The kernel needs to be compiled with support\n"
 			   "for /proc filesystem enabled!");
 		return (-1);
 	}
 	if ((n = read(fd, StatBuf, STATBUFSIZE - 1)) == STATBUFSIZE - 1)
 	{
-		perror("ERROR: Internal buffer too small to read "
+		print_error("ERROR: Internal buffer too small to read "
 			   "/proc/stat!");
 		return (-1);
 	}
@@ -957,7 +954,7 @@ printDiskIO(const char* cmd)
 
 	if (!ptr)
 	{
-		fprintf(stderr, "Disk device disappeared\n");
+		print_error("ERROR: Disk device disappeared\n");
 		return;
 	}
 	if (strcmp(name, "total") == 0)
@@ -975,7 +972,7 @@ printDiskIO(const char* cmd)
 	else {
 		fprintf(currentClient, "0\n");
 
-		fprintf(stderr, "ERROR: unknown disk device property %s\n", name);
+		print_error("ERROR: unknown disk device property %s\n", name);
 	}
 }
 
@@ -1012,7 +1009,7 @@ printDiskIOInfo(const char* cmd)
 		fprintf(currentClient, "Write accesses device %d, %d\t0\t0\tkBytes/s\n", major, minor);
 	else {
 		fprintf(currentClient, "Dummy\t0\t0\t\n");
-		fprintf(stderr, "ERROR: Request for unknown device property %s\n",
+		print_error("ERROR: Request for unknown device property %s\n",
 				name);
 	}
 }

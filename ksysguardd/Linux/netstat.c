@@ -103,7 +103,7 @@ char *get_serv_name(int port, char *proto)
 		return "*";
 	}
 
-	bzero(buffer, sizeof(buffer));
+	memset(buffer, 0, sizeof(buffer));
 	
 	if ((service = getservbyport(ntohs(port), proto)) == NULL) {
 		snprintf(buffer, sizeof(buffer), "%d", port);
@@ -124,7 +124,7 @@ char *get_host_name(int addr)
 		return "*";
 	}
 
-	bzero(buffer, sizeof(buffer));
+	memset(buffer, 0, sizeof(buffer));
 
 	if ((host = gethostbyaddr((char *)&addr, 4, AF_INET)) == NULL) {
 		a_addr.s_addr = addr;
@@ -144,7 +144,7 @@ char *get_proto_name(int number)
 		return "*";
 	}
 
-	bzero(buffer, sizeof(buffer));
+	memset(buffer, 0, sizeof(buffer));
 
 	if ((protocol = getprotobynumber(number)) == NULL) {
 		snprintf(buffer, sizeof(buffer), "%d", number);
