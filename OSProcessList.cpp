@@ -294,6 +294,12 @@ OSProcessList::hasName(void) const
 	return (true);
 }
 
+bool
+OSProcessList::hasCmdLine(void) const
+{
+	return (false);
+}
+
 bool 
 OSProcessList::hasUid(void) const
 {
