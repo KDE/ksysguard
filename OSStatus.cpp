@@ -73,6 +73,9 @@
  * allow them unless you have _really_ good reasons for doing so.
  */
 
+#include <stdlib.h>
+#include <dirent.h>
+
 #include <kapp.h>
 
 #include "OSStatus.h"
@@ -235,8 +238,8 @@ OSStatus::getMemoryInfo(int& total, int& mfree, int& used, int& buffers,
 	 * The following works only on systems with 4GB or less. Currently this
 	 * is no problem but what happens if Linus changes his mind?
 	 */
-	fscanf(meminfo, "%*s %d %d %*d %d %d %d\n",
-		   &total, &mfree, &used, &buffers, &cached);
+	fscanf(meminfo, "%*s %d %d %d %*d %d %d\n",
+		   &total, &used, &mfree, &buffers, &cached);
 
 	total /= 1024;
 	mfree /= 1024;
@@ -301,6 +304,25 @@ OSStatus::getSwapInfo(int& stotal, int& sfree)
 	sfree /= 1024;
 
 	return (true);
+}
+
+int 
+isProcDir(const struct dirent* dir)
+{
+	return (atoi(dir->d_name));
+}
+
+int
+OSStatus::getNoProcesses(void)
+{
+	int processes;
+	struct dirent** namelist;
+
+	processes = scandir("/proc", &namelist, isProcDir, alphasort);
+
+	free(namelist);
+
+	return (processes);
 }
 
 #elif __FreeBSD__
@@ -454,6 +476,13 @@ OSStatus::getSwapInfo(int& stotal, int& sfree)
 	return (true);
 }
 
+int
+OSStatus::getNoProcesses(void)
+{
+#warning "OSStatus::getNoProcesses not yet implemented"
+	return (0);
+}
+
 #else
 
 OSStatus::OSStatus()
@@ -512,4 +541,11 @@ OSStatus::getSwapInfo(int &, int &)
 			  "Sorry");
 	return false;
 }
+
+int
+OSStatus::getNoProcesses(void)
+{
+	return (0);
+}
+
 #endif

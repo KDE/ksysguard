@@ -35,6 +35,7 @@
 #include <kstatusbar.h>
 
 #include "TaskMan.h"
+#include "OSStatus.h"
 
 extern KApplication* Kapp;
 
@@ -43,7 +44,6 @@ class TopLevel : public KTMainWindow
 	Q_OBJECT
 
 public:
-
     enum
 	{
 		MENU_ID_ABOUT = 100,
@@ -55,6 +55,8 @@ public:
 	TopLevel(QWidget *parent = 0, const char *name = 0, int sfolder = 0);
 	~TopLevel()
 	{
+		killTimer(timerID);
+
 		delete taskman;
 		delete file;
 		delete settings;
@@ -69,7 +71,9 @@ public:
 	}
 
 protected:
+	virtual void timerEvent(QTimerEvent*);
 
+private:
 	KMenuBar* menubar;
 	KStatusBar* statusbar;
 	QPopupMenu* file;
@@ -77,6 +81,9 @@ protected:
 	QPopupMenu* help;
 
 	TaskMan* taskman;
+
+	int timerID;
+	OSStatus osStatus;
 
 protected slots:
 

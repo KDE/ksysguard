@@ -104,6 +104,12 @@ public:
 	 */
 	bool getSwapInfo(int& stotal, int& sfree);
 
+	/**
+	 * This functions returns the number of processes that are currently
+	 * running on the system.
+	 */
+	int getNoProcesses(void);
+
 private:
 	/**
 	 * The private functions are helper functions for the public functions.

@@ -25,6 +25,7 @@
 #include <assert.h>
 
 #include <qpainter.h>
+#include <qpixmap.h>
 
 #include "SignalPlotter.moc"
 
@@ -38,7 +39,8 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name, int min,
 							 int max)
 	: QWidget(parent, name), minValue(min), maxValue(max)
 {
-    setBackgroundColor(black);
+	// paintEvent covers whole widget so we use no background to avoid flicker
+	setBackgroundMode(NoBackground);
 
 	beams = 0;
 	lowPass = FALSE;
@@ -158,9 +160,12 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	int w = width();
 	int h = height();
 
+	QPixmap pm(rect().width(), rect().height());
 	QPainter p;
-	p.begin(this);
+	p.begin(&pm, this);
 
+	p.setPen(black);
+	p.drawRect(rect());
 	/*
 	 * Draw white line along the bottom and the right side of the widget to
 	 * create a 3D like look.
@@ -196,4 +201,5 @@ SignalPlotter::paintEvent(QPaintEvent*)
 		}
 	}
 	p.end();
+	bitBlt(this, 0, 0, &pm);
 }

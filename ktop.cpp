@@ -94,8 +94,14 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	setMenu(menubar);
 
 	statusbar = new KStatusBar(this, "statusbar");
-	statusbar->insertItem("Hallo", 0);
+	statusbar->insertItem(i18n("88888 Processes"), 0);
+	statusbar->insertItem(i18n("Memory: 888888 kB used, "
+							   "888888 kB free"), 1);
+	statusbar->insertItem(i18n("Swap: 888888 kB used, "
+							   "888888 kB free"), 2);
 	setStatusBar(statusbar);
+	// call timerEvent to fill the status bar with real values
+	timerEvent(0);
 
 	assert(Kapp);
 	setCaption(i18n("KDE Task Manager"));
@@ -128,6 +134,8 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	else 
 		setGeometry(0,0, KTOP_MIN_W + 1, KTOP_MIN_H);
 
+	timerID = startTimer(2000);
+
 	// show the dialog box
     show();
 
@@ -159,6 +167,25 @@ TopLevel::menuHandler(int id)
 	default:
 		break;
 	}
+}
+
+void
+TopLevel::timerEvent(QTimerEvent*)
+{
+	QString s;
+
+	s.sprintf(i18n("%d Processes"), osStatus.getNoProcesses());
+	statusbar->changeItem(s, 0);
+
+	int dum, mUsed, mFree;
+	osStatus.getMemoryInfo(dum, mFree, mUsed, dum, dum);
+	s.sprintf(i18n("Memory: %d kB used, %d kB free"), mUsed, mFree);
+	statusbar->changeItem(s, 1);
+
+	int sTotal, sFree;
+	osStatus.getSwapInfo(sTotal, sFree);
+	s.sprintf(i18n("Swap: %d kB used, %d kB free"), sTotal - sFree, sFree);
+	statusbar->changeItem(s, 2);
 }
 
 /*
