@@ -39,7 +39,7 @@ METASOURCES = AUTO
 
 # make messages.po. Move this one to ../po/ and "make merge" in po
 messages:
-	$(XGETTEXT) -C -ki18n -x $(includedir)/kde.pot *.cc && mv messages.po ../po/ktop.pot
+	$(XGETTEXT) -C -ki18n -x $(includedir)/kde.pot *.cc && mv messages.po ../../po/ktop.pot
 
 KDE_ICON = ktop
 
