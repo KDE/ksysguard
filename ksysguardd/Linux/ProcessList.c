@@ -273,7 +273,7 @@ updateProcess(int pid)
 		userDiff = userTime - ps->userTime;
 		sysDiff = sysTime - ps->sysTime;
 
-		if ((timeDiff > 0) && (userDiff > 0) && (sysDiff > 0))
+		if ((timeDiff > 0) && (userDiff >= 0) && (sysDiff >= 0))
 		{
 			ps->userLoad = ((double) userDiff / timeDiff) * 100.0;
 			ps->sysLoad = ((double) sysDiff / timeDiff) * 100.0;
