@@ -267,7 +267,7 @@ TopLevel::timerEvent(QTimerEvent*)
 							   (SensorClient*) this, 1);
 		SensorMgr->sendRequest("localhost", "mem/physical/used",
 							   (SensorClient*) this, 2);
-		SensorMgr->sendRequest("localhost", "mem/swap/used",
+		SensorMgr->sendRequest("localhost", "mem/swap/free",
 							   (SensorClient*) this, 3);
 	}
 }

@@ -204,13 +204,16 @@ WorkSheet::save(const QString& fN)
 	QStringList::Iterator it;
 	for (it = hosts.begin(); it != hosts.end(); ++it)
 	{
-		QDomElement host = doc.createElement("host");
-		ws.appendChild(host);
 		QString shell, command;
-		SensorMgr->getHostInfo(*it, shell, command);
-		host.setAttribute("name", *it);
-		host.setAttribute("shell", shell);
-		host.setAttribute("command", command);
+
+		if (SensorMgr->getHostInfo(*it, shell, command))
+		{
+			QDomElement host = doc.createElement("host");
+			ws.appendChild(host);
+			host.setAttribute("name", *it);
+			host.setAttribute("shell", shell);
+			host.setAttribute("command", command);
+		}
 	}
 	
 	for (int i = 0; i < rows; ++i)
