@@ -180,14 +180,6 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	int range = maxValue - minValue;
 	p.scale(1.0f, (float) h / range);
 
-	p.setPen(QColor("darkgreen"));
-	if (w > 60)
-		for (int x = 30; x < (w - 2); x += 30)
-			p.drawLine(x, 0, x, range - 1);
-	if (h > 60)
-		for (int y = 1; y < 5; y++)
-			p.drawLine(0, y * (range / 5), w - 2, y * (range / 5));
-
 	for (int i = 0; i < (w - 2); i++)
 	{
 		int bias = 0;
@@ -202,6 +194,16 @@ SignalPlotter::paintEvent(QPaintEvent*)
 			}
 		}
 	}
+
+	/* Draw scope-like grid */
+	p.setPen(QColor("darkgreen"));
+	if (w > 60)
+		for (int x = 30; x < (w - 2); x += 30)
+			p.drawLine(x, 0, x, range - 1);
+	if (h > 60)
+		for (int y = 1; y < 5; y++)
+			p.drawLine(0, y * (range / 5), w - 2, y * (range / 5));
+
 	p.end();
 	bitBlt(this, 0, 0, &pm);
 }

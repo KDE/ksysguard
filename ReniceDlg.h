@@ -62,8 +62,6 @@ public:
 		delete okButton;
 		delete cancelButton;
 		
-		delete butLay;
-		delete sldLay;
 		delete vLay;
 	}
 

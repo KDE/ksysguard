@@ -54,7 +54,6 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
 	connect(this, SIGNAL(tabSelected(int)), SLOT(tabBarSelected(int)));
 	connect(this, SIGNAL(enableRefreshMenu(bool)),
 			MainMenuBar, SLOT(enableRefreshMenu(bool)));
-						 
 
     /*
      * set up page 0 (process list viewer)
@@ -87,8 +86,6 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
 void 
 TaskMan::raiseStartUpPage()
 {
-	printf("Raised page %d\n", currentPage);
-
     // startup_page settings...
 	currentPage = Kapp->getConfig()->readNumEntry("StartUpPage", currentPage);
 

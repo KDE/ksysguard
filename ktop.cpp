@@ -89,7 +89,7 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	 * defined min width. If this is not done the widget is not drawn
 	 * properly the first time. Subsequent redraws after resize are no problem.
 	 *
-	 * I need to implement some propper session management some day!
+	 * I need to implement a propper session management some day!
 	 */
 	QString t = Kapp->getConfig()->readEntry(QString("G_Toplevel"));
 	if(!t.isNull())

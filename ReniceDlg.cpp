@@ -95,8 +95,5 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 	butLay->addStretch(1);
 
 	vLay->activate();
-
-	// force widget to minimum size
-	resize(0, 0);
 }
 
