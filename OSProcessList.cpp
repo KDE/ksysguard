@@ -234,29 +234,20 @@ OSProcessList::update(void)
 	// delete old process list
 	clear();
 
-	TimeStampList* newTStamps = new TimeStampList;
-	// If there is no old list yet, we create an empty one.
-	if (!lastTStamps)
-		lastTStamps = new TimeStampList;
-
-        int mib[3];
-        mib[0] = CTL_KERN;
-        mib[1] = KERN_PROC;
-        mib[2] = KERN_PROC_ALL;
+	int mib[3];
+	mib[0] = CTL_KERN;
+	mib[1] = KERN_PROC;
+	mib[2] = KERN_PROC_ALL;
 
 	size_t len;
 	sysctl(mib, 3, NULL, &len, NULL, 0);
 
-        struct kinfo_proc *p = (struct kinfo_proc *)malloc(len);
+	struct kinfo_proc *p = (struct kinfo_proc *)malloc(len);
 	sysctl(mib, 3, p, &len, NULL, 0);
 
 	size_t num;
-	for (num = 0; num < len / sizeof(struct kinfo_proc) - 1; num++) {
-		if (!p[num].kp_proc.p_pid) continue;
-
-		QString pids;
-		pids.sprintf("%d", p[num].kp_proc.p_pid);
-		OSProcess* ps = new OSProcess(pids, lastTStamps, newTStamps);
+	for (num = 0; num < len / sizeof(struct kinfo_proc); num++) {
+		OSProcess* ps = new OSProcess((char *)&p[num], 0, 0);
 
 		if (!ps || !ps->ok())
 		{
@@ -274,8 +265,6 @@ OSProcessList::update(void)
 	}
 	
 	// make new list old one and discard the really old one
-	delete lastTStamps;
-	lastTStamps = newTStamps;
 	free(p);
 
 	return (true);
@@ -358,7 +347,6 @@ OSProcessList::OSProcessList()
   errMessage = i18n("Your OS is not supported yet.  Sorry");
   return;
 }
-
 
 bool
 OSProcessList::update(void)

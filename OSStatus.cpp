@@ -294,7 +294,8 @@ OSStatus::getCpuLoad(int& user, int& sys, int& nice, int& idle)
 	user = 0; // FIXME
 	sys = 0; // FIXME
 	nice = 0; // FIXME
-	idle = 100; // FIXME
+
+	idle = 100 - (user + sys + nice);
 
 	return (true);
 }
