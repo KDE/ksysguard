@@ -6,6 +6,6 @@
   <beam sensorName="cpu/nice" hostName="localhost" />
  </display>
  <display title="Memory" class="FancyPlotter" row="1" column="0" min="0" max="0" >
-  <beam sensorName="mem/used" hostName="localhost" />
+  <beam sensorName="mem/physical/used" hostName="localhost" />
  </display>
 </WorkSheet>

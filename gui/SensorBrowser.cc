@@ -55,6 +55,7 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	dict.insert("nice", new QString(i18n("Nice Load")));
 	dict.insert("user", new QString(i18n("User Load")));
 	dict.insert("mem", new QString(i18n("Memory")));
+	dict.insert("physical", new QString(i18n("Physical Memory")));
 	dict.insert("swap", new QString(i18n("Swap Memory")));
 	dict.insert("cached", new QString(i18n("Cached Memory")));
 	dict.insert("buf", new QString(i18n("Buffered Memory")));

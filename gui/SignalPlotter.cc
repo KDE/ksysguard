@@ -45,8 +45,7 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name, int min,
 
 	beams = 0;
 	lowPass = FALSE;
-	minValue = maxValue = 0;
-	autoRange = true;
+	autoRange = (min == max);
 
 	// Anything smaller than this does not make sense.
 	setMinimumSize(16, 16);
@@ -145,7 +144,7 @@ SignalPlotter::changeRange(int beam, long min, long max)
 	}
 
 	// Only the first beam affects range calculation.
-	if (beam)
+	if (beam > 1)
 		return;
 
 	if (min == max)

@@ -45,8 +45,12 @@ void printCached(const char* cmd);
 
 void printCachedInfo(const char* cmd);
 
-void printSwap(const char* cmd);
+void printSwapUsed(const char* cmd);
 
-void printSwapInfo(const char* cmd);
+void printSwapUsedInfo(const char* cmd);
+
+void printSwapFree(const char* cmd);
+
+void printSwapFreeInfo(const char* cmd);
 
 #endif

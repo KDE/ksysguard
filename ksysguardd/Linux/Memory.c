@@ -36,23 +36,25 @@ static size_t Buffers = 0;
 static size_t Cached = 0;
 static size_t STotal = 0;
 static size_t SFree = 0;
+static size_t SUsed = 0;
 
 static void
 processMemInfo()
 {
 	sscanf(MemInfoBuf, "%*[^\n]\n"
 		   "%*s %d %d %d %*d %d %d\n"
-		   "%*s %d %*d %d\n", 
+		   "%*s %d %d %d\n", 
 		   &Total, &Used, &MFree, &Buffers, &Cached,
-		   &STotal, &SFree);
+		   &STotal, &SUsed, &SFree);
 
 	Total /= 1024;
-	STotal /= 1024;
 	MFree /= 1024;
-	SFree /= 1024;
 	Used /= 1024;
 	Buffers /= 1024;
 	Cached /= 1024;
+	STotal /= 1024;
+	SFree /= 1024;
+	SUsed /= 1024;
 
 	Dirty = 0;
 }
@@ -72,11 +74,17 @@ initMemory(void)
 		return;
 	fclose(meminfo);
 
-	registerMonitor("mem/free", "integer", printMFree, printMFreeInfo);
-	registerMonitor("mem/used", "integer", printUsed, printUsedInfo);
-	registerMonitor("mem/buf", "integer", printBuffers, printBuffersInfo);
-	registerMonitor("mem/cached", "integer", printCached, printCachedInfo);
-	registerMonitor("mem/swap", "integer", printSwap, printSwapInfo);
+	registerMonitor("mem/physical/free", "integer", printMFree,
+					printMFreeInfo);
+	registerMonitor("mem/physical/used", "integer", printUsed, printUsedInfo);
+	registerMonitor("mem/physical/buf", "integer", printBuffers,
+					printBuffersInfo);
+	registerMonitor("mem/physical/cached", "integer", printCached,
+					printCachedInfo);
+	registerMonitor("mem/swap/used", "integer", printSwapUsed,
+					printSwapUsedInfo);
+	registerMonitor("mem/swap/free", "integer", printSwapFree,
+					printSwapFreeInfo);
 }
 
 void
@@ -182,7 +190,23 @@ printCachedInfo(const char* cmd)
 }
 
 void
-printSwap(const char* cmd)
+printSwapUsed(const char* cmd)
+{
+	if (Dirty)
+		processMemInfo();
+	printf("%d\n", SUsed);
+}
+
+void
+printSwapUsedInfo(const char* cmd)
+{
+	if (Dirty)
+		processMemInfo();
+	printf("Used Swap Memory\t0\t%d\tKB\n", STotal);
+}
+
+void
+printSwapFree(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
@@ -190,10 +214,9 @@ printSwap(const char* cmd)
 }
 
 void
-printSwapInfo(const char* cmd)
+printSwapFreeInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Swap Memory\t0\t%d\tKB\n", STotal);
+	printf("Free Swap Memory\t0\t%d\tKB\n", STotal);
 }
-
