@@ -30,7 +30,6 @@
 */
 
 #include <assert.h>
-#include <stdio.h>
 #include <ctype.h>
 
 #include <qstringlist.h>
@@ -287,34 +286,17 @@ void
 TopLevel::readProperties(KConfig* cfg)
 {
 	cfg->setGroup("KSysGuard Settings");
+	
+	int ww = cfg->readNumEntry("SizeX", 600);
+        int wh = cfg->readNumEntry("SizeY", 375);
+	resize(ww, wh);
 
-	QString geom = cfg->readEntry("Size");
-	if(geom.isEmpty())
-	{
-		// the default size; a golden ratio
-		resize(600, 375);
-	}
-	else
-	{
-		int ww, wh;
-		sscanf(geom.data(), "%d:%d", &ww, &wh);
-		resize(ww, wh);
-	}
-
-	QValueList<int> sizes;
-	geom = cfg->readEntry("SplitterSizes");
-	if (geom.isEmpty())
+	QValueList<int> sizes = cfg->readIntListEntry("SplitterSizeList");
+	if (sizes.isEmpty())
 	{
 		// start with a 30/70 ratio
 		sizes.append(30);
 		sizes.append(70);
-	}
-	else
-	{
-		int s1, s2;
-		sscanf(geom.data(), "%d:%d", &s1, &s2);
-		sizes.append(s1);
-		sizes.append(s2);
 	}
 	splitter->setSizes(sizes);
 
@@ -345,14 +327,9 @@ TopLevel::saveProperties(KConfig* cfg)
 	cfg->setGroup("KSysGuard Settings");
 
 	// Save window geometry. TODO: x/y is not exaclty correct. Needs fixing.
-	QString geom = QString("%1:%2").arg(width()).arg(height());
-	cfg->writeEntry("Size", geom);
-
-	// Save splitter sizes.
-	QValueList<int> spSz = splitter->sizes();
-	geom = QString("%1:%2").arg(*spSz.at(0)).arg(*spSz.at(1));
-	cfg->writeEntry("SplitterSizes", geom);
-
+	cfg->writeEntry("SizeX", width());
+	cfg->writeEntry("SizeY", height());
+	cfg->writeEntry("SplitterSizeList", splitter->sizes());
 	cfg->writeEntry("ToolBarHidden", !toolbarTog->isChecked());
 	cfg->writeEntry("StatusBarHidden", !statusBarTog->isChecked());
 
