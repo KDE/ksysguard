@@ -57,6 +57,7 @@ typedef struct {
 static int ServerSocket;
 static ClientInfo ClientList[ MAX_CLIENTS ];
 static int SocketPort = -1;
+static unsigned char BindToAllInterfaces = 0;
 static int CurrentSocket;
 static const char *LockFile = "/var/run/ksysguardd.pid";
 static const char *ConfigFile = KSYSGUARDDRCFILE;
@@ -91,7 +92,7 @@ static int processArguments( int argc, char* argv[] )
   int option;
 
   opterr = 0;
-  while ( ( option = getopt( argc, argv, "-p:f:dh" ) ) != EOF ) {
+  while ( ( option = getopt( argc, argv, "-p:f:dih" ) ) != EOF ) {
     switch ( tolower( option ) ) {
       case 'p':
         SocketPort = atoi( optarg );
@@ -102,10 +103,13 @@ static int processArguments( int argc, char* argv[] )
       case 'd':
         RunAsDaemon = 1;
         break;
+      case 'i':
+        BindToAllInterfaces = 1;
+        break;
       case '?':
       case 'h':
       default:
-        fprintf(stderr, "Usage: %s [-d] [-p port]\n", argv[ 0 ] );
+        fprintf(stderr, "Usage: %s [-d] [-i] [-p port]\n", argv[ 0 ] );
         return -1;
         break;
     }
@@ -326,7 +330,10 @@ int createServerSocket()
 
   memset( &s_in, 0, sizeof( struct sockaddr_in ) );
   s_in.sin_family = AF_INET;
-  s_in.sin_addr.s_addr = htonl( INADDR_ANY );
+  if ( BindToAllInterfaces )
+      s_in.sin_addr.s_addr = htonl( INADDR_ANY );
+  else
+      s_in.sin_addr.s_addr = htonl( INADDR_LOOPBACK );
   s_in.sin_port = htons( SocketPort );
 
   if ( bind( newSocket, (struct sockaddr*)&s_in, sizeof( s_in ) ) < 0 ) {
