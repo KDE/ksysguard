@@ -463,16 +463,16 @@ void TopLevel::answerReceived( int id, const QString &answer )
     case 2:
       mUsed = answer.toLong();
       s = i18n( "Memory: %1 %2 used, %3 %4 free" )
-              .arg( KGlobal::locale()->formatNumber( mUsed ) ).arg( unit )
-              .arg( KGlobal::locale()->formatNumber( mFree ) ).arg( unit );
+              .arg( KGlobal::locale()->formatNumber( mUsed, 0 ) ).arg( unit )
+              .arg( KGlobal::locale()->formatNumber( mFree, 0 ) ).arg( unit );
       statusBar()->changeItem( s, 1 );
       break;
 
     case 3:
       sFree = answer.toLong();
       s = i18n( "Swap: %1 %2 used, %3 %4 free" )
-              .arg( KGlobal::locale()->formatNumber( sTotal - sFree ) ).arg( unit )
-              .arg( KGlobal::locale()->formatNumber( sFree ) ).arg( unit );
+              .arg( KGlobal::locale()->formatNumber( sTotal - sFree, 0 ) ).arg( unit )
+              .arg( KGlobal::locale()->formatNumber( sFree, 0 ) ).arg( unit );
       statusBar()->changeItem( s, 2 );
       break;
 

@@ -593,6 +593,8 @@ ProcessList::addProcess(KSGRD::SensorPSLine* p, ProcessLVI* pli)
 			pli->setText(col, *columnDict[(*p)[col]]);
 		else if ( columnTypes[col] == "f" )
       pli->setText( col, KGlobal::locale()->formatNumber( (*p)[col].toFloat() ) );
+    else if ( columnTypes[col] == "D" )
+      pli->setText( col, KGlobal::locale()->formatNumber( (*p)[col].toDouble(), 0 ) );
     else
 			pli->setText(col, (*p)[col]);
 	}
@@ -645,7 +647,7 @@ ProcessList::addColumn(const QString& label, const QString& type)
 		setColumnAlignment(col, AlignLeft);
 		sortFunc.append(0);
 	}
-	else if (type == "d")
+	else if (type == "d" || type == "D")
 	{
 		setColumnAlignment(col, AlignRight);
 		sortFunc.append(&intKey);
