@@ -287,6 +287,8 @@ private:
 
 	static QDict<QString> aliases;
 
+	QDict<QPixmap> iconCache;
+
     KIconLoader* icons;
 	QPopupMenu* processPM;
 	QPopupMenu* headerPM;

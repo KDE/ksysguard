@@ -71,9 +71,9 @@ ListViewItem::paintFocus(QPainter *, const QColorGroup &, const QRect &)
 MyListView::MyListView(QWidget *parent)
 	: QListView(parent)
 {
-	gridColor = QColor(Qt::green);
-	textColor = QColor(Qt::green);
-	backgroundColor = QColor(Qt::black);
+	gridColor = QColor(Style->getFgColor1());
+	textColor = QColor(Style->getFgColor2());
+	backgroundColor = QColor(Style->getBackgroundColor());
 
 	QColorGroup cg = this->colorGroup();
 	cg.setBrush(QColorGroup::Base, backgroundColor);
@@ -86,9 +86,9 @@ MyListView::MyListView(QWidget *parent)
 ListView::ListView(QWidget* parent, const char* name, const QString& t,
 				   int, int) : SensorDisplay(parent, name)
 {
+	setBackgroundColor(Style->getBackgroundColor());
 	monitor = new MyListView(frame);
 	CHECK_PTR(monitor);
-	monitor->setBackgroundColor(Qt::black);
 	monitor->setSelectionMode(QListView::NoSelection);
 	monitor->setItemMargin(2);
 
@@ -149,17 +149,12 @@ ListView::answerReceived(int id, const QString& answer)
 				monitor->removeColumn(i);
 			}
 
-			int width = (monitor->width() / headers.numberOfTokens() - 1);
-
 			/* Add the new columns */
 			for (unsigned int i = 0; i < headers.numberOfTokens(); i++)
 			{
+				/* TODO: Implement translation support for header texts */
 				monitor->addColumn(headers[i], -1);
 				monitor->setColumnWidthMode(i, QListView::Maximum);
-				if (i == (headers.numberOfTokens() - 1)) {
-					width -= 15;
-				}
-				monitor->setColumnWidth(i, width);
 			}
 
 			timerOn();
@@ -196,19 +191,22 @@ ListView::createFromDOM(QDomElement& element)
 {
 	title = element.attribute("title");
 
+	setBackgroundColor(restoreColorFromDOM(element, "backgroundColor",
+										   Style->getBackgroundColor()));
 	monitor->setGridColor(restoreColorFromDOM(element, "gridColor",
-											   Qt::green));
+											  Style->getFgColor1()));
 	monitor->setTextColor(restoreColorFromDOM(element, "textColor",
-											   Qt::green));
+											  Style->getFgColor2()));
 	monitor->setBackgroundColor(
-		restoreColorFromDOM(element, "backgroundColor", Qt::black));
+		restoreColorFromDOM(element, "backgroundColor",
+							Style->getBackgroundColor()));
 	addSensor(element.attribute("hostName"),
 			  element.attribute("sensorName"), title);
 
 	QColorGroup colorGroup = monitor->colorGroup();
 	colorGroup.setBrush(QColorGroup::Base,
 						restoreColorFromDOM(element, "backgroundColor",
-											Qt::black));
+											Style->getBackgroundColor()));
 	QPalette pal(colorGroup, colorGroup, colorGroup);
 	monitor->setPalette(pal);
 
@@ -268,6 +266,7 @@ ListView::applySettings()
 void
 ListView::applyStyle()
 {
+	setBackgroundColor(Style->getBackgroundColor());
 	monitor->setGridColor(Style->getFgColor1());
 	monitor->setTextColor(Style->getFgColor2());
 	monitor->setBackgroundColor(Style->getBackgroundColor());

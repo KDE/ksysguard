@@ -6,7 +6,7 @@
 
     Copyright (C) 1998 Nicolas Leclercq <nicknet@planete.net>
 
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -41,6 +41,7 @@
 #include <qheader.h>
 #include <qpixmap.h>
 #include <qbitmap.h>
+#include <qimage.h>
 #include <qpaintdevice.h>
 #include <qpopupmenu.h>
 #include <qdom.h>
@@ -120,6 +121,8 @@ ProcessLVI::key(int column, bool) const
 ProcessList::ProcessList(QWidget *parent, const char* name)
 	: QListView(parent, name)
 {
+	iconCache.setAutoDelete(true);
+
 	columnDict.setAutoDelete(true);
 	columnDict.insert("running",
 					  new QString(i18n("process status", "running")));
@@ -163,8 +166,8 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 		aliases.insert("scsi_eh_5", new QString("kernel"));
 		aliases.insert("scsi_eh_6", new QString("kernel"));
 		aliases.insert("scsi_eh_7", new QString("kernel"));
-		aliases.insert("usbmgr", new QString("kernel"));
 		/* daemon and other service providers */
+		aliases.insert("artsd", new QString("daemon"));
 		aliases.insert("atd", new QString("daemon"));
 		aliases.insert("automount", new QString("daemon"));
 		aliases.insert("cardmgr", new QString("daemon"));
@@ -180,6 +183,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 		aliases.insert("sendmail", new QString("daemon"));
 		aliases.insert("sshd", new QString("daemon"));
 		aliases.insert("syslogd", new QString("daemon"));
+		aliases.insert("usbmgr", new QString("daemon"));
 		aliases.insert("wwwoffled", new QString("daemon"));
 		aliases.insert("xntpd", new QString("daemon"));
 		aliases.insert("ypbind", new QString("daemon"));
@@ -187,6 +191,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 		aliases.insert("appletproxy", new QString("kdeapp"));
 		aliases.insert("dcopserver", new QString("kdeapp"));
 		aliases.insert("kcookiejar", new QString("kdeapp"));
+		aliases.insert("kde", new QString("kdeapp"));
 		aliases.insert("kded", new QString("kdeapp"));
 		aliases.insert("kdeinit", new QString("kdeapp"));
 		aliases.insert("kdesktop", new QString("kdeapp"));
@@ -371,6 +376,9 @@ ProcessList::setTreeView(bool tv)
 		 * appropriately. */
 		setColumnWidth(0, savedWidth[0]);
 	}
+	/* In tree view mode borders are added to the icons. So we have to clear
+	 * the cache when we change the tree view mode. */
+	iconCache.clear();
 }
 
 void
@@ -600,32 +608,49 @@ ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 	if (aliases[name])
 		name = *aliases[name];
 
-	/* TODO: This icon handling is pretty much a CPU hog. We need to make
-	 * this more efficient. Probably a local cache will do the job. */
 	/* Get icon from icon list that might be appropriate for a process
 	 * with this name. */
-	QPixmap pix = icons->loadIcon(name, KIcon::Small,
-								  KIcon::SizeSmall, KIcon::DefaultState,
-								  0L, true);
-	if (pix.isNull() || !pix.mask())
-		pix = icons->loadIcon("unknownapp", KIcon::User,
-							  KIcon::SizeSmall);
-
-	/* We copy the icon into a 24x16 pixmap to add a 4 pixel margin on
-	 * the left and right side. In tree view mode we use the original
-	 * icon. */
-	QPixmap icon(24, 16, pix.depth());
-	if (!treeViewEnabled)
+	QPixmap pix;
+	if (!iconCache[name])
 	{
-		icon.fill();
-		bitBlt(&icon, 4, 0, &pix, 0, 0, pix.width(), pix.height());
-		QBitmap mask(24, 16, TRUE);
-		bitBlt(&mask, 4, 0, pix.mask(), 0, 0, pix.width(), pix.height());
-		icon.setMask(mask);
+		pix = icons->loadIcon(name, KIcon::Small,
+							  KIcon::SizeSmall, KIcon::DefaultState,
+							  0L, true);
+		if (pix.isNull() || !pix.mask())
+			pix = icons->loadIcon("unknownapp", KIcon::User,
+								  KIcon::SizeSmall);
+
+		if (pix.width() != 16 || pix.height() != 16)
+		{
+			/* I guess this isn't needed too often. The KIconLoader should
+			 * scale the pixmaps already appropriately. Since I got a bug
+			 * report claiming that it doesn't work with GNOME apps I've
+			 * added this safeguard. */
+			QImage img;
+			img = pix;
+			img.smoothScale(16, 16);
+			pix = img;
+		}
+		/* We copy the icon into a 24x16 pixmap to add a 4 pixel margin on
+		 * the left and right side. In tree view mode we use the original
+		 * icon. */
+		QPixmap icon(24, 16, pix.depth());
+		if (!treeViewEnabled)
+		{
+			icon.fill();
+			bitBlt(&icon, 4, 0, &pix, 0, 0, pix.width(), pix.height());
+			QBitmap mask(24, 16, TRUE);
+			bitBlt(&mask, 4, 0, pix.mask(), 0, 0, pix.width(), pix.height());
+			icon.setMask(mask);
+			pix = icon;
+		}
+		iconCache.insert(name, new QPixmap(pix));
 	}
+	else
+		pix = *(iconCache[name]);
 
 	// icon + process name
-	pli->setPixmap(0, treeViewEnabled ? pix : icon);
+	pli->setPixmap(0, pix);
 	pli->setText(0, p->getName());
 
 	// insert remaining field into table

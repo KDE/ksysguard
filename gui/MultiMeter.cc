@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -273,7 +273,7 @@ MultiMeter::sensorError(int, bool err)
 void
 MultiMeter::setDigitColor(const QColor& col)
 {
-	QPalette p;
+	QPalette p = lcd->palette();
 	p.setColor(QColorGroup::Foreground, col);
 	lcd->setPalette(p);
 }
@@ -283,4 +283,9 @@ MultiMeter::setBackgroundColor(const QColor& col)
 {
 	lcd->setBackgroundColor(col);
 	errorLabel->setBackgroundColor(col);
+
+	QPalette p = lcd->palette();
+	p.setColor(QColorGroup::Light, col);
+	p.setColor(QColorGroup::Dark, col);
+	lcd->setPalette(p);
 }
