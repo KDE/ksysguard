@@ -57,7 +57,7 @@ SensorAgent::sendRequest(const QString& req, SensorClient* client, int id)
 	/* The request is registered with the FIFO so that the answer can be
 	 * routed back to the requesting client. */
 	inputFIFO.prepend(new SensorRequest(req, client, id));
-	if (daemonOnLine && (inputFIFO.count() == 1))
+	if (daemonOnLine)
 	{
 		executeCommand();
 		return (true);
@@ -97,7 +97,7 @@ SensorAgent::processAnswer(const QString& buf)
 			break;
 		}
 
-	// Now look at the error messages
+	// Now we look at the error messages
 	int start = 0;
 	int end;
 	while ((end = errorBuffer.find("\n", start)) >= 0)
@@ -119,55 +119,48 @@ SensorAgent::processAnswer(const QString& buf)
 	}
 
 	// And now the real information
-	while ((end = answerBuffer.find("\nksysguardd> ")) > 0)
+	while ((end = answerBuffer.find("\nksysguardd> ")) >= 0)
 	{
 		if (!daemonOnLine)
 		{
-			/* First '\nksysguardd> ' signals that daemon is
+			/* First '\nksysguardd> ' signals that the daemon is
 			 * ready to serve requests now. */
 			daemonOnLine = true;
-			answerBuffer = QString();
-			if (!inputFIFO.isEmpty())
-			{
-				// If FIFO is not empty send out first request.
-				executeCommand();
-			}
+			answerBuffer = QString::null;
+			executeCommand();
 			return;
 		}
 			
-		if (!processingFIFO.isEmpty())
+		// remove pending request from FIFO
+		SensorRequest* req = processingFIFO.last();
+		if (!req)
 		{
-			// remove pending request from FIFO
-			SensorRequest* req = processingFIFO.last();
-			if (!req)
-			{
-				kdDebug()
-					<< "ERROR: Received answer but have no pending "
-					<< "request!" << endl;
-				return;
-			}
-				
-			if (!req->client)
-			{
-				kdDebug ()
-					<< "ERROR: No client registered for request!"
-					<< endl;
-				processingFIFO.removeLast();
-				return;
-			}
-			if (answerBuffer.left(end) == "UNKNOWN COMMAND")
-			{
-				// Notify client of newly arrived answer.
-				req->client->sensorLost(req->id);
-			}
-			else
-			{
-				// Notify client of newly arrived answer.
-				req->client->answerReceived(req->id,
-											answerBuffer.left(end));
-			}
-			processingFIFO.removeLast();
+			kdDebug()
+				<< "ERROR: Received answer but have no pending "
+				<< "request!" << endl;
+			return;
 		}
+				
+		if (!req->client)
+		{
+			kdDebug ()
+				<< "ERROR: No client registered for request!"
+				<< endl;
+			processingFIFO.removeLast();
+			return;
+		}
+		if (answerBuffer.left(end) == "UNKNOWN COMMAND")
+		{
+			// Notify client of newly arrived answer.
+			req->client->sensorLost(req->id);
+		}
+		else
+		{
+			// Notify client of newly arrived answer.
+			req->client->answerReceived(req->id,
+										answerBuffer.left(end));
+		}
+		processingFIFO.removeLast();
 
 		// chop of processed part of the answer buffer
 		answerBuffer.remove(0, end + strlen("\nksysguardd> "));

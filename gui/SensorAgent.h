@@ -90,7 +90,6 @@ signals:
 	void reconfigure(const SensorAgent*);
 
 protected:
-	virtual void executeCommand() = 0;
 	void processAnswer(const QString& buf);
 
 	SensorManager* sensorManager;
@@ -104,6 +103,7 @@ protected:
 	QString errorBuffer;
 
 private:
+	virtual void executeCommand() = 0;
 	int state;
 } ;
 	
