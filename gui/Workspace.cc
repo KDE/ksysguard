@@ -193,7 +193,7 @@ Workspace::saveOnQuit()
 void
 Workspace::loadWorkSheet()
 {
-	KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", true);
+	KFileDialog fd(0, i18n("*.sgrd|Sensor Files"), this, "LoadFileDialog", true);
 	KURL url = fd.getOpenURL(workDir, "*.sgrd", 0,
 								i18n("Select a Worksheet to Load"));
 	loadWorkSheet(url);
@@ -240,7 +240,7 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 	QString fileName = sheet->getFileName();
 	if (fileName.isEmpty())
 	{
-		KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", true);
+		KFileDialog fd(0, i18n("*.sgrd|Sensor Files"), this, "LoadFileDialog", true);
 		fileName = fd.getSaveFileName(workDir + "/" +
 			tabLabel(sheet) + ".sgrd", "*.sgrd", 0,
 			i18n("Save Current Worksheet As"));
