@@ -35,7 +35,7 @@
 
 #define NONE -1
 
-ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
+ProcListPage::ProcListPage(QWidget* parent, const char* name)
 	: QWidget(parent, name)
 {
 	// Create the box that will contain the other widgets.

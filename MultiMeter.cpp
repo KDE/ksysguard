@@ -27,8 +27,8 @@
 
 #include "MultiMeter.moc"
 
-const static int GMBorder = 2;
-const static int LCDHeight = 21;
+static const int GMBorder = 2;
+static const int LCDHeight = 21;
 
 inline int max(int a, int b)
 {
