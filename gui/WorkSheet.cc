@@ -445,6 +445,11 @@ void WorkSheet::dropEvent( QDropEvent *e )
   }
 }
 
+QSize WorkSheet::sizeHint() const
+{
+  return QSize( 200,150 );
+}
+
 void WorkSheet::customEvent( QCustomEvent *e )
 {
   if ( e->type() == QEvent::User ) {

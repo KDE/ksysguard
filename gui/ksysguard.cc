@@ -120,21 +120,16 @@ TopLevel::TopLevel( const char *name )
                SLOT( configure() ), actionCollection(), "configure_sheet" );
 
   KStdAction::revert( this, SLOT( resetWorkSheets() ), actionCollection() );
-  KStdAction::showToolbar( "mainToolBar", actionCollection() );
   mActionStatusBar = KStdAction::showStatusbar( this, SLOT( showStatusBar() ),
                                                 actionCollection() );
   mActionStatusBar->setChecked( false );
 
-  KStdAction::configureToolbars( this, SLOT( editToolbars() ), actionCollection() );
-  KStdAction::keyBindings(guiFactory(), SLOT(configureShortcuts()),
-actionCollection());
-
   new KAction( i18n( "Configure &Style..." ), "colorize", 0, this,
                SLOT( editStyle() ), actionCollection(), "configure_style" );
 
-  createGUI();
-
-  resize( 600, 440 );
+  // TODO remove resize and fix so sizeHints() determines default size.
+  resize( 640, 480 );
+  setupGUI();
 }
 
 
@@ -382,13 +377,6 @@ void TopLevel::readProperties( KConfig *cfg )
      maximized, so we save the coordinates instead */
   if ( cfg->readBoolEntry( "isMinimized" ) == true )
     showMinimized();
-  else {
-    int wx = cfg->readNumEntry( "PosX", 100 );
-    int wy = cfg->readNumEntry( "PosY", 100 );
-    int ww = cfg->readNumEntry( "SizeX", 600 );
-    int wh = cfg->readNumEntry( "SizeY", 375 );
-    setGeometry( wx, wy, ww, wh );
-  }
 
   QValueList<int> sizes = cfg->readIntListEntry( "SplitterSizeList" );
   if ( sizes.isEmpty() ) {
@@ -417,14 +405,8 @@ void TopLevel::saveProperties( KConfig *cfg )
 {
   mActionOpenRecent->saveEntries( cfg );
 
-  cfg->writeEntry( "PosX", x() );
-  cfg->writeEntry( "PosY", y() );
-  cfg->writeEntry( "SizeX", width() );
-  cfg->writeEntry( "SizeY", height() );
   cfg->writeEntry( "isMinimized", isMinimized() );
   cfg->writeEntry( "SplitterSizeList", mSplitter->sizes() );
-
-  saveMainWindowSettings( cfg );
 
   KSGRD::Style->saveProperties( cfg );
   KSGRD::SensorMgr->saveProperties( cfg );

@@ -85,7 +85,8 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
     void sheetModified( QWidget *sheet );
 
   protected:
-	  void dragEnterEvent( QDragEnterEvent* );
+    virtual QSize sizeHint() const;
+    void dragEnterEvent( QDragEnterEvent* );
     void dropEvent( QDropEvent* );
     void customEvent( QCustomEvent* );
 
