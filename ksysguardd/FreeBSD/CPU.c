@@ -68,7 +68,8 @@ exitCpuInfo(void)
 int
 updateCpuInfo(void)
 {
-        sysctlbyname("kern.cp_time", &cp_time, sizeof(cp_time), NULL, 0);
+	size_t len = sizeof(cp_time);
+        sysctlbyname("kern.cp_time", &cp_time, &len, NULL, 0);
         percentages(CPUSTATES, cpu_states, cp_time, cp_old, cp_diff);
 	return (0);
 }
