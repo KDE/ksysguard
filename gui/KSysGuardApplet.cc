@@ -73,10 +73,10 @@ KSysGuardApplet::KSysGuardApplet( const QString& configFile, Type type,
   mDockCount = 1;
   mDockList = new QWidget*[ mDockCount ];
 
+  mSizeRatio = 1.0;
   addEmptyDisplay( mDockList, 0 );
 
   updateInterval( 2 );
-  mSizeRatio = 1.0;
 
   load();
 
