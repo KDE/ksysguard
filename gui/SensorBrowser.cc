@@ -56,16 +56,18 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	dict.insert("memfree", new QString(i18n("Free Memory")));
 	dict.insert("pscount", new QString(i18n("Process Count")));
 	dict.insert("ps", new QString(i18n("Process Controller")));
-#if 0
+
 	for (int i = 0; i < 32; i++)
 	{
 		dict.insert("cpu" + QString::number(i) + "idle",
-					new QString(i18n("CPU" + QString::number(i) + " Idle Load")));
-		dict.insert("cpusys", new QString(i18n("System Load")));
-		dict.insert("cpunice", new QString(i18n("Nice Load")));
-		dict.insert("cpuuser", new QString(i18n("User Load")));
+					new QString(QString(i18n("CPU%1 Idle Load")).arg(i)));
+		dict.insert("cpu" + QString::number(i) + "sys",
+					new QString(QString(i18n("CPU%1 System Load")).arg(i)));
+		dict.insert("cpu" + QString::number(i) + "nice",
+					new QString(QString(i18n("CPU%1 Nice Load")).arg(i)));
+		dict.insert("cpu" + QString::number(i) + "user",
+					new QString(QString(i18n("CPU%1 User Load")).arg(i)));
 	}
-#endif
 }
 
 void
@@ -77,7 +79,7 @@ SensorBrowser::update()
 	SensorAgent* host;
 	for (int i = 0 ; (host = it.current()); ++it, ++i)
 	{
-		QString hostName = sensorManager-> getHostName(host);
+		QString hostName = sensorManager->getHostName(host);
 
 		QListViewItem* lvi = new QListViewItem(this, hostName);
 		CHECK_PTR(lvi);

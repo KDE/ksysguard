@@ -10,10 +10,9 @@
 	Copyright (c) 1999 Chris Schlaeger
 	                   cs@kde.org
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,15 +25,21 @@
 
 	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
 	not commit any changes without consulting me first. Thanks!
+
+	$Id$
 */
 
-// $Id$
-
+#include <config.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
-#include <assert.h>
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#if HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
 
 #include <qheader.h>
 #include <qpixmap.h>
@@ -53,49 +58,9 @@
 #define NONE -1
 #define INIT_PID 1
 
-typedef const char* (*KeyFunc)(const char*);
-
-typedef struct
-{
-	const char* header;
-	char* trHeader;
-	bool visible;
-	bool supported;
-	bool sortable;
-	int alignment;
-	KeyFunc key;
-} TABCOLUMN;
-
 static const char* intKey(const char* text);
 static const char* timeKey(const char* text);
-static const char* percentKey(const char* text);
-
-/*
- * The following array defined the setup of the tab dialog. Not all platforms
- * may support all columns which is indicated by the supported flag. Also
- * not all columns may be visible at all times.
- *
- * This table, the construction of the KTabListBox lines in
- * ProcessList::initTabCol and ProcessList::load() MUST be keept in sync!
- * Also, the order and existance of the first three columns (icon, name and
- * pid) is mandatory! This i18n() mechanism is way too inflexible!
- */
-static TABCOLUMN TabCol[] =
-{
-	{ "Name",        0, true, true,  true,  1, 0 },
-	{ "PID",         0, true, true,  true,  2, intKey },
-	{ "User",        0, true, false, true,  1, 0 },
-	{ "CPU",         0, true, false, true,  2, percentKey },
-	{ "Time",        0, true, false, true,  2, timeKey },
-	{ "Nice",        0, true, false, true,  2, intKey },
-	{ "Status",      0, true, false, true,  1, 0 },
-	{ "Memory",      0, true, false, true,  2, intKey },
-	{ "Resident",    0, true, false, true,  2, intKey },
-	{ "Shared",      0, true, false, true,  2, intKey },
-	{ "Commandline", 0, true, false, true,  1, 0 }
-};
-
-static const int MaxCols = sizeof(TabCol) / sizeof(TABCOLUMN);
+static const char* floatKey(const char* text);
 
 /*
  * The *key functions are used to sort the list. Since QListView can only sort
@@ -126,10 +91,10 @@ timeKey(const char* text)
 }
 
 static const char*
-percentKey(const char* text)
+floatKey(const char* text)
 {
 	double percent;
-	sscanf(text, "%lf%%", &percent);
+	sscanf(text, "%lf", &percent);
 
 	static char key[16];
 	sprintf(key, "%06.2f", percent);
@@ -140,10 +105,12 @@ percentKey(const char* text)
 QString
 ProcessLVI::key(int column, bool) const
 {
-	if (TabCol[column].key)
-		return ((*TabCol[column].key)(text(column)));
-	else
-		return (text(column));
+	QValueList<KeyFunc> kf = ((ProcessList*) listView())->getSortFunc();
+	KeyFunc func = *(kf.at(column));
+	if (func)
+		return (func(text(column)));
+
+	return (text(column));
 }
 
 ProcessList::ProcessList(QWidget *parent, const char* name)
@@ -179,13 +146,6 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	connect(this, SIGNAL(processSelected(int)),
 			MainMenuBar, SLOT(processSelected(int)));
 
-	/*
-	 * If the process list has changed we need to be informed by a signal
-	 * about it to update the displayed process list.
-	 */
-	connect(MainMenuBar, SIGNAL(requestUpdate(void)),
-			this, SLOT(update(void)));
-
 	/* As long as the scrollbar sliders are pressed and hold the process
 	 * list is frozen. */
 	connect(verticalScrollBar(), SIGNAL(sliderPressed(void)),
@@ -197,39 +157,29 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	connect(horizontalScrollBar(), SIGNAL(sliderReleased(void)),
 			this, SLOT(timerOn()));
 
-	// no timer started yet
-	timerId = NONE;
-
 	treeViewEnabled = false;
 
-	filterMode = FILTER_OWN;
-
-	refreshRate = REFRESH_MEDIUM;
+	filterMode = FILTER_ALL;
 
 	sortColumn = 1;
 	increasing = FALSE;
+
+	// Elements in the process list may only live in this list.
+	pl.setAutoDelete(TRUE);
 
 	// load the icons we display with the processes
 	icons = new KIconLoader();
 	CHECK_PTR(icons);
 
-#if 0
-	// make sure we can retrieve process lists from the OS
-	if (!pl.ok())
-	{
-		KMessageBox::error(this, pl.getErrMessage());
-		abort();
-	}
-#endif
-
-	initTabCol();
+	setItemMargin(1);
+	setAllColumnsShowFocus(TRUE);
+	setTreeStepSize(17);
+	setSorting(sortColumn, increasing);
 
 	// Create RMB popup to modify process attributes
 	processMenu = new ProcessMenu();
 	connect(this, SIGNAL(processSelected(int)),
 			processMenu, SLOT(processSelected(int)));
-	connect(processMenu, SIGNAL(requestUpdate(void)),
-			this, SLOT(update(void)));
 
 	// Create popup menu for RMB clicks on table header
 	headerPM = new QPopupMenu();
@@ -244,9 +194,6 @@ ProcessList::~ProcessList()
 {
 	// remove icon list from memory
 	delete icons;
-
-	// switch off timer
-	timerOff();
 
 	delete(processMenu);
 	delete(headerPM);
@@ -278,7 +225,7 @@ ProcessList::loadSettings(void)
 	// The default sorting is for the PID in decreasing order.
 	sortColumn = Kapp->config()->readNumEntry("SortColumn", 1);
 	increasing = Kapp->config()->readNumEntry("SortIncreasing", FALSE);
-	QListView::setSorting(sortColumn, increasing);
+	setSorting(sortColumn, increasing);
 #endif
 }
 
@@ -295,140 +242,36 @@ ProcessList::saveSettings(void)
 }
 
 void 
-ProcessList::setRefreshRate(int r)
+ProcessList::update(const QString& list)
 {
-	assert(r >= REFRESH_MANUAL && r <= REFRESH_FAST);
-
-	timerOff();
-	switch (refreshRate = r)
-	{
-	case REFRESH_MANUAL:
-		break;
-
-	case REFRESH_SLOW:
-		timerInterval = 20000;
-		break;
-
-	case REFRESH_MEDIUM:
-		timerInterval = 7000;
-		break;
-
-	case REFRESH_FAST:
-	default:
-		timerInterval = 1000;
-		break;
-	}
-
-	// only re-start the timer if auto mode is enabled
-	if (refreshRate != REFRESH_MANUAL)
-		timerOn();
-
-	emit(refreshRateChanged(refreshRate));
-}
-
-void
-ProcessList::setSorting(int column, bool inc)
-{
-	/*
-	 * If the new column is equal to the current column we flip the sorting
-	 * direction. Otherwise we just change the column we sort for. Since some
-	 * columns may be invisible we have to map the view column to the table
-	 * column.
-	 */
-	int tcol = mapV2T(column);
-
-	if (sortColumn == tcol)
-		increasing = !inc;
-	else
-	{
-		sortColumn = tcol;
-		increasing = inc;
-	}
-
-	QListView::setSorting(sortColumn, increasing);
-}
-
-int
-ProcessList::setAutoUpdateMode(bool mode)
-{
-	/*
-	 * If auto mode is enabled the display is updated regurlarly triggered
-	 * by a timer event.
-	 */
-
-	// save current setting of the timer
-	int oldmode = (timerId != NONE) ? TRUE : FALSE; 
-
-	// set new setting
-	if (mode && (refreshRate != REFRESH_MANUAL))
-		timerOn();
-	else
-		timerOff();
-
-	// return the previous setting
-	return (oldmode);
-}
-
-void 
-ProcessList::update(void)
-{
-	// disable the auto-update and save current mode
-	int lastmode = setAutoUpdateMode(FALSE);
-
-	// retrieve current process list from OS and update tab dialog
-	load();
-
-	setAutoUpdateMode(lastmode);
-}
-
-void 
-ProcessList::load()
-{
-	int vpos = verticalScrollBar()->value();
-	int hpos = horizontalScrollBar()->value();
-
-#if 0
 	pl.clear();
-#endif
 
-	/* This piece of code tries to work around the QListView
-	 * auto-shrink bug. The column width is always reset to the size
-	 * required for the header. If any column entry needs more space
-	 * QListView will resize the column again. Unfortunately this
-	 * causes heavy flickering! */
-	QFontMetrics fm = fontMetrics();
-	int col = 0;
-	for (int i = 0; i < MaxCols; i++)
-		if (TabCol[i].visible && TabCol[i].supported)
-			setColumnWidth(col++, fm.width(TabCol[i].trHeader) + 10);
-
-#if 0
-	// request current list of processes
-	if (!pl.update())
-	{
-		KMessageBox::error(this, pl.getErrMessage());
-		abort();
-	}
-#endif
-
+	// Convert ps answer in a list of tokenized lines
+	SensorTokenizer procs(list, '\n');
+	for (unsigned int i = 0; i < procs.numberOfTokens(); i++)
+		pl.append(new SensorPSLine(procs[i]));
+	// remove all leaves that do not match the filter
 	if (treeViewEnabled)
 		deleteLeaves();
+
+	int vpos = verticalScrollBar()->value();
+	int hpos = horizontalScrollBar()->value();
 
 	int selectedProcess = selectedPid();
 
 	clear();
 
-	ProcessLVI* newSelection = treeViewEnabled ?
-		buildTree(selectedProcess) :
-		buildList(selectedProcess);
+	ProcessLVI* newSelection;
+	if (treeViewEnabled)
+		newSelection = buildTree(selectedProcess);
+	else
+		newSelection = buildList(selectedProcess);
 
-#if 0
 	if (newSelection)
 	{
 		setSelected(newSelection, TRUE);
 		ensureItemVisible(newSelection);
 	}
-#endif
 
 	/* This is necessary because the selected process may has
 	 * disappeared without ktop's interaction. Since there are widgets
@@ -440,9 +283,25 @@ ProcessList::load()
 	horizontalScrollBar()->setValue(hpos);
 }
 
+void 
+ProcessList::load()
+{
 #if 0
+	/* This piece of code tries to work around the QListView
+	 * auto-shrink bug. The column width is always reset to the size
+	 * required for the header. If any column entry needs more space
+	 * QListView will resize the column again. Unfortunately this
+	 * causes heavy flickering! */
+	QFontMetrics fm = fontMetrics();
+	int col = 0;
+	for (int i = 0; i < MaxCols; i++)
+		if (TabCol[i].visible && TabCol[i].supported)
+			setColumnWidth(col++, fm.width(TabCol[i].trHeader) + 10);
+#endif
+}
+
 bool
-ProcessList::matchesFilter(OSProcess* p) const
+ProcessList::matchesFilter(SensorPSLine* p) const
 {
 	// This mechanism is likely to change in the future!
 
@@ -452,17 +311,16 @@ ProcessList::matchesFilter(OSProcess* p) const
 		return (true);
 
 	case FILTER_SYSTEM:
-		return (p->getUid() < 100 ? true : false);
+		return (p->getUId() < 100 ? true : false);
 
 	case FILTER_USER:
-		return (p->getUid() >= 100 ? true : false);
+		return (p->getUId() >= 100 ? true : false);
 
 	case FILTER_OWN:
 	default:
-		return (p->getUid() == getuid() ? true : false);
+		return (p->getUId() == (long) getuid() ? true : false);
 	}
 }
-#endif
 
 ProcessLVI*
 ProcessList::buildList(int selectedProcess)
@@ -473,10 +331,10 @@ ProcessList::buildList(int selectedProcess)
 	 * Get the first process in the list, check whether it matches the filter
 	 * and append it to QListView widget if so.
 	 */
-#if 0
+
 	while (!pl.isEmpty())
 	{
-		OSProcess* p = pl.first();
+		SensorPSLine* p = pl.first();
 
 		if (matchesFilter(p))
 		{
@@ -489,19 +347,19 @@ ProcessList::buildList(int selectedProcess)
 		}
 		pl.removeFirst();
     }
-#endif
+
 	return (newSelection);
 }
 
 ProcessLVI*
 ProcessList::buildTree(int selectedProcess)
 {
+	debug("ProcessList::buildTree");
 	ProcessLVI* newSelection = 0;
 
-#if 0
 	if (treeViewEnabled)
 	{
-		OSProcess* ps = pl.first();
+		SensorPSLine* ps = pl.first();
 
 		while (ps)
 		{
@@ -522,46 +380,42 @@ ProcessList::buildTree(int selectedProcess)
 				ps = pl.next();
 		}
 	}
-#endif
+
 	return (newSelection);
 }
 
 void
 ProcessList::deleteLeaves(void)
 {
-#if 0
 	for ( ; ; )
 	{
 		unsigned int i;
 		for (i = 0; i < pl.count() &&
-		            (!isLeafProcess(pl.at(i)->getPid()) ||
-					 matchesFilter(pl.at(i))); i++)
+				 (!isLeafProcess(pl.at(i)->getPid()) ||
+				  matchesFilter(pl.at(i))); i++)
 			;
 		if (i == pl.count())
 			return;
 
 		pl.remove(i);
 	}
-#endif
 }
 
 bool
 ProcessList::isLeafProcess(int pid)
 {
-#if 0	
 	for (unsigned int i = 0; i < pl.count(); i++)
-		if (pl.at(i)->getPpid() == pid)
+		if (pl.at(i)->getPPid() == pid)
 			return (false);
-#endif
+
 	return (true);
 }
 
-#if 0
 void
-ProcessList::extendTree(OSProcessList* pl, ProcessLVI* parent, int ppid,
+ProcessList::extendTree(QList<SensorPSLine>* pl, ProcessLVI* parent, int ppid,
 						ProcessLVI** newSelection, int selectedProcess)
 {
-	OSProcess* ps;
+	SensorPSLine* ps;
 
 	// start at top list
 	ps = pl->first();
@@ -569,7 +423,7 @@ ProcessList::extendTree(OSProcessList* pl, ProcessLVI* parent, int ppid,
 	while (ps)
 	{
 		// look for a child process of the current parent
-		if (ps->getPpid() == ppid)
+		if (ps->getPPid() == ppid)
 		{
 			ProcessLVI* pli = new ProcessLVI(parent);
 			
@@ -604,19 +458,20 @@ ProcessList::extendTree(OSProcessList* pl, ProcessLVI* parent, int ppid,
 }
 
 void
-ProcessList::addProcess(OSProcess* p, ProcessLVI* pli)
+ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 {
 	/*
 	 * Get icon from icon list that might be appropriate for a process
 	 * with this name.
 	 */
-	QPixmap pix = icons->loadApplicationMiniIcon(QString(p->getName())
-												 + ".png", 16, 16);
+	QPixmap pix = icons->loadIcon(p->getName(), KIcon::Desktop,
+								  KIcon::SizeSmall);
 	if (pix.isNull())
 	{
 		pix = QPixmap(BarIcon(p->getName()));
 		if (pix.isNull())
-			pix = icons->loadApplicationMiniIcon("default.png", 16, 16);
+			pix = icons->loadIcon("default", KIcon::Desktop,
+								  KIcon::SizeSmall);
 	}
 
 	/*
@@ -633,70 +488,16 @@ ProcessList::addProcess(OSProcess* p, ProcessLVI* pli)
 		icon.setMask(mask);
 	}
 
-	int col = 0;
 	// icon + process name
-	pli->setPixmap(col, treeViewEnabled ? pix : icon);
-	pli->setText(col++, p->getName());
+	pli->setPixmap(0, treeViewEnabled ? pix : icon);
+	pli->setText(0, p->getName());
 
 	QString s;
 
-	// pid
-	pli->setText(col++, s.setNum(p->getPid()));
-
-	TABCOLUMN* tc = &TabCol[2];
-
-	// user name
-	if (tc->visible && tc->supported)
-		pli->setText(col++, p->getUserName());
-	tc++;
-
-	// CPU load
-	if (tc->visible && tc->supported)
-		pli->setText(col++, s.sprintf("%.2f%%", 
-									  p->getUserLoad() + p->getSysLoad()));
-	tc++;
-
-	// total processing time
-	if (tc->visible && tc->supported)
-	{
-		int totalTime = p->getUserTime() + p->getSysTime();
-		pli->setText(col++, s.sprintf("%d:%02d",
-									  (totalTime / 100) / 60,
-									  (totalTime / 100) % 60));
-	}
-	tc++;
-
-	// process nice level
-	if (tc->visible && tc->supported)
-		pli->setText(col++, s.setNum(p->getNiceLevel()));
-	tc++;
-
-	// process status
-	if (tc->visible && tc->supported)
-		pli->setText(col++, p->getStatusTxt());
-	tc++;
-
-	// VM size (total memory in kBytes)
-	if (tc->visible && tc->supported)
-		pli->setText(col++, s.setNum(p->getVm_size() / 1024));
-	tc++;
-
-	// VM RSS (Resident memory in kBytes)
-	if (tc->visible && tc->supported)
-		pli->setText(col++, s.setNum(p->getVm_rss() / 1024));
-	tc++;
-
-	// VM LIB (Shared memory in kBytes)
-	if (tc->visible && tc->supported)
-		pli->setText(col++, s.setNum(p->getVm_lib() / 1024));
-	tc++;
-
-	// Commandline
-	if (tc->visible && tc->supported)
-		pli->setText(col++, p->getCmdLine());
-	tc++;
+	// insert remaining field into table
+	for (unsigned int col = 1; col < p->numberOfTokens(); col++)
+		pli->setText(col, (*p)[col]);
 }
-#endif
 
 int
 ProcessList::selectedPid(void) const
@@ -712,90 +513,66 @@ ProcessList::selectedPid(void) const
 	return (pidStr.toInt());
 }
 
-#define SETTABCOL(text, has) \
-	tc->trHeader = new char[strlen(text) + 1]; \
-	strcpy(tc->trHeader, text); \
-	if (has) \
-		tc->supported = true; \
-	tc++
+void
+ProcessList::removeColumns(void)
+{
+	for (int i = columns() - 1; i >= 0; --i)
+		removeColumn(i);
+}
 
 void
-ProcessList::initTabCol(void)
+ProcessList::addColumn(const QString& header, const QString& type)
 {
-	TABCOLUMN* tc = &TabCol[0];
-
-	tc->trHeader = new char[strlen(i18n("Name")) + 1];
-	strcpy(tc->trHeader, i18n("Name"));
-	tc++;
-
-	tc->trHeader = new char[strlen(i18n("PID")) + 1];
-	strcpy(tc->trHeader, i18n("PID"));
-	tc++;
-
-#if 0
-	SETTABCOL(i18n("User ID"), pl.hasUid());
-	SETTABCOL(i18n("CPU"), pl.hasUserLoad() && pl.hasSysLoad());
-	SETTABCOL(i18n("Time"), pl.hasUserTime() && pl.hasSysTime());
-	SETTABCOL(i18n("Nice"), pl.hasNiceLevel());
-	SETTABCOL(i18n("Status"), pl.hasStatus());
-	SETTABCOL(i18n("Memory"), pl.hasVmSize());
-	SETTABCOL(i18n("Resident"), pl.hasVmRss());
-	SETTABCOL(i18n("Shared"), pl.hasVmLib());
-	SETTABCOL(i18n("Command line"), pl.hasCmdLine());
-#endif
-	SETTABCOL(i18n("User ID"), TRUE);
-	SETTABCOL(i18n("CPU"), TRUE);
-	SETTABCOL(i18n("Time"), TRUE);
-	SETTABCOL(i18n("Nice"), TRUE);
-	SETTABCOL(i18n("Status"), TRUE);
-	SETTABCOL(i18n("Memory"), TRUE);
-	SETTABCOL(i18n("Resident"), TRUE);
-	SETTABCOL(i18n("Shared"), TRUE);
-	SETTABCOL(i18n("Command line"), TRUE);
-
-	// determine the number of visible columns
-	int cnt;
-
-	/*
-	 * Set the column witdh for all columns in the process list table.
-	 * A dummy string that is somewhat longer than the real text is used
-	 * to determine the width with the current font metrics.
-	 */
-	int col;
-	QFontMetrics fm = fontMetrics();
-	for (cnt = col = 0; cnt < MaxCols; cnt++)
-		if (TabCol[cnt].visible && TabCol[cnt].supported)
-		{
-			addColumn(TabCol[cnt].trHeader);
-			setColumnAlignment(col++, TabCol[cnt].alignment);
-		}
-	setItemMargin(1);
-	setAllColumnsShowFocus(TRUE);
-	setTreeStepSize(17);
-	QListView::setSorting(sortColumn, increasing);
+	uint col = sortFunc.count();
+	QListView::addColumn(header);
+	if (type == "s")
+	{
+		setColumnAlignment(col, AlignLeft);
+		sortFunc.append(0);
+	}
+	else if (type == "d")
+	{
+		setColumnAlignment(col, AlignRight);
+		sortFunc.append(&intKey);
+	}
+	else if (type == "t")
+	{
+		setColumnAlignment(col, AlignRight);
+		sortFunc.append(&timeKey);
+	}
+	else	// should be type "f"
+	{
+		setColumnAlignment(col, AlignRight);
+		sortFunc.append(floatKey);
+	}
 }
 
 int 
 ProcessList::mapV2T(int vcol)
 {
+#if 0
 	int tcol;
 	int i = 0;
 	for (tcol = 0; !TabCol[tcol].visible || (i < vcol); tcol++)
 		if (TabCol[tcol].visible)
 			i++;
-
 	return (tcol);
+#endif
+	return vcol;
 }
 
 int
 ProcessList::mapT2V(int tcol)
 {
+#if 0
 	int vcol = 0;
 	for (int i = 0; i < tcol; i++)
 		if (TabCol[i].visible)
 			vcol++;
 
 	return (vcol);
+#endif
+	return (tcol);
 }
 
 void
@@ -813,7 +590,7 @@ ProcessList::handleRMBPopup(int item)
 			setColumnWidthMode(currColumn, Manual);
 			setColumnWidth(currColumn, 0);
 //			header()->setCellSize(currColumn, 0);
-			update();
+//			update();
 		}
 		break;
 	case HEADER_ADD:
@@ -875,8 +652,3 @@ ProcessList::viewportMousePressEvent(QMouseEvent* e)
 	else
 		QListView::mousePressEvent(e);
 }
-
-
-
-
-

@@ -171,11 +171,10 @@ updateProcess(int pid)
 		bsort_ctnr(ProcessList, processCmp, 0);
 	}
 
-	ps->alive = 1;
 	snprintf(buf, BUFSIZE - 1, "/proc/%d/status", pid);
 	if((fd = fopen(buf, "r")) == 0)
 	{
-		printf("Error: Cannot open %s!\n", buf);
+		// process has terminated in the mean time
 		return (-1);
 	}
 
@@ -192,7 +191,8 @@ updateProcess(int pid)
 	fscanf(fd, "%*s %*d %*s");	/* VmData */
 	fscanf(fd, "%*s %*d %*s");	/* VmStk */
 	fscanf(fd, "%*s %*d %*s");	/* VmExe */
-	fscanf(fd, "%8s %d %*s", buf, &ps->vmLib);	/* VmLib */
+	if (fscanf(fd, "%8s %d %*s", buf, &ps->vmLib) != 2) 	/* VmLib */
+		return (-1);
 	buf[7] = '\0';
 	if (strcmp(buf, "VmLib:") != 0)
 		ps->vmLib = 0;
@@ -204,16 +204,14 @@ updateProcess(int pid)
     snprintf(buf, BUFSIZE - 1, "/proc/%d/stat", pid);
 	buf[BUFSIZE - 1] = '\0';
 	if ((fd = fopen(buf, "r")) == 0)
-	{
-		sprintf("Cannot open %s!\n", buf);
 		return (-1);
-	}
 
-	fscanf(fd, "%*d %*s %c %d %d %*d %d %*d %*u %*u %*u %*u %*u %d %d"
-		   "%*d %*d %*d %d %*u %*u %*d %u %u",
-		   &ps->status, (int*) &ps->ppid, (int*) &ps->gid, &ps->ttyNo,
-		   &userTime, &sysTime, &ps->niceLevel, &ps->vmSize,
-		   &ps->vmRss);
+	if (fscanf(fd, "%*d %*s %c %d %d %*d %d %*d %*u %*u %*u %*u %*u %d %d"
+			   "%*d %*d %*d %d %*u %*u %*d %u %u",
+			   &ps->status, (int*) &ps->ppid, (int*) &ps->gid, &ps->ttyNo,
+			   &userTime, &sysTime, &ps->niceLevel, &ps->vmSize,
+			   &ps->vmRss) != 9)
+		return (-1);
 
 	ps->vmRss = (ps->vmRss + 3) * PAGE_SIZE;
 
@@ -266,6 +264,8 @@ updateProcess(int pid)
 		strncpy(ps->userName, pwent->pw_name, sizeof(ps->userName) - 1);
 		ps->userName[sizeof(ps->userName) - 1] = '\0';
 	}
+
+	ps->alive = 1;
 
 	return (0);
 }
@@ -353,9 +353,9 @@ updateProcessList(void)
 void
 printProcessListInfo(const char* cmd)
 {
-	printf("Name\tPID\tPPID\tStatus\tNice\tVmSize\tVmRss\tVmLib\tUser"
-		   "\tSystem\tUser\tCommand\n");
-	printf("s\td\td\ts\td\td\td\td\tf\tf\ts\ts\n");
+	printf("Name\tPID\tPPID\tUID\tGID\tStatus\tNice\tVmSize\tVmRss"
+		   "\tVmLib\tUser%%\tSystem%%\tLogin\tCommand\n");
+	printf("s\td\td\td\td\ts\td\td\td\td\tf\tf\ts\ts\n");
 }
 
 void
@@ -367,9 +367,12 @@ printProcessList(const char* cmd)
 	{
 		ProcessInfo* ps = get_ctnr(ProcessList, i);
 
-		printf("%s\t%d\t%d\t%c\t%d\t%d\t%d\t%d\t%3.2f%%\t%3.2f%%\t%s\t%s\n",
-			   ps->name, (int) ps->pid, (int) ps->ppid, ps->status,
-			   ps->niceLevel, ps->vmSize, ps->vmRss, ps->vmLib,
+		printf("%s\t%ld\t%ld\t%ld\t%ld\t%c\t%d\t%d\t%d\t%d"
+			   "\t%3.2f\t%3.2f\t%s\t%s\n",
+			   ps->name, (long) ps->pid, (long) ps->ppid,
+			   (long) ps->uid, (long) ps->gid, ps->status,
+			   ps->niceLevel, 
+			   ps->vmSize / 1024, ps->vmRss / 1024, ps->vmLib / 1024,
 			   ps->userLoad, ps->sysLoad, ps->userName, ps->cmdline);
 	}
 }

@@ -127,8 +127,43 @@ public:
 	}
 	const QString& getUnit()
 	{
+
 		return ((*this)[3]);
 	}
 } ;
 
+/**
+ * A PS line consists of information about a process. Each piece of 
+ * information is seperated by a TAB. The first 4 fields are process name,
+ * PID, PPID and real user ID. Those fields are mandatory.
+ */
+class SensorPSLine : public SensorTokenizer
+{
+public:
+	SensorPSLine(const QString& line)
+		: SensorTokenizer(line, '\t') { }
+	~SensorPSLine() { }
+
+	const QString& getName()
+	{
+		return ((*this)[0]);
+	}
+	long getPid()
+	{
+		return ((*this)[1].toLong());
+	}
+
+	long getPPid()
+	{
+		return ((*this)[2].toLong());
+	}
+
+	long getUId()
+	{
+		return ((*this)[2].toLong());
+	}
+} ;
+
 #endif
+
+
