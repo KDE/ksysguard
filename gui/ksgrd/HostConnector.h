@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
     Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -48,7 +48,7 @@ class HostConnector : public KDialogBase
 
     QString currentHostName() const;
     QString currentCommand() const;
-    int port();
+    int port() const;
 
     bool useSsh() const;
     bool useRsh() const;
@@ -57,7 +57,7 @@ class HostConnector : public KDialogBase
 
   protected slots:
     virtual void slotHelp();
-
+    void slotHostNameChanged( const QString &_text );
   private:
     KComboBox *mCommands;
     KComboBox *mHostNames;

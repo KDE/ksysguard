@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
     Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -60,7 +60,7 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
 
   QButtonGroup *group = new QButtonGroup( 0, Qt::Vertical,
                                           i18n( "Connection Type" ), page );
-  QGridLayout *groupLayout = new QGridLayout( group->layout(), 4, 4, 
+  QGridLayout *groupLayout = new QGridLayout( group->layout(), 4, 4,
       spacingHint() );
   groupLayout->setAlignment( Qt::AlignTop );
 
@@ -116,12 +116,19 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
            mCommands, SLOT( setEnabled( bool ) ) );
   connect( mUseDaemon, SIGNAL( toggled( bool ) ),
            mPort, SLOT( setEnabled( bool ) ) );
-
+  connect( mHostNames->lineEdit(),  SIGNAL( textChanged ( const QString & ) ),
+           this, SLOT(  slotHostNameChanged( const QString & ) ) );
+  enableButtonOK( !mHostNames->lineEdit()->text().isEmpty() );
   KAcceleratorManager::manage( this );
 }
 
 HostConnector::~HostConnector()
 {
+}
+
+void HostConnector::slotHostNameChanged( const QString &_text )
+{
+    enableButtonOK( !_text.isEmpty() );
 }
 
 void HostConnector::setHostNames( const QStringList &list )
@@ -177,7 +184,7 @@ QString HostConnector::currentCommand() const
   return mCommands->currentText();
 }
 
-int HostConnector::port()
+int HostConnector::port() const
 {
   return mPort->value();
 }
