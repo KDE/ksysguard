@@ -70,8 +70,10 @@ void parseConfigFile(const char *filename)
 		push_ctnr(SensorList, strdup("Stat"));
 		push_ctnr(SensorList, strdup("NetDev"));
 		push_ctnr(SensorList, strdup("NetStat"));
+		push_ctnr(SensorList, strdup("Apm"));
 		push_ctnr(SensorList, strdup("CpuInfo"));
 		push_ctnr(SensorList, strdup("LoadAvg"));
+		push_ctnr(SensorList, strdup("LmSensors"));
 		push_ctnr(SensorList, strdup("DiskStat"));
 		push_ctnr(SensorList, strdup("LogFile"));
 

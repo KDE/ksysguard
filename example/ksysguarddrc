@@ -15,4 +15,4 @@ LogFiles=messages:/var/log/messages,kern:/var/log/kern.log,daemon:/var/log/daemo
 #	LmSensors	informations about motherboard and CPU
 #	DiskStat	partition space
 #	LogFile		local logfiles
-Sensors=ProcessList,Memory,Stat,NetDev,NetStat,CpuInfo,LoadAvg,DiskStat,LogFile
+Sensors=ProcessList,Memory,Stat,NetDev,NetStat,Apm,CpuInfo,LoadAvg,LmSensors,DiskStat,LogFile
