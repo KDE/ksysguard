@@ -432,7 +432,7 @@ TaskMan::TaskMan( QWidget *parent, const char *name, int sfolder )
     l_mem_details[i++] = new QLabel(i18n("Cache:"), mem_detail_box);
     l_mem_details[i++] = new QLabel(i18n("Buffers:"), mem_detail_box);
     l_mem_details[i++] = new QLabel(i18n("Total physical:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(i18n("Used by kernel:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(i18n("Unused memory:"), mem_detail_box);
     l_mem_details[i++] = new QLabel(i18n("Swap avail:"), mem_detail_box);
     l_mem_details[i++] = new QLabel(i18n("Swap free:"), mem_detail_box);
     l_mem_details[i++] = new QLabel(i18n("Total virtual:"), mem_detail_box);
@@ -724,7 +724,7 @@ void TaskMan::resizeEvent(QResizeEvent *ev)
         mem_details[i]->move(10 + widest_label + 10, 15 + i * (l_mem_details[i]->height()));
     }
     int column2 = 30 + widest_label + mem_details[0]->width();
-    widest_label = l_mem_details[MEM_KERN]->width();
+    widest_label = l_mem_details[MEM_UNUSED]->width();
     for(i = MEM_PHYS; i < MEM_END; i++) {
         l_mem_details[i]->move(column2, 15 + ( i - MEM_PHYS ) * (l_mem_details[i]->height()));
         mem_details[i]->move(column2 + 10 + widest_label, 15 + ( i - MEM_PHYS ) * (l_mem_details[i]->height()));

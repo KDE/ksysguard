@@ -126,9 +126,9 @@ public:
             SORTBY_VMSIZE  ,
             SORTBY_VMRSS   ,
 #ifdef __FreeBSD__
-            SORTBY_PRIOR   ,
+            SORTBY_PRIOR
 #else
-            SORTBY_VMLIB   ,
+            SORTBY_VMLIB
 #endif
           };
 

@@ -101,15 +101,15 @@ MemMon::MemMon(QWidget *parent, const char *name, QWidget *child)
     }
 
     //    pageshift -= LOG1024;
-    kvm_nlist(kvm, nlst);
+    if (kvm) kvm_nlist(kvm, nlst);
     cnt_offset = nlst[X_CNT].n_value;
     buf_offset = nlst[X_BUFSPACE].n_value;
 
     // init vmmeter the first time
-    kvm_read(kvm, cnt_offset, &vmstat, sizeof(vmstat));
+    if (kvm) kvm_read(kvm, cnt_offset, &vmstat, sizeof(vmstat));
 
     // bufspace is for "buffers", this is not in vmmeter
-    kvm_read(kvm, buf_offset, &bufspace, sizeof(bufspace));
+    if (kvm) kvm_read(kvm, buf_offset, &bufspace, sizeof(bufspace));
 
     int mib[2];
     mib[0] = CTL_HW;
@@ -119,12 +119,7 @@ MemMon::MemMon(QWidget *parent, const char *name, QWidget *child)
     sysctl(mib, 2, &physmem, &len, NULL, 0);
     mem_size = physmem;
 
-    // get available pyhsical ram for userspace
-    mib_usermem[0] = CTL_HW;
-    mib_usermem[1] = HW_USERMEM;
-    sysctl(mib_usermem, 2, &usermem, &len, NULL, 0);
-
-    swapInfo(&sw_avail, &sw_free);
+    if (kvm) swapInfo(&sw_avail, &sw_free);
 
     mem_size = physmem / 1024 + sw_avail;
 
@@ -210,6 +205,9 @@ MemMon::~MemMon()
 
 int MemMon::swapInfo(int *retavail, int *retfree)
 {
+	// This doesn't work unless we can read kernel memory
+	if (!kvm) return (0);
+
 	char *header;
 	int hlen, nswap, nswdev, dmmax;
 	int i, div, avail, nfree, npfree, used;
@@ -390,26 +388,24 @@ void MemMon::paintEvent(QPaintEvent *)
 void MemMon::timerEvent(QTimerEvent *)
 {
 #ifdef __FreeBSD__
-    unsigned long usermem;
-    unsigned int len = sizeof(usermem);
-    
-    kvm_read(kvm, cnt_offset, &vmstat, sizeof(vmstat));
-    kvm_read(kvm, buf_offset, &bufspace, sizeof(bufspace));
-    sysctl(mib_usermem, 2, &usermem, &len, NULL, 0);
+    if (kvm) kvm_read(kvm, cnt_offset, &vmstat, sizeof(vmstat));
+    if (kvm) kvm_read(kvm, buf_offset, &bufspace, sizeof(bufspace));
 
     iVm->active = pagetok(vmstat.v_active_count) / 1024;
     iVm->inactive = pagetok(vmstat.v_inactive_count) / 1024;
     iVm->wired = pagetok(vmstat.v_wire_count) / 1024;
     iVm->cache = pagetok(vmstat.v_cache_count) / 1024;
     iVm->buffers = bufspace / 1024;
-    
-    updateLabel(memstat_labels[0], iVm->active);
-    updateLabel(memstat_labels[1], iVm->inactive);
-    updateLabel(memstat_labels[2], iVm->wired);
-    updateLabel(memstat_labels[3], iVm->cache);
+    iVm->unused = pagetok(vmstat.v_free_count) / 1024;
+    iVm->usermem = iVm->active + iVm->inactive + iVm->wired + iVm->cache + iVm->buffers + iVm->unused;
+
+    updateLabel(memstat_labels[MEM_ACTIVE], iVm->active);
+    updateLabel(memstat_labels[MEM_INACTIVE], iVm->inactive);
+    updateLabel(memstat_labels[MEM_WIRED], iVm->wired);
+    updateLabel(memstat_labels[MEM_CACHE], iVm->cache);
     updateLabel(memstat_labels[MEM_BUFFERS], iVm->buffers);
     updateLabel(memstat_labels[MEM_PHYS], physmem / 1024);
-    updateLabel(memstat_labels[MEM_KERN], (physmem - usermem) / 1024);
+    updateLabel(memstat_labels[MEM_UNUSED], iVm->unused);
     updateLabel(memstat_labels[MEM_SWAPAVAIL], sw_avail);
     updateLabel(memstat_labels[MEM_SWAPFREE], sw_free);
     updateLabel(memstat_labels[MEM_TOTAL], mem_size);

@@ -61,9 +61,9 @@ protected:
     QBrush   brush_0, 
              brush_1;
 #ifdef __FreeBSD__
-    u_long physmem, usermem;
+    u_long physmem;
     int    sw_avail, sw_free;
-    int    mib_usermem[2], bufspace;
+    int    bufspace;
     QLabel **memstat_labels;
     struct vmmeter vmstat;
     u_long   cnt_offset, buf_offset;
@@ -80,7 +80,7 @@ protected:
     struct nlist nlst[VM_DMMAX + 2];
 
     struct _ivm {
-        int active, inactive, wired, cache, buffers;
+        int active, inactive, wired, cache, buffers, unused, usermem;
     };
     struct _ivm ivm, *iVm;
 #endif
@@ -92,7 +92,7 @@ protected:
 #define MEM_CACHE 3
 #define MEM_BUFFERS 4
 #define MEM_PHYS 5
-#define MEM_KERN 6
+#define MEM_UNUSED 6
 #define MEM_SWAPAVAIL 7
 #define MEM_SWAPFREE  8
 #define MEM_TOTAL 9

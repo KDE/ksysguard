@@ -99,6 +99,7 @@ TopLevel::TopLevel( QWidget *parent, const char *name, int sfolder )
     
     setCaption(i18n("KDE Taskmanager"));
     setMinimumSize(515,468);
+    resize(600,500);
 
     taskman = new TaskMan(this, "", sfolder);
     connect(taskman,SIGNAL(applyButtonPressed()),this,SLOT(quitSlot()));
@@ -243,6 +244,7 @@ int main( int argc, char ** argv )
 
     KApplication a( argc, argv, "ktop" );
 #ifdef __FreeBSD__
+/*
     if (kvm == NULL) {
 	QMessageBox::critical(NULL, NULL,
 		i18n("Could not open kernel memory file.\n"
@@ -250,9 +252,8 @@ int main( int argc, char ** argv )
 		"chgrp kmem KDEDIR/bin/ktop\n"
 		"chmod 2555 KDEDIR/bin/ktop"),
 			      i18n("&OK"));
-	
-	exit(1);
     }
+*/	
 #endif
     a.enableSessionManagement(true);
     mykapp = &a;
@@ -267,6 +268,9 @@ int main( int argc, char ** argv )
 
     TaskMan::TaskMan_clearIconList();
     
+#ifdef __FreeBSD__
+    if (kvm) kvm_close(kvm);
+#endif
 
     return result;
 }

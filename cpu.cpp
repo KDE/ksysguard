@@ -95,6 +95,8 @@ CpuMon::CpuMon(QWidget *parent, const char *name, QWidget *child)
     // FreeBSD system - dependent parts:
 
 #ifdef __FreeBSD__
+   if (!kvm) return;
+
    old_nice_ticks = 0;
    old_system_ticks = 0;
    old_idle_ticks = 0;
@@ -159,9 +161,6 @@ CpuMon::CpuMon(QWidget *parent, const char *name, QWidget *child)
 CpuMon::~CpuMon() 
 {
   killTimer(tid);
-#ifdef __FreeBSD__
-  kvm_close(kvm);
-#endif
   if ( load_values )
        free(load_values);
 }
@@ -236,11 +235,11 @@ void CpuMon::timerEvent(QTimerEvent *)
 
 #ifdef __FreeBSD__
     unsigned long value;
-    kvm_nlist(kvm, nlst);
+    if (kvm) kvm_nlist(kvm, nlst);
     for(int i = 0; i < 5; i++) {
-      kvm_read(kvm, nlst[i].n_value, &value, sizeof(value));
+      if (kvm) kvm_read(kvm, nlst[i].n_value, &value, sizeof(value));
     }
-    kvm_read(kvm, cp_time_offset, (int *)&system_ticks, sizeof(system_ticks));
+    if (kvm) kvm_read(kvm, cp_time_offset, (int *)&system_ticks, sizeof(system_ticks));
 #else
     rewind(statfile);
     char     buffer[100];
