@@ -62,12 +62,12 @@ main(int argc, const char* argv[])
 	char cmdBuf[CMDBUFSIZE];
 
 	initCommand();
-	initDispatcher();
 	registerCommand("quit", exQuit);
 	initProcessList();
 	initMemory();
 	initStat();
 	initNetDev();
+	initDispatcher();
 
 	while (!dispatcherReady())
 		;
@@ -85,11 +85,11 @@ main(int argc, const char* argv[])
 		fflush(stdout);
 	} while (!QuitApp);
 
+	exitDispatcher();
 	exitNetDev();
 	exitStat();
 	exitMemory();
 	exitProcessList();
-	exitDispatcher();
 	exitCommand();
 
 	return (0);

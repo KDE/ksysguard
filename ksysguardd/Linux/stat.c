@@ -377,6 +377,9 @@ initStat(void)
 void
 exitStat(void)
 {
+	if (DiskLoad)
+		free(DiskLoad);
+
 	if (SMPLoad)
 	{
 		free(SMPLoad);

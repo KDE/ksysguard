@@ -105,8 +105,8 @@ initDispatcher(void)
 void
 exitDispatcher(void)
 {
-	/* It would be good programming style to restore the signal table and
-	 * the timer here. */
+	/* restore signal handler */
+	signal(SIGALRM, SIG_IGN);
 }
 
 int

@@ -47,6 +47,7 @@ _Command(void* v)
 		free (c->command);
 	if (c->type)
 		free (c->type);
+	free (v);
 }
 
 /*
@@ -75,6 +76,7 @@ registerCommand(const char* command, cmdExecutor ex)
 	Command* cmd = (Command*) malloc(sizeof(Command));
 	cmd->command = (char*) malloc(strlen(command) + 1);
 	strcpy(cmd->command, command);
+	cmd->type = 0;
 	cmd->ex = ex;
 	cmd->isMonitor = 0;
 	push_ctnr(CommandList, cmd);
@@ -104,6 +106,7 @@ registerMonitor(const char* command, const char* type, cmdExecutor ex,
 	cmd->command = (char*) malloc(strlen(command) + 2);
 	strcpy(cmd->command, command);
 	cmd->command[strlen(command)] = '?';
+	cmd->command[strlen(command) + 1] = '\0';
 	cmd->ex = iq;
 	cmd->isMonitor = 0;
 	cmd->type = 0;

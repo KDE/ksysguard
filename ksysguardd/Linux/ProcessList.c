@@ -371,7 +371,7 @@ void
 exitProcessList(void)
 {
 	if (ProcessList)
-		free (ProcessList);
+		destr_ctnr(ProcessList, free);
 }
 
 int
