@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2002 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -54,7 +54,7 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name)
 	minValue = maxValue = 0.0;
 	autoRange = false;
 
-	graphStyle = GRAPH_BASIC_POLY;
+	graphStyle = GRAPH_ORIGINAL;
 
 	// Anything smaller than this does not make sense.
 	setMinimumSize(16, 16);
@@ -66,7 +66,7 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name)
 	vDistance = 30;
 	vScroll = true;
 	vOffset = 0;
-	hScale = 5;
+	hScale = 1;
 
 	hLines = true;
 	hColor = KSGRD::Style->getFgColor2();

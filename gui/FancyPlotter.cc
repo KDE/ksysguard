@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2002 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -211,7 +211,7 @@ FancyPlotter::applySettings()
 			if (it.current()->text(0) == QString("%1").arg(i + 1 + delCount))
 			{
 				plotter->beamColor[i] = it.current()->pixmap(2)->
-																convertToImage().pixel(1, 1);
+					convertToImage().pixel(1, 1);
 				found = true;
 				if (delCount > 0) {
 					it.current()->setText(0, QString("%1").arg(i + 1));
@@ -317,7 +317,8 @@ FancyPlotter::settingsMoveDown()
 	{
 		if (fps->sensorList->currentItem()->itemBelow())
 		{
-			fps->sensorList->currentItem()->moveItem(fps->sensorList->currentItem()->itemBelow());
+			fps->sensorList->currentItem()->
+				moveItem(fps->sensorList->currentItem()->itemBelow());
 		}
 
 		// Re-calculate the "sensor number" field
@@ -347,7 +348,7 @@ FancyPlotter::applyStyle()
 	plotter->bColor = KSGRD::Style->getBackgroundColor();
 	plotter->fontSize = KSGRD::Style->getFontSize();
 	for (uint i = 0; i < plotter->beamColor.count() &&
-			 i < KSGRD::Style->getSensorColorCount(); ++i)
+		 i < KSGRD::Style->getSensorColorCount(); ++i)
 		plotter->beamColor[i] = KSGRD::Style->getSensorColor(i);
 	plotter->update();
 	setModified(true);
@@ -363,7 +364,8 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 
 bool
 FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
-				const QString& sensorType, const QString& title, const QColor& col)
+						const QString& sensorType, const QString& title,
+					   	const QColor& col)
 {
 	if (sensorType != "integer" && sensorType != "float")
 		return (false);
@@ -382,7 +384,8 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 	if (!plotter->addBeam(col))
 		return (false);
 
-	registerSensor(new FPSensorProperties(hostName, sensorName, sensorType, title, col));
+	registerSensor(new FPSensorProperties(hostName, sensorName,
+										  sensorType, title, col));
 
 	/* To differentiate between answers from value requests and info
 	 * requests we add 100 to the beam index for info requests. */
@@ -394,9 +397,11 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 	for (uint i = 0; i < beams; ++i)
 	{
 		if (i == 0)
-			tooltip += QString("%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+			tooltip += QString("%1:%2").arg(sensors.at(i)->hostName)
+				.arg(sensors.at(i)->name);
 		else
-			tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+			tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName)
+				.arg(sensors.at(i)->name);
 	}
 	QToolTip::remove(plotter);
 	QToolTip::add(plotter, tooltip);
@@ -422,9 +427,11 @@ FancyPlotter::removeSensor(uint idx)
 	for (uint i = 0; i < beams; ++i)
 	{
 		if (i == 0)
-			tooltip += QString("%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+			tooltip += QString("%1:%2").arg(sensors.at(i)->hostName)
+				.arg(sensors.at(i)->name);
 		else
-			tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+			tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName)
+				.arg(sensors.at(i)->name);
 	}
 	QToolTip::remove(plotter);
 	QToolTip::add(plotter, tooltip);
@@ -475,7 +482,8 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 	else if (id >= 100)
 	{
 		KSGRD::SensorFloatInfo info(answer);
-		if (plotter->autoRange)
+		if (!plotter->autoRange &&
+		   	plotter->minValue == 0.0 && plotter->maxValue == 0.0)
 		{
 			/* We only use this information from the sensor when the
 			 * display is still using the default values. If the
@@ -503,7 +511,7 @@ FancyPlotter::createFromDOM(QDomElement& element)
 						KSGRD::Style->getFgColor1());
 	plotter->vDistance = element.attribute("vDistance", "30").toUInt();
 	plotter->vScroll = element.attribute("vScroll", "1").toUInt();
-	plotter->graphStyle = element.attribute("graphStyle", "1").toUInt();
+	plotter->graphStyle = element.attribute("graphStyle", "0").toUInt();
 	plotter->hScale = element.attribute("hScale", "5").toUInt();
 
 	plotter->hLines = element.attribute("hLines", "1").toUInt();
@@ -523,7 +531,11 @@ FancyPlotter::createFromDOM(QDomElement& element)
 	for (uint i = 0; i < dnList.count(); ++i)
 	{
 		QDomElement el = dnList.item(i).toElement();
-		addSensor(el.attribute("hostName"), el.attribute("sensorName"), (el.attribute("sensorType").isEmpty() ? "integer" : el.attribute("sensorType")), "", restoreColorFromDOM(el, "color", KSGRD::Style->getSensorColor(i)));
+		addSensor(el.attribute("hostName"), el.attribute("sensorName"),
+				  (el.attribute("sensorType").isEmpty() ? "integer" :
+				   el.attribute("sensorType")), "",
+				  restoreColorFromDOM(el, "color",
+									  KSGRD::Style->getSensorColor(i)));
 	}
 
 	internCreateFromDOM(element);

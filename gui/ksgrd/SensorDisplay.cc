@@ -330,7 +330,8 @@ SensorDisplay::internCreateFromDOM(QDomElement& element)
 bool
 SensorDisplay::addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& description)
 {
-	registerSensor(new SensorProperties(hostName, sensorName, sensorType, description));
+	registerSensor(new SensorProperties(hostName, sensorName, sensorType,
+									   	description));
 	return (true);
 }
 
