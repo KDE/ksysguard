@@ -164,6 +164,8 @@ MultiMeter::setTitle(const QString& t, const QString& u)
 bool
 MultiMeter::load(QDomElement& el)
 {
+	modified = false;
+
 	title = el.attribute("title");
 	setTitle(title, unit);
 	showUnit = el.attribute("showUnit").toInt();
@@ -172,8 +174,6 @@ MultiMeter::load(QDomElement& el)
 	upperLimitActive = el.attribute("upperLimitActive").toInt();
 	upperLimit = el.attribute("upperLimit").toLong();
 	addSensor(el.attribute("hostName"), el.attribute("sensorName"), "");
-
-	modified = FALSE;
 
 	return (TRUE);
 }

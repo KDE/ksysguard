@@ -242,6 +242,8 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 bool
 FancyPlotter::load(QDomElement& domElem)
 {
+	modified = false;
+
 	QString title = domElem.attribute("title");
 	if (!title.isEmpty())
 		meterFrame->setTitle(title);

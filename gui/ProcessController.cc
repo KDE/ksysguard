@@ -233,6 +233,8 @@ ProcessController::sensorError(bool err)
 bool
 ProcessController::load(QDomElement& el)
 {
+	modified = FALSE;
+
 	bool result = addSensor(el.attribute("hostName"),
 							el.attribute("sensorName"),
 							QString::null);
