@@ -40,7 +40,6 @@
 #include <ktabctl.h>
 #include <ktablistbox.h>
 
-#include "IconList.h"
 #include "ProcessList.h"
 #include "ProcListPage.h"
 #include "PerfMonPage.h"
