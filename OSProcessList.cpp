@@ -55,7 +55,7 @@
 
 // nothing here yet
 
-#else
+#elif linux
 
 // Code for Linux 2.x
 
@@ -206,7 +206,91 @@ OSProcessList::hasVmLib(void) const
 	return (false);
 }
 
+#else
+
+OSProcessList::OSProcessList()
+{
+
+  error = true;
+  errMessage = i18n("Your OS is not supported yet.  Sorry");
+  return;
+}
+
+
+bool
+OSProcessList::update(void)
+{
+	return (false);
+}
+
+bool 
+OSProcessList::hasName(void) const
+{
+	return (false);
+}
+
+bool 
+OSProcessList::hasUid(void) const
+{
+	return (false);
+}
+
+bool 
+OSProcessList::hasUserTime(void) const
+{
+	return (false);
+}
+
+bool
+OSProcessList::hasSysTime(void) const
+{
+	return (false);
+}
+
+bool 
+OSProcessList::hasUserLoad(void) const
+{
+	return (false);
+}
+
+bool
+OSProcessList::hasSysLoad(void) const
+{
+	return (false);
+}
+
+bool
+OSProcessList::hasStatus(void) const
+{
+	return (false);
+}
+
+bool
+OSProcessList::hasPriority(void) const
+{
+	return (false);
+}
+
+bool 
+OSProcessList::hasVmSize(void) const
+{
+	return (false);
+}
+
+bool
+OSProcessList::hasVmRss(void) const
+{
+	return (false);
+}
+
+bool 
+OSProcessList::hasVmLib(void) const
+{
+	return (false);
+}
+
 #endif
+
 
 /*
  * The following code should be platform independant.
