@@ -36,6 +36,8 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 {
 	// default interval is 2 seconds.
 	timerInterval = 2000;
+	timerId = NONE;
+	sensorOk = TRUE;
 
 	hostNames.setAutoDelete(true);
 	sensorNames.setAutoDelete(true);
@@ -94,11 +96,27 @@ void
 SensorDisplay::sendRequest(const QString& hostName, const QString& cmd,
 						   int id)
 {
-	if (!SensorMgr->sendRequest(hostName, cmd, (SensorClient*) this, id))
+	sensorError(!SensorMgr->sendRequest(hostName, cmd,
+										(SensorClient*) this, id));
+}
+
+void
+SensorDisplay::sensorError(bool err)
+{
+	if (err == sensorOk)
 	{
-		QCustomEvent* ev = new QCustomEvent(QEvent::User);
-		ev->setData(this);
-		kapp->postEvent(parent(), ev);
+		if (err)
+		{
+			/* The sensor has been lost. The default implementation
+			 * simply removes the display from the worksheet. This
+			 * function should be overloaded to signal the error
+			 * condition in the display but keep the display in the
+			 * worksheet. */
+			QCustomEvent* ev = new QCustomEvent(QEvent::User);
+			ev->setData(this);
+			kapp->postEvent(parent(), ev);
+		}
+		sensorOk = !err;
 	}
 }
 

@@ -57,6 +57,8 @@ public:
 
 	void settings();
 
+	virtual void sensorError(bool err);
+
 public slots:
 	void applySettings();
 
@@ -65,6 +67,7 @@ private:
 
 	QGroupBox* frame;
 	QLCDNumber* lcd;
+
 	QString title;
 	QString unit;
 	bool modified;

@@ -65,7 +65,6 @@ void
 initMemory(void)
 {
 	FILE* meminfo;
-	size_t n;
 
 	/* Make sure that /proc/meminfo exists and is readable. If not we do
 	 * not register any monitors for memory. */

@@ -92,7 +92,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	bKill = new QPushButton(i18n("Kill"), this, "bKill");
 	CHECK_PTR(bKill);
 	bKill->setMinimumSize(bKill->sizeHint());
-	connect(bKill,SIGNAL(clicked()), this, SLOT(killProcess()));
+	connect(bKill, SIGNAL(clicked()), this, SLOT(killProcess()));
 
 	// Setup the geometry management.
 	gm = new QVBoxLayout(this, 10);
@@ -216,6 +216,17 @@ ProcessController::answerReceived(int id, const QString& answer)
 	case 3:
 		// result of kill operation, we currently don't care about it.
 		break;
+	}
+}
+
+void
+ProcessController::sensorError(bool err)
+{
+	if (err == sensorOk)
+	{
+		// this happens only when the sensorOk status needs to be changed.
+		box->setEnabled(!err);
+		sensorOk = !err;
 	}
 }
 

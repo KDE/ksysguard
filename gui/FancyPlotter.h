@@ -43,10 +43,7 @@ class FancyPlotterSettings : public KDialogBase
 
 public:
 	FancyPlotterSettings(const QString& oldTitle, long min, long max);
-	~FancyPlotterSettings()
-	{
-		delete mainWidget;
-	}
+	~FancyPlotterSettings() { }
 
 	QString getTitle() const;
 	long getMin() const;
@@ -106,6 +103,8 @@ public:
 	{
 		return (TRUE);
 	}
+
+	virtual void sensorError(bool err);
 
 public slots:
 	void applySettings(FancyPlotterSettings*);

@@ -85,6 +85,8 @@ public:
 
 	virtual void settings() { }
 
+	virtual void sensorError(bool mode);
+
 	void collectHosts(QValueList<QString>& list);
 
 public slots:
@@ -131,9 +133,12 @@ protected:
 	QList<const QString> hostNames;
 	QList<const QString> sensorNames;
 
+	/* This flag indicates whether the communication to the sensor(s) is
+	 * ok or not. */
+	bool sensorOk;
+
 private:
 	int timerId;
-
 	int timerInterval;
 } ;
 

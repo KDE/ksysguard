@@ -52,17 +52,7 @@ class ProcessController : public SensorDisplay
 
 public:
 	ProcessController(QWidget* parent = 0, const char* name = 0);
-	virtual ~ProcessController()
-	{
-		delete xbTreeView;
-		delete xbPause;
-		delete bKill;
-		delete bRefresh;
-		delete box;
-		delete cbFilter;
-		delete pList;
-		delete gm;
-	}
+	virtual ~ProcessController() { }
 
 	void resizeEvent(QResizeEvent*);
 
@@ -93,6 +83,8 @@ public:
 	virtual bool addSensor(const QString&, const QString&, const QString&);
 
 	virtual void answerReceived(int id, const QString& answer);
+
+	virtual void sensorError(bool err);
 
 public slots:
 	void filterModeChanged(int filter)

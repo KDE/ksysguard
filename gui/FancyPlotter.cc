@@ -155,6 +155,17 @@ FancyPlotter::settings()
 }
 
 void
+FancyPlotter::sensorError(bool err)
+{
+	if (err == sensorOk)
+	{
+		// this happens only when the sensorOk status needs to be changed.
+		meterFrame->setEnabled(!err);
+		sensorOk = !err;
+	}
+}
+
+void
 FancyPlotter::applySettings(FancyPlotterSettings* s)
 {
 	meterFrame->setTitle(s->getTitle());

@@ -226,3 +226,14 @@ MultiMeter::applySettings()
 
 	modified = TRUE;
 }
+
+void
+MultiMeter::sensorError(bool err)
+{
+	if (err == sensorOk)
+	{
+		// this happens only when the sensorOk status needs to be changed.
+		frame->setEnabled(!err);
+		sensorOk = !err;
+	}
+}
