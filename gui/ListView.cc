@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE Task Manager and System Monitor
-   
+
 	Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -43,17 +43,17 @@
 #include "ListView.h"
 #include "ListView.moc"
 
-static const char* intKey(const char* text);
-static const char* timeKey(const char* text);
-static const char* floatKey(const char* text);
-static const char* diskStatKey(const char* text);
+const char* intKey(const char* text);
+const char* timeKey(const char* text);
+const char* floatKey(const char* text);
+const char* diskStatKey(const char* text);
 
 /*
  * The *key functions are used to sort the list. Since QListView can only sort
  * strings we have to massage the original contense so that the string sort
  * will produce the expected result.
  */
-static const char*
+const char*
 intKey(const char* text)
 {
 	int val;
@@ -64,7 +64,7 @@ intKey(const char* text)
 	return (key);
 }
 
-static const char*
+const char*
 timeKey(const char* text)
 {
 	int h, m;
@@ -76,7 +76,7 @@ timeKey(const char* text)
 	return (key);
 }
 
-static const char*
+const char*
 floatKey(const char* text)
 {
 	double percent;
@@ -88,14 +88,14 @@ floatKey(const char* text)
 	return (key);
 }
 
-static const char*
+const char*
 diskStatKey(const char* text)
 {
 	char *number, *dev;
 	char tmp[1024];
 	int i, val;
 	static char key[100];
-	
+
 	strncpy(tmp, text, sizeof(tmp) - 1);
 	number = tmp;
 	for (i = 0; i < strlen(tmp); i++) {
@@ -134,7 +134,7 @@ PrivateListView::PrivateListView(QWidget *parent, const char *name)
 	: QListView(parent, name)
 {
 	QColorGroup cg = colorGroup();
-	
+
 	cg.setColor(QColorGroup::Link, Style->getFgColor1());
 	cg.setColor(QColorGroup::Text, Style->getFgColor2());
 	cg.setColor(QColorGroup::Base, Style->getBackgroundColor());
@@ -279,7 +279,7 @@ ListView::answerReceived(int id, const QString& answer)
 			}
 			SensorTokenizer headers(lines[0], '\t');
 			SensorTokenizer colTypes(lines[1], '\t');
-		
+
 			/* remove all columns from list */
 			monitor->removeColumns();
 
@@ -317,7 +317,7 @@ ListView::createFromDOM(QDomElement& element)
 	colorGroup.setColor(QColorGroup::Link, restoreColorFromDOM(element, "gridColor", Style->getFgColor1()));
 	colorGroup.setColor(QColorGroup::Text, restoreColorFromDOM(element, "textColor", Style->getFgColor2()));
 	colorGroup.setColor(QColorGroup::Base, restoreColorFromDOM(element, "backgroundColor", Style->getBackgroundColor()));
-	
+
 	monitor->setPalette(QPalette(colorGroup, colorGroup, colorGroup));
 
 	setModified(FALSE);

@@ -61,51 +61,11 @@
 #define NONE -1
 #define INIT_PID 1
 
-static const char* intKey(const char* text);
-static const char* timeKey(const char* text);
-static const char* floatKey(const char* text);
+extern const char* intKey(const char* text);
+extern const char* timeKey(const char* text);
+extern const char* floatKey(const char* text);
 
 QDict<QString> ProcessList::aliases;
-
-/*
- * The *key functions are used to sort the list. Since QListView can only sort
- * strings we have to massage the original contense so that the string sort
- * will produce the expected result.
- */
-static const char*
-intKey(const char* text)
-{
-	int val;
-	sscanf(text, "%d", &val);
-	static char key[32];
-	sprintf(key, "%016d", val);
-
-	return (key);
-}
-
-static const char*
-timeKey(const char* text)
-{
-	int h, m;
-	sscanf(text, "%d:%d", &h, &m);
-	int t = h * 60 + m;
-	static char key[32];
-	sprintf(key, "%010d", t);
-
-	return (key);
-}
-
-static const char*
-floatKey(const char* text)
-{
-	double percent;
-	sscanf(text, "%lf", &percent);
-
-	static char key[32];
-	sprintf(key, "%010.2f", percent);
-
-	return (key);
-}
 
 QString
 ProcessLVI::key(int column, bool) const
