@@ -53,7 +53,8 @@
 
 #define CMDBUFSIZE	128
 #define MAX_CLIENTS	100
-#define PORT_NUMBER	2001
+/* This is the official ksysguardd port assigned by IANA. */
+#define PORT_NUMBER	3112
 #define TIMERINTERVAL	2
 
 typedef struct

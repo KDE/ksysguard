@@ -13,8 +13,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>391</width>
-            <height>248</height>
+            <width>565</width>
+            <height>307</height>
         </rect>
     </property>
     <property stdset="1">
@@ -498,7 +498,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>e.g.  8359</string>
+                        <string>e.g.  3112</string>
                     </property>
                 </widget>
                 <spacer row="7"  column="1" >
@@ -542,7 +542,7 @@
                     </property>
                     <property stdset="1">
                         <name>value</name>
-                        <number>8359</number>
+                        <number>3112</number>
                     </property>
                     <property>
                         <name>toolTip</name>
