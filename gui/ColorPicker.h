@@ -22,6 +22,9 @@
 	$Id$
 */
 
+#ifndef _ColorPicker_h_
+#define _ColorPicker_h_
+
 class QHBoxLayout;
 class QLabel;
 class QFrame;
@@ -51,3 +54,5 @@ private:
 	QFrame* box;
 	QPushButton* button;
 } ;
+
+#endif
