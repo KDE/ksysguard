@@ -134,6 +134,7 @@ void DancingBars::applySettings()
 
   QValueList< QStringList > list = mSettingsDialog->sensors();
   QValueList< QStringList >::Iterator it;
+
   for ( uint i = 0; i < sensors().count(); i++ ) {
     bool found = false;
     for ( it = list.begin(); it != list.end(); ++it ) {
@@ -143,8 +144,6 @@ void DancingBars::applySettings()
         found = true;
         break;
       }
-
-      it++;
     }
 
     if ( !found )
