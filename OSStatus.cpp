@@ -434,6 +434,7 @@ OSStatus::getNoProcesses(void)
 
 OSStatus::OSStatus()
 {
+	cpuCount = -1;
 	error = false;
 }
 
@@ -448,46 +449,26 @@ OSStatus::getCpuLoad(int& user, int& sys, int& nice, int& idle)
 	sys = 0; // FIXME
 	nice = 0; // FIXME
 
-return (true);
-	int mib[3];
-	mib[0] = CTL_KERN;
-	mib[1] = KERN_PROC;
-	mib[2] = KERN_PROC_ALL;
-
-	size_t len;
-	sysctl(mib, 3, NULL, &len, NULL, 0);
-
-	struct kinfo_proc *p = (struct kinfo_proc *)malloc(len);
-	sysctl(mib, 3, p, &len, NULL, 0);
-
-	printf("---\n");
-	size_t num;
-	for (num = 0; num < len / sizeof(struct kinfo_proc); num++) {
-		user += p[num].kp_proc.p_pctcpu;
-		printf("comm: %s\n user: %d\nproc: %d\n", p[num].kp_proc.p_comm, user, p[num].kp_proc.p_pctcpu);
-	}
-
-	idle = 100 - (user + sys + nice);
-
-	free(p);
-
 	return (true);
 }
 
 int
 OSStatus::getCpuCount(void)
 {
-	int ncpu;
-	size_t len = sizeof (ncpu);
-	if (sysctlbyname("hw.ncpu", &ncpu, &len, NULL, 0) == -1 || !len)
-		return (1); // default to 1;
+	if (cpuCount < 0)
+	{
+		size_t len = sizeof (cpuCount);
+		if (sysctlbyname("hw.ncpu", &cpuCount, &len, NULL, 0) == -1 || !len)
+			cpuCount = 1; // default to 1;
+	}
 
-	return (ncpu);
+	return (cpuCount);
 }
 
 bool
 OSStatus::getCpuXLoad(int, int& user, int& sys, int& nice, int& idle)
 {
+	// FIXME
 	// SMP support not yet implemented!
 	return (getCpuLoad(user, sys, nice, idle));
 }
@@ -495,11 +476,12 @@ OSStatus::getCpuXLoad(int, int& user, int& sys, int& nice, int& idle)
 bool
 OSStatus::readCpuInfo(const char*, int*, int*, int*, int*)
 {
+	// FIXME
 	return (false);
 }
 
 bool
-OSStatus::getMemoryInfo(int& total, int& mfree, int& shared, int& buffers,
+OSStatus::getMemoryInfo(int& total, int& mfree, int& used, int& buffers,
 						int& cached)
 {
 	int mib[2];
@@ -516,13 +498,13 @@ OSStatus::getMemoryInfo(int& total, int& mfree, int& shared, int& buffers,
 
 	// total
 	sysctl(mib, 2, &total, &len, NULL, 0);
+	total /= 1024;
 
 	// mfree
-	mfree = p.t_free * getpagesize();
+	mfree = p.t_free * getpagesize() / 1024;
 
-	// FIXME shared no longer used, parameter is now used pysical memory; CS
-	// shared
-	shared = p.t_rmshr * getpagesize();
+	// used
+	used = p.t_arm * getpagesize() / 1024;
 
 	// buffers
 	len = sizeof (buffers);
@@ -533,7 +515,9 @@ OSStatus::getMemoryInfo(int& total, int& mfree, int& shared, int& buffers,
 	len = sizeof (cached);
 	if ((sysctlbyname("vm.stats.vm.v_cache_count", &cached, &len, NULL, 0) == -1) || !len)
 		cached = 0; // Doesn't work under FreeBSD v2.2.x
-	cached *= getpagesize();
+	cached *= getpagesize() / 1024;
+
+	
 
 	return (true);
 }
@@ -562,18 +546,24 @@ OSStatus::getSwapInfo(int& stotal, int& sfree)
 	strtok(NULL, " ");
 	free_str = strtok(NULL, " ");
 
-	stotal = atoi(total_str) * 1024;
-	sfree = atoi(free_str) * 1024;
+	stotal = atoi(total_str);
+	sfree = atoi(free_str);
 
-	printf("stotal: %d, sfree: %d\n", stotal, sfree);
 	return (true);
 }
 
 int
 OSStatus::getNoProcesses(void)
 {
-#warning "OSStatus::getNoProcesses not yet implemented"
-	return (0);
+	int mib[3];
+	mib[0] = CTL_KERN;
+	mib[1] = KERN_PROC;
+	mib[2] = KERN_PROC_ALL;
+
+	size_t len;
+	sysctl(mib, 3, NULL, &len, NULL, 0);
+
+	return (len / sizeof (struct kinfo_proc));
 }
 
 #else
