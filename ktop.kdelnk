@@ -2,9 +2,11 @@
 [KDE Desktop Entry]
 BinaryPattern=ktop;
 Comment=The KDE Taskmanager
+Comment[da]=KDE filstyring og browser logget ind som superbruger
 Comment[pt_BR]=Gerenciador de tarefas KDE
 Comment[ru]=Менеджер задач KDE
 Name=KTop
+Name[da]=Ktop
 Exec=ktop
 Icon=ktop.xpm
 MiniIcon=ktop.xpm
