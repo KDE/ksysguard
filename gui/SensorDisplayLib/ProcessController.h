@@ -33,7 +33,7 @@
 #include <qpushbutton.h>
 #include <qwidget.h>
 
-#include <kapp.h>
+#include <kapplication.h>
 
 #include <SensorDisplay.h>
 

@@ -31,7 +31,7 @@
 
 #include <dcopclient.h>
 #include <dcopobject.h>
-#include <kapp.h>
+#include <kapplication.h>
 #include <kmainwindow.h>
 #include <kstatusbar.h>
 
