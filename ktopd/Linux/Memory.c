@@ -91,7 +91,9 @@ updateMemory(void)
 		   &STotal, &SFree);
 
 	Total /= 1024;
+	STotal /= 1024;
 	MFree /= 1024;
+	SFree /= 1024;
 	Used /= 1024;
 	Buffers /= 1024;
 	Cached /= 1024;
