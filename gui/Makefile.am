@@ -58,7 +58,7 @@ ksysguard_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 data_DATA = ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml
 
 # This stuff is now for the kicker applet
-lib_LTLIBRARIES = libksysguardapplet.la
+kde_module_LTLIBRARIES = libksysguardapplet.la
 
 libksysguardapplet_la_SOURCES = \
 	BarGraph.cc \
