@@ -17,7 +17,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
 */
 
 // $Id$
@@ -66,22 +65,22 @@ OSProcess::loadInfo(const char* pidStr)
 	switch (status)
 	{
 	case 'R':
-		strcpy(statusTxt,"Run");
+		strcpy(statusTxt, i18n("Run"));
 		break;
 	case 'S':
-		strcpy(statusTxt,"Sleep");
+		strcpy(statusTxt, i18n("Sleep"));
 		break;
 	case 'D': 
-		strcpy(statusTxt,"Disk");
+		strcpy(statusTxt, i18n("Disk"));
 		break;
 	case 'Z': 
-		strcpy(statusTxt,"Zombie");
+		strcpy(statusTxt, i18n("Zombie"));
 		break;
 	case 'T': 
-		strcpy(statusTxt,"Stop");
+		strcpy(statusTxt, i18n("Stop"));
 		break;
 	case 'W': 
-		strcpy(statusTxt,"Swap");
+		strcpy(statusTxt, i18n("Swap"));
 		break;
 	default:
 		strcpy(statusTxt,"????");
@@ -160,7 +159,7 @@ OSProcessList::OSProcessList()
 	sortCriteria = SORTBY_PID;
 	setAutoDelete(true);
 
-	/**
+	/*
 	 * Here we make sure that the kernel has been compiled with /proc
 	 * support enabled. If not we generate an error message and set the
 	 * error variable to true.

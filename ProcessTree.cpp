@@ -17,7 +17,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
 */
 
 // $Id$
@@ -34,24 +33,28 @@
 #define INIT_PID 1
 #define NONE -1
 
-KtopProcTree::KtopProcTree(QWidget *parent, const char *name, WFlags f)
+ProcessTree::ProcessTree(QWidget *parent, const char *name, WFlags f)
 	: KTreeList(parent, name, f)
 {
+	// configure some KTreeList settings
 	setShowItemText(true);
 	setTreeDrawing(true);
 	setBottomScrollBar(true);
 	setAutoUpdate(true);
 
+	// turn on auto delete for pid list
 	pids.setAutoDelete(true);
 
+	// load icons
 	icons = new KtopIconList;
 	CHECK_PTR(icons);
 
+	// set the rootProcess to the id of 'init' process
 	rootProcess = INIT_PID;
 }
 
 int
-KtopProcTree::selectedProcess(void)
+ProcessTree::selectedProcess(void)
 {
 	if (currentItem() < 0)
 		return (-1);
@@ -61,29 +64,32 @@ KtopProcTree::selectedProcess(void)
 }
 
 void
-KtopProcTree::setRootProcess(void)
+ProcessTree::setRootProcess(void)
 {
 	int pid = selectedProcess();
 
+	// set the root of the tree to a new process
 	rootProcess = pid > 0 ? pid : INIT_PID;
+
+	// refresh the display with up-to-date process list
 	update();
 }
 
 void 
-KtopProcTree::update(void)
+ProcessTree::update(void)
 {
+	// get a current process list
 	setAutoUpdate(false);
 	loadProcesses();
 	setAutoUpdate(true);
 
+	// refresh the display
 	if (isVisible())
-	{
 		repaint(TRUE);
-	}
 }
 
 void 
-KtopProcTree::loadProcesses()
+ProcessTree::loadProcesses()
 {
 	OSProcessList pl;
 
@@ -123,7 +129,7 @@ KtopProcTree::loadProcesses()
 }
 
 void
-KtopProcTree::buildTree(int parentIdx, int ppid, OSProcessList* pl, int& cntr)
+ProcessTree::buildTree(int parentIdx, int ppid, OSProcessList* pl, int& cntr)
 {
 	OSProcess* ps;
 

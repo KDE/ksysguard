@@ -48,7 +48,7 @@ BUILTSOURCES =	ktop.moc memory.moc settings.moc cpu.moc widgets.moc \
 
 # if you "make distclean", this files get removed. If you want to remove
 # them while "make clean", use CLEANFILES
-DISTCLEANFILES = $(BUILTSOURCES)
+DISTCLEANFILES = $(BUILTSOURCES) ktop \#*\# *~
 
 # make messages.po. Move this one to ../po/ and "make merge" in po
 messages:

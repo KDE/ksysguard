@@ -56,11 +56,11 @@ public:
 	ProcTreePage(QWidget *parent = 0, const char *name = 0);
 	~ProcTreePage()
 	{
-		delete pTree_bRefresh;
-		delete pTree_bRoot;
-		delete pTree_bKill;
-		delete pTree_cbSort;
-		delete pTree_box;
+		delete bRefresh;
+		delete bRoot;
+		delete bKill;
+		delete cbSort;
+		delete box;
 		delete pTree;
 	}
 
@@ -81,26 +81,24 @@ public:
 
 		/* save sort criterium (process tree) */
 		Kapp->getConfig()->writeEntry(QString(cfgkey_pTreeSort),
-									  t.setNum(pTree_sortby), TRUE);
+									  t.setNum(sortby), TRUE);
 	}
 
 public slots:
-	void pTree_update()
+
+	void update()
 	{
 		pTree->update();
 	}
 
 	void handleSortChange(int idx);
 
-	void pTree_popupMenu(QPoint)
-	{ 
-	} 
-	void pTree_changeRoot()
+	void changeRoot()
 	{  
 		pTree->setRootProcess();
 	}
 
-	void pTree_killTask();
+	void killTask();
 
 signals:
 	void killProcess(int);
@@ -124,13 +122,13 @@ private:
 		return (false);
 	}
 
-	QPushButton* pTree_bRefresh;
-	QPushButton* pTree_bRoot;
-	QPushButton* pTree_bKill; 
-	QComboBox* pTree_cbSort;
-	QGroupBox* pTree_box;
-	KtopProcTree* pTree;
-	int pTree_sortby;
+	QPushButton* bRefresh;
+	QPushButton* bRoot;
+	QPushButton* bKill; 
+	QComboBox* cbSort;
+	QGroupBox* box;
+	ProcessTree* pTree;
+	int sortby;
 	char cfgkey_pTreeSort[12];
 } ;
 

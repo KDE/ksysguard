@@ -152,9 +152,9 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
     installEventFilter(this);
 
     // add pages...
-    addTab(procListPage, "Processes &List");
-    addTab(procTreePage, "Processes &Tree");
-    addTab(perfMonPage, "&Performance");
+    addTab(procListPage, i18n("Processes &List"));
+    addTab(procTreePage, i18n("Processes &Tree"));
+    addTab(perfMonPage, i18n("&Performance"));
     move(0,0);
 #ifdef DEBUG_MODE
 	printf("KTOP debug: Selected start tab: %d\n", startup_page);
@@ -183,7 +183,7 @@ void TaskMan::raiseStartUpPage()
 	if (restoreStartupPage)
 	{
 		tmp = Kapp->getConfig()->readEntry(QString(cfgkey_startUpPage));
-		if( ! tmp.isNull() )
+		if(!tmp.isNull())
 			startup_page = tmp.toInt();
 	}
 } 
@@ -254,7 +254,7 @@ TaskMan::pSigHandler( int id )
   	if ( err == -1 ) 
 	{
 		QMessageBox::warning(this,i18n("ktop"),
-       		i18n("Kill error...\nSpecified process does not exists\nor permission denied."),
+       		i18n("Kill error...\nSpecified process does not exist\nor permission denied."),
        		i18n("OK"), 0);
 	}
    } 
@@ -268,7 +268,7 @@ TaskMan::pSigHandler( int id )
 	if ( err == -1 ) 
 	{
 		QMessageBox::warning(this,i18n("ktop"),
-		i18n("Renice error...\nSpecified process does not exists\nor permission denied."),
+		i18n("Renice error...\nSpecified process does not exist\nor permission denied."),
 		i18n("OK"), 0); 
 	  	procListPage->update();
 		procTreePage->update();
@@ -282,7 +282,7 @@ TaskMan::pSigHandler( int id )
 		if ( err == -1 ) 
    		{
 			QMessageBox::warning(this,i18n("ktop"),
-  			i18n("Renice error...\nSpecified process does not exists\nor permission denied."),
+  			i18n("Renice error...\nSpecified process does not exist\nor permission denied."),
 			i18n("OK"), 0);   
 		}
 	}

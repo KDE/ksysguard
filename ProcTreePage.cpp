@@ -43,6 +43,12 @@ typedef struct
 	OSProcessList::SORTKEY sortMethod;
 } SortButton;
 
+/*
+ * This array defines the items of the sort selection combo box. The labels
+ * are only provided to enhance readability. They are not used for the 
+ * creation of the combo box since the i18n() mechanism needs to work on
+ * fixed strings.
+ */
 static SortButton SortButtons[] =
 {
 	{ "Sort by ID", OSProcessList::SORTBY_PID },
@@ -56,12 +62,12 @@ ProcTreePage::ProcTreePage(QWidget* parent = 0, const char* name = 0)
 	: QWidget(parent, name)
 {
 	// surrounding box with title "Running Processes"
-	pTree_box = new QGroupBox(this, "pTree_box"); 
-	CHECK_PTR(pTree_box); 
-	pTree_box->setTitle(i18n("Running Processes"));
+	box = new QGroupBox(this, "pTree_box"); 
+	CHECK_PTR(box); 
+	box->setTitle(i18n("Running Processes"));
 
 	// the tree handling widget
-	pTree = new KtopProcTree(this, "pTree"); 
+	pTree = new ProcessTree(this, "pTree"); 
 	CHECK_PTR(pTree); 
 	pTree->setExpandLevel(20); 
 	pTree->setSmoothScrolling(TRUE);
@@ -73,36 +79,38 @@ ProcTreePage::ProcTreePage(QWidget* parent = 0, const char* name = 0)
 	 */
 
 	// "Refresh Now" button
-	pTree_bRefresh = new QPushButton(i18n("Refresh Now"), this,
+	bRefresh = new QPushButton(i18n("Refresh Now"), this,
 									 "pTree_bRefresh");
-	CHECK_PTR(pTree_bRefresh);
-	connect(pTree_bRefresh, SIGNAL(clicked()), this, SLOT(pTree_update()));
+	CHECK_PTR(bRefresh);
+	connect(bRefresh, SIGNAL(clicked()), this, SLOT(update()));
 
 	// "Change Root" button
-	pTree_bRoot = new QPushButton(i18n("Change Root"), this, "pTree_bRoot");
-	CHECK_PTR(pTree_bRoot);
-	connect(pTree_bRoot, SIGNAL(clicked()), this, SLOT(pTree_changeRoot()));
+	bRoot = new QPushButton(i18n("Change Root"), this, "pTree_bRoot");
+	CHECK_PTR(bRoot);
+	connect(bRoot, SIGNAL(clicked()), this, SLOT(changeRoot()));
 
 	// "Kill Task" button
-	pTree_bKill = new QPushButton(i18n("Kill Task"), this, "pTree_bKill");
-	CHECK_PTR(pTree_bKill);
-	connect(pTree_bKill, SIGNAL(clicked()), this, SLOT(pTree_killTask()));
+	bKill = new QPushButton(i18n("Kill Task"), this, "pTree_bKill");
+	CHECK_PTR(bKill);
+	connect(bKill, SIGNAL(clicked()), this, SLOT(killTask()));
 
 	// Sorting Method combo button
-	pTree_cbSort = new QComboBox(this, "pTree_cbSort");
-	CHECK_PTR(pTree_cbSort);
-	for (int i = 0; i < NoSortButtons; i++)
-		pTree_cbSort->insertItem(i18n(SortButtons[i].label));
-	connect(pTree_cbSort, SIGNAL(activated(int)),
+	cbSort = new QComboBox(this, "pTree_cbSort");
+	CHECK_PTR(cbSort);
+	// These combo box labels and the SortButton array must be kept in sync!
+	cbSort->insertItem(i18n("Sort by ID"));
+	cbSort->insertItem(i18n("Sort by Name"));
+	cbSort->insertItem(i18n("Sort by Owner (UID)"));
+	connect(cbSort, SIGNAL(activated(int)),
 			SLOT(handleSortChange(int)));
 
 	strcpy(cfgkey_pTreeSort, "pTreeSort");
 
 	// restore sort method for pTree...
-	pTree_sortby = 0;
-	loadSetting(pTree_sortby, "pTreeSort");
-	pTree->setSortMethod(SortButtons[pTree_sortby].sortMethod);
-	pTree_cbSort->setCurrentItem(pTree_sortby);
+	sortby = 0;
+	loadSetting(sortby, "pTreeSort");
+	pTree->setSortMethod(SortButtons[sortby].sortMethod);
+	cbSort->setCurrentItem(sortby);
     
 	// create process tree
 	pTree->update();
@@ -116,25 +124,25 @@ ProcTreePage::resizeEvent(QResizeEvent* ev)
     int w = width();
     int h = height();
    
-	pTree_box->setGeometry(5, 5, w - 10, h - 20);
+	box->setGeometry(5, 5, w - 10, h - 20);
 
    	pTree->setGeometry(10, 30, w - 20, h - 90);
 
-	pTree_cbSort->setGeometry(10, h - 50,140, 25);
-	pTree_bRefresh->setGeometry(w - 270, h - 50, 80, 25);
-	pTree_bRoot->setGeometry(w - 180, h - 50, 80, 25);
-	pTree_bKill->setGeometry(w - 90, h - 50, 80, 25);
+	cbSort->setGeometry(10, h - 50,140, 25);
+	bRefresh->setGeometry(w - 270, h - 50, 80, 25);
+	bRoot->setGeometry(w - 180, h - 50, 80, 25);
+	bKill->setGeometry(w - 90, h - 50, 80, 25);
 }
 
 void
 ProcTreePage::handleSortChange(int idx)
 {
-	pTree->setSortMethod(SortButtons[pTree_sortby = idx].sortMethod);
+	pTree->setSortMethod(SortButtons[sortby = idx].sortMethod);
 	pTree->update();
 }
 
 void 
-ProcTreePage::pTree_killTask()
+ProcTreePage::killTask()
 {
 	int pid = selectionPid();
 	if (pid < 0)

@@ -17,7 +17,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
 */
 
 // $Id$
@@ -43,7 +42,7 @@ public:
 	virtual ~OSProcess() {}
 
 	/**
-	 * This functions retries the kernel information about the process with
+	 * This functions retrieves the kernel information about the process with
 	 * the id 'pidStr' (decimal number passed as string).
 	 */
 	bool loadInfo(const char* pidStr);

@@ -31,13 +31,13 @@
 #include "IconList.h"
 #include "OSProcessList.h"
 
-class KtopProcTree : public KTreeList
+class ProcessTree : public KTreeList
 {
 	Q_OBJECT
 
 public:
-	KtopProcTree(QWidget *parent = 0, const char *name = 0, WFlags f = 0);
-    ~KtopProcTree()
+	ProcessTree(QWidget *parent = 0, const char *name = 0, WFlags f = 0);
+    ~ProcessTree()
 	{
 		delete icons;
 	}
