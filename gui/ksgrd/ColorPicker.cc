@@ -59,7 +59,7 @@ void
 ColorPicker::colorDialog()
 {
 	QColor col = getColor();
-	if (KColorDialog::getColor(col) == KColorDialog::Accepted)
+	if (KColorDialog::getColor(col, this->parentWidget()) == KColorDialog::Accepted)
 		setColor(col);
 }
 
