@@ -1,14 +1,29 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = $(UNAME)
+if include_ksysguardd_linux
+linux_SUBDIR = Linux
+endif
+if include_ksysguardd_freebsd
+freebsd_SUBDIR = FreeBSD
+endif
+if include_ksysguardd_solaris
+solaris_SUBDIR = Solaris
+endif
+if include_ksysguardd_tru64
+tru64_SUBDIR = Tru64
+endif
+if include_ksysguardd_irix
+irix_SUBDIR = Irix
+endif
 
-KSYSGUARDDRCFILE=@sysconfdir@/ksysguarddrc
+SUBDIRS = $(linux_SUBDIR) $(freebsd_SUBDIR) \
+	$(solaris_SUBDIR) $(tru64_SUBDIR) $(irix_SUBDIR)
+
+KSYSGUARDDRCFILE=$(sysconfdir)/ksysguarddrc
 INCLUDES = -DKSYSGUARDDRCFILE="\"$(KSYSGUARDDRCFILE)\"" -DOSTYPE_$(UNAME) -I$(srcdir)/../CContLib -I$(srcdir)/$(UNAME)
 
 bin_PROGRAMS = ksysguardd
 
 ksysguardd_SOURCES = Command.c conf.c ksysguardd.c PWUIDCache.c
-ksysguardd_LDFLAGS = -ggdb -L../CContLib
-ksysguardd_LDADD =  $(UNAME)/libksysguardd.a -lccont $(LIBHOSTS)
-
-
+ksysguardd_LDFLAGS = -ggdb 
+ksysguardd_LDADD =  $(top_builddir)/ksysguard/ksysguardd/$(UNAME)/libksysguardd.a ../CContLib/libccont.la -lccont $(LIBHOSTS)
