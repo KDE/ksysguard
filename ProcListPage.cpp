@@ -107,10 +107,13 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 
 	gm->activate();
 
+	setMinimumSize(sizeHint());
+
 	pList->loadSettings();
 
 	// create process list
     pList->update();
+	printf("ProcListPage: %d, %d\n", sizeHint().width(), sizeHint().height());
 }
 
 void

@@ -27,6 +27,10 @@
 
 #include "FancyPlotter.moc"
 
+static const int FrameMargin = 5;
+static const int Margin = 15;
+static const int HeadHeight = 10;
+
 FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 						   const char* title, int min, int max)
 	: QWidget(parent, name)
@@ -40,6 +44,10 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 
 	plotter = new SignalPlotter(this, "signalPlotter", min, max);
 	CHECK_PTR(plotter);
+
+	setMinimumSize(sizeHint());
+
+	printf("FancyPlotter: %d, %d\n", sizeHint().width(), sizeHint().height());
 }
 
 FancyPlotter::~FancyPlotter()
@@ -55,27 +63,36 @@ FancyPlotter::resizeEvent(QResizeEvent*)
 	int w = width();
 	int h = height();
 
-	meterFrame->move(5, 5);
-	meterFrame->resize(w - 10, h - 10);
+	meterFrame->move(FrameMargin, FrameMargin);
+	meterFrame->resize(w - 2 * FrameMargin, h - 2 * FrameMargin);
 
 	int mmw;
 	QSize mmSize = multiMeter->sizeHint();
 
-	if ((w < 280) || (h < (mmSize.height() + 40)))
+	if ((w < 280) || (h < (mmSize.height() + (2 * Margin + HeadHeight))))
 	{
 		mmw = 0;
 		multiMeter->hide();
 
-		plotter->move(mmw + 15, 25);
-		plotter->resize(w - mmw - 30, h - 40);
+		plotter->move(mmw + Margin, Margin + HeadHeight);
+		plotter->resize(w - mmw - 2 * Margin, h - (2 * Margin + HeadHeight));
 	}
 	else
 	{
 		mmw = 150;
 		multiMeter->show();
-		multiMeter->move(15, 25);
+		multiMeter->move(Margin, Margin + HeadHeight);
 		multiMeter->resize(mmw, h - 40);
-		plotter->move(mmw + 25, 25);
-		plotter->resize(w - mmw - 40, h - 40);
+		plotter->move(mmw + 2 * Margin, Margin + HeadHeight);
+		plotter->resize(w - mmw - (3 * Margin),
+						h - (2 * Margin + HeadHeight));
 	}
+}
+
+QSize
+FancyPlotter::sizeHint(void)
+{
+	QSize psize = plotter->minimumSize();
+	return (QSize(psize.width() + Margin * 2,
+				  psize.height() + Margin * 2 + HeadHeight));
 }

@@ -26,6 +26,7 @@
 
 #include <qwidget.h>
 #include <qlabel.h>
+#include <qsize.h>
 
 #include "SignalPlotter.h"
 #include "MultiMeter.h"
@@ -57,6 +58,8 @@ public:
 	{
 		plotter->setLowPass(lp);
 	}
+
+	virtual QSize sizeHint(void);
 
 protected:
 	virtual void resizeEvent(QResizeEvent*);

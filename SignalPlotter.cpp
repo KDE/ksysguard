@@ -46,6 +46,9 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name, int min,
 	lowPass = FALSE;
 	for (int i = 0; i < MAXBEAMS; i++)
 		beamData[i] = 0;
+
+	// Anything smaller than this does not make sense.
+	setMinimumSize(16, 16);
 }
 
 SignalPlotter::~SignalPlotter()
@@ -169,12 +172,11 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	 * Draw white line along the bottom and the right side of the widget to
 	 * create a 3D like look.
 	 */
-	p.setPen(QColor("white"));
+	p.setPen(QColor(colorGroup().light()));
 	p.drawLine(0, h - 1, w - 1, h - 1);
 	p.drawLine(w - 1, 0, w - 1, h - 1);
 
 	p.setClipRect(1, 1, w - 2, h - 2);
-//	p.setViewport(1, 1, w - 2, h - 2);
 	int range = maxValue - minValue;
 	p.scale(1.0f, (float) h / range);
 

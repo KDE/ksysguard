@@ -121,7 +121,10 @@ PerfMonPage::PerfMonPage(QWidget* parent = 0, const char* name = 0)
 
 	gm->activate();
 
+	setMinimumSize(sizeHint());
+
     timerID = startTimer(2000);
+	printf("PerfMonPage: %d, %d\n", sizeHint().width(), sizeHint().height());
 }
 
 void

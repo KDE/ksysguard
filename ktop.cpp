@@ -38,8 +38,8 @@
 #include "OSStatus.h"
 #include "ktop.moc"
 
-#define KTOP_MIN_W	500
-#define KTOP_MIN_H	380
+#define KTOP_MIN_W	50
+#define KTOP_MIN_H	50
 
 /*
  * Global variables
@@ -83,8 +83,6 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	// call timerEvent to fill the status bar with real values
 	timerEvent(0);
 
-	setMinimumSize(KTOP_MIN_W, KTOP_MIN_H);
-
 	/*
 	 * Restore size of the dialog box that was used at end of last session.
 	 * Due to a bug in Qt we need to set the width to one more than the
@@ -106,6 +104,7 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 		}
 	}
 
+	printf("ktop: %d, %d\n", sizeHint().width(), sizeHint().height());
 	readProperties(Kapp->getConfig());
 
 	timerID = startTimer(2000);

@@ -363,9 +363,6 @@ ProcessList::update(void)
 	load();
 
 	setAutoUpdateMode(lastmode);
-
-    if(isVisible())
-		repaint();
 }
 
 void 
@@ -764,6 +761,7 @@ ProcessList::handleRMBPopup(int item)
 		{
 			setColumnWidthMode(currColumn, Manual);
 			setColumnWidth(currColumn, 0);
+//			header()->setCellSize(currColumn, 0);
 			update();
 		}
 		break;

@@ -41,7 +41,7 @@
 #define NONE -1
 
 /*
- * This constructor creates the actual QTabDialog. It is a modeless dialog,
+ * This constructor creates the actual KTabCtl. It is a modeless dialog,
  * using the toplevel widget as its parent, so the dialog won't get its own
  * window.
  */
@@ -78,16 +78,20 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
     addTab(perfMonPage, i18n("Performance &Meter"));
 
 	move(0,0);
+
+	setMinimumSize(sizeHint());
+	printf("TaskMan: %d, %d\n", sizeHint().width(), sizeHint().height());
 }
 
 void 
 TaskMan::raiseStartUpPage()
 {
+	printf("Raised page %d\n", currentPage);
+
     // startup_page settings...
 	currentPage = Kapp->getConfig()->readNumEntry("StartUpPage", currentPage);
 
-	// tell QTabDialog to raise the specified startup page
-//	showPage(pages[currentPage]);
+	// tell KTabCtl to raise the specified startup page
 	showTab(currentPage);
 } 
 
