@@ -134,29 +134,6 @@ static const char* execXpm[]={
 
 static QPixmap *defaultIcon;
 
-static const char *refreshrates[] = {
-    "Refresh rate : Slow", 
-    "Refresh rate : Medium", 
-    "Refresh rate : Fast",
-     0
-};
-
-static const char *sortmethodsTree[] = {
-    "Sort by ID",
-    "Sort by Name",
-    "Sort by Owner (UID)",
-     0
-};
-
-static const char *sig[] = {
-    "send SIGINT\t(ctrl-c)" ,
-    "send SIGQUIT\t(core)" ,
-    "send SIGTERM\t(term.)" ,
-    "send SIGKILL\t(term.)" ,
-    "send SIGUSR1\t(user1)" ,
-    "send SIGUSR2\t(user2)" ,
-};
-
 #define NUM_COL 10
 // I have to find a better method...
 static const char *col_headers[] = {
@@ -329,13 +306,14 @@ TaskMan::TaskMan( QWidget *parent, const char *name, int sfolder )
      ----------------------------------------------*/ 
     pSig = new QPopupMenu(NULL,"_psig");
     CHECK_PTR(pSig);
-    pSig->insertItem(ktr(sig[0]),MENU_ID_SIGINT);
-    pSig->insertItem(ktr(sig[1]),MENU_ID_SIGQUIT);
-    pSig->insertItem(ktr(sig[2]),MENU_ID_SIGTERM);
-    pSig->insertItem(ktr(sig[3]),MENU_ID_SIGKILL);
+
+    pSig->insertItem(ktr("send SIGINT\t(ctrl-c)"),MENU_ID_SIGINT);
+    pSig->insertItem(ktr("send SIGQUIT\t(core)"),MENU_ID_SIGQUIT);
+    pSig->insertItem(ktr("send SIGTERM\t(term.)"),MENU_ID_SIGTERM);
+    pSig->insertItem(ktr("send SIGKILL\t(term.)"),MENU_ID_SIGKILL);
     pSig->insertSeparator();
-    pSig->insertItem(ktr(sig[4]),MENU_ID_SIGUSR1);
-    pSig->insertItem(ktr(sig[5]),MENU_ID_SIGUSR2);
+    pSig->insertItem(ktr("send SIGUSR1\t(user1)"),MENU_ID_SIGUSR1);
+    pSig->insertItem(ktr("send SIGUSR2\t(user2)"),MENU_ID_SIGUSR2);
     connect(pSig,SIGNAL(activated(int)), this, SLOT(pSigHandler(int)));
   
     /*----------------------------------------------
@@ -369,9 +347,10 @@ TaskMan::TaskMan( QWidget *parent, const char *name, int sfolder )
   
     pList_cbRefresh = new QComboBox(p0,"pList_cbRefresh");
     CHECK_PTR(pList_cbRefresh);
-    for ( int i=0 ; refreshrates[i] ; i++ ) {
-      pList_cbRefresh->insertItem( klocale->translate(refreshrates[i]),-1);
-    } 
+
+    pList_cbRefresh->insertItem( klocale->translate("Refresh rate : Slow"),-1);
+    pList_cbRefresh->insertItem( klocale->translate("Refresh rate : Medium"),-1);
+    pList_cbRefresh->insertItem( klocale->translate("Refresh rate : Fast"),-1);
     pList_cbRefresh->setCurrentItem(2); //fast = default value;
     connect(pList_cbRefresh,SIGNAL(activated(int)),SLOT(pList_cbRefreshActivated(int)));
 
@@ -406,9 +385,10 @@ TaskMan::TaskMan( QWidget *parent, const char *name, int sfolder )
 
     pTree_cbSort = new QComboBox(p1,"pTree_cbSort");
     CHECK_PTR(pTree_cbSort);
-    for ( int i=0 ; sortmethodsTree[i] ; i++ ) {
-        pTree_cbSort->insertItem( klocale->translate(sortmethodsTree[i]),-1);
-    } 
+
+    pTree_cbSort->insertItem( klocale->translate("Sort by ID"),-1);
+    pTree_cbSort->insertItem( klocale->translate("Sort by Name"),-1);
+    pTree_cbSort->insertItem( klocale->translate("Sort by Owner (UID)"),-1);
     pTree_cbSort->setCurrentItem(1); //by proc name = default value;
     connect(pTree_cbSort,SIGNAL(activated(int)),SLOT(pTree_cbSortActivated(int)));
     
