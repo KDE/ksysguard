@@ -45,7 +45,7 @@ extern "C"
 {
 	KPanelApplet* init(QWidget *parent, const QString& configFile)
 	{
-		KGlobal::locale()->insertCatalogue("ksysguardapplet");
+		KGlobal::locale()->insertCatalogue("ksysguard");
 		return new KSysGuardApplet(configFile, KPanelApplet::Normal,
 								   KPanelApplet::Preferences, parent,
 								   "ksysguardapplet");
