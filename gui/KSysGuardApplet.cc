@@ -44,7 +44,7 @@
 #include "DancingBars.h"
 #include "FancyPlotter.h"
 #include "KSysGuardApplet.moc"
-#include "KSysGuardAppletSettings.h"
+#include "KSGAppletSettings.h"
 #include "MultiMeter.h"
 
 extern "C"
@@ -123,32 +123,28 @@ KSysGuardApplet::resizeEvent(QResizeEvent*)
 void
 KSysGuardApplet::preferences()
 {
-	ksgas = new KSysGuardAppletSettings(
-		this, "KSysGuardAppletSettings", true);
+	ksgas = new KSGAppletSettings(this);
 	Q_CHECK_PTR(ksgas);
 																
-	connect(ksgas->applyButton, SIGNAL(clicked()),
-			this, SLOT(applySettings()));
+	connect(ksgas, SIGNAL(applyClicked()), SLOT(applySettings()));
 
-	ksgas->dockCnt->setValue(dockCnt);
-	ksgas->ratio->setValue(sizeRatio * 100.0 + 0.5);
-	ksgas->interval->setValue(updateInterval());
+	ksgas->setNumDisplay(dockCnt);
+	ksgas->setSizeRatio(sizeRatio * 100.0 + 0.5);
+	ksgas->setUpdateInterval(updateInterval());
 
 	if (ksgas->exec())
 		applySettings();
 
 	delete ksgas;
 	ksgas = 0;
-
-	save();
 }
 
 void
 KSysGuardApplet::applySettings()
 {
-	updateInterval(ksgas->interval->text().toUInt());
-	sizeRatio = ksgas->ratio->text().toDouble() / 100.0;
-	resizeDocks(ksgas->dockCnt->text().toUInt());
+	updateInterval(ksgas->updateInterval());
+	sizeRatio = ksgas->sizeRatio() / 100.0;
+	resizeDocks(ksgas->numDisplay());
 
 	for (uint i = 0; i < dockCnt; ++i)
 		if (!docks[i]->isA("QFrame"))

@@ -36,7 +36,7 @@ namespace KSGRD
 class QDragEnterEvent;
 class QDropEvent;
 class QPoint;
-class KSysGuardAppletSettings;
+class KSGAppletSettings;
 
 class KSysGuardApplet : public KPanelApplet, public KSGRD::SensorBoard
 {
@@ -74,7 +74,7 @@ private:
 	uint dockCnt;
 	QWidget** docks;
 	double sizeRatio;
-	KSysGuardAppletSettings* ksgas;
+	KSGAppletSettings* ksgas;
 };
 
 #endif
