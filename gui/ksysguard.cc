@@ -400,13 +400,6 @@ void TopLevel::readProperties( KConfig *cfg )
   }
   mSplitter->setSizes( sizes );
 
-  applyMainWindowSettings( cfg );
-
-  if ( !statusBar()->isHidden() ) {
-    mActionStatusBar->setChecked( true );
-    showStatusBar();
-  }
-
   KSGRD::SensorMgr->readProperties( cfg );
   KSGRD::Style->readProperties( cfg );
 
@@ -415,6 +408,13 @@ void TopLevel::readProperties( KConfig *cfg )
   setMinimumSize( sizeHint() );
 
   mActionOpenRecent->loadEntries( cfg );
+
+  applyMainWindowSettings( cfg );
+
+  if ( !statusBar()->isHidden() ) {
+    mActionStatusBar->setChecked( true );
+    showStatusBar();
+  }
 }
 
 void TopLevel::saveProperties( KConfig *cfg )
