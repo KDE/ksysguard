@@ -36,6 +36,8 @@ void printBuffers(const char* cmd);
 void printBuffersInfo(const char* cmd);
 void printCached(const char* cmd);
 void printCachedInfo(const char* cmd);
+void printApplication(const char* cmd);
+void printApplicationInfo(const char* cmd);
 void printSwapUsed(const char* cmd);
 void printSwapUsedInfo(const char* cmd);
 void printSwapFree(const char* cmd);

@@ -45,6 +45,7 @@ static size_t MFree = 0;
 static size_t Used = 0;
 static size_t Buffers = 0;
 static size_t Cached = 0;
+static size_t Application = 0;
 static size_t STotal = 0;
 static size_t SFree = 0;
 static size_t SUsed = 0;
@@ -66,6 +67,7 @@ initMemory(struct SensorModul* sm)
 	registerMonitor("mem/physical/used", "integer", printUsed, printUsedInfo, sm);
 	registerMonitor("mem/physical/buf", "integer", printBuffers, printBuffersInfo, sm);
 	registerMonitor("mem/physical/cached", "integer", printCached, printCachedInfo, sm);
+	registerMonitor("mem/physical/application", "integer", printApplication, printApplicationInfo, sm);
 	registerMonitor("mem/swap/free", "integer", printSwapFree, printSwapFreeInfo, sm);
 	registerMonitor("mem/swap/used", "integer", printSwapUsed, printSwapUsedInfo, sm);
 }
@@ -80,7 +82,6 @@ int
 updateMemory(void)
 {
 	size_t len;
-	struct vmtotal p;
 	FILE *file;
 	char buf[256];
 	struct kvm_swap kswap[16];
@@ -108,18 +109,18 @@ updateMemory(void)
                 Buffers = 0; /* Doesn't work under FreeBSD v2.2.x */
         Buffers /= 1024;
 
-
         len = sizeof (Cached);
         if ((sysctlbyname("vm.stats.vm.v_cache_count", &Cached, &len, NULL, 0) == -1) || !len)
                 Cached = 0; /* Doesn't work under FreeBSD v2.2.x */
-        Cached *= getpagesize() / 1024;
+        Cached *= pagesize / 1024;
 
+	len = sizeof (MFree);
+	if ((sysctlbyname("vm.stats.vm.v_free_count", &MFree, &len, NULL, 0) == -1) || !len)
+		MFree = 0; /* Doesn't work under FreeBSD v2.2.x */
+	MFree *= pagesize / 1024;
 
-	/* initializes the pointer to the vmmeter struct */
-	len = sizeof (p);
-	sysctlbyname("vm.vmmeter", &p, &len, NULL, 0);
-        MFree = p.t_free * getpagesize() / 1024;
-        Used = p.t_arm * getpagesize() / 1024 + Buffers + Cached;
+	Used = Total - MFree;
+	Application = Used - Buffers - Cached;
 
 	return 0;
 }
@@ -170,6 +171,18 @@ void
 printCachedInfo(const char* cmd)
 {
 	fprintf(CurrentClient, "Cached Memory\t0\t%d\tKB\n", Total);
+}
+
+void
+printApplication(const char* cmd)
+{
+	fprintf(CurrentClient, "%d\n", Application);
+}
+
+void
+printApplicationInfo(const char* cmd)
+{
+	fprintf(CurrentClient, "Application Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
