@@ -110,7 +110,9 @@ diskStatKey(const char* text)
 		}
 	}
 
-	return NULL;
+	strncpy(key, text, sizeof(key) - 1);
+
+	return key;
 }
 
 PrivateListViewItem::PrivateListViewItem(PrivateListView *parent)
