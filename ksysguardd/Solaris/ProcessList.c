@@ -20,6 +20,13 @@
 
 */
 
+/* Stop <sys/procfs.h> from crapping out on 32-bit architectures. */
+
+#if !defined(_LP64) && _FILE_OFFSET_BITS == 64
+# undef _FILE_OFFSET_BITS
+# define _FILE_OFFSET_BITS 32
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

@@ -23,10 +23,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/stat.h>
-#include <sys/swap.h>
 
 #include "config.h"
+
+/* Stop <sys/swap.h> from crapping out on 32-bit architectures. */
+
+#if !defined(_LP64) && _FILE_OFFSET_BITS == 64
+# undef _FILE_OFFSET_BITS
+# define _FILE_OFFSET_BITS 32
+#endif
+
+#include <sys/stat.h>
+#include <sys/swap.h>
+#include <vm/anon.h>
 
 #ifdef HAVE_KSTAT
 #include <kstat.h>
@@ -41,6 +50,7 @@ static t_memsize totalmem = (t_memsize) 0;
 static t_memsize freemem = (t_memsize) 0;
 static long totalswap = 0L;
 static long freeswap = 0L;
+static struct anoninfo am_swap;
 
 /*
  *  this is borrowed from top's m_sunos5 module
@@ -103,56 +113,32 @@ void exitMemory( void ) {
 
 int updateMemory( void ) {
 
-	struct swaptable	*swt;
-	struct swapent		*ste;
-	int			i;
-	int			ndevs;
 	long			swaptotal;
 	long			swapfree;
-	char			dummy[128];
+	long			swapused;
 #ifdef HAVE_KSTAT
 	kstat_ctl_t		*kctl;
 	kstat_t			*ksp;
 	kstat_named_t		*kdata;
 #endif /* HAVE_KSTAT */
-
-	if( (ndevs = swapctl( SC_GETNSWP, NULL )) < 1 )
-		return( 0 );
-	if( (swt = (struct swaptable *) malloc(
-			sizeof( int )
-			+ ndevs * sizeof( struct swapent ))) == NULL )
-		return( 0 );
+	swaptotal = swapused = swapfree = 0L;
 
 	/*
-	 *  fill in the required fields and retrieve the info thru swapctl()
+	 *  Retrieve overall swap information from anonymous memory structure -
+	 *  which is the same way "swap -s" retrieves it's statistics.
+	 *
+	 *  swapctl(SC_LIST, void *arg) does not return what we are looking for.
 	 */
-	swt->swt_n = ndevs;
-	ste = &(swt->swt_ent[0]);
-	for( i = 0; i < ndevs; i++ ) {
-		/*
-		 *  since we'renot interested in the path(s),
-		 *  we'll re-use the same buffer
-		 */
-		ste->ste_path = dummy;
-		ste++;
-	}
-	swapctl( SC_LIST, swt );
 
-	swaptotal = swapfree = 0L;
+	if (swapctl(SC_AINFO, &am_swap) == -1)
+		return(0);
 
-	ste = &(swt->swt_ent[0]);
-	for( i = 0; i < ndevs; i++ ) {
-		if( (! (ste->ste_flags & ST_INDEL))
-				&& (! (ste->ste_flags & ST_DOINGDEL)) ) {
-			swaptotal += ste->ste_pages;
-			swapfree += ste->ste_free;
-		}
-		ste++;
-	}
-	free( swt );
+	swaptotal = am_swap.ani_max;
+	swapused = am_swap.ani_resv;
+	swapfree = swaptotal - swapused;
 
-	totalswap = pagetok( swaptotal );
-	freeswap = pagetok( swapfree );
+	totalswap = pagetok(swaptotal);
+	freeswap = pagetok(swapfree);
 
 #ifdef HAVE_KSTAT
 	/*
