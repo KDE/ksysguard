@@ -37,6 +37,10 @@ void printUsed(const char* cmd);
 
 void printUsedInfo(const char* cmd);
 
+void printAppl(const char* cmd);
+
+void printApplInfo(const char* cmd);
+
 void printBuffers(const char* cmd);
 
 void printBuffersInfo(const char* cmd);

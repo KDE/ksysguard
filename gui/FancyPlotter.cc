@@ -36,10 +36,6 @@
 #include "SensorManager.h"
 #include "FancyPlotter.moc"
 
-static const int FrameMargin = 0;
-static const int Margin = 5;
-static const int HeadHeight = 10;
-
 FancyPlotterSettings::FancyPlotterSettings(const QString& oldTitle,
 										   long min, long max)
 	: KDialogBase(0, 0, true, QString::null, Ok | Apply | Cancel)
@@ -118,13 +114,12 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 {
 	sensorNames.setAutoDelete(true);
 
-	meterFrame = new QGroupBox(this, "meterFrame"); 
+	meterFrame = new QGroupBox(1, Qt::Vertical, title, this, "meterFrame"); 
 	CHECK_PTR(meterFrame);
-	meterFrame->setTitle(title);
 
 	beams = 0;
 
-	plotter = new SignalPlotter(this, "signalPlotter", min, max);
+	plotter = new SignalPlotter(meterFrame, "signalPlotter", min, max);
 	CHECK_PTR(plotter);
 
 	setMinimumSize(sizeHint());
@@ -202,21 +197,12 @@ void
 FancyPlotter::resizeEvent(QResizeEvent*)
 {
 	meterFrame->setGeometry(0, 0, width(), height());
-	QRect meter = meterFrame->contentsRect();
-	meter.setX(Margin);
-	meter.setY(HeadHeight + Margin);
-	meter.setWidth(width() - 2 * Margin);
-	meter.setHeight(height() - HeadHeight - 2 * Margin);
-
-	plotter->setGeometry(meter);
 }
 
 QSize
 FancyPlotter::sizeHint(void)
 {
-	QSize psize = plotter->minimumSize();
-	return (QSize(psize.width() + Margin * 2,
-				  psize.height() + Margin * 2 + HeadHeight));
+	return (meterFrame->sizeHint());
 }
 
 void

@@ -44,6 +44,6 @@ messages: rc.cpp
 	$(XGETTEXT) *.cpp *.cc -o $(podir)/ksysguard.pot
 
 rcdir = $(kde_datadir)/ksysguard
-rc_DATA = ksysguard.rc
+rc_DATA = ksysguardui.rc
 
 apps_DATA = ksysguard.desktop

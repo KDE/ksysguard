@@ -43,12 +43,14 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name, int min,
 	// paintEvent covers whole widget so we use no background to avoid flicker
 	setBackgroundMode(NoBackground);
 
-	beams = 0;
+	beams = samples = 0;
 	lowPass = FALSE;
 	autoRange = (min == max);
 
 	// Anything smaller than this does not make sense.
 	setMinimumSize(16, 16);
+	setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
+							  QSizePolicy::Expanding, FALSE));
 }
 
 SignalPlotter::~SignalPlotter()
@@ -60,13 +62,11 @@ SignalPlotter::~SignalPlotter()
 bool
 SignalPlotter::addBeam(QColor col)
 {
-	assert(width() > 2);
-
 	if (beams == MAXBEAMS)
 		return (false);
 
-	beamData[beams] = new long[width() - 2];
-	memset(beamData[beams], 0, sizeof(int) * (width() - 2));
+	beamData[beams] = new long[samples];
+	memset(beamData[beams], 0, sizeof(long) * samples);
 	beamColor[beams] = col;
 	beams++;
 
@@ -179,7 +179,7 @@ SignalPlotter::calcRange()
 }
 
 void
-SignalPlotter::resizeEvent(QResizeEvent* ev)
+SignalPlotter::resizeEvent(QResizeEvent*)
 {
 	assert(width() > 2);
 
@@ -192,7 +192,7 @@ SignalPlotter::resizeEvent(QResizeEvent* ev)
 	long* tmp[MAXBEAMS];
 
 	// overlap between the old and the new buffers.
-	int overlap = min(ev->oldSize().width() - 2, width() - 2);
+	int overlap = min(samples, width() - 2);
 
 	for (int i = 0; i < beams; i++)
 	{
@@ -204,7 +204,7 @@ SignalPlotter::resizeEvent(QResizeEvent* ev)
 
 		// copy overlap from old buffer to new buffer
 		memcpy(tmp[i] + ((width() - 2) - overlap),
-			   beamData[i] + ((ev->oldSize().width() - 2) - overlap),
+			   beamData[i] + (samples - overlap),
 			   overlap * sizeof(int));
 
 		// discard old buffer
@@ -212,6 +212,7 @@ SignalPlotter::resizeEvent(QResizeEvent* ev)
 
 		beamData[i] = tmp[i];
 	}
+	samples = width() - 2;
 }
 
 void 
@@ -239,17 +240,18 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	 * in pixels. So we force the range to at least be 20. */
 	if (range < 20)
 		range = 20;
-	p.scale(1.0f, (float) h / range);
+	int maxVal = minValue + range;
 
 	/* Draw scope-like grid */
-	p.setPen(QColor("darkgreen"));
 	if (w > 60)
+	{
+		p.setPen(QColor("green"));
 		for (int x = 30; x < (w - 2); x += 30)
-			p.drawLine(x, 0, x, range - 1);
-	if (h > 60)
-		for (int y = 1; y < 5; y++)
-			p.drawLine(0, y * (range / 5), w - 2, y * (range / 5));
+			p.drawLine(x, 0, x, height() - 1);
+	}
 
+	// Scale painter to value coordinates
+	p.scale(1.0f, (float) h / range);
 	for (int i = 0; i < (w - 2); i++)
 	{
 		int bias = 0;
@@ -263,6 +265,24 @@ SignalPlotter::paintEvent(QPaintEvent*)
 				bias += beamData[b][i];
 			}
 		}
+	}
+	
+	// Scale back to pixel coordinates
+	p.scale(1.0f, (float) range / h);
+	// draw horizontal lines and values
+	if (h > 60)
+	{
+		p.setPen(QColor("green"));
+		p.setFont(QFont("lucidatypewriter", 12));
+		QString val;
+		for (int y = 1; y < 5; y++)
+		{
+			p.drawLine(0, y * (height() / 5), w - 2, y * (height() / 5));
+			val = QString("%1").arg(maxVal - y * (range / 5));
+			p.drawText(6, y * (height() / 5) - 1, val);
+		}
+		val = QString("%1").arg(minValue);
+		p.drawText(6, height() - 2, val);
 	}
 
 	p.end();

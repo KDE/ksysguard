@@ -75,6 +75,7 @@ private:
 	long* beamData[MAXBEAMS];
 	QColor beamColor[MAXBEAMS];
 	int beams;
+	int samples;
 } ;
 
 #endif

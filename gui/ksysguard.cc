@@ -122,7 +122,7 @@ TopLevel::TopLevel(const char *name)
     KStdAction::configureToolbars(this, SLOT(editToolbars()),
 								  actionCollection());
 	statusBarTog->setChecked(FALSE);
-	createGUI("ksysguard.rc");
+	createGUI();
 
 	show();
 }

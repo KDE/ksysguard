@@ -185,8 +185,18 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 		{
 			// remove pending request from FIFO
 			SensorRequest* req = processingFIFO.last();
+			if (!req)
+			{
+				qDebug("ERROR: Received answer but have no pending request!");
+				return;
+			}
 			processingFIFO.removeLast();
 			
+			if (!req->client)
+			{
+				qDebug("ERROR: No client registered for request!");
+				return;
+			}
 			// Notify client of newly arrived answer.
 			req->client->answerReceived(req->id, answerBuffer.left(end));
 			delete req;

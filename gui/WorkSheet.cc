@@ -64,7 +64,6 @@ WorkSheet::WorkSheet(QWidget* parent, int r, int c) :
 
 WorkSheet::~WorkSheet()
 {
-	qDebug("Deleting work sheet...");
 	for (int i = 0; i < rows; ++i)
 		delete [] displays[i];
 

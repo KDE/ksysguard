@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "stat.h"
 #include "Command.h"
@@ -44,6 +45,19 @@ typedef struct
 	unsigned long idleTicks;
 } CPULoadInfo;
 
+typedef struct
+{
+	unsigned long delta;
+	unsigned long old;
+} DiskLoadSample;
+
+typedef struct
+{
+	/* 5 types of samples are taken:
+       total, rio, wio, rBlk, wBlk */
+	DiskLoadSample s[5];
+} DiskLoadInfo;
+	
 #define STATBUFSIZE 2048
 static char StatBuf[STATBUFSIZE];
 static int Dirty = 0;
@@ -51,18 +65,48 @@ static int Dirty = 0;
 static CPULoadInfo CPULoad;
 static CPULoadInfo* SMPLoad = 0;
 static unsigned CPUCount = 0;
-static unsigned long Disk = 0;
-static unsigned long OldDisk = 0;
-static unsigned long DiskRIO = 0;
-static unsigned long OldDiskRIO = 0;
-static unsigned long DiskWIO = 0;
-static unsigned long OldDiskWIO = 0;
+static DiskLoadInfo* DiskLoad = 0;
+static unsigned DiskCount = 0;
 static unsigned long PageIn = 0;
 static unsigned long OldPageIn = 0;
 static unsigned long PageOut = 0;
 static unsigned long OldPageOut = 0;
 static unsigned long Ctxt = 0;
 static unsigned long OldCtxt = 0;
+
+static int initStatDisk(char* tag, char* buf, char* label, char* shortLabel,
+						int index, cmdExecutor ex, cmdExecutor iq);
+static void updateCPULoad(const char* line, CPULoadInfo* load);
+static int processDisk(char* tag, char* buf, char* label, int index);
+static void processStat(void);
+
+static int
+initStatDisk(char* tag, char* buf, char* label, char* shortLabel, int index,
+			 cmdExecutor ex, cmdExecutor iq)
+{
+	char sensorName[128];
+
+	if (strcmp(label, tag) == 0)
+	{
+		int i;
+		buf = buf + strlen(label) + 1;
+		
+		for (i = 0; i < DiskCount; ++i)
+		{
+			sscanf(buf, "%lu", &DiskLoad[i].s[index].old);
+			while (*buf && isblank(*buf++))
+				;
+			while (*buf && isdigit(*buf++))
+				;
+			sprintf(sensorName, "disk/disk%d/%s", i, shortLabel);
+			registerMonitor(sensorName, "integer", ex, iq);
+
+		}
+		return (1);
+	}
+
+	return (0);
+}
 
 static void
 updateCPULoad(const char* line, CPULoadInfo* load)
@@ -98,6 +142,31 @@ updateCPULoad(const char* line, CPULoadInfo* load)
 	load->idleTicks = currIdleTicks;
 }
 
+static int
+processDisk(char* tag, char* buf, char* label, int index)
+{
+	if (strcmp(label, tag) == 0)
+	{
+		unsigned long val;
+		int i;
+		buf = buf + strlen(label) + 1;
+		
+		for (i = 0; i < DiskCount; ++i)
+		{
+			sscanf(buf, "%lu", &val);
+			while (*buf && isblank(*buf++))
+				;
+			while (*buf && isdigit(*buf++))
+				;
+			DiskLoad[i].s[index].delta = val - DiskLoad[i].s[index].old;
+			DiskLoad[i].s[index].old = val;
+		}
+		return (1);
+	}
+
+	return (0);
+}
+
 static void
 processStat(void)
 {
@@ -113,7 +182,7 @@ processStat(void)
 	while (sscanf(statBufP, format, buf) == 1)
 	{
 		buf[sizeof(buf) - 1] = '\0';
-		statBufP += strlen(buf) + 1;	// move statBufP to next line
+		statBufP += strlen(buf) + 1;	/* move statBufP to next line */
 		sscanf(buf, tagFormat, tag);
 
 		if (strcmp("cpu", tag) == 0)
@@ -128,27 +197,16 @@ processStat(void)
 			sscanf(tag + 3, "%d", &id);
 			updateCPULoad(buf, &SMPLoad[id]);
 		}
-		else if (strcmp("disk", tag) == 0)
-		{
-			unsigned long val;
-			sscanf(buf + 5, "%lu", &val);
-			Disk = val - OldDisk;
-			OldDisk = val;
-		}
-		else if (strcmp("disk_rio", tag) == 0)
-		{
-			unsigned long val;
-			sscanf(buf + 9, "%lu", &val);
-			DiskRIO = val - OldDiskRIO;
-			OldDiskRIO = val;
-		}
-		else if (strcmp("disk_wio", tag) == 0)
-		{
-			unsigned long val;
-			sscanf(buf + 9, "%lu", &val);
-			DiskWIO = val - OldDiskWIO;
-			OldDiskWIO = val;
-		}
+		else if (processDisk(tag, buf, "disk", 0))
+			;
+		else if (processDisk(tag, buf, "disk_rio", 1))
+			;
+		else if (processDisk(tag, buf, "disk_wio", 2))
+			;
+		else if (processDisk(tag, buf, "disk_rblk", 3))
+			;
+		else if (processDisk(tag, buf, "disk_wblk", 4))
+			;
 		else if (strcmp("page", tag) == 0)
 		{
 			unsigned long v1, v2;
@@ -263,22 +321,35 @@ initStat(void)
 		}
 		else if (strcmp("disk", tag) == 0)
 		{
-			sscanf(buf + 5, "%lu", &OldDisk);
-			registerMonitor("disk/load", "integer", printDiskLoad,
-							printDiskLoadInfo);
+			unsigned long val;
+			char* b = buf + 5;
+
+			/* Count the number of registered disks */
+			for (DiskCount = 0; *b && sscanf(b, "%lu", &val) == 1; DiskCount++)
+			{
+				while (*b && isblank(*b++))
+					;
+				while (*b && isdigit(*b++))
+					;
+			}
+			if (DiskCount > 0)
+				DiskLoad = (DiskLoadInfo*) malloc(sizeof(DiskLoadInfo)
+												  * DiskCount);
+			initStatDisk(tag, buf, "disk", "disk", 0, printDiskTotal,
+						 printDiskTotalInfo);
 		}
-		else if (strcmp("disk_rio", tag) == 0)
-		{
-			sscanf(buf + 9, "%lu", &OldDiskRIO);
-			registerMonitor("disk/rio", "integer", printDiskRIO,
-							printDiskRIOInfo);
-		}
-		else if (strcmp("disk_wio", tag) == 0)
-		{
-			sscanf(buf + 9, "%lu", &OldDiskWIO);
-			registerMonitor("disk/wio", "integer", printDiskWIO,
-							printDiskWIOInfo);
-		}
+		else if (initStatDisk(tag, buf, "disk_rio", "rio", 1, printDiskRIO,
+							  printDiskRIOInfo))
+			;
+		else if (initStatDisk(tag, buf, "disk_wio", "wio", 2, printDiskWIO,
+							  printDiskWIOInfo))
+			;
+		else if (initStatDisk(tag, buf, "disk_rblk", "rblk", 3, printDiskRBlk,
+							  printDiskRBlkInfo))
+			;
+		else if (initStatDisk(tag, buf, "disk_wblk", "wblk", 4, printDiskWBlk,
+							  printDiskWBlkInfo))
+			;
 		else if (strcmp("page", tag) == 0)
 		{
 			sscanf(buf + 5, "%lu %lu", &OldPageIn, &OldPageOut);
@@ -296,7 +367,7 @@ initStat(void)
 	}
 	fclose(stat);
 
-	// Call processStat to eliminate initial peek values.
+	/* Call processStat to eliminate initial peek values. */
 	processStat();
 
 	if (CPUCount > 0)
@@ -471,45 +542,105 @@ printCPUxIdleInfo(const char* cmd)
 }
 
 void
-printDiskLoad(const char* cmd)
+printDiskTotal(const char* cmd)
 {
+	int id;
+
 	if (Dirty)
 		processStat();
-	printf("%lu\n", Disk / TIMERINTERVAL);
+	sscanf(cmd + 9, "%d", &id);
+	printf("%lu\n", DiskLoad[id].s[0].delta / TIMERINTERVAL);
 }
 
 void
-printDiskLoadInfo(const char* cmd)
+printDiskTotalInfo(const char* cmd)
 {
-	printf("Disk Load\t0\t0\tkBytes/s\n");
+	int id;
+
+	sscanf(cmd + 9, "%d", &id);
+	printf("Disk%d Total Load\t0\t0\tkBytes/s\n", id);
 }
 
 void
 printDiskRIO(const char* cmd)
 {
+	int id;
+
 	if (Dirty)
 		processStat();
-	printf("%lu\n", DiskRIO / TIMERINTERVAL);
+	sscanf(cmd + 9, "%d", &id);
+	printf("%lu\n", DiskLoad[id].s[1].delta / TIMERINTERVAL);
 }
 
 void
 printDiskRIOInfo(const char* cmd)
 {
-	printf("Disk Read\t0\t0\tkBytes/s\n");
+	int id;
+
+	sscanf(cmd + 9, "%d", &id);
+	printf("Disk%d Read\t0\t0\tkBytes/s\n", id);
 }
 
 void
 printDiskWIO(const char* cmd)
 {
+	int id;
+
 	if (Dirty)
 		processStat();
-	printf("%lu\n", DiskWIO / TIMERINTERVAL);
+	sscanf(cmd + 9, "%d", &id);
+	printf("%lu\n", DiskLoad[id].s[2].delta / TIMERINTERVAL);
 }
 
 void
 printDiskWIOInfo(const char* cmd)
 {
-	printf("Disk Write\t0\t0\tkBytes/s\n");
+	int id;
+
+	sscanf(cmd + 9, "%d", &id);
+	printf("Disk%d Write\t0\t0\tkBytes/s\n", id);
+}
+
+void
+printDiskRBlk(const char* cmd)
+{
+	int id;
+
+	if (Dirty)
+		processStat();
+	sscanf(cmd + 9, "%d", &id);
+	/* a block is 512 bytes or 1/2 kBytes */
+	printf("%lu\n", DiskLoad[id].s[3].delta / TIMERINTERVAL * 2);
+}
+
+void
+printDiskRBlkInfo(const char* cmd)
+{
+	int id;
+
+	sscanf(cmd + 9, "%d", &id);
+	printf("Disk%d Read Data\t0\t0\tkBytes/s\n", id);
+}
+
+void
+printDiskWBlk(const char* cmd)
+{
+	int id;
+
+	if (Dirty)
+		processStat();
+	sscanf(cmd + 9, "%d", &id);
+	/* a block is 512 bytes or 1/2 kBytes */
+	printf("%lu\n", DiskLoad[id].s[4].delta / TIMERINTERVAL * 2);
+}
+
+void
+printDiskWBlkInfo(const char* cmd)
+{
+	int id;
+
+	sscanf(cmd + 9, "%d", &id);
+	printf("Disk%d Write Data\t0\t0\tkBytes/s\n", id);
 }
 
 void

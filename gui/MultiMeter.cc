@@ -39,19 +39,11 @@
 #include "MultiMeterSettings.h"
 #include "MultiMeter.moc"
 
-// Use the variables defined in FancyPlotter.cc when
-// compiling with --enable-final to prevent duplicates.
-#ifndef KDE_USE_FINAL
-static const int FrameMargin = 0;
-static const int Margin = 5;
-static const int HeadHeight = 10;
-#endif
-
 MultiMeter::MultiMeter(QWidget* parent, const char* name,
 					   const QString& t, int, int)
 	: SensorDisplay(parent, name)
 {
-	frame = new QGroupBox(this, "meterFrame");
+	frame = new QGroupBox(1, Qt::Vertical, title, this, "meterFrame"); 
 	CHECK_PTR(frame);
 
 	showUnit = TRUE;
@@ -60,9 +52,15 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 
 	setTitle(t, unit);
 
-	lcd = new QLCDNumber(this, "meterLCD");
+	lcd = new QLCDNumber(frame, "meterLCD");
 	CHECK_PTR(lcd);
 	lcd->setSegmentStyle(QLCDNumber::Filled);
+	lcd->setBackgroundColor(Qt::black);
+	QPalette p;
+	p.setColor(QColorGroup::Foreground, Qt::green);
+	lcd->setPalette(p);
+	lcd->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
+								   QSizePolicy::Expanding, FALSE));
 
 	/* All RMB clicks to the lcd widget will be handled by 
 	 * SensorDisplay::eventFilter. */
@@ -143,13 +141,6 @@ void
 MultiMeter::resizeEvent(QResizeEvent*)
 {
 	frame->setGeometry(0, 0, width(), height());
- 
-	QRect box = frame->contentsRect();
-	box.setX(Margin);
-	box.setY(HeadHeight + Margin);
-	box.setWidth(width() - 2 * Margin);
-	box.setHeight(height() - HeadHeight - 2 * Margin);
-	lcd->setGeometry(box);
 }
 
 void

@@ -451,7 +451,7 @@ printProcessCount(const char* cmd)
 void
 printProcessCountInfo(const char* cmd)
 {
-	printf("Number of Processes\t1\t65535\t\n");
+	printf("Number of Processes\t0\t0\t\n");
 }
 
 void

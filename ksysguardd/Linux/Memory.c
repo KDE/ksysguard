@@ -31,6 +31,7 @@ static int Dirty = 0;
 
 static size_t Total = 0;
 static size_t MFree = 0;
+static size_t Appl = 0;
 static size_t Used = 0;
 static size_t Buffers = 0;
 static size_t Cached = 0;
@@ -47,6 +48,7 @@ processMemInfo()
 		   &Total, &Used, &MFree, &Buffers, &Cached,
 		   &STotal, &SUsed, &SFree);
 
+	Appl = (Used - (Buffers + Cached)) / 1024;
 	Total /= 1024;
 	MFree /= 1024;
 	Used /= 1024;
@@ -77,6 +79,8 @@ initMemory(void)
 	registerMonitor("mem/physical/free", "integer", printMFree,
 					printMFreeInfo);
 	registerMonitor("mem/physical/used", "integer", printUsed, printUsedInfo);
+	registerMonitor("mem/physical/application", "integer", printAppl,
+					printApplInfo);
 	registerMonitor("mem/physical/buf", "integer", printBuffers,
 					printBuffersInfo);
 	registerMonitor("mem/physical/cached", "integer", printCached,
@@ -155,6 +159,22 @@ printUsedInfo(const char* cmd)
 	if (Dirty)
 		processMemInfo();
 	printf("Used Memory\t0\t%d\tKB\n", Total);
+}
+
+void
+printAppl(const char* cmd)
+{
+	if (Dirty)
+		processMemInfo();
+	printf("%d\n", Appl);
+}
+
+void
+printApplInfo(const char* cmd)
+{
+	if (Dirty)
+		processMemInfo();
+	printf("Application Memory\t0\t%d\tKB\n", Total);
 }
 
 void

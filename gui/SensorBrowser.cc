@@ -60,13 +60,17 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	dict.insert("cached", new QString(i18n("Cached Memory")));
 	dict.insert("buf", new QString(i18n("Buffered Memory")));
 	dict.insert("used", new QString(i18n("Used Memory")));
+	dict.insert("application", new QString(i18n("Application Memory")));
 	dict.insert("free", new QString(i18n("Free Memory")));
 	dict.insert("pscount", new QString(i18n("Process Count")));
 	dict.insert("ps", new QString(i18n("Process Controller")));
-	dict.insert("disk", new QString(i18n("Hard Disk")));
+	dict.insert("disk", new QString(i18n("Disk Troughput")));
 	dict.insert("load", new QString(i18n("Load")));
-	dict.insert("rio", new QString(i18n("Read Throughput")));
-	dict.insert("wio", new QString(i18n("Write Throughput")));
+	dict.insert("total", new QString(i18n("Total Accesses")));
+	dict.insert("rio", new QString(i18n("Read Accesses")));
+	dict.insert("wio", new QString(i18n("Write Accesses")));
+	dict.insert("rblk", new QString(i18n("Read Data")));
+	dict.insert("wblk", new QString(i18n("Write Data")));
 	dict.insert("pageIn", new QString(i18n("Pages In")));
 	dict.insert("pageOut", new QString(i18n("Pages Out")));
 	dict.insert("context", new QString(i18n("Context Switches")));
@@ -75,8 +79,12 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	dict.insert("sentBytes", new QString(i18n("Sent Bytes")));
 
 	for (int i = 0; i < 32; i++)
+	{
 		dict.insert("cpu" + QString::number(i),
 					new QString(QString(i18n("CPU%1")).arg(i)));
+		dict.insert("disk" + QString::number(i),
+					new QString(QString(i18n("Disk%1")).arg(i)));
+	}
 
 	icons = new KIconLoader();
 	CHECK_PTR(icons);
