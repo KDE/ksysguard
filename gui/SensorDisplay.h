@@ -36,6 +36,21 @@
 class QDomDocument;
 class QDomElement;
 
+class SensorProperties
+{
+public:
+	SensorProperties() { }
+	~SensorProperties() { }
+
+	QString hostName;
+	QString name;
+	QString description;
+
+	/* This flag indicates whether the communication to the sensor is
+	 * ok or not. */
+	bool ok;
+} ;
+
 /**
  * This class is the base class for all displays for sensors. A
  * display is any kind of widget that can display the value of one or
@@ -85,12 +100,19 @@ public:
 
 	virtual void settings() { }
 
-	virtual void sensorLost()
+	virtual void updateWhatsThis();
+
+	virtual QString additionalWhatsThis()
 	{
-		sensorError(true);
+		return QString::null;
 	}
 
-	virtual void sensorError(bool mode);
+	virtual void sensorLost(int reqId)
+	{
+		sensorError(reqId, true);
+	}
+
+	virtual void sensorError(int sensorId, bool mode);
 
 	virtual bool loadSensor(QDomElement& domElem);
 	virtual bool saveSensor(QDomDocument& doc, QDomElement& sensor);
@@ -139,13 +161,7 @@ protected:
 	void registerSensor(const QString& hostName, const QString& sensorName,
 						const QString& sensorDescr);
 
-	QStringList hostNames;
-	QStringList sensorNames;
-	QStringList sensorDescriptions; 
-
-	/* This flag indicates whether the communication to the sensor(s) is
-	 * ok or not. */
-	bool sensorOk;
+	QList<SensorProperties> sensors;
 
 private:
 	int timerId;

@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -102,7 +102,7 @@ void
 MultiMeter::answerReceived(int id, const QString& answer)
 {
 	/* We received something, so the sensor is probably ok. */
-	sensorError(false);
+	sensorError(id, false);
 
 	if (id == 100)
 	{
@@ -193,8 +193,8 @@ MultiMeter::load(QDomElement& el)
 bool
 MultiMeter::save(QDomDocument&, QDomElement& display)
 {
-	display.setAttribute("hostName", *hostNames.at(0));
-	display.setAttribute("sensorName", *sensorNames.at(0));
+	display.setAttribute("hostName", sensors.at(0)->hostName);
+	display.setAttribute("sensorName", sensors.at(0)->name);
 	display.setAttribute("title", title);
 	display.setAttribute("showUnit", (int) showUnit);
 	display.setAttribute("lowerLimitActive", (int) lowerLimitActive);
@@ -241,12 +241,12 @@ MultiMeter::applySettings()
 }
 
 void
-MultiMeter::sensorError(bool err)
+MultiMeter::sensorError(int, bool err)
 {
-	if (err == sensorOk)
+	if (err == sensors.at(0)->ok)
 	{
 		// this happens only when the sensorOk status needs to be changed.
-		sensorOk = !err;
+		sensors.at(0)->ok = !err;
 	}
 	if (err)
 		errorLabel->show();

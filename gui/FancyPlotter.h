@@ -61,6 +61,8 @@ public:
 
 	virtual void answerReceived(int id, const QString& s);
 
+	virtual QString additionalWhatsThis();
+
 	bool load(QDomElement& el);
 	bool save(QDomDocument& doc, QDomElement& display);
 
@@ -74,7 +76,7 @@ public:
 		return (TRUE);
 	}
 
-	virtual void sensorError(bool err);
+	virtual void sensorError(int sensorID, bool err);
 
 public slots:
 	void applySettings();

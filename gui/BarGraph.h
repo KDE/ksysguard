@@ -49,13 +49,19 @@ public:
 	{
 		return (autoRange ? 0 : maxValue);
 	}
-	long getLimit() const
+	void getLimits(long& l, bool& la, long& u, bool& ua) const
 	{
-		return (limit);
+		l = lowerLimit;
+		la = lowerLimitActive;
+		u = upperLimit;
+		ua = upperLimitActive;
 	}
-	void setLimit(long l)
+	void setLimits(long l, bool la, long u, bool ua)
 	{
-		limit = l;
+		lowerLimit = l;
+		lowerLimitActive = la;
+		upperLimit = u;
+		upperLimitActive = ua;
 	}
 
 	void changeRange(long min, long max);
@@ -75,7 +81,10 @@ protected:
 private:
 	long minValue;
 	long maxValue;
-	long limit;
+	long lowerLimit;
+	bool lowerLimitActive;
+	long upperLimit;
+	bool upperLimitActive;
 	bool autoRange;
 	QArray<long> samples;
 	QStringList footers;

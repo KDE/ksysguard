@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -61,7 +61,7 @@ DancingBars::DancingBars(QWidget* parent, const char* name,
 	 * SensorDisplay::eventFilter. */
 	plotter->installEventFilter(this);
 
-	modified = FALSE;
+	modified = false;
 }
 
 DancingBars::~DancingBars()
@@ -71,27 +71,40 @@ DancingBars::~DancingBars()
 }
 
 void
-DancingBars::sensorError(bool err)
+DancingBars::sensorError(int sensorId, bool err)
 {
-	if (err == sensorOk)
+	if (sensorId >= (int) sensors.count() || sensorId < 0)
+		return;
+
+	if (err == sensors.at(sensorId)->ok)
 	{
 		// this happens only when the sensorOk status needs to be changed.
-		sensorOk = !err;
+		sensors.at(sensorId)->ok = !err;
 	}
-	plotter->setSensorOk(sensorOk);
+	bool ok = true;
+	for (uint i = 0; i < sensors.count(); ++i)
+		if (!sensors.at(i)->ok)
+		{
+			ok = false;
+			break;
+		}
+	plotter->setSensorOk(ok);
 }
 
 void
 DancingBars::settings()
 {
-	dbs = new DancingBarsSettings(this, "DancingBarsSettings", TRUE);
+	dbs = new DancingBarsSettings(this, "DancingBarsSettings", true);
 	CHECK_PTR(dbs);
 
 	dbs->title->setText(meterFrame->title());
 	dbs->maximumValue->setValue(plotter->getMax());
-	if (plotter->getLimit())
+	long l, u;
+	bool la, ua;
+	plotter->getLimits(l, la, u, ua);
+	if (ua)
 		dbs->enableAlarm->setChecked(true);
-	dbs->limit->setValue(plotter->getLimit());
+	dbs->limit->setValue(u);
 
 	connect(dbs->applyButton, SIGNAL(clicked()),
 			this, SLOT(applySettings()));
@@ -110,11 +123,11 @@ DancingBars::applySettings()
 	plotter->changeRange(plotter->getMin(),
 						 dbs->maximumValue->text().toLong());
 	if (dbs->enableAlarm->isChecked())
-		plotter->setLimit(dbs->limit->text().toLong());
+		plotter->setLimits(0, false, dbs->limit->text().toLong(), true);
 	else
-		plotter->setLimit(0);
+		plotter->setLimits(0, false, 0, false);
 
-	modified = TRUE;
+	modified = true;
 }
 
 bool
@@ -154,16 +167,16 @@ void
 DancingBars::answerReceived(int id, const QString& answer)
 {
 	/* We received something, so the sensor is probably ok. */
-	sensorError(false);
+	sensorError(id, false);
 
-	if (id < 5)
+	if (id <= 100)
 	{
 		sampleBuf[id] = answer.toLong();
 		if (flags & (1 << id))
 		{
 			kdDebug() << "ERROR: DancingBars lost sample (" << flags
 					  << ", " << bars << ")" << endl;
-			sensorError(true);
+			sensorError(id, true);
 		}
 		flags |= 1 << id;
 
@@ -193,7 +206,10 @@ DancingBars::load(QDomElement& domElem)
 
 	plotter->changeRange(domElem.attribute("min").toLong(),
 						 domElem.attribute("max").toLong());
-	plotter->setLimit(domElem.attribute("limit").toLong());
+	plotter->setLimits(domElem.attribute("lowlimit").toLong(),
+					   domElem.attribute("lowlimitactive").toInt(),
+					   domElem.attribute("uplimit").toLong(),
+					   domElem.attribute("uplimitactive").toInt());
 
 	QDomNodeList dnList = domElem.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)
@@ -203,7 +219,7 @@ DancingBars::load(QDomElement& domElem)
 				  el.attribute("sensorDescr"));
 	}
 
-	return (TRUE);
+	return (true);
 }
 
 bool
@@ -212,17 +228,23 @@ DancingBars::save(QDomDocument& doc, QDomElement& display)
 	display.setAttribute("title", meterFrame->title());
 	display.setAttribute("min", (int) plotter->getMin());
 	display.setAttribute("max", (int) plotter->getMax());
-	display.setAttribute("limit", (int) plotter->getLimit());
+	long l, u;
+	bool la, ua;
+	plotter->getLimits(l, la, u, ua);
+	display.setAttribute("lowlimit", (int) l);
+	display.setAttribute("lowlimitactive", la);
+	display.setAttribute("uplimit", (int) u);
+	display.setAttribute("uplimitactive", ua);
 
 	for (int i = 0; i < bars; ++i)
 	{
 		QDomElement beam = doc.createElement("beam");
 		display.appendChild(beam);
-		beam.setAttribute("hostName", *hostNames.at(i));
-		beam.setAttribute("sensorName", *sensorNames.at(i));
-		beam.setAttribute("sensorDescr", *sensorDescriptions.at(i));
+		beam.setAttribute("hostName", sensors.at(i)->hostName);
+		beam.setAttribute("sensorName", sensors.at(i)->name);
+		beam.setAttribute("sensorDescr", sensors.at(i)->description);
 	}
-	modified = FALSE;
+	modified = false;
 
-	return (TRUE);
+	return (true);
 }

@@ -28,6 +28,8 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qpopupmenu.h>
+#include <qwhatsthis.h>
+
 #include <kmessagebox.h>
 #include <klocale.h>
 #include <kdebug.h>
@@ -397,6 +399,11 @@ WorkSheet::insertDummyDisplay(int r, int c)
 	QGroupBox* dummy = new QGroupBox(this, "dummy frame");
 	dummy->setMinimumSize(40, 25);
 	dummy->setTitle(i18n("Drop sensor here"));
+	QWhatsThis::add(dummy, i18n(
+		"This is an empty space in a work sheet. Drag a sensor from "
+		"the Sensor Browser and drop it here. A sensor display will "
+		"appear that allows you to monitor the values of the sensor "
+		"over time."));
 	displays[r][c] = dummy;
 	lm->addWidget(dummy, r, c);
 	displays[r][c]->show();

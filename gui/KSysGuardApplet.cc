@@ -1,8 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999, 2000 Chris Schlaeger
-	                   cs@kde.org
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -24,8 +23,11 @@
 	$Id$
 */
 
+#include <qdragobject.h>
+
 #include <kglobal.h>
 #include <klocale.h>
+#include <kdebug.h>
 
 #include "SensorManager.h"
 #include "FancyPlotter.h"
@@ -37,7 +39,7 @@ extern "C"
 	{
 		KGlobal::locale()->insertCatalogue("ksysguardapplet");
 		return new KSysGuardApplet(configFile, KPanelApplet::Normal,
-								   0, parent,
+								   KPanelApplet::Preferences, parent,
 								   "ksysguardapplet");
     }
 }
@@ -47,12 +49,10 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 								 const char *name)
     : KPanelApplet(configFile, t, actions, parent, name)
 {
-	dockCnt = 0;
 	/* Workaround for a kicker race problem. If we do not show up fast
 	 * enough kicker will not embed the widget, but put it in a "Applet
 	 * proxy" window instead. */
 	show();
-
 	SensorMgr = new SensorManager();
 	CHECK_PTR(SensorMgr);
 	SensorMgr->engage("localhost", "", "ksysguardd");
@@ -71,6 +71,8 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 
 	for (uint i = 0; i < dockCnt; ++i)
 		docks[i]->show();
+	dockCnt = 0;
+	setAcceptDrops(TRUE);
 }
 
 KSysGuardApplet::~KSysGuardApplet()
@@ -97,6 +99,12 @@ KSysGuardApplet::resizeEvent(QResizeEvent*)
 }
 
 void
+KSysGuardApplet::preferences()
+{
+	kdDebug() << "Preferences" << endl;
+}
+
+void
 KSysGuardApplet::layout()
 {
 	int w = width();
@@ -108,4 +116,37 @@ KSysGuardApplet::layout()
 	else
 		for (uint i = 0; i < dockCnt; ++i)
 			docks[i]->setGeometry(0, i * w, w, w);
+}
+
+void
+KSysGuardApplet::dragEnterEvent(QDragEnterEvent* ev)
+{
+    ev->accept(QTextDrag::canDecode(ev));
+}
+
+void
+KSysGuardApplet::dropEvent(QDropEvent* ev)
+{
+	QString dObj;
+
+	if (QTextDrag::decode(ev, dObj))
+	{
+		// The host name, sensor name and type are seperated by a ' '.
+		QString hostName = dObj.left(dObj.find(' '));
+		dObj.remove(0, dObj.find(' ') + 1);
+		QString sensorName = dObj.left(dObj.find(' '));
+		dObj.remove(0, dObj.find(' ') + 1);
+		QString sensorType = dObj.left(dObj.find(' '));
+		dObj.remove(0, dObj.find(' ') + 1);
+		QString sensorDescr = dObj;
+
+		if (hostName.isEmpty() || sensorName.isEmpty() ||
+			sensorType.isEmpty())
+		{
+			return;
+		}
+
+		//addDisplay(hostName, sensorName, sensorType,
+		//					   sensorDescr, i, j);
+	}
 }

@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -64,7 +64,7 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 	 * SensorDisplay::eventFilter. */
 	plotter->installEventFilter(this);
 
-	modified = FALSE;
+	modified = false;
 }
 
 FancyPlotter::~FancyPlotter()
@@ -90,14 +90,25 @@ FancyPlotter::settings()
 }
 
 void
-FancyPlotter::sensorError(bool err)
+FancyPlotter::sensorError(int sensorId, bool err)
 {
-	if (err == sensorOk)
+	if (sensorId >= beams || sensorId < 0)
+		return;
+
+	if (err == sensors.at(sensorId)->ok)
 	{
 		// this happens only when the sensorOk status needs to be changed.
-		sensorOk = !err;
+		sensors.at(sensorId)->ok = !err;
+
+		bool ok = true;
+		for (int i = 0; i < beams; ++i)
+			if (!sensors.at(i)->ok)
+			{
+				ok = false;
+				break;
+			}
+		plotter->setSensorOk(ok);
 	}
-	plotter->setSensorOk(sensorOk);
 }
 
 void
@@ -107,7 +118,7 @@ FancyPlotter::applySettings()
 	plotter->changeRange(0, fps->minVal->text().toDouble(),
 						 fps->maxVal->text().toDouble());
 
-	modified = TRUE;
+	modified = true;
 }
 
 bool
@@ -118,13 +129,25 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 
 	if ((unsigned) beams >= (sizeof(cols) / sizeof(QColor)))
 		return (false);
-
+#if 0
+	if (beams > 0 && hostName != sensors.at(0)->hostName)
+	{
+		KMessageBox::sorry(this, QString(
+						   "All sensors of this display need\n"
+						   "to be from the host %1!")
+						   .arg(sensors.at(0)->hostName));
+		/* We have to enforce this since the answers to value requests
+		 * need to be received in order. */
+		return (false);
+	}
+#endif
 	if (!plotter->addBeam(cols[beams]))
 		return (false);
 
 	registerSensor(hostName, sensorName, title);
 	++beams;
 
+	updateWhatsThis();
 	/* To differentiate between answers from value requests and info
 	 * requests we add 100 to the beam index for info requests. */
 	sendRequest(hostName, sensorName + "?", beams + 100);
@@ -153,18 +176,19 @@ FancyPlotter::sizeHint(void)
 void
 FancyPlotter::answerReceived(int id, const QString& answer)
 {
-	/* We received something, so the sensor is probably ok. */
-	sensorError(false);
-
 	if (id < 5)
 	{
 		sampleBuf[id] = answer.toDouble();
 		if (flags & (1 << id))
 		{
-			qDebug("ERROR: FancyPlotter lost sample (%x, %d)", flags, beams);
-			sensorError(true);
+			for (int i = 0; i < beams; ++i)
+				if (!(flags & (1 << i)))
+					sensorError(i, true);
+			flags = (1 << beams) - 1;
 		}
 		flags |= 1 << id;
+		/* We received something, so the sensor is probably ok. */
+		sensorError(id, false);
 
 		if (flags == (uint) ((1 << beams) - 1))
 		{
@@ -179,6 +203,24 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 		plotter->changeRange(id - 100, info.getMin(), info.getMax());
 		timerOn();
 	}
+}
+
+QString
+FancyPlotter::additionalWhatsThis()
+{
+	QString text = i18n("<p>The following sensors are connected:</p>"
+						"<center><table><tr><th>Beam</th><th>Host</th>"
+		"<th>Sensor Code</th></tr>\n");
+	const char* colors[] = { "blue", "red", "yellow", "cyan", "magenta" };
+
+	for (int i = 0; i < beams; ++i)
+		text += QString("<tr><td bgcolor=") + colors[i]
+			+ "> </td><td>" + sensors.at(i)->hostName + "</td><td>"
+			+ sensors.at(i)->name + "</td><td>"
+			+ "</tr>\n";
+	text += "</table></center>";
+
+	return (text);
 }
 
 bool
@@ -200,7 +242,7 @@ FancyPlotter::load(QDomElement& domElem)
 		addSensor(el.attribute("hostName"), el.attribute("sensorName"), "");
 	}
 
-	return (TRUE);
+	return (true);
 }
 
 bool
@@ -214,10 +256,10 @@ FancyPlotter::save(QDomDocument& doc, QDomElement& display)
 	{
 		QDomElement beam = doc.createElement("beam");
 		display.appendChild(beam);
-		beam.setAttribute("hostName", *hostNames.at(i));
-		beam.setAttribute("sensorName", *sensorNames.at(i));
+		beam.setAttribute("hostName", sensors.at(i)->hostName);
+		beam.setAttribute("sensorName", sensors.at(i)->name);
 	}
-	modified = FALSE;
+	modified = false;
 
-	return (TRUE);
+	return (true);
 }

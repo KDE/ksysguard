@@ -44,7 +44,7 @@ Workspace::Workspace(QWidget* parent, const char* name)
 	autoSave = TRUE;
 
 	QWhatsThis::add(this, i18n(
-		"This is you work space. It holds your work sheets. You need "
+		"This is your work space. It holds your work sheets. You need "
 		"to create a new work sheet (Menu File->New) before "
 		"you can drag sensors here."));
 }

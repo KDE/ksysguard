@@ -40,6 +40,7 @@ BarGraph::BarGraph(QWidget* parent, const char* name, int min, int max)
 	setBackgroundMode(NoBackground);
 
 	bars = 0;
+	lowerLimitActive = upperLimitActive = false;
 	autoRange = (min == max);
 
 	// Anything smaller than this does not make sense.
@@ -110,16 +111,27 @@ BarGraph::paintEvent(QPaintEvent*)
 	p.setClipRect(1, 1, w - 2, h - 2);
 
 	int barWidth = (w - 2) / bars;
+	int b;
+	/* Labels are only printed underneath the bars if the labels for all
+	 * bars are smaller than the bar width. If a single label does not fit
+	 * no label is shown. */
+	bool showLabels = true;
+	for (b = 0; b < bars; b++)
+		if (fm.width(footers[b]) > barWidth)
+			showLabels = false;
+
 	int barHeight;
-	barHeight = h - 2 - fm.lineSpacing() - 2;
+	if (showLabels)
+		barHeight = h - 2 - fm.lineSpacing() - 2;
+	else
+		barHeight = h - 2;
 	for (int b = 0; b < bars; b++)
 	{
 		int topVal = (int) ((float) barHeight / maxValue * samples[b]);
-		int limitVal = (int) ((float) barHeight / maxValue * limit);
 
 		for (int i = 0; i < barHeight && i < topVal; i += 2)
 		{
-			if (limit && i > limitVal && samples[b] > limit)
+			if (upperLimitActive && samples[b] > upperLimit)
 				p.setPen(QColor(128 + (int) ((float) 128 / barHeight * i), 0,
 								0));
 			else
@@ -128,13 +140,14 @@ BarGraph::paintEvent(QPaintEvent*)
 			p.drawLine(b * barWidth + 3, barHeight - i, (b + 1) * barWidth - 3,
 					   barHeight - i);
 		}
-		if (limit && samples[b] > limit)
+		if (upperLimitActive && samples[b] > upperLimit)
 			p.setPen(QColor("red"));
 		else
 			p.setPen(QColor("green"));
-		p.drawText(b * barWidth + 3, h - fm.lineSpacing() - 2,
-				   barWidth - 2 * 3, fm.lineSpacing(), Qt::AlignCenter,
-				   footers[b]);
+		if (showLabels)
+			p.drawText(b * barWidth + 3, h - fm.lineSpacing() - 2,
+					   barWidth - 2 * 3, fm.lineSpacing(), Qt::AlignCenter,
+					   footers[b]);
 	}
 	
 	if (!sensorOk)

@@ -70,6 +70,14 @@ public:
 			return (u);
 	}
 
+	const QString& trSensorPath(const QString& u)
+	{
+		if (!u.isEmpty() && dict[u])
+			return (*dict[u]);
+		else
+			return (u);
+	}
+
 public slots:
 	void reconfigure(const SensorAgent* sensor);
 
@@ -87,6 +95,8 @@ private:
 	 */
 	QDict<QString> descriptions;
 	QDict<QString> units;
+	QDict<QString> dict;
+
 	QWidget* broadcaster;
 } ;
 

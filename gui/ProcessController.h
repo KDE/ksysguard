@@ -85,7 +85,7 @@ public:
 
 	virtual void answerReceived(int id, const QString& answer);
 
-	virtual void sensorError(bool err);
+	virtual void sensorError(int, bool err);
 
 public slots:
 	void filterModeChanged(int filter)

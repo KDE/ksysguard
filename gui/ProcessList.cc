@@ -121,11 +121,17 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	: QListView(parent, name)
 {
 	columnDict.setAutoDelete(true);
-	columnDict.insert("idle", new QString(i18n("process status", "idle")));
-	columnDict.insert("run", new QString(i18n("process status", "run")));
-	columnDict.insert("sleep", new QString(i18n("process status", "sleep")));
-	columnDict.insert("stop", new QString(i18n("process status", "stop")));
+	columnDict.insert("running",
+					  new QString(i18n("process status", "running")));
+	columnDict.insert("sleeping",
+					  new QString(i18n("process status", "sleeping")));
+	columnDict.insert("disk sleep",
+					  new QString(i18n("process status", "disk sleep")));
 	columnDict.insert("zombie", new QString(i18n("process status", "zombie")));
+	columnDict.insert("stopped",
+					  new QString(i18n("process status", "stopped")));
+	columnDict.insert("paging", new QString(i18n("process status", "paging")));
+	columnDict.insert("idle", new QString(i18n("process status", "idle")));
 
 	/* The filter mode is controlled by a combo box of the parent. If
 	 * the mode is changed we get a signal. */

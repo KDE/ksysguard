@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -57,7 +57,7 @@ public:
 
 	void setSensorOk(bool ok)
 	{
-		if (ok != sensorOk)
+//		if (ok != sensorOk)
 		{
 			sensorOk = ok;
 			update();

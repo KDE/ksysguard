@@ -58,7 +58,7 @@ public:
 
 	void settings();
 
-	virtual void sensorError(bool err);
+	virtual void sensorError(int, bool err);
 
 public slots:
 	void applySettings();

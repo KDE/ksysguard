@@ -36,18 +36,17 @@
 SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 	QWidget(parent, name)
 {
+	sensors.setAutoDelete(true);
+
 	// default interval is 2 seconds.
 	timerInterval = 2000;
 	timerId = NONE;
 	timerOn();
-	sensorOk = TRUE;
+	QWhatsThis::add(this, "dummy");
 
-	QWhatsThis::add(this, i18n(
-		"This is a sensor display. To customize a sensor display click "
-		"and hold the right mouse button on either the frame or the "
-		"display box and select the 'Properties' entry from the popup "
-		"menu. Select 'Remove' to delete the display from the work "
-		"sheet."));
+	/* Let's call updateWhatsThis() in case the derived class does not do
+	 * this. */
+	updateWhatsThis();
 }
 
 SensorDisplay::~SensorDisplay()
@@ -60,23 +59,21 @@ SensorDisplay::registerSensor(const QString& hostName,
 							  const QString& sensorName,
 							  const QString& sensorDescription)
 {
-	hostNames.append(hostName);
-	sensorNames.append(sensorName);
-	sensorDescriptions.append(sensorDescription);
+	SensorProperties* s = new SensorProperties;
+	s->hostName = hostName;
+	s->name = sensorName;
+	s->description = sensorDescription;
+	s->ok = false;
+
+	sensors.append(s);
 }
 
 void
 SensorDisplay::timerEvent(QTimerEvent*)
 {
-	QStringList::Iterator hnIt;
-	QStringList::Iterator snIt;
-
-	hnIt = hostNames.begin();
-	snIt = sensorNames.begin();
-	for (int i = 0; hnIt != hostNames.end(); ++hnIt, ++snIt, ++i)
-	{
-		sendRequest(*hnIt, *snIt, i);
-	}
+	int i = 0;
+	for (SensorProperties* s = sensors.first(); s; s = sensors.next(), ++i)
+		sendRequest(s->hostName, s->name, i);
 }
 
 bool
@@ -111,13 +108,16 @@ SensorDisplay::sendRequest(const QString& hostName, const QString& cmd,
 {
 	if (!SensorMgr->sendRequest(hostName, cmd,
 								(SensorClient*) this, id))
-		sensorError(true);
+		sensorError(id, true);
 }
 
 void
-SensorDisplay::sensorError(bool err)
+SensorDisplay::sensorError(int sensorId, bool err)
 {
-	if (err == sensorOk)
+	if (sensorId >= (int) sensors.count() || sensorId < 0)
+		return;
+
+	if (err == sensors.at(sensorId)->ok)
 	{
 		if (err)
 		{
@@ -130,8 +130,19 @@ SensorDisplay::sensorError(bool err)
 			ev->setData(this);
 			kapp->postEvent(parent(), ev);
 		}
-		sensorOk = !err;
+		sensors.at(sensorId)->ok = !err;
 	}
+}
+
+void
+SensorDisplay::updateWhatsThis()
+{
+	QWhatsThis::add(this, QString(i18n(
+		"<qt><p>This is a sensor display. To customize a sensor display click "
+		"and hold the right mouse button on either the frame or the "
+		"display box and select the <i>Properties</i> entry from the popup "
+		"menu. Select <i>Remove</i> to delete the display from the work "
+		"sheet.</p>%1</qt>")).arg(additionalWhatsThis()));
 }
 
 bool
@@ -151,9 +162,7 @@ SensorDisplay::saveSensor(QDomDocument& /*doc*/, QDomElement& /*sensor*/)
 void
 SensorDisplay::collectHosts(QValueList<QString>& list)
 {
-	QStringList::Iterator hnIt;
-
-	for (hnIt = hostNames.begin(); hnIt != hostNames.end(); ++hnIt)
-		if (!list.contains(*hnIt))
-			list.append(*hnIt);
+	for (SensorProperties* s = sensors.first(); s; s = sensors.next())
+		if (!list.contains(s->hostName))
+			list.append(s->hostName);
 }

@@ -220,12 +220,6 @@ private:
 
 	QList<HostInfo> hostInfos;
 
-	/**
-	 * This dictionary stores the description (localized versions) of
-	 * the sensor names.
-	 */
-	QDict<QString> dict;
-
 	// This string stores the drag object.
 	QString dragText;
 

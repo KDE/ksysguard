@@ -51,7 +51,7 @@ public:
 	 * In case of an unexpected fatal problem with the sensor the sensor
 	 * agent will call this function to notify the client about it.
 	 */
-	virtual void sensorLost() { }
+	virtual void sensorLost(int) { }
 } ;
 
 /**

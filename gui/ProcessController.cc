@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms version 2 of of the GNU General Public
@@ -170,13 +170,14 @@ ProcessController::addSensor(const QString& hostName,
 void
 ProcessController::updateList()
 {
-	sendRequest(*hostNames.at(0), "ps", 2);
+	sendRequest(sensors.at(0)->hostName, "ps", 2);
 }
 
 void
 ProcessController::killProcess(int pid, int sig)
 {
-	sendRequest(*hostNames.at(0), QString("kill %1 %2" ).arg(pid).arg(sig), 3);
+	sendRequest(sensors.at(0)->hostName,
+				QString("kill %1 %2" ).arg(pid).arg(sig), 3);
 	updateList();
 }
 
@@ -205,7 +206,7 @@ ProcessController::killProcess()
 	// send kill signal to all seleted processes
 	QValueListConstIterator<int> it;
 	for (it = selectedPIds.begin(); it != selectedPIds.end(); ++it)
-		sendRequest(*hostNames.at(0), QString("kill %1 %2" ).arg(*it)
+		sendRequest(sensors.at(0)->hostName, QString("kill %1 %2" ).arg(*it)
 					.arg(MENU_ID_SIGKILL), 3);
 	updateList();
 }
@@ -214,7 +215,7 @@ void
 ProcessController::answerReceived(int id, const QString& answer)
 {
 	/* We received something, so the sensor is probably ok. */
-	sensorError(false);
+	sensorError(id, false);
 
 	switch (id)
 	{
@@ -227,7 +228,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 		{
 			kdDebug () << "ProcessController::answerReceived(1)"
 				  "wrong number of lines [" <<  answer << "]" << endl;
-			sensorError(true);
+			sensorError(id, true);
 			return;
 		}
 		SensorTokenizer headers(lines[0], '\t');
@@ -256,8 +257,8 @@ ProcessController::answerReceived(int id, const QString& answer)
 		 * connection. The corruption seems to affect only the ps output. */
 		if (!pList->update(answer))
 		{
-			sensorError(true);
-			SensorMgr->resynchronize(*hostNames.at(0));
+			sensorError(id, true);
+			SensorMgr->resynchronize(sensors.at(0)->hostName);
 		}
 		break;
 	case 3:
@@ -267,14 +268,14 @@ ProcessController::answerReceived(int id, const QString& answer)
 }
 
 void
-ProcessController::sensorError(bool err)
+ProcessController::sensorError(int, bool err)
 {
-	if (err == sensorOk)
+	if (err == sensors.at(0)->ok)
 	{
 		/* This happens only when the sensorOk status needs to be changed. */
-		sensorOk = !err;
+		sensors.at(0)->ok = !err;
 	}
-	pList->setSensorOk(sensorOk);
+	pList->setSensorOk(sensors.at(0)->ok);
 }
 
 bool
@@ -309,8 +310,8 @@ ProcessController::load(QDomElement& el)
 bool
 ProcessController::save(QDomDocument& doc, QDomElement& display)
 {
-	display.setAttribute("hostName", *hostNames.at(0));
-	display.setAttribute("sensorName", *sensorNames.at(0));
+	display.setAttribute("hostName", sensors.at(0)->hostName);
+	display.setAttribute("sensorName", sensors.at(0)->name);
 	display.setAttribute("tree", (uint) xbTreeView->isChecked());
 	display.setAttribute("pause", (uint) xbPause->isChecked());
 	display.setAttribute("filter", cbFilter->currentItem());

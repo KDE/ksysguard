@@ -30,6 +30,8 @@
 #include <kpanelapplet.h>
 
 class SensorDisplay;
+class QDragEnterEvent;
+class QDropEvent;
 
 class KSysGuardApplet : public KPanelApplet
 {
@@ -43,9 +45,12 @@ public:
 
 	virtual int heightForWidth(int w) const;
 	virtual int widthForHeight(int h) const;
+	virtual void preferences();
 
 protected:
     void resizeEvent(QResizeEvent*);
+	void dragEnterEvent(QDragEnterEvent* ev);
+	void dropEvent(QDropEvent* ev);
 
 private:
 	void layout();

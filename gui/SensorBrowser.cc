@@ -43,7 +43,6 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	QListView(parent, name), sensorManager(sm)
 {
 	hostInfos.setAutoDelete(TRUE);
-	dict.setAutoDelete(TRUE);
 
 	connect(sm, SIGNAL(update(void)), this, SLOT(update(void)));
 	connect(this, SIGNAL(selectionChanged(QListViewItem*)),
@@ -52,62 +51,6 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	addColumn(i18n("Sensor Browser"));
 	QToolTip::add(this, i18n("Drag sensors to empty fields in a work sheet"));
 	setRootIsDecorated(TRUE);
-
-	// Fill the sensor description dictionary.
-	dict.insert("cpu", new QString(i18n("CPU Load", "Load")));
-	dict.insert("idle", new QString(i18n("Idle Load")));
-	dict.insert("sys", new QString(i18n("System Load")));
-	dict.insert("nice", new QString(i18n("Nice Load")));
-	dict.insert("user", new QString(i18n("User Load")));
-	dict.insert("mem", new QString(i18n("Memory")));
-	dict.insert("physical", new QString(i18n("Physical Memory")));
-	dict.insert("swap", new QString(i18n("Swap Memory")));
-	dict.insert("cached", new QString(i18n("Cached Memory")));
-	dict.insert("buf", new QString(i18n("Buffered Memory")));
-	dict.insert("used", new QString(i18n("Used Memory")));
-	dict.insert("application", new QString(i18n("Application Memory")));
-	dict.insert("free", new QString(i18n("Free Memory")));
-	dict.insert("pscount", new QString(i18n("Process Count")));
-	dict.insert("ps", new QString(i18n("Process Controller")));
-	dict.insert("disk", new QString(i18n("Disk Throughput")));
-	dict.insert("load", new QString(i18n("CPU Load", "Load")));
-	dict.insert("total", new QString(i18n("Total Accesses")));
-	dict.insert("rio", new QString(i18n("Read Accesses")));
-	dict.insert("wio", new QString(i18n("Write Accesses")));
-	dict.insert("rblk", new QString(i18n("Read Data")));
-	dict.insert("wblk", new QString(i18n("Write Data")));
-	dict.insert("pageIn", new QString(i18n("Pages In")));
-	dict.insert("pageOut", new QString(i18n("Pages Out")));
-	dict.insert("context", new QString(i18n("Context Switches")));
-	dict.insert("network", new QString(i18n("Network")));
-	dict.insert("recBytes", new QString(i18n("Received Bytes")));
-	dict.insert("sentBytes", new QString(i18n("Sent Bytes")));
-	dict.insert("apm", new QString(i18n("Advanced Power Management")));
-	dict.insert("batterycharge", new QString(i18n("Battery Charge")));
-	dict.insert("remainingtime", new QString(i18n("Remaining Time")));
-	dict.insert("interrupts", new QString(i18n("Interrupts")));
-	dict.insert("loadavg1", new QString(i18n("Load Average (1 min)")));
-	dict.insert("loadavg5", new QString(i18n("Load Average (5 min)")));
-	dict.insert("loadavg15", new QString(i18n("Load Average (15 min)")));
-	dict.insert("clock", new QString(i18n("Clock Frequency")));
-
-	for (int i = 0; i < 32; i++)
-	{
-		dict.insert("cpu" + QString::number(i),
-					new QString(QString(i18n("CPU%1")).arg(i)));
-		dict.insert("disk" + QString::number(i),
-					new QString(QString(i18n("Disk%1")).arg(i)));
-	}
-
-	dict.insert("int00", new QString(i18n("Total")));
-	for (int i = 1; i < 25; i++)
-	{
-		QString num = QString::number(i);
-		if (i < 10)
-			num = "0" + num;
-		dict.insert("int" + num,
-					new QString(QString(i18n("Int%1")).arg(i - 1, 3)));
-	}
 
 	icons = new KIconLoader();
 	CHECK_PTR(icons);
@@ -243,10 +186,7 @@ SensorBrowser::answerReceived(int id, const QString& s)
 		{
 			// Localize the sensor name part by part.
 			QString name;
-			if (!dict[absolutePath[j]])
-				name = absolutePath[j];
-			else
-				name = *(dict[absolutePath[j]]);
+			name = SensorMgr->trSensorPath(absolutePath[j]);
 
 			bool found = FALSE;
 			QListViewItem* sibling = parent->firstChild();

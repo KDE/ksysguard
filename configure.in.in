@@ -8,3 +8,7 @@ case "$host" in
 esac
 AC_MSG_RESULT($ksysguardd_compile)
 AC_SUBST(UNAME)
+
+AC_CHECK_LIB(sensors, sensors_init, [LIBSENSORS="-lsensors"])
+AC_SUBST(LIBSENSORS)
+AC_CHECK_HEADERS(sensors/sensors.h)

@@ -180,7 +180,7 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 			if (answerBuffer.left(end) == "UNKNOWN COMMAND")
 			{
 				// Notify client of newly arrived answer.
-				req->client->sensorLost();
+				req->client->sensorLost(req->id);
 			}
 			else
 			{
