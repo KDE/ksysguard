@@ -28,6 +28,7 @@
 
 #include "Command.h"
 #include "Memory.h"
+#include "ksysguardd.h"
 
 #define MEMINFOBUFSIZE 1024
 static char MemInfoBuf[MEMINFOBUFSIZE];
@@ -151,7 +152,7 @@ printMFree(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	fprintf(currentClient, "%ld\n", MFree);
+	fprintf(CurrentClient, "%ld\n", MFree);
 }
 
 void
@@ -159,7 +160,7 @@ printMFreeInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	fprintf(currentClient, "Free Memory\t0\t%ld\tKB\n", Total);
+	fprintf(CurrentClient, "Free Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -167,7 +168,7 @@ printUsed(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	fprintf(currentClient, "%ld\n", Used);
+	fprintf(CurrentClient, "%ld\n", Used);
 }
 
 void
@@ -175,7 +176,7 @@ printUsedInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	fprintf(currentClient, "Used Memory\t0\t%ld\tKB\n", Total);
+	fprintf(CurrentClient, "Used Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -183,7 +184,7 @@ printAppl(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	fprintf(currentClient, "%ld\n", Appl);
+	fprintf(CurrentClient, "%ld\n", Appl);
 }
 
 void
@@ -191,7 +192,7 @@ printApplInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	fprintf(currentClient, "Application Memory\t0\t%ld\tKB\n", Total);
+	fprintf(CurrentClient, "Application Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -199,7 +200,7 @@ printBuffers(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	fprintf(currentClient, "%ld\n", Buffers);
+	fprintf(CurrentClient, "%ld\n", Buffers);
 }
 
 void
@@ -207,7 +208,7 @@ printBuffersInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	fprintf(currentClient, "Buffer Memory\t0\t%ld\tKB\n", Total);
+	fprintf(CurrentClient, "Buffer Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -215,7 +216,7 @@ printCached(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	fprintf(currentClient, "%ld\n", Cached);
+	fprintf(CurrentClient, "%ld\n", Cached);
 }
 
 void
@@ -223,7 +224,7 @@ printCachedInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	fprintf(currentClient, "Cached Memory\t0\t%ld\tKB\n", Total);
+	fprintf(CurrentClient, "Cached Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -231,7 +232,7 @@ printSwapUsed(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	fprintf(currentClient, "%ld\n", SUsed);
+	fprintf(CurrentClient, "%ld\n", SUsed);
 }
 
 void
@@ -239,7 +240,7 @@ printSwapUsedInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	fprintf(currentClient, "Used Swap Memory\t0\t%ld\tKB\n", STotal);
+	fprintf(CurrentClient, "Used Swap Memory\t0\t%ld\tKB\n", STotal);
 }
 
 void
@@ -247,7 +248,7 @@ printSwapFree(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	fprintf(currentClient, "%ld\n", SFree);
+	fprintf(CurrentClient, "%ld\n", SFree);
 }
 
 void
@@ -255,5 +256,5 @@ printSwapFreeInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	fprintf(currentClient, "Free Swap Memory\t0\t%ld\tKB\n", STotal);
+	fprintf(CurrentClient, "Free Swap Memory\t0\t%ld\tKB\n", STotal);
 }

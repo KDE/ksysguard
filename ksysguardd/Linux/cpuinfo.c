@@ -29,6 +29,7 @@
 #include <ctype.h>
 #include <time.h>
 
+#include "ksysguardd.h"
 #include "Command.h"
 #include "cpuinfo.h"
 
@@ -176,7 +177,7 @@ printCPUxClock(const char* cmd)
 		processCpuInfo();
 
 	sscanf(cmd + 3, "%d", &id);
-	fprintf(currentClient, "%f\n", Clocks[id]);
+	fprintf(CurrentClient, "%f\n", Clocks[id]);
 }
 
 void
@@ -185,5 +186,5 @@ printCPUxClockInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 3, "%d", &id);
-	fprintf(currentClient, "CPU%d Clock Frequency\t0\t0\tMHz\n", id);
+	fprintf(CurrentClient, "CPU%d Clock Frequency\t0\t0\tMHz\n", id);
 }

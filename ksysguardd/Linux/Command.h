@@ -23,7 +23,6 @@
 #ifndef _Command_h_
 #define _Command_h_
 
-FILE *currentClient;
 void print_error(const char *, ...);
 void log_error(const char *, ...);
 

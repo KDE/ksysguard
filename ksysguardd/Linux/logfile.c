@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "ksysguardd.h"
 #include "Command.h"
 #include "ccont.h"
 #include "logfile.h"
@@ -67,16 +68,16 @@ void printLogFile(const char* cmd)
 
 		if (!strcmp(entry->name, filename) && (entry->id == id)) {
 			while (fgets(line, 1024, entry->fh) != NULL) {
-				fprintf(currentClient, "%s", line);
+				fprintf(CurrentClient, "%s", line);
 			}
 		}
 	}
-	fprintf(currentClient, "\n");
+	fprintf(CurrentClient, "\n");
 }
 
 void printLogFileInfo(const char* cmd)
 {
-	fprintf(currentClient, "LogFile\n");
+	fprintf(CurrentClient, "LogFile\n");
 }
 
 void registerLogFile(const char* cmd)
@@ -84,7 +85,6 @@ void registerLogFile(const char* cmd)
 	char filename[256];
 	FILE* file;
 	LogFileEntry *entry;
-	int i;
 
 	memset(filename, 0, 256);
 	sscanf(cmd, "%*s %256s", filename);
@@ -107,7 +107,7 @@ void registerLogFile(const char* cmd)
 
 	push_ctnr(LogFiles, entry);	
 
-	fprintf(currentClient, "%lu\n", counter);
+	fprintf(CurrentClient, "%lu\n", counter);
 
 	counter++;
 }
@@ -127,10 +127,10 @@ void unregisterLogFile(const char* cmd)
 		if (!strcmp(entry->name, filename) && (entry->id == id)) {
 			fclose(entry->fh);
 			free(remove_ctnr(LogFiles, i));
-			fprintf(currentClient, "\n");
+			fprintf(CurrentClient, "\n");
 			return;
 		}
 	}
 
-	fprintf(currentClient, "\n");
+	fprintf(CurrentClient, "\n");
 }

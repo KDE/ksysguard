@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
+#include "ksysguardd.h"
 #include "Command.h"
 #include "loadavg.h"
 
@@ -108,13 +109,13 @@ printLoadAvg1(const char* c)
 	if (Dirty)
 		processLoadAvg();
 
-	fprintf(currentClient, "%f\n", LoadAvg1);
+	fprintf(CurrentClient, "%f\n", LoadAvg1);
 }
 
 void
 printLoadAvg1Info(const char* c)
 {
-	fprintf(currentClient, "Load average 1 min\t0\t0\t\n");
+	fprintf(CurrentClient, "Load average 1 min\t0\t0\t\n");
 }
 
 void
@@ -123,13 +124,13 @@ printLoadAvg5(const char* c)
 	if (Dirty)
 		processLoadAvg();
 
-	fprintf(currentClient, "%f\n", LoadAvg5);
+	fprintf(CurrentClient, "%f\n", LoadAvg5);
 }
 
 void
 printLoadAvg5Info(const char* c)
 {
-	fprintf(currentClient, "Load average 5 min\t0\t0\t\n");
+	fprintf(CurrentClient, "Load average 5 min\t0\t0\t\n");
 }
 
 void
@@ -138,11 +139,11 @@ printLoadAvg15(const char* c)
 	if (Dirty)
 		processLoadAvg();
 
-	fprintf(currentClient, "%f\n", LoadAvg15);
+	fprintf(CurrentClient, "%f\n", LoadAvg15);
 }
 
 void
 printLoadAvg15Info(const char* c)
 {
-	fprintf(currentClient, "Load average 15 min\t0\t0\t\n");
+	fprintf(CurrentClient, "Load average 15 min\t0\t0\t\n");
 }

@@ -71,7 +71,7 @@ print_error(const char *fmt, ...)
 	vsnprintf(errmsg, 1024, fmt, az);
 	va_end(az);
 
-	fprintf(currentClient, "\033%s\033", errmsg);
+	fprintf(CurrentClient, "\033%s\033", errmsg);
 }
 
 void
@@ -212,13 +212,13 @@ executeCommand(const char* command)
 				print_error("RECONFIGURE\n");
 			}
 
-			fflush(currentClient);
+			fflush(CurrentClient);
 			return;
 		}
 	}
 
-	fprintf(currentClient, "UNKNOWN COMMAND\n");
-	fflush(currentClient);
+	fprintf(CurrentClient, "UNKNOWN COMMAND\n");
+	fflush(CurrentClient);
 }
 
 void
@@ -231,9 +231,9 @@ printMonitors(const char* c)
 		Command* cmd = (Command*) get_ctnr(CommandList, i);
 
 		if (cmd->isMonitor)
-			fprintf(currentClient, "%s\t%s\n", cmd->command, cmd->type);
+			fprintf(CurrentClient, "%s\t%s\n", cmd->command, cmd->type);
 	}
-	fflush(currentClient);
+	fflush(CurrentClient);
 }
 
 void
@@ -247,13 +247,13 @@ printTest(const char* c)
 
 		if (strcmp(cmd->command, c + strlen("test ")) == 0)
 		{
-			fprintf(currentClient, "1\n");
-			fflush(currentClient);
+			fprintf(CurrentClient, "1\n");
+			fflush(CurrentClient);
 			return;
 		}
 	}
-	fprintf(currentClient, "0\n");
-	fflush(currentClient);
+	fprintf(CurrentClient, "0\n");
+	fflush(CurrentClient);
 }
 
 void

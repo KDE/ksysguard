@@ -25,6 +25,7 @@
 #include <string.h>
 #include <time.h>
 
+#include "ksysguardd.h"
 #include "Command.h"
 #include "ccont.h"
 #include "diskstat.h"
@@ -159,7 +160,7 @@ void printDiskStat(const char* cmd)
 
 	for (i = 0; i < level_ctnr(DiskStatList); i++) {
 		DiskInfo* disk_info = get_ctnr(DiskStatList, i);
-		fprintf(currentClient, "%s\t%ld\t%ld\t%ld\t%d\t%s\n",
+		fprintf(CurrentClient, "%s\t%ld\t%ld\t%ld\t%d\t%s\n",
 			disk_info->device,
 			disk_info->blocks,
 			disk_info->bused,
@@ -171,7 +172,7 @@ void printDiskStat(const char* cmd)
 
 void printDiskStatInfo(const char* cmd)
 {
-	fprintf(currentClient, "Device\tBlocks\tUsed\tAvailable\tUsed %%\tMountPoint\n");
+	fprintf(CurrentClient, "Device\tBlocks\tUsed\tAvailable\tUsed %%\tMountPoint\n");
 }
 
 void printDiskStatUsed(const char* cmd)
@@ -185,14 +186,14 @@ void printDiskStatUsed(const char* cmd)
 	for (i = 0; i < level_ctnr(DiskStatList); i++) {
 		DiskInfo* disk_info = get_ctnr(DiskStatList, i);
 		if (!strcmp(mntpnt, disk_info->mntpnt)) {
-			fprintf(currentClient, "%ld\n", disk_info->bused);
+			fprintf(CurrentClient, "%ld\n", disk_info->bused);
 		}
 	}
 }
 
 void printDiskStatUsedInfo(const char* cmd)
 {
-	fprintf(currentClient, "Used Blocks\t0\t-\tBlocks\n");
+	fprintf(CurrentClient, "Used Blocks\t0\t-\tBlocks\n");
 }
 
 void printDiskStatFree(const char* cmd)
@@ -206,14 +207,14 @@ void printDiskStatFree(const char* cmd)
 	for (i = 0; i < level_ctnr(DiskStatList); i++) {
 		DiskInfo* disk_info = get_ctnr(DiskStatList, i);
 		if (!strcmp(mntpnt, disk_info->mntpnt)) {
-			fprintf(currentClient, "%ld\n", disk_info->bfree);
+			fprintf(CurrentClient, "%ld\n", disk_info->bfree);
 		}
 	}
 }
 
 void printDiskStatFreeInfo(const char* cmd)
 {
-	fprintf(currentClient, "Free Blocks\t0\t-\tBlocks\n");
+	fprintf(CurrentClient, "Free Blocks\t0\t-\tBlocks\n");
 }
 
 void printDiskStatPercent(const char* cmd)
@@ -227,12 +228,12 @@ void printDiskStatPercent(const char* cmd)
 	for (i = 0; i < level_ctnr(DiskStatList); i++) {
 		DiskInfo* disk_info = get_ctnr(DiskStatList, i);
 		if (!strcmp(mntpnt, disk_info->mntpnt)) {
-			fprintf(currentClient, "%d\n", disk_info->bused_percent);
+			fprintf(CurrentClient, "%d\n", disk_info->bused_percent);
 		}
 	}
 }
 
 void printDiskStatPercentInfo(const char* cmd)
 {
-	fprintf(currentClient, "Used Blocks\t0\t100\t%%\n");
+	fprintf(CurrentClient, "Used Blocks\t0\t100\t%%\n");
 }

@@ -22,7 +22,10 @@
 #ifndef _ksysguardd_h_
 #define _ksysguardd_h_
 
+#include <stdio.h>
+
 extern int QuitApp;
 extern int RunAsDaemon;
+extern FILE* CurrentClient;
 
 #endif

@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
+#include "ksysguardd.h"
 #include "Command.h"
 #include "apm.h"
 
@@ -107,13 +108,13 @@ printApmBatFill(const char* c)
 	if (Dirty)
 		processApm();
 
-	fprintf(currentClient, "%d\n", BatFill);
+	fprintf(CurrentClient, "%d\n", BatFill);
 }
 
 void
 printApmBatFillInfo(const char* c)
 {
-	fprintf(currentClient, "Battery charge\t0\t100\t%%\n");
+	fprintf(CurrentClient, "Battery charge\t0\t100\t%%\n");
 }
 
 void
@@ -122,11 +123,11 @@ printApmBatTime(const char* c)
 	if (Dirty)
 		processApm();
 
-	fprintf(currentClient, "%d\n", BatTime);
+	fprintf(CurrentClient, "%d\n", BatTime);
 }
 
 void
 printApmBatTimeInfo(const char* c)
 {
-	fprintf(currentClient, "Remaining battery time\t0\t0\tmin\n");
+	fprintf(CurrentClient, "Remaining battery time\t0\t0\tmin\n");
 }

@@ -433,9 +433,9 @@ exitProcessList(void)
 void
 printProcessListInfo(const char* cmd)
 {
-	fprintf(currentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize"
+	fprintf(CurrentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize"
 		   "\tVmRss\tLogin\tCommand\n");
-	fprintf(currentClient, "s\td\td\td\td\tS\tf\tf\td\td\td\ts\ts\n");
+	fprintf(CurrentClient, "s\td\td\td\td\tS\tf\tf\td\td\td\ts\ts\n");
 }
 
 void
@@ -450,7 +450,7 @@ printProcessList(const char* cmd)
 	{
 		ProcessInfo* ps = get_ctnr(ProcessList, i);
 
-		fprintf(currentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d"
+		fprintf(CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d"
 			   "\t%s\t%s\n",
 			   ps->name, (long) ps->pid, (long) ps->ppid,
 			   (long) ps->uid, (long) ps->gid, ps->status,
@@ -466,13 +466,13 @@ printProcessCount(const char* cmd)
 	if ((time(0) - timeStamp) > 2)
 		updateProcessList();
 
-	fprintf(currentClient, "%d\n", ProcessCount);
+	fprintf(CurrentClient, "%d\n", ProcessCount);
 }
 
 void
 printProcessCountInfo(const char* cmd)
 {
-	fprintf(currentClient, "Number of Processes\t0\t0\t\n");
+	fprintf(CurrentClient, "Number of Processes\t0\t0\t\n");
 }
 
 void
@@ -546,22 +546,22 @@ killProcess(const char* cmd)
 		switch(errno)
 		{
 		case EINVAL:
-			fprintf(currentClient, "4\t%d\n", pid);
+			fprintf(CurrentClient, "4\t%d\n", pid);
 			break;
 		case ESRCH:
-			fprintf(currentClient, "3\t%d\n", pid);
+			fprintf(CurrentClient, "3\t%d\n", pid);
 			break;
 		case EPERM:
-			fprintf(currentClient, "2\t%d\n", pid);
+			fprintf(CurrentClient, "2\t%d\n", pid);
 			break;
 		default:
-			fprintf(currentClient, "1\t%d\n", pid);	/* unkown error */
+			fprintf(CurrentClient, "1\t%d\n", pid);	/* unkown error */
 			break;
 		}
 
 	}
 	else
-		fprintf(currentClient, "0\t%d\n", pid);
+		fprintf(CurrentClient, "0\t%d\n", pid);
 }
 
 void
@@ -575,20 +575,20 @@ setPriority(const char* cmd)
 		switch(errno)
 		{
 		case EINVAL:
-			fprintf(currentClient, "4\n");
+			fprintf(CurrentClient, "4\n");
 			break;
 		case ESRCH:
-			fprintf(currentClient, "3\n");
+			fprintf(CurrentClient, "3\n");
 			break;
 		case EPERM:
 		case EACCES:
-			fprintf(currentClient, "2\n");
+			fprintf(CurrentClient, "2\n");
 			break;
 		default:
-			fprintf(currentClient, "1\n");	/* unkown error */
+			fprintf(CurrentClient, "1\n");	/* unkown error */
 			break;
 		}
 	}
 	else
-		fprintf(currentClient, "0\n");
+		fprintf(CurrentClient, "0\n");
 }

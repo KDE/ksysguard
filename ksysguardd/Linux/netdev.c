@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "ksysguardd.h"
 #include "Command.h"
 #include "netdev.h"
 
@@ -374,18 +375,18 @@ printNetDev##a(const char* cmd) \
 	for (i = 0; i < MAXNETDEVS; ++i) \
 		if (strcmp(NetDevs[i].name, dev) == 0) \
 		{ \
-			fprintf(currentClient, "%lu\n", (unsigned long) \
+			fprintf(CurrentClient, "%lu\n", (unsigned long) \
 				   (NetDevs[i].a / (NetDevs[i].a##Scale * timeInterval))); \
 			return; \
 		} \
  \
-	fprintf(currentClient, "0\n"); \
+	fprintf(CurrentClient, "0\n"); \
 } \
  \
 void \
 printNetDev##a##Info(const char* cmd) \
 { \
-	fprintf(currentClient, "%s\t0\t0\t%s\n", c, d); \
+	fprintf(CurrentClient, "%s\t0\t0\t%s\n", c, d); \
 }
 
 FORALL(PRINTFUNC)

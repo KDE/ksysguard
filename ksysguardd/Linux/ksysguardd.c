@@ -68,8 +68,17 @@ static int SocketPort = PORT_NUMBER;
 static int CurrentSocket;
 static char *LockFile = "/var/run/ksysguardd.pid";
 
+/* This variable is set to 1 if a module requests that the daemon should
+ * be terminated. */
 int QuitApp = 0;
+
+/* This variable indicates whether we are running as daemon or (1) or if
+ * we were have a controlling shell. */
 int RunAsDaemon = 0;
+
+/* This pointer is used by all modules. It contains the file pointer of
+ * the currently served client. This is stdout for non-daemon mode. */
+FILE* CurrentClient = 0;
 
 static int
 processArguments(int argc, char* argv[])
@@ -259,7 +268,8 @@ addClient(int client)
 				log_error("fdopen()");
 				return (-1);
 			}
-			/* We use unbuffered IO */
+			/* TODO: Check wheter this is a good idea!
+			 * We use unbuffered IO */
 			fcntl(fileno(out), F_SETFL, O_NDELAY);
 			ClientList[i].out = out;
 			printWelcome(out);
@@ -433,11 +443,11 @@ handleSocketTraffic(int socket, const fd_set* fds)
 							delClient(CurrentSocket);
 						else
 						{
-							currentClient = ClientList[i].out;
+							CurrentClient = ClientList[i].out;
 							fflush(stdout);
 							executeCommand(cmdBuf);
-							fprintf(currentClient, "ksysguardd> ");
-							fflush(currentClient);
+							fprintf(CurrentClient, "ksysguardd> ");
+							fflush(CurrentClient);
 						}
 					}
 				}
@@ -518,10 +528,7 @@ main(int argc, char* argv[])
 	}
 	else
 	{
-		fcntl(fileno(stdin), F_SETFL, O_NONBLOCK);
-		setvbuf(stdin, malloc(4096), _IOFBF, 4096);
-		fcntl(fileno(stdout), F_SETFL, O_NONBLOCK);
-		currentClient = stdout;
+		CurrentClient = stdout;
 		ServerSocket = 0;
 	}
 

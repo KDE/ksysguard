@@ -30,6 +30,7 @@
 #include <ctype.h>
 
 #include "stat.h"
+#include "ksysguardd.h"
 #include "Command.h"
 
 typedef struct
@@ -204,76 +205,97 @@ static int
 processDiskIO(const char* buf)
 {
 	/* Process disk_io lines as provided by 2.4.x kernels.
-	 * disk_io: (3,0):(524392,341664,14532074,182728,11468624) */
+	 * disk_io: (2,0):(3,3,6,0,0) (3,0):(1413012,511622,12155382,901390,26486215) */
 	int major, minor;
 	unsigned long total, rblk, rio, wblk, wio;
 	DiskIOInfo* ptr = DiskIO;
 	DiskIOInfo* last = 0;
 	char sensorName[128];
+	const char* p;
 
-	if (sscanf(buf, "disk_io: (%d,%d):(%lu,%lu,%lu,%lu,%lu)", &major, &minor,
-			   &total, &rio, &rblk, &wio, &wblk) != 7)
-		return (-1);
-
-	while (ptr)
+	p = buf + strlen("disk_io: ");
+	while (p && *p)
 	{
-		if (ptr->major == major && ptr->minor == minor)
+		if (sscanf(p, "(%d,%d):(%lu,%lu,%lu,%lu,%lu)", &major, &minor,
+				   &total, &rio, &rblk, &wio, &wblk) != 7)
+			return (-1);
+
+		last = 0;
+		ptr = DiskIO;
+		while (ptr)
 		{
-			/* The IO device has already been registered. */
-			ptr->total.delta = total - ptr->total.old;
+			if (ptr->major == major && ptr->minor == minor)
+			{
+				/* The IO device has already been registered. */
+				ptr->total.delta = total - ptr->total.old;
+				ptr->total.old = total;
+				ptr->rio.delta = rio - ptr->rio.old;
+				ptr->rio.old = rio;
+				ptr->wio.delta = wio - ptr->wio.old;
+				ptr->wio.old = wio;
+				ptr->rblk.delta = rblk - ptr->rblk.old;
+				ptr->rblk.old = rblk;
+				ptr->wblk.delta = wblk - ptr->wblk.old;
+				ptr->wblk.old = wblk;
+				ptr->alive = 1;
+				break;
+			}
+			last = ptr;
+			ptr = ptr->next;
+		}
+
+		if (!ptr)
+		{
+			/* The IO device has not been registered yet. We need to add it. */
+			ptr = (DiskIOInfo*) malloc(sizeof(DiskIOInfo));
+			ptr->major = major;
+			ptr->minor = minor;
+			ptr->total.delta = 0;
 			ptr->total.old = total;
-			ptr->rio.delta = rio - ptr->rio.old;
+			ptr->rio.delta = 0;
 			ptr->rio.old = rio;
-			ptr->wio.delta = wio - ptr->wio.old;
+			ptr->wio.delta = 0;
 			ptr->wio.old = wio;
-			ptr->rblk.delta = rblk - ptr->rblk.old;
+			ptr->rblk.delta = 0;
 			ptr->rblk.old = rblk;
-			ptr->wblk.delta = wblk - ptr->wblk.old;
+			ptr->wblk.delta = 0;
 			ptr->wblk.old = wblk;
 			ptr->alive = 1;
-			return (0);
+			ptr->next = 0;
+			if (last)
+			{
+				/* Append new entry at end of list. */
+				last->next = ptr;
+			}
+			else
+			{
+				/* List is empty, so we insert the fist element into
+                 * the list. */
+				DiskIO = ptr;
+			}
+			sprintf(sensorName, "disk/%d:%d/total", major, minor);
+			registerMonitor(sensorName, "integer", printDiskIO,
+							printDiskIOInfo);
+			sprintf(sensorName, "disk/%d:%d/rio", major, minor);
+			registerMonitor(sensorName, "integer", printDiskIO,
+							printDiskIOInfo);
+			sprintf(sensorName, "disk/%d:%d/wio", major, minor);
+			registerMonitor(sensorName, "integer", printDiskIO,
+							printDiskIOInfo);
+			sprintf(sensorName, "disk/%d:%d/rblk", major, minor);
+			registerMonitor(sensorName, "integer", printDiskIO,
+							printDiskIOInfo);
+			sprintf(sensorName, "disk/%d:%d/wblk", major, minor);
+			registerMonitor(sensorName, "integer", printDiskIO,
+							printDiskIOInfo);
 		}
-		last = ptr;
-		ptr = ptr->next;
+		/* Move p after the sencond ')'. We can safely asume that
+		 * those two ')' exist. */
+		p = strchr(p, ')') + 1;
+		p = strchr(p, ')') + 1;
+		if (p && *p)
+			p = strchr(p, '(');
 	}
-
-	/* The IO device has not been registered yet. We need to add it. */
-	ptr = (DiskIOInfo*) malloc(sizeof(DiskIOInfo));
-	ptr->major = major;
-	ptr->minor = minor;
-	ptr->total.delta = 0;
-	ptr->total.old = total;
-	ptr->rio.delta = 0;
-	ptr->rio.old = rio;
-	ptr->wio.delta = 0;
-	ptr->wio.old = wio;
-	ptr->rblk.delta = 0;
-	ptr->rblk.old = rblk;
-	ptr->wblk.delta = 0;
-	ptr->wblk.old = wblk;
-	ptr->alive = 1;
-	ptr->next = 0;
-	if (last)
-	{
-		/* Append new entry at end of list. */
-		last->next = ptr;
-	}
-	else
-	{
-		/* List is empty, so we insert the fist element into the list. */
-		DiskIO = ptr;
-	}
-	sprintf(sensorName, "disk/%d:%d/total", major, minor);
-	registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo);
-	sprintf(sensorName, "disk/%d:%d/rio", major, minor);
-	registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo);
-	sprintf(sensorName, "disk/%d:%d/wio", major, minor);
-	registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo);
-	sprintf(sensorName, "disk/%d:%d/rblk", major, minor);
-	registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo);
-	sprintf(sensorName, "disk/%d:%d/wblk", major, minor);
-	registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo);
-
 	return (0);
 }
 
@@ -454,7 +476,7 @@ initStat(void)
 
 	if ((stat = fopen("/proc/stat", "r")) == NULL)
 	{
-		fprintf(currentClient, "ERROR: Cannot open file \'/proc/stat\'!\n"
+		fprintf(CurrentClient, "ERROR: Cannot open file \'/proc/stat\'!\n"
 				"The kernel needs to be compiled with support\n"
 				"for /proc filesystem enabled!");
 		return;
@@ -642,13 +664,13 @@ printCPUUser(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	fprintf(currentClient, "%d\n", CPULoad.userLoad);
+	fprintf(CurrentClient, "%d\n", CPULoad.userLoad);
 }
 
 void 
 printCPUUserInfo(const char* cmd)
 {
-	fprintf(currentClient, "CPU User Load\t0\t100\t%%\n");
+	fprintf(CurrentClient, "CPU User Load\t0\t100\t%%\n");
 }
 
 void
@@ -656,13 +678,13 @@ printCPUNice(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	fprintf(currentClient, "%d\n", CPULoad.niceLoad);
+	fprintf(CurrentClient, "%d\n", CPULoad.niceLoad);
 }
 
 void 
 printCPUNiceInfo(const char* cmd)
 {
-	fprintf(currentClient, "CPU Nice Load\t0\t100\t%%\n");
+	fprintf(CurrentClient, "CPU Nice Load\t0\t100\t%%\n");
 }
 
 void
@@ -670,13 +692,13 @@ printCPUSys(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	fprintf(currentClient, "%d\n", CPULoad.sysLoad);
+	fprintf(CurrentClient, "%d\n", CPULoad.sysLoad);
 }
 
 void 
 printCPUSysInfo(const char* cmd)
 {
-	fprintf(currentClient, "CPU System Load\t0\t100\t%%\n");
+	fprintf(CurrentClient, "CPU System Load\t0\t100\t%%\n");
 }
 
 void
@@ -684,13 +706,13 @@ printCPUIdle(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	fprintf(currentClient, "%d\n", CPULoad.idleLoad);
+	fprintf(CurrentClient, "%d\n", CPULoad.idleLoad);
 }
 
 void 
 printCPUIdleInfo(const char* cmd)
 {
-	fprintf(currentClient, "CPU Idle Load\t0\t100\t%%\n");
+	fprintf(CurrentClient, "CPU Idle Load\t0\t100\t%%\n");
 }
 
 void
@@ -701,7 +723,7 @@ printCPUxUser(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 3, "%d", &id);
-	fprintf(currentClient, "%d\n", SMPLoad[id].userLoad);
+	fprintf(CurrentClient, "%d\n", SMPLoad[id].userLoad);
 }
 
 void 
@@ -710,7 +732,7 @@ printCPUxUserInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 3, "%d", &id);
-	fprintf(currentClient, "CPU%d User Load\t0\t100\t%%\n", id);
+	fprintf(CurrentClient, "CPU%d User Load\t0\t100\t%%\n", id);
 }
 
 void
@@ -721,7 +743,7 @@ printCPUxNice(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 3, "%d", &id);
-	fprintf(currentClient, "%d\n", SMPLoad[id].niceLoad);
+	fprintf(CurrentClient, "%d\n", SMPLoad[id].niceLoad);
 }
 
 void 
@@ -730,7 +752,7 @@ printCPUxNiceInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 3, "%d", &id);
-	fprintf(currentClient, "CPU%d Nice Load\t0\t100\t%%\n", id);
+	fprintf(CurrentClient, "CPU%d Nice Load\t0\t100\t%%\n", id);
 }
 
 void
@@ -741,7 +763,7 @@ printCPUxSys(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 3, "%d", &id);
-	fprintf(currentClient, "%d\n", SMPLoad[id].sysLoad);
+	fprintf(CurrentClient, "%d\n", SMPLoad[id].sysLoad);
 }
 
 void 
@@ -750,7 +772,7 @@ printCPUxSysInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 3, "%d", &id);
-	fprintf(currentClient, "CPU%d System Load\t0\t100\t%%\n", id);
+	fprintf(CurrentClient, "CPU%d System Load\t0\t100\t%%\n", id);
 }
 
 void
@@ -761,7 +783,7 @@ printCPUxIdle(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 3, "%d", &id);
-	fprintf(currentClient, "%d\n", SMPLoad[id].idleLoad);
+	fprintf(CurrentClient, "%d\n", SMPLoad[id].idleLoad);
 }
 
 void 
@@ -770,7 +792,7 @@ printCPUxIdleInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 3, "%d", &id);
-	fprintf(currentClient, "CPU%d Idle Load\t0\t100\t%%\n", id);
+	fprintf(CurrentClient, "CPU%d Idle Load\t0\t100\t%%\n", id);
 }
 
 void
@@ -781,7 +803,7 @@ printDiskTotal(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
-	fprintf(currentClient, "%lu\n", (unsigned long) (DiskLoad[id].s[0].delta / timeInterval));
+	fprintf(CurrentClient, "%lu\n", (unsigned long) (DiskLoad[id].s[0].delta / timeInterval));
 }
 
 void
@@ -790,7 +812,7 @@ printDiskTotalInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 9, "%d", &id);
-	fprintf(currentClient, "Disk%d Total Load\t0\t0\tkBytes/s\n", id);
+	fprintf(CurrentClient, "Disk%d Total Load\t0\t0\tkBytes/s\n", id);
 }
 
 void
@@ -801,7 +823,7 @@ printDiskRIO(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
-	fprintf(currentClient, "%lu\n", (unsigned long ) (DiskLoad[id].s[1].delta / timeInterval));
+	fprintf(CurrentClient, "%lu\n", (unsigned long ) (DiskLoad[id].s[1].delta / timeInterval));
 }
 
 void
@@ -810,7 +832,7 @@ printDiskRIOInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 9, "%d", &id);
-	fprintf(currentClient, "Disk%d Read\t0\t0\tkBytes/s\n", id);
+	fprintf(CurrentClient, "Disk%d Read\t0\t0\tkBytes/s\n", id);
 }
 
 void
@@ -821,7 +843,7 @@ printDiskWIO(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
-	fprintf(currentClient, "%lu\n", (unsigned long) (DiskLoad[id].s[2].delta / timeInterval));
+	fprintf(CurrentClient, "%lu\n", (unsigned long) (DiskLoad[id].s[2].delta / timeInterval));
 }
 
 void
@@ -830,7 +852,7 @@ printDiskWIOInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 9, "%d", &id);
-	fprintf(currentClient, "Disk%d Write\t0\t0\tkBytes/s\n", id);
+	fprintf(CurrentClient, "Disk%d Write\t0\t0\tkBytes/s\n", id);
 }
 
 void
@@ -842,7 +864,7 @@ printDiskRBlk(const char* cmd)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
 	/* a block is 512 bytes or 1/2 kBytes */
-	fprintf(currentClient, "%lu\n", (unsigned long)
+	fprintf(CurrentClient, "%lu\n", (unsigned long)
 		   (DiskLoad[id].s[3].delta / timeInterval * 2));
 }
 
@@ -852,7 +874,7 @@ printDiskRBlkInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 9, "%d", &id);
-	fprintf(currentClient, "Disk%d Read Data\t0\t0\tkBytes/s\n", id);
+	fprintf(CurrentClient, "Disk%d Read Data\t0\t0\tkBytes/s\n", id);
 }
 
 void
@@ -864,7 +886,7 @@ printDiskWBlk(const char* cmd)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
 	/* a block is 512 bytes or 1/2 kBytes */
-	fprintf(currentClient, "%lu\n", (unsigned long)
+	fprintf(CurrentClient, "%lu\n", (unsigned long)
 		   (DiskLoad[id].s[4].delta / timeInterval * 2));
 }
 
@@ -874,7 +896,7 @@ printDiskWBlkInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + 9, "%d", &id);
-	fprintf(currentClient, "Disk%d Write Data\t0\t0\tkBytes/s\n", id);
+	fprintf(CurrentClient, "Disk%d Write Data\t0\t0\tkBytes/s\n", id);
 }
 
 void
@@ -882,13 +904,13 @@ printPageIn(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	fprintf(currentClient, "%lu\n", (unsigned long) (PageIn / timeInterval));
+	fprintf(CurrentClient, "%lu\n", (unsigned long) (PageIn / timeInterval));
 }
 
 void
 printPageInInfo(const char* cmd)
 {
-	fprintf(currentClient, "Paged in Pages\t0\t0\t1/s\n");
+	fprintf(CurrentClient, "Paged in Pages\t0\t0\t1/s\n");
 }
 
 void
@@ -896,13 +918,13 @@ printPageOut(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	fprintf(currentClient, "%lu\n", (unsigned long) (PageOut / timeInterval));
+	fprintf(CurrentClient, "%lu\n", (unsigned long) (PageOut / timeInterval));
 }
 
 void
 printPageOutInfo(const char* cmd)
 {
-	fprintf(currentClient, "Paged out Pages\t0\t0\t1/s\n");
+	fprintf(CurrentClient, "Paged out Pages\t0\t0\t1/s\n");
 }
 
 void
@@ -913,7 +935,7 @@ printInterruptx(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + strlen("cpu/interrupts/int"), "%d", &id);
-	fprintf(currentClient, "%lu\n", (unsigned long) (Intr[id] / timeInterval));
+	fprintf(CurrentClient, "%lu\n", (unsigned long) (Intr[id] / timeInterval));
 }
 
 void
@@ -922,7 +944,7 @@ printInterruptxInfo(const char* cmd)
 	int id;
 
 	sscanf(cmd + strlen("cpu/interrupt/int"), "%d", &id);
-	fprintf(currentClient, "Interrupt %d\t0\t0\t1/s\n", id);
+	fprintf(CurrentClient, "Interrupt %d\t0\t0\t1/s\n", id);
 }
 
 void
@@ -930,13 +952,13 @@ printCtxt(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	fprintf(currentClient, "%lu\n", (unsigned long) (Ctxt / timeInterval));
+	fprintf(CurrentClient, "%lu\n", (unsigned long) (Ctxt / timeInterval));
 }
 
 void
 printCtxtInfo(const char* cmd)
 {
-	fprintf(currentClient, "Context switches\t0\t0\t1/s\n");
+	fprintf(CurrentClient, "Context switches\t0\t0\t1/s\n");
 }
 
 void
@@ -944,33 +966,42 @@ printDiskIO(const char* cmd)
 {
 	int major, minor;
 	char name[16];
-	DiskIOInfo* ptr = DiskIO;
+	DiskIOInfo* ptr;
 
 	sscanf(cmd, "disk/%d:%d/%s", &major, &minor, name);
 
-	while (ptr && ptr->major != major && ptr->minor != minor)
+	if (Dirty)
+		processStat();
+
+	ptr = DiskIO;
+	while (ptr && (ptr->major != major || ptr->minor != minor))
 		ptr = ptr->next;
 
 	if (!ptr)
 	{
+		fprintf(CurrentClient, "0\n");
+		/* TODO: send "RECONFIGURE" */
 		log_error("Disk device disappeared");
 		return;
 	}
 	if (strcmp(name, "total") == 0)
-		fprintf(currentClient, "%lu\n", (unsigned long) (ptr->total.delta / timeInterval));
+		fprintf(CurrentClient, "%lu\n",
+				(unsigned long) (ptr->total.delta / timeInterval));
 	else if (strcmp(name, "rio") == 0)
-		fprintf(currentClient, "%lu\n", (unsigned long) (ptr->rio.delta / timeInterval));
+		fprintf(CurrentClient, "%lu\n",
+				(unsigned long) (ptr->rio.delta / timeInterval));
 	else if (strcmp(name, "wio") == 0)
-		fprintf(currentClient, "%lu\n", (unsigned long) (ptr->wio.delta / timeInterval));
+		fprintf(CurrentClient, "%lu\n",
+				(unsigned long) (ptr->wio.delta / timeInterval));
 	else if (strcmp(name, "rblk") == 0)
-		fprintf(currentClient, "%lu\n", (unsigned long)
+		fprintf(CurrentClient, "%lu\n", (unsigned long)
 			   (ptr->rblk.delta / (timeInterval * 2)));
 	else if (strcmp(name, "wblk") == 0)
-		fprintf(currentClient, "%lu\n", (unsigned long)
+		fprintf(CurrentClient, "%lu\n", (unsigned long)
 			   (ptr->wblk.delta / (timeInterval * 2)));
-	else {
-		fprintf(currentClient, "0\n");
-
+	else
+	{
+		fprintf(CurrentClient, "0\n");
 		log_error("Unknown disk device property \'%s\'", name);
 	}
 }
@@ -984,30 +1015,37 @@ printDiskIOInfo(const char* cmd)
 
 	sscanf(cmd, "disk/%d:%d/%s", &major, &minor, name);
 
-	while (ptr && ptr->major != major && ptr->minor != minor)
+	while (ptr && (ptr->major != major || ptr->minor != minor))
 		ptr = ptr->next;
 
 	if (!ptr)
 	{
 		/* Disk device has disappeared. Print a dummy answer. */
-		fprintf(currentClient, "Dummy\t0\t0\t\n");
+		fprintf(CurrentClient, "Dummy\t0\t0\t\n");
 		return;
 	}
 	/* remove trailing '?' */
 	name[strlen(name) - 1] = '\0';
 
 	if (strcmp(name, "total") == 0)
-		fprintf(currentClient, "Total accesses device %d, %d\t0\t0\t1/s\n", major, minor);
+		fprintf(CurrentClient, "Total accesses device %d, %d\t0\t0\t1/s\n",
+				major, minor);
 	else if (strcmp(name, "rio") == 0)
-		fprintf(currentClient, "Read data device %d, %d\t0\t0\t1/s\n", major, minor);
+		fprintf(CurrentClient, "Read data device %d, %d\t0\t0\t1/s\n",
+				major, minor);
 	else if (strcmp(name, "wio") == 0)
-		fprintf(currentClient, "Write data device %d, %d\t0\t0\t1/s\n", major, minor);
+		fprintf(CurrentClient, "Write data device %d, %d\t0\t0\t1/s\n",
+				major, minor);
 	else if (strcmp(name, "rblk") == 0)
-		fprintf(currentClient, "Read accesses device %d, %d\t0\t0\tkBytes/s\n", major, minor);
+		fprintf(CurrentClient, "Read accesses device %d, %d\t0\t0\tkBytes/s\n",
+				major, minor);
 	else if (strcmp(name, "wblk") == 0)
-		fprintf(currentClient, "Write accesses device %d, %d\t0\t0\tkBytes/s\n", major, minor);
-	else {
-		fprintf(currentClient, "Dummy\t0\t0\t\n");
+		fprintf(CurrentClient,
+				"Write accesses device %d, %d\t0\t0\tkBytes/s\n",
+				major, minor);
+	else
+	{
+		fprintf(CurrentClient, "Dummy\t0\t0\t\n");
 		log_error("Request for unknown device property \'%s\'",	name);
 	}
 }
