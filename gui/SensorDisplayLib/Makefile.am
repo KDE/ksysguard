@@ -32,27 +32,27 @@ libsensordisplays_la_SOURCES = \
 	SensorLoggerSettings.ui
 
 libsensordisplayincludedir = $(includedir)/SensorDisplayLib
-#libsensordisplayinclude_HEADERS = \
-#	SensorDisplay.h \
-#	BarGraph.h \
-#	BarGraphSettings.h \
-#	DancingBars.h \
-#	DancingBarsSettings.h \
-#	DummyDisplay.h \
-#	FancyPlotter.h \
-#	FancyPlotterSettings.h \
-#	ListView.h \
-#	ListViewSettings.h \
-#	LogFile.h \
-#	LogFileSettings.h \
-#	MultiMeter.h \
-#	MultiMeterSettings.h \
-#	ProcessController.h \
-#	ProcessList.h \
-#	ReniceDlg.h \
-#	SensorLogger.h \
-#	SensorLoggerDlg.h \
-#	SensorLoggerSettings.h \
+#libsensordisplayinclude_HEADERS = 
+#	SensorDisplay.h 
+#	BarGraph.h 
+#	BarGraphSettings.h 
+#	DancingBars.h 
+#	DancingBarsSettings.h 
+#	DummyDisplay.h 
+#	FancyPlotter.h
+#	FancyPlotterSettings.h 
+#	ListView.h 
+#	ListViewSettings.h 
+#	LogFile.h 
+#	LogFileSettings.h 
+#	MultiMeter.h 
+#	MultiMeterSettings.h 
+#	ProcessController.h 
+#	ProcessList.h 
+#	ReniceDlg.h 
+#	SensorLogger.h 
+#	SensorLoggerDlg.h 
+#	SensorLoggerSettings.h 
 #	SignalPlotter.h
 
 # just to make sure, automake makes them 
