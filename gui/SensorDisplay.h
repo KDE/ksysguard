@@ -46,6 +46,7 @@ public:
 	QString hostName;
 	QString name;
 	QString description;
+	QString unit;
 
 	/* This flag indicates whether the communication to the sensor is
 	 * ok or not. */

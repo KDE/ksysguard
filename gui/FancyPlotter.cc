@@ -45,7 +45,7 @@
 #include "FancyPlotter.moc"
 
 FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
-						   const QString& title, double min, double max,
+						   const QString& title, double, double,
 						   bool nf)
 	: SensorDisplay(parent, name), noFrame(nf)
 {
@@ -56,11 +56,11 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 
 	if (noFrame)
 	{
-		plotter = new SignalPlotter(this, "signalPlotter", min, max);
+		plotter = new SignalPlotter(this, "signalPlotter");
 		plotter->topBar = true;
 	}
 	else
-		plotter = new SignalPlotter(frame, "signalPlotter", min, max);
+		plotter = new SignalPlotter(frame, "signalPlotter");
 	CHECK_PTR(plotter);
 	if (!title.isEmpty())
 		plotter->setTitle(title);
@@ -85,6 +85,7 @@ FancyPlotter::settings()
 	CHECK_PTR(fps);
 	fps->title->setText(frame->title());
 	fps->title->setFocus();
+	fps->autoRange->setChecked(plotter->autoRange);
 	fps->minVal->setText(QString("%1").arg(plotter->getMin()));
 	fps->minVal->setValidator(new KFloatValidator(fps->minVal));
 	fps->maxVal->setText(QString("%1").arg(plotter->getMax()));
@@ -127,7 +128,8 @@ FancyPlotter::settings()
 		QString status = sensors.at(i)->ok ? i18n("Ok") : i18n("Error");
 		QListViewItem* lvi = new QListViewItem(
 			fps->sensorList, sensors.at(i)->hostName,
-			SensorMgr->translateSensor(sensors.at(i)->name), "???", status);
+			SensorMgr->translateSensor(sensors.at(i)->name),
+			SensorMgr->translateUnit(sensors.at(i)->unit), status);
 		QPixmap pm(12, 12);
 		pm.fill(plotter->beamColor[i]);
 		lvi->setPixmap(1, pm);
@@ -152,8 +154,11 @@ FancyPlotter::applySettings()
 {
 	frame->setTitle(fps->title->text());
 	plotter->setTitle(fps->title->text());
-	plotter->changeRange(0, fps->minVal->text().toDouble(),
-						 fps->maxVal->text().toDouble());
+	if (fps->autoRange->isChecked())
+		plotter->changeRange(0, 0.0, 0.0);
+	else
+		plotter->changeRange(0, fps->minVal->text().toDouble(),
+							 fps->maxVal->text().toDouble());
 
 	plotter->vLines = fps->vLines->isChecked();
 	plotter->vColor = fps->vColor->palette().color(QPalette::Normal,
@@ -256,7 +261,31 @@ FancyPlotter::settingsDelete()
 	QListViewItem* lvi = fps->sensorList->currentItem();
 
 	if (lvi)
+	{
+		/* Before we delete the currently selected item, we determine a
+		 * new item to be selected. That way we can ensure that multiple
+		 * items can be deleted without forcing the user to select a new
+		 * item between the deletes. If all items are deleted, the buttons
+		 * are disabled again. */
+		QListViewItem* newSelected = 0;
+		if (lvi->itemBelow())
+		{
+			lvi->itemBelow()->setSelected(true);
+			newSelected = lvi->itemBelow();
+		}
+		else if (lvi->itemAbove())
+		{
+			lvi->itemAbove()->setSelected(true);
+			newSelected = lvi->itemAbove();
+		}
+		else
+			settingsSelectionChanged(0);
+			
 		delete lvi;
+
+		if (newSelected)
+			fps->sensorList->ensureItemVisible(newSelected);
+	}
 }
 
 void
@@ -315,12 +344,12 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 		return (false);
 
 	registerSensor(hostName, sensorName, title);
-	++beams;
 
 	/* To differentiate between answers from value requests and info
 	 * requests we add 100 to the beam index for info requests. */
 	sendRequest(hostName, sensorName + "?", beams + 100);
 
+	++beams;
 	return (true);
 }
 
@@ -381,10 +410,19 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 			sampleBuf.clear();
 		}
 	}
-	else if (id > 100)
+	else if (id >= 100)
 	{
 		SensorFloatInfo info(answer);
-		plotter->changeRange(id - 100, info.getMin(), info.getMax());
+		if (plotter->minValue == 0.0 && plotter->maxValue == 0.0 &&
+			plotter->autoRange)
+		{
+			/* We only use this information from the sensor when the
+			 * display is still using the default values. If the
+			 * sensor has been restored we don't touch the already set
+			 * values. */
+			plotter->changeRange(id - 100, info.getMin(), info.getMax());
+		}
+		sensors.at(id - 100)->unit = info.getUnit();
 		timerOn();
 	}
 }

@@ -40,8 +40,7 @@ class SignalPlotter : public QWidget
 	friend class FancyPlotter;
 
 public:
-	SignalPlotter(QWidget* parent = 0, const char* name = 0, double min = 0,
-				  double max = 100);
+	SignalPlotter(QWidget* parent = 0, const char* name = 0);
 	~SignalPlotter();
 
 	bool addBeam(QColor col);

@@ -181,7 +181,7 @@
                                 <name>spacing</name>
                                 <number>6</number>
                             </property>
-                            <widget row="0"  column="0" >
+                            <widget row="1"  column="0" >
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
@@ -192,18 +192,22 @@
                                     <string>Minimum Value</string>
                                 </property>
                             </widget>
-                            <widget row="0"  column="2" >
-                                <class>QLabel</class>
+                            <widget row="0"  column="0"  rowspan="1"  colspan="3" >
+                                <class>QCheckBox</class>
                                 <property stdset="1">
                                     <name>name</name>
-                                    <cstring>TextLabel3</cstring>
+                                    <cstring>autoRange</cstring>
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
-                                    <string>Maximum Value</string>
+                                    <string>Automatic Range Detection</string>
+                                </property>
+                                <property>
+                                    <name>whatsThis</name>
+                                    <string>Check this box if you want the display range to adapt dynamically to the currently displayed values. If you don't check this, you have to specify the range you want in the fields below.</string>
                                 </property>
                             </widget>
-                            <widget row="0"  column="1" >
+                            <widget row="1"  column="1" >
                                 <class>QLineEdit</class>
                                 <property stdset="1">
                                     <name>name</name>
@@ -228,7 +232,39 @@
                                     <string>Enter the minimum value for the display here. If both values are 0 automatic range detection is enabled.</string>
                                 </property>
                             </widget>
-                            <widget row="0"  column="3" >
+                            <spacer row="1"  column="2" >
+                                <property>
+                                    <name>name</name>
+                                    <cstring>Spacer4_2</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>orientation</name>
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property stdset="1">
+                                    <name>sizeType</name>
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property>
+                                    <name>sizeHint</name>
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget row="1"  column="3" >
+                                <class>QLabel</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>TextLabel3</cstring>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string>Maximum Value</string>
+                                </property>
+                            </widget>
+                            <widget row="1"  column="4" >
                                 <class>QLineEdit</class>
                                 <property stdset="1">
                                     <name>name</name>
@@ -853,6 +889,18 @@
         <signal>toggled(bool)</signal>
         <receiver>labels</receiver>
         <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>autoRange</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>minVal</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>autoRange</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>maxVal</receiver>
+        <slot>setDisabled(bool)</slot>
     </connection>
 </connections>
 <tabstops>

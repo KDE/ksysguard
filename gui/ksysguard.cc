@@ -424,12 +424,13 @@ static const KCmdLineOptions options[] =
 int
 main(int argc, char** argv)
 {
-#if 0
-//#ifndef NDEBUG
-	/* This will put ksysguard in it's on session not having a controlling
-	 * terminal attached to it. This prevents ssh from using this terminal
-	 * for password requests. Unfortunately you now need a ssh with
-	 * ssh-askpass support to popup an X dialog to enter the password. */
+#ifndef NDEBUG
+	/* This forking will put ksysguard in it's on session not having a
+	 * controlling terminal attached to it. This prevents ssh from
+	 * using this terminal for password requests. Unfortunately you
+	 * now need a ssh with ssh-askpass support to popup an X dialog to
+	 * enter the password. Currently only the original ssh provides this
+	 * but not open-ssh. */
 	pid_t pid;
 	if ((pid = fork()) < 0)
 		return (-1);
@@ -448,6 +449,7 @@ main(int argc, char** argv)
 								   "The KSysGuard Developers"));
 	aboutData.addAuthor("Chris Schlaeger", "Current Maintainer",
 						"cs@kde.org");
+	aboutData.addAuthor("Tobias Koenig", 0, "tokoe82@yahoo.de");
 	aboutData.addAuthor("Nicolas Leclercq", 0, "nicknet@planete.net");
 	aboutData.addAuthor("Alex Sanda", 0, "alex@darkstart.ping.at");
 	aboutData.addAuthor("Bernd Johannes Wuebben", 0,

@@ -135,6 +135,7 @@ Workspace::newWorkSheet()
 												   true);
 	CHECK_PTR(wss);
 	wss->sheetName->setText(sheetName);
+	wss->sheetName->setFocus();
 	if (wss->exec())
 	{
 		WorkSheet* sheet = new WorkSheet(this, wss->rows->text().toUInt(),

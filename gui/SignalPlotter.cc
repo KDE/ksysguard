@@ -40,9 +40,8 @@ min(int a, int b)
 	return (a < b ? a : b);
 }
 
-SignalPlotter::SignalPlotter(QWidget* parent, const char* name, double min,
-							 double max)
-	: QWidget(parent, name), minValue(min), maxValue(max)
+SignalPlotter::SignalPlotter(QWidget* parent, const char* name)
+	: QWidget(parent, name)
 {
 	beamData.setAutoDelete(true);
 
@@ -50,7 +49,8 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name, double min,
 	setBackgroundMode(NoBackground);
 
 	samples = 0;
-	autoRange = (min == max);
+	minValue = maxValue = 0.0;
+	autoRange = true;
 
 	// Anything smaller than this does not make sense.
 	setMinimumSize(16, 16);
