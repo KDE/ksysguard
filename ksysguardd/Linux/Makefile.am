@@ -10,5 +10,5 @@ endif
 INCLUDES = -I$(srcdir)/../../CContLib -I$(srcdir)/.. $(KSGRD_SUPPORTS)
 
 noinst_LIBRARIES = libksysguardd.a
-libksysguardd_a_SOURCES = ProcessList.c	Memory.c stat.c netdev.c apm.c \
+libksysguardd_a_SOURCES = ProcessList.c	Memory.c stat.c netdev.c apm.c acpi.c \
 	loadavg.c cpuinfo.c lmsensors.c netstat.c diskstat.c logfile.c i8k.c

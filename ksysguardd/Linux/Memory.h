@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
+    Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -17,30 +17,30 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	$Id$
+    $Id$
 */
 
-#ifndef _Memory_h_
-#define _Memory_h_
+#ifndef KSG_MEMORY_H
+#define KSG_MEMORY_H
 
-void initMemory(struct SensorModul* sm);
-void exitMemory(void);
+void initMemory( struct SensorModul* );
+void exitMemory( void );
 
-int updateMemory(void);
+int updateMemory( void );
 
-void printMFree(const char* cmd);
-void printMFreeInfo(const char* cmd);
-void printUsed(const char* cmd);
-void printUsedInfo(const char* cmd);
-void printAppl(const char* cmd);
-void printApplInfo(const char* cmd);
-void printBuffers(const char* cmd);
-void printBuffersInfo(const char* cmd);
-void printCached(const char* cmd);
-void printCachedInfo(const char* cmd);
-void printSwapUsed(const char* cmd);
-void printSwapUsedInfo(const char* cmd);
-void printSwapFree(const char* cmd);
-void printSwapFreeInfo(const char* cmd);
+void printMFree( const char* );
+void printMFreeInfo( const char* );
+void printUsed( const char* );
+void printUsedInfo( const char* );
+void printAppl( const char* );
+void printApplInfo( const char* );
+void printBuffers( const char* );
+void printBuffersInfo( const char* );
+void printCached( const char* );
+void printCachedInfo( const char* );
+void printSwapUsed( const char* );
+void printSwapUsedInfo( const char* );
+void printSwapFree( const char* );
+void printSwapFreeInfo( const char* );
 
 #endif

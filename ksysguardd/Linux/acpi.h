@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
 
-    Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
+    Copyright (c) 2003 Stephan Uhlmann <su@su2.info>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -15,23 +15,17 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    $Id$
 */
 
-#include "ccont.h"
+#ifndef KSG_ACPI_H
+#define KSG_ACPI_H
 
-#ifndef KSG_CONF_H
-#define KSG_CONF_H
+void initAcpi( struct SensorModul* );
+void exitAcpi( void );
 
-typedef struct {
-  char *name;
-  char *path;
-} ConfigLogFile;
+int updateAcpi( void );
 
-void parseConfigFile( const char *filename );
-void freeConfigFile();
-
-int sensorAvailable( const char* sensor );
+void printAcpiBatFill( const char* );
+void printAcpiBatFillInfo( const char* );
 
 #endif

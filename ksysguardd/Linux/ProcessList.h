@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
-	Copyright (c) 1999 - 2000 Chris Schlaeger <cs@kde.org>
-    
+
+    Copyright (c) 1999 - 2000 Chris Schlaeger <cs@kde.org>
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -17,22 +17,23 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	$Id$
+    $Id$
 */
 
-#ifndef _ProcessList_H_
-#define _ProcessList_H_
+#ifndef KSG_PROCESSLIST_H
+#define KSG_PROCESSLIST_H
 
-void initProcessList(struct SensorModul* sm);
-void exitProcessList(void);
+void initProcessList( struct SensorModul* );
+void exitProcessList( void );
 
-int updateProcessList(void);
+int updateProcessList( void );
 
-void printProcessList(const char*);
-void printProcessListInfo(const char*);
-void printProcessCount(const char* cmd);
-void printProcessCountInfo(const char* cmd);
-void killProcess(const char* cmd);
-void setPriority(const char* cmd);
+void printProcessList( const char* );
+void printProcessListInfo( const char* );
+void printProcessCount( const char* );
+void printProcessCountInfo( const char* );
+
+void killProcess( const char* );
+void setPriority( const char* );
 
 #endif

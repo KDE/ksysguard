@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
-	Copyright (c) 1999-2001 Chris Schlaeger <cs@kde.org>
-    
+
+    Copyright (c) 1999-2001 Chris Schlaeger <cs@kde.org>
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -16,11 +16,11 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	$Id$
+    $Id$
 */
 
-#ifndef _ksysguardd_h_
-#define _ksysguardd_h_
+#ifndef KSG_KSYSGUARDD_H
+#define KSG_KSYSGUARDD_H
 
 #include <stdio.h>
 #include <time.h>
@@ -34,20 +34,20 @@
 /* Timer interval for update modules */
 #define UPDATEINTERVAL	2
 
-extern int QuitApp;
 extern int RunAsDaemon;
+extern int QuitApp;
 
 /* This pointer give you access to the client which made the request */
 extern FILE* CurrentClient;
 
 struct SensorModul {
-	const char *configName;
-	void (*initCommand)(struct SensorModul*);
-	void (*exitCommand)(void);
-	int (*updateCommand)(void);
-	void (*checkCommand)(void);
-	int available;
-	time_t time;
+  const char *configName;
+  void (*initCommand)( struct SensorModul* );
+  void (*exitCommand)( void );
+  int (*updateCommand)( void );
+  void (*checkCommand)( void );
+  int available;
+  time_t time;
 };
 
 #endif

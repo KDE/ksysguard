@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
+    Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -17,35 +17,78 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	$Id$
+    $Id$
 */
 
 #include "ksysguardd.h"
 
-#ifndef _Command_h_
-#define _Command_h_
-
-void print_error(const char *, ...);
-void log_error(const char *, ...);
+#ifndef KSG_COMMAND_H
+#define KSG_COMMAND_H
 
 typedef void (*cmdExecutor)(const char*);
 
+/**
+  Set this flag to '1' to request a rescan of the available sensors
+  in the front end.
+ */
 extern int ReconfigureFlag;
+
+/**
+  Has nearly the same meaning like the above flag ;)
+ */
 extern int CheckSetupFlag;
 
-void initCommand(void);
-void exitCommand(void);
+/**
+  Delivers the error message to the front end.
+ */
+void print_error( const char*, ... );
 
-void registerCommand(const char* command, cmdExecutor ex);
-void removeCommand(const char* command);
-void registerMonitor(const char* command, const char* type, cmdExecutor ex,
-					 cmdExecutor iq, struct SensorModul* sm);
-void removeMonitor(const char* command);
-void executeCommand(const char* command);
+/**
+  Writes the error message to the syslog daemon.
+ */
+void log_error( const char*, ... );
 
-void printMonitors(const char* cmd);
-void printTest(const char* cmd);
+/**
+  Use this function to register a command with the name
+  @ref command and the function pointer @ref ex.
+ */
+void registerCommand( const char* command, cmdExecutor ex );
 
-void exQuit(const char* cmd);
+/**
+  Use this function to remove a command with the name
+  @ref command.
+ */
+void removeCommand( const char* command );
+
+/**
+  Use this function to add a new montior with the name @ref monitor
+  from the type @ref type.
+  @ref ex is a pointer to the function that is called to get a value
+  and @ref iq is a pointer to the function that returns informations
+  about this monitor.
+  @ref sm is a parameter to the sensor modul object that is passed by
+  the initXXX method.
+ */
+void registerMonitor( const char* monitor, const char* type, cmdExecutor ex,
+                      cmdExecutor iq, struct SensorModul* sm );
+
+/**
+  Use this function to add the montior with the name @ref monitor.
+ */
+void removeMonitor( const char* monitor );
+
+
+/**
+  Internal usage.
+ */
+void executeCommand( const char* command );
+
+void initCommand( void );
+void exitCommand( void );
+
+void printMonitors( const char* cmd );
+void printTest( const char* cmd );
+
+void exQuit( const char* cmd );
 
 #endif
