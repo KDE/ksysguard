@@ -512,7 +512,7 @@ FancyPlotter::createFromDOM(QDomElement& element)
 	plotter->vDistance = element.attribute("vDistance", "30").toUInt();
 	plotter->vScroll = element.attribute("vScroll", "1").toUInt();
 	plotter->graphStyle = element.attribute("graphStyle", "0").toUInt();
-	plotter->hScale = element.attribute("hScale", "5").toUInt();
+	plotter->hScale = element.attribute("hScale", "1").toUInt();
 
 	plotter->hLines = element.attribute("hLines", "1").toUInt();
 	plotter->hColor = restoreColorFromDOM(element, "hColor",
