@@ -297,7 +297,7 @@ FancyPlotter::settingsMoveUp()
 			if (temp->itemAbove())
 				fps->sensorList->currentItem()->moveItem(temp->itemAbove());
 			else
-				fps->sensorList->currentItem()->moveItem(temp->parent());
+				temp->moveItem(fps->sensorList->currentItem());
 		}
 
 		// Re-calculate the "sensor number" field
@@ -306,6 +306,8 @@ FancyPlotter::settingsMoveUp()
 		{
 			i->setText(0, QString("%1").arg(count));
 		}
+
+		settingsSelectionChanged(fps->sensorList->currentItem());
 	}
 }
 
@@ -327,7 +329,7 @@ FancyPlotter::settingsMoveDown()
 		{
 			i->setText(0, QString("%1").arg(count));
 		}
-		//settingsSelectionChanged(fps->sensorList()->currentItem());
+		settingsSelectionChanged(fps->sensorList->currentItem());
 	}
 }
 
