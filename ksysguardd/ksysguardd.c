@@ -552,7 +552,7 @@ main(int argc, char* argv[])
 
 		endgrent();
 	}
-#endif // OSTYPE_FreeBSD
+#endif /* OSTYPE_FreeBSD */
 
 	printWelcome(stdout);
 
