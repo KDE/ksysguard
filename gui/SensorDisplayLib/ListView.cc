@@ -95,7 +95,7 @@ diskStatKey(const char* text)
 	int i, val;
 	static char key[100];
 
-	strncpy(tmp, text, sizeof(tmp) - 1);
+	strlcpy(tmp, text, sizeof(tmp) - 1);
 	number = tmp;
 	for (i = 0; i < strlen(tmp); i++) {
 		number++;
@@ -109,7 +109,7 @@ diskStatKey(const char* text)
 		}
 	}
 
-	strncpy(key, text, sizeof(key) - 1);
+	strlcpy(key, text, sizeof(key) - 1);
 
 	return key;
 }
