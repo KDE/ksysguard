@@ -1,6 +1,8 @@
 This document describes the interface between ksysguard and
 ksysguardd. ksysguardd is started as a child of ksysguard, either
-directly or via a shell. 
+directly or via a shell. Alternatively a ksysguardd can listen on a
+port and a single instance can then be used by multiple instances of
+ksysguard.
 
 This client/server design was chosen, because on some operating
 systems the back-end needs elevated permissions. Since C++ programs
@@ -8,11 +10,12 @@ should NEVER have setgid/setuid permissions, a plain C back-end was
 needed. It also allowed for an easy network support using existing
 security mechanisms (ssh).
 
-The communication runs over stdin, stdout and stderr. ksysguard sends
-commands and ksysguardd answers to them. Each answer ends with the
-string "\nksysguardd> ". The set of commands that each ksysguardd
-implementation supports can be very different. There are only a very
-few mandatory command and a few recommended commands.
+ksysguard sends commands and ksysguardd answers to them. Each answer
+ends with the string "\nksysguardd> ". Error messages are enclosed in
+ESC '\033' characters. Therefor regular messages may never contain
+ESC. The set of commands that each ksysguardd implementation supports
+can be very different. There are only a very few mandatory command and
+a few recommended commands.
 
 The mandatory commands are 'monitors', 'test' and 'quit'.
 The recommended commands are:
@@ -47,11 +50,12 @@ Sensor names can be hierarchical. Each level is separated by a
 /. ksysguard uses a tree widget in the SensorBrowser to display the
 commands in a tree. Every sensor name must be followed by the type of
 the sensor separated by a tab. Currently 3 different types of sensors
-are supported, integer, float and table. The table sensor returns the
-information for the ProcessController widget. To find out more about a
-sensor an additional command must be implemented for each sensor that
-has a questionmark appended to the sensor name. It can be used to
-find out more about the sensor.
+are supported, integer, float, listview and table. The table sensor
+returns the information for the ProcessController widget. listview
+sensors use a generic table to display information. To find out more
+about a sensor an additional command must be implemented for each
+sensor that has a questionmark appended to the sensor name. It can be
+used to find out more about the sensor.
 
 --------
 ksysguardd> mem/physical/free?
