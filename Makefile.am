@@ -58,7 +58,7 @@ install-data-local:
 	$(mkinstalldirs) $(kde_icondir)
 	$(INSTALL_DATA) ktop.xpm $(kde_icondir)
 	$(mkinstalldirs) $(kde_minidir)
-	$(INSTALL_DATA) mini-ktop.xpm $(kde_minidir)/mini-ktop.xpm
+	$(INSTALL_DATA) mini-ktop.xpm $(kde_minidir)/ktop.xpm
 
 # remove ALL you have installed in install-data-local or install-exec-local
 uninstall-local:
