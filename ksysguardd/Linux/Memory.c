@@ -64,7 +64,11 @@ static void processMemInfo()
   scan_one( MemInfoBuf, "SwapFree", &SFree );
   Used = Total - MFree;
   Appl = ( Used - ( Buffers + Cached ) );
-  SUsed = STotal - SFree;
+
+  if ( STotal == 0 ) /* no swap activated */
+    SUsed = 0;
+  else
+    SUsed = STotal - SFree;
 
   Dirty = 0;
 }

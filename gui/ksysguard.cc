@@ -265,7 +265,6 @@ void TopLevel::initStatusBar()
    * answerReceived(). */
   KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/used?",
                                  (KSGRD::SensorClient*)this, 5 );
-
   updateStatusBar();
   
   KToggleAction *sb = dynamic_cast<KToggleAction*>(action("options_show_statusbar"));
@@ -337,6 +336,8 @@ void TopLevel::timerEvent( QTimerEvent* )
                                    (KSGRD::SensorClient*)this, 2 );
     KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/free",
                                    (KSGRD::SensorClient*)this, 3 );
+    KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/used",
+                                   (KSGRD::SensorClient*)this, 4 );
   }
 }
 
@@ -397,7 +398,7 @@ void TopLevel::answerReceived( int id, const QString &answer )
   static QString unit;
   static long mUsed = 0;
   static long mFree = 0;
-  static long sTotal = 0;
+  static long sUsed = 0;
   static long sFree = 0;
 
   switch ( id ) {
@@ -425,18 +426,19 @@ void TopLevel::answerReceived( int id, const QString &answer )
 
     case 3:
       sFree = answer.toLong();
-      s = i18n( "Swap: %1 %2 used, %3 %4 free" )
-              .arg( KGlobal::locale()->formatNumber( sTotal - sFree, 0 ) ).arg( unit )
-              .arg( KGlobal::locale()->formatNumber( sFree, 0 ) ).arg( unit );
-      statusBar()->changeItem( s, 2 );
+      setSwapInfo( sUsed, sFree, unit );
+      break;
+
+    case 4:
+      sUsed = answer.toLong();
+      setSwapInfo( sUsed, sFree, unit );
       break;
 
     case 5: {
       KSGRD::SensorIntegerInfo info( answer );
-      sTotal = info.max();
-      unit = KSGRD::SensorMgr->translateUnit(info.unit());
-      break;
+      unit = KSGRD::SensorMgr->translateUnit( info.unit() );
     }
+
     case 133: {
       QCString replyType = "QString";
       QByteArray replyData;
@@ -468,6 +470,20 @@ void TopLevel::answerReceived( int id, const QString &answer )
       break;
     }
   }
+}
+
+void TopLevel::setSwapInfo( long used, long free, const QString &unit )
+{
+  QString msg;
+  if ( used == 0 && free == 0 ) // no swap available
+    msg = i18n( "No swap space available" );
+  else {
+    msg = i18n( "Swap: %1 %2 used, %3 %4 free" )
+              .arg( KGlobal::locale()->formatNumber( used, 0 ) ).arg( unit )
+              .arg( KGlobal::locale()->formatNumber( free, 0 ) ).arg( unit );
+  }
+
+  statusBar()->changeItem( msg, 2 );
 }
 
 static const KCmdLineOptions options[] = {

@@ -86,6 +86,8 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
     void slotNewToolbarConfig();
 
   private:
+    void setSwapInfo( long, long, const QString& );
+
     QPtrList<DCOPClientTransaction> mDCopFIFO;
 
     QSplitter* mSplitter;
