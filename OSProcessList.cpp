@@ -225,7 +225,7 @@ OSProcessList::update(void)
 				if (ps)
 					errMessage = ps->getErrMessage();
 				else
-					errMessage = i18n("Cannot read status of processes"
+					errMessage = i18n("Cannot read status of processes "
 									  "from /proc/* directories!\n");
 				delete ps;
 				return (false);
