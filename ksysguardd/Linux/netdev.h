@@ -28,6 +28,8 @@ void exitNetDev(void);
 
 int updateNetDev(void);
 
+void checkNetDev(void);
+
 void printNetDevRecBytes(const char* cmd);
 void printNetDevRecBytesInfo(const char* cmd);
 void printNetDevSentBytes(const char* cmd);

@@ -28,6 +28,7 @@
 typedef void (*cmdExecutor)(const char*);
 
 extern int ReconfigureFlag;
+extern int CheckSetupFlag;
 
 void initCommand(void);
 

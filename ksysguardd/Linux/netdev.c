@@ -54,6 +54,7 @@ static char NetDevBuf[NETDEVBUFSIZE];
 static int NetDevCnt = 0;
 static int Dirty = 0;
 static int NetDevOk = 0;
+static long OldHash = 0;
 
 #define MAXNETDEVS 64
 static NetDevInfo NetDevs[MAXNETDEVS];
@@ -135,10 +136,8 @@ processNetDev(void)
 		return;
 
 	for (i = 0; i < 5 && processNetDev_() < 0; ++i)
-	{
-		exitNetDev();
-		initNetDev();
-	}
+		checkNetDev();
+
 	/* If 5 reconfiguration attemts failed, something is very wrong and
 	 * we close the netdev module for further use. */
 	if (i == 5)
@@ -241,6 +240,8 @@ Inter-|   Receive                                                |  Transmit
 
 	size_t n;
 	int fd;
+	long hash;
+	char* p;
 
 	if (NetDevOk < 0)
 		return(0);
@@ -263,9 +264,32 @@ Inter-|   Receive                                                |  Transmit
 	NetDevOk = 1;
 	NetDevBuf[n] = '\0';
 
+	/* Calculate hash over the first 7 characters of each line starting
+	 * after the first newline. */
+	for (p = NetDevBuf, hash = 0; *p; ++p)
+		if (*p == '\n')
+			for (++p; *p && *p != ':' && *p != '|'; ++p)
+				hash = ((hash << 6) + *p) % 390389;
+
+	if (OldHash != 0 && OldHash != hash)
+	{
+		perror("RECONFIGURE\n");
+		CheckSetupFlag = 1;
+	}
+	OldHash = hash;
+
 	Dirty = 1;
 
 	return (0);
+}
+
+void
+checkNetDev(void)
+{
+	/* Values for other network devices are lost, but it is still better
+	 * than not detecting any new devices. TODO: Fix after 2.1 is out. */
+	exitNetDev();
+	initNetDev();
 }
 
 void

@@ -27,6 +27,7 @@
 
 #include "ccont.h"
 #include "Command.h"
+#include "netdev.h"		/* TODO: Ugly dependancy. Should fix this later. */
 
 typedef struct
 {
@@ -55,6 +56,7 @@ _Command(void* v)
 */
 
 int ReconfigureFlag = 0;
+int CheckSetupFlag = 0;
 
 void
 initCommand(void)
@@ -153,6 +155,12 @@ executeCommand(const char* command)
 	int i;
 	char tokenFormat[32];
 	char token[32];
+
+	if (CheckSetupFlag)
+	{
+		checkNetDev();
+		CheckSetupFlag = 0;
+	}
 
 	sprintf(tokenFormat, "%%%ds", (int) sizeof(token) - 1);
 	sscanf(command, tokenFormat, token);
