@@ -397,7 +397,6 @@ SensorDisplay::setIsOnTop(bool onTop)
 	}
 	else if (!onTop && timerId != NONE)
 	{
-		kdDebug() << "Timer stopped" << endl;
 		timerOff();
 		pausedWhileHidden = true;
 	}
