@@ -196,6 +196,10 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	uint w = width();
 	uint h = height();
 
+	/* Do not do repaints when the widget is not yet setup properly. */
+	if (w <= 2)
+		return;
+	
 	QPixmap pm(w, h);
 	QPainter p;
 	p.begin(&pm, this);
