@@ -267,7 +267,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 
 	// load the icons we display with the processes
 	icons = new KIconLoader();
-	CHECK_PTR(icons);
+	Q_CHECK_PTR(icons);
 	errorIcon = QIconSet(icons->loadIcon("connect_creating", KIcon::Desktop,
 										 KIcon::SizeSmall));
 

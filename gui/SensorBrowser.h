@@ -153,7 +153,7 @@ public:
 				   const QString& descr, const QString& type)
 	{
 		SensorInfo* si = new SensorInfo(lvi, name, descr, type);
-		CHECK_PTR(si);
+		Q_CHECK_PTR(si);
 		sensors.append(si);
 	}
 

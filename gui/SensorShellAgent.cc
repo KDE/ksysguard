@@ -56,7 +56,7 @@ SensorShellAgent::start(const QString& host_, const QString& shell_,
 						const QString& command_, int)
 {
 	daemon = new KShellProcess;
-	CHECK_PTR(daemon);
+	Q_CHECK_PTR(daemon);
 
 	host = host_;
 	shell = shell_;

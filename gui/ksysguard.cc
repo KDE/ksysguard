@@ -75,16 +75,16 @@ TopLevel::TopLevel(const char *name)
 	timerId = -1;
 
 	splitter = new QSplitter(this, "Splitter");
-	CHECK_PTR(splitter);
+	Q_CHECK_PTR(splitter);
 	splitter->setOrientation(Horizontal);
 	splitter->setOpaqueResize(TRUE);
 	setCentralWidget(splitter);
 
 	sb = new SensorBrowser(splitter, SensorMgr, "SensorBrowser");
-	CHECK_PTR(sb);
+	Q_CHECK_PTR(sb);
 
 	ws = new Workspace(splitter, "Workspace");
-	CHECK_PTR(ws);
+	Q_CHECK_PTR(ws);
 	connect(ws, SIGNAL(announceRecentURL(const KURL&)),
 			this, SLOT(registerRecentURL(const KURL&)));
 	connect(ws, SIGNAL(setCaption(const QString&, bool)),
@@ -95,7 +95,7 @@ TopLevel::TopLevel(const char *name)
 	 * number of processes and the memory consumption of the local
 	 * host. */
 	statusbar = new KStatusBar(this, "statusbar");
-	CHECK_PTR(statusbar);
+	Q_CHECK_PTR(statusbar);
 	statusbar->insertFixedItem(i18n("88888 Processes"), 0);
 	statusbar->insertFixedItem(i18n("Memory: 8888888 kB used, "
 							   "8888888 kB free"), 1);
@@ -578,9 +578,9 @@ main(int argc, char** argv)
 	KApplication *a = new KApplication;
 
 	SensorMgr = new SensorManager();
-	CHECK_PTR(SensorMgr);
+	Q_CHECK_PTR(SensorMgr);
 	Style = new StyleEngine();
-	CHECK_PTR(Style);
+	Q_CHECK_PTR(Style);
 
 	KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
@@ -608,7 +608,7 @@ main(int argc, char** argv)
 		a->dcopClient()->setDefaultObject("KSysGuardIface");
 
 		Toplevel = new TopLevel("KSysGuard");
-		CHECK_PTR(Toplevel);
+		Q_CHECK_PTR(Toplevel);
 
 		// create top-level widget
 		if (args->count() > 0)

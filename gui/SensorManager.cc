@@ -146,7 +146,7 @@ SensorManager::SensorManager()
 	broadcaster = 0;
 
 	hostConnector = new HostConnector(0, "HostConnector", true);
-	CHECK_PTR(hostConnector);
+	Q_CHECK_PTR(hostConnector);
 	connect(hostConnector->helpButton, SIGNAL(clicked()),
 			this, SLOT(helpConnectHost()));
 }
@@ -217,7 +217,7 @@ SensorManager::engage(const QString& hostname, const QString& shell,
 			daemon = new SensorShellAgent(this);
 		else
 			daemon = new SensorSocketAgent(this);
-		CHECK_PTR(daemon);
+		Q_CHECK_PTR(daemon);
 
 		if (!daemon->start(hostname.ascii(), shell, command, port))
 		{

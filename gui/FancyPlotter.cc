@@ -63,7 +63,7 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 	}
 	else
 		plotter = new SignalPlotter(frame, "signalPlotter");
-	CHECK_PTR(plotter);
+	Q_CHECK_PTR(plotter);
 	if (!title.isEmpty())
 		plotter->setTitle(title);
 
@@ -84,7 +84,7 @@ void
 FancyPlotter::settings()
 {
 	fps = new FancyPlotterSettings(this, "FancyPlotterSettings", true);
-	CHECK_PTR(fps);
+	Q_CHECK_PTR(fps);
 	fps->title->setText(frame->title());
 	fps->title->setFocus();
 	fps->autoRange->setChecked(plotter->autoRange);

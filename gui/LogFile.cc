@@ -36,14 +36,14 @@ LogFile::LogFile(QWidget *parent, const char *name, const QString&)
 	: SensorDisplay(parent, name)
 {
 	monitor = new QListBox(this);
-	CHECK_PTR(monitor);
+	Q_CHECK_PTR(monitor);
 	
 	KIconLoader iconLoader;
 	QPixmap errorIcon = iconLoader.loadIcon("connect_creating",
 											KIcon::Desktop, KIcon::SizeSmall);
 
 	errorLabel = new QLabel(monitor);
-	CHECK_PTR(errorLabel);
+	Q_CHECK_PTR(errorLabel);
 
 	errorLabel->setPixmap(errorIcon);
 	errorLabel->resize(errorIcon.size());
@@ -89,7 +89,7 @@ void LogFile::settings(void)
 	QColorGroup cgroup = monitor->colorGroup();
 
 	lfs = new LogFileSettings(this);
-	CHECK_PTR(lfs);
+	Q_CHECK_PTR(lfs);
 	
 	lfs->setForegroundColor(cgroup.text());
 	lfs->setBackgroundColor(cgroup.base());
@@ -214,7 +214,7 @@ LogFile::answerReceived(int id, const QString& answer)
 
 				for (QStringList::Iterator it = filterRules.begin(); it != filterRules.end(); it++) {
 					QRegExp *expr = new QRegExp((*it).latin1());
-					if (expr->find(lines[i].latin1(), 0) != -1) {
+					if (expr->match(lines[i].latin1(), 0) != -1) {
 						KNotifyClient::event("pattern_match", QString("rule '%1' matched").arg((*it).latin1()));
 					}
 					delete expr;

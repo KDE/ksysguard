@@ -376,7 +376,7 @@ WorkSheet::settings()
 {
 	WorkSheetSettings* wss = new WorkSheetSettings(this, "WorkSheetSettings",
 												   true);
-	CHECK_PTR(wss);
+	Q_CHECK_PTR(wss);
 	/* The sheet name should be changed with the "Save as..." function,
 	 * so we don't have to display the display frame. */
 	wss->titleFrame->hide();
@@ -507,7 +507,7 @@ WorkSheet::replaceDisplay(uint r, uint c, QDomElement& element)
 		kdDebug () << "Unkown class " <<  classType << endl;
 		return (false);
 	}
-	CHECK_PTR(newDisplay);
+	Q_CHECK_PTR(newDisplay);
 	newDisplay->setUpdateInterval(updateInterval);
 
 	// load display specific settings
@@ -586,14 +586,14 @@ WorkSheet::createGrid(uint r, uint c)
 
 	// create grid layout with specified dimentions
 	lm = new QGridLayout(this, r, c, 5);
-	CHECK_PTR(lm);
+	Q_CHECK_PTR(lm);
 
 	displays = new SensorDisplay**[rows];
-	CHECK_PTR(displays);
+	Q_CHECK_PTR(displays);
 	for (r = 0; r < rows; ++r)
 	{
 		displays[r] = new SensorDisplay*[columns];
-		CHECK_PTR(displays[r]);
+		Q_CHECK_PTR(displays[r]);
 		for (c = 0; c < columns; ++c)
 			displays[r][c] = 0;
 	}
@@ -611,11 +611,11 @@ WorkSheet::resizeGrid(uint newRows, uint newColumns)
 	uint r, c;
 	/* Create new array for display pointers */
 	SensorDisplay*** newDisplays = new SensorDisplay**[newRows];
-	CHECK_PTR(newDisplays);
+	Q_CHECK_PTR(newDisplays);
 	for (r = 0; r < newRows; ++r)
 	{
 		newDisplays[r] = new SensorDisplay*[newColumns];
-		CHECK_PTR(newDisplays[r]);
+		Q_CHECK_PTR(newDisplays[r]);
 		for (c = 0; c < newColumns; ++c)
 		{
 			if (c < columns && r < rows)

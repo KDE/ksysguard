@@ -65,16 +65,16 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 	ksgas = 0;
 
 	SensorMgr = new SensorManager();
-	CHECK_PTR(SensorMgr);
+	Q_CHECK_PTR(SensorMgr);
 
 	Style = new StyleEngine();
-	CHECK_PTR(Style);
+	Q_CHECK_PTR(Style);
 
 	dockCnt = 1;
 	docks = new QWidget*[dockCnt];
-	CHECK_PTR(docks);
+	Q_CHECK_PTR(docks);
 	docks[0] = new QFrame(this);
-	CHECK_PTR(docks[0]);
+	Q_CHECK_PTR(docks[0]);
 	((QFrame*) docks[0])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
 	QToolTip::add(docks[0],
 				  i18n("Drag sensors from the KDE System Guard into "
@@ -125,7 +125,7 @@ KSysGuardApplet::preferences()
 {
 	ksgas = new KSysGuardAppletSettings(
 		this, "KSysGuardAppletSettings", true);
-	CHECK_PTR(ksgas);
+	Q_CHECK_PTR(ksgas);
 																
 	connect(ksgas->applyButton, SIGNAL(clicked()),
 			this, SLOT(applySettings()));
@@ -232,17 +232,17 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 				{
 					case 1:
 						wdg = new FancyPlotter(this, "FancyPlotter", sensorDescr, 100.0, 100.0, true);
-						CHECK_PTR(wdg);
+						Q_CHECK_PTR(wdg);
 						break;
 
 					case 2:
 						wdg = new MultiMeter(this, "MultiMeter", sensorDescr, 100.0, 100.0, true);
-						CHECK_PTR(wdg);
+						Q_CHECK_PTR(wdg);
 						break;
 
 					case 3:
 						wdg = new DancingBars(this, "DancingBars", sensorDescr, 100.0, 100.0, true);
-						CHECK_PTR(wdg);
+						Q_CHECK_PTR(wdg);
 						break;
 				}
 
@@ -288,7 +288,7 @@ KSysGuardApplet::removeDisplay(SensorDisplay* sd)
 		{
 			delete docks[i];
 			docks[i] = new QFrame(this);
-			CHECK_PTR(docks[i]);
+			Q_CHECK_PTR(docks[i]);
 			((QFrame*) docks[i])->
 				setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
 			QToolTip::add(docks[i],
@@ -316,7 +316,7 @@ KSysGuardApplet::resizeDocks(uint newDockCnt)
 
 	// Create and initialize new dock array.
 	QWidget** tmp = new QWidget*[newDockCnt];
-	CHECK_PTR(tmp);
+	Q_CHECK_PTR(tmp);
 
 	uint i;
 	// Copy old docks into new.
@@ -330,7 +330,7 @@ KSysGuardApplet::resizeDocks(uint newDockCnt)
 	for (i = dockCnt; i < newDockCnt; ++i)
 	{
 		tmp[i] = new QFrame(this);
-		CHECK_PTR(tmp[i]);
+		Q_CHECK_PTR(tmp[i]);
 		((QFrame*) tmp[i])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
 		QToolTip::add(tmp[i],
 					  i18n("Drag sensors from the KDE System Guard into "
@@ -441,7 +441,7 @@ KSysGuardApplet::load()
 					 "this type of sensor. Please choose another sensor."));
 			return (FALSE);
 		}
-		CHECK_PTR(newDisplay);
+		Q_CHECK_PTR(newDisplay);
 
 		newDisplay->setUpdateInterval(updateInterval);
 		// load display specific settings

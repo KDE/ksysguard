@@ -64,7 +64,7 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 		lcd = new QLCDNumber(this, "meterLCD");
 	else
 		lcd = new QLCDNumber(frame, "meterLCD");
-	CHECK_PTR(lcd);
+	Q_CHECK_PTR(lcd);
 	lcd->setSegmentStyle(QLCDNumber::Filled);
 	setDigitColor(Style->getBackgroundColor());
 	lcd->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
@@ -229,7 +229,7 @@ void
 MultiMeter::settings()
 {
 	mms = new MultiMeterSettings(this, "MultiMeterSettings", TRUE);
-	CHECK_PTR(mms);
+	Q_CHECK_PTR(mms);
 	mms->title->setText(title);
 	mms->title->setFocus();
 	mms->showUnit->setChecked(showUnit);

@@ -56,7 +56,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 
 	// Create the table that lists the processes.
 	pList = new ProcessList(this, "pList");    
-	CHECK_PTR(pList);
+	Q_CHECK_PTR(pList);
 	connect(pList, SIGNAL(killProcess(int, int)),
 			this, SLOT(killProcess(int, int)));
 	connect(pList, SIGNAL(listModified(bool)),
@@ -64,7 +64,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 
 	// Create the check box to switch between tree view and list view.
 	xbTreeView = new QCheckBox(i18n("&Tree"), this, "xbTreeView");
-	CHECK_PTR(xbTreeView);
+	Q_CHECK_PTR(xbTreeView);
 	xbTreeView->setMinimumSize(xbTreeView->sizeHint());
 	connect(xbTreeView, SIGNAL(toggled(bool)),
 			this, SLOT(setTreeView(bool)));
@@ -73,7 +73,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	 * cbFilter must be created prior to constructing pList as the
 	 * pList constructor sets cbFilter to its start value. */
 	cbFilter = new QComboBox(this, "pList_cbFilter");
-	CHECK_PTR(cbFilter);
+	Q_CHECK_PTR(cbFilter);
 	cbFilter->insertItem(i18n("All processes"), 0);
 	cbFilter->insertItem(i18n("System processes"), 1);
 	cbFilter->insertItem(i18n("User processes"), 2);
@@ -87,19 +87,19 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 
 	// Create the check box to pause the automatic list update.
 	xbPause = new QCheckBox(i18n("&Pause"), this, "xbPause");
-	CHECK_PTR(xbPause);
+	Q_CHECK_PTR(xbPause);
 	xbPause->setMinimumSize(xbPause->sizeHint());
 	connect(xbPause, SIGNAL(toggled(bool)), this, SLOT(togglePause(bool)));
 
 	// Create the 'Refresh' button.
 	bRefresh = new QPushButton(i18n("&Refresh"), this, "bRefresh");
-	CHECK_PTR(bRefresh);
+	Q_CHECK_PTR(bRefresh);
 	bRefresh->setMinimumSize(bRefresh->sizeHint());
 	connect(bRefresh, SIGNAL(clicked()), this, SLOT(updateList()));
 
 	// Create the 'Kill' button.
 	bKill = new QPushButton(i18n("&Kill"), this, "bKill");
-	CHECK_PTR(bKill);
+	Q_CHECK_PTR(bKill);
 	bKill->setMinimumSize(bKill->sizeHint());
 	connect(bKill, SIGNAL(clicked()), this, SLOT(killProcess()));
 	/* Disable the kill button until we know that the daemon supports the
@@ -109,12 +109,12 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 
 	// Setup the geometry management.
 	gm = new QVBoxLayout(this, 10);
-	CHECK_PTR(gm);
+	Q_CHECK_PTR(gm);
 	gm->addSpacing(15);
 	gm->addWidget(pList, 1);
 
 	gm1 = new QHBoxLayout();
-	CHECK_PTR(gm1);
+	Q_CHECK_PTR(gm1);
 	gm->addLayout(gm1, 0);
 	gm1->addStretch();
 	gm1->addWidget(xbTreeView);

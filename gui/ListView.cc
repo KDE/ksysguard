@@ -88,7 +88,7 @@ ListView::ListView(QWidget* parent, const char* name, const QString& t,
 {
 	setBackgroundColor(Style->getBackgroundColor());
 	monitor = new MyListView(frame);
-	CHECK_PTR(monitor);
+	Q_CHECK_PTR(monitor);
 	monitor->setSelectionMode(QListView::NoSelection);
 	monitor->setItemMargin(2);
 
@@ -97,7 +97,7 @@ ListView::ListView(QWidget* parent, const char* name, const QString& t,
 											KIcon::Desktop, KIcon::SizeSmall);
 
 	errorLabel = new QLabel(monitor);
-	CHECK_PTR(errorLabel);
+	Q_CHECK_PTR(errorLabel);
 
 	errorLabel->setPixmap(errorIcon);
 	errorLabel->resize(errorIcon.size());
@@ -240,7 +240,7 @@ void
 ListView::settings()
 {
 	lvs = new ListViewSettings(this, "ListViewSettings", TRUE);
-	CHECK_PTR(lvs);
+	Q_CHECK_PTR(lvs);
 	connect(lvs->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
 
 	lvs->gridColor->setColor(monitor->getGridColor());

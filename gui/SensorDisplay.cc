@@ -48,7 +48,7 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 	QWhatsThis::add(this, "dummy");
 
 	frame = new QGroupBox(1, Qt::Vertical, "", this, "displayFrame"); 
-	CHECK_PTR(frame);
+	Q_CHECK_PTR(frame);
 
 	/* All RMB clicks to the box frame will be handled by 
 	 * SensorDisplay::eventFilter. */

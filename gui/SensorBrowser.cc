@@ -55,7 +55,7 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	setRootIsDecorated(TRUE);
 
 	icons = new KIconLoader();
-	CHECK_PTR(icons);
+	Q_CHECK_PTR(icons);
 
 	// The sensor browser can be completely hidden.
 	setMinimumWidth(1);
@@ -110,14 +110,14 @@ SensorBrowser::update()
 	{
 		QString hostName = sensorManager->getHostName(host);
 		QListViewItem* lvi = new QListViewItem(this, hostName);
-		CHECK_PTR(lvi);
+		Q_CHECK_PTR(lvi);
 
 		QPixmap pix = icons->loadIcon("computer", KIcon::Desktop,
 									  KIcon::SizeSmall);
 		lvi->setPixmap(0, pix);
 
 		HostInfo* hostInfo = new HostInfo(id, host, hostName, lvi);
-		CHECK_PTR(hostInfo);
+		Q_CHECK_PTR(hostInfo);
 		hostInfos.append(hostInfo);
 
 		// request sensor list from host
@@ -206,7 +206,7 @@ SensorBrowser::answerReceived(int id, const QString& s)
 			if (!found)
 			{
 				QListViewItem* lvi = new QListViewItem(parent, name);
-				CHECK_PTR(lvi);
+				Q_CHECK_PTR(lvi);
 				if (j == absolutePath.numberOfTokens() - 1)
 				{
 					QPixmap pix = icons->loadIcon("ksysguardd",
@@ -261,7 +261,7 @@ SensorBrowser::viewportMouseMoveEvent(QMouseEvent* ev)
 		+ (*it)->getSensorDescription(item);
 
 	QDragObject* dObj = new QTextDrag(dragText, this);
-	CHECK_PTR(dObj);
+	Q_CHECK_PTR(dObj);
 	dObj->dragCopy();
 }
 

@@ -32,12 +32,12 @@ LogFileSettings::LogFileSettings(QWidget *parent, const char *name)
 	: QDialog(parent, name, TRUE)
 {
 	QVBoxLayout *tablayout = new QVBoxLayout(this, 2);
-	CHECK_PTR(tablayout);
+	Q_CHECK_PTR(tablayout);
 
 	tabWidget = new QTabWidget(this);
-	CHECK_PTR(tabWidget);
+	Q_CHECK_PTR(tabWidget);
 	actionButtons = new KButtonBox(this);
-	CHECK_PTR(actionButtons);
+	Q_CHECK_PTR(actionButtons);
 
 	actionButtons->addStretch(1);
 	actionButtons->addButton(i18n("&Ok"), this, SLOT(accept()), FALSE);
@@ -51,38 +51,38 @@ LogFileSettings::LogFileSettings(QWidget *parent, const char *name)
 
 	// text sheet
 	QWidget *textWidget = new QWidget(tabWidget);
-	CHECK_PTR(textWidget);
+	Q_CHECK_PTR(textWidget);
 
 	QVBoxLayout *textLayout = new QVBoxLayout(textWidget, 3);
-	CHECK_PTR(textLayout);
+	Q_CHECK_PTR(textLayout);
 
 	QGroupBox *titleFrame = new QGroupBox(textWidget, "titleFrame");
-	CHECK_PTR(titleFrame);
+	Q_CHECK_PTR(titleFrame);
 	titleFrame->setColumnLayout(0, Qt::Vertical );
 	titleFrame->layout()->setMargin(10);
 	titleFrame->setTitle(i18n("Title"));
 
 	QVBoxLayout *vbox1 = new QVBoxLayout(titleFrame->layout());
-	CHECK_PTR(vbox1);
+	Q_CHECK_PTR(vbox1);
 
 	titleText = new QLineEdit(titleFrame, "titleText");
-	CHECK_PTR(titleText);
+	Q_CHECK_PTR(titleText);
 	vbox1->addWidget(titleText);
 
 	QGroupBox *colorFrame = new QGroupBox(textWidget, "colorFrame");
-	CHECK_PTR(colorFrame);
+	Q_CHECK_PTR(colorFrame);
 	colorFrame->setColumnLayout(0, Qt::Vertical );
 	colorFrame->layout()->setMargin(10);
 	colorFrame->setTitle(i18n("Colors"));
 
 	QVBoxLayout *vbox2 = new QVBoxLayout(colorFrame->layout());
-	CHECK_PTR(vbox2);
+	Q_CHECK_PTR(vbox2);
 
 	fgColorPicker = new ColorPicker(colorFrame);
-	CHECK_PTR(fgColorPicker);
+	Q_CHECK_PTR(fgColorPicker);
 	fgColorPicker->setText(i18n("Foreground Color"));
 	bgColorPicker = new ColorPicker(colorFrame);
-	CHECK_PTR(bgColorPicker);
+	Q_CHECK_PTR(bgColorPicker);
 	bgColorPicker->setText(i18n("Background Color"));
 
 	vbox2->addWidget(fgColorPicker);
@@ -90,16 +90,16 @@ LogFileSettings::LogFileSettings(QWidget *parent, const char *name)
 	vbox2->addWidget(bgColorPicker);
 
 	QGroupBox *fontFrame = new QGroupBox(textWidget, "fontFrame");
-	CHECK_PTR(fontFrame);
+	Q_CHECK_PTR(fontFrame);
 	fontFrame->setColumnLayout(0, Qt::Vertical );
 	fontFrame->layout()->setMargin(10);
 	fontFrame->setTitle(i18n("Font"));
 
 	QHBoxLayout *hbox1 = new QHBoxLayout(fontFrame->layout());
-	CHECK_PTR(hbox1);
+	Q_CHECK_PTR(hbox1);
 
 	fontButton = new QPushButton(i18n("Font"), fontFrame);
-	CHECK_PTR(fontButton);
+	Q_CHECK_PTR(fontButton);
 	fontButton->setFixedSize(100, 25);
 
 	hbox1->addStretch(1);
@@ -115,24 +115,24 @@ LogFileSettings::LogFileSettings(QWidget *parent, const char *name)
 
 	// filter sheet
 	QWidget *filterWidget = new QWidget(tabWidget);
-	CHECK_PTR(filterWidget);
+	Q_CHECK_PTR(filterWidget);
 
 	QVBoxLayout *vbox3 = new QVBoxLayout(filterWidget, 1);
-	CHECK_PTR(vbox3);
+	Q_CHECK_PTR(vbox3);
 	vbox3->setMargin(10);
 
 	QGroupBox *filterFrame = new QGroupBox(filterWidget, "filterWidget");
-	CHECK_PTR(filterFrame);
+	Q_CHECK_PTR(filterFrame);
 
 	QHBoxLayout *layout5 = new QHBoxLayout(filterFrame);
-	CHECK_PTR(layout5);
+	Q_CHECK_PTR(layout5);
 	QVBoxLayout *layout6 = new QVBoxLayout(filterFrame);
-	CHECK_PTR(layout6);
+	Q_CHECK_PTR(layout6);
 	
 	layout5->addLayout(layout6);
 	
 	ruleButtons = new KButtonBox(filterFrame, KButtonBox::Vertical);
-	CHECK_PTR(ruleButtons);
+	Q_CHECK_PTR(ruleButtons);
 	ruleButtons->addButton(i18n("Add"), this, SLOT(slotAddRule()), FALSE);
 	ruleButtons->addButton(i18n("Delete"), this, SLOT(slotDelRule()), FALSE);
 	ruleButtons->addButton(i18n("Change"), this, SLOT(slotChangeRule()), FALSE);
@@ -140,11 +140,11 @@ LogFileSettings::LogFileSettings(QWidget *parent, const char *name)
 	layout5->addWidget(ruleButtons);
 
 	filterText = new QLineEdit(filterFrame);
-	CHECK_PTR(filterText);
+	Q_CHECK_PTR(filterText);
 	layout6->addWidget(filterText);
 
 	ruleList = new QListBox(filterFrame);
-	CHECK_PTR(ruleList);
+	Q_CHECK_PTR(ruleList);
 	layout6->addWidget(ruleList);
 
 	vbox3->addWidget(filterFrame);

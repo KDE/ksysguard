@@ -45,12 +45,12 @@ SLListViewItem::SLListViewItem(QListView *parent)
 
 LogSensor::LogSensor(QListView *parent)
 {
-	CHECK_PTR(parent);
+	Q_CHECK_PTR(parent);
 
 	monitor = parent;
 
 	lvi = new SLListViewItem(monitor);
-	CHECK_PTR(lvi);
+	Q_CHECK_PTR(lvi);
 
 	lowerLimit = 0;
 	lowerLimitActive = 0;
@@ -58,7 +58,7 @@ LogSensor::LogSensor(QListView *parent)
 	upperLimitActive = 0;
 
 	KIconLoader *icons = new KIconLoader();
-	CHECK_PTR(icons);
+	Q_CHECK_PTR(icons);
 	pixmap_running = icons->loadIcon("running", KIcon::Small, KIcon::SizeSmall);
 	pixmap_waiting = icons->loadIcon("waiting", KIcon::Small, KIcon::SizeSmall);
 	delete icons;
@@ -101,7 +101,7 @@ void
 LogSensor::answerReceived(int id, const QString& answer)
 {
 	logFile = new QFile(fileName);
-	CHECK_PTR(logFile);
+	Q_CHECK_PTR(logFile);
 
 	if (!logFile->open(IO_ReadWrite | IO_Append))
 	{
@@ -148,7 +148,7 @@ SensorLogger::SensorLogger(QWidget *parent, const char *name, const QString&)
 	: SensorDisplay(parent, name)
 {
 	monitor = new QListView(this, "monitor");
-	CHECK_PTR(monitor);
+	Q_CHECK_PTR(monitor);
 
 	monitor->addColumn(i18n("Logging"));
 	monitor->addColumn(i18n("TimerInterval"));
@@ -184,7 +184,7 @@ SensorLogger::addSensor(const QString& hostName, const QString& sensorName, cons
 		return (false);
 
 	sld = new SensorLoggerDlg(this, "SensorLoggerDlg", true);
-	CHECK_PTR(sld);
+	Q_CHECK_PTR(sld);
 
 	sld->applyButton->hide();
 	connect(sld->fileButton, SIGNAL(clicked()), this, SLOT(fileSelect()));
@@ -192,7 +192,7 @@ SensorLogger::addSensor(const QString& hostName, const QString& sensorName, cons
 	if (sld->exec()) {
 		if (!sld->fileName->text().isEmpty()) {
 			LogSensor *sensor = new LogSensor(monitor);
-			CHECK_PTR(sensor);
+			Q_CHECK_PTR(sensor);
 
 			sensor->setHostName(hostName);
 			sensor->setSensorName(sensorName);
@@ -219,7 +219,7 @@ bool
 SensorLogger::editSensor(LogSensor* sensor)
 {
 	sld = new SensorLoggerDlg(this, "SensorLoggerDlg", true);
-	CHECK_PTR(sld);
+	Q_CHECK_PTR(sld);
 
 	connect(sld->fileButton, SIGNAL(clicked()), this, SLOT(fileSelect()));
 
@@ -268,7 +268,7 @@ SensorLogger::settings()
 	QColorGroup cgroup = monitor->colorGroup();
 
 	sls = new SensorLoggerSettings(this, "SensorLoggerSettings", TRUE);
-	CHECK_PTR(sls);
+	Q_CHECK_PTR(sls);
 
 	connect(sls->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
 
@@ -333,7 +333,7 @@ SensorLogger::createFromDOM(QDomElement& element)
 	for (uint i = 0; i < dnList.count(); i++) {
 		QDomElement element = dnList.item(i).toElement();
 		LogSensor* sensor = new LogSensor(monitor);
-		CHECK_PTR(sensor);
+		Q_CHECK_PTR(sensor);
 
 		sensor->setHostName(element.attribute("hostName"));
 		sensor->setSensorName(element.attribute("sensorName"));

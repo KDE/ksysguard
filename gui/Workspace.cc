@@ -147,7 +147,7 @@ Workspace::newWorkSheet()
 
 	WorkSheetSettings* wss = new WorkSheetSettings(this, "WorkSheetSettings",
 												   true);
-	CHECK_PTR(wss);
+	Q_CHECK_PTR(wss);
 	wss->sheetName->setText(sheetName);
 	wss->sheetName->setFocus();
 	if (wss->exec())
@@ -155,7 +155,7 @@ Workspace::newWorkSheet()
 		WorkSheet* sheet = new WorkSheet(this, wss->rows->text().toUInt(),
 										 wss->columns->text().toUInt(),
 										 wss->interval->text().toUInt());
-		CHECK_PTR(sheet);
+		Q_CHECK_PTR(sheet);
 		insertTab(sheet, wss->sheetName->text());
 		sheets.append(sheet);
 		showPage(sheet);
@@ -369,7 +369,7 @@ Workspace::restoreWorkSheet(const QString& fileName, const QString& newName)
 	baseName = baseName.left(baseName.findRev('.'));
 
 	WorkSheet* sheet = new WorkSheet(this);
-	CHECK_PTR(sheet);
+	Q_CHECK_PTR(sheet);
 	insertTab(sheet, baseName);
 	showPage(sheet);
 	if (!sheet->load(fileName))

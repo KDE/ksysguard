@@ -61,7 +61,7 @@ DancingBars::DancingBars(QWidget* parent, const char* name,
 		plotter = new BarGraph(this, "signalPlotter");
 	else
 		plotter = new BarGraph(frame, "signalPlotter");
-	CHECK_PTR(plotter);
+	Q_CHECK_PTR(plotter);
 
 	setMinimumSize(sizeHint());
 
@@ -100,7 +100,7 @@ void
 DancingBars::settings()
 {
 	dbs = new DancingBarsSettings(this, "DancingBarsSettings", true);
-	CHECK_PTR(dbs);
+	Q_CHECK_PTR(dbs);
 
 	dbs->title->setText(frame->title());
 	dbs->title->setFocus();
@@ -215,7 +215,7 @@ DancingBars::settingsEdit()
 
 	BarGraphSettings* bgs = new BarGraphSettings(
 		this, "BarsGraphSettings", true);
-	CHECK_PTR(dbs);
+	Q_CHECK_PTR(dbs);
 
 	bgs->label->setText(lvi->text(2));
 	if (bgs->exec())
