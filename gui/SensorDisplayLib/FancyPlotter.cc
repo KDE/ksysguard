@@ -396,12 +396,13 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 	QString tooltip;
 	for (uint i = 0; i < beams; ++i)
 	{
+		kdDebug() << "i=" << i << ":" << beams <<  endl;
 		if (i == 0)
-			tooltip += QString("%1:%2").arg(sensors.at(i)->hostName)
-				.arg(sensors.at(i)->name);
+			tooltip += QString("%1:%2").arg(sensors.at(beams - i - 1)->hostName)
+				.arg(sensors.at(beams - i - 1)->name);
 		else
-			tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName)
-				.arg(sensors.at(i)->name);
+			tooltip += QString("\n%1:%2").arg(sensors.at(beams - i - 1)->hostName)
+				.arg(sensors.at(beams - i - 1)->name);
 	}
 	QToolTip::remove(plotter);
 	QToolTip::add(plotter, tooltip);
@@ -427,11 +428,11 @@ FancyPlotter::removeSensor(uint idx)
 	for (uint i = 0; i < beams; ++i)
 	{
 		if (i == 0)
-			tooltip += QString("%1:%2").arg(sensors.at(i)->hostName)
-				.arg(sensors.at(i)->name);
+			tooltip += QString("%1:%2").arg(sensors.at(beams - i - 1)->hostName)
+				.arg(sensors.at(beams - i - 1)->name);
 		else
-			tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName)
-				.arg(sensors.at(i)->name);
+			tooltip += QString("\n%1:%2").arg(sensors.at(beams - i - 1)->hostName)
+				.arg(sensors.at(beams - i - 1)->name);
 	}
 	QToolTip::remove(plotter);
 	QToolTip::add(plotter, tooltip);
