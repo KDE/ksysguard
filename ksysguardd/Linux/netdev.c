@@ -30,61 +30,64 @@
 #include "Command.h"
 #include "netdev.h"
 
-#define CALC(a, b, c, d) \
+#define CALC(a, b, c, d, e) \
 { \
 	NetDevs[i].a = a - NetDevs[i].Old##a; \
 	NetDevs[i].Old##a = a; \
 }
 
-#define REGISTERSENSOR(a, b, c, d) \
+#define REGISTERSENSOR(a, b, c, d, e) \
 { \
 	sprintf(mon, "network/interfaces/%s/%s", tag, b); \
 	registerMonitor(mon, "integer", printNetDev##a, \
 					printNetDev##a##Info); \
 }
 
-#define UNREGISTERSENSOR(a, b, c, d) \
+#define UNREGISTERSENSOR(a, b, c, d, e) \
 { \
 	sprintf(mon, "network/interfaces/%s/%s", NetDevs[i].name, b); \
 	removeMonitor(mon); \
 }
 
-#define DEFMEMBERS(a, b, c, d) \
+#define DEFMEMBERS(a, b, c, d, e) \
 unsigned long Old##a; \
-unsigned long a;
+unsigned long a; \
+unsigned long a##Scale;
 
-#define DEFVARS(a, b, c, d) \
+#define DEFVARS(a, b, c, d, e) \
 unsigned long a;
 
 #define FORALL(a) \
-	a(recBytes, "receiver/data", "Received Data", "kBytes/s") \
-	a(recPacks, "receiver/packets", "Received Packets", "1/s") \
-	a(recErrs, "receiver/errors", "Receiver Errors", "1/s") \
-	a(recDrop, "receiver/drops", "Receiver Drops", "1/s") \
-	a(recFifo, "receiver/fifo", "Receiver FIFO Overruns", "1/s") \
-	a(recFrame, "receiver/frame", "Receiver Frame Errors", "1/s") \
+	a(recBytes, "receiver/data", "Received Data", "kBytes/s", 1024) \
+	a(recPacks, "receiver/packets", "Received Packets", "1/s", 1) \
+	a(recErrs, "receiver/errors", "Receiver Errors", "1/s", 1) \
+	a(recDrop, "receiver/drops", "Receiver Drops", "1/s", 1) \
+	a(recFifo, "receiver/fifo", "Receiver FIFO Overruns", "1/s", 1) \
+	a(recFrame, "receiver/frame", "Receiver Frame Errors", "1/s", 1) \
 	a(recCompressed, "receiver/compressed", "Received Compressed Packets", \
-	  "1/s") \
+	  "1/s", 1) \
 	a(recMulticast, "receiver/multicast", "Received Multicast Packets", \
-	  "1/s") \
-	a(sentBytes, "transmitter/data", "Sent Data", "kBytes/s") \
-	a(sentPacks, "transmitter/packs", "Sent Packets", "1/s") \
-	a(sentErrs, "transmitter/errors", "Transmitter Errors", "1/s") \
-	a(sentDrop, "transmitter/drops", "Transmitter Drops", "1/s") \
-	a(sentFifo, "transmitter/fifo", "Transmitter FIFO overruns", "1/s") \
-	a(sentColls, "transmitter/collisions", "Transmitter Collisions", "1/s") \
+	  "1/s", 1) \
+	a(sentBytes, "transmitter/data", "Sent Data", "kBytes/s", 1024) \
+	a(sentPacks, "transmitter/packets", "Sent Packets", "1/s", 1) \
+	a(sentErrs, "transmitter/errors", "Transmitter Errors", "1/s", 1) \
+	a(sentDrop, "transmitter/drops", "Transmitter Drops", "1/s", 1) \
+	a(sentFifo, "transmitter/fifo", "Transmitter FIFO overruns", "1/s", 1) \
+	a(sentColls, "transmitter/collisions", "Transmitter Collisions", \
+	  "1/s", 1) \
 	a(sentCarrier, "transmitter/carrier", "Transmitter Carrier losses", \
-	  "1/s") \
+	  "1/s", 1) \
 	a(sentCompressed, "transmitter/compressed", \
-	  "Transmitter Compressed Packets", "1/s")
+	  "Transmitter Compressed Packets", "1/s", 1)
 
-#define SETZERO(a, b, c, d) \
+#define SETZERO(a, b, c, d, e) \
 a = 0;
 
-#define SETMEMBERZERO(a, b, c, d) \
-NetDevs[i].a = 0;
+#define SETMEMBERZERO(a, b, c, d, e) \
+NetDevs[i].a = 0; \
+NetDevs[i].a##Scale = e;
 
-#define DECLAREFUNC(a, b, c, d) \
+#define DECLAREFUNC(a, b, c, d, e) \
 void printNetDev##a(const char* cmd); \
 void printNetDev##a##Info(const char* cmd);
 
@@ -352,7 +355,7 @@ checkNetDev(void)
 	initNetDev();
 }
 
-#define PRINTFUNC(a, b, c, d) \
+#define PRINTFUNC(a, b, c, d, e) \
 void \
 printNetDev##a(const char* cmd) \
 { \
@@ -372,7 +375,7 @@ printNetDev##a(const char* cmd) \
 		if (strcmp(NetDevs[i].name, dev) == 0) \
 		{ \
 			fprintf(currentClient, "%lu\n", (unsigned long) \
-				   (NetDevs[i].a / (1024 * timeInterval))); \
+				   (NetDevs[i].a / (NetDevs[i].a##Scale * timeInterval))); \
 			return; \
 		} \
  \
