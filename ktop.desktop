@@ -47,7 +47,6 @@ Name[sr]=Task Menad¾er
 Name[sv]=Aktivitetshanterare
 Exec=ktop
 Icon=ktop
-MiniIcon=ktop
 Type=Application
 DocPath=ktop/ktop.html
 TerminalOptions=

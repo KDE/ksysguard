@@ -9,7 +9,6 @@ Name[ja]=¥¿¥¹¥¯¥Þ¥Í¡¼¥¸¥ã¡¼¤È¥·¥¹¥Æ¥à¥â¥Ë¥¿¡¼
 Name[no_NY]=Oppgåvebehandlar og systemovervakar
 Exec=ktop
 Icon=ktop
-MiniIcon=ktop
 Type=Application
 DocPath=ktop/ktop.html
 TerminalOptions=
