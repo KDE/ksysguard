@@ -27,13 +27,14 @@
 #include <qdom.h>
 #include <qfile.h>
 #include <qtextstream.h>
-
+#include <qpopupmenu.h>
 #include <kmessagebox.h>
 #include <klocale.h>
 
 #include "WorkSheet.h"
 #include "SensorManager.h"
 #include "FancyPlotter.h"
+#include "MultiMeter.h"
 #include "ProcessController.h"
 #include "WorkSheet.moc"
 
@@ -156,7 +157,9 @@ WorkSheet::load(const QString& fN)
 		QString classType = element.attribute("class");
 		SensorDisplay* newDisplay;
 		if (classType == "FancyPlotter")
-			newDisplay = new FancyPlotter(this, 0);
+			newDisplay = new FancyPlotter(this);
+		else if (classType == "MultiMeter")
+			newDisplay = new MultiMeter(this);
 		else if (classType == "ProcessController")
 			newDisplay = new ProcessController(this);
 		else
@@ -234,7 +237,7 @@ WorkSheet::save(const QString& fN)
 
 SensorDisplay*
 WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
-					  const QString& sensorType,
+					  const QString& sensorType, const QString& sensorDescr,
 					  int r, int c, const QString& displayType)
 {
 	if (!SensorMgr->engage(hostName))
@@ -255,7 +258,24 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 		 * handled with a popup menu that lists all possible sensor
 		 * displays for the sensor type. */
 		if (sensorType == "integer")
-			newDisplay = new FancyPlotter(this, 0, sensorName);
+		{
+			QPopupMenu pm;
+			pm.insertItem(i18n("Select a display type"), 0);
+			pm.setItemEnabled(0, FALSE);
+			pm.insertSeparator();
+			pm.insertItem(i18n("&Signal Plotter"), 1);
+			pm.insertItem(i18n("&Multimeter"), 2);
+			switch (pm.exec(QCursor::pos()))
+			{
+			case 1:
+				newDisplay = new FancyPlotter(this, sensorName,
+											  sensorDescr);
+				break;
+			case 2:
+				newDisplay = new MultiMeter(this, sensorName, sensorDescr);
+				break;
+			}
+		}
 		else if (sensorType == "table")
 			newDisplay = new ProcessController(this);
 		else
@@ -310,7 +330,9 @@ WorkSheet::dropEvent(QDropEvent* ev)
 		dObj.remove(0, dObj.find(' ') + 1);
 		QString sensorName = dObj.left(dObj.find(' '));
 		dObj.remove(0, dObj.find(' ') + 1);
-		QString sensorType = dObj;
+		QString sensorType = dObj.left(dObj.find(' '));
+		dObj.remove(0, dObj.find(' ') + 1);
+		QString sensorDescr = dObj;
 
 		if (hostName.isEmpty() || sensorName.isEmpty() ||
 			sensorType.isEmpty())
@@ -324,7 +346,8 @@ WorkSheet::dropEvent(QDropEvent* ev)
 			for (int j = 0; j < columns; ++j)
 				if (displays[i][j]->geometry().contains(ev->pos()))
 				{
-					addDisplay(hostName, sensorName, sensorType, i, j);
+					addDisplay(hostName, sensorName, sensorType,
+							   sensorDescr, i, j);
 
 					// Notify parent about possibly new minimum size.
 					((QWidget*) parent()->parent())->setMinimumSize(

@@ -46,19 +46,24 @@ public:
 		: lvi(l), name(n), description(d), type(t) { }
 	~SensorInfo() { }
 
-	QListViewItem* getLVI()
+	QListViewItem* getLVI() const
 	{
 		return (lvi);
 	}
 
-	const QString& getName()
+	const QString& getName() const
 	{
 		return (name);
 	}
 
-	const QString& getType()
+	const QString& getType() const
 	{
 		return (type);
+	}
+
+	const QString& getDescription() const
+	{
+		return (description);
 	}
 
 private:
@@ -118,6 +123,16 @@ public:
 		assert(it.current());
 
 		return ((*it)->getType());
+	}
+
+	const QString& getSensorDescription(const QListViewItem* lvi) const
+	{
+		QListIterator<SensorInfo> it(sensors);
+		for ( ; it.current() && (*it)->getLVI() != lvi; ++it)
+			;
+		assert(it.current());
+
+		return ((*it)->getDescription());
 	}
 
 	void addSensor(QListViewItem* lvi, const QString& name,

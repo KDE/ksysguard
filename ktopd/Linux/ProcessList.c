@@ -236,7 +236,7 @@ updateProcess(int pid)
 		userDiff = userTime - ps->userTime;
 		sysDiff = sysTime - ps->sysTime;
 
-		if (timeDiff > 0)
+		if ((timeDiff > 0) && (userDiff > 0) && (sysDiff > 0))
 		{
 			ps->userLoad = ((double) userDiff / timeDiff) * 100.0;
 			ps->sysLoad = ((double) sysDiff / timeDiff) * 100.0;
@@ -391,8 +391,8 @@ updateProcessList(void)
 void
 printProcessListInfo(const char* cmd)
 {
-	printf("Name\tPID\tPPID\tUID\tGID\tStatus\tNice\tVmSize\tVmRss"
-		   "\tVmLib\tUser%%\tSystem%%\tLogin\tCommand\n");
+	printf("Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize"
+		   "\tVmRss\tVmLib\tLogin\tCommand\n");
 	printf("s\td\td\td\td\ts\td\td\td\td\tf\tf\ts\ts\n");
 }
 
@@ -406,13 +406,13 @@ printProcessList(const char* cmd)
 	{
 		ProcessInfo* ps = get_ctnr(ProcessList, i);
 
-		printf("%s\t%ld\t%ld\t%ld\t%ld\t%c\t%d\t%d\t%d\t%d"
-			   "\t%3.2f\t%3.2f\t%s\t%s\n",
+		printf("%s\t%ld\t%ld\t%ld\t%ld\t%c\t%.2f\t%.2f\t%d\t%d\t%d\t%d"
+			   "\t%s\t%s\n",
 			   ps->name, (long) ps->pid, (long) ps->ppid,
 			   (long) ps->uid, (long) ps->gid, ps->status,
-			   ps->niceLevel, 
+			   ps->userLoad, ps->sysLoad, ps->niceLevel, 
 			   ps->vmSize / 1024, ps->vmRss / 1024, ps->vmLib / 1024,
-			   ps->userLoad, ps->sysLoad, ps->userName, ps->cmdline);
+			   ps->userName, ps->cmdline);
 	}
 }
 

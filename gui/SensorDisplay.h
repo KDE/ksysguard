@@ -50,7 +50,6 @@ public:
 	SensorDisplay(QWidget* parent = 0, const char* name = 0);
 	~SensorDisplay();
 
-	void registerSensor(const QString& hostName, const QString& sensorName);
 	virtual bool addSensor(const QString&, const QString&, const QString&)
 	{
 		return (FALSE);
@@ -121,6 +120,8 @@ signals:
 
 protected:
 	virtual void timerEvent(QTimerEvent*);
+
+	void registerSensor(const QString& hostName, const QString& sensorName);
 
 	QList<const QString> hostNames;
 	QList<const QString> sensorNames;

@@ -212,12 +212,16 @@ SensorBrowser::viewportMouseMoveEvent(QMouseEvent* ev)
 	if (!it.current())
 		return;
 
-	// Create text drag object as "<hostname> <sensorname> <sensortype>".
+	// Create text drag object as
+	// "<hostname> <sensorname> <sensortype> <sensordescription>".
+	// Only the description may contain blanks.
 	dragText = (*it)->getHostName() + " "
 		+ (*it)->getSensorName(item) + " "
-		+ (*it)->getSensorType(item);
+		+ (*it)->getSensorType(item) + " "
+		+ (*it)->getSensorDescription(item);
 
 	QDragObject* dObj = new QTextDrag(dragText, this);
 	CHECK_PTR(dObj);
 	dObj->dragCopy();
 }
+

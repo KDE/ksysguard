@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,89 +25,95 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <qcolor.h>
+#include <qgroupbox.h>
+#include <qlcdnumber.h>
+#include <qdom.h>
+#include <qtextstream.h>
 
 #include "MultiMeter.moc"
 
-static const int GMBorder = 2;
-static const int LCDHeight = 21;
+static const int FrameMargin = 0;
+static const int Margin = 5;
+static const int HeadHeight = 10;
 
-MultiMeter::MultiMeter(QWidget* parent, const char* name, int minVal,
-					   int maxVal)
-	: QWidget(parent, name)
+MultiMeter::MultiMeter(QWidget* parent, const QString& name,
+					   const QString& t, int, int)
+	: SensorDisplay(parent, name)
 {
-	meters = 0;
-	digits = (int) log10(QMAX(abs(minVal), abs(maxVal))) + 1;
-	if (minVal < 0)
-		digits++;
+	frame = new QGroupBox(this, "meterFrame");
+	CHECK_PTR(frame);
 
-	meterLabel.setAutoDelete(true);
+	setTitle(t, unit);
 
-	gm = new QGridLayout(this, 1, 2);
+	lcd = new QLCDNumber(this, "meterLCD");
+	CHECK_PTR(lcd);
+//	digits = (int) log10(QMAX(abs(minVal), abs(maxVal))) + 1;
 }
 
 bool
-MultiMeter::addMeter(const QString& name, QColor col)
+MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
+					  const QString&)
 {
-	delete gm;
+	registerSensor(hostName, sensorName);
 
-	gm = new QGridLayout(this, ++meters, 2, GMBorder);
+	/* To differentiate between answers from value requests and info
+	 * requests we use 100 for info requests. */
+	sendRequest(hostName, sensorName + "?", 100);
 
-	QLabel* lab = new QLabel(name, this);
-	meterLabel.append(lab);
-
-	QLCDNumber* lcd = new QLCDNumber(this);
-	lcd->setMaximumHeight(LCDHeight);
-	lcd->setMinimumHeight(LCDHeight);
-	lcd->setMaximumWidth(60);
-	lcd->setBackgroundColor(col);
-	lcd->setNumDigits(digits);
-	meterLcd.append(lcd);
-
-	for (int i = 0; i < meters; i++)
-	{
-		gm->addWidget(meterLabel.at(i), i, 0);
-		gm->addWidget(meterLcd.at(i), i, 1);
-		gm->setRowStretch(i, 1);
-	}
-
-	gm->activate();
-
-	return (true);
+	return (TRUE);
 }
 
 void
-MultiMeter::updateValues(int v0, int v1, int v2, int v3, int v4)
+MultiMeter::answerReceived(int id, const QString& answer)
 {
-	if (meters > 0)
-		meterLcd.at(0)->display(v0);
-	if (meters > 1)
-		meterLcd.at(1)->display(v1);
-	if (meters > 2)
-		meterLcd.at(2)->display(v2);
-	if (meters > 3)
-		meterLcd.at(3)->display(v3);
-	if (meters > 4)
-		meterLcd.at(4)->display(v4);
+	if (id == 100)
+	{
+		SensorIntegerInfo info(answer);
+		setTitle(title, info.getUnit());
+	}
+	else
+		lcd->display(answer.toInt());
 }
 
-QSize
-MultiMeter::sizeHint(void)
+void
+MultiMeter::resizeEvent(QResizeEvent*)
 {
-	int maxLab = 0;
-	int maxLcd = 0;
+	frame->setGeometry(0, 0, width(), height());
+ 
+	QRect box = frame->contentsRect();
+	box.setX(Margin);
+	box.setY(HeadHeight + Margin);
+	box.setWidth(width() - 2 * Margin);
+	box.setHeight(height() - HeadHeight - 2 * Margin);
+	lcd->setGeometry(box);
+}
 
-	for (int i = 0; i < meters; i++)
-	{
-		if (meterLabel.at(i)->width() > maxLab)
-			maxLab = meterLabel.at(i)->width();
-		if (meterLcd.at(i)->width() > maxLcd)
-			maxLcd = meterLcd.at(i)->width();
-	}
+void
+MultiMeter::setTitle(const QString& t, const QString& u)
+{
+	title = t;
+	unit = u;
+	QString titleWithUnit = title;
 
-	QSize hint;
-	hint.setWidth(maxLab + maxLcd + 3 * GMBorder);
-	hint.setHeight(GMBorder + meters * (GMBorder + LCDHeight));
+	if (!unit.isEmpty())
+		titleWithUnit = title + " [" + unit + "]";
 
-	return (hint);
+	frame->setTitle(titleWithUnit);
+}
+
+bool
+MultiMeter::load(QDomElement& domElem)
+{
+	title = domElem.attribute("title");
+	setTitle(title, unit);
+
+	return (TRUE);
+}
+
+bool
+MultiMeter::save(QTextStream& s)
+{
+	s << "title=\"" << title << "\">\n";
+
+	return (TRUE);
 }
