@@ -89,11 +89,9 @@ public:
 
 	const QString& operator[](unsigned idx)
 	{
-		static QString dummy = "";
-
 		if (idx < tokens.count())
 			return *(tokens.at(idx));
-		return (dummy);
+		return (QString::null);
 	}
 
 	unsigned numberOfTokens() { return (tokens.count()); }

@@ -131,8 +131,6 @@ SensorManager::sendRequest(const QString& hostname, const QString& req,
 const QString
 SensorManager::getHostName(const SensorAgent* sensor) const
 {
-	static QString dummy;
-
 	QDictIterator<SensorAgent> it(sensors);
 	
 	while (it.current())
@@ -142,7 +140,7 @@ SensorManager::getHostName(const SensorAgent* sensor) const
 		++it;
 	}
 
-	return (dummy);
+	return (QString::null);
 }
 
 bool
