@@ -3,10 +3,12 @@
 Name=KTop
 Name[de]=KTop
 Name[hr]=KTop
+Name[fr]=KTop
 Exec=ktop
 Icon=ktop.xpm
 Type=Application
 DocPath=ktop/ktop.html
-Command=Performance monitor
+Comment=Performance monitor
+Comment[fr]=Moniteur de performance
 Terminal=0
 MiniIcon=ktop.xpm
