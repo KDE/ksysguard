@@ -116,43 +116,29 @@ SensorDisplay::unregisterSensor(uint idx)
 void
 SensorDisplay::setupTimer()
 {
-	ts = new TimerSettings(this, "TimerSettings", true);
-	Q_CHECK_PTR(ts);
+  TimerSettings dlg( this );
 
-	connect(ts->useGlobalUpdate, SIGNAL(toggled(bool)), this, 
-			SLOT(timerToggled(bool)));
+	dlg.setUseGlobalUpdate( globalUpdateInterval );
+  dlg.setInterval( timerInterval );
 
-	ts->useGlobalUpdate->setChecked(globalUpdateInterval);
-	ts->interval->setValue(timerInterval);
+  if ( dlg.exec() ) {
+    if ( dlg.useGlobalUpdate() ) {
+      globalUpdateInterval = true;
 
-    timerToggled( globalUpdateInterval );
+      SensorBoard* sb = dynamic_cast<SensorBoard*>( parentWidget() );
+      if ( !sb ) {
+        kdDebug(1215) << "dynamic cast lacks" << endl;
+        setUpdateInterval( 2 );
+      } else {
+        setUpdateInterval( sb->updateInterval() );
+      }
+    } else {
+      globalUpdateInterval = false;
+      setUpdateInterval( dlg.interval() );
+    }
 
-	if (ts->exec()) {
-		if (ts->useGlobalUpdate->isChecked()) {
-			globalUpdateInterval = true;
-
-			SensorBoard* sb = dynamic_cast<SensorBoard*>(parentWidget());
-			if (!sb) {
-				kdDebug(1215) << "dynamic cast lacks" << endl;
-				setUpdateInterval(2);
-			} else {
-				setUpdateInterval(sb->updateInterval());
-			}
-		} else {
-			globalUpdateInterval = false;
-			setUpdateInterval(ts->interval->value());
-		}
-		setModified(true);
-	}
-
-	delete ts;
-}
-
-void
-SensorDisplay::timerToggled(bool value)
-{
-	ts->interval->setEnabled(!value);
-	ts->TextLabel1->setEnabled(!value);
+    setModified( true );
+  }
 }
 
 void

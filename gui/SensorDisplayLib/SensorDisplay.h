@@ -38,7 +38,6 @@
 
 class QDomDocument;
 class QDomElement;
-class TimerSettings;
 
 namespace KSGRD {
 
@@ -152,8 +151,6 @@ public slots:
 	virtual void applySettings() { }
 	virtual void applyStyle() { }
 
-	void timerToggled(bool);
-
 	virtual void setModified(bool mfd);
 		
 signals:
@@ -202,8 +199,6 @@ private:
 	QString unit;
 
 	QWidget* plotterWdg;
-
-	TimerSettings* ts;
 };
 
 }; // namespace KSGRD

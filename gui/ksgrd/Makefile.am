@@ -16,8 +16,8 @@ libksgrd_la_SOURCES = \
 	SensorSocketAgent.cc \
 	StyleEngine.cc \
 	StyleSettings.cc \
-	HostConnector.ui \
-	TimerSettings.ui
+	TimerSettings.cc \
+	HostConnector.ui
 
 ksgrdincludedir = $(includedir)/ksgrd
 ksgrdinclude_HEADERS = \
