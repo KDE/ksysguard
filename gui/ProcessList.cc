@@ -764,7 +764,7 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 	if (killSupported && lvi->isSelected())
 	{
 		processPM->insertSeparator();
-		processPM->insertItem(i18n("Renice process"), 100);
+		processPM->insertItem(i18n("Renice process"), 300);
 	}
 
 	int id;
@@ -786,7 +786,7 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 		setColumnWidth(col, 0);
 		setModified(true);
 		break;
-	case 100:
+	case 300:
 		{
 		ReniceDlg *reniceDlg = new ReniceDlg(this, "reniceDlg", currentNiceValue, currentPId);
 		Q_CHECK_PTR(reniceDlg);
