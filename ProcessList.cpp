@@ -38,14 +38,14 @@
 
 #include "ProcessList.moc"
 
-#define DEBUG_MODE
+// #define DEBUG_MODE
 
 #define ktr           klocale->translate
 #define PROC_BASE     "/proc"
 #define KDE_ICN_DIR   "/share/icons/mini"
 #define KTOP_ICN_DIR  "/share/apps/ktop/pics"
 #define INIT_PID      1
-#define NONE         -1
+#define NONE -1
 
 #define NUM_COL 10
 
@@ -95,82 +95,90 @@ static KTabListBox::ColumnType col_types[] =
 };
 
 KtopProcList::KtopProcList(QWidget *parent = 0, const char* name = 0)
-             : KTabListBox(parent, name, NUM_COL)
+	: KTabListBox(parent, name, NUM_COL)
 {
-#ifdef DEBUG_MODE
-	printf("KTop debug: KtopProcList()\n");
-#endif
+	setSeparator(';');
 
-  initMetaObject();
-  setSeparator(';');
+	// no process list generated yet
+	ps_list  = NULL;
+	// no timer started yet
+	timer_id = NONE;
 
-  ps_list  = NULL;
-  timer_id = NONE;
-  lastSelectionPid = getpid();
-  filtermode = FILTER_OWN;
-  update_rate = UPDATE_FAST;
+	/*
+	 * The first selected process is ktop itself because we are sure it
+	 * exists and we can easyly get the pid.
+	 */
+	lastSelectionPid = getpid();
 
-  icons = new KtopIconList;
-  CHECK_PTR(icons);
+	/*
+	 * The default filter mode is 'own processes'. This can be overridden by
+	 * the config file.
+	 */
+	filtermode = FILTER_OWN;
 
-  QFontMetrics fm = fontMetrics();
-  for ( int cnt=0 ; col_headers[cnt] ; cnt++ ) {
-        setColumn(cnt,col_headers[cnt]
-                     ,fm.width(dummies[cnt])
-                     ,col_types[cnt]);
-  }
+	/*
+	 * The default update rate is 'fast'. This can be overridden by the
+	 * config file.
+	 */
+	update_rate = UPDATE_FAST;
 
-  connect(this,SIGNAL(headerClicked(int)),SLOT(userClickOnHeader(int)));
-  connect(this,SIGNAL(highlighted(int,int)),SLOT(procHighlighted(int,int)));
+	// load the icons we display with the processes
+	icons = new KtopIconList;
+	CHECK_PTR(icons);
 
-  installEventFilter(this);
+	/*
+	 * Set the column witdh for all columns in the process list table.
+	 * A dummy string that is somewhat longer than the real text is used
+	 * to determine the width with the current font metrics.
+	 */
+	QFontMetrics fm = fontMetrics();
+	for (int cnt = 0; col_headers[cnt]; cnt++)
+		setColumn(cnt, col_headers[cnt], fm.width(dummies[cnt]),
+				  col_types[cnt]);
 
+	// Clicking on the header changes the sort order.
+	connect(this, SIGNAL(headerClicked(int)),
+			SLOT(userClickOnHeader(int)));
+
+	// Clicking in the table can change the process selection.
+	connect(this, SIGNAL(highlighted(int,int)),
+			SLOT(procHighlighted(int, int)));
 }
 
 KtopProcList::~KtopProcList()
 {
-  delete icons;
+	// remove icon list from memory
+	delete icons;
 
-  #ifdef DEBUG_MODE
-     printf("KTop debug : KtopProcList::~KtopProcList : delete icons done !\n");
-  #endif
+	// switch off timer
+	if (timer_id != NONE)
+		killTimer(timer_id);
 
-  if ( timer_id != NONE ) killTimer(timer_id);
-
-  while( ps_list ) {
-    psPtr tmp = ps_list;
-    ps_list = ps_list->next;
-    delete tmp;
-  }
-
-  #ifdef DEBUG_MODE
-     printf("KTop debug : KtopProcList::~KtopProcList : delete ps_list done !\n");
-  #endif
-
+	// delete process list
+	while (ps_list)
+	{
+		psPtr tmp = ps_list;
+		ps_list = ps_list->next;
+		delete tmp;
+	}
 }
 
 void 
 KtopProcList::setUpdateRate(int r)
 {
-#ifdef DEBUG_MODE
-    printf("KTop debug : KtopProcList::setUpdateRate\n");
-#endif
-
 	update_rate = r;
 	switch (update_rate)
 	{
 	case UPDATE_SLOW:
-		timer_interval = UPDATE_SLOW_VALUE*1000;
+		timer_interval = UPDATE_SLOW_VALUE * 1000;
 		break;
 	case UPDATE_MEDIUM:
-		timer_interval = UPDATE_MEDIUM_VALUE*1000;
+		timer_interval = UPDATE_MEDIUM_VALUE * 1000;
 		break;
 	case UPDATE_FAST:
-		timer_interval = UPDATE_FAST_VALUE*1000;
-		break;
 	default:
-		timer_interval = UPDATE_FAST_VALUE*1000;
-		break;    	
+		timer_interval = UPDATE_FAST_VALUE * 1000;
+		break;
 	}
 
 	if (timer_id != NONE)
@@ -183,46 +191,30 @@ KtopProcList::setUpdateRate(int r)
 int 
 KtopProcList::setAutoUpdateMode(bool mode)
 {
-  int oldmode = ( timer_id != NONE ) ? TRUE : FALSE; 
-  if ( mode ) timerOn(); else timerOff();
-  return oldmode;
-}
+	int oldmode = (timer_id != NONE) ? TRUE : FALSE; 
 
-void 
-KtopProcList::timerOff(void)
-{
-    if ( timer_id != NONE ) {
-         killTimer(timer_id);
-         timer_id = NONE;
-    } 
-}
+	if (mode)
+		timerOn();
+	else
+		timerOff();
 
-void 
-KtopProcList::timerOn()
-{
-    timer_id = startTimer(timer_interval);
+	return (oldmode);
 }
 
 void 
 KtopProcList::update(void)
 {
-#ifdef DEBUG_MODE
-	printf("Ktop debug: KtopProcList::update()\n");
-#endif
+	int top_Item = topItem();
+	int lastmode = setAutoUpdateMode(FALSE);
+	setAutoUpdate(FALSE);
+	load();
+	try2restoreSelection();
+	setTopItem(top_Item);
+	setAutoUpdate(TRUE);
+	setAutoUpdateMode(lastmode);
 
-    int top_Item = topItem();
-    int lastmode = setAutoUpdateMode(FALSE);
-    setAutoUpdate(FALSE);
-      load();
-      try2restoreSelection();
-      setTopItem(top_Item);
-    setAutoUpdate(TRUE);
-    setAutoUpdateMode(lastmode);
-    if( isVisible() ) repaint();
-#ifdef DEBUG_MODE
-	else
-		printf("Ktop debug: KtopProcList::update(): page invisible\n");
-#endif
+    if(isVisible())
+		repaint();
 }
 
 void 
@@ -237,7 +229,7 @@ KtopProcList::load()
 	dir = opendir(PROC_BASE);
 	while((entry = readdir(dir))) 
 	{
-		if( isdigit(entry->d_name[0]) ) 
+		if(isdigit(entry->d_name[0])) 
 			psList_getProcStatus(entry->d_name);
 	}
 	closedir(dir);
@@ -273,7 +265,7 @@ KtopProcList::load()
 			break;
 		}
         pwent = getpwuid(tmp->uid);
-        if ( pwent ) 
+        if (pwent) 
 			strncpy(usrName,pwent->pw_name,31);
         else 
 			strcpy(usrName,"????");
@@ -289,8 +281,7 @@ KtopProcList::load()
 				tmp->statusTxt,
 				tmp->vm_size, 
 				tmp->vm_rss, 
-				tmp->vm_lib
-		    );         
+				tmp->vm_lib);         
         appendItem(line);
     }
 }
@@ -298,251 +289,266 @@ KtopProcList::load()
 void 
 KtopProcList::psList_sort() 
 {
-
     int   swap;
-    psPtr start, 
-          item, 
-          tmp;
+    psPtr start;
+	psPtr item;
+	psPtr tmp;
 
-    for ( start=ps_list ; start ; start=start->next ) { 
-
-        for ( item=ps_list ; item && item->next ; item=item->next ) {
-
-	    switch ( sort_method ) {
+	/*
+	 * This double for-loop implements a simple bubblesort algorithm. This
+	 * can probably be done in a more efficient way.
+	 */
+	for (start = ps_list; start; start = start->next)
+	{ 
+		for (item = ps_list; item && item->next; item = item->next)
+		{
+			// Find out whether we have to swap (bubble)
+			switch (sort_method)
+			{
 	        case SORTBY_PID:
-		    swap = item->pid > item->next->pid;
-		    break;
+				swap = item->pid > item->next->pid;
+				break;
 	        case SORTBY_UID:
-		    swap = item->uid > item->next->uid;
-		    break;
+				swap = item->uid > item->next->uid;
+				break;
 	        case SORTBY_NAME:
-                    swap = strcmp(item->name, item->next->name) > 0;
-		    break;
+				swap = strcmp(item->name, item->next->name) > 0;
+				break;
 	        case SORTBY_TIME:
-		    swap = item->time < item->next->time;
-		    break;
+				swap = item->time < item->next->time;
+				break;
 	        case SORTBY_STATUS:
-		    swap = item->status > item->next->status;
-		    break;
+				swap = item->status > item->next->status;
+				break;
 	        case SORTBY_VMSIZE:
-		    swap = item->vm_size < item->next->vm_size;
-		    break;
+				swap = item->vm_size < item->next->vm_size;
+				break;
 	        case SORTBY_VMRSS:
-		    swap = item->vm_rss < item->next->vm_rss;
-		    break;
+				swap = item->vm_rss < item->next->vm_rss;
+				break;
 	        case SORTBY_VMLIB:
-		    swap = item->vm_lib < item->next->vm_lib;
-		    break;
+				swap = item->vm_lib < item->next->vm_lib;
+				break;
 	        case SORTBY_CPU:
-	        default        :
-		    swap = (item->time-item->otime) < (item->next->time-item->next->otime);
-	    }
+	        default:
+				swap = (item->time-item->otime) <
+					(item->next->time-item->next->otime);
+			}
 
-	    if ( swap ) {
-	        tmp = item->next;
-	        if ( item->prev ) 
-                     item->prev->next = tmp;
-		else 
-                     ps_list = tmp;
-	        if( tmp->next ) 
-                     tmp->next->prev = item;
-		tmp->prev  = item->prev;
-		item->prev = tmp;
-		item->next = tmp->next;
-		tmp->next  = item;
-		if( (start=item) ) start=tmp;
-		item=tmp;
-	    }
-	}
+			/*
+			 * Swap two elements of a doubly-linked list.
+			 */
+			if (swap)
+			{
+				tmp = item->next;
+				if (item->prev) 
+					item->prev->next = tmp;
+				else 
+					ps_list = tmp;
+				if(tmp->next) 
+					tmp->next->prev = item;
+				tmp->prev  = item->prev;
+				item->prev = tmp;
+				item->next = tmp->next;
+				tmp->next  = item;
+				if((start = item))
+					start = tmp;
+				item = tmp;
+			}
+		}
     } 
 }
 
 void 
 KtopProcList::psList_clearProcVisit() 
 {
-    psPtr tmp;
-    for( tmp=ps_list ; tmp ; tmp->visited=0 , tmp=tmp->next );
+	psPtr tmp;
+	for(tmp=ps_list; tmp; tmp->visited = 0, tmp = tmp->next)
+		;
 }
 
 psPtr 
 KtopProcList::psList_getProcItem(char* aName)
 {
-    psPtr tmp;
-    int   pid;
+	psPtr tmp;
+	int   pid;
 
-    sscanf(aName,"%d",&pid);
-    for ( tmp=ps_list ; tmp && (tmp->pid!=pid) ; tmp=tmp->next );
+	sscanf(aName,"%d",&pid);
+	for (tmp = ps_list; tmp && (tmp->pid != pid); tmp = tmp->next)
+		;
 
-    if( ! tmp ) {
-        // create an new elem & insert it 
-        // at the top of the linked list
-        tmp = new psStruct;
-        if ( tmp ) {
-           memset(tmp,0,sizeof(psStruct));
-           tmp->pid=pid;
-           tmp->next=ps_list;
-           if( ps_list )
-               ps_list->prev=tmp;
-           ps_list=tmp;
-        }
-    }
-    return tmp;
+	if(!tmp)
+	{
+		// create an new elem & insert it 
+		// at the top of the linked list
+		tmp = new psStruct;
+		if (tmp)
+		{
+			memset(tmp, 0, sizeof(psStruct));
+			tmp->pid = pid;
+			tmp->next=ps_list;
+			if (ps_list)
+				ps_list->prev = tmp;
+			ps_list = tmp;
+		}
+	}
+	return (tmp);
 }
 
 void 
 KtopProcList::psList_removeProcUnvisited() 
 {
-    psPtr item, tmp;
+	psPtr item, tmp;
 
-    for ( item=ps_list ; item ; ) {
-        if( ! item->visited ) {
-            tmp = item;
-            if ( item->prev )
-                 item->prev->next = item->next;
-	    else
-	         ps_list = item->next;
-            if ( item->next )
-	         item->next->prev = item->prev;
-            item = item->next; 
-            delete tmp;
-        }
-	item = item->next;
-    }
+	for (item = ps_list; item; )
+	{
+		if(!item->visited)
+		{
+			tmp = item;
+			if (item->prev)
+                item->prev->next = item->next;
+			else
+				ps_list = item->next;
+			if (item->next)
+				item->next->prev = item->prev;
+			item = item->next; 
+			delete tmp;
+		}
+		item = item->next;
+	}
 }
 
 int 
 KtopProcList::psList_getProcStatus(char *pid)
 {
-    char   buffer[1024], temp[128];
-    FILE   *fd;
-    int    u1, u2, u3, u4, time1, time2;
-    psPtr  ps;
+	char buffer[1024], temp[128];
+	FILE* fd;
+	int u1, u2, u3, u4, time1, time2;
+	psPtr ps;
 
-    ps = psList_getProcItem(pid);
-    if ( ! ps ) return 0;
+	ps = psList_getProcItem(pid);
+	if (! ps)
+		return (0);
     
-    sprintf(buffer, "/proc/%s/status", pid);
-    if((fd = fopen(buffer, "r")) == 0)
-        return 0;
+	sprintf(buffer, "/proc/%s/status", pid);
+	if((fd = fopen(buffer, "r")) == 0)
+		return 0;
 
-    fscanf(fd, "%s %s", buffer, ps->name);
-    fscanf(fd, "%s %c %s", buffer, &ps->status, temp);
-    switch ( ps->status ) {
-       case 'R':
-           strcpy(ps->statusTxt,"Run");
-           break;
-       case 'S':
-           strcpy(ps->statusTxt,"Sleep");
-           break;
-       case 'D': 
-           strcpy(ps->statusTxt,"Disk");
-           break;
-       case 'Z': 
-           strcpy(ps->statusTxt,"Zombie");
-           break;
-       case 'T': 
-           strcpy(ps->statusTxt,"Stop");
-           break;
-       case 'W': 
-           strcpy(ps->statusTxt,"Swap");
-           break;
-       default:
-           strcpy(ps->statusTxt,"????");
-           break;
-    }
-    fscanf(fd, "%s %d", buffer, &ps->pid);
-    fscanf(fd, "%s %d", buffer, &ps->ppid);
-    fscanf(fd, "%s %d %d %d %d", buffer, &u1, &u2, &u3, &u4);
-    ps->uid = u1;
-    fscanf(fd, "%s %d %d %d %d", buffer, &u1, &u2, &u3, &u4);
-    ps->gid = u1;
-    fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_size);
-    if(strcmp(buffer, "VmSize:"))
-        ps->vm_size=0;
-    fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_lock);
-    if(strcmp(buffer, "VmLck:"))
-        ps->vm_lock=0;
-    fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_rss);
-    if(strcmp(buffer, "VmRSS:"))
-        ps->vm_rss=0;
-    fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_data);
-    if(strcmp(buffer, "VmData:"))
-        ps->vm_data=0;
-    fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_stack);
-    if(strcmp(buffer, "VmStk:"))
-        ps->vm_stack=0;
-    fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_exe);
-    if(strcmp(buffer, "VmExe:"))
-        ps->vm_exe=0;
-    fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_lib);
-    if(strcmp(buffer, "VmLib:"))
-        ps->vm_lib=0;
-    fclose(fd);
-
+	fscanf(fd, "%s %s", buffer, ps->name);
+	fscanf(fd, "%s %c %s", buffer, &ps->status, temp);
+	switch (ps->status)
+	{
+	case 'R':
+		strcpy(ps->statusTxt,"Run");
+		break;
+	case 'S':
+		strcpy(ps->statusTxt,"Sleep");
+		break;
+	case 'D': 
+		strcpy(ps->statusTxt,"Disk");
+		break;
+	case 'Z': 
+		strcpy(ps->statusTxt,"Zombie");
+		break;
+	case 'T': 
+		strcpy(ps->statusTxt,"Stop");
+		break;
+	case 'W': 
+		strcpy(ps->statusTxt,"Swap");
+		break;
+	default:
+		strcpy(ps->statusTxt,"????");
+		break;
+	}
+	fscanf(fd, "%s %d", buffer, &ps->pid);
+	fscanf(fd, "%s %d", buffer, &ps->ppid);
+	fscanf(fd, "%s %d %d %d %d", buffer, &u1, &u2, &u3, &u4);
+	ps->uid = u1;
+	fscanf(fd, "%s %d %d %d %d", buffer, &u1, &u2, &u3, &u4);
+	ps->gid = u1;
+	fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_size);
+	if (strcmp(buffer, "VmSize:"))
+		ps->vm_size=0;
+	fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_lock);
+	if (strcmp(buffer, "VmLck:"))
+		ps->vm_lock=0;
+	fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_rss);
+	if (strcmp(buffer, "VmRSS:"))
+		ps->vm_rss=0;
+	fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_data);
+	if (strcmp(buffer, "VmData:"))
+		ps->vm_data=0;
+	fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_stack);
+	if (strcmp(buffer, "VmStk:"))
+		ps->vm_stack=0;
+	fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_exe);
+	if (strcmp(buffer, "VmExe:"))
+		ps->vm_exe=0;
+	fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_lib);
+	if (strcmp(buffer, "VmLib:"))
+		ps->vm_lib=0;
+	fclose(fd);
     sprintf(buffer, "/proc/%s/stat", pid);
-    if((fd = fopen(buffer, "r")) == 0)
-        return 0;
+	if ((fd = fopen(buffer, "r")) == 0)
+		return (0);
     
-    fscanf(fd, "%*s %*s %*s %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %d %d", &time1, &time2);
-
-    struct timeval tv;
-    gettimeofday(&tv,0);
-    ps->oabstime=ps->abstime;
-    ps->abstime=tv.tv_sec*100+tv.tv_usec/10000;
-
+	fscanf(fd, "%*s %*s %*s %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %d %d",
+		   &time1, &time2);
+	
+	struct timeval tv;
+	gettimeofday(&tv,0);
+	ps->oabstime=ps->abstime;
+	ps->abstime=tv.tv_sec*100+tv.tv_usec/10000;
     // if no time between two cycles - don't show any usable cpu percentage
-    if(ps->oabstime==ps->abstime)
-        ps->oabstime=ps->abstime-100000;
-    ps->otime=ps->time;
-    ps->time=time1+time2;
+	if (ps->oabstime == ps->abstime)
+		ps->oabstime = ps->abstime - 100000;
+	ps->otime = ps->time;
+	ps->time = time1 + time2;
+	fclose(fd);
+	ps->visited=1;
 
-    fclose(fd);
-    ps->visited=1;
-
-    return 1;
+	return 1;
 }
 
 void 
 KtopProcList::userClickOnHeader(int indxCol)
 {
-#ifdef DEBUG_MODE
-    printf("KTop debug : KtopProcList::userClickOnHeader : col = %d.\n",
-		   indxCol);
-#endif
-
-  if ( indxCol ) {
-       switch ( indxCol-1 ) {
-          case SORTBY_PID: 
-          case SORTBY_NAME: 
-          case SORTBY_UID: 
-          case SORTBY_CPU: 
-          case SORTBY_TIME:
-          case SORTBY_STATUS:
-          case SORTBY_VMSIZE:
-          case SORTBY_VMRSS:
-          case SORTBY_VMLIB:
-               setSortMethod(indxCol-1);
-               break;
-          default: 
-               return;
-               break;
-       }
-       update();
-  }
+	if (indxCol)
+	{
+		switch (indxCol - 1)
+		{
+		case SORTBY_PID: 
+		case SORTBY_NAME: 
+		case SORTBY_UID: 
+		case SORTBY_CPU: 
+		case SORTBY_TIME:
+		case SORTBY_STATUS:
+		case SORTBY_VMSIZE:
+		case SORTBY_VMRSS:
+		case SORTBY_VMLIB:
+			setSortMethod(indxCol - 1);
+			break;
+		default: 
+			return;
+			break;
+		}
+		update();
+	}
 }
 
 void 
 KtopProcList::try2restoreSelection()
 {
- int err = 0;
- 
- if ( lastSelectionPid != NONE )
-      err = kill(lastSelectionPid,0);
+	int err = 0;
 
- if ( err || (lastSelectionPid == NONE) )
-    lastSelectionPid = getpid();
- 
- restoreSelection();
+	// Find out if the selected process in still in process list.
+	if (lastSelectionPid != NONE)
+		err = kill(lastSelectionPid, 0);
+
+	// If not select ktop again.
+	if (err || (lastSelectionPid == NONE))
+		lastSelectionPid = getpid();
+ 	restoreSelection();
 }
 
 void 
@@ -553,50 +559,33 @@ KtopProcList::restoreSelection()
 	int pid;
 	bool res = FALSE;
 
+	// Find the last selected process and select it again.
 	for (int i = 0; i < cnt; i++)
 	{
+		// the line starts with the pid
 		txt = text(i, 1);
 		res = FALSE;
 		pid = txt.toInt(&res);
 		if (res && (pid == lastSelectionPid))
 		{
 			setCurrentItem(i);
-#ifdef DEBUG_MODE
-			printf("KTop debug : KtopKtopProcList::restoreSelection :"
-				   "cur pid : %d\n" ,pid);    
-#endif
 			return;
 		}
 	}
 }
 
 void 
-KtopProcList::procHighlighted(int indx,int)
+KtopProcList::procHighlighted(int indx, int)
 { 
-#ifdef DEBUG_MODE
-    printf("KTop debug : KtopProcList::procHighlighted : item %d selected.\n",
-		   indx);
-#endif
-  
 	lastSelectionPid = NONE;
-	sscanf(text(indx,1),"%d",&lastSelectionPid);
-
-#ifdef DEBUG_MODE
-    printf("KTop debug : KtopProcList::procHighlighted : lastSelectionPid"
-		   "= %d.\n"
-           ,lastSelectionPid);
-#endif 
+	sscanf(text(indx, 1), "%d", &lastSelectionPid);
 } 
 
 int 
 KtopProcList::cellHeight(int row)
 {
-#ifdef DEBUG_MODE
-	printf("KTop debug : KtopProcList::cellHeight : called for row %d.\n",
-		   row);
-#endif
-
 	const QPixmap *pix = icons->procIcon(text(row, 2));
+
 	if (pix)
 		return (pix->height());
 

@@ -40,7 +40,10 @@
 
 #include "IconList.h"
 
-typedef struct pS {
+#define NONE -1
+
+typedef struct pS
+{
     char      name[101],
 		status,
 		statusTxt[10],
@@ -63,9 +66,6 @@ typedef struct pS {
 		*prev;  
 } psStruct, *psPtr;
 
-/*=============================================================================
- class  : KtopProcList
- =============================================================================*/
 class KtopProcList : public KTabListBox
 {
     Q_OBJECT;
@@ -155,8 +155,21 @@ private:
 	void load();
 	void try2restoreSelection(); 
 	void restoreSelection();
-	void timerOff();
-	void timerOn();
+
+	void timerOff()
+	{
+		if (timer_id != NONE)
+		{
+			killTimer(timer_id);
+			timer_id = NONE;
+		} 
+	}
+
+	void timerOn()
+	{
+		timer_id = startTimer(timer_interval);
+	}
+
 	int psList_getProcStatus(char*);
 	void psList_clearProcVisit();
 	void psList_removeProcUnvisited();
@@ -173,11 +186,6 @@ private:
 
     KtopIconList *icons;
 
-	void repaint()
-		{
-			KTabListBox::repaint();
-			printf("ProcessList::repaint()\n");
-		}
  private slots:
 	void procHighlighted(int, int);
 	void userClickOnHeader(int);

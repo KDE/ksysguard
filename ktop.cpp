@@ -26,7 +26,7 @@
 */
 
 #include <qmenubar.h>
-
+#include <qmessagebox.h>
 #include <kconfig.h>
 #include <klocale.h>
 

@@ -31,6 +31,7 @@
 
 #include <qwidget.h>
 #include <qpushbutton.h>
+#include <qcombobox.h>
 
 #include "ProcessList.h"
 

@@ -29,6 +29,8 @@
 #ifndef TASKMAN_H
 #define TASKMAN_H
 
+#include <qtabdialog.h>
+
 #include <ktablistbox.h>
 
 #include "cpu.h"

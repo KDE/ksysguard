@@ -7,7 +7,8 @@
     Copyright (C) 1998 Nicolas Leclercq
                        nicknet@planete.net
 
-	Copyright (c) 1999 Chris Schlaeger <cs@axys.de>
+	Copyright (c) 1999 Chris Schlaeger
+	                   cs@axys.de
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,31 +30,8 @@
 #define _IconList_h_
 
 #include <qlist.h>
-#include <qpalette.h>
-#include <qcombo.h>
-#include <qpainter.h>
-#include <qpushbt.h>
-#include <qtabdlg.h>
-#include <qtimer.h>
-#include <qmsgbox.h>
-#include <qlabel.h>
-#include <qobject.h>
-#include <qlistbox.h>
-#include <qgrpbox.h>
-#include <qradiobt.h>
-#include <qchkbox.h>
-#include <qbttngrp.h>
-#include <qpalette.h>
-#include <qlined.h>
-#include <qtabbar.h>
-#include <qpopmenu.h>
-#include <qfontmet.h>
-#include <qslider.h>
-#include <qlcdnum.h>
+#include <qpixmap.h>
 
-/*=============================================================================
- class  :  KtopIconListElem
- =============================================================================*/
 class KtopIconListElem
 {
 public:
@@ -68,9 +46,6 @@ private:
     char     icnName[128];
 };
 
-/*=============================================================================
- class  : KtopIconList
- =============================================================================*/
 class KtopIconList
 {
  public:

@@ -29,6 +29,8 @@
 #include <sys/types.h>
 #include <signal.h>
 
+#include <qmessagebox.h>
+
 #include <kconfig.h>
 #include <kapp.h>
 #include <klocale.h>
@@ -59,8 +61,6 @@ static const char *processfilter[] =
 ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	: QWidget(parent, name)
 {
-    initMetaObject();
-
     pList_box = new QGroupBox(this, "pList_box"); 
     CHECK_PTR(pList_box);
     pList_box->move(5, 5);

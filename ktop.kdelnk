@@ -1,10 +1,14 @@
 # KDE Config File 
 [KDE Desktop Entry]
+BinaryPattern=ktop;
+Comment=The KDE Taskmanager
+Comment[de]=Der KDE Prozessmanager
 Name=KTop
 Exec=ktop
 Icon=ktop.xpm
+MiniIcon=ktop.xpm
 Type=Application
 DocPath=ktop/ktop.html
-Command=Performance monitor
+TerminalOptions=
 Terminal=0
-MiniIcon=ktop.xpm
+Path=

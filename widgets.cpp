@@ -42,6 +42,12 @@
 #include <signal.h>
 #include <errno.h>
 
+#include <qtabbar.h>
+#include <qmessagebox.h>
+#include <qslider.h>
+#include <qlabel.h>
+#include <qlcdnumber.h>
+
 #include <kconfig.h>
 #include <kapp.h>
 #include <klocale.h>
@@ -92,8 +98,6 @@ TaskMan::TaskMan(QWidget *parent, const char *name, int sfolder)
 	: QTabDialog(parent, name, FALSE, 0)
 {
 	QString tmp;
-
-	initMetaObject();
 
 	pages[0] = NULL;
 	pages[1] = NULL;
