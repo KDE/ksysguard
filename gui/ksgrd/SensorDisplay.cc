@@ -27,6 +27,7 @@
 #include <qpopupmenu.h>
 #include <qspinbox.h>
 #include <qwhatsthis.h>
+#include <qbitmap.h>
 
 #include <kapplication.h>
 #include <kdebug.h>
@@ -53,9 +54,9 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name, const QString& t
 	modified = false;
 	showUnit = false;
 	timerId = NONE;
-	frame = NULL;
-	errorLabel = NULL;
-	plotterWdg = NULL;
+	frame = 0;
+	errorIndicator = 0;
+	plotterWdg = 0;
 
 	pauseOnHide = false;
 	pausedWhileHidden = false;
@@ -160,8 +161,7 @@ SensorDisplay::timerEvent(QTimerEvent*)
 void
 SensorDisplay::resizeEvent(QResizeEvent*)
 {
-	frame->setGeometry(0, 0, width(), height());
-	errorLabel->move(0, 0);
+	frame->setGeometry(rect());
 }
 
 bool
@@ -454,27 +454,31 @@ SensorDisplay::setSensorOk(bool ok)
 {
 	if (ok)
 	{
-		if (errorLabel)
+		if (errorIndicator)
 		{
-			delete errorLabel;
-			errorLabel = 0;
+			delete errorIndicator;
+			errorIndicator = 0;
 		}
-	} else {
-		if (errorLabel)
+	}
+	else 
+	{
+		if (errorIndicator)
 			return;
 
 		KIconLoader iconLoader;
-		QPixmap errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop,
-							KIcon::SizeSmall);
+		QPixmap errorIcon = iconLoader.loadIcon("connect_creating", 
+												KIcon::Desktop,
+												KIcon::SizeSmall);
 		if (plotterWdg == 0)
 			return;
 
-		errorLabel = new QLabel(plotterWdg);
-		Q_CHECK_PTR(errorLabel);
-		errorLabel->setPixmap(errorIcon);
-		errorLabel->resize(errorIcon.size());
-		errorLabel->move(0, 0);
-		errorLabel->show();
+		errorIndicator = new QWidget(plotterWdg);
+		errorIndicator->setErasePixmap(errorIcon);
+		errorIndicator->resize(errorIcon.size());
+		if (errorIcon.mask())
+			errorIndicator->setMask(*errorIcon.mask());
+		errorIndicator->move(0, 0);
+		errorIndicator->show();
 	}
 }
 

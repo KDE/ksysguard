@@ -194,7 +194,7 @@ private:
 	int timerId;
 	int timerInterval;
 
-	QLabel* errorLabel;
+	QWidget* errorIndicator;
 
 	QString title;
 	QString unit;
