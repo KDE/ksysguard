@@ -1,3 +1,6 @@
+AC_CHECK_HEADERS(sys/types.h sys/param.h sys/resource.h sys/user.h \
+  sys/stat.h sys/unistd.h sys/time.h sys/sysctl.h sys/vmmeter.h)
+
 dnl Check whether ktop can run; FreeBSD works as well! Check needs to be added!
 dnl Alpha Linux might work as well; please test and modify check
 AC_MSG_CHECKING(if ktop can be compiled)
