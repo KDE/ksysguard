@@ -24,6 +24,7 @@
 #define _SensorAgent_h_
 
 #include <qobject.h>
+#include <qlist.h>
 
 class QString;
 class KProcess;

@@ -1,8 +1,8 @@
 /*
     KTop, the KDE Task Manager and System Monitor
-   
+
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -27,6 +27,7 @@
 #define _SensorClient_h_
 
 #include <qstring.h>
+#include <qlist.h>
 
 /**
  * Every object that should act as a client to a sensor must inherit from
