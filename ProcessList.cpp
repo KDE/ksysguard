@@ -599,9 +599,7 @@ ProcessList::addProcess(OSProcess* p, ProcessLVI* pli)
 												 + ".png", 16, 16);
 	if (pix.isNull())
 	{
-		QString s = BarIcon(p->getName());
-		debug(QString("using %1...").arg(s));
-		pix = QPixmap(s);
+		pix = QPixmap(BarIcon(p->getName()));
 		if (pix.isNull())
 			pix = icons->loadApplicationMiniIcon("default.png", 16, 16);
 	}
