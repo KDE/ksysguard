@@ -1,0 +1,29 @@
+/* XPM */
+/* Drawn  by Mark Donohoe & Jonathan Buzzard for the K Desktop Environment */
+/* See http://www.kde.org */
+static char*sound[]={
+"16 16 7 1",
+"e c #ffffff",
+"c c #ffffff",
+"a c #c0c0c0",
+"# c #808080",
+"b c #000000",
+"d c #00c0c0",
+". c None",
+".......##....#..",
+"......#ab#...#..",
+".....#abac#..#..",
+"....#abaac#..#.#",
+"...#adbacc#..#.#",
+".##addbace#..#.#",
+"#aadddbbce#.##.#",
+"#dadddbabc#.#.##",
+"#dadddb#bc#.#.#.",
+"###dddbbce#.#.#.",
+".bb#ddbace#.#.#.",
+"...b#dbace#.#.#.",
+"....b#baac#.#...",
+".....b#bac#.#...",
+"......b#b#......",
+".......bb......."};
+

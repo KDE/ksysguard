@@ -1,0 +1,8 @@
+# KDE Config File
+[KDE Desktop Entry]
+SwallowTitle=xload
+SwallowExec=xload -jumpscroll 1 -fg CadetBlue -bg grey76 -nolabel  -geometry 50x50+10000+10000
+Comment=Informations about your system status
+Exec=ktop --start-folder
+icon=Info.xpm
+Type=Application

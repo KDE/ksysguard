@@ -1,0 +1,20 @@
+/* XPM */
+static char * mini_k_xpm[] = {
+"14 14 3 1",
+" 	c None",
+".	c #BEFBBEFBBEFB",
+"X	c #000000000000",
+"              ",
+"  .... .....  ",
+" .XXXX XXXXX. ",
+"  .XX. .XX..  ",
+"  .XX. .X.    ",
+"  .XX..X.     ",
+"  .XXXX.      ",
+"  .XXXXX.     ",
+"  .XX.XXX.    ",
+"  .XX..XXX.   ",
+"  .XX. .XXX.  ",
+" .XXXX XXXXX  ",
+"  .... .....  ",
+"              "};
