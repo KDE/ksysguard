@@ -27,6 +27,10 @@
 
 // $Id$
 
+#include <stdlib.h>
+
+#include <qmessagebox.h>
+
 #include <kapp.h>
 
 #include "PerfMonPage.moc"
@@ -34,73 +38,59 @@
 PerfMonPage::PerfMonPage(QWidget* parent = 0, const char* name = 0)
 	: QWidget(parent, name)
 {
-	cpubox = new QGroupBox(this, "_cpumon");
-	CHECK_PTR(cpubox); 
-	cpubox->setTitle(i18n("CPU load"));
-	cpubox1 = new QGroupBox(this, "_cpumon1");
-	CHECK_PTR(cpubox1); 
-	cpubox1->setTitle(i18n("CPU load history"));
-	cpu_cur = new QWidget(this, "cpu_child");
-	CHECK_PTR(cpu_cur); 
-	cpu_cur->setBackgroundColor(black);
-	cpumon = new CpuMon(cpubox1, "cpumon", cpu_cur);
-	CHECK_PTR(cpumon);
+	cpu = new FancyPlotter(this, "cpu_meter", i18n("CPU Load History"),
+						   0, 100);
+	cpu->setLowPass(TRUE);
+	cpu->addBeam(i18n("User"), blue);
+	cpu->addBeam(i18n("System"), red);
+	cpu->addBeam(i18n("Nice"), yellow);
 
-	membox = new QGroupBox(this, "_memmon");
-	CHECK_PTR(membox);
-	membox->setTitle(i18n("Memory"));
-	membox1 = new QGroupBox(this, "_memhistory");
-	CHECK_PTR(membox1);
-	membox1->setTitle(i18n("Memory usage history"));
-	mem_cur = new QWidget(this, "mem_child");
-	CHECK_PTR(mem_cur);
-	mem_cur->setBackgroundColor(black);
-	memmon = new MemMon(membox1, "memmon", mem_cur);
+	int physical, swap, dum;
+	stat.getMemoryInfo(physical, dum, dum, dum, dum);
+	stat.getSwapInfo(swap, dum);
 
-#ifdef ADD_SWAPMON
-   	swapbox = new QGroupBox(this, "_swapmon");
-   	CHECK_PTR(swapbox);
-   	swapbox->setTitle(i18n("Swap"));
-   	swapbox1 = new QGroupBox(this, "_swaphistory");
-   	CHECK_PTR(swapbox1);
-   	swapbox1->setTitle(i18n("Swap history"));
-   	swap_cur = new QWidget(this,"swap_child");
-   	CHECK_PTR(swap_cur);
-   	swap_cur->setBackgroundColor(black);
-   	swapmon = new SwapMon(swapbox1, "swapmon", swap_cur);
-#endif
+	memory = new FancyPlotter(this, "memory_meter",
+							  i18n("Memory Usage History"),
+							  0, physical + swap);
+	memory->addBeam(i18n("Used"), blue);
+	memory->addBeam(i18n("Buffer"), green);
+	memory->addBeam(i18n("Cache"), yellow);
+	memory->addBeam(i18n("Swap"), red);
+
+    timerID = startTimer(2000);
 }
 
 void
 PerfMonPage::resizeEvent(QResizeEvent* ev)
 {
     QWidget::resizeEvent(ev);
+	cpu->resize(width(), height() / 2);
 
-	int w = width();
-	int h = height();
-   
-#ifdef ADD_SWAPMON
-	cpubox->setGeometry(10, 10, 80, (h - 40) / 3);
-	cpubox1->setGeometry(100, 10, w - 110, (h - 40) / 3);
-	cpu_cur->setGeometry(20, 10 + 18, 60, (h - 118) / 3);
-	cpumon->setGeometry(10, 18, w - 130, (h - 118) / 3);
-	membox->setGeometry(10, (h + 20) / 3, 80, (h - 40) / 3);
-	membox1->setGeometry(100, (h + 20) / 3, w - 110, (h - 40) / 3);
-	mem_cur->setGeometry(20, (h + 20) / 3 + 18, 60,(h - 118) / 3);
-	memmon->setGeometry(10, 18, w - 130, (h - 118) / 3);
-	swapbox->setGeometry(10, (2 * h + 10) / 3, 80, (h - 40) / 3);
-	swapbox1->setGeometry(100, (2 * h + 10) / 3, w - 110, (h - 40) / 3);
-	swap_cur->setGeometry(20, (2 * h + 10) / 3 + 18, 60, (h - 118) / 3);
-	swapmon->setGeometry(10, 18, w - 130, (h - 118) / 3);
-#else
-	cpubox->setGeometry(10, 10, 80, (h / 2) - 30);
-	cpubox1->setGeometry(100, 10, w - 110, (h / 2) - 30);
-	cpu_cur->setGeometry(20, 30, 60, (h / 2) - 60);
-	cpumon->setGeometry(10, 20, cpubox1->width() - 20, cpubox1->height() - 30);
+	memory->move(0, height() / 2);
+	memory->resize(width(), height() / 2);
+}
 
-	membox->setGeometry(10, h / 2, 80, (h / 2) - 30);
-	membox1->setGeometry(100, h / 2, w - 110, (h / 2) - 30);
-	mem_cur->setGeometry(20, h / 2 + 20, 60, (h / 2) - 60);
-	memmon->setGeometry(10, 20, membox1->width() - 20, membox1->height() - 30);
-#endif
+void
+PerfMonPage::timerEvent(QTimerEvent*)
+{
+	int user, sys, nice, idle;
+	if (!stat.getCpuLoad(user, sys, nice, idle))
+	{
+		QMessageBox::critical(this, "Task Manager", stat.getErrMessage(),
+							  0, 0);
+		abort();
+	}
+	cpu->addSample(user, sys, nice);
+
+
+	int dum, used, buffer, cache, stotal, sfree;
+	if (!stat.getMemoryInfo(dum, dum, used, buffer, cache) ||
+		!stat.getSwapInfo(stotal, sfree))
+	{
+		QMessageBox::critical(this, "Task Manager", stat.getErrMessage(),
+							  0, 0);
+		abort();
+	}
+
+	memory->addSample(used - (buffer + cache), buffer, cache, stotal - sfree);
 }

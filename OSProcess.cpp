@@ -41,6 +41,9 @@
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
+#ifdef HAVE_SYS_USER_H
+#include <sys/user.h>
+#endif
 #include <signal.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -154,7 +157,7 @@ OSProcess::read(const void* info)
 		   (int*) &pid, &status, (int*) &ppid, (int*) &gid, &ttyNo,
 		   &userTime, &sysTime, &niceLevel, &vm_size, &vm_rss);
 
-	vm_rss = (vm_rss + 3) * 4096;
+	vm_rss = (vm_rss + 3) * PAGE_SIZE;
 
 	fclose(fd);
 
@@ -197,9 +200,9 @@ OSProcess::read(const void* info)
 	}
 
 	// find out user name with the process uid
-//	struct passwd* pwent = getpwuid(uid);
-//	if (pwent)
-//		userName = pwent->pw_name;
+	struct passwd* pwent = getpwuid(uid);
+	if (pwent)
+		userName = pwent->pw_name;
 
 	return (true);
 }

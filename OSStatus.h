@@ -92,19 +92,33 @@ public:
 	/**
 	 * This function determines the memory usage of the system. All values
 	 * are for physical memory only. If an error occured the return value is
-	 * false, otherwise true. All values are in bytes.
+	 * false, otherwise true. All values are in kBytes.
 	 */
-	bool getMemoryInfo(int& mtotal, int& mfree, int& shared, int& buffers,
+	bool getMemoryInfo(int& mtotal, int& mfree, int& used, int& buffers,
 					   int& cached);
 
 	/**
 	 * This function deterines the total swap space size and the used swap
 	 * space size. If an error occured the return value is false, otherwise
-	 * true. All values are in bytes.
+	 * true. All values are in kBytes.
 	 */
 	bool getSwapInfo(int& stotal, int& sfree);
 
 private:
+	/**
+	 * The private functions are helper functions for the public functions.
+	 * They need not to make sense on all platforms. If a platform cannot use
+	 * a private functions it just needs to implement a dummy. Each platform
+	 * may have it's own set of functions although some overlap would be
+	 * desirable.
+	 */
+
+	/**
+	 * This function reads the information for the cpu 'cpu'. This can be
+	 * "cpu" or "cpu0", "cpu1" etc. on SMP systems.
+	 */
+	bool readCpuInfo(const char* cpu, int* u, int* s, int* n, int* i);
+
 	/**
 	 * To determine the system load we have to calculate the differences
 	 * between the ticks values of two successive calls to getCpuLoad. These

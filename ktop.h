@@ -32,6 +32,7 @@
 #include <kapp.h>
 #include <ktmainwindow.h>
 #include <kmenubar.h>
+#include <kstatusbar.h>
 
 #include "TaskMan.h"
 
@@ -55,10 +56,11 @@ public:
 	~TopLevel()
 	{
 		delete taskman;
-		delete menubar;
 		delete file;
 		delete settings;
 		delete help;
+		delete menubar;
+		delete statusbar;
 	}
 
 	void closeEvent(QCloseEvent*)
@@ -69,6 +71,7 @@ public:
 protected:
 
 	KMenuBar* menubar;
+	KStatusBar* statusbar;
 	QPopupMenu* file;
 	QPopupMenu* settings;
 	QPopupMenu* help;
@@ -81,5 +84,3 @@ protected slots:
 	void quitSlot();
 
 };
-
-

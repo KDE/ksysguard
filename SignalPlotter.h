@@ -1,12 +1,6 @@
 /*
-    KTop, a taskmanager and cpu load monitor
+    KTop, the KDE Task Manager
    
-    Copyright (C) 1997 Bernd Johannes Wuebben
-                       wuebben@math.cornell.edu
-
-    Copyright (C) 1998 Nicolas Leclercq
-                       nicknet@planete.net
-    
 	Copyright (c) 1999 Chris Schlaeger
 	                   cs@axys.de
     
@@ -27,37 +21,45 @@
 
 // $Id$
 
-#ifndef _PerfMonPage_h_
-#define _PerfMonPage_h_
+#ifndef _SignalPlotter_h_
+#define _SignalPlotter_h_
 
 #include <qwidget.h>
-#include <qgroupbox.h>
+#include <qarray.h>
+#include <qbrush.h>
 
-#include "FancyPlotter.h"
-#include "OSStatus.h"
+class QColor;
 
-class PerfMonPage : public QWidget
+#define MAXBEAMS 5
+
+class SignalPlotter : public QWidget
 {
 	Q_OBJECT
 
 public:
-	PerfMonPage(QWidget* parent = 0, const char* name = 0);
-	~PerfMonPage()
+	SignalPlotter(QWidget* parent = 0, const char* name = 0, int min = 0,
+				  int max = 100);
+	~SignalPlotter();
+
+	bool addBeam(QColor col);
+	void addSample(int s0, int s1 = 0, int s2 = 0, int s3 = 0, int s4 = 0);
+
+	void setLowPass(bool lp)
 	{
-		killTimer(timerID);
-		delete cpu;
-		delete memory;
+		lowPass = lp;
 	}
 
-	virtual void resizeEvent(QResizeEvent* ev);
-	virtual void timerEvent(QTimerEvent*);
+protected:
+	virtual void resizeEvent(QResizeEvent*);
+	virtual void paintEvent(QPaintEvent*);
 
 private:
-	OSStatus stat;
-	int timerID;
-
-	FancyPlotter* cpu;
-	FancyPlotter* memory;
+	int minValue;
+	int maxValue;
+	bool lowPass;
+	int* beamData[MAXBEAMS];
+	QColor beamColor[MAXBEAMS];
+	int beams;
 } ;
 
 #endif

@@ -1,12 +1,6 @@
 /*
-    KTop, a taskmanager and cpu load monitor
+    KTop, the KDE Task Manager
    
-    Copyright (C) 1997 Bernd Johannes Wuebben
-                       wuebben@math.cornell.edu
-
-    Copyright (C) 1998 Nicolas Leclercq
-                       nicknet@planete.net
-    
 	Copyright (c) 1999 Chris Schlaeger
 	                   cs@axys.de
     
@@ -27,37 +21,50 @@
 
 // $Id$
 
-#ifndef _PerfMonPage_h_
-#define _PerfMonPage_h_
+#ifndef _FancyPlotter_h_
+#define _FancyPlotter_h_
 
 #include <qwidget.h>
-#include <qgroupbox.h>
+#include <qlabel.h>
 
-#include "FancyPlotter.h"
-#include "OSStatus.h"
+#include "SignalPlotter.h"
 
-class PerfMonPage : public QWidget
+class QGroupBox;
+
+class FancyPlotter : public QWidget
 {
 	Q_OBJECT
 
 public:
-	PerfMonPage(QWidget* parent = 0, const char* name = 0);
-	~PerfMonPage()
+	FancyPlotter(QWidget* parent = 0, const char* name = 0,
+				 const char* title = 0, int min = 0,
+				 int max = 100);
+	~FancyPlotter();
+
+	bool addBeam(const char* name, QColor col)
 	{
-		killTimer(timerID);
-		delete cpu;
-		delete memory;
+//		beamNames.append(new QLabel(name, this));
+		return (plotter->addBeam(col));
 	}
 
-	virtual void resizeEvent(QResizeEvent* ev);
-	virtual void timerEvent(QTimerEvent*);
+	void addSample(int s0, int s1 = 0, int s2 = 0, int s3 = 0, int s4 = 0)
+	{
+		plotter->addSample(s0, s1, s2, s3, s4);
+	}
+
+	void setLowPass(bool lp)
+	{
+		plotter->setLowPass(lp);
+	}
+
+protected:
+	virtual void resizeEvent(QResizeEvent*);
 
 private:
-	OSStatus stat;
-	int timerID;
-
-	FancyPlotter* cpu;
-	FancyPlotter* memory;
+	QGroupBox* signalFrame;
+	SignalPlotter* plotter;
+	QGroupBox* valuesFrame;
+	QList<QLabel> beamNames;
 } ;
 
 #endif

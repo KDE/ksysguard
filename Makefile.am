@@ -27,7 +27,7 @@ bin_PROGRAMS = 	ktop
 ktop_SOURCES	= ktop.cpp memory.cpp settings.cpp cpu.cpp TaskMan.cpp \
 	ProcListPage.cpp ProcTreePage.cpp IconList.cpp ProcessList.cpp \
 	ProcessTree.cpp OSProcessList.cpp OSProcess.cpp PerfMonPage.cpp \
-	OSStatus.cpp ReniceDlg.cpp
+	FancyPlotter.cpp SignalPlotter.cpp OSStatus.cpp ReniceDlg.cpp
 
 # the library search path
 ktop_LDFLAGS = $(all_libraries) $(KDE_RPATH)
@@ -40,10 +40,10 @@ ktop_LDADD   =      $(LIB_KFM) $(LIB_KDEUI)
 # this option you can leave out. Just, if you use "make dist", you need it
 noinst_HEADERS = ktop.h memory.h settings.h cpu.h TaskMan.h ProcListPage.h\
 	IconList.h ProcessList.h ProcessTree.h OSProcessList.h ProcTreePage.h \
-	PerfMonPage.h OSStatus.h ReniceDlg.h
+	PerfMonPage.h FancyPlotter.h SignalPlotter.h OSStatus.h ReniceDlg.h
 
 # just to make sure, automake makes them 
-METASOURCES =	ktop.moc memory.moc settings.moc cpu.moc TaskMan.moc ProcListPage.moc ProcessList.moc ProcessTree.moc ProcTreePage.moc PerfMonPage.moc ReniceDlg.moc
+METASOURCES =	ktop.moc memory.moc settings.moc cpu.moc TaskMan.moc ProcListPage.moc ProcessList.moc ProcessTree.moc ProcTreePage.moc PerfMonPage.moc FancyPlotter.moc SignalPlotter.moc ReniceDlg.moc
 
 # make messages.po. Move this one to ../po/ and "make merge" in po
 messages:

@@ -96,15 +96,9 @@ OSStatus::OSStatus()
 
     setvbuf(stat, NULL, _IONBF, 0);
 
-	if (fscanf(stat, "%*s %d %d %d %d",
-			   &userTicks, &sysTicks, &niceTicks, &idleTicks) != 4)
-	{
-		error = true;
-		errMessage = i18n("Cannot read file \'/proc/stat\'!\n"
-						  "The kernel needs to be compiled with support\n"
-						  "for /proc filesystem enabled!");
+	if (!readCpuInfo("cpu", &userTicks, &sysTicks, &niceTicks,
+					 &idleTicks))
 		return;
-	}
 
 	/*
 	 * Contrary to /proc/stat the /proc/meminfo file cannot be left open.
@@ -160,18 +154,10 @@ OSStatus::getCpuLoad(int& user, int& sys, int& nice, int& idle)
 
 	int currUserTicks, currSysTicks, currNiceTicks, currIdleTicks;
 
-	rewind(stat);
-	if (fscanf(stat, "%*s %d %d %d %d",
-			   &currUserTicks, &currNiceTicks,
-			   &currSysTicks, &currIdleTicks) != 4)
-	{
-		error = true;
-		errMessage = i18n("Cannot read file \'/proc/stat\'!\n"
-						  "The kernel needs to be compiled with support\n"
-						  "for /proc filesystem enabled!");
+	if (!readCpuInfo("cpu", &currUserTicks, &currSysTicks,
+					 &currNiceTicks, &currIdleTicks))
 		return (false);
-	}
-
+		
 	int totalTicks = ((currUserTicks - userTicks) +
 					  (currSysTicks - sysTicks) +
 					  (currNiceTicks - niceTicks) +
@@ -204,11 +190,12 @@ OSStatus::getCpuCount(void)
 bool
 OSStatus::getCpuXLoad(int, int& user, int& sys, int& nice, int& idle)
 {
-	getCpuLoad(user, sys, nice, idle);	// SMP support not yet implemented!
+	// SMP support not yet implemented!
+	return (getCpuLoad(user, sys, nice, idle));
 }
 
 bool
-OSStatus::getMemoryInfo(int& total, int& mfree, int& shared, int& buffers,
+OSStatus::getMemoryInfo(int& total, int& mfree, int& used, int& buffers,
 						int& cached)
 {
 	/*
@@ -216,7 +203,7 @@ OSStatus::getMemoryInfo(int& total, int& mfree, int& shared, int& buffers,
 	 * It also contains the information about the swap space.
 	 * The 'file' looks like this:
 	 *
-	 * total:    used:    free:  shared: buffers:  cached:
+	 *         total:    used:    free:  shared: buffers:  cached:
 	 * Mem:  64593920 60219392  4374528 49426432  6213632 33689600
 	 * Swap: 69636096   761856 68874240
 	 * MemTotal:     63080 kB
@@ -244,9 +231,44 @@ OSStatus::getMemoryInfo(int& total, int& mfree, int& shared, int& buffers,
 		errMessage = i18n("Cannot read memory info file \'/proc/meminfo\'!\n");
 		return (false);
 	}
-	fscanf(meminfo, "%*s %d %*d %d %d %d %d\n",
-		   &total, &mfree, &shared, &buffers, &cached);
+	/*
+	 * The following works only on systems with 4GB or less. Currently this
+	 * is no problem but what happens if Linus changes his mind?
+	 */
+	fscanf(meminfo, "%*s %d %d %*d %d %d %d\n",
+		   &total, &mfree, &used, &buffers, &cached);
+
+	total /= 1024;
+	mfree /= 1024;
+	used /= 1024;
+	buffers /= 1024;
+	cached /= 1024;
+
 	fclose(meminfo);
+
+	return (true);
+}
+
+bool
+OSStatus::readCpuInfo(const char* cpu, int* u, int* s, int* n, int* i)
+{
+	char tag[32];
+
+	rewind(stat);
+
+	do
+	{
+		if (fscanf(stat, "%32s %d %d %d %d", tag, u, n, s, i) != 5)
+		{
+			error = true;
+			errMessage.sprintf(i18n("Cannot read info for %s from file "
+									"\'/proc/stat\'!\n"
+									"The kernel needs to be compiled with "
+									"support\n"
+									"for /proc filesystem enabled!"), cpu);
+			return (false);
+		}
+	} while (strcmp(tag, cpu));
 
 	return (true);
 }
@@ -274,6 +296,9 @@ OSStatus::getSwapInfo(int& stotal, int& sfree)
 	fscanf(meminfo, "%*s %d %*d %d\n",
 		   &stotal, &sfree);
 	fclose(meminfo);
+
+	stotal /= 1024;
+	sfree /= 1024;
 
 	return (true);
 }
@@ -320,7 +345,14 @@ OSStatus::getCpuCount(void)
 bool
 OSStatus::getCpuXLoad(int, int& user, int& sys, int& nice, int& idle)
 {
-	getCpuLoad(user, sys, nice, idle);	// SMP support not yet implemented!
+	// SMP support not yet implemented!
+	return (getCpuLoad(user, sys, nice, idle));
+}
+
+bool
+OSStatus::readCpuInfo(const char*, int*, int*, int*, int*)
+{
+	return (false);
 }
 
 bool
@@ -345,6 +377,7 @@ OSStatus::getMemoryInfo(int& total, int& mfree, int& shared, int& buffers,
 	// mfree
 	mfree = p.t_free * getpagesize();
 
+	// FIXME shared no longer used, parameter is now used pysical memory; CS
 	// shared
 	shared = p.t_rmshr * getpagesize();
 
@@ -396,6 +429,24 @@ OSStatus::getCpuLoad(int &, int &, int &, int &)
 	errMessage = i18n("Your system is not currently supported.\n"
 			  "Sorry");
 	return false;
+}
+
+int
+OSStatus::getCpuCount(void)
+{
+	return (1);
+}
+
+bool
+OSStatus::getCpuXLoad(int, int& user, int& sys, int& nice, int& idle)
+{
+	return (getCpuLoad(user, sys, nice, idle));
+}
+
+bool
+OSStatus::readCpuInfo(const char*, int*, int*, int*, int*)
+{
+	return (false);
 }
 
 bool

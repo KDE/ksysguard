@@ -93,6 +93,10 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	// register the menu bar with KTMainWindow
 	setMenu(menubar);
 
+	statusbar = new KStatusBar(this, "statusbar");
+	statusbar->insertItem("Hallo", 0);
+	setStatusBar(statusbar);
+
 	assert(Kapp);
 	setCaption(i18n("KDE Task Manager"));
 	setMinimumSize(KTOP_MIN_W, KTOP_MIN_H);
