@@ -312,11 +312,29 @@ OSStatus::getMemoryInfo(int& total, int& mfree, int& shared, int& buffers,
 	mib[1] = HW_PHYSMEM;
 	len = sizeof (total);
 
+	// total
 	sysctl(mib, 2, &total, &len, NULL, 0);
+
+	// mfree
 	mfree = p.t_free * getpagesize();
+
+	// shared
 	shared = p.t_rmshr * getpagesize();
-	buffers = 0; // FIXME
-	cached = 0; // FIXME
+
+	// buffers
+#if 0
+	len = sizeof (buffers);
+	sysctlbyname("vfs.bufspace", &buffers, &len, NULL, 0);
+#endif
+	buffers = 0; // FIXME doesn't work under 2.2.x
+
+	// cached
+#if 0
+	len = sizeof (cached);
+	sysctlbyname("vm.stats.vm.v_cache_count", &cached, &len, NULL, 0);
+	cached *= getpagesize();
+#endif
+	cached = 0; // FIXME doesn't work under 2.2.x
 
 	return (true);
 }

@@ -95,18 +95,18 @@ OSProcess::OSProcess(int pid_)
 	QString pidStr;
 	pidStr.sprintf("%d", pid_);
 
-	read(pidStr);
+	read((const void *)pidStr);
 
 	userLoad = sysLoad = 0.0;
 }
 
 bool
-OSProcess::read(const char* pidStr)
+OSProcess::read(const char* info)
 {
 	FILE* fd;
 
 	QString buf;
-	buf.sprintf("/proc/%s/status", pidStr);
+	buf.sprintf("/proc/%s/status", (const char *)info);
 	if((fd = fopen(buf, "r")) == 0)
 	{
 		error = true;
@@ -123,7 +123,7 @@ OSProcess::read(const char* pidStr)
 	fscanf(fd, "%*s %d %*d %*d %*d", (int*) &uid);
 	fclose(fd);
 
-    buf.sprintf("/proc/%s/stat", pidStr);
+    buf.sprintf("/proc/%s/stat", (const char *)info);
 	if ((fd = fopen(buf, "r")) == 0)
 	{
 		error = true;
@@ -180,12 +180,12 @@ OSProcess::read(const char* pidStr)
 #include <sys/sysctl.h>
 #include <sys/user.h>                    
 
-OSProcess::OSProcess(const void* pidStr, TimeStampList* /*lastTStamps*/,
+OSProcess::OSProcess(const void* info, TimeStampList* /*lastTStamps*/,
                                          TimeStampList* /*newTStamps*/)
 {
 	error = false;
 
-	read(pidStr);
+	read(info);
 }
 
 OSProcess::OSProcess(int pid_)
@@ -207,9 +207,9 @@ OSProcess::OSProcess(int pid_)
 }
 
 bool
-OSProcess::read(const char* pidStr)
+OSProcess::read(const void* info)
 {
-	struct kinfo_proc *p = (struct kinfo_proc *)pidStr;
+	struct kinfo_proc *p = (struct kinfo_proc *)info;
 
 	pid = p->kp_proc.p_pid;
 	ppid = p->kp_eproc.e_ppid;
@@ -220,7 +220,8 @@ OSProcess::read(const char* pidStr)
 	// find out user name with the process uid
 	struct passwd* pwent = getpwuid(uid);
 	userName = pwent ? pwent->pw_name : "????";
-	priority = p->kp_proc.p_nice;
+	priority = p->kp_proc.p_priority;
+	niceLevel = p->kp_proc.p_nice;
 
 	// this isn't usertime -- it's total time (??)
 #if __FreeBSD_version >= 300000
@@ -244,7 +245,7 @@ OSProcess::read(const char* pidStr)
 }
 
 #else
-OSProcess::OSProcess(const void* pidStr, TimeStampList* lastTStamps,
+OSProcess::OSProcess(const void* info, TimeStampList* lastTStamps,
                                          TimeStampList* newTStamps)
 {
 }
@@ -254,7 +255,7 @@ OSProcess::OSProcess(int pid_)
 }
 
 bool
-OSProcess::read(const char* pidStr)
+OSProcess::read(const char* info)
 {
 }
 #endif

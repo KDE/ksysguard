@@ -320,6 +320,12 @@ OSProcessList::hasPriority(void) const
 	return (true);
 }
 
+bool
+OSProcessList::hasNiceLevel(void) const
+{
+	return (true);
+}
+
 bool 
 OSProcessList::hasVmSize(void) const
 {

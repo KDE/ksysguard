@@ -149,7 +149,7 @@ public:
 	bool sendSignal(int sig);
 
 private:
-	bool read(const char* pidStr);
+	bool read(const void* info);
 
 	/// the name of the application (executable)
 	char name[101];
