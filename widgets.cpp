@@ -135,51 +135,8 @@ static const char* execXpm[]={
 static QPixmap *defaultIcon;
 
 #define NUM_COL 10
-// I have to find a better method...
-static const char *col_headers[] = {
-     " "      ,
-     "procID" ,
-     "Name"   ,
-     "userID" ,
-     "CPU"    ,
-     "Time"   ,
-     "Status" ,
-     "VmSize" ,
-     "VmRss"  ,
-#ifdef __FreeBSD__
-     "Prior"   ,
-#else
-     "VmLib"  ,
-#endif
-     0
-};
 
-static const char *dummies[] = {
-     "++++"              ,
-     "procID++"          ,
-     "kfontmanager++"    ,
-     "rootuseroot"       ,
-     "100.00%+"          ,
-     "100:00++"          ,
-     "Status+++"         ,
-     "VmSize++"          ,
-     "VmSize++"          ,
-     "VmSize++"          ,
-     0
-};
 
-static KTabListBox::ColumnType col_types[] = {
-     KTabListBox::MixedColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn
-};
 
 /*=============================================================================
  Class : IconListElem (methods)
@@ -307,13 +264,13 @@ TaskMan::TaskMan( QWidget *parent, const char *name, int sfolder )
     pSig = new QPopupMenu(NULL,"_psig");
     CHECK_PTR(pSig);
 
-    pSig->insertItem(ktr("send SIGINT\t(ctrl-c)"),MENU_ID_SIGINT);
-    pSig->insertItem(ktr("send SIGQUIT\t(core)"),MENU_ID_SIGQUIT);
-    pSig->insertItem(ktr("send SIGTERM\t(term.)"),MENU_ID_SIGTERM);
-    pSig->insertItem(ktr("send SIGKILL\t(term.)"),MENU_ID_SIGKILL);
+    pSig->insertItem(i18n("send SIGINT\t(ctrl-c)"),MENU_ID_SIGINT);
+    pSig->insertItem(i18n("send SIGQUIT\t(core)"),MENU_ID_SIGQUIT);
+    pSig->insertItem(i18n("send SIGTERM\t(term.)"),MENU_ID_SIGTERM);
+    pSig->insertItem(i18n("send SIGKILL\t(term.)"),MENU_ID_SIGKILL);
     pSig->insertSeparator();
-    pSig->insertItem(ktr("send SIGUSR1\t(user1)"),MENU_ID_SIGUSR1);
-    pSig->insertItem(ktr("send SIGUSR2\t(user2)"),MENU_ID_SIGUSR2);
+    pSig->insertItem(i18n("send SIGUSR1\t(user1)"),MENU_ID_SIGUSR1);
+    pSig->insertItem(i18n("send SIGUSR2\t(user2)"),MENU_ID_SIGUSR2);
     connect(pSig,SIGNAL(activated(int)), this, SLOT(pSigHandler(int)));
   
     /*----------------------------------------------
@@ -331,30 +288,64 @@ TaskMan::TaskMan( QWidget *parent, const char *name, int sfolder )
     connect(pList,SIGNAL(popupMenu(int,int)),SLOT(pList_popupMenu(int,int)));
     
     QFontMetrics fm = pList->fontMetrics();
-    for ( int cnt=0 ; col_headers[cnt] ; cnt++ ) {
-         pList->setColumn(cnt,col_headers[cnt]
-                             ,fm.width(dummies[cnt])
-                             ,col_types[cnt]);
-    }
+// I have to find a better method...
+
+    int cnt=0;
+    pList->setColumn(cnt," "
+                        ,fm.width("++++")
+                        ,KTabListBox::MixedColumn); cnt++;
+    pList->setColumn(cnt,i18n("procID")
+                        ,fm.width("procID++")
+                        ,KTabListBox::TextColumn); cnt++;
+    pList->setColumn(cnt,i18n("Name")
+                        ,fm.width("kfontmanager++")
+                        ,KTabListBox::TextColumn); cnt++;
+    pList->setColumn(cnt,i18n("userID")
+                        ,fm.width("rootuseroot")
+                        ,KTabListBox::TextColumn); cnt++;
+    pList->setColumn(cnt,i18n("CPU")
+                        ,fm.width("100.00%+")
+                        ,KTabListBox::TextColumn); cnt++;
+    pList->setColumn(cnt,i18n("Time")
+                        ,fm.width("100:00++")
+                        ,KTabListBox::TextColumn); cnt++;
+    pList->setColumn(cnt,i18n("Status")
+                        ,fm.width("Status+++")
+                        ,KTabListBox::TextColumn); cnt++;
+    pList->setColumn(cnt,i18n("VmSize")
+                        ,fm.width("VmSize++")
+                        ,KTabListBox::TextColumn); cnt++;
+    pList->setColumn(cnt,i18n("VmRss")
+                        ,fm.width("VmSize++")
+                        ,KTabListBox::TextColumn); cnt++;
+#ifdef __FreeBSD__
+    pList->setColumn(cnt,i18n("Prior")
+                        ,fm.width("100++")
+                        ,KTabListBox::TextColumn); cnt++;
+#else
+    pList->setColumn(cnt,i18n("VmLib")
+                        ,fm.width("VmSize++")
+                        ,KTabListBox::TextColumn); cnt++;
+#endif
 
     // now, three buttons which should appear on the sheet (just below the listbox)
-    pList_bRefresh = new QPushButton(ktr("Refresh Now"), p0,"pList_bRefresh");
+    pList_bRefresh = new QPushButton(i18n("Refresh Now"), p0,"pList_bRefresh");
     CHECK_PTR(pList_bRefresh);
     connect(pList_bRefresh, SIGNAL(clicked()), this, SLOT(pList_update()));
-    pList_bKill = new QPushButton(ktr("Kill task"), p0, "pList_bKill");
+    pList_bKill = new QPushButton(i18n("Kill task"), p0, "pList_bKill");
     CHECK_PTR(pList_bKill);
     connect(pList_bKill,SIGNAL(clicked()), this, SLOT(pList_killTask()));
   
     pList_cbRefresh = new QComboBox(p0,"pList_cbRefresh");
     CHECK_PTR(pList_cbRefresh);
 
-    pList_cbRefresh->insertItem( klocale->translate("Refresh rate : Slow"),-1);
-    pList_cbRefresh->insertItem( klocale->translate("Refresh rate : Medium"),-1);
-    pList_cbRefresh->insertItem( klocale->translate("Refresh rate : Fast"),-1);
+    pList_cbRefresh->insertItem( i18n("Refresh rate : Slow"),-1);
+    pList_cbRefresh->insertItem( i18n("Refresh rate : Medium"),-1);
+    pList_cbRefresh->insertItem( i18n("Refresh rate : Fast"),-1);
     pList_cbRefresh->setCurrentItem(2); //fast = default value;
     connect(pList_cbRefresh,SIGNAL(activated(int)),SLOT(pList_cbRefreshActivated(int)));
 
-    pList_box->setTitle(ktr("Running processes"));
+    pList_box->setTitle(i18n("Running processes"));
 
     /*----------------------------------------------
      set up page 1 (process tree)
@@ -372,23 +363,23 @@ TaskMan::TaskMan( QWidget *parent, const char *name, int sfolder )
     connect(pTree,SIGNAL(clicked(QMouseEvent*)),SLOT(pTree_clicked(QMouseEvent*)));
 
     // now, three buttons which should appear on the sheet (just below the tree box)
-    pTree_bRefresh = new QPushButton(ktr("Refresh Now"), p1, "pTree_bRefresh");
+    pTree_bRefresh = new QPushButton(i18n("Refresh Now"), p1, "pTree_bRefresh");
     CHECK_PTR(pTree_bRefresh);
     connect(pTree_bRefresh, SIGNAL(clicked()), this, SLOT(pTree_update()));
-    pTree_bRoot = new QPushButton(ktr("Change Root"), p1,"pTree_bRoot");
+    pTree_bRoot = new QPushButton(i18n("Change Root"), p1,"pTree_bRoot");
     CHECK_PTR(pTree_bRoot);
     connect(pTree_bRoot,SIGNAL(clicked()), this,SLOT(pTree_changeRoot()));
-    pTree_bKill = new QPushButton(ktr("Kill task"), p1, "pTree_bKill");
+    pTree_bKill = new QPushButton(i18n("Kill task"), p1, "pTree_bKill");
     CHECK_PTR(pTree_bKill);
     connect(pTree_bKill,SIGNAL(clicked()), this, SLOT(pTree_killTask()));
-    pTree_box->setTitle(ktr("Running processes"));
+    pTree_box->setTitle(i18n("Running processes"));
 
     pTree_cbSort = new QComboBox(p1,"pTree_cbSort");
     CHECK_PTR(pTree_cbSort);
 
-    pTree_cbSort->insertItem( klocale->translate("Sort by ID"),-1);
-    pTree_cbSort->insertItem( klocale->translate("Sort by Name"),-1);
-    pTree_cbSort->insertItem( klocale->translate("Sort by Owner (UID)"),-1);
+    pTree_cbSort->insertItem( i18n("Sort by ID"),-1);
+    pTree_cbSort->insertItem( i18n("Sort by Name"),-1);
+    pTree_cbSort->insertItem( i18n("Sort by Owner (UID)"),-1);
     pTree_cbSort->setCurrentItem(1); //by proc name = default value;
     connect(pTree_cbSort,SIGNAL(activated(int)),SLOT(pTree_cbSortActivated(int)));
     
@@ -399,10 +390,10 @@ TaskMan::TaskMan( QWidget *parent, const char *name, int sfolder )
     CHECK_PTR(p2); 
     cpubox = new QGroupBox(p2, "_cpumon");
     CHECK_PTR(cpubox); 
-    cpubox->setTitle(ktr("CPU load"));
+    cpubox->setTitle(i18n("CPU load"));
     cpubox1 = new QGroupBox(p2, "_cpumon1");
     CHECK_PTR(cpubox1); 
-    cpubox1->setTitle(ktr("CPU load history"));
+    cpubox1->setTitle(i18n("CPU load history"));
     // cpu_cur is the left display (current load).
     cpu_cur = new QWidget(p2, "cpu_child");
     CHECK_PTR(cpu_cur); 
@@ -414,10 +405,10 @@ TaskMan::TaskMan( QWidget *parent, const char *name, int sfolder )
     // now, we do the same for the memory monitor
     membox = new QGroupBox(p2, "_memmon");
     CHECK_PTR(membox);
-    membox->setTitle(ktr("Memory"));
+    membox->setTitle(i18n("Memory"));
     membox1 = new QGroupBox(p2, "_memhistory");
     CHECK_PTR(membox1);
-    membox1->setTitle(ktr("Memory usage history"));
+    membox1->setTitle(i18n("Memory usage history"));
     mem_cur = new QWidget(p2, "mem_child");
     CHECK_PTR(mem_cur);
     mem_cur->setBackgroundColor(black);
@@ -492,9 +483,9 @@ TaskMan::TaskMan( QWidget *parent, const char *name, int sfolder )
     pTree_update();        /* create process tree the first time */
 
     // add pages...
-    addTab(p0,ktr("Processes &List"));
-    addTab(p1,ktr("Processes &Tree"));
-    addTab(p2,ktr("&Performance"));
+    addTab(p0,i18n("Processes &List"));
+    addTab(p1,i18n("Processes &Tree"));
+    addTab(p2,i18n("&Performance"));
     move(0,0);
 }
 
