@@ -50,7 +50,7 @@ public:
 	ProcessLVI(QListView* lv) : QListViewItem(lv) { }
 	ProcessLVI(QListViewItem* lvi) : QListViewItem(lvi) { }
 
-	virtual const char* key(int column, bool) const;
+	virtual QString key(int column, bool) const;
 } ;
 
 class QPopupMenu;
@@ -194,8 +194,48 @@ private:
 	// Get a current list of processes from the operating system.
 	void load();
 
-	void buildTree(OSProcessList* pl, ProcessLVI* parent, int ppid);
+	/*
+	 * This function determines whether a process matches the current filter
+	 * mode or not. If it machtes the criteria it returns true, false
+	 * otherwise.
+	 */
+	bool matchesFilter(OSProcess* p) const;
 
+	/*
+	 * This function constructs the list of processes for list mode. It's a
+	 * straightforward appending operation to the QListView widget.
+	 */
+	ProcessLVI* buildList(int selectedProcess);
+
+	/*
+	 * This fuction constructs the tree of processes for tree mode. It filters
+	 * out leaf-sub-trees that contain no processes that match the filter
+	 * criteria.
+	 */
+	ProcessLVI* buildTree(int selectedProcess);
+
+	/*
+	 * This function deletes the leaf-sub-trees that do not match the filter
+	 * criteria.
+	 */
+	void deleteLeaves(void);
+
+	/* This function returns true if the process is a leaf process with
+	 * respect to the other processes in the process list. It does not
+	 * have to be a leaf process in the overall list of processes.
+	 */
+	bool isLeafProcess(int pid);
+
+	/*
+	 * This function is used to recursively construct the tree by removing
+	 * processes from the process list an inserting them into the tree.	
+	 */
+	void extendTree(OSProcessList* pl, ProcessLVI* parent, int ppid,
+					ProcessLVI** newSelection, int selectedProcess);
+
+	/*
+	 * This function adds a process to the list/tree.
+	 */
 	void addProcess(OSProcess* p, ProcessLVI* pli);
 
 	/**

@@ -26,7 +26,6 @@
 #include <qstring.h>
 
 #include <kapp.h>
-#include <kstring.h>
 
 #include "version.h"
 #include "MainMenu.moc"
@@ -48,14 +47,14 @@ MainMenu::MainMenu(QWidget* parent, const char* name) :
 
 	// 'Help' submenu
 	QString about;
-	ksprintf(&about, i18n("KDE Task Manager (KTop) Version %s\n\n"
-			     "Copyright:\n"
-			     "1996 : A. Sanda <alex@darkstar.ping.at>\n"
-			     "1997 : Ralf Mueller <ralf@bj-ig.de>\n"
-			     "1997-98 : Bernd Johannes Wuebben <wuebben@kde.org>\n"
-			     "1998 : Nicolas Leclercq <nicknet@planete.net>\n"
-			     "1999 : Chris Schlaeger <cs@kde.org>\n"),
-			 KTOP_VERSION);
+	about.sprintf(i18n("KDE Task Manager (KTop) Version %s\n\n"
+					   "Copyright:\n"
+					   "1996 : A. Sanda <alex@darkstar.ping.at>\n"
+					   "1997 : Ralf Mueller <ralf@bj-ig.de>\n"
+					   "1997-98 : Bernd Johannes Wuebben <wuebben@kde.org>\n"
+					   "1998 : Nicolas Leclercq <nicknet@planete.net>\n"
+					   "1999 : Chris Schlaeger <cs@kde.org>\n"),
+				  KTOP_VERSION);
 	help = Kapp->getHelpMenu(true, about);
 
 	// 'Refresh Rate' submenu

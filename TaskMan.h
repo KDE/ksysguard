@@ -33,7 +33,7 @@
 #include <signal.h>
 
 #include <qwidget.h>
-#include <qtabdialog.h>
+#include <ktabctl.h>
 
 #include <ktablistbox.h>
 
@@ -47,7 +47,7 @@
  * 3 entry tab dialog. The tabs contain a process list, a process tree and
  * a performance meter.
  */
-class TaskMan : public QTabDialog
+class TaskMan : public KTabCtl
 {
 	Q_OBJECT
 

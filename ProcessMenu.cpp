@@ -73,7 +73,7 @@ ProcessMenu::killProcess(int pid, int sig)
 	{
 		QMessageBox::warning(this, i18n("Task Manager"),
 							 i18n("You need to select a process first!"),
-								  i18n("OK"), 0);   
+								  i18n("OK"), QString::null);
 		return;
 	}
 
@@ -83,7 +83,8 @@ ProcessMenu::killProcess(int pid, int sig)
 	{
 		QString msg;
 		msg.sprintf(i18n("The process %d is no longer persistent."), pid);
-		QMessageBox::warning(this, i18n("Task Manager"), msg, i18n("OK"), 0);
+		QMessageBox::warning(this, i18n("Task Manager"), msg, i18n("OK"),
+							 QString::null);
 		return;
 	}
 
@@ -123,12 +124,13 @@ ProcessMenu::killProcess(int pid, int sig)
 					 "(Process name: %s  Owner: %s)\n"), sigName.data(),
 				ps.getPid(), ps.getName(), ps.getUserName().data());
 	switch(QMessageBox::warning(this, "Task Manager", msg,
-								i18n("Continue"), i18n("Abort"), 0, 1))
+								i18n("Continue"), i18n("Abort"),\
+								QString::null, 1))
     { 
 	case 0: // continue
 		if (!ps.sendSignal(sig))
 			QMessageBox::warning(this, "Task Manager", ps.getErrMessage(),
-								 i18n("Continue"), 0);
+								 i18n("Continue"), QString::null);
 		break;
 
 	case 1: // abort
@@ -147,7 +149,8 @@ ProcessMenu::reniceProcess(int pid)
 	{
 		QString msg;
 		msg.sprintf(i18n("The process %d is no longer persistent."), pid);
-		QMessageBox::warning(this, i18n("Task Manager"), msg, i18n("OK"), 0);
+		QMessageBox::warning(this, i18n("Task Manager"), msg, i18n("OK"),
+							 QString::null);
 		return;
 	}
 
@@ -159,7 +162,7 @@ ProcessMenu::reniceProcess(int pid)
 							 i18n("Renice error...\n"
 								  "Specified process does not exist\n"
 								  "or permission denied."),
-							 i18n("OK"), 0); 
+							 i18n("OK"), QString::null);
 		return;
 	}
 
@@ -177,7 +180,7 @@ ProcessMenu::reniceProcess(int pid)
 								 i18n("Renice error...\n"
 									  "Specified process does not exist\n"
 									  "or permission denied."),
-								 i18n("OK"), 0);   
+								 i18n("OK"), QString::null);
 		}
 	}
 }

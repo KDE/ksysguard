@@ -53,36 +53,35 @@ KApplication* Kapp;
 TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	: KTMainWindow(name)
 {
+	assert(Kapp);
+	setCaption(i18n("KDE Task Manager"));
+
 	/*
 	 * create main menu
 	 */
-
 	menubar = new MainMenu(this, "MainMenu");
 	connect(menubar, SIGNAL(quit()), this, SLOT(quitSlot()));
 	// register the menu bar with KTMainWindow
 	setMenu(menubar);
 
-	statusbar = new KStatusBar(this, "statusbar");
-	statusbar->insertItem(i18n("88888 Processes"), 0);
-	statusbar->insertItem(i18n("Memory: 888888 kB used, "
-							   "888888 kB free"), 1);
-	statusbar->insertItem(i18n("Swap: 888888 kB used, "
-							   "888888 kB free"), 2);
-	setStatusBar(statusbar);
-	// call timerEvent to fill the status bar with real values
-	timerEvent(0);
-
-	assert(Kapp);
-	setCaption(i18n("KDE Task Manager"));
-
 	// create the tab dialog
-	taskman = new TaskMan(this, "", sfolder);
+	taskman = new TaskMan(this, "TaskMan", sfolder);
 
 	// register the tab dialog with KTMainWindow as client widget
 	setView(taskman);
 
 	connect(taskman, SIGNAL(enableRefreshMenu(bool)),
 			menubar, SLOT(enableRefreshMenu(bool)));
+
+	statusbar = new KStatusBar(this, "statusbar");
+	statusbar->insertItem(i18n("88888 Processes"), 0);
+	statusbar->insertItem(i18n("Memory: 8888888 kB used, "
+							   "8888888 kB free"), 1);
+	statusbar->insertItem(i18n("Swap: 8888888 kB used, "
+							   "8888888 kB free"), 2);
+	setStatusBar(statusbar);
+	// call timerEvent to fill the status bar with real values
+	timerEvent(0);
 
 	setMinimumSize(KTOP_MIN_W, KTOP_MIN_H);
 
@@ -112,10 +111,10 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	timerID = startTimer(2000);
 
 	// show the dialog box
-    show();
+	show();
 
 	// switch to the selected startup page
-    taskman->raiseStartUpPage();
+	taskman->raiseStartUpPage();
 }
 
 void 
@@ -181,17 +180,17 @@ main(int argc, char** argv)
 	 */
 	for (i = 1; i < argc; i++)
 	{
-		if(!strcmp(argv[i],"--help"))
+		if (!strcmp(argv[i],"--help"))
 		{
 			// print usage information
 			usage(argv[0]);
 			return 0;
 		}
-		if(strstr(argv[i],"-p"))
+		if (strstr(argv[i],"-p"))
 		{
 			// select what page (tab) to show after startup
 			i++;
-			if ( strstr(argv[i], "perf"))
+			if (strstr(argv[i], "perf"))
 			{
 				// performance monitor
 				sfolder = TaskMan::PAGE_PERF;
@@ -219,7 +218,9 @@ main(int argc, char** argv)
 
 	// create top-level widget
 	TopLevel *toplevel = new TopLevel(0, "TaskManager", sfolder);
+	Kapp->setMainWidget(toplevel);
 	Kapp->setTopWidget(toplevel);
+	toplevel->show();
 
 	// run the application
 	int result = Kapp->exec();

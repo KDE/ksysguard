@@ -46,14 +46,11 @@
  * window.
  */
 TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
-	: QTabDialog(parent, name, FALSE, 0)
+	: KTabCtl(parent, name)
 {
 	pages[0] = pages[1] = NULL;
 
-    // Delete the OK button, it is created by default by the constructor.
-	setOkButton(0);
-
-	connect(tabBar(), SIGNAL(selected(int)), SLOT(tabBarSelected(int)));
+	connect(this, SIGNAL(tabSelected(int)), SLOT(tabBarSelected(int)));
 	connect(this, SIGNAL(enableRefreshMenu(bool)),
 			MainMenuBar, SLOT(enableRefreshMenu(bool)));
 						 
@@ -80,7 +77,7 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
     addTab(procListPage, i18n("Processes &List"));
     addTab(perfMonPage, i18n("Performance &Meter"));
 
-    move(0,0);
+	move(0,0);
 }
 
 void 
@@ -90,7 +87,8 @@ TaskMan::raiseStartUpPage()
 	currentPage = Kapp->getConfig()->readNumEntry("StartUpPage", currentPage);
 
 	// tell QTabDialog to raise the specified startup page
-	showPage(pages[currentPage]);
+//	showPage(pages[currentPage]);
+	showTab(currentPage);
 } 
 
 void 

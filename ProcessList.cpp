@@ -139,7 +139,7 @@ percentKey(const char* text)
 	return (key);
 }
 
-const char*
+QString
 ProcessLVI::key(int column, bool dir) const
 {
 	if (TabCol[column].key)
@@ -373,6 +373,18 @@ ProcessList::load()
 {
 	pl.clear();
 
+	/*
+	 * This piece of code tries to work around the QListView auto-shrink
+	 * bug. The column width is always reset to the size required for the
+	 * header. If any column entry needs more space QListView will resize
+	 * the column again. Unfortunately this causes heave flickering!
+	 */
+	QFontMetrics fm = fontMetrics();
+	int col = 0;
+	for (int i = 0; i < MaxCols; i++)
+		if (TabCol[i].visible && TabCol[i].supported)
+			setColumnWidth(col++, fm.width(TabCol[i].trHeader) + 10);
+
 	// request current list of processes
 	if (!pl.update())
 	{
@@ -380,10 +392,85 @@ ProcessList::load()
 		abort();
 	}
 
+	if (treeViewEnabled)
+		deleteLeaves();
+
 	int selectedProcess = selectedPid();
 
 	clear();
 
+	ProcessLVI* newSelection = treeViewEnabled ?
+		buildTree(selectedProcess) :
+		buildList(selectedProcess);
+
+	if (newSelection)
+	{
+		setSelected(newSelection, TRUE);
+		ensureItemVisible(newSelection);
+	}
+
+	/*
+	 * This is necessary because the selected process may has disappeared
+	 * without ktop's interaction. Since there are widgets that always need
+	 * to know the currently selected process we send out a processSelected
+	 * signal.
+	 */
+	emit(processSelected(selectedPid()));
+}
+
+bool
+ProcessList::matchesFilter(OSProcess* p) const
+{
+	// This mechanism is likely to change in the future!
+
+	switch (filterMode)
+	{
+	case FILTER_ALL:
+		return (true);
+
+	case FILTER_SYSTEM:
+		return (p->getUid() < 100 ? true : false);
+
+	case FILTER_USER:
+		return (p->getUid() >= 100 ? true : false);
+
+	case FILTER_OWN:
+	default:
+		return (p->getUid() == getuid() ? true : false);
+	}
+}
+
+ProcessLVI*
+ProcessList::buildList(int selectedProcess)
+{
+	ProcessLVI* newSelection = 0;
+
+	/*
+	 * Get the first process in the list, check whether it matches the filter
+	 * and append it to QListView widget if so.
+	 */
+	while (!pl.isEmpty())
+	{
+		OSProcess* p = pl.first();
+
+		if (matchesFilter(p))
+		{
+			ProcessLVI* pli = new ProcessLVI(this);
+
+			addProcess(p, pli);
+
+			if (p->getPid() == selectedProcess)
+				newSelection = pli;
+		}
+		pl.removeFirst();
+    }
+
+	return (newSelection);
+}
+
+ProcessLVI*
+ProcessList::buildTree(int selectedProcess)
+{
 	ProcessLVI* newSelection = 0;
 
 	if (treeViewEnabled)
@@ -398,69 +485,52 @@ ProcessList::load()
 				ProcessLVI* pli = new ProcessLVI(this);
 				addProcess(ps, pli);
 
-				buildTree(&pl, pli, ps->getPid());
+				if (ps->getPid() == selectedProcess)
+					newSelection = pli;
+
+				extendTree(&pl, pli, ps->getPid(),
+						  &newSelection, selectedProcess);
 				break;
 			}
 			else
 				ps = pl.next();
 		}
 	}
-	else
-	{
-	while (!pl.isEmpty())
-	{
-		OSProcess* p = pl.first();
 
-		// filter out processes we are not interested in
-		// This mechanism is likely to change in the future!
-		bool ignore;
-		switch (filterMode)
-		{
-		case FILTER_ALL:
-			ignore = false;
-			break;
-		case FILTER_SYSTEM:
-			ignore = p->getUid() >= 100 ? true : false;
-			break;
-		case FILTER_USER:
-			ignore = p->getUid() < 100 ? true : false;
-			break;
-		case FILTER_OWN:
-		default:
-			ignore = p->getUid() != getuid() ? true : false;
-			break;
-		}
-		if (!ignore)
-		{
-			ProcessLVI* pli = new ProcessLVI(this);
-
-			addProcess(p, pli);
-
-			if (p->getPid() == selectedProcess)
-				newSelection = pli;
-		}
-		pl.removeFirst();
-    }
-	}
-	if (newSelection)
-	{
-		setSelected(newSelection, TRUE);
-		ensureItemVisible(newSelection);
-	}
-	else
-		selectedProcess = NONE;
-
-	/*
-	 * This is necessary because the selected process may has disappeared
-	 * without ktop's interaction. Since there are widgets that always need
-	 * to know the currently selected process we send out a processSelected
-	 * signal.
-	 */
-	emit(processSelected(selectedProcess));
+	return (newSelection);
 }
 
 void
-ProcessList::buildTree(OSProcessList* pl, ProcessLVI* parent, int ppid)
+ProcessList::deleteLeaves(void)
+{
+	for ( ; ; )
+	{
+		unsigned int i;
+		for (i = 0; i < pl.count() &&
+		            (!isLeafProcess(pl.at(i)->getPid()) ||
+					 matchesFilter(pl.at(i))); i++)
+			;
+		if (i == pl.count())
+			return;
+
+		pl.remove(i);
+	}
+}
+
+bool
+ProcessList::isLeafProcess(int pid)
+{
+	
+	for (unsigned int i = 0; i < pl.count(); i++)
+		if (pl.at(i)->getPpid() == pid)
+			return (false);
+
+	return (true);
+}
+
+void
+ProcessList::extendTree(OSProcessList* pl, ProcessLVI* parent, int ppid,
+						ProcessLVI** newSelection, int selectedProcess)
 {
 	OSProcess* ps;
 
@@ -476,6 +546,10 @@ ProcessList::buildTree(OSProcessList* pl, ProcessLVI* parent, int ppid)
 			
 			addProcess(ps, pli);
 
+			// if process was the previous selected one save pointer to LVI
+			if (ps->getPid() == selectedProcess)
+				*newSelection = pli;
+
 			// set parent to 'open'
 			setOpen(parent, TRUE);
 
@@ -483,7 +557,7 @@ ProcessList::buildTree(OSProcessList* pl, ProcessLVI* parent, int ppid)
 			pl->remove();
 
 			// now look for the childs of the inserted process
-			buildTree(pl, pli, ps->getPid());
+			extendTree(pl, pli, ps->getPid(), newSelection, selectedProcess);
 
 			/*
 			 * Since buildTree can remove processes from the list we can't

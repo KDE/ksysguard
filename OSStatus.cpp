@@ -78,6 +78,21 @@
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
 #endif
+#ifdef HAVE_SYS_SYSCTL_H
+#include <sys/sysctl.h>
+#endif
+#ifdef HAVE_VM_VM_PARAM_H
+#include <vm/vm_param.h>
+#endif
+#ifdef HAVE_SYS_VMMETER_H
+#include <sys/vmmeter.h>
+#endif
+#ifdef HAVE_SYS_USER_H
+#include <sys/user.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #include <stdlib.h>
 #include <dirent.h>
@@ -85,12 +100,6 @@
 #include <kapp.h>
 
 #include "OSStatus.h"
-#include <sys/sysctl.h>
-#include <vm/vm_param.h>
-#include <sys/vmmeter.h>
-#include <sys/user.h>
-#include <unistd.h>
-
 
 // uncomment this line to fake SMP reporting on non SMP systems
 // #define FAKE_SMP 1
@@ -161,6 +170,7 @@ OSStatus::getCpuLoad(int& user, int& sys, int& nice, int& idle)
 	 *
 	 * SMP systems will have cpu1 to cpuN lines right after the cpu info. The
 	 * format is identical to cpu and reports the information for each cpu.
+	 * Linux kernels <= 2.0 do not provide this information!
 	 *
 	 * The /proc/stat file looks like this:
 	 *
