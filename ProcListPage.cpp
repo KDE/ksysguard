@@ -38,7 +38,6 @@
 #include "ktop.h"
 #include "ProcListPage.moc"
 
-#define ktr klocale->translate
 #define NONE -1
 
 static const char *rateTxt[] =
@@ -61,24 +60,26 @@ static const char *processfilter[] =
 ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	: QWidget(parent, name)
 {
+	// Create the box that will contain the other widgets.
     pList_box = new QGroupBox(this, "pList_box"); 
     CHECK_PTR(pList_box);
     pList_box->move(5, 5);
     pList_box->resize(380, 380);
 
+	// Create the table that lists the processes.
     pList = new KtopProcList(this, "pList");    
     CHECK_PTR(pList);
     connect(pList, SIGNAL(popupMenu(int, int)),
-			SLOT(pList_popupMenu(int,int)));
+			SLOT(pList_popupMenu(int, int)));
 	connect(pList, SIGNAL(popupMenu(int, int)),
 			parent, SLOT(popupMenu(int, int)));
     pList->move(10, 30);
     pList->resize(370, 300);
 
-	// create a combo box to configure the refresh rate
-    pList_cbRefresh = new QComboBox(this,"pList_cbRefresh");
+	// Create a combo box to configure the refresh rate.
+    pList_cbRefresh = new QComboBox(this, "pList_cbRefresh");
     CHECK_PTR(pList_cbRefresh);
-    for (int i = 0 ; rateTxt[i]; i++)
+    for (int i = 0; rateTxt[i]; i++)
 	{
 		pList_cbRefresh->insertItem(klocale->translate(rateTxt[i]),
 									i + (KtopProcList::UPDATE_SLOW));
@@ -87,14 +88,7 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
     connect(pList_cbRefresh, SIGNAL(activated(int)),
 			SLOT(pList_cbRefreshActivated(int)));
 
-    pList_bRefresh = new QPushButton(ktr("Refresh Now"), this,
-									 "pList_bRefresh");
-    CHECK_PTR(pList_bRefresh);
-    connect(pList_bRefresh, SIGNAL(clicked()), this, SLOT(pList_update()));
-    pList_bKill = new QPushButton(ktr("Kill task"), this, "pList_bKill");
-    CHECK_PTR(pList_bKill);
-    connect(pList_bKill,SIGNAL(clicked()), this, SLOT(pList_killTask()));
-  
+	// Create the combo box to configure the process filter.
     pList_cbFilter = new QComboBox(this,"pList_cbFilter");
     CHECK_PTR(pList_cbFilter);
     for (int i=0; processfilter[i]; i++)
@@ -105,7 +99,18 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
     connect(pList_cbFilter, SIGNAL(activated(int)),
 			SLOT(pList_cbProcessFilter(int)));
 
-    pList_box->setTitle(ktr("Running processes"));
+	// Create the 'Refresh Now' button.
+    pList_bRefresh = new QPushButton(i18n("Refresh Now"), this,
+									 "pList_bRefresh");
+    CHECK_PTR(pList_bRefresh);
+    connect(pList_bRefresh, SIGNAL(clicked()), this, SLOT(pList_update()));
+
+	// Create the 'Kill task' button.
+    pList_bKill = new QPushButton(i18n("Kill task"), this, "pList_bKill");
+    CHECK_PTR(pList_bKill);
+    connect(pList_bKill,SIGNAL(clicked()), this, SLOT(pList_killTask()));
+  
+    pList_box->setTitle(i18n("Running processes"));
 
     strcpy(cfgkey_pListUpdate, "pListUpdate");
 	strcpy(cfgkey_pListFilter, "pListFilter");

@@ -58,27 +58,26 @@
 #include "memory.h"
 #include "widgets.h"
 
-#define ktr klocale->translate
-
 AppSettings::AppSettings(QWidget *parent, const char *name)
             :QDialog(parent, name, TRUE)
 {
     setMinimumSize(210,170);
     setMaximumSize(210,170);
-    setCaption(ktr("Ktop Preferences"));
+    setCaption(i18n("Ktop Preferences"));
 
-    startuppage = new QButtonGroup(ktr("Start up page"), this, "_startuppage");
+    startuppage = new QButtonGroup(i18n("Start up page"), this,
+								   "_startuppage");
 
-    rb_pList = new QRadioButton(ktr("Processes List"),startuppage, "_pList");
+    rb_pList = new QRadioButton(i18n("Processes List"),startuppage, "_pList");
 	rb_pList->resize(160, 25);
-    rb_pTree = new QRadioButton(ktr("Processes Tree"),startuppage, "_pTree");
+    rb_pTree = new QRadioButton(i18n("Processes Tree"),startuppage, "_pTree");
 	rb_pTree->resize(160, 25);
-    rb_Perf  = new QRadioButton(ktr("Performance Meter"),startuppage, "_Perf");
+    rb_Perf  = new QRadioButton(i18n("Performance Meter"),startuppage, "_Perf");
 	rb_Perf->resize(160, 25);
 
-    ok = new QPushButton(ktr("Ok"), this, "_ok");
+    ok = new QPushButton(i18n("Ok"), this, "_ok");
     ok->setDefault(TRUE);
-    cancel = new QPushButton(ktr("Cancel"), this, "_cancel");
+    cancel = new QPushButton(i18n("Cancel"), this, "_cancel");
     ok->resize(80, 25);
 
     cancel->resize(80, 25);

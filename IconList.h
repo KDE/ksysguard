@@ -35,32 +35,60 @@
 class KtopIconListElem
 {
 public:
-      KtopIconListElem(const char* fName,const char* iName);
-     ~KtopIconListElem();
+	KtopIconListElem(const char* fName, const char* iName);
+	~KtopIconListElem()
+	{
+		delete pm;
+		delete icnName;
+	}
 
-      const QPixmap* pixmap();
-      const char*    name();
+	const QPixmap* pixmap()
+	{
+		return (pm);
+	}
+
+	const char* name()
+	{
+		return (icnName);
+	}
 
 private:
-    QPixmap *pm;
-    char     icnName[128];
+	QPixmap* pm;
+	char* icnName;
 };
 
+/**
+ * This class loads all available mini icons. The icons can be retrieved by
+ * name. The icon list is shared between all instances of this class. All
+ * available icons are read in up-front. I might consider a on-demand loading
+ * in the future.
+ */
 class KtopIconList
 {
- public:
-      KtopIconList();
-     ~KtopIconList();
+public:
+	KtopIconList();
+	~KtopIconList();
 
-      const QPixmap* procIcon(const char*);
+	/**
+	 * This function can be used to retrieve icons by name.
+	 */
+	const QPixmap* procIcon(const char*);
 
- private :
-      static int                      instCounter;
-      static QList<KtopIconListElem> *icnList;
-      static const QPixmap*           defaultIcon;
+private:
+	/// This functions loads the icons.
+	void load();
 
-      static void load();
+	/**
+	 * The data is shared between the instances. We use this variable to
+	 * keep track of how many instances have been created.
+	 */
+	static int instCounter;
+
+	/// The list of loaded icons.
+	static QList<KtopIconListElem>* icnList;
+
+	/// The pixmap for the default icon.
+	static const QPixmap* defaultIcon;
 };
-
 
 #endif

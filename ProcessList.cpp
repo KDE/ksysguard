@@ -40,29 +40,30 @@
 
 // #define DEBUG_MODE
 
-#define ktr           klocale->translate
 #define PROC_BASE     "/proc"
-#define KDE_ICN_DIR   "/share/icons/mini"
-#define KTOP_ICN_DIR  "/share/apps/ktop/pics"
 #define INIT_PID      1
 #define NONE -1
 
 #define NUM_COL 10
 
-// I have to find a better method...
+inline int max(int a, int b)
+{
+	return ((a) < (b) ? (b) : (a));
+}
+
 static const char *col_headers[] = 
 {
-     " "      ,
-     "procID" ,
-     "Name"   ,
-     "userID" ,
-     "CPU"    ,
-     "Time"   ,
-     "Status" ,
-     "VmSize" ,
-     "VmRss"  ,
-     "VmLib"  ,
-     0
+	"  ",
+	"procID",
+	"Name",
+	"userID",
+	"CPU",
+	"Time",
+	"Status",
+	"VmSize",
+	"VmRss",
+	"VmLib",
+	0
 };
 
 static const char *dummies[] = 
@@ -133,7 +134,9 @@ KtopProcList::KtopProcList(QWidget *parent = 0, const char* name = 0)
 	 */
 	QFontMetrics fm = fontMetrics();
 	for (int cnt = 0; col_headers[cnt]; cnt++)
-		setColumn(cnt, col_headers[cnt], fm.width(dummies[cnt]),
+		setColumn(cnt, i18n(col_headers[cnt]),
+				  max(fm.width(dummies[cnt]),
+					  fm.width(i18n(col_headers[cnt]))),
 				  col_types[cnt]);
 
 	// Clicking on the header changes the sort order.

@@ -62,7 +62,6 @@
 #include "ProcListPage.h"
 #include "widgets.moc"
 
-#define ktr           klocale->translate
 #define PROC_BASE     "/proc"
 #define KDE_ICN_DIR   "/share/icons/mini"
 #define KTOP_ICN_DIR  "/share/apps/ktop/pics"
@@ -114,15 +113,15 @@ TaskMan::TaskMan(QWidget *parent, const char *name, int sfolder)
 	 */
 	pSig = new QPopupMenu(NULL,"_psig");
 	CHECK_PTR(pSig);
-	pSig->insertItem(ktr("Renice Task..."),MENU_ID_RENICE);
+	pSig->insertItem(i18n("Renice Task..."),MENU_ID_RENICE);
 	pSig->insertSeparator();
-	pSig->insertItem(ktr(sig[0]), MENU_ID_SIGINT);
-	pSig->insertItem(ktr(sig[1]), MENU_ID_SIGQUIT);
-	pSig->insertItem(ktr(sig[2]), MENU_ID_SIGTERM);
-	pSig->insertItem(ktr(sig[3]), MENU_ID_SIGKILL);
+	pSig->insertItem(i18n(sig[0]), MENU_ID_SIGINT);
+	pSig->insertItem(i18n(sig[1]), MENU_ID_SIGQUIT);
+	pSig->insertItem(i18n(sig[2]), MENU_ID_SIGTERM);
+	pSig->insertItem(i18n(sig[3]), MENU_ID_SIGKILL);
 	pSig->insertSeparator();
-	pSig->insertItem(ktr(sig[4]), MENU_ID_SIGUSR1);
-	pSig->insertItem(ktr(sig[5]), MENU_ID_SIGUSR2);
+	pSig->insertItem(i18n(sig[4]), MENU_ID_SIGUSR1);
+	pSig->insertItem(i18n(sig[5]), MENU_ID_SIGUSR2);
 	connect(pSig, SIGNAL(activated(int)), this, SLOT(pSigHandler(int)));
   
     /*
@@ -146,16 +145,16 @@ TaskMan::TaskMan(QWidget *parent, const char *name, int sfolder)
     connect(pTree,SIGNAL(popupMenu(QPoint)),SLOT(pTree_popupMenu(QPoint)));
 
     // now, three buttons which should appear on the sheet (just below the tree box)
-    pTree_bRefresh = new QPushButton(ktr("Refresh Now"), pages[1], "pTree_bRefresh");
+    pTree_bRefresh = new QPushButton(i18n("Refresh Now"), pages[1], "pTree_bRefresh");
     CHECK_PTR(pTree_bRefresh);
     connect(pTree_bRefresh, SIGNAL(clicked()), this, SLOT(pTree_update()));
-    pTree_bRoot = new QPushButton(ktr("Change Root"), pages[1],"pTree_bRoot");
+    pTree_bRoot = new QPushButton(i18n("Change Root"), pages[1],"pTree_bRoot");
     CHECK_PTR(pTree_bRoot);
     connect(pTree_bRoot,SIGNAL(clicked()), this,SLOT(pTree_changeRoot()));
-    pTree_bKill = new QPushButton(ktr("Kill task"), pages[1], "pTree_bKill");
+    pTree_bKill = new QPushButton(i18n("Kill task"), pages[1], "pTree_bKill");
     CHECK_PTR(pTree_bKill);
     connect(pTree_bKill,SIGNAL(clicked()), this, SLOT(pTree_killTask()));
-    pTree_box->setTitle(ktr("Running processes"));
+    pTree_box->setTitle(i18n("Running processes"));
 
     pTree_cbSort = new QComboBox(pages[1],"pTree_cbSort");
     CHECK_PTR(pTree_cbSort);
@@ -173,10 +172,10 @@ TaskMan::TaskMan(QWidget *parent, const char *name, int sfolder)
 
     cpubox = new QGroupBox(pages[2], "_cpumon");
     CHECK_PTR(cpubox); 
-    cpubox->setTitle(ktr("CPU load"));
+    cpubox->setTitle(i18n("CPU load"));
     cpubox1 = new QGroupBox(pages[2], "_cpumon1");
     CHECK_PTR(cpubox1); 
-    cpubox1->setTitle(ktr("CPU load history"));
+    cpubox1->setTitle(i18n("CPU load history"));
     cpu_cur = new QWidget(pages[2], "cpu_child");
     CHECK_PTR(cpu_cur); 
     cpu_cur->setBackgroundColor(black);
@@ -185,10 +184,10 @@ TaskMan::TaskMan(QWidget *parent, const char *name, int sfolder)
 
     membox = new QGroupBox(pages[2], "_memmon");
     CHECK_PTR(membox);
-    membox->setTitle(ktr("Memory"));
+    membox->setTitle(i18n("Memory"));
     membox1 = new QGroupBox(pages[2], "_memhistory");
     CHECK_PTR(membox1);
-    membox1->setTitle(ktr("Memory usage history"));
+    membox1->setTitle(i18n("Memory usage history"));
     mem_cur = new QWidget(pages[2], "mem_child");
     CHECK_PTR(mem_cur);
     mem_cur->setBackgroundColor(black);
@@ -197,10 +196,10 @@ TaskMan::TaskMan(QWidget *parent, const char *name, int sfolder)
     #ifdef ADD_SWAPMON
     	swapbox = new QGroupBox(pages[2], "_swapmon");
     	CHECK_PTR(swapbox);
-    	swapbox->setTitle(ktr("Swap"));
+    	swapbox->setTitle(i18n("Swap"));
     	swapbox1 = new QGroupBox(pages[2], "_swaphistory");
     	CHECK_PTR(swapbox1);
-    	swapbox1->setTitle(ktr("Swap history"));
+    	swapbox1->setTitle(i18n("Swap history"));
     	swap_cur = new QWidget(pages[2],"swap_child");
     	CHECK_PTR(swap_cur);
     	swap_cur->setBackgroundColor(black);

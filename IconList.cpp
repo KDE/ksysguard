@@ -7,7 +7,8 @@
     Copyright (C) 1998 Nicolas Leclercq
                        nicknet@planete.net
 
-	Copyright (c) 1999 Chris Schlaeger <cs@axys.de>
+	Copyright (c) 1999 Chris Schlaeger
+	                   cs@axys.de
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,232 +31,195 @@
 #include <dirent.h>
 
 #include "IconList.h"
+#include "ktop.h"
 
-#define KDE_ICN_DIR   "/share/icons/mini"
-#define KTOP_ICN_DIR  "/share/apps/ktop/pics"
+#define DEBUG_MODE
 
-// exec.xpm = default Icon for processes tree.
-// drawn  by Mark Donohoe for the K Desktop Environment 
-static const char* execXpm[]={
-"16 16 7 1",
-"# c #000000",
-"d c #008080",
-"a c #beffff",
-"c c #00c0c0",
-"b c #585858",
-"e c #00c0c0",
-". c None",
-"................",
-".....######.....",
-"..###abcaba###..",
-".#cabcbaababaa#.",
-".#cccaaccaacaa#.",
-".###accaacca###.",
-"#ccccca##aaccaa#",
-"#dd#ecc##cca#cc#",
-"#d#dccccccacc#c#",
-"##adcccccccccd##",
-".#ad#c#cc#d#cd#.",
-".#a#ad#cc#dd#d#.",
-".###ad#dd#dd###.",
-"...#ad#cc#dd#...",
-"...####cc####...",
-"......####......"};
-
-/*=============================================================================
- Class : KtopIconListElem (methods)
- =============================================================================*/
-/*-----------------------------------------------------------------------------
-  Routine : KtopIconListElem::KtopIconListElem (constructor)
- -----------------------------------------------------------------------------*/
-KtopIconListElem::KtopIconListElem(const char* fName,const char* iName)
+/*
+ * Default Icon (exec.xpm)
+ * Drawn by Mark Donohoe for the K Desktop Environment.
+ */
+static const char* execXpm[]=
 {
-  QPixmap  new_xpm;
+	"16 16 7 1",
+	"# c #000000",
+	"d c #008080",
+	"a c #beffff",
+	"c c #00c0c0",
+	"b c #585858",
+	"e c #00c0c0",
+	". c None",
+	"................",
+	".....######.....",
+	"..###abcaba###..",
+	".#cabcbaababaa#.",
+	".#cccaaccaacaa#.",
+	".###accaacca###.",
+	"#ccccca##aaccaa#",
+	"#dd#ecc##cca#cc#",
+	"#d#dccccccacc#c#",
+	"##adcccccccccd##",
+	".#ad#c#cc#d#cd#.",
+	".#a#ad#cc#dd#d#.",
+	".###ad#dd#dd###.",
+	"...#ad#cc#dd#...",
+	"...####cc####...",
+	"......####......"
+};
 
-  pm = new QPixmap(fName);
-  if ( pm && pm->isNull() ) {
-       delete pm;
-       pm = NULL;
-  }
-  strcpy(icnName,iName);
+KtopIconListElem::KtopIconListElem(const char* fName, const char* iName)
+{
+	pm = new QPixmap(fName);
+	if (pm && pm->isNull())
+	{
+		delete pm;
+		pm = NULL;
+	}
+
+	icnName = new char[strlen(iName) + 1];
+	strcpy(icnName, iName);
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : KtopIconListElem::~KtopIconListElem (destructor)
- -----------------------------------------------------------------------------*/
-KtopIconListElem::~KtopIconListElem()
-{
-  if ( pm ) delete pm;
-}
+QList<KtopIconListElem>* KtopIconList::icnList = NULL;
+int KtopIconList::instCounter = 0;
+const QPixmap* KtopIconList::defaultIcon = NULL;
 
-/*-----------------------------------------------------------------------------
-  Routine : KtopIconListElem::pixmap
- -----------------------------------------------------------------------------*/
-const QPixmap* KtopIconListElem::pixmap()
-{
-  return pm;
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : KtopIconListElem::name()
- -----------------------------------------------------------------------------*/
-const char* KtopIconListElem::name()
-{
-  return icnName;
-}
-
-//*****************************************************************************
-//*****************************************************************************
-/*=============================================================================
- Class : KtopIconList (methods)
- =============================================================================*/
-
-/*-----------------------------------------------------------------------------
- definition of the KtopIconList's static member "icnList".
- -----------------------------------------------------------------------------*/
-QList<KtopIconListElem> *KtopIconList::icnList     = NULL;
-int                      KtopIconList::instCounter = 0;
-const QPixmap*           KtopIconList::defaultIcon = NULL;
-
-/*-----------------------------------------------------------------------------
-  Routine : KtopIconList::KtopIconList (constructor)
- -----------------------------------------------------------------------------*/
 KtopIconList::KtopIconList()
 {
-  if ( ! KtopIconList::instCounter ) {
-       #ifdef DEBUG_MODE
-         printf("KTop debug : KtopIconList : No instance. Loading icons...\n");
-       #endif
-       KtopIconList::load();
-       defaultIcon = new QPixmap(execXpm);
-       CHECK_PTR(defaultIcon);
-  }
-  KtopIconList::instCounter++;
-  #ifdef DEBUG_MODE
-     printf("KTop debug : KtopIconList: Instance n°%d created.\n"
-            ,KtopIconList::instCounter);
-  #endif
+	/*
+	 * Check whether the icons have already been loaded from another instance
+	 * of this class. If not, load the icons.
+	 */
+	if (!KtopIconList::instCounter)
+	{
+		KtopIconList::load();
+		defaultIcon = new QPixmap(execXpm);
+		CHECK_PTR(defaultIcon);
+	}
+
+	// Increase the instance counter, we have created another instance.
+	KtopIconList::instCounter++;
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : KtopIconList::~KtopIconList (destructor)
- -----------------------------------------------------------------------------*/
 KtopIconList::~KtopIconList()
 { 
-  #ifdef DEBUG_MODE
-     printf("KTop debug : KtopIconList : Deleting instance n°%d\n"
-            ,KtopIconList::instCounter);
-  #endif
-  KtopIconList::instCounter--;
+	// Decrease the instance counter.
+	KtopIconList::instCounter--;
 
-  if ( ! KtopIconList::instCounter ) {
-    #ifdef DEBUG_MODE
-      printf("KTop debug : KtopIconList : No more instance. Deleting icons...\n");
-    #endif
-    delete KtopIconList::defaultIcon;
-    KtopIconList::icnList->setAutoDelete(TRUE);
-    KtopIconList::icnList->clear();
-  }
+	/*
+	 * If all instances have called the destructor we can delete the icon
+	 * list.
+	 */
+	if (!KtopIconList::instCounter)
+	{
+		// delete default icon
+		delete KtopIconList::defaultIcon;
+
+		// delete other icons
+		KtopIconList::icnList->setAutoDelete(TRUE);
+		KtopIconList::icnList->clear();
+	}
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : KtopIconList::procIcon
- -----------------------------------------------------------------------------*/
-const QPixmap* KtopIconList::procIcon( const char* pname )
+const QPixmap* 
+KtopIconList::procIcon(const char* pname)
 {
- KtopIconListElem* cur  = KtopIconList::icnList->first();
- KtopIconListElem* last = KtopIconList::icnList->getLast();
- bool              goOn = TRUE;
- char              iName[128];
+	KtopIconListElem* cur = KtopIconList::icnList->first();
+	KtopIconListElem* last = KtopIconList::icnList->getLast();
+	bool goOn = TRUE;
 
- sprintf(iName,"%s.xpm",pname);
- do {
-    if ( cur == last ) goOn = FALSE;
-    if (! cur ) goto end;
-    if ( !strcmp(cur->name(),iName) ) {
-         const QPixmap *pix = cur->pixmap();
-         if ( pix ) return pix;
-         else return defaultIcon;
-    }
-    cur = KtopIconList::icnList->next(); 
- } while ( goOn ) ;
+	/*
+	 * Icons are matched to processes by name. The process name and the
+	 * base name of the icon must be identical. This does not rule out some
+	 * funny results but I can't think of a better way.
+	 */
+	QString iName = QString(pname) + ".xpm";
+
+	// This linear search seems slow and complicated. I need to change this.
+	do
+	{
+		if (cur == last)
+			goOn = FALSE;
+		if (!cur)
+			goto end;
+		if (strcmp(iName.data(), cur->name()) == 0)
+		{
+			const QPixmap *pix = cur->pixmap();
+			if (pix)
+				return (pix);
+			else
+				return (defaultIcon);
+		}
+		cur = KtopIconList::icnList->next(); 
+	} while (goOn);
 
  end: 
-   return defaultIcon;
+	return defaultIcon;
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : KtopIconList::load
- -----------------------------------------------------------------------------*/
-void KtopIconList::load()
+void 
+KtopIconList::load()
 {
-    DIR           *dir;
-    struct dirent *de;
-    char           path[PATH_MAX+1];
-    char           icnFile[PATH_MAX+1];
-    char           prefix[32];
+	DIR* dir;
+	struct dirent* de;
+	QString path;
+	QString icnFile;
 
-    icnList = new QList<KtopIconListElem>;
-    CHECK_PTR(icnList);
+	icnList = new QList<KtopIconListElem>;
+	CHECK_PTR(icnList);
 
-    #ifdef DEBUG_MODE
-       printf("KTop debug : KtopIconList::load : looking for icons...\n");
-    #endif
-
-    char *kde_dir = getenv("KDEDIR");
-
-    if ( kde_dir ) {
-         sprintf(path,"%s%s",kde_dir,KDE_ICN_DIR);
-         dir = opendir(path);
-    } 
-    else {
-          sprintf(prefix,"/opt/kde");
-          sprintf(path,"%s%s",prefix,KDE_ICN_DIR);
-          dir = opendir(path);
-          if ( ! dir ) {
-               sprintf(prefix,"/usr/local");
-               sprintf(path,"%s%s",prefix,KDE_ICN_DIR);
-               dir = opendir(path);  
-          }
-    }
+	// determine path to mini icons
+	path = Kapp->kde_icondir() + "/mini";
+	dir = opendir(path);
   
-    if ( ! dir ) return;  // default icon will be used
-    
-    while ( ( de = readdir(dir) ) )
-     {
-	if( strstr(de->d_name,".xpm") ) { 
-            sprintf(icnFile,"%s/%s",path,de->d_name);
-            KtopIconListElem *newElem = new KtopIconListElem(icnFile,de->d_name);
-            CHECK_PTR(newElem);
-            icnList->append(newElem);  
-	}       
-     }
+	if (!dir)
+		return;  // default icon will be used
 
-    (void)closedir(dir);
-  
-    if ( kde_dir ) {
-         sprintf(path,"%s%s",kde_dir,KTOP_ICN_DIR);
-    } else {
-          sprintf(path,"%s%s",prefix,KTOP_ICN_DIR);
-          #ifdef DEBUG_MODE
-            printf("KTop debug : KtopIconList::load : trying %s...\n",path);
-          #endif
-    }
+    // Load all *.xpm files from the kde_icondir()/mini directory.
+    while ((de = readdir(dir)))
+	{
+		if (strstr(de->d_name, ".xpm"))
+		{ 
+			// construct name of icon file
+			icnFile = path + "/" + de->d_name;
 
+			// read in icon
+			KtopIconListElem *newElem = 
+				new KtopIconListElem(icnFile, de->d_name);
+			CHECK_PTR(newElem);
+
+			// add icon to icon list
+			icnList->append(newElem);  
+		}       
+	}
+
+	closedir(dir);
+
+	// deterime ktop data directory
+	path = Kapp->kde_datadir() + "/ktop/pics";
     dir = opendir(path);     
-    if ( ! dir ) return; // default icon will be used
-  
-    while ( ( de = readdir(dir) ) )
-     {
-	if( strstr(de->d_name,".xpm") ) 
-         { 
-            sprintf(icnFile,"%s/%s",path,de->d_name);
-            KtopIconListElem *newElem = new KtopIconListElem(icnFile,de->d_name);
-            CHECK_PTR(newElem);
-            icnList->append(newElem);  
-	}       
-     }
 
-    (void)closedir(dir);
+    if (!dir)
+		return; // default icon will be used
+  
+    // Load all *.xpm files from the kde_datadir()/ktop/pics directory.
+	while ((de = readdir(dir)))
+	{
+		if (strstr(de->d_name, ".xpm")) 
+		{ 
+			// construct name of icon file
+			icnFile = path + "/" + de->d_name;
+
+			// read in icon
+			KtopIconListElem *newElem =
+				new KtopIconListElem(icnFile, de->d_name);
+			CHECK_PTR(newElem);
+
+			// add icon to icon list
+			icnList->append(newElem);  
+		}       
+	}
+
+	closedir(dir);
 }
 
