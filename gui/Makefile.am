@@ -1,14 +1,11 @@
-# just set the variable
-appsdir = $(kde_appsdir)/System
-datadir = $(kde_datadir)/ksysguard
 
-kdemime_DATA = x-ksysguard.desktop
 kdemimedir = $(kde_mimedir)/application
+kdemime_DATA = x-ksysguard.desktop
 
 rcdir = $(kde_datadir)/ksysguard
 rc_DATA = ksysguardui.rc
 
-apps_DATA = ksysguard.desktop
+xdg_apps_DATA = ksysguard.desktop
 
 lnkdir = $(kde_datadir)/kicker/applets
 lnk_DATA = ksysguardapplet.desktop
@@ -39,7 +36,8 @@ ksysguard_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
 kpm_SOURCES = kpm.c
 
-data_DATA = ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml
+appdatadir = $(kde_datadir)/ksysguard
+appdata_DATA = ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml
 
 # This stuff is now for the kicker applet
 kde_module_LTLIBRARIES = sysguard_panelapplet.la
