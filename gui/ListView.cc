@@ -32,6 +32,7 @@
 #include <kcolorbtn.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 
 #include "ColorPicker.h"
