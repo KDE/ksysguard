@@ -2,6 +2,7 @@
 [KDE Desktop Entry]
 Name=KTop
 Name[de]=KTop
+Name[no]=KTop
 Name[hr]=KTop
 Name[fr]=KTop
 Name[sk]=KTop
@@ -10,6 +11,7 @@ Icon=ktop.xpm
 Type=Application
 DocPath=ktop/ktop.html
 Comment=Performance monitor
+Comment[no]=Ytelsesovervåkning
 Comment[fr]=Moniteur de performance
 Comment[sk]=Monitorovanie výkonu
 Terminal=0
