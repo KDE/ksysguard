@@ -38,12 +38,23 @@
 PerfMonPage::PerfMonPage(QWidget* parent = 0, const char* name = 0)
 	: QWidget(parent, name)
 {
-	cpu = new FancyPlotter(this, "cpu_meter", i18n("CPU Load History"),
-						   0, 100);
-	cpu->setLowPass(TRUE);
-	cpu->addBeam(i18n("User"), blue);
-	cpu->addBeam(i18n("System"), red);
-	cpu->addBeam(i18n("Nice"), yellow);
+	noCpus = stat.getCpuCount();
+
+	/*
+	 * On SMP systems we call it a system load meter. On single CPU systems
+	 * it's just a CPU load meter.
+	 */
+	if (noCpus == 1)
+		cpuload = new FancyPlotter(this, "cpuload_meter",
+								   i18n("CPU Load History"), 0, 100);
+	else
+		cpuload = new FancyPlotter(this, "cpuload_meter",
+								   i18n("System Load History"), 0, 100);
+
+	cpuload->setLowPass(TRUE);
+	cpuload->addBeam(i18n("User"), blue);
+	cpuload->addBeam(i18n("System"), red);
+	cpuload->addBeam(i18n("Nice"), yellow);
 
 	int physical, swap, dum;
 	stat.getMemoryInfo(physical, dum, dum, dum, dum);
@@ -57,17 +68,60 @@ PerfMonPage::PerfMonPage(QWidget* parent = 0, const char* name = 0)
 	memory->addBeam(i18n("Cache"), yellow);
 	memory->addBeam(i18n("Swap"), red);
 
+	if (noCpus == 1)
+	{
+		/*
+		 * On single CPU systems the performance meter features a memory
+		 * plotter underneath a CPU load plotter. The layout is 2 rows and
+		 * 1 column.
+		 */
+		gm = new QGridLayout(this, 2, 1);
+
+		gm->addWidget(cpuload, 0, 0);
+		gm->addWidget(memory, 1, 0);
+
+		gm->setRowStretch(0, 1);
+		gm->setRowStretch(1, 1);
+	}
+	else
+	{
+		/*
+		 * On SMP systems the performance meter features a memory plotter
+		 * to the right of the system load plotter. Underneath are the load
+		 * plotter for each CPU. The layout is 1 + (noCpus/2) rows and 2
+		 * columns.
+		 */
+		gm = new QGridLayout(this, 1 + (noCpus / 2), 2);
+		gm->addWidget(cpuload, 0, 0);
+		gm->addWidget(memory, 0, 1);
+
+		// all rows and columns have the same size
+		gm->setColStretch(0, 1);
+		gm->setColStretch(1, 1);
+		for (int row = 0; row < 1 + (noCpus / 2); row++)
+			gm->setRowStretch(row, 1);
+
+		for (int c = 0; c < noCpus; c++)
+		{
+			QString name;
+			name.sprintf("cpu%d_meter", c);
+			QString label;
+			label.sprintf(i18n("CPU%d Load History"), c);
+
+			FancyPlotter* p = new FancyPlotter(this, name, label, 0, 100);
+			p->setLowPass(TRUE);
+			p->addBeam(i18n("User"), blue);
+			p->addBeam(i18n("System"), red);
+			p->addBeam(i18n("Nice"), yellow);
+
+			cpu.append(p);
+			gm->addWidget(p, 1 + (c / 2), c % 2);
+		}
+	}
+
+	gm->activate();
+
     timerID = startTimer(2000);
-}
-
-void
-PerfMonPage::resizeEvent(QResizeEvent* ev)
-{
-    QWidget::resizeEvent(ev);
-	cpu->resize(width(), height() / 2);
-
-	memory->move(0, height() / 2);
-	memory->resize(width(), height() / 2);
 }
 
 void
@@ -80,8 +134,7 @@ PerfMonPage::timerEvent(QTimerEvent*)
 							  0, 0);
 		abort();
 	}
-	cpu->addSample(user, sys, nice);
-
+	cpuload->addSample(user, sys, nice);
 
 	int dum, used, buffer, cache, stotal, sfree;
 	if (!stat.getMemoryInfo(dum, dum, used, buffer, cache) ||
@@ -91,6 +144,17 @@ PerfMonPage::timerEvent(QTimerEvent*)
 							  0, 0);
 		abort();
 	}
-
 	memory->addSample(used - (buffer + cache), buffer, cache, stotal - sfree);
+
+	if (noCpus > 1)
+		for (int i = 0; i < noCpus; i++)
+		{
+			if (!stat.getCpuXLoad(i, user, sys, nice, idle))
+			{
+				QMessageBox::critical(this, "Task Manager",
+									  stat.getErrMessage(), 0, 0);
+				abort();
+			}
+			cpu.at(i)->addSample(user, sys, nice);
+		}
 }

@@ -173,13 +173,14 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	p.drawLine(0, h - 1, w - 1, h - 1);
 	p.drawLine(w - 1, 0, w - 1, h - 1);
 
-	p.setViewport(1, 1, w - 2, h - 2);
+	p.setClipRect(1, 1, w - 2, h - 2);
+//	p.setViewport(1, 1, w - 2, h - 2);
 	int range = maxValue - minValue;
-	p.scale(1.0f, (float) (h - 2) / range);
+	p.scale(1.0f, (float) h / range);
 
 	p.setPen(QColor("darkgreen"));
 	if (w > 60)
-		for (int x = 30; x < (w - 3); x += 30)
+		for (int x = 30; x < (w - 2); x += 30)
 			p.drawLine(x, 0, x, range - 1);
 	if (h > 60)
 		for (int y = 1; y < 5; y++)
@@ -193,8 +194,8 @@ SignalPlotter::paintEvent(QPaintEvent*)
 			if (beamData[b][i] > 0)
 			{
 				p.setPen(beamColor[b]);
-				p.drawLine(i, range - bias - 1,
-						   i, range - (bias + beamData[b][i]) - 1);
+				p.drawLine(i + 1, range - bias - 1,
+						   i + 1, range - (bias + beamData[b][i]) - 1);
 				bias += beamData[b][i];
 			}
 		}

@@ -32,6 +32,7 @@
 
 #include <qwidget.h>
 #include <qgroupbox.h>
+#include <qlayout.h>
 
 #include "FancyPlotter.h"
 #include "OSStatus.h"
@@ -45,19 +46,23 @@ public:
 	~PerfMonPage()
 	{
 		killTimer(timerID);
-		delete cpu;
+		delete cpuload;
 		delete memory;
+		delete gm;
 	}
 
-	virtual void resizeEvent(QResizeEvent* ev);
 	virtual void timerEvent(QTimerEvent*);
 
 private:
 	OSStatus stat;
 	int timerID;
 
-	FancyPlotter* cpu;
+	int noCpus;
+
+	QGridLayout* gm;
+	FancyPlotter* cpuload;
 	FancyPlotter* memory;
+	QList<FancyPlotter> cpu;
 } ;
 
 #endif

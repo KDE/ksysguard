@@ -87,6 +87,7 @@
 OSStatus::OSStatus()
 {
 	error = false;
+	cpuCount = -1;
 
 	if ((stat = fopen("/proc/stat", "r")) == NULL)
 	{
@@ -119,10 +120,17 @@ OSStatus::OSStatus()
 		return;
 	}
 	fclose(meminfo);
+
+	userTicksX = sysTicksX = niceTicksX = idleTicksX = 0;
 }
 
 OSStatus::~OSStatus()
 {
+	delete userTicksX;
+	delete sysTicksX;
+	delete niceTicksX;
+	delete idleTicksX;
+
 	if (stat)
 		fclose(stat);
 }
@@ -187,14 +195,78 @@ OSStatus::getCpuLoad(int& user, int& sys, int& nice, int& idle)
 int
 OSStatus::getCpuCount(void)
 {
-	return (1);	// SMP support not yet implemented!
+	/*
+	 * The number of CPUs is only determined once. Initially the cpuCount
+	 * is set to -1. The first call of this function then checks for the
+	 * availability of cpu load information from /proc/stat.
+	 */
+	if (cpuCount < 0)
+	{
+		int dum;
+		QString cpuName;
+		for (cpuCount = 1; ; cpuCount++)
+		{
+			cpuName.sprintf("cpu%d", cpuCount);
+			if (!readCpuInfo(cpuName, &dum, &dum, &dum, &dum))
+			{
+				/*
+				 * Clear the error flag since this situation was caused on
+				 * purpose.
+				 */
+				error = false;
+				
+				if (cpuCount > 1)
+				{
+					/*
+					 * We only need the TicksX arrays on SMP systems. So we
+					 * don't allocate them on single CPU systems.
+					 */
+					userTicksX = new int[cpuCount];
+					sysTicksX = new int[cpuCount];
+					niceTicksX = new int[cpuCount];
+					idleTicksX = new int[cpuCount];
+				}
+				return (cpuCount);
+			}
+		}
+	}
+
+	return (cpuCount);
 }
 
 bool
-OSStatus::getCpuXLoad(int, int& user, int& sys, int& nice, int& idle)
+OSStatus::getCpuXLoad(int cpu, int& user, int& sys, int& nice, int& idle)
 {
-	// SMP support not yet implemented!
-	return (getCpuLoad(user, sys, nice, idle));
+	int currUserTicks, currSysTicks, currNiceTicks, currIdleTicks;
+
+	QString cpuName;
+	cpuName.sprintf("cpu%d", cpuCount);
+
+	if (!readCpuInfo(cpuName, &currUserTicks, &currSysTicks,
+					 &currNiceTicks, &currIdleTicks))
+		return (false);
+
+	int totalTicks = ((currUserTicks - userTicksX[cpu]) +
+					  (currSysTicks - sysTicksX[cpu]) +
+					  (currNiceTicks - niceTicksX[cpu]) +
+					  (currIdleTicks - idleTicksX[cpu]));
+
+	if (totalTicks > 0)
+	{
+		user = (100 * (currUserTicks - userTicksX[cpu])) / totalTicks;
+		sys = (100 * (currSysTicks - sysTicksX[cpu])) / totalTicks;
+		nice = (100 * (currNiceTicks - niceTicksX[cpu])) / totalTicks;
+		idle = (100 - (user + sys + nice));
+	}
+	else
+		user = sys = nice = idle = 0;
+
+	userTicksX[cpu] = currUserTicks;
+	sysTicksX[cpu] = currSysTicks;
+	niceTicksX[cpu] = currNiceTicks;
+	idleTicksX[cpu] = currIdleTicks;
+
+	return (true);
 }
 
 bool
@@ -318,8 +390,11 @@ OSStatus::getNoProcesses(void)
 	int processes;
 	struct dirent** namelist;
 
+
 	processes = scandir("/proc", &namelist, isProcDir, alphasort);
 
+	for (int i = 0; i < processes; i++)
+		free(namelist[i]);
 	free(namelist);
 
 	return (processes);

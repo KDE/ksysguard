@@ -78,7 +78,8 @@ public:
 	bool getCpuLoad(int& user, int& sys, int& nice, int& idle);
 
 	/**
-	 * This function returns the number of CPUs installed.
+	 * This function returns the number of CPUs installed. It must be called
+	 * before the first call to getCpuXLoad!
 	 */
 	int getCpuCount(void);
 
@@ -126,6 +127,11 @@ private:
 	bool readCpuInfo(const char* cpu, int* u, int* s, int* n, int* i);
 
 	/**
+	 * The number of CPUs the system has.
+	 */
+	int cpuCount;
+
+	/**
 	 * To determine the system load we have to calculate the differences
 	 * between the ticks values of two successive calls to getCpuLoad. These
 	 * variables are used to store the ticks values for the next call.
@@ -134,6 +140,15 @@ private:
 	int sysTicks;
 	int niceTicks;
 	int idleTicks;
+
+	/**
+	 * And now the same again for SMP systems. The arrays are allocated when
+	 * needed.
+	 */
+	int* userTicksX;
+	int* sysTicksX;
+	int* niceTicksX;
+	int* idleTicksX;
 
 	/// This file pointer is used to access the /proc/stat file.
 	FILE* stat;
