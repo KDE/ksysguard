@@ -24,6 +24,8 @@
 
 #include <assert.h>
 
+#include <qtimer.h>
+
 #include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -175,7 +177,12 @@ ProcessController::killProcess(int pid, int sig)
 {
 	sendRequest(sensors.at(0)->hostName,
 				QString("kill %1 %2" ).arg(pid).arg(sig), 3);
-	updateList();
+
+	if (paused())
+	    // give ksysguardd time to update its proccess list
+	    QTimer::singleShot(3000, this, SLOT(updateList()));
+	else
+	    updateList();
 }
 
 void
@@ -205,6 +212,11 @@ ProcessController::killProcess()
 	for (it = selectedPIds.begin(); it != selectedPIds.end(); ++it)
 		sendRequest(sensors.at(0)->hostName, QString("kill %1 %2" ).arg(*it)
 					.arg(MENU_ID_SIGKILL), 3);
+	
+	if (paused())
+	    // give ksysguardd time to update its proccess list
+	    QTimer::singleShot(3000, this, SLOT(updateList()));
+	else
 	updateList();
 }
 

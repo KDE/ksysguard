@@ -128,6 +128,8 @@ public:
 
 	void registerPlotterWidget(QWidget *plotter);
 
+	bool paused() const { return timerId == NONE; }
+
 	bool showUnit;
 	bool globalUpdateInterval;
 
