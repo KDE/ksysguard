@@ -300,6 +300,9 @@ void Workspace::deleteWorkSheet()
                             i18n( "The worksheet '%1' contains unsaved data.\n"
                                   "Do you want to save the worksheet?" )
                             .arg( tabLabel( current ) ) );
+        if ( res == KMessageBox::Cancel )
+          return;
+
         if ( res == KMessageBox::Yes )
           saveWorkSheet( current );
       }	else
