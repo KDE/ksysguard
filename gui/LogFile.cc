@@ -23,8 +23,9 @@
 #include <kmessagebox.h>
 #include <knotifyclient.h>
 
+#include <qregexp.h>
+
 #include <sys/types.h>
-#include <regex.h>
 #include <stdio.h>
 
 #include "StyleEngine.h"
@@ -197,8 +198,6 @@ LogFile::updateMonitor()
 void
 LogFile::answerReceived(int id, const QString& answer)
 {
-	regex_t token;
-
 	/* We received something, so the sensor is probably ok. */
 	sensorError(FALSE);
 
@@ -214,13 +213,14 @@ LogFile::answerReceived(int id, const QString& answer)
 				monitor->insertItem(lines[i], -1);
 
 				for (QStringList::Iterator it = filterRules.begin(); it != filterRules.end(); it++) {
-					regcomp(&token, (*it).latin1(), REG_NEWLINE|REG_EXTENDED);
-					if (!regexec(&token, lines[i].latin1(), 0, NULL, 0)) {
-						QString info;
-						info.sprintf("rule '%s' matched", (*it).latin1());
-						KNotifyClient::event("pattern_match", info);
+					QRegExp *expr = new QRegExp((*it).latin1());
+					fprintf(stderr, "-%s-\n", lines[i].latin1());
+					fprintf(stderr, "(%d)...\n", expr->find(lines[i].latin1(), 0));
+					if (expr->find(lines[i].latin1(), 0) != -1) {
+						fprintf(stderr, "matched...\n");
+						KNotifyClient::event("pattern_match", QString("rule '%1' matched").arg((*it).latin1()));
 					}
-					regfree(&token);
+					delete expr;
 				}
 			}
 			break;

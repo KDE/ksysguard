@@ -26,6 +26,7 @@
 #include <kfiledialog.h>
 
 #include <qcheckbox.h>
+#include <qdatetime.h>
 #include <qtextstream.h>
 
 #include "ColorPicker.h"
@@ -132,8 +133,10 @@ LogSensor::answerReceived(int id, const QString& answer)
 				KNotifyClient::event("sensor_alarm", QString("sensor '%1' at '%2' reached upper limit").arg(sensorName).arg(hostName));
 				timerOn();
 			}
+			QDate date = QDateTime::currentDateTime().date();
+			QTime time = QDateTime::currentDateTime().time();
 
-			stream << QString("%1\t%2\n").arg(QTime::currentTime().toString()).arg(value);
+			stream << QString("%1 %2 %3 %4 %5: %6\n").arg(date.monthName(date.month())).arg(date.day()).arg(time.toString()).arg(hostName).arg(sensorName).arg(value);
 		}
 	}
 
