@@ -6,9 +6,8 @@
 
     Copyright (C) 1998 Nicolas Leclercq
                        nicknet@planete.net
-    
-	Copyright (c) 1999 Chris Schlaeger
-	                   cs@axys.de
+
+	Copyright (c) 1999 Chris Schlaeger <cs@axys.de>
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,63 +25,67 @@
 
 */
 
-#ifndef _cpu_h_
-#define _cpu_h_
+#ifndef _IconList_h_
+#define _IconList_h_
+
+#include <qlist.h>
+#include <qpalette.h>
+#include <qcombo.h>
+#include <qpainter.h>
+#include <qpushbt.h>
+#include <qtabdlg.h>
+#include <qtimer.h>
+#include <qmsgbox.h>
+#include <qlabel.h>
+#include <qobject.h>
+#include <qlistbox.h>
+#include <qgrpbox.h>
+#include <qradiobt.h>
+#include <qchkbox.h>
+#include <qbttngrp.h>
+#include <qpalette.h>
+#include <qlined.h>
+#include <qtabbar.h>
+#include <qpopmenu.h>
+#include <qfontmet.h>
+#include <qslider.h>
+#include <qlcdnum.h>
 
 /*=============================================================================
-  HEADERs
+ class  :  KtopIconListElem
  =============================================================================*/
-#include <sys/time.h>
-
-#include <qwidget.h>
-#include <qbrush.h>
-
-/*=============================================================================
-  CLASSes
- =============================================================================*/
-//-----------------------------------------------------------------------------
-// class  : CpuMon 
-//-----------------------------------------------------------------------------
-class CpuMon : public QWidget
+class KtopIconListElem
 {
-
-  Q_OBJECT;
-
 public:
+      KtopIconListElem(const char* fName,const char* iName);
+     ~KtopIconListElem();
 
-   CpuMon (QWidget *parent = 0, const char *name = 0, QWidget *child = 0);
-  ~CpuMon ();
+      const QPixmap* pixmap();
+      const char*    name();
 
-   void updateValues();
-   void setChild(QWidget *w = 0);
-   int iconified;
-
-protected:
-
-  virtual void timerEvent(QTimerEvent *);
-  virtual void paintEvent(QPaintEvent *);
-
-  struct timeval oldtime;
-
-  unsigned *load_values, 
-            max_load;
-  int       tid,
-            old_y_scale;
-  unsigned  intervals, 
-	    timer_interval;
-  unsigned  user_ticks, 
-	    system_ticks, 
-	    nice_ticks, 
-	    idle_ticks,
-            old_user_ticks, 
-	    old_system_ticks, 
-            old_nice_ticks, 
-            old_idle_ticks;
-  QWidget  *my_child;
-  FILE     *statfile;
-  QBrush    brush_0, 
-            brush_1, 
-            brush_2;
+private:
+    QPixmap *pm;
+    char     icnName[128];
 };
+
+/*=============================================================================
+ class  : KtopIconList
+ =============================================================================*/
+class KtopIconList
+{
+ public:
+      KtopIconList();
+     ~KtopIconList();
+
+      const QPixmap* procIcon(const char*);
+
+ private :
+      static int                      instCounter;
+      static QList<KtopIconListElem> *icnList;
+      static const QPixmap*           defaultIcon;
+
+      static void load();
+};
+
 
 #endif

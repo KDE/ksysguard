@@ -1,0 +1,30 @@
+/* XPM */
+/* Drawn for the K Desktop Environment */
+/* See http://www.kde.org */
+static char*xemacs[]={
+"16 16 8 1",
+"# c #000000",
+"a c #ffffff",
+"f c #c0c0c0",
+"d c #a0a0a4",
+"b c #585858",
+"c c #ff0000",
+"e c #ffff00",
+". c None",
+"..#############.",
+"..#aaaaaaaaaaa#b",
+"..#aaaaaaaaaaa#b",
+"cc#ccaccccbaaa#b",
+".cccbdccbefeee#b",
+".cccddccccbffe#b",
+".cccdaccbbbfff#b",
+".c#cbdccbaafaa#b",
+"cc#ccdccccbfff#b",
+"bb#bbbbbbbbfaa#b",
+"..#aaaaafffffa#b",
+"..#accfffffaaa#b",
+"..#aacaaaaaaaa#b",
+"..#aaaaaaaaaaa#b",
+"..#############b",
+"....bbbbbbbbbbbb"};
+

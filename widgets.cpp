@@ -7,6 +7,9 @@
     Copyright (C) 1998 Nicolas Leclercq
                        nicknet@planete.net
     
+	Copyright (c) 1999 Chris Schlaeger
+	                   cs@axys.de
+    
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -23,12 +26,6 @@
 
 */
 
-/* $Id$ */
-
-/*=============================================================================
-  HEADERs
- =============================================================================*/
-#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -37,511 +34,227 @@
 #include <ctype.h>
 #include <pwd.h>
 #include <time.h>
+#include <sys/time.h>
+#include <sys/resource.h>       
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <limits.h>
-
-#ifdef HAVE_SYS_PARAM_H
-#include <sys/param.h>
-#endif
-
-#ifdef __FreeBSD__
+#include <fcntl.h>
 #include <signal.h>
-#include <sys/sysctl.h>
-#include <sys/user.h>
-#endif
-
-#include <signal.h>
-#include <qevent.h> 
-#include <qpalette.h>
-#include <qcombo.h>
-#include <qpainter.h>
-#include <qpushbt.h>
-#include <qtabdlg.h>
-#include <qtimer.h>
-#include <qmsgbox.h>
-#include <qlabel.h>
-#include <qobject.h>
-#include <qlistbox.h>
-#include <qgrpbox.h>
-#include <qradiobt.h>
-#include <qchkbox.h>
-#include <qbttngrp.h>
-#include <qpalette.h>
-#include <qlined.h>
-#include <qtabbar.h>
-#include <qpopmenu.h>
-#include <qfontmet.h>
+#include <errno.h>
 
 #include <kconfig.h>
 #include <kapp.h>
+#include <klocale.h>
 #include <kiconloader.h>
 #include <ktablistbox.h>
 
+#include "ktop.h"
 #include "settings.h"
 #include "cpu.h"
 #include "memory.h"
 #include "comm.h"
-#include "ptree.h"
+#include "ProcListPage.h"
 #include "widgets.moc"
 
-/*=============================================================================
-  #DEFINEs
- =============================================================================*/
-#ifndef __FreeBSD__
-// Actually it would be muy nifty if we could use getmntent for this :^)
-// BSD doesn't need this, so fail if something tries to use it..
+#define ktr           klocale->translate
 #define PROC_BASE     "/proc"
-#endif
+#define KDE_ICN_DIR   "/share/icons/mini"
+#define KTOP_ICN_DIR  "/share/apps/ktop/pics"
 #define INIT_PID      1
 #define NONE         -1
 
-//-----------------------------------------------------------------------------
-//#define DEBUG_MODE    // uncomment to active "printf lines"
-//-----------------------------------------------------------------------------
+//#define DEBUG_MODE    // uncomment to activate "printf lines"
 
-/*=============================================================================
-  GLOBALs
- =============================================================================*/
-extern KConfig *config;
-
-// exec.xpm = default Icon for processes tree.
-// drawn  by Mark Donohoe for the K Desktop Environment 
-static const char* execXpm[]={
-"16 16 7 1",
-"# c #000000",
-"d c #008080",
-"a c #beffff",
-"c c #00c0c0",
-"b c #585858",
-"e c #00c0c0",
-". c None",
-"................",
-".....######.....",
-"..###abcaba###..",
-".#cabcbaababaa#.",
-".#cccaaccaacaa#.",
-".###accaacca###.",
-"#ccccca##aaccaa#",
-"#dd#ecc##cca#cc#",
-"#d#dccccccacc#c#",
-"##adcccccccccd##",
-".#ad#c#cc#d#cd#.",
-".#a#ad#cc#dd#d#.",
-".###ad#dd#dd###.",
-"...#ad#cc#dd#...",
-"...####cc####...",
-"......####......"};
-
-static QPixmap *defaultIcon;
-
-#define NUM_COL 10
-
-
-
-/*=============================================================================
- Class : IconListElem (methods)
- =============================================================================*/
-/*-----------------------------------------------------------------------------
-  Routine : IconListElem::IconListElem (constructor)
- -----------------------------------------------------------------------------*/
-IconListElem::IconListElem(const char* fName,const char* iName)
+static const char *sortmethodsTree[] =
 {
-  QPixmap  new_xpm;
+	"Sort by ID",
+	"Sort by Name",
+	"Sort by Owner (UID)",
+	0
+};
 
-  pm = new QPixmap(fName);
-  if ( pm && pm->isNull() ) {
-       delete pm;
-       pm = defaultIcon;
-  }
-  strcpy(icnName,iName);
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : IconListElem::~IconListElem (destructor)
- -----------------------------------------------------------------------------*/
-IconListElem::~IconListElem()
+static const char *sig[] = 
 {
-  if ( pm ) delete pm;
-}
+    "send SIGINT\t(ctrl-c)" ,
+    "send SIGQUIT\t(core)" ,
+    "send SIGTERM\t(term.)" ,
+    "send SIGKILL\t(term.)" ,
+    "send SIGUSR1\t(user1)" ,
+    "send SIGUSR2\t(user2)" ,
+};
 
-/*-----------------------------------------------------------------------------
-  Routine : IconListElem::getPixmap
- -----------------------------------------------------------------------------*/
-const QPixmap* IconListElem::getPixmap()
+/*
+ * It creates the actual QTabDialog. We create it as a modeless dialog, 
+ * using the toplevel widget as its parent, so the dialog won't get 
+ * its own window
+ */
+TaskMan::TaskMan(QWidget *parent, const char *name, int sfolder)
+	: QTabDialog(parent, name, FALSE, 0)
 {
-  return pm;
-}
+	QString tmp;
 
-/*-----------------------------------------------------------------------------
-  Routine : IconListElem::getName()
- -----------------------------------------------------------------------------*/
-const char* IconListElem::getName()
-{
-  return icnName;
-}
+	initMetaObject();
 
-/*=============================================================================
- Class : ProcList (methods)
- =============================================================================*/
-/*-----------------------------------------------------------------------------
-  Routine : ProcList::ProcList (constructor)
- -----------------------------------------------------------------------------*/
-ProcList::ProcList(QWidget *parent=0,const char* name=0,int nCol=1)
-         :KTabListBox(parent,name,nCol)
-{
-  initMetaObject();
-  setSeparator(';');
-}
+	pages[0] = NULL;
+	pages[1] = NULL;
+	pages[2] = NULL;
+	settings = NULL;
+	restoreStartupPage = FALSE;
 
-/*-----------------------------------------------------------------------------
-  Routine : ProcList::~ProcList  (destructor)
- -----------------------------------------------------------------------------*/
-ProcList::~ProcList ()
-{
-}
-
-/*-----------------------------------------------------------------------------
-  Routine :  ProcList::cellHeight
- -----------------------------------------------------------------------------*/
-int ProcList::cellHeight(int row)
-{
-  #ifdef DEBUG_MODE
-     printf("KTop debug : cellHeight called for row %d.\n",row);
-  #endif
-
-  const QPixmap *pix = TaskMan::TaskMan_getProcIcon(text(row,2));
-  if ( pix ) 
-       return(pix->height());
-  return(18);
-}
-
-
-/*=============================================================================
- Class : TaskMan (methods)
- =============================================================================*/
-
-/*-----------------------------------------------------------------------------
- definition of the TaskMan's static member "icons".
- -----------------------------------------------------------------------------*/
-QList<IconListElem>* TaskMan::icons = NULL;
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::TaskMan (constructor)
-            creates the actual QTabDialog. We create it as a modeless dialog, 
-	    using the toplevel widget as its parent, so the dialog won't get 
-	    its own window.
- -----------------------------------------------------------------------------*/
-TaskMan::TaskMan( QWidget *parent, const char *name, int sfolder )
-        :QTabDialog( parent, name, FALSE, 0)
-{
-    QString tmp;
-    QWidget *p0,*p1,*p2;
-
-    initMetaObject();
-
-    pages[0] = NULL;
-    pages[1] = NULL;
-    pages[2] = NULL;
-
-    settings = NULL;
-    ps       = NULL;
-    ps_list  = NULL;
-
-    pTree_updating     = FALSE;
-    restoreStartupPage = FALSE;
-    mouseRightButDown  = FALSE;
-
-    pTree_lastSelectionPid = getpid();
-    pList_lastSelectionPid = getpid();
-
-    setStyle(WindowsStyle);
+	setStyle(WindowsStyle);
     
-    connect(tabBar(),SIGNAL(selected(int)),SLOT(tabBarSelected(int)));
+	connect(tabBar(), SIGNAL(selected(int)), SLOT(tabBarSelected(int)));
      
-    /*----------------------------------------------
-     set up pSig (QPopupMenu)
-     ----------------------------------------------*/ 
-    pSig = new QPopupMenu(NULL,"_psig");
-    CHECK_PTR(pSig);
-
-    pSig->insertItem(i18n("send SIGINT\t(ctrl-c)"),MENU_ID_SIGINT);
-    pSig->insertItem(i18n("send SIGQUIT\t(core)"),MENU_ID_SIGQUIT);
-    pSig->insertItem(i18n("send SIGTERM\t(term.)"),MENU_ID_SIGTERM);
-    pSig->insertItem(i18n("send SIGKILL\t(term.)"),MENU_ID_SIGKILL);
-    pSig->insertSeparator();
-    pSig->insertItem(i18n("send SIGUSR1\t(user1)"),MENU_ID_SIGUSR1);
-    pSig->insertItem(i18n("send SIGUSR2\t(user2)"),MENU_ID_SIGUSR2);
-    connect(pSig,SIGNAL(activated(int)), this, SLOT(pSigHandler(int)));
+	/*
+	 * set up popup menu pSig
+	 */
+	pSig = new QPopupMenu(NULL,"_psig");
+	CHECK_PTR(pSig);
+	pSig->insertItem(ktr("Renice Task..."),MENU_ID_RENICE);
+	pSig->insertSeparator();
+	pSig->insertItem(ktr(sig[0]), MENU_ID_SIGINT);
+	pSig->insertItem(ktr(sig[1]), MENU_ID_SIGQUIT);
+	pSig->insertItem(ktr(sig[2]), MENU_ID_SIGTERM);
+	pSig->insertItem(ktr(sig[3]), MENU_ID_SIGKILL);
+	pSig->insertSeparator();
+	pSig->insertItem(ktr(sig[4]), MENU_ID_SIGUSR1);
+	pSig->insertItem(ktr(sig[5]), MENU_ID_SIGUSR2);
+	connect(pSig, SIGNAL(activated(int)), this, SLOT(pSigHandler(int)));
   
-    /*----------------------------------------------
-      set up page 0 (process list viewer)
-     ----------------------------------------------*/ 
+    /*
+     * set up page 0 (process list viewer)
+     */
 
-    pages[0] = p0 = new QWidget(this,"page0"); 
-    CHECK_PTR(p0);
-    pList_box = new QGroupBox(p0, "pList_box"); 
-    CHECK_PTR(pList_box);
-    pList = new ProcList(p0,"pList",NUM_COL);    
-    CHECK_PTR(pList);
-    connect(pList,SIGNAL(headerClicked(int)),SLOT(pList_headerClicked(int)));
-    connect(pList,SIGNAL(highlighted(int,int)),SLOT(pList_procHighlighted(int,int)));
-    connect(pList,SIGNAL(popupMenu(int,int)),SLOT(pList_popupMenu(int,int)));
-    
-    QFontMetrics fm = pList->fontMetrics();
-// I have to find a better method...
-
-    int cnt=0;
-    pList->setColumn(cnt," "
-                        ,fm.width("++++")
-                        ,KTabListBox::MixedColumn); cnt++;
-    pList->setColumn(cnt,i18n("procID")
-                        ,fm.width("procID++")
-                        ,KTabListBox::TextColumn); cnt++;
-    pList->setColumn(cnt,i18n("Name")
-                        ,fm.width("kfontmanager++")
-                        ,KTabListBox::TextColumn); cnt++;
-    pList->setColumn(cnt,i18n("userID")
-                        ,fm.width("rootuseroot")
-                        ,KTabListBox::TextColumn); cnt++;
-    pList->setColumn(cnt,i18n("CPU")
-                        ,fm.width("100.00%+")
-                        ,KTabListBox::TextColumn); cnt++;
-    pList->setColumn(cnt,i18n("Time")
-                        ,fm.width("100:00++")
-                        ,KTabListBox::TextColumn); cnt++;
-    pList->setColumn(cnt,i18n("Status")
-                        ,fm.width("Status+++")
-                        ,KTabListBox::TextColumn); cnt++;
-    pList->setColumn(cnt,i18n("VmSize")
-                        ,fm.width("VmSize++")
-                        ,KTabListBox::TextColumn); cnt++;
-    pList->setColumn(cnt,i18n("VmRss")
-                        ,fm.width("VmSize++")
-                        ,KTabListBox::TextColumn); cnt++;
-#ifdef __FreeBSD__
-    pList->setColumn(cnt,i18n("Prior")
-                        ,fm.width("100++")
-                        ,KTabListBox::TextColumn); cnt++;
-#else
-    pList->setColumn(cnt,i18n("VmLib")
-                        ,fm.width("VmSize++")
-                        ,KTabListBox::TextColumn); cnt++;
-#endif
-
-    // now, three buttons which should appear on the sheet (just below the listbox)
-    pList_bRefresh = new QPushButton(i18n("Refresh Now"), p0,"pList_bRefresh");
-    CHECK_PTR(pList_bRefresh);
-    connect(pList_bRefresh, SIGNAL(clicked()), this, SLOT(pList_update()));
-    pList_bKill = new QPushButton(i18n("Kill task"), p0, "pList_bKill");
-    CHECK_PTR(pList_bKill);
-    connect(pList_bKill,SIGNAL(clicked()), this, SLOT(pList_killTask()));
-  
-    pList_cbRefresh = new QComboBox(p0,"pList_cbRefresh");
-    CHECK_PTR(pList_cbRefresh);
-
-    pList_cbRefresh->insertItem( i18n("Refresh rate : Slow"),-1);
-    pList_cbRefresh->insertItem( i18n("Refresh rate : Medium"),-1);
-    pList_cbRefresh->insertItem( i18n("Refresh rate : Fast"),-1);
-    pList_cbRefresh->setCurrentItem(2); //fast = default value;
-    connect(pList_cbRefresh,SIGNAL(activated(int)),SLOT(pList_cbRefreshActivated(int)));
-
-    pList_box->setTitle(i18n("Running processes"));
+    procListPage = new ProcListPage(this, "ProcListPage");
+    CHECK_PTR(procListPage);
 
     /*----------------------------------------------
      set up page 1 (process tree)
      ----------------------------------------------*/
-    pages[1] = p1 = new QWidget(this, "page1"); 
-    CHECK_PTR(p1);          
-    pTree_box = new QGroupBox(p1,"pTree_box"); 
+    pages[1] = new QWidget(this, "page1"); 
+    CHECK_PTR(pages[1]);
+    pTree_box = new QGroupBox(pages[1],"pTree_box"); 
     CHECK_PTR(pTree_box); 
-    pTree = new ProcTree(p1,"pTree"); 
-    CHECK_PTR(pTree);          
+    pTree = new KtopProcTree(pages[1],"pTree"); 
+    CHECK_PTR(pTree); 
     pTree->setExpandLevel(20); 
-    pTree->show();
     pTree->setSmoothScrolling(TRUE);
-    connect(pTree,SIGNAL(highlighted(int)),SLOT(pTree_procHighlighted(int)));
-    connect(pTree,SIGNAL(clicked(QMouseEvent*)),SLOT(pTree_clicked(QMouseEvent*)));
+    connect(pTree,SIGNAL(popupMenu(QPoint)),SLOT(pTree_popupMenu(QPoint)));
 
     // now, three buttons which should appear on the sheet (just below the tree box)
-    pTree_bRefresh = new QPushButton(i18n("Refresh Now"), p1, "pTree_bRefresh");
+    pTree_bRefresh = new QPushButton(ktr("Refresh Now"), pages[1], "pTree_bRefresh");
     CHECK_PTR(pTree_bRefresh);
     connect(pTree_bRefresh, SIGNAL(clicked()), this, SLOT(pTree_update()));
-    pTree_bRoot = new QPushButton(i18n("Change Root"), p1,"pTree_bRoot");
+    pTree_bRoot = new QPushButton(ktr("Change Root"), pages[1],"pTree_bRoot");
     CHECK_PTR(pTree_bRoot);
     connect(pTree_bRoot,SIGNAL(clicked()), this,SLOT(pTree_changeRoot()));
-    pTree_bKill = new QPushButton(i18n("Kill task"), p1, "pTree_bKill");
+    pTree_bKill = new QPushButton(ktr("Kill task"), pages[1], "pTree_bKill");
     CHECK_PTR(pTree_bKill);
     connect(pTree_bKill,SIGNAL(clicked()), this, SLOT(pTree_killTask()));
-    pTree_box->setTitle(i18n("Running processes"));
+    pTree_box->setTitle(ktr("Running processes"));
 
-    pTree_cbSort = new QComboBox(p1,"pTree_cbSort");
+    pTree_cbSort = new QComboBox(pages[1],"pTree_cbSort");
     CHECK_PTR(pTree_cbSort);
-
-    pTree_cbSort->insertItem( i18n("Sort by ID"),-1);
-    pTree_cbSort->insertItem( i18n("Sort by Name"),-1);
-    pTree_cbSort->insertItem( i18n("Sort by Owner (UID)"),-1);
-    pTree_cbSort->setCurrentItem(1); //by proc name = default value;
+    for ( int i=0 ; sortmethodsTree[i] ; i++ ) {
+        pTree_cbSort->insertItem( klocale->translate(sortmethodsTree[i])
+                                               ,i+(KtopProcTree::SORTBY_PID));
+    } 
     connect(pTree_cbSort,SIGNAL(activated(int)),SLOT(pTree_cbSortActivated(int)));
     
     /*----------------------------------------------
      set up page 2 (This is the performance monitor)
      ----------------------------------------------*/
-    pages[2] = p2 = new QWidget(this, "page2");
-    CHECK_PTR(p2); 
-    cpubox = new QGroupBox(p2, "_cpumon");
+    pages[2] = new QWidget(this, "page2");
+    CHECK_PTR(pages[2]); 
+
+    cpubox = new QGroupBox(pages[2], "_cpumon");
     CHECK_PTR(cpubox); 
-    cpubox->setTitle(i18n("CPU load"));
-    cpubox1 = new QGroupBox(p2, "_cpumon1");
+    cpubox->setTitle(ktr("CPU load"));
+    cpubox1 = new QGroupBox(pages[2], "_cpumon1");
     CHECK_PTR(cpubox1); 
-    cpubox1->setTitle(i18n("CPU load history"));
-    // cpu_cur is the left display (current load).
-    cpu_cur = new QWidget(p2, "cpu_child");
+    cpubox1->setTitle(ktr("CPU load history"));
+    cpu_cur = new QWidget(pages[2], "cpu_child");
     CHECK_PTR(cpu_cur); 
     cpu_cur->setBackgroundColor(black);
-    // cpumon is the "real" load monitor. It contains all the functionality.
-    // cpu_cur is passed as a parameter
     cpumon = new CpuMon (cpubox1, "cpumon", cpu_cur);
     CHECK_PTR(cpumon);
-    // now, we do the same for the memory monitor
-    membox = new QGroupBox(p2, "_memmon");
+
+    membox = new QGroupBox(pages[2], "_memmon");
     CHECK_PTR(membox);
-    membox->setTitle(i18n("Memory"));
-    membox1 = new QGroupBox(p2, "_memhistory");
+    membox->setTitle(ktr("Memory"));
+    membox1 = new QGroupBox(pages[2], "_memhistory");
     CHECK_PTR(membox1);
-    membox1->setTitle(i18n("Memory usage history"));
-    mem_cur = new QWidget(p2, "mem_child");
+    membox1->setTitle(ktr("Memory usage history"));
+    mem_cur = new QWidget(pages[2], "mem_child");
     CHECK_PTR(mem_cur);
     mem_cur->setBackgroundColor(black);
     memmon = new MemMon (membox1, "memmon", mem_cur);
 
-
-    // set up the memory information box (below the graphical display)
-    // this is currently FreeBSD specific.
-    //
-#ifdef __FreeBSD__
-                                              // memmon will directly update them
-    mem_detail_box = new QGroupBox(p2, "_dmem");
-    CHECK_PTR(mem_detail_box);
-    mem_detail_box->setTitle(i18n("Memory details:"));
-
-    int i = 0;
-    l_mem_details[i++] = new QLabel(i18n("Active:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(i18n("Inactive:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(i18n("Wired:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(i18n("Cache:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(i18n("Buffers:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(i18n("Total physical:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(i18n("Unused memory:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(i18n("Swap avail:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(i18n("Swap free:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(i18n("Total virtual:"), mem_detail_box);
-
-    for(i = 0; i < MEM_END; i++) {
-        mem_details[i] = new QLabel("XXXXXXXXX", mem_detail_box);
-        mem_details[i]->adjustSize();
-        mem_details[i]->setAlignment(AlignRight);
-        l_mem_details[i]->adjustSize();
-    }
-    memmon->setTargetLabels(mem_details);      // hand off the QLabel pointers to memmon
-#endif
-
-
-    // adjust some geometry
-    pList_box->move(5, 5);
-    pList_box->resize(380, 380);
-    pList->move(10, 30);
-    pList->resize(370, 300);
+    #ifdef ADD_SWAPMON
+    	swapbox = new QGroupBox(pages[2], "_swapmon");
+    	CHECK_PTR(swapbox);
+    	swapbox->setTitle(ktr("Swap"));
+    	swapbox1 = new QGroupBox(pages[2], "_swaphistory");
+    	CHECK_PTR(swapbox1);
+    	swapbox1->setTitle(ktr("Swap history"));
+    	swap_cur = new QWidget(pages[2],"swap_child");
+    	CHECK_PTR(swap_cur);
+    	swap_cur->setBackgroundColor(black);
+    	swapmon = new SwapMon (swapbox1, "swapmon", swap_cur);
+    #endif
 
     /*----------------------------------------------
      settings
      ----------------------------------------------*/
-    strcpy(cfgkey_startUpPage,"startUpPage");
-    strcpy(cfgkey_pListUpdate,"pListUpdate");
-    strcpy(cfgkey_pListSort,"pListSort");
-    strcpy(cfgkey_pTreeSort,"pTreeSort");
+    strcpy(cfgkey_startUpPage, "startUpPage");
+    strcpy(cfgkey_pTreeSort, "pTreeSort");
 
-    // restore refresh rate settings...
-    pList_refreshRate=UPDATE_MEDIUM;
-    tmp = config->readEntry(QString(cfgkey_pListUpdate));
-    if( ! tmp.isNull() ) {
-        bool res = FALSE;
-        pList_refreshRate = tmp.toInt(&res);
-        if (!res) pList_refreshRate=UPDATE_MEDIUM;
-    }
-    tid = NONE;
-    pList_cbRefreshActivated(pList_refreshRate);
-    pList_cbRefresh->setCurrentItem(pList_refreshRate);
+    // startup_page settings...
+	startup_page = PAGE_PLIST;
+	tmp = Kapp->getConfig()->readEntry(QString(cfgkey_startUpPage));
+	if(!tmp.isNull())
+	{
+		startup_page = tmp.toInt();
+#ifdef DEBUG_MODE
+		printf("KTop debug : TaskMan::TaskMan : startup_page (config val)"
+			   "== %d.\n", startup_page);
+#endif
+    }  
 
-    // restore sort method for pList...
-    pList_sortby=SORTBY_CPU;
-    tmp = config->readEntry(QString(cfgkey_pListSort));
-    if( ! tmp.isNull() ) {
-        bool res = FALSE;
-        pList_sortby = tmp.toInt(&res);
-        if (!res) pList_sortby=SORTBY_CPU;
-    }
+	if (sfolder >= 0)
+	{ 
+		restoreStartupPage = TRUE;
+		startup_page = sfolder;
+#ifdef DEBUG_MODE
+		printf("KTop debug : TaskMan::TaskMan : startup_page (cmd line val)"
+			   "== %d.\n", startup_page);
+#endif
+	}
 
     // restore sort method for pTree...
-    pTree_sortby=SORTBY_NAME;
-    tmp = config->readEntry(QString(cfgkey_pTreeSort));
+    pTree_sortby=KtopProcTree::SORTBY_NAME;
+    tmp = Kapp->getConfig()->readEntry(QString(cfgkey_pTreeSort));
     if( ! tmp.isNull() ) {
         bool res = FALSE;
         pTree_sortby = tmp.toInt(&res);
-        if (!res) pTree_sortby=SORTBY_NAME;
+        if (!res) pTree_sortby=KtopProcTree::SORTBY_NAME;
     }
+    pTree->setSortMethod(pTree_sortby);
     pTree_cbSort->setCurrentItem(pTree_sortby);
-
-    // startup_page settings...
-    startup_page = PAGE_PLIST;
-    tmp = config->readEntry(QString(cfgkey_startUpPage));
-    if( ! tmp.isNull() ) {
-            startup_page = tmp.toInt();
-            #ifdef DEBUG_MODE
-               printf("KTop debug : startup_page (config val) = %d.\n",startup_page);
-            #endif
-    }  
-
-    if ( sfolder >= 0 ) { 
-         restoreStartupPage = TRUE;
-         startup_page = sfolder;
-         #ifdef DEBUG_MODE
-            printf("KTop debug : startup_page (cmd line val) = %d.\n",startup_page);
-         #endif
-    }
 
     installEventFilter(this);
 
-    pList_update();        /* create process list the first time */
-    pTree_update();        /* create process tree the first time */
+    
+    pTree->update(); /* create process tree */
 
     // add pages...
-    addTab(p0,i18n("Processes &List"));
-    addTab(p1,i18n("Processes &Tree"));
-    addTab(p2,i18n("&Performance"));
+    addTab(procListPage, "Processes &List");
+    addTab(pages[1], "Processes &Tree");
+    addTab(pages[2], "&Performance");
     move(0,0);
-}
-
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::~TaskMan() (destructor)
-	    writes back config entries (current)
- -----------------------------------------------------------------------------*/
-TaskMan::~TaskMan()
-{  
-   if ( settings )
-      delete settings;
-
-   while( ps_list ) {
-      psPtr tmp = ps_list;
-      ps_list = ps_list->next;
-      delete tmp;
-   }
-   
-   delete pList;
-   delete pTree;
-   delete cpumon;
-   delete memmon;
+#ifdef DEBUG_MODE
+	printf("KTOP debug: Selected start tab: %d\n", startup_page);
+#endif
 }
 
 /*-----------------------------------------------------------------------------
@@ -549,213 +262,79 @@ TaskMan::~TaskMan()
  -----------------------------------------------------------------------------*/
 void TaskMan::raiseStartUpPage()
 { 
-    QString tmp;
+#ifdef DEBUG_MODE
+		printf("KTop debug: TaskMan::raiseStartUpPage : startup_page "
+			   "== %d.\n", startup_page);
+#endif
 
-    tabBar()->setCurrentTab(startup_page);
+	QString tmp;
 
-    // in case startup_page has been modified from cmd line...
-    if ( restoreStartupPage ) {
-       tmp = config->readEntry(QString(cfgkey_startUpPage));
-       if( ! tmp.isNull() )
-           startup_page = tmp.toInt();
-    }
+	showPage(pages[startup_page]);
+
+	/*
+	 * In case the startup_page has been forced on the command line we restore
+	 * the startup_page variable form the config file again so we use the
+	 * forced value only for this session.
+	 */
+	if (restoreStartupPage)
+	{
+		tmp = Kapp->getConfig()->readEntry(QString(cfgkey_startUpPage));
+		if( ! tmp.isNull() )
+			startup_page = tmp.toInt();
+	}
 } 
 
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::initIconList
- -----------------------------------------------------------------------------*/
-void TaskMan::TaskMan_initIconList()
+void 
+TaskMan::resizeEvent(QResizeEvent *ev)
 {
-    DIR           *dir;
-    struct dirent *de;
-    char           path[PATH_MAX+1];
-    char           icnFile[PATH_MAX+1];
-
-    if ( icons ) return;
-
-    #ifdef DEBUG_MODE
-       printf("KTop debug : Looking for mini-icons.\n");
-    #endif
-
-    defaultIcon = new QPixmap(execXpm);
-    CHECK_PTR(defaultIcon);
-
-    icons = new QList<IconListElem>;
-    CHECK_PTR(icons);
-    
-    sprintf(path,"%s/mini",KApplication::kde_icondir().data());
-    #ifdef DEBUG_MODE
-      printf("KTop debug : %s.\n", path);
-    #endif
-    dir = opendir( path );
-
-    if ( ! dir ) return;  // default icon will be used
-  
-    while ( ( de = readdir(dir) ) )
-     {
-	if( strstr(de->d_name,".xpm") ) { 
-
-            sprintf(icnFile,"%s/%s",path,de->d_name);
-
-            #ifdef DEBUG_MODE
-		//printf("KTop debug : found xpm : %s.\n",icnFile);
-            #endif
-
-            IconListElem *newElem = new IconListElem(icnFile,de->d_name);
-            CHECK_PTR(newElem);
-            icons->append(newElem);  
-	}       
-     }
-
-    (void)closedir(dir);
-
-    sprintf(path,"%s%s",KApplication::kde_datadir().data(), "/ktop/pics"); 
-    #ifdef DEBUG_MODE
-      printf("KTop debug : trying %s...\n", path);
-    #endif
-
-    dir = opendir( path );
-    if ( !dir ) return; // default icon will be used
-  
-    while ( ( de = readdir(dir) ) )
-     {
-	if( strstr(de->d_name,".xpm") ) 
-         { 
-            sprintf(icnFile,"%s/%s",path,de->d_name);
-
-            #ifdef DEBUG_MODE
-		//printf("KTop debug : found xpm : %s.\n",icnFile);
-            #endif
-
-            IconListElem *newElem = new IconListElem(icnFile,de->d_name);
-            CHECK_PTR(newElem);
-            icons->append(newElem);  
-	}       
-     }
-
-    (void)closedir(dir);
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::clearIconList
- -----------------------------------------------------------------------------*/
-void TaskMan::TaskMan_clearIconList()
-{
-  icons->setAutoDelete(TRUE);
-  icons->clear();
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::TaskMan_getProcIcon
- -----------------------------------------------------------------------------*/
-const QPixmap* TaskMan::TaskMan_getProcIcon( const char* pname )
-{
- IconListElem* cur  = icons->first();
- IconListElem* last = icons->getLast();
- bool          goOn = TRUE;
- char          iName[128];
-
- sprintf(iName,"%s.xpm",pname);
- do {
-    if ( cur == last ) goOn = FALSE;
-    if (! cur ) goto end;
-    if ( !strcmp(cur->getName(),iName) )
-       return( cur->getPixmap() );
-    cur = icons->next(); 
- } while ( goOn ) ;
-
- end: 
-   return defaultIcon;
-}
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::resizeEvent
- -----------------------------------------------------------------------------*/
-void TaskMan::resizeEvent(QResizeEvent *ev)
-{
-  
     QTabDialog::resizeEvent(ev);
 
-    if( ! pages[1] || !pages[0] )
+    if( ! procListPage || !pages[1] || !pages[2] )
           return;
 
-    int w = pages[0]->width();
-    int h = pages[0]->height();
-
-    // processes list
-    pList_box->setGeometry(5, 5, w - 10, h - 20);
-    pList->setGeometry(10,25, w - 20, h - 75);
-    pList_cbRefresh->setGeometry(10, h - 45, 180, 25);
-    pList_bRefresh->setGeometry(w - 220, h - 45, 100, 25);
-    pList_bKill->setGeometry(w - 110, h - 45, 100, 25);
-    
+    int w = pages[2]->width();
+    int h = pages[2]->height();
+   
     // processes tree
-    pTree_box->setGeometry(5, 5, w - 10, h - 20);
-    pTree->setGeometry(10, 30, w - 20, h - 90);
-    pTree_cbSort->setGeometry(10, h - 50, 140, 25);
-    pTree_bRefresh->setGeometry(w - 330, h - 50, 100, 25);
-    pTree_bRoot->setGeometry(w - 220, h - 50, 100, 25);
-    pTree_bKill->setGeometry(w - 110, h - 50, 100, 25);
- 
+	pTree_box->setGeometry(5, 5, w - 10, h - 20);
+   	pTree->setGeometry(10, 30, w - 20, h - 90);
+	pTree_cbSort->setGeometry(10, h - 50,140, 25);
+	pTree_bRefresh->setGeometry(w - 270, h - 50, 80, 25);
+	pTree_bRoot->setGeometry(w - 180, h - 50, 80, 25);
+	pTree_bKill->setGeometry(w - 90, h - 50, 80, 25);
+
     // performances page
 
-    // Note: FreeBSD support is different. We have additional textual
-    //       information about memory usage, file handles, swapstate etc.
-    //       That is, we need different geometry on the performance page.
-    //
-    
-#ifdef __FreeBSD__
-    int widest_label = 0;
-    int i;
-    for(i = 0; i < MEM_PHYS; i++) {
-	if (widest_label < l_mem_details[i]->width())
-	widest_label = l_mem_details[i]->width();
-    }
-    
-    cpubox->setGeometry(10, 10, 80, (h / 2) - 60);
-    cpubox1->setGeometry(100, 10, w - 110, (h / 2) - 60);
-    cpu_cur->setGeometry(20, 30, 60, (h / 2) - 90);
-    cpumon->setGeometry(10, 20, cpubox1->width() - 20, cpubox1->height() - 30);
-    membox->setGeometry(10, (h / 2) - 40, 80, (h / 2) - 60);
-    membox1->setGeometry(100, (h / 2) - 40, w - 110, (h / 2) - 60);
-    mem_cur->setGeometry(20, h / 2 - 20, 60, (h / 2) - 90);
-    memmon->setGeometry(10, 20, membox1->width() - 20, membox1->height() - 30);
-    for(i = 0; i < MEM_PHYS; i++) {
-        l_mem_details[i]->move(10, 15 + i * (l_mem_details[i]->height()));
-        mem_details[i]->move(10 + widest_label + 10, 15 + i * (l_mem_details[i]->height()));
-    }
-    int column2 = 30 + widest_label + mem_details[0]->width();
-    widest_label = l_mem_details[MEM_UNUSED]->width();
-    for(i = MEM_PHYS; i < MEM_END; i++) {
-        l_mem_details[i]->move(column2, 15 + ( i - MEM_PHYS ) * (l_mem_details[i]->height()));
-        mem_details[i]->move(column2 + 10 + widest_label, 15 + ( i - MEM_PHYS ) * (l_mem_details[i]->height()));
-    }
-    mem_detail_box->setGeometry(10, h - 100, column2 + 20 + widest_label + mem_details[MEM_PHYS]->width(), 95);
-#else
-    cpubox->setGeometry(10, 10, 80, (h / 2) - 30);
-    cpubox1->setGeometry(100, 10, w - 110, (h / 2) - 30);
-    cpu_cur->setGeometry(20, 30, 60, (h / 2) - 60);
-    cpumon->setGeometry(10, 20, cpubox1->width() - 20, cpubox1->height() - 30);
-    membox->setGeometry(10, h / 2, 80, (h / 2) - 30);
-    membox1->setGeometry(100, h / 2, w - 110, (h / 2) - 30);
-    mem_cur->setGeometry(20, h / 2 + 20, 60, (h / 2) - 60);
-    memmon->setGeometry(10, 20, membox1->width() - 20, membox1->height() - 30);
-#endif
+    #ifdef ADD_SWAPMON
+	cpubox->setGeometry (  10,       10,      80,    (h-40)/3);
+     	cpubox1->setGeometry( 100,       10, w - 110,    (h-40)/3);
+     	cpu_cur->setGeometry(  20,    10+18,      60,   (h-118)/3);
+     	cpumon->setGeometry(   10,       18, w - 130,   (h-118)/3);
+     	membox->setGeometry (  10,   (h+20)/3,      80,    (h-40)/3);
+     	membox1->setGeometry( 100,   (h+20)/3, w - 110,    (h-40)/3);
+     	mem_cur->setGeometry(  20,(h+20)/3+18,      60,   (h-118)/3);
+     	memmon->setGeometry (  10,         18, w - 130,   (h-118)/3);
+     	swapbox->setGeometry ( 10,   (2*h+10)/3,      80,    (h-40)/3);
+     	swapbox1->setGeometry(100,   (2*h+10)/3, w - 110,    (h-40)/3);
+     	swap_cur->setGeometry( 20,(2*h+10)/3+18,      60,   (h-118)/3);
+     	swapmon->setGeometry ( 10,           18, w - 130,   (h-118)/3);
+   #else
+	cpubox->setGeometry(10, 10, 80, (h / 2) - 30);
+    	cpubox1->setGeometry(100, 10, w - 110, (h / 2) - 30);
+    	cpu_cur->setGeometry(20, 30, 60, (h / 2) - 60);
+    	cpumon->setGeometry(10, 20, cpubox1->width() - 20, cpubox1->height() - 30);
+    	membox->setGeometry(10, h / 2, 80, (h / 2) - 30);
+    	membox1->setGeometry(100, h / 2, w - 110, (h / 2) - 30);
+    	mem_cur->setGeometry(20, h / 2 + 20, 60, (h / 2) - 60);
+    	memmon->setGeometry(10, 20, membox1->width() - 20, membox1->height() - 30);
+   #endif
 }
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::TaskMan_timerEvent(QTimerEvent *)
- -----------------------------------------------------------------------------*/
-void TaskMan::timerEvent(QTimerEvent *)
+             
+void 
+TaskMan::pSigHandler( int id )
 {
-   pList_update();
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pSigHandler
- -----------------------------------------------------------------------------*/
-void TaskMan::pSigHandler( int id )
-{
-  int the_sig;
+  int the_sig=0;
+  int renice=0;
 
   switch ( id ) {
 	case MENU_ID_SIGINT:
@@ -776,134 +355,122 @@ void TaskMan::pSigHandler( int id )
 	case MENU_ID_SIGUSR2:
 	  the_sig = SIGUSR2;
           break;
+	case MENU_ID_RENICE:
+	  renice = 1;
+	  break;
     	default:
           return;
           break;
   }
 
+  int err=0;
   int selection;
   switch ( tabBar()->currentTab() ) {
      case PAGE_PLIST:
-      if ( pList_lastSelectionPid == NONE ) return;
-      selection = pList_lastSelectionPid;
+      selection = procListPage->selectionPid();
+      if ( selection == NONE ) return;
       break;
      case PAGE_PTREE:
-      if ( pTree_lastSelectionPid == NONE ) return;
-      selection = pTree_lastSelectionPid;
+      selection = pTree->selectionPid();
+      if ( selection == NONE ) return;
       break;
      default:
       return;
       break;
   }
-  
-  int err = kill(selection,the_sig);
-  if ( err == -1 ) {
-       QMessageBox::warning(this,"ktop",
-       "Kill error...\nSpecified process does not exists\nor permission denied.",
-       "OK", 0);
-  }
 
-  switch ( tabBar()->currentTab() ) {
-    case PAGE_PLIST: 
-        if ( err != -1 ) {
-      	     pList_lastSelectionPid = getpid();
-      	     pList_update();
-        }
-      	break;
-    case PAGE_PTREE:
-        if ( err != -1 ) {
-      	     pTree_lastSelectionPid = getpid();
-      	     pTree_update();
-        }
-      	break;
-    default:
-      	return;
-      	break;
-  }
- 
-}
+  int lastmode = procListPage->setAutoUpdateMode(FALSE);
 
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::tabBarSelected
- -----------------------------------------------------------------------------*/
-void TaskMan::tabBarSelected ( int tabIndx )
-{ 
-  #ifdef DEBUG_MODE
-    printf("KTop debug : tabBar selected. indx=%d.\n",tabIndx);
-  #endif
+  if ( renice == 0 ) 
+  { 
+	err = kill(selection,the_sig);
+  	if ( err == -1 ) 
+	{
+		QMessageBox::warning(this,"ktop",
+       		"Kill error...\nSpecified process does not exists\nor permission denied.",
+       		"Ok", 0);
+	}
+   } 
+   else 
+   {
+	int i;   
+        int pprio;
+       
+        errno=0; // -1 is a possible value for getpriority return value
+ 	pprio = getpriority (PRIO_PROCESS,selection);
+	if ( err == -1 ) 
+	{
+		QMessageBox::warning(this,"ktop",
+		"Renice error...\nSpecified process does not exists\nor permission denied.",
+		"Ok", 0); 
+	  	procListPage->update();
+		pTree->update();
+		return;
+	}
 
-  switch ( tabIndx ) {
-     case PAGE_PLIST :
-       pList_update();
-       break;
-     case PAGE_PTREE :
-       pTree_update();
-       break;
+	SetNice m(this,"nice",pprio);
+	if ( (i=m.exec())<=20 && (i>=-20) && (i!=pprio) ) 
+	{
+		err = setpriority (PRIO_PROCESS,selection,i);
+		if ( err == -1 ) 
+   		{
+			QMessageBox::warning(this,"ktop",
+  			"Renice error...\nSpecified process does not exists\nor permission denied.",
+			"Ok", 0);   
+		}
+	}
+   }
+        
+   switch ( tabBar()->currentTab() ) 
+   {
+     case PAGE_PLIST:
+      if ( err != -1 ) procListPage->update();
+      break;
+     case PAGE_PTREE:
+      if ( err != -1 ) pTree->update();
+      break;
      default:
-       break;
-  }
+      return;
+      break;
+   }
+
+   procListPage->setAutoUpdateMode(lastmode);
+
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pList_cbRefreshActivated
- -----------------------------------------------------------------------------*/
-void TaskMan::pList_cbRefreshActivated(int indx)
+void 
+TaskMan::tabBarSelected (int tabIndx)
 { 
+#ifdef DEBUG_MODE
+	printf("KTop debug: TaskMan::tabBarSelected : indx == %d.\n", tabIndx);
+#endif
 
- #ifdef DEBUG_MODE
-    printf("KTop debug : cbRefreshActivated - item = %d.\n",indx);
- #endif
-
- int value;
-
- pList_refreshRate = indx;
-
- switch ( indx ) {
-	case UPDATE_SLOW:
-	  value = UPDATE_SLOW_VALUE;
-	  break;
-        case UPDATE_MEDIUM:
-	  value = UPDATE_MEDIUM_VALUE;
-          break;
-        case UPDATE_FAST:
-	  value = UPDATE_FAST_VALUE;
-          break;
-    	default:
-	  value = UPDATE_FAST_VALUE;
-	  break;    	
- }
- setUpdateInterval(value);
+	switch ( tabIndx )
+	{
+	case PAGE_PLIST :
+		procListPage->setAutoUpdateMode(TRUE);
+		procListPage->update();
+		break;
+	case PAGE_PTREE :
+		procListPage->setAutoUpdateMode(FALSE);
+		pTree->update();
+		break;
+	case PAGE_PERF  :
+		procListPage->setAutoUpdateMode(FALSE);
+		break;
+	default:
+		break;
+	}
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::setUpdateInterval
- 	    sets new timer interval, return old value
- -----------------------------------------------------------------------------*/
-int TaskMan::setUpdateInterval(int new_interval)
+void 
+TaskMan::invokeSettings(void)
 {
-    int old = timer_interval;
-    
-    if ( tid != NONE ) killTimer(tid);
-    timer_interval = new_interval * 1000;
-    tid = startTimer(timer_interval);
-    return (old / 1000);
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::getUpdateInterval()
-            returns current timer interval
- -----------------------------------------------------------------------------*/
-int TaskMan::getUpdateInterval()
-{
-    return (timer_interval / 1000);
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::invokeSettings(void)
- -----------------------------------------------------------------------------*/
-void TaskMan::invokeSettings(void)
-{
-    if( ! settings ){
+#ifdef DEBUG_MODE
+	printf("KTop debug: TaskMan::invokeSettings : startup_page == %d.\n",
+		   startup_page);
+#endif
+    if( ! settings ) {
         settings = new AppSettings(0,"proc_options");
         CHECK_PTR(settings);      
     }
@@ -911,1071 +478,79 @@ void TaskMan::invokeSettings(void)
     settings->setStartUpPage(startup_page);
     if( settings->exec() ) {
         startup_page = settings->getStartUpPage();
-        #ifdef DEBUG_MODE
-           printf("KTop debug : startup_page (new val) = %d.\n",startup_page);
-        #endif
+#ifdef DEBUG_MODE
+		printf("KTop debug : TaskMan::invokeSettings : startup_page (new val) = %d.\n"
+			   ,startup_page);
+#endif
         saveSettings();
     }
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::saveSettings(void)
- -----------------------------------------------------------------------------*/
-void TaskMan::saveSettings()
+void 
+TaskMan::saveSettings()
 {
- QString  t;
- char     temp[32];
- char    *g_format = "%04d:%04d:%04d:%04d";
+	QString t;
+	char temp[32];
+	char *g_format = "%04d:%04d:%04d:%04d";
 
- sprintf( temp                    , g_format
-        , parentWidget()->x()     , parentWidget()->y()
-        , parentWidget()->width() , parentWidget()->height() );
+	/* save window size */
+	sprintf(temp, g_format,
+			parentWidget()->x(), parentWidget()->y(),
+			parentWidget()->width() , parentWidget()->height());
+	Kapp->getConfig()->writeEntry(QString("G_Toplevel"), QString(temp));
 
- config->writeEntry(QString("G_Toplevel"), QString(temp));
- config->writeEntry(QString(cfgkey_startUpPage),t.setNum(startup_page),TRUE);
- config->writeEntry(QString(cfgkey_pListUpdate),t.setNum(pList_refreshRate),TRUE);
- config->writeEntry(QString(cfgkey_pListSort),t.setNum(pList_sortby),TRUE);
- config->writeEntry(QString(cfgkey_pTreeSort),t.setNum(pTree_sortby),TRUE);
- config->sync();
+	/* save startup page (tab) */
+	Kapp->getConfig()->writeEntry(QString(cfgkey_startUpPage),
+					   t.setNum(startup_page), TRUE);
+
+	procListPage->saveSettings();
+
+	/* save sort criterium (process tree) */
+	Kapp->getConfig()->writeEntry(QString(cfgkey_pTreeSort),
+					   t.setNum(pTree_sortby), TRUE);
+
+	Kapp->getConfig()->sync();
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan : Processes list routines
- -----------------------------------------------------------------------------*/
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pList_update
- -----------------------------------------------------------------------------*/
-void TaskMan::pList_update(void)
+void 
+TaskMan::pTree_update( void )
 {
-    int top_Item   = pList->topItem();
-    pList->setAutoUpdate(FALSE);
-      pList_load();
-      pList_restoreSelection();
-      pList->setTopItem(top_Item);
-    pList->setAutoUpdate(TRUE);
-    if( pList->isVisible() ) pList->repaint();
+  pTree->update();
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pList_load
- -----------------------------------------------------------------------------*/
-void TaskMan::pList_load()
-{
-#ifdef __FreeBSD__
-	char line[256];
-	struct passwd *pwent;
-	pList_clearProcVisit();
-
-	int mib[3];
-	size_t len;
-	struct kinfo_proc *p;
-
-	mib[0] = CTL_KERN;
-	mib[1] = KERN_PROC;
-	mib[2] = KERN_PROC_ALL;
-	sysctl(mib, 3, NULL, &len, NULL, 0);
-	p = (struct kinfo_proc *)malloc(len);
-	sysctl(mib, 3, p, &len, NULL, 0);
-
-	int num;
-	for (num = len / sizeof(struct kinfo_proc) - 1; num > -1; num--) {
-		char s[10];
-		snprintf(s, 10,"%d",p[num].kp_proc.p_pid);
-		ps = pList_getProcItem(s);
-		if ( ! ps ) return;
-
-		strcpy(ps->name, p[num].kp_proc.p_comm);
-		ps->status = p[num].kp_proc.p_stat;
-		strcpy(ps->statusTxt, p[num].kp_eproc.e_wmesg);
-	 	ps->visited = 1;
-		ps->uid = p[num].kp_eproc.e_ucred.cr_uid;
-		ps->gid = p[num].kp_eproc.e_pgid;
-		ps->pid = p[num].kp_proc.p_pid;
-		ps->ppid = p[num].kp_eproc.e_ppid;
-
-		struct timeval tv;
-		gettimeofday(&tv,0);
-
-		ps->oabstime = ps->abstime;
-		ps->abstime = tv.tv_sec*100+tv.tv_usec/10000;
-
-		// if no time between two cycles - don't show any usable cpu percentage
-		if(ps->oabstime==ps->abstime)
-			ps->oabstime=ps->abstime-100000;
-		ps->otime=ps->time;
-#if __FreeBSD_version >= 300000
-		ps->time=p[num].kp_proc.p_runtime / 10000;
-#else
-		ps->time=p[num].kp_proc.p_rtime.tv_sec*100+p[num].kp_proc.p_rtime.tv_usec/10000;
-#endif
-
-		// set other data
-		ps->vm_size = (p[num].kp_eproc.e_vm.vm_tsize +
-			p[num].kp_eproc.e_vm.vm_dsize +
-			p[num].kp_eproc.e_vm.vm_ssize) * getpagesize() / 1024;
-		ps->vm_lock = 0;
-		ps->vm_rss = p[num].kp_eproc.e_vm.vm_rssize * getpagesize() / 1024;
-		ps->vm_data = p[num].kp_eproc.e_vm.vm_dsize * getpagesize() / 1024;
-		ps->vm_stack = p[num].kp_eproc.e_vm.vm_ssize * getpagesize() / 1024;
-		ps->vm_exe = p[num].kp_eproc.e_vm.vm_tsize * getpagesize() / 1024;
-		ps->priority = p[num].kp_proc.p_priority - PZERO;
-	}
-	free(p);
-#else
-    DIR *dir;
-    char line[256];
-    struct dirent *entry;
-    struct passwd *pwent;
-    
-    pList_clearProcVisit();
-      dir = opendir(PROC_BASE);
-      while( (entry = readdir(dir)) ) {
-        if( isdigit(entry->d_name[0]) ) 
-            pList_getProcStatus(entry->d_name);
-      }
-      closedir(dir);
-#endif
-    pList_removeProcUnvisited();
-    pList_sort();
-
-    pList->clear();
-    pList->dict().clear();  
-
-    psPtr tmp;
-    const QPixmap *pix;
-    char  usrName[32];
-    int   i;
-    for( tmp=ps_list, i=1 ; tmp ; tmp=tmp->next , i++) {
-        pwent = getpwuid(tmp->uid);
-        if ( pwent ) 
-          strncpy(usrName,pwent->pw_name,31);
-        else 
-          strcpy(usrName,"????");
-        pix = pList_getProcIcon((const char*)tmp->name);
-        pList->dict().insert((const char*)tmp->name,pix);
-        sprintf(line, "{%s};%d;%s;%s;%5.2f%%;%d:%02d;%s;%d;%d;%d", 
-                    tmp->name,
-	            tmp->pid, 
-                    tmp->name, 
-                    usrName,
-                    1.0*(tmp->time-tmp->otime)/(tmp->abstime-tmp->oabstime)*100, 
-                    (tmp->time/100)/60,(tmp->time/100)%60, 
-                    tmp->statusTxt,
-                    tmp->vm_size, 
-                    tmp->vm_rss, 
-#ifdef __FreeBSD__
-		    tmp->priority
-#else
-                    tmp->vm_lib
-#endif
-		    );         
-        pList->appendItem(line);
-    }
-
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pList_sort()
- -----------------------------------------------------------------------------*/
-void TaskMan::pList_sort() 
-{
-
-    int   swap;
-    psPtr start, 
-          item, 
-          tmp;
-
-    for ( start=ps_list ; start ; start=start->next ) { 
-
-        for ( item=ps_list ; item && item->next ; item=item->next ) {
-
-	    switch ( pList_sortby ) {
-	        case SORTBY_PID:
-		    swap = item->pid > item->next->pid;
-		    break;
-	        case SORTBY_UID:
-		    swap = item->uid > item->next->uid;
-		    break;
-	        case SORTBY_NAME:
-                    swap = strcmp(item->name, item->next->name) > 0;
-		    break;
-	        case SORTBY_TIME:
-		    swap = item->time < item->next->time;
-		    break;
-	        case SORTBY_STATUS:
-		    swap = item->status > item->next->status;
-		    break;
-	        case SORTBY_VMSIZE:
-		    swap = item->vm_size < item->next->vm_size;
-		    break;
-	        case SORTBY_VMRSS:
-		    swap = item->vm_rss < item->next->vm_rss;
-		    break;
-#ifdef __FreeBSD__
-	        case SORTBY_PRIOR:
-		    swap = item->priority < item->next->priority;
-#else
-	        case SORTBY_VMLIB:
-		    swap = item->vm_lib < item->next->vm_lib;
-#endif
-		    break;
-	        case SORTBY_CPU:
-	        default        :
-		    swap = (item->time-item->otime) < (item->next->time-item->next->otime);
-	    }
-
-	    if ( swap ) {
-	        tmp = item->next;
-	        if ( item->prev ) 
-                     item->prev->next = tmp;
-		else 
-                     ps_list = tmp;
-	        if( tmp->next ) 
-                     tmp->next->prev = item;
-		tmp->prev  = item->prev;
-		item->prev = tmp;
-		item->next = tmp->next;
-		tmp->next  = item;
-		if( (start=item) ) start=tmp;
-		item=tmp;
-	    }
-
-	}
-    } 
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pList_clearProcVisit()
- -----------------------------------------------------------------------------*/
-void TaskMan::pList_clearProcVisit() 
-{
-    psPtr tmp;
-    for( tmp=ps_list ; tmp ; tmp->visited=0 , tmp=tmp->next );
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pList_getProcItem(char* aName)
- -----------------------------------------------------------------------------*/
-psPtr TaskMan::pList_getProcItem(char* aName) 
-{
-    psPtr tmp;
-    int   pid;
-
-    sscanf(aName,"%d",&pid);
-    for ( tmp=ps_list ; tmp && (tmp->pid!=pid) ; tmp=tmp->next );
-
-    if( ! tmp ) {
-        // create an new elem & insert it 
-        // at the top of the linked list
-        tmp = new psStruct;
-        if ( tmp ) {
-           memset(tmp,0,sizeof(psStruct));
-           tmp->pid=pid;
-           tmp->next=ps_list;
-           if( ps_list )
-               ps_list->prev=tmp;
-           ps_list=tmp;
-        }
-    }
-    return tmp;
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pList_removeProcUnvisited()
- -----------------------------------------------------------------------------*/
-void TaskMan::pList_removeProcUnvisited() 
-{
-    psPtr item, tmp;
-
-    for ( item=ps_list ; item ; ) {
-        if( ! item->visited ) {
-            tmp = item;
-            if ( item->prev )
-                 item->prev->next = item->next;
-	    else
-	         ps_list = item->next;
-            if ( item->next )
-	         item->next->prev = item->prev;
-            item = item->next; 
-            delete tmp;
-        }
-	item = item->next;
-    }
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pList_getProcStatus(char * pid)
- -----------------------------------------------------------------------------*/
-#ifndef __FreeBSD__
-// BSD doesn't use this
-int TaskMan::pList_getProcStatus(char * pid)
-{
-    char buffer[1024], temp[128];
-    FILE *fd;
-    int u1, u2, u3, u4, time1, time2;
-    
-    #ifdef DEBUG_MODE
-      //printf("KTop debug: read entered\n");
-    #endif
-
-    ps = pList_getProcItem(pid);
-    if ( ! ps ) return 0;
-    
-    sprintf(buffer, "/proc/%s/status", pid);
-    if((fd = fopen(buffer, "r")) == 0)
-        return 0;
-
-    fscanf(fd, "%s %s", buffer, ps->name);
-    fscanf(fd, "%s %c %s", buffer, &ps->status, temp);
-    switch ( ps->status ) {
-       case 'R':
-           strcpy(ps->statusTxt,"Run");
-           break;
-       case 'S':
-           strcpy(ps->statusTxt,"Sleep");
-           break;
-       case 'D': 
-           strcpy(ps->statusTxt,"Disk");
-           break;
-       case 'Z': 
-           strcpy(ps->statusTxt,"Zombie");
-           break;
-       case 'T': 
-           strcpy(ps->statusTxt,"Stop");
-           break;
-       case 'W': 
-           strcpy(ps->statusTxt,"Swap");
-           break;
-       default:
-           strcpy(ps->statusTxt,"????");
-           break;
-    }
-    fscanf(fd, "%s %d", buffer, &ps->pid);
-    fscanf(fd, "%s %d", buffer, &ps->ppid);
-    fscanf(fd, "%s %d %d %d %d", buffer, &u1, &u2, &u3, &u4);
-    ps->uid = u1;
-    fscanf(fd, "%s %d %d %d %d", buffer, &u1, &u2, &u3, &u4);
-    ps->gid = u1;
-    fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_size);
-    if(strcmp(buffer, "VmSize:"))
-        ps->vm_size=0;
-    fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_lock);
-    if(strcmp(buffer, "VmLck:"))
-        ps->vm_lock=0;
-    fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_rss);
-    if(strcmp(buffer, "VmRSS:"))
-        ps->vm_rss=0;
-    fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_data);
-    if(strcmp(buffer, "VmData:"))
-        ps->vm_data=0;
-    fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_stack);
-    if(strcmp(buffer, "VmStk:"))
-        ps->vm_stack=0;
-    fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_exe);
-    if(strcmp(buffer, "VmExe:"))
-        ps->vm_exe=0;
-    fscanf(fd, "%s %d %*s\n", buffer, &ps->vm_lib);
-    if(strcmp(buffer, "VmLib:"))
-        ps->vm_lib=0;
-    fclose(fd);
-
-    #ifdef DEBUG_MODE
-      //printf("KTop debug: read completed\n");
-    #endif
-    sprintf(buffer, "/proc/%s/stat", pid);
-    if((fd = fopen(buffer, "r")) == 0)
-        return 0;
-    
-    fscanf(fd, "%*s %*s %*s %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %d %d", &time1, &time2);
-    #ifdef DEBUG_MODE
-      //printf("KTop debug: %d %d\n", time1, time2);
-    #endif
-
-    struct timeval tv;
-    gettimeofday(&tv,0);
-    ps->oabstime=ps->abstime;
-    ps->abstime=tv.tv_sec*100+tv.tv_usec/10000;
-
-    // if no time between two cycles - don't show any usable cpu percentage
-    if(ps->oabstime==ps->abstime)
-        ps->oabstime=ps->abstime-100000;
-    ps->otime=ps->time;
-    ps->time=time1+time2;
-
-    fclose(fd);
-    ps->visited=1;
-
-    return 1;
-}
-#endif
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::headerClicked
- -----------------------------------------------------------------------------*/
-void TaskMan::pList_headerClicked(int indxCol)
-{
-  #ifdef DEBUG_MODE
-    printf("KTop debug : pList_headerClicked : col. : %d.\n",indxCol);
-  #endif
-
-  if ( indxCol ) {
-       switch ( indxCol-1 ) {
-          case SORTBY_PID: 
-          case SORTBY_NAME: 
-          case SORTBY_UID: 
-          case SORTBY_CPU: 
-          case SORTBY_TIME:
-          case SORTBY_STATUS:
-          case SORTBY_VMSIZE:
-          case SORTBY_VMRSS:
-#ifdef __FreeBSD__
-          case SORTBY_PRIOR:
-#else
-          case SORTBY_VMLIB:
-#endif
-               pList_sortby = indxCol-1;
-               break;
-          default: 
-               return;
-               break;
-       }
-       pList_update();
-  }
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pList_procHighlighted
- -----------------------------------------------------------------------------*/
-void TaskMan::pList_procHighlighted(int indx,int)
-{ 
-  #ifdef DEBUG_MODE
-    printf("KTop debug : item %d selected.\n",indx);
-  #endif
-  
-  pList_lastSelectionPid = NONE;
-  sscanf(pList->text(indx,1),"%d",&pList_lastSelectionPid);
-  #ifdef DEBUG_MODE
-    printf("KTop debug : pList_lastSelectionPid = %d.\n",pList_lastSelectionPid);
-  #endif 
-} 
- 
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pList_popupMenu
- -----------------------------------------------------------------------------*/
-void TaskMan::pList_popupMenu(int indx,int)
-{ 
-  #ifdef DEBUG_MODE
-    printf("KTop debug : item %d selected.\n",indx);
-  #endif
-
-  pList->setCurrentItem(indx);
-  pSig->popup(QCursor::pos());
-  
-} 
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pList_killTask()
- -----------------------------------------------------------------------------*/
-void TaskMan::pList_killTask()
-{
- char pname[64];
- char uname[64];
- int  pid;
-
- int cur = pList->currentItem();
- if ( cur == NONE ) return;
-
- sscanf((pList->text(cur,1)).data(),"%d",&pid);
- sscanf((pList->text(cur,2)).data(),"%s",pname);
- sscanf((pList->text(cur,3)).data(),"%s",uname); 
-
- #ifdef DEBUG_MODE
-   printf("KTop debug : current selection pid   = %d\n",pid); 
-   printf("KTop debug : current selection pname = %s\n",pname);
-   printf("KTop debug : current selection uname = %s\n",uname);
- #endif
-
- if ( pList_lastSelectionPid != pid ) {
-      QMessageBox::warning(this,"ktop",
-                                "Selection changed !\n\n",
-                                "Abort",0);
-      pList_lastSelectionPid = NONE;
-      pList->setCurrentItem(0);
-      return;
- }
-
- int  err;
- char msg[256];
- sprintf(msg,"Kill process %d (%s - %s) ?\n",pid,pname,uname);
-
- switch( QMessageBox::warning(this,"ktop",
-                                    msg,
-                                   "Continue", "Abort",
-                                    0, 1 )
-       )
-    { 
-      case 0: // continue
-          err = kill(pList_lastSelectionPid ,SIGKILL);
-          if ( err == -1 ) 
-	       QMessageBox::warning(this,"ktop",
-                                    "Kill error...\nSpecified process does not exists\nor permission denied.",
-                                    "OK", 0);
-          pList_lastSelectionPid = NONE;
-          pList_update();
-          pList->setCurrentItem(0);
-          break;
-      case 1: // abort
-          break;
-    }
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pList_restoreSelection
- -----------------------------------------------------------------------------*/
-void TaskMan::pList_restoreSelection(int lastColVis = 0)
-{
-  if ( pList_lastSelectionPid==NONE ) return;
-
-  QString txt;
-  int     cnt = pList->count();
-  int     pid;
-  bool    res = FALSE;
-
-  for ( int i=0 ; i< cnt  ; i++ ) {
-      txt = pList->text(i,1);
-      res = FALSE;
-      pid = txt.toInt(&res);
-      if ( res && (pid == pList_lastSelectionPid) ) {
-           pList->setCurrentItem(i,lastColVis);
-           #ifdef DEBUG_MODE
-             printf("KTop debug : pList_restoreSelection - cur pid : %d\n",pid);    
-           #endif
-           return;
-      }
-  }
- 
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pList_getProcIcon
- -----------------------------------------------------------------------------*/
-const QPixmap* TaskMan::pList_getProcIcon( const char* pname )
-{
- return TaskMan_getProcIcon(pname);
-}
-
-
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan : Processes tree routines
- -----------------------------------------------------------------------------*/
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_update
- -----------------------------------------------------------------------------*/
-void TaskMan::pTree_update( void )
-{
-  pTree_updating = TRUE;
-  	pTree->setUpdatesEnabled(FALSE);  
-    		pTree->setExpandLevel(0); 
-    		pTree->clear();
-    		pTree_readProcDir();
-                #ifdef DEBUG_MODE
-                  printf("KTop debug : pTree_update : pTree_readProcDir : ok.\n");
-                #endif
-    		pTree_sort();
-                #ifdef DEBUG_MODE
-                  printf("KTop debug : pTree_update : pTree_sort: ok.\n");
-                #endif
-    		pTree->setExpandLevel(50);
-  	pTree->setUpdatesEnabled(TRUE);
-  	if ( pTree->isVisible() )
-       		pTree->repaint(TRUE);
-        pTree_restoreSelection(pTree->itemAt(0));
-        #ifdef DEBUG_MODE
-           printf("KTop debug : pTree_update : pTree_restoreSelection : ok.\n");
-        #endif
- pTree_updating = FALSE;
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_cbSortActivated
- -----------------------------------------------------------------------------*/
-void TaskMan::pTree_cbSortActivated(int indx)
+void 
+TaskMan::pTree_cbSortActivated(int indx)
 { 
  #ifdef DEBUG_MODE
-    printf("KTop debug : pTree_cbSortActivated - item = %d.\n",indx);
+    printf("KTop debug : TaskMan::pTree_cbSortActivated : item=%d.\n",indx);
  #endif
  
  pTree_sortby = indx;
- pTree_sortUpdate();
- pTree_restoreSelection(pTree->itemAt(0));
- 
+ pTree->setSortMethod(indx);
+ pTree->update();
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_sort
- -----------------------------------------------------------------------------*/
-void TaskMan::pTree_sort( void )
-{
- ProcTreeItem *mainItem = pTree->itemAt(0);
- 
- if ( ! mainItem ) return;
- 
- switch ( pTree_sortby ) {
-   case SORTBY_PID:
-	mainItem->setSortPidText(); 
-        mainItem->setChild(pTree_sortByPid(mainItem->getChild(),false));
-	break; 
-   case SORTBY_NAME:
-        mainItem->setSortNameText(); 
-        mainItem->setChild(pTree_sortByName(mainItem->getChild()));
-        break; 
-   case SORTBY_UID:
-        mainItem->setSortUidText(); 
-        mainItem->setChild(pTree_sortByUid(mainItem->getChild()));
-        break;
- }
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_sortUpdate
- -----------------------------------------------------------------------------*/
-void TaskMan::pTree_sortUpdate( void )
-{    
-  pTree->setUpdatesEnabled(FALSE);  
-    pTree_sort();
-  pTree->setUpdatesEnabled(TRUE);
-  if ( pTree->isVisible() )
-       pTree->repaint(TRUE); 
-}
-
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_getParentItem
- -----------------------------------------------------------------------------*/
-ProcTreeItem* TaskMan::pTree_getParentItem(ProcTreeItem* item, int ppid )
-{
- ProcTreeItem* anItem;
-
- if ( ! item ) return NULL ; 
- if ( item->getProcId() == ppid ) 
-      return item;
- if ( (anItem = pTree_getParentItem(item->getSibling(),ppid)) )
-    return anItem;
- return pTree_getParentItem(item->getChild(),ppid);
- 
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_restoreSelection
- -----------------------------------------------------------------------------*/
-ProcTreeItem* TaskMan::pTree_restoreSelection(ProcTreeItem* item)
-{
- ProcTreeItem* anItem;
-
- if ( !item || (pTree_lastSelectionPid==NONE) ) {
-      return NULL;
- }
-
- if ( item->getProcId() == pTree_lastSelectionPid ) {
-      int indx  = pTree->itemVisibleIndex(item);
-      #ifdef DEBUG_MODE
-        printf("KTop debug : item->getProcId()= %d =?= pTree_lastSelectionPid=%d\n"
-	        ,item->getProcId(),pTree_lastSelectionPid);       
-	printf("KTop debug : pTree last selection : %d\n",indx);
-      #endif
-      pTree->setCurrentItem(indx);
-      return item;
- }
-
- if ( (anItem = pTree_restoreSelection(item->getSibling())) )
-    return anItem;
-
- return pTree_restoreSelection(item->getChild());
- 
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_sortByName
- -----------------------------------------------------------------------------*/
-ProcTreeItem* TaskMan::pTree_sortByName( ProcTreeItem* ref ) 
-{
- ProcTreeItem *newTop,*cur,*aTempItem,*prev=NULL;
-
- if ( ! ref ) return ref;
-
- ref->setSortNameText();
-
- if ( ref->hasChild() )
-   ref->setChild(pTree_sortByName(ref->getChild()) );
-
- if ( ! ref->hasSibling() ) 
-   return ref;
-
- newTop = pTree_sortByName(ref->getSibling());
- ref->setSibling(newTop);  
- if ( ! newTop ) return newTop;  
- 
- cur = newTop;
-
- int counter = 0; 
-
- while ( cur )   
-   {     
-     aTempItem = cur->getSibling();
-     if ( strcmp(ref->getProcName(),cur->getProcName()) > 0 ) {
-	 cur->setSibling(ref); 
-	 ref->setSibling(aTempItem);
-	 if ( prev ) prev->setSibling(cur);
-	 prev = cur;
-	 counter++;   
-     } 
-     cur = aTempItem;
-   }
-
- if ( counter ) return newTop; else return ref; 
-
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_sortByPid
- -----------------------------------------------------------------------------*/
-ProcTreeItem* TaskMan::pTree_sortByPid(ProcTreeItem* ref, bool reverse) 
-{
- ProcTreeItem *newTop,*cur,*aTempItem,*prev=NULL;
-
- if ( ! ref ) return ref;
- 
- ref->setSortPidText();
-
- if ( ref->hasChild() )
-   ref->setChild( pTree_sortByPid(ref->getChild(),reverse) );
-
- if ( ! ref->hasSibling() ) 
-   return ref;
- 
- newTop = pTree_sortByPid(ref->getSibling(),reverse);
- ref->setSibling(newTop);  
- if ( ! newTop ) return newTop;  
- 
- cur = newTop;
-
- int   counter = 0; 
-
- while ( cur )   
-   { 
-     aTempItem = cur->getSibling();
-     
-     if ( ! reverse ) {
-     	if ( ref->getProcId() > cur->getProcId() ) {
-	 	cur->setSibling(ref); 
-	 	ref->setSibling(aTempItem);
-	 	if ( prev ) prev->setSibling(cur);
-	 	prev = cur;
-	 	counter++;   
-     	}
-      }
-      else {
-     	if ( ref->getProcId() < cur->getProcId() ) {
-	 	cur->setSibling(ref); 
-	 	ref->setSibling(aTempItem);
-	 	if ( prev ) prev->setSibling(cur);
-	 	prev = cur;
-	 	counter++;   
-     	}
-      }
- 
-     cur = aTempItem;
-   }
- if ( counter ) return newTop; else return ref; 
-
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_sortByUid
- -----------------------------------------------------------------------------*/
-ProcTreeItem* TaskMan::pTree_sortByUid(ProcTreeItem* ref) 
-{
- ProcTreeItem *newTop,*cur,*aTempItem,*prev=NULL;
-
- if ( ! ref ) return ref;
- 
- ref->setSortUidText();
-
- if ( ref->hasChild() )
-   ref->setChild( pTree_sortByUid(ref->getChild()) );
-
- if ( ! ref->hasSibling() ) 
-   return ref;
- 
- newTop = pTree_sortByUid(ref->getSibling());
- ref->setSibling(newTop);  
- if ( ! newTop ) return newTop;  
- 
- cur = newTop;
-
- int   counter = 0; 
-
- while ( cur )   
-   { 
-     aTempItem = cur->getSibling();
-     
-     if ( ref->getProcUid() > cur->getProcUid() ) {
-	 	cur->setSibling(ref); 
-	 	ref->setSibling(aTempItem);
-	 	if ( prev ) prev->setSibling(cur);
-	 	prev = cur;
-	 	counter++;   
-     }
-     cur = aTempItem;
-   }
-
- if ( counter ) return newTop; else return ref; 
-
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_reorder
- -----------------------------------------------------------------------------*/
-void TaskMan::pTree_reorder( ProcTree* alist )
-{
-  ProcTreeItem   *cur = alist->itemAt(0),*token,*next;
-  if ( !cur ) return;
-
-  while ( cur ) 
-    { 
-      ProcTreeItem *parent = pTree_getParentItem(pTree->itemAt(0),cur->getParentId()); 
-          next  = cur->getSibling();
-      int indx  = alist->itemVisibleIndex(cur);
-          token = alist->takeItem(indx);
-      if ( parent ) 
-	{ 
-          ProcTreeItem *child = new ProcTreeItem(cur->getProcInfo()
-                                       ,pTree_getProcIcon(cur->getProcName()));
-          CHECK_PTR(child);
-	  parent->appendChild(child);
-	}
-        else { // parent not already in tree => move item to bottom
-           alist->insertItem(token,alist->count()-1,false);
-        }
-        cur = next;
-    }
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_changeRoot
- -----------------------------------------------------------------------------*/
-void TaskMan::pTree_changeRoot()
+void 
+TaskMan::pTree_changeRoot()
 {  
-  int newRootIndx = pTree->currentItem();
-  if ( newRootIndx == -1 ) return;
-  
-  ProcTreeItem *newRoot = pTree->takeItem(newRootIndx);
-  if ( ! newRoot ) return;
-
-  pTree->setUpdatesEnabled(FALSE);  
-    pTree->clear();
-    pTree->insertItem(newRoot);
-    pTree->setCurrentItem(0);
-  pTree->setUpdatesEnabled(TRUE);
-  pTree->repaint(TRUE); 
+  pTree->changeRoot();
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : pTree_readProcDir
-  Most of this code (this routine) is :
-  Copyright 1993-1998 Werner Almesberger (pstree author). All rights reserved.
- -----------------------------------------------------------------------------*/
-void TaskMan::pTree_readProcDir(  )
-{
-#ifdef __FreeBSD__
-    int mib[2];
-    size_t len;
-    struct kinfo_proc *p;
-#else
-    DIR           *dir;
-    struct dirent *de;
-    FILE          *file;
-    struct stat    st;
-    char           path[PATH_MAX+1];
-    int            empty,dummy;
-#endif
-    ProcInfo       pi;
-    struct passwd *pwent;
-
-#ifdef __FreeBSD__
-    mib[0] = CTL_KERN;
-    mib[1] = KERN_PROC;
-    mib[2] = KERN_PROC_ALL;
-    sysctl(mib, 3, NULL, &len, NULL, 0);
-    p = (struct kinfo_proc *)malloc(len);
-    sysctl(mib, 3, p, &len, NULL, 0);
-#endif
-    ProcTree      *alist = new ProcTree();  
-    CHECK_PTR(alist);
-
-#ifndef __FreeBSD__
-    if (!(dir = opendir(PROC_BASE))) 
-      {
-	perror(PROC_BASE);
-	exit(1);
-      }
-
-    empty = 0;
-
-    while ((de = readdir(dir)))
-         
-         if(isdigit(de->d_name[0])) { 
-      
-            sscanf(de->d_name,"%d",&(pi.pid));
-
-	    sprintf(path,"%s/%d/stat",PROC_BASE,pi.pid);
-
-	    if ( ( file = fopen(path,"r") ) ) {
-
-		if (fstat(fileno(file),&st) < 0) {
-		    perror(path);
-		    exit(1);
-		}
-
-                pi.uid = st.st_uid;
-		if (fscanf(file,"%d (%[^)]) %c %d"
-			       ,&dummy
-			       ,pi.name
-			       ,(char*)&dummy
-			       ,&(pi.ppid)) == 4) 
-		  { 
-                    
-                    // get user name
-                    pwent = getpwuid(pi.uid);
-                    if( pwent )
-			strcpy(pi.uname,pwent->pw_name);
-                    else 
-                        strcpy(pi.uname,"????");
-
-		    strcpy(pi.arg,"Not implemented");
-                    
-                    // create new item
-                    ProcTreeItem *child = new ProcTreeItem(pi,pTree_getProcIcon(pi.name));
-                    CHECK_PTR(child);
-                     
-                    //insert new item in tree
-		    if ( pi.pid == INIT_PID )
-		         pTree->insertItem(child);
-		    else if ( pi.ppid == INIT_PID ) 
-			 pTree->addChildItem(child,0); 
-		    else { 
-		      ProcTreeItem *item=pTree_getParentItem(pTree->itemAt(0),pi.ppid);   
-		      if ( item )  
-			  item->appendChild(child); 
-		      else  
-			  alist->insertItem(child); 
-		    }	
-	          }
-		(void)fclose(file);
-	    }
-	}
-    (void)closedir(dir);
-
-    if ( empty ) {
-        if ( alist ) delete alist;
-	fprintf(stderr,PROC_BASE " is empty (not mounted ???)\n");
-	exit(1);
-    }
-#else
-    int num;
-    for (num = len / sizeof(struct kinfo_proc) - 1; num > -1; num--) {
-	pi.pid = p[num].kp_proc.p_pid;
-	pi.ppid = p[num].kp_eproc.e_ppid;
-	pi.uid =  p[num].kp_eproc.e_ucred.cr_uid;
-	strcpy(pi.name, p[num].kp_proc.p_comm);
-
-	// get user name
-	pwent = getpwuid(pi.uid);
-	if( pwent )
-	    strcpy(pi.uname,pwent->pw_name);
-	else
-	    strcpy(pi.uname,"????");
-
-	strcpy(pi.arg,"Not implemented");
-                    
-        // create new item
-        ProcTreeItem *child = new ProcTreeItem(pi,pTree_getProcIcon(pi.name));
-        CHECK_PTR(child);
-
-        //insert new item in tree
-	if ( pi.pid == INIT_PID )
-	    pTree->insertItem(child);
-	else if ( pi.ppid == INIT_PID )
-	    pTree->addChildItem(child,0); 
-	else if (pi.ppid) {  // kernel processes can't be viewed in tree
-	    ProcTreeItem *item=pTree_getParentItem(pTree->itemAt(0),pi.ppid);   
-	    if ( item )  
-		item->appendChild(child); 
-	    else  
-		alist->insertItem(child);
-	}
-
-    }
-#endif
-
-    pTree_reorder(alist);
-    
-    delete alist;
-
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_clicked
- -----------------------------------------------------------------------------*/
-void TaskMan::pTree_clicked(QMouseEvent* e)
-{
-  #ifdef DEBUG_MODE
-      printf("KTop debug : mousePressEvent : button : %d.\n",e->button());
-  #endif
-  mouseRightButDown = (e->button() == RightButton) ? TRUE : FALSE;
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_procHighlighted
- -----------------------------------------------------------------------------*/
-void TaskMan::pTree_procHighlighted(int indx)
+void 
+TaskMan::pTree_popupMenu(QPoint p)
 { 
-  if ( pTree_updating ) return;
-
   #ifdef DEBUG_MODE
-    printf("KTop debug : item %d selected.\n",indx);
+    printf("KTop debug : TaskMan::pTree_popupMenu.\n");
   #endif
- 
-  pTree_lastSelectionPid = NONE;
 
-  ProcTreeItem *item = pTree->itemAt(indx);
-  if ( ! item ) return;
-  
-  pTree_lastSelectionPid = item->getProcId();
-
-  #ifdef DEBUG_MODE
-    printf("KTop debug : pTree_lastSelectionPid = %d.\n"
-                                              ,pTree_lastSelectionPid);
-  #endif  
-  
-  if ( mouseRightButDown ) {
-       pSig->popup(QCursor::pos());
-       mouseRightButDown = FALSE;
-  }
+  pSig->popup(p);
 } 
 
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_killTask()
- -----------------------------------------------------------------------------*/
-void TaskMan::pTree_killTask()
+void 
+TaskMan::pTree_killTask()
 {
  int cur = pTree->currentItem();
- if ( (cur == -1) || (pTree_lastSelectionPid==NONE) ) {
-        pTree->setCurrentItem(0);
-	pTree_lastSelectionPid = NONE;
-        return;
- }
+ if ( cur == NONE ) return;
 
  ProcTreeItem *item = pTree->itemAt(cur);
  if ( ! item ) return;
@@ -1983,17 +558,15 @@ void TaskMan::pTree_killTask()
  ProcInfo pInfo = item->getProcInfo();
  
  #ifdef DEBUG_MODE
-   printf("KTop debug : current selection pid   = %d\n",pInfo.pid); 
-   printf("KTop debug : current selection pname = %s\n",pInfo.name);
-   printf("KTop debug : current selection uname = %s\n",pInfo.uname);
+   printf("KTop debug : TaskMan::pTree_killTask : selection pid=%d\n",pInfo.pid); 
+   printf("KTop debug : TaskMan::pTree_killTask : selection pname = %s\n",pInfo.name);
+   printf("KTop debug : TaskMan::pTree_killTask : selection uname = %s\n",pInfo.uname);
  #endif
 
- if ( pTree_lastSelectionPid != pInfo.pid ) {
+ if ( pTree->selectionPid() != pInfo.pid ) {
       QMessageBox::warning(this,"ktop",
                                 "Selection changed !\n\n",
                                 "Abort",0);
-      pTree_lastSelectionPid = NONE;
-      pTree->setCurrentItem(0);
       return;
  }
 
@@ -2008,24 +581,62 @@ void TaskMan::pTree_killTask()
        )
     { 
       case 0: // continue
-          err = kill(pTree_lastSelectionPid ,SIGKILL);
-          if ( err == -1 ) 
-	       QMessageBox::warning(this,"ktop",
-                                    "Kill error...\nSpecified process does not exists\nor permission denied.",
-                                    "OK", 0);
-          pTree_lastSelectionPid = NONE;
-          pTree_update();
-          pTree->setCurrentItem(0);
+          err = kill(pTree->selectionPid(),SIGKILL);
+          if ( err ) {
+              QMessageBox::warning(this,"ktop",
+              "Kill error !\nThe following error occured...\n",
+              strerror(errno),0);   
+          }
+          pTree->update();
           break;
       case 1: // abort
           break;
     }
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : TaskMan::pTree_getProcIcon
- -----------------------------------------------------------------------------*/
-const QPixmap* TaskMan::pTree_getProcIcon( const char* pname )
+SetNice::SetNice( QWidget *parent, const char *name , int currentPPrio )
+       : QDialog( parent, name, TRUE )
 {
- return TaskMan_getProcIcon(pname);
+	QPushButton *ok, *cancel;
+	QSlider *priority;
+	QLabel *label0;
+	QLCDNumber *lcd0;
+	label0 = new QLabel("Please enter desired priority:", this);
+	label0->setGeometry( 10, 10 ,210, 15);
+	priority = new QSlider( -20, 20, 1, 0, QSlider::Horizontal, this, "prio" );
+	priority->setGeometry( 10,35, 210, 25 );
+    	priority->setTickmarks((QSlider::TickSetting)2);
+    	priority->setFocusPolicy( QWidget::TabFocus );
+    	priority->setFixedHeight(priority->sizeHint().height());
+	lcd0= new QLCDNumber(3,this,"lcd");
+	lcd0->setGeometry( 80, 65 , 70 , 30);
+	QObject::connect( priority, SIGNAL(valueChanged(int)),lcd0,  SLOT(display(int)) );
+	QObject::connect( priority, SIGNAL(valueChanged(int)), SLOT(setPriorityValue(int)) );
+        ok = new QPushButton( "Ok", this );
+        ok->setGeometry( 10,110, 100,30 );
+        connect( ok, SIGNAL(clicked()), SLOT(ok()));
+        cancel = new QPushButton( "Cancel", this );
+        cancel->setGeometry( 120,110, 100,30 );
+        connect( cancel, SIGNAL(clicked()), SLOT(cancel()));
+	value=currentPPrio;
+	priority->setValue(value);
+	lcd0->display(value);
+}
+
+void 
+SetNice::setPriorityValue( int i )
+{
+	value=i;
+}
+
+void 
+SetNice::ok()
+{
+	done(value);
+}
+
+void 
+SetNice::cancel()
+{
+	done(40);
 }

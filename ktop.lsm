@@ -1,0 +1,19 @@
+Begin3
+Title: 		ktop - taskmanager / performance monitor
+Version: 	0.9.8
+Entered-date:   Feb 23 98
+Entered-by: 	nicknet@planete.net (Nicolas Leclercq)
+Description: 	A taskmanager and performance monitor.
+Keywords: 	KDE, Qt, gui, X11, top, performance, cpu, process
+Author1: 	alex@darkstar.ping.at (Alexander Sanda)
+Author2: 	wuebben@kde.org (Bernd Johannes Wuebben)
+Author3: 	ralf@bj-ig.de (Ralf Mueller)
+Author4: 	nicknet@planete.net (Nicolas Leclercq)
+Maintained-by: 	wuebben@kde.org (Bernd Johannes Wuebben)
+Primary-site: 	ftp://ftp.kde.org
+Platform: 	Linux, needs Qt and the kde libs
+Copying-policy: GPL 
+End
+
+
+

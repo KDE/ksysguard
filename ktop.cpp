@@ -7,6 +7,9 @@
     Copyright (C) 1998 Nicolas Leclercq
                        nicknet@planete.net
     
+	Copyright (c) 1999 Chris Schlaeger
+	                   cs@axys.de
+    
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -22,270 +25,211 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-/*=============================================================================
-  HEADERs
- =============================================================================*/
-#include <qpopmenu.h>
 #include <qmenubar.h>
-#include <qpainter.h>
-#include <qapp.h>
-#include <qkeycode.h>
-#include <qaccel.h>
-#include <qpushbt.h>
-#include <qdialog.h>
-#include <qtimer.h>
-#include <qlabel.h>
-#include <qobject.h>
-#include <qlistbox.h>
-#include <qgrpbox.h>
-#include <qevent.h>
-#include <qcombo.h>
-#include <qlined.h>
-#include <qradiobt.h>
-#include <qchkbox.h>
-#include <qtabdlg.h>
-#include <qtooltip.h>
-#include <qmsgbox.h>
-#include <qpalette.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <time.h>
-#include <sys/mman.h>
 
 #include <kconfig.h>
-#include <kapp.h>
+#include <klocale.h>
 
-#include "settings.h"
-#include "cpu.h"
-#include "memory.h"
-#include "widgets.h"
-#include "ktop.moc"
 #include "version.h"
+#include "ktop.moc"
 
-/*=============================================================================
-  #DEFINEs
- =============================================================================*/
+#define ktr klocale->translate
+#define KTOP_MIN_W	524
+#define KTOP_MIN_H	446
 
-//-----------------------------------------------------------------------------
-//#define DEBUG_MODE    // uncomment to active "printf lines"
-//-----------------------------------------------------------------------------
-
-/*=============================================================================
-  GLOBALs
- =============================================================================*/
-KConfig       *config;
-KApplication  *mykapp;
-
-#ifdef __FreeBSD__
-#include <kvm.h>
-#include <fcntl.h>
-#include <limits.h>
-kvm_t         *kvm;
-#endif
-
-/*=============================================================================
- Class : TopLevel (methods)
- =============================================================================*/
-/*-----------------------------------------------------------------------------
-  Routine : TopLevel::TopLevel (constructor)
- -----------------------------------------------------------------------------*/
-TopLevel::TopLevel( QWidget *parent, const char *name, int sfolder )
-         :QWidget( parent, name )
-{
-    QString t;
-    
-    setCaption(i18n("KDE Taskmanager"));
-    setMinimumSize(515,468);
-    resize(600,500);
-
-    taskman = new TaskMan(this, "", sfolder);
-    connect(taskman,SIGNAL(applyButtonPressed()),this,SLOT(quitSlot()));
-
-    file = new QPopupMenu();
-    file->insertItem(i18n("&Quit"), MENU_ID_QUIT, -1);
-    connect(file, SIGNAL(activated(int)), this, SLOT(menuHandler(int)));
-
-    QString about;
-    about.sprintf(i18n(
-      "KDE Taskmanager Version %s\n\n"
-      "Copyright:\n"
-      "1996 A. Sanda <alex@darkstar.ping.at>\n"
-      "1997 Ralf Mueller <ralf@bj-ig.de>\n"
-      "1997-98 Bernd Johannes Wuebben  <wuebben@kde.org>\n"
-      "1998 Nicolas Leclercq <nicknet@planete.net>"), KTOP_VERSION);
-    help = kapp->getHelpMenu(TRUE, about);
-
-    settings = new QPopupMenu();
-    settings->insertItem(i18n("StartUp Preferences...")
-			                        ,MENU_ID_PROCSETTINGS, -1);
-    connect(settings, SIGNAL(activated(int)), this, SLOT(menuHandler(int)));
-
-    menubar = new QMenuBar(this, "menubar");
-    menubar->setLineWidth(1);
-    menubar->insertItem(i18n("&File"), file, 2, -1);
-    menubar->insertItem(i18n("&Options"), settings, 3, -1);
-    menubar->insertSeparator(-1);
-    menubar->insertItem(i18n("&Help"), help, 2, -1);
-
-    t = config->readEntry(QString("G_Toplevel"));
-    if( ! t.isNull() ) {
-        if ( t.length() == 19 ) { 
-            int xpos,ypos,ww,wh;
-            sscanf(t.data(),"%04d:%04d:%04d:%04d",&xpos,&ypos,&ww,&wh);
-            #ifdef DEBUG_MODE
-              printf("KTop debug : %04d:%04d:%04d:%04d\n",xpos,ypos,ww,wh);
-            #endif
-            setGeometry(xpos,ypos,ww,wh);
-        }
-    }
-
-    adjustSize();
-    show();
-    taskman->raiseStartUpPage();
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TopLevel::~TopLevel (desstructor)
- -----------------------------------------------------------------------------*/
-TopLevel::~TopLevel()
-{
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TopLevel::closeEvent
- -----------------------------------------------------------------------------*/
-void  TopLevel::closeEvent( QCloseEvent * )
-{
-  quitSlot();
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TopLevel::quitSlot()
- -----------------------------------------------------------------------------*/
-void TopLevel::quitSlot()
-{
-  taskman->saveSettings();
-  config->sync();
-  qApp->quit();
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TopLevel::resizeEvent
- -----------------------------------------------------------------------------*/
-void TopLevel::resizeEvent( QResizeEvent * )
-{
-    taskman->setGeometry(0, menubar->height() + 2, width(), 
-			    height() - menubar->height() - 5);
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : TopLevel::menuHandler
- -----------------------------------------------------------------------------*/
-void TopLevel::menuHandler(int id)
-{
-  switch(id) {
-
-    case MENU_ID_QUIT:
-      quitSlot();
-      break;
-
-    case MENU_ID_PROCSETTINGS:
-        taskman->invokeSettings();
-        break;
-        
-    default:
-        break;
-  }
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : usage
- -----------------------------------------------------------------------------*/
-static void usage(char *name) 
-{
-  printf("%s [kdeopts] [--help] [-p (list|tree|perf)]\n", name);
-}
-
-/*-----------------------------------------------------------------------------
-  Routine : main
- -----------------------------------------------------------------------------*/
-int main( int argc, char ** argv )
-{
-    int i, 
-    sfolder=-1;
-
-#ifdef __FreeBSD__          // obtain kvm handle for reading kernel data
-    kvm = kvm_open(NULL, NULL, NULL, O_RDONLY, NULL);
-    // we don't have to be sgid anymore
-    setgid(getgid());
-#endif
-    for(i=1; i<argc; i++) {
-        if( ! strcmp(argv[i],"--help") ) {
-	    usage(argv[0]);
-	    return 0;
-	}
-	if( strstr(argv[i],"-p") ) {
-	    i++;
-	           if ( strstr(argv[i],"perf")   ) {
-	                sfolder=TaskMan::PAGE_PERF;
-	    } else if ( strstr(argv[i],"list") ) {
-	                sfolder=TaskMan::PAGE_PLIST;
-	    } else if ( strstr(argv[i],"tree") ) {
-	                sfolder=TaskMan::PAGE_PTREE;
-	    } else {
-	        usage(argv[0]);
-		return 1;
-	    }
-	}
-    }
-
-    KApplication a( argc, argv, "ktop" );
-#ifdef __FreeBSD__
 /*
-    if (kvm == NULL) {
-	QMessageBox::critical(NULL, NULL,
-		i18n("Could not open kernel memory file.\n"
-		"Make sure your ktop binary is installed sgid kmem.\n\n"
-		"chgrp kmem KDEDIR/bin/ktop\n"
-		"chmod 2555 KDEDIR/bin/ktop"),
-			      i18n("&OK"));
-    }
-*/	
-#endif
-    a.enableSessionManagement(true);
-    mykapp = &a;
-    config = a.getConfig();
+ * Global variables
+ */
+KApplication* Kapp;
 
-    TaskMan::TaskMan_initIconList();
+/*
+ * This is the constructor for the main widget. It sets up the menu and the
+ * TaskMan widget.
+ */
+TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
+	: QWidget(parent, name)
+{
+	setCaption(ktr("KDE Taskmanager"));
+	setMinimumSize(KTOP_MIN_W, KTOP_MIN_H);
 
-    QWidget *toplevel = new TopLevel(0,"Taskmanager", sfolder);
-    a.setTopWidget( toplevel );
- 
-    int result = a.exec();
+	taskman = new TaskMan(this, "", sfolder);
+	connect(taskman, SIGNAL(applyButtonPressed()), this, SLOT(quitSlot()));
 
-    TaskMan::TaskMan_clearIconList();
-    
-#ifdef __FreeBSD__
-    if (kvm) kvm_close(kvm);
-#endif
+	/*
+	 * create main menu
+	 */
+	// 'File' submenu
+	file = new QPopupMenu();
+	file->insertItem(ktr("Quit"), MENU_ID_QUIT, -1);
+	connect(file, SIGNAL(activated(int)), this, SLOT(menuHandler(int)));
 
-    return result;
+	// 'Help' submenu
+	help = new QPopupMenu();
+	help->insertItem(ktr("Help"), MENU_ID_HELP, -1);
+	help->insertItem(ktr("About..."), MENU_ID_ABOUT, -1);
+	connect(help, SIGNAL(activated(int)), this, SLOT(menuHandler(int)));
+
+	// 'Options' submenu
+	settings = new QPopupMenu();
+	settings->insertItem(ktr("StartUp Preferences..."),
+						 MENU_ID_PROCSETTINGS, -1);
+	connect(settings, SIGNAL(activated(int)), this, SLOT(menuHandler(int)));
+
+	// register submenues
+	menubar = new QMenuBar(this, "menubar");
+	menubar->setLineWidth(1);
+	menubar->insertItem(ktr("&File"), file, 2, -1);
+	menubar->insertItem(ktr("&Options"), settings, 3, -1);
+	menubar->insertSeparator(-1);
+	menubar->insertItem(ktr("&Help"), help, 2, -1);
+
+	/*
+	 * Restore size of the dialog box that was used at end of last session.
+	 * Due to a bug in Qt we need to set the width to one more than the
+	 * defined min width. If this is not done the widget is not drawn
+	 * properly the first time. Subsequent redraws after resize are no problem.
+	 */
+	QString t = Kapp->getConfig()->readEntry(QString("G_Toplevel"));
+	if(!t.isNull())
+	{
+		if (t.length() == 19)
+		{ 
+			int xpos, ypos, ww, wh;
+			sscanf(t.data(), "%04d:%04d:%04d:%04d", &xpos, &ypos, &ww, &wh);
+			setGeometry(xpos, ypos,
+						ww <= KTOP_MIN_W ? KTOP_MIN_W + 1 : ww,
+						wh <= KTOP_MIN_H ? KTOP_MIN_H : wh);
+		}
+	}
+	else 
+		setGeometry(0,0, KTOP_MIN_W + 1, KTOP_MIN_H);
+
+	// show the dialog box
+    show();
+
+	// switch to the selected startup page
+    taskman->raiseStartUpPage();     
 }
 
+void 
+TopLevel::quitSlot()
+{
+	taskman->saveSettings();
+	Kapp->getConfig()->sync();
+	qApp->quit();
+}
 
+void 
+TopLevel::resizeEvent(QResizeEvent*)
+{
+	taskman->setGeometry(0, menubar->height() + 2, width(),
+						 height() - menubar->height() - 5);
+}
 
+void 
+TopLevel::menuHandler(int id)
+{
+	switch(id)
+	{
+    case MENU_ID_QUIT:
+		quitSlot();
+		break;
 
+    case MENU_ID_HELP:
+		Kapp->invokeHTMLHelp("", "");
+		break;
 
+    case MENU_ID_ABOUT:
+        QMessageBox::information(this,
+				klocale->translate("About Taskmanager"),  
+				"KDE Taskmanager Version "KTOP_VERSION"\n\n"\
+				"Copyright:\n"\
+				"1996 : A. Sanda <alex@darkstar.ping.at>\n"\
+				"1997 : Ralf Mueller <ralf@bj-ig.de>\n"\
+				"1997-98 : Bernd Johannes Wuebben <wuebben@kde.org>\n"\
+				"1998 : Nicolas Leclercq <nicknet@planete.net>\n"\
+				"1999 : Chris Schlaeger <cs@axys.de>\n");
+		break;
 
+	case MENU_ID_PROCSETTINGS:
+		taskman->invokeSettings();
+		break;
+        
+	default:
+		break;
+	}
+}
 
+/**
+ * Print usage information.
+ */
+static void 
+usage(char *name) 
+{
+	printf("%s [kdeopts] [--help] [-p (list|tree|perf)]\n", name);
+}
 
+/**
+ * Where it all begins.
+ */
+int
+main(int argc, char** argv)
+{
+	int i;
+	int sfolder = -1;
 
+	/*
+	 * process command line arguments
+	 */
+	for (i = 1; i < argc; i++)
+	{
+		if(!strcmp(argv[i],"--help"))
+		{
+			// print usage information
+			usage(argv[0]);
+			return 0;
+		}
+		if(strstr(argv[i],"-p"))
+		{
+			// select what page (tab) to show after startup
+			i++;
+			if ( strstr(argv[i], "perf"))
+			{
+				// performance monitor
+				sfolder = TaskMan::PAGE_PERF;
+			}
+			else if (strstr(argv[i], "list"))
+			{
+				// process list
+				sfolder = TaskMan::PAGE_PLIST;
+			}
+			else if (strstr(argv[i], "tree"))
+			{
+				// process tree
+				sfolder=TaskMan::PAGE_PTREE;
+			}
+			else
+			{
+				// print usage information
+				usage(argv[0]);
+				return 1;
+			}
+		}
+    }
 
+	// initialize KDE application
+	Kapp = new KApplication(argc, argv, "ktop");
+	Kapp->enableSessionManagement(true);
 
+	// create top-level widget
+	QWidget *toplevel = new TopLevel(0, "Taskmanager", sfolder);
+	Kapp->setTopWidget(toplevel);
 
+	// run the application
+	int result = Kapp->exec();
 
+    delete toplevel;
+	delete Kapp;
 
-
+	return result;
+}

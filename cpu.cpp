@@ -7,9 +7,6 @@
     Copyright (C) 1998 Nicolas Leclercq
                        nicknet@planete.net
     
-    System-dependent parts for FreeBSD (C) 1998 Alexander Sanda 
-    <as@psa.at> and Hans Petter Bieker <zerium@traad.ml.org>.
-
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -45,31 +42,18 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <time.h>
-
-#ifdef HAVE_SYS_PARAM_H
-#include <sys/param.h>
-#endif
-
-#include <limits.h>
-
-#ifdef linux
 #include <asm/param.h>
-#endif
-
 #include <sys/mman.h>
 
+#include "ktop.h"
 #include "settings.h"
 #include "cpu.moc"
 #include "kconfig.h"
+#include "klocale.h"
 
 /*=============================================================================
   GLOBALs
  =============================================================================*/
-extern KConfig *config;
-
-#ifdef __FreeBSD__
-extern kvm_t *kvm;
-#endif
 
 /*=============================================================================
  Class :  CpuMon (methods)
@@ -81,64 +65,34 @@ CpuMon::CpuMon(QWidget *parent, const char *name, QWidget *child)
        :QWidget (parent, name)
 {
     struct timezone timez;
+    char dummy[10];
     int t;
     QString tmp;
     
+    initMetaObject();
+
     setBackgroundColor(black);
-    setMinimumSize(200, 90);
     my_child = child;
     intervals = 100;  /* # of intervals we want to record in the load history */
     load_values = 0;
     load_values = (unsigned *)malloc(sizeof(unsigned) * intervals);
     memset(load_values, 0, sizeof(unsigned) * intervals);
 
-    // FreeBSD system - dependent parts:
-
-#ifdef __FreeBSD__
-   if (!kvm) return;
-
-   old_nice_ticks = 0;
-   old_system_ticks = 0;
-   old_idle_ticks = 0;
-
-   // Set up the nlst struct
-#ifdef _AOUT_INCLUDE_
-#define NLSTNAME(a) nlst[(a)].u_un.n_name
-#else
-#define NLSTNAME(a) nlst[(a)].n_name
-#endif
-   NLSTNAME(X_CCPU) = "_ccpu";
-   NLSTNAME(X_CP_TIME) = "_cp_time";
-   NLSTNAME(X_HZ) = "_hz";
-   NLSTNAME(X_STATHZ) = "_stathz";
-   NLSTNAME(X_AVENRUN) = "_averunnable";
-   NLSTNAME(X_AVENRUN + 1) = NULL;
-
-   kvm_nlist(kvm, nlst);    // init the nlist from kvm data
-   cp_time_offset = nlst[X_CP_TIME].n_value;
-
-   // init cp_time counter
-   kvm_read(kvm, cp_time_offset, (int *)&old_system_ticks, sizeof(old_system_ticks));
-   kvm_read(kvm, nlst[X_HZ].n_value, (int *)&HZ, sizeof(HZ));
-
-#else
     // set up the initial values
     statfile = 0;
     statfile = fopen("/proc/stat", "r");
     setvbuf(statfile, NULL, _IONBF, 0);
     
-    char dummy[10];
     // read in the initial tick values
     fscanf(statfile, "%s %d %d %d %d", dummy, &old_user_ticks
                                      , &old_nice_ticks, &old_system_ticks
                                      , &old_idle_ticks);
-#endif
     gettimeofday(&oldtime, &timez);
 
     // get the configuration value for the update speed
     timer_interval = 2000; 
     
-    tmp = config->readEntry(QString("PfmUpdate"));
+    tmp = Kapp->getConfig()->readEntry(QString("PfmUpdate"));
     if(!tmp.isNull()) {
         if((t = tmp.toInt()))
             timer_interval = t * 1000;
@@ -177,11 +131,11 @@ void CpuMon::paintEvent(QPaintEvent *)
               h = height();
 
     // first, paint the history display
-    p.begin(this);
+     p.begin(this);
      p.setPen(QColor("darkgreen"));
      p.drawRect(0, 0, w, h);                 /* 3 horizontal scales */
-     p.drawLine(0, h / 3, w, h / 3);
-     p.drawLine(0, 2*(h / 3), w, 2*(h / 3));
+     p.drawLine(0, h / 2, w, h / 2);
+     p.drawLine(0, 2*(h / 2), w, 2*(h / 2));
      p.setPen(green);
      // set the viewport, so that we don't overwrite the frame
      p.setViewport(1, 1, w - 2, h - 2);
@@ -222,6 +176,7 @@ void CpuMon::paintEvent(QPaintEvent *)
  -----------------------------------------------------------------------------*/
 void CpuMon::timerEvent(QTimerEvent *)
 {
+    char     buffer[100];
     struct   timeval time;
     struct   timezone timez;
     float    elapsed_time;
@@ -233,19 +188,9 @@ void CpuMon::timerEvent(QTimerEvent *)
     
     memcpy(load_values, &load_values[1], sizeof(unsigned) * (intervals - 1));
 
-#ifdef __FreeBSD__
-    unsigned long value;
-    if (kvm) kvm_nlist(kvm, nlst);
-    for(int i = 0; i < 5; i++) {
-      if (kvm) kvm_read(kvm, nlst[i].n_value, &value, sizeof(value));
-    }
-    if (kvm) kvm_read(kvm, cp_time_offset, (int *)&system_ticks, sizeof(system_ticks));
-#else
     rewind(statfile);
-    char     buffer[100];
     fscanf(statfile, "%s %d %d %d %d", buffer, &user_ticks, &nice_ticks
                                      , &system_ticks, &idle_ticks );
-#endif
 
     gettimeofday(&time, &timez);
     elapsed_time = (time.tv_sec - oldtime.tv_sec)
@@ -264,11 +209,6 @@ void CpuMon::timerEvent(QTimerEvent *)
         load_percent = 100;
 
     load_values[intervals - 1] = load_percent;
-
-#if defined(__FreeBSD__) && defined(__DEBUG__)
-    printf("ELAPSED:      %d\n", elapsed_ticks);
-    printf("CP_TIME_DIFF: %d\n", system_ticks - old_system_ticks);
-#endif
 
     old_system_ticks = system_ticks;
     old_nice_ticks = nice_ticks;

@@ -23,11 +23,8 @@
 
 */
 
-#ifdef __FreeBSD__
-#include <sys/vmmeter.h>
-#include <kvm.h>
-#include <nlist.h>
-#endif
+#ifndef _memory_h_
+#define _memory_h_
 
 /*=============================================================================
   CLASSes
@@ -37,17 +34,12 @@
 //-----------------------------------------------------------------------------
 class MemMon : public QWidget
 {
-    Q_OBJECT
+    Q_OBJECT;
 
 public:     
      MemMon (QWidget *parent = 0, const char *name = 0, QWidget *child = 0);
     ~MemMon ();
 
-#ifdef __FreeBSD__
-     void setTargetLabels(QLabel **);
-     int  swapInfo(int *, int *);
-#endif
-     void updateLabel(QLabel *, int);
 protected:
 
     virtual void paintEvent(QPaintEvent *);
@@ -60,40 +52,35 @@ protected:
     QWidget *my_child;
     QBrush   brush_0, 
              brush_1;
-#ifdef __FreeBSD__
-    u_long physmem;
-    int    sw_avail, sw_free;
-    int    bufspace;
-    QLabel **memstat_labels;
-    struct vmmeter vmstat;
-    u_long   cnt_offset, buf_offset;
-
-#define X_CNT          0
-#define X_VMTOTAL      1
-#define X_BUFSPACE     2
-#define VM_SWAPLIST     3
-#define VM_SWDEVT       4
-#define VM_NSWAP        5
-#define VM_NSWDEV       6
-#define VM_DMMAX        7
-
-    struct nlist nlst[VM_DMMAX + 2];
-
-    struct _ivm {
-        int active, inactive, wired, cache, buffers, unused, usermem;
-    };
-    struct _ivm ivm, *iVm;
-#endif
 };
 
-#define MEM_ACTIVE 0
-#define MEM_INACTIVE 1
-#define MEM_WIRED 2
-#define MEM_CACHE 3
-#define MEM_BUFFERS 4
-#define MEM_PHYS 5
-#define MEM_UNUSED 6
-#define MEM_SWAPAVAIL 7
-#define MEM_SWAPFREE  8
-#define MEM_TOTAL 9
-#define MEM_END 10
+//-----------------------------------------------------------------------------
+// class  : SwapMon
+//-----------------------------------------------------------------------------
+class SwapMon : public QWidget
+{
+  Q_OBJECT;
+
+public:
+
+   SwapMon (QWidget *parent = 0, const char *name = 0, QWidget *child = 0);
+  ~SwapMon ();
+
+protected:
+
+  virtual void paintEvent(QPaintEvent *);
+  virtual void timerEvent(QTimerEvent *);
+
+  QWidget  *my_child;
+  int       swapVals[3],
+            tid;
+  char     *memZone;
+  unsigned *swapData,
+            indx,
+            ticks;
+  QBrush    brush_0, 
+            brush_1, 
+            brush_2;
+};
+
+#endif
