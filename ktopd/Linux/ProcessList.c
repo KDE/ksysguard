@@ -279,6 +279,8 @@ updateProcess(int pid)
 			len = strlen(ps->cmdline + KDEINITLEN);
 		if (len > 0)
 		{
+			if (len > sizeof(ps->name) - 1)
+				len = sizeof(ps->name) - 1;
 			strncpy(ps->name, ps->cmdline + KDEINITLEN, len);
 			ps->name[len] = '\0';
 		}

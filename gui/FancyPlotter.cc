@@ -94,6 +94,12 @@ FancyPlotterSettings::getTitle() const
 	return (titleLE->text());
 }
 
+void
+FancyPlotterSettings::applyPressed()
+{
+	emit applySettings(this);
+}
+
 long
 FancyPlotterSettings::getMin() const
 {
@@ -123,6 +129,8 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 	connect(plotter, SIGNAL(rmbPressed()), this, SLOT(rmbPressed()));
 
 	setMinimumSize(sizeHint());
+
+	modified = false;
 }
 
 FancyPlotter::~FancyPlotter()
@@ -136,11 +144,19 @@ FancyPlotter::settings()
 {
 	FancyPlotterSettings s(meterFrame->title(), plotter->getMin(),
 						   plotter->getMax());
+	connect(&s, SIGNAL(applySettings(FancyPlotterSettings*)),
+			this, SLOT(applySettings(FancyPlotterSettings*)));
+
 	if (s.exec())
-	{
-		meterFrame->setTitle(s.getTitle());
-		plotter->changeRange(0, s.getMin(), s.getMax());
-	}
+		applySettings(&s);
+}
+
+void
+FancyPlotter::applySettings(FancyPlotterSettings* s)
+{
+	meterFrame->setTitle(s->getTitle());
+	plotter->changeRange(0, s->getMin(), s->getMax());
+	modified = TRUE;
 }
 
 bool
@@ -239,5 +255,11 @@ FancyPlotter::save(QTextStream& s)
 		s << "<beam hostName=\"" << *hostNames.at(i) << "\" "
 		  << "sensorName=\"" << *sensorNames.at(i) << "\"/>\n";
 	}
+	modified = FALSE;
+
 	return (TRUE);
 }
+
+
+
+

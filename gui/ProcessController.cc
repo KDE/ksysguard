@@ -112,7 +112,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 
 	setMinimumSize(sizeHint());
 
-	pList->loadSettings();
+	modified = FALSE;
 }
 
 void
@@ -253,6 +253,8 @@ ProcessController::save(QTextStream& s)
 		s << "off";
 	s << "\" ";
 	s << "filter=\"" << cbFilter->currentItem() << "\">\n";
+
+	modified = FALSE;
 
 	return (TRUE);
 }

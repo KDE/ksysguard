@@ -46,7 +46,6 @@ public:
 	bool addBeam(QColor col);
 	void addSample(int s0, int s1 = 0, int s2 = 0, int s3 = 0, int s4 = 0);
 
-	void changeRange(int beam, int min, int max);
 	long getMin() const
 	{
 		return (autoRange ? 0 : minValue);
@@ -55,6 +54,8 @@ public:
 	{
 		return (autoRange ? 0 : maxValue);
 	}
+
+	void changeRange(int beam, long min, long max);
 
 	void setLowPass(bool lp)
 	{

@@ -142,7 +142,7 @@ SignalPlotter::addSample(int s0, int s1, int s2, int s3, int s4)
 }
 
 void
-SignalPlotter::changeRange(int beam, int min, int max)
+SignalPlotter::changeRange(int beam, long min, long max)
 {
 	if (beam < 0 || beam >= MAXBEAMS)
 	{

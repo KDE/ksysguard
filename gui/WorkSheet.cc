@@ -72,7 +72,11 @@ WorkSheet::~WorkSheet()
 bool
 WorkSheet::hasBeenModified()
 {
-	// TODO: Check child widgets as well.
+	for (int i = 0; i < rows; ++i)
+		for (int j = 0; j < columns; ++j)
+			if (((SensorDisplay*)displays[i][j])->hasBeenModified())
+				return (TRUE);
+
 	return (modified);
 }
 

@@ -75,6 +75,11 @@ public:
 
 	bool save(QTextStream& s);
 
+	bool hasBeenModified()
+	{
+		return (modified);
+	}
+
 	void refreshList(void)
 	{
 		updateList();
@@ -94,12 +99,14 @@ public slots:
 	{
 		cbFilter->setCurrentItem(filter);
 		updateList();
+		modified = TRUE;
 	}
 
 	void setTreeView(bool tv)
 	{
 		pList->setTreeView(tv);
 		updateList();
+		modified = TRUE;
 	}
 
 	void togglePause(bool p)
@@ -108,6 +115,7 @@ public slots:
 			timerOff();
 		else
 			timerOn();
+		modified = TRUE;
 	}
 
 	void killProcess();
@@ -118,6 +126,8 @@ signals:
 	void setFilterMode(int);
 
 private:
+	bool modified;
+
 	QVBoxLayout* gm;
 
 	/// The frame around the other widgets.

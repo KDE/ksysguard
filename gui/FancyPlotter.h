@@ -52,6 +52,12 @@ public:
 	long getMin() const;
 	long getMax() const;
 
+signals:
+	void applySettings(FancyPlotterSettings*);
+
+protected slots:
+	void applyPressed();
+
 private:
 	QLineEdit* titleLE;
 	KIntNumInput* minNI;
@@ -91,11 +97,20 @@ public:
 	bool load(QDomElement& el);
 	bool save(QTextStream& s);
 
+	bool hasBeenModified() const
+	{
+		return (modified);
+	}
+
+public slots:
+	void applySettings(FancyPlotterSettings*);
+
 protected:
 	virtual void resizeEvent(QResizeEvent*);
 
 private:
 	int beams;
+	bool modified;
 
 	QGroupBox* meterFrame;
 

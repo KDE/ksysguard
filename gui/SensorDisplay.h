@@ -74,6 +74,11 @@ public:
 		return (TRUE);
 	}
 
+	virtual bool hasBeenModified()
+	{
+		return (TRUE);
+	}
+
 	virtual void settings() { }
 
 	void collectHosts(QValueList<QString>& list);

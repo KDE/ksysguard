@@ -47,8 +47,10 @@ Workspace::saveProperties(KConfig* cfg)
 
 	QString sheetList;
 	QListIterator<WorkSheet> it(sheets);
-	for (int i = 0; it.current(); ++it, ++i)
+	int i;
+	for (i = 0; it.current(); ++it, ++i)
 		cfg->writeEntry(QString("Sheet%1").arg(i), (*it)->getFileName());
+	cfg->writeEntry("SheetCount", i);
 }
 
 void
@@ -80,7 +82,8 @@ Workspace::readProperties(KConfig* cfg)
 	}
 	else
 	{
-		for (int i = 0; ; ++i)
+		int sheetCount = cfg->readNumEntry("SheetCount");
+		for (int i = 0; i < sheetCount; ++i)
 		{
 			QString fileName = cfg->readEntry(QString("Sheet%1").arg(i));
 			if (!fileName.isEmpty())
@@ -122,7 +125,7 @@ Workspace::newWorkSheet()
 	{
 		WorkSheet* sheet = new WorkSheet(this, s->getRows(), s->getColumns());
 		CHECK_PTR(sheet);
-		insertTab(sheet, sheetName);
+		insertTab(sheet, s->getSheetName());
 		sheets.append(sheet);
 		showPage(sheet);
 	}
@@ -136,7 +139,7 @@ Workspace::saveOnQuit()
 	for (; it.current(); ++it)
 		if ((*it)->hasBeenModified())
 		{
-			if (!autoSave)
+			if (!autoSave || (*it)->getFileName().isEmpty())
 			{
 				int res = KMessageBox::warningYesNoCancel(
 					this,

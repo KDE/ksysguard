@@ -41,7 +41,7 @@ public:
 		delete mainWidget;
 	}
 
-	const QString& getSheetName() const;
+	QString getSheetName() const;
 
 	int getRows() const;
 

@@ -80,7 +80,7 @@ WorkSheetSetup::WorkSheetSetup(const QString& defSheetName)
 	setMainWidget(mainWidget);
 }
 
-const QString&
+QString
 WorkSheetSetup::getSheetName() const
 {
 	return (sheetNameLE->text());
