@@ -85,6 +85,9 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	dict.insert("batterycharge", new QString(i18n("Battery Charge")));
 	dict.insert("remainingtime", new QString(i18n("Remaining Time")));
 	dict.insert("interrupts", new QString(i18n("Interrupts")));
+	dict.insert("loadavg1", new QString(i18n("Load Average (1 min)")));
+	dict.insert("loadavg5", new QString(i18n("Load Average (5 min)")));
+	dict.insert("loadavg15", new QString(i18n("Load Average (15 min)")));
 
 	for (int i = 0; i < 32; i++)
 	{

@@ -33,34 +33,8 @@
 #include "SensorDisplay.h"
 #include "SignalPlotter.h"
 
+class FancyPlotterSettings;
 class QGroupBox;
-class QLineEdit;
-class KIntNumInput;
-
-class FancyPlotterSettings : public KDialogBase
-{
-	Q_OBJECT
-
-public:
-	FancyPlotterSettings(const QString& oldTitle, long min, long max);
-	~FancyPlotterSettings() { }
-
-	QString getTitle() const;
-	long getMin() const;
-	long getMax() const;
-
-signals:
-	void applySettings(FancyPlotterSettings*);
-
-protected slots:
-	void applyPressed();
-
-private:
-	QLineEdit* titleLE;
-	KIntNumInput* minNI;
-	KIntNumInput* maxNI;
-	QWidget* mainWidget;
-} ;
 
 class FancyPlotter : public SensorDisplay
 {
@@ -68,8 +42,8 @@ class FancyPlotter : public SensorDisplay
 
 public:
 	FancyPlotter(QWidget* parent = 0, const char* name = 0,
-				 const QString& title = QString::null, int min = 0,
-				 int max = 100);
+				 const QString& title = QString::null, double min = 0,
+				 double max = 100);
 	~FancyPlotter();
 
 	void settings();
@@ -77,7 +51,8 @@ public:
 	bool addSensor(const QString& hostName, const QString& sensorName,
 				   const QString& title);
 
-	void addSample(int s0, int s1 = 0, int s2 = 0, int s3 = 0, int s4 = 0)
+	void addSample(double s0, double s1 = 0, double s2 = 0, double s3 = 0,
+				   double s4 = 0)
 	{
 		plotter->addSample(s0, s1, s2, s3, s4);
 	}
@@ -107,7 +82,7 @@ public:
 	virtual void sensorError(bool err);
 
 public slots:
-	void applySettings(FancyPlotterSettings*);
+	void applySettings();
 
 protected:
 	virtual void resizeEvent(QResizeEvent*);
@@ -120,11 +95,13 @@ private:
 
 	SignalPlotter* plotter;
 
+	FancyPlotterSettings* fps;
+
 	/* The sample buffer and the flags are needed to store the incoming
 	 * samples for each beam until all samples of the period have been
 	 * received. The flags variable is used to ensure that all samples have
 	 * been received. */
-	long sampleBuf[5];
+	double sampleBuf[5];
 	uint flags;
 } ;
 

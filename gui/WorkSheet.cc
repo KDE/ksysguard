@@ -297,6 +297,8 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 				return (0);
 			}
 		}
+		else if (sensorType == "float")
+			newDisplay = new FancyPlotter(this, "FancyPlotter", sensorDescr);
 		else if (sensorType == "table")
 			newDisplay = new ProcessController(this);
 		else

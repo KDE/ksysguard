@@ -75,9 +75,31 @@ public:
 	/// The destructor.
 	~ProcessList();
 
-	void removeColumns(void);
+	void removeColumns();
 
 	void addColumn(const QString& header, const QString& type);
+
+	void setSortColumn(uint col, bool inc)
+	{
+		sortColumn = col;
+		increasing = inc;
+		setSorting(col, inc);
+	}
+
+	uint getSortColumn()
+	{
+		return sortColumn;
+	}
+
+	bool getIncreasing()
+	{
+		return increasing;
+	}
+
+	bool hasBeenModified()
+	{
+		return modified;
+	}
 
 	/**
 	 * This function clears the current selection and sends out a signal.
@@ -124,6 +146,8 @@ public slots:
 	{
 		filterMode = fm;
 	}
+
+	void sortingChanged(int col);
 
 signals:
 	// This signal is emitted whenever a new process has been selected.
@@ -216,6 +240,7 @@ private slots:
 	}
 
 private:
+	bool modified;
 	int filterMode;
 	int sortColumn;
 	bool increasing;

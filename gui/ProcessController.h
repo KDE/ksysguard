@@ -68,7 +68,7 @@ public:
 
 	bool hasBeenModified() const
 	{
-		return (modified);
+		return (modified || pList->hasBeenModified());
 	}
 
 	void refreshList(void)

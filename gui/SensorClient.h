@@ -132,6 +132,37 @@ public:
 } ;
 
 /**
+ * An float info contains 4 fields seperated by TABS, a description
+ * (name), the minimum and the maximum values and the unit.
+ * e.g. CPU Voltage	0.0	5.0	V
+ */
+class SensorFloatInfo : public SensorTokenizer
+{
+public:
+	SensorFloatInfo(const QString& info)
+		: SensorTokenizer(info, '\t') { }
+	~SensorFloatInfo() { }
+
+	const QString& getName()
+	{
+		return ((*this)[0]);
+	}
+	double getMin()
+	{
+		return ((*this)[1].toDouble());
+	}
+	double getMax()
+	{
+		return ((*this)[2].toDouble());
+	}
+	const QString& getUnit()
+	{
+
+		return ((*this)[3]);
+	}
+} ;
+
+/**
  * A PS line consists of information about a process. Each piece of 
  * information is seperated by a TAB. The first 4 fields are process name,
  * PID, PPID and real user ID. Those fields are mandatory.

@@ -269,9 +269,13 @@ ProcessController::load(QDomElement& el)
 	xbPause->setChecked(el.attribute("pause").toInt());
 	togglePause(el.attribute("pause").toInt());
 
-	int filter = el.attribute("filter").toUInt();
+	uint filter = el.attribute("filter").toUInt();
 	cbFilter->setCurrentItem(filter);
 	filterModeChanged(filter);
+
+	uint col = el.attribute("sortColumn").toUInt();
+	bool inc = el.attribute("incrOrder").toUInt();
+	pList->setSortColumn(col, inc);
 
 	modified = FALSE;
 
@@ -286,6 +290,8 @@ ProcessController::save(QDomDocument&, QDomElement& display)
 	display.setAttribute("tree", (uint) xbTreeView->isChecked());
 	display.setAttribute("pause", (uint) xbPause->isChecked());
 	display.setAttribute("filter", cbFilter->currentItem());
+	display.setAttribute("sortColumn", pList->getSortColumn());
+	display.setAttribute("incrOrder", pList->getIncreasing());
 
 	modified = FALSE;
 

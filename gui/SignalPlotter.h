@@ -38,23 +38,24 @@ class SignalPlotter : public QWidget
 	Q_OBJECT
 
 public:
-	SignalPlotter(QWidget* parent = 0, const char* name = 0, int min = 0,
-				  int max = 100);
+	SignalPlotter(QWidget* parent = 0, const char* name = 0, double min = 0,
+				  double max = 100);
 	~SignalPlotter();
 
 	bool addBeam(QColor col);
-	void addSample(int s0, int s1 = 0, int s2 = 0, int s3 = 0, int s4 = 0);
+	void addSample(double s0, double s1 = 0, double s2 = 0, double s3 = 0,
+				   double s4 = 0);
 
-	long getMin() const
+	double getMin() const
 	{
 		return (autoRange ? 0 : minValue);
 	}
-	long getMax() const
+	double getMax() const
 	{
 		return (autoRange ? 0 : maxValue);
 	}
 
-	void changeRange(int beam, long min, long max);
+	void changeRange(int beam, double min, double max);
 
 	void setLowPass(bool lp)
 	{
@@ -68,11 +69,11 @@ protected:
 private:
 	void calcRange();
 
-	long minValue;
-	long maxValue;
+	double minValue;
+	double maxValue;
 	bool autoRange;
 	bool lowPass;
-	long* beamData[MAXBEAMS];
+	double* beamData[MAXBEAMS];
 	QColor beamColor[MAXBEAMS];
 	int beams;
 	int samples;

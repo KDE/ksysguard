@@ -18,7 +18,7 @@
     </property>
     <property stdset="1">
         <name>caption</name>
-        <string>Form1</string>
+        <string>Multimeter Settings</string>
     </property>
     <grid>
         <property stdset="1">

@@ -209,6 +209,7 @@ MultiMeter::settings()
 		applySettings();
 
 	delete mms;
+	mms = 0;
 }
 
 void

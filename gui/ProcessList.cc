@@ -7,7 +7,7 @@
     Copyright (C) 1998 Nicolas Leclercq
                        nicknet@planete.net
 
-	Copyright (c) 1999 Chris Schlaeger
+	Copyright (c) 1999, 2000 Chris Schlaeger
 	                   cs@kde.org
     
     This program is free software; you can redistribute it and/or
@@ -150,6 +150,11 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	connect(horizontalScrollBar(), SIGNAL(sliderReleased(void)),
 			parent, SLOT(timerOn()));
 
+	/* Since Qt does not tell us the sorting details we have to do our
+	 * own bookkeping, so we can save and restore the sorting
+	 * settings. */
+	connect(header(), SIGNAL(clicked(int)), this, SLOT(sortingChanged(int)));
+
 	treeViewEnabled = false;
 	openAll = TRUE;
 
@@ -183,6 +188,8 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	headerPM->insertItem(i18n("Remove Column"), HEADER_REMOVE);
 	headerPM->insertItem(i18n("Add Column"), HEADER_ADD);
 	headerPM->insertItem(i18n("Help on Column"), HEADER_HELP);
+
+	modified = false;
 }
 
 ProcessList::~ProcessList()
@@ -245,6 +252,20 @@ ProcessList::update(const QString& list)
 	horizontalScrollBar()->setValue(hpos);
 
 	return (TRUE);
+}
+
+void
+ProcessList::sortingChanged(int col)
+{
+	if (col == sortColumn)
+		increasing = !increasing;
+	else
+	{
+		sortColumn = col;
+		increasing = true;
+	}
+	setSorting(sortColumn, increasing);
+	modified = true;
 }
 
 bool
@@ -395,7 +416,6 @@ ProcessList::extendTree(QList<SensorPSLine>* pl, ProcessLVI* parent, int ppid)
 			ps = pl->next();
 	}
 }
-
 void
 ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 {
@@ -490,6 +510,7 @@ ProcessList::addColumn(const QString& header, const QString& type)
 		setColumnAlignment(col, AlignRight);
 		sortFunc.append(floatKey);
 	}
+	setSorting(sortColumn, increasing);
 }
 
 int 

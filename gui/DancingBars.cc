@@ -100,6 +100,7 @@ DancingBars::settings()
 		applySettings();
 
 	delete dbs;
+	dbs = 0;
 }
 
 void

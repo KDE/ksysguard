@@ -38,8 +38,8 @@ min(int a, int b)
 	return (a < b ? a : b);
 }
 
-SignalPlotter::SignalPlotter(QWidget* parent, const char* name, int min,
-							 int max)
+SignalPlotter::SignalPlotter(QWidget* parent, const char* name, double min,
+							 double max)
 	: QWidget(parent, name), minValue(min), maxValue(max)
 {
 	// paintEvent covers whole widget so we use no background to avoid flicker
@@ -67,8 +67,8 @@ SignalPlotter::addBeam(QColor col)
 	if (beams == MAXBEAMS)
 		return (false);
 
-	beamData[beams] = new long[samples];
-	memset(beamData[beams], 0, sizeof(long) * samples);
+	beamData[beams] = new double[samples];
+	memset(beamData[beams], 0, sizeof(double) * samples);
 	beamColor[beams] = col;
 	beams++;
 
@@ -76,7 +76,7 @@ SignalPlotter::addBeam(QColor col)
 }
 
 void
-SignalPlotter::addSample(int s0, int s1, int s2, int s3, int s4)
+SignalPlotter::addSample(double s0, double s1, double s2, double s3, double s4)
 {
 	/* To avoid unecessary calls to the fairly expensive calcRange
 	 * function we only do a recalc if the value to be dropped is
@@ -91,7 +91,7 @@ SignalPlotter::addSample(int s0, int s1, int s2, int s3, int s4)
 
 	// Shift data buffers one sample down.
 	for (int i = 0; i < beams; i++)
-		memmove(beamData[i], beamData[i] + 1, (samples - 1) * sizeof(int));
+		memmove(beamData[i], beamData[i] + 1, (samples - 1) * sizeof(double));
 
 	if (lowPass)
 	{
@@ -135,11 +135,12 @@ SignalPlotter::addSample(int s0, int s1, int s2, int s3, int s4)
 }
 
 void
-SignalPlotter::changeRange(int beam, long min, long max)
+SignalPlotter::changeRange(int beam, double min, double max)
 {
 	if (beam < 0 || beam >= MAXBEAMS)
 	{
-		kdDebug() << "SignalPlotter::changeRange: beam index out of range" << endl;
+		kdDebug() << "SignalPlotter::changeRange: beam index out of range"
+				  << endl;
 		return;
 	}
 
@@ -189,23 +190,23 @@ SignalPlotter::resizeEvent(QResizeEvent*)
 	 * display we try to keep as much data as possible. Data that is
 	 * lost due to shrinking the buffers cannot be recovered on
 	 * enlarging though. */
-	long* tmp[MAXBEAMS];
+	double* tmp[MAXBEAMS];
 
 	// overlap between the old and the new buffers.
 	int overlap = min(samples, width() - 2);
 
 	for (int i = 0; i < beams; i++)
 	{
-		tmp[i] = new long[width() - 2];
+		tmp[i] = new double[width() - 2];
 
 		// initialize new part of the new buffer
 		if (width() - 2 > overlap)
-			memset(tmp[i], 0, sizeof(int) * (width() - 2 - overlap));
+			memset(tmp[i], 0, sizeof(double) * (width() - 2 - overlap));
 
 		// copy overlap from old buffer to new buffer
 		memcpy(tmp[i] + ((width() - 2) - overlap),
 			   beamData[i] + (samples - overlap),
-			   overlap * sizeof(int));
+			   overlap * sizeof(double));
 
 		// discard old buffer
 		delete [] beamData[i];
@@ -233,40 +234,38 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	p.drawLine(w - 1, 0, w - 1, h - 1);
 
 	p.setClipRect(1, 1, w - 2, h - 2);
-	int range = maxValue - minValue;
-	/* It makes no sense to have a range that is smaller than the 20
-	 * in pixels. So we force the range to at least be 20. */
-	if (range < 20)
-		range = 20;
-	int maxVal = minValue + range;
+	double range = maxValue - minValue;
+	/* We enforce a minimum range of 1.0 to avoid division by 0 errors. */
+	if (range < 1.0)
+		range = 1.0;
+	double maxVal = minValue + range;
 
-	/* Draw scope-like grid */
+	/* Draw scope-like grid vertical lines */
 	if (w > 60)
 	{
 		p.setPen(QColor("green"));
 		for (int x = 30; x < (w - 2); x += 30)
-			p.drawLine(x, 0, x, height() - 1);
+			p.drawLine(x, 0, x, height() - 2);
 	}
 
-	// Scale painter to value coordinates
-	p.scale(1.0f, (float) h / range);
+	/* Plot stacked values */
 	for (int i = 0; i < samples; i++)
 	{
-		int bias = 0;
+		double bias = 0;
+		double scaleFac = (h - 2) / range;
 		for (int b = 0; b < beams; b++)
 		{
 			if (beamData[b][i] > 0)
 			{
 				p.setPen(beamColor[b]);
-				p.drawLine(i + 1, range - bias - 1,
-						   i + 1, range - (bias + beamData[b][i]) - 1);
+				p.drawLine(i + 1, h - 2 - (int) (bias * scaleFac),
+						   i + 1, h - 2 -
+						   (int) ((bias + beamData[b][i]) * scaleFac));
 				bias += beamData[b][i];
 			}
 		}
 	}
 	
-	// Scale back to pixel coordinates
-	p.scale(1.0f, (float) range / h);
 	// draw horizontal lines and values
 	if (h > 60)
 	{
