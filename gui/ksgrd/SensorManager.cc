@@ -158,7 +158,7 @@ bool SensorManager::engageHost( const QString &hostName )
 {
   bool retVal = true;
 
-  if ( hostName == "" || mAgents.find( hostName ) == 0 ) {
+  if ( hostName.isEmpty() || mAgents.find( hostName ) == 0 ) {
     mHostConnector->setCurrentHostName( hostName );
 
     if ( mHostConnector->exec() ) {
@@ -177,7 +177,7 @@ bool SensorManager::engageHost( const QString &hostName )
       else
         command = mHostConnector->currentCommand();
 
-      if ( hostName == "" )
+      if ( hostName.isEmpty() )
         retVal = engage( mHostConnector->currentHostName(), shell,
                          command, port );
       else
