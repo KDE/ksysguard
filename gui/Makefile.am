@@ -61,4 +61,4 @@ METASOURCES = AUTO
 
 messages: rc.cpp
 	$(EXTRACTRC) ksgrd/*.ui >> rc.cpp
-	$(XGETTEXT) ksgrd/*.cpp ksgrd/*.cc *.cpp *.cc -o $(podir)/ksysguard.pot
+	$(XGETTEXT) ksgrd/*.cc *.cpp *.cc -o $(podir)/ksysguard.pot
