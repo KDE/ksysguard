@@ -146,14 +146,15 @@ updateCpuInfo(void)
 	if ((fd = open("/proc/cpuinfo", O_RDONLY)) < 0)
 	{
 		if (CpuInfoOK != 0)
-			print_error("ERROR: Cannot open file \'/proc/cpuinfo\'!\n");
+			print_error("Cannot open file \'/proc/cpuinfo\'!\n"
+			   "The kernel needs to be compiled with support\n"
+			   "for /proc filesystem enabled!\n");
 		CpuInfoOK = -1;
 		return (-1);
 	}
 	if ((n = read(fd, CpuInfoBuf, CPUINFOBUFSIZE - 1)) == CPUINFOBUFSIZE - 1)
 	{
-		print_error("ERROR: Internal buffer too small to read "
-			   "\'/proc/cpuinfo\'!\n");
+		log_error("Internal buffer too small to read \'/proc/cpuinfo\'");
 		CpuInfoOK = 0;
 		return (-1);
 	}

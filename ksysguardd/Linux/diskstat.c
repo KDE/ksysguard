@@ -82,7 +82,7 @@ int updateDiskStat(void)
 	DiskInfo *disk_info;
 	
 	if ((mounts = fopen("/etc/mtab", "r")) == NULL) {
-		print_error("ERROR: can't open \'/etc/mtab\'\n");
+		print_error("Cannot open \'/etc/mtab\'!\n");
 		return -1;
 	} else {
 		stat("/etc/mtab", &mtab_info);

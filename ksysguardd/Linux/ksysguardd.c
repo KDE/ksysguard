@@ -21,20 +21,21 @@
 */
 
 #include <config.h>
+#include <ctype.h>
+#include <fcntl.h>
 #include <netdb.h>
 #include <netinet/in.h>
+#include <pwd.h>
 #include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/time.h>
-#include <sys/stat.h>
 #include <unistd.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <fcntl.h>
 
 #include "ksysguardd.h"
 #include "Command.h"
@@ -49,10 +50,10 @@
 #include "lmsensors.h"
 #include "diskstat.h"
 
-#define CMDBUFSIZE 128
+#define CMDBUFSIZE	128
 #define MAX_CLIENTS	100
 #define PORT_NUMBER	2001
-#define TIMERINVERVAL 2
+#define TIMERINVERVAL	2
 
 typedef struct
 {
@@ -64,6 +65,7 @@ static int ServerSocket;
 static ClientInfo ClientList[MAX_CLIENTS];
 static int SocketPort = PORT_NUMBER;
 static int CurrentSocket;
+static char *LockFile = "/var/run/ksysguardd.pid";
 
 int QuitApp = 0;
 int RunAsDaemon = 0;
@@ -108,18 +110,106 @@ printWelcome(FILE* out)
 	fflush(out);
 }
 
+static int
+createLockFile()
+{
+	FILE *file;
+	
+	if ((file = fopen(LockFile, "r")) != NULL)
+	{
+		log_error("Server is already running");
+		fclose(file);
+		return -1;
+	}
+	else
+	{
+		if ((file = fopen(LockFile, "w")) == NULL)
+		{
+			log_error("Cannot create lockfile '%s'", LockFile);
+			return -2;
+		}
+		fprintf(file, "%d", getpid());
+		fclose(file);
+
+		return 0;
+	}
+}
+
+static void
+removeLockFile(void)
+{
+	/* setuid back to root for removing lockfile */
+	if (seteuid(0) < 0) {
+		log_error("Cannot seteuid back to 'root'");
+	}
+
+	if (unlink(LockFile) < 0) {
+		log_error("Cannot remove lockfile '%s'", LockFile);
+	}
+}
+
+void
+signalHandler(int sig)
+{
+	switch (sig)
+	{
+		case SIGQUIT:
+		case SIGTERM:
+			removeLockFile();
+			exit(0);
+			break;
+	}
+}
+
+static void
+installSignalHandler(void)
+{
+	struct sigaction Action;
+
+	Action.sa_handler = signalHandler;
+	sigemptyset(&Action.sa_mask);
+	/* make sure that interrupted system calls are restarted. */
+	Action.sa_flags = SA_RESTART;
+	sigaction(SIGTERM, &Action, 0);
+	sigaction(SIGQUIT, &Action, 0);
+}
+
+static void
+changeUID(void)
+{
+	struct passwd *pwd;
+	
+	if ((pwd = getpwnam("nobody")) != NULL)
+	{
+		seteuid(pwd->pw_uid);
+	}
+	else
+	{
+		log_error("Cannot seteuid to 'nobody'");
+		/* maybe we should exit here */
+		/* exit(1); */
+	}
+}
+
 void
 makeDaemon(void)
 {
+
 	switch (fork())
 	{
 	case -1:
-		log_error("fork");
+		log_error("fork()");
 		break;
 	case 0:
 		setsid();
 		chdir("/");
 		umask(0);
+		if (createLockFile() < 0)
+			exit(1);
+
+		installSignalHandler();
+
+		changeUID();
 		break;
 	default:
 		exit(0);
@@ -164,13 +254,14 @@ addClient(int client)
 			ClientList[i].socket = client;
 			if ((out = fdopen(client, "w+")) == NULL)
 			{
-				log_error("fdopen");
+				log_error("fdopen()");
 				return (-1);
 			}
 			/* We use unbuffered IO */
 			fcntl(fileno(out), F_SETFL, O_NDELAY);
 			ClientList[i].out = out;
 			printWelcome(out);
+
 			return (0);
 		}
 	}
@@ -208,7 +299,7 @@ createServerSocket(int port)
 
 	if ((newSocket = socket(PF_INET, SOCK_STREAM, 0)) < 0) 
 	{
-		log_error("socket");
+		log_error("socket()");
 		return (-1);
 	}
 
@@ -221,13 +312,13 @@ createServerSocket(int port)
   
 	if (bind(newSocket, (struct sockaddr_in*) &sin, sizeof(sin)) < 0)
 	{
-		log_error("bind");
+		log_error("bind()");
 		return -1;
 	}
 	
 	if (listen(newSocket, 5) < 0)
 	{
-		log_error("listen");
+		log_error("listen()");
 		return -1;
 	}
 	
@@ -313,7 +404,7 @@ handleSocketTraffic(int socket, const fd_set* fds)
 			/* a new connection */
 			if ((clientSocket = accept(socket, &addr, &addr_len)) < 0)
 			{
-				log_error("accept");
+				log_error("accept()");
 				exit(1);
 			}
 			else

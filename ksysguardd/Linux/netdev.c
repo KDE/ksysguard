@@ -315,8 +315,7 @@ Inter-|   Receive                                                |  Transmit
 	}
 	if ((n = read(fd, NetDevBuf, NETDEVBUFSIZE - 1)) == NETDEVBUFSIZE - 1)
 	{
-		print_error("ERROR: Internal buffer too small to read "
-			   "\'/proc/net/dev\'!\n");
+		log_error("Internal buffer too small to read \'/proc/net/dev\'");
 		NetDevOk = -1;
 		return (-1);
 	}

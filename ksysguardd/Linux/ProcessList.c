@@ -376,9 +376,9 @@ updateProcessList(void)
 	/* read in current process list via the /proc filesystem entry */
 	if ((dir = opendir("/proc")) == NULL)
 	{
-		log_error("Cannot open directory \'/proc\'!\n"
+		print_error("Cannot open directory \'/proc\'!\n"
 			   "The kernel needs to be compiled with support\n"
-			   "for /proc filesystem enabled!");
+			   "for /proc filesystem enabled!\n");
 		return (-1);
 	}
 	while ((entry = readdir(dir))) 

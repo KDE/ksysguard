@@ -68,7 +68,7 @@ log_error(const char *fmt, ...)
 {
 	va_list az;
 
-	openlog("ksysguardd", LOG_PERROR, LOG_DAEMON);
+	openlog("ksysguardd", LOG_PID, LOG_DAEMON);
 	va_start(az, fmt);
 	syslog(LOG_ERR, fmt, az);
 	closelog();

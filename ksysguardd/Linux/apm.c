@@ -84,13 +84,14 @@ updateApm(void)
 	if ((fd = open("/proc/apm", O_RDONLY)) < 0)
 	{
 		if (ApmOK != 0)
-			print_error("ERROR: Cannot open file \'/proc/apm\'!\n");
+			print_error("Cannot open file \'/proc/apm\'!\n"
+			   "The kernel needs to be compiled with support\n"
+			   "for /proc filesystem enabled!\n");
 		return (-1);
 	}
 	if ((n = read(fd, ApmBuf, APMBUFSIZE - 1)) == APMBUFSIZE - 1)
 	{
-		print_error("ERROR: Internal buffer too small to read "
-			   "\'/proc/apm\'!\n");
+		log_error("Internal buffer too small to read \'/proc/apm\'");
 		return (-1);
 	}
 	close(fd);

@@ -127,15 +127,15 @@ updateMemory(void)
 
 	if ((fd = open("/proc/meminfo", O_RDONLY)) < 0)
 	{
-		log_error("Cannot open \'/proc/meminfo\'!\n"
+		print_error("Cannot open \'/proc/meminfo\'!\n"
 			   "The kernel needs to be compiled with support\n"
-			   "for /proc filesystem enabled!");
+			   "for /proc filesystem enabled!\n");
 		return (-1);
 	}
 	if ((n = read(fd, MemInfoBuf, MEMINFOBUFSIZE - 1)) ==
 		MEMINFOBUFSIZE - 1)
 	{
-		log_error("Internal buffer too small to read \'/proc/mem\'!");
+		log_error("Internal buffer too small to read \'/proc/mem\'");
 		return (-1);
 	}
 
