@@ -87,7 +87,7 @@
  *	ifspeed			interface speed: 10000000 for 10BaseT
  *	duplex			"half" or "full"
  *	media			e.g. "PHY/MII"
- *	promisc			promiscous mode (e.g. "off")
+ *	promisc			promiscuous mode (e.g. "off")
  *	first_collisions
  *	multi_collisions
  *	sqe_errors

@@ -456,7 +456,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
   }
 
   /* In autoRange mode we determine the range and plot the values in
-   * one go. This is more efficently than running through the
+   * one go. This is more efficiently than running through the
    * buffers twice but we do react on recently discarded samples as
    * well as new samples one plot too late. So the range is not
    * correct if the recently discarded samples are larger or smaller

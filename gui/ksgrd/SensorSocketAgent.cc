@@ -114,7 +114,7 @@ void SensorSocketAgent::error( int id )
                          .arg( hostName() ) );
       break;
     default:
-      kdDebug(1215) << "SensorSocketAgent::error() unkown error " << id << endl;
+      kdDebug(1215) << "SensorSocketAgent::error() unknown error " << id << endl;
   }
 
   setDaemonOnLine( false );

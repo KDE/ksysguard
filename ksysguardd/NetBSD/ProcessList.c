@@ -419,7 +419,7 @@ killProcess(const char* cmd)
 			fprintf(CurrentClient, "2\t%d\n", pid);
 			break;
 		default:
-			fprintf(CurrentClient, "1\t%d\n", pid);	/* unkown error */
+			fprintf(CurrentClient, "1\t%d\n", pid);	/* unknown error */
 			break;
 		}
 
@@ -449,7 +449,7 @@ setPriority(const char* cmd)
 			fprintf(CurrentClient, "2\n");
 			break;
 		default:
-			fprintf(CurrentClient, "1\n");	/* unkown error */
+			fprintf(CurrentClient, "1\n");	/* unknown error */
 			break;
 		}
 	}

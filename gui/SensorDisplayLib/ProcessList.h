@@ -213,7 +213,7 @@ private:
 	void buildList();
 
 	/**
-	 * This fuction constructs the tree of processes for tree mode. It
+	 * This function constructs the tree of processes for tree mode. It
 	 * filters out leaf-sub-trees that contain no processes that match
 	 * the filter criteria.
 	 */

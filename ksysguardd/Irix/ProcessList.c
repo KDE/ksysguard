@@ -431,7 +431,7 @@ void killProcess( const char *cmd ) {
 				fprintf(CurrentClient, "2\n" );
 				break;
 			default:
-				fprintf(CurrentClient, "1\n" );	/* unkown error */
+				fprintf(CurrentClient, "1\n" );	/* unknown error */
 				break;
 		}
 	} else
@@ -455,7 +455,7 @@ void setPriority( const char *cmd ) {
 				fprintf(CurrentClient, "2\n" );
 				break;
 			default:
-				fprintf(CurrentClient, "1\n" );	/* unkown error */
+				fprintf(CurrentClient, "1\n" );	/* unknown error */
 				break;
 		}
 	} else

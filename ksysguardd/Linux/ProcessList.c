@@ -523,7 +523,7 @@ void killProcess( const char* cmd )
       case EPERM:
         fprintf( CurrentClient, "2\t%d\n", pid );
         break;
-      default: /* unkown error */
+      default: /* unknown error */
         fprintf( CurrentClient, "1\t%d\n", pid );
         break;
     }
@@ -548,7 +548,7 @@ void setPriority( const char* cmd )
       case EACCES:
         fprintf( CurrentClient, "2\n" );
         break;
-      default: /* unkown error */
+      default: /* unknown error */
         fprintf( CurrentClient, "1\n" );
         break;
     }

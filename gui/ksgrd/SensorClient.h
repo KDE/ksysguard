@@ -34,7 +34,7 @@ namespace KSGRD {
   Every object that should act as a client to a sensor must inherit from
   this class. A pointer to the client object is passed as SensorClient*
   to the SensorAgent. When the requested information is available or a
-  problem occured one of the member functions is called.
+  problem occurred one of the member functions is called.
  */
 class SensorClient
 {

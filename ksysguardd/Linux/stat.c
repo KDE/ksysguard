@@ -264,7 +264,7 @@ static int processDiskIO( const char* buf )
       sprintf( sensorName, "disk/%d:%d/wblk", major, minor );
       registerMonitor( sensorName, "integer", printDiskIO, printDiskIOInfo, StatSM );
     }
-    /* Move p after the sencond ')'. We can safely asume that
+    /* Move p after the sencond ')'. We can safely assume that
      * those two ')' exist. */
     p = strchr( p, ')' ) + 1;
     p = strchr( p, ')' ) + 1;
@@ -523,7 +523,7 @@ void initStat( struct SensorModul* sm )
           NumOfInts++;
 
       /* It looks like anything above 24 is always 0. So let's just
-       * ignore this for the time beeing. */
+       * ignore this for the time being. */
       if ( NumOfInts > 25 )
         NumOfInts = 25;
       OldIntr = (unsigned long*)malloc( NumOfInts * sizeof( unsigned long ) );

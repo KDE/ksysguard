@@ -272,7 +272,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 		KSGRD::SensorTokenizer vals(answer, '\t');
 		switch (vals[0].toInt())
 		{
-		case 0:	// successfull kill operation
+		case 0:	// successful kill operation
 			break;
 		case 1:	// unknown error
 			KSGRD::SensorMgr->notify(
@@ -307,7 +307,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 		KSGRD::SensorTokenizer vals(answer, '\t');
 		switch (vals[0].toInt())
 		{
-		case 0:	// successfull renice operation
+		case 0:	// successful renice operation
 			break;
 		case 1:	// unknown error
 			KSGRD::SensorMgr->notify(
