@@ -120,6 +120,10 @@ SensorBrowser::update()
 		QListViewItem* lvi = new QListViewItem(this, hostName);
 		CHECK_PTR(lvi);
 
+		QPixmap pix = icons->loadIcon("computer", KIcon::Desktop,
+									  KIcon::SizeSmall);
+		lvi->setPixmap(0, pix);
+
 		HostInfo* hostInfo = new HostInfo(id, host, hostName, lvi);
 		CHECK_PTR(hostInfo);
 		hostInfos.append(hostInfo);
@@ -216,7 +220,7 @@ SensorBrowser::answerReceived(int id, const QString& s)
 				CHECK_PTR(lvi);
 				if (j == absolutePath.numberOfTokens() - 1)
 				{
-					QPixmap pix = icons->loadIcon("pci",
+					QPixmap pix = icons->loadIcon("ksysguardd",
 												  KIcon::Desktop,
 												  KIcon::SizeSmall);
 					lvi->setPixmap(0, pix);
@@ -272,6 +276,7 @@ SensorBrowser::viewportMouseMoveEvent(QMouseEvent* ev)
 QStringList
 SensorBrowser::listSensors()
 {
+	// TODO: This does not work yet!
 	QStringList list;
 
 	list.append("Test 123");

@@ -374,7 +374,7 @@ ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 	{
 		pix = QPixmap(BarIcon(p->getName()));
 		if (pix.isNull())
-			pix = icons->loadIcon("default", KIcon::Desktop,
+			pix = icons->loadIcon("unkown", KIcon::Desktop,
 								  KIcon::SizeSmall);
 	}
 
