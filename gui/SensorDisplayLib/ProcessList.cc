@@ -716,24 +716,24 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 			currentNiceValue = lvi->text(i).toInt();
 
 	processPM = new QPopupMenu();
-	processPM->insertItem(i18n("Hide column"), 5);
+	processPM->insertItem(i18n("Hide Column"), 5);
 	QPopupMenu* hiddenPM = new QPopupMenu(processPM);
 	for (int i = 0; i < columns(); ++i)
 		if (columnWidth(i) == 0)
 			hiddenPM->insertItem(header()->label(i), i + 100);
-	processPM->insertItem(i18n("Show column"), hiddenPM);
+	processPM->insertItem(i18n("Show Column"), hiddenPM);
 
 	processPM->insertSeparator();
 
-	processPM->insertItem(i18n("Select all processes"), 1);
-	processPM->insertItem(i18n("Unselect all processes"), 2);
+	processPM->insertItem(i18n("Select All Processes"), 1);
+	processPM->insertItem(i18n("Unselect All Processes"), 2);
 
 	QPopupMenu* signalPM = new QPopupMenu(processPM);
 	if (killSupported && lvi->isSelected())
 	{
 		processPM->insertSeparator();
-		processPM->insertItem(i18n("Select all child processes"), 3);
-		processPM->insertItem(i18n("Unselect all child processes"), 4);
+		processPM->insertItem(i18n("Select All Child Processes"), 3);
+		processPM->insertItem(i18n("Unselect All Child Processes"), 4);
 
 		signalPM->insertItem(i18n("SIGABRT"), MENU_ID_SIGABRT);
 		signalPM->insertItem(i18n("SIGALRM"), MENU_ID_SIGALRM);
@@ -764,7 +764,7 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 	if (killSupported && lvi->isSelected())
 	{
 		processPM->insertSeparator();
-		processPM->insertItem(i18n("Renice process"), 300);
+		processPM->insertItem(i18n("Renice Process"), 300);
 	}
 
 	int id;

@@ -73,10 +73,10 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	 * pList constructor sets cbFilter to its start value. */
 	cbFilter = new QComboBox(this, "pList_cbFilter");
 	Q_CHECK_PTR(cbFilter);
-	cbFilter->insertItem(i18n("All processes"), 0);
-	cbFilter->insertItem(i18n("System processes"), 1);
-	cbFilter->insertItem(i18n("User processes"), 2);
-	cbFilter->insertItem(i18n("Own processes"), 3);
+	cbFilter->insertItem(i18n("All Processes"), 0);
+	cbFilter->insertItem(i18n("System Processes"), 1);
+	cbFilter->insertItem(i18n("User Processes"), 2);
+	cbFilter->insertItem(i18n("Own Processes"), 3);
 	cbFilter->setMinimumSize(cbFilter->sizeHint());
 
 	/* When the both cbFilter and pList are constructed we can connect the

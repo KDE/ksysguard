@@ -317,7 +317,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 		if (sensorType == "integer" || sensorType == "float")
 		{
 			QPopupMenu pm;
-			pm.insertItem(i18n("Select a display type"), 0);
+			pm.insertItem(i18n("Select a Display Type"), 0);
 			pm.setItemEnabled(0, false);
 			pm.insertSeparator();
 			pm.insertItem(i18n("&Signal Plotter"), 1);
