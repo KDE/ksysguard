@@ -562,7 +562,8 @@ main(int argc, char** argv)
 	KAboutData aboutData("ksysguard", I18N_NOOP("KDE System Guard"),
 						 KSYSGUARD_VERSION, Description,
 						 KAboutData::License_GPL,
-						 I18N_NOOP("(c) 1996-2001, "
+						 I18N_NOOP("(c) 1996, 1997, 1998, 1999, 2000, "
+								   "2001, 2002\n"
 								   "The KSysGuard Developers"));
 	aboutData.addAuthor("Chris Schlaeger", "Current Maintainer",
 						"cs@kde.org");
