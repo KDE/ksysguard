@@ -1,8 +1,8 @@
 # KDE Config File 
 [KDE Desktop Entry]
 BinaryPattern=ktop;
-Comment=Information about tasks and performence
-Name=Task Manager
+Comment=Information about tasks and performance
+Name=Performance monitor
 Exec=ktop
 Icon=ktop.xpm
 MiniIcon=ktop.xpm
