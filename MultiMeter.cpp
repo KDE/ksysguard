@@ -33,17 +33,12 @@
 static const int GMBorder = 2;
 static const int LCDHeight = 21;
 
-inline int max(int a, int b)
-{
-	return (a > b ? a : b);
-}
-
 MultiMeter::MultiMeter(QWidget* parent, const char* name, int minVal,
 					   int maxVal)
 	: QWidget(parent, name)
 {
 	meters = 0;
-	digits = (int) log10(max(abs(minVal), abs(maxVal))) + 1;
+	digits = (int) log10(QMAX(abs(minVal), abs(maxVal))) + 1;
 	if (minVal < 0)
 		digits++;
 

@@ -99,11 +99,6 @@ static TABCOLUMN TabCol[] =
 
 static const int MaxCols = sizeof(TabCol) / sizeof(TABCOLUMN);
 
-inline int max(int a, int b)
-{
-	return ((a) < (b) ? (b) : (a));
-}
-
 /*
  * The *key functions are used to sort the list. Since QListView can only sort
  * strings we have to massage the original contense so that the string sort

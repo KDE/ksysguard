@@ -30,6 +30,9 @@
 
 // $Id$
 
+#ifndef _ktop_h
+#define _ktop_h
+
 #include <qpopupmenu.h>
 #include <qlayout.h>
 
@@ -85,3 +88,5 @@ protected slots:
 	void quitSlot();
 
 };
+
+#endif
