@@ -17,6 +17,9 @@
     Boston, MA 02111-1307, USA.
 */
 
+#ifndef __KSGAppletSettings_h__
+#define __KSGAppletSettings_h__
+
 #include <kdialogbase.h>
 
 #include "KSGAppletSettingsWidget.h"
@@ -44,3 +47,4 @@ protected:
 
 };
 
+#endif
