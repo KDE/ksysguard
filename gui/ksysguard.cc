@@ -99,6 +99,7 @@ TopLevel::TopLevel(const char *name)
     KStdAction::openNew(ws, SLOT(newWorkSheet()), actionCollection());
     KStdAction::open(ws, SLOT(loadWorkSheet()), actionCollection());
 	KStdAction::close(ws, SLOT(deleteWorkSheet()), actionCollection());
+
 	KStdAction::saveAs(ws, SLOT(saveWorkSheetAs()), actionCollection());
 	KStdAction::save(ws, SLOT(saveWorkSheet()), actionCollection());
 	KStdAction::quit(this, SLOT(quitApp()), actionCollection());

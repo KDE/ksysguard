@@ -29,6 +29,7 @@
 
 class QGroupBox;
 class QLCDNumber;
+class MultiMeterSettings;
 
 class MultiMeter : public SensorDisplay
 {
@@ -42,12 +43,17 @@ public:
 	}
 
 	bool addSensor(const QString& hostName, const QString& sensorName,
-				   const QString& title);
+				   const QString& sensorDescr);
 	void answerReceived(int id, const QString& answer);
 	void resizeEvent(QResizeEvent*);
 
 	bool load(QDomElement& domEl);
 	bool save(QDomDocument& doc, QDomElement& display);
+
+	void settings();
+
+public slots:
+	void applySettings();
 
 private:
 	void setTitle(const QString& t, const QString& u);
@@ -56,6 +62,13 @@ private:
 	QLCDNumber* lcd;
 	QString title;
 	QString unit;
+	bool modified;
+	MultiMeterSettings* mms;
+	bool showUnit;
+	bool lowerLimitActive;
+	long lowerLimit;
+	bool upperLimitActive;
+	long upperLimit;
 } ;
 
 #endif

@@ -16,6 +16,7 @@ ksysguard_SOURCES = ksysguard.cc ksysguard.skel SensorAgent.cc \
 	ProcessMenu.cc ReniceDlg.cc WorkSheet.cc Workspace.cc \
 	SensorBrowser.cc SensorDisplay.cc \
 	FancyPlotter.cc SignalPlotter.cc MultiMeter.cc \
+	MultiMeterSettings.cpp \
 	ProcessController.cc ProcessList.cc 
 
 # the library search path
@@ -33,6 +34,7 @@ noinst_HEADERS = SensorClient.h ksysguard.h ProcessMenu.h \
 	HostConnector.h WorkSheetSetup.h \
 	SensorAgent.h SensorManager.h SensorDisplay.h \
 	FancyPlotter.h SignalPlotter.h MultiMeter.h \
+	MultiMeterSettings.h \
 	ProcessController.h ProcessList.h version.h 
 
 # just to make sure, automake makes them 

@@ -61,6 +61,17 @@ SensorDisplay::timerEvent(QTimerEvent*)
 		sendRequest(*hnIt.current(), *snIt.current(), i);
 }
 
+bool
+SensorDisplay::eventFilter(QObject* o, QEvent* e)
+{
+	if (e->type() == QEvent::MouseButtonPress &&
+		((QMouseEvent*) e)->button() == RightButton)
+	{
+		this->settings();
+	}
+	return QWidget::eventFilter(o, e);
+}
+
 void
 SensorDisplay::sendRequest(const QString& hostName, const QString& cmd,
 						   int id)

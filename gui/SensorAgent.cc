@@ -29,6 +29,8 @@
 #include <klocale.h>
 #include <kprocess.h>
 #include <kpassdlg.h> 
+#include <kmessagebox.h>
+
 #include "SensorManager.h"
 #include "SensorAgent.h"
 #include "SensorClient.h"
@@ -218,6 +220,11 @@ SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 
 	if (errorBuffer.find("assword: ") > 0)
 	{
+#if 0
+		/* Unfortunately ssh reads the password from the controlling
+		 * terminal and not from stdin. Since KProcess does not emulate
+		 * a terminal we have no way of passing the password to ssh.
+		 * So I disable the password dialog until this has been fixed. */
 		QCString password;
 		int result = KPasswordDialog::
 			getPassword(password, errorBuffer);
@@ -228,10 +235,13 @@ SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 			cmdWithNL = "\n";
 		daemon->writeStdin(cmdWithNL.data(), cmdWithNL.length());
 		pwSent = true;
-	}
-	else
-	{
-//		sensorManager->disengage(this);
+#endif
+		KMessageBox::error(0,
+			"KSysGuard does not support password entry for ssh.\n"
+			"Please add the contense of your ~/.ssh/identity.pub file\n"
+			"on the local hosts to your ~/.ssh/authorized_keys file\n"
+			"on the remote hosts.");
+		sensorManager->disengage(this);
 	}
 }
 

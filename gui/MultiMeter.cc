@@ -29,7 +29,14 @@
 #include <qlcdnumber.h>
 #include <qdom.h>
 #include <qtextstream.h>
+#include <qlineedit.h>
+#include <qspinbox.h>
+#include <qcheckbox.h>
+#include <qpushbutton.h>
 
+#include <kmessagebox.h>
+
+#include "MultiMeterSettings.h"
 #include "MultiMeter.moc"
 
 static const int FrameMargin = 0;
@@ -42,12 +49,17 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 {
 	frame = new QGroupBox(this, "meterFrame");
 	CHECK_PTR(frame);
+	showUnit = TRUE;
+	lowerLimit = upperLimit = 0;
+	lowerLimitActive = upperLimitActive = FALSE;
 
 	setTitle(t, unit);
 
 	lcd = new QLCDNumber(this, "meterLCD");
 	CHECK_PTR(lcd);
-//	digits = (int) log10(QMAX(abs(minVal), abs(maxVal))) + 1;
+	lcd->setSegmentStyle(QLCDNumber::Filled);
+	lcd->installEventFilter(this);
+	modified = FALSE;
 }
 
 bool
@@ -60,6 +72,7 @@ MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
 	 * requests we use 100 for info requests. */
 	sendRequest(hostName, sensorName + "?", 100);
 
+	modified = TRUE;
 	return (TRUE);
 }
 
@@ -72,7 +85,26 @@ MultiMeter::answerReceived(int id, const QString& answer)
 		setTitle(title, info.getUnit());
 	}
 	else
-		lcd->display(answer.toInt());
+	{
+		long val = answer.toInt();
+		if (lowerLimitActive && val < lowerLimit)
+		{
+			timerOff();
+			KMessageBox::information(
+				this, QString(i18n("%1\nLower limit exceeded!"))
+				.arg(title));
+			timerOn();
+		}
+		if (upperLimitActive && val > upperLimit)
+		{
+			timerOff();
+			KMessageBox::information(
+				this, QString(i18n("%1\nUpper limit exceeded!"))
+				.arg(title));
+			timerOn();
+		}
+		lcd->display((int) val);
+	}
 }
 
 void
@@ -95,17 +127,25 @@ MultiMeter::setTitle(const QString& t, const QString& u)
 	unit = u;
 	QString titleWithUnit = title;
 
-	if (!unit.isEmpty())
+	if (!unit.isEmpty() && showUnit)
 		titleWithUnit = title + " [" + unit + "]";
 
 	frame->setTitle(titleWithUnit);
 }
 
 bool
-MultiMeter::load(QDomElement& domElem)
+MultiMeter::load(QDomElement& el)
 {
-	title = domElem.attribute("title");
+	title = el.attribute("title");
 	setTitle(title, unit);
+	showUnit = el.attribute("showUnit").toInt();
+	lowerLimitActive = el.attribute("lowerLimitActive").toInt();
+	lowerLimit = el.attribute("lowerLimit").toLong();
+	upperLimitActive = el.attribute("upperLimitActive").toInt();
+	upperLimit = el.attribute("upperLimit").toLong();
+	addSensor(el.attribute("hostName"), el.attribute("sensorName"), "");
+
+	modified = FALSE;
 
 	return (TRUE);
 }
@@ -113,7 +153,48 @@ MultiMeter::load(QDomElement& domElem)
 bool
 MultiMeter::save(QDomDocument&, QDomElement& display)
 {
+	display.setAttribute("hostName", *hostNames.at(0));
+	display.setAttribute("sensorName", *sensorNames.at(0));
 	display.setAttribute("title", title);
+	display.setAttribute("showUnit", (int) showUnit);
+	display.setAttribute("lowerLimitActive", (int) lowerLimitActive);
+	display.setAttribute("lowerLimit", (int) lowerLimit);
+	display.setAttribute("upperLimitActive", (int) upperLimitActive);
+	display.setAttribute("upperLimit", (int) upperLimit);
+	modified = FALSE;
 
 	return (TRUE);
+}
+
+void
+MultiMeter::settings()
+{
+	mms = new MultiMeterSettings(this, "MultiMeterSettings", TRUE);
+	CHECK_PTR(mms);
+	mms->title->setText(title);
+	mms->showUnit->setChecked(showUnit);
+	mms->lowerLimitActive->setChecked(lowerLimitActive);
+	mms->lowerLimit->setValue(lowerLimit);
+	mms->upperLimitActive->setChecked(upperLimitActive);
+	mms->upperLimit->setValue(upperLimit);
+	connect(mms->applyButton, SIGNAL(clicked()),
+			this, SLOT(applySettings()));
+
+	if (mms->exec())
+		applySettings();
+
+	delete mms;
+}
+
+void
+MultiMeter::applySettings()
+{
+	showUnit = mms->showUnit->isChecked();
+	setTitle(mms->title->text(), unit);
+	lowerLimitActive = mms->lowerLimitActive->isChecked();
+	lowerLimit = mms->lowerLimit->text().toLong();
+	upperLimitActive = mms->upperLimitActive->isChecked();
+	upperLimit = mms->upperLimit->text().toLong();
+
+	modified = TRUE;
 }

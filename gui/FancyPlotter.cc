@@ -261,7 +261,3 @@ FancyPlotter::save(QDomDocument& doc, QDomElement& display)
 
 	return (TRUE);
 }
-
-
-
-

@@ -120,6 +120,7 @@ signals:
 
 protected:
 	virtual void timerEvent(QTimerEvent*);
+	virtual bool eventFilter(QObject*, QEvent*);
 
 	void registerSensor(const QString& hostName, const QString& sensorName);
 

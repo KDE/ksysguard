@@ -184,7 +184,8 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 	if (fileName.isEmpty())
 	{
 		KFileDialog fd(workDir, "*.sgrd", this, "LoadFileDialog", TRUE);
-		fileName = fd.getSaveFileName(QString::null, "*.sgrd");
+		fileName = fd.getSaveFileName(
+			tabLabel(currentPage()) + ".sgrd", "*.sgrd");
 		if (fileName.isEmpty())
 			return;
 		workDir = fileName.left(fileName.findRev('/'));
