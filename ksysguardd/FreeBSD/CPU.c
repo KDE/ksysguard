@@ -20,8 +20,14 @@
 	$Id$
 */
 
+#include <osreldate.h>
+
 #include <sys/types.h>
-#include <sys/dkstat.h>
+#if __FreeBSD_version < 500101
+	#include <sys/dkstat.h>
+#else
+	#include <sys/resource.h>
+#endif
 #include <sys/sysctl.h>
 
 #include <devstat.h>
