@@ -580,6 +580,7 @@ ProcessList::removeColumns(void)
 {
 	for (int i = columns() - 1; i >= 0; --i)
 		removeColumn(i);
+	sortFunc.clear();
 }
 
 void
