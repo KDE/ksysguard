@@ -35,12 +35,11 @@ noinst_HEADERS = MainMenu.h ReniceDlg.h SensorClient.h ktop.h ProcessMenu.h \
 
 # just to make sure, automake makes them 
 
-METASOURCES = ktop.moc SensorAgent.moc SensorManager.moc Workspace.moc WorkSheet.moc SensorBrowser.moc MainMenu.moc ProcessMenu.moc ReniceDlg.moc
-# TaskMan.moc ProcListPage.moc ProcessList.moc PerfMonPage.moc FancyPlotter.moc MultiMeter.moc SignalPlotter.moc
+METASOURCES = AUTO
 
 # make messages.po. Move this one to ../po/ and "make merge" in po
 messages:
-	$(XGETTEXT) -C -ki18n -x $(includedir)/kde.pot $(ktop_SOURCES) && mv messages.po ../po/ktop.pot
+	$(XGETTEXT) -C -ki18n -x $(includedir)/kde.pot *.cc && mv messages.po ../po/ktop.pot
 
 KDE_ICON = ktop
 
