@@ -354,7 +354,7 @@ KSysGuardApplet::resizeDocks(uint newDockCnt)
 			tmp[i]->show();
 	}
 	// Destruct old dock.
-	delete docks;
+	delete [] docks;
 
 	docks = tmp;
 	dockCnt = newDockCnt;
