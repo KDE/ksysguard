@@ -1,4 +1,3 @@
-INCLUDES = -I$(srcdir)/../../CContLib
 CFLAGS = -Wall $(CONFIGFLAGS)
 KSYSGUARDDRCFILE=@sysconfdir@/ksysguarddrc
 
