@@ -116,10 +116,19 @@ OSProcess::read(const void* info)
 
 	QString buf;
 	buf.sprintf("/proc/%s/status", (const char*) info);
-	if((fd = fopen(buf, "r")) == 0 && kill(pid, 0) == 0)
+	if((fd = fopen(buf, "r")) == 0)
 	{
 		error = true;
-		errMessage.sprintf(i18n("Cannot open %s!\n"), buf.data());
+		/*
+		 * If we cannot read /proc/xxx/status we need to check whether the
+		 * process is still alive. If so, this is realy an error. Otherwise
+		 * the process probably has died during the calling of this function.
+		 */
+		if (kill(pid, 0) == 0)
+			errMessage.sprintf(i18n("Cannot open %s!\n"), buf.data());
+		else
+			errMessage.sprintf(i18n("The Process has been terminated!\n"));
+
 		return (false);
 	}
 

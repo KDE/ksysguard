@@ -73,11 +73,19 @@ MainMenu::MainMenu(QWidget* parent, const char* name) :
 	refresh->insertItem(i18n("Fast Refresh"), MENU_ID_REFRESH_FAST, -1);
 	connect(refresh, SIGNAL(activated(int)), this, SLOT(handler(int)));
 
+	// 'Process' submenu
+	process = new ProcessMenu();
+	process->setItemEnabled(MENU_ID_MENU_PROCESS, false);
+	connect(process, SIGNAL(requestUpdate(void)),
+			this, SLOT(requestUpdateSlot(void)));
+
 	// register submenues
 	setLineWidth(1);
 	insertItem(i18n("&File"), file, 2, -1);
 	insertItem(i18n("&Options"), settings, 3, -1);
 	insertItem(i18n("&Refresh Rate"), refresh, MENU_ID_MENU_REFRESH, -1);
+	insertItem(i18n("&Process"), process, MENU_ID_MENU_PROCESS, -1);
+
 	insertSeparator(-1);
 	insertItem(i18n("&Help"), help, 2, -1);
 }

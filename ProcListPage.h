@@ -31,6 +31,7 @@
 #define _ProcListPage_h_
 
 #include <qwidget.h>
+#include <qcheckbox.h>
 #include <qpushbutton.h>
 #include <qcombobox.h>
 #include <qlayout.h>
@@ -55,6 +56,7 @@ public:
 	ProcListPage(QWidget* parent = 0, const char* name = 0);
 	virtual ~ProcListPage()
 	{
+		delete treeViewCB;
 		delete bKill;
 		delete bRefresh;
 		delete box;
@@ -65,9 +67,9 @@ public:
 
 	void resizeEvent(QResizeEvent*);
 
-	int selectionPid(void)
+	void clearSelection(void)
 	{
-		return (pList->selectedPid());
+		pList->clearSelection();
 	}
 
 	int setAutoUpdateMode(bool mode)
@@ -81,15 +83,17 @@ public:
 	}
 
 public slots:
-	void popupMenu(int, int);
-	void killTask();
 	void filterModeChanged(int filter)
 	{
 		cbFilter->setCurrentItem(filter);
 	}
 
+	void treeViewChanged(bool tv)
+	{
+		treeViewCB->setChecked(tv);
+	}
+
 signals:
-	void killProcess(int);
 	void setFilterMode(int);
 
 private:
@@ -102,6 +106,8 @@ private:
     ProcessList* pList;
 
 	QHBoxLayout* gm1;
+
+	QCheckBox* treeViewCB;
 
 	/// This combo boxes control the process filter.
 	QComboBox* cbFilter;

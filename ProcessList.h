@@ -35,38 +35,51 @@
 
 #include "IconList.h"
 #include "OSProcessList.h"
+#include "ProcessMenu.h"
 
 #define NONE -1
 
+/**
+ * To support bi-directional sorting, and sorting of text, intergers etc. we
+ * need a specialized version of QListViewItem. The only specialization is
+ * the key function.
+ */
 class ProcessLVI : public QListViewItem
 {
 public:
-	ProcessLVI(QListView* lvi) : QListViewItem(lvi) { }
+	ProcessLVI(QListView* lv) : QListViewItem(lv) { }
+	ProcessLVI(QListViewItem* lvi) : QListViewItem(lvi) { }
 
-	virtual QString key(int column, bool) const;
+	virtual const char* key(int column, bool) const;
 } ;
 
 class QPopupMenu;
 
 /**
- * This class implements a widget that displays processes in a table. The
- * KTabListBox is used for the handling of the table. The widget has four
- * buttons that control the update rate, the process filter, manual refresh
- * and killing of processes. The display is updated automatically when
- * auto mode is enabled.
+ * This class implementes a table filled with information about the running
+ * processes. The table is derived from QListView.
  */
 class ProcessList : public QListView
 {
     Q_OBJECT
 
 public:
-	// items of "Filter" combo box
+	// possible values for the filter mode
 	enum
 	{
 		FILTER_ALL = 0,
 		FILTER_SYSTEM,
 		FILTER_USER,
 		FILTER_OWN
+	};
+
+	// possible values for the refresh rate. 
+	enum
+	{
+		REFRESH_MANUAL = 0,
+		REFRESH_SLOW,
+		REFRESH_MEDIUM,
+		REFRESH_FAST
 	};
 
 	/// The constructor.
@@ -77,6 +90,8 @@ public:
 
 	void saveSettings(void);
 
+	void loadSettings(void);
+
 	/**
 	 * This function can be used to control the auto update feature of the
 	 * widget. If auto update mode is enabled the display is refreshed
@@ -84,9 +99,21 @@ public:
 	 */
 	int setAutoUpdateMode(bool mode = TRUE);
 
+	/**
+	 * To support bi-directional sorting we need to re-implement setSorting
+	 * to respect the direction and the different contense (text, number, etc).
+	 */
 	virtual void setSorting(int column, bool increasing = TRUE);
 
-	int selectedPid(void) const;
+	/**
+	 * This function clears the current selection and sends out a signal.
+	 */
+	void clearSelection(void)
+	{
+		if (currentItem())
+			setSelected(currentItem(), false);
+		emit(processSelected(-1));
+	}
 
 public slots:
 	/**
@@ -95,7 +122,30 @@ public slots:
 	 */
 	void update(void);
 
+	void killProcess(void)
+	{
+		processMenu->killProcess(selectedPid());
+		update();
+	}
+
+	/**
+	 * This slot allows the refresh rate to be set by other widgets. Possible
+	 * values are REFRESH_MANUAL, REFRESH_SLOW, REFRESH_MEDIUM and
+	 * REFRESH_FAST.
+	 */
 	void setRefreshRate(int);
+
+	void setTreeView(bool tv)
+	{
+		treeViewEnabled = tv;
+		update();
+	}
+
+	/**
+	 * This slot allows the filter mode to be set by other widgets. Possible
+	 * values are FILTER_ALL, FILTER_SYSTEM, FILTER_USER and FILTER_OWN. This
+	 * filter mechanism will be much more sophisticated in the future.
+	 */
 	void setFilterMode(int fm)
 	{
 		filterMode = fm;
@@ -103,15 +153,19 @@ public slots:
 	}
 
 signals:
-	void popupMenu(int, int);
+	// This signal is emitted whenever the refresh rate has been changed.
 	void refreshRateChanged(int);
+
+	// This signal is emitted whenever the filter mode has been changed.
 	void filterModeChanged(int);
+
+	void treeViewChanged(bool);
+
+	// This signal is emitted whenever a new process has been selected.
+	void processSelected(int);
 
 protected:
 	virtual void mousePressEvent(QMouseEvent* e);
-
-private slots:
-	void handleRMBPopup(int item);
 
 private:
 	// items of table header RMB popup menu
@@ -129,15 +183,25 @@ private:
 		UPDATE_FAST_VALUE = 1
 	};
 
+	/**
+	 * This function returns the process ID of the currently selected process.
+	 * If there isn't any -1 is returned.
+	 */
+	int selectedPid(void) const;
+
 	void initTabCol(void);
 
-    virtual void timerEvent(QTimerEvent*)
-	{
-		update();
-	}
-
+	// Get a current list of processes from the operating system.
 	void load();
 
+	void buildTree(OSProcessList* pl, ProcessLVI* parent, int ppid);
+
+	void addProcess(OSProcess* p, ProcessLVI* pli);
+
+	/**
+	 * This functions stops the timer that triggers automatic refreshed of the
+	 * process list.
+	 */
 	void timerOff()
 	{
 		if (timerId != NONE)
@@ -147,23 +211,48 @@ private:
 		} 
 	}
 
+	/**
+	 * This function starts the timer that triggers the automatic refreshes
+	 * of the process list. It reads the interval from the member object
+	 * timerInterval. To change the interval the timer must be stoped first
+	 * with timerOff() and than started again with timeOn().
+	 */
 	void timerOn()
 	{
-		timerId = startTimer(timerInterval);
+		if (timerId == NONE)
+			timerId = startTimer(timerInterval);
 	}
 
-	/*
+	/**
+	 * This function is automatically triggered by timer events. It refreshes
+	 * the displayed process list.
+	 */
+    virtual void timerEvent(QTimerEvent*)
+	{
+		update();
+	}
+
+	/**
 	 * Since some columns of our process table might be invisible the columns
 	 * of the QListView and the data structure do not match. We have to map
 	 * the visible columns to the table columns (V2T).
 	 */
 	int mapV2T(int vcol);
 
-	/*
+	/**
 	 * This function maps a table columns index to a visible columns index.
 	 */
 	int mapT2V(int tcol);
 
+private slots:
+	void handleRMBPopup(int item);
+	void selectionChangedSlot(QListViewItem* lvi)
+	{
+		QString pidStr = lvi->text(2);
+		emit(processSelected(pidStr.toInt()));
+	}
+
+private:
 	int filterMode;
 	int sortColumn;
 	bool increasing;
@@ -171,9 +260,11 @@ private:
 	int currColumn;
 	int timerInterval;
 	int timerId;
+	bool treeViewEnabled;
 
 	OSProcessList pl;
     KtopIconList* icons;
+	ProcessMenu* processMenu;
 	QPopupMenu* headerPM;
 };
 

@@ -30,9 +30,13 @@
 #include <ctype.h>
 #include <string.h>
 #include <signal.h>
+#include <assert.h>
 
 #include <qmessagebox.h>
 #include <qheader.h>
+#include <qpixmap.h>
+#include <qbitmap.h>
+#include <qpaintdevice.h>
 
 #include <kapp.h>
 #include <klocale.h>
@@ -42,6 +46,7 @@
 #include "ProcessList.moc"
 
 #define NONE -1
+#define INIT_PID 1
 
 typedef const char* (*KeyFunc)(const char*);
 
@@ -74,7 +79,6 @@ static const char* percentKey(const char* text);
  */
 static TABCOLUMN TabCol[] =
 {
-	{ "",            0, true, true,  false, 2, 0 },
 	{ "Name",        0, true, true,  true,  1, 0 },
 	{ "PID",         0, true, true,  true,  2, intKey },
 	{ "User",        0, true, false, true,  1, 0 },
@@ -130,12 +134,12 @@ percentKey(const char* text)
 	sscanf(text, "%lf%%", &percent);
 
 	static char key[16];
-	sprintf(key, "%03.2f", percent);
+	sprintf(key, "%06.2f", percent);
 
 	return (key);
 }
 
-QString
+const char*
 ProcessLVI::key(int column, bool dir) const
 {
 	if (TabCol[column].key)
@@ -147,35 +151,54 @@ ProcessLVI::key(int column, bool dir) const
 ProcessList::ProcessList(QWidget *parent, const char* name)
 	: QListView(parent, name)
 {
+	/*
+	 * The refresh rate can be changed from the main menu. If this happens
+	 * a signal is send. The menu has the current refresh rate checked. So we
+	 * need to send a signal to the menu if the rate was changed.
+	 */
 	connect(this, SIGNAL(refreshRateChanged(int)),
 			MainMenuBar, SLOT(checkRefreshRate(int)));
 	connect(MainMenuBar, SIGNAL(setRefreshRate(int)),
 			this, SLOT(setRefreshRate(int)));
 
+	/*
+	 * The filter mode is controlled by a combo box of the parent. If the
+	 * mode is changed we get a signal. To notify the combo box of mode
+	 * changes we send out a signal.
+	 */
 	connect(this, SIGNAL(filterModeChanged(int)),
 			parent, SLOT(filterModeChanged(int)));
 	connect(parent, SIGNAL(setFilterMode(int)),
 			this, SLOT(setFilterMode(int)));
 
+	/*
+	 * When a new process is selected to receive a signal from the base
+	 * class and repeat the signal to the menu. The menu keeps track of the
+	 * currently selected process.
+	 */
+	connect(this, SIGNAL(selectionChanged(QListViewItem *)),
+			SLOT(selectionChangedSlot(QListViewItem*)));
+	connect(this, SIGNAL(processSelected(int)),
+			MainMenuBar, SLOT(processSelected(int)));
+
+	/*
+	 * If the process list has changed we need to be informed by a signal
+	 * about it to update the displayed process list.
+	 */
+	connect(MainMenuBar, SIGNAL(requestUpdate(void)),
+			this, SLOT(update(void)));
+
 	// no timer started yet
 	timerId = NONE;
 
-	/*
-	 * The default filter mode is 'own processes'. This can be overridden by
-	 * the config file.
-	 */
-	filterMode = Kapp->getConfig()->readNumEntry("FilterMode", FILTER_OWN);
-	emit(filterModeChanged(filterMode));
+	treeViewEnabled = false;
 
-	/*
-	 * The default update rate is 'medium'. This can be overridden by the
-	 * config file.
-	 */
-	setRefreshRate(Kapp->getConfig()->readNumEntry("RefreshRate", 2));
+	filterMode = FILTER_OWN;
 
-	// The default sorting is for the PID in decreasing order.
-	sortColumn = Kapp->getConfig()->readNumEntry("SortColumn", 1);
-	increasing = Kapp->getConfig()->readNumEntry("SortIncreasing", FALSE);
+	refreshRate = REFRESH_MEDIUM;
+
+	sortColumn = 1;
+	increasing = FALSE;
 
 	// load the icons we display with the processes
 	icons = new KtopIconList;
@@ -190,11 +213,17 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 
 	initTabCol();
 
+	// Create RMB popup to modify process attributes
+	processMenu = new ProcessMenu();
+	connect(this, SIGNAL(processSelected(int)),
+			processMenu, SLOT(processSelected(int)));
+	connect(processMenu, SIGNAL(requestUpdate(void)),
+			this, SLOT(update(void)));
+
 	// Create popup menu for RMB clicks on table header
 	headerPM = new QPopupMenu();
 	connect(headerPM, SIGNAL(activated(int)),
 			this, SLOT(handleRMBPopup(int)));
-	
 	headerPM->insertItem(i18n("Remove Column"), HEADER_REMOVE);
 	headerPM->insertItem(i18n("Add Column"), HEADER_ADD);
 	headerPM->insertItem(i18n("Help on Column"), HEADER_HELP);
@@ -206,15 +235,43 @@ ProcessList::~ProcessList()
 	delete icons;
 
 	// switch off timer
-	if (timerId != NONE)
-		killTimer(timerId);
+	timerOff();
 
+	delete(processMenu);
 	delete(headerPM);
+}
+
+void
+ProcessList::loadSettings(void)
+{
+	treeViewEnabled = Kapp->getConfig()->readNumEntry("TreeView",
+													  treeViewEnabled);
+	emit(treeViewChanged(treeViewEnabled));
+
+	/*
+	 * The default filter mode is 'own processes'. This can be overridden by
+	 * the config file.
+	 */
+	filterMode = Kapp->getConfig()->readNumEntry("FilterMode", filterMode);
+	emit(filterModeChanged(filterMode));
+
+	/*
+	 * The default update rate is 'medium'. This can be overridden by the
+	 * config file.
+	 */
+	setRefreshRate(Kapp->getConfig()->readNumEntry("RefreshRate",
+												   refreshRate));
+
+	// The default sorting is for the PID in decreasing order.
+	sortColumn = Kapp->getConfig()->readNumEntry("SortColumn", 1);
+	increasing = Kapp->getConfig()->readNumEntry("SortIncreasing", FALSE);
+	QListView::setSorting(sortColumn, increasing);
 }
 
 void
 ProcessList::saveSettings(void)
 {
+	Kapp->getConfig()->writeEntry("TreeView", treeViewEnabled);
 	Kapp->getConfig()->writeEntry("FilterMode", filterMode);
 	Kapp->getConfig()->writeEntry("RefreshRate", refreshRate);
 	Kapp->getConfig()->writeEntry("SortColumn", sortColumn);
@@ -224,28 +281,30 @@ ProcessList::saveSettings(void)
 void 
 ProcessList::setRefreshRate(int r)
 {
+	assert(r >= REFRESH_MANUAL && r <= REFRESH_FAST);
+
 	timerOff();
 	switch (refreshRate = r)
 	{
-	case 0:
+	case REFRESH_MANUAL:
 		break;
 
-	case 1:
+	case REFRESH_SLOW:
 		timerInterval = 20000;
 		break;
 
-	case 2:
+	case REFRESH_MEDIUM:
 		timerInterval = 7000;
 		break;
 
-	case 3:
+	case REFRESH_FAST:
 	default:
 		timerInterval = 1000;
 		break;
 	}
 
 	// only re-start the timer if auto mode is enabled
-	if (refreshRate != 0)
+	if (refreshRate != REFRESH_MANUAL)
 		timerOn();
 
 	emit(refreshRateChanged(refreshRate));
@@ -270,25 +329,8 @@ ProcessList::setSorting(int column, bool inc)
 		increasing = inc;
 	}
 
-	QListView::setSorting(column, increasing);
+	QListView::setSorting(sortColumn, increasing);
 }
-
-#if 0
-void
-ProcessList::setSortColumn(int c, bool inc)
-{
-	/*
-	 * We need to make sure that the specified column is visible. If it's not
-	 * we use the first column (PID).
-	 */
-	if ((c >= 0) && (c < MaxCols) && TabCol[c].visible)
-		sortColumn = c;
-	else
-		sortColumn = 1;
-
-	increasing = inc;
-}
-#endif
 
 int
 ProcessList::setAutoUpdateMode(bool mode)
@@ -302,7 +344,7 @@ ProcessList::setAutoUpdateMode(bool mode)
 	int oldmode = (timerId != NONE) ? TRUE : FALSE; 
 
 	// set new setting
-	if (mode && refreshRate != 0)
+	if (mode && (refreshRate != REFRESH_MANUAL))
 		timerOn();
 	else
 		timerOff();
@@ -341,13 +383,36 @@ ProcessList::load()
 	int selectedProcess = selectedPid();
 
 	clear();
+
 	ProcessLVI* newSelection = 0;
 
+	if (treeViewEnabled)
+	{
+		OSProcess* ps = pl.first();
+
+		while (ps)
+		{
+			if (ps->getPid() == INIT_PID)
+			{
+				// insert root item into the tree widget
+				ProcessLVI* pli = new ProcessLVI(this);
+				addProcess(ps, pli);
+
+				buildTree(&pl, pli, ps->getPid());
+				break;
+			}
+			else
+				ps = pl.next();
+		}
+	}
+	else
+	{
 	while (!pl.isEmpty())
 	{
 		OSProcess* p = pl.first();
 
 		// filter out processes we are not interested in
+		// This mechanism is likely to change in the future!
 		bool ignore;
 		switch (filterMode)
 		{
@@ -367,90 +432,159 @@ ProcessList::load()
 		}
 		if (!ignore)
 		{
-			/*
-			 * Get icon from icon list that might be appropriate for a process
-			 * with this name.
-			 */
-			const QPixmap* pix = icons->procIcon((const char*)p->getName());
-
 			ProcessLVI* pli = new ProcessLVI(this);
 
-			int col = 0;
-			// icon
-			pli->setPixmap(col++, *pix);
-
-			// process name
-			pli->setText(col++, p->getName());
-
-			QString s;
-
-			// pid
-			pli->setText(col++, s.setNum(p->getPid()).data());
-
-			TABCOLUMN* tc = &TabCol[2];
-
-			// user name
-			if (tc->visible && tc->supported)
-				pli->setText(col++, p->getUserName().data());
-			tc++;
-
-			// CPU load
-			if (tc->visible && tc->supported)
-				pli->setText(col++, s.sprintf("%.2f%%", 
-									p->getUserLoad() + p->getSysLoad()));
-			tc++;
-
-			// total processing time
-			if (tc->visible && tc->supported)
-			{
-				int totalTime = p->getUserTime() + p->getSysTime();
-				pli->setText(col++, s.sprintf("%d:%02d",
-											  (totalTime / 100) / 60,
-											  (totalTime / 100) % 60));
-			}
-			tc++;
-
-			// process nice level
-			if (tc->visible && tc->supported)
-				pli->setText(col++, s.sprintf("%d", p->getNiceLevel()));
-			tc++;
-
-			// process status
-			if (tc->visible && tc->supported)
-				pli->setText(col++, p->getStatusTxt());
-			tc++;
-
-			// VM size (total memory in kBytes)
-			if (tc->visible && tc->supported)
-				pli->setText(col++, s.setNum(p->getVm_size() / 1024));
-			tc++;
-
-			// VM RSS (Resident memory in kBytes)
-			if (tc->visible && tc->supported)
-				pli->setText(col++, s.setNum(p->getVm_rss() / 1024));
-			tc++;
-
-			// VM LIB (Shared memory in kBytes)
-			if (tc->visible && tc->supported)
-				pli->setText(col++, s.setNum(p->getVm_lib() / 1024));
-			tc++;
-
-			// Commandline
-			if (tc->visible && tc->supported)
-				pli->setText(col++, p->getCmdLine());
-			tc++;
+			addProcess(p, pli);
 
 			if (p->getPid() == selectedProcess)
 				newSelection = pli;
 		}
 		pl.removeFirst();
     }
-	
+	}
 	if (newSelection)
 	{
 		setSelected(newSelection, TRUE);
 		ensureItemVisible(newSelection);
 	}
+	else
+		selectedProcess = NONE;
+
+	/*
+	 * This is necessary because the selected process may has disappeared
+	 * without ktop's interaction. Since there are widgets that always need
+	 * to know the currently selected process we send out a processSelected
+	 * signal.
+	 */
+	emit(processSelected(selectedProcess));
+}
+
+void
+ProcessList::buildTree(OSProcessList* pl, ProcessLVI* parent, int ppid)
+{
+	OSProcess* ps;
+
+	// start at top list
+	ps = pl->first();
+
+	while (ps)
+	{
+		// look for a child process of the current parent
+		if (ps->getPpid() == ppid)
+		{
+			ProcessLVI* pli = new ProcessLVI(parent);
+			
+			addProcess(ps, pli);
+
+			// set parent to 'open'
+			setOpen(parent, TRUE);
+
+			// remove the process from the process list
+			pl->remove();
+
+			// now look for the childs of the inserted process
+			buildTree(pl, pli, ps->getPid());
+
+			/*
+			 * Since buildTree can remove processes from the list we can't
+			 * find a "current" process. So we start searching at the top
+			 * again. It's no endless loops since this branch is only entered
+			 * when there are childs of the current parents in the list. When
+			 * we have removed them all the while loop will exit.
+			 */
+			ps = pl->first();
+		}
+		else
+			ps = pl->next();
+	}
+	
+}
+
+void
+ProcessList::addProcess(OSProcess* p, ProcessLVI* pli)
+{
+	/*
+	 * Get icon from icon list that might be appropriate for a process
+	 * with this name.
+	 */
+	const QPixmap* pix = icons->procIcon((const char*)p->getName());
+
+	/*
+	 * We copy the icon into a 24x16 pixmap to add a 4 pixel margin on the
+	 * left and right side. In tree view mode we use the original icon.
+	 */
+	QPixmap icon(24, 16, pix->depth());
+	if (!treeViewEnabled)
+	{
+		icon.fill();
+		bitBlt(&icon, 4, 0, pix, 0, 0, pix->width(), pix->height());
+		QBitmap mask(24, 16, TRUE);
+		bitBlt(&mask, 4, 0, pix->mask(), 0, 0, pix->width(), pix->height());
+		icon.setMask(mask);
+	}
+
+	int col = 0;
+	// icon + process name
+	pli->setPixmap(col, treeViewEnabled ? *pix : icon);
+	pli->setText(col++, p->getName());
+
+	QString s;
+
+	// pid
+	pli->setText(col++, s.setNum(p->getPid()).data());
+
+	TABCOLUMN* tc = &TabCol[2];
+
+	// user name
+	if (tc->visible && tc->supported)
+		pli->setText(col++, p->getUserName().data());
+	tc++;
+
+	// CPU load
+	if (tc->visible && tc->supported)
+		pli->setText(col++, s.sprintf("%.2f%%", 
+									  p->getUserLoad() + p->getSysLoad()));
+	tc++;
+
+	// total processing time
+	if (tc->visible && tc->supported)
+	{
+		int totalTime = p->getUserTime() + p->getSysTime();
+		pli->setText(col++, s.sprintf("%d:%02d",
+									  (totalTime / 100) / 60,
+									  (totalTime / 100) % 60));
+	}
+	tc++;
+
+	// process nice level
+	if (tc->visible && tc->supported)
+		pli->setText(col++, s.sprintf("%d", p->getNiceLevel()));
+	tc++;
+
+	// process status
+	if (tc->visible && tc->supported)
+		pli->setText(col++, p->getStatusTxt());
+	tc++;
+
+	// VM size (total memory in kBytes)
+	if (tc->visible && tc->supported)
+		pli->setText(col++, s.setNum(p->getVm_size() / 1024));
+	tc++;
+
+	// VM RSS (Resident memory in kBytes)
+	if (tc->visible && tc->supported)
+		pli->setText(col++, s.setNum(p->getVm_rss() / 1024));
+	tc++;
+
+	// VM LIB (Shared memory in kBytes)
+	if (tc->visible && tc->supported)
+		pli->setText(col++, s.setNum(p->getVm_lib() / 1024));
+	tc++;
+
+	// Commandline
+	if (tc->visible && tc->supported)
+		pli->setText(col++, p->getCmdLine());
+	tc++;
 }
 
 int
@@ -458,11 +592,11 @@ ProcessList::selectedPid(void) const
 {
 	ProcessLVI* current = (ProcessLVI*) currentItem();
 
-	if (!current)
+	if (!current || !isSelected(current))
 		return (NONE);
 
-	// get PID from 3rd column of the selected row
-	QString pidStr = current->text(2);
+	// get PID from 2nd column of the selected row
+	QString pidStr = current->text(1);
 
 	return (pidStr.toInt());
 }
@@ -478,10 +612,6 @@ void
 ProcessList::initTabCol(void)
 {
 	TABCOLUMN* tc = &TabCol[0];
-
-	tc->trHeader = new char[strlen("") + 1];
-	strcpy(tc->trHeader, "");
-	tc++;
 
 	tc->trHeader = new char[strlen(i18n("Name")) + 1];
 	strcpy(tc->trHeader, i18n("Name"));
@@ -519,6 +649,7 @@ ProcessList::initTabCol(void)
 		}
 	setItemMargin(1);
 	setAllColumnsShowFocus(TRUE);
+	setTreeStepSize(17);
 	QListView::setSorting(sortColumn, increasing);
 }
 
@@ -605,7 +736,11 @@ ProcessList::mousePressEvent(QMouseEvent* e)
 			 */
 			ProcessLVI* lvi = (ProcessLVI*) itemAt(e->pos());
 			setSelected(lvi, TRUE);
-			emit(popupMenu(0, 0));
+			/*
+			 * I tried e->pos() instead of QCursor::pos() but then the menu
+			 * appears centered above the cursor which is annoying.
+			 */
+			processMenu->popup(QCursor::pos());
 		}
 	}
 	else

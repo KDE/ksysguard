@@ -32,6 +32,7 @@
 
 #include "OSProcessList.h"
 #include "ProcessTree.moc"
+#include "MainMenu.h"
 
 #define INIT_PID 1
 #define NONE -1
@@ -39,6 +40,10 @@
 ProcessTree::ProcessTree(QWidget *parent, const char *name, WFlags f)
 	: KTreeList(parent, name, f)
 {
+	connect(this, SIGNAL(highlighted(int)), SLOT(selectionChanged(int)));
+	connect(this, SIGNAL(processSelected(int)),
+			MainMenuBar, SLOT(processSelected(int)));
+
 	// configure some KTreeList settings
 	setShowItemText(true);
 	setTreeDrawing(true);
@@ -62,6 +67,13 @@ ProcessTree::ProcessTree(QWidget *parent, const char *name, WFlags f)
 
 	// set the rootProcess to the id of 'init' process
 	rootProcess = INIT_PID;
+
+	// Create RMB popup to modify process attributes
+	processMenu = new ProcessMenu();
+	connect(this, SIGNAL(processSelected(int)),
+			processMenu, SLOT(processSelected(int)));
+	connect(processMenu, SIGNAL(requestUpdate(void)),
+			this, SLOT(update(void)));
 }
 
 int
@@ -75,7 +87,7 @@ ProcessTree::selectedProcess(void)
 }
 
 void
-ProcessTree::setRootProcess(void)
+ProcessTree::changeRootProcess(void)
 {
 	int pid = selectedProcess();
 

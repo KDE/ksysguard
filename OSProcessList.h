@@ -137,7 +137,7 @@ public:
 
 private:
 	/// This function is needed by the parent class to sort the list.
-	virtual int compareItems(Item it1, Item it2);
+	virtual int compareItems(GCI it1, GCI it2);
 
 	/// This variabled stores the criteria used to sort the list.
 	SORTKEY sortCriteria;

@@ -26,6 +26,8 @@
 
 #include <kmenubar.h>
 
+#include "ProcessMenu.h"
+
 class MainMenu : public KMenuBar
 {
 	Q_OBJECT
@@ -40,6 +42,7 @@ public:
 		MENU_ID_REFRESH_SLOW,
 		MENU_ID_REFRESH_MEDIUM,
 		MENU_ID_REFRESH_FAST,
+		MENU_ID_MENU_PROCESS = 60,
 	    MENU_ID_QUIT = 20,
 		MENU_ID_HELP = 30
 	};
@@ -50,6 +53,7 @@ public:
 		delete file;
 		delete settings;
 		delete refresh;
+		delete process;
 		delete help;
 	}
 
@@ -59,18 +63,29 @@ public slots:
 	{
 		setItemEnabled(MENU_ID_MENU_REFRESH, enable);
 	}
+	void processSelected(int pid)
+	{
+		setItemEnabled(MENU_ID_MENU_PROCESS, pid >= 0);
+		process->processSelected(pid);
+	}
 
 signals:
 	void quit(void);
 	void setRefreshRate(int);
+	void requestUpdate(void);
 
 private slots:
 	void handler(int);
+	void requestUpdateSlot(void)
+	{
+		emit(requestUpdate());
+	}
 
 private:
 	QPopupMenu* file;
 	QPopupMenu* settings;
 	QPopupMenu* refresh;
+	ProcessMenu* process;
 	QPopupMenu* help;
 } ;
 

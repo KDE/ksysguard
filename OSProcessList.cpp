@@ -490,7 +490,7 @@ inline int cmp(double a, double b)
 }
 
 int
-OSProcessList::compareItems(Item it1, Item it2)
+OSProcessList::compareItems(GCI it1, GCI it2)
 {
 	OSProcess* item1 = (OSProcess*) it1;
 	OSProcess* item2 = (OSProcess*) it2;

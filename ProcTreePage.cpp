@@ -71,8 +71,6 @@ ProcTreePage::ProcTreePage(QWidget* parent = 0, const char* name = 0)
 	CHECK_PTR(pTree); 
 	pTree->setExpandLevel(20); 
 	pTree->setSmoothScrolling(TRUE);
-	connect(pTree, SIGNAL(popupMenu(QPoint)),
-			parent, SLOT(popupMenu(QPoint)));
 
 	/*
 	 * four buttons which should appear on the sheet (just below the tree box)
@@ -89,13 +87,13 @@ ProcTreePage::ProcTreePage(QWidget* parent = 0, const char* name = 0)
 	bRoot = new QPushButton(i18n("Change Root"), this, "pTree_bRoot");
 	CHECK_PTR(bRoot);
 	bRoot->setMinimumSize(bRoot->sizeHint());
-	connect(bRoot, SIGNAL(clicked()), this, SLOT(changeRoot()));
+	connect(bRoot, SIGNAL(clicked()), pTree, SLOT(changeRootProcess()));
 
 	// "Kill Task" button
 	bKill = new QPushButton(i18n("Kill Task"), this, "pTree_bKill");
 	CHECK_PTR(bKill);
 	bKill->setMinimumSize(bKill->sizeHint());
-	connect(bKill, SIGNAL(clicked()), this, SLOT(killTask()));
+	connect(bKill, SIGNAL(clicked()), pTree, SLOT(killProcess()));
 
 	// Sorting Method combo button
 	cbSort = new QComboBox(this, "pTree_cbSort");
@@ -163,7 +161,7 @@ ProcTreePage::killTask()
 		QMessageBox::warning(this, i18n("Task Manager"),
 				     i18n("You need to select a process before\n"
 					  "pressing the kill button!\n"),
-				     i18n("OK"), QString::null);   
+				     i18n("OK"), 0);
 		return;
 	}
 

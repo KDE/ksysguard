@@ -71,11 +71,6 @@ public:
 		PAGE_PTREE, 
 		PAGE_PERF
 	};
-	enum 
-	{
-		MENU_ID_PROP = 100,
-		MENU_ID_KILL
-	};
 
 	TaskMan(QWidget* parent = 0, const char* name = 0,
 			int sfolder = 0);
@@ -91,10 +86,6 @@ public:
 	void invokeSettings();
 	void raiseStartUpPage();
 	void saveSettings();
-
-	static void TaskMan_initIconList(); 
-	static void TaskMan_clearIconList();
-	static const QPixmap* TaskMan_getProcIcon(const char*);
 
 public slots:
 	void pSigHandler(int);

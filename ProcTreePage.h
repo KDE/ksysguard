@@ -65,7 +65,6 @@ public:
 		delete pTree;
 
 		delete gm;
-		delete gm1;
 	}
 
 	void resizeEvent(QResizeEvent* ev);
@@ -77,6 +76,11 @@ public:
 	int selectionPid(void)
 	{
 		return (pTree->selectedProcess());
+	}
+
+	void clearSelection(void)
+	{
+		pTree->clearSelection();
 	}
 
 	void saveSettings(void)
@@ -96,11 +100,6 @@ public slots:
 	}
 
 	void handleSortChange(int idx);
-
-	void changeRoot()
-	{  
-		pTree->setRootProcess();
-	}
 
 	void killTask();
 

@@ -53,10 +53,10 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
 	settings = NULL;
 	restoreStartupPage = FALSE;
 
-	//setStyle(WindowsStyle); //MR: commented this out because it doesn´t exsist anymore in Qt2.0
+	setStyle(WindowsStyle);
 
     // Delete the OK button, it is created by default by the constructor.
-	setOkButton( QString::null );
+	setOkButton(0);
 
 	connect(tabBar(), SIGNAL(selected(int)), SLOT(tabBarSelected(int)));
 
@@ -85,8 +85,6 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
      */
     pages[0] = procListPage = new ProcListPage(this, "ProcListPage");
     CHECK_PTR(procListPage);
-	connect(procListPage, SIGNAL(killProcess(int)),
-			this, SLOT(killProcess(int)));
 	
 	/*
 	 * set up page 1 (process tree)
@@ -187,11 +185,6 @@ TaskMan::pSigHandler(int id)
 	int pid;
 	switch (tabBar()->currentTab())
 	{
-	case PAGE_PLIST:
-		pid = procListPage->selectionPid();
-		if (pid == NONE)
-			return;
-		break;
 	case PAGE_PTREE:
 		pid = procTreePage->selectionPid();
 		if (pid == NONE)
@@ -230,16 +223,20 @@ TaskMan::tabBarSelected(int tabIndx)
 	switch (tabIndx)
 	{
 	case PAGE_PLIST:
+		procListPage->clearSelection();
 		procListPage->setAutoUpdateMode(TRUE);
 		procListPage->update();
 		emit(enableRefreshMenu(TRUE));
 		break;
 	case PAGE_PTREE:
+		procTreePage->clearSelection();
 		procListPage->setAutoUpdateMode(FALSE);
 		procTreePage->update();
 		emit(enableRefreshMenu(FALSE));
 		break;
 	case PAGE_PERF:
+		procListPage->clearSelection();
+		procTreePage->clearSelection();
 		procListPage->setAutoUpdateMode(FALSE);
 		emit(enableRefreshMenu(FALSE));
 		break;
@@ -258,13 +255,12 @@ TaskMan::killProcess(int pid, int sig, const char* sigName)
 		    sigName, ps.getPid(),
 		    ps.getName(), ps.getUserName().data());
 	switch(QMessageBox::warning(this, "Task Manager", msg,
-				    i18n("Continue"), i18n("Abort"), 
-				    QString::null, 1))
+				    i18n("Continue"), i18n("Abort"), 0, 1))
     { 
 	case 0: // continue
 		if (!ps.sendSignal(sig))
 		  QMessageBox::warning(this, "Task Manager", ps.getErrMessage(),
-				       i18n("Continue"), QString::null);
+				       i18n("Continue"), 0);
 		break;
 
 	case 1: // abort
@@ -285,7 +281,7 @@ TaskMan::reniceProcess(int pid)
 				     i18n("Renice error...\n"
 					  "Specified process does not exist\n"
 					  "or permission denied."),
-				     i18n("OK"), QString::null); 
+				     i18n("OK"), 0); 
 		return;
 	}
 
@@ -303,7 +299,7 @@ TaskMan::reniceProcess(int pid)
 					     i18n("Renice error...\n"
 						  "Specified process does not exist\n"
 						  "or permission denied."),
-					     i18n("OK"), QString::null);   
+					     i18n("OK"), 0);
 		}
 	}
 }

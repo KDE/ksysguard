@@ -30,6 +30,7 @@
 
 #include "IconList.h"
 #include "OSProcessList.h"
+#include "ProcessMenu.h"
 
 class ProcessTree : public KTreeList
 {
@@ -40,9 +41,8 @@ public:
     ~ProcessTree()
 	{
 		delete icons;
+		delete processMenu;
 	}
-
-	void update();
 
 	void setSortMethod(OSProcessList::SORTKEY m)
 	{
@@ -51,16 +51,38 @@ public:
 
 	int selectedProcess(void);
 
-	void setRootProcess(void);
+	void clearSelection(void)
+	{
+		if (currentItem() >= 0)
+			setCurrentItem(-1);
+		emit processSelected(-1);
+	}
+
+public slots:
+	void update();
+
+	void killProcess(void)
+	{
+		processMenu->killProcess(selectedProcess());
+		update();
+	}
+
+	void changeRootProcess(void);
 
 signals:
-	void popupMenu(QPoint);
+	void processSelected(int);
 
 protected:
 	virtual void mouseReleaseEvent (QMouseEvent* e)
 	{
 		if ((currentItem() >= 0) && (e->button() == RightButton))
-			emit popupMenu(e->pos());
+			processMenu->popup(QCursor::pos());
+	}
+
+private slots:
+	void selectionChanged(int)
+	{
+		emit(processSelected(selectedProcess()));
 	}
 
 private:
@@ -79,6 +101,8 @@ private:
 	QList<int> pids;
 
 	int rootProcess;
+
+	ProcessMenu* processMenu;
 };
 
 #endif
