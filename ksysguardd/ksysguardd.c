@@ -209,6 +209,7 @@ static void dropPrivileges( void )
 
 void makeDaemon( void )
 {
+  int fd = -1;
   switch ( fork() ) {
     case -1:
       log_error( "fork() failed" );
@@ -222,6 +223,14 @@ void makeDaemon( void )
 
       dropPrivileges();
       installSignalHandler();
+      
+      fd = open("/dev/null", O_RDWR, 0); 
+      if (fd != -1) {
+          dup2(fd, STDIN_FILENO);
+          dup2(fd, STDOUT_FILENO);
+          dup2(fd, STDERR_FILENO);
+          close (fd);
+      }
       break;
     default:
       exit( 0 );
