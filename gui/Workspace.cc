@@ -189,7 +189,7 @@ void Workspace::loadWorkSheet( const KURL &url )
    * transparent. Unless s/o beats me up I use this pseudo transparent
    * code. */
   QString tmpFile;
-  KIO::NetAccess::download( url, tmpFile );
+  KIO::NetAccess::download( url, tmpFile, this );
   mWorkDir = tmpFile.left( tmpFile.findRev( '/' ) );
 
   // Load sheet from file.
