@@ -1,5 +1,3 @@
-AM_CFLAGS = -Wall
-
 INCLUDES = -I$(srcdir)/../../CContLib -I..
 
 noinst_LIBRARIES = libksysguardd.a
