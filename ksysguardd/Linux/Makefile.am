@@ -1,4 +1,5 @@
 INCLUDES = -I$(srcdir)/../../CContLib
+CPPFLAGS = -D_GNU_SOURCE
 CFLAGS = -Wall $(CONFIGFLAGS)
 
 bin_PROGRAMS = ksysguardd
