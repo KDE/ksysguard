@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=KSysGuard
+Comment=The KDE System Guard Applet.
+X-KDE-Library=libksysguardapplet
+X-KDE-UniqueApplet=true

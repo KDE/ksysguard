@@ -47,6 +47,8 @@ SensorManager::SensorManager()
 	units.insert("kBytes", new QString(i18n("kBytes")));
 	units.insert("min", new QString(i18n("the unit minutes", "min")));
 	units.insert("MHz", new QString(i18n("the frequency unit", "MHz")));
+
+	broadcaster = 0;
 }
 
 SensorManager::~SensorManager()
@@ -130,11 +132,14 @@ SensorManager::hostLost(const SensorAgent* sensor)
 {
 	emit hostConnectionLost(sensor->getHostName());
 
-	QCustomEvent* ev = new QCustomEvent(QEvent::User);
-	ev->setData(new QString(
-		i18n("Connection to %1 has been lost!")
-		.arg(sensor->getHostName())));
-	kapp->postEvent(Toplevel, ev);
+	if (broadcaster)
+	{
+		QCustomEvent* ev = new QCustomEvent(QEvent::User);
+		ev->setData(new QString(
+			i18n("Connection to %1 has been lost!")
+			.arg(sensor->getHostName())));
+		kapp->postEvent(broadcaster, ev);
+	}
 }
 
 void

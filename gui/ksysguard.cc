@@ -521,6 +521,7 @@ main(int argc, char** argv)
 		else
 			Toplevel->readProperties(a->config());
 	}
+	SensorMgr->setBroadcaster(Toplevel);
 	if (KMainWindow::memberList->first())
 	{
 		a->dcopClient()->registerAs("ksysguard", FALSE);

@@ -1,0 +1,111 @@
+/*
+    KSysGuard, the KDE System Guard
+   
+	Copyright (c) 1999, 2000 Chris Schlaeger
+	                   cs@kde.org
+    
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	KSysGuard is currently maintained by Chris Schlaeger
+	<cs@kde.org>. Please do not commit any changes without consulting
+	me first. Thanks!
+
+	$Id$
+*/
+
+#include <kglobal.h>
+#include <klocale.h>
+
+#include "SensorManager.h"
+#include "FancyPlotter.h"
+#include "KSysGuardApplet.moc"
+
+extern "C"
+{
+	KPanelApplet* init(QWidget *parent, const QString& configFile)
+	{
+		KGlobal::locale()->insertCatalogue("ksysguardapplet");
+		return new KSysGuardApplet(configFile, KPanelApplet::Normal,
+								   0, parent,
+								   "ksysguardapplet");
+    }
+}
+
+KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
+								 int actions, QWidget *parent,
+								 const char *name)
+    : KPanelApplet(configFile, t, actions, parent, name)
+{
+	dockCnt = 0;
+	/* Workaround for a kicker race problem. If we do not show up fast
+	 * enough kicker will not embed the widget, but put it in a "Applet
+	 * proxy" window instead. */
+	show();
+
+	SensorMgr = new SensorManager();
+	CHECK_PTR(SensorMgr);
+	SensorMgr->engage("localhost", "", "ksysguardd");
+
+	dockCnt = 2;
+	docks = new SensorDisplay*[dockCnt];
+	docks[0] = new FancyPlotter(this, "LoadMeter", "Load", 100.0, 100.0, true);
+	docks[0]->addSensor("localhost", "cpu/user", "Load");
+	docks[0]->addSensor("localhost", "cpu/sys", "Load");
+	docks[0]->addSensor("localhost", "cpu/nice", "Load");
+
+	docks[1] = new FancyPlotter(this, "Memory", "Memory", 100.0, 100.0, true);
+	docks[1]->addSensor("localhost", "mem/physical/application", "Memory");
+	docks[1]->addSensor("localhost", "mem/physical/buf", "Memory");
+	docks[1]->addSensor("localhost", "mem/physical/cached", "Memory");
+
+	for (uint i = 0; i < dockCnt; ++i)
+		docks[i]->show();
+}
+
+KSysGuardApplet::~KSysGuardApplet()
+{
+	delete SensorMgr;
+}
+
+int
+KSysGuardApplet::widthForHeight(int h) const
+{
+	return (h * dockCnt);
+}
+
+int
+KSysGuardApplet::heightForWidth(int w) const
+{
+	return (w * dockCnt);
+}
+
+void
+KSysGuardApplet::resizeEvent(QResizeEvent*)
+{
+	layout();
+}
+
+void
+KSysGuardApplet::layout()
+{
+	int w = width();
+	int h = height();
+
+	if (orientation() == Horizontal)
+		for (uint i = 0; i < dockCnt; ++i)
+			docks[i]->setGeometry(i * h, 0, h, h);
+	else
+		for (uint i = 0; i < dockCnt; ++i)
+			docks[i]->setGeometry(0, i * w, w, w);
+}

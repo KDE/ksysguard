@@ -51,6 +51,10 @@ public:
 	bool disengage(const QString& hostname);
 	bool resynchronize(const QString& hostname);
 	void hostLost(const SensorAgent* sensor);
+	void setBroadcaster(QWidget* bc)
+	{
+		broadcaster = bc;
+	}
 
 	bool sendRequest(const QString& hostname, const QString& req,
 					 SensorClient* client, int id = 0);
@@ -83,6 +87,7 @@ private:
 	 */
 	QDict<QString> descriptions;
 	QDict<QString> units;
+	QWidget* broadcaster;
 } ;
 
 extern SensorManager* SensorMgr;

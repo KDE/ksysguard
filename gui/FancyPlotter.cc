@@ -39,10 +39,12 @@
 #include "FancyPlotter.moc"
 
 FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
-						   const QString& title, double min, double max)
-	: SensorDisplay(parent, name)
+						   const QString& title, double min, double max,
+						   bool nf)
+	: SensorDisplay(parent, name), noFrame(nf)
 {
-	meterFrame = new QGroupBox(1, Qt::Vertical, title, this, "meterFrame"); 
+	meterFrame = new QGroupBox(1, Qt::Vertical, title, this,
+							   "meterFrame"); 
 	CHECK_PTR(meterFrame);
 	if (!title.isEmpty())
 		meterFrame->setTitle(title);
@@ -50,7 +52,10 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 	beams = 0;
 	flags = 0;
 
-	plotter = new SignalPlotter(meterFrame, "signalPlotter", min, max);
+	if (noFrame)
+		plotter = new SignalPlotter(this, "signalPlotter", min, max);
+	else
+		plotter = new SignalPlotter(meterFrame, "signalPlotter", min, max);
 	CHECK_PTR(plotter);
 
 	setMinimumSize(sizeHint());
@@ -64,8 +69,6 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 
 FancyPlotter::~FancyPlotter()
 {
-	delete plotter;
-	delete meterFrame;
 }
 
 void
@@ -132,13 +135,19 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 void
 FancyPlotter::resizeEvent(QResizeEvent*)
 {
-	meterFrame->setGeometry(0, 0, width(), height());
+	if (noFrame)
+		plotter->setGeometry(0, 0, width(), height());
+	else
+		meterFrame->setGeometry(0, 0, width(), height());
 }
 
 QSize
 FancyPlotter::sizeHint(void)
 {
-	return (meterFrame->sizeHint());
+	if (noFrame)
+		return (plotter->sizeHint());
+	else
+		return (meterFrame->sizeHint());
 }
 
 void
