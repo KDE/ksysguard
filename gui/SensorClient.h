@@ -26,7 +26,7 @@
 #define _SensorClient_h_
 
 #include <qstring.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 /**
  * Every object that should act as a client to a sensor must inherit from
@@ -97,7 +97,7 @@ public:
 	unsigned numberOfTokens() { return (tokens.count()); }
 
 private:
-	QList<QString> tokens;
+	QPtrList<QString> tokens;
 } ;
 
 /**

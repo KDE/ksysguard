@@ -90,7 +90,7 @@ StyleEngine::saveProperties(KConfig* cfg)
 	cfg->writeEntry("backgroundColor", backgroundColor);
 	cfg->writeEntry("fontSize", fontSize);
 	QStringList sl;
-	QListIterator<QColor> it = sensorColors;
+	QPtrListIterator<QColor> it = sensorColors;
 	for ( ; it; ++it)
 		sl.append((*it)->name());
 	cfg->writeEntry("sensorColors", sl);

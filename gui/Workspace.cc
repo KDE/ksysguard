@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE Task Manager and System Monitor
-   
+
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -71,7 +71,7 @@ Workspace::saveProperties(KConfig* cfg)
 	cfg->writeEntry("CurrentSheet", tabLabel(currentPage()));
 
 	QString sheetList;
-	QListIterator<WorkSheet> it(sheets);
+	QPtrListIterator<WorkSheet> it(sheets);
 	int i;
 	QStringList list;
 	for (i = 0; it.current(); ++it, ++i)
@@ -118,7 +118,7 @@ Workspace::readProperties(KConfig* cfg)
 	}
 
 	// Determine visible sheet.
-	QListIterator<WorkSheet> it(sheets);
+	QPtrListIterator<WorkSheet> it(sheets);
 	for (; it.current(); ++it)
 		if (currentSheet == tabLabel(*it))
 		{
@@ -138,7 +138,7 @@ Workspace::newWorkSheet()
 	do
 	{
 		sheetName = QString(i18n("Sheet %1")).arg(i++);
-		QListIterator<WorkSheet> it(sheets);
+		QPtrListIterator<WorkSheet> it(sheets);
 		found = FALSE;
 		for (; it.current() && !found; ++it)
 			if (tabLabel(*it) == sheetName)
@@ -168,7 +168,7 @@ Workspace::newWorkSheet()
 bool
 Workspace::saveOnQuit()
 {
-	QListIterator<WorkSheet> it(sheets);
+	QPtrListIterator<WorkSheet> it(sheets);
 	for (; it.current(); ++it)
 		if ((*it)->hasBeenModified())
 		{
@@ -338,7 +338,7 @@ Workspace::deleteWorkSheet()
 void
 Workspace::deleteWorkSheet(const QString& fileName)
 {
-	QListIterator<WorkSheet> it(sheets);
+	QPtrListIterator<WorkSheet> it(sheets);
 	for (; it.current(); ++it)
 		if ((*it)->getFileName() == fileName)
 		{

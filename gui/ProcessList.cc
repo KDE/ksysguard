@@ -1,13 +1,13 @@
 /*
     KSysGuard, the KDE Task Manager
-   
+
     Copyright (C) 1997 Bernd Johannes Wuebben
                        <wuebben@math.cornell.edu>
 
     Copyright (C) 1998 Nicolas Leclercq <nicknet@planete.net>
 
 	Copyright (c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -301,7 +301,7 @@ ProcessList::~ProcessList()
 	delete(headerPM);
 }
 
-const QValueList<int>& 
+const QValueList<int>&
 ProcessList::getSelectedPIds()
 {
 	selectedPIds.clear();
@@ -344,7 +344,7 @@ ProcessList::update(const QString& list)
 	int currItemPos = itemRect(currentItem()).y();
 	int vpos = verticalScrollBar()->value();
 	int hpos = horizontalScrollBar()->value();
-	
+
 	updateMetaInfo();
 
 	clear();
@@ -557,7 +557,7 @@ ProcessList::isLeafProcess(int pid)
 }
 
 void
-ProcessList::extendTree(QList<SensorPSLine>* pl, ProcessLVI* parent, int ppid)
+ProcessList::extendTree(QPtrList<SensorPSLine>* pl, ProcessLVI* parent, int ppid)
 {
 	SensorPSLine* ps;
 
@@ -570,7 +570,7 @@ ProcessList::extendTree(QList<SensorPSLine>* pl, ProcessLVI* parent, int ppid)
 		if (ps->getPPid() == ppid)
 		{
 			ProcessLVI* pli = new ProcessLVI(parent);
-			
+
 			addProcess(ps, pli);
 
 			if (selectedPIds.findIndex(ps->getPid()) != -1)
@@ -791,7 +791,7 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 	processPM->insertItem(i18n("Show column"), hiddenPM);
 
 	processPM->insertSeparator();
-	
+
 	processPM->insertItem(i18n("Select all processes"), 1);
 	processPM->insertItem(i18n("Unselect all processes"), 2);
 

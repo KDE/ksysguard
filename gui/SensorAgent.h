@@ -23,7 +23,7 @@
 #define _SensorAgent_h_
 
 #include <qobject.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 class QString;
 class KProcess;
@@ -104,8 +104,8 @@ private:
 	virtual bool txReady() = 0;
 
 	int state;
-	QList<SensorRequest> inputFIFO;
-	QList<SensorRequest> processingFIFO;
+	QPtrList<SensorRequest> inputFIFO;
+	QPtrList<SensorRequest> processingFIFO;
 	QString answerBuffer;
 	QString errorBuffer;
 } ;

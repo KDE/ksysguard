@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE Task Manager and System Monitor
-   
+
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -78,7 +78,7 @@ SensorBrowser::~SensorBrowser()
 void
 SensorBrowser::disconnect()
 {
-	QListIterator<HostInfo> it(hostInfos);
+	QPtrListIterator<HostInfo> it(hostInfos);
 
 	for (; it.current(); ++it)
 		if ((*it)->getLVI()->isSelected())
@@ -148,7 +148,7 @@ SensorBrowser::answerReceived(int id, const QString& s)
 	   ps	table
 	*/
 
-	QListIterator<HostInfo> it(hostInfos);
+	QPtrListIterator<HostInfo> it(hostInfos);
 
 	/* Check if id is still valid. It can get obsolete by rapid calls
 	 * of update() or when the sensor died. */
@@ -183,7 +183,7 @@ SensorBrowser::answerReceived(int id, const QString& s)
 		 * the sensor user in the cpu node. There is no limit for the
 		 * depth of nodes. */
 		SensorTokenizer absolutePath(sensorName, '/');
-		
+
 		QListViewItem* parent = (*it)->getLVI();
 		for (unsigned int j = 0; j < absolutePath.numberOfTokens(); ++j)
 		{
@@ -246,7 +246,7 @@ SensorBrowser::viewportMouseMoveEvent(QMouseEvent* ev)
 		return;		// no item under cursor
 
 	// Make sure that a sensor and not a node or hostname has been picked.
-	QListIterator<HostInfo> it(hostInfos);
+	QPtrListIterator<HostInfo> it(hostInfos);
 	for ( ; it.current() && !(*it)->isRegistered(item); ++it)
 		;
 	if (!it.current())
@@ -270,7 +270,7 @@ SensorBrowser::listHosts()
 {
 	QStringList hostList;
 
-	QListIterator<HostInfo> it(hostInfos);
+	QPtrListIterator<HostInfo> it(hostInfos);
 	for ( ; it.current(); ++it)
 	{
 		hostList.append((*it)->getHostName());
@@ -284,7 +284,7 @@ SensorBrowser::listSensors(const QString& hostName)
 {
 	QStringList sensorList;
 
-	QListIterator<HostInfo> it(hostInfos);
+	QPtrListIterator<HostInfo> it(hostInfos);
 	for ( ; it.current(); ++it)
 	{
 		if ((*it)->getHostName() == hostName) {

@@ -114,7 +114,7 @@ public:
 
 	const QString& getSensorName(const QListViewItem* lvi) const
 	{
-		QListIterator<SensorInfo> it(sensors);
+		QPtrListIterator<SensorInfo> it(sensors);
 		for ( ; it.current() && (*it)->getLVI() != lvi; ++it)
 			;
 		assert(it.current());
@@ -124,14 +124,14 @@ public:
 
 	void appendSensors(QStringList& l)
 	{
-		QListIterator<SensorInfo> it(sensors);
+		QPtrListIterator<SensorInfo> it(sensors);
 		for ( ; it.current(); ++it)
 			l.append(it.current()->getName());
 	}
 
 	const QString& getSensorType(const QListViewItem* lvi) const
 	{
-		QListIterator<SensorInfo> it(sensors);
+		QPtrListIterator<SensorInfo> it(sensors);
 		for ( ; it.current() && (*it)->getLVI() != lvi; ++it)
 			;
 		assert(it.current());
@@ -141,7 +141,7 @@ public:
 
 	const QString& getSensorDescription(const QListViewItem* lvi) const
 	{
-		QListIterator<SensorInfo> it(sensors);
+		QPtrListIterator<SensorInfo> it(sensors);
 		for ( ; it.current() && (*it)->getLVI() != lvi; ++it)
 			;
 		assert(it.current());
@@ -159,7 +159,7 @@ public:
 
 	bool isRegistered(const QString& name) const
 	{
-		QListIterator<SensorInfo> it(sensors);
+		QPtrListIterator<SensorInfo> it(sensors);
 		for ( ; it.current(); ++it)
 			if ((*it)->getName() == name)
 				return (true);
@@ -169,7 +169,7 @@ public:
 
 	bool isRegistered(QListViewItem* lvi) const
 	{
-		QListIterator<SensorInfo> it(sensors);
+		QPtrListIterator<SensorInfo> it(sensors);
 		for ( ; it.current(); ++it)
 			if ((*it)->getLVI() == lvi)
 				return (true);
@@ -187,7 +187,7 @@ private:
 	/// pointer to the entry in the browser QListView
 	QListViewItem* lvi;
 
-	QList<SensorInfo> sensors;
+	QPtrList<SensorInfo> sensors;
 } ;
 	
 /**
@@ -219,7 +219,7 @@ private:
 
 	SensorManager* sensorManager;
 
-	QList<HostInfo> hostInfos;
+	QPtrList<HostInfo> hostInfos;
 
 	// This string stores the drag object.
 	QString dragText;

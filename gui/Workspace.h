@@ -27,7 +27,7 @@
 
 #include <qtabwidget.h>
 #include <qstring.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 #include <kurl.h>
 
@@ -78,7 +78,7 @@ signals:
 	void setCaption(const QString& text, bool modified);
 
 private:
-	QList<WorkSheet> sheets;
+	QPtrList<WorkSheet> sheets;
 	/// Directory that was used for the last load/save.
 	QString workDir;
 	bool autoSave;

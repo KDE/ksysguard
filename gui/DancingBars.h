@@ -51,7 +51,7 @@ public:
 				const QString& sensorType, const QString& title);
 	bool removeSensor(uint idx);
 
-	void updateSamples(const QArray<double>& newSamples)
+	void updateSamples(const QMemArray<double>& newSamples)
 	{
 		plotter->updateSamples(newSamples);
 	}
@@ -93,7 +93,7 @@ private:
 	 * samples for each beam until all samples of the period have been
 	 * received. The flags variable is used to ensure that all samples have
 	 * been received. */
-	QArray<double> sampleBuf;
+	QMemArray<double> sampleBuf;
 	ulong flags;
 	bool noFrame;
 } ;

@@ -27,7 +27,7 @@
 
 #include "qobject.h"
 #include "qcolor.h"
-#include "qlist.h"
+#include "qptrlist.h"
 
 class KConfig;
 class QListBoxItem;
@@ -100,7 +100,7 @@ private:
 	QColor alarmColor;
 	QColor backgroundColor;
 	uint fontSize;
-	QList<QColor> sensorColors;
+	QPtrList<QColor> sensorColors;
 } ;
 
 extern StyleEngine* Style;

@@ -235,7 +235,7 @@ private:
 	 * removing processes from the process list an inserting them into
 	 * the tree.
 	 */
-	void extendTree(QList<SensorPSLine>* pl, ProcessLVI* parent, int ppid);
+	void extendTree(QPtrList<SensorPSLine>* pl, ProcessLVI* parent, int ppid);
 
 	/**
 	 * This function adds a process to the list/tree.
@@ -275,7 +275,7 @@ private:
 	QValueList<int> currentWidth;
 	QValueList<int> index;
 
-	QList<SensorPSLine> pl;
+	QPtrList<SensorPSLine> pl;
 
 	QStringList columnTypes;
 	QDict<QString> columnDict;

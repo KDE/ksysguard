@@ -92,7 +92,7 @@ private:
 
 	KStatusBar* statusbar;
 
-	QList<DCOPClientTransaction> dcopFIFO;
+	QPtrList<DCOPClientTransaction> dcopFIFO;
 
 	QSplitter* splitter;
 	KRecentFilesAction* openRecent;
@@ -108,7 +108,7 @@ extern TopLevel* Toplevel;
 
 /*
    since there is only a forward declaration of DCOPClientTransaction
-   in dcopclient.h we have to redefine it here, otherwise QList
+   in dcopclient.h we have to redefine it here, otherwise QPtrList
    causes errors
 */
 typedef unsigned long CARD32;

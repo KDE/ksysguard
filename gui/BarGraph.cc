@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE Task Manager and System Monitor
-   
+
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation
@@ -92,7 +92,7 @@ BarGraph::removeBar(uint idx)
 }
 
 void
-BarGraph::updateSamples(const QArray<double>& newSamples)
+BarGraph::updateSamples(const QMemArray<double>& newSamples)
 {
 	samples = newSamples;
 	update();
@@ -105,7 +105,7 @@ BarGraph::changeRange(double min, double max)
 	maxValue = max;
 }
 
-void 
+void
 BarGraph::paintEvent(QPaintEvent*)
 {
 	int w = width();
@@ -176,7 +176,7 @@ BarGraph::paintEvent(QPaintEvent*)
 						   footers[b]);
 		}
 	}
-	
+
 	if (!sensorOk)
 		p.drawPixmap(2, 2, errorIcon);
 

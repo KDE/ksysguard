@@ -26,8 +26,8 @@
 #define _BarGraph_h_
 
 #include <qwidget.h>
-#include <qvector.h>
-#include <qarray.h>
+#include <qptrvector.h>
+#include <qmemarray.h>
 
 class BarGraph : public QWidget
 {
@@ -42,7 +42,7 @@ public:
 	bool addBar(const QString& footer);
 	bool removeBar(uint idx);
 
-	void updateSamples(const QArray<double>& newSamples);
+	void updateSamples(const QMemArray<double>& newSamples);
 
 	double getMin() const
 	{
@@ -89,7 +89,7 @@ private:
 	double upperLimit;
 	bool upperLimitActive;
 	bool autoRange;
-	QArray<double> samples;
+	QMemArray<double> samples;
 	QStringList footers;
 	uint bars;
 	QColor normalColor;
