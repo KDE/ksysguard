@@ -31,6 +31,8 @@ class QGridLayout;
 class QDragEnterEvent;
 class QDropEvent;
 class QString;
+class QDomElement;
+class QTextStream;
 class SensorDisplay;
 
 /**
@@ -47,8 +49,13 @@ public:
 	WorkSheet(QWidget* parent, int rows, int columns);
 	~WorkSheet();
 
-	void addDisplay(const QString& hostname, const QString& monitor,
-					const QString& sensorType, int r, int c);
+	bool load(QDomElement& domElem);
+	bool save(QTextStream& s, const QString& name);
+
+	SensorDisplay* addDisplay(const QString& hostname,
+							  const QString& monitor,
+							  const QString& sensorType, int r, int c,
+							  const QString& displayType = QString::null);
 
 public slots:
 	void removeDisplay(SensorDisplay* display);
@@ -70,5 +77,3 @@ private:
 } ;
 
 #endif
-
-

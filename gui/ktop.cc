@@ -128,6 +128,7 @@ TopLevel::TopLevel(const char *name)
     KStdAction::openNew(ws, SLOT(newWorkSheet()), actionCollection());
     KStdAction::open(ws, SLOT(loadWorkSheet()), actionCollection());
 	KStdAction::close(ws, SLOT(deleteWorkSheet()), actionCollection());
+	KStdAction::save(ws, SLOT(saveWorkSheet()), actionCollection());
 	KStdAction::quit(this, SLOT(quitApp()), actionCollection());
 
     (void) new KAction(i18n("C&onnect Host"), "connect_established", 0,

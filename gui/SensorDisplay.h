@@ -32,6 +32,9 @@
 
 #define NONE -1
 
+class QDomElement;
+class QTextStream;
+
 /**
  * This class is the base class for all displays for sensors. A
  * display is any kind of widget that can display the value of one or
@@ -49,7 +52,7 @@ public:
 	void registerSensor(const QString& hostName, const QString& sensorName);
 	virtual bool addSensor(const QString&, const QString&, const QString&)
 	{
-		return (false);
+		return (FALSE);
 	}
 
 	/**
@@ -59,6 +62,16 @@ public:
 	 * handling by removing the display of necessary.
 	 */
 	void sendRequest(const QString& hostName, const QString& cmd, int id);
+
+	virtual bool load(QDomElement&)
+	{
+		return (TRUE);
+	}
+
+	virtual bool save(QTextStream&)
+	{
+		return (TRUE);
+	}
 
 public slots:
 	/**
@@ -93,13 +106,13 @@ signals:
 protected:
 	virtual void timerEvent(QTimerEvent*);
 
+	QList<const QString> hostNames;
+	QList<const QString> sensorNames;
+
 private:
 	int timerId;
 
 	int timerInterval;
-
-	QList<const QString> hostNames;
-	QList<const QString> sensorNames;
 } ;
 
 #endif

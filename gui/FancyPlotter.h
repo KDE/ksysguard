@@ -62,6 +62,9 @@ public:
 
 	virtual void answerReceived(int id, const QString& s);
 
+	bool load(QDomElement& el);
+	bool save(QTextStream& s);
+
 protected:
 	virtual void resizeEvent(QResizeEvent*);
 

@@ -38,13 +38,15 @@ public:
 	Workspace(QWidget* parent, const char* name = 0);
 	~Workspace() { }
 
-	void addSheet(const QString& title, int columns = 1, int columns = 1);
+	WorkSheet* addSheet(const QString& title, int columns = 1,
+						int columns = 1);
 
 	void saveProperties();
 
 public slots:
 	void newWorkSheet();
 	void loadWorkSheet();
+	void saveWorkSheet();
 	void deleteWorkSheet();
 
 private:

@@ -24,6 +24,8 @@
 */
 
 #include <qdragobject.h>
+#include <qdom.h>
+#include <qtextstream.h>
 
 #include <kmessagebox.h>
 #include <klocale.h>
@@ -64,16 +66,88 @@ WorkSheet::~WorkSheet()
 	delete [] displays;
 }
 
-void
+bool
+WorkSheet::load(QDomElement& domElem)
+{
+	debug("WorkSheet::load");
+	QDomNodeList dnList = domElem.elementsByTagName("display");
+	for (uint i = 0; i < dnList.count(); ++i)
+	{
+		QDomElement element = dnList.item(i).toElement();
+		int row = element.attribute("row").toUInt();
+		int column = element.attribute("column").toUInt();
+		if (row >= rows || column >= columns)
+		{
+			debug("Row or Column out of range (%d/%d)", row, column);
+			return (FALSE);
+		}
+
+		QString classType = element.attribute("class");
+		debug("adding %s", classType.latin1());
+		SensorDisplay* newDisplay;
+		if (classType == "FancyPlotter")
+			newDisplay = new FancyPlotter(this, 0);
+		else if (classType == "ProcessController")
+			newDisplay = new ProcessController(this);
+		else
+		{
+			debug("Unkown class %s", classType.latin1());
+			return (FALSE);
+		}
+		CHECK_PTR(newDisplay);
+			
+		if (!newDisplay->load(element))
+			return (FALSE);
+
+		// remove the old display at this location
+		delete displays[row][column];
+		// insert new display
+		lm->addWidget(newDisplay, row, column);
+		newDisplay->show();
+		displays[row][column] = newDisplay;
+		connect(newDisplay, SIGNAL(removeDisplay(SensorDisplay*)),
+				this, SLOT(removeDisplay(SensorDisplay*)));
+	}
+
+	return (TRUE);
+}
+
+bool
+WorkSheet::save(QTextStream& s, const QString& name)
+{
+	s << "<WorkSheet name=\"" << name << "\" "
+	  << "rows=\"" << rows << "\" "
+	  << "columns=\"" << columns << "\">\n";
+
+	for (int i = 0; i < rows; ++i)
+		for (int j = 0; j < columns; ++j)
+			if (!displays[i][j]->isA("QGroupBox"))
+			{
+				SensorDisplay* display = (SensorDisplay*) displays[i][j];
+
+				s << "<display row=\"" << i << "\" "
+				  << "column=\"" << j << "\" "
+				  << "class=\"" << display->className() << "\" ";
+
+				display->save(s);
+
+				s << "</display>\n";
+			}	
+	s << "</WorkSheet>\n";
+
+	return (TRUE);
+}
+
+SensorDisplay*
 WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
-					  const QString& sensorType, int r, int c)
+					  const QString& sensorType,
+					  int r, int c, const QString& /*displayType*/)
 {
 	if (!SensorMgr->engage(hostName))
 	{
-		QString msg = i18n("Unknown hostname \'%1\' or sensor \'%2\'!")
-			.arg(hostName).arg(sensorName);
+		QString msg = i18n("Unknown hostname \'%1\'!").arg(hostName);
 		KMessageBox::error(this, msg);
-		return;
+		return (0);
 	}
 
 	/* If the by 'r' and 'c' specified display is a QGroupBox dummy
@@ -93,7 +167,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 		else
 		{
 			debug("Unkown sensor type: " + sensorType);
-			return;
+			return (0);
 		}
 
 		// remove the old display at this location
@@ -108,6 +182,8 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 
 	((SensorDisplay*) displays[r][c])->
 		addSensor(hostName, sensorName, "Unused");
+
+	return ((SensorDisplay*) displays[r][c]);
 }
 
 void

@@ -23,6 +23,8 @@
 */
 
 #include <qgroupbox.h>
+#include <qtextstream.h>
+#include <qdom.h>
 
 #include <kapp.h>
 #include <klocale.h>
@@ -148,4 +150,32 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 		multiMeter->updateValues(s[0], s[1], s[2], s[3], s[4]);
 		plotter->addSample(s[0], s[1], s[2], s[3], s[4]);
 	}
+}
+
+bool
+FancyPlotter::load(QDomElement& domElem)
+{
+	QDomNodeList dnList = domElem.elementsByTagName("beam");
+	for (uint i = 0; i < dnList.count(); ++i)
+	{
+		QDomElement el = dnList.item(i).toElement();
+		debug("Adding %s, %s", el.attribute("hostName").latin1(),
+			  el.attribute("sensorName").latin1());
+		addSensor(el.attribute("hostName"), el.attribute("sensorName"), "");
+	}
+
+	return (TRUE);
+}
+
+bool
+FancyPlotter::save(QTextStream& s)
+{
+	s << "beams=\"" << beams << "\">\n";
+
+	for (int i = 0; i < beams; ++i)
+	{
+		s << "<beam hostName=\"" << *hostNames.at(i) << "\" "
+		  << "sensorName=\"" << *sensorNames.at(i) << "\"/>\n";
+	}
+	return (TRUE);
 }
