@@ -66,7 +66,7 @@ public:
 
 	int selectionPid(void)
 	{
-		return (pList->selectionPid());
+		return (pList->selectedPid());
 	}
 
 	int setAutoUpdateMode(bool mode)

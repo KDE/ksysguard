@@ -72,6 +72,10 @@ public:
 	{
 		return (name);
 	}
+	const QString& getCmdLine(void) const
+	{
+		return (cmdline);
+	}
 	const char* getStatusTxt(void) const
 	{
 		return (statusTxt);
@@ -132,6 +136,8 @@ public:
 	{
 		return (sysLoad);
 	}
+
+	bool exists(void) const;
 
 	bool ok(void) const
 	{

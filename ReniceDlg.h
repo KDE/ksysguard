@@ -24,6 +24,17 @@
 #ifndef _ReniceDlg_h_
 #define _ReniceDlg_h_
 
+/*
+ * kapp.h includes a dirty X.h file that contains marcos that collide with
+ * qslider.h. The following defines work around the problem.
+ */
+#ifdef Above
+#undef Above
+#endif
+#ifdef Below
+#undef Below
+#endif
+
 #include <qlabel.h>
 #include <qlcdnum.h>
 #include <qslider.h>

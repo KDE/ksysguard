@@ -113,18 +113,28 @@ OSProcessList::update(void)
 										  newTStamps);
 			if (!ps || !ps->ok())
 			{
-				error = true;
-				if (ps)
-					errMessage = ps->getErrMessage();
-				else
-					errMessage = i18n("Cannot read status of processes\n"
-									  "from /proc/... directories!\n");
+				/*
+				 * Maybe the process disappeard while we were reading it's 
+				 * information. If it's still there this is really an error.
+				 */
+				if (ps->exists())
+				{
+					error = true;
+					if (ps)
+						errMessage = ps->getErrMessage();
+					else
+						errMessage = i18n("Cannot read status of processes\n"
+										  "from /proc/... directories!\n");
+					delete ps;
+					return (false);
+				}
 				delete ps;
-				return (false);
 			}
-
-			// insert process into sorted list
-			inSort(ps);
+			else
+			{
+				// insert process into sorted list
+				inSort(ps);
+			}
 		}
 	}
 	closedir(dir);
@@ -138,6 +148,12 @@ OSProcessList::update(void)
 
 bool 
 OSProcessList::hasName(void) const
+{
+	return (true);
+}
+
+bool
+OSProcessList::hasCmdLine(void) const
 {
 	return (true);
 }
@@ -199,13 +215,13 @@ OSProcessList::hasVmSize(void) const
 bool
 OSProcessList::hasVmRss(void) const
 {
-	return (false);
+	return (true);
 }
 
 bool 
 OSProcessList::hasVmLib(void) const
 {
-	return (false);
+	return (true);
 }
 
 #elif __FreeBSD__
@@ -364,6 +380,12 @@ OSProcessList::update(void)
 
 bool 
 OSProcessList::hasName(void) const
+{
+	return (false);
+}
+
+bool 
+OSProcessList::hasCmdLine(void) const
 {
 	return (false);
 }

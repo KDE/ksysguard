@@ -59,9 +59,8 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	pList = new ProcessList(this, "pList");    
 	CHECK_PTR(pList);
 	connect(pList, SIGNAL(popupMenu(int, int)),
-			SLOT(popupMenu(int, int)));
-	connect(pList, SIGNAL(popupMenu(int, int)),
 			parent, SLOT(popupMenu(int, int)));
+
 	pList->move(10, 30);
 	pList->resize(370, 300);
 
@@ -172,7 +171,7 @@ ProcListPage::cbProcessFilter(int indx)
 void 
 ProcListPage::popupMenu(int row,int)
 { 
-	pList->setCurrentItem(row);
+//	pList->setCurrentItem(row);
 } 
 
 void 

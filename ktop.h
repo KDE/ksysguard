@@ -27,16 +27,17 @@
 
 // $Id$
 
-#include <qmenubar.h>
 #include <qpopupmenu.h>
 
 #include <kapp.h>
+#include <ktmainwindow.h>
+#include <kmenubar.h>
 
 #include "TaskMan.h"
 
 extern KApplication* Kapp;
 
-class TopLevel : public QWidget
+class TopLevel : public KTMainWindow
 {
 	Q_OBJECT
 
@@ -67,9 +68,7 @@ public:
 
 protected:
 
-	void resizeEvent(QResizeEvent*);
-
-	QMenuBar* menubar;
+	KMenuBar* menubar;
 	QPopupMenu* file;
 	QPopupMenu* settings;
 	QPopupMenu* help;

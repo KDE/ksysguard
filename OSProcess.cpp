@@ -61,7 +61,8 @@ OSProcess::OSProcess(const void* info, TimeStampList* lastTStamps,
 {
 	error = false;
 
-	read((const char*) info);
+	if (!read((const char*) info))
+		return;
 
 	TimeStamp* ts = new TimeStamp(pid, userTime, sysTime);
 	newTStamps->inSort(ts);
@@ -95,7 +96,8 @@ OSProcess::OSProcess(int pid_)
 	QString pidStr;
 	pidStr.sprintf("%d", pid_);
 
-	read((const void *)pidStr);
+	if (!read((const void *)pidStr))
+		return;
 
 	userLoad = sysLoad = 0.0;
 }
@@ -107,7 +109,7 @@ OSProcess::read(const void* info)
 
 	QString buf;
 	buf.sprintf("/proc/%s/status", (const char*) info);
-	if((fd = fopen(buf, "r")) == 0)
+	if((fd = fopen(buf, "r")) == 0 && kill(pid, 0) == 0)
 	{
 		error = true;
 		errMessage.sprintf(i18n("Cannot open %s!\n"), buf.data());
@@ -115,12 +117,26 @@ OSProcess::read(const void* info)
 	}
 
     char status;
-
+	char cbuf[1024];
 	fscanf(fd, "%*s %s", name);
 	fscanf(fd, "%*s %*c %*s");
 	fscanf(fd, "%*s %*d");
 	fscanf(fd, "%*s %*d");
 	fscanf(fd, "%*s %d %*d %*d %*d", (int*) &uid);
+	fscanf(fd, "%*s %*d %*d %*d %*d");
+	fscanf(fd, "%*s %*d %*d %*d %*d");
+	fscanf(fd, "%*s %*d %*s");	// VmSize
+	fscanf(fd, "%*s %*d %*s");	// VmLck
+	fscanf(fd, "%*s %*d %*s");	// VmRSS
+	fscanf(fd, "%*s %*d %*s");	// VmData
+	fscanf(fd, "%*s %*d %*s");	// VmStk
+	fscanf(fd, "%*s %*d %*s");	// VmExe
+	fscanf(fd, "%s %d %*s", cbuf, &vm_lib);	// VmLib
+	if (strcmp(cbuf, "VmLib:") != 0)
+		vm_lib = 0;
+	else
+		vm_lib *= 1024;
+
 	fclose(fd);
 
     buf.sprintf("/proc/%s/stat", (const char *)info);
@@ -135,6 +151,22 @@ OSProcess::read(const void* info)
 		   "%*d %*d %*d %d %*u %*u %*d %u %u",
 		   (int*) &pid, &status, (int*) &ppid, (int*) &gid, &ttyNo,
 		   &userTime, &sysTime, &niceLevel, &vm_size, &vm_rss);
+
+	vm_rss = (vm_rss + 3) * 4096;
+
+	fclose(fd);
+
+    buf.sprintf("/proc/%s/cmdline", (const char *)info);
+	if ((fd = fopen(buf, "r")) == 0)
+	{
+		error = true;
+		errMessage.sprintf(i18n("Cannot open %s!\n"), buf.data());
+		return (false);
+	}
+	cbuf[0] = '\0';
+	fscanf(fd, "%1023[^\n]", cbuf);
+	cbuf[1023] = '\0';
+	cmdline = cbuf;
 	fclose(fd);
 
 	switch (status)
@@ -263,6 +295,12 @@ OSProcess::read(const char* info)
 /*
  * Hopefully the following functions work on all platforms.
  */
+
+bool
+OSProcess::exists(void) const
+{
+	return (kill(pid, 0) == 0);
+}
 
 bool
 OSProcess::setNiceLevel(int newNiceLevel)

@@ -29,8 +29,10 @@
 
 #include <assert.h>
 
-#include <qmenubar.h>
 #include <qmessagebox.h>
+
+#include <ktmainwindow.h>
+#include <kmenubar.h>
 #include <kconfig.h>
 #include <klocale.h>
 #include <kstring.h>
@@ -52,15 +54,8 @@ KApplication* Kapp;
  * TaskMan widget.
  */
 TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
-	: QWidget(parent, name)
+	: KTMainWindow(name)
 {
-	assert(Kapp);
-	setCaption(i18n("KDE Task Manager"));
-	setMinimumSize(KTOP_MIN_W, KTOP_MIN_H);
-
-	taskman = new TaskMan(this, "", sfolder);
-	connect(taskman, SIGNAL(applyButtonPressed()), this, SLOT(quitSlot()));
-
 	/*
 	 * create main menu
 	 */
@@ -88,12 +83,25 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	connect(settings, SIGNAL(activated(int)), this, SLOT(menuHandler(int)));
 
 	// register submenues
-	menubar = new QMenuBar(this, "menubar");
+	menubar = new KMenuBar(this, "menubar");
 	menubar->setLineWidth(1);
 	menubar->insertItem(i18n("&File"), file, 2, -1);
 	menubar->insertItem(i18n("&Options"), settings, 3, -1);
 	menubar->insertSeparator(-1);
 	menubar->insertItem(i18n("&Help"), help, 2, -1);
+
+	// register the menu bar with KTMainWindow
+	setMenu(menubar);
+
+	assert(Kapp);
+	setCaption(i18n("KDE Task Manager"));
+	setMinimumSize(KTOP_MIN_W, KTOP_MIN_H);
+
+	// create the tab dialog
+	taskman = new TaskMan(this, "", sfolder);
+	connect(taskman, SIGNAL(applyButtonPressed()), this, SLOT(quitSlot()));
+	// register the tab dialog with KTMainWindow as client widget
+	setView(taskman);
 
 	/*
 	 * Restore size of the dialog box that was used at end of last session.
@@ -120,7 +128,7 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
     show();
 
 	// switch to the selected startup page
-    taskman->raiseStartUpPage();     
+    taskman->raiseStartUpPage();
 }
 
 void 
@@ -129,13 +137,6 @@ TopLevel::quitSlot()
 	taskman->saveSettings();
 	Kapp->getConfig()->sync();
 	qApp->quit();
-}
-
-void 
-TopLevel::resizeEvent(QResizeEvent*)
-{
-	taskman->setGeometry(0, menubar->height() + 2, width(),
-						 height() - menubar->height() - 5);
 }
 
 void 

@@ -56,9 +56,12 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
 	restoreStartupPage = FALSE;
 
 	setStyle(WindowsStyle);
-    
+
+    // Delete the OK button, it is created by default by the constructor.
+	setOkButton(0);
+
 	connect(tabBar(), SIGNAL(selected(int)), SLOT(tabBarSelected(int)));
-     
+
 	/*
 	 * set up popup menu pSig
 	 */

@@ -91,6 +91,7 @@ public:
 	 * for each platform.
 	 */
 	bool hasName(void) const;
+	bool hasCmdLine(void) const;
 	bool hasUid(void) const;
 	bool hasUserTime(void) const;
 	bool hasSysTime(void) const;

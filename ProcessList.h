@@ -31,13 +31,20 @@
 #define _ProcessList_h_
 
 #include <qwidget.h>
-
-#include <ktablistbox.h>
+#include <qlistview.h>
 
 #include "IconList.h"
 #include "OSProcessList.h"
 
 #define NONE -1
+
+class ProcessLVI : public QListViewItem
+{
+public:
+	ProcessLVI(QListView* lvi) : QListViewItem(lvi) { }
+
+	virtual const char* key(int column, bool) const;
+} ;
 
 /**
  * This class implements a widget that displays processes in a table. The
@@ -46,7 +53,7 @@
  * and killing of processes. The display is updated automatically when
  * auto mode is enabled.
  */
-class ProcessList : public KTabListBox
+class ProcessList : public QListView
 {
     Q_OBJECT
 
@@ -111,29 +118,46 @@ public:
 		filtermode = m;
 	}
 
+	virtual void setSorting(int column, bool increasing = TRUE);
+
 	/**
-	 * This function returns the number of the column that is to sort the
-	 * process list. It's the index in the TabCol array, not the index of 
-	 * the KTabList column since some columns may be invisible.
+	 * Return the index of the column that we sort for.
 	 */
-	int getSortColumn()
+	int getSortColumn() const
 	{
 		return (sortColumn);
+	}
+
+	/**
+	 * Return wheather we sort in increasing direction or not.
+	 */
+	int getIncreasing() const
+	{
+		return (increasing);
 	}
 
 	/**
 	 * This functions specifies the column that is used to sort the process
 	 * list.
 	 */
-	void setSortColumn(int c);
+	void setSortColumn(int c, bool inc = FALSE);
 
-	int selectionPid(void)
+	int selectedPid(void) const;
+
+signals:
+	void popupMenu(int, int);
+
+public slots:
+	void hideColumn(int col)
 	{
-		return lastSelectionPid;
+		printf("Request to hide columnd %d\n", col);
 	}
 
 protected:
-	virtual int cellHeight(int);  
+	virtual void mousePressEvent(QMouseEvent* e);
+
+private slots:
+	void handleRMBPopup(int item);
 
 private:
     enum
@@ -166,19 +190,15 @@ private:
 		timer_id = startTimer(timer_interval);
 	}
 
-    int lastSelectionPid;
 	int filtermode;
 	int sortColumn;
+	bool increasing;
 	int update_rate;
 	int timer_interval;
 	int timer_id;
 
 	OSProcessList pl;
     KtopIconList* icons;
-
- private slots:
-	void procHighlighted(int, int);
-	void userClickOnHeader(int);
 };
 
 #endif
