@@ -59,12 +59,13 @@ processMemInfo()
 {
 	scan_one(MemInfoBuf, "MemTotal", &Total);
 	scan_one(MemInfoBuf, "MemFree", &MFree);
-	Used = Total - MFree;
 	scan_one(MemInfoBuf, "Buffers", &Buffers);
 	scan_one(MemInfoBuf, "Cached", &Cached);
 	scan_one(MemInfoBuf, "SwapTotal", &STotal);
 	scan_one(MemInfoBuf, "SwapFree", &SFree);
-        SUsed = STotal - SFree;
+	Used = Total - MFree;
+	Appl = (Used - (Buffers + Cached));
+	SUsed = STotal - SFree;
 
 	Dirty = 0;
 }
