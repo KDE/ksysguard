@@ -19,6 +19,8 @@
 	$Id$
 */
 
+#ifdef __i386__
+
 #include <unistd.h>
 #include <fcntl.h>
 #include <machine/apm_bios.h>
@@ -97,3 +99,5 @@ printApmBatTimeInfo(const char* c)
 {
 	fprintf(CurrentClient, "Remaining battery time\t0\t0\tmin\n");
 }
+
+#endif
