@@ -16,8 +16,8 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+	Please do not commit any changes without consulting me first. Thanks!
 
 	$Id$
 */
@@ -50,6 +50,8 @@ ColorPicker::ColorPicker(QWidget* parent, const char* name)
 	button = new QPushButton(this, "button");
 	button->setText(i18n("Change Color"));
 	l->addWidget(button);
+
+	label->setBuddy(button);
 
 	connect(button, SIGNAL(clicked()), this, SLOT(colorDialog()));
 }

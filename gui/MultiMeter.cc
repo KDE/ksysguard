@@ -43,6 +43,7 @@
 
 #include "MultiMeterSettings.h"
 #include "SensorManager.h"
+#include "StyleEngine.h"
 #include "ColorPicker.h"
 #include "MultiMeter.moc"
 
@@ -56,12 +57,12 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 
 	setTitle(t, unit);
 
-	normalDigitColor = Qt::green;
-	alarmDigitColor = Qt::red;
+	normalDigitColor = Style->getFgColor1();
+	alarmDigitColor = Style->getAlarmColor();
 	lcd = new QLCDNumber(frame, "meterLCD");
 	CHECK_PTR(lcd);
 	lcd->setSegmentStyle(QLCDNumber::Filled);
-	setDigitColor(Qt::black);
+	setDigitColor(Style->getBackgroundColor());
 	lcd->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
 								   QSizePolicy::Expanding, FALSE));
 
@@ -73,7 +74,7 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 	errorLabel->resize(errorIcon.size());
 	errorLabel->move(2, 2);
 
-	setBackgroundColor(Qt::black);
+	setBackgroundColor(Style->getBackgroundColor());
 	/* All RMB clicks to the lcd widget will be handled by 
 	 * SensorDisplay::eventFilter. */
 	lcd->installEventFilter(this);
@@ -191,9 +192,12 @@ MultiMeter::createFromDOM(QDomElement& el)
 	upperLimitActive = el.attribute("upperLimitActive").toInt();
 	upperLimit = el.attribute("upperLimit").toLong();
 
-	normalDigitColor = restoreColorFromDOM(el, "normalDigitColor", Qt::green);
-	alarmDigitColor = restoreColorFromDOM(el, "alarmDigitColor", Qt::red);
-	setBackgroundColor(restoreColorFromDOM(el, "backgroundColor", Qt::black));
+	normalDigitColor = restoreColorFromDOM(el, "normalDigitColor",
+										   Style->getFgColor1());
+	alarmDigitColor = restoreColorFromDOM(el, "alarmDigitColor",
+										  Style->getAlarmColor());
+	setBackgroundColor(restoreColorFromDOM(el, "backgroundColor",
+										   Style->getBackgroundColor()));
 
 	addSensor(el.attribute("hostName"), el.attribute("sensorName"), "");
 
@@ -267,6 +271,15 @@ MultiMeter::applySettings()
 
 	repaint();
 	setModified(TRUE);
+}
+
+void
+MultiMeter::applyStyle()
+{
+	normalDigitColor = Style->getFgColor1();
+	setBackgroundColor(Style->getBackgroundColor());
+	repaint();
+	setModified(true);
 }
 
 void

@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE System Guard
+    KKSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     

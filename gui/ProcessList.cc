@@ -21,8 +21,8 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+	Please do not commit any changes without consulting me first. Thanks!
 
 	$Id$
 */
@@ -818,6 +818,7 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 		setColumnWidthMode(col, QListView::Manual);
 		savedWidth[col] = columnWidth(col);
 		setColumnWidth(col, 0);
+		setModified(true);
 		break;
 	default:
 		if (id < 100)
@@ -846,6 +847,7 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 			int col = id - 100;
 			setColumnWidthMode(col, QListView::Maximum);
 			setColumnWidth(col, savedWidth[col]);
+			setModified(true);
 		}
 	}
 	delete processPM;

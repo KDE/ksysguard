@@ -31,6 +31,7 @@
 
 #include <kiconloader.h>
 
+#include <StyleEngine.h>
 #include "BarGraph.moc"
 
 BarGraph::BarGraph(QWidget* parent, const char* name)
@@ -45,10 +46,10 @@ BarGraph::BarGraph(QWidget* parent, const char* name)
 	lowerLimit = upperLimit = 0.0;
 	lowerLimitActive = upperLimitActive = false;
 
-	normalColor = QColor(20, 255, 20);
-	alarmColor = QColor(255, 20, 20);
-	backgroundColor = QColor(0, 0, 0);
-	fontSize = 10;
+	normalColor = Style->getFgColor1();
+	alarmColor = Style->getAlarmColor();
+	backgroundColor = Style->getBackgroundColor();
+	fontSize = Style->getFontSize();
 
 	// Anything smaller than this does not make sense.
 	setMinimumSize(16, 16);

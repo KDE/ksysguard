@@ -40,6 +40,7 @@
 #include <kdebug.h>
 
 #include "SensorManager.h"
+#include "StyleEngine.h"
 #include "FancyPlotterSettings.h"
 #include "ColorPicker.h"
 #include "FancyPlotter.moc"
@@ -243,6 +244,20 @@ FancyPlotter::settingsSelectionChanged(QListViewItem* lvi)
 }
 
 void
+FancyPlotter::applyStyle()
+{
+	plotter->vColor = Style->getFgColor1();
+	plotter->hColor = Style->getFgColor2();
+	plotter->bColor = Style->getBackgroundColor();
+	plotter->fontSize = Style->getFontSize();
+	for (uint i = 0; i < plotter->beamColor.count() &&
+			 i < Style->getSensorColorCount(); ++i)
+		plotter->beamColor[i] = Style->getSensorColor(i);
+	plotter->update();
+	setModified(true);
+}
+
+void
 FancyPlotter::sensorError(int sensorId, bool err)
 {
 	if ((uint) sensorId >= beams || sensorId < 0)
@@ -269,7 +284,7 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 						const QString& title)
 {
 	return (addSensor(hostName, sensorName, title,
-					  plotter->getDefaultColor(beams)));
+					  Style->getSensorColor(beams)));
 }
 
 bool
@@ -387,33 +402,23 @@ FancyPlotter::createFromDOM(QDomElement& domElem)
 	plotter->changeRange(0, domElem.attribute("min").toDouble(),
 						 domElem.attribute("max").toDouble());
 
-	bool ok;
-	plotter->vLines = domElem.attribute("vLines").toUInt(&ok);
-	if (!ok)
-		plotter->vLines = true;
-	plotter->vColor = restoreColorFromDOM(domElem, "vColor", Qt::green);
-	plotter->vDistance = domElem.attribute("vDistance").toUInt(&ok);
-	if (!ok)
-		plotter->vDistance = 30;
+	plotter->vLines = domElem.attribute("vLines", "1").toUInt();
+	plotter->vColor = restoreColorFromDOM(domElem, "vColor",
+										  Style->getFgColor1());
+	plotter->vDistance = domElem.attribute("vDistance", "30").toUInt();
 
-	plotter->hLines = domElem.attribute("hLines").toUInt(&ok);
-	if (!ok)
-		plotter->hLines = true;
-	plotter->hColor = restoreColorFromDOM(domElem, "hColor", Qt::green);
-	plotter->hCount = domElem.attribute("hCount").toUInt(&ok);
-	if (!ok)
-		plotter->hCount = 5;
+	plotter->hLines = domElem.attribute("hLines", "1").toUInt();
+	plotter->hColor = restoreColorFromDOM(domElem, "hColor",
+										  Style->getFgColor2());
+	plotter->hCount = domElem.attribute("hCount", "5").toUInt();
 
-	plotter->labels = domElem.attribute("labels").toUInt(&ok);
-	if (!ok)
-		plotter->labels = true;
-	plotter->topBar = domElem.attribute("topBar").toUInt(&ok);
-	if (!ok)
-		plotter->topBar = false;
-	plotter->fontSize = domElem.attribute("fontSize").toUInt(&ok);
-	if (!ok)
-		plotter->fontSize = 12;
-	plotter->bColor = restoreColorFromDOM(domElem, "bColor", Qt::black);
+	plotter->labels = domElem.attribute("labels", "1").toUInt();
+	plotter->topBar = domElem.attribute("topBar", "0").toUInt();
+	plotter->fontSize = domElem.attribute(
+		"fontSize", QString("%1").arg(Style->getFontSize())).toUInt();
+
+	plotter->bColor = restoreColorFromDOM(domElem, "bColor",
+										  Style->getBackgroundColor());
 
 	QDomNodeList dnList = domElem.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)
@@ -421,7 +426,7 @@ FancyPlotter::createFromDOM(QDomElement& domElem)
 		QDomElement el = dnList.item(i).toElement();
 		addSensor(el.attribute("hostName"), el.attribute("sensorName"), "",
 				  restoreColorFromDOM(el, "color",
-									  plotter->getDefaultColor(i)));
+									  Style->getSensorColor(i)));
 	}
 
 	setModified(false);

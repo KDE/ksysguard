@@ -422,6 +422,13 @@ Workspace::updateCaption(QWidget* ws)
 }
 
 void
+Workspace::applyStyle()
+{
+	if (currentPage())
+		((WorkSheet*) currentPage())->applyStyle();
+}
+
+void
 Workspace::showProcesses()
 {
 	KStandardDirs* kstd = KGlobal::dirs();

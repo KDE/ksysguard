@@ -40,6 +40,7 @@
 #include <kdebug.h>
 
 #include "SensorManager.h"
+#include "StyleEngine.h"
 #include "ColorPicker.h"
 #include "DancingBarsSettings.h"
 #include "BarGraphSettings.h"
@@ -183,6 +184,18 @@ DancingBars::applySettings()
 			i--;
 		}
 	}
+
+	repaint();
+	setModified(true);
+}
+
+void
+DancingBars::applyStyle()
+{
+	plotter->normalColor = Style->getFgColor1();
+	plotter->alarmColor = Style->getAlarmColor();
+	plotter->backgroundColor = Style->getBackgroundColor();
+	plotter->fontSize = Style->getFontSize();
 
 	repaint();
 	setModified(true);
@@ -342,12 +355,13 @@ DancingBars::createFromDOM(QDomElement& domElem)
 					   domElem.attribute("uplimitactive", "0").toInt());
 
 	plotter->normalColor = restoreColorFromDOM(domElem, "normalColor",
-											   Qt::green);
+											   Style->getFgColor1());
 	plotter->alarmColor = restoreColorFromDOM(domElem, "alarmColor",
-											  Qt::red);
-	plotter->backgroundColor = restoreColorFromDOM(domElem, "backgroundColor",
-												   Qt::black);
-	plotter->fontSize = domElem.attribute("fontSize", "10").toInt();
+											  Style->getAlarmColor());
+	plotter->backgroundColor = restoreColorFromDOM(
+		domElem, "backgroundColor", Style->getBackgroundColor());
+	plotter->fontSize = domElem.attribute(
+		"fontSize", QString("%1").arg(Style->getFontSize())).toInt();
 
 	QDomNodeList dnList = domElem.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)

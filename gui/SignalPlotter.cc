@@ -33,6 +33,7 @@
 #include <kiconloader.h>
 #include <kdebug.h>
 
+#include "StyleEngine.h"
 #include "SignalPlotter.moc"
 
 static inline int
@@ -64,18 +65,18 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name)
 	sensorOk = false;
 
 	vLines = true;
-	vColor = green;
+	vColor = Style->getFgColor1();
 	vDistance = 30;
 
 	hLines = true;
-	hColor = green;
+	hColor = Style->getFgColor2();
 	hCount = 5;
 
 	labels = true;
 	topBar = false;
-	fontSize = 12;
+	fontSize = Style->getFontSize();
 
-	bColor = black;
+	bColor = Style->getBackgroundColor();
 }
 
 SignalPlotter::~SignalPlotter()
@@ -123,15 +124,6 @@ SignalPlotter::addSample(const QValueList<double>& sampleBuf)
 	}
 
 	update();
-}
-
-QColor
-SignalPlotter::getDefaultColor(uint index)
-{
-	uint v = 0x00ff00;
-	for (uint i = 0; i < index; ++i)
-		v = (((v + 82) & 0xff) << 23) | (v >> 8);
-	return (QColor(v & 0xff, (v >> 16) & 0xff, (v >> 8) & 0xff));
 }
 
 void

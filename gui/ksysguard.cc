@@ -52,6 +52,7 @@
 #include <kdebug.h>
 
 #include "SensorBrowser.h"
+#include "StyleEngine.h"
 #include "SensorManager.h"
 #include "SensorAgent.h"
 #include "Workspace.h"
@@ -88,6 +89,7 @@ TopLevel::TopLevel(const char *name)
 			this, SLOT(registerRecentURL(const KURL&)));
 	connect(ws, SIGNAL(setCaption(const QString&, bool)),
 			this, SLOT(setCaption(const QString&, bool)));
+	connect(Style, SIGNAL(applyStyleToWorksheet()), ws, SLOT(applyStyle()));
 
 	/* Create the status bar. It displays some information about the
 	 * number of processes and the memory consumption of the local
@@ -133,6 +135,9 @@ TopLevel::TopLevel(const char *name)
     KStdAction::configureToolbars(this, SLOT(editToolbars()),
 								  actionCollection());
 	statusBarTog->setChecked(FALSE);
+	(void) new KAction(i18n("Configure &Style..."), "colorize", 0, this,
+					   SLOT(editStyle()), actionCollection(),
+					   "configure_style");
 	createGUI();
 
 	show();
@@ -179,9 +184,11 @@ QString
 TopLevel::readIntegerSensor(const QString& sensorLocator)
 {
 	QString host = sensorLocator.left(sensorLocator.find(':'));
-	QString sensor = sensorLocator.right(sensorLocator.length() - sensorLocator.find(':') - 1);
+	QString sensor = sensorLocator.right(sensorLocator.length() -
+										 sensorLocator.find(':') - 1);
 
-	DCOPClientTransaction *dcopTransaction = kapp->dcopClient()->beginTransaction();
+	DCOPClientTransaction *dcopTransaction =
+		kapp->dcopClient()->beginTransaction();
 	dcopFIFO.prepend(dcopTransaction);
 
 	SensorMgr->engage(host, "", "ksysguardd");
@@ -196,9 +203,11 @@ TopLevel::readListSensor(const QString& sensorLocator)
 	QStringList retval;
 	
 	QString host = sensorLocator.left(sensorLocator.find(':'));
-	QString sensor = sensorLocator.right(sensorLocator.length() - sensorLocator.find(':') - 1);
+	QString sensor = sensorLocator.right(sensorLocator.length() -
+										 sensorLocator.find(':') - 1);
 
-	DCOPClientTransaction *dcopTransaction = kapp->dcopClient()->beginTransaction();
+	DCOPClientTransaction *dcopTransaction =
+		kapp->dcopClient()->beginTransaction();
 	dcopFIFO.prepend(dcopTransaction);
 
 	SensorMgr->engage(host, "", "ksysguardd");
@@ -265,8 +274,9 @@ void
 TopLevel::initStatusBar()
 {
 	SensorMgr->engage("localhost", "", "ksysguardd");
-	/* Request info about the swapspace size and the units it is measured in.
-	 * The requested info will be received by answerReceived(). */
+	/* Request info about the swapspace size and the units it is
+	 * measured in.  The requested info will be received by
+	 * answerReceived(). */
 	SensorMgr->sendRequest("localhost", "mem/swap/used?",
 						   (SensorClient*) this, 5);
 }
@@ -323,6 +333,12 @@ TopLevel::editToolbars()
 
 	if (dlg.exec())
 		createGUI();
+}
+
+void
+TopLevel::editStyle()
+{
+	Style->configure();
 }
 
 void
@@ -398,6 +414,7 @@ TopLevel::readProperties(KConfig* cfg)
 	}
 
 	SensorMgr->readProperties(cfg);
+	Style->readProperties(cfg);
 
 	ws->readProperties(cfg);
 
@@ -420,6 +437,7 @@ TopLevel::saveProperties(KConfig* cfg)
 	cfg->writeEntry("ToolBarHidden", !toolbarTog->isChecked());
 	cfg->writeEntry("StatusBarHidden", !statusBarTog->isChecked());
 
+	Style->saveProperties(cfg);
 	SensorMgr->saveProperties(cfg);
 
 	ws->saveProperties(cfg);
@@ -456,26 +474,29 @@ TopLevel::answerReceived(int id, const QString& answer)
 			.arg(sTotal - sFree).arg(unit).arg(sFree).arg(unit);
 		statusbar->changeItem(s, 2);
 		break;
-	case 5: {
+	case 5:
+	{
 		SensorIntegerInfo info(answer);
 		sTotal = info.getMax();
 		unit = SensorMgr->translateUnit(info.getUnit());
 		break;
-		}
-
-	case 133: {
+	}
+	case 133:
+	{
 		QCString replyType = "QString";
 		QByteArray replyData;
 		QDataStream reply(replyData, IO_WriteOnly);
 		reply << answer;
 
 		DCOPClientTransaction *dcopTransaction = dcopFIFO.last();
-		kapp->dcopClient()->endTransaction(dcopTransaction, replyType, replyData);
+		kapp->dcopClient()->endTransaction(dcopTransaction, replyType,
+										   replyData);
 		dcopFIFO.removeLast();
 		break;
-		}
+	}
 
-	case 134: {
+	case 134:
+	{
 		QStringList resultList;
 		QCString replyType = "QStringList";
 		QByteArray replyData;
@@ -489,11 +510,11 @@ TopLevel::answerReceived(int id, const QString& answer)
 		reply << resultList;
 
 		DCOPClientTransaction *dcopTransaction = dcopFIFO.last();
-		kapp->dcopClient()->endTransaction(dcopTransaction, replyType, replyData);
+		kapp->dcopClient()->endTransaction(dcopTransaction, replyType,
+										   replyData);
 		dcopFIFO.removeLast();
 		break;
-		}
-
+	}
 	}
 }
 
@@ -557,6 +578,8 @@ main(int argc, char** argv)
 
 	SensorMgr = new SensorManager();
 	CHECK_PTR(SensorMgr);
+	Style = new StyleEngine();
+	CHECK_PTR(Style);
 
 	KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
@@ -611,6 +634,7 @@ main(int argc, char** argv)
 		result = a->exec();
 	}
 
+	delete Style;
 	delete SensorMgr;
 	delete a;
 

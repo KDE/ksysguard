@@ -31,6 +31,7 @@ ksysguard_SOURCES = \
 	ProcessController.cc ProcessList.cc \
 	ListView.cc \
 	LogFile.cc LogFileSettings.cc \
+	StyleEngine.cc \
 	SensorBrowser.cc  \
 	SensorManager.cc \
 	SensorAgent.cc SensorShellAgent.cc SensorSocketAgent.cc \
@@ -38,7 +39,7 @@ ksysguard_SOURCES = \
 	ksysguard.cc ksysguard.skel \
 	DancingBarsSettings.ui MultiMeterSettings.ui \
 	FancyPlotterSettings.ui HostConnector.ui WorkSheetSettings.ui \
-	ListViewSettings.ui BarGraphSettings.ui
+	ListViewSettings.ui BarGraphSettings.ui StyleSettings.ui
 
 # the library search path
 ksysguard_LDFLAGS = $(all_libraries) $(KDE_RPATH)
@@ -52,11 +53,17 @@ data_DATA = ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml
 # This stuff is now for the kicker applet
 lib_LTLIBRARIES = libksysguardapplet.la
 
-libksysguardapplet_la_SOURCES = KSysGuardApplet.cc SensorManager.cc \
-	SensorAgent.cc SensorShellAgent.cc SensorSocketAgent.cc \
-	FancyPlotter.cc SignalPlotter.cc SensorDisplay.cc \
+libksysguardapplet_la_SOURCES = \
 	ColorPicker.cc \
-	FancyPlotterSettings.ui HostConnector.ui KSysGuardAppletSettings.ui
+	FancyPlotter.cc SignalPlotter.cc \
+	SensorDisplay.cc \
+	StyleEngine.cc \
+	SensorManager.cc \
+	SensorAgent.cc SensorShellAgent.cc SensorSocketAgent.cc \
+	KSysGuardApplet.cc \
+	FancyPlotterSettings.ui HostConnector.ui KSysGuardAppletSettings.ui \
+	StyleSettings.ui
+
 libksysguardapplet_la_METASOURCES = AUTO
 libksysguardapplet_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -module -no-undefined
 libksysguardapplet_la_LIBADD = $(LIB_KDEUI) $(LIB_KSYCOCA)

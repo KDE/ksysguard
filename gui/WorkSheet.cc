@@ -406,6 +406,14 @@ WorkSheet::showPopupMenu(SensorDisplay* display)
 }
 
 void
+WorkSheet::applyStyle()
+{
+	for (uint r = 0; r < rows; ++r)
+		for (uint c = 0; c < columns; ++c)
+			displays[r][c]->applyStyle();
+}
+
+void
 WorkSheet::dragEnterEvent(QDragEnterEvent* ev)
 {
     ev->accept(QTextDrag::canDecode(ev));

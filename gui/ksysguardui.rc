@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="ksysguard" version="2">
+<kpartgui name="ksysguard" version="3">
 <MenuBar>
   <Menu name="file"><text>&amp;File</text>
     <Action name="connect_host"/>
@@ -11,6 +11,7 @@
   <Menu name="settings"><text>&amp;Settings</text>
     <Action name="showtoolbar"/>
     <Action name="showstatusbar"/>
+    <Action name="configure_style"/>
   </Menu>
 </MenuBar>
 </kpartgui>

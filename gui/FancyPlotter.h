@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -16,8 +16,8 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+	Please do not commit any changes without consulting me first. Thanks!
 
 	$Id$
 */
@@ -67,18 +67,6 @@ public:
 				   const QString& title, const QColor& col);
 	bool removeSensor(uint idx);
 
-	void addSample(double s0, double s1 = 0, double s2 = 0, double s3 = 0,
-				   double s4 = 0)
-	{
-		QValueList<double> d;
-		d.append(s0);
-		d.append(s1);
-		d.append(s2);
-		d.append(s3);
-		d.append(s4);
-		plotter->addSample(d);
-	}
-
 	virtual QSize sizeHint(void);
 
 	virtual void answerReceived(int id, const QString& s);
@@ -99,6 +87,7 @@ public slots:
 	void settingsSetColor();
 	void settingsDelete();
 	void settingsSelectionChanged(QListViewItem*);
+	virtual void applyStyle();
 
 protected:
 	virtual void resizeEvent(QResizeEvent*);
