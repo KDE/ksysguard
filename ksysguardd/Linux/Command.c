@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <signal.h>
 
 #include "ccont.h"
 #include "Command.h"
@@ -36,6 +37,7 @@ typedef struct
 } Command;
 
 static CONTAINER CommandList;
+static sigset_t SignalSet;
 
 void 
 _Command(void* v)
@@ -55,6 +57,8 @@ void
 initCommand(void)
 {
 	CommandList = new_ctnr(CT_SLL);
+	sigemptyset(&SignalSet);
+	sigaddset(&SignalSet, SIGALRM);
 
 	registerCommand("monitors", printMonitors);
 }
@@ -121,7 +125,14 @@ executeCommand(const char* command)
 		Command* cmd = (Command*) get_ctnr(CommandList, i);
 		if (strcmp(cmd->command, token) == 0)
 		{
+			/* Block timer interrupts while processing a command */
+			sigprocmask(SIG_BLOCK, &SignalSet, 0);
+
 			(*(cmd->ex))(command);
+
+			/* re-enable timer interrupts again. */
+			sigprocmask(SIG_UNBLOCK, &SignalSet, 0);
+
 			return;
 		}
 	}
