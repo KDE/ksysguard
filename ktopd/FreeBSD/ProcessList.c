@@ -1,9 +1,9 @@
 /*
     KTop, the KDE Task Manager
-   
+
 	Copyright (c) 1999-2000 Hans Petter Bieker<bieker@kde.org>
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -132,12 +132,12 @@ typedef struct
 	char cmdline[256];
 
 	/* the login name of the user that owns this process */
-	char userName[32];
+ 	char userName[32];
 } ProcessInfo;
 
 static unsigned ProcessCount;
 
-static int 
+static int
 processCmp(void* p1, void* p2)
 {
 	return (((ProcessInfo*) p1)->pid - ((ProcessInfo*) p2)->pid);
@@ -258,7 +258,7 @@ initProcessList(void)
 
 	registerCommand("ps", printProcessList);
 	registerCommand("ps?", printProcessListInfo);
-	registerMonitor("pscount", printProcessCount, printProcessCountInfo);
+	registerMonitor("pscount", "integer", printProcessCount, printProcessCountInfo);
 }
 
 void

@@ -1,8 +1,8 @@
 /*
     KTop, the KDE Task Manager
-   
+
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -115,7 +115,7 @@ initCPU(void)
 	 * intr 50444 38672 2557 0 0 0 0 2 0 2 0 0 3 1429 1 7778 0
 	 * ctxt 54155
 	 * btime 917379184
-	 * processes 347 
+	 * processes 347
 	 */
 	char format[32];
 	char buf[1024];
@@ -137,7 +137,7 @@ return 0;
 	{
 		char tag[32];
 		char tagFormat[16];
-		
+
 		buf[sizeof(buf) - 1] = '\0';
 		sprintf(tagFormat, "%%%ds", sizeof(tag) - 1);
 		sscanf(buf, tagFormat, tag);
@@ -145,10 +145,14 @@ return 0;
 		if (strcmp("cpu", tag) == 0)
 		{
 			/* Total CPU load */
-			registerMonitor("cpuuser", printCPUUser, printCPUUserInfo);
-			registerMonitor("cpunice", printCPUNice, printCPUNiceInfo);
-			registerMonitor("cpusys", printCPUSys, printCPUSysInfo);
-			registerMonitor("cpuidle", printCPUIdle, printCPUIdleInfo);
+		        registerMonitor("cpuuser", "integer", printCPUUser,
+					printCPUUserInfo);
+			registerMonitor("cpunice", "integer", printCPUNice,
+					printCPUNiceInfo);
+			registerMonitor("cpusys", "integer", printCPUSys,
+					printCPUSysInfo);
+			registerMonitor("cpuidle", "integer", printCPUIdle,
+					printCPUIdleInfo);
 		}
 		else if (strncmp("cpu", tag, 3) == 0)
 		{
@@ -158,13 +162,17 @@ return 0;
 			sscanf(tag + 3, "%d", &id);
 			CPUCount++;
 			sprintf(cmdName, "cpu%duser", id);
-			registerMonitor(cmdName, printCPUxUser, printCPUxUserInfo);
+			registerMonitor(cmdName, "integer", printCPUxUser,
+					printCPUxUserInfo);
 			sprintf(cmdName, "cpu%dnice", id);
-			registerMonitor(cmdName, printCPUxNice, printCPUxNiceInfo);
+			registerMonitor(cmdName, "integer", printCPUxNice,
+					printCPUxNiceInfo);
 			sprintf(cmdName, "cpu%dsys", id);
-			registerMonitor(cmdName, printCPUxSys, printCPUxSysInfo);
+			registerMonitor(cmdName, "integer", printCPUxSys,
+					printCPUxSysInfo);
 			sprintf(cmdName, "cpu%didle", id);
-			registerMonitor(cmdName, printCPUxIdle, printCPUxIdleInfo);
+			registerMonitor(cmdName, "integer", printCPUxIdle,
+					printCPUxIdleInfo);
 		}
 	}
 
@@ -230,7 +238,7 @@ printCPUUser(const char* cmd)
 	printf("%d\n", CPULoad.userLoad);
 }
 
-void 
+void
 printCPUUserInfo(const char* cmd)
 {
 	printf("CPU User Load\t0\t100\t%%\n");
@@ -242,7 +250,7 @@ printCPUNice(const char* cmd)
 	printf("%d\n", CPULoad.niceLoad);
 }
 
-void 
+void
 printCPUNiceInfo(const char* cmd)
 {
 	printf("CPU Nice Load\t0\t100\t%%\n");
@@ -254,7 +262,7 @@ printCPUSys(const char* cmd)
 	printf("%d\n", CPULoad.sysLoad);
 }
 
-void 
+void
 printCPUSysInfo(const char* cmd)
 {
 	printf("CPU System Load\t0\t100\t%%\n");
@@ -266,7 +274,7 @@ printCPUIdle(const char* cmd)
 	printf("%d\n", CPULoad.idleLoad);
 }
 
-void 
+void
 printCPUIdleInfo(const char* cmd)
 {
 	printf("CPU Idle Load\t0\t100\t%%\n");
@@ -281,7 +289,7 @@ printCPUxUser(const char* cmd)
 	printf("%d\n", SMPLoad[id].userLoad);
 }
 
-void 
+void
 printCPUxUserInfo(const char* cmd)
 {
 	int id;
@@ -299,7 +307,7 @@ printCPUxNice(const char* cmd)
 	printf("%d\n", SMPLoad[id].niceLoad);
 }
 
-void 
+void
 printCPUxNiceInfo(const char* cmd)
 {
 	int id;
@@ -317,7 +325,7 @@ printCPUxSys(const char* cmd)
 	printf("%d\n", SMPLoad[id].sysLoad);
 }
 
-void 
+void
 printCPUxSysInfo(const char* cmd)
 {
 	int id;
@@ -335,7 +343,7 @@ printCPUxIdle(const char* cmd)
 	printf("%d\n", SMPLoad[id].idleLoad);
 }
 
-void 
+void
 printCPUxIdleInfo(const char* cmd)
 {
 	int id;

@@ -1,8 +1,8 @@
 /*
     KTop, the KDE Task Manager
-   
+
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -30,6 +30,7 @@ typedef struct
 {
 	char* command;
 	cmdExecutor ex;
+        char *type;
 	int isMonitor;
 } Command;
 
@@ -53,7 +54,7 @@ exitCommand(void)
 	destr_ctnr(CommandList, (DESTR_FUNC) NIL);
 }
 
-void 
+void
 registerCommand(const char* command, cmdExecutor ex)
 {
 	Command* cmd = (Command*) malloc(sizeof(Command));
@@ -65,7 +66,7 @@ registerCommand(const char* command, cmdExecutor ex)
 }
 
 void
-registerMonitor(const char* command, cmdExecutor ex, cmdExecutor iq)
+registerMonitor(const char* command, const char *type, cmdExecutor ex, cmdExecutor iq)
 {
 	/* Monitors are similar to regular commands except that every monitor
 	 * registers two commands. The first is the value request command and
@@ -79,6 +80,8 @@ registerMonitor(const char* command, cmdExecutor ex, cmdExecutor iq)
 	strcpy(cmd->command, command);
 	cmd->ex = ex;
 	cmd->isMonitor = 1;
+	cmd->type = (char *) malloc(strlen(type) + 1);
+	strcpy(cmd->type, type);
 	push_ctnr(CommandList, cmd);
 
 	cmd = (Command*) malloc(sizeof(Command));
@@ -87,10 +90,11 @@ registerMonitor(const char* command, cmdExecutor ex, cmdExecutor iq)
 	cmd->command[strlen(command)] = '?';
 	cmd->ex = iq;
 	cmd->isMonitor = 0;
+	cmd->type = 0;
 	push_ctnr(CommandList, cmd);
 }
 
-void 
+void
 executeCommand(const char* command)
 {
 	int i;
@@ -122,6 +126,6 @@ printMonitors(const char* cmd)
 		Command* cmd = (Command*) get_ctnr(CommandList, i);
 
 		if (cmd->isMonitor)
-			printf("%s\n", cmd->command);
+			printf("%s\t%s\n", cmd->command, cmd->type);
 	}
 }

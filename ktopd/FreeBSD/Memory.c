@@ -1,9 +1,9 @@
 /*
     KTop, the KDE Task Manager
-   
+
 	Copyright (c) 1999-2000 Hans Petter Bieker <bieker@kde.org>
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -45,11 +45,11 @@ static size_t SFree = 0;
 void
 initMemory(void)
 {
-	registerMonitor("memfree", printMFree, printMFreeInfo);
-	registerMonitor("memused", printUsed, printUsedInfo);
-	registerMonitor("membuf", printBuffers, printBuffersInfo);
-	registerMonitor("memcached", printCached, printCachedInfo);
-	registerMonitor("memswap", printSwap, printSwapInfo);
+        registerMonitor("memfree", "integer", printMFree, printMFreeInfo);
+	registerMonitor("memused", "integer", printUsed, printUsedInfo);
+	registerMonitor("membuf", "integer", printBuffers, printBuffersInfo);
+	registerMonitor("memcached", "integer", printCached, printCachedInfo);
+	registerMonitor("memswap", "integer", printSwap, printSwapInfo);
 }
 
 void
