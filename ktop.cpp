@@ -194,7 +194,6 @@ main(int argc, char** argv)
 {
 	// initialize KDE application
 	Kapp = new KApplication(argc, argv, "ktop");
-	Kapp->enableSessionManagement(true);
 
 	/*
 	 * This OSStatus object will be used on platforms that require KTop to
