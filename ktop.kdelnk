@@ -1,25 +1,25 @@
 # KDE Config File 
 [KDE Desktop Entry]
 Name=Top performance monitor
-Name[es]=Monitor de Rendimiento Top
 Name[de]=KTop
-Name[no]=Top ytelsesovervåker
-Name[hr]=KTop
 Name[fr]=Ktop
-Name[sk]=KTop
+Name[es]=Monitor de Rendimiento Top
 Name[pt]=KTop
+Name[hr]=KTop
+Name[no]=Top ytelsesovervåker
+Name[sk]=KTop
 Name[pt_BR]=KTop
 Exec=ktop
 Icon=ktop.xpm
 Type=Application
 DocPath=ktop/ktop.html
 Comment=Performance monitor
-Comment[es]=Monitor de rendimiento
 Comment[de]=Performance-Anzeiger
-Comment[no]=Ytelsesovervåkning
 Comment[fr]=Moniteur de performances système
-Comment[sk]=Monitorovanie výkonu
+Comment[es]=Monitor de rendimiento
 Comment[pt]=Monitor de performance
+Comment[no]=Ytelsesovervåkning
+Comment[sk]=Monitorovanie výkonu
 Comment[pt_BR]=Monitor de performance
 Terminal=0
 MiniIcon=ktop.xpm
