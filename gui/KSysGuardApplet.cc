@@ -446,7 +446,7 @@ bool KSysGuardApplet::save()
 
   QFile file( fileName );
   if ( !file.open( IO_WriteOnly ) ) {
-    KMessageBox::sorry( this, i18n( "Can't save file %1" ).arg( fileName ) );
+    KMessageBox::sorry( this, i18n( "Cannot save file %1" ).arg( fileName ) );
     return false;
   }
 

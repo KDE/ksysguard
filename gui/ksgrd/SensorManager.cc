@@ -276,7 +276,7 @@ void SensorManager::hostLost( const SensorAgent *agent )
 
   if ( mBroadcaster ) {
     QCustomEvent *event = new QCustomEvent( QEvent::User );
-    event->setData( new QString( i18n( "Connection to %1 has been lost!" )
+    event->setData( new QString( i18n( "Connection to %1 has been lost." )
                     .arg( agent->hostName() ) ) );
     kapp->postEvent( mBroadcaster, event );
   }

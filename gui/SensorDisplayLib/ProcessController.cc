@@ -199,7 +199,7 @@ ProcessController::killProcess()
 	if (selectedPIds.isEmpty())
 	{
 		KMessageBox::sorry(this,
-						   i18n("You need to select a process first!"));
+						   i18n("You need to select a process first."));
 		return;
 	}
 	else
@@ -285,7 +285,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 			break;
 		case 1:	// unknown error
 			KSGRD::SensorMgr->notify(
-				i18n("Error while attempting to kill process %1!")
+				i18n("Error while attempting to kill process %1.")
 				.arg(vals[1]));
 			break;
 		case 2:
@@ -295,11 +295,11 @@ ProcessController::answerReceived(int id, const QString& answer)
 			break;
 		case 3:
 			KSGRD::SensorMgr->notify(
-				i18n("Process %1 has already disappeared!")
+				i18n("Process %1 has already disappeared.")
 				.arg(vals[1]));
 			break;
 		case 4:
-			KSGRD::SensorMgr->notify(i18n("Invalid Signal!"));
+			KSGRD::SensorMgr->notify(i18n("Invalid Signal."));
 			break;
 		}
 		break;
@@ -320,7 +320,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 			break;
 		case 1:	// unknown error
 			KSGRD::SensorMgr->notify(
-				i18n("Error while attempting to renice process %1!")
+				i18n("Error while attempting to renice process %1.")
 				.arg(vals[1]));
 			break;
 		case 2:
@@ -330,11 +330,11 @@ ProcessController::answerReceived(int id, const QString& answer)
 			break;
 		case 3:
 			KSGRD::SensorMgr->notify(
-				i18n("Process %1 has already disappeared!")
+				i18n("Process %1 has already disappeared.")
 				.arg(vals[1]));
 			break;
 		case 4:
-			KSGRD::SensorMgr->notify(i18n("Invalid argument!"));
+			KSGRD::SensorMgr->notify(i18n("Invalid argument."));
 			break;
 		}
 		break;

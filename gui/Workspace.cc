@@ -220,7 +220,7 @@ void Workspace::saveWorkSheetAs()
 void Workspace::saveWorkSheet( WorkSheet *sheet )
 {
   if ( !sheet ) {
-    KMessageBox::sorry( this, i18n( "You don't have a worksheet that could be saved!" ) );
+    KMessageBox::sorry( this, i18n( "You do not have a worksheet that could be saved." ) );
     return;
   }
 
@@ -311,7 +311,7 @@ void Workspace::deleteWorkSheet()
     removePage( current );
     mSheetList.remove( current );
   } else {
-    QString msg = i18n( "There are no worksheets that could be deleted!" );
+    QString msg = i18n( "There are no worksheets that could be deleted." );
     KMessageBox::error( this, msg );
   }
 }
@@ -435,7 +435,7 @@ void Workspace::showProcesses()
   if ( !file.isEmpty() )
     restoreWorkSheet( file );
   else
-    KMessageBox::error( this, i18n( "Cannot find file ProcessTable.sgrd!" ) );
+    KMessageBox::error( this, i18n( "Cannot find file ProcessTable.sgrd." ) );
 }
 
 #include "Workspace.moc"

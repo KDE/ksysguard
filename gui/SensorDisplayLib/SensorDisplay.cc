@@ -94,7 +94,7 @@ void SensorDisplay::registerSensor( SensorProperties *sp )
    * a case the user can re-enter the connect information and the
    * connection will be established. */
   if ( !SensorMgr->engageHost( sp->hostName() ) ) {
-    QString msg = i18n( "Impossible to connect to \'%1\'!" ).arg( sp->hostName() );
+    QString msg = i18n( "It is impossible to connect to \'%1\'." ).arg( sp->hostName() );
     KMessageBox::error( this, msg );
   }
 

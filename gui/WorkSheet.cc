@@ -217,7 +217,7 @@ bool WorkSheet::save( const QString &fileName )
 
   QFile file( mFileName );
   if ( !file.open( IO_WriteOnly ) ) {
-    KMessageBox::sorry( this, i18n( "Can't save file %1" ).arg( mFileName ) );
+    KMessageBox::sorry( this, i18n( "Cannot save file %1" ).arg( mFileName ) );
     return false;
   }
 
@@ -302,7 +302,7 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
                                              uint row, uint column )
 {
   if ( !KSGRD::SensorMgr->engageHost( hostName ) ) {
-    QString msg = i18n( "Impossible to connect to \'%1\'!" ).arg( hostName );
+    QString msg = i18n( "It is impossible to connect to \'%1\'." ).arg( hostName );
     KMessageBox::error( this, msg );
 
     return 0;
