@@ -129,7 +129,7 @@ KSysGuardApplet::preferences()
 	connect(ksgas, SIGNAL(applyClicked()), SLOT(applySettings()));
 
 	ksgas->setNumDisplay(dockCnt);
-	ksgas->setSizeRatio(sizeRatio * 100.0 + 0.5);
+	ksgas->setSizeRatio((int) (sizeRatio * 100.0 + 0.5));
 	ksgas->setUpdateInterval(updateInterval());
 
 	if (ksgas->exec())
@@ -218,7 +218,7 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 			if (sensorType == "integer" || sensorType == "float")
 			{
 				QPopupMenu popup;
-				QWidget *wdg;
+				QWidget *wdg = 0;
 
 				popup.insertItem(i18n("Select Display Type"), 0);
 				popup.setItemEnabled(0, false);
@@ -242,7 +242,7 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 
 					case 3:
 						wdg = new DancingBars(this, "DancingBars", sensorDescr,
-											  100.0, 100.0, true);
+											  100, 100, true);
 						Q_CHECK_PTR(wdg);
 						break;
 				}
@@ -445,8 +445,8 @@ KSysGuardApplet::load()
 			newDisplay = new MultiMeter(this, "MultiMeter", "Dummy", 100.0,
 									   	100.0, true);
 		else if (classType == "DancingBars")
-			newDisplay = new DancingBars(this, "DancingBars", "Dummy", 100.0,
-										 100.0, true);
+			newDisplay = new DancingBars(this, "DancingBars", "Dummy", 100,
+										 100, true);
 		else
 		{
 			KMessageBox::sorry(
