@@ -28,7 +28,7 @@
 #include "Command.h"
 #include "ProcessList.h"
 #include "Memory.h"
-#include "CPU.h"
+#include "stat.h"
 
 /* This variable will be set to 1 as soon as the first interrupt (SIGALRM)
  * has been received. */
@@ -55,7 +55,7 @@ signalHandler(int sig)
 	case SIGALRM:
 		updateProcessList();
 		updateMemory();
-		updateCPU();
+		updateStat();
 		DispatcherReady = 1;
 		break;
     case SIGQUIT:

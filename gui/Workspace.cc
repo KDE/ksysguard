@@ -88,8 +88,6 @@ Workspace::readProperties(KConfig* cfg)
 			QString fileName = cfg->readEntry(QString("Sheet%1").arg(i));
 			if (!fileName.isEmpty())
 				restoreWorkSheet(fileName);
-			else
-				break;
 		}
 		currentSheet = cfg->readEntry("CurrentSheet");
 	}

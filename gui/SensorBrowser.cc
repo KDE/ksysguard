@@ -61,6 +61,9 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	dict.insert("load", new QString(i18n("Load")));
 	dict.insert("rio", new QString(i18n("Read Throughput")));
 	dict.insert("wio", new QString(i18n("Write Throughput")));
+	dict.insert("pageIn", new QString(i18n("Pages In")));
+	dict.insert("pageOut", new QString(i18n("Pages Out")));
+	dict.insert("context", new QString(i18n("Context Switches")));
 
 	for (int i = 0; i < 32; i++)
 		dict.insert("cpu" + QString::number(i),

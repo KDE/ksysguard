@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "CPU.h"
+#include "stat.h"
 #include "Command.h"
 
 typedef struct
@@ -57,6 +57,12 @@ static unsigned long DiskRIO = 0;
 static unsigned long OldDiskRIO = 0;
 static unsigned long DiskWIO = 0;
 static unsigned long OldDiskWIO = 0;
+static unsigned long PageIn = 0;
+static unsigned long OldPageIn = 0;
+static unsigned long PageOut = 0;
+static unsigned long OldPageOut = 0;
+static unsigned long Ctxt = 0;
+static unsigned long OldCtxt = 0;
 
 static void
 updateCPULoad(const char* line, CPULoadInfo* load)
@@ -143,6 +149,22 @@ processStat(void)
 			DiskWIO = val - OldDiskWIO;
 			OldDiskWIO = val;
 		}
+		else if (strcmp("page", tag) == 0)
+		{
+			unsigned long v1, v2;
+			sscanf(buf + 5, "%lu %lu", &v1, &v2);
+			PageIn = v1 - OldPageIn;
+			OldPageIn = v1;
+			PageOut = v2 - OldPageOut;
+			OldPageOut = v2;
+		}
+		else if (strcmp("ctxt", tag) == 0)
+		{
+			unsigned long val;
+			sscanf(buf + 5, "%lu", &val);
+			Ctxt = val - OldCtxt;
+			OldCtxt = val;
+		}
 	}
 
 	Dirty = 0;
@@ -153,7 +175,7 @@ processStat(void)
 */
 
 void
-initCPU(void)
+initStat(void)
 {
 	/* The CPU load is calculated from the values in /proc/stat. The cpu
 	 * entry contains 4 counters. These counters count the number of ticks
@@ -257,6 +279,20 @@ initCPU(void)
 			registerMonitor("disk/wio", "integer", printDiskWIO,
 							printDiskWIOInfo);
 		}
+		else if (strcmp("page", tag) == 0)
+		{
+			sscanf(buf + 5, "%lu %lu", &OldPageIn, &OldPageOut);
+			registerMonitor("cpu/pageIn", "integer", printPageIn,
+							printPageInInfo);
+			registerMonitor("cpu/pageOut", "integer", printPageOut,
+							printPageOutInfo);
+		}
+		else if (strcmp("ctxt", tag) == 0)
+		{
+			sscanf(buf + 5, "%lu", &OldCtxt);
+			registerMonitor("cpu/context", "integer", printCtxt,
+							printCtxtInfo);
+		}
 	}
 	fclose(stat);
 
@@ -265,7 +301,7 @@ initCPU(void)
 }
 
 void
-exitCPU(void)
+exitStat(void)
 {
 	if (SMPLoad)
 	{
@@ -275,7 +311,7 @@ exitCPU(void)
 }
 
 int
-updateCPU(void)
+updateStat(void)
 {
 	size_t n;
 	FILE* stat;
@@ -471,4 +507,46 @@ void
 printDiskWIOInfo(const char* cmd)
 {
 	printf("Disk Write\t0\t0\tkBytes/s\n");
+}
+
+void
+printPageIn(const char* cmd)
+{
+	if (Dirty)
+		processStat();
+	printf("%lu\n", PageIn / TIMERINTERVAL);
+}
+
+void
+printPageInInfo(const char* cmd)
+{
+	printf("Paged in Pages\t0\t0\t1/s\n");
+}
+
+void
+printPageOut(const char* cmd)
+{
+	if (Dirty)
+		processStat();
+	printf("%lu\n", PageOut / TIMERINTERVAL);
+}
+
+void
+printPageOutInfo(const char* cmd)
+{
+	printf("Paged out Pages\t0\t0\t1/s\n");
+}
+
+void
+printCtxt(const char* cmd)
+{
+	if (Dirty)
+		processStat();
+	printf("%lu\n", Ctxt / TIMERINTERVAL);
+}
+
+void
+printCtxtInfo(const char* cmd)
+{
+	printf("Context switches\t0\t0\t1/s\n");
 }

@@ -28,7 +28,7 @@
 #include "Command.h"
 #include "ProcessList.h"
 #include "Memory.h"
-#include "CPU.h"
+#include "stat.h"
 
 #define CMDBUFSIZE 128
 
@@ -65,7 +65,7 @@ main(int argc, const char* argv[])
 	registerCommand("quit", exQuit);
 	initProcessList();
 	initMemory();
-	initCPU();
+	initStat();
 
 	while (!dispatcherReady())
 		;
@@ -82,7 +82,7 @@ main(int argc, const char* argv[])
 		fflush(stdout);
 	} while (!QuitApp);
 
-	exitCPU();
+	exitStat();
 	exitMemory();
 	exitProcessList();
 	exitDispatcher();

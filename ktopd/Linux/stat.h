@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,14 +19,14 @@
 	$Id$
 */
 
-#ifndef _CPU_h_
-#define _CPU_h_
+#ifndef _stat_h_
+#define _stat_h_
 
-void initCPU(void);
+void initStat(void);
 
-void exitCPU(void);
+void exitStat(void);
 
-int updateCPU(void);
+int updateStat(void);
 
 void printCPUUser(const char* cmd);
 void printCPUUserInfo(const char* cmd);
@@ -51,5 +50,11 @@ void printDiskRIO(const char* cmd);
 void printDiskRIOInfo(const char* cmd);
 void printDiskWIO(const char* cmd);
 void printDiskWIOInfo(const char* cmd);
+void printPageIn(const char* cmd);
+void printPageInInfo(const char* cmd);
+void printPageOut(const char* cmd);
+void printPageOutInfo(const char* cmd);
+void printCtxt(const char* cmd);
+void printCtxtInfo(const char* cmd);
 
 #endif
