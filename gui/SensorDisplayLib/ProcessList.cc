@@ -322,7 +322,15 @@ ProcessList::update(const QString& list)
 	else
 		buildList();
 
-	setCurrentItem(itemAt(QPoint(1, currItemPos)));
+  QListViewItemIterator it( this );
+  while ( it.current() ) {
+    if ( itemPos( it.current() ) == currItemPos ) {
+      setCurrentItem( it.current() );
+      break;
+    }
+    ++it;
+  }
+
 	verticalScrollBar()->setValue(vpos);
 	horizontalScrollBar()->setValue(hpos);
 
