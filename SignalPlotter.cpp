@@ -160,12 +160,11 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	int w = width();
 	int h = height();
 
-	QPixmap pm(rect().width(), rect().height());
+	QPixmap pm(width(), height());
 	QPainter p;
 	p.begin(&pm, this);
 
-	p.setPen(black);
-	p.drawRect(rect());
+	pm.fill(black);
 	/*
 	 * Draw white line along the bottom and the right side of the widget to
 	 * create a 3D like look.
