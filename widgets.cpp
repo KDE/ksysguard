@@ -28,6 +28,7 @@
 /*=============================================================================
   HEADERs
  =============================================================================*/
+#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,10 +39,14 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <limits.h>
+
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+
 #ifdef __FreeBSD__
 #include <signal.h>
-#include <sys/syslimits.h>
-#include <sys/param.h>
 #include <sys/sysctl.h>
 #include <sys/user.h>
 #endif
@@ -922,7 +927,7 @@ void TaskMan::pList_load()
 	struct passwd *pwent;
 	pList_clearProcVisit();
 
-	int mib[2];
+	int mib[3];
 	size_t len;
 	struct kinfo_proc *p;
 
