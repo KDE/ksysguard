@@ -23,7 +23,7 @@
 #define _SensorShellAgent_h_
 
 #include <qobject.h>
-#include <qlist.h>
+#include <qptrlist.h>
 
 #include <SensorAgent.h>
 

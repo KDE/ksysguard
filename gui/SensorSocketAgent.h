@@ -22,7 +22,7 @@
 #ifndef _SensorSocketAgent_h_
 #define _SensorSocketAgent_h_
 
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qsocket.h>
 
 #include "SensorAgent.h"

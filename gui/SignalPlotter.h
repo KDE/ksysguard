@@ -25,7 +25,7 @@
 #ifndef _SignalPlotter_h_
 #define _SignalPlotter_h_
 
-#include <qlist.h>
+#include <qptrlist.h>
 #include <qvaluelist.h>
 #include <qwidget.h>
 #include <qstring.h>
