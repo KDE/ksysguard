@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE KSysGuardWorkSheet ><WorkSheet rows="1" interval="2" columns="1" >
  <host port="-1" shell="" name="localhost" command="ksysguardd" />
- <display class="ProcessController" row="0" sensorName="ps" column="0" filter="0" sortColumn="0" hostName="localhost" incrOrder="1" tree="0" pause="0" >
+ <display class="ProcessController" row="0" sensorName="ps" sensorType="table" column="0" filter="0" sortColumn="0" hostName="localhost" incrOrder="1" tree="0" pause="0" >
   <column currentWidth="127" savedWidth="126" index="0" />
   <column currentWidth="42" savedWidth="46" index="1" />
   <column currentWidth="0" savedWidth="42" index="2" />

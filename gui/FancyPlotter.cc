@@ -282,16 +282,19 @@ FancyPlotter::sensorError(int sensorId, bool err)
 
 bool
 FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
-						const QString& title)
+					const QString& sensorType, const QString& title)
 {
-	return (addSensor(hostName, sensorName, title,
+	return (addSensor(hostName, sensorName, sensorType, title,
 					  Style->getSensorColor(beams)));
 }
 
 bool
 FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
-						const QString& title, const QColor& col)
+				const QString& sensorType, const QString& title, const QColor& col)
 {
+	if (sensorType != "integer" && sensorType != "float")
+		return (false);
+
 	if (beams > 0 && hostName != sensors.at(0)->hostName)
 	{
 		KMessageBox::sorry(this, QString(
@@ -306,7 +309,7 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 	if (!plotter->addBeam(col))
 		return (false);
 
-	registerSensor(new FPSensorProperties(hostName, sensorName, title, col));
+	registerSensor(new FPSensorProperties(hostName, sensorName, sensorType, title, col));
 
 	/* To differentiate between answers from value requests and info
 	 * requests we add 100 to the beam index for info requests. */
@@ -314,11 +317,16 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 
 	++beams;
 
-	if (noFrame) {
+	if (noFrame)
+	{
 		QString tooltip;
 		for (uint i = 0; i < beams; ++i)
-			tooltip += QString("%1:%2\n").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
-
+		{
+			if (i == 0)
+				tooltip += QString("%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+			else
+				tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+		}
 		QToolTip::remove(plotter);
 		QToolTip::add(plotter, tooltip);
 	}
@@ -340,11 +348,16 @@ FancyPlotter::removeSensor(uint idx)
 	beams--;
 	SensorDisplay::removeSensor(idx);
 
-	if (noFrame) {
+	if (noFrame)
+	{
 		QString tooltip;
 		for (uint i = 0; i < beams; ++i)
-			tooltip += QString("%1:%2\n").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
-
+		{
+			if (i == 0)
+				tooltip += QString("%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+			else
+				tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+		}
 		QToolTip::remove(plotter);
 		QToolTip::add(plotter, tooltip);
 	}
@@ -444,7 +457,7 @@ FancyPlotter::createFromDOM(QDomElement& domElem)
 	for (uint i = 0; i < dnList.count(); ++i)
 	{
 		QDomElement el = dnList.item(i).toElement();
-		addSensor(el.attribute("hostName"), el.attribute("sensorName"), "",
+		addSensor(el.attribute("hostName"), el.attribute("sensorName"), el.attribute("sensorType"), "",
 				  restoreColorFromDOM(el, "color",
 									  Style->getSensorColor(i)));
 	}
@@ -480,6 +493,7 @@ FancyPlotter::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 		display.appendChild(beam);
 		beam.setAttribute("hostName", sensors.at(i)->hostName);
 		beam.setAttribute("sensorName", sensors.at(i)->name);
+		beam.setAttribute("sensorType", sensors.at(i)->type);
 		addColorToDOM(beam, "color", plotter->beamColor[i]);
 	}
 	if (save)

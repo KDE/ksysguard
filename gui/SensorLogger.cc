@@ -178,8 +178,11 @@ SensorLogger::~SensorLogger(void)
 }
 
 bool
-SensorLogger::addSensor(const QString& hostName, const QString& sensorName, const QString&)
+SensorLogger::addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString&)
 {
+	if (sensorType != "integer" && sensorType != "float")
+		return (false);
+
 	sld = new SensorLoggerDlg(this, "SensorLoggerDlg", true);
 	CHECK_PTR(sld);
 

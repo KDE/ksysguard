@@ -41,9 +41,9 @@ class FPSensorProperties : public SensorProperties
 {
 public:
 	FPSensorProperties() { }
-	FPSensorProperties(const QString& hn, const QString& n, const QString& d,
+	FPSensorProperties(const QString& hn, const QString& n, const QString& t, const QString& d,
 					   const QColor& c)
-		: SensorProperties(hn, n, d), color(c) { }
+		: SensorProperties(hn, n, t, d), color(c) { }
 	~FPSensorProperties() { }
 
 	QColor color;
@@ -62,9 +62,9 @@ public:
 	void settings();
 
 	bool addSensor(const QString& hostName, const QString& sensorName,
-				   const QString& title);
+				const QString& sensorType, const QString& title);
 	bool addSensor(const QString& hostName, const QString& sensorName,
-				   const QString& title, const QColor& col);
+				   const QString& sensorType, const QString& title, const QColor& col);
 	bool removeSensor(uint idx);
 
 	virtual QSize sizeHint(void);

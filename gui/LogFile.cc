@@ -61,9 +61,12 @@ LogFile::~LogFile(void)
 }
 
 bool
-LogFile::addSensor(const QString& hostName, const QString& sensorName, const QString& t)
+LogFile::addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& t)
 {
-	registerSensor(new SensorProperties(hostName, sensorName, t));
+	if (sensorType != "logfile")
+		return (false);
+
+	registerSensor(new SensorProperties(hostName, sensorName, sensorType, t));
 
 	QString sensorID = sensorName.right(sensorName.length() - (sensorName.findRev("/") + 1));
 
@@ -151,7 +154,7 @@ LogFile::createFromDOM(QDomElement& element)
 		filterRules.append(element.attribute("rule"));
 	}
 
-	addSensor(element.attribute("hostName"), element.attribute("sensorName"), title);
+	addSensor(element.attribute("hostName"), element.attribute("sensorName"), element.attribute("sensorType"), title);
 
 	setModified(FALSE);
 
@@ -163,6 +166,7 @@ LogFile::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 {
 	element.setAttribute("hostName", sensors.at(0)->hostName);
 	element.setAttribute("sensorName", sensors.at(0)->name);
+	element.setAttribute("sensorType", sensors.at(0)->type);
 
 	element.setAttribute("title", title);
 	element.setAttribute("font", monitor->font().rawName());

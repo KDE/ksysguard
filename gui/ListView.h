@@ -74,7 +74,7 @@ public:
 	{
 	}
 
-	bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorDescr);
+	bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& sensorDescr);
 	void answerReceived(int id, const QString& answer);
 	void resizeEvent(QResizeEvent*);
 	void updateList();

@@ -85,6 +85,10 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 	load();
 
 	setAcceptDrops(TRUE);
+
+	KMessageBox::information(
+		this, i18n("Drag sensors from the sensor-tree of ksysguard to the empty fields in the applet"),
+		QString::null, "ShowSBUseInfo");
 }
 
 KSysGuardApplet::~KSysGuardApplet()
@@ -146,7 +150,8 @@ KSysGuardApplet::applySettings()
 	resizeDocks(ksgas->dockCnt->text().toUInt());
 
 	for (uint i = 0; i < dockCnt; ++i)
-		((SensorDisplay*) docks[i])->setUpdateInterval(updateInterval);
+		if (!docks[i]->isA("QFrame"))
+			((SensorDisplay*) docks[i])->setUpdateInterval(updateInterval);
 
 	save();
 }
@@ -258,7 +263,7 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 			 }
 		}
 		((SensorDisplay*) docks[dock])->
-			addSensor(hostName, sensorName, sensorDescr);
+			addSensor(hostName, sensorName, sensorType, sensorDescr);
 	}
 
 	save();

@@ -76,7 +76,7 @@ public:
 		updateList();
 	}
 
-	virtual bool addSensor(const QString&, const QString&, const QString&);
+	virtual bool addSensor(const QString&, const QString&, const QString&, const QString&);
 
 	virtual void answerReceived(int id, const QString& answer);
 

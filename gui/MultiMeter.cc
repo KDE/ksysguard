@@ -89,9 +89,12 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 
 bool
 MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
-					  const QString& title)
+					const QString& sensorType, const QString& title)
 {
-	registerSensor(new SensorProperties(hostName, sensorName, title));
+	if (sensorType != "integer" && sensorType != "float")
+		return (false);
+
+	registerSensor(new SensorProperties(hostName, sensorName, sensorType, title));
 
 	/* To differentiate between answers from value requests and info
 	 * requests we use 100 for info requests. */
@@ -192,7 +195,7 @@ MultiMeter::createFromDOM(QDomElement& el)
 	setBackgroundColor(restoreColorFromDOM(el, "backgroundColor",
 										   Style->getBackgroundColor()));
 
-	addSensor(el.attribute("hostName"), el.attribute("sensorName"), "");
+	addSensor(el.attribute("hostName"), el.attribute("sensorName"), el.attribute("sensorType"), "");
 
 	setModified(false);
 
@@ -204,6 +207,7 @@ MultiMeter::addToDOM(QDomDocument&, QDomElement& display, bool save)
 {
 	display.setAttribute("hostName", sensors.at(0)->hostName);
 	display.setAttribute("sensorName", sensors.at(0)->name);
+	display.setAttribute("sensorType", sensors.at(0)->type);
 	display.setAttribute("title", title);
 	display.setAttribute("showUnit", (int) showUnit);
 	display.setAttribute("lowerLimitActive", (int) lowerLimitActive);

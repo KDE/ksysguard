@@ -250,7 +250,6 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 										  fileName.findRev('/') - 1);
 		// chop off extension (usually '.sgrd')
 		baseName = baseName.left(baseName.findRev('.'));
-//		changeTab(currentPage(), baseName);
 		changeTab(sheet, baseName);
 	}
 	/* If we cannot save the file is probably write protected. So we need
@@ -270,7 +269,6 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 void
 Workspace::saveWorkSheetAs(WorkSheet* sheet)
 {
-//	WorkSheet* sheet = (WorkSheet*) currentPage();
 	if (!sheet)
 	{
 		KMessageBox::sorry(

@@ -110,9 +110,12 @@ ListView::ListView(QWidget* parent, const char* name, const QString& t,
 }
 
 bool
-ListView::addSensor(const QString& hostName, const QString& sensorName, const QString& title)
+ListView::addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& title)
 {
-	registerSensor(new SensorProperties(hostName, sensorName, title));
+	if (sensorType != "listview")
+		return (false);
+
+	registerSensor(new SensorProperties(hostName, sensorName, sensorType, title));
 
 	frame->setTitle(title);
 
@@ -201,7 +204,7 @@ ListView::createFromDOM(QDomElement& element)
 		restoreColorFromDOM(element, "backgroundColor",
 							Style->getBackgroundColor()));
 	addSensor(element.attribute("hostName"),
-			  element.attribute("sensorName"), title);
+			  element.attribute("sensorName"), element.attribute("sensorType"), title);
 
 	QColorGroup colorGroup = monitor->colorGroup();
 	colorGroup.setBrush(QColorGroup::Base,
@@ -220,6 +223,7 @@ ListView::addToDOM(QDomDocument&, QDomElement& element, bool save)
 {
 	element.setAttribute("hostName", sensors.at(0)->hostName);
 	element.setAttribute("sensorName", sensors.at(0)->name);
+	element.setAttribute("sensorType", sensors.at(0)->type);
 	element.setAttribute("title", title);
 
 	addColorToDOM(element, "gridColor", monitor->getGridColor());

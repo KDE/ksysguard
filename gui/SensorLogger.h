@@ -145,7 +145,7 @@ public:
 	SensorLogger(QWidget *parent = 0, const char *name = 0, const QString& title = 0);
 	~SensorLogger(void);
 
-	bool addSensor(const QString& hostName, const QString& sensorName,
+	bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType,
 				   const QString& sensorDescr);
 
 	bool editSensor(LogSensor*);

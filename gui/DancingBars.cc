@@ -23,28 +23,29 @@
 	$Id$
 */
 
-#include <qgroupbox.h>
-#include <qtextstream.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
 #include <qcheckbox.h>
-#include <qspinbox.h>
-#include <qlistview.h>
 #include <qdom.h>
+#include <qgroupbox.h>
 #include <qlayout.h>
+#include <qlineedit.h>
+#include <qlistview.h>
+#include <qpushbutton.h>
+#include <qspinbox.h>
+#include <qtextstream.h>
+#include <qtooltip.h>
 
 #include <kapp.h>
+#include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <knumvalidator.h>
-#include <kdebug.h>
 
-#include "SensorManager.h"
-#include "StyleEngine.h"
 #include "ColorPicker.h"
-#include "DancingBarsSettings.h"
 #include "BarGraphSettings.h"
 #include "DancingBars.moc"
+#include "DancingBarsSettings.h"
+#include "SensorManager.h"
+#include "StyleEngine.h"
 
 DancingBars::DancingBars(QWidget* parent, const char* name,
 						 const QString& title, int, int, bool nf)
@@ -262,22 +263,39 @@ DancingBars::settingsSelectionChanged(QListViewItem* lvi)
 }
 
 bool
-DancingBars::addSensor(const QString& hostName, const QString& sensorName,
+DancingBars::addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType,
 					   const QString& title)
 {
+	if (sensorType != "integer" && sensorType != "float")
+		return (false);
+
 	if (bars >= 32)
 		return (false);
 
 	if (!plotter->addBar(title))
 		return (false);
 
-	registerSensor(new SensorProperties(hostName, sensorName, title));
+	registerSensor(new SensorProperties(hostName, sensorName, sensorType, title));
 
 	/* To differentiate between answers from value requests and info
 	 * requests we add 100 to the beam index for info requests. */
 	sendRequest(hostName, sensorName + "?", bars + 100);
 	++bars;
 	sampleBuf.resize(bars);
+
+	if (noFrame)
+	{
+		QString tooltip;
+		for (uint i = 0; i < bars; ++i)
+		{
+			if (i == 0)
+				tooltip += QString("%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+			else
+				tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+		}
+		QToolTip::remove(plotter);
+		QToolTip::add(plotter, tooltip);
+	}
 
 	return (true);
 }
@@ -295,6 +313,20 @@ DancingBars::removeSensor(uint idx)
 	plotter->removeBar(idx);
 	bars--;
 	SensorDisplay::removeSensor(idx);
+
+	if (noFrame)
+	{
+		QString tooltip;
+		for (uint i = 0; i < bars; ++i)
+		{
+			if (i == 0)
+				tooltip += QString("%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+			else
+				tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+		}
+		QToolTip::remove(plotter);
+		QToolTip::add(plotter, tooltip);
+	}
 
 	return (true);
 }
@@ -385,7 +417,7 @@ DancingBars::createFromDOM(QDomElement& domElem)
 	{
 		QDomElement el = dnList.item(i).toElement();
 		addSensor(el.attribute("hostName"), el.attribute("sensorName"),
-				  el.attribute("sensorDescr"));
+				 el.attribute("sensorType"), el.attribute("sensorDescr"));
 	}
 
 	setModified(false);
@@ -418,6 +450,7 @@ DancingBars::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 		display.appendChild(beam);
 		beam.setAttribute("hostName", sensors.at(i)->hostName);
 		beam.setAttribute("sensorName", sensors.at(i)->name);
+		beam.setAttribute("sensorType", sensors.at(i)->type);
 		beam.setAttribute("sensorDescr", plotter->footers[i]);
 	}
 

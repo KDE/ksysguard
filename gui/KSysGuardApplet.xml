@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE KSysGuardApplet ><WorkSheet sizeRatio="1.2" dockCnt="2" interval="4" >
  <host shell="" name="localhost" command="ksysguardd" />
  <display topBar="1" vColor="4605510" title="CPU" dock="0" class="FancyPlotter" hLines="1" hCount="2" vLines="0" min="0" max="100" hColor="4605510" fontSize="8" labels="0" vDistance="30" >
-  <beam sensorName="cpu/user" hostName="localhost" />
-  <beam sensorName="cpu/sys" hostName="localhost" />
-  <beam sensorName="cpu/nice" hostName="localhost" />
+  <beam sensorName="cpu/user" sensorType="integer" hostName="localhost" />
+  <beam sensorName="cpu/sys" sensorType="integer" hostName="localhost" />
+  <beam sensorName="cpu/nice" sensorType="integer" hostName="localhost" />
  </display>
  <display topBar="1" vColor="4605510" title="Mem" dock="1" class="FancyPlotter" hLines="1" hCount="2" vLines="0" min="0" max="255032" hColor="4605510" fontSize="8" labels="0" vDistance="30" >
-  <beam sensorName="mem/physical/application" hostName="localhost" />
-  <beam sensorName="mem/physical/buf" hostName="localhost" />
-  <beam sensorName="mem/physical/cached" hostName="localhost" />
+  <beam sensorName="mem/physical/application" sensorType="integer" hostName="localhost" />
+  <beam sensorName="mem/physical/buf" sensorType="integer" hostName="localhost" />
+  <beam sensorName="mem/physical/cached" sensorType="integer" hostName="localhost" />
  </display>
 </WorkSheet>

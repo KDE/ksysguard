@@ -365,7 +365,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 		replaceDisplay(r, c, newDisplay);
 	}
 
-	displays[r][c]->addSensor(hostName, sensorName, sensorDescr);
+	displays[r][c]->addSensor(hostName, sensorName, sensorType, sensorDescr);
 
 	setModified(true);
 	return ((SensorDisplay*) displays[r][c]);

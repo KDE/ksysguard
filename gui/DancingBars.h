@@ -48,7 +48,7 @@ public:
 	void settings();
 
 	bool addSensor(const QString& hostName, const QString& sensorName,
-				   const QString& title);
+				const QString& sensorType, const QString& title);
 	bool removeSensor(uint idx);
 
 	void updateSamples(const QArray<double>& newSamples)

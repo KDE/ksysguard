@@ -145,9 +145,13 @@ ProcessController::resizeEvent(QResizeEvent* ev)
 bool
 ProcessController::addSensor(const QString& hostName,
 							 const QString& sensorName,
+							const QString& sensorType,
 							 const QString& title)
 {
-	registerSensor(new SensorProperties(hostName, sensorName, title));
+	if (sensorType != "table")
+		return (false);
+
+	registerSensor(new SensorProperties(hostName, sensorName, sensorType, title));
 	/* This just triggers the first communication. The full set of
 	 * requests are send whenever the sensor reconnects (detected in
 	 * sensorError(). */
@@ -310,7 +314,7 @@ bool
 ProcessController::createFromDOM(QDomElement& el)
 {
 	bool result = addSensor(el.attribute("hostName"),
-							el.attribute("sensorName"),
+							el.attribute("sensorName"), el.attribute("sensorType"),
 							QString::null);
 
 	xbTreeView->setChecked(el.attribute("tree").toInt());
@@ -340,6 +344,7 @@ ProcessController::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 {
 	display.setAttribute("hostName", sensors.at(0)->hostName);
 	display.setAttribute("sensorName", sensors.at(0)->name);
+	display.setAttribute("sensorType", sensors.at(0)->type);
 	display.setAttribute("tree", (uint) xbTreeView->isChecked());
 	display.setAttribute("pause", (uint) xbPause->isChecked());
 	display.setAttribute("filter", cbFilter->currentItem());

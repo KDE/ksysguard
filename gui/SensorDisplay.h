@@ -42,8 +42,8 @@ class SensorProperties
 {
 public:
 	SensorProperties() { }
-	SensorProperties(const QString& hn, const QString& n, const QString& d)
-		: hostName(hn), name(n), description(d)
+	SensorProperties(const QString& hn, const QString& n, const QString& t, const QString& d)
+		: hostName(hn), name(n), type(t), description(d)
 	{
 		ok = false;
 	}
@@ -51,6 +51,7 @@ public:
 
 	QString hostName;
 	QString name;
+	QString type;
 	QString description;
 	QString unit;
 
@@ -73,10 +74,10 @@ public:
 	SensorDisplay(QWidget* parent = 0, const char* name = 0);
 	virtual ~SensorDisplay();
 
-	virtual bool addSensor(const QString& hn, const QString& sn,
+	virtual bool addSensor(const QString& hn, const QString& sn, const QString& st,
 						   const QString& res1)
 	{
-		registerSensor(new SensorProperties(hn, sn, res1));
+		registerSensor(new SensorProperties(hn, sn, st, res1));
 		return (true);
 	}
 
@@ -223,7 +224,3 @@ private:
 } ;
 
 #endif
-
-
-
-
