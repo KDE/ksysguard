@@ -47,6 +47,8 @@
 #include "WorkSheetSettings.h"
 #include "WorkSheet.moc"
 
+#include <stdio.h>
+
 WorkSheet::WorkSheet(QWidget* parent) :
 	QWidget(parent)
 {
@@ -526,8 +528,9 @@ WorkSheet::replaceDisplay(uint r, uint c, SensorDisplay* newDisplay)
 		connect(newDisplay, SIGNAL(displayModified(bool)),
 				this, SLOT(setModified(bool)));
 	}
+
+
 	lm->addWidget(displays[r][c], r, c);	
-	fixTabOrder();
 	
 	if (isVisible())
 	{
@@ -603,7 +606,7 @@ WorkSheet::resizeGrid(uint newRows, uint newColumns)
 	for (r = 0; r < newRows; ++r)
 	{
 		newDisplays[r] = new SensorDisplay*[newColumns];
-		CHECK_PTR(displays[r]);
+		CHECK_PTR(newDisplays[r]);
 		for (c = 0; c < newColumns; ++c)
 		{
 			if (c < columns && r < rows)
@@ -648,6 +651,8 @@ WorkSheet::resizeGrid(uint newRows, uint newColumns)
 
 	rows = newRows;
 	columns = newColumns;
+
+	fixTabOrder();
 
 	lm->activate();
 }

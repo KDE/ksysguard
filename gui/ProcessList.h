@@ -171,6 +171,11 @@ public slots:
 			emit listModified(modified);
 		}
 	}
+
+	void selectCurrent(void)
+	{
+		setSelected(currentItem(), !isSelected(currentItem()));
+	}
 		
 signals:
 	// This signal is emitted whenever a new process has been selected.
