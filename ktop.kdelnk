@@ -1,0 +1,11 @@
+# KDE Config File 
+[KDE Desktop Entry]
+Name=KTop
+Name[de]=KTop
+Exec=ktop
+Icon=ktop.xpm
+Type=Application
+DocPath=ktop/ktop.html
+Command=Performance monitor
+Terminal=0
+MiniIcon=ktop.xpm
