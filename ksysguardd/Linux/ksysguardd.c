@@ -49,6 +49,7 @@
 #include "loadavg.h"
 #include "lmsensors.h"
 #include "diskstat.h"
+#include "logfile.h"
 
 #define CMDBUFSIZE	128
 #define MAX_CLIENTS	100
@@ -467,6 +468,7 @@ initModules()
 	initLoadAvg();
 	initLmSensors();
 	initDiskStat();
+	initLogFile();
 
 	ReconfigureFlag = 0;
 }
@@ -474,6 +476,7 @@ initModules()
 static void
 exitModules()
 {
+	exitLogFile();
 	exitDiskStat();
 	exitLmSensors();
 	exitLoadAvg();

@@ -14,8 +14,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>359</width>
-            <height>213</height>
+            <width>400</width>
+            <height>334</height>
         </rect>
     </property>
     <property stdset="1">
@@ -84,6 +84,13 @@
                             <height>20</height>
                         </size>
                     </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
                 </spacer>
                 <widget>
                     <class>ColorPicker</class>
@@ -131,6 +138,13 @@
                             <height>20</height>
                         </size>
                     </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
                 </spacer>
                 <widget>
                     <class>ColorPicker</class>
@@ -162,6 +176,60 @@
                     <property>
                         <name>name</name>
                         <cstring>Spacer3</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget>
+                    <class>ColorPicker</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>backgroundColor</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>0</width>
+                            <height>40</height>
+                        </size>
+                    </property>
+                    <property>
+                        <name>color</name>
+                        <color>
+                            <red>0</red>
+                            <green>255</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Grid Color</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer4</cstring>
                     </property>
                     <property stdset="1">
                         <name>orientation</name>

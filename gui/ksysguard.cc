@@ -33,6 +33,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <qstringlist.h>
 
@@ -49,7 +50,6 @@
 #include <kedittoolbar.h>
 #include <kurl.h>
 #include <kdebug.h>
-#include <dcopclient.h>
 
 #include "SensorBrowser.h"
 #include "SensorManager.h"
@@ -162,16 +162,47 @@ TopLevel::removeWorkSheet(const QString& fileName)
 }
 
 QStringList
-TopLevel::listSensors()
+TopLevel::listSensors(const QString& hostName)
 {
-	return (sb->listSensors());
+	return (sb->listSensors(hostName));
+}
+
+QStringList
+TopLevel::listHosts()
+{
+	return (sb->listHosts());
 }
 
 QString
-TopLevel::readSensor(const QString& /*sensorLocator*/)
+TopLevel::readIntegerSensor(const QString& sensorLocator)
 {
-	// TODO: not yet implemented
+	QString host = sensorLocator.left(sensorLocator.find(':'));
+	QString sensor = sensorLocator.right(sensorLocator.length() - sensorLocator.find(':') - 1);
+
+	DCOPClientTransaction *dcopTransaction = kapp->dcopClient()->beginTransaction();
+	dcopFIFO.prepend(dcopTransaction);
+
+	SensorMgr->engage(host, "", "ksysguardd");
+	SensorMgr->sendRequest(host, sensor, (SensorClient*) this, 133);
+
 	return (QString::null);
+}
+
+QStringList
+TopLevel::readListSensor(const QString& sensorLocator)
+{
+	QStringList retval;
+	
+	QString host = sensorLocator.left(sensorLocator.find(':'));
+	QString sensor = sensorLocator.right(sensorLocator.length() - sensorLocator.find(':') - 1);
+
+	DCOPClientTransaction *dcopTransaction = kapp->dcopClient()->beginTransaction();
+	dcopFIFO.prepend(dcopTransaction);
+
+	SensorMgr->engage(host, "", "ksysguardd");
+	SensorMgr->sendRequest(host, sensor, (SensorClient*) this, 134);
+
+	return retval;
 }
 
 /*
@@ -423,11 +454,44 @@ TopLevel::answerReceived(int id, const QString& answer)
 			.arg(sTotal - sFree).arg(unit).arg(sFree).arg(unit);
 		statusbar->changeItem(s, 2);
 		break;
-	case 5:
+	case 5: {
 		SensorIntegerInfo info(answer);
 		sTotal = info.getMax();
 		unit = SensorMgr->translateUnit(info.getUnit());
 		break;
+		}
+
+	case 133: {
+		QCString replyType = "QString";
+		QByteArray replyData;
+		QDataStream reply(replyData, IO_WriteOnly);
+		reply << answer;
+
+		DCOPClientTransaction *dcopTransaction = dcopFIFO.last();
+		kapp->dcopClient()->endTransaction(dcopTransaction, replyType, replyData);
+		dcopFIFO.removeLast();
+		break;
+		}
+
+	case 134: {
+		QStringList resultList;
+		QCString replyType = "QStringList";
+		QByteArray replyData;
+		QDataStream reply(replyData, IO_WriteOnly);
+
+		SensorTokenizer lines(answer, '\n');
+
+		for (unsigned int i = 0; i < lines.numberOfTokens(); i++)
+			resultList.append(lines[i]);
+
+		reply << resultList;
+
+		DCOPClientTransaction *dcopTransaction = dcopFIFO.last();
+		kapp->dcopClient()->endTransaction(dcopTransaction, replyType, replyData);
+		dcopFIFO.removeLast();
+		break;
+		}
+
 	}
 }
 

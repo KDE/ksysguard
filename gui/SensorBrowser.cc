@@ -264,17 +264,32 @@ SensorBrowser::viewportMouseMoveEvent(QMouseEvent* ev)
 }
 
 QStringList
-SensorBrowser::listSensors()
+SensorBrowser::listHosts()
 {
-	// TODO: This does not work yet!
-	QStringList list;
+	QStringList hostList;
 
 	QListIterator<HostInfo> it(hostInfos);
 	for ( ; it.current(); ++it)
 	{
-		list.append((*it)->getHostName());
-		(*it)->appendSensors(list);
+		hostList.append((*it)->getHostName());
 	}
 
-	return (list);
+	return hostList;
+}
+
+QStringList
+SensorBrowser::listSensors(const QString& hostName)
+{
+	QStringList sensorList;
+
+	QListIterator<HostInfo> it(hostInfos);
+	for ( ; it.current(); ++it)
+	{
+		if ((*it)->getHostName() == hostName) {
+			(*it)->appendSensors(sensorList);
+			return (sensorList);
+		}
+	}
+
+	return (sensorList);
 }

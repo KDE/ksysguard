@@ -42,6 +42,7 @@
 #include "MultiMeter.h"
 #include "DancingBars.h"
 #include "ListView.h"
+#include "LogFile.h"
 #include "ProcessController.h"
 #include "WorkSheetSettings.h"
 #include "WorkSheet.moc"
@@ -356,6 +357,8 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 		}
 		else if (sensorType == "listview")
 			newDisplay = new ListView(this);
+		else if (sensorType == "logfile")
+			newDisplay = new LogFile(this);
 		else if (sensorType == "table")
 			newDisplay = new ProcessController(this);
 		else
@@ -470,6 +473,8 @@ WorkSheet::replaceDisplay(uint r, uint c, QDomElement& element)
 		newDisplay = new DancingBars(this);
 	else if (classType == "ListView")
 		newDisplay = new ListView(this);
+	else if (classType == "LogFile")
+		newDisplay = new LogFile(this);
 	else if (classType == "ProcessController")
 		newDisplay = new ProcessController(this);
 	else

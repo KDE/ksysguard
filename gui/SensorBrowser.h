@@ -202,7 +202,8 @@ public:
 	SensorBrowser(QWidget* parent, SensorManager* sm, const char* name);
 	~SensorBrowser();
 
-	QStringList listSensors();
+	QStringList listHosts();
+	QStringList listSensors(const QString& hostName);
 
 public slots:
 	void disconnect();

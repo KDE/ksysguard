@@ -19,6 +19,7 @@
 	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
 	not commit any changes without consulting me first. Thanks!
 */
+
 #include <stdio.h>
 #include <qdom.h>
 #include <qgroupbox.h>
@@ -41,16 +42,17 @@ ListViewItem::ListViewItem(MyListView *parent)
 {
 	gridColor = (QColor)parent->getGridColor();
 	textColor = (QColor)parent->getTextColor();
+	backgroundColor = (QColor)parent->getBackgroundColor();
 }
 
 void ListViewItem::paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment)
 {
-	QColorGroup my_cg(cg);
+	QColorGroup colorGroup(cg);
 
-	my_cg.setColor(QColorGroup::Text, textColor);
-	my_cg.setColor(QColorGroup::Base, Qt::black);
+	colorGroup.setColor(QColorGroup::Text, textColor);
+	colorGroup.setColor(QColorGroup::Base, backgroundColor);
 
-	QListViewItem::paintCell(p, my_cg, column, width, alignment);
+	QListViewItem::paintCell(p, colorGroup, column, width, alignment);
 	p->setPen((QColor)gridColor);
 	p->drawLine(0, height() - 1, width - 1, height() - 1);
 }
@@ -65,10 +67,10 @@ MyListView::MyListView(QWidget *parent)
 {
 	gridColor = QColor(Qt::green);
 	textColor = QColor(Qt::green);
+	backgroundColor = QColor(Qt::black);
 
-	// it's the only way to paint a black background :(
 	QColorGroup cg = this->colorGroup();
-	cg.setBrush(QColorGroup::Base, Qt::black);
+	cg.setBrush(QColorGroup::Base, backgroundColor);
 
 	QPalette pal(cg, cg, cg);
 	
@@ -184,26 +186,34 @@ ListView::resizeEvent(QResizeEvent*)
 }
 
 bool
-ListView::createFromDOM(QDomElement& el)
+ListView::createFromDOM(QDomElement& element)
 {
-	modified = false;
+	modified = FALSE;
 
-	title = el.attribute("title");
-	mainList->setGridColor(QColor(el.attribute("gridcolor")));
-	mainList->setTextColor(QColor(el.attribute("textcolor")));
-	addSensor(el.attribute("hostName"), el.attribute("sensorName"), "");
+	title = element.attribute("title");
+	mainList->setGridColor(restoreColorFromDOM(element, "gridColor", Qt::green));
+	mainList->setTextColor(restoreColorFromDOM(element, "textColor", Qt::green));
+	mainList->setBackgroundColor(restoreColorFromDOM(element, "backgroundColor", Qt::black));
+	addSensor(element.attribute("hostName"), element.attribute("sensorName"), "");
+
+	QColorGroup colorGroup = mainList->colorGroup();
+	colorGroup.setBrush(QColorGroup::Base, restoreColorFromDOM(element, "backgroundColor", Qt::black));
+	QPalette pal(colorGroup, colorGroup, colorGroup);
+	mainList->setPalette(pal);
 
 	return (TRUE);
 }
 
 bool
-ListView::addToDOM(QDomDocument&, QDomElement& display, bool save)
+ListView::addToDOM(QDomDocument&, QDomElement& element, bool save)
 {
-	display.setAttribute("hostName", sensors.at(0)->hostName);
-	display.setAttribute("sensorName", sensors.at(0)->name);
-	display.setAttribute("title", title);
-	display.setAttribute("gridcolor", mainList->getGridColor().name());
-	display.setAttribute("textcolor", mainList->getTextColor().name());
+	element.setAttribute("hostName", sensors.at(0)->hostName);
+	element.setAttribute("sensorName", sensors.at(0)->name);
+	element.setAttribute("title", title);
+
+	addColorToDOM(element, "gridColor", mainList->getGridColor());
+	addColorToDOM(element, "textColor", mainList->getTextColor());
+	addColorToDOM(element, "backgroundColor", mainList->getBackgroundColor());
 
 	if (save)
 		modified = FALSE;
@@ -220,6 +230,7 @@ ListView::settings()
 
 	lvs->gridColor->setColor(mainList->getGridColor());
 	lvs->textColor->setColor(mainList->getTextColor());
+	lvs->backgroundColor->setColor(mainList->getBackgroundColor());
 
 	if (lvs->exec())
 		applySettings();
@@ -233,9 +244,8 @@ ListView::applySettings()
 {
 	mainList->setGridColor(lvs->gridColor->getColor());
 	mainList->setTextColor(lvs->textColor->getColor());
+	mainList->setBackgroundColor(lvs->backgroundColor->getColor());
 	modified = TRUE;
-
-	mainList->update(mainList->x(), mainList->y(), mainList->width(), mainList->height());
 }
 
 void

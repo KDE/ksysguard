@@ -30,6 +30,7 @@ ksysguard_SOURCES = \
 	DancingBars.cc BarGraph.cc \
 	ProcessController.cc ProcessList.cc \
 	ListView.cc \
+	LogFile.cc LogFileSettings.cc \
 	SensorBrowser.cc  \
 	SensorManager.cc \
 	SensorAgent.cc SensorShellAgent.cc SensorSocketAgent.cc \

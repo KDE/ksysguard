@@ -33,6 +33,7 @@
 #include <kmainwindow.h>
 #include <kstatusbar.h>
 #include <dcopobject.h>
+#include <dcopclient.h>
 
 #include "SensorClient.h"
 
@@ -65,8 +66,10 @@ k_dcop:
 	ASYNC showProcesses();
 	ASYNC loadWorkSheet(const QString& fileName);
 	ASYNC removeWorkSheet(const QString& fileName);
-	QStringList listSensors();
-	QString readSensor(const QString& sensorLocator);
+	QStringList listHosts();
+	QStringList listSensors(const QString& hostName);
+	QString readIntegerSensor(const QString& sensorLocator);
+	QStringList readListSensor(const QString& sensorLocator);
 
 public slots:
 	void registerRecentURL(const KURL& url);
@@ -88,6 +91,8 @@ private:
 
 	KStatusBar* statusbar;
 
+	QList<DCOPClientTransaction> dcopFIFO;
+
 	QSplitter* splitter;
 	KRecentFilesAction* openRecent;
 	KToggleAction* toolbarTog;
@@ -99,5 +104,20 @@ private:
 };
 
 extern TopLevel* Toplevel;
+
+/*
+   since there is only a forward declaration of DCOPClientTransaction
+   in dcopclient.h we have to redefine it here, otherwise QList
+   causes errors
+*/
+typedef unsigned long CARD32;
+
+class DCOPClientTransaction
+{
+public:
+	Q_INT32 id;
+	CARD32 key;
+	QCString senderId;
+};
 
 #endif

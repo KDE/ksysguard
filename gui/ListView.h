@@ -36,13 +36,17 @@ class MyListView : public QListView
 public:
 	MyListView(QWidget *parent = 0);
 
-	void setGridColor(QColor color) { gridColor = color; }
-	void setTextColor(QColor color) { textColor = color; }
+	void setGridColor(const QColor& color) { gridColor = color; }
+	void setTextColor(const QColor& color) { textColor = color; }
+	void setBackgroundColor(const QColor& color) { backgroundColor = color; }
 	QColor getGridColor(void) { return gridColor; }
 	QColor getTextColor(void) { return textColor; }
+	QColor getBackgroundColor(void) { return backgroundColor; }
+
 private:
 	QColor gridColor;
 	QColor textColor;
+	QColor backgroundColor;
 };	
 
 class ListViewItem : public QListViewItem
@@ -56,6 +60,7 @@ public:
 private:
 	QColor gridColor;
 	QColor textColor;
+	QColor backgroundColor;
 };	
 
 class ListView : public SensorDisplay
@@ -85,6 +90,11 @@ public:
 	virtual void timerEvent(QTimerEvent*)
 	{
 		updateList();
+	}
+
+	virtual bool hasBeenModified() const
+	{
+		return (modified);
 	}
 
 	void settings();

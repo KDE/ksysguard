@@ -37,8 +37,7 @@ class SensorManager;
 class SensorRequest
 {
 public:
-	SensorRequest(const QString& r, SensorClient* c, int i,
-				  unsigned char s = 0) :
+	SensorRequest(const QString& r, SensorClient* c, int i) :
 		request(r), client(c), id(i) { }
 	~SensorRequest() { }
 
