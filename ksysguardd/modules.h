@@ -59,11 +59,19 @@
 #include "ProcessList.h"
 #endif /* OSTYPE_Solaris */
 
+#ifdef OSTYPE_Irix
+#include "LoadAvg.h"
+#include "Memory.h"
+#include "NetDev.h"
+#include "ProcessList.h"
+#include "cpu.h"
+#endif /* OSTYPE_Irix */
+
 #ifdef OSTYPE_Tru64
 #include "LoadAvg.h"
 #include "Memory.h"
 #include "NetDev.h"
-#endif
+#endif /* OSTYPE_Tru64 */
 
 struct ModulListEntry {
 	char *configName;
@@ -121,6 +129,16 @@ struct ModulListEntry ModulList[] = {
 };
 #define NUM_MODULES 4
 #endif /* OSTYPE_Solaris */
+
+#ifdef OSTYPE_Irix
+	{ "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULLVVFUNC },
+	{ "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC },
+	{ "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC },
+	{ "NetDev", initNetDev, exitNetDev, updateNetDev, NULLVVFUNC },
+	{ "ProcessList", initProcessList, exitProcessList, updateProcessList, NULLVVFUNC },
+};
+#define NUM_MODULES 5
+#endif /* OSTYPE_Irix */
 
 #ifdef OSTYPE_Tru64
 	{ "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC },

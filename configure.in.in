@@ -5,6 +5,7 @@ case "$host" in
   *-*-freebsd*) ksysguardd_compile=yes; UNAME='FreeBSD' ;;
   *-*-solaris*) ksysguardd_compile=yes; UNAME='Solaris' ;;
   *-*-osf*) ksysguardd_compile=yes; UNAME='Tru64' ;;
+  *-*-irix*) ksysguardd_compile=yes; UNAME='Irix' ;;
   *) ksysguardd_compile=no; UNAME='' ;;
 esac
 

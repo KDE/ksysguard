@@ -423,7 +423,7 @@ handleSocketTraffic(int socket, const fd_set* fds)
 		{
 			int clientSocket;
 			struct sockaddr addr;
-			socklen_t addr_len;
+			socklen_t addr_len = sizeof(struct sockaddr);
 
 			/* a new connection */
 			if ((clientSocket = accept(socket, &addr, &addr_len)) < 0)
