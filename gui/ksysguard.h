@@ -80,6 +80,7 @@ protected slots:
 	void disconnectHost();
 	void showToolBar();
 	void showStatusBar();
+	void editToolbars();
 
 private:
 	KStatusBar* statusbar;

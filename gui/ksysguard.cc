@@ -45,6 +45,7 @@
 #include <kstdaccel.h>
 #include <kaction.h>
 #include <kstdaction.h>
+#include <kedittoolbar.h>
 #include <dcopclient.h>
 
 #include "SensorBrowser.h"
@@ -54,19 +55,7 @@
 #include "HostConnector.h"
 #include "../version.h"
 
-#include "ksysguard.h"
-
-#undef RESTORE
-#define RESTORE(type)\
-{\
-  int n = 1;\
-  while (KMainWindow::canBeRestored(n)) {\
-      (new type)->restore(n);\
-      n++;\
-fprintf(stderr,"N IS %d\n", n); fflush(stderr);\
-  }\
-}
-
+#include "ksysguard.moc"
 
 static const char* Description = I18N_NOOP("KDE System Guard");
 TopLevel* Toplevel;
@@ -131,18 +120,12 @@ TopLevel::TopLevel(const char *name)
 	statusBarTog = KStdAction::showStatusbar(this, SLOT(showStatusBar()),
 											 actionCollection(),
 											 "showstatusbar");
-fprintf(stderr,"NOT WANTING TO, ATTEMPTING TO\n");fflush(stderr);
+    KStdAction::configureToolbars(this, SLOT(editToolbars()),
+								  actionCollection());
 	statusBarTog->setChecked(FALSE);
 	createGUI("ksysguard.rc");
-fprintf(stderr,"NOT WANTING TO, ATTEMPTING TO\n");fflush(stderr);
 
-	// Hide XML GUI generated toolbar.
-	//enableToolBar(KToolBar::Hide);
-
-fprintf(stderr,"NOT WANTING TO, ATTEMPTING TO\n");fflush(stderr);
-	// show the dialog box
 	show();
-fprintf(stderr,"NOT WANTING TO, ATTEMPTING TO\n");fflush(stderr);
 }
 
 TopLevel::~TopLevel()
@@ -260,6 +243,15 @@ void
 TopLevel::showStatusBar()
 {
 	enableStatusBar(KStatusBar::Toggle);
+}
+
+void
+TopLevel::editToolbars()
+{
+	KEditToolbar dlg(actionCollection());
+
+	if (dlg.exec())
+		createGUI();
 }
 
 void
@@ -447,15 +439,13 @@ main(int argc, char** argv)
 
 
 	// create top-level widget
-	if (a->isRestored()) {
-		fprintf(stderr,"RESTORING\n");
-fflush(stderr);
-		RESTORE(TopLevel)
-	} else
+	if (a->isRestored())
 	{
-fprintf(stderr,"WANTED TO ALLOCATED NEW TOPLEV\n");fflush(stderr);
+		RESTORE(TopLevel)
+	}
+	else
+	{
 		Toplevel = new TopLevel("KSysGuard");
-fprintf(stderr,"ALLOCATED NEW TOPLEV\n");fflush(stderr);
 		if (args->isSet("showprocesses"))
 		{
 			Toplevel->beATaskManager();
@@ -475,6 +465,3 @@ fprintf(stderr,"ALLOCATED NEW TOPLEV\n");fflush(stderr);
 
 	return (result);
 }
-
-#include "ksysguard.moc"
-

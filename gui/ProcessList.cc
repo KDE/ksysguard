@@ -137,6 +137,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 			parent, SLOT(timerOn()));
 
 	treeViewEnabled = false;
+	openAll = TRUE;
 
 	filterMode = FILTER_ALL;
 
@@ -192,7 +193,7 @@ ProcessList::update(const QString& list)
 	int vpos = verticalScrollBar()->value();
 	int hpos = horizontalScrollBar()->value();
 
-	updateSelectedPIds();
+	updateMetaInfo();
 
 	clear();
 #if 0
@@ -282,7 +283,7 @@ ProcessList::buildTree()
 			pl.remove();
 
 			if (selectedPIds.findIndex(pid) != -1)
-				pli->setSelected(true);
+				pli->setSelected(TRUE);
 
 			// insert all child processes of current process
 			extendTree(&pl, pli, pid);
@@ -340,8 +341,11 @@ ProcessList::extendTree(QList<SensorPSLine>* pl, ProcessLVI* parent, int ppid)
 			if (selectedPIds.findIndex(ps->getPid()) != -1)
 				pli->setSelected(true);
 
-			// set parent to 'open'
-			setOpen(parent, TRUE);
+			if (ps->getPPid() != INIT_PID &&
+				 closedSubTrees.findIndex(ps->getPPid()) != -1)
+				setOpen(parent, FALSE);
+			else
+				setOpen(parent, TRUE);
 
 			// remove the process from the process list, ps is now invalid
 			int pid = ps->getPid();
@@ -370,13 +374,9 @@ ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 	 * with this name. */
 	QPixmap pix = icons->loadIcon(p->getName(), KIcon::Desktop,
 								  KIcon::SizeSmall);
-	if (pix.isNull())
-	{
-		pix = QPixmap(BarIcon(p->getName()));
-		if (pix.isNull())
-			pix = icons->loadIcon("unkown", KIcon::Desktop,
-								  KIcon::SizeSmall);
-	}
+	if (pix.isNull() || !pix.mask())
+		pix = icons->loadIcon("unkown", KIcon::Desktop,
+							  KIcon::SizeSmall);
 
 	/* We copy the icon into a 24x16 pixmap to add a 4 pixel margin on
 	 * the left and right side. In tree view mode we use the original
@@ -403,9 +403,10 @@ ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 }
 
 void
-ProcessList::updateSelectedPIds(void)
+ProcessList::updateMetaInfo(void)
 {
 	selectedPIds.clear();
+	closedSubTrees.clear();
 
     QListViewItemIterator it(this);
 
@@ -414,7 +415,20 @@ ProcessList::updateSelectedPIds(void)
 	{
 		if (it.current()->isSelected())
 			selectedPIds.append(it.current()->text(1).toInt());
-    }	
+		if (treeViewEnabled && !it.current()->isOpen())
+			closedSubTrees.append(it.current()->text(1).toInt());
+    }
+
+	/* In list view mode all list items are set to closed by QListView.
+	 * If the tree view is now selected, all item will be closed. This is
+	 * annoying. So we use the openAll flag to force all trees to open when
+	 * the treeViewEnbled flag was set to true. */
+	if (openAll)
+	{
+		if (treeViewEnabled)
+			closedSubTrees.clear();
+		openAll = FALSE;
+	}
 }
 
 void

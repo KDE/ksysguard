@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -108,7 +108,8 @@ public:
 public slots:
 	void setTreeView(bool tv)
 	{
-		treeViewEnabled = tv;
+		if (treeViewEnabled = tv)
+			openAll = TRUE;
 	}
 
 	/**
@@ -136,10 +137,10 @@ private:
 	};
 
 	/**
-	 * This function returns the process ID of the currently selected
-	 * process.  If there isn't any -1 is returned.
+	 * This function updates the lists of selected PID und the closed
+	 * sub trees.
 	 */
-	void updateSelectedPIds(void);
+	void updateMetaInfo(void);
 
 	/**
 	 * This function determines whether a process matches the current
@@ -219,12 +220,15 @@ private:
 	int refreshRate;
 	int currColumn;
 	bool treeViewEnabled;
+	bool openAll;
 
 	QList<SensorPSLine> pl;
 
 	QValueList<KeyFunc> sortFunc;
 
 	QValueList<int> selectedPIds;
+	QValueList<int> closedSubTrees;
+
     KIconLoader* icons;
 	ProcessMenu* processMenu;
 	QPopupMenu* headerPM;

@@ -9,6 +9,7 @@
     <Action name="showmenubar"/>
     <Action name="showtoolbar"/>
     <Action name="showstatusbar"/>
+    <Action name="configureToolbar"/>
   </Menu>
 </MenuBar>
 </kpartgui>

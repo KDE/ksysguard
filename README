@@ -20,7 +20,7 @@ and merging becomes a real headache so your code will be lost.
 
 This does not mean that I don't appreciate your help. Especially
 porting to other platforms is difficult for me. Each platform has it's
-specific back-end. See the ktopd directory for details.
+specific back-end. See the ksysguardd directory for details.
 
 5-Jan-2000 Chris Schlaeger <cs@kde.org>
 

@@ -278,6 +278,8 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 			case 2:
 				newDisplay = new MultiMeter(this, "MultiMeter", sensorDescr);
 				break;
+			default:
+				return (0);
 			}
 		}
 		else if (sensorType == "table")
