@@ -30,10 +30,10 @@
 #include <qdict.h>
 #include <qgroupbox.h>
 #include <qlayout.h>
-#include <qpushbutton.h>
 #include <qwidget.h>
 
 #include <kapplication.h>
+#include <kpushbutton.h>
 
 #include <SensorDisplay.h>
 
@@ -143,8 +143,8 @@ private:
 	QComboBox* cbFilter;
 	
 	/// These buttons force an immedeate refresh or kill a process.
-	QPushButton* bRefresh;
-	QPushButton* bKill;
+	KPushButton* bRefresh;
+	KPushButton* bKill;
 
 	/// Dictionary for header translations.
 	QDict<QString> dict;

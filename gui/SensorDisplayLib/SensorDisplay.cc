@@ -125,6 +125,8 @@ SensorDisplay::setupTimer()
 	ts->useGlobalUpdate->setChecked(globalUpdateInterval);
 	ts->interval->setValue(timerInterval / 1000);
 
+    timerToggled( globalUpdateInterval );
+
 	if (ts->exec()) {
 		if (ts->useGlobalUpdate->isChecked()) {
 			globalUpdateInterval = true;
@@ -150,6 +152,7 @@ void
 SensorDisplay::timerToggled(bool value)
 {
 	ts->interval->setEnabled(!value);
+	ts->TextLabel1->setEnabled(!value);
 }
 
 void
