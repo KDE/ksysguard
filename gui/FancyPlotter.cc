@@ -498,7 +498,13 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 bool
 FancyPlotter::createFromDOM(QDomElement& element)
 {
-	if (element.attribute("autoRange").toInt())
+	/* autoRage was added after KDE 2.x and was brokenly emulated by
+	 * min == 0.0 and max == 0.0. Since we have to be able to read old
+	 * files as well we have to emulate the old behaviour as well. */
+	double min = element.attribute("min", "0.0").toDouble();
+	double max = element.attribute("max", "0.0").toDouble();
+	if (element.attribute("autoRange",
+						  min == 0.0 && max == 0.0 ? "1" : "0").toInt())
 		plotter->autoRange = true;
 	else {
 		plotter->autoRange = false;
