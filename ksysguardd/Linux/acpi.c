@@ -84,14 +84,14 @@ int updateAcpi( void )
   char AcpiBatInfoBuf[ ACPIBATTERYINFOBUFSIZE ];
   char AcpiBatStateBuf[ ACPIBATTERYSTATEBUFSIZE ];
   char *p;
-  int AcpiBatDesignCapacity = 1;
+  int AcpiBatCapacity = 1;
   int AcpiBatRemainingCapacity = 0;
   
   if ( AcpiBatteryOK < 0 )
     return -1;
 
   for ( i = 0; i < AcpiBatteryNum; i++ ) {
-    /* get design capacity */
+    /* get total capacity */
     snprintf( s, sizeof( s ), "/proc/acpi/battery/%s/info", AcpiBatteryNames[ i ] );
     if ( ( fd = open( s, O_RDONLY ) ) < 0 ) {
       print_error( "Cannot open file \'%s\'!\n"
@@ -107,8 +107,8 @@ int updateAcpi( void )
     }
     close( fd );
     p = AcpiBatInfoBuf;
-    while ( ( p!= NULL ) && ( sscanf( p, "design capacity: %d ",
-                              &AcpiBatDesignCapacity ) != 1 ) ) {
+    while ( ( p!= NULL ) && ( sscanf( p, "last full capacity: %d ",
+                              &AcpiBatCapacity ) != 1 ) ) {
       p = strchr( p, '\n' );
       if ( p )
         p++;
@@ -136,8 +136,8 @@ int updateAcpi( void )
         p++;
     }
     /* calculate charge rate */
-    if ( AcpiBatDesignCapacity > 0 )
-      AcpiBatteryCharge[ i ] = AcpiBatRemainingCapacity * 100 / AcpiBatDesignCapacity;
+    if ( AcpiBatCapacity > 0 )
+      AcpiBatteryCharge[ i ] = AcpiBatRemainingCapacity * 100 / AcpiBatCapacity;
     else
       AcpiBatteryCharge[ i ] = 0;
   } 
