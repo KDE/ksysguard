@@ -234,7 +234,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   mSensorView->addColumn( i18n( "Status" ) );
   mSensorView->setAllColumnsShowFocus( true );
   pageLayout->addMultiCellWidget( mSensorView, 0, 5, 0, 0 );
-
+  mSensorView->setSortColumn ( -1 );
   mEditButton = new QPushButton( i18n( "Set Color..." ), page );
   mEditButton->setEnabled( false );
   QWhatsThis::add( mEditButton, i18n( "Push this button to configure the color of the sensor in the diagram." ) );
@@ -558,9 +558,13 @@ void FancyPlotterSettings::moveUpSensor()
     QListViewItem* item = mSensorView->currentItem()->itemAbove();
     if ( item ) {
       if ( item->itemAbove() )
+      {
         mSensorView->currentItem()->moveItem( item->itemAbove() );
+      }
       else
+      {
         item->moveItem( mSensorView->currentItem() );
+      }
     }
 
     // Re-calculate the "sensor number" field
