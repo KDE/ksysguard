@@ -193,7 +193,7 @@ ProcessList::~ProcessList()
 	delete(headerPM);
 }
 
-void 
+bool
 ProcessList::update(const QString& list)
 {
 	pl.clear();
@@ -201,7 +201,21 @@ ProcessList::update(const QString& list)
 	// Convert ps answer in a list of tokenized lines
 	SensorTokenizer procs(list, '\n');
 	for (unsigned int i = 0; i < procs.numberOfTokens(); i++)
-		pl.append(new SensorPSLine(procs[i]));
+	{
+		SensorPSLine* line = new SensorPSLine(procs[i]);
+		if (line->numberOfTokens() != (uint) columns())
+		{
+			qDebug("%s", list.latin1());
+			qDebug("Incomplete ps line:");
+			QString l;
+			for (uint j = 0; j < line->numberOfTokens(); j++)
+				l += (*line)[i] + "|";
+			qDebug("%s", l.latin1());
+			return (FALSE);
+		}
+		else
+			pl.append(line);
+	}
 
 	int vpos = verticalScrollBar()->value();
 	int hpos = horizontalScrollBar()->value();
@@ -229,6 +243,8 @@ ProcessList::update(const QString& list)
 
 	verticalScrollBar()->setValue(vpos);
 	horizontalScrollBar()->setValue(hpos);
+
+	return (TRUE);
 }
 
 bool

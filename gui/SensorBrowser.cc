@@ -64,7 +64,7 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	dict.insert("free", new QString(i18n("Free Memory")));
 	dict.insert("pscount", new QString(i18n("Process Count")));
 	dict.insert("ps", new QString(i18n("Process Controller")));
-	dict.insert("disk", new QString(i18n("Disk Troughput")));
+	dict.insert("disk", new QString(i18n("Disk Throughput")));
 	dict.insert("load", new QString(i18n("Load")));
 	dict.insert("total", new QString(i18n("Total Accesses")));
 	dict.insert("rio", new QString(i18n("Read Accesses")));

@@ -49,6 +49,7 @@ public:
 				const QString& command = "");
 	bool disengage(const SensorAgent* sensor);
 	bool disengage(const QString& hostname);
+	bool resynchronize(const QString& hostname);
 	void hostLost(const SensorAgent* sensor);
 	void reconfigure(const SensorAgent* senros);
 

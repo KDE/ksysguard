@@ -210,8 +210,12 @@ ProcessController::answerReceived(int id, const QString& answer)
 	}
 	case 2:
 		/* We have received the answer to a ps command that contains a
-		 * list of processes with various additional information. */
-		pList->update(answer);
+		 * list of processes with various additional information. Sometimes,
+		 * for yet unknown reason the connection gets distorted and the
+		 * information is corrupted. As a workaround we simply restart the
+		 * connection. The corruption seems to affect only the ps output. */
+		if (!pList->update(answer))
+			SensorMgr->resynchronize(*hostNames.at(0));
 		break;
 	case 3:
 		// result of kill operation, we currently don't care about it.

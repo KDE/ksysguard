@@ -96,9 +96,11 @@ public:
 
 	/**
 	 * The udpate function can be used to update the displayed process
-	 * list.  A current list of processes is requested from the OS.
+	 * list.  A current list of processes is requested from the OS. In
+	 * case the list contains invalid or corrupted info, FALSE is
+	 * returned.
 	 */
-	void update(const QString& list);
+	bool update(const QString& list);
 
 	const QValueList<KeyFunc>& getSortFunc()
 	{

@@ -96,6 +96,23 @@ SensorManager::disengage(const QString& hostname)
 	return (FALSE);
 }
 
+bool
+SensorManager::resynchronize(const QString& hostname)
+{
+	SensorAgent* daemon;
+
+	if ((daemon = sensors.find(hostname)) == 0)
+		return (FALSE);
+
+	QString shell, command;
+	getHostInfo(hostname, shell, command);
+	disengage(hostname);
+
+	qDebug("Re-synchronizing connection to %s", hostname.latin1());
+
+	return (engage(hostname, shell, command));
+}
+
 void
 SensorManager::hostLost(const SensorAgent* sensor)
 {

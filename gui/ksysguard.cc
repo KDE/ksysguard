@@ -290,11 +290,11 @@ TopLevel::queryClose()
 void
 TopLevel::readProperties(KConfig* cfg)
 {
-//	cfg->setGroup("KSysGuard Settings");
-	
+	int wx = cfg->readNumEntry("PosX", 100);
+	int wy = cfg->readNumEntry("PosY", 100);
 	int ww = cfg->readNumEntry("SizeX", 600);
 	int wh = cfg->readNumEntry("SizeY", 375);
-	resize(ww, wh);
+	setGeometry(wx, wy, ww, wh);
 
 	QValueList<int> sizes = cfg->readIntListEntry("SplitterSizeList");
 	if (sizes.isEmpty())
@@ -327,9 +327,9 @@ TopLevel::readProperties(KConfig* cfg)
 void
 TopLevel::saveProperties(KConfig* cfg)
 {
-//	cfg->setGroup("KSysGuard Settings");
-
 	// Save window geometry. TODO: x/y is not exaclty correct. Needs fixing.
+	cfg->writeEntry("PosX", x());
+	cfg->writeEntry("PosY", y());
 	cfg->writeEntry("SizeX", width());
 	cfg->writeEntry("SizeY", height());
 	cfg->writeEntry("SplitterSizeList", splitter->sizes());
@@ -437,7 +437,6 @@ main(int argc, char** argv)
 		}
 		else
 			Toplevel->readProperties(a->config());
-		Toplevel->show();
 	}
 	if (KMainWindow::memberList->first())
 	{
