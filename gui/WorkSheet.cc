@@ -670,7 +670,7 @@ QString WorkSheet::currentDisplayAsXML()
   return doc.toString();
 }
 
-void WorkSheet::setIsOnTop( bool onTop )
+void WorkSheet::setIsOnTop( bool /* onTop */ )
 {
 /*
   for ( uint r = 0; r < mRows; ++r )
