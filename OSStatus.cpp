@@ -309,10 +309,12 @@ OSStatus::getSwapInfo(int& stotal, int& sfree)
  * Copyright 1999 Hans Petter Bieker <zerium@webindex.no>.
  */
 
+#include <stdlib.h>
 #include <sys/param.h>
 #include <sys/sysctl.h>
 #include <vm/vm_param.h>
 #include <sys/vmmeter.h>
+#include <sys/user.h>
 #include <unistd.h>
 
 OSStatus::OSStatus()
@@ -331,7 +333,28 @@ OSStatus::getCpuLoad(int& user, int& sys, int& nice, int& idle)
 	sys = 0; // FIXME
 	nice = 0; // FIXME
 
+return (true);
+	int mib[3];
+	mib[0] = CTL_KERN;
+	mib[1] = KERN_PROC;
+	mib[2] = KERN_PROC_ALL;
+
+	size_t len;
+	sysctl(mib, 3, NULL, &len, NULL, 0);
+
+	struct kinfo_proc *p = (struct kinfo_proc *)malloc(len);
+	sysctl(mib, 3, p, &len, NULL, 0);
+
+	printf("---\n");
+	size_t num;
+	for (num = 0; num < len / sizeof(struct kinfo_proc); num++) {
+		user += p[num].kp_proc.p_pctcpu;
+		printf("comm: %s\n user: %d\nproc: %d\n", p[num].kp_proc.p_comm, user, p[num].kp_proc.p_pctcpu);
+	}
+
 	idle = 100 - (user + sys + nice);
+
+	free(p);
 
 	return (true);
 }
@@ -339,7 +362,12 @@ OSStatus::getCpuLoad(int& user, int& sys, int& nice, int& idle)
 int
 OSStatus::getCpuCount(void)
 {
-	return (1);	// SMP support not yet implemented!
+	int ncpu;
+	size_t len = sizeof (ncpu);
+	if (sysctlbyname("hw.ncpu", &ncpu, &len, NULL, 0) == -1 || !len)
+		return (1); // default to 1;
+
+	return (ncpu);
 }
 
 bool
@@ -382,19 +410,15 @@ OSStatus::getMemoryInfo(int& total, int& mfree, int& shared, int& buffers,
 	shared = p.t_rmshr * getpagesize();
 
 	// buffers
-#if 0
 	len = sizeof (buffers);
-	sysctlbyname("vfs.bufspace", &buffers, &len, NULL, 0);
-#endif
-	buffers = 0; // FIXME doesn't work under 2.2.x
+	if ((sysctlbyname("vfs.bufspace", &buffers, &len, NULL, 0) == -1) || !len)
+		buffers = 0; // Doesn't work under FreeBSD v2.2.x
 
 	// cached
-#if 0
 	len = sizeof (cached);
-	sysctlbyname("vm.stats.vm.v_cache_count", &cached, &len, NULL, 0);
+	if ((sysctlbyname("vm.stats.vm.v_cache_count", &cached, &len, NULL, 0) == -1) || !len)
+		cached = 0; // Doesn't work under FreeBSD v2.2.x
 	cached *= getpagesize();
-#endif
-	cached = 0; // FIXME doesn't work under 2.2.x
 
 	return (true);
 }
@@ -402,9 +426,31 @@ OSStatus::getMemoryInfo(int& total, int& mfree, int& shared, int& buffers,
 bool
 OSStatus::getSwapInfo(int& stotal, int& sfree)
 {
-	stotal = 0; // FIXME
-	sfree = 0; // FIXME
+	FILE *file;
+	char buf[256];
 
+	/* Q&D hack for swap display. Borrowed from xsysinfo-1.4 */
+	if ((file = popen("/usr/sbin/pstat -ks", "r")) == NULL) {
+		stotal = sfree = 0;
+	return (true);
+	}
+
+	fgets(buf, sizeof(buf), file);
+	fgets(buf, sizeof(buf), file);
+	fgets(buf, sizeof(buf), file);
+	fgets(buf, sizeof(buf), file);
+	pclose(file);
+
+	char *total_str, *free_str;
+	strtok(buf, " ");
+	total_str = strtok(NULL, " ");
+	strtok(NULL, " ");
+	free_str = strtok(NULL, " ");
+
+	stotal = atoi(total_str) * 1024;
+	sfree = atoi(free_str) * 1024;
+
+	printf("stotal: %d, sfree: %d\n", stotal, sfree);
 	return (true);
 }
 
