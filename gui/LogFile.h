@@ -15,6 +15,8 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	$Id$
 */
 
 #ifndef _LogFile_h
@@ -29,10 +31,11 @@
 #include <qstring.h>
 #include <qstringlist.h>
 
-#include <SensorDisplay.h>
+#include <ksgrd/SensorDisplay.h>
+
 #include "LogFileSettings.h"
 
-class LogFile : public SensorDisplay
+class LogFile : public KSGRD::SensorDisplay
 {
 	Q_OBJECT
 public:
@@ -44,8 +47,8 @@ public:
 	void answerReceived(int id, const QString& answer);
 	void resizeEvent(QResizeEvent*);
 
-	bool createFromDOM(QDomElement& domEl);
-	bool addToDOM(QDomDocument& doc, QDomElement& display, bool save = true);
+	bool createFromDOM(QDomElement& element);
+	bool addToDOM(QDomDocument& doc, QDomElement& element, bool save = true);
 
 	void updateMonitor(void);
 
@@ -58,22 +61,24 @@ public:
 
 	virtual bool hasSettingsDialog() const
 	{
-		return (TRUE);
+		return (true);
 	}
-
-	virtual void sensorError(bool err);
 
 public slots:
 	void applySettings();
 	void applyStyle();
 
+	void settingsFontSelection();
+	void settingsAddRule();
+	void settingsDeleteRule();
+	void settingsChangeRule();
+	void settingsRuleListSelected(int index);
+
 private:
 	LogFileSettings* lfs;
 
 	QFile* logFile;
-	QLabel* errorLabel;
 	QListBox* monitor;
-	QString title;
 	QStringList filterRules;
 
 	unsigned long logFileID;

@@ -28,13 +28,14 @@
 
 #include <kpanelapplet.h>
 
-class SensorDisplay;
+class KSGRD::SensorBoard;
+class KSGRD::SensorDisplay;
 class QDragEnterEvent;
 class QDropEvent;
 class QPoint;
 class KSysGuardAppletSettings;
 
-class KSysGuardApplet : public KPanelApplet
+class KSysGuardApplet : public KPanelApplet, public KSGRD::SensorBoard
 {
 	Q_OBJECT
 
@@ -48,7 +49,6 @@ public:
 	virtual int widthForHeight(int h) const;
 	virtual void preferences();
 
-	uint updateInterval;
 protected:
 	void resizeEvent(QResizeEvent*);
 	void dragEnterEvent(QDragEnterEvent* ev);
@@ -66,7 +66,7 @@ private:
 	bool save();
 
 	int findDock(const QPoint& p);
-	void removeDisplay(SensorDisplay* sd);
+	void removeDisplay(KSGRD::SensorDisplay* sd);
 
 	uint dockCnt;
 	QWidget** docks;

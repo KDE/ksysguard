@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -30,18 +30,19 @@
 
 #include <kapplication.h>
 #include <kdebug.h>
+#include <kiconloader.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 
 #include "SensorDisplay.h"
 #include "SensorDisplay.moc"
 #include "SensorManager.h"
+#include "TimerSettings.h"
 
-// bad dependences... FIXME
-#include "WorkSheet.h"
-#include "KSysGuardApplet.h"
 
-SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
+using namespace KSGRD;
+
+SensorDisplay::SensorDisplay(QWidget* parent, const char* name, const QString& title) :
 	QWidget(parent, name)
 {
 	sensors.setAutoDelete(true);
@@ -49,14 +50,29 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 	// default interval is 2 seconds.
 	timerInterval = 2000;
 	globalUpdateInterval = true;
-	noFrame = 0;
 	timerId = NONE;
 	modified = false;
+	frame = NULL;
+
 	timerOn();
 	QWhatsThis::add(this, "dummy");
 
 	frame = new QGroupBox(1, Qt::Vertical, "", this, "displayFrame"); 
 	Q_CHECK_PTR(frame);
+	frame->setTitle(title);
+
+	KIconLoader iconLoader;
+	QPixmap errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop,
+							KIcon::SizeSmall);
+	errorLabel = new QLabel(frame);
+	Q_CHECK_PTR(errorLabel);
+	errorLabel->setPixmap(errorIcon);
+	errorLabel->resize(errorIcon.size());
+	errorLabel->move(2, 2);
+
+	setMinimumSize(16, 16);
+	setModified(false);
+	setSensorOk(false);
 
 	/* All RMB clicks to the box frame will be handled by 
 	 * SensorDisplay::eventFilter. */
@@ -111,7 +127,7 @@ SensorDisplay::setupTimer()
 	if (ts->exec()) {
 		if (ts->useGlobalUpdate->isChecked()) {
 			globalUpdateInterval = true;
-			setUpdateInterval(((WorkSheet *)parentWidget())->updateInterval);
+			setUpdateInterval(((SensorBoard *)parentWidget())->updateInterval());
 		} else {
 			globalUpdateInterval = false;
 			setUpdateInterval(ts->interval->text().toInt());
@@ -134,6 +150,12 @@ SensorDisplay::timerEvent(QTimerEvent*)
 	int i = 0;
 	for (SensorProperties* s = sensors.first(); s; s = sensors.next(), ++i)
 		sendRequest(s->hostName, s->name, i);
+}
+
+void
+SensorDisplay::resizeEvent(QResizeEvent*)
+{
+	frame->setGeometry(0, 0, width(), height());
 }
 
 bool
@@ -175,7 +197,7 @@ SensorDisplay::eventFilter(QObject* o, QEvent* e)
 			setModified(true);
 			break;
 		}
-		return (TRUE);
+		return (true);
 	}
 	else if (e->type() == QEvent::MouseButtonRelease &&
 			 ((QMouseEvent*) e)->button() == LeftButton)
@@ -202,19 +224,19 @@ SensorDisplay::sensorError(int sensorId, bool err)
 
 	if (err == sensors.at(sensorId)->ok)
 	{
-		if (err)
-		{
-			/* The sensor has been lost. The default implementation
-			 * simply removes the display from the worksheet. This
-			 * function should be overloaded to signal the error
-			 * condition in the display but keep the display in the
-			 * worksheet. */
-			QCustomEvent* ev = new QCustomEvent(QEvent::User);
-			ev->setData(this);
-			kapp->postEvent(parent(), ev);
-		}
+		// this happens only when the sensorOk status needs to be changed.
 		sensors.at(sensorId)->ok = !err;
 	}
+
+	bool ok = true;
+	for (uint i = 0; i < sensors.count(); ++i)
+		if (!sensors.at(i)->ok)
+		{
+			ok = false;
+			break;
+		}
+
+	setSensorOk(ok);
 }
 
 void
@@ -257,8 +279,11 @@ SensorDisplay::addColorToDOM(QDomElement& de, const QString& attr,
 	de.setAttribute(attr, (r << 16) | (g << 8) | b);
 }
 
-void SensorDisplay::internAddToDOM(QDomDocument& doc, QDomElement& element)
+void
+SensorDisplay::internAddToDOM(QDomDocument& doc, QDomElement& element)
 {
+	element.setAttribute("title", title());
+
 	if (globalUpdateInterval)
 		element.setAttribute("globalUpdate", "1");
 	else
@@ -270,21 +295,141 @@ void SensorDisplay::internAddToDOM(QDomDocument& doc, QDomElement& element)
 		element.setAttribute("pause", 0);
 }
 
-void SensorDisplay::internCreateFromDOM(QDomElement& element)
+void
+SensorDisplay::internCreateFromDOM(QDomElement& element)
 {
+	title(element.attribute("title", QString::null));
+
 	if (element.attribute("updateInterval") != QString::null) {
 		globalUpdateInterval = false;
 		setUpdateInterval(element.attribute("updateInterval", "2").toInt());
 	} else {
 		globalUpdateInterval = true;
-		if (noFrame)
-			setUpdateInterval(((KSysGuardApplet *)parentWidget())->updateInterval);
-		else
-			setUpdateInterval(((WorkSheet *)parentWidget())->updateInterval);
+		setUpdateInterval(((SensorBoard *)parentWidget())->updateInterval());
 	}
 
 	if (element.attribute("pause", "0").toInt() == 0)
 		timerOn();
 	else
 		timerOff();
+}
+
+bool
+SensorDisplay::addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& description)
+{
+	registerSensor(new SensorProperties(hostName, sensorName, sensorType, description));
+	return (true);
+}
+
+bool
+SensorDisplay::removeSensor(uint idx)
+{
+	unregisterSensor(idx);
+	return (true);
+}
+
+void
+SensorDisplay::setUpdateInterval(uint interval)
+{
+	bool timerActive = timerId != NONE;
+
+	if (timerActive)
+		timerOff();
+	timerInterval = interval * 1000;
+	if (timerActive)
+		timerOn();
+}
+
+QString
+SensorDisplay::additionalWhatsThis()
+{
+	return QString::null;
+}
+
+void
+SensorDisplay::sensorLost(int reqId)
+{
+	sensorError(reqId, true);
+}
+
+bool
+SensorDisplay::createFromDOM(QDomElement&)
+{
+	// should never been used.
+	return (false);
+}
+
+bool
+SensorDisplay::addToDOM(QDomDocument&, QDomElement&, bool = true)
+{
+	// should never been used.
+	return (false);
+}
+
+void
+SensorDisplay::timerOff()
+{
+	if (timerId != NONE)
+	{
+		killTimer(timerId);
+		timerId = NONE;
+	} 
+}
+
+void
+SensorDisplay::timerOn()
+{
+	if (timerId == NONE)
+	{
+		timerId = startTimer(timerInterval);
+	}
+}
+
+void
+SensorDisplay::rmbPressed()
+{
+	emit(showPopupMenu(this));
+}
+
+void
+SensorDisplay::setModified(bool mfd)
+{
+	if (mfd != modified)
+	{
+		modified = mfd;
+		emit displayModified(modified);
+	}
+}
+		
+void
+SensorDisplay::focusInEvent(QFocusEvent*)
+{
+	frame->setLineWidth(2);
+}
+
+void
+SensorDisplay::focusOutEvent(QFocusEvent*)
+{
+	frame->setLineWidth(1);
+}
+
+void
+SensorDisplay::setSensorOk(bool ok)
+{
+	if (ok)
+		errorLabel->hide();
+	else
+		errorLabel->show();
+}
+
+void
+SensorDisplay::title(const QString& title)
+{
+	frame->setTitle(title);
+}
+
+QString
+SensorDisplay::title()
+{
+	return frame->title();
 }

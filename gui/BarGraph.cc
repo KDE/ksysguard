@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
 
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
 
@@ -22,15 +22,16 @@
 	$Id$
 */
 
-#include <string.h>
 #include <assert.h>
-#include <kdebug.h>
+#include <string.h>
 
 #include <qpainter.h>
 
+#include <kdebug.h>
 #include <kiconloader.h>
 
-#include <StyleEngine.h>
+#include <ksgrd/StyleEngine.h>
+
 #include "BarGraph.moc"
 
 BarGraph::BarGraph(QWidget* parent, const char* name)
@@ -45,20 +46,15 @@ BarGraph::BarGraph(QWidget* parent, const char* name)
 	lowerLimit = upperLimit = 0.0;
 	lowerLimitActive = upperLimitActive = false;
 
-	normalColor = Style->getFgColor1();
-	alarmColor = Style->getAlarmColor();
-	backgroundColor = Style->getBackgroundColor();
-	fontSize = Style->getFontSize();
+	normalColor = KSGRD::Style->getFgColor1();
+	alarmColor = KSGRD::Style->getAlarmColor();
+	backgroundColor = KSGRD::Style->getBackgroundColor();
+	fontSize = KSGRD::Style->getFontSize();
 
 	// Anything smaller than this does not make sense.
 	setMinimumSize(16, 16);
 	setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
-							  QSizePolicy::Expanding, FALSE));
-
-	KIconLoader iconLoader;
-	errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop,
-									KIcon::SizeSmall);
-	sensorOk = false;
+							  QSizePolicy::Expanding, false));
 }
 
 BarGraph::~BarGraph()
@@ -175,9 +171,6 @@ BarGraph::paintEvent(QPaintEvent*)
 						   footers[b]);
 		}
 	}
-
-	if (!sensorOk)
-		p.drawPixmap(2, 2, errorIcon);
 
 	p.end();
 	bitBlt(this, 0, 0, &pm);

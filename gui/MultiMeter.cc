@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org>
     
@@ -25,56 +25,47 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <qlcdnumber.h>
-#include <qdom.h>
-#include <qlineedit.h>
 #include <qcheckbox.h>
-#include <qpushbutton.h>
+#include <qdom.h>
 #include <qlabel.h>
+#include <qlcdnumber.h>
+#include <qlineedit.h>
+#include <qpushbutton.h>
 #include <qtooltip.h>
 
-#include <kiconloader.h>
 #include <kdebug.h>
+#include <kiconloader.h>
 #include <knumvalidator.h>
 
-#include "MultiMeterSettings.h"
-#include "SensorManager.h"
-#include "StyleEngine.h"
-#include "ColorPicker.h"
+#include <ksgrd/ColorPicker.h>
+#include <ksgrd/SensorManager.h>
+#include <ksgrd/StyleEngine.h>
+
 #include "MultiMeter.moc"
+#include "MultiMeterSettings.h"
 
 MultiMeter::MultiMeter(QWidget* parent, const char* name,
-					   const QString& t, double, double, bool nf)
-	: SensorDisplay(parent, name)
+				   const QString& title, double, double, bool nf)
+	: KSGRD::SensorDisplay(parent, name, title)
 {
-	showUnit = TRUE;
+	showUnit = true;
 	lowerLimit = upperLimit = 0;
-	lowerLimitActive = upperLimitActive = FALSE;
+	lowerLimitActive = upperLimitActive = false;
 	noFrame = nf;
 
-	setTitle(t, unit);
-
-	normalDigitColor = Style->getFgColor1();
-	alarmDigitColor = Style->getAlarmColor();
+	normalDigitColor = KSGRD::Style->getFgColor1();
+	alarmDigitColor = KSGRD::Style->getAlarmColor();
 	if (noFrame)
 		lcd = new QLCDNumber(this, "meterLCD");
 	else
 		lcd = new QLCDNumber(frame, "meterLCD");
 	Q_CHECK_PTR(lcd);
 	lcd->setSegmentStyle(QLCDNumber::Filled);
-	setDigitColor(Style->getBackgroundColor());
+	setDigitColor(KSGRD::Style->getBackgroundColor());
 	lcd->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
-								   QSizePolicy::Expanding, FALSE));
+					   QSizePolicy::Expanding, false));
 
-	KIconLoader iconLoader;
-	QPixmap errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop,
-											KIcon::SizeSmall);
-	errorLabel = new QLabel(lcd);
-	errorLabel->setPixmap(errorIcon);
-	errorLabel->resize(errorIcon.size());
-	errorLabel->move(2, 2);
-
-	setBackgroundColor(Style->getBackgroundColor());
+	setBackgroundColor(KSGRD::Style->getBackgroundColor());
 	/* All RMB clicks to the lcd widget will be handled by 
 	 * SensorDisplay::eventFilter. */
 	lcd->installEventFilter(this);
@@ -90,19 +81,17 @@ MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
 	if (sensorType != "integer" && sensorType != "float")
 		return (false);
 
-	registerSensor(new SensorProperties(hostName, sensorName, sensorType, title));
+	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 
 	/* To differentiate between answers from value requests and info
 	 * requests we use 100 for info requests. */
 	sendRequest(hostName, sensorName + "?", 100);
 
-	if (noFrame) {
-		QToolTip::remove(lcd);
-		QToolTip::add(lcd, QString("%1:%2").arg(hostName).arg(sensorName));
-	}
+	QToolTip::remove(lcd);
+	QToolTip::add(lcd, QString("%1:%2").arg(hostName).arg(sensorName));
 
-	setModified(TRUE);
-	return (TRUE);
+	setModified(true);
+	return (true);
 }
 
 void
@@ -113,8 +102,8 @@ MultiMeter::answerReceived(int id, const QString& answer)
 
 	if (id == 100)
 	{
-		SensorIntegerInfo info(answer);
-		setTitle(title, SensorMgr->translateUnit(info.getUnit()));
+		KSGRD::SensorIntegerInfo info(answer);
+		setTitle(KSGRD::SensorMgr->translateUnit(info.getUnit()));
 	}
 	else
 	{
@@ -155,14 +144,13 @@ MultiMeter::resizeEvent(QResizeEvent*)
 }
 
 void
-MultiMeter::setTitle(const QString& t, const QString& u)
+MultiMeter::setTitle(const QString& u)
 {
-	title = t;
 	unit = u;
-	QString titleWithUnit = title;
+	QString titleWithUnit = title();
 
 	if (!unit.isEmpty() && showUnit)
-		titleWithUnit = title + " [" + unit + "]";
+		titleWithUnit = title() + " [" + unit + "]";
 
 	/* Changing the frame title may increase the width of the frame and
 	 * hence breaks the layout. To avoid this, we save the original size
@@ -175,28 +163,27 @@ MultiMeter::setTitle(const QString& t, const QString& u)
 bool
 MultiMeter::createFromDOM(QDomElement& element)
 {
-	title = element.attribute("title");
 	showUnit = element.attribute("showUnit").toInt();
-	setTitle(title, unit);
 	lowerLimitActive = element.attribute("lowerLimitActive").toInt();
 	lowerLimit = element.attribute("lowerLimit").toLong();
 	upperLimitActive = element.attribute("upperLimitActive").toInt();
 	upperLimit = element.attribute("upperLimit").toLong();
 
 	normalDigitColor = restoreColorFromDOM(element, "normalDigitColor",
-										   Style->getFgColor1());
+						KSGRD::Style->getFgColor1());
 	alarmDigitColor = restoreColorFromDOM(element, "alarmDigitColor",
-										  Style->getAlarmColor());
+						KSGRD::Style->getAlarmColor());
 	setBackgroundColor(restoreColorFromDOM(element, "backgroundColor",
-										   Style->getBackgroundColor()));
+						KSGRD::Style->getBackgroundColor()));
 
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "integer" : element.attribute("sensorType")), "");
 
 	internCreateFromDOM(element);
+	setTitle(unit);
 
 	setModified(false);
 
-	return (TRUE);
+	return (true);
 }
 
 bool
@@ -205,7 +192,6 @@ MultiMeter::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 	element.setAttribute("hostName", sensors.at(0)->hostName);
 	element.setAttribute("sensorName", sensors.at(0)->name);
 	element.setAttribute("sensorType", sensors.at(0)->type);
-	element.setAttribute("title", title);
 	element.setAttribute("showUnit", (int) showUnit);
 	element.setAttribute("lowerLimitActive", (int) lowerLimitActive);
 	element.setAttribute("lowerLimit", (int) lowerLimit);
@@ -219,17 +205,17 @@ MultiMeter::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 	internAddToDOM(doc, element);
 
 	if (save)
-		setModified(FALSE);
+		setModified(false);
 
-	return (TRUE);
+	return (true);
 }
 
 void
 MultiMeter::settings()
 {
-	mms = new MultiMeterSettings(this, "MultiMeterSettings", TRUE);
+	mms = new MultiMeterSettings(this, "MultiMeterSettings", true);
 	Q_CHECK_PTR(mms);
-	mms->title->setText(title);
+	mms->title->setText(title());
 	mms->title->setFocus();
 	mms->showUnit->setChecked(showUnit);
 	mms->lowerLimitActive->setChecked(lowerLimitActive);
@@ -255,7 +241,8 @@ void
 MultiMeter::applySettings()
 {
 	showUnit = mms->showUnit->isChecked();
-	setTitle(mms->title->text(), unit);
+	title(mms->title->text());
+	setTitle(unit);
 	lowerLimitActive = mms->lowerLimitActive->isChecked();
 	lowerLimit = mms->lowerLimit->text().toDouble();
 	upperLimitActive = mms->upperLimitActive->isChecked();
@@ -266,30 +253,16 @@ MultiMeter::applySettings()
 	setBackgroundColor(mms->backgroundColor->getColor());
 
 	repaint();
-	setModified(TRUE);
+	setModified(true);
 }
 
 void
 MultiMeter::applyStyle()
 {
-	normalDigitColor = Style->getFgColor1();
-	setBackgroundColor(Style->getBackgroundColor());
+	normalDigitColor = KSGRD::Style->getFgColor1();
+	setBackgroundColor(KSGRD::Style->getBackgroundColor());
 	repaint();
 	setModified(true);
-}
-
-void
-MultiMeter::sensorError(int, bool err)
-{
-	if (err == sensors.at(0)->ok)
-	{
-		// this happens only when the sensorOk status needs to be changed.
-		sensors.at(0)->ok = !err;
-	}
-	if (err)
-		errorLabel->show();
-	else
-		errorLabel->hide();
 }
 
 void
@@ -304,7 +277,6 @@ void
 MultiMeter::setBackgroundColor(const QColor& col)
 {
 	lcd->setBackgroundColor(col);
-	errorLabel->setBackgroundColor(col);
 
 	QPalette p = lcd->palette();
 	p.setColor(QColorGroup::Light, col);

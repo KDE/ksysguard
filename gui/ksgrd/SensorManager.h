@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
@@ -27,10 +27,13 @@
 
 #include <kconfig.h>
 
-#include "SensorAgent.h"
+#include <ksgrd/SensorAgent.h>
+
+class HostConnector;
+
+namespace KSGRD {
 
 class SensorManagerIterator;
-class HostConnector;
 
 /**
  * The SensorManager handles all interaction with the connected
@@ -137,6 +140,7 @@ public:
 	SensorManagerIterator(const SensorManager* sm) :
 		QDictIterator<SensorAgent>(sm->sensors) { }
 	~SensorManagerIterator() { }
-} ;
+};
+};
 
 #endif

@@ -25,14 +25,14 @@
 #ifndef _MultiMeter_h_
 #define _MultiMeter_h_
 
-#include <SensorDisplay.h>
+#include <ksgrd/SensorDisplay.h>
 
 class QGroupBox;
 class QLCDNumber;
 class QLabel;
 class MultiMeterSettings;
 
-class MultiMeter : public SensorDisplay
+class MultiMeter : public KSGRD::SensorDisplay
 {
 	Q_OBJECT
 
@@ -48,33 +48,29 @@ public:
 	void answerReceived(int id, const QString& answer);
 	void resizeEvent(QResizeEvent*);
 
-	bool createFromDOM(QDomElement& domEl);
-	bool addToDOM(QDomDocument& doc, QDomElement& display, bool save = true);
+	bool createFromDOM(QDomElement& element);
+	bool addToDOM(QDomDocument& doc, QDomElement& element, bool save = true);
 
 	virtual bool hasSettingsDialog() const
 	{
-		return (TRUE);
+		return (true);
 	}
 
 	void settings();
-
-	virtual void sensorError(int, bool err);
 
 public slots:
 	void applySettings();
 	void applyStyle();
 
 private:
-	void setTitle(const QString& t, const QString& u);
+	void setTitle(const QString& u);
 	void setDigitColor(const QColor& col);
 	void setBackgroundColor(const QColor& col);
 
 	QLCDNumber* lcd;
-	QLabel* errorLabel;
 	QColor normalDigitColor;
 	QColor alarmDigitColor;
 
-	QString title;
 	QString unit;
 	MultiMeterSettings* mms;
 	bool showUnit;

@@ -25,9 +25,9 @@
 #ifndef _Workspace_h_
 #define _Workspace_h_
 
-#include <qtabwidget.h>
-#include <qstring.h>
 #include <qptrlist.h>
+#include <qstring.h>
+#include <qtabwidget.h>
 
 #include <kurl.h>
 

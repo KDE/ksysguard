@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org>
     
@@ -26,12 +26,13 @@
 
 #include <klocale.h>
 
-#include "SensorManager.h"
+#include <ksgrd/SensorManager.h>
+
 #include "DummyDisplay.moc"
 
 DummyDisplay::DummyDisplay(QWidget* parent, const char* name,
 					   const QString&, double, double)
-	: SensorDisplay(parent, name)
+	: KSGRD::SensorDisplay(parent, name)
 {
 	frame->setTitle(i18n("Drop sensor here"));
 	setMinimumSize(16, 16);

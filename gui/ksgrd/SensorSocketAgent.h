@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
@@ -19,50 +19,50 @@
 	$Id$
 */
 
-#ifndef _SensorShellAgent_h_
-#define _SensorShellAgent_h_
+#ifndef _SensorSocketAgent_h_
+#define _SensorSocketAgent_h_
 
-#include <qobject.h>
 #include <qptrlist.h>
+#include <qsocket.h>
 
-#include <SensorAgent.h>
+#include <ksgrd/SensorAgent.h>
 
 class QString;
-class KProcess;
-class KShellProcess;
+
+namespace KSGRD {
+
 class SensorClient;
-class SensorManager;
 
 /**
- * The SensorShellAgent starts a ksysguardd process and handles the
- * asynchronous communication. It keeps a list of pending requests
- * that have not been answered yet by ksysguard. The current
- * implementation only allowes one pending requests. Incoming requests
- * are queued in an input FIFO.
- */
-class SensorShellAgent : public SensorAgent
+ * The SensorSocketAgent connects to a ksysguardd via a TCP
+ * connection. It keeps a list of pending requests that have not been
+ * answered yet by ksysguard. The current implementation only allowes
+ * one pending requests. Incoming requests are queued in an input
+ * FIFO.
+*/
+class SensorSocketAgent : public SensorAgent
 {
 	Q_OBJECT
 
 public:
-	SensorShellAgent(SensorManager* sm);
-	~SensorShellAgent();
+	SensorSocketAgent(SensorManager* sm);
+	~SensorSocketAgent();
 
 	bool start(const QString& host, const QString& shell,
-					   const QString& command = "", int port = -1);
+			   const QString& command = "", int port = -1);
 
-	void getHostInfo(QString& sh, QString& cmd, int& port) const
+	void getHostInfo(QString& s, QString& c, int& p) const
 	{
-		sh = shell;
-		cmd = command;
-		port = -1;
+		s = QString::null;
+		c = QString::null;
+		p = port;
 	}
 
 private slots:
-	void msgSent(KProcess*);
-	void msgRcvd(KProcess*, char* buffer, int buflen);
-	void errMsgRcvd(KProcess*, char* buffer, int buflen);
-	void daemonExited(KProcess*);
+	void connectionClosed();
+	void msgSent(int);
+	void msgRcvd();
+	void error(int);
 
 private:
 	bool writeMsg(const char* msg, int len);
@@ -71,9 +71,9 @@ private:
 		return (!transmitting);
 	}
 
-	KShellProcess* daemon;
-	QString shell;
-	QString command;
-} ;
+	QSocket socket;
+	int port;
+};
+};
 	
 #endif

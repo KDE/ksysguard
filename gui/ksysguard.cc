@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -30,30 +30,29 @@
 
 #include <assert.h>
 #include <ctype.h>
-#include <unistd.h>
 #include <fcntl.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-
-#include <kwinmodule.h>
-#include <klocale.h>
-#include <kcmdlineargs.h>
-#include <kmessagebox.h>
-#include <kaboutdata.h>
 #include <kaction.h>
-#include <kstdaction.h>
-#include <kedittoolbar.h>
+#include <kaboutdata.h>
+#include <kcmdlineargs.h>
 #include <kdebug.h>
+#include <kedittoolbar.h>
+#include <klocale.h>
+#include <kmessagebox.h>
+#include <kstdaction.h>
+#include <kwinmodule.h>
 
-#include "SensorBrowser.h"
-#include "StyleEngine.h"
-#include "SensorManager.h"
-#include "SensorAgent.h"
-#include "Workspace.h"
+#include <ksgrd/SensorAgent.h>
+#include <ksgrd/SensorManager.h>
+#include <ksgrd/StyleEngine.h>
+
 #include "../version.h"
-
 #include "ksysguard.moc"
+#include "SensorBrowser.h"
+#include "Workspace.h"
 
 static const char* Description = I18N_NOOP("KDE System Guard");
 TopLevel* Toplevel;
@@ -66,16 +65,16 @@ TopLevel::TopLevel(const char *name)
 	: KMainWindow(0, name), DCOPObject("KSysGuardIface")
 {
 	setPlainCaption(i18n("KDE System Guard"));
-	dontSaveSession = FALSE;
+	dontSaveSession = false;
 	timerId = -1;
 
 	splitter = new QSplitter(this, "Splitter");
 	Q_CHECK_PTR(splitter);
 	splitter->setOrientation(Horizontal);
-	splitter->setOpaqueResize(TRUE);
+	splitter->setOpaqueResize(true);
 	setCentralWidget(splitter);
 
-	sb = new SensorBrowser(splitter, SensorMgr, "SensorBrowser");
+	sb = new SensorBrowser(splitter, KSGRD::SensorMgr, "SensorBrowser");
 	Q_CHECK_PTR(sb);
 
 	ws = new Workspace(splitter, "Workspace");
@@ -84,7 +83,7 @@ TopLevel::TopLevel(const char *name)
 			this, SLOT(registerRecentURL(const KURL&)));
 	connect(ws, SIGNAL(setCaption(const QString&, bool)),
 			this, SLOT(setCaption(const QString&, bool)));
-	connect(Style, SIGNAL(applyStyleToWorksheet()), ws, SLOT(applyStyle()));
+	connect(KSGRD::Style, SIGNAL(applyStyleToWorksheet()), ws, SLOT(applyStyle()));
 
 	/* Create the status bar. It displays some information about the
 	 * number of processes and the memory consumption of the local
@@ -123,13 +122,13 @@ TopLevel::TopLevel(const char *name)
 					   "configure_sheet");
 	toolbarTog = KStdAction::showToolbar(this, SLOT(toggleMainToolBar()),
 										 actionCollection(), "showtoolbar");
-	toolbarTog->setChecked(FALSE);
+	toolbarTog->setChecked(false);
 	statusBarTog = KStdAction::showStatusbar(this, SLOT(showStatusBar()),
 											 actionCollection(),
 											 "showstatusbar");
 	KStdAction::configureToolbars(this, SLOT(editToolbars()),
 								  actionCollection());
-	statusBarTog->setChecked(FALSE);
+	statusBarTog->setChecked(false);
 	(void) new KAction(i18n("Configure &Style..."), "colorize", 0, this,
 					   SLOT(editStyle()), actionCollection(),
 					   "configure_style");
@@ -187,8 +186,8 @@ TopLevel::readIntegerSensor(const QString& sensorLocator)
 		kapp->dcopClient()->beginTransaction();
 	dcopFIFO.prepend(dcopTransaction);
 
-	SensorMgr->engage(host, "", "ksysguardd");
-	SensorMgr->sendRequest(host, sensor, (SensorClient*) this, 133);
+	KSGRD::SensorMgr->engage(host, "", "ksysguardd");
+	KSGRD::SensorMgr->sendRequest(host, sensor, (KSGRD::SensorClient*) this, 133);
 
 	return (QString::null);
 }
@@ -206,8 +205,8 @@ TopLevel::readListSensor(const QString& sensorLocator)
 		kapp->dcopClient()->beginTransaction();
 	dcopFIFO.prepend(dcopTransaction);
 
-	SensorMgr->engage(host, "", "ksysguardd");
-	SensorMgr->sendRequest(host, sensor, (SensorClient*) this, 134);
+	KSGRD::SensorMgr->engage(host, "", "ksysguardd");
+	KSGRD::SensorMgr->sendRequest(host, sensor, (KSGRD::SensorClient*) this, 134);
 
 	return retval;
 }
@@ -245,18 +244,18 @@ TopLevel::beATaskManager()
 				w, h);
 
 	// No toolbar and status bar in taskmanager mode.
-	statusBarTog->setChecked(FALSE);
+	statusBarTog->setChecked(false);
 	showStatusBar();
 
-	showMainToolBar(FALSE);
+	showMainToolBar(false);
 
-	dontSaveSession = TRUE;
+	dontSaveSession = true;
 }
 
 void
 TopLevel::showRequestedSheets()
 {
-	showMainToolBar(FALSE);
+	showMainToolBar(false);
 
 	QValueList<int> sizes;
 	sizes.append(0);
@@ -269,18 +268,18 @@ TopLevel::showRequestedSheets()
 void
 TopLevel::initStatusBar()
 {
-	SensorMgr->engage("localhost", "", "ksysguardd");
+	KSGRD::SensorMgr->engage("localhost", "", "ksysguardd");
 	/* Request info about the swap space size and the units it is
 	 * measured in.  The requested info will be received by
 	 * answerReceived(). */
-	SensorMgr->sendRequest("localhost", "mem/swap/used?",
-						   (SensorClient*) this, 5);
+	KSGRD::SensorMgr->sendRequest("localhost", "mem/swap/used?",
+						   (KSGRD::SensorClient*) this, 5);
 }
 
 void 
 TopLevel::connectHost()
 {
-	SensorMgr->engageHost("");
+	KSGRD::SensorMgr->engageHost("");
 }
 
 void 
@@ -334,7 +333,7 @@ TopLevel::editToolbars()
 void
 TopLevel::editStyle()
 {
-	Style->configure();
+	KSGRD::Style->configure();
 }
 
 void
@@ -357,14 +356,14 @@ TopLevel::timerEvent(QTimerEvent*)
 	{
 		/* Request some info about the memory status. The requested
 		 * information will be received by answerReceived(). */
-		SensorMgr->sendRequest("localhost", "pscount", (SensorClient*) this,
+		KSGRD::SensorMgr->sendRequest("localhost", "pscount", (KSGRD::SensorClient*) this,
 							   0);
-		SensorMgr->sendRequest("localhost", "mem/physical/free",
-							   (SensorClient*) this, 1);
-		SensorMgr->sendRequest("localhost", "mem/physical/used",
-							   (SensorClient*) this, 2);
-		SensorMgr->sendRequest("localhost", "mem/swap/free",
-							   (SensorClient*) this, 3);
+		KSGRD::SensorMgr->sendRequest("localhost", "mem/physical/free",
+							   (KSGRD::SensorClient*) this, 1);
+		KSGRD::SensorMgr->sendRequest("localhost", "mem/physical/used",
+							   (KSGRD::SensorClient*) this, 2);
+		KSGRD::SensorMgr->sendRequest("localhost", "mem/swap/free",
+							   (KSGRD::SensorClient*) this, 3);
 	}
 }
 
@@ -374,13 +373,13 @@ TopLevel::queryClose()
 	if (!dontSaveSession)
 	{
 		if (!ws->saveOnQuit())
-			return (FALSE);
+			return (false);
 
 		saveProperties(kapp->config());
 		kapp->config()->sync();
 	}
 
-	return (TRUE);
+	return (true);
 }
 
 void
@@ -411,12 +410,12 @@ TopLevel::readProperties(KConfig* cfg)
 
 	if (!cfg->readNumEntry("StatusBarHidden", 1))
 	{
-		statusBarTog->setChecked(TRUE);
+		statusBarTog->setChecked(true);
 		showStatusBar();
 	}
 
-	SensorMgr->readProperties(cfg);
-	Style->readProperties(cfg);
+	KSGRD::SensorMgr->readProperties(cfg);
+	KSGRD::Style->readProperties(cfg);
 
 	ws->readProperties(cfg);
 
@@ -439,8 +438,8 @@ TopLevel::saveProperties(KConfig* cfg)
 	cfg->writeEntry("ToolBarHidden", !toolbarTog->isChecked());
 	cfg->writeEntry("StatusBarHidden", !statusBarTog->isChecked());
 
-	Style->saveProperties(cfg);
-	SensorMgr->saveProperties(cfg);
+	KSGRD::Style->saveProperties(cfg);
+	KSGRD::SensorMgr->saveProperties(cfg);
 
 	ws->saveProperties(cfg);
 }
@@ -478,9 +477,9 @@ TopLevel::answerReceived(int id, const QString& answer)
 		break;
 	case 5:
 	{
-		SensorIntegerInfo info(answer);
+		KSGRD::SensorIntegerInfo info(answer);
 		sTotal = info.getMax();
-		unit = SensorMgr->translateUnit(info.getUnit());
+		unit = KSGRD::SensorMgr->translateUnit(info.getUnit());
 		break;
 	}
 	case 133:
@@ -504,7 +503,7 @@ TopLevel::answerReceived(int id, const QString& answer)
 		QByteArray replyData;
 		QDataStream reply(replyData, IO_WriteOnly);
 
-		SensorTokenizer lines(answer, '\n');
+		KSGRD::SensorTokenizer lines(answer, '\n');
 
 		for (unsigned int i = 0; i < lines.numberOfTokens(); i++)
 			resultList.append(lines[i]);
@@ -584,10 +583,10 @@ main(int argc, char** argv)
 	// initialize KDE application
 	KApplication *a = new KApplication;
 
-	SensorMgr = new SensorManager();
-	Q_CHECK_PTR(SensorMgr);
-	Style = new StyleEngine();
-	Q_CHECK_PTR(Style);
+	KSGRD::SensorMgr = new KSGRD::SensorManager();
+	Q_CHECK_PTR(KSGRD::SensorMgr);
+	KSGRD::Style = new KSGRD::StyleEngine();
+	Q_CHECK_PTR(KSGRD::Style);
 
 	KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
@@ -598,12 +597,12 @@ main(int argc, char** argv)
 		/* To avoid having multiple instances of ksysguard in
 		 * taskmanager mode we check if another taskmanager is running
 		 * already. If so, we terminate this one immediately. */
-		if (a->dcopClient()->registerAs("ksysguard_taskmanager", FALSE) ==
+		if (a->dcopClient()->registerAs("ksysguard_taskmanager", false) ==
 			"ksysguard_taskmanager")
 		{
 			Toplevel = new TopLevel("KSysGuard");
 			Toplevel->beATaskManager();
-			SensorMgr->setBroadcaster(Toplevel);
+			KSGRD::SensorMgr->setBroadcaster(Toplevel);
 
 			// run the application
 			result = a->exec();
@@ -611,7 +610,7 @@ main(int argc, char** argv)
 	}
 	else
 	{
-		a->dcopClient()->registerAs("ksysguard", FALSE);
+		a->dcopClient()->registerAs("ksysguard", false);
 		a->dcopClient()->setDefaultObject("KSysGuardIface");
 
 		Toplevel = new TopLevel("KSysGuard");
@@ -636,14 +635,14 @@ main(int argc, char** argv)
 		}
 
 		Toplevel->initStatusBar();
-		SensorMgr->setBroadcaster(Toplevel);
+		KSGRD::SensorMgr->setBroadcaster(Toplevel);
 
 		// run the application
 		result = a->exec();
 	}
 
-	delete Style;
-	delete SensorMgr;
+	delete KSGRD::Style;
+	delete KSGRD::SensorMgr;
 	delete a;
 
 	return (result);

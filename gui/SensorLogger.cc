@@ -15,25 +15,25 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	$Id$
 */
 
+#include <qcheckbox.h>
+#include <qpushbutton.h>
+
 #include <kapplication.h>
+#include <kfiledialog.h>
 #include <kiconloader.h>
 #include <klocale.h>
 #include <knumvalidator.h>
-#include <kfiledialog.h>
 
-#include <qcheckbox.h>
-
-#include "ColorPicker.h"
-#include "SensorManager.h"
-#include "StyleEngine.h"
+#include <ksgrd/ColorPicker.h>
+#include <ksgrd/SensorManager.h>
+#include <ksgrd/StyleEngine.h>
 
 #include "SensorLogger.moc"
 #include "SensorLoggerSettings.h"
-
-#include <stdio.h>
-#include <qpushbutton.h>
 
 SLListViewItem::SLListViewItem(QListView *parent)
 	: QListViewItem(parent)
@@ -91,7 +91,7 @@ LogSensor::stopLogging(void)
 void
 LogSensor::timerEvent(QTimerEvent*)
 {
-	SensorMgr->sendRequest(hostName, sensorName, (SensorClient*) this, 42);
+	KSGRD::SensorMgr->sendRequest(hostName, sensorName, (KSGRD::SensorClient*) this, 42);
 }
 
 void
@@ -141,8 +141,8 @@ LogSensor::answerReceived(int id, const QString& answer)
 	delete logFile;
 }
 
-SensorLogger::SensorLogger(QWidget *parent, const char *name, const QString&)
-	: SensorDisplay(parent, name)
+SensorLogger::SensorLogger(QWidget *parent, const char *name, const QString& title)
+	: KSGRD::SensorDisplay(parent, name, title)
 {
 	monitor = new QListView(this, "monitor");
 	Q_CHECK_PTR(monitor);
@@ -154,9 +154,9 @@ SensorLogger::SensorLogger(QWidget *parent, const char *name, const QString&)
 	monitor->addColumn(i18n("LogFile"));
 
 	QColorGroup cgroup = monitor->colorGroup();
-	cgroup.setColor(QColorGroup::Text, Style->getFgColor1());
-	cgroup.setColor(QColorGroup::Base, Style->getBackgroundColor());
-	cgroup.setColor(QColorGroup::Foreground, Style->getAlarmColor());
+	cgroup.setColor(QColorGroup::Text, KSGRD::Style->getFgColor1());
+	cgroup.setColor(QColorGroup::Base, KSGRD::Style->getBackgroundColor());
+	cgroup.setColor(QColorGroup::Foreground, KSGRD::Style->getAlarmColor());
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 	monitor->setSelectionMode(QListView::NoSelection);
 
@@ -264,7 +264,7 @@ SensorLogger::settings()
 {
 	QColorGroup cgroup = monitor->colorGroup();
 
-	sls = new SensorLoggerSettings(this, "SensorLoggerSettings", TRUE);
+	sls = new SensorLoggerSettings(this, "SensorLoggerSettings", true);
 	Q_CHECK_PTR(sls);
 
 	connect(sls->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
@@ -272,7 +272,7 @@ SensorLogger::settings()
 	sls->foregroundColor->setColor(cgroup.text());
 	sls->backgroundColor->setColor(cgroup.base());
 	sls->alarmColor->setColor(cgroup.foreground());
-	sls->title->setText(title);
+	sls->title->setText(title());
 
 	if (sls->exec())
 		applySettings();
@@ -291,9 +291,7 @@ SensorLogger::applySettings()
 	cgroup.setColor(QColorGroup::Foreground, sls->alarmColor->getColor());
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 
-	title = sls->title->text();
-
-	frame->setTitle(title);
+	title(sls->title->text());
 
 	setModified(true);
 }
@@ -303,9 +301,9 @@ SensorLogger::applyStyle(void)
 {
 	QColorGroup cgroup = monitor->colorGroup();
 
-	cgroup.setColor(QColorGroup::Text, Style->getFgColor1());
-	cgroup.setColor(QColorGroup::Base, Style->getBackgroundColor());
-	cgroup.setColor(QColorGroup::Foreground, Style->getAlarmColor());
+	cgroup.setColor(QColorGroup::Text, KSGRD::Style->getFgColor1());
+	cgroup.setColor(QColorGroup::Base, KSGRD::Style->getBackgroundColor());
+	cgroup.setColor(QColorGroup::Foreground, KSGRD::Style->getAlarmColor());
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 
 	setModified(true);
@@ -315,9 +313,6 @@ bool
 SensorLogger::createFromDOM(QDomElement& element)
 {
 	QColorGroup cgroup = monitor->colorGroup();
-
-	title = element.attribute("title");
-	frame->setTitle(title);
 
 	cgroup.setColor(QColorGroup::Text, restoreColorFromDOM(element, "textColor", Qt::green));
 	cgroup.setColor(QColorGroup::Base, restoreColorFromDOM(element, "backgroundColor", Qt::black));
@@ -344,6 +339,8 @@ SensorLogger::createFromDOM(QDomElement& element)
 		logSensors.append(sensor);
 	}
 
+	internCreateFromDOM(element);
+
 	setModified(false);
 
 	return (true);
@@ -352,8 +349,6 @@ SensorLogger::createFromDOM(QDomElement& element)
 bool
 SensorLogger::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 {
-	element.setAttribute("title", title);
-
 	addColorToDOM(element, "textColor", monitor->colorGroup().text());
 	addColorToDOM(element, "backgroundColor", monitor->colorGroup().base());
 	addColorToDOM(element, "alarmColor", monitor->colorGroup().foreground());
@@ -372,6 +367,8 @@ SensorLogger::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 		
 		element.appendChild(log);
 	}
+
+	internAddToDOM(doc, element);
 
 	if (save)
 		setModified(false);

@@ -25,13 +25,15 @@
 #ifndef _StyleEngine_h_
 #define _StyleEngine_h_
 
-#include "qobject.h"
-#include "qcolor.h"
-#include "qptrlist.h"
+#include <qcolor.h>
+#include <qobject.h>
+#include <qptrlist.h>
 
 class KConfig;
 class QListBoxItem;
 class StyleSettings;
+
+namespace KSGRD {
 
 class StyleEngine : public QObject
 {
@@ -101,8 +103,10 @@ private:
 	QColor backgroundColor;
 	uint fontSize;
 	QPtrList<QColor> sensorColors;
-} ;
+};
 
 extern StyleEngine* Style;
+
+};
 
 #endif

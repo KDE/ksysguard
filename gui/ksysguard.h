@@ -25,25 +25,24 @@
 #ifndef _ktop_h_
 #define _ktop_h_
 
+#include <qevent.h>
 #include <qpopupmenu.h>
 #include <qsplitter.h>
-#include <qevent.h>
 
+#include <dcopclient.h>
+#include <dcopobject.h>
 #include <kapp.h>
 #include <kmainwindow.h>
 #include <kstatusbar.h>
-#include <dcopobject.h>
-#include <dcopclient.h>
 
-#include "SensorClient.h"
+#include <ksgrd/SensorClient.h>
 
 class KRecentFilesAction;
 class KToggleAction;
-class SensorAgent;
 class SensorBrowser;
 class Workspace;
 
-class TopLevel : public KMainWindow, public SensorClient, public DCOPObject
+class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObject
 {
 	Q_OBJECT
 	K_DCOP

@@ -37,12 +37,12 @@
 #undef Below
 #endif
 
-#include <qlabel.h>
-#include <qlcdnumber.h>
-#include <qslider.h>
-#include <qpushbutton.h>
 #include <qdialog.h>
+#include <qlabel.h>
 #include <qlayout.h>
+#include <qlcdnumber.h>
+#include <qpushbutton.h>
+#include <qslider.h>
 
 /**
  * This class creates and handles a simple dialog to change the scheduling

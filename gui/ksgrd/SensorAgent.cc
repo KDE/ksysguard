@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -19,7 +19,6 @@
 	$Id$
 */
 
-#include <iostream.h>
 #include <stdlib.h>
 
 
@@ -35,6 +34,8 @@
 /* This can be used to debug communication problems with the daemon.
  * Should be set to 0 in any production version. */
 #define SA_TRACE 0
+
+using namespace KSGRD;
 
 SensorAgent::SensorAgent(SensorManager* sm) :
 	sensorManager(sm)

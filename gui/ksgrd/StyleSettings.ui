@@ -1,6 +1,7 @@
 <!DOCTYPE UI><UI>
 <class>StyleSettings</class>
 <author>Chris Schlaeger &lt;cs@kde.org&gt;</author>
+<header location="global">ColorPicker.h</header>
 <widget>
     <class>QDialog</class>
     <property stdset="1">

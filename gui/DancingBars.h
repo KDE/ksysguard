@@ -27,7 +27,8 @@
 
 #include <qlistview.h>
 
-#include "SensorDisplay.h"
+#include <ksgrd/SensorDisplay.h>
+
 #include "BarGraph.h"
 
 class QGroupBox;
@@ -35,14 +36,14 @@ class QLineEdit;
 class KIntNumInput;
 class DancingBarsSettings;
 
-class DancingBars : public SensorDisplay
+class DancingBars : public KSGRD::SensorDisplay
 {
 	Q_OBJECT
 
 public:
 	DancingBars(QWidget* parent = 0, const char* name = 0,
-				const QString& title = QString::null, int min = 0,
-				int max = 100, bool nf = 0);
+			const QString& title = QString::null, int min = 0,
+			int max = 100, bool nf = 0);
 	virtual ~DancingBars();
 
 	void settings();
@@ -60,15 +61,13 @@ public:
 
 	virtual void answerReceived(int id, const QString& s);
 
-	bool createFromDOM(QDomElement& el);
-	bool addToDOM(QDomDocument& doc, QDomElement& display, bool save = true);
+	bool createFromDOM(QDomElement& element);
+	bool addToDOM(QDomDocument& doc, QDomElement& element, bool save = true);
 
 	virtual bool hasSettingsDialog() const
 	{
-		return (TRUE);
+		return (true);
 	}
-
-	virtual void sensorError(int, bool err);
 
 public slots:
 	void applySettings();
@@ -81,8 +80,6 @@ protected:
 	virtual void resizeEvent(QResizeEvent*);
 
 private:
-	void setTitle(const QString& t);
-
 	uint bars;
 
 	BarGraph* plotter;

@@ -25,9 +25,9 @@
 #ifndef _BarGraph_h_
 #define _BarGraph_h_
 
-#include <qwidget.h>
-#include <qptrvector.h>
 #include <qmemarray.h>
+#include <qptrvector.h>
+#include <qwidget.h>
 
 class BarGraph : public QWidget
 {
@@ -69,15 +69,6 @@ public:
 
 	void changeRange(double min, double max);
 
-	void setSensorOk(bool ok)
-	{
-		if (ok != sensorOk)
-		{
-			sensorOk = ok;
-			update();
-		}
-	}
-
 protected:
 	virtual void paintEvent(QPaintEvent*);
 
@@ -96,9 +87,6 @@ private:
 	QColor alarmColor;
 	QColor backgroundColor;
 	int fontSize;
-
-	QPixmap errorIcon;
-	bool sensorOk;
 } ;
 
 #endif

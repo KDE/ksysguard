@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -23,16 +23,17 @@
 	$Id$
 */
 
-#include <string.h>
 #include <assert.h>
 #include <math.h>
+#include <string.h>
 
 #include <qpainter.h>
+#include <qpixmap.h>
 
-#include <kiconloader.h>
 #include <kdebug.h>
 
-#include "StyleEngine.h"
+#include <ksgrd/StyleEngine.h>
+
 #include "SignalPlotter.moc"
 
 static inline int
@@ -58,29 +59,24 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name)
 	// Anything smaller than this does not make sense.
 	setMinimumSize(16, 16);
 	setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
-							  QSizePolicy::Expanding, FALSE));
-
-	KIconLoader iconLoader;
-	errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop,
-									KIcon::SizeSmall);
-	sensorOk = false;
+							  QSizePolicy::Expanding, false));
 
 	vLines = true;
-	vColor = Style->getFgColor1();
+	vColor = KSGRD::Style->getFgColor1();
 	vDistance = 30;
 	vScroll = true;
 	vOffset = 0;
 	hScale = 5;
 
 	hLines = true;
-	hColor = Style->getFgColor2();
+	hColor = KSGRD::Style->getFgColor2();
 	hCount = 5;
 
 	labels = true;
 	topBar = false;
-	fontSize = Style->getFontSize();
+	fontSize = KSGRD::Style->getFontSize();
 
-	bColor = Style->getBackgroundColor();
+	bColor = KSGRD::Style->getBackgroundColor();
 }
 
 SignalPlotter::~SignalPlotter()
@@ -427,9 +423,6 @@ SignalPlotter::paintEvent(QPaintEvent*)
 			p.drawText(6, top + h - 2, val);
 		}
 	}
-
-	if (!sensorOk)
-		p.drawPixmap(2, 2, errorIcon);
 
 	p.end();
 	bitBlt(this, 0, 0, &pm);

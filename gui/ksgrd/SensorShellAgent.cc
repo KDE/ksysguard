@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -20,8 +20,6 @@
 */
 
 #include <stdlib.h>
-#include <iostream.h>
-
 
 #include <kprocess.h>
 #include <kpassdlg.h> 
@@ -30,6 +28,8 @@
 #include "SensorManager.h"
 #include "SensorClient.h"
 #include "SensorShellAgent.moc"
+
+using namespace KSGRD;
 
 SensorShellAgent::SensorShellAgent(SensorManager* sm) :
 	SensorAgent(sm)

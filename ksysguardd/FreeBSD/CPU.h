@@ -21,11 +21,9 @@
 #ifndef _cpuinfo_h_
 #define _cpuinfo_h_
 
-void initCPU(void);
-
-void exitCPU(void);
-
-int updateCPU(void);
+void initCpuInfo(void);
+void exitCpuInfo(void);
+int updateCpuInfo(void);
 
 void printCPUUser(const char* cmd);
 void printCPUUserInfo(const char* cmd);

@@ -15,38 +15,31 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	$Id$
 */
 
-#include <kdebug.h>
-#include <kiconloader.h>
+#include <stdio.h>
+#include <sys/types.h>
 
+#include <qpushbutton.h>
 #include <qregexp.h>
 
-#include <sys/types.h>
-#include <stdio.h>
+#include <kfontdialog.h>
+#include <kdebug.h>
+#include <klocale.h>
 
-#include "StyleEngine.h"
+#include <ksgrd/ColorPicker.h>
+#include <ksgrd/StyleEngine.h>
 
 #include "LogFile.moc"
 
-LogFile::LogFile(QWidget *parent, const char *name, const QString&)
-	: SensorDisplay(parent, name)
+LogFile::LogFile(QWidget *parent, const char *name, const QString& title)
+	: KSGRD::SensorDisplay(parent, name, title)
 {
 	monitor = new QListBox(this);
 	Q_CHECK_PTR(monitor);
 	
-	KIconLoader iconLoader;
-	QPixmap errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop, KIcon::SizeSmall);
-
-	errorLabel = new QLabel(monitor);
-	Q_CHECK_PTR(errorLabel);
-
-	errorLabel->setPixmap(errorIcon);
-	errorLabel->resize(errorIcon.size());
-	errorLabel->move(2, 2);
-
-	frame->setTitle(title);
-
 	setMinimumSize(50, 25);
 	setModified(false);
 }
@@ -62,21 +55,19 @@ LogFile::addSensor(const QString& hostName, const QString& sensorName, const QSt
 	if (sensorType != "logfile")
 		return (false);
 
-	registerSensor(new SensorProperties(hostName, sensorName, sensorType, t));
+	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, t));
 
 	QString sensorID = sensorName.right(sensorName.length() - (sensorName.findRev("/") + 1));
 
 	sendRequest(sensors.at(0)->hostName, QString("logfile_register %1" ).arg(sensorID), 42);
 
 	if (t.isEmpty())
-		title = sensors.at(0)->hostName + ":" + sensorID;
+		title(sensors.at(0)->hostName + ":" + sensorID);
 	else
-		title = t;
+		title(t);
 
-	frame->setTitle(title);
-
-	setModified(TRUE);
-	return (TRUE);
+	setModified(true);
+	return (true);
 }
 
 
@@ -87,12 +78,25 @@ void LogFile::settings(void)
 	lfs = new LogFileSettings(this);
 	Q_CHECK_PTR(lfs);
 	
-	lfs->setForegroundColor(cgroup.text());
-	lfs->setBackgroundColor(cgroup.base());
-	lfs->setFont(monitor->font());
-	lfs->setFilterRules(filterRules);
-	lfs->setTitle(title);
+	lfs->fgColor->setColor(cgroup.text());
+	lfs->fgColor->setText(i18n("Foreground Color"));
+	lfs->bgColor->setColor(cgroup.base());
+	lfs->bgColor->setText(i18n("Background Color"));
+	lfs->fontButton->setFont(monitor->font());
+	lfs->ruleList->insertStringList(filterRules);
+	lfs->title->setText(title());
 	
+	connect(lfs->okButton, SIGNAL(clicked()), lfs, SLOT(accept()));
+	connect(lfs->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
+	connect(lfs->cancelButton, SIGNAL(clicked()), lfs, SLOT(reject()));
+
+	connect(lfs->fontButton, SIGNAL(clicked()), this, SLOT(settingsFontSelection()));
+	connect(lfs->addButton, SIGNAL(clicked()), this, SLOT(settingsAddRule()));
+	connect(lfs->deleteButton, SIGNAL(clicked()), this, SLOT(settingsDeleteRule()));
+	connect(lfs->changeButton, SIGNAL(clicked()), this, SLOT(settingsChangeRule()));
+	connect(lfs->ruleList, SIGNAL(selected(int)), this, SLOT(settingsRuleListSelected(int)));
+	connect(lfs->ruleText, SIGNAL(returnPressed()), this, SLOT(settingsAddRule()));
+
 	if (lfs->exec()) {
 		applySettings();
 	}
@@ -101,20 +105,56 @@ void LogFile::settings(void)
 	lfs = 0;
 }
 
+void LogFile::settingsFontSelection()
+{
+	QFont tmpFont = lfs->fontButton->font();
+
+	if (KFontDialog::getFont(tmpFont) == KFontDialog::Accepted) {
+		lfs->fontButton->setFont(tmpFont);
+	}
+}
+
+void LogFile::settingsAddRule()
+{
+	if (!lfs->ruleText->text().isEmpty()) {
+		lfs->ruleList->insertItem(lfs->ruleText->text(), -1);
+		lfs->ruleText->setText("");
+	}
+}
+
+void LogFile::settingsDeleteRule()
+{
+	lfs->ruleList->removeItem(lfs->ruleList->currentItem());
+	lfs->ruleText->setText("");
+}
+
+void LogFile::settingsChangeRule()
+{
+	lfs->ruleList->changeItem(lfs->ruleText->text(), lfs->ruleList->currentItem());
+	lfs->ruleText->setText("");
+}
+
+void LogFile::settingsRuleListSelected(int index)
+{
+	lfs->ruleText->setText(lfs->ruleList->text(index));
+}
+
 void LogFile::applySettings(void)
 {
 	QColorGroup cgroup = monitor->colorGroup();
 
-	cgroup.setColor(QColorGroup::Text, lfs->getForegroundColor());
-	cgroup.setColor(QColorGroup::Base, lfs->getBackgroundColor());
+	cgroup.setColor(QColorGroup::Text, lfs->fgColor->getColor());
+	cgroup.setColor(QColorGroup::Base, lfs->bgColor->getColor());
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
-	monitor->setFont(lfs->getFont());
-	filterRules = lfs->getFilterRules();
-	title = lfs->getTitle();
+	monitor->setFont(lfs->fontButton->font());
 
-	frame->setTitle(title);
+	filterRules.clear();
+	for (int i = 0; i < lfs->ruleList->count(); i++)
+		filterRules.append(lfs->ruleList->text(i));
 
-	setModified(TRUE);
+	title(lfs->title->text());
+
+	setModified(true);
 }
 
 void
@@ -122,11 +162,11 @@ LogFile::applyStyle()
 {
 	QColorGroup cgroup = monitor->colorGroup();
 
-	cgroup.setColor(QColorGroup::Text, Style->getFgColor1());
-	cgroup.setColor(QColorGroup::Base, Style->getBackgroundColor());
+	cgroup.setColor(QColorGroup::Text, KSGRD::Style->getFgColor1());
+	cgroup.setColor(QColorGroup::Base, KSGRD::Style->getBackgroundColor());
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 
-	setModified(TRUE);
+	setModified(true);
 }
 
 bool
@@ -134,8 +174,6 @@ LogFile::createFromDOM(QDomElement& element)
 {
 	QFont font;
 	QColorGroup cgroup = monitor->colorGroup();
-
-	title = element.attribute("title");
 
 	cgroup.setColor(QColorGroup::Text, restoreColorFromDOM(element, "textColor", Qt::green));
 	cgroup.setColor(QColorGroup::Base, restoreColorFromDOM(element, "backgroundColor", Qt::black));
@@ -150,13 +188,13 @@ LogFile::createFromDOM(QDomElement& element)
 		filterRules.append(element.attribute("rule"));
 	}
 
-	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "logfile" : element.attribute("sensorType")), title);
-
 	internCreateFromDOM(element);
 
-	setModified(FALSE);
+	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "logfile" : element.attribute("sensorType")), title());
 
-	return TRUE;
+	setModified(false);
+
+	return true;
 }
 
 bool
@@ -166,7 +204,6 @@ LogFile::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 	element.setAttribute("sensorName", sensors.at(0)->name);
 	element.setAttribute("sensorType", sensors.at(0)->type);
 
-	element.setAttribute("title", title);
 	element.setAttribute("font", monitor->font().rawName());
 
 	addColorToDOM(element, "textColor", monitor->colorGroup().text());
@@ -183,9 +220,9 @@ LogFile::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 	internAddToDOM(doc, element);
 
 	if (save)
-		setModified(FALSE);
+		setModified(false);
 
-	return TRUE;
+	return true;
 }
 
 void
@@ -199,12 +236,12 @@ void
 LogFile::answerReceived(int id, const QString& answer)
 {
 	/* We received something, so the sensor is probably ok. */
-	sensorError(FALSE);
+	sensorError(id, false);
 
 	switch (id)
 	{
 		case 19: {
-			SensorTokenizer lines(answer, '\n');
+			KSGRD::SensorTokenizer lines(answer, '\n');
 
 			for (uint i = 0; i < lines.numberOfTokens(); i++) {
 				if (monitor->count() == MAXLINES)
@@ -235,18 +272,4 @@ LogFile::resizeEvent(QResizeEvent*)
 {
 	frame->setGeometry(0, 0, this->width(), this->height());
 	monitor->setGeometry(10, 20, this->width() - 20, this->height() - 30);
-}
-
-void
-LogFile::sensorError(bool err)
-{
-	if (err == sensors.at(0)->ok) {
-		// this happens only when the sensorOk status needs to be changed.
-		sensors.at(0)->ok = !err;
-	}
-
-	if (err)
-		errorLabel->show();
-	else
-		errorLabel->hide();
 }

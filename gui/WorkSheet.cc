@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -22,28 +22,27 @@
 	$Id$
 */
 
-#include <qdragobject.h>
 #include <qclipboard.h>
 #include <qcursor.h>
+#include <qdragobject.h>
 
-#include <kmessagebox.h>
-#include <klocale.h>
 #include <kdebug.h>
+#include <klocale.h>
+#include <kmessagebox.h>
 
-#include "WorkSheet.h"
-#include "SensorManager.h"
+#include <ksgrd/SensorManager.h>
+
+#include "DancingBars.h"
 #include "DummyDisplay.h"
 #include "FancyPlotter.h"
-#include "MultiMeter.h"
-#include "DancingBars.h"
 #include "ListView.h"
 #include "LogFile.h"
-#include "SensorLogger.h"
+#include "MultiMeter.h"
 #include "ProcessController.h"
-#include "WorkSheetSettings.h"
+#include "SensorLogger.h"
+#include "WorkSheet.h"
 #include "WorkSheet.moc"
-
-#include <stdio.h>
+#include "WorkSheetSettings.h"
 
 WorkSheet::WorkSheet(QWidget* parent) :
 	QWidget(parent)
@@ -63,7 +62,7 @@ WorkSheet::WorkSheet(QWidget* parent, uint rs, uint cs, uint i) :
 	rows = columns = 0;
 	lm = 0;
 	displays = 0;
-	updateInterval = i;
+	updateInterval(i);
 	modified = false;
 	fileName = "";
 
@@ -117,9 +116,9 @@ WorkSheet::load(const QString& fN)
 	}
 	// Check for proper size.
 	QDomElement element = doc.documentElement();
-	updateInterval = element.attribute("interval").toUInt();
-	if (updateInterval < 2 || updateInterval > 300)
-		updateInterval = 2;
+	updateInterval(element.attribute("interval").toUInt());
+	if (updateInterval() < 2 || updateInterval() > 300)
+		updateInterval(2);
 	bool rowsOk;
 	uint r = element.attribute("rows").toUInt(&rowsOk);
 	bool columnsOk;
@@ -146,7 +145,7 @@ WorkSheet::load(const QString& fN)
 		int port = element.attribute("port").toInt(&ok);
 		if (!ok)
 			port = -1;
-		SensorMgr->engage(element.attribute("name"),
+		KSGRD::SensorMgr->engage(element.attribute("name"),
 						  element.attribute("shell"),
 						  element.attribute("command"), port);
 	}
@@ -189,7 +188,7 @@ WorkSheet::save(const QString& fN)
 	// save work sheet information
 	QDomElement ws = doc.createElement("WorkSheet");
 	doc.appendChild(ws);
-	ws.setAttribute("interval", updateInterval);
+	ws.setAttribute("interval", updateInterval());
 	ws.setAttribute("rows", rows);
 	ws.setAttribute("columns", columns);
 
@@ -203,7 +202,7 @@ WorkSheet::save(const QString& fN)
 		QString shell, command;
 		int port;
 
-		if (SensorMgr->getHostInfo(*it, shell, command, port))
+		if (KSGRD::SensorMgr->getHostInfo(*it, shell, command, port))
 		{
 			QDomElement host = doc.createElement("host");
 			ws.appendChild(host);
@@ -218,14 +217,14 @@ WorkSheet::save(const QString& fN)
 		for (uint j = 0; j < columns; ++j)
 			if (!displays[i][j]->isA("DummyDisplay"))
 			{
-				SensorDisplay* displayP = (SensorDisplay*) displays[i][j];
-				QDomElement display = doc.createElement("display");
-				ws.appendChild(display);
-				display.setAttribute("row", i);
-				display.setAttribute("column", j);
-				display.setAttribute("class", displayP->className());
+				KSGRD::SensorDisplay* display = (KSGRD::SensorDisplay*) displays[i][j];
+				QDomElement element = doc.createElement("display");
+				ws.appendChild(element);
+				element.setAttribute("row", i);
+				element.setAttribute("column", j);
+				element.setAttribute("class", display->className());
 
-				displayP->addToDOM(doc, display);
+				display->addToDOM(doc, element);
 			}	
 
 	QFile file(fileName = fN);
@@ -294,12 +293,12 @@ WorkSheet::paste()
 	replaceDisplay(r, c, element);
 }
 
-SensorDisplay*
+KSGRD::SensorDisplay*
 WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 					  const QString& sensorType, const QString& sensorDescr,
 					  uint r, uint c)
 {
-	if (!SensorMgr->engageHost(hostName))
+	if (!KSGRD::SensorMgr->engageHost(hostName))
 	{
 		QString msg = i18n("Impossible to connect to \'%1\'!").arg(hostName);
 		KMessageBox::error(this, msg);
@@ -311,7 +310,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 	 * the new sensor to an existing display. */
 	if (displays[r][c]->isA("DummyDisplay"))
 	{
-		SensorDisplay* newDisplay = 0;
+		KSGRD::SensorDisplay* newDisplay = 0;
 		/* If the sensor type is supported by more than one display
 		 * type we popup a menu so the user can select what display is
 		 * wanted. */
@@ -363,7 +362,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 	displays[r][c]->addSensor(hostName, sensorName, sensorType, sensorDescr);
 
 	setModified(true);
-	return ((SensorDisplay*) displays[r][c]);
+	return ((KSGRD::SensorDisplay*) displays[r][c]);
 }
 
 void
@@ -379,15 +378,15 @@ WorkSheet::settings()
 
 	wss->rows->setValue(rows);	
 	wss->columns->setValue(columns);
-	wss->interval->setValue(updateInterval);
+	wss->interval->setValue(updateInterval());
 
 	if (wss->exec())
 	{
-		updateInterval = wss->interval->text().toUInt();
+		updateInterval(wss->interval->text().toUInt());
 		for (uint r = 0; r < rows; ++r)
 			for (uint c = 0; c < columns; ++c)
 				if (displays[r][c]->globalUpdateInterval)
-					displays[r][c]->setUpdateInterval(updateInterval);
+					displays[r][c]->setUpdateInterval(updateInterval());
 
 		resizeGrid(wss->rows->text().toUInt(),
 				   wss->columns->text().toUInt());
@@ -399,7 +398,7 @@ WorkSheet::settings()
 }
 
 void
-WorkSheet::showPopupMenu(SensorDisplay* display)
+WorkSheet::showPopupMenu(KSGRD::SensorDisplay* display)
 {
 	display->settings();
 }
@@ -477,7 +476,7 @@ WorkSheet::customEvent(QCustomEvent* ev)
 			"Do you really want to delete the display?")) ==
 			KMessageBox::Yes)
 		{				
-			removeDisplay((SensorDisplay*) ev->data());
+			removeDisplay((KSGRD::SensorDisplay*) ev->data());
 		}
 	}
 }
@@ -486,7 +485,7 @@ bool
 WorkSheet::replaceDisplay(uint r, uint c, QDomElement& element)
 {
 	QString classType = element.attribute("class");
-	SensorDisplay* newDisplay;
+	KSGRD::SensorDisplay* newDisplay;
 	if (classType == "FancyPlotter")
 		newDisplay = new FancyPlotter(this);
 	else if (classType == "MultiMeter")
@@ -508,7 +507,7 @@ WorkSheet::replaceDisplay(uint r, uint c, QDomElement& element)
 	}
 	Q_CHECK_PTR(newDisplay);
 	if (newDisplay->globalUpdateInterval)
-		newDisplay->setUpdateInterval(updateInterval);
+		newDisplay->setUpdateInterval(updateInterval());
 
 	// load display specific settings
 	if (!newDisplay->createFromDOM(element))
@@ -520,7 +519,7 @@ WorkSheet::replaceDisplay(uint r, uint c, QDomElement& element)
 }
 
 void
-WorkSheet::replaceDisplay(uint r, uint c, SensorDisplay* newDisplay)
+WorkSheet::replaceDisplay(uint r, uint c, KSGRD::SensorDisplay* newDisplay)
 {
 	// remove the old display at this location
 	delete displays[r][c];
@@ -532,9 +531,9 @@ WorkSheet::replaceDisplay(uint r, uint c, SensorDisplay* newDisplay)
 	{
 		displays[r][c] = newDisplay;
 		if (displays[r][c]->globalUpdateInterval)
-			displays[r][c]->setUpdateInterval(updateInterval);
-		connect(newDisplay, SIGNAL(showPopupMenu(SensorDisplay*)),
-				this, SLOT(showPopupMenu(SensorDisplay*)));
+			displays[r][c]->setUpdateInterval(updateInterval());
+		connect(newDisplay, SIGNAL(showPopupMenu(KSGRD::SensorDisplay*)),
+				this, SLOT(showPopupMenu(KSGRD::SensorDisplay*)));
 		connect(newDisplay, SIGNAL(displayModified(bool)),
 				this, SLOT(setModified(bool)));
 	}
@@ -555,7 +554,7 @@ WorkSheet::replaceDisplay(uint r, uint c, SensorDisplay* newDisplay)
 }
 
 void
-WorkSheet::removeDisplay(SensorDisplay* display)
+WorkSheet::removeDisplay(KSGRD::SensorDisplay* display)
 {
 	if (!display)
 		return;
@@ -576,7 +575,7 @@ WorkSheet::collectHosts(QValueList<QString>& list)
 	for (uint r = 0; r < rows; ++r)
 		for (uint c = 0; c < columns; ++c)
 			if (!displays[r][c]->isA("DummyDisplay"))
-				((SensorDisplay*) displays[r][c])->collectHosts(list);
+				((KSGRD::SensorDisplay*) displays[r][c])->collectHosts(list);
 }
 
 void
@@ -589,11 +588,11 @@ WorkSheet::createGrid(uint r, uint c)
 	lm = new QGridLayout(this, r, c, 5);
 	Q_CHECK_PTR(lm);
 
-	displays = new SensorDisplay**[rows];
+	displays = new KSGRD::SensorDisplay**[rows];
 	Q_CHECK_PTR(displays);
 	for (r = 0; r < rows; ++r)
 	{
-		displays[r] = new SensorDisplay*[columns];
+		displays[r] = new KSGRD::SensorDisplay*[columns];
 		Q_CHECK_PTR(displays[r]);
 		for (c = 0; c < columns; ++c)
 			displays[r][c] = 0;
@@ -611,11 +610,11 @@ WorkSheet::resizeGrid(uint newRows, uint newColumns)
 {
 	uint r, c;
 	/* Create new array for display pointers */
-	SensorDisplay*** newDisplays = new SensorDisplay**[newRows];
+	KSGRD::SensorDisplay*** newDisplays = new KSGRD::SensorDisplay**[newRows];
 	Q_CHECK_PTR(newDisplays);
 	for (r = 0; r < newRows; ++r)
 	{
-		newDisplays[r] = new SensorDisplay*[newColumns];
+		newDisplays[r] = new KSGRD::SensorDisplay*[newColumns];
 		Q_CHECK_PTR(newDisplays[r]);
 		for (c = 0; c < newColumns; ++c)
 		{
@@ -667,7 +666,7 @@ WorkSheet::resizeGrid(uint newRows, uint newColumns)
 	lm->activate();
 }
 
-SensorDisplay*
+KSGRD::SensorDisplay*
 WorkSheet::currentDisplay(uint* row, uint* column)
 {
 	for (uint r = 0 ; r < rows; ++r)
@@ -700,7 +699,7 @@ WorkSheet::fixTabOrder()
 QString
 WorkSheet::currentDisplayAsXML()
 {
-	SensorDisplay* display = currentDisplay();
+	KSGRD::SensorDisplay* display = currentDisplay();
 	if (!display)
 		return QString::null;
 
@@ -709,10 +708,10 @@ WorkSheet::currentDisplayAsXML()
 	doc.appendChild(doc.createProcessingInstruction(
 		"xml", "version=\"1.0\" encoding=\"UTF-8\""));
 
-	QDomElement domEl = doc.createElement("display");
-	doc.appendChild(domEl);
-	domEl.setAttribute("class", display->className());
-	display->addToDOM(doc, domEl);
+	QDomElement element = doc.createElement("display");
+	doc.appendChild(element);
+	element.setAttribute("class", display->className());
+	display->addToDOM(doc, element);
 
 	return doc.toString();
 }

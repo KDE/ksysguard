@@ -25,20 +25,22 @@
 #ifndef _SensorDisplay_h_
 #define _SensorDisplay_h_
 
-#include <qwidget.h>
-#include <qvaluelist.h>
 #include <qgroupbox.h>
+#include <qlabel.h>
+#include <qvaluelist.h>
+#include <qwidget.h>
+
 #include <knotifyclient.h>
 
-#include "SensorClient.h"
-#include "SensorDisplay.h"
-
-#include "TimerSettings.h"
+#include <ksgrd/SensorClient.h>
 
 #define NONE -1
 
 class QDomDocument;
 class QDomElement;
+class TimerSettings;
+
+namespace KSGRD {
 
 class SensorProperties
 {
@@ -73,21 +75,11 @@ class SensorDisplay : public QWidget, public SensorClient
 	Q_OBJECT
 public:
 
-	SensorDisplay(QWidget* parent = 0, const char* name = 0);
+	SensorDisplay(QWidget* parent = 0, const char* name = 0, const QString& title = 0);
 	virtual ~SensorDisplay();
 
-	virtual bool addSensor(const QString& hn, const QString& sn, const QString& st,
-						   const QString& res1)
-	{
-		registerSensor(new SensorProperties(hn, sn, st, res1));
-		return (true);
-	}
-
-	virtual bool removeSensor(uint idx)
-	{
-		unregisterSensor(idx);
-		return (true);
-	}
+	virtual bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& description);
+	virtual bool removeSensor(uint idx);
 
 	/**
 	 * This function is a wrapper function to SensorManager::sendRequest.
@@ -97,16 +89,7 @@ public:
 	 */
 	void sendRequest(const QString& hostName, const QString& cmd, int id);
 
-	void setUpdateInterval(uint i)
-	{
-		bool timerActive = timerId != NONE;
-
-		if (timerActive)
-			timerOff();
-		timerInterval = i * 1000;
-		if (timerActive)
-			timerOn();
-	}
+	void setUpdateInterval(uint interval);
 
 	virtual bool hasSettingsDialog() const
 	{
@@ -116,111 +99,74 @@ public:
 	virtual void settings() { }
 
 	virtual void updateWhatsThis();
+	virtual QString additionalWhatsThis();
 
-	virtual QString additionalWhatsThis()
-	{
-		return QString::null;
-	}
+	virtual void sensorLost(int reqId);
 
-	virtual void sensorLost(int reqId)
-	{
-		sensorError(reqId, true);
-	}
-
+	/**
+	 * Normaly you shouldn't reimplement this methode
+	 */
 	virtual void sensorError(int sensorId, bool mode);
 
-	virtual bool createFromDOM(QDomElement&)
-	{
-		// should never been used.
-		return (false);
-	}
-	virtual bool addToDOM(QDomDocument&, QDomElement&, bool = true)
-	{
-		// should never been used.
-		return (false);
-	}
+	virtual bool createFromDOM(QDomElement&);
+	virtual bool addToDOM(QDomDocument&, QDomElement&, bool = true);
 
 	void collectHosts(QValueList<QString>& list);
 
 	void setupTimer(void);
 
+	void title(const QString& title);
+	QString title();
+
 	bool globalUpdateInterval;
 
 public slots:
-	/**
-	 * This functions stops the timer that triggers the periodic events.
-	 */
-	void timerOff()
-	{
-		if (timerId != NONE)
-		{
-			killTimer(timerId);
-			timerId = NONE;
-		} 
-	}
-
 	/**
 	 * This function starts the timer that triggers timer events. It
 	 * reads the interval from the member object timerInterval. To
 	 * change the interval the timer must be stoped first with
 	 * timerOff() and than started again with timeOn().
 	 */
-	void timerOn()
-	{
-		if (timerId == NONE)
-		{
-			timerId = startTimer(timerInterval);
-		}
-	}
+	void timerOn();
 
-	void rmbPressed()
-	{
-		emit(showPopupMenu(this));
-	}
+	/**
+	 * This functions stops the timer that triggers the periodic events.
+	 */
+	void timerOff();
+
+	void rmbPressed();
 
 	virtual void applySettings() { }
 	virtual void applyStyle() { }
 
 	void timerToggled(bool);
 
-	virtual void setModified(bool mfd)
-	{
-		if (mfd != modified)
-		{
-			modified = mfd;
-			emit displayModified(modified);
-		}
-	}
+	virtual void setModified(bool mfd);
 		
 signals:
-	void showPopupMenu(SensorDisplay* display);
+	void showPopupMenu(KSGRD::SensorDisplay* display);
 	void displayModified(bool mfd);
 
 protected:
 	virtual void timerEvent(QTimerEvent*);
+	virtual void resizeEvent(QResizeEvent*);
 	virtual bool eventFilter(QObject*, QEvent*);
 
-	void registerSensor(SensorProperties* sp);
+	virtual void focusInEvent(QFocusEvent*);
+	virtual void focusOutEvent(QFocusEvent*);
 
+	void registerSensor(SensorProperties* sp);
 	void unregisterSensor(uint idx);
 
-	virtual void focusInEvent(QFocusEvent*)
-	{
-		frame->setLineWidth(2);
-	}
-
-	virtual void focusOutEvent(QFocusEvent*)
-	{
-		frame->setLineWidth(1);
-	}
-
 	QColor restoreColorFromDOM(QDomElement& de, const QString& attr,
-							   const QColor& fallback);
+						   const QColor& fallback);
 	void addColorToDOM(QDomElement& de, const QString& attr,
 					   const QColor& col);
 
 	void internAddToDOM(QDomDocument& doc, QDomElement& display);
 	void internCreateFromDOM(QDomElement& display);
+
+	void setSensorOk(bool ok);
 
 	QPtrList<SensorProperties> sensors;
 
@@ -228,14 +174,16 @@ protected:
 	QGroupBox* frame;
 
 	bool modified;
-
 	bool noFrame;
 
 private:
 	int timerId;
 	int timerInterval;
 
-	TimerSettings *ts;
+	QLabel* errorLabel;
+
+	TimerSettings* ts;
+};
 };
 
 #endif

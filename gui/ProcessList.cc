@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager
+    KSysGuard, the KDE System Guard
 
     Copyright (C) 1997 Bernd Johannes Wuebben
                        <wuebben@math.cornell.edu>
@@ -27,30 +27,28 @@
 	$Id$
 */
 
+#include <assert.h>
 #include <config.h>
-
-#include <sys/types.h>
-
 #include <ctype.h>
+#include <signal.h>
 #include <stdio.h>
 #include <string.h>
-#include <signal.h>
+#include <sys/types.h>
 #include <unistd.h>
-#include <assert.h>
 
-#include <qheader.h>
 #include <qbitmap.h>
+#include <qheader.h>
 #include <qimage.h>
 #include <qpopupmenu.h>
 
-#include <klocale.h>
 #include <kdebug.h>
+#include <klocale.h>
 #include <kmessagebox.h>
 
-#include "SignalIDs.h"
 #include "ProcessController.h"
-#include "SensorManager.h"
 #include "ProcessList.moc"
+#include "ReniceDlg.h"
+#include "SignalIDs.h"
 
 #define NONE -1
 #define INIT_PID 1
@@ -192,24 +190,22 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	connect(header(), SIGNAL(clicked(int)), this, SLOT(sortingChanged(int)));
 
 	treeViewEnabled = false;
-	openAll = TRUE;
+	openAll = true;
 
 	filterMode = FILTER_ALL;
 
 	sortColumn = 1;
-	increasing = FALSE;
+	increasing = false;
 
 	// Elements in the process list may only live in this list.
-	pl.setAutoDelete(TRUE);
+	pl.setAutoDelete(true);
 
 	// load the icons we display with the processes
 	icons = new KIconLoader();
 	Q_CHECK_PTR(icons);
-	errorIcon = QIconSet(icons->loadIcon("connect_creating", KIcon::Desktop,
-										 KIcon::SizeSmall));
 
 	setItemMargin(2);
-	setAllColumnsShowFocus(TRUE);
+	setAllColumnsShowFocus(true);
 	setTreeStepSize(17);
 	setSorting(sortColumn, increasing);
 	setSelectionMode(Multi);
@@ -225,7 +221,6 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	connect(header(), SIGNAL(indexChange(int, int, int)),
 			this, SLOT(indexChanged(int, int, int)));
 
-	sensorOk = false;
 	killSupported = false;
 	setModified(false);
 }
@@ -263,10 +258,10 @@ ProcessList::update(const QString& list)
 	pl.clear();
 
 	// Convert ps answer in a list of tokenized lines
-	SensorTokenizer procs(list, '\n');
+	KSGRD::SensorTokenizer procs(list, '\n');
 	for (unsigned int i = 0; i < procs.numberOfTokens(); i++)
 	{
-		SensorPSLine* line = new SensorPSLine(procs[i]);
+		KSGRD::SensorPSLine* line = new KSGRD::SensorPSLine(procs[i]);
 		if (line->numberOfTokens() != (uint) columns())
 		{
 #if 0
@@ -276,9 +271,8 @@ ProcessList::update(const QString& list)
 			for (uint j = 0; j < line->numberOfTokens(); j++)
 				l += (*line)[j] + "|";
 			kdDebug() << "Incomplete ps line:" << l << endl;
-			setSensorOk(false);
 #endif
-			return (FALSE);
+			return (false);
 		}
 		else
 			pl.append(line);
@@ -307,7 +301,7 @@ ProcessList::update(const QString& list)
 
 	triggerUpdate();
 
-	return (TRUE);
+	return (true);
 }
 
 void
@@ -316,7 +310,7 @@ ProcessList::setTreeView(bool tv)
 	if (treeViewEnabled = tv)
 	{
 		savedWidth[0] = columnWidth(0);
-		openAll = TRUE;
+		openAll = true;
 	}
 	else
 	{
@@ -328,21 +322,6 @@ ProcessList::setTreeView(bool tv)
 	/* In tree view mode borders are added to the icons. So we have to clear
 	 * the cache when we change the tree view mode. */
 	iconCache.clear();
-}
-
-void
-ProcessList::setSensorOk(bool ok)
-{
-	if (ok != sensorOk)
-	{
-		sensorOk = ok;
-		if (columns() == 0)
-			QListView::addColumn(QString::null);
-		if (sensorOk)
-			setColumnText(0, QIconSet(), columnText(0));
-		else
-			setColumnText(0, errorIcon, columnText(0));
-	}
 }
 
 bool
@@ -403,7 +382,7 @@ ProcessList::sortingChanged(int col)
 }
 
 bool
-ProcessList::matchesFilter(SensorPSLine* p) const
+ProcessList::matchesFilter(KSGRD::SensorPSLine* p) const
 {
 	// This mechanism is likely to change in the future!
 
@@ -431,7 +410,7 @@ ProcessList::buildList()
 	 * filter and append it to QListView widget if so. */
 	while (!pl.isEmpty())
 	{
-		SensorPSLine* p = pl.first();
+		KSGRD::SensorPSLine* p = pl.first();
 
 		if (matchesFilter(p))
 		{
@@ -452,7 +431,7 @@ ProcessList::buildTree()
 	// remove all leaves that do not match the filter
 	deleteLeaves();
 
-	SensorPSLine* ps = pl.first();
+	KSGRD::SensorPSLine* ps = pl.first();
 
 	while (ps)
 	{
@@ -467,7 +446,7 @@ ProcessList::buildTree()
 			pl.remove();
 
 			if (selectedPIds.findIndex(pid) != -1)
-				pli->setSelected(TRUE);
+				pli->setSelected(true);
 
 			// insert all child processes of current process
 			extendTree(&pl, pli, pid);
@@ -506,9 +485,9 @@ ProcessList::isLeafProcess(int pid)
 }
 
 void
-ProcessList::extendTree(QPtrList<SensorPSLine>* pl, ProcessLVI* parent, int ppid)
+ProcessList::extendTree(QPtrList<KSGRD::SensorPSLine>* pl, ProcessLVI* parent, int ppid)
 {
-	SensorPSLine* ps;
+	KSGRD::SensorPSLine* ps;
 
 	// start at top list
 	ps = pl->first();
@@ -527,9 +506,9 @@ ProcessList::extendTree(QPtrList<SensorPSLine>* pl, ProcessLVI* parent, int ppid
 
 			if (ps->getPPid() != INIT_PID &&
 				 closedSubTrees.findIndex(ps->getPPid()) != -1)
-				setOpen(parent, FALSE);
+				setOpen(parent, false);
 			else
-				setOpen(parent, TRUE);
+				setOpen(parent, true);
 
 			// remove the process from the process list, ps is now invalid
 			int pid = ps->getPid();
@@ -551,7 +530,7 @@ ProcessList::extendTree(QPtrList<SensorPSLine>* pl, ProcessLVI* parent, int ppid
 	}
 }
 void
-ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
+ProcessList::addProcess(KSGRD::SensorPSLine* p, ProcessLVI* pli)
 {
 	QString name = p->getName();
 	if (aliases[name])
@@ -588,7 +567,7 @@ ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 		{
 			icon.fill();
 			bitBlt(&icon, 4, 0, &pix, 0, 0, pix.width(), pix.height());
-			QBitmap mask(24, 16, TRUE);
+			QBitmap mask(24, 16, true);
 			bitBlt(&mask, 4, 0, pix.mask(), 0, 0, pix.width(), pix.height());
 			icon.setMask(mask);
 			pix = icon;
@@ -637,7 +616,7 @@ ProcessList::updateMetaInfo(void)
 	{
 		if (treeViewEnabled)
 			closedSubTrees.clear();
-		openAll = FALSE;
+		openAll = false;
 	}
 }
 
@@ -731,6 +710,11 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 	 * processPM->exec(). */
 	int currentPId = lvi->text(1).toInt();
 
+	int currentNiceValue;
+	for (int i = 0; i < columns(); ++i)
+		if (QString::compare(header()->label(i), i18n("Nice")) == 0)
+			currentNiceValue = lvi->text(i).toInt();
+
 	processPM = new QPopupMenu();
 	processPM->insertItem(i18n("Hide column"), 5);
 	QPopupMenu* hiddenPM = new QPopupMenu(processPM);
@@ -775,6 +759,14 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 		processPM->insertItem(i18n("Send Signal"), signalPM);
 	}
 
+	/* differ between killSupported and reniceSupported in a future
+	 * version. */
+	if (killSupported && lvi->isSelected())
+	{
+		processPM->insertSeparator();
+		processPM->insertItem(i18n("Renice process"), 100);
+	}
+
 	int id;
 	switch (id = processPM->exec(p))
 	{
@@ -793,6 +785,18 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 		savedWidth[col] = columnWidth(col);
 		setColumnWidth(col, 0);
 		setModified(true);
+		break;
+	case 100:
+		{
+		ReniceDlg *reniceDlg = new ReniceDlg(this, "reniceDlg", currentNiceValue, currentPId);
+		Q_CHECK_PTR(reniceDlg);
+
+		int reniceVal;
+		if ((reniceVal = reniceDlg->exec()) != 40)
+			emit reniceProcess(currentPId, reniceVal);
+
+		delete reniceDlg;
+		}
 		break;
 	default:
 		/* IDs < 100 are used for signals. */

@@ -6,9 +6,18 @@ case "$host" in
   *-*-solaris*) ksysguardd_compile=yes; UNAME='Solaris' ;;
   *) ksysguard_compile=no; UNAME='' ;;
 esac
+
 AC_MSG_RESULT($ksysguardd_compile)
 AC_SUBST(UNAME)
 
 AC_CHECK_LIB(sensors, sensors_init, [LIBSENSORS="-lsensors"])
 AC_SUBST(LIBSENSORS)
+
+case "$UNAME" in
+	Linux) LIBHOSTS="$LIBSENSORS" ;;
+	FreeBSD) LIBHOSTS="$LIBSENSORS -lkvm" ;;
+	Solaris) LIBHOSTS="$LIBSENSORS -lkstat -lsocket" ;;
+esac
+AC_SUBST(LIBHOSTS)
+
 AC_CHECK_HEADERS(sensors/sensors.h)

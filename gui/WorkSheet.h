@@ -25,8 +25,10 @@
 #ifndef _WorkSheet_h_
 #define _WorkSheet_h_
 
-#include <qwidget.h>
 #include <qvaluelist.h>
+#include <qwidget.h>
+
+#include <ksgrd/SensorDisplay.h>
 
 class QGridLayout;
 class QDragEnterEvent;
@@ -34,7 +36,6 @@ class QDropEvent;
 class QString;
 class QDomElement;
 class QTextStream;
-class SensorDisplay;
 
 /**
  * A WorkSheet contains the displays to visualize the sensor results. When
@@ -43,7 +44,7 @@ class SensorDisplay;
  * layout. The number of columns can not be changed. Displays are added by
  * dragging a sensor from the sensor browser over the WorkSheet.
  */
-class WorkSheet : public QWidget
+class WorkSheet : public QWidget, public KSGRD::SensorBoard
 {
 	Q_OBJECT
 public:
@@ -74,16 +75,14 @@ public:
 		return modified;
 	}
 
-	SensorDisplay* addDisplay(const QString& hostname,
+	KSGRD::SensorDisplay* addDisplay(const QString& hostname,
 							  const QString& monitor,
 							  const QString& sensorType,
 							  const QString& sensorDescr, uint r, uint c);
 	void settings();
 
-	uint updateInterval;
-
 public slots:
-	void showPopupMenu(SensorDisplay* display);
+	void showPopupMenu(KSGRD::SensorDisplay* display);
 	void setModified(bool mfd);
 	void applyStyle();
 
@@ -96,11 +95,11 @@ protected:
 	void customEvent(QCustomEvent* ev);
 
 private:
-	void removeDisplay(SensorDisplay* display);
+	void removeDisplay(KSGRD::SensorDisplay* display);
 
 	bool replaceDisplay(uint r, uint c, QDomElement& element);
 
-	void replaceDisplay(uint r, uint c, SensorDisplay* display = 0);
+	void replaceDisplay(uint r, uint c, KSGRD::SensorDisplay* display = 0);
 
 	void collectHosts(QValueList<QString>& l);
 
@@ -108,7 +107,7 @@ private:
 
 	void resizeGrid(uint r, uint c);
 
-	SensorDisplay* currentDisplay(uint* r = 0, uint* c = 0);
+	KSGRD::SensorDisplay* currentDisplay(uint* r = 0, uint* c = 0);
 
 	void fixTabOrder();
 
@@ -122,7 +121,7 @@ private:
 	/* This two dimensional array stores the pointers to the sensor displays
 	 * or if no sensor is present at a position a pointer to a dummy widget.
 	 * The size of the array corresponds to the size of the grid layout. */
-	SensorDisplay*** displays;
+	KSGRD::SensorDisplay*** displays;
 } ;
 
 #endif

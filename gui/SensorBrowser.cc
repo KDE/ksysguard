@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
 
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
 
@@ -28,20 +28,21 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 
+#include <kdebug.h>
+#include <kiconloader.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kiconloader.h>
-#include <kdebug.h>
+
+#include <ksgrd/SensorManager.h>
 
 #include "SensorBrowser.h"
-#include "SensorManager.h"
 #include "SensorBrowser.moc"
 
-SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
+SensorBrowser::SensorBrowser(QWidget* parent, KSGRD::SensorManager* sm,
 							 const char* name) :
 	QListView(parent, name), sensorManager(sm)
 {
-	hostInfos.setAutoDelete(TRUE);
+	hostInfos.setAutoDelete(true);
 
 	connect(sm, SIGNAL(update(void)), this, SLOT(update(void)));
 	connect(this, SIGNAL(selectionChanged(QListViewItem*)),
@@ -51,7 +52,7 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	addColumn(i18n("Sensor Type"));
 	QToolTip::add(this, i18n("Drag sensors to empty cells of a work sheet "
 							 "or the panel applet."));
-	setRootIsDecorated(TRUE);
+	setRootIsDecorated(true);
 
 	icons = new KIconLoader();
 	Q_CHECK_PTR(icons);
@@ -84,7 +85,7 @@ SensorBrowser::disconnect()
 		{
 			kdDebug() << "Disconnecting " <<  (*it)->getHostName().ascii()
 					  << endl;
-			SensorMgr->disengage((*it)->getSensorAgent());
+			KSGRD::SensorMgr->disengage((*it)->getSensorAgent());
 		}
 }
 
@@ -99,12 +100,12 @@ SensorBrowser::update()
 {
 	static int id = 0;
 
-	SensorManagerIterator it(sensorManager);
+	KSGRD::SensorManagerIterator it(sensorManager);
 
 	hostInfos.clear();
 	clear();
 
-	SensorAgent* host;
+	KSGRD::SensorAgent* host;
 	for (int i = 0 ; (host = it.current()); ++it, ++i)
 	{
 		QString hostName = sensorManager->getHostName(host);
@@ -123,7 +124,7 @@ SensorBrowser::update()
 		host->sendRequest("monitors", this, id);
 		++id;
 	}
-	setMouseTracking(FALSE);
+	setMouseTracking(false);
 }
 
 void
@@ -157,13 +158,13 @@ SensorBrowser::answerReceived(int id, const QString& s)
 	if (!it.current())
 		return;
 
-	SensorTokenizer lines(s, '\n');
+	KSGRD::SensorTokenizer lines(s, '\n');
 
 	for (unsigned int i = 0; i < lines.numberOfTokens(); ++i)
 	{
 		if (lines[i].isEmpty())
 			break;
-		SensorTokenizer words(lines[i], '\t');
+		KSGRD::SensorTokenizer words(lines[i], '\t');
 
 		QString sensorName = words[0];
 		QString sensorType = words[1];
@@ -181,23 +182,23 @@ SensorBrowser::answerReceived(int id, const QString& s)
 		 * nodes through slashes in the sensor name. E. g. cpu/user is
 		 * the sensor user in the cpu node. There is no limit for the
 		 * depth of nodes. */
-		SensorTokenizer absolutePath(sensorName, '/');
+		KSGRD::SensorTokenizer absolutePath(sensorName, '/');
 
 		QListViewItem* parent = (*it)->getLVI();
 		for (unsigned int j = 0; j < absolutePath.numberOfTokens(); ++j)
 		{
 			// Localize the sensor name part by part.
 			QString name;
-			name = SensorMgr->trSensorPath(absolutePath[j]);
+			name = KSGRD::SensorMgr->trSensorPath(absolutePath[j]);
 
-			bool found = FALSE;
+			bool found = false;
 			QListViewItem* sibling = parent->firstChild();
 			while (sibling && !found)
 			{
 				if (sibling->text(0) == name)
 				{
 					// The node or sensor is already known.
-					found = TRUE;
+					found = true;
 				}
 				else
 					sibling = sibling->nextSibling();
@@ -212,7 +213,7 @@ SensorBrowser::answerReceived(int id, const QString& s)
 												  KIcon::Desktop,
 												  KIcon::SizeSmall);
 					lvi->setPixmap(0, pix);
-					lvi->setText(1, SensorMgr->trSensorType(sensorType));
+					lvi->setText(1, KSGRD::SensorMgr->trSensorType(sensorType));
 					// add sensor info to internal data structure
 					(*it)->addSensor(lvi, sensorName, name, sensorType);
 				}
@@ -233,7 +234,7 @@ SensorBrowser::answerReceived(int id, const QString& s)
 void
 SensorBrowser::viewportMouseMoveEvent(QMouseEvent* ev)
 {
-	/* setMouseTracking(FALSE) seems to be broken. With current Qt
+	/* setMouseTracking(false) seems to be broken. With current Qt
 	 * mouse tracking cannot be turned off. So we have to check each event
 	 * whether the LMB is really pressed. */
 

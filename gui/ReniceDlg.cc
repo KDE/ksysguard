@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
     
@@ -29,7 +29,7 @@
 
 ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 					 int pid)
-	: QDialog(parent, name, TRUE)
+	: QDialog(parent, name, true)
 {
 	setCaption(i18n("Renice Process"));
 
@@ -54,7 +54,7 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 	sldLay = new QHBoxLayout();
 	vLay->addLayout(sldLay);
 
-	slider = new QSlider(-20, 20, 1, 0, QSlider::Horizontal, this, "prio" );
+	slider = new QSlider(-20, 19, 1, 0, QSlider::Horizontal, this, "prio" );
 	slider->setMaximumSize(210, 25);
 	slider->setMinimumSize(210, 25);
 	slider->setTickmarks((QSlider::TickSetting) 2);

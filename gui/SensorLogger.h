@@ -15,6 +15,8 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	$Id$
 */
 
 #ifndef _SensorLogger_h
@@ -29,7 +31,7 @@
 #include <qspinbox.h>
 #include <qstring.h>
 
-#include <SensorDisplay.h>
+#include <ksgrd/SensorDisplay.h>
 
 #include "SensorLoggerDlg.h"
 
@@ -57,7 +59,7 @@ private:
 	QColor textColor;
 };	
 
-class LogSensor : public QObject, public SensorClient
+class LogSensor : public QObject, public KSGRD::SensorClient
 {
 	Q_OBJECT
 public:
@@ -138,7 +140,7 @@ private:
 	double upperLimit;
 };
 
-class SensorLogger : public SensorDisplay
+class SensorLogger : public KSGRD::SensorDisplay
 {
 	Q_OBJECT
 public:
@@ -153,14 +155,14 @@ public:
 	void answerReceived(int id, const QString& answer);
 	void resizeEvent(QResizeEvent*);
 
-	bool createFromDOM(QDomElement& domEl);
-	bool addToDOM(QDomDocument& doc, QDomElement& display, bool save = true);
+	bool createFromDOM(QDomElement& element);
+	bool addToDOM(QDomDocument& doc, QDomElement& element, bool save = true);
 
 	void settings(void);
 
 	virtual bool hasSettingsDialog() const
 	{
-		return (TRUE);
+		return (true);
 	}
 
 public slots:
@@ -174,7 +176,6 @@ protected:
 
 private:
 	QListView* monitor;
-	QString title;
 
 	QPtrList<LogSensor> logSensors;
 

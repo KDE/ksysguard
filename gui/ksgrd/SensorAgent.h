@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
@@ -28,6 +28,9 @@
 class KProcess;
 class KShellProcess;
 class QString;
+
+namespace KSGRD {
+
 class SensorClient;
 class SensorManager;
 
@@ -108,6 +111,7 @@ private:
 	QPtrList<SensorRequest> processingFIFO;
 	QString answerBuffer;
 	QString errorBuffer;
+};
 };
 	
 #endif

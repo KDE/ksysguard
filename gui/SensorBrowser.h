@@ -25,15 +25,15 @@
 #ifndef _SensorBrowser_h_
 #define _SensorBrowser_h_
 
-#include <qlistview.h>
 #include <qdict.h>
+#include <qlistview.h>
 
-#include "SensorClient.h"
+#include <ksgrd/SensorClient.h>
 
 class QMouseEvent;
 class KIconLoader;
-class SensorManager;
-class SensorAgent;
+class KSGRD::SensorManager;
+class KSGRD::SensorAgent;
 
 /**
  * The SensorBrowser is the graphical front-end of the SensorManager. It
@@ -84,11 +84,11 @@ private:
 class HostInfo
 {
 public:
-	HostInfo(int i, const SensorAgent* a, const QString& n,
+	HostInfo(int i, const KSGRD::SensorAgent* a, const QString& n,
 			 QListViewItem* l) :
 		id(i), sensorAgent(a), hostName(n), lvi(l)
 	{
-		sensors.setAutoDelete(TRUE);
+		sensors.setAutoDelete(true);
 	}
 	~HostInfo() { }
 
@@ -97,7 +97,7 @@ public:
 		return (id);
 	}
 
-	const SensorAgent* getSensorAgent() const
+	const KSGRD::SensorAgent* getSensorAgent() const
 	{
 		return (sensorAgent);
 	}
@@ -181,7 +181,7 @@ private:
 	// unique ID, used for sendRequests/answerReceived 
 	int id;
 
-	const SensorAgent* sensorAgent;
+	const KSGRD::SensorAgent* sensorAgent;
 
 	const QString hostName;
 	/// pointer to the entry in the browser QListView
@@ -194,12 +194,12 @@ private:
  * The SensorBrowser is the graphical front-end of the SensorManager. It
  * displays the currently available hosts and their sensors.
  */
-class SensorBrowser : public QListView, public SensorClient
+class SensorBrowser : public QListView, public KSGRD::SensorClient
 {
 	Q_OBJECT
 
 public:
-	SensorBrowser(QWidget* parent, SensorManager* sm, const char* name);
+	SensorBrowser(QWidget* parent, KSGRD::SensorManager* sm, const char* name);
 	~SensorBrowser();
 
 	QStringList listHosts();
@@ -217,7 +217,7 @@ protected:
 private:
 	void answerReceived(int id, const QString& s);
 
-	SensorManager* sensorManager;
+	KSGRD::SensorManager* sensorManager;
 
 	QPtrList<HostInfo> hostInfos;
 

@@ -25,17 +25,18 @@
 #ifndef _ProcessController_h_
 #define _ProcessController_h_
 
-#include <qwidget.h>
 #include <qcheckbox.h>
-#include <qpushbutton.h>
 #include <qcombobox.h>
+#include <qdict.h>
 #include <qgroupbox.h>
 #include <qlayout.h>
-#include <qdict.h>
+#include <qpushbutton.h>
+#include <qwidget.h>
 
 #include <kapp.h>
 
-#include "SensorDisplay.h"
+#include <ksgrd/SensorDisplay.h>
+
 #include "ProcessList.h"
 
 extern KApplication* Kapp;
@@ -47,7 +48,7 @@ extern KApplication* Kapp;
  * update rate and the process filter.  The buttons are used to force
  * an immediate update and to kill a process.
  */
-class ProcessController : public SensorDisplay
+class ProcessController : public KSGRD::SensorDisplay
 {
 	Q_OBJECT
 
@@ -62,9 +63,9 @@ public:
 		pList->clearSelection();
 	}
 
-	bool createFromDOM(QDomElement& el);
+	bool createFromDOM(QDomElement& element);
 
-	bool addToDOM(QDomDocument& doc, QDomElement& display, bool save = true);
+	bool addToDOM(QDomDocument& doc, QDomElement& element, bool save = true);
 
 	void refreshList(void)
 	{
@@ -86,7 +87,7 @@ public:
 
 	virtual bool hasSettingsDialog() const
 	{
-		return (TRUE);
+		return (true);
 	}
 
 public slots:
@@ -117,6 +118,8 @@ public slots:
 
 	void killProcess();
 	void killProcess(int pid, int sig);
+
+	void reniceProcess(int pid, int niceValue);
 
 	void updateList();
 

@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -22,15 +22,16 @@
 	$Id$
 */
 
+#include <qbuttongroup.h>
 #include <qcheckbox.h>
 #include <qdom.h>
 #include <qimage.h>
 #include <qlineedit.h>
 #include <qlistview.h>
+#include <qpushbutton.h>
+#include <qradiobutton.h>
 #include <qspinbox.h>
 #include <qtooltip.h>
-#include <qradiobutton.h>
-#include <qbuttongroup.h>
 
 #include <kcolordialog.h>
 #include <kdebug.h>
@@ -38,21 +39,18 @@
 #include <kmessagebox.h>
 #include <knumvalidator.h>
 
-#include "ColorPicker.h"
+#include <ksgrd/ColorPicker.h>
+#include <ksgrd/SensorManager.h>
+#include <ksgrd/StyleEngine.h>
+
 #include "FancyPlotter.moc"
 #include "FancyPlotterSettings.h"
-#include "SensorManager.h"
-#include "StyleEngine.h"
-#include <qpushbutton.h>
 
 FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 						   const QString& title, double, double,
 						   bool nf)
-	: SensorDisplay(parent, name)
+	: KSGRD::SensorDisplay(parent, name, title)
 {
-	if (!title.isEmpty())
-		frame->setTitle(title);
-
 	beams = 0;
 	noFrame = nf;
 
@@ -85,7 +83,7 @@ FancyPlotter::settings()
 {
 	fps = new FancyPlotterSettings(this, "FancyPlotterSettings", true);
 	Q_CHECK_PTR(fps);
-	fps->title->setText(frame->title());
+	fps->title->setText(title());
 	fps->title->setFocus();
 	fps->autoRange->setChecked(plotter->autoRange);
 	fps->minVal->setText(QString("%1").arg(plotter->getMin()));
@@ -132,8 +130,8 @@ FancyPlotter::settings()
 			fps->sensorList,
 			QString("%1").arg(i + 1),
 			sensors.at(i)->hostName,
-			SensorMgr->translateSensor(sensors.at(i)->name),
-			SensorMgr->translateUnit(sensors.at(i)->unit), status);
+			KSGRD::SensorMgr->translateSensor(sensors.at(i)->name),
+			KSGRD::SensorMgr->translateUnit(sensors.at(i)->unit), status);
 		QPixmap pm(12, 12);
 		pm.fill(plotter->beamColor[i]);
 		lvi->setPixmap(2, pm);
@@ -160,8 +158,8 @@ FancyPlotter::settings()
 void
 FancyPlotter::applySettings()
 {
-	frame->setTitle(fps->title->text());
-	plotter->setTitle(fps->title->text());
+	title(fps->title->text());
+	plotter->setTitle(title());
 	if (fps->autoRange->isChecked())
 		plotter->autoRange = true;
 	else {
@@ -342,37 +340,15 @@ FancyPlotter::settingsSelectionChanged(QListViewItem* lvi)
 void
 FancyPlotter::applyStyle()
 {
-	plotter->vColor = Style->getFgColor1();
-	plotter->hColor = Style->getFgColor2();
-	plotter->bColor = Style->getBackgroundColor();
-	plotter->fontSize = Style->getFontSize();
+	plotter->vColor = KSGRD::Style->getFgColor1();
+	plotter->hColor = KSGRD::Style->getFgColor2();
+	plotter->bColor = KSGRD::Style->getBackgroundColor();
+	plotter->fontSize = KSGRD::Style->getFontSize();
 	for (uint i = 0; i < plotter->beamColor.count() &&
-			 i < Style->getSensorColorCount(); ++i)
-		plotter->beamColor[i] = Style->getSensorColor(i);
+			 i < KSGRD::Style->getSensorColorCount(); ++i)
+		plotter->beamColor[i] = KSGRD::Style->getSensorColor(i);
 	plotter->update();
 	setModified(true);
-}
-
-void
-FancyPlotter::sensorError(int sensorId, bool err)
-{
-	if ((uint) sensorId >= beams || sensorId < 0)
-		return;
-
-	if (err == sensors.at(sensorId)->ok)
-	{
-		// this happens only when the sensorOk status needs to be changed.
-		sensors.at(sensorId)->ok = !err;
-
-		bool ok = true;
-		for (uint i = 0; i < beams; ++i)
-			if (!sensors.at(i)->ok)
-			{
-				ok = false;
-				break;
-			}
-		plotter->setSensorOk(ok);
-	}
 }
 
 bool
@@ -380,7 +356,7 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 					const QString& sensorType, const QString& title)
 {
 	return (addSensor(hostName, sensorName, sensorType, title,
-					  Style->getSensorColor(beams)));
+					  KSGRD::Style->getSensorColor(beams)));
 }
 
 bool
@@ -412,19 +388,16 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 
 	++beams;
 
-	if (noFrame)
+	QString tooltip;
+	for (uint i = 0; i < beams; ++i)
 	{
-		QString tooltip;
-		for (uint i = 0; i < beams; ++i)
-		{
-			if (i == 0)
-				tooltip += QString("%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
-			else
-				tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
-		}
-		QToolTip::remove(plotter);
-		QToolTip::add(plotter, tooltip);
+		if (i == 0)
+			tooltip += QString("%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+		else
+			tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
 	}
+	QToolTip::remove(plotter);
+	QToolTip::add(plotter, tooltip);
 
 	return (true);
 }
@@ -441,21 +414,18 @@ FancyPlotter::removeSensor(uint idx)
 
 	plotter->removeBeam(idx);
 	beams--;
-	SensorDisplay::removeSensor(idx);
+	KSGRD::SensorDisplay::removeSensor(idx);
 
-	if (noFrame)
+	QString tooltip;
+	for (uint i = 0; i < beams; ++i)
 	{
-		QString tooltip;
-		for (uint i = 0; i < beams; ++i)
-		{
-			if (i == 0)
-				tooltip += QString("%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
-			else
-				tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
-		}
-		QToolTip::remove(plotter);
-		QToolTip::add(plotter, tooltip);
+		if (i == 0)
+			tooltip += QString("%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+		else
+			tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
 	}
+	QToolTip::remove(plotter);
+	QToolTip::add(plotter, tooltip);
 
 	return (true);
 }
@@ -502,7 +472,7 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 	}
 	else if (id >= 100)
 	{
-		SensorFloatInfo info(answer);
+		KSGRD::SensorFloatInfo info(answer);
 		if (plotter->autoRange)
 		{
 			/* We only use this information from the sensor when the
@@ -518,13 +488,6 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 bool
 FancyPlotter::createFromDOM(QDomElement& element)
 {
-	QString title = element.attribute("title");
-	if (!title.isEmpty())
-	{
-		frame->setTitle(title);
-		plotter->setTitle(title);
-	}
-
 	if (element.attribute("autoRange").toInt())
 		plotter->autoRange = true;
 	else {
@@ -535,34 +498,37 @@ FancyPlotter::createFromDOM(QDomElement& element)
 
 	plotter->vLines = element.attribute("vLines", "1").toUInt();
 	plotter->vColor = restoreColorFromDOM(element, "vColor",
-										  Style->getFgColor1());
+						KSGRD::Style->getFgColor1());
 	plotter->vDistance = element.attribute("vDistance", "30").toUInt();
 	plotter->vScroll = element.attribute("vScroll", "1").toUInt();
-
 	plotter->graphStyle = element.attribute("graphStyle", "1").toUInt();
 	plotter->hScale = element.attribute("hScale", "5").toUInt();
 
 	plotter->hLines = element.attribute("hLines", "1").toUInt();
 	plotter->hColor = restoreColorFromDOM(element, "hColor",
-										  Style->getFgColor2());
+						KSGRD::Style->getFgColor2());
 	plotter->hCount = element.attribute("hCount", "5").toUInt();
 
 	plotter->labels = element.attribute("labels", "1").toUInt();
 	plotter->topBar = element.attribute("topBar", "0").toUInt();
 	plotter->fontSize = element.attribute(
-		"fontSize", QString("%1").arg(Style->getFontSize())).toUInt();
+		"fontSize", QString("%1").arg(KSGRD::Style->getFontSize())).toUInt();
 
 	plotter->bColor = restoreColorFromDOM(element, "bColor",
-										  Style->getBackgroundColor());
+					  KSGRD::Style->getBackgroundColor());
 
 	QDomNodeList dnList = element.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)
 	{
 		QDomElement el = dnList.item(i).toElement();
-		addSensor(el.attribute("hostName"), el.attribute("sensorName"), (el.attribute("sensorType").isEmpty() ? "integer" : el.attribute("sensorType")), "", restoreColorFromDOM(el, "color", Style->getSensorColor(i)));
+		addSensor(el.attribute("hostName"), el.attribute("sensorName"), (el.attribute("sensorType").isEmpty() ? "integer" : el.attribute("sensorType")), "", restoreColorFromDOM(el, "color", KSGRD::Style->getSensorColor(i)));
 	}
 
 	internCreateFromDOM(element);
+
+	if (!title().isEmpty())
+		plotter->setTitle(title());
+
 
 	setModified(false);
 
@@ -572,7 +538,6 @@ FancyPlotter::createFromDOM(QDomElement& element)
 bool
 FancyPlotter::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 {
-	element.setAttribute("title", frame->title());
 	element.setAttribute("min", plotter->getMin());
 	element.setAttribute("max", plotter->getMax());
 	element.setAttribute("autoRange", plotter->autoRange);

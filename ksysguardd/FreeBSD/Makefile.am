@@ -1,10 +1,7 @@
 CFLAGS = -Wall $(CONFIGFLAGS)
-KSYSGUARDDRCFILE=@sysconfdir@/ksysguarddrc
 
 INCLUDES = -DKSYSGUARDDRCFILE="\"$(KSYSGUARDDRCFILE)\"" -I$(srcdir)/../../CContLib -I$(srcdir)/../..
 
-bin_PROGRAMS = ksysguardd
-
-ksysguardd_SOURCES = CPU.c Command.c Memory.c ProcessList.c apm.c diskstat.c \
-	ksysguardd.c loadavg.c logfile.c netdev.c conf.c
-ksysguardd_LDADD = -L../../CContLib -lccont -lkvm
+lib_LIBRARIES = libksysguardd.a
+libksysguardd_a_SOURCES = CPU.c Memory.c ProcessList.c apm.c diskstat.c \
+	loadavg.c logfile.c netdev.c

@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -21,22 +21,27 @@
 
 	$Id$
 */
-
-#include <qradiobutton.h>
+#include <qcombobox.h>
+#include <qlabel.h>
 #include <qpushbutton.h>
+#include <qradiobutton.h>
 #include <qspinbox.h>
 
-#include <klocale.h>
+#include <kapplication.h>
 #include <kdebug.h>
+#include <klocale.h>
 
-#include "ksysguard.h"
 #include "SensorManager.h"
+#include "SensorManager.moc"
 #include "HostConnector.h"
+
 #include "SensorShellAgent.h"
 #include "SensorSocketAgent.h"
-#include "SensorManager.moc"
 
-SensorManager* SensorMgr;
+
+using namespace KSGRD;
+
+SensorManager* KSGRD::SensorMgr;
 
 SensorManager::SensorManager()
 {

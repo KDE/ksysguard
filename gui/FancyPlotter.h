@@ -25,19 +25,20 @@
 #ifndef _FancyPlotter_h_
 #define _FancyPlotter_h_
 
+#include <qgroupbox.h>
 #include <qlabel.h>
 #include <qsize.h>
-#include <qgroupbox.h>
 
 #include <kdialogbase.h>
 
-#include "SensorDisplay.h"
+#include <ksgrd/SensorDisplay.h>
+
 #include "SignalPlotter.h"
 
 class QListViewItem;
 class FancyPlotterSettings;
 
-class FPSensorProperties : public SensorProperties
+class FPSensorProperties : public KSGRD::SensorProperties
 {
 public:
 	FPSensorProperties() { }
@@ -49,7 +50,7 @@ public:
 	QColor color;
 } ;
 
-class FancyPlotter : public SensorDisplay
+class FancyPlotter : public KSGRD::SensorDisplay
 {
 	Q_OBJECT
 
@@ -71,24 +72,22 @@ public:
 
 	virtual void answerReceived(int id, const QString& s);
 
-	virtual bool createFromDOM(QDomElement& el);
-	virtual bool addToDOM(QDomDocument& doc, QDomElement& display,
+	virtual bool createFromDOM(QDomElement& element);
+	virtual bool addToDOM(QDomDocument& doc, QDomElement& element,
 						  bool save = true);
 
 	virtual bool hasSettingsDialog() const
 	{
-		return (TRUE);
+		return (true);
 	}
-
-	virtual void sensorError(int sensorID, bool err);
 
 public slots:
 	void applySettings();
 	void settingsSetColor();
 	void settingsDelete();
 	void settingsSelectionChanged(QListViewItem*);
- void settingsMoveUp();
- void settingsMoveDown();
+	void settingsMoveUp();
+	void settingsMoveDown();
 	virtual void applyStyle();
 
 protected:

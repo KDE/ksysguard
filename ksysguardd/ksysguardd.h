@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
-	   
-    Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
+   
+	Copyright (c) 1999-2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -15,20 +15,20 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	$Id$
 */
 
-#include "ccont.h"
+#ifndef _ksysguardd_h_
+#define _ksysguardd_h_
 
-#ifndef _conf_h_
-#define _conf_h_
+#include <stdio.h>
 
-typedef struct {
-	char *name;
-	char *path;
-} ConfigLogFile;
+extern int QuitApp;
+extern int RunAsDaemon;
+extern FILE* CurrentClient;
 
-void parseConfigFile(const char *filename);
-
-int sensorAvailable(const char* sensor);
+/* called every 2 seconds, so the sensors can update their values */
+void updateModules(void);
 
 #endif

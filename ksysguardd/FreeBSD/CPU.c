@@ -49,7 +49,7 @@ long cp_diff[CPUSTATES];
 int cpu_states[CPUSTATES];
 
 void
-initCPU(void)
+initCpuInfo(void)
 {
 	/* Total CPU load */
 	registerMonitor("cpu/user", "integer", printCPUUser,
@@ -64,17 +64,17 @@ initCPU(void)
 	kvm_nlist(kd, my_nlist);
 	cp_time_offset = my_nlist[0].n_value;
 
-	updateCPU();
+	updateCpuInfo();
 }
 
 void
-exitCPU(void)
+exitCpuInfo(void)
 {
 	kvm_close(kd);
 }
 
 int
-updateCPU(void)
+updateCpuInfo(void)
 {
         kvm_read(kd, cp_time_offset, (char *)cp_time, sizeof(cp_time));
         percentages(CPUSTATES, cpu_states, cp_time, cp_old, cp_diff);

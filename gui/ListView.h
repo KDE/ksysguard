@@ -18,6 +18,8 @@
 
 	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
 	not commit any changes without consulting me first. Thanks!
+
+	$Id$
 */
 
 #ifndef _ListView_h_
@@ -26,7 +28,7 @@
 #include <qlistview.h>
 #include <qpainter.h>
 
-#include <SensorDisplay.h>
+#include <ksgrd/SensorDisplay.h>
 
 typedef const char* (*KeyFunc)(const char*);
 
@@ -69,7 +71,7 @@ private:
 	QWidget *_parent;
 };	
 
-class ListView : public SensorDisplay
+class ListView : public KSGRD::SensorDisplay
 {
 	Q_OBJECT
 public:
@@ -82,12 +84,12 @@ public:
 	void resizeEvent(QResizeEvent*);
 	void updateList();
 
-	bool createFromDOM(QDomElement& domEl);
-	bool addToDOM(QDomDocument& doc, QDomElement& display, bool save = true);
+	bool createFromDOM(QDomElement& element);
+	bool addToDOM(QDomDocument& doc, QDomElement& element, bool save = true);
 
 	virtual bool hasSettingsDialog() const
 	{
-		return (TRUE);
+		return (true);
 	}
 
 	virtual void timerEvent(QTimerEvent*)
@@ -97,14 +99,11 @@ public:
 
 	void settings();
 
-	virtual void sensorError(bool err);
-
 public slots:
 	void applySettings();
 	void applyStyle();
 
 private:
-	QLabel* errorLabel;
 	PrivateListView* monitor;
 	ListViewSettings* lvs;
 

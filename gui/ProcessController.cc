@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -24,17 +24,17 @@
 
 #include <assert.h>
 
-
+#include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kdebug.h>
 
-#include "SignalIDs.h"
-#include "SensorManager.h"
+#include <ksgrd/SensorManager.h>
+
 #include "ProcessController.moc"
+#include "SignalIDs.h"
 
 ProcessController::ProcessController(QWidget* parent, const char* name)
-	: SensorDisplay(parent, name)
+	: KSGRD::SensorDisplay(parent, name)
 {
 	dict.setAutoDelete(true);
 	dict.insert("Name", new QString(i18n("Name")));
@@ -56,6 +56,8 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	Q_CHECK_PTR(pList);
 	connect(pList, SIGNAL(killProcess(int, int)),
 			this, SLOT(killProcess(int, int)));
+	connect(pList, SIGNAL(reniceProcess(int, int)),
+			this, SLOT(reniceProcess(int, int)));
 	connect(pList, SIGNAL(listModified(bool)),
 			this, SLOT(setModified(bool)));
 
@@ -140,7 +142,7 @@ ProcessController::addSensor(const QString& hostName,
 	if (sensorType != "table")
 		return (false);
 
-	registerSensor(new SensorProperties(hostName, sensorName, sensorType, title));
+	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 	/* This just triggers the first communication. The full set of
 	 * requests are send whenever the sensor reconnects (detected in
 	 * sensorError(). */
@@ -201,6 +203,13 @@ ProcessController::killProcess()
 }
 
 void
+ProcessController::reniceProcess(int pid, int niceValue)
+{
+	sendRequest(sensors.at(0)->hostName,
+				QString("setpriority %1 %2" ).arg(pid).arg(niceValue), 5);
+}
+
+void
 ProcessController::answerReceived(int id, const QString& answer)
 {
 	/* We received something, so the sensor is probably ok. */
@@ -212,7 +221,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 	{
 		/* We have received the answer to a ps? command that contains
 		 * the information about the table headers. */
-		SensorTokenizer lines(answer, '\n');
+		KSGRD::SensorTokenizer lines(answer, '\n');
 		if (lines.numberOfTokens() != 2)
 		{
 			kdDebug () << "ProcessController::answerReceived(1)"
@@ -220,9 +229,9 @@ ProcessController::answerReceived(int id, const QString& answer)
 			sensorError(id, true);
 			return;
 		}
-		SensorTokenizer headers(lines[0], '\t');
-		SensorTokenizer colTypes(lines[1], '\t');
-		
+		KSGRD::SensorTokenizer headers(lines[0], '\t');
+		KSGRD::SensorTokenizer colTypes(lines[1], '\t');
+
 		pList->removeColumns();
 		for (unsigned int i = 0; i < headers.numberOfTokens(); i++)
 		{
@@ -245,28 +254,28 @@ ProcessController::answerReceived(int id, const QString& answer)
 	{
 		// result of kill operation
 		kdDebug() << answer << endl;
-		SensorTokenizer vals(answer, '\t');
+		KSGRD::SensorTokenizer vals(answer, '\t');
 		switch (vals[0].toInt())
 		{
 		case 0:	// successfull kill operation
 			break;
 		case 1:	// unknown error
-			SensorMgr->notify(
+			KSGRD::SensorMgr->notify(
 				QString(i18n("Error while attempting to kill process %1!"))
 				.arg(vals[1]));
 			break;
 		case 2:
-			SensorMgr->notify(
+			KSGRD::SensorMgr->notify(
 				QString(i18n("Insufficient permissions to kill "
 							 "process %1!")).arg(vals[1]));
 			break;
 		case 3:
-			SensorMgr->notify(
+			KSGRD::SensorMgr->notify(
 				QString(i18n("Process %1 has already disappeared!"))
 				.arg(vals[1]));
 			break;
 		case 4:
-			SensorMgr->notify(i18n("Invalid Signal!"));
+			KSGRD::SensorMgr->notify(i18n("Invalid Signal!"));
 			break;
 		}
 		break;
@@ -276,6 +285,36 @@ ProcessController::answerReceived(int id, const QString& answer)
 		pList->setKillSupported(killSupported);
 		bKill->setEnabled(killSupported);
 		break;
+	case 5:
+	{
+		// result of renice operation
+		kdDebug() << answer << endl;
+		KSGRD::SensorTokenizer vals(answer, '\t');
+		switch (vals[0].toInt())
+		{
+		case 0:	// successfull renice operation
+			break;
+		case 1:	// unknown error
+			KSGRD::SensorMgr->notify(
+				QString(i18n("Error while attempting to renice process %1!"))
+				.arg(vals[1]));
+			break;
+		case 2:
+			KSGRD::SensorMgr->notify(
+				QString(i18n("Insufficient permissions to renice "
+							 "process %1!")).arg(vals[1]));
+			break;
+		case 3:
+			KSGRD::SensorMgr->notify(
+				QString(i18n("Process %1 has already disappeared!"))
+				.arg(vals[1]));
+			break;
+		case 4:
+			KSGRD::SensorMgr->notify(i18n("Invalid argument!"));
+			break;
+		}
+		break;
+	}
 	}
 }
 
@@ -297,7 +336,7 @@ ProcessController::sensorError(int, bool err)
 		/* This happens only when the sensorOk status needs to be changed. */
 		sensors.at(0)->ok = !err;
 	}
-	pList->setSensorOk(sensors.at(0)->ok);
+	setSensorOk(sensors.at(0)->ok);
 }
 
 bool

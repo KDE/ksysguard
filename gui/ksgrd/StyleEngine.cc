@@ -22,6 +22,8 @@
 	$Id$
 */
 
+#include <qpushbutton.h>
+
 #include "qspinbox.h"
 #include "qimage.h"
 
@@ -30,11 +32,12 @@
 #include "kcolordialog.h"
 
 #include "ColorPicker.h"
-#include "StyleSettings.h"
-#include <qpushbutton.h>
 #include "StyleEngine.moc"
+#include "StyleSettings.h"
 
-StyleEngine* Style;
+using namespace KSGRD;
+
+StyleEngine* KSGRD::Style;
 
 StyleEngine::StyleEngine()
 {

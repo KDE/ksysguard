@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
@@ -22,12 +22,12 @@
 	$Id$
 */
 
-#include <qlineedit.h>
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qlineedit.h>
 
-#include <knuminput.h>
 #include <klocale.h>
+#include <knuminput.h>
 
 #include "WorkSheetSetup.h"
 #include "WorkSheetSetup.moc"

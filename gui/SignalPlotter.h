@@ -26,9 +26,9 @@
 #define _SignalPlotter_h_
 
 #include <qptrlist.h>
+#include <qstring.h>
 #include <qvaluelist.h>
 #include <qwidget.h>
-#include <qstring.h>
 
 #define	GRAPH_ORIGINAL		0
 #define GRAPH_BASIC_POLY	1
@@ -71,15 +71,6 @@ public:
 		title = t;
 	}
 
-	void setSensorOk(bool ok)
-	{
-		if (ok != sensorOk)
-		{
-			sensorOk = ok;
-			update();
-		}
-	}
-
 protected:
 	virtual void resizeEvent(QResizeEvent*);
 	virtual void paintEvent(QPaintEvent*);
@@ -94,8 +85,8 @@ private:
 	bool vLines;
 	QColor vColor;
 	uint vDistance;
-  bool vScroll;
-  uint vOffset;
+	bool vScroll;
+	uint vOffset;
 	uint hScale;
 
 	bool hLines;
@@ -112,8 +103,6 @@ private:
 	QValueList<QColor> beamColor;
 	int samples;
 
-	QPixmap errorIcon;
-	bool sensorOk;
 	QString title;
 } ;
 

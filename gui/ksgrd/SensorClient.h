@@ -28,6 +28,8 @@
 #include <qstring.h>
 #include <qptrlist.h>
 
+namespace KSGRD {
+
 /**
  * Every object that should act as a client to a sensor must inherit from
  * this class. A pointer to the client object is passed as SensorClient*
@@ -55,6 +57,24 @@ public:
 } ;
 
 /**
+ * Every object that has a SensorClient as a child must inherit from
+ * this class to support the advanced update interval settings.
+ */
+class SensorBoard
+{
+public:
+	SensorBoard() { }
+	virtual ~SensorBoard() { }
+
+	void updateInterval(uint interval) { mUpdateInterval = interval; }
+
+	uint updateInterval() { return mUpdateInterval; }
+
+private:
+	uint mUpdateInterval;
+} ;
+
+/**
  * The following classes are utility classes that provide a
  * convenient way to retrieve pieces of information from the sensor
  * answers. For each type of answer there is a separate class.
@@ -65,7 +85,7 @@ class SensorTokenizer
 public:
 	SensorTokenizer(const QString& info, QChar separator)
 	{
-		tokens.setAutoDelete(TRUE);
+		tokens.setAutoDelete(true);
 
 		QString s = info;
 		while (s.length() > 0)
@@ -192,7 +212,8 @@ public:
 	{
 		return ((*this)[3].toLong());
 	}
-} ;
+};
+};
 
 #endif
 

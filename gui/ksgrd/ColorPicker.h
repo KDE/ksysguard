@@ -33,7 +33,7 @@ class QPushButton;
 class ColorPicker : public QWidget
 {
 	Q_OBJECT
-    Q_PROPERTY(QString text READ getText WRITE setText)
+	Q_PROPERTY(QString text READ getText WRITE setText)
 	Q_PROPERTY(QColor color READ getColor WRITE setColor)
 
 public:
@@ -53,6 +53,6 @@ private:
 	QLabel* label;
 	QFrame* box;
 	QPushButton* button;
-} ;
+};
 
 #endif

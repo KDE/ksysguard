@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
 
 	Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
 
@@ -18,28 +18,29 @@
 
 	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
 	Please do not commit any changes without consulting me first. Thanks!
+
+	$Id$
 */
+
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <config.h>
 #include <qdom.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 
-#include <kdebug.h>
-#include <kiconloader.h>
 #include <kcolorbutton.h>
+#include <kdebug.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-
-#include "ColorPicker.h"
-#include "ListViewSettings.h"
-#include "SensorManager.h"
-#include "StyleEngine.h"
+#include <ksgrd/ColorPicker.h>
+#include <ksgrd/SensorManager.h>
+#include <ksgrd/StyleEngine.h>
 
 #include "ListView.h"
 #include "ListView.moc"
+#include "ListViewSettings.h"
 
 const char* intKey(const char* text);
 const char* timeKey(const char* text);
@@ -135,9 +136,9 @@ PrivateListView::PrivateListView(QWidget *parent, const char *name)
 {
 	QColorGroup cg = colorGroup();
 
-	cg.setColor(QColorGroup::Link, Style->getFgColor1());
-	cg.setColor(QColorGroup::Text, Style->getFgColor2());
-	cg.setColor(QColorGroup::Base, Style->getBackgroundColor());
+	cg.setColor(QColorGroup::Link, KSGRD::Style->getFgColor1());
+	cg.setColor(QColorGroup::Text, KSGRD::Style->getFgColor2());
+	cg.setColor(QColorGroup::Base, KSGRD::Style->getBackgroundColor());
 
 	setPalette(QPalette(cg, cg, cg));
 }
@@ -146,10 +147,10 @@ void PrivateListView::update(const QString& answer)
 {
 	clear();
 
-	SensorTokenizer lines(answer, '\n');
+	KSGRD::SensorTokenizer lines(answer, '\n');
 	for (uint i = 0; i < lines.numberOfTokens(); i++) {
 		PrivateListViewItem *item = new PrivateListViewItem(this);
-		SensorTokenizer records(lines[i], '\t');
+		KSGRD::SensorTokenizer records(lines[i], '\t');
 		for (uint j = 0; j < records.numberOfTokens(); j++)
 			item->setText(j, records[j]);
 
@@ -211,24 +212,14 @@ PrivateListView::addColumn(const QString& label, const QString& type)
 }
 
 ListView::ListView(QWidget* parent, const char* name, const QString& t,
-				   int, int) : SensorDisplay(parent, name)
+				   int, int) : KSGRD::SensorDisplay(parent, name)
 {
-	setBackgroundColor(Style->getBackgroundColor());
+	setBackgroundColor(KSGRD::Style->getBackgroundColor());
 
 	monitor = new PrivateListView(frame);
 	Q_CHECK_PTR(monitor);
 	monitor->setSelectionMode(QListView::NoSelection);
 	monitor->setItemMargin(2);
-
-	KIconLoader iconLoader;
-	QPixmap errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop, KIcon::SizeSmall);
-
-	errorLabel = new QLabel(monitor);
-	Q_CHECK_PTR(errorLabel);
-
-	errorLabel->setPixmap(errorIcon);
-	errorLabel->resize(errorIcon.size());
-	errorLabel->move(2, 2);
 
 	title = t;
 	frame->setTitle(title);
@@ -242,7 +233,7 @@ ListView::addSensor(const QString& hostName, const QString& sensorName, const QS
 	if (sensorType != "listview")
 		return (false);
 
-	registerSensor(new SensorProperties(hostName, sensorName, sensorType, title));
+	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 
 	frame->setTitle(title);
 
@@ -250,8 +241,8 @@ ListView::addSensor(const QString& hostName, const QString& sensorName, const QS
 	 * requests we use 100 for info requests. */
 	sendRequest(hostName, sensorName + "?", 100);
 
-	setModified(TRUE);
-	return (TRUE);
+	setModified(true);
+	return (true);
 }
 
 void
@@ -264,21 +255,21 @@ void
 ListView::answerReceived(int id, const QString& answer)
 {
 	/* We received something, so the sensor is probably ok. */
-	sensorError(false);
+	sensorError(id, false);
 
 	switch (id)
 	{
 		case 100: {
 			/* We have received the answer to a '?' command that contains
 			 * the information about the table headers. */
-			SensorTokenizer lines(answer, '\n');
+			KSGRD::SensorTokenizer lines(answer, '\n');
 			if (lines.numberOfTokens() != 2)
 			{
 				kdDebug() << "wrong number of lines" << endl;
 				return;
 			}
-			SensorTokenizer headers(lines[0], '\t');
-			SensorTokenizer colTypes(lines[1], '\t');
+			KSGRD::SensorTokenizer headers(lines[0], '\t');
+			KSGRD::SensorTokenizer colTypes(lines[1], '\t');
 
 			/* remove all columns from list */
 			monitor->removeColumns();
@@ -311,17 +302,17 @@ ListView::createFromDOM(QDomElement& element)
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "listview" : element.attribute("sensorType")), title);
 
 	QColorGroup colorGroup = monitor->colorGroup();
-	colorGroup.setColor(QColorGroup::Link, restoreColorFromDOM(element, "gridColor", Style->getFgColor1()));
-	colorGroup.setColor(QColorGroup::Text, restoreColorFromDOM(element, "textColor", Style->getFgColor2()));
-	colorGroup.setColor(QColorGroup::Base, restoreColorFromDOM(element, "backgroundColor", Style->getBackgroundColor()));
+	colorGroup.setColor(QColorGroup::Link, restoreColorFromDOM(element, "gridColor", KSGRD::Style->getFgColor1()));
+	colorGroup.setColor(QColorGroup::Text, restoreColorFromDOM(element, "textColor", KSGRD::Style->getFgColor2()));
+	colorGroup.setColor(QColorGroup::Base, restoreColorFromDOM(element, "backgroundColor", KSGRD::Style->getBackgroundColor()));
 
 	monitor->setPalette(QPalette(colorGroup, colorGroup, colorGroup));
 
 	internCreateFromDOM(element);
 
-	setModified(FALSE);
+	setModified(false);
 
-	return (TRUE);
+	return (true);
 }
 
 bool
@@ -340,15 +331,15 @@ ListView::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 	internAddToDOM(doc, element);
 
 	if (save)
-		setModified(FALSE);
+		setModified(false);
 
-	return (TRUE);
+	return (true);
 }
 
 void
 ListView::settings()
 {
-	lvs = new ListViewSettings(this, "ListViewSettings", TRUE);
+	lvs = new ListViewSettings(this, "ListViewSettings", true);
 	Q_CHECK_PTR(lvs);
 	connect(lvs->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
 
@@ -377,32 +368,17 @@ ListView::applySettings()
 	title = lvs->title->text();
 	frame->setTitle(title);
 
-	setModified(TRUE);
+	setModified(true);
 }
 
 void
 ListView::applyStyle()
 {
 	QColorGroup colorGroup = monitor->colorGroup();
-	colorGroup.setColor(QColorGroup::Link, Style->getFgColor1());
-	colorGroup.setColor(QColorGroup::Text, Style->getFgColor2());
-	colorGroup.setColor(QColorGroup::Base, Style->getBackgroundColor());
+	colorGroup.setColor(QColorGroup::Link, KSGRD::Style->getFgColor1());
+	colorGroup.setColor(QColorGroup::Text, KSGRD::Style->getFgColor2());
+	colorGroup.setColor(QColorGroup::Base, KSGRD::Style->getBackgroundColor());
 	monitor->setPalette(QPalette(colorGroup, colorGroup, colorGroup));
 
-	setModified(TRUE);
+	setModified(true);
 }
-
-void
-ListView::sensorError(bool err)
-{
-	if (err == sensors.at(0)->ok) {
-		// this happens only when the sensorOk status needs to be changed.
-		sensors.at(0)->ok = !err;
-	}
-
-	if (err)
-		errorLabel->show();
-	else
-		errorLabel->hide();
-}
-

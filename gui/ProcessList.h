@@ -26,16 +26,14 @@
 #ifndef _ProcessList_h_
 #define _ProcessList_h_
 
-#include <qwidget.h>
-#include <qlistview.h>
-#include <qvaluelist.h>
-#include <qstringlist.h>
 #include <qdict.h>
 #include <qdom.h>
+#include <qlistview.h>
+#include <qstringlist.h>
+#include <qvaluelist.h>
+#include <qwidget.h>
 
 #include <kiconloader.h>
-
-#include "SensorClient.h"
 
 typedef const char* (*KeyFunc)(const char*);
 
@@ -179,6 +177,9 @@ signals:
 	// This signal is emitted when process pid should receive signal sig.
 	void killProcess(int pid, int sig);
 
+	// This signal is emitted when process pid should be reniced.
+	void reniceProcess(int pid, int niceValue);
+
 	void listModified(bool);
 
 private:
@@ -201,7 +202,7 @@ private:
 	 * filter mode or not. If it machtes the criteria it returns true,
 	 * false otherwise.
 	 */
-	bool matchesFilter(SensorPSLine* p) const;
+	bool matchesFilter(KSGRD::SensorPSLine* p) const;
 
 	/**
 	 * This function constructs the list of processes for list
@@ -235,12 +236,12 @@ private:
 	 * removing processes from the process list an inserting them into
 	 * the tree.
 	 */
-	void extendTree(QPtrList<SensorPSLine>* pl, ProcessLVI* parent, int ppid);
+	void extendTree(QPtrList<KSGRD::SensorPSLine>* pl, ProcessLVI* parent, int ppid);
 
 	/**
 	 * This function adds a process to the list/tree.
 	 */
-	void addProcess(SensorPSLine* p, ProcessLVI* pli);
+	void addProcess(KSGRD::SensorPSLine* p, ProcessLVI* pli);
 
 private:
 	void selectAll(bool select);
@@ -255,9 +256,6 @@ private:
 	bool killSupported;
 	bool treeViewEnabled;
 	bool openAll;
-	bool sensorOk;
-
-	QIconSet errorIcon;
 
 	/* The following lists are primarily used to store table specs between
 	 * load() and the actual table creation in addColumn(). */
@@ -265,7 +263,7 @@ private:
 	QValueList<int> currentWidth;
 	QValueList<int> index;
 
-	QPtrList<SensorPSLine> pl;
+	QPtrList<KSGRD::SensorPSLine> pl;
 
 	QStringList columnTypes;
 	QDict<QString> columnDict;

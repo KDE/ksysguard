@@ -1,5 +1,5 @@
 /*
-    KSysGuard, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE System Guard
 
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
 
@@ -22,16 +22,16 @@
 	$Id$
 */
 
-#include <qwhatsthis.h>
 #include <qlineedit.h>
 #include <qspinbox.h>
+#include <qwhatsthis.h>
 
-#include <kmessagebox.h>
-#include <klocale.h>
-#include <kfiledialog.h>
-#include <kstandarddirs.h>
-#include <kio/netaccess.h>
 #include <kdebug.h>
+#include <kfiledialog.h>
+#include <kio/netaccess.h>
+#include <klocale.h>
+#include <kmessagebox.h>
+#include <kstandarddirs.h>
 
 #include "WorkSheet.h"
 #include "WorkSheetSettings.h"
@@ -40,8 +40,8 @@
 Workspace::Workspace(QWidget* parent, const char* name)
 	: QTabWidget(parent, name)
 {
-	sheets.setAutoDelete(TRUE);
-	autoSave = TRUE;
+	sheets.setAutoDelete(true);
+	autoSave = true;
 
 	connect(this, SIGNAL(currentChanged(QWidget*)),
 			this, SLOT(updateCaption(QWidget*)));
@@ -137,10 +137,10 @@ Workspace::newWorkSheet()
 	{
 		sheetName = QString(i18n("Sheet %1")).arg(i++);
 		QPtrListIterator<WorkSheet> it(sheets);
-		found = FALSE;
+		found = false;
 		for (; it.current() && !found; ++it)
 			if (tabLabel(*it) == sheetName)
-				found = TRUE;
+				found = true;
 	} while (found);
 
 	WorkSheetSettings* wss = new WorkSheetSettings(this, "WorkSheetSettings",
@@ -180,19 +180,19 @@ Workspace::saveOnQuit()
 				if (res == KMessageBox::Yes)
 					saveWorkSheet(*it);
 				else if (res == KMessageBox::Cancel)
-					return FALSE;	// abort quit
+					return false;	// abort quit
 			}
 			else
 				saveWorkSheet(*it);
 		}
 
-	return (TRUE);
+	return (true);
 }
 
 void
 Workspace::loadWorkSheet()
 {
-	KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", TRUE);
+	KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", true);
 	KURL url = fd.getOpenURL(workDir, "*.sgrd", 0,
 								i18n("Select a work sheet to load"));
 	loadWorkSheet(url);
@@ -236,7 +236,7 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 	QString fileName = sheet->getFileName();
 	if (fileName.isEmpty())
 	{
-		KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", TRUE);
+		KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", true);
 		fileName = fd.getSaveFileName(workDir + "/" +
 			tabLabel(sheet) + ".sgrd", "*.sgrd", 0,
 			i18n("Save current work sheet as"));
@@ -277,7 +277,7 @@ Workspace::saveWorkSheetAs(WorkSheet* sheet)
 	QString fileName;
 	do
 	{
-		KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", TRUE);
+		KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", true);
 		fileName = fd.getSaveFileName(workDir + "/" +
 			tabLabel(currentPage()) + ".sgrd", "*.sgrd");
 		if (fileName.isEmpty())
@@ -373,7 +373,7 @@ Workspace::restoreWorkSheet(const QString& fileName, const QString& newName)
 	if (!sheet->load(fileName))
 	{
 		delete sheet;
-		return (FALSE);
+		return (false);
 	}
 	sheets.append(sheet);
 	connect(sheet, SIGNAL(sheetModified(QWidget*)),
@@ -384,7 +384,7 @@ Workspace::restoreWorkSheet(const QString& fileName, const QString& newName)
 	if (!newName.isEmpty())
 		sheet->setFileName(newName);
 
-	return (TRUE);
+	return (true);
 }
 
 void

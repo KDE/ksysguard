@@ -3,6 +3,8 @@
    
 	Copyright (c) 1999-2001 Chris Schlaeger <cs@kde.org>
 				 Tobias Koenig <tokoe82@yahoo.de>
+
+	Solaris support by Torsten Kasch <tk@Genetik.Uni-Bielefeld.DE>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -38,20 +40,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include "Command.h"
-#include "Memory.h"
-#include "ProcessList.h"
-#include "apm.h"
-#include "conf.h"
-#include "cpuinfo.h"
-#include "diskstat.h"
-#include "ksysguardd.h"
-#include "lmsensors.h"
-#include "loadavg.h"
-#include "logfile.h"
-#include "netdev.h"
-#include "netstat.h"
-#include "stat.h"
+#include "modules.h"
 
 #define CMDBUFSIZE	128
 #define MAX_CLIENTS	100
@@ -478,31 +467,18 @@ handleSocketTraffic(int socket, const fd_set* fds)
 static void
 initModules()
 {
+	struct ModulListEntry entry;
+	int i;
+
 	/* initialize all sensors */
 	initCommand();
 
-	if (sensorAvailable("ProcessList"))
-		initProcessList();
-	if (sensorAvailable("Memory"))
-		initMemory();
-	if (sensorAvailable("Stat"))
-		initStat();
-	if (sensorAvailable("NetDev"))
-		initNetDev();
-	if (sensorAvailable("NetStat"))
-		initNetStat();
-	if (sensorAvailable("Apm"))
-		initApm();
-	if (sensorAvailable("CpuInfo"))
-		initCpuInfo();
-	if (sensorAvailable("LoadAvg"))
-		initLoadAvg();
-	if (sensorAvailable("LmSensors"))
-		initLmSensors();
-	if (sensorAvailable("DiskStat"))
-		initDiskStat();
-	if (sensorAvailable("LogFile"))
-		initLogFile();
+	for (i = 0; i < NUM_MODULES; i++)
+	{
+		entry = ModulList[i];
+		if (entry.initCommand != NULL && sensorAvailable(entry.configName))
+			entry.initCommand();
+	}
 
 	ReconfigureFlag = 0;
 }
@@ -510,64 +486,37 @@ initModules()
 static void
 exitModules()
 {
-	if (sensorAvailable("LogFile"))
-		exitLogFile();
-	if (sensorAvailable("DiskStat"))
-		exitDiskStat();
-	if (sensorAvailable("LmSensors"))
-		exitLmSensors();
-	if (sensorAvailable("LoadAvg"))
-		exitLoadAvg();
-	if (sensorAvailable("CpuInfo"))
-		exitCpuInfo();
-	if (sensorAvailable("Apm"))
-		exitApm();
-	if (sensorAvailable("NetStat"))
-		exitNetStat();
-	if (sensorAvailable("NetDev"))
-		exitNetDev();
-	if (sensorAvailable("Stat"))
-		exitStat();
-	if (sensorAvailable("Memory"))
-		exitMemory();
-	if (sensorAvailable("ProcessList"))
-		exitProcessList();
+	struct ModulListEntry entry;
+	int i;
+
+	for (i = 0; i < NUM_MODULES; i++)
+	{
+		entry = ModulList[i];
+		if (entry.exitCommand != NULL && sensorAvailable(entry.configName))
+			entry.exitCommand();
+	}
 
 	exitCommand();
 }
 
 void
-checkModules()
-{
-/*
-	if (sensorAvailable("NetDev"))
-		checkNetDev();
-*/
-	if (sensorAvailable("DiskStat"))
-		checkDiskStat();
-}
-
-void
 updateModules()
 {
-	checkModules();
+	struct ModulListEntry entry;
+	int i;
 
-	if (sensorAvailable("Memory"))
-		updateMemory();
-	if (sensorAvailable("ProcessList"))
-		updateProcessList();
-	if (sensorAvailable("CpuInfo"))
-		updateCpuInfo();
-	if (sensorAvailable("NetDev"))
-		updateNetDev();
-	if (sensorAvailable("DiskStat"))
-		updateDiskStat();
-	if (sensorAvailable("Stat"))
-		updateStat();
-	if (sensorAvailable("Apm"))
-		updateApm();
-	if (sensorAvailable("LoadAvg"))
-		updateLoadAvg();
+	for (i = 0; i < NUM_MODULES; i++)
+	{
+		entry = ModulList[i];
+		if (entry.updateCommand != NULL && sensorAvailable(entry.configName))
+		{
+			entry.updateCommand();
+
+			/* we call the checkup functions here */
+			if (entry.checkCommand != NULL)
+				entry.checkCommand();
+		}
+	}
 }
 
 /*
@@ -580,6 +529,30 @@ main(int argc, char* argv[])
 	fd_set fds;
 	struct timeval tv;
 	struct timeval last;
+
+#ifdef OSTYPE_FreeBSD
+	/* if we are not root or the executable does not belong to the
+	 * kmem group, ksysguardd will crash because of permission problems
+	 * for opening /dev/kmem
+	 */
+	struct group* grentry = NULL;
+
+	if (geteuid() != 0) {
+		grentry = getgrnam("kmem");
+		if (grentry == NULL) {
+			fprintf(stderr, "the group kmem is missing on your system\n");
+			return -1;
+		}
+
+		if (geteuid() != grentry->gr_gid) {
+			fprintf(stderr, "ksysguardd can't be started because of permission conflicts!\n"
+					"Start the program as user 'root' or change its group to 'kmem' and set the sgid-bit\n");
+			return -1;
+		}
+
+		endgrent();
+	}
+#endif // OSTYPE_FreeBSD
 
 	printWelcome(stdout);
 
