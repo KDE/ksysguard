@@ -106,7 +106,7 @@ processArguments(int argc, char* argv[])
 			break;
 		case '?':
 		case 'h':
-			fprintf(stderr, "usage: %s [-d] [-p port]\n", argv[0]);
+			fprintf(stderr, "Usage: %s [-d] [-p port]\n", argv[0]);
 			return (-1);
 			break;
 		}
@@ -152,24 +152,12 @@ createLockFile()
 		fprintf(stderr, "Cannot create lockfile '%s'\n", LockFile);
 		return -2;
 	}
-	/* We abandon file here on purpose. It's needed nowhere else, but we
+	/* We abandon 'file' here on purpose. It's needed nowhere else, but we
 	 * have to keep the file open and locked. The kernel will remove the
-	 * lock when the process terminates. */
+	 * lock when the process terminates and the runlevel scripts has to
+	 * remove the pid file. */
 		
 	return 0;
-}
-
-static void
-removeLockFile(void)
-{
-	/* setuid back to root for removing lockfile */
-	if (seteuid(0) < 0) {
-		log_error("Cannot seteuid back to 'root'");
-	}
-
-	if (unlink(LockFile) < 0) {
-		log_error("Cannot remove lockfile '%s'", LockFile);
-	}
 }
 
 void
@@ -179,7 +167,7 @@ signalHandler(int sig)
 	{
 		case SIGQUIT:
 		case SIGTERM:
-			removeLockFile();
+			/* Not really anything to do here at the moment. */
 			exit(0);
 			break;
 	}
@@ -199,17 +187,17 @@ installSignalHandler(void)
 }
 
 static void
-changeUID(void)
+dropPrivileges(void)
 {
 	struct passwd *pwd;
 	
 	if ((pwd = getpwnam("nobody")) != NULL)
 	{
-		seteuid(pwd->pw_uid);
+		setuid(pwd->pw_uid);
 	}
 	else
 	{
-		log_error("Cannot seteuid to 'nobody'");
+		log_error("User 'nobody' does not exist.");
 		/* We exit here to avoid becoming vulnerable just because
 		 * user nobody does not exist. */
 		exit(1);
@@ -223,7 +211,7 @@ makeDaemon(void)
 	switch (fork())
 	{
 	case -1:
-		log_error("fork()");
+		log_error("fork() failed");
 		break;
 	case 0:
 		setsid();
@@ -231,10 +219,10 @@ makeDaemon(void)
 		umask(0);
 		if (createLockFile() < 0)
 			exit(1);
+		dropPrivileges();
 
 		installSignalHandler();
 
-		changeUID();
 		break;
 	default:
 		exit(0);
@@ -282,8 +270,7 @@ addClient(int client)
 				log_error("fdopen()");
 				return (-1);
 			}
-			/* TODO: Check wheter this is a good idea!
-			 * We use unbuffered IO */
+			/* We use unbuffered IO */
 			fcntl(fileno(out), F_SETFL, O_NDELAY);
 			ClientList[i].out = out;
 			printWelcome(out);

@@ -51,10 +51,18 @@ void initLogFile(void)
 	registerCommand("logfile_unregister", unregisterLogFile);
 	registerCommand("logfile_registered", printRegistered);
 
-	for (i = 0; i < level_ctnr(LogFileList); i++) {
+	for (i = 0; i < level_ctnr(LogFileList); i++)
+	{
+		FILE* fp;
 		ConfigLogFile *entry = get_ctnr(LogFileList, i);
-		snprintf(monitor, 1024, "logfiles/%s", entry->name);
-		registerMonitor(monitor, "logfile", printLogFile, printLogFileInfo);
+		/* Register the log file only if we can actually read the file. */
+		if ((fp = fopen(entry->path, "r")) != NULL)
+		{
+			fclose(fp);
+			snprintf(monitor, 1024, "logfiles/%s", entry->name);
+			registerMonitor(monitor, "logfile", printLogFile,
+							printLogFileInfo);
+		}
 	}
 
 	LogFiles = new_ctnr(CT_DLL);
