@@ -21,18 +21,20 @@
 	$Id$
 */
 
+#include <sys/types.h>
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#include <sys/vmmeter.h>
+
+#include <vm/vm_param.h>
+
 #include <fcntl.h>
 #include <kvm.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/param.h>
-#include <sys/sysctl.h>
-#include <sys/types.h>
-#include <sys/vmmeter.h>
 #include <unistd.h>
-#include <vm/vm_param.h>
 
 #include "Command.h"
 #include "Memory.h"
@@ -77,7 +79,6 @@ exitMemory(void)
 int
 updateMemory(void)
 {
-	int mib[2];
 	size_t len;
 	struct vmtotal p;
 	FILE *file;
