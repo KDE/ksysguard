@@ -135,7 +135,7 @@ percentKey(const char* text)
 	return (key);
 }
 
-const char*
+QString
 ProcessLVI::key(int column, bool dir) const
 {
 	if (TabCol[column].key)

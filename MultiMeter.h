@@ -28,6 +28,7 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qlcdnumber.h>
+#include <qlist.h>
 
 class QColor;
 

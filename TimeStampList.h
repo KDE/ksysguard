@@ -106,7 +106,7 @@ public:
 	~TimeStampList() { }
 
 private:
-	int compareItems(GCI it1, GCI it2)
+	int compareItems(Item it1, Item it2)
 	{
 		TimeStamp* ts1 = (TimeStamp*) it1;
 		TimeStamp* ts2 = (TimeStamp*) it2;

@@ -43,7 +43,7 @@ class ProcessLVI : public QListViewItem
 public:
 	ProcessLVI(QListView* lvi) : QListViewItem(lvi) { }
 
-	virtual const char* key(int column, bool) const;
+	virtual QString key(int column, bool) const;
 } ;
 
 class QPopupMenu;

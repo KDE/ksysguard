@@ -53,10 +53,10 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
 	settings = NULL;
 	restoreStartupPage = FALSE;
 
-	setStyle(WindowsStyle);
+	//setStyle(WindowsStyle); //MR: commented this out because it doesn´t exsist anymore in Qt2.0
 
     // Delete the OK button, it is created by default by the constructor.
-	setOkButton(0);
+	setOkButton( QString::null );
 
 	connect(tabBar(), SIGNAL(selected(int)), SLOT(tabBarSelected(int)));
 
@@ -254,15 +254,17 @@ TaskMan::killProcess(int pid, int sig, const char* sigName)
 	// Make sure user really want to send the signal to that process.
 	QString msg;
 	msg.sprintf(i18n("Send signal %s to process %d?\n"
-					 "(Process name: %s  Owner: %s)\n"), sigName, ps.getPid(),
-				ps.getName(), ps.getUserName().data());
+			 "(Process name: %s  Owner: %s)\n"), 
+		    sigName, ps.getPid(),
+		    ps.getName(), ps.getUserName().data());
 	switch(QMessageBox::warning(this, "Task Manager", msg,
-								i18n("Continue"), i18n("Abort"), 0, 1))
+				    i18n("Continue"), i18n("Abort"), 
+				    QString::null, 1))
     { 
 	case 0: // continue
 		if (!ps.sendSignal(sig))
-			QMessageBox::warning(this, "Task Manager", ps.getErrMessage(),
-								 i18n("Continue"), 0);
+		  QMessageBox::warning(this, "Task Manager", ps.getErrMessage(),
+				       i18n("Continue"), QString::null);
 		break;
 
 	case 1: // abort
@@ -280,10 +282,10 @@ TaskMan::reniceProcess(int pid)
 	if (!ps.ok()) 
 	{
 		QMessageBox::warning(this, i18n("Task Manager"),
-							 i18n("Renice error...\n"
-								  "Specified process does not exist\n"
-								  "or permission denied."),
-							 i18n("OK"), 0); 
+				     i18n("Renice error...\n"
+					  "Specified process does not exist\n"
+					  "or permission denied."),
+				     i18n("OK"), QString::null); 
 		return;
 	}
 
@@ -298,10 +300,10 @@ TaskMan::reniceProcess(int pid)
 		if (!ps.setNiceLevel(newNiceLevel))
 		{
 			QMessageBox::warning(this, i18n("Task Manager"),
-								 i18n("Renice error...\n"
-									  "Specified process does not exist\n"
-									  "or permission denied."),
-								 i18n("OK"), 0);   
+					     i18n("Renice error...\n"
+						  "Specified process does not exist\n"
+						  "or permission denied."),
+					     i18n("OK"), QString::null);   
 		}
 	}
 }

@@ -161,9 +161,9 @@ ProcTreePage::killTask()
 	if (pid < 0)
 	{
 		QMessageBox::warning(this, i18n("Task Manager"),
-							 i18n("You need to select a process before\n"
-								  "pressing the kill button!\n"),
-								  i18n("OK"), 0);   
+				     i18n("You need to select a process before\n"
+					  "pressing the kill button!\n"),
+				     i18n("OK"), QString::null);   
 		return;
 	}
 
