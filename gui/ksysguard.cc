@@ -128,9 +128,6 @@ TopLevel::TopLevel(const char *name)
 TopLevel::~TopLevel()
 {
 	killTimer(timerID);
-
-	delete statusbar;
-	delete splitter;
 }
 
 /*
@@ -392,7 +389,6 @@ static const KCmdLineOptions options[] =
 	{ 0, 0, 0}
 };
 
-
 /*
  * Once upon a time...
  */
@@ -446,6 +442,9 @@ main(int argc, char** argv)
 
 	// run the application
 	int result = a->exec();
+
+	delete SensorMgr;
+	delete a;
 
 	return (result);
 }

@@ -93,6 +93,11 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	setMinimumWidth(1);
 }
 
+SensorBrowser::~SensorBrowser()
+{
+	delete icons;
+}
+
 void
 SensorBrowser::disconnect()
 {
