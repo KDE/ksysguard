@@ -33,6 +33,7 @@
 #include "apm.h"
 #include "cpuinfo.h"
 #include "loadavg.h"
+#include "lmsensors.h"
 
 #define CMDBUFSIZE 128
 
@@ -73,6 +74,7 @@ main(int argc, const char* argv[])
 	initApm();
 	initCpuInfo();
 	initLoadAvg();
+	initLmSensors();
 	initDispatcher();
 
 	while (!dispatcherReady())
@@ -93,6 +95,7 @@ main(int argc, const char* argv[])
 		fflush(stdout);
 	} while (!QuitApp);
 
+	exitLmSensors();
 	exitLoadAvg();
 	exitCpuInfo();
 	exitApm();
