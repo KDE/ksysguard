@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE KSysGuardWorkSheet ><WorkSheet rows="2" columns="1" >
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE KSysGuardWorkSheet ><KSysGuardWorkSheet rows="2" columns="1" >
  <host shell="" name="localhost" command="ksysguardd" />
  <display title="CPU" class="FancyPlotter" row="0" column="0" min="0" max="0" >
   <beam sensorName="cpu/user" hostName="localhost" />
@@ -8,4 +8,4 @@
  <display title="Memory" class="FancyPlotter" row="1" column="0" min="0" max="0" >
   <beam sensorName="mem/physical/used" hostName="localhost" />
  </display>
-</WorkSheet>
+</KSysGuardWorkSheet> 
