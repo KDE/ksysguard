@@ -239,20 +239,6 @@ void TopLevel::beATaskManager()
   // Avoid displaying splitter widget
   mSensorBrowser->hide();
 
-  // Show window centered on the desktop.
-  KWinModule kwm(0, KWinModule::INFO_DESKTOP);
-  QRect workArea = kwm.workArea();
-  int w = 600;
-  if ( workArea.width() < w )
-    w = workArea.width();
-
-  int h = 440;
-  if ( workArea.height() < h )
-    h = workArea.height();
-
-  setGeometry( ( workArea.width() - w ) / 2, ( workArea.height() - h ) / 2,
-               w, h );
-
   // No toolbar and status bar in taskmanager mode.
   toolBar( "mainToolBar" )->hide();
 
