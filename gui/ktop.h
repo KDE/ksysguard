@@ -34,8 +34,6 @@
 #include <kmenubar.h>
 #include <kstatusbar.h>
 
-#include "SensorBrowser.h"
-#include "Workspace.h"
 #include "SensorClient.h"
 #include "MainMenu.h"
 
