@@ -37,7 +37,7 @@ class SignalPlotter : public QWidget
 {
 	Q_OBJECT
 
-	friend FancyPlotter;
+	friend class FancyPlotter;
 
 public:
 	SignalPlotter(QWidget* parent = 0, const char* name = 0, double min = 0,
