@@ -41,7 +41,7 @@ noinst_HEADERS = SensorClient.h ksysguard.h ProcessMenu.h \
 METASOURCES = AUTO
 
 messages: rc.cpp
-	$(XGETTEXT) *.cc -o $(podir)/ksysguard.pot
+	$(XGETTEXT) *.cpp *.cc -o $(podir)/ksysguard.pot
 
 rcdir = $(kde_datadir)/ksysguard
 rc_DATA = ksysguard.rc
