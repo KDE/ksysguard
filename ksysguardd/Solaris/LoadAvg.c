@@ -33,6 +33,7 @@
 #include <kstat.h>
 #endif
 
+#include "ksysguardd.h"
 #include "Command.h"
 #include "LoadAvg.h"
 
@@ -91,33 +92,31 @@ int updateLoadAvg( void ) {
 	 	loadavg15 = LOAD( kdata->value.ui32 );
 
 	kstat_close( kctl );
-#else
-	return( 0 );
 #endif /* ! HAVE_KSTAT */
 
 	return( 0 );
 }
 
 void printLoadAvg1Info( const char *cmd ) {
-	printf( "avnrun 1min\t0\t0\n" );
+	fprintf(CurrentClient, "avnrun 1min\t0\t0\n" );
 }
 
 void printLoadAvg1( const char *cmd ) {
-	printf( "%f\n", loadavg1 );
+	fprintf(CurrentClient, "%f\n", loadavg1 );
 }
 
 void printLoadAvg5Info( const char *cmd ) {
-	printf( "avnrun 5min\t0\t0\n" );
+	fprintf(CurrentClient, "avnrun 5min\t0\t0\n" );
 }
 
 void printLoadAvg5( const char *cmd ) {
-	printf( "%f\n", loadavg5 );
+	fprintf(CurrentClient, "%f\n", loadavg5 );
 }
 
 void printLoadAvg15Info( const char *cmd ) {
-	printf( "avnrun 15min\t0\t0\n" );
+	fprintf(CurrentClient, "avnrun 15min\t0\t0\n" );
 }
 
 void printLoadAvg15( const char *cmd ) {
-	printf( "%f\n", loadavg15 );
+	fprintf(CurrentClient, "%f\n", loadavg15 );
 }

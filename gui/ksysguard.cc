@@ -98,9 +98,9 @@ TopLevel::TopLevel(const char *name)
 							   "8888888 kB free"), 2);
 	statusBar()->hide();
 
-    // create actions for menue entries
-    KStdAction::openNew(ws, SLOT(newWorkSheet()), actionCollection());
-    KStdAction::open(ws, SLOT(loadWorkSheet()), actionCollection());
+	// create actions for menue entries
+	KStdAction::openNew(ws, SLOT(newWorkSheet()), actionCollection());
+	KStdAction::open(ws, SLOT(loadWorkSheet()), actionCollection());
 	openRecent = KStdAction::openRecent(ws, SLOT(loadWorkSheet(const KURL&)),
 										actionCollection());
 	KStdAction::close(ws, SLOT(deleteWorkSheet()), actionCollection());
@@ -109,10 +109,10 @@ TopLevel::TopLevel(const char *name)
 	KStdAction::save(ws, SLOT(saveWorkSheet()), actionCollection());
 	KStdAction::quit(this, SLOT(close()), actionCollection());
 
-    (void) new KAction(i18n("C&onnect Host..."), "connect_established", 0,
+	(void) new KAction(i18n("C&onnect Host..."), "connect_established", 0,
 					   this, SLOT(connectHost()), actionCollection(),
 					   "connect_host");
-    (void) new KAction(i18n("D&isconnect Host"), "connect_no", 0, this,
+	(void) new KAction(i18n("D&isconnect Host"), "connect_no", 0, this,
 					   SLOT(disconnectHost()), actionCollection(),
 					   "disconnect_host");
 	KStdAction::cut(ws, SLOT(cut()), actionCollection());
@@ -127,7 +127,7 @@ TopLevel::TopLevel(const char *name)
 	statusBarTog = KStdAction::showStatusbar(this, SLOT(showStatusBar()),
 											 actionCollection(),
 											 "showstatusbar");
-    KStdAction::configureToolbars(this, SLOT(editToolbars()),
+	KStdAction::configureToolbars(this, SLOT(editToolbars()),
 								  actionCollection());
 	statusBarTog->setChecked(FALSE);
 	(void) new KAction(i18n("Configure &Style..."), "colorize", 0, this,
@@ -573,6 +573,10 @@ main(int argc, char** argv)
 						"wuebben@math.cornell.edu");
 	aboutData.addAuthor("Ralf Mueller", 0, "rlaf@bj-ig.de");
 	aboutData.addAuthor("Hamish Rodda", 0, "meddie@yoyo.cc.monash.edu.au");
+	aboutData.addAuthor("Torsten Kasch", 
+		"Solaris Support\n"
+		"Parts derived (by permission) from the sunos5 module of William LeFebvre's \"top\" utility.",
+		"tk@Genetik.Uni-Bielefeld.DE");
 	
 	KCmdLineArgs::init(argc, argv, &aboutData);
 	KCmdLineArgs::addCmdLineOptions(options);

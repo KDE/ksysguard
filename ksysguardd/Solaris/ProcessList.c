@@ -25,9 +25,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
-#include <errno.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <pwd.h>
@@ -37,6 +37,7 @@
 
 #include "ccont.h"
 #include "../../gui/SignalIDs.h"
+#include "ksysguardd.h"
 
 #include "Command.h"
 #include "ProcessList.h"
@@ -65,9 +66,6 @@ static CONTAINER ProcessList = 0;
 static time_t timeStamp = (time_t) 0;
 static unsigned ProcessCount = 0;	/*  # of processes	  */
 static DIR *procdir;			/*  handle for /proc	  */
-
-#define printerr(a) write(STDERR_FILENO, (a), strlen(a))
-
 
 /*
  *  lwpStateName()  --  return string representation of process state
@@ -152,10 +150,14 @@ static int updateProcess( pid_t pid ) {
 	if( (ps = findProcessInList( pid )) == NULL ) {
 		if( (ps = (ProcessInfo *) malloc( sizeof( ProcessInfo )))
 				== NULL ) {
-			printerr( "cannot malloc()\n" );
+			print_error( "cannot malloc()\n" );
 			return( -1 );
 		}
 		ps->pid = pid;
+		ps->userName = NULL;
+		ps->State = NULL;
+		ps->Command = NULL;
+		ps->CmdLine = NULL;
 		ps->alive = 0;
 
 		push_ctnr( ProcessList, ps );
@@ -163,13 +165,13 @@ static int updateProcess( pid_t pid ) {
 	}
 
 	snprintf( buf, BUFSIZE - 1, "%s/%ld/psinfo", PROCDIR, pid );
-	if( (fd = open( buf, O_RDONLY )) < 0 )
+	if( (fd = open( buf, O_RDONLY )) < 0 ) {
+		print_error( "cannot open() \"%s\"\n", buf );
 		return( -1 );
+	}
 
 	if( read( fd, &psinfo, sizeof( psinfo_t )) != sizeof( psinfo_t )) {
-		printerr( "cannot read \"" );
-		printerr( buf );
-		printerr( "\"\n" );
+		print_error( "cannot read() \"%s\"\n", buf );
 		close( fd );
 		return( -1 );
 	}
@@ -178,9 +180,16 @@ static int updateProcess( pid_t pid ) {
 	ps->ppid = psinfo.pr_ppid;
 	ps->uid = psinfo.pr_uid;
 	ps->gid = psinfo.pr_gid;
+
 	pw = getpwuid( psinfo.pr_uid );
+	if( ps->userName != NULL )
+		free( ps->userName );
 	ps->userName = strdup( pw->pw_name );
+
+	if( ps->State != NULL )
+		free( ps->State );
 	ps->State = lwpStateName( psinfo.pr_lwp );
+
 	if( (ps->nThreads = psinfo.pr_nlwp ) != 0 ) {
 		ps->Prio = psinfo.pr_lwp.pr_pri;
 		ps->Time = psinfo.pr_lwp.pr_time.tv_sec * 100
@@ -190,24 +199,17 @@ static int updateProcess( pid_t pid ) {
 	}
 	ps->Size = psinfo.pr_size;
 	ps->RSSize = psinfo.pr_rssize;
-	ps->Command = strdup( psinfo.pr_fname );
-	ps->CmdLine = strdup( psinfo.pr_psargs );
 
-	/*
-	 *  "fix" argv[0] for programs launched by kdeinit
-	 */
-	if( (strcmp( ps->Command, "kdeinit" ) == 0)
-		&& (strncmp( ps->Command, "kdeinit: ", strlen( "kdeinit: " ))
-			== 0 ) ) {
-		/*
-		 *  IMHO, kdeinit itself (or the processes it starts) should
-		 *  set argv[0] appropriately (like sendmail does), so
-		 *  that non-KDE tools ("ps") see "the right thing" too
-		 */
-	}
+	if( ps->Command != NULL )
+		free( ps->Command );
+	ps->Command = strdup( psinfo.pr_fname );
+	if( ps->CmdLine != NULL )
+		free( ps->CmdLine );
+	ps->CmdLine = strdup( psinfo.pr_psargs );
 
 	validateStr( ps->Command );
 	ps->alive = 1;
+	timeStamp = time( NULL );
 
 	return( 0 );
 }
@@ -231,9 +233,7 @@ static void cleanupProcessList( void ) {
 void initProcessList( void ) {
 
 	if( (procdir = opendir( PROCDIR )) == NULL ) {
-		printerr( "cannot open \"" );
-		printerr( PROCDIR );
-		printerr( "\" for reading\n" );
+		print_error( "cannot open \"%s\" for reading\n", PROCDIR );
 		return;
 	}
 
@@ -281,19 +281,23 @@ int updateProcessList( void ) {
 }
 
 void printProcessListInfo( const char *cmd ) {
-	printf( "Name\tPID\tPPID\tGID\tStatus\tUser\tThreads"
+	fprintf(CurrentClient, "Name\tPID\tPPID\tGID\tStatus\tUser\tThreads"
 		"\tSize\tResident\t%% CPU\tPriority\tCommand\n" );
-	printf( "s\td\td\td\ts\ts\td\td\td\tf\td\ts\n" );
+	fprintf(CurrentClient, "s\td\td\td\ts\ts\td\td\td\tf\td\ts\n" );
 }
 
 void printProcessList( const char *cmd ) {
 
 	int	i;
 
+	if( (time( NULL ) - timeStamp) >= 2 )
+		updateProcessList();
+
 	for( i = 0; i < level_ctnr( ProcessList ); i++ ) {
 		ProcessInfo *ps = get_ctnr( ProcessList, i );
 
-		printf( "%s\t%ld\t%ld\t%ld\t%s\t%s\t%d\t%d %s\t%d %s\t%.2f\t%d\t%s\n",
+		fprintf(CurrentClient,
+			"%s\t%ld\t%ld\t%ld\t%s\t%s\t%d\t%d\t%d\t%.2f\t%d\t%s\n",
 			ps->Command,
 			(long) ps->pid,
 			(long) ps->ppid,
@@ -301,22 +305,20 @@ void printProcessList( const char *cmd ) {
 			ps->State,
 			ps->userName,
 			ps->nThreads,
-			(ps->Size > 10000) ? (ps->Size / 1024) : ps->Size,
-			(ps->Size > 10000) ? "M" : "K",
-			(ps->RSSize > 10000) ? (ps->RSSize / 1024) : ps->RSSize,
-			(ps->RSSize > 10000) ? "M" : "K",
+			ps->Size,
+			ps->RSSize,
 			ps->Load,
 			ps->Prio,
-			ps->CmdLine );
+			ps->CmdLine);
 	}
 }
 
 void printProcessCount( const char *cmd ) {
-	printf( "%d\n", ProcessCount );
+	fprintf(CurrentClient, "%d\n", ProcessCount );
 }
 
 void printProcessCountInfo( const char *cmd ) {
-	printf( "Number of Processes\t0\t0\t\n" );
+	fprintf(CurrentClient, "Number of Processes\t0\t0\t\n" );
 }
 
 void killProcess( const char *cmd ) {
@@ -387,20 +389,20 @@ void killProcess( const char *cmd ) {
 	if( kill( (pid_t) pid, sig )) {
 		switch( errno ) {
 			case EINVAL:
-				printf( "4\n" );
+				fprintf(CurrentClient, "4\n" );
 				break;
 			case ESRCH:
-				printf( "3\n" );
+				fprintf(CurrentClient, "3\n" );
 				break;
 			case EPERM:
-				printf( "2\n" );
+				fprintf(CurrentClient, "2\n" );
 				break;
 			default:
-				printf( "1\n" );	/* unkown error */
+				fprintf(CurrentClient, "1\n" );	/* unkown error */
 				break;
 		}
 	} else
-		printf("0\n");
+		fprintf(CurrentClient, "0\n");
 }
 
 void setPriority( const char *cmd ) {
@@ -410,19 +412,19 @@ void setPriority( const char *cmd ) {
 	if( setpriority( PRIO_PROCESS, pid, prio )) {
 		switch( errno ) {
 			case EINVAL:
-				printf( "4\n" );
+				fprintf(CurrentClient, "4\n" );
 				break;
 			case ESRCH:
-				printf( "3\n" );
+				fprintf(CurrentClient, "3\n" );
 				break;
 			case EPERM:
 			case EACCES:
-				printf( "2\n" );
+				fprintf(CurrentClient, "2\n" );
 				break;
 			default:
-				printf( "1\n" );	/* unkown error */
+				fprintf(CurrentClient, "1\n" );	/* unkown error */
 				break;
 		}
 	} else
-		printf("0\n");
+		fprintf(CurrentClient, "0\n");
 }

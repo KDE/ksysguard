@@ -241,7 +241,7 @@ readCommand(int fd, char* cmdBuf, size_t len)
 }
 
 void
-reset_clientlist(void)
+resetClientList(void)
 {
 	int i;
 
@@ -596,7 +596,7 @@ main(int argc, char* argv[])
 
 		if ((ServerSocket = createServerSocket()) < 0)
 			return (-1);
-		reset_clientlist();
+		resetClientList();
 	}
 	else
 	{

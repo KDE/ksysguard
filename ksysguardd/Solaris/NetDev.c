@@ -39,6 +39,7 @@
 #include <kstat.h>
 #endif
 
+#include "ksysguardd.h"
 #include "Command.h"
 #include "NetDev.h"
 
@@ -117,8 +118,6 @@ typedef struct {
 	unsigned long	OLDbrdcstrcv;
 } NetDevInfo;
 
-
-#define printerr(a) write(STDERR_FILENO, (a), strlen(a))
 
 #define NBUFFERS 64
 #define MAXNETDEVS 64
@@ -245,7 +244,7 @@ int getnetdevlist( void ) {
 	close( fd );
 
 	if( (prevCount > 0) && (prevCount != NetDevCount) ) {
-		printerr( "RECONFIGURE\n" );
+		print_error( "RECONFIGURE\n" );
 		prevCount = NetDevCount;
 	}
 
@@ -429,7 +428,7 @@ int updateNetDev( void ) {
 }
 
 void printIPacketsInfo( const char *cmd ) {
-	printf( "Received Packets\t0\t0\tPackets\n" );
+	fprintf(CurrentClient, "Received Packets\t0\t0\tPackets\n" );
 }
 
 void printIPackets( const char *cmd ) {
@@ -446,18 +445,18 @@ void printIPackets( const char *cmd ) {
 	for( i = 0; i < NetDevCount; i++ ) {
 		if( (IfInfo[i].OLDipackets > 0)
 				&& (strcmp( IfInfo[i].Name, name ) == 0) ) {
-			printf( "%ld\n",
+			fprintf(CurrentClient, "%ld\n",
 				IfInfo[i].ipackets - IfInfo[i].OLDipackets);
 			free( cmdcopy );
 			return;
 		}
 	}
 	free( cmdcopy );
-	printf( "0\n" );
+	fprintf(CurrentClient, "0\n" );
 }
 
 void printOPacketsInfo( const char *cmd ) {
-	printf( "Transmitted Packets\t0\t0\tPackets\n" );
+	fprintf(CurrentClient, "Transmitted Packets\t0\t0\tPackets\n" );
 }
 
 void printOPackets( const char *cmd ) {
@@ -474,18 +473,18 @@ void printOPackets( const char *cmd ) {
 	for( i = 0; i < NetDevCount; i++ ) {
 		if( (IfInfo[i].OLDopackets > 0)
 				&& (strcmp( IfInfo[i].Name, name ) == 0) ) {
-			printf( "%ld\n",
+			fprintf(CurrentClient, "%ld\n",
 				IfInfo[i].opackets - IfInfo[i].OLDopackets );
 			free( cmdcopy );
 			return;
 		}
 	}
 	free( cmdcopy );
-	printf( "0\n" );
+	fprintf(CurrentClient, "0\n" );
 }
 
 void printIErrorsInfo( const char *cmd ) {
-	printf( "Input Errors\t0\t0\tPackets\n" );
+	fprintf(CurrentClient, "Input Errors\t0\t0\tPackets\n" );
 }
 
 void printIErrors( const char *cmd ) {
@@ -502,18 +501,18 @@ void printIErrors( const char *cmd ) {
 	for( i = 0; i < NetDevCount; i++ ) {
 		if( (IfInfo[i].OLDierrors > 0)
 				&& (strcmp( IfInfo[i].Name, name ) == 0) ) {
-			printf( "%ld\n",
+			fprintf(CurrentClient, "%ld\n",
 				IfInfo[i].ierrors - IfInfo[i].OLDierrors );
 			free( cmdcopy );
 			return;
 		}
 	}
 	free( cmdcopy );
-	printf( "0\n" );
+	fprintf(CurrentClient, "0\n" );
 }
 
 void printOErrorsInfo( const char *cmd ) {
-	printf( "Output Errors\t0\t0\tPackets\n" );
+	fprintf(CurrentClient, "Output Errors\t0\t0\tPackets\n" );
 }
 
 void printOErrors( const char *cmd ) {
@@ -530,18 +529,18 @@ void printOErrors( const char *cmd ) {
 	for( i = 0; i < NetDevCount; i++ ) {
 		if( (IfInfo[i].OLDoerrors > 0)
 				&& (strcmp( IfInfo[i].Name, name ) == 0) ) {
-			printf( "%ld\n",
+			fprintf(CurrentClient, "%ld\n",
 				IfInfo[i].oerrors - IfInfo[i].OLDoerrors );
 			free( cmdcopy );
 			return;
 		}
 	}
 	free( cmdcopy );
-	printf( "0\n" );
+	fprintf(CurrentClient, "0\n" );
 }
 
 void printCollisionsInfo( const char *cmd ) {
-	printf( "Collisions\t0\t0\tPackets\n" );
+	fprintf(CurrentClient, "Collisions\t0\t0\tPackets\n" );
 }
 
 void printCollisions( const char *cmd ) {
@@ -558,18 +557,18 @@ void printCollisions( const char *cmd ) {
 	for( i = 0; i < NetDevCount; i++ ) {
 		if( (IfInfo[i].OLDcollisions > 0)
 				&& (strcmp( IfInfo[i].Name, name ) == 0) ) {
-			printf( "%ld\n",
+			fprintf(CurrentClient, "%ld\n",
 				IfInfo[i].collisions - IfInfo[i].OLDcollisions );
 			free( cmdcopy );
 			return;
 		}
 	}
 	free( cmdcopy );
-	printf( "0\n" );
+	fprintf(CurrentClient, "0\n" );
 }
 
 void printMultiXmitsInfo( const char *cmd ) {
-	printf( "Multicasts Sent\t0\t0\tPackets\n" );
+	fprintf(CurrentClient, "Multicasts Sent\t0\t0\tPackets\n" );
 }
 
 void printMultiXmits( const char *cmd ) {
@@ -586,18 +585,18 @@ void printMultiXmits( const char *cmd ) {
 	for( i = 0; i < NetDevCount; i++ ) {
 		if( (IfInfo[i].OLDmultixmt > 0)
 				&& (strcmp( IfInfo[i].Name, name ) == 0) ) {
-			printf( "%ld\n",
+			fprintf(CurrentClient, "%ld\n",
 				IfInfo[i].multixmt - IfInfo[i].OLDmultixmt );
 			free( cmdcopy );
 			return;
 		}
 	}
 	free( cmdcopy );
-	printf( "0\n" );
+	fprintf(CurrentClient, "0\n" );
 }
 
 void printMultiRecvsInfo( const char *cmd ) {
-	printf( "Multicasts Received\t0\t0\tPackets\n" );
+	fprintf(CurrentClient, "Multicasts Received\t0\t0\tPackets\n" );
 }
 
 void printMultiRecvs( const char *cmd ) {
@@ -614,18 +613,18 @@ void printMultiRecvs( const char *cmd ) {
 	for( i = 0; i < NetDevCount; i++ ) {
 		if( (IfInfo[i].OLDmultircv > 0)
 				&& (strcmp( IfInfo[i].Name, name ) == 0) ) {
-			printf( "%ld\n",
+			fprintf(CurrentClient, "%ld\n",
 				IfInfo[i].multircv - IfInfo[i].OLDmultircv );
 			free( cmdcopy );
 			return;
 		}
 	}
 	free( cmdcopy );
-	printf( "0\n" );
+	fprintf(CurrentClient, "0\n" );
 }
 
 void printBcastXmitsInfo( const char *cmd ) {
-	printf( "Broadcasts Sent\t0\t0\tPackets\n" );
+	fprintf(CurrentClient, "Broadcasts Sent\t0\t0\tPackets\n" );
 }
 
 void printBcastXmits( const char *cmd ) {
@@ -642,18 +641,18 @@ void printBcastXmits( const char *cmd ) {
 	for( i = 0; i < NetDevCount; i++ ) {
 		if( (IfInfo[i].OLDbrdcstxmt > 0)
 				&& (strcmp( IfInfo[i].Name, name ) == 0) ) {
-			printf( "%ld\n",
+			fprintf(CurrentClient, "%ld\n",
 				IfInfo[i].brdcstxmt - IfInfo[i].OLDbrdcstxmt );
 			free( cmdcopy );
 			return;
 		}
 	}
 	free( cmdcopy );
-	printf( "0\n" );
+	fprintf(CurrentClient, "0\n" );
 }
 
 void printBcastRecvsInfo( const char *cmd ) {
-	printf( "Broadcasts Received\t0\t0\tPackets\n" );
+	fprintf(CurrentClient, "Broadcasts Received\t0\t0\tPackets\n" );
 }
 
 void printBcastRecvs( const char *cmd ) {
@@ -670,12 +669,12 @@ void printBcastRecvs( const char *cmd ) {
 	for( i = 0; i < NetDevCount; i++ ) {
 		if( (IfInfo[i].OLDbrdcstrcv > 0)
 				&& (strcmp( IfInfo[i].Name, name ) == 0) ) {
-			printf( "%ld\n",
+			fprintf(CurrentClient, "%ld\n",
 				IfInfo[i].brdcstrcv - IfInfo[i].OLDbrdcstrcv );
 			free( cmdcopy );
 			return;
 		}
 	}
 	free( cmdcopy );
-	printf( "0\n" );
+	fprintf(CurrentClient, "0\n" );
 }

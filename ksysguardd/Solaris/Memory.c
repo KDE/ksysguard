@@ -33,15 +33,60 @@
 #include <kstat.h>
 #endif
 
+#include "ksysguardd.h"
 #include "Command.h"
 #include "Memory.h"
 
+static int Dirty = 1;
 static t_memsize totalmem = (t_memsize) 0;
 static t_memsize freemem = (t_memsize) 0;
-static t_memsize totalswap = (t_memsize) 0;
-static t_memsize freeswap = (t_memsize) 0;
+static long totalswap = 0L;
+static long freeswap = 0L;
+
+/*
+ *  this is borrowed from top's m_sunos5 module
+ *  used by permission from William LeFebvre
+ */
+static int pageshift;
+static long (*p_pagetok) ();
+#define pagetok(size) ((*p_pagetok)(size))
+
+long pagetok_none( long size ) {
+	return( size );
+}
+
+long pagetok_left( long size ) {
+	return( size << pageshift );
+}
+
+long pagetok_right( long size ) {
+	return( size >> pageshift );
+}
 
 void initMemory( void ) {
+
+	long i = sysconf( _SC_PAGESIZE );
+
+	pageshift = 0;
+	while( (i >>= 1) > 0 )
+		pageshift++;
+
+	/* calculate an amount to shift to K values */
+	/* remember that log base 2 of 1024 is 10 (i.e.: 2^10 = 1024) */
+	pageshift -= 10;
+
+	/* now determine which pageshift function is appropriate for the 
+	result (have to because x << y is undefined for y < 0) */
+	if( pageshift > 0 ) {
+		/* this is the most likely */
+		p_pagetok = pagetok_left;
+	} else if( pageshift == 0 ) {
+		p_pagetok = pagetok_none;
+	} else {
+		p_pagetok = pagetok_right;
+		pageshift = -pageshift;
+	}
+
 #ifdef HAVE_KSTAT
 	registerMonitor( "mem/physical/free", "integer",
 					printMemFree, printMemFreeInfo );
@@ -95,6 +140,7 @@ int updateMemory( void ) {
 	swapctl( SC_LIST, swt );
 
 	swaptotal = swapfree = 0L;
+
 	ste = &(swt->swt_ent[0]);
 	for( i = 0; i < ndevs; i++ ) {
 		if( (! (ste->ste_flags & ST_INDEL))
@@ -106,9 +152,8 @@ int updateMemory( void ) {
 	}
 	free( swt );
 
-	totalswap = PAGETOK( swaptotal );
-	freeswap = PAGETOK( swapfree );
-
+	totalswap = pagetok( swaptotal );
+	freeswap = pagetok( swapfree );
 
 #ifdef HAVE_KSTAT
 	/*
@@ -119,7 +164,7 @@ int updateMemory( void ) {
 	while( kstat_chain_update( kctl ) != 0 )
 		;
 
-	totalmem = PAGETOK( sysconf( _SC_PHYS_PAGES ));
+	totalmem = pagetok( sysconf( _SC_PHYS_PAGES ));
 
 	/*
 	 *  traverse the kstat chain to find the appropriate statistics
@@ -134,44 +179,60 @@ int updateMemory( void ) {
 	 */
 	 kdata = (kstat_named_t *) kstat_data_lookup( ksp, "freemem" );
 	 if( kdata != NULL )
-	 	freemem = PAGETOK( kdata->value.ui32 );
+	 	freemem = pagetok( kdata->value.ui32 );
 
 	kstat_close( kctl );
-#else
-	return( 0 );
 #endif /* ! HAVE_KSTAT */
+
+	Dirty = 0;
 
 	return( 0 );
 }
 
 void printMemFreeInfo( const char *cmd ) {
-	printf( "Free Memory\t0\t%ld\tKB\n", totalmem );
+	if( Dirty )
+		updateMemory();
+	fprintf(CurrentClient, "Free Memory\t0\t%ld\tKB\n", totalmem );
 }
 
 void printMemFree( const char *cmd ) {
-	printf( "%ld\n", freemem );
+	if( Dirty )
+		updateMemory();
+	fprintf(CurrentClient, "%ld\n", freemem );
 }
 
 void printMemUsedInfo( const char *cmd ) {
-	printf( "Used Memory\t0\t%ld\tKB\n", totalmem - freemem );
+	if( Dirty )
+		updateMemory();
+	fprintf(CurrentClient, "Used Memory\t0\t%ld\tKB\n", totalmem );
 }
 
 void printMemUsed( const char *cmd ) {
-	printf( "%ld\n", totalmem - freemem );
+	if( Dirty )
+		updateMemory();
+	fprintf(CurrentClient, "%ld\n", totalmem - freemem );
 }
 
 void printSwapFreeInfo( const char *cmd ) {
-	printf( "Free Swap\t0\t%ld\tKB\n", totalswap );
+	if( Dirty )
+		updateMemory();
+	fprintf(CurrentClient, "Free Swap\t0\t%ld\tKB\n", totalswap );
 }
 
 void printSwapFree( const char *cmd ) {
-	printf( "%ld\n", freeswap );
+	if( Dirty )
+		updateMemory();
+	fprintf(CurrentClient, "%ld\n", freeswap );
 }
 
 void printSwapUsedInfo( const char *cmd ) {
-	printf( "Used Swap\t0\t%ld\tKB\n", totalswap );
+	if( Dirty )
+		updateMemory();
+	fprintf(CurrentClient, "Used Swap\t0\t%ld\tKB\n", totalswap );
 }
 
 void printSwapUsed( const char *cmd ) {
-	printf( "%ld\n", totalswap - freeswap );
+	if( Dirty )
+		updateMemory();
+	fprintf(CurrentClient, "%ld\n", totalswap - freeswap );
 }

@@ -25,29 +25,26 @@
 #ifndef _Command_h_
 #define _Command_h_
 
-#define TIMERINTERVAL 2
+void print_error(const char *, ...);
+void log_error(const char *, ...);
 
 typedef void (*cmdExecutor)(const char*);
 
 extern int ReconfigureFlag;
 
 void initCommand(void);
-
 void exitCommand(void);
 
 void registerCommand(const char* command, cmdExecutor ex);
-
+void executeCommand(const char* command);
 void removeCommand(const char* command);
 
-void registerMonitor(const char* command, const char* type, cmdExecutor ex,
-					 cmdExecutor iq);
-
+void registerMonitor(const char* command, const char* type, cmdExecutor ex, cmdExecutor iq);
 void removeMonitor(const char* command);
 
-void executeCommand(const char* command);
-
 void printMonitors(const char* cmd);
-
 void printTest(const char* cmd);
+
+void exQuit(const char* cmd);
 
 #endif

@@ -29,11 +29,15 @@
 
 void initProcessList(void);
 void exitProcessList(void);
+
 int updateProcessList(void);
+
 void printProcessList(const char*);
 void printProcessListInfo(const char*);
+
 void printProcessCount(const char* cmd);
 void printProcessCountInfo(const char* cmd);
+
 void killProcess(const char* cmd);
 void setPriority(const char* cmd);
 

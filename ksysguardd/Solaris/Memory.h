@@ -27,7 +27,7 @@
 
 typedef unsigned long t_memsize;
 
-#define PAGETOK(a) ((( (t_memsize) sysconf( _SC_PAGESIZE )) / (t_memsize) 1024) * (t_memsize) a)
+#define PAGETOK(a) ((( (t_memsize) sysconf( _SC_PAGESIZE )) / (t_memsize) 1024) * (t_memsize) (a))
 
 void initMemory(void);
 void exitMemory(void);
