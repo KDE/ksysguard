@@ -27,14 +27,13 @@
 #include <signal.h>
 #include <assert.h>
 
-#include <qmessagebox.h>
-
 #include <kapp.h>
+#include <klocale.h>
+#include <kmessagebox.h>
 
 #include "ProcessMenu.moc"
 #include "OSProcessList.h"
 #include "ReniceDlg.h"
-#include <klocale.h>
 
 ProcessMenu::ProcessMenu(QWidget* parent, const char* name)
 	: QPopupMenu(parent, name)
@@ -75,9 +74,7 @@ ProcessMenu::killProcess(int pid, int sig)
 {
 	if (pid < 0)
 	{
-		QMessageBox::warning(this, i18n("Task Manager"),
-							 i18n("You need to select a process first!"),
-								  i18n("OK"), QString::null);
+		KMessageBox::sorry(this, i18n("You need to select a process first!"));
 		return;
 	}
 
@@ -87,8 +84,7 @@ ProcessMenu::killProcess(int pid, int sig)
 	{
 		QString msg;
 		msg = i18n("The process %1 is no longer persistent.").arg(pid);
-		QMessageBox::warning(this, i18n("Task Manager"), msg, i18n("OK"),
-							 QString::null);
+		KMessageBox::sorry(this, msg);
 		return;
 	}
 
@@ -123,24 +119,20 @@ ProcessMenu::killProcess(int pid, int sig)
 	}
 
 	// Make sure user really want to send the signal to that process.
-	QString msg;
-	msg = i18n("Send signal %1 to process %2?\n"
-					 "(Process name: %3  Owner: %4)\n")
+	QString msg = i18n("Send signal %1 to process %2?\n"
+			   "(Process name: %3  Owner: %4)\n")
 		.arg(sigName)
 		.arg(ps.getPid())
 		.arg(ps.getName())
 		.arg(ps.getUserName());
-	switch(QMessageBox::warning(this, "Task Manager", msg,
-								i18n("Continue"), i18n("Abort"),\
-								QString::null, 1))
+	switch(KMessageBox::questionYesNo(this, msg))
     { 
-	case 0: // continue
+	case 0: // yes
 		if (!ps.sendSignal(sig))
-			QMessageBox::warning(this, "Task Manager", ps.getErrMessage(),
-								 i18n("Continue"), QString::null);
+			KMessageBox::error(this, ps.getErrMessage());
 		break;
 
-	case 1: // abort
+	case 1: // no
 		break;
 	}
 }
@@ -154,10 +146,8 @@ ProcessMenu::reniceProcess(int pid)
 
 	if (!ps.ok())
 	{
-		QString msg;
-		msg = i18n("The process %1 is no longer persistent.").arg(pid);
-		QMessageBox::warning(this, i18n("Task Manager"), msg, i18n("OK"),
-							 QString::null);
+		QString msg = i18n("The process %1 is no longer persistent.").arg(pid);
+		KMessageBox::sorry(this, msg);
 		return;
 	}
 
@@ -165,11 +155,9 @@ ProcessMenu::reniceProcess(int pid)
 	int currentNiceLevel = ps.getNiceLevel();
 	if (!ps.ok()) 
 	{
-		QMessageBox::warning(this, i18n("Task Manager"),
-							 i18n("Renice error...\n"
-								  "Specified process does not exist\n"
-								  "or permission denied."),
-							 i18n("OK"), QString::null);
+		KMessageBox::sorry(this, i18n("Renice error...\n"
+					      "Specified process does not exist\n"
+					      "or permission denied."));
 		return;
 	}
 
@@ -183,11 +171,9 @@ ProcessMenu::reniceProcess(int pid)
 	{
 		if (!ps.setNiceLevel(newNiceLevel))
 		{
-			QMessageBox::warning(this, i18n("Task Manager"),
-								 i18n("Renice error...\n"
-									  "Specified process does not exist\n"
-									  "or permission denied."),
-								 i18n("OK"), QString::null);
+			KMessageBox::sorry(this, i18n("Renice error...\n"
+						"Specified process does not exist\n"
+						"or permission denied."));
 		}
 	}
 }

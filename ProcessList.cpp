@@ -36,7 +36,6 @@
 #include <signal.h>
 #include <assert.h>
 
-#include <qmessagebox.h>
 #include <qheader.h>
 #include <qpixmap.h>
 #include <qbitmap.h>
@@ -45,6 +44,7 @@
 #include <kapp.h>
 #include <klocale.h>
 #include <kconfig.h>
+#include <kmessagebox.h>
 
 #include "MainMenu.h"
 #include "OSProcessList.h"
@@ -207,7 +207,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	// make sure we can retrieve process lists from the OS
 	if (!pl.ok())
 	{
-		QMessageBox::critical(this, "Task Manager", pl.getErrMessage(), 0, 0);
+		KMessageBox::error(this, pl.getErrMessage());
 		abort();
 	}
 
@@ -385,7 +385,7 @@ ProcessList::load()
 	// request current list of processes
 	if (!pl.update())
 	{
-		QMessageBox::critical(this, "Task Manager", pl.getErrMessage(), 0, 0);
+		KMessageBox::error(this, pl.getErrMessage());
 		abort();
 	}
 

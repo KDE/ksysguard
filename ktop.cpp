@@ -32,11 +32,10 @@
 
 #include <assert.h>
 
-#include <qmessagebox.h>
-
 #include <ktmainwindow.h>
 #include <kconfig.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 
 #include "OSStatus.h"
 #include "ktop.moc"
@@ -242,8 +241,7 @@ main(int argc, char** argv)
 
 	if (!priv.ok())
 	{
-		QMessageBox::critical(NULL, "KDE Task Manager", priv.getErrMessage(),
-							  0, 0);
+		KMessageBox::error(0, priv.getErrMessage());
 		return (-1);
 	}
 

@@ -31,7 +31,6 @@
 // $Id$
 
 #include <qtabbar.h>
-#include <qmessagebox.h>
 
 #include <kapp.h>
 

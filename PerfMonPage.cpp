@@ -29,10 +29,9 @@
 
 #include <stdlib.h>
 
-#include <qmessagebox.h>
-
 #include <kapp.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 
 #include "PerfMonPage.moc"
 
@@ -134,8 +133,7 @@ PerfMonPage::timerEvent(QTimerEvent*)
 	int user, sys, nice, idle;
 	if (!stat.getCpuLoad(user, sys, nice, idle))
 	{
-		QMessageBox::critical(this, "Task Manager", stat.getErrMessage(),
-							  0, 0);
+		KMessageBox::error(this, stat.getErrMessage());
 		abort();
 	}
 	cpuload->addSample(user, nice, sys);
@@ -144,8 +142,7 @@ PerfMonPage::timerEvent(QTimerEvent*)
 	if (!stat.getMemoryInfo(dum, dum, used, buffer, cache) ||
 		!stat.getSwapInfo(stotal, sfree))
 	{
-		QMessageBox::critical(this, "Task Manager", stat.getErrMessage(),
-							  0, 0);
+		KMessageBox::error(this, stat.getErrMessage());
 		abort();
 	}
 	memory->addSample(used - (buffer + cache), buffer, cache, stotal - sfree);
@@ -155,8 +152,7 @@ PerfMonPage::timerEvent(QTimerEvent*)
 		{
 			if (!stat.getCpuXLoad(i, user, sys, nice, idle))
 			{
-				QMessageBox::critical(this, "Task Manager",
-									  stat.getErrMessage(), 0, 0);
+				KMessageBox::error(this, stat.getErrMessage());
 				abort();
 			}
 			cpu.at(i)->addSample(user, nice, sys);
