@@ -26,4 +26,4 @@ bin_PROGRAMS = ksysguardd
 
 ksysguardd_SOURCES = Command.c conf.c ksysguardd.c PWUIDCache.c
 ksysguardd_LDFLAGS = -ggdb 
-ksysguardd_LDADD =  $(top_builddir)/ksysguard/ksysguardd/$(UNAME)/libksysguardd.a ../CContLib/libccont.la -lccont $(LIBHOSTS)
+ksysguardd_LDADD =  $(top_builddir)/ksysguard/ksysguardd/$(UNAME)/libksysguardd.a ../CContLib/libccont.a $(LIBHOSTS)
