@@ -133,6 +133,13 @@ Workspace::newWorkSheet()
 	delete s;
 }
 
+void
+Workspace::openRecent(const KURL&)
+{
+	/* TODO: I still need to make file handling in this class network
+	 * transparent. Then this function is trivial to implement. */
+}
+
 bool
 Workspace::saveOnQuit()
 {
@@ -171,6 +178,9 @@ Workspace::loadWorkSheet()
 
 	// Load sheet from file.
 	restoreWorkSheet(fileName);
+	KURL url;
+	url.setPath(fileName);
+	emit announceRecentURL(url);
 }
 
 void

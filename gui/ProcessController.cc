@@ -251,8 +251,12 @@ ProcessController::sensorError(bool err)
 {
 	if (err == sensorOk)
 	{
-		// this happens only when the sensorOk status needs to be changed.
-		box->setEnabled(!err);
+		/* This happens only when the sensorOk status needs to be changed.
+		 * In case the sensor is not reachable the frame is not displayed.
+		 * I don't like this too much, but I couldn't think of a better
+		 * quick hack solution. Disabling the frame was not a good idea
+		 * since it was impossible then to remove the broken displays. */
+		box->setLineWidth((int) !err);
 		sensorOk = !err;
 	}
 }

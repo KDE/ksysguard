@@ -36,6 +36,7 @@
 
 #include "SensorClient.h"
 
+class KRecentFilesAction;
 class KToggleAction;
 class SensorAgent;
 class SensorBrowser;
@@ -65,7 +66,11 @@ k_dcop:
 	QStringList listSensors();
 	QString readSensor(const QString& sensorLocator);
 
+public slots:
+	void registerRecentURL(const KURL& url);
+
 protected:
+
 	virtual void customEvent(QCustomEvent* e);
 	virtual void timerEvent(QTimerEvent*);
 	virtual bool queryClose();
@@ -83,6 +88,7 @@ private:
 	KStatusBar* statusbar;
 
 	QSplitter* splitter;
+	KRecentFilesAction* openRecent;
 	KToggleAction* toolbarTog;
 	KToggleAction* statusBarTog;
 	SensorBrowser* sb;

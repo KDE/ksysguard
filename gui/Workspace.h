@@ -29,6 +29,8 @@
 #include <qstring.h>
 #include <qlist.h>
 
+#include <kurl.h>
+
 class KConfig;
 class WorkSheet;
 
@@ -52,6 +54,7 @@ public:
 public slots:
 	void newWorkSheet();
 	void loadWorkSheet();
+	void openRecent(const KURL&);
 	void saveWorkSheet()
 	{
 		saveWorkSheet((WorkSheet*) currentPage());
@@ -59,6 +62,9 @@ public slots:
 	void saveWorkSheet(WorkSheet* sheet);
 	void saveWorkSheetAs();
 	void deleteWorkSheet();
+
+signals:
+	void announceRecentURL(const KURL& url);
 
 private:
 	QList<WorkSheet> sheets;

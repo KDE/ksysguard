@@ -154,10 +154,10 @@ initNetDev(void)
 				sprintf(mon, "network/%s/sentBytes", tag);
 				registerMonitor(mon, "integer", printNetDevSentBytes,
 								printNetDevRecBytesInfo);
+				sscanf(pos + 1, "%ld %*d %*d %*d %*d %*d %*d %*d" 
+					   "%ld %*d %*d %*d %*d %*d %*d %*d",
+					   &NetDevs[i].OldRxBytes, &NetDevs[i].OldTxBytes);
 			}
-			sscanf(pos + 1, "%ld %*d %*d %*d %*d %*d %*d %*d" 
-				   "%ld %*d %*d %*d %*d %*d %*d %*d",
-				   &NetDevs[i].OldRxBytes, &NetDevs[i].OldTxBytes);
 			NetDevs[i].rxBytes = NetDevs[i].txBytes = 0;
 		}
 	}

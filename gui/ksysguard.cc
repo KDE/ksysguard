@@ -31,6 +31,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <unistd.h>
 
 #include <qstringlist.h>
 
@@ -44,6 +45,7 @@
 #include <kaction.h>
 #include <kstdaction.h>
 #include <kedittoolbar.h>
+#include <kurl.h>
 #include <dcopclient.h>
 
 #include "SensorBrowser.h"
@@ -79,6 +81,8 @@ TopLevel::TopLevel(const char *name)
 
 	ws = new Workspace(splitter, "Workspace");
 	CHECK_PTR(ws);
+	connect(ws, SIGNAL(announceRecentURL(const KURL&)),
+			this, SLOT(registerRecentURL(const KURL&)));
 
 	/* Create the status bar. It displays some information about the
 	 * number of processes and the memory consumption of the local
@@ -100,6 +104,8 @@ TopLevel::TopLevel(const char *name)
     // setup File menu
     KStdAction::openNew(ws, SLOT(newWorkSheet()), actionCollection());
     KStdAction::open(ws, SLOT(loadWorkSheet()), actionCollection());
+	openRecent = KStdAction::openRecent(ws, SLOT(openRecent(const KURL&)),
+										actionCollection());
 	KStdAction::close(ws, SLOT(deleteWorkSheet()), actionCollection());
 
 	KStdAction::saveAs(ws, SLOT(saveWorkSheetAs()), actionCollection());
@@ -168,6 +174,12 @@ TopLevel::readSensor(const QString& /*sensorLocator*/)
 /*
  * End of DCOP Interface section
  */
+
+void
+TopLevel::registerRecentURL(const KURL& url)
+{
+	openRecent->addURL(url);
+}
 
 void
 TopLevel::beATaskManager()
@@ -396,6 +408,11 @@ static const KCmdLineOptions options[] =
 int
 main(int argc, char** argv)
 {
+	/* Create a new session. This is needed so the ssh calls do not use
+	 * the controlling terminal for password requests. ssh will use
+	 * ssh-askpass if it was compiled with X support. */
+	setsid();
+
 	KAboutData aboutData("ksysguard", I18N_NOOP("KDE System Guard"),
 						 KSYSGUARD_VERSION, Description,
 						 KAboutData::License_GPL,
