@@ -76,8 +76,6 @@ SignalPlotter::addBeam(QColor col)
 void
 SignalPlotter::addSample(int s0, int s1, int s2, int s3, int s4)
 {
-	assert(width() > 3);
-
 	/* To avoid unecessary calls to the fairly expensive calcRange
 	 * function we only do a recalc if the value to be dropped is
 	 * an extreme value. */
@@ -91,39 +89,39 @@ SignalPlotter::addSample(int s0, int s1, int s2, int s3, int s4)
 
 	// Shift data buffers one sample down.
 	for (int i = 0; i < beams; i++)
-		memmove(beamData[i], beamData[i] + 1, (width() - 3) * sizeof(int));
+		memmove(beamData[i], beamData[i] + 1, (samples - 1) * sizeof(int));
 
 	if (lowPass)
 	{
 		/* We use an FIR type low-pass filter to make the display look
 		 * a little nicer without becoming too inaccurate. */
 		if (beams > 0)
-			beamData[0][width() - 3] = (beamData[0][width() - 4] + s0) / 2;
+			beamData[0][samples - 1] = (beamData[0][samples - 2] + s0) / 2;
 		if (beams > 1)
-			beamData[1][width() - 3] = (beamData[1][width() - 4] + s1) / 2;
+			beamData[1][samples - 1] = (beamData[1][samples - 2] + s1) / 2;
 		if (beams > 2)
-			beamData[2][width() - 3] = (beamData[2][width() - 4] + s2) / 2;
+			beamData[2][samples - 1] = (beamData[2][samples - 2] + s2) / 2;
 		if (beams > 3)
-			beamData[3][width() - 3] = (beamData[3][width() - 4] + s3) / 2;
+			beamData[3][samples - 1] = (beamData[3][samples - 2] + s3) / 2;
 		if (beams > 4)
-			beamData[4][width() - 3] = (beamData[4][width() - 4] + s4) / 2;
+			beamData[4][samples - 1] = (beamData[4][samples - 2] + s4) / 2;
 	}
 	else
 	{
 		if (beams > 0)
-			beamData[0][width() - 3] = s0;
+			beamData[0][samples - 1] = s0;
 		if (beams > 1)
-			beamData[1][width() - 3] = s1;
+			beamData[1][samples - 1] = s1;
 		if (beams > 2)
-			beamData[2][width() - 3] = s2;
+			beamData[2][samples - 1] = s2;
 		if (beams > 3)
-			beamData[3][width() - 3] = s3;
+			beamData[3][samples - 1] = s3;
 		if (beams > 4)
-			beamData[4][width() - 3] = s4;
+			beamData[4][samples - 1] = s4;
 	}
 	for (int i = 0; i < beams; i++)
-		if (beamData[i][width() - 3] <= minValue ||
-			beamData[i][width() - 3] >= maxValue)
+		if (beamData[i][samples - 1] <= minValue ||
+			beamData[i][samples - 1] >= maxValue)
 		{
 			recalc = true;
 		}
@@ -166,7 +164,7 @@ SignalPlotter::calcRange()
 	minValue = 0;
 	maxValue = 0;
 
-	for (int i = 0; i < (width() - 2); i++)
+	for (int i = 0; i < samples; i++)
 	{
 		for (int b = 0; b < beams; b++)
 		{
@@ -218,8 +216,6 @@ SignalPlotter::resizeEvent(QResizeEvent*)
 void 
 SignalPlotter::paintEvent(QPaintEvent*)
 {
-	assert(width() > 2);
-
 	int w = width();
 	int h = height();
 
@@ -252,7 +248,7 @@ SignalPlotter::paintEvent(QPaintEvent*)
 
 	// Scale painter to value coordinates
 	p.scale(1.0f, (float) h / range);
-	for (int i = 0; i < (w - 2); i++)
+	for (int i = 0; i < samples; i++)
 	{
 		int bias = 0;
 		for (int b = 0; b < beams; b++)

@@ -118,6 +118,7 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 	CHECK_PTR(meterFrame);
 
 	beams = 0;
+	flags = 0;
 
 	plotter = new SignalPlotter(meterFrame, "signalPlotter", min, max);
 	CHECK_PTR(plotter);
@@ -208,20 +209,25 @@ FancyPlotter::sizeHint(void)
 void
 FancyPlotter::answerReceived(int id, const QString& answer)
 {
-	static long s[5];
-
 	if (id < 5)
-		s[id] = answer.toLong();
+	{
+		sampleBuf[id] = answer.toLong();
+		if (flags & (1 << id))
+			qDebug("ERROR: FancyPlotter lost sample (%x, %d)", flags, beams);
+		flags |= 1 << id;
+
+		if (flags == (uint) ((1 << beams) - 1))
+		{
+			plotter->addSample(sampleBuf[0], sampleBuf[1], sampleBuf[2],
+							   sampleBuf[3], sampleBuf[4]);
+			flags = 0;
+		}
+	}
 	else if (id > 100)
 	{
 		SensorIntegerInfo info(answer);
 		plotter->changeRange(id - 100, info.getMin(), info.getMax());
 		timerOn();
-	}
-
-	if (id == beams - 1)
-	{
-		plotter->addSample(s[0], s[1], s[2], s[3], s[4]);
 	}
 }
 

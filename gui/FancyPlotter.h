@@ -119,6 +119,13 @@ private:
 	QGroupBox* meterFrame;
 
 	SignalPlotter* plotter;
+
+	/* The sample buffer and the flags are needed to store the incoming
+	 * samples for each beam until all samples of the period have been
+	 * received. The flags variable is used to ensure that all samples have
+	 * been received. */
+	long sampleBuf[5];
+	uint flags;
 } ;
 
 #endif
