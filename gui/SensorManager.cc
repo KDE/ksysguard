@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -23,6 +23,9 @@
 */
 
 #include <qevent.h>
+#include <qradiobutton.h>
+#include <qpushbutton.h>
+#include <qcombobox.h>
 
 #include <kapp.h>
 #include <klocale.h>
@@ -30,6 +33,7 @@
 
 #include "ksysguard.h"
 #include "SensorManager.h"
+#include "HostConnector.h"
 #include "SensorAgent.h"
 #include "SensorManager.moc"
 
@@ -39,7 +43,7 @@ SensorManager::SensorManager()
 {
 	sensors.setAutoDelete(true);
 
-	dict.setAutoDelete(TRUE);
+	dict.setAutoDelete(true);
 	// Fill the sensor description dictionary.
 	dict.insert("cpu", new QString(i18n("CPU Load", "Load")));
 	dict.insert("idle", new QString(i18n("Idle Load")));
@@ -96,20 +100,78 @@ SensorManager::SensorManager()
 					new QString(QString(i18n("Int%1")).arg(i - 1, 3)));
 	}
 
-	descriptions.setAutoDelete(TRUE);
+	descriptions.setAutoDelete(true);
 	// TODO: translated descriptions not yet implemented.
 
-	units.setAutoDelete(TRUE);
+	units.setAutoDelete(true);
 	units.insert("1/s", new QString(i18n("the unit 1 per second", "1/s")));
 	units.insert("kBytes", new QString(i18n("kBytes")));
 	units.insert("min", new QString(i18n("the unit minutes", "min")));
 	units.insert("MHz", new QString(i18n("the frequency unit", "MHz")));
 
 	broadcaster = 0;
+
+	hostConnector = new HostConnector(0, "HostConnector", true);
+	CHECK_PTR(hostConnector);
+	connect(hostConnector->helpButton, SIGNAL(clicked()),
+			this, SLOT(helpConnectHost()));
 }
 
 SensorManager::~SensorManager()
 {
+	delete hostConnector;
+}
+
+bool
+SensorManager::engageHost(const QString& hostname)
+{
+	bool retVal = true;
+
+	if (hostname == "" || sensors.find(hostname) == 0)
+	{
+		if (hostname == "")
+		{
+			/* Show combo box, hide fixed label. */
+			hostConnector->hostLabel->setText(i18n("Host"));
+			hostConnector->host->show();
+			hostConnector->host->setEnabled(true);
+			hostConnector->host->setFocus();
+		}
+		else
+		{
+			/* Show fixed label (hostname) and hide combo box. */
+			hostConnector->hostLabel->setText(hostname);
+			hostConnector->host->hide();
+			hostConnector->host->setEnabled(false);
+		}
+		if (hostConnector->exec())
+		{
+			QString shell;
+			QString command;
+
+			if (hostConnector->ssh->isChecked())
+			{
+				shell = "ssh";
+				command = "";
+			}
+			else if (hostConnector->rsh->isChecked())
+			{
+				shell = "rsh";
+				command = "";
+			}
+			else
+			{
+				shell = "";
+				command = hostConnector->command->currentText();
+			}
+			if (hostname == "")
+				retVal = engage(hostConnector->host->currentText(), shell,
+								command);
+			else
+				retVal = engage(hostname, shell, command);
+		}
+	}
+	return (retVal);
 }
 
 bool
@@ -125,16 +187,16 @@ SensorManager::engage(const QString& hostname, const QString& shell,
 		if (!daemon->start(hostname.ascii(), shell, command))
 		{
 			delete daemon;
-			return (FALSE);
+			return (false);
 		}
 		sensors.insert(hostname, daemon);
 		connect(daemon, SIGNAL(reconfigure(const SensorAgent*)),
 				this, SLOT(reconfigure(const SensorAgent*)));
 		emit update();
-		return (TRUE);
+		return (true);
 	}
 
-	return (TRUE);
+	return (false);
 }
 
 bool
@@ -147,10 +209,10 @@ SensorManager::disengage(const SensorAgent* sa)
 		{
 			sensors.remove(it.currentKey());
 			emit update();
-			return (TRUE);
+			return (true);
 		}
 
-	return (FALSE);
+	return (false);
 }
 
 bool
@@ -161,10 +223,10 @@ SensorManager::disengage(const QString& hostname)
 	{
 		sensors.remove(hostname);
 		emit update();
-		return (TRUE);
+		return (true);
 	}
 
-	return (FALSE);
+	return (false);
 }
 
 bool
@@ -173,7 +235,7 @@ SensorManager::resynchronize(const QString& hostname)
 	SensorAgent* daemon;
 
 	if ((daemon = sensors.find(hostname)) == 0)
-		return (FALSE);
+		return (false);
 
 	QString shell, command;
 	getHostInfo(hostname, shell, command);
@@ -213,10 +275,10 @@ SensorManager::sendRequest(const QString& hostname, const QString& req,
 	if ((daemon = sensors.find(hostname)) != 0)
 	{
 		daemon->sendRequest(req, client, id);
-		return (TRUE);
+		return (true);
 	}
 
-	return (FALSE);
+	return (false);
 }
 
 const QString
@@ -242,8 +304,42 @@ SensorManager::getHostInfo(const QString& hostName, QString& shell,
 	if ((daemon = sensors.find(hostName)) != 0)
 	{
 		daemon->getHostInfo(shell, command);
-		return (TRUE);
+		return (true);
 	}
 
-	return (FALSE);
+	return (false);
+}
+
+void
+SensorManager::readProperties(KConfig* cfg)
+{
+	QStringList sl = cfg->readListEntry("HostList");
+	hostConnector->host->insertStringList(sl);
+	sl.clear();
+	sl = cfg->readListEntry("CommandList");
+	hostConnector->command->insertStringList(sl);
+}
+
+void
+SensorManager::saveProperties(KConfig* cfg)
+{
+	QComboBox* cb = hostConnector->host;
+	QStringList sl;
+	for (int i = 0; i < cb->count(); ++i)
+		sl.append(cb->text(i));
+	cfg->writeEntry("HostList", sl);
+
+	cb = hostConnector->command;
+	sl.clear();
+	for (int i = 0; i < cb->count(); ++i)
+		sl.append(cb->text(i));
+	cfg->writeEntry("CommandList", sl);
+	
+}
+
+void
+SensorManager::helpConnectHost()
+{
+	kapp->invokeHelp("CONNECTINGTOOTHERHOSTS",
+					 "ksysguard/the-sensor-browser.html");
 }

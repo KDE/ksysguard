@@ -39,7 +39,7 @@ lib_LTLIBRARIES = libksysguardapplet.la
 
 libksysguardapplet_la_SOURCES = KSysGuardApplet.cc SensorManager.cc \
 	SensorAgent.cc FancyPlotter.cc SignalPlotter.cc SensorDisplay.cc \
-	FancyPlotterSettings.ui
+	FancyPlotterSettings.ui HostConnector.ui
 libksysguardapplet_la_METASOURCES = AUTO
 libksysguardapplet_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -module -no-undefined
 libksysguardapplet_la_LIBADD = $(LIB_KDEUI) $(LIB_KSYCOCA)

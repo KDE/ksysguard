@@ -258,8 +258,10 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 					  const QString& sensorType, const QString& sensorDescr,
 					  int r, int c)
 {
-	if (!SensorMgr->engage(hostName))
+	if (!SensorMgr->engageHost(hostName))
 	{
+		/* TODO: This error message is wrong. It needs to be changed
+		 * to "Impossible to connect to ..." after the message freeze. */
 		QString msg = i18n("Unknown hostname \'%1\'!").arg(hostName);
 		KMessageBox::error(this, msg);
 		return (0);

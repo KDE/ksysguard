@@ -13,7 +13,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>382</width>
+            <width>378</width>
             <height>210</height>
         </rect>
     </property>
@@ -38,49 +38,11 @@
             <class>QLabel</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>TextLabel1</cstring>
+                <cstring>hostLabel</cstring>
             </property>
             <property stdset="1">
                 <name>text</name>
                 <string>Host</string>
-            </property>
-        </widget>
-        <widget row="0"  column="1" >
-            <class>QComboBox</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>host</cstring>
-            </property>
-            <property stdset="1">
-                <name>sizePolicy</name>
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>0</vsizetype>
-                </sizepolicy>
-            </property>
-            <property stdset="1">
-                <name>editable</name>
-                <bool>true</bool>
-            </property>
-            <property stdset="1">
-                <name>autoCompletion</name>
-                <bool>true</bool>
-            </property>
-            <property stdset="1">
-                <name>duplicatesEnabled</name>
-                <bool>false</bool>
-            </property>
-            <property stdset="1">
-                <name>insertionPolicy</name>
-                <enum>AtTop</enum>
-            </property>
-            <property stdset="1">
-                <name>maxCount</name>
-                <number>20</number>
-            </property>
-            <property>
-                <name>whatsThis</name>
-                <string>Enter the name of the host you want to connect to.</string>
             </property>
         </widget>
         <widget row="2"  column="0"  rowspan="1"  colspan="2" >
@@ -228,6 +190,10 @@
                                 <cstring>command</cstring>
                             </property>
                             <property stdset="1">
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
+                            <property stdset="1">
                                 <name>sizePolicy</name>
                                 <sizepolicy>
                                     <hsizetype>3</hsizetype>
@@ -239,24 +205,20 @@
                                 <bool>true</bool>
                             </property>
                             <property stdset="1">
-                                <name>autoCompletion</name>
-                                <bool>true</bool>
-                            </property>
-                            <property stdset="1">
-                                <name>duplicatesEnabled</name>
-                                <bool>false</bool>
+                                <name>maxCount</name>
+                                <number>20</number>
                             </property>
                             <property stdset="1">
                                 <name>insertionPolicy</name>
                                 <enum>AtTop</enum>
                             </property>
                             <property stdset="1">
-                                <name>enabled</name>
-                                <bool>false</bool>
+                                <name>autoCompletion</name>
+                                <bool>true</bool>
                             </property>
                             <property stdset="1">
-                                <name>maxCount</name>
-                                <number>20</number>
+                                <name>duplicatesEnabled</name>
+                                <bool>false</bool>
                             </property>
                             <property>
                                 <name>whatsThis</name>
@@ -477,6 +439,44 @@
                     </property>
                 </widget>
             </grid>
+        </widget>
+        <widget row="0"  column="1" >
+            <class>QComboBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>host</cstring>
+            </property>
+            <property stdset="1">
+                <name>sizePolicy</name>
+                <sizepolicy>
+                    <hsizetype>3</hsizetype>
+                    <vsizetype>0</vsizetype>
+                </sizepolicy>
+            </property>
+            <property stdset="1">
+                <name>editable</name>
+                <bool>true</bool>
+            </property>
+            <property stdset="1">
+                <name>maxCount</name>
+                <number>20</number>
+            </property>
+            <property stdset="1">
+                <name>insertionPolicy</name>
+                <enum>AtTop</enum>
+            </property>
+            <property stdset="1">
+                <name>autoCompletion</name>
+                <bool>true</bool>
+            </property>
+            <property stdset="1">
+                <name>duplicatesEnabled</name>
+                <bool>false</bool>
+            </property>
+            <property>
+                <name>whatsThis</name>
+                <string>Enter the name of the host you want to connect to.</string>
+            </property>
         </widget>
     </grid>
 </widget>

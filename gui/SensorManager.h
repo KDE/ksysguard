@@ -25,15 +25,21 @@
 #include <qobject.h>
 #include <qdict.h>
 
+#include <kconfig.h>
+
 #include "SensorAgent.h"
 
 class SensorManagerIterator;
+class HostConnector;
 
 /**
  * The SensorManager handles all interaction with the connected
  * hosts. Connections to a specific hosts are handled by
  * SensorAgents. Use engage() to establish a connection and
- * disengage() to terminate the connection.
+ * disengage() to terminate the connection. If you don't know if a
+ * certain host is already connected use engageHost(). If there is no
+ * connection yet or the hostname is empty, a dialog will be shown to
+ * enter the connections details.
  */
 class SensorManager : public QObject
 {
@@ -45,6 +51,7 @@ public:
 	SensorManager();
 	~SensorManager();
 
+	bool engageHost(const QString& hostname);
 	bool engage(const QString& hostname, const QString& shell = "ssh",
 				const QString& command = "");
 	bool disengage(const SensorAgent* sensor);
@@ -77,6 +84,8 @@ public:
 		else
 			return (u);
 	}
+	void readProperties(KConfig* cfg);
+	void saveProperties(KConfig* cfg);
 
 public slots:
 	void reconfigure(const SensorAgent* sensor);
@@ -88,6 +97,9 @@ signals:
 protected:
 	QDict<SensorAgent> sensors;
 
+protected slots:
+	void helpConnectHost();
+
 private:
 	/**
 	 * These dictionary stores the localized versions of the sensor
@@ -98,6 +110,8 @@ private:
 	QDict<QString> dict;
 
 	QWidget* broadcaster;
+
+	HostConnector* hostConnector;
 } ;
 
 extern SensorManager* SensorMgr;

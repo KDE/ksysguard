@@ -28,6 +28,7 @@
 
 #include <kglobal.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 #include <kdebug.h>
 
 #include "SensorManager.h"
@@ -153,6 +154,15 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 		if (hostName.isEmpty() || sensorName.isEmpty() ||
 			sensorType.isEmpty())
 		{
+			return;
+		}
+
+		if (!SensorMgr->engageHost(hostName))
+		{
+			/* TODO: This error message is wrong. It needs to be changed
+			 * to "Impossible to connect to ..." after the message freeze. */
+			QString msg = i18n("Unknown hostname \'%1\'!").arg(hostName);
+			KMessageBox::error(this, msg);
 			return;
 		}
 
