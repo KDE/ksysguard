@@ -104,6 +104,8 @@ class SignalPlotter : public QWidget
     QColor backgroundColor() const;
 
   protected:
+    void updateDataBuffers();
+
     virtual void resizeEvent( QResizeEvent* );
     virtual void paintEvent( QPaintEvent* );
 

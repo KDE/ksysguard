@@ -200,7 +200,12 @@ uint SignalPlotter::graphStyle() const
 
 void SignalPlotter::setHorizontalScale( int scale )
 {
+  if (scale == mHorizontalScale)
+     return;
+
   mHorizontalScale = scale;
+  if (isVisible())
+     updateDataBuffers();
 }
 
 int SignalPlotter::horizontalScale() const
@@ -322,6 +327,11 @@ void SignalPlotter::resizeEvent( QResizeEvent* )
 {
   Q_ASSERT( width() > 2 );
 
+  updateDataBuffers();
+}
+
+void SignalPlotter::updateDataBuffers()
+{
   /* Since the data buffers for the beams are equal in size to the
    * width of the widget minus 2 we have to enlarge or shrink the
    * buffers accordingly when a resize occures. To have a nicer
