@@ -58,8 +58,19 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name, double min,
 	KIconLoader iconLoader;
 	errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop,
 									KIcon::SizeSmall);
-	showTopBar = false;
 	sensorOk = false;
+
+	vLines = true;
+	vColor = green;
+	vDistance = 30;
+
+	hLines = true;
+	hColor = green;
+	hCount = 5;
+
+	labels = true;
+	topBar = false;
+	fontSize = 12;
 }
 
 SignalPlotter::~SignalPlotter()
@@ -209,8 +220,8 @@ SignalPlotter::resizeEvent(QResizeEvent*)
 void 
 SignalPlotter::paintEvent(QPaintEvent*)
 {
-	int w = width();
-	int h = height();
+	uint w = width();
+	uint h = height();
 
 	QPixmap pm(w, h);
 	QPainter p;
@@ -233,19 +244,19 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	if (autoRange)
 	{
 		// Massage the range so that the grid shows some nice values.
-		double step = range / 5.0;
+		double step = range / hCount;
 		double dim = pow(10, floor(log10(step)));
-		range = dim * ceil(step / dim) * 5;
+		range = dim * ceil(step / dim) * hCount;
 	}
 	double maxVal = minValue + range;
 
 	int top = 0;
-	if (showTopBar && h > 50)
+	if (topBar && h > (fontSize + 2 + hCount * 10))
 	{
 		/* Draw horizontal bar with current sensor values at top of display. */
-		p.setPen(QColor("green"));
+		p.setPen(hColor);
 		int x0 = w / 2;
-		p.setFont(QFont("lucidatypewriter", 10));
+		p.setFont(QFont("lucidatypewriter", fontSize));
 		top = fontMetrics().height() - 1;
 		h -= top;
 		int h0 = top - 2;
@@ -288,10 +299,10 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	}
 
 	/* Draw scope-like grid vertical lines */
-	if (w > 60)
+	if (vLines && w > 60)
 	{
-		p.setPen(QColor("green"));
-		for (int x = 30; x < (w - 2); x += 30)
+		p.setPen(vColor);
+		for (uint x = vDistance; x < (w - 2); x += vDistance)
 			p.drawLine(w - x, top, w - x, h + top - 2);
 	}
 
@@ -331,23 +342,24 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	}
 	
 	/* Draw horizontal lines and values. Lines are drawn when the
-	 * height is greater than 35, values are shown when height is
-	 * greater than 60 */
-	if (h > 35)
+	 * height is greater than 10 times hCount + 1, values are shown
+	 * when width is greater than 60 */
+	if (hLines && h > (10 * (hCount + 1)))
 	{
-		p.setPen(QColor("green"));
-		p.setFont(QFont("lucidatypewriter", 12));
+		p.setPen(hColor);
+		p.setFont(QFont("lucidatypewriter", fontSize));
 		QString val;
-		for (int y = 1; y < 5; y++)
+		for (uint y = 1; y < hCount; y++)
 		{
-			p.drawLine(0, top + y * (h / 5), w - 2, top + y * (h / 5));
-			if (h > 60 && w > 60)
+			p.drawLine(0, top + y * (h / hCount), w - 2,
+					   top + y * (h / hCount));
+			if (labels && h > (fontSize + 1) * (hCount + 1) && w > 60)
 			{
-				val = QString("%1").arg(maxVal - y * (range / 5));
-				p.drawText(6, top + y * (h / 5) - 1, val);
+				val = QString("%1").arg(maxVal - y * (range / hCount));
+				p.drawText(6, top + y * (h / hCount) - 1, val);
 			}
 		}
-		if (h > 60 && w > 60)
+		if (labels && h > (fontSize + 1) * (hCount + 1) && w > 60)
 		{
 			val = QString("%1").arg(minValue);
 			p.drawText(6, top + h - 2, val);

@@ -25,8 +25,12 @@
 #include <qgroupbox.h>
 #include <qtextstream.h>
 #include <qlineedit.h>
+#include <qspinbox.h>
+#include <qcheckbox.h>
+#include <qtoolbutton.h>
 #include <qdom.h>
 #include <qlayout.h>
+#include <qcolordialog.h>
 
 #include <kapp.h>
 #include <klocale.h>
@@ -52,7 +56,7 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 	if (noFrame)
 	{
 		plotter = new SignalPlotter(this, "signalPlotter", min, max);
-		plotter->setShowTopBar(true);
+		plotter->topBar = true;
 	}
 	else
 		plotter = new SignalPlotter(frame, "signalPlotter", min, max);
@@ -84,14 +88,88 @@ FancyPlotter::settings()
 	fps->minVal->setValidator(new KFloatValidator(fps->minVal));
 	fps->maxVal->setText(QString("%1").arg(plotter->getMax()));
 	fps->maxVal->setValidator(new KFloatValidator(fps->maxVal));
+
+	/* Properties for vertical lines */
+	fps->vLines->setChecked(plotter->vLines);
+	QPalette cp = fps->vColor->palette();
+	cp.setColor(QPalette::Normal, QColorGroup::Background, plotter->vColor);
+	fps->vColor->setPalette(cp);
+	fps->vDistance->setValue(plotter->vDistance);
+
+	/* Properties for horizontal lines */
+	fps->hLines->setChecked(plotter->hLines);
+	cp = fps->hColor->palette();
+	cp.setColor(QPalette::Normal, QColorGroup::Background, plotter->hColor);
+	fps->hColor->setPalette(cp);
+	fps->hCount->setValue(plotter->hCount);
+
+	fps->labels->setChecked(plotter->labels);
+	fps->topBar->setChecked(plotter->topBar);
+	fps->fontSize->setValue(plotter->fontSize);
+
 	connect(fps->applyButton, SIGNAL(clicked()),
 			this, SLOT(applySettings()));
+	connect(fps->vColorButton, SIGNAL(clicked()),
+			this, SLOT(vColorSettings()));
+	connect(fps->hColorButton, SIGNAL(clicked()),
+			this, SLOT(hColorSettings()));
 
 	if (fps->exec())
 		applySettings();
 
 	delete fps;
 	fps = 0;
+}
+
+void
+FancyPlotter::applySettings()
+{
+	frame->setTitle(fps->title->text());
+	plotter->setTitle(fps->title->text());
+	plotter->changeRange(0, fps->minVal->text().toDouble(),
+						 fps->maxVal->text().toDouble());
+
+	plotter->vLines = fps->vLines->isChecked();
+	plotter->vColor = fps->vColor->palette().color(QPalette::Normal,
+												   QColorGroup::Background);
+	plotter->vDistance = fps->vDistance->text().toUInt();
+
+	plotter->hLines = fps->hLines->isChecked();
+	plotter->hColor = fps->hColor->palette().color(QPalette::Normal,
+												   QColorGroup::Background);
+	plotter->hCount = fps->hCount->text().toUInt();
+
+	plotter->labels = fps->labels->isChecked();
+	plotter->topBar = fps->topBar->isChecked();
+	plotter->fontSize = fps->fontSize->text().toUInt();
+
+	modified = true;
+}
+
+void
+FancyPlotter::vColorSettings()
+{
+	QPalette cp = fps->vColor->palette();
+	QColor picked = QColorDialog::getColor(cp.color(QPalette::Normal,
+													QColorGroup::Background));
+	if (picked.isValid())
+	{
+		cp.setColor(QPalette::Normal, QColorGroup::Background, picked);
+		fps->vColor->setPalette(cp);
+	}
+}
+
+void
+FancyPlotter::hColorSettings()
+{
+	QPalette cp = fps->hColor->palette();
+	QColor picked = QColorDialog::getColor(cp.color(QPalette::Normal,
+													QColorGroup::Background));
+	if (picked.isValid())
+	{
+		cp.setColor(QPalette::Normal, QColorGroup::Background, picked);
+		fps->hColor->setPalette(cp);
+	}
 }
 
 void
@@ -114,17 +192,6 @@ FancyPlotter::sensorError(int sensorId, bool err)
 			}
 		plotter->setSensorOk(ok);
 	}
-}
-
-void
-FancyPlotter::applySettings()
-{
-	frame->setTitle(fps->title->text());
-	plotter->setTitle(fps->title->text());
-	plotter->changeRange(0, fps->minVal->text().toDouble(),
-						 fps->maxVal->text().toDouble());
-
-	modified = true;
 }
 
 bool
@@ -244,6 +311,41 @@ FancyPlotter::createFromDOM(QDomElement& domElem)
 	plotter->changeRange(0, domElem.attribute("min").toDouble(),
 						 domElem.attribute("max").toDouble());
 
+	bool ok;
+	plotter->vLines = domElem.attribute("vLines").toUInt(&ok);
+	if (!ok)
+		plotter->vLines = true;
+	uint c = domElem.attribute("vColor").toUInt(&ok);
+	if (!ok)
+		plotter->vColor = QColor("green");
+	else
+		plotter->vColor = QColor(c >> 16, c >> 8, c & 0xFF);
+	plotter->vDistance = domElem.attribute("vDistance").toUInt(&ok);
+	if (!ok)
+		plotter->vDistance = 30;
+
+	plotter->hLines = domElem.attribute("hLines").toUInt(&ok);
+	if (!ok)
+		plotter->hLines = true;
+	c = domElem.attribute("hColor").toUInt(&ok);
+	if (!ok)
+		plotter->hColor = QColor("green");
+	else
+		plotter->hColor = QColor(c >> 16, c >> 8, c & 0xFF);
+	plotter->hCount = domElem.attribute("hCount").toUInt(&ok);
+	if (!ok)
+		plotter->hCount = 5;
+
+	plotter->labels = domElem.attribute("labels").toUInt(&ok);
+	if (!ok)
+		plotter->labels = true;
+	plotter->topBar = domElem.attribute("topBar").toUInt(&ok);
+	if (!ok)
+		plotter->topBar = false;
+	plotter->fontSize = domElem.attribute("fontSize").toUInt(&ok);
+	if (!ok)
+		plotter->fontSize = 12;
+
 	QDomNodeList dnList = domElem.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)
 	{
@@ -260,6 +362,20 @@ FancyPlotter::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 	display.setAttribute("title", frame->title());
 	display.setAttribute("min", plotter->getMin());
 	display.setAttribute("max", plotter->getMax());
+	display.setAttribute("vLines", plotter->vLines);
+	int r, g, b;
+	plotter->vColor.rgb(&r, &g, &b);
+	display.setAttribute("vColor", (r << 16) | (g << 8) | b);
+	display.setAttribute("vDistance", plotter->vDistance);
+
+	display.setAttribute("hLines", plotter->hLines);
+	plotter->hColor.rgb(&r, &g, &b);
+	display.setAttribute("hColor", (r << 16) | (g << 8) | b);
+	display.setAttribute("hCount", plotter->hCount);
+
+	display.setAttribute("labels", plotter->labels);
+	display.setAttribute("topBar", plotter->topBar);
+	display.setAttribute("fontSize", plotter->fontSize);
 
 	for (int i = 0; i < beams; ++i)
 	{

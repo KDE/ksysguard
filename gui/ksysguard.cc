@@ -48,6 +48,7 @@
 #include <kstdaction.h>
 #include <kedittoolbar.h>
 #include <kurl.h>
+#include <kdebug.h>
 #include <dcopclient.h>
 
 #include "SensorBrowser.h"
@@ -68,7 +69,7 @@ TopLevel* Toplevel;
 TopLevel::TopLevel(const char *name)
 	: KMainWindow(0, name), DCOPObject("KSysGuardIface")
 {
-	setPlainCaption( i18n( "KDE System Guard" ) );
+	setPlainCaption(i18n("KDE System Guard"));
 	dontSaveSession = FALSE;
 
 	splitter = new QSplitter(this, "Splitter");
@@ -463,30 +464,44 @@ main(int argc, char** argv)
 
 	KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
-	// create top-level widget
-	if (a->isRestored())
+	int result = 0;
+
+	if (args->isSet("showprocesses"))
 	{
-		RESTORE(TopLevel)
+		/* To avoid having multiple instances of ksysguard in
+		 * taskmanager mode we check if another taskmanager is running
+		 * already. If so, we terminate this one immediately. */
+		if (a->dcopClient()->registerAs("ksysguard_taskmanager", FALSE) ==
+			"ksysguard_taskmanager")
+		{
+			Toplevel = new TopLevel("KSysGuard");
+			Toplevel->beATaskManager();
+			SensorMgr->setBroadcaster(Toplevel);
+
+			// run the application
+			result = a->exec();
+		}
 	}
 	else
 	{
-		Toplevel = new TopLevel("KSysGuard");
-		if (args->isSet("showprocesses"))
-		{
-			Toplevel->beATaskManager();
-		}
-		else
-			Toplevel->readProperties(a->config());
-	}
-	SensorMgr->setBroadcaster(Toplevel);
-	if (KMainWindow::memberList->first())
-	{
 		a->dcopClient()->registerAs("ksysguard", FALSE);
 		a->dcopClient()->setDefaultObject("KSysGuardIface");
-	}
 
-	// run the application
-	int result = a->exec();
+		// create top-level widget
+		if (a->isRestored())
+		{
+			RESTORE(TopLevel);
+		}
+		else
+		{
+			Toplevel = new TopLevel("KSysGuard");
+			Toplevel->readProperties(a->config());
+		}
+		SensorMgr->setBroadcaster(Toplevel);
+
+		// run the application
+		result = a->exec();
+	}
 
 	delete SensorMgr;
 	delete a;

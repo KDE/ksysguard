@@ -58,6 +58,7 @@ public:
 	bool disengage(const QString& hostname);
 	bool resynchronize(const QString& hostname);
 	void hostLost(const SensorAgent* sensor);
+	void notify(const QString& msg) const;
 	void setBroadcaster(QWidget* bc)
 	{
 		broadcaster = bc;

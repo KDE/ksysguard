@@ -29,6 +29,7 @@
 #include <qfile.h>
 #include <qdom.h>
 #include <qtextstream.h>
+#include <qtooltip.h>
 
 #include <kglobal.h>
 #include <klocale.h>
@@ -66,6 +67,9 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 	docks = new QWidget*[dockCnt];
 	docks[0] = new QFrame(this);
 	((QFrame*) docks[0])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
+	QToolTip::add(docks[0],
+				  i18n("Drag sensors from the KDE System Guard into "
+					   "this cell."));
 	updateInterval = 2;
 	sizeRatio = 1.0;
 
@@ -238,6 +242,9 @@ KSysGuardApplet::removeDisplay(SensorDisplay* sd)
 			docks[i] = new QFrame(this);
 			((QFrame*) docks[i])->
 				setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
+			QToolTip::add(docks[i],
+						  i18n("Drag sensors from the KDE System Guard into "
+							   "this cell."));
 			layout();
 			if (isVisible())
 				docks[i]->show();
@@ -271,6 +278,9 @@ KSysGuardApplet::resizeDocks(uint newDockCnt)
 	{
 		tmp[i] = new QFrame(this);
 		((QFrame*) tmp[i])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
+		QToolTip::add(tmp[i],
+					  i18n("Drag sensors from the KDE System Guard into "
+						   "this cell."));
 		if (isVisible())
 			tmp[i]->show();
 	}

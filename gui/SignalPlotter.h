@@ -29,12 +29,15 @@
 #include <qstring.h>
 
 class QColor;
+class FancyPlotter;
 
 #define MAXBEAMS 5
 
 class SignalPlotter : public QWidget
 {
 	Q_OBJECT
+
+	friend FancyPlotter;
 
 public:
 	SignalPlotter(QWidget* parent = 0, const char* name = 0, double min = 0,
@@ -70,11 +73,6 @@ public:
 		}
 	}
 
-	void setShowTopBar(bool s)
-	{
-		showTopBar = s;
-	}
-
 protected:
 	virtual void resizeEvent(QResizeEvent*);
 	virtual void paintEvent(QPaintEvent*);
@@ -85,6 +83,19 @@ private:
 	double minValue;
 	double maxValue;
 	bool autoRange;
+
+	bool vLines;
+	QColor vColor;
+	uint vDistance;
+
+	bool hLines;
+	QColor hColor;
+	uint hCount;
+
+	bool labels;
+	bool topBar;
+	uint fontSize;
+
 	double* beamData[MAXBEAMS];
 	QColor beamColor[MAXBEAMS];
 	int beams;
@@ -93,7 +104,6 @@ private:
 	QPixmap errorIcon;
 	bool sensorOk;
 	QString title;
-	bool showTopBar;
 } ;
 
 #endif

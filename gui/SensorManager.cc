@@ -262,6 +262,20 @@ SensorManager::hostLost(const SensorAgent* sensor)
 }
 
 void
+SensorManager::notify(const QString& msg) const
+{
+	/* This function relays text messages to the toplevel widget that
+	 * displays the message in a pop-up box. It must be used for objects
+	 * that might have been deleted before the pop-up box is closed. */
+	if (broadcaster)
+	{
+		QCustomEvent* ev = new QCustomEvent(QEvent::User);
+		ev->setData(new QString(msg));
+		kapp->postEvent(broadcaster, ev);
+	}
+}
+
+void
 SensorManager::reconfigure(const SensorAgent*)
 {
 	emit(update());

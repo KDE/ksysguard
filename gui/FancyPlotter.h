@@ -81,6 +81,8 @@ public:
 
 public slots:
 	void applySettings();
+	void vColorSettings();
+	void hColorSettings();
 
 protected:
 	virtual void resizeEvent(QResizeEvent*);

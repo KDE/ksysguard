@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -220,8 +220,8 @@ SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 
 	if (!errorBuffer.isEmpty())
 	{
-		KMessageBox::error(0, QString(i18n("Message from %1:\n%2")
-									  .arg(host).arg(errorBuffer)));
+		SensorMgr->notify(QString(i18n("Message from %1:\n%2")
+								  .arg(host).arg(errorBuffer)));
 		errorBuffer = "";
 	}
 }
