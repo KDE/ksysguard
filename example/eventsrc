@@ -34,6 +34,7 @@ Comment[sv]=KDE:s systemövervakare
 Comment[ta]=KDE ¦¾¡Ì¾¢ì ¸¡ôÀ¡Ç÷
 Comment[tr]=KDE Sistem Koruyucu
 Comment[vi]=Trình bảo vềEhềEthống KDE 
+Comment[xxx]=xx
 Comment[zh_CN.GB2312]=KDE 系统卫士
 
 [pattern_match]
@@ -55,6 +56,7 @@ Name[no_NY]=mønster_treff
 Name[pl]=dopasowanie_wzorca
 Name[sl]=vzorec_zadetek
 Name[sv]=mönsterigenkänning
+Name[xxx]=xx
 Name[zh_CN.GB2312]=模式匹配
 Comment=search pattern matched
 Comment[af]=soektog patroon ooreengestem
@@ -86,6 +88,7 @@ Comment[sl]=iskalni vzorec se ujema
 Comment[sv]=sökmönster igenkänt
 Comment[ta]=§¾ÊÂ ¯Õ ¦À¡Õó¾¢ÂÐ
 Comment[tr]=eşleşen örüntüyü ara
+Comment[xxx]=xx
 Comment[zh_CN.GB2312]=查找匹配的模式
 
 [sensor_alarm]
@@ -102,6 +105,7 @@ Name[lt]=daviklio aliarmas
 Name[lv]=sensora_trauksme
 Name[sl]=senzor_alarm
 Name[sv]=sensorlarm
+Name[xxx]=xx
 Name[zh_CN.GB2312]=传感器警报
 Comment=sensor exceted critical limit
 Comment[az]=sensor kritik limiti aşdı
@@ -127,4 +131,5 @@ Comment[sk]=senzor prekročil kritickú hodnotu
 Comment[sl]=senzor presega kritično mejo
 Comment[ta]=¯½Ã¢ ¯öÂ ±ø¨Ä¨Âò ¾¡ñÊÂÐ
 Comment[tr]=alıcı kritik limiti geçti
+Comment[xxx]=xx
 Comment[zh_CN.GB2312]=传感器超过临界限度
