@@ -26,7 +26,7 @@ bin_PROGRAMS = 	ktop
 # Which sources should be compiled for ktop.
 ktop_SOURCES	= ktop.cpp MainMenu.cpp ProcessMenu.cpp \
 	TaskMan.cpp \
-	ProcListPage.cpp IconList.cpp ProcessList.cpp \
+	ProcListPage.cpp ProcessList.cpp \
 	OSProcessList.cpp OSProcess.cpp PerfMonPage.cpp \
 	FancyPlotter.cpp MultiMeter.cpp SignalPlotter.cpp OSStatus.cpp \
 	ReniceDlg.cpp
@@ -42,7 +42,7 @@ ktop_LDADD   =      $(LIB_KFM) $(LIB_KDEUI)
 # this option you can leave out. Just, if you use "make dist", you need it
 noinst_HEADERS = ktop.h MainMenu.h ProcessMenu.h TaskMan.h \
 	ProcListPage.h \
-	IconList.h ProcessList.h OSProcessList.h \
+	ProcessList.h OSProcessList.h \
 	PerfMonPage.h FancyPlotter.h MultiMeter.h SignalPlotter.h OSStatus.h \
 	ReniceDlg.h
 

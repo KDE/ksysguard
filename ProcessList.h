@@ -23,6 +23,9 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
+	not commit any changes without consulting me first. Thanks!
 */
 
 // $Id$
@@ -33,7 +36,8 @@
 #include <qwidget.h>
 #include <qlistview.h>
 
-#include "IconList.h"
+#include <kiconloader.h>
+
 #include "OSProcessList.h"
 #include "ProcessMenu.h"
 
@@ -306,7 +310,7 @@ private:
 	bool treeViewEnabled;
 
 	OSProcessList pl;
-    KtopIconList* icons;
+    KIconLoader* icons;
 	ProcessMenu* processMenu;
 	QPopupMenu* headerPM;
 };

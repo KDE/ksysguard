@@ -17,6 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
+	not commit any changes without consulting me first. Thanks!
 */
 
 // $Id$
@@ -120,8 +123,10 @@ OSProcess::read(const void* info)
 {
 	FILE* fd;
 
+	const char* pidStr = (const char*) info;
+
 	QString buf;
-	buf = QString("/proc/%1/status").arg((char*)info);
+	buf = QString("/proc/%1/status").arg(pidStr);
 	if((fd = fopen(buf, "r")) == 0)
 	{
 		error = true;
@@ -161,7 +166,7 @@ OSProcess::read(const void* info)
 
 	fclose(fd);
 
-    buf = QString("/proc/%1/stat").arg((char*)info);
+    buf = QString("/proc/%1/stat").arg(pidStr);
 	if ((fd = fopen(buf, "r")) == 0)
 	{
 		error = true;
@@ -178,7 +183,7 @@ OSProcess::read(const void* info)
 
 	fclose(fd);
 
-    buf = QString("/proc/%1/cmdline").arg((char*)info);
+    buf = QString("/proc/%1/cmdline").arg(pidStr);
 	if ((fd = fopen(buf, "r")) == 0)
 	{
 		error = true;

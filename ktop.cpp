@@ -23,6 +23,9 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
+	not commit any changes without consulting me first. Thanks!
 */
 
 // $Id$
@@ -53,6 +56,8 @@ KApplication* Kapp;
 TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	: KTMainWindow(name)
 {
+	taskman = 0;
+
 	assert(Kapp);
 	setCaption(i18n("KDE Task Manager"));
 
@@ -104,7 +109,8 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 		}
 	}
 
-	printf("ktop: %d, %d\n", sizeHint().width(), sizeHint().height());
+	setMinimumSize(sizeHint());
+
 	readProperties(Kapp->getConfig());
 
 	timerID = startTimer(2000);
@@ -115,6 +121,32 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	// switch to the selected startup page
 	taskman->raiseStartUpPage();
 }
+
+#if 0
+QSize
+TopLevel::sizeHint()
+{
+	QSize hint;
+
+	if (!taskman)
+		return (hint);
+
+	hint = taskman->sizeHint();
+
+	hint.setWidth(hint.width() + view_left + (width() - view_right) + 6);
+	hint.setHeight(hint.height() + view_top + (height() - view_bottom) + 6);
+
+	return (hint);
+}
+
+void
+TopLevel::updateRects()
+{
+	KTMainWindow::updateRects();
+	if (sizeHint().isValid())
+		setMinimumSize(sizeHint());
+}
+#endif
 
 void 
 TopLevel::quitSlot()

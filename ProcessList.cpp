@@ -23,11 +23,15 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
+	not commit any changes without consulting me first. Thanks!
 */
 
 // $Id$
 
 #include <ctype.h>
+#include <stdio.h>
 #include <string.h>
 #include <signal.h>
 #include <assert.h>
@@ -202,7 +206,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	increasing = FALSE;
 
 	// load the icons we display with the processes
-	icons = new KtopIconList;
+	icons = new KIconLoader(Kapp->getConfig(), "ktop", "pics");
 	CHECK_PTR(icons);
 
 	// make sure we can retrieve process lists from the OS
@@ -579,25 +583,25 @@ ProcessList::addProcess(OSProcess* p, ProcessLVI* pli)
 	 * Get icon from icon list that might be appropriate for a process
 	 * with this name.
 	 */
-	const QPixmap* pix = icons->procIcon((const char*)p->getName());
+	QPixmap pix = icons->loadApplicationMiniIcon(p->getName(), 16, 16);
 
 	/*
 	 * We copy the icon into a 24x16 pixmap to add a 4 pixel margin on the
 	 * left and right side. In tree view mode we use the original icon.
 	 */
-	QPixmap icon(24, 16, pix->depth());
+	QPixmap icon(24, 16, pix.depth());
 	if (!treeViewEnabled)
 	{
 		icon.fill();
-		bitBlt(&icon, 4, 0, pix, 0, 0, pix->width(), pix->height());
+		bitBlt(&icon, 4, 0, &pix, 0, 0, pix.width(), pix.height());
 		QBitmap mask(24, 16, TRUE);
-		bitBlt(&mask, 4, 0, pix->mask(), 0, 0, pix->width(), pix->height());
+		bitBlt(&mask, 4, 0, pix.mask(), 0, 0, pix.width(), pix.height());
 		icon.setMask(mask);
 	}
 
 	int col = 0;
 	// icon + process name
-	pli->setPixmap(col, treeViewEnabled ? *pix : icon);
+	pli->setPixmap(col, treeViewEnabled ? pix : icon);
 	pli->setText(col++, p->getName());
 
 	QString s;
