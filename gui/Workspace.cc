@@ -209,17 +209,20 @@ Workspace::loadWorkSheet(const KURL& url)
 	 * transparent. Unless s/o beats me up I use this pseudo transparent
 	 * code. */
 	QString tmpFile;
-    KIO::NetAccess::download(url, tmpFile);
+	KIO::NetAccess::download(url, tmpFile);
 	workDir = tmpFile.left(tmpFile.findRev('/'));
+
 	// Load sheet from file.
-	restoreWorkSheet(tmpFile);
+	if (!restoreWorkSheet(tmpFile))
+		return;
+
 	/* If we have loaded a non-local file we clear the file name so that
 	 * the users is prompted for a new name for saving the file. */
 	KURL tmpFileUrl;
 	tmpFileUrl.setPath(tmpFile);
 	if (tmpFileUrl != url.url())
 		sheets.last()->setFileName(QString::null);
-    KIO::NetAccess::removeTempFile(tmpFile);
+	KIO::NetAccess::removeTempFile(tmpFile);
 
 	emit announceRecentURL(KURL(url));
 }
