@@ -18,6 +18,7 @@ Comment[pt_BR]=Informações sobre o status de seu sistema
 Comment[ro]=Informaşii despre starea sistemului
 Comment[ru]=éÎÆÏÒÍÁÃÉÑ Ï ÓÏÓÔÏÑÎÉÉ ÓÉÓÔÅÍÙ
 Comment[sk]=Informácie o stave vá¹ho systému
+Comment[sl]=Informacije o stanju sistema
 Comment[sv]=Statusinformation om ditt system
 Exec=ktop --start-folder
 icon=Info.xpm

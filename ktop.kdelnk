@@ -2,14 +2,7 @@
 [KDE Desktop Entry]
 BinaryPattern=ktop;
 Comment=Taskmanager and performance monitor
-Comment[no]=Informasjon om oppgaver og ytelse
-Comment[da]=KDE filstyring og browser logget ind som superbruger
-Comment[de]=Der KDE Prozessmanager
-Comment[pt_BR]=Gerenciador de tarefas KDE
-Comment[ru]=íÅÎÅÄÖÅÒ ÚÁÄÁŞ KDE
 Name=Taskmanager
-Name[da]=Ktop
-Name[no]=Ytelsesovervåker
 Exec=ktop
 Icon=ktop.xpm
 MiniIcon=ktop.xpm
