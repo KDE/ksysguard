@@ -163,14 +163,18 @@ SignalPlotter::calcRange()
 	minValue = 0;
 	maxValue = 0;
 
-	for (double* d = beamData.first(); d; d = beamData.next())
-		for (int i = 0; i < samples; i++)
-		{
-			if (d[i] < minValue)
-				minValue = d[i];
-			if (d[i] > maxValue)
-				maxValue = d[i];
-		}
+	for (int i = 0; i < samples; i++)
+	{
+		double sum = 0;
+
+		for (double* d = beamData.first(); d; d = beamData.next())
+			sum += d[i];
+
+		if (sum < minValue)
+			minValue = sum;
+		if (sum > maxValue)
+			maxValue = sum;
+	}
 }
 
 void
