@@ -52,9 +52,9 @@ PerfMonPage::PerfMonPage(QWidget* parent = 0, const char* name = 0)
 								   i18n("System Load History"), 0, 100);
 
 	cpuload->setLowPass(TRUE);
-	cpuload->addBeam(i18n("User"), blue);
-	cpuload->addBeam(i18n("System"), red);
-	cpuload->addBeam(i18n("Nice"), yellow);
+	cpuload->addBeam(i18n("User (%)"), blue);
+	cpuload->addBeam(i18n("Nice (%)"), yellow);
+	cpuload->addBeam(i18n("System (%)"), red);
 
 	int physical, swap, dum;
 	stat.getMemoryInfo(physical, dum, dum, dum, dum);
@@ -63,10 +63,10 @@ PerfMonPage::PerfMonPage(QWidget* parent = 0, const char* name = 0)
 	memory = new FancyPlotter(this, "memory_meter",
 							  i18n("Memory Usage History"),
 							  0, physical + swap);
-	memory->addBeam(i18n("Used"), blue);
-	memory->addBeam(i18n("Buffer"), green);
-	memory->addBeam(i18n("Cache"), yellow);
-	memory->addBeam(i18n("Swap"), red);
+	memory->addBeam(i18n("Program (kB)"), blue);
+	memory->addBeam(i18n("Buffer (kB)"), green);
+	memory->addBeam(i18n("Cache (kB)"), yellow);
+	memory->addBeam(i18n("Swap (kB)"), red);
 
 	if (noCpus == 1)
 	{
@@ -110,9 +110,9 @@ PerfMonPage::PerfMonPage(QWidget* parent = 0, const char* name = 0)
 
 			FancyPlotter* p = new FancyPlotter(this, name, label, 0, 100);
 			p->setLowPass(TRUE);
-			p->addBeam(i18n("User"), blue);
-			p->addBeam(i18n("System"), red);
-			p->addBeam(i18n("Nice"), yellow);
+			p->addBeam(i18n("User (%)"), blue);
+			p->addBeam(i18n("Nice (%)"), yellow);
+			p->addBeam(i18n("System (%)"), red);
 
 			cpu.append(p);
 			gm->addWidget(p, 1 + (c / 2), c % 2);
@@ -134,7 +134,7 @@ PerfMonPage::timerEvent(QTimerEvent*)
 							  0, 0);
 		abort();
 	}
-	cpuload->addSample(user, sys, nice);
+	cpuload->addSample(user, nice, sys);
 
 	int dum, used, buffer, cache, stotal, sfree;
 	if (!stat.getMemoryInfo(dum, dum, used, buffer, cache) ||
@@ -155,6 +155,6 @@ PerfMonPage::timerEvent(QTimerEvent*)
 									  stat.getErrMessage(), 0, 0);
 				abort();
 			}
-			cpu.at(i)->addSample(user, sys, nice);
+			cpu.at(i)->addSample(user, nice, sys);
 		}
 }

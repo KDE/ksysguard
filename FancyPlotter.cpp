@@ -31,11 +31,12 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 						   const char* title, int min, int max)
 	: QWidget(parent, name)
 {
-	beamNames.setAutoDelete(TRUE);
+	meterFrame = new QGroupBox(this, "meterFrame"); 
+	meterFrame->setTitle(title);
+	CHECK_PTR(meterFrame);
 
-	signalFrame = new QGroupBox(this, "signalFrame"); 
-	signalFrame->setTitle(title);
-	CHECK_PTR(signalFrame);
+	multiMeter = new MultiMeter(this, "multiMeter", min, max);
+	CHECK_PTR(meterFrame);
 
 	plotter = new SignalPlotter(this, "signalPlotter", min, max);
 	CHECK_PTR(plotter);
@@ -43,9 +44,9 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 
 FancyPlotter::~FancyPlotter()
 {
+	delete multiMeter;
 	delete plotter;
-	delete signalFrame;
-//	delete valuesFrame;
+	delete meterFrame;
 }
 
 void
@@ -54,28 +55,25 @@ FancyPlotter::resizeEvent(QResizeEvent*)
 	int w = width();
 	int h = height();
 
-#if 0
-	QListIterator<QLabel> li(beamNames);
-	QLabel* name;
-	int nameWidth = 0;
-	while ((name = ++li))
-		if (nameWidth < name->sizeHint().width())
-			nameWidth = name->sizeHint().width();
+	meterFrame->move(5, 5);
+	meterFrame->resize(w - 10, h - 10);
 
-	if (w > nameWidth + 20 + 60 + 20)
+	int mmw;
+	QSize mmSize = multiMeter->sizeHint();
+
+	if ((w < 280) || (h < (mmSize.height() + 40)))
 	{
-		signalFrame->move(nameWidth + 20, 5);
-		signalFrame->resize(w - 10 - nameWidth - 20, h - 10);
-
-		plotter->move(nameWidth + 25, 25);
-		plotter->resize(w - 30 - nameWidth - 20, h - 40);
+		mmw = 0;
+		multiMeter->hide();
 	}
 	else
-#endif
 	{
-		signalFrame->move(5, 5);
-		signalFrame->resize(w - 10, h - 10);
-		plotter->move(15, 25);
-		plotter->resize(w - 30, h - 40);
+		mmw = 150;
+		multiMeter->show();
+		multiMeter->move(15, 25);
+		multiMeter->resize(mmw, h - 40);
 	}
+
+	plotter->move(mmw + 25, 25);
+	plotter->resize(w - mmw - 40, h - 40);
 }

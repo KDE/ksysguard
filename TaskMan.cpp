@@ -34,8 +34,6 @@
 
 #include "ktop.h"
 #include "settings.h"
-#include "cpu.h"
-#include "memory.h"
 #include "ReniceDlg.h"
 #include "ProcListPage.h"
 #include "OSProcessList.h"

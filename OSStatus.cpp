@@ -80,6 +80,9 @@
 
 #include "OSStatus.h"
 
+// uncomment this line to fake SMP reporting on non SMP systems
+//#define FAKE_SMP 1
+
 #ifdef linux
 
 // Code for Linux 2.x
@@ -328,6 +331,16 @@ OSStatus::getMemoryInfo(int& total, int& mfree, int& used, int& buffers,
 bool
 OSStatus::readCpuInfo(const char* cpu, int* u, int* s, int* n, int* i)
 {
+#ifdef FAKE_SMP
+	/*
+	 * This code redirects inquieries for cpu0 and cpu1 to cpu to fake a
+	 * 2 processor SMP system for test purposes.
+	 */
+	char cpuFake[10] = "cpu";
+	if (strcmp(cpu, "cpu0") != 0 && strcmp(cpu, "cpu1") != 0)
+		strcpy(cpuFake, cpu);
+#define cpu cpuFake
+#endif
 	char tag[32];
 
 	rewind(stat);
@@ -347,6 +360,9 @@ OSStatus::readCpuInfo(const char* cpu, int* u, int* s, int* n, int* i)
 	} while (strcmp(tag, cpu));
 
 	return (true);
+#ifdef FAKE_SMP
+#undef cpu
+#endif
 }
 
 bool

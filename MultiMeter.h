@@ -21,52 +21,43 @@
 
 // $Id$
 
-#ifndef _FancyPlotter_h_
-#define _FancyPlotter_h_
+#ifndef _MultiMeter_h_
+#define _MultiMeter_h_
 
 #include <qwidget.h>
+#include <qlayout.h>
 #include <qlabel.h>
+#include <qlcdnumber.h>
 
-#include "SignalPlotter.h"
-#include "MultiMeter.h"
+class QColor;
 
-class QGroupBox;
-
-class FancyPlotter : public QWidget
+class MultiMeter : public QWidget
 {
 	Q_OBJECT
 
 public:
-	FancyPlotter(QWidget* parent = 0, const char* name = 0,
-				 const char* title = 0, int min = 0,
-				 int max = 100);
-	~FancyPlotter();
-
-	bool addBeam(const char* name, QColor col)
+	MultiMeter(QWidget* parent = 0, const char* name = 0, int min = 0,
+			   int max = 100);
+	~MultiMeter()
 	{
-		return (plotter->addBeam(col) && multiMeter->addMeter(name, col));
+		delete gm;
 	}
 
-	void addSample(int s0, int s1 = 0, int s2 = 0, int s3 = 0, int s4 = 0)
-	{
-		multiMeter->updateValues(s0, s1, s2, s3, s4);
-		plotter->addSample(s0, s1, s2, s3, s4);
-	}
+	bool addMeter(const char* name, QColor col);
 
-	void setLowPass(bool lp)
-	{
-		plotter->setLowPass(lp);
-	}
+	void updateValues(int v0 = 0, int v1 = 0, int v2 = 0, int v3 = 0,
+					  int v4 = 0);
 
-protected:
-	virtual void resizeEvent(QResizeEvent*);
+	virtual QSize sizeHint(void);
 
 private:
-	QGroupBox* meterFrame;
+	// the number of meters displayed in this multi meter
+	int meters;
+	int digits;
 
-	MultiMeter* multiMeter;
-
-	SignalPlotter* plotter;
+	QGridLayout* gm;
+	QList<QLabel> meterLabel;
+	QList<QLCDNumber> meterLcd;
 } ;
 
 #endif

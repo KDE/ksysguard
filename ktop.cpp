@@ -41,8 +41,10 @@
 #include "OSStatus.h"
 #include "ktop.moc"
 
-#define KTOP_MIN_W	549
-#define KTOP_MIN_H	446
+//#define KTOP_MIN_W	549
+//#define KTOP_MIN_H	446
+#define KTOP_MIN_W	40
+#define KTOP_MIN_H	40
 
 /*
  * Global variables

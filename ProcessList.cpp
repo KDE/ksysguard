@@ -71,7 +71,7 @@ static const char* percentKey(const char* text);
  */
 static TABCOLUMN TabCol[] =
 {
-	{ "",            0, true, true,  false, 1, 0 },
+	{ "",            0, true, true,  false, 2, 0 },
 	{ "Name",        0, true, true,  true,  1, 0 },
 	{ "PID",         0, true, true,  true,  2, intKey },
 	{ "User",        0, true, false, true,  1, 0 },
