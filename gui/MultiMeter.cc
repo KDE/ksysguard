@@ -34,6 +34,7 @@
 #include <qcheckbox.h>
 #include <qpushbutton.h>
 
+#include <klocale.h>
 #include <kmessagebox.h>
 
 #include "MultiMeterSettings.h"

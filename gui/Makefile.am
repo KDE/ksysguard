@@ -16,7 +16,7 @@ ksysguard_SOURCES = ksysguard.cc ksysguard.skel SensorAgent.cc \
 	ProcessMenu.cc ReniceDlg.cc WorkSheet.cc Workspace.cc \
 	SensorBrowser.cc SensorDisplay.cc \
 	FancyPlotter.cc SignalPlotter.cc MultiMeter.cc \
-	MultiMeterSettings.cpp \
+	MultiMeterSettings.ui \
 	ProcessController.cc ProcessList.cc 
 
 # the library search path
