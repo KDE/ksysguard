@@ -50,7 +50,7 @@ class TopLevel : public KTMainWindow
 	Q_OBJECT
 
 public:
-	TopLevel(QWidget *parent = 0, const char *name = 0, int sfolder = 0);
+	TopLevel(const char *name = 0, int sfolder = 0);
 	~TopLevel()
 	{
 		killTimer(timerID);

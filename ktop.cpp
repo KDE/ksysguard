@@ -53,7 +53,7 @@ KApplication* Kapp;
  * This is the constructor for the main widget. It sets up the menu and the
  * TaskMan widget.
  */
-TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
+TopLevel::TopLevel(const char *name, int sfolder)
 	: KTMainWindow(name)
 {
 	taskman = 0;
@@ -248,7 +248,7 @@ main(int argc, char** argv)
 	}
 
 	// create top-level widget
-	TopLevel *toplevel = new TopLevel(0, "TaskManager", sfolder);
+	TopLevel *toplevel = new TopLevel("TaskManager", sfolder);
 	Kapp->setMainWidget(toplevel);
 	Kapp->setTopWidget(toplevel);
 	toplevel->show();
