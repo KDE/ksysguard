@@ -490,7 +490,6 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
 
   // load display specific settings
   if ( !newDisplay->restoreSettings( element ) )
-// FIXME: delete newDisplay?
     return false;
 
   replaceDisplay( row, column, newDisplay );
