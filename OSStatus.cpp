@@ -97,7 +97,7 @@
 #include <stdlib.h>
 #include <dirent.h>
 
-#include <kapp.h>
+#include <qdir.h>
 #include <klocale.h>
 
 #include "OSStatus.h"
@@ -419,26 +419,30 @@ OSStatus::getSwapInfo(int& stotal, int& sfree)
 	return (true);
 }
 
-int 
-isProcDir(const struct dirent* dir)
-{
-	return (atoi(dir->d_name));
-}
-
 int
 OSStatus::getNoProcesses(void)
 {
-	int processes;
-	struct dirent** namelist;
+    QDir d("/proc");
+    int processes=0;
 
+    d.setFilter(QDir::Dirs); // Dirs only
 
-	processes = scandir("/proc", &namelist, isProcDir, alphasort);
+    const QFileInfoList *list = d.entryInfoList();
+    if (!list)
+        return 0;
+    QFileInfoListIterator it( *list );      // create list iterator
+    QFileInfo *fi;                          // pointer for traversing
+    while ( (fi=it.current()) ) 
+    {                                       // for each file...
+        bool isInt;
+        // Test if directory name is a number
+        (void) fi->fileName().toInt(&isInt);
+        if (isInt)
+           processes++;
+        ++it;				    // Next file 
+    }
 
-	for (int i = 0; i < processes; i++)
-		free(namelist[i]);
-	free(namelist);
-
-	return (processes);
+    return (processes);
 }
 
 #elif __FreeBSD__
