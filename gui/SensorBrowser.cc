@@ -64,7 +64,7 @@ class HostItem : public QListViewItem
 
 SensorBrowser::SensorBrowser( QWidget* parent, KSGRD::SensorManager* sm,
                               const char* name)
-  : QListView( parent, name ), mSensorManager( sm )
+  : KListView( parent, name ), mSensorManager( sm )
 {
   mHostInfoList.setAutoDelete(true);
 
@@ -76,6 +76,8 @@ SensorBrowser::SensorBrowser( QWidget* parent, KSGRD::SensorManager* sm,
 
   addColumn( i18n( "Sensor Browser" ) );
   addColumn( i18n( "Sensor Type" ) );
+  setFullWidth( true );
+
   QToolTip::add( this, i18n( "Drag sensors to empty cells of a worksheet "
                              "or the panel applet." ) );
   setRootIsDecorated( true );
