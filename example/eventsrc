@@ -114,6 +114,7 @@ Comment[ca]=Cerca coincidència de patró
 Comment[cs]=Hledaný vzor odpovídá
 Comment[da]=Søgemønsteret matchede
 Comment[de]=Übereinstimmung mit Suchmuster
+Comment[eo]=Serĉoŝablonesprimo kunvenita
 Comment[es]=Coincidencia con el patrón de búsqueda
 Comment[et]=Otsingu muster sobib
 Comment[eu]=bilatu konparatutako eredua
@@ -139,7 +140,7 @@ Comment[sr@Latn]=Подударан узорак је пронађен
 Comment[sv]=Sökmönster igenkänt
 Comment[ta]=மாதிரி பொருத்தத்தை தேடு
 Comment[tr]=Eşleşen örüntüyü ara
-Comment[uk]=Знайдено взірець пошука
+Comment[uk]=Знайдено взірець пошуку
 Comment[xx]=xxSearch pattern matchedxx
 
 [sensor_alarm]
