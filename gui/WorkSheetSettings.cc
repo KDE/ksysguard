@@ -102,6 +102,8 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
 
   KAcceleratorManager::manage( page );
 
+  mSheetTitle->setFocus();
+
   resize( QSize( 250, 230 ).expandedTo( minimumSizeHint() ) );
 }
 
