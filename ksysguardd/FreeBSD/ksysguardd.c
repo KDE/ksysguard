@@ -20,6 +20,8 @@
 	$Id$
 */
 
+#include <config.h>
+
 #include <ctype.h>
 #include <fcntl.h>
 #include <netdb.h>
@@ -119,7 +121,7 @@ printWelcome(FILE* out)
 			"(c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org> and\n"
 			"(c) 2001 Tobias Koenig <tokoe82@yahoo.de>\n"
 			"This program is part of the KDE Project and licensed under\n"
-			"the GNU GPL version 2. See www.kde.org for details!\n", KSYSGUARD_VERSION);
+			"the GNU GPL version 2. See www.kde.org for details!\n", VERSION);
 	fflush(out);
 }
 
