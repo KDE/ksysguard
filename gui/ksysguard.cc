@@ -116,7 +116,7 @@ TopLevel::TopLevel( const char *name )
   KStdAction::cut( mWorkSpace, SLOT( cut() ), actionCollection() );
   KStdAction::copy( mWorkSpace, SLOT( copy() ), actionCollection() );
   KStdAction::paste( mWorkSpace, SLOT( paste() ), actionCollection() );
-  new KAction( i18n( "&Work Sheet Properties..." ), "configure", 0, mWorkSpace,
+  new KAction( i18n( "&Work Sheet Properties" ), "configure", 0, mWorkSpace,
                SLOT( configure() ), actionCollection(), "configure_sheet" );
 
   KStdAction::revert( this, SLOT( resetWorkSheets() ), actionCollection() );
@@ -126,7 +126,7 @@ TopLevel::TopLevel( const char *name )
   mActionStatusBar->setChecked( false );
 
   KStdAction::configureToolbars( this, SLOT( editToolbars() ), actionCollection() );
-  KStdAction::keyBindings(guiFactory(), SLOT(configureShortcuts()), 
+  KStdAction::keyBindings(guiFactory(), SLOT(configureShortcuts()),
 actionCollection());
 
   new KAction( i18n( "Configure &Style..." ), "colorize", 0, this,

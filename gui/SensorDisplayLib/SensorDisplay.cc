@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
     Copyright (c) 1999 - 2002 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -60,7 +60,7 @@ SensorDisplay::SensorDisplay( QWidget *parent, const char *name,
   setTimerOn( true );
   QWhatsThis::add( this, "dummy" );
 
-  mFrame = new QGroupBox( 2, Qt::Vertical, "", this, "displayFrame"); 
+  mFrame = new QGroupBox( 2, Qt::Vertical, "", this, "displayFrame");
 
   setTitle( title );
 
@@ -68,7 +68,7 @@ SensorDisplay::SensorDisplay( QWidget *parent, const char *name,
   setModified( false );
   setSensorOk( false );
 
-  /* All RMB clicks to the box frame will be handled by 
+  /* All RMB clicks to the box frame will be handled by
    * SensorDisplay::eventFilter. */
   mFrame->installEventFilter( this );
 
@@ -151,7 +151,7 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
      ( (QMouseEvent*)event)->button() == RightButton ) {
     QPopupMenu pm;
     if ( hasSettingsDialog() )
-      pm.insertItem( i18n( "&Properties..." ), 1 );
+      pm.insertItem( i18n( "&Properties" ), 1 );
     pm.insertItem( i18n( "&Remove Display" ), 2 );
     pm.insertSeparator();
     pm.insertItem( i18n( "&Setup Update Interval..." ), 3 );
@@ -407,7 +407,7 @@ void SensorDisplay::setModified( bool value )
     emit modified( mModified );
   }
 }
-		
+
 void SensorDisplay::focusInEvent( QFocusEvent* )
 {
   mFrame->setLineWidth( 2 );

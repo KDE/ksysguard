@@ -149,7 +149,7 @@ SensorLogger::SensorLogger(QWidget *parent, const char *name, const QString& tit
 	monitor->setSelectionMode(QListView::NoSelection);
 
 	connect(monitor, SIGNAL(rightButtonClicked(QListViewItem*, const QPoint&, int)), this, SLOT(RMBClicked(QListViewItem*, const QPoint&, int)));
-	
+
 	setTitle(i18n("Sensor Logger"));
 
 	logSensors.setAutoDelete(true);
@@ -336,7 +336,7 @@ SensorLogger::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 		log.setAttribute("lowerLimit", QString("%1").arg(sensor->getLowerLimit()));
 		log.setAttribute("upperLimitActive", QString("%1").arg(sensor->getUpperLimitActive()));
 		log.setAttribute("upperLimit", QString("%1").arg(sensor->getUpperLimit()));
-		
+
 		element.appendChild(log);
 	}
 
@@ -379,7 +379,7 @@ SensorLogger::RMBClicked(QListViewItem* item, const QPoint& point, int)
 {
 	QPopupMenu pm;
 	if (hasSettingsDialog())
-		pm.insertItem(i18n("&Properties..."), 1);
+		pm.insertItem(i18n("&Properties"), 1);
 	pm.insertItem(i18n("&Remove Display"), 2);
 	pm.insertSeparator(-1);
 	pm.insertItem(i18n("&Remove Sensor"), 3);
