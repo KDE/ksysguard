@@ -416,8 +416,7 @@ DancingBars::createFromDOM(QDomElement& domElem)
 	for (uint i = 0; i < dnList.count(); ++i)
 	{
 		QDomElement el = dnList.item(i).toElement();
-		addSensor(el.attribute("hostName"), el.attribute("sensorName"),
-				 el.attribute("sensorType"), el.attribute("sensorDescr"));
+		addSensor(el.attribute("hostName"), el.attribute("sensorName"), (el.attribute("sensorType").isEmpty() ? "integer" : el.attribute("sensorType")), el.attribute("sensorDescr"));
 	}
 
 	setModified(false);

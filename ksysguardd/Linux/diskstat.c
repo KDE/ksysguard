@@ -17,18 +17,19 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <mntent.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/vfs.h>
-#include <unistd.h>
-#include <string.h>
 #include <time.h>
+#include <unistd.h>
 
-#include "ksysguardd.h"
 #include "Command.h"
 #include "ccont.h"
 #include "diskstat.h"
+#include "ksysguardd.h"
 
 typedef struct {
 	char device[256];
@@ -40,7 +41,6 @@ typedef struct {
 } DiskInfo;
 
 static CONTAINER DiskStatList = 0;
-static time_t DiskStat_timeStamp = 0;
 
 char *getMntPnt(const char *cmd)
 {
@@ -56,75 +56,101 @@ char *getMntPnt(const char *cmd)
 	return (char *)device;
 }
 
+/* ----------------------------- public part ------------------------------- */
+
 void initDiskStat(void)
 {
+	char monitor[1024];
+	int i;
+	
 	DiskStatList = new_ctnr(CT_DLL);
 
+	if (updateDiskStat() < 0)
+		return;
+
 	registerMonitor("partitions/list", "listview", printDiskStat, printDiskStatInfo);
-	updateDiskStat();
+
+	for (i = 0; i < level_ctnr(DiskStatList); i++) {
+		DiskInfo* disk_info = get_ctnr(DiskStatList, i);
+		
+		snprintf(monitor, sizeof(monitor), "partitions%s/usedspace", disk_info->mntpnt);
+		registerMonitor(monitor, "integer", printDiskStatUsed, printDiskStatUsedInfo);
+		snprintf(monitor, sizeof(monitor), "partitions%s/freespace", disk_info->mntpnt);
+		registerMonitor(monitor, "integer", printDiskStatFree, printDiskStatFreeInfo);
+		snprintf(monitor, sizeof(monitor), "partitions%s/filllevel", disk_info->mntpnt);
+		registerMonitor(monitor, "integer", printDiskStatPercent, printDiskStatPercentInfo);
+	}
 }
 
 void exitDiskStat(void)
 {
+	char monitor[1024];
+	int i;
+
+	removeMonitor("partitions/list");
+
+	for (i = 0; i < level_ctnr(DiskStatList); i++) {
+		DiskInfo* disk_info = get_ctnr(DiskStatList, i);
+		
+		snprintf(monitor, sizeof(monitor), "partitions%s/usedspace", disk_info->mntpnt);
+		removeMonitor(monitor);
+		snprintf(monitor, sizeof(monitor), "partitions%s/freespace", disk_info->mntpnt);
+		removeMonitor(monitor);
+		snprintf(monitor, sizeof(monitor), "partitions%s/filllevel", disk_info->mntpnt);
+		removeMonitor(monitor);
+	}
+
 	if (DiskStatList)
 		destr_ctnr(DiskStatList, free);
 }
 
-int updateDiskStat(void)
+void checkDiskStat(void)
 {
-	FILE *mounts;
-	char line[1024], mntpnt[256], device[256];
-	char monitor[300];
-	struct statfs fs_info;
 	struct stat mtab_info;
 	static off_t mtab_size = 0;
+
+	stat("/etc/mtab", &mtab_info);
+
+	if (mtab_info.st_size != mtab_size) {
+		exitDiskStat();
+		initDiskStat();
+		mtab_size = mtab_info.st_size;
+	}
+}
+
+int updateDiskStat(void)
+{
+	DiskInfo *disk_info;
+	FILE *fh;
+	struct mntent *mnt_info;
 	float percent;
 	int i;
-	DiskInfo *disk_info;
+	struct statfs fs_info;
 	
-	if ((mounts = fopen("/etc/mtab", "r")) == NULL) {
+	if ((fh = setmntent("/etc/mtab", "r")) == NULL) {
 		print_error("Cannot open \'/etc/mtab\'!\n");
 		return -1;
-	} else {
-		stat("/etc/mtab", &mtab_info);
 	}
 
-	for (i = 0; i < level_ctnr(DiskStatList); i++) {
-		disk_info = remove_ctnr(DiskStatList, i--);
+	for (i = 0; i < level_ctnr(DiskStatList); i++)
+		free(remove_ctnr(DiskStatList, i--));
 
-		// was there a change in mtab
-		if (mtab_info.st_size != mtab_size) {
-			snprintf(monitor, sizeof(monitor), "partitions%s/usedspace", disk_info->mntpnt);
-			removeMonitor(monitor);
-			snprintf(monitor, sizeof(monitor), "partitions%s/freespace", disk_info->mntpnt);
-			removeMonitor(monitor);
-			snprintf(monitor, sizeof(monitor), "partitions%s/filllevel", disk_info->mntpnt);
-			removeMonitor(monitor);
-		}
-
-		free(disk_info);
-	}
-
-	while (fgets(line, sizeof(line), mounts) != NULL) {
-		memset(mntpnt, 0, sizeof(mntpnt));
-		memset(device, 0, sizeof(device));
-		memset(monitor, 0, sizeof(monitor));;
-		sscanf(line, "%255s %255s", device, mntpnt);
-		if (statfs(mntpnt, &fs_info) < 0)
+	while ((mnt_info = getmntent(fh)) != NULL) {
+		if (statfs(mnt_info->mnt_dir, &fs_info) < 0)
 			continue;
 
-		if ((strncmp(mntpnt, "/proc", 5)) && (strncmp(mntpnt, "/dev/", 5))) {
+		if (strcmp(mnt_info->mnt_type, "proc") && strcmp(mnt_info->mnt_type, "devfs") && strcmp(mnt_info->mnt_type, "devpts")) {
 			percent = (((float)fs_info.f_blocks - (float)fs_info.f_bfree)/(float)fs_info.f_blocks);
 			percent = percent * 100;
-			if ((disk_info = (DiskInfo *)malloc(sizeof(DiskInfo))) == NULL) {
+			if ((disk_info = (DiskInfo *)malloc(sizeof(DiskInfo))) == NULL)
 				continue;
-			}
+
 			memset(disk_info, 0, sizeof(DiskInfo));
-			strncpy(disk_info->device, device, 255);
-			if (!strcmp(mntpnt, "/")) {
-				strncpy(disk_info->mntpnt, "/root", 6);
+			strncpy(disk_info->device, mnt_info->mnt_fsname, 255);
+			if (!strcmp(mnt_info->mnt_dir, "/")) {
+				strcpy(disk_info->mntpnt, "/root");
 			} else {
-				strncpy(disk_info->mntpnt, mntpnt, 255);
+				strncpy(disk_info->mntpnt, mnt_info->mnt_dir, 255);
 			}
 			disk_info->blocks = fs_info.f_blocks;
 			disk_info->bfree = fs_info.f_bfree;
@@ -132,31 +158,17 @@ int updateDiskStat(void)
 			disk_info->bused_percent = (int)percent;
 
 			push_ctnr(DiskStatList, disk_info);
-
-			if (mtab_info.st_size != mtab_size) {
-				snprintf(monitor, sizeof(monitor), "partitions%s/usedspace", disk_info->mntpnt);
-				registerMonitor(monitor, "integer", printDiskStatUsed, printDiskStatUsedInfo);
-				snprintf(monitor, sizeof(monitor), "partitions%s/freespace", disk_info->mntpnt);
-				registerMonitor(monitor, "integer", printDiskStatFree, printDiskStatFreeInfo);
-				snprintf(monitor, sizeof(monitor), "partitions%s/filllevel", disk_info->mntpnt);
-				registerMonitor(monitor, "integer", printDiskStatPercent, printDiskStatPercentInfo);
-			}
 		}
 	}
-	
-	fclose(mounts);
-	DiskStat_timeStamp = time(0);
-	mtab_size = mtab_info.st_size;
-	
+
+	endmntent(fh);
+
 	return 0;
 }
 
 void printDiskStat(const char* cmd)
 {
 	int i;
-
-	if ((time(0) - DiskStat_timeStamp) > 2)
-		updateDiskStat();
 
 	for (i = 0; i < level_ctnr(DiskStatList); i++) {
 		DiskInfo* disk_info = get_ctnr(DiskStatList, i);
@@ -174,16 +186,13 @@ void printDiskStat(const char* cmd)
 
 void printDiskStatInfo(const char* cmd)
 {
-	fprintf(CurrentClient, "Device\tBlocks\tUsed\tAvailable\tUsed %%\tMountPoint\n");
+	fprintf(CurrentClient, "Device\tBlocks\tUsed\tAvailable\tUsed %%\tMountPoint\nM\td\td\td\td\ts\n");
 }
 
 void printDiskStatUsed(const char* cmd)
 {
 	int i;
 	char *mntpnt = (char *)getMntPnt(cmd);
-
-	if ((time(0) - DiskStat_timeStamp) > 2)
-		updateDiskStat();
 
 	for (i = 0; i < level_ctnr(DiskStatList); i++) {
 		DiskInfo* disk_info = get_ctnr(DiskStatList, i);
@@ -205,9 +214,6 @@ void printDiskStatFree(const char* cmd)
 	int i;
 	char *mntpnt = (char *)getMntPnt(cmd);
 
-	if ((time(0) - DiskStat_timeStamp) > 2)
-		updateDiskStat();
-
 	for (i = 0; i < level_ctnr(DiskStatList); i++) {
 		DiskInfo* disk_info = get_ctnr(DiskStatList, i);
 		if (!strcmp(mntpnt, disk_info->mntpnt)) {
@@ -227,9 +233,6 @@ void printDiskStatPercent(const char* cmd)
 {
 	int i;
 	char *mntpnt = (char *)getMntPnt(cmd);
-
-	if ((time(0) - DiskStat_timeStamp) > 2)
-		updateDiskStat();
 
 	for (i = 0; i < level_ctnr(DiskStatList); i++) {
 		DiskInfo* disk_info = get_ctnr(DiskStatList, i);

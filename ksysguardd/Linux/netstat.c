@@ -464,7 +464,7 @@ printNetStatTcpUdpRaw(const char *cmd)
 void
 printNetStatTcpUdpRawInfo(const char *cmd)
 {
-	fprintf(CurrentClient, "Local Address\tPort\tForeign Address\tPort\tState\tUID\n");
+	fprintf(CurrentClient, "Local Address\tPort\tForeign Address\tPort\tState\tUID\ns\ts\ts\ts\ts\td\n");
 }
 
 void printNetStatUnix(const char *cmd)
@@ -490,5 +490,5 @@ void printNetStatUnix(const char *cmd)
 
 void printNetStatUnixInfo(const char *cmd)
 {
-	fprintf(CurrentClient, "RefCount\tType\tState\tInode\tPath\n");
+	fprintf(CurrentClient, "RefCount\tType\tState\tInode\tPath\nd\ts\ts\td\ts\n");
 }

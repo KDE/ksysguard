@@ -30,29 +30,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/file.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/file.h>
 #include <unistd.h>
 
-#include "ksysguardd.h"
 #include "Command.h"
-#include "ProcessList.h"
 #include "Memory.h"
-#include "stat.h"
+#include "ProcessList.h"
+#include "apm.h"
+#include "conf.h"
+#include "cpuinfo.h"
+#include "diskstat.h"
+#include "ksysguardd.h"
+#include "lmsensors.h"
+#include "loadavg.h"
+#include "logfile.h"
 #include "netdev.h"
 #include "netstat.h"
-#include "apm.h"
-#include "cpuinfo.h"
-#include "loadavg.h"
-#include "lmsensors.h"
-#include "diskstat.h"
-#include "logfile.h"
-
-#include "conf.h"
+#include "stat.h"
 
 #define CMDBUFSIZE	128
 #define MAX_CLIENTS	100
@@ -396,12 +395,7 @@ handleTimerEvent(struct timeval* tv, struct timeval* last)
 	if (now.tv_sec - last->tv_sec >= TIMERINTERVAL)
 	{
 		/* If so, update all sensors and save current time to last. */
-		updateMemory();
-		updateStat();
-		updateNetDev();
-		updateApm();
-		updateCpuInfo();
-		updateLoadAvg();
+		updateModules();
 		*last = now;
 	}
 	/* Set tv so that the next timer event will be generated in
@@ -486,17 +480,29 @@ initModules()
 {
 	/* initialize all sensors */
 	initCommand();
-	initProcessList();
-	initMemory();
-	initStat();
-	initNetDev();
-	initNetStat();
-	initApm();
-	initCpuInfo();
-	initLoadAvg();
-	initLmSensors();
-	initDiskStat();
-	initLogFile();
+
+	if (sensorAvailable("ProcessList"))
+		initProcessList();
+	if (sensorAvailable("Memory"))
+		initMemory();
+	if (sensorAvailable("Stat"))
+		initStat();
+	if (sensorAvailable("NetDev"))
+		initNetDev();
+	if (sensorAvailable("NetStat"))
+		initNetStat();
+	if (sensorAvailable("Apm"))
+		initApm();
+	if (sensorAvailable("CpuInfo"))
+		initCpuInfo();
+	if (sensorAvailable("LoadAvg"))
+		initLoadAvg();
+	if (sensorAvailable("LmSensors"))
+		initLmSensors();
+	if (sensorAvailable("DiskStat"))
+		initDiskStat();
+	if (sensorAvailable("LogFile"))
+		initLogFile();
 
 	ReconfigureFlag = 0;
 }
@@ -504,18 +510,64 @@ initModules()
 static void
 exitModules()
 {
-	exitLogFile();
-	exitDiskStat();
-	exitLmSensors();
-	exitLoadAvg();
-	exitCpuInfo();
-	exitApm();
-	exitNetDev();
-	exitNetDev();
-	exitStat();
-	exitMemory();
-	exitProcessList();
+	if (sensorAvailable("LogFile"))
+		exitLogFile();
+	if (sensorAvailable("DiskStat"))
+		exitDiskStat();
+	if (sensorAvailable("LmSensors"))
+		exitLmSensors();
+	if (sensorAvailable("LoadAvg"))
+		exitLoadAvg();
+	if (sensorAvailable("CpuInfo"))
+		exitCpuInfo();
+	if (sensorAvailable("Apm"))
+		exitApm();
+	if (sensorAvailable("NetStat"))
+		exitNetStat();
+	if (sensorAvailable("NetDev"))
+		exitNetDev();
+	if (sensorAvailable("Stat"))
+		exitStat();
+	if (sensorAvailable("Memory"))
+		exitMemory();
+	if (sensorAvailable("ProcessList"))
+		exitProcessList();
+
 	exitCommand();
+}
+
+void
+checkModules()
+{
+/*
+	if (sensorAvailable("NetDev"))
+		checkNetDev();
+*/
+	if (sensorAvailable("DiskStat"))
+		checkDiskStat();
+}
+
+void
+updateModules()
+{
+	checkModules();
+
+	if (sensorAvailable("Memory"))
+		updateMemory();
+	if (sensorAvailable("ProcessList"))
+		updateProcessList();
+	if (sensorAvailable("CpuInfo"))
+		updateCpuInfo();
+	if (sensorAvailable("NetDev"))
+		updateNetDev();
+	if (sensorAvailable("DiskStat"))
+		updateDiskStat();
+	if (sensorAvailable("Stat"))
+		updateStat();
+	if (sensorAvailable("Apm"))
+		updateApm();
+	if (sensorAvailable("LoadAvg"))
+		updateLoadAvg();
 }
 
 /*

@@ -287,9 +287,6 @@ exitNetDev(void)
 int
 updateNetDev(void)
 {
-	/* ATTENTION: This function is called from a signal handler! Rules for
-	 * signal handlers must be obeyed! */
-
 	/* We read the information about the network interfaces from
 	   /proc/net/dev. The file should look like this:
 

@@ -24,7 +24,7 @@ void initNetStat(void);
 void exitNetStat(void);
 
 int updateNetStat(void);
-int updateNetStatTcpUdpRaw(const char *cmd);
+int updateNetStatTcpUdpRaw(const char* cmd);
 int updateNetStatUnix(void);
 
 void printNetStat(const char* cmd);

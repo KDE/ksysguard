@@ -21,11 +21,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "ksysguardd.h"
 #include "Command.h"
 #include "ccont.h"
-#include "logfile.h"
 #include "conf.h"
+#include "ksysguardd.h"
+#include "logfile.h"
 
 static CONTAINER LogFiles = 0;
 static unsigned long counter = 1;
@@ -89,6 +89,9 @@ void printLogFile(const char* cmd)
 			while (fgets(line, 1024, entry->fh) != NULL) {
 				fprintf(CurrentClient, "%s", line);
 			}
+
+			/* delete the EOF */
+			clearerr(entry->fh);
 		}
 	}
 

@@ -155,6 +155,7 @@ ProcessController::addSensor(const QString& hostName,
 	/* This just triggers the first communication. The full set of
 	 * requests are send whenever the sensor reconnects (detected in
 	 * sensorError(). */
+
 	sendRequest(hostName, "test kill", 4);
 
 	if (title.isEmpty())
@@ -314,7 +315,7 @@ bool
 ProcessController::createFromDOM(QDomElement& el)
 {
 	bool result = addSensor(el.attribute("hostName"),
-							el.attribute("sensorName"), el.attribute("sensorType"),
+							el.attribute("sensorName"), (el.attribute("sensorType").isEmpty() ? "table" : el.attribute("sensorType")),
 							QString::null);
 
 	xbTreeView->setChecked(el.attribute("tree").toInt());

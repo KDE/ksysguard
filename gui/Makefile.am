@@ -22,32 +22,45 @@ bin_PROGRAMS = 	ksysguard
 
 # Which sources should be compiled for ksysguard.
 ksysguard_SOURCES = \
+	BarGraph.cc \
 	ColorPicker.cc \
-	SensorDisplay.cc \
+	DancingBars.cc \
 	DummyDisplay.cc \
-	FancyPlotter.cc SignalPlotter.cc \
-	MultiMeter.cc \
-	DancingBars.cc BarGraph.cc \
-	ProcessController.cc ProcessList.cc \
+	FancyPlotter.cc\
 	ListView.cc \
-	LogFile.cc LogFileSettings.cc \
-	StyleEngine.cc \
-	SensorLogger.cc \
+	LogFile.cc \
+	LogFileSettings.cc \
+	MultiMeter.cc \
+	ProcessController.cc ProcessList.cc \
+	SensorAgent.cc \
 	SensorBrowser.cc  \
+	SensorDisplay.cc \
+	SensorLogger.cc \
 	SensorManager.cc \
-	SensorAgent.cc SensorShellAgent.cc SensorSocketAgent.cc \
-	WorkSheet.cc Workspace.cc \
+	SensorShellAgent.cc \
+	SensorSocketAgent.cc \
+	SignalPlotter.cc \
+	StyleEngine.cc \
+	WorkSheet.cc \
+	Workspace.cc \
 	ksysguard.cc ksysguard.skel \
-	DancingBarsSettings.ui MultiMeterSettings.ui \
-	FancyPlotterSettings.ui HostConnector.ui WorkSheetSettings.ui \
-	ListViewSettings.ui BarGraphSettings.ui StyleSettings.ui SensorLoggerDlg.ui SensorLoggerSettings.ui
+	BarGraphSettings.ui \
+	DancingBarsSettings.ui \
+	FancyPlotterSettings.ui \
+	HostConnector.ui \
+	ListViewSettings.ui \
+	MultiMeterSettings.ui \
+	SensorLoggerDlg.ui \
+	SensorLoggerSettings.ui \
+	StyleSettings.ui \
+	WorkSheetSettings.ui
 
 # the library search path
 ksysguard_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
 # the libraries to link against. Be aware of the order. First the libraries,
 # that depend on the following ones.
-ksysguard_LDADD   =       $(LIB_KDEUI) $(LIB_KFILE)
+ksysguard_LDADD   = $(LIB_KDEUI) $(LIB_KFILE)
 
 data_DATA = ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml
 
@@ -55,17 +68,26 @@ data_DATA = ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml
 lib_LTLIBRARIES = libksysguardapplet.la
 
 libksysguardapplet_la_SOURCES = \
+	BarGraph.cc \
 	ColorPicker.cc \
-	DancingBars.cc BarGraph.cc \
-	FancyPlotter.cc SignalPlotter.cc \
-	MultiMeter.cc MultiMeterSettings.ui \
-	SensorDisplay.cc \
-	StyleEngine.cc \
-	SensorManager.cc \
-	SensorAgent.cc SensorShellAgent.cc SensorSocketAgent.cc \
+	DancingBars.cc \
+	FancyPlotter.cc \
 	KSysGuardApplet.cc \
-	FancyPlotterSettings.ui HostConnector.ui KSysGuardAppletSettings.ui \
-	StyleSettings.ui DancingBarsSettings.ui BarGraphSettings.ui
+	MultiMeter.cc \
+	SensorAgent.cc \
+	SensorDisplay.cc \
+	SensorManager.cc \
+	SensorShellAgent.cc \
+	SensorSocketAgent.cc \
+	SignalPlotter.cc \
+	StyleEngine.cc \
+	BarGraphSettings.ui \
+	DancingBarsSettings.ui \
+	FancyPlotterSettings.ui \
+	HostConnector.ui \
+	KSysGuardAppletSettings.ui \
+	MultiMeterSettings.ui \
+	StyleSettings.ui
 
 libksysguardapplet_la_METASOURCES = AUTO
 libksysguardapplet_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -module -no-undefined

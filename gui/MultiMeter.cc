@@ -195,7 +195,7 @@ MultiMeter::createFromDOM(QDomElement& el)
 	setBackgroundColor(restoreColorFromDOM(el, "backgroundColor",
 										   Style->getBackgroundColor()));
 
-	addSensor(el.attribute("hostName"), el.attribute("sensorName"), el.attribute("sensorType"), "");
+	addSensor(el.attribute("hostName"), el.attribute("sensorName"), (el.attribute("sensorType").isEmpty() ? "integer" : el.attribute("sensorType")), "");
 
 	setModified(false);
 

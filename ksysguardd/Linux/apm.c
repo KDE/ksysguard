@@ -19,15 +19,15 @@
 	$Id$
 */
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <stdio.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-#include "ksysguardd.h"
 #include "Command.h"
 #include "apm.h"
+#include "ksysguardd.h"
 
 static int ApmOK = 0;
 static int BatFill, BatTime;
@@ -74,8 +74,6 @@ exitApm(void)
 int
 updateApm(void)
 {
-	/* ATTENTION: This function is called from a signal handler! Rules for
-	 * signal handlers must be obeyed! */
 	size_t n;
 	int fd;
 

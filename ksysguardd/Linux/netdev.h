@@ -23,11 +23,9 @@
 #define _netdev_h_
 
 void initNetDev(void);
-
 void exitNetDev(void);
 
 int updateNetDev(void);
-
 void checkNetDev(void);
 
 void printNetDevRecBytes(const char* cmd);

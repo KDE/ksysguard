@@ -6,7 +6,7 @@
 
     Copyright (C) 1998 Nicolas Leclercq <nicknet@planete.net>
 
-	Copyright (c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -306,7 +306,7 @@ ProcessList::getSelectedPIds()
 {
 	selectedPIds.clear();
 	// iterate through all items of the listview and find selected processes
-    QListViewItemIterator it(this);
+	QListViewItemIterator it(this);
 	for ( ; it.current(); ++it )
 		if (it.current()->isSelected())
 			selectedPIds.append(it.current()->text(1).toInt());
@@ -331,7 +331,7 @@ ProcessList::update(const QString& list)
 			kdDebug() << list << endl;
 			QString l;
 			for (uint j = 0; j < line->numberOfTokens(); j++)
-				l += (*line)[i] + "|";
+				l += (*line)[j] + "|";
 			kdDebug() << "Incomplete ps line:" << l << endl;
 			setSensorOk(false);
 #endif
@@ -494,7 +494,7 @@ ProcessList::buildList()
 				pli->setSelected(true);
 		}
 		pl.removeFirst();
-    }
+	}
 }
 
 void
@@ -669,7 +669,7 @@ ProcessList::updateMetaInfo(void)
 	selectedPIds.clear();
 	closedSubTrees.clear();
 
-    QListViewItemIterator it(this);
+	QListViewItemIterator it(this);
 
 	// iterate through all items of the listview
 	for ( ; it.current(); ++it )
@@ -678,7 +678,7 @@ ProcessList::updateMetaInfo(void)
 			selectedPIds.append(it.current()->text(1).toInt());
 		if (treeViewEnabled && !it.current()->isOpen())
 			closedSubTrees.append(it.current()->text(1).toInt());
-    }
+	}
 
 	/* In list view mode all list items are set to closed by QListView.
 	 * If the tree view is now selected, all item will be closed. This is

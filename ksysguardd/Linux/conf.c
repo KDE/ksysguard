@@ -37,6 +37,30 @@ void parseConfigFile(const char *filename)
 
 	if ((config = fopen(filename, "r")) == NULL) {
 		log_error("can't open config file '%s'", filename);
+
+		/* if we can't open a config file we have to add the
+		   available sensors manually
+		*/
+
+		confSensor = strdup("ProcessList");
+		push_ctnr(SensorList, confSensor);
+		confSensor = strdup("Memory");
+		push_ctnr(SensorList, confSensor);
+		confSensor = strdup("Stat");
+		push_ctnr(SensorList, confSensor);
+		confSensor = strdup("NetDev");
+		push_ctnr(SensorList, confSensor);
+		confSensor = strdup("NetStat");
+		push_ctnr(SensorList, confSensor);
+		confSensor = strdup("CpuInfo");
+		push_ctnr(SensorList, confSensor);
+		confSensor = strdup("LoadAvg");
+		push_ctnr(SensorList, confSensor);
+		confSensor = strdup("DiskStat");
+		push_ctnr(SensorList, confSensor);
+		confSensor = strdup("LogFile");
+		push_ctnr(SensorList, confSensor);
+
 		return;
 	}
 

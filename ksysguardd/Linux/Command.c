@@ -27,10 +27,9 @@
 #include <string.h>
 #include <syslog.h>
 
-#include "ccont.h"
 #include "Command.h"
+#include "ccont.h"
 #include "ksysguardd.h"
-#include "netdev.h"		/* TODO: Ugly dependancy. Should fix this later. */
 
 typedef struct
 {
@@ -71,7 +70,8 @@ print_error(const char *fmt, ...)
 	vsnprintf(errmsg, 1024, fmt, az);
 	va_end(az);
 
-	fprintf(CurrentClient, "\033%s\033", errmsg);
+	if (CurrentClient)
+		fprintf(CurrentClient, "\033%s\033", errmsg);
 }
 
 void
@@ -190,12 +190,6 @@ executeCommand(const char* command)
 	char tokenFormat[64];
 	char token[64];
 
-	if (CheckSetupFlag)
-	{
-		checkNetDev();
-		CheckSetupFlag = 0;
-	}
-
 	sprintf(tokenFormat, "%%%ds", (int) sizeof(token) - 1);
 	sscanf(command, tokenFormat, token);
 
@@ -217,8 +211,10 @@ executeCommand(const char* command)
 		}
 	}
 
-	fprintf(CurrentClient, "UNKNOWN COMMAND\n");
-	fflush(CurrentClient);
+	if (CurrentClient) {
+		fprintf(CurrentClient, "UNKNOWN COMMAND\n");
+		fflush(CurrentClient);
+	}
 }
 
 void

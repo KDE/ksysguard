@@ -25,6 +25,9 @@
 
 void initProcessList(void);
 void exitProcessList(void);
+
+void updateProcessList(void);
+
 void printProcessList(const char*);
 void printProcessListInfo(const char*);
 void printProcessCount(const char* cmd);

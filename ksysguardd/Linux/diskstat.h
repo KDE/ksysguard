@@ -24,6 +24,7 @@ void initDiskStat(void);
 void exitDiskStat(void);
 
 int updateDiskStat(void);
+void checkDiskStat(void);
 
 void printDiskStat(const char* cmd);
 void printDiskStatInfo(const char* cmd);

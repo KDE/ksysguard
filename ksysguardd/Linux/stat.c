@@ -483,7 +483,7 @@ initStat(void)
 	}
 
 	/* Use unbuffered input for /proc/stat file. */
-    setvbuf(stat, NULL, _IONBF, 0);
+	setvbuf(stat, NULL, _IONBF, 0);
 
 	sprintf(format, "%%%d[^\n]\n", (int) sizeof(buf) - 1);
 

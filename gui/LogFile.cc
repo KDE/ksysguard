@@ -39,8 +39,7 @@ LogFile::LogFile(QWidget *parent, const char *name, const QString&)
 	Q_CHECK_PTR(monitor);
 	
 	KIconLoader iconLoader;
-	QPixmap errorIcon = iconLoader.loadIcon("connect_creating",
-											KIcon::Desktop, KIcon::SizeSmall);
+	QPixmap errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop, KIcon::SizeSmall);
 
 	errorLabel = new QLabel(monitor);
 	Q_CHECK_PTR(errorLabel);
@@ -154,7 +153,7 @@ LogFile::createFromDOM(QDomElement& element)
 		filterRules.append(element.attribute("rule"));
 	}
 
-	addSensor(element.attribute("hostName"), element.attribute("sensorName"), element.attribute("sensorType"), title);
+	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "logfile" : element.attribute("sensorType")), title);
 
 	setModified(FALSE);
 

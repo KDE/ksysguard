@@ -101,9 +101,7 @@ exitMemory(void)
 int
 updateMemory(void)
 {
-	/* ATTENTION: This function is called from a signal handler! Rules for
-	 * signal handlers must be obeyed!
-	 *
+	/*
 	 * The amount of total and used memory is read from the /proc/meminfo.
 	 * It also contains the information about the swap space.
 	 * The 'file' looks like this:

@@ -73,9 +73,10 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 	dockCnt = 1;
 	docks = new QWidget*[dockCnt];
 	Q_CHECK_PTR(docks);
+
 	docks[0] = new QFrame(this);
 	Q_CHECK_PTR(docks[0]);
-	((QFrame*) docks[0])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
+	((QFrame*)docks[0])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
 	QToolTip::add(docks[0],
 				  i18n("Drag sensors from the KDE System Guard into "
 					   "this cell."));
@@ -287,10 +288,10 @@ KSysGuardApplet::removeDisplay(SensorDisplay* sd)
 		if (sd == docks[i])
 		{
 			delete docks[i];
+
 			docks[i] = new QFrame(this);
 			Q_CHECK_PTR(docks[i]);
-			((QFrame*) docks[i])->
-				setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
+			((QFrame*) docks[i])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
 			QToolTip::add(docks[i],
 						  i18n("Drag sensors from the KDE System Guard into "
 							   "this cell."));

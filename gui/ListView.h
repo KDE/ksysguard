@@ -24,55 +24,58 @@
 #define _ListView_h_
 
 #include <qlistview.h>
+#include <qpainter.h>
 
 #include <SensorDisplay.h>
+
+typedef const char* (*KeyFunc)(const char*);
 
 class QLabel;
 class QBoxGroup;
 class ListViewSettings;
 
-class MyListView : public QListView
+class PrivateListView : public QListView
 {
+	Q_OBJECT
 public:
-	MyListView(QWidget *parent = 0);
-
-	void setGridColor(const QColor& color) { gridColor = color; }
-	void setTextColor(const QColor& color) { textColor = color; }
-	void setBackgroundColor(const QColor& color) { backgroundColor = color; }
-	QColor getGridColor(void) { return gridColor; }
-	QColor getTextColor(void) { return textColor; }
-	QColor getBackgroundColor(void) { return backgroundColor; }
+	PrivateListView(QWidget *parent = 0, const char *name = 0);
+	
+	void addColumn(const QString& label, const QString& type);
+	void removeColumns(void);
+	void update(const QString& answer);
+	QValueList<KeyFunc> getSortFunc(void) { return sortFunc; }
 
 private:
-	QColor gridColor;
-	QColor textColor;
-	QColor backgroundColor;
-};	
+	QValueList<KeyFunc> sortFunc;
+};
 
-class ListViewItem : public QListViewItem
+class PrivateListViewItem : public QListViewItem
 {
 public:
-	ListViewItem(MyListView *parent);
+	PrivateListViewItem(PrivateListView *parent = 0);
 
-	void paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment);
-	void paintFocus(QPainter *, const QColorGroup &cg, const QRect &r);
+	void paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment) {
+		QColorGroup cgroup = _parent->colorGroup();
+		QListViewItem::paintCell(p, cgroup, column, width, alignment);
+		p->setPen(cgroup.color(QColorGroup::Link));
+		p->drawLine(0, height() - 1, width - 1, height() - 1);
+	}
+
+	void paintFocus(QPainter *, const QColorGroup, const QRect) {}
+
+	virtual QString key(int column, bool) const;
 
 private:
-	QColor gridColor;
-	QColor textColor;
-	QColor backgroundColor;
+	QWidget *_parent;
 };	
 
 class ListView : public SensorDisplay
 {
 	Q_OBJECT
-
 public:
 	ListView(QWidget* parent = 0, const char* name = 0,
 			const QString& = QString::null, int min = 0, int max = 0);
-	~ListView()
-	{
-	}
+	~ListView() {}
 
 	bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& sensorDescr);
 	void answerReceived(int id, const QString& answer);
@@ -102,7 +105,7 @@ public slots:
 
 private:
 	QLabel* errorLabel;
-	MyListView* monitor;
+	PrivateListView* monitor;
 	ListViewSettings* lvs;
 
 	QString title;

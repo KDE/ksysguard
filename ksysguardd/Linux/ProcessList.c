@@ -48,7 +48,6 @@
 #define KDEINITLEN strlen("kdeinit: ")
 
 static CONTAINER ProcessList = 0;
-static time_t timeStamp = 0;
 
 typedef struct
 {
@@ -71,7 +70,7 @@ typedef struct
 	gid_t gid;
 
 	/* a character description of the process status */
-    char status[16];
+	char status[16];
 
 	/* the number of the tty the process owns */
 	int ttyNo;
@@ -229,7 +228,7 @@ updateProcess(int pid)
 	if (fclose(fd))
 		return (-1);
 
-    snprintf(buf, BUFSIZE - 1, "/proc/%d/stat", pid);
+	snprintf(buf, BUFSIZE - 1, "/proc/%d/stat", pid);
 	buf[BUFSIZE - 1] = '\0';
 	if ((fd = fopen(buf, "r")) == 0)
 		return (-1);
@@ -362,14 +361,9 @@ cleanupProcessList(void)
 	}
 }
 
-static int
+void
 updateProcessList(void)
 {
-	/* There no way that this function can avoid the use of
-	 * non-reentrant glibc functions. We cannot use it from within
-	 * signal handlers. So we use the timeStamp variable to find out
-	 * if the last update was more than 2 seconds ago and refresh the
-	 * list by calling this function. */
 	DIR* dir;
 	struct dirent* entry;
 
@@ -379,7 +373,7 @@ updateProcessList(void)
 		print_error("Cannot open directory \'/proc\'!\n"
 			   "The kernel needs to be compiled with support\n"
 			   "for /proc filesystem enabled!\n");
-		return (-1);
+		return;
 	}
 	while ((entry = readdir(dir))) 
 	{
@@ -394,10 +388,6 @@ updateProcessList(void)
 	closedir(dir);
 
 	cleanupProcessList();
-
-	timeStamp = time(0);
-
-	return (0);
 }
 
 /*
@@ -420,11 +410,23 @@ initProcessList(void)
 		registerCommand("kill", killProcess);
 		registerCommand("setpriority", setPriority);
 	}
+
+	updateProcessList();
 }
 
 void
 exitProcessList(void)
 {
+
+	removeMonitor("ps");
+	removeMonitor("pscount");
+
+	if (!RunAsDaemon)
+	{
+		removeCommand("kill");
+		removeCommand("setpriority");
+	}
+
 	if (ProcessList)
 		destr_ctnr(ProcessList, free);
 	exitPWUIDCache();
@@ -442,9 +444,6 @@ void
 printProcessList(const char* cmd)
 {
 	int i;
-
-	if ((time(0) - timeStamp) >= 2)
-		updateProcessList();
 
 	for (i = 0; i < level_ctnr(ProcessList); i++)
 	{
@@ -465,9 +464,6 @@ printProcessList(const char* cmd)
 void
 printProcessCount(const char* cmd)
 {
-	if ((time(0) - timeStamp) >= 2)
-		updateProcessList();
-
 	fprintf(CurrentClient, "%d\n", ProcessCount);
 }
 

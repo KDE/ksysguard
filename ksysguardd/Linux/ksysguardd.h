@@ -28,4 +28,10 @@ extern int QuitApp;
 extern int RunAsDaemon;
 extern FILE* CurrentClient;
 
+/* called every 2 seconds, so the sensors can update their values */
+void updateModules(void);
+
+/* when do we call this? */
+void checkModules(void);
+
 #endif

@@ -137,7 +137,7 @@ private:
 	bool killSupported;
 
 	/// The process list.
-    ProcessList* pList;
+	ProcessList* pList;
 
 	QHBoxLayout* gm1;
 
