@@ -268,7 +268,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 			break;
 		case 1:	// unknown error
 			SensorMgr->notify(
-				QString(i18n("Error during kill of process %1!"))
+				QString(i18n("Error while attempting to kill process %1!"))
 				.arg(vals[1]));
 			break;
 		case 2:
@@ -278,7 +278,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 			break;
 		case 3:
 			SensorMgr->notify(
-				QString(i18n("Process %1 disappeared already!")).arg(vals[1]));
+				QString(i18n("Process %1 has already disappeared!")).arg(vals[1]));
 			break;
 		case 4:
 			SensorMgr->notify(i18n("Invalid Signal!"));

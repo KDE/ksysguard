@@ -303,7 +303,7 @@ KSysGuardApplet::load()
 	QFile file(fileName);
 	if (!file.open(IO_ReadOnly))
 	{
-		KMessageBox::sorry(this, i18n("Can't open the file %1")
+		KMessageBox::sorry(this, i18n("Can't open the file %1.")
 						   .arg(fileName));
 		return (FALSE);
 	}
@@ -315,7 +315,7 @@ KSysGuardApplet::load()
 	{
 		KMessageBox::sorry(
 			this,
-			i18n("The file %1 does not contain valid XML").arg(fileName));
+			i18n("The file %1 does not contain valid XML.").arg(fileName));
 		return (FALSE);
 	}
 	// Check for proper document type.
@@ -325,7 +325,7 @@ KSysGuardApplet::load()
 			this,
 			i18n("The file %1 does not contain a valid applet\n"
 				 "definition, which must have a document type\n"
-				 "'KSysGuardApplet'").arg(fileName));
+				 "'KSysGuardApplet'.").arg(fileName));
 		return (FALSE);
 	}
 
@@ -386,8 +386,8 @@ KSysGuardApplet::load()
 		{
 			KMessageBox::sorry(
 				this,
-				i18n("The KSysGuard applet does not support displaying\n"
-					 "this type of sensors. Please choose another sensor."));
+				i18n("The KSysGuard applet does not support displaying of\n"
+					 "this type of sensor. Please choose another sensor."));
 			return (FALSE);
 		}
 		CHECK_PTR(newDisplay);

@@ -171,7 +171,7 @@
                     </property>
                     <property>
                         <name>whatsThis</name>
-                        <string>Enter here the number of displays you want to embedd into the panel.</string>
+                        <string>Enter here the number of displays you want to embed into the panel.</string>
                     </property>
                 </widget>
             </hbox>
@@ -243,7 +243,7 @@
                     </property>
                     <property>
                         <name>whatsThis</name>
-                        <string>This setting controls the width/height ratio for horizontal panels and the height/width ratio for vertical panels. E. g. to have the displays in a horizontal panel twice as wide as their height enter 200%. To have them half as wide enter 50%.</string>
+                        <string>This setting controls the width/height ratio for horizontal panels and the height/width ratio for vertical panels (e.g. To have the displays in a horizontal panel twice as wide as their height enter 200%. To have them half as wide enter 50%).</string>
                     </property>
                 </widget>
             </hbox>

@@ -64,10 +64,10 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 		"The sensor browser lists the connected hosts and the sensors "
 		"that they provide. Click and drag sensors into drop zones "
 		"of a work sheet or the panel applet. A display will appear "
-		"the visualizes the "
+		"that visualizes the "
 		"values provided by the sensor. Some sensor displays can "
 		"display values of multiple sensors. Simply drag other "
-		"sensors onto the display to add more sensors."));
+		"sensors on to the display to add more sensors."));
 }
 
 SensorBrowser::~SensorBrowser()

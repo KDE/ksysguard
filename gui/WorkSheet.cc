@@ -127,7 +127,7 @@ WorkSheet::load(const QString& fN)
 			this,
 			i18n("The file %1 does not contain a valid work sheet\n"
 				 "definition, which must have a document type\n"
-				 "'KSysGuardWorkSheet'").arg(fileName));
+				 "'KSysGuardWorkSheet'.").arg(fileName));
 		return (false);
 	}
 	// Check for proper size.

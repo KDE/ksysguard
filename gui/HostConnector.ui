@@ -254,7 +254,7 @@
                             </property>
                             <property>
                                 <name>whatsThis</name>
-                                <string>Select this if you want to use the secure shell to log into the remote host.</string>
+                                <string>Select this to use the secure shell to login to the remote host.</string>
                             </property>
                         </widget>
                         <spacer>
@@ -290,7 +290,7 @@
                             </property>
                             <property>
                                 <name>whatsThis</name>
-                                <string>Select this to use the remote shell to log into the remote host.</string>
+                                <string>Select this to use the remote shell to login to the remote host.</string>
                             </property>
                         </widget>
                         <spacer>
@@ -326,7 +326,7 @@
                             </property>
                             <property>
                                 <name>toolTip</name>
-                                <string>Select this if you want to connect to a ksysguard daemon that is running on the machine you want to connect to and is listening for client requests.</string>
+                                <string>Select this if you want to connect to a ksysguard daemon that is running on the machine you want to connect to, and is listening for client requests.</string>
                             </property>
                         </widget>
                         <spacer>
@@ -432,7 +432,7 @@
                             </property>
                             <property stdset="1">
                                 <name>text</name>
-                                <string>e. g. ssh -l root remote.host.org ksysguardd</string>
+                                <string>e.g. ssh -l root remote.host.org ksysguardd</string>
                             </property>
                         </widget>
                     </vbox>
@@ -546,7 +546,7 @@
                     </property>
                     <property>
                         <name>toolTip</name>
-                        <string>Enter the port number where the ksysguard daemon is listening for connections.</string>
+                        <string>Enter the port number on which the ksysguard daemon is listening for connections.</string>
                     </property>
                 </widget>
                 <spacer row="6"  column="0"  rowspan="2"  colspan="1" >
