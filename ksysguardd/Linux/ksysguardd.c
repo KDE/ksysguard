@@ -29,13 +29,14 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/time.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #include "ksysguardd.h"
-#include "Dispatcher.h"
 #include "Command.h"
 #include "ProcessList.h"
 #include "Memory.h"
@@ -53,9 +54,22 @@
 #define PORT_NUMBER	2001
 
 static int client_list[MAX_CLIENTS];
+FILE* clientFDs[MAX_CLIENTS];
 static int curr_socket;
 static int QuitApp = 0;
 int RunAsDaemon = 0;
+
+static void
+printWelcome(FILE* out)
+{
+	fprintf(out,
+			"ksysguardd %s  (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>\n"
+			"                               Tobias Koenig <tokoe@yahoo.de>\n"
+			"This program is part of the KDE Project and licensed under\n"
+			"the GNU GPL version 2. See www.kde.org for details!\n"
+			"ksysguardd> ", VERSION);
+	fflush(out);
+}
 
 static void
 readCommand(char* cmdBuf)
@@ -73,7 +87,10 @@ void reset_clientlist(void)
 	int i;
 
 	for (i = 0; i < MAX_CLIENTS; i++)
+	{
 		client_list[i] = -1;
+		clientFDs[i] = 0;
+	}
 }
 
 void add_client(int client)
@@ -81,15 +98,15 @@ void add_client(int client)
 	int i;
 	FILE* out;
 
-	for (i = 0; i < MAX_CLIENTS; i++) {
-		if (client_list[i] == -1) {
+	for (i = 0; i < MAX_CLIENTS; i++)
+	{
+		if (client_list[i] == -1)
+		{
 			client_list[i] = client;
-			out = fdopen(client, "w+");
-			fprintf(out, "ksysguardd %s  (c) 1999, 2000 Chris Schlaeger <cs@kde.org>\n"
-					"This program is part of the KDE Project and licensed under\n"
-					"the GNU GPL version 2. See www.kde.org for details!\n"
-					"ksysguardd> ", VERSION);
-			fflush(out);
+			if ((out = fdopen(client, "w+")) == NULL)
+				perror("fdopen");
+			clientFDs[i] = out;
+			printWelcome(out);
 			return;
 		}
 	}
@@ -170,6 +187,8 @@ main(int argc, char* argv[])
 	fd_set fds;
 	struct sockaddr_in addr;
 	socklen_t addr_len;
+	struct timeval tv;
+	struct timeval last;
 	int socket_port = PORT_NUMBER;
 
 	opterr = 0;
@@ -201,93 +220,127 @@ main(int argc, char* argv[])
 	initCpuInfo();
 	initLoadAvg();
 	initLmSensors();
-	initDispatcher();
 	initDiskStat();
 
-	/* wait for the dispatcher */
-	while (!dispatcherReady())
-		;
 	ReconfigureFlag = 0;
 
-	if (RunAsDaemon) {
+	printWelcome(stdout);
+
+	if (RunAsDaemon)
+	{
 		make_daemon();
 
-		if ((socket = createServerSocket(socket_port)) < 0) {
-				return -1;
-		}
-
+		if ((socket = createServerSocket(socket_port)) < 0)
+			return -1;
 		reset_clientlist();
+	}
+	else
+	{
+		currentClient = stdout;
+		currentClientFD = fileno(currentClient);
+		socket = 0;
+	}
 
-		while (1) {
-			memset(cmdBuf, 0, sizeof(cmdBuf));
+	tv.tv_sec = 2;
+	tv.tv_usec = 0;
+	gettimeofday(&last, NULL);
 
-			/* fill select structure */
-			maxfd = socket;
+	while (!QuitApp)
+	{
+		memset(cmdBuf, 0, sizeof(cmdBuf));
 
-			FD_ZERO(&fds);
+		/* fill select structure */
+		maxfd = socket;
+
+		FD_ZERO(&fds);
+		if (RunAsDaemon)
+		{
 			FD_SET(socket, &fds);
 
-			for (i = 0; i < MAX_CLIENTS; i++) {
-				if (client_list[i] != -1) {
+			for (i = 0; i < MAX_CLIENTS; i++)
+			{
+				if (client_list[i] != -1)
+				{
 					FD_SET(client_list[i], &fds);
 					maxfd = (client_list[i] > maxfd ? client_list[i] : maxfd);
 				}
 			}
+		}
+		else
+			FD_SET(fileno(stdin), &fds);
 
-			/* wait for communication */
-			if (select(maxfd + 1, &fds, NULL, NULL, NULL) > 0) {
-				if (FD_ISSET(socket, &fds)) { /* a new connection */
-					if ((conn_socket = accept(socket, &addr, &addr_len)) < 0) {
+		/* wait for communication or timeouts */
+		if (select(maxfd + 1, &fds, NULL, NULL, &tv) >= 0)
+		{
+			struct timeval now;
+			gettimeofday(&now, NULL);
+			if (now.tv_sec - last.tv_sec >= 2)
+			{
+				updateMemory();
+				updateStat();
+				updateNetDev();
+				updateApm();
+				updateCpuInfo();
+				updateLoadAvg();
+				last = now;
+			}
+			tv.tv_usec = last.tv_usec - now.tv_usec;
+			if (tv.tv_usec < 0)
+			{
+				tv.tv_usec += 1000000;
+				tv.tv_sec = last.tv_sec + 1 - now.tv_sec;
+			}
+			else
+				tv.tv_sec = last.tv_sec + 2 - now.tv_sec;
+
+			if (RunAsDaemon)
+			{
+				if (FD_ISSET(socket, &fds))
+				{
+					/* a new connection */
+					if ((conn_socket = accept(socket, &addr, &addr_len)) < 0)
+					{
 						perror("accept");
 						exit(1);
-					} else {
-						add_client(conn_socket);
 					}
+					else
+						add_client(conn_socket);
 				}
-
-				for (i = 0; i < MAX_CLIENTS; i++) {
-					if (client_list[i] != -1) {
+			
+				for (i = 0; i < MAX_CLIENTS; i++)
+				{
+					if (client_list[i] != -1)
+					{
 						curr_socket = client_list[i];
-						if (FD_ISSET(client_list[i], &fds)) {
-							if (read(curr_socket, cmdBuf, sizeof(cmdBuf)) < 0) {
+						if (FD_ISSET(client_list[i], &fds))
+						{
+							if (read(curr_socket, cmdBuf, sizeof(cmdBuf) - 1) < 0
+								|| strstr(cmdBuf, "quit"))
+							{
 								del_client(curr_socket);
 								close(curr_socket);
-							} else {
-								if (strstr(cmdBuf, "quit")) {
-									del_client(curr_socket);
-									close(curr_socket);
-								} else {
-									if ((currentClient = fdopen(curr_socket, "w+")) == NULL) {
-										perror("fdopen");
-									}
-									currentClientFD = fileno(currentClient);
-									executeCommand(cmdBuf);
-									fprintf(currentClient, "ksysguardd> ");
-									fflush(currentClient);
-								}
+								clientFDs[i] = 0;
+							}
+							else
+							{
+								currentClient = clientFDs[i];
+								currentClientFD = fileno(currentClient);
+								executeCommand(cmdBuf);
+								fprintf(currentClient, "ksysguardd> ");
+								fflush(currentClient);
 							}
 						}
 					}
 				}
 			}
+			else if (FD_ISSET(fileno(stdin), &fds))
+			{
+				readCommand(cmdBuf);
+				executeCommand(cmdBuf);
+				printf("ksysguardd> ");
+				fflush(stdout);
+			}
 		}
-	}
-
-	if (RunAsDaemon == 0) {
-		currentClient = stdout;
-		currentClientFD = fileno(currentClient);
-		
-		printf("ksysguardd %s  (c) 1999, 2000 Chris Schlaeger <cs@kde.org>\n"
-		   "This program is part of the KDE Project and licensed under\n"
-		   "the GNU GPL version 2. See www.kde.org for details!\n"
-		   "ksysguardd> ", VERSION);
-		fflush(stdout);
-		do {
-			readCommand(cmdBuf);
-			executeCommand(cmdBuf);
-			printf("ksysguardd> ");
-			fflush(stdout);
-		} while (!QuitApp);
 	}
 
 	exitDiskStat();
@@ -295,7 +348,6 @@ main(int argc, char* argv[])
 	exitLoadAvg();
 	exitCpuInfo();
 	exitApm();
-	exitDispatcher();
 	exitNetDev();
 	exitNetDev();
 	exitStat();
