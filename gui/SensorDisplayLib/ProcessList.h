@@ -49,8 +49,8 @@ public:
 	ProcessLVI(QListView* lv) : QListViewItem(lv) { }
 	ProcessLVI(QListViewItem* lvi) : QListViewItem(lvi) { }
 
-	virtual QString key(int column, bool) const;
-} ;
+	virtual int compare( QListViewItem *item, int column, bool ) const;
+};
 
 class QPopupMenu;
 
@@ -71,6 +71,8 @@ public:
 		FILTER_USER,
 		FILTER_OWN
 	};
+
+    enum ColumnType { Text, Int, Float, Time };
 
 	/// The constructor.
 	ProcessList(QWidget* parent = 0, const char* name = 0);
@@ -119,10 +121,7 @@ public:
 	 */
 	bool update(const QString& list);
 
-	const QValueList<KeyFunc>& getSortFunc()
-	{
-		return (sortFunc);
-	}
+	int columnType( uint col ) const;
 
 	void setSensorOk(bool ok);
 
@@ -267,10 +266,8 @@ private:
 
 	QPtrList<KSGRD::SensorPSLine> pl;
 
-	QStringList columnTypes;
+	QStringList mColumnTypes;
 	QDict<QString> columnDict;
-
-	QValueList<KeyFunc> sortFunc;
 
 	QValueList<int> selectedPIds;
 	QValueList<int> closedSubTrees;

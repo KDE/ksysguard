@@ -54,21 +54,46 @@
 #define NONE -1
 #define INIT_PID 1
 
-extern const char* intKey(const char* text);
-extern const char* timeKey(const char* text);
-extern const char* floatKey(const char* text);
+//extern const char* intKey(const char* text);
+//extern const char* timeKey(const char* text);
+//extern const char* floatKey(const char* text);
 
 QDict<QString> ProcessList::aliases;
 
-QString
-ProcessLVI::key(int column, bool) const
+int ProcessLVI::compare( QListViewItem *item, int col, bool ascending ) const
 {
-	QValueList<KeyFunc> kf = ((ProcessList*) listView())->getSortFunc();
-	KeyFunc func = *(kf.at(column));
-	if (func)
-		return (func(text(column).latin1()));
+  int type = ((ProcessList*)listView())->columnType( col );
 
-	return (text(column));
+  if ( type == ProcessList::Int ) {
+    int prev = (int)KGlobal::locale()->readNumber( key( col, ascending ) );
+    int next = (int)KGlobal::locale()->readNumber( item->key( col, ascending ) );
+    if ( prev < next )
+      return -1;
+    else if ( prev == next )
+      return 0;
+    else if ( prev > next )
+      return 1;
+  } else if ( type == ProcessList::Float ) {
+    double prev = KGlobal::locale()->readNumber( key( col, ascending ) );
+    double next = KGlobal::locale()->readNumber( item->key( col, ascending ) );
+    if ( prev < next )
+      return -1;
+    else if ( prev > next )
+      return 1;
+  } else if ( type == ProcessList::Time ) {
+    int hourPrev, hourNext, minutesPrev, minutesNext;
+    sscanf( key( col, ascending ).latin1(), "%d:%d", &hourPrev, &minutesPrev );
+    sscanf( item->key( col, ascending ).latin1(), "%d:%d", &hourNext, &minutesNext );
+    int prev = hourPrev * 60 + minutesPrev;
+    int next = hourNext * 60 + minutesNext;
+    if ( prev < next )
+      return -1;
+    else if ( prev == next )
+      return 0;
+    else if ( prev > next )
+      return 1;
+  } else
+    return key( col, ascending ).localeAwareCompare( item->key( col, ascending ) );
 }
 
 ProcessList::ProcessList(QWidget *parent, const char* name)
@@ -387,6 +412,21 @@ ProcessList::sortingChanged(int col)
 	setModified(true);
 }
 
+int ProcessList::columnType( uint pos ) const
+{
+  if ( pos < 0 || pos >= mColumnTypes.count() )
+    return 0;
+
+  if ( mColumnTypes[ pos ] == "d" || mColumnTypes[ pos ] == "D" )
+    return Int;
+  else if ( mColumnTypes[ pos ] == "f" || mColumnTypes[ pos ] == "F" )
+    return Float;
+  else if ( mColumnTypes[ pos ] == "t" )
+    return Time;
+  else
+    return Text;
+}
+
 bool
 ProcessList::matchesFilter(KSGRD::SensorPSLine* p) const
 {
@@ -589,11 +629,11 @@ ProcessList::addProcess(KSGRD::SensorPSLine* p, ProcessLVI* pli)
 	// insert remaining field into table
 	for (unsigned int col = 1; col < p->count(); col++)
 	{
-		if (columnTypes[col] == "S" && columnDict[(*p)[col]])
+		if (mColumnTypes[col] == "S" && columnDict[(*p)[col]])
 			pli->setText(col, *columnDict[(*p)[col]]);
-		else if ( columnTypes[col] == "f" )
+		else if ( mColumnTypes[col] == "f" )
       pli->setText( col, KGlobal::locale()->formatNumber( (*p)[col].toFloat() ) );
-    else if ( columnTypes[col] == "D" )
+    else if ( mColumnTypes[col] == "D" )
       pli->setText( col, KGlobal::locale()->formatNumber( (*p)[col].toDouble(), 0 ) );
     else
 			pli->setText(col, (*p)[col]);
@@ -634,34 +674,21 @@ ProcessList::removeColumns(void)
 {
 	for (int i = columns() - 1; i >= 0; --i)
 		removeColumn(i);
-	sortFunc.clear();
 }
 
 void
 ProcessList::addColumn(const QString& label, const QString& type)
 {
-	uint col = sortFunc.count();
 	QListView::addColumn(label);
+	uint col = columns() - 1;
 	if (type == "s" || type == "S")
-	{
 		setColumnAlignment(col, AlignLeft);
-		sortFunc.append(0);
-	}
 	else if (type == "d" || type == "D")
-	{
 		setColumnAlignment(col, AlignRight);
-		sortFunc.append(&intKey);
-	}
 	else if (type == "t")
-	{
 		setColumnAlignment(col, AlignRight);
-		sortFunc.append(&timeKey);
-	}
 	else if (type == "f")
-	{
 		setColumnAlignment(col, AlignRight);
-		sortFunc.append(floatKey);
-	}
 	else
 	{
 		kdDebug(1215) << "Unknown type " << type << " of column " << label
@@ -669,7 +696,7 @@ ProcessList::addColumn(const QString& label, const QString& type)
 		return;
 	}
 
-	columnTypes.append(type);
+	mColumnTypes.append(type);
 
 	/* Just use some sensible default values as initial setting. */
 	QFontMetrics fm = fontMetrics();

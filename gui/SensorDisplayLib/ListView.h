@@ -40,15 +40,16 @@ class PrivateListView : public QListView
 {
 	Q_OBJECT
 public:
+  enum ColumnType { Text, Int, Float, Time, DiskStat };
+
 	PrivateListView(QWidget *parent = 0, const char *name = 0);
 	
 	void addColumn(const QString& label, const QString& type);
 	void removeColumns(void);
 	void update(const QString& answer);
-	QValueList<KeyFunc> getSortFunc(void) { return sortFunc; }
+	int columnType( uint pos ) const;
 
 private:
-	QValueList<KeyFunc> sortFunc;
   QStringList mColumnTypes;
 };
 
@@ -66,7 +67,7 @@ public:
 
 	void paintFocus(QPainter *, const QColorGroup, const QRect) {}
 
-	virtual QString key(int column, bool) const;
+	virtual int compare( QListViewItem*, int column, bool ascending ) const;
 
 private:
 	QWidget *_parent;

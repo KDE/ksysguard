@@ -35,6 +35,7 @@
 #include <kdebug.h>
 #include <kglobal.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 #include <ksgrd/ColorPicker.h>
 #include <ksgrd/SensorManager.h>
 #include <ksgrd/StyleEngine.h>
@@ -43,93 +44,66 @@
 #include "ListView.moc"
 #include "ListViewSettings.h"
 
-const char* intKey(const char* text);
-const char* timeKey(const char* text);
-const char* floatKey(const char* text);
-const char* diskStatKey(const char* text);
-
-/*
- * The *key functions are used to sort the list. Since QListView can only sort
- * strings we have to massage the original contense so that the string sort
- * will produce the expected result.
- */
-const char*
-intKey(const char* text)
-{
-	int val;
-	sscanf(text, "%d", &val);
-	static char key[32];
-	sprintf(key, "%016d", val);
-
-	return (key);
-}
-
-const char*
-timeKey(const char* text)
-{
-	int h, m;
-	sscanf(text, "%d:%d", &h, &m);
-	int t = h * 60 + m;
-	static char key[32];
-	sprintf(key, "%010d", t);
-
-	return (key);
-}
-
-const char*
-floatKey(const char* text)
-{
-	double percent;
-	sscanf(text, "%lf", &percent);
-
-	static char key[32];
-	sprintf(key, "%010.2f", percent);
-
-	return (key);
-}
-
-const char*
-diskStatKey(const char* text)
-{
-	char *number, *dev;
-	char tmp[1024];
-	int val;
-	static char key[100];
-
-	strlcpy( tmp, text, sizeof(tmp) - 1 );
-	number = tmp;
-	for ( uint i = 0; i < strlen(tmp); i++ ) {
-		number++;
-		if (isdigit(tmp[i])) {
-			val = atoi(number);
-			tmp[i] = '\0';
-			dev = tmp;
-
-			snprintf(key, sizeof(key), "%s%016d\n", dev, val);
-			return (key);
-		}
-	}
-
-	strlcpy(key, text, sizeof(key) - 1);
-
-	return key;
-}
-
 PrivateListViewItem::PrivateListViewItem(PrivateListView *parent)
 	: QListViewItem(parent)
 {
 	_parent = parent;
 }
 
-QString
-PrivateListViewItem::key(int column, bool) const
+int PrivateListViewItem::compare( QListViewItem *item, int col, bool ascending ) const
 {
-	QValueList<KeyFunc> kf = ((PrivateListView*)listView())->getSortFunc();
-	KeyFunc func = *(kf.at(column));
-	if (func)
-		return (func(text(column).latin1()));
+  int type = ((PrivateListView*)listView())->columnType( col );
 
-	return (text(column));
+  if ( type == PrivateListView::Int ) {
+    int prev = (int)KGlobal::locale()->readNumber( key( col, ascending ) );
+    int next = (int)KGlobal::locale()->readNumber( item->key( col, ascending ) );
+    if ( prev < next )
+      return -1;
+    else if ( prev == next )
+      return 0;
+    else if ( prev > next )
+      return 1;
+  } else if ( type == PrivateListView::Float ) {
+    double prev = KGlobal::locale()->readNumber( key( col, ascending ) );
+    double next = KGlobal::locale()->readNumber( item->key( col, ascending ) );
+    if ( prev < next )
+      return -1;
+    else if ( prev > next )
+      return 1;
+  } else if ( type == PrivateListView::Time ) {
+    int hourPrev, hourNext, minutesPrev, minutesNext;
+    sscanf( key( col, ascending ).latin1(), "%d:%d", &hourPrev, &minutesPrev );
+    sscanf( item->key( col, ascending ).latin1(), "%d:%d", &hourNext, &minutesNext );
+    int prev = hourPrev * 60 + minutesPrev;
+    int next = hourNext * 60 + minutesNext;
+    if ( prev < next )
+      return -1;
+    else if ( prev == next )
+      return 0;
+    else if ( prev > next )
+      return 1;
+  } else if ( type == PrivateListView::DiskStat ) {
+    QString prev = key( col, ascending );
+    QString next = item->key( col, ascending );
+    QString prevKey, nextKey;
+    
+    uint counter = prev.length();
+    for ( uint i = 0; i < counter; ++i )
+      if ( prev[ i ].isDigit() ) {
+        prevKey.sprintf( "%s%016d", prev.left( i ).latin1(), prev.mid( i ).toInt() );
+        break;
+      }
+
+    counter = next.length();
+    for ( uint i = 0; i < counter; ++i )
+      if ( next[ i ].isDigit() ) {
+        nextKey.sprintf( "%s%016d", next.left( i ).latin1(), next.mid( i ).toInt() );
+        break;
+      }
+
+    return prevKey.compare( nextKey );
+  } else
+    return key( col, ascending ).localeAwareCompare( item->key( col, ascending ) );
 }
 
 PrivateListView::PrivateListView(QWidget *parent, const char *name)
@@ -165,47 +139,44 @@ void PrivateListView::update(const QString& answer)
 	}
 }
 
-void
-PrivateListView::removeColumns(void)
+int PrivateListView::columnType( uint pos ) const
+{
+  if ( pos < 0 || pos >= mColumnTypes.count() )
+    return 0;
+
+  if ( mColumnTypes[ pos ] == "d" || mColumnTypes[ pos ] == "D" )
+    return Int;
+  else if ( mColumnTypes[ pos ] == "f" || mColumnTypes[ pos ] == "F" )
+    return Float;
+  else if ( mColumnTypes[ pos ] == "t" )
+    return Time;
+  else if ( mColumnTypes[ pos ] == "M" )
+    return DiskStat;
+  else
+    return Text;
+}
+
+void PrivateListView::removeColumns(void)
 {
 	for (int i = columns() - 1; i >= 0; --i)
 		removeColumn(i);
-
-	sortFunc.clear();
 }
 
-void
-PrivateListView::addColumn(const QString& label, const QString& type)
+void PrivateListView::addColumn(const QString& label, const QString& type)
 {
-	uint col = sortFunc.count();
-	QListView::addColumn(label);
+	QListView::addColumn( label );
+  int col = columns() - 1;
 
-	if (type == "s" || type == "S")
-	{
-		setColumnAlignment(col, AlignLeft);
-		sortFunc.append(0);
-	}
+  if (type == "s" || type == "S")
+    setColumnAlignment(col, AlignLeft);
 	else if (type == "d" || type == "D")
-	{
 		setColumnAlignment(col, AlignRight);
-		sortFunc.append(&intKey);
-	}
 	else if (type == "t")
-	{
 		setColumnAlignment(col, AlignRight);
-		sortFunc.append(&timeKey);
-	}
 	else if (type == "f")
-	{
 		setColumnAlignment(col, AlignRight);
-		sortFunc.append(&floatKey);
-	}
-	/* special sort function for partitions/list sensor */
 	else if (type == "M")
-	{
 		setColumnAlignment(col, AlignLeft);
-		sortFunc.append(&diskStatKey);
-	}
 	else
 	{
 		kdDebug(1215) << "Unknown type " << type << " of column " << label
