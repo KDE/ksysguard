@@ -76,7 +76,7 @@ private:
 //-----------------------------------------------------------------------------
 class ProcList : public KTabListBox
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
       ProcList(QWidget* parent , const char* name, int nCol);
      ~ProcList();
@@ -91,7 +91,7 @@ signals:
 //-----------------------------------------------------------------------------
 class TaskMan : public QTabDialog
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
 
