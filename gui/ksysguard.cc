@@ -320,8 +320,15 @@ TopLevel::editToolbars()
 {
 	KEditToolbar dlg(actionCollection());
 
+	bool isHidden = toolBar("mainToolBar")->isHidden();
+
+	// Is it a bug, that createGUI() show the toolbar even when it's hidden?
 	if (dlg.exec())
+	{
 		createGUI();
+		if (isHidden)
+			toolBar("mainToolBar")->hide();
+	}
 }
 
 void
