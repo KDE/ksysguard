@@ -26,6 +26,7 @@
 #include "ccont.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 struct container_info {
 	INDEX count;
@@ -344,7 +345,7 @@ void* remove_ctnr(CONTAINER rootNode)
 	info = (CONTAINER_INFO)rootNode->data;
 	currentNode = info->currentNode;
 
-	if (currentNode == rootNode) { // should never happen
+	if (currentNode == rootNode) { /* should never happen */
 		rpterr("remove_curr_ctnr: delete root node");
 		return NIL;
 	}
