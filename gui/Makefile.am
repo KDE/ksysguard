@@ -28,8 +28,7 @@ noinst_HEADERS = MainMenu.h ReniceDlg.h SensorClient.h ktop.h ProcessMenu.h \
 	Workspace.h WorkSheet.h SensorBrowser.h \
 	SensorAgent.h SensorManager.h SensorDisplay.h \
 	FancyPlotter.h SignalPlotter.h MultiMeter.h \
-	ProcessController.h ProcessList.h
-	version.h 
+	ProcessController.h ProcessList.h version.h 
 
 # just to make sure, automake makes them 
 METASOURCES = AUTO
