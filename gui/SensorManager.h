@@ -46,7 +46,7 @@ public:
 	const QString getHostName(const SensorAgent* sensor) const;
 
 signals:
-	void update(void);
+	void update();
 
 protected:
 	QDict<SensorAgent> sensors;
@@ -58,8 +58,8 @@ class SensorManagerIterator : public QDictIterator<SensorAgent>
 {
 public:
 	SensorManagerIterator(const SensorManager* sm) :
-		QDictIterator<SensorAgent>(sm->sensors)
-	{ }
+		QDictIterator<SensorAgent>(sm->sensors) { }
+	~SensorManagerIterator() { }
 } ;
 
 #endif

@@ -51,7 +51,7 @@ public:
 	 * In case of an unexpected fatal problem with the sensor the sensor
 	 * agent will call this function to notify the client about it.
 	 */
-	virtual void sensorLost(void) { }
+	virtual void sensorLost() { }
 } ;
 
 /**
@@ -84,19 +84,19 @@ public:
 	}
 	~SensorMonitorInfo() { }
 
-	const QString& getName(void)
+	const QString& getName()
 	{
 		return (name);
 	}
-	long getMin(void)
+	long getMin()
 	{
 		return (min);
 	}
-	long getMax(void)
+	long getMax()
 	{
 		return (max);
 	}
-	const QString& getUnit(void)
+	const QString& getUnit()
 	{
 		return (unit);
 	}
@@ -135,7 +135,7 @@ public:
 	~SensorLinesTokenizer() { }
 
 	const QString& operator[](int idx) { return *(tokens.at(idx)); }
-	unsigned numberOfTokens(void) { return (tokens.count()); }
+	unsigned numberOfTokens() { return (tokens.count()); }
 
 private:
 	QList<QString> tokens;

@@ -76,13 +76,13 @@ public slots:
 	}
 
 signals:
-	void quit(void);
+	void quit();
 	void setRefreshRate(int);
-	void requestUpdate(void);
+	void requestUpdate();
 
 private slots:
 	void handler(int);
-	void requestUpdateSlot(void)
+	void requestUpdateSlot()
 	{
 		emit(requestUpdate());
 	}

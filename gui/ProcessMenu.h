@@ -58,7 +58,7 @@ public slots:
 	void killProcess(int, int sig = SIGKILL);
 
 signals:
-	void requestUpdate(void);
+	void requestUpdate();
 
 private:
 	void reniceProcess(int pid);

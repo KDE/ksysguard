@@ -11,9 +11,9 @@ bin_PROGRAMS = 	ktop
 
 # Which sources should be compiled for ktop.
 
-ktop_SOURCES = ktop.cc  SensorAgent.cc SensorManager.cc SensorBrowser.cc \
-	Workspace.cc MainMenu.cc ProcessMenu.cc ReniceDlg.cc FancyPlotter.cc \
-	SignalPlotter.cc MultiMeter.cc
+ktop_SOURCES = ktop.cc  SensorAgent.cc SensorManager.cc \
+	Workspace.cc WorkSheet.cc SensorBrowser.cc MainMenu.cc \
+	ProcessMenu.cc ReniceDlg.cc
 
 #	TaskMan.cc \
 #	ProcListPage.cc ProcessList.cc \
@@ -30,13 +30,13 @@ ktop_LDADD   =       $(LIB_KDEUI)
 
 # this option you can leave out. Just, if you use "make dist", you need it
 noinst_HEADERS = MainMenu.h ReniceDlg.h SensorClient.h ktop.h ProcessMenu.h \
-	Workspace.h SensorAgent.h SensorManager.h SensorBrowser.h version.h \
-	FancyPlotter.h SignalPlotter.h MultiMeter.h
+	Workspace.h WorkSheet.h SensorAgent.h SensorManager.h \
+	SensorBrowser.h version.h 
 
 # just to make sure, automake makes them 
 
-METASOURCES = ktop.moc SensorAgent.moc SensorManager.moc MainMenu.moc ProcessMenu.moc ReniceDlg.moc 
-# TaskMan.moc ProcListPage.moc ProcessList.moc PerfMonPage.moc 
+METASOURCES = ktop.moc SensorAgent.moc SensorManager.moc Workspace.moc WorkSheet.moc SensorBrowser.moc MainMenu.moc ProcessMenu.moc ReniceDlg.moc
+# TaskMan.moc ProcListPage.moc ProcessList.moc PerfMonPage.moc FancyPlotter.moc MultiMeter.moc SignalPlotter.moc
 
 # make messages.po. Move this one to ../po/ and "make merge" in po
 messages:
