@@ -509,11 +509,10 @@ ProcessList::extendTree(QPtrList<KSGRD::SensorPSLine>* pl, ProcessLVI* parent, i
 			if (selectedPIds.findIndex(ps->getPid()) != -1)
 				pli->setSelected(true);
 
-			if (ps->getPPid() != INIT_PID &&
-				 closedSubTrees.findIndex(ps->getPPid()) != -1)
-				setOpen(parent, false);
+			if (ps->getPPid() != INIT_PID && closedSubTrees.findIndex(ps->getPPid()) != -1)
+				parent->setOpen(false);
 			else
-				setOpen(parent, true);
+				parent->setOpen(true);
 
 			// remove the process from the process list, ps is now invalid
 			int pid = ps->getPid();
@@ -705,10 +704,6 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 {
 	if (!lvi)
 		return;
-
-	/* Qt (un)selectes LVIs on RMB clicks. Since we don't want this, we have
-	 * to invert it again. */
-	lvi->setSelected(!lvi->isSelected());
 
 	/* lvi is only valid until the next time we hit the main event
 	 * loop. So we need to save the information we need after calling
