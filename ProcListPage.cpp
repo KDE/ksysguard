@@ -46,23 +46,6 @@
 
 #define NONE -1
 
-static const char *rateTxt[] =
-{
-    "Refresh rate: Slow", 
-    "Refresh rate: Medium", 
-    "Refresh rate: Fast",
-	0
-};
-
-static const char *processfilter[] =
-{
-	"All processes",
-	"System processes",
-	"User processes",
-	"Own processes",
-	0
-};
-
 ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	: QWidget(parent, name)
 {
@@ -86,9 +69,12 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	// Create a combo box to configure the refresh rate.
 	cbRefresh = new QComboBox(this, "pList_cbRefresh");
 	CHECK_PTR(cbRefresh);
-	for (int i = 0; rateTxt[i]; i++)
-		cbRefresh->insertItem(i18n(rateTxt[i]),
-									i + (KtopProcList::UPDATE_SLOW));
+	cbRefresh->insertItem(i18n("Refresh rate: Slow"),
+			      (KtopProcList::UPDATE_SLOW));
+	cbRefresh->insertItem(i18n("Refresh rate: Medium"),
+			      (KtopProcList::UPDATE_MEDIUM));
+	cbRefresh->insertItem(i18n("Refresh rate: Fast"),
+			      (KtopProcList::UPDATE_FAST));
 	cbRefresh->setCurrentItem(pList->updateRate());
 	connect(cbRefresh, SIGNAL(activated(int)),
 			SLOT(cbRefreshActivated(int)));
@@ -96,8 +82,10 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	// Create the combo box to configure the process filter.
 	cbFilter = new QComboBox(this,"pList_cbFilter");
 	CHECK_PTR(cbFilter);
-	for (int i = 0; processfilter[i]; i++)
-		cbFilter->insertItem(i18n(processfilter[i]), -1);
+	cbFilter->insertItem(i18n("All processes"), -1);
+	cbFilter->insertItem(i18n("System processes"), -1);
+	cbFilter->insertItem(i18n("User processes"), -1);
+	cbFilter->insertItem(i18n("Own processes"), -1);
 	cbFilter->setCurrentItem(pList->getFilterMode());
 	connect(cbFilter, SIGNAL(activated(int)),
 			SLOT(cbProcessFilter(int)));
@@ -206,26 +194,25 @@ ProcListPage::killTask()
 
 	if (pList->selectionPid() != pid)
 	{
-		QMessageBox::warning(this,"ktop",
-							 "Selection changed!\n\n",
-							 "Abort", 0);
+		QMessageBox::warning(this,i18n("ktop"),
+							 i18n("Selection changed!\n\n"),
+							 i18n("Abort"), 0);
 		return;
 	}
 
 	QString msg;
-	msg.sprintf("Kill process %d (", pid);
-	msg += pname + " - " + uname + ") ?\n";
+	msg.sprintf(i18n("Kill process %d (%s - %s)?"), pid, &pname, &uname);
 
 	int err = 0;
-	switch (QMessageBox::warning(this, "ktop", msg, "Continue", "Abort", 0, 1))
+	switch (QMessageBox::warning(this, i18n("ktop"), msg, i18n("Continue"), i18n("Abort"), 0, 1))
 	{ 
 	case 0: // try to kill the process
 		err = kill(pList->selectionPid(), SIGKILL);
 		if (err)
 		{
-			QMessageBox::warning(this,"ktop",
-								 "Kill error !\n"
-								 "The following error occured...\n",
+			QMessageBox::warning(this,i18n("ktop"),
+								 i18n("Kill error !\n"
+								 "The following error occured...\n"),
 								 strerror(errno), 0);   
 		}
 		pList->update();

@@ -31,6 +31,7 @@
 #include <qmessagebox.h>
 #include <kconfig.h>
 #include <klocale.h>
+#include <kstring.h>
 
 #include "version.h"
 #include "ktop.moc"
@@ -65,10 +66,16 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	connect(file, SIGNAL(activated(int)), this, SLOT(menuHandler(int)));
 
 	// 'Help' submenu
-	help = new QPopupMenu();
-	help->insertItem(i18n("Help"), MENU_ID_HELP, -1);
-	help->insertItem(i18n("About..."), MENU_ID_ABOUT, -1);
-	connect(help, SIGNAL(activated(int)), this, SLOT(menuHandler(int)));
+	QString about;
+	ksprintf(&about, i18n("KDE Taskmanager Version %s\n\n"
+			     "Copyright:\n"
+			     "1996 : A. Sanda <alex@darkstar.ping.at>\n"
+			     "1997 : Ralf Mueller <ralf@bj-ig.de>\n"
+			     "1997-98 : Bernd Johannes Wuebben <wuebben@kde.org>\n"
+			     "1998 : Nicolas Leclercq <nicknet@planete.net>\n"
+			     "1999 : Chris Schlaeger <cs@axys.de>\n"),
+			 KTOP_VERSION);
+	help = kapp->getHelpMenu(true, about);
 
 	// 'Options' submenu
 	settings = new QPopupMenu();
@@ -132,24 +139,8 @@ TopLevel::menuHandler(int id)
 {
 	switch(id)
 	{
-    case MENU_ID_QUIT:
+	case MENU_ID_QUIT:
 		quitSlot();
-		break;
-
-    case MENU_ID_HELP:
-		Kapp->invokeHTMLHelp("", "");
-		break;
-
-    case MENU_ID_ABOUT:
-        QMessageBox::information(this,
-				klocale->translate("About Taskmanager"),  
-				"KDE Taskmanager Version "KTOP_VERSION"\n\n"\
-				"Copyright:\n"\
-				"1996 : A. Sanda <alex@darkstar.ping.at>\n"\
-				"1997 : Ralf Mueller <ralf@bj-ig.de>\n"\
-				"1997-98 : Bernd Johannes Wuebben <wuebben@kde.org>\n"\
-				"1998 : Nicolas Leclercq <nicknet@planete.net>\n"\
-				"1999 : Chris Schlaeger <cs@axys.de>\n");
 		break;
 
 	case MENU_ID_PROCSETTINGS:

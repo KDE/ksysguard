@@ -68,16 +68,6 @@
 
 //#define DEBUG_MODE    // uncomment to activate "printf lines"
 
-static const char *sig[] = 
-{
-    "send SIGINT\t(ctrl-c)" ,
-    "send SIGQUIT\t(core)" ,
-    "send SIGTERM\t(term.)" ,
-    "send SIGKILL\t(term.)" ,
-    "send SIGUSR1\t(user1)" ,
-    "send SIGUSR2\t(user2)" ,
-};
-
 /*
  * It creates the actual QTabDialog. We create it as a modeless dialog, 
  * using the toplevel widget as its parent, so the dialog won't get 
@@ -105,13 +95,13 @@ TaskMan::TaskMan(QWidget *parent, const char *name, int sfolder)
 	CHECK_PTR(pSig);
 	pSig->insertItem(i18n("Renice Task..."),MENU_ID_RENICE);
 	pSig->insertSeparator();
-	pSig->insertItem(i18n(sig[0]), MENU_ID_SIGINT);
-	pSig->insertItem(i18n(sig[1]), MENU_ID_SIGQUIT);
-	pSig->insertItem(i18n(sig[2]), MENU_ID_SIGTERM);
-	pSig->insertItem(i18n(sig[3]), MENU_ID_SIGKILL);
+	pSig->insertItem(i18n("send SIGINT\t(ctrl-c)"), MENU_ID_SIGINT);
+	pSig->insertItem(i18n("send SIGQUIT\t(core)"), MENU_ID_SIGQUIT);
+	pSig->insertItem(i18n("send SIGTERM\t(term.)"), MENU_ID_SIGTERM);
+	pSig->insertItem(i18n("send SIGKILL\t(term.)"), MENU_ID_SIGKILL);
 	pSig->insertSeparator();
-	pSig->insertItem(i18n(sig[4]), MENU_ID_SIGUSR1);
-	pSig->insertItem(i18n(sig[5]), MENU_ID_SIGUSR2);
+	pSig->insertItem(i18n("send SIGUSR1\t(user1)"), MENU_ID_SIGUSR1);
+	pSig->insertItem(i18n("send SIGUSR2\t(user2)"), MENU_ID_SIGUSR2);
 	connect(pSig, SIGNAL(activated(int)), this, SLOT(pSigHandler(int)));
   
     /*
@@ -328,9 +318,9 @@ TaskMan::pSigHandler( int id )
 	err = kill(selection,the_sig);
   	if ( err == -1 ) 
 	{
-		QMessageBox::warning(this,"ktop",
-       		"Kill error...\nSpecified process does not exists\nor permission denied.",
-       		"Ok", 0);
+		QMessageBox::warning(this,i18n("ktop"),
+       		i18n("Kill error...\nSpecified process does not exists\nor permission denied."),
+       		i18n("OK"), 0);
 	}
    } 
    else 
@@ -342,9 +332,9 @@ TaskMan::pSigHandler( int id )
  	pprio = getpriority (PRIO_PROCESS,selection);
 	if ( err == -1 ) 
 	{
-		QMessageBox::warning(this,"ktop",
-		"Renice error...\nSpecified process does not exists\nor permission denied.",
-		"Ok", 0); 
+		QMessageBox::warning(this,i18n("ktop"),
+		i18n("Renice error...\nSpecified process does not exists\nor permission denied."),
+		i18n("OK"), 0); 
 	  	procListPage->update();
 		procTreePage->update();
 		return;
@@ -356,9 +346,9 @@ TaskMan::pSigHandler( int id )
 		err = setpriority (PRIO_PROCESS,selection,i);
 		if ( err == -1 ) 
    		{
-			QMessageBox::warning(this,"ktop",
-  			"Renice error...\nSpecified process does not exists\nor permission denied.",
-			"Ok", 0);   
+			QMessageBox::warning(this,i18n("ktop"),
+  			i18n("Renice error...\nSpecified process does not exists\nor permission denied."),
+			i18n("OK"), 0);   
 		}
 	}
    }
@@ -459,7 +449,7 @@ SetNice::SetNice( QWidget *parent, const char *name , int currentPPrio )
 	QSlider *priority;
 	QLabel *label0;
 	QLCDNumber *lcd0;
-	label0 = new QLabel("Please enter desired priority:", this);
+	label0 = new QLabel(i18n("Please enter desired priority:"), this);
 	label0->setGeometry( 10, 10 ,210, 15);
 	priority = new QSlider( -20, 20, 1, 0, QSlider::Horizontal, this, "prio" );
 	priority->setGeometry( 10,35, 210, 25 );
@@ -470,10 +460,10 @@ SetNice::SetNice( QWidget *parent, const char *name , int currentPPrio )
 	lcd0->setGeometry( 80, 65 , 70 , 30);
 	QObject::connect( priority, SIGNAL(valueChanged(int)),lcd0,  SLOT(display(int)) );
 	QObject::connect( priority, SIGNAL(valueChanged(int)), SLOT(setPriorityValue(int)) );
-        ok = new QPushButton( "Ok", this );
+        ok = new QPushButton( i18n("OK"), this );
         ok->setGeometry( 10,110, 100,30 );
         connect( ok, SIGNAL(clicked()), SLOT(ok()));
-        cancel = new QPushButton( "Cancel", this );
+        cancel = new QPushButton( i18n("Cancel"), this );
         cancel->setGeometry( 120,110, 100,30 );
         connect( cancel, SIGNAL(clicked()), SLOT(cancel()));
 	value=currentPPrio;

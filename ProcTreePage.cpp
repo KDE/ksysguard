@@ -153,17 +153,17 @@ ProcTreePage::pTree_killTask()
 				ps->getName(), ps->getUserName().data());
 
 	int err;
-	switch(QMessageBox::warning(this, "ktop", msg,
+	switch(QMessageBox::warning(this, i18n("ktop"), msg,
 								i18n("Continue"), i18n("Abort"), 0, 1))
     { 
 	case 0: // continue
 		err = kill(ps->getPid(), SIGKILL);
 		if (err)
 		{
-			QMessageBox::warning(this, "ktop",
+			QMessageBox::warning(this, i18n("ktop"),
 								 i18n("Kill error !\n"
 								 "The following error occured...\n"),
-								 strerror(errno), 0);   
+								 strerror(errno), 0);
 		}
 		pTree->update();
 		break;
