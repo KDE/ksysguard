@@ -49,6 +49,7 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 {
 	frame = new QGroupBox(this, "meterFrame");
 	CHECK_PTR(frame);
+
 	showUnit = TRUE;
 	lowerLimit = upperLimit = 0;
 	lowerLimitActive = upperLimitActive = FALSE;
@@ -58,7 +59,12 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 	lcd = new QLCDNumber(this, "meterLCD");
 	CHECK_PTR(lcd);
 	lcd->setSegmentStyle(QLCDNumber::Filled);
+
+	/* All RMB clicks to the lcd widget will be handled by 
+	 * SensorDisplay::eventFilter. */
 	lcd->installEventFilter(this);
+
+	setMinimumSize(50, 25);
 	modified = FALSE;
 }
 
@@ -87,23 +93,39 @@ MultiMeter::answerReceived(int id, const QString& answer)
 	else
 	{
 		long val = answer.toInt();
+		lcd->display((int) val);
 		if (lowerLimitActive && val < lowerLimit)
 		{
 			timerOff();
-			KMessageBox::information(
-				this, QString(i18n("%1\nLower limit exceeded!"))
-				.arg(title));
+			QColor oldColor = lcd->backgroundColor();
+			lcd->setBackgroundColor(QColor(255, 0, 0));
+			if (KMessageBox::questionYesNo(
+				this, QString(i18n("%1\nLower limit exceeded!")).arg(title),
+							  i18n("Alarm"),
+							  i18n("Acknoledge"),
+							  i18n("Disable Alarm")) == KMessageBox::No)
+			{
+				lowerLimitActive = FALSE;
+			}
+			lcd->setBackgroundColor(oldColor);
 			timerOn();
 		}
 		if (upperLimitActive && val > upperLimit)
 		{
 			timerOff();
-			KMessageBox::information(
-				this, QString(i18n("%1\nUpper limit exceeded!"))
-				.arg(title));
+			QColor oldColor = lcd->backgroundColor();
+			lcd->setBackgroundColor(QColor(255, 0, 0));
+			if (KMessageBox::questionYesNo(
+				this, QString(i18n("%1\nUpper limit exceeded!")).arg(title),
+							  i18n("Alarm"),
+							  i18n("Acknoledge"),
+							  i18n("Disable Alarm")) == KMessageBox::No)
+			{
+				upperLimitActive = FALSE;
+			}
+			lcd->setBackgroundColor(oldColor);
 			timerOn();
 		}
-		lcd->display((int) val);
 	}
 }
 

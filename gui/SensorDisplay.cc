@@ -22,6 +22,10 @@
 	$Id$
 */
 
+#include <qpopupmenu.h>
+
+#include <klocale.h>
+
 #include "SensorDisplay.h"
 #include "SensorDisplay.moc"
 #include "SensorManager.h"
@@ -67,7 +71,18 @@ SensorDisplay::eventFilter(QObject* o, QEvent* e)
 	if (e->type() == QEvent::MouseButtonPress &&
 		((QMouseEvent*) e)->button() == RightButton)
 	{
-		this->settings();
+		QPopupMenu pm;
+		pm.insertItem(i18n("&Properties"), 1);
+		pm.insertItem(i18n("&Remove Display"), 2);
+		switch (pm.exec(QCursor::pos()))
+		{
+		case 1:
+			this->settings();
+			break;
+		case 2:
+			emit removeDisplay(this);
+			break;
+		}
 	}
 	return QWidget::eventFilter(o, e);
 }

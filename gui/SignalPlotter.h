@@ -62,13 +62,9 @@ public:
 		lowPass = lp;
 	}
 
-signals:
-	void rmbPressed();
-
 protected:
 	virtual void resizeEvent(QResizeEvent*);
 	virtual void paintEvent(QPaintEvent*);
-	virtual void mousePressEvent(QMouseEvent*);
 
 private:
 	void calcRange();

@@ -33,6 +33,8 @@
 #include <stdio.h>
 #include <ctype.h>
 
+#include <qstringlist.h>
+
 #include <ktmainwindow.h>
 #include <kwinmodule.h>
 #include <kconfig.h>
@@ -53,7 +55,7 @@
 #include "../version.h"
 #include "ksysguard.moc"
 
-static const char* Description = I18N_NOOP("KDE Task Manager");
+static const char* Description = I18N_NOOP("KDE System Guard");
 TopLevel* Toplevel;
 
 /*
@@ -61,7 +63,7 @@ TopLevel* Toplevel;
  * TaskMan widget.
  */
 TopLevel::TopLevel(const char *name)
-	: KTMainWindow(name), DCOPObject("KGuardIface")
+	: KTMainWindow(name), DCOPObject("KSysGuardIface")
 {
 	dontSaveSession = FALSE;
 
@@ -134,11 +136,42 @@ TopLevel::~TopLevel()
 	delete splitter;
 }
 
+/*
+ * DCOP Interface functions
+ */
 void
 TopLevel::showProcesses()
 {
 	ws->showProcesses();
 }
+
+void
+TopLevel::loadWorkSheet(const QString& fileName)
+{
+	ws->restoreWorkSheet(fileName);
+}
+
+void
+TopLevel::removeWorkSheet(const QString& fileName)
+{
+	ws->deleteWorkSheet(fileName);
+}
+
+QStringList
+TopLevel::listSensors()
+{
+	return (sb->listSensors());
+}
+
+QString
+TopLevel::readSensor(const QString& /*sensorLocator*/)
+{
+	return (QString::null);
+}
+
+/*
+ * End of DCOP Interface section
+ */
 
 void
 TopLevel::beATaskManager()
@@ -371,7 +404,7 @@ static const KCmdLineOptions options[] =
 int
 main(int argc, char** argv)
 {
-	KAboutData aboutData("ksysguard", I18N_NOOP("KDE Task Manager"),
+	KAboutData aboutData("ksysguard", I18N_NOOP("KDE System Guard"),
 						 KSYSGUARD_VERSION, Description,
 						 KAboutData::License_GPL,
 						 I18N_NOOP("(c) 1996-2000, "
@@ -400,7 +433,7 @@ main(int argc, char** argv)
 		RESTORE(TopLevel)
 	else
 	{
-		Toplevel = new TopLevel("TaskManager");
+		Toplevel = new TopLevel("KSysGuard");
 		if (args->isSet("showprocesses"))
 		{
 			Toplevel->beATaskManager();
@@ -411,8 +444,8 @@ main(int argc, char** argv)
 	}
 	if (KMainWindow::memberList->first())
 	{
-		a.dcopClient()->registerAs("kguard", FALSE);
-		a.dcopClient()->setDefaultObject("KGuardIface");
+		a.dcopClient()->registerAs("ksysguard", FALSE);
+		a.dcopClient()->setDefaultObject("KSysGuardIface");
 	}
 
 	// run the application

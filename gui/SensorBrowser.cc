@@ -26,9 +26,11 @@
 
 #include <qevent.h>
 #include <qdragobject.h>
+#include <qtooltip.h>
 
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kiconloader.h>
 
 #include "SensorBrowser.h"
 #include "SensorManager.h"
@@ -41,6 +43,7 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	connect(sm, SIGNAL(update(void)), this, SLOT(update(void)));
 
 	addColumn(i18n("Sensor Browser"));
+	QToolTip::add(this, "Drag sensors to empty fields in a work sheet");
 	setRootIsDecorated(TRUE);
 
 	// Fill the sensor description dictionary.
@@ -71,6 +74,9 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	for (int i = 0; i < 32; i++)
 		dict.insert("cpu" + QString::number(i),
 					new QString(QString(i18n("CPU%1")).arg(i)));
+
+	icons = new KIconLoader();
+	CHECK_PTR(icons);
 
 	// The sensor browser can be completely hidden.
 	setMinimumWidth(1);
@@ -184,6 +190,10 @@ SensorBrowser::answerReceived(int id, const QString& s)
 				CHECK_PTR(lvi);
 				if (j == absolutePath.numberOfTokens() - 1)
 				{
+					QPixmap pix = icons->loadIcon("pci",
+												  KIcon::Desktop,
+												  KIcon::SizeSmall);
+					lvi->setPixmap(0, pix);
 					// add sensor info to internal data structure
 					hostInfos.at(id)->addSensor(lvi, sensorName, name,
 												sensorType);
@@ -234,3 +244,18 @@ SensorBrowser::viewportMouseMoveEvent(QMouseEvent* ev)
 	dObj->dragCopy();
 }
 
+QStringList
+SensorBrowser::listSensors()
+{
+	QStringList list;
+
+	list.append("Test 123");
+	QListIterator<HostInfo> it(hostInfos);
+	for ( ; it.current(); ++it)
+	{
+		list.append((*it)->getHostName());
+//		(*it)->listSensors();
+	}
+
+	return (list);
+}

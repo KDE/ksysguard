@@ -63,7 +63,12 @@ public:
 	void beATaskManager();
 
 k_dcop:
+	// calling ksysguard with kwin/kicker hot-key
 	ASYNC showProcesses();
+	ASYNC loadWorkSheet(const QString& fileName);
+	ASYNC removeWorkSheet(const QString& fileName);
+	QStringList listSensors();
+	QString readSensor(const QString& sensorLocator);
 
 protected:
 	virtual void customEvent(QCustomEvent* e);

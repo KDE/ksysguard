@@ -126,9 +126,12 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 
 	plotter = new SignalPlotter(this, "signalPlotter", min, max);
 	CHECK_PTR(plotter);
-	connect(plotter, SIGNAL(rmbPressed()), this, SLOT(rmbPressed()));
 
 	setMinimumSize(sizeHint());
+
+	/* All RMB clicks to the plotter widget will be handled by 
+	 * SensorDisplay::eventFilter. */
+	plotter->installEventFilter(this);
 
 	modified = false;
 }

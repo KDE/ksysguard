@@ -31,6 +31,7 @@
 #include "SensorClient.h"
 
 class QMouseEvent;
+class KIconLoader;
 class SensorManager;
 class SensorAgent;
 
@@ -167,7 +168,6 @@ private:
 	const SensorAgent* sensorAgent;
 
 	const QString hostName;
-
 	/// pointer to the entry in the browser QListView
 	QListViewItem* lvi;
 
@@ -185,6 +185,8 @@ class SensorBrowser : public QListView, public SensorClient
 public:
 	SensorBrowser(QWidget* parent, SensorManager* sm, const char* name);
 	~SensorBrowser() { }
+
+	QStringList listSensors();
 
 public slots:
 	void disconnect();
@@ -209,6 +211,8 @@ private:
 
 	// This string stores the drag object.
 	QString dragText;
+
+	KIconLoader* icons;
 } ;
 
 #endif

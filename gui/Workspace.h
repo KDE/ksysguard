@@ -45,6 +45,9 @@ public:
 
 	void showProcesses();
 
+	bool restoreWorkSheet(const QString& fileName);
+	void deleteWorkSheet(const QString& fileName);
+
 public slots:
 	void newWorkSheet();
 	void loadWorkSheet();
@@ -57,8 +60,6 @@ public slots:
 	void deleteWorkSheet();
 
 private:
-	bool restoreWorkSheet(const QString& fileName);
-
 	QList<WorkSheet> sheets;
 	/// Directory that was used for the last load/save.
 	QString workDir;

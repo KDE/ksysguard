@@ -36,6 +36,7 @@
 Workspace::Workspace(QWidget* parent, const char* name)
 	: QTabWidget(parent, name)
 {
+	sheets.setAutoDelete(TRUE);
 	autoSave = TRUE;
 }
 
@@ -236,7 +237,6 @@ Workspace::deleteWorkSheet()
 	{
 		removePage(current);
 		sheets.remove(current);
-		delete current;
 
 		setMinimumSize(sizeHint());
 	}
@@ -246,6 +246,21 @@ Workspace::deleteWorkSheet()
 						   "could be deleted!");
 		KMessageBox::error(this, msg);
 	}
+}
+
+void
+Workspace::deleteWorkSheet(const QString& fileName)
+{
+	QListIterator<WorkSheet> it(sheets);
+	for (; it.current(); ++it)
+		if ((*it)->getFileName() == fileName)
+		{
+			removePage(*it);
+			sheets.remove(*it);
+
+			setMinimumSize(sizeHint());
+			return;
+		}
 }
 
 bool
@@ -277,10 +292,10 @@ Workspace::showProcesses()
 	KStandardDirs* kstd = KGlobal::dirs();
 	kstd->addResourceType("data", "share/apps/ksysguard");
 
-	QString f = kstd->findResource("data", "ProcessController.sgrd");
+	QString f = kstd->findResource("data", "ProcessTable.sgrd");
 	if (!f.isEmpty())
 		restoreWorkSheet(f);
 	else
 		KMessageBox::error(
-			this, i18n("Cannot find file ProcessController.sgrd!"));
+			this, i18n("Cannot find file ProcessTable.sgrd!"));
 }
