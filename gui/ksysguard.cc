@@ -282,12 +282,12 @@ TopLevel::timerEvent(QTimerEvent*)
 		 * information will be received by answerReceived(). */
 		SensorMgr->sendRequest("localhost", "pscount", (SensorClient*) this,
 							   0);
-		SensorMgr->sendRequest("localhost", "mem/free", (SensorClient*) this,
-							   1);
-		SensorMgr->sendRequest("localhost", "mem/used", (SensorClient*) this,
-							   2);
-		SensorMgr->sendRequest("localhost", "mem/swap", (SensorClient*) this,
-							   3);
+		SensorMgr->sendRequest("localhost", "mem/physical/free",
+							   (SensorClient*) this, 1);
+		SensorMgr->sendRequest("localhost", "mem/physical/used",
+							   (SensorClient*) this, 2);
+		SensorMgr->sendRequest("localhost", "mem/swap/used",
+							   (SensorClient*) this, 3);
 	}
 }
 
@@ -324,7 +324,8 @@ TopLevel::readProperties(KConfig* cfg)
 	SensorMgr->engage("localhost", "", "ksysguardd");
 	/* Request info about the swapspace size and the units it is measured in.
 	 * The requested info will be received by answerReceived(). */
-	SensorMgr->sendRequest("localhost", "mem/swap?", (SensorClient*) this, 5);
+	SensorMgr->sendRequest("localhost", "mem/swap/used?",
+						   (SensorClient*) this, 5);
 }
 
 void

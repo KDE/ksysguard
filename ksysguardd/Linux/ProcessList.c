@@ -402,7 +402,7 @@ updateProcessList(void)
 			int pid;
 
 			pid = atoi(entry->d_name);
-			updateProcess(pid);
+			updateProcess(pid); 
 		}
 	}
 	closedir(dir);
@@ -426,6 +426,7 @@ printProcessList(const char* cmd)
 	int i;
 
 	TimeOut = 0;
+
 	for (i = 0; i < level_ctnr(ProcessList); i++)
 	{
 		ProcessInfo* ps = get_ctnr(ProcessList, i);

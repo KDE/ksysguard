@@ -42,8 +42,8 @@ static volatile int DispatcherReady = 0;
 static void 
 signalHandler(int sig)
 {
-	/* restore the trap table */
-	if (signal(sig, signalHandler) == SIG_ERR)
+	/* ignore further alarms while processing one */
+	if (signal(sig, SIG_IGN) == SIG_ERR)
 	{
 		perror("signalHandler");
 		exit(1);
@@ -69,6 +69,13 @@ signalHandler(int sig)
 	default:
 		break;
     }
+
+	/* restore the trap table */
+	if (signal(sig, signalHandler) == SIG_ERR)
+	{
+		perror("signalHandler");
+		exit(1);
+	}
 }
 
 static void
