@@ -281,9 +281,14 @@ KSysGuardApplet::customEvent(QCustomEvent* ev)
 {
 	if (ev->type() == QEvent::User)
 	{
-		// SensorDisplays send out this event if they want to be removed.
-		removeDisplay((KSGRD::SensorDisplay*) ev->data());
-		save();
+		if (KMessageBox::warningYesNo(this, i18n(
+			"Do you really want to delete the display?")) ==
+			KMessageBox::Yes)
+		{				
+			// SensorDisplays send out this event if they want to be removed.
+			removeDisplay((KSGRD::SensorDisplay*) ev->data());
+			save();
+		}
 	}
 }
 

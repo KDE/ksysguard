@@ -2,12 +2,12 @@
 <!DOCTYPE KSysGuardApplet>
 <WorkSheet sizeRatio="1.2" dockCnt="2" interval="4" >
  <host port="-1" shell="" name="localhost" command="ksysguardd" />
- <display topBar="1" vColor="326429" title="User Load" dock="0" bColor="3223601" graphStyle="0" class="FancyPlotter" unit="" hScale="1" showUnit="0" hLines="1" hCount="5" vLines="1" autoRange="1" min="0" max="0" hColor="14606046" globalUpdate="1" pause="0" fontSize="8" labels="1" vScroll="1" vDistance="30" >
+ <display topBar="1" vColor="326429" title="CPU" dock="0" bColor="3223601" graphStyle="0" class="FancyPlotter" unit="" hScale="1" showUnit="0" hLines="1" hCount="2" vLines="1" autoRange="0" min="0" max="0" hColor="14606046" globalUpdate="1" pause="0" fontSize="8" labels="1" vScroll="1" vDistance="30" >
   <beam sensorName="cpu/user" hostName="localhost" color="1608191" sensorType="integer" />
   <beam sensorName="cpu/sys" hostName="localhost" color="16743688" sensorType="integer" />
   <beam sensorName="cpu/nice" hostName="localhost" color="16771600" sensorType="integer" />
  </display>
- <display topBar="1" vColor="4605510" title="Mem" dock="1" bColor="3223601" graphStyle="0" class="FancyPlotter" unit="" hScale="5" showUnit="0" hLines="1" hCount="2" vLines="0" autoRange="1" min="0" max="0" hColor="14606046" globalUpdate="1" pause="0" fontSize="8" labels="0" vScroll="1" vDistance="30" >
+ <display topBar="1" vColor="4605510" title="Mem" dock="1" bColor="3223601" graphStyle="0" class="FancyPlotter" unit="" hScale="5" showUnit="0" hLines="1" hCount="2" vLines="0" autoRange="0" min="0" max="0" hColor="14606046" globalUpdate="1" pause="0" fontSize="8" labels="0" vScroll="1" vDistance="30" >
   <beam sensorName="mem/physical/application" hostName="localhost" color="1608191" sensorType="integer" />
   <beam sensorName="mem/physical/buf" hostName="localhost" color="16743688" sensorType="integer" />
   <beam sensorName="mem/physical/cached" hostName="localhost" color="16771600" sensorType="integer" />
