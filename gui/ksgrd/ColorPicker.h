@@ -24,12 +24,14 @@
 #ifndef KSG_COLORPICKER_H
 #define KSG_COLORPICKER_H
 
+#include <kdemacros.h>
+
 class QFrame;
 class QHBoxLayout;
 class QLabel;
 class QPushButton;
 
-class ColorPicker : public QWidget
+class KDE_EXPORT ColorPicker : public QWidget
 {
 	Q_OBJECT
 	Q_PROPERTY( QString text READ text WRITE setText )

@@ -28,6 +28,8 @@
 #include <qobject.h>
 #include <qptrlist.h>
 
+#include <kdemacros.h>
+
 class KConfig;
 
 class QListBoxItem;
@@ -36,7 +38,7 @@ class StyleSettings;
 
 namespace KSGRD {
 
-class StyleEngine : public QObject
+class KDE_EXPORT StyleEngine : public QObject
 {
   Q_OBJECT
 
@@ -77,7 +79,7 @@ class StyleEngine : public QObject
     StyleSettings *mSettingsDialog;
 };
 
-extern StyleEngine* Style;
+KDE_EXPORT extern StyleEngine* Style;
 
 }
 

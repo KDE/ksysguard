@@ -43,7 +43,7 @@ class SensorRequest;
   ksysguardd. The current implementation only allowes one pending
   requests. Incoming requests are queued in an input FIFO.
 */
-class SensorAgent : public QObject
+class KDE_EXPORT SensorAgent : public QObject
 {
   Q_OBJECT
 

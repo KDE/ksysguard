@@ -43,7 +43,7 @@ class SensorManagerIterator;
   connection yet or the hostname is empty, a dialog will be shown to
   enter the connections details.
  */
-class SensorManager : public QObject
+class KDE_EXPORT SensorManager : public QObject
 {
   Q_OBJECT
 
@@ -110,9 +110,9 @@ class SensorManager : public QObject
     HostConnector* mHostConnector;
 };
 
-extern SensorManager* SensorMgr;
+KDE_EXPORT extern SensorManager* SensorMgr;
 
-class SensorManagerIterator : public QDictIterator<SensorAgent>
+class KDE_EXPORT SensorManagerIterator : public QDictIterator<SensorAgent>
 {
   public:
     SensorManagerIterator( const SensorManager *sm )
