@@ -30,7 +30,6 @@
 #include <qtoolbutton.h>
 #include <qdom.h>
 #include <qlayout.h>
-#include <qcolordialog.h>
 #include <qlistview.h>
 #include <qimage.h>
 
@@ -38,6 +37,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <knumvalidator.h>
+#include <kcolordialog.h>
 #include <kdebug.h>
 
 #include "SensorManager.h"
@@ -202,11 +202,11 @@ void
 FancyPlotter::vColorSettings()
 {
 	QPalette cp = fps->vColor->palette();
-	QColor picked = QColorDialog::getColor(cp.color(QPalette::Normal,
-													QColorGroup::Background));
-	if (picked.isValid())
+	QColor c = cp.color(QPalette::Normal, QColorGroup::Background);
+	int result = KColorDialog::getColor(c);
+	if (result == KColorDialog::Accepted)
 	{
-		cp.setColor(QPalette::Normal, QColorGroup::Background, picked);
+		cp.setColor(QPalette::Normal, QColorGroup::Background, c);
 		fps->vColor->setPalette(cp);
 	}
 }
@@ -215,11 +215,11 @@ void
 FancyPlotter::hColorSettings()
 {
 	QPalette cp = fps->hColor->palette();
-	QColor picked = QColorDialog::getColor(cp.color(QPalette::Normal,
-													QColorGroup::Background));
-	if (picked.isValid())
+	QColor c = cp.color(QPalette::Normal, QColorGroup::Background);
+	int result = KColorDialog::getColor(c);
+	if (result == KColorDialog::Accepted)
 	{
-		cp.setColor(QPalette::Normal, QColorGroup::Background, picked);
+		cp.setColor(QPalette::Normal, QColorGroup::Background, c);
 		fps->hColor->setPalette(cp);
 	}
 }
@@ -228,11 +228,11 @@ void
 FancyPlotter::bColorSettings()
 {
 	QPalette cp = fps->bColor->palette();
-	QColor picked = QColorDialog::getColor(cp.color(QPalette::Normal,
-													QColorGroup::Background));
-	if (picked.isValid())
+	QColor c = cp.color(QPalette::Normal, QColorGroup::Background);
+	int result = KColorDialog::getColor(c);
+	if (result == KColorDialog::Accepted)
 	{
-		cp.setColor(QPalette::Normal, QColorGroup::Background, picked);
+		cp.setColor(QPalette::Normal, QColorGroup::Background, c);
 		fps->bColor->setPalette(cp);
 	}
 }
@@ -245,12 +245,12 @@ FancyPlotter::settingsSetColor()
 	if (!lvi)
 		return;
 
-	QColor picked = QColorDialog::getColor(
-		lvi->pixmap(1)->convertToImage().pixel(1, 1));
-	if (picked.isValid())
+	QColor c = lvi->pixmap(1)->convertToImage().pixel(1, 1);
+	int result = KColorDialog::getColor(c);
+	if (result == KColorDialog::Accepted)
 	{
 		QPixmap newPm(12, 12);
-		newPm.fill(picked);
+		newPm.fill(c);
 		lvi->setPixmap(1, newPm);
 	}
 }
