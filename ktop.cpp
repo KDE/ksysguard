@@ -103,7 +103,7 @@ TopLevel::TopLevel(const char *name, int sfolder)
 	 *
 	 * I need to implement a propper session management some day!
 	 */
-	QString t = Kapp->getConfig()->readEntry(QString("G_Toplevel"));
+	QString t = Kapp->config()->readEntry(QString("G_Toplevel"));
 	if(!t.isNull())
 	{
 		if (t.length() == 19)
@@ -118,7 +118,7 @@ TopLevel::TopLevel(const char *name, int sfolder)
 
 	setMinimumSize(sizeHint());
 
-	readProperties(Kapp->getConfig());
+	readProperties(Kapp->config());
 
 	timerID = startTimer(2000);
 
@@ -132,11 +132,11 @@ TopLevel::TopLevel(const char *name, int sfolder)
 void 
 TopLevel::quitSlot()
 {
-	saveProperties(Kapp->getConfig());
+	saveProperties(Kapp->config());
 
 	taskman->saveSettings();
 
-	Kapp->getConfig()->sync();
+	Kapp->config()->sync();
 	qApp->quit();
 }
 

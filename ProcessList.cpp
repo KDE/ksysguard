@@ -256,7 +256,7 @@ ProcessList::~ProcessList()
 void
 ProcessList::loadSettings(void)
 {
-	treeViewEnabled = Kapp->getConfig()->readNumEntry("TreeView",
+	treeViewEnabled = Kapp->config()->readNumEntry("TreeView",
 													  treeViewEnabled);
 	emit(treeViewChanged(treeViewEnabled));
 
@@ -264,30 +264,30 @@ ProcessList::loadSettings(void)
 	 * The default filter mode is 'own processes'. This can be overridden by
 	 * the config file.
 	 */
-	filterMode = Kapp->getConfig()->readNumEntry("FilterMode", filterMode);
+	filterMode = Kapp->config()->readNumEntry("FilterMode", filterMode);
 	emit(filterModeChanged(filterMode));
 
 	/*
 	 * The default update rate is 'medium'. This can be overridden by the
 	 * config file.
 	 */
-	setRefreshRate(Kapp->getConfig()->readNumEntry("RefreshRate",
+	setRefreshRate(Kapp->config()->readNumEntry("RefreshRate",
 												   refreshRate));
 
 	// The default sorting is for the PID in decreasing order.
-	sortColumn = Kapp->getConfig()->readNumEntry("SortColumn", 1);
-	increasing = Kapp->getConfig()->readNumEntry("SortIncreasing", FALSE);
+	sortColumn = Kapp->config()->readNumEntry("SortColumn", 1);
+	increasing = Kapp->config()->readNumEntry("SortIncreasing", FALSE);
 	QListView::setSorting(sortColumn, increasing);
 }
 
 void
 ProcessList::saveSettings(void)
 {
-	Kapp->getConfig()->writeEntry("TreeView", treeViewEnabled);
-	Kapp->getConfig()->writeEntry("FilterMode", filterMode);
-	Kapp->getConfig()->writeEntry("RefreshRate", refreshRate);
-	Kapp->getConfig()->writeEntry("SortColumn", sortColumn);
-	Kapp->getConfig()->writeEntry("SortIncreasing", increasing);
+	Kapp->config()->writeEntry("TreeView", treeViewEnabled);
+	Kapp->config()->writeEntry("FilterMode", filterMode);
+	Kapp->config()->writeEntry("RefreshRate", refreshRate);
+	Kapp->config()->writeEntry("SortColumn", sortColumn);
+	Kapp->config()->writeEntry("SortIncreasing", increasing);
 }
 
 void 

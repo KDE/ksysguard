@@ -58,7 +58,7 @@ MainMenu::MainMenu(QWidget* parent, const char* name) :
 				 "1998 : Nicolas Leclercq <nicknet@planete.net>\n"
 				 "1999 : Chris Schlaeger <cs@kde.org>\n")
 		.arg(KTOP_VERSION);
-	help = Kapp->getHelpMenu(true, about);
+	help = Kapp->helpMenu(true, about);
 
 	// 'Refresh Rate' submenu
 	refresh = new QPopupMenu();

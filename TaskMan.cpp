@@ -87,7 +87,7 @@ void
 TaskMan::raiseStartUpPage()
 {
     // startup_page settings...
-	currentPage = Kapp->getConfig()->readNumEntry("StartUpPage", currentPage);
+	currentPage = Kapp->config()->readNumEntry("StartUpPage", currentPage);
 
 	// tell KTabCtl to raise the specified startup page
 	showTab(currentPage);
@@ -122,13 +122,13 @@ TaskMan::saveSettings()
 	tmp.sprintf("%04d:%04d:%04d:%04d",
 				parentWidget()->x(), parentWidget()->y(),
 				parentWidget()->width(), parentWidget()->height());
-	Kapp->getConfig()->writeEntry("G_Toplevel", tmp);
+	Kapp->config()->writeEntry("G_Toplevel", tmp);
 
 	// save startup page (tab)
-	Kapp->getConfig()->writeEntry("StartUpPage", currentPage, TRUE);
+	Kapp->config()->writeEntry("StartUpPage", currentPage, TRUE);
 
 	// save process list settings
 	procListPage->saveSettings();
 
-	Kapp->getConfig()->sync();
+	Kapp->config()->sync();
 }
