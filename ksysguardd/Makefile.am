@@ -6,6 +6,9 @@ endif
 if include_ksysguardd_freebsd
 freebsd_SUBDIR = FreeBSD
 endif
+if include_ksysguardd_netbsd
+netbsd_SUBDIR = NetBSD
+endif
 if include_ksysguardd_solaris
 solaris_SUBDIR = Solaris
 endif
@@ -16,7 +19,7 @@ if include_ksysguardd_irix
 irix_SUBDIR = Irix
 endif
 
-SUBDIRS = $(linux_SUBDIR) $(freebsd_SUBDIR) \
+SUBDIRS = $(linux_SUBDIR) $(freebsd_SUBDIR) $(netbsd_SUBDIR)\
 	$(solaris_SUBDIR) $(tru64_SUBDIR) $(irix_SUBDIR)
 
 KSYSGUARDDRCFILE=$(sysconfdir)/ksysguarddrc
