@@ -77,7 +77,7 @@ typedef struct DiskIOInfo
 	struct DiskIOInfo* next;
 } DiskIOInfo;
 
-#define STATBUFSIZE 2048
+#define STATBUFSIZE 4096
 static char StatBuf[STATBUFSIZE];
 static int Dirty = 0;
 
@@ -471,29 +471,20 @@ initStat(void)
 	 */
 
 	char format[32];
+	char tagFormat[16];
 	char buf[1024];
-	FILE* stat = 0;
+	char tag[32];
+	char* statBufP = StatBuf;
 
-	if ((stat = fopen("/proc/stat", "r")) == NULL)
-	{
-		fprintf(CurrentClient, "ERROR: Cannot open file \'/proc/stat\'!\n"
-				"The kernel needs to be compiled with support\n"
-				"for /proc filesystem enabled!");
-		return;
-	}
-
-	/* Use unbuffered input for /proc/stat file. */
-	setvbuf(stat, NULL, _IONBF, 0);
+	updateStat();
 
 	sprintf(format, "%%%d[^\n]\n", (int) sizeof(buf) - 1);
+	sprintf(tagFormat, "%%%ds", (int) sizeof(tag) - 1);
 
-	while (fscanf(stat, format, buf) == 1)
+	while (sscanf(statBufP, format, buf) == 1)
 	{
-		char tag[32];
-		char tagFormat[16];
-		
 		buf[sizeof(buf) - 1] = '\0';
-		sprintf(tagFormat, "%%%ds", (int) sizeof(tag) - 1);
+		statBufP += strlen(buf) + 1;	/* move statBufP to next line */
 		sscanf(buf, tagFormat, tag);
 
 		if (strcmp("cpu", tag) == 0)
@@ -608,13 +599,11 @@ initStat(void)
 							printCtxtInfo);
 		}
 	}
-	fclose(stat);
+	if (CPUCount > 0)
+		SMPLoad = (CPULoadInfo*) malloc(sizeof(CPULoadInfo) * CPUCount);
 
 	/* Call processStat to eliminate initial peek values. */
 	processStat();
-
-	if (CPUCount > 0)
-		SMPLoad = (CPULoadInfo*) malloc(sizeof(CPULoadInfo) * CPUCount);
 }
 
 void

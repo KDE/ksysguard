@@ -110,6 +110,8 @@ void checkDiskStat(void)
 	static off_t mtab_size = 0;
 
 	stat("/etc/mtab", &mtab_info);
+	if (!mtab_size)
+		mtab_size = mtab_info.st_size;
 
 	if (mtab_info.st_size != mtab_size) {
 		exitDiskStat();

@@ -710,7 +710,7 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 	 * processPM->exec(). */
 	int currentPId = lvi->text(1).toInt();
 
-	int currentNiceValue;
+	int currentNiceValue = 0;
 	for (int i = 0; i < columns(); ++i)
 		if (QString::compare(header()->label(i), i18n("Nice")) == 0)
 			currentNiceValue = lvi->text(i).toInt();

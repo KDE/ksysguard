@@ -38,6 +38,33 @@
 #include "SensorBrowser.h"
 #include "SensorBrowser.moc"
 
+class HostItem : public QListViewItem
+{
+public:
+   HostItem(SensorBrowser *parent, const QString &label1, int id, KSGRD::SensorAgent *host) : 
+      QListViewItem(parent, label1), mInited(false), mId(id), mHost(host), mParent(parent)
+   {
+      setExpandable(true);
+   }
+   
+   void setOpen(bool open)
+   {
+      if (open && !mInited)
+      {
+         mInited = true;
+	// request sensor list from host
+	mHost->sendRequest("monitors", mParent, mId);
+      }
+      QListViewItem::setOpen(open);
+   }
+   
+private:
+   bool mInited;
+   int mId;
+   KSGRD::SensorAgent* mHost;
+   SensorBrowser* mParent;
+};
+
 SensorBrowser::SensorBrowser(QWidget* parent, KSGRD::SensorManager* sm,
 							 const char* name) :
 	QListView(parent, name), sensorManager(sm)
@@ -109,7 +136,7 @@ SensorBrowser::update()
 	for (int i = 0 ; (host = it.current()); ++it, ++i)
 	{
 		QString hostName = sensorManager->getHostName(host);
-		QListViewItem* lvi = new QListViewItem(this, hostName);
+		HostItem* lvi = new HostItem(this, hostName, id, host);
 		Q_CHECK_PTR(lvi);
 
 		QPixmap pix = icons->loadIcon("computer", KIcon::Desktop,
@@ -119,9 +146,6 @@ SensorBrowser::update()
 		HostInfo* hostInfo = new HostInfo(id, host, hostName, lvi);
 		Q_CHECK_PTR(hostInfo);
 		hostInfos.append(hostInfo);
-
-		// request sensor list from host
-		host->sendRequest("monitors", this, id);
 		++id;
 	}
 	setMouseTracking(false);

@@ -226,9 +226,10 @@ executeCommand(const char* command)
 }
 
 void
-printMonitors(const char* c)
+printMonitors(const char *c)
 {
 	int i;
+	ReconfigureFlag = 0;
 
 	for (i = 0; i < level_ctnr(CommandList); i++)
 	{
