@@ -134,10 +134,11 @@ BarGraph::paintEvent(QPaintEvent*)
 		for (b = 0; b < bars; b++)
 			if (fm.width(footers[b]) > barWidth)
 				showLabels = false;
-
+		
 		int barHeight;
 		if (showLabels)
-			barHeight = h - 2 - fm.lineSpacing() - 2;
+//			barHeight = h - 2 - fm.lineSpacing() - 2;
+			barHeight = h - 2 - (2*fm.lineSpacing()) - 2;
 		else
 			barHeight = h - 2;
 		for (uint b = 0; b < bars; b++)
@@ -164,10 +165,14 @@ BarGraph::paintEvent(QPaintEvent*)
 				p.setPen(alarmColor);
 			else
 				p.setPen(normalColor);
-			if (showLabels)
-				p.drawText(b * barWidth + 3, h - fm.lineSpacing() - 2,
+			if (showLabels) {
+				p.drawText(b * barWidth + 3, h - (2* fm.lineSpacing()) - 2,
 						   barWidth - 2 * 3, fm.lineSpacing(), Qt::AlignCenter,
 						   footers[b]);
+				p.drawText(b * barWidth + 3, h - fm.lineSpacing() - 2,
+						   barWidth - 2 * 3, fm.lineSpacing(), Qt::AlignCenter,
+						   QString("%1").arg(samples[b]));
+			}
 		}
 	}
 

@@ -283,7 +283,7 @@ ProcessList::update(const QString& list)
 			pl.append(line);
 	}
 
-	int currItemPos = itemRect(currentItem()).y();
+	int currItemPos = itemPos(currentItem());
 	int vpos = verticalScrollBar()->value();
 	int hpos = horizontalScrollBar()->value();
 
