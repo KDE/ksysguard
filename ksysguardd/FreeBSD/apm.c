@@ -19,6 +19,7 @@
 	$Id$
 */
 
+#include <unistd.h>
 #include <fcntl.h>
 #include <machine/apm_bios.h>
 #include <stdio.h>
