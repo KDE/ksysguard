@@ -81,14 +81,14 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 	vLay->addLayout(butLay);
 	butLay->addStretch(1);
 
-	okButton = new QPushButton(i18n("OK"), this);
+	okButton = new QPushButton(i18n("&OK"), this);
 	okButton->setMaximumSize(100, 30);
 	okButton->setMinimumSize(100, 30);
 	connect(okButton, SIGNAL(clicked()), SLOT(ok()));
 	butLay->addWidget(okButton);
 	butLay->addStretch(1);
 
-	cancelButton = new QPushButton(i18n("Cancel"), this);
+	cancelButton = new QPushButton(i18n("&Cancel"), this);
 	cancelButton->setMaximumSize(100, 30);
 	cancelButton->setMinimumSize(100, 30);
 	connect(cancelButton, SIGNAL(clicked()), SLOT(cancel()));
