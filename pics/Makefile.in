@@ -1,8 +1,14 @@
-# Makefile.in generated automatically by automake 1.2 from Makefile.am
+# Makefile.in generated automatically by automake 1.3 from Makefile.am
 
-# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
-# gives unlimited permission to copy, distribute and modify it.
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
 
 # add here all files
 
@@ -27,6 +33,8 @@ mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
 
+DISTDIR =
+
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -44,12 +52,12 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 transform = @program_transform_name@
 
-NORMAL_INSTALL = true
-PRE_INSTALL = true
-POST_INSTALL = true
-NORMAL_UNINSTALL = true
-PRE_UNINSTALL = true
-POST_UNINSTALL = true
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
 build_alias = @build_alias@
 build_triplet = @build@
 host_alias = @host_alias@
@@ -67,7 +75,6 @@ KDE_INCLUDES = @KDE_INCLUDES@
 KDE_LDFLAGS = @KDE_LDFLAGS@
 KDE_RPATH = @KDE_RPATH@
 LD = @LD@
-LIBBSD = @LIBBSD@
 LIBCOMPAT = @LIBCOMPAT@
 LIBCRYPT = @LIBCRYPT@
 LIBDL = @LIBDL@
@@ -93,6 +100,7 @@ VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
 XPMINC = @XPMINC@
 XPMLIB = @XPMLIB@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_INCLUDES = @X_INCLUDES@
 X_LDFLAGS = @X_LDFLAGS@
 all_includes = @all_includes@
@@ -116,7 +124,6 @@ kde_toolbardir = @kde_toolbardir@
 kde_wallpaperdir = @kde_wallpaperdir@
 qt_includes = @qt_includes@
 qt_libraries = @qt_libraries@
-topdir = @topdir@
 x_includes = @x_includes@
 x_libraries = @x_libraries@
 
@@ -132,7 +139,6 @@ data_DATA = g++.xpm           krootwm.xpm       tcsh.xpm \
 
 datadir = $(kde_datadir)/ktop/pics
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
 DATA =  $(data_DATA)
 
@@ -143,34 +149,34 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-default: all
+all: Makefile $(DATA)
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu ktop/pics/Makefile
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu ./ktop/pics/Makefile
 
-Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
 install-dataDATA: $(data_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(datadir)
+	$(mkinstalldirs) $(DESTDIR)$(datadir)
 	@list='$(data_DATA)'; for p in $$list; do \
 	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(datadir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(datadir)/$$p; \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(datadir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(datadir)/$$p; \
 	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(datadir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(datadir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(datadir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(datadir)/$$p; \
 	  fi; fi; \
 	done
 
 uninstall-dataDATA:
-	$(NORMAL_UNINSTALL)
+	@$(NORMAL_UNINSTALL)
 	list='$(data_DATA)'; for p in $$list; do \
-	  rm -f $(datadir)/$$p; \
+	  rm -f $(DESTDIR)$(datadir)/$$p; \
 	done
 tags: TAGS
 TAGS:
@@ -178,13 +184,14 @@ TAGS:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = ktop/pics
+subdir = ./ktop/pics
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu ktop/pics/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu ./ktop/pics/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  test -f $(distdir)/$$file \
@@ -207,42 +214,40 @@ install: install-exec install-data all
 
 uninstall: uninstall-dataDATA
 
-all: Makefile $(DATA)
-
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(datadir)
+	$(mkinstalldirs)  $(DATADIR)$(datadir)
 
 
 mostlyclean-generic:
-	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+	-test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
 
 clean-generic:
-	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
-	rm -f Makefile $(DISTCLEANFILES)
-	rm -f config.cache config.log stamp-h stamp-h[0-9]*
-	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+	-rm -f Makefile $(DISTCLEANFILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:
-	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
-	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-generic
 
 clean:  clean-generic mostlyclean
 
 distclean:  distclean-generic clean
-	rm -f config.status
-	rm -f libtool
+	-rm -f config.status
+	-rm -f libtool
 
 maintainer-clean:  maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: default uninstall-dataDATA install-dataDATA tags distdir info \
-dvi installcheck install-exec install-data install uninstall all \
+.PHONY: uninstall-dataDATA install-dataDATA tags distdir info dvi \
+installcheck install-exec install-data install uninstall all \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 

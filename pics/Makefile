@@ -1,9 +1,15 @@
 # Generated automatically from Makefile.in by configure.
-# Makefile.in generated automatically by automake 1.2 from Makefile.am
+# Makefile.in generated automatically by automake 1.3 from Makefile.am
 
-# Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
-# gives unlimited permission to copy, distribute and modify it.
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
 
 # add here all files
 
@@ -12,10 +18,10 @@ SHELL = /bin/sh
 
 srcdir = .
 top_srcdir = ../..
-prefix = /usr/local/kde
+prefix = /home/kulow/prod/KDE
 exec_prefix = ${prefix}
 
-bindir = /usr/local/kde/bin
+bindir = /home/kulow/prod/KDE/bin
 sbindir = ${exec_prefix}/sbin
 libexecdir = ${exec_prefix}/libexec
 sysconfdir = ${prefix}/etc
@@ -26,6 +32,8 @@ infodir = ${prefix}/info
 mandir = ${prefix}/man
 includedir = ${prefix}/include
 oldincludedir = /usr/include
+
+DISTDIR =
 
 pkgdatadir = $(datadir)/kdenonbeta
 pkglibdir = $(libdir)/kdenonbeta
@@ -38,87 +46,86 @@ AUTOCONF = autoconf
 AUTOMAKE = automake
 AUTOHEADER = autoheader
 
-INSTALL = /usr/bin/install -c
+INSTALL = /home/kulow/bin/install -c
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_SCRIPT = ${INSTALL_PROGRAM}
 transform = s,x,x,
 
-NORMAL_INSTALL = true
-PRE_INSTALL = true
-POST_INSTALL = true
-NORMAL_UNINSTALL = true
-PRE_UNINSTALL = true
-POST_UNINSTALL = true
-build_alias = i586-pc-linux-gnu
-build_triplet = i586-pc-linux-gnu
-host_alias = i586-pc-linux-gnu
-host_triplet = i586-pc-linux-gnu
-target_alias = i586-pc-linux-gnu
-target_triplet = i586-pc-linux-gnu
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+build_alias = sparc-sun-solaris2.5.1
+build_triplet = sparc-sun-solaris2.5.1
+host_alias = sparc-sun-solaris2.5.1
+host_triplet = sparc-sun-solaris2.5.1
+target_alias = sparc-sun-solaris2.5.1
+target_triplet = sparc-sun-solaris2.5.1
 CC = gcc
 CPP = gcc -E
 CXX = g++
 GLINC = @GLINC@
 GLLIB = @GLLIB@
-GMSGFMT = /usr/bin/msgfmt
+GMSGFMT = /home/kulow/bin/msgfmt
 KDE_EXTRA_RPATH = 
-KDE_INCLUDES = -I/usr/local/kde/include
-KDE_LDFLAGS = -L/usr/local/kde/lib
-KDE_RPATH = -rpath $(kde_libraries) -rpath $(qt_libraries) -rpath $(x_libraries)
-LD = /usr/bin/ld
-LIBBSD = 
+KDE_INCLUDES = -I/home/kulow/prod/KDE/include
+KDE_LDFLAGS = -L/home/kulow/prod/KDE/lib
+KDE_RPATH = -rpath $(kde_libraries) -rpath $(qt_libraries)
+LD = /usr/ccs/bin/ld
 LIBCOMPAT = 
 LIBCRYPT = -lcrypt
 LIBDL = @LIBDL@
 LIBJPEG = @LIBJPEG@
 LIBOBJS = @LIBOBJS@
-LIBSOCKET = 
+LIBSOCKET = -lsocket  -lnsl
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
-LIBUCB = 
+LIBUCB = -lucb
 LN_S = ln -s
 MAKEINFO = makeinfo
-MOC = /usr/local/qt/bin/moc
-MSGFMT = /usr/bin/msgfmt
-NM = /usr/bin/nm -B
+MOC = /home/kulow/prod/qt/bin/moc
+MSGFMT = /home/kulow/bin/msgfmt
+NM = /usr/ccs/bin/nm -p
 PACKAGE = kdenonbeta
 PAMINC = @PAMINC@
 PAMLIBPATHS = @PAMLIBPATHS@
 PAMLIBS = @PAMLIBS@
-QT_INCLUDES = -I/usr/local/qt/include
-QT_LDFLAGS = -L/usr/local/qt/lib
+QT_INCLUDES = -I/home/kulow/prod/qt/include
+QT_LDFLAGS = -L/home/kulow/prod/qt/lib
 RANLIB = ranlib
 USE_NLS = yes
 VERSION = 0.1
-XGETTEXT = /usr/bin/xgettext
+XGETTEXT = /home/kulow/bin/xgettext
 XPMINC = @XPMINC@
 XPMLIB = @XPMLIB@
-X_INCLUDES = -I/usr/X11R6/include
-X_LDFLAGS = -L/usr/X11R6/lib
-all_includes = -I/usr/local/kde/include -I/usr/local/qt/include -I/usr/X11R6/include
-all_libraries = -L/usr/local/kde/lib -L/usr/local/qt/lib -L/usr/X11R6/lib
+X_EXTRA_LIBS = -lsocket  -lnsl
+X_INCLUDES = -I/usr/openwin/include
+X_LDFLAGS = 
+all_includes = -I/home/kulow/prod/KDE/include -I/home/kulow/prod/qt/include -I/usr/openwin/include
+all_libraries = -L/home/kulow/prod/KDE/lib -L/home/kulow/prod/qt/lib 
 install_root = 
-kde_appsdir = /usr/local/kde/share/applnk
-kde_bindir = /usr/local/kde/bin
-kde_cgidir = /usr/local/kde/cgi-bin
-kde_confdir = /usr/local/kde/share/config
-kde_datadir = /usr/local/kde/share/apps
-kde_htmldir = /usr/local/kde/share/doc/HTML
-kde_icondir = /usr/local/kde/share/icons
-kde_includes = /usr/local/kde/include
-kde_libraries = /usr/local/kde/lib
-kde_locale = /usr/local/kde/share/locale
-kde_mimedir = /usr/local/kde/share/mimelnk
-kde_minidir = /usr/local/kde/share/icons/mini
-kde_partsdir = /usr/local/kde/parts
-kde_sounddir = /usr/local/kde/share/sounds
-kde_toolbardir = /usr/local/kde/share/toolbar
-kde_wallpaperdir = /usr/local/kde/share/wallpapers
-qt_includes = /usr/local/qt/include
-qt_libraries = /usr/local/qt/lib
-topdir = /usr/local2/src/kde/kdenonbeta
-x_includes = /usr/X11R6/include
-x_libraries = /usr/X11R6/lib
+kde_appsdir = /home/kulow/prod/KDE/share/applnk
+kde_bindir = /home/kulow/prod/KDE/bin
+kde_cgidir = /home/kulow/prod/KDE/cgi-bin
+kde_confdir = /home/kulow/prod/KDE/share/config
+kde_datadir = /home/kulow/prod/KDE/share/apps
+kde_htmldir = /home/kulow/prod/KDE/share/doc/HTML
+kde_icondir = /home/kulow/prod/KDE/share/icons
+kde_includes = /home/kulow/prod/KDE/include
+kde_libraries = /home/kulow/prod/KDE/lib
+kde_locale = /home/kulow/prod/KDE/share/locale
+kde_mimedir = /home/kulow/prod/KDE/share/mimelnk
+kde_minidir = /home/kulow/prod/KDE/share/icons/mini
+kde_partsdir = /home/kulow/prod/KDE/parts
+kde_sounddir = /home/kulow/prod/KDE/share/sounds
+kde_toolbardir = /home/kulow/prod/KDE/share/toolbar
+kde_wallpaperdir = /home/kulow/prod/KDE/share/wallpapers
+qt_includes = /home/kulow/prod/qt/include
+qt_libraries = /home/kulow/prod/qt/lib
+x_includes = /usr/openwin/include
+x_libraries = /usr/lib
 
 data_DATA = g++.xpm           krootwm.xpm       tcsh.xpm \
 	X.xpm             gbd.xpm           ksh.xpm           xconsole.xpm \
@@ -132,7 +139,6 @@ data_DATA = g++.xpm           krootwm.xpm       tcsh.xpm \
 
 datadir = $(kde_datadir)/ktop/pics
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
 DATA =  $(data_DATA)
 
@@ -143,34 +149,34 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP = --best
-default: all
+all: Makefile $(DATA)
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu ktop/pics/Makefile
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu ./ktop/pics/Makefile
 
-Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
 install-dataDATA: $(data_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(datadir)
+	$(mkinstalldirs) $(DESTDIR)$(datadir)
 	@list='$(data_DATA)'; for p in $$list; do \
 	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(datadir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(datadir)/$$p; \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(datadir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(datadir)/$$p; \
 	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(datadir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(datadir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(datadir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(datadir)/$$p; \
 	  fi; fi; \
 	done
 
 uninstall-dataDATA:
-	$(NORMAL_UNINSTALL)
+	@$(NORMAL_UNINSTALL)
 	list='$(data_DATA)'; for p in $$list; do \
-	  rm -f $(datadir)/$$p; \
+	  rm -f $(DESTDIR)$(datadir)/$$p; \
 	done
 tags: TAGS
 TAGS:
@@ -178,13 +184,14 @@ TAGS:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = ktop/pics
+subdir = ./ktop/pics
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu ktop/pics/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu ./ktop/pics/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  test -f $(distdir)/$$file \
@@ -207,42 +214,40 @@ install: install-exec install-data all
 
 uninstall: uninstall-dataDATA
 
-all: Makefile $(DATA)
-
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(datadir)
+	$(mkinstalldirs)  $(DATADIR)$(datadir)
 
 
 mostlyclean-generic:
-	test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+	-test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
 
 clean-generic:
-	test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
-	rm -f Makefile $(DISTCLEANFILES)
-	rm -f config.cache config.log stamp-h stamp-h[0-9]*
-	test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+	-rm -f Makefile $(DISTCLEANFILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 
 maintainer-clean-generic:
-	test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
-	test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean:  mostlyclean-generic
 
 clean:  clean-generic mostlyclean
 
 distclean:  distclean-generic clean
-	rm -f config.status
-	rm -f libtool
+	-rm -f config.status
+	-rm -f libtool
 
 maintainer-clean:  maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: default uninstall-dataDATA install-dataDATA tags distdir info \
-dvi installcheck install-exec install-data install uninstall all \
+.PHONY: uninstall-dataDATA install-dataDATA tags distdir info dvi \
+installcheck install-exec install-data install uninstall all \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
