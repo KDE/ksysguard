@@ -83,7 +83,7 @@ static int Dirty = 0;
 /* We have observed deviations of up to 5% in the accuracy of the timer
  * interrupts. So we try to measure the interrupt interval and use this
  * value to calculate timing dependant values. */
-static float timeInterval = TIMERINTERVAL;
+static float timeInterval = 0;
 static struct timeval lastSampling;
 static struct timeval currSampling;
 

@@ -53,7 +53,7 @@
 #define CMDBUFSIZE	128
 #define MAX_CLIENTS	100
 #define PORT_NUMBER	2001
-#define TIMERINVERVAL	2
+#define TIMERINTERVAL	2
 
 typedef struct
 {
@@ -186,8 +186,9 @@ changeUID(void)
 	else
 	{
 		log_error("Cannot seteuid to 'nobody'");
-		/* maybe we should exit here */
-		/* exit(1); */
+		/* We exit here to avoid becoming vulnerable just because
+		 * user nobody does not exist. */
+		exit(1);
 	}
 }
 
@@ -363,7 +364,7 @@ handleTimerEvent(struct timeval* tv, struct timeval* last)
 	struct timeval now;
 	gettimeofday(&now, NULL);
 	/* Check if the last event was really TIMERINTERVAL seconds ago */
-	if (now.tv_sec - last->tv_sec >= TIMERINVERVAL)
+	if (now.tv_sec - last->tv_sec >= TIMERINTERVAL)
 	{
 		/* If so, update all sensors and save current time to last. */
 		updateMemory();

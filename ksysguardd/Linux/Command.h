@@ -23,8 +23,6 @@
 #ifndef _Command_h_
 #define _Command_h_
 
-#define TIMERINTERVAL 2
-
 FILE *currentClient;
 void print_error(const char *, ...);
 void log_error(const char *, ...);

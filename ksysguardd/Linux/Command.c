@@ -43,37 +43,6 @@ typedef struct
 static CONTAINER CommandList;
 static sigset_t SignalSet;
 
-void
-print_error(const char *fmt, ...)
-{
-	char errmsg[1024];
-	int i;
-	va_list az;
-	
-	va_start(az, fmt);
-	vsnprintf(errmsg, 1024, fmt, az);
-	va_end(az);
-
-	fprintf(currentClient, "\033\033\033");
-	for (i = 0; i < strlen(errmsg); i++) {
-		fprintf(currentClient, "%c", errmsg[i]);
-		if ((errmsg[i] == '\n') && (i != (strlen(errmsg) - 1))) {
-			fprintf(currentClient, "\033\033\033");
-		}
-	}
-}
-
-void
-log_error(const char *fmt, ...)
-{
-	va_list az;
-
-	openlog("ksysguardd", LOG_PID, LOG_DAEMON);
-	va_start(az, fmt);
-	syslog(LOG_ERR, fmt, az);
-	closelog();
-}
-
 void 
 _Command(void* v)
 {
@@ -91,6 +60,34 @@ _Command(void* v)
 
 int ReconfigureFlag = 0;
 int CheckSetupFlag = 0;
+
+void
+print_error(const char *fmt, ...)
+{
+	char errmsg[1024];
+	va_list az;
+	
+	va_start(az, fmt);
+	vsnprintf(errmsg, 1024, fmt, az);
+	va_end(az);
+
+	fprintf(currentClient, "\033%s\033", errmsg);
+}
+
+void
+log_error(const char *fmt, ...)
+{
+	char errmsg[1024];
+	va_list az;
+	
+	va_start(az, fmt);
+	vsnprintf(errmsg, 1024, fmt, az);
+	va_end(az);
+
+	openlog("ksysguardd", LOG_PID, LOG_DAEMON);
+	syslog(LOG_ERR, errmsg);
+	closelog();
+}
 
 void
 initCommand(void)
