@@ -131,7 +131,7 @@ initCPU(void)
 	/* Use unbuffered input for /proc/stat file. */
     setvbuf(Stat, NULL, _IONBF, 0);
 
-	sprintf(format, "%%%d[^\n]", sizeof(buf) - 1);
+	sprintf(format, "%%%d[^\n]\n", sizeof(buf) - 1);
 
 	while (fscanf(Stat, format, buf) == 1)
 	{
@@ -155,6 +155,7 @@ initCPU(void)
 			char cmdName[16];
 			/* Load for each SMP CPU */
 			int id;
+
 			sscanf(tag + 3, "%d", &id);
 			CPUCount++;
 			sprintf(cmdName, "cpu%duser", id);
@@ -194,7 +195,7 @@ updateCPU(void)
 	char format[32];
 	char buf[1024];
 
-	sprintf(format, "%%%d[^\n]", sizeof(buf) - 1);
+	sprintf(format, "%%%d[^\n]\n", sizeof(buf) - 1);
 
 	rewind(Stat);
 	while (fscanf(Stat, format, buf) == 1)

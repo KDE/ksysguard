@@ -1,8 +1,7 @@
 /*
-    KTop, the KDE Task Manager
+    KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger
-	                   cs@kde.org
+	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,9 +19,9 @@
 
 	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
 	not commit any changes without consulting me first. Thanks!
-*/
 
-// $Id$
+	$Id$
+*/
 
 #ifndef _MultiMeter_h_
 #define _MultiMeter_h_
@@ -47,7 +46,7 @@ public:
 		delete gm;
 	}
 
-	bool addMeter(const char* name, QColor col);
+	bool addMeter(const QString& name, QColor col);
 
 	void updateValues(int v0 = 0, int v1 = 0, int v2 = 0, int v3 = 0,
 					  int v4 = 0);

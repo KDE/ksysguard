@@ -23,9 +23,9 @@
 	$Id$
 */
 
-#include <qgrid.h>
+#include <kmessagebox.h>
+#include <klocale.h>
 
-#include "SensorManager.h"
 #include "Workspace.h"
 #include "WorkSheet.h"
 #include "Workspace.moc"
@@ -33,7 +33,31 @@
 Workspace::Workspace(QWidget* parent, const char* name)
 	: QTabWidget(parent, name)
 {
+}
+
+void
+Workspace::newWorkSheet()
+{
+	/* TODO: Pop-up a dialog and ask for name and number of columns. */
 	addSheet("Test", 2);
+}
+
+void
+Workspace::deleteWorkSheet()
+{
+	WorkSheet* current = (WorkSheet*) currentPage();
+
+	if (current)
+	{
+		removePage(current);
+		delete current;
+	}
+	else
+	{
+		QString msg = i18n("There are no work sheets that\n"
+						   "could be deleted!");
+		KMessageBox::error(this, msg);
+	}
 }
 
 void
@@ -41,7 +65,5 @@ Workspace::addSheet(const QString& title, int columns)
 {
 	WorkSheet* sheet = new WorkSheet(columns, this);
 	insertTab(sheet, title);
+	showPage(sheet);
 }
-
-
-

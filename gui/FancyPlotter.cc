@@ -1,8 +1,7 @@
 /*
-    KTop, the KDE Task Manager
+    KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger
-	                   cs@kde.org
+	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,14 +19,18 @@
 
 	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
 	not commit any changes without consulting me first. Thanks!
+
+	$Id$
 */
 
-// $Id$
-
-#include <stdio.h>
 #include <qgroupbox.h>
-#include <kapp.h>
+#include <qdragobject.h>
 
+#include <kapp.h>
+#include <klocale.h>
+#include <kmessagebox.h>
+
+#include "SensorManager.h"
 #include "FancyPlotter.moc"
 
 static const int FrameMargin = 5;
@@ -36,14 +39,16 @@ static const int HeadHeight = 10;
 
 FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 						   const char* title, int min, int max)
-	: QWidget(parent, name)
+	: SensorDisplay(parent, name)
 {
 	meterFrame = new QGroupBox(this, "meterFrame"); 
-	meterFrame->setTitle(title);
 	CHECK_PTR(meterFrame);
+	meterFrame->setTitle(title);
+
+	beams = 0;
 
 	multiMeter = new MultiMeter(this, "multiMeter", min, max);
-	CHECK_PTR(meterFrame);
+	CHECK_PTR(multiMeter);
 
 	plotter = new SignalPlotter(this, "signalPlotter", min, max);
 	CHECK_PTR(plotter);
@@ -56,6 +61,27 @@ FancyPlotter::~FancyPlotter()
 	delete multiMeter;
 	delete plotter;
 	delete meterFrame;
+}
+
+bool
+FancyPlotter::addSensor(SensorAgent* sensorAgent, const QString& sensorName,
+						const QString& title)
+{
+	static QColor cols[] = { blue, red, yellow, cyan, magenta };
+
+	if ((unsigned) beams >= (sizeof(cols) / sizeof(QColor)))
+		return (false);
+
+	if (!plotter->addBeam(cols[beams]))
+		return (false);
+
+	if (!multiMeter->addMeter(title, cols[beams]))
+		return (false);
+
+	registerSensor(sensorAgent, sensorName);
+	++beams;
+
+	return (true);
 }
 
 void
@@ -96,4 +122,19 @@ FancyPlotter::sizeHint(void)
 	QSize psize = plotter->minimumSize();
 	return (QSize(psize.width() + Margin * 2,
 				  psize.height() + Margin * 2 + HeadHeight));
+}
+
+void
+FancyPlotter::answerReceived(int id, const QString& answer)
+{
+	static long s[5];
+
+	if (id < 5)
+		s[id] = answer.toLong();
+
+	if (id == beams - 1)
+	{
+		multiMeter->updateValues(s[0], s[1], s[2], s[3], s[4]);
+		plotter->addSample(s[0], s[1], s[2], s[3], s[4]);
+	}
 }

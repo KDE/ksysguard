@@ -23,40 +23,36 @@
 	$Id$
 */
 
-#ifndef _WorkSheet_h_
-#define _WorkSheet_h_
-
-#include <qgrid.h>
-
 #include "SensorDisplay.h"
+#include "SensorDisplay.moc"
 
-class QDragEnterEvent;
-class QDropEvent;
-class QString;
-
-/*
- * A WorkSheet contains the displays to visualize the sensor results. When
- * creating the WorkSheet you must specify the number of columns. Displays
- * can be added and removed on the fly. The grid layout will handle the
- * layout. The number of columns can not be changed. Displays are added by
- * dragging a sensor from the sensor browser over the WorkSheet.
- */
-class WorkSheet : public QGrid
+SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
+	QWidget(parent, name)
 {
-	Q_OBJECT
-public:
-	WorkSheet(int columns, QWidget* parent);
-	~WorkSheet() { }
+	timerId = startTimer(2000);
+	sensorNames.setAutoDelete(true);
+}
 
-	void addDisplay(const QString& hostname, const QString& monitor,
-					SensorDisplay* current = 0);
+SensorDisplay::~SensorDisplay()
+{
+	killTimer(timerId);
+}
 
-protected:
-	void dragEnterEvent(QDragEnterEvent* ev);
-	void dropEvent(QDropEvent* ev);
+void
+SensorDisplay::registerSensor(SensorAgent* sensorAgent,
+							  const QString& sensorName)
+{
+	sensorAgents.append(sensorAgent);
+	sensorNames.append(new QString(sensorName));
+}
 
-private:
-	QList<SensorDisplay> displays;
-} ;
+void
+SensorDisplay::timerEvent(QTimerEvent*)
+{
+	QListIterator<SensorAgent> saIt(sensorAgents);	
+	QListIterator<const QString> snIt(sensorNames);
 
-#endif
+	for (int i = 0; saIt.current(); ++saIt, ++snIt, ++i)
+		saIt.current()->sendRequest(*snIt.current(), (SensorClient*) this, i);
+}
+

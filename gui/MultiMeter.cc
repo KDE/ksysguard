@@ -1,8 +1,7 @@
 /*
-    KTop, the KDE Task Manager
+    KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger
-	                   cs@kde.org
+	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,9 +19,9 @@
 
 	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
 	not commit any changes without consulting me first. Thanks!
-*/
 
-// $Id$
+	$Id$
+*/
 
 #include <math.h>
 
@@ -48,7 +47,7 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name, int minVal,
 }
 
 bool
-MultiMeter::addMeter(const char* name, QColor col)
+MultiMeter::addMeter(const QString& name, QColor col)
 {
 	delete gm;
 

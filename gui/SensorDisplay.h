@@ -1,14 +1,7 @@
 /*
-    KTop, a taskmanager and cpu load monitor
+    KTop, the KDE Task Manager and System Monitor
    
-    Copyright (C) 1997 Bernd Johannes Wuebben
-                       wuebben@math.cornell.edu
-
-    Copyright (C) 1998 Nicolas Leclercq
-                       nicknet@planete.net
-    
-	Copyright (c) 1999 Chris Schlaeger
-	                   cs@kde.org
+	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,46 +19,47 @@
 
 	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
 	not commit any changes without consulting me first. Thanks!
+
+	$Id$
 */
 
-// $Id$
-
-#ifndef _PerfMonPage_h_
-#define _PerfMonPage_h_
+#ifndef _SensorDisplay_h_
+#define _SensorDisplay_h_
 
 #include <qwidget.h>
-#include <qgroupbox.h>
-#include <qlayout.h>
 
-#include "FancyPlotter.h"
-#include "OSStatus.h"
+#include "SensorClient.h"
+#include "SensorDisplay.h"
+#include "SensorAgent.h"
 
-class PerfMonPage : public QWidget
+/**
+ * This class is the base class for all displays for sensors. A
+ * display is any kind of widget that can display the value of one or
+ * more sensors in any form. It must be inherited by all displays that
+ * should be inserted into the work sheet.
+ */
+class SensorDisplay : public QWidget, public SensorClient
 {
 	Q_OBJECT
-
 public:
-	PerfMonPage(QWidget* parent = 0, const char* name = 0);
-	~PerfMonPage()
+
+	SensorDisplay(QWidget* parent = 0, const char* name = 0);
+	~SensorDisplay();
+
+	void registerSensor(SensorAgent* sensorAgent, const QString& sensorName);
+	virtual bool addSensor(SensorAgent*, const QString&, const QString&)
 	{
-		killTimer(timerID);
-		delete cpuload;
-		delete memory;
-		delete gm;
+		return (false);
 	}
 
+protected:
 	virtual void timerEvent(QTimerEvent*);
 
 private:
-	OSStatus stat;
-	int timerID;
+	int timerId;
 
-	int noCpus;
-
-	QGridLayout* gm;
-	FancyPlotter* cpuload;
-	FancyPlotter* memory;
-	QList<FancyPlotter> cpu;
+	QList<const QString> sensorNames;
+	QList<SensorAgent> sensorAgents;
 } ;
 
 #endif

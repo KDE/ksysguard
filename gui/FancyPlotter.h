@@ -1,8 +1,7 @@
 /*
-    KTop, the KDE Task Manager
+    KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger
-	                   cs@kde.org
+	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,23 +19,25 @@
 
 	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
 	not commit any changes without consulting me first. Thanks!
-*/
 
-// $Id$
+	$Id$
+*/
 
 #ifndef _FancyPlotter_h_
 #define _FancyPlotter_h_
 
-#include <qwidget.h>
 #include <qlabel.h>
 #include <qsize.h>
 
+#include "SensorDisplay.h"
 #include "SignalPlotter.h"
 #include "MultiMeter.h"
 
 class QGroupBox;
+class QDragEnterEvent;
+class QDropEvent;
 
-class FancyPlotter : public QWidget
+class FancyPlotter : public SensorDisplay
 {
 	Q_OBJECT
 
@@ -46,10 +47,8 @@ public:
 				 int max = 100);
 	~FancyPlotter();
 
-	bool addBeam(const char* name, QColor col)
-	{
-		return (plotter->addBeam(col) && multiMeter->addMeter(name, col));
-	}
+	bool addSensor(SensorAgent* sensorAgent, const QString& sensorName,
+				   const QString& title);
 
 	void addSample(int s0, int s1 = 0, int s2 = 0, int s3 = 0, int s4 = 0)
 	{
@@ -64,10 +63,14 @@ public:
 
 	virtual QSize sizeHint(void);
 
+	virtual void answerReceived(int id, const QString& s);
+
 protected:
 	virtual void resizeEvent(QResizeEvent*);
 
 private:
+	int beams;
+
 	QGroupBox* meterFrame;
 
 	MultiMeter* multiMeter;

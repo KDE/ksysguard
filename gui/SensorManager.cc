@@ -45,7 +45,6 @@ SensorManager::engage(const QString& hostname)
 
 	if ((ktopd = sensors.find(hostname)) == 0)
 	{
-		debug("New Sensor added");
 		ktopd = new SensorAgent;
 		ktopd->start(hostname.ascii(), "rsh");
 		sensors.insert(hostname, ktopd);

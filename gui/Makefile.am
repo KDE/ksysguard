@@ -14,7 +14,8 @@ bin_PROGRAMS = 	ktop
 ktop_SOURCES = ktop.cc  SensorAgent.cc SensorManager.cc \
 	MainMenu.cc \
 	ProcessMenu.cc ReniceDlg.cc WorkSheet.cc Workspace.cc \
-	SensorBrowser.cc
+	SensorBrowser.cc SensorDisplay.cc \
+	FancyPlotter.cc SignalPlotter.cc MultiMeter.cc
 
 #	TaskMan.cc \
 #	ProcListPage.cc ProcessList.cc \
@@ -26,18 +27,16 @@ ktop_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
 # the libraries to link against. Be aware of the order. First the libraries,
 # that depend on the following ones.
-#ktop_LDADD   =       $(LIB_KDEUI) $(LIBKVM)
 ktop_LDADD   =       $(LIB_KDEUI)
 
 # this option you can leave out. Just, if you use "make dist", you need it
 noinst_HEADERS = MainMenu.h ReniceDlg.h SensorClient.h ktop.h ProcessMenu.h \
-	SensorAgent.h SensorManager.h \
+	Workspace.h WorkSheet.h SensorBrowser.h
+	SensorAgent.h SensorManager.h SensorDisplay.h \
+	FancyPlotter.h SignalPlotter.h MultiMeter.h \
 	version.h 
-# Not here (David)
-# Workspace.h WorkSheet.h SensorBrowser.h
 
 # just to make sure, automake makes them 
-
 METASOURCES = AUTO
 
 # make messages.po. Move this one to $(podir)/ and "make merge" in po
@@ -47,4 +46,3 @@ messages:
 KDE_ICON = ktop
 
 apps_DATA = ktop.desktop
-

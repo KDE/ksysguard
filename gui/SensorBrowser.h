@@ -30,6 +30,7 @@
 
 #include "SensorClient.h"
 
+class QMouseEvent;
 class SensorManager;
 
 class SensorBrowser : public QListView, public SensorClient
@@ -43,11 +44,17 @@ public:
 public slots:
 	void update();
 
+protected:
+	virtual void viewportMouseMoveEvent(QMouseEvent* ev);
+
 private:
 	void answerReceived(int id, const QString& s);
 
 	SensorManager* sensorManager;
 	QList<QListViewItem> sensors;
+
+	// This string stores the drag object.
+	QString dragText;
 } ;
 
 #endif

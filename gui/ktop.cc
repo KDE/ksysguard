@@ -60,25 +60,31 @@ TopLevel::TopLevel(const char *name, int)
 	assert(Kapp);
 	setCaption(i18n("KDE Task Manager"));
 
-	/*
-	 * create main menu
-	 */
+	// Create main menu
 	menubar = new MainMenu(this, "MainMenu");
+	CHECK_PTR(menubar);
 	connect(menubar, SIGNAL(quit()), this, SLOT(quitSlot()));
 	// register the menu bar with KTMainWindow
 	setMenu(menubar);
 
 	splitter = new QSplitter(this, "Splitter");
+	CHECK_PTR(splitter);
 	splitter->setOrientation(Horizontal);
 	setView(splitter);
 
 	sb = new SensorBrowser(splitter, SensorMgr, "SensorBrowser");
+	CHECK_PTR(sb);
+
 	ws = new Workspace(splitter, "Workspace");
+	CHECK_PTR(ws);
+	connect(menubar, SIGNAL(newWorkSheet()), ws, SLOT(newWorkSheet()));
+	connect(menubar, SIGNAL(deleteWorkSheet()), ws, SLOT(deleteWorkSheet()));
 
-//	connect(taskman, SIGNAL(enableRefreshMenu(bool)),
-//			menubar, SLOT(enableRefreshMenu(bool)));
-
+	/* Create the status bar. It displays some information about the
+	 * number of processes and the memory consumption of the local
+	 * host. */
 	statusbar = new KStatusBar(this, "statusbar");
+	CHECK_PTR(statusbar);
 	statusbar->insertItem(i18n("88888 Processes"), 0);
 	statusbar->insertItem(i18n("Memory: 8888888 kB used, "
 							   "8888888 kB free"), 1);
@@ -94,14 +100,13 @@ TopLevel::TopLevel(const char *name, int)
 	// call timerEvent to fill the status bar with real values
 	timerEvent(0);
 
-	/*
-	 * Restore size of the dialog box that was used at end of last session.
-	 * Due to a bug in Qt we need to set the width to one more than the
-	 * defined min width. If this is not done the widget is not drawn
-	 * properly the first time. Subsequent redraws after resize are no problem.
+	/* Restore size of the dialog box that was used at end of last
+	 * session.  Due to a bug in Qt we need to set the width to one
+	 * more than the defined min width. If this is not done the widget
+	 * is not drawn properly the first time. Subsequent redraws after
+	 * resize are no problem.
 	 *
-	 * I need to implement a propper session management some day!
-	 */
+	 * I need to implement a propper session management some day! */
 	QString t = Kapp->config()->readEntry(QString("G_Toplevel"));
 	if(!t.isNull())
 	{
@@ -201,13 +206,16 @@ main(int argc, char** argv)
 {
 	// initialize KDE application
 	Kapp = new KApplication(argc, argv, "ktop");
+	CHECK_PTR(Kapp);
 
 	int sfolder = -1;
 
 	SensorMgr = new SensorManager();
+	CHECK_PTR(SensorMgr);
 
 	// create top-level widget
 	TopLevel *toplevel = new TopLevel("TaskManager", sfolder);
+	CHECK_PTR(toplevel);
 	Kapp->setMainWidget(toplevel);
 	Kapp->setTopWidget(toplevel);
 	toplevel->show();

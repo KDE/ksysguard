@@ -28,6 +28,9 @@
 
 #include <qtabwidget.h>
 #include <qstring.h>
+#include <qlist.h>
+
+class WorkSheet;
 
 class Workspace : public QTabWidget
 {
@@ -37,6 +40,10 @@ public:
 	~Workspace() { }
 
 	void addSheet(const QString& title, int columns = 1);
+
+public slots:
+	void newWorkSheet();
+	void deleteWorkSheet();
 } ;
 
 #endif

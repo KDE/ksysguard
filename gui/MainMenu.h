@@ -28,10 +28,9 @@
 #define _MainMenu_h_
 
 #include <kmenubar.h>
+#include <khelpmenu.h>
 
 #include "ProcessMenu.h"
-
-class KHelpMenu;
 
 /**
  * This class implements the main menu. All triggered actions are activated
@@ -46,12 +45,12 @@ public:
     enum
 	{
 		MENU_ID_ABOUT = 100,
-		MENU_ID_MENU_REFRESH,
-		MENU_ID_REFRESH_MANUAL,
-		MENU_ID_REFRESH_SLOW,
-		MENU_ID_REFRESH_MEDIUM,
-		MENU_ID_REFRESH_FAST,
-		MENU_ID_MENU_PROCESS,
+		MENU_ID_NEW_WORKSHEET,
+		MENU_ID_DELETE_WORKSHEET,
+		MENU_ID_LOAD_WORKSHEET,
+		MENU_ID_SAVE_WORKSHEET,
+		MENU_ID_CONNECT_HOST,
+		MENU_ID_DISCONNECT_HOST,
 	    MENU_ID_QUIT,
 		MENU_ID_HELP
 	};
@@ -60,38 +59,21 @@ public:
 	~MainMenu()
 	{
 		delete file;
-		delete refresh;
-		delete process;
-	}
-
-public slots:
-	void checkRefreshRate(int);
-	void enableRefreshMenu(bool enable)
-	{
-		setItemEnabled(MENU_ID_MENU_REFRESH, enable);
-	}
-	void processSelected(int pid)
-	{
-		setItemEnabled(MENU_ID_MENU_PROCESS, pid >= 0);
-		process->processSelected(pid);
+		delete sensor;
+		delete help;
 	}
 
 signals:
 	void quit();
-	void setRefreshRate(int);
-	void requestUpdate();
+	void newWorkSheet();
+	void deleteWorkSheet();
 
 private slots:
 	void handler(int);
-	void requestUpdateSlot()
-	{
-		emit(requestUpdate());
-	}
 
 private:
 	QPopupMenu* file;
-	QPopupMenu* refresh;
-	ProcessMenu* process;
+	QPopupMenu* sensor;
 	KHelpMenu* help;
 } ;
 

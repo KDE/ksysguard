@@ -23,40 +23,45 @@
 	$Id$
 */
 
-#ifndef _WorkSheet_h_
-#define _WorkSheet_h_
+#ifndef _SignalPlotter_h_
+#define _SignalPlotter_h_
 
-#include <qgrid.h>
+#include <qwidget.h>
+#include <qarray.h>
+#include <qbrush.h>
 
-#include "SensorDisplay.h"
+class QColor;
 
-class QDragEnterEvent;
-class QDropEvent;
-class QString;
+#define MAXBEAMS 5
 
-/*
- * A WorkSheet contains the displays to visualize the sensor results. When
- * creating the WorkSheet you must specify the number of columns. Displays
- * can be added and removed on the fly. The grid layout will handle the
- * layout. The number of columns can not be changed. Displays are added by
- * dragging a sensor from the sensor browser over the WorkSheet.
- */
-class WorkSheet : public QGrid
+class SignalPlotter : public QWidget
 {
 	Q_OBJECT
-public:
-	WorkSheet(int columns, QWidget* parent);
-	~WorkSheet() { }
 
-	void addDisplay(const QString& hostname, const QString& monitor,
-					SensorDisplay* current = 0);
+public:
+	SignalPlotter(QWidget* parent = 0, const char* name = 0, int min = 0,
+				  int max = 100);
+	~SignalPlotter();
+
+	bool addBeam(QColor col);
+	void addSample(int s0, int s1 = 0, int s2 = 0, int s3 = 0, int s4 = 0);
+
+	void setLowPass(bool lp)
+	{
+		lowPass = lp;
+	}
 
 protected:
-	void dragEnterEvent(QDragEnterEvent* ev);
-	void dropEvent(QDropEvent* ev);
+	virtual void resizeEvent(QResizeEvent*);
+	virtual void paintEvent(QPaintEvent*);
 
 private:
-	QList<SensorDisplay> displays;
+	int minValue;
+	int maxValue;
+	bool lowPass;
+	int* beamData[MAXBEAMS];
+	QColor beamColor[MAXBEAMS];
+	int beams;
 } ;
 
 #endif

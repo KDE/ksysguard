@@ -23,7 +23,11 @@
 	$Id$
 */
 
+#include <qevent.h>
+#include <qdragobject.h>
+
 #include <klocale.h>
+#include <kmessagebox.h>
 
 #include "SensorBrowser.h"
 #include "SensorManager.h"
@@ -47,9 +51,11 @@ SensorBrowser::update()
 	sensors.clear();
 	for (int i = 0 ; it.current(); ++it, ++i)
 	{
-		sensors.append(new QListViewItem(this,
-										 sensorManager->
-										 getHostName(it.current())));
+		QListViewItem* lvi = new QListViewItem(this,
+									   sensorManager->
+									   getHostName(it.current()));
+		CHECK_PTR(lvi);
+		sensors.append(lvi);
 		(*it).sendRequest("monitors", this, i);
 	}
 }
@@ -60,5 +66,27 @@ SensorBrowser::answerReceived(int id, const QString& s)
 	SensorLinesTokenizer tok(s);
 
 	for (unsigned int i = 0; i < tok.numberOfTokens(); ++i)
-		new QListViewItem(sensors.at(id), tok[i]);
+	{
+		QListViewItem* lvi = new QListViewItem(sensors.at(id), tok[i]);
+		CHECK_PTR(lvi);
+	}
+}
+
+void
+SensorBrowser::viewportMouseMoveEvent(QMouseEvent* ev)
+{
+	QListViewItem* item = itemAt(ev->pos());
+	if (!item)
+		return;		// no item under cursor
+
+	QListViewItem* parent = item->parent();
+	if (!parent)
+		return;		// item is not a sensor name
+
+	// Create text drag object as "<hostname> <sensorname>".
+	dragText = parent->text(0) + " " + item->text(0);
+
+	QDragObject* dObj = new QTextDrag(dragText, this);
+	CHECK_PTR(dObj);
+	dObj->dragCopy();
 }

@@ -46,41 +46,40 @@ MainMenu::MainMenu(QWidget* parent, const char* name) :
 
 	// 'File' submenu
 	file = new QPopupMenu();
+	CHECK_PTR(file);
+	file->insertItem(i18n("New Worksheet"), MENU_ID_NEW_WORKSHEET, -1);
+	file->insertItem(i18n("Delete Worksheet"), MENU_ID_DELETE_WORKSHEET, -1);
+	file->insertSeparator(-1);
+	file->insertItem(i18n("Load Worksheet"), MENU_ID_LOAD_WORKSHEET, -1);
+	file->insertItem(i18n("Save Worksheet"), MENU_ID_SAVE_WORKSHEET, -1);
+	file->insertSeparator(-1);
 	file->insertItem(i18n("Quit"), MENU_ID_QUIT, -1);
 	connect(file, SIGNAL(activated(int)), this, SLOT(handler(int)));
 
+	// 'Sensor' submenu
+	sensor = new QPopupMenu();
+	CHECK_PTR(sensor);
+	sensor->insertItem(i18n("Connect Host"), MENU_ID_CONNECT_HOST, -1);
+	sensor->insertItem(i18n("Disconnect Host"), MENU_ID_DISCONNECT_HOST, -1);
+	connect(sensor, SIGNAL(activated(int)), this, SLOT(handler(int)));
+
 	// 'Help' submenu
 	QString about;
-	about = i18n("KDE Task Manager (KTop) Version %1\n\n"
+	about = i18n("KDE Task Manager and Perfomance Monitor  Version %1\n\n"
 				 "Copyright:\n"
 				 "1996 : A. Sanda <alex@darkstar.ping.at>\n"
 				 "1997 : Ralf Mueller <ralf@bj-ig.de>\n"
-				 "1997-98 : Bernd Johannes Wuebben <wuebben@kde.org>\n"
+				 "1997-1998 : Bernd Johannes Wuebben <wuebben@kde.org>\n"
 				 "1998 : Nicolas Leclercq <nicknet@planete.net>\n"
 				 "1999 : Chris Schlaeger <cs@kde.org>\n")
 		.arg(KTOP_VERSION);
     help = new KHelpMenu(this, about);
-
-	// 'Refresh Rate' submenu
-	refresh = new QPopupMenu();
-	refresh->setCheckable(true);
-	refresh->insertItem(i18n("Manual Refresh"), MENU_ID_REFRESH_MANUAL, -1);
-	refresh->insertItem(i18n("Slow Refresh"), MENU_ID_REFRESH_SLOW, -1);
-	refresh->insertItem(i18n("Medium Refresh"), MENU_ID_REFRESH_MEDIUM, -1);
-	refresh->insertItem(i18n("Fast Refresh"), MENU_ID_REFRESH_FAST, -1);
-	connect(refresh, SIGNAL(activated(int)), this, SLOT(handler(int)));
-
-	// 'Process' submenu
-	process = new ProcessMenu();
-	process->setItemEnabled(MENU_ID_MENU_PROCESS, false);
-	connect(process, SIGNAL(requestUpdate(void)),
-			this, SLOT(requestUpdateSlot(void)));
+	CHECK_PTR(help);
 
 	// register submenues
 	setLineWidth(1);
 	insertItem(i18n("&File"), file, 2, -1);
-	insertItem(i18n("&Refresh Rate"), refresh, MENU_ID_MENU_REFRESH, -1);
-	insertItem(i18n("&Process"), process, MENU_ID_MENU_PROCESS, -1);
+	insertItem(i18n("&Sensor"), sensor, -1, -1);
 
 	insertSeparator(-1);
 	insertItem(i18n("&Help"), help->menu(), 2, -1);
@@ -95,22 +94,15 @@ MainMenu::handler(int id)
 		emit(quit());
 		break;
 
-	case MENU_ID_REFRESH_MANUAL:
-	case MENU_ID_REFRESH_SLOW:
-	case MENU_ID_REFRESH_MEDIUM:
-	case MENU_ID_REFRESH_FAST:
-		emit(setRefreshRate(id - MENU_ID_REFRESH_MANUAL));
+	case MENU_ID_NEW_WORKSHEET:
+		emit(newWorkSheet());
+		break;
+
+	case MENU_ID_DELETE_WORKSHEET:
+		emit(deleteWorkSheet());
 		break;
 
 	default:
 		break;
 	}
-}
-
-void
-MainMenu::checkRefreshRate(int rate)
-{
-	// uncheck old and check new rate
-	for (int i = MENU_ID_REFRESH_MANUAL; i <= MENU_ID_REFRESH_FAST; i++)
-		refresh->setItemChecked(i, rate == i - MENU_ID_REFRESH_MANUAL);
 }
