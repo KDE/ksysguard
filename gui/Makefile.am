@@ -25,7 +25,7 @@ ksysguard_SOURCES = \
 	ksysguard.cc ksysguard.skel \
 	DancingBarsSettings.ui MultiMeterSettings.ui \
 	FancyPlotterSettings.ui HostConnector.ui WorkSheetSettings.ui \
-	ListViewSettings.cc
+	ListViewSettings.ui
 
 # the library search path
 ksysguard_LDFLAGS = $(all_libraries) $(KDE_RPATH)
