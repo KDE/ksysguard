@@ -31,7 +31,7 @@
 #include <khelpmenu.h>
 #include <klocale.h>
 
-#include "version.h"
+#include "../version.h"
 #include "MainMenu.moc"
 
 extern KApplication* Kapp;

@@ -46,6 +46,8 @@ public:
 	bool addBeam(QColor col);
 	void addSample(int s0, int s1 = 0, int s2 = 0, int s3 = 0, int s4 = 0);
 
+	void changeRange(int beam, int min, int max);
+
 	void setLowPass(bool lp)
 	{
 		lowPass = lp;
@@ -58,6 +60,8 @@ protected:
 private:
 	int minValue;
 	int maxValue;
+	int minValues[MAXBEAMS];
+	int maxValues[MAXBEAMS];
 	bool lowPass;
 	int* beamData[MAXBEAMS];
 	QColor beamColor[MAXBEAMS];

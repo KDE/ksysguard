@@ -44,13 +44,12 @@
 #include "SensorManager.h"
 #include "SensorAgent.h"
 #include "Workspace.h"
-#include "version.h"
+#include "../version.h"
 #include "ktop.moc"
 
 
 
-static const char *description = 
-	I18N_NOOP("KDE process monitor");
+static const char* Description = I18N_NOOP("KDE Task Manager");
 
 #define KTOP_MIN_W	50
 #define KTOP_MIN_H	50
@@ -190,7 +189,7 @@ TopLevel::answerReceived(int id, const QString& answer)
 		break;
 	case 3:
 		sFree = answer.toLong();
-		s = i18n("Swap: %1 %2 used, %2 %4 free")
+		s = i18n("Swap: %1 %2 used, %3 %4 free")
 			.arg(sTotal - sFree).arg(unit).arg(sFree).arg(unit);
 		statusbar->changeItem(s, 2);
 		break;
@@ -216,12 +215,16 @@ static const KCmdLineOptions options[] =
 int
 main(int argc, char** argv)
 {
-	KAboutData aboutData( "ktop", I18N_NOOP("KDE Task Manager"),
-		KTOP_VERSION, description, KAboutData::License_GPL,
-		"(c) 1997-2000, The KTop Developers");
-	aboutData.addAuthor("Bernd Johannes Wuebben",0, "wuebben@math.cornell.edu");
+	KAboutData aboutData("ktop", I18N_NOOP("KDE Task Manager"),
+						 KTOP_VERSION, Description, KAboutData::License_GPL,
+						 I18N_NOOP("(c) 1996-2000, The KTop Developers"));
+	aboutData.addAuthor("Alex Sanda", 0, "alex@darkstart.ping.at");
+	aboutData.addAuthor("Ralf Mueller", 0, "rlaf@bj-ig.de");
+	aboutData.addAuthor("Bernd Johannes Wuebben", 0,
+						"wuebben@math.cornell.edu");
 	aboutData.addAuthor("Nicolas Leclercq",0, "nicknet@planete.net");
-	aboutData.addAuthor("Chris Schlaeger","Current Maintainer", "cs@kde.org");
+	aboutData.addAuthor("Chris Schlaeger", "Current Maintainer",
+						"cs@kde.org");
 	
 	KCmdLineArgs::init( argc, argv, &aboutData );
 	KCmdLineArgs::addCmdLineOptions( options );

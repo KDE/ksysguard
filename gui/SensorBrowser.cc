@@ -45,16 +45,25 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	setRootIsDecorated(TRUE);
 
 	// Fill the sensor description dictionary.
-	dict.insert("cpuidle", new QString(i18n("CPU Idle Load")));
-	dict.insert("cpusys", new QString(i18n("CPU System Load")));
-	dict.insert("cpunice", new QString(i18n("CPU Nice Load")));
-	dict.insert("cpuuser", new QString(i18n("CPU User Load")));
+	dict.insert("cpuidle", new QString(i18n("Idle Load")));
+	dict.insert("cpusys", new QString(i18n("System Load")));
+	dict.insert("cpunice", new QString(i18n("Nice Load")));
+	dict.insert("cpuuser", new QString(i18n("User Load")));
 	dict.insert("memswap", new QString(i18n("Swap Memory")));
 	dict.insert("memcached", new QString(i18n("Cached Memory")));
 	dict.insert("membuf", new QString(i18n("Buffered Memory")));
 	dict.insert("memused", new QString(i18n("Used Memory")));
 	dict.insert("memfree", new QString(i18n("Free Memory")));
 	dict.insert("pscount", new QString(i18n("Process Count")));
+	dict.insert("ps", new QString(i18n("Process Controller")));
+	for (int i = 0; i < 32; i++)
+	{
+		dict.insert("cpu" + QString(i) + "idle",
+					new QString(i18n("CPU" + QString(i) + " Idle Load")));
+		dict.insert("cpusys", new QString(i18n("System Load")));
+		dict.insert("cpunice", new QString(i18n("Nice Load")));
+		dict.insert("cpuuser", new QString(i18n("User Load")));
+	}
 }
 
 void
@@ -78,6 +87,7 @@ SensorBrowser::update()
 		// request sensor list from host
 		host->sendRequest("monitors", this, i);
 	}
+	setMouseTracking(FALSE);
 }
 
 void
@@ -121,6 +131,14 @@ SensorBrowser::answerReceived(int id, const QString& s)
 void
 SensorBrowser::viewportMouseMoveEvent(QMouseEvent* ev)
 {
+	/* setMouseTracking(FALSE) seems to be broken. With current Qt
+	 * mouse tracking cannot be turned off. So we have to check each event
+	 * whether the LMB is really pressed. */
+
+	if (!(ev->state() & LeftButton))
+		return;
+
+	debug("SensorBrowser::MouseMoveEvent");
 	QListViewItem* item = itemAt(ev->pos());
 	if (!item)
 		return;		// no item under cursor
@@ -135,8 +153,11 @@ SensorBrowser::viewportMouseMoveEvent(QMouseEvent* ev)
 		;
 	assert(it.current());
 
-	// Create text drag object as "<hostname> <sensorname>".
-	dragText = (*it)->getHostName() + " " + (*it)->getSensorName(item);
+	debug("Drag object created");
+	// Create text drag object as "<hostname> <sensorname> <sensortype>".
+	dragText = (*it)->getHostName() + " "
+		+ (*it)->getSensorName(item) + " "
+		+ (*it)->getSensorType(item);
 
 	QDragObject* dObj = new QTextDrag(dragText, this);
 	CHECK_PTR(dObj);

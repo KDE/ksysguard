@@ -34,8 +34,6 @@
 #include "MultiMeter.h"
 
 class QGroupBox;
-class QDragEnterEvent;
-class QDropEvent;
 
 class FancyPlotter : public SensorDisplay
 {

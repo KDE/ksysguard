@@ -47,7 +47,11 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name, int min,
 	beams = 0;
 	lowPass = FALSE;
 	for (int i = 0; i < MAXBEAMS; i++)
+	{
+		minValues[i] = 0;
+		maxValues[i] = 0;
 		beamData[i] = 0;
+	}
 
 	// Anything smaller than this does not make sense.
 	setMinimumSize(16, 16);
@@ -88,10 +92,8 @@ SignalPlotter::addSample(int s0, int s1, int s2, int s3, int s4)
 
 	if (lowPass)
 	{
-		/*
-		 * We use an FIR type low-pass filter to make the display look a little
-		 * nicer without becoming too inaccurate.
-		 */
+		/* We use an FIR type low-pass filter to make the display look
+		 *a little nicer without becoming too inaccurate. */
 		if (beams > 0)
 			beamData[0][width() - 3] = (beamData[0][width() - 4] + s0) / 2;
 		if (beams > 1)
@@ -118,6 +120,29 @@ SignalPlotter::addSample(int s0, int s1, int s2, int s3, int s4)
 	}
 
 	repaint();
+}
+
+void
+SignalPlotter::changeRange(int beam, int min, int max)
+{
+	if (beam < 0 || beam >= MAXBEAMS)
+	{
+		debug("SignalPlotter::changeRange: beam index out of range");
+		return;
+	}
+
+	minValues[beam] = min;
+	maxValues[beam] = max;
+
+	minValue = maxValue = 0;
+	for (int i = 0; i < beams; i++)
+	{
+		/* The plotter runs in accumulative mode, so we need to accumulate
+		 * the min and max values for each beam to determine the overall
+		 * signal range of the plotter. */
+		minValue += minValues[i];
+		maxValue += maxValues[i];
+	}
 }
 
 void
@@ -170,10 +195,8 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	p.begin(&pm, this);
 
 	pm.fill(black);
-	/*
-	 * Draw white line along the bottom and the right side of the widget to
-	 * create a 3D like look.
-	 */
+	/* Draw white line along the bottom and the right side of the
+	 * widget to create a 3D like look. */
 	p.setPen(QColor(colorGroup().light()));
 	p.drawLine(0, h - 1, w - 1, h - 1);
 	p.drawLine(w - 1, 0, w - 1, h - 1);

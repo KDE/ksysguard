@@ -49,7 +49,7 @@ public:
 	~WorkSheet() { }
 
 	void addDisplay(const QString& hostname, const QString& monitor,
-					SensorDisplay* current = 0);
+					const QString& sensorType, SensorDisplay* current = 0);
 
 protected:
 	void dragEnterEvent(QDragEnterEvent* ev);

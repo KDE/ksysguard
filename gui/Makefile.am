@@ -13,12 +13,8 @@ ktop_SOURCES = ktop.cc  SensorAgent.cc SensorManager.cc \
 	MainMenu.cc \
 	ProcessMenu.cc ReniceDlg.cc WorkSheet.cc Workspace.cc \
 	SensorBrowser.cc SensorDisplay.cc \
-	FancyPlotter.cc SignalPlotter.cc MultiMeter.cc
-
-#	TaskMan.cc \
-#	ProcListPage.cc ProcessList.cc \
-#	OSProcessList.cc OSProcess.cc PerfMonPage.cc \
-#	FancyPlotter.cc MultiMeter.cc SignalPlotter.cc OSStatus.cc \
+	FancyPlotter.cc SignalPlotter.cc MultiMeter.cc \
+	ProcessController.cc ProcessList.cc
 
 # the library search path
 ktop_LDFLAGS = $(all_libraries) $(KDE_RPATH)
@@ -32,6 +28,7 @@ noinst_HEADERS = MainMenu.h ReniceDlg.h SensorClient.h ktop.h ProcessMenu.h \
 	Workspace.h WorkSheet.h SensorBrowser.h \
 	SensorAgent.h SensorManager.h SensorDisplay.h \
 	FancyPlotter.h SignalPlotter.h MultiMeter.h \
+	ProcessController.h ProcessList.h
 	version.h 
 
 # just to make sure, automake makes them 

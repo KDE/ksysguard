@@ -24,7 +24,6 @@
 */
 
 #include <qgroupbox.h>
-#include <qdragobject.h>
 
 #include <kapp.h>
 #include <klocale.h>
@@ -81,6 +80,11 @@ FancyPlotter::addSensor(SensorAgent* sensorAgent, const QString& sensorName,
 	registerSensor(sensorAgent, sensorName);
 	++beams;
 
+	/* To differentiate between answers from value requests and info
+	 * requests we add 100 to the beam index for info requests. */
+	sensorAgent->sendRequest(sensorName + "?", (SensorClient*) this,
+							 beams + 100);
+
 	return (true);
 }
 
@@ -131,6 +135,13 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 
 	if (id < 5)
 		s[id] = answer.toLong();
+	else if (id > 100)
+	{
+		SensorIntegerInfo info(answer);
+		plotter->changeRange(id - 100, info.getMin(), info.getMax());
+		/* TODO: set unit in multi meter
+		 * unit = info.getUnit() */
+	}
 
 	if (id == beams - 1)
 	{

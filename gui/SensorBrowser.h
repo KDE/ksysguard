@@ -52,6 +52,11 @@ public:
 		return (name);
 	}
 
+	const QString& getType()
+	{
+		return (type);
+	}
+
 private:
 	/// pointer to the entry in the browser QListView
 	QListViewItem* lvi;
@@ -62,7 +67,7 @@ private:
 	/// the localized description of the sensor
 	QString description;
 
-	/// qualifies the class of the sensor (ps, integer, etc.)
+	/// qualifies the class of the sensor (table, integer, etc.)
 	QString type;
 } ;
 
@@ -93,6 +98,16 @@ public:
 		assert(it.current());
 
 		return ((*it)->getName());
+	}
+
+	const QString& getSensorType(const QListViewItem* lvi)
+	{
+		QListIterator<SensorInfo> it(sensors);
+		for ( ; it.current() && (*it)->getLVI() != lvi; ++it)
+			;
+		assert(it.current());
+
+		return ((*it)->getType());
 	}
 
 	void addSensor(QListViewItem* lvi, const QString& name,

@@ -33,6 +33,7 @@
 
 #include "SensorManager.h"
 #include "FancyPlotter.h"
+#include "ProcessController.h"
 
 WorkSheet::WorkSheet(int columns, QWidget* parent) :
 	QGrid(columns, parent)
@@ -42,7 +43,7 @@ WorkSheet::WorkSheet(int columns, QWidget* parent) :
 
 void
 WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
-					  SensorDisplay* current)
+					  const QString& sensorType, SensorDisplay* current)
 {
 	SensorAgent* sensor = SensorMgr->engage(hostName);
 
@@ -62,14 +63,27 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 		QListIterator<SensorDisplay> it(displays);
 		for ( ; it.current() && (it.current() != current); ++it)
 			;
+		/* TODO: We need to make sure that the sensor display supports
+		 * the sensor type. */
 		current = it.current();
 	}
 
 	if (!current)
 	{
-		/* No display has focus and no existing widget has been requested.
-		 * So we create a new display. */
-		current = new FancyPlotter(this, 0, sensorName);
+		// No existing display has been specified, so we create a new one.
+		/* Currently we support one specific sensor display for each
+		 * sensor type. This will change for sure and can then be
+		 * handled with a popup menu that lists all possible sensor
+		 * displays for the sensor type. */
+		if (sensorType == "integer")
+			current = new FancyPlotter(this, 0, sensorName);
+		else if (sensorType == "table")
+			current = new ProcessController(this);
+		else
+		{
+			debug("Unkown sensor type: " + sensorType);
+			return;
+		}
 		current->show();
 		displays.append(current);
 	}
@@ -90,13 +104,18 @@ WorkSheet::dropEvent(QDropEvent* ev)
 
 	if (QTextDrag::decode(ev, dObj))
 	{
-		// The host name and the sensor name are seperated by a ' '.
+		// The host name, sensor name and type are seperated by a ' '.
 		QString hostName = dObj.left(dObj.find(' '));
 		dObj.remove(0, dObj.find(' ') + 1);
-		QString sensorName = dObj;
+		QString sensorName = dObj.left(dObj.find(' '));
+		dObj.remove(0, dObj.find(' ') + 1);
+		QString sensorType = dObj;
 
-		if (hostName.isEmpty() || sensorName.isEmpty())
+		if (hostName.isEmpty() || sensorName.isEmpty() ||
+			sensorType.isEmpty())
+		{
 			return;
+		}
 
 		/* If the event occured over a display the sensor is added to that
 		 * existing widget. If it was dropped over the sheet (background)
@@ -116,11 +135,11 @@ WorkSheet::dropEvent(QDropEvent* ev)
 			if (r.contains(ev->pos()))
 			{
 				// Dropped over a display. Add sensor to existing display.
-				addDisplay(hostName, sensorName, it.current());
+				addDisplay(hostName, sensorName, sensorType, it.current());
 				return;
 			}
 		}
 		// Not dropped over a diplay. Create a new display.
-		addDisplay(hostName, sensorName);
+		addDisplay(hostName, sensorName, sensorType);
 	}
 }
