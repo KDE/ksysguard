@@ -41,10 +41,11 @@ typedef struct
 	char name[32];
 } NetDevInfo;
 
-#define NETDEVBUFSIZE 1024
+#define NETDEVBUFSIZE 4096
 static char NetDevBuf[NETDEVBUFSIZE];
 static int NetDevCnt = 0;
 static int Dirty = 0;
+static int NetDevOk = 0;
 
 #define MAXNETDEVS 64
 static NetDevInfo NetDevs[MAXNETDEVS];
@@ -228,18 +229,24 @@ Inter-|   Receive                                                |  Transmit
 	size_t n;
 	int fd;
 
+	if (NetDevOk < 0)
+		return(0);
+
 	if ((fd = open("/proc/net/dev", O_RDONLY)) < 0)
 	{
 		/* /proc/net/dev may not exist on some machines. */
+		NetDevOk = -1;
 		return (0);
 	}
 	if ((n = read(fd, NetDevBuf, NETDEVBUFSIZE - 1)) == NETDEVBUFSIZE - 1)
 	{
 		perror("ERROR: Internal buffer too small to read "
 			   "/proc/net/dev!");
+		NetDevOk = -1;
 		return (-1);
 	}
 	close(fd);
+	NetDevOk = 1;
 	NetDevBuf[n] = '\0';
 	Dirty = 1;
 

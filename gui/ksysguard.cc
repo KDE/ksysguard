@@ -296,6 +296,9 @@ TopLevel::customEvent(QCustomEvent* ev)
 {
 	if (ev->type() == QEvent::User)
 	{
+		/* Due to the asynchronous communication between ksysguard and its
+		 * back-ends, we sometimes need to show message boxes that were
+		 * triggered by objects that have died already. */
 		KMessageBox::error(this, *((QString*) ev->data()));
 		delete (QString*) ev->data();
 	}

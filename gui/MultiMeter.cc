@@ -39,6 +39,7 @@
 #include <kmessagebox.h>
 #include <kiconloader.h>
 #include <kdebug.h>
+#include <knumvalidator.h>
 
 #include "MultiMeterSettings.h"
 #include "SensorManager.h"
@@ -216,8 +217,10 @@ MultiMeter::settings()
 	mms->showUnit->setChecked(showUnit);
 	mms->lowerLimitActive->setChecked(lowerLimitActive);
 	mms->lowerLimit->setText(QString("%1").arg(lowerLimit));
+	mms->lowerLimit->setValidator(new KFloatValidator(mms->lowerLimit));
 	mms->upperLimitActive->setChecked(upperLimitActive);
 	mms->upperLimit->setText(QString("%1").arg(upperLimit));
+	mms->upperLimit->setValidator(new KFloatValidator(mms->upperLimit));
 	connect(mms->applyButton, SIGNAL(clicked()),
 			this, SLOT(applySettings()));
 

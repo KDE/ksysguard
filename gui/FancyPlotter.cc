@@ -31,7 +31,7 @@
 #include <kapp.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <knuminput.h>
+#include <knumvalidator.h>
 #include <kdebug.h>
 
 #include "SensorManager.h"
@@ -79,7 +79,9 @@ FancyPlotter::settings()
 	fps->title->setText(meterFrame->title());
 	fps->title->setFocus();
 	fps->minVal->setText(QString("%1").arg(plotter->getMin()));
+	fps->minVal->setValidator(new KFloatValidator(fps->minVal));
 	fps->maxVal->setText(QString("%1").arg(plotter->getMax()));
+	fps->maxVal->setValidator(new KFloatValidator(fps->maxVal));
 	connect(fps->applyButton, SIGNAL(clicked()),
 			this, SLOT(applySettings()));
 

@@ -112,6 +112,15 @@ KSysGuardApplet::layout()
 			docks[i]->setGeometry(0, i * w, w, w);
 }
 
+int
+KSysGuardApplet::findDock(const QPoint& p)
+{
+	if (orientation() == Horizontal)
+		return (p.x() / height());
+	else
+		return (p.y() / width());
+}
+
 void
 KSysGuardApplet::dragEnterEvent(QDragEnterEvent* ev)
 {
@@ -140,7 +149,38 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 			return;
 		}
 
-		//addDisplay(hostName, sensorName, sensorType,
-		//					   sensorDescr, i, j);
+		int dock = findDock(ev->pos());
+		if (docks[dock] == 0)
+		{
+			docks[dock] = new FancyPlotter(this, "FancyPlotter",
+										   sensorDescr);
+			layout();
+			kdDebug() << "New display added" << endl;
+
+		}
+		docks[dock]->addSensor(hostName, sensorName, sensorDescr);
 	}
+}
+
+void
+KSysGuardApplet::customEvent(QCustomEvent* ev)
+{
+	if (ev->type() == QEvent::User)
+	{
+		// SensorDisplays send out this event if they want to be removed.
+		removeDisplay((SensorDisplay*) ev->data());
+		delete ev;
+	}
+}
+
+void
+KSysGuardApplet::removeDisplay(SensorDisplay* sd)
+{
+	for (uint i = 0; i < dockCnt; ++i)
+		if (sd == docks[i])
+		{
+			delete docks[i];
+			docks[i] = 0;
+			return;
+		}
 }
