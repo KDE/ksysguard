@@ -181,12 +181,11 @@ Inter-|   Receive                                                |  Transmit
 	*/
 
 	FILE* netdev;
-	size_t n;
 
 	if ((netdev = fopen("/proc/net/dev", "r")) == NULL)
 		return (-1);
 
-	n = fread(NetDevBuf, 1, NETDEVBUFSIZE - 1, netdev);
+	fread(NetDevBuf, 1, NETDEVBUFSIZE - 1, netdev);
 	fclose(netdev);
 	Dirty = 1;
 

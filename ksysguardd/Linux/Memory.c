@@ -117,12 +117,11 @@ updateMemory(void)
 	 */
 
 	FILE* meminfo;
-	unsigned long n;
 
 	if ((meminfo = fopen("/proc/meminfo", "r")) == NULL)
 		return (-1);
 
-	n = (unsigned long) fread(MemInfoBuf, 1, MEMINFOBUFSIZE - 1, meminfo);
+	fread(MemInfoBuf, 1, MEMINFOBUFSIZE - 1, meminfo);
 	fclose(meminfo);
 	Dirty = 1;
 
