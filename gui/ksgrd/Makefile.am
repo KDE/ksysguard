@@ -10,14 +10,14 @@ libksgrd_la_LIBADD = $(LIB_KDEUI)
 # Which sources should be compiled for ksysguard.
 libksgrd_la_SOURCES = \
 	ColorPicker.cc \
+	HostConnector.cc \
 	SensorAgent.cc \
 	SensorManager.cc \
 	SensorShellAgent.cc \
 	SensorSocketAgent.cc \
 	StyleEngine.cc \
 	StyleSettings.cc \
-	TimerSettings.cc \
-	HostConnector.ui
+	TimerSettings.cc
 
 ksgrdincludedir = $(includedir)/ksgrd
 ksgrdinclude_HEADERS = \

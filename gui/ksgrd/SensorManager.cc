@@ -144,9 +144,7 @@ SensorManager::SensorManager()
 
   mBroadcaster = 0;
 
-  mHostConnector = new HostConnector( 0, "HostConnector", true );
-  connect( mHostConnector->helpButton, SIGNAL( clicked() ),
-           SLOT( helpConnectHost() ) );
+  mHostConnector = new HostConnector( 0 );
 }
 
 SensorManager::~SensorManager()
@@ -159,18 +157,7 @@ bool SensorManager::engageHost( const QString &hostName )
   bool retVal = true;
 
   if ( hostName == "" || mAgents.find( hostName ) == 0 ) {
-    if ( hostName == "" ) {
-			// Show combo box, hide fixed label.
-      mHostConnector->hostLabel->setText( i18n( "Host" ) );
-      mHostConnector->host->show();
-      mHostConnector->host->setEnabled( true );
-      mHostConnector->host->setFocus();
-    } else {
-      // Show fixed label (hostname) and hide combo box.
-      mHostConnector->hostLabel->setText( hostName );
-      mHostConnector->host->hide();
-      mHostConnector->host->setEnabled( false );
-    }
+    mHostConnector->setCurrentHostName( hostName );
 
     if ( mHostConnector->exec() ) {
       QString shell = "";
@@ -179,17 +166,17 @@ bool SensorManager::engageHost( const QString &hostName )
 
       /* Check which radio button is selected and set parameters
        * appropriately. */
-      if ( mHostConnector->ssh->isChecked() )
+      if ( mHostConnector->useSsh() )
         shell = "ssh";
-      else if ( mHostConnector->rsh->isChecked() )
+      else if ( mHostConnector->useRsh() )
         shell = "rsh";
-      else if ( mHostConnector->daemon->isChecked() )
-        port = mHostConnector->port->text().toInt();
+      else if ( mHostConnector->useDaemon() )
+        port = mHostConnector->port();
       else
-        command = mHostConnector->command->currentText();
+        command = mHostConnector->currentCommand();
 
       if ( hostName == "" )
-        retVal = engage( mHostConnector->host->currentText(), shell,
+        retVal = engage( mHostConnector->currentHostName(), shell,
                          command, port );
       else
         retVal = engage( hostName, shell, command, port );
@@ -407,31 +394,15 @@ QString SensorManager::translateSensor( const QString &sensor ) const
 
 void SensorManager::readProperties( KConfig *cfg )
 {
-  mHostConnector->host->insertStringList( cfg->readListEntry( "HostList" ) );
-  mHostConnector->command->insertStringList( cfg->readListEntry( "CommandList" ) );
+  mHostConnector->setHostNames( cfg->readListEntry( "HostList" ) );
+  mHostConnector->setCommands( cfg->readListEntry( "CommandList" ) );
 }
 
 void
 SensorManager::saveProperties( KConfig *cfg )
 {
-	QStringList list;
-  QComboBox *cb = mHostConnector->host;
-
-	for ( int i = 0; i < cb->count(); ++i )
-    list.append( cb->text( i ) );
-  cfg->writeEntry( "HostList", list );
-
-	list.clear();
-	cb = mHostConnector->command;
-
-	for ( int i = 0; i < cb->count(); ++i )
-    list.append( cb->text( i ) );
-  cfg->writeEntry( "CommandList", list );
-}
-
-void SensorManager::helpConnectHost()
-{
-  kapp->invokeHelp( "CONNECTINGTOOTHERHOSTS", "ksysguard/the-sensor-browser.html" );
+  cfg->writeEntry( "HostList", mHostConnector->hostNames() );
+  cfg->writeEntry( "CommandList", mHostConnector->commands() );
 }
 
 void SensorManager::disconnectClient( SensorClient *client )

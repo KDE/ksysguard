@@ -96,9 +96,6 @@ class SensorManager : public QObject
   protected:
     QDict<SensorAgent> mAgents;
 
-  protected slots:
-    void helpConnectHost();
-
   private:
     /**
       These dictionary stores the localized versions of the sensor
