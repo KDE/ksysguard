@@ -239,8 +239,9 @@ void KSysGuardApplet::dropEvent( QDropEvent *e )
 void KSysGuardApplet::customEvent( QCustomEvent *e )
 {
   if ( e->type() == QEvent::User ) {
-    if ( KMessageBox::warningYesNo( this,
-         i18n( "Do you really want to delete the display?" ) ) ==	KMessageBox::Yes ) {
+    if ( KMessageBox::warningContinueCancel( this,
+         i18n( "Do you really want to delete the display?" ), i18n("Delete Display"),
+	 KStdGuiItem::del() ) == KMessageBox::Continue ) {
       // SensorDisplays send out this event if they want to be removed.
       removeDisplay( (KSGRD::SensorDisplay*)e->data() );
       save();

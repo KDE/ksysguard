@@ -449,8 +449,9 @@ void WorkSheet::customEvent( QCustomEvent *e )
 {
   if ( e->type() == QEvent::User ) {
     // SensorDisplays send out this event if they want to be removed.
-    if ( KMessageBox::warningYesNo( this, i18n( "Do you really want to delete the display?" ) )
-         == KMessageBox::Yes ) {
+    if ( KMessageBox::warningContinueCancel( this, i18n( "Do you really want to delete the display?" ),
+      i18n("Delete Display"), KStdGuiItem::del() )
+         == KMessageBox::Continue ) {
       removeDisplay( (KSGRD::SensorDisplay*)e->data() );
     }
   }
