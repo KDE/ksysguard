@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
-    
+
+    Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -16,21 +16,21 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	$Id$
+    $Id$
 */
 
-#ifndef _netdev_h_
-#define _netdev_h_
+#ifndef KSG_NETDEV_H
+#define KSG_NETDEV_H
 
-void initNetDev(struct SensorModul* sm);
-void exitNetDev(void);
+void initNetDev( struct SensorModul* );
+void exitNetDev( void );
 
-int updateNetDev(void);
-void checkNetDev(void);
+int updateNetDev( void );
+void checkNetDev( void );
 
-void printNetDevRecBytes(const char* cmd);
-void printNetDevRecBytesInfo(const char* cmd);
-void printNetDevSentBytes(const char* cmd);
-void printNetDevSentBytesInfo(const char* cmd);
+void printNetDevRecBytes( const char* );
+void printNetDevRecBytesInfo( const char* );
+void printNetDevSentBytes( const char* );
+void printNetDevSentBytesInfo( const char* );
 
 #endif
