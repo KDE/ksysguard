@@ -176,7 +176,7 @@ private:
 	QListView* monitor;
 	QString title;
 
-	QList<LogSensor> logSensors;
+	QPtrList<LogSensor> logSensors;
 
 	SensorLoggerDlg *sld;
 	SensorLoggerSettings *sls;

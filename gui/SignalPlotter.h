@@ -100,7 +100,7 @@ private:
 
 	QColor bColor;
 
-	QList<double> beamData;
+	QPtrList<double> beamData;
 	QValueList<QColor> beamColor;
 	int samples;
 

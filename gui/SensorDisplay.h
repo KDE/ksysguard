@@ -211,7 +211,7 @@ protected:
 	void addColorToDOM(QDomElement& de, const QString& attr,
 					   const QColor& col);
 
-	QList<SensorProperties> sensors;
+	QPtrList<SensorProperties> sensors;
 
 	/// The frame around the other widgets.
 	QGroupBox* frame;
