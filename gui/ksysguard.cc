@@ -105,7 +105,7 @@ TopLevel::TopLevel(const char *name)
 
 	KStdAction::saveAs(ws, SLOT(saveWorkSheetAs()), actionCollection());
 	KStdAction::save(ws, SLOT(saveWorkSheet()), actionCollection());
-	KStdAction::quit(this, SLOT(quitApp()), actionCollection());
+	KStdAction::quit(this, SLOT(close()), actionCollection());
 
     (void) new KAction(i18n("C&onnect Host"), "connect_established", 0,
 					   this, SLOT(connectHost()), actionCollection(),
@@ -204,20 +204,6 @@ TopLevel::beATaskManager()
 	dontSaveSession = TRUE;
 }
 
-void
-TopLevel::quitApp()
-{
-	if (!dontSaveSession)
-	{
-		if (!ws->saveOnQuit())
-			return;
-
-		saveProperties(kapp->config());
-		kapp->config()->sync();
-	}
-	qApp->quit();
-}
-
 void 
 TopLevel::connectHost()
 {
@@ -269,7 +255,6 @@ TopLevel::customEvent(QCustomEvent* ev)
 	{
 		KMessageBox::error(this, *((QString*) ev->data()));
 		delete (QString*) ev->data();
-		delete ev;
 	}
 }
 
@@ -291,10 +276,25 @@ TopLevel::timerEvent(QTimerEvent*)
 	}
 }
 
+bool
+TopLevel::queryClose()
+{
+	if (!dontSaveSession)
+	{
+		if (!ws->saveOnQuit())
+			return (FALSE);
+
+		saveProperties(kapp->config());
+		kapp->config()->sync();
+	}
+
+	return (TRUE);
+}
+
 void
 TopLevel::readProperties(KConfig* cfg)
 {
-	cfg->setGroup("KSysGuard Settings");
+//	cfg->setGroup("KSysGuard Settings");
 	
 	int ww = cfg->readNumEntry("SizeX", 600);
 	int wh = cfg->readNumEntry("SizeY", 375);
@@ -331,7 +331,7 @@ TopLevel::readProperties(KConfig* cfg)
 void
 TopLevel::saveProperties(KConfig* cfg)
 {
-	cfg->setGroup("KSysGuard Settings");
+//	cfg->setGroup("KSysGuard Settings");
 
 	// Save window geometry. TODO: x/y is not exaclty correct. Needs fixing.
 	cfg->writeEntry("SizeX", width());
@@ -433,8 +433,7 @@ main(int argc, char** argv)
 	SensorMgr = new SensorManager();
 	CHECK_PTR(SensorMgr);
 
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
+	KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
 	// create top-level widget
 	if (a->isRestored())

@@ -50,11 +50,6 @@ public:
 	TopLevel(const char *name = 0);
 	~TopLevel();
 
-	void closeEvent(QCloseEvent*)
-	{
-		quitApp();
-	}
-
 	virtual void saveProperties(KConfig*);
 	virtual void readProperties(KConfig*);
 
@@ -73,9 +68,9 @@ k_dcop:
 protected:
 	virtual void customEvent(QCustomEvent* e);
 	virtual void timerEvent(QTimerEvent*);
+	virtual bool queryClose();
 
 protected slots:
-	void quitApp();
 	void connectHost();
 	void disconnectHost();
 	void toggleMainToolBar();

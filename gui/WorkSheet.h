@@ -59,7 +59,13 @@ public:
 		return (fileName);
 	}
 
-	bool hasBeenModified();
+	void setFileName(const QString& fN)
+	{
+		fileName = fN;
+		modified = TRUE;
+	}
+
+	bool hasBeenModified() const;
 
 	SensorDisplay* addDisplay(const QString& hostname,
 							  const QString& monitor,

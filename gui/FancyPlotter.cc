@@ -133,7 +133,7 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 	 * SensorDisplay::eventFilter. */
 	plotter->installEventFilter(this);
 
-	modified = false;
+	modified = FALSE;
 }
 
 FancyPlotter::~FancyPlotter()

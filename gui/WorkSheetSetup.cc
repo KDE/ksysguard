@@ -27,6 +27,7 @@
 #include <qlayout.h>
 
 #include <knuminput.h>
+#include <klocale.h>
 
 #include "WorkSheetSetup.h"
 #include "WorkSheetSetup.moc"
@@ -43,7 +44,7 @@ WorkSheetSetup::WorkSheetSetup(const QString& defSheetName)
 	QHBoxLayout* subLay = new QHBoxLayout();
 	CHECK_PTR(subLay);
 	vLay->addLayout(subLay);
-	QLabel* sheetName = new QLabel("Name:", mainWidget, "sheetName");
+	QLabel* sheetName = new QLabel(i18n("Name:"), mainWidget, "sheetName");
 	CHECK_PTR(sheetName);
 	subLay->addWidget(sheetName);
 	sheetNameLE = new QLineEdit(defSheetName, mainWidget, "sheetNameLE");
@@ -55,7 +56,7 @@ WorkSheetSetup::WorkSheetSetup(const QString& defSheetName)
 	subLay = new QHBoxLayout();
 	CHECK_PTR(subLay);
 	vLay->addLayout(subLay);
-	QLabel* rowLB = new QLabel("Rows:", mainWidget, "rowLB");
+	QLabel* rowLB = new QLabel(i18n("Rows:"), mainWidget, "rowLB");
 	CHECK_PTR(rowLB);
 	subLay->addWidget(rowLB);
 	rowNI = new KIntNumInput(1, mainWidget, 10, "rowNI");
@@ -67,7 +68,7 @@ WorkSheetSetup::WorkSheetSetup(const QString& defSheetName)
 	subLay = new QHBoxLayout();
 	CHECK_PTR(subLay);
 	vLay->addLayout(subLay);
-	QLabel* colLB = new QLabel("Columns:", mainWidget, "colLB");
+	QLabel* colLB = new QLabel(i18n("Columns:"), mainWidget, "colLB");
 	CHECK_PTR(colLB);
 	subLay->addWidget(colLB);
 	colNI = new KIntNumInput(1, mainWidget, 10, "colNI");

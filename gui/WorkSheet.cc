@@ -72,7 +72,7 @@ WorkSheet::~WorkSheet()
 }
 
 bool
-WorkSheet::hasBeenModified()
+WorkSheet::hasBeenModified() const
 {
 	for (int i = 0; i < rows; ++i)
 		for (int j = 0; j < columns; ++j)
@@ -85,6 +85,8 @@ WorkSheet::hasBeenModified()
 bool
 WorkSheet::load(const QString& fN)
 {
+	modified = FALSE;
+
 	QFile file(fileName = fN);
 	if (!file.open(IO_ReadOnly))
 	{
@@ -177,6 +179,8 @@ WorkSheet::load(const QString& fN)
 		replaceDisplay(row, column, newDisplay);
 	}
 
+	modified = FALSE;
+
 	return (TRUE);
 }
 
@@ -227,6 +231,8 @@ WorkSheet::save(const QString& fN)
 	QFile file(fileName = fN);
 	if (!file.open(IO_WriteOnly))
 	{
+		/* TODO: Change this to "Can't save file %1" after message freeze
+		 * is over. */
 		KMessageBox::sorry(this, i18n("Can't open the file %1")
 						   .arg(fileName));
 		return (FALSE);

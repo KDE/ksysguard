@@ -73,7 +73,7 @@ public:
 		return (TRUE);
 	}
 
-	virtual bool hasBeenModified()
+	virtual bool hasBeenModified() const
 	{
 		return (TRUE);
 	}

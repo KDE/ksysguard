@@ -64,23 +64,25 @@ Workspace::readProperties(KConfig* cfg)
 
 	if (workDir.isEmpty())
 	{
-		/* If workDir is not specified in the config file, it's probably
-		 * the first time the user has started KTop. We then "restore" a
-		 * special default configuration. */
+		/* If workDir is not specified in the config file, it's
+		 * probably the first time the user has started KSysGuard. We
+		 * then "restore" a special default configuration. */
 		KStandardDirs* kstd = KGlobal::dirs();
 		kstd->addResourceType("data", "share/apps/ksysguard");
 
+		workDir = kstd->saveLocation("data", "ksysguard/");
+
 		QString f = kstd->findResource("data", "SystemLoad.sgrd");
+		QString fNew = workDir + i18n("System Load") + ".sgrd";
 		if (!f.isEmpty())
-			restoreWorkSheet(f);
+			restoreWorkSheet(f, fNew);
 
 		f = kstd->findResource("data", "ProcessTable.sgrd");
+		fNew = workDir + i18n("Process Table") + ".sgrd";
 		if (!f.isEmpty())
-			restoreWorkSheet(f);
+			restoreWorkSheet(f, fNew);
 
-		currentSheet = "SystemLoad";
-
-		workDir = kstd->saveLocation("data", "ksysguard/");
+		currentSheet = i18n("System Load");
 	}
 	else
 	{
@@ -197,8 +199,10 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 		baseName = baseName.left(baseName.findRev('.'));
 		changeTab(currentPage(), baseName);
 	}
-
-	sheet->save(fileName);
+	/* If we cannot save the file is probably write protected. So we need
+	 * to ask the user for a new name. */
+	if (!sheet->save(fileName))
+		saveWorkSheetAs();
 }
 
 void
@@ -212,20 +216,22 @@ Workspace::saveWorkSheetAs()
 		return;
 	}
 
-	KFileDialog fd(workDir, "*.sgrd", this, "LoadFileDialog", TRUE);
-	QString fileName = fd.getSaveFileName(
-		tabLabel(currentPage()) + ".sgrd", "*.sgrd");
-	if (fileName.isEmpty())
-		return;
-	workDir = fileName.left(fileName.findRev('/'));
-	// extract filename without path
-	QString baseName = fileName.right(fileName.length() -
-									  fileName.findRev('/') - 1);
-	// chop off extension (usually '.sgrd')
-	baseName = baseName.left(baseName.findRev('.'));
-	changeTab(currentPage(), baseName);
-
-	sheet->save(fileName);
+	QString fileName;
+	do
+	{
+		KFileDialog fd(workDir, "*.sgrd", this, "LoadFileDialog", TRUE);
+		fileName = fd.getSaveFileName(
+			tabLabel(currentPage()) + ".sgrd", "*.sgrd");
+		if (fileName.isEmpty())
+			return;
+		workDir = fileName.left(fileName.findRev('/'));
+		// extract filename without path
+		QString baseName = fileName.right(fileName.length() -
+										  fileName.findRev('/') - 1);
+		// chop off extension (usually '.sgrd')
+		baseName = baseName.left(baseName.findRev('.'));
+		changeTab(currentPage(), baseName);
+	} while (!sheet->save(fileName));
 }
 
 void
@@ -264,11 +270,20 @@ Workspace::deleteWorkSheet(const QString& fileName)
 }
 
 bool
-Workspace::restoreWorkSheet(const QString& fileName)
+Workspace::restoreWorkSheet(const QString& fileName, const QString& newName)
 {
+	/* We might want to save the worksheet under a different name later. This
+	 * name can be specified by newName. If newName is empty we use the
+	 * original name to save the work sheet. */
+	QString fName;
+	if (newName.isEmpty())
+		fName = fileName;
+	else
+		fName = newName;
+
 	// extract filename without path
-	QString baseName = fileName.right(fileName.length() -
-									  fileName.findRev('/') - 1);
+	QString baseName = fName.right(fName.length() -
+									  fName.findRev('/') - 1);
 	// chop off extension (usually '.sgrd')
 	baseName = baseName.left(baseName.findRev('.'));
 
@@ -282,6 +297,11 @@ Workspace::restoreWorkSheet(const QString& fileName)
 		return (FALSE);
 	}
 	sheets.append(sheet);
+
+	/* Force the file name to be the new name. This also sets the modified
+	 * flag, so that the file will get saved on exit. */
+	if (!newName.isEmpty())
+		sheet->setFileName(newName);
 
 	return (TRUE);
 }

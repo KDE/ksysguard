@@ -65,7 +65,7 @@ public:
 
 	bool save(QDomDocument& doc, QDomElement& display);
 
-	bool hasBeenModified()
+	bool hasBeenModified() const
 	{
 		return (modified);
 	}

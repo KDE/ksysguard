@@ -45,7 +45,8 @@ public:
 
 	void showProcesses();
 
-	bool restoreWorkSheet(const QString& fileName);
+	bool restoreWorkSheet(const QString& fileName,
+						  const QString& newName = QString::null);
 	void deleteWorkSheet(const QString& fileName);
 
 public slots:
