@@ -165,12 +165,10 @@ static int updateProcess( pid_t pid ) {
 
 	snprintf( buf, BUFSIZE - 1, "%s/%ld/psinfo", PROCDIR, pid );
 	if( (fd = open( buf, O_RDONLY )) < 0 ) {
-		print_error( "cannot open() \"%s\"\n", buf );
 		return( -1 );
 	}
 
 	if( read( fd, &psinfo, sizeof( psinfo_t )) != sizeof( psinfo_t )) {
-		print_error( "cannot read() \"%s\"\n", buf );
 		close( fd );
 		return( -1 );
 	}
