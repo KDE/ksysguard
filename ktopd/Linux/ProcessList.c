@@ -298,7 +298,7 @@ cleanupProcessList(void)
 }
 
 /*
-================================ public part ==================================
+================================ public part =================================
 */
 
 void
@@ -306,10 +306,9 @@ initProcessList(void)
 {
 	ProcessList = new_ctnr(CT_DLL);
 
-	registerCommand("ps", printProcessList);
-	registerCommand("ps?", printProcessListInfo);
 	registerMonitor("pscount", "integer", printProcessCount,
 					printProcessCountInfo);
+	registerMonitor("ps", "table", printProcessList, printProcessListInfo);
 }
 
 void
