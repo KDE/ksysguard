@@ -283,7 +283,7 @@
                     </property>
                     <property>
                         <name>text</name>
-                        <string>Ok</string>
+                        <string>OK</string>
                     </property>
                     <property>
                         <name>default</name>
