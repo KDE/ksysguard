@@ -1,7 +1,5 @@
-#! /usr/bin/tail +2
-
 datadir = $(kde_appsdir)/ksysguard
 data_DATA = eventsrc
 
-etcdir = /etc
+etcdir = $(sysconfdir)
 etc_DATA = ksysguarddrc

@@ -1,6 +1,8 @@
-INCLUDES = -I$(srcdir)/../../CContLib
 CPPFLAGS = -D_GNU_SOURCE
 CFLAGS = -Wall $(CONFIGFLAGS)
+KSYSGUARDDRCFILE=@sysconfdir@/ksysguarddrc
+
+INCLUDES = -DKSYSGUARDDRCFILE="\"$(KSYSGUARDDRCFILE)\"" -I$(srcdir)/../../CContLib
 
 bin_PROGRAMS = ksysguardd
 

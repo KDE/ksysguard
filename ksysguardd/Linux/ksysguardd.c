@@ -70,7 +70,7 @@ static ClientInfo ClientList[MAX_CLIENTS];
 static int SocketPort = -1;
 static int CurrentSocket;
 static char *LockFile = "/var/run/ksysguardd.pid";
-static char *ConfigFile = "/etc/ksysguarddrc";
+static char *ConfigFile = KSYSGUARDDRCFILE;
 
 /* This variable is set to 1 if a module requests that the daemon should
  * be terminated. */
