@@ -127,8 +127,10 @@ TopLevel::TopLevel( const char *name )
                SLOT( editStyle() ), actionCollection(), "configure_style" );
 
   // TODO remove resize and fix so sizeHints() determines default size.
-  resize( 640, 480 );
-  setupGUI();
+  if (!initialGeometrySet())
+    resize( 640, 480 );
+  setupGUI(ToolBar | Keys | StatusBar | Create);
+  setAutoSaveSettings();
 }
 
 
