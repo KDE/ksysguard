@@ -38,6 +38,15 @@ void parseConfigFile(const char *filename)
 	ConfigLogFile *confLog;
 	
 
+	if (LogFileList)
+		destr_ctnr(LogFileList, free);
+
+	if (SensorList)
+		destr_ctnr(SensorList, free);
+
+	LogFileList = new_ctnr(CT_DLL);
+	SensorList = new_ctnr(CT_DLL);
+
 	if ((config = fopen(filename, "r")) == NULL) {
 		log_error("can't open config file '%s'", filename);
 
@@ -66,16 +75,6 @@ void parseConfigFile(const char *filename)
 
 		return;
 	}
-
-	
-	if (LogFileList)
-		destr_ctnr(LogFileList, free);
-
-	if (SensorList)
-		destr_ctnr(SensorList, free);
-
-	LogFileList = new_ctnr(CT_DLL);
-	SensorList = new_ctnr(CT_DLL);
 
 	while (fgets(line, sizeof(line), config) != NULL) {
 		if ((line[0] == '#') || (strlen(line) == 0)) {
