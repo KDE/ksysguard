@@ -34,8 +34,45 @@ Comment[uk]=Системний вартовий KDE
 
 [pattern_match]
 Name=pattern_match
+Name[da]=mønster_tilpasning
+Name[de]=Musterübereinstimmung
+Name[es]=concordancia de plantillas
+Name[ja]=パターンマッチ
+Name[lv]=šablona_atbilstība
+Name[no_NY]=mønster_treff
+Name[sl]=vzorec_zadetek
+Name[sv]=mönsterigenkänning
 Comment=search pattern matched
+Comment[da]=sågemønster tilpasset
+Comment[de]=Übereinstimmende Suchmuster
+Comment[es]=plantilla de búsqueda encontrada
+Comment[ja]=検索パターンにマッチしました
+Comment[lv]=meklēšanas šablons atbildis
+Comment[no_NY]=Søkjemønsteret passa
+Comment[pt_BR]=padrão de pesquisa correspondido
+Comment[pt]=padrão de pesquisa correspondido
+Comment[sl]=iskalni vzorec se ujema
+Comment[sv]=sökmönster igenkänt
+Comment[uk]=пошук відповідного взірця
 
 [sensor_alarm]
 Name=sensor_alarm
+Name[de]=Sensormeldung
+Name[es]=sensor de alarma
+Name[ja]=センサーアラーム
+Name[lv]=sensora_trauksme
+Name[sl]=senzor_alarm
+Name[sv]=sensorlarm
 Comment=sensor exceted critical limit
+Comment[da]=sensor gik ud over kritisk grænse
+Comment[de]=Sensor erfasst die Überschreitung einer kritischen Grenze
+Comment[en_GB]=sensor exceeded critical limit
+Comment[es]=sensor excedió el límite crítico
+Comment[ja]=センサーは致命的限界を越えました。
+Comment[lv]=sensors pārsniedzis kritisko limitu
+Comment[no_NY]=sensoren gjekk over kritisk grense
+Comment[pt_BR]=o sensor excedeu o limite crítico
+Comment[pt]=o sensor excedeu o limite crítico
+Comment[sl]=senzor presega kritično mejo
+Comment[sv]=en sensor överskred den kritiska gränsen
+Comment[uk]=датчик перевищів критичний рівень
