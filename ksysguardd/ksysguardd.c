@@ -39,6 +39,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include "modules.h"
 
@@ -122,12 +123,21 @@ createLockFile()
 	
 	if ((file = fopen(LockFile, "w+")) != NULL)
 	{
-		if (flock(fileno(file), LOCK_EX | LOCK_NB) < 0)
+		struct flock lock;
+		lock.l_type = F_WRLCK;
+		lock.l_whence = 0;
+		lock.l_start = 0;
+		lock.l_len = 0;
+		lock.l_pid = -1;
+		if (fcntl(fileno(file), F_SETLK, &lock) < 0)
 		{
-			log_error("ksysguardd is running already");
-			fprintf(stderr, "ksysguardd is running already\n");
-			fclose(file);
-			return -1;
+			if ((errno == EACCES) || (errno == EAGAIN))
+			{
+				log_error("ksysguardd is running already");
+				fprintf(stderr, "ksysguardd is running already\n");
+				fclose(file);
+				return -1;
+			}
 		}
 		fseek(file, 0, SEEK_SET);
 		fprintf(file, "%d\n", getpid());
