@@ -20,6 +20,7 @@
 	Please do not commit any changes without consulting me first. Thanks!
 */
 
+#include <config.h>
 #include <qdom.h>
 #include <qlabel.h>
 #include <qlineedit.h>
