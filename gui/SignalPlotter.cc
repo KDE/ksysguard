@@ -288,14 +288,14 @@ SignalPlotter::paintEvent(QPaintEvent*)
 			 * a 50% darker color. */
 			if (end - start > 2)
 			{
-				p.setPen(beamColor[b].dark(200));
+				p.setPen(beamColor[b].dark(150));
 				p.drawLine(i + 1, start, i + 1, end - 1);
 				p.setPen(beamColor[b]);
 				p.drawLine(i + 1, end - 1, i + 1, end);
 			}
 			else if (start - end > 2)
 			{
-				p.setPen(beamColor[b].dark(200));
+				p.setPen(beamColor[b].dark(150));
 				p.drawLine(i + 1, start, i + 1, end + 1);
 				p.setPen(beamColor[b]);
 				p.drawLine(i + 1, end + 1, i + 1, end);

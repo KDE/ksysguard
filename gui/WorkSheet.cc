@@ -101,7 +101,7 @@ WorkSheet::load(const QString& fN)
 	// Parse the XML file.
 	QDomDocument doc;
 	// Read in file and check for a valid XML header.
-	if (!doc.setContent(QString::fromUtf8(file.readAll())))
+	if (!doc.setContent(&file))
 	{
 		KMessageBox::sorry(
 			this,
@@ -245,7 +245,8 @@ WorkSheet::save(const QString& fN)
 		return (FALSE);
 	}
 	QTextStream s(&file);
-	s << doc.toString().utf8();
+	s.setEncoding(QTextStream::UnicodeUTF8);
+	s << doc;
 	file.close();
 
 	modified = FALSE;
