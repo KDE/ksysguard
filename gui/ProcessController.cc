@@ -78,7 +78,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 			pList, SLOT(setFilterMode(int)));
 
 	// Create the check box to pause the automatic list update.
-	xbPause = new QCheckBox("Pause", this, "xbPause");
+	xbPause = new QCheckBox(i18n("Pause"), this, "xbPause");
 	CHECK_PTR(xbPause);
 	xbPause->setMinimumSize(xbPause->sizeHint());
 	connect(xbPause, SIGNAL(toggled(bool)), this, SLOT(togglePause(bool)));
