@@ -1,3 +1,4 @@
+
 AUTOMAKE_OPTIONS = foreign
 
 bin_PROGRAMS = conttest
@@ -9,8 +10,5 @@ libccont_a_SOURCES = ccont.c dll.c pga.c sll.c
 
 conttest_SOURCES = conttest.c
 conttest_LDFLAGS = $(all_libraries) 
-conttest_LDADD = -lccont
+conttest_LDADD = libccont.a
 
-conttest$(EXEEXT): libccont.a
-
-CLEANFILES = *~ 
