@@ -54,7 +54,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	pList->installEventFilter(this);
 
 	// Create the check box to switch between tree view and list view.
-	xbTreeView = new QCheckBox("Tree", this, "xbTreeView");
+	xbTreeView = new QCheckBox(i18n("Tree"), this, "xbTreeView");
 	CHECK_PTR(xbTreeView);
 	xbTreeView->setMinimumSize(xbTreeView->sizeHint());
 	connect(xbTreeView, SIGNAL(toggled(bool)),
