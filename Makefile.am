@@ -62,11 +62,11 @@ kde_icon_DATA = ktop.xpm
 # if you have more of them, create a subdirectory with an extra Makefile 
 install-data-local: 
 	$(mkinstalldirs) $(APPSDIR)
-	$(INSTALL_DATA) $(srcdir)/ktop.kdelnk $(APPSDIR)
+	$(INSTALL_DATA) $(srcdir)/ktop.desktop $(APPSDIR)
 	$(mkinstalldirs) $(kde_minidir)
 	$(INSTALL_DATA) $(srcdir)/mini-ktop.xpm $(kde_minidir)/ktop.xpm
 
 # remove ALL you have installed in install-data-local or install-exec-local
 uninstall-local:
-	-rm -f $(APPSDIR)/ktop.kdelnk
+	-rm -f $(APPSDIR)/ktop.desktop
 	-rm -f $(kde_minidir)/mini-ktop.xpm
