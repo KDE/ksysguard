@@ -89,14 +89,11 @@
 /*=============================================================================
   #DEFINEs
  =============================================================================*/
-#define ktr           klocale->translate
 #ifndef __FreeBSD__
 // Actually it would be muy nifty if we could use getmntent for this :^)
 // BSD doesn't need this, so fail if something tries to use it..
 #define PROC_BASE     "/proc"
 #endif
-#define KDE_ICN_DIR   "/share/icons/mini"
-#define KTOP_ICN_DIR  "/share/apps/ktop/pics"
 #define INIT_PID      1
 #define NONE         -1
 
@@ -587,7 +584,7 @@ void TaskMan::TaskMan_initIconList()
     icons = new QList<IconListElem>;
     CHECK_PTR(icons);
     
-    sprintf(path,"%s",KApplication::kde_icondir().data());
+    sprintf(path,"%s/mini",KApplication::kde_icondir().data());
     #ifdef DEBUG_MODE
       printf("KTop debug : %s.\n", path);
     #endif
@@ -613,7 +610,7 @@ void TaskMan::TaskMan_initIconList()
 
     (void)closedir(dir);
 
-    sprintf(path,"%s%s",KApplication::kde_appsdir().data(), "/ktop/pics"); 
+    sprintf(path,"%s%s",KApplication::kde_datadir().data(), "/ktop/pics"); 
     #ifdef DEBUG_MODE
       printf("KTop debug : trying %s...\n", path);
     #endif
