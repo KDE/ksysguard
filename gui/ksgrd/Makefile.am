@@ -11,7 +11,6 @@ libksgrd_la_LIBADD = $(LIB_KDEUI)
 libksgrd_la_SOURCES = \
 	ColorPicker.cc \
 	SensorAgent.cc \
-	SensorDisplay.cc \
 	SensorManager.cc \
 	SensorShellAgent.cc \
 	SensorSocketAgent.cc \
@@ -21,9 +20,17 @@ libksgrd_la_SOURCES = \
 	TimerSettings.ui
 
 ksgrdincludedir = $(includedir)/ksgrd
-ksgrdinclude_HEADERS = SensorDisplay.h SensorClient.h SensorManager.h \
-	SensorAgent.h SensorShellAgent.h SensorSocketAgent.h \
-	StyleEngine.h ColorPicker.h
+ksgrdinclude_HEADERS = \
+	ColorPicker.h \
+	HostConnector.h \
+	SensorAgent.h \
+	SensorClient.h \
+	SensorManager.h \
+	SensorShellAgent.h \
+	SensorSocketAgent.h \
+	StyleEngine.h \
+	StyleSettings.h \
+	TimerSettings.h
 
 # just to make sure, automake makes them 
 libksgrd_la_METASOURCES = AUTO
