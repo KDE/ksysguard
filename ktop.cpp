@@ -108,10 +108,15 @@ TopLevel::TopLevel( QWidget *parent, const char *name, int sfolder )
     file->insertItem(i18n("&Quit"), MENU_ID_QUIT, -1);
     connect(file, SIGNAL(activated(int)), this, SLOT(menuHandler(int)));
 
-    help = new QPopupMenu();
-    help->insertItem(i18n("&Contents"), MENU_ID_HELP, -1);
-    help->insertItem(i18n("&About ktop..."), MENU_ID_ABOUT, -1);
-    connect(help, SIGNAL(activated(int)), this, SLOT(menuHandler(int)));
+    QString about;
+    about.sprintf(i18n(
+      "KDE Taskmanager Version %s\n\n"
+      "Copyright:\n"
+      "1996 A. Sanda <alex@darkstar.ping.at>\n"
+      "1997 Ralf Mueller <ralf@bj-ig.de>\n"
+      "1997-98 Bernd Johannes Wuebben  <wuebben@kde.org>\n"
+      "1998 Nicolas Leclercq <nicknet@planete.net>"), KTOP_VERSION);
+    help = kapp->getHelpMenu(TRUE, about);
 
     settings = new QPopupMenu();
     settings->insertItem(i18n("StartUp Preferences...")
@@ -186,22 +191,6 @@ void TopLevel::menuHandler(int id)
     case MENU_ID_QUIT:
       quitSlot();
       break;
-
-    case MENU_ID_HELP:
-      mykapp->invokeHTMLHelp("","");
-      break;
-
-    case MENU_ID_ABOUT:
-        QMessageBox::information(this,
-			       i18n("About Taskmanager"), 
-			      "KDE Taskmanager Version "KTOP_VERSION"\n\n"\
-			      "Copyright:\n"\
-			      "1996 A. Sanda <alex@darkstar.ping.at>\n"\
-			      "1997 Ralf Mueller <ralf@bj-ig.de>\n"\
-			      "1997-98 Bernd Johannes Wuebben  <wuebben@kde.org>\n"\
-			      "1998 Nicolas Leclercq <nicknet@planete.net>"
-			       );
-        break;
 
     case MENU_ID_PROCSETTINGS:
         taskman->invokeSettings();

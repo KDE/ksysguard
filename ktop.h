@@ -30,8 +30,8 @@ class TopLevel : public QWidget
 
 public:
 
-    enum {  MENU_ID_ABOUT = 100 , MENU_ID_PROCSETTINGS = 50, 
-	    MENU_ID_QUIT  = 20  , MENU_ID_HELP         = 30 
+    enum {  MENU_ID_PROCSETTINGS = 50, 
+	    MENU_ID_QUIT  = 20
          };
     
     TopLevel( QWidget *parent=0, const char *name=0, int sfolder=0);
