@@ -101,7 +101,7 @@ WorkSheet::load(const QString& fN)
 	{
 		KMessageBox::sorry(
 			this,
-			i18n("The file %1 does not contain valid XML").arg(fileName));
+			i18n("The file %1 does not contain valid XML.").arg(fileName));
 		return (false);
 	}
 	// Check for proper document type.
