@@ -214,10 +214,7 @@ LogFile::answerReceived(int id, const QString& answer)
 
 				for (QStringList::Iterator it = filterRules.begin(); it != filterRules.end(); it++) {
 					QRegExp *expr = new QRegExp((*it).latin1());
-					fprintf(stderr, "-%s-\n", lines[i].latin1());
-					fprintf(stderr, "(%d)...\n", expr->find(lines[i].latin1(), 0));
 					if (expr->find(lines[i].latin1(), 0) != -1) {
-						fprintf(stderr, "matched...\n");
 						KNotifyClient::event("pattern_match", QString("rule '%1' matched").arg((*it).latin1()));
 					}
 					delete expr;

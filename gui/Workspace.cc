@@ -307,6 +307,22 @@ Workspace::deleteWorkSheet()
 
 	if (current)
 	{
+		if (current->hasBeenModified())
+		{
+			if (!autoSave || current->getFileName().isEmpty())
+			{
+				int res = KMessageBox::warningYesNoCancel(
+					this,
+					QString(i18n("The worksheet '%1' contains unsaved data\n"
+								 "Do you want to save the worksheet?"))
+					.arg(tabLabel(current)));
+				if (res == KMessageBox::Yes)
+					saveWorkSheet(current);
+			}
+			else
+				saveWorkSheet(current);
+		}
+
 		removePage(current);
 		sheets.remove(current);
 
