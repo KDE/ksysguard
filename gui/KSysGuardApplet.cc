@@ -39,6 +39,7 @@
 
 #include "SensorManager.h"
 #include "FancyPlotter.h"
+#include "StyleEngine.h"
 #include "KSysGuardAppletSettings.h"
 #include "KSysGuardApplet.moc"
 
@@ -63,6 +64,9 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 	SensorMgr = new SensorManager();
 	CHECK_PTR(SensorMgr);
 
+	Style = new StyleEngine();
+	CHECK_PTR(Style);
+
 	dockCnt = 1;
 	docks = new QWidget*[dockCnt];
 	docks[0] = new QFrame(this);
@@ -83,6 +87,7 @@ KSysGuardApplet::~KSysGuardApplet()
 	save();
 
 	delete ksgas;
+	delete Style;
 	delete SensorMgr;
 }
 
