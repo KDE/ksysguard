@@ -688,17 +688,17 @@ void TaskMan::resizeEvent(QResizeEvent *ev)
     // processes list
     pList_box->setGeometry(5, 5, w - 10, h - 20);
     pList->setGeometry(10,25, w - 20, h - 75);
-    pList_cbRefresh->setGeometry(10, h - 45,140, 25);
-    pList_bRefresh->setGeometry(w - 180, h - 45, 80, 25);
-    pList_bKill->setGeometry(w - 90, h - 45, 80, 25);
+    pList_cbRefresh->setGeometry(10, h - 45, 180, 25);
+    pList_bRefresh->setGeometry(w - 220, h - 45, 100, 25);
+    pList_bKill->setGeometry(w - 110, h - 45, 100, 25);
     
     // processes tree
     pTree_box->setGeometry(5, 5, w - 10, h - 20);
     pTree->setGeometry(10, 30, w - 20, h - 90);
-    pTree_cbSort->setGeometry(10, h - 50,140, 25);
-    pTree_bRefresh->setGeometry(w - 270, h - 50, 80, 25);
-    pTree_bRoot->setGeometry(w - 180, h - 50, 80, 25);
-    pTree_bKill->setGeometry(w - 90, h - 50, 80, 25);
+    pTree_cbSort->setGeometry(10, h - 50, 140, 25);
+    pTree_bRefresh->setGeometry(w - 330, h - 50, 100, 25);
+    pTree_bRoot->setGeometry(w - 220, h - 50, 100, 25);
+    pTree_bKill->setGeometry(w - 110, h - 50, 100, 25);
  
     // performances page
 
