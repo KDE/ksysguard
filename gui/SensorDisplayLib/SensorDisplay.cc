@@ -49,7 +49,7 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name, const QString& t
 	sensors.setAutoDelete(true);
 
 	// default interval is 2 seconds.
-	timerInterval = 2000;
+	timerInterval = 2;
 	globalUpdateInterval = true;
 	modified = false;
 	showUnit = false;
@@ -123,7 +123,7 @@ SensorDisplay::setupTimer()
 			SLOT(timerToggled(bool)));
 
 	ts->useGlobalUpdate->setChecked(globalUpdateInterval);
-	ts->interval->setValue(timerInterval / 1000);
+	ts->interval->setValue(timerInterval);
 
     timerToggled( globalUpdateInterval );
 
@@ -299,8 +299,12 @@ SensorDisplay::internAddToDOM(QDomDocument& doc, QDomElement& element)
 
 	if (globalUpdateInterval)
 		element.setAttribute("globalUpdate", "1");
-	else
-		element.setAttribute("updateInterval", timerInterval / 1000);
+	else {
+		element.setAttribute("globalUpdate", "0");
+		element.setAttribute("updateInterval", timerInterval);
+  }
+
+  kdDebug() << "timerId==" << timerId << endl;
 
 	if (timerId == NONE)
 		element.setAttribute("pause", 1);
@@ -358,7 +362,7 @@ SensorDisplay::setUpdateInterval(uint interval)
 
 	if (timerActive)
 		timerOff();
-	timerInterval = interval * 1000;
+	timerInterval = interval;
 	if (timerActive)
 		timerOn();
 }
@@ -422,7 +426,7 @@ SensorDisplay::timerOn()
 {
 	if (timerId == NONE)
 	{
-		timerId = startTimer(timerInterval);
+		timerId = startTimer(timerInterval * 1000);
 	}
 }
 

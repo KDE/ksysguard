@@ -44,7 +44,7 @@ public:
 	FPSensorProperties() { }
 	FPSensorProperties(const QString& hn, const QString& n, const QString& t, const QString& d,
 					   const QColor& c)
-		: SensorProperties(hn, n, t, d), color(c) { }
+		: KSGRD::SensorProperties(hn, n, t, d), color(c) { }
 	~FPSensorProperties() { }
 
 	QColor color;

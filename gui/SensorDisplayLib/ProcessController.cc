@@ -129,10 +129,6 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	registerPlotterWidget(pList);
 
 	setMinimumSize(sizeHint());
-
-	/* If the process list is not visible there is no need to update
-	 * it. */
-	pauseOnHide = true;
 }
 
 void
