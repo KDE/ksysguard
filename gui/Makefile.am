@@ -16,7 +16,7 @@ ksysguard_SOURCES = \
 	FancyPlotter.cc SignalPlotter.cc \
 	MultiMeter.cc \
 	DancingBars.cc BarGraph.cc \
-	ProcessController.cc ProcessList.cc ProcessMenu.cc \
+	ProcessController.cc ProcessList.cc \
 	SensorBrowser.cc  \
 	SensorManager.cc SensorAgent.cc \
 	WorkSheet.cc Workspace.cc \

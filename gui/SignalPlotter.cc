@@ -24,6 +24,7 @@
 
 #include <string.h>
 #include <assert.h>
+#include <math.h>
 
 #include <qpainter.h>
 #include <qpixmap.h>
@@ -224,46 +225,17 @@ SignalPlotter::paintEvent(QPaintEvent*)
 
 	p.setClipRect(1, 1, w - 2, h - 2);
 	double range = maxValue - minValue;
-	/* We enforce a minimum range of 1.0 to avoid division by 0 errors. */
-	if (range < 1.0)
+	/* If the range too small we will force it to 1.0 since it looks
+	 * a lot nicer. */
+	if (range < 0.000001)
 		range = 1.0;
 
 	if (autoRange)
 	{
-		/* Massage the range so that the grid shows some nice values. The
-		 * lowest printed value should only have 2 non-zero digits. */
+		// Massage the range so that the grid shows some nice values.
 		double step = range / 5.0;
-		if (step >= 100)
-		{
-			int shift = 0;
-			while (step >= 100)
-			{
-				shift++;
-				step /= 10;
-			}
-			if (((double) ((int) step)) != step)
-				step = ((int) step) + 1.0;
-			else
-				step = (int) step;
-			while (--shift >= 0)
-				step *= 10;
-		}
-		else
-		{
-			int shift = 0;
-			while (step < 10)
-			{
-				shift++;
-				step *= 10;
-			}
-			if (((double) ((int) step)) != step)
-				step = ((int) step) + 1.0;
-			else
-				step = (int) step;
-			while (--shift >= 0)
-				step /= 10;
-		}
-		range = 5.0 * step;
+		double dim = pow(10, floor(log10(step)));
+		range = dim * ceil(step / dim) * 5;
 	}
 	double maxVal = minValue + range;
 
@@ -320,7 +292,7 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	{
 		p.setPen(QColor("green"));
 		for (int x = 30; x < (w - 2); x += 30)
-			p.drawLine(x, top, x, h + top - 2);
+			p.drawLine(w - x, top, w - x, h + top - 2);
 	}
 
 	/* Plot stacked values */

@@ -63,7 +63,7 @@ public:
 
 	void setSensorOk(bool ok)
 	{
-//		if (ok != sensorOk)
+		if (ok != sensorOk)
 		{
 			sensorOk = ok;
 			update();
