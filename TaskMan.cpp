@@ -65,7 +65,7 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
 	pSig = new QPopupMenu(NULL,"_psig");
 	CHECK_PTR(pSig);
 	OSProcessList pl;
-	if (pl.hasPriority())
+	if (pl.hasNiceLevel())
 	{
 		pSig->insertItem(i18n("Renice Task..."),MENU_ID_RENICE);
 		pSig->insertSeparator();
@@ -275,7 +275,7 @@ TaskMan::reniceProcess(int pid)
 	OSProcess ps(pid);
 
 	// get current priority of the process with pid
-	int currentPriority = ps.getPriority();
+	int currentNiceLevel = ps.getNiceLevel();
 	if (!ps.ok()) 
 	{
 		QMessageBox::warning(this, i18n("ktop"),
@@ -287,14 +287,14 @@ TaskMan::reniceProcess(int pid)
 	}
 
 	// create a dialog widget
-	ReniceDlg dialog(this, "nice", currentPriority);
+	ReniceDlg dialog(this, "nice", currentNiceLevel);
 
-	// request new priority value with dialog box and set the new priority
-	int newPriority;
-	if ((newPriority = dialog.exec()) <= 20 && (newPriority >= -20) &&
-		(newPriority != currentPriority)) 
+	// request new nice value with dialog box and set the new nice level
+	int newNiceLevel;
+	if ((newNiceLevel = dialog.exec()) <= 20 && (newNiceLevel >= -20) &&
+		(newNiceLevel != currentNiceLevel)) 
 	{
-		if (!ps.setPriority(newPriority))
+		if (!ps.setNiceLevel(newNiceLevel))
 		{
 			QMessageBox::warning(this, i18n("ktop"),
 								 i18n("Renice error...\n"

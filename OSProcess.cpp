@@ -52,20 +52,16 @@
 #include "OSProcess.h"
 #include "TimeStampList.h"
 
-#ifdef _PLATFORM_A
-
-// nothing here yet
-
-#elif linux
+#ifdef linux
 
 // Code for Linux 2.x
 
-OSProcess::OSProcess(const char* pidStr, TimeStampList* lastTStamps,
+OSProcess::OSProcess(const void* info, TimeStampList* lastTStamps,
 					 TimeStampList* newTStamps)
 {
 	error = false;
 
-	read(pidStr);
+	read((const char*) info);
 
 	TimeStamp* ts = new TimeStamp(pid, userTime, sysTime);
 	newTStamps->inSort(ts);
@@ -138,7 +134,7 @@ OSProcess::read(const char* pidStr)
 	fscanf(fd, "%d %*s %c %d %d %*d %d %*d %*u %*u %*u %*u %*u %d %d"
 		   "%*d %*d %*d %d %*u %*u %*d %u %u",
 		   (int*) &pid, &status, (int*) &ppid, (int*) &gid, &ttyNo,
-		   &userTime, &sysTime, &priority, &vm_size, &vm_rss);
+		   &userTime, &sysTime, &niceLevel, &vm_size, &vm_rss);
 	fclose(fd);
 
 	switch (status)
@@ -268,12 +264,12 @@ OSProcess::read(const char* pidStr)
  */
 
 bool
-OSProcess::setPriority(int newPriority)
+OSProcess::setNiceLevel(int newNiceLevel)
 {
-	if (setpriority(PRIO_PROCESS, pid, newPriority) == -1)
+	if (setpriority(PRIO_PROCESS, pid, newNiceLevel) == -1)
 	{
 		error = true;
-		errMessage.sprintf(i18n("Could not set new priority for process %d"),
+		errMessage.sprintf(i18n("Could not set new nice level for process %d"),
 						   pid);
 		return (false);
 	}

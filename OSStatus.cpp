@@ -58,7 +58,7 @@
  * ...
  * }
  * #else
- * // Code for Linux 2.x
+ * // generic code
  * OSStatus::OSStatus()
  * {
  * ...
@@ -77,11 +77,7 @@
 
 #include "OSStatus.h"
 
-#ifdef _SOME_PLATFORM_
-
-// nothing here yet
-
-#elif linux
+#ifdef linux
 
 // Code for Linux 2.x
 

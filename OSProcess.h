@@ -59,7 +59,7 @@ public:
 	 * values can only be determined with the help of a list that contains
 	 * performance information of a previous measurement.
 	 */
-	OSProcess(const char* pidStr, TimeStampList* lastTStamps,
+	OSProcess(const void* info, TimeStampList* lastTStamps,
 			  TimeStampList* newTStamps);
 	/**
 	 * This constructor can be used if no CPU load values are needed.
@@ -99,6 +99,10 @@ public:
 	int getPriority(void) const
 	{
 		return (priority);
+	}
+	int getNiceLevel(void) const
+	{
+		return (niceLevel);
 	}
 	unsigned int getVm_size(void) const
 	{
@@ -140,7 +144,7 @@ public:
 		return (errMessage);
 	}
 
-	bool setPriority(int newPriority);
+	bool setNiceLevel(int newNiceLevel);
 
 	bool sendSignal(int sig);
 
@@ -175,8 +179,13 @@ private:
 	int ttyNo;
 
 	/*
-	 * The scheduling priority. The range should be -20 to 20. I'm not sure
+	 * The nice level. The range should be -20 to 20. I'm not sure
 	 * whether this is true for all platforms.
+	 */
+	int niceLevel;
+
+	/*
+	 * The scheduling priority.
 	 */
 	int priority;
 

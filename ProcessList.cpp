@@ -81,7 +81,7 @@ static TABCOLUMN TabCol[] =
 	  OSProcessList::SORTBY_CPU },
 	{ "Time", 0, "100:00++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_TIME },
-	{ "Prior.", 0, "-20+", true, false, KTabListBox::TextColumn,
+	{ "Nice", 0, "-20+", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_PRIORITY },
 	{ "Status", 0, "Status+++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_STATUS },
@@ -336,9 +336,9 @@ ProcessList::load()
 			}
 			tc++;
 
-			// process priority
+			// process nice level
 			if (tc->visible && tc->supported)
-				line += s.sprintf("%d;", p->getPriority());
+				line += s.sprintf("%d;", p->getNiceLevel());
 			tc++;
 
 			// process status
@@ -450,7 +450,7 @@ ProcessList::initTabCol(void)
 	SETTABCOL(i18n("User ID"), pl.hasUid());
 	SETTABCOL(i18n("CPU"), pl.hasUserLoad && pl.hasSysLoad());
 	SETTABCOL(i18n("Time"), pl.hasUserTime() && pl.hasSysTime());
-	SETTABCOL(i18n("Prior."), pl.hasPriority());
+	SETTABCOL(i18n("Nice"), pl.hasNiceLevel());
 	SETTABCOL(i18n("Status"), pl.hasStatus());
 	SETTABCOL(i18n("Memory"), pl.hasVmSize());
 	SETTABCOL(i18n("Resident"), pl.hasVmRss());
@@ -476,7 +476,7 @@ ProcessList::initTabCol(void)
 		{
 			setColumn(col++, TabCol[cnt].trHeader,
 					  max(fm.width(TabCol[cnt].placeholder),
-						  fm.width(TabCol[cnt].trHeader) + 6),
+						  fm.width(TabCol[cnt].trHeader) + 7),
 					  TabCol[cnt].type);
 		}
 }

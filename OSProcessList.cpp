@@ -51,11 +51,7 @@
 
 #include "OSProcessList.h"
 
-#ifdef _PLATFORM_A
-
-// nothing here yet
-
-#elif linux
+#ifdef linux
 
 // Code for Linux 2.x
 
@@ -121,7 +117,7 @@ OSProcessList::update(void)
 				if (ps)
 					errMessage = ps->getErrMessage();
 				else
-					errMessage = i18n("Cannot read status of processes"
+					errMessage = i18n("Cannot read status of processes\n"
 									  "from /proc/... directories!\n");
 				delete ps;
 				return (false);
@@ -184,6 +180,12 @@ OSProcessList::hasStatus(void) const
 
 bool
 OSProcessList::hasPriority(void) const
+{
+	return (false);
+}
+
+bool
+OSProcessList::hasNiceLevel(void) const
 {
 	return (true);
 }
@@ -398,6 +400,12 @@ OSProcessList::hasStatus(void) const
 
 bool
 OSProcessList::hasPriority(void) const
+{
+	return (false);
+}
+
+bool
+OSProcessList::hasNiceLevel(void) const
 {
 	return (false);
 }

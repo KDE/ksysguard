@@ -41,6 +41,12 @@ von anderen Leuten an KTop gearbeitet:
 <item> Nicolas Leclercq  &lt;nicknet@planete.net&gt;
 </itemize>
 
+Die Portierung auf andere Platformen als Linux wurde durchgeführt von:
+
+<itemize>
+<item> FreeBSD: Hans Petter Bieker &lt;zerium@traad.lavvu.no&gt;
+</itemize>
+
 <sect1>Lizenz und Gewährleistung <p>
 <tscreen><verb>
 
@@ -81,6 +87,11 @@ Damit KTop funktioniert, ist es notwendig den
 Linux-Kernel mit Unterstützung des /proc-Filesystems zu
 kompilieren. Dies ist meist die Default-Einstellung und bei den
 Linux-Distributionen bereits vorhanden.
+
+<item> FreeBSD <p>
+
+Das KTop Programm muss der Gruppe kmem angehören und das setgid Bit
+gesetzt haben.
 
 </itemize>
 
@@ -124,9 +135,38 @@ Einstellungsdialog ist über das Menü des Prozeßmanagers erreichbar.
 Die Prozeßlistenseite enthält eine Liste mit den Prozessen, die auf
 Ihrem Rechner laufen. Die Liste kann nach den einzelnen Spalten
 sortiert werden. Klicken Sie einfach auf den Kopf der jeweiligen
-Spalte um die Tabelle nach dieser Spalte zu sortieren. Unterhalb der
-Tabelle befinden sich vier Knöpfe, die nun von links nach rechts
-beschrieben werden.
+Spalte um die Tabelle nach dieser Spalte zu sortieren. 
+
+<itemize>
+
+<item> <bf/PID/ Die Prozeß ID. Eine eindeutige Nummer für jeden Prozeß.
+
+<item> <bf/Name/ Der Name der Datei mit dem der Prozeß gestarted wurde.
+
+<item> <bf/User ID/ Der Name des Benutzers der den Prozeß gestarted hat.
+
+<item> <bf/Last/ Die Prozessorauslastung dieses Prozesses.
+
+<item> <bf/Zeit/ Die gesammte vom Prozeß beanspruchte Rechenleistung.
+
+<item> <bf/Nice/ Die Zuteilungspriorität für den Prozessor.
+
+<item> <bf/Status/ Der Prozeßstatus.
+
+<item> <bf/Speicher/ Die Speichermenge (in kBytes) die der Prozeß
+benötigt. Dies beinhaltet auch Speicher der mit anderen Prozessen
+geteilt wird.
+
+<item> <bf/Resident/ Die Speichermenge (in kBytes) die der Prozeß im
+physikalischen Speicher (RAM) belegt.
+
+<item> <bf/Geteilt/ Die Speichermenge (in kBytes) die der Prozeß mit
+anderen Prozessen teilt.
+
+</itemize>
+
+Unterhalb der Tabelle befinden sich vier Knöpfe, die nun von links
+nach rechts beschrieben werden.
 
 <sect2>Die Erneuerungsrate<p>
 

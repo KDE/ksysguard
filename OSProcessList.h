@@ -98,6 +98,7 @@ public:
 	bool hasSysLoad(void) const;
 	bool hasStatus(void) const;
 	bool hasPriority(void) const;
+	bool hasNiceLevel(void) const;
 	bool hasVmSize(void) const;
 	bool hasVmRss(void) const;
 	bool hasVmLib(void) const;
