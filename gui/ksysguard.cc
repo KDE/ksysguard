@@ -460,7 +460,10 @@ TopLevel::answerReceived(int id, const QString& answer)
 	case 0:
 		// yes, I know there is never 1 process, but that's the way
 		// singular vs. plural works :/
-		s = i18n("1 Process", "%n Processes", answer);
+		//
+		// To use pluralForms, though, you need to convert to
+		// an integer, not use the QString straight.
+		s = i18n("1 Process", "%n Processes", answer.toInt());
 		statusbar->changeItem(s, 0);
 		break;
 	case 1:
