@@ -33,6 +33,7 @@
 #include "stat.h"
 #include "netdev.h"
 #include "apm.h"
+#include "cpuinfo.h"
 #include "loadavg.h"
 
 /* Special version of perror for use in signal handler functions. */
@@ -62,6 +63,7 @@ signalHandler(int sig)
 		updateStat();
 		updateNetDev();
 		updateApm();
+		updateCpuInfo();
 		updateLoadAvg();
 		DispatcherReady = 1;
 		break;

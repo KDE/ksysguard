@@ -68,7 +68,7 @@ typedef struct
 	gid_t gid;
 
 	/* a character description of the process status */
-    char status;
+    char status[16];
 
 	/* the number of the tty the process owns */
 	int ttyNo;
@@ -183,6 +183,7 @@ updateProcess(int pid)
 	char buf[BUFSIZE];
 	int userTime, sysTime;
 	const char* uName;
+	char status;
 
 	if ((ps = findProcessInList(pid)) == 0)
 	{
@@ -238,12 +239,21 @@ updateProcess(int pid)
 
 	if (fscanf(fd, "%*d %*s %c %d %d %*d %d %*d %*u %*u %*u %*u %*u %d %d"
 			   "%*d %*d %*d %d %*u %*u %*d %u %u",
-			   &ps->status, (int*) &ps->ppid, (int*) &ps->gid, &ps->ttyNo,
+			   &status, (int*) &ps->ppid, (int*) &ps->gid, &ps->ttyNo,
 			   &userTime, &sysTime, &ps->niceLevel, &ps->vmSize,
 			   &ps->vmRss) != 9)
 		return (-1);
 	if (fclose(fd))
 		return (-1);
+
+	if (status == 'S')
+		strcpy(ps->status, "sleep");
+	else if (status == 'R')
+		strcpy(ps->status, "run");
+	else if (status == 'Z')
+		strcpy(ps->status, "zombie");
+	else
+		sprintf(ps->status, "Unknown: %c", status);
 
 	ps->vmRss = (ps->vmRss + 3) * PAGE_SIZE;
 
@@ -417,7 +427,7 @@ printProcessListInfo(const char* cmd)
 {
 	printf("Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize"
 		   "\tVmRss\tVmLib\tLogin\tCommand\n");
-	printf("s\td\td\td\td\ts\tf\tf\td\td\td\td\ts\ts\n");
+	printf("s\td\td\td\td\tS\tf\tf\td\td\td\td\ts\ts\n");
 }
 
 void
@@ -432,7 +442,7 @@ printProcessList(const char* cmd)
 	{
 		ProcessInfo* ps = get_ctnr(ProcessList, i);
 
-		printf("%s\t%ld\t%ld\t%ld\t%ld\t%c\t%.2f\t%.2f\t%d\t%d\t%d\t%d"
+		printf("%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d\t%d"
 			   "\t%s\t%s\n",
 			   ps->name, (long) ps->pid, (long) ps->ppid,
 			   (long) ps->uid, (long) ps->gid, ps->status,

@@ -328,7 +328,7 @@ initStat(void)
 		}
 		else if (strncmp("cpu", tag, 3) == 0)
 		{
-			char cmdName[16];
+			char cmdName[24];
 			/* Load for each SMP CPU */
 			int id;
 
