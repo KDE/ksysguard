@@ -44,7 +44,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
   QWidget *page = new QWidget( this );
   setMainWidget( page );
 
-  QVBoxLayout *topLayout = new QVBoxLayout( page, marginHint(), spacingHint() );
+  QVBoxLayout *topLayout = new QVBoxLayout( page, 0, spacingHint() );
 
   QGroupBox *group = new QGroupBox( 0, Qt::Vertical, i18n( "Title" ), page );
   group->layout()->setMargin( marginHint() );

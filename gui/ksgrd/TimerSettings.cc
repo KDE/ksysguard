@@ -39,7 +39,7 @@ TimerSettings::TimerSettings( QWidget *parent, const char *name )
 {
   QFrame *page = plainPage();
 
-  QGridLayout *layout = new QGridLayout( page, 2, 2, marginHint(), spacingHint() );
+  QGridLayout *layout = new QGridLayout( page, 2, 2, 0, spacingHint() );
 
   mUseGlobalUpdate = new QCheckBox( i18n( "Use update interval of worksheet" ), page );
   layout->addMultiCellWidget( mUseGlobalUpdate, 0, 0, 0, 1 );

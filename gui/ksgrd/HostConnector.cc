@@ -39,7 +39,7 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
                  parent, name, true, true )
 {
   QFrame *page = plainPage();
-  QGridLayout *layout = new QGridLayout( page, 2, 2, marginHint(), spacingHint() );
+  QGridLayout *layout = new QGridLayout( page, 2, 2, 0, spacingHint() );
   layout->setColStretch( 1, 1 );
 
   QLabel *label = new QLabel( i18n( "Host:" ), page );
@@ -60,7 +60,8 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
 
   QButtonGroup *group = new QButtonGroup( 0, Qt::Vertical,
                                           i18n( "Connection Type" ), page );
-  QGridLayout *groupLayout = new QGridLayout( group->layout(), 4, 4, spacingHint() );
+  QGridLayout *groupLayout = new QGridLayout( group->layout(), 4, 4, 
+      spacingHint() );
   groupLayout->setAlignment( Qt::AlignTop );
 
   mUseSsh = new QRadioButton( i18n( "ssh" ), group );

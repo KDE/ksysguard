@@ -43,7 +43,7 @@ StyleSettings::StyleSettings( QWidget *parent, const char *name )
                  Cancel, Ok, parent, name, true, true )
 {
   QFrame *page = addPage( i18n( "Display Style" ) );
-  QGridLayout *layout = new QGridLayout( page, 5, 2, marginHint(), spacingHint() );
+  QGridLayout *layout = new QGridLayout( page, 6, 2, 0, spacingHint() );
 
   QLabel *label = new QLabel( i18n( "First foreground color:" ), page );
   layout->addWidget( label, 0, 0 );
@@ -81,9 +81,10 @@ StyleSettings::StyleSettings( QWidget *parent, const char *name )
   layout->addWidget( mFontSize, 4, 1 );
   label->setBuddy( mFontSize );
 
+  layout->setRowStretch( 5, 1 );
 
   page = addPage( i18n( "Sensor Colors" ) );
-  layout = new QGridLayout( page, 1, 2, marginHint(), spacingHint() );
+  layout = new QGridLayout( page, 1, 2, 0, spacingHint() );
 
   mColorListBox = new QListBox( page );
   layout->addWidget( mColorListBox, 0, 0 );
