@@ -1,4 +1,4 @@
-CFLAGS = -Wall $(CONFIGFLAGS)
+AM_CFLAGS = -Wall $(CONFIGFLAGS)
 
 INCLUDES = -DKSYSGUARDDRCFILE="\"$(KSYSGUARDDRCFILE)\"" -I$(srcdir)/../../CContLib -I$(srcdir)/..
 

@@ -5,4 +5,4 @@ include_HEADERS = ccont.h
 
 libccont_a_SOURCES = ccont.c
 
-CFLAGS = -ggdb
+AM_CFLAGS = -ggdb
