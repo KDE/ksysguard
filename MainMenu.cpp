@@ -31,6 +31,7 @@
 #include <kapp.h>
 
 #include "version.h"
+#include <khelpmenu.h>
 #include <klocale.h>
 #include <kstdaccel.h>
 #include "MainMenu.moc"
@@ -54,15 +55,21 @@ MainMenu::MainMenu(QWidget* parent, const char* name) :
 
 	// 'Help' submenu
 	QString about;
-	about = i18n("KDE Task Manager (KTop) Version %1\n\n"
-					   "Copyright:\n"
-					   "1996 : A. Sanda <alex@darkstar.ping.at>\n"
-					   "1997 : Ralf Mueller <ralf@bj-ig.de>\n"
-					   "1997-98 : Bernd Johannes Wuebben <wuebben@kde.org>\n"
-					   "1998 : Nicolas Leclercq <nicknet@planete.net>\n"
-					   "1999 : Chris Schlaeger <cs@kde.org>\n")
-				  .arg(KTOP_VERSION);
-	help = Kapp->helpMenu(true, about);
+	about = i18n(""
+	  "KDE Task Manager (KTop) Version %1\n\n"
+	   "Copyright:\n"
+	   "1996 : A. Sanda <alex@darkstar.ping.at>\n"
+	   "1997 : Ralf Mueller <ralf@bj-ig.de>\n"
+	   "1997-98 : Bernd Johannes Wuebben <wuebben@kde.org>\n"
+	   "1998 : Nicolas Leclercq <nicknet@planete.net>\n"
+	   "1999 : Chris Schlaeger <cs@kde.org>\n")
+	  .arg(KTOP_VERSION);
+
+#warning We have a memory leak here. This object must be removed in the 
+#warning destructor. Espen Sand
+  
+	KHelpMenu *mHelpMenu = new KHelpMenu( this, about );
+	help = mHelpMenu->menu();
 
 	// 'Refresh Rate' submenu
 	refresh = new QPopupMenu();
