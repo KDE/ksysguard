@@ -50,7 +50,6 @@
 #include <time.h>
 
 #include <kconfig.h>
-#include <klocale.h>
 #include <kapp.h>
 
 #include "settings.moc"

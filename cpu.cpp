@@ -45,18 +45,22 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <time.h>
-#ifdef __FreeBSD__
-#include <machine/param.h>
+
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+
 #include <limits.h>
-#else
+
+#ifdef linux
 #include <asm/param.h>
 #endif
+
 #include <sys/mman.h>
 
 #include "settings.h"
 #include "cpu.moc"
 #include "kconfig.h"
-#include "klocale.h"
 
 /*=============================================================================
   GLOBALs

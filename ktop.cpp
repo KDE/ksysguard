@@ -57,7 +57,6 @@
 
 #include <kconfig.h>
 #include <kapp.h>
-#include <klocale.h>
 
 #include "settings.h"
 #include "cpu.h"

@@ -75,7 +75,6 @@
 
 #include <kconfig.h>
 #include <kapp.h>
-#include <klocale.h>
 #include <kiconloader.h>
 #include <ktablistbox.h>
 
