@@ -81,7 +81,7 @@
 
 // nothing here yet
 
-#else
+#elif linux
 
 // Code for Linux 2.x
 
@@ -267,4 +267,44 @@ OSStatus::getSwapInfo(int& stotal, int& sfree)
 	return (true);
 }
 
+#else
+
+OSStatus::OSStatus()
+{
+	error = true;
+	errMessage = i18n("Your system is not currently supported.\n"
+			  "Sorry");
+	return;
+}
+
+OSStatus::~OSStatus ()
+{
+}
+
+bool
+OSStatus::getCpuLoad(int &, int &, int &, int &)
+{
+	error = true;
+	errMessage = i18n("Your system is not currently supported.\n"
+			  "Sorry");
+	return false;
+}
+
+bool
+OSStatus::getMemoryInfo(int &, int &, int &, int &, int &)
+{
+	error = true;
+	errMessage = i18n("Your system is not currently supported.\n"
+			  "Sorry");
+	return false;
+}
+
+bool
+OSStatus::getSwapInfo(int &, int &)
+{
+	error = true;
+	errMessage = i18n("Your system is not currently supported.\n"
+			  "Sorry");
+	return false;
+}
 #endif
