@@ -48,17 +48,17 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 				   const QString& title, double, double, bool nf)
 	: KSGRD::SensorDisplay(parent, name, title)
 {
-	showUnit = true;
+	setShowUnit( true );
 	lowerLimit = upperLimit = 0;
 	lowerLimitActive = upperLimitActive = false;
-	noFrame = nf;
+	setNoFrame( nf );
 
 	normalDigitColor = KSGRD::Style->firstForegroundColor();
 	alarmDigitColor = KSGRD::Style->alarmColor();
-	if (noFrame)
+	if (noFrame())
 		lcd = new QLCDNumber(this, "meterLCD");
 	else
-		lcd = new QLCDNumber(frame, "meterLCD");
+		lcd = new QLCDNumber(frame(), "meterLCD");
 	Q_CHECK_PTR(lcd);
 	lcd->setSegmentStyle(QLCDNumber::Filled);
 	setDigitColor(KSGRD::Style->backgroundColor());
@@ -70,7 +70,7 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 	 * SensorDisplay::eventFilter. */
 	lcd->installEventFilter(this);
 
-	registerPlotterWidget(lcd);
+	setPlotterWidget(lcd);
 
 	setMinimumSize(16, 16);
 	setModified(false);
@@ -112,7 +112,7 @@ MultiMeter::answerReceived(int id, const QString& answer)
 		double val = answer.toDouble();
 		int digits = (int) log10(val) + 1;
 
-		if (noFrame)
+		if (noFrame())
 			lcd->setNumDigits(2);
 		else
 		{
@@ -139,30 +139,30 @@ MultiMeter::answerReceived(int id, const QString& answer)
 void
 MultiMeter::resizeEvent(QResizeEvent*)
 {
-	if (noFrame)
+	if (noFrame())
 		lcd->setGeometry(0, 0, width() - 1, height() - 1);
 	else
-		frame->setGeometry(0, 0, width(), height());
+		frame()->setGeometry(0, 0, width(), height());
 }
 
 bool
-MultiMeter::createFromDOM(QDomElement& element)
+MultiMeter::restoreSettings(QDomElement& element)
 {
 	lowerLimitActive = element.attribute("lowerLimitActive").toInt();
 	lowerLimit = element.attribute("lowerLimit").toLong();
 	upperLimitActive = element.attribute("upperLimitActive").toInt();
 	upperLimit = element.attribute("upperLimit").toLong();
 
-	normalDigitColor = restoreColorFromDOM(element, "normalDigitColor",
+	normalDigitColor = restoreColor(element, "normalDigitColor",
 						KSGRD::Style->firstForegroundColor());
-	alarmDigitColor = restoreColorFromDOM(element, "alarmDigitColor",
+	alarmDigitColor = restoreColor(element, "alarmDigitColor",
 						KSGRD::Style->alarmColor());
-	setBackgroundColor(restoreColorFromDOM(element, "backgroundColor",
+	setBackgroundColor(restoreColor(element, "backgroundColor",
 						KSGRD::Style->backgroundColor()));
 
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "integer" : element.attribute("sensorType")), "");
 
-	internCreateFromDOM(element);
+	SensorDisplay::restoreSettings(element);
 
 	setModified(false);
 
@@ -170,22 +170,22 @@ MultiMeter::createFromDOM(QDomElement& element)
 }
 
 bool
-MultiMeter::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
+MultiMeter::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 {
-	element.setAttribute("hostName", sensors.at(0)->hostName);
-	element.setAttribute("sensorName", sensors.at(0)->name);
-	element.setAttribute("sensorType", sensors.at(0)->type);
-	element.setAttribute("showUnit", (int) showUnit);
+	element.setAttribute("hostName", sensors().at(0)->hostName());
+	element.setAttribute("sensorName", sensors().at(0)->name());
+	element.setAttribute("sensorType", sensors().at(0)->type());
+	element.setAttribute("showUnit", showUnit());
 	element.setAttribute("lowerLimitActive", (int) lowerLimitActive);
 	element.setAttribute("lowerLimit", (int) lowerLimit);
 	element.setAttribute("upperLimitActive", (int) upperLimitActive);
 	element.setAttribute("upperLimit", (int) upperLimit);
 
-	addColorToDOM(element, "normalDigitColor", normalDigitColor);
-	addColorToDOM(element, "alarmDigitColor", alarmDigitColor);
-	addColorToDOM(element, "backgroundColor", lcd->backgroundColor());
+	saveColor(element, "normalDigitColor", normalDigitColor);
+	saveColor(element, "alarmDigitColor", alarmDigitColor);
+	saveColor(element, "backgroundColor", lcd->backgroundColor());
 
-	internAddToDOM(doc, element);
+	SensorDisplay::saveSettings(doc, element);
 
 	if (save)
 		setModified(false);
@@ -194,13 +194,13 @@ MultiMeter::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 }
 
 void
-MultiMeter::settings()
+MultiMeter::configureSettings()
 {
 	mms = new MultiMeterSettings(this, "MultiMeterSettings", true);
 	Q_CHECK_PTR(mms);
-	mms->title->setText(getTitle());
+	mms->title->setText(title());
 	mms->title->setFocus();
-	mms->showUnit->setChecked(showUnit);
+	mms->showUnit->setChecked(showUnit());
 	mms->lowerLimitActive->setChecked(lowerLimitActive);
 	mms->lowerLimit->setText(QString("%1").arg(lowerLimit));
 	mms->lowerLimit->setValidator(new KFloatValidator(mms->lowerLimit));
@@ -223,7 +223,7 @@ MultiMeter::settings()
 void
 MultiMeter::applySettings()
 {
-	showUnit = mms->showUnit->isChecked();
+	setShowUnit( mms->showUnit->isChecked() );
 	setTitle(mms->title->text());
 	lowerLimitActive = mms->lowerLimitActive->isChecked();
 	lowerLimit = mms->lowerLimit->text().toDouble();

@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-
-    Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-
+   
+    Copyright (c) 2003 Tobias Koenig <tokoe@kde.org>
+    
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -22,35 +22,28 @@
     $Id$
 */
 
-#ifndef KSG_SIGNALPLOTTER_H
-#define KSG_SIGNALPLOTTER_H
+#ifndef FANCYPLOTTERSETTINGS_H
+#define FANCYPLOTTERSETTINGS_H
 
-#include <qptrlist.h>
-#include <qstring.h>
-#include <qvaluelist.h>
-#include <qwidget.h>
+#include <kdialogbase.h>
 
-#define GRAPH_POLYGON     0
-#define	GRAPH_ORIGINAL    1
+class KColorButton;
+class KIntNumInput;
+class KLineEdit;
+class KListView;
 
-class QColor;
+class QCheckBox;
+class QListViewItem;
+class QPushButton;
+class QRadioButton;
 
-class SignalPlotter : public QWidget
+class FancyPlotterSettings : public KDialogBase
 {
   Q_OBJECT
 
   public:
-    SignalPlotter( QWidget *parent = 0, const char *name = 0 );
-    ~SignalPlotter();
-
-    bool addBeam( const QColor &color );
-    void addSample( const QValueList<double> &samples );
-
-    void removeBeam( uint pos );
-
-    void changeRange( int beam, double min, double max );
-
-    QValueList<QColor> &beamColors();
+    FancyPlotterSettings( QWidget* parent = 0, const char* name = 0 );
+    ~FancyPlotterSettings();
 
     void setTitle( const QString &title );
     QString title() const;
@@ -64,8 +57,8 @@ class SignalPlotter : public QWidget
     void setMaxValue( double max );
     double maxValue() const;
 
-    void setGraphStyle( uint style );
-    uint graphStyle() const;
+    void setUsePolygonStyle( bool value );
+    bool usePolygonStyle() const;
 
     void setHorizontalScale( int scale );
     int horizontalScale() const;
@@ -103,40 +96,42 @@ class SignalPlotter : public QWidget
     void setBackgroundColor( const QColor &color );
     QColor backgroundColor() const;
 
-  protected:
-    virtual void resizeEvent( QResizeEvent* );
-    virtual void paintEvent( QPaintEvent* );
+    void setSensors( const QValueList< QStringList > &list );
+    QValueList< QStringList > sensors() const;
+
+  private slots:
+    void editSensor();
+    void removeSensor();
+    void moveUpSensor();
+    void moveDownSensor();
+    void selectionChanged( QListViewItem* );
 
   private:
-    double mMinValue;
-    double mMaxValue;
-    bool mUseAutoRange;
 
-    uint mGraphStyle;
+    KColorButton *mVerticalLinesColor;
+    KColorButton *mHorizontalLinesColor;
+    KColorButton *mBackgroundColor;
+    KLineEdit *mMinValue;
+    KLineEdit *mMaxValue;
+    KLineEdit *mTitle;
+    KIntNumInput *mHorizontalScale;
+    KIntNumInput *mVerticalLinesDistance;
+    KIntNumInput *mHorizontalLinesCount;
+    KIntNumInput *mFontSize;
+    KListView *mSensorView;
 
-    bool mShowVerticalLines;
-    QColor mVerticalLinesColor;
-    uint mVerticalLinesDistance;
-    bool mVerticalLinesScroll;
-    uint mVerticalLinesOffset;
-    uint mHorizontalScale;
-
-    bool mShowHorizontalLines;
-    QColor mHorizontalLinesColor;
-    uint mHorizontalLinesCount;
-
-    bool mShowLabels;
-    bool mShowTopBar;
-    uint mFontSize;
-
-    QColor mBackgroundColor;
-
-    QPtrList<double> mBeamData;
-    QValueList<QColor> mBeamColor;
-
-    int mSamples;
-
-    QString mTitle;
+    QCheckBox *mShowVerticalLines;
+    QCheckBox *mShowHorizontalLines;
+    QCheckBox *mVerticalLinesScroll;
+    QCheckBox *mUseAutoRange;
+    QCheckBox *mShowLabels;
+    QCheckBox *mShowTopBar;
+    QPushButton *mEditButton;
+    QPushButton *mRemoveButton;
+    QPushButton *mMoveUpButton;
+    QPushButton *mMoveDownButton;
+    QRadioButton *mUsePolygonStyle;
+    QRadioButton *mUseOriginalStyle;
 };
 
 #endif

@@ -166,7 +166,7 @@ SensorLogger::SensorLogger(QWidget *parent, const char *name, const QString& tit
 
 	logSensors.setAutoDelete(true);
 
-	registerPlotterWidget(monitor);
+	setPlotterWidget(monitor);
 
 	setMinimumSize(50, 25);
 	setModified(false);
@@ -262,7 +262,7 @@ SensorLogger::fileSelect(void)
 
 
 void
-SensorLogger::settings()
+SensorLogger::configureSettings()
 {
 	QColorGroup cgroup = monitor->colorGroup();
 
@@ -274,7 +274,7 @@ SensorLogger::settings()
 	sls->foregroundColor->setColor(cgroup.text());
 	sls->backgroundColor->setColor(cgroup.base());
 	sls->alarmColor->setColor(cgroup.foreground());
-	sls->title->setText(getTitle());
+	sls->title->setText(title());
 
 	if (sls->exec())
 		applySettings();
@@ -312,13 +312,13 @@ SensorLogger::applyStyle(void)
 }
 
 bool
-SensorLogger::createFromDOM(QDomElement& element)
+SensorLogger::restoreSettings(QDomElement& element)
 {
 	QColorGroup cgroup = monitor->colorGroup();
 
-	cgroup.setColor(QColorGroup::Text, restoreColorFromDOM(element, "textColor", Qt::green));
-	cgroup.setColor(QColorGroup::Base, restoreColorFromDOM(element, "backgroundColor", Qt::black));
-	cgroup.setColor(QColorGroup::Foreground, restoreColorFromDOM(element, "alarmColor", Qt::red));
+	cgroup.setColor(QColorGroup::Text, restoreColor(element, "textColor", Qt::green));
+	cgroup.setColor(QColorGroup::Base, restoreColor(element, "backgroundColor", Qt::black));
+	cgroup.setColor(QColorGroup::Foreground, restoreColor(element, "alarmColor", Qt::red));
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 
 	logSensors.clear();
@@ -341,7 +341,7 @@ SensorLogger::createFromDOM(QDomElement& element)
 		logSensors.append(sensor);
 	}
 
-	internCreateFromDOM(element);
+	SensorDisplay::restoreSettings(element);
 
 	setModified(false);
 
@@ -349,11 +349,11 @@ SensorLogger::createFromDOM(QDomElement& element)
 }
 
 bool
-SensorLogger::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
+SensorLogger::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 {
-	addColorToDOM(element, "textColor", monitor->colorGroup().text());
-	addColorToDOM(element, "backgroundColor", monitor->colorGroup().base());
-	addColorToDOM(element, "alarmColor", monitor->colorGroup().foreground());
+	saveColor(element, "textColor", monitor->colorGroup().text());
+	saveColor(element, "backgroundColor", monitor->colorGroup().base());
+	saveColor(element, "alarmColor", monitor->colorGroup().foreground());
 
 	for (LogSensor* sensor = logSensors.first(); sensor != 0; sensor = logSensors.next())
 	{
@@ -370,7 +370,7 @@ SensorLogger::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 		element.appendChild(log);
 	}
 
-	internAddToDOM(doc, element);
+	SensorDisplay::saveSettings(doc, element);
 
 	if (save)
 		setModified(false);
@@ -387,7 +387,7 @@ SensorLogger::answerReceived(int, const QString&)
 void
 SensorLogger::resizeEvent(QResizeEvent*)
 {
-	frame->setGeometry(0, 0, this->width(), this->height());
+	frame()->setGeometry(0, 0, this->width(), this->height());
 	monitor->setGeometry(10, 20, this->width() - 20, this->height() - 30);
 }
 
@@ -420,7 +420,7 @@ SensorLogger::RMBClicked(QListViewItem* item, const QPoint& point, int)
 	switch (pm.exec(point))
 	{
 	case 1:
-		this->settings();
+		configureSettings();
 		break;
 	case 2: {
 		QCustomEvent* ev = new QCustomEvent(QEvent::User);

@@ -225,14 +225,14 @@ ListView::ListView(QWidget* parent, const char* name, const QString& title, int,
 {
 	setBackgroundColor(KSGRD::Style->backgroundColor());
 
-	monitor = new PrivateListView(frame);
+	monitor = new PrivateListView( frame() );
 	Q_CHECK_PTR(monitor);
 	monitor->setSelectionMode(QListView::NoSelection);
 	monitor->setItemMargin(2);
 
 	setMinimumSize(50, 25);
 
-	registerPlotterWidget(monitor);
+	setPlotterWidget(monitor);
 
 	setModified(false);
 }
@@ -258,7 +258,7 @@ ListView::addSensor(const QString& hostName, const QString& sensorName, const QS
 void
 ListView::updateList()
 {
-	sendRequest(sensors.at(0)->hostName, sensors.at(0)->name, 19);
+	sendRequest(sensors().at(0)->hostName(), sensors().at(0)->name(), 19);
 }
 
 void
@@ -300,23 +300,23 @@ ListView::answerReceived(int id, const QString& answer)
 void
 ListView::resizeEvent(QResizeEvent*)
 {
-	frame->setGeometry(0, 0, width(), height());
+	frame()->setGeometry(0, 0, width(), height());
 	monitor->setGeometry(10, 20, width() - 20, height() - 30);
 }
 
 bool
-ListView::createFromDOM(QDomElement& element)
+ListView::restoreSettings(QDomElement& element)
 {
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "listview" : element.attribute("sensorType")), element.attribute("title"));
 
 	QColorGroup colorGroup = monitor->colorGroup();
-	colorGroup.setColor(QColorGroup::Link, restoreColorFromDOM(element, "gridColor", KSGRD::Style->firstForegroundColor()));
-	colorGroup.setColor(QColorGroup::Text, restoreColorFromDOM(element, "textColor", KSGRD::Style->secondForegroundColor()));
-	colorGroup.setColor(QColorGroup::Base, restoreColorFromDOM(element, "backgroundColor", KSGRD::Style->backgroundColor()));
+	colorGroup.setColor(QColorGroup::Link, restoreColor(element, "gridColor", KSGRD::Style->firstForegroundColor()));
+	colorGroup.setColor(QColorGroup::Text, restoreColor(element, "textColor", KSGRD::Style->secondForegroundColor()));
+	colorGroup.setColor(QColorGroup::Base, restoreColor(element, "backgroundColor", KSGRD::Style->backgroundColor()));
 
 	monitor->setPalette(QPalette(colorGroup, colorGroup, colorGroup));
 
-	internCreateFromDOM(element);
+	SensorDisplay::restoreSettings(element);
 
 	setModified(false);
 
@@ -324,18 +324,18 @@ ListView::createFromDOM(QDomElement& element)
 }
 
 bool
-ListView::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
+ListView::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 {
-	element.setAttribute("hostName", sensors.at(0)->hostName);
-	element.setAttribute("sensorName", sensors.at(0)->name);
-	element.setAttribute("sensorType", sensors.at(0)->type);
+	element.setAttribute("hostName", sensors().at(0)->hostName());
+	element.setAttribute("sensorName", sensors().at(0)->name());
+	element.setAttribute("sensorType", sensors().at(0)->type());
 
 	QColorGroup colorGroup = monitor->colorGroup();
-	addColorToDOM(element, "gridColor", colorGroup.color(QColorGroup::Link));
-	addColorToDOM(element, "textColor", colorGroup.color(QColorGroup::Text));
-	addColorToDOM(element, "backgroundColor", colorGroup.color(QColorGroup::Base));
+	saveColor(element, "gridColor", colorGroup.color(QColorGroup::Link));
+	saveColor(element, "textColor", colorGroup.color(QColorGroup::Text));
+	saveColor(element, "backgroundColor", colorGroup.color(QColorGroup::Base));
 
-	internAddToDOM(doc, element);
+	SensorDisplay::saveSettings(doc, element);
 
 	if (save)
 		setModified(false);
@@ -344,7 +344,7 @@ ListView::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 }
 
 void
-ListView::settings()
+ListView::configureSettings()
 {
 	lvs = new ListViewSettings(this, "ListViewSettings", true);
 	Q_CHECK_PTR(lvs);
@@ -354,7 +354,7 @@ ListView::settings()
 	lvs->gridColor->setColor(colorGroup.color(QColorGroup::Link));
 	lvs->textColor->setColor(colorGroup.color(QColorGroup::Text));
 	lvs->backgroundColor->setColor(colorGroup.color(QColorGroup::Base));
-	lvs->title->setText(getTitle());
+	lvs->title->setText(title());
 
 	if (lvs->exec())
 		applySettings();

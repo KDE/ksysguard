@@ -42,14 +42,14 @@ LogFile::LogFile(QWidget *parent, const char *name, const QString& title)
 	
 	setMinimumSize(50, 25);
 
-	registerPlotterWidget(monitor);
+	setPlotterWidget(monitor);
 
 	setModified(false);
 }
 
 LogFile::~LogFile(void)
 {
-	sendRequest(sensors.at(0)->hostName, QString("logfile_unregister %1" ).arg(logFileID), 43);
+	sendRequest(sensors().at(0)->hostName(), QString("logfile_unregister %1" ).arg(logFileID), 43);
 }
 
 bool
@@ -62,10 +62,10 @@ LogFile::addSensor(const QString& hostName, const QString& sensorName, const QSt
 
 	QString sensorID = sensorName.right(sensorName.length() - (sensorName.findRev("/") + 1));
 
-	sendRequest(sensors.at(0)->hostName, QString("logfile_register %1" ).arg(sensorID), 42);
+	sendRequest(sensors().at(0)->hostName(), QString("logfile_register %1" ).arg(sensorID), 42);
 
 	if (title.isEmpty())
-		setTitle(sensors.at(0)->hostName + ":" + sensorID);
+		setTitle(sensors().at(0)->hostName() + ":" + sensorID);
 	else
 		setTitle(title);
 
@@ -75,7 +75,7 @@ LogFile::addSensor(const QString& hostName, const QString& sensorName, const QSt
 }
 
 
-void LogFile::settings(void)
+void LogFile::configureSettings(void)
 {
 	QColorGroup cgroup = monitor->colorGroup();
 
@@ -88,7 +88,7 @@ void LogFile::settings(void)
 	lfs->bgColor->setText(i18n("Background color:"));
 	lfs->fontButton->setFont(monitor->font());
 	lfs->ruleList->insertStringList(filterRules);
-	lfs->title->setText(getTitle());
+	lfs->title->setText(title());
 	
 	connect(lfs->okButton, SIGNAL(clicked()), lfs, SLOT(accept()));
 	connect(lfs->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
@@ -174,13 +174,13 @@ LogFile::applyStyle()
 }
 
 bool
-LogFile::createFromDOM(QDomElement& element)
+LogFile::restoreSettings(QDomElement& element)
 {
 	QFont font;
 	QColorGroup cgroup = monitor->colorGroup();
 
-	cgroup.setColor(QColorGroup::Text, restoreColorFromDOM(element, "textColor", Qt::green));
-	cgroup.setColor(QColorGroup::Base, restoreColorFromDOM(element, "backgroundColor", Qt::black));
+	cgroup.setColor(QColorGroup::Text, restoreColor(element, "textColor", Qt::green));
+	cgroup.setColor(QColorGroup::Base, restoreColor(element, "backgroundColor", Qt::black));
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "logfile" : element.attribute("sensorType")), element.attribute("title"));
@@ -194,7 +194,7 @@ LogFile::createFromDOM(QDomElement& element)
 		filterRules.append(element.attribute("rule"));
 	}
 
-	internCreateFromDOM(element);
+	SensorDisplay::restoreSettings(element);
 
 	setModified(false);
 
@@ -202,16 +202,16 @@ LogFile::createFromDOM(QDomElement& element)
 }
 
 bool
-LogFile::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
+LogFile::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 {
-	element.setAttribute("hostName", sensors.at(0)->hostName);
-	element.setAttribute("sensorName", sensors.at(0)->name);
-	element.setAttribute("sensorType", sensors.at(0)->type);
+	element.setAttribute("hostName", sensors().at(0)->hostName());
+	element.setAttribute("sensorName", sensors().at(0)->name());
+	element.setAttribute("sensorType", sensors().at(0)->type());
 
 	element.setAttribute("font", monitor->font().rawName());
 
-	addColorToDOM(element, "textColor", monitor->colorGroup().text());
-	addColorToDOM(element, "backgroundColor", monitor->colorGroup().base());
+	saveColor(element, "textColor", monitor->colorGroup().text());
+	saveColor(element, "backgroundColor", monitor->colorGroup().base());
 
 	for (QStringList::Iterator it = filterRules.begin();
 		 it != filterRules.end(); it++)
@@ -221,7 +221,7 @@ LogFile::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 		element.appendChild(filter);
 	}
 
-	internAddToDOM(doc, element);
+	SensorDisplay::saveSettings(doc, element);
 
 	if (save)
 		setModified(false);
@@ -232,8 +232,8 @@ LogFile::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 void
 LogFile::updateMonitor()
 {
-	sendRequest(sensors.at(0)->hostName,
-				QString("%1 %2" ).arg(sensors.at(0)->name).arg(logFileID), 19);
+	sendRequest(sensors().at(0)->hostName(),
+				QString("%1 %2" ).arg(sensors().at(0)->name()).arg(logFileID), 19);
 }
 
 void
@@ -274,6 +274,6 @@ LogFile::answerReceived(int id, const QString& answer)
 void
 LogFile::resizeEvent(QResizeEvent*)
 {
-	frame->setGeometry(0, 0, this->width(), this->height());
+	frame()->setGeometry(0, 0, this->width(), this->height());
 	monitor->setGeometry(10, 20, this->width() - 20, this->height() - 30);
 }

@@ -155,10 +155,10 @@ public:
 	void answerReceived(int id, const QString& answer);
 	void resizeEvent(QResizeEvent*);
 
-	bool createFromDOM(QDomElement& element);
-	bool addToDOM(QDomDocument& doc, QDomElement& element, bool save = true);
+	bool restoreSettings(QDomElement& element);
+	bool saveSettings(QDomDocument& doc, QDomElement& element, bool save = true);
 
-	void settings(void);
+	void configureSettings(void);
 
 	virtual bool hasSettingsDialog() const
 	{

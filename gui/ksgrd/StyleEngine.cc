@@ -40,8 +40,8 @@ StyleEngine* KSGRD::Style;
 
 StyleEngine::StyleEngine()
 {
-  mFirstForegroundColor = QColor( 0x04fb1d );  // light green
-  mSecondForegroundColor = QColor( 0x04fb1d ); // light green
+  mFirstForegroundColor = QColor( 0x6894c9 );  // light blue
+  mSecondForegroundColor = QColor( 0x6894c9 ); // light blue
   mAlarmColor = QColor( 255, 0, 0 );
   mBackgroundColor = QColor( 0x313031 );       // almost black
   mFontSize = 9;

@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
+    Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -16,18 +16,14 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-	Please do not commit any changes without consulting me first. Thanks!
+    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+    Please do not commit any changes without consulting me first. Thanks!
 
-	$Id$
+    $Id$
 */
 
-#ifndef _FancyPlotter_h_
-#define _FancyPlotter_h_
-
-#include <qgroupbox.h>
-#include <qlabel.h>
-#include <qsize.h>
+#ifndef KSG_FANCYPLOTTER_H
+#define KSG_FANCYPLOTTER_H
 
 #include <kdialogbase.h>
 
@@ -40,72 +36,71 @@ class FancyPlotterSettings;
 
 class FPSensorProperties : public KSGRD::SensorProperties
 {
-public:
-	FPSensorProperties() { }
-	FPSensorProperties(const QString& hn, const QString& n, const QString& t, const QString& d,
-					   const QColor& c)
-		: KSGRD::SensorProperties(hn, n, t, d), color(c) { }
-	~FPSensorProperties() { }
+  public:
+    FPSensorProperties();
+    FPSensorProperties( const QString &hostName, const QString &name,
+                        const QString &type, const QString &description,
+                        const QColor &color );
+    ~FPSensorProperties();
 
-	QColor color;
-} ;
+    void setColor( const QColor &color );
+    QColor color() const;
+
+  private:
+    QColor mColor;
+};
 
 class FancyPlotter : public KSGRD::SensorDisplay
 {
-	Q_OBJECT
+  Q_OBJECT
 
-public:
-	FancyPlotter(QWidget* parent = 0, const char* name = 0,
-				 const QString& title = QString::null, double min = 0,
-				 double max = 100, bool noFrame = false);
-	virtual ~FancyPlotter();
+  public:
+    FancyPlotter( QWidget* parent = 0, const char* name = 0,
+                  const QString& title = QString::null, double min = 0,
+                  double max = 100, bool noFrame = false );
+    virtual ~FancyPlotter();
 
-	void settings();
+    void configureSettings();
 
-	bool addSensor(const QString& hostName, const QString& sensorName,
-				const QString& sensorType, const QString& title);
-	bool addSensor(const QString& hostName, const QString& sensorName,
-				   const QString& sensorType, const QString& title, const QColor& col);
-	bool removeSensor(uint idx);
+    bool addSensor( const QString &hostName, const QString &name,
+                    const QString &type, const QString &title );
+    bool addSensor( const QString &hostName, const QString &name,
+                    const QString &type, const QString &title,
+                    const QColor &color );
 
-	virtual QSize sizeHint(void);
+    bool removeSensor( uint pos );
 
-	virtual void answerReceived(int id, const QString& s);
+    virtual QSize sizeHint(void);
 
-	virtual bool createFromDOM(QDomElement& element);
-	virtual bool addToDOM(QDomDocument& doc, QDomElement& element,
-						  bool save = true);
+    virtual void answerReceived( int id, const QString &answer );
 
-	virtual bool hasSettingsDialog() const
-	{
-		return (true);
-	}
+    virtual bool restoreSettings( QDomElement &element );
+    virtual bool saveSettings( QDomDocument &doc, QDomElement &element,
+                               bool save = true );
 
-public slots:
-	void applySettings();
-	void settingsSetColor();
-	void settingsDelete();
-	void settingsSelectionChanged(QListViewItem*);
-	void settingsMoveUp();
-	void settingsMoveDown();
-	virtual void applyStyle();
+    virtual bool hasSettingsDialog() const;
 
-protected:
-	virtual void resizeEvent(QResizeEvent*);
+  public slots:
+    void applySettings();
+    virtual void applyStyle();
 
-private:
-	uint beams;
-	bool modified;
+  protected:
+    virtual void resizeEvent( QResizeEvent* );
 
-	SignalPlotter* plotter;
+  private:
+    uint mBeams;
 
-	FancyPlotterSettings* fps;
+    SignalPlotter* mPlotter;
 
-	/* The sample buffer and the flags are needed to store the incoming
-	 * samples for each beam until all samples of the period have been
-	 * received. The flags variable is used to ensure that all samples have
-	 * been received. */
-	QValueList<double> sampleBuf;
-} ;
+    FancyPlotterSettings* mSettingsDialog;
+
+    /**
+      The sample buffer and the flags are needed to store the incoming
+      samples for each beam until all samples of the period have been
+      received. The flags variable is used to ensure that all samples have
+      been received.
+     */
+    QValueList<double> mSampleBuf;
+};
 
 #endif

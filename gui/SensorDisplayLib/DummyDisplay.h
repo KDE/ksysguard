@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
+    Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -16,31 +16,30 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-	Please do not commit any changes without consulting me first. Thanks!
+    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+    Please do not commit any changes without consulting me first. Thanks!
 
-	$Id$
+    $Id$
 */
 
-#ifndef _DummyDisplay_h_
-#define _DummyDisplay_h_
+#ifndef KSG_DUMMYDISPLAY_H
+#define KSG_DUMMYDISPLAY_H
 
 #include <SensorDisplay.h>
 
 class DummyDisplay : public KSGRD::SensorDisplay
 {
-	Q_OBJECT
+  Q_OBJECT
 
-public:
-	DummyDisplay(QWidget* parent = 0, const char* name = 0,
-			   const QString& = QString::null, double min = 0, double max = 0);
-	virtual ~DummyDisplay()
-	{
-	}
+  public:
+    DummyDisplay( QWidget* parent = 0, const char* name = 0,
+                  const QString& = QString::null, double min = 0,
+                  double max = 0 );
+    virtual ~DummyDisplay() {}
 
-	void resizeEvent(QResizeEvent*);
+    void resizeEvent( QResizeEvent* );
 
-	virtual bool eventFilter(QObject*, QEvent*);
-} ;
+    virtual bool eventFilter( QObject*, QEvent* );
+};
 
 #endif

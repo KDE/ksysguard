@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,16 +16,16 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger
-	<cs@kde.org>. Please do not commit any changes without consulting
-	me first. Thanks!
+    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+    Please do not commit any changes without consulting me first. Thanks!
 
-	$Id$
+    $Id$
 */
 
 #include <qcheckbox.h>
 #include <qdom.h>
 #include <qlineedit.h>
+#include <qlistview.h>
 #include <qpushbutton.h>
 #include <qspinbox.h>
 #include <qtooltip.h>
@@ -34,394 +34,320 @@
 #include <klineeditdlg.h>
 #include <klocale.h>
 #include <knumvalidator.h>
-
 #include <ksgrd/ColorPicker.h>
 #include <ksgrd/SensorManager.h>
 #include <ksgrd/StyleEngine.h>
 
-#include "DancingBars.moc"
+#include "BarGraph.h"
 #include "DancingBarsSettings.h"
 
-DancingBars::DancingBars(QWidget* parent, const char* name,
-						 const QString& title, int, int, bool nf)
-	: KSGRD::SensorDisplay(parent, name, title)
+#include "DancingBars.h"
+
+DancingBars::DancingBars( QWidget *parent, const char *name, const QString &title,
+                          int, int, bool noFrame_ )
+  : KSGRD::SensorDisplay( parent, name, title )
 {
-	bars = 0;
-	flags = 0;
-	noFrame = nf;
+  mBars = 0;
+	mFlags = 0;
+	setNoFrame( noFrame_ );
 
-	if (noFrame)
-		plotter = new BarGraph(this, "signalPlotter");
-	else
-		plotter = new BarGraph(frame, "signalPlotter");
-	Q_CHECK_PTR(plotter);
+  if ( noFrame() )
+    mPlotter = new BarGraph( this );
+  else
+    mPlotter = new BarGraph( frame() );
 
-	setMinimumSize(sizeHint());
+  setMinimumSize( sizeHint() );
 
-	/* All RMB clicks to the plotter widget will be handled by 
-	 * SensorDisplay::eventFilter. */
-	plotter->installEventFilter(this);
+  /* All RMB clicks to the mPlotter widget will be handled by 
+   * SensorDisplay::eventFilter. */
+  mPlotter->installEventFilter( this );
 
-	registerPlotterWidget(plotter);
+  setPlotterWidget( mPlotter );
 
-	setModified(false);
+  setModified( false );
 }
 
 DancingBars::~DancingBars()
 {
 }
 
-void
-DancingBars::settings()
+void DancingBars::configureSettings()
 {
-	dbs = new DancingBarsSettings(this, "DancingBarsSettings", true);
-	Q_CHECK_PTR(dbs);
+  mSettingsDialog = new DancingBarsSettings( this );
 
-	dbs->title->setText(getTitle());
-	dbs->title->setFocus();
-	dbs->minVal->setValidator(new KFloatValidator(dbs->minVal));
-	dbs->minVal->setText(QString("%1").arg(plotter->getMin()));
-	dbs->maxVal->setValidator(new KFloatValidator(dbs->maxVal));
-	dbs->maxVal->setText(QString("%1").arg(plotter->getMax()));
+  mSettingsDialog->setTitle( title() );
+  mSettingsDialog->setMinValue( mPlotter->getMin() );
+  mSettingsDialog->setMaxValue( mPlotter->getMax() );
 
-	double l, u;
-	bool la, ua;
-	plotter->getLimits(l, la, u, ua);
-	dbs->upperLimitActive->setChecked(ua);
-	dbs->upperLimit->setValidator(new KFloatValidator(dbs->upperLimit));
-	dbs->upperLimit->setText(QString("%1").arg(u));
-	dbs->lowerLimitActive->setChecked(la);
-	dbs->lowerLimit->setValidator(new KFloatValidator(dbs->lowerLimit));
-	dbs->lowerLimit->setText(QString("%1").arg(l));
+  double l, u;
+  bool la, ua;
+  mPlotter->getLimits( l, la, u, ua );
 
-	dbs->normalColor->setColor(plotter->normalColor);
-	dbs->alarmColor->setColor(plotter->alarmColor);
-	dbs->backgroundColor->setColor(plotter->backgroundColor);
-	dbs->fontSize->setValue(plotter->fontSize);
+  mSettingsDialog->setUseUpperLimit( ua );
+  mSettingsDialog->setUpperLimit( u );
 
-	for (uint i = bars - 1; i < bars; i--)
-	{
-		QString status = sensors.at(i)->ok ? i18n("OK") : i18n("Error");
-		QListViewItem* lvi = new QListViewItem(
-			dbs->sensorList,
-			sensors.at(i)->hostName,
-			KSGRD::SensorMgr->translateSensor(sensors.at(i)->name),
-			plotter->footers[i],
-			KSGRD::SensorMgr->translateUnit(sensors.at(i)->unit), status);
-	}
-	connect(dbs->editButton, SIGNAL(clicked()),
-			this, SLOT(settingsEdit()));
-	connect(dbs->deleteButton, SIGNAL(clicked()),
-			this, SLOT(settingsDelete()));
-	connect(dbs->sensorList, SIGNAL(selectionChanged(QListViewItem*)),
-			this, SLOT(settingsSelectionChanged(QListViewItem*)));
+  mSettingsDialog->setUseLowerLimit( la );
+  mSettingsDialog->setLowerLimit( l );
 
-	connect(dbs->applyButton, SIGNAL(clicked()),
-			this, SLOT(applySettings()));
+  mSettingsDialog->setForegroundColor( mPlotter->normalColor );
+  mSettingsDialog->setAlarmColor( mPlotter->alarmColor );
+  mSettingsDialog->setBackgroundColor( mPlotter->backgroundColor );
+  mSettingsDialog->setFontSize( mPlotter->fontSize );
 
-	if (dbs->exec())
-		applySettings();
+  QValueList< QStringList > list;
+  for ( uint i = mBars - 1; i < mBars; i-- ) {
+    QStringList entry;
+    entry << sensors().at( i )->hostName();
+    entry << KSGRD::SensorMgr->translateSensor( sensors().at( i )->name() );
+    entry << mPlotter->footers[ i ];
+    entry << KSGRD::SensorMgr->translateUnit( sensors().at( i )->unit() );
+    entry << ( sensors().at( i )->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
 
-	delete dbs;
-	dbs = 0;
+    list.append( entry );
+  }
+  mSettingsDialog->setSensors( list );
+
+  connect( mSettingsDialog, SIGNAL( applyClicked() ), SLOT( applySettings() ) );
+
+  if ( mSettingsDialog->exec() )
+    applySettings();
+
+  delete mSettingsDialog;
+  mSettingsDialog = 0;
 }
 
-void
-DancingBars::applySettings()
+void DancingBars::applySettings()
 {
-	setTitle(dbs->title->text());
-	plotter->changeRange(dbs->minVal->text().toDouble(),
-						 dbs->maxVal->text().toDouble());
+  setTitle( mSettingsDialog->title() );
+  mPlotter->changeRange( mSettingsDialog->minValue(), mSettingsDialog->maxValue() );
+  mPlotter->setLimits( mSettingsDialog->useLowerLimit() ?
+                       mSettingsDialog->lowerLimit() : 0,
+                       mSettingsDialog->useLowerLimit(),
+                       mSettingsDialog->useUpperLimit() ?
+                       mSettingsDialog->upperLimit() : 0,
+                       mSettingsDialog->useUpperLimit() );
 
-	plotter->setLimits(dbs->lowerLimitActive->isChecked() ?
-					   dbs->lowerLimit->text().toDouble() : 0,
-					   dbs->lowerLimitActive->isChecked(),
-					   dbs->upperLimitActive->isChecked() ?
-					   dbs->upperLimit->text().toDouble() : 0,
-					   dbs->upperLimitActive->isChecked());
+  mPlotter->normalColor = mSettingsDialog->foregroundColor();
+  mPlotter->alarmColor = mSettingsDialog->alarmColor();
+  mPlotter->backgroundColor = mSettingsDialog->backgroundColor();
+  mPlotter->fontSize = mSettingsDialog->fontSize();
 
-	plotter->normalColor = dbs->normalColor->color();
-	plotter->alarmColor = dbs->alarmColor->color();
-	plotter->backgroundColor = dbs->backgroundColor->color();
-	plotter->fontSize = dbs->fontSize->value();
+  QValueList< QStringList > list = mSettingsDialog->sensors();
+  QValueList< QStringList >::Iterator it;
+  for ( uint i = 0; i < sensors().count(); i++ ) {
+    bool found = false;
+    for ( it = list.begin(); it != list.end(); ++it ) {
+      if ( (*it)[ 0 ] == sensors().at( i )->hostName() &&
+           (*it)[ 1 ] == KSGRD::SensorMgr->translateSensor( sensors().at( i )->name() ) ) {
+        mPlotter->footers[ i ] = (*it)[ 2 ];
+        found = true;
+        break;
+      }
 
-	QListViewItemIterator it(dbs->sensorList);
-	/* Iterate through all items of the listview and reverse iterate
-	 * through the registered sensors. */
-	for (uint i = 0; i < sensors.count(); i++)
-	{
-		if (it.current() &&
-			it.current()->text(0) == sensors.at(i)->hostName &&
-			it.current()->text(1) == 
-			KSGRD::SensorMgr->translateSensor(sensors.at(i)->name))
-		{
-			plotter->footers[i] = it.current()->text(2);
-			it++;
-		}
-		else
-		{
-			removeSensor(i);
-			i--;
-		}
-	}
+      it++;
+    }
 
-	repaint();
-	setModified(true);
+    if ( !found )
+      removeSensor( i );
+  }
+
+  repaint();
+  setModified( true );
 }
 
-void
-DancingBars::applyStyle()
+void DancingBars::applyStyle()
 {
-	plotter->normalColor = KSGRD::Style->firstForegroundColor();
-	plotter->alarmColor = KSGRD::Style->alarmColor();
-	plotter->backgroundColor = KSGRD::Style->backgroundColor();
-	plotter->fontSize = KSGRD::Style->fontSize();
+  mPlotter->normalColor = KSGRD::Style->firstForegroundColor();
+  mPlotter->alarmColor = KSGRD::Style->alarmColor();
+  mPlotter->backgroundColor = KSGRD::Style->backgroundColor();
+  mPlotter->fontSize = KSGRD::Style->fontSize();
 
-	repaint();
-	setModified(true);
+  repaint();
+  setModified( true );
 }
 
-void
-DancingBars::settingsEdit()
+bool DancingBars::addSensor( const QString &hostName, const QString &name,
+                             const QString &type, const QString &title )
 {
-	QListViewItem* lvi = dbs->sensorList->currentItem();
+  if ( type != "integer" && type != "float" )
+    return false;
 
-	if (!lvi)
-		return;
+  if ( mBars >= 32 )
+    return false;
 
-	KLineEditDlg dlg(i18n("Enter new label:"), lvi->text(2), this);
-	dlg.setCaption(i18n("Label of Bar Graph"));
-	if (dlg.exec())
-		lvi->setText(2, dlg.text());
+  if ( !mPlotter->addBar( title ) )
+    return false;
+
+  registerSensor( new KSGRD::SensorProperties( hostName, name, type, title ) );
+
+  /* To differentiate between answers from value requests and info
+   * requests we add 100 to the beam index for info requests. */
+  sendRequest( hostName, name + "?", mBars + 100 );
+  ++mBars;
+  mSampleBuffer.resize( mBars );
+
+  QString tooltip;
+  for ( uint i = 0; i < mBars; ++i ) {
+    tooltip += QString( "%1%2:%3" ).arg( i != 0 ? "\n" : "" )
+                                   .arg( sensors().at( i )->hostName() )
+                                   .arg( sensors().at( i )->name() );
+  }
+  QToolTip::remove( mPlotter );
+  QToolTip::add( mPlotter, tooltip );
+
+  return true;
 }
 
-void
-DancingBars::settingsDelete()
+bool DancingBars::removeSensor( uint pos )
 {
-	QListViewItem* lvi = dbs->sensorList->currentItem();
+  if ( pos >= mBars ) {
+    kdDebug(1215) << "DancingBars::removeSensor: idx out of range ("
+                  << pos << ")" << endl;
+    return false;
+  }
 
-	if (lvi)
-	{
-		/* Before we delete the currently selected item, we determine a
-		 * new item to be selected. That way we can ensure that multiple
-		 * items can be deleted without forcing the user to select a new
-		 * item between the deletes. If all items are deleted, the buttons
-		 * are disabled again. */
-		QListViewItem* newSelected = 0;
-		if (lvi->itemBelow())
-		{
-			lvi->itemBelow()->setSelected(true);
-			newSelected = lvi->itemBelow();
-		}
-		else if (lvi->itemAbove())
-		{
-			lvi->itemAbove()->setSelected(true);
-			newSelected = lvi->itemAbove();
-		}
-		else
-			settingsSelectionChanged(0);
-			
-		delete lvi;
+  mPlotter->removeBar( pos );
+  mBars--;
+  KSGRD::SensorDisplay::removeSensor( pos );
 
-		if (newSelected)
-			dbs->sensorList->ensureItemVisible(newSelected);
-	}
+  QString tooltip;
+  for ( uint i = 0; i < mBars; ++i ) {
+    tooltip += QString( "%1%2:%3" ).arg( i != 0 ? "\n" : "" )
+                                   .arg( sensors().at( i )->hostName() )
+                                   .arg( sensors().at( i )->name() );
+  }
+  QToolTip::remove( mPlotter );
+  QToolTip::add( mPlotter, tooltip );
+
+  return true;
 }
 
-void
-DancingBars::settingsSelectionChanged(QListViewItem* lvi)
+void DancingBars::updateSamples( const QMemArray<double> &samples )
 {
-	dbs->editButton->setEnabled(lvi != 0);
-	dbs->deleteButton->setEnabled(lvi != 0);
+  mPlotter->updateSamples( samples );
 }
 
-bool
-DancingBars::addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType,
-					   const QString& title)
+void DancingBars::resizeEvent( QResizeEvent* )
 {
-	if (sensorType != "integer" && sensorType != "float")
-		return (false);
-
-	if (bars >= 32)
-		return (false);
-
-	if (!plotter->addBar(title))
-		return (false);
-
-	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
-
-	/* To differentiate between answers from value requests and info
-	 * requests we add 100 to the beam index for info requests. */
-	sendRequest(hostName, sensorName + "?", bars + 100);
-	++bars;
-	sampleBuf.resize(bars);
-
-	QString tooltip;
-	for (uint i = 0; i < bars; ++i)
-	{
-		if (i == 0)
-			tooltip += QString("%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
-		else
-			tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
-	}
-	QToolTip::remove(plotter);
-	QToolTip::add(plotter, tooltip);
-
-	return (true);
+  if ( noFrame() )
+    mPlotter->setGeometry( 0, 0, width(), height() );
+  else
+    frame()->setGeometry( 0, 0, width(), height() );
 }
 
-bool
-DancingBars::removeSensor(uint idx)
+QSize DancingBars::sizeHint()
 {
-	if (idx >= bars)
-	{
-		kdDebug(1215) << "DancingBars::removeSensor: idx out of range ("
-				  << idx << ")" << endl;
-		return (false);
-	}
-
-	plotter->removeBar(idx);
-	bars--;
-	KSGRD::SensorDisplay::removeSensor(idx);
-
-	QString tooltip;
-	for (uint i = 0; i < bars; ++i)
-	{
-		if (i == 0)
-			tooltip += QString("%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
-		else
-			tooltip += QString("\n%1:%2").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
-	}
-	QToolTip::remove(plotter);
-	QToolTip::add(plotter, tooltip);
-
-	return (true);
+  if ( noFrame() )
+    return ( mPlotter->sizeHint() );
+  else
+    return ( frame()->sizeHint() );
 }
 
-void
-DancingBars::resizeEvent(QResizeEvent*)
+void DancingBars::answerReceived( int id, const QString &answer )
 {
-	if (noFrame)
-		plotter->setGeometry(0, 0, width(), height());
-	else
-		frame->setGeometry(0, 0, width(), height());
-}
-
-QSize
-DancingBars::sizeHint(void)
-{
-	if (noFrame)
-		return (plotter->sizeHint());
-	else
-		return (frame->sizeHint());
-}
-
-void
-DancingBars::answerReceived(int id, const QString& answer)
-{
-	/* We received something, so the sensor is probably ok. */
-	sensorError(id, false);
+  /* We received something, so the sensor is probably ok. */
+  sensorError( id, false );
 	
-	if (id < 100)
-	{
-		sampleBuf[id] = answer.toDouble();
-		if (flags & (1 << id))
-		{
-			kdDebug(1215) << "ERROR: DancingBars lost sample (" << flags
-					  << ", " << bars << ")" << endl;
-			sensorError(id, true);
-		}
-		flags |= 1 << id;
+  if ( id < 100 ) {
+    mSampleBuffer[ id ] = answer.toDouble();
+    if ( mFlags & ( 1 << id ) ) {
+      kdDebug(1215) << "ERROR: DancingBars lost sample (" << mFlags
+                    << ", " << mBars << ")" << endl;
+      sensorError( id, true );
+    }
+    mFlags |= 1 << id;
 
-		if (flags == (uint) ((1 << bars) - 1))
-		{
-			plotter->updateSamples(sampleBuf);
-			flags = 0;
-		}
-	}
-	else if (id >= 100)
-	{
-		KSGRD::SensorIntegerInfo info(answer);
-		if (id == 100)
-			if (plotter->getMin() == 0.0 && plotter->getMax() == 0.0)
-			{
-				/* We only use this information from the sensor when the
-				 * display is still using the default values. If the
-				 * sensor has been restored we don't touch the already set
-				 * values. */
-				plotter->changeRange(info.min(), info.max());
+    if ( mFlags == (uint)( ( 1 << mBars ) - 1 ) ) {
+      mPlotter->updateSamples( mSampleBuffer );
+      mFlags = 0;
+    }
+  } else if ( id >= 100 ) {
+    KSGRD::SensorIntegerInfo info( answer );
+    if ( id == 100 )
+      if ( mPlotter->getMin() == 0.0 && mPlotter->getMax() == 0.0 ) {
+        /* We only use this information from the sensor when the
+         * display is still using the default values. If the
+         * sensor has been restored we don't touch the already set
+         * values. */
+        mPlotter->changeRange( info.min(), info.max() );
 			}
 
-		sensors.at(id - 100)->unit = info.unit();
+    sensors().at( id - 100 )->setUnit( info.unit() );
 	}
 }
 
-bool
-DancingBars::createFromDOM(QDomElement& element)
+bool DancingBars::restoreSettings( QDomElement &element )
 {
-	plotter->changeRange(element.attribute("min", "0").toDouble(),
-						element.attribute("max", "0").toDouble());
+  SensorDisplay::restoreSettings( element );
 
-	plotter->setLimits(element.attribute("lowlimit", "0").toDouble(),
-					element.attribute("lowlimitactive", "0").toInt(),
-					element.attribute("uplimit", "0").toDouble(),
-					element.attribute("uplimitactive", "0").toInt());
+  mPlotter->changeRange( element.attribute( "min", "0" ).toDouble(),
+                         element.attribute( "max", "0" ).toDouble() );
 
-	plotter->normalColor = restoreColorFromDOM(element, "normalColor",
-											   KSGRD::Style->firstForegroundColor());
-	plotter->alarmColor = restoreColorFromDOM(element, "alarmColor",
-											  KSGRD::Style->alarmColor());
-	plotter->backgroundColor = restoreColorFromDOM(
-		element, "backgroundColor", KSGRD::Style->backgroundColor());
-	plotter->fontSize = element.attribute(
-		"fontSize", QString("%1").arg(KSGRD::Style->fontSize())).toInt();
+  mPlotter->setLimits( element.attribute( "lowlimit", "0" ).toDouble(),
+                       element.attribute( "lowlimitactive", "0" ).toInt(),
+                       element.attribute( "uplimit", "0" ).toDouble(),
+                       element.attribute( "uplimitactive", "0" ).toInt() );
 
-	QDomNodeList dnList = element.elementsByTagName("beam");
-	for (uint i = 0; i < dnList.count(); ++i)
-	{
-		QDomElement el = dnList.item(i).toElement();
-		addSensor(el.attribute("hostName"), el.attribute("sensorName"), (el.attribute("sensorType").isEmpty() ? "integer" : el.attribute("sensorType")), el.attribute("sensorDescr"));
-	}
+  mPlotter->normalColor = restoreColor( element, "normalColor",
+                                        KSGRD::Style->firstForegroundColor() );
+  mPlotter->alarmColor = restoreColor( element, "alarmColor",
+                                       KSGRD::Style->alarmColor() );
+  mPlotter->backgroundColor = restoreColor( element, "backgroundColor",
+                                            KSGRD::Style->backgroundColor() );
+  mPlotter->fontSize = element.attribute( "fontSize", QString( "%1" ).arg(
+                                          KSGRD::Style->fontSize() ) ).toInt();
 
-	internCreateFromDOM(element);
+  QDomNodeList dnList = element.elementsByTagName( "beam" );
+  for ( uint i = 0; i < dnList.count(); ++i ) {
+    QDomElement el = dnList.item( i ).toElement();
+    addSensor( el.attribute( "hostName" ), el.attribute( "sensorName" ),
+               ( el.attribute( "sensorType" ).isEmpty() ? "integer" :
+               el.attribute( "sensorType" ) ), el.attribute( "sensorDescr" ) );
+  }
 
-	setModified(false);
+  setModified( false );
 
-	return (true);
+  return true;
 }
 
-bool
-DancingBars::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
+bool DancingBars::saveSettings( QDomDocument &doc, QDomElement &element,
+                                bool save )
 {
-	element.setAttribute("min", plotter->getMin());
-	element.setAttribute("max", plotter->getMax());
-	double l, u;
-	bool la, ua;
-	plotter->getLimits(l, la, u, ua);
-	element.setAttribute("lowlimit", l);
-	element.setAttribute("lowlimitactive", la);
-	element.setAttribute("uplimit", u);
-	element.setAttribute("uplimitactive", ua);
+  element.setAttribute( "min", mPlotter->getMin() );
+  element.setAttribute( "max", mPlotter->getMax() );
+  double l, u;
+  bool la, ua;
+  mPlotter->getLimits( l, la, u, ua );
+  element.setAttribute( "lowlimit", l );
+  element.setAttribute( "lowlimitactive", la );
+  element.setAttribute( "uplimit", u );
+  element.setAttribute( "uplimitactive", ua );
 
-	addColorToDOM(element, "normalColor", plotter->normalColor);
-	addColorToDOM(element, "alarmColor", plotter->alarmColor);
-	addColorToDOM(element, "backgroundColor", plotter->backgroundColor);
-	element.setAttribute("fontSize", plotter->fontSize);
+  saveColor( element, "normalColor", mPlotter->normalColor );
+  saveColor( element, "alarmColor", mPlotter->alarmColor );
+	saveColor( element, "backgroundColor", mPlotter->backgroundColor );
+  element.setAttribute( "fontSize", mPlotter->fontSize );
 
-	for (uint i = 0; i < bars; ++i)
-	{
-		QDomElement beam = doc.createElement("beam");
-		element.appendChild(beam);
-		beam.setAttribute("hostName", sensors.at(i)->hostName);
-		beam.setAttribute("sensorName", sensors.at(i)->name);
-		beam.setAttribute("sensorType", sensors.at(i)->type);
-		beam.setAttribute("sensorDescr", plotter->footers[i]);
-	}
+  for ( uint i = 0; i < mBars; ++i ) {
+    QDomElement beam = doc.createElement( "beam" );
+    element.appendChild( beam );
+    beam.setAttribute( "hostName", sensors().at( i )->hostName() );
+    beam.setAttribute( "sensorName", sensors().at( i )->name() );
+    beam.setAttribute( "sensorType", sensors().at( i )->type() );
+    beam.setAttribute( "sensorDescr", mPlotter->footers[ i ] );
+  }
 
-	internAddToDOM(doc, element);
+  SensorDisplay::saveSettings( doc, element );
 
-	if (save)
-		setModified(false);
+  if ( save )
+    setModified( false );
 
-	return (true);
+  return true;
 }
+
+bool DancingBars::hasSettingsDialog() const
+{
+  return true;
+}
+
+#include "DancingBars.moc"

@@ -384,7 +384,7 @@ bool KSysGuardApplet::load()
     newDisplay->setUpdateInterval( updateInterval() );
 
     // load display specific settings
-    if ( !newDisplay->createFromDOM( element ) )
+    if ( !newDisplay->restoreSettings( element ) )
       return false;
 
     delete mDockList[ dock ];
@@ -412,7 +412,7 @@ bool KSysGuardApplet::save()
   uint i;
   for ( i = 0; i < mDockCount; ++i )
     if ( !mDockList[ i ]->isA( "QFrame" ) )
-      ((KSGRD::SensorDisplay*)mDockList[ i ])->collectHosts( hosts );
+      ((KSGRD::SensorDisplay*)mDockList[ i ])->hosts( hosts );
 
   // save host information (name, shell, etc.)
   QStringList::Iterator it;
@@ -437,7 +437,7 @@ bool KSysGuardApplet::save()
       element.setAttribute( "dock", i );
       element.setAttribute( "class", mDockList[ i ]->className() );
 
-      ((KSGRD::SensorDisplay*)mDockList[ i ])->addToDOM( doc, element );
+      ((KSGRD::SensorDisplay*)mDockList[ i ])->saveSettings( doc, element );
     }
 
   KStandardDirs* kstd = KGlobal::dirs();

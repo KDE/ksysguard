@@ -63,9 +63,9 @@ public:
 		pList->clearSelection();
 	}
 
-	bool createFromDOM(QDomElement& element);
+	bool restoreSettings(QDomElement& element);
 
-	bool addToDOM(QDomDocument& doc, QDomElement& element, bool save = true);
+	bool saveSettings(QDomDocument& doc, QDomElement& element, bool save = true);
 
 	void refreshList(void)
 	{
@@ -83,7 +83,7 @@ public:
 
 	virtual void sensorError(int, bool err);
 
-	void settings() { }
+	void configureSettings() { }
 
 	virtual bool hasSettingsDialog() const
 	{
@@ -107,12 +107,12 @@ public slots:
 
 	virtual void setModified(bool mfd)
 	{
-		if (mfd != modified)
+		if (mfd != modified())
 		{
-			modified = mfd;
+			SensorDisplay::setModified( mfd );
 			if (!mfd)
 				pList->setModified(0);
-			emit displayModified(modified);
+			emit modified(modified());
 		}
 	}
 

@@ -126,7 +126,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 
 	gm->activate();
 
-	registerPlotterWidget(pList);
+	setPlotterWidget(pList);
 
 	setMinimumSize(sizeHint());
 }
@@ -134,7 +134,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 void
 ProcessController::resizeEvent(QResizeEvent* ev)
 {
-	frame->setGeometry(0, 0, width(), height());
+	frame()->setGeometry(0, 0, width(), height());
 
     QWidget::resizeEvent(ev);
 }
@@ -166,16 +166,16 @@ ProcessController::addSensor(const QString& hostName,
 void
 ProcessController::updateList()
 {
-	sendRequest(sensors.at(0)->hostName, "ps", 2);
+	sendRequest(sensors().at(0)->hostName(), "ps", 2);
 }
 
 void
 ProcessController::killProcess(int pid, int sig)
 {
-	sendRequest(sensors.at(0)->hostName,
+	sendRequest(sensors().at(0)->hostName(),
 				QString("kill %1 %2" ).arg(pid).arg(sig), 3);
 
-	if (paused())
+	if ( !timerOn() )
 	    // give ksysguardd time to update its proccess list
 	    QTimer::singleShot(3000, this, SLOT(updateList()));
 	else
@@ -207,10 +207,10 @@ ProcessController::killProcess()
 	// send kill signal to all seleted processes
 	QValueListConstIterator<int> it;
 	for (it = selectedPIds.begin(); it != selectedPIds.end(); ++it)
-		sendRequest(sensors.at(0)->hostName, QString("kill %1 %2" ).arg(*it)
+		sendRequest(sensors().at(0)->hostName(), QString("kill %1 %2" ).arg(*it)
 					.arg(MENU_ID_SIGKILL), 3);
 	
-	if (paused())
+	if ( !timerOn())
 	    // give ksysguardd time to update its proccess list
 	    QTimer::singleShot(3000, this, SLOT(updateList()));
 	else
@@ -220,7 +220,7 @@ ProcessController::killProcess()
 void
 ProcessController::reniceProcess(int pid, int niceValue)
 {
-	sendRequest(sensors.at(0)->hostName,
+	sendRequest(sensors().at(0)->hostName(),
 				QString("setpriority %1 %2" ).arg(pid).arg(niceValue), 5);
 }
 
@@ -336,7 +336,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 void
 ProcessController::sensorError(int, bool err)
 {
-	if (err == sensors.at(0)->ok)
+	if (err == sensors().at(0)->isOk())
 	{
 		if (!err)
 		{
@@ -344,18 +344,18 @@ ProcessController::sensorError(int, bool err)
 			 * (re-)established we need to requests the full set of
 			 * properties again, since the back-end might be a new
 			 * one. */
-			sendRequest(sensors.at(0)->hostName, "ps?", 1);
-			sendRequest(sensors.at(0)->hostName, "test kill", 4);
+			sendRequest(sensors().at(0)->hostName(), "ps?", 1);
+			sendRequest(sensors().at(0)->hostName(), "test kill", 4);
 		}
 
 		/* This happens only when the sensorOk status needs to be changed. */
-		sensors.at(0)->ok = !err;
+		sensors().at(0)->setIsOk( !err );
 	}
-	setSensorOk(sensors.at(0)->ok);
+	setSensorOk(sensors().at(0)->isOk());
 }
 
 bool
-ProcessController::createFromDOM(QDomElement& element)
+ProcessController::restoreSettings(QDomElement& element)
 {
 	bool result = addSensor(element.attribute("hostName"),
 							element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "table" : element.attribute("sensorType")),
@@ -376,7 +376,7 @@ ProcessController::createFromDOM(QDomElement& element)
 
 	pList->setSortColumn(col, inc);
 
-	internCreateFromDOM(element);
+	SensorDisplay::restoreSettings(element);
 
 	setModified(false);
 
@@ -384,11 +384,11 @@ ProcessController::createFromDOM(QDomElement& element)
 }
 
 bool
-ProcessController::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
+ProcessController::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 {
-	element.setAttribute("hostName", sensors.at(0)->hostName);
-	element.setAttribute("sensorName", sensors.at(0)->name);
-	element.setAttribute("sensorType", sensors.at(0)->type);
+	element.setAttribute("hostName", sensors().at(0)->hostName());
+	element.setAttribute("sensorName", sensors().at(0)->name());
+	element.setAttribute("sensorType", sensors().at(0)->type());
 	element.setAttribute("tree", (uint) xbTreeView->isChecked());
 	element.setAttribute("filter", cbFilter->currentItem());
 	element.setAttribute("sortColumn", pList->getSortColumn());
@@ -397,7 +397,7 @@ ProcessController::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 	if (!pList->save(doc, element))
 		return (false);
 
-	internAddToDOM(doc, element);
+	SensorDisplay::saveSettings(doc, element);
 
 	if (save)
 		setModified(false);

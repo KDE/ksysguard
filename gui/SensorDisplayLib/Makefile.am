@@ -12,8 +12,10 @@ libsensordisplays_la_SOURCES = \
 	SensorDisplay.cc \
 	BarGraph.cc \
 	DancingBars.cc \
+	DancingBarsSettings.cc \
 	DummyDisplay.cc \
 	FancyPlotter.cc \
+	FancyPlotterSettings.cc \
 	ListView.cc \
 	LogFile.cc \
 	MultiMeter.cc \
@@ -22,8 +24,6 @@ libsensordisplays_la_SOURCES = \
 	ReniceDlg.cc \
 	SensorLogger.cc \
 	SignalPlotter.cc \
-	DancingBarsSettings.ui \
-	FancyPlotterSettings.ui \
 	ListViewSettings.ui \
 	LogFileSettings.ui \
 	MultiMeterSettings.ui \

@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,82 +16,75 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-	Please do not commit any changes without consulting me first. Thanks!
+    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+    Please do not commit any changes without consulting me first. Thanks!
 
-	$Id$
+    $Id$
 */
 
-#ifndef _DancingBars_h_
-#define _DancingBars_h_
-
-#include <qlistview.h>
+#ifndef KSG_DANCINGBARS_H
+#define KSG_DANCINGBARS_H
 
 #include <SensorDisplay.h>
 
-#include "BarGraph.h"
+class KIntNumInput;
 
 class QGroupBox;
 class QLineEdit;
-class KIntNumInput;
+class QListViewItem;
+
+class BarGraph;
 class DancingBarsSettings;
 
 class DancingBars : public KSGRD::SensorDisplay
 {
-	Q_OBJECT
+  Q_OBJECT
 
-public:
-	DancingBars(QWidget* parent = 0, const char* name = 0,
-			const QString& title = QString::null, int min = 0,
-			int max = 100, bool nf = 0);
-	virtual ~DancingBars();
+  public:
+    DancingBars( QWidget *parent = 0, const char *name = 0,
+                 const QString &title = QString::null, int min = 0,
+                 int max = 100, bool noFrame = 0 );
+    virtual ~DancingBars();
 
-	void settings();
+    void configureSettings();
 
-	bool addSensor(const QString& hostName, const QString& sensorName,
-				const QString& sensorType, const QString& title);
-	bool removeSensor(uint idx);
+    bool addSensor( const QString &hostName, const QString &name,
+                    const QString &type, const QString &title );
+    bool removeSensor( uint pos );
 
-	void updateSamples(const QMemArray<double>& newSamples)
-	{
-		plotter->updateSamples(newSamples);
-	}
+    void updateSamples( const QMemArray<double> &samples );
 
-	virtual QSize sizeHint(void);
+    virtual QSize sizeHint();
 
-	virtual void answerReceived(int id, const QString& s);
+    virtual void answerReceived( int id, const QString &answer );
 
-	bool createFromDOM(QDomElement& element);
-	bool addToDOM(QDomDocument& doc, QDomElement& element, bool save = true);
+    bool restoreSettings( QDomElement& );
+    bool saveSettings( QDomDocument&, QDomElement&, bool save = true );
 
-	virtual bool hasSettingsDialog() const
-	{
-		return (true);
-	}
+    virtual bool hasSettingsDialog() const;
 
-public slots:
-	void applySettings();
-	virtual void applyStyle();
-	void settingsEdit();
-	void settingsDelete();
-	void settingsSelectionChanged(QListViewItem*);
+  public slots:
+    void applySettings();
+    virtual void applyStyle();
 
-protected:
-	virtual void resizeEvent(QResizeEvent*);
+  protected:
+    virtual void resizeEvent( QResizeEvent* );
 
-private:
-	uint bars;
+  private:
+    uint mBars;
 
-	BarGraph* plotter;
+    BarGraph* mPlotter;
 
-	DancingBarsSettings* dbs;
+    DancingBarsSettings* mSettingsDialog;
 
-	/* The sample buffer and the flags are needed to store the incoming
-	 * samples for each beam until all samples of the period have been
-	 * received. The flags variable is used to ensure that all samples have
-	 * been received. */
-	QMemArray<double> sampleBuf;
-	ulong flags;
+    /**
+      The sample buffer and the flags are needed to store the incoming
+      samples for each beam until all samples of the period have been
+      received. The flags variable is used to ensure that all samples have
+      been received.
+     */
+    QMemArray<double> mSampleBuffer;
+    ulong mFlags;
 };
 
 #endif

@@ -212,7 +212,7 @@ bool WorkSheet::save( const QString &fileName )
         element.setAttribute( "column", c );
         element.setAttribute( "class", display->className() );
 
-        display->addToDOM( doc, element );
+        display->saveSettings( doc, element );
       }	
 
   QFile file( mFileName );
@@ -379,7 +379,7 @@ void WorkSheet::settings()
     updateInterval( dlg.interval() );
     for (uint r = 0; r < mRows; ++r)
       for (uint c = 0; c < mColumns; ++c)
-        if ( mDisplayList[ r ][ c ]->globalUpdateInterval )
+        if ( mDisplayList[ r ][ c ]->useGlobalUpdateInterval() )
           mDisplayList[ r ][ c ]->setUpdateInterval( updateInterval() );
 
     resizeGrid( dlg.rows(), dlg.columns() );
@@ -390,7 +390,7 @@ void WorkSheet::settings()
 
 void WorkSheet::showPopupMenu( KSGRD::SensorDisplay *display )
 {
-  display->settings();
+  display->configureSettings();
 }
 
 void WorkSheet::setModified( bool modified )
@@ -480,11 +480,11 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
     return false;
   }
 
-  if ( newDisplay->globalUpdateInterval )
+  if ( newDisplay->useGlobalUpdateInterval() )
     newDisplay->setUpdateInterval( updateInterval() );
 
   // load display specific settings
-  if ( !newDisplay->createFromDOM( element ) )
+  if ( !newDisplay->restoreSettings( element ) )
     return false;
 
   replaceDisplay( row, column, newDisplay );
@@ -502,11 +502,11 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
     mDisplayList[ row ][ column ] = new DummyDisplay( this, "DummyDisplay" );
   else {
     mDisplayList[ row ][ column ] = newDisplay;
-    if ( mDisplayList[ row ][ column ]->globalUpdateInterval )
+    if ( mDisplayList[ row ][ column ]->useGlobalUpdateInterval() )
       mDisplayList[ row ][ column ]->setUpdateInterval( updateInterval() );
     connect( newDisplay, SIGNAL( showPopupMenu( KSGRD::SensorDisplay* ) ),
              SLOT( showPopupMenu( KSGRD::SensorDisplay* ) ) );
-    connect( newDisplay, SIGNAL( displayModified( bool ) ),
+    connect( newDisplay, SIGNAL( modified( bool ) ),
              SLOT( setModified( bool ) ) );
   }
 
@@ -543,7 +543,7 @@ void WorkSheet::collectHosts( QStringList &list )
   for ( uint r = 0; r < mRows; ++r )
     for ( uint c = 0; c < mColumns; ++c )
       if ( !mDisplayList[ r ][ c ]->isA( "DummyDisplay" ) )
-        ((KSGRD::SensorDisplay*)mDisplayList[ r ][ c ])->collectHosts( list );
+        ((KSGRD::SensorDisplay*)mDisplayList[ r ][ c ])->hosts( list );
 }
 
 void WorkSheet::createGrid( uint rows, uint columns )
@@ -665,16 +665,18 @@ QString WorkSheet::currentDisplayAsXML()
   QDomElement element = doc.createElement( "display" );
   doc.appendChild( element );
   element.setAttribute( "class", display->className() );
-  display->addToDOM( doc, element );
+  display->saveSettings( doc, element );
 
   return doc.toString();
 }
 
 void WorkSheet::setIsOnTop( bool onTop )
 {
+/*
   for ( uint r = 0; r < mRows; ++r )
     for ( uint c = 0; c < mColumns; ++c )
       mDisplayList[ r ][ c ]->setIsOnTop( onTop );
+*/
 }
 
 #include "WorkSheet.moc"
