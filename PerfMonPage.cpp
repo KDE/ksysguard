@@ -105,9 +105,9 @@ PerfMonPage::PerfMonPage(QWidget* parent = 0, const char* name = 0)
 		for (int c = 0; c < noCpus; c++)
 		{
 			QString name;
-			name.sprintf("cpu%d_meter", c);
+			name = QString("cpu%1_meter").arg(c);
 			QString label;
-			label.sprintf(i18n("CPU%d Load History"), c);
+			label = i18n("CPU%1 Load History").arg(c);
 
 			FancyPlotter* p = new FancyPlotter(this, name, label, 0, 100);
 			p->setLowPass(TRUE);

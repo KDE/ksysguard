@@ -107,7 +107,7 @@ OSProcess::OSProcess(int pid_)
 	error = false;
 
 	QString pidStr;
-	pidStr.sprintf("%d", pid_);
+	pidStr.setNum(pid_);
 
 	if (!read((const void *)pidStr))
 		return;
@@ -121,7 +121,7 @@ OSProcess::read(const void* info)
 	FILE* fd;
 
 	QString buf;
-	buf.sprintf("/proc/%s/status", (const char*) info);
+	buf = QString("/proc/%1/status").arg(info);
 	if((fd = fopen(buf, "r")) == 0)
 	{
 		error = true;
@@ -131,9 +131,9 @@ OSProcess::read(const void* info)
 		 * the process probably has died during the calling of this function.
 		 */
 		if (kill(pid, 0) == 0)
-			errMessage.sprintf(i18n("Cannot open %s!\n"), buf.data());
+			errMessage = i18n("Cannot open %1!\n").arg(buf);
 		else
-			errMessage.sprintf(i18n("The Process has been terminated!\n"));
+			errMessage = i18n("The Process has been terminated!\n");
 
 		return (false);
 	}
@@ -161,11 +161,11 @@ OSProcess::read(const void* info)
 
 	fclose(fd);
 
-    buf.sprintf("/proc/%s/stat", (const char *)info);
+    buf = QString("/proc/%1/stat").arg(info);
 	if ((fd = fopen(buf, "r")) == 0)
 	{
 		error = true;
-		errMessage.sprintf(i18n("Cannot open %s!\n"), buf.data());
+		errMessage = i18n("Cannot open %1!\n").arg(buf);
 		return (false);
 	}
 
@@ -178,11 +178,11 @@ OSProcess::read(const void* info)
 
 	fclose(fd);
 
-    buf.sprintf("/proc/%s/cmdline", (const char *)info);
+    buf = QString("/proc/%1/cmdline").arg(info);
 	if ((fd = fopen(buf, "r")) == 0)
 	{
 		error = true;
-		errMessage.sprintf(i18n("Cannot open %s!\n"), buf.data());
+		errMessage = i18n("Cannot open %1!\n").arg(buf);
 		return (false);
 	}
 	cbuf[0] = '\0';
@@ -372,8 +372,8 @@ OSProcess::setNiceLevel(int newNiceLevel)
 	if (setpriority(PRIO_PROCESS, pid, newNiceLevel) == -1)
 	{
 		error = true;
-		errMessage.sprintf(i18n("Could not set new nice level for process %d"),
-						   pid);
+		errMessage = i18n("Could not set new nice level for process %1")
+						   .arg(pid);
 		return (false);
 	}
 
@@ -386,8 +386,8 @@ OSProcess::sendSignal(int sig)
 	if (kill(pid, sig))
 	{
 		error = true;
-		errMessage.sprintf(i18n("Cound not send signal %d to process %d"),
-						   sig, pid);
+		errMessage = i18n("Cound not send signal %1 to process %2")
+						   .arg(sig).arg(pid);
 		return (false);
 	}
 

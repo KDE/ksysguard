@@ -7,9 +7,6 @@ If you want to join this development please contact me first. Please
 do *NOT* check in unsolicited code as I might am rearranging the code
 and merging becomes a real headache so your code will be lost.
 
-DO NOT DO ANY QT2.0 PORTING OF THE CODE!!! This will start after 1.1.1
-is out!
-
 This does not mean that I don't appreciate your help. Especially
 porting to other platforms is difficult for me. I have introduced a
 nice interface so porting is fairly easy. See OSStatus.cpp if you are

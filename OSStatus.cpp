@@ -232,7 +232,7 @@ OSStatus::getCpuCount(void)
 		QString cpuName;
 		for (cpuCount = 1; ; cpuCount++)
 		{
-			cpuName.sprintf("cpu%d", cpuCount);
+			cpuName = QString("cpu%1").arg(cpuCount);
 			if (!readCpuInfo(cpuName, &dum, &dum, &dum, &dum))
 			{
 				/*
@@ -267,7 +267,7 @@ OSStatus::getCpuXLoad(int cpu, int& user, int& sys, int& nice, int& idle)
 	int currUserTicks, currSysTicks, currNiceTicks, currIdleTicks;
 
 	QString cpuName;
-	cpuName.sprintf("cpu%d", cpu);
+	cpuName = QString("cpu%1").arg(cpu);
 
 	if (!readCpuInfo(cpuName, &currUserTicks, &currSysTicks,
 					 &currNiceTicks, &currIdleTicks))
@@ -373,11 +373,11 @@ OSStatus::readCpuInfo(const char* cpu, int* u, int* s, int* n, int* i)
 		if (fscanf(stat, "%32s %d %d %d %d", tag, u, n, s, i) != 5)
 		{
 			error = true;
-			errMessage.sprintf(i18n("Cannot read info for %s from file "
+			errMessage = i18n("Cannot read info for %1 from file "
 									"\'/proc/stat\'!\n"
 									"The kernel needs to be compiled with "
 									"support\n"
-									"for /proc filesystem enabled!"), cpu);
+									"for /proc filesystem enabled!").arg(cpu);
 			return (false);
 		}
 	} while (strcmp(tag, cpu));

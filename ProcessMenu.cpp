@@ -83,7 +83,7 @@ ProcessMenu::killProcess(int pid, int sig)
 	if (!ps.ok())
 	{
 		QString msg;
-		msg.sprintf(i18n("The process %d is no longer persistent."), pid);
+		msg = i18n("The process %1 is no longer persistent.").arg(pid);
 		QMessageBox::warning(this, i18n("Task Manager"), msg, i18n("OK"),
 							 QString::null);
 		return;
@@ -121,9 +121,12 @@ ProcessMenu::killProcess(int pid, int sig)
 
 	// Make sure user really want to send the signal to that process.
 	QString msg;
-	msg.sprintf(i18n("Send signal %s to process %d?\n"
-					 "(Process name: %s  Owner: %s)\n"), sigName.data(),
-				ps.getPid(), ps.getName(), ps.getUserName().data());
+	msg = i18n("Send signal %1 to process %2?\n"
+					 "(Process name: %3  Owner: %4)\n")
+		.arg(sigName)
+		.arg(ps.getPid())
+		.arg(ps.getName())
+		.arg(ps.getUserName());
 	switch(QMessageBox::warning(this, "Task Manager", msg,
 								i18n("Continue"), i18n("Abort"),\
 								QString::null, 1))
@@ -149,7 +152,7 @@ ProcessMenu::reniceProcess(int pid)
 	if (!ps.ok())
 	{
 		QString msg;
-		msg.sprintf(i18n("The process %d is no longer persistent."), pid);
+		msg = i18n("The process %1 is no longer persistent.").arg(pid);
 		QMessageBox::warning(this, i18n("Task Manager"), msg, i18n("OK"),
 							 QString::null);
 		return;

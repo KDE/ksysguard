@@ -132,17 +132,17 @@ TopLevel::timerEvent(QTimerEvent*)
 {
 	QString s;
 
-	s.sprintf(i18n("%d Processes"), osStatus.getNoProcesses());
+	s = i18n("%1 Processes").arg(osStatus.getNoProcesses());
 	statusbar->changeItem(s, 0);
 
 	int dum, mUsed, mFree;
 	osStatus.getMemoryInfo(dum, mFree, mUsed, dum, dum);
-	s.sprintf(i18n("Memory: %d kB used, %d kB free"), mUsed, mFree);
+	s = i18n("Memory: %1 kB used, %2 kB free").arg(mUsed).arg(mFree);
 	statusbar->changeItem(s, 1);
 
 	int sTotal, sFree;
 	osStatus.getSwapInfo(sTotal, sFree);
-	s.sprintf(i18n("Swap: %d kB used, %d kB free"), sTotal - sFree, sFree);
+	s = i18n("Swap: %1 kB used, %2 kB free").arg(sTotal - sFree).arg(sFree);
 	statusbar->changeItem(s, 2);
 }
 

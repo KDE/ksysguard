@@ -37,11 +37,11 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 	vLay = new QVBoxLayout(this, 20, -1, "ReniceLayout");
 
 	QString msg;
-	msg.sprintf(i18n("You are about the change the scheduling priority of\n"
-					 "process %d. Be aware that only the Superuser (root)\n"
+	msg = i18n("You are about the change the scheduling priority of\n"
+					 "process %1. Be aware that only the Superuser (root)\n"
 					 "can decrease the nice level of a process. The smaller\n"
 					 "the number is the higher is the priority.\n\n"
-					 "Please enter the desired nice level:"), pid);
+					 "Please enter the desired nice level:").arg(pid);
 	message = new QLabel(msg, this);
 	message->setMinimumSize(message->sizeHint());
 	vLay->addWidget(message);

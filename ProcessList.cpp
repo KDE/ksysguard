@@ -603,13 +603,13 @@ ProcessList::addProcess(OSProcess* p, ProcessLVI* pli)
 	QString s;
 
 	// pid
-	pli->setText(col++, s.setNum(p->getPid()).data());
+	pli->setText(col++, s.setNum(p->getPid()));
 
 	TABCOLUMN* tc = &TabCol[2];
 
 	// user name
 	if (tc->visible && tc->supported)
-		pli->setText(col++, p->getUserName().data());
+		pli->setText(col++, p->getUserName());
 	tc++;
 
 	// CPU load
