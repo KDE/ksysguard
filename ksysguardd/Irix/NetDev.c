@@ -202,6 +202,7 @@ int updateNetDev(void)
 		istat=&ifc.ifc_req[i].ifr_stats;
 		//if ( ifc.ifc_req[i].ifr_flags & IFF_UP) {
 			strncpy(NetDevs[i].name,ifc.ifc_req[i].ifr_name, IFNAMSIZ);
+                        NetDevs[i].name[IFNAMSIZ-1]='\0';
 			NetDevs[i].recBytes = (istat->ifs_ipackets - oNetDevs[i].recBytes) * 100 / elapsed;
 			NetDevs[i].recPacks = (istat->ifs_ipackets - oNetDevs[i].recPacks) * 100 / elapsed;
 			NetDevs[i].recErrs = istat->ifs_ierrors - oNetDevs[i].recErrs;
