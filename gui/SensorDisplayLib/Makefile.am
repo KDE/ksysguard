@@ -22,7 +22,6 @@ libsensordisplays_la_SOURCES = \
 	ReniceDlg.cc \
 	SensorLogger.cc \
 	SignalPlotter.cc \
-	BarGraphSettings.ui \
 	DancingBarsSettings.ui \
 	FancyPlotterSettings.ui \
 	ListViewSettings.ui \
@@ -35,7 +34,6 @@ libsensordisplayincludedir = $(includedir)/SensorDisplayLib
 #libsensordisplayinclude_HEADERS = 
 #	SensorDisplay.h 
 #	BarGraph.h 
-#	BarGraphSettings.h 
 #	DancingBars.h 
 #	DancingBarsSettings.h 
 #	DummyDisplay.h 

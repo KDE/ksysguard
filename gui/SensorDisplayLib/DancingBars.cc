@@ -31,6 +31,7 @@
 #include <qtooltip.h>
 
 #include <kdebug.h>
+#include <klineeditdlg.h>
 #include <klocale.h>
 #include <knumvalidator.h>
 
@@ -38,7 +39,6 @@
 #include <ksgrd/SensorManager.h>
 #include <ksgrd/StyleEngine.h>
 
-#include "BarGraphSettings.h"
 #include "DancingBars.moc"
 #include "DancingBarsSettings.h"
 
@@ -189,13 +189,10 @@ DancingBars::settingsEdit()
 	if (!lvi)
 		return;
 
-	BarGraphSettings* bgs = new BarGraphSettings(
-		this, "BarsGraphSettings", true);
-	Q_CHECK_PTR(bgs);
-
-	bgs->label->setText(lvi->text(2));
-	if (bgs->exec())
-		lvi->setText(2, bgs->label->text());
+	KLineEditDlg dlg(i18n("Enter new label:"), lvi->text(2), this);
+	dlg.setCaption(i18n("Label of Bar Graph"));
+	if (dlg.exec())
+		lvi->setText(2, dlg.text());
 }
 
 void
