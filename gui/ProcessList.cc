@@ -192,17 +192,6 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	connect(this, SIGNAL(selectionChanged(QListViewItem *)),
 			SLOT(selectionChangedSlot(QListViewItem*)));
 
-	/* As long as the scrollbar sliders are pressed and hold the process
-	 * list is frozen. */
-	connect(verticalScrollBar(), SIGNAL(sliderPressed(void)),
-			parent, SLOT(timerOff()));
-	connect(verticalScrollBar(), SIGNAL(sliderReleased(void)),
-			parent, SLOT(timerOn()));
-	connect(horizontalScrollBar(), SIGNAL(sliderPressed(void)),
-			parent, SLOT(timerOff()));
-	connect(horizontalScrollBar(), SIGNAL(sliderReleased(void)),
-			parent, SLOT(timerOn()));
-
 	/* We need to catch this signal to show various popup menues. */
 	connect(this,
 			SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)),
@@ -282,7 +271,6 @@ ProcessList::update(const QString& list)
 	 * Ditto for the scrollbar. */
 	setUpdatesEnabled(false);
 	viewport()->setUpdatesEnabled(false);
-//	verticalScrollBar()->setUpdatesEnabled(false);
 
 	pl.clear();
 
@@ -328,10 +316,8 @@ ProcessList::update(const QString& list)
 	// Re-enable painting, and force an update.
 	viewport()->setUpdatesEnabled(true);
 	setUpdatesEnabled(true);
-//	verticalScrollBar()->setUpdatesEnabled(true);
-	//repaint();
-	triggerUpdate();
 
+	triggerUpdate();
 
 	return (TRUE);
 }
