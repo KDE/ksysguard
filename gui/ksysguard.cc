@@ -58,7 +58,7 @@
 
 #include "ksysguard.h"
 
-static const char Description[] = I18N_NOOP( "KDE System Guard" );
+static const char Description[] = I18N_NOOP( "KDE system guard" );
 TopLevel* topLevel;
 
 /**
