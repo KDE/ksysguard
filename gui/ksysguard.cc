@@ -458,7 +458,9 @@ TopLevel::answerReceived(int id, const QString& answer)
 	switch (id)
 	{
 	case 0:
-		s = i18n("%1 Processes").arg(answer);
+		// yes, I know there is never 1 process, but that's the way
+		// singular vs. plural works :/
+		s = i18n("1 Process", "%n Processes", answer);
 		statusbar->changeItem(s, 0);
 		break;
 	case 1:
@@ -574,9 +576,7 @@ main(int argc, char** argv)
 	KAboutData aboutData("ksysguard", I18N_NOOP("KDE System Guard"),
 						 KSYSGUARD_VERSION, Description,
 						 KAboutData::License_GPL,
-						 I18N_NOOP("(c) 1996, 1997, 1998, 1999, 2000, "
-								   "2001, 2002\n"
-								   "The KSysGuard Developers"));
+						 I18N_NOOP("(c) 1996-2002 The KSysGuard Developers"));
 	aboutData.addAuthor("Chris Schlaeger", "Current Maintainer",
 						"cs@kde.org");
 	aboutData.addAuthor("Tobias Koenig", 0, "tokoe82@yahoo.de");
