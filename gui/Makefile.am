@@ -85,5 +85,5 @@ EXTRA_DIST = $(lnk_DATA)
 METASOURCES = AUTO
 
 messages: rc.cpp
-	$(XGETTEXT) *.cpp *.cc -o $(podir)/ksysguard.pot
-
+	$(EXTRACTRC) ksgrd/*.ui >> rc.cpp
+	$(XGETTEXT) ksgrd/*.cpp ksgrd/*.cc *.cpp *.cc -o $(podir)/ksysguard.pot

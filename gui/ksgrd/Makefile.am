@@ -27,6 +27,3 @@ ksgrdinclude_HEADERS = SensorDisplay.h SensorClient.h SensorManager.h \
 
 # just to make sure, automake makes them 
 libksgrd_la_METASOURCES = AUTO
-
-messages: rc.cpp
-	$(XGETTEXT) *.cpp *.cc -o $(podir)/ksysguard.pot
