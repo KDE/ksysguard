@@ -100,8 +100,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
   QWhatsThis::add( mInterval, i18n( "All displays of the sheet are updated at the rate specified here." ) );
   QToolTip::add( mSheetTitle, i18n( "Enter the title of the worksheet here." ) );
 
-  // KAccelManager crashes here with no bt :(
-//  KAcceleratorManager::manage( page );
+  KAcceleratorManager::manage( page );
 
   resize( QSize( 250, 230 ).expandedTo( minimumSizeHint() ) );
 }
