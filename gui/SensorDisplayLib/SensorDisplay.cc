@@ -257,8 +257,8 @@ SensorDisplay::updateWhatsThis()
 		"<qt><p>This is a sensor display. To customize a sensor display click "
 		"and hold the right mouse button on either the frame or the "
 		"display box and select the <i>Properties</i> entry from the popup "
-		"menu. Select <i>Remove</i> to delete the display from the work "
-		"sheet.</p>%1</qt>")).arg(additionalWhatsThis()));
+		"menu. Select <i>Remove</i> to delete the display from the worksheet."
+		"</p>%1</qt>")).arg(additionalWhatsThis()));
 }
 
 void

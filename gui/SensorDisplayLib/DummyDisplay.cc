@@ -37,7 +37,7 @@ DummyDisplay::DummyDisplay(QWidget* parent, const char* name,
 	setMinimumSize(16, 16);
 
 	QWhatsThis::add(this, i18n(
-		"This is an empty space in a work sheet. Drag a sensor from "
+		"This is an empty space in a worksheet. Drag a sensor from "
 		"the Sensor Browser and drop it here. A sensor display will "
 		"appear that allows you to monitor the values of the sensor "
 		"over time."));

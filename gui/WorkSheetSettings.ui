@@ -19,7 +19,7 @@
     </property>
     <property stdset="1">
         <name>caption</name>
-        <string>Work Sheet Properties</string>
+        <string>Worksheet Properties</string>
     </property>
     <grid>
         <property stdset="1">
@@ -255,7 +255,7 @@
                     </property>
                     <property>
                         <name>toolTip</name>
-                        <string>Enter the title of the work sheet here.</string>
+                        <string>Enter the title of the worksheet here.</string>
                     </property>
                 </widget>
             </grid>

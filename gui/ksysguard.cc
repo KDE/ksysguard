@@ -147,8 +147,8 @@ TopLevel::~TopLevel()
 void TopLevel::resetWorkSheets()
 {
 	if ( KMessageBox::questionYesNo( this,
-			i18n( "Do you really want restore the default work sheets?" ),
-			i18n( "Reset all work sheets" ),
+			i18n( "Do you really want to restore the default worksheets?" ),
+			i18n( "Reset All Worksheets" ),
 			KStdGuiItem::yes(), KStdGuiItem::no(),
 			"AskResetWorkSheets") == KMessageBox::No )
 		return;

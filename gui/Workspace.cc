@@ -47,8 +47,8 @@ Workspace::Workspace(QWidget* parent, const char* name)
 			this, SLOT(updateCaption(QWidget*)));
 
 	QWhatsThis::add(this, i18n(
-		"This is your work space. It holds your work sheets. You need "
-		"to create a new work sheet (Menu File->New) before "
+		"This is your work space. It holds your worksheets. You need "
+		"to create a new worksheet (Menu File->New) before "
 		"you can drag sensors here."));
 }
 
@@ -195,7 +195,7 @@ Workspace::loadWorkSheet()
 {
 	KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", true);
 	KURL url = fd.getOpenURL(workDir, "*.sgrd", 0,
-								i18n("Select a work sheet to load"));
+								i18n("Select a worksheet to load"));
 	loadWorkSheet(url);
 }
 
@@ -243,7 +243,7 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 		KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", true);
 		fileName = fd.getSaveFileName(workDir + "/" +
 			tabLabel(sheet) + ".sgrd", "*.sgrd", 0,
-			i18n("Save current work sheet as"));
+			i18n("Save current worksheet as"));
 		if (fileName.isEmpty())
 			return;
 		workDir = fileName.left(fileName.findRev('/'));
@@ -331,7 +331,7 @@ Workspace::deleteWorkSheet()
 	}
 	else
 	{
-		QString msg = i18n("There are no work sheets that "
+		QString msg = i18n("There are no worksheets that "
 						   "could be deleted!");
 		KMessageBox::error(this, msg);
 	}

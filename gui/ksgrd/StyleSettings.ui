@@ -266,7 +266,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>&amp;Apply to Current Work Sheet</string>
+                        <string>&amp;Apply to Current Worksheet</string>
                     </property>
                     <property stdset="1">
                         <name>autoDefault</name>

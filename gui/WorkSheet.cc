@@ -109,7 +109,7 @@ WorkSheet::load(const QString& fN)
 	{
 		KMessageBox::sorry(
 			this,
-			i18n("The file %1 does not contain a valid work sheet "
+			i18n("The file %1 does not contain a valid worksheet "
 				 "definition, which must have a document type "
 				 "'KSysGuardWorkSheet'.").arg(fileName));
 		return (false);
@@ -126,7 +126,7 @@ WorkSheet::load(const QString& fN)
 	if (!(rowsOk && columnsOk))
 	{
 		KMessageBox::sorry(
-			this, i18n("The file %1 has an invalid work sheet size.")
+			this, i18n("The file %1 has an invalid worksheet size.")
 			.arg(fileName));
 		return (false);
 	}
