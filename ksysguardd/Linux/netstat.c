@@ -265,9 +265,10 @@ updateNetStatTcpUdpRaw(const char *cmd)
 {
 	FILE *netstat;
 	char buffer[1024];
-	int local_addr, local_port;
-	int remote_addr, remote_port;
-	int state, uid, i;
+	uint local_addr, local_port;
+	uint remote_addr, remote_port;
+	int uid, i;
+	uint state;
 	SocketInfo *socket_info;
 
 	if (strstr(cmd, "tcp")) {
@@ -461,6 +462,7 @@ printNetStatTcpUdpRaw(const char *cmd)
 void
 printNetStatTcpUdpRawInfo(const char *cmd)
 {
+	(void) cmd;
 	fprintf(CurrentClient, "Local Address\tPort\tForeign Address\tPort\tState\tUID\ns\ts\ts\ts\ts\td\n");
 }
 
@@ -468,6 +470,7 @@ void printNetStatUnix(const char *cmd)
 {
 	UnixInfo* unix_info;
 
+	(void) cmd;
 	if ((time(0) - Unix_timeStamp) >= UPDATEINTERVAL)
 		updateNetStatUnix();
 	
@@ -486,5 +489,6 @@ void printNetStatUnix(const char *cmd)
 
 void printNetStatUnixInfo(const char *cmd)
 {
+	(void) cmd;
 	fprintf(CurrentClient, "RefCount\tType\tState\tInode\tPath\nd\ts\ts\td\ts\n");
 }

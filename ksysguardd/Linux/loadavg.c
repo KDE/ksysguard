@@ -105,6 +105,7 @@ updateLoadAvg(void)
 void
 printLoadAvg1(const char* c)
 {
+	(void) c;
 	if (Dirty)
 		processLoadAvg();
 
@@ -114,12 +115,14 @@ printLoadAvg1(const char* c)
 void
 printLoadAvg1Info(const char* c)
 {
+	(void) c;
 	fprintf(CurrentClient, "Load average 1 min\t0\t0\t\n");
 }
 
 void
 printLoadAvg5(const char* c)
 {
+	(void) c;
 	if (Dirty)
 		processLoadAvg();
 
@@ -129,12 +132,14 @@ printLoadAvg5(const char* c)
 void
 printLoadAvg5Info(const char* c)
 {
+	(void) c;
 	fprintf(CurrentClient, "Load average 5 min\t0\t0\t\n");
 }
 
 void
 printLoadAvg15(const char* c)
 {
+	(void) c;
 	if (Dirty)
 		processLoadAvg();
 
@@ -144,5 +149,6 @@ printLoadAvg15(const char* c)
 void
 printLoadAvg15Info(const char* c)
 {
+	(void) c;
 	fprintf(CurrentClient, "Load average 15 min\t0\t0\t\n");
 }

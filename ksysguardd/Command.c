@@ -251,6 +251,7 @@ printMonitors(const char *c)
 	int i;
 	ReconfigureFlag = 0;
 
+	(void) c;
 	for (i = 0; i < level_ctnr(CommandList); i++)
 	{
 		Command* cmd = (Command*) get_ctnr(CommandList, i);
@@ -284,5 +285,6 @@ printTest(const char* c)
 void
 exQuit(const char* cmd)
 {
+	(void) cmd;
 	QuitApp = 1;
 }

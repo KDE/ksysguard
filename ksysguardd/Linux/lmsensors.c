@@ -52,19 +52,19 @@ sensorCmp(void* s1, void* s2)
 static LMSENSOR*
 findMatchingSensor(const char* name)
 {
-	long index;
+	long idx;
 	LMSENSOR key;
 	LMSENSOR* s;
 
 	key.fullName = (char*) malloc(strlen(name) + 1);
 	strcpy(key.fullName, name);
-	if ((index = search_ctnr(LmSensors, sensorCmp, &key)) < 0)
+	if ((idx = search_ctnr(LmSensors, sensorCmp, &key)) < 0)
 	{
 		free(key.fullName);
 		return (0);
 	}
 	free(key.fullName);
-	s = get_ctnr(LmSensors, index);
+	s = get_ctnr(LmSensors, idx);
 
 	return (s);
 }

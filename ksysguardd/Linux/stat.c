@@ -107,16 +107,16 @@ static unsigned long* OldIntr = 0;
 static unsigned long* Intr = 0;
 
 static int initStatDisk(char* tag, char* buf, const char* label, const char* shortLabel,
-						int index, cmdExecutor ex, cmdExecutor iq);
+						int idx, cmdExecutor ex, cmdExecutor iq);
 static void updateCPULoad(const char* line, CPULoadInfo* load);
-static int processDisk(char* tag, char* buf, const char* label, int index);
+static int processDisk(char* tag, char* buf, const char* label, int idx);
 static void processStat(void);
 static int processDiskIO(const char* buf);
 static void cleanupDiskList(void);
 
 static int
-initStatDisk(char* tag, char* buf, const char* label, const char* shortLabel, int index,
-			 cmdExecutor ex, cmdExecutor iq)
+initStatDisk(char* tag, char* buf, const char* label, const char* shortLabel,
+			 int idx, cmdExecutor ex, cmdExecutor iq)
 {
 	char sensorName[128];
 
@@ -129,7 +129,7 @@ initStatDisk(char* tag, char* buf, const char* label, const char* shortLabel, in
 		
 		for (i = 0; i < DiskCount; ++i)
 		{
-			sscanf(buf, "%lu", &DiskLoad[i].s[index].old);
+			sscanf(buf, "%lu", &DiskLoad[i].s[idx].old);
 			while (*buf && isblank(*buf++))
 				;
 			while (*buf && isdigit(*buf++))
@@ -179,7 +179,7 @@ updateCPULoad(const char* line, CPULoadInfo* load)
 }
 
 static int
-processDisk(char* tag, char* buf, const char* label, int index)
+processDisk(char* tag, char* buf, const char* label, int idx)
 {
 	if (strcmp(label, tag) == 0)
 	{
@@ -194,8 +194,8 @@ processDisk(char* tag, char* buf, const char* label, int index)
 				;
 			while (*buf && isdigit(*buf++))
 				;
-			DiskLoad[i].s[index].delta = val - DiskLoad[i].s[index].old;
-			DiskLoad[i].s[index].old = val;
+			DiskLoad[i].s[idx].delta = val - DiskLoad[i].s[idx].old;
+			DiskLoad[i].s[idx].old = val;
 		}
 		return (1);
 	}

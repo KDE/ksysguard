@@ -20,6 +20,7 @@
 */
 
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include <pwd.h>
 #include <sys/types.h>
@@ -75,7 +76,7 @@ getCachedPWUID(uid_t uid)
 {
 	CachedPWUID key;
 	CachedPWUID* entry = 0;
-	long index;
+	long idx;
 	time_t stamp;
 
 	stamp = time(0);
@@ -95,7 +96,7 @@ getCachedPWUID(uid_t uid)
 	}
 
 	key.uid = uid;
-	if ((index = search_ctnr(UIDCache, uidCmp, &key)) < 0)
+	if ((idx = search_ctnr(UIDCache, uidCmp, &key)) < 0)
 	{
 		struct passwd* pwent;
 
@@ -121,7 +122,7 @@ getCachedPWUID(uid_t uid)
 	else
 	{
 		/* User is is already known */
-		entry = get_ctnr(UIDCache, index);
+		entry = get_ctnr(UIDCache, idx);
 	}
 
 	return (entry->uName);

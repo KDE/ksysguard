@@ -97,6 +97,7 @@ void printLogFile(const char* cmd)
 
 void printLogFileInfo(const char* cmd)
 {
+	(void) cmd;
 	fprintf(CurrentClient, "LogFile\n");
 }
 
@@ -166,6 +167,7 @@ void printRegistered(const char* cmd)
 {
 	LogFileEntry *entry;
 
+	(void) cmd;
 	for (entry = first_ctnr(LogFiles); entry; entry = next_ctnr(LogFiles)) {
 		fprintf(CurrentClient, "%s:%lu\n", entry->name, entry->id);
 	}

@@ -94,7 +94,7 @@ void printNetDev##a##Info(const char* cmd);
 
 typedef struct
 {
-	FORALL(DEFMEMBERS);
+	FORALL(DEFMEMBERS)
 	char name[32];
 } NetDevInfo;
 
@@ -389,6 +389,7 @@ printNetDev##a(const char* cmd) \
 void \
 printNetDev##a##Info(const char* cmd) \
 { \
+	(void)cmd; \
 	fprintf(CurrentClient, "%s\t0\t0\t%s\n", c, d); \
 }
 

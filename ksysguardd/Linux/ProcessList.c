@@ -162,13 +162,13 @@ static ProcessInfo*
 findProcessInList(int pid)
 {
 	ProcessInfo key;
-	long index;
+	long idx;
 
 	key.pid = pid;
-	if ((index = search_ctnr(ProcessList, processCmp, &key)) < 0)
+	if ((idx = search_ctnr(ProcessList, processCmp, &key)) < 0)
 		return (0);
 
-	return (get_ctnr(ProcessList, index));
+	return (get_ctnr(ProcessList, idx));
 }
 
 static int
@@ -438,6 +438,7 @@ exitProcessList(void)
 void
 printProcessListInfo(const char* cmd)
 {
+	(void)cmd;
 	fprintf(CurrentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize"
 		   "\tVmRss\tLogin\tCommand\n");
 	fprintf(CurrentClient, "s\td\td\td\td\tS\tf\tf\td\td\td\ts\ts\n");
@@ -448,6 +449,7 @@ printProcessList(const char* cmd)
 {
 	ProcessInfo* ps;
 
+	(void)cmd;
 	for (ps = first_ctnr(ProcessList); ps; ps = next_ctnr(ProcessList))
 	{
 		fprintf(CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d"
@@ -465,12 +467,14 @@ printProcessList(const char* cmd)
 void
 printProcessCount(const char* cmd)
 {
+	(void)cmd;
 	fprintf(CurrentClient, "%d\n", ProcessCount);
 }
 
 void
 printProcessCountInfo(const char* cmd)
 {
+	(void)cmd;
 	fprintf(CurrentClient, "Number of Processes\t0\t0\t\n");
 }
 

@@ -104,6 +104,7 @@ updateApm(void)
 void
 printApmBatFill(const char* c)
 {
+	(void)c;
 	if (Dirty)
 		processApm();
 
@@ -113,12 +114,14 @@ printApmBatFill(const char* c)
 void
 printApmBatFillInfo(const char* c)
 {
+	(void)c;
 	fprintf(CurrentClient, "Battery charge\t0\t100\t%%\n");
 }
 
 void
 printApmBatTime(const char* c)
 {
+	(void)c;
 	if (Dirty)
 		processApm();
 
@@ -128,5 +131,6 @@ printApmBatTime(const char* c)
 void
 printApmBatTimeInfo(const char* c)
 {
+	(void)c;
 	fprintf(CurrentClient, "Remaining battery time\t0\t0\tmin\n");
 }

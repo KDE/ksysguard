@@ -64,7 +64,7 @@ void makeDaemon(void);
 void resetClientList(void);
 int addClient(int client);
 int delClient(int client);
-int createServerSocket();
+int createServerSocket(void);
 
 /* This variable is set to 1 if a module requests that the daemon should
  * be terminated. */
@@ -313,7 +313,7 @@ createServerSocket()
 {
 	int i = 1;
 	int newSocket;
-	struct sockaddr_in sin;
+	struct sockaddr_in s_in;
 	struct servent *service;
 
 	if ((newSocket = socket(PF_INET, SOCK_STREAM, 0)) < 0) 
@@ -338,12 +338,12 @@ createServerSocket()
 			SocketPort = htons(service->s_port);
 	}
 
-	memset(&sin, 0, sizeof(struct sockaddr_in));
-	sin.sin_family = AF_INET;
-	sin.sin_addr.s_addr = htonl(INADDR_ANY);
-	sin.sin_port = htons(SocketPort);
+	memset(&s_in, 0, sizeof(struct sockaddr_in));
+	s_in.sin_family = AF_INET;
+	s_in.sin_addr.s_addr = htonl(INADDR_ANY);
+	s_in.sin_port = htons(SocketPort);
 
-	if (bind(newSocket, (struct sockaddr*) &sin, sizeof(sin)) < 0)
+	if (bind(newSocket, (struct sockaddr*) &s_in, sizeof(s_in)) < 0)
 	{
 		log_error("Cannot bind to port %d", SocketPort);
 		return -1;
@@ -425,7 +425,7 @@ handleTimerEvent(struct timeval* tv, struct timeval* last)
 }
 
 static void
-handleSocketTraffic(int socket, const fd_set* fds)
+handleSocketTraffic(int socketNo, const fd_set* fds)
 {
 	char cmdBuf[CMDBUFSIZE];
 
@@ -433,20 +433,20 @@ handleSocketTraffic(int socket, const fd_set* fds)
 	{
 		int i;
 
-		if (FD_ISSET(socket, fds))
+		if (FD_ISSET(socketNo, fds))
 		{
-			int clientSocket;
+			int clientsocket;
 			struct sockaddr addr;
 			socklen_t addr_len = sizeof(struct sockaddr);
 
 			/* a new connection */
-			if ((clientSocket = accept(socket, &addr, &addr_len)) < 0)
+			if ((clientsocket = accept(socketNo, &addr, &addr_len)) < 0)
 			{
 				log_error("accept()");
 				exit(1);
 			}
 			else
-				addClient(clientSocket);
+				addClient(clientsocket);
 		}
 
 		for (i = 0; i < MAX_CLIENTS; i++)
