@@ -1,18 +1,18 @@
 Begin3
-Title: 		ktop - taskmanager / performance monitor
+Title: 		KTop - The KDE Task Manager
 Version: 	0.9.9
-Entered-date:   Jan xx 99
+Entered-date:   Feb 08 99
 Entered-by: 	cs@axys.de (Chris Schlaeger)
-Description: 	A taskmanager and performance monitor.
-Keywords: 	KDE, Qt, gui, X11, top, performance, cpu, process
+Description: 	The KDE Task Manager
+Keywords: 	KDE, Qt, gui, X11, top, ps, pstree, load, cpu, process
 Author1: 	alex@darkstar.ping.at (Alexander Sanda)
 Author2: 	wuebben@kde.org (Bernd Johannes Wuebben)
 Author3: 	ralf@bj-ig.de (Ralf Mueller)
 Author4: 	nicknet@planete.net (Nicolas Leclercq)
 Author5:	cs@axys.de (Chris Schlaeger)
 Maintained-by: 	cs@axys.de (Chris Schlaeger)
-Primary-site: 	ftp://ftp.kde.org/pub/kde/stable/1.1pre2/apps/utils/
-Platform: 	Linux, needs Qt 1.4x and the kde libs 1.x
+Primary-site: 	ftp://ftp.kde.org
+Platform: 	Linux 2.x or FreeBSD, needs Qt 1.4x and the KDE 1.x libs
 Copying-policy: GPL 
 End
 
