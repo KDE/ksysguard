@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,6 +29,12 @@
 
 class SensorManagerIterator;
 
+/**
+ * The SensorManager handles all interaction with the connected
+ * hosts. Connections to a specific hosts are handled by
+ * SensorAgents. Use engage() to establish a connection and
+ * disengage() to terminate the connection.
+ */
 class SensorManager : public QObject
 {
 	Q_OBJECT
@@ -40,9 +45,13 @@ public:
 	SensorManager();
 	~SensorManager();
 
-	SensorAgent* engage(const QString& hostname, const QString& shell = "ssh",
-						const QString& command = "");
-	void disengage(const SensorAgent* sensor);
+	bool engage(const QString& hostname, const QString& shell = "ssh",
+				const QString& command = "");
+	bool disengage(const SensorAgent* sensor);
+	bool disengage(const QString& hostname);
+
+	bool sendRequest(const QString& hostname, const QString& req,
+					 SensorClient* client, int id = 0);
 
 	const QString getHostName(const SensorAgent* sensor) const;
 

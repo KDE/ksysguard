@@ -71,7 +71,7 @@ ProcessMenu::handler(int id)
 }
 
 void 
-ProcessMenu::killProcess(int pid, int sig)
+ProcessMenu::killProcess(int /* pid*/, int /*sig*/)
 {
 #if 0
 	if (pid < 0)
@@ -141,7 +141,7 @@ ProcessMenu::killProcess(int pid, int sig)
 }
 
 void
-ProcessMenu::reniceProcess(int pid)
+ProcessMenu::reniceProcess(int /*pid*/)
 {
 #if 0
 	assert(pid >= 0);

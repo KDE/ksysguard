@@ -85,10 +85,10 @@ TopLevel::TopLevel(const char *name, int)
 							   "8888888 kB free"), 2);
 	setStatusBar(statusbar);
 
-	localhost = SensorMgr->engage("localhost", "", "ssh ktopd");
+	SensorMgr->engage("localhost", "", "ktopd");
 	/* Request info about the swapspace size and the units it is measured in.
 	 * The requested info will be received by answerReceived(). */
-	localhost->sendRequest("memswap?", (SensorClient*) this, 5);
+	SensorMgr->sendRequest("localhost", "memswap?", (SensorClient*) this, 5);
 
 	// call timerEvent to fill the status bar with real values
 	timerEvent(0);
@@ -166,6 +166,7 @@ TopLevel::connectHost()
 void 
 TopLevel::disconnectHost()
 {
+	sb->disconnect();
 }
 
 void
@@ -173,10 +174,10 @@ TopLevel::timerEvent(QTimerEvent*)
 {
 	/* Request some info about the memory status. The requested information
 	 * will be received by answerReceived(). */
-	localhost->sendRequest("pscount", (SensorClient*) this, 0);
-	localhost->sendRequest("memfree", (SensorClient*) this, 1);
-	localhost->sendRequest("memused", (SensorClient*) this, 2);
-	localhost->sendRequest("memswap", (SensorClient*) this, 3);
+	SensorMgr->sendRequest("localhost", "pscount", (SensorClient*) this, 0);
+	SensorMgr->sendRequest("localhost", "memfree", (SensorClient*) this, 1);
+	SensorMgr->sendRequest("localhost", "memused", (SensorClient*) this, 2);
+	SensorMgr->sendRequest("localhost", "memswap", (SensorClient*) this, 3);
 }
 
 void

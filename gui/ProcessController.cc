@@ -28,6 +28,7 @@
 #include <klocale.h>
 
 #include "ktop.h"
+#include "SensorManager.h"
 #include "ProcessController.moc"
 
 #define NONE -1
@@ -121,11 +122,11 @@ ProcessController::resizeEvent(QResizeEvent* ev)
 }
 
 bool
-ProcessController::addSensor(SensorAgent* sa, const QString& /* sensorName */,
+ProcessController::addSensor(const QString& hostName,
+							 const QString& /* sensorName */,
 							 const QString& /* title */)
 {
-	sensorAgent = sa;
-	sa->sendRequest("ps?", (SensorClient*) this, 1);
+	SensorMgr->sendRequest(hostName, "ps?", (SensorClient*) this, 1);
 
 	return (TRUE);
 }

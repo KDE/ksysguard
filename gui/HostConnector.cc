@@ -64,11 +64,11 @@ HostConnector::HostConnector(QWidget* parent, const char* name) :
 	subLay->addWidget(rshButton);
 	subLay->addStretch(1);
 	
-	otherButton = new QRadioButton(i18n("other"), this);
+	otherButton = new QRadioButton(i18n("custom"), this);
 	CHECK_PTR(otherButton);
 	subLay->addWidget(otherButton);
 	subLay->addStretch(1);
-	
+
 	// Command entry line
 	createTextEntry(i18n("Command:"), commandLbl, commandLE);
 
@@ -86,11 +86,10 @@ HostConnector::HostConnector(QWidget* parent, const char* name) :
 	CHECK_PTR(okButton);
 	okButton->setMaximumSize(100, 30);
 	okButton->setMinimumSize(100, 30);
+	okButton->setFocus();
 	connect(okButton, SIGNAL(clicked()), SLOT(okClicked()));
 	subLay->addWidget(okButton);
 	subLay->addStretch(1);
-
-	sshClicked();
 
 	cancelButton = new QPushButton(i18n("&Cancel"), this);
 	CHECK_PTR(cancelButton);
@@ -101,6 +100,9 @@ HostConnector::HostConnector(QWidget* parent, const char* name) :
 	subLay->addStretch(1);
 
 	vLay->activate();
+
+	sshButton->setChecked(true);
+	commandLE->setEnabled(false);
 }
 
 HostConnector::~HostConnector()

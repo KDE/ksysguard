@@ -74,6 +74,19 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 }
 
 void
+SensorBrowser::disconnect()
+{
+	QListIterator<HostInfo> it(hostInfos);
+
+	for (; it.current(); ++it)
+		if ((*it)->getLVI()->isSelected())
+		{
+			debug("Disconnecting %s", (*it)->getHostName().ascii());
+			SensorMgr->disengage((*it)->getSensorAgent());
+		}
+}
+
+void
 SensorBrowser::update()
 {
 	SensorManagerIterator it(sensorManager);
@@ -88,7 +101,7 @@ SensorBrowser::update()
 		QListViewItem* lvi = new QListViewItem(this, hostName);
 		CHECK_PTR(lvi);
 
-		HostInfo* hostInfo = new HostInfo(hostName, lvi);
+		HostInfo* hostInfo = new HostInfo(host, hostName, lvi);
 		CHECK_PTR(hostInfo);
 		hostInfos.append(hostInfo);
 

@@ -30,7 +30,6 @@
 
 #include "SensorClient.h"
 #include "SensorDisplay.h"
-#include "SensorAgent.h"
 
 #define NONE -1
 
@@ -48,8 +47,8 @@ public:
 	SensorDisplay(QWidget* parent = 0, const char* name = 0);
 	~SensorDisplay();
 
-	void registerSensor(SensorAgent* sensorAgent, const QString& sensorName);
-	virtual bool addSensor(SensorAgent*, const QString&, const QString&)
+	void registerSensor(const QString& hostName, const QString& sensorName);
+	virtual bool addSensor(const QString&, const QString&, const QString&)
 	{
 		return (false);
 	}
@@ -90,8 +89,8 @@ private:
 
 	int timerInterval;
 
+	QList<const QString> hostNames;
 	QList<const QString> sensorNames;
-	QList<SensorAgent> sensorAgents;
 } ;
 
 #endif

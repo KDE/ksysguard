@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -66,6 +65,18 @@ public:
 	bool start(const QString& host, const QString& shell,
 			   const QString& command = "");
 
+	/**
+	 * This function should only be used by the the SensorManager and
+	 * never by the SensorClients directly since the pointer returned by
+	 * engaged is not guaranteed to be valid. Only the SensorManager knows
+	 * whether a SensorAgent pointer is still valid or not.
+	 *
+	 * This function sends out a command to the sensor and notifies the
+	 * agent to return the answer to 'client'. The 'id' can be used by the
+	 * client to identify the answer. It is only passed through and never
+	 * used by the SensorAgent. So it can be any value the client suits to
+	 * use.
+	 */
 	bool sendRequest(const QString& req, SensorClient* client, int id = 0);
 
 private slots:

@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,6 +32,7 @@
 
 class QMouseEvent;
 class SensorManager;
+class SensorAgent;
 
 class SensorInfo
 {
@@ -74,11 +74,17 @@ private:
 class HostInfo
 {
 public:
-	HostInfo(const QString& n, QListViewItem* l) : hostName(n), lvi(l)
+	HostInfo(const SensorAgent* a, const QString& n, QListViewItem* l) :
+		sensorAgent(a), hostName(n), lvi(l)
 	{
 		sensors.setAutoDelete(TRUE);
 	}
 	~HostInfo() { }
+
+	const SensorAgent* getSensorAgent() const
+	{
+		return (sensorAgent);
+	}
 
 	const QString& getHostName() const
 	{
@@ -129,7 +135,9 @@ public:
 	}
 
 private:
-	QString hostName;
+	const SensorAgent* sensorAgent;
+
+	const QString hostName;
 
 	/// pointer to the entry in the browser QListView
 	QListViewItem* lvi;
@@ -150,6 +158,7 @@ public:
 	~SensorBrowser() { }
 
 public slots:
+	void disconnect();
 	void update();
 
 protected:

@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -45,7 +44,7 @@ public:
 				 int max = 100);
 	~FancyPlotter();
 
-	bool addSensor(SensorAgent* sensorAgent, const QString& sensorName,
+	bool addSensor(const QString& hostName, const QString& sensorName,
 				   const QString& title);
 
 	void addSample(int s0, int s1 = 0, int s2 = 0, int s3 = 0, int s4 = 0)

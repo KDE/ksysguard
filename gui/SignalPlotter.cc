@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -54,7 +54,7 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name, int min,
 
 SignalPlotter::~SignalPlotter()
 {
-	for (int i = 0; i < MAXBEAMS; i++)
+	for (int i = 0; i < beams; i++)
 		delete [] beamData[i];
 }
 

@@ -63,7 +63,7 @@ FancyPlotter::~FancyPlotter()
 }
 
 bool
-FancyPlotter::addSensor(SensorAgent* sensorAgent, const QString& sensorName,
+FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 						const QString& title)
 {
 	static QColor cols[] = { blue, red, yellow, cyan, magenta };
@@ -77,13 +77,13 @@ FancyPlotter::addSensor(SensorAgent* sensorAgent, const QString& sensorName,
 	if (!multiMeter->addMeter(title, cols[beams]))
 		return (false);
 
-	registerSensor(sensorAgent, sensorName);
+	registerSensor(hostName, sensorName);
 	++beams;
 
 	/* To differentiate between answers from value requests and info
 	 * requests we add 100 to the beam index for info requests. */
-	sensorAgent->sendRequest(sensorName + "?", (SensorClient*) this,
-							 beams + 100);
+	SensorMgr->sendRequest(hostName, sensorName + "?", (SensorClient*) this,
+						   beams + 100);
 
 	return (true);
 }

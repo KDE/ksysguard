@@ -1,11 +1,11 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    version 2 as published by the Free Software Foundation.
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -81,7 +81,7 @@ public:
 		sensorAgent->sendRequest("ps?", (SensorClient*) this, 2);
 	}
 
-	virtual bool addSensor(SensorAgent*, const QString&, const QString&);
+	virtual bool addSensor(const QString&, const QString&, const QString&);
 
 	virtual void answerReceived(int id, const QString& answer);
 

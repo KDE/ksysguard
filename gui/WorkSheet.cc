@@ -45,9 +45,7 @@ void
 WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 					  const QString& sensorType, SensorDisplay* current)
 {
-	SensorAgent* sensor = SensorMgr->engage(hostName);
-
-	if (!sensor)
+	if (!SensorMgr->engage(hostName))
 	{
 		QString msg = i18n("Unknown hostname \'%1\' or sensor \'%2\'!")
 			.arg(hostName).arg(sensorName);
@@ -88,7 +86,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 		displays.append(current);
 	}
 
-	current->addSensor(sensor, sensorName, "Test");
+	current->addSensor(hostName, sensorName, "Test");
 }
 
 void

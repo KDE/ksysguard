@@ -25,6 +25,7 @@
 
 #include "SensorDisplay.h"
 #include "SensorDisplay.moc"
+#include "SensorManager.h"
 
 SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 	QWidget(parent, name)
@@ -42,20 +43,21 @@ SensorDisplay::~SensorDisplay()
 }
 
 void
-SensorDisplay::registerSensor(SensorAgent* sensorAgent,
+SensorDisplay::registerSensor(const QString& hostName,
 							  const QString& sensorName)
 {
-	sensorAgents.append(sensorAgent);
+	hostNames.append(new QString(hostName));
 	sensorNames.append(new QString(sensorName));
 }
 
 void
 SensorDisplay::timerEvent(QTimerEvent*)
 {
-	QListIterator<SensorAgent> saIt(sensorAgents);	
+	QListIterator<const QString> hnIt(hostNames);
 	QListIterator<const QString> snIt(sensorNames);
 
-	for (int i = 0; saIt.current(); ++saIt, ++snIt, ++i)
-		saIt.current()->sendRequest(*snIt.current(), (SensorClient*) this, i);
+	for (int i = 0; hnIt.current(); ++hnIt, ++snIt, ++i)
+		SensorMgr->sendRequest(*hnIt.current(), *snIt.current(),
+							   (SensorClient*) this, i);
 }
 

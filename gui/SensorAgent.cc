@@ -143,7 +143,14 @@ SensorAgent::msgSent(KProcess*)
 void 
 SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 {
-	answerBuffer += QString(buffer).left(buflen);
+	if (buflen > 0)
+	{
+		char* aux = new char[buflen + 1];
+		strncpy(aux, buffer, buflen);
+		aux[buflen] = '\0';
+		answerBuffer += QString(aux);
+		delete [] aux;
+	}
 
 	int end;
 	while ((end = answerBuffer.find("\nktopd> ")) > 0)
@@ -179,10 +186,16 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 }
 
 void
-SensorAgent::errMsgRcvd(KProcess*, char* buffer, int /* buflen */)
+SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 {
-	/* TODO: Better error handling */
-	debug("RCVD Error: %s", buffer);
+	if (buflen > 0)
+	{
+		char* aux = new char[buflen + 1];
+		strncpy(aux, buffer, buflen);
+		aux[buflen] = '\0';
+		debug("RCVD Error: %s", aux);
+		delete [] aux;
+	}
 	sensorManager->disengage(this);
 }
 

@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -38,7 +37,7 @@ SensorManager::~SensorManager()
 {
 }
 
-SensorAgent*
+bool
 SensorManager::engage(const QString& hostname, const QString& shell,
 					  const QString& command)
 {
@@ -47,14 +46,21 @@ SensorManager::engage(const QString& hostname, const QString& shell,
 	if ((ktopd = sensors.find(hostname)) == 0)
 	{
 		ktopd = new SensorAgent(this);
-		ktopd->start(hostname.ascii(), shell, command);
+		CHECK_PTR(ktopd);
+		if (!ktopd->start(hostname.ascii(), shell, command))
+		{
+			delete ktopd;
+			return (FALSE);
+		}
 		sensors.insert(hostname, ktopd);
 		emit update();
+		return (TRUE);
 	}
-	return (ktopd);
+
+	return (TRUE);
 }
 
-void
+bool
 SensorManager::disengage(const SensorAgent* sa)
 {
 	QDictIterator<SensorAgent> it(sensors);
@@ -64,7 +70,38 @@ SensorManager::disengage(const SensorAgent* sa)
 		{
 			sensors.remove(it.currentKey());
 			emit update();
+			return (TRUE);
 		}
+
+	return (FALSE);
+}
+
+bool
+SensorManager::disengage(const QString& hostname)
+{
+	SensorAgent* ktopd;
+	if ((ktopd = sensors.find(hostname)) != 0)
+	{
+		sensors.remove(hostname);
+		emit update();
+		return (TRUE);
+	}
+
+	return (FALSE);
+}
+
+bool
+SensorManager::sendRequest(const QString& hostname, const QString& req,
+						   SensorClient* client, int id)
+{
+	SensorAgent* ktopd;
+	if ((ktopd = sensors.find(hostname)) != 0)
+	{
+		ktopd->sendRequest(req, client, id);
+		return (TRUE);
+	}
+
+	return (FALSE);
 }
 
 const QString
