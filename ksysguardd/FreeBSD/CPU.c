@@ -20,28 +20,22 @@
 	$Id$
 */
 
+#include <sys/types.h>
 #include <sys/dkstat.h>
+#include <sys/sysctl.h>
+
 #include <devstat.h>
 #include <fcntl.h>
-#include <kvm.h>
 #include <nlist.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 
 #include "CPU.h"
 #include "Command.h"
 #include "ksysguardd.h"
 
 long percentages(int cnt, int *out, long *new, long *old, long *diffs);
-
-struct nlist my_nlist[] = {
-	{"_cp_time"},
-	{ 0 }
-};
-
-kvm_t *kd;
 
 unsigned long cp_time_offset;
 
@@ -62,9 +56,6 @@ initCpuInfo(struct SensorModul* sm)
 			printCPUSysInfo, sm);
 	registerMonitor("cpu/idle", "integer", printCPUIdle,
 			printCPUIdleInfo, sm);
-	kd = kvm_open(NULL, NULL, NULL, O_RDONLY, "kvm_open");
-	kvm_nlist(kd, my_nlist);
-	cp_time_offset = my_nlist[0].n_value;
 
 	updateCpuInfo();
 }
@@ -72,13 +63,12 @@ initCpuInfo(struct SensorModul* sm)
 void
 exitCpuInfo(void)
 {
-	kvm_close(kd);
 }
 
 int
 updateCpuInfo(void)
 {
-        kvm_read(kd, cp_time_offset, (char *)cp_time, sizeof(cp_time));
+        sysctlbyname("kern.cp_time", &cp_time, sizeof(cp_time), NULL, 0);
         percentages(CPUSTATES, cpu_states, cp_time, cp_old, cp_diff);
 	return (0);
 }
