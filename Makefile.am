@@ -45,7 +45,7 @@ DISTCLEANFILES = $(BUILTSOURCES)
 
 # make messages.po. Move this one to ../po/ and "make merge" in po
 messages:
-	$(XGETTEXT) -C -ktranslate -kktr  $(ktop_SOURCES)
+	$(XGETTEXT) -C -ktranslate -kktr -x$(includedir)/kde.pot $(ktop_SOURCES) && mv messages.po ../po/ktop.pot
 
 # just install datas here. Use install-exec-data for scripts and etc.
 # the binary itself is already installed from automake
