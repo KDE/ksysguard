@@ -38,10 +38,8 @@
 #include "OSStatus.h"
 #include "ktop.moc"
 
-//#define KTOP_MIN_W	549
-//#define KTOP_MIN_H	446
-#define KTOP_MIN_W	40
-#define KTOP_MIN_H	40
+#define KTOP_MIN_W	500
+#define KTOP_MIN_H	380
 
 /*
  * Global variables
@@ -85,6 +83,8 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 
 	connect(taskman, SIGNAL(enableRefreshMenu(bool)),
 			menubar, SLOT(enableRefreshMenu(bool)));
+
+	setMinimumSize(KTOP_MIN_W, KTOP_MIN_H);
 
 	/*
 	 * Restore size of the dialog box that was used at end of last session.

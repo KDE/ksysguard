@@ -36,8 +36,10 @@
  * features. This is planned for KTop versions after 1.0.0!
  */
 
-#include <unistd.h>
 #include <config.h>
+#ifdef HAVE_SYS_UNISTD_H
+#include <unistd.h>
+#endif
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif

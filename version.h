@@ -1,1 +1,1 @@
-#define KTOP_VERSION "990301"
+#define KTOP_VERSION "1.0.0p1"
