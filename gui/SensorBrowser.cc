@@ -58,8 +58,8 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	dict.insert("ps", new QString(i18n("Process Controller")));
 	for (int i = 0; i < 32; i++)
 	{
-		dict.insert("cpu" + QString(i) + "idle",
-					new QString(i18n("CPU" + QString(i) + " Idle Load")));
+		dict.insert("cpu" + QString::number(i) + "idle",
+					new QString(i18n("CPU" + QString::number(i) + " Idle Load")));
 		dict.insert("cpusys", new QString(i18n("System Load")));
 		dict.insert("cpunice", new QString(i18n("Nice Load")));
 		dict.insert("cpuuser", new QString(i18n("User Load")));
