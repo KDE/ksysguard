@@ -35,7 +35,7 @@ typedef enum
 {
 	CT_DLL = 0,
 	CT_SLL = 1,
-	CT_PGA = 2,
+	CT_PGA = 2
 } CONTAINER_TYPE;
 
 typedef struct
