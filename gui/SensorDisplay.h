@@ -41,7 +41,12 @@ class SensorProperties
 {
 public:
 	SensorProperties() { }
-	~SensorProperties() { }
+	SensorProperties(const QString& hn, const QString& n, const QString& d)
+		: hostName(hn), name(n), description(d)
+	{
+		ok = false;
+	}
+	virtual ~SensorProperties() { }
 
 	QString hostName;
 	QString name;
@@ -70,7 +75,7 @@ public:
 	virtual bool addSensor(const QString& hn, const QString& sn,
 						   const QString& res1)
 	{
-		registerSensor(hn, sn, res1);
+		registerSensor(new SensorProperties(hn, sn, res1));
 		return (true);
 	}
 
@@ -175,8 +180,7 @@ protected:
 	virtual void timerEvent(QTimerEvent*);
 	virtual bool eventFilter(QObject*, QEvent*);
 
-	void registerSensor(const QString& hostName, const QString& sensorName,
-						const QString& sensorDescr);
+	void registerSensor(SensorProperties* sp);
 
 	void unregisterSensor(uint idx);
 
@@ -189,6 +193,11 @@ protected:
 	{
 		frame->setLineWidth(1);
 	}
+
+	QColor restoreColorFromDOM(QDomElement& de, const QString& attr,
+							   const QColor& fallback);
+	void addColorToDOM(QDomElement& de, const QString& attr,
+					   const QColor& col);
 
 	QList<SensorProperties> sensors;
 

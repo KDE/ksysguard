@@ -88,6 +88,15 @@ public:
 		else
 			return (u);
 	}
+	
+	const QString& trSensorType(const QString& u) const
+	{
+		if (!u.isEmpty() && types[u])
+			return (*types[u]);
+		else
+			return (u);
+	}
+	
 	QString translateSensor(const QString& u) const;
 	void readProperties(KConfig* cfg);
 	void saveProperties(KConfig* cfg);
@@ -113,6 +122,7 @@ private:
 	QDict<QString> descriptions;
 	QDict<QString> units;
 	QDict<QString> dict;
+	QDict<QString> types;
 
 	QWidget* broadcaster;
 

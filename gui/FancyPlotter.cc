@@ -29,7 +29,6 @@
 #include <qcheckbox.h>
 #include <qtoolbutton.h>
 #include <qdom.h>
-#include <qlayout.h>
 #include <qlistview.h>
 #include <qimage.h>
 
@@ -42,6 +41,7 @@
 
 #include "SensorManager.h"
 #include "FancyPlotterSettings.h"
+#include "ColorPicker.h"
 #include "FancyPlotter.moc"
 
 FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
@@ -93,16 +93,12 @@ FancyPlotter::settings()
 
 	/* Properties for vertical lines */
 	fps->vLines->setChecked(plotter->vLines);
-	QPalette cp = fps->vColor->palette();
-	cp.setColor(QPalette::Normal, QColorGroup::Background, plotter->vColor);
-	fps->vColor->setPalette(cp);
+	fps->vColor->setColor(plotter->vColor);
 	fps->vDistance->setValue(plotter->vDistance);
 
 	/* Properties for horizontal lines */
 	fps->hLines->setChecked(plotter->hLines);
-	cp = fps->hColor->palette();
-	cp.setColor(QPalette::Normal, QColorGroup::Background, plotter->hColor);
-	fps->hColor->setPalette(cp);
+	fps->hColor->setColor(plotter->hColor);
 	fps->hCount->setValue(plotter->hCount);
 
 	fps->labels->setChecked(plotter->labels);
@@ -110,18 +106,10 @@ FancyPlotter::settings()
 	fps->fontSize->setValue(plotter->fontSize);
 
 	/* Properties for background */
-	cp = fps->bColor->palette();
-	cp.setColor(QPalette::Normal, QColorGroup::Background, plotter->bColor);
-	fps->bColor->setPalette(cp);
+	fps->bColor->setColor(plotter->bColor);
 
 	connect(fps->applyButton, SIGNAL(clicked()),
 			this, SLOT(applySettings()));
-	connect(fps->vColorButton, SIGNAL(clicked()),
-			this, SLOT(vColorSettings()));
-	connect(fps->hColorButton, SIGNAL(clicked()),
-			this, SLOT(hColorSettings()));
-	connect(fps->bColorButton, SIGNAL(clicked()),
-			this, SLOT(bColorSettings()));
 
 	for (uint i = 0; i < beams; ++i)
 	{
@@ -161,21 +149,18 @@ FancyPlotter::applySettings()
 							 fps->maxVal->text().toDouble());
 
 	plotter->vLines = fps->vLines->isChecked();
-	plotter->vColor = fps->vColor->palette().color(QPalette::Normal,
-												   QColorGroup::Background);
+	plotter->vColor = fps->vColor->getColor();
 	plotter->vDistance = fps->vDistance->text().toUInt();
 
 	plotter->hLines = fps->hLines->isChecked();
-	plotter->hColor = fps->hColor->palette().color(QPalette::Normal,
-												   QColorGroup::Background);
+	plotter->hColor = fps->hColor->getColor();
 	plotter->hCount = fps->hCount->text().toUInt();
 
 	plotter->labels = fps->labels->isChecked();
 	plotter->topBar = fps->topBar->isChecked();
 	plotter->fontSize = fps->fontSize->text().toUInt();
 
-	plotter->bColor = fps->bColor->palette().color(QPalette::Normal,
-												   QColorGroup::Background);
+	plotter->bColor = fps->bColor->getColor();
 
     QListViewItemIterator it(fps->sensorList);
 	/* Iterate through all items of the listview and reverse iterate
@@ -195,46 +180,8 @@ FancyPlotter::applySettings()
 			removeSensor(i);
 	}
 
+	plotter->repaint();
 	modified = true;
-}
-
-void
-FancyPlotter::vColorSettings()
-{
-	QPalette cp = fps->vColor->palette();
-	QColor c = cp.color(QPalette::Normal, QColorGroup::Background);
-	int result = KColorDialog::getColor(c);
-	if (result == KColorDialog::Accepted)
-	{
-		cp.setColor(QPalette::Normal, QColorGroup::Background, c);
-		fps->vColor->setPalette(cp);
-	}
-}
-
-void
-FancyPlotter::hColorSettings()
-{
-	QPalette cp = fps->hColor->palette();
-	QColor c = cp.color(QPalette::Normal, QColorGroup::Background);
-	int result = KColorDialog::getColor(c);
-	if (result == KColorDialog::Accepted)
-	{
-		cp.setColor(QPalette::Normal, QColorGroup::Background, c);
-		fps->hColor->setPalette(cp);
-	}
-}
-
-void
-FancyPlotter::bColorSettings()
-{
-	QPalette cp = fps->bColor->palette();
-	QColor c = cp.color(QPalette::Normal, QColorGroup::Background);
-	int result = KColorDialog::getColor(c);
-	if (result == KColorDialog::Accepted)
-	{
-		cp.setColor(QPalette::Normal, QColorGroup::Background, c);
-		fps->bColor->setPalette(cp);
-	}
 }
 
 void
@@ -343,7 +290,7 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 	if (!plotter->addBeam(col))
 		return (false);
 
-	registerSensor(hostName, sensorName, title);
+	registerSensor(new FPSensorProperties(hostName, sensorName, title, col));
 
 	/* To differentiate between answers from value requests and info
 	 * requests we add 100 to the beam index for info requests. */
@@ -444,25 +391,13 @@ FancyPlotter::createFromDOM(QDomElement& domElem)
 
 	bool ok;
 	plotter->vLines = domElem.attribute("vLines").toUInt(&ok);
-	if (!ok)
-		plotter->vLines = true;
-	uint c = domElem.attribute("vColor").toUInt(&ok);
-	if (!ok)
-		plotter->vColor = QColor("green");
-	else
-		plotter->vColor = QColor((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
+	plotter->vColor = restoreColorFromDOM(domElem, "vColor", Qt::green);
 	plotter->vDistance = domElem.attribute("vDistance").toUInt(&ok);
 	if (!ok)
 		plotter->vDistance = 30;
 
 	plotter->hLines = domElem.attribute("hLines").toUInt(&ok);
-	if (!ok)
-		plotter->hLines = true;
-	c = domElem.attribute("hColor").toUInt(&ok);
-	if (!ok)
-		plotter->hColor = QColor("green");
-	else
-		plotter->hColor = QColor((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
+	plotter->hColor = restoreColorFromDOM(domElem, "hColor", Qt::green);
 	plotter->hCount = domElem.attribute("hCount").toUInt(&ok);
 	if (!ok)
 		plotter->hCount = 5;
@@ -476,24 +411,15 @@ FancyPlotter::createFromDOM(QDomElement& domElem)
 	plotter->fontSize = domElem.attribute("fontSize").toUInt(&ok);
 	if (!ok)
 		plotter->fontSize = 12;
-	c = domElem.attribute("bColor").toUInt(&ok);
-	if (!ok)
-		plotter->bColor = QColor("black");
-	else
-		plotter->bColor = QColor((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
+	plotter->bColor = restoreColorFromDOM(domElem, "bColor", Qt::black);
 
 	QDomNodeList dnList = domElem.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)
 	{
 		QDomElement el = dnList.item(i).toElement();
-		QColor col;
-		c = el.attribute("color").toUInt(&ok);
-		if (!ok)
-			col = plotter->getDefaultColor(i);
-		else
-			col = QColor((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
 		addSensor(el.attribute("hostName"), el.attribute("sensorName"), "",
-				  col);
+				  restoreColorFromDOM(el, "color",
+									  plotter->getDefaultColor(i)));
 	}
 
 	return (true);
@@ -506,22 +432,18 @@ FancyPlotter::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 	display.setAttribute("min", plotter->getMin());
 	display.setAttribute("max", plotter->getMax());
 	display.setAttribute("vLines", plotter->vLines);
-	int r, g, b;
-	plotter->vColor.rgb(&r, &g, &b);
-	display.setAttribute("vColor", (r << 16) | (g << 8) | b);
+	addColorToDOM(display, "vColor", plotter->vColor);
 	display.setAttribute("vDistance", plotter->vDistance);
 
 	display.setAttribute("hLines", plotter->hLines);
-	plotter->hColor.rgb(&r, &g, &b);
-	display.setAttribute("hColor", (r << 16) | (g << 8) | b);
+	addColorToDOM(display, "hColor", plotter->hColor);
 	display.setAttribute("hCount", plotter->hCount);
 
 	display.setAttribute("labels", plotter->labels);
 	display.setAttribute("topBar", plotter->topBar);
 	display.setAttribute("fontSize", plotter->fontSize);
 
-	plotter->bColor.rgb(&r, &g, &b);
-	display.setAttribute("bColor", (r << 16) | (g << 8) | b);
+	addColorToDOM(display, "bColor", plotter->bColor);
 
 	for (uint i = 0; i < beams; ++i)
 	{
@@ -529,8 +451,7 @@ FancyPlotter::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 		display.appendChild(beam);
 		beam.setAttribute("hostName", sensors.at(i)->hostName);
 		beam.setAttribute("sensorName", sensors.at(i)->name);
-		plotter->beamColor[i].rgb(&r, &g, &b);
-		beam.setAttribute("color", (r << 16) | (g << 8) | b);
+		addColorToDOM(beam, "color", plotter->beamColor[i]);
 	}
 	if (save)
 		modified = false;

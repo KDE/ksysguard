@@ -70,9 +70,13 @@ public slots:
 
 private:
 	void setTitle(const QString& t, const QString& u);
+	void setDigitColor(const QColor& col);
+	void setBackgroundColor(const QColor& col);
 
 	QLCDNumber* lcd;
 	QLabel* errorLabel;
+	QColor normalDigitColor;
+	QColor alarmDigitColor;
 
 	QString title;
 	QString unit;

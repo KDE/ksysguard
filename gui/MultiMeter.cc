@@ -43,6 +43,7 @@
 
 #include "MultiMeterSettings.h"
 #include "SensorManager.h"
+#include "ColorPicker.h"
 #include "MultiMeter.moc"
 
 MultiMeter::MultiMeter(QWidget* parent, const char* name,
@@ -55,13 +56,12 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 
 	setTitle(t, unit);
 
+	normalDigitColor = Qt::green;
+	alarmDigitColor = Qt::red;
 	lcd = new QLCDNumber(frame, "meterLCD");
 	CHECK_PTR(lcd);
 	lcd->setSegmentStyle(QLCDNumber::Filled);
-	lcd->setBackgroundColor(Qt::black);
-	QPalette p;
-	p.setColor(QColorGroup::Foreground, Qt::green);
-	lcd->setPalette(p);
+	setDigitColor(Qt::black);
 	lcd->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
 								   QSizePolicy::Expanding, FALSE));
 
@@ -73,6 +73,7 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 	errorLabel->resize(errorIcon.size());
 	errorLabel->move(2, 2);
 
+	setBackgroundColor(Qt::black);
 	/* All RMB clicks to the lcd widget will be handled by 
 	 * SensorDisplay::eventFilter. */
 	lcd->installEventFilter(this);
@@ -86,7 +87,7 @@ bool
 MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
 					  const QString& title)
 {
-	registerSensor(hostName, sensorName, title);
+	registerSensor(new SensorProperties(hostName, sensorName, title));
 
 	/* To differentiate between answers from value requests and info
 	 * requests we use 100 for info requests. */
@@ -119,9 +120,10 @@ MultiMeter::answerReceived(int id, const QString& answer)
 		lcd->display(val);
 		if (lowerLimitActive && val < lowerLimit)
 		{
+			setDigitColor(alarmDigitColor);	
+#if 0
+			/* TODO: Sent notification to event logger */
 			timerOff();
-			QColor oldColor = lcd->backgroundColor();
-			lcd->setBackgroundColor(QColor(255, 0, 0));
 			if (KMessageBox::questionYesNo(
 				this, QString(i18n("%1\nLower limit exceeded!")).arg(title),
 							  i18n("Alarm"),
@@ -130,14 +132,15 @@ MultiMeter::answerReceived(int id, const QString& answer)
 			{
 				lowerLimitActive = FALSE;
 			}
-			lcd->setBackgroundColor(oldColor);
 			timerOn();
+#endif
 		}
-		if (upperLimitActive && val > upperLimit)
+		else if (upperLimitActive && val > upperLimit)
 		{
+			setDigitColor(alarmDigitColor);
+#if 0
+			/* TODO: Sent notification to event logger */
 			timerOff();
-			QColor oldColor = lcd->backgroundColor();
-			lcd->setBackgroundColor(QColor(255, 0, 0));
 			if (KMessageBox::questionYesNo(
 				this, QString(i18n("%1\nUpper limit exceeded!")).arg(title),
 							  i18n("Alarm"),
@@ -146,9 +149,11 @@ MultiMeter::answerReceived(int id, const QString& answer)
 			{
 				upperLimitActive = FALSE;
 			}
-			lcd->setBackgroundColor(oldColor);
 			timerOn();
+#endif
 		}
+		else
+			setDigitColor(normalDigitColor);
 	}
 }
 
@@ -188,6 +193,11 @@ MultiMeter::createFromDOM(QDomElement& el)
 	lowerLimit = el.attribute("lowerLimit").toLong();
 	upperLimitActive = el.attribute("upperLimitActive").toInt();
 	upperLimit = el.attribute("upperLimit").toLong();
+
+	normalDigitColor = restoreColorFromDOM(el, "normalDigitColor", Qt::green);
+	alarmDigitColor = restoreColorFromDOM(el, "alarmDigitColor", Qt::red);
+	setBackgroundColor(restoreColorFromDOM(el, "backgroundColor", Qt::black));
+
 	addSensor(el.attribute("hostName"), el.attribute("sensorName"), "");
 
 	return (TRUE);
@@ -204,6 +214,10 @@ MultiMeter::addToDOM(QDomDocument&, QDomElement& display, bool save)
 	display.setAttribute("lowerLimit", (int) lowerLimit);
 	display.setAttribute("upperLimitActive", (int) upperLimitActive);
 	display.setAttribute("upperLimit", (int) upperLimit);
+
+	addColorToDOM(display, "normalDigitColor", normalDigitColor);
+	addColorToDOM(display, "alarmDigitColor", alarmDigitColor);
+	addColorToDOM(display, "backgroundColor", lcd->backgroundColor());
 
 	if (save)
 		modified = FALSE;
@@ -225,6 +239,9 @@ MultiMeter::settings()
 	mms->upperLimitActive->setChecked(upperLimitActive);
 	mms->upperLimit->setText(QString("%1").arg(upperLimit));
 	mms->upperLimit->setValidator(new KFloatValidator(mms->upperLimit));
+	mms->normalDigitColor->setColor(normalDigitColor);
+	mms->alarmDigitColor->setColor(alarmDigitColor);
+	mms->backgroundColor->setColor(lcd->backgroundColor());
 	connect(mms->applyButton, SIGNAL(clicked()),
 			this, SLOT(applySettings()));
 
@@ -245,6 +262,11 @@ MultiMeter::applySettings()
 	upperLimitActive = mms->upperLimitActive->isChecked();
 	upperLimit = mms->upperLimit->text().toDouble();
 
+	normalDigitColor = mms->normalDigitColor->getColor();
+	alarmDigitColor = mms->alarmDigitColor->getColor();
+	setBackgroundColor(mms->backgroundColor->getColor());
+
+	repaint();
 	modified = TRUE;
 }
 
@@ -260,4 +282,19 @@ MultiMeter::sensorError(int, bool err)
 		errorLabel->show();
 	else
 		errorLabel->hide();
+}
+
+void
+MultiMeter::setDigitColor(const QColor& col)
+{
+	QPalette p;
+	p.setColor(QColorGroup::Foreground, col);
+	lcd->setPalette(p);
+}
+
+void
+MultiMeter::setBackgroundColor(const QColor& col)
+{
+	lcd->setBackgroundColor(col);
+	errorLabel->setBackgroundColor(col);
 }

@@ -119,6 +119,12 @@ SensorManager::SensorManager()
 	units.insert("min", new QString(i18n("the unit minutes", "min")));
 	units.insert("MHz", new QString(i18n("the frequency unit", "MHz")));
 
+	types.setAutoDelete(true);
+	types.insert("integer", new QString(i18n("Integer Value")));
+	types.insert("float", new QString(i18n("Floating Point Value")));
+	types.insert("table", new QString(i18n("Process Controller")));
+	types.insert("listview", new QString(i18n("Table")));
+
 	broadcaster = 0;
 
 	hostConnector = new HostConnector(0, "HostConnector", true);

@@ -49,6 +49,7 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 			this, SLOT(newItemSelected(QListViewItem*)));
 
 	addColumn(i18n("Sensor Browser"));
+	addColumn(i18n("Sensor Type"));
 	QToolTip::add(this, i18n("Drag sensors to empty cells of a work sheet "
 							 "or the panel applet."));
 	setRootIsDecorated(TRUE);
@@ -212,6 +213,7 @@ SensorBrowser::answerReceived(int id, const QString& s)
 												  KIcon::Desktop,
 												  KIcon::SizeSmall);
 					lvi->setPixmap(0, pix);
+					lvi->setText(1, SensorMgr->trSensorType(sensorType));
 					// add sensor info to internal data structure
 					(*it)->addSensor(lvi, sensorName, name, sensorType);
 				}

@@ -37,6 +37,18 @@
 class QListViewItem;
 class FancyPlotterSettings;
 
+class FPSensorProperties : public SensorProperties
+{
+public:
+	FPSensorProperties() { }
+	FPSensorProperties(const QString& hn, const QString& n, const QString& d,
+					   const QColor& c)
+		: SensorProperties(hn, n, d), color(c) { }
+	~FPSensorProperties() { }
+
+	QColor color;
+} ;
+
 class FancyPlotter : public SensorDisplay
 {
 	Q_OBJECT
@@ -89,9 +101,6 @@ public:
 
 public slots:
 	void applySettings();
-	void vColorSettings();
-	void hColorSettings();
-	void bColorSettings();
 	void settingsSetColor();
 	void settingsDelete();
 	void settingsSelectionChanged(QListViewItem*);

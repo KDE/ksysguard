@@ -106,7 +106,7 @@ ListView::ListView(QWidget* parent, const char* name, const QString& title, int,
 bool
 ListView::addSensor(const QString& hostName, const QString& sensorName, const QString& title)
 {
-	registerSensor(hostName, sensorName, title);
+	registerSensor(new SensorProperties(hostName, sensorName, title));
 
 	/* To differentiate between answers from value requests and info
 	 * requests we use 100 for info requests. */

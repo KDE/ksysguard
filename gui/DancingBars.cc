@@ -124,6 +124,7 @@ DancingBars::applySettings()
 	else
 		plotter->setLimits(0, false, 0, false);
 
+	repaint();
 	modified = true;
 }
 
@@ -137,7 +138,7 @@ DancingBars::addSensor(const QString& hostName, const QString& sensorName,
 	if (!plotter->addBar(title))
 		return (false);
 
-	registerSensor(hostName, sensorName, title);
+	registerSensor(new SensorProperties(hostName, sensorName, title));
 	++bars;
 	sampleBuf.resize(bars);
 

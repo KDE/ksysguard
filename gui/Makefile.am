@@ -11,6 +11,7 @@ bin_PROGRAMS = 	ksysguard
 
 # Which sources should be compiled for ksysguard.
 ksysguard_SOURCES = \
+	ColorPicker.cc \
 	SensorDisplay.cc \
 	DummyDisplay.cc \
 	FancyPlotter.cc SignalPlotter.cc \
@@ -47,6 +48,7 @@ lib_LTLIBRARIES = libksysguardapplet.la
 libksysguardapplet_la_SOURCES = KSysGuardApplet.cc SensorManager.cc \
 	SensorAgent.cc SensorShellAgent.cc SensorSocketAgent.cc \
 	FancyPlotter.cc SignalPlotter.cc SensorDisplay.cc \
+	ColorPicker.cc \
 	FancyPlotterSettings.ui HostConnector.ui KSysGuardAppletSettings.ui
 libksysguardapplet_la_METASOURCES = AUTO
 libksysguardapplet_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -module -no-undefined

@@ -13,13 +13,17 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>423</width>
-            <height>276</height>
+            <width>430</width>
+            <height>275</height>
         </rect>
     </property>
     <property stdset="1">
         <name>caption</name>
         <string>Signal Plotter Settings</string>
+    </property>
+    <property stdset="1">
+        <name>sizeGripEnabled</name>
+        <bool>true</bool>
     </property>
     <grid>
         <property stdset="1">
@@ -346,51 +350,7 @@
                                     <string>Check this to enable horizontal lines if display is large enough.</string>
                                 </property>
                             </widget>
-                            <widget row="0"  column="2" >
-                                <class>QToolButton</class>
-                                <property stdset="1">
-                                    <name>name</name>
-                                    <cstring>vColorButton</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Set Color</string>
-                                </property>
-                                <property>
-                                    <name>whatsThis</name>
-                                    <string>Push this button to configure the color of the vertical lines.</string>
-                                </property>
-                            </widget>
-                            <widget row="0"  column="1" >
-                                <class>QFrame</class>
-                                <property stdset="1">
-                                    <name>name</name>
-                                    <cstring>vColor</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>0</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
-                                </property>
-                                <property stdset="1">
-                                    <name>minimumSize</name>
-                                    <size>
-                                        <width>16</width>
-                                        <height>16</height>
-                                    </size>
-                                </property>
-                                <property stdset="1">
-                                    <name>frameShape</name>
-                                    <enum>StyledPanel</enum>
-                                </property>
-                                <property stdset="1">
-                                    <name>frameShadow</name>
-                                    <enum>Raised</enum>
-                                </property>
-                            </widget>
-                            <widget row="1"  column="4" >
+                            <widget row="1"  column="3" >
                                 <class>QSpinBox</class>
                                 <property stdset="1">
                                     <name>name</name>
@@ -409,7 +369,7 @@
                                     <string>Enter the number of horizontal lines here.</string>
                                 </property>
                             </widget>
-                            <widget row="0"  column="4" >
+                            <widget row="0"  column="3" >
                                 <class>QSpinBox</class>
                                 <property stdset="1">
                                     <name>name</name>
@@ -428,7 +388,7 @@
                                     <string>Enter the distance between two vertical lines here.</string>
                                 </property>
                             </widget>
-                            <widget row="0"  column="3" >
+                            <widget row="0"  column="2" >
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
@@ -439,7 +399,7 @@
                                     <string>Distance</string>
                                 </property>
                             </widget>
-                            <widget row="1"  column="3" >
+                            <widget row="1"  column="2" >
                                 <class>QLabel</class>
                                 <property stdset="1">
                                     <name>name</name>
@@ -465,48 +425,34 @@
                                     <string>Check this to activate the vertical lines if display is large enough.</string>
                                 </property>
                             </widget>
+                            <widget row="0"  column="1" >
+                                <class>ColorPicker</class>
+                                <property stdset="1">
+                                    <name>name</name>
+                                    <cstring>vColor</cstring>
+                                </property>
+                                <property>
+                                    <name>color</name>
+                                    <color>
+                                        <red>0</red>
+                                        <green>255</green>
+                                        <blue>0</blue>
+                                    </color>
+                                </property>
+                            </widget>
                             <widget row="1"  column="1" >
-                                <class>QFrame</class>
+                                <class>ColorPicker</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>hColor</cstring>
                                 </property>
-                                <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>0</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
-                                </property>
-                                <property stdset="1">
-                                    <name>minimumSize</name>
-                                    <size>
-                                        <width>16</width>
-                                        <height>16</height>
-                                    </size>
-                                </property>
-                                <property stdset="1">
-                                    <name>frameShape</name>
-                                    <enum>StyledPanel</enum>
-                                </property>
-                                <property stdset="1">
-                                    <name>frameShadow</name>
-                                    <enum>Raised</enum>
-                                </property>
-                            </widget>
-                            <widget row="1"  column="2" >
-                                <class>QToolButton</class>
-                                <property stdset="1">
-                                    <name>name</name>
-                                    <cstring>hColorButton</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Set Color</string>
-                                </property>
                                 <property>
-                                    <name>whatsThis</name>
-                                    <string>Push this button to configure the color of the horizontal lines.</string>
+                                    <name>color</name>
+                                    <color>
+                                        <red>0</red>
+                                        <green>255</green>
+                                        <blue>0</blue>
+                                    </color>
                                 </property>
                             </widget>
                         </grid>
@@ -628,48 +574,26 @@
                                 <name>spacing</name>
                                 <number>6</number>
                             </property>
-                            <widget row="0"  column="1" >
-                                <class>QToolButton</class>
-                                <property stdset="1">
-                                    <name>name</name>
-                                    <cstring>bColorButton</cstring>
-                                </property>
-                                <property stdset="1">
-                                    <name>text</name>
-                                    <string>Set Color</string>
-                                </property>
-                                <property>
-                                    <name>whatsThis</name>
-                                    <string>Push this button to configure the background color.</string>
-                                </property>
-                            </widget>
                             <widget row="0"  column="0" >
-                                <class>QFrame</class>
+                                <class>ColorPicker</class>
                                 <property stdset="1">
                                     <name>name</name>
                                     <cstring>bColor</cstring>
                                 </property>
                                 <property stdset="1">
-                                    <name>sizePolicy</name>
-                                    <sizepolicy>
-                                        <hsizetype>0</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                    </sizepolicy>
-                                </property>
-                                <property stdset="1">
                                     <name>minimumSize</name>
                                     <size>
                                         <width>16</width>
-                                        <height>16</height>
+                                        <height>24</height>
                                     </size>
                                 </property>
-                                <property stdset="1">
-                                    <name>frameShape</name>
-                                    <enum>StyledPanel</enum>
-                                </property>
-                                <property stdset="1">
-                                    <name>frameShadow</name>
-                                    <enum>Raised</enum>
+                                <property>
+                                    <name>color</name>
+                                    <color>
+                                        <red>0</red>
+                                        <green>0</green>
+                                        <blue>0</blue>
+                                    </color>
                                 </property>
                             </widget>
                         </grid>
@@ -847,6 +771,30 @@
         </widget>
     </grid>
 </widget>
+<customwidgets>
+    <customwidget>
+        <class>ColorPicker</class>
+        <header location="global">ColorPicker.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+        <property type="Color">color</property>
+        <property type="String">text</property>
+    </customwidget>
+</customwidgets>
+<images>
+    <image>
+        <name>image0</name>
+        <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1be245fc04c5a3201e4615f430059d0711ff5ddb2e6bb236ec90eed134cb5a19d8ef36602af5ecdbfeeac05dda0798d3abebde87e3faa374d3807fa0d633a52d38d8de6f679fe33fc776e196f53cd010188256a3600a292882096246517815ca99884606e18044a3a40d91824820924265a7923a2e8bcd05f33db1173e002913175f2a6be6d3294871a2d95fa00e8a94ee017b69d339d90df1e77c57ea072ede6758</data>
+    </image>
+</images>
 <connections>
     <connection>
         <sender>okButton</sender>
@@ -863,19 +811,7 @@
     <connection>
         <sender>hLines</sender>
         <signal>toggled(bool)</signal>
-        <receiver>hColorButton</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>hLines</sender>
-        <signal>toggled(bool)</signal>
         <receiver>hCount</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>vLines</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>vColorButton</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
     <connection>

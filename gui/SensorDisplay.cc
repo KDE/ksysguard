@@ -24,6 +24,7 @@
 
 #include <qpopupmenu.h>
 #include <qwhatsthis.h>
+#include <qdom.h>
 
 #include <kapp.h>
 #include <klocale.h>
@@ -59,17 +60,9 @@ SensorDisplay::~SensorDisplay()
 }
 
 void
-SensorDisplay::registerSensor(const QString& hostName,
-							  const QString& sensorName,
-							  const QString& sensorDescription)
+SensorDisplay::registerSensor(SensorProperties* sp)
 {
-	SensorProperties* s = new SensorProperties;
-	s->hostName = hostName;
-	s->name = sensorName;
-	s->description = sensorDescription;
-	s->ok = false;
-
-	sensors.append(s);
+	sensors.append(sp);
 }
 
 void
@@ -166,4 +159,25 @@ SensorDisplay::collectHosts(QValueList<QString>& list)
 	for (SensorProperties* s = sensors.first(); s; s = sensors.next())
 		if (!list.contains(s->hostName))
 			list.append(s->hostName);
+}
+
+QColor
+SensorDisplay::restoreColorFromDOM(QDomElement& de, const QString& attr,
+								   const QColor& fallback)
+{
+	bool ok;
+	uint c = de.attribute(attr).toUInt(&ok);
+	if (!ok)
+		return (fallback);
+	else
+		return (QColor((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF));
+}
+
+void
+SensorDisplay::addColorToDOM(QDomElement& de, const QString& attr,
+							 const QColor& col)
+{
+	int r, g, b;
+	col.rgb(&r, &g, &b);
+	de.setAttribute(attr, (r << 16) | (g << 8) | b);
 }

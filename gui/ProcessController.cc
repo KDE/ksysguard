@@ -155,7 +155,7 @@ ProcessController::addSensor(const QString& hostName,
 							 const QString& sensorName,
 							 const QString& title)
 {
-	registerSensor(hostName, sensorName, title);
+	registerSensor(new SensorProperties(hostName, sensorName, title));
 	sendRequest(hostName, "ps?", 1);
 	sendRequest(hostName, "test kill", 4);
 
