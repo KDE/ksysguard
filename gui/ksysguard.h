@@ -80,7 +80,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
   protected slots:
     void connectHost();
     void disconnectHost();
-    void showStatusBar();
+    void updateStatusBar();
     void editToolbars();
     void editStyle();
     void slotNewToolbarConfig();
@@ -90,7 +90,6 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
 
     QSplitter* mSplitter;
     KRecentFilesAction* mActionOpenRecent;
-    KToggleAction* mActionStatusBar;
 
     SensorBrowser* mSensorBrowser;
     Workspace* mWorkSpace;

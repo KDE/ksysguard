@@ -120,9 +120,6 @@ TopLevel::TopLevel( const char *name )
                SLOT( configure() ), actionCollection(), "configure_sheet" );
 
   KStdAction::revert( this, SLOT( resetWorkSheets() ), actionCollection() );
-  mActionStatusBar = KStdAction::showStatusbar( this, SLOT( showStatusBar() ),
-                                                actionCollection() );
-  mActionStatusBar->setChecked( false );
 
   new KAction( i18n( "Configure &Style..." ), "colorize", 0, this,
                SLOT( editStyle() ), actionCollection(), "configure_style" );
@@ -280,6 +277,21 @@ void TopLevel::initStatusBar()
    * answerReceived(). */
   KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/used?",
                                  (KSGRD::SensorClient*)this, 5 );
+
+  updateStatusBar();
+  
+  KToggleAction *sb = dynamic_cast<KToggleAction*>(action("options_show_statusbar"));
+  if (sb)
+     connect(sb, SIGNAL(toggled(bool)), this, SLOT(updateStatusBar()));
+}
+
+void TopLevel::updateStatusBar()
+{
+  if ( mTimerId == -1 )
+    mTimerId = startTimer( 2000 );
+
+  // call timerEvent to fill the status bar with real values
+  timerEvent( 0 );
 }
 
 void TopLevel::connectHost()
@@ -290,24 +302,6 @@ void TopLevel::connectHost()
 void TopLevel::disconnectHost()
 {
   mSensorBrowser->disconnect();
-}
-
-void TopLevel::showStatusBar()
-{
-  if ( mActionStatusBar->isChecked() ) {
-    statusBar()->show();
-    if ( mTimerId == -1 )
-      mTimerId = startTimer( 2000 );
-
-    // call timerEvent to fill the status bar with real values
-    timerEvent( 0 );
-  } else {
-    statusBar()->hide();
-    if ( mTimerId != -1 ) {
-      killTimer( mTimerId );
-      mTimerId = -1;
-    }
-  }
 }
 
 void TopLevel::editToolbars()
@@ -394,11 +388,6 @@ void TopLevel::readProperties( KConfig *cfg )
   mActionOpenRecent->loadEntries( cfg );
 
   applyMainWindowSettings( cfg );
-
-  if ( !statusBar()->isHidden() ) {
-    mActionStatusBar->setChecked( true );
-    showStatusBar();
-  }
 }
 
 void TopLevel::saveProperties( KConfig *cfg )
