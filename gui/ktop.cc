@@ -70,8 +70,8 @@ TopLevel::TopLevel(const char *name, int sfolder)
 	splitter->setOrientation(Horizontal);
 	setView(splitter);
 
-	sb = new SensorBrowser(splitter, SensorMgr, "SensorBrowser");
-	ws = new Workspace(splitter, "Workspace");
+	//sb = new SensorBrowser(splitter, SensorMgr, "SensorBrowser");
+	//ws = new Workspace(splitter, "Workspace");
 
 //	connect(taskman, SIGNAL(enableRefreshMenu(bool)),
 //			menubar, SLOT(enableRefreshMenu(bool)));

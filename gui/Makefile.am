@@ -12,8 +12,13 @@ bin_PROGRAMS = 	ktop
 # Which sources should be compiled for ktop.
 
 ktop_SOURCES = ktop.cc  SensorAgent.cc SensorManager.cc \
-	Workspace.cc WorkSheet.cc SensorBrowser.cc MainMenu.cc \
+    MainMenu.cc \
 	ProcessMenu.cc ReniceDlg.cc
+
+# Those have been forgotten (David)
+#   WorkSheet.cc \
+#	Workspace.cc \
+#   SensorBrowser.cc \
 
 #	TaskMan.cc \
 #	ProcListPage.cc ProcessList.cc \
@@ -30,8 +35,10 @@ ktop_LDADD   =       $(LIB_KDEUI)
 
 # this option you can leave out. Just, if you use "make dist", you need it
 noinst_HEADERS = MainMenu.h ReniceDlg.h SensorClient.h ktop.h ProcessMenu.h \
-	Workspace.h WorkSheet.h SensorAgent.h SensorManager.h \
-	SensorBrowser.h version.h 
+	SensorAgent.h SensorManager.h \
+	version.h 
+# Not here (David)
+# Workspace.h WorkSheet.h SensorBrowser.h
 
 # just to make sure, automake makes them 
 

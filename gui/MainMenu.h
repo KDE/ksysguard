@@ -31,6 +31,8 @@
 
 #include "ProcessMenu.h"
 
+class KHelpMenu;
+
 /**
  * This class implements the main menu. All triggered actions are activated
  * through signals. For on-the-fly modification of the menus slots are
@@ -60,7 +62,6 @@ public:
 		delete file;
 		delete refresh;
 		delete process;
-		delete help;
 	}
 
 public slots:
@@ -91,7 +92,7 @@ private:
 	QPopupMenu* file;
 	QPopupMenu* refresh;
 	ProcessMenu* process;
-	QPopupMenu* help;
+	KHelpMenu* help;
 } ;
 
 extern MainMenu* MainMenuBar;

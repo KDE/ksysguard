@@ -28,6 +28,7 @@
 #include <qstring.h>
 
 #include <kapp.h>
+#include <khelpmenu.h>
 #include <klocale.h>
 
 #include "version.h"
@@ -58,7 +59,7 @@ MainMenu::MainMenu(QWidget* parent, const char* name) :
 				 "1998 : Nicolas Leclercq <nicknet@planete.net>\n"
 				 "1999 : Chris Schlaeger <cs@kde.org>\n")
 		.arg(KTOP_VERSION);
-	help = Kapp->helpMenu(true, about);
+    help = new KHelpMenu(this, about);
 
 	// 'Refresh Rate' submenu
 	refresh = new QPopupMenu();
@@ -82,7 +83,7 @@ MainMenu::MainMenu(QWidget* parent, const char* name) :
 	insertItem(i18n("&Process"), process, MENU_ID_MENU_PROCESS, -1);
 
 	insertSeparator(-1);
-	insertItem(i18n("&Help"), help, 2, -1);
+	insertItem(i18n("&Help"), help->menu(), 2, -1);
 }
 
 void 
