@@ -47,11 +47,12 @@ class WorkSheet : public QWidget
 {
 	Q_OBJECT
 public:
+	WorkSheet(QWidget* parent);
 	WorkSheet(QWidget* parent, int rows, int columns);
 	~WorkSheet();
 
-	bool load(QDomElement& domElem);
-	bool save(QTextStream& s, const QString& name);
+	bool load(const QString& fileName);
+	bool save(const QString& fileName);
 
 	SensorDisplay* addDisplay(const QString& hostname,
 							  const QString& monitor,
@@ -70,8 +71,10 @@ private:
 
 	void collectHosts(QValueList<QString>& l);
 
-	const int rows;
-	const int columns;
+	void createGrid(uint r, uint c);
+
+	int rows;
+	int columns;
 	QGridLayout* lm;
 	/* This two dimensional array stores the pointers to the sensor displays
 	 * or if no sensor is present at a position a pointer to a dummy widget.

@@ -22,12 +22,9 @@
 	$Id$
 */
 
-#include <qdom.h>
-#include <qfile.h>
-#include <qtextstream.h>
-
 #include <kmessagebox.h>
 #include <klocale.h>
+#include <kfiledialog.h>
 
 #include "Workspace.h"
 #include "WorkSheet.h"
@@ -58,69 +55,40 @@ Workspace::newWorkSheet()
 	} while (found);
 
 	WorkSheetSetup* s = new WorkSheetSetup(sheetName);
+	CHECK_PTR(s);
 	if (s->exec())
-		addSheet(s->getSheetName(), s->getRows(), s->getColumns());
+	{
+		WorkSheet* sheet = new WorkSheet(this, s->getRows(), s->getColumns());
+		CHECK_PTR(sheet);
+		insertTab(sheet, sheetName);
+		sheets.append(sheet);
+		showPage(sheet);
+	}
 	delete s;
 }
 
 void
 Workspace::loadWorkSheet()
 {
-	QString fileName = "test.xml";
-	QFile file(fileName);
-	if (!file.open(IO_ReadOnly))
-	{
-		KMessageBox::sorry(this, i18n("Can't open the file %1")
-						   .arg(fileName));
+	KFileDialog fd(workDir, "*.ktop", this, "LoadFileDialog", TRUE);
+	QString fileName = fd.getOpenFileName(QString::null, "*.ktop");
+	if (fileName.isEmpty())
 		return;
-	}
-    
-	// Parse the XML file.
-	QDomDocument doc;
-	// Read in file and check for a valid XML header.
-	if (!doc.setContent(&file))
-	{
-		KMessageBox::sorry(
-			this,
-			i18n("The file %1 does not contain valid XML").arg(fileName));
-		return;
-	}
-	// Check for proper document type.
-	if (doc.doctype().name() != "ktopWorkSheet")
-	{
-		KMessageBox::sorry(
-			this,
-			i18n("The file %1 does not contain a valid work sheet\n"
-				 "definition, which must have a document type\n"
-				 "'ktopWorkSheet'").arg(fileName));
-		return;
-	}
-	// Check for proper name.
-	QDomElement element = doc.documentElement();
-	QString name = element.attribute("name");
-	if (name.isEmpty())
-	{
-		KMessageBox::sorry(
-			this, i18n("The file %1 lacks a name for the work sheet.")
-			.arg(fileName));
-		return;
-	}
-	bool rowsOk;
-	uint rows = element.attribute("rows").toUInt(&rowsOk);
-	bool columnsOk;
-	uint columns = element.attribute("columns").toUInt(&columnsOk);
-	if (!(rowsOk && columnsOk))
-	{
-		KMessageBox::sorry(
-			this, i18n("The file %1 has an invalid work sheet size.")
-			.arg(fileName));
-		return;
-	}
+
+	workDir = fileName.left(fileName.findRev('/'));
+	// extract filename without path
+	QString baseName = fileName.right(fileName.length() -
+									  fileName.findRev('/') - 1);
+	// chop off extension (usually '.ktop')
+	baseName = baseName.left(baseName.findRev('.'));
 
 	// Add a new sheet to the workspace.
-	WorkSheet* sheet = addSheet(name, rows, columns);
+	WorkSheet* sheet = new WorkSheet(this);
 	CHECK_PTR(sheet);
-	sheet->load(element);
+	insertTab(sheet, baseName);
+	sheets.append(sheet);
+	showPage(sheet);
+	sheet->load(fileName);
 }
 
 void
@@ -134,20 +102,19 @@ Workspace::saveWorkSheet()
 		return;
 	}
 
-	QString fileName = "test.xml";
-	QFile file(fileName);
-	if (!file.open(IO_WriteOnly))
-	{
-		KMessageBox::sorry(this, i18n("Can't open the file %1")
-						   .arg(fileName));
+	KFileDialog fd(workDir, "*.ktop", this, "LoadFileDialog", TRUE);
+	QString fileName = fd.getSaveFileName(QString::null, "*.ktop");
+	if (fileName.isEmpty())
 		return;
-	}
-	QTextStream s(&file);
-    s << "<!DOCTYPE ktopWorkSheet>\n";
+	workDir = fileName.left(fileName.findRev('/'));
+	// extract filename without path
+	QString baseName = fileName.right(fileName.length() -
+									  fileName.findRev('/') - 1);
+	// chop off extension (usually '.ktop')
+	baseName = baseName.left(baseName.findRev('.'));
+	changeTab(currentPage(), baseName);
 
-	sheet->save(s, tabLabel(sheet));
-
-	file.close();
+	sheet->save(fileName);
 }
 
 void
@@ -167,17 +134,6 @@ Workspace::deleteWorkSheet()
 						   "could be deleted!");
 		KMessageBox::error(this, msg);
 	}
-}
-
-WorkSheet*
-Workspace::addSheet(const QString& title, int rows, int columns)
-{
-	WorkSheet* sheet = new WorkSheet(this, rows, columns);
-	insertTab(sheet, title);
-	sheets.append(sheet);
-	showPage(sheet);
-
-	return (sheet);
 }
 
 void

@@ -25,6 +25,7 @@
 
 #include <qdragobject.h>
 #include <qdom.h>
+#include <qfile.h>
 #include <qtextstream.h>
 
 #include <kmessagebox.h>
@@ -36,25 +37,23 @@
 #include "ProcessController.h"
 #include "WorkSheet.moc"
 
-WorkSheet::WorkSheet(QWidget* parent, int r, int c) :
-	QWidget(parent), rows(r), columns(c)
+WorkSheet::WorkSheet(QWidget* parent) :
+	QWidget(parent)
 {
-	// create grid layout with specified dimentions
-	lm = new QGridLayout(this, rows, columns, 10);
-	CHECK_PTR(lm);
+	lm = 0;
+	rows = columns = 0;
+	displays = 0;
 
-	// and fill it with dummy displays
-	int i, j;
-	displays = new QWidget**[rows];
-	CHECK_PTR(displays);
-	for (i = 0; i < rows; ++i)
-	{
-		displays[i] = new QWidget*[columns];
-		CHECK_PTR(displays[i]);
-		for (j = 0; j < columns; ++j)
-			insertDummyDisplay(i, j);
-	}
-	lm->activate();
+	setAcceptDrops(TRUE);
+}
+
+WorkSheet::WorkSheet(QWidget* parent, int r, int c) :
+	QWidget(parent)
+{
+	lm = 0;
+	displays = 0;
+	createGrid(r, c);
+
 	setAcceptDrops(TRUE);
 }
 
@@ -67,10 +66,68 @@ WorkSheet::~WorkSheet()
 }
 
 bool
-WorkSheet::load(QDomElement& domElem)
+WorkSheet::load(const QString& fileName)
 {
-	QDomNodeList dnList = domElem.elementsByTagName("display");
-	for (uint i = 0; i < dnList.count(); ++i)
+	QFile file(fileName);
+	if (!file.open(IO_ReadOnly))
+	{
+		KMessageBox::sorry(this, i18n("Can't open the file %1")
+						   .arg(fileName));
+		return (FALSE);
+	}
+    
+	// Parse the XML file.
+	QDomDocument doc;
+	// Read in file and check for a valid XML header.
+	if (!doc.setContent(&file))
+	{
+		KMessageBox::sorry(
+			this,
+			i18n("The file %1 does not contain valid XML").arg(fileName));
+		return (FALSE);
+	}
+	// Check for proper document type.
+	if (doc.doctype().name() != "ktopWorkSheet")
+	{
+		KMessageBox::sorry(
+			this,
+			i18n("The file %1 does not contain a valid work sheet\n"
+				 "definition, which must have a document type\n"
+				 "'ktopWorkSheet'").arg(fileName));
+		return (FALSE);
+	}
+	// Check for proper size.
+	QDomElement element = doc.documentElement();
+	bool rowsOk;
+	uint r = element.attribute("rows").toUInt(&rowsOk);
+	bool columnsOk;
+	uint c = element.attribute("columns").toUInt(&columnsOk);
+	if (!(rowsOk && columnsOk))
+	{
+		KMessageBox::sorry(
+			this, i18n("The file %1 has an invalid work sheet size.")
+			.arg(fileName));
+		return (FALSE);
+	}
+
+	createGrid(r, c);
+
+	uint i;
+
+	/* Load lists of hosts that are needed for the work sheet and try
+	 * to establish a connection. */
+	QDomNodeList dnList = element.elementsByTagName("host");
+	for (i = 0; i < dnList.count(); ++i)
+	{
+		QDomElement element = dnList.item(i).toElement();
+		SensorMgr->engage(element.attribute("name"),
+						  element.attribute("shell"),
+						  element.attribute("command"));
+	}
+
+	// Load the displays and place them into the work sheet.
+	dnList = element.elementsByTagName("display");
+	for (i = 0; i < dnList.count(); ++i)
 	{
 		QDomElement element = dnList.item(i).toElement();
 		int row = element.attribute("row").toUInt();
@@ -112,8 +169,18 @@ WorkSheet::load(QDomElement& domElem)
 }
 
 bool
-WorkSheet::save(QTextStream& s, const QString& name)
+WorkSheet::save(const QString& fileName)
 {
+	QFile file(fileName);
+	if (!file.open(IO_WriteOnly))
+	{
+		KMessageBox::sorry(this, i18n("Can't open the file %1")
+						   .arg(fileName));
+		return (FALSE);
+	}
+	QTextStream s(&file);
+    s << "<!DOCTYPE ktopWorkSheet>\n";
+
 	QValueList<QString> hosts;
 	collectHosts(hosts);
 
@@ -121,8 +188,11 @@ WorkSheet::save(QTextStream& s, const QString& name)
 	 * and should be escaped. It's probably a good idea to use
 	 * QDomDocument for writing as well. */
 
+	// save work sheet information
+	s << "<WorkSheet rows=\"" << rows << "\" "
+	  << "columns=\"" << columns << "\">\n";
+
 	// save host information (name, shell, etc.)
-	s << "<HostInfos>\n";
 	QValueList<QString>::Iterator it;
 	for (it = hosts.begin(); it != hosts.end(); ++it)
 	{
@@ -132,13 +202,7 @@ WorkSheet::save(QTextStream& s, const QString& name)
 		  << "shell=\"" << shell << "\" "
 		  << "command=\"" << command << "\"/>\n";
 	}
-	s << "</HostInfos>\n";
 	
-	// save work sheet information
-	s << "<WorkSheet name=\"" << name << "\" "
-	  << "rows=\"" << rows << "\" "
-	  << "columns=\"" << columns << "\">\n";
-
 	for (int i = 0; i < rows; ++i)
 		for (int j = 0; j < columns; ++j)
 			if (!displays[i][j]->isA("QGroupBox"))
@@ -155,6 +219,7 @@ WorkSheet::save(QTextStream& s, const QString& name)
 			}	
 	s << "</WorkSheet>\n";
 
+	file.close();
 	return (TRUE);
 }
 
@@ -274,4 +339,31 @@ WorkSheet::collectHosts(QValueList<QString>& list)
 		for (int c = 0; c < columns; ++c)
 			if (!displays[r][c]->isA("QGroupBox"))
 				((SensorDisplay*) displays[r][c])->collectHosts(list);
+}
+
+void
+WorkSheet::createGrid(uint r, uint c)
+{
+	if (lm)
+		delete lm;
+
+	rows = r;
+	columns = c;
+
+	// create grid layout with specified dimentions
+	lm = new QGridLayout(this, r, c, 5);
+	CHECK_PTR(lm);
+
+	// and fill it with dummy displays
+	int i, j;
+	displays = new QWidget**[rows];
+	CHECK_PTR(displays);
+	for (i = 0; i < rows; ++i)
+	{
+		displays[i] = new QWidget*[columns];
+		CHECK_PTR(displays[i]);
+		for (j = 0; j < columns; ++j)
+			insertDummyDisplay(i, j);
+	}
+	lm->activate();
 }

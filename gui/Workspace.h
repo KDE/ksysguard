@@ -38,9 +38,6 @@ public:
 	Workspace(QWidget* parent, const char* name = 0);
 	~Workspace() { }
 
-	WorkSheet* addSheet(const QString& title, int columns = 1,
-						int columns = 1);
-
 	void saveProperties();
 
 public slots:
@@ -51,6 +48,8 @@ public slots:
 
 private:
 	QList<WorkSheet> sheets;
+	/// Directory that was used for the last load/save.
+	QString workDir;
 } ;
 
 #endif
