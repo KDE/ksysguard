@@ -189,7 +189,7 @@ void printDiskStat(const char* cmd)
 
 void printDiskStatInfo(const char* cmd)
 {
-	fprintf(CurrentClient, "Device\tBlocks\tUsed\tAvailable\tUsed %%\tMountPoint\n");
+	fprintf(CurrentClient, "Device\tBlocks\tUsed\tAvailable\tUsed %%\tMountPoint\nM\tD\tD\tD\td\ts\n");
 }
 
 void printDiskStatUsed(const char* cmd)
