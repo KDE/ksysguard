@@ -307,47 +307,57 @@ ProcessList::load()
 			// pid
 			line += s.setNum(p->getPid()) + ";";
 
+			TABCOLUMN* tc = &TabCol[2];
 			// process name
-			if (TabCol[2].visible && TabCol[2].supported)
+			if (tc->visible && tc->supported)
 				line += p->getName() + QString(";");
+			tc++;
 
 			// user name
-			if (TabCol[3].visible && TabCol[3].supported)
+			if (tc->visible && tc->supported)
 				line += p->getUserName() + QString(";");
+			tc++;
 
 			// CPU load
-			if (TabCol[4].visible && TabCol[4].supported)
+			if (tc->visible && tc->supported)
 				line += s.sprintf("%.2f%%;",
 								  p->getUserLoad() + p->getSysLoad());
+			tc++;
 
 			// total processing time
-			if (TabCol[5].visible && TabCol[5].supported)
+			if (tc->visible && tc->supported)
 			{
 				int totalTime = p->getUserTime() + p->getSysTime();
 				line += s.sprintf("%d:%02d;",
 								  (totalTime / 100) / 60,
 								  (totalTime / 100) % 60);
 			}
+			tc++;
 
 			// process priority
-			if (TabCol[6].visible && TabCol[6].supported)
+			if (tc->visible && tc->supported)
 				line += s.sprintf("%d;", p->getPriority());
+			tc++;
 
 			// process status
-			if (TabCol[7].visible && TabCol[6].supported)
+			if (tc->visible && tc->supported)
 				line += p->getStatusTxt() + QString(";");
+			tc++;
 
 			// VM size (total memory in kBytes)
-			if (TabCol[8].visible && TabCol[7].supported)
+			if (tc->visible && tc->supported)
 				line += s.setNum(p->getVm_size() / 1024) + ";";
+			tc++;
 
 			// VM rss
-			if (TabCol[9].visible && TabCol[8].supported)
+			if (tc->visible && tc->supported)
 				line += s.setNum(p->getVm_rss()) + ";";
+			tc++;
 
 			// VM lib
-			if (TabCol[10].visible && TabCol[9].supported)
+			if (tc->visible && tc->supported)
 				line += s.setNum(p->getVm_lib()) + ";";
+			tc++;
 
 			appendItem(line);
 		}
@@ -418,56 +428,31 @@ ProcessList::cellHeight(int row)
 	return (18);	// Why not 42? How can we make this more sensible?
 }
 
+#define SETTABCOL(text, has) \
+	tc->trHeader = new char[strlen(text) + 1]; \
+	strcpy(tc->trHeader, text); \
+	if (has) \
+		tc->supported = true; \
+	tc++
+
 void
 ProcessList::initTabCol(void)
 {
-	TabCol[1].trHeader = new char[strlen(i18n("PID")) + 1];
-	strcpy(TabCol[1].trHeader, i18n("PID"));
+	TABCOLUMN* tc = &TabCol[1];
 
-	TabCol[2].trHeader = new char[strlen(i18n("Name")) + 1];
-	strcpy(TabCol[2].trHeader, i18n("Name"));
-	if (pl.hasName())
-		TabCol[2].supported = true;
+	tc->trHeader = new char[strlen(i18n("PID")) + 1];
+	strcpy(tc->trHeader, i18n("PID"));
+	tc++;
 
-	TabCol[3].trHeader = new char[strlen(i18n("User ID")) + 1];
-	strcpy(TabCol[3].trHeader, i18n("User ID"));
-	if (pl.hasUid())
-		TabCol[3].supported = true;
-
-	TabCol[4].trHeader = new char[strlen(i18n("CPU")) + 1];
-	strcpy(TabCol[4].trHeader, i18n("CPU"));
-	if (pl.hasUserLoad && pl.hasSysLoad())
-		TabCol[4].supported = true;
-
-	TabCol[5].trHeader = new char[strlen(i18n("Time")) + 1];
-	strcpy(TabCol[5].trHeader, i18n("Time"));
-	if (pl.hasUserTime() && pl.hasSysTime())
-		TabCol[5].supported = true;
-
-	TabCol[6].trHeader = new char[strlen(i18n("Prior.")) + 1];
-	strcpy(TabCol[6].trHeader, i18n("Prior."));
-	if (pl.hasPriority())
-		TabCol[6].supported = true;
-
-	TabCol[7].trHeader = new char[strlen(i18n("Status")) + 1];
-	strcpy(TabCol[7].trHeader, i18n("Status"));
-	if (pl.hasStatus())
-		TabCol[7].supported = true;
-
-	TabCol[8].trHeader = new char[strlen(i18n("Memory")) + 1];
-	strcpy(TabCol[8].trHeader, i18n("Memory"));
-	if (pl.hasVmSize())
-		TabCol[8].supported = true;
-
-	TabCol[9].trHeader = new char[strlen(i18n("VmRss")) + 1];
-	strcpy(TabCol[9].trHeader, i18n("VmRss"));
-	if (pl.hasVmRss())
-		TabCol[9].supported = true;
-
-	TabCol[10].trHeader = new char[strlen(i18n("VmLib")) + 1];
-	strcpy(TabCol[10].trHeader, i18n("VmLib"));
-	if (pl.hasVmLib())
-		TabCol[10].supported = true;
+	SETTABCOL(i18n("Name"), pl.hasName());
+	SETTABCOL(i18n("User ID"), pl.hasUid());
+	SETTABCOL(i18n("CPU"), pl.hasUserLoad && pl.hasSysLoad());
+	SETTABCOL(i18n("Time"), pl.hasUserTime() && pl.hasSysTime());
+	SETTABCOL(i18n("Prior."), pl.hasPriority());
+	SETTABCOL(i18n("Status"), pl.hasStatus());
+	SETTABCOL(i18n("Memory"), pl.hasVmSize());
+	SETTABCOL(i18n("VmRss"), pl.hasVmRss());
+	SETTABCOL(i18n("VmLib"), pl.hasVmLib());
 
 	// determine the number of visible columns
 	int columns = 0;
@@ -483,10 +468,11 @@ ProcessList::initTabCol(void)
 	 * to determine the width with the current font metrics.
 	 */
 	QFontMetrics fm = fontMetrics();
+	int col = 0;
 	for (cnt = 0; cnt < MaxCols; cnt++)
 		if (TabCol[cnt].visible && TabCol[cnt].supported)
 		{
-			setColumn(cnt, TabCol[cnt].trHeader,
+			setColumn(col++, TabCol[cnt].trHeader,
 					  max(fm.width(TabCol[cnt].placeholder),
 						  fm.width(TabCol[cnt].trHeader) + 6),
 					  TabCol[cnt].type);

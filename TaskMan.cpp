@@ -38,6 +38,7 @@
 #include "memory.h"
 #include "ReniceDlg.h"
 #include "ProcListPage.h"
+#include "OSProcessList.h"
 #include "TaskMan.moc"
 
 #define NONE -1
@@ -63,8 +64,12 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
 	 */
 	pSig = new QPopupMenu(NULL,"_psig");
 	CHECK_PTR(pSig);
-	pSig->insertItem(i18n("Renice Task..."),MENU_ID_RENICE);
-	pSig->insertSeparator();
+	OSProcessList pl;
+	if (pl.hasPriority())
+	{
+		pSig->insertItem(i18n("Renice Task..."),MENU_ID_RENICE);
+		pSig->insertSeparator();
+	}
 	pSig->insertItem(i18n("send SIGINT\t(ctrl-c)"), MENU_ID_SIGINT);
 	pSig->insertItem(i18n("send SIGQUIT\t(core)"), MENU_ID_SIGQUIT);
 	pSig->insertItem(i18n("send SIGTERM\t(term.)"), MENU_ID_SIGTERM);

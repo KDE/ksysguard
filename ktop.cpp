@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Taskmanager
+    KTop, the KDE Task Manager
    
     Copyright (C) 1997 Bernd Johannes Wuebben
                        wuebben@math.cornell.edu
@@ -52,7 +52,7 @@ KApplication* Kapp;
 TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	: QWidget(parent, name)
 {
-	setCaption(i18n("KDE Taskmanager"));
+	setCaption(i18n("KDE Task Manager"));
 	setMinimumSize(KTOP_MIN_W, KTOP_MIN_H);
 
 	taskman = new TaskMan(this, "", sfolder);
@@ -68,7 +68,7 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 
 	// 'Help' submenu
 	QString about;
-	ksprintf(&about, i18n("KDE Taskmanager Version %s\n\n"
+	ksprintf(&about, i18n("KDE Task Manager (KTop) Version %s\n\n"
 			     "Copyright:\n"
 			     "1996 : A. Sanda <alex@darkstar.ping.at>\n"
 			     "1997 : Ralf Mueller <ralf@bj-ig.de>\n"
