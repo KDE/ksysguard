@@ -189,14 +189,14 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   groupBox = new QGroupBox( 0, Qt::Vertical, i18n( "Colors" ), page );
   boxLayout = new QGridLayout( groupBox->layout(), 3, 2, spacingHint() );
 
-  label = new QLabel( i18n( "Vertical Lines:" ), groupBox );
+  label = new QLabel( i18n( "Vertical lines:" ), groupBox );
   boxLayout->addWidget( label, 0, 0 );
 
   mVerticalLinesColor = new KColorButton( groupBox );
   boxLayout->addWidget( mVerticalLinesColor, 0, 1 );
   label->setBuddy( mVerticalLinesColor );
 
-  label = new QLabel( i18n( "Horizontal Lines:" ), groupBox );
+  label = new QLabel( i18n( "Horizontal lines:" ), groupBox );
   boxLayout->addWidget( label, 1, 0 );
 
   mHorizontalLinesColor = new KColorButton( groupBox );
