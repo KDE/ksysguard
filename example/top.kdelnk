@@ -1,6 +1,7 @@
 # KDE Config File
 [KDE Desktop Entry]
 SwallowTitle=xload
+SwallowTitle[no]=xload
 SwallowTitle[es]=xload
 SwallowTitle[hr]=xload
 SwallowTitle[fr]=xload
