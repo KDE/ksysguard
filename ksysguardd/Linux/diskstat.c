@@ -47,7 +47,7 @@ char *getMntPnt(const char *cmd)
 	char *ptr;
 
 	memset(device, 0, sizeof(device));
-	sscanf(cmd, "diskspace%1024s", device);
+	sscanf(cmd, "partitions%1024s", device);
 
 	ptr = (char *)rindex(device, '/');
 	*ptr = '\0';
@@ -59,7 +59,7 @@ void initDiskStat(void)
 {
 	DiskStatList = new_ctnr(CT_DLL);
 
-	registerMonitor("diskspace/list", "listview", printDiskStat, printDiskStatInfo);
+	registerMonitor("partitions/list", "listview", printDiskStat, printDiskStatInfo);
 	updateDiskStat();
 }
 
@@ -93,11 +93,11 @@ int updateDiskStat(void)
 
 		// was there a change in mtab
 		if (mtab_info.st_size != mtab_size) {
-			snprintf(monitor, sizeof(monitor), "diskspace%s/used", disk_info->mntpnt);
+			snprintf(monitor, sizeof(monitor), "partitions%s/usedspace", disk_info->mntpnt);
 			removeMonitor(monitor);
-			snprintf(monitor, sizeof(monitor), "diskspace%s/free", disk_info->mntpnt);
+			snprintf(monitor, sizeof(monitor), "partitions%s/freespace", disk_info->mntpnt);
 			removeMonitor(monitor);
-			snprintf(monitor, sizeof(monitor), "diskspace%s/percent", disk_info->mntpnt);
+			snprintf(monitor, sizeof(monitor), "partitions%s/filllevel", disk_info->mntpnt);
 			removeMonitor(monitor);
 		}
 
@@ -133,11 +133,11 @@ int updateDiskStat(void)
 			push_ctnr(DiskStatList, disk_info);
 
 			if (mtab_info.st_size != mtab_size) {
-				snprintf(monitor, sizeof(monitor), "diskspace%s/used", disk_info->mntpnt);
+				snprintf(monitor, sizeof(monitor), "partitions%s/usedspace", disk_info->mntpnt);
 				registerMonitor(monitor, "integer", printDiskStatUsed, printDiskStatUsedInfo);
-				snprintf(monitor, sizeof(monitor), "diskspace%s/free", disk_info->mntpnt);
+				snprintf(monitor, sizeof(monitor), "partitions%s/freespace", disk_info->mntpnt);
 				registerMonitor(monitor, "integer", printDiskStatFree, printDiskStatFreeInfo);
-				snprintf(monitor, sizeof(monitor), "diskspace%s/percent", disk_info->mntpnt);
+				snprintf(monitor, sizeof(monitor), "partitions%s/filllevel", disk_info->mntpnt);
 				registerMonitor(monitor, "integer", printDiskStatPercent, printDiskStatPercentInfo);
 			}
 		}

@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -32,13 +32,69 @@
 
 /* Special version of perror for use in signal handler functions. */
 #define perror(a) write(STDERR_FILENO, (a), strlen(a))
+#define print(a) write(currentClientFD, (a), strlen(a))
+
+#define CALC(a, b, c, d) \
+{ \
+	NetDevs[i].a = a - NetDevs[i].Old##a; \
+	NetDevs[i].Old##a = a; \
+}
+
+#define REGISTERSENSOR(a, b, c, d) \
+{ \
+	sprintf(mon, "network/interfaces/%s/%s", tag, b); \
+	registerMonitor(mon, "integer", printNetDev##a, \
+					printNetDev##a##Info); \
+}
+
+#define UNREGISTERSENSOR(a, b, c, d) \
+{ \
+	sprintf(mon, "network/interfaces/%s/%s", NetDevs[i].name, b); \
+	removeMonitor(mon); \
+}
+
+#define DEFMEMBERS(a, b, c, d) \
+unsigned long Old##a; \
+unsigned long a;
+
+#define DEFVARS(a, b, c, d) \
+unsigned long a;
+
+#define FORALL(a) \
+	a(recBytes, "receiver/data", "Received Data", "kBytes/s") \
+	a(recPacks, "receiver/packets", "Received Packets", "1/s") \
+	a(recErrs, "receiver/errors", "Receiver Errors", "1/s") \
+	a(recDrop, "receiver/drops", "Receiver Drops", "1/s") \
+	a(recFifo, "receiver/fifo", "Receiver FIFO Overruns", "1/s") \
+	a(recFrame, "receiver/frame", "Receiver Frame Errors", "1/s") \
+	a(recCompressed, "receiver/compressed", "Received Compressed Packets", \
+	  "1/s") \
+	a(recMulticast, "receiver/multicast", "Received Multicast Packets", \
+	  "1/s") \
+	a(sentBytes, "transmitter/data", "Sent Data", "kBytes/s") \
+	a(sentPacks, "transmitter/packs", "Sent Packets", "1/s") \
+	a(sentErrs, "transmitter/errors", "Transmitter Errors", "1/s") \
+	a(sentDrop, "transmitter/drops", "Transmitter Drops", "1/s") \
+	a(sentFifo, "transmitter/fifo", "Transmitter FIFO overruns", "1/s") \
+	a(sentColls, "transmitter/collisions", "Transmitter Collisions", "1/s") \
+	a(sentCarrier, "transmitter/carrier", "Transmitter Carrier losses", \
+	  "1/s") \
+	a(sentCompressed, "transmitter/compressed", \
+	  "Transmitter Compressed Packets", "1/s")
+
+#define SETZERO(a, b, c, d) \
+a = 0;
+
+#define SETMEMBERZERO(a, b, c, d) \
+NetDevs[i].a = 0;
+
+#define DECLAREFUNC(a, b, c, d) \
+void printNetDev##a(const char* cmd); \
+void printNetDev##a##Info(const char* cmd);
 
 typedef struct
 {
-	long OldRxBytes;
-	long OldTxBytes;
-	long rxBytes;
-	long txBytes;
+	FORALL(DEFMEMBERS);
 	char name[32];
 } NetDevInfo;
 
@@ -58,6 +114,8 @@ static long OldHash = 0;
 
 #define MAXNETDEVS 64
 static NetDevInfo NetDevs[MAXNETDEVS];
+
+FORALL(DECLAREFUNC)
 
 static int
 processNetDev_(void)
@@ -90,13 +148,16 @@ processNetDev_(void)
 			char* pos = strchr(tag, ':');
 			if (pos)
 			{
-				unsigned long rxBytes, txBytes, rxPacks, txPacks;
+				FORALL(DEFVARS);
 				*pos = '\0';
-				rxBytes = txBytes = rxPacks = txPacks = 0;
+				FORALL(SETZERO);
 				sscanf(buf + 7,
-					   "%lu %lu %*d %*d %*d %*d %*d %*d " 
-					   "%lu %lu %*d %*d %*d %*d %*d %*d",
-					   &rxBytes, &rxPacks, &txBytes, &txPacks);
+					   "%lu %lu %lu %lu %lu %lu %lu %lu " 
+					   "%lu %lu %lu %lu %lu %lu %lu %lu",
+					   &recBytes, &recPacks, &recErrs, &recDrop, &recFifo,
+					   &recFrame, &recCompressed, &recMulticast,
+					   &sentBytes, &sentPacks, &sentErrs, &sentDrop,
+					   &sentFifo, &sentColls, &sentCarrier, &sentCompressed);
 
 				if (i >= NetDevCnt || strcmp(NetDevs[i].name, tag) != 0)
 				{
@@ -106,10 +167,7 @@ processNetDev_(void)
 				}
 				else
 				{
-					NetDevs[i].rxBytes = rxBytes - NetDevs[i].OldRxBytes;
-					NetDevs[i].txBytes = txBytes - NetDevs[i].OldTxBytes;
-					NetDevs[i].OldRxBytes = rxBytes;
-					NetDevs[i].OldTxBytes = txBytes;
+					FORALL(CALC);
 				}
 			}
 		}
@@ -118,9 +176,9 @@ processNetDev_(void)
 		return (-1);
 
 	/* save exact time inverval between this and the last read of
-	 * /proc/stat */
-	timeInterval = currSampling.tv_sec + currSampling.tv_usec / 100000.0 -
-		lastSampling.tv_sec - lastSampling.tv_usec / 100000.0;
+	 * /proc/net/dev */
+	timeInterval = currSampling.tv_sec - lastSampling.tv_sec +
+		(currSampling.tv_usec - lastSampling.tv_usec) / 1000000.0;
 	lastSampling = currSampling;
 
 	Dirty = 0;
@@ -184,18 +242,28 @@ initNetDev(void)
 				char mon[128];
 				*pos = '\0';
 				strcpy(NetDevs[i].name, tag);
-				sprintf(mon, "network/interfaces/%s/recBytes", tag);
-				registerMonitor(mon, "integer", printNetDevRecBytes,
-								printNetDevRecBytesInfo);
-				sprintf(mon, "network/interfaces/%s/sentBytes", tag);
-				registerMonitor(mon, "integer", printNetDevSentBytes,
-								printNetDevRecBytesInfo);
-				sscanf(pos + 1, "%ld %*d %*d %*d %*d %*d %*d %*d" 
-					   "%ld %*d %*d %*d %*d %*d %*d %*d",
-					   &NetDevs[i].OldRxBytes, &NetDevs[i].OldTxBytes);
+				FORALL(REGISTERSENSOR);
+				sscanf(pos + 1, "%lu %lu %lu %lu %lu %lu %lu %lu" 
+					   "%lu %lu %lu %lu %lu %lu %lu %lu",
+					   &NetDevs[i].recBytes,
+					   &NetDevs[i].recPacks,
+					   &NetDevs[i].recErrs,
+					   &NetDevs[i].recDrop,
+					   &NetDevs[i].recFifo,
+					   &NetDevs[i].recFrame,
+					   &NetDevs[i].recCompressed,
+					   &NetDevs[i].recMulticast,
+					   &NetDevs[i].sentBytes,
+					   &NetDevs[i].sentPacks,
+					   &NetDevs[i].sentErrs,
+					   &NetDevs[i].sentDrop,
+					   &NetDevs[i].sentFifo,
+					   &NetDevs[i].sentColls,
+					   &NetDevs[i].sentCarrier,
+					   &NetDevs[i].sentCompressed);
 				NetDevCnt++;
 			}
-			NetDevs[i].rxBytes = NetDevs[i].txBytes = 0;
+			FORALL(SETMEMBERZERO);
 		}
 	}
 
@@ -211,10 +279,7 @@ exitNetDev(void)
 	for (i = 0; i < NetDevCnt; ++i)
 	{
 		char mon[128];
-		sprintf(mon, "network/interfaces/%s/recBytes", NetDevs[i].name);
-		removeMonitor(mon);
-		sprintf(mon, "network/interfaces/%s/sentBytes", NetDevs[i].name);
-		removeMonitor(mon);
+		FORALL(UNREGISTERSENSOR);
 	}
 	NetDevCnt = 0;
 }
@@ -273,8 +338,7 @@ Inter-|   Receive                                                |  Transmit
 
 	if (OldHash != 0 && OldHash != hash)
 	{
-		/* TODO: Check whether fwrite() is reentrant! */
-		fwrite("\033\033\033RECONFIGURE\n", strlen("\033\033\033RECONFIGURE\n"), 1, currentClient);
+		print("\033\033\033RECONFIGURE\n");
 		CheckSetupFlag = 1;
 	}
 	OldHash = hash;
@@ -293,66 +357,37 @@ checkNetDev(void)
 	initNetDev();
 }
 
-void
-printNetDevRecBytes(const char* cmd)
-{
-	int i;
-	char* beg;
-	char* end;
-	char dev[64];
-
-	beg = strchr(cmd, '/');
-	beg = strchr(beg + 1, '/');
-	end = strchr(beg + 1, '/');
-	strncpy(dev, beg + 1, end - beg - 1);
-	dev[end - beg - 1] = '\0';
-	if (Dirty)
-		processNetDev();
-	for (i = 0; i < MAXNETDEVS; ++i)
-		if (strcmp(NetDevs[i].name, dev) == 0)
-		{
-			fprintf(currentClient, "%lu\n", (unsigned long)
-				   (NetDevs[i].rxBytes / (1024 * timeInterval)));
-			return;
-		}
-
-	fprintf(currentClient, "0\n");
+#define PRINTFUNC(a, b, c, d) \
+void \
+printNetDev##a(const char* cmd) \
+{ \
+	int i; \
+	char* beg; \
+	char* end; \
+	char dev[64]; \
+ \
+	beg = strchr(cmd, '/'); \
+	beg = strchr(beg + 1, '/'); \
+	end = strchr(beg + 1, '/'); \
+	strncpy(dev, beg + 1, end - beg - 1); \
+	dev[end - beg - 1] = '\0'; \
+	if (Dirty) \
+		processNetDev(); \
+	for (i = 0; i < MAXNETDEVS; ++i) \
+		if (strcmp(NetDevs[i].name, dev) == 0) \
+		{ \
+			fprintf(currentClient, "%lu\n", (unsigned long) \
+				   (NetDevs[i].a / (1024 * timeInterval))); \
+			return; \
+		} \
+ \
+	fprintf(currentClient, "0\n"); \
+} \
+ \
+void \
+printNetDev##a##Info(const char* cmd) \
+{ \
+	fprintf(currentClient, "%s\t0\t0\t%s\n", c, d); \
 }
 
-void
-printNetDevRecBytesInfo(const char* cmd)
-{
-	fprintf(currentClient, "Received Bytes\t0\t0\tkBytes/s\n");
-}
-
-void
-printNetDevSentBytes(const char* cmd)
-{
-	int i;
-	char* beg;
-	char* end;
-	char dev[64];
-
-	beg = strchr(cmd, '/');
-	beg = strchr(beg + 1, '/');
-	end = strchr(beg + 1, '/');
-	strncpy(dev, beg + 1, end - beg - 1);
-	dev[end - beg - 1] = '\0';
-	if (Dirty)
-		processNetDev();
-	for (i = 0; i < MAXNETDEVS; ++i)
-		if (strcmp(NetDevs[i].name, dev) == 0)
-		{
-			fprintf(currentClient, "%lu\n", (unsigned long)
-				   (NetDevs[i].txBytes / (1024 * timeInterval)));
-			return;
-		}
-
-	fprintf(currentClient, "0\n");
-}
-
-void
-printNetDevRecSendInfo(const char* cmd)
-{
-	fprintf(currentClient, "Send Bytes\t0\t0\tkBytes/s\n");
-}
+FORALL(PRINTFUNC)

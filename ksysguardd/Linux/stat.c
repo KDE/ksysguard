@@ -404,8 +404,8 @@ processStat(void)
 	}
 
 	/* save exact time inverval between this and the last read of /proc/stat */
-	timeInterval = currSampling.tv_sec + currSampling.tv_usec / 100000.0 -
-		lastSampling.tv_sec - lastSampling.tv_usec / 100000.0;
+	timeInterval = currSampling.tv_sec - lastSampling.tv_sec +
+		(currSampling.tv_usec - lastSampling.tv_usec) / 1000000.0;
 	lastSampling = currSampling;
 
 	cleanupDiskList();

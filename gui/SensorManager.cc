@@ -73,8 +73,22 @@ SensorManager::SensorManager()
 	dict.insert("pageOut", new QString(i18n("Pages Out")));
 	dict.insert("context", new QString(i18n("Context Switches")));
 	dict.insert("network", new QString(i18n("Network")));
-	dict.insert("recBytes", new QString(i18n("Received Bytes")));
-	dict.insert("sentBytes", new QString(i18n("Sent Bytes")));
+	dict.insert("interfaces", new QString(i18n("Interfaces")));
+	dict.insert("receiver", new QString(i18n("Receiver")));
+	dict.insert("transmitter", new QString(i18n("Transmitter")));
+	dict.insert("data", new QString(i18n("Data")));
+	dict.insert("compressed", new QString(i18n("Compressed Packets")));
+	dict.insert("drops", new QString(i18n("Dropped Packets")));
+	dict.insert("errors", new QString(i18n("Errors")));
+	dict.insert("fifo", new QString(i18n("FIFO Overruns")));
+	dict.insert("frame", new QString(i18n("Frame Errors")));
+	dict.insert("multicast", new QString(i18n("Multicast")));
+	dict.insert("packets", new QString(i18n("Packets")));
+	dict.insert("carrier", new QString(i18n("Carrier")));
+	dict.insert("collisions", new QString(i18n("Collisions")));
+	dict.insert("sockets", new QString(i18n("Sockets")));
+	dict.insert("count", new QString(i18n("Total Number")));
+	dict.insert("list", new QString(i18n("Table")));
 	dict.insert("apm", new QString(i18n("Advanced Power Management")));
 	dict.insert("batterycharge", new QString(i18n("Battery Charge")));
 	dict.insert("remainingtime", new QString(i18n("Remaining Time")));
@@ -84,6 +98,10 @@ SensorManager::SensorManager()
 	dict.insert("loadavg15", new QString(i18n("Load Average (15 min)")));
 	dict.insert("clock", new QString(i18n("Clock Frequency")));
 	dict.insert("lmsensors", new QString(i18n("Hardware Sensors")));
+	dict.insert("partitions", new QString(i18n("Partition Usage")));
+	dict.insert("usedspace", new QString(i18n("Used Space")));
+	dict.insert("freespace", new QString(i18n("Free Space")));
+	dict.insert("filllevel", new QString(i18n("Fill Level")));
 
 	for (int i = 0; i < 32; i++)
 	{

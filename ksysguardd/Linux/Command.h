@@ -26,6 +26,7 @@
 #define TIMERINTERVAL 2
 
 FILE *currentClient;
+int currentClientFD;
 void print_error(const char *, ...);
 
 typedef void (*cmdExecutor)(const char*);

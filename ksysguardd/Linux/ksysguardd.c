@@ -260,6 +260,7 @@ main(int argc, char* argv[])
 									if ((currentClient = fdopen(curr_socket, "w+")) == NULL) {
 										perror("fdopen");
 									}
+									currentClientFD = fileno(currentClient);
 									executeCommand(cmdBuf);
 									fprintf(currentClient, "ksysguardd> ");
 									fflush(currentClient);
@@ -274,6 +275,7 @@ main(int argc, char* argv[])
 
 	if (RunAsDaemon == 0) {
 		currentClient = stdout;
+		currentClientFD = fileno(currentClient);
 		
 		printf("ksysguardd %s  (c) 1999, 2000 Chris Schlaeger <cs@kde.org>\n"
 		   "This program is part of the KDE Project and licensed under\n"
