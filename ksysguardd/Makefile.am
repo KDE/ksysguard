@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = foreign
 SUBDIRS = $(UNAME)
 
 KSYSGUARDDRCFILE=@sysconfdir@/ksysguarddrc
-INCLUDES = -DKSYSGUARDDRCFILE="\"$(KSYSGUARDDRCFILE)\"" -DOSTYPE_$(UNAME) -I$(srcdir)/../CContLib -I$(UNAME)
+INCLUDES = -DKSYSGUARDDRCFILE="\"$(KSYSGUARDDRCFILE)\"" -DOSTYPE_$(UNAME) -I$(srcdir)/../CContLib -I$(srcdir)/$(UNAME)
 
 bin_PROGRAMS = ksysguardd
 

@@ -1,7 +1,7 @@
 CPPFLAGS = -D_GNU_SOURCE
 CFLAGS = -Wall $(CONFIGFLAGS)
 
-INCLUDES = -I$(srcdir)/../../CContLib -I..
+INCLUDES = -I$(srcdir)/../../CContLib -I$(srcdir)/..
 
 lib_LIBRARIES = libksysguardd.a
 libksysguardd_a_SOURCES = ProcessList.c	Memory.c stat.c netdev.c apm.c \
