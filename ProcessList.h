@@ -40,6 +40,13 @@
 
 #define NONE -1
 
+/**
+ * This class implements a widget that displays processes in a table. The
+ * KTabListBox is used for the handling of the table. The widget has four
+ * buttons that control the update rate, the process filter, manual refresh
+ * and killing of processes. The display is updated automatically when
+ * auto mode is enabled.
+ */
 class KtopProcList : public KTabListBox
 {
     Q_OBJECT
@@ -59,44 +66,67 @@ public:
 		FILTER_OWN
 	};
 
+	/// The constructor.
 	KtopProcList(QWidget* parent , const char* name);
+
+	/// The destructor.
 	~KtopProcList();
 
+	/**
+	 * The udpate function can be used to update the displayed process list.
+	 * A current list of processes is requested from the OS.
+	 */
 	void update(void);
 
-	int  setAutoUpdateMode(bool mode = TRUE);
+	/**
+	 * This function can be used to control the auto update feature of the
+	 * widget. If auto update mode is enabled the display is refreshed
+	 * according to the set refresh rate.
+	 */
+	int setAutoUpdateMode(bool mode = TRUE);
 
-	int updateRate()
+	/**
+	 * This function returns the current refresh rate. It's not the rate
+	 * itself but the index of the combo button item used to control the rate.
+	 */
+	int getUpdateRate()
 	{
 		return (update_rate);
 	}
 
+	/// This function sets the refresh rate.
 	void setUpdateRate(int);
 
-	int sortMethod(void)
-	{
-		return (sort_method);
-	}
-
+	/**
+	 * This function returns the current filter mode. The value is the index
+	 * of the combo button item used to set the filter mode.
+	 */
 	int getFilterMode()
 	{
 		return (filtermode);
 	}
 
+	/// This function sets the filter mode.
 	void setFilterMode(int m)
 	{
 		filtermode = m;
 	}
 
-	int getSortMethod()
+	/**
+	 * This function returns the number of the column that is to sort the
+	 * process list. It's the index in the TabCol array, not the index of 
+	 * the KTabList column since some columns may be invisible.
+	 */
+	int getSortColumn()
 	{
-		return (sort_method);
+		return (sortColumn);
 	}
 
-	void setSortMethod(int m)
-	{
-		sort_method = (OSProcessList::SORTKEY) m;
-	}
+	/**
+	 * This functions specifies the column that is used to sort the process
+	 * list.
+	 */
+	void setSortColumn(int c);
 
 	int selectionPid(void)
 	{
@@ -113,6 +143,8 @@ private:
 		UPDATE_MEDIUM_VALUE = 7,
 		UPDATE_FAST_VALUE = 1
 	};
+
+	void initTabCol(void);
 
     virtual void timerEvent(QTimerEvent*)
 	{
@@ -139,12 +171,12 @@ private:
 
     int lastSelectionPid;
 	int filtermode;
-	OSProcessList::SORTKEY sort_method;
+	int sortColumn;
 	int update_rate;
 	int timer_interval;
 	int timer_id;
 
-    KtopIconList *icons;
+    KtopIconList* icons;
 
  private slots:
 	void procHighlighted(int, int);
@@ -152,4 +184,3 @@ private:
 };
 
 #endif
-

@@ -27,6 +27,8 @@
 #include <dirent.h>
 #include <pwd.h>
 
+#include <kapp.h>
+
 #include "OSProcessList.h"
 #include "TimeStampList.h"
 
@@ -114,7 +116,7 @@ OSProcess::loadInfo(const char* pidStr)
 
     sprintf(buffer, "/proc/%s/stat", pidStr);
 	if ((fd = fopen(buffer, "r")) == 0)
-		return (0);
+		return (false);
     
 	fscanf(fd, "%*s %*s %*s %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %d %d",
 		   &userTime, &sysTime);
@@ -151,7 +153,32 @@ OSProcess::loadInfo(const char* pidStr)
 	return (true);
 }
 
-void
+OSProcessList::OSProcessList()
+{
+	error = false;
+
+	sortCriteria = SORTBY_PID;
+	setAutoDelete(true);
+
+	/**
+	 * Here we make sure that the kernel has been compiled with /proc
+	 * support enabled. If not we generate an error message and set the
+	 * error variable to true.
+	 */
+	DIR* dir;
+	if ((dir = opendir("/proc")) == NULL)
+	{
+		error = true;
+		errMessage = i18n("Cannot open directory \'/proc\'!\n"
+						  "The kernel needs to be compiled with support\n"
+						  "for /proc filesystem enabled!");
+		return;
+	}
+	closedir(dir);
+}
+
+
+bool
 OSProcessList::update(void)
 {
 	// delete old process list
@@ -166,7 +193,14 @@ OSProcessList::update(void)
 	if (!OldTStamps)
 		OldTStamps = new TimeStampList;
 
-	dir = opendir("/proc");
+	if ((dir = opendir("/proc")) == NULL)
+	{
+		error = true;
+		errMessage = i18n("Cannot open directory \'/proc\'!\n"
+						  "The kernel needs to be compiled with support\n"
+						  "for /proc filesystem enabled!");
+		return (false);
+	}
 	while ((entry = readdir(dir))) 
 	{
 		OSProcess* ps = new OSProcess();
@@ -183,6 +217,8 @@ OSProcessList::update(void)
 	delete OldTStamps;
 	OldTStamps = NewTStamps;
 	NewTStamps = NULL;
+
+	return (true);
 }
 
 int

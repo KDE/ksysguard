@@ -102,6 +102,9 @@ public slots:
 
 	void pTree_killTask();
 
+signals:
+	void killProcess(int);
+
 private:
 	/**
 	 * This function gets an int value from the config file. The value is

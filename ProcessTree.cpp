@@ -31,8 +31,8 @@
 #include "OSProcessList.h"
 #include "ProcessTree.moc"
 
-#define INIT_PID      1
-#define NONE         -1
+#define INIT_PID 1
+#define NONE -1
 
 KtopProcTree::KtopProcTree(QWidget *parent, const char *name, WFlags f)
 	: KTreeList(parent, name, f)

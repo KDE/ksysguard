@@ -23,7 +23,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
 */
 
 // $Id$
@@ -41,13 +40,19 @@
 
 extern KApplication* Kapp;
 
+/**
+ * This widget implements a process list page. Besides the process list which
+ * is implemented as a KtopProcList, it contains two comboxes and two buttons.
+ * The combo boxes are used to set the update rate and the process filter.
+ * The buttons are used to force an immediate update and to kill a process.
+ */
 class ProcListPage : public QWidget
 {
 	Q_OBJECT
 
 public:
-	ProcListPage(QWidget *parent = 0, const char *name = 0);
-	~ProcListPage()
+	ProcListPage(QWidget* parent = 0, const char* name = 0);
+	virtual ~ProcListPage()
 	{
 		delete bKill;
 		delete bRefresh;
@@ -58,6 +63,7 @@ public:
 	}
 
 	void resizeEvent(QResizeEvent*);
+
 	int selectionPid(void)
 	{
 		return (pList->selectionPid());
@@ -75,10 +81,13 @@ public slots:
 	{
 		pList->update();
 	}
-	void cbRefreshActivated (int);
+	void cbRefreshActivated(int);
 	void cbProcessFilter(int);
 	void popupMenu(int, int);
 	void killTask();
+
+signals:
+	void killProcess(int);
 
 private:
 	/**
@@ -99,18 +108,25 @@ private:
 		return (false);
 	}
 
-	QPushButton* bKill;
-	QPushButton* bRefresh;
-
+	/// The frame around the other widgets.
     QGroupBox* box;
-	QComboBox* cbRefresh;
-	QComboBox* cbFilter;
+
+	/// The process list.
     KtopProcList* pList;
 
+	/// These combo boxes control the refresh rate and the process filter.
+	QComboBox* cbRefresh;
+	QComboBox* cbFilter;
+	
+	/// These buttons force an immedeate refresh or kill a process.
+	QPushButton* bRefresh;
+	QPushButton* bKill;
+
+	/**
+	 * This variable stores the index of the currently selected item of
+	 * the cbRefresh combo box.
+	 */
 	int refreshRate;
-	char cfgkey_pListUpdate[12];
-	char cfgkey_pListFilter[12];
-	char cfgkey_pListSort[12];
 } ;
 
 #endif

@@ -23,7 +23,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
 */
 
 // $Id$
@@ -118,7 +117,9 @@ ProcTreePage::resizeEvent(QResizeEvent* ev)
     int h = height();
    
 	pTree_box->setGeometry(5, 5, w - 10, h - 20);
+
    	pTree->setGeometry(10, 30, w - 20, h - 90);
+
 	pTree_cbSort->setGeometry(10, h - 50,140, 25);
 	pTree_bRefresh->setGeometry(w - 270, h - 50, 80, 25);
 	pTree_bRoot->setGeometry(w - 180, h - 50, 80, 25);
@@ -139,40 +140,7 @@ ProcTreePage::pTree_killTask()
 	if (pid < 0)
 		return;
 
-	OSProcessList pl;
-	pl.update();
-	OSProcess* ps;
-	for (ps = pl.first(); ps && ps->getPid() != pid; ps = pl.next())
-		;
+	emit(killProcess(pid));
 
-	if (!ps)
-		return;
-
-	QString msg;
-	msg.sprintf(i18n("Kill process %d (%s - %s) ?\n"), ps->getPid(),
-				ps->getName(), ps->getUserName().data());
-
-	int err;
-	switch(QMessageBox::warning(this, i18n("ktop"), msg,
-								i18n("Continue"), i18n("Abort"), 0, 1))
-    { 
-	case 0: // continue
-		err = kill(ps->getPid(), SIGKILL);
-		if (err)
-		{
-			QMessageBox::warning(this, i18n("ktop"),
-								 i18n("Kill error !\n"
-								 "The following error occured...\n"),
-								 strerror(errno), 0);
-		}
-		pTree->update();
-		break;
-
-	case 1: // abort
-		break;
-	}
+	pTree->update();
 }
-
-
-
-

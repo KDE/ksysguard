@@ -1,12 +1,15 @@
 # KDE Config File 
 [KDE Desktop Entry]
 BinaryPattern=ktop;
-Comment=Information about tasks and performance
+Comment=Taskmanager and performance monitor
 Comment[no]=Informasjon om oppgaver og ytelse
-Comment[pt_BR]=InformaÁıes sobre processos e performance
-Name=Performance monitor
+Comment[da]=KDE filstyring og browser logget ind som superbruger
+Comment[de]=Der KDE Prozessmanager
+Comment[pt_BR]=Gerenciador de tarefas KDE
+Comment[ru]=Ì≈Œ≈ƒ÷≈“ ⁄¡ƒ¡ﬁ KDE
+Name=Taskmanager
+Name[da]=Ktop
 Name[no]=YtelsesovervÂker
-Name[pt_BR]=Monitor de performance
 Exec=ktop
 Icon=ktop.xpm
 MiniIcon=ktop.xpm
@@ -15,3 +18,5 @@ DocPath=ktop/ktop.html
 TerminalOptions=
 Terminal=0
 Path=
+SwallowTitle=xload
+SwallowExec=xload -jumpscroll 1 -fg green3 -bg black -nolabel -geometry 50x50+10000+10000

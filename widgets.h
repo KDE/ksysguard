@@ -35,14 +35,13 @@
 
 #include <ktablistbox.h>
 
-#include "cpu.h"
-#include "memory.h"
 #include "settings.h"
 #include "IconList.h"
 #include "ProcessList.h"
 #include "ProcessTree.h"
 #include "ProcListPage.h"
 #include "ProcTreePage.h"
+#include "PerfMonPage.h"
 
 //#define ADD_SWAPMON
 
@@ -73,7 +72,7 @@ public:
 		MENU_ID_KILL
 	};
 
-	TaskMan(QWidget *parent = 0, const char *name = 0, int sfolder=0);
+	TaskMan(QWidget* parent = 0, const char* name = 0, int sfolder = 0);
     ~TaskMan()
 	{
 		delete procListPage;
@@ -97,17 +96,11 @@ private:
 
 	ProcTreePage* procTreePage;
 
+	PerfMonPage* perfMonPage;
+
     QWidget* pages[3];
-	QWidget* mem_cur;
-	QWidget* cpu_cur;
-	QGroupBox* cpubox;
-	QGroupBox* membox;
-	QGroupBox* cpubox1;
-	QGroupBox* membox1;
 	
 	QPopupMenu* pSig;
-	CpuMon* cpumon;
-	MemMon* memmon;
 	AppSettings* settings;
 
     int timer_interval;
@@ -117,15 +110,7 @@ private:
 	char cfgkey_startUpPage[12];
 	bool restoreStartupPage;
 
-#ifdef ADD_SWAPMON
-	QGroupBox* swapbox1;
-	QWidget* swap_cur;	
-	SwapMon* swapmon;
-	QGroupBox* swapbox;
-#endif
-
 public slots:
-
 	void pSigHandler(int);
 	void tabBarSelected(int);
 
@@ -137,6 +122,8 @@ public slots:
 	{
 		pSig->popup(QCursor::pos());
 	}
+	void killProcess(int);
+
 };
 
 class SetNice : public QDialog

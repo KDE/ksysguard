@@ -26,39 +26,16 @@
 /*=============================================================================
   HEADERs
  =============================================================================*/
-#include <qwidget.h>
-#include <qframe.h>
-#include <qpicture.h>
-#include <qevent.h>
-#include <qpainter.h>
-
-#include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <ctype.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
+#include <string.h>
+
+#include <qpainter.h>
 
 #include "memory.moc"
 
-/*=============================================================================
-  #DEFINEs
- =============================================================================*/
-#define bytetok(x) (((x) + 512) >> 10)
-#define MEM_ZONE_SIZE 4096
-
-/*=============================================================================
- Class : MemMon (methods)
- =============================================================================*/
-/*-----------------------------------------------------------------------------
-  Routine : MemMon::MemMon (constructor)
- -----------------------------------------------------------------------------*/
 MemMon::MemMon(QWidget *parent, const char *name, QWidget *child)
        :QWidget (parent, name)
 {
-    char buffer[256];
-    
     initMetaObject();
 
     setBackgroundColor(black);
@@ -67,32 +44,26 @@ MemMon::MemMon(QWidget *parent, const char *name, QWidget *child)
     mem_values = 0;
     mem_values = (int *)malloc(sizeof(int) * intervals);
     memset(mem_values, 0, sizeof(int) * intervals);
-    FILE *fd = fopen("/proc/meminfo", "r");
-    fgets(buffer, sizeof(buffer), fd);
-    fgets(buffer, sizeof(buffer), fd);
-    mem_size = physsize = atol(buffer + 5);
-    fgets(buffer, sizeof(buffer), fd);
-    mem_size += atol(buffer + 5);
-    fclose(fd);
+
+	int dum, stotal;
+	os.getMemoryInfo(physsize, dum, dum, dum, dum);
+	os.getSwapInfo(stotal, dum);
+	mem_size = physsize + stotal;
+
     brush_0 = QBrush(QColor("darkgreen"), SolidPattern);
     brush_1 = QBrush(green, SolidPattern);
     startTimer(2000);
     show();
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : MemMon::MemMon (destructor)
- -----------------------------------------------------------------------------*/
 MemMon::~MemMon() 
 {
     if(mem_values)
         free(mem_values);
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : MemMon::paintEvent
- -----------------------------------------------------------------------------*/
-void MemMon::paintEvent(QPaintEvent *)
+void 
+MemMon::paintEvent(QPaintEvent *)
 {
     QPainter p;
     char     buf[20];
@@ -129,31 +100,21 @@ void MemMon::paintEvent(QPaintEvent *)
     p.end();
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : MemMon::timerEvent
- -----------------------------------------------------------------------------*/
-void MemMon::timerEvent(QTimerEvent *)
+void 
+MemMon::timerEvent(QTimerEvent *)
 {
-    char buffer[256];
-    FILE *f;
-    
-    f = fopen("/proc/meminfo", "r");
-    fgets(buffer, sizeof(buffer), f);
-    fgets(buffer, sizeof(buffer), f);
-    memcpy(mem_values, &mem_values[1], sizeof(int) * (intervals - 1));
-    mem_values[intervals - 1] = atol(strchr(buffer + 6, ' ') + 1);
-    fgets(buffer, sizeof(buffer), f);
-    mem_values[intervals - 1] += atol(strchr(buffer + 6, ' ') + 1);
-    fclose(f);
-    if( isVisible() ) repaint();
+	int mtotal, mfree, dum;
+	int stotal, sfree;
+
+	os.getMemoryInfo(mtotal, mfree, dum, dum, dum);
+	os.getSwapInfo(stotal, sfree);
+    memmove(mem_values, &mem_values[1], sizeof(int) * (intervals - 1));
+    mem_values[intervals - 1] = (mtotal - mfree) + (stotal - sfree);
+
+    if (isVisible())
+		repaint();
 }
 
-/*=============================================================================
- Class : SwapMon (methods)
- =============================================================================*/
-/*-----------------------------------------------------------------------------
-  Routine : SwapMon::SwapMon
- -----------------------------------------------------------------------------*/
 SwapMon::SwapMon(QWidget *parent, const char *name, QWidget *child )
         :QWidget (parent, name)
 {
@@ -179,9 +140,6 @@ SwapMon::SwapMon(QWidget *parent, const char *name, QWidget *child )
     show();
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : SwapMon::~SwapMon
- -----------------------------------------------------------------------------*/
 SwapMon::~SwapMon()
 {
   killTimer(tid);
@@ -189,10 +147,8 @@ SwapMon::~SwapMon()
   delete memZone;
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : SwapMon::paintEvent
- -----------------------------------------------------------------------------*/
-void SwapMon::paintEvent(QPaintEvent *)
+void 
+SwapMon::paintEvent(QPaintEvent *)
 {
   QPainter p;
 
@@ -220,37 +176,9 @@ void SwapMon::paintEvent(QPaintEvent *)
   p.end();
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : SwapMon::timerEvent
- -----------------------------------------------------------------------------*/
-void SwapMon::timerEvent(QTimerEvent *)
+void 
+SwapMon::timerEvent(QTimerEvent *)
 {
-  /*
-  int   fd, len;
-  char *p;
-  
-  fd = open("/proc/meminfo",O_RDONLY);
-  if ( fd < 0 ) return;
-  len = read(fd,memZone,MEM_ZONE_SIZE-1);
-  close(fd);
-  if ( ( len < 0 ) || (len > MEM_ZONE_SIZE-1) ) return;
-  memZone[len] = '\0';
-
-  // be prepared for extra columns to appear be seeking
-  // to ends of lines...
-  p = strchr(memZone,'\n');
-  p = strchr(p+1,'\n');
-
-  while (isspace(*p)) p++;
-  while (*p && !isspace(*p)) p++;
-	
-  // "Swap total"	 
-  swapVals[0] = bytetok(strtoul(p, &p, 10));
-  swapVals[1] = bytetok(strtoul(p, &p, 10));
-  // "Swap used"
-  swapVals[2] = bytetok(strtoul(p, &p, 10));
-  */
-
   if ( swapVals[0] == 0 ) swapVals[0] = unsigned(1e9);
 
   indx =(indx+1)%ticks;
@@ -260,7 +188,5 @@ void SwapMon::timerEvent(QTimerEvent *)
 
 
 }
-
-
 
 

@@ -26,7 +26,7 @@ bin_PROGRAMS = 	ktop
 # Which sources should be compiled for ktop.
 ktop_SOURCES	= ktop.cpp memory.cpp settings.cpp cpu.cpp widgets.cpp \
 	ProcListPage.cpp ProcTreePage.cpp IconList.cpp ProcessList.cpp \
-	ProcessTree.cpp OSProcessList.cpp
+	ProcessTree.cpp OSProcessList.cpp PerfMonPage.cpp OSStatus.cpp
 
 # the library search path
 ktop_LDFLAGS = $(all_libraries) $(KDE_RPATH)
@@ -38,12 +38,13 @@ ktop_LDADD   =      $(LIB_KFM) $(LIB_KDEUI)
 
 # this option you can leave out. Just, if you use "make dist", you need it
 noinst_HEADERS = ktop.h memory.h settings.h cpu.h widgets.h ProcListPage.h\
-	IconList.h ProcessList.h ProcessTree.h OSProcessList.h ProcTreePage.h
+	IconList.h ProcessList.h ProcessTree.h OSProcessList.h ProcTreePage.h \
+	PerfMonPage.h OSStatus.h
 
 # just to make sure, automake makes them 
 BUILTSOURCES =	ktop.moc memory.moc settings.moc cpu.moc widgets.moc \
 	ProcListPage.moc IconList.moc ProcessList.moc ProcessTree.moc \
-	ProcTreePage.moc
+	ProcTreePage.moc PerfMonPage.moc
 
 # if you "make distclean", this files get removed. If you want to remove
 # them while "make clean", use CLEANFILES
@@ -110,4 +111,6 @@ ProcessTree.cpp : ProcessTree.moc
 ProcessTree.moc : ProcessTree.h
 	$(MOC) ProcessTree.h -o ProcessTree.moc
 
-
+PerfMonPage.cpp : PerfMonPage.moc
+PerfMonPage.moc : PerfMonPage.h
+	$(MOC) PerfMonPage.h -o PerfMonPage.moc

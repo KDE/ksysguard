@@ -60,20 +60,16 @@
 #include "ProcListPage.h"
 #include "widgets.moc"
 
-#define PROC_BASE     "/proc"
-#define KDE_ICN_DIR   "/share/icons/mini"
-#define KTOP_ICN_DIR  "/share/apps/ktop/pics"
-#define INIT_PID      1
-#define NONE         -1
+#define NONE -1
 
 //#define DEBUG_MODE    // uncomment to activate "printf lines"
 
 /*
- * It creates the actual QTabDialog. We create it as a modeless dialog, 
- * using the toplevel widget as its parent, so the dialog won't get 
- * its own window
+ * This constructor creates the actual QTabDialog. It is a modeless dialog,
+ * using the toplevel widget as its parent, so the dialog won't get its own
+ * window.
  */
-TaskMan::TaskMan(QWidget *parent, const char *name, int sfolder)
+TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
 	: QTabDialog(parent, name, FALSE, 0)
 {
 	QString tmp;
@@ -109,54 +105,22 @@ TaskMan::TaskMan(QWidget *parent, const char *name, int sfolder)
      */
     pages[0] = procListPage = new ProcListPage(this, "ProcListPage");
     CHECK_PTR(procListPage);
+	connect(procListPage, SIGNAL(killProcess(int)),
+			this, SLOT(killProcess(int)));
 	
 	/*
 	 * set up page 1 (process tree)
 	 */
     pages[1] = procTreePage = new ProcTreePage(this, "ProcTreePage"); 
     CHECK_PTR(procTreePage);
-    
-    /*----------------------------------------------
-     set up page 2 (This is the performance monitor)
-     ----------------------------------------------*/
-    pages[2] = new QWidget(this, "page2");
-    CHECK_PTR(pages[2]); 
+	connect(procTreePage, SIGNAL(killProcess(int)),
+			this, SLOT(killProcess(int)));
 
-    cpubox = new QGroupBox(pages[2], "_cpumon");
-    CHECK_PTR(cpubox); 
-    cpubox->setTitle(i18n("CPU load"));
-    cpubox1 = new QGroupBox(pages[2], "_cpumon1");
-    CHECK_PTR(cpubox1); 
-    cpubox1->setTitle(i18n("CPU load history"));
-    cpu_cur = new QWidget(pages[2], "cpu_child");
-    CHECK_PTR(cpu_cur); 
-    cpu_cur->setBackgroundColor(black);
-    cpumon = new CpuMon (cpubox1, "cpumon", cpu_cur);
-    CHECK_PTR(cpumon);
-
-    membox = new QGroupBox(pages[2], "_memmon");
-    CHECK_PTR(membox);
-    membox->setTitle(i18n("Memory"));
-    membox1 = new QGroupBox(pages[2], "_memhistory");
-    CHECK_PTR(membox1);
-    membox1->setTitle(i18n("Memory usage history"));
-    mem_cur = new QWidget(pages[2], "mem_child");
-    CHECK_PTR(mem_cur);
-    mem_cur->setBackgroundColor(black);
-    memmon = new MemMon (membox1, "memmon", mem_cur);
-
-    #ifdef ADD_SWAPMON
-    	swapbox = new QGroupBox(pages[2], "_swapmon");
-    	CHECK_PTR(swapbox);
-    	swapbox->setTitle(i18n("Swap"));
-    	swapbox1 = new QGroupBox(pages[2], "_swaphistory");
-    	CHECK_PTR(swapbox1);
-    	swapbox1->setTitle(i18n("Swap history"));
-    	swap_cur = new QWidget(pages[2],"swap_child");
-    	CHECK_PTR(swap_cur);
-    	swap_cur->setBackgroundColor(black);
-    	swapmon = new SwapMon (swapbox1, "swapmon", swap_cur);
-    #endif
+	/*
+	 * set up page 2 (performance monitor)
+	 */
+    pages[2] = perfMonPage = new PerfMonPage(this, "PerfMonPage");
+    CHECK_PTR(perfMonPage);
 
     /*----------------------------------------------
      settings
@@ -190,7 +154,7 @@ TaskMan::TaskMan(QWidget *parent, const char *name, int sfolder)
     // add pages...
     addTab(procListPage, "Processes &List");
     addTab(procTreePage, "Processes &Tree");
-    addTab(pages[2], "&Performance");
+    addTab(perfMonPage, "&Performance");
     move(0,0);
 #ifdef DEBUG_MODE
 	printf("KTOP debug: Selected start tab: %d\n", startup_page);
@@ -229,37 +193,8 @@ TaskMan::resizeEvent(QResizeEvent *ev)
 {
 	QTabDialog::resizeEvent(ev);
 
-	if(!procListPage || !procTreePage || !pages[2])
+	if(!procListPage || !procTreePage || !perfMonPage)
 		return;
-
-    int w = pages[2]->width();
-    int h = pages[2]->height();
-   
-    // performances page
-
-    #ifdef ADD_SWAPMON
-	cpubox->setGeometry (  10,       10,      80,    (h-40)/3);
-     	cpubox1->setGeometry( 100,       10, w - 110,    (h-40)/3);
-     	cpu_cur->setGeometry(  20,    10+18,      60,   (h-118)/3);
-     	cpumon->setGeometry(   10,       18, w - 130,   (h-118)/3);
-     	membox->setGeometry (  10,   (h+20)/3,      80,    (h-40)/3);
-     	membox1->setGeometry( 100,   (h+20)/3, w - 110,    (h-40)/3);
-     	mem_cur->setGeometry(  20,(h+20)/3+18,      60,   (h-118)/3);
-     	memmon->setGeometry (  10,         18, w - 130,   (h-118)/3);
-     	swapbox->setGeometry ( 10,   (2*h+10)/3,      80,    (h-40)/3);
-     	swapbox1->setGeometry(100,   (2*h+10)/3, w - 110,    (h-40)/3);
-     	swap_cur->setGeometry( 20,(2*h+10)/3+18,      60,   (h-118)/3);
-     	swapmon->setGeometry ( 10,           18, w - 130,   (h-118)/3);
-   #else
-	cpubox->setGeometry(10, 10, 80, (h / 2) - 30);
-    	cpubox1->setGeometry(100, 10, w - 110, (h / 2) - 30);
-    	cpu_cur->setGeometry(20, 30, 60, (h / 2) - 60);
-    	cpumon->setGeometry(10, 20, cpubox1->width() - 20, cpubox1->height() - 30);
-    	membox->setGeometry(10, h / 2, 80, (h / 2) - 30);
-    	membox1->setGeometry(100, h / 2, w - 110, (h / 2) - 30);
-    	mem_cur->setGeometry(20, h / 2 + 20, 60, (h / 2) - 60);
-    	memmon->setGeometry(10, 20, membox1->width() - 20, membox1->height() - 30);
-   #endif
 }
              
 void 
@@ -396,47 +331,77 @@ TaskMan::tabBarSelected (int tabIndx)
 }
 
 void 
+TaskMan::killProcess(int pid)
+{
+	OSProcessList pl;
+	pl.update();
+	OSProcess* ps;
+	for (ps = pl.first(); ps && ps->getPid() != pid; ps = pl.next())
+		;
+
+	if (!ps)
+		return;
+
+	QString msg;
+	msg.sprintf(i18n("Kill process %d (%s - %s) ?\n"), ps->getPid(),
+				ps->getName(), ps->getUserName().data());
+
+	int err;
+	switch(QMessageBox::warning(this, "ktop", msg,
+								i18n("Continue"), i18n("Abort"), 0, 1))
+    { 
+	case 0: // continue
+		err = kill(ps->getPid(), SIGKILL);
+		if (err)
+		{
+			QMessageBox::warning(this, "ktop",
+								 i18n("Kill error !\n"
+								 "The following error occured...\n"),
+								 strerror(errno), 0);   
+		}
+		break;
+
+	case 1: // abort
+		break;
+	}
+}
+
+void 
 TaskMan::invokeSettings(void)
 {
-#ifdef DEBUG_MODE
-	printf("KTop debug: TaskMan::invokeSettings : startup_page == %d.\n",
-		   startup_page);
-#endif
-    if( ! settings ) {
-        settings = new AppSettings(0,"proc_options");
-        CHECK_PTR(settings);      
-    }
+	if(!settings)
+	{
+		settings = new AppSettings(0,"proc_options");
+		CHECK_PTR(settings);      
+	}
 
-    settings->setStartUpPage(startup_page);
-    if( settings->exec() ) {
-        startup_page = settings->getStartUpPage();
-#ifdef DEBUG_MODE
-		printf("KTop debug : TaskMan::invokeSettings : startup_page (new val) = %d.\n"
-			   ,startup_page);
-#endif
-        saveSettings();
-    }
+	settings->setStartUpPage(startup_page);
+	if (settings->exec())
+	{
+		startup_page = settings->getStartUpPage();
+		saveSettings();
+	}
 }
 
 void 
 TaskMan::saveSettings()
 {
-	QString t;
-	char temp[32];
-	char *g_format = "%04d:%04d:%04d:%04d";
+	QString tmp;
 
-	/* save window size */
-	sprintf(temp, g_format,
-			parentWidget()->x(), parentWidget()->y(),
-			parentWidget()->width() , parentWidget()->height());
-	Kapp->getConfig()->writeEntry(QString("G_Toplevel"), QString(temp));
+	// save window size
+	tmp.sprintf("%04d:%04d:%04d:%04d",
+				parentWidget()->x(), parentWidget()->y(),
+				parentWidget()->width(), parentWidget()->height());
+	Kapp->getConfig()->writeEntry(QString("G_Toplevel"), tmp);
 
-	/* save startup page (tab) */
+	// save startup page (tab)
 	Kapp->getConfig()->writeEntry(QString(cfgkey_startUpPage),
-					   t.setNum(startup_page), TRUE);
+					   tmp.setNum(startup_page), TRUE);
 
+	// save process list settings
 	procListPage->saveSettings();
 
+	// save process tree settings
 	procTreePage->saveSettings();
 
 	Kapp->getConfig()->sync();

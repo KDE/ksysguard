@@ -23,17 +23,16 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
 */
 
 // $Id$
 
-#include <errno.h>
-#include <signal.h>
 #include <config.h>
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
+#include <errno.h>
+#include <signal.h>
 
 #include <qmessagebox.h>
 
@@ -70,12 +69,12 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	cbRefresh = new QComboBox(this, "pList_cbRefresh");
 	CHECK_PTR(cbRefresh);
 	cbRefresh->insertItem(i18n("Refresh rate: Slow"),
-			      (KtopProcList::UPDATE_SLOW));
+						  (KtopProcList::UPDATE_SLOW));
 	cbRefresh->insertItem(i18n("Refresh rate: Medium"),
-			      (KtopProcList::UPDATE_MEDIUM));
+						  (KtopProcList::UPDATE_MEDIUM));
 	cbRefresh->insertItem(i18n("Refresh rate: Fast"),
-			      (KtopProcList::UPDATE_FAST));
-	cbRefresh->setCurrentItem(pList->updateRate());
+						  (KtopProcList::UPDATE_FAST));
+	cbRefresh->setCurrentItem(pList->getUpdateRate());
 	connect(cbRefresh, SIGNAL(activated(int)),
 			SLOT(cbRefreshActivated(int)));
 
@@ -91,8 +90,7 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 			SLOT(cbProcessFilter(int)));
 
 	// Create the 'Refresh Now' button.
-	bRefresh = new QPushButton(i18n("Refresh Now"), this,
-									 "pList_bRefresh");
+	bRefresh = new QPushButton(i18n("Refresh Now"), this, "pList_bRefresh");
 	CHECK_PTR(bRefresh);
 	connect(bRefresh, SIGNAL(clicked()), this, SLOT(update()));
 
@@ -100,10 +98,6 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	bKill = new QPushButton(i18n("Kill task"), this, "pList_bKill");
 	CHECK_PTR(bKill);
 	connect(bKill,SIGNAL(clicked()), this, SLOT(killTask()));
-
-	strcpy(cfgkey_pListUpdate, "pListUpdate");
-	strcpy(cfgkey_pListFilter, "pListFilter");
-	strcpy(cfgkey_pListSort, "pListSort");
 
 	// restore refresh rate settings...
 	refreshRate = KtopProcList::UPDATE_MEDIUM;
@@ -118,9 +112,9 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	pList->setFilterMode(filter);
 
 	// restore sort method for pList...
-	int sortby = pList->getSortMethod();
+	int sortby = pList->getSortColumn();
 	loadSetting(sortby, "pListSort");
-	pList->setSortMethod(sortby);
+	pList->setSortColumn(sortby);
 
 	// create process list
     pList->update();
@@ -134,9 +128,10 @@ ProcListPage::resizeEvent(QResizeEvent* ev)
     int w = width();
     int h = height();
    
+	box->setGeometry(5, 5, w - 10, h - 20);
+
 	pList->setGeometry(10,25, w - 20, h - 75);
 
-	box->setGeometry(5, 5, w - 10, h - 20);
 	cbRefresh->setGeometry(10, h - 45, 150, 25);
 	cbFilter->setGeometry(170, h - 45, 150, 25);
 	bRefresh->setGeometry(w - 180, h - 45, 80, 25);
@@ -149,16 +144,15 @@ ProcListPage::saveSettings(void)
 	QString t;
 
 	/* save refresh rate */
-	Kapp->getConfig()->writeEntry(QString(cfgkey_pListUpdate),
-					   t.setNum(refreshRate), TRUE);
+	Kapp->getConfig()->writeEntry("pListUpdate", t.setNum(refreshRate), TRUE);
 
 	/* save filter mode */
-	Kapp->getConfig()->writeEntry(QString(cfgkey_pListFilter),
-					   t.setNum(pList->getFilterMode()), TRUE);
+	Kapp->getConfig()->writeEntry("pListFilter",
+								  t.setNum(pList->getFilterMode()), TRUE);
 
 	/* save sort criterium */
-	Kapp->getConfig()->writeEntry(QString(cfgkey_pListSort),
-					   t.setNum(pList->getSortMethod()), TRUE);
+	Kapp->getConfig()->writeEntry("pListSort",
+								  t.setNum(pList->getSortColumn()), TRUE);
 }
 
 void 
@@ -172,7 +166,7 @@ void
 ProcListPage::cbProcessFilter(int indx)
 {
 	pList->setFilterMode(indx);
-	update();
+	pList->update();
 }
 
 void 
@@ -184,41 +178,12 @@ ProcListPage::popupMenu(int row,int)
 void 
 ProcListPage::killTask()
 {
-	int cur = pList->currentItem();
-	if (cur == NONE)
+	int pid = selectionPid();
+	if (pid < 0)
 		return;
 
-	int pid = pList->text(cur, 1).toInt();
-	QString pname = pList->text(cur, 2);
-	QString uname = pList->text(cur, 3);
+	emit(killProcess(pid));
 
-	if (pList->selectionPid() != pid)
-	{
-		QMessageBox::warning(this,i18n("ktop"),
-							 i18n("Selection changed!\n\n"),
-							 i18n("Abort"), 0);
-		return;
-	}
-
-	QString msg;
-	msg.sprintf(i18n("Kill process %d (%s - %s)?"), pid, &pname, &uname);
-
-	int err = 0;
-	switch (QMessageBox::warning(this, i18n("ktop"), msg, i18n("Continue"), i18n("Abort"), 0, 1))
-	{ 
-	case 0: // try to kill the process
-		err = kill(pList->selectionPid(), SIGKILL);
-		if (err)
-		{
-			QMessageBox::warning(this,i18n("ktop"),
-								 i18n("Kill error !\n"
-								 "The following error occured...\n"),
-								 strerror(errno), 0);   
-		}
-		pList->update();
-		break;
-
-	case 1: // abort
-		break;
-	}
+	pList->update();
 }
+

@@ -20,52 +20,19 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
 */
 
-/*=============================================================================
-  HEADERs
- =============================================================================*/
-#include <qwidget.h>
-#include <qframe.h>
-#include <qpicture.h>
-#include <qevent.h>
-#include <qpainter.h>
-#include <qpushbt.h>
-#include <qbttngrp.h>
-#include <qradiobt.h>
-#include <qdialog.h>
-#include <qchkbox.h>
-#include <qlined.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <time.h>
-#include <asm/param.h>
-#include <sys/mman.h>
+// $Id$
+
+#include <string.h>
 
 #include "ktop.h"
 #include "settings.h"
 #include "cpu.moc"
-#include "kconfig.h"
-#include "klocale.h"
 
-/*=============================================================================
-  GLOBALs
- =============================================================================*/
-
-/*=============================================================================
- Class :  CpuMon (methods)
- =============================================================================*/
-/*-----------------------------------------------------------------------------
-  Routine : CpuMon::CpuMon (constructor)
- -----------------------------------------------------------------------------*/
-CpuMon::CpuMon(QWidget *parent, const char *name, QWidget *child)
-       :QWidget (parent, name)
+CpuMon::CpuMon(QWidget* parent, const char* name, QWidget* child)
+	: QWidget(parent, name)
 {
-    struct timezone timez;
-    char dummy[10];
     int t;
     QString tmp;
     
@@ -78,16 +45,6 @@ CpuMon::CpuMon(QWidget *parent, const char *name, QWidget *child)
     load_values = (unsigned *)malloc(sizeof(unsigned) * intervals);
     memset(load_values, 0, sizeof(unsigned) * intervals);
 
-    // set up the initial values
-    statfile = 0;
-    statfile = fopen("/proc/stat", "r");
-    setvbuf(statfile, NULL, _IONBF, 0);
-    
-    // read in the initial tick values
-    fscanf(statfile, "%s %d %d %d %d", dummy, &old_user_ticks
-                                     , &old_nice_ticks, &old_system_ticks
-                                     , &old_idle_ticks);
-    gettimeofday(&oldtime, &timez);
 
     // get the configuration value for the update speed
     timer_interval = 2000; 
@@ -109,9 +66,6 @@ CpuMon::CpuMon(QWidget *parent, const char *name, QWidget *child)
     show();
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : CpuMon::~CpuMon (desstructor)
- -----------------------------------------------------------------------------*/
 CpuMon::~CpuMon() 
 {
   killTimer(tid);
@@ -119,10 +73,8 @@ CpuMon::~CpuMon()
        free(load_values);
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : CpuMon::paintEvent
- -----------------------------------------------------------------------------*/
-void CpuMon::paintEvent(QPaintEvent *)
+void 
+CpuMon::paintEvent(QPaintEvent *)
 {
     QPainter  p;
     unsigned  cur_y;
@@ -171,57 +123,21 @@ void CpuMon::paintEvent(QPaintEvent *)
     p.end();  
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : CpuMon::timerEvent : records the actual load values
- -----------------------------------------------------------------------------*/
-void CpuMon::timerEvent(QTimerEvent *)
+void 
+CpuMon::timerEvent(QTimerEvent *)
 {
-    char     buffer[100];
-    struct   timeval time;
-    struct   timezone timez;
-    float    elapsed_time;
-    unsigned elapsed_ticks, load_ticks, load_percent;
+	memmove(load_values, &load_values[1], sizeof(unsigned) * (intervals - 1));
 
-    // dirty trick :-)
-    // shift the array one position up. memcpy() should work faster than
-    // a simple for(;;) loop
-    
-    memcpy(load_values, &load_values[1], sizeof(unsigned) * (intervals - 1));
+	int user, sys, nice, idle;
+	stat.getCpuLoad(user, sys, nice, idle);
+	load_values[intervals - 1] = user + sys + nice;
 
-    rewind(statfile);
-    fscanf(statfile, "%s %d %d %d %d", buffer, &user_ticks, &nice_ticks
-                                     , &system_ticks, &idle_ticks );
-
-    gettimeofday(&time, &timez);
-    elapsed_time = (time.tv_sec - oldtime.tv_sec)
-                 + (float) (time.tv_usec - oldtime.tv_usec) / 1000000.0;
-    oldtime.tv_sec = time.tv_sec;
-    oldtime.tv_usec = time.tv_usec;
-
-    elapsed_ticks = (int)(elapsed_time * HZ * 100);
-    load_ticks = (system_ticks - old_system_ticks) 
-               + (nice_ticks - old_nice_ticks) 
-               + (user_ticks - old_user_ticks);
-
-    load_percent = (load_ticks * 100) / (elapsed_ticks / 100);
-
-    if(load_percent > 100)
-        load_percent = 100;
-
-    load_values[intervals - 1] = load_percent;
-
-    old_system_ticks = system_ticks;
-    old_nice_ticks = nice_ticks;
-    old_user_ticks = user_ticks;
-
-    repaint();
+	repaint();
 }
 
-/*-----------------------------------------------------------------------------
-  Routine : CpuMon::setChild
- -----------------------------------------------------------------------------*/
-void CpuMon::setChild(QWidget *w)
+void 
+CpuMon::setChild(QWidget *w)
 {
-    my_child = w;
+	my_child = w;
 }
 

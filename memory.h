@@ -26,6 +26,11 @@
 #ifndef _memory_h_
 #define _memory_h_
 
+#include <qwidget.h>
+#include <qbrush.h>
+
+#include "OSStatus.h"
+
 /*=============================================================================
   CLASSes
  =============================================================================*/
@@ -44,6 +49,9 @@ protected:
 
     virtual void paintEvent(QPaintEvent *);
     virtual void timerEvent(QTimerEvent *);
+
+private:
+	OSStatus os;
 
     int      intervals,
              mem_size, 
@@ -70,6 +78,9 @@ protected:
 
   virtual void paintEvent(QPaintEvent *);
   virtual void timerEvent(QTimerEvent *);
+
+private:
+	OSStatus os;
 
   QWidget  *my_child;
   int       swapVals[3],

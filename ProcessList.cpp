@@ -23,7 +23,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
 */
 
 // $Id$
@@ -31,6 +30,9 @@
 #include <ctype.h>
 #include <string.h>
 #include <signal.h>
+
+#include <qmessagebox.h>
+
 #include <kapp.h>
 #include <klocale.h>
 
@@ -43,7 +45,8 @@
 
 typedef struct
 {
-	char* header;
+	const char* header;
+	char* trHeader;
 	char* placeholder;
 	bool visible;
 	KTabListBox::ColumnType type;
@@ -59,30 +62,32 @@ typedef struct
  * The same mechanism can be used if a platform does not support a certain
  * type of information.
  *
- * This table and the construction of the KTabListBox lines in
- * ProcessList::load MUST be keept in sync!
+ * This table, the construction of the KTabListBox lines in
+ * ProcessList::initTabCol and KtopProcList::load() MUST be keept in sync!
+ * Also, the order and existance of the first two columns (icon and
+ * pid) is mandatory! This i18n() mechanism is way too inflexible!
  */
 static TABCOLUMN TabCol[] =
 {
-	{ "",       "++++",           true, KTabListBox::MixedColumn,
+	{ "", 0, "++++", true, KTabListBox::MixedColumn,
 	  OSProcessList::SORTBY_NAME },
-	{ "procID", "procID++",       true, KTabListBox::TextColumn,
+	{ "procID", 0, "procID++", true, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_PID },
-	{ "Name",   "kfontmanager++", true, KTabListBox::TextColumn,
+	{ "Name", 0, "kfontmanager++", true, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_NAME},
-	{ "userID", "rootuseroot",    true, KTabListBox::TextColumn,
+	{ "userID", 0, "rootuseroot", true, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_UID },
-	{ "CPU",    "100.00%+",       true, KTabListBox::TextColumn,
+	{ "CPU", 0, "100.00%+", true, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_CPU },
-	{ "Time",   "100:00++",       true, KTabListBox::TextColumn,
+	{ "Time", 0, "100:00++", true, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_TIME },
-	{ "Status", "Status+++",      true, KTabListBox::TextColumn,
+	{ "Status", 0, "Status+++", true, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_STATUS },
-	{ "VmSize", "VmSize++",       true, KTabListBox::TextColumn,
+	{ "VmSize", 0, "VmSize++", true, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_VMSIZE },
-	{ "VmRss",  "VmSize++",       true, KTabListBox::TextColumn,
+	{ "VmRss", 0, "VmSize++", true, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_VMRSS },
-	{ "VmLib",  "VmSize++",       true, KTabListBox::TextColumn,
+	{ "VmLib", 0, "VmSize++", true, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_VMLIB }
 };
 
@@ -98,8 +103,6 @@ KtopProcList::KtopProcList(QWidget *parent = 0, const char* name = 0)
 {
 	setSeparator(';');
 
-	// no process list generated yet
-	//ps_list  = NULL;
 	// no timer started yet
 	timer_id = NONE;
 
@@ -125,6 +128,19 @@ KtopProcList::KtopProcList(QWidget *parent = 0, const char* name = 0)
 	icons = new KtopIconList;
 	CHECK_PTR(icons);
 
+	// make sure we can retrieve process lists from the OS
+	OSProcessList pl;
+	if (!pl.ok())
+	{
+		QMessageBox::critical(this, "ktop", pl.getErrMessage(), 0, 0);
+
+		/*
+		 * We need to do some better error handling here!
+		 */
+
+		return;
+	}
+
 	// determine the number of visible columns
 	int columns = 0;
 	int cnt;
@@ -133,20 +149,7 @@ KtopProcList::KtopProcList(QWidget *parent = 0, const char* name = 0)
 			columns++;
 	setNumCols(columns);
 
-	/*
-	 * Set the column witdh for all columns in the process list table.
-	 * A dummy string that is somewhat longer than the real text is used
-	 * to determine the width with the current font metrics.
-	 */
-	QFontMetrics fm = fontMetrics();
-	for (cnt = 0; cnt < MaxCols ; cnt++)
-		if (TabCol[cnt].visible)
-		{
-			setColumn(cnt, i18n(TabCol[cnt].header),
-					  max(fm.width(TabCol[cnt].placeholder),
-						  fm.width(i18n(TabCol[cnt].header))),
-					  TabCol[cnt].type);
-		}
+	initTabCol();
 
 	// Clicking on the header changes the sort order.
 	connect(this, SIGNAL(headerClicked(int)),
@@ -190,6 +193,19 @@ KtopProcList::setUpdateRate(int r)
 		timerOff();
 		timerOn();
 	}
+}
+
+void
+KtopProcList::setSortColumn(int c)
+{
+	/*
+	 * We need to make sure that the specified column is visible. If it's not
+	 * we use the first column (PID).
+	 */
+	if ((c >= 0) && (c < MaxCols) && TabCol[c].visible)
+		sortColumn = c;
+	else
+		sortColumn = 1;
 }
 
 int 
@@ -243,10 +259,15 @@ KtopProcList::load()
 {
 	OSProcessList pl;
 
-	pl.setSortCriteria(sort_method);
+	pl.setSortCriteria(TabCol[sortColumn].sortMethod);
 
 	// request current list of processes
-	pl.update();
+	if (!pl.update())
+	{
+		QMessageBox::critical(this, "ktop", pl.getErrMessage(), 0, 0);
+		qApp->quit();
+		return;
+	}
 
 	clear();
 
@@ -294,12 +315,10 @@ KtopProcList::load()
 			QString s;
 
 			// icon
-			if (TabCol[0].visible)
-				line += QString("{") + p->getName() + "};";
+			line += QString("{") + p->getName() + "};";
 
 			// pid
-			if (TabCol[1].visible)
-				line += s.setNum(p->getPid()) + ";";
+			line += s.setNum(p->getPid()) + ";";
 
 			// process name
 			if (TabCol[2].visible)
@@ -348,7 +367,7 @@ KtopProcList::load()
 void 
 KtopProcList::userClickOnHeader(int colIndex)
 {
-	setSortMethod(TabCol[colIndex].sortMethod);
+	setSortColumn(colIndex);
 	update();
 }
 
@@ -406,4 +425,50 @@ KtopProcList::cellHeight(int row)
 		return (pix->height());
 
 	return (18);	// Why not 42? How can we make this more sensible?
+}
+
+void
+KtopProcList::initTabCol(void)
+{
+	TabCol[1].trHeader = new char[strlen(i18n("procID")) + 1];
+	strcpy(TabCol[1].trHeader, i18n("procID"));
+
+	TabCol[2].trHeader = new char[strlen(i18n("Name")) + 1];
+	strcpy(TabCol[2].trHeader, i18n("Name"));
+
+	TabCol[3].trHeader = new char[strlen(i18n("userID")) + 1];
+	strcpy(TabCol[3].trHeader, i18n("userID"));
+
+	TabCol[4].trHeader = new char[strlen(i18n("CPU")) + 1];
+	strcpy(TabCol[4].trHeader, i18n("CPU"));
+
+	TabCol[5].trHeader = new char[strlen(i18n("Time")) + 1];
+	strcpy(TabCol[5].trHeader, i18n("Time"));
+
+	TabCol[6].trHeader = new char[strlen(i18n("Status")) + 1];
+	strcpy(TabCol[6].trHeader, i18n("Status"));
+
+	TabCol[7].trHeader = new char[strlen(i18n("VmSize")) + 1];
+	strcpy(TabCol[7].trHeader, i18n("VmSize"));
+
+	TabCol[8].trHeader = new char[strlen(i18n("VmRss")) + 1];
+	strcpy(TabCol[8].trHeader, i18n("VmRss"));
+
+	TabCol[9].trHeader = new char[strlen(i18n("VmLib")) + 1];
+	strcpy(TabCol[9].trHeader, i18n("VmLib"));
+
+	/*
+	 * Set the column witdh for all columns in the process list table.
+	 * A dummy string that is somewhat longer than the real text is used
+	 * to determine the width with the current font metrics.
+	 */
+	QFontMetrics fm = fontMetrics();
+	for (int cnt = 0; cnt < MaxCols; cnt++)
+		if (TabCol[cnt].visible)
+		{
+			setColumn(cnt, TabCol[cnt].trHeader,
+					  max(fm.width(TabCol[cnt].placeholder),
+						  fm.width(TabCol[cnt].trHeader)),
+					  TabCol[cnt].type);
+		}
 }

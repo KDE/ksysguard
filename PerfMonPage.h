@@ -25,61 +25,62 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _cpu_h_
-#define _cpu_h_
+// $Id$
 
-#include <stdio.h>
+#ifndef _PerfMonPage_h_
+#define _PerfMonPage_h_
 
 #include <qwidget.h>
-#include <qbrush.h>
+#include <qgroupbox.h>
 
-#include "OSStatus.h"
+#include "cpu.h"
+#include "memory.h"
 
-class CpuMon : public QWidget
+class PerfMonPage : public QWidget
 {
-
-  Q_OBJECT
+	Q_OBJECT
 
 public:
+	PerfMonPage(QWidget* parent = 0, const char* name = 0);
+	~PerfMonPage()
+	{
+		delete cpumon;
+		delete cpu_cur;
+		delete cpubox;
+		delete cpubox1;
 
+		delete memmon;
+		delete mem_cur;
+		delete membox;
+		delete membox1;
 
-   CpuMon (QWidget *parent = 0, const char *name = 0, QWidget *child = 0);
-  ~CpuMon ();
+#ifdef ADD_SWAPMON
+		delete swapmon;
+		delete swap_cur;
+		delete swapbox;
+		delete swapbox1;
+#endif
+	}
 
-   void updateValues();
-   void setChild(QWidget *w = 0);
-   int iconified;
-
-protected:
-
-  virtual void timerEvent(QTimerEvent *);
-  virtual void paintEvent(QPaintEvent *);
+	virtual void resizeEvent(QResizeEvent* ev);
 
 private:
-	OSStatus stat;
+	CpuMon* cpumon;
+	QWidget* cpu_cur;
+	QGroupBox* cpubox;
+	QGroupBox* cpubox1;
 
-	unsigned *load_values, 
-		max_load;
-	int       tid,
-		old_y_scale;
-	unsigned  intervals, 
-	    timer_interval;
-	unsigned  user_ticks, 
-	    system_ticks, 
-	    nice_ticks, 
-	    idle_ticks;
-#if 0
-		old_user_ticks, 
-	    old_system_ticks, 
-		old_nice_ticks, 
-		old_idle_ticks;
+	MemMon* memmon;
+	QWidget* mem_cur;
+	QGroupBox* membox;
+	QGroupBox* membox1;
+
+#ifdef ADD_SWAPMON
+	SwapMon* swapmon;
+	QWidget* swap_cur;	
+	QGroupBox* swapbox;
+	QGroupBox* swapbox1;
 #endif
-  QWidget  *my_child;
-  QBrush    brush_0, 
-            brush_1, 
-            brush_2;
-};
+} ;
 
 #endif
-
-

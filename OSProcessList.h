@@ -80,6 +80,10 @@ public:
 	{
 		return (gid);
 	}
+	int getPriority(void) const
+	{
+		return (priority);
+	}
 	unsigned int getVm_size(void) const
 	{
 		return (vm_size);
@@ -122,6 +126,7 @@ private:
 	QString userName;
 	uid_t uid;
 	gid_t gid;
+	int priority;
 	unsigned int vm_size;
 	unsigned int vm_lock;
 	unsigned int vm_rss;
@@ -137,7 +142,7 @@ private:
 
 /**
  * This class encapsulates all OS specific information about the process list.
- * Since inquiring process status is hight OS dependant all these adaptions
+ * Since inquiring process status is highly OS dependant all these adaptions
  * should be made in this file.
  */
 class OSProcessList : public QList<OSProcess>
@@ -158,11 +163,7 @@ public:
 		SORTBY_VMLIB
 	};	
 
-	OSProcessList()
-	{
-		sortCriteria = SORTBY_PID;
-		setAutoDelete(true);
-	}
+	OSProcessList();
 
 	virtual ~OSProcessList() {}
 
@@ -170,13 +171,17 @@ public:
 	 * This function clears the old process list and retrieves a current one
 	 * from the OS.
 	 */
-	void update(void);
+	bool update(void);
 
 	/**
 	 * The 'has...' functions can be used to inquire if the OS supports a
 	 * specific process attribute. The return value may be hardcoded and
-	 * ifdefed for each platform.
+	 * ifdef'd for each platform.
 	 */
+	bool hasPriority(void) const
+	{
+		return (false); // not yet implemented
+	}
 	bool hasVmSize(void) const
 	{
 		return (true);
@@ -200,10 +205,23 @@ public:
 		return (sortCriteria);
 	}
 
+	bool ok(void) const
+	{
+		return (!error);
+	}
+
+	const QString& getErrMessage(void) const
+	{
+		return (errMessage);
+	}
+
 private:
-	int compareItems(GCI it1, GCI it2);
+	virtual int compareItems(GCI it1, GCI it2);
 
 	SORTKEY sortCriteria;
+
+	bool error;
+	QString errMessage;
 } ;
 
 #endif
