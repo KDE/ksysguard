@@ -34,7 +34,7 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include <signal.h>
+#include <fcntl.h>
 
 #include "ksysguardd.h"
 #include "Command.h"
@@ -126,15 +126,16 @@ makeDaemon(void)
 	}
 }
 
-static void
-readCommand(char* cmdBuf)
+static int
+readCommand(int fd, char* cmdBuf, size_t len)
 {
 	int i;
-	int c;
-
-	for (i = 0; i < CMDBUFSIZE - 1 && (c = getchar()) != '\n'; i++)
-		cmdBuf[i] = (char) c;
+	char c;
+	for (i = 0; (i < len) && (read(fd, &c, 1) == 1) && (c != '\n'); ++i)
+		cmdBuf[i] = c;
 	cmdBuf[i] = '\0';
+
+	return (i);
 }
 
 void
@@ -162,7 +163,12 @@ addClient(int client)
 		{
 			ClientList[i].socket = client;
 			if ((out = fdopen(client, "w+")) == NULL)
+			{
 				log_error("fdopen");
+				return (-1);
+			}
+			/* We use unbuffered IO */
+			fcntl(fileno(out), F_SETFL, O_NDELAY);
 			ClientList[i].out = out;
 			printWelcome(out);
 			return (0);
@@ -182,8 +188,10 @@ delClient(int client)
 	{
 		if (ClientList[i].socket == client)
 		{
-			ClientList[i].socket = -1;
 			fclose(ClientList[i].out);
+			ClientList[i].out = 0;
+			close(ClientList[i].socket);
+			ClientList[i].socket = -1;
 			return (0);
 		}
 	}
@@ -249,7 +257,11 @@ setupSelect(fd_set* fds)
 		}
 	}
 	else
-		FD_SET(fileno(stdin), fds);
+	{
+		FD_SET(STDIN_FILENO, fds);
+		if (highestFD < STDIN_FILENO)
+			highestFD = STDIN_FILENO;
+	}
 
 	return (highestFD);
 }
@@ -271,8 +283,8 @@ handleTimerEvent(struct timeval* tv, struct timeval* last)
 		updateLoadAvg();
 		*last = now;
 	}
-	/* Set tv that the next timer event will be generated in TIMERINTERVAL
-	 * seconds. */
+	/* Set tv so that the next timer event will be generated in
+	 * TIMERINTERVAL seconds. */
 	tv->tv_usec = last->tv_usec - now.tv_usec;
 	if (tv->tv_usec < 0)
 	{
@@ -315,27 +327,33 @@ handleSocketTraffic(int socket, const fd_set* fds)
 				CurrentSocket = ClientList[i].socket;
 				if (FD_ISSET(ClientList[i].socket, fds))
 				{
-					if (read(CurrentSocket, cmdBuf, sizeof(cmdBuf) - 1) < 0
-						|| strstr(cmdBuf, "quit"))
+					ssize_t cnt;
+					if ((cnt = readCommand(CurrentSocket, cmdBuf,
+										   sizeof(cmdBuf) - 1)) <= 0)
 					{
 						delClient(CurrentSocket);
-						close(CurrentSocket);
-						ClientList[i].out = 0;
 					}
 					else
 					{
-						currentClient = ClientList[i].out;
-						executeCommand(cmdBuf);
-						fprintf(currentClient, "ksysguardd> ");
-						fflush(currentClient);
+						cmdBuf[cnt] = '\0';
+						if (strncmp(cmdBuf, "quit", 4) == 0)
+							delClient(CurrentSocket);
+						else
+						{
+							currentClient = ClientList[i].out;
+							fflush(stdout);
+							executeCommand(cmdBuf);
+							fprintf(currentClient, "ksysguardd> ");
+							fflush(currentClient);
+						}
 					}
 				}
 			}
 		}
 	}
-	else if (FD_ISSET(fileno(stdin), fds))
+	else if (FD_ISSET(STDIN_FILENO, fds))
 	{
-		readCommand(cmdBuf);
+		readCommand(STDIN_FILENO, cmdBuf, sizeof(cmdBuf));
 		executeCommand(cmdBuf);
 		printf("ksysguardd> ");
 		fflush(stdout);
@@ -405,6 +423,9 @@ main(int argc, char* argv[])
 	}
 	else
 	{
+		fcntl(fileno(stdin), F_SETFL, O_NONBLOCK);
+		setvbuf(stdin, malloc(4096), _IOFBF, 4096);
+		fcntl(fileno(stdout), F_SETFL, O_NONBLOCK);
 		currentClient = stdout;
 		ServerSocket = 0;
 	}
@@ -416,7 +437,6 @@ main(int argc, char* argv[])
 	while (!QuitApp)
 	{
 		int highestFD = setupSelect(&fds);
-
 		/* wait for communication or timeouts */
 		if (select(highestFD + 1, &fds, NULL, NULL, &tv) >= 0)
 		{

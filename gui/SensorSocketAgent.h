@@ -62,7 +62,11 @@ private slots:
 	void error(int);
 
 private:
-	void executeCommand();
+	bool writeMsg(const char* msg, int len);
+	bool txReady()
+	{
+		return (!transmitting);
+	}
 
 	QSocket socket;
 	int port;

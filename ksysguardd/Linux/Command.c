@@ -186,7 +186,7 @@ removeMonitor(const char* command)
 	free(buf);
 }
 
-void 
+void
 executeCommand(const char* command)
 {
 	int i;
@@ -207,13 +207,7 @@ executeCommand(const char* command)
 		Command* cmd = (Command*) get_ctnr(CommandList, i);
 		if (strcmp(cmd->command, token) == 0)
 		{
-			/* Block timer interrupts while processing a command */
-			sigprocmask(SIG_BLOCK, &SignalSet, 0);
-
 			(*(cmd->ex))(command);
-
-			/* re-enable timer interrupts again. */
-			sigprocmask(SIG_UNBLOCK, &SignalSet, 0);
 
 			if (ReconfigureFlag)
 			{
@@ -241,8 +235,8 @@ printMonitors(const char* c)
 
 		if (cmd->isMonitor)
 			fprintf(currentClient, "%s\t%s\n", cmd->command, cmd->type);
-			fflush(currentClient);
 	}
+	fflush(currentClient);
 }
 
 void

@@ -64,10 +64,13 @@ private slots:
 	void errMsgRcvd(KProcess*, char* buffer, int buflen);
 	void daemonExited(KProcess*);
 
-protected:
-	virtual void executeCommand();
-
 private:
+	bool writeMsg(const char* msg, int len);
+	bool txReady()
+	{
+		return (!transmitting);
+	}
+
 	KShellProcess* daemon;
 	QString shell;
 	QString command;

@@ -37,7 +37,8 @@ class SensorManager;
 class SensorRequest
 {
 public:
-	SensorRequest(const QString& r, SensorClient* c, int i) :
+	SensorRequest(const QString& r, SensorClient* c, int i,
+				  unsigned char s = 0) :
 		request(r), client(c), id(i) { }
 	~SensorRequest() { }
 
@@ -91,20 +92,23 @@ signals:
 
 protected:
 	void processAnswer(const QString& buf);
+	void executeCommand();
 
 	SensorManager* sensorManager;
 
 	bool daemonOnLine;
+	bool transmitting;
 	QString host;
 
+private:
+	virtual bool writeMsg(const char* msg, int len) = 0;
+	virtual bool txReady() = 0;
+
+	int state;
 	QList<SensorRequest> inputFIFO;
 	QList<SensorRequest> processingFIFO;
 	QString answerBuffer;
 	QString errorBuffer;
-
-private:
-	virtual void executeCommand() = 0;
-	int state;
 } ;
 	
 #endif

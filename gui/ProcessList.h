@@ -31,6 +31,7 @@
 #include <qvaluelist.h>
 #include <qstringlist.h>
 #include <qdict.h>
+#include <qdom.h>
 
 #include <kiconloader.h>
 

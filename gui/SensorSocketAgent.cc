@@ -44,7 +44,7 @@ SensorSocketAgent::SensorSocketAgent(SensorManager* sm) :
 			this, SLOT(msgSent(int)));
 	connect(&socket, SIGNAL(readyRead()),
 			this, SLOT(msgRcvd()));
-	connect(&socket, SIGNAL(delayedCloseFinished()),
+	connect(&socket, SIGNAL(connectionClosed()),
 			this, SLOT(connectionClosed()));
 }
 
@@ -75,9 +75,7 @@ SensorSocketAgent::msgSent(int)
 	if (socket.bytesToWrite() != 0)
 		return;
 
-	// remove oldest (sent) request from input FIFO
-	inputFIFO.removeLast();
-
+	transmitting = false;
 	// Try to send next request if available.
 	executeCommand();
 }
@@ -86,20 +84,12 @@ void
 SensorSocketAgent::msgRcvd()
 {
 	int buflen = socket.bytesAvailable();
-	if (buflen <= 0)
-	{
-		executeCommand();
-		return;
-	}
-
 	char* buffer = new char[buflen];
 	socket.readBlock(buffer, buflen);
 	QString buf = QString::fromLocal8Bit(buffer, buflen);
 	delete [] buffer;
 
 	processAnswer(buf);
-
-	executeCommand();
 }
 
 void
@@ -108,23 +98,6 @@ SensorSocketAgent::connectionClosed()
 	daemonOnLine = false;
 	sensorManager->hostLost(this);
 	sensorManager->requestDisengage(this);
-}
-
-void
-SensorSocketAgent::executeCommand()
-{
-	if (inputFIFO.isEmpty() || processingFIFO.count() >= 1)
-		return;
-
-	// take request for input FIFO
-	SensorRequest* req = inputFIFO.last();
-
-	// send request to daemon
-	QString cmdWithNL = req->request + "\n";
-	socket.writeBlock(cmdWithNL.ascii(), cmdWithNL.length());
-
-	// add request to processing FIFO
-	processingFIFO.prepend(new SensorRequest(*req));
 }
 
 void
@@ -150,4 +123,10 @@ SensorSocketAgent::error(int id)
 
 	daemonOnLine = false;
 	sensorManager->requestDisengage(this);
+}
+
+bool
+SensorSocketAgent::writeMsg(const char* msg, int len)
+{
+	return (socket.writeBlock(msg, len) == len);
 }

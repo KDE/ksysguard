@@ -91,9 +91,7 @@ SensorShellAgent::start(const QString& host_, const QString& shell_,
 void
 SensorShellAgent::msgSent(KProcess*)
 {
-	// remove oldest (sent) request from input FIFO
-	inputFIFO.removeLast();
-
+	transmitting = false;
 	// Try to send next request if available.
 	executeCommand();
 }
@@ -129,19 +127,8 @@ SensorShellAgent::daemonExited(KProcess*)
 	sensorManager->disengage(this);
 }
 
-void
-SensorShellAgent::executeCommand()
+bool
+SensorShellAgent::writeMsg(const char* msg, int len)
 {
-	if (inputFIFO.isEmpty())
-		return;
-
-	// take request for input FIFO
-	SensorRequest* req = inputFIFO.last();
-
-	// send request to daemon
-	QString cmdWithNL = req->request + "\n";
-	daemon->writeStdin(cmdWithNL.ascii(), cmdWithNL.length());
-
-	// add request to processing FIFO
-	processingFIFO.prepend(new SensorRequest(*req));
+	return (daemon->writeStdin(msg, len));
 }
