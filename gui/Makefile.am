@@ -40,6 +40,4 @@ METASOURCES = AUTO
 messages:
 	$(XGETTEXT) *.cc -o $(podir)/ktop.pot
 
-KDE_ICON = ktop
-
 apps_DATA = ktop.desktop
