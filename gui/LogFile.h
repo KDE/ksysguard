@@ -73,7 +73,6 @@ private:
 	QFile* logFile;
 	QLabel* errorLabel;
 	QListBox* monitor;
-	QString fileName;
 	QString title;
 	QStringList filterRules;
 

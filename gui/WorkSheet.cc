@@ -53,7 +53,7 @@ WorkSheet::WorkSheet(QWidget* parent) :
 	lm = 0;
 	rows = columns = 0;
 	displays = 0;
-	setModified(false);
+	modified = false;
 	fileName = "";
 
 	setAcceptDrops(true);
@@ -62,11 +62,13 @@ WorkSheet::WorkSheet(QWidget* parent) :
 WorkSheet::WorkSheet(QWidget* parent, uint rs, uint cs, uint i) :
 	QWidget(parent)
 {
+	rows = columns = 0;
 	lm = 0;
 	displays = 0;
 	updateInterval = i;
-	setModified(false);
+	modified = false;
 	fileName = "";
+
 	createGrid(rs, cs);
 
 	// Initialize worksheet with dummy displays.

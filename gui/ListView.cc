@@ -33,10 +33,11 @@
 #include <kiconloader.h>
 #include <kcolorbtn.h>
 
-#include "SensorManager.h"
-#include "ListViewSettings.h"
 #include "ColorPicker.h"
+#include "ListViewSettings.h"
+#include "SensorManager.h"
 #include "StyleEngine.h"
+
 #include "ListView.moc"
 
 ListViewItem::ListViewItem(MyListView *parent)

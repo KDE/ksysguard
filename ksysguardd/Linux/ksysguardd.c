@@ -51,6 +51,8 @@
 #include "diskstat.h"
 #include "logfile.h"
 
+#include "conf.h"
+
 #define CMDBUFSIZE	128
 #define MAX_CLIENTS	100
 /* This is the official ksysguardd port assigned by IANA. */
@@ -65,9 +67,10 @@ typedef struct
 
 static int ServerSocket;
 static ClientInfo ClientList[MAX_CLIENTS];
-static int SocketPort = PORT_NUMBER;
+static int SocketPort = -1;
 static int CurrentSocket;
 static char *LockFile = "/var/run/ksysguardd.pid";
+static char *ConfigFile = "/etc/ksysguardd.conf";
 
 /* This variable is set to 1 if a module requests that the daemon should
  * be terminated. */
@@ -87,12 +90,15 @@ processArguments(int argc, char* argv[])
 	int option;
 
 	opterr = 0;
-	while ((option = getopt(argc, argv, "-p:dh")) != EOF) 
+	while ((option = getopt(argc, argv, "-p:f:dh")) != EOF) 
 	{
 		switch (tolower(option))
 		{
 		case 'p':
 			SocketPort = atoi(optarg);
+			break;
+		case 'f':
+			ConfigFile = strdup(optarg);
 			break;
 		case 'd':
 			RunAsDaemon = 1;
@@ -304,11 +310,12 @@ delClient(int client)
 }
 
 int
-createServerSocket(int port)
+createServerSocket()
 {
 	int i = 1;
 	int newSocket;
 	struct sockaddr_in sin;
+	struct servent *service;
 
 	if ((newSocket = socket(PF_INET, SOCK_STREAM, 0)) < 0) 
 	{
@@ -318,10 +325,16 @@ createServerSocket(int port)
 
 	setsockopt(newSocket, SOL_SOCKET, SO_REUSEADDR, &i, sizeof(i));
 
+	if ((service = getservbyname("ksysguardd", "tcp")) == NULL) {
+		SocketPort = PORT_NUMBER;
+	} else {
+		SocketPort = service->s_port;
+	}
+
 	memset(&sin, 0, sizeof(struct sockaddr_in));
 	sin.sin_family = AF_INET;
 	sin.sin_addr.s_addr = htonl(INADDR_ANY);
-	sin.sin_port = htons(port);
+	sin.sin_port = SocketPort;
   
 	if (bind(newSocket, (struct sockaddr_in*) &sin, sizeof(sin)) < 0)
 	{
@@ -517,13 +530,15 @@ main(int argc, char* argv[])
 	if (processArguments(argc, argv) < 0)
 		return (-1);
 
+	parseConfigFile(ConfigFile);
+
 	initModules();
 
 	if (RunAsDaemon)
 	{
 		makeDaemon();
 
-		if ((ServerSocket = createServerSocket(SocketPort)) < 0)
+		if ((ServerSocket = createServerSocket()) < 0)
 			return (-1);
 		reset_clientlist();
 	}

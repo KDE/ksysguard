@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
-   
-	Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
+	   
+    Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -17,19 +17,16 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _logfile_h_
-#define _logfile_h_
+#include "ccont.h"
 
-void initLogFile(void);
-void exitLogFile(void);
+#ifndef _conf_h_
+#define _conf_h_
 
-void printLogFile(const char* cmd);
-void printLogFileInfo(const char* cmd);
+typedef struct {
+	char *name;
+	char *path;
+} ConfigLogFile;
 
-void registerLogFile(const char* cmd);
-void unregisterLogFile(const char* cmd);
-
-/* debug commands */
-void printRegistered(const char* cmd);
+void parseConfigFile(const char *filename);
 
 #endif

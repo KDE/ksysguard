@@ -17,13 +17,15 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <kfiledialog.h>
+#include <kiconloader.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 
 #include <regex.h>
+#include <stdio.h>
 
 #include "StyleEngine.h"
+
 #include "LogFile.moc"
 
 LogFile::LogFile(QWidget *parent, const char *name, const QString&)
@@ -55,7 +57,7 @@ LogFile::LogFile(QWidget *parent, const char *name, const QString&)
 
 LogFile::~LogFile(void)
 {
-	sendRequest(sensors.at(0)->hostName, QString("unregisterlogfile %1 %2" ).arg(fileName).arg(logFileID), 43);
+	sendRequest(sensors.at(0)->hostName, QString("logfile_unregister %1" ).arg(logFileID), 43);
 }
 
 bool
@@ -63,14 +65,14 @@ LogFile::addSensor(const QString& hostName, const QString& sensorName, const QSt
 {
 	registerSensor(new SensorProperties(hostName, sensorName, t));
 
-	if (fileName.isEmpty()) {
-		fileName = KFileDialog::getOpenFileName();
-	}
+	QString sensorID = sensorName.right(sensorName.length() - (sensorName.findRev("/") + 1));
 
-	sendRequest(sensors.at(0)->hostName, QString("registerlogfile %1" ).arg(fileName), 42);
+	sendRequest(sensors.at(0)->hostName, QString("logfile_register %1" ).arg(sensorID), 42);
 
 	if (t.isEmpty())
-		title = sensors.at(0)->hostName + ":" + fileName;
+		title = sensors.at(0)->hostName + ":" + sensorID;
+	else
+		title = t;
 
 	frame->setTitle(title);
 
@@ -135,7 +137,6 @@ LogFile::createFromDOM(QDomElement& element)
 	QColorGroup cgroup = monitor->colorGroup();
 
 	title = element.attribute("title");
-	fileName = element.attribute("filename");
 
 	cgroup.setColor(QColorGroup::Text, restoreColorFromDOM(element, "textColor", Qt::green));
 	cgroup.setColor(QColorGroup::Base, restoreColorFromDOM(element, "backgroundColor", Qt::black));
@@ -164,7 +165,6 @@ LogFile::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 	element.setAttribute("sensorName", sensors.at(0)->name);
 
 	element.setAttribute("title", title);
-	element.setAttribute("filename", fileName);
 	element.setAttribute("font", monitor->font().rawName());
 
 	addColorToDOM(element, "textColor", monitor->colorGroup().text());
@@ -188,7 +188,7 @@ void
 LogFile::updateMonitor()
 {
 	sendRequest(sensors.at(0)->hostName,
-				QString("logfiles %1 %2" ).arg(fileName).arg(logFileID), 19);
+				QString("%1 %2" ).arg(sensors.at(0)->name).arg(logFileID), 19);
 }
 
 void

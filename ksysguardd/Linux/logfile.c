@@ -25,6 +25,7 @@
 #include "Command.h"
 #include "ccont.h"
 #include "logfile.h"
+#include "conf.h"
 
 static CONTAINER LogFiles = 0;
 static unsigned long counter = 1;
@@ -35,15 +36,26 @@ typedef struct {
 	unsigned long id;
 } LogFileEntry;
 
+extern CONTAINER LogFileList;
+
 /*
 ================================ public part =================================
 */
 
 void initLogFile(void)
 {
-	registerCommand("registerlogfile", registerLogFile);
-	registerCommand("unregisterlogfile", unregisterLogFile);
-	registerMonitor("logfiles", "logfile", printLogFile, printLogFileInfo);
+	int i;
+	char monitor[1024];
+
+	registerCommand("logfile_register", registerLogFile);
+	registerCommand("logfile_unregister", unregisterLogFile);
+	registerCommand("logfile_registered", printRegistered);
+
+	for (i = 0; i < level_ctnr(LogFileList); i++) {
+		ConfigLogFile *entry = get_ctnr(LogFileList, i);
+		snprintf(monitor, 1024, "logfiles/%s", entry->name);
+		registerMonitor(monitor, "logfile", printLogFile, printLogFileInfo);
+	}
 
 	LogFiles = new_ctnr(CT_DLL);
 }
@@ -56,17 +68,16 @@ void exitLogFile(void)
 
 void printLogFile(const char* cmd)
 {
-	char filename[256];
 	char line[1024];
 	unsigned long id;
 	int i;
 	
-	sscanf(cmd, "%*s %256s %lu", filename, &id);
+	sscanf(cmd, "%*s %lu", &id);
 
 	for (i = 0; i < level_ctnr(LogFiles); i++) {
 		LogFileEntry *entry = get_ctnr(LogFiles, i);
 
-		if (!strcmp(entry->name, filename) && (entry->id == id)) {
+		if (entry->id == id) {
 			while (fgets(line, 1024, entry->fh) != NULL) {
 				fprintf(CurrentClient, "%s", line);
 			}
@@ -83,56 +94,75 @@ void printLogFileInfo(const char* cmd)
 
 void registerLogFile(const char* cmd)
 {
-	char filename[256];
+	char name[256];
 	FILE* file;
 	LogFileEntry *entry;
+	int i;
 
-	memset(filename, 0, 256);
-	sscanf(cmd, "%*s %256s", filename);
+	memset(name, 0, sizeof(name));
+	sscanf(cmd, "%*s %256s", name);
 	
-	if ((file = fopen(filename, "r")) == NULL) {
-		print_error("fopen()");
-		fprintf(CurrentClient, "0\n");
-		return;
+	for (i = 0; i < level_ctnr(LogFileList); i++) {
+		ConfigLogFile *conf = get_ctnr(LogFileList, i);
+		if (!strcmp(conf->name, name)) {
+			if ((file = fopen(conf->path, "r")) == NULL) {
+				print_error("fopen()");
+				fprintf(CurrentClient, "0\n");
+				return;
+			}
+
+			fseek(file, 0, SEEK_END);
+
+			if ((entry = (LogFileEntry *)malloc(sizeof(LogFileEntry))) == NULL) {
+				print_error("malloc()");
+				fprintf(CurrentClient, "0\n");
+				return;
+			}
+
+			entry->fh = file;
+			strncpy(entry->name, conf->name, 256);
+			entry->id = counter;
+
+			push_ctnr(LogFiles, entry);	
+
+			fprintf(CurrentClient, "%lu\n", counter);
+			counter++;
+
+			return;
+		}
 	}
 
-	fseek(file, 0, SEEK_END);
-
-	if ((entry = (LogFileEntry *)malloc(sizeof(LogFileEntry))) == NULL) {
-		print_error("malloc()");
-		fprintf(CurrentClient, "0\n");
-		return;
-	}
-
-	entry->fh = file;
-	strncpy(entry->name, filename, 256);
-	entry->id = counter;
-
-	push_ctnr(LogFiles, entry);	
-
-	fprintf(CurrentClient, "%lu\n", counter);
-
-	counter++;
+	fprintf(CurrentClient, "\n");
 }
 
 void unregisterLogFile(const char* cmd)
 {
-	char filename[256];
 	unsigned long id;
 	int i;
 
-	memset(filename, 0, 256);
-	sscanf(cmd, "%*s %256s %lu", filename, &id);
+	sscanf(cmd, "%*s %lu", &id);
 	
 	for (i = 0; i < level_ctnr(LogFiles); i++) {
 		LogFileEntry *entry = get_ctnr(LogFiles, i);
 
-		if (!strcmp(entry->name, filename) && (entry->id == id)) {
+		if (entry->id == id) {
 			fclose(entry->fh);
 			free(remove_ctnr(LogFiles, i));
 			fprintf(CurrentClient, "\n");
 			return;
 		}
+	}
+
+	fprintf(CurrentClient, "\n");
+}
+
+void printRegistered(const char* cmd)
+{
+	int i;
+
+	for (i = 0; i < level_ctnr(LogFiles); i++) {
+		LogFileEntry *entry = get_ctnr(LogFiles, i);
+		fprintf(CurrentClient, "%s:%lu\n", entry->name, entry->id);
 	}
 
 	fprintf(CurrentClient, "\n");
