@@ -237,8 +237,11 @@ updateProcess(int pid)
 			   "%*d %*d %*d %d %*u %*u %*d %u %u",
 			   &status, (int*) &ps->ppid, (int*) &ps->gid, &ps->ttyNo,
 			   &userTime, &sysTime, &ps->niceLevel, &ps->vmSize,
-			   &ps->vmRss) != 9)
+			   &ps->vmRss) != 9) {
+		fclose(fd);
 		return (-1);
+	}
+
 	if (fclose(fd))
 		return (-1);
 

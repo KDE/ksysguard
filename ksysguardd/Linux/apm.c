@@ -91,6 +91,7 @@ updateApm(void)
 	if ((n = read(fd, ApmBuf, APMBUFSIZE - 1)) == APMBUFSIZE - 1)
 	{
 		log_error("Internal buffer too small to read \'/proc/apm\'");
+		close(fd);
 		return (-1);
 	}
 	close(fd);

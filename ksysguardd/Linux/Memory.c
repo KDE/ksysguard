@@ -132,6 +132,7 @@ updateMemory(void)
 		MEMINFOBUFSIZE - 1)
 	{
 		log_error("Internal buffer too small to read \'/proc/mem\'");
+		close(fd);
 		return (-1);
 	}
 

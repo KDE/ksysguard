@@ -321,6 +321,7 @@ Inter-|   Receive                                                |  Transmit
 	{
 		log_error("Internal buffer too small to read \'/proc/net/dev\'");
 		NetDevOk = -1;
+		close(fd);
 		return (-1);
 	}
 	gettimeofday(&currSampling, 0);

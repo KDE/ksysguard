@@ -641,6 +641,7 @@ updateStat(void)
 	if ((n = read(fd, StatBuf, STATBUFSIZE - 1)) == STATBUFSIZE - 1)
 	{
 		log_error("Internal buffer too small to read \'/proc/stat\'");
+		close(fd);
 		return (-1);
 	}
 	gettimeofday(&currSampling, 0);

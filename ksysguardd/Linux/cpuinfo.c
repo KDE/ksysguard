@@ -142,6 +142,7 @@ updateCpuInfo(void)
 	{
 		log_error("Internal buffer too small to read \'/proc/cpuinfo\'");
 		CpuInfoOK = 0;
+		close(fd);
 		return (-1);
 	}
 	close(fd);
