@@ -230,6 +230,50 @@ OSProcess::read(const void* info)
  */
 
 #include <sys/sysctl.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
+#include <klocale.h>
 
 OSProcess::OSProcess(const void* info, TimeStampList* /*lastTStamps*/,
                                          TimeStampList* /*newTStamps*/)

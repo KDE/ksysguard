@@ -28,6 +28,7 @@
 #include <kapp.h>
 
 #include "version.h"
+#include <klocale.h>
 #include "MainMenu.moc"
 
 extern KApplication* Kapp;

@@ -22,6 +22,7 @@
 // $Id$
 
 #include <kapp.h>
+#include <klocale.h>
 
 #include "ReniceDlg.moc"
 

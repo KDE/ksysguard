@@ -36,6 +36,7 @@
 #include "ReniceDlg.h"
 #include "ProcListPage.h"
 #include "OSProcessList.h"
+#include <klocale.h>
 #include "TaskMan.moc"
 
 #define NONE -1

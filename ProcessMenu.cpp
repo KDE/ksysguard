@@ -31,6 +31,7 @@
 #include "ProcessMenu.moc"
 #include "OSProcessList.h"
 #include "ReniceDlg.h"
+#include <klocale.h>
 
 ProcessMenu::ProcessMenu(QWidget* parent, const char* name)
 	: QPopupMenu(parent, name)

@@ -30,6 +30,7 @@
 #include <kapp.h>
 
 #include "ktop.h"
+#include <klocale.h>
 #include "ProcListPage.moc"
 
 #define NONE -1
