@@ -119,7 +119,9 @@ TopLevel::TopLevel( const char *name )
   new KAction( i18n( "&Worksheet Properties" ), "configure", 0, mWorkSpace,
                SLOT( configure() ), actionCollection(), "configure_sheet" );
 
-  KStdAction::revert( this, SLOT( resetWorkSheets() ), actionCollection() );
+  new KAction( i18n( "Load standard sheets" ), "revert",
+               0, this, SLOT( resetWorkSheets() ),
+               actionCollection(), "file_revert"  );
 
   new KAction( i18n( "Configure &Style..." ), "colorize", 0, this,
                SLOT( editStyle() ), actionCollection(), "configure_style" );
