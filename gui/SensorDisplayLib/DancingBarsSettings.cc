@@ -85,7 +85,7 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   page = addPage( i18n( "Alarms" ) );
   pageLayout = new QGridLayout( page, 3, 1, 0, spacingHint() );
 
-  groupBox = new QGroupBox( 0, Qt::Vertical, i18n( "Alarm for Minimum value" ), page );
+  groupBox = new QGroupBox( 0, Qt::Vertical, i18n( "Alarm for Minimum Value" ), page );
   boxLayout = new QGridLayout( groupBox->layout(), 1, 4 );
   boxLayout->setColStretch( 1, 1 );
 
@@ -103,7 +103,7 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
 
   pageLayout->addWidget( groupBox, 0, 0 );
 
-  groupBox = new QGroupBox( 0, Qt::Vertical, i18n( "Alarm for Maximum value" ), page );
+  groupBox = new QGroupBox( 0, Qt::Vertical, i18n( "Alarm for Maximum Value" ), page );
   boxLayout = new QGridLayout( groupBox->layout(), 1, 4 );
   boxLayout->setColStretch( 1, 1 );
 
