@@ -490,6 +490,8 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 			 * sensor has been restored we don't touch the already set
 			 * values. */
 			plotter->changeRange(id - 100, info.getMin(), info.getMax());
+			if (info.getMin() == 0.0 && info.getMax() == 0.0)
+				plotter->setAutoRange(TRUE);
 		}
 		sensors.at(id - 100)->unit = info.getUnit();
 	}

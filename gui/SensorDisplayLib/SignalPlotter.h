@@ -66,6 +66,8 @@ public:
 
 	void changeRange(int beam, double min, double max);
 
+	void setAutoRange(bool ar) { autoRange = ar; }
+
 	void setTitle(const QString& t)
 	{
 		title = t;
