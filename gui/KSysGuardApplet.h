@@ -1,7 +1,7 @@
 /*
     KKSysGuard, the KDE System Guard
    
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,23 +16,24 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger
-	<cs@kde.org>. Please do not commit any changes without consulting
-	me first. Thanks!
+    KSysGuard is currently maintained by Chris Schlaeger
+    <cs@kde.org>. Please do not commit any changes without consulting
+    me first. Thanks!
 
-	$Id$
+    $Id$
 */
 
-#ifndef __KSysGuardApplet_h__
-#define __KSysGuardApplet_h__
+#ifndef KSG_KSYSGUARDAPPLET_H
+#define KSG_KSYSGUARDAPPLET_H
 
 #include <kpanelapplet.h>
 
 namespace KSGRD
 {
-	class SensorBoard;
-	class SensorDisplay;
+class SensorBoard;
+class SensorDisplay;
 }
+
 class QDragEnterEvent;
 class QDropEvent;
 class QPoint;
@@ -42,39 +43,41 @@ class KSysGuardApplet : public KPanelApplet, public KSGRD::SensorBoard
 {
 	Q_OBJECT
 
-public:
-	KSysGuardApplet(const QString& configFile, Type t = Normal,
-		     int actions = 0, QWidget *parent = 0, const char *name = 0);
+  public:
+    KSysGuardApplet( const QString& configFile, Type type = Normal,
+                     int actions = 0, QWidget *parent = 0,
+                     const char *name = 0 );
+    virtual ~KSysGuardApplet();
 
-	virtual ~KSysGuardApplet();
+    virtual int heightForWidth( int width ) const;
+    virtual int widthForHeight( int height ) const;
 
-	virtual int heightForWidth(int w) const;
-	virtual int widthForHeight(int h) const;
-	virtual void preferences();
+    virtual void preferences();
 
-protected:
-	void resizeEvent(QResizeEvent*);
-	void dragEnterEvent(QDragEnterEvent* ev);
-	void dropEvent(QDropEvent* ev);
-	void customEvent(QCustomEvent* ev);
+  protected:
+    void resizeEvent( QResizeEvent* );
+    void dragEnterEvent( QDragEnterEvent* );
+    void dropEvent( QDropEvent* );
+    void customEvent( QCustomEvent* );
 
-private slots:
-	void applySettings();
+  private slots:
+    void applySettings();
 
-private:
-	void layout();
-	void resizeDocks(uint newDockCnt);
+  private:
+    void layout();
+    void resizeDocks( uint newDockCount );
+    void addEmptyDisplay( QWidget **dock, uint pos );
 
-	bool load();
-	bool save();
+    bool load();
+    bool save();
 
-	int findDock(const QPoint& p);
-	void removeDisplay(KSGRD::SensorDisplay* sd);
+    int findDock( const QPoint& );
+    void removeDisplay( KSGRD::SensorDisplay* );
 
-	uint dockCnt;
-	QWidget** docks;
-	double sizeRatio;
-	KSGAppletSettings* ksgas;
+    double mSizeRatio;
+    uint mDockCount;
+    KSGAppletSettings* mSettingsDlg;
+    QWidget** mDockList;
 };
 
 #endif

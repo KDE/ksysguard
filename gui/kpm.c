@@ -2,8 +2,8 @@
 
 #include <unistd.h>
 
-int main(int argc, char **argv)
+int main()
 {
-   char * const args[3] = { "ksysguard", "--showprocesses", 0 };
+   char *const args[3] = { "ksysguard", "--showprocesses", 0 };
    return execvp("ksysguard", args);
 }

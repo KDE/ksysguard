@@ -611,10 +611,11 @@ main(int argc, char** argv)
 	aboutData.addAuthor("Ralf Mueller", 0, "rlaf@bj-ig.de");
 	aboutData.addAuthor("Hamish Rodda", 0, "meddie@yoyo.cc.monash.edu.au");
 	aboutData.addAuthor("Torsten Kasch", 
-		"Solaris Support\n"
-		"Parts derived (by permission) from the sunos5 module of William LeFebvre's \"top\" utility.",
-		"tk@Genetik.Uni-Bielefeld.DE");
-	
+            I18N_NOOP("Solaris Support\n"
+			      "Parts derived (by permission) from the sunos5\n"
+			      "module of William LeFebvre's \"top\" utility."),
+            "tk@Genetik.Uni-Bielefeld.DE");
+
 	KCmdLineArgs::init(argc, argv, &aboutData);
 	KCmdLineArgs::addCmdLineOptions(options);
 	

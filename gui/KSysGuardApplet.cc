@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
 
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,11 +16,11 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger
-	<cs@kde.org>. Please do not commit any changes without consulting
-	me first. Thanks!
+    KSysGuard is currently maintained by Chris Schlaeger
+    <cs@kde.org>. Please do not commit any changes without consulting
+    me first. Thanks!
 
-	$Id$
+    $Id$
 */
 
 #include <qcursor.h>
@@ -43,497 +43,432 @@
 
 #include "DancingBars.h"
 #include "FancyPlotter.h"
-#include "KSysGuardApplet.moc"
 #include "KSGAppletSettings.h"
 #include "MultiMeter.h"
 
+#include "KSysGuardApplet.h"
+
 extern "C"
 {
-	KPanelApplet* init(QWidget *parent, const QString& configFile)
-	{
-		KGlobal::locale()->insertCatalogue("ksysguard");
-		return new KSysGuardApplet(configFile, KPanelApplet::Normal,
-								   KPanelApplet::Preferences, parent,
-								   "ksysguardapplet");
-    }
+  KPanelApplet* init( QWidget *parent, const QString& configFile )
+  {
+    KGlobal::locale()->insertCatalogue( "ksysguard" );
+    return new KSysGuardApplet( configFile, KPanelApplet::Normal,
+                                KPanelApplet::Preferences, parent,
+                                "ksysguardapplet" );
+  }
 }
 
-KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
-								 int actions, QWidget *parent,
-								 const char *name)
-    : KPanelApplet(configFile, t, actions, parent, name)
+KSysGuardApplet::KSysGuardApplet( const QString& configFile, Type type,
+                                  int actions, QWidget *parent,
+                                  const char *name )
+  : KPanelApplet( configFile, type, actions, parent, name)
 {
-	ksgas = 0;
+  mSettingsDlg = 0;
 
-	KSGRD::SensorMgr = new KSGRD::SensorManager();
-	Q_CHECK_PTR(KSGRD::SensorMgr);
+  KSGRD::SensorMgr = new KSGRD::SensorManager();
 
-	KSGRD::Style = new KSGRD::StyleEngine();
-	Q_CHECK_PTR(KSGRD::Style);
+  KSGRD::Style = new KSGRD::StyleEngine();
 
-	dockCnt = 1;
-	docks = new QWidget*[dockCnt];
-	Q_CHECK_PTR(docks);
+  mDockCount = 1;
+  mDockList = new QWidget*[ mDockCount ];
 
-	docks[0] = new QFrame(this);
-	Q_CHECK_PTR(docks[0]);
-	((QFrame*)docks[0])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
-	QToolTip::add(docks[0],
-				  i18n("Drag sensors from the KDE System Guard into "
-					   "this cell."));
-	updateInterval(2);
-	sizeRatio = 1.0;
+  addEmptyDisplay( mDockList, 0 );
 
-	load();
+  updateInterval( 2 );
+  mSizeRatio = 1.0;
 
-	setAcceptDrops(true);
+  load();
 
+  setAcceptDrops( true );
 }
 
 KSysGuardApplet::~KSysGuardApplet()
 {
-	save();
+  save();
 
-	if (ksgas)
-		delete ksgas;
+  delete mSettingsDlg;
+  mSettingsDlg = 0;
 
 	delete KSGRD::Style;
 	delete KSGRD::SensorMgr;
 	KSGRD::SensorMgr = 0;
 }
 
-int
-KSysGuardApplet::widthForHeight(int h) const
+int KSysGuardApplet::widthForHeight( int height ) const
 {
-	return ((int) (h * sizeRatio + 0.5) * dockCnt);
+  return ( (int) ( height * mSizeRatio + 0.5 ) * mDockCount );
 }
 
-int
-KSysGuardApplet::heightForWidth(int w) const
+int KSysGuardApplet::heightForWidth( int width ) const
 {
-	return ((int) (w * sizeRatio + 0.5) * dockCnt);
+  return ( (int) ( width * mSizeRatio + 0.5 ) * mDockCount );
 }
 
-void
-KSysGuardApplet::resizeEvent(QResizeEvent*)
+void KSysGuardApplet::resizeEvent( QResizeEvent* )
 {
-	layout();
+  layout();
 }
 
-void
-KSysGuardApplet::preferences()
+void KSysGuardApplet::preferences()
 {
-	ksgas = new KSGAppletSettings(this);
-	Q_CHECK_PTR(ksgas);
+  mSettingsDlg = new KSGAppletSettings( this );
 																
-	connect(ksgas, SIGNAL(applyClicked()), SLOT(applySettings()));
+  connect( mSettingsDlg, SIGNAL( applyClicked() ), SLOT( applySettings() ) );
 
-	ksgas->setNumDisplay(dockCnt);
-	ksgas->setSizeRatio((int) (sizeRatio * 100.0 + 0.5));
-	ksgas->setUpdateInterval(updateInterval());
+  mSettingsDlg->setNumDisplay( mDockCount );
+  mSettingsDlg->setSizeRatio( (int) ( mSizeRatio * 100.0 + 0.5 ) );
+  mSettingsDlg->setUpdateInterval( updateInterval() );
 
-	if (ksgas->exec())
-		applySettings();
+  if ( mSettingsDlg->exec() )
+    applySettings();
 
-	delete ksgas;
-	ksgas = 0;
+	delete mSettingsDlg;
+	mSettingsDlg = 0;
 }
 
-void
-KSysGuardApplet::applySettings()
+void KSysGuardApplet::applySettings()
 {
-	updateInterval(ksgas->updateInterval());
-	sizeRatio = ksgas->sizeRatio() / 100.0;
-	resizeDocks(ksgas->numDisplay());
+  updateInterval( mSettingsDlg->updateInterval() );
+  mSizeRatio = mSettingsDlg->sizeRatio() / 100.0;
+  resizeDocks( mSettingsDlg->numDisplay() );
 
-	for (uint i = 0; i < dockCnt; ++i)
-		if (!docks[i]->isA("QFrame"))
-			((KSGRD::SensorDisplay*) docks[i])->
-				setUpdateInterval(updateInterval());
+  for ( uint i = 0; i < mDockCount; ++i )
+    if ( !mDockList[ i ]->isA( "QFrame" ) )
+      ((KSGRD::SensorDisplay*)mDockList[ i ])->setUpdateInterval( updateInterval() );
 
-	save();
+  save();
 }
 
-void
-KSysGuardApplet::layout()
+void KSysGuardApplet::layout()
 {
-	if (orientation() == Horizontal)
-	{
-		int h = height();
-		int w = (int) (h * sizeRatio + 0.5);
-		for (uint i = 0; i < dockCnt; ++i)
-			if (docks[i])
-				docks[i]->setGeometry(i * w, 0, w, h);
-	}
-	else
-	{
-		int w = width();
-		int h = (int) (w * sizeRatio + 0.5);
-		for (uint i = 0; i < dockCnt; ++i)
-			if (docks[i])
-				docks[i]->setGeometry(0, i * h, w, h);
-	}
+  if ( orientation() == Horizontal ) {
+    int h = height();
+    int w = (int) ( h * mSizeRatio + 0.5 );
+    for ( uint i = 0; i < mDockCount; ++i )
+      if ( mDockList[ i ] )
+        mDockList[ i ]->setGeometry( i * w, 0, w, h );
+  } else {
+    int w = width();
+    int h = (int) ( w * mSizeRatio + 0.5 );
+    for ( uint i = 0; i < mDockCount; ++i )
+      if ( mDockList[ i ] )
+        mDockList[ i ]->setGeometry( 0, i * h, w, h );
+  }
 }
 
-int
-KSysGuardApplet::findDock(const QPoint& p)
+int KSysGuardApplet::findDock( const QPoint& point )
 {
-	if (orientation() == Horizontal)
-		return (p.x() / (int) (height() * sizeRatio + 0.5));
-	else
-		return (p.y() / (int) (width() * sizeRatio + 0.5));
+  if ( orientation() == Horizontal )
+    return ( point.x() / (int) ( height() * mSizeRatio + 0.5 ) );
+  else
+    return ( point.y() / (int) ( width() * mSizeRatio + 0.5 ) );
 }
 
-void
-KSysGuardApplet::dragEnterEvent(QDragEnterEvent* ev)
+void KSysGuardApplet::dragEnterEvent( QDragEnterEvent *e )
 {
-	ev->accept(QTextDrag::canDecode(ev));
+  e->accept( QTextDrag::canDecode( e ) );
 }
 
-void
-KSysGuardApplet::dropEvent(QDropEvent* ev)
+void KSysGuardApplet::dropEvent( QDropEvent *e )
 {
-	QString dObj;
+  QString dragObject;
 
-	if (QTextDrag::decode(ev, dObj))
-	{
-		// The host name, sensor name and type are seperated by a ' '.
-		QString hostName = dObj.left(dObj.find(' '));
-		dObj.remove(0, dObj.find(' ') + 1);
-		QString sensorName = dObj.left(dObj.find(' '));
-		dObj.remove(0, dObj.find(' ') + 1);
-		QString sensorType = dObj.left(dObj.find(' '));
-		dObj.remove(0, dObj.find(' ') + 1);
-		QString sensorDescr = dObj;
+  if ( QTextDrag::decode( e, dragObject ) ) {
+    // The host name, sensor name and type are seperated by a ' '.
+    QStringList parts = QStringList::split( ' ', dragObject );
 
-		if (hostName.isEmpty() || sensorName.isEmpty() ||
-			sensorType.isEmpty())
-		{
-			return;
-		}
+    QString hostName = parts[ 0 ];
+    QString sensorName = parts[ 1 ];
+    QString sensorType = parts[ 2 ];
+    QString sensorDescr = parts[ 3 ];
 
-		int dock = findDock(ev->pos());
-		if (docks[dock]->isA("QFrame"))
-		{
-			if (sensorType == "integer" || sensorType == "float")
-			{
-				QPopupMenu popup;
-				QWidget *wdg = 0;
+    if ( hostName.isEmpty() || sensorName.isEmpty() || sensorType.isEmpty() )
+      return;
 
-				popup.insertItem(i18n("Select Display Type"), 0);
-				popup.setItemEnabled(0, false);
-				popup.insertSeparator();
-				popup.insertItem(i18n("&Signal Plotter"), 1);
-				popup.insertItem(i18n("&Multimeter"), 2);
-				popup.insertItem(i18n("&Dancing Bars"), 3);
-				switch (popup.exec(QCursor::pos()))
-				{
-					case 1:
-						wdg = new FancyPlotter(this, "FancyPlotter",
-											   sensorDescr, 100.0, 100.0, true);
-						Q_CHECK_PTR(wdg);
+    int dock = findDock( e->pos() );
+    if ( mDockList[ dock ]->isA( "QFrame" ) ) {
+      if ( sensorType == "integer" || sensorType == "float" ) {
+        QPopupMenu popup;
+        QWidget *wdg = 0;
+
+        popup.insertItem( i18n( "Select Display Type" ), 0 );
+        popup.setItemEnabled( 0, false );
+        popup.insertSeparator();
+        popup.insertItem( i18n( "&Signal Plotter" ), 1 );
+        popup.insertItem( i18n( "&Multimeter" ), 2 );
+        popup.insertItem( i18n( "&Dancing Bars" ), 3 );
+        switch ( popup.exec( QCursor::pos() ) ) {
+          case 1:
+            wdg = new FancyPlotter( this, "FancyPlotter", sensorDescr,
+                                    100.0, 100.0, true );
 						break;
 
-					case 2:
-						wdg = new MultiMeter(this, "MultiMeter", sensorDescr,
-											 100.0, 100.0, true);
-						Q_CHECK_PTR(wdg);
-						break;
+          case 2:
+            wdg = new MultiMeter( this, "MultiMeter", sensorDescr,
+                                  100.0, 100.0, true );
+            break;
 
-					case 3:
-						wdg = new DancingBars(this, "DancingBars", sensorDescr,
-											  100, 100, true);
-						Q_CHECK_PTR(wdg);
-						break;
+          case 3:
+            wdg = new DancingBars( this, "DancingBars", sensorDescr,
+                                   100, 100, true );
+            break;
 				}
 
-				if (wdg)
-				{
-					delete docks[dock];
-					docks[dock] = wdg;
-					layout();
-					docks[dock]->show();
-				}
-			 }
-			 else
-			 {
-				KMessageBox::sorry(
-					this,
-					i18n("The KSysGuard applet does not support displaying of "
-						 "this type of sensor. Please choose another sensor."));
+        if ( wdg ) {
+          delete mDockList[ dock ];
+          mDockList[ dock ] = wdg;
+          layout();
 
-				layout();
-			 }
-		}
+          mDockList[ dock ]->show();
+        }
+      } else {
+        KMessageBox::sorry( this,
+          i18n( "The KSysGuard applet does not support displaying of "
+                "this type of sensor. Please choose another sensor." ) );
 
-		if (!docks[dock]->isA("QFrame"))
-			((KSGRD::SensorDisplay*) docks[dock])->
-				addSensor(hostName, sensorName, sensorType, sensorDescr);
-	}
+        layout();
+      }
+    }
 
-	save();
+    if ( !mDockList[ dock ]->isA( "QFrame" ) )
+      ((KSGRD::SensorDisplay*)mDockList[ dock ])->
+                  addSensor( hostName, sensorName, sensorType, sensorDescr );
+  }
+
+  save();
 }
 
-void
-KSysGuardApplet::customEvent(QCustomEvent* ev)
+void KSysGuardApplet::customEvent( QCustomEvent *e )
 {
-	if (ev->type() == QEvent::User)
-	{
-		if (KMessageBox::warningYesNo(this, i18n(
-			"Do you really want to delete the display?")) ==
-			KMessageBox::Yes)
-		{				
-			// SensorDisplays send out this event if they want to be removed.
-			removeDisplay((KSGRD::SensorDisplay*) ev->data());
-			save();
-		}
-	}
+  if ( e->type() == QEvent::User ) {
+    if ( KMessageBox::warningYesNo( this,
+         i18n( "Do you really want to delete the display?" ) ) ==	KMessageBox::Yes ) {				
+      // SensorDisplays send out this event if they want to be removed.
+      removeDisplay( (KSGRD::SensorDisplay*)e->data() );
+      save();
+    }
+  }
 }
 
-void
-KSysGuardApplet::removeDisplay(KSGRD::SensorDisplay* sd)
+void KSysGuardApplet::removeDisplay( KSGRD::SensorDisplay *display )
 {
-	for (uint i = 0; i < dockCnt; ++i)
-		if (sd == docks[i])
-		{
-			delete docks[i];
+  for ( uint i = 0; i < mDockCount; ++i )
+    if ( display == mDockList[i] ) {
+      delete mDockList[ i ];
 
-			docks[i] = new QFrame(this);
-			Q_CHECK_PTR(docks[i]);
-			((QFrame*) docks[i])->
-				setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
-			QToolTip::add(docks[i],
-						  i18n("Drag sensors from the KDE System Guard into "
-							   "this cell."));
-			layout();
-			if (isVisible())
-				docks[i]->show();
-			return;
-		}
+      addEmptyDisplay( mDockList, i );
+      return;
+    }
 }
 
-void
-KSysGuardApplet::resizeDocks(uint newDockCnt)
+void KSysGuardApplet::resizeDocks( uint newDockCount )
 {
-	/* This function alters the number of available docks. The number of
-	 * docks can be increased or decreased. We try to preserve existing
-	 * docks if possible. */
+  /* This function alters the number of available docks. The number of
+   * docks can be increased or decreased. We try to preserve existing
+   * docks if possible. */
 
-	if (newDockCnt == dockCnt)
-	{
-		emit updateLayout();
-		return;
-	}
+  if ( newDockCount == mDockCount ) {
+    emit updateLayout();
+    return;
+  }
 
-	// Create and initialize new dock array.
-	QWidget** tmp = new QWidget*[newDockCnt];
-	Q_CHECK_PTR(tmp);
+  // Create and initialize new dock array.
+  QWidget** tmp = new QWidget*[ newDockCount ];
 
-	uint i;
-	// Copy old docks into new.
-	for (i = 0; (i < newDockCnt) && (i < dockCnt); ++i)
-		tmp[i] = docks[i];
-	// Destruct old docks that are not needed anymore.
-	for (i = newDockCnt; i < dockCnt; ++i)
-		if (docks[i])
-			delete docks[i];
-	
-	for (i = dockCnt; i < newDockCnt; ++i)
-	{
-		tmp[i] = new QFrame(this);
-		Q_CHECK_PTR(tmp[i]);
-		((QFrame*) tmp[i])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
-		QToolTip::add(tmp[i],
-					  i18n("Drag sensors from the KDE System Guard into "
-						   "this cell."));
-		if (isVisible())
-			tmp[i]->show();
-	}
-	// Destruct old dock.
-	delete [] docks;
+  uint i;
+  for ( i = 0; ( i < newDockCount ) && ( i < mDockCount ); ++i )
+    tmp[ i ] = mDockList[ i ];
 
-	docks = tmp;
-	dockCnt = newDockCnt;
+  for ( i = newDockCount; i < mDockCount; ++i )
+    if ( mDockList[ i ] )
+      delete mDockList[ i ];
 
-	emit updateLayout();
+  for ( i = mDockCount; i < newDockCount; ++i )
+    addEmptyDisplay( tmp, i );
+
+  delete [] mDockList;
+
+  mDockList = tmp;
+  mDockCount = newDockCount;
+
+  emit updateLayout();
 }
 
-bool
-KSysGuardApplet::load()
+bool KSysGuardApplet::load()
 {
-	KStandardDirs* kstd = KGlobal::dirs();
-	kstd->addResourceType("data", "share/apps/ksysguard");
-	QString fileName = kstd->findResource("data", "KSysGuardApplet.xml");
+  KStandardDirs* kstd = KGlobal::dirs();
+  kstd->addResourceType( "data", "share/apps/ksysguard" );
+  QString fileName = kstd->findResource( "data", "KSysGuardApplet.xml" );
 
-	QFile file(fileName);
-	if (!file.open(IO_ReadOnly))
-	{
-		KMessageBox::sorry(this, i18n("Can't open the file %1.")
-						   .arg(fileName));
-		return (false);
-	}
+  QFile file( fileName );
+  if ( !file.open( IO_ReadOnly ) ) {
+    KMessageBox::sorry( this, i18n( "Can't open the file %1." ).arg( fileName ) );
+    return false;
+  }
 
-	// Parse the XML file.
-	QDomDocument doc;
-	// Read in file and check for a valid XML header.
-	if (!doc.setContent(&file))
-	{
-		KMessageBox::sorry(
-			this,
-			i18n("The file %1 does not contain valid XML.").arg(fileName));
-		return (false);
-	}
+  // Parse the XML file.
+  QDomDocument doc;
+
+  // Read in file and check for a valid XML header.
+  if ( !doc.setContent( &file ) ) {
+    KMessageBox::sorry( this, i18n( "The file %1 does not contain valid XML." )
+                        .arg( fileName ) );
+    return false;
+  }
+
 	// Check for proper document type.
-	if (doc.doctype().name() != "KSysGuardApplet")
-	{
-		KMessageBox::sorry(
-			this,
-			i18n("The file %1 does not contain a valid applet "
-				 "definition, which must have a document type "
-				 "'KSysGuardApplet'.").arg(fileName));
-		return (false);
-	}
+  if ( doc.doctype().name() != "KSysGuardApplet" ) {
+    KMessageBox::sorry( this, i18n( "The file %1 does not contain a valid applet "
+                        "definition, which must have a document type 'KSysGuardApplet'." )
+                        .arg( fileName ) );
+    return false;
+  }
 
-	QDomElement element = doc.documentElement();
-	bool ok;
-	uint d = element.attribute("dockCnt").toUInt(&ok);
-	if (!ok)
-		d = 1;
-	sizeRatio = element.attribute("sizeRatio").toDouble(&ok);
-	if (!ok)
-		sizeRatio = 1.0;
-	updateInterval(element.attribute("interval").toUInt(&ok));
-	if (!ok)
-		updateInterval(2);
-	resizeDocks(d);
+  QDomElement element = doc.documentElement();
+  bool ok;
+  uint count = element.attribute( "dockCnt" ).toUInt( &ok );
+  if ( !ok )
+		count = 1;
 
-	/* Load lists of hosts that are needed for the work sheet and try
-	 * to establish a connection. */
-	QDomNodeList dnList = element.elementsByTagName("host");
-	uint i;
-	for (i = 0; i < dnList.count(); ++i)
-	{
-		QDomElement element = dnList.item(i).toElement();
-		bool ok;
-		int port = element.attribute("port").toInt(&ok);
-		if (!ok)
-			port = -1;
-		KSGRD::SensorMgr->engage(element.attribute("name"),
-						  element.attribute("shell"),
-						  element.attribute("command"), port);
-	}
+  mSizeRatio = element.attribute( "sizeRatio" ).toDouble( &ok );
+  if ( !ok )
+    mSizeRatio = 1.0;
 
-	// Load the displays and place them into the work sheet.
-	dnList = element.elementsByTagName("display");
-	for (i = 0; i < dnList.count(); ++i)
-	{
-		QDomElement element = dnList.item(i).toElement();
-		uint dock = element.attribute("dock").toUInt();
-		if (i >= dockCnt)
-		{
-			kdDebug () << "Dock number " << i << " out of range "
-					   << dockCnt << endl;
-			return (false);
-		}
+  updateInterval( element.attribute( "interval" ).toUInt( &ok ) );
+  if ( !ok )
+    updateInterval( 2 );
 
-		QString classType = element.attribute("class");
-		KSGRD::SensorDisplay* newDisplay;
-		if (classType == "FancyPlotter")
-			newDisplay = new FancyPlotter(this, "FancyPlotter", "Dummy", 100.0, 
-										  100.0, true);
-		else if (classType == "MultiMeter")
-			newDisplay = new MultiMeter(this, "MultiMeter", "Dummy", 100.0,
-									   	100.0, true);
-		else if (classType == "DancingBars")
-			newDisplay = new DancingBars(this, "DancingBars", "Dummy", 100,
-										 100, true);
-		else
-		{
-			KMessageBox::sorry(
-				this,
-				i18n("The KSysGuard applet does not support displaying of "
-					 "this type of sensor. Please choose another sensor."));
-			return (false);
-		}
-		Q_CHECK_PTR(newDisplay);
+  resizeDocks( count );
 
-		newDisplay->setUpdateInterval(updateInterval());
-		// load display specific settings
-		if (!newDisplay->createFromDOM(element))
-			return (false);
+  /* Load lists of hosts that are needed for the work sheet and try
+   * to establish a connection. */
+  QDomNodeList dnList = element.elementsByTagName( "host" );
+  uint i;
+  for ( i = 0; i < dnList.count(); ++i ) {
+    QDomElement element = dnList.item( i ).toElement();
+    int port = element.attribute( "port" ).toInt( &ok );
+    if ( !ok )
+      port = -1;
 
-		delete docks[dock];
-		docks[dock] = newDisplay;
-	}
-	return (true);
+    KSGRD::SensorMgr->engage( element.attribute( "name" ),
+                              element.attribute( "shell" ),
+                              element.attribute( "command" ), port );
+  }
+
+  // Load the displays and place them into the work sheet.
+  dnList = element.elementsByTagName( "display" );
+  for ( i = 0; i < dnList.count(); ++i ) {
+    QDomElement element = dnList.item( i ).toElement();
+    uint dock = element.attribute( "dock" ).toUInt();
+    if ( i >= mDockCount ) {
+      kdDebug () << "Dock number " << i << " out of range "
+                 << mDockCount << endl;
+      return false;
+    }
+
+    QString classType = element.attribute( "class" );
+    KSGRD::SensorDisplay* newDisplay;
+    if ( classType == "FancyPlotter" )
+      newDisplay = new FancyPlotter( this, "FancyPlotter", "Dummy", 100.0, 100.0, true );
+    else if ( classType == "MultiMeter" )
+      newDisplay = new MultiMeter( this, "MultiMeter", "Dummy", 100.0, 100.0, true );
+    else if ( classType == "DancingBars" )
+      newDisplay = new DancingBars( this, "DancingBars", "Dummy", 100, 100, true );
+    else {
+      KMessageBox::sorry( this, i18n( "The KSysGuard applet does not support displaying of "
+                          "this type of sensor. Please choose another sensor." ) );
+      return false;
+    }
+
+    newDisplay->setUpdateInterval( updateInterval() );
+
+    // load display specific settings
+    if ( !newDisplay->createFromDOM( element ) )
+      return false;
+
+    delete mDockList[ dock ];
+    mDockList[ dock ] = newDisplay;
+  }
+
+  return true;
 }
 
-bool
-KSysGuardApplet::save()
+bool KSysGuardApplet::save()
 {
-	// Parse the XML file.
-	QDomDocument doc("KSysGuardApplet");
-	doc.appendChild(doc.createProcessingInstruction(
-		"xml", "version=\"1.0\" encoding=\"UTF-8\""));
+  // Parse the XML file.
+  QDomDocument doc( "KSysGuardApplet" );
+  doc.appendChild( doc.createProcessingInstruction(
+                   "xml", "version=\"1.0\" encoding=\"UTF-8\"" ) );
 
-	// save work sheet information
-	QDomElement ws = doc.createElement("WorkSheet");
-	doc.appendChild(ws);
-	ws.setAttribute("dockCnt", dockCnt);
-	ws.setAttribute("sizeRatio", sizeRatio);
-	ws.setAttribute("interval", updateInterval());
+  // save work sheet information
+  QDomElement ws = doc.createElement( "WorkSheet" );
+  doc.appendChild( ws );
+  ws.setAttribute( "dockCnt", mDockCount );
+  ws.setAttribute( "sizeRatio", mSizeRatio );
+  ws.setAttribute( "interval", updateInterval() );
 
-	QStringList hosts;
-	uint i;
-	for (i = 0; i < dockCnt; ++i)
-		if (!docks[i]->isA("QFrame"))
-			((KSGRD::SensorDisplay*) docks[i])->collectHosts(hosts);
+  QStringList hosts;
+  uint i;
+  for ( i = 0; i < mDockCount; ++i )
+    if ( !mDockList[ i ]->isA( "QFrame" ) )
+      ((KSGRD::SensorDisplay*)mDockList[ i ])->collectHosts( hosts );
 
-	// save host information (name, shell, etc.)
-	QStringList::Iterator it;
-	for (it = hosts.begin(); it != hosts.end(); ++it)
-	{
-		QString shell, command;
-		int port;
+  // save host information (name, shell, etc.)
+  QStringList::Iterator it;
+  for ( it = hosts.begin(); it != hosts.end(); ++it ) {
+    QString shell, command;
+    int port;
 
-		if (KSGRD::SensorMgr->getHostInfo(*it, shell, command, port))
-		{
-			QDomElement host = doc.createElement("host");
-			ws.appendChild(host);
-			host.setAttribute("name", *it);
-			host.setAttribute("shell", shell);
-			host.setAttribute("command", command);
-			host.setAttribute("port", port);
-		}
-	}
+    if ( KSGRD::SensorMgr->getHostInfo( *it, shell, command, port ) ) {
+      QDomElement host = doc.createElement( "host" );
+      ws.appendChild( host );
+      host.setAttribute( "name", *it );
+      host.setAttribute( "shell", shell );
+      host.setAttribute( "command", command );
+      host.setAttribute( "port", port );
+    }
+  }
 
-	for (i = 0; i < dockCnt; ++i)
-		if (!docks[i]->isA("QFrame"))
-		{
-			QDomElement element = doc.createElement("display");
-			ws.appendChild(element);
-			element.setAttribute("dock", i);
-			element.setAttribute("class", docks[i]->className());
+  for ( i = 0; i < mDockCount; ++i )
+    if ( !mDockList[ i ]->isA( "QFrame" ) ) {
+      QDomElement element = doc.createElement( "display" );
+      ws.appendChild( element );
+      element.setAttribute( "dock", i );
+      element.setAttribute( "class", mDockList[ i ]->className() );
 
-			((KSGRD::SensorDisplay*) docks[i])->addToDOM(doc, element);
-		}
+      ((KSGRD::SensorDisplay*)mDockList[ i ])->addToDOM( doc, element );
+    }
 
-	KStandardDirs* kstd = KGlobal::dirs();
-	kstd->addResourceType("data", "share/apps/ksysguard");
-	QString fileName = kstd->saveLocation("data", "ksysguard");
-	fileName += "/KSysGuardApplet.xml";
+  KStandardDirs* kstd = KGlobal::dirs();
+  kstd->addResourceType( "data", "share/apps/ksysguard" );
+  QString fileName = kstd->saveLocation( "data", "ksysguard" );
+  fileName += "/KSysGuardApplet.xml";
 
-	QFile file(fileName);
-	if (!file.open(IO_WriteOnly))
-	{
-		KMessageBox::sorry(this, i18n("Can't save file %1")
-						   .arg(fileName));
-		return (false);
-	}
-	QTextStream s(&file);
-	s.setEncoding(QTextStream::UnicodeUTF8);
-	s << doc;
-	file.close();
+  QFile file( fileName );
+  if ( !file.open( IO_WriteOnly ) ) {
+    KMessageBox::sorry( this, i18n( "Can't save file %1" ).arg( fileName ) );
+    return false;
+  }
 
-	return (true);
+  QTextStream s( &file );
+  s.setEncoding( QTextStream::UnicodeUTF8 );
+  s << doc;
+  file.close();
+
+  return true;
 }
+
+void KSysGuardApplet::addEmptyDisplay( QWidget **dock, uint pos )
+{
+  dock[ pos ] = new QFrame( this );
+  ((QFrame*)dock[ pos ])->setFrameStyle( QFrame::WinPanel | QFrame::Sunken );
+  QToolTip::add( dock[ pos ],
+                 i18n( "Drag sensors from the KDE System Guard into this cell." ) );
+
+  layout();
+  if ( isVisible() )
+    dock[ pos ]->show();
+}
+
+#include "KSysGuardApplet.moc"

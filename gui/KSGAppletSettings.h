@@ -1,4 +1,5 @@
-/*  This file is part of the KDE Libraries
+/*
+    This file is part of KSysGuard.
     Copyright ( C ) 2002 Nadeem Hasan ( nhasan@kde.org )
 
     This library is free software; you can redistribute it and/or
@@ -17,34 +18,32 @@
     Boston, MA 02111-1307, USA.
 */
 
-#ifndef __KSGAppletSettings_h__
-#define __KSGAppletSettings_h__
+#ifndef KSG_APPLETSETTINGS_H
+#define KSG_APPLETSETTINGS_H
 
 #include <kdialogbase.h>
 
-#include "KSGAppletSettingsWidget.h"
-
+class KIntNumInput;
 
 class KSGAppletSettings : public KDialogBase
 {
+  public:
+    KSGAppletSettings( QWidget *parent = 0, const char *name = 0 );
+    ~KSGAppletSettings();
 
-public:
+    void setNumDisplay( int );
+    int numDisplay() const;
 
-  KSGAppletSettings( QWidget *parent=0, const char *name=0 );
-  ~KSGAppletSettings();
+    void setSizeRatio( int );
+    int sizeRatio() const;
 
-  int numDisplay();
-  int sizeRatio();
-  int updateInterval();
+    void setUpdateInterval( int );
+    int updateInterval() const;
 
-  void setNumDisplay( int );
-  void setSizeRatio( int );
-  void setUpdateInterval( int );
-
-protected:
-
-  KSGAppletSettingsWidget *widget_;
-
+  private:
+    KIntNumInput *mInterval;
+    KIntNumInput *mNumDisplay;
+    KIntNumInput *mSizeRatio;
 };
 
 #endif

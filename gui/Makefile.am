@@ -46,8 +46,7 @@ kde_module_LTLIBRARIES = sysguard_panelapplet.la
 
 sysguard_panelapplet_la_SOURCES = \
 	KSysGuardApplet.cc \
-	KSGAppletSettings.cc \
-	KSGAppletSettingsWidget.ui
+	KSGAppletSettings.cc
 
 sysguard_panelapplet_la_LIBADD = \
 	ksgrd/libksgrd.la \
