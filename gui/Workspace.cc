@@ -435,6 +435,9 @@ Workspace::updateCaption(QWidget* ws)
 						((WorkSheet*) ws)->hasBeenModified());
 	else
 		emit setCaption(QString::null, false);
+
+	for (WorkSheet* s = sheets.first(); s != 0; s = sheets.next())
+		((WorkSheet*) s)->setIsOnTop(s == ws);
 }
 
 void

@@ -72,7 +72,7 @@ public slots:
 	void configure();
 	void updateCaption(QWidget*);
 	void applyStyle();
-
+	
 signals:
 	void announceRecentURL(const KURL& url);
 	void setCaption(const QString& text, bool modified);

@@ -75,10 +75,13 @@ class SensorDisplay : public QWidget, public SensorClient
 	Q_OBJECT
 public:
 
-	SensorDisplay(QWidget* parent = 0, const char* name = 0, const QString& title = 0);
+	SensorDisplay(QWidget* parent = 0, const char* name = 0, 
+				  const QString& title = 0);
 	virtual ~SensorDisplay();
 
-	virtual bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& description);
+	virtual bool addSensor(const QString& hostName, const QString& sensorName,
+						   const QString& sensorType,
+						   const QString& description);
 	virtual bool removeSensor(uint idx);
 
 	/**
@@ -114,6 +117,8 @@ public:
 	void collectHosts(QValueList<QString>& list);
 
 	void setupTimer(void);
+
+	void setIsOnTop(bool onTop);
 
 	void setTitle(const QString& title);
 	QString getTitle();
@@ -182,6 +187,9 @@ protected:
 	bool modified;
 	bool noFrame;
 
+	bool pauseOnHide;
+	bool pausedWhileHidden;
+
 private:
 	int timerId;
 	int timerInterval;
@@ -195,6 +203,7 @@ private:
 
 	TimerSettings* ts;
 };
-};
+
+}; // namespace KSGRD
 
 #endif

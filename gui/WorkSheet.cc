@@ -716,3 +716,12 @@ WorkSheet::currentDisplayAsXML()
 
 	return doc.toString();
 }
+
+void
+WorkSheet::setIsOnTop(bool onTop)
+{
+	for (uint i = 0; i < rows; ++i)
+		for (uint j = 0; j < columns; ++j)
+			displays[i][j]->setIsOnTop(onTop);
+}
+

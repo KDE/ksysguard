@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2002 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -56,6 +56,9 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name, const QString& t
 	frame = NULL;
 	errorLabel = NULL;
 	plotterWdg = NULL;
+
+	pauseOnHide = false;
+	pausedWhileHidden = false;
 
 	timerOn();
 	QWhatsThis::add(this, "dummy");
@@ -113,7 +116,8 @@ SensorDisplay::setupTimer()
 	ts = new TimerSettings(this, "TimerSettings", true);
 	Q_CHECK_PTR(ts);
 
-	connect(ts->useGlobalUpdate, SIGNAL(toggled(bool)), this, SLOT(timerToggled(bool)));
+	connect(ts->useGlobalUpdate, SIGNAL(toggled(bool)), this, 
+			SLOT(timerToggled(bool)));
 
 	ts->useGlobalUpdate->setChecked(globalUpdateInterval);
 	ts->interval->setValue(timerInterval / 1000);
@@ -378,6 +382,25 @@ SensorDisplay::addToDOM(QDomDocument&, QDomElement&, bool)
 {
 	// should never been used.
 	return (false);
+}
+
+void
+SensorDisplay::setIsOnTop(bool onTop)
+{
+	if (!pauseOnHide)
+		return;
+	
+	if (onTop && pausedWhileHidden)
+	{
+		timerOn();
+		pausedWhileHidden = false;
+	}
+	else if (!onTop && timerId != NONE)
+	{
+		kdDebug() << "Timer stopped" << endl;
+		timerOff();
+		pausedWhileHidden = true;
+	}
 }
 
 void

@@ -1,7 +1,7 @@
 /*
     KKSysGuard, the KDE System Guard
    
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2002 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -86,6 +86,8 @@ public:
 							  const QString& sensorDescr, uint r, uint c);
 	void settings();
 
+	void setIsOnTop(bool onTop);
+	
 public slots:
 	void showPopupMenu(KSGRD::SensorDisplay* display);
 	void setModified(bool mfd);
