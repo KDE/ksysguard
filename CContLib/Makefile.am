@@ -8,8 +8,9 @@ include_HEADERS = ccont.h
 libccont_a_SOURCES = ccont.c dll.c pga.c sll.c
 
 conttest_SOURCES = conttest.c
-conttest_LDADD = -L. -lccont
+conttest_LDFLAGS = $(all_libraries) 
+conttest_LDADD = -lccont
 
-conttest: libccont.a
+conttest$(EXEEXT): libccont.a
 
 CLEANFILES = *~ 
