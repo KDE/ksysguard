@@ -1,11 +1,8 @@
-AC_CHECK_HEADERS(sys/types.h sys/param.h sys/resource.h sys/user.h \
-  sys/stat.h sys/unistd.h sys/time.h sys/sysctl.h sys/vmmeter.h)
-
-dnl Check whether ktop can run; FreeBSD works as well! Check needs to be added!
+dnl Check whether ktop can run; 
 AC_MSG_CHECKING(if ktop can be compiled)
 case "$host" in 
   *-*-linux-*) ktop_compile=yes; UNAME='Linux' ;;
-  *-*-freebsd*) ktop_compile=yes; UNAME='' ;;
+  *-*-freebsd*) ktop_compile=yes; UNAME='FreeBSD' ;;
   *) ktop_compile=no; UNAME='' ;;
 esac
 AC_MSG_RESULT($ktop_compile)
