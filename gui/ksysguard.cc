@@ -88,14 +88,14 @@ TopLevel::TopLevel(const char *name)
 	/* Create the status bar. It displays some information about the
 	 * number of processes and the memory consumption of the local
 	 * host. */
-	statusbar = new KStatusBar(this, "statusbar");
-	Q_CHECK_PTR(statusbar);
+	statusbar = statusBar();
+
 	statusbar->insertFixedItem(i18n("88888 Processes"), 0);
 	statusbar->insertFixedItem(i18n("Memory: 8888888 kB used, "
 							   "8888888 kB free"), 1);
 	statusbar->insertFixedItem(i18n("Swap: 8888888 kB used, "
 							   "8888888 kB free"), 2);
-	statusBar()->hide();
+	statusbar->hide();
 
 	// create actions for menue entries
 	KStdAction::openNew(ws, SLOT(newWorkSheet()), actionCollection());
@@ -132,10 +132,9 @@ TopLevel::TopLevel(const char *name)
 	(void) new KAction(i18n("Configure &Style..."), "colorize", 0, this,
 					   SLOT(editStyle()), actionCollection(),
 					   "configure_style");
+	resize(600, 440);
 
 	createGUI();
-
-	show();
 }
 
 TopLevel::~TopLevel()
@@ -262,7 +261,6 @@ TopLevel::showRequestedSheets()
 	sizes.append(100);
 	splitter->setSizes(sizes);
 
-	resize(600, 440);
 }
 
 void
@@ -602,6 +600,7 @@ main(int argc, char** argv)
 		{
 			Toplevel = new TopLevel("KSysGuard");
 			Toplevel->beATaskManager();
+			Toplevel->show();
 			KSGRD::SensorMgr->setBroadcaster(Toplevel);
 
 			// run the application
@@ -635,6 +634,7 @@ main(int argc, char** argv)
 		}
 
 		Toplevel->initStatusBar();
+		Toplevel->show();
 		KSGRD::SensorMgr->setBroadcaster(Toplevel);
 
 		// run the application
