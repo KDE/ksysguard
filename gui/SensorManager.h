@@ -49,6 +49,8 @@ public:
 				const QString& command = "");
 	bool disengage(const SensorAgent* sensor);
 	bool disengage(const QString& hostname);
+	void hostLost(const SensorAgent* sensor);
+	void reconfigure(const SensorAgent* senros);
 
 	bool sendRequest(const QString& hostname, const QString& req,
 					 SensorClient* client, int id = 0);
@@ -58,6 +60,7 @@ public:
 
 signals:
 	void update();
+	void hostConnectionLost(const QString& hostName);
 
 protected:
 	QDict<SensorAgent> sensors;

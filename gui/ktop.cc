@@ -52,6 +52,7 @@
 #include "ktop.moc"
 
 static const char* Description = I18N_NOOP("KDE Task Manager");
+TopLevel* Toplevel;
 
 /*
  * This is the constructor for the main widget. It sets up the menu and the
@@ -86,11 +87,6 @@ TopLevel::TopLevel(const char *name)
 							   "8888888 kB free"), 2);
 	setStatusBar(statusbar);
 	enableStatusBar(KStatusBar::Hide);
-
-	SensorMgr->engage("localhost", "", "ktopd");
-	/* Request info about the swapspace size and the units it is measured in.
-	 * The requested info will be received by answerReceived(). */
-	SensorMgr->sendRequest("localhost", "mem/swap?", (SensorClient*) this, 5);
 
 	// call timerEvent to fill the status bar with real values
 	timerEvent(0);
@@ -163,6 +159,12 @@ TopLevel::beATaskManager()
 	setGeometry((workArea.width() - w) / 2, (workArea.height() - h) / 2,
 				w, h);
 
+	// No toolbar and status bar in taskmanager mode.
+	enableStatusBar(KStatusBar::Hide);
+	statusBarTog->setChecked(FALSE);
+	enableToolBar(KToolBar::Hide);
+	toolbarTog->setChecked(FALSE);
+
 	dontSaveSession = TRUE;
 }
 
@@ -205,6 +207,17 @@ void
 TopLevel::showStatusBar()
 {
 	enableStatusBar(KStatusBar::Toggle);
+}
+
+void
+TopLevel::customEvent(QCustomEvent* ev)
+{
+	debug("Custom event received");
+	if (ev->type() == QEvent::User)
+	{
+		KMessageBox::error(this, *((QString*) ev->data()));
+		delete ev->data();
+	}
 }
 
 void
@@ -274,6 +287,11 @@ TopLevel::readProperties(KConfig* cfg)
 	ws->readProperties(cfg);
 
 	setMinimumSize(sizeHint());
+
+	SensorMgr->engage("localhost", "", "ktopd");
+	/* Request info about the swapspace size and the units it is measured in.
+	 * The requested info will be received by answerReceived(). */
+	SensorMgr->sendRequest("localhost", "mem/swap?", (SensorClient*) this, 5);
 }
 
 void
@@ -377,23 +395,23 @@ main(int argc, char** argv)
 		RESTORE(TopLevel)
 	else
 	{
-		TopLevel *toplevel = new TopLevel("TaskManager");
+		Toplevel = new TopLevel("TaskManager");
 		if (args->isSet("showprocesses"))
 		{
-			toplevel->beATaskManager();
+			Toplevel->beATaskManager();
 		}
 		else
-			toplevel->readProperties(a.config());
-		toplevel->show();
+			Toplevel->readProperties(a.config());
+		Toplevel->show();
 	}
 	if (KMainWindow::memberList->first())
 	{
 		a.dcopClient()->registerAs("kguard", FALSE);
 		a.dcopClient()->setDefaultObject("KGuardIface");
 	}
+
 	// run the application
 	int result = a.exec();
 
 	return (result);
 }
-

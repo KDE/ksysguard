@@ -188,6 +188,7 @@ public:
 
 public slots:
 	void disconnect();
+	void hostReconfigured(const QString& hostName);
 	void update();
 
 protected:

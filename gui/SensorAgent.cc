@@ -112,6 +112,7 @@ SensorAgent::start(const QString& host_, const QString& shell_,
 
 	if (!ktopd->start(KProcess::NotifyOnExit, KProcess::All))
 	{
+		sensorManager->hostLost(this);
 		debug("Can't start ktopd");
 		return (false);
 	}
@@ -237,6 +238,7 @@ SensorAgent::ktopdExited(KProcess*)
 {
 	ktopdOnLine = false;
 	debug("ktopd exited");
+	sensorManager->hostLost(this);
 	sensorManager->disengage(this);
 }
 

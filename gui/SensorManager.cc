@@ -22,6 +22,12 @@
 	$Id$
 */
 
+#include <qevent.h>
+
+#include <kapp.h>
+#include <klocale.h>
+
+#include "ktop.h"
 #include "SensorManager.h"
 #include "SensorAgent.h"
 #include "SensorManager.moc"
@@ -88,6 +94,25 @@ SensorManager::disengage(const QString& hostname)
 	}
 
 	return (FALSE);
+}
+
+void
+SensorManager::hostLost(const SensorAgent* sensor)
+{
+	debug("SensorManager::hostLost");
+	emit hostConnectionLost(sensor->getHostName());
+
+	QCustomEvent* ev = new QCustomEvent(QEvent::User);
+	ev->setData(new QString(
+		i18n("Connection to %1 has been lost!")
+		.arg(sensor->getHostName())));
+	kapp->postEvent(Toplevel, ev);
+}
+
+void
+SensorManager::reconfigure(const SensorAgent*)
+{
+	// TODO: not yet implemented.
 }
 
 bool

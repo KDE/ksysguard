@@ -79,7 +79,12 @@ public:
 	 */
 	bool sendRequest(const QString& req, SensorClient* client, int id = 0);
 
-	void getHostInfo(QString& sh, QString& cmd)
+	const QString& getHostName() const
+	{
+		return (host);
+	}
+
+	void getHostInfo(QString& sh, QString& cmd) const
 	{
 		sh = shell;
 		cmd = command;

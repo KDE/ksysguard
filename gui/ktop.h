@@ -27,6 +27,7 @@
 
 #include <qpopupmenu.h>
 #include <qsplitter.h>
+#include <qevent.h>
 
 #include <kapp.h>
 #include <ktmainwindow.h>
@@ -65,6 +66,7 @@ k_dcop:
 	ASYNC showProcesses();
 
 protected:
+	virtual void customEvent(QCustomEvent* e);
 	virtual void timerEvent(QTimerEvent*);
 
 protected slots:
@@ -85,5 +87,7 @@ private:
 	int timerID;
 	bool dontSaveSession;
 };
+
+extern TopLevel* Toplevel;
 
 #endif

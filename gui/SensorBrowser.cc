@@ -28,6 +28,7 @@
 #include <qdragobject.h>
 
 #include <klocale.h>
+#include <kmessagebox.h>
 
 #include "SensorBrowser.h"
 #include "SensorManager.h"
@@ -86,6 +87,12 @@ SensorBrowser::disconnect()
 			debug("Disconnecting %s", (*it)->getHostName().ascii());
 			SensorMgr->disengage((*it)->getSensorAgent());
 		}
+}
+
+void
+SensorBrowser::hostReconfigured(const QString&)
+{
+	// TODO: not yet implemented.
 }
 
 void
