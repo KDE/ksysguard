@@ -1,4 +1,4 @@
-INCLUDES = -I../../CContLib
+INCLUDES = -I$(srcdir)/../../CContLib
 CFLAGS = -Wall $(CONFIGFLAGS)
 
 bin_PROGRAMS = ktopd
