@@ -289,13 +289,10 @@ ListView::answerReceived(int id, const QString& answer)
 			for (unsigned int i = 0; i < headers.numberOfTokens(); i++)
 				/* TODO: Implement translation support for header texts */
 				monitor->addColumn(headers[i], colTypes[i]);
-
-			timerOn();
 			break;
 		}
 		case 19: {
 			monitor->update(answer);
-			timerOn();
 			break;
 		}
 	}

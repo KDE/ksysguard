@@ -104,14 +104,6 @@ public slots:
 		setModified(true);
 	}
 
-	void togglePause(bool p)
-	{
-		if (p)
-			timerOff();
-		else
-			timerOn();
-		setModified(true);
-	}
 	virtual void setModified(bool mfd)
 	{
 		if (mfd != modified)
@@ -144,9 +136,6 @@ private:
 	/// Checkbox to switch between tree and list view
 	QCheckBox* xbTreeView;
 
-	/// Checkbox to pause the automatic update of the process list
-	QCheckBox* xbPause;
-
 	/// This combo boxes control the process filter.
 	QComboBox* cbFilter;
 	
@@ -156,6 +145,6 @@ private:
 
 	/// Dictionary for header translations.
 	QDict<QString> dict;
-} ;
+};
 
 #endif

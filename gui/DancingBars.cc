@@ -388,7 +388,6 @@ DancingBars::answerReceived(int id, const QString& answer)
 			}
 
 		sensors.at(id - 100)->unit = info.getUnit();
-		timerOn();
 	}
 }
 

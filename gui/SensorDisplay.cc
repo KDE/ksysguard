@@ -107,6 +107,7 @@ SensorDisplay::setupTimer()
 	connect(ts->useGlobalUpdate, SIGNAL(toggled(bool)), this, SLOT(timerToggled(bool)));
 
 	ts->useGlobalUpdate->setChecked(globalUpdateInterval);
+	ts->interval->setValue(timerInterval / 1000);
 
 	if (ts->exec()) {
 		if (ts->useGlobalUpdate->isChecked()) {
@@ -145,20 +146,34 @@ SensorDisplay::eventFilter(QObject* o, QEvent* e)
 		QPopupMenu pm;
 		if (hasSettingsDialog())
 			pm.insertItem(i18n("&Properties"), 1);
-		pm.insertItem(i18n("&Setup Timer Interval"), 2);
-		pm.insertItem(i18n("&Remove Display"), 3);
+		pm.insertItem(i18n("&Remove Display"), 2);
+		pm.insertSeparator();
+		pm.insertItem(i18n("&Setup Update Interval"), 3);
+		if (timerId == NONE)
+			pm.insertItem(i18n("&Continue Update"), 4);
+		else
+			pm.insertItem(i18n("P&ause Update"), 5);
 		switch (pm.exec(QCursor::pos()))
 		{
 		case 1:
-			this->settings();
+			settings();
 			break;
-		case 2:
-			this->setupTimer();
-			break;
-		case 3:
+		case 2: {
 			QCustomEvent* ev = new QCustomEvent(QEvent::User);
 			ev->setData(this);
 			kapp->postEvent(parent(), ev);
+			}
+			break;
+		case 3:
+			setupTimer();
+			break;
+		case 4:
+			timerOn();
+			setModified(true);
+			break;
+		case 5:
+			timerOff();
+			setModified(true);
 			break;
 		}
 		return (TRUE);
@@ -249,6 +264,11 @@ void SensorDisplay::internAddToDOM(QDomDocument& doc, QDomElement& element)
 		element.setAttribute("globalUpdate", "1");
 	else
 		element.setAttribute("updateInterval", timerInterval / 1000);
+
+	if (timerId == NONE)
+		element.setAttribute("pause", 1);
+	else
+		element.setAttribute("pause", 0);
 }
 
 void SensorDisplay::internCreateFromDOM(QDomElement& element)
@@ -263,4 +283,9 @@ void SensorDisplay::internCreateFromDOM(QDomElement& element)
 		else
 			setUpdateInterval(((WorkSheet *)parentWidget())->updateInterval);
 	}
+
+	if (element.attribute("pause", "0").toInt() == 0)
+		timerOn();
+	else
+		timerOff();
 }

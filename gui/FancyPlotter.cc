@@ -516,7 +516,6 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 			plotter->changeRange(id - 100, info.getMin(), info.getMax());
 		}
 		sensors.at(id - 100)->unit = info.getUnit();
-		timerOn();
 	}
 }
 

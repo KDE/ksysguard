@@ -85,12 +85,6 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	connect(cbFilter, SIGNAL(activated(int)),
 			this, SLOT(filterModeChanged(int)));
 
-	// Create the check box to pause the automatic list update.
-	xbPause = new QCheckBox(i18n("&Pause"), this, "xbPause");
-	Q_CHECK_PTR(xbPause);
-	xbPause->setMinimumSize(xbPause->sizeHint());
-	connect(xbPause, SIGNAL(toggled(bool)), this, SLOT(togglePause(bool)));
-
 	// Create the 'Refresh' button.
 	bRefresh = new QPushButton(i18n("&Refresh"), this, "bRefresh");
 	Q_CHECK_PTR(bRefresh);
@@ -120,8 +114,6 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	gm1->addWidget(xbTreeView);
 	gm1->addStretch();
 	gm1->addWidget(cbFilter);
-	gm1->addStretch();
-	gm1->addWidget(xbPause);
 	gm1->addStretch();
 	gm1->addWidget(bRefresh);
 	gm1->addStretch();
@@ -320,8 +312,6 @@ ProcessController::createFromDOM(QDomElement& element)
 
 	xbTreeView->setChecked(element.attribute("tree").toInt());
 	setTreeView(element.attribute("tree").toInt());
-	xbPause->setChecked(element.attribute("pause").toInt());
-	togglePause(element.attribute("pause").toInt());
 
 	uint filter = element.attribute("filter").toUInt();
 	cbFilter->setCurrentItem(filter);
@@ -349,7 +339,6 @@ ProcessController::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 	element.setAttribute("sensorName", sensors.at(0)->name);
 	element.setAttribute("sensorType", sensors.at(0)->type);
 	element.setAttribute("tree", (uint) xbTreeView->isChecked());
-	element.setAttribute("pause", (uint) xbPause->isChecked());
 	element.setAttribute("filter", cbFilter->currentItem());
 	element.setAttribute("sortColumn", pList->getSortColumn());
 	element.setAttribute("incrOrder", pList->getIncreasing());

@@ -120,7 +120,6 @@ MultiMeter::answerReceived(int id, const QString& answer)
 	{
 		SensorIntegerInfo info(answer);
 		setTitle(title, SensorMgr->translateUnit(info.getUnit()));
-		timerOn();
 	}
 	else
 	{
