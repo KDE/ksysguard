@@ -562,7 +562,7 @@ int main( int argc, char** argv )
   aboutData.addAuthor( "Alex Sanda", 0, "alex@darkstart.ping.at" );
   aboutData.addAuthor( "Bernd Johannes Wuebben", 0, "wuebben@math.cornell.edu" );
   aboutData.addAuthor( "Ralf Mueller", 0, "rlaf@bj-ig.de" );
-  aboutData.addAuthor( "Hamish Rodda", 0, "meddie@yoyo.cc.monash.edu.au" );
+  aboutData.addAuthor( "Hamish Rodda", 0, "rodda@kde.org" );
   aboutData.addAuthor( "Torsten Kasch", I18N_NOOP( "Solaris Support\n"
                        "Parts derived (by permission) from the sunos5\n"
                        "module of William LeFebvre's \"top\" utility." ),
