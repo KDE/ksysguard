@@ -427,21 +427,21 @@ TaskMan::TaskMan( QWidget *parent, const char *name, int sfolder )
                                               // memmon will directly update them
     mem_detail_box = new QGroupBox(p2, "_dmem");
     CHECK_PTR(mem_detail_box);
-    mem_detail_box->setTitle(ktr("Memory details:"));
+    mem_detail_box->setTitle(i18n("Memory details:"));
 
     int i = 0;
-    l_mem_details[i++] = new QLabel(ktr("Active:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(ktr("Inactive:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(ktr("Wired:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(ktr("Cache:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(ktr("Buffers:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(ktr("Total physical:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(ktr("Used by kernel:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(ktr("Swap avail:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(ktr("Swap free:"), mem_detail_box);
-    l_mem_details[i++] = new QLabel(ktr("Total virtual:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(i18n("Active:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(i18n("Inactive:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(i18n("Wired:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(i18n("Cache:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(i18n("Buffers:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(i18n("Total physical:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(i18n("Used by kernel:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(i18n("Swap avail:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(i18n("Swap free:"), mem_detail_box);
+    l_mem_details[i++] = new QLabel(i18n("Total virtual:"), mem_detail_box);
 
-    for(int i = 0; i < MEM_END; i++) {
+    for(i = 0; i < MEM_END; i++) {
         mem_details[i] = new QLabel("XXXXXXXXX", mem_detail_box);
         mem_details[i]->adjustSize();
         mem_details[i]->setAlignment(AlignRight);
