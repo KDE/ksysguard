@@ -1,7 +1,7 @@
 [!Global!]
 IconName=ksysguard
 Comment=KDE System Guard
-Comment[af]=kde stelsel wag
+Comment[af]=Kde Stelsel Wag
 Comment[ar]=حارس النظام
 Comment[az]=KDE Sistem Cangüdəni
 Comment[bg]=Cистемен монитор на KDE
@@ -89,6 +89,7 @@ Comment[ar]=تم ايجاد تماثل
 Comment[az]=axtarılan naxış uyğundur
 Comment[bg]=търси съвпадения в образец
 Comment[bs]=pronađen uzorak za pretragu
+Comment[ca]=cerca un patró coincident
 Comment[cs]=hledat odpovídající vzor
 Comment[da]=søgemønsteret blev fundet
 Comment[de]=Übereinstimmende Suchmuster
@@ -160,8 +161,9 @@ Name[zh_CN]=传感器警报
 Name[zh_TW]=偵測器通知
 Name[zu]=uluvo_oluxwayisayo
 Comment=Sensor exceeded critical limit
-Comment[af]=sensor oorskry krities beperk
+Comment[af]=Sensor oorskry krities beperk
 Comment[bs]=Senzor je prekoračio kritičnu granicu
+Comment[ca]=EL sensor ha excedit el límit crític
 Comment[cs]=Senzor překročil kritickou hodnotu
 Comment[da]=Sensor gik ud over kritisk grænse
 Comment[de]=Sensor zeigt Überschreitung der kritischen Grenze an
