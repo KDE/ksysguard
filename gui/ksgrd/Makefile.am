@@ -1,6 +1,6 @@
 
 # set the include path for X, qt and KDE
-INCLUDES= -I$(srcdir)/.. $(all_includes)
+INCLUDES= -I$(srcdir)/../SensorDisplayLib $(all_includes)
  
 lib_LTLIBRARIES = libksgrd.la
 

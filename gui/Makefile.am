@@ -17,7 +17,7 @@ lnk_DATA = ksysguardapplet.desktop
 SUBDIRS = ksgrd SensorDisplayLib
 
 # set the include path for X, qt and KDE
-INCLUDES = $(all_includes) -ISensorDisplayLib
+INCLUDES = $(all_includes) -I$(srcdir)/SensorDisplayLib
  
 ####### This part is very ksysguard specific
 # you can add here more. This one gets installed 
@@ -29,8 +29,7 @@ ksysguard_SOURCES = \
 	WorkSheet.cc \
 	WorkSheetSettings.ui \
 	Workspace.cc \
-	ksysguard.cc \
-	ksysguard_skel.cc
+	ksysguard.cc ksysguard.skel
 
 ksysguard_LDADD = \
 	ksgrd/libksgrd.la \
