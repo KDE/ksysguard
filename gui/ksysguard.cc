@@ -117,17 +117,13 @@ TopLevel::TopLevel(const char *name)
 	KStdAction::cut(ws, SLOT(cut()), actionCollection());
 	KStdAction::copy(ws, SLOT(copy()), actionCollection());
 	KStdAction::paste(ws, SLOT(paste()), actionCollection());
-	(void) new KAction(i18n("Configure &Worksheet..."), "configure", 0, ws,
+	(void) new KAction(i18n("&Work Sheet Properties..."), "configure", 0, ws,
 					   SLOT(configure()), actionCollection(),
 					   "configure_sheet");
-	toolbarTog = KStdAction::showToolbar(this, SLOT(toggleMainToolBar()),
-										 actionCollection(), "showtoolbar");
+	toolbarTog = KStdAction::showToolbar(this, SLOT(toggleMainToolBar()), actionCollection());
 	toolbarTog->setChecked(false);
-	statusBarTog = KStdAction::showStatusbar(this, SLOT(showStatusBar()),
-											 actionCollection(),
-											 "showstatusbar");
-	KStdAction::configureToolbars(this, SLOT(editToolbars()),
-								  actionCollection());
+	statusBarTog = KStdAction::showStatusbar(this, SLOT(showStatusBar()), actionCollection());
+	KStdAction::configureToolbars(this, SLOT(editToolbars()), actionCollection());
 	statusBarTog->setChecked(false);
 	(void) new KAction(i18n("Configure &Style..."), "colorize", 0, this,
 					   SLOT(editStyle()), actionCollection(),

@@ -154,6 +154,7 @@ Workspace::newWorkSheet()
 										 wss->columns->text().toUInt(),
 										 wss->interval->text().toUInt());
 		Q_CHECK_PTR(sheet);
+		sheet->setName(wss->sheetName->text());
 		insertTab(sheet, wss->sheetName->text());
 		sheets.append(sheet);
 		showPage(sheet);
@@ -368,6 +369,7 @@ Workspace::restoreWorkSheet(const QString& fileName, const QString& newName)
 
 	WorkSheet* sheet = new WorkSheet(this);
 	Q_CHECK_PTR(sheet);
+	sheet->setName(baseName);
 	insertTab(sheet, baseName);
 	showPage(sheet);
 	if (!sheet->load(fileName))

@@ -21,7 +21,7 @@ INCLUDES = $(all_includes)
  
 ####### This part is very ksysguard specific
 # you can add here more. This one gets installed 
-bin_PROGRAMS = ksysguard
+bin_PROGRAMS = ksysguard kpm
 
 # Which sources should be compiled for ksysguard.
 ksysguard_SOURCES = \
@@ -54,6 +54,8 @@ ksysguard_SOURCES = \
 
 ksysguard_LDADD   = ksgrd/libksgrd.la $(LIB_KDEUI) $(LIB_KFILE)
 ksysguard_LDFLAGS = $(all_libraries) $(KDE_RPATH)
+
+kpm_SOURCES = kpm.c
 
 data_DATA = ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml
 

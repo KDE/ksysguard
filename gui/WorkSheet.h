@@ -75,6 +75,11 @@ public:
 		return modified;
 	}
 
+	void setName(const QString& _name)
+	{
+		name = _name;
+	}
+
 	KSGRD::SensorDisplay* addDisplay(const QString& hostname,
 							  const QString& monitor,
 							  const QString& sensorType,
@@ -114,6 +119,7 @@ private:
 	QString currentDisplayAsXML();
 
 	QString fileName;
+	QString name;
 	bool modified;
 	uint rows;
 	uint columns;

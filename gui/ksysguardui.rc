@@ -9,8 +9,6 @@
     <Action name="configure_sheet"/>
   </Menu>
   <Menu name="settings"><text>&amp;Settings</text>
-    <Action name="showtoolbar"/>
-    <Action name="showstatusbar"/>
     <Action name="configure_style"/>
   </Menu>
 </MenuBar>

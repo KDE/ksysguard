@@ -375,6 +375,7 @@ WorkSheet::settings()
 	 * so we don't have to display the display frame. */
 	wss->titleFrame->hide();
 	wss->resize(wss->sizeHint());
+	wss->Properties->setTitle(name);
 
 	wss->rows->setValue(rows);	
 	wss->columns->setValue(columns);

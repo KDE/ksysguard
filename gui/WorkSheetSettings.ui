@@ -19,7 +19,7 @@
     </property>
     <property stdset="1">
         <name>caption</name>
-        <string>Work Sheet Settings</string>
+        <string>Work Sheet Properties</string>
     </property>
     <grid>
         <property stdset="1">
