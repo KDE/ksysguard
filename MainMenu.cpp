@@ -25,98 +25,109 @@
 // $Id$
 
 #include <assert.h>
-
 #include <qstring.h>
 
 #include <kapp.h>
-
-#include "version.h"
 #include <khelpmenu.h>
 #include <klocale.h>
 #include <kstdaccel.h>
-#include "MainMenu.moc"
 
-extern KApplication* Kapp;
+#include "version.h"
+#include "MainMenu.moc"
 
 MainMenu* MainMenuBar = 0;
 
-MainMenu::MainMenu(QWidget* parent, const char* name) :
-	KMenuBar(parent, name)
+MainMenu::MainMenu(QWidget* parent, const char* name) 
+  :KMenuBar(parent, name)
 {
-	KStdAccel accel;
+  KStdAccel accel;
 
-	assert(MainMenuBar == 0);
-	MainMenuBar = this;
+  assert(MainMenuBar == 0);
+  MainMenuBar = this;
 
-	// 'File' submenu
-	file = new QPopupMenu();
-	file->insertItem(i18n("&Quit"), this, SLOT(slotQuit()), accel.quit());
-	connect(file, SIGNAL(activated(int)), this, SLOT(handler(int)));
-
-	// 'Help' submenu
-	QString about;
-	about = i18n(""
-	  "KDE Task Manager (KTop) Version %1\n\n"
-	   "Copyright:\n"
-	   "1996 : A. Sanda <alex@darkstar.ping.at>\n"
-	   "1997 : Ralf Mueller <ralf@bj-ig.de>\n"
-	   "1997-98 : Bernd Johannes Wuebben <wuebben@kde.org>\n"
-	   "1998 : Nicolas Leclercq <nicknet@planete.net>\n"
-	   "1999 : Chris Schlaeger <cs@kde.org>\n")
-	  .arg(KTOP_VERSION);
-
-#warning We have a memory leak here. This object must be removed in the 
-#warning destructor. Espen Sand
+  // 'File' submenu
+  file = new QPopupMenu();
+  file->insertItem(i18n("&Quit"), this, SLOT(slotQuit()), accel.quit());
+  connect(file, SIGNAL(activated(int)), this, SLOT(handler(int)));
   
-	KHelpMenu *mHelpMenu = new KHelpMenu( this, about );
-	help = mHelpMenu->menu();
+  // 'Help' submenu
+  QString about;
+  about = i18n(""
+    "KDE Task Manager (KTop) Version %1\n\n"
+    "Copyright:\n"
+    "1996 : A. Sanda <alex@darkstar.ping.at>\n"
+    "1997 : Ralf Mueller <ralf@bj-ig.de>\n"
+    "1997-98 : Bernd Johannes Wuebben <wuebben@kde.org>\n"
+    "1998 : Nicolas Leclercq <nicknet@planete.net>\n"
+    "1999 : Chris Schlaeger <cs@kde.org>\n")
+    .arg(KTOP_VERSION);
 
-	// 'Refresh Rate' submenu
-	refresh = new QPopupMenu();
-	refresh->setCheckable(true);
-	refresh->insertItem(i18n("Manual Refresh"), MENU_ID_REFRESH_MANUAL, -1);
-	refresh->insertItem(i18n("Slow Refresh"), MENU_ID_REFRESH_SLOW, -1);
-	refresh->insertItem(i18n("Medium Refresh"), MENU_ID_REFRESH_MEDIUM, -1);
-	refresh->insertItem(i18n("Fast Refresh"), MENU_ID_REFRESH_FAST, -1);
-	connect(refresh, SIGNAL(activated(int)), this, SLOT(handler(int)));
+  mHelpMenu = new KHelpMenu( this, about );
 
-	// 'Process' submenu
-	process = new ProcessMenu();
-	process->setItemEnabled(MENU_ID_MENU_PROCESS, false);
-	connect(process, SIGNAL(requestUpdate(void)),
-			this, SLOT(requestUpdateSlot(void)));
+  // 'Refresh Rate' submenu
+  refresh = new QPopupMenu();
+  refresh->setCheckable(true);
+  refresh->insertItem(i18n("Manual Refresh"), MENU_ID_REFRESH_MANUAL, -1);
+  refresh->insertItem(i18n("Slow Refresh"), MENU_ID_REFRESH_SLOW, -1);
+  refresh->insertItem(i18n("Medium Refresh"), MENU_ID_REFRESH_MEDIUM, -1);
+  refresh->insertItem(i18n("Fast Refresh"), MENU_ID_REFRESH_FAST, -1);
+  connect(refresh, SIGNAL(activated(int)), this, SLOT(handler(int)));
 
-	// register submenues
-	setLineWidth(1);
-	insertItem(i18n("&File"), file, 2, -1);
-	insertItem(i18n("&Refresh Rate"), refresh, MENU_ID_MENU_REFRESH, -1);
-	insertItem(i18n("&Process"), process, MENU_ID_MENU_PROCESS, -1);
+  // 'Process' submenu
+  process = new ProcessMenu();
+  process->setItemEnabled(MENU_ID_MENU_PROCESS, false);
+  connect(process, SIGNAL(requestUpdate(void)),
+	  this, SLOT(requestUpdateSlot(void)));
 
-	insertSeparator(-1);
-	insertItem(i18n("&Help"), help, 2, -1);
+  // register submenues
+  setLineWidth(1);
+  insertItem(i18n("&File"), file, 2, -1);
+  insertItem(i18n("&Refresh Rate"), refresh, MENU_ID_MENU_REFRESH, -1);
+  insertItem(i18n("&Process"), process, MENU_ID_MENU_PROCESS, -1);
+	
+  insertSeparator(-1);
+  insertItem(i18n("&Help"), mHelpMenu->menu(), 2, -1);
 }
 
-void 
-MainMenu::handler(int id)
+
+MainMenu::~MainMenu( void )
 {
-	switch(id)
-	{
-	case MENU_ID_REFRESH_MANUAL:
-	case MENU_ID_REFRESH_SLOW:
-	case MENU_ID_REFRESH_MEDIUM:
-	case MENU_ID_REFRESH_FAST:
-		emit(setRefreshRate(id - MENU_ID_REFRESH_MANUAL));
-		break;
-
-	default:
-		break;
-	}
+  delete file;
+  delete refresh;
+  delete process;
+  delete mHelpMenu->menu(); // The menu is created only once
+  delete mHelpMenu;
 }
 
-void
-MainMenu::checkRefreshRate(int rate)
+
+
+
+void MainMenu::handler(int id)
 {
-	// uncheck old and check new rate
-	for (int i = MENU_ID_REFRESH_MANUAL; i <= MENU_ID_REFRESH_FAST; i++)
-		refresh->setItemChecked(i, rate == i - MENU_ID_REFRESH_MANUAL);
+  switch(id)
+  {
+    case MENU_ID_REFRESH_MANUAL:
+    case MENU_ID_REFRESH_SLOW:
+    case MENU_ID_REFRESH_MEDIUM:
+    case MENU_ID_REFRESH_FAST:
+      emit(setRefreshRate(id - MENU_ID_REFRESH_MANUAL));
+    break;
+
+    default:
+    break;
+  }
 }
+
+void MainMenu::checkRefreshRate(int rate)
+{
+  // uncheck old and check new rate
+  for (int i = MENU_ID_REFRESH_MANUAL; i <= MENU_ID_REFRESH_FAST; i++)
+    refresh->setItemChecked(i, rate == i - MENU_ID_REFRESH_MANUAL);
+}
+
+
+
+
+
+
+

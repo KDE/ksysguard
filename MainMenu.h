@@ -27,7 +27,9 @@
 #ifndef _MainMenu_h_
 #define _MainMenu_h_
 
+#include <khelpmenu.h>
 #include <kmenubar.h>
+class KHelpMenu;
 
 #include "ProcessMenu.h"
 
@@ -54,13 +56,7 @@ public:
 	};
     
 	MainMenu(QWidget* parent = 0, const char* name = 0);
-	~MainMenu()
-	{
-		delete file;
-		delete refresh;
-		delete process;
-		delete help;
-	}
+	~MainMenu( void );
 
 public slots:
 	void checkRefreshRate(int);
@@ -94,7 +90,7 @@ private:
 	QPopupMenu* file;
 	QPopupMenu* refresh;
 	ProcessMenu* process;
-	QPopupMenu* help;
+	KHelpMenu *mHelpMenu;
 } ;
 
 extern MainMenu* MainMenuBar;
