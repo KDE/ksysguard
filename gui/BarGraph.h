@@ -60,6 +60,15 @@ public:
 
 	void changeRange(long min, long max);
 
+	void setSensorOk(bool ok)
+	{
+		if (ok != sensorOk)
+		{
+			sensorOk = ok;
+			update();
+		}
+	}
+
 protected:
 	virtual void paintEvent(QPaintEvent*);
 
@@ -71,6 +80,9 @@ private:
 	QArray<long> samples;
 	QStringList footers;
 	int bars;
+
+	QPixmap errorIcon;
+	bool sensorOk;
 } ;
 
 #endif

@@ -1,5 +1,6 @@
 <!DOCTYPE UI><UI>
 <class>MultiMeterSettings</class>
+<author>Chris Schlaeger &lt;cs@kde.org&gt;</author>
 <include location="global">klocale.h</include>
 <widget>
     <class>QDialog</class>
@@ -58,6 +59,10 @@
                         <name>text</name>
                         <string>Enable Alarm</string>
                     </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enable the minimum value alarm.</string>
+                    </property>
                 </widget>
                 <spacer row="0"  column="1" >
                     <property>
@@ -104,6 +109,10 @@
                     <property stdset="1">
                         <name>enabled</name>
                         <bool>false</bool>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>If the sensor falls below this value a warning is displayed.</string>
                     </property>
                 </widget>
                 <spacer row="1"  column="1" >
@@ -158,6 +167,10 @@
                         <name>text</name>
                         <string>Enable Alarm</string>
                     </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enable the maximum value alarm.</string>
+                    </property>
                 </widget>
                 <spacer row="0"  column="1" >
                     <property>
@@ -204,6 +217,10 @@
                     <property stdset="1">
                         <name>enabled</name>
                         <bool>false</bool>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>If the sensor exceeds this value a warning is displayed.</string>
                     </property>
                 </widget>
                 <spacer row="1"  column="1" >
@@ -336,6 +353,10 @@
                         <name>name</name>
                         <cstring>title</cstring>
                     </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enter the title of the display here.</string>
+                    </property>
                 </widget>
                 <widget>
                     <class>QCheckBox</class>
@@ -346,6 +367,10 @@
                     <property stdset="1">
                         <name>text</name>
                         <string>Show Unit</string>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enable this to append the unit to the title of the display.</string>
                     </property>
                 </widget>
             </hbox>

@@ -76,9 +76,9 @@ DancingBars::sensorError(bool err)
 	if (err == sensorOk)
 	{
 		// this happens only when the sensorOk status needs to be changed.
-		meterFrame->setEnabled(!err);
 		sensorOk = !err;
 	}
+	plotter->setSensorOk(sensorOk);
 }
 
 void
@@ -153,12 +153,18 @@ DancingBars::sizeHint(void)
 void
 DancingBars::answerReceived(int id, const QString& answer)
 {
+	/* We received something, so the sensor is probably ok. */
+	sensorError(false);
+
 	if (id < 5)
 	{
 		sampleBuf[id] = answer.toLong();
 		if (flags & (1 << id))
+		{
 			kdDebug() << "ERROR: DancingBars lost sample (" << flags
 					  << ", " << bars << ")" << endl;
+			sensorError(true);
+		}
 		flags |= 1 << id;
 
 		if (flags == (uint) ((1 << bars) - 1))

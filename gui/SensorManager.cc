@@ -69,6 +69,8 @@ SensorManager::engage(const QString& hostname, const QString& shell,
 			return (FALSE);
 		}
 		sensors.insert(hostname, daemon);
+		connect(daemon, SIGNAL(reconfigure(const SensorAgent*)),
+				this, SLOT(reconfigure(const SensorAgent*)));
 		emit update();
 		return (TRUE);
 	}
@@ -138,7 +140,7 @@ SensorManager::hostLost(const SensorAgent* sensor)
 void
 SensorManager::reconfigure(const SensorAgent*)
 {
-	// TODO: not yet implemented.
+	emit(update());
 }
 
 bool

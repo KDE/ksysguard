@@ -1,5 +1,7 @@
 <!DOCTYPE UI><UI>
 <class>FancyPlotterSettings</class>
+<author>Chris Schlaeger &lt;cs@kde.org&gt;</author>
+<include location="global">locale.h</include>
 <widget>
     <class>QDialog</class>
     <property stdset="1">
@@ -142,6 +144,10 @@
                 <name>name</name>
                 <cstring>title</cstring>
             </property>
+            <property>
+                <name>whatsThis</name>
+                <string>Enter the title of the display here.</string>
+            </property>
         </widget>
         <widget row="1"  column="2" >
             <class>QLineEdit</class>
@@ -156,6 +162,10 @@
             <property>
                 <name>hAlign</name>
             </property>
+            <property>
+                <name>whatsThis</name>
+                <string>Enter the minimum value for the display here. If both values are 0 automatic range detection is enabled.</string>
+            </property>
         </widget>
         <widget row="2"  column="2" >
             <class>QLineEdit</class>
@@ -169,6 +179,10 @@
             </property>
             <property>
                 <name>hAlign</name>
+            </property>
+            <property>
+                <name>whatsThis</name>
+                <string>Enter the maximum value for the display here. If both values are 0 automatic range detection is enabled.</string>
             </property>
         </widget>
     </grid>

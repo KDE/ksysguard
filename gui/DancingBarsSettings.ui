@@ -13,7 +13,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>351</width>
+            <width>347</width>
             <height>171</height>
         </rect>
     </property>
@@ -58,6 +58,10 @@
                             <vsizetype>0</vsizetype>
                         </sizepolicy>
                     </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>You can change the label on the display frame here.</string>
+                    </property>
                 </widget>
                 <widget row="1"  column="0"  rowspan="1"  colspan="2" >
                     <class>QLabel</class>
@@ -98,6 +102,10 @@
                         <name>maxValue</name>
                         <number>999999999</number>
                     </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enter the maximum value the bars can reach.</string>
+                    </property>
                 </widget>
             </grid>
         </widget>
@@ -137,6 +145,10 @@
                         <name>text</name>
                         <string>Enable Alarm above</string>
                     </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Check this box to enable the color alarm.</string>
+                    </property>
                 </widget>
                 <widget row="0"  column="3" >
                     <class>QSpinBox</class>
@@ -154,6 +166,10 @@
                     <property stdset="1">
                         <name>maxValue</name>
                         <number>999999999</number>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>If a bar exceeds the value you enter here, it is displayed in a different color to alert you.</string>
                     </property>
                 </widget>
             </grid>

@@ -78,6 +78,8 @@ main(int argc, const char* argv[])
 	while (!dispatcherReady())
 		;
 
+	ReconfigureFlag = 0;
+
 	printf("ksysguardd %s  (c) 1999, 2000 Chris Schlaeger <cs@kde.org>\n"
 		   "This program is part of the KDE Project and licensed under\n"
 		   "the GNU GPL version 2. See www.kde.org for details!\n"

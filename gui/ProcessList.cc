@@ -74,10 +74,6 @@ static const char* floatKey(const char* text);
 static const char*
 intKey(const char* text)
 {
-	// TODO: For some yet unknown reason text is sometimes 0.
-	if (!text)
-		return (0);
-
 	int val;
 	sscanf(text, "%d", &val);
 	static char key[32];
@@ -89,10 +85,6 @@ intKey(const char* text)
 static const char*
 timeKey(const char* text)
 {
-	// TODO: For some yet unknown reason text is sometimes 0.
-	if (!text)
-		return (0);
-
 	int h, m;
 	sscanf(text, "%d:%d", &h, &m);
 	int t = h * 60 + m;
@@ -105,10 +97,6 @@ timeKey(const char* text)
 static const char*
 floatKey(const char* text)
 {
-	// TODO: For some yet unknown reason text is sometimes 0.
-	if (!text)
-		return (0);
-
 	double percent;
 	sscanf(text, "%lf", &percent);
 
@@ -186,6 +174,8 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	// load the icons we display with the processes
 	icons = new KIconLoader();
 	CHECK_PTR(icons);
+	errorIcon = QIconSet(icons->loadIcon("connect_creating", KIcon::Desktop,
+										 KIcon::SizeSmall));
 
 	setItemMargin(1);
 	setAllColumnsShowFocus(TRUE);
@@ -204,6 +194,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	connect(header(), SIGNAL(indexChange(int, int, int)),
 			this, SLOT(indexChanged(int, int, int)));
 
+	sensorOk = false;
 	modified = false;
 }
 
@@ -232,6 +223,7 @@ ProcessList::update(const QString& list)
 			for (uint j = 0; j < line->numberOfTokens(); j++)
 				l += (*line)[i] + "|";
 			kdDebug() << "Incomplete ps line:" << l << endl;
+			setSensorOk(false);
 			return (FALSE);
 		}
 		else
@@ -272,6 +264,21 @@ ProcessList::setTreeView(bool tv)
 		 * So we shrink it to 1 pixel. The next update will resize it again
 		 * appropriately. */
 		setColumnWidth(0, savedWidth[0]);
+	}
+}
+
+void
+ProcessList::setSensorOk(bool ok)
+{
+	if (ok != sensorOk)
+	{
+		sensorOk = ok;
+		if (columns() == 0)
+			QListView::addColumn(QString::null);
+		if (sensorOk)
+			setColumnText(0, QIconSet(), columnText(0));
+		else
+			setColumnText(0, errorIcon, columnText(0));
 	}
 }
 
@@ -649,6 +656,8 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 	processPM->insertItem(i18n("Select all processes"), 1);
 	processPM->insertItem(i18n("Unselect all processes"), 2);
 
+	/* TODO: We need to check if the back-end actually supports the kill
+	 * command. */
 	QPopupMenu* signalPM = new QPopupMenu(processPM);
 	if (lvi->isSelected())
 	{

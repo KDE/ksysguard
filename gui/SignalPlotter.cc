@@ -28,6 +28,7 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 
+#include <kiconloader.h>
 #include <kdebug.h>
 
 #include "SignalPlotter.moc"
@@ -52,6 +53,11 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name, double min,
 	setMinimumSize(16, 16);
 	setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
 							  QSizePolicy::Expanding, FALSE));
+
+	KIconLoader iconLoader;
+	errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop,
+									KIcon::SizeSmall);
+	sensorOk = false;
 }
 
 SignalPlotter::~SignalPlotter()
@@ -113,7 +119,7 @@ SignalPlotter::addSample(double s0, double s1, double s2, double s3, double s4)
 	if (autoRange && recalc)
 		calcRange();
 
-	repaint();
+	update();
 }
 
 void
@@ -301,6 +307,9 @@ SignalPlotter::paintEvent(QPaintEvent*)
 		val = QString("%1").arg(minValue);
 		p.drawText(6, height() - 2, val);
 	}
+
+	if (!sensorOk)
+		p.drawPixmap(2, 2, errorIcon);
 
 	p.end();
 	bitBlt(this, 0, 0, &pm);

@@ -91,6 +91,9 @@ public:
 		cmd = command;
 	}
 
+signals:
+	void reconfigure(const SensorAgent*);
+
 private slots:
 	void msgSent(KProcess*);
 	void msgRcvd(KProcess*, char* buffer, int buflen);
@@ -112,6 +115,7 @@ private:
 	QList<SensorRequest> inputFIFO;
 	QList<SensorRequest> processingFIFO;
 	QString answerBuffer;
+	QString errorBuffer;
 } ;
 	
 #endif

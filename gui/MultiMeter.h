@@ -29,6 +29,7 @@
 
 class QGroupBox;
 class QLCDNumber;
+class QLabel;
 class MultiMeterSettings;
 
 class MultiMeter : public SensorDisplay
@@ -67,6 +68,7 @@ private:
 
 	QGroupBox* frame;
 	QLCDNumber* lcd;
+	QLabel* errorLabel;
 
 	QString title;
 	QString unit;

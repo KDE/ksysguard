@@ -51,7 +51,6 @@ public:
 	bool disengage(const QString& hostname);
 	bool resynchronize(const QString& hostname);
 	void hostLost(const SensorAgent* sensor);
-	void reconfigure(const SensorAgent* senros);
 
 	bool sendRequest(const QString& hostname, const QString& req,
 					 SensorClient* client, int id = 0);
@@ -66,6 +65,9 @@ public:
 		else
 			return (u);
 	}
+
+public slots:
+	void reconfigure(const SensorAgent* sensor);
 
 signals:
 	void update();

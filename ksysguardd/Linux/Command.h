@@ -27,17 +27,25 @@
 
 typedef void (*cmdExecutor)(const char*);
 
+extern int ReconfigureFlag;
+
 void initCommand(void);
 
 void exitCommand(void);
 
 void registerCommand(const char* command, cmdExecutor ex);
 
+void removeCommand(const char* command);
+
 void registerMonitor(const char* command, const char* type, cmdExecutor ex,
 					 cmdExecutor iq);
+
+void removeMonitor(const char* command);
 
 void executeCommand(const char* command);
 
 void printMonitors(const char* cmd);
+
+void printTest(const char* cmd);
 
 #endif

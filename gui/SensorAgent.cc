@@ -177,8 +177,16 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 					<< "ERROR: No client registered for request!" << endl;
 				return;
 			}
-			// Notify client of newly arrived answer.
-			req->client->answerReceived(req->id, answerBuffer.left(end));
+			if (answerBuffer.left(end) == "UNKNOWN COMMAND")
+			{
+				// Notify client of newly arrived answer.
+				req->client->sensorLost();
+			}
+			else
+			{
+				// Notify client of newly arrived answer.
+				req->client->answerReceived(req->id, answerBuffer.left(end));
+			}
 			delete req;
 		}
 
@@ -190,9 +198,26 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 void
 SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 {
-	QString errorBuffer = QString::fromLocal8Bit(buffer, buflen);
-	KMessageBox::error(0, QString(i18n("Message from %1:\n%2").arg(host)
-								  .arg(errorBuffer)));
+	QString aux = QString::fromLocal8Bit(buffer, buflen);
+	errorBuffer += aux;
+
+	int start = 0;
+	int end;
+	while ((end = errorBuffer.find("\n", start)) > 0)
+	{
+		if (errorBuffer.mid(start, end - start) == "RECONFIGURE")
+		{
+			emit reconfigure(this);
+			errorBuffer.remove(start, end - start + 1);
+		}
+	}
+
+	if (!errorBuffer.isEmpty())
+	{
+		KMessageBox::error(0, QString(i18n("Message from %1:\n%2")
+									  .arg(host).arg(errorBuffer)));
+		errorBuffer = "";
+	}
 }
 
 void

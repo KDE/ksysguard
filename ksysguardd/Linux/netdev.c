@@ -43,13 +43,14 @@ typedef struct
 
 #define NETDEVBUFSIZE 1024
 static char NetDevBuf[NETDEVBUFSIZE];
+static int NetDevCnt = 0;
 static int Dirty = 0;
 
 #define MAXNETDEVS 64
 static NetDevInfo NetDevs[MAXNETDEVS];
 
-static void
-processNetDev(void)
+static int
+processNetDev_(void)
 {
 	int i;
 	char format[32];
@@ -87,11 +88,11 @@ processNetDev(void)
 					   "%lu %lu %*d %*d %*d %*d %*d %*d",
 					   &rxBytes, &rxPacks, &txBytes, &txPacks);
 
-				if (strcmp(NetDevs[i].name, tag) != 0)
+				if (i >= NetDevCnt || strcmp(NetDevs[i].name, tag) != 0)
 				{
-					strcpy(NetDevs[i].name, tag);
-					NetDevs[i].rxBytes = NetDevs[i].txBytes = 0;
-					/* TODO: Implement sensor structure update */
+					/* The network device configuration has changed. We
+					 * need to reconfigure the netdev module. */
+					return (-1);
 				}
 				else
 				{
@@ -103,8 +104,30 @@ processNetDev(void)
 			}
 		}
 	}
+	if (i != NetDevCnt)
+		return (-1);
 
 	Dirty = 0;
+	return (0);
+}
+
+void
+processNetDev(void)
+{
+	int i;
+
+	if (NetDevCnt == 0)
+		return;
+
+	for (i = 0; i < 5 && processNetDev_() < 0; ++i)
+	{
+		exitNetDev();
+		initNetDev();
+	}
+	/* If 5 reconfiguration attemts failed, something is very wrong and
+	 * we close the netdev module for further use. */
+	if (i == 5)
+		exitNetDev();
 }
 
 /*
@@ -157,18 +180,30 @@ initNetDev(void)
 				sscanf(pos + 1, "%ld %*d %*d %*d %*d %*d %*d %*d" 
 					   "%ld %*d %*d %*d %*d %*d %*d %*d",
 					   &NetDevs[i].OldRxBytes, &NetDevs[i].OldTxBytes);
+				NetDevCnt++;
 			}
 			NetDevs[i].rxBytes = NetDevs[i].txBytes = 0;
 		}
 	}
 
-	// Call processNetDev to elimitate initial peek values.
+	/* Call processNetDev to elimitate initial peek values. */
 	processNetDev();
 }
 
 void
 exitNetDev(void)
 {
+	int i;
+
+	for (i = 0; i < NetDevCnt; ++i)
+	{
+		char mon[128];
+		sprintf(mon, "network/%s/recBytes", NetDevs[i].name);
+		removeMonitor(mon);
+		sprintf(mon, "network/%s/sentBytes", NetDevs[i].name);
+		removeMonitor(mon);
+	}
+	NetDevCnt = 0;
 }
 
 int

@@ -29,6 +29,8 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 
+#include <kiconloader.h>
+
 #include "BarGraph.moc"
 
 BarGraph::BarGraph(QWidget* parent, const char* name, int min, int max)
@@ -44,6 +46,11 @@ BarGraph::BarGraph(QWidget* parent, const char* name, int min, int max)
 	setMinimumSize(16, 16);
 	setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
 							  QSizePolicy::Expanding, FALSE));
+
+	KIconLoader iconLoader;
+	errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop,
+									KIcon::SizeSmall);
+	sensorOk = false;
 }
 
 BarGraph::~BarGraph()
@@ -63,7 +70,7 @@ void
 BarGraph::updateSamples(const QArray<long>& newSamples)
 {
 	samples = newSamples;
-	repaint();
+	update();
 }
 
 void
@@ -130,6 +137,9 @@ BarGraph::paintEvent(QPaintEvent*)
 				   footers[b]);
 	}
 	
+	if (!sensorOk)
+		p.drawPixmap(2, 2, errorIcon);
+
 	p.end();
 	bitBlt(this, 0, 0, &pm);
 }

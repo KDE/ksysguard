@@ -108,6 +108,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	connect(bRefresh, SIGNAL(clicked()), this, SLOT(updateList()));
 
 	// Create the 'Kill' button.
+	// TODO: we need to check first if the backend supports the 'kill' command.
 	bKill = new QPushButton(i18n("&Kill"), this, "bKill");
 	CHECK_PTR(bKill);
 	bKill->setMinimumSize(bKill->sizeHint());
@@ -212,6 +213,9 @@ ProcessController::killProcess()
 void
 ProcessController::answerReceived(int id, const QString& answer)
 {
+	/* We received something, so the sensor is probably ok. */
+	sensorError(false);
+
 	switch (id)
 	{
 	case 1:
@@ -223,6 +227,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 		{
 			kdDebug () << "ProcessController::answerReceived(1)"
 				  "wrong number of lines [" <<  answer << "]" << endl;
+			sensorError(true);
 			return;
 		}
 		SensorTokenizer headers(lines[0], '\t');
@@ -250,7 +255,10 @@ ProcessController::answerReceived(int id, const QString& answer)
 		 * information is corrupted. As a workaround we simply restart the
 		 * connection. The corruption seems to affect only the ps output. */
 		if (!pList->update(answer))
+		{
+			sensorError(true);
 			SensorMgr->resynchronize(*hostNames.at(0));
+		}
 		break;
 	case 3:
 		// result of kill operation, we currently don't care about it.
@@ -263,14 +271,10 @@ ProcessController::sensorError(bool err)
 {
 	if (err == sensorOk)
 	{
-		/* This happens only when the sensorOk status needs to be changed.
-		 * In case the sensor is not reachable the frame is not displayed.
-		 * I don't like this too much, but I couldn't think of a better
-		 * quick hack solution. Disabling the frame was not a good idea
-		 * since it was impossible then to remove the broken displays. */
-		box->setLineWidth((int) !err);
+		/* This happens only when the sensorOk status needs to be changed. */
 		sensorOk = !err;
 	}
+	pList->setSensorOk(sensorOk);
 }
 
 bool

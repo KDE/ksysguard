@@ -92,9 +92,9 @@ FancyPlotter::sensorError(bool err)
 	if (err == sensorOk)
 	{
 		// this happens only when the sensorOk status needs to be changed.
-		meterFrame->setEnabled(!err);
 		sensorOk = !err;
 	}
+	plotter->setSensorOk(sensorOk);
 }
 
 void
@@ -144,11 +144,17 @@ FancyPlotter::sizeHint(void)
 void
 FancyPlotter::answerReceived(int id, const QString& answer)
 {
+	/* We received something, so the sensor is probably ok. */
+	sensorError(false);
+
 	if (id < 5)
 	{
 		sampleBuf[id] = answer.toDouble();
 		if (flags & (1 << id))
+		{
 			qDebug("ERROR: FancyPlotter lost sample (%x, %d)", flags, beams);
+			sensorError(true);
+		}
 		flags |= 1 << id;
 
 		if (flags == (uint) ((1 << beams) - 1))

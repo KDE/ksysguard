@@ -33,9 +33,12 @@
 #include <qspinbox.h>
 #include <qcheckbox.h>
 #include <qpushbutton.h>
+#include <qlabel.h>
 
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kiconloader.h>
+#include <kdebug.h>
 
 #include "MultiMeterSettings.h"
 #include "SensorManager.h"
@@ -64,12 +67,21 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 	lcd->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
 								   QSizePolicy::Expanding, FALSE));
 
+	KIconLoader iconLoader;
+	QPixmap errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop,
+											KIcon::SizeSmall);
+	errorLabel = new QLabel(lcd);
+	errorLabel->setPixmap(errorIcon);
+	errorLabel->resize(errorIcon.size());
+	errorLabel->move(2, 2);
+
 	/* All RMB clicks to the lcd widget will be handled by 
 	 * SensorDisplay::eventFilter. */
 	lcd->installEventFilter(this);
 
 	setMinimumSize(50, 25);
 	modified = FALSE;
+
 }
 
 bool
@@ -89,6 +101,9 @@ MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
 void
 MultiMeter::answerReceived(int id, const QString& answer)
 {
+	/* We received something, so the sensor is probably ok. */
+	sensorError(false);
+
 	if (id == 100)
 	{
 		SensorIntegerInfo info(answer);
@@ -231,7 +246,10 @@ MultiMeter::sensorError(bool err)
 	if (err == sensorOk)
 	{
 		// this happens only when the sensorOk status needs to be changed.
-		frame->setEnabled(!err);
 		sensorOk = !err;
 	}
+	if (err)
+		errorLabel->show();
+	else
+		errorLabel->hide();
 }

@@ -11,14 +11,14 @@ bin_PROGRAMS = 	ksysguard
 
 # Which sources should be compiled for ksysguard.
 ksysguard_SOURCES = ksysguard.cc ksysguard.skel SensorAgent.cc \
-	SensorManager.cc HostConnector.cc WorkSheetSetup.cc \
+	SensorManager.cc WorkSheetSetup.cc \
 	ProcessMenu.cc ReniceDlg.cc WorkSheet.cc Workspace.cc \
 	SensorBrowser.cc SensorDisplay.cc \
 	FancyPlotter.cc SignalPlotter.cc MultiMeter.cc \
 	DancingBars.cc BarGraph.cc \
 	ProcessController.cc ProcessList.cc \
 	DancingBarsSettings.ui MultiMeterSettings.ui \
-	FancyPlotterSettings.ui
+	FancyPlotterSettings.ui HostConnector.ui
 
 # the library search path
 ksysguard_LDFLAGS = $(all_libraries) $(KDE_RPATH)

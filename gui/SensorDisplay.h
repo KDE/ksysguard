@@ -85,6 +85,11 @@ public:
 
 	virtual void settings() { }
 
+	virtual void sensorLost()
+	{
+		sensorError(true);
+	}
+
 	virtual void sensorError(bool mode);
 
 	virtual bool loadSensor(QDomElement& domElem);

@@ -27,6 +27,7 @@
 #include <qevent.h>
 #include <qdragobject.h>
 #include <qtooltip.h>
+#include <qwhatsthis.h>
 
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -113,6 +114,14 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 
 	// The sensor browser can be completely hidden.
 	setMinimumWidth(1);
+
+	QWhatsThis::add(this, i18n(
+		"The sensor browser lists the connected hosts and the sensors "
+		"that they provide. Click and drag sensors into drop zones "
+		"of a work sheet. A display will appear the visualizes the "
+		"values provided by the sensor. Some sensor displays can "
+		"display values of multiple sensors. Simply drag other "
+		"sensors onto the display to add more sensors."));
 }
 
 SensorBrowser::~SensorBrowser()

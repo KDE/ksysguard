@@ -131,6 +131,8 @@ public:
 		return (sortFunc);
 	}
 
+	void setSensorOk(bool ok);
+
 	bool load(QDomElement& el);
 	bool save(QDomDocument& doc, QDomElement& display);
 
@@ -252,6 +254,9 @@ private:
 	int currColumn;
 	bool treeViewEnabled;
 	bool openAll;
+	bool sensorOk;
+
+	QIconSet errorIcon;
 
 	/* The following lists are primarily used to store table specs between
 	 * load() and the actual table creation in addColumn(). */

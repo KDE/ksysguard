@@ -23,9 +23,11 @@
 */
 
 #include <qpopupmenu.h>
+#include <qwhatsthis.h>
 
 #include <kapp.h>
 #include <klocale.h>
+#include <kiconloader.h>
 
 #include "SensorDisplay.h"
 #include "SensorDisplay.moc"
@@ -37,7 +39,15 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 	// default interval is 2 seconds.
 	timerInterval = 2000;
 	timerId = NONE;
+	timerOn();
 	sensorOk = TRUE;
+
+	QWhatsThis::add(this, i18n(
+		"This is a sensor display. To customize a sensor display click "
+		"and hold the right mouse button on either the frame or the "
+		"display box and select the 'Properties' entry from the popup "
+		"menu. Select 'Remove' to delete the display from the work "
+		"sheet."));
 }
 
 SensorDisplay::~SensorDisplay()
@@ -99,8 +109,9 @@ void
 SensorDisplay::sendRequest(const QString& hostName, const QString& cmd,
 						   int id)
 {
-	sensorError(!SensorMgr->sendRequest(hostName, cmd,
-										(SensorClient*) this, id));
+	if (!SensorMgr->sendRequest(hostName, cmd,
+								(SensorClient*) this, id))
+		sensorError(true);
 }
 
 void

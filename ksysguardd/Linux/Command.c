@@ -54,6 +54,8 @@ _Command(void* v)
 ================================ public part =================================
 */
 
+int ReconfigureFlag = 0;
+
 void
 initCommand(void)
 {
@@ -62,6 +64,7 @@ initCommand(void)
 	sigaddset(&SignalSet, SIGALRM);
 
 	registerCommand("monitors", printMonitors);
+	registerCommand("test", printTest);
 }
 
 void
@@ -80,6 +83,24 @@ registerCommand(const char* command, cmdExecutor ex)
 	cmd->ex = ex;
 	cmd->isMonitor = 0;
 	push_ctnr(CommandList, cmd);
+	ReconfigureFlag = 1;
+}
+
+void
+removeCommand(const char* command)
+{
+	int i;
+
+	for (i = 0; i < level_ctnr(CommandList); i++)
+	{
+		Command* cmd = (Command*) get_ctnr(CommandList, i);
+		if (strcmp(cmd->command, command) == 0)
+		{
+			remove_ctnr(CommandList, i);
+			free(cmd);
+		}
+	}
+	ReconfigureFlag = 1;
 }
 
 void
@@ -113,6 +134,19 @@ registerMonitor(const char* command, const char* type, cmdExecutor ex,
 	push_ctnr(CommandList, cmd);
 }
 
+void
+removeMonitor(const char* command)
+{
+	char* buf;
+
+	removeCommand(command);
+	buf = (char*) malloc(strlen(command) + 2);
+	strcpy(buf, command);
+	strcat(buf, "?");
+	removeCommand(buf);
+	free(buf);
+}
+
 void 
 executeCommand(const char* command)
 {
@@ -136,14 +170,21 @@ executeCommand(const char* command)
 			/* re-enable timer interrupts again. */
 			sigprocmask(SIG_UNBLOCK, &SignalSet, 0);
 
+			if (ReconfigureFlag)
+			{
+				ReconfigureFlag = 0;
+				fprintf(stderr, "RECONFIGURE\n");
+			}
+
 			return;
 		}
 	}
-	printf("Unkown command\n");
+
+	fprintf(stdout, "UNKNOWN COMMAND\n");
 }
 
 void
-printMonitors(const char* cmd)
+printMonitors(const char* c)
 {
 	int i;
 
@@ -154,4 +195,22 @@ printMonitors(const char* cmd)
 		if (cmd->isMonitor)
 			printf("%s\t%s\n", cmd->command, cmd->type);
 	}
+}
+
+void
+printTest(const char* c)
+{
+	int i;
+
+	for (i = 0; i < level_ctnr(CommandList); i++)
+	{
+		Command* cmd = (Command*) get_ctnr(CommandList, i);
+
+		if (strcmp(cmd->command, c + strlen("test ")) == 0)
+		{
+			printf("1\n");
+			return;
+		}
+	}
+	printf("0\n");
 }

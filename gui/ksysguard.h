@@ -41,6 +41,7 @@ class KToggleAction;
 class SensorAgent;
 class SensorBrowser;
 class Workspace;
+class HostConnector;
 
 class TopLevel : public KMainWindow, public SensorClient, public DCOPObject
 {
@@ -78,6 +79,7 @@ protected:
 protected slots:
 	void connectHost();
 	void disconnectHost();
+	void helpConnectHost();
 	void toggleMainToolBar();
 	void showStatusBar();
 	void editToolbars();
@@ -95,6 +97,8 @@ private:
 	Workspace* ws;
 	int timerID;
 	bool dontSaveSession;
+
+	HostConnector* hostConnector;
 };
 
 extern TopLevel* Toplevel;

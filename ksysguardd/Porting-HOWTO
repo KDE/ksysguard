@@ -4,10 +4,29 @@ directly or via a shell. The communication runs over stdin, stdout and
 stderr. ksysguard sends commands and ksysguardd answers to them. Each
 answer ends with the string "\nksysguardd> ". The set of commands that
 each ksysguardd implementation supports can be very different. There
-is only a single mandatory command and a few recommended commands.
+are only a very few mandatory command and a few recommended commands.
 
-The mandatory command are 'monitors' and 'quit'.  'monitors' retuns
-the list of available sensors. The output looks like this:
+The mandatory commands are 'monitors', 'test' and 'quit'.
+The recommended commands are:
+
+cpu/idle        integer
+cpu/sys integer
+cpu/nice        integer
+cpu/user        integer
+mem/swap/free   integer
+mem/swap/used   integer
+mem/physical/cached     integer
+mem/physical/buf        integer
+mem/physical/application        integer
+mem/physical/used       integer
+mem/physical/free       integer
+ps      table
+pscount	integer
+
+Without these commands KSysGuard is not very helpful.
+
+The 'monitors' command retuns the list of available sensors. The
+output looks like this:
 
 --------
 mem/physical/free       integer
@@ -62,5 +81,18 @@ to deviate from the Linux implementation unless absolutely
 unavoidable, in order to provide a consistent interface across all
 platforms.
 
+The 'test' command can be used by the front-end to find out if a
+certain other command is supported by this version of ksysguardd. The
+command returns "1\n" if the command is supported and "0\n" if the
+command is not supported.
+
 The 'quit' command terminates ksysguardd.
+
+ksysguardd may support dynamic monitor sets. If a CPU is added or an
+interface disabled, monitors may be added or removed. To notify the
+front-end about this, you need to send the string "RECONFIGURE\n" over
+stderr. This causes the front-end to request the list of monitors
+again and adapt it's layout accordingly. If ksysguardd receives a
+command it doesn't know it has to reply with "UNKNOWN
+COMMAND\nksysguardd> ".
 

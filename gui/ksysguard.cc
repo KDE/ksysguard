@@ -35,7 +35,10 @@
 #include <stdlib.h>
 
 #include <qstringlist.h>
+#include <qradiobutton.h>
+#include <qcombobox.h>
 
+#include <kapp.h>
 #include <kwinmodule.h>
 #include <kconfig.h>
 #include <klocale.h>
@@ -59,7 +62,6 @@
 #include "ksysguard.moc"
 
 static const char* Description = I18N_NOOP("KDE System Guard");
-static int CtrlTty;
 TopLevel* Toplevel;
 
 /*
@@ -132,10 +134,17 @@ TopLevel::TopLevel(const char *name)
 	createGUI();
 
 	show();
+
+	hostConnector = new HostConnector(0, "HostConnector", true);
+	CHECK_PTR(hostConnector);
+	connect(hostConnector->helpButton, SIGNAL(clicked()),
+			this, SLOT(helpConnectHost()));
 }
 
 TopLevel::~TopLevel()
 {
+	delete hostConnector;
+
 	killTimer(timerID);
 }
 
@@ -217,16 +226,41 @@ TopLevel::beATaskManager()
 void 
 TopLevel::connectHost()
 {
-	QDialog* d = new HostConnector(0, "HostConnector");
-	d->exec();
+	if (hostConnector->exec())
+	{
+		QString shell;
+		QString command;
 
-	delete d;
+		if (hostConnector->ssh->isChecked())
+		{
+			shell = "ssh";
+			command = "";
+		}
+		else if (hostConnector->rsh->isChecked())
+		{
+			shell = "rsh";
+			command = "";
+		}
+		else
+		{
+			shell = "";
+			command = hostConnector->command->currentText();
+		}
+		SensorMgr->engage(hostConnector->host->currentText(), shell, command);
+	}
 }
 
 void 
 TopLevel::disconnectHost()
 {
 	sb->disconnect();
+}
+
+void
+TopLevel::helpConnectHost()
+{
+	kapp->invokeHelp("CONNECTINGTOOTHERHOSTS",
+					 "ksysguard/the-sensor-browser.html");
 }
 
 void
@@ -336,6 +370,12 @@ TopLevel::readProperties(KConfig* cfg)
 						   (SensorClient*) this, 5);
 
 	openRecent->loadEntries(cfg);
+
+	QStringList sl = cfg->readListEntry("HostList");
+	hostConnector->host->insertStringList(sl);
+	sl.clear();
+	sl = cfg->readListEntry("CommandList");
+	hostConnector->command->insertStringList(sl);
 }
 
 void
@@ -352,6 +392,18 @@ TopLevel::saveProperties(KConfig* cfg)
 	cfg->writeEntry("ToolBarHidden", !toolbarTog->isChecked());
 	cfg->writeEntry("StatusBarHidden", !statusBarTog->isChecked());
 
+	QComboBox* cb = hostConnector->host;
+	QStringList sl;
+	for (int i = 0; i < cb->count(); ++i)
+		sl.append(cb->text(i));
+	cfg->writeEntry("HostList", sl);
+
+	cb = hostConnector->command;
+	sl.clear();
+	for (int i = 0; i < cb->count(); ++i)
+		sl.append(cb->text(i));
+	cfg->writeEntry("CommandList", sl);
+	
 	ws->saveProperties(cfg);
 }
 

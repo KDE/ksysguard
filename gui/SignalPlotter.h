@@ -26,8 +26,6 @@
 #define _SignalPlotter_h_
 
 #include <qwidget.h>
-#include <qarray.h>
-#include <qbrush.h>
 
 class QColor;
 
@@ -57,6 +55,15 @@ public:
 
 	void changeRange(int beam, double min, double max);
 
+	void setSensorOk(bool ok)
+	{
+		if (ok != sensorOk)
+		{
+			sensorOk = ok;
+			update();
+		}
+	}
+
 protected:
 	virtual void resizeEvent(QResizeEvent*);
 	virtual void paintEvent(QPaintEvent*);
@@ -71,6 +78,12 @@ private:
 	QColor beamColor[MAXBEAMS];
 	int beams;
 	int samples;
+
+	QPixmap errorIcon;
+	bool sensorOk;
 } ;
 
 #endif
+
+
+
