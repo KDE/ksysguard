@@ -101,17 +101,17 @@ updateMemory(void)
 
         len = sizeof (Buffers);
         if ((sysctlbyname("vfs.bufspace", &Buffers, &len, NULL, 0) == -1) || !len)
-                Buffers = 0; // Doesn't work under FreeBSD v2.2.x
+                Buffers = 0; /* Doesn't work under FreeBSD v2.2.x */
         Buffers /= 1024;
 
 
         len = sizeof (Cached);
         if ((sysctlbyname("vm.stats.vm.v_cache_count", &Cached, &len, NULL, 0) == -1) || !len)
-                Cached = 0; // Doesn't work under FreeBSD v2.2.x
+                Cached = 0; /* Doesn't work under FreeBSD v2.2.x */
         Cached *= getpagesize() / 1024;
 
 
-	// initializes the pointer to the vmmeter struct
+	/* initializes the pointer to the vmmeter struct */
 	mib[0] = CTL_VM;
 	mib[1] = VM_METER;
 	len = sizeof (p);

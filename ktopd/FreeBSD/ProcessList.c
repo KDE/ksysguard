@@ -186,20 +186,20 @@ updateProcess(int pid)
 	if (sysctl(mib, 4, &p, &len, NULL, 0) == -1 || !len)
 		return -1;
 
-	// ??
+	/* ?? */
         ps->pid = p.kp_proc.p_pid;
         ps->ppid = p.kp_eproc.e_ppid;
         strcpy(ps->name, p.kp_proc.p_comm);
         ps->uid = p.kp_eproc.e_ucred.cr_uid;
         ps->gid = p.kp_eproc.e_pgid;
 
-        // find out user name with the process uid
+        /* find out user name with the process uid */
         pwent = getpwuid(ps->uid);
 	strcpy(ps->userName, pwent ? pwent->pw_name : "????");
         ps->priority = p.kp_proc.p_priority;
         ps->niceLevel = p.kp_proc.p_nice;
 
-        // this isn't usertime -- it's total time (??)
+        /* this isn't usertime -- it's total time (??) */
 #if __FreeBSD_version >= 300000
         ps->userTime = p.kp_proc.p_runtime / 10000;
 #else
@@ -209,7 +209,7 @@ updateProcess(int pid)
         ps->userLoad = p.kp_proc.p_pctcpu / 100;
         ps->sysLoad = 0;
 
-        // memory
+        /* memory */
         ps->vmSize =  (p.kp_eproc.e_vm.vm_tsize +
                     p.kp_eproc.e_vm.vm_dsize +
                     p.kp_eproc.e_vm.vm_ssize) * getpagesize();

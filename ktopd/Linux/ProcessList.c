@@ -186,13 +186,13 @@ updateProcess(int pid)
 	fscanf(fd, "%*s %d %*d %*d %*d", (int*) &ps->uid);
 	fscanf(fd, "%*s %*d %*d %*d %*d");
 	fscanf(fd, "%*s %*d %*d %*d %*d");
-	fscanf(fd, "%*s %*d %*s");	// VmSize
-	fscanf(fd, "%*s %*d %*s");	// VmLck
-	fscanf(fd, "%*s %*d %*s");	// VmRSS
-	fscanf(fd, "%*s %*d %*s");	// VmData
-	fscanf(fd, "%*s %*d %*s");	// VmStk
-	fscanf(fd, "%*s %*d %*s");	// VmExe
-	fscanf(fd, "%8s %d %*s", buf, &ps->vmLib);	// VmLib
+	fscanf(fd, "%*s %*d %*s");	/* VmSize */
+	fscanf(fd, "%*s %*d %*s");	/* VmLck */
+	fscanf(fd, "%*s %*d %*s");	/* VmRSS */
+	fscanf(fd, "%*s %*d %*s");	/* VmData */
+	fscanf(fd, "%*s %*d %*s");	/* VmStk */
+	fscanf(fd, "%*s %*d %*s");	/* VmExe */
+	fscanf(fd, "%8s %d %*s", buf, &ps->vmLib);	/* VmLib */
 	buf[7] = '\0';
 	if (strcmp(buf, "VmLib:") != 0)
 		ps->vmLib = 0;
