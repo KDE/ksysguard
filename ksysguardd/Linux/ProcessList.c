@@ -190,6 +190,7 @@ updateProcess(int pid)
 
 		ps = (ProcessInfo*) malloc(sizeof(ProcessInfo));
 		ps->pid = pid;
+		ps->alive = 0;
 
 		gettimeofday(&tv, 0);
 		ps->centStamp = tv.tv_sec * 100 + tv.tv_usec / 10000;
@@ -227,7 +228,8 @@ updateProcess(int pid)
 	else
 		ps->vmLib *= 1024;
 
-	fclose(fd);
+	if (fclose(fd))
+		return (-1);
 
     snprintf(buf, BUFSIZE - 1, "/proc/%d/stat", pid);
 	buf[BUFSIZE - 1] = '\0';
@@ -240,11 +242,8 @@ updateProcess(int pid)
 			   &userTime, &sysTime, &ps->niceLevel, &ps->vmSize,
 			   &ps->vmRss) != 9)
 		return (-1);
-	if (!strchr("SRZTD", ps->status))
-	{
-		/* fprintf(stderr, "Unknown status %c\n", ps->status); */
-		ps->status = '-';
-	}
+	if (fclose(fd))
+		return (-1);
 
 	ps->vmRss = (ps->vmRss + 3) * PAGE_SIZE;
 
@@ -279,8 +278,6 @@ updateProcess(int pid)
 		ps->sysTime = sysTime;
 	}
 
-	fclose(fd);
-
 	snprintf(buf, BUFSIZE - 1, "/proc/%d/cmdline", pid);
 	if ((fd = fopen(buf, "r")) == 0)
 		return (-1);
@@ -290,7 +287,8 @@ updateProcess(int pid)
 	fscanf(fd, buf, ps->cmdline);
 	ps->cmdline[sizeof(ps->cmdline) - 1] = '\0';
 	validateStr(ps->cmdline);
-	fclose(fd);
+	if (fclose(fd))
+		return (-1);
 
 	/* Ugly hack to "fix" program name for kdeinit lauched programs. */
 	if (strcmp(ps->name, "kdeinit") == 0 &&
