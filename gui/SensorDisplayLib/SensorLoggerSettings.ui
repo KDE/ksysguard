@@ -20,7 +20,7 @@
     </property>
     <property stdset="1">
         <name>caption</name>
-        <string>SensorLogger Settings</string>
+        <string>Sensor Logger Settings</string>
     </property>
     <property stdset="1">
         <name>sizeGripEnabled</name>
