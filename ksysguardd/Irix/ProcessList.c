@@ -196,6 +196,7 @@ static int updateProcess( pid_t pid ) {
 	ps->userName = strdup( pw->pw_name );
 
 	strncpy (ps->State,lwpStateName( psinfo ),8);
+        ps->State[7]='\0';
 
 
 	ps->Prio = psinfo.pr_pri;
@@ -224,8 +225,10 @@ static int updateProcess( pid_t pid ) {
 	ps->RSSize = (psinfo.pr_rssize * pagesz)/KBYTES;
 
 	strncpy(ps->Command,psinfo.pr_fname,PRCOMSIZ);
+        ps->Command[PRCOMSIZ-1]='\0';
 
 	strncpy(ps->CmdLine,psinfo.pr_psargs,PRARGSZ);
+        ps->CmdLine[PRARGSZ-1]='\0';
 
 	validateStr( ps->Command );
 	validateStr( ps->CmdLine );
