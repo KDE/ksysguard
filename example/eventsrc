@@ -65,6 +65,7 @@ Comment[ven]=Mulindi wa maitele a KDE
 Comment[vi]=Trình bảo vệ hệ thống KDE
 Comment[xh]=KDE Ukhuselo lendlela yokusebenza
 Comment[xx]=xxKDE System Guardxx
+Comment[zh_CN]=KDE 系统卫士
 Comment[zh_TW]=KDE 系統守衛
 Comment[zu]=Unogada Wesistimu ye-KDE
 
@@ -150,6 +151,7 @@ Comment[ta]=மாதிரி பொருத்தத்தை தேடு
 Comment[tr]=Eşleşen örüntüyü ara
 Comment[uk]=Знайдено взірець пошуку
 Comment[xx]=xxSearch pattern matchedxx
+Comment[zh_CN]=搜索匹配的模式
 
 [sensor_alarm]
 Name=sensor_alarm
