@@ -19,6 +19,8 @@
 	$Id$
 */
 
+#include <config.h>
+
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <stdio.h>
@@ -118,7 +120,7 @@ char *get_serv_name(int port, const char *proto)
 	if ((service = getservbyport(ntohs(port), proto)) == NULL) {
 		snprintf(buffer, sizeof(buffer), "%d", port);
 	} else {
-		strncpy(buffer, service->s_name, sizeof(buffer));
+		strlcpy(buffer, service->s_name, sizeof(buffer));
 	}
 
 	return (char *)buffer;
@@ -140,7 +142,7 @@ char *get_host_name(int addr)
 		a_addr.s_addr = addr;
 		return inet_ntoa(a_addr);
 	} else {
-		strncpy(buffer, host->h_name, sizeof(buffer));
+		strlcpy(buffer, host->h_name, sizeof(buffer));
 		return (char *)buffer;
 	}
 }
@@ -159,7 +161,7 @@ char *get_proto_name(int number)
 	if ((protocol = getprotobynumber(number)) == NULL) {
 		snprintf(buffer, sizeof(buffer), "%d", number);
 	} else {
-		strncpy(buffer, protocol->p_name, sizeof(buffer));
+		strlcpy(buffer, protocol->p_name, sizeof(buffer));
 	}
 
 	return (char *)buffer;
@@ -309,31 +311,31 @@ updateNetStatTcpUdpRaw(const char *cmd)
 			if ((socket_info = (SocketInfo *)malloc(sizeof(SocketInfo))) == NULL) {
 				continue;
 			}
-			strncpy(socket_info->local_addr, get_host_name(local_addr), 127);
-			strncpy(socket_info->remote_addr, get_host_name(remote_addr), 127);
+			strlcpy(socket_info->local_addr, get_host_name(local_addr), sizeof(socket_info->local_addr));
+			strlcpy(socket_info->remote_addr, get_host_name(remote_addr), sizeof(socket_info->remote_addr));
 
 			if (strstr(cmd, "tcp")) {
-				strncpy(socket_info->local_port, get_serv_name(local_port, "tcp"), 127);
-				strncpy(socket_info->remote_port, get_serv_name(remote_port, "tcp"), 127);
-				strncpy(socket_info->state, conn_state[state], 127);
+				strlcpy(socket_info->local_port, get_serv_name(local_port, "tcp"), sizeof(socket_info->local_port));
+				strlcpy(socket_info->remote_port, get_serv_name(remote_port, "tcp"), sizeof(socket_info->remote_port));
+				strlcpy(socket_info->state, conn_state[state], sizeof(socket_info->state));
 				socket_info->uid = uid;
 
 				push_ctnr(TcpSocketList, socket_info);
 			}
 
 			if (strstr(cmd, "udp")) {
-				strncpy(socket_info->local_port, get_serv_name(local_port, "udp"), 127);
-				strncpy(socket_info->remote_port, get_serv_name(remote_port, "udp"), 127);
-				strncpy(socket_info->state, conn_state[state], 127);
+				strlcpy(socket_info->local_port, get_serv_name(local_port, "udp"), sizeof(socket_info->local_port));
+				strlcpy(socket_info->remote_port, get_serv_name(remote_port, "udp"), sizeof(socket_info->remote_port));
+				strlcpy(socket_info->state, conn_state[state], sizeof(socket_info->state));
 				socket_info->uid = uid;
 
 				push_ctnr(UdpSocketList, socket_info);
 			}
 
 			if (strstr(cmd, "raw")) {
-				strncpy(socket_info->local_port, get_proto_name(local_port), 127);
-				strncpy(socket_info->remote_port, get_proto_name(remote_port), 127);
-				snprintf(socket_info->state, 127, "%d", state);
+				strlcpy(socket_info->local_port, get_proto_name(local_port), sizeof(socket_info->local_port));
+				strlcpy(socket_info->remote_port, get_proto_name(remote_port), sizeof(socket_info->remote_port));
+				snprintf(socket_info->state, sizeof(socket_info->state)-1, "%d", state);
 				socket_info->uid = uid;
 
 				push_ctnr(RawSocketList, socket_info);
@@ -377,10 +379,10 @@ updateNetStatUnix(void)
 			}
 
 			unix_info->refcount = ref_count;
-			strncpy(unix_info->type, raw_type[type], 127);
-			strncpy(unix_info->state, raw_state[state], 127);
+			strlcpy(unix_info->type, raw_type[type], sizeof(unix_info->type));
+			strlcpy(unix_info->state, raw_state[state], sizeof(unix_info->state));
 			unix_info->inode = inode;
-			strncpy(unix_info->path, path, 255);
+			strlcpy(unix_info->path, path, sizeof(unix_info->path));
 
 			push_ctnr(UnixSocketList, unix_info);
 		}
