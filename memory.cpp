@@ -53,7 +53,6 @@
 extern kvm_t *kvm;
 static int pageshift;
 #define pagetok(size) ((size) << pageshift)       // translate pages to K(bytes)
-#define __DEBUG__
 #endif
 
 /*=============================================================================
@@ -65,27 +64,35 @@ static int pageshift;
 MemMon::MemMon(QWidget *parent, const char *name, QWidget *child)
        :QWidget (parent, name)
 {
-#ifdef __FreeBSD__
-    int mib[2];
-    size_t len;
-    int pagesize;
-#else
-    char buffer[256];
-#endif
-    
     setBackgroundColor(black);
     my_child = child;
     intervals = 100;
     mem_values = 0;
     mem_values = (int *)malloc(sizeof(int) * intervals);
     memset(mem_values, 0, sizeof(int) * intervals);
+
 #ifdef __FreeBSD__
+    // Set up the nlst struct
+#ifdef _AOUT_INCLUDE_
+#define NLSTNAME(a) nlst[(a)].u_un.n_name
+#else
+#define NLSTNAME(a) nlst[(a)].n_name
+#endif
+    NLSTNAME(X_CNT) = "_cnt";
+    NLSTNAME(X_VMTOTAL) = "_vmtotal";
+    NLSTNAME(X_BUFSPACE) = "_bufspace";
+    NLSTNAME(VM_SWAPLIST) = "_swaplist";
+    NLSTNAME(VM_SWDEVT) = "_swdevt";
+    NLSTNAME(VM_NSWAP) = "_nswap";
+    NLSTNAME(VM_NSWDEV) = "_nswdev";
+    NLSTNAME(VM_DMMAX) = "_dmmax";
+    NLSTNAME(VM_DMMAX + 1) = NULL;
 
     // get physical pagesize, calculate pageshift value for pagetok()
     // taken from FreeBSD's part of top
 
     iVm = &ivm;
-    pagesize = getpagesize();
+    int pagesize = getpagesize();
     pageshift = 0;
     while (pagesize > 1)
     {
@@ -104,10 +111,11 @@ MemMon::MemMon(QWidget *parent, const char *name, QWidget *child)
     // bufspace is for "buffers", this is not in vmmeter
     kvm_read(kvm, buf_offset, &bufspace, sizeof(bufspace));
 
+    int mib[2];
     mib[0] = CTL_HW;
     mib[1] = HW_PHYSMEM;
 
-    len = sizeof(physmem);
+    size_t len = sizeof(physmem);
     sysctl(mib, 2, &physmem, &len, NULL, 0);
     mem_size = physmem;
 
@@ -126,6 +134,7 @@ MemMon::MemMon(QWidget *parent, const char *name, QWidget *child)
 #endif
 
 #else
+    char buffer[256];
     FILE *fd = fopen("/proc/meminfo", "r");
     fgets(buffer, sizeof(buffer), fd);
     fgets(buffer, sizeof(buffer), fd);
@@ -381,7 +390,6 @@ void MemMon::paintEvent(QPaintEvent *)
 void MemMon::timerEvent(QTimerEvent *)
 {
 #ifdef __FreeBSD__
-
     unsigned long usermem;
     unsigned int len = sizeof(usermem);
     

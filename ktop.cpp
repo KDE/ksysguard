@@ -217,7 +217,7 @@ int main( int argc, char ** argv )
     sfolder=-1;
 
 #ifdef __FreeBSD__          // obtain kvm handle for reading kernel data
-    kvm = kvm_open(NULL, NULL, NULL, O_RDONLY, "kvm_open");
+    kvm = kvm_open(NULL, NULL, NULL, O_RDONLY, NULL);
     // we don't have to be sgid anymore
     setgid(getgid());
 #endif
@@ -245,7 +245,7 @@ int main( int argc, char ** argv )
 #ifdef __FreeBSD__
     if (kvm == NULL) {
 	QMessageBox::critical(NULL, NULL,
-		i18n("Could not open kernel memory file. "
+		i18n("Could not open kernel memory file.\n"
 		"Make sure your ktop binary is installed sgid kmem.\n\n"
 		"chgrp kmem KDEDIR/bin/ktop\n"
 		"chmod 2555 KDEDIR/bin/ktop"),

@@ -81,9 +81,6 @@ CpuMon::CpuMon(QWidget *parent, const char *name, QWidget *child)
        :QWidget (parent, name)
 {
     struct timezone timez;
-#ifndef __FreeBSD__
-    char dummy[10];
-#endif
     int t;
     QString tmp;
     
@@ -102,6 +99,19 @@ CpuMon::CpuMon(QWidget *parent, const char *name, QWidget *child)
    old_system_ticks = 0;
    old_idle_ticks = 0;
 
+   // Set up the nlst struct
+#ifdef _AOUT_INCLUDE_
+#define NLSTNAME(a) nlst[(a)].u_un.n_name
+#else
+#define NLSTNAME(a) nlst[(a)].n_name
+#endif
+   NLSTNAME(X_CCPU) = "_ccpu";
+   NLSTNAME(X_CP_TIME) = "_cp_time";
+   NLSTNAME(X_HZ) = "_hz";
+   NLSTNAME(X_STATHZ) = "_stathz";
+   NLSTNAME(X_AVENRUN) = "_averunnable";
+   NLSTNAME(X_AVENRUN + 1) = NULL;
+
    kvm_nlist(kvm, nlst);    // init the nlist from kvm data
    cp_time_offset = nlst[X_CP_TIME].n_value;
 
@@ -115,6 +125,7 @@ CpuMon::CpuMon(QWidget *parent, const char *name, QWidget *child)
     statfile = fopen("/proc/stat", "r");
     setvbuf(statfile, NULL, _IONBF, 0);
     
+    char dummy[10];
     // read in the initial tick values
     fscanf(statfile, "%s %d %d %d %d", dummy, &old_user_ticks
                                      , &old_nice_ticks, &old_system_ticks
@@ -212,9 +223,6 @@ void CpuMon::paintEvent(QPaintEvent *)
  -----------------------------------------------------------------------------*/
 void CpuMon::timerEvent(QTimerEvent *)
 {
-#ifndef __FreeBSD__
-    char     buffer[100];
-#endif
     struct   timeval time;
     struct   timezone timez;
     float    elapsed_time;
@@ -235,6 +243,7 @@ void CpuMon::timerEvent(QTimerEvent *)
     kvm_read(kvm, cp_time_offset, (int *)&system_ticks, sizeof(system_ticks));
 #else
     rewind(statfile);
+    char     buffer[100];
     fscanf(statfile, "%s %d %d %d %d", buffer, &user_ticks, &nice_ticks
                                      , &system_ticks, &idle_ticks );
 #endif

@@ -67,25 +67,18 @@ protected:
     QLabel **memstat_labels;
     struct vmmeter vmstat;
     u_long   cnt_offset, buf_offset;
-    struct nlist nlst[] = {
+
 #define X_CNT          0
-        { "_cnt" },                /* 0 */
 #define X_VMTOTAL      1
-        { "_vmtotal"},
 #define X_BUFSPACE     2
-        { "_bufspace"},
 #define VM_SWAPLIST     3
-        { "_swaplist"},
 #define VM_SWDEVT       4
-        { "_swdevt"},
 #define VM_NSWAP        5
-        { "_nswap"},
 #define VM_NSWDEV       6
-        { "_nswdev"},
 #define VM_DMMAX        7
-        { "_dmmax"},
-        { NULL }
-    };
+
+    struct nlist nlst[VM_DMMAX + 2];
+
     struct _ivm {
         int active, inactive, wired, cache, buffers;
     };

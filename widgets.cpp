@@ -704,8 +704,12 @@ void TaskMan::resizeEvent(QResizeEvent *ev)
     //
     
 #ifdef __FreeBSD__
-    int widest_label = l_mem_details[MEM_INACTIVE]->width();
+    int widest_label = 0;
     int i;
+    for(i = 0; i < MEM_PHYS; i++) {
+	if (widest_label < l_mem_details[i]->width())
+	widest_label = l_mem_details[i]->width();
+    }
     
     cpubox->setGeometry(10, 10, 80, (h / 2) - 60);
     cpubox1->setGeometry(100, 10, w - 110, (h / 2) - 60);

@@ -79,19 +79,15 @@ protected:
 #ifdef __FreeBSD__
   u_long     cp_time_offset;
   u_long     HZ;
-  struct nlist nlst[] = {
+
 #define X_CCPU          0
-    { "_ccpu" },                /* 0 */
 #define X_CP_TIME       1
-    { "_cp_time" },             /* 1 */
 #define X_HZ            2
-    { "_hz" },                  /* 2 */
 #define X_STATHZ        3
-    { "_stathz" },              /* 3 */
 #define X_AVENRUN       4
-    { "_averunnable" },         /* 4 */
-    { NULL }
-  };
+
+  struct nlist nlst[X_AVENRUN + 2];
+
 #endif
   QBrush    brush_0, 
             brush_1, 
