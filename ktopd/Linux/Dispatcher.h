@@ -26,6 +26,5 @@
 void initDispatcher(void);
 void exitDispatcher(void);
 int dispatcherReady(void);
-void setPsRate(const char* cmd);
 
 #endif

@@ -33,9 +33,6 @@
 /* This variable will be set to 1 as soon as the first interrupt (SIGALRM)
  * has been received. */
 static volatile int DispatcherReady = 0;
-static unsigned PsRate = 2;
-/* The process list is read every 2 seconds by default. */
-static int PsCounter = 1;
 
 /*
  * signalHandler()
@@ -56,12 +53,7 @@ signalHandler(int sig)
     case SIGINT:
 		break;
 	case SIGALRM:
-		if (PsCounter > 0)
-			if (--PsCounter == 0)
-			{
-				PsCounter = PsRate;
-				updateProcessList();
-			}
+		updateProcessList();
 		updateMemory();
 		updateCPU();
 		DispatcherReady = 1;
@@ -87,16 +79,14 @@ startTimer(long sec)
 }
 
 /*
-================================ public part ==================================
+================================ public part =================================
 */
 
 void
 initDispatcher(void)
 {
 	signal(SIGALRM, signalHandler);
-	startTimer(1);
-
-	registerCommand("psrate", setPsRate);
+	startTimer(TIMERINTERVAL);
 }
 
 void
@@ -110,11 +100,4 @@ int
 dispatcherReady(void)
 {
 	return (DispatcherReady);
-}
-
-void
-setPsRate(const char* cmd)
-{
-	sscanf(cmd, "%*s %u", &PsRate);
-	PsCounter = PsRate;
 }

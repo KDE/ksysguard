@@ -45,6 +45,7 @@ static CONTAINER ProcessList = 0;
 static int TimeOut = 0;
 
 #define BUFSIZE 1024
+#define KDEINITLEN strlen("kdeinit: ")
 
 typedef struct
 {
@@ -265,6 +266,23 @@ updateProcess(int pid)
 	fscanf(fd, buf, ps->cmdline);
 	ps->cmdline[sizeof(ps->cmdline) - 1] = '\0';
 	fclose(fd);
+
+	/* Ugly hack to "fix" program name for kdeinit lauched programs. */
+	if (strcmp(ps->name, "kdeinit") == 0 &&
+		strncmp(ps->cmdline, "kdeinit: ", KDEINITLEN) == 0)
+	{
+		size_t len;
+		char* end = strchr(ps->cmdline + KDEINITLEN, ' ');
+		if (end)
+			len = end - ps->cmdline;
+		else
+			len = strlen(ps->cmdline + KDEINITLEN);
+		if (len > 0)
+		{
+			strncpy(ps->name, ps->cmdline + KDEINITLEN, len);
+			ps->name[len] = '\0';
+		}
+	}
 
 	/* find out user name with the process uid */
 	pwent = getpwuid(ps->uid);

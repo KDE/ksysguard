@@ -241,16 +241,19 @@ initCPU(void)
 		}
 		else if (strcmp("disk", tag) == 0)
 		{
+			sscanf(buf + 5, "%lu", &OldDisk);
 			registerMonitor("disk/load", "integer", printDiskLoad,
 							printDiskLoadInfo);
 		}
 		else if (strcmp("disk_rio", tag) == 0)
 		{
+			sscanf(buf + 9, "%lu", &OldDiskRIO);
 			registerMonitor("disk/rio", "integer", printDiskRIO,
 							printDiskRIOInfo);
 		}
 		else if (strcmp("disk_wio", tag) == 0)
 		{
+			sscanf(buf + 9, "%lu", &OldDiskWIO);
 			registerMonitor("disk/wio", "integer", printDiskWIO,
 							printDiskWIOInfo);
 		}
@@ -433,7 +436,7 @@ printDiskLoad(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	printf("%lu\n", Disk);
+	printf("%lu\n", Disk / TIMERINTERVAL);
 }
 
 void
@@ -447,13 +450,13 @@ printDiskRIO(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	printf("%lu\n", DiskRIO);
+	printf("%lu\n", DiskRIO / TIMERINTERVAL);
 }
 
 void
 printDiskRIOInfo(const char* cmd)
 {
-	printf("Disk Read\t0\t100\tkBytes/s\n");
+	printf("Disk Read\t0\t0\tkBytes/s\n");
 }
 
 void
@@ -461,11 +464,11 @@ printDiskWIO(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	printf("%lu\n", DiskWIO);
+	printf("%lu\n", DiskWIO / TIMERINTERVAL);
 }
 
 void
 printDiskWIOInfo(const char* cmd)
 {
-	printf("Disk Write\t0\t100\tkBytes/s\n");
+	printf("Disk Write\t0\t0\tkBytes/s\n");
 }

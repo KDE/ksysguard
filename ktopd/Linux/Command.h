@@ -23,6 +23,8 @@
 #ifndef _Command_h_
 #define _Command_h_
 
+#define TIMERINTERVAL 2
+
 typedef void (*cmdExecutor)(const char*);
 
 void initCommand(void);
