@@ -195,7 +195,7 @@ Workspace::loadWorkSheet()
 {
 	KFileDialog fd(0, i18n("*.sgrd|Sensor Files"), this, "LoadFileDialog", true);
 	KURL url = fd.getOpenURL(workDir, "*.sgrd", 0,
-								i18n("Select a Worksheet to Load"));
+								i18n("Select Worksheet to Load"));
 	loadWorkSheet(url);
 }
 
