@@ -305,7 +305,7 @@ SignalPlotter::paintEvent(QPaintEvent*)
 		minValue = maxValue = 0.0;
 	/* Plot stacked values */
 	double scaleFac = (h - 2) / range;
-	int prevVals[beamData.count()];
+	int *prevVals = new int[beamData.count()];
 	int hack[4];
 	int x1 = w - ((samples + 1) * hScale);
 
@@ -400,6 +400,8 @@ SignalPlotter::paintEvent(QPaintEvent*)
 			}
 		}
 	}
+
+	delete[] prevVals;
 
 	/* Draw horizontal lines and values. Lines are drawn when the
 	 * height is greater than 10 times hCount + 1, values are shown

@@ -72,7 +72,7 @@ public:
 		else
 			return dummy;
 	}
-	const uint getSensorColorCount() const
+	uint getSensorColorCount() const
 	{
 		return sensorColors.count();
 	}
