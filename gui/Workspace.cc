@@ -31,6 +31,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
+#include <kaccelmanager.h>
 
 #include "WorkSheet.h"
 #include "WorkSheetSettings.h"
@@ -40,6 +41,8 @@
 Workspace::Workspace( QWidget* parent, const char* name )
   : QTabWidget( parent, name )
 {
+  KAcceleratorManager::setNoAccel(this);
+ 
   mSheetList.setAutoDelete( true );
   mAutoSave = true;
 
