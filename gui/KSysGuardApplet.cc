@@ -25,7 +25,7 @@
 
 #include <qdragobject.h>
 #include <qspinbox.h>
-#include <qlabel.h>
+#include <qframe.h>
 #include <qfile.h>
 #include <qdom.h>
 #include <qtextstream.h>
@@ -63,8 +63,9 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 	CHECK_PTR(SensorMgr);
 
 	dockCnt = 1;
-	docks = new SensorDisplay*[dockCnt];
-	docks[0] = 0;
+	docks = new QWidget*[dockCnt];
+	docks[0] = new QFrame(this);
+	((QFrame*) docks[0])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
 
 	load();
 
@@ -119,6 +120,7 @@ void
 KSysGuardApplet::applySettings()
 {
 	resizeDocks(ksgas->dockCnt->text().toUInt());
+	save();
 }
 
 void
@@ -188,14 +190,16 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 		}
 
 		int dock = findDock(ev->pos());
-		if (docks[dock] == 0)
+		if (docks[dock]->isA("QFrame"))
 		{
+			delete docks[dock];
 			docks[dock] = new FancyPlotter(this, "FancyPlotter",
 										   sensorDescr, 100.0, 100.0, true);
 			layout();
 			docks[dock]->show();
 		}
-		docks[dock]->addSensor(hostName, sensorName, sensorDescr);
+		((SensorDisplay*) docks[dock])->
+			addSensor(hostName, sensorName, sensorDescr);
 	}
 
 	save();
@@ -219,7 +223,12 @@ KSysGuardApplet::removeDisplay(SensorDisplay* sd)
 		if (sd == docks[i])
 		{
 			delete docks[i];
-			docks[i] = 0;
+			docks[i] = new QFrame(this);
+			((QFrame*) docks[i])->
+				setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
+			layout();
+			if (isVisible())
+				docks[i]->show();
 			return;
 		}
 }
@@ -235,7 +244,7 @@ KSysGuardApplet::resizeDocks(uint newDockCnt)
 		return;
 
 	// Create and initialize new dock array.
-	SensorDisplay** tmp = new SensorDisplay*[newDockCnt];
+	QWidget** tmp = new QWidget*[newDockCnt];
 	uint i;
 	// Copy old docks into new.
 	for (i = 0; (i < newDockCnt) && (i < dockCnt); ++i)
@@ -244,7 +253,12 @@ KSysGuardApplet::resizeDocks(uint newDockCnt)
 	for (i = newDockCnt; i < dockCnt; ++i)
 		delete docks[i];
 	for (i = dockCnt; i < newDockCnt; ++i)
-		tmp[i] = 0;
+	{
+		tmp[i] = new QFrame(this);
+		((QFrame*) tmp[i])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
+		if (isVisible())
+			tmp[i]->show();
+	}
 	// Destruct old dock.
 	delete docks;
 
@@ -366,8 +380,8 @@ KSysGuardApplet::save()
 	QStringList hosts;
 	uint i;
 	for (i = 0; i < dockCnt; ++i)
-		if (docks[i])
-			docks[i]->collectHosts(hosts);
+		if (!docks[i]->isA("QFrame"))
+			((SensorDisplay*) docks[i])->collectHosts(hosts);
 
 	// save host information (name, shell, etc.)
 	QStringList::Iterator it;
@@ -386,14 +400,14 @@ KSysGuardApplet::save()
 	}
 	
 	for (i = 0; i < dockCnt; ++i)
-		if (docks[i])
+		if (!docks[i]->isA("QFrame"))
 		{
 			QDomElement display = doc.createElement("display");
 			ws.appendChild(display);
 			display.setAttribute("dock", i);
 			display.setAttribute("class", docks[i]->className());
 
-			docks[i]->save(doc, display);
+			((SensorDisplay*) docks[i])->save(doc, display);
 		}	
 
 	KStandardDirs* kstd = KGlobal::dirs();

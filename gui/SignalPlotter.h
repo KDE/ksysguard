@@ -26,6 +26,7 @@
 #define _SignalPlotter_h_
 
 #include <qwidget.h>
+#include <qstring.h>
 
 class QColor;
 
@@ -55,6 +56,11 @@ public:
 
 	void changeRange(int beam, double min, double max);
 
+	void setTitle(const QString& t)
+	{
+		title = t;
+	}
+
 	void setSensorOk(bool ok)
 	{
 //		if (ok != sensorOk)
@@ -62,6 +68,11 @@ public:
 			sensorOk = ok;
 			update();
 		}
+	}
+
+	void setShowTopBar(bool s)
+	{
+		showTopBar = s;
 	}
 
 protected:
@@ -81,9 +92,8 @@ private:
 
 	QPixmap errorIcon;
 	bool sensorOk;
+	QString title;
+	bool showTopBar;
 } ;
 
 #endif
-
-
-

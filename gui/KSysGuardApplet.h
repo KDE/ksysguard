@@ -69,7 +69,7 @@ private:
 	void removeDisplay(SensorDisplay* sd);
 
 	uint dockCnt;
-	SensorDisplay** docks;
+	QWidget** docks;
 	KSysGuardAppletSettings* ksgas;
 };
 

@@ -57,6 +57,7 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name, double min,
 	KIconLoader iconLoader;
 	errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop,
 									KIcon::SizeSmall);
+	showTopBar = false;
 	sensorOk = false;
 }
 
@@ -210,7 +211,7 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	int w = width();
 	int h = height();
 
-	QPixmap pm(width(), height());
+	QPixmap pm(w, h);
 	QPainter p;
 	p.begin(&pm, this);
 
@@ -266,12 +267,60 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	}
 	double maxVal = minValue + range;
 
+	int top = 0;
+	if (showTopBar && h > 50)
+	{
+		/* Draw horizontal bar with current sensor values at top of display. */
+		p.setPen(QColor("green"));
+		int x0 = w / 2;
+		p.setFont(QFont("lucidatypewriter", 10));
+		top = fontMetrics().height() - 1;
+		h -= top;
+		int h0 = top - 2;
+		p.drawText(1, 1, x0, top - 1, Qt::AlignCenter, title);
+
+		p.drawLine(x0 - 1, 1, x0 - 1, h0);
+		p.drawLine(0, top - 1, w - 2, top - 1);
+
+		double bias = -minValue;
+		double scaleFac = (w - x0 - 2) / range;
+		for (int b = 0; b < beams; b++)
+		{
+			int start = x0 + (int) (bias * scaleFac);
+			int end = x0 + (int) ((bias += beamData[b][w - 3]) * scaleFac);
+			/* If the rect is wider than 2 pixels we draw only the last
+			 * pixels with the bright color. The rest is painted with
+			 * a 50% darker color. */
+			if (end - start > 1)
+			{
+				p.setPen(beamColor[b].dark(150));
+				p.setBrush(beamColor[b].dark(150));
+				p.drawRect(start, 1, end - start, h0);
+				p.setPen(beamColor[b]);
+				p.drawLine(end, 1, end, h0);
+			}
+			else if (start - end > 1)
+			{
+				p.setPen(beamColor[b].dark(150));
+				p.setBrush(beamColor[b].dark(150));
+				p.drawRect(end, 1, start - end, h0);
+				p.setPen(beamColor[b]);
+				p.drawLine(end, 1, end, h0);
+			}
+			else
+			{
+				p.setPen(beamColor[b]);
+				p.drawLine(start, 1, start, h0);
+			}
+		}
+	}
+
 	/* Draw scope-like grid vertical lines */
 	if (w > 60)
 	{
 		p.setPen(QColor("green"));
 		for (int x = 30; x < (w - 2); x += 30)
-			p.drawLine(x, 0, x, height() - 2);
+			p.drawLine(x, top, x, h + top - 2);
 	}
 
 	/* Plot stacked values */
@@ -281,8 +330,9 @@ SignalPlotter::paintEvent(QPaintEvent*)
 		double bias = -minValue;
 		for (int b = 0; b < beams; b++)
 		{
-			int start = h - 2 - (int) (bias * scaleFac);
-			int end = h - 2 - (int) ((bias + beamData[b][i]) * scaleFac);
+			int start = top + h - 2 - (int) (bias * scaleFac);
+			int end = top + h - 2 - (int) ((bias + beamData[b][i]) * scaleFac);
+			bias += beamData[b][i];
 			/* If the line is longer than 2 pixels we draw only the last
 			 * 2 pixels with the bright color. The rest is painted with
 			 * a 50% darker color. */
@@ -305,24 +355,31 @@ SignalPlotter::paintEvent(QPaintEvent*)
 				p.setPen(beamColor[b]);
 				p.drawLine(i + 1, start, i + 1, end);
 			}
-			bias += beamData[b][i];
 		}
 	}
 	
-	// draw horizontal lines and values
-	if (h > 60)
+	/* Draw horizontal lines and values. Lines are drawn when the
+	 * height is greater than 35, values are shown when height is
+	 * greater than 60 */
+	if (h > 35)
 	{
 		p.setPen(QColor("green"));
 		p.setFont(QFont("lucidatypewriter", 12));
 		QString val;
 		for (int y = 1; y < 5; y++)
 		{
-			p.drawLine(0, y * (height() / 5), w - 2, y * (height() / 5));
-			val = QString("%1").arg(maxVal - y * (range / 5));
-			p.drawText(6, y * (height() / 5) - 1, val);
+			p.drawLine(0, top + y * (h / 5), w - 2, top + y * (h / 5));
+			if (h > 60 && w > 60)
+			{
+				val = QString("%1").arg(maxVal - y * (range / 5));
+				p.drawText(6, top + y * (h / 5) - 1, val);
+			}
 		}
-		val = QString("%1").arg(minValue);
-		p.drawText(6, height() - 2, val);
+		if (h > 60 && w > 60)
+		{
+			val = QString("%1").arg(minValue);
+			p.drawText(6, top + h - 2, val);
+		}
 	}
 
 	if (!sensorOk)

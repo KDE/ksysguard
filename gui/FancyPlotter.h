@@ -44,7 +44,7 @@ public:
 	FancyPlotter(QWidget* parent = 0, const char* name = 0,
 				 const QString& title = QString::null, double min = 0,
 				 double max = 100, bool noFrame = false);
-	~FancyPlotter();
+	virtual ~FancyPlotter();
 
 	void settings();
 

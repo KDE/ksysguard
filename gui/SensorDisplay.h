@@ -63,7 +63,7 @@ class SensorDisplay : public QWidget, public SensorClient
 public:
 
 	SensorDisplay(QWidget* parent = 0, const char* name = 0);
-	~SensorDisplay();
+	virtual ~SensorDisplay();
 
 	virtual bool addSensor(const QString&, const QString&, const QString&)
 	{

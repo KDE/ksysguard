@@ -53,10 +53,15 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 	flags = 0;
 
 	if (noFrame)
+	{
 		plotter = new SignalPlotter(this, "signalPlotter", min, max);
+		plotter->setShowTopBar(true);
+	}
 	else
 		plotter = new SignalPlotter(meterFrame, "signalPlotter", min, max);
 	CHECK_PTR(plotter);
+	if (!title.isEmpty())
+		plotter->setTitle(title);
 
 	setMinimumSize(sizeHint());
 
@@ -118,6 +123,7 @@ void
 FancyPlotter::applySettings()
 {
 	meterFrame->setTitle(fps->title->text());
+	plotter->setTitle(fps->title->text());
 	plotter->changeRange(0, fps->minVal->text().toDouble(),
 						 fps->maxVal->text().toDouble());
 
@@ -233,7 +239,10 @@ FancyPlotter::load(QDomElement& domElem)
 
 	QString title = domElem.attribute("title");
 	if (!title.isEmpty())
+	{
 		meterFrame->setTitle(title);
+		plotter->setTitle(title);
+	}
 
 	plotter->changeRange(0, domElem.attribute("min").toDouble(),
 						 domElem.attribute("max").toDouble());
