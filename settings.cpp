@@ -87,7 +87,7 @@ AppSettings::AppSettings(QWidget *parent, const char *name)
     rb_Perf  = new QRadioButton(i18n("Performance"),startuppage, "_Perf");
     startuppage->resize(300, 200);
 
-    ok = new QPushButton(i18n("Ok"), this, "_ok");
+    ok = new QPushButton(i18n("OK"), this, "_ok");
     ok->setDefault(TRUE);
     cancel = new QPushButton(i18n("Cancel"), this, "_cancel");
     ok->resize(80, 25);

@@ -756,7 +756,7 @@ void TaskMan::pSigHandler( int id )
   if ( err == -1 ) {
        QMessageBox::warning(this,"ktop",
        "Kill error...\nSpecified process does not exists\nor permission denied.",
-       "Ok", 0);
+       "OK", 0);
   }
 
   switch ( tabBar()->currentTab() ) {
@@ -1372,7 +1372,7 @@ void TaskMan::pList_killTask()
           if ( err == -1 ) 
 	       QMessageBox::warning(this,"ktop",
                                     "Kill error...\nSpecified process does not exists\nor permission denied.",
-                                    "Ok", 0);
+                                    "OK", 0);
           pList_lastSelectionPid = NONE;
           pList_update();
           pList->setCurrentItem(0);
@@ -1965,7 +1965,7 @@ void TaskMan::pTree_killTask()
           if ( err == -1 ) 
 	       QMessageBox::warning(this,"ktop",
                                     "Kill error...\nSpecified process does not exists\nor permission denied.",
-                                    "Ok", 0);
+                                    "OK", 0);
           pTree_lastSelectionPid = NONE;
           pTree_update();
           pTree->setCurrentItem(0);
