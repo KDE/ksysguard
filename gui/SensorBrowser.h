@@ -27,12 +27,95 @@
 #define _SensorBrowser_h_
 
 #include <qlistview.h>
+#include <qdict.h>
 
 #include "SensorClient.h"
 
 class QMouseEvent;
 class SensorManager;
 
+class SensorInfo
+{
+public:
+	SensorInfo(QListViewItem* l, const QString& n, const QString& d,
+			   const QString& t)
+		: lvi(l), name(n), description(d), type(t) { }
+	~SensorInfo() { }
+
+	QListViewItem* getLVI()
+	{
+		return (lvi);
+	}
+
+	const QString& getName()
+	{
+		return (name);
+	}
+
+private:
+	/// pointer to the entry in the browser QListView
+	QListViewItem* lvi;
+
+	/// the name of the sensor as provided by ktopd
+	QString name;
+
+	/// the localized description of the sensor
+	QString description;
+
+	/// qualifies the class of the sensor (ps, integer, etc.)
+	QString type;
+} ;
+
+class HostInfo
+{
+public:
+	HostInfo(const QString& n, QListViewItem* l) : hostName(n), lvi(l)
+	{
+		sensors.setAutoDelete(TRUE);
+	}
+	~HostInfo() { }
+
+	const QString& getHostName()
+	{
+		return (hostName);
+	}
+
+	QListViewItem* getLVI()
+	{
+		return (lvi);
+	}
+
+	const QString& getSensorName(const QListViewItem* lvi)
+	{
+		QListIterator<SensorInfo> it(sensors);
+		for ( ; it.current() && (*it)->getLVI() != lvi; ++it)
+			;
+		assert(it.current());
+
+		return ((*it)->getName());
+	}
+
+	void addSensor(QListViewItem* lvi, const QString& name,
+				   const QString& descr, const QString& type)
+	{
+		SensorInfo* si = new SensorInfo(lvi, name, descr, type);
+		CHECK_PTR(si);
+		sensors.append(si);
+	}
+
+private:
+	QString hostName;
+
+	/// pointer to the entry in the browser QListView
+	QListViewItem* lvi;
+
+	QList<SensorInfo> sensors;
+} ;
+	
+/**
+ * The SensorBrowser is the graphical front-end of the SensorManager. It
+ * displays the currently available hosts and their sensors.
+ */
 class SensorBrowser : public QListView, public SensorClient
 {
 	Q_OBJECT
@@ -51,7 +134,14 @@ private:
 	void answerReceived(int id, const QString& s);
 
 	SensorManager* sensorManager;
-	QList<QListViewItem> sensors;
+
+	QList<HostInfo> hostInfos;
+
+	/**
+	 * This dictionary stores the description (localized versions) of
+	 * the sensor names.
+	 */
+	QDict<QString> dict;
 
 	// This string stores the drag object.
 	QString dragText;

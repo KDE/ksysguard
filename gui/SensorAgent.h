@@ -24,12 +24,14 @@
 #define _SensorAgent_h_
 
 #include <qobject.h>
-#include <qstring.h>
 
-#include <kprocess.h>
-
+class QString;
+class KProcess;
 class SensorClient;
 
+/**
+ * This auxilliary class is used to store requests during their processing.
+ */
 class SensorRequest
 {
 	friend class SensorAgent;
@@ -44,7 +46,13 @@ private:
 	SensorClient* client;
 	int id;
 } ;
-	
+
+/**
+ * The SensorAgent starts a ktopd process and handles the asynchronous
+ * communication. It keeps a list of pending requests that have not been
+ * answered yet by ktopd. The current implementation only allowes one
+ * pending requests. Incoming requests are queued in an input FIFO.
+ */
 class SensorAgent : public QObject
 {
 	Q_OBJECT
@@ -58,10 +66,10 @@ public:
 	bool sendRequest(const QString& req, SensorClient* client, int id = 0);
 
 private slots:
-	void msgSent(KProcess* proc);
-	void msgRcvd(KProcess* proc, char* buffer, int buflen);
-	void errMsgRcvd(KProcess* proc, char* buffer, int buflen);
-	void ktopdExited(KProcess* proc);
+	void msgSent(KProcess*);
+	void msgRcvd(KProcess*, char* buffer, int buflen);
+	void errMsgRcvd(KProcess*, char* buffer, int buflen);
+	void ktopdExited(KProcess*);
 
 private:
 	void executeCommand();

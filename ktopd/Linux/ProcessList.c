@@ -304,7 +304,8 @@ initProcessList(void)
 
 	registerCommand("ps", printProcessList);
 	registerCommand("ps?", printProcessListInfo);
-	registerMonitor("pscount", printProcessCount, printProcessCountInfo);
+	registerMonitor("pscount", "integer", printProcessCount,
+					printProcessCountInfo);
 }
 
 void

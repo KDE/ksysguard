@@ -1,6 +1,6 @@
 This CVS version of KTop is work in progress! Although I only try to
 check in reasonably stable versions, I cannot guarantee this. I
-typically develop on SuSE Linux 6.0 with 2.2 kernel. If your system is
+typically develop on SuSE Linux 6.x with 2.2 kernel. If your system is
 different, this program might not even compile.
 
 If you want to join this development please contact me first. Please
@@ -8,9 +8,8 @@ do *NOT* check in unsolicited code as I might am rearranging the code
 and merging becomes a real headache so your code will be lost.
 
 This does not mean that I don't appreciate your help. Especially
-porting to other platforms is difficult for me. I have introduced a
-nice interface so porting is fairly easy. See OSStatus.cpp if you are
-interested. I really like to have a Solaris 2.x and HPUX 7 port!
+porting to other platforms is difficult for me. Each platform has it's
+specific back-end. See the ktopd directory for details.
 
-16-Feb-1999 Chris Schlaeger <cs@kde.org>
+5-Jan-2000 Chris Schlaeger <cs@kde.org>
 

@@ -34,7 +34,7 @@ class QDragEnterEvent;
 class QDropEvent;
 class QString;
 
-/*
+/**
  * A WorkSheet contains the displays to visualize the sensor results. When
  * creating the WorkSheet you must specify the number of columns. Displays
  * can be added and removed on the fly. The grid layout will handle the

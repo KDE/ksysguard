@@ -23,6 +23,8 @@
 	$Id$
 */
 
+#include <assert.h>
+
 #include <qevent.h>
 #include <qdragobject.h>
 
@@ -41,6 +43,18 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 
 	addColumn(i18n("Sensor Browser"));
 	setRootIsDecorated(TRUE);
+
+	// Fill the sensor description dictionary.
+	dict.insert("cpuidle", new QString(i18n("CPU Idle Load")));
+	dict.insert("cpusys", new QString(i18n("CPU System Load")));
+	dict.insert("cpunice", new QString(i18n("CPU Nice Load")));
+	dict.insert("cpuuser", new QString(i18n("CPU User Load")));
+	dict.insert("memswap", new QString(i18n("Swap Memory")));
+	dict.insert("memcached", new QString(i18n("Cached Memory")));
+	dict.insert("membuf", new QString(i18n("Buffered Memory")));
+	dict.insert("memused", new QString(i18n("Used Memory")));
+	dict.insert("memfree", new QString(i18n("Free Memory")));
+	dict.insert("pscount", new QString(i18n("Process Count")));
 }
 
 void
@@ -48,27 +62,59 @@ SensorBrowser::update()
 {
 	SensorManagerIterator it(sensorManager);
 
-	sensors.clear();
-	for (int i = 0 ; it.current(); ++it, ++i)
+	hostInfos.clear();
+	SensorAgent* host;
+	for (int i = 0 ; (host = it.current()); ++it, ++i)
 	{
-		QListViewItem* lvi = new QListViewItem(this,
-									   sensorManager->
-									   getHostName(it.current()));
+		QString hostName = sensorManager-> getHostName(host);
+
+		QListViewItem* lvi = new QListViewItem(this, hostName);
 		CHECK_PTR(lvi);
-		sensors.append(lvi);
-		(*it).sendRequest("monitors", this, i);
+
+		HostInfo* hostInfo = new HostInfo(hostName, lvi);
+		CHECK_PTR(hostInfo);
+		hostInfos.append(hostInfo);
+
+		// request sensor list from host
+		host->sendRequest("monitors", this, i);
 	}
 }
 
 void
 SensorBrowser::answerReceived(int id, const QString& s)
 {
-	SensorLinesTokenizer tok(s);
+	/* An answer has the following format:
 
-	for (unsigned int i = 0; i < tok.numberOfTokens(); ++i)
+	   cpuidle	integer
+	   cpusys 	integer
+	   cpunice	integer
+	   cpuuser	integer
+	   ps	table
+	*/
+
+	SensorTokenizer lines(s, '\n');
+
+	for (unsigned int i = 0; i < lines.numberOfTokens(); ++i)
 	{
-		QListViewItem* lvi = new QListViewItem(sensors.at(id), tok[i]);
+		SensorTokenizer words(lines[i], '\t');
+
+		QString sensorName = words[0];
+		QString sensorType = words[1];
+
+		// retrieve localized description from dictionary
+		QString sensorDescription;
+		if (!dict[sensorName])
+			sensorDescription = sensorName;
+		else
+			sensorDescription = *(dict[sensorName]);
+
+		QListViewItem* lvi = new QListViewItem(hostInfos.at(id)->getLVI(),
+											   sensorDescription);
 		CHECK_PTR(lvi);
+
+		// add sensor info to internal data structure
+		hostInfos.at(id)->addSensor(lvi, sensorName, sensorDescription,
+									sensorType);
 	}
 }
 
@@ -83,8 +129,14 @@ SensorBrowser::viewportMouseMoveEvent(QMouseEvent* ev)
 	if (!parent)
 		return;		// item is not a sensor name
 
+	// find the host info record that belongs to the LVI
+	QListIterator<HostInfo> it(hostInfos);
+	for ( ; it.current() && (*it)->getLVI() != parent; ++it)
+		;
+	assert(it.current());
+
 	// Create text drag object as "<hostname> <sensorname>".
-	dragText = parent->text(0) + " " + item->text(0);
+	dragText = (*it)->getHostName() + " " + (*it)->getSensorName(item);
 
 	QDragObject* dObj = new QTextDrag(dragText, this);
 	CHECK_PTR(dObj);

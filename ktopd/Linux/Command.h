@@ -31,7 +31,8 @@ void exitCommand(void);
 
 void registerCommand(const char* command, cmdExecutor ex);
 
-void registerMonitor(const char* command, cmdExecutor ex, cmdExecutor iq);
+void registerMonitor(const char* command, const char* type, cmdExecutor ex,
+					 cmdExecutor iq);
 
 void executeCommand(const char* command);
 

@@ -25,6 +25,9 @@
 
 #include <qevent.h>
 #include <qapplication.h>
+#include <qstring.h>
+
+#include <kprocess.h>
 
 #include "SensorAgent.h"
 #include "SensorClient.h"
@@ -56,9 +59,10 @@ SensorAgent::~SensorAgent()
 }
 	
 bool
-SensorAgent::start(const QString& host, const QString& shell)
+SensorAgent::start(const QString& /* host */, const QString& /* shell */)
 {
 	ktopd = new KProcess;
+	CHECK_PTR(ktopd);
 
 	connect(ktopd, SIGNAL(processExited(KProcess *)),
 			this, SLOT(ktopdExited(KProcess*)));
@@ -72,7 +76,12 @@ SensorAgent::start(const QString& host, const QString& shell)
 	*ktopd << "ktopd";
 
 	if (!ktopd->start(KProcess::NotifyOnExit, KProcess::All))
+	{
 		cout << "Can't start ktopd" << endl;
+		return (false);
+	}
+
+	return (true);
 }
 
 bool
@@ -82,11 +91,16 @@ SensorAgent::sendRequest(const QString& req, SensorClient* client, int id)
 	 * routed back to the requesting client. */
 	inputFIFO.prepend(new SensorRequest(req, client, id));
 	if (ktopdOnLine && (inputFIFO.count() == 1))
+	{
 		executeCommand();
+		return (true);
+	}
+
+	return (false);
 }
 
 void
-SensorAgent::msgSent(KProcess* proc)
+SensorAgent::msgSent(KProcess*)
 {
 	// remove oldest (sent) request from input FIFO
 	SensorRequest* req = inputFIFO.last();
@@ -98,7 +112,7 @@ SensorAgent::msgSent(KProcess* proc)
 }
 
 void 
-SensorAgent::msgRcvd(KProcess* proc, char* buffer, int buflen)
+SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 {
 	answerBuffer += QString(buffer).left(buflen);
 
@@ -136,13 +150,14 @@ SensorAgent::msgRcvd(KProcess* proc, char* buffer, int buflen)
 }
 
 void
-SensorAgent::errMsgRcvd(KProcess* proc, char* buffer, int buflen)
+SensorAgent::errMsgRcvd(KProcess*, char* buffer, int /* buflen */)
 {
+	/* TODO: Better error handling */
 	cout << "RCVD Error: " << buffer << endl;
 }
 
 void
-SensorAgent::ktopdExited(KProcess* proc)
+SensorAgent::ktopdExited(KProcess*)
 {
 	ktopdOnLine = false;
 	cout << "ktopd exited" << endl;

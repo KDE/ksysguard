@@ -30,10 +30,21 @@ typedef struct
 {
 	char* command;
 	cmdExecutor ex;
+	char* type;
 	int isMonitor;
 } Command;
 
 static CONTAINER CommandList;
+
+void 
+_Command(void* v)
+{
+	Command* c = v;
+	if (c->command)
+		free (c->command);
+	if (c->type)
+		free (c->type);
+}
 
 /*
 ================================ public part ==================================
@@ -50,7 +61,7 @@ initCommand(void)
 void
 exitCommand(void)
 {
-	destr_ctnr(CommandList, (DESTR_FUNC) NIL);
+	destr_ctnr(CommandList, _Command);
 }
 
 void 
@@ -65,7 +76,8 @@ registerCommand(const char* command, cmdExecutor ex)
 }
 
 void
-registerMonitor(const char* command, cmdExecutor ex, cmdExecutor iq)
+registerMonitor(const char* command, const char* type, cmdExecutor ex,
+				cmdExecutor iq)
 {
 	/* Monitors are similar to regular commands except that every monitor
 	 * registers two commands. The first is the value request command and
@@ -78,6 +90,8 @@ registerMonitor(const char* command, cmdExecutor ex, cmdExecutor iq)
 	cmd->command = (char*) malloc(strlen(command) + 1);
 	strcpy(cmd->command, command);
 	cmd->ex = ex;
+	cmd->type = (char*) malloc(strlen(type) + 1);
+	strcpy(cmd->type, type);
 	cmd->isMonitor = 1;
 	push_ctnr(CommandList, cmd);
 
@@ -87,6 +101,7 @@ registerMonitor(const char* command, cmdExecutor ex, cmdExecutor iq)
 	cmd->command[strlen(command)] = '?';
 	cmd->ex = iq;
 	cmd->isMonitor = 0;
+	cmd->type = 0;
 	push_ctnr(CommandList, cmd);
 }
 
@@ -122,6 +137,6 @@ printMonitors(const char* cmd)
 		Command* cmd = (Command*) get_ctnr(CommandList, i);
 
 		if (cmd->isMonitor)
-			printf("%s\n", cmd->command);
+			printf("%s\t%s\n", cmd->command, cmd->type);
 	}
 }

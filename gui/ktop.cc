@@ -191,7 +191,7 @@ TopLevel::answerReceived(int id, const QString& answer)
 		statusbar->changeItem(s, 2);
 		break;
 	case 5:
-		SensorMonitorInfo info(answer);
+		SensorIntegerInfo info(answer);
 		sTotal = info.getMax();
 		unit = info.getUnit();
 		break;

@@ -60,85 +60,74 @@ public:
  * answers. For each type of answer there is a separate class.
  */
 
-/**
- * A monitor info contains 4 fields seperated by TABS, a description
- * (name), the minimum and the maximum values and the unit.
- * e.g. Swap Memory	0	133885952	KB
- */
-class SensorMonitorInfo
+class SensorTokenizer
 {
 public:
-	SensorMonitorInfo(const QString& info)
-	{
-		QString s = info;
-		name = s.left(s.find('\t'));
-		// skip name
-		s = s.remove(0, s.find('\t') + 1);
-		min = s.left(s.find('\t')).toLong();
-		// skip minimal value
-		s = s.remove(0, s.find('\t') + 1);
-		max = s.left(s.find('\t')).toLong();
-		// skip maximum value
-		s = s.remove(0, s.find('\t') + 1);
-		unit = s;
-	}
-	~SensorMonitorInfo() { }
-
-	const QString& getName()
-	{
-		return (name);
-	}
-	long getMin()
-	{
-		return (min);
-	}
-	long getMax()
-	{
-		return (max);
-	}
-	const QString& getUnit()
-	{
-		return (unit);
-	}
-
-private:
-	QString name;
-	long min;
-	long max;
-	QString unit;
-} ;
-
-class SensorLinesTokenizer
-{
-public:
-	SensorLinesTokenizer(const QString& info)
+	SensorTokenizer(const QString& info, QChar separator)
 	{
 		tokens.setAutoDelete(TRUE);
 
 		QString s = info;
 		while (s.length() > 0)
 		{
-			int newline;
+			int sep;
 
-			if ((newline = s.find('\n')) < 0)
+			if ((sep = s.find(separator)) < 0)
 			{
 				tokens.append(new QString(s));
 				break;
 			}
 			else
 			{
-				tokens.append(new QString(s.left(newline)));
-				s = s.remove(0, newline + 1);
+				tokens.append(new QString(s.left(sep)));
+				s = s.remove(0, sep + 1);
 			}
 		}
 	}
-	~SensorLinesTokenizer() { }
+	~SensorTokenizer() { }
 
-	const QString& operator[](int idx) { return *(tokens.at(idx)); }
+	const QString& operator[](unsigned idx)
+	{
+		static QString dummy = "";
+
+		if (idx < tokens.count())
+			return *(tokens.at(idx));
+		return (dummy);
+	}
 	unsigned numberOfTokens() { return (tokens.count()); }
 
 private:
 	QList<QString> tokens;
+} ;
+
+/**
+ * An integer info contains 4 fields seperated by TABS, a description
+ * (name), the minimum and the maximum values and the unit.
+ * e.g. Swap Memory	0	133885952	KB
+ */
+class SensorIntegerInfo : public SensorTokenizer
+{
+public:
+	SensorIntegerInfo(const QString& info)
+		: SensorTokenizer(info, '\t') { }
+	~SensorIntegerInfo() { }
+
+	const QString& getName()
+	{
+		return ((*this)[0]);
+	}
+	long getMin()
+	{
+		return ((*this)[1].toLong());
+	}
+	long getMax()
+	{
+		return ((*this)[2].toLong());
+	}
+	const QString& getUnit()
+	{
+		return ((*this)[3]);
+	}
 } ;
 
 #endif
