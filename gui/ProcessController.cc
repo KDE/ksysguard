@@ -252,15 +252,8 @@ ProcessController::answerReceived(int id, const QString& answer)
 	}
 	case 2:
 		/* We have received the answer to a ps command that contains a
-		 * list of processes with various additional information. Sometimes,
-		 * for yet unknown reason the connection gets distorted and the
-		 * information is corrupted. As a workaround we simply restart the
-		 * connection. The corruption seems to affect only the ps output. */
-		if (!pList->update(answer))
-		{
-			sensorError(id, true);
-			SensorMgr->resynchronize(sensors.at(0)->hostName);
-		}
+		 * list of processes with various additional information. */
+		pList->update(answer);
 		break;
 	case 3:
 	{
@@ -304,6 +297,12 @@ ProcessController::sensorError(int, bool err)
 {
 	if (err == sensors.at(0)->ok)
 	{
+		if (!err)
+		{
+			sendRequest(sensors.at(0)->hostName, "ps?", 1);
+			sendRequest(sensors.at(0)->hostName, "test kill", 4);
+		}
+
 		/* This happens only when the sensorOk status needs to be changed. */
 		sensors.at(0)->ok = !err;
 	}

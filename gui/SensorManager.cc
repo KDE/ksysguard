@@ -264,6 +264,7 @@ SensorManager::resynchronize(const QString& hostname)
 	QString shell, command;
 	int port;
 	getHostInfo(hostname, shell, command, port);
+
 	disengage(hostname);
 
 	kdDebug () << "Re-synchronizing connection to " << hostname << endl;

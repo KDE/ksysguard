@@ -40,22 +40,15 @@
 SensorAgent::SensorAgent(SensorManager* sm) :
 	sensorManager(sm)
 {
+	inputFIFO.setAutoDelete(true);
+	processingFIFO.setAutoDelete(true);
+
 	daemonOnLine = false;
 	state = 1;
 }
 
 SensorAgent::~SensorAgent()
 {
-	while (!inputFIFO.isEmpty())
-	{
-		delete inputFIFO.first();
-		inputFIFO.removeFirst();
-	}
-	while (!processingFIFO.isEmpty())
-	{
-		delete processingFIFO.first();
-		processingFIFO.removeFirst();
-	}
 }
 	
 bool
@@ -153,13 +146,13 @@ SensorAgent::processAnswer(const QString& buf)
 					<< "request!" << endl;
 				return;
 			}
-			processingFIFO.removeLast();
 				
 			if (!req->client)
 			{
 				kdDebug ()
 					<< "ERROR: No client registered for request!"
 					<< endl;
+				processingFIFO.removeLast();
 				return;
 			}
 			if (answerBuffer.left(end) == "UNKNOWN COMMAND")
@@ -173,10 +166,10 @@ SensorAgent::processAnswer(const QString& buf)
 				req->client->answerReceived(req->id,
 											answerBuffer.left(end));
 			}
-			delete req;
+			processingFIFO.removeLast();
 		}
 
-		// chop of processed part answer buffer
+		// chop of processed part of the answer buffer
 		answerBuffer.remove(0, end + strlen("\nksysguardd> "));
 	}
 }

@@ -92,9 +92,7 @@ void
 SensorShellAgent::msgSent(KProcess*)
 {
 	// remove oldest (sent) request from input FIFO
-	SensorRequest* req = inputFIFO.last();
 	inputFIFO.removeLast();
-	delete req;
 
 	// Try to send next request if available.
 	executeCommand();

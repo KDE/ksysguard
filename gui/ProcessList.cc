@@ -236,12 +236,15 @@ ProcessList::update(const QString& list)
 		SensorPSLine* line = new SensorPSLine(procs[i]);
 		if (line->numberOfTokens() != (uint) columns())
 		{
+#if 0
+			// This is needed for debugging only.
 			kdDebug() << list << endl;
 			QString l;
 			for (uint j = 0; j < line->numberOfTokens(); j++)
 				l += (*line)[i] + "|";
 			kdDebug() << "Incomplete ps line:" << l << endl;
 			setSensorOk(false);
+#endif
 			return (FALSE);
 		}
 		else
