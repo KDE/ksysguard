@@ -458,6 +458,8 @@ printProcessList(const char* cmd)
 			   ps->vmSize / 1024, ps->vmRss / 1024,
 			   ps->userName, ps->cmdline);
 	}
+
+	fprintf(CurrentClient, "\n");
 }
 
 void

@@ -231,7 +231,7 @@
                     </property>
                     <property>
                         <name>text</name>
-                        <string>Grid Color</string>
+                        <string>Background Color</string>
                     </property>
                 </widget>
                 <spacer>

@@ -72,6 +72,7 @@ void printLogFile(const char* cmd)
 			}
 		}
 	}
+
 	fprintf(CurrentClient, "\n");
 }
 

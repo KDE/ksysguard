@@ -127,8 +127,6 @@ exitCpuInfo(void)
 int
 updateCpuInfo(void)
 {
-	/* ATTENTION: This function is called from a signal handler! Rules for
-	 * signal handlers must be obeyed! */
 	size_t n;
 	int fd;
 

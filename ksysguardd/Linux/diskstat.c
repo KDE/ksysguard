@@ -168,6 +168,8 @@ void printDiskStat(const char* cmd)
 			disk_info->bused_percent,
 			disk_info->mntpnt);
 	}
+
+	fprintf(CurrentClient, "\n");
 }
 
 void printDiskStatInfo(const char* cmd)
@@ -189,6 +191,8 @@ void printDiskStatUsed(const char* cmd)
 			fprintf(CurrentClient, "%ld\n", disk_info->bused);
 		}
 	}
+
+	fprintf(CurrentClient, "\n");
 }
 
 void printDiskStatUsedInfo(const char* cmd)
@@ -210,6 +214,8 @@ void printDiskStatFree(const char* cmd)
 			fprintf(CurrentClient, "%ld\n", disk_info->bfree);
 		}
 	}
+
+	fprintf(CurrentClient, "\n");
 }
 
 void printDiskStatFreeInfo(const char* cmd)
@@ -231,6 +237,8 @@ void printDiskStatPercent(const char* cmd)
 			fprintf(CurrentClient, "%d\n", disk_info->bused_percent);
 		}
 	}
+
+	fprintf(CurrentClient, "\n");
 }
 
 void printDiskStatPercentInfo(const char* cmd)

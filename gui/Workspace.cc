@@ -239,7 +239,7 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 	{
 		KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", TRUE);
 		fileName = fd.getSaveFileName(workDir + "/" +
-			tabLabel(currentPage()) + ".sgrd", "*.sgrd", 0,
+			tabLabel(sheet) + ".sgrd", "*.sgrd", 0,
 			i18n("Save current work sheet as"));
 		if (fileName.isEmpty())
 			return;

@@ -633,8 +633,6 @@ exitStat(void)
 int
 updateStat(void)
 {
-	/* ATTENTION: This function is called from a signal handler! Rules for
-	 * signal handlers must be obeyed! */
 	size_t n;
 	int fd;
 
@@ -979,8 +977,9 @@ printDiskIO(const char* cmd)
 
 	if (!ptr)
 	{
+		print_error("RECONFIGURE");
 		fprintf(CurrentClient, "0\n");
-		/* TODO: send "RECONFIGURE" */
+
 		log_error("Disk device disappeared");
 		return;
 	}
