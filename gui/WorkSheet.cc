@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,11 +29,10 @@
 #include <klocale.h>
 
 #include "WorkSheet.h"
-#include "WorkSheet.moc"
-
 #include "SensorManager.h"
 #include "FancyPlotter.h"
 #include "ProcessController.h"
+#include "WorkSheet.moc"
 
 WorkSheet::WorkSheet(int columns, QWidget* parent) :
 	QGrid(columns, parent)

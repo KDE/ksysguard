@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -38,7 +38,6 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 {
 	// Create the box that will contain the other widgets.
 	box = new QGroupBox(this, "pList_box"); 
-	box->setTitle(i18n("Running Processes"));
 	CHECK_PTR(box);
 
 	// Create the table that lists the processes.
@@ -78,7 +77,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	bRefresh = new QPushButton(i18n("Refresh"), this, "bRefresh");
 	CHECK_PTR(bRefresh);
 	bRefresh->setMinimumSize(bRefresh->sizeHint());
-	connect(bRefresh, SIGNAL(clicked()), pList, SLOT(updateList()));
+	connect(bRefresh, SIGNAL(clicked()), this, SLOT(updateList()));
 
 	// Create the 'Kill' button.
 	bKill = new QPushButton(i18n("Kill"), this, "bKill");
@@ -130,9 +129,22 @@ ProcessController::addSensor(const QString& hostname,
 	if (!SensorMgr->sendRequest(hostName, "ps?", (SensorClient*) this, 1))
 	{
 		// The sensor agent died.
+		// TODO: make this visible or remove process controller
 	}
 
+	box->setTitle(QString(i18n("%1: Running Processes")).arg(hostname));
+
 	return (TRUE);
+}
+
+void
+ProcessController::updateList()
+{
+	if (!SensorMgr->sendRequest(hostName, "ps", this, 2))
+	{
+		// The sensor agent died.
+		// TODO: make this visible or remove process controller
+	}
 }
 
 void

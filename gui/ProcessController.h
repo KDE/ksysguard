@@ -78,7 +78,7 @@ public:
 
 	void refreshList(void)
 	{
-		SensorMgr->sendRequest(hostName, "ps?", (SensorClient*) this, 2);
+		updateList();
 	}
 
 	virtual bool addSensor(const QString&, const QString&, const QString&);
@@ -87,7 +87,7 @@ public:
 
 	virtual void timerEvent(QTimerEvent*)
 	{
-		SensorMgr->sendRequest(hostName, "ps", (SensorClient*) this, 2);
+		updateList();
 	}
 
 public slots:
@@ -111,10 +111,7 @@ public slots:
 			timerOn();
 	}
 
-	void updateList()
-	{
-		SensorMgr->sendRequest(hostName, "ps", this, 2);
-	}
+	void updateList();
 
 signals:
 	void setFilterMode(int);

@@ -84,6 +84,7 @@ public:
 			}
 		}
 	}
+
 	~SensorTokenizer() { }
 
 	const QString& operator[](unsigned idx)
@@ -94,6 +95,7 @@ public:
 			return *(tokens.at(idx));
 		return (dummy);
 	}
+
 	unsigned numberOfTokens() { return (tokens.count()); }
 
 private:
