@@ -1991,13 +1991,3 @@ const QPixmap* TaskMan::pTree_getProcIcon( const char* pname )
 {
  return TaskMan_getProcIcon(pname);
 }
-
-
-
-
-
-
-
-
-
-
