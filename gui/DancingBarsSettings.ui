@@ -580,7 +580,7 @@
                                 </property>
                                 <property>
                                     <name>whatsThis</name>
-                                    <string>This determines the size of the font used to print a label underneath the bars. Bars are automatically surpressed if one text becomes too large. So it is advisable to use a small font size here.</string>
+                                    <string>This determines the size of the font used to print a label underneath the bars. Bars are automatically suppressed if text becomes too large, so it is advisable to use a small font size here.</string>
                                 </property>
                             </widget>
                         </hbox>
