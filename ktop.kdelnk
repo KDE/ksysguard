@@ -2,7 +2,11 @@
 [KDE Desktop Entry]
 BinaryPattern=ktop;
 Comment=Information about tasks and performance
+Comment[no]=Informasjon om oppgaver og ytelse
+Comment[pt_BR]=Informações sobre processos e performance
 Name=Performance monitor
+Name[no]=Ytelsesovervåker
+Name[pt_BR]=Monitor de performance
 Exec=ktop
 Icon=ktop.xpm
 MiniIcon=ktop.xpm
