@@ -298,6 +298,8 @@ QString FancyPlotterSettings::title() const
 void FancyPlotterSettings::setUseAutoRange( bool value )
 {
   mUseAutoRange->setChecked( value );
+  mMinValue->setEnabled( !value );
+  mMaxValue->setEnabled( !value );
 }
 
 bool FancyPlotterSettings::useAutoRange() const
@@ -351,6 +353,9 @@ int FancyPlotterSettings::horizontalScale() const
 void FancyPlotterSettings::setShowVerticalLines( bool value )
 {
   mShowVerticalLines->setChecked( value );
+  mVerticalLinesDistance->setEnabled(  value );
+  mVerticalLinesScroll->setEnabled( value );
+  mVerticalLinesColor->setEnabled( value );
 }
 
 bool FancyPlotterSettings::showVerticalLines() const
@@ -391,6 +396,10 @@ bool FancyPlotterSettings::verticalLinesScroll() const
 void FancyPlotterSettings::setShowHorizontalLines( bool value )
 {
   mShowHorizontalLines->setChecked( value );
+  mHorizontalLinesCount->setEnabled( value );
+  mHorizontalLinesColor->setEnabled( value );
+  mShowLabels->setEnabled( value );
+
 }
 
 bool FancyPlotterSettings::showHorizontalLines() const
