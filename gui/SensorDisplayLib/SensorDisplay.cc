@@ -177,10 +177,10 @@ SensorDisplay::eventFilter(QObject* o, QEvent* e)
 	{
 		QPopupMenu pm;
 		if (hasSettingsDialog())
-			pm.insertItem(i18n("&Properties"), 1);
+			pm.insertItem(i18n("&Properties..."), 1);
 		pm.insertItem(i18n("&Remove Display"), 2);
 		pm.insertSeparator();
-		pm.insertItem(i18n("&Setup Update Interval"), 3);
+		pm.insertItem(i18n("&Setup Update Interval..."), 3);
 		if (timerId == NONE)
 			pm.insertItem(i18n("&Continue Update"), 4);
 		else

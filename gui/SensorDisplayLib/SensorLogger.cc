@@ -409,7 +409,7 @@ SensorLogger::RMBClicked(QListViewItem* item, const QPoint& point, int)
 {
 	QPopupMenu pm;
 	if (hasSettingsDialog())
-		pm.insertItem(i18n("&Properties"), 1);
+		pm.insertItem(i18n("&Properties..."), 1);
 	pm.insertItem(i18n("&Remove Display"), 2);
 	pm.insertSeparator(-1);
 	pm.insertItem(i18n("&Remove Sensor"), 3);
