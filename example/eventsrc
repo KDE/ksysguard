@@ -113,6 +113,7 @@ Comment[et]=Otsingu muster sobib
 Comment[fi]=Hakumerkkijono osui
 Comment[fr]=Motif de recherche trouvé
 Comment[hu]=Illeszkedő keresési minta
+Comment[it]=Schema di ricerca trovato
 Comment[nl]=Zoekpatroon komt overeen
 Comment[pt]=Padrão de pesquisa encontrado
 Comment[pt_BR]=Padrão de busca encontrado
@@ -122,6 +123,7 @@ Comment[sr@Latn]=Подударан узорак је пронађен
 Comment[sv]=Sökmönster igenkänt
 Comment[tr]=Eşleşen örüntüyü ara
 Comment[uk]=Знайдено взірець пошука
+Comment[xx]=xxSearch pattern matchedxx
 Comment[zh_CN]=查找匹配的模式
 
 [sensor_alarm]
