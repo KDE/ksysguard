@@ -8,7 +8,7 @@
                        nicknet@planete.net
 
 	Copyright (c) 1999 Chris Schlaeger
-	                   cs@axys.de
+	                   cs@kde.org
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -60,13 +60,6 @@ class ProcessList : public QListView
     Q_OBJECT
 
 public:
-	// items of "Refresh-Rate" combo box
-	enum
-	{
-		UPDATE_SLOW = 0, 
-		UPDATE_MEDIUM, 
-		UPDATE_FAST   
-	};
 	// items of "Filter" combo box
 	enum
 	{
@@ -77,16 +70,12 @@ public:
 	};
 
 	/// The constructor.
-	ProcessList(QWidget* parent , const char* name);
+	ProcessList(QWidget* parent = 0, const char* name = 0);
 
 	/// The destructor.
 	~ProcessList();
 
-	/**
-	 * The udpate function can be used to update the displayed process list.
-	 * A current list of processes is requested from the OS.
-	 */
-	void update(void);
+	void saveSettings(void);
 
 	/**
 	 * This function can be used to control the auto update feature of the
@@ -95,61 +84,28 @@ public:
 	 */
 	int setAutoUpdateMode(bool mode = TRUE);
 
-	/**
-	 * This function returns the current refresh rate. It's not the rate
-	 * itself but the index of the combo button item used to control the rate.
-	 */
-	int getUpdateRate()
-	{
-		return (update_rate);
-	}
-
-	/// This function sets the refresh rate.
-	void setUpdateRate(int);
-
-	/**
-	 * This function returns the current filter mode. The value is the index
-	 * of the combo button item used to set the filter mode.
-	 */
-	int getFilterMode()
-	{
-		return (filtermode);
-	}
-
-	/// This function sets the filter mode.
-	void setFilterMode(int m)
-	{
-		filtermode = m;
-	}
-
 	virtual void setSorting(int column, bool increasing = TRUE);
-
-	/**
-	 * Return the index of the column that we sort for.
-	 */
-	int getSortColumn() const
-	{
-		return (sortColumn);
-	}
-
-	/**
-	 * Return wheather we sort in increasing direction or not.
-	 */
-	int getIncreasing() const
-	{
-		return (increasing);
-	}
-
-	/**
-	 * This functions specifies the column that is used to sort the process
-	 * list.
-	 */
-	void setSortColumn(int c, bool inc = FALSE);
 
 	int selectedPid(void) const;
 
+public slots:
+	/**
+	 * The udpate function can be used to update the displayed process list.
+	 * A current list of processes is requested from the OS.
+	 */
+	void update(void);
+
+	void setRefreshRate(int);
+	void setFilterMode(int fm)
+	{
+		filterMode = fm;
+		update();
+	}
+
 signals:
 	void popupMenu(int, int);
+	void refreshRateChanged(int);
+	void filterModeChanged(int);
 
 protected:
 	virtual void mousePressEvent(QMouseEvent* e);
@@ -184,16 +140,16 @@ private:
 
 	void timerOff()
 	{
-		if (timer_id != NONE)
+		if (timerId != NONE)
 		{
-			killTimer(timer_id);
-			timer_id = NONE;
+			killTimer(timerId);
+			timerId = NONE;
 		} 
 	}
 
 	void timerOn()
 	{
-		timer_id = startTimer(timer_interval);
+		timerId = startTimer(timerInterval);
 	}
 
 	/*
@@ -208,13 +164,13 @@ private:
 	 */
 	int mapT2V(int tcol);
 
-	int filtermode;
+	int filterMode;
 	int sortColumn;
 	bool increasing;
-	int update_rate;
+	int refreshRate;
 	int currColumn;
-	int timer_interval;
-	int timer_id;
+	int timerInterval;
+	int timerId;
 
 	OSProcessList pl;
     KtopIconList* icons;

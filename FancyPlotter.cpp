@@ -2,7 +2,7 @@
     KTop, the KDE Task Manager
    
 	Copyright (c) 1999 Chris Schlaeger
-	                   cs@axys.de
+	                   cs@kde.org
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -65,6 +65,9 @@ FancyPlotter::resizeEvent(QResizeEvent*)
 	{
 		mmw = 0;
 		multiMeter->hide();
+
+		plotter->move(mmw + 15, 25);
+		plotter->resize(w - mmw - 30, h - 40);
 	}
 	else
 	{
@@ -72,8 +75,7 @@ FancyPlotter::resizeEvent(QResizeEvent*)
 		multiMeter->show();
 		multiMeter->move(15, 25);
 		multiMeter->resize(mmw, h - 40);
+		plotter->move(mmw + 25, 25);
+		plotter->resize(w - mmw - 40, h - 40);
 	}
-
-	plotter->move(mmw + 25, 25);
-	plotter->resize(w - mmw - 40, h - 40);
 }

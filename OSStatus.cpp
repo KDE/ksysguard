@@ -2,7 +2,7 @@
     KTop, the KDE Task Manager
    
 	Copyright (c) 1999 Chris Schlaeger
-	                   cs@axys.de
+	                   cs@kde.org
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -81,7 +81,7 @@
 #include "OSStatus.h"
 
 // uncomment this line to fake SMP reporting on non SMP systems
-//#define FAKE_SMP 1
+// #define FAKE_SMP 1
 
 #ifdef linux
 
@@ -359,10 +359,11 @@ OSStatus::readCpuInfo(const char* cpu, int* u, int* s, int* n, int* i)
 		}
 	} while (strcmp(tag, cpu));
 
-	return (true);
 #ifdef FAKE_SMP
 #undef cpu
 #endif
+
+	return (true);
 }
 
 bool

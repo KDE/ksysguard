@@ -8,7 +8,7 @@
                        nicknet@planete.net
     
 	Copyright (c) 1999 Chris Schlaeger
-	                   cs@axys.de
+	                   cs@kde.org
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -77,7 +77,8 @@ public:
 		MENU_ID_KILL
 	};
 
-	TaskMan(QWidget* parent = 0, const char* name = 0, int sfolder = 0);
+	TaskMan(QWidget* parent = 0, const char* name = 0,
+			int sfolder = 0);
     ~TaskMan()
 	{
 		delete procListPage;
@@ -87,8 +88,6 @@ public:
 		delete settings;
 	}
      
-	int setUpdateInterval(int);
-	int getUpdateInterval();
 	void invokeSettings();
 	void raiseStartUpPage();
 	void saveSettings();
@@ -100,7 +99,6 @@ public:
 public slots:
 	void pSigHandler(int);
 	void tabBarSelected(int);
-
 	void popupMenu(int, int)
 	{
 		pSig->popup(QCursor::pos());
@@ -113,6 +111,10 @@ public slots:
 	{
 		killProcess(pid, SIGKILL, "SIGKILL");
 	}
+
+signals:
+	void refreshRateSelected(int);
+	void enableRefreshMenu(bool);
 
 private:
 	void reniceProcess(int pid);

@@ -8,7 +8,7 @@
                        nicknet@planete.net
 
 	Copyright (c) 1999 Chris Schlaeger
-	                   cs@axys.de
+	                   cs@kde.org
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@
 #include <kapp.h>
 #include <klocale.h>
 
+#include "MainMenu.h"
 #include "OSProcessList.h"
 #include "ProcessList.moc"
 
@@ -54,6 +55,8 @@ typedef struct
 	int alignment;
 	KeyFunc key;
 } TABCOLUMN;
+
+extern KApplication* Kapp;
 
 static const char* intKey(const char* text);
 static const char* timeKey(const char* text);
@@ -141,27 +144,38 @@ ProcessLVI::key(int column, bool dir) const
 		return (text(column));
 }
 
-ProcessList::ProcessList(QWidget *parent = 0, const char* name = 0)
+ProcessList::ProcessList(QWidget *parent, const char* name)
 	: QListView(parent, name)
 {
+	connect(this, SIGNAL(refreshRateChanged(int)),
+			MainMenuBar, SLOT(checkRefreshRate(int)));
+	connect(MainMenuBar, SIGNAL(setRefreshRate(int)),
+			this, SLOT(setRefreshRate(int)));
+
+	connect(this, SIGNAL(filterModeChanged(int)),
+			parent, SLOT(filterModeChanged(int)));
+	connect(parent, SIGNAL(setFilterMode(int)),
+			this, SLOT(setFilterMode(int)));
+
 	// no timer started yet
-	timer_id = NONE;
+	timerId = NONE;
 
 	/*
 	 * The default filter mode is 'own processes'. This can be overridden by
 	 * the config file.
 	 */
-	filtermode = FILTER_OWN;
+	filterMode = Kapp->getConfig()->readNumEntry("FilterMode", FILTER_OWN);
+	emit(filterModeChanged(filterMode));
 
 	/*
 	 * The default update rate is 'medium'. This can be overridden by the
 	 * config file.
 	 */
-	update_rate = UPDATE_MEDIUM;
+	setRefreshRate(Kapp->getConfig()->readNumEntry("RefreshRate", 2));
 
 	// The default sorting is for the PID in decreasing order.
-	sortColumn = 1;
-	increasing = FALSE;
+	sortColumn = Kapp->getConfig()->readNumEntry("SortColumn", 1);
+	increasing = Kapp->getConfig()->readNumEntry("SortIncreasing", FALSE);
 
 	// load the icons we display with the processes
 	icons = new KtopIconList;
@@ -192,35 +206,49 @@ ProcessList::~ProcessList()
 	delete icons;
 
 	// switch off timer
-	if (timer_id != NONE)
-		killTimer(timer_id);
+	if (timerId != NONE)
+		killTimer(timerId);
 
 	delete(headerPM);
 }
 
-void 
-ProcessList::setUpdateRate(int r)
+void
+ProcessList::saveSettings(void)
 {
-	switch (update_rate = r)
+	Kapp->getConfig()->writeEntry("FilterMode", filterMode);
+	Kapp->getConfig()->writeEntry("RefreshRate", refreshRate);
+	Kapp->getConfig()->writeEntry("SortColumn", sortColumn);
+	Kapp->getConfig()->writeEntry("SortIncreasing", increasing);
+}
+
+void 
+ProcessList::setRefreshRate(int r)
+{
+	timerOff();
+	switch (refreshRate = r)
 	{
-	case UPDATE_SLOW:
-		timer_interval = UPDATE_SLOW_VALUE * 1000;
+	case 0:
 		break;
-	case UPDATE_MEDIUM:
-		timer_interval = UPDATE_MEDIUM_VALUE * 1000;
+
+	case 1:
+		timerInterval = 20000;
 		break;
-	case UPDATE_FAST:
+
+	case 2:
+		timerInterval = 7000;
+		break;
+
+	case 3:
 	default:
-		timer_interval = UPDATE_FAST_VALUE * 1000;
+		timerInterval = 1000;
 		break;
 	}
 
 	// only re-start the timer if auto mode is enabled
-	if (timer_id != NONE)
-	{
-		timerOff();
+	if (refreshRate != 0)
 		timerOn();
-	}
+
+	emit(refreshRateChanged(refreshRate));
 }
 
 void
@@ -237,11 +265,15 @@ ProcessList::setSorting(int column, bool inc)
 	if (sortColumn == tcol)
 		increasing = !inc;
 	else
+	{
 		sortColumn = tcol;
+		increasing = inc;
+	}
 
 	QListView::setSorting(column, increasing);
 }
 
+#if 0
 void
 ProcessList::setSortColumn(int c, bool inc)
 {
@@ -256,6 +288,7 @@ ProcessList::setSortColumn(int c, bool inc)
 
 	increasing = inc;
 }
+#endif
 
 int
 ProcessList::setAutoUpdateMode(bool mode)
@@ -266,10 +299,10 @@ ProcessList::setAutoUpdateMode(bool mode)
 	 */
 
 	// save current setting of the timer
-	int oldmode = (timer_id != NONE) ? TRUE : FALSE; 
+	int oldmode = (timerId != NONE) ? TRUE : FALSE; 
 
 	// set new setting
-	if (mode)
+	if (mode && refreshRate != 0)
 		timerOn();
 	else
 		timerOff();
@@ -316,7 +349,7 @@ ProcessList::load()
 
 		// filter out processes we are not interested in
 		bool ignore;
-		switch (filtermode)
+		switch (filterMode)
 		{
 		case FILTER_ALL:
 			ignore = false;
@@ -335,7 +368,7 @@ ProcessList::load()
 		if (!ignore)
 		{
 			/*
-			 * Get icon from icon list might be appropriate for a process
+			 * Get icon from icon list that might be appropriate for a process
 			 * with this name.
 			 */
 			const QPixmap* pix = icons->procIcon((const char*)p->getName());
@@ -486,6 +519,7 @@ ProcessList::initTabCol(void)
 		}
 	setItemMargin(1);
 	setAllColumnsShowFocus(TRUE);
+	QListView::setSorting(sortColumn, increasing);
 }
 
 int 

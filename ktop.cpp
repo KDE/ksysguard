@@ -8,7 +8,7 @@
                        nicknet@planete.net
     
 	Copyright (c) 1999 Chris Schlaeger
-	                   cs@axys.de
+	                   cs@kde.org
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,12 +32,9 @@
 #include <qmessagebox.h>
 
 #include <ktmainwindow.h>
-#include <kmenubar.h>
 #include <kconfig.h>
 #include <klocale.h>
-#include <kstring.h>
 
-#include "version.h"
 #include "OSStatus.h"
 #include "ktop.moc"
 
@@ -61,37 +58,9 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	/*
 	 * create main menu
 	 */
-	// 'File' submenu
-	file = new QPopupMenu();
-	file->insertItem(i18n("Quit"), MENU_ID_QUIT, -1);
-	connect(file, SIGNAL(activated(int)), this, SLOT(menuHandler(int)));
 
-	// 'Help' submenu
-	QString about;
-	ksprintf(&about, i18n("KDE Task Manager (KTop) Version %s\n\n"
-			     "Copyright:\n"
-			     "1996 : A. Sanda <alex@darkstar.ping.at>\n"
-			     "1997 : Ralf Mueller <ralf@bj-ig.de>\n"
-			     "1997-98 : Bernd Johannes Wuebben <wuebben@kde.org>\n"
-			     "1998 : Nicolas Leclercq <nicknet@planete.net>\n"
-			     "1999 : Chris Schlaeger <cs@axys.de>\n"),
-			 KTOP_VERSION);
-	help = kapp->getHelpMenu(true, about);
-
-	// 'Options' submenu
-	settings = new QPopupMenu();
-	settings->insertItem(i18n("StartUp Preferences..."),
-						 MENU_ID_PROCSETTINGS, -1);
-	connect(settings, SIGNAL(activated(int)), this, SLOT(menuHandler(int)));
-
-	// register submenues
-	menubar = new KMenuBar(this, "menubar");
-	menubar->setLineWidth(1);
-	menubar->insertItem(i18n("&File"), file, 2, -1);
-	menubar->insertItem(i18n("&Options"), settings, 3, -1);
-	menubar->insertSeparator(-1);
-	menubar->insertItem(i18n("&Help"), help, 2, -1);
-
+	menubar = new MainMenu(this, "MainMenu");
+	connect(menubar, SIGNAL(quit()), this, SLOT(quitSlot()));
 	// register the menu bar with KTMainWindow
 	setMenu(menubar);
 
@@ -111,9 +80,14 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 
 	// create the tab dialog
 	taskman = new TaskMan(this, "", sfolder);
-	connect(taskman, SIGNAL(applyButtonPressed()), this, SLOT(quitSlot()));
+
 	// register the tab dialog with KTMainWindow as client widget
 	setView(taskman);
+
+	connect(taskman, SIGNAL(enableRefreshMenu(bool)),
+			menubar, SLOT(enableRefreshMenu(bool)));
+
+//	setMinimumSize(sizeHint());
 
 	/*
 	 * Restore size of the dialog box that was used at end of last session.
@@ -151,24 +125,6 @@ TopLevel::quitSlot()
 	taskman->saveSettings();
 	Kapp->getConfig()->sync();
 	qApp->quit();
-}
-
-void 
-TopLevel::menuHandler(int id)
-{
-	switch(id)
-	{
-	case MENU_ID_QUIT:
-		quitSlot();
-		break;
-
-	case MENU_ID_PROCSETTINGS:
-		taskman->invokeSettings();
-		break;
-        
-	default:
-		break;
-	}
 }
 
 void

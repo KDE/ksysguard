@@ -8,7 +8,7 @@
                        nicknet@planete.net
     
 	Copyright (c) 1999 Chris Schlaeger
-	                   cs@axys.de
+	                   cs@kde.org
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@
 #include <qpushbutton.h>
 #include <qcombobox.h>
 #include <qgroupbox.h>
+#include <qlayout.h>
 
 #include <kapp.h>
 
@@ -62,6 +63,9 @@ public:
 		delete cbSort;
 		delete box;
 		delete pTree;
+
+		delete gm;
+		delete gm1;
 	}
 
 	void resizeEvent(QResizeEvent* ev);
@@ -128,6 +132,10 @@ private:
 	QComboBox* cbSort;
 	QGroupBox* box;
 	ProcessTree* pTree;
+
+	QVBoxLayout* gm;
+	QHBoxLayout* gm1;
+
 	int sortby;
 	char cfgkey_pTreeSort[12];
 } ;

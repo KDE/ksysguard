@@ -1,12 +1,6 @@
 /*
     KTop, the KDE Task Manager
    
-    Copyright (C) 1997 Bernd Johannes Wuebben
-                       wuebben@math.cornell.edu
-
-    Copyright (C) 1998 Nicolas Leclercq
-                       nicknet@planete.net
-    
 	Copyright (c) 1999 Chris Schlaeger
 	                   cs@kde.org
     
@@ -27,54 +21,59 @@
 
 // $Id$
 
-#include <qpopupmenu.h>
+#ifndef _MainMenu_h_
+#define _MainMenu_h_
 
-#include <kapp.h>
-#include <ktmainwindow.h>
 #include <kmenubar.h>
-#include <kstatusbar.h>
 
-#include "TaskMan.h"
-#include "OSStatus.h"
-
-#include "MainMenu.h"
-
-extern KApplication* Kapp;
-
-class TopLevel : public KTMainWindow
+class MainMenu : public KMenuBar
 {
 	Q_OBJECT
 
 public:
-	TopLevel(QWidget *parent = 0, const char *name = 0, int sfolder = 0);
-	~TopLevel()
+    enum
 	{
-		killTimer(timerID);
-
-		delete taskman;
-		delete menubar;
-		delete statusbar;
+		MENU_ID_ABOUT = 100,
+		MENU_ID_PROCSETTINGS = 50,
+		MENU_ID_MENU_REFRESH,
+		MENU_ID_REFRESH_MANUAL,
+		MENU_ID_REFRESH_SLOW,
+		MENU_ID_REFRESH_MEDIUM,
+		MENU_ID_REFRESH_FAST,
+	    MENU_ID_QUIT = 20,
+		MENU_ID_HELP = 30
+	};
+    
+	MainMenu(QWidget* parent = 0, const char* name = 0);
+	~MainMenu()
+	{
+		delete file;
+		delete settings;
+		delete refresh;
+		delete help;
 	}
 
-	void closeEvent(QCloseEvent*)
+public slots:
+	void checkRefreshRate(int);
+	void enableRefreshMenu(bool enable)
 	{
-		quitSlot();
+		setItemEnabled(MENU_ID_MENU_REFRESH, enable);
 	}
 
-protected:
-	virtual void timerEvent(QTimerEvent*);
+signals:
+	void quit(void);
+	void setRefreshRate(int);
+
+private slots:
+	void handler(int);
 
 private:
-	MainMenu* menubar;
-	KStatusBar* statusbar;
+	QPopupMenu* file;
+	QPopupMenu* settings;
+	QPopupMenu* refresh;
+	QPopupMenu* help;
+} ;
 
-	TaskMan* taskman;
+extern MainMenu* MainMenuBar;
 
-	int timerID;
-	OSStatus osStatus;
-
-protected slots:
-
-	void quitSlot();
-
-};
+#endif

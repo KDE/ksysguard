@@ -8,7 +8,7 @@
                        nicknet@planete.net
     
 	Copyright (c) 1999 Chris Schlaeger
-	                   cs@axys.de
+	                   cs@kde.org
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@
 #include <qwidget.h>
 #include <qpushbutton.h>
 #include <qcombobox.h>
+#include <qlayout.h>
 
 #include <kapp.h>
 
@@ -57,9 +58,9 @@ public:
 		delete bKill;
 		delete bRefresh;
 		delete box;
-		delete cbRefresh;
 		delete cbFilter;
 		delete pList;
+		delete gm;
 	}
 
 	void resizeEvent(QResizeEvent*);
@@ -74,39 +75,25 @@ public:
 		return (pList->setAutoUpdateMode(mode));
 	}
 	
-	void saveSettings(void);
+	void saveSettings(void)
+	{
+		pList->saveSettings();
+	}
 
 public slots:
-	void update()
-	{
-		pList->update();
-	}
-	void cbRefreshActivated(int);
-	void cbProcessFilter(int);
 	void popupMenu(int, int);
 	void killTask();
+	void filterModeChanged(int filter)
+	{
+		cbFilter->setCurrentItem(filter);
+	}
 
 signals:
 	void killProcess(int);
+	void setFilterMode(int);
 
 private:
-	/**
-	 * This function gets an int value from the config file. The value is
-	 * specified with the tag string. If no value is found the 'val'
-	 * cal-by-ref parameter is not changed.
-	 */
-	bool loadSetting(int& val, const char* tag)
-	{
-		QString tmpStr = Kapp->getConfig()->readEntry(tag);
-		bool res;
-		int tmpInt = tmpStr.toInt(&res);
-		if (res)
-		{
-			val = tmpInt;
-			return (true);
-		}
-		return (false);
-	}
+	QVBoxLayout* gm;
 
 	/// The frame around the other widgets.
     QGroupBox* box;
@@ -114,8 +101,9 @@ private:
 	/// The process list.
     ProcessList* pList;
 
-	/// These combo boxes control the refresh rate and the process filter.
-	QComboBox* cbRefresh;
+	QHBoxLayout* gm1;
+
+	/// This combo boxes control the process filter.
 	QComboBox* cbFilter;
 	
 	/// These buttons force an immedeate refresh or kill a process.

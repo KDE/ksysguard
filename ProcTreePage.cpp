@@ -8,7 +8,7 @@
                        nicknet@planete.net
     
 	Copyright (c) 1999 Chris Schlaeger
-	                   cs@axys.de
+	                   cs@kde.org
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -82,16 +82,19 @@ ProcTreePage::ProcTreePage(QWidget* parent = 0, const char* name = 0)
 	bRefresh = new QPushButton(i18n("Refresh Now"), this,
 									 "pTree_bRefresh");
 	CHECK_PTR(bRefresh);
+	bRefresh->setMinimumSize(bRefresh->sizeHint());
 	connect(bRefresh, SIGNAL(clicked()), this, SLOT(update()));
 
 	// "Change Root" button
 	bRoot = new QPushButton(i18n("Change Root"), this, "pTree_bRoot");
 	CHECK_PTR(bRoot);
+	bRoot->setMinimumSize(bRoot->sizeHint());
 	connect(bRoot, SIGNAL(clicked()), this, SLOT(changeRoot()));
 
 	// "Kill Task" button
 	bKill = new QPushButton(i18n("Kill Task"), this, "pTree_bKill");
 	CHECK_PTR(bKill);
+	bKill->setMinimumSize(bKill->sizeHint());
 	connect(bKill, SIGNAL(clicked()), this, SLOT(killTask()));
 
 	// Sorting Method combo button
@@ -101,6 +104,7 @@ ProcTreePage::ProcTreePage(QWidget* parent = 0, const char* name = 0)
 	cbSort->insertItem(i18n("Sort by ID"));
 	cbSort->insertItem(i18n("Sort by Name"));
 	cbSort->insertItem(i18n("Sort by Owner (UID)"));
+	cbSort->setMinimumSize(cbSort->sizeHint());
 	connect(cbSort, SIGNAL(activated(int)),
 			SLOT(handleSortChange(int)));
 
@@ -111,7 +115,26 @@ ProcTreePage::ProcTreePage(QWidget* parent = 0, const char* name = 0)
 	loadSetting(sortby, "pTreeSort");
 	pTree->setSortMethod(SortButtons[sortby].sortMethod);
 	cbSort->setCurrentItem(sortby);
-    
+
+    gm = new QVBoxLayout(this, 10);
+	gm->addSpacing(15);
+	gm->addWidget(pTree, 1);
+
+	gm1 = new QHBoxLayout();
+	gm->addLayout(gm1, 0);
+	gm1->addStretch();
+	gm1->addWidget(cbSort);
+	gm1->addStretch();
+	gm1->addWidget(bRoot);
+	gm1->addStretch();
+	gm1->addWidget(bRefresh);
+	gm1->addStretch();
+	gm1->addWidget(bKill);
+	gm1->addStretch();
+	gm->addSpacing(5);
+
+	gm->activate();
+
 	// create process tree
 	pTree->update();
 }
@@ -119,19 +142,9 @@ ProcTreePage::ProcTreePage(QWidget* parent = 0, const char* name = 0)
 void
 ProcTreePage::resizeEvent(QResizeEvent* ev)
 {
+	box->setGeometry(5, 5, width() - 10, height() - 10);
+
     QWidget::resizeEvent(ev);
-
-    int w = width();
-    int h = height();
-   
-	box->setGeometry(5, 5, w - 10, h - 20);
-
-   	pTree->setGeometry(10, 30, w - 20, h - 90);
-
-	cbSort->setGeometry(10, h - 50, 160, 25);
-	bRefresh->setGeometry(w - 300, h - 50, 90, 25);
-	bRoot->setGeometry(w - 200, h - 50, 90, 25);
-	bKill->setGeometry(w - 100, h - 50, 90, 25);
 }
 
 void

@@ -8,7 +8,7 @@
                        nicknet@planete.net
     
 	Copyright (c) 1999 Chris Schlaeger
-	                   cs@axys.de
+	                   cs@kde.org
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -53,7 +53,20 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	box->setTitle(i18n("Running Processes"));
 	CHECK_PTR(box);
 	box->move(5, 5);
-	box->resize(380, 380);
+//	box->resize(380, 380);
+
+	/*
+	 * Create the combo box to configure the process filter. The
+	 * cbFilter must be created prior to constructing pList as the
+	 * pList constructor sets cbFilter to its start value.
+	 */
+	cbFilter = new QComboBox(this,"pList_cbFilter");
+	CHECK_PTR(cbFilter);
+	cbFilter->insertItem(i18n("All processes"), 0);
+	cbFilter->insertItem(i18n("System processes"), 1);
+	cbFilter->insertItem(i18n("User processes"), 2);
+	cbFilter->insertItem(i18n("Own processes"), 3);
+	cbFilter->setMinimumSize(cbFilter->sizeHint());
 
 	// Create the table that lists the processes.
 	pList = new ProcessList(this, "pList");    
@@ -62,58 +75,42 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 			parent, SLOT(popupMenu(int, int)));
 
 	pList->move(10, 30);
-	pList->resize(370, 300);
 
-	// Create a combo box to configure the refresh rate.
-	cbRefresh = new QComboBox(this, "pList_cbRefresh");
-	CHECK_PTR(cbRefresh);
-	cbRefresh->insertItem(i18n("Refresh rate: Slow"),
-						  (ProcessList::UPDATE_SLOW));
-	cbRefresh->insertItem(i18n("Refresh rate: Medium"),
-						  (ProcessList::UPDATE_MEDIUM));
-	cbRefresh->insertItem(i18n("Refresh rate: Fast"),
-						  (ProcessList::UPDATE_FAST));
-	cbRefresh->setCurrentItem(pList->getUpdateRate());
-	connect(cbRefresh, SIGNAL(activated(int)),
-			SLOT(cbRefreshActivated(int)));
-
-	// Create the combo box to configure the process filter.
-	cbFilter = new QComboBox(this,"pList_cbFilter");
-	CHECK_PTR(cbFilter);
-	cbFilter->insertItem(i18n("All processes"), -1);
-	cbFilter->insertItem(i18n("System processes"), -1);
-	cbFilter->insertItem(i18n("User processes"), -1);
-	cbFilter->insertItem(i18n("Own processes"), -1);
-	cbFilter->setCurrentItem(pList->getFilterMode());
+	/*
+	 * When the both cbFilter and pList are constructed we can connect the
+	 * missing link.
+	 */
 	connect(cbFilter, SIGNAL(activated(int)),
-			SLOT(cbProcessFilter(int)));
+			pList, SLOT(setFilterMode(int)));
 
 	// Create the 'Refresh Now' button.
 	bRefresh = new QPushButton(i18n("Refresh Now"), this, "pList_bRefresh");
 	CHECK_PTR(bRefresh);
-	connect(bRefresh, SIGNAL(clicked()), this, SLOT(update()));
+	bRefresh->setMinimumSize(bRefresh->sizeHint());
+	connect(bRefresh, SIGNAL(clicked()), pList, SLOT(update()));
 
 	// Create the 'Kill task' button.
 	bKill = new QPushButton(i18n("Kill task"), this, "pList_bKill");
 	CHECK_PTR(bKill);
+	bKill->setMinimumSize(bKill->sizeHint());
 	connect(bKill,SIGNAL(clicked()), this, SLOT(killTask()));
 
-	// restore refresh rate settings...
-	refreshRate = ProcessList::UPDATE_MEDIUM;
-	loadSetting(refreshRate, "pListUpdate");
-	cbRefresh->setCurrentItem(refreshRate);
-	pList->setUpdateRate(refreshRate);
+	gm = new QVBoxLayout(this, 10);
+	gm->addSpacing(15);
+	gm->addWidget(pList, 1);
 
-	// restore process filter settings...
-	int filter = pList->getFilterMode();
-	loadSetting(filter, "pListFilter");
-	cbFilter->setCurrentItem(filter);
-	pList->setFilterMode(filter);
+	gm1 = new QHBoxLayout();
+	gm->addLayout(gm1, 0);
+	gm1->addStretch();
+	gm1->addWidget(cbFilter);
+	gm1->addStretch();
+	gm1->addWidget(bRefresh);
+	gm1->addStretch();
+	gm1->addWidget(bKill);
+	gm1->addStretch();
+	gm->addSpacing(5);
 
-	// restore sort method for pList...
-	int sortby = pList->getSortColumn();
-	loadSetting(sortby, "pListSort");
-	pList->setSortColumn(sortby);
+	gm->activate();
 
 	// create process list
     pList->update();
@@ -122,50 +119,11 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 void
 ProcListPage::resizeEvent(QResizeEvent* ev)
 {
+	box->setGeometry(5, 5, width() - 10, height() - 10);
+
     QWidget::resizeEvent(ev);
-
-    int w = width();
-    int h = height();
-   
-	box->setGeometry(5, 5, w - 10, h - 20);
-
-	pList->setGeometry(10,25, w - 20, h - 75);
-
-	cbRefresh->setGeometry(10, h - 45, 165, 25);
-	cbFilter->setGeometry(185, h - 45, 140, 25);
-	bRefresh->setGeometry(w - 200, h - 45, 90, 25);
-	bKill->setGeometry(w - 100, h - 45, 90, 25);
-}
-
-void
-ProcListPage::saveSettings(void)
-{
-	QString t;
-
-	/* save refresh rate */
-	Kapp->getConfig()->writeEntry("pListUpdate", t.setNum(refreshRate), TRUE);
-
-	/* save filter mode */
-	Kapp->getConfig()->writeEntry("pListFilter",
-								  t.setNum(pList->getFilterMode()), TRUE);
-
-	/* save sort criterium */
-	Kapp->getConfig()->writeEntry("pListSort",
-								  t.setNum(pList->getSortColumn()), TRUE);
-}
-
-void 
-ProcListPage::cbRefreshActivated(int indx)
-{ 
-	refreshRate = indx;
-	pList->setUpdateRate(indx);
-}
-
-void 
-ProcListPage::cbProcessFilter(int indx)
-{
-	pList->setFilterMode(indx);
-	pList->update();
+//	pList->setGeometry(box->x() + 7, box->y() + 16,
+//					   box->width() - 14, box->height() - 23);
 }
 
 void 

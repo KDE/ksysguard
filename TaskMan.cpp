@@ -8,7 +8,7 @@
                        nicknet@planete.net
     
 	Copyright (c) 1999 Chris Schlaeger
-	                   cs@axys.de
+	                   cs@kde.org
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -103,10 +103,8 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
     CHECK_PTR(perfMonPage);
 
     // startup_page settings...
-	startup_page = PAGE_PLIST;
-	QString tmp = Kapp->getConfig()->readEntry("startUpPage");
-	if(!tmp.isNull())
-		startup_page = tmp.toInt();
+	startup_page = Kapp->getConfig()->readNumEntry("startUpPage", PAGE_PLIST);
+
 	// setting from config file can be overidden by command line option
 	if (sfolder >= 0)
 	{ 
@@ -130,14 +128,13 @@ TaskMan::raiseStartUpPage()
 
 	/*
 	 * In case the startup_page has been forced on the command line we restore
-	 * the startup_page variable form the config file again so we use the
+	 * the startup_page variable from the config file again so we use the
 	 * forced value only for this session.
 	 */
 	if (restoreStartupPage)
 	{
-		QString tmp = Kapp->getConfig()->readEntry(QString("startUpPage"));
-		if(!tmp.isNull())
-			startup_page = tmp.toInt();
+		startup_page = Kapp->getConfig()->readNumEntry("startUpPage",
+													   startup_page);
 	}
 } 
 
@@ -235,13 +232,16 @@ TaskMan::tabBarSelected(int tabIndx)
 	case PAGE_PLIST:
 		procListPage->setAutoUpdateMode(TRUE);
 		procListPage->update();
+		emit(enableRefreshMenu(TRUE));
 		break;
 	case PAGE_PTREE:
 		procListPage->setAutoUpdateMode(FALSE);
 		procTreePage->update();
+		emit(enableRefreshMenu(FALSE));
 		break;
 	case PAGE_PERF:
 		procListPage->setAutoUpdateMode(FALSE);
+		emit(enableRefreshMenu(FALSE));
 		break;
 	}
 }
@@ -336,8 +336,7 @@ TaskMan::saveSettings()
 	Kapp->getConfig()->writeEntry("G_Toplevel", tmp);
 
 	// save startup page (tab)
-	Kapp->getConfig()->writeEntry("startUpPage",
-					   tmp.setNum(startup_page), TRUE);
+	Kapp->getConfig()->writeEntry("startUpPage", startup_page, TRUE);
 
 	// save process list settings
 	procListPage->saveSettings();
