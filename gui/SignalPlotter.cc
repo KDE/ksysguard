@@ -239,7 +239,7 @@ SignalPlotter::paintEvent(QPaintEvent*)
 		p.setPen(hColor);
 		int x0 = w / 2;
 		p.setFont(QFont(p.font().family(), fontSize));
-		top = p.fontMetrics().height() + 2;
+		top = p.fontMetrics().height();
 		h -= top;
 		int h0 = top - 2;
 		p.drawText(0, 0, x0, top - 2, Qt::AlignCenter, title);
@@ -301,104 +301,138 @@ SignalPlotter::paintEvent(QPaintEvent*)
 		minValue = maxValue = 0.0;
 	/* Plot stacked values */
 	double scaleFac = (h - 2) / range;
-	int *prevVals = new int[beamData.count()];
-	int hack[4];
-	int x1 = w - ((samples + 1) * hScale);
-
-	for (int i = 0; i < samples; i++)
+	if (graphStyle == GRAPH_ORIGINAL)
 	{
-		QValueList<QColor>::Iterator col;
-		col = beamColor.begin();
-		double sum = 0.0;
-		int y = top + h - 2;
-		int oldY = top + h;
-		int oldPrevY = oldY;
-		int height = 0;
-		int j = 0;
-		int jMax = beamData.count() - 1;
-		x1 += hScale;
-		int x2 = x1 + hScale;
-
-		for (double* d = beamData.first(); d; d = beamData.next(), ++col, j++)
+		int xPos = 0;
+		for (int i = 0; i < samples; i++, xPos += hScale)
 		{
-			if (autoRange)
+			double bias = -minVal;
+			QValueList<QColor>::Iterator col;
+			col = beamColor.begin();
+			double sum = 0.0;
+			for (double* d = beamData.first(); d; d = beamData.next(), ++col)
 			{
-				sum += d[i];
-				if (sum < minValue)
-					minValue = sum;
-				if (sum > maxValue)
-					maxValue = sum;
-			}
-			height = (int) ((d[i] - minVal) * scaleFac);
-			y -= height;
-			/* If the line is longer than 2 pixels we draw only the last
-			 * 2 pixels with the bright color. The rest is painted with
-			 * a 50% darker color. */
-
-			switch (graphStyle) {
-				case GRAPH_ORIGINAL:
-					// FIXME (not quite right yet)
-					if (height > 2)
-					{
-						p.fillRect(x1, y + 2, hScale, height - 2, (*col).dark(150));
-						p.fillRect(x1, y, hScale, 2, *col);
-					}
-					else
-						p.fillRect(x1, y, hScale, height, *col);
-					break;
-				case GRAPH_BASIC_POLY:
-					QPen lastPen = QPen(p.pen());
-					p.setPen((*col).dark(150));
-					p.setBrush((*col).dark(150));
-					QPointArray pa(4);
-					int prevY = (i == 0) ? y : prevVals[j];
-					pa.putPoints(0, 1, x1, prevY);
-					pa.putPoints(1, 1, x2, y);
-					pa.putPoints(2, 1, x2, oldY);
-					pa.putPoints(3, 1, x1, oldPrevY);
-					p.drawPolygon(pa);
-					p.setPen(lastPen);
-					if (jMax == 0)
-					{
-						// draw as normal, no deferred drawing req'd.
-						p.setPen(*col);
-						p.drawLine(x1, prevY, x2, y);
-					}
-					else if (j == jMax)
-					{
-						// draw previous values and current values
-						p.drawLine(hack[0], hack[1], hack[2], hack[3]);
-						p.setPen(*col);
-						p.drawLine(x1, prevY, x2, y);
-					}
-					else if (j == 0)
-					{
-						// save values only
-						hack[0] = x1;
-						hack[1] = prevY;
-						hack[2] = x2;
-						hack[3] = y;
-						p.setPen(*col);
-					}
-					else
-					{
-						p.drawLine(hack[0], hack[1], hack[2], hack[3]);
-						hack[0] = x1;
-						hack[1] = prevY;
-						hack[2] = x2;
-						hack[3] = y;
-						p.setPen(*col);
-					}
-					prevVals[j] = y;
-					oldY = y;
-					oldPrevY = prevY;
-					break;
+				if (autoRange)
+				{
+					sum += d[i];
+					if (sum < minValue)
+						minValue = sum;
+					if (sum > maxValue)
+						maxValue = sum;
+				}
+				int start = top + h - 2 - (int) (bias * scaleFac);
+				int end = top + h - 2 - (int) ((bias + d[i]) * scaleFac);
+				bias += d[i];
+				/* If the line is longer than 2 pixels we draw only the last
+				 * 2 pixels with the bright color. The rest is painted with
+				 * a 50% darker color. */
+				if (end - start > 2)
+				{
+					p.fillRect(xPos, start, hScale, end - start - 1,
+							   (*col).dark(150));
+					p.fillRect(xPos, end - 1, hScale, 2, *col);
+				}
+				else if (start - end > 2)
+				{
+					p.fillRect(xPos, start, hScale, end - start + 1,
+							   (*col).dark(150));
+					p.fillRect(xPos, end + 1, hScale, 2, *col);
+				}
+				else
+				{
+					p.fillRect(xPos, start, hScale, end - start, *col);
+				}
 			}
 		}
 	}
+	else
+	{
+		int *prevVals = new int[beamData.count()];
+		int hack[4];
+		int x1 = w - ((samples + 1) * hScale);
 
-	delete[] prevVals;
+		for (int i = 0; i < samples; i++)
+		{
+			QValueList<QColor>::Iterator col;
+			col = beamColor.begin();
+			double sum = 0.0;
+			int y = top + h - 2;
+			int oldY = top + h;
+			int oldPrevY = oldY;
+			int height = 0;
+			int j = 0;
+			int jMax = beamData.count() - 1;
+			x1 += hScale;
+			int x2 = x1 + hScale;
 
+			for (double* d = beamData.first(); d; d = beamData.next(), ++col,
+				 j++)
+			{
+				if (autoRange)
+				{
+					sum += d[i];
+					if (sum < minValue)
+						minValue = sum;
+					if (sum > maxValue)
+						maxValue = sum;
+				}
+				height = (int) ((d[i] - minVal) * scaleFac);
+				y -= height;
+				/* If the line is longer than 2 pixels we draw only the last
+				 * 2 pixels with the bright color. The rest is painted with
+				 * a 50% darker color. */
+
+				QPen lastPen = QPen(p.pen());
+				p.setPen((*col).dark(150));
+				p.setBrush((*col).dark(150));
+				QPointArray pa(4);
+				int prevY = (i == 0) ? y : prevVals[j];
+				pa.putPoints(0, 1, x1, prevY);
+				pa.putPoints(1, 1, x2, y);
+				pa.putPoints(2, 1, x2, oldY);
+				pa.putPoints(3, 1, x1, oldPrevY);
+				p.drawPolygon(pa);
+				p.setPen(lastPen);
+				if (jMax == 0)
+				{
+					// draw as normal, no deferred drawing req'd.
+					p.setPen(*col);
+					p.drawLine(x1, prevY, x2, y);
+				}
+				else if (j == jMax)
+				{
+					// draw previous values and current values
+					p.drawLine(hack[0], hack[1], hack[2], hack[3]);
+					p.setPen(*col);
+					p.drawLine(x1, prevY, x2, y);
+				}
+				else if (j == 0)
+				{
+					// save values only
+					hack[0] = x1;
+					hack[1] = prevY;
+					hack[2] = x2;
+					hack[3] = y;
+					p.setPen(*col);
+				}
+				else
+				{
+					p.drawLine(hack[0], hack[1], hack[2], hack[3]);
+					hack[0] = x1;
+					hack[1] = prevY;
+					hack[2] = x2;
+					hack[3] = y;
+					p.setPen(*col);
+				}
+				prevVals[j] = y;
+				oldY = y;
+				oldPrevY = prevY;
+			}
+		}
+
+		delete[] prevVals;
+	}
+	
 	/* Draw horizontal lines and values. Lines are drawn when the
 	 * height is greater than 10 times hCount + 1, values are shown
 	 * when width is greater than 60 */
