@@ -2,8 +2,10 @@
 [KDE Desktop Entry]
 BinaryPattern=ktop;
 Comment=Taskmanager and performance monitor
+Comment[no]=Oppgavebehandler og ytelsesovervåker
 Comment[pt_BR]=Monitor de performance e gerenciador de tarefas
 Name=Taskmanager
+Name[no]=Oppgavebehandler
 Name[pt_BR]=Gerenciador de Tarefas
 Exec=ktop
 Icon=ktop.xpm
