@@ -38,7 +38,7 @@ public:
 				  int max = 100);
 	~BarGraph();
 
-	bool addBar();
+	bool addBar(const QString& footer);
 	void updateSamples(const QArray<long>& newSamples);
 
 	long getMin() const
@@ -49,6 +49,14 @@ public:
 	{
 		return (autoRange ? 0 : maxValue);
 	}
+	long getLimit() const
+	{
+		return (limit);
+	}
+	void setLimit(long l)
+	{
+		limit = l;
+	}
 
 	void changeRange(long min, long max);
 
@@ -58,8 +66,10 @@ protected:
 private:
 	long minValue;
 	long maxValue;
+	long limit;
 	bool autoRange;
 	QArray<long> samples;
+	QStringList footers;
 	int bars;
 } ;
 

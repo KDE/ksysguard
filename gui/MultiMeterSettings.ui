@@ -3,58 +3,58 @@
 <include location="global">klocale.h</include>
 <widget>
     <class>QDialog</class>
-    <property>
+    <property stdset="1">
         <name>name</name>
         <cstring>MultiMeterSettings</cstring>
     </property>
-    <property>
+    <property stdset="1">
         <name>geometry</name>
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>333</width>
-            <height>251</height>
+            <width>328</width>
+            <height>215</height>
         </rect>
     </property>
-    <property>
+    <property stdset="1">
         <name>caption</name>
         <string>Form1</string>
     </property>
     <grid>
-        <property>
+        <property stdset="1">
             <name>margin</name>
             <number>11</number>
         </property>
-        <property>
+        <property stdset="1">
             <name>spacing</name>
             <number>6</number>
         </property>
         <widget row="1"  column="0" >
             <class>QGroupBox</class>
-            <property>
+            <property stdset="1">
                 <name>name</name>
                 <cstring>GroupBox1</cstring>
             </property>
-            <property>
+            <property stdset="1">
                 <name>title</name>
                 <string>Alarm for minimum value</string>
             </property>
             <grid>
-                <property>
+                <property stdset="1">
                     <name>margin</name>
                     <number>11</number>
                 </property>
-                <property>
+                <property stdset="1">
                     <name>spacing</name>
                     <number>6</number>
                 </property>
                 <widget row="0"  column="0" >
                     <class>QCheckBox</class>
-                    <property>
+                    <property stdset="1">
                         <name>name</name>
                         <cstring>lowerLimitActive</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>text</name>
                         <string>Enable Alarm</string>
                     </property>
@@ -64,46 +64,44 @@
                         <name>name</name>
                         <cstring>Spacer1</cstring>
                     </property>
-                    <property>
-                        <name>geometry</name>
-                        <rect>
-                            <x>118</x>
-                            <y>20</y>
-                            <width>22</width>
-                            <height>20</height>
-                        </rect>
-                    </property>
-                    <property>
+                    <property stdset="1">
                         <name>orientation</name>
                         <enum>Horizontal</enum>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>sizeType</name>
                         <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
                     </property>
                 </spacer>
                 <widget row="0"  column="2" >
                     <class>QLabel</class>
-                    <property>
+                    <property stdset="1">
                         <name>name</name>
                         <cstring>TextLabel2</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>text</name>
                         <string>Lower Limit</string>
                     </property>
                 </widget>
                 <widget row="0"  column="3" >
                     <class>QSpinBox</class>
-                    <property>
+                    <property stdset="1">
                         <name>name</name>
                         <cstring>lowerLimit</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>maxValue</name>
                         <number>99999999</number>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>enabled</name>
                         <bool>false</bool>
                     </property>
@@ -113,52 +111,50 @@
                         <name>name</name>
                         <cstring>Spacer1_3</cstring>
                     </property>
-                    <property>
-                        <name>geometry</name>
-                        <rect>
-                            <x>119</x>
-                            <y>48</y>
-                            <width>20</width>
-                            <height>17</height>
-                        </rect>
-                    </property>
-                    <property>
+                    <property stdset="1">
                         <name>orientation</name>
                         <enum>Vertical</enum>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>sizeType</name>
                         <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
                     </property>
                 </spacer>
             </grid>
         </widget>
         <widget row="2"  column="0" >
             <class>QGroupBox</class>
-            <property>
+            <property stdset="1">
                 <name>name</name>
                 <cstring>GroupBox1_2</cstring>
             </property>
-            <property>
+            <property stdset="1">
                 <name>title</name>
                 <string>Alarm for maximum value</string>
             </property>
             <grid>
-                <property>
+                <property stdset="1">
                     <name>margin</name>
                     <number>11</number>
                 </property>
-                <property>
+                <property stdset="1">
                     <name>spacing</name>
                     <number>6</number>
                 </property>
                 <widget row="0"  column="0" >
                     <class>QCheckBox</class>
-                    <property>
+                    <property stdset="1">
                         <name>name</name>
                         <cstring>upperLimitActive</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>text</name>
                         <string>Enable Alarm</string>
                     </property>
@@ -168,46 +164,44 @@
                         <name>name</name>
                         <cstring>Spacer1_2</cstring>
                     </property>
-                    <property>
-                        <name>geometry</name>
-                        <rect>
-                            <x>118</x>
-                            <y>20</y>
-                            <width>23</width>
-                            <height>20</height>
-                        </rect>
-                    </property>
-                    <property>
+                    <property stdset="1">
                         <name>orientation</name>
                         <enum>Horizontal</enum>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>sizeType</name>
                         <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
                     </property>
                 </spacer>
                 <widget row="0"  column="2" >
                     <class>QLabel</class>
-                    <property>
+                    <property stdset="1">
                         <name>name</name>
                         <cstring>TextLabel2_2</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>text</name>
                         <string>Upper Limit</string>
                     </property>
                 </widget>
                 <widget row="0"  column="3" >
                     <class>QSpinBox</class>
-                    <property>
+                    <property stdset="1">
                         <name>name</name>
                         <cstring>upperLimit</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>maxValue</name>
                         <number>99999999</number>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>enabled</name>
                         <bool>false</bool>
                     </property>
@@ -217,38 +211,36 @@
                         <name>name</name>
                         <cstring>Spacer2</cstring>
                     </property>
-                    <property>
-                        <name>geometry</name>
-                        <rect>
-                            <x>119</x>
-                            <y>48</y>
-                            <width>20</width>
-                            <height>17</height>
-                        </rect>
-                    </property>
-                    <property>
+                    <property stdset="1">
                         <name>orientation</name>
                         <enum>Vertical</enum>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>sizeType</name>
                         <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
                     </property>
                 </spacer>
             </grid>
         </widget>
         <widget row="3"  column="0" >
             <class>QLayoutWidget</class>
-            <property>
+            <property stdset="1">
                 <name>name</name>
                 <cstring>Layout3</cstring>
             </property>
             <hbox>
-                <property>
+                <property stdset="1">
                     <name>margin</name>
                     <number>0</number>
                 </property>
-                <property>
+                <property stdset="1">
                     <name>spacing</name>
                     <number>6</number>
                 </property>
@@ -257,57 +249,55 @@
                         <name>name</name>
                         <cstring>Spacer4</cstring>
                     </property>
-                    <property>
-                        <name>geometry</name>
-                        <rect>
-                            <x>1</x>
-                            <y>7</y>
-                            <width>88</width>
-                            <height>20</height>
-                        </rect>
-                    </property>
-                    <property>
+                    <property stdset="1">
                         <name>orientation</name>
                         <enum>Horizontal</enum>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>sizeType</name>
                         <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
                     </property>
                 </spacer>
                 <widget>
                     <class>QPushButton</class>
-                    <property>
+                    <property stdset="1">
                         <name>name</name>
                         <cstring>okButton</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>text</name>
                         <string>OK</string>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>default</name>
                         <bool>true</bool>
                     </property>
                 </widget>
                 <widget>
                     <class>QPushButton</class>
-                    <property>
+                    <property stdset="1">
                         <name>name</name>
                         <cstring>applyButton</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>text</name>
                         <string>Apply</string>
                     </property>
                 </widget>
                 <widget>
                     <class>QPushButton</class>
-                    <property>
+                    <property stdset="1">
                         <name>name</name>
                         <cstring>cancelButton</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>text</name>
                         <string>Cancel</string>
                     </property>
@@ -316,44 +306,44 @@
         </widget>
         <widget row="0"  column="0" >
             <class>QLayoutWidget</class>
-            <property>
+            <property stdset="1">
                 <name>name</name>
                 <cstring>Layout4</cstring>
             </property>
             <hbox>
-                <property>
+                <property stdset="1">
                     <name>margin</name>
                     <number>0</number>
                 </property>
-                <property>
+                <property stdset="1">
                     <name>spacing</name>
                     <number>6</number>
                 </property>
                 <widget>
                     <class>QLabel</class>
-                    <property>
+                    <property stdset="1">
                         <name>name</name>
                         <cstring>TextLabel1</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>text</name>
                         <string>Title:</string>
                     </property>
                 </widget>
                 <widget>
                     <class>QLineEdit</class>
-                    <property>
+                    <property stdset="1">
                         <name>name</name>
                         <cstring>title</cstring>
                     </property>
                 </widget>
                 <widget>
                     <class>QCheckBox</class>
-                    <property>
+                    <property stdset="1">
                         <name>name</name>
                         <cstring>showUnit</cstring>
                     </property>
-                    <property>
+                    <property stdset="1">
                         <name>text</name>
                         <string>Show Unit</string>
                     </property>

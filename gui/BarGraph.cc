@@ -29,7 +29,6 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 
-#include "SensorDisplay.h"
 #include "BarGraph.moc"
 
 BarGraph::BarGraph(QWidget* parent, const char* name, int min, int max)
@@ -52,9 +51,10 @@ BarGraph::~BarGraph()
 }
 
 bool
-BarGraph::addBar()
+BarGraph::addBar(const QString& footer)
 {
 	samples.resize(++bars);
+	footers.append(footer);
 
 	return (true);
 }
@@ -102,26 +102,34 @@ BarGraph::paintEvent(QPaintEvent*)
 
 	p.setClipRect(1, 1, w - 2, h - 2);
 
-	int barWidth = w / bars;
+	int barWidth = (w - 2) / bars;
 	int barHeight;
 	barHeight = h - 2 - fm.lineSpacing() - 2;
 	for (int b = 0; b < bars; b++)
 	{
 		int topVal = (int) ((float) barHeight / maxValue * samples[b]);
+		int limitVal = (int) ((float) barHeight / maxValue * limit);
 
 		for (int i = 0; i < barHeight && i < topVal; i += 2)
 		{
-			p.setPen(QColor(0, 128 + (int) ((float) 128 / barHeight * i), 0));
+			if (limit && i > limitVal && samples[b] > limit)
+				p.setPen(QColor(128 + (int) ((float) 128 / barHeight * i), 0,
+								0));
+			else
+				p.setPen(QColor(0, 128 + (int) ((float) 128 / barHeight * i),
+								0));
 			p.drawLine(b * barWidth + 3, barHeight - i, (b + 1) * barWidth - 3,
 					   barHeight - i);
 		}
-		p.setPen(QColor("green"));
+		if (limit && samples[b] > limit)
+			p.setPen(QColor("red"));
+		else
+			p.setPen(QColor("green"));
 		p.drawText(b * barWidth + 3, h - fm.lineSpacing() - 2,
 				   barWidth - 2 * 3, fm.lineSpacing(), Qt::AlignCenter,
-				   "Dummy");
+				   footers[b]);
 	}
 	
 	p.end();
 	bitBlt(this, 0, 0, &pm);
 }
-

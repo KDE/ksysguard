@@ -25,43 +25,13 @@
 #ifndef _DancingBars_h_
 #define _DancingBars_h_
 
-#include <qlabel.h>
-#include <qsize.h>
-#include <qarray.h>
-
-#include <kdialogbase.h>
-
 #include "SensorDisplay.h"
 #include "BarGraph.h"
 
 class QGroupBox;
 class QLineEdit;
 class KIntNumInput;
-
-class DancingBarsSettings : public KDialogBase
-{
-	Q_OBJECT
-
-public:
-	DancingBarsSettings(const QString& oldTitle, long min, long max);
-	~DancingBarsSettings() { }
-
-	QString getTitle() const;
-	long getMin() const;
-	long getMax() const;
-
-signals:
-	void applySettings(DancingBarsSettings*);
-
-protected slots:
-	void applyPressed();
-
-private:
-	QLineEdit* titleLE;
-	KIntNumInput* minNI;
-	KIntNumInput* maxNI;
-	QWidget* mainWidget;
-} ;
+class DancingBarsSettings;
 
 class DancingBars : public SensorDisplay
 {
@@ -69,8 +39,8 @@ class DancingBars : public SensorDisplay
 
 public:
 	DancingBars(QWidget* parent = 0, const char* name = 0,
-				 const QString& title = QString::null, int min = 0,
-				 int max = 100);
+				const QString& title = QString::null, int min = 0,
+				int max = 100);
 	~DancingBars();
 
 	void settings();
@@ -103,18 +73,22 @@ public:
 	virtual void sensorError(bool err);
 
 public slots:
-	void applySettings(DancingBarsSettings*);
+	void applySettings();
 
 protected:
 	virtual void resizeEvent(QResizeEvent*);
 
 private:
+	void setTitle(const QString& t);
+
 	int bars;
 	bool modified;
 
 	QGroupBox* meterFrame;
 
 	BarGraph* plotter;
+
+	DancingBarsSettings* dbs;
 
 	/* The sample buffer and the flags are needed to store the incoming
 	 * samples for each beam until all samples of the period have been

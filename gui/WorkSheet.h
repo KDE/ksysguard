@@ -70,8 +70,7 @@ public:
 	SensorDisplay* addDisplay(const QString& hostname,
 							  const QString& monitor,
 							  const QString& sensorType,
-							  const QString& sensorDescr, int r, int c,
-							  const QString& displayType = QString::null);
+							  const QString& sensorDescr, int r, int c);
 
 public slots:
 	void removeDisplay(SensorDisplay* display);

@@ -114,6 +114,8 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 {
 	meterFrame = new QGroupBox(1, Qt::Vertical, title, this, "meterFrame"); 
 	CHECK_PTR(meterFrame);
+	if (!title.isEmpty())
+		meterFrame->setTitle(title);
 
 	beams = 0;
 	flags = 0;
@@ -182,9 +184,6 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 	registerSensor(hostName, sensorName, title);
 	++beams;
 
-	if (!title.isEmpty())
-		meterFrame->setTitle(title);
-
 	/* To differentiate between answers from value requests and info
 	 * requests we add 100 to the beam index for info requests. */
 	sendRequest(hostName, sensorName + "?", beams + 100);
@@ -237,6 +236,7 @@ FancyPlotter::load(QDomElement& domElem)
 	QString title = domElem.attribute("title");
 	if (!title.isEmpty())
 		meterFrame->setTitle(title);
+
 	plotter->changeRange(0, domElem.attribute("min").toLong(),
 						 domElem.attribute("max").toLong());
 

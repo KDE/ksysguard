@@ -253,7 +253,7 @@ WorkSheet::save(const QString& fN)
 SensorDisplay*
 WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 					  const QString& sensorType, const QString& sensorDescr,
-					  int r, int c, const QString& displayType)
+					  int r, int c)
 {
 	if (!SensorMgr->engage(hostName))
 	{
@@ -308,7 +308,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 	}
 
 	((SensorDisplay*) displays[r][c])->
-		addSensor(hostName, sensorName, displayType);
+		addSensor(hostName, sensorName, sensorDescr);
 
 	modified = TRUE;
 	return ((SensorDisplay*) displays[r][c]);

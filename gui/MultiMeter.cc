@@ -164,8 +164,8 @@ MultiMeter::load(QDomElement& el)
 	modified = false;
 
 	title = el.attribute("title");
-	setTitle(title, unit);
 	showUnit = el.attribute("showUnit").toInt();
+	setTitle(title, unit);
 	lowerLimitActive = el.attribute("lowerLimitActive").toInt();
 	lowerLimit = el.attribute("lowerLimit").toLong();
 	upperLimitActive = el.attribute("upperLimitActive").toInt();
