@@ -23,6 +23,7 @@
 	$Id$
 */
 
+#include <qcursor.h>
 #include <qdom.h>
 #include <qdragobject.h>
 #include <qfile.h>
