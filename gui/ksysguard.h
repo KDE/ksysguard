@@ -47,7 +47,6 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
 
   public:
     TopLevel( const char *name = 0 );
-    ~TopLevel();
 
   virtual void saveProperties( KConfig* );
   virtual void readProperties( KConfig* );
@@ -85,7 +84,6 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
     void editToolbars();
     void editStyle();
     void slotNewToolbarConfig();
-    void slotConfigureKeys();
 
   private:
     QPtrList<DCOPClientTransaction> mDCopFIFO;
