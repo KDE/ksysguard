@@ -41,6 +41,7 @@
 #include <kdebug.h>
 #include <kedittoolbar.h>
 #include <kglobal.h>
+#include <kglobalsettings.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <ksgrd/SensorAgent.h>
@@ -75,7 +76,7 @@ TopLevel::TopLevel( const char *name )
 
   mSplitter = new QSplitter( this );
   mSplitter->setOrientation( Horizontal );
-  mSplitter->setOpaqueResize( true );
+  mSplitter->setOpaqueResize( KGlobalSettings::opaqueResize() );
   setCentralWidget( mSplitter );
 
   mSensorBrowser = new SensorBrowser( mSplitter, KSGRD::SensorMgr );
