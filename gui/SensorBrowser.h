@@ -201,6 +201,7 @@ public slots:
 	void disconnect();
 	void hostReconfigured(const QString& hostName);
 	void update();
+	void newItemSelected(QListViewItem* item);
 
 protected:
 	virtual void viewportMouseMoveEvent(QMouseEvent* ev);

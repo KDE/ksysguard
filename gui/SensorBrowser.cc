@@ -41,9 +41,11 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	QListView(parent, name), sensorManager(sm)
 {
 	connect(sm, SIGNAL(update(void)), this, SLOT(update(void)));
+	connect(this, SIGNAL(selectionChanged(QListViewItem*)),
+			this, SLOT(newItemSelected(QListViewItem*)));
 
 	addColumn(i18n("Sensor Browser"));
-	QToolTip::add(this, "Drag sensors to empty fields in a work sheet");
+	QToolTip::add(this, i18n("Drag sensors to empty fields in a work sheet"));
 	setRootIsDecorated(TRUE);
 
 	// Fill the sensor description dictionary.
@@ -127,6 +129,15 @@ SensorBrowser::update()
 		++id;
 	}
 	setMouseTracking(FALSE);
+}
+
+void
+SensorBrowser::newItemSelected(QListViewItem* item)
+{
+	if (item->pixmap(0))
+		KMessageBox::information(
+			this, i18n("Drag sensors to empty fields in a work sheet"),
+			QString::null, "ShowSBUseInfo");
 }
 
 void
