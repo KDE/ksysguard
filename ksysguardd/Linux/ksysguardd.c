@@ -35,6 +35,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/file.h>
 #include <unistd.h>
 
 #include "ksysguardd.h"
@@ -119,11 +120,10 @@ printWelcome(FILE* out)
 {
 	fprintf(out,
 			"ksysguardd %s\n"
-			"(c) 1999 - 2001 Chris Schlaeger <cs@kde.org> and\n"
-			"                Tobias Koenig <tokoe82@yahoo.de>\n"
+			"(c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org> and\n"
+			"(c) 2001 Tobias Koenig <tokoe82@yahoo.de>\n"
 			"This program is part of the KDE Project and licensed under\n"
-			"the GNU GPL version 2. See www.kde.org for details!\n"
-			"ksysguardd> ", VERSION);
+			"the GNU GPL version 2. See www.kde.org for details!\n", VERSION);
 	fflush(out);
 }
 
@@ -132,24 +132,29 @@ createLockFile()
 {
 	FILE *file;
 	
-	if ((file = fopen(LockFile, "r")) != NULL)
+	if ((file = fopen(LockFile, "w+")) != NULL)
 	{
-		log_error("Server is already running");
-		fclose(file);
-		return -1;
+		if (flock(fileno(file), LOCK_EX | LOCK_NB) < 0)
+		{
+			log_error("ksysguardd is running already");
+			fprintf(stderr, "ksysguardd is running already\n");
+			fclose(file);
+			return -1;
+		}
+		fseek(file, 0, SEEK_SET);
+		fprintf(file, "%d\n", getpid());
 	}
 	else
 	{
-		if ((file = fopen(LockFile, "w")) == NULL)
-		{
-			log_error("Cannot create lockfile '%s'", LockFile);
-			return -2;
-		}
-		fprintf(file, "%d", getpid());
-		fclose(file);
-
-		return 0;
+		log_error("Cannot create lockfile '%s'", LockFile);
+		fprintf(stderr, "Cannot create lockfile '%s'\n", LockFile);
+		return -2;
 	}
+	/* We abandon file here on purpose. It's needed nowhere else, but we
+	 * have to keep the file open and locked. The kernel will remove the
+	 * lock when the process terminates. */
+		
+	return 0;
 }
 
 static void
@@ -280,6 +285,8 @@ addClient(int client)
 			fcntl(fileno(out), F_SETFL, O_NDELAY);
 			ClientList[i].out = out;
 			printWelcome(out);
+			fprintf(out, "ksysguardd> ");
+			fflush(out);
 
 			return (0);
 		}
@@ -544,6 +551,8 @@ main(int argc, char* argv[])
 	}
 	else
 	{
+		fprintf(stdout, "ksysguardd> ");
+		fflush(stdout);
 		CurrentClient = stdout;
 		ServerSocket = 0;
 	}
