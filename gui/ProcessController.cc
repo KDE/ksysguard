@@ -4,8 +4,8 @@
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    version 2 as published by the Free Software Foundation.
+    modify it under the terms version 2 of of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,6 +26,7 @@
 
 #include <kapp.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 
 #include "ktop.h"
 #include "SensorManager.h"
@@ -83,7 +84,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	bKill = new QPushButton(i18n("Kill"), this, "bKill");
 	CHECK_PTR(bKill);
 	bKill->setMinimumSize(bKill->sizeHint());
-	connect(bKill,SIGNAL(clicked()), pList, SLOT(killProcess()));
+	connect(bKill,SIGNAL(clicked()), this, SLOT(killProcess()));
 
 	// Setup the geometry management.
 	gm = new QVBoxLayout(this, 10);
@@ -148,6 +149,35 @@ ProcessController::updateList()
 }
 
 void
+ProcessController::killProcess(void)
+{
+	const QValueList<int>& selectedPIds = pList->getSelectedPIds();
+
+	if (selectedPIds.isEmpty())
+	{
+		KMessageBox::sorry(this, i18n("You need to select a process first!"));
+		return;
+	}
+	else
+	{
+		if (KMessageBox::warningYesNo(this,
+									  i18n("Do you want to kill the\n"
+										   "selected processes?")) ==
+			  KMessageBox::No)
+			return;
+	}
+	QValueListConstIterator<int> it;
+		for (it = selectedPIds.begin(); it != selectedPIds.end(); ++it)
+			if (!SensorMgr->sendRequest(hostName,
+										QString("kill %1 9" ).arg(*it),
+										this, 3))
+			{
+				// The sensor agent died.
+				// TODO: make this visible or remove process controller
+			}
+}
+
+void
 ProcessController::answerReceived(int id, const QString& answer)
 {
 	switch (id)
@@ -176,6 +206,9 @@ ProcessController::answerReceived(int id, const QString& answer)
 		/* We have received the answer to a ps command that contains a
 		 * list of processes with various additional information. */
 		pList->update(answer);
+		break;
+	case 3:
+		// result of kill operation, we currently don't care about it.
 		break;
 	}
 }

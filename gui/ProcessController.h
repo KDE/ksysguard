@@ -111,6 +111,8 @@ public slots:
 			timerOn();
 	}
 
+	void killProcess();
+
 	void updateList();
 
 signals:

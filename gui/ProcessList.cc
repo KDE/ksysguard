@@ -49,9 +49,10 @@
 #include <kapp.h>
 #include <klocale.h>
 #include <kconfig.h>
-#include <kmessagebox.h>
 #include <kstddirs.h>
 
+#include "ProcessController.h"
+#include "SensorManager.h"
 #include "ProcessList.moc"
 
 #define NONE -1

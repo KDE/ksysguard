@@ -29,7 +29,6 @@
 #include <qdragobject.h>
 
 #include <klocale.h>
-#include <kmessagebox.h>
 
 #include "SensorBrowser.h"
 #include "SensorManager.h"

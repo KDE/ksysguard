@@ -37,7 +37,7 @@
 typedef const char* (*KeyFunc)(const char*);
 
 /**
- * To support bi-directional sorting, and sorting of text, intergers etc. we
+ * To support bi-directional sorting, and sorting of text, integers etc. we
  * need a specialized version of QListViewItem.
  */
 class ProcessLVI : public QListViewItem
@@ -93,6 +93,11 @@ public:
 		emit(processSelected(-1));
 	}
 
+	const QValueList<int>& getSelectedPIds()
+	{
+		return (selectedPIds);
+	}
+
 	/**
 	 * The udpate function can be used to update the displayed process
 	 * list.  A current list of processes is requested from the OS.
@@ -105,12 +110,6 @@ public:
 	}
 
 public slots:
-	void killProcess(void)
-	{
-//		processMenu->killProcess(selectedPid());
-//		update();
-	}
-
 	void setTreeView(bool tv)
 	{
 		treeViewEnabled = tv;
@@ -173,7 +172,8 @@ private:
 	 */
 	void deleteLeaves(void);
 
-	/* This function returns true if the process is a leaf process with
+	/**
+	 * This function returns true if the process is a leaf process with
 	 * respect to the other processes in the process list. It does not
 	 * have to be a leaf process in the overall list of processes.
 	 */
