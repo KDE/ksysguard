@@ -38,7 +38,7 @@
 #include "netdev.h"
 #include "netstat.h"
 #include "stat.h"
-#endif // OSTYPE_Linux
+#endif /* OSTYPE_Linux */
 
 #ifdef OSTYPE_FreeBSD
 #include <grp.h>
@@ -50,14 +50,20 @@
 #include "loadavg.h"
 #include "logfile.h"
 #include "netdev.h"
-#endif // OSTYPE_FreeBSD
+#endif /* OSTYPE_FreeBSD */
 
 #ifdef OSTYPE_Solaris
 #include "LoadAvg.h"
 #include "Memory.h"
 #include "NetDev.h"
 #include "ProcessList.h"
-#endif // OSTYPE_Solaris
+#endif /* OSTYPE_Solaris */
+
+#ifdef OSTYPE_Tru64
+#include "LoadAvg.h"
+#include "Memory.h"
+#include "NetDev.h"
+#endif
 
 struct ModulListEntry {
 	char *configName;
@@ -82,7 +88,7 @@ struct ModulListEntry ModulList[] = {
 	{ "LogFile", initLogFile, exitLogFile, NULL, NULL }
 };
 #define NUM_MODULES 11
-#endif // OSTYPE_Linux
+#endif /* OSTYPE_Linux */
 
 #ifdef OSTYPE_FreeBSD
 	{ "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULL },
@@ -95,7 +101,7 @@ struct ModulListEntry ModulList[] = {
 	{ "NetDev", initNetDev, exitNetDev, updateNetDev, checkNetDev },
 };
 #define NUM_MODULES 8
-#endif // OSTYPE_FreeBSD
+#endif /* OSTYPE_FreeBSD */
 
 #ifdef OSTYPE_Solaris
 	{ "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULL },
@@ -104,6 +110,14 @@ struct ModulListEntry ModulList[] = {
 	{ "ProcessList", initProcessList, exitProcessList, updateProcessList, NULL },
 };
 #define NUM_MODULES 4
-#endif // OSTYPE_Solaris
+#endif /* OSTYPE_Solaris */
 
-#endif // modules_h
+#ifdef OSTYPE_Tru64
+	{ "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULL },
+	{ "Memory", initMemory, exitMemory, updateMemory, NULL },
+	{ "NetDev", initNetDev, exitNetDev, updateNetDev, NULL },
+};
+#define NUM_MODULES 3
+#endif /* OSTYPE_Tru64 */
+
+#endif /* modules_h */
