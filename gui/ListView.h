@@ -74,10 +74,10 @@ public:
 	void resizeEvent(QResizeEvent*);
 	void updateList();
 
-	bool load(QDomElement& domEl);
-	bool save(QDomDocument& doc, QDomElement& display);
+	bool createFromDOM(QDomElement& domEl);
+	bool addToDOM(QDomDocument& doc, QDomElement& display, bool save = true);
 
-	virtual bool hasSettingsDialog()
+	virtual bool hasSettingsDialog() const
 	{
 		return (TRUE);
 	}

@@ -33,6 +33,7 @@
 
 #include "SensorManager.h"
 #include "ListViewSettings.h"
+#include "ColorPicker.h"
 #include "ListView.moc"
 
 ListViewItem::ListViewItem(MyListView *parent)
@@ -183,7 +184,7 @@ ListView::resizeEvent(QResizeEvent*)
 }
 
 bool
-ListView::load(QDomElement& el)
+ListView::createFromDOM(QDomElement& el)
 {
 	modified = false;
 
@@ -196,14 +197,16 @@ ListView::load(QDomElement& el)
 }
 
 bool
-ListView::save(QDomDocument&, QDomElement& display)
+ListView::addToDOM(QDomDocument&, QDomElement& display, bool save)
 {
 	display.setAttribute("hostName", sensors.at(0)->hostName);
 	display.setAttribute("sensorName", sensors.at(0)->name);
 	display.setAttribute("title", title);
 	display.setAttribute("gridcolor", mainList->getGridColor().name());
 	display.setAttribute("textcolor", mainList->getTextColor().name());
-	modified = FALSE;
+
+	if (save)
+		modified = FALSE;
 
 	return (TRUE);
 }
@@ -215,8 +218,8 @@ ListView::settings()
 	CHECK_PTR(lvs);
 	connect(lvs->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
 
-	lvs->gridColorButton->setColor(mainList->getGridColor());
-	lvs->textColorButton->setColor(mainList->getTextColor());
+	lvs->gridColor->setColor(mainList->getGridColor());
+	lvs->textColor->setColor(mainList->getTextColor());
 
 	if (lvs->exec())
 		applySettings();
@@ -228,8 +231,8 @@ ListView::settings()
 void
 ListView::applySettings()
 {
-	mainList->setGridColor(lvs->gridColorButton->color());
-	mainList->setTextColor(lvs->textColorButton->color());
+	mainList->setGridColor(lvs->gridColor->getColor());
+	mainList->setTextColor(lvs->textColor->getColor());
 	modified = TRUE;
 
 	mainList->update(mainList->x(), mainList->y(), mainList->width(), mainList->height());

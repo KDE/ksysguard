@@ -14,15 +14,19 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>328</width>
-            <height>215</height>
+            <width>359</width>
+            <height>213</height>
         </rect>
     </property>
     <property stdset="1">
         <name>caption</name>
         <string>Listview Settings</string>
     </property>
-    <grid>
+    <property stdset="1">
+        <name>sizeGripEnabled</name>
+        <bool>true</bool>
+    </property>
+    <vbox>
         <property stdset="1">
             <name>margin</name>
             <number>11</number>
@@ -31,17 +35,27 @@
             <name>spacing</name>
             <number>6</number>
         </property>
-        <widget row="1"  column="0" >
+        <widget>
             <class>QGroupBox</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>GroupBox1</cstring>
+                <cstring>frame</cstring>
             </property>
             <property stdset="1">
                 <name>title</name>
-                <string></string>
+                <string>Colors</string>
             </property>
-            <grid>
+            <property stdset="1">
+                <name>alignment</name>
+                <set>WordBreak|AlignVCenter|AlignLeft</set>
+            </property>
+            <property>
+                <name>vAlign</name>
+            </property>
+            <property>
+                <name>wordwrap</name>
+            </property>
+            <vbox>
                 <property stdset="1">
                     <name>margin</name>
                     <number>11</number>
@@ -50,53 +64,10 @@
                     <name>spacing</name>
                     <number>6</number>
                 </property>
-                <widget row="0"  column="0" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>gridColorLabel</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>GridColor</string>
-                    </property>
-                    <property>
-                        <name>whatsThis</name>
-                        <string>Color for the ListView-Grid</string>
-                    </property>
-                </widget>
-                <spacer row="0"  column="1" >
+                <spacer>
                     <property>
                         <name>name</name>
                         <cstring>Spacer1</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget row="0"  column="2" >
-                    <class>KColorButton</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>gridColorButton</cstring>
-                    </property>
-                </widget>
-                <spacer row="1"  column="1" >
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer1_3</cstring>
                     </property>
                     <property stdset="1">
                         <name>orientation</name>
@@ -114,71 +85,33 @@
                         </size>
                     </property>
                 </spacer>
-            </grid>
-        </widget>
-        <widget row="2"  column="0" >
-            <class>QGroupBox</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>GroupBox2</cstring>
-            </property>
-            <property stdset="1">
-                <name>title</name>
-                <string></string>
-            </property>
-            <grid>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>11</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
-                <widget row="0"  column="0" >
-                    <class>QLabel</class>
+                <widget>
+                    <class>ColorPicker</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>textColorLabel</cstring>
+                        <cstring>textColor</cstring>
                     </property>
                     <property stdset="1">
-                        <name>text</name>
-                        <string>TextColor</string>
-                    </property>
-                    <property>
-                        <name>whatsThis</name>
-                        <string>Color for the ListView-Text</string>
-                    </property>
-                </widget>
-                <spacer row="0"  column="1" >
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer1_2</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
+                        <name>minimumSize</name>
                         <size>
-                            <width>20</width>
-                            <height>20</height>
+                            <width>0</width>
+                            <height>40</height>
                         </size>
                     </property>
-                </spacer>
-                <widget row="0"  column="2" >
-                    <class>KColorButton</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>textColorButton</cstring>
+                    <property>
+                        <name>color</name>
+                        <color>
+                            <red>0</red>
+                            <green>255</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Text Color</string>
                     </property>
                 </widget>
-                <spacer row="1"  column="1" >
+                <spacer>
                     <property>
                         <name>name</name>
                         <cstring>Spacer2</cstring>
@@ -199,9 +132,56 @@
                         </size>
                     </property>
                 </spacer>
-            </grid>
+                <widget>
+                    <class>ColorPicker</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>gridColor</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>0</width>
+                            <height>40</height>
+                        </size>
+                    </property>
+                    <property>
+                        <name>color</name>
+                        <color>
+                            <red>0</red>
+                            <green>255</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Grid Color</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer3</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </vbox>
         </widget>
-        <widget row="4"  column="0" >
+        <widget>
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
@@ -216,27 +196,6 @@
                     <name>spacing</name>
                     <number>6</number>
                 </property>
-                <spacer>
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer4</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
                 <widget>
                     <class>QPushButton</class>
                     <property stdset="1">
@@ -263,6 +222,34 @@
                         <string>Apply</string>
                     </property>
                 </widget>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer1_4</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
                 <widget>
                     <class>QPushButton</class>
                     <property stdset="1">
@@ -276,8 +263,32 @@
                 </widget>
             </hbox>
         </widget>
-    </grid>
+    </vbox>
 </widget>
+<customwidgets>
+    <customwidget>
+        <class>ColorPicker</class>
+        <header location="global">ColorPicker.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+        </sizepolicy>
+        <pixmap>image0</pixmap>
+        <property type="Color">color</property>
+        <property type="String">text</property>
+    </customwidget>
+</customwidgets>
+<images>
+    <image>
+        <name>image0</name>
+        <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1be245fc04c5a3201e4615f430059d0711ff5ddb2e6bb236ec90eed134cb5a19d8ef36602af5ecdbfeeac05dda0798d3abebde87e3faa374d3807fa0d633a52d38d8de6f679fe33fc776e196f53cd010188256a3600a292882096246517815ca99884606e18044a3a40d91824820924265a7923a2e8bcd05f33db1173e002913175f2a6be6d3294871a2d95fa00e8a94ee017b69d339d90df1e77c57ea072ede6758</data>
+    </image>
+</images>
 <connections>
     <connection>
         <sender>okButton</sender>
@@ -294,8 +305,6 @@
     <slot access="public">applyClicked()</slot>
 </connections>
 <tabstops>
-    <tabstop>gridColorButton</tabstop>
-    <tabstop>textColorButton</tabstop>
     <tabstop>okButton</tabstop>
     <tabstop>applyButton</tabstop>
     <tabstop>cancelButton</tabstop>
