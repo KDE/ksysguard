@@ -151,11 +151,9 @@ BarGraph::paintEvent(QPaintEvent*)
 			{
 				if ((upperLimitActive && samples[b] > upperLimit) ||
 					(lowerLimitActive && samples[b] < lowerLimit))
-					p.setPen(alarmColor.light((int) 30 +
-											  (70.0 / (barHeight + 1) * i)));
+					p.setPen(alarmColor.light(static_cast<int>(30 + (70.0 / (barHeight + 1) * i))));
 				else
-					p.setPen(normalColor.light((int) 30 +
-											   (70.0 / (barHeight + 1) * i)));
+					p.setPen(normalColor.light(static_cast<int>(30 + (70.0 / (barHeight + 1) * i))));
 				p.drawLine(b * barWidth + 3, barHeight - i,
 						   (b + 1) * barWidth - 3,
 						   barHeight - i);
