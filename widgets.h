@@ -26,6 +26,8 @@
 
 */
 
+// $Id$
+
 #ifndef TASKMAN_H
 #define TASKMAN_H
 

@@ -26,6 +26,8 @@
 
 */
 
+// $Id$
+
 #ifndef _ProcessList_h_
 #define _ProcessList_h_
 
@@ -39,6 +41,7 @@
 #include <ktablistbox.h>
 
 #include "IconList.h"
+#include "OSProcessList.h"
 
 #define NONE -1
 
@@ -84,18 +87,6 @@ public:
 		FILTER_USER,
 		FILTER_OWN
 	};
- 	enum sortID
-	{
-		SORTBY_PID = 0, 
-		SORTBY_NAME, 
-		SORTBY_UID, 
-		SORTBY_CPU,
-		SORTBY_TIME,
-		SORTBY_STATUS,
-		SORTBY_VMSIZE,
-		SORTBY_VMRSS,
-		SORTBY_VMLIB
-	};	
 
 	KtopProcList(QWidget* parent , const char* name);
 	~KtopProcList();
@@ -126,7 +117,7 @@ public:
 		filtermode = m;
 	}
 
-	void setSortMethod(int m)
+	void setSortMethod(OSProcessList::SORTKEY m)
 	{
 		sort_method = m;
 	}
@@ -170,16 +161,10 @@ private:
 		timer_id = startTimer(timer_interval);
 	}
 
-	int psList_getProcStatus(char*);
-	void psList_clearProcVisit();
-	void psList_removeProcUnvisited();
-	void psList_sort();
-	psPtr psList_getProcItem(char*);
-    
     psPtr ps_list;
     int lastSelectionPid;
 	int filtermode;
-	int sort_method;
+	OSProcessList::SORTKEY sort_method;
 	int update_rate;
 	int timer_interval;
 	int timer_id;

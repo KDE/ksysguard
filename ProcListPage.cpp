@@ -26,6 +26,9 @@
 
 */
 
+// $Id$
+
+#include <errno.h>
 #include <sys/types.h>
 #include <signal.h>
 
@@ -61,68 +64,63 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	: QWidget(parent, name)
 {
 	// Create the box that will contain the other widgets.
-    pList_box = new QGroupBox(this, "pList_box"); 
-    CHECK_PTR(pList_box);
-    pList_box->move(5, 5);
-    pList_box->resize(380, 380);
+	pList_box = new QGroupBox(this, "pList_box"); 
+	pList_box->setTitle(i18n("Running processes"));
+	CHECK_PTR(pList_box);
+	pList_box->move(5, 5);
+	pList_box->resize(380, 380);
 
 	// Create the table that lists the processes.
-    pList = new KtopProcList(this, "pList");    
-    CHECK_PTR(pList);
-    connect(pList, SIGNAL(popupMenu(int, int)),
+	pList = new KtopProcList(this, "pList");    
+	CHECK_PTR(pList);
+	connect(pList, SIGNAL(popupMenu(int, int)),
 			SLOT(pList_popupMenu(int, int)));
 	connect(pList, SIGNAL(popupMenu(int, int)),
 			parent, SLOT(popupMenu(int, int)));
-    pList->move(10, 30);
-    pList->resize(370, 300);
+	pList->move(10, 30);
+	pList->resize(370, 300);
 
 	// Create a combo box to configure the refresh rate.
-    pList_cbRefresh = new QComboBox(this, "pList_cbRefresh");
-    CHECK_PTR(pList_cbRefresh);
-    for (int i = 0; rateTxt[i]; i++)
-	{
-		pList_cbRefresh->insertItem(klocale->translate(rateTxt[i]),
+	pList_cbRefresh = new QComboBox(this, "pList_cbRefresh");
+	CHECK_PTR(pList_cbRefresh);
+	for (int i = 0; rateTxt[i]; i++)
+		pList_cbRefresh->insertItem(i18n(rateTxt[i]),
 									i + (KtopProcList::UPDATE_SLOW));
-    } 
-    pList_cbRefresh->setCurrentItem(pList->updateRate());
-    connect(pList_cbRefresh, SIGNAL(activated(int)),
+	pList_cbRefresh->setCurrentItem(pList->updateRate());
+	connect(pList_cbRefresh, SIGNAL(activated(int)),
 			SLOT(pList_cbRefreshActivated(int)));
 
 	// Create the combo box to configure the process filter.
-    pList_cbFilter = new QComboBox(this,"pList_cbFilter");
-    CHECK_PTR(pList_cbFilter);
-    for (int i=0; processfilter[i]; i++)
-	{
-		pList_cbFilter->insertItem(klocale->translate(processfilter[i]), -1);
-    }
-    pList_cbFilter->setCurrentItem(pList->filterMode());
-    connect(pList_cbFilter, SIGNAL(activated(int)),
+	pList_cbFilter = new QComboBox(this,"pList_cbFilter");
+	CHECK_PTR(pList_cbFilter);
+	for (int i = 0; processfilter[i]; i++)
+		pList_cbFilter->insertItem(i18n(processfilter[i]), -1);
+	pList_cbFilter->setCurrentItem(pList->filterMode());
+	connect(pList_cbFilter, SIGNAL(activated(int)),
 			SLOT(pList_cbProcessFilter(int)));
 
 	// Create the 'Refresh Now' button.
-    pList_bRefresh = new QPushButton(i18n("Refresh Now"), this,
+	pList_bRefresh = new QPushButton(i18n("Refresh Now"), this,
 									 "pList_bRefresh");
-    CHECK_PTR(pList_bRefresh);
-    connect(pList_bRefresh, SIGNAL(clicked()), this, SLOT(pList_update()));
+	CHECK_PTR(pList_bRefresh);
+	connect(pList_bRefresh, SIGNAL(clicked()), this, SLOT(pList_update()));
 
 	// Create the 'Kill task' button.
-    pList_bKill = new QPushButton(i18n("Kill task"), this, "pList_bKill");
-    CHECK_PTR(pList_bKill);
-    connect(pList_bKill,SIGNAL(clicked()), this, SLOT(pList_killTask()));
-  
-    pList_box->setTitle(i18n("Running processes"));
+	pList_bKill = new QPushButton(i18n("Kill task"), this, "pList_bKill");
+	CHECK_PTR(pList_bKill);
+	connect(pList_bKill,SIGNAL(clicked()), this, SLOT(pList_killTask()));
 
-    strcpy(cfgkey_pListUpdate, "pListUpdate");
+	strcpy(cfgkey_pListUpdate, "pListUpdate");
 	strcpy(cfgkey_pListFilter, "pListFilter");
-    strcpy(cfgkey_pListSort, "pListSort");
+	strcpy(cfgkey_pListSort, "pListSort");
 
 	// restore refresh rate settings...
 	pList_refreshRate = KtopProcList::UPDATE_MEDIUM;
 	QString tmp = Kapp->getConfig()->readEntry(QString(cfgkey_pListUpdate));
-	if(!tmp.isNull())
+	if (!tmp.isNull())
 	{
 		bool res = FALSE;
-		pList_refreshRate =tmp.toInt(&res);
+		pList_refreshRate = tmp.toInt(&res);
 		if (!res) 
 			pList_refreshRate = KtopProcList::UPDATE_MEDIUM;
 	}
@@ -131,7 +129,7 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 
 	// restore process filter settings...
 	tmp = Kapp->getConfig()->readEntry(QString(cfgkey_pListFilter));
-	if(!tmp.isNull())
+	if (!tmp.isNull())
 	{
 		bool res = FALSE;
 		int filter = tmp.toInt(&res);
@@ -144,15 +142,16 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	pList->setUpdateRate(pList_refreshRate);
 
 	// restore sort method for pList...
-	pList_sortby=KtopProcList::SORTBY_CPU;
+	pList_sortby = OSProcessList::SORTBY_CPU;
 	tmp = Kapp->getConfig()->readEntry(QString(cfgkey_pListSort));
 	if(!tmp.isNull())
 	{
 		bool res = FALSE;
 		pList_sortby = tmp.toInt(&res);
-		if (!res) pList_sortby=KtopProcList::SORTBY_CPU;
+		if (!res)
+			pList_sortby = OSProcessList::SORTBY_CPU;
 	}
-	pList->setSortMethod(pList_sortby);
+	pList->setSortMethod((OSProcessList::SORTKEY) pList_sortby);
 
     pList->update(); /* create process list */
 }
@@ -172,7 +171,6 @@ ProcListPage::resizeEvent(QResizeEvent* ev)
 	pList_cbFilter->setGeometry(170, h - 45, 150, 25);
 	pList_bRefresh->setGeometry(w - 180, h - 45, 80, 25);
 	pList_bKill->setGeometry(w - 90, h - 45, 80, 25);
-
 }
 
 void

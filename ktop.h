@@ -26,6 +26,8 @@
 
 */
 
+// $Id$
+
 #include <qmenubar.h>
 #include <qpopupmenu.h>
 

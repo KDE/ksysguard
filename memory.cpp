@@ -162,10 +162,13 @@ SwapMon::SwapMon(QWidget *parent, const char *name, QWidget *child )
     my_child  = child;
     ticks = 50;
 
-    swapData = new unsigned [ticks](0);
+    swapData = new unsigned [ticks];
+	memset(swapData, 0, ticks * sizeof(unsigned));
     CHECK_PTR(swapData);
-    memZone  = new char [4096](0);
+
+    memZone  = new char [4096];
     CHECK_PTR(memZone);
+	memset(memZone, 0, 4096);
 
     setBackgroundColor(black);
     brush_0 = QBrush(QColor("darkgreen"), SolidPattern);
@@ -222,10 +225,10 @@ void SwapMon::paintEvent(QPaintEvent *)
  -----------------------------------------------------------------------------*/
 void SwapMon::timerEvent(QTimerEvent *)
 {
+  /*
   int   fd, len;
   char *p;
   
-  /*
   fd = open("/proc/meminfo",O_RDONLY);
   if ( fd < 0 ) return;
   len = read(fd,memZone,MEM_ZONE_SIZE-1);

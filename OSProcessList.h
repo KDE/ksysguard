@@ -1,0 +1,195 @@
+/*
+    KTop, a taskmanager and cpu load monitor
+   
+	Copyright (c) 1999 Chris Schlaeger
+	                   cs@axys.de
+    
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
+
+// $Id$
+
+#ifndef _OSProcessList_h_
+#define _OSProcessList_h_
+
+#include "unistd.h"
+
+#include <qlist.h>
+
+class OSProcess
+{
+public:
+	OSProcess() {}
+	virtual ~OSProcess() {}
+
+	/**
+	 * This functions retries the kernel information about the process with
+	 * the id 'pidStr' (decimal number passed as string).
+	 */
+	bool loadInfo(const char* pidStr);
+
+	const char* getName(void) const
+	{
+		return (name);
+	}
+	char getStatus(void) const
+	{
+		return (status);
+	}
+	const char* getStatusTxt(void) const
+	{
+		return (statusTxt);
+	}
+	pid_t getPid(void) const
+	{
+		return (pid);
+	}
+	pid_t getPpid(void) const
+	{
+		return (ppid);
+	}
+	uid_t getUid(void) const
+	{
+		return (uid);
+	}
+	gid_t getGid(void) const
+	{
+		return (gid);
+	}
+	unsigned int getVm_size(void) const
+	{
+		return (vm_size);
+	}
+	unsigned int getVm_data(void) const
+	{
+		return (vm_data);
+	}
+	unsigned int getVm_rss(void) const
+	{
+		return (vm_rss);
+	}
+	unsigned int getVm_lib(void) const
+	{
+		return (vm_lib);
+	}
+	int getOtime(void) const
+	{
+		return (otime);
+	}
+	int getTime(void) const
+	{
+		return (time);
+	}
+	int getOabstime(void) const
+	{
+		return (oabstime);
+	}
+	int getAbstime(void) const
+	{
+		return (abstime);
+	}
+
+private:
+	char name[101];
+	char status;
+	char statusTxt[10];
+	pid_t pid;
+	pid_t ppid;
+	uid_t uid;
+	gid_t gid;
+	unsigned int vm_size;
+	unsigned int vm_lock;
+	unsigned int vm_rss;
+	unsigned int vm_data;
+	unsigned int vm_stack;
+	unsigned int vm_exe;
+	unsigned int vm_lib;
+	int otime;
+	int time;
+	int oabstime;
+	int abstime;
+} ;
+
+/**
+ * This class encapsulates all OS specific information about the process list.
+ * Since inquiring process status is hight OS dependant all these adaptions
+ * should be made in this file.
+ */
+class OSProcessList : public QList<OSProcess>
+{
+public:
+ 	enum SORTKEY
+	{
+		SORTBY_PID = 0, 
+		SORTBY_NAME, 
+		SORTBY_UID, 
+		SORTBY_CPU,
+		SORTBY_TIME,
+		SORTBY_STATUS,
+		SORTBY_VMSIZE,
+		SORTBY_VMRSS,
+		SORTBY_VMLIB
+	};	
+
+	OSProcessList()
+	{
+		sortCriteria = SORTBY_PID;
+		setAutoDelete(true);
+	}
+
+	virtual ~OSProcessList() {}
+
+	/**
+	 * This function clears the old process list and retrieves a current one
+	 * from the OS.
+	 */
+	void update(void);
+
+	/**
+	 * The 'has...' functions can be used to inquire if the OS supports a
+	 * specific process attribute. The return value may be hardcoded and
+	 * ifdefed for each platform.
+	 */
+	bool hasVmSize(void) const
+	{
+		return (true);
+	}
+	bool hasVmRss(void) const
+	{
+		return (true);
+	}
+	bool hasVmList(void) const
+	{
+		return (true);
+	}
+
+	void setSortCriteria(SORTKEY sk)
+	{
+		sortCriteria = sk;
+	}
+
+	SORTKEY getSortCriteria(void)
+	{
+		return (sortCriteria);
+	}
+
+private:
+	int compareItems(GCI it1, GCI it2);
+
+	SORTKEY sortCriteria;
+} ;
+
+#endif

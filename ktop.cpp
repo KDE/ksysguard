@@ -25,6 +25,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+// $Id$
+
 #include <qmenubar.h>
 #include <qmessagebox.h>
 #include <kconfig.h>
