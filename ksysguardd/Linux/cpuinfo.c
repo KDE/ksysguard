@@ -146,14 +146,14 @@ updateCpuInfo(void)
 	if ((fd = open("/proc/cpuinfo", O_RDONLY)) < 0)
 	{
 		if (CpuInfoOK != 0)
-			perror("ERROR: Cannot open file \'/proc/cpuinfo\'!");
+			print_error("ERROR: Cannot open file \'/proc/cpuinfo\'!\n");
 		CpuInfoOK = -1;
 		return (-1);
 	}
 	if ((n = read(fd, CpuInfoBuf, CPUINFOBUFSIZE - 1)) == CPUINFOBUFSIZE - 1)
 	{
-		perror("ERROR: Internal buffer too small to read "
-			   "/proc/cpuinfo!");
+		print_error("ERROR: Internal buffer too small to read "
+			   "\'/proc/cpuinfo\'!\n");
 		CpuInfoOK = 0;
 		return (-1);
 	}

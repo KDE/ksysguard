@@ -84,13 +84,13 @@ updateApm(void)
 	if ((fd = open("/proc/apm", O_RDONLY)) < 0)
 	{
 		if (ApmOK != 0)
-			perror("ERROR: Cannot open file \'/proc/apm\'!");
+			print_error("ERROR: Cannot open file \'/proc/apm\'!\n");
 		return (-1);
 	}
 	if ((n = read(fd, ApmBuf, APMBUFSIZE - 1)) == APMBUFSIZE - 1)
 	{
-		perror("ERROR: Internal buffer too small to read "
-			   "/proc/apm!");
+		print_error("ERROR: Internal buffer too small to read "
+			   "\'/proc/apm\'!\n");
 		return (-1);
 	}
 	close(fd);

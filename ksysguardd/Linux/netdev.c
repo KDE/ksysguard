@@ -30,8 +30,6 @@
 #include "Command.h"
 #include "netdev.h"
 
-/* Special version of perror for use in signal handler functions. */
-#define perror(a) write(STDERR_FILENO, (a), strlen(a))
 #define print(a) write(currentClientFD, (a), strlen(a))
 
 #define CALC(a, b, c, d) \
@@ -319,8 +317,8 @@ Inter-|   Receive                                                |  Transmit
 	}
 	if ((n = read(fd, NetDevBuf, NETDEVBUFSIZE - 1)) == NETDEVBUFSIZE - 1)
 	{
-		perror("ERROR: Internal buffer too small to read "
-			   "/proc/net/dev!");
+		print_error("ERROR: Internal buffer too small to read "
+			   "\'/proc/net/dev\'!\n");
 		NetDevOk = -1;
 		return (-1);
 	}

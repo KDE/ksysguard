@@ -285,7 +285,7 @@ updateNetStatTcpUdpRaw(const char *cmd)
 	}
 
 	if ((netstat = fopen(buffer, "r")) == NULL) {
-		perror("open");
+		print_error("ERROR: can't open \'%s\'!\n", buffer);
 		return -1;
 	}
 
@@ -349,7 +349,7 @@ updateNetStatUnix(void)
 	UnixInfo *unix_info;
 
 	if ((file = fopen("/proc/net/unix", "r")) == NULL) {
-		perror("open");
+		print_error("ERROR: can't open \'/proc/net/unix\'!\n");
 		return -1;
 	}
 

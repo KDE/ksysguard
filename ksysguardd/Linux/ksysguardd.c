@@ -64,7 +64,7 @@ printWelcome(FILE* out)
 {
 	fprintf(out,
 			"ksysguardd %s  (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>\n"
-			"                               Tobias Koenig <tokoe@yahoo.de>\n"
+			"                               Tobias Koenig <tokoe82@yahoo.de>\n"
 			"This program is part of the KDE Project and licensed under\n"
 			"the GNU GPL version 2. See www.kde.org for details!\n"
 			"ksysguardd> ", VERSION);
@@ -201,7 +201,7 @@ main(int argc, char* argv[])
 				RunAsDaemon = 1;
 				break;
 			case '?':
-				print_error("usage: %s [-d] [-p port]\n", argv[0]);
+				fprintf(stderr, "usage: %s [-d] [-p port]\n", argv[0]);
 				return -1;
 				break;
 		}

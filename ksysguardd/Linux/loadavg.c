@@ -85,13 +85,13 @@ updateLoadAvg(void)
 	if ((fd = open("/proc/loadavg", O_RDONLY)) < 0)
 	{
 		if (LoadAvgOK != 0)
-			perror("ERROR: Cannot open file \'/proc/loadavg\'!");
+			print_error("ERROR: Cannot open file \'/proc/loadavg\'!\n");
 		return (-1);
 	}
 	if ((n = read(fd, LoadAvgBuf, LOADAVGBUFSIZE - 1)) == LOADAVGBUFSIZE - 1)
 	{
-		perror("ERROR: Internal buffer too small to read "
-			   "/proc/loadavg!");
+		print_error("ERROR: Internal buffer too small to read "
+			   "\'/proc/loadavg\'!\n");
 		return (-1);
 	}
 	close(fd);

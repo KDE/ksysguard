@@ -29,9 +29,6 @@
 #include "Command.h"
 #include "Memory.h"
 
-/* Special version of perror for use in signal handler functions. */
-#define perror(a) write(STDERR_FILENO, (a), strlen(a))
-
 #define MEMINFOBUFSIZE 1024
 static char MemInfoBuf[MEMINFOBUFSIZE];
 static int Dirty = 0;
@@ -130,15 +127,15 @@ updateMemory(void)
 
 	if ((fd = open("/proc/meminfo", O_RDONLY)) < 0)
 	{
-		perror("ERROR: Cannot open /proc/meminfo!\n"
+		print_error("ERROR: Cannot open \'/proc/meminfo\'!\n"
 			   "The kernel needs to be compiled with support\n"
-			   "for /proc filesystem enabled!");
+			   "for /proc filesystem enabled!\n");
 		return (-1);
 	}
 	if ((n = read(fd, MemInfoBuf, MEMINFOBUFSIZE - 1)) ==
 		MEMINFOBUFSIZE - 1)
 	{
-		perror("ERROR: Internal buffer too small to read /proc/mem!");
+		print_error("ERROR: Internal buffer too small to read \'/proc/mem\'!\n");
 		return (-1);
 	}
 

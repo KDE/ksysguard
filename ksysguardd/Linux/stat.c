@@ -620,13 +620,13 @@ updateStat(void)
 	{
 		print_error("ERROR: Cannot open file \'/proc/stat\'!\n"
 			   "The kernel needs to be compiled with support\n"
-			   "for /proc filesystem enabled!");
+			   "for /proc filesystem enabled!\n");
 		return (-1);
 	}
 	if ((n = read(fd, StatBuf, STATBUFSIZE - 1)) == STATBUFSIZE - 1)
 	{
 		print_error("ERROR: Internal buffer too small to read "
-			   "/proc/stat!");
+			   "\'/proc/stat\'!\n");
 		return (-1);
 	}
 	gettimeofday(&currSampling, 0);
@@ -972,7 +972,7 @@ printDiskIO(const char* cmd)
 	else {
 		fprintf(currentClient, "0\n");
 
-		print_error("ERROR: unknown disk device property %s\n", name);
+		print_error("ERROR: unknown disk device property \'%s\'!\n", name);
 	}
 }
 
@@ -1009,7 +1009,7 @@ printDiskIOInfo(const char* cmd)
 		fprintf(currentClient, "Write accesses device %d, %d\t0\t0\tkBytes/s\n", major, minor);
 	else {
 		fprintf(currentClient, "Dummy\t0\t0\t\n");
-		print_error("ERROR: Request for unknown device property %s\n",
+		print_error("ERROR: Request for unknown device property \'%s\'!\n",
 				name);
 	}
 }
