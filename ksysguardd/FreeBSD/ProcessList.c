@@ -21,29 +21,27 @@
 	$Id$
 */
 
+#include <ctype.h>
+#include <dirent.h>
+#include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <sys/types.h>
-#include <sys/time.h>
 #include <sys/param.h>
-#include <sys/user.h>
 #if __FreeBSD_version > 500015
 #include <sys/priority.h>
 #endif
-#include <unistd.h>
-#include <pwd.h>
-#include <dirent.h>
-
-
 #include <sys/sysctl.h>
+#include <sys/time.h>
 #include <sys/types.h>
-#include <sys/param.h>
+#include <sys/user.h>
+#include <unistd.h>
 
-#include "ccont.h"
+
 #include "Command.h"
 #include "ProcessList.h"
+#include "ccont.h"
+#include "ksysguardd.h"
 
 CONTAINER ProcessList = 0;
 
@@ -70,7 +68,7 @@ typedef struct
 	gid_t gid;
 
 	/* a character description of the process status */
-    char status[16];
+	char status[16];
 
 	/* the number of the tty the process owns */
 	int ttyNo;
@@ -257,7 +255,7 @@ cleanupProcessList(void)
 	ProcessCount = 0;
 	/* All processes that do not have the active flag set are assumed dead
 	 * and will be removed from the list. The alive flag is cleared. */
-	for (i = 1; i < level_ctnr(ProcessList); i++)
+	for (i = 0; i < level_ctnr(ProcessList); i++)
 	{
 		ProcessInfo* ps = get_ctnr(ProcessList, i);
 		if (ps->alive)
@@ -285,14 +283,18 @@ initProcessList(void)
 {
 	ProcessList = new_ctnr(CT_DLL);
 
-	registerCommand("ps", printProcessList);
-	registerCommand("ps?", printProcessListInfo);
+	registerMonitor("ps", "table", printProcessList, printProcessListInfo);
 	registerMonitor("pscount", "integer", printProcessCount, printProcessCountInfo);
+
+	updateProcessList();
 }
 
 void
 exitProcessList(void)
 {
+	removeMonitor("ps");
+	removeMonitor("pscount");
+
 	if (ProcessList)
 		free (ProcessList);
 }
@@ -328,9 +330,9 @@ updateProcessList(void)
 void
 printProcessListInfo(const char* cmd)
 {
-	printf("Name\tPID\tPPID\tStatus\tNice\tVmSize\tVmRss\tVmLib\tUser"
+	fprintf(CurrentClient, "Name\tPID\tPPID\tStatus\tNice\tVmSize\tVmRss\tVmLib\tUser"
 		   "\tSystem\tUser\tCommand\n");
-	printf("s\td\td\ts\td\td\td\td\tf\tf\ts\ts\n");
+	fprintf(CurrentClient, "s\td\td\ts\td\td\td\td\tf\tf\ts\ts\n");
 }
 
 void
@@ -338,11 +340,11 @@ printProcessList(const char* cmd)
 {
 	int i;
 
-	for (i = 1; i < level_ctnr(ProcessList); i++)
+	for (i = 0; i < level_ctnr(ProcessList); i++)
 	{
 		ProcessInfo* ps = get_ctnr(ProcessList, i);
 
-		printf("%s\t%d\t%d\t%s\t%d\t%d\t%d\t%d\t%3.2f%%\t%3.2f%%\t%s\t%s\n",
+		fprintf(CurrentClient, "%s\t%d\t%d\t%s\t%d\t%d\t%d\t%d\t%3.2f%%\t%3.2f%%\t%s\t%s\n\n",
 			   ps->name, (int) ps->pid, (int) ps->ppid, ps->status,
 			   ps->niceLevel, ps->vmSize, ps->vmRss, ps->vmLib,
 			   ps->userLoad, ps->sysLoad, ps->userName, ps->cmdline);
@@ -352,11 +354,11 @@ printProcessList(const char* cmd)
 void
 printProcessCount(const char* cmd)
 {
-	printf("%d\n", ProcessCount);
+	fprintf(CurrentClient, "%d\n", ProcessCount);
 }
 
 void
 printProcessCountInfo(const char* cmd)
 {
-	printf("Number of Processes\t1\t65535\t\n");
+	fprintf(CurrentClient, "Number of Processes\t1\t65535\t\n");
 }

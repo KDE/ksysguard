@@ -20,8 +20,8 @@
 	$Id$
 */
 
-#ifndef _ProcessList_H_
-#define _ProcessList_H_
+#ifndef _process_list_h_
+#define _process_list_h_
 
 void initProcessList(void);
 void exitProcessList(void);

@@ -21,18 +21,22 @@
 	$Id$
 */
 
-#include <stdlib.h>
+#include <fcntl.h>
+#include <kvm.h>
+#include <limits.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#include <sys/types.h>
+#include <sys/vmmeter.h>
+#include <unistd.h>
+#include <vm/vm_param.h>
 
 #include "Command.h"
 #include "Memory.h"
-
-#include <sys/param.h>
-#include <sys/sysctl.h>
-#include <vm/vm_param.h>
-#include <sys/vmmeter.h>
-#include <string.h>
-#include <unistd.h>
+#include "ksysguardd.h"
 
 static size_t Total = 0;
 static size_t MFree = 0;
@@ -41,56 +45,62 @@ static size_t Buffers = 0;
 static size_t Cached = 0;
 static size_t STotal = 0;
 static size_t SFree = 0;
+static size_t SUsed = 0;
+static kvm_t *kd;
 
 void
 initMemory(void)
 {
-        registerMonitor("memfree", "integer", printMFree, printMFreeInfo);
-	registerMonitor("memused", "integer", printUsed, printUsedInfo);
-	registerMonitor("membuf", "integer", printBuffers, printBuffersInfo);
-	registerMonitor("memcached", "integer", printCached, printCachedInfo);
-	registerMonitor("memswap", "integer", printSwap, printSwapInfo);
+	char *nlistf = NULL;
+	char *memf = NULL;
+	char buf[_POSIX2_LINE_MAX];
+	
+	if ((kd = kvm_openfiles(nlistf, memf, NULL, O_RDONLY, buf)) == NULL) {
+		log_error("kvm_openfiles()");
+		return;
+	}
+
+        registerMonitor("mem/physical/free", "integer", printMFree, printMFreeInfo);
+	registerMonitor("mem/physical/used", "integer", printUsed, printUsedInfo);
+	registerMonitor("mem/physical/buf", "integer", printBuffers, printBuffersInfo);
+	registerMonitor("mem/physical/cached", "integer", printCached, printCachedInfo);
+	registerMonitor("mem/swap/free", "integer", printSwapFree, printSwapFreeInfo);
+	registerMonitor("mem/swap/used", "integer", printSwapUsed, printSwapUsedInfo);
 }
 
 void
 exitMemory(void)
 {
+	kvm_close(kd);
 }
 
 int
 updateMemory(void)
 {
-        int mib[2];
-        size_t len;
-        struct vmtotal p;
-        FILE *file;
-        char buf[256];
+	int mib[2];
+	size_t len;
+	struct vmtotal p;
+	FILE *file;
+	char buf[256];
+	struct kvm_swap kswap[16];
+	int i, swap_count, hlen, pagesize = getpagesize();
+	long blocksize;
 
         len = sizeof (Total);
         sysctlbyname("hw.physmem", &Total, &len, NULL, 0);
         Total /= 1024;
 
-        /* Q&D hack for swap display. Borrowed from xsysinfo-1.4 */
-        if ((file = popen("/usr/sbin/pstat -ks", "r")) == NULL) {
-                STotal = SFree = 0;
-        } else {
-		char *total_str, *free_str;
+	/* Borrowed from pstat */ 
+	swap_count = kvm_getswapinfo(kd, kswap, 16, SWIF_DEV_PREFIX);
+	getbsize(&hlen, &blocksize);
 
-		fgets(buf, sizeof(buf), file);
-		fgets(buf, sizeof(buf), file);
-		fgets(buf, sizeof(buf), file);
-		fgets(buf, sizeof(buf), file);
-		pclose(file);
+#define CONVERT(v) ((int)((quad_t)(v) * pagesize / blocksize))
 
-		strtok(buf, " ");
-		total_str = strtok(NULL, " ");
-		strtok(NULL, " ");
-		free_str = strtok(NULL, " ");
-
-		STotal = atoi(total_str);
-		SFree = atoi(free_str);
+	if (swap_count > 0) {
+		STotal = CONVERT(kswap[0].ksw_total);
+		SUsed = CONVERT(kswap[0].ksw_used);
+		SFree = CONVERT(kswap[0].ksw_total - kswap[0].ksw_used);
 	}
-
 
         len = sizeof (Buffers);
         if ((sysctlbyname("vfs.bufspace", &Buffers, &len, NULL, 0) == -1) || !len)
@@ -116,59 +126,71 @@ updateMemory(void)
 void
 printMFree(const char* cmd)
 {
-	printf("%d\n", MFree);
+	fprintf(CurrentClient, "%d\n", MFree);
 }
 
 void
 printMFreeInfo(const char* cmd)
 {
-	printf("Free Memory\t0\t%d\tKB\n", Total);
+	fprintf(CurrentClient, "Free Memory\t0\t%d\tKB\n", Total);
 }
 
 void
 printUsed(const char* cmd)
 {
-	printf("%d\n", Used);
+	fprintf(CurrentClient, "%d\n", Used);
 }
 
 void
 printUsedInfo(const char* cmd)
 {
-	printf("Used Memory\t0\t%d\tKB\n", Total);
+	fprintf(CurrentClient, "Used Memory\t0\t%d\tKB\n", Total);
 }
 
 void
 printBuffers(const char* cmd)
 {
-	printf("%d\n", Buffers);
+	fprintf(CurrentClient, "%d\n", Buffers);
 }
 
 void
 printBuffersInfo(const char* cmd)
 {
-	printf("Buffer Memory\t0\t%d\tKB\n", Total);
+	fprintf(CurrentClient, "Buffer Memory\t0\t%d\tKB\n", Total);
 }
 
 void
 printCached(const char* cmd)
 {
-	printf("%d\n", Cached);
+	fprintf(CurrentClient, "%d\n", Cached);
 }
 
 void
 printCachedInfo(const char* cmd)
 {
-	printf("Cached Memory\t0\t%d\tKB\n", Total);
+	fprintf(CurrentClient, "Cached Memory\t0\t%d\tKB\n", Total);
 }
 
 void
-printSwap(const char* cmd)
+printSwapUsed(const char* cmd)
 {
-	printf("%d\n", SFree);
+	fprintf(CurrentClient, "%d\n", SUsed);
 }
 
 void
-printSwapInfo(const char* cmd)
+printSwapUsedInfo(const char* cmd)
 {
-	printf("Swap Memory\t0\t%d\tKB\n", STotal);
+	fprintf(CurrentClient, "Used Swap Memory\t0\t%d\tKB\n", STotal);
+}
+
+void
+printSwapFree(const char* cmd)
+{
+	fprintf(CurrentClient, "%d\n", SFree);
+}
+
+void
+printSwapFreeInfo(const char* cmd)
+{
+	fprintf(CurrentClient, "Free Swap Memory\t0\t%d\tKB\n", STotal);
 }

@@ -20,19 +20,19 @@
 	$Id$
 */
 
-#include <sys/types.h>
 #include <sys/dkstat.h>
-
-#include <kvm.h>
-#include <nlist.h>
 #include <devstat.h>
 #include <fcntl.h>
+#include <kvm.h>
+#include <nlist.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 
 #include "CPU.h"
 #include "Command.h"
+#include "ksysguardd.h"
 
 long percentages(int cnt, int *out, long *new, long *old, long *diffs);
 
@@ -54,19 +54,19 @@ void
 initCPU(void)
 {
 	/* Total CPU load */
-	registerMonitor("cpuuser", "integer", printCPUUser,
+	registerMonitor("cpu/user", "integer", printCPUUser,
 			printCPUUserInfo);
-	registerMonitor("cpunice", "integer", printCPUNice,
+	registerMonitor("cpu/nice", "integer", printCPUNice,
 			printCPUNiceInfo);
-	registerMonitor("cpusys", "integer", printCPUSys,
+	registerMonitor("cpu/sys", "integer", printCPUSys,
 			printCPUSysInfo);
-	registerMonitor("cpuidle", "integer", printCPUIdle,
+	registerMonitor("cpu/idle", "integer", printCPUIdle,
 			printCPUIdleInfo);
 	kd = kvm_open(NULL, NULL, NULL, O_RDONLY, "kvm_open");
 	kvm_nlist(kd, my_nlist);
 	cp_time_offset = my_nlist[0].n_value;
-        kvm_read(kd, cp_time_offset, (char *)cp_time, sizeof(cp_time));
-        percentages(CPUSTATES, cpu_states, cp_time, cp_old, cp_diff);
+
+	updateCPU();
 }
 
 void
@@ -86,49 +86,49 @@ updateCPU(void)
 void
 printCPUUser(const char* cmd)
 {
-	printf("%d\n", cpu_states[CP_USER]/10);
+	fprintf(CurrentClient, "%d\n", cpu_states[CP_USER]/10);
 }
 
 void
 printCPUUserInfo(const char* cmd)
 {
-	printf("CPU User Load\t0\t100\t%%\n");
+	fprintf(CurrentClient, "CPU User Load\t0\t100\t%%\n");
 }
 
 void
 printCPUNice(const char* cmd)
 {
-	printf("%d\n", cpu_states[CP_NICE]/10);
+	fprintf(CurrentClient, "%d\n", cpu_states[CP_NICE]/10);
 }
 
 void
 printCPUNiceInfo(const char* cmd)
 {
-	printf("CPU Nice Load\t0\t100\t%%\n");
+	fprintf(CurrentClient, "CPU Nice Load\t0\t100\t%%\n");
 }
 
 void
 printCPUSys(const char* cmd)
 {
-	printf("%d\n", cpu_states[CP_SYS]/10);
+	fprintf(CurrentClient, "%d\n", cpu_states[CP_SYS]/10);
 }
 
 void
 printCPUSysInfo(const char* cmd)
 {
-	printf("CPU System Load\t0\t100\t%%\n");
+	fprintf(CurrentClient, "CPU System Load\t0\t100\t%%\n");
 }
 
 void
 printCPUIdle(const char* cmd)
 {
-	printf("%d\n", cpu_states[CP_IDLE]/10);
+	fprintf(CurrentClient, "%d\n", cpu_states[CP_IDLE]/10);
 }
 
 void
 printCPUIdleInfo(const char* cmd)
 {
-	printf("CPU Idle Load\t0\t100\t%%\n");
+	fprintf(CurrentClient, "CPU Idle Load\t0\t100\t%%\n");
 }
 
 

@@ -20,8 +20,8 @@
 	$Id$
 */
 
-#ifndef _CPU_h_
-#define _CPU_h_
+#ifndef _cpuinfo_h_
+#define _cpuinfo_h_
 
 void initCPU(void);
 

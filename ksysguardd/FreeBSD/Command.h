@@ -1,8 +1,8 @@
 /*
-    KTop, the KDE Task Manager
-
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
-
+    KSysGuard, the KDE System Guard
+   
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+    
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -20,10 +20,16 @@
 	$Id$
 */
 
-#ifndef _Command_h_
-#define _Command_h_
+#ifndef _command_h_
+#define _command_h_
+
+void print_error(const char *, ...);
+void log_error(const char *, ...);
 
 typedef void (*cmdExecutor)(const char*);
+
+extern int ReconfigureFlag;
+extern int CheckSetupFlag;
 
 void initCommand(void);
 
@@ -31,11 +37,19 @@ void exitCommand(void);
 
 void registerCommand(const char* command, cmdExecutor ex);
 
-void registerMonitor(const char* command, const char *type, cmdExecutor ex,
-		     cmdExecutor iq);
+void removeCommand(const char* command);
+
+void registerMonitor(const char* command, const char* type, cmdExecutor ex,
+					 cmdExecutor iq);
+
+void removeMonitor(const char* command);
 
 void executeCommand(const char* command);
 
 void printMonitors(const char* cmd);
+
+void printTest(const char* cmd);
+
+void exQuit(const char* cmd);
 
 #endif
