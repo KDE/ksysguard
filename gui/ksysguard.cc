@@ -581,13 +581,15 @@ main(int argc, char** argv)
 		a->dcopClient()->registerAs("ksysguard", FALSE);
 		a->dcopClient()->setDefaultObject("KSysGuardIface");
 
+		Toplevel = new TopLevel("KSysGuard");
+		CHECK_PTR(Toplevel);
+
 		// create top-level widget
 		if (args->count() > 0)
 		{
 			/* The user has specified a list of worksheets to load. In this
 			 * case we do not restore any previous settings but load all the
 			 * requested worksheets. */
-			Toplevel = new TopLevel("KSysGuard");
 			Toplevel->showRequestedSheets();
 			for (int i = 0; i < args->count(); ++i)
 				Toplevel->loadWorkSheet(args->arg(i));
@@ -595,14 +597,9 @@ main(int argc, char** argv)
 		else
 		{
 			if (a->isRestored())
-			{
-				RESTORE(TopLevel);
-			}
+				Toplevel->restore(1);
 			else
-			{
-				Toplevel = new TopLevel("KSysGuard");
 				Toplevel->readProperties(a->config());
-			}
 		}
 
 		Toplevel->initStatusBar();

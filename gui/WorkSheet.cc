@@ -16,8 +16,8 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+	Please do not commit any changes without consulting me first. Thanks!
 
 	$Id$
 */
@@ -456,7 +456,12 @@ WorkSheet::customEvent(QCustomEvent* ev)
 	if (ev->type() == QEvent::User)
 	{
 		// SensorDisplays send out this event if they want to be removed.
-		removeDisplay((SensorDisplay*) ev->data());
+		if (KMessageBox::warningYesNo(this, i18n(
+			"Do you really want to delete the display?")) ==
+			KMessageBox::Yes)
+		{				
+			removeDisplay((SensorDisplay*) ev->data());
+		}
 	}
 }
 
@@ -535,13 +540,8 @@ WorkSheet::removeDisplay(SensorDisplay* display)
 		for (uint c = 0; c < columns; ++c)
 			if (displays[r][c] == display)
 			{
-				if (KMessageBox::warningYesNo(this, i18n(
-					"Do you really want to delete the display?")) ==
-					KMessageBox::Yes)
-				{				
-					replaceDisplay(r, c);
-					modified = true;
-				}
+				replaceDisplay(r, c);
+				modified = true;
 				return;
 			}
 }

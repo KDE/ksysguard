@@ -99,14 +99,19 @@ SignalPlotter::addSample(const QValueList<double>& sampleBuf)
 	if (beamData.count() != sampleBuf.count())
 		return;
 
-	/* To avoid unecessary calls to the fairly expensive calcRange
-	 * function we only do a recalc if the value to be dropped is
-	 * an extreme value. */
-	bool recalc = false;
 	double* d;
-	for (d = beamData.first(); d; d = beamData.next())
-		if (d[0] <= minValue || d[0] >= maxValue)
-			recalc = true;
+	if (autoRange)
+	{
+		double sum = 0;
+		for (d = beamData.first(); d; d = beamData.next())
+		{
+			sum += d[0];
+			if (sum < minValue)
+				minValue = sum;
+			if (sum > maxValue)
+				maxValue = sum;
+		}
+	}
 
 	// Shift data buffers one sample down and insert new samples.
 	QValueList<double>::ConstIterator s;
@@ -115,12 +120,7 @@ SignalPlotter::addSample(const QValueList<double>& sampleBuf)
 	{
 		memmove(d, d + 1, (samples - 1) * sizeof(double));
 		d[samples - 1] = *s;
-		if (*s < minValue || *s > maxValue)
-			recalc = true;
 	}
-
-	if (autoRange && recalc)
-		calcRange();
 
 	update();
 }
@@ -144,33 +144,12 @@ SignalPlotter::changeRange(int beam, double min, double max)
 	if (min == max)
 	{
 		autoRange = TRUE;
-		calcRange();
 	}
 	else
 	{
 		minValue = min;
 		maxValue = max;
 		autoRange = FALSE;
-	}
-}
-
-void
-SignalPlotter::calcRange()
-{
-	minValue = 0;
-	maxValue = 0;
-
-	for (int i = 0; i < samples; i++)
-	{
-		double sum = 0;
-
-		for (double* d = beamData.first(); d; d = beamData.next())
-			sum += d[i];
-
-		if (sum < minValue)
-			minValue = sum;
-		if (sum > maxValue)
-			maxValue = sum;
 	}
 }
 
@@ -311,6 +290,15 @@ SignalPlotter::paintEvent(QPaintEvent*)
 			p.drawLine(w - x, top, w - x, h + top - 2);
 	}
 
+	/* In autoRange mode we determine the range and plot the values in
+	 * one go. This is more efficently than running through the
+	 * buffers twice but we do react on recently discarded samples as
+	 * well as new samples one plot too late. So the range is not
+	 * correct if the recently discarded samples are larger or smaller
+	 * than the current extreme values. But we can probably live with
+	 * this. */
+	if (autoRange)
+		minValue = maxValue = 0.0;
 	/* Plot stacked values */
 	double scaleFac = (h - 2) / range;
 	for (int i = 0; i < samples; i++)
@@ -318,8 +306,17 @@ SignalPlotter::paintEvent(QPaintEvent*)
 		double bias = -minVal;
 		QValueList<QColor>::Iterator col;
 		col = beamColor.begin();
+		double sum = 0.0;
 		for (double* d = beamData.first(); d; d = beamData.next(), ++col)
 		{
+			if (autoRange)
+			{
+				sum += d[i];
+				if (sum < minValue)
+					minValue = sum;
+				if (sum > maxValue)
+					maxValue = sum;
+			}
 			int start = top + h - 2 - (int) (bias * scaleFac);
 			int end = top + h - 2 - (int) ((bias + d[i]) * scaleFac);
 			bias += d[i];

@@ -84,8 +84,6 @@ protected:
 	virtual void paintEvent(QPaintEvent*);
 
 private:
-	void calcRange();
-
 	double minValue;
 	double maxValue;
 	bool autoRange;

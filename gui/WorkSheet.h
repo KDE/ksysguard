@@ -78,7 +78,6 @@ public:
 	void settings();
 
 public slots:
-	void removeDisplay(SensorDisplay* display);
 	void showPopupMenu(SensorDisplay* display);
 
 protected:
@@ -87,6 +86,8 @@ protected:
 	void customEvent(QCustomEvent* ev);
 
 private:
+	void removeDisplay(SensorDisplay* display);
+
 	bool replaceDisplay(uint r, uint c, QDomElement& element);
 
 	void replaceDisplay(uint r, uint c, SensorDisplay* display = 0);
