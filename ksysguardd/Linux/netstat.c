@@ -406,13 +406,13 @@ void
 printNetStatInfo(const char* cmd)
 {
 	if (strstr(cmd, "tcp") != NULL)
-		fprintf(currentClient, "Number of TCP-Sockets\t0\t65536\tSockets\n");
+		fprintf(currentClient, "Number of TCP-Sockets\t0\t0\tSockets\n");
 	if (strstr(cmd, "udp") != NULL)
-		fprintf(currentClient, "Number of UDP-Sockets\t0\t65536\tSockets\n");
+		fprintf(currentClient, "Number of UDP-Sockets\t0\t0\tSockets\n");
 	if (strstr(cmd, "unix") != NULL)
-		fprintf(currentClient, "Number of UnixDomain-Sockets\t0\t65536\tSockets\n");
+		fprintf(currentClient, "Number of UnixDomain-Sockets\t0\t0\tSockets\n");
 	if (strstr(cmd, "raw") != NULL)
-		fprintf(currentClient, "Number of Raw-Sockets\t0\t65536\tSockets\n");
+		fprintf(currentClient, "Number of Raw-Sockets\t0\t0\tSockets\n");
 }
 
 void
