@@ -2,7 +2,7 @@
 [KDE Desktop Entry]
 BinaryPattern=ktop;
 Comment=Information about tasks and performence
-Name=Tast Manager
+Name=Task Manager
 Exec=ktop
 Icon=ktop.xpm
 MiniIcon=ktop.xpm
