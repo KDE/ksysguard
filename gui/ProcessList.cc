@@ -6,7 +6,7 @@
 
     Copyright (C) 1998 Nicolas Leclercq <nicknet@planete.net>
 
-    Copyright (c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 1999, 2000, 2001, 2002 Chris Schlaeger <cs@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -110,6 +110,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 		aliases.insert("ksoftirqd_CPU7", new QString("kernel"));
 		aliases.insert("kswapd", new QString("kernel"));
 		aliases.insert("kupdated", new QString("kernel"));
+		aliases.insert("mdrecoveryd", new QString("kernel"));
 		aliases.insert("scsi_eh_0", new QString("kernel"));
 		aliases.insert("scsi_eh_1", new QString("kernel"));
 		aliases.insert("scsi_eh_2", new QString("kernel"));
@@ -154,6 +155,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 		aliases.insert("kio_uiserver", new QString("kdeapp"));
 		aliases.insert("klauncher", new QString("kdeapp"));
 		aliases.insert("ksmserver", new QString("kdeapp"));
+		aliases.insert("kwrapper", new QString("kdeapp"));
 		aliases.insert("kwrited", new QString("kdeapp"));
 		aliases.insert("kxmlrpcd", new QString("kdeapp"));
 		aliases.insert("startkde", new QString("kdeapp"));
@@ -161,16 +163,19 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 		aliases.insert("bash", new QString("shell"));
 		aliases.insert("cat", new QString("tools"));
 		aliases.insert("egrep", new QString("tools"));
+		aliases.insert("emacs", new QString("wordprocessing"));
 		aliases.insert("fgrep", new QString("tools"));
 		aliases.insert("find", new QString("tools"));
 		aliases.insert("grep", new QString("tools"));
 		aliases.insert("ksh", new QString("shell"));
+		aliases.insert("screen", new QString("openterm"));
 		aliases.insert("sh", new QString("shell"));
 		aliases.insert("sort", new QString("tools"));
 		aliases.insert("ssh", new QString("shell"));
 		aliases.insert("su", new QString("tools"));
 		aliases.insert("tcsh", new QString("shell"));
 		aliases.insert("tee", new QString("tools"));
+		aliases.insert("vi", new QString("wordprocessing"));
 	}
 
 	/* The filter mode is controlled by a combo box of the parent. If
