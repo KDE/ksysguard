@@ -25,7 +25,7 @@
 #include <kaccelmanager.h>
 #include <kcolorbutton.h>
 #include <klineedit.h>
-#include <klineeditdlg.h>
+#include <kinputdialog.h>
 #include <klistview.h>
 #include <klocale.h>
 #include <knuminput.h>
@@ -353,10 +353,11 @@ void DancingBarsSettings::editSensor()
   if ( !lvi )
     return;
 
-  KLineEditDlg dlg( i18n( "Enter new label:" ), lvi->text( 2 ), this );
-  dlg.setCaption( i18n( "Label of Bar Graph" ) );
-  if ( dlg.exec() )
-    lvi->setText( 2, dlg.text() );
+  bool ok;
+  QString str = KInputDialog::getText( i18n( "Label of Bar Graph" ),
+    i18n( "Enter new label:" ), lvi->text( 2 ), &ok, this );
+  if ( ok )
+    lvi->setText( 2, str );
 }
 
 void DancingBarsSettings::removeSensor()
