@@ -17,17 +17,13 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <kapp.h>
+#include <kapplication.h>
 #include <kiconloader.h>
 #include <klocale.h>
-#include <kmessagebox.h>
-#include <knotifyclient.h>
 #include <knumvalidator.h>
 #include <kfiledialog.h>
 
 #include <qcheckbox.h>
-#include <qdatetime.h>
-#include <qtextstream.h>
 
 #include "ColorPicker.h"
 #include "SensorManager.h"

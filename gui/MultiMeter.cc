@@ -25,19 +25,14 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <qgroupbox.h>
 #include <qlcdnumber.h>
 #include <qdom.h>
-#include <qtextstream.h>
 #include <qlineedit.h>
-#include <qspinbox.h>
 #include <qcheckbox.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
 #include <qtooltip.h>
 
-#include <klocale.h>
-#include <kmessagebox.h>
 #include <kiconloader.h>
 #include <kdebug.h>
 #include <knumvalidator.h>

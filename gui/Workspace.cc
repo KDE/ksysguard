@@ -29,9 +29,7 @@
 #include <kmessagebox.h>
 #include <klocale.h>
 #include <kfiledialog.h>
-#include <kconfig.h>
-#include <kstddirs.h>
-#include <kurl.h>
+#include <kstandarddirs.h>
 #include <kio/netaccess.h>
 #include <kdebug.h>
 

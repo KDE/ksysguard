@@ -21,15 +21,12 @@
 */
 
 #include <qdom.h>
-#include <qgroupbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
-#include <qlistview.h>
-#include <qtextstream.h>
 
 #include <kdebug.h>
 #include <kiconloader.h>
-#include <kcolorbtn.h>
+#include <kcolorbutton.h>
 
 #include <stdio.h>
 #include <stdlib.h>

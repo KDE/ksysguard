@@ -19,9 +19,6 @@
 
 #include <kdebug.h>
 #include <kiconloader.h>
-#include <klocale.h>
-#include <kmessagebox.h>
-#include <knotifyclient.h>
 
 #include <qregexp.h>
 

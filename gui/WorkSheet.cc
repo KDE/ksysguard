@@ -23,12 +23,6 @@
 */
 
 #include <qdragobject.h>
-#include <qdom.h>
-#include <qfile.h>
-#include <qtextstream.h>
-#include <qpopupmenu.h>
-#include <qspinbox.h>
-#include <qwhatsthis.h>
 #include <qclipboard.h>
 
 #include <kmessagebox.h>

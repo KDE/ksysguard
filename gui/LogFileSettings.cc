@@ -21,7 +21,6 @@
 #include <klocale.h>
 
 #include <qgroupbox.h>
-#include <qlabel.h>
 #include <qlayout.h>
 
 #include "LogFileSettings.moc"

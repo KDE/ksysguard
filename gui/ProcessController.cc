@@ -24,15 +24,12 @@
 
 #include <assert.h>
 
-#include <qtextstream.h>
 
-#include <kapp.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kdebug.h>
 
 #include "SignalIDs.h"
-#include "ksysguard.h"
 #include "SensorManager.h"
 #include "ProcessController.moc"
 

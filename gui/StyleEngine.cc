@@ -22,15 +22,11 @@
 	$Id$
 */
 
-#include "qlistbox.h"
 #include "qspinbox.h"
-#include "qpixmap.h"
 #include "qimage.h"
-#include "qstringlist.h"
 
 #include "klocale.h"
 #include "kconfig.h"
-#include "kconfigbase.h"
 #include "kcolordialog.h"
 
 #include "ColorPicker.h"

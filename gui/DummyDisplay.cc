@@ -22,7 +22,6 @@
 	$Id$
 */
 
-#include <qgroupbox.h>
 #include <qwhatsthis.h>
 
 #include <klocale.h>

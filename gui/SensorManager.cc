@@ -22,13 +22,10 @@
 	$Id$
 */
 
-#include <qevent.h>
 #include <qradiobutton.h>
 #include <qpushbutton.h>
-#include <qcombobox.h>
 #include <qspinbox.h>
 
-#include <kapp.h>
 #include <klocale.h>
 #include <kdebug.h>
 

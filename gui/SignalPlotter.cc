@@ -28,7 +28,6 @@
 #include <math.h>
 
 #include <qpainter.h>
-#include <qpixmap.h>
 
 #include <kiconloader.h>
 #include <kdebug.h>

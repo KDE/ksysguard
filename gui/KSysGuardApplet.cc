@@ -26,18 +26,15 @@
 #include <qdom.h>
 #include <qdragobject.h>
 #include <qfile.h>
-#include <qframe.h>
 #include <qpopupmenu.h>
 #include <qpushbutton.h>
 #include <qspinbox.h>
-#include <qtextstream.h>
 #include <qtooltip.h>
 
 #include <kdebug.h>
-#include <kglobal.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kstddirs.h>
+#include <kstandarddirs.h>
 
 #include "DancingBars.h"
 #include "FancyPlotter.h"

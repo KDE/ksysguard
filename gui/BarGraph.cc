@@ -27,7 +27,6 @@
 #include <kdebug.h>
 
 #include <qpainter.h>
-#include <qpixmap.h>
 
 #include <kiconloader.h>
 

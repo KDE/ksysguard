@@ -39,17 +39,11 @@
 #include <assert.h>
 
 #include <qheader.h>
-#include <qpixmap.h>
 #include <qbitmap.h>
 #include <qimage.h>
-#include <qpaintdevice.h>
 #include <qpopupmenu.h>
-#include <qdom.h>
 
-#include <kapp.h>
 #include <klocale.h>
-#include <kconfig.h>
-#include <kstddirs.h>
 #include <kdebug.h>
 #include <kmessagebox.h>
 

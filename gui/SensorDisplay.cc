@@ -28,10 +28,9 @@
 #include <qspinbox.h>
 #include <qwhatsthis.h>
 
-#include <kapp.h>
+#include <kapplication.h>
 #include <kdebug.h>
 #include <klocale.h>
-#include <kiconloader.h>
 #include <kmessagebox.h>
 
 #include "SensorDisplay.h"

@@ -24,7 +24,6 @@
 
 #include <assert.h>
 
-#include <qevent.h>
 #include <qdragobject.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>

@@ -25,19 +25,13 @@
 
 #include <qcheckbox.h>
 #include <qdom.h>
-#include <qgroupbox.h>
-#include <qlayout.h>
 #include <qlineedit.h>
-#include <qlistview.h>
 #include <qpushbutton.h>
 #include <qspinbox.h>
-#include <qtextstream.h>
 #include <qtooltip.h>
 
-#include <kapp.h>
 #include <kdebug.h>
 #include <klocale.h>
-#include <kmessagebox.h>
 #include <knumvalidator.h>
 
 #include "ColorPicker.h"

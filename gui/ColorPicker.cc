@@ -24,7 +24,6 @@
 
 #include <qlayout.h>
 #include <qlabel.h>
-#include <qframe.h>
 #include <qpushbutton.h>
 
 #include <kcolordialog.h>

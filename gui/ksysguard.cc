@@ -35,20 +35,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <qstringlist.h>
 
-#include <kapp.h>
 #include <kwinmodule.h>
-#include <kconfig.h>
 #include <klocale.h>
 #include <kcmdlineargs.h>
 #include <kmessagebox.h>
 #include <kaboutdata.h>
-#include <kstdaccel.h>
 #include <kaction.h>
 #include <kstdaction.h>
 #include <kedittoolbar.h>
-#include <kurl.h>
 #include <kdebug.h>
 
 #include "SensorBrowser.h"

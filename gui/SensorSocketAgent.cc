@@ -22,14 +22,9 @@
 #include <stdlib.h>
 #include <iostream.h>
 
-#include <qevent.h>
-#include <qapplication.h>
-#include <qstring.h>
 
 #include <klocale.h>
-#include <kprocess.h>
 #include <kpassdlg.h> 
-#include <kmessagebox.h>
 #include <kdebug.h>
 
 #include "SensorManager.h"

@@ -24,18 +24,14 @@
 
 #include <qcheckbox.h>
 #include <qdom.h>
-#include <qgroupbox.h>
 #include <qimage.h>
 #include <qlineedit.h>
 #include <qlistview.h>
 #include <qspinbox.h>
-#include <qtextstream.h>
-#include <qtoolbutton.h>
 #include <qtooltip.h>
 #include <qradiobutton.h>
 #include <qbuttongroup.h>
 
-#include <kapp.h>
 #include <kcolordialog.h>
 #include <kdebug.h>
 #include <klocale.h>
