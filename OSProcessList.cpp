@@ -240,15 +240,14 @@ OSProcessList::update(void)
 		lastTStamps = new TimeStampList;
 
         int mib[3];
-        size_t len;
-        struct kinfo_proc *p;
-
         mib[0] = CTL_KERN;
         mib[1] = KERN_PROC;
         mib[2] = KERN_PROC_ALL;
+
+	size_t len;
 	sysctl(mib, 3, NULL, &len, NULL, 0);
 
-        p = (struct kinfo_proc *)malloc(len);
+        struct kinfo_proc *p = (struct kinfo_proc *)malloc(len);
 	sysctl(mib, 3, p, &len, NULL, 0);
 
 	int num;
@@ -266,6 +265,7 @@ OSProcessList::update(void)
 	// make new list old one and discard the really old one
 	delete lastTStamps;
 	lastTStamps = newTStamps;
+	free(p);
 
 	return (true);
 }

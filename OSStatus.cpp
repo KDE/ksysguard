@@ -283,20 +283,35 @@ OSStatus::~OSStatus ()
 }
 
 bool
-OSStatus::getCpuLoad(int &, int &, int &, int &)
+OSStatus::getCpuLoad(int& user, int& sys, int& nice, int& idle)
 {
+	user = 0;
+	sys = 0;
+	nice = 0;
+	idle = 100;
+
 	return (true);
 }
 
 bool
-OSStatus::getMemoryInfo(int &, int &, int &, int &, int &)
+OSStatus::getMemoryInfo(int& total, int& mfree, int& shared, int& buffers,
+						int& cached)
 {
+	total = 1000;
+	mfree = 0;
+	shared = 0;
+	buffers = 0;
+	cached = 0;
+
 	return (true);
 }
 
 bool
-OSStatus::getSwapInfo(int &, int &)
+OSStatus::getSwapInfo(int& stotal, int& sfree)
 {
+	stotal = 0;
+	sfree = 0;
+
 	return (true);
 }
 

@@ -225,7 +225,7 @@ OSProcess::read(const char* pidStr)
 	// find out user name with the process uid
 	struct passwd* pwent = getpwuid(uid);
 	userName = pwent ? pwent->pw_name : "????";
-	priority = p.kp_proc.p_priority - PZERO;
+	priority = p.kp_proc.p_nice;
 
 	// this isn't usertime -- it total time (??)
 #if __FreeBSD_version >= 300000
