@@ -540,23 +540,36 @@ static const KCmdLineOptions options[] =
 int
 main(int argc, char** argv)
 {
-#ifndef NDEBUG
+	// initpipe is used to keep the parent process around till the child
+	// has registered with dcop. 
+	int initpipe[2];
+	pipe(initpipe);
+
 	/* This forking will put ksysguard in it's on session not having a
 	 * controlling terminal attached to it. This prevents ssh from
 	 * using this terminal for password requests. Unfortunately you
 	 * now need a ssh with ssh-askpass support to popup an X dialog to
 	 * enter the password. Currently only the original ssh provides this
 	 * but not open-ssh. */
+	 
 	pid_t pid;
 	if ((pid = fork()) < 0)
 		return (-1);
 	else
 		if (pid != 0)
 		{
+			close(initpipe[1]);
+
+			// wait till init is complete
+			char c;
+			while( read(initpipe[0], &c, 1) < 0);
+
+			// then exit
+			close(initpipe[0]);
 			exit(0);
 		}
+	close(initpipe[0]);
 	setsid();
-#endif
 
 	KAboutData aboutData("ksysguard", I18N_NOOP("KDE System Guard"),
 						 KSYSGUARD_VERSION, Description,
@@ -581,6 +594,7 @@ main(int argc, char** argv)
 	KCmdLineArgs::init(argc, argv, &aboutData);
 	KCmdLineArgs::addCmdLineOptions(options);
 	
+	KApplication::disableAutoDcopRegistration();
 	// initialize KDE application
 	KApplication *a = new KApplication;
 
@@ -601,6 +615,11 @@ main(int argc, char** argv)
 		if (a->dcopClient()->registerAs("ksysguard_taskmanager", false) ==
 			"ksysguard_taskmanager")
 		{
+			// We have registered with DCOP, our parent can exit now.
+			char c = 0;
+			write(initpipe[1], &c, 1);
+			close(initpipe[1]);
+
 			Toplevel = new TopLevel("KSysGuard");
 			Toplevel->beATaskManager();
 			Toplevel->show();
@@ -612,8 +631,13 @@ main(int argc, char** argv)
 	}
 	else
 	{
-		a->dcopClient()->registerAs("ksysguard", false);
+		a->dcopClient()->registerAs("ksysguard");
 		a->dcopClient()->setDefaultObject("KSysGuardIface");
+
+		// We have registered with DCOP, our parent can exit now.
+		char c = 0;
+		write(initpipe[1], &c, 1);
+		close(initpipe[1]);
 
 		Toplevel = new TopLevel("KSysGuard");
 		Q_CHECK_PTR(Toplevel);
