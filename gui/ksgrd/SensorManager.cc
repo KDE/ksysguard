@@ -93,6 +93,7 @@ SensorManager::SensorManager()
   mDict.insert( "acpi", new QString( i18n( "ACPI" ) ) );
   mDict.insert( "battery", new QString( i18n( "Battery" ) ) );
   mDict.insert( "batterycharge", new QString( i18n( "Battery Charge" ) ) );
+  mDict.insert( "batteryusage", new QString( i18n( "Battery Usage" ) ) );
   mDict.insert( "remainingtime", new QString( i18n( "Remaining Time" ) ) );
   mDict.insert( "interrupts", new QString( i18n( "Interrupts" ) ) );
   mDict.insert( "loadavg1", new QString( i18n( "Load Average (1 min)" ) ) );

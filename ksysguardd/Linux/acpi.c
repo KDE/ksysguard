@@ -39,7 +39,7 @@ static int AcpiBatteryOK = 0;
 static int AcpiBatteryNum = 0;
 static char AcpiBatteryNames[ ACPIBATTERYNUMMAX ][ 8 ];
 static int AcpiBatteryCharge[ ACPIBATTERYNUMMAX ];
-
+static int AcpiBatteryUsage[ ACPIBATTERYNUMMAX ];
 
 
 /*
@@ -48,6 +48,7 @@ static int AcpiBatteryCharge[ ACPIBATTERYNUMMAX ];
 
 void initAcpi( struct SensorModul* sm )
 {
+  int BatteryDirNummer;
   DIR *d;
   struct dirent *de;
   char s[ ACPIFILENAMELENGTHMAX ];
@@ -60,10 +61,13 @@ void initAcpi( struct SensorModul* sm )
   } else {
     while ( ( de = readdir( d ) ) )
       if ( ( strcmp( de->d_name, "." ) != 0 ) && ( strcmp( de->d_name, ".." ) != 0 ) ) {
-        strncpy( AcpiBatteryNames[ AcpiBatteryNum ], de->d_name, 8 );
+        sscanf(de->d_name,"BAT%d",&BatteryDirNummer);
+        strncpy( AcpiBatteryNames[ BatteryDirNummer ], de->d_name, 8 );
         snprintf( s, sizeof( s ), "acpi/battery/%d/batterycharge", AcpiBatteryNum );
         registerMonitor( s, "integer", printAcpiBatFill, printAcpiBatFillInfo, sm );
-        AcpiBatteryCharge[ AcpiBatteryNum ] = 0;
+        snprintf( s, sizeof( s ), "acpi/battery/%d/batteryusage", AcpiBatteryNum );
+	registerMonitor( s, "integer", printAcpiBatUsage, printAcpiBatUsageInfo, sm);
+        AcpiBatteryCharge[ BatteryDirNummer ] = 0;
         AcpiBatteryNum++;
       }
 
@@ -135,11 +139,25 @@ int updateAcpi( void )
       if ( p )
         p++;
     }
+    
+    /* get current battery usage, (current Current) */
+    p = AcpiBatStateBuf;
+    while ( ( p!= NULL ) && ( sscanf( p, "present rate: %d ",
+                              &AcpiBatteryUsage[i] ) != 1 ) ) {
+      p = strchr( p, '\n' );
+      if ( p )
+        p++;
+    } 
+    
+    
     /* calculate charge rate */
     if ( AcpiBatCapacity > 0 )
       AcpiBatteryCharge[ i ] = AcpiBatRemainingCapacity * 100 / AcpiBatCapacity;
     else
       AcpiBatteryCharge[ i ] = 0;
+    
+    
+
   } 
 
   return 0;
@@ -159,4 +177,22 @@ void printAcpiBatFillInfo( const char* cmd )
 
   sscanf( cmd + 13, "%d", &i );
   fprintf( CurrentClient, "Battery %d charge\t0\t100\t%%\n", i );
+}
+
+void printAcpiBatUsage( const char* cmd)
+{
+ int i;
+ 
+ sscanf( cmd + 13, "%d", &i );
+ fprintf(CurrentClient, "%d\n", AcpiBatteryUsage[ i ] );
+}
+
+void printAcpiBatUsageInfo( const char* cmd)
+{
+
+ int i;
+
+ sscanf(cmd+13, "%d", &i);
+
+ fprintf(CurrentClient, "Battery %d usage\t0\t2500\tmA\n", i );
 }

@@ -27,5 +27,7 @@ int updateAcpi( void );
 
 void printAcpiBatFill( const char* );
 void printAcpiBatFillInfo( const char* );
+void printAcpiBatUsage( const char* );
+void printAcpiBatUsageInfo( const char* );
 
 #endif
