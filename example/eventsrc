@@ -109,6 +109,7 @@ Name[zh_CN.GB2312]=传感器警报
 Comment=sensor exceted critical limit
 Comment[az]=sensor kritik limiti aşdı
 Comment[cs]=senzor překročil kritickou hodnotu
+Comment[da]=sensor gik ud over kritisk grænse
 Comment[en_GB]=sensor exceeded critical limit
 Comment[eo]=sentilo transiris danĝeran limon
 Comment[et]=sensor ületab kriitilise piiri
