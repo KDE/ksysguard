@@ -1,0 +1,122 @@
+ /*
+    KTop, the KDE Task Manager
+   
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+
+	Solaris support by Torsten Kasch <tk@Genetik.Uni-Bielefeld.DE>
+    
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	$Id$
+*/
+
+#include <stdio.h>
+#include <sys/time.h>
+#include <signal.h>
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
+
+#include "Dispatcher.h"
+#include "Command.h"
+
+#include "Memory.h"
+#include "LoadAvg.h"
+#include "ProcessList.h"
+#include "NetDev.h"
+
+/* Special version of perror for use in signal handler functions. */
+#define printerr(a) write(STDERR_FILENO, (a), strlen(a))
+
+/* This variable will be set to 1 as soon as the first interrupt (SIGALRM)
+ * has been received. */
+static volatile int DispatcherReady = 0;
+
+static struct sigaction Action, OldAction;
+
+static void signalHandler( int sig ) {
+
+	int errnoSave = errno;
+
+	switch( sig ) {
+		case SIGINT:
+			break;
+		case SIGALRM:
+			updateMemory();
+			updateLoadAvg();
+			updateProcessList();
+			updateNetDev();
+			DispatcherReady = 1;
+			break;
+		case SIGQUIT:
+			printerr("SIGQUIT received\n");
+			break;
+		case SIGTERM:
+			printerr("SIGTERM received\n");
+			break;
+		default:
+			break;
+	}
+
+	errno = errnoSave;
+	/*
+	 *  re-install the signal handler
+	 *  because it gets removed when called
+	 */
+	sigaction( SIGALRM, &Action, &OldAction );
+}
+
+static void startTimer( long sec ) {
+
+	struct itimerval tv;
+
+	tv.it_interval.tv_sec = sec;
+	tv.it_interval.tv_usec = 0L;
+	tv.it_value.tv_sec = sec;
+	tv.it_value.tv_usec = 0L;
+
+	if( setitimer( ITIMER_REAL, &tv, NULL ) != 0 ) {
+		printerr( "setitimer(): " );
+		printerr( strerror( errno ));
+		printerr( "\n" );
+	}
+}
+
+/*
+================================ public part =================================
+*/
+
+void
+initDispatcher(void)
+{
+	Action.sa_handler = signalHandler;
+	sigemptyset( &Action.sa_mask );
+	sigaddset( &Action.sa_mask, SIGALRM );
+	Action.sa_flags = SA_RESTART;
+	sigaction( SIGALRM, &Action, &OldAction );
+
+	startTimer( TIMERINTERVAL );
+#if 0
+	signal( SIGALRM, signalHandler );
+	startTimer( TIMERINTERVAL );
+#endif
+}
+
+void exitDispatcher( void ) {
+}
+
+int dispatcherReady( void ) {
+	return( DispatcherReady );
+}

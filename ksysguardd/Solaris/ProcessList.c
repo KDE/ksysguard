@@ -1,0 +1,428 @@
+/*
+    KTop, the KDE Task Manager
+   
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+
+	Solaris support by Torsten Kasch <tk@Genetik.Uni-Bielefeld.DE>
+    
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	$Id$
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <pwd.h>
+#include <procfs.h>
+#include <sys/proc.h>
+#include <sys/resource.h>
+
+#include "ccont.h"
+#include "../../gui/SignalIDs.h"
+
+#include "Command.h"
+#include "ProcessList.h"
+
+#define BUFSIZE 1024
+
+typedef struct {
+	int	alive;		/*  for "garbage collection"	  */
+	pid_t	pid;		/*  process ID			  */
+	pid_t	ppid;		/*  parent process ID		  */
+	uid_t	uid;		/*  process owner (real UID)	  */
+	gid_t	gid;		/*  process group (real GID)	  */
+	char	*userName;	/*  process owner (name)	  */
+	int	nThreads;	/*  # of threads in this process  */
+	int	Prio;		/*  scheduling priority		  */
+	size_t	Size;		/*  total size of process image	  */
+	size_t	RSSize;		/*  resident set size		  */
+	char	*State;		/*  process state		  */
+	int	Time;		/*  CPU time for the process	  */
+	double	Load;		/*  CPU load in %		  */
+	char	*Command;	/*  command name		  */
+	char	*CmdLine;	/*  command line		  */
+} ProcessInfo;
+
+static CONTAINER ProcessList = 0;
+static time_t timeStamp = (time_t) 0;
+static unsigned ProcessCount = 0;	/*  # of processes	  */
+static DIR *procdir;			/*  handle for /proc	  */
+
+#define printerr(a) write(STDERR_FILENO, (a), strlen(a))
+
+
+/*
+ *  lwpStateName()  --  return string representation of process state
+ */
+char *lwpStateName( lwpsinfo_t lwpinfo ) {
+
+	char	result[8];
+	int	processor;
+
+	switch( (int) lwpinfo.pr_state ) {
+		case SSLEEP:
+			sprintf( result, "%s", "sleep" );
+			break;
+		case SRUN:
+			sprintf( result, "%s", "run" );
+			break;
+		case SZOMB:
+			sprintf( result, "%s", "zombie" );
+			break;
+		case SSTOP:
+			sprintf( result, "%s", "stop" );
+			break;
+		case SIDL:
+			sprintf( result, "%s", "start" );
+			break;
+		case SONPROC:
+			processor = (int) lwpinfo.pr_onpro;
+			sprintf( result, "%s/%d", "cpu", processor );
+			break;
+		default:
+			sprintf( result, "%s", "???" );
+			break;
+	}
+
+	return( strdup( result ));
+}
+
+static void validateStr( char *string ) {
+
+	char	*ptr = string;
+
+	/*
+	 *  remove all chars that might screw up communication
+	 */
+	while( *ptr != '\0' ) {
+		if( *ptr == '\t' || *ptr == '\n' || *ptr == '\r' )
+			*ptr = ' ';
+		ptr++;
+	}
+	/*
+	 *  make sure there's at least one char 
+	 */
+	if( string[0] == '\0' )
+		strcpy( string, " " );
+}
+
+static int processCmp( void *p1, void *p2 ) {
+
+	return( ((ProcessInfo *) p1)->pid - ((ProcessInfo *) p2)->pid );
+}
+
+static ProcessInfo *findProcessInList( pid_t pid ) {
+
+	ProcessInfo	key;
+	long		index;
+	
+	key.pid = pid;
+	if( (index = search_ctnr( ProcessList, processCmp, &key )) < 0 )
+		return( NULL );
+
+	return( get_ctnr( ProcessList, index ));
+}
+
+static int updateProcess( pid_t pid ) {
+
+	ProcessInfo	*ps;
+	int		fd;
+	char		buf[BUFSIZE];
+	psinfo_t	psinfo;
+	struct passwd	*pw;
+
+	if( (ps = findProcessInList( pid )) == NULL ) {
+		if( (ps = (ProcessInfo *) malloc( sizeof( ProcessInfo )))
+				== NULL ) {
+			printerr( "cannot malloc()\n" );
+			return( -1 );
+		}
+		ps->pid = pid;
+		ps->alive = 0;
+
+		push_ctnr( ProcessList, ps );
+		bsort_ctnr( ProcessList, processCmp, 0 );
+	}
+
+	snprintf( buf, BUFSIZE - 1, "%s/%ld/psinfo", PROCDIR, pid );
+	if( (fd = open( buf, O_RDONLY )) < 0 )
+		return( -1 );
+
+	if( read( fd, &psinfo, sizeof( psinfo_t )) != sizeof( psinfo_t )) {
+		printerr( "cannot read \"" );
+		printerr( buf );
+		printerr( "\"\n" );
+		close( fd );
+		return( -1 );
+	}
+	close( fd );
+
+	ps->ppid = psinfo.pr_ppid;
+	ps->uid = psinfo.pr_uid;
+	ps->gid = psinfo.pr_gid;
+	pw = getpwuid( psinfo.pr_uid );
+	ps->userName = strdup( pw->pw_name );
+	ps->State = lwpStateName( psinfo.pr_lwp );
+	if( (ps->nThreads = psinfo.pr_nlwp ) != 0 ) {
+		ps->Prio = psinfo.pr_lwp.pr_pri;
+		ps->Time = psinfo.pr_lwp.pr_time.tv_sec * 100
+			+ psinfo.pr_lwp.pr_time.tv_nsec * 10000000;
+		ps->Load = (double) psinfo.pr_lwp.pr_pctcpu
+			/ (double) 0x8000 * 100.0;
+	}
+	ps->Size = psinfo.pr_size;
+	ps->RSSize = psinfo.pr_rssize;
+	ps->Command = strdup( psinfo.pr_fname );
+	ps->CmdLine = strdup( psinfo.pr_psargs );
+
+	/*
+	 *  "fix" argv[0] for programs launched by kdeinit
+	 */
+	if( (strcmp( ps->Command, "kdeinit" ) == 0)
+		&& (strncmp( ps->Command, "kdeinit: ", strlen( "kdeinit: " ))
+			== 0 ) ) {
+		/*
+		 *  IMHO, kdeinit itself (or the processes it starts) should
+		 *  set argv[0] appropriately (like sendmail does), so
+		 *  that non-KDE tools ("ps") see "the right thing" too
+		 */
+	}
+
+	validateStr( ps->Command );
+	ps->alive = 1;
+
+	return( 0 );
+}
+
+static void cleanupProcessList( void ) {
+
+	int	i;
+
+	ProcessCount = 0;
+	for( i = 0; i < level_ctnr( ProcessList ); i++ ) {
+		ProcessInfo *ps = get_ctnr( ProcessList, i );
+		if( ps->alive ) {
+			ps->alive = 0;
+			ProcessCount++;
+		} else {
+			free( remove_ctnr( ProcessList, i-- ));
+		}
+	}
+}
+
+void initProcessList( void ) {
+
+	if( (procdir = opendir( PROCDIR )) == NULL ) {
+		printerr( "cannot open \"" );
+		printerr( PROCDIR );
+		printerr( "\" for reading\n" );
+		return;
+	}
+
+	ProcessList = new_ctnr( CT_DLL );
+
+	/*
+	 *  register the supported monitors & commands
+	 */
+	registerMonitor( "pscount", "integer",
+				printProcessCount, printProcessCountInfo );
+	registerMonitor( "ps", "table",
+				printProcessList, printProcessListInfo );
+
+	registerCommand( "kill", killProcess );
+	registerCommand( "setpriority", setPriority );
+}
+
+void exitProcessList( void ) {
+
+	if( ProcessList )
+		destr_ctnr( ProcessList, free );
+}
+
+int updateProcessList( void ) {
+
+	struct dirent	*de;
+
+	rewinddir( procdir );
+	while( (de = readdir( procdir )) != NULL ) {
+		/*
+		 *  skip '.' and '..'
+		 */
+		if( de->d_name[0] == '.' )
+			continue;
+
+		/*
+		 *  fetch the process info and insert it into the info table
+		 */
+		updateProcess( (pid_t) atol( de->d_name ));
+	}
+	cleanupProcessList();
+	timeStamp = time( NULL );
+
+	return( 0 );
+}
+
+void printProcessListInfo( const char *cmd ) {
+	printf( "Name\tPID\tPPID\tGID\tStatus\tUser\tThreads"
+		"\tSize\tResident\t%% CPU\tPriority\tCommand\n" );
+	printf( "s\td\td\td\ts\ts\td\td\td\tf\td\ts\n" );
+}
+
+void printProcessList( const char *cmd ) {
+
+	int	i;
+
+	for( i = 0; i < level_ctnr( ProcessList ); i++ ) {
+		ProcessInfo *ps = get_ctnr( ProcessList, i );
+
+		printf( "%s\t%ld\t%ld\t%ld\t%s\t%s\t%d\t%d %s\t%d %s\t%.2f\t%d\t%s\n",
+			ps->Command,
+			(long) ps->pid,
+			(long) ps->ppid,
+			(long) ps->gid,
+			ps->State,
+			ps->userName,
+			ps->nThreads,
+			(ps->Size > 10000) ? (ps->Size / 1024) : ps->Size,
+			(ps->Size > 10000) ? "M" : "K",
+			(ps->RSSize > 10000) ? (ps->RSSize / 1024) : ps->RSSize,
+			(ps->RSSize > 10000) ? "M" : "K",
+			ps->Load,
+			ps->Prio,
+			ps->CmdLine );
+	}
+}
+
+void printProcessCount( const char *cmd ) {
+	printf( "%d\n", ProcessCount );
+}
+
+void printProcessCountInfo( const char *cmd ) {
+	printf( "Number of Processes\t0\t0\t\n" );
+}
+
+void killProcess( const char *cmd ) {
+
+	int sig, pid;
+
+	sscanf( cmd, "%*s %d %d", &pid, &sig );
+
+	switch( sig ) {
+		case MENU_ID_SIGABRT:
+			sig = SIGABRT;
+			break;
+		case MENU_ID_SIGALRM:
+			sig = SIGALRM;
+			break;
+		case MENU_ID_SIGCHLD:
+			sig = SIGCHLD;
+			break;
+		case MENU_ID_SIGCONT:
+			sig = SIGCONT;
+			break;
+		case MENU_ID_SIGFPE:
+			sig = SIGFPE;
+			break;
+		case MENU_ID_SIGHUP:
+			sig = SIGHUP;
+			break;
+		case MENU_ID_SIGILL:
+			sig = SIGILL;
+			break;
+		case MENU_ID_SIGINT:
+			sig = SIGINT;
+			break;
+		case MENU_ID_SIGKILL:
+			sig = SIGKILL;
+			break;
+		case MENU_ID_SIGPIPE:
+			sig = SIGPIPE;
+			break;
+		case MENU_ID_SIGQUIT:
+			sig = SIGQUIT;
+			break;
+		case MENU_ID_SIGSEGV:
+			sig = SIGSEGV;
+			break;
+		case MENU_ID_SIGSTOP:
+			sig = SIGSTOP;
+			break;
+		case MENU_ID_SIGTERM:
+			sig = SIGTERM;
+			break;
+		case MENU_ID_SIGTSTP:
+			sig = SIGTSTP;
+			break;
+		case MENU_ID_SIGTTIN:
+			sig = SIGTTIN;
+			break;
+		case MENU_ID_SIGTTOU:
+			sig = SIGTTOU;
+			break;
+		case MENU_ID_SIGUSR1:
+			sig = SIGUSR1;
+			break;
+		case MENU_ID_SIGUSR2:
+			sig = SIGUSR2;
+			break;
+	}
+	if( kill( (pid_t) pid, sig )) {
+		switch( errno ) {
+			case EINVAL:
+				printf( "4\n" );
+				break;
+			case ESRCH:
+				printf( "3\n" );
+				break;
+			case EPERM:
+				printf( "2\n" );
+				break;
+			default:
+				printf( "1\n" );	/* unkown error */
+				break;
+		}
+	} else
+		printf("0\n");
+}
+
+void setPriority( const char *cmd ) {
+	int pid, prio;
+
+	sscanf( cmd, "%*s %d %d", &pid, &prio );
+	if( setpriority( PRIO_PROCESS, pid, prio )) {
+		switch( errno ) {
+			case EINVAL:
+				printf( "4\n" );
+				break;
+			case ESRCH:
+				printf( "3\n" );
+				break;
+			case EPERM:
+			case EACCES:
+				printf( "2\n" );
+				break;
+			default:
+				printf( "1\n" );	/* unkown error */
+				break;
+		}
+	} else
+		printf("0\n");
+}

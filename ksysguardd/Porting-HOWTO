@@ -109,4 +109,11 @@ minimum installation (only a single file) on the monitored machine,
 all translation are handled by the front-end. Please see the files
 gui/SensorManger.cc and gui/ProcessTable.cc if you add new strings.
 
+Since I'm very much a C++ guy I've written some functions which
+provide a similar functionality as template classes for lists and
+arrays. The Linux implementation uses them. Feel free to use them for
+the ports as well if you like. The interface is described in
+CContLib/ccont.h. Unfortunately I still haven't found time to document
+it properly, but the use should be fairly obvious.
+
 Chris <cs@kde.org>
