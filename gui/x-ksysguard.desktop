@@ -1,0 +1,8 @@
+# KDE Config File
+[Desktop Entry]
+MimeType=application/x-ksysguard
+Comment=KDE System Guard
+Icon=ksysguard
+Type=MimeType
+Patterns=*.sgrd;
+X-KDE-AutoEmbed=false

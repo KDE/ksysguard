@@ -391,12 +391,16 @@ FancyPlotter::createFromDOM(QDomElement& domElem)
 
 	bool ok;
 	plotter->vLines = domElem.attribute("vLines").toUInt(&ok);
+	if (!ok)
+		plotter->vLines = true;
 	plotter->vColor = restoreColorFromDOM(domElem, "vColor", Qt::green);
 	plotter->vDistance = domElem.attribute("vDistance").toUInt(&ok);
 	if (!ok)
 		plotter->vDistance = 30;
 
 	plotter->hLines = domElem.attribute("hLines").toUInt(&ok);
+	if (!ok)
+		plotter->hLines = true;
 	plotter->hColor = restoreColorFromDOM(domElem, "hColor", Qt::green);
 	plotter->hCount = domElem.attribute("hCount").toUInt(&ok);
 	if (!ok)

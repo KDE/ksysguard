@@ -57,6 +57,8 @@ public:
 	virtual void answerReceived(int id, const QString& s);
 
 	void beATaskManager();
+	void showRequestedSheets();
+	void initStatusBar();
 
 k_dcop:
 	// calling ksysguard with kwin/kicker hot-key
@@ -92,8 +94,8 @@ private:
 	KToggleAction* statusBarTog;
 	SensorBrowser* sb;
 	Workspace* ws;
-	int timerID;
 	bool dontSaveSession;
+	int timerId;
 };
 
 extern TopLevel* Toplevel;

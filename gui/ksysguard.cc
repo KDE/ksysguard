@@ -71,6 +71,7 @@ TopLevel::TopLevel(const char *name)
 {
 	setPlainCaption(i18n("KDE System Guard"));
 	dontSaveSession = FALSE;
+	timerId = -1;
 
 	splitter = new QSplitter(this, "Splitter");
 	CHECK_PTR(splitter);
@@ -97,11 +98,6 @@ TopLevel::TopLevel(const char *name)
 	statusbar->insertFixedItem(i18n("Swap: 8888888 kB used, "
 							   "8888888 kB free"), 2);
 	statusBar()->hide();
-
-	// call timerEvent to fill the status bar with real values
-	timerEvent(0);
-
-	timerID = startTimer(2000);
 
     // create actions for menue entries
     KStdAction::openNew(ws, SLOT(newWorkSheet()), actionCollection());
@@ -142,7 +138,6 @@ TopLevel::TopLevel(const char *name)
 
 TopLevel::~TopLevel()
 {
-	killTimer(timerID);
 }
 
 /*
@@ -157,7 +152,7 @@ TopLevel::showProcesses()
 void
 TopLevel::loadWorkSheet(const QString& fileName)
 {
-	ws->restoreWorkSheet(fileName);
+	ws->loadWorkSheet(KURL(fileName));
 }
 
 void
@@ -212,12 +207,35 @@ TopLevel::beATaskManager()
 				w, h);
 
 	// No toolbar and status bar in taskmanager mode.
-	statusBar()->hide();
 	statusBarTog->setChecked(FALSE);
+	showStatusBar();
 
 	showMainToolBar(FALSE);
 
 	dontSaveSession = TRUE;
+}
+
+void
+TopLevel::showRequestedSheets()
+{
+	showMainToolBar(FALSE);
+
+	QValueList<int> sizes;
+	sizes.append(0);
+	sizes.append(100);
+	splitter->setSizes(sizes);
+
+	resize(600, 440);
+}
+
+void
+TopLevel::initStatusBar()
+{
+	SensorMgr->engage("localhost", "", "ksysguardd");
+	/* Request info about the swapspace size and the units it is measured in.
+	 * The requested info will be received by answerReceived(). */
+	SensorMgr->sendRequest("localhost", "mem/swap/used?",
+						   (SensorClient*) this, 5);
 }
 
 void 
@@ -245,9 +263,24 @@ void
 TopLevel::showStatusBar()
 {
 	if (statusBarTog->isChecked())
+	{
 		statusBar()->show();
+		if (timerId == -1)
+		{
+			timerId = startTimer(2000);
+		}
+		// call timerEvent to fill the status bar with real values
+		timerEvent(0);
+	}
 	else
+	{
 		statusBar()->hide();
+		if (timerId != -1)
+		{
+			killTimer(timerId);
+			timerId = -1;
+		} 
+	}
 }
 
 void
@@ -327,8 +360,8 @@ TopLevel::readProperties(KConfig* cfg)
 
 	if (!cfg->readNumEntry("StatusBarHidden", 1))
 	{
-		statusBar()->show();
 		statusBarTog->setChecked(TRUE);
+		showStatusBar();
 	}
 
 	SensorMgr->readProperties(cfg);
@@ -336,12 +369,6 @@ TopLevel::readProperties(KConfig* cfg)
 	ws->readProperties(cfg);
 
 	setMinimumSize(sizeHint());
-
-	SensorMgr->engage("localhost", "", "ksysguardd");
-	/* Request info about the swapspace size and the units it is measured in.
-	 * The requested info will be received by answerReceived(). */
-	SensorMgr->sendRequest("localhost", "mem/swap/used?",
-						   (SensorClient*) this, 5);
 
 	openRecent->loadEntries(cfg);
 }
@@ -413,8 +440,8 @@ TopLevel::showMainToolBar(bool show)
 
 static const KCmdLineOptions options[] =
 {
-	{ "showprocesses", I18N_NOOP("show only process list of local host"),
-	  0 },
+	{ "showprocesses", I18N_NOOP("show only process list of local host"), 0 },
+	{ "+[worksheet]", I18N_NOOP("optional worksheet files to load"), 0 },
 	{ 0, 0, 0}
 };
 
@@ -491,15 +518,30 @@ main(int argc, char** argv)
 		a->dcopClient()->setDefaultObject("KSysGuardIface");
 
 		// create top-level widget
-		if (a->isRestored())
+		if (args->count() > 0)
 		{
-			RESTORE(TopLevel);
+			/* The user has specified a list of worksheets to load. In this
+			 * case we do not restore any previous settings but load all the
+			 * requested worksheets. */
+			Toplevel = new TopLevel("KSysGuard");
+			Toplevel->showRequestedSheets();
+			for (int i = 0; i < args->count(); ++i)
+				Toplevel->loadWorkSheet(args->arg(i));
 		}
 		else
 		{
-			Toplevel = new TopLevel("KSysGuard");
-			Toplevel->readProperties(a->config());
+			if (a->isRestored())
+			{
+				RESTORE(TopLevel);
+			}
+			else
+			{
+				Toplevel = new TopLevel("KSysGuard");
+				Toplevel->readProperties(a->config());
+			}
 		}
+
+		Toplevel->initStatusBar();
 		SensorMgr->setBroadcaster(Toplevel);
 
 		// run the application

@@ -2,6 +2,17 @@
 appsdir = $(kde_appsdir)/System
 datadir = $(kde_datadir)/ksysguard
 
+kdemime_DATA = x-ksysguard.desktop
+kdemimedir = $(kde_mimedir)/application
+
+rcdir = $(kde_datadir)/ksysguard
+rc_DATA = ksysguardui.rc
+
+apps_DATA = ksysguard.desktop
+
+lnkdir = $(kde_datadir)/kicker/applets
+lnk_DATA = ksysguardapplet.desktop
+
 # set the include path for X, qt and KDE
 INCLUDES= $(all_includes)
  
@@ -37,11 +48,6 @@ ksysguard_LDADD   =       $(LIB_KDEUI) $(LIB_KFILE)
 
 data_DATA = ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml
 
-rcdir = $(kde_datadir)/ksysguard
-rc_DATA = ksysguardui.rc
-
-apps_DATA = ksysguard.desktop
-
 # This stuff is now for the kicker applet
 lib_LTLIBRARIES = libksysguardapplet.la
 
@@ -54,8 +60,6 @@ libksysguardapplet_la_METASOURCES = AUTO
 libksysguardapplet_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -module -no-undefined
 libksysguardapplet_la_LIBADD = $(LIB_KDEUI) $(LIB_KSYCOCA)
 
-lnkdir = $(kde_datadir)/kicker/applets
-lnk_DATA = ksysguardapplet.desktop
 EXTRA_DIST = $(lnk_DATA)
 
 # just to make sure, automake makes them 
