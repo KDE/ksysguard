@@ -48,7 +48,7 @@ static struct SensorModul* DiskStatSM;
 
 char *getMntPnt(const char *cmd)
 {
-	static char device[1024];
+	static char device[1025];
 	char *ptr;
 
 	memset(device, 0, sizeof(device));

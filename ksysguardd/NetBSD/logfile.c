@@ -104,7 +104,7 @@ void printLogFileInfo(const char* cmd)
 
 void registerLogFile(const char* cmd)
 {
-	char name[256];
+	char name[257];
 	FILE* file;
 	LogFileEntry *entry;
 	ConfigLogFile *conf;
