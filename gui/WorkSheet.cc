@@ -380,6 +380,9 @@ WorkSheet::settings()
 	wss->columns->setValue(columns);
 	wss->interval->setValue(updateInterval());
 
+	// quickhack
+	wss->interval->setEnabled(false);
+
 	if (wss->exec())
 	{
 		updateInterval(wss->interval->text().toUInt());

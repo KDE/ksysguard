@@ -135,6 +135,9 @@ KSysGuardApplet::preferences()
 	ksgas->dockCnt->setValue(dockCnt);
 	ksgas->ratio->setValue(sizeRatio * 100.0);
 	ksgas->interval->setValue(updateInterval());
+	// quickhack
+	ksgas->interval->setEnabled(false);
+
 	if (ksgas->exec())
 		applySettings();
 
@@ -219,7 +222,7 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 		int dock = findDock(ev->pos());
 		if (docks[dock]->isA("QFrame"))
 		{
-			if (sensorType == "integer")
+			if (sensorType == "integer" || sensorType == "float")
 			{
 				QPopupMenu popup;
 				QWidget *wdg;
@@ -262,10 +265,14 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 					this,
 					i18n("The KSysGuard applet does not support displaying of "
 						 "this type of sensor. Please choose another sensor."));
+
+				layout();
 			 }
 		}
-		((KSGRD::SensorDisplay*) docks[dock])->
-			addSensor(hostName, sensorName, sensorType, sensorDescr);
+
+		if (!docks[dock]->isA("QFrame"))
+			((KSGRD::SensorDisplay*) docks[dock])->
+				addSensor(hostName, sensorName, sensorType, sensorDescr);
 	}
 
 	save();
