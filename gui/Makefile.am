@@ -35,8 +35,8 @@ noinst_HEADERS = MainMenu.h ReniceDlg.h SensorClient.h ktop.h ProcessMenu.h \
 
 # just to make sure, automake makes them 
 
-METASOURCES = ktop.moc SensorAgent.moc SensorManager.moc SensorBrowser.moc MainMenu.moc ProcessMenu.moc ReniceDlg.moc Workspace.moc FancyPlotter.moc SignalPlotter.moc MultiMeter.moc
-# TaskMan.moc ProcListPage.moc ProcessList.moc PerfMonPage.moc FancyPlotter.moc MultiMeter.moc SignalPlotter.moc
+METASOURCES = ktop.moc SensorAgent.moc SensorManager.moc MainMenu.moc ProcessMenu.moc ReniceDlg.moc 
+# TaskMan.moc ProcListPage.moc ProcessList.moc PerfMonPage.moc 
 
 # make messages.po. Move this one to ../po/ and "make merge" in po
 messages:
