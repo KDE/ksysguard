@@ -574,7 +574,6 @@ void TaskMan::TaskMan_initIconList()
     struct dirent *de;
     char           path[PATH_MAX+1];
     char           icnFile[PATH_MAX+1];
-    char           prefix[32];
 
     if ( icons ) return;
 
@@ -588,30 +587,11 @@ void TaskMan::TaskMan_initIconList()
     icons = new QList<IconListElem>;
     CHECK_PTR(icons);
     
-    char *kde_dir = getenv("KDEDIR");
-
-    if ( kde_dir ) {
-         #ifdef DEBUG_MODE
-            printf("KTop debug : KDEDIR : %s.\n",kde_dir);
-         #endif
-         sprintf(path,"%s%s",kde_dir,KDE_ICN_DIR);
-         dir = opendir(path);
-     } else {
-          #ifdef DEBUG_MODE
-            printf("KTop debug : trying /opt/kde/share...\n");
-          #endif
-          sprintf(prefix,"/opt/kde");
-          sprintf(path,"%s%s",prefix,KDE_ICN_DIR);
-          dir = opendir(path);
-          if ( ! dir ) {
-              #ifdef DEBUG_MODE
-                printf("KTop debug : trying /usr/local/kde/share...\n");
-              #endif
-              sprintf(prefix,"/usr/local");
-              sprintf(path,"%s%s",prefix,KDE_ICN_DIR);
-              dir = opendir(path);
-          }
-     }
+    sprintf(path,"%s",KApplication::kde_icondir().data());
+    #ifdef DEBUG_MODE
+      printf("KTop debug : %s.\n", path);
+    #endif
+    dir = opendir( path );
 
     if ( ! dir ) return;  // default icon will be used
   
@@ -632,17 +612,13 @@ void TaskMan::TaskMan_initIconList()
      }
 
     (void)closedir(dir);
-  
-    if ( kde_dir ) {
-         sprintf(path,"%s%s",kde_dir,KTOP_ICN_DIR);
-    } else {
-          sprintf(path,"%s%s",prefix,KTOP_ICN_DIR);
-          #ifdef DEBUG_MODE
-            printf("KTop debug : trying %s...\n",path);
-          #endif
-    }
 
-    dir = opendir(path);     
+    sprintf(path,"%s%s",KApplication::kde_appsdir().data(), "/ktop/pics"); 
+    #ifdef DEBUG_MODE
+      printf("KTop debug : trying %s...\n", path);
+    #endif
+
+    dir = opendir( path );
     if ( !dir ) return; // default icon will be used
   
     while ( ( de = readdir(dir) ) )
@@ -733,6 +709,7 @@ void TaskMan::resizeEvent(QResizeEvent *ev)
     
 #ifdef __FreeBSD__
     int widest_label = l_mem_details[MEM_INACTIVE]->width();
+    int i;
     
     cpubox->setGeometry(10, 10, 80, (h / 2) - 60);
     cpubox1->setGeometry(100, 10, w - 110, (h / 2) - 60);
@@ -742,7 +719,7 @@ void TaskMan::resizeEvent(QResizeEvent *ev)
     membox1->setGeometry(100, (h / 2) - 40, w - 110, (h / 2) - 60);
     mem_cur->setGeometry(20, h / 2 - 20, 60, (h / 2) - 90);
     memmon->setGeometry(10, 20, membox1->width() - 20, membox1->height() - 30);
-    for(int i = 0; i < MEM_PHYS; i++) {
+    for(i = 0; i < MEM_PHYS; i++) {
         l_mem_details[i]->move(10, 15 + i * (l_mem_details[i]->height()));
         mem_details[i]->move(10 + widest_label + 10, 15 + i * (l_mem_details[i]->height()));
     }
