@@ -304,8 +304,6 @@ SensorDisplay::internAddToDOM(QDomDocument& doc, QDomElement& element)
 		element.setAttribute("updateInterval", timerInterval);
   }
 
-  kdDebug() << "timerId==" << timerId << endl;
-
 	if (timerId == NONE)
 		element.setAttribute("pause", 1);
 	else
