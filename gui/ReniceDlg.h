@@ -38,7 +38,7 @@
 #endif
 
 #include <qlabel.h>
-#include <qlcdnum.h>
+#include <qlcdnumber.h>
 #include <qslider.h>
 #include <qpushbutton.h>
 #include <qdialog.h>

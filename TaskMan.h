@@ -37,8 +37,6 @@
 
 #include <qwidget.h>
 
-#include <ktabctl.h>
-
 #include "ProcessList.h"
 #include "ProcListPage.h"
 #include "PerfMonPage.h"
@@ -48,7 +46,7 @@
  * 3 entry tab dialog. The tabs contain a process list, a process tree and
  * a performance meter.
  */
-class TaskMan : public KTabCtl
+class TaskMan : public QTabWidget
 {
 	Q_OBJECT
 
