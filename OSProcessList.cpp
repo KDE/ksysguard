@@ -48,6 +48,7 @@
 #include <pwd.h>
 
 #include <kapp.h>
+#include <klocale.h>
 
 #include "OSProcessList.h"
 

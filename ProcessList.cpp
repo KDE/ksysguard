@@ -40,6 +40,7 @@
 
 #include <kapp.h>
 #include <klocale.h>
+#include <kconfig.h>
 
 #include "MainMenu.h"
 #include "OSProcessList.h"

@@ -58,6 +58,7 @@
 #include <pwd.h>
 
 #include <kapp.h>
+#include <klocale.h>
 
 #include "OSProcess.h"
 #include "TimeStampList.h"
