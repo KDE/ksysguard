@@ -54,10 +54,6 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	dict.insert("Login", new QString(i18n("Login")));
 	dict.insert("Command", new QString(i18n("Command")));
 
-	/* All RMB clicks to the box frame will be handled by 
-	 * SensorDisplay::eventFilter. */
-	frame->installEventFilter(this);
-
 	// Create the table that lists the processes.
 	pList = new ProcessList(this, "pList");    
 	CHECK_PTR(pList);
@@ -66,10 +62,6 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	connect(pList, SIGNAL(listModified(bool)),
 			this, SLOT(setModified(bool)));
 
-	/* All RMB clicks to the plist widget will be handled by 
-	 * SensorDisplay::eventFilter. */
-	pList->installEventFilter(this);
-	
 	// Create the check box to switch between tree view and list view.
 	xbTreeView = new QCheckBox(i18n("&Tree"), this, "xbTreeView");
 	CHECK_PTR(xbTreeView);

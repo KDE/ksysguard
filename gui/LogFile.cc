@@ -51,10 +51,6 @@ LogFile::LogFile(QWidget *parent, const char *name, const QString&)
 
 	frame->setTitle(title);
 
-	/* All RMB clicks to the lcd widget will be handled by 
-	 * SensorDisplay::eventFilter. */
-	frame->installEventFilter(this);
-
 	setMinimumSize(50, 25);
 	setModified(false);
 }

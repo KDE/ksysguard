@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,8 +16,8 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+	Please do not commit any changes without consulting me first. Thanks!
 
 	$Id$
 */
@@ -36,10 +36,6 @@ DummyDisplay::DummyDisplay(QWidget* parent, const char* name,
 {
 	frame->setTitle(i18n("Drop sensor here"));
 	setMinimumSize(16, 16);
-
-	/* All events to the frame widget will be handled by 
-	 * SensorDisplay::eventFilter. */
-	frame->installEventFilter(this);
 
 	QWhatsThis::add(this, i18n(
 		"This is an empty space in a work sheet. Drag a sensor from "
