@@ -138,6 +138,16 @@ public:
 		return (false);
 	}
 
+	bool isRegistered(QListViewItem* lvi) const
+	{
+		QListIterator<SensorInfo> it(sensors);
+		for ( ; it.current(); ++it)
+			if ((*it)->getLVI() == lvi)
+				return (true);
+
+		return (false);
+	}
+
 private:
 	const SensorAgent* sensorAgent;
 

@@ -58,7 +58,7 @@ static const char* Description = I18N_NOOP("KDE Task Manager");
  * This is the constructor for the main widget. It sets up the menu and the
  * TaskMan widget.
  */
-TopLevel::TopLevel(const char *name, int)
+TopLevel::TopLevel(const char *name)
 	: KTMainWindow(name)
 {
 	splitter = new QSplitter(this, "Splitter");
@@ -94,7 +94,7 @@ TopLevel::TopLevel(const char *name, int)
 	SensorMgr->engage("localhost", "", "ktopd");
 	/* Request info about the swapspace size and the units it is measured in.
 	 * The requested info will be received by answerReceived(). */
-	SensorMgr->sendRequest("localhost", "memswap?", (SensorClient*) this, 5);
+	SensorMgr->sendRequest("localhost", "mem/swap?", (SensorClient*) this, 5);
 
 	// call timerEvent to fill the status bar with real values
 	timerEvent(0);
@@ -121,8 +121,6 @@ TopLevel::TopLevel(const char *name, int)
 
 	setMinimumSize(sizeHint());
 	resize(500, 300);
-
-	readProperties(kapp->config());
 
 	timerID = startTimer(2000);
 
@@ -155,7 +153,6 @@ void
 TopLevel::quitApp()
 {
 	saveProperties(kapp->config());
-
 	kapp->config()->sync();
 	qApp->quit();
 }
@@ -181,9 +178,21 @@ TopLevel::timerEvent(QTimerEvent*)
 	/* Request some info about the memory status. The requested information
 	 * will be received by answerReceived(). */
 	SensorMgr->sendRequest("localhost", "pscount", (SensorClient*) this, 0);
-	SensorMgr->sendRequest("localhost", "memfree", (SensorClient*) this, 1);
-	SensorMgr->sendRequest("localhost", "memused", (SensorClient*) this, 2);
-	SensorMgr->sendRequest("localhost", "memswap", (SensorClient*) this, 3);
+	SensorMgr->sendRequest("localhost", "mem/free", (SensorClient*) this, 1);
+	SensorMgr->sendRequest("localhost", "mem/used", (SensorClient*) this, 2);
+	SensorMgr->sendRequest("localhost", "mem/swap", (SensorClient*) this, 3);
+}
+
+void
+TopLevel::readProperties(KConfig* /*cfg*/)
+{
+	debug("TopLevel::readProperties");
+}
+
+void
+TopLevel::saveProperties(KConfig* /*cfg*/)
+{
+	debug("TopLevel::saveProperties");
 }
 
 void
@@ -234,7 +243,7 @@ static const KCmdLineOptions options[] =
 
 
 /*
- * Where it all begins.
+ * Once upon a time...
  */
 int
 main(int argc, char** argv)
@@ -250,24 +259,26 @@ main(int argc, char** argv)
 						"wuebben@math.cornell.edu");
 	aboutData.addAuthor("Ralf Mueller", 0, "rlaf@bj-ig.de");
 	
-	KCmdLineArgs::init( argc, argv, &aboutData );
-	KCmdLineArgs::addCmdLineOptions( options );
+	KCmdLineArgs::init(argc, argv, &aboutData);
+	KCmdLineArgs::addCmdLineOptions(options);
 	
 	// initialize KDE application
 	KApplication a;
-
-	int sfolder = -1;
 
 	SensorMgr = new SensorManager();
 	CHECK_PTR(SensorMgr);
 
 	// create top-level widget
-	TopLevel *toplevel = new TopLevel("TaskManager", sfolder);
+	TopLevel *toplevel = new TopLevel("TaskManager");
 	CHECK_PTR(toplevel);
-	a.setMainWidget(toplevel);
-	a.setTopWidget(toplevel);
-
-	toplevel->show();
+	if (a.isRestored())
+		toplevel->restore(1);
+	else
+	{
+		a.setMainWidget(toplevel);
+		a.setTopWidget(toplevel);
+		toplevel->show();
+	}
 
 	// run the application
 	int result = a.exec();

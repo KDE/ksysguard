@@ -37,11 +37,11 @@ static size_t SFree = 0;
 void
 initMemory(void)
 {
-	registerMonitor("memfree", "integer", printMFree, printMFreeInfo);
-	registerMonitor("memused", "integer", printUsed, printUsedInfo);
-	registerMonitor("membuf", "integer", printBuffers, printBuffersInfo);
-	registerMonitor("memcached", "integer", printCached, printCachedInfo);
-	registerMonitor("memswap", "integer", printSwap, printSwapInfo);
+	registerMonitor("mem/free", "integer", printMFree, printMFreeInfo);
+	registerMonitor("mem/used", "integer", printUsed, printUsedInfo);
+	registerMonitor("mem/buf", "integer", printBuffers, printBuffersInfo);
+	registerMonitor("mem/cached", "integer", printCached, printCachedInfo);
+	registerMonitor("mem/swap", "integer", printSwap, printSwapInfo);
 }
 
 void

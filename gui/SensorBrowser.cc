@@ -44,29 +44,23 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	setRootIsDecorated(TRUE);
 
 	// Fill the sensor description dictionary.
-	dict.insert("cpuidle", new QString(i18n("Idle Load")));
-	dict.insert("cpusys", new QString(i18n("System Load")));
-	dict.insert("cpunice", new QString(i18n("Nice Load")));
-	dict.insert("cpuuser", new QString(i18n("User Load")));
-	dict.insert("memswap", new QString(i18n("Swap Memory")));
-	dict.insert("memcached", new QString(i18n("Cached Memory")));
-	dict.insert("membuf", new QString(i18n("Buffered Memory")));
-	dict.insert("memused", new QString(i18n("Used Memory")));
-	dict.insert("memfree", new QString(i18n("Free Memory")));
+	dict.insert("cpu", new QString(i18n("Load")));
+	dict.insert("idle", new QString(i18n("Idle Load")));
+	dict.insert("sys", new QString(i18n("System Load")));
+	dict.insert("nice", new QString(i18n("Nice Load")));
+	dict.insert("user", new QString(i18n("User Load")));
+	dict.insert("mem", new QString(i18n("Memory")));
+	dict.insert("swap", new QString(i18n("Swap Memory")));
+	dict.insert("cached", new QString(i18n("Cached Memory")));
+	dict.insert("buf", new QString(i18n("Buffered Memory")));
+	dict.insert("used", new QString(i18n("Used Memory")));
+	dict.insert("free", new QString(i18n("Free Memory")));
 	dict.insert("pscount", new QString(i18n("Process Count")));
 	dict.insert("ps", new QString(i18n("Process Controller")));
 
 	for (int i = 0; i < 32; i++)
-	{
-		dict.insert("cpu" + QString::number(i) + "idle",
-					new QString(QString(i18n("CPU%1 Idle Load")).arg(i)));
-		dict.insert("cpu" + QString::number(i) + "sys",
-					new QString(QString(i18n("CPU%1 System Load")).arg(i)));
-		dict.insert("cpu" + QString::number(i) + "nice",
-					new QString(QString(i18n("CPU%1 Nice Load")).arg(i)));
-		dict.insert("cpu" + QString::number(i) + "user",
-					new QString(QString(i18n("CPU%1 User Load")).arg(i)));
-	}
+		dict.insert("cpu" + QString::number(i),
+					new QString(QString(i18n("CPU%1")).arg(i)));
 
 	// The sensor browser can be completely hidden.
 	setMinimumWidth(1);
@@ -115,10 +109,10 @@ SensorBrowser::answerReceived(int id, const QString& s)
 {
 	/* An answer has the following format:
 
-	   cpuidle	integer
-	   cpusys 	integer
-	   cpunice	integer
-	   cpuuser	integer
+	   cpu/idle	integer
+	   cpu/sys 	integer
+	   cpu/nice	integer
+	   cpu/user	integer
 	   ps	table
 	*/
 
@@ -131,30 +125,63 @@ SensorBrowser::answerReceived(int id, const QString& s)
 		QString sensorName = words[0];
 		QString sensorType = words[1];
 
-		/* Calling update() a rapid sequence will create pending 
-		 * requests that do not get erased by calling clear(). Subsequent
-		 * updates will receive the old pending answers so we need to make
-		 * sure that we register each sensor only once. */
+		/* Calling update() a rapid sequence will create pending
+		 * requests that do not get erased by calling
+		 * clear(). Subsequent updates will receive the old pending
+		 * answers so we need to make sure that we register each
+		 * sensor only once. */
 		if (hostInfos.at(id)->isRegistered(sensorName))
 			return;
 
-		// retrieve localized description from dictionary
-		QString sensorDescription;
-		if (!dict[sensorName])
-			sensorDescription = sensorName;
-		else
-			sensorDescription = *(dict[sensorName]);
+		/* The sensor browser can display sensors in a hierachical order.
+		 * Sensors can be grouped into nodes by seperating the hierachical
+		 * nodes through slashes in the sensor name. E. g. cpu/user is
+		 * the sensor user in the cpu node. There is no limit for the
+		 * depth of nodes. */
+		SensorTokenizer absolutePath(sensorName, '/');
+		
+		QListViewItem* parent = hostInfos.at(id)->getLVI();
+		for (unsigned int j = 0; j < absolutePath.numberOfTokens(); ++j)
+		{
+			// Localize the sensor name part by part.
+			QString name;
+			if (!dict[absolutePath[j]])
+				name = absolutePath[j];
+			else
+				name = *(dict[absolutePath[j]]);
 
-		QListViewItem* lvi = new QListViewItem(hostInfos.at(id)->getLVI(),
-											   sensorDescription);
-		CHECK_PTR(lvi);
+			bool found = FALSE;
+			QListViewItem* sibling = parent->firstChild();
+			while (sibling && !found)
+			{
+				if (sibling->text(0) == name)
+				{
+					// The node or sensor is already known.
+					found = TRUE;
+				}
+				else
+					sibling = sibling->nextSibling();
+			}
+			if (!found)
+			{
+				QListViewItem* lvi = new QListViewItem(parent, name);
+				CHECK_PTR(lvi);
+				if (j == absolutePath.numberOfTokens() - 1)
+				{
+					// add sensor info to internal data structure
+					hostInfos.at(id)->addSensor(lvi, sensorName, name,
+												sensorType);
+				}
+				else
+					parent = lvi;
 
-		// add sensor info to internal data structure
-		hostInfos.at(id)->addSensor(lvi, sensorName, sensorDescription,
-									sensorType);
+				// The child indicator might need to be updated.
+				repaintItem(parent);
+			}
+			else
+				parent = sibling;
+		}
 	}
-	// The child indicator might need to be updated.
-	repaintItem(hostInfos.at(id)->getLVI());
 }
 
 void
@@ -171,15 +198,12 @@ SensorBrowser::viewportMouseMoveEvent(QMouseEvent* ev)
 	if (!item)
 		return;		// no item under cursor
 
-	QListViewItem* parent = item->parent();
-	if (!parent)
-		return;		// item is not a sensor name
-
-	// find the host info record that belongs to the LVI
+	// Make sure that a sensor and not a node or hostname has been picked.
 	QListIterator<HostInfo> it(hostInfos);
-	for ( ; it.current() && (*it)->getLVI() != parent; ++it)
+	for ( ; it.current() && !(*it)->isRegistered(item); ++it)
 		;
-	assert(it.current());
+	if (!it.current())
+		return;
 
 	// Create text drag object as "<hostname> <sensorname> <sensortype>".
 	dragText = (*it)->getHostName() + " "

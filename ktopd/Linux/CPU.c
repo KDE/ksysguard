@@ -145,13 +145,13 @@ initCPU(void)
 		if (strcmp("cpu", tag) == 0)
 		{
 			/* Total CPU load */
-			registerMonitor("cpuuser", "integer", printCPUUser,
+			registerMonitor("cpu/user", "integer", printCPUUser,
 							printCPUUserInfo);
-			registerMonitor("cpunice", "integer", printCPUNice,
+			registerMonitor("cpu/nice", "integer", printCPUNice,
 							printCPUNiceInfo);
-			registerMonitor("cpusys", "integer", printCPUSys,
+			registerMonitor("cpu/sys", "integer", printCPUSys,
 							printCPUSysInfo);
-			registerMonitor("cpuidle", "integer", printCPUIdle,
+			registerMonitor("cpu/idle", "integer", printCPUIdle,
 							printCPUIdleInfo);
 		}
 		else if (strncmp("cpu", tag, 3) == 0)
@@ -162,16 +162,16 @@ initCPU(void)
 
 			sscanf(tag + 3, "%d", &id);
 			CPUCount++;
-			sprintf(cmdName, "cpu%duser", id);
+			sprintf(cmdName, "cpu%d/user", id);
 			registerMonitor(cmdName, "integer", printCPUxUser,
 							printCPUxUserInfo);
-			sprintf(cmdName, "cpu%dnice", id);
+			sprintf(cmdName, "cpu%d/nice", id);
 			registerMonitor(cmdName, "integer", printCPUxNice,
 							printCPUxNiceInfo);
-			sprintf(cmdName, "cpu%dsys", id);
+			sprintf(cmdName, "cpu%d/sys", id);
 			registerMonitor(cmdName, "integer", printCPUxSys,
 							printCPUxSysInfo);
-			sprintf(cmdName, "cpu%didle", id);
+			sprintf(cmdName, "cpu%d/idle", id);
 			registerMonitor(cmdName, "integer", printCPUxIdle,
 							printCPUxIdleInfo);
 		}

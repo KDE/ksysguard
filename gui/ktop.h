@@ -45,13 +45,16 @@ class TopLevel : public KTMainWindow, public SensorClient
 	Q_OBJECT
 
 public:
-	TopLevel(const char *name = 0, int sfolder = 0);
+	TopLevel(const char *name = 0);
 	~TopLevel();
 
 	void closeEvent(QCloseEvent*)
 	{
 		quitApp();
 	}
+
+	virtual void saveProperties(KConfig*);
+	virtual void readProperties(KConfig*);
 
 	virtual void answerReceived(int id, const QString& s);
 
