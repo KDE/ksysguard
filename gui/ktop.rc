@@ -5,5 +5,10 @@
     <Action name="connect_host"/>
     <Action name="disconnect_host"/>
   </Menu>
+  <Menu name="settings"><text>&amp;Settings</text>
+    <Action name="showmenubar"/>
+    <Action name="showtoolbar"/>
+    <Action name="showstatusbar"/>
+  </Menu>
 </MenuBar>
 </kpartgui>

@@ -26,6 +26,10 @@
 #include "Command.h"
 #include "Memory.h"
 
+#define MEMINFOBUFSIZE 1024
+static char MemInfoBuf[MEMINFOBUFSIZE];
+static int Dirty = 0;
+
 static size_t Total = 0;
 static size_t MFree = 0;
 static size_t Used = 0;
@@ -33,6 +37,30 @@ static size_t Buffers = 0;
 static size_t Cached = 0;
 static size_t STotal = 0;
 static size_t SFree = 0;
+
+static void
+processMemInfo()
+{
+	sscanf(MemInfoBuf, "%*[^\n]\n"
+		   "%*s %d %d %d %*d %d %d\n"
+		   "%*s %d %*d %d\n", 
+		   &Total, &Used, &MFree, &Buffers, &Cached,
+		   &STotal, &SFree);
+
+	Total /= 1024;
+	STotal /= 1024;
+	MFree /= 1024;
+	SFree /= 1024;
+	Used /= 1024;
+	Buffers /= 1024;
+	Cached /= 1024;
+
+	Dirty = 0;
+}
+
+/*
+================================ public part =================================
+*/
 
 void
 initMemory(void)
@@ -70,96 +98,99 @@ updateMemory(void)
 	 */
 
 	FILE* meminfo;
+	size_t n;
 
 	if ((meminfo = fopen("/proc/meminfo", "r")) == NULL)
 	{
-		printf("ERROR: Cannot open file \'/proc/meminfo\'!\n"
-			   "The kernel needs to be compiled with support\n"
-			   "for /proc filesystem enabled!");
+		fprintf(stderr, "ERROR: Cannot open file \'/proc/meminfo\'!\n"
+				"The kernel needs to be compiled with support\n"
+				"for /proc filesystem enabled!");
 		return (-1);
 	}
-	if (fscanf(meminfo, "%*[^\n]\n") == EOF)
-	{
-		printf("ERROR: Cannot read memory info file \'/proc/meminfo\'!\n");
-		return (-1);
-	}
-	/* The following works only on systems with 4GB or less. Currently this
-	 * is no problem but what happens if Linus changes his mind? */
-	fscanf(meminfo, "%*s %d %d %d %*d %d %d\n",
-		   &Total, &Used, &MFree, &Buffers, &Cached);
-	fscanf(meminfo, "%*s %d %*d %d\n",
-		   &STotal, &SFree);
-
-	Total /= 1024;
-	STotal /= 1024;
-	MFree /= 1024;
-	SFree /= 1024;
-	Used /= 1024;
-	Buffers /= 1024;
-	Cached /= 1024;
-
+	n = fread(MemInfoBuf, 1, MEMINFOBUFSIZE - 1, meminfo);
 	fclose(meminfo);
+	Dirty = 1;
 
-	return (1);
+	return (0);
 }
 
 void
 printMFree(const char* cmd)
 {
+	if (Dirty)
+		processMemInfo();
 	printf("%d\n", MFree);
 }
 
 void
 printMFreeInfo(const char* cmd)
 {
+	if (Dirty)
+		processMemInfo();
 	printf("Free Memory\t0\t%d\tKB\n", Total);
 }
 
 void
 printUsed(const char* cmd)
 {
+	if (Dirty)
+		processMemInfo();
 	printf("%d\n", Used);
 }
 
 void
 printUsedInfo(const char* cmd)
 {
+	if (Dirty)
+		processMemInfo();
 	printf("Used Memory\t0\t%d\tKB\n", Total);
 }
 
 void
 printBuffers(const char* cmd)
 {
+	if (Dirty)
+		processMemInfo();
 	printf("%d\n", Buffers);
 }
 
 void
 printBuffersInfo(const char* cmd)
 {
+	if (Dirty)
+		processMemInfo();
 	printf("Buffer Memory\t0\t%d\tKB\n", Total);
 }
 
 void
 printCached(const char* cmd)
 {
+	if (Dirty)
+		processMemInfo();
 	printf("%d\n", Cached);
 }
 
 void
 printCachedInfo(const char* cmd)
 {
+	if (Dirty)
+		processMemInfo();
 	printf("Cached Memory\t0\t%d\tKB\n", Total);
 }
 
 void
 printSwap(const char* cmd)
 {
+	if (Dirty)
+		processMemInfo();
 	printf("%d\n", SFree);
 }
 
 void
 printSwapInfo(const char* cmd)
 {
+	if (Dirty)
+		processMemInfo();
 	printf("Swap Memory\t0\t%d\tKB\n", STotal);
 }
 

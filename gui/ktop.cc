@@ -81,6 +81,7 @@ TopLevel::TopLevel(const char *name)
 	statusbar->insertFixedItem(i18n("Swap: 8888888 kB used, "
 							   "8888888 kB free"), 2);
 	setStatusBar(statusbar);
+	enableStatusBar(KStatusBar::Hide);
 
 	SensorMgr->engage("localhost", "", "ktopd");
 	/* Request info about the swapspace size and the units it is measured in.
@@ -106,6 +107,13 @@ TopLevel::TopLevel(const char *name)
     (void) new KAction(i18n("D&isconnect Host"), "connect_no", 0, this,
 					   SLOT(disconnectHost()), actionCollection(),
 					   "disconnect_host");
+	toolbarTog = KStdAction::showToolbar(this, SLOT(showToolBar()),
+										 actionCollection(), "showtoolbar");
+	toolbarTog->setChecked(FALSE);
+	statusBarTog = KStdAction::showStatusbar(this, SLOT(showStatusBar()),
+											 actionCollection(),
+											 "showstatusbar");
+	statusBarTog->setChecked(FALSE);
 	createGUI("ktop.rc");
 
 	// Hide XML GUI generated toolbar.
@@ -150,14 +158,33 @@ TopLevel::disconnectHost()
 }
 
 void
+TopLevel::showToolBar()
+{
+	enableToolBar(KToolBar::Toggle);
+}
+
+void
+TopLevel::showStatusBar()
+{
+	enableStatusBar(KStatusBar::Toggle);
+}
+
+void
 TopLevel::timerEvent(QTimerEvent*)
 {
-	/* Request some info about the memory status. The requested information
-	 * will be received by answerReceived(). */
-	SensorMgr->sendRequest("localhost", "pscount", (SensorClient*) this, 0);
-	SensorMgr->sendRequest("localhost", "mem/free", (SensorClient*) this, 1);
-	SensorMgr->sendRequest("localhost", "mem/used", (SensorClient*) this, 2);
-	SensorMgr->sendRequest("localhost", "mem/swap", (SensorClient*) this, 3);
+	if (statusbar->isVisibleTo(this))
+	{
+		/* Request some info about the memory status. The requested
+		 * information will be received by answerReceived(). */
+		SensorMgr->sendRequest("localhost", "pscount", (SensorClient*) this,
+							   0);
+		SensorMgr->sendRequest("localhost", "mem/free", (SensorClient*) this,
+							   1);
+		SensorMgr->sendRequest("localhost", "mem/used", (SensorClient*) this,
+							   2);
+		SensorMgr->sendRequest("localhost", "mem/swap", (SensorClient*) this,
+							   3);
+	}
 }
 
 void
@@ -195,6 +222,17 @@ TopLevel::readProperties(KConfig* cfg)
 	}
 	splitter->setSizes(sizes);
 
+	if (!cfg->readNumEntry("ToolBarHidden", 1))
+	{
+		enableToolBar(KToolBar::Show);
+		toolbarTog->setChecked(TRUE);
+	}
+	if (!cfg->readNumEntry("StatusBarHidden", 1))
+	{
+		enableStatusBar(KStatusBar::Show);
+		statusBarTog->setChecked(TRUE);
+	}
+		
 	ws->readProperties(cfg);
 
 	setMinimumSize(sizeHint());
@@ -213,6 +251,9 @@ TopLevel::saveProperties(KConfig* cfg)
 	QValueList<int> spSz = splitter->sizes();
 	geom = QString("%1:%2").arg(*spSz.at(0)).arg(*spSz.at(1));
 	cfg->writeEntry("SplitterSizes", geom);
+
+	cfg->writeEntry("ToolBarHidden", !toolbarTog->isChecked());
+	cfg->writeEntry("StatusBarHidden", !statusBarTog->isChecked());
 
 	ws->saveProperties(cfg);
 }

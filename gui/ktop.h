@@ -36,6 +36,7 @@
 
 extern KApplication* Kapp;
 
+class KToggleAction;
 class SensorAgent;
 class SensorBrowser;
 class Workspace;
@@ -65,11 +66,15 @@ protected slots:
 	void quitApp();
 	void connectHost();
 	void disconnectHost();
+	void showToolBar();
+	void showStatusBar();
 
 private:
 	KStatusBar* statusbar;
 
 	QSplitter* splitter;
+	KToggleAction* toolbarTog;
+	KToggleAction* statusBarTog;
 	SensorBrowser* sb;
 	Workspace* ws;
 	int timerID;

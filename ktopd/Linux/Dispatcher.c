@@ -67,10 +67,10 @@ signalHandler(int sig)
 		DispatcherReady = 1;
 		break;
     case SIGQUIT:
-		printf("SIGQUIT received\n");
+		perror("SIGQUIT received\n");
 		break;
     case SIGTERM:
-		printf("SIGTERM received\n");
+		perror("SIGTERM received\n");
 		break;
 	default:
 		break;

@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -45,13 +44,21 @@ typedef struct
 	unsigned long idleTicks;
 } CPULoadInfo;
 
-static FILE* Stat = 0;
+#define STATBUFSIZE 2048
+static char StatBuf[STATBUFSIZE];
+static int Dirty = 0;
 
-CPULoadInfo CPULoad;
-CPULoadInfo* SMPLoad = 0;
-unsigned CPUCount = 0;
+static CPULoadInfo CPULoad;
+static CPULoadInfo* SMPLoad = 0;
+static unsigned CPUCount = 0;
+static unsigned long Disk = 0;
+static unsigned long OldDisk = 0;
+static unsigned long DiskRIO = 0;
+static unsigned long OldDiskRIO = 0;
+static unsigned long DiskWIO = 0;
+static unsigned long OldDiskWIO = 0;
 
-void
+static void
 updateCPULoad(const char* line, CPULoadInfo* load)
 {
 	unsigned long currUserTicks, currSysTicks, currNiceTicks, currIdleTicks;
@@ -85,8 +92,64 @@ updateCPULoad(const char* line, CPULoadInfo* load)
 	load->idleTicks = currIdleTicks;
 }
 
+static void
+processStat(void)
+{
+	char format[32];
+	char tagFormat[16];
+	char buf[1024];
+	char tag[32];
+	char* statBufP = StatBuf;
+
+	sprintf(format, "%%%d[^\n]\n", sizeof(buf) - 1);
+	sprintf(tagFormat, "%%%ds", sizeof(tag) - 1);
+
+	while (sscanf(statBufP, format, buf) == 1)
+	{
+		buf[sizeof(buf) - 1] = '\0';
+		statBufP += strlen(buf) + 1;	// move statBufP to next line
+		sscanf(buf, tagFormat, tag);
+
+		if (strcmp("cpu", tag) == 0)
+		{
+			/* Total CPU load */
+			updateCPULoad(buf, &CPULoad);
+		}
+		else if (strncmp("cpu", tag, 3) == 0)
+		{
+			/* Load for each SMP CPU */
+			int id;
+			sscanf(tag + 3, "%d", &id);
+			updateCPULoad(buf, &SMPLoad[id]);
+		}
+		else if (strcmp("disk", tag) == 0)
+		{
+			unsigned long val;
+			sscanf(buf + 5, "%lu", &val);
+			Disk = val - OldDisk;
+			OldDisk = val;
+		}
+		else if (strcmp("disk_rio", tag) == 0)
+		{
+			unsigned long val;
+			sscanf(buf + 9, "%lu", &val);
+			DiskRIO = val - OldDiskRIO;
+			OldDiskRIO = val;
+		}
+		else if (strcmp("disk_wio", tag) == 0)
+		{
+			unsigned long val;
+			sscanf(buf + 9, "%lu", &val);
+			DiskWIO = val - OldDiskWIO;
+			OldDiskWIO = val;
+		}
+	}
+
+	Dirty = 0;
+}
+
 /*
-================================ public part ==================================
+================================ public part =================================
 */
 
 void
@@ -119,21 +182,22 @@ initCPU(void)
 
 	char format[32];
 	char buf[1024];
+	FILE* stat = 0;
 
-	if ((Stat = fopen("/proc/stat", "r")) == NULL)
+	if ((stat = fopen("/proc/stat", "r")) == NULL)
 	{
-		printf("ERROR: Cannot open file \'/proc/stat\'!\n"
-			   "The kernel needs to be compiled with support\n"
-			   "for /proc filesystem enabled!");
+		fprintf(stderr, "ERROR: Cannot open file \'/proc/stat\'!\n"
+				"The kernel needs to be compiled with support\n"
+				"for /proc filesystem enabled!");
 		return;
 	}
 
 	/* Use unbuffered input for /proc/stat file. */
-    setvbuf(Stat, NULL, _IONBF, 0);
+    setvbuf(stat, NULL, _IONBF, 0);
 
 	sprintf(format, "%%%d[^\n]\n", sizeof(buf) - 1);
 
-	while (fscanf(Stat, format, buf) == 1)
+	while (fscanf(stat, format, buf) == 1)
 	{
 		char tag[32];
 		char tagFormat[16];
@@ -175,7 +239,23 @@ initCPU(void)
 			registerMonitor(cmdName, "integer", printCPUxIdle,
 							printCPUxIdleInfo);
 		}
+		else if (strcmp("disk", tag) == 0)
+		{
+			registerMonitor("disk/load", "integer", printDiskLoad,
+							printDiskLoadInfo);
+		}
+		else if (strcmp("disk_rio", tag) == 0)
+		{
+			registerMonitor("disk/rio", "integer", printDiskRIO,
+							printDiskRIOInfo);
+		}
+		else if (strcmp("disk_wio", tag) == 0)
+		{
+			registerMonitor("disk/wio", "integer", printDiskWIO,
+							printDiskWIOInfo);
+		}
 	}
+	fclose(stat);
 
 	if (CPUCount > 0)
 		SMPLoad = (CPULoadInfo*) malloc(sizeof(CPULoadInfo) * CPUCount);
@@ -184,12 +264,6 @@ initCPU(void)
 void
 exitCPU(void)
 {
-	if (Stat)
-	{
-		fclose(Stat);
-		Stat = 0;
-	}
-
 	if (SMPLoad)
 	{
 		free(SMPLoad);
@@ -200,34 +274,20 @@ exitCPU(void)
 int
 updateCPU(void)
 {
-	char format[32];
-	char buf[1024];
+	size_t n;
+	FILE* stat;
 
-	sprintf(format, "%%%d[^\n]\n", sizeof(buf) - 1);
-
-	rewind(Stat);
-	while (fscanf(Stat, format, buf) == 1)
+	if ((stat = fopen("/proc/stat", "r")) == NULL)
 	{
-		char tag[32];
-		char tagFormat[16];
-
-		buf[sizeof(buf) - 1] = '\0';
-		sprintf(tagFormat, "%%%ds", sizeof(tag) - 1);
-		sscanf(buf, tagFormat, tag);
-
-		if (strcmp("cpu", tag) == 0)
-		{
-			/* Total CPU load */
-			updateCPULoad(buf, &CPULoad);
-		}
-		else if (strncmp("cpu", tag, 3) == 0)
-		{
-			/* Load for each SMP CPU */
-			int id;
-			sscanf(tag + 3, "%d", &id);
-			updateCPULoad(buf, &SMPLoad[id]);
-		}
+		fprintf(stderr, "ERROR: Cannot open file \'/proc/stat\'!\n"
+				"The kernel needs to be compiled with support\n"
+				"for /proc filesystem enabled!");
+		return (-1);
 	}
+	n = fread(StatBuf, 1, STATBUFSIZE - 1, stat);
+	fclose(stat);
+	StatBuf[n] = '\0';
+	Dirty = 1;
 
 	return (0);
 }
@@ -235,6 +295,8 @@ updateCPU(void)
 void
 printCPUUser(const char* cmd)
 {
+	if (Dirty)
+		processStat();
 	printf("%d\n", CPULoad.userLoad);
 }
 
@@ -247,6 +309,8 @@ printCPUUserInfo(const char* cmd)
 void
 printCPUNice(const char* cmd)
 {
+	if (Dirty)
+		processStat();
 	printf("%d\n", CPULoad.niceLoad);
 }
 
@@ -259,6 +323,8 @@ printCPUNiceInfo(const char* cmd)
 void
 printCPUSys(const char* cmd)
 {
+	if (Dirty)
+		processStat();
 	printf("%d\n", CPULoad.sysLoad);
 }
 
@@ -271,6 +337,8 @@ printCPUSysInfo(const char* cmd)
 void
 printCPUIdle(const char* cmd)
 {
+	if (Dirty)
+		processStat();
 	printf("%d\n", CPULoad.idleLoad);
 }
 
@@ -285,6 +353,8 @@ printCPUxUser(const char* cmd)
 {
 	int id;
 
+	if (Dirty)
+		processStat();
 	sscanf(cmd + 3, "%d", &id);
 	printf("%d\n", SMPLoad[id].userLoad);
 }
@@ -303,6 +373,8 @@ printCPUxNice(const char* cmd)
 {
 	int id;
 
+	if (Dirty)
+		processStat();
 	sscanf(cmd + 3, "%d", &id);
 	printf("%d\n", SMPLoad[id].niceLoad);
 }
@@ -321,6 +393,8 @@ printCPUxSys(const char* cmd)
 {
 	int id;
 
+	if (Dirty)
+		processStat();
 	sscanf(cmd + 3, "%d", &id);
 	printf("%d\n", SMPLoad[id].sysLoad);
 }
@@ -339,6 +413,8 @@ printCPUxIdle(const char* cmd)
 {
 	int id;
 
+	if (Dirty)
+		processStat();
 	sscanf(cmd + 3, "%d", &id);
 	printf("%d\n", SMPLoad[id].idleLoad);
 }
@@ -350,4 +426,46 @@ printCPUxIdleInfo(const char* cmd)
 
 	sscanf(cmd + 3, "%d", &id);
 	printf("CPU%d Idle Load\t0\t100\t%%\n", id);
+}
+
+void
+printDiskLoad(const char* cmd)
+{
+	if (Dirty)
+		processStat();
+	printf("%lu\n", Disk);
+}
+
+void
+printDiskLoadInfo(const char* cmd)
+{
+	printf("Disk Load\t0\t0\tkBytes/s\n");
+}
+
+void
+printDiskRIO(const char* cmd)
+{
+	if (Dirty)
+		processStat();
+	printf("%lu\n", DiskRIO);
+}
+
+void
+printDiskRIOInfo(const char* cmd)
+{
+	printf("Disk Read\t0\t100\tkBytes/s\n");
+}
+
+void
+printDiskWIO(const char* cmd)
+{
+	if (Dirty)
+		processStat();
+	printf("%lu\n", DiskWIO);
+}
+
+void
+printDiskWIOInfo(const char* cmd)
+{
+	printf("Disk Write\t0\t100\tkBytes/s\n");
 }

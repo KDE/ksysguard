@@ -41,7 +41,8 @@
 #include <asm/page.h>
 #endif
 
-CONTAINER ProcessList = 0;
+static CONTAINER ProcessList = 0;
+static int TimeOut = 0;
 
 #define BUFSIZE 1024
 
@@ -335,13 +336,19 @@ updateProcessList(void)
 	DIR* dir;
 	struct dirent* entry;
 
-	/* read in current process list via the /proc filesystem entry */
+	/* If the process information has not been requested for 10 intervals
+	 * we save CPU time by not updating the list. The next request will
+	 * re-enable the updates again. */
+	if (TimeOut > 10)
+		return (0);
+	TimeOut++;
 
+	/* read in current process list via the /proc filesystem entry */
 	if ((dir = opendir("/proc")) == NULL)
 	{
-		printf("ERROR: Cannot open directory \'/proc\'!\n"
-			   "The kernel needs to be compiled with support\n"
-			   "for /proc filesystem enabled!");
+		fprintf(stderr, "ERROR: Cannot open directory \'/proc\'!\n"
+				"The kernel needs to be compiled with support\n"
+				"for /proc filesystem enabled!");
 		return (-1);
 	}
 	while ((entry = readdir(dir))) 
@@ -374,6 +381,7 @@ printProcessList(const char* cmd)
 {
 	int i;
 
+	TimeOut = 0;
 	for (i = 0; i < level_ctnr(ProcessList); i++)
 	{
 		ProcessInfo* ps = get_ctnr(ProcessList, i);
@@ -391,6 +399,7 @@ printProcessList(const char* cmd)
 void
 printProcessCount(const char* cmd)
 {
+	TimeOut = 0;
 	printf("%d\n", ProcessCount);
 }
 

@@ -45,5 +45,11 @@ void printCPUxSys(const char* cmd);
 void printCPUxSysInfo(const char* cmd);
 void printCPUxIdle(const char* cmd);
 void printCPUxIdleInfo(const char* cmd);
+void printDiskLoad(const char* cmd);
+void printDiskLoadInfo(const char* cmd);
+void printDiskRIO(const char* cmd);
+void printDiskRIOInfo(const char* cmd);
+void printDiskWIO(const char* cmd);
+void printDiskWIOInfo(const char* cmd);
 
 #endif
