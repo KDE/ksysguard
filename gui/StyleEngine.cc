@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -122,6 +122,8 @@ StyleEngine::configure()
 	connect(ss->buttonApply, SIGNAL(clicked()),
 			this, SLOT(applyToWorksheet()));
 
+        connect(ss->colorList, SIGNAL(doubleClicked ( QListBoxItem * )),
+                this, SLOT(editColor()));
 	if (ss->exec())
 		apply();
 
