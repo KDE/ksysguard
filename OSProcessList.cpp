@@ -1,5 +1,5 @@
 /*
-    KTop, a taskmanager and cpu load monitor
+    KTop, the KDE Taskmanager
    
 	Copyright (c) 1999 Chris Schlaeger
 	                   cs@axys.de
@@ -33,6 +33,15 @@
  * features. This is planned for KTop version after 1.0.0!
  */
 
+#include <config.h>
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
+#include <sys/resource.h>       
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#include <signal.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <dirent.h>
@@ -49,120 +58,6 @@
 #else
 
 // Code for Linux 2.x
-
-OSProcess::OSProcess(const char* pidStr, TimeStampList* lastTStamps,
-					 TimeStampList* newTStamps)
-{
-	char buffer[1024];
-	FILE* fd;
-
-	error = false;
-
-	QString buf;
-	buf.sprintf("/proc/%s/status", pidStr);
-	if((fd = fopen(buf, "r")) == 0)
-	{
-		error = true;
-		errMessage.sprintf(i18n("Cannot open %s!\n"), buf.data());
-		return;
-	}
-
-	fscanf(fd, "%s %s", buffer, name);
-	fscanf(fd, "%s %c %*s", buffer, &status);
-	fscanf(fd, "%*s %*d");
-	fscanf(fd, "%*s %*d");
-	fscanf(fd, "%*s %d %*d %*d %*d", (int*) &uid);
-	fscanf(fd, "%*s %d %*d %*d %*d", (int*) &gid);
-	fscanf(fd, "%s %d %*s\n", buffer, &vm_size);
-	if (strcmp(buffer, "VmSize:"))
-		vm_size = 0;
-	fscanf(fd, "%s %d %*s\n", buffer, &vm_lock);
-	if (strcmp(buffer, "VmLck:"))
-		vm_lock = 0;
-	fscanf(fd, "%s %d %*s\n", buffer, &vm_rss);
-	if (strcmp(buffer, "VmRSS:"))
-		vm_rss = 0;
-	fscanf(fd, "%s %d %*s\n", buffer, &vm_data);
-	if (strcmp(buffer, "VmData:"))
-		vm_data = 0;
-	fscanf(fd, "%s %d %*s\n", buffer, &vm_stack);
-	if (strcmp(buffer, "VmStk:"))
-		vm_stack = 0;
-	fscanf(fd, "%s %d %*s\n", buffer, &vm_exe);
-	if (strcmp(buffer, "VmExe:"))
-		vm_exe = 0;
-	fscanf(fd, "%s %d %*s\n", buffer, &vm_lib);
-	if (strcmp(buffer, "VmLib:"))
-		vm_lib = 0;
-	fclose(fd);
-
-    buf.sprintf("/proc/%s/stat", pidStr);
-	if ((fd = fopen(buf, "r")) == 0)
-	{
-		error = true;
-		errMessage.sprintf(i18n("Cannot open %s!\n"), buf.data());
-		return;
-	}
-    
-	fscanf(fd, "%d %*s %c %d %d %*d %d %*d %*u %*u %*u %*u %*u %d %d"
-		   "%*d %*d %*d %d %*u %*u %*d %u %u",
-		   (int*) &pid, &status, (int*) &ppid, (int*) &gid, &ttyNo,
-		   &userTime, &sysTime, &priority, &vm_size, &vm_rss);
-	fclose(fd);
-
-	switch (status)
-	{
-	case 'R':
-		statusTxt = i18n("Run");
-		break;
-	case 'S':
-		statusTxt = i18n("Sleep");
-		break;
-	case 'D': 
-		statusTxt = i18n("Disk");
-		break;
-	case 'Z': 
-		statusTxt = i18n("Zombie");
-		break;
-	case 'T': 
-		statusTxt = i18n("Stop");
-		break;
-	case 'W': 
-		statusTxt = i18n("Swap");
-		break;
-	default:
-		statusTxt = i18n("????");
-		break;
-	}
-
-	TimeStamp* ts = new TimeStamp(pid, userTime, sysTime);
-	newTStamps->inSort(ts);
-
-	if (lastTStamps->find(ts) >= 0)
-	{
-		int lastCentStamp = lastTStamps->current()->getCentStamp();
-		int lastUserTime = lastTStamps->current()->getUserTime();
-		int lastSysTime = lastTStamps->current()->getSysTime();
-
-		int timeDiff = ts->getCentStamp() - lastCentStamp;
-		int userDiff = userTime - lastUserTime;
-		int sysDiff =  sysTime - lastSysTime;
-
-		if (timeDiff > 0)
-		{
-			userLoad = ((double) userDiff / timeDiff) * 100.0;
-			sysLoad = ((double) sysDiff / timeDiff) * 100.0;
-		}
-		else
-			sysLoad = userLoad = 0.0;
-	}
-	else
-		sysLoad = userLoad = 0.0;
-
-	// find out user name with the process uid
-	struct passwd* pwent = getpwuid(uid);
-	userName = pwent ? pwent->pw_name : "????";
-}
 
 OSProcessList::OSProcessList()
 {
@@ -373,7 +268,7 @@ OSProcessList::compareItems(GCI it1, GCI it2)
 		return (cmp(item1->getPriority(), item2->getPriority()));
 
 	case SORTBY_STATUS:
-		return (cmp(item1->getStatus(), item2->getStatus()));
+		return (strcmp(item1->getStatusTxt(), item2->getStatusTxt()));
 
 	case SORTBY_VMSIZE:
 		return (cmp(item1->getVm_size(), item2->getVm_size()) * -1);

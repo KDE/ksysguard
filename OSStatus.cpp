@@ -1,5 +1,5 @@
 /*
-    KTop, a taskmanager and cpu load monitor
+    KTop, the KDE Taskmanager
    
 	Copyright (c) 1999 Chris Schlaeger
 	                   cs@axys.de
@@ -29,9 +29,9 @@
  * sacrifying the ability to improve it further by adding new features.
  * The operation system abstraction classes were introduced to isolate OS
  * specific code in a very small number of modules. These modules are called
- * OSStatus and OSProcessList. OSStatus can be used to retrieve information
- * about the current system status while OSProcessList provides a list of
- * running processes.
+ * OSStatus, OSProcess and OSProcessList. OSStatus can be used to retrieve
+ * information about the current system status while OSProcessList provides
+ * a list of running processes.
  *
  * If you add support for a new platform try to make as little changes as
  * possible. Idealy you only need to change the two OS*.cpp files. Please

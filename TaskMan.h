@@ -1,5 +1,5 @@
 /*
-    KTop, a taskmanager and cpu load monitor
+    KTop, the KDE Taskmanager
    
     Copyright (C) 1997 Bernd Johannes Wuebben
                        wuebben@math.cornell.edu
@@ -81,6 +81,10 @@ public:
     ~TaskMan()
 	{
 		delete procListPage;
+		delete procTreePage;
+		delete perfMonPage;
+		delete pSig;
+		delete settings;
 	}
      
 	int setUpdateInterval(int);
@@ -120,6 +124,7 @@ private:
 
 	PerfMonPage* perfMonPage;
 
+	/// This is only an alias for procListPage, procTreePage and perfMonPage
     QWidget* pages[3];
 	
 	QPopupMenu* pSig;

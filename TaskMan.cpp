@@ -1,5 +1,5 @@
 /*
-    KTop, a taskmanager and cpu load monitor
+    KTop, the KDE Taskmanager
    
     Copyright (C) 1997 Bernd Johannes Wuebben
                        wuebben@math.cornell.edu
@@ -27,17 +27,6 @@
 
 // $Id$
 
-#include <config.h>
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
-#include <sys/resource.h>       
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#include <errno.h>
-#include <signal.h>
-
 #include <qtabbar.h>
 #include <qmessagebox.h>
 
@@ -47,7 +36,6 @@
 #include "settings.h"
 #include "cpu.h"
 #include "memory.h"
-#include "comm.h"
 #include "ReniceDlg.h"
 #include "ProcListPage.h"
 #include "TaskMan.moc"
@@ -255,31 +243,20 @@ TaskMan::tabBarSelected(int tabIndx)
 void 
 TaskMan::killProcess(int pid, int sig, const char* sigName)
 {
-	// Create a current process list and find process with specified pid.
-	OSProcessList pl;
-	pl.setSortCriteria(OSProcessList::SORTBY_PID);
-	pl.update();
-	int idx = pl.find(&OSProcess(pid));
-	if (idx < 0)
-		return;
-	OSProcess* ps = pl.at(idx);
+	OSProcess ps(pid);
 
 	// Make sure user really want to send the signal to that process.
 	QString msg;
 	msg.sprintf(i18n("Send signal %s to process %d?\n"
-					 "(Process name: %s  Owner: %s)\n"), sigName, ps->getPid(),
-				ps->getName(), ps->getUserName().data());
+					 "(Process name: %s  Owner: %s)\n"), sigName, ps.getPid(),
+				ps.getName(), ps.getUserName().data());
 	switch(QMessageBox::warning(this, "ktop", msg,
 								i18n("Continue"), i18n("Abort"), 0, 1))
     { 
 	case 0: // continue
-		if (kill(ps->getPid(), sig))
-		{
-			QMessageBox::warning(this, "ktop",
-								 i18n("Could not send the signal!\n"
-								 "The following error occured...\n"),
-								 strerror(errno), 0);
-		}
+		if (!ps.sendSignal(sig))
+			QMessageBox::warning(this, "ktop", ps.getErrMessage(),
+								 i18n("Continue"), 0);
 		break;
 
 	case 1: // abort
@@ -290,15 +267,11 @@ TaskMan::killProcess(int pid, int sig, const char* sigName)
 void
 TaskMan::reniceProcess(int pid)
 {
-	/*
-	 * -1 is a legitimate priority value as well as the result when an error
-	 * has occured. So we have to clear errno to use it as an additional
-	 * error indicator.
-	 */
-	errno = 0;
+	OSProcess ps(pid);
+
 	// get current priority of the process with pid
-	int currentPriority = getpriority(PRIO_PROCESS, pid);
-	if (currentPriority == -1 && errno != 0) 
+	int currentPriority = ps.getPriority();
+	if (!ps.ok()) 
 	{
 		QMessageBox::warning(this, i18n("ktop"),
 							 i18n("Renice error...\n"
@@ -316,7 +289,7 @@ TaskMan::reniceProcess(int pid)
 	if ((newPriority = dialog.exec()) <= 20 && (newPriority >= -20) &&
 		(newPriority != currentPriority)) 
 	{
-		if (setpriority(PRIO_PROCESS, pid, newPriority) == -1)
+		if (!ps.setPriority(newPriority))
 		{
 			QMessageBox::warning(this, i18n("ktop"),
 								 i18n("Renice error...\n"

@@ -1,5 +1,5 @@
 /*
-    KTop, a taskmanager and cpu load monitor
+    KTop, the KDE Taskmanager
    
     Copyright (C) 1997 Bernd Johannes Wuebben
                        wuebben@math.cornell.edu

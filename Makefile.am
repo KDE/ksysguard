@@ -26,8 +26,8 @@ bin_PROGRAMS = 	ktop
 # Which sources should be compiled for ktop.
 ktop_SOURCES	= ktop.cpp memory.cpp settings.cpp cpu.cpp TaskMan.cpp \
 	ProcListPage.cpp ProcTreePage.cpp IconList.cpp ProcessList.cpp \
-	ProcessTree.cpp OSProcessList.cpp PerfMonPage.cpp OSStatus.cpp \
-	ReniceDlg.cpp
+	ProcessTree.cpp OSProcessList.cpp OSProcess.cpp PerfMonPage.cpp \
+	OSStatus.cpp ReniceDlg.cpp
 
 # the library search path
 ktop_LDFLAGS = $(all_libraries) $(KDE_RPATH)

@@ -1,5 +1,5 @@
 /*
-    KTop, a taskmanager and cpu load monitor
+    KTop, the KDE Taskmanager
    
 	Copyright (c) 1999 Chris Schlaeger
 	                   cs@axys.de
@@ -33,7 +33,7 @@
  * To keep this file readable and maintainable please keep the number of
  * #ifdef _PLATFORM_ as low as possible. Ideally you dont have to make any
  * platform specific changes in the header files. Please do not add any new
- * features. This is planned for KTop version after 1.0.0!
+ * features. This is planned for KTop versions after 1.0.0!
  */
 
 #include <unistd.h>
@@ -46,124 +46,7 @@
 #include <qstring.h>
 
 #include "TimeStampList.h"
-
-/**
- * This class requests all needed information about a process and stores it
- * for later retrival.
- */
-class OSProcess
-{
-public:
-	OSProcess(const char* pidStr, TimeStampList* lastTStamps,
-			  TimeStampList* newTStamps);
-	OSProcess(int pid_) : pid(pid_) { }
-	virtual ~OSProcess() { }
-
-	const char* getName(void) const
-	{
-		return (name);
-	}
-	char getStatus(void) const
-	{
-		return (status);
-	}
-	const char* getStatusTxt(void) const
-	{
-		return (statusTxt);
-	}
-	const QString& getUserName(void) const
-	{
-		return (userName);
-	}
-	pid_t getPid(void) const
-	{
-		return (pid);
-	}
-	pid_t getPpid(void) const
-	{
-		return (ppid);
-	}
-	uid_t getUid(void) const
-	{
-		return (uid);
-	}
-	gid_t getGid(void) const
-	{
-		return (gid);
-	}
-	int getPriority(void) const
-	{
-		return (priority);
-	}
-	unsigned int getVm_size(void) const
-	{
-		return (vm_size);
-	}
-	unsigned int getVm_data(void) const
-	{
-		return (vm_data);
-	}
-	unsigned int getVm_rss(void) const
-	{
-		return (vm_rss);
-	}
-	unsigned int getVm_lib(void) const
-	{
-		return (vm_lib);
-	}
-	unsigned int getUserTime(void) const
-	{
-		return (userTime);
-	}
-	unsigned int getSysTime(void) const
-	{
-		return (sysTime);
-	}
-	double getUserLoad(void) const
-	{
-		return (userLoad);
-	}
-	double getSysLoad(void) const
-	{
-		return (sysLoad);
-	}
-
-	bool ok(void) const
-	{
-		return (!error);
-	}
-
-	const QString& getErrMessage(void) const
-	{
-		return (errMessage);
-	}
-
-private:
-	char name[101];
-	char status;
-	QString statusTxt;
-	pid_t pid;
-	pid_t ppid;
-	QString userName;
-	uid_t uid;
-	gid_t gid;
-	int ttyNo;
-	int priority;
-	unsigned int vm_size;
-	unsigned int vm_lock;
-	unsigned int vm_rss;
-	unsigned int vm_data;
-	unsigned int vm_stack;
-	unsigned int vm_exe;
-	unsigned int vm_lib;
-	unsigned int userTime;
-	unsigned int sysTime;
-	double userLoad;
-	double sysLoad;
-
-	bool error;
-	QString errMessage;
-} ;
+#include "OSProcess.h"
 
 /**
  * This class encapsulates all OS specific information about the process list.
@@ -241,10 +124,12 @@ public:
 
 	/**
 	 * This function can be used when calls to ok() return false to find out
-	 * what has happened.
+	 * what has happened. The error variable is cleared after a call to
+	 * getErrMessage().
 	 */
-	const QString& getErrMessage(void) const
+	const QString& getErrMessage(void)
 	{
+		error = false;
 		return (errMessage);
 	}
 
