@@ -113,7 +113,7 @@ FancyPlotterSettings::getMax() const
 }
 
 FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
-						   const char* title, int min, int max)
+						   const QString& title, int min, int max)
 	: SensorDisplay(parent, name)
 {
 	sensorNames.setAutoDelete(true);

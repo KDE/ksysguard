@@ -71,7 +71,7 @@ class FancyPlotter : public SensorDisplay
 
 public:
 	FancyPlotter(QWidget* parent = 0, const char* name = 0,
-				 const char* title = 0, int min = 0,
+				 const QString& title = QString::null, int min = 0,
 				 int max = 100);
 	~FancyPlotter();
 

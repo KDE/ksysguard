@@ -84,7 +84,6 @@ SensorAgent::start(const QString& host_, const QString& shell_,
 
 	if (command != "")
 	{
-		debug(command);
 		// We assume parameters to be seperated by a single blank.
 		QString s = command;
 		while (s.length() > 0)

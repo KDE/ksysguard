@@ -185,8 +185,8 @@ ProcessController::answerReceived(int id, const QString& answer)
 		SensorTokenizer lines(answer, '\n');
 		if (lines.numberOfTokens() != 2)
 		{
-			debug(QString("ProcessController::answerReceived(1)"
-				  "wrong number of lines [%1]").arg(answer));
+			debug("ProcessController::answerReceived(1)"
+				  "wrong number of lines [%s]", answer.latin1());
 			return;
 		}
 		SensorTokenizer headers(lines[0], '\t');
@@ -216,10 +216,10 @@ ProcessController::load(QDomElement& el)
 							el.attribute("sensorName"),
 							QString::null);
 
-	xbTreeView->setChecked(el.attribute("tree"));
-	setTreeView(el.attribute("tree"));
-	xbPause->setChecked(el.attribute("pause"));
-	togglePause(el.attribute("pause"));
+	xbTreeView->setChecked(el.attribute("tree").toInt());
+	setTreeView(el.attribute("tree").toInt());
+	xbPause->setChecked(el.attribute("pause").toInt());
+	togglePause(el.attribute("pause").toInt());
 
 	int filter = el.attribute("filter").toUInt();
 	cbFilter->setCurrentItem(filter);
@@ -229,7 +229,7 @@ ProcessController::load(QDomElement& el)
 }
 
 bool
-ProcessController::save(QDomDocument& doc, QDomElement& display)
+ProcessController::save(QDomDocument&, QDomElement& display)
 {
 	display.setAttribute("hostName", *hostNames.at(0));
 	display.setAttribute("sensorName", *sensorNames.at(0));

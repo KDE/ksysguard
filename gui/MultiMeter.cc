@@ -36,7 +36,7 @@ static const int FrameMargin = 0;
 static const int Margin = 5;
 static const int HeadHeight = 10;
 
-MultiMeter::MultiMeter(QWidget* parent, const QString& name,
+MultiMeter::MultiMeter(QWidget* parent, const char* name,
 					   const QString& t, int, int)
 	: SensorDisplay(parent, name)
 {

@@ -271,11 +271,11 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 			switch (pm.exec(QCursor::pos()))
 			{
 			case 1:
-				newDisplay = new FancyPlotter(this, sensorName,
+				newDisplay = new FancyPlotter(this, "FancyPlotter",
 											  sensorDescr);
 				break;
 			case 2:
-				newDisplay = new MultiMeter(this, sensorName, sensorDescr);
+				newDisplay = new MultiMeter(this, "MultiMeter", sensorDescr);
 				break;
 			}
 		}
@@ -283,7 +283,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 			newDisplay = new ProcessController(this);
 		else
 		{
-			debug("Unkown sensor type: " + sensorType);
+			debug("Unkown sensor type: %s", sensorType.latin1());
 			return (0);
 		}
 		replaceDisplay(r, c, newDisplay);

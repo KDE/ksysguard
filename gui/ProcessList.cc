@@ -108,7 +108,7 @@ ProcessLVI::key(int column, bool) const
 	QValueList<KeyFunc> kf = ((ProcessList*) listView())->getSortFunc();
 	KeyFunc func = *(kf.at(column));
 	if (func)
-		return (func(text(column)));
+		return (func(text(column).latin1()));
 
 	return (text(column));
 }

@@ -35,7 +35,7 @@ class MultiMeter : public SensorDisplay
 	Q_OBJECT
 
 public:
-	MultiMeter(QWidget* parent = 0, const QString& = QString::null,
+	MultiMeter(QWidget* parent = 0, const char* name = 0,
 			   const QString& = QString::null, int min = 0, int max = 0);
 	~MultiMeter()
 	{
