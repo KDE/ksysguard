@@ -92,13 +92,13 @@
 #endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#include <klocale.h>
 #endif
 
 #include <stdlib.h>
 #include <dirent.h>
 
 #include <kapp.h>
+#include <klocale.h>
 
 #include "OSStatus.h"
 
