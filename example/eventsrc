@@ -143,6 +143,6 @@ Name[ven/messages/kdebase/desktop_kdebase.po]=Zwipfi_Alamu
 Name[xh/messages/kdebase/desktop_kdebase.po]=uluvo_oluvusayo
 Name[xx/messages/kdebase/desktop_kdebase.po]=xx
 Name[zu/messages/kdebase/desktop_kdebase.po]=uluvo_oluxwayisayo
-Comment=sensor exceeded critical limit
+Comment=Sensor exceeded critical limit
 Comment[hu/messages/kdebase/desktop_kdebase.po]=egy figyelt érték elérte a kritikus szintet
 Comment[sv/messages/kdebase/desktop_kdebase.po]=sensor överskred den kritiska gränsen
