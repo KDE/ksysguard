@@ -36,6 +36,7 @@
 #include <sys/types.h>
 #include <sys/user.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include "../../gui/SignalIDs.h"
 #include "Command.h"
@@ -346,7 +347,7 @@ printProcessList(const char* cmd)
 {
 	ProcessInfo* ps;
 
-	ps = first_ctnr(ProcessList) /* skip 'kernel' entry */
+	ps = first_ctnr(ProcessList); /* skip 'kernel' entry */
 	for (ps = next_ctnr(ProcessList); ps; ps = next_ctnr(ProcessList))
 	{
 		fprintf(CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d\t%s\t%s\n",

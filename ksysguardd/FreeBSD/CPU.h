@@ -23,6 +23,8 @@
 #ifndef _cpuinfo_h_
 #define _cpuinfo_h_
 
+struct SensorModul;
+
 void initCpuInfo(struct SensorModul* sm);
 void exitCpuInfo(void);
 
