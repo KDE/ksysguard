@@ -128,10 +128,10 @@ ProcTreePage::resizeEvent(QResizeEvent* ev)
 
    	pTree->setGeometry(10, 30, w - 20, h - 90);
 
-	cbSort->setGeometry(10, h - 50,140, 25);
-	bRefresh->setGeometry(w - 270, h - 50, 80, 25);
-	bRoot->setGeometry(w - 180, h - 50, 80, 25);
-	bKill->setGeometry(w - 90, h - 50, 80, 25);
+	cbSort->setGeometry(10, h - 50, 160, 25);
+	bRefresh->setGeometry(w - 300, h - 50, 90, 25);
+	bRoot->setGeometry(w - 200, h - 50, 90, 25);
+	bKill->setGeometry(w - 100, h - 50, 90, 25);
 }
 
 void

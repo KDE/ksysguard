@@ -132,10 +132,10 @@ ProcListPage::resizeEvent(QResizeEvent* ev)
 
 	pList->setGeometry(10,25, w - 20, h - 75);
 
-	cbRefresh->setGeometry(10, h - 45, 150, 25);
-	cbFilter->setGeometry(170, h - 45, 150, 25);
-	bRefresh->setGeometry(w - 180, h - 45, 80, 25);
-	bKill->setGeometry(w - 90, h - 45, 80, 25);
+	cbRefresh->setGeometry(10, h - 45, 165, 25);
+	cbFilter->setGeometry(185, h - 45, 140, 25);
+	bRefresh->setGeometry(w - 200, h - 45, 90, 25);
+	bKill->setGeometry(w - 100, h - 45, 90, 25);
 }
 
 void
