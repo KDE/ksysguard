@@ -48,7 +48,7 @@
                         <cstring>hostLabel</cstring>
                     </property>
                     <property name="text">
-                        <string>Host</string>
+                        <string>Host:</string>
                     </property>
                 </widget>
                 <widget class="QComboBox">
@@ -334,7 +334,7 @@
                         <cstring>TextLabel1</cstring>
                     </property>
                     <property name="text">
-                        <string>Port</string>
+                        <string>Port:</string>
                     </property>
                 </widget>
                 <spacer row="2" column="1">
@@ -414,7 +414,7 @@
                         <cstring>TextLabel2</cstring>
                     </property>
                     <property name="text">
-                        <string>Command</string>
+                        <string>Command:</string>
                     </property>
                     <property name="alignment">
                         <set>AlignVCenter|AlignLeft</set>

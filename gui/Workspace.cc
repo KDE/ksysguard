@@ -195,7 +195,7 @@ Workspace::loadWorkSheet()
 {
 	KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", true);
 	KURL url = fd.getOpenURL(workDir, "*.sgrd", 0,
-								i18n("Select a worksheet to load"));
+								i18n("Select a Worksheet to Load"));
 	loadWorkSheet(url);
 }
 
@@ -243,7 +243,7 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 		KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", true);
 		fileName = fd.getSaveFileName(workDir + "/" +
 			tabLabel(sheet) + ".sgrd", "*.sgrd", 0,
-			i18n("Save current worksheet as"));
+			i18n("Save Current Worksheet As"));
 		if (fileName.isEmpty())
 			return;
 		workDir = fileName.left(fileName.findRev('/'));

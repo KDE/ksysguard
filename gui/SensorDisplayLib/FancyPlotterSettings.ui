@@ -63,7 +63,7 @@
                     </property>
                 </widget>
                 <spacer>
-                    <property name="name" stdset="0">
+                    <property name="name">
                         <cstring>Spacer1</cstring>
                     </property>
                     <property name="orientation">
@@ -71,12 +71,6 @@
                     </property>
                     <property name="sizeType">
                         <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
                     </property>
                 </spacer>
                 <widget class="QPushButton">
@@ -174,7 +168,7 @@
                                 </property>
                             </widget>
                             <spacer>
-                                <property name="name" stdset="0">
+                                <property name="name">
                                     <cstring>Spacer8</cstring>
                                 </property>
                                 <property name="orientation">
@@ -182,12 +176,6 @@
                                 </property>
                                 <property name="sizeType">
                                     <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
                                 </property>
                             </spacer>
                         </vbox>
@@ -233,7 +221,7 @@
                                     <cstring>TextLabel2</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Minimum Value</string>
+                                    <string>Minimum value:</string>
                                 </property>
                             </widget>
                             <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="3">
@@ -267,7 +255,7 @@
                                 </property>
                             </widget>
                             <spacer row="1" column="2">
-                                <property name="name" stdset="0">
+                                <property name="name">
                                     <cstring>Spacer4_2</cstring>
                                 </property>
                                 <property name="orientation">
@@ -276,19 +264,13 @@
                                 <property name="sizeType">
                                     <enum>Expanding</enum>
                                 </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget class="QLabel" row="1" column="3">
                                 <property name="name">
                                     <cstring>TextLabel3</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Maximum Value</string>
+                                    <string>Maximum value:</string>
                                 </property>
                             </widget>
                             <widget class="QLineEdit" row="1" column="4">
@@ -357,7 +339,7 @@
                                 </property>
                             </widget>
                             <spacer>
-                                <property name="name" stdset="0">
+                                <property name="name">
                                     <cstring>Spacer5</cstring>
                                 </property>
                                 <property name="orientation">
@@ -365,12 +347,6 @@
                                 </property>
                                 <property name="sizeType">
                                     <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
                                 </property>
                             </spacer>
                         </hbox>
@@ -412,7 +388,7 @@
                                 <number>6</number>
                             </property>
                             <spacer row="0" column="1">
-                                <property name="name" stdset="0">
+                                <property name="name">
                                     <cstring>Spacer7</cstring>
                                 </property>
                                 <property name="orientation">
@@ -420,12 +396,6 @@
                                 </property>
                                 <property name="sizeType">
                                     <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
                                 </property>
                             </spacer>
                             <widget class="QCheckBox" row="1" column="0">
@@ -469,7 +439,7 @@
                                     <cstring>TextLabel3_2</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Font Size</string>
+                                    <string>Font size:</string>
                                 </property>
                             </widget>
                         </grid>
@@ -543,7 +513,7 @@
                                         <number>6</number>
                                     </property>
                                     <spacer>
-                                        <property name="name" stdset="0">
+                                        <property name="name">
                                             <cstring>Spacer6</cstring>
                                         </property>
                                         <property name="orientation">
@@ -622,7 +592,7 @@
                                     <cstring>TextLabel1</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Distance</string>
+                                    <string>Distance:</string>
                                 </property>
                             </widget>
                             <widget class="QLabel" row="2" column="2">
@@ -630,7 +600,7 @@
                                     <cstring>Count</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Count</string>
+                                    <string>Count:</string>
                                 </property>
                             </widget>
                             <widget class="QCheckBox" row="0" column="0">
@@ -638,7 +608,7 @@
                                     <cstring>vLines</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Vertical Lines</string>
+                                    <string>Vertical lines</string>
                                 </property>
                                 <property name="whatsThis" stdset="0">
                                     <string>Check this to activate the vertical lines if display is large enough.</string>
@@ -812,7 +782,7 @@
                                         </property>
                                     </widget>
                                     <spacer>
-                                        <property name="name" stdset="0">
+                                        <property name="name">
                                             <cstring>Spacer4</cstring>
                                         </property>
                                         <property name="orientation">
@@ -851,7 +821,7 @@
                                         </property>
                                     </widget>
                                     <spacer>
-                                        <property name="name" stdset="0">
+                                        <property name="name">
                                             <cstring>Spacer7_2</cstring>
                                         </property>
                                         <property name="orientation">
@@ -859,12 +829,6 @@
                                         </property>
                                         <property name="sizeType">
                                             <enum>Expanding</enum>
-                                        </property>
-                                        <property name="sizeHint">
-                                            <size>
-                                                <width>20</width>
-                                                <height>20</height>
-                                            </size>
                                         </property>
                                     </spacer>
                                 </vbox>
@@ -891,13 +855,13 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-        <pixmap>image1</pixmap>
+        <pixmap>image0</pixmap>
         <property type="Color">color</property>
         <property type="String">text</property>
     </customwidget>
 </customwidgets>
 <images>
-    <image name="image1">
+    <image name="image0">
         <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1be245fc04c5a3201e4615f430059d0711ff5ddb2e6bb236ec90eed134cb5a19d8ef36602af5ecdbfeeac05dda0798d3abebde87e3faa374d3807fa0d633a52d38d8de6f679fe33fc776e196f53cd010188256a3600a292882096246517815ca99884606e18044a3a40d91824820924265a7923a2e8bcd05f33db1173e002913175f2a6be6d3294871a2d95fa00e8a94ee017b69d339d90df1e77c57ea072ede6758</data>
     </image>
 </images>

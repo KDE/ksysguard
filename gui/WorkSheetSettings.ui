@@ -190,7 +190,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Update Interval</string>
+                        <string>Update interval:</string>
                     </property>
                 </widget>
                 <widget row="0"  column="0" >
@@ -201,7 +201,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Rows</string>
+                        <string>Rows:</string>
                     </property>
                 </widget>
                 <widget row="1"  column="0" >
@@ -212,7 +212,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Columns</string>
+                        <string>Columns:</string>
                     </property>
                 </widget>
                 <widget row="2"  column="2" >
@@ -223,7 +223,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Sec.</string>
+                        <string>sec.</string>
                     </property>
                 </widget>
             </grid>
