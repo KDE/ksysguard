@@ -91,6 +91,7 @@ signals:
 
 protected:
 	virtual void executeCommand() = 0;
+	void processAnswer(const QString& buf);
 
 	SensorManager* sensorManager;
 
@@ -101,6 +102,9 @@ protected:
 	QList<SensorRequest> processingFIFO;
 	QString answerBuffer;
 	QString errorBuffer;
+
+private:
+	int state;
 } ;
 	
 #endif

@@ -182,14 +182,14 @@ executeCommand(const char* command)
 			if (ReconfigureFlag)
 			{
 				ReconfigureFlag = 0;
-				fprintf(stderr, "RECONFIGURE\n");
+				fprintf(currentClient, "\033\033\033RECONFIGURE\n");
 			}
 
 			return;
 		}
 	}
 
-	fprintf(currentClient, "UNKNOWN COMMAND \'%s\'\n", command);
+	fprintf(currentClient, "UNKNOWN COMMAND\n");
 	fflush(currentClient);
 }
 

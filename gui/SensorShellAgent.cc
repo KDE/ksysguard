@@ -107,60 +107,8 @@ SensorShellAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 		return;
 
 	QString aux = QString::fromLocal8Bit(buffer, buflen);
-	answerBuffer += aux;
 
-	int end;
-	while ((end = answerBuffer.find("\nksysguardd> ")) > 0)
-	{
-		if (!daemonOnLine)
-		{
-			/* First '\nksysguardd> ' signals that daemon is ready to serve
-			 * requests now. */
-			daemonOnLine = true;
-			answerBuffer = QString();
-			if (!inputFIFO.isEmpty())
-			{
-				// If FIFO is not empty send out first request.
-				executeCommand();
-			}
-			return;
-		}
-
-		if (!processingFIFO.isEmpty())
-		{
-			// remove pending request from FIFO
-			SensorRequest* req = processingFIFO.last();
-			if (!req)
-			{
-				kdDebug()
-					<< "ERROR: Received answer but have no pending request!"
-					<< endl;
-				return;
-			}
-			processingFIFO.removeLast();
-			
-			if (!req->client)
-			{
-				kdDebug ()
-					<< "ERROR: No client registered for request!" << endl;
-				return;
-			}
-			if (answerBuffer.left(end) == "UNKNOWN COMMAND")
-			{
-				// Notify client of newly arrived answer.
-				req->client->sensorLost(req->id);
-			}
-			else
-			{
-				// Notify client of newly arrived answer.
-				req->client->answerReceived(req->id, answerBuffer.left(end));
-			}
-			delete req;
-		}
-
-		// chop of processed part answer buffer
-		answerBuffer.remove(0, end + strlen("\nksysguardd> "));
-	}
+	processAnswer(aux);
 }
 
 void
@@ -169,26 +117,10 @@ SensorShellAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 	if (!buffer || buflen == 0)
 		return;
 
-	errorBuffer += QString::fromLocal8Bit(buffer, buflen);
+	QString buf = QString::fromLocal8Bit(buffer, buflen);
 
-	int start = 0;
-	int end;
-	while ((end = errorBuffer.find("\n", start)) > 0)
-	{
-		if (errorBuffer.mid(start, end - start) == "RECONFIGURE")
-		{
-			emit reconfigure(this);
-			errorBuffer.remove(start, end - start + 1);
-		}
-		start = end + 1;
-	}
-
-	if (!errorBuffer.isEmpty())
-	{
-		SensorMgr->notify(QString(i18n("Message from %1:\n%2")
-								  .arg(host).arg(errorBuffer)));
-		errorBuffer = "";
-	}
+	kdDebug() << "SensorShellAgent: Warning, received text over stderr!"
+			  << endl << buf << endl;
 }
 
 void

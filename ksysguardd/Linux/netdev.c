@@ -273,7 +273,8 @@ Inter-|   Receive                                                |  Transmit
 
 	if (OldHash != 0 && OldHash != hash)
 	{
-		perror("RECONFIGURE\n");
+		/* TODO: Check whether fwrite() is reentrant! */
+		fwrite("RECONFIGURE\n", strlen("RECONFIGURE\n"), 1, currentClient);
 		CheckSetupFlag = 1;
 	}
 	OldHash = hash;
