@@ -278,6 +278,8 @@ private:
 	QValueList<int> selectedPIds;
 	QValueList<int> closedSubTrees;
 
+	static QDict<QString> aliases;
+
     KIconLoader* icons;
 	QPopupMenu* processPM;
 	QPopupMenu* headerPM;

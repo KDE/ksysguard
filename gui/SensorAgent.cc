@@ -88,11 +88,16 @@ SensorAgent::processAnswer(const QString& buf)
 			state = (state + 1) & 1;
 			if (!errorBuffer.isEmpty() && state == 0)
 			{
-				/* We just received the end of an error message, so we
-				 * can display it. */
-				SensorMgr->notify(QString(i18n("Message from %1:\n%2")
-										  .arg(host)
-										  .arg(errorBuffer)));
+				if (errorBuffer == "RECONFIGURE\n")
+					emit reconfigure(this);
+				else
+				{
+					/* We just received the end of an error message, so we
+					 * can display it. */
+					SensorMgr->notify(QString(i18n("Message from %1:\n%2")
+											  .arg(host)
+											  .arg(errorBuffer)));
+				}
 				errorBuffer = QString::null;
 			}
 		}

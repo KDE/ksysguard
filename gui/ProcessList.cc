@@ -64,6 +64,8 @@ static const char* intKey(const char* text);
 static const char* timeKey(const char* text);
 static const char* floatKey(const char* text);
 
+QDict<QString> ProcessList::aliases;
+
 /*
  * The *key functions are used to sort the list. Since QListView can only sort
  * strings we have to massage the original contense so that the string sort
@@ -130,6 +132,49 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 					  new QString(i18n("process status", "stopped")));
 	columnDict.insert("paging", new QString(i18n("process status", "paging")));
 	columnDict.insert("idle", new QString(i18n("process status", "idle")));
+
+	if (aliases.isEmpty())
+	{
+		aliases.insert("init", new QString("penguin"));
+		aliases.insert("kswapd", new QString("kcmmemory"));
+		aliases.insert("keventd", new QString("kcmmemory"));
+		aliases.insert("kreclaimd", new QString("kcmmemory"));
+		aliases.insert("kbdflush", new QString("kcmmemory"));
+		aliases.insert("kupdated", new QString("kcmmemory"));
+		aliases.insert("klogd", new QString("kcmmemory"));
+		aliases.insert("khubd", new QString("kcmmemory"));
+		aliases.insert("scsi_eh_0", new QString("kcmmemory"));
+		aliases.insert("scsi_eh_1", new QString("kcmmemory"));
+		aliases.insert("scsi_eh_2", new QString("kcmmemory"));
+		aliases.insert("scsi_eh_3", new QString("kcmmemory"));
+		aliases.insert("scsi_eh_4", new QString("kcmmemory"));
+		aliases.insert("scsi_eh_5", new QString("kcmmemory"));
+		aliases.insert("scsi_eh_6", new QString("kcmmemory"));
+		aliases.insert("scsi_eh_7", new QString("kcmmemory"));
+		aliases.insert("ksoftirqd_CPU0", new QString("kcmmemory"));
+		aliases.insert("ksoftirqd_CPU1", new QString("kcmmemory"));
+		aliases.insert("ksoftirqd_CPU2", new QString("kcmmemory"));
+		aliases.insert("ksoftirqd_CPU3", new QString("kcmmemory"));
+		aliases.insert("ksoftirqd_CPU4", new QString("kcmmemory"));
+		aliases.insert("ksoftirqd_CPU5", new QString("kcmmemory"));
+		aliases.insert("ksoftirqd_CPU6", new QString("kcmmemory"));
+		aliases.insert("ksoftirqd_CPU7", new QString("kcmmemory"));
+		aliases.insert("usbmgr", new QString("kcmmemory"));
+		aliases.insert("automount", new QString("gv"));
+		aliases.insert("cupsd", new QString("gv"));
+		aliases.insert("atd", new QString("gv"));
+		aliases.insert("syslogd", new QString("gv"));
+		aliases.insert("rpc.statd", new QString("gv"));
+		aliases.insert("sshd", new QString("gv"));
+		aliases.insert("portmap", new QString("gv"));
+		aliases.insert("in.identd", new QString("gv"));
+		aliases.insert("sendmail", new QString("gv"));
+		aliases.insert("ypbind", new QString("gv"));
+		aliases.insert("xntpd", new QString("gv"));
+		aliases.insert("nscd", new QString("gv"));
+		aliases.insert("cron", new QString("gv"));
+		aliases.insert("rpciod", new QString("gv"));
+	}
 
 	/* The filter mode is controlled by a combo box of the parent. If
 	 * the mode is changed we get a signal. */
@@ -511,9 +556,12 @@ ProcessList::extendTree(QList<SensorPSLine>* pl, ProcessLVI* parent, int ppid)
 void
 ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 {
+	QString name = p->getName();
+	if (aliases[name])
+		name = *aliases[name];
 	/* Get icon from icon list that might be appropriate for a process
 	 * with this name. */
-	QPixmap pix = icons->loadIcon(p->getName(), KIcon::Small,
+	QPixmap pix = icons->loadIcon(name, KIcon::Small,
 								  KIcon::SizeSmall, KIcon::DefaultState,
 								  0L, true);
 	if (pix.isNull() || !pix.mask())
