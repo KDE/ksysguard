@@ -1,0 +1,225 @@
+<!doctype linuxdoc system>
+
+<!-- The KTop Handbuch.
+
+ -->
+
+<article>
+
+<!-- Title information -->
+
+<title>The KTop Handbuch
+<author>Chris Schl&auml;ger, <tt/cs@axys.de/
+<date>Version $Id$
+<abstract>Dieses Handbuch beschreibt KTop Version 0.9.9
+
+<!-- Inhaltsverzeichnis -->
+<toc>
+
+<!-- Anfang des Dokuments -->
+
+
+<sect>Einführung
+
+<sect1>Über KTop<p>
+
+KTop ist der KDE Taskmanager. Er zeigt Prozesse die auf dem Rechner
+laufen in Listen- und Baumform. Prozesse können beendet werden, und
+verschiedene Signale an sie gesendet werden. Ausserdem enthält er eine
+Prozessorauslastungsanzeige und eine Speicherverbrauchsanzeige.
+
+<sect1> Autoren<p>
+
+KTop wird derzeit von Chris Schläger <htmlurl url="mailto:cs@axys.de"
+name="cs@axys.de"> entwickelt. In der Vergangenheit haben einer Reihe
+von anderen Leuten an KTop gearbeitet:
+
+<itemize>
+<item> A. Sanda &lt;alex@darkstar.ping.at&gt;
+<item> Ralf Mueller &lt;ralf@bj-ig.de&gt;
+<item> Bernd Johannes Wuebben  &lt;wuebben@math.cornell.edu&gt;
+<item> Nicolas Leclercq  &lt;nicknet@planete.net&gt;
+</itemize>
+
+<sect1>Lizenz und Gewährleistung <p>
+<tscreen><verb>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+</verb></tscreen>
+
+<sect>Installation
+<p>
+<sect1>Wie kann KTop bekommen
+<p>
+KTop ist ein Teil des KDE Project <url url="http://www.kde.org">. Es
+kann auf dem Haupt-FTP-Server des KDE Projects gefunden werden.
+
+<sect1>Vorraussetzungen
+<p>
+Um KTop erfolgreich übersetzen zu können wird KDE 1.x und Qt 1.4x
+benötigt. Alle benötigten Bibliotheken sowie auch KTop selbst können
+auf <url url="ftp://ftp.kde.org/pub/kde/"> gefunden werden.
+
+Zur Zeit werden folgende UNIX-Varianten unterstützt:
+
+<itemize>
+<item> Linux 2.x <p> 
+Damit KTop funktioniert, ist es notwendig den
+Linux-Kernel mit Unterstützung des /proc-Filesystems zu
+kompilieren. Dies ist meist die Default-Einstellung und bei den
+Linux-Distributionen bereits vorhanden.
+
+</itemize>
+
+Die Unterstützung für andere Platformen ist in Vorbereitung. Ihre
+Hilfe wird sehr begrüßt.
+
+<sect1>Übersetzung und Installation
+<p>
+
+Um KTop zu übersetzen und zu installieren müssen folgende Eingaben im
+KTop-Hauptverzeichnis gemacht werden:
+
+<tscreen><verb>
+% ./configure
+% make
+% make install
+</verb></tscreen>
+
+Sollten Sie Probleme haben wenden Sie sich bitte an die
+<sf/KDE/-Mailinglisten.
+
+<sect1> Installation des Prozeßmanagers und der Auslastungsanzeige als
+Icon in der KDE-Startleiste <p>
+
+Sie können den Prozeßmanager in der Startleiste installieren. Hierzu
+benutzen sie einfach das Menü Startleiste/Hinzufügen. Wenn sie das
+Programm xload installiert haben erscheint anstatt des KTop-Icons eine
+Prozessorauslastungsanzeige. Ein Mausklick auf das Icon oder die
+Auslastungsanzeige started den Prozeßmanager.
+
+<sect>Der Umgang mit dem KDE Prozeßmanger <p>
+
+Nachdem sie den Prozeßmanager gestarted haben sehen Sie eine Dialogbox
+mit drei Seiten. Sie können die angezeigte Seite durch anklicken eines
+anderen Seitenkopfes wechseln. Die Seite, die nach dem Start angezeigt
+werden soll kann über den Einstellungsdialog festgelegt werden. Der
+Einstellungsdialog ist über das Menü des Prozeßmanagers erreichbar.
+
+<sect1>Die Prozeßlistenseite<p>
+
+Die Prozeßlistenseite enthält eine Liste mit den Prozessen, die auf
+Ihrem Rechner laufen. Die Liste kann nach den einzelnen Spalten
+sortiert werden. Klicken Sie einfach auf den Kopf der jeweiligen
+Spalte um die Tabelle nach dieser Spalte zu sortieren. Unterhalb der
+Tabelle befinden sich vier Knöpfe, die nun von links nach rechts
+beschrieben werden.
+
+<sect2>Die Erneuerungsrate<p>
+
+Die Erneuerungsrate bestimmt wie häufig die Prozeßliste aktualisiert
+wird. Dies ist besonders für die Ermittlung der Prozessorauslastung
+wichtig, da die Auslastung über die gesamte Zeit zwischen zwei
+Aktualisierungen gemittelt wird. Eine niedrige, eine mittlere und eine
+hohe Erneuerungsrate steht zur Verfügung. Für die meisten Anwendungen
+ist die mittlere Rate ein guter Kompromiß.
+
+<sect2>Der Prozeßfilter<p>
+
+Der Prozeßfilter kann benutzt werden um die Anzahl der angezeigten
+Prozesse zu reduzieren. Sie können somit Prozesse ausblenden, an denen
+Sie nicht interessiert sind. Derzeit stehen die Einstellungen "Alle
+Prozesse", "Systemprozesse", "Benutzerprozesse" und "Eigene Prozesse"
+zur Verfügung.
+
+<sect2>Der Erneuerungsknopf<p>
+
+Ein Mausklick auf diesen Knopf aktualisiert die Prozeßliste sofort.
+
+<sect2>Der Abschußknopf<p>
+
+Wenn sie die Beendung eines Prozesses erzwingen wollen, können sie
+durch Anklicken dieses Knopfes ein Kill-Signal an den ausgewählten
+Prozeß schicken. Dies erzwingt die Beendigung des Prozesses, auch wenn
+er sonst nicht mehr reagiert.
+
+<sect1>Die Prozeßbaumseite<p>
+
+Die Prozeßbaumseite wurde entworfen, um die Beziehungen zwischen den
+einzelnen Prozessen graphisch darzustellen. Ein Prozeß, der von einem
+anderen Prozeß gestartet wurde, wird als Kind des ersten Prozesses
+bezeichnet. Der <sl/init/ Prozeß ist der Urvater aller Prozesse.
+
+Wenn Sie nicht an den Nachkommen eines bestimmten Prozesses
+interessiert sind können Sie das Quadraht links nebem dem Prozeß
+anklicken und der Teilbaum wird verschwinden. Ein weiterer Mausklick
+läßt den Baum wieder erscheinen.
+
+Diese Seite enthält vier Knöpfe, mit denen das Erscheinungsbild des
+Prozeßbaumes verändert werden kann. Die Knöpfe werden im Folgenden von
+links nach rechts beschrieben.
+
+<sect2>Der Sortierknopf<p>
+
+Dieser Knopf bestimmt die Reihenfolge in der die Kinder eines
+Prozesses sortiert werden.
+
+<sect2>Der Erneuerungsknopf<p>
+
+Ein Klick auf den Erneuerungsknopf erzeugt einen neuen Prozeßbaum mit
+den aktuellen Prozessen.
+
+<sect2>Der Wurzelknopf<p>
+
+Wenn Sie nur an den Nachkommen eines bestimmten Prozesses interessiert
+sind selektieren Sie diesen Prozeß und klicken dann auf den
+Wurzelknopf. Nun wird nur der Teilbaum mit dem Selektierten Prozess
+als Wurzel dargestellt. Wird der Knopf gedrückt, wenn kein Prozeß
+selektiert ist, erscheint wieder der komplette Baum.
+
+<sect2>Der Abschußknopf<p>
+
+Wenn sie die Beendung eines Prozesses erzwingen wollen, können sie
+durch Anklicken dieses Knopfes ein Kill-Signal an den ausgewählten
+Prozeß schicken. Dies erzwingt die Beendigung des Prozesses, auch wenn
+er sonst nicht mehr reagiert.
+
+<sect1> Die Auslastungsseite<p>
+
+Die Auslastungsseite enthält zwei Anzeigen die die Prozessorauslastung
+und den Speicherverbrauch anzeigen. Die rote Linie im
+Speicherverbrauchsschreiber zeigt die Grenze zwischen physikalischen
+Speicher (RAM) und Auslagerungsspeicher. Da die meisten UNIX-Varianten
+versuchen die Zugriffe auf die Festplatte durch Puffern im RAM zu
+minimieren ist es normal das der physikalische Speicher meist fast
+vollständig in Gebrauch ist. Dies ist in der Regel kein Anzeichen
+dafür, daß ein Program übermäßig Speicher verbraucht. Aufgrund des
+irreführenden Charakters dieser Anzeige wird sie in einer der nächsten
+Versionen überarbeitet.
+
+<sect1> Pop-Up Menüs<p>
+
+Bei einem Klick mit der rechten Maustaste auf einen Prozeß in der
+Prozeßliste oder im Prozeßbaum erscheint ein Pop-Up Menü das es
+erlaubt, die Priorität des Prozesses zu verändern oder ein Signal an
+diesen Prozeß zu schicken.
+
+<sect>Fragen und Antworten<p>
+
+Derzeit noch nichts.
+
+<p>
+</article>
