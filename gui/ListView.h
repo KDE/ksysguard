@@ -100,7 +100,6 @@ public slots:
 	void applySettings();
 
 private:
-	QFrame* frame;
 	QLabel* errorLabel;
 	MyListView* mainList;
 	ListViewSettings* lvs;

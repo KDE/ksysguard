@@ -45,6 +45,7 @@ public:
 	void setForegroundColor(const QColor& color) { fgColorPicker->setColor(color); }
 	void setBackgroundColor(const QColor& color) { bgColorPicker->setColor(color); }
 	void setFont(const QFont& font) { textFont = font; fontButton->setFont(font); }
+	void setTitle(const QString& title) { titleText->setText(title); }
 
 	QStringList getFilterRules(void) {
 		QStringList rules;
@@ -59,6 +60,7 @@ public:
 	QColor getForegroundColor(void) { return fgColorPicker->getColor(); }
 	QColor getBackgroundColor(void) { return bgColorPicker->getColor(); }
 	QFont getFont(void) { return textFont; }
+	QString getTitle(void) { return titleText->text(); }
 
 public slots:
 	void slotFontSelection(void);
@@ -76,6 +78,7 @@ private:
 
 	QFont textFont;
 	QLineEdit *filterText;
+	QLineEdit *titleText;
 	QListBox *ruleList;
 	QPushButton *fontButton;
 	QTabWidget *tabWidget;

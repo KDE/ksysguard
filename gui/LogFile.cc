@@ -25,7 +25,7 @@
 
 #include "LogFile.moc"
 
-LogFile::LogFile(QWidget *parent, const char *name)
+LogFile::LogFile(QWidget *parent, const char *name, const QString&)
 	: SensorDisplay(parent, name)
 {
 	monitor = new QListBox(this);
@@ -42,6 +42,8 @@ LogFile::LogFile(QWidget *parent, const char *name)
 	errorLabel->resize(errorIcon.size());
 	errorLabel->move(2, 2);
 
+	frame->setTitle(title);
+
 	/* All RMB clicks to the lcd widget will be handled by 
 	 * SensorDisplay::eventFilter. */
 	frame->installEventFilter(this);
@@ -56,9 +58,9 @@ LogFile::~LogFile(void)
 }
 
 bool
-LogFile::addSensor(const QString& hostName, const QString& sensorName, const QString& title)
+LogFile::addSensor(const QString& hostName, const QString& sensorName, const QString& t)
 {
-	registerSensor(new SensorProperties(hostName, sensorName, title));
+	registerSensor(new SensorProperties(hostName, sensorName, t));
 
 	if (fileName.isEmpty()) {
 		fileName = KFileDialog::getOpenFileName();
@@ -66,7 +68,10 @@ LogFile::addSensor(const QString& hostName, const QString& sensorName, const QSt
 
 	sendRequest(sensors.at(0)->hostName, QString("registerlogfile %1" ).arg(fileName), 42);
 
-	frame->setTitle(QString("%1:%2").arg(sensors.at(0)->hostName).arg(fileName));
+	if (t.isEmpty())
+		title = sensors.at(0)->hostName + ":" + fileName;
+
+	frame->setTitle(title);
 
 	setModified(TRUE);
 	return (TRUE);
@@ -84,6 +89,7 @@ void LogFile::settings(void)
 	lfs->setBackgroundColor(cgroup.base());
 	lfs->setFont(monitor->font());
 	lfs->setFilterRules(filterRules);
+	lfs->setTitle(title);
 	
 	if (lfs->exec()) {
 		applySettings();
@@ -102,6 +108,9 @@ void LogFile::applySettings(void)
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 	monitor->setFont(lfs->getFont());
 	filterRules = lfs->getFilterRules();
+	title = lfs->getTitle();
+
+	frame->setTitle(title);
 
 	setModified(TRUE);
 }
@@ -112,6 +121,7 @@ LogFile::createFromDOM(QDomElement& element)
 	QFont font;
 	QColorGroup cgroup = monitor->colorGroup();
 
+	title = element.attribute("title");
 	fileName = element.attribute("filename");
 
 	cgroup.setColor(QColorGroup::Text, restoreColorFromDOM(element, "textColor", Qt::green));
@@ -127,7 +137,7 @@ LogFile::createFromDOM(QDomElement& element)
 		filterRules.append(element.attribute("rule"));
 	}
 
-	addSensor(element.attribute("hostName"), element.attribute("sensorName"), fileName);
+	addSensor(element.attribute("hostName"), element.attribute("sensorName"), title);
 
 	setModified(FALSE);
 
@@ -140,6 +150,7 @@ LogFile::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 	element.setAttribute("hostName", sensors.at(0)->hostName);
 	element.setAttribute("sensorName", sensors.at(0)->name);
 
+	element.setAttribute("title", title);
 	element.setAttribute("filename", fileName);
 	element.setAttribute("font", monitor->font().rawName());
 
@@ -208,7 +219,7 @@ void
 LogFile::resizeEvent(QResizeEvent*)
 {
 	frame->setGeometry(0, 0, this->width(), this->height());
-	monitor->setGeometry(10, 20, this->width() - 20, this->height() - 40);
+	monitor->setGeometry(10, 20, this->width() - 20, this->height() - 30);
 }
 
 void

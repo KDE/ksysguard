@@ -24,6 +24,7 @@
 #include <qdom.h>
 #include <qgroupbox.h>
 #include <qlabel.h>
+#include <qlineedit.h>
 #include <qlistview.h>
 #include <qpainter.h>
 #include <qtextstream.h>
@@ -80,12 +81,9 @@ MyListView::MyListView(QWidget *parent)
 	this->setPalette(pal);
 }
 
-ListView::ListView(QWidget* parent, const char* name, const QString& title,
+ListView::ListView(QWidget* parent, const char* name, const QString& t,
 				   int, int) : SensorDisplay(parent, name)
 {
-	frame = new QGroupBox(1, Qt::Vertical, title, this, "frame"); 
-	CHECK_PTR(frame);
-
 	mainList = new MyListView(frame);
 	CHECK_PTR(mainList);
 	mainList->setBackgroundColor(Qt::black);
@@ -103,6 +101,9 @@ ListView::ListView(QWidget* parent, const char* name, const QString& title,
 	errorLabel->resize(errorIcon.size());
 	errorLabel->move(2, 2);
 
+	title = t;
+	frame->setTitle(title);
+
 	/* All RMB clicks on the frame will be handled by
 	 * SensorDisplay::eventFilter. */
 	frame->installEventFilter(this);
@@ -114,6 +115,8 @@ bool
 ListView::addSensor(const QString& hostName, const QString& sensorName, const QString& title)
 {
 	registerSensor(new SensorProperties(hostName, sensorName, title));
+
+	frame->setTitle(title);
 
 	/* To differentiate between answers from value requests and info
 	 * requests we use 100 for info requests. */
@@ -186,13 +189,15 @@ ListView::answerReceived(int id, const QString& answer)
 void
 ListView::resizeEvent(QResizeEvent*)
 {
-	frame->setGeometry(0, 0, this->width(), this->height());
+	frame->setGeometry(0, 0, width(), height());
+	mainList->setGeometry(10, 20, width() - 20, height() - 30);
 }
 
 bool
 ListView::createFromDOM(QDomElement& element)
 {
 	title = element.attribute("title");
+
 	mainList->setGridColor(restoreColorFromDOM(element, "gridColor",
 											   Qt::green));
 	mainList->setTextColor(restoreColorFromDOM(element, "textColor",
@@ -200,7 +205,7 @@ ListView::createFromDOM(QDomElement& element)
 	mainList->setBackgroundColor(
 		restoreColorFromDOM(element, "backgroundColor", Qt::black));
 	addSensor(element.attribute("hostName"),
-			  element.attribute("sensorName"), "");
+			  element.attribute("sensorName"), title);
 
 	QColorGroup colorGroup = mainList->colorGroup();
 	colorGroup.setBrush(QColorGroup::Base,
@@ -241,6 +246,7 @@ ListView::settings()
 	lvs->gridColor->setColor(mainList->getGridColor());
 	lvs->textColor->setColor(mainList->getTextColor());
 	lvs->backgroundColor->setColor(mainList->getBackgroundColor());
+	lvs->title->setText(title);
 
 	if (lvs->exec())
 		applySettings();
@@ -255,6 +261,9 @@ ListView::applySettings()
 	mainList->setGridColor(lvs->gridColor->getColor());
 	mainList->setTextColor(lvs->textColor->getColor());
 	mainList->setBackgroundColor(lvs->backgroundColor->getColor());
+	title = lvs->title->text();
+	frame->setTitle(title);
+
 	setModified(TRUE);
 }
 

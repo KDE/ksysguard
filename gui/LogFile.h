@@ -36,7 +36,7 @@ class LogFile : public SensorDisplay
 {
 	Q_OBJECT
 public:
-	LogFile(QWidget *parent = 0, const char *name = 0);
+	LogFile(QWidget *parent = 0, const char *name = 0, const QString& title = 0);
 	~LogFile(void);
 
 	bool addSensor(const QString& hostName, const QString& sensorName,
@@ -73,6 +73,7 @@ private:
 	QLabel* errorLabel;
 	QListBox* monitor;
 	QString fileName;
+	QString title;
 	QStringList filterRules;
 
 	unsigned long logFileID;

@@ -20,10 +20,13 @@
 #include <kfontdialog.h>
 #include <klocale.h>
 
+#include <qgroupbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
 
 #include "LogFileSettings.moc"
+
+#include <stdio.h>
 
 LogFileSettings::LogFileSettings(QWidget *parent, const char *name)
 	: QDialog(parent, name, TRUE)
@@ -39,6 +42,7 @@ LogFileSettings::LogFileSettings(QWidget *parent, const char *name)
 	actionButtons->addStretch(1);
 	actionButtons->addButton(i18n("&Ok"), this, SLOT(accept()), FALSE);
 	actionButtons->addButton(i18n("&Apply"), parent, SLOT(applySettings()), FALSE);
+	actionButtons->addStretch(1);
 	actionButtons->addButton(i18n("&Cancel"), this, SLOT(reject()), FALSE);
 	actionButtons->addStretch(1);
 
@@ -49,32 +53,61 @@ LogFileSettings::LogFileSettings(QWidget *parent, const char *name)
 	QWidget *textWidget = new QWidget(tabWidget);
 	CHECK_PTR(textWidget);
 
-	QVBoxLayout *layout1 = new QVBoxLayout(textWidget, 3);
-	CHECK_PTR(layout1);
-	QHBoxLayout *layout2 = new QHBoxLayout(textWidget, 3);
-	CHECK_PTR(layout2);
+	QVBoxLayout *textLayout = new QVBoxLayout(textWidget, 3);
+	CHECK_PTR(textLayout);
 
-	fgColorPicker = new ColorPicker(textWidget);
+	QGroupBox *titleFrame = new QGroupBox(textWidget, "titleFrame");
+	CHECK_PTR(titleFrame);
+	titleFrame->setColumnLayout(0, Qt::Vertical );
+	titleFrame->layout()->setMargin(10);
+	titleFrame->setTitle(i18n("Title"));
+
+	QVBoxLayout *vbox1 = new QVBoxLayout(titleFrame->layout());
+	CHECK_PTR(vbox1);
+
+	titleText = new QLineEdit(titleFrame, "titleText");
+	CHECK_PTR(titleText);
+	vbox1->addWidget(titleText);
+
+	QGroupBox *colorFrame = new QGroupBox(textWidget, "colorFrame");
+	CHECK_PTR(colorFrame);
+	colorFrame->setColumnLayout(0, Qt::Vertical );
+	colorFrame->layout()->setMargin(10);
+	colorFrame->setTitle(i18n("Colors"));
+
+	QVBoxLayout *vbox2 = new QVBoxLayout(colorFrame->layout());
+	CHECK_PTR(vbox2);
+
+	fgColorPicker = new ColorPicker(colorFrame);
 	CHECK_PTR(fgColorPicker);
 	fgColorPicker->setText(i18n("Foreground Color"));
-	bgColorPicker = new ColorPicker(textWidget);
+	bgColorPicker = new ColorPicker(colorFrame);
 	CHECK_PTR(bgColorPicker);
 	bgColorPicker->setText(i18n("Background Color"));
 
-	fontButton = new QPushButton(i18n("Font"), textWidget);
+	vbox2->addWidget(fgColorPicker);
+	vbox2->addStretch(1);
+	vbox2->addWidget(bgColorPicker);
+
+	QGroupBox *fontFrame = new QGroupBox(textWidget, "fontFrame");
+	CHECK_PTR(fontFrame);
+	fontFrame->setColumnLayout(0, Qt::Vertical );
+	fontFrame->layout()->setMargin(10);
+	fontFrame->setTitle(i18n("Font"));
+
+	QHBoxLayout *hbox1 = new QHBoxLayout(fontFrame->layout());
+	CHECK_PTR(hbox1);
+
+	fontButton = new QPushButton(i18n("Font"), fontFrame);
 	CHECK_PTR(fontButton);
-	fontButton->setFixedSize(100, 30);
+	fontButton->setFixedSize(100, 25);
 
-	QLabel *fontLabel = new QLabel(i18n("Font"), textWidget);
-	CHECK_PTR(fontLabel);
+	hbox1->addStretch(1);
+	hbox1->addWidget(fontButton);
 
-	layout1->addWidget(fgColorPicker);
-	layout1->addWidget(bgColorPicker);
-	layout1->addLayout(layout2);
-
-	layout2->addWidget(fontLabel);
-	layout2->addStretch(1);
-	layout2->addWidget(fontButton);
+	textLayout->addWidget(titleFrame);
+	textLayout->addWidget(colorFrame);
+	textLayout->addWidget(fontFrame);
 
 	connect(fontButton, SIGNAL(clicked()), this, SLOT(slotFontSelection()));
 
@@ -84,14 +117,21 @@ LogFileSettings::LogFileSettings(QWidget *parent, const char *name)
 	QWidget *filterWidget = new QWidget(tabWidget);
 	CHECK_PTR(filterWidget);
 
-	QHBoxLayout *layout5 = new QHBoxLayout(filterWidget, 2);
+	QVBoxLayout *vbox3 = new QVBoxLayout(filterWidget, 1);
+	CHECK_PTR(vbox3);
+	vbox3->setMargin(10);
+
+	QGroupBox *filterFrame = new QGroupBox(filterWidget, "filterWidget");
+	CHECK_PTR(filterFrame);
+
+	QHBoxLayout *layout5 = new QHBoxLayout(filterFrame);
 	CHECK_PTR(layout5);
-	QVBoxLayout *layout6 = new QVBoxLayout(filterWidget, 2);
+	QVBoxLayout *layout6 = new QVBoxLayout(filterFrame);
 	CHECK_PTR(layout6);
 	
 	layout5->addLayout(layout6);
 	
-	ruleButtons = new KButtonBox(filterWidget, KButtonBox::Vertical);
+	ruleButtons = new KButtonBox(filterFrame, KButtonBox::Vertical);
 	CHECK_PTR(ruleButtons);
 	ruleButtons->addButton(i18n("Add"), this, SLOT(slotAddRule()), FALSE);
 	ruleButtons->addButton(i18n("Delete"), this, SLOT(slotDelRule()), FALSE);
@@ -99,13 +139,15 @@ LogFileSettings::LogFileSettings(QWidget *parent, const char *name)
 	ruleButtons->layout();
 	layout5->addWidget(ruleButtons);
 
-	filterText = new QLineEdit(filterWidget);
+	filterText = new QLineEdit(filterFrame);
 	CHECK_PTR(filterText);
 	layout6->addWidget(filterText);
 
-	ruleList = new QListBox(filterWidget);
+	ruleList = new QListBox(filterFrame);
 	CHECK_PTR(ruleList);
 	layout6->addWidget(ruleList);
+
+	vbox3->addWidget(filterFrame);
 
 	connect(ruleList, SIGNAL(selected(int)), this, SLOT(slotRuleListSelected(int)));
 

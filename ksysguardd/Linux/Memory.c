@@ -91,6 +91,9 @@ initMemory(void)
 					printSwapUsedInfo);
 	registerMonitor("mem/swap/free", "integer", printSwapFree,
 					printSwapFreeInfo);
+
+	/* run it here, to avoid that print*Info() returns '0' as total size */
+	updateMemory();
 }
 
 void

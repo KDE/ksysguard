@@ -15,7 +15,7 @@
             <x>0</x>
             <y>0</y>
             <width>283</width>
-            <height>198</height>
+            <height>313</height>
         </rect>
     </property>
     <property stdset="1">
@@ -39,7 +39,60 @@
             <class>QGroupBox</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>frame</cstring>
+                <cstring>titleFrame</cstring>
+            </property>
+            <property stdset="1">
+                <name>title</name>
+                <string>Title</string>
+            </property>
+            <vbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>11</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QLineEdit</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>title</cstring>
+                    </property>
+                </widget>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer5</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </vbox>
+        </widget>
+        <widget>
+            <class>QGroupBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>colorFrame</cstring>
+            </property>
+            <property stdset="1">
+                <name>title</name>
+                <string>Colors</string>
             </property>
             <property stdset="1">
                 <name>frameShape</name>
@@ -48,10 +101,6 @@
             <property stdset="1">
                 <name>frameShadow</name>
                 <enum>Sunken</enum>
-            </property>
-            <property stdset="1">
-                <name>title</name>
-                <string>Colors</string>
             </property>
             <property stdset="1">
                 <name>alignment</name>
@@ -225,7 +274,7 @@
                         <name>color</name>
                         <color>
                             <red>0</red>
-                            <green>255</green>
+                            <green>0</green>
                             <blue>0</blue>
                         </color>
                     </property>
@@ -246,6 +295,13 @@
                     <property stdset="1">
                         <name>sizeType</name>
                         <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
                     </property>
                     <property>
                         <name>sizeHint</name>
@@ -310,6 +366,13 @@
                     <property stdset="1">
                         <name>sizeType</name>
                         <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
                     </property>
                     <property>
                         <name>sizeHint</name>

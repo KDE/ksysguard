@@ -335,7 +335,14 @@ DancingBars::answerReceived(int id, const QString& answer)
 	{
 		SensorIntegerInfo info(answer);
 		if (id == 100)
-			plotter->changeRange(info.getMin(), info.getMax());
+			if (plotter->getMin() == 0.0 && plotter->getMax() == 0.0)
+			{
+				/* We only use this information from the sensor when the
+				 * display is still using the default values. If the
+				 * sensor has been restored we don't touch the already set
+				 * values. */
+				plotter->changeRange(info.getMin(), info.getMax());
+			}
 
 		sensors.at(id - 100)->unit = info.getUnit();
 		timerOn();
@@ -349,6 +356,7 @@ DancingBars::createFromDOM(QDomElement& domElem)
 
 	plotter->changeRange(domElem.attribute("min", "0").toDouble(),
 						 domElem.attribute("max", "0").toDouble());
+
 	plotter->setLimits(domElem.attribute("lowlimit", "0").toDouble(),
 					   domElem.attribute("lowlimitactive", "0").toInt(),
 					   domElem.attribute("uplimit", "0").toDouble(),

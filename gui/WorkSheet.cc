@@ -341,9 +341,9 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 			}
 		}
 		else if (sensorType == "listview")
-			newDisplay = new ListView(this);
+			newDisplay = new ListView(this, "ListView", sensorDescr);
 		else if (sensorType == "logfile")
-			newDisplay = new LogFile(this);
+			newDisplay = new LogFile(this, "LogFile", sensorDescr);
 		else if (sensorType == "table")
 			newDisplay = new ProcessController(this);
 		else

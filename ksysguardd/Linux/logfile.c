@@ -27,7 +27,7 @@
 #include "logfile.h"
 
 static CONTAINER LogFiles = 0;
-static unsigned long counter = 0;
+static unsigned long counter = 1;
 
 typedef struct {
 	char name[256];
@@ -91,14 +91,16 @@ void registerLogFile(const char* cmd)
 	sscanf(cmd, "%*s %256s", filename);
 	
 	if ((file = fopen(filename, "r")) == NULL) {
-		perror("fopen()");
+		print_error("fopen()");
+		fprintf(CurrentClient, "0\n");
 		return;
 	}
 
 	fseek(file, 0, SEEK_END);
 
 	if ((entry = (LogFileEntry *)malloc(sizeof(LogFileEntry))) == NULL) {
-		perror("malloc()");
+		print_error("malloc()");
+		fprintf(CurrentClient, "0\n");
 		return;
 	}
 
