@@ -7,6 +7,7 @@ case "$host" in
   *-*-solaris*) ksysguardd_compile=yes; UNAME='Solaris' ;;
   *-*-osf*) ksysguardd_compile=yes; UNAME='Tru64' ;;
   *-*-irix*) ksysguardd_compile=yes; UNAME='Irix' ;;
+  *-*-openbsd*) ksysguardd_compile=yes; UNAME='OpenBSD' ;;
   *) ksysguardd_compile=no; UNAME='' ;;
 esac
 
@@ -19,6 +20,7 @@ AM_CONDITIONAL(include_ksysguardd_netbsd, test "$UNAME" = NetBSD)
 AM_CONDITIONAL(include_ksysguardd_solaris, test "$UNAME" = Solaris)
 AM_CONDITIONAL(include_ksysguardd_tru64, test "$UNAME" = Tru64)
 AM_CONDITIONAL(include_ksysguardd_irix, test "$UNAME" = Irix)
+AM_CONDITIONAL(include_ksysguardd_openbsd, test "$UNAME" = OpenBSD)
 AC_SUBST(UNAME)
 
 AC_CHECK_LIB(sensors, sensors_init, [LIBSENSORS="-lsensors"])

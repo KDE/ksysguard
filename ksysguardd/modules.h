@@ -76,6 +76,11 @@
 #include "NetDev.h"
 #endif /* OSTYPE_Tru64 */
 
+#ifdef OSTYPE_OpenBSD
+#include "cpu.h"
+#include "memory.h"
+#endif /* OSTYPE_OpenBSD */
+
 typedef void (*VSFunc)(struct SensorModul*);
 #define NULLVSFUNC ((VSFunc) 0)
 typedef void (*VVFunc)(void);
@@ -90,7 +95,7 @@ struct SensorModul SensorModulList[] = {
 		NULLVVFUNC, 0, NULLTIME },
 	{ "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC, 0, NULLTIME },
 	{ "Stat", initStat, exitStat, updateStat, NULLVVFUNC, 0, NULLTIME },
-	{ "NetDev", initNetDev, exitNetDev, updateNetDev, NULLVVFUNC, 0, NULLTIME },
+	{ "NetDev", initNetDev, exitNetDev, updateNetDev, checkNetDev, 0, NULLTIME },
 	{ "NetStat", initNetStat, exitNetStat, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
 	{ "Apm", initApm, exitApm, updateApm, NULLVVFUNC, 0, NULLTIME },
 	{ "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULLVVFUNC, 0, NULLTIME },
@@ -134,6 +139,11 @@ struct SensorModul SensorModulList[] = {
 	{ "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC, 0, NULLTIME },
 	{ "NetDev", initNetDev, exitNetDev, updateNetDev, NULLVVFUNC, 0, NULLTIME },
 #endif /* OSTYPE_Tru64 */
+
+#ifdef OSTYPE_OpenBSD
+	{ "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULLVVFUNC, 0, NULLTIME },
+	{ "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC, 0, NULLTIME },
+#endif /* OSTYPE_OpenBSD */
 
 	{ NULL, NULLVSFUNC, NULLVVFUNC, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME }
 };
