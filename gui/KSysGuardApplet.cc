@@ -220,7 +220,7 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 				QPopupMenu popup;
 				QWidget *wdg;
 
-				popup.insertItem(i18n("Select a Display Type"), 0);
+				popup.insertItem(i18n("Select Display Type"), 0);
 				popup.setItemEnabled(0, false);
 				popup.insertSeparator();
 				popup.insertItem(i18n("&Signal Plotter"), 1);

@@ -32,7 +32,7 @@
 
 DummyDisplay::DummyDisplay(QWidget* parent, const char* name,
 					   const QString&, double, double)
-	: KSGRD::SensorDisplay(parent, name, i18n("Drop sensor here"))
+	: KSGRD::SensorDisplay(parent, name, i18n("Drop Sensor Here"))
 {
 	setMinimumSize(16, 16);
 

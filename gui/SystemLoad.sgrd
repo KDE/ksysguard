@@ -10,7 +10,7 @@
  <display topBar="0" vColor="326429" title="Load Average (1 min)" bColor="3223601" graphStyle="0" class="FancyPlotter" row="0" unit="" hScale="1" column="1" showUnit="0" hLines="1" hCount="5" vLines="1" autoRange="1" min="0" max="0" hColor="326429" globalUpdate="1" pause="0" fontSize="9" labels="1" vScroll="1" vDistance="30" >
   <beam sensorName="cpu/loadavg1" hostName="localhost" color="1608191" sensorType="float" />
  </display>
- <display topBar="0" vColor="326429" title="Physical  Memory"
+ <display topBar="0" vColor="326429" title="Physical Memory"
 bColor="3223601" graphStyle="0" class="FancyPlotter" row="1" unit=""
 hScale="1" column="0" showUnit="0" hLines="1" hCount="5" vLines="1"
 autoRange="0" min="0" max="0" hColor="326429" globalUpdate="1" pause="0" fontSize="9" labels="1" vScroll="1" vDistance="30" >
