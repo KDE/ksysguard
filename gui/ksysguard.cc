@@ -104,7 +104,7 @@ TopLevel::TopLevel(const char *name)
     // setup File menu
     KStdAction::openNew(ws, SLOT(newWorkSheet()), actionCollection());
     KStdAction::open(ws, SLOT(loadWorkSheet()), actionCollection());
-	openRecent = KStdAction::openRecent(ws, SLOT(openRecent(const KURL&)),
+	openRecent = KStdAction::openRecent(ws, SLOT(loadWorkSheet(const KURL&)),
 										actionCollection());
 	KStdAction::close(ws, SLOT(deleteWorkSheet()), actionCollection());
 
@@ -332,11 +332,15 @@ TopLevel::readProperties(KConfig* cfg)
 	 * The requested info will be received by answerReceived(). */
 	SensorMgr->sendRequest("localhost", "mem/swap/used?",
 						   (SensorClient*) this, 5);
+
+	openRecent->loadEntries(cfg);
 }
 
 void
 TopLevel::saveProperties(KConfig* cfg)
 {
+	openRecent->saveEntries(cfg);
+
 	// Save window geometry. TODO: x/y is not exaclty correct. Needs fixing.
 	cfg->writeEntry("PosX", x());
 	cfg->writeEntry("PosY", y());

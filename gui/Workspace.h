@@ -54,7 +54,7 @@ public:
 public slots:
 	void newWorkSheet();
 	void loadWorkSheet();
-	void openRecent(const KURL&);
+	void loadWorkSheet(const KURL&);
 	void saveWorkSheet()
 	{
 		saveWorkSheet((WorkSheet*) currentPage());

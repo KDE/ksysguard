@@ -27,6 +27,8 @@
 #include <kfiledialog.h>
 #include <kconfig.h>
 #include <kstddirs.h>
+#include <kurl.h>
+#include <kio/netaccess.h>
 
 #include "Workspace.h"
 #include "WorkSheet.h"
@@ -133,13 +135,6 @@ Workspace::newWorkSheet()
 	delete s;
 }
 
-void
-Workspace::openRecent(const KURL&)
-{
-	/* TODO: I still need to make file handling in this class network
-	 * transparent. Then this function is trivial to implement. */
-}
-
 bool
 Workspace::saveOnQuit()
 {
@@ -170,17 +165,34 @@ void
 Workspace::loadWorkSheet()
 {
 	KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", TRUE);
-	QString fileName = fd.getOpenFileName(workDir, "*.sgrd");
-	if (fileName.isEmpty())
+	KURL url = fd.getOpenURL(workDir, "*.sgrd", 0,
+								i18n("Select a work sheet to load"));
+	loadWorkSheet(url);
+}
+
+void
+Workspace::loadWorkSheet(const KURL& url)
+{
+	if (url.isEmpty())
 		return;
 
-	workDir = fileName.left(fileName.findRev('/'));
-
+	/* It's probably not worth the effort to make this really network
+	 * transparent. Unless s/o beats me up I use this pseudo transparent
+	 * code. */
+	QString tmpFile;
+    KIO::NetAccess::download(url, tmpFile);
+	workDir = tmpFile.left(tmpFile.findRev('/'));
 	// Load sheet from file.
-	restoreWorkSheet(fileName);
-	KURL url;
-	url.setPath(fileName);
-	emit announceRecentURL(url);
+	restoreWorkSheet(tmpFile);
+	/* If we have loaded a non-local file we clear the file name so that
+	 * the users is prompted for a new name for saving the file. */
+	KURL tmpFileUrl;
+	tmpFileUrl.setPath(tmpFile);
+	if (tmpFileUrl != url.url())
+		sheets.last()->setFileName(QString::null);
+    KIO::NetAccess::removeTempFile(tmpFile);
+
+	emit announceRecentURL(KURL(url));
 }
 
 void
@@ -198,7 +210,8 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 	{
 		KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", TRUE);
 		fileName = fd.getSaveFileName(workDir + "/" +
-			tabLabel(currentPage()) + ".sgrd", "*.sgrd");
+			tabLabel(currentPage()) + ".sgrd", "*.sgrd", 0,
+			i18n("Save current work sheet as"));
 		if (fileName.isEmpty())
 			return;
 		workDir = fileName.left(fileName.findRev('/'));
@@ -212,7 +225,15 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 	/* If we cannot save the file is probably write protected. So we need
 	 * to ask the user for a new name. */
 	if (!sheet->save(fileName))
+	{
 		saveWorkSheetAs();
+		return;
+	}
+
+	/* Add file to recent documents menue. */
+	KURL url;
+	url.setPath(fileName);
+	emit announceRecentURL(url);
 }
 
 void
@@ -242,6 +263,11 @@ Workspace::saveWorkSheetAs()
 		baseName = baseName.left(baseName.findRev('.'));
 		changeTab(currentPage(), baseName);
 	} while (!sheet->save(fileName));
+
+	/* Add file to recent documents menue. */
+	KURL url;
+	url.setPath(fileName);
+	emit announceRecentURL(url);
 }
 
 void
