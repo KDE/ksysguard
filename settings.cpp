@@ -22,76 +22,53 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
 */
 
-#include <qpainter.h>
-#include <qpushbt.h>
-#include <qtabdlg.h>
-#include <qtimer.h>
-#include <qlabel.h>
-#include <qobject.h>
-#include <qlistbox.h>
-#include <qgrpbox.h>
-#include <qradiobt.h>
-#include <qchkbox.h>
-#include <qbttngrp.h>
-#include <qpalette.h>
-#include <qlined.h>
-#include <qmsgbox.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <dirent.h>
-#include <ctype.h>
-#include <pwd.h>
-#include <time.h>
-
-#include <kconfig.h>
-#include <klocale.h>
 #include <kapp.h>
 
 #include "TaskMan.h"
 #include "settings.moc"
 
-AppSettings::AppSettings(QWidget *parent, const char *name)
-            :QDialog(parent, name, TRUE)
+AppSettings::AppSettings(QWidget* parent, const char* name)
+	: QDialog(parent, name, TRUE)
 {
-    setMinimumSize(210,170);
-    setMaximumSize(210,170);
-    setCaption(i18n("Ktop Preferences"));
+    setCaption(i18n("KTop Preferences"));
 
     startuppage = new QButtonGroup(i18n("Start up page"), this,
-								   "_startuppage");
+								   "startuppage");
 
-    rb_pList = new QRadioButton(i18n("Processes List"),startuppage, "_pList");
+    rb_pList = new QRadioButton(i18n("Processes &List"),startuppage, "RBList");
 	rb_pList->resize(160, 25);
-    rb_pTree = new QRadioButton(i18n("Processes Tree"),startuppage, "_pTree");
+
+    rb_pTree = new QRadioButton(i18n("Processes &Tree"),startuppage, "RBTree");
 	rb_pTree->resize(160, 25);
-    rb_Perf  = new QRadioButton(i18n("Performance Meter"),startuppage, "_Perf");
+
+    rb_Perf  = new QRadioButton(i18n("Performance &Meter"),startuppage,
+								"RBPerf");
 	rb_Perf->resize(160, 25);
 
-    ok = new QPushButton(i18n("OK"), this, "_ok");
+    ok = new QPushButton(i18n("&OK"), this, "OK");
     ok->setDefault(TRUE);
-    cancel = new QPushButton(i18n("Cancel"), this, "_cancel");
     ok->resize(80, 25);
-
-    cancel->resize(80, 25);
     connect(ok, SIGNAL(clicked()), this, SLOT(doValidate()));
+
+    cancel = new QPushButton(i18n("&Cancel"), this, "Cancel");
+    cancel->resize(80, 25);
     connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
+
+    setMinimumSize(210,170);
+    setMaximumSize(210,170);
 }
 
 void 
-AppSettings::resizeEvent(QResizeEvent *)
+AppSettings::resizeEvent(QResizeEvent*)
 {
 	startuppage->setGeometry(10, 10, width() - 20, height() - 65);
 	ok->move(16, height() - 38);
-	cancel->move(16+ok->width() + 16, height() - 38);
-	rb_pList->move(20,17);
-	rb_pTree->move(20,42);
-	rb_Perf->move(20,67);
+	cancel->move(16 + ok->width() + 16, height() - 38);
+	rb_pList->move(20, 17);
+	rb_pTree->move(20, 42);
+	rb_Perf->move(20, 67);
 }
 
 void 
@@ -115,14 +92,14 @@ AppSettings::setStartUpPage(int update)
 int 
 AppSettings::getStartUpPage()
 {
-    int page = 0;
-    
-    if ( rb_pList->isChecked() )
-        page = TaskMan::PAGE_PLIST;
-    if ( rb_pTree->isChecked() )
-        page = TaskMan::PAGE_PTREE;
-    if ( rb_Perf->isChecked()  )
-        page = TaskMan::PAGE_PERF;
+	int page = 0;
+   
+	if (rb_pList->isChecked())
+		page = TaskMan::PAGE_PLIST;
+	if (rb_pTree->isChecked())
+		page = TaskMan::PAGE_PTREE;
+	if (rb_Perf->isChecked())
+		page = TaskMan::PAGE_PERF;
 
     return page;
 }
@@ -130,7 +107,7 @@ AppSettings::getStartUpPage()
 void 
 AppSettings::doValidate()
 {
-    accept();
+	accept();
 }
 
 

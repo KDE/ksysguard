@@ -1,12 +1,6 @@
 /*
     KTop, a taskmanager and cpu load monitor
    
-    Copyright (C) 1997 Bernd Johannes Wuebben
-                       wuebben@math.cornell.edu
-
-    Copyright (C) 1998 Nicolas Leclercq
-                       nicknet@planete.net
-    
 	Copyright (c) 1999 Chris Schlaeger
 	                   cs@axys.de
     
@@ -30,7 +24,12 @@
 #ifndef _ReniceDlg_h_
 #define _ReniceDlg_h_
 
+#include <qlabel.h>
+#include <qlcdnum.h>
+#include <qslider.h>
+#include <qpushbutton.h>
 #include <qdialog.h>
+#include <qlayout.h>
 
 /**
  * This class creates and handles a simple dialog to change the scheduling
@@ -42,6 +41,20 @@ class ReniceDlg : public QDialog
 
 public:
 	ReniceDlg(QWidget* parent, const char* name, int currentPPrio);
+	~ReniceDlg()
+	{
+		delete message;
+
+		delete slider;
+		delete lcd;
+
+		delete okButton;
+		delete cancelButton;
+		
+		delete butLay;
+		delete sldLay;
+		delete vLay;
+	}
 
 public slots:
 	void ok()
@@ -56,6 +69,18 @@ public slots:
 
 private:
 	int value;
+
+	QBoxLayout* vLay;
+	QBoxLayout* butLay;
+	QBoxLayout* sldLay;
+
+	QLabel* message;
+
+	QSlider* slider;
+	QLCDNumber* lcd;
+
+	QPushButton* okButton;
+	QPushButton* cancelButton;
 
 private slots:
 	void setPriorityValue(int priority)

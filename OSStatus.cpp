@@ -97,10 +97,39 @@ bool
 OSStatus::getMemoryInfo(int& total, int& mfree, int& shared, int& buffers,
 						int& cached)
 {
+	/*
+	 * The amount of total and used memory is read from the /proc/meminfo.
+	 * It also contains the information about the swap space.
+	 * The 'file' looks like this:
+	 *
+	 * total:    used:    free:  shared: buffers:  cached:
+	 * Mem:  64593920 60219392  4374528 49426432  6213632 33689600
+	 * Swap: 69636096   761856 68874240
+	 * MemTotal:     63080 kB
+	 * MemFree:       4272 kB
+	 * MemShared:    48268 kB
+	 * Buffers:       6068 kB
+	 * Cached:       32900 kB
+	 * SwapTotal:    68004 kB
+	 * SwapFree:     67260 kB
+	 */
+
 	FILE* meminfo;
 
-	meminfo = fopen("/proc/meminfo", "r");
-	fscanf(meminfo, "%*[^\n]\n");
+	if ((meminfo = fopen("/proc/meminfo", "r")) == NULL)
+	{
+		error = true;
+		errMessage = i18n("Cannot open file \'/proc/meminfo\'!\n"
+						  "The kernel needs to be compiled with support\n"
+						  "for /proc filesystem enabled!");
+		return (false);
+	}
+	if (fscanf(meminfo, "%*[^\n]\n") == EOF)
+	{
+		error = true;
+		errMessage = i18n("Cannot read memory info file \'/proc/meminfo\'!\n");
+		return (false);
+	}
 	fscanf(meminfo, "%*s %d %*d %d %d %d %d\n",
 		   &total, &mfree, &shared, &buffers, &cached);
 	fclose(meminfo);
@@ -113,8 +142,20 @@ OSStatus::getSwapInfo(int& stotal, int& sfree)
 {
 	FILE* meminfo;
 
-	meminfo = fopen("/proc/meminfo", "r");
-	fscanf(meminfo, "%*[^\n]\n");
+	if ((meminfo = fopen("/proc/meminfo", "r")) == NULL)
+	{
+		error = true;
+		errMessage = i18n("Cannot open file \'/proc/meminfo\'!\n"
+						  "The kernel needs to be compiled with support\n"
+						  "for /proc filesystem enabled!");
+		return (false);
+	}
+	if (fscanf(meminfo, "%*[^\n]\n") == EOF)
+	{
+		error = true;
+		errMessage = i18n("Cannot read swap info from \'/proc/meminfo\'!\n");
+		return (false);
+	}
 	fscanf(meminfo, "%*[^\n]\n");
 	fscanf(meminfo, "%*s %d %*d %d\n",
 		   &stotal, &sfree);

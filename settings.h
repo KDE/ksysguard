@@ -29,11 +29,11 @@
 #define _settings_h_
 
 #include <qdialog.h>
-#include <qradiobt.h>
-#include <qpushbt.h>
-#include <qbttngrp.h>
+#include <qradiobutton.h>
+#include <qpushbutton.h>
+#include <qbuttongroup.h>
 
-/*
+/**
  * This class implements the property setup dialog. Currently it only consists
  * of a group of radio buttons to setup the startup page.
  */

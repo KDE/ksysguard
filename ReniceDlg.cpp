@@ -1,12 +1,6 @@
 /*
     KTop, a taskmanager and cpu load monitor
    
-    Copyright (C) 1997 Bernd Johannes Wuebben
-                       wuebben@math.cornell.edu
-
-    Copyright (C) 1998 Nicolas Leclercq
-                       nicknet@planete.net
-    
 	Copyright (c) 1999 Chris Schlaeger
 	                   cs@axys.de
     
@@ -27,11 +21,6 @@
 
 // $Id$
 
-#include <qlabel.h>
-#include <qlcdnum.h>
-#include <qslider.h>
-#include <qpushbutton.h>
-
 #include <kapp.h>
 
 #include "ReniceDlg.moc"
@@ -39,32 +28,69 @@
 ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio)
 	: QDialog(parent, name, TRUE)
 {
-	QLabel* label0 = new QLabel(i18n("Please enter desired priority:"), this);
-	label0->setGeometry(10, 10, 210, 15);
-
-	QSlider* priority = new QSlider(-20, 20, 1, 0, QSlider::Horizontal,
-									this, "prio" );
-	priority->setGeometry(10, 35, 210, 25);
-	priority->setTickmarks((QSlider::TickSetting) 2);
-	priority->setFocusPolicy(QWidget::TabFocus);
-	priority->setFixedHeight(priority->sizeHint().height());
-
-	QLCDNumber* lcd0= new QLCDNumber(3, this, "lcd");
-	lcd0->setGeometry(80, 65, 70, 30);
-	QObject::connect(priority, SIGNAL(valueChanged(int)), lcd0,
-					 SLOT(display(int)));
-	QObject::connect(priority, SIGNAL(valueChanged(int)),
-					 SLOT(setPriorityValue(int)));
-
-	QPushButton* ok = new QPushButton(i18n("OK"), this);
-	ok->setGeometry(10, 110, 100, 30);
-	connect(ok, SIGNAL(clicked()), SLOT(ok()));
-
-	QPushButton* cancel = new QPushButton(i18n("Cancel"), this);
-	cancel->setGeometry(120, 110, 100, 30);
-	connect(cancel, SIGNAL(clicked()), SLOT(cancel()));
-
 	value = currentPPrio;
-	priority->setValue(value);
-	lcd0->display(value);
+
+	vLay = new QVBoxLayout(this, 20, -1, "ReniceLayout");
+
+	QString msg = i18n("You are about the change the scheduling priority of\n"
+					   "a process. Be aware that only the Superuser (root)\n"
+					   "can increase the priority of a process. The smaller\n"
+					   "the number is the higher is the priority.\n\n"
+					   "Please enter the desired priority:");
+	message = new QLabel(msg, this);
+	message->setMinimumSize(message->sizeHint());
+	vLay->addWidget(message);
+
+	/*
+	 * Create a slider with an LCD display to the right using a horizontal
+	 * layout. The slider and the LCD are kept in sync through signals
+	 */
+	sldLay = new QHBoxLayout();
+	vLay->addLayout(sldLay);
+
+	slider = new QSlider(-20, 20, 1, 0, QSlider::Horizontal, this, "prio" );
+	slider->setMaximumSize(210, 25);
+	slider->setMinimumSize(210, 25);
+	slider->setTickmarks((QSlider::TickSetting) 2);
+	slider->setFocusPolicy(QWidget::TabFocus);
+	slider->setFixedHeight(slider->sizeHint().height());
+	slider->setValue(value);
+	sldLay->addWidget(slider);
+	sldLay->addSpacing(10);
+
+	lcd = new QLCDNumber(3, this, "lcd");
+	lcd->setMaximumSize(55, 23);
+	lcd->setMinimumSize(55, 23);
+	lcd->display(value);
+	QObject::connect(slider, SIGNAL(valueChanged(int)), lcd,
+					 SLOT(display(int)));
+	QObject::connect(slider, SIGNAL(valueChanged(int)),
+					 SLOT(setPriorityValue(int)));
+	sldLay->addWidget(lcd);
+
+	/*
+	 * Create two an "OK" and a "Cancel" button in a horizontal layout.
+	 */
+	butLay = new QHBoxLayout();
+	vLay->addLayout(butLay);
+	butLay->addStretch(1);
+
+	okButton = new QPushButton(i18n("OK"), this);
+	okButton->setMaximumSize(100, 30);
+	okButton->setMinimumSize(100, 30);
+	connect(okButton, SIGNAL(clicked()), SLOT(ok()));
+	butLay->addWidget(okButton);
+	butLay->addStretch(1);
+
+	cancelButton = new QPushButton(i18n("Cancel"), this);
+	cancelButton->setMaximumSize(100, 30);
+	cancelButton->setMinimumSize(100, 30);
+	connect(cancelButton, SIGNAL(clicked()), SLOT(cancel()));
+	butLay->addWidget(cancelButton);
+	butLay->addStretch(1);
+
+	vLay->activate();
+
+	// force widget to minimum size
+	resize(0, 0);
 }
