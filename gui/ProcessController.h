@@ -71,12 +71,16 @@ public:
 		pList->clearSelection();
 	}
 
-	void saveSettings(void)
-	{
-		pList->saveSettings();
-	}
+	bool load(QDomElement& el);
+
+	bool save(QTextStream& s);
 
 	void refreshList(void)
+	{
+		updateList();
+	}
+
+	virtual void timerEvent(QTimerEvent*)
 	{
 		updateList();
 	}
@@ -84,11 +88,6 @@ public:
 	virtual bool addSensor(const QString&, const QString&, const QString&);
 
 	virtual void answerReceived(int id, const QString& answer);
-
-	virtual void timerEvent(QTimerEvent*)
-	{
-		updateList();
-	}
 
 public slots:
 	void filterModeChanged(int filter)
@@ -141,8 +140,6 @@ private:
 	/// These buttons force an immedeate refresh or kill a process.
 	QPushButton* bRefresh;
 	QPushButton* bKill;
-
-	QString hostName;
 } ;
 
 #endif

@@ -26,6 +26,7 @@
 #define _SensorDisplay_h_
 
 #include <qwidget.h>
+#include <qvaluelist.h>
 
 #include "SensorClient.h"
 #include "SensorDisplay.h"
@@ -72,6 +73,8 @@ public:
 	{
 		return (TRUE);
 	}
+
+	void collectHosts(QValueList<QString>& list);
 
 public slots:
 	/**

@@ -41,6 +41,8 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 						   const char* title, int min, int max)
 	: SensorDisplay(parent, name)
 {
+	sensorNames.setAutoDelete(true);
+
 	meterFrame = new QGroupBox(this, "meterFrame"); 
 	CHECK_PTR(meterFrame);
 	meterFrame->setTitle(title);
@@ -159,8 +161,6 @@ FancyPlotter::load(QDomElement& domElem)
 	for (uint i = 0; i < dnList.count(); ++i)
 	{
 		QDomElement el = dnList.item(i).toElement();
-		debug("Adding %s, %s", el.attribute("hostName").latin1(),
-			  el.attribute("sensorName").latin1());
 		addSensor(el.attribute("hostName"), el.attribute("sensorName"), "");
 	}
 

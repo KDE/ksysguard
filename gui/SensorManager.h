@@ -54,6 +54,7 @@ public:
 					 SensorClient* client, int id = 0);
 
 	const QString getHostName(const SensorAgent* sensor) const;
+	bool getHostInfo(const QString& host, QString& shell, QString& command);
 
 signals:
 	void update();

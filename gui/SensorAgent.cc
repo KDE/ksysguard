@@ -63,11 +63,15 @@ SensorAgent::~SensorAgent()
 }
 	
 bool
-SensorAgent::start(const QString& host, const QString& shell,
-				   const QString& command)
+SensorAgent::start(const QString& host_, const QString& shell_,
+				   const QString& command_)
 {
 	ktopd = new KProcess;
 	CHECK_PTR(ktopd);
+
+	host = host_;
+	shell = shell_;
+	command = command_;
 
 	connect(ktopd, SIGNAL(processExited(KProcess *)),
 			this, SLOT(ktopdExited(KProcess*)));

@@ -79,6 +79,12 @@ public:
 	 */
 	bool sendRequest(const QString& req, SensorClient* client, int id = 0);
 
+	void getHostInfo(QString& sh, QString& cmd)
+	{
+		sh = shell;
+		cmd = command;
+	}
+
 private slots:
 	void msgSent(KProcess*);
 	void msgRcvd(KProcess*, char* buffer, int buflen);
@@ -95,6 +101,7 @@ private:
 	bool pwSent;
 	QString host;
 	QString shell;
+	QString command;
 
 	QList<SensorRequest> inputFIFO;
 	QList<SensorRequest> processingFIFO;

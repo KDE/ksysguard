@@ -69,7 +69,6 @@ WorkSheet::~WorkSheet()
 bool
 WorkSheet::load(QDomElement& domElem)
 {
-	debug("WorkSheet::load");
 	QDomNodeList dnList = domElem.elementsByTagName("display");
 	for (uint i = 0; i < dnList.count(); ++i)
 	{
@@ -83,7 +82,6 @@ WorkSheet::load(QDomElement& domElem)
 		}
 
 		QString classType = element.attribute("class");
-		debug("adding %s", classType.latin1());
 		SensorDisplay* newDisplay;
 		if (classType == "FancyPlotter")
 			newDisplay = new FancyPlotter(this, 0);
@@ -95,7 +93,8 @@ WorkSheet::load(QDomElement& domElem)
 			return (FALSE);
 		}
 		CHECK_PTR(newDisplay);
-			
+
+		// load display specific settings
 		if (!newDisplay->load(element))
 			return (FALSE);
 
@@ -115,6 +114,27 @@ WorkSheet::load(QDomElement& domElem)
 bool
 WorkSheet::save(QTextStream& s, const QString& name)
 {
+	QValueList<QString> hosts;
+	collectHosts(hosts);
+
+	/* TODO: Strings like shell and command may contain double quotes
+	 * and should be escaped. It's probably a good idea to use
+	 * QDomDocument for writing as well. */
+
+	// save host information (name, shell, etc.)
+	s << "<HostInfos>\n";
+	QValueList<QString>::Iterator it;
+	for (it = hosts.begin(); it != hosts.end(); ++it)
+	{
+		QString shell, command;
+		SensorMgr->getHostInfo(*it, shell, command);
+		s << "<host name=\"" << *it << "\" "
+		  << "shell=\"" << shell << "\" "
+		  << "command=\"" << command << "\"/>\n";
+	}
+	s << "</HostInfos>\n";
+	
+	// save work sheet information
 	s << "<WorkSheet name=\"" << name << "\" "
 	  << "rows=\"" << rows << "\" "
 	  << "columns=\"" << columns << "\">\n";
@@ -245,4 +265,13 @@ WorkSheet::insertDummyDisplay(int r, int c)
 	displays[r][c] = dummy;
 	lm->addWidget(dummy, r, c);
 	displays[r][c]->show();
+}
+
+void
+WorkSheet::collectHosts(QValueList<QString>& list)
+{
+	for (int r = 0; r < rows; ++r)
+		for (int c = 0; c < columns; ++c)
+			if (!displays[r][c]->isA("QGroupBox"))
+				((SensorDisplay*) displays[r][c])->collectHosts(list);
 }

@@ -33,6 +33,8 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 	timerInterval = 2000;
 
 	timerId = startTimer(timerInterval);
+
+	hostNames.setAutoDelete(true);
 	sensorNames.setAutoDelete(true);
 }
 
@@ -65,4 +67,14 @@ SensorDisplay::sendRequest(const QString& hostName, const QString& cmd,
 {
 	if (!SensorMgr->sendRequest(hostName, cmd, (SensorClient*) this, id))
 		emit(removeDisplay(this));
+}
+
+void
+SensorDisplay::collectHosts(QValueList<QString>& list)
+{
+	QListIterator<const QString> hnIt(hostNames);
+
+	for (; hnIt.current(); ++hnIt)
+		if (!list.contains(*hnIt.current()))
+			list.append(*hnIt.current());
 }

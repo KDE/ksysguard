@@ -24,6 +24,8 @@
 
 #include <assert.h>
 
+#include <qtextstream.h>
+
 #include <kapp.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -124,15 +126,14 @@ ProcessController::resizeEvent(QResizeEvent* ev)
 }
 
 bool
-ProcessController::addSensor(const QString& hostname,
-							 const QString& /* sensorName */,
+ProcessController::addSensor(const QString& hostName,
+							 const QString& sensorName,
 							 const QString& /* title */)
 {
-	debug("Hostname: %s", hostName.ascii());
-	hostName = hostname;
+	registerSensor(hostName, sensorName);
 	sendRequest(hostName, "ps?", 1);
 
-	box->setTitle(QString(i18n("%1: Running Processes")).arg(hostname));
+	box->setTitle(QString(i18n("%1: Running Processes")).arg(hostName));
 
 	return (TRUE);
 }
@@ -140,7 +141,7 @@ ProcessController::addSensor(const QString& hostname,
 void
 ProcessController::updateList()
 {
-	sendRequest(hostName, "ps", 2);
+	sendRequest(*hostNames.at(0), "ps", 2);
 }
 
 void
@@ -167,8 +168,8 @@ ProcessController::killProcess(void)
 
 	// send kill signal to all seleted processes
 	QValueListConstIterator<int> it;
-		for (it = selectedPIds.begin(); it != selectedPIds.end(); ++it)
-			sendRequest(hostName, QString("kill %1 9" ).arg(*it), 3);
+	for (it = selectedPIds.begin(); it != selectedPIds.end(); ++it)
+		sendRequest(*hostNames.at(0), QString("kill %1 9" ).arg(*it), 3);
 }
 
 void
@@ -205,4 +206,52 @@ ProcessController::answerReceived(int id, const QString& answer)
 		// result of kill operation, we currently don't care about it.
 		break;
 	}
+}
+
+bool
+ProcessController::load(QDomElement& el)
+{
+	bool result = addSensor(el.attribute("hostName"),
+							el.attribute("sensorName"),
+							QString::null);
+
+	if (el.attribute("tree") == "on")
+	{
+		xbTreeView->setChecked(TRUE);
+		setTreeView(TRUE);
+	}
+	if (el.attribute("pause") == "on")
+	{
+		xbPause->setChecked(TRUE);
+		togglePause(TRUE);
+	}
+
+	int filter = el.attribute("filter").toUInt();
+	cbFilter->setCurrentItem(filter);
+	filterModeChanged(filter);
+
+	return (result);
+}
+
+bool
+ProcessController::save(QTextStream& s)
+{
+	s << "hostName=\"" << *hostNames.at(0) << "\" "
+	  << "sensorName=\"" << *sensorNames.at(0) << "\" "
+	  << "tree=\"";
+	if (xbTreeView->isChecked())
+		s << "on";
+	else
+		s << "off";
+	s << "\" ";
+
+	s << "pause=\"";
+	if (xbPause->isChecked())
+		s << "on";
+	else
+		s << "off";
+	s << "\" ";
+	s << "filter=\"" << cbFilter->currentItem() << "\">\n";
+
+	return (TRUE);
 }

@@ -26,6 +26,7 @@
 #define _WorkSheet_h_
 
 #include <qwidget.h>
+#include <qvaluelist.h>
 
 class QGridLayout;
 class QDragEnterEvent;
@@ -66,6 +67,8 @@ protected:
 
 private:
 	void insertDummyDisplay(int r, int c);
+
+	void collectHosts(QValueList<QString>& l);
 
 	const int rows;
 	const int columns;

@@ -120,3 +120,17 @@ SensorManager::getHostName(const SensorAgent* sensor) const
 
 	return (dummy);
 }
+
+bool
+SensorManager::getHostInfo(const QString& hostName, QString& shell,
+						   QString& command)
+{
+	SensorAgent* ktopd;
+	if ((ktopd = sensors.find(hostName)) != 0)
+	{
+		ktopd->getHostInfo(shell, command);
+		return (TRUE);
+	}
+
+	return (FALSE);
+}
