@@ -52,7 +52,7 @@ sysguard_panelapplet_la_LIBADD = \
 	ksgrd/libksgrd.la \
 	SensorDisplayLib/libsensordisplays.la \
 	$(LIB_KDEUI) $(LIB_KIO)
-sysguard_panelapplet_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -module -no-undefined
+sysguard_panelapplet_la_LDFLAGS = -module $(KDE_PLUGIN) $(all_libraries)
 
 EXTRA_DIST = $(lnk_DATA)
 
