@@ -38,7 +38,7 @@ static int CpuInfoOK = 0;
 static float* Clocks = 0;
 static int CPUs = 0;
 
-#define CPUINFOBUFSIZE 8192
+#define CPUINFOBUFSIZE (32 * 1024)
 static char CpuInfoBuf[ CPUINFOBUFSIZE ];
 static int Dirty = 0;
 static struct SensorModul *CpuInfoSM;

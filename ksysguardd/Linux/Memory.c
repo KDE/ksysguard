@@ -32,7 +32,8 @@
 
 #include "Memory.h"
 
-#define MEMINFOBUFSIZE 1024
+#define MEMINFOBUFSIZE (2 * 1024)
+
 static char MemInfoBuf[ MEMINFOBUFSIZE ];
 static int Dirty = 1;
 

@@ -78,7 +78,8 @@ typedef struct DiskIOInfo
   struct DiskIOInfo* next;
 } DiskIOInfo;
 
-#define STATBUFSIZE 4096
+#define STATBUFSIZE (32 * 1024)
+
 static char StatBuf[ STATBUFSIZE ];
 static char VmStatBuf[ STATBUFSIZE ];
 static int Dirty = 0;
