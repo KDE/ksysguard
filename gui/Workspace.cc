@@ -102,5 +102,5 @@ Workspace::saveProperties()
 		sheetList += tabLabel(*it);
 
 	
-	return (TRUE);
+	return;
 }
