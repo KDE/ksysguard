@@ -28,8 +28,11 @@
 
 #include <kpanelapplet.h>
 
-class KSGRD::SensorBoard;
-class KSGRD::SensorDisplay;
+namespace KSGRD
+{
+	class SensorBoard;
+	class SensorDisplay;
+}
 class QDragEnterEvent;
 class QDropEvent;
 class QPoint;

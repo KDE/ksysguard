@@ -32,8 +32,12 @@
 
 class QMouseEvent;
 class KIconLoader;
-class KSGRD::SensorManager;
-class KSGRD::SensorAgent;
+
+namespace KSGRD
+{
+	class SensorManager;
+	class SensorAgent;
+}
 
 /**
  * The SensorBrowser is the graphical front-end of the SensorManager. It
