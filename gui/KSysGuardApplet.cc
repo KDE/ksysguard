@@ -28,6 +28,7 @@
 #include <qfile.h>
 #include <qframe.h>
 #include <qpopupmenu.h>
+#include <qpushbutton.h>
 #include <qspinbox.h>
 #include <qtextstream.h>
 #include <qtooltip.h>

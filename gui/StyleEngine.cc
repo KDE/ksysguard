@@ -35,6 +35,7 @@
 
 #include "ColorPicker.h"
 #include "StyleSettings.h"
+#include <qpushbutton.h>
 #include "StyleEngine.moc"
 
 StyleEngine* Style;

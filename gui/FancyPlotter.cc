@@ -45,6 +45,7 @@
 #include "FancyPlotterSettings.h"
 #include "SensorManager.h"
 #include "StyleEngine.h"
+#include <qpushbutton.h>
 
 FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 						   const QString& title, double, double,

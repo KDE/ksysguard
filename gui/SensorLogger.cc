@@ -37,6 +37,7 @@
 #include "SensorLoggerSettings.h"
 
 #include <stdio.h>
+#include <qpushbutton.h>
 
 SLListViewItem::SLListViewItem(QListView *parent)
 	: QListViewItem(parent)
