@@ -13,6 +13,7 @@ Icon=ktop.xpm
 Type=Application
 DocPath=ktop/ktop.html
 Comment=Performance monitor
+Comment[de]=Performance-Anzeiger
 Comment[no]=Ytelsesovervåkning
 Comment[fr]=Moniteur de performances système
 Comment[sk]=Monitorovanie výkonu

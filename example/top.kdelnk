@@ -8,6 +8,7 @@ SwallowTitle[pt]=xload
 SwallowTitle[pt_BR]=xload
 SwallowExec=xload -jumpscroll 1 -fg CadetBlue -bg grey76 -nolabel  -geometry 50x50+10000+10000
 Comment=Informations about your system status
+Comment[de]=Informationen über den Systemstatus
 Comment[hr]=Informacije o stanju sistema
 Comment[fr]=Informations système
 Comment[sk]=Informácie o stave systému
