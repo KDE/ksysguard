@@ -25,7 +25,7 @@
 void initNetDev(struct SensorModul* sm);
 void exitNetDev(void);
 
-void updateNetDev(void);
+int updateNetDev(void);
 void checkNetDev(void);
 
 void printNetDevRecBytes(const char* cmd);

@@ -176,7 +176,7 @@ void exitNetDev(void)
 	}
 }
 
-void updateNetDev(void)
+int updateNetDev(void)
 {
 	int name[6];
 	int num_iface, i;
@@ -212,6 +212,8 @@ void updateNetDev(void)
 			NetDevCnt++;
 		}
 	}
+
+	return 0;
 }
 
 void checkNetDev(void)

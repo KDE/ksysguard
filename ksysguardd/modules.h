@@ -110,7 +110,7 @@ struct SensorModul SensorModulList[] = {
 #endif
 	{ "DiskStat", initDiskStat, exitDiskStat, updateDiskStat, checkDiskStat, 0, NULLTIME },
 	{ "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC, 0, NULLTIME },
-	{ "LogFile", initLogFile, exitLogFile, NULLVVFUNC, NULLVVFUNC, 0, NULLTIME },
+	{ "LogFile", initLogFile, exitLogFile, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
 	{ "NetDev", initNetDev, exitNetDev, updateNetDev, checkNetDev, 0, NULLTIME },
 #endif /* OSTYPE_FreeBSD */
 
