@@ -30,7 +30,6 @@
 #include <qtooltip.h>
 
 #include <kdebug.h>
-#include <klineeditdlg.h>
 #include <klocale.h>
 #include <knumvalidator.h>
 #include <ksgrd/ColorPicker.h>
