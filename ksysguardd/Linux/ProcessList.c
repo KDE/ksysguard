@@ -305,7 +305,8 @@ updateProcess(int pid)
 
 	/* Ugly hack to "fix" program name for kdeinit launched programs. */
 	if (strcmp(ps->name, "kdeinit") == 0 &&
-		strncmp(ps->cmdline, "kdeinit: ", KDEINITLEN) == 0)
+		strncmp(ps->cmdline, "kdeinit: ", KDEINITLEN) == 0 &&
+		strcmp(ps->cmdline + KDEINITLEN, "Running...") != 0)
 	{
 		size_t len;
 		char* end = strchr(ps->cmdline + KDEINITLEN, ' ');
