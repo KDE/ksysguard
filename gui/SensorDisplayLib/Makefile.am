@@ -2,7 +2,7 @@
 # set the include path for X, qt and KDE
 INCLUDES= -I$(srcdir)/.. -I$(srcdir)/../ksgrd -I../ksgrd $(all_includes)
  
-lib_LTLIBRARIES = libsensordisplays.la
+noinst_LTLIBRARIES = libsensordisplays.la
 
 libsensordisplays_la_LDFLAGS = $(all_libraries) -no-undefined
 libsensordisplays_la_LIBADD = ../ksgrd/libksgrd.la $(LIB_KIO)
@@ -29,29 +29,6 @@ libsensordisplays_la_SOURCES = \
 	MultiMeterSettings.ui \
 	SensorLoggerDlg.ui \
 	SensorLoggerSettings.ui
-
-libsensordisplayincludedir = $(includedir)/SensorDisplayLib
-#libsensordisplayinclude_HEADERS = 
-#	SensorDisplay.h 
-#	BarGraph.h 
-#	DancingBars.h 
-#	DancingBarsSettings.h 
-#	DummyDisplay.h 
-#	FancyPlotter.h
-#	FancyPlotterSettings.h 
-#	ListView.h 
-#	ListViewSettings.h 
-#	LogFile.h 
-#	LogFileSettings.h 
-#	MultiMeter.h 
-#	MultiMeterSettings.h 
-#	ProcessController.h 
-#	ProcessList.h 
-#	ReniceDlg.h 
-#	SensorLogger.h 
-#	SensorLoggerDlg.h 
-#	SensorLoggerSettings.h 
-#	SignalPlotter.h
 
 # just to make sure, automake makes them 
 METASOURCES = AUTO
