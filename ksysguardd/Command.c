@@ -196,7 +196,7 @@ void executeCommand( const char* command )
   for ( cmd = first_ctnr( CommandList ); cmd; cmd = next_ctnr( CommandList ) ) {
     if ( strcmp( cmd->command, token ) == 0 ) {
       if ( cmd->isMonitor ) {
-        if ( ( time( NULL ) - cmd->sm->time ) > UPDATEINTERVAL ) {
+        if ( ( time( NULL ) - cmd->sm->time ) >= UPDATEINTERVAL ) {
           cmd->sm->time = time( NULL );
 
           if ( cmd->sm->updateCommand != NULL )

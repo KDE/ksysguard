@@ -11,7 +11,7 @@ void SensorLoggerDlgWidget::init()
 {
   m_lowerLimit->setValidator(new KDoubleValidator(m_lowerLimit));
   m_upperLimit->setValidator(new KDoubleValidator(m_upperLimit));
-  m_timerInterval->setRange(2, 99, 1, true);
+  m_timerInterval->setRange(1, 99, 1, true);
 
   m_fileName->setFocus();
 }

@@ -62,7 +62,7 @@ KSGAppletSettings::KSGAppletSettings( QWidget *parent, const char *name )
   topLayout->addWidget( label, 2, 0 );
 
   mInterval = new KIntNumInput( 2, page );
-  mInterval->setMinValue( 2 );
+  mInterval->setMinValue( 1 );
   mInterval->setMaxValue( 300 );
   mInterval->setSuffix( i18n( " sec" ) );
   topLayout->addWidget( mInterval, 2, 1 );

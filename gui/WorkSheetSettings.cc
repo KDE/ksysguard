@@ -87,7 +87,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
 
   mInterval = new KIntNumInput( 2, group );
   mInterval->setMaxValue( 300 );
-  mInterval->setMinValue( 2 );
+  mInterval->setMinValue( 1 );
   mInterval->setSuffix( i18n( " sec" ) );
   groupLayout->addWidget( mInterval, 2, 1 );
   label->setBuddy( mInterval );

@@ -114,7 +114,7 @@ bool WorkSheet::load( const QString &fileName )
   // Check for proper size.
   QDomElement element = doc.documentElement();
   updateInterval( element.attribute( "interval" ).toUInt() );
-  if ( updateInterval() < 2 || updateInterval() > 300 )
+  if ( updateInterval() < 1 || updateInterval() > 300 )
     updateInterval( 2 );
 
   bool rowsOk, columnsOk;

@@ -46,7 +46,7 @@ TimerSettings::TimerSettings( QWidget *parent, const char *name )
   mLabel = new QLabel( i18n( "Update interval:" ), page );
   layout->addWidget( mLabel, 1, 0 );
 
-  mInterval = new QSpinBox( 2, 300, 1, page );
+  mInterval = new QSpinBox( 1, 300, 1, page );
   mInterval->setValue( 2 );
   mInterval->setSuffix( i18n( " sec" ) );
   layout->addWidget( mInterval, 1, 1 );

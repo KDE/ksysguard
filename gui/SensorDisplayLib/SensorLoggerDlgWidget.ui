@@ -59,7 +59,7 @@
                         <number>2</number>
                     </property>
                     <property name="minValue">
-                        <number>2</number>
+                        <number>1</number>
                     </property>
                     <property name="maxValue">
                         <number>99</number>
