@@ -58,7 +58,7 @@ libksysguardapplet_la_SOURCES = \
 	ColorPicker.cc \
 	DancingBars.cc BarGraph.cc \
 	FancyPlotter.cc SignalPlotter.cc \
-	MultiMeter.cc MultiMeterSettings.cc \
+	MultiMeter.cc MultiMeterSettings.ui \
 	SensorDisplay.cc \
 	StyleEngine.cc \
 	SensorManager.cc \
