@@ -58,6 +58,7 @@ typedef struct {
 
 static time_t TcpUdpRaw_timeStamp = 0;
 static time_t Unix_timeStamp = 0;
+static time_t NetStat_timeStamp = 0;
 
 static const char *raw_type[] =
 {
@@ -251,6 +252,7 @@ updateNetStat(void)
 		fclose(netstat);
 	}
 
+	NetStat_timeStamp = time(0);
 	return 0;
 }
 
@@ -391,7 +393,8 @@ updateNetStatUnix(void)
 void
 printNetStat(const char* cmd)
 {
-	updateNetStat();
+	if ((time(0) - NetStat_timeStamp) >= 2)
+		updateNetStat();
 
 	if (strstr(cmd, "tcp") != NULL)
 		fprintf(CurrentClient, "%d\n", num_tcp);
@@ -422,7 +425,7 @@ printNetStatTcpUdpRaw(const char *cmd)
 	int i;
 
 	if (strstr(cmd, "tcp")) {
-		if ((time(0) - TcpUdpRaw_timeStamp) > 2)
+		if ((time(0) - TcpUdpRaw_timeStamp) >= 2)
 			updateNetStatTcpUdpRaw("tcp");
 
 		for (i = 0; i < level_ctnr(TcpSocketList); i++) {
@@ -434,7 +437,7 @@ printNetStatTcpUdpRaw(const char *cmd)
 	}
 
 	if (strstr(cmd, "udp")) {
-		if ((time(0) - TcpUdpRaw_timeStamp) > 2)
+		if ((time(0) - TcpUdpRaw_timeStamp) >= 2)
 			updateNetStatTcpUdpRaw("udp");
 
 		for (i = 0; i < level_ctnr(UdpSocketList); i++) {
@@ -446,7 +449,7 @@ printNetStatTcpUdpRaw(const char *cmd)
 	}
 
 	if (strstr(cmd, "raw")) {
-		if ((time(0) - TcpUdpRaw_timeStamp) > 2)
+		if ((time(0) - TcpUdpRaw_timeStamp) >= 2)
 			updateNetStatTcpUdpRaw("raw");
 
 		for (i = 0; i < level_ctnr(RawSocketList); i++) {
@@ -468,7 +471,7 @@ void printNetStatUnix(const char *cmd)
 {
 	int i;
 
-	if ((time(0) - Unix_timeStamp) > 2)
+	if ((time(0) - Unix_timeStamp) >= 2)
 		updateNetStatUnix();
 	
 	for (i = 0; i < level_ctnr(UnixSocketList); i++) {

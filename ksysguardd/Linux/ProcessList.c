@@ -443,7 +443,7 @@ printProcessList(const char* cmd)
 {
 	int i;
 
-	if ((time(0) - timeStamp) > 2)
+	if ((time(0) - timeStamp) >= 2)
 		updateProcessList();
 
 	for (i = 0; i < level_ctnr(ProcessList); i++)
@@ -465,7 +465,7 @@ printProcessList(const char* cmd)
 void
 printProcessCount(const char* cmd)
 {
-	if ((time(0) - timeStamp) > 2)
+	if ((time(0) - timeStamp) >= 2)
 		updateProcessList();
 
 	fprintf(CurrentClient, "%d\n", ProcessCount);
