@@ -63,4 +63,4 @@ Terminal=0
 Path=
 X-KDE-StartupNotify=true
 X-DCOP-ServiceType=Multi
-Categories=QT;KDE;System
+Categories=Qt;KDE;System
