@@ -220,9 +220,9 @@ updateProcess(int pid)
 			sscanf(buf, "%*s %63s", ps->name);
 			validateStr(ps->name);
 		}
-		else if (strcmp(tag, "Uid:"))
+		else if (strcmp(tag, "Uid:") == 0)
 		{
-			fscanf(fd, "%*s %d %*d %*d %*d", (int*) &ps->uid);
+			sscanf(buf, "%*s %d %*d %*d %*d", (int*) &ps->uid);
 		}
 	}
 	if (fclose(fd))
