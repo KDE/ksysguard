@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -50,11 +50,19 @@ public:
 
 	bool addSensor(const QString& hostName, const QString& sensorName,
 				   const QString& title);
+	bool addSensor(const QString& hostName, const QString& sensorName,
+				   const QString& title, const QColor& col);
 
 	void addSample(double s0, double s1 = 0, double s2 = 0, double s3 = 0,
 				   double s4 = 0)
 	{
-		plotter->addSample(s0, s1, s2, s3, s4);
+		QValueList<double> d;
+		d.append(s0);
+		d.append(s1);
+		d.append(s2);
+		d.append(s3);
+		d.append(s4);
+		plotter->addSample(d);
 	}
 
 	virtual QSize sizeHint(void);
@@ -83,6 +91,11 @@ public slots:
 	void applySettings();
 	void vColorSettings();
 	void hColorSettings();
+	void bColorSettings();
+	void settingsSetColor();
+	void settingsUp();
+	void settingsDown();
+	void settingsDelete();
 
 protected:
 	virtual void resizeEvent(QResizeEvent*);
@@ -100,8 +113,7 @@ private:
 	 * samples for each beam until all samples of the period have been
 	 * received. The flags variable is used to ensure that all samples have
 	 * been received. */
-	double sampleBuf[5];
-	uint flags;
+	QValueList<double> sampleBuf;
 } ;
 
 #endif

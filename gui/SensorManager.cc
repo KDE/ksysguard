@@ -332,6 +332,26 @@ SensorManager::getHostInfo(const QString& hostName, QString& shell,
 	return (false);
 }
 
+QString
+SensorManager::translateSensor(const QString& u) const
+{
+	QString token, out;
+	int start = 0, end = 0;
+	for ( ; ; )
+	{
+		end = u.find('/', start);
+		if (end > 0)
+			out += trSensorPath(u.mid(start, end - start)) + "/";
+		else
+		{
+			out += trSensorPath(u.right(u.length() - start));
+			break;
+		}
+		start = end + 1;
+	}
+	return (out);
+}
+
 void
 SensorManager::readProperties(KConfig* cfg)
 {

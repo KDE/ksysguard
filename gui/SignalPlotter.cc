@@ -44,10 +44,12 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name, double min,
 							 double max)
 	: QWidget(parent, name), minValue(min), maxValue(max)
 {
+	beamData.setAutoDelete(true);
+
 	// paintEvent covers whole widget so we use no background to avoid flicker
 	setBackgroundMode(NoBackground);
 
-	beams = samples = 0;
+	samples = 0;
 	autoRange = (min == max);
 
 	// Anything smaller than this does not make sense.
@@ -71,63 +73,54 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name, double min,
 	labels = true;
 	topBar = false;
 	fontSize = 12;
+
+	bColor = black;
 }
 
 SignalPlotter::~SignalPlotter()
 {
-	for (int i = 0; i < beams; i++)
-		delete [] beamData[i];
 }
 
 bool
 SignalPlotter::addBeam(QColor col)
 {
-	if (beams == MAXBEAMS)
-		return (false);
-
-	beamData[beams] = new double[samples];
-	memset(beamData[beams], 0, sizeof(double) * samples);
-	beamColor[beams] = col;
-	beams++;
+	double* d = new double[samples];
+	memset(d, 0, sizeof(double) * samples);
+	beamData.append(d);
+	beamColor.append(col);
 
 	return (true);
 }
 
 void
-SignalPlotter::addSample(double s0, double s1, double s2, double s3, double s4)
+SignalPlotter::addSample(const QValueList<double>& sampleBuf)
 {
+	if (beamData.count() != sampleBuf.count())
+	{
+		kdDebug() << "ERROR: beamData buffer and and samples buffer "
+			"don't match" << endl;
+		return;
+	}
+
 	/* To avoid unecessary calls to the fairly expensive calcRange
 	 * function we only do a recalc if the value to be dropped is
 	 * an extreme value. */
 	bool recalc = false;
-	for (int i = 0; i < beams; i++)
-		if (beamData[i][0] <= minValue ||
-			beamData[i][0] >= maxValue)
-		{
+	double* d;
+	for (d = beamData.first(); d; d = beamData.next())
+		if (d[0] <= minValue || d[0] >= maxValue)
 			recalc = true;
-		}
 
-	// Shift data buffers one sample down.
-	for (int i = 0; i < beams; i++)
-		memmove(beamData[i], beamData[i] + 1, (samples - 1) * sizeof(double));
-
-	if (beams > 0)
-		beamData[0][samples - 1] = s0;
-	if (beams > 1)
-		beamData[1][samples - 1] = s1;
-	if (beams > 2)
-		beamData[2][samples - 1] = s2;
-	if (beams > 3)
-		beamData[3][samples - 1] = s3;
-	if (beams > 4)
-		beamData[4][samples - 1] = s4;
-
-	for (int i = 0; i < beams; i++)
-		if (beamData[i][samples - 1] <= minValue ||
-			beamData[i][samples - 1] >= maxValue)
-		{
+	// Shift data buffers one sample down and insert new samples.
+	QValueList<double>::ConstIterator s;
+	for (d = beamData.first(), s = sampleBuf.begin(); d;
+		 d = beamData.next(), ++s)
+	{
+		memmove(d, d + 1, (samples - 1) * sizeof(double));
+		d[samples - 1] = *s;
+		if (*s < minValue || *s > maxValue)
 			recalc = true;
-		}
+	}
 
 	if (autoRange && recalc)
 		calcRange();
@@ -135,16 +128,18 @@ SignalPlotter::addSample(double s0, double s1, double s2, double s3, double s4)
 	update();
 }
 
+QColor
+SignalPlotter::getDefaultColor(uint index)
+{
+	uint v = 0x00ff00;
+	for (uint i = 0; i < index; ++i)
+		v = (((v + 82) & 0xff) << 23) | (v >> 8);
+	return (QColor(v & 0xff, (v >> 16) & 0xff, (v >> 8) & 0xff));
+}
+
 void
 SignalPlotter::changeRange(int beam, double min, double max)
 {
-	if (beam < 0 || beam >= MAXBEAMS)
-	{
-		kdDebug() << "SignalPlotter::changeRange: beam index out of range"
-				  << endl;
-		return;
-	}
-
 	// Only the first beam affects range calculation.
 	if (beam > 1)
 		return;
@@ -168,16 +163,14 @@ SignalPlotter::calcRange()
 	minValue = 0;
 	maxValue = 0;
 
-	for (int i = 0; i < samples; i++)
-	{
-		for (int b = 0; b < beams; b++)
+	for (double* d = beamData.first(); d; d = beamData.next())
+		for (int i = 0; i < samples; i++)
 		{
-			if (beamData[b][i] < minValue)
-				minValue = beamData[b][i];
-			if (beamData[b][i] > maxValue)
-				maxValue = beamData[b][i];
+			if (d[i] < minValue)
+				minValue = d[i];
+			if (d[i] > maxValue)
+				maxValue = d[i];
 		}
-	}
 }
 
 void
@@ -191,28 +184,25 @@ SignalPlotter::resizeEvent(QResizeEvent*)
 	 * display we try to keep as much data as possible. Data that is
 	 * lost due to shrinking the buffers cannot be recovered on
 	 * enlarging though. */
-	double* tmp[MAXBEAMS];
 
 	// overlap between the old and the new buffers.
 	int overlap = min(samples, width() - 2);
 
-	for (int i = 0; i < beams; i++)
+	for (uint i = 0; i < beamData.count(); ++i)
 	{
-		tmp[i] = new double[width() - 2];
+		double* nd = new double[width() - 2];
 
 		// initialize new part of the new buffer
 		if (width() - 2 > overlap)
-			memset(tmp[i], 0, sizeof(double) * (width() - 2 - overlap));
+			memset(nd, 0, sizeof(double) * (width() - 2 - overlap));
 
 		// copy overlap from old buffer to new buffer
-		memcpy(tmp[i] + ((width() - 2) - overlap),
-			   beamData[i] + (samples - overlap),
+		memcpy(nd + ((width() - 2) - overlap),
+			   beamData.at(i) + (samples - overlap),
 			   overlap * sizeof(double));
 
-		// discard old buffer
-		delete [] beamData[i];
-
-		beamData[i] = tmp[i];
+		beamData.remove(i);
+		beamData.insert(i, nd);
 	}
 	samples = width() - 2;
 }
@@ -227,7 +217,7 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	QPainter p;
 	p.begin(&pm, this);
 
-	pm.fill(black);
+	pm.fill(bColor);
 	/* Draw white line along the bottom and the right side of the
 	 * widget to create a 3D like look. */
 	p.setPen(QColor(colorGroup().light()));
@@ -279,32 +269,34 @@ SignalPlotter::paintEvent(QPaintEvent*)
 
 		double bias = -minVal;
 		double scaleFac = (w - x0 - 2) / range;
-		for (int b = 0; b < beams; b++)
+		QValueList<QColor>::Iterator col;
+		col = beamColor.begin();
+		for (double* d = beamData.first(); d; d = beamData.next(), ++col)
 		{
 			int start = x0 + (int) (bias * scaleFac);
-			int end = x0 + (int) ((bias += beamData[b][w - 3]) * scaleFac);
+			int end = x0 + (int) ((bias += d[w - 3]) * scaleFac);
 			/* If the rect is wider than 2 pixels we draw only the last
 			 * pixels with the bright color. The rest is painted with
 			 * a 50% darker color. */
 			if (end - start > 1)
 			{
-				p.setPen(beamColor[b].dark(150));
-				p.setBrush(beamColor[b].dark(150));
+				p.setPen((*col).dark(150));
+				p.setBrush((*col).dark(150));
 				p.drawRect(start, 1, end - start, h0);
-				p.setPen(beamColor[b]);
+				p.setPen(*col);
 				p.drawLine(end, 1, end, h0);
 			}
 			else if (start - end > 1)
 			{
-				p.setPen(beamColor[b].dark(150));
-				p.setBrush(beamColor[b].dark(150));
+				p.setPen((*col).dark(150));
+				p.setBrush((*col).dark(150));
 				p.drawRect(end, 1, start - end, h0);
-				p.setPen(beamColor[b]);
+				p.setPen(*col);
 				p.drawLine(end, 1, end, h0);
 			}
 			else
 			{
-				p.setPen(beamColor[b]);
+				p.setPen(*col);
 				p.drawLine(start, 1, start, h0);
 			}
 		}
@@ -323,31 +315,33 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	for (int i = 0; i < samples; i++)
 	{
 		double bias = -minVal;
-		for (int b = 0; b < beams; b++)
+		QValueList<QColor>::Iterator col;
+		col = beamColor.begin();
+		for (double* d = beamData.first(); d; d = beamData.next(), ++col)
 		{
 			int start = top + h - 2 - (int) (bias * scaleFac);
-			int end = top + h - 2 - (int) ((bias + beamData[b][i]) * scaleFac);
-			bias += beamData[b][i];
+			int end = top + h - 2 - (int) ((bias + d[i]) * scaleFac);
+			bias += d[i];
 			/* If the line is longer than 2 pixels we draw only the last
 			 * 2 pixels with the bright color. The rest is painted with
 			 * a 50% darker color. */
 			if (end - start > 2)
 			{
-				p.setPen(beamColor[b].dark(150));
+				p.setPen((*col).dark(150));
 				p.drawLine(i + 1, start, i + 1, end - 1);
-				p.setPen(beamColor[b]);
+				p.setPen(*col);
 				p.drawLine(i + 1, end - 1, i + 1, end);
 			}
 			else if (start - end > 2)
 			{
-				p.setPen(beamColor[b].dark(150));
+				p.setPen((*col).dark(150));
 				p.drawLine(i + 1, start, i + 1, end + 1);
-				p.setPen(beamColor[b]);
+				p.setPen(*col);
 				p.drawLine(i + 1, end + 1, i + 1, end);
 			}
 			else
 			{
-				p.setPen(beamColor[b]);
+				p.setPen(*col);
 				p.drawLine(i + 1, start, i + 1, end);
 			}
 		}

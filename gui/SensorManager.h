@@ -70,7 +70,7 @@ public:
 	const QString getHostName(const SensorAgent* sensor) const;
 	bool getHostInfo(const QString& host, QString& shell, QString& command);
 
-	const QString& translateUnit(const QString& u)
+	const QString& translateUnit(const QString& u) const
 	{
 		if (!u.isEmpty() && units[u])
 			return (*units[u]);
@@ -78,13 +78,14 @@ public:
 			return (u);
 	}
 
-	const QString& trSensorPath(const QString& u)
+	const QString& trSensorPath(const QString& u) const
 	{
 		if (!u.isEmpty() && dict[u])
 			return (*dict[u]);
 		else
 			return (u);
 	}
+	QString translateSensor(const QString& u) const;
 	void readProperties(KConfig* cfg);
 	void saveProperties(KConfig* cfg);
 

@@ -31,6 +31,8 @@
 #include <qdom.h>
 #include <qlayout.h>
 #include <qcolordialog.h>
+#include <qlistview.h>
+#include <qimage.h>
 
 #include <kapp.h>
 #include <klocale.h>
@@ -51,7 +53,6 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 		frame->setTitle(title);
 
 	beams = 0;
-	flags = 0;
 
 	if (noFrame)
 	{
@@ -107,12 +108,39 @@ FancyPlotter::settings()
 	fps->topBar->setChecked(plotter->topBar);
 	fps->fontSize->setValue(plotter->fontSize);
 
+	/* Properties for background */
+	cp = fps->bColor->palette();
+	cp.setColor(QPalette::Normal, QColorGroup::Background, plotter->bColor);
+	fps->bColor->setPalette(cp);
+
 	connect(fps->applyButton, SIGNAL(clicked()),
 			this, SLOT(applySettings()));
 	connect(fps->vColorButton, SIGNAL(clicked()),
 			this, SLOT(vColorSettings()));
 	connect(fps->hColorButton, SIGNAL(clicked()),
 			this, SLOT(hColorSettings()));
+	connect(fps->bColorButton, SIGNAL(clicked()),
+			this, SLOT(bColorSettings()));
+
+	for (int i = 0; i < beams; ++i)
+	{
+		QString status = sensors.at(i)->ok ? i18n("Ok") : i18n("Error");
+		QListViewItem* lvi = new QListViewItem(
+			fps->sensorList, sensors.at(i)->hostName,
+			SensorMgr->translateSensor(sensors.at(i)->name), "???", status);
+		QPixmap pm(12, 12);
+		pm.fill(plotter->beamColor[i]);
+		lvi->setPixmap(1, pm);
+		fps->sensorList->insertItem(lvi);
+	}
+	connect(fps->sColorButton, SIGNAL(clicked()),
+			this, SLOT(settingsSetColor()));
+	connect(fps->upButton, SIGNAL(clicked()),
+			this, SLOT(settingsUp()));
+	connect(fps->downButton, SIGNAL(clicked()),
+			this, SLOT(settingsDown()));
+	connect(fps->deleteButton, SIGNAL(clicked()),
+			this, SLOT(settingsDelete()));
 
 	if (fps->exec())
 		applySettings();
@@ -142,6 +170,15 @@ FancyPlotter::applySettings()
 	plotter->labels = fps->labels->isChecked();
 	plotter->topBar = fps->topBar->isChecked();
 	plotter->fontSize = fps->fontSize->text().toUInt();
+
+	plotter->bColor = fps->bColor->palette().color(QPalette::Normal,
+												   QColorGroup::Background);
+
+    QListViewItemIterator it(fps->sensorList);
+	// iterate through all items of the listview
+	for (int i = 0; it.current(); ++it, ++i )
+		plotter->beamColor[i] = it.current()->pixmap(1)->
+			convertToImage().pixel(1, 1);
 
 	modified = true;
 }
@@ -173,6 +210,52 @@ FancyPlotter::hColorSettings()
 }
 
 void
+FancyPlotter::bColorSettings()
+{
+	QPalette cp = fps->bColor->palette();
+	QColor picked = QColorDialog::getColor(cp.color(QPalette::Normal,
+													QColorGroup::Background));
+	if (picked.isValid())
+	{
+		cp.setColor(QPalette::Normal, QColorGroup::Background, picked);
+		fps->bColor->setPalette(cp);
+	}
+}
+
+void
+FancyPlotter::settingsSetColor()
+{
+	QListViewItem* lvi = fps->sensorList->currentItem();
+
+	if (!lvi)
+		return;
+
+	QColor picked = QColorDialog::getColor(
+		lvi->pixmap(1)->convertToImage().pixel(1, 1));
+	if (picked.isValid())
+	{
+		QPixmap newPm(12, 12);
+		newPm.fill(picked);
+		lvi->setPixmap(1, newPm);
+	}
+}
+
+void
+FancyPlotter::settingsUp()
+{
+}
+
+void
+FancyPlotter::settingsDown()
+{
+}
+
+void
+FancyPlotter::settingsDelete()
+{
+}
+
+void
 FancyPlotter::sensorError(int sensorId, bool err)
 {
 	if (sensorId >= beams || sensorId < 0)
@@ -198,11 +281,14 @@ bool
 FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 						const QString& title)
 {
-	static QColor cols[] = { blue, red, yellow, cyan, magenta };
+	return (addSensor(hostName, sensorName, title,
+					  plotter->getDefaultColor(beams)));
+}
 
-	if ((unsigned) beams >= (sizeof(cols) / sizeof(QColor)))
-		return (false);
-
+bool
+FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
+						const QString& title, const QColor& col)
+{
 	if (beams > 0 && hostName != sensors.at(0)->hostName)
 	{
 		KMessageBox::sorry(this, QString(
@@ -214,13 +300,12 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 		return (false);
 	}
 
-	if (!plotter->addBeam(cols[beams]))
+	if (!plotter->addBeam(col))
 		return (false);
 
 	registerSensor(hostName, sensorName, title);
 	++beams;
 
-	updateWhatsThis();
 	/* To differentiate between answers from value requests and info
 	 * requests we add 100 to the beam index for info requests. */
 	sendRequest(hostName, sensorName + "?", beams + 100);
@@ -249,25 +334,23 @@ FancyPlotter::sizeHint(void)
 void
 FancyPlotter::answerReceived(int id, const QString& answer)
 {
-	if (id < 5)
+	if (id < beams)
 	{
-		sampleBuf[id] = answer.toDouble();
-		if (flags & (1 << id))
+		if (id != (int) sampleBuf.count())
 		{
-			for (int i = 0; i < beams; ++i)
-				if (!(flags & (1 << i)))
-					sensorError(i, true);
-			flags = (1 << beams) - 1;
+			if (id == 0)
+				sensorError(beams - 1, true);
+			else
+				sensorError(id - 1, true);
 		}
-		flags |= 1 << id;
+		sampleBuf.append(answer.toDouble());
 		/* We received something, so the sensor is probably ok. */
 		sensorError(id, false);
 
-		if (flags == (uint) ((1 << beams) - 1))
+		if (id == beams - 1)
 		{
-			plotter->addSample(sampleBuf[0], sampleBuf[1], sampleBuf[2],
-							   sampleBuf[3], sampleBuf[4]);
-			flags = 0;
+			plotter->addSample(sampleBuf);
+			sampleBuf.clear();
 		}
 	}
 	else if (id > 100)
@@ -281,19 +364,9 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 QString
 FancyPlotter::additionalWhatsThis()
 {
-	QString text = i18n("<p>The following sensors are connected:</p>"
-						"<center><table><tr><th>Beam</th><th>Host</th>"
-		"<th>Sensor Code</th></tr>\n");
-	const char* colors[] = { "blue", "red", "yellow", "cyan", "magenta" };
-
-	for (int i = 0; i < beams; ++i)
-		text += QString("<tr><td bgcolor=") + colors[i]
-			+ "> </td><td>" + sensors.at(i)->hostName + "</td><td>"
-			+ sensors.at(i)->name + "</td><td>"
-			+ "</tr>\n";
-	text += "</table></center>";
-
-	return (text);
+	return (i18n("<p>The following sensors are connected:</p>"
+				 "<center><table><tr><th>Beam</th><th>Host</th>"
+				 "<th>Sensor Code</th></tr>\n</table></center>"));
 }
 
 bool
@@ -319,7 +392,7 @@ FancyPlotter::createFromDOM(QDomElement& domElem)
 	if (!ok)
 		plotter->vColor = QColor("green");
 	else
-		plotter->vColor = QColor(c >> 16, c >> 8, c & 0xFF);
+		plotter->vColor = QColor((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
 	plotter->vDistance = domElem.attribute("vDistance").toUInt(&ok);
 	if (!ok)
 		plotter->vDistance = 30;
@@ -331,7 +404,7 @@ FancyPlotter::createFromDOM(QDomElement& domElem)
 	if (!ok)
 		plotter->hColor = QColor("green");
 	else
-		plotter->hColor = QColor(c >> 16, c >> 8, c & 0xFF);
+		plotter->hColor = QColor((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
 	plotter->hCount = domElem.attribute("hCount").toUInt(&ok);
 	if (!ok)
 		plotter->hCount = 5;
@@ -345,12 +418,24 @@ FancyPlotter::createFromDOM(QDomElement& domElem)
 	plotter->fontSize = domElem.attribute("fontSize").toUInt(&ok);
 	if (!ok)
 		plotter->fontSize = 12;
+	c = domElem.attribute("bColor").toUInt(&ok);
+	if (!ok)
+		plotter->bColor = QColor("black");
+	else
+		plotter->bColor = QColor((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
 
 	QDomNodeList dnList = domElem.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)
 	{
 		QDomElement el = dnList.item(i).toElement();
-		addSensor(el.attribute("hostName"), el.attribute("sensorName"), "");
+		QColor col;
+		c = el.attribute("color").toUInt(&ok);
+		if (!ok)
+			col = plotter->getDefaultColor(i);
+		else
+			col = QColor((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
+		addSensor(el.attribute("hostName"), el.attribute("sensorName"), "",
+				  col);
 	}
 
 	return (true);
@@ -377,12 +462,17 @@ FancyPlotter::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 	display.setAttribute("topBar", plotter->topBar);
 	display.setAttribute("fontSize", plotter->fontSize);
 
+	plotter->bColor.rgb(&r, &g, &b);
+	display.setAttribute("bColor", (r << 16) | (g << 8) | b);
+
 	for (int i = 0; i < beams; ++i)
 	{
 		QDomElement beam = doc.createElement("beam");
 		display.appendChild(beam);
 		beam.setAttribute("hostName", sensors.at(i)->hostName);
 		beam.setAttribute("sensorName", sensors.at(i)->name);
+		plotter->beamColor[i].rgb(&r, &g, &b);
+		beam.setAttribute("color", (r << 16) | (g << 8) | b);
 	}
 	if (save)
 		modified = false;

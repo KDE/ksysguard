@@ -25,13 +25,13 @@
 #ifndef _SignalPlotter_h_
 #define _SignalPlotter_h_
 
+#include <qlist.h>
+#include <qvaluelist.h>
 #include <qwidget.h>
 #include <qstring.h>
 
 class QColor;
 class FancyPlotter;
-
-#define MAXBEAMS 5
 
 class SignalPlotter : public QWidget
 {
@@ -45,8 +45,7 @@ public:
 	~SignalPlotter();
 
 	bool addBeam(QColor col);
-	void addSample(double s0, double s1 = 0, double s2 = 0, double s3 = 0,
-				   double s4 = 0);
+	void addSample(const QValueList<double>& samples);
 
 	double getMin() const
 	{
@@ -56,6 +55,8 @@ public:
 	{
 		return (autoRange ? 0 : maxValue);
 	}
+
+	QColor getDefaultColor(uint index);
 
 	void changeRange(int beam, double min, double max);
 
@@ -96,9 +97,10 @@ private:
 	bool topBar;
 	uint fontSize;
 
-	double* beamData[MAXBEAMS];
-	QColor beamColor[MAXBEAMS];
-	int beams;
+	QColor bColor;
+
+	QList<double> beamData;
+	QValueList<QColor> beamColor;
 	int samples;
 
 	QPixmap errorIcon;

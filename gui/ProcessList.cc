@@ -2,13 +2,11 @@
     KTop, the KDE Task Manager
    
     Copyright (C) 1997 Bernd Johannes Wuebben
-                       wuebben@math.cornell.edu
+                       <wuebben@math.cornell.edu>
 
-    Copyright (C) 1998 Nicolas Leclercq
-                       nicknet@planete.net
+    Copyright (C) 1998 Nicolas Leclercq <nicknet@planete.net>
 
-	Copyright (c) 1999, 2000 Chris Schlaeger
-	                   cs@kde.org
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
