@@ -65,6 +65,7 @@ public:
 
 public slots:
 	void applySettings();
+	void applyStyle();
 
 private:
 	LogFileSettings* lfs;

@@ -98,10 +98,11 @@ public:
 
 public slots:
 	void applySettings();
+	void applyStyle();
 
 private:
 	QLabel* errorLabel;
-	MyListView* mainList;
+	MyListView* monitor;
 	ListViewSettings* lvs;
 
 	QString title;

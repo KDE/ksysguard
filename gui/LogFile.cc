@@ -115,6 +115,18 @@ void LogFile::applySettings(void)
 	setModified(TRUE);
 }
 
+void
+LogFile::applyStyle()
+{
+	QColorGroup cgroup = monitor->colorGroup();
+
+	cgroup.setColor(QColorGroup::Text, Style->getFgColor1());
+	cgroup.setColor(QColorGroup::Base, Style->getBackgroundColor());
+	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
+
+	setModified(TRUE);
+}
+
 bool
 LogFile::createFromDOM(QDomElement& element)
 {

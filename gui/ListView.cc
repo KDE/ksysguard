@@ -84,17 +84,17 @@ MyListView::MyListView(QWidget *parent)
 ListView::ListView(QWidget* parent, const char* name, const QString& t,
 				   int, int) : SensorDisplay(parent, name)
 {
-	mainList = new MyListView(frame);
-	CHECK_PTR(mainList);
-	mainList->setBackgroundColor(Qt::black);
-	mainList->setSelectionMode(QListView::NoSelection);
-	mainList->setItemMargin(2);
+	monitor = new MyListView(frame);
+	CHECK_PTR(monitor);
+	monitor->setBackgroundColor(Qt::black);
+	monitor->setSelectionMode(QListView::NoSelection);
+	monitor->setItemMargin(2);
 
 	KIconLoader iconLoader;
 	QPixmap errorIcon = iconLoader.loadIcon("connect_creating",
 											KIcon::Desktop, KIcon::SizeSmall);
 
-	errorLabel = new QLabel(mainList);
+	errorLabel = new QLabel(monitor);
 	CHECK_PTR(errorLabel);
 
 	errorLabel->setPixmap(errorIcon);
@@ -147,21 +147,21 @@ ListView::answerReceived(int id, const QString& answer)
 			SensorTokenizer headers(lines[0], '\t');
 		
 			/* Remove all columns from list */
-			for (int i = mainList->columns() - 1; i >= 0; --i) {
-				mainList->removeColumn(i);
+			for (int i = monitor->columns() - 1; i >= 0; --i) {
+				monitor->removeColumn(i);
 			}
 
-			int width = (mainList->width() / headers.numberOfTokens() - 1);
+			int width = (monitor->width() / headers.numberOfTokens() - 1);
 
 			/* Add the new columns */
 			for (unsigned int i = 0; i < headers.numberOfTokens(); i++)
 			{
-				mainList->addColumn(headers[i], -1);
-				mainList->setColumnWidthMode(i, QListView::Maximum);
+				monitor->addColumn(headers[i], -1);
+				monitor->setColumnWidthMode(i, QListView::Maximum);
 				if (i == (headers.numberOfTokens() - 1)) {
 					width -= 15;
 				}
-				mainList->setColumnWidth(i, width);
+				monitor->setColumnWidth(i, width);
 			}
 
 			timerOn();
@@ -170,14 +170,14 @@ ListView::answerReceived(int id, const QString& answer)
 		case 19: {
 			SensorTokenizer lines(answer, '\n');
 
-			mainList->clear();
+			monitor->clear();
 			for (unsigned int i = 0; i < lines.numberOfTokens(); i++) {
-				ListViewItem *item = new ListViewItem(mainList);
+				ListViewItem *item = new ListViewItem(monitor);
 				SensorTokenizer records(lines[i], '\t');
 				for (unsigned int j = 0; j < records.numberOfTokens(); j++) {
 					item->setText(j, records[j]);
 				}
-				mainList->insertItem(item);
+				monitor->insertItem(item);
 			}
 
 			timerOn();
@@ -190,7 +190,7 @@ void
 ListView::resizeEvent(QResizeEvent*)
 {
 	frame->setGeometry(0, 0, width(), height());
-	mainList->setGeometry(10, 20, width() - 20, height() - 30);
+	monitor->setGeometry(10, 20, width() - 20, height() - 30);
 }
 
 bool
@@ -198,21 +198,21 @@ ListView::createFromDOM(QDomElement& element)
 {
 	title = element.attribute("title");
 
-	mainList->setGridColor(restoreColorFromDOM(element, "gridColor",
+	monitor->setGridColor(restoreColorFromDOM(element, "gridColor",
 											   Qt::green));
-	mainList->setTextColor(restoreColorFromDOM(element, "textColor",
+	monitor->setTextColor(restoreColorFromDOM(element, "textColor",
 											   Qt::green));
-	mainList->setBackgroundColor(
+	monitor->setBackgroundColor(
 		restoreColorFromDOM(element, "backgroundColor", Qt::black));
 	addSensor(element.attribute("hostName"),
 			  element.attribute("sensorName"), title);
 
-	QColorGroup colorGroup = mainList->colorGroup();
+	QColorGroup colorGroup = monitor->colorGroup();
 	colorGroup.setBrush(QColorGroup::Base,
 						restoreColorFromDOM(element, "backgroundColor",
 											Qt::black));
 	QPalette pal(colorGroup, colorGroup, colorGroup);
-	mainList->setPalette(pal);
+	monitor->setPalette(pal);
 
 	setModified(FALSE);
 
@@ -226,9 +226,9 @@ ListView::addToDOM(QDomDocument&, QDomElement& element, bool save)
 	element.setAttribute("sensorName", sensors.at(0)->name);
 	element.setAttribute("title", title);
 
-	addColorToDOM(element, "gridColor", mainList->getGridColor());
-	addColorToDOM(element, "textColor", mainList->getTextColor());
-	addColorToDOM(element, "backgroundColor", mainList->getBackgroundColor());
+	addColorToDOM(element, "gridColor", monitor->getGridColor());
+	addColorToDOM(element, "textColor", monitor->getTextColor());
+	addColorToDOM(element, "backgroundColor", monitor->getBackgroundColor());
 
 	if (save)
 		setModified(FALSE);
@@ -243,9 +243,9 @@ ListView::settings()
 	CHECK_PTR(lvs);
 	connect(lvs->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
 
-	lvs->gridColor->setColor(mainList->getGridColor());
-	lvs->textColor->setColor(mainList->getTextColor());
-	lvs->backgroundColor->setColor(mainList->getBackgroundColor());
+	lvs->gridColor->setColor(monitor->getGridColor());
+	lvs->textColor->setColor(monitor->getTextColor());
+	lvs->backgroundColor->setColor(monitor->getBackgroundColor());
 	lvs->title->setText(title);
 
 	if (lvs->exec())
@@ -258,11 +258,21 @@ ListView::settings()
 void
 ListView::applySettings()
 {
-	mainList->setGridColor(lvs->gridColor->getColor());
-	mainList->setTextColor(lvs->textColor->getColor());
-	mainList->setBackgroundColor(lvs->backgroundColor->getColor());
+	monitor->setGridColor(lvs->gridColor->getColor());
+	monitor->setTextColor(lvs->textColor->getColor());
+	monitor->setBackgroundColor(lvs->backgroundColor->getColor());
 	title = lvs->title->text();
 	frame->setTitle(title);
+
+	setModified(TRUE);
+}
+
+void
+ListView::applyStyle()
+{
+	monitor->setGridColor(Style->getFgColor1());
+	monitor->setTextColor(Style->getFgColor2());
+	monitor->setBackgroundColor(Style->getBackgroundColor());
 
 	setModified(TRUE);
 }
