@@ -20,7 +20,6 @@
 	Please do not commit any changes without consulting me
 	first. Thanks!
 
-	$Id$
  */
 
 #ifndef _ProcessList_h_

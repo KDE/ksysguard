@@ -25,7 +25,6 @@
     Johannes Wuebben <wuebben@math.cornell.edu> and Nicolas Leclercq
     <nicknet@planete.net>.
 
-    $Id$
 */
 
 #include <assert.h>

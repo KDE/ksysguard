@@ -1,5 +1,4 @@
 #
-#  $Id$
 #
 
 # Sun's C++ compiler doesn't support -Wall

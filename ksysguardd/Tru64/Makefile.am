@@ -1,5 +1,4 @@
 #
-#  $Id$
 #
 AM_CFLAGS = -Wall 
 

@@ -1,5 +1,4 @@
 #
-# $Id$
 #
 
 INCLUDES = -I$(srcdir)/../../CContLib -I$(srcdir)/..

@@ -20,7 +20,6 @@
     <cs@kde.org>. Please do not commit any changes without consulting
     me first. Thanks!
 
-    $Id$
 */
 
 #ifndef KSG_KSYSGUARDAPPLET_H
