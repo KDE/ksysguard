@@ -341,7 +341,7 @@ void
 Workspace::removeAllWorkSheets()
 {
 	WorkSheet *sheet;
-	while ( (sheet = ( WorkSheet * )currentPage() != 0 )
+	while ( (sheet = ( WorkSheet * )currentPage()) != 0 )
 	{
 		removePage( sheet );
 		sheets.remove( sheet );
