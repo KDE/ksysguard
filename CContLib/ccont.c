@@ -133,7 +133,7 @@ void push_ctnr(CONTAINER rootNode, void* object)
 	((CONTAINER_INFO)rootNode->data)->count++;
 }
 
-void* remove_ctnr(CONTAINER rootNode, INDEX pos)
+void* remove_at_ctnr(CONTAINER rootNode, INDEX pos)
 {
 	CONTAINER it;
 	INDEX counter = 0;
@@ -328,4 +328,37 @@ void* next_ctnr(CONTAINER rootNode)
 	info->currentNode = info->currentNode->next;
 
 	return info->currentNode->data;
+}
+
+void* remove_ctnr(CONTAINER rootNode)
+{
+	CONTAINER currentNode, tmp;
+	CONTAINER_INFO info;
+	void* retval;
+	
+	if (rootNode == NIL) {
+		rpterr("remove_curr_ctnr: NIL argument");
+		return NIL;
+	}
+
+	info = (CONTAINER_INFO)rootNode->data;
+	currentNode = info->currentNode;
+
+	if (currentNode == rootNode) { // should never happen
+		rpterr("remove_curr_ctnr: delete root node");
+		return NIL;
+	}
+
+	retval = currentNode->data;
+	tmp = currentNode->prev;
+
+	currentNode->prev->next = currentNode->next;
+	currentNode->next->prev = currentNode->prev;
+
+	free(currentNode);
+
+	info->count--;
+	info->currentNode = tmp;
+
+	return retval;
 }

@@ -147,16 +147,14 @@ void registerLogFile(const char* cmd)
 void unregisterLogFile(const char* cmd)
 {
 	unsigned long id;
-	int i;
+	LogFileEntry *entry;
 
 	sscanf(cmd, "%*s %lu", &id);
 	
-	for (i = 0; i < level_ctnr(LogFiles); i++) {
-		LogFileEntry *entry = get_ctnr(LogFiles, i);
-
+	for (entry = first_ctnr(LogFiles); entry; entry = next_ctnr(LogFiles)) {
 		if (entry->id == id) {
 			fclose(entry->fh);
-			free(remove_ctnr(LogFiles, i));
+			free(remove_ctnr(LogFiles));
 			fprintf(CurrentClient, "\n");
 			return;
 		}

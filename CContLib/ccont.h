@@ -91,7 +91,7 @@ void push_ctnr(CONTAINER ctnr, void* object);
  *
  * @return A pointer to the removed object or @p 0L if it doesn't exist.
  */
-void* remove_ctnr(CONTAINER ctnr, INDEX pos);
+void* remove_at_ctnr(CONTAINER ctnr, INDEX pos);
 
 /**
  * Remove the first entry of container.
@@ -150,5 +150,13 @@ void* first_ctnr(CONTAINER ctnr);
  * @return A Pointer to the next object in container.
  */
 void* next_ctnr(CONTAINER ctnr);
+
+/**
+ * Use this function to remove the current entry while
+ * iterating over the container.
+ *
+ * @return A Pointer to the removed object or @p 0L if it doesn't exist.
+ */
+void* remove_ctnr(CONTAINER ctnr);
 
 #endif

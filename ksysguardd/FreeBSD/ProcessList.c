@@ -252,14 +252,13 @@ updateProcess(int pid)
 static void
 cleanupProcessList(void)
 {
-	int i;
+	ProcessInfo* ps;
 
 	ProcessCount = 0;
 	/* All processes that do not have the active flag set are assumed dead
 	 * and will be removed from the list. The alive flag is cleared. */
-	for (i = 0; i < level_ctnr(ProcessList); i++)
+	for (ps = first_ctnr(ProcessList); ps; ps = next_ctnr(ProcessList))
 	{
-		ProcessInfo* ps = get_ctnr(ProcessList, i);
 		if (ps->alive)
 		{
 			/* Process is still alive. Just clear flag. */
@@ -271,7 +270,7 @@ cleanupProcessList(void)
 			/* Process has probably died. We remove it from the list and
 			 * destruct the data structure. i needs to be decremented so
 			 * that after i++ the next list element will be inspected. */
-			free(remove_ctnr(ProcessList, i--));
+			free(remove_ctnr(ProcessList));
 		}
 	}
 }

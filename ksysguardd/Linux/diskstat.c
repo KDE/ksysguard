@@ -133,8 +133,8 @@ int updateDiskStat(void)
 		return -1;
 	}
 
-	for (i = 0; i < level_ctnr(DiskStatList); i++)
-		free(remove_ctnr(DiskStatList, i--));
+	for (i = level_ctnr(DiskStatList); i >= 0; --i)
+		free(pop_ctnr(DiskStatList));
 
 	while ((mnt_info = getmntent(fh)) != NULL) {
 		if (statfs(mnt_info->mnt_dir, &fs_info) < 0)

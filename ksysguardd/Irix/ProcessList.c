@@ -236,16 +236,15 @@ static int updateProcess( pid_t pid ) {
 
 static void cleanupProcessList( void ) {
 
-	int	i;
+	ProcessInfo *ps;
 
 	ProcessCount = 0;
-	for( i = 0; i < level_ctnr( ProcessList ); i++ ) {
-		ProcessInfo *ps = get_ctnr( ProcessList, i );
+	for( ps = first_ctnr( ProcessList ); ps; ps = next_ctnr( ProcessList )) {
 		if( ps->alive ) {
 			ps->alive = 0;
 			ProcessCount++;
 		} else {
-			free( remove_ctnr( ProcessList, i-- ));
+			free( remove_ctnr( ProcessList ));
 		}
 	}
 }

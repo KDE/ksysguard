@@ -116,6 +116,8 @@ void
 exitCpuInfo(void)
 {
 	CpuInfoOK = -1;
+
+	free(Clocks);
 }
 
 int

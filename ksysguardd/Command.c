@@ -136,14 +136,14 @@ registerCommand(const char* command, cmdExecutor ex)
 void
 removeCommand(const char* command)
 {
+	Command* cmd;
 	int i;
 
-	for (i = 0; i < level_ctnr(CommandList); i++)
+	for (cmd = first_ctnr(CommandList); cmd; cmd = next_ctnr(CommandList))
 	{
-		Command* cmd = (Command*) get_ctnr(CommandList, i);
 		if (strcmp(cmd->command, command) == 0)
 		{
-			remove_ctnr(CommandList, i);
+			remove_ctnr(CommandList);
 			if (cmd->command)
 				free(cmd->command);
 			if (cmd->type)

@@ -34,6 +34,8 @@ void destrLogFileList(void *ptr)
 	if (ptr) {
 		if (((ConfigLogFile*)ptr)->name)
 			free(((ConfigLogFile*)ptr)->name);
+
+		free(ptr);
 	}
 }
 

@@ -82,17 +82,12 @@ getCachedPWUID(uid_t uid)
 		/* Cleanup cache entries every TIMEOUT seconds so that we
 		 * don't pile tons of unused entries, and to make sure that
 		 * our entries are not outdated. */
-		long i;
-		for (i = 0; i < level_ctnr(UIDCache); ++i)
+		for (entry = first_ctnr(UIDCache); entry; entry = next_ctnr(UIDCache))
 		{
 			/* If a cache entry has not been updated for TIMEOUT
 			 * seconds the entry is removed. */
-			entry = get_ctnr(UIDCache, i);
 			if (stamp - entry->tStamp > TIMEOUT)
-			{
-				entry = remove_ctnr(UIDCache, i--);
-				destrCachedPWUID(entry);
-			}
+				destrCachedPWUID(remove_ctnr(UIDCache));
 		}
 		lastCleanup = stamp;
 	}
