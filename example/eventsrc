@@ -117,6 +117,7 @@ Name[zh_TW.Big5]=感測器通知
 Comment=sensor exceted critical limit
 Comment[ara]=المراقب تعدى الحد المصيري
 Comment[az]=sensor kritik limiti aşdı
+Comment[bs]=Baterija je blizu potpunog pražnjenja
 Comment[cs]=senzor překročil kritickou hodnotu
 Comment[da]=sensor gik ud over kritisk grænse
 Comment[en_GB]=sensor exceeded critical limit
