@@ -13,8 +13,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>328</width>
-            <height>215</height>
+            <width>307</width>
+            <height>213</height>
         </rect>
     </property>
     <property stdset="1">
@@ -64,6 +64,27 @@
                         <string>Enable the minimum value alarm.</string>
                     </property>
                 </widget>
+                <spacer row="1"  column="2" >
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer1_3</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
                 <spacer row="0"  column="1" >
                     <property>
                         <name>name</name>
@@ -97,153 +118,23 @@
                     </property>
                 </widget>
                 <widget row="0"  column="3" >
-                    <class>QSpinBox</class>
+                    <class>QLineEdit</class>
                     <property stdset="1">
                         <name>name</name>
                         <cstring>lowerLimit</cstring>
                     </property>
                     <property stdset="1">
-                        <name>maxValue</name>
-                        <number>99999999</number>
-                    </property>
-                    <property stdset="1">
                         <name>enabled</name>
                         <bool>false</bool>
                     </property>
-                    <property>
-                        <name>whatsThis</name>
-                        <string>If the sensor falls below this value a warning is displayed.</string>
-                    </property>
-                </widget>
-                <spacer row="1"  column="1" >
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer1_3</cstring>
-                    </property>
                     <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Vertical</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
+                        <name>minimumSize</name>
                         <size>
-                            <width>20</width>
-                            <height>20</height>
+                            <width>70</width>
+                            <height>0</height>
                         </size>
                     </property>
-                </spacer>
-            </grid>
-        </widget>
-        <widget row="2"  column="0" >
-            <class>QGroupBox</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>GroupBox1_2</cstring>
-            </property>
-            <property stdset="1">
-                <name>title</name>
-                <string>Alarm for maximum value</string>
-            </property>
-            <grid>
-                <property stdset="1">
-                    <name>margin</name>
-                    <number>11</number>
-                </property>
-                <property stdset="1">
-                    <name>spacing</name>
-                    <number>6</number>
-                </property>
-                <widget row="0"  column="0" >
-                    <class>QCheckBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>upperLimitActive</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>Enable Alarm</string>
-                    </property>
-                    <property>
-                        <name>whatsThis</name>
-                        <string>Enable the maximum value alarm.</string>
-                    </property>
                 </widget>
-                <spacer row="0"  column="1" >
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer1_2</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget row="0"  column="2" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>TextLabel2_2</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>Upper Limit</string>
-                    </property>
-                </widget>
-                <widget row="0"  column="3" >
-                    <class>QSpinBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>upperLimit</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>maxValue</name>
-                        <number>99999999</number>
-                    </property>
-                    <property stdset="1">
-                        <name>enabled</name>
-                        <bool>false</bool>
-                    </property>
-                    <property>
-                        <name>whatsThis</name>
-                        <string>If the sensor exceeds this value a warning is displayed.</string>
-                    </property>
-                </widget>
-                <spacer row="1"  column="1" >
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer2</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Vertical</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
             </grid>
         </widget>
         <widget row="3"  column="0" >
@@ -375,6 +266,113 @@
                 </widget>
             </hbox>
         </widget>
+        <widget row="2"  column="0" >
+            <class>QGroupBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>GroupBox1_2</cstring>
+            </property>
+            <property stdset="1">
+                <name>title</name>
+                <string>Alarm for maximum value</string>
+            </property>
+            <grid>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>11</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget row="0"  column="0" >
+                    <class>QCheckBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>upperLimitActive</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Enable Alarm</string>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enable the maximum value alarm.</string>
+                    </property>
+                </widget>
+                <spacer row="0"  column="1" >
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer1_2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget row="0"  column="2" >
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel2_2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Upper Limit</string>
+                    </property>
+                </widget>
+                <widget row="0"  column="3" >
+                    <class>QLineEdit</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>upperLimit</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>enabled</name>
+                        <bool>false</bool>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>70</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </widget>
+                <spacer row="1"  column="2" >
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </grid>
+        </widget>
     </grid>
 </widget>
 <connections>
@@ -391,15 +389,15 @@
         <slot>reject()</slot>
     </connection>
     <connection>
-        <sender>upperLimitActive</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>upperLimit</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
         <sender>lowerLimitActive</sender>
         <signal>toggled(bool)</signal>
         <receiver>lowerLimit</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>upperLimitActive</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>upperLimit</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
     <slot access="public">applyClicked()</slot>

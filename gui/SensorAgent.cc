@@ -198,8 +198,7 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 void
 SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 {
-	QString aux = QString::fromLocal8Bit(buffer, buflen);
-	errorBuffer += aux;
+	errorBuffer += QString::fromLocal8Bit(buffer, buflen);
 
 	int start = 0;
 	int end;
@@ -210,6 +209,7 @@ SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 			emit reconfigure(this);
 			errorBuffer.remove(start, end - start + 1);
 		}
+		start = end + 1;
 	}
 
 	if (!errorBuffer.isEmpty())

@@ -215,9 +215,9 @@ MultiMeter::settings()
 	mms->title->setFocus();
 	mms->showUnit->setChecked(showUnit);
 	mms->lowerLimitActive->setChecked(lowerLimitActive);
-	mms->lowerLimit->setValue(lowerLimit);
+	mms->lowerLimit->setText(QString("%1").arg(lowerLimit));
 	mms->upperLimitActive->setChecked(upperLimitActive);
-	mms->upperLimit->setValue(upperLimit);
+	mms->upperLimit->setText(QString("%1").arg(upperLimit));
 	connect(mms->applyButton, SIGNAL(clicked()),
 			this, SLOT(applySettings()));
 
@@ -234,9 +234,9 @@ MultiMeter::applySettings()
 	showUnit = mms->showUnit->isChecked();
 	setTitle(mms->title->text(), unit);
 	lowerLimitActive = mms->lowerLimitActive->isChecked();
-	lowerLimit = mms->lowerLimit->text().toLong();
+	lowerLimit = mms->lowerLimit->text().toDouble();
 	upperLimitActive = mms->upperLimitActive->isChecked();
-	upperLimit = mms->upperLimit->text().toLong();
+	upperLimit = mms->upperLimit->text().toDouble();
 
 	modified = TRUE;
 }
