@@ -43,15 +43,13 @@ noinst_HEADERS = ktop.h memory.h settings.h cpu.h TaskMan.h ProcListPage.h\
 	PerfMonPage.h OSStatus.h ReniceDlg.h
 
 # just to make sure, automake makes them 
-BUILTSOURCES =	ktop.moc memory.moc settings.moc cpu.moc TaskMan.moc ProcListPage.moc IconList.moc ProcessList.moc ProcessTree.moc ProcTreePage.moc PerfMonPage.moc ReniceDlg.moc
-
-# if you "make distclean", this files get removed. If you want to remove
-# them while "make clean", use CLEANFILES
-DISTCLEANFILES = $(BUILTSOURCES) ktop \#*\# *~
+METASOURCES =	ktop.moc memory.moc settings.moc cpu.moc TaskMan.moc ProcListPage.moc ProcessList.moc ProcessTree.moc ProcTreePage.moc PerfMonPage.moc ReniceDlg.moc
 
 # make messages.po. Move this one to ../po/ and "make merge" in po
 messages:
 	$(XGETTEXT) -C -ki18n -x $(includedir)/kde.pot $(ktop_SOURCES) && mv messages.po ../po/ktop.pot
+
+kde_icon_DATA = ktop.xpm
 
 # just install datas here. Use install-exec-data for scripts and etc.
 # the binary itself is already installed from automake
@@ -60,60 +58,11 @@ messages:
 # if you have more of them, create a subdirectory with an extra Makefile 
 install-data-local: 
 	$(mkinstalldirs) $(APPSDIR)
-	$(INSTALL_DATA) ktop.kdelnk $(APPSDIR)
-	$(mkinstalldirs) $(kde_icondir)
-	$(INSTALL_DATA) ktop.xpm $(kde_icondir)
+	$(INSTALL_DATA) $(srcdir)/ktop.kdelnk $(APPSDIR)
 	$(mkinstalldirs) $(kde_minidir)
-	$(INSTALL_DATA) mini-ktop.xpm $(kde_minidir)/ktop.xpm
+	$(INSTALL_DATA) $(srcdir)/mini-ktop.xpm $(kde_minidir)/ktop.xpm
 
 # remove ALL you have installed in install-data-local or install-exec-local
 uninstall-local:
 	-rm -f $(APPSDIR)/ktop.kdelnk
-	-rm -f $(kde_icondir)/ktop.xpm
 	-rm -f $(kde_minidir)/mini-ktop.xpm
-
-# add a dependency for every moc file to be full portable
-# I've added a key binding to emacs for this. 
-ktop.cpp:ktop.moc
-ktop.moc: ktop.h
-	$(MOC) ktop.h -o ktop.moc
-
-memory.cpp:memory.moc
-memory.moc: memory.h
-	$(MOC) memory.h -o memory.moc
-
-cpu.cpp:cpu.moc
-cpu.moc: cpu.h
-	$(MOC) cpu.h -o cpu.moc
-
-TaskMan.cpp:TaskMan.moc
-TaskMan.moc: TaskMan.h
-	$(MOC) TaskMan.h -o TaskMan.moc
-
-settings.cpp:settings.moc
-settings.moc: settings.h
-	$(MOC) settings.h -o settings.moc
-
-ReniceDlg.cpp : ReniceDlg.moc
-ReniceDlg.moc : ReniceDlg.h
-	$(MOC) ReniceDlg.h -o ReniceDlg.moc
-	
-ProcListPage.cpp : ProcListPage.moc
-ProcListPage.moc : ProcListPage.h
-	$(MOC) ProcListPage.h -o ProcListPage.moc
-
-ProcessList.cpp : ProcessList.moc
-ProcessList.moc : ProcessList.h
-	$(MOC) ProcessList.h -o ProcessList.moc
-
-ProcTreePage.cpp : ProcTreePage.moc
-ProcTreePage.moc : ProcTreePage.h
-	$(MOC) ProcTreePage.h -o ProcTreePage.moc
-
-ProcessTree.cpp : ProcessTree.moc
-ProcessTree.moc : ProcessTree.h
-	$(MOC) ProcessTree.h -o ProcessTree.moc
-
-PerfMonPage.cpp : PerfMonPage.moc
-PerfMonPage.moc : PerfMonPage.h
-	$(MOC) PerfMonPage.h -o PerfMonPage.moc

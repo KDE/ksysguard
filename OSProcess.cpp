@@ -180,7 +180,7 @@ OSProcess::read(const char* pidStr)
 #include <sys/sysctl.h>
 #include <sys/user.h>                    
 
-OSProcess::OSProcess(const char* pidStr, TimeStampList* /*lastTStamps*/,
+OSProcess::OSProcess(const void* pidStr, TimeStampList* /*lastTStamps*/,
                                          TimeStampList* /*newTStamps*/)
 {
 	error = false;
@@ -244,7 +244,7 @@ OSProcess::read(const char* pidStr)
 }
 
 #else
-OSProcess::OSProcess(const char* pidStr, TimeStampList* lastTStamps,
+OSProcess::OSProcess(const void* pidStr, TimeStampList* lastTStamps,
                                          TimeStampList* newTStamps)
 {
 }
