@@ -31,8 +31,4 @@ extern FILE* CurrentClient;
 void updateModules(void);
 void checkModules(void);
 
-
-// DEBUG
-#define VERSION "0.7"
-#define KSYSGUARDDRCFILE "/etc/ksysguarddrc"
 #endif
