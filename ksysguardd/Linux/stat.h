@@ -62,5 +62,7 @@ void printInterruptx(const char* cmd);
 void printInterruptxInfo(const char* cmd);
 void printCtxt(const char* cmd);
 void printCtxtInfo(const char* cmd);
+void printDiskIO(const char* cmd);
+void printDiskIOInfo(const char* cmd);
 
 #endif

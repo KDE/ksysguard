@@ -21,6 +21,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -40,6 +41,13 @@ typedef struct
 	long txBytes;
 	char name[32];
 } NetDevInfo;
+
+/* We have observed deviations of up to 5% in the accuracy of the timer
+ * interrupts. So we try to measure the interrupt interval and use this
+ * value to calculate timing dependant values. */
+static float timeInterval = TIMERINTERVAL;
+static struct timeval lastSampling;
+static struct timeval currSampling;
 
 #define NETDEVBUFSIZE 4096
 static char NetDevBuf[NETDEVBUFSIZE];
@@ -108,6 +116,12 @@ processNetDev_(void)
 	if (i != NetDevCnt)
 		return (-1);
 
+	/* save exact time inverval between this and the last read of
+	 * /proc/stat */
+	timeInterval = currSampling.tv_sec + currSampling.tv_usec / 100000.0 -
+		lastSampling.tv_sec - lastSampling.tv_usec / 100000.0;
+	lastSampling = currSampling;
+
 	Dirty = 0;
 	return (0);
 }
@@ -153,7 +167,6 @@ initNetDev(void)
 
 	/* skip 2 first lines */
 	for (i = 0; i < 2; i++)
-
 	{
 		sscanf(netDevBufP, format, buf);
 		buf[sizeof(buf) - 1] = '\0';
@@ -245,9 +258,11 @@ Inter-|   Receive                                                |  Transmit
 		NetDevOk = -1;
 		return (-1);
 	}
+	gettimeofday(&currSampling, 0);
 	close(fd);
 	NetDevOk = 1;
 	NetDevBuf[n] = '\0';
+
 	Dirty = 1;
 
 	return (0);
@@ -270,7 +285,8 @@ printNetDevRecBytes(const char* cmd)
 	for (i = 0; i < MAXNETDEVS; ++i)
 		if (strcmp(NetDevs[i].name, dev) == 0)
 		{
-			printf("%ld\n", NetDevs[i].rxBytes / (1024 * TIMERINTERVAL));
+			printf("%lu\n", (unsigned long)
+				   (NetDevs[i].rxBytes / (1024 * timeInterval)));
 			return;
 		}
 
@@ -300,7 +316,8 @@ printNetDevSentBytes(const char* cmd)
 	for (i = 0; i < MAXNETDEVS; ++i)
 		if (strcmp(NetDevs[i].name, dev) == 0)
 		{
-			printf("%ld\n", NetDevs[i].txBytes / (1024 * TIMERINTERVAL));
+			printf("%lu\n", (unsigned long)
+				   (NetDevs[i].txBytes / (1024 * timeInterval)));
 			return;
 		}
 

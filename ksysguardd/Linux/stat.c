@@ -21,6 +21,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -64,16 +65,37 @@ typedef struct
        total, rio, wio, rBlk, wBlk */
 	DiskLoadSample s[5];
 } DiskLoadInfo;
-	
+
+typedef struct DiskIOInfo
+{
+	int major;
+	int minor;
+	int alive;
+	DiskLoadSample total;
+	DiskLoadSample rio;
+	DiskLoadSample wio;
+	DiskLoadSample rblk;
+	DiskLoadSample wblk;
+	struct DiskIOInfo* next;
+} DiskIOInfo;
+
 #define STATBUFSIZE 2048
 static char StatBuf[STATBUFSIZE];
 static int Dirty = 0;
+
+/* We have observed deviations of up to 5% in the accuracy of the timer
+ * interrupts. So we try to measure the interrupt interval and use this
+ * value to calculate timing dependant values. */
+static float timeInterval = TIMERINTERVAL;
+static struct timeval lastSampling;
+static struct timeval currSampling;
 
 static CPULoadInfo CPULoad;
 static CPULoadInfo* SMPLoad = 0;
 static unsigned CPUCount = 0;
 static DiskLoadInfo* DiskLoad = 0;
 static unsigned DiskCount = 0;
+static DiskIOInfo* DiskIO = 0;
 static unsigned long PageIn = 0;
 static unsigned long OldPageIn = 0;
 static unsigned long PageOut = 0;
@@ -89,12 +111,16 @@ static int initStatDisk(char* tag, char* buf, char* label, char* shortLabel,
 static void updateCPULoad(const char* line, CPULoadInfo* load);
 static int processDisk(char* tag, char* buf, char* label, int index);
 static void processStat(void);
+static int processDiskIO(const char* buf);
+static void cleanupDiskList(void);
 
 static int
 initStatDisk(char* tag, char* buf, char* label, char* shortLabel, int index,
 			 cmdExecutor ex, cmdExecutor iq)
 {
 	char sensorName[128];
+
+	gettimeofday(&lastSampling, 0);
 
 	if (strcmp(label, tag) == 0)
 	{
@@ -177,6 +203,131 @@ processDisk(char* tag, char* buf, char* label, int index)
 	return (0);
 }
 
+static int
+processDiskIO(const char* buf)
+{
+	/* Process disk_io lines as provided by 2.4.x kernels.
+	 * disk_io: (3,0):(524392,341664,14532074,182728,11468624) */
+	int major, minor;
+	unsigned long total, rblk, rio, wblk, wio;
+	DiskIOInfo* ptr = DiskIO;
+	DiskIOInfo* last = 0;
+	char sensorName[128];
+
+	if (sscanf(buf, "disk_io: (%d,%d):(%lu,%lu,%lu,%lu,%lu)", &major, &minor,
+			   &total, &rio, &rblk, &wio, &wblk) != 7)
+		return (-1);
+
+	while (ptr)
+	{
+		if (ptr->major == major && ptr->minor == minor)
+		{
+			/* The IO device has already been registered. */
+			ptr->total.delta = total - ptr->total.old;
+			ptr->total.old = total;
+			ptr->rio.delta = rio - ptr->rio.old;
+			ptr->rio.old = rio;
+			ptr->wio.delta = wio - ptr->wio.old;
+			ptr->wio.old = wio;
+			ptr->rblk.delta = rblk - ptr->rblk.old;
+			ptr->rblk.old = rblk;
+			ptr->wblk.delta = wblk - ptr->wblk.old;
+			ptr->wblk.old = wblk;
+			ptr->alive = 1;
+			return (0);
+		}
+		last = ptr;
+		ptr = ptr->next;
+	}
+
+	/* The IO device has not been registered yet. We need to add it. */
+	ptr = (DiskIOInfo*) malloc(sizeof(DiskIOInfo));
+	ptr->major = major;
+	ptr->minor = minor;
+	ptr->total.delta = 0;
+	ptr->total.old = total;
+	ptr->rio.delta = 0;
+	ptr->rio.old = rio;
+	ptr->wio.delta = 0;
+	ptr->wio.old = wio;
+	ptr->rblk.delta = 0;
+	ptr->rblk.old = rblk;
+	ptr->wblk.delta = 0;
+	ptr->wblk.old = wblk;
+	ptr->alive = 1;
+	ptr->next = 0;
+	if (last)
+	{
+		/* Append new entry at end of list. */
+		last->next = ptr;
+	}
+	else
+	{
+		/* List is empty, so we insert the fist element into the list. */
+		DiskIO = ptr;
+	}
+	sprintf(sensorName, "disk/%d:%d/total", major, minor);
+	registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo);
+	sprintf(sensorName, "disk/%d:%d/rio", major, minor);
+	registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo);
+	sprintf(sensorName, "disk/%d:%d/wio", major, minor);
+	registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo);
+	sprintf(sensorName, "disk/%d:%d/rblk", major, minor);
+	registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo);
+	sprintf(sensorName, "disk/%d:%d/wblk", major, minor);
+	registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo);
+
+	return (0);
+}
+
+static void
+cleanupDiskList(void)
+{
+	DiskIOInfo* ptr = DiskIO;
+	DiskIOInfo* last = 0;
+
+	while (ptr)
+	{
+		if (ptr->alive == 0)
+		{
+			DiskIOInfo* newPtr;
+			char sensorName[128];
+
+			/* Disk device has disappeared. We have to remove it from
+			 * the list and unregister the monitors. */
+			sprintf(sensorName, "disk/%d:%d/total", ptr->major, ptr->minor);
+			removeMonitor(sensorName);
+			sprintf(sensorName, "disk/%d:%d/rio", ptr->major, ptr->minor);
+			removeMonitor(sensorName);
+			sprintf(sensorName, "disk/%d:%d/wio", ptr->major, ptr->minor);
+			removeMonitor(sensorName);
+			sprintf(sensorName, "disk/%d:%d/rblk", ptr->major, ptr->minor);
+			removeMonitor(sensorName);
+			sprintf(sensorName, "disk/%d:%d/wblk", ptr->major, ptr->minor);
+			removeMonitor(sensorName);
+			if (last)
+			{
+				last->next = ptr->next;
+				newPtr = ptr->next;
+			}
+			else
+			{
+				DiskIO = ptr->next;
+				newPtr = DiskIO;
+				last = 0;
+			}
+			free (ptr);
+			ptr = newPtr;
+		}
+		else
+		{
+			ptr->alive = 0;
+			last = ptr;
+			ptr = ptr->next;
+		}
+	}
+}
+
 static void
 processStat(void)
 {
@@ -217,6 +368,8 @@ processStat(void)
 			;
 		else if (processDisk(tag, buf, "disk_wblk", 4))
 			;
+		else if (strcmp("disk_io:", tag) == 0)
+			processDiskIO(buf);
 		else if (strcmp("page", tag) == 0)
 		{
 			unsigned long v1, v2;
@@ -253,6 +406,13 @@ processStat(void)
 		}
 	}
 
+	/* save exact time inverval between this and the last read of /proc/stat */
+	timeInterval = currSampling.tv_sec + currSampling.tv_usec / 100000.0 -
+		lastSampling.tv_sec - lastSampling.tv_usec / 100000.0;
+	lastSampling = currSampling;
+
+	cleanupDiskList();
+
 	Dirty = 0;
 }
 
@@ -286,6 +446,9 @@ initStat(void)
 	 * ctxt 54155
 	 * btime 917379184
 	 * processes 347 
+	 *
+	 * Linux kernel >= 2.4.0 have one or more disk_io: lines instead of
+	 * the disk_* lines.
 	 */
 
 	char format[32];
@@ -378,6 +541,8 @@ initStat(void)
 		else if (initStatDisk(tag, buf, "disk_wblk", "wblk", 4, printDiskWBlk,
 							  printDiskWBlkInfo))
 			;
+		else if (strcmp("disk_io:", tag) == 0)
+			processDiskIO(buf);
 		else if (strcmp("page", tag) == 0)
 		{
 			sscanf(buf + 5, "%lu %lu", &OldPageIn, &OldPageOut);
@@ -467,8 +632,10 @@ updateStat(void)
 			   "/proc/stat!");
 		return (-1);
 	}
+	gettimeofday(&currSampling, 0);
 	close(fd);
 	StatBuf[n] = '\0';
+
 	Dirty = 1;
 
 	return (0);
@@ -618,7 +785,7 @@ printDiskTotal(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
-	printf("%lu\n", DiskLoad[id].s[0].delta / TIMERINTERVAL);
+	printf("%lu\n", (unsigned long) (DiskLoad[id].s[0].delta / timeInterval));
 }
 
 void
@@ -638,7 +805,7 @@ printDiskRIO(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
-	printf("%lu\n", DiskLoad[id].s[1].delta / TIMERINTERVAL);
+	printf("%lu\n", (unsigned long ) (DiskLoad[id].s[1].delta / timeInterval));
 }
 
 void
@@ -658,7 +825,7 @@ printDiskWIO(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
-	printf("%lu\n", DiskLoad[id].s[2].delta / TIMERINTERVAL);
+	printf("%lu\n", (unsigned long) (DiskLoad[id].s[2].delta / timeInterval));
 }
 
 void
@@ -679,7 +846,8 @@ printDiskRBlk(const char* cmd)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
 	/* a block is 512 bytes or 1/2 kBytes */
-	printf("%lu\n", DiskLoad[id].s[3].delta / TIMERINTERVAL * 2);
+	printf("%lu\n", (unsigned long)
+		   (DiskLoad[id].s[3].delta / timeInterval * 2));
 }
 
 void
@@ -700,7 +868,8 @@ printDiskWBlk(const char* cmd)
 		processStat();
 	sscanf(cmd + 9, "%d", &id);
 	/* a block is 512 bytes or 1/2 kBytes */
-	printf("%lu\n", DiskLoad[id].s[4].delta / TIMERINTERVAL * 2);
+	printf("%lu\n", (unsigned long)
+		   (DiskLoad[id].s[4].delta / timeInterval * 2));
 }
 
 void
@@ -717,7 +886,7 @@ printPageIn(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	printf("%lu\n", PageIn / TIMERINTERVAL);
+	printf("%lu\n", (unsigned long) (PageIn / timeInterval));
 }
 
 void
@@ -731,7 +900,7 @@ printPageOut(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	printf("%lu\n", PageOut / TIMERINTERVAL);
+	printf("%lu\n", (unsigned long) (PageOut / timeInterval));
 }
 
 void
@@ -748,7 +917,7 @@ printInterruptx(const char* cmd)
 	if (Dirty)
 		processStat();
 	sscanf(cmd + strlen("cpu/interrupts/int"), "%d", &id);
-	printf("%lu\n", Intr[id] / TIMERINTERVAL);
+	printf("%lu\n", (unsigned long) (Intr[id] / timeInterval));
 }
 
 void
@@ -765,11 +934,86 @@ printCtxt(const char* cmd)
 {
 	if (Dirty)
 		processStat();
-	printf("%lu\n", Ctxt / TIMERINTERVAL);
+	printf("%lu\n", (unsigned long) (Ctxt / timeInterval));
 }
 
 void
 printCtxtInfo(const char* cmd)
 {
 	printf("Context switches\t0\t0\t1/s\n");
+}
+
+void
+printDiskIO(const char* cmd)
+{
+	int major, minor;
+	char name[16];
+	DiskIOInfo* ptr = DiskIO;
+
+	sscanf(cmd, "disk/%d:%d/%s", &major, &minor, name);
+
+	while (ptr && ptr->major != major && ptr->minor != minor)
+		ptr = ptr->next;
+
+	if (!ptr)
+	{
+		fprintf(stderr, "Disk device disappeared\n");
+		return;
+	}
+	if (strcmp(name, "total") == 0)
+		printf("%lu\n", (unsigned long) (ptr->total.delta / timeInterval));
+	else if (strcmp(name, "rio") == 0)
+		printf("%lu\n", (unsigned long) (ptr->rio.delta / timeInterval));
+	else if (strcmp(name, "wio") == 0)
+		printf("%lu\n", (unsigned long) (ptr->wio.delta / timeInterval));
+	else if (strcmp(name, "rblk") == 0)
+		printf("%lu\n", (unsigned long)
+			   (ptr->rblk.delta / (timeInterval * 2)));
+	else if (strcmp(name, "wblk") == 0)
+		printf("%lu\n", (unsigned long)
+			   (ptr->wblk.delta / (timeInterval * 2)));
+	else
+	{
+		printf("0\n");
+		fprintf(stderr, "ERROR: unknown disk device property %s\n", name);
+	}
+}
+
+void
+printDiskIOInfo(const char* cmd)
+{
+	int major, minor;
+	char name[16];
+	DiskIOInfo* ptr = DiskIO;
+
+	sscanf(cmd, "disk/%d:%d/%s", &major, &minor, name);
+
+	while (ptr && ptr->major != major && ptr->minor != minor)
+		ptr = ptr->next;
+
+	if (!ptr)
+	{
+		/* Disk device has disappeared. Print a dummy answer. */
+		printf("Dummy\t0\t0\t\n");
+		return;
+	}
+	/* remove trailing '?' */
+	name[strlen(name) - 1] = '\0';
+
+	if (strcmp(name, "total") == 0)
+		printf("Total accesses device %d, %d\t0\t0\t1/s\n", major, minor);
+	else if (strcmp(name, "rio") == 0)
+		printf("Read data device %d, %d\t0\t0\t1/s\n", major, minor);
+	else if (strcmp(name, "wio") == 0)
+		printf("Write data device %d, %d\t0\t0\t1/s\n", major, minor);
+	else if (strcmp(name, "rblk") == 0)
+		printf("Read accesses device %d, %d\t0\t0\tkBytes/s\n", major, minor);
+	else if (strcmp(name, "wblk") == 0)
+		printf("Write accesses device %d, %d\t0\t0\tkBytes/s\n", major, minor);
+	else
+	{
+		printf("Dummy\t0\t0\t\n");
+		fprintf(stderr, "ERROR: Request for unknown device property %s\n",
+				name);
+	}
 }
