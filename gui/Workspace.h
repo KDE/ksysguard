@@ -66,6 +66,7 @@ public slots:
 	}
 	void saveWorkSheetAs(WorkSheet* sheet);
 	void deleteWorkSheet();
+	void removeAllWorkSheets();
 	void cut();
 	void copy();
 	void paste();

@@ -72,6 +72,7 @@ k_dcop:
 
 public slots:
 	void registerRecentURL(const KURL& url);
+	void resetWorkSheets();
 
 protected:
 	virtual void customEvent(QCustomEvent* e);

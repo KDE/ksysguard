@@ -44,6 +44,7 @@
 #include <kmessagebox.h>
 #include <kstdaction.h>
 #include <kwinmodule.h>
+#include <kstandarddirs.h>
 
 #include <ksgrd/SensorAgent.h>
 #include <ksgrd/SensorManager.h>
@@ -120,6 +121,7 @@ TopLevel::TopLevel(const char *name)
 	(void) new KAction(i18n("&Work Sheet Properties..."), "configure", 0, ws,
 					   SLOT(configure()), actionCollection(),
 					   "configure_sheet");
+	KStdAction::revert(this, SLOT( resetWorkSheets() ), actionCollection() );
 	KStdAction::showToolbar("mainToolBar", actionCollection());
 	statusBarTog = KStdAction::showStatusbar(this, SLOT(showStatusBar()), actionCollection());
 	KStdAction::configureToolbars(this, SLOT(editToolbars()), actionCollection());
@@ -139,6 +141,29 @@ TopLevel::~TopLevel()
 /*
  * DCOP Interface functions
  */
+
+
+void TopLevel::resetWorkSheets()
+{
+	ws->removeAllWorkSheets();
+
+	KStandardDirs* kstd = KGlobal::dirs();
+	kstd->addResourceType("data", "share/apps/ksysguard");
+
+	QString workDir = kstd->saveLocation("data", "ksysguard");
+
+	QString f = kstd->findResource("data", "SystemLoad.sgrd");
+	QString fNew = workDir + "/" + i18n("System Load") + ".sgrd";
+	if (!f.isEmpty())
+		ws->restoreWorkSheet(f, fNew);
+
+	f = kstd->findResource("data", "ProcessTable.sgrd");
+	fNew = workDir + "/" + i18n("Process Table") + ".sgrd";
+	if (!f.isEmpty())
+		ws->restoreWorkSheet(f, fNew);
+}
+
+
 void
 TopLevel::showProcesses()
 {

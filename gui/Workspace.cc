@@ -338,6 +338,14 @@ Workspace::deleteWorkSheet()
 }
 
 void
+Workspace::removeAllWorkSheets()
+{
+	WorkSheet *sheet;
+	while ( sheet = ( WorkSheet * )currentPage() )
+		removePage( sheet );
+}
+
+void
 Workspace::deleteWorkSheet(const QString& fileName)
 {
 	QPtrListIterator<WorkSheet> it(sheets);
