@@ -5,6 +5,7 @@ SwallowExec=xload -jumpscroll 1 -fg CadetBlue -bg grey76 -nolabel  -geometry 50x
 BinaryPattern=
 MimeType=
 Comment=Informations about your system status
+Comment[ca]=Informacions tocants a l'estat del sistema
 Comment[cs]=Informace o stavu va¹eho systému
 Comment[da]=Information om systemets status
 Comment[es]=Información sobre el estado de tu sistema
