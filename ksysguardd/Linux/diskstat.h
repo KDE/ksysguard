@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-	   
+
     Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -16,26 +16,26 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	$Id$
+    $Id$
 */
 
-#ifndef _diskstat_h_
-#define _diskstat_h_
+#ifndef KSG_DISKSTAT_H
+#define KSG_DISKSTAT_H
 
-void initDiskStat(struct SensorModul* sm);
-void exitDiskStat(void);
+void initDiskStat( struct SensorModul* );
+void exitDiskStat( void );
 
-int updateDiskStat(void);
-void checkDiskStat(void);
+int updateDiskStat( void );
+void checkDiskStat( void );
 
-void printDiskStat(const char* cmd);
-void printDiskStatInfo(const char* cmd);
+void printDiskStat( const char* );
+void printDiskStatInfo( const char* );
 
-void printDiskStatUsed(const char* cmd);
-void printDiskStatUsedInfo(const char* cmd);
-void printDiskStatFree(const char* cmd);
-void printDiskStatFreeInfo(const char* cmd);
-void printDiskStatPercent(const char* cmd);
-void printDiskStatPercentInfo(const char* cmd);
+void printDiskStatUsed( const char* );
+void printDiskStatUsedInfo( const char* );
+void printDiskStatFree( const char* );
+void printDiskStatFreeInfo( const char* );
+void printDiskStatPercent( const char* );
+void printDiskStatPercentInfo( const char* );
 
 #endif

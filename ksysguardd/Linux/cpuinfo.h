@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
-	Copyright (c) 2000-2001 Chris Schlaeger <cs@kde.org>
-    
+
+    Copyright (c) 2000-2001 Chris Schlaeger <cs@kde.org>
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -16,18 +16,18 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	$Id$
+    $Id$
 */
 
-#ifndef _cpuinfo_h_
-#define _cpuinfo_h_
+#ifndef KSG_CPUINFO_H
+#define KSG_CPUINFO_H
 
-void initCpuInfo(struct SensorModul* sm);
-void exitCpuInfo(void);
+void initCpuInfo( struct SensorModul* );
+void exitCpuInfo( void );
 
-int updateCpuInfo(void);
+int updateCpuInfo( void );
 
-void printCPUxClock(const char*);
-void printCPUxClockInfo(const char*);
+void printCPUxClock( const char* );
+void printCPUxClockInfo( const char* );
 
 #endif

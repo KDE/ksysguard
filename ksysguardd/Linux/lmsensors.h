@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-	   
+
     Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -19,13 +19,13 @@
     $Id$
 */
 
-#ifndef _lmsensors_h_
-#define _lmsensors_h_
+#ifndef KSG_LMSENSORS_H
+#define KSG_LMSENSORS_H
 
-void initLmSensors(struct SensorModul* sm);
-void exitLmSensors(void);
+void initLmSensors( struct SensorModul* );
+void exitLmSensors( void );
 
-void printLmSensor(const char* cmd);
-void printLmSensorInfo(const char* cmd);
+void printLmSensor( const char* );
+void printLmSensorInfo( const char* );
 
 #endif
