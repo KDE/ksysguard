@@ -71,16 +71,20 @@ int ProcessLVI::compare( QListViewItem *item, int col, bool ascending ) const
       return -1;
     else if ( prev == next )
       return 0;
-    else if ( prev > next )
+    else
       return 1;
-  } else if ( type == ProcessList::Float ) {
+  }
+
+  if ( type == ProcessList::Float ) {
     double prev = KGlobal::locale()->readNumber( key( col, ascending ) );
     double next = KGlobal::locale()->readNumber( item->key( col, ascending ) );
     if ( prev < next )
       return -1;
-    else if ( prev > next )
+    else
       return 1;
-  } else if ( type == ProcessList::Time ) {
+  }
+
+  if ( type == ProcessList::Time ) {
     int hourPrev, hourNext, minutesPrev, minutesNext;
     sscanf( key( col, ascending ).latin1(), "%d:%d", &hourPrev, &minutesPrev );
     sscanf( item->key( col, ascending ).latin1(), "%d:%d", &hourNext, &minutesNext );
@@ -90,10 +94,11 @@ int ProcessLVI::compare( QListViewItem *item, int col, bool ascending ) const
       return -1;
     else if ( prev == next )
       return 0;
-    else if ( prev > next )
+    else
       return 1;
-  } else
-    return key( col, ascending ).localeAwareCompare( item->key( col, ascending ) );
+  }
+
+  return key( col, ascending ).localeAwareCompare( item->key( col, ascending ) );
 }
 
 ProcessList::ProcessList(QWidget *parent, const char* name)

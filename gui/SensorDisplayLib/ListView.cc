@@ -59,14 +59,14 @@ int PrivateListViewItem::compare( QListViewItem *item, int col, bool ascending )
       return -1;
     else if ( prev == next )
       return 0;
-    else if ( prev > next )
+    else
       return 1;
   } else if ( type == PrivateListView::Float ) {
     double prev = KGlobal::locale()->readNumber( key( col, ascending ) );
     double next = KGlobal::locale()->readNumber( item->key( col, ascending ) );
     if ( prev < next )
       return -1;
-    else if ( prev > next )
+    else
       return 1;
   } else if ( type == PrivateListView::Time ) {
     int hourPrev, hourNext, minutesPrev, minutesNext;
@@ -78,7 +78,7 @@ int PrivateListViewItem::compare( QListViewItem *item, int col, bool ascending )
       return -1;
     else if ( prev == next )
       return 0;
-    else if ( prev > next )
+    else
       return 1;
   } else if ( type == PrivateListView::DiskStat ) {
     QString prev = key( col, ascending );
