@@ -1003,8 +1003,11 @@ void TaskMan::pList_load()
 		if(ps->oabstime==ps->abstime)
 			ps->oabstime=ps->abstime-100000;
 		ps->otime=ps->time;
-//		ps->time=p[num].kp_proc.p_rtime.tv_sec*100+p[num].kp_proc.p_rtime.tv_usec/10000;
+#if __FreeBSD_version >= 300000
 		ps->time=p[num].kp_proc.p_runtime / 10000;
+#else
+		ps->time=p[num].kp_proc.p_rtime.tv_sec*100+p[num].kp_proc.p_rtime.tv_usec/10000;
+#endif
 
 		// set other data
 		ps->vm_size = (p[num].kp_eproc.e_vm.vm_tsize +
