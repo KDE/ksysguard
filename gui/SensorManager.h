@@ -61,7 +61,7 @@ public:
 
 	const QString& translateUnit(const QString& u)
 	{
-		if (units[u])
+		if (!u.isEmpty() && units[u])
 			return (*units[u]);
 		else
 			return (u);

@@ -51,7 +51,10 @@ void
 initApm(void)
 {
 	if (updateApm() < 0)
+	{
 		ApmOK = -1;
+		return;
+	}
 	else
 		ApmOK = 1;
 
