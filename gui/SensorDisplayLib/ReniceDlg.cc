@@ -20,7 +20,6 @@
 	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
 	not commit any changes without consulting me first. Thanks!
 
-	$Id$
 */
 
 #include <klocale.h>
@@ -29,13 +28,14 @@
 
 ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 					 int pid)
-	: QDialog(parent, name, true)
+	: KDialogBase( parent, "renicedialog", true, i18n("Renice Process"),
+                       KDialogBase::Ok|KDialogBase::Cancel, KDialogBase::Ok, true )
 {
-	setCaption(i18n("Renice Process"));
-
 	value = currentPPrio;
 
-	vLay = new QVBoxLayout(this, 20, -1, "ReniceLayout");
+         QWidget *page = new QWidget( this );
+         setMainWidget(page);
+	vLay = new QVBoxLayout(page, 20, -1, "ReniceLayout");
 
 	QString msg;
 	msg = i18n("You are about to change the scheduling priority of\n"
@@ -43,7 +43,7 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 			   "can decrease the nice level of a process. The lower\n"
 			   "the number is the higher the priority.\n\n"
 			   "Please enter the desired nice level:").arg(pid);
-	message = new QLabel(msg, this);
+	message = new QLabel(msg, page);
 	message->setMinimumSize(message->sizeHint());
 	vLay->addWidget(message);
 
@@ -54,7 +54,7 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 	sldLay = new QHBoxLayout();
 	vLay->addLayout(sldLay);
 
-	slider = new QSlider(-20, 19, 1, 0, QSlider::Horizontal, this, "prio" );
+	slider = new QSlider(-20, 19, 1, 0, QSlider::Horizontal, page, "prio" );
 	slider->setMaximumSize(210, 25);
 	slider->setMinimumSize(210, 25);
 	slider->setTickmarks((QSlider::TickSetting) 2);
@@ -64,7 +64,7 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 	sldLay->addWidget(slider);
 	sldLay->addSpacing(10);
 
-	lcd = new QLCDNumber(3, this, "lcd");
+	lcd = new QLCDNumber(3, page, "lcd");
 	lcd->setMaximumSize(55, 23);
 	lcd->setMinimumSize(55, 23);
 	lcd->display(value);
@@ -73,28 +73,15 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 	QObject::connect(slider, SIGNAL(valueChanged(int)),
 					 SLOT(setPriorityValue(int)));
 	sldLay->addWidget(lcd);
-
-	/*
-	 * Create an "OK" and a "Cancel" button in a horizontal layout.
-	 */
-	butLay = new QHBoxLayout();
-	vLay->addLayout(butLay);
-	butLay->addStretch(1);
-
-	okButton = new QPushButton(i18n("&OK"), this);
-	okButton->setMaximumSize(100, 30);
-	okButton->setMinimumSize(100, 30);
-	connect(okButton, SIGNAL(clicked()), SLOT(ok()));
-	butLay->addWidget(okButton);
-	butLay->addStretch(1);
-
-	cancelButton = new QPushButton(i18n("&Cancel"), this);
-	cancelButton->setMaximumSize(100, 30);
-	cancelButton->setMinimumSize(100, 30);
-	connect(cancelButton, SIGNAL(clicked()), SLOT(cancel()));
-	butLay->addWidget(cancelButton);
-	butLay->addStretch(1);
-
 	vLay->activate();
 }
 
+void ReniceDlg::slotOk()
+{
+    done(value);
+}
+
+void ReniceDlg::slotCancel()
+{
+    done(40);
+}

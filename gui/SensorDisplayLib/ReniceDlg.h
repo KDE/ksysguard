@@ -20,7 +20,6 @@
 	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
 	not commit any changes without consulting me first. Thanks!
 
-	$Id$
 */
 
 #ifndef _ReniceDlg_h_
@@ -37,7 +36,7 @@
 #undef Below
 #endif
 
-#include <qdialog.h>
+#include <kdialogbase.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qlcdnumber.h>
@@ -48,7 +47,7 @@
  * This class creates and handles a simple dialog to change the scheduling
  * priority of a process.
  */
-class ReniceDlg : public QDialog
+class ReniceDlg : public KDialogBase
 {
 	Q_OBJECT
 
@@ -60,23 +59,11 @@ public:
 
 		delete slider;
 		delete lcd;
-
-		delete okButton;
-		delete cancelButton;
-
 		delete vLay;
 	}
-
 public slots:
-	void ok()
-	{
-		done(value);
-	}
-
-	void cancel()
-	{
-		done(40);
-	}
+    void slotOk();
+    void slotCancel();
 
 private:
 	int value;
@@ -89,9 +76,6 @@ private:
 
 	QSlider* slider;
 	QLCDNumber* lcd;
-
-	QPushButton* okButton;
-	QPushButton* cancelButton;
 
 private slots:
 	void setPriorityValue(int priority)
