@@ -232,8 +232,24 @@ static int readCommand( int fd, char* cmdBuf, size_t len )
 {
   unsigned int i;
   char c;
-  for ( i = 0; ( i < len ) && ( read( fd, &c, 1 ) == 1 ) && ( c != '\n' ); ++i )
+  for ( i = 0; i < len; ++i )
+  {
+    int result = read( fd, &c, 1 );
+    if (result < 0)
+      return -1; /* Error */
+      
+    if (result == 0) {
+      if (i == 0)
+        return -1; /* Connection lost */
+
+      break; /* End of data */
+    }
+    
+    if (c == '\n')
+      break; /* End of line */
+
     cmdBuf[ i ] = c;
+  }
   cmdBuf[i] = '\0';
 
   return i;
@@ -450,7 +466,9 @@ static void handleSocketTraffic( int socketNo, const fd_set* fds )
       }
     }
   } else if ( FD_ISSET( STDIN_FILENO, fds ) ) {
-    readCommand( STDIN_FILENO, cmdBuf, sizeof( cmdBuf ) );
+    if (readCommand( STDIN_FILENO, cmdBuf, sizeof( cmdBuf ) ) < 0) {
+      exit(0);
+    }
     executeCommand( cmdBuf );
     printf( "ksysguardd> " );
     fflush( stdout );
