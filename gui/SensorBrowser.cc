@@ -92,7 +92,7 @@ SensorBrowser::disconnect()
 	for (; it.current(); ++it)
 		if ((*it)->getLVI()->isSelected())
 		{
-			debug("Disconnecting %s", (*it)->getHostName().ascii());
+			qDebug("Disconnecting %s", (*it)->getHostName().ascii());
 			SensorMgr->disengage((*it)->getSensorAgent());
 		}
 }

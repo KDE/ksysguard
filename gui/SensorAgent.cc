@@ -117,7 +117,7 @@ SensorAgent::start(const QString& host_, const QString& shell_,
 	if (!daemon->start(KProcess::NotifyOnExit, KProcess::All))
 	{
 		sensorManager->hostLost(this);
-		debug("Command \'%s\' failed", cmd.latin1());
+		qDebug("Command \'%s\' failed", cmd.latin1());
 		return (false);
 	}
 
@@ -144,7 +144,7 @@ SensorAgent::msgSent(KProcess*)
 {
 	if (pwSent)
 	{
-		debug("Password sent");
+		qDebug("Password sent");
 		pwSent = false;
 		return;
 	}
@@ -175,7 +175,7 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 	{
 		if (!daemonOnLine)
 		{
-			debug("Sensor is on-line");
+			qDebug("Sensor is on-line");
 			/* First '\nksysguardd> ' signals that daemon is ready to serve
 			 * requests now. */
 			daemonOnLine = true;
@@ -214,7 +214,7 @@ SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 		strncpy(aux, buffer, buflen);
 		aux[buflen] = '\0';
 		errorBuffer = aux;
-		debug("ERR: %s", aux);
+		qDebug("ERR: %s", aux);
 		delete [] aux;
 	}
 
@@ -249,7 +249,7 @@ void
 SensorAgent::daemonExited(KProcess*)
 {
 	daemonOnLine = false;
-	debug("ksysguardd exited");
+	qDebug("ksysguardd exited");
 	sensorManager->hostLost(this);
 	sensorManager->disengage(this);
 }

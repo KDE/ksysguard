@@ -140,7 +140,7 @@ SignalPlotter::changeRange(int beam, long min, long max)
 {
 	if (beam < 0 || beam >= MAXBEAMS)
 	{
-		debug("SignalPlotter::changeRange: beam index out of range");
+		qDebug("SignalPlotter::changeRange: beam index out of range");
 		return;
 	}
 

@@ -64,7 +64,7 @@ WorkSheet::WorkSheet(QWidget* parent, int r, int c) :
 
 WorkSheet::~WorkSheet()
 {
-	debug("Deleting work sheet...");
+	qDebug("Deleting work sheet...");
 	for (int i = 0; i < rows; ++i)
 		delete [] displays[i];
 
@@ -151,7 +151,7 @@ WorkSheet::load(const QString& fN)
 		int column = element.attribute("column").toUInt();
 		if (row >= rows || column >= columns)
 		{
-			debug("Row or Column out of range (%d/%d)", row, column);
+			qDebug("Row or Column out of range (%d/%d)", row, column);
 			return (FALSE);
 		}
 
@@ -165,7 +165,7 @@ WorkSheet::load(const QString& fN)
 			newDisplay = new ProcessController(this);
 		else
 		{
-			debug("Unkown class %s", classType.latin1());
+			qDebug("Unkown class %s", classType.latin1());
 			return (FALSE);
 		}
 		CHECK_PTR(newDisplay);
@@ -286,7 +286,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 			newDisplay = new ProcessController(this);
 		else
 		{
-			debug("Unkown sensor type: %s", sensorType.latin1());
+			qDebug("Unkown sensor type: %s", sensorType.latin1());
 			return (0);
 		}
 		replaceDisplay(r, c, newDisplay);

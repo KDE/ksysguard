@@ -193,7 +193,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 		SensorTokenizer lines(answer, '\n');
 		if (lines.numberOfTokens() != 2)
 		{
-			debug("ProcessController::answerReceived(1)"
+			qDebug("ProcessController::answerReceived(1)"
 				  "wrong number of lines [%s]", answer.latin1());
 			return;
 		}
