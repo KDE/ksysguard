@@ -53,7 +53,7 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	setRootIsDecorated(TRUE);
 
 	// Fill the sensor description dictionary.
-	dict.insert("cpu", new QString(i18n("Load")));
+	dict.insert("cpu", new QString(i18n("CPU Load", "Load")));
 	dict.insert("idle", new QString(i18n("Idle Load")));
 	dict.insert("sys", new QString(i18n("System Load")));
 	dict.insert("nice", new QString(i18n("Nice Load")));
@@ -69,7 +69,7 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	dict.insert("pscount", new QString(i18n("Process Count")));
 	dict.insert("ps", new QString(i18n("Process Controller")));
 	dict.insert("disk", new QString(i18n("Disk Throughput")));
-	dict.insert("load", new QString(i18n("Load")));
+	dict.insert("load", new QString(i18n("CPU Load", "Load")));
 	dict.insert("total", new QString(i18n("Total Accesses")));
 	dict.insert("rio", new QString(i18n("Read Accesses")));
 	dict.insert("wio", new QString(i18n("Write Accesses")));
