@@ -32,6 +32,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 #include "Command.h"
@@ -67,13 +68,13 @@ char **parseCommand(const char *cmd)
 	begin = rindex(tmp_cmd, '/');
 	*begin = '\0';
 	begin++;
-	retval[1] = strdup(begin); // sensor
+	retval[1] = strdup((const char *)begin); /* sensor */
 
 	begin = rindex(tmp_cmd, '/');
 	*begin = '\0';
 	begin = rindex(tmp_cmd, '/');
 	begin++;
-	retval[0] = strdup(begin); // interface
+	retval[0] = strdup((const char *)begin); /* interface  */
 	free(tmp_cmd);
 
 	return retval;
