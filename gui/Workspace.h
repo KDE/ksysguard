@@ -39,7 +39,7 @@ public:
 	Workspace(QWidget* parent, const char* name = 0);
 	~Workspace() { }
 
-	void addSheet(const QString& title, int columns = 1);
+	void addSheet(const QString& title, int columns = 1, int columns = 1);
 
 public slots:
 	void newWorkSheet();

@@ -22,50 +22,36 @@
 	$Id$
 */
 
-#ifndef _HostConnector_h_
-#define _HostConnector_h_
+#ifndef _WorkSheetSetup_h_
+#define _WorkSheetSetup_h_
 
-#include <qdialog.h>
+#include "kdialogbase.h"
 
-class QLabel;
-class QPushButton;
-class QBoxLayout;
 class QLineEdit;
-class QRadioButton;
+class KIntNumInput;
 
-/**
- * This class creates and handles a simple dialog to establish a connection
- * with a new remote host.
- */
-class HostConnector : public QDialog
+class WorkSheetSetup : public KDialogBase
 {
 	Q_OBJECT
 
 public:
-	HostConnector(QWidget* parent, const char* name);
-	~HostConnector();
+	WorkSheetSetup(const QString& defSheetName);
+	~WorkSheetSetup()
+	{
+		delete mainWidget;
+	}
 
-public slots:
-	void okClicked();
-	void cancelClicked();
-	void sshClicked();
-	void rshClicked();
-	void otherClicked();
+	const QString& getSheetName() const;
+
+	int getRows() const;
+
+	int getColumns() const;
 
 private:
-	void createTextEntry(const QString& label, QLabel*& lbl, QLineEdit*& le);
-
-	QBoxLayout* vLay;
-
-	QLabel* hostLbl;
-	QLineEdit* hostLE;
-	QRadioButton* sshButton;
-	QRadioButton* rshButton;
-	QRadioButton* otherButton;
-	QLabel* commandLbl;
-	QLineEdit* commandLE;
-	QPushButton* okButton;
-	QPushButton* cancelButton;
-};
+	QLineEdit* sheetNameLE;
+	KIntNumInput* rowNI;
+	KIntNumInput* colNI;
+	QWidget* mainWidget;
+} ;
 
 #endif

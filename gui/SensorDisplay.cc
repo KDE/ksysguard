@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -57,7 +56,13 @@ SensorDisplay::timerEvent(QTimerEvent*)
 	QListIterator<const QString> snIt(sensorNames);
 
 	for (int i = 0; hnIt.current(); ++hnIt, ++snIt, ++i)
-		SensorMgr->sendRequest(*hnIt.current(), *snIt.current(),
-							   (SensorClient*) this, i);
+		sendRequest(*hnIt.current(), *snIt.current(), i);
 }
 
+void
+SensorDisplay::sendRequest(const QString& hostName, const QString& cmd,
+						   int id)
+{
+	if (!SensorMgr->sendRequest(hostName, cmd, (SensorClient*) this, id))
+		emit(removeDisplay(this));
+}

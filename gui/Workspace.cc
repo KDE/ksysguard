@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,6 +27,7 @@
 
 #include "Workspace.h"
 #include "WorkSheet.h"
+#include "WorkSheetSetup.h"
 #include "Workspace.moc"
 
 Workspace::Workspace(QWidget* parent, const char* name)
@@ -39,8 +39,11 @@ Workspace::Workspace(QWidget* parent, const char* name)
 void
 Workspace::newWorkSheet()
 {
-	/* TODO: Pop-up a dialog and ask for name and number of columns. */
-	addSheet(QString(i18n("Sheet %1")).arg(++tabCount), 2);
+	QString sheetName = QString(i18n("Sheet %1")).arg(++tabCount);
+	WorkSheetSetup* s = new WorkSheetSetup(sheetName);
+	if (s->exec())
+		addSheet(s->getSheetName(), s->getRows(), s->getColumns());
+	delete s;
 }
 
 void
@@ -57,7 +60,6 @@ Workspace::deleteWorkSheet()
 	if (current)
 	{
 		removePage(current);
-		--tabCount;
 		delete current;
 	}
 	else
@@ -69,9 +71,9 @@ Workspace::deleteWorkSheet()
 }
 
 void
-Workspace::addSheet(const QString& title, int columns)
+Workspace::addSheet(const QString& title, int rows, int columns)
 {
-	WorkSheet* sheet = new WorkSheet(columns, this);
+	WorkSheet* sheet = new WorkSheet(this, rows, columns);
 	insertTab(sheet, title);
 	showPage(sheet);
 }

@@ -88,10 +88,12 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 
 	// Setup the geometry management.
 	gm = new QVBoxLayout(this, 10);
+	CHECK_PTR(gm);
 	gm->addSpacing(15);
 	gm->addWidget(pList, 1);
 
 	gm1 = new QHBoxLayout();
+	CHECK_PTR(gm1);
 	gm->addLayout(gm1, 0);
 	gm1->addStretch();
 	gm1->addWidget(xbTreeView);
@@ -116,7 +118,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 void
 ProcessController::resizeEvent(QResizeEvent* ev)
 {
-	box->setGeometry(5, 5, width() - 10, height() - 10);
+	box->setGeometry(0, 0, width(), height());
 
     QWidget::resizeEvent(ev);
 }
@@ -126,12 +128,9 @@ ProcessController::addSensor(const QString& hostname,
 							 const QString& /* sensorName */,
 							 const QString& /* title */)
 {
+	debug("Hostname: %s", hostName.ascii());
 	hostName = hostname;
-	if (!SensorMgr->sendRequest(hostName, "ps?", (SensorClient*) this, 1))
-	{
-		// The sensor agent died.
-		// TODO: make this visible or remove process controller
-	}
+	sendRequest(hostName, "ps?", 1);
 
 	box->setTitle(QString(i18n("%1: Running Processes")).arg(hostname));
 
@@ -141,11 +140,7 @@ ProcessController::addSensor(const QString& hostname,
 void
 ProcessController::updateList()
 {
-	if (!SensorMgr->sendRequest(hostName, "ps", this, 2))
-	{
-		// The sensor agent died.
-		// TODO: make this visible or remove process controller
-	}
+	sendRequest(hostName, "ps", 2);
 }
 
 void
@@ -155,7 +150,8 @@ ProcessController::killProcess(void)
 
 	if (selectedPIds.isEmpty())
 	{
-		KMessageBox::sorry(this, i18n("You need to select a process first!"));
+		KMessageBox::sorry(this,
+						   i18n("You need to select a process first!"));
 		return;
 	}
 	else
@@ -163,18 +159,16 @@ ProcessController::killProcess(void)
 		if (KMessageBox::warningYesNo(this,
 									  i18n("Do you want to kill the\n"
 										   "selected processes?")) ==
-			  KMessageBox::No)
+			KMessageBox::No)
+		{
 			return;
+		}
 	}
+
+	// send kill signal to all seleted processes
 	QValueListConstIterator<int> it;
 		for (it = selectedPIds.begin(); it != selectedPIds.end(); ++it)
-			if (!SensorMgr->sendRequest(hostName,
-										QString("kill %1 9" ).arg(*it),
-										this, 3))
-			{
-				// The sensor agent died.
-				// TODO: make this visible or remove process controller
-			}
+			sendRequest(hostName, QString("kill %1 9" ).arg(*it), 3);
 }
 
 void
@@ -189,8 +183,8 @@ ProcessController::answerReceived(int id, const QString& answer)
 		SensorTokenizer lines(answer, '\n');
 		if (lines.numberOfTokens() != 2)
 		{
-			debug("ProcessController::answerReceived(1)"
-				  "wrong number of lines");
+			debug(QString("ProcessController::answerReceived(1)"
+				  "wrong number of lines [%1]").arg(answer));
 			return;
 		}
 		SensorTokenizer headers(lines[0], '\t');

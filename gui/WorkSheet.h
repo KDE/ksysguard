@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,13 +25,13 @@
 #ifndef _WorkSheet_h_
 #define _WorkSheet_h_
 
-#include <qgrid.h>
+#include <qwidget.h>
 
-#include "SensorDisplay.h"
-
+class QGridLayout;
 class QDragEnterEvent;
 class QDropEvent;
 class QString;
+class SensorDisplay;
 
 /**
  * A WorkSheet contains the displays to visualize the sensor results. When
@@ -41,22 +40,35 @@ class QString;
  * layout. The number of columns can not be changed. Displays are added by
  * dragging a sensor from the sensor browser over the WorkSheet.
  */
-class WorkSheet : public QGrid
+class WorkSheet : public QWidget
 {
 	Q_OBJECT
 public:
-	WorkSheet(int columns, QWidget* parent);
-	~WorkSheet() { }
+	WorkSheet(QWidget* parent, int rows, int columns);
+	~WorkSheet();
 
 	void addDisplay(const QString& hostname, const QString& monitor,
-					const QString& sensorType, SensorDisplay* current = 0);
+					const QString& sensorType, int r, int c);
+
+public slots:
+	void removeDisplay(SensorDisplay* display);
 
 protected:
 	void dragEnterEvent(QDragEnterEvent* ev);
 	void dropEvent(QDropEvent* ev);
 
 private:
-	QList<SensorDisplay> displays;
+	void insertDummyDisplay(int r, int c);
+
+	const int rows;
+	const int columns;
+	QGridLayout* lm;
+	/* This two dimensional array stores the pointers to the sensor displays
+	 * or if no sensor is present at a position a pointer to a dummy widget.
+	 * The size of the array corresponds to the size of the grid layout. */
+	QWidget*** displays;
 } ;
 
 #endif
+
+

@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -53,6 +52,14 @@ public:
 		return (false);
 	}
 
+	/**
+	 * This function is a wrapper function to SensorManager::sendRequest.
+	 * It should be used by all SensorDisplay functions that need to send
+	 * a request to a sensor since it performs an appropriate error
+	 * handling by removing the display of necessary.
+	 */
+	void sendRequest(const QString& hostName, const QString& cmd, int id);
+
 public slots:
 	/**
 	 * This functions stops the timer that triggers the periodic events.
@@ -80,6 +87,8 @@ public slots:
 		}
 	}
 
+signals:
+	void removeDisplay(SensorDisplay* display);
 
 protected:
 	virtual void timerEvent(QTimerEvent*);

@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -32,9 +31,9 @@
 #include "SensorManager.h"
 #include "FancyPlotter.moc"
 
-static const int FrameMargin = 5;
-static const int Margin = 15;
-static const int HeadHeight = 10;
+static const int FrameMargin = 0;
+static const int Margin = 5;
+static const int HeadHeight = 0;
 
 FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 						   const char* title, int min, int max)
@@ -82,8 +81,7 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 
 	/* To differentiate between answers from value requests and info
 	 * requests we add 100 to the beam index for info requests. */
-	SensorMgr->sendRequest(hostName, sensorName + "?", (SensorClient*) this,
-						   beams + 100);
+	sendRequest(hostName, sensorName + "?", beams + 100);
 
 	return (true);
 }
@@ -94,8 +92,12 @@ FancyPlotter::resizeEvent(QResizeEvent*)
 	int w = width();
 	int h = height();
 
-	meterFrame->move(FrameMargin, FrameMargin);
-	meterFrame->resize(w - 2 * FrameMargin, h - 2 * FrameMargin);
+	meterFrame->setGeometry(0, 0, width(), height());
+	QRect meter = meterFrame->contentsRect();
+	meter.setX(meter.x() + Margin);
+	meter.setY(meter.y() + HeadHeight + Margin);
+	meter.setWidth(meter.width() - Margin);
+	meter.setHeight(meter.height() - Margin);
 
 	int mmw;
 	QSize mmSize = multiMeter->sizeHint();
@@ -104,9 +106,7 @@ FancyPlotter::resizeEvent(QResizeEvent*)
 	{
 		mmw = 0;
 		multiMeter->hide();
-
-		plotter->move(mmw + Margin, Margin + HeadHeight);
-		plotter->resize(w - mmw - 2 * Margin, h - (2 * Margin + HeadHeight));
+		plotter->setGeometry(meter);
 	}
 	else
 	{

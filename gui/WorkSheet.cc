@@ -34,15 +34,39 @@
 #include "ProcessController.h"
 #include "WorkSheet.moc"
 
-WorkSheet::WorkSheet(int columns, QWidget* parent) :
-	QGrid(columns, parent)
+WorkSheet::WorkSheet(QWidget* parent, int r, int c) :
+	QWidget(parent), rows(r), columns(c)
 {
+	// create grid layout with specified dimentions
+	lm = new QGridLayout(this, rows, columns, 10);
+	CHECK_PTR(lm);
+
+	// and fill it with dummy displays
+	int i, j;
+	displays = new QWidget**[rows];
+	CHECK_PTR(displays);
+	for (i = 0; i < rows; ++i)
+	{
+		displays[i] = new QWidget*[columns];
+		CHECK_PTR(displays[i]);
+		for (j = 0; j < columns; ++j)
+			insertDummyDisplay(i, j);
+	}
+	lm->activate();
 	setAcceptDrops(TRUE);
+}
+
+WorkSheet::~WorkSheet()
+{
+	for (int i = 0; i < rows; ++i)
+		delete [] displays[i];
+
+	delete [] displays;
 }
 
 void
 WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
-					  const QString& sensorType, SensorDisplay* current)
+					  const QString& sensorType, int r, int c)
 {
 	if (!SensorMgr->engage(hostName))
 	{
@@ -52,40 +76,50 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 		return;
 	}
 
-	if (current)
+	/* If the by 'r' and 'c' specified display is a QGroupBox dummy
+	 * display we replace the widget. Otherwise we just try to add
+	 * the new sensor to an existing display. */
+	if (displays[r][c]->isA("QGroupBox"))
 	{
-		/* If the sensor should be added to an existing widget we have to
-		 * make sure that the specified widget is in fact an existing
-		 * display. */
-		QListIterator<SensorDisplay> it(displays);
-		for ( ; it.current() && (it.current() != current); ++it)
-			;
-		/* TODO: We need to make sure that the sensor display supports
-		 * the sensor type. */
-		current = it.current();
-	}
-
-	if (!current)
-	{
-		// No existing display has been specified, so we create a new one.
+		SensorDisplay* newDisplay = 0;
 		/* Currently we support one specific sensor display for each
 		 * sensor type. This will change for sure and can then be
 		 * handled with a popup menu that lists all possible sensor
 		 * displays for the sensor type. */
 		if (sensorType == "integer")
-			current = new FancyPlotter(this, 0, sensorName);
+			newDisplay = new FancyPlotter(this, 0, sensorName);
 		else if (sensorType == "table")
-			current = new ProcessController(this);
+			newDisplay = new ProcessController(this);
 		else
 		{
 			debug("Unkown sensor type: " + sensorType);
 			return;
 		}
-		current->show();
-		displays.append(current);
+
+		// remove the old display at this location
+		delete displays[r][c];
+		// insert new display
+		lm->addWidget(newDisplay, r, c);
+		newDisplay->show();
+		displays[r][c] = newDisplay;
+		connect(newDisplay, SIGNAL(removeDisplay(SensorDisplay*)),
+				this, SLOT(removeDisplay(SensorDisplay*)));
 	}
 
-	current->addSensor(hostName, sensorName, "Test");
+	((SensorDisplay*) displays[r][c])->
+		addSensor(hostName, sensorName, "Unused");
+}
+
+void
+WorkSheet::removeDisplay(SensorDisplay* display)
+{
+	for (int i = 0; i < rows; ++i)
+		for (int j = 0; j < columns; ++j)
+			if (displays[i][j] == display)
+			{
+				delete display;
+				insertDummyDisplay(i, j);
+			}
 }
 
 void
@@ -114,29 +148,25 @@ WorkSheet::dropEvent(QDropEvent* ev)
 			return;
 		}
 
-		/* If the event occured over a display the sensor is added to that
-		 * existing widget. If it was dropped over the sheet (background)
-		 * a new display is created. Since the displays of a full sheet
-		 * cover almost the whole sheet, a margin of 15 pixels at all sides
-		 * of all displays is counted to the sheet. This is roughly equivalent
-		 * of dropping the object outside of the QFrame line. */
-		const int margin = 15;
-		QListIterator<SensorDisplay> it(displays);
-		for ( ; it.current(); ++it)
-		{
-			QRect r;
-			r.setX(it.current()->x() + margin);
-			r.setY(it.current()->y() + margin);
-			r.setWidth(it.current()->width() - 2 * margin);
-			r.setHeight(it.current()->height() - 2 * margin);
-			if (r.contains(ev->pos()))
-			{
-				// Dropped over a display. Add sensor to existing display.
-				addDisplay(hostName, sensorName, sensorType, it.current());
-				return;
-			}
-		}
-		// Not dropped over a diplay. Create a new display.
-		addDisplay(hostName, sensorName, sensorType);
+		/* Find the sensor display that is supposed to get the drop
+		 * event and replace or add sensor. */
+		for (int i = 0; i < rows; ++i)
+			for (int j = 0; j < columns; ++j)
+				if (displays[i][j]->geometry().contains(ev->pos()))
+				{
+					addDisplay(hostName, sensorName, sensorType, i, j);
+					return;
+				}
 	}
+}
+
+void
+WorkSheet::insertDummyDisplay(int r, int c)
+{
+	QGroupBox* dummy = new QGroupBox(this, "dummy frame");
+	dummy->setMinimumSize(40, 25);
+	dummy->setTitle(i18n("Drop sensor here"));
+	displays[r][c] = dummy;
+	lm->addWidget(dummy, r, c);
+	displays[r][c]->show();
 }
