@@ -19,6 +19,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+	$Id$
 */
 
 #ifndef _Memory_h_
@@ -26,7 +27,7 @@
 
 typedef unsigned long t_memsize;
 
-void initMemory(void);
+void initMemory(struct SensorModul* sm);
 void exitMemory(void);
 
 int updateMemory(void);

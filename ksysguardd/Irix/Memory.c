@@ -18,7 +18,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    
+	$Id$
 */
 
 #include <stdio.h>
@@ -41,16 +41,16 @@ static t_memsize freemem = (t_memsize) 0;
 static unsigned long totalswap = 0L,vswap = 0L;
 static unsigned long freeswap  = 0L,bufmem = 0L ;
 
-void initMemory( void ) {
+void initMemory( struct SensorModul* sm ) {
 
 	registerMonitor( "mem/physical/free", "integer",
-					printMemFree, printMemFreeInfo );
+					printMemFree, printMemFreeInfo, sm );
 	registerMonitor( "mem/physical/used", "integer",
-					printMemUsed, printMemUsedInfo );
+					printMemUsed, printMemUsedInfo, sm );
 	registerMonitor( "mem/swap/free", "integer",
-					printSwapFree, printSwapFreeInfo );
+					printSwapFree, printSwapFreeInfo, sm );
 	registerMonitor( "mem/swap/used", "integer",
-					printSwapUsed, printSwapUsedInfo );
+					printSwapUsed, printSwapUsedInfo, sm );
 }
 
 void exitMemory( void ) {

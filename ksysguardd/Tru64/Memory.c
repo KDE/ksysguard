@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
 
@@ -63,7 +63,7 @@ long pagetok_right( long size ) {
 	return( size >> pageshift );
 }
 
-void initMemory( void ) {
+void initMemory( struct SensorModul* sm ) {
 
 	long i = sysconf( _SC_PAGESIZE );
 
@@ -89,14 +89,14 @@ void initMemory( void ) {
 
 #ifdef HAVE_KSTAT
 	registerMonitor( "mem/physical/free", "integer",
-					printMemFree, printMemFreeInfo );
+					printMemFree, printMemFreeInfo, sm );
 	registerMonitor( "mem/physical/used", "integer",
-					printMemUsed, printMemUsedInfo );
+					printMemUsed, printMemUsedInfo, sm );
 #endif
 	registerMonitor( "mem/swap/free", "integer",
-					printSwapFree, printSwapFreeInfo );
+					printSwapFree, printSwapFreeInfo, sm );
 	registerMonitor( "mem/swap/used", "integer",
-					printSwapUsed, printSwapUsedInfo );
+					printSwapUsed, printSwapUsedInfo, sm );
 }
 
 void exitMemory( void ) {

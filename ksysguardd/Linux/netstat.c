@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
+	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -15,6 +15,8 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	$Id$
 */
 
 #include <arpa/inet.h>
@@ -184,48 +186,44 @@ void printSocketInfo(SocketInfo* socket_info)
 */
 
 void
-initNetStat(void)
+initNetStat(struct SensorModul* sm)
 {
 	FILE *netstat;
 	
 	if ((netstat = fopen("/proc/net/tcp", "r")) != NULL) {
-		registerMonitor("network/sockets/tcp/count", "integer", printNetStat, printNetStatInfo);
-		registerMonitor("network/sockets/tcp/list", "listview", printNetStatTcpUdpRaw, printNetStatTcpUdpRawInfo);
+		registerMonitor("network/sockets/tcp/count", "integer", printNetStat, printNetStatInfo, sm);
+		registerMonitor("network/sockets/tcp/list", "listview", printNetStatTcpUdpRaw, printNetStatTcpUdpRawInfo, sm);
 		fclose(netstat);
 	}
 	if ((netstat = fopen("/proc/net/udp", "r")) != NULL) {
-		registerMonitor("network/sockets/udp/count", "integer", printNetStat, printNetStatInfo);
-		registerMonitor("network/sockets/udp/list", "listview", printNetStatTcpUdpRaw, printNetStatTcpUdpRawInfo);
+		registerMonitor("network/sockets/udp/count", "integer", printNetStat, printNetStatInfo, sm);
+		registerMonitor("network/sockets/udp/list", "listview", printNetStatTcpUdpRaw, printNetStatTcpUdpRawInfo, sm);
 		fclose(netstat);
 	}
 	if ((netstat = fopen("/proc/net/unix", "r")) != NULL) {
-		registerMonitor("network/sockets/unix/count", "integer", printNetStat, printNetStatInfo);
-		registerMonitor("network/sockets/unix/list", "listview", printNetStatUnix, printNetStatUnixInfo);
+		registerMonitor("network/sockets/unix/count", "integer", printNetStat, printNetStatInfo, sm);
+		registerMonitor("network/sockets/unix/list", "listview", printNetStatUnix, printNetStatUnixInfo, sm);
 		fclose(netstat);
 	}
 	if ((netstat = fopen("/proc/net/raw", "r")) != NULL) {
-		registerMonitor("network/sockets/raw/count", "integer", printNetStat, printNetStatInfo);
-		registerMonitor("network/sockets/raw/list", "listview", printNetStatTcpUdpRaw, printNetStatTcpUdpRawInfo);
+		registerMonitor("network/sockets/raw/count", "integer", printNetStat, printNetStatInfo, sm);
+		registerMonitor("network/sockets/raw/list", "listview", printNetStatTcpUdpRaw, printNetStatTcpUdpRawInfo, sm);
 		fclose(netstat);
 	}
 
-	TcpSocketList = new_ctnr(CT_DLL);
-	UdpSocketList = new_ctnr(CT_DLL);
-	RawSocketList = new_ctnr(CT_DLL);
-	UnixSocketList = new_ctnr(CT_DLL);
+	TcpSocketList = new_ctnr();
+	UdpSocketList = new_ctnr();
+	RawSocketList = new_ctnr();
+	UnixSocketList = new_ctnr();
 }
 
 void
 exitNetStat(void)
 {
-	if (TcpSocketList)
-		destr_ctnr(TcpSocketList, free);
-	if (UdpSocketList)
-		destr_ctnr(UdpSocketList, free);
-	if (RawSocketList)
-		destr_ctnr(RawSocketList, free);
-	if (UnixSocketList)
-		destr_ctnr(UnixSocketList, free);
+	destr_ctnr(TcpSocketList, free);
+	destr_ctnr(UdpSocketList, free);
+	destr_ctnr(RawSocketList, free);
+	destr_ctnr(UnixSocketList, free);
 }
 
 int
@@ -268,22 +266,22 @@ updateNetStatTcpUdpRaw(const char *cmd)
 
 	if (strstr(cmd, "tcp")) {
 		snprintf(buffer, sizeof(buffer), "/proc/net/tcp");
-		for (i = 0; i < level_ctnr(TcpSocketList); i++) {
-			free(remove_ctnr(TcpSocketList, i--));
+		for (i = level_ctnr(TcpSocketList); i > -1; --i) {
+			free(pop_ctnr(TcpSocketList));
 		}
 	}
 
 	if (strstr(cmd, "udp")) {
 		snprintf(buffer, sizeof(buffer), "/proc/net/udp");
-		for (i = 0; i < level_ctnr(UdpSocketList); i++) {
-			free(remove_ctnr(UdpSocketList, i--));
+		for (i = level_ctnr(UdpSocketList); i > -1; --i) {
+			free(pop_ctnr(UdpSocketList));
 		}
 	}
 
 	if (strstr(cmd, "raw")) {
 		snprintf(buffer, sizeof(buffer), "/proc/net/raw");
-		for (i = 0; i < level_ctnr(RawSocketList); i++) {
-			free(remove_ctnr(RawSocketList, i--));
+		for (i = level_ctnr(RawSocketList); i > -1; --i) {
+			free(pop_ctnr(RawSocketList));
 		}
 	}
 
@@ -360,8 +358,8 @@ updateNetStatUnix(void)
 		return -1;
 	}
 
-	for (i = 0; i < level_ctnr(UnixSocketList); i++) {
-		free(remove_ctnr(UnixSocketList, i--));
+	for (i = level_ctnr(UnixSocketList); i > -1; --i) {
+		free(pop_ctnr(UnixSocketList));
 	}
 
 	fgets(buffer, sizeof(buffer), file);
@@ -393,7 +391,7 @@ updateNetStatUnix(void)
 void
 printNetStat(const char* cmd)
 {
-	if ((time(0) - NetStat_timeStamp) >= 2)
+	if ((time(0) - NetStat_timeStamp) >= UPDATEINTERVAL)
 		updateNetStat();
 
 	if (strstr(cmd, "tcp") != NULL)
@@ -422,40 +420,37 @@ printNetStatInfo(const char* cmd)
 void
 printNetStatTcpUdpRaw(const char *cmd)
 {
-	int i;
+	SocketInfo* socket_info;
 
 	if (strstr(cmd, "tcp")) {
-		if ((time(0) - TcpUdpRaw_timeStamp) >= 2)
+		if ((time(0) - TcpUdpRaw_timeStamp) >= UPDATEINTERVAL)
 			updateNetStatTcpUdpRaw("tcp");
 
-		for (i = 0; i < level_ctnr(TcpSocketList); i++) {
-			SocketInfo* socket_info = get_ctnr(TcpSocketList, i);
+		for (socket_info = first_ctnr(TcpSocketList); socket_info; socket_info = next_ctnr(TcpSocketList))
 			printSocketInfo(socket_info);
-		}
+
 		if (level_ctnr(TcpSocketList) == 0)
 			fprintf(CurrentClient, "\n");
 	}
 
 	if (strstr(cmd, "udp")) {
-		if ((time(0) - TcpUdpRaw_timeStamp) >= 2)
+		if ((time(0) - TcpUdpRaw_timeStamp) >= UPDATEINTERVAL)
 			updateNetStatTcpUdpRaw("udp");
 
-		for (i = 0; i < level_ctnr(UdpSocketList); i++) {
-			SocketInfo* socket_info = get_ctnr(UdpSocketList, i);
+		for (socket_info = first_ctnr(UdpSocketList); socket_info; socket_info = next_ctnr(UdpSocketList))
 			printSocketInfo(socket_info);
-		}
+
 		if (level_ctnr(UdpSocketList) == 0)
 			fprintf(CurrentClient, "\n");
 	}
 
 	if (strstr(cmd, "raw")) {
-		if ((time(0) - TcpUdpRaw_timeStamp) >= 2)
+		if ((time(0) - TcpUdpRaw_timeStamp) >= UPDATEINTERVAL)
 			updateNetStatTcpUdpRaw("raw");
 
-		for (i = 0; i < level_ctnr(RawSocketList); i++) {
-			SocketInfo* socket_info = get_ctnr(RawSocketList, i);
+		for (socket_info = first_ctnr(RawSocketList); socket_info; socket_info = next_ctnr(RawSocketList))
 			printSocketInfo(socket_info);
-		}
+
 		if (level_ctnr(RawSocketList) == 0)
 			fprintf(CurrentClient, "\n");
 	}
@@ -469,14 +464,12 @@ printNetStatTcpUdpRawInfo(const char *cmd)
 
 void printNetStatUnix(const char *cmd)
 {
-	int i;
+	UnixInfo* unix_info;
 
-	if ((time(0) - Unix_timeStamp) >= 2)
+	if ((time(0) - Unix_timeStamp) >= UPDATEINTERVAL)
 		updateNetStatUnix();
 	
-	for (i = 0; i < level_ctnr(UnixSocketList); i++) {
-		UnixInfo* unix_info = get_ctnr(UnixSocketList, i);
-
+	for (unix_info = first_ctnr(UnixSocketList); unix_info; unix_info = next_ctnr(UnixSocketList)) {
 		fprintf(CurrentClient, "%d\t%s\t%s\t%d\t%s\n",
 			unix_info->refcount,
 			unix_info->type,
@@ -484,6 +477,7 @@ void printNetStatUnix(const char *cmd)
 			unix_info->inode,
 			unix_info->path);
 	}
+
 	if (level_ctnr(UnixSocketList) == 0)
 		fprintf(CurrentClient, "\n");
 }

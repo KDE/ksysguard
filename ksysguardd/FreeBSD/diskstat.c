@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
 	   
-    Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
+	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -44,6 +44,7 @@ typedef struct {
 } DiskInfo;
 
 static CONTAINER DiskStatList = 0;
+static struct SensorModul* DiskStatSM;
 
 char *getMntPnt(const char *cmd)
 {
@@ -74,25 +75,25 @@ int numMntPnt(void)
 
 /* ------------------------------ public part --------------------------- */
 
-void initDiskStat(void)
+void initDiskStat(struct SensorModul* sm)
 {
 	char monitor[1024];
-	int i;
+	DiskInfo* disk_info;
 
-	DiskStatList = new_ctnr(CT_DLL);
+	DiskStatList = new_ctnr();
+	DiskStatSM = sm;
 
 	updateDiskStat();
 
-	registerMonitor("partitions/list", "listview", printDiskStat, printDiskStatInfo);
+	registerMonitor("partitions/list", "listview", printDiskStat, printDiskStatInfo, DiskStatSM);
 
-	for (i = 0; i < level_ctnr(DiskStatList); i++) {
-		DiskInfo* disk_info = get_ctnr(DiskStatList, i);
+	for (disk_info = first_ctnr(DiskStatList); disk_info; disk_info = next_ctnr(DiskStatList)) {
 		snprintf(monitor, sizeof(monitor), "partitions%s/usedspace", disk_info->mntpnt);
-		registerMonitor(monitor, "integer", printDiskStatUsed, printDiskStatUsedInfo);
+		registerMonitor(monitor, "integer", printDiskStatUsed, printDiskStatUsedInfo, DiskStatSM);
 		snprintf(monitor, sizeof(monitor), "partitions%s/freespace", disk_info->mntpnt);
-		registerMonitor(monitor, "integer", printDiskStatFree, printDiskStatFreeInfo);
+		registerMonitor(monitor, "integer", printDiskStatFree, printDiskStatFreeInfo, DiskStatSM);
 		snprintf(monitor, sizeof(monitor), "partitions%s/filllevel", disk_info->mntpnt);
-		registerMonitor(monitor, "integer", printDiskStatPercent, printDiskStatPercentInfo);
+		registerMonitor(monitor, "integer", printDiskStatPercent, printDiskStatPercentInfo, DiskStatSM);
 	}
 }
 
@@ -102,7 +103,7 @@ void checkDiskStat(void)
 		/* a filesystem was mounted or unmounted
 		   so we do a reset */
 		exitDiskStat();
-		initDiskStat();
+		initDiskStat(DiskStatSM);
 	}
 }
 
@@ -110,25 +111,19 @@ void exitDiskStat(void)
 {
 	DiskInfo *disk_info;
 	char monitor[1024];
-	int i;
 
 	removeMonitor("partitions/list");
 
-	for (i = 0; i < level_ctnr(DiskStatList); i++) {
-		disk_info = remove_ctnr(DiskStatList, i--);
-
+	for (disk_info = first_ctnr(DiskStatList); disk_info; disk_info = next_ctnr(DiskStatList)) {
 		snprintf(monitor, sizeof(monitor), "partitions%s/usedspace", disk_info->mntpnt);
 		removeMonitor(monitor);
 		snprintf(monitor, sizeof(monitor), "partitions%s/freespace", disk_info->mntpnt);
 		removeMonitor(monitor);
 		snprintf(monitor, sizeof(monitor), "partitions%s/filllevel", disk_info->mntpnt);
 		removeMonitor(monitor);
-
-		free(disk_info);
 	}
 
-	if (DiskStatList)
-		destr_ctnr(DiskStatList, free);
+	destr_ctnr(DiskStatList, free);
 }
 
 int updateDiskStat(void)
@@ -141,8 +136,8 @@ int updateDiskStat(void)
 
 	/* let's hope there is no difference between the DiskStatList and
 	   the number of mounted filesystems */
-	for (i = 0; i < level_ctnr(DiskStatList); i++)
-		free(remove_ctnr(DiskStatList, i--));
+	for (i = level_ctnr(DiskStatList); i > -1; --i)
+		free(pop_ctnr(DiskStatList));
 
 	mntcount = getmntinfo(&fs_info, MNT_WAIT);
 
@@ -175,10 +170,9 @@ int updateDiskStat(void)
 
 void printDiskStat(const char* cmd)
 {
-	int i;
-
-	for (i = 0; i < level_ctnr(DiskStatList); i++) {
-		DiskInfo* disk_info = get_ctnr(DiskStatList, i);
+	DiskInfo* disk_info;
+	
+	for (disk_info = first_ctnr(DiskStatList); disk_info; disk_info = next_ctnr(DiskStatList)) {
 		fprintf(CurrentClient, "%s\t%ld\t%ld\t%ld\t%d\t%s\n",
 			disk_info->device,
 			disk_info->blocks,
@@ -198,11 +192,10 @@ void printDiskStatInfo(const char* cmd)
 
 void printDiskStatUsed(const char* cmd)
 {
-	int i;
+	DiskInfo* disk_info;
 	char *mntpnt = (char *)getMntPnt(cmd);
 
-	for (i = 0; i < level_ctnr(DiskStatList); i++) {
-		DiskInfo* disk_info = get_ctnr(DiskStatList, i);
+	for (disk_info = first_ctnr(DiskStatList); disk_info; disk_info = next_ctnr(DiskStatList)) {
 		if (!strcmp(mntpnt, disk_info->mntpnt)) {
 			fprintf(CurrentClient, "%ld\n", disk_info->bused);
 		}
@@ -218,11 +211,10 @@ void printDiskStatUsedInfo(const char* cmd)
 
 void printDiskStatFree(const char* cmd)
 {
-	int i;
+	DiskInfo* disk_info;
 	char *mntpnt = (char *)getMntPnt(cmd);
 
-	for (i = 0; i < level_ctnr(DiskStatList); i++) {
-		DiskInfo* disk_info = get_ctnr(DiskStatList, i);
+	for (disk_info = first_ctnr(DiskStatList); disk_info; disk_info = next_ctnr(DiskStatList)) {
 		if (!strcmp(mntpnt, disk_info->mntpnt)) {
 			fprintf(CurrentClient, "%ld\n", disk_info->bfree);
 		}
@@ -238,11 +230,10 @@ void printDiskStatFreeInfo(const char* cmd)
 
 void printDiskStatPercent(const char* cmd)
 {
-	int i;
+	DiskInfo* disk_info;
 	char *mntpnt = (char *)getMntPnt(cmd);
 
-	for (i = 0; i < level_ctnr(DiskStatList); i++) {
-		DiskInfo* disk_info = get_ctnr(DiskStatList, i);
+	for (disk_info = first_ctnr(DiskStatList); disk_info; disk_info = next_ctnr(DiskStatList)) {
 		if (!strcmp(mntpnt, disk_info->mntpnt)) {
 			fprintf(CurrentClient, "%d\n", disk_info->bused_percent);
 		}

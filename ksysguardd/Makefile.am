@@ -8,7 +8,7 @@ INCLUDES = -DKSYSGUARDDRCFILE="\"$(KSYSGUARDDRCFILE)\"" -DOSTYPE_$(UNAME) -I$(sr
 bin_PROGRAMS = ksysguardd
 
 ksysguardd_SOURCES = Command.c conf.c ksysguardd.c PWUIDCache.c
-ksysguardd_LDFLAGS = -L../CContLib
+ksysguardd_LDFLAGS = -ggdb -L../CContLib
 ksysguardd_LDADD =  $(UNAME)/libksysguardd.a -lccont $(LIBHOSTS)
 
 

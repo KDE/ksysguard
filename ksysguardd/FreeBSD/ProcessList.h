@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
     
@@ -23,13 +23,16 @@
 #ifndef _process_list_h_
 #define _process_list_h_
 
-void initProcessList(void);
+void initProcessList(struct SensorModul* sm);
 void exitProcessList(void);
+
 int updateProcessList(void);
+
 void printProcessList(const char*);
 void printProcessListInfo(const char*);
 void printProcessCount(const char* cmd);
 void printProcessCountInfo(const char* cmd);
+
 void killProcess(const char* cmd);
 void setPriority(const char* cmd);
 

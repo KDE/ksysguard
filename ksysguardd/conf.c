@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
 	   
-    Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
+    Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -29,22 +29,29 @@
 CONTAINER LogFileList = 0;
 CONTAINER SensorList = 0;
 
+void destrLogFileList(void *ptr)
+{
+	if (ptr) {
+		if (((ConfigLogFile*)ptr)->name)
+			free(((ConfigLogFile*)ptr)->name);
+	}
+}
+
+void freeConfigFile(void)
+{
+	destr_ctnr(LogFileList, destrLogFileList);
+	destr_ctnr(SensorList, free);
+}
+
 void parseConfigFile(const char *filename)
 {
 	FILE* config;
 	char line[2048];
-	char *begin, *token, *tmp, *confSensor;
+	char *begin, *token, *tmp;
 	ConfigLogFile *confLog;
-	
 
-	if (LogFileList)
-		destr_ctnr(LogFileList, free);
-
-	if (SensorList)
-		destr_ctnr(SensorList, free);
-
-	LogFileList = new_ctnr(CT_DLL);
-	SensorList = new_ctnr(CT_DLL);
+	LogFileList = new_ctnr();
+	SensorList = new_ctnr();
 
 	if ((config = fopen(filename, "r")) == NULL) {
 		log_error("can't open config file '%s'", filename);
@@ -53,24 +60,15 @@ void parseConfigFile(const char *filename)
 		   available sensors manually
 		*/
 
-		confSensor = strdup("ProcessList");
-		push_ctnr(SensorList, confSensor);
-		confSensor = strdup("Memory");
-		push_ctnr(SensorList, confSensor);
-		confSensor = strdup("Stat");
-		push_ctnr(SensorList, confSensor);
-		confSensor = strdup("NetDev");
-		push_ctnr(SensorList, confSensor);
-		confSensor = strdup("NetStat");
-		push_ctnr(SensorList, confSensor);
-		confSensor = strdup("CpuInfo");
-		push_ctnr(SensorList, confSensor);
-		confSensor = strdup("LoadAvg");
-		push_ctnr(SensorList, confSensor);
-		confSensor = strdup("DiskStat");
-		push_ctnr(SensorList, confSensor);
-		confSensor = strdup("LogFile");
-		push_ctnr(SensorList, confSensor);
+		push_ctnr(SensorList, strdup("ProcessList"));
+		push_ctnr(SensorList, strdup("Memory"));
+		push_ctnr(SensorList, strdup("Stat"));
+		push_ctnr(SensorList, strdup("NetDev"));
+		push_ctnr(SensorList, strdup("NetStat"));
+		push_ctnr(SensorList, strdup("CpuInfo"));
+		push_ctnr(SensorList, strdup("LoadAvg"));
+		push_ctnr(SensorList, strdup("DiskStat"));
+		push_ctnr(SensorList, strdup("LogFile"));
 
 		return;
 	}
@@ -108,10 +106,8 @@ void parseConfigFile(const char *filename)
 			begin = strchr(line, '=');
 			begin++;
 
-			for (token = strtok(begin, ","); token; token = strtok(NULL, ",")) {
-				confSensor = strdup(token);
-				push_ctnr(SensorList, confSensor);
-			}
+			for (token = strtok(begin, ","); token; token = strtok(NULL, ","))
+				push_ctnr(SensorList, strdup(token));
 		}
 	}
 
@@ -122,7 +118,7 @@ int sensorAvailable(const char *sensor)
 {
 	int i;
 	
-	for (i = 0; i < level_ctnr(SensorList); i++) {
+	for (i = 0; i < level_ctnr(SensorList); ++i) {
 		char* name = get_ctnr(SensorList, i);
 		if (!strcmp(name, sensor))
 			return 1;

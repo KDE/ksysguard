@@ -18,6 +18,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+	$Id$
 */
 
 #include <stdio.h>
@@ -167,7 +168,7 @@ static int updateProcess( pid_t pid ) {
 		ps->centStamp = (double)tv.tv_sec * 100.0 + (double)tv.tv_usec / 10000.0;
 
 		push_ctnr( ProcessList, ps );
-		bsort_ctnr( ProcessList, processCmp, 0 );
+		bsort_ctnr( ProcessList, processCmp );
 	}
 
 	sprintf( buf, "%s/pinfo/%ld", PROCDIR, pid );
@@ -249,23 +250,23 @@ static void cleanupProcessList( void ) {
 	}
 }
 
-void initProcessList( void ) {
+void initProcessList( struct SensorModul* sm ) {
 
 	if( (procdir = opendir( PROCDIR )) == NULL ) {
 		print_error( "cannot open \"%s\" for reading\n", PROCDIR );
 		return;
 	}
 	pagesz=getpagesize();
-	ProcessList = new_ctnr( CT_DLL );
+	ProcessList = new_ctnr();
 	updateProcessList();
 
 	/*
 	 *  register the supported monitors & commands
 	 */
 	registerMonitor( "pscount", "integer",
-				printProcessCount, printProcessCountInfo );
+				printProcessCount, printProcessCountInfo, sm );
 	registerMonitor( "ps", "table",
-				printProcessList, printProcessListInfo );
+				printProcessList, printProcessListInfo, sm );
 
 	if (!RunAsDaemon)
 	{
@@ -285,20 +286,13 @@ void exitProcessList( void ) {
 		removeCommand("setpriority");
 	}
 
-	if( ProcessList )
-		destr_ctnr( ProcessList, free );
+	destr_ctnr( ProcessList, free );
 }
 
 int updateProcessList( void ) {
 
 	struct dirent	*de;
 	struct statfs sf;
-	time_t elapsed;
-	static time_t timeStamp = 0;
-
-	elapsed   = time(NULL) - timeStamp;
-	timeStamp = time(NULL);
-	if( elapsed < 2 ) return (0);
 
 	statfs("/proc/pinfo",&sf,sizeof(sf),0);
 	ProcessCount = sf.f_files;
@@ -329,13 +323,9 @@ void printProcessListInfo( const char *cmd ) {
 
 void printProcessList( const char *cmd ) {
 
-	int	i;
+	ProcessInfo *ps;
 
-	updateProcessList();
-
-	for( i = 0; i < level_ctnr( ProcessList ); i++ ) {
-		ProcessInfo *ps = get_ctnr( ProcessList, i );
-
+	for( ps = first_ctnr( ProcessList ); ps; ps = next_ctnr( ProcessList )) {
 		fprintf(CurrentClient,
 			"%s\t%ld\t%ld\t%ld\t%s\t%s\t%d\t%d\t%.2f\t%d\t%s\n",
 			ps->Command,

@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
+	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -33,17 +33,17 @@ static double LoadAvg[3];
 */
 
 void
-initLoadAvg(void)
+initLoadAvg(struct SensorModul* sm)
 {
 	if (updateLoadAvg() < 0)
 		return;
 
 	registerMonitor("cpu/loadavg1", "float", printLoadAvg1,
-					printLoadAvg1Info);
+					printLoadAvg1Info, sm);
 	registerMonitor("cpu/loadavg5", "float", printLoadAvg5,
-					printLoadAvg5Info);
+					printLoadAvg5Info, sm);
 	registerMonitor("cpu/loadavg15", "float", printLoadAvg15,
-					printLoadAvg15Info);
+					printLoadAvg15Info, sm);
 }
 
 void

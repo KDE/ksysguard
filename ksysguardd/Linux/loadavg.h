@@ -22,8 +22,9 @@
 #ifndef _loadavg_h_
 #define _loadavg_h_
 
-void initLoadAvg(void);
+void initLoadAvg(struct SensorModul* sm);
 void exitLoadAvg(void);
+
 int updateLoadAvg(void);
 
 void printLoadAvg1(const char*);

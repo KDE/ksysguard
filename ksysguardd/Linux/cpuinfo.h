@@ -22,8 +22,9 @@
 #ifndef _cpuinfo_h_
 #define _cpuinfo_h_
 
-void initCpuInfo(void);
+void initCpuInfo(struct SensorModul* sm);
 void exitCpuInfo(void);
+
 int updateCpuInfo(void);
 
 void printCPUxClock(const char*);

@@ -37,6 +37,7 @@ typedef struct
 	cmdExecutor ex;
 	char* type;
 	int isMonitor;
+	struct SensorModul* sm;
 } Command;
 
 static CONTAINER CommandList;
@@ -45,12 +46,14 @@ static sigset_t SignalSet;
 void 
 _Command(void* v)
 {
-	Command* c = v;
-	if (c->command)
-		free (c->command);
-	if (c->type)
-		free (c->type);
-	free (v);
+	if (v) {
+		Command* c = v;
+		if (c->command)
+			free (c->command);
+		if (c->type)
+			free (c->type);
+		free (v);
+	}
 }
 
 /*
@@ -100,7 +103,7 @@ log_error(const char *fmt, ...)
 void
 initCommand(void)
 {
-	CommandList = new_ctnr(CT_SLL);
+	CommandList = new_ctnr();
 	sigemptyset(&SignalSet);
 	sigaddset(&SignalSet, SIGALRM);
 
@@ -141,6 +144,10 @@ removeCommand(const char* command)
 		if (strcmp(cmd->command, command) == 0)
 		{
 			remove_ctnr(CommandList, i);
+			if (cmd->command)
+				free(cmd->command);
+			if (cmd->type)
+				free(cmd->type);
 			free(cmd);
 		}
 	}
@@ -149,7 +156,7 @@ removeCommand(const char* command)
 
 void
 registerMonitor(const char* command, const char* type, cmdExecutor ex,
-				cmdExecutor iq)
+				cmdExecutor iq, struct SensorModul* sm)
 {
 	/* Monitors are similar to regular commands except that every monitor
 	 * registers two commands. The first is the value request command and
@@ -165,6 +172,7 @@ registerMonitor(const char* command, const char* type, cmdExecutor ex,
 	cmd->type = (char*) malloc(strlen(type) + 1);
 	strcpy(cmd->type, type);
 	cmd->isMonitor = 1;
+	cmd->sm = sm;
 	push_ctnr(CommandList, cmd);
 
 	cmd = (Command*) malloc(sizeof(Command));
@@ -174,6 +182,7 @@ registerMonitor(const char* command, const char* type, cmdExecutor ex,
 	cmd->command[strlen(command) + 1] = '\0';
 	cmd->ex = iq;
 	cmd->isMonitor = 0;
+	cmd->sm = sm;
 	cmd->type = 0;
 	push_ctnr(CommandList, cmd);
 }
@@ -206,6 +215,16 @@ executeCommand(const char* command)
 		Command* cmd = (Command*) get_ctnr(CommandList, i);
 		if (strcmp(cmd->command, token) == 0)
 		{
+			if (cmd->isMonitor)
+			{
+				if ((time(NULL) - cmd->sm->time) > UPDATEINTERVAL) {
+					cmd->sm->time = time(NULL);
+					
+					if (cmd->sm->updateCommand != NULL) /* should never happen */
+						cmd->sm->updateCommand();
+				}
+			}
+
 			(*(cmd->ex))(command);
 
 			if (ReconfigureFlag)

@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
 
@@ -29,7 +29,7 @@ typedef unsigned long t_memsize;
 
 #define PAGETOK(a) ((( (t_memsize) sysconf( _SC_PAGESIZE )) / (t_memsize) 1024) * (t_memsize) (a))
 
-void initMemory(void);
+void initMemory(struct SensorModul* sm);
 void exitMemory(void);
 
 int updateMemory(void);

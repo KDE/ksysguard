@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
 
@@ -251,7 +251,7 @@ int getnetdevlist( void ) {
 	return( NetDevCount );
 }
 
-void initNetDev( void ) {
+void initNetDev( struct SensorModul* sm ) {
 #ifdef HAVE_KSTAT
 	char	mon[128];
 	int	i;
@@ -260,10 +260,10 @@ void initNetDev( void ) {
 	for( i = 0; i < NetDevCount; i++ ) {
 		sprintf( mon, "network/%s/ipackets", IfInfo[i].Name );
 		registerMonitor( mon, "integer",
-					printIPackets, printIPacketsInfo );
+					printIPackets, printIPacketsInfo, sm );
 		sprintf( mon, "network/%s/opackets", IfInfo[i].Name );
 		registerMonitor( mon, "integer",
-					printOPackets, printOPacketsInfo );
+					printOPackets, printOPacketsInfo, sm );
 		/*
 		 *  if this isn't a loopback interface,
 		 *  register additional monitors
@@ -275,49 +275,49 @@ void initNetDev( void ) {
 			sprintf( mon, "network/%s/ierrors",
 					IfInfo[i].Name );
 			registerMonitor( mon, "integer",
-					printIErrors, printIErrorsInfo );
+					printIErrors, printIErrorsInfo, sm );
 			/*
 			 *  xmit errors
 			 */
 			sprintf( mon, "network/%s/oerrors",
 					IfInfo[i].Name );
 			registerMonitor( mon, "integer",
-					printOErrors, printOErrorsInfo );
+					printOErrors, printOErrorsInfo, sm );
 			/*
 			 *  collisions
 			 */
 			sprintf( mon, "network/%s/collisions",
 					IfInfo[i].Name );
 			registerMonitor( mon, "integer",
-					printCollisions, printCollisionsInfo );
+					printCollisions, printCollisionsInfo, sm );
 			/*
 			 *  multicast xmits
 			 */
 			sprintf( mon, "network/%s/multixmt",
 					IfInfo[i].Name );
 			registerMonitor( mon, "integer",
-					printMultiXmits, printMultiXmitsInfo );
+					printMultiXmits, printMultiXmitsInfo, sm );
 			/*
 			 *  multicast recvs
 			 */
 			sprintf( mon, "network/%s/multircv",
 					IfInfo[i].Name );
 			registerMonitor( mon, "integer",
-					printMultiRecvs, printMultiRecvsInfo );
+					printMultiRecvs, printMultiRecvsInfo, sm );
 			/*
 			 *  broadcast xmits
 			 */
 			sprintf( mon, "network/%s/brdcstxmt",
 					IfInfo[i].Name );
 			registerMonitor( mon, "integer",
-					printBcastXmits, printBcastXmitsInfo );
+					printBcastXmits, printBcastXmitsInfo, sm );
 			/*
 			 *  broadcast recvs
 			 */
 			sprintf( mon, "network/%s/brdcstrcv",
 					IfInfo[i].Name );
 			registerMonitor( mon, "integer",
-					printBcastRecvs, printBcastRecvsInfo );
+					printBcastRecvs, printBcastRecvsInfo, sm );
 		}
 	}
 #endif

@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
 
-	Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
+	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
 	Irix Support by Carsten Kroll <ckroll@pinnaclesys.com>
 
     This program is free software; you can redistribute it and/or
@@ -17,6 +17,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+	$Id$
 */
 
 #include <fcntl.h>
@@ -88,7 +89,7 @@ char **parseCommand(const char *cmd)
 
 /* ------------------------------ public part --------------------------- */
 
-void initNetDev(void)
+void initNetDev(struct SensorModul* sm)
 {
 	int i;
 	char monitor[1024];
@@ -101,31 +102,31 @@ void initNetDev(void)
 	for (i = 0; i < NetDevCnt; i++) {
 
 		sprintf(monitor,"network/interfaces/%s/receiver/packets", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo, sm);
 		sprintf(monitor ,"network/interfaces/%s/receiver/errors", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo, sm);
 		/*
 		[CK] I don't know how to get Bytes sent/received, if someone does please drop me a note.
 		sprintf(monitor,"network/interfaces/%s/receiver/data", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo, sm);
 		sprintf(monitor,"network/interfaces/%s/receiver/drops", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo, sm);
 		sprintf(monitor ,"network/interfaces/%s/receiver/multicast", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo, sm);
 		*/
 
 		sprintf(monitor,"network/interfaces/%s/transmitter/packets", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo, sm);
 		sprintf(monitor,"network/interfaces/%s/transmitter/errors", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo, sm);
 		/*
 		sprintf(monitor,"network/interfaces/%s/transmitter/data", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo, sm);
 		sprintf(monitor,"network/interfaces/%s/transmitter/multicast", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo, sm);
 		*/
 		sprintf(monitor,"network/interfaces/%s/transmitter/collisions", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo, sm);
 	}
 }
 

@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
 
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
 
@@ -16,6 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	$Id$
 */
 
 #include <sys/dkstat.h>
@@ -49,17 +51,17 @@ long cp_diff[CPUSTATES];
 int cpu_states[CPUSTATES];
 
 void
-initCpuInfo(void)
+initCpuInfo(struct SensorModul* sm)
 {
 	/* Total CPU load */
 	registerMonitor("cpu/user", "integer", printCPUUser,
-			printCPUUserInfo);
+			printCPUUserInfo, sm);
 	registerMonitor("cpu/nice", "integer", printCPUNice,
-			printCPUNiceInfo);
+			printCPUNiceInfo, sm);
 	registerMonitor("cpu/sys", "integer", printCPUSys,
-			printCPUSysInfo);
+			printCPUSysInfo, sm);
 	registerMonitor("cpu/idle", "integer", printCPUIdle,
-			printCPUIdleInfo);
+			printCPUIdleInfo, sm);
 	kd = kvm_open(NULL, NULL, NULL, O_RDONLY, "kvm_open");
 	kvm_nlist(kd, my_nlist);
 	cp_time_offset = my_nlist[0].n_value;

@@ -2,7 +2,7 @@
     KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999, 2000, 2001, 2002 Chris Schlaeger <cs@kde.org>
-				 Tobias Koenig <tokoe82@yahoo.de>
+				 Tobias Koenig <tokoe@kde.org>
 
 	Solaris support by Torsten Kasch <tk@Genetik.Uni-Bielefeld.DE>
     
@@ -45,9 +45,6 @@
 
 #define CMDBUFSIZE	128
 #define MAX_CLIENTS	100
-/* This is the official ksysguardd port assigned by IANA. */
-#define PORT_NUMBER	3112
-#define TIMERINTERVAL	2
 
 typedef struct
 {
@@ -110,7 +107,7 @@ printWelcome(FILE* out)
 	fprintf(out,
 			"ksysguardd %s\n"
 			"(c) 1999, 2000, 2001, 2002 Chris Schlaeger <cs@kde.org> and\n"
-			"(c) 2001 Tobias Koenig <tokoe82@yahoo.de>\n"
+			"(c) 2001 Tobias Koenig <tokoe@kde.org>\n"
 			"This program is part of the KDE Project and licensed under\n"
 			"the GNU GPL version 2. See www.kde.org for details!\n", 
 			KSYSGUARD_VERSION);
@@ -387,6 +384,16 @@ setupSelect(fd_set* fds)
 }
 
 static void
+checkModules()
+{
+	struct SensorModul *entry;
+
+	for (entry = SensorModulList; entry->configName != NULL; entry++)
+		if (entry->checkCommand != NULL && entry->available)
+			entry->checkCommand();
+}
+
+static void
 handleTimerEvent(struct timeval* tv, struct timeval* last)
 {
 	struct timeval now;
@@ -395,7 +402,7 @@ handleTimerEvent(struct timeval* tv, struct timeval* last)
 	if (now.tv_sec - last->tv_sec >= TIMERINTERVAL)
 	{
 		/* If so, update all sensors and save current time to last. */
-		updateModules();
+		checkModules();
 		*last = now;
 	}
 	/* Set tv so that the next timer event will be generated in
@@ -478,17 +485,18 @@ handleSocketTraffic(int socket, const fd_set* fds)
 static void
 initModules()
 {
-	struct ModulListEntry entry;
-	int i;
+	struct SensorModul *entry;
 
 	/* initialize all sensors */
 	initCommand();
 
-	for (i = 0; i < NUM_MODULES; i++)
+	for (entry = SensorModulList; entry->configName != NULL; entry++)
 	{
-		entry = ModulList[i];
-		if (entry.initCommand != NULL && sensorAvailable(entry.configName))
-			entry.initCommand();
+		if (entry->initCommand != NULL && sensorAvailable(entry->configName))
+		{
+			entry->available = 1;
+			entry->initCommand(entry);
+		}
 	}
 
 	ReconfigureFlag = 0;
@@ -497,37 +505,15 @@ initModules()
 static void
 exitModules()
 {
-	struct ModulListEntry entry;
-	int i;
+	struct SensorModul *entry;
 
-	for (i = 0; i < NUM_MODULES; i++)
+	for (entry = SensorModulList; entry->configName != NULL; entry++)
 	{
-		entry = ModulList[i];
-		if (entry.exitCommand != NULL && sensorAvailable(entry.configName))
-			entry.exitCommand();
+		if (entry->exitCommand != NULL && entry->available)
+			entry->exitCommand();
 	}
 
 	exitCommand();
-}
-
-void
-updateModules()
-{
-	struct ModulListEntry entry;
-	int i;
-
-	for (i = 0; i < NUM_MODULES; i++)
-	{
-		entry = ModulList[i];
-		if (entry.updateCommand != NULL && sensorAvailable(entry.configName))
-		{
-			entry.updateCommand();
-
-			/* we call the checkup functions here */
-			if (entry.checkCommand != NULL)
-				entry.checkCommand();
-		}
-	}
 }
 
 /*
@@ -606,6 +592,8 @@ main(int argc, char* argv[])
 	}
 
 	exitModules();
+
+	freeConfigFile();
 
 	return 0;
 }

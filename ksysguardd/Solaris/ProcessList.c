@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
 
@@ -63,7 +63,6 @@ typedef struct {
 } ProcessInfo;
 
 static CONTAINER ProcessList = 0;
-static time_t timeStamp = (time_t) 0;
 static unsigned ProcessCount = 0;	/*  # of processes	  */
 static DIR *procdir;			/*  handle for /proc	  */
 
@@ -161,7 +160,7 @@ static int updateProcess( pid_t pid ) {
 		ps->alive = 0;
 
 		push_ctnr( ProcessList, ps );
-		bsort_ctnr( ProcessList, processCmp, 0 );
+		bsort_ctnr( ProcessList, processCmp );
 	}
 
 	snprintf( buf, BUFSIZE - 1, "%s/%ld/psinfo", PROCDIR, pid );
@@ -219,7 +218,6 @@ static int updateProcess( pid_t pid ) {
 	validateStr( ps->CmdLine );
 
 	ps->alive = 1;
-	timeStamp = time( NULL );
 
 	return( 0 );
 }
@@ -240,22 +238,22 @@ static void cleanupProcessList( void ) {
 	}
 }
 
-void initProcessList( void ) {
+void initProcessList( struct SensorModul* sm ) {
 
 	if( (procdir = opendir( PROCDIR )) == NULL ) {
 		print_error( "cannot open \"%s\" for reading\n", PROCDIR );
 		return;
 	}
 
-	ProcessList = new_ctnr( CT_DLL );
+	ProcessList = new_ctnr();
 
 	/*
 	 *  register the supported monitors & commands
 	 */
 	registerMonitor( "pscount", "integer",
-				printProcessCount, printProcessCountInfo );
+				printProcessCount, printProcessCountInfo, sm );
 	registerMonitor( "ps", "table",
-				printProcessList, printProcessListInfo );
+				printProcessList, printProcessListInfo, sm );
 
 	registerCommand( "kill", killProcess );
 	registerCommand( "setpriority", setPriority );
@@ -263,8 +261,7 @@ void initProcessList( void ) {
 
 void exitProcessList( void ) {
 
-	if( ProcessList )
-		destr_ctnr( ProcessList, free );
+	destr_ctnr( ProcessList, free );
 }
 
 int updateProcessList( void ) {
@@ -285,7 +282,6 @@ int updateProcessList( void ) {
 		updateProcess( (pid_t) atol( de->d_name ));
 	}
 	cleanupProcessList();
-	timeStamp = time( NULL );
 
 	return( 0 );
 }
@@ -298,14 +294,9 @@ void printProcessListInfo( const char *cmd ) {
 
 void printProcessList( const char *cmd ) {
 
-	int	i;
+	ProcessInfo *ps;
 
-	if( (time( NULL ) - timeStamp) >= 2 )
-		updateProcessList();
-
-	for( i = 0; i < level_ctnr( ProcessList ); i++ ) {
-		ProcessInfo *ps = get_ctnr( ProcessList, i );
-
+	for( ps = first_ctnr( ProcessList ); ps; ps = next_ctnr( ProcessList )) {
 		fprintf(CurrentClient,
 			"%s\t%ld\t%ld\t%ld\t%s\t%s\t%d\t%d\t%d\t%.2f\t%d\t%s\n",
 			ps->Command,

@@ -20,19 +20,19 @@ a few recommended commands.
 The mandatory commands are 'monitors', 'test' and 'quit'.
 The recommended commands are:
 
-cpu/idle        integer
-cpu/sys integer
-cpu/nice        integer
-cpu/user        integer
-mem/swap/free   integer
-mem/swap/used   integer
-mem/physical/cached     integer
-mem/physical/buf        integer
-mem/physical/application        integer
-mem/physical/used       integer
-mem/physical/free       integer
-ps      table
-pscount	integer
+cpu/idle
+cpu/sys
+cpu/nice
+cpu/user
+mem/swap/free
+mem/swap/used
+mem/physical/cached
+mem/physical/buf
+mem/physical/application
+mem/physical/used
+mem/physical/free
+ps
+pscount
 
 Without these commands KSysGuard is not very helpful.
 
@@ -49,7 +49,7 @@ ksysguardd>
 Sensor names can be hierarchical. Each level is separated by a
 /. ksysguard uses a tree widget in the SensorBrowser to display the
 commands in a tree. Every sensor name must be followed by the type of
-the sensor separated by a tab. Currently 3 different types of sensors
+the sensor separated by a tab. Currently 4 different types of sensors
 are supported, integer, float, listview and table. The table sensor
 returns the information for the ProcessController widget. listview
 sensors use a generic table to display information. To find out more
@@ -111,13 +111,22 @@ COMMAND\nksysguardd> ".
 ksysguardd does not handle native language support. In order to have a
 minimum installation (only a single file) on the monitored machine,
 all translation are handled by the front-end. Please see the files
-gui/SensorManger.cc and gui/ProcessTable.cc if you add new strings.
+gui/ksgrd/SensorManger.cc and gui/SensorDisplayLib/ProcessTable.cc
+if you add new strings.
 
-Since I'm very much a C++ guy I've written some functions which
-provide a similar functionality as template classes for lists and
-arrays. The Linux implementation uses them. Feel free to use them for
-the ports as well if you like. The interface is described in
-CContLib/ccont.h. Unfortunately I still haven't found time to document
-it properly, but the use should be fairly obvious.
+/**
+ * Since I'm very much a C++ guy I've written some functions which
+ * provide a similar functionality as template classes for lists and
+ * arrays. The Linux implementation uses them. Feel free to use them for
+ * the ports as well if you like. The interface is described in
+ * CContLib/ccont.h. Unfortunately I still haven't found time to document
+ * it properly, but the use should be fairly obvious.
+ */
 
 Chris <cs@kde.org>
+
+Since the above mentioned CContLib was a little slow I reimplement it and
+wrote some docu stuff in the header file. If you need an example for use
+look at ksysguardd/Linux/diskstat.(h|c).
+
+Tobias <tokoe@kde.org>

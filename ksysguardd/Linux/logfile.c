@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
+	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -15,6 +15,8 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	$Id$
 */
 
 #include <stdio.h>
@@ -42,49 +44,45 @@ extern CONTAINER LogFileList;
 ================================ public part =================================
 */
 
-void initLogFile(void)
+void initLogFile(struct SensorModul* sm)
 {
-	int i;
 	char monitor[1024];
+	ConfigLogFile *entry;
 
 	registerCommand("logfile_register", registerLogFile);
 	registerCommand("logfile_unregister", unregisterLogFile);
 	registerCommand("logfile_registered", printRegistered);
 
-	for (i = 0; i < level_ctnr(LogFileList); i++)
+	for (entry = first_ctnr(LogFileList); entry; entry = next_ctnr(LogFileList))
 	{
 		FILE* fp;
-		ConfigLogFile *entry = get_ctnr(LogFileList, i);
 		/* Register the log file only if we can actually read the file. */
 		if ((fp = fopen(entry->path, "r")) != NULL)
 		{
 			fclose(fp);
 			snprintf(monitor, 1024, "logfiles/%s", entry->name);
 			registerMonitor(monitor, "logfile", printLogFile,
-							printLogFileInfo);
+							printLogFileInfo, sm);
 		}
 	}
 
-	LogFiles = new_ctnr(CT_DLL);
+	LogFiles = new_ctnr();
 }
 
 void exitLogFile(void)
 {
-	if (LogFiles)
-		destr_ctnr(LogFiles, free);
+	destr_ctnr(LogFiles, free);
 }
 
 void printLogFile(const char* cmd)
 {
 	char line[1024];
 	unsigned long id;
-	int i;
-	
+	LogFileEntry *entry;
+
 	sscanf(cmd, "%*s %lu", &id);
 
-	for (i = 0; i < level_ctnr(LogFiles); i++) {
-		LogFileEntry *entry = get_ctnr(LogFiles, i);
-
+	for (entry = first_ctnr(LogFiles); entry; entry = next_ctnr(LogFiles)) {
 		if (entry->id == id) {
 			while (fgets(line, 1024, entry->fh) != NULL) {
 				fprintf(CurrentClient, "%s", line);
@@ -169,10 +167,9 @@ void unregisterLogFile(const char* cmd)
 
 void printRegistered(const char* cmd)
 {
-	int i;
+	LogFileEntry *entry;
 
-	for (i = 0; i < level_ctnr(LogFiles); i++) {
-		LogFileEntry *entry = get_ctnr(LogFiles, i);
+	for (entry = first_ctnr(LogFiles); entry; entry = next_ctnr(LogFiles)) {
 		fprintf(CurrentClient, "%s:%lu\n", entry->name, entry->id);
 	}
 

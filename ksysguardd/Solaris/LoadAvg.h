@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
 
@@ -27,7 +27,7 @@
 
 #define LOAD(a) ((double)(a) / (1 << 8 ))
 
-void initLoadAvg(void);
+void initLoadAvg(struct SensorModul* sm);
 void exitLoadAvg(void);
 
 int updateLoadAvg(void);

@@ -1,7 +1,9 @@
 /*
-    C Container Library
+    Lightweight C Container Library
    
-	Copyright (c) 1992-1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 2002 Tobias Koenig <tokoe@kde.org>
+
+	Original code was written by Chris Schlaeger <cs@kde.org>
     
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -21,57 +23,132 @@
 	$Id$
 */
 
-#if !defined _CCONT_H_
-#define _CCONT_H_
+#ifndef _CCONT_H
+#define _CCONT_H
+
+#ifndef NIL
+#define NIL ((void*) 0)
+#endif
+
+#define destr_ctnr(x, y) zero_destr_ctnr(x, y); x=0
+
+struct container {
+	struct container* next;
+	struct container* prev;
+	void* data;
+};
+
+typedef struct container T_CONTAINER;
+typedef struct container* CONTAINER;
 
 typedef long INDEX;
 
 typedef void (*DESTR_FUNC)(void*);
 typedef int  (*COMPARE_FUNC)(void*, void*);
-typedef void (*REPORT_FUNC)(INDEX, INDEX);
-typedef int  (*CHECK_FUNC)(void*);
 
-typedef enum
-{
-	CT_DLL = 0,
-	CT_SLL = 1,
-	CT_PGA = 2
-} CONTAINER_TYPE;
+/**
+ * Initialize the container @p ctnr.
+ */
+CONTAINER new_ctnr(void);
 
-typedef struct
-{
-	void* (*new)(void);
-	void  (*destruct)(void*, DESTR_FUNC);
-	int   (*check)(void*, CHECK_FUNC);
-	int   (*insert)(void*, void*, INDEX);
-	void* (*get)(void*, INDEX);
-	void* (*remove)(void*, INDEX);
-	INDEX (*level)(void*);
-	int   (*swop)(void*, INDEX, INDEX);
-} CONT_TOOLS;
+/**
+ * Remove all entries from @p ctnr and reset its
+ * internal structure. Use @ref new_ctnr() @em before @em
+ * access the container next time.
+ *
+ * Note: use the 'destr_ctnr' macro to get zeroed pointer
+ *       automatically.
+ *
+ * @param destr_func The function that is called to
+ *                   free the single entries.
+ */
+void zero_destr_ctnr(CONTAINER ctnr, DESTR_FUNC destr_func);
 
-typedef struct
-{
-	CONT_TOOLS* tools;
-	void*       handle;
-} CONT;
+/**
+ * @return the number of entries in @p ctnr.
+ */
+INDEX level_ctnr(CONTAINER ctnr);
 
-typedef CONT* CONTAINER;
+/**
+ * Insert a new entry in container.
+ *
+ * @param object  A pointer to the object.
+ * @param pos     The position where the object should be insert.
+ */
+void insert_ctnr(CONTAINER ctnr, void* object, INDEX pos);
 
-void      bsort_ctnr(CONTAINER ctnr, COMPARE_FUNC compare, REPORT_FUNC report);
-int       check_ctnr(CONTAINER ctnr, CHECK_FUNC check);
-void      destr_ctnr(CONTAINER ctnr, DESTR_FUNC destr_obj);
-void*     get_ctnr(CONTAINER ctnr, INDEX pos);
-int       insert_ctnr(CONTAINER ctnr, void* object, INDEX pos);
-INDEX     level_ctnr(CONTAINER ctnr);
-CONTAINER new_ctnr(CONTAINER_TYPE type);
-void*     plop_ctnr(CONTAINER ctnr);
-void*     pop_ctnr(CONTAINER ctnr);
-int       push_ctnr(CONTAINER ctnr, void* object);
-void      qsort_ctnr(CONTAINER ctnr, COMPARE_FUNC compare, REPORT_FUNC report);
-void*     remove_ctnr(CONTAINER ctnr, INDEX pos);
-INDEX     search_ctnr(CONTAINER ctnr, COMPARE_FUNC compare, void* pattern);
+/**
+ * Add a new entry at the end of container.
+ *
+ * @param object  The object that should be added.
+ */
+void push_ctnr(CONTAINER ctnr, void* object);
 
-#define NIL     ((void*) 0L)
+/**
+ * Remove an entry from container.
+ *
+ * @param pos  The position of the object that should be removed.
+ *
+ * @return A pointer to the removed object or @p 0L if it doesn't exist.
+ */
+void* remove_ctnr(CONTAINER ctnr, INDEX pos);
+
+/**
+ * Remove the first entry of container.
+ *
+ * @return A pointer to the removed object or @p 0L if there is now entry.
+ */
+void* pop_ctnr(CONTAINER ctnr);
+
+/**
+ * @return A pointer to the object at position @a pos
+ *         or @p 0L if it doesn't exist.
+ */
+void* get_ctnr(CONTAINER ctnr, INDEX pos);
+
+/**
+ * @return The position of a matching entry.
+ *
+ * @param compare_func A Pointer to the function that is
+ *                     called to compare all entries in the
+ *                     container with the given pattern.
+ * @param pattern      The pattern for coparison.
+ */
+INDEX search_ctnr(CONTAINER ctnr, COMPARE_FUNC compare_func, void* pattern);
+
+/**
+ * Swap two objects in container.
+ *
+ * @param pos1 Position of the first object.
+ * @param pos2 Position of the second object.
+ */
+void swop_ctnr(CONTAINER ctnr, INDEX pos1, INDEX pos2);
+
+/**
+ * Sort all entries of container.
+ *
+ * @param compare_func A Pointer to the function that is
+ *                     called to compare to entries of the
+ *                     container.
+ */
+void bsort_ctnr(CONTAINER ctnr, COMPARE_FUNC compare_func);
+
+/**
+ * Use this function to iterate over the container.
+ *
+ * for (ptr = first_ctnr(ctnr); ptr; ptr = next_ctnr(ctnr)) {
+ * 	do_anything(ptr);
+ * }
+ *
+ * @return A Pointer to the first object in container.
+ */
+void* first_ctnr(CONTAINER ctnr);
+
+/**
+ * Use this function to iterate over the container.
+ *
+ * @return A Pointer to the next object in container.
+ */
+void* next_ctnr(CONTAINER ctnr);
 
 #endif

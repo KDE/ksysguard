@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
+	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -53,6 +53,7 @@ typedef struct {
 #define MAXNETDEVS 64
 static NetDevInfo NetDevs[MAXNETDEVS];
 static int NetDevCnt = 0;
+static struct SensorModul* NetDevSM;
 
 char **parseCommand(const char *cmd)
 {
@@ -110,35 +111,37 @@ int numActivIfaces(void)
 
 /* ------------------------------ public part --------------------------- */
 
-void initNetDev(void)
+void initNetDev(struct SensorModul* sm)
 {
 	int i;
 	char monitor[1024];
+
+	NetDevSM = sm;
 
 	updateNetDev();
 	
 	for (i = 0; i < NetDevCnt; i++) {
 		snprintf(monitor, sizeof(monitor), "network/interfaces/%s/receiver/data", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo, NetDevSM);
 		snprintf(monitor, sizeof(monitor), "network/interfaces/%s/receiver/packets", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo, NetDevSM);
 		snprintf(monitor, sizeof(monitor), "network/interfaces/%s/receiver/errors", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo, NetDevSM);
 		snprintf(monitor, sizeof(monitor), "network/interfaces/%s/receiver/drops", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo, NetDevSM);
 		snprintf(monitor, sizeof(monitor), "network/interfaces/%s/receiver/multicast", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevRecBytes, printNetDevRecBytesInfo, NetDevSM);
 
 		snprintf(monitor, sizeof(monitor), "network/interfaces/%s/transmitter/data", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo, NetDevSM);
 		snprintf(monitor, sizeof(monitor), "network/interfaces/%s/transmitter/packets", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo, NetDevSM);
 		snprintf(monitor, sizeof(monitor), "network/interfaces/%s/transmitter/errors", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo, NetDevSM);
 		snprintf(monitor, sizeof(monitor), "network/interfaces/%s/transmitter/multicast", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo, NetDevSM);
 		snprintf(monitor, sizeof(monitor), "network/interfaces/%s/transmitter/collisions", NetDevs[i].name);
-		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo);
+		registerMonitor(monitor, "integer", printNetDevSentBytes, printNetDevSentBytesInfo, NetDevSM);
 	}
 }
 
@@ -216,7 +219,7 @@ void checkNetDev(void)
 		/* interface has been added or removed
 		   so we do a reset */
 		exitNetDev();
-		initNetDev();
+		initNetDev(NetDevSM);
 	}
 }
 

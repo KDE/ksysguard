@@ -22,7 +22,7 @@
 #ifndef _netdev_h_
 #define _netdev_h_
 
-void initNetDev(void);
+void initNetDev(struct SensorModul* sm);
 void exitNetDev(void);
 
 int updateNetDev(void);

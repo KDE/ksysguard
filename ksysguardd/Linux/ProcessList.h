@@ -23,7 +23,7 @@
 #ifndef _ProcessList_H_
 #define _ProcessList_H_
 
-void initProcessList(void);
+void initProcessList(struct SensorModul* sm);
 void exitProcessList(void);
 
 int updateProcessList(void);

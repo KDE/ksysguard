@@ -40,8 +40,7 @@ static int CPUs = 0;
 #define CPUINFOBUFSIZE 8192
 static char CpuInfoBuf[CPUINFOBUFSIZE];
 static int Dirty = 0;
-static int Asleep = 0;
-static time_t lastRequest;
+static struct SensorModul *CpuInfoSM;
 
 static void
 processCpuInfo(void)
@@ -54,12 +53,6 @@ processCpuInfo(void)
 
 	if (!CpuInfoOK)
 		return;
-
-	if (Asleep)
-	{
-		Asleep = 0;
-		updateCpuInfo();
-	}
 
 	sprintf(format, "%%%d[^:]: %%%d[^\n]\n", (int) sizeof(tag) - 1,
 			(int) sizeof(value) - 1);
@@ -88,7 +81,7 @@ processCpuInfo(void)
 					Clocks = malloc(CPUs * sizeof(float));
 					sprintf(cmdName, "cpu%d/clock", cpuId);
 					registerMonitor(cmdName, "float", printCPUxClock,
-							printCPUxClockInfo);
+							printCPUxClockInfo, CpuInfoSM);
 				}
 			}
 		}
@@ -110,9 +103,10 @@ processCpuInfo(void)
 */
 
 void
-initCpuInfo(void)
+initCpuInfo(struct SensorModul* sm)
 {
-	lastRequest = time(0);
+	CpuInfoSM = sm;
+
 	if (updateCpuInfo() < 0)
 		return;
 	processCpuInfo();
@@ -133,15 +127,6 @@ updateCpuInfo(void)
 	if (CpuInfoOK < 0)
 		return (-1);
 
-	if (Asleep)
-		return (0);
-
-	if (time(0) > lastRequest + 5)
-	{
-		Asleep = 1;
-		return (0);
-	}
-		
 	if ((fd = open("/proc/cpuinfo", O_RDONLY)) < 0)
 	{
 		if (CpuInfoOK != 0)
@@ -170,7 +155,6 @@ printCPUxClock(const char* cmd)
 {
 	int id;
 
-	lastRequest = time(0);
 	if (Dirty)
 		processCpuInfo();
 

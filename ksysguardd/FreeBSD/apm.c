@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
+	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -36,7 +36,7 @@ static int ApmFD, BattFill, BattTime;
 */
 
 void
-initApm(void)
+initApm(struct SensorModul* sm)
 {
 	if ((ApmFD = open(APMDEV, O_RDONLY)) < 0)
 		return;
@@ -45,9 +45,9 @@ initApm(void)
 		return;
 
 	registerMonitor("apm/batterycharge", "integer", printApmBatFill,
-					printApmBatFillInfo);
+					printApmBatFillInfo, sm);
 	registerMonitor("apm/remainingtime", "integer", printApmBatTime,
-					printApmBatTimeInfo);
+					printApmBatTimeInfo, sm);
 }
 
 void

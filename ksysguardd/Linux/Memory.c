@@ -71,7 +71,7 @@ processMemInfo()
 */
 
 void
-initMemory(void)
+initMemory(struct SensorModul* sm)
 {
 	/* Make sure that /proc/meminfo exists and is readable. If not we do
 	 * not register any monitors for memory. */
@@ -79,18 +79,18 @@ initMemory(void)
 		return;
 
 	registerMonitor("mem/physical/free", "integer", printMFree,
-					printMFreeInfo);
-	registerMonitor("mem/physical/used", "integer", printUsed, printUsedInfo);
+					printMFreeInfo, sm);
+	registerMonitor("mem/physical/used", "integer", printUsed, printUsedInfo, sm);
 	registerMonitor("mem/physical/application", "integer", printAppl,
-					printApplInfo);
+					printApplInfo, sm);
 	registerMonitor("mem/physical/buf", "integer", printBuffers,
-					printBuffersInfo);
+					printBuffersInfo, sm);
 	registerMonitor("mem/physical/cached", "integer", printCached,
-					printCachedInfo);
+					printCachedInfo, sm);
 	registerMonitor("mem/swap/used", "integer", printSwapUsed,
-					printSwapUsedInfo);
+					printSwapUsedInfo, sm);
 	registerMonitor("mem/swap/free", "integer", printSwapFree,
-					printSwapFreeInfo);
+					printSwapFreeInfo, sm);
 }
 
 void

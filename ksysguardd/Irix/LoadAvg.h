@@ -27,7 +27,7 @@
 
 #define LOAD(a) ((double)(a) / (1 << 8 ))
 
-void initLoadAvg(void);
+void initLoadAvg(struct SensorModul* sm);
 void exitLoadAvg(void);
 
 int updateLoadAvg(void);

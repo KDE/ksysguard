@@ -23,7 +23,7 @@
 #ifndef _Memory_h_
 #define _Memory_h_
 
-void initMemory(void);
+void initMemory(struct SensorModul* sm);
 void exitMemory(void);
 
 int updateMemory(void);

@@ -22,8 +22,7 @@
 #ifndef _stat_h_
 #define _stat_h_
 
-void initStat(void);
-
+void initStat(struct SensorModul* sm);
 void exitStat(void);
 
 int updateStat(void);

@@ -22,8 +22,9 @@
 #ifndef _lmsensors_h_
 #define _lmsensors_h_
 
-void initLmSensors(void);
+void initLmSensors(struct SensorModul* sm);
 void exitLmSensors(void);
+
 void printLmSensor(const char* cmd);
 void printLmSensorInfo(const char* cmd);
 

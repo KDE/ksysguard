@@ -29,8 +29,8 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "stat.h"
 #include "ksysguardd.h"
+#include "stat.h"
 #include "Command.h"
 
 typedef struct
@@ -87,6 +87,7 @@ static int Dirty = 0;
 static float timeInterval = 0;
 static struct timeval lastSampling;
 static struct timeval currSampling;
+static struct SensorModul* StatSM;
 
 static CPULoadInfo CPULoad;
 static CPULoadInfo* SMPLoad = 0;
@@ -133,7 +134,7 @@ initStatDisk(char* tag, char* buf, char* label, char* shortLabel, int index,
 			while (*buf && isdigit(*buf++))
 				;
 			sprintf(sensorName, "disk/disk%d/%s", i, shortLabel);
-			registerMonitor(sensorName, "integer", ex, iq);
+			registerMonitor(sensorName, "integer", ex, iq, StatSM);
 
 		}
 		return (1);
@@ -275,19 +276,19 @@ processDiskIO(const char* buf)
 			}
 			sprintf(sensorName, "disk/%d:%d/total", major, minor);
 			registerMonitor(sensorName, "integer", printDiskIO,
-							printDiskIOInfo);
+							printDiskIOInfo, StatSM);
 			sprintf(sensorName, "disk/%d:%d/rio", major, minor);
 			registerMonitor(sensorName, "integer", printDiskIO,
-							printDiskIOInfo);
+							printDiskIOInfo, StatSM);
 			sprintf(sensorName, "disk/%d:%d/wio", major, minor);
 			registerMonitor(sensorName, "integer", printDiskIO,
-							printDiskIOInfo);
+							printDiskIOInfo, StatSM);
 			sprintf(sensorName, "disk/%d:%d/rblk", major, minor);
 			registerMonitor(sensorName, "integer", printDiskIO,
-							printDiskIOInfo);
+							printDiskIOInfo, StatSM);
 			sprintf(sensorName, "disk/%d:%d/wblk", major, minor);
 			registerMonitor(sensorName, "integer", printDiskIO,
-							printDiskIOInfo);
+							printDiskIOInfo, StatSM);
 		}
 		/* Move p after the sencond ')'. We can safely asume that
 		 * those two ')' exist. */
@@ -440,7 +441,7 @@ processStat(void)
 */
 
 void
-initStat(void)
+initStat(struct SensorModul* sm)
 {
 	/* The CPU load is calculated from the values in /proc/stat. The cpu
 	 * entry contains 4 counters. These counters count the number of ticks
@@ -476,6 +477,8 @@ initStat(void)
 	char tag[32];
 	char* statBufP = StatBuf;
 
+	StatSM = sm;
+
 	updateStat();
 
 	sprintf(format, "%%%d[^\n]\n", (int) sizeof(buf) - 1);
@@ -491,13 +494,13 @@ initStat(void)
 		{
 			/* Total CPU load */
 			registerMonitor("cpu/user", "integer", printCPUUser,
-							printCPUUserInfo);
+							printCPUUserInfo, StatSM);
 			registerMonitor("cpu/nice", "integer", printCPUNice,
-							printCPUNiceInfo);
+							printCPUNiceInfo, StatSM);
 			registerMonitor("cpu/sys", "integer", printCPUSys,
-							printCPUSysInfo);
+							printCPUSysInfo, StatSM);
 			registerMonitor("cpu/idle", "integer", printCPUIdle,
-							printCPUIdleInfo);
+							printCPUIdleInfo, StatSM);
 		}
 		else if (strncmp("cpu", tag, 3) == 0)
 		{
@@ -509,16 +512,16 @@ initStat(void)
 			CPUCount++;
 			sprintf(cmdName, "cpu%d/user", id);
 			registerMonitor(cmdName, "integer", printCPUxUser,
-							printCPUxUserInfo);
+							printCPUxUserInfo, StatSM);
 			sprintf(cmdName, "cpu%d/nice", id);
 			registerMonitor(cmdName, "integer", printCPUxNice,
-							printCPUxNiceInfo);
+							printCPUxNiceInfo, StatSM);
 			sprintf(cmdName, "cpu%d/sys", id);
 			registerMonitor(cmdName, "integer", printCPUxSys,
-							printCPUxSysInfo);
+							printCPUxSysInfo, StatSM);
 			sprintf(cmdName, "cpu%d/idle", id);
 			registerMonitor(cmdName, "integer", printCPUxIdle,
-							printCPUxIdleInfo);
+							printCPUxIdleInfo, StatSM);
 		}
 		else if (strcmp("disk", tag) == 0)
 		{
@@ -557,9 +560,9 @@ initStat(void)
 		{
 			sscanf(buf + 5, "%lu %lu", &OldPageIn, &OldPageOut);
 			registerMonitor("cpu/pageIn", "integer", printPageIn,
-							printPageInInfo);
+							printPageInInfo, StatSM);
 			registerMonitor("cpu/pageOut", "integer", printPageOut,
-							printPageOutInfo);
+							printPageOutInfo, StatSM);
 		}
 		else if (strcmp("intr", tag) == 0)
 		{
@@ -589,14 +592,14 @@ initStat(void)
 					p++;
 				sprintf(cmdName, "cpu/interrupts/int%02d", i);
 				registerMonitor(cmdName, "integer", printInterruptx,
-								printInterruptxInfo);
+								printInterruptxInfo, StatSM);
 			}
 		}
 		else if (strcmp("ctxt", tag) == 0)
 		{
 			sscanf(buf + 5, "%lu", &OldCtxt);
 			registerMonitor("cpu/context", "integer", printCtxt,
-							printCtxtInfo);
+							printCtxtInfo, StatSM);
 		}
 	}
 	if (CPUCount > 0)
@@ -609,14 +612,17 @@ initStat(void)
 void
 exitStat(void)
 {
-	if (DiskLoad)
-		free(DiskLoad);
+	free(DiskLoad);
+	DiskLoad = 0;
 
-	if (SMPLoad)
-	{
-		free(SMPLoad);
-		SMPLoad = 0;
-	}
+	free(SMPLoad);
+	SMPLoad = 0;
+
+	free(OldIntr);
+	OldIntr = 0;
+	
+	free(Intr);
+	Intr = 0;		
 }
 
 int

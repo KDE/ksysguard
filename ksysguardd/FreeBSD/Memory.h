@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
     
@@ -23,7 +23,7 @@
 #ifndef _memory_h_
 #define _memory_h_
 
-void initMemory(void);
+void initMemory(struct SensorModul* sm);
 void exitMemory(void);
 
 int updateMemory(void);

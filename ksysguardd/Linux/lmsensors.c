@@ -69,7 +69,7 @@ findMatchingSensor(const char* name)
 }
 
 void
-initLmSensors(void)
+initLmSensors(struct SensorModul* sm)
 {
 	const sensors_chip_name* scn;
 	int nr = 0;
@@ -89,7 +89,7 @@ initLmSensors(void)
 	}
 	fclose(input);
 
-	LmSensors = new_ctnr(CT_SLL);
+	LmSensors = new_ctnr();
 	while ((scn = sensors_get_detected_chips(&nr)) != NULL)
 	{
 		int nr1, nr2;
@@ -122,7 +122,7 @@ initLmSensors(void)
 				{
 					push_ctnr(LmSensors, p);
 					registerMonitor(p->fullName, "float", printLmSensor,
-									printLmSensorInfo);
+									printLmSensorInfo, sm);
 				}
 				else
 				{
@@ -132,7 +132,7 @@ initLmSensors(void)
 			}
 		}
 	}
-	bsort_ctnr(LmSensors, sensorCmp, 0);
+	bsort_ctnr(LmSensors, sensorCmp);
 }
 
 void

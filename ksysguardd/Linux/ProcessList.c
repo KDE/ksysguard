@@ -196,7 +196,7 @@ updateProcess(int pid)
 		ps->centStamp = tv.tv_sec * 100 + tv.tv_usec / 10000;
 
 		push_ctnr(ProcessList, ps);
-		bsort_ctnr(ProcessList, processCmp, 0);
+		bsort_ctnr(ProcessList, processCmp);
 	}
 
 	snprintf(buf, BUFSIZE - 1, "/proc/%d/status", pid);
@@ -396,15 +396,15 @@ updateProcessList(void)
 */
 
 void
-initProcessList(void)
+initProcessList(struct SensorModul* sm)
 {
 	initPWUIDCache();
 
-	ProcessList = new_ctnr(CT_DLL);
+	ProcessList = new_ctnr();
 
 	registerMonitor("pscount", "integer", printProcessCount,
-					printProcessCountInfo);
-	registerMonitor("ps", "table", printProcessList, printProcessListInfo);
+					printProcessCountInfo, sm);
+	registerMonitor("ps", "table", printProcessList, printProcessListInfo, sm);
 
 	if (!RunAsDaemon)
 	{
@@ -428,8 +428,8 @@ exitProcessList(void)
 		removeCommand("setpriority");
 	}
 
-	if (ProcessList)
-		destr_ctnr(ProcessList, free);
+	destr_ctnr(ProcessList, free);
+
 	exitPWUIDCache();
 }
 
@@ -444,12 +444,10 @@ printProcessListInfo(const char* cmd)
 void
 printProcessList(const char* cmd)
 {
-	int i;
+	ProcessInfo* ps;
 
-	for (i = 0; i < level_ctnr(ProcessList); i++)
+	for (ps = first_ctnr(ProcessList); ps; ps = next_ctnr(ProcessList))
 	{
-		ProcessInfo* ps = get_ctnr(ProcessList, i);
-
 		fprintf(CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d"
 			   "\t%s\t%s\n",
 			   ps->name, (long) ps->pid, (long) ps->ppid,

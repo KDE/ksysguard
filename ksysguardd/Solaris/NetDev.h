@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
 
@@ -25,7 +25,7 @@
 #ifndef _NetDev_h_
 #define _NetDev_h_
 
-void initNetDev(void);
+void initNetDev(struct SensorModul* sm);
 void exitNetDev(void);
 
 int updateNetDev(void);

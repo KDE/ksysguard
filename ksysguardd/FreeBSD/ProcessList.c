@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
 
 	Copyright (c) 1999-2000 Hans Petter Bieker<bieker@kde.org>
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
@@ -174,7 +174,7 @@ updateProcess(int pid)
 		ps->pid = pid;
 		ps->centStamp = 0;
 		push_ctnr(ProcessList, ps);
-		bsort_ctnr(ProcessList, processCmp, 0);
+		bsort_ctnr(ProcessList, processCmp);
 	}
 
 	ps->alive = 1;
@@ -280,12 +280,12 @@ cleanupProcessList(void)
 */
 
 void
-initProcessList(void)
+initProcessList(struct SensorModul* sm)
 {
-	ProcessList = new_ctnr(CT_DLL);
+	ProcessList = new_ctnr();
 
-	registerMonitor("ps", "table", printProcessList, printProcessListInfo);
-	registerMonitor("pscount", "integer", printProcessCount, printProcessCountInfo);
+	registerMonitor("ps", "table", printProcessList, printProcessListInfo, sm);
+	registerMonitor("pscount", "integer", printProcessCount, printProcessCountInfo, sm);
 
 	if (!RunAsDaemon)
 	{
@@ -344,12 +344,11 @@ printProcessListInfo(const char* cmd)
 void
 printProcessList(const char* cmd)
 {
-	int i;
+	ProcessInfo* ps;
 
-	for (i = 1; i < level_ctnr(ProcessList); i++)
+	ps = first_ctnr(ProcessList) /* skip 'kernel' entry */
+	for (ps = next_ctnr(ProcessList); ps; ps = next_ctnr(ProcessList))
 	{
-		ProcessInfo* ps = get_ctnr(ProcessList, i);
-
 		fprintf(CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d\t%s\t%s\n",
 			   ps->name, (long)ps->pid, (long)ps->ppid,
 			   (long)ps->uid, (long)ps->gid, ps->status,

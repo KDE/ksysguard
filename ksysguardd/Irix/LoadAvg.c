@@ -37,13 +37,13 @@ double loadavg1 = 0.0;
 double loadavg5 = 0.0;
 double loadavg15 = 0.0;
 
-void initLoadAvg( void ) {
+void initLoadAvg(struct SensorModul* sm ) {
 	registerMonitor( "cpu/loadavg1", "float",
-					printLoadAvg1, printLoadAvg1Info );
+					printLoadAvg1, printLoadAvg1Info, sm );
 	registerMonitor( "cpu/loadavg5", "float",
-					printLoadAvg5, printLoadAvg5Info );
+					printLoadAvg5, printLoadAvg5Info, sm );
 	registerMonitor( "cpu/loadavg15", "float",
-					printLoadAvg15, printLoadAvg15Info );
+					printLoadAvg15, printLoadAvg15Info, sm );
 }
 
 void exitLoadAvg( void ) {

@@ -16,13 +16,16 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	$Id$
 */
 
 #ifndef _cpuinfo_h_
 #define _cpuinfo_h_
 
-void initCpuInfo(void);
+void initCpuInfo(struct SensorModul* sm);
 void exitCpuInfo(void);
+
 int updateCpuInfo(void);
 
 void printCPUUser(const char* cmd);

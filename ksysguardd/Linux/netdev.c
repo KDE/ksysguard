@@ -41,7 +41,7 @@
 { \
 	sprintf(mon, "network/interfaces/%s/%s", tag, b); \
 	registerMonitor(mon, "integer", printNetDev##a, \
-					printNetDev##a##Info); \
+					printNetDev##a##Info, NetDevSM); \
 }
 
 #define UNREGISTERSENSOR(a, b, c, d, e) \
@@ -104,6 +104,7 @@ typedef struct
 static float timeInterval = 0;
 static struct timeval lastSampling;
 static struct timeval currSampling;
+static struct SensorModul* NetDevSM;
 
 #define NETDEVBUFSIZE 4096
 static char NetDevBuf[NETDEVBUFSIZE];
@@ -207,7 +208,7 @@ processNetDev(void)
 */
 
 void
-initNetDev(void)
+initNetDev(struct SensorModul* sm)
 {
 	int i;
 	char format[32];
@@ -215,6 +216,8 @@ initNetDev(void)
 	char buf[1024];
 	char tag[64];
 	char* netDevBufP = NetDevBuf;
+
+	NetDevSM = sm;
 
 	if (updateNetDev() < 0)
 		return;
@@ -350,7 +353,7 @@ checkNetDev(void)
 	/* Values for other network devices are lost, but it is still better
 	 * than not detecting any new devices. TODO: Fix after 2.1 is out. */
 	exitNetDev();
-	initNetDev();
+	initNetDev(NetDevSM);
 }
 
 #define PRINTFUNC(a, b, c, d, e) \

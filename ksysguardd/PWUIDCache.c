@@ -59,7 +59,7 @@ destrCachedPWUID(void* c)
 void
 initPWUIDCache()
 {
-	UIDCache = new_ctnr(CT_DLL);
+	UIDCache = new_ctnr();
 }
 
 void
@@ -72,7 +72,7 @@ const char*
 getCachedPWUID(uid_t uid)
 {
 	CachedPWUID key;
-	CachedPWUID* entry;
+	CachedPWUID* entry = 0;
 	long index;
 	time_t stamp;
 
@@ -90,7 +90,7 @@ getCachedPWUID(uid_t uid)
 			entry = get_ctnr(UIDCache, i);
 			if (stamp - entry->tStamp > TIMEOUT)
 			{
-				remove_ctnr(UIDCache, i--);
+				entry = remove_ctnr(UIDCache, i--);
 				destrCachedPWUID(entry);
 			}
 		}
@@ -103,7 +103,7 @@ getCachedPWUID(uid_t uid)
 		struct passwd* pwent;
 
 		/* User id is not yet known */
-		entry = malloc(sizeof(CachedPWUID));
+		entry = (CachedPWUID*)malloc(sizeof(CachedPWUID));
 		entry->tStamp = stamp;
 		entry->uid = uid;
 
@@ -119,7 +119,7 @@ getCachedPWUID(uid_t uid)
 			strcpy(entry->uName, "?");
 		}
 		push_ctnr(UIDCache, entry);
-		bsort_ctnr(UIDCache, uidCmp, 0);
+		bsort_ctnr(UIDCache, uidCmp);
 	}
 	else
 	{

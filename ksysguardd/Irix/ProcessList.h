@@ -19,7 +19,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	$ $
+	$Id$
 */
 
 #ifndef _ProcessList_H_
@@ -27,7 +27,7 @@
 
 #define PROCDIR "/proc"
 
-void initProcessList(void);
+void initProcessList(struct SensorModul* sm);
 void exitProcessList(void);
 
 int updateProcessList(void);

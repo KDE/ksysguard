@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
    
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
 
@@ -27,7 +27,7 @@
 
 #define PROCDIR "/proc"
 
-void initProcessList(void);
+void initProcessList(struct SensorModul* sm);
 void exitProcessList(void);
 
 int updateProcessList(void);

@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
 	   
-    Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
+    Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -15,12 +15,14 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	$Id$
 */
 
 #ifndef _diskstat_h_
 #define _diskstat_h_
 
-void initDiskStat(void);
+void initDiskStat(struct SensorModul* sm);
 void exitDiskStat(void);
 
 int updateDiskStat(void);

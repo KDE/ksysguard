@@ -22,8 +22,9 @@
 #ifndef _apm_h_
 #define _apm_h_
 
-void initApm(void);
+void initApm(struct SensorModul* sm);
 void exitApm(void);
+
 int updateApm(void);
 
 void printApmBatFill(const char*);

@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE System Guard
 
 	Copyright (c) 1999-2000 Hans Petter Bieker <bieker@kde.org>
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
@@ -49,7 +49,7 @@ static size_t SUsed = 0;
 static kvm_t *kd;
 
 void
-initMemory(void)
+initMemory(struct SensorModul* sm)
 {
 	char *nlistf = NULL;
 	char *memf = NULL;
@@ -60,12 +60,12 @@ initMemory(void)
 		return;
 	}
 
-        registerMonitor("mem/physical/free", "integer", printMFree, printMFreeInfo);
-	registerMonitor("mem/physical/used", "integer", printUsed, printUsedInfo);
-	registerMonitor("mem/physical/buf", "integer", printBuffers, printBuffersInfo);
-	registerMonitor("mem/physical/cached", "integer", printCached, printCachedInfo);
-	registerMonitor("mem/swap/free", "integer", printSwapFree, printSwapFreeInfo);
-	registerMonitor("mem/swap/used", "integer", printSwapUsed, printSwapUsedInfo);
+        registerMonitor("mem/physical/free", "integer", printMFree, printMFreeInfo, sm);
+	registerMonitor("mem/physical/used", "integer", printUsed, printUsedInfo, sm);
+	registerMonitor("mem/physical/buf", "integer", printBuffers, printBuffersInfo, sm);
+	registerMonitor("mem/physical/cached", "integer", printCached, printCachedInfo, sm);
+	registerMonitor("mem/swap/free", "integer", printSwapFree, printSwapFreeInfo, sm);
+	registerMonitor("mem/swap/used", "integer", printSwapUsed, printSwapUsedInfo, sm);
 }
 
 void

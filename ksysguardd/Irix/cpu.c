@@ -18,6 +18,8 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+	$Id$
 */
 
 #include <stdio.h>
@@ -60,7 +62,7 @@ int getID(const char *cmd){
 }
 
 void
-initCpuInfo(void)
+initCpuInfo(struct SensorModul* sm)
 {
 	char mname[50];
 	int i;
@@ -70,23 +72,23 @@ initCpuInfo(void)
 	memset(g_ci,0,sizeof(struct cpu_info) * nCPUs);
 
 	registerMonitor("cpu/user", "integer", printCPUUser,
-		printCPUUserInfo);
+		printCPUUserInfo, sm);
 	registerMonitor("cpu/sys",  "integer", printCPUSys,
-		printCPUSysInfo);
+		printCPUSysInfo, sm);
 	registerMonitor("cpu/idle", "integer", printCPUIdle,
-		printCPUIdleInfo);
+		printCPUIdleInfo, sm);
 
 	if (nCPUs > 1) for (i=0;i<nCPUs;i++){
 		/* indidividual CPU load */
 		sprintf(mname,"cpu/cpu%d/user",i+1);
 		registerMonitor(mname, "integer", printCPUxUser,
-				printCPUUserInfo);
+				printCPUUserInfo, sm);
 		sprintf(mname,"cpu/cpu%d/sys",i+1);
 		registerMonitor(mname, "integer", printCPUxSys,
-				printCPUSysInfo);
+				printCPUSysInfo, sm);
 		sprintf(mname,"cpu/cpu%d/idle",i+1);
 		registerMonitor(mname, "integer", printCPUxIdle,
-				printCPUIdleInfo);
+				printCPUIdleInfo, sm);
 	}
 
 	updateCpuInfo();

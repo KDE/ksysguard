@@ -49,7 +49,7 @@ processApm(void)
 */
 
 void
-initApm(void)
+initApm(struct SensorModul* sm)
 {
 	if (updateApm() < 0)
 	{
@@ -60,9 +60,9 @@ initApm(void)
 		ApmOK = 1;
 
 	registerMonitor("apm/batterycharge", "integer", printApmBatFill,
-					printApmBatFillInfo);
+					printApmBatFillInfo, sm);
 	registerMonitor("apm/remainingtime", "integer", printApmBatTime,
-					printApmBatTimeInfo);
+					printApmBatTimeInfo, sm);
 }
 
 void

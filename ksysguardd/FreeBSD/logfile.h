@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
+	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -22,7 +22,7 @@
 #ifndef _logfile_h_
 #define _logfile_h_
 
-void initLogFile(void);
+void initLogFile(struct SensorModul* sm);
 void exitLogFile(void);
 
 void printLogFile(const char* cmd);
