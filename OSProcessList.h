@@ -26,6 +26,10 @@
 #define _OSProcessList_h_
 
 #include <unistd.h>
+#include <config.h>
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
 
 #include <qlist.h>
 

@@ -31,18 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <dirent.h>
-#include <ctype.h>
-#include <pwd.h>
-#include <time.h>
-#include <sys/time.h>
-#include <sys/resource.h>       
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <signal.h>
-#include <errno.h>
 
 #include <qtabbar.h>
 #include <qmessagebox.h>
