@@ -59,12 +59,28 @@ public:
 	const QString getHostName(const SensorAgent* sensor) const;
 	bool getHostInfo(const QString& host, QString& shell, QString& command);
 
+	const QString& translateUnit(const QString& u)
+	{
+		if (units[u])
+			return (*units[u]);
+		else
+			return (u);
+	}
+
 signals:
 	void update();
 	void hostConnectionLost(const QString& hostName);
 
 protected:
 	QDict<SensorAgent> sensors;
+
+private:
+	/**
+	 * These dictionary stores the localized versions of the sensor
+	 * descriptions and units.
+	 */
+	QDict<QString> descriptions;
+	QDict<QString> units;
 } ;
 
 extern SensorManager* SensorMgr;

@@ -38,6 +38,7 @@
 #include <kmessagebox.h>
 
 #include "MultiMeterSettings.h"
+#include "SensorManager.h"
 #include "MultiMeter.moc"
 
 MultiMeter::MultiMeter(QWidget* parent, const char* name,
@@ -73,9 +74,9 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 
 bool
 MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
-					  const QString&)
+					  const QString& title)
 {
-	registerSensor(hostName, sensorName);
+	registerSensor(hostName, sensorName, title);
 
 	/* To differentiate between answers from value requests and info
 	 * requests we use 100 for info requests. */
@@ -91,7 +92,7 @@ MultiMeter::answerReceived(int id, const QString& answer)
 	if (id == 100)
 	{
 		SensorIntegerInfo info(answer);
-		setTitle(title, info.getUnit());
+		setTitle(title, SensorMgr->translateUnit(info.getUnit()));
 		timerOn();
 	}
 	else

@@ -36,6 +36,7 @@
 #include "SensorManager.h"
 #include "FancyPlotter.h"
 #include "MultiMeter.h"
+#include "DancingBars.h"
 #include "ProcessController.h"
 #include "WorkSheet.moc"
 
@@ -153,7 +154,8 @@ WorkSheet::load(const QString& fN)
 		int column = element.attribute("column").toUInt();
 		if (row >= rows || column >= columns)
 		{
-			kdDebug () << "Row or Column out of range (" << row << ", " << column << ")" << endl;
+			kdDebug () << "Row or Column out of range (" << row << ", "
+					   << column << ")" << endl;
 			return (FALSE);
 		}
 
@@ -163,6 +165,8 @@ WorkSheet::load(const QString& fN)
 			newDisplay = new FancyPlotter(this);
 		else if (classType == "MultiMeter")
 			newDisplay = new MultiMeter(this);
+		else if (classType == "DancingBars")
+			newDisplay = new DancingBars(this);
 		else if (classType == "ProcessController")
 			newDisplay = new ProcessController(this);
 		else
@@ -234,9 +238,7 @@ WorkSheet::save(const QString& fN)
 	QFile file(fileName = fN);
 	if (!file.open(IO_WriteOnly))
 	{
-		/* TODO: Change this to "Can't save file %1" after message freeze
-		 * is over. */
-		KMessageBox::sorry(this, i18n("Can't open the file %1")
+		KMessageBox::sorry(this, i18n("Can't save file %1")
 						   .arg(fileName));
 		return (FALSE);
 	}
@@ -278,6 +280,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 			pm.insertSeparator();
 			pm.insertItem(i18n("&Signal Plotter"), 1);
 			pm.insertItem(i18n("&Multimeter"), 2);
+			pm.insertItem(i18n("&BarGraph"), 3);
 			switch (pm.exec(QCursor::pos()))
 			{
 			case 1:
@@ -286,6 +289,9 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 				break;
 			case 2:
 				newDisplay = new MultiMeter(this, "MultiMeter", sensorDescr);
+				break;
+			case 3:
+				newDisplay = new DancingBars(this, "DancingBars", sensorDescr);
 				break;
 			default:
 				return (0);

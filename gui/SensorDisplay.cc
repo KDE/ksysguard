@@ -38,9 +38,6 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 	timerInterval = 2000;
 	timerId = NONE;
 	sensorOk = TRUE;
-
-	hostNames.setAutoDelete(true);
-	sensorNames.setAutoDelete(true);
 }
 
 SensorDisplay::~SensorDisplay()
@@ -50,20 +47,26 @@ SensorDisplay::~SensorDisplay()
 
 void
 SensorDisplay::registerSensor(const QString& hostName,
-							  const QString& sensorName)
+							  const QString& sensorName,
+							  const QString& sensorDescription)
 {
-	hostNames.append(new QString(hostName));
-	sensorNames.append(new QString(sensorName));
+	hostNames.append(hostName);
+	sensorNames.append(sensorName);
+	sensorDescriptions.append(sensorDescription);
 }
 
 void
 SensorDisplay::timerEvent(QTimerEvent*)
 {
-	QListIterator<const QString> hnIt(hostNames);
-	QListIterator<const QString> snIt(sensorNames);
+	QStringList::Iterator hnIt;
+	QStringList::Iterator snIt;
 
-	for (int i = 0; hnIt.current(); ++hnIt, ++snIt, ++i)
-		sendRequest(*hnIt.current(), *snIt.current(), i);
+	hnIt = hostNames.begin();
+	snIt = sensorNames.begin();
+	for (int i = 0; hnIt != hostNames.end(); ++hnIt, ++snIt, ++i)
+	{
+		sendRequest(*hnIt, *snIt, i);
+	}
 }
 
 bool
@@ -120,12 +123,26 @@ SensorDisplay::sensorError(bool err)
 	}
 }
 
+bool
+SensorDisplay::loadSensor(QDomElement& /*dolElement*/)
+{
+	// TODO: not sure whether it makes sense to have this function.
+	return (false);
+}
+
+bool
+SensorDisplay::saveSensor(QDomDocument& /*doc*/, QDomElement& /*sensor*/)
+{
+	// TODO: not sure whether it makes sense to have this function.
+	return (false);
+}
+
 void
 SensorDisplay::collectHosts(QValueList<QString>& list)
 {
-	QListIterator<const QString> hnIt(hostNames);
+	QStringList::Iterator hnIt;
 
-	for (; hnIt.current(); ++hnIt)
-		if (!list.contains(*hnIt.current()))
-			list.append(*hnIt.current());
+	for (hnIt = hostNames.begin(); hnIt != hostNames.end(); ++hnIt)
+		if (!list.contains(*hnIt))
+			list.append(*hnIt);
 }

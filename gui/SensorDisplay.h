@@ -87,6 +87,9 @@ public:
 
 	virtual void sensorError(bool mode);
 
+	virtual bool loadSensor(QDomElement& domElem);
+	virtual bool saveSensor(QDomDocument& doc, QDomElement& sensor);
+
 	void collectHosts(QValueList<QString>& list);
 
 public slots:
@@ -128,10 +131,12 @@ protected:
 	virtual void timerEvent(QTimerEvent*);
 	virtual bool eventFilter(QObject*, QEvent*);
 
-	void registerSensor(const QString& hostName, const QString& sensorName);
+	void registerSensor(const QString& hostName, const QString& sensorName,
+						const QString& sensorDescr);
 
-	QList<const QString> hostNames;
-	QList<const QString> sensorNames;
+	QStringList hostNames;
+	QStringList sensorNames;
+	QStringList sensorDescriptions; 
 
 	/* This flag indicates whether the communication to the sensor(s) is
 	 * ok or not. */

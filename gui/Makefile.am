@@ -16,7 +16,7 @@ ksysguard_SOURCES = ksysguard.cc ksysguard.skel SensorAgent.cc \
 	ProcessMenu.cc ReniceDlg.cc WorkSheet.cc Workspace.cc \
 	SensorBrowser.cc SensorDisplay.cc \
 	FancyPlotter.cc SignalPlotter.cc MultiMeter.cc \
-	MultiMeterSettings.ui \
+	MultiMeterSettings.cc DancingBars.cc BarGraph.cc \
 	ProcessController.cc ProcessList.cc
 
 # the library search path
@@ -30,8 +30,8 @@ data_DATA = ProcessTable.sgrd SystemLoad.sgrd
 
 # this option you can leave out. Just, if you use "make dist", you need it
 noinst_HEADERS = SensorClient.h ksysguard.h ProcessMenu.h \
-	Workspace.h WorkSheet.h SensorBrowser.h \
-	HostConnector.h WorkSheetSetup.h \
+	Workspace.h WorkSheet.h SensorBrowser.h DancingBars.h \
+	BarGraph.h HostConnector.h WorkSheetSetup.h \
 	SensorAgent.h SensorManager.h SensorDisplay.h \
 	FancyPlotter.h SignalPlotter.h MultiMeter.h \
 	MultiMeterSettings.h \

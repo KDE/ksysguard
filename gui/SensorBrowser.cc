@@ -81,6 +81,10 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	dict.insert("network", new QString(i18n("Network")));
 	dict.insert("recBytes", new QString(i18n("Received Bytes")));
 	dict.insert("sentBytes", new QString(i18n("Sent Bytes")));
+	dict.insert("apm", new QString(i18n("Advanced Power Management")));
+	dict.insert("batterycharge", new QString(i18n("Battery Charge")));
+	dict.insert("remainingtime", new QString(i18n("Remaining Time")));
+	dict.insert("interrupts", new QString(i18n("Interrupts")));
 
 	for (int i = 0; i < 32; i++)
 	{
@@ -88,6 +92,16 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 					new QString(QString(i18n("CPU%1")).arg(i)));
 		dict.insert("disk" + QString::number(i),
 					new QString(QString(i18n("Disk%1")).arg(i)));
+	}
+
+	dict.insert("int00", new QString(i18n("Total")));
+	for (int i = 1; i < 25; i++)
+	{
+		QString num = QString::number(i);
+		if (i < 10)
+			num = "0" + num;
+		dict.insert("int" + num,
+					new QString(QString(i18n("Int%1")).arg(i - 1, 3)));
 	}
 
 	icons = new KIconLoader();
@@ -110,7 +124,8 @@ SensorBrowser::disconnect()
 	for (; it.current(); ++it)
 		if ((*it)->getLVI()->isSelected())
 		{
-			kdDebug() << "Disconnecting " <<  (*it)->getHostName().ascii() << endl;
+			kdDebug() << "Disconnecting " <<  (*it)->getHostName().ascii()
+					  << endl;
 			SensorMgr->disengage((*it)->getSensorAgent());
 		}
 }
@@ -297,12 +312,11 @@ SensorBrowser::listSensors()
 	// TODO: This does not work yet!
 	QStringList list;
 
-	list.append("Test 123");
 	QListIterator<HostInfo> it(hostInfos);
 	for ( ; it.current(); ++it)
 	{
 		list.append((*it)->getHostName());
-//		(*it)->listSensors();
+		(*it)->appendSensors(list);
 	}
 
 	return (list);

@@ -70,15 +70,15 @@ Workspace::readProperties(KConfig* cfg)
 		KStandardDirs* kstd = KGlobal::dirs();
 		kstd->addResourceType("data", "share/apps/ksysguard");
 
-		workDir = kstd->saveLocation("data", "ksysguard/");
+		workDir = kstd->saveLocation("data", "ksysguard");
 
 		QString f = kstd->findResource("data", "SystemLoad.sgrd");
-		QString fNew = workDir + i18n("System Load") + ".sgrd";
+		QString fNew = workDir + "/" + i18n("System Load") + ".sgrd";
 		if (!f.isEmpty())
 			restoreWorkSheet(f, fNew);
 
 		f = kstd->findResource("data", "ProcessTable.sgrd");
-		fNew = workDir + i18n("Process Table") + ".sgrd";
+		fNew = workDir + "/" + i18n("Process Table") + ".sgrd";
 		if (!f.isEmpty())
 			restoreWorkSheet(f, fNew);
 
@@ -162,8 +162,8 @@ Workspace::saveOnQuit()
 void
 Workspace::loadWorkSheet()
 {
-	KFileDialog fd(workDir, "*.sgrd", this, "LoadFileDialog", TRUE);
-	QString fileName = fd.getOpenFileName(QString::null, "*.sgrd");
+	KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", TRUE);
+	QString fileName = fd.getOpenFileName(workDir, "*.sgrd");
 	if (fileName.isEmpty())
 		return;
 
@@ -186,8 +186,8 @@ Workspace::saveWorkSheet(WorkSheet* sheet)
 	QString fileName = sheet->getFileName();
 	if (fileName.isEmpty())
 	{
-		KFileDialog fd(workDir, "*.sgrd", this, "LoadFileDialog", TRUE);
-		fileName = fd.getSaveFileName(
+		KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", TRUE);
+		fileName = fd.getSaveFileName(workDir + "/" +
 			tabLabel(currentPage()) + ".sgrd", "*.sgrd");
 		if (fileName.isEmpty())
 			return;
@@ -219,8 +219,8 @@ Workspace::saveWorkSheetAs()
 	QString fileName;
 	do
 	{
-		KFileDialog fd(workDir, "*.sgrd", this, "LoadFileDialog", TRUE);
-		fileName = fd.getSaveFileName(
+		KFileDialog fd(0, "*.sgrd", this, "LoadFileDialog", TRUE);
+		fileName = fd.getSaveFileName(workDir + "/" +
 			tabLabel(currentPage()) + ".sgrd", "*.sgrd");
 		if (fileName.isEmpty())
 			return;

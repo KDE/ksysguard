@@ -38,6 +38,14 @@ SensorManager* SensorMgr;
 SensorManager::SensorManager()
 {
 	sensors.setAutoDelete(true);
+
+	descriptions.setAutoDelete(TRUE);
+	// TODO: translated descriptions not yet implemented.
+
+	units.setAutoDelete(TRUE);
+	units.insert("1/s", new QString(i18n("1/s")));
+	units.insert("kBytes", new QString(i18n("kBytes")));
+	units.insert("min", new QString(i18n("min")));
 }
 
 SensorManager::~SensorManager()

@@ -38,6 +38,21 @@
 ProcessController::ProcessController(QWidget* parent, const char* name)
 	: SensorDisplay(parent, name)
 {
+	dict.setAutoDelete(true);
+	dict.insert("Name", new QString(i18n("Name")));
+	dict.insert("PID", new QString(i18n("PID")));
+	dict.insert("PPID", new QString(i18n("PPID")));
+	dict.insert("UID", new QString(i18n("UID")));
+	dict.insert("GID", new QString(i18n("GID")));
+	dict.insert("Status", new QString(i18n("Status")));
+	dict.insert("User%", new QString(i18n("User%")));
+	dict.insert("System%", new QString(i18n("System%")));
+	dict.insert("Nice", new QString(i18n("Nice")));
+	dict.insert("VmSize", new QString(i18n("VmSize")));
+	dict.insert("VmRss", new QString(i18n("VmRss")));
+	dict.insert("Login", new QString(i18n("Login")));
+	dict.insert("Command", new QString(i18n("Command")));
+
 	// Create the box that will contain the other widgets.
 	box = new QGroupBox(this, "pList_box"); 
 	CHECK_PTR(box);
@@ -53,9 +68,9 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	/* All RMB clicks to the plist widget will be handled by 
 	 * SensorDisplay::eventFilter. */
 	pList->installEventFilter(this);
-
+	
 	// Create the check box to switch between tree view and list view.
-	xbTreeView = new QCheckBox(i18n("Tree"), this, "xbTreeView");
+	xbTreeView = new QCheckBox(i18n("&Tree"), this, "xbTreeView");
 	CHECK_PTR(xbTreeView);
 	xbTreeView->setMinimumSize(xbTreeView->sizeHint());
 	connect(xbTreeView, SIGNAL(toggled(bool)),
@@ -78,19 +93,19 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 			pList, SLOT(setFilterMode(int)));
 
 	// Create the check box to pause the automatic list update.
-	xbPause = new QCheckBox(i18n("Pause"), this, "xbPause");
+	xbPause = new QCheckBox(i18n("&Pause"), this, "xbPause");
 	CHECK_PTR(xbPause);
 	xbPause->setMinimumSize(xbPause->sizeHint());
 	connect(xbPause, SIGNAL(toggled(bool)), this, SLOT(togglePause(bool)));
 
 	// Create the 'Refresh' button.
-	bRefresh = new QPushButton(i18n("Refresh"), this, "bRefresh");
+	bRefresh = new QPushButton(i18n("&Refresh"), this, "bRefresh");
 	CHECK_PTR(bRefresh);
 	bRefresh->setMinimumSize(bRefresh->sizeHint());
 	connect(bRefresh, SIGNAL(clicked()), this, SLOT(updateList()));
 
 	// Create the 'Kill' button.
-	bKill = new QPushButton(i18n("Kill"), this, "bKill");
+	bKill = new QPushButton(i18n("&Kill"), this, "bKill");
 	CHECK_PTR(bKill);
 	bKill->setMinimumSize(bKill->sizeHint());
 	connect(bKill, SIGNAL(clicked()), this, SLOT(killProcess()));
@@ -137,7 +152,7 @@ ProcessController::addSensor(const QString& hostName,
 							 const QString& sensorName,
 							 const QString& title)
 {
-	registerSensor(hostName, sensorName);
+	registerSensor(hostName, sensorName, title);
 	sendRequest(hostName, "ps?", 1);
 
 	if (title.isEmpty())
@@ -203,7 +218,14 @@ ProcessController::answerReceived(int id, const QString& answer)
 		
 		pList->removeColumns();
 		for (unsigned int i = 0; i < headers.numberOfTokens(); i++)
-			pList->addColumn(headers[i], colTypes[i]);
+		{
+			QString header;
+			if (dict[headers[i]])
+				header = *dict[headers[i]];
+			else
+				header = headers[i];
+			pList->addColumn(header, colTypes[i]);
+		}
 
 		timerOn();
 

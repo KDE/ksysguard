@@ -371,7 +371,7 @@ TopLevel::answerReceived(int id, const QString& answer)
 	case 5:
 		SensorIntegerInfo info(answer);
 		sTotal = info.getMax();
-		unit = info.getUnit();
+		unit = SensorMgr->translateUnit(info.getUnit());
 		break;
 	}
 }

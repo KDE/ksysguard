@@ -31,6 +31,7 @@
 #include <qcombobox.h>
 #include <qgroupbox.h>
 #include <qlayout.h>
+#include <qdict.h>
 
 #include <kapp.h>
 
@@ -142,6 +143,9 @@ private:
 	/// These buttons force an immedeate refresh or kill a process.
 	QPushButton* bRefresh;
 	QPushButton* bKill;
+
+	/// Dictionary for header translations.
+	QDict<QString> dict;
 } ;
 
 #endif

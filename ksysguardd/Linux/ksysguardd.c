@@ -30,6 +30,7 @@
 #include "Memory.h"
 #include "stat.h"
 #include "netdev.h"
+#include "apm.h"
 
 #define CMDBUFSIZE 128
 
@@ -67,6 +68,7 @@ main(int argc, const char* argv[])
 	initMemory();
 	initStat();
 	initNetDev();
+	initApm();
 	initDispatcher();
 
 	while (!dispatcherReady())
@@ -85,6 +87,7 @@ main(int argc, const char* argv[])
 		fflush(stdout);
 	} while (!QuitApp);
 
+	exitApm();
 	exitDispatcher();
 	exitNetDev();
 	exitStat();

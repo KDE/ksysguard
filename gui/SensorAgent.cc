@@ -188,14 +188,17 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 			SensorRequest* req = processingFIFO.last();
 			if (!req)
 			{
-				kdDebug() << "ERROR: Received answer but have no pending request!" << endl;
+				kdDebug()
+					<< "ERROR: Received answer but have no pending request!"
+					<< endl;
 				return;
 			}
 			processingFIFO.removeLast();
 			
 			if (!req->client)
 			{
-				kdDebug () << "ERROR: No client registered for request!" << endl;
+				kdDebug ()
+					<< "ERROR: No client registered for request!" << endl;
 				return;
 			}
 			// Notify client of newly arrived answer.

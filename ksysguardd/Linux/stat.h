@@ -58,6 +58,8 @@ void printPageIn(const char* cmd);
 void printPageInInfo(const char* cmd);
 void printPageOut(const char* cmd);
 void printPageOutInfo(const char* cmd);
+void printInterruptx(const char* cmd);
+void printInterruptxInfo(const char* cmd);
 void printCtxt(const char* cmd);
 void printCtxtInfo(const char* cmd);
 

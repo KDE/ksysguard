@@ -34,9 +34,9 @@
 #include <knuminput.h>
 
 #include "SensorManager.h"
-#include "FancyPlotter.moc"
+#include "DancingBars.moc"
 
-FancyPlotterSettings::FancyPlotterSettings(const QString& oldTitle,
+DancingBarsSettings::DancingBarsSettings(const QString& oldTitle,
 										   long min, long max)
 	: KDialogBase(0, 0, true, QString::null, Ok | Apply | Cancel)
 {
@@ -85,40 +85,40 @@ FancyPlotterSettings::FancyPlotterSettings(const QString& oldTitle,
 }
 
 QString
-FancyPlotterSettings::getTitle() const
+DancingBarsSettings::getTitle() const
 {
 	return (titleLE->text());
 }
 
 void
-FancyPlotterSettings::applyPressed()
+DancingBarsSettings::applyPressed()
 {
 	emit applySettings(this);
 }
 
 long
-FancyPlotterSettings::getMin() const
+DancingBarsSettings::getMin() const
 {
 	return (minNI->value());
 }
 
 long
-FancyPlotterSettings::getMax() const
+DancingBarsSettings::getMax() const
 {
 	return (maxNI->value());
 }
 
-FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
+DancingBars::DancingBars(QWidget* parent, const char* name,
 						   const QString& title, int min, int max)
 	: SensorDisplay(parent, name)
 {
 	meterFrame = new QGroupBox(1, Qt::Vertical, title, this, "meterFrame"); 
 	CHECK_PTR(meterFrame);
 
-	beams = 0;
+	bars = 0;
 	flags = 0;
 
-	plotter = new SignalPlotter(meterFrame, "signalPlotter", min, max);
+	plotter = new BarGraph(meterFrame, "signalPlotter", min, max);
 	CHECK_PTR(plotter);
 
 	setMinimumSize(sizeHint());
@@ -130,26 +130,26 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 	modified = FALSE;
 }
 
-FancyPlotter::~FancyPlotter()
+DancingBars::~DancingBars()
 {
 	delete plotter;
 	delete meterFrame;
 }
 
 void
-FancyPlotter::settings()
+DancingBars::settings()
 {
-	FancyPlotterSettings s(meterFrame->title(), plotter->getMin(),
+	DancingBarsSettings s(meterFrame->title(), plotter->getMin(),
 						   plotter->getMax());
-	connect(&s, SIGNAL(applySettings(FancyPlotterSettings*)),
-			this, SLOT(applySettings(FancyPlotterSettings*)));
+	connect(&s, SIGNAL(applySettings(DancingBarsSettings*)),
+			this, SLOT(applySettings(DancingBarsSettings*)));
 
 	if (s.exec())
 		applySettings(&s);
 }
 
 void
-FancyPlotter::sensorError(bool err)
+DancingBars::sensorError(bool err)
 {
 	if (err == sensorOk)
 	{
@@ -160,109 +160,110 @@ FancyPlotter::sensorError(bool err)
 }
 
 void
-FancyPlotter::applySettings(FancyPlotterSettings* s)
+DancingBars::applySettings(DancingBarsSettings* s)
 {
 	meterFrame->setTitle(s->getTitle());
-	plotter->changeRange(0, s->getMin(), s->getMax());
+	plotter->changeRange(s->getMin(), s->getMax());
 	modified = TRUE;
 }
 
 bool
-FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
+DancingBars::addSensor(const QString& hostName, const QString& sensorName,
 						const QString& title)
 {
-	static QColor cols[] = { blue, red, yellow, cyan, magenta };
-
-	if ((unsigned) beams >= (sizeof(cols) / sizeof(QColor)))
+	if (bars >= 32)
 		return (false);
 
-	if (!plotter->addBeam(cols[beams]))
+	if (!plotter->addBar())
 		return (false);
 
 	registerSensor(hostName, sensorName, title);
-	++beams;
+	++bars;
+	sampleBuf.resize(bars);
 
 	if (!title.isEmpty())
 		meterFrame->setTitle(title);
 
 	/* To differentiate between answers from value requests and info
 	 * requests we add 100 to the beam index for info requests. */
-	sendRequest(hostName, sensorName + "?", beams + 100);
+	sendRequest(hostName, sensorName + "?", bars + 100);
 
 	return (true);
 }
 
 void
-FancyPlotter::resizeEvent(QResizeEvent*)
+DancingBars::resizeEvent(QResizeEvent*)
 {
 	meterFrame->setGeometry(0, 0, width(), height());
 }
 
 QSize
-FancyPlotter::sizeHint(void)
+DancingBars::sizeHint(void)
 {
 	return (meterFrame->sizeHint());
 }
 
 void
-FancyPlotter::answerReceived(int id, const QString& answer)
+DancingBars::answerReceived(int id, const QString& answer)
 {
 	if (id < 5)
 	{
 		sampleBuf[id] = answer.toLong();
 		if (flags & (1 << id))
-			qDebug("ERROR: FancyPlotter lost sample (%x, %d)", flags, beams);
+			qDebug("ERROR: DancingBars lost sample (%lux, %d)", flags, bars);
 		flags |= 1 << id;
 
-		if (flags == (uint) ((1 << beams) - 1))
+		if (flags == (uint) ((1 << bars) - 1))
 		{
-			plotter->addSample(sampleBuf[0], sampleBuf[1], sampleBuf[2],
-							   sampleBuf[3], sampleBuf[4]);
+			plotter->updateSamples(sampleBuf);
 			flags = 0;
 		}
 	}
 	else if (id > 100)
 	{
 		SensorIntegerInfo info(answer);
-		plotter->changeRange(id - 100, info.getMin(), info.getMax());
+		if (id == 100)
+			plotter->changeRange(info.getMin(), info.getMax());
 		timerOn();
 	}
 }
 
 bool
-FancyPlotter::load(QDomElement& domElem)
+DancingBars::load(QDomElement& domElem)
 {
 	modified = false;
 
 	QString title = domElem.attribute("title");
 	if (!title.isEmpty())
 		meterFrame->setTitle(title);
-	plotter->changeRange(0, domElem.attribute("min").toLong(),
+	plotter->changeRange(domElem.attribute("min").toLong(),
 						 domElem.attribute("max").toLong());
 
 	QDomNodeList dnList = domElem.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)
 	{
 		QDomElement el = dnList.item(i).toElement();
-		addSensor(el.attribute("hostName"), el.attribute("sensorName"), "");
+		addSensor(el.attribute("hostName"), el.attribute("sensorName"),
+				  el.attribute("sensorDescr"));
 	}
 
 	return (TRUE);
 }
 
 bool
-FancyPlotter::save(QDomDocument& doc, QDomElement& display)
+DancingBars::save(QDomDocument& doc, QDomElement& display)
 {
 	display.setAttribute("title", meterFrame->title());
 	display.setAttribute("min", (int) plotter->getMin());
 	display.setAttribute("max", (int) plotter->getMax());
 
-	for (int i = 0; i < beams; ++i)
+	for (int i = 0; i < bars; ++i)
 	{
 		QDomElement beam = doc.createElement("beam");
 		display.appendChild(beam);
 		beam.setAttribute("hostName", *hostNames.at(i));
 		beam.setAttribute("sensorName", *sensorNames.at(i));
+		beam.setAttribute("sensorDescr", *sensorDescriptions.at(i));
 	}
 	modified = FALSE;
 

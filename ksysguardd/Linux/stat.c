@@ -29,8 +29,7 @@
 
 typedef struct
 {
-	/* A CPU can be loaded with user processes, reniced processes and
-	 * system processes. Unused processing time is called idle load.
+	/* A CPU can be loaded with user processes, reniced processes and	 * system processes. Unused processing time is called idle load.
 	 * These variable store the percentage of each load type. */
 	int userLoad;
 	int niceLoad;
@@ -73,6 +72,9 @@ static unsigned long PageOut = 0;
 static unsigned long OldPageOut = 0;
 static unsigned long Ctxt = 0;
 static unsigned long OldCtxt = 0;
+static unsigned int NumOfInts = 0;
+static unsigned long* OldIntr = 0;
+static unsigned long* Intr = 0;
 
 static int initStatDisk(char* tag, char* buf, char* label, char* shortLabel,
 						int index, cmdExecutor ex, cmdExecutor iq);
@@ -216,6 +218,24 @@ processStat(void)
 			PageOut = v2 - OldPageOut;
 			OldPageOut = v2;
 		}
+		else if (strcmp("intr", tag) == 0)
+		{
+			int i = 0;
+			char* p = buf + 5;
+
+			for (i = 0; i < NumOfInts; i++)
+			{
+				unsigned long val;
+				
+				sscanf(p, "%lu", &val);
+				Intr[i] = val - OldIntr[i];
+				OldIntr[i] = val;
+				while (*p && *p != ' ')
+					p++;
+				while (*p && *p == ' ')
+					p++;
+			}
+		}
 		else if (strcmp("ctxt", tag) == 0)
 		{
 			unsigned long val;
@@ -357,6 +377,37 @@ initStat(void)
 							printPageInInfo);
 			registerMonitor("cpu/pageOut", "integer", printPageOut,
 							printPageOutInfo);
+		}
+		else if (strcmp("intr", tag) == 0)
+		{
+			int i;
+			char cmdName[32];
+			char* p = buf + 5;
+			/* Count the number of listed values in the intr line. */
+			NumOfInts = 0;
+			while (*p)
+				if (*p++ == ' ')
+					NumOfInts++;
+			/* It looks like anything above 24 is always 0. So let's just
+			 * ignore this for the time beeing. */
+			if (NumOfInts > 25)
+				NumOfInts = 25;
+			OldIntr = (unsigned long*) malloc(NumOfInts 
+											  * sizeof(unsigned long));
+			Intr = (unsigned long*) malloc(NumOfInts * sizeof(unsigned long));
+			i = 0;
+			p = buf + 5;
+			for (i = 0; p && i < NumOfInts; i++)
+			{
+				sscanf(p, "%lu", &OldIntr[i]);
+				while (*p && *p != ' ')
+					p++;
+				while (*p && *p == ' ')
+					p++;
+				sprintf(cmdName, "cpu/interrupts/int%02d", i);
+				registerMonitor(cmdName, "integer", printInterruptx,
+								printInterruptxInfo);
+			}
 		}
 		else if (strcmp("ctxt", tag) == 0)
 		{
@@ -672,6 +723,26 @@ void
 printPageOutInfo(const char* cmd)
 {
 	printf("Paged out Pages\t0\t0\t1/s\n");
+}
+
+void
+printInterruptx(const char* cmd)
+{
+	int id;
+
+	if (Dirty)
+		processStat();
+	sscanf(cmd + strlen("cpu/interrupts/int"), "%d", &id);
+	printf("%lu\n", Intr[id] / TIMERINTERVAL);
+}
+
+void
+printInterruptxInfo(const char* cmd)
+{
+	int id;
+
+	sscanf(cmd + strlen("cpu/interrupt/int"), "%d", &id);
+	printf("Interrupt %d\t0\t0\t1/s\n", id);
 }
 
 void

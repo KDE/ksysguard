@@ -122,6 +122,13 @@ public:
 		return ((*it)->getName());
 	}
 
+	void appendSensors(QStringList& l)
+	{
+		QListIterator<SensorInfo> it(sensors);
+		for ( ; it.current(); ++it)
+			l.append(it.current()->getName());
+	}
+
 	const QString& getSensorType(const QListViewItem* lvi) const
 	{
 		QListIterator<SensorInfo> it(sensors);

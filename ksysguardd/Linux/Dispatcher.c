@@ -30,6 +30,7 @@
 #include "Memory.h"
 #include "stat.h"
 #include "netdev.h"
+#include "apm.h"
 
 /* This variable will be set to 1 as soon as the first interrupt (SIGALRM)
  * has been received. */
@@ -58,6 +59,7 @@ signalHandler(int sig)
 		updateMemory();
 		updateStat();
 		updateNetDev();
+		updateApm();
 		DispatcherReady = 1;
 		break;
     case SIGQUIT:
