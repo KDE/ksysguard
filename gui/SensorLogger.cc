@@ -136,7 +136,7 @@ LogSensor::answerReceived(int id, const QString& answer)
 			QDate date = QDateTime::currentDateTime().date();
 			QTime time = QDateTime::currentDateTime().time();
 
-			stream << QString("%1 %2 %3 %4 %5: %6\n").arg(date.monthName(date.month())).arg(date.day()).arg(time.toString()).arg(hostName).arg(sensorName).arg(value);
+			stream << QString("%1 %2 %3 %4 %5: %6\n").arg(date.shortMonthName(date.month())).arg(date.day()).arg(time.toString()).arg(hostName).arg(sensorName).arg(value);
 		}
 	}
 
