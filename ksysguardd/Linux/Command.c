@@ -20,11 +20,12 @@
 	$Id$
 */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <signal.h>
 #include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <syslog.h>
 
 #include "ccont.h"
 #include "Command.h"
@@ -59,6 +60,17 @@ print_error(const char *fmt, ...)
 			fprintf(currentClient, "\033\033\033");
 		}
 	}
+}
+
+void
+log_error(const char *fmt, ...)
+{
+	va_list az;
+
+	openlog("ksysguardd", LOG_PERROR, LOG_DAEMON);
+	va_start(az, fmt);
+	syslog(LOG_ERR, fmt, az);
+	closelog();
 }
 
 void 

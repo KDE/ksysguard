@@ -30,8 +30,6 @@
 #include "Command.h"
 #include "netdev.h"
 
-#define print(a) write(currentClientFD, (a), strlen(a))
-
 #define CALC(a, b, c, d) \
 { \
 	NetDevs[i].a = a - NetDevs[i].Old##a; \
@@ -336,7 +334,7 @@ Inter-|   Receive                                                |  Transmit
 
 	if (OldHash != 0 && OldHash != hash)
 	{
-		print("\033\033\033RECONFIGURE\n");
+		print_error("RECONFIGURE\n");
 		CheckSetupFlag = 1;
 	}
 	OldHash = hash;

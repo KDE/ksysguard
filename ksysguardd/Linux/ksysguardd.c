@@ -104,7 +104,7 @@ void add_client(int client)
 		{
 			client_list[i] = client;
 			if ((out = fdopen(client, "w+")) == NULL)
-				perror("fdopen");
+				log_error("fdopen");
 			clientFDs[i] = out;
 			printWelcome(out);
 			return;
@@ -119,6 +119,8 @@ void del_client(int client)
 	for (i = 0; i < MAX_CLIENTS; i++) {
 		if (client_list[i] == client) {
 			client_list[i] = -1;
+			fflush(clientFDs[i]);
+			fclose(clientFDs[i]);
 		}
 	}
 }
@@ -129,7 +131,7 @@ int createServerSocket(int port)
 	struct sockaddr_in sin;
 
 	if ((sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
-		perror("socket");
+		log_error("socket");
 		return -1;
 	}
 
@@ -141,12 +143,12 @@ int createServerSocket(int port)
 	sin.sin_port = htons(port);
   
 	if (bind(sock, (struct sockaddr_in *)&sin, sizeof(sin)) < 0) {
-		perror("bind");
+		log_error("bind");
 		return -1;
 	}
 	
 	if (listen(sock, 5) < 0) {
-		perror("listen");
+		log_error("listen");
 		return -1;
 	}
 	
@@ -157,7 +159,7 @@ void make_daemon(void)
 {
 	switch (fork()) {
 		case -1:
-			perror("fork");
+			log_error("fork");
 			break;
 		case 0:
 			setsid();
@@ -237,7 +239,6 @@ main(int argc, char* argv[])
 	else
 	{
 		currentClient = stdout;
-		currentClientFD = fileno(currentClient);
 		socket = 0;
 	}
 
@@ -300,7 +301,7 @@ main(int argc, char* argv[])
 					/* a new connection */
 					if ((conn_socket = accept(socket, &addr, &addr_len)) < 0)
 					{
-						perror("accept");
+						log_error("accept");
 						exit(1);
 					}
 					else
@@ -324,7 +325,6 @@ main(int argc, char* argv[])
 							else
 							{
 								currentClient = clientFDs[i];
-								currentClientFD = fileno(currentClient);
 								executeCommand(cmdBuf);
 								fprintf(currentClient, "ksysguardd> ");
 								fflush(currentClient);
