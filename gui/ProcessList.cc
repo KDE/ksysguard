@@ -513,10 +513,11 @@ ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 {
 	/* Get icon from icon list that might be appropriate for a process
 	 * with this name. */
-	QPixmap pix = icons->loadIcon(p->getName(), KIcon::Desktop,
-								  KIcon::SizeSmall);
+	QPixmap pix = icons->loadIcon(p->getName(), KIcon::Small,
+								  KIcon::SizeSmall, KIcon::DefaultState,
+								  0L, true);
 	if (pix.isNull() || !pix.mask())
-		pix = icons->loadIcon("unkown", KIcon::Desktop,
+		pix = icons->loadIcon("unknownapp", KIcon::User,
 							  KIcon::SizeSmall);
 
 	/* We copy the icon into a 24x16 pixmap to add a 4 pixel margin on

@@ -156,7 +156,9 @@ ProcessController::addSensor(const QString& hostName,
 							 const QString& title)
 {
 	registerSensor(new SensorProperties(hostName, sensorName, title));
-	sendRequest(hostName, "ps?", 1);
+	/* This just triggers the first communication. The full set of
+	 * requests are send whenever the sensor reconnects (detected in
+	 * sensorError(). */
 	sendRequest(hostName, "test kill", 4);
 
 	if (title.isEmpty())
@@ -299,6 +301,10 @@ ProcessController::sensorError(int, bool err)
 	{
 		if (!err)
 		{
+			/* Whenever the communication with the sensor has been
+			 * (re-)established we need to requests the full set of
+			 * properties again, since the back-end might be a new
+			 * one. */
 			sendRequest(sensors.at(0)->hostName, "ps?", 1);
 			sendRequest(sensors.at(0)->hostName, "test kill", 4);
 		}

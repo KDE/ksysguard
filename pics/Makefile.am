@@ -1,2 +1,3 @@
-korganizericondir = $(kde_datadir)/ksysguard/icons
-korganizericon_ICON = AUTO
+datadir = $(kde_datadir)/ksysguard/pics
+
+data_DATA = unknownapp.png

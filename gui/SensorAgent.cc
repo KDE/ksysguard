@@ -37,6 +37,8 @@
 #include "SensorClient.h"
 #include "SensorAgent.moc"
 
+/* This can be used to debug communication problems with the daemon.
+ * Should be set to 0 in any production version. */
 #define SA_TRACE 0
 
 SensorAgent::SensorAgent(SensorManager* sm) :
@@ -50,7 +52,7 @@ SensorAgent::SensorAgent(SensorManager* sm) :
 
 	daemonOnLine = false;
 	transmitting = false;
-	state = 1;
+	state = 0;
 }
 
 SensorAgent::~SensorAgent()
@@ -80,54 +82,27 @@ SensorAgent::processAnswer(const QString& buf)
 	kdDebug() << "<- " << buf << endl;
 #endif
 	for (uint i = 0; i < buf.length(); i++)
-		switch (state)
+	{
+		if (buf[i] == '\033')
 		{
-		case 0: // receiving to answerBuffer
-			if (buf[i] == '\n')
-				state = 1;
-			answerBuffer += buf[i];
-			break;
-		case 1: // last character was a '\n'
-		case 2: // last characters were "\n\033"
-		case 3: // last characters were "\n\033\033"
-			if (buf[i] == '\033')
-				state++;
-			else
+			state = (state + 1) & 1;
+			if (!errorBuffer.isEmpty() && state == 0)
 			{
-				for (int j = 0; j < state - 1; j++)
-					answerBuffer += '\033';
-				answerBuffer += buf[i];
-				state = 0;
+				/* We just received the end of an error message, so we
+				 * can display it. */
+				SensorMgr->notify(QString(i18n("Message from %1:\n%2")
+										  .arg(host)
+										  .arg(errorBuffer)));
+				errorBuffer = QString::null;
 			}
-			break;
-		case 4:	// receiving to errorBuffer
-			if (buf[i] == '\n')
-				state = 0;
+		}
+		else if (state == 0)	// receiving to answerBuffer
+			answerBuffer += buf[i];
+		else	// receiving to errorBuffer
 			errorBuffer += buf[i];
-			break;
-		}
+	}
 
-	// Now we look at the error messages
-	int start = 0;
 	int end;
-	while ((end = errorBuffer.find("\n", start)) >= 0)
-	{
-		if (errorBuffer.mid(start, end - start) == "RECONFIGURE")
-		{
-			emit reconfigure(this);
-			errorBuffer.remove(start, end - start + 1);
-		}
-		start = end + 1;
-	}
-	
-	if ((end = errorBuffer.find("\n")) >= 0)
-	{
-		SensorMgr->notify(QString(i18n("Message from %1:\n%2")
-								  .arg(host)
-								  .arg(errorBuffer.left(end + 1))));
-		errorBuffer.remove(0, end + 1);
-	}
-
 	// And now the real information
 	while ((end = answerBuffer.find("\nksysguardd> ")) >= 0)
 	{
