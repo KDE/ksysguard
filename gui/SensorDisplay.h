@@ -33,8 +33,8 @@
 
 #define NONE -1
 
+class QDomDocument;
 class QDomElement;
-class QTextStream;
 
 /**
  * This class is the base class for all displays for sensors. A
@@ -68,7 +68,7 @@ public:
 		return (TRUE);
 	}
 
-	virtual bool save(QTextStream&)
+	virtual bool save(QDomDocument&, QDomElement&)
 	{
 		return (TRUE);
 	}

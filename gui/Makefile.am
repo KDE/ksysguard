@@ -25,7 +25,7 @@ ktop_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 # that depend on the following ones.
 ktop_LDADD   =       $(LIB_KDEUI) $(LIB_KFILE)
 
-data_DATA = ProcessTable.ktop SystemLoad.ktop Taskmanager.ktop
+data_DATA = ProcessTable.ktop SystemLoad.ktop
 
 # this option you can leave out. Just, if you use "make dist", you need it
 noinst_HEADERS = SensorClient.h ktop.h ProcessMenu.h \

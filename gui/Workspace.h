@@ -57,7 +57,7 @@ public slots:
 	void deleteWorkSheet();
 
 private:
-	void restoreWorkSheet(const QString& fileName);
+	bool restoreWorkSheet(const QString& fileName);
 
 	QList<WorkSheet> sheets;
 	/// Directory that was used for the last load/save.

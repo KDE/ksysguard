@@ -216,16 +216,10 @@ ProcessController::load(QDomElement& el)
 							el.attribute("sensorName"),
 							QString::null);
 
-	if (el.attribute("tree") == "on")
-	{
-		xbTreeView->setChecked(TRUE);
-		setTreeView(TRUE);
-	}
-	if (el.attribute("pause") == "on")
-	{
-		xbPause->setChecked(TRUE);
-		togglePause(TRUE);
-	}
+	xbTreeView->setChecked(el.attribute("tree"));
+	setTreeView(el.attribute("tree"));
+	xbPause->setChecked(el.attribute("pause"));
+	togglePause(el.attribute("pause"));
 
 	int filter = el.attribute("filter").toUInt();
 	cbFilter->setCurrentItem(filter);
@@ -235,24 +229,13 @@ ProcessController::load(QDomElement& el)
 }
 
 bool
-ProcessController::save(QTextStream& s)
+ProcessController::save(QDomDocument& doc, QDomElement& display)
 {
-	s << "hostName=\"" << *hostNames.at(0) << "\" "
-	  << "sensorName=\"" << *sensorNames.at(0) << "\" "
-	  << "tree=\"";
-	if (xbTreeView->isChecked())
-		s << "on";
-	else
-		s << "off";
-	s << "\" ";
-
-	s << "pause=\"";
-	if (xbPause->isChecked())
-		s << "on";
-	else
-		s << "off";
-	s << "\" ";
-	s << "filter=\"" << cbFilter->currentItem() << "\">\n";
+	display.setAttribute("hostName", *hostNames.at(0));
+	display.setAttribute("sensorName", *sensorNames.at(0));
+	display.setAttribute("tree", (uint) xbTreeView->isChecked());
+	display.setAttribute("pause", (uint) xbPause->isChecked());
+	display.setAttribute("filter", cbFilter->currentItem());
 
 	modified = FALSE;
 

@@ -1,12 +1,11 @@
-<!DOCTYPE ktopWorkSheet>
-<WorkSheet rows="2" columns="1">
-<host name="localhost" shell="" command="ktopd"/>
-<display row="0" column="0" class="FancyPlotter" title="CPU">
-<beam hostName="localhost" sensorName="cpu/user"/>
-<beam hostName="localhost" sensorName="cpu/sys"/>
-<beam hostName="localhost" sensorName="cpu/nice"/>
-</display>
-<display row="1" column="0" class="FancyPlotter" title="Memory">
-<beam hostName="localhost" sensorName="mem/used"/>
-</display>
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE KSysGuardWorkSheet ><WorkSheet rows="2" columns="1" >
+ <host shell="" name="localhost" command="ktopd" />
+ <display title="CPU" class="FancyPlotter" row="0" column="0" min="0" max="0" >
+  <beam sensorName="cpu/user" hostName="localhost" />
+  <beam sensorName="cpu/sys" hostName="localhost" />
+  <beam sensorName="cpu/nice" hostName="localhost" />
+ </display>
+ <display title="Memory" class="FancyPlotter" row="1" column="0" min="0" max="0" >
+  <beam sensorName="mem/used" hostName="localhost" />
+ </display>
 </WorkSheet>

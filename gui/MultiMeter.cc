@@ -111,9 +111,9 @@ MultiMeter::load(QDomElement& domElem)
 }
 
 bool
-MultiMeter::save(QTextStream& s)
+MultiMeter::save(QDomDocument&, QDomElement& display)
 {
-	s << "title=\"" << title << "\">\n";
+	display.setAttribute("title", title);
 
 	return (TRUE);
 }

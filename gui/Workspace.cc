@@ -85,9 +85,8 @@ Workspace::readProperties(KConfig* cfg)
 	{
 		QStringList list = cfg->readListEntry("Sheets");
 		for (QStringList::Iterator it = list.begin(); it != list.end(); ++it)
-		{
 			restoreWorkSheet(*it);
-		}
+
 		currentSheet = cfg->readEntry("CurrentSheet");
 	}
 
@@ -210,7 +209,8 @@ Workspace::saveWorkSheetAs()
 	}
 
 	KFileDialog fd(workDir, "*.ktop", this, "LoadFileDialog", TRUE);
-	QString fileName = fd.getSaveFileName(QString::null, "*.ktop");
+	QString fileName = fd.getSaveFileName(
+		tabLabel(currentPage()) + ".ktop", "*.ktop");
 	if (fileName.isEmpty())
 		return;
 	workDir = fileName.left(fileName.findRev('/'));
@@ -245,7 +245,7 @@ Workspace::deleteWorkSheet()
 	}
 }
 
-void
+bool
 Workspace::restoreWorkSheet(const QString& fileName)
 {
 	// extract filename without path
@@ -257,10 +257,15 @@ Workspace::restoreWorkSheet(const QString& fileName)
 	WorkSheet* sheet = new WorkSheet(this);
 	CHECK_PTR(sheet);
 	insertTab(sheet, baseName);
-	sheets.append(sheet);
 	showPage(sheet);
 	if (!sheet->load(fileName))
+	{
 		delete sheet;
+		return (FALSE);
+	}
+	sheets.append(sheet);
+
+	return (TRUE);
 }
 
 void
@@ -269,10 +274,10 @@ Workspace::showProcesses()
 	KStandardDirs* kstd = KGlobal::dirs();
 	kstd->addResourceType("data", "share/apps/ktop");
 
-	QString f = kstd->findResource("data", "Taskmanager.ktop");
+	QString f = kstd->findResource("data", "ProcessController.ktop");
 	if (!f.isEmpty())
 		restoreWorkSheet(f);
 	else
 		KMessageBox::error(
-			this, i18n("Cannot find file Taskmanager.ktop!"));
+			this, i18n("Cannot find file ProcessController.ktop!"));
 }

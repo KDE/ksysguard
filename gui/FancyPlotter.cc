@@ -244,16 +244,18 @@ FancyPlotter::load(QDomElement& domElem)
 }
 
 bool
-FancyPlotter::save(QTextStream& s)
+FancyPlotter::save(QDomDocument& doc, QDomElement& display)
 {
-	s << "title=\"" << meterFrame->title() << "\" "
-	  << "min=\"" << plotter->getMin() << "\" "
-	  << "max=\"" << plotter->getMax() << "\">\n";
+	display.setAttribute("title", meterFrame->title());
+	display.setAttribute("min", (int) plotter->getMin());
+	display.setAttribute("max", (int) plotter->getMax());
 
 	for (int i = 0; i < beams; ++i)
 	{
-		s << "<beam hostName=\"" << *hostNames.at(i) << "\" "
-		  << "sensorName=\"" << *sensorNames.at(i) << "\"/>\n";
+		QDomElement beam = doc.createElement("beam");
+		display.appendChild(beam);
+		beam.setAttribute("hostName", *hostNames.at(i));
+		beam.setAttribute("sensorName", *sensorNames.at(i));
 	}
 	modified = FALSE;
 

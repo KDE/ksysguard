@@ -95,7 +95,7 @@ public:
 	virtual void answerReceived(int id, const QString& s);
 
 	bool load(QDomElement& el);
-	bool save(QTextStream& s);
+	bool save(QDomDocument& doc, QDomElement& display);
 
 	bool hasBeenModified() const
 	{

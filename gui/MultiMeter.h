@@ -47,7 +47,7 @@ public:
 	void resizeEvent(QResizeEvent*);
 
 	bool load(QDomElement& domEl);
-	bool save(QTextStream& s);
+	bool save(QDomDocument& doc, QDomElement& display);
 
 private:
 	void setTitle(const QString& t, const QString& u);

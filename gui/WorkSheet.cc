@@ -103,13 +103,13 @@ WorkSheet::load(const QString& fN)
 		return (FALSE);
 	}
 	// Check for proper document type.
-	if (doc.doctype().name() != "ktopWorkSheet")
+	if (doc.doctype().name() != "KSysGuardWorkSheet")
 	{
 		KMessageBox::sorry(
 			this,
 			i18n("The file %1 does not contain a valid work sheet\n"
 				 "definition, which must have a document type\n"
-				 "'ktopWorkSheet'").arg(fileName));
+				 "'KSysGuardWorkSheet'").arg(fileName));
 		return (FALSE);
 	}
 	// Check for proper size.
@@ -182,6 +182,47 @@ WorkSheet::load(const QString& fN)
 bool
 WorkSheet::save(const QString& fN)
 {
+	// Parse the XML file.
+	QDomDocument doc("KSysGuardWorkSheet");
+	doc.appendChild(doc.createProcessingInstruction(
+		"xml", "version=\"1.0\" encoding=\"UTF-8\""));
+
+	// save work sheet information
+	QDomElement ws = doc.createElement("WorkSheet");
+	doc.appendChild(ws);
+	ws.setAttribute("rows", rows);
+	ws.setAttribute("columns", columns);
+
+	QStringList hosts;
+	collectHosts(hosts);
+
+	// save host information (name, shell, etc.)
+	QStringList::Iterator it;
+	for (it = hosts.begin(); it != hosts.end(); ++it)
+	{
+		QDomElement host = doc.createElement("host");
+		ws.appendChild(host);
+		QString shell, command;
+		SensorMgr->getHostInfo(*it, shell, command);
+		host.setAttribute("name", *it);
+		host.setAttribute("shell", shell);
+		host.setAttribute("command", command);
+	}
+	
+	for (int i = 0; i < rows; ++i)
+		for (int j = 0; j < columns; ++j)
+			if (!displays[i][j]->isA("QGroupBox"))
+			{
+				SensorDisplay* displayP = (SensorDisplay*) displays[i][j];
+				QDomElement display = doc.createElement("display");
+				ws.appendChild(display);
+				display.setAttribute("row", i);
+				display.setAttribute("column", j);
+				display.setAttribute("class", displayP->className());
+
+				displayP->save(doc, display);
+			}	
+
 	QFile file(fileName = fN);
 	if (!file.open(IO_WriteOnly))
 	{
@@ -190,47 +231,9 @@ WorkSheet::save(const QString& fN)
 		return (FALSE);
 	}
 	QTextStream s(&file);
-    s << "<!DOCTYPE ktopWorkSheet>\n";
-
-	QValueList<QString> hosts;
-	collectHosts(hosts);
-
-	/* TODO: Strings like shell and command may contain double quotes
-	 * and should be escaped. It's probably a good idea to use
-	 * QDomDocument for writing as well. */
-
-	// save work sheet information
-	s << "<WorkSheet rows=\"" << rows << "\" "
-	  << "columns=\"" << columns << "\">\n";
-
-	// save host information (name, shell, etc.)
-	QValueList<QString>::Iterator it;
-	for (it = hosts.begin(); it != hosts.end(); ++it)
-	{
-		QString shell, command;
-		SensorMgr->getHostInfo(*it, shell, command);
-		s << "<host name=\"" << *it << "\" "
-		  << "shell=\"" << shell << "\" "
-		  << "command=\"" << command << "\"/>\n";
-	}
-	
-	for (int i = 0; i < rows; ++i)
-		for (int j = 0; j < columns; ++j)
-			if (!displays[i][j]->isA("QGroupBox"))
-			{
-				SensorDisplay* display = (SensorDisplay*) displays[i][j];
-
-				s << "<display row=\"" << i << "\" "
-				  << "column=\"" << j << "\" "
-				  << "class=\"" << display->className() << "\" ";
-
-				display->save(s);
-
-				s << "</display>\n";
-			}	
-	s << "</WorkSheet>\n";
-
+	s << doc;
 	file.close();
+
 	modified = FALSE;
 	return (TRUE);
 }

@@ -1,4 +1,4 @@
-<!DOCTYPE ktopWorkSheet>
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE KSysGuardWorkSheet >
 <WorkSheet rows="1" columns="1">
 <host name="localhost" shell="" command="ktopd"/>
 <display row="0" column="0" class="ProcessController" hostName="localhost" sensorName="ps" tree="off" pause="off" filter="0">
