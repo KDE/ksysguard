@@ -69,7 +69,9 @@ SensorBrowser::SensorBrowser( QWidget* parent, KSGRD::SensorManager* sm,
   mHostInfoList.setAutoDelete(true);
 
   connect( mSensorManager, SIGNAL( update() ), SLOT( update() ) );
-  connect( this, SIGNAL( selectionChanged( QListViewItem* ) ),
+  connect( this, SIGNAL( clicked( QListViewItem* ) ),
+           SLOT( newItemSelected( QListViewItem* ) ) );
+  connect( this, SIGNAL( returnPressed( QListViewItem* ) ),
            SLOT( newItemSelected( QListViewItem* ) ) );
 
   addColumn( i18n( "Sensor Browser" ) );
@@ -140,9 +142,13 @@ void SensorBrowser::update()
 
 void SensorBrowser::newItemSelected( QListViewItem *item )
 {
-  if ( item->pixmap( 0 ) )
+  static bool showAnnoyingPopup = true;
+  if ( item && item->pixmap( 0 ) && showAnnoyingPopup)
+  {
+    showAnnoyingPopup = false;
     KMessageBox::information( this, i18n( "Drag sensors to empty fields in a worksheet" ),
                               QString::null, "ShowSBUseInfo" );
+  }
 }
 
 void SensorBrowser::answerReceived( int id, const QString &answer )
