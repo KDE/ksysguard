@@ -248,11 +248,11 @@ TopLevel::showStatusBar()
 void
 TopLevel::customEvent(QCustomEvent* ev)
 {
-	debug("Custom event received");
 	if (ev->type() == QEvent::User)
 	{
 		KMessageBox::error(this, *((QString*) ev->data()));
-		delete ev->data();
+		delete (QString*) ev->data();
+		delete ev;
 	}
 }
 

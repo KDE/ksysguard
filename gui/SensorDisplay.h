@@ -78,6 +78,11 @@ public:
 		return (TRUE);
 	}
 
+	virtual bool hasSettingsDialog()
+	{
+		return (FALSE);
+	}
+
 	virtual void settings() { }
 
 	void collectHosts(QValueList<QString>& list);
@@ -115,7 +120,6 @@ public slots:
 	}
 
 signals:
-	void removeDisplay(SensorDisplay* display);
 	void showPopupMenu(SensorDisplay* display);
 
 protected:

@@ -296,6 +296,9 @@ initStat(void)
 	}
 	fclose(stat);
 
+	// Call processStat to eliminate initial peek values.
+	processStat();
+
 	if (CPUCount > 0)
 		SMPLoad = (CPULoadInfo*) malloc(sizeof(CPULoadInfo) * CPUCount);
 }

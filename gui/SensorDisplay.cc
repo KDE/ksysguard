@@ -24,6 +24,7 @@
 
 #include <qpopupmenu.h>
 
+#include <kapp.h>
 #include <klocale.h>
 
 #include "SensorDisplay.h"
@@ -35,8 +36,6 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 {
 	// default interval is 2 seconds.
 	timerInterval = 2000;
-
-	timerId = startTimer(timerInterval);
 
 	hostNames.setAutoDelete(true);
 	sensorNames.setAutoDelete(true);
@@ -72,7 +71,8 @@ SensorDisplay::eventFilter(QObject* o, QEvent* e)
 		((QMouseEvent*) e)->button() == RightButton)
 	{
 		QPopupMenu pm;
-		pm.insertItem(i18n("&Properties"), 1);
+		if (hasSettingsDialog())
+			pm.insertItem(i18n("&Properties"), 1);
 		pm.insertItem(i18n("&Remove Display"), 2);
 		switch (pm.exec(QCursor::pos()))
 		{
@@ -80,9 +80,12 @@ SensorDisplay::eventFilter(QObject* o, QEvent* e)
 			this->settings();
 			break;
 		case 2:
-			emit removeDisplay(this);
+			QCustomEvent* ev = new QCustomEvent(QEvent::User);
+			ev->setData(this);
+			kapp->postEvent(parent(), ev);
 			break;
 		}
+		return (TRUE);
 	}
 	return QWidget::eventFilter(o, e);
 }
@@ -92,7 +95,11 @@ SensorDisplay::sendRequest(const QString& hostName, const QString& cmd,
 						   int id)
 {
 	if (!SensorMgr->sendRequest(hostName, cmd, (SensorClient*) this, id))
-		emit(removeDisplay(this));
+	{
+		QCustomEvent* ev = new QCustomEvent(QEvent::User);
+		ev->setData(this);
+		kapp->postEvent(parent(), ev);
+	}
 }
 
 void

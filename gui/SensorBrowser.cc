@@ -104,6 +104,8 @@ SensorBrowser::hostReconfigured(const QString&)
 void
 SensorBrowser::update()
 {
+	static int id = 0;
+
 	SensorManagerIterator it(sensorManager);
 
 	hostInfos.clear();
@@ -116,12 +118,13 @@ SensorBrowser::update()
 		QListViewItem* lvi = new QListViewItem(this, hostName);
 		CHECK_PTR(lvi);
 
-		HostInfo* hostInfo = new HostInfo(host, hostName, lvi);
+		HostInfo* hostInfo = new HostInfo(id, host, hostName, lvi);
 		CHECK_PTR(hostInfo);
 		hostInfos.append(hostInfo);
 
 		// request sensor list from host
-		host->sendRequest("monitors", this, i);
+		host->sendRequest("monitors", this, id);
+		++id;
 	}
 	setMouseTracking(FALSE);
 }
@@ -138,10 +141,22 @@ SensorBrowser::answerReceived(int id, const QString& s)
 	   ps	table
 	*/
 
+	QListIterator<HostInfo> it(hostInfos);
+
+	/* Check if id is still valid. It can get obsolete by rapid calls
+	 * of update() or when the sensor died. */
+	for (; it.current(); ++it)
+		if ((*it)->getId() == id)
+			break;
+	if (!it.current())
+		return;
+
 	SensorTokenizer lines(s, '\n');
 
 	for (unsigned int i = 0; i < lines.numberOfTokens(); ++i)
 	{
+		if (lines[i].isEmpty())
+			break;
 		SensorTokenizer words(lines[i], '\t');
 
 		QString sensorName = words[0];
@@ -152,7 +167,7 @@ SensorBrowser::answerReceived(int id, const QString& s)
 		 * clear(). Subsequent updates will receive the old pending
 		 * answers so we need to make sure that we register each
 		 * sensor only once. */
-		if (hostInfos.at(id)->isRegistered(sensorName))
+		if ((*it)->isRegistered(sensorName))
 			return;
 
 		/* The sensor browser can display sensors in a hierachical order.
@@ -162,7 +177,7 @@ SensorBrowser::answerReceived(int id, const QString& s)
 		 * depth of nodes. */
 		SensorTokenizer absolutePath(sensorName, '/');
 		
-		QListViewItem* parent = hostInfos.at(id)->getLVI();
+		QListViewItem* parent = (*it)->getLVI();
 		for (unsigned int j = 0; j < absolutePath.numberOfTokens(); ++j)
 		{
 			// Localize the sensor name part by part.
@@ -195,8 +210,7 @@ SensorBrowser::answerReceived(int id, const QString& s)
 												  KIcon::SizeSmall);
 					lvi->setPixmap(0, pix);
 					// add sensor info to internal data structure
-					hostInfos.at(id)->addSensor(lvi, sensorName, name,
-												sensorType);
+					(*it)->addSensor(lvi, sensorName, name, sensorType);
 				}
 				else
 					parent = lvi;

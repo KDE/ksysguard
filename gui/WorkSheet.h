@@ -74,6 +74,7 @@ public slots:
 protected:
 	void dragEnterEvent(QDragEnterEvent* ev);
 	void dropEvent(QDropEvent* ev);
+	void customEvent(QCustomEvent* ev);
 
 private:
 	void insertDummyDisplay(int r, int c);

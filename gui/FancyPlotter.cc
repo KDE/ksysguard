@@ -219,6 +219,7 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 	{
 		SensorIntegerInfo info(answer);
 		plotter->changeRange(id - 100, info.getMin(), info.getMax());
+		timerOn();
 	}
 
 	if (id == beams - 1)

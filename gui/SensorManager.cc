@@ -47,18 +47,18 @@ bool
 SensorManager::engage(const QString& hostname, const QString& shell,
 					  const QString& command)
 {
-	SensorAgent* ktopd;
+	SensorAgent* daemon;
 
-	if ((ktopd = sensors.find(hostname)) == 0)
+	if ((daemon = sensors.find(hostname)) == 0)
 	{
-		ktopd = new SensorAgent(this);
-		CHECK_PTR(ktopd);
-		if (!ktopd->start(hostname.ascii(), shell, command))
+		daemon = new SensorAgent(this);
+		CHECK_PTR(daemon);
+		if (!daemon->start(hostname.ascii(), shell, command))
 		{
-			delete ktopd;
+			delete daemon;
 			return (FALSE);
 		}
-		sensors.insert(hostname, ktopd);
+		sensors.insert(hostname, daemon);
 		emit update();
 		return (TRUE);
 	}
@@ -85,8 +85,8 @@ SensorManager::disengage(const SensorAgent* sa)
 bool
 SensorManager::disengage(const QString& hostname)
 {
-	SensorAgent* ktopd;
-	if ((ktopd = sensors.find(hostname)) != 0)
+	SensorAgent* daemon;
+	if ((daemon = sensors.find(hostname)) != 0)
 	{
 		sensors.remove(hostname);
 		emit update();
@@ -99,7 +99,6 @@ SensorManager::disengage(const QString& hostname)
 void
 SensorManager::hostLost(const SensorAgent* sensor)
 {
-	debug("SensorManager::hostLost");
 	emit hostConnectionLost(sensor->getHostName());
 
 	QCustomEvent* ev = new QCustomEvent(QEvent::User);
@@ -119,10 +118,10 @@ bool
 SensorManager::sendRequest(const QString& hostname, const QString& req,
 						   SensorClient* client, int id)
 {
-	SensorAgent* ktopd;
-	if ((ktopd = sensors.find(hostname)) != 0)
+	SensorAgent* daemon;
+	if ((daemon = sensors.find(hostname)) != 0)
 	{
-		ktopd->sendRequest(req, client, id);
+		daemon->sendRequest(req, client, id);
 		return (TRUE);
 	}
 
@@ -150,10 +149,10 @@ bool
 SensorManager::getHostInfo(const QString& hostName, QString& shell,
 						   QString& command)
 {
-	SensorAgent* ktopd;
-	if ((ktopd = sensors.find(hostName)) != 0)
+	SensorAgent* daemon;
+	if ((daemon = sensors.find(hostName)) != 0)
 	{
-		ktopd->getHostInfo(shell, command);
+		daemon->getHostInfo(shell, command);
 		return (TRUE);
 	}
 

@@ -84,12 +84,18 @@ private:
 class HostInfo
 {
 public:
-	HostInfo(const SensorAgent* a, const QString& n, QListViewItem* l) :
-		sensorAgent(a), hostName(n), lvi(l)
+	HostInfo(int i, const SensorAgent* a, const QString& n,
+			 QListViewItem* l) :
+		id(i), sensorAgent(a), hostName(n), lvi(l)
 	{
 		sensors.setAutoDelete(TRUE);
 	}
 	~HostInfo() { }
+
+	int getId() const
+	{
+		return (id);
+	}
 
 	const SensorAgent* getSensorAgent() const
 	{
@@ -165,6 +171,9 @@ public:
 	}
 
 private:
+	// unique ID, used for sendRequests/answerReceived 
+	int id;
+
 	const SensorAgent* sensorAgent;
 
 	const QString hostName;

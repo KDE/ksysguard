@@ -102,6 +102,11 @@ public:
 		return (modified);
 	}
 
+	virtual bool hasSettingsDialog()
+	{
+		return (TRUE);
+	}
+
 public slots:
 	void applySettings(FancyPlotterSettings*);
 

@@ -89,10 +89,16 @@ MultiMeter::answerReceived(int id, const QString& answer)
 	{
 		SensorIntegerInfo info(answer);
 		setTitle(title, info.getUnit());
+		timerOn();
 	}
 	else
 	{
 		long val = answer.toInt();
+		int digits = (int) log10(val) + 1;
+		if (digits > 5)
+			lcd->setNumDigits(digits);
+		else
+			lcd->setNumDigits(5);
 		lcd->display((int) val);
 		if (lowerLimitActive && val < lowerLimit)
 		{

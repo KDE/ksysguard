@@ -41,9 +41,17 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	box = new QGroupBox(this, "pList_box"); 
 	CHECK_PTR(box);
 
+	/* All RMB clicks to the box frame will be handled by 
+	 * SensorDisplay::eventFilter. */
+	box->installEventFilter(this);
+
 	// Create the table that lists the processes.
 	pList = new ProcessList(this, "pList");    
 	CHECK_PTR(pList);
+
+	/* All RMB clicks to the plist widget will be handled by 
+	 * SensorDisplay::eventFilter. */
+	pList->installEventFilter(this);
 
 	// Create the check box to switch between tree view and list view.
 	xbTreeView = new QCheckBox("Tree", this, "xbTreeView");
@@ -195,6 +203,8 @@ ProcessController::answerReceived(int id, const QString& answer)
 		pList->removeColumns();
 		for (unsigned int i = 0; i < headers.numberOfTokens(); i++)
 			pList->addColumn(headers[i], colTypes[i]);
+
+		timerOn();
 
 		break;
 	}

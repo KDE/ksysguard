@@ -50,6 +50,11 @@ public:
 	bool load(QDomElement& domEl);
 	bool save(QDomDocument& doc, QDomElement& display);
 
+	virtual bool hasSettingsDialog()
+	{
+		return (TRUE);
+	}
+
 	void settings();
 
 public slots:

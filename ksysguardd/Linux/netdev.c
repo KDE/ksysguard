@@ -72,12 +72,12 @@ processNetDev(void)
 			char* pos = strchr(tag, ':');
 			if (pos)
 			{
-				long rxBytes, txBytes, rxPacks, txPacks;
+				unsigned long rxBytes, txBytes, rxPacks, txPacks;
 				*pos = '\0';
 				rxBytes = txBytes = rxPacks = txPacks = 0;
 				sscanf(buf + 7,
-					   "%ld %ld %*d %*d %*d %*d %*d %*d " 
-					   "%ld %ld %*d %*d %*d %*d %*d %*d",
+					   "%lu %lu %*d %*d %*d %*d %*d %*d " 
+					   "%lu %lu %*d %*d %*d %*d %*d %*d",
 					   &rxBytes, &rxPacks, &txBytes, &txPacks);
 
 				if (strcmp(NetDevs[i].name, tag) != 0)
@@ -154,6 +154,9 @@ initNetDev(void)
 			NetDevs[i].rxBytes = NetDevs[i].txBytes = 0;
 		}
 	}
+
+	// Call processNetDev to elimitate initial peek values.
+	processNetDev();
 }
 
 void
@@ -207,7 +210,7 @@ printNetDevRecBytes(const char* cmd)
 	for (i = 0; i < MAXNETDEVS; ++i)
 		if (strcmp(NetDevs[i].name, dev) == 0)
 		{
-			printf("%ld\n", NetDevs[i].rxBytes / TIMERINTERVAL);
+			printf("%ld\n", NetDevs[i].rxBytes / (1024 * TIMERINTERVAL));
 			return;
 		}
 
@@ -217,7 +220,7 @@ printNetDevRecBytes(const char* cmd)
 void
 printNetDevRecBytesInfo(const char* cmd)
 {
-	printf("Received Bytes\t0\t0\tBytes/s\n");
+	printf("Received Bytes\t0\t0\tkBytes/s\n");
 }
 
 void
@@ -237,7 +240,7 @@ printNetDevSentBytes(const char* cmd)
 	for (i = 0; i < MAXNETDEVS; ++i)
 		if (strcmp(NetDevs[i].name, dev) == 0)
 		{
-			printf("%ld\n", NetDevs[i].txBytes / TIMERINTERVAL);
+			printf("%ld\n", NetDevs[i].txBytes / (1024 * TIMERINTERVAL));
 			return;
 		}
 
@@ -247,5 +250,5 @@ printNetDevSentBytes(const char* cmd)
 void
 printNetDevRecSendInfo(const char* cmd)
 {
-	printf("Send Bytes\t0\t0\tBytes/s\n");
+	printf("Send Bytes\t0\t0\tkBytes/s\n");
 }

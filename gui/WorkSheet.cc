@@ -362,6 +362,17 @@ WorkSheet::dropEvent(QDropEvent* ev)
 }
 
 void
+WorkSheet::customEvent(QCustomEvent* ev)
+{
+	if (ev->type() == QEvent::User)
+	{
+		// SensorDisplays send out this event if they want to be removed.
+		removeDisplay((SensorDisplay*) ev->data());
+		delete ev;
+	}
+}
+
+void
 WorkSheet::insertDummyDisplay(int r, int c)
 {
 	QGroupBox* dummy = new QGroupBox(this, "dummy frame");
@@ -382,8 +393,6 @@ WorkSheet::replaceDisplay(int r, int c, SensorDisplay* newDisplay)
 	lm->addWidget(newDisplay, r, c);
 	newDisplay->show();
 	displays[r][c] = newDisplay;
-	connect(newDisplay, SIGNAL(removeDisplay(SensorDisplay*)),
-			this, SLOT(removeDisplay(SensorDisplay*)));
 	connect(newDisplay, SIGNAL(showPopupMenu(SensorDisplay*)),
 			this, SLOT(showPopupMenu(SensorDisplay*)));
 }
