@@ -40,6 +40,7 @@
 #include <kstdaccel.h>
 #include <kaction.h>
 #include <kstdaction.h>
+#include <dcopclient.h>
 
 #include "SensorBrowser.h"
 #include "SensorManager.h"
@@ -56,7 +57,7 @@ static const char* Description = I18N_NOOP("KDE Task Manager");
  * TaskMan widget.
  */
 TopLevel::TopLevel(const char *name)
-	: KTMainWindow(name)
+	: KTMainWindow(name), DCOPObject("KGuardIface")
 {
 	splitter = new QSplitter(this, "Splitter");
 	CHECK_PTR(splitter);
@@ -129,6 +130,12 @@ TopLevel::~TopLevel()
 
 	delete statusbar;
 	delete splitter;
+}
+
+void
+TopLevel::showProcesses()
+{
+	ws->showProcesses();
 }
 
 void
@@ -331,21 +338,22 @@ main(int argc, char** argv)
 	CHECK_PTR(SensorMgr);
 
 	// create top-level widget
-	TopLevel *toplevel = new TopLevel("TaskManager");
-	CHECK_PTR(toplevel);
 	if (a.isRestored())
-		toplevel->restore(1);
+		RESTORE(TopLevel)
 	else
 	{
-		a.setMainWidget(toplevel);
-		a.setTopWidget(toplevel);
+		TopLevel *toplevel = new TopLevel("TaskManager");
 		toplevel->readProperties(a.config());
+		toplevel->show();
 	}
-
+	if (KMainWindow::memberList->first())
+	{
+		a.dcopClient()->registerAs("kguard", FALSE);
+		a.dcopClient()->setDefaultObject("KGuardIface");
+	}
 	// run the application
 	int result = a.exec();
 
-    delete toplevel;
-
 	return (result);
 }
+

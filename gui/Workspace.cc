@@ -48,9 +48,10 @@ Workspace::saveProperties(KConfig* cfg)
 	QString sheetList;
 	QListIterator<WorkSheet> it(sheets);
 	int i;
+	QStringList list;
 	for (i = 0; it.current(); ++it, ++i)
-		cfg->writeEntry(QString("Sheet%1").arg(i), (*it)->getFileName());
-	cfg->writeEntry("SheetCount", i);
+		list.append((*it)->getFileName());
+	cfg->writeEntry("Sheets", list);
 }
 
 void
@@ -82,12 +83,10 @@ Workspace::readProperties(KConfig* cfg)
 	}
 	else
 	{
-		int sheetCount = cfg->readNumEntry("SheetCount");
-		for (int i = 0; i < sheetCount; ++i)
+		QStringList list = cfg->readListEntry("Sheets");
+		for (QStringList::Iterator it = list.begin(); it != list.end(); ++it)
 		{
-			QString fileName = cfg->readEntry(QString("Sheet%1").arg(i));
-			if (!fileName.isEmpty())
-				restoreWorkSheet(fileName);
+			restoreWorkSheet(*it);
 		}
 		currentSheet = cfg->readEntry("CurrentSheet");
 	}
@@ -262,4 +261,15 @@ Workspace::restoreWorkSheet(const QString& fileName)
 	showPage(sheet);
 	if (!sheet->load(fileName))
 		delete sheet;
+}
+
+void
+Workspace::showProcesses()
+{
+	KStandardDirs* kstd = KGlobal::dirs();
+	kstd->addResourceType("data", "share/apps/ktop");
+
+	QString f = kstd->findResource("data", "Taskmanager.ktop");
+	if (!f.isEmpty())
+		restoreWorkSheet(f);
 }

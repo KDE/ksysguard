@@ -31,19 +31,19 @@
 #include <kapp.h>
 #include <ktmainwindow.h>
 #include <kstatusbar.h>
+#include <dcopobject.h>
 
 #include "SensorClient.h"
-
-extern KApplication* Kapp;
 
 class KToggleAction;
 class SensorAgent;
 class SensorBrowser;
 class Workspace;
 
-class TopLevel : public KTMainWindow, public SensorClient
+class TopLevel : public KTMainWindow, public SensorClient, public DCOPObject
 {
 	Q_OBJECT
+	K_DCOP
 
 public:
 	TopLevel(const char *name = 0);
@@ -58,6 +58,9 @@ public:
 	virtual void readProperties(KConfig*);
 
 	virtual void answerReceived(int id, const QString& s);
+
+k_dcop:
+	ASYNC showProcesses();
 
 protected:
 	virtual void timerEvent(QTimerEvent*);

@@ -11,12 +11,12 @@ bin_PROGRAMS = 	ktop
 
 # Which sources should be compiled for ktop.
 
-ktop_SOURCES = ktop.cc  SensorAgent.cc SensorManager.cc \
+ktop_SOURCES = ktop.cc ktop.skel SensorAgent.cc SensorManager.cc \
 	HostConnector.cc WorkSheetSetup.cc \
 	ProcessMenu.cc ReniceDlg.cc WorkSheet.cc Workspace.cc \
 	SensorBrowser.cc SensorDisplay.cc \
 	FancyPlotter.cc SignalPlotter.cc MultiMeter.cc \
-	ProcessController.cc ProcessList.cc
+	ProcessController.cc ProcessList.cc 
 
 # the library search path
 ktop_LDFLAGS = $(all_libraries) $(KDE_RPATH)
@@ -25,7 +25,7 @@ ktop_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 # that depend on the following ones.
 ktop_LDADD   =       $(LIB_KDEUI) $(LIB_KFILE)
 
-data_DATA = ProcessTable.ktop SystemLoad.ktop
+data_DATA = ProcessTable.ktop SystemLoad.ktop Taskmanager.ktop
 
 # this option you can leave out. Just, if you use "make dist", you need it
 noinst_HEADERS = SensorClient.h ktop.h ProcessMenu.h \

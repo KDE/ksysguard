@@ -43,6 +43,8 @@ public:
 	void readProperties(KConfig* cfg);
 	bool saveOnQuit();
 
+	void showProcesses();
+
 public slots:
 	void newWorkSheet();
 	void loadWorkSheet();
