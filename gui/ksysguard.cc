@@ -391,6 +391,7 @@ void TopLevel::saveProperties( KConfig *cfg )
   KSGRD::Style->saveProperties( cfg );
   KSGRD::SensorMgr->saveProperties( cfg );
 
+  saveMainWindowSettings( cfg );
   mWorkSpace->saveProperties( cfg );
 }
 
