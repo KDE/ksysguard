@@ -50,7 +50,6 @@ public:
 		MENU_ID_REFRESH_MEDIUM,
 		MENU_ID_REFRESH_FAST,
 		MENU_ID_MENU_PROCESS,
-	    MENU_ID_QUIT,
 		MENU_ID_HELP
 	};
     
@@ -85,6 +84,10 @@ private slots:
 	void requestUpdateSlot(void)
 	{
 		emit(requestUpdate());
+	}
+	void slotQuit()
+	{
+		emit(quit());
 	}
 
 private:

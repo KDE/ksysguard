@@ -32,6 +32,7 @@
 
 #include "version.h"
 #include <klocale.h>
+#include <kstdaccel.h>
 #include "MainMenu.moc"
 
 extern KApplication* Kapp;
@@ -41,12 +42,14 @@ MainMenu* MainMenuBar = 0;
 MainMenu::MainMenu(QWidget* parent, const char* name) :
 	KMenuBar(parent, name)
 {
+	KStdAccel accel;
+
 	assert(MainMenuBar == 0);
 	MainMenuBar = this;
 
 	// 'File' submenu
 	file = new QPopupMenu();
-	file->insertItem(i18n("Quit"), MENU_ID_QUIT, -1);
+	file->insertItem(i18n("&Quit"), this, SLOT(slotQuit()), accel.quit());
 	connect(file, SIGNAL(activated(int)), this, SLOT(handler(int)));
 
 	// 'Help' submenu
@@ -91,10 +94,6 @@ MainMenu::handler(int id)
 {
 	switch(id)
 	{
-	case MENU_ID_QUIT:
-		emit(quit());
-		break;
-
 	case MENU_ID_REFRESH_MANUAL:
 	case MENU_ID_REFRESH_SLOW:
 	case MENU_ID_REFRESH_MEDIUM:
