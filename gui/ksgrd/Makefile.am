@@ -4,7 +4,7 @@ INCLUDES= -I$(srcdir)/../SensorDisplayLib $(all_includes)
  
 lib_LTLIBRARIES = libksgrd.la
 
-libksgrd_la_LDFLAGS = -no-undefined $(all_libraries)
+libksgrd_la_LDFLAGS = -no-undefined -version-info 3:0:2 $(all_libraries)
 libksgrd_la_LIBADD = $(LIB_KDEUI)
 
 # Which sources should be compiled for ksysguard.
