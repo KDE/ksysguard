@@ -261,8 +261,6 @@ void TopLevel::beATaskManager()
 
   // No toolbar and status bar in taskmanager mode.
   toolBar( "mainToolBar" )->hide();
-  mActionStatusBar->setChecked( false );
-  showStatusBar();
 
   mDontSaveSession = true;
 
@@ -599,6 +597,7 @@ int main( int argc, char** argv )
 
       topLevel = new TopLevel( "KSysGuard" );
       topLevel->beATaskManager();
+      topLevel->initStatusBar();
       topLevel->show();
       KSGRD::SensorMgr->setBroadcaster( topLevel );
 
