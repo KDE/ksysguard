@@ -30,8 +30,11 @@
 #include "Memory.h"
 #include "CPU.h"
 
-static unsigned PsRate = 0;
-static int PsCounter = 0;
+/* This variable will be set to 1 as soon as the first interrupt (SIGALRM)
+ * has been received. */
+static volatile int DispatcherReady = 0;
+static unsigned PsRate = 1;
+static int PsCounter = 1;
 
 /*
  * signalHandler()
@@ -60,6 +63,7 @@ signalHandler(int sig)
 			}
 		updateMemory();
 		updateCPU();
+		DispatcherReady = 1;
 		break;
     case SIGQUIT:
 		printf("SIGQUIT received\n");
@@ -99,6 +103,12 @@ exitDispatcher(void)
 {
 	/* It would be good programming style to restore the signal table and
 	 * the timer here. */
+}
+
+int
+dispatcherReady(void)
+{
+	return (DispatcherReady);
 }
 
 void

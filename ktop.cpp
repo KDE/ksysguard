@@ -38,6 +38,7 @@
 #include <kmessagebox.h>
 
 #include "SensorManager.h"
+#include "SensorAgent.h"
 #include "OSStatus.h"
 #include "ktop.moc"
 
@@ -85,6 +86,12 @@ TopLevel::TopLevel(const char *name, int sfolder)
 	statusbar->insertItem(i18n("Swap: 8888888 kB used, "
 							   "8888888 kB free"), 2);
 	setStatusBar(statusbar);
+
+	localhost = SensorMgr->engage("localhost");
+	/* Request info about the swapspace size and the units it is measured in.
+	 * The requested info will be received by answerReceived(). */
+	localhost->sendRequest("memswap?", (SensorClient*) this, 5);
+
 	// call timerEvent to fill the status bar with real values
 	timerEvent(0);
 
@@ -122,32 +129,6 @@ TopLevel::TopLevel(const char *name, int sfolder)
 	taskman->raiseStartUpPage();
 }
 
-#if 0
-QSize
-TopLevel::sizeHint()
-{
-	QSize hint;
-
-	if (!taskman)
-		return (hint);
-
-	hint = taskman->sizeHint();
-
-	hint.setWidth(hint.width() + view_left + (width() - view_right) + 6);
-	hint.setHeight(hint.height() + view_top + (height() - view_bottom) + 6);
-
-	return (hint);
-}
-
-void
-TopLevel::updateRects()
-{
-	KTMainWindow::updateRects();
-	if (sizeHint().isValid())
-		setMinimumSize(sizeHint());
-}
-#endif
-
 void 
 TopLevel::quitSlot()
 {
@@ -162,20 +143,51 @@ TopLevel::quitSlot()
 void
 TopLevel::timerEvent(QTimerEvent*)
 {
+	/* Request some info about the memory status. The requested information
+	 * will be received by answerReceived(). */
+	localhost->sendRequest("pscount", (SensorClient*) this, 0);
+	localhost->sendRequest("memfree", (SensorClient*) this, 1);
+	localhost->sendRequest("memused", (SensorClient*) this, 2);
+	localhost->sendRequest("memswap", (SensorClient*) this, 3);
+}
+
+void
+TopLevel::answerReceived(int id, const QString& answer)
+{
 	QString s;
+	static QString unit;
+	static long mUsed = 0;
+	static long mFree = 0;
+	static long sTotal = 0;
+	static long sFree = 0;
 
-	s = i18n("%1 Processes").arg(osStatus.getNoProcesses());
-	statusbar->changeItem(s, 0);
-
-	int dum, mUsed, mFree;
-	osStatus.getMemoryInfo(dum, mFree, mUsed, dum, dum);
-	s = i18n("Memory: %1 kB used, %2 kB free").arg(mUsed).arg(mFree);
-	statusbar->changeItem(s, 1);
-
-	int sTotal, sFree;
-	osStatus.getSwapInfo(sTotal, sFree);
-	s = i18n("Swap: %1 kB used, %2 kB free").arg(sTotal - sFree).arg(sFree);
-	statusbar->changeItem(s, 2);
+	switch (id)
+	{
+	case 0:
+		s = i18n("%1 Processes").arg(answer);
+		statusbar->changeItem(s, 0);
+		break;
+	case 1:
+		mFree = answer.toLong();
+		break;
+	case 2:
+		mUsed = answer.toLong();
+		s = i18n("Memory: %1 %2 used, %3 %4 free")
+			.arg(mUsed).arg(unit).arg(mFree).arg(unit);
+		statusbar->changeItem(s, 1);
+		break;
+	case 3:
+		sFree = answer.toLong();
+		s = i18n("Swap: %1 %2 used, %2 %4 free")
+			.arg(sTotal - sFree).arg(unit).arg(sFree).arg(unit);
+		statusbar->changeItem(s, 2);
+		break;
+	case 5:
+		SensorMonitorInfo info(answer);
+		sTotal = info.getMax();
+		unit = info.getUnit();
+		break;
+	}
 }
 
 /*

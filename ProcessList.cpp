@@ -141,7 +141,7 @@ percentKey(const char* text)
 }
 
 QString
-ProcessLVI::key(int column, bool /*dir*/) const
+ProcessLVI::key(int column, bool) const
 {
 	if (TabCol[column].key)
 		return ((*TabCol[column].key)(text(column)));
@@ -189,6 +189,17 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	connect(MainMenuBar, SIGNAL(requestUpdate(void)),
 			this, SLOT(update(void)));
 
+	/* As long as the scrollbar sliders are pressed and hold the process
+	 * list is frozen. */
+	connect(verticalScrollBar(), SIGNAL(sliderPressed(void)),
+			this, SLOT(timerOff()));
+	connect(verticalScrollBar(), SIGNAL(sliderReleased(void)),
+			this, SLOT(timerOn()));
+	connect(horizontalScrollBar(), SIGNAL(sliderPressed(void)),
+			this, SLOT(timerOff()));
+	connect(horizontalScrollBar(), SIGNAL(sliderReleased(void)),
+			this, SLOT(timerOn()));
+
 	// no timer started yet
 	timerId = NONE;
 
@@ -202,7 +213,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	increasing = FALSE;
 
 	// load the icons we display with the processes
-	icons = new KIconLoader(Kapp->getConfig(), "ktop", "pics");
+	icons = new KIconLoader();
 	CHECK_PTR(icons);
 
 	// make sure we can retrieve process lists from the OS
@@ -369,14 +380,16 @@ ProcessList::update(void)
 void 
 ProcessList::load()
 {
+	int vpos = verticalScrollBar()->value();
+	int hpos = horizontalScrollBar()->value();
+
 	pl.clear();
 
-	/*
-	 * This piece of code tries to work around the QListView auto-shrink
-	 * bug. The column width is always reset to the size required for the
-	 * header. If any column entry needs more space QListView will resize
-	 * the column again. Unfortunately this causes heave flickering!
-	 */
+	/* This piece of code tries to work around the QListView
+	 * auto-shrink bug. The column width is always reset to the size
+	 * required for the header. If any column entry needs more space
+	 * QListView will resize the column again. Unfortunately this
+	 * causes heavy flickering! */
 	QFontMetrics fm = fontMetrics();
 	int col = 0;
 	for (int i = 0; i < MaxCols; i++)
@@ -401,19 +414,22 @@ ProcessList::load()
 		buildTree(selectedProcess) :
 		buildList(selectedProcess);
 
+#if 0
 	if (newSelection)
 	{
 		setSelected(newSelection, TRUE);
 		ensureItemVisible(newSelection);
 	}
+#endif
 
-	/*
-	 * This is necessary because the selected process may has disappeared
-	 * without ktop's interaction. Since there are widgets that always need
-	 * to know the currently selected process we send out a processSelected
-	 * signal.
-	 */
+	/* This is necessary because the selected process may has
+	 * disappeared without ktop's interaction. Since there are widgets
+	 * that always need to know the currently selected process we send
+	 * out a processSelected signal. */
 	emit(processSelected(selectedPid()));
+
+	verticalScrollBar()->setValue(vpos);
+	horizontalScrollBar()->setValue(hpos);
 }
 
 bool
@@ -579,14 +595,16 @@ ProcessList::addProcess(OSProcess* p, ProcessLVI* pli)
 	 * Get icon from icon list that might be appropriate for a process
 	 * with this name.
 	 */
-	QPixmap pix = icons->loadApplicationMiniIcon(QString(p->getName()) + ".png", 16, 16);
-	if (pix.isNull()) {
-	   QString s = locate("toolbar", QString(p->getName()) + ".png");
-	   debug(QString("using %1...").arg(s));
-	   pix = QPixmap(s);
-	   if (pix.isNull())
-	      pix = icons->loadApplicationMiniIcon("default.png", 16, 16);
-        }
+	QPixmap pix = icons->loadApplicationMiniIcon(QString(p->getName())
+												 + ".png", 16, 16);
+	if (pix.isNull())
+	{
+		QString s = locate("toolbar", QString(p->getName()) + ".png");
+		debug(QString("using %1...").arg(s));
+		pix = QPixmap(s);
+		if (pix.isNull())
+			pix = icons->loadApplicationMiniIcon("default.png", 16, 16);
+	}
 
 	/*
 	 * We copy the icon into a 24x16 pixmap to add a 4 pixel margin on the
@@ -781,8 +799,9 @@ ProcessList::handleRMBPopup(int item)
 }
 
 void 
-ProcessList::mousePressEvent(QMouseEvent* e)
+ProcessList::viewportMousePressEvent(QMouseEvent* e)
 {
+	printf("mousePressEvent\n");
 	/*
 	 * I haven't found a better way to catch RMB clicks on the header than
 	 * this hacking of the mousePressEvent function. RMB clicks are dealt
@@ -791,6 +810,7 @@ ProcessList::mousePressEvent(QMouseEvent* e)
 	 */
 	if (e->button() == RightButton)
 	{
+		printf("RMB pressed\n");
 #if 0
 		/*
 		 * As long as QListView does not support removing or hiding of columns
@@ -823,6 +843,15 @@ ProcessList::mousePressEvent(QMouseEvent* e)
 			processMenu->popup(QCursor::pos());
 		}
 	}
+	else if (e->button() == LeftButton)
+	{
+		printf("LMB pressed\n");
+	}
 	else
 		QListView::mousePressEvent(e);
 }
+
+
+
+
+

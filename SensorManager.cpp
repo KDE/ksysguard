@@ -21,21 +21,35 @@
 */
 
 #include "SensorManager.h"
+#include "SensorAgent.h"
 #include "SensorManager.moc"
 
 SensorManager* SensorMgr;
 
 SensorManager::SensorManager()
 {
-	DaemonAgent* ktopd;
-	ktopd = new DaemonAgent;
-	ktopd->start("localhost", "rsh");
-	daList.append(ktopd);
 }
 
 SensorManager::~SensorManager()
 {
-	QListIterator<DaemonAgent> it(daList);
+	QListIterator<SensorAgent> it(daList);
 	for (; it.current(); ++it)
 		delete(it.current());
+}
+
+SensorAgent*
+SensorManager::engage(const QString& hostname)
+{
+	SensorAgent* ktopd;
+	ktopd = new SensorAgent;
+	ktopd->start(hostname.ascii(), "rsh");
+	daList.append(ktopd);
+
+	return (ktopd);
+}
+
+void
+SensorManager::disengage(const SensorAgent* da)
+{
+	// remove daemon agent for daList
 }

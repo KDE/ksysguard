@@ -117,7 +117,6 @@ ProcListPage::ProcListPage(QWidget* parent, const char* name)
 
 	// create process list
     pList->update();
-	printf("ProcListPage: %d, %d\n", sizeHint().width(), sizeHint().height());
 }
 
 void

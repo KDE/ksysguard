@@ -20,6 +20,8 @@
 	$Id$
 */
 
+#include "config.h"
+
 #include <stdio.h>
 #include <string.h>
 
@@ -66,7 +68,12 @@ main(int argc, const char* argv[])
 	initMemory();
 	initCPU();
 
-	printf("ktopd> ");
+	while (!dispatcherReady())
+		;
+
+	printf("ktopd %s  (c) 1999 Chris Schlaeger <cs@kde.org>\n"
+		   "This program may be distributed under the GPL.\n"
+		   "ktopd> ", VERSION);
 	fflush(stdout);
 	do
 	{

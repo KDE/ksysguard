@@ -41,6 +41,7 @@
 #include <kmenubar.h>
 #include <kstatusbar.h>
 
+#include "SensorClient.h"
 #include "TaskMan.h"
 #include "OSStatus.h"
 
@@ -48,7 +49,9 @@
 
 extern KApplication* Kapp;
 
-class TopLevel : public KTMainWindow
+class SensorAgent;
+
+class TopLevel : public KTMainWindow, public SensorClient
 {
 	Q_OBJECT
 
@@ -71,6 +74,8 @@ public:
 		quitSlot();
 	}
 
+	virtual void answerReceived(int id, const QString& s);
+	
 protected:
 	virtual void timerEvent(QTimerEvent*);
 
@@ -82,6 +87,8 @@ private:
 
 	int timerID;
 	OSStatus osStatus;
+
+	SensorAgent* localhost;
 
 protected slots:
 

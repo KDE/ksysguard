@@ -20,26 +20,42 @@
 	$Id$
 */
 
-#ifndef _DaemonAgent_h_
-#define _DaemonAgent_h_
+#ifndef _SensorAgent_h_
+#define _SensorAgent_h_
 
 #include <qobject.h>
 #include <qstring.h>
 
 #include <kprocess.h>
 
-class DaemonAgent : public QObject
+class SensorClient;
+
+class SensorRequest
+{
+	friend class SensorAgent;
+
+public:
+	SensorRequest(const QString& r, SensorClient* c, int i) :
+		request(r), client(c), id(i) { }
+	~SensorRequest() { }
+
+private:
+	QString request;
+	SensorClient* client;
+	int id;
+} ;
+	
+class SensorAgent : public QObject
 {
 	Q_OBJECT
 
 public:
-	DaemonAgent();
-	~DaemonAgent();
+	SensorAgent();
+	~SensorAgent();
 
 	bool start(const QString& host, const QString& shell);
 
-	signals:
-	void reportAnswer(const QString& answer);
+	bool sendRequest(const QString& req, SensorClient* client, int id = 0);
 
 private slots:
 	void msgSent(KProcess* proc);
@@ -48,13 +64,16 @@ private slots:
 	void ktopdExited(KProcess* proc);
 
 private:
-	void executeCommand(const QString& cmd);
+	void executeCommand();
 
 	KProcess* ktopd;
+	bool ktopdOnLine;
 	QString host;
 	QString shell;
 
-	QString answerBuf;
+	QList<SensorRequest> inputFIFO;
+	QList<SensorRequest> processingFIFO;
+	QString answerBuffer;
 } ;
 	
 #endif

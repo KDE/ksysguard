@@ -80,10 +80,7 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
     addTab(procListPage, i18n("Processes &List"));
     addTab(perfMonPage, i18n("Performance &Meter"));
 
-	move(0,0);
-
 	setMinimumSize(sizeHint());
-	printf("TaskMan: %d, %d\n", sizeHint().width(), sizeHint().height());
 }
 
 void 

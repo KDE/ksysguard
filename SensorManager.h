@@ -25,7 +25,7 @@
 
 #include <qobject.h>
 
-#include "DaemonAgent.h"
+class SensorAgent;
 
 class SensorManager : public QObject
 {
@@ -35,8 +35,11 @@ public:
 	SensorManager();
 	~SensorManager();
 
+	SensorAgent* engage(const QString& hostname);
+	void disengage(const SensorAgent* da);
+
 private:
-	QList<DaemonAgent> daList;
+	QList<SensorAgent> daList;
 } ;
 
 extern SensorManager* SensorMgr;
