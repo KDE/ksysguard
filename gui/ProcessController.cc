@@ -186,11 +186,10 @@ ProcessController::killProcess()
 	}
 	else
 	{
-		if (KMessageBox::warningYesNo(
-			this, QString(i18n("Do you want to kill the\n"
-							   "selected %1 process(es)?"))
-			.arg(selectedPIds.count())) ==
-			KMessageBox::No)
+		QString  msg = i18n("Do you want to kill the selected process?", 
+				"Do you want to kill the %n selected processes?", 
+				selectedPIds.count());
+		if (KMessageBox::warningYesNo(this, msg) != KMessageBox::Yes)
 		{
 			return;
 		}

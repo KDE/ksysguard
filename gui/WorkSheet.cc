@@ -109,8 +109,8 @@ WorkSheet::load(const QString& fN)
 	{
 		KMessageBox::sorry(
 			this,
-			i18n("The file %1 does not contain a valid work sheet\n"
-				 "definition, which must have a document type\n"
+			i18n("The file %1 does not contain a valid work sheet "
+				 "definition, which must have a document type "
 				 "'KSysGuardWorkSheet'.").arg(fileName));
 		return (false);
 	}
@@ -284,7 +284,7 @@ WorkSheet::paste()
 	{
 		KMessageBox::sorry(
 			this,
-			i18n("The clipboard does not contain a valid display\n"
+			i18n("The clipboard does not contain a valid display "
 				 "description."));
 		return;
 	}

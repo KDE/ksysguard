@@ -815,9 +815,10 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 				}
 			}
 
-			QString msg = i18n("Do you really want to send signal %1\n"
-							   "to the %2 selected process(es)?")
-				.arg(signalPM->text(id)).arg(selectedPIds.count());
+			QString msg = i18n("Do you really want to send signal %1 to the selected process?", 
+					"Do you really want to send signal %1 to the %n selected processes?",
+					selectedPIds.count())
+				.arg(signalPM->text(id));
 			int answ;
 			switch(answ = KMessageBox::questionYesNo(this, msg))
 			{

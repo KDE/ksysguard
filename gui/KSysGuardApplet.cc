@@ -260,7 +260,7 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 			 {
 				KMessageBox::sorry(
 					this,
-					i18n("The KSysGuard applet does not support displaying of\n"
+					i18n("The KSysGuard applet does not support displaying of "
 						 "this type of sensor. Please choose another sensor."));
 			 }
 		}
@@ -379,8 +379,8 @@ KSysGuardApplet::load()
 	{
 		KMessageBox::sorry(
 			this,
-			i18n("The file %1 does not contain a valid applet\n"
-				 "definition, which must have a document type\n"
+			i18n("The file %1 does not contain a valid applet "
+				 "definition, which must have a document type "
 				 "'KSysGuardApplet'.").arg(fileName));
 		return (false);
 	}
@@ -439,7 +439,7 @@ KSysGuardApplet::load()
 		{
 			KMessageBox::sorry(
 				this,
-				i18n("The KSysGuard applet does not support displaying of\n"
+				i18n("The KSysGuard applet does not support displaying of "
 					 "this type of sensor. Please choose another sensor."));
 			return (false);
 		}

@@ -371,7 +371,7 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 	if (beams > 0 && hostName != sensors.at(0)->hostName)
 	{
 		KMessageBox::sorry(this, QString(
-						   "All sensors of this display need\n"
+						   "All sensors of this display need "
 						   "to be from the host %1!")
 						   .arg(sensors.at(0)->hostName));
 		/* We have to enforce this since the answers to value requests

@@ -174,7 +174,7 @@ Workspace::saveOnQuit()
 			{
 				int res = KMessageBox::warningYesNoCancel(
 					this,
-					QString(i18n("The worksheet '%1' contains unsaved data\n"
+					QString(i18n("The worksheet '%1' contains unsaved data.\n"
 								 "Do you want to save the worksheet?"))
 					.arg(tabLabel(*it)));
 				if (res == KMessageBox::Yes)
@@ -310,7 +310,7 @@ Workspace::deleteWorkSheet()
 			{
 				int res = KMessageBox::warningYesNoCancel(
 					this,
-					QString(i18n("The worksheet '%1' contains unsaved data\n"
+					QString(i18n("The worksheet '%1' contains unsaved data.\n"
 								 "Do you want to save the worksheet?"))
 					.arg(tabLabel(current)));
 				if (res == KMessageBox::Yes)
@@ -327,7 +327,7 @@ Workspace::deleteWorkSheet()
 	}
 	else
 	{
-		QString msg = i18n("There are no work sheets that\n"
+		QString msg = i18n("There are no work sheets that "
 						   "could be deleted!");
 		KMessageBox::error(this, msg);
 	}
