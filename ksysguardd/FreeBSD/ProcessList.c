@@ -30,6 +30,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/param.h>
+
+#if defined(__DragonFly__)
+#include <sys/user.h>
+#include <sys/resourcevar.h>
+#endif
+
 #if __FreeBSD_version > 500015
 #include <sys/priority.h>
 #endif
@@ -112,7 +118,11 @@ typedef struct
 	 * good idea. I never thought that the stability of UNIX could get me
 	 * into trouble! ;)
 	 */
+#if !defined(__DragonFly__)
 	unsigned int userTime;
+#else
+        long userTime;
+#endif
 
 	/*
 	 * The number of 1/100 of a second the process has spend in system space.
@@ -171,6 +181,7 @@ updateProcess(int pid)
 	struct passwd* pwent;
 	int mib[4];
 	struct kinfo_proc p;
+	struct rusage pru;
 	size_t len;
 	size_t buflen = 256;
 	char buf[256];
@@ -215,7 +226,15 @@ updateProcess(int pid)
 #if __FreeBSD_version >= 500015
         ps->userTime = p.ki_runtime / 10000;
 #elif __FreeBSD_version >= 300000
+#if defined(__DragonFly__)
+	if (!getrusage(p.kp_proc.p_pid, &pru))
+	{
+		errx(1, "failed to get rusage info");
+	}
+	ps->userTime = pru.ru_utime.tv_usec / 1000; /*p_runtime / 1000*/ 
+#else
         ps->userTime = p.kp_proc.p_runtime / 10000;
+#endif
 #else
 	ps->userTime = p.kp_proc.p_rtime.tv_sec*100+p.kp_proc.p_rtime.tv_usec/100;
 #endif
@@ -241,7 +260,12 @@ updateProcess(int pid)
 		ps->userLoad = 100.0 * (double) p.kp_proc.p_pctcpu / fscale;
 	ps->vmSize   = p.kp_eproc.e_vm.vm_map.size;
 	ps->vmRss    = p.kp_eproc.e_vm.vm_rssize * getpagesize();
+#if defined (__DragonFly__)
+	strlcpy(ps->name,p.kp_thread.td_comm ? p.kp_thread.td_comm : "????", 
+		sizeof(ps->name));
+#else
 	strlcpy(ps->name,p.kp_proc.p_comm ? p.kp_proc.p_comm : "????", sizeof(ps->name));
+#endif
 	strcpy(ps->status,(p.kp_proc.p_stat>=1)&&(p.kp_proc.p_stat<=5)? statuses[p.kp_proc.p_stat-1]:"????");
 #endif
 
