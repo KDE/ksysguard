@@ -19,17 +19,18 @@
 	$Id$
 */
 
-#include <fcntl.h>
+#include <sys/types.h>
 #include <sys/socket.h>
-#include <net/if.h>
-#include <net/if_mib.h>
-#include <stdio.h>
-#include <string.h>
 #include <sys/sysctl.h>
 #include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
 
+#include <net/if.h>
+#include <net/if_mib.h>
+
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "Command.h"
 #include "ksysguardd.h"
