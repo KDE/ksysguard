@@ -518,7 +518,7 @@ void TopLevel::answerReceived( int id, const QString &answer )
 static const KCmdLineOptions options[] = {
   { "showprocesses", I18N_NOOP( "Show only process list of local host" ), 0 },
   { "+[worksheet]", I18N_NOOP( "Optional worksheet files to load" ), 0 },
-  { 0, 0, 0}
+  KCmdLineLastOption
 };
 
 /*
