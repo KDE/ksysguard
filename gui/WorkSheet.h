@@ -80,6 +80,8 @@ public:
 							  const QString& sensorDescr, uint r, uint c);
 	void settings();
 
+	uint updateInterval;
+
 public slots:
 	void showPopupMenu(SensorDisplay* display);
 	void setModified(bool mfd);
@@ -116,7 +118,6 @@ private:
 	bool modified;
 	uint rows;
 	uint columns;
-	uint updateInterval;
 	QGridLayout* lm;
 	/* This two dimensional array stores the pointers to the sensor displays
 	 * or if no sensor is present at a position a pointer to a dummy widget.

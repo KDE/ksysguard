@@ -577,6 +577,7 @@ main(int argc, char** argv)
 	aboutData.addAuthor("Bernd Johannes Wuebben", 0,
 						"wuebben@math.cornell.edu");
 	aboutData.addAuthor("Ralf Mueller", 0, "rlaf@bj-ig.de");
+	aboutData.addAuthor("Hamish Rodda", 0, "meddie@yoyo.cc.monash.edu.au");
 	
 	KCmdLineArgs::init(argc, argv, &aboutData);
 	KCmdLineArgs::addCmdLineOptions(options);

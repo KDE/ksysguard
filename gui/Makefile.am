@@ -53,6 +53,7 @@ ksysguard_SOURCES = \
 	SensorLoggerDlg.ui \
 	SensorLoggerSettings.ui \
 	StyleSettings.ui \
+	TimerSettings.ui \
 	WorkSheetSettings.ui
 
 # the library search path
@@ -87,7 +88,8 @@ libksysguardapplet_la_SOURCES = \
 	HostConnector.ui \
 	KSysGuardAppletSettings.ui \
 	MultiMeterSettings.ui \
-	StyleSettings.ui
+	StyleSettings.ui \
+	TimerSettings.ui
 
 libksysguardapplet_la_METASOURCES = AUTO
 libksysguardapplet_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -module -no-undefined

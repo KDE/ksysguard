@@ -128,7 +128,8 @@ DancingBars::settings()
 	{
 		QString status = sensors.at(i)->ok ? i18n("Ok") : i18n("Error");
 		QListViewItem* lvi = new QListViewItem(
-			dbs->sensorList, sensors.at(i)->hostName,
+			dbs->sensorList,
+			sensors.at(i)->hostName,
 			SensorMgr->translateSensor(sensors.at(i)->name),
 			plotter->footers[i],
 			SensorMgr->translateUnit(sensors.at(i)->unit), status);
@@ -169,7 +170,7 @@ DancingBars::applySettings()
 	plotter->backgroundColor = dbs->backgroundColor->getColor();
 	plotter->fontSize = dbs->fontSize->value();
 
-    QListViewItemIterator it(dbs->sensorList);
+	QListViewItemIterator it(dbs->sensorList);
 	/* Iterate through all items of the listview and reverse iterate
 	 * through the registered sensors. */
 	for (uint i = 0; i < sensors.count(); i++)
@@ -391,33 +392,35 @@ DancingBars::answerReceived(int id, const QString& answer)
 }
 
 bool
-DancingBars::createFromDOM(QDomElement& domElem)
+DancingBars::createFromDOM(QDomElement& element)
 {
-	frame->setTitle(domElem.attribute("title"));
+	frame->setTitle(element.attribute("title"));
 
-	plotter->changeRange(domElem.attribute("min", "0").toDouble(),
-						 domElem.attribute("max", "0").toDouble());
+	plotter->changeRange(element.attribute("min", "0").toDouble(),
+						element.attribute("max", "0").toDouble());
 
-	plotter->setLimits(domElem.attribute("lowlimit", "0").toDouble(),
-					   domElem.attribute("lowlimitactive", "0").toInt(),
-					   domElem.attribute("uplimit", "0").toDouble(),
-					   domElem.attribute("uplimitactive", "0").toInt());
+	plotter->setLimits(element.attribute("lowlimit", "0").toDouble(),
+					element.attribute("lowlimitactive", "0").toInt(),
+					element.attribute("uplimit", "0").toDouble(),
+					element.attribute("uplimitactive", "0").toInt());
 
-	plotter->normalColor = restoreColorFromDOM(domElem, "normalColor",
+	plotter->normalColor = restoreColorFromDOM(element, "normalColor",
 											   Style->getFgColor1());
-	plotter->alarmColor = restoreColorFromDOM(domElem, "alarmColor",
+	plotter->alarmColor = restoreColorFromDOM(element, "alarmColor",
 											  Style->getAlarmColor());
 	plotter->backgroundColor = restoreColorFromDOM(
-		domElem, "backgroundColor", Style->getBackgroundColor());
-	plotter->fontSize = domElem.attribute(
+		element, "backgroundColor", Style->getBackgroundColor());
+	plotter->fontSize = element.attribute(
 		"fontSize", QString("%1").arg(Style->getFontSize())).toInt();
 
-	QDomNodeList dnList = domElem.elementsByTagName("beam");
+	QDomNodeList dnList = element.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)
 	{
 		QDomElement el = dnList.item(i).toElement();
 		addSensor(el.attribute("hostName"), el.attribute("sensorName"), (el.attribute("sensorType").isEmpty() ? "integer" : el.attribute("sensorType")), el.attribute("sensorDescr"));
 	}
+
+	internCreateFromDOM(element);
 
 	setModified(false);
 
@@ -425,33 +428,35 @@ DancingBars::createFromDOM(QDomElement& domElem)
 }
 
 bool
-DancingBars::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
+DancingBars::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 {
-	display.setAttribute("title", frame->title());
-	display.setAttribute("min", plotter->getMin());
-	display.setAttribute("max", plotter->getMax());
+	element.setAttribute("title", frame->title());
+	element.setAttribute("min", plotter->getMin());
+	element.setAttribute("max", plotter->getMax());
 	double l, u;
 	bool la, ua;
 	plotter->getLimits(l, la, u, ua);
-	display.setAttribute("lowlimit", l);
-	display.setAttribute("lowlimitactive", la);
-	display.setAttribute("uplimit", u);
-	display.setAttribute("uplimitactive", ua);
+	element.setAttribute("lowlimit", l);
+	element.setAttribute("lowlimitactive", la);
+	element.setAttribute("uplimit", u);
+	element.setAttribute("uplimitactive", ua);
 
-	addColorToDOM(display, "normalColor", plotter->normalColor);
-	addColorToDOM(display, "alarmColor", plotter->alarmColor);
-	addColorToDOM(display, "backgroundColor", plotter->backgroundColor);
-	display.setAttribute("fontSize", plotter->fontSize);
+	addColorToDOM(element, "normalColor", plotter->normalColor);
+	addColorToDOM(element, "alarmColor", plotter->alarmColor);
+	addColorToDOM(element, "backgroundColor", plotter->backgroundColor);
+	element.setAttribute("fontSize", plotter->fontSize);
 
 	for (uint i = 0; i < bars; ++i)
 	{
 		QDomElement beam = doc.createElement("beam");
-		display.appendChild(beam);
+		element.appendChild(beam);
 		beam.setAttribute("hostName", sensors.at(i)->hostName);
 		beam.setAttribute("sensorName", sensors.at(i)->name);
 		beam.setAttribute("sensorType", sensors.at(i)->type);
 		beam.setAttribute("sensorDescr", plotter->footers[i]);
 	}
+
+	internAddToDOM(doc, element);
 
 	if (save)
 		setModified(false);

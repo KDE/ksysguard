@@ -391,11 +391,15 @@ WorkSheet::settings()
 		updateInterval = wss->interval->text().toUInt();
 		for (uint r = 0; r < rows; ++r)
 			for (uint c = 0; c < columns; ++c)
-				displays[r][c]->setUpdateInterval(updateInterval);
+				if (displays[r][c]->globalUpdateInterval)
+					displays[r][c]->setUpdateInterval(updateInterval);
 
 		resizeGrid(wss->rows->text().toUInt(),
 				   wss->columns->text().toUInt());
+
+		setModified(true);
 	}
+
 	delete wss;
 }
 
@@ -508,7 +512,8 @@ WorkSheet::replaceDisplay(uint r, uint c, QDomElement& element)
 		return (false);
 	}
 	Q_CHECK_PTR(newDisplay);
-	newDisplay->setUpdateInterval(updateInterval);
+	if (newDisplay->globalUpdateInterval)
+		newDisplay->setUpdateInterval(updateInterval);
 
 	// load display specific settings
 	if (!newDisplay->createFromDOM(element))
@@ -527,11 +532,12 @@ WorkSheet::replaceDisplay(uint r, uint c, SensorDisplay* newDisplay)
 
 	// insert new display
 	if (!newDisplay)
-		displays[r][c] = new DummyDisplay(this, "dummy frame");
+		displays[r][c] = new DummyDisplay(this, "DummyDisplay");
 	else
 	{
 		displays[r][c] = newDisplay;
-		displays[r][c]->setUpdateInterval(updateInterval);
+		if (displays[r][c]->globalUpdateInterval)
+			displays[r][c]->setUpdateInterval(updateInterval);
 		connect(newDisplay, SIGNAL(showPopupMenu(SensorDisplay*)),
 				this, SLOT(showPopupMenu(SensorDisplay*)));
 		connect(newDisplay, SIGNAL(displayModified(bool)),

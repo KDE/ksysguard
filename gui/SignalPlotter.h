@@ -30,6 +30,9 @@
 #include <qwidget.h>
 #include <qstring.h>
 
+#define	GRAPH_ORIGINAL		0
+#define GRAPH_BASIC_POLY	1
+
 class QColor;
 class FancyPlotter;
 
@@ -86,9 +89,14 @@ private:
 	double maxValue;
 	bool autoRange;
 
+	uint graphStyle;
+
 	bool vLines;
 	QColor vColor;
 	uint vDistance;
+  bool vScroll;
+  uint vOffset;
+	uint hScale;
 
 	bool hLines;
 	QColor hColor;

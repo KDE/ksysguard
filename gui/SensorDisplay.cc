@@ -22,11 +22,14 @@
 	$Id$
 */
 
-#include <qpopupmenu.h>
-#include <qwhatsthis.h>
+#include <qcheckbox.h>
 #include <qdom.h>
+#include <qpopupmenu.h>
+#include <qspinbox.h>
+#include <qwhatsthis.h>
 
 #include <kapp.h>
+#include <kdebug.h>
 #include <klocale.h>
 #include <kiconloader.h>
 #include <kmessagebox.h>
@@ -34,6 +37,7 @@
 #include "SensorDisplay.h"
 #include "SensorDisplay.moc"
 #include "SensorManager.h"
+#include "WorkSheet.h"
 
 SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 	QWidget(parent, name)
@@ -42,6 +46,7 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 
 	// default interval is 2 seconds.
 	timerInterval = 2000;
+	globalUpdateInterval = true;
 	timerId = NONE;
 	modified = false;
 	timerOn();
@@ -90,6 +95,36 @@ SensorDisplay::unregisterSensor(uint idx)
 }
 
 void
+SensorDisplay::setupTimer()
+{
+	ts = new TimerSettings(this, "TimerSettings", true);
+	Q_CHECK_PTR(ts);
+
+	connect(ts->useGlobalUpdate, SIGNAL(toggled(bool)), this, SLOT(timerToggled(bool)));
+
+	ts->useGlobalUpdate->setChecked(globalUpdateInterval);
+
+	if (ts->exec()) {
+		if (ts->useGlobalUpdate->isChecked()) {
+			globalUpdateInterval = true;
+			setUpdateInterval(((WorkSheet *)parentWidget())->updateInterval);
+		} else {
+			globalUpdateInterval = false;
+			setUpdateInterval(ts->interval->text().toInt());
+		}
+		setModified(true);
+	}
+
+	delete ts;
+}
+
+void
+SensorDisplay::timerToggled(bool value)
+{
+	ts->interval->setEnabled(!value);
+}
+
+void
 SensorDisplay::timerEvent(QTimerEvent*)
 {
 	int i = 0;
@@ -106,13 +141,17 @@ SensorDisplay::eventFilter(QObject* o, QEvent* e)
 		QPopupMenu pm;
 		if (hasSettingsDialog())
 			pm.insertItem(i18n("&Properties"), 1);
-		pm.insertItem(i18n("&Remove Display"), 2);
+		pm.insertItem(i18n("&Setup Timer Interval"), 2);
+		pm.insertItem(i18n("&Remove Display"), 3);
 		switch (pm.exec(QCursor::pos()))
 		{
 		case 1:
 			this->settings();
 			break;
 		case 2:
+			this->setupTimer();
+			break;
+		case 3:
 			QCustomEvent* ev = new QCustomEvent(QEvent::User);
 			ev->setData(this);
 			kapp->postEvent(parent(), ev);
@@ -198,4 +237,23 @@ SensorDisplay::addColorToDOM(QDomElement& de, const QString& attr,
 	int r, g, b;
 	col.rgb(&r, &g, &b);
 	de.setAttribute(attr, (r << 16) | (g << 8) | b);
+}
+
+void SensorDisplay::internAddToDOM(QDomDocument& doc, QDomElement& element)
+{
+	if (globalUpdateInterval)
+		element.setAttribute("globalUpdate", "1");
+	else
+		element.setAttribute("updateInterval", timerInterval / 1000);
+}
+
+void SensorDisplay::internCreateFromDOM(QDomElement& element)
+{
+	if (element.attribute("updateInterval") != QString::null) {
+		globalUpdateInterval = false;
+		setUpdateInterval(element.attribute("updateInterval", "2").toInt());
+	} else {
+		globalUpdateInterval = true;
+		setUpdateInterval(((WorkSheet *)parentWidget())->updateInterval);
+	}
 }

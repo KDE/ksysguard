@@ -25,9 +25,9 @@
 #include <qobject.h>
 #include <qptrlist.h>
 
-class QString;
 class KProcess;
 class KShellProcess;
+class QString;
 class SensorClient;
 class SensorManager;
 
@@ -44,7 +44,7 @@ public:
 	QString request;
 	SensorClient* client;
 	int id;
-} ;
+};
 
 /**
  * The SensorAgent depending on the type of requested connection
@@ -108,6 +108,6 @@ private:
 	QPtrList<SensorRequest> processingFIFO;
 	QString answerBuffer;
 	QString errorBuffer;
-} ;
+};
 	
 #endif

@@ -155,6 +155,8 @@ LogFile::createFromDOM(QDomElement& element)
 
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "logfile" : element.attribute("sensorType")), title);
 
+	internCreateFromDOM(element);
+
 	setModified(FALSE);
 
 	return TRUE;
@@ -180,6 +182,8 @@ LogFile::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 		filter.setAttribute("rule", (*it));
 		element.appendChild(filter);
 	}
+
+	internAddToDOM(doc, element);
 
 	if (save)
 		setModified(FALSE);

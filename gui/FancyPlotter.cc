@@ -32,6 +32,8 @@
 #include <qtextstream.h>
 #include <qtoolbutton.h>
 #include <qtooltip.h>
+#include <qradiobutton.h>
+#include <qbuttongroup.h>
 
 #include <kapp.h>
 #include <kcolordialog.h>
@@ -94,10 +96,22 @@ FancyPlotter::settings()
 	fps->maxVal->setText(QString("%1").arg(plotter->getMax()));
 	fps->maxVal->setValidator(new KFloatValidator(fps->maxVal));
 
+	/* Graph style */
+	switch (plotter->graphStyle) {
+		case GRAPH_ORIGINAL:
+			fps->styleGroup->setButton(fps->styleGroup->id(fps->style0));
+			break;
+		case GRAPH_BASIC_POLY:
+			fps->styleGroup->setButton(fps->styleGroup->id(fps->style1));
+			break;
+	}
+	fps->hScale->setValue(plotter->hScale);
+
 	/* Properties for vertical lines */
 	fps->vLines->setChecked(plotter->vLines);
 	fps->vColor->setColor(plotter->vColor);
 	fps->vDistance->setValue(plotter->vDistance);
+	fps->vScroll->setChecked(plotter->vScroll);
 
 	/* Properties for horizontal lines */
 	fps->hLines->setChecked(plotter->hLines);
@@ -118,12 +132,14 @@ FancyPlotter::settings()
 	{
 		QString status = sensors.at(i)->ok ? i18n("Ok") : i18n("Error");
 		QListViewItem* lvi = new QListViewItem(
-			fps->sensorList, sensors.at(i)->hostName,
+			fps->sensorList,
+			QString("%1").arg(i + 1),
+			sensors.at(i)->hostName,
 			SensorMgr->translateSensor(sensors.at(i)->name),
 			SensorMgr->translateUnit(sensors.at(i)->unit), status);
 		QPixmap pm(12, 12);
 		pm.fill(plotter->beamColor[i]);
-		lvi->setPixmap(1, pm);
+		lvi->setPixmap(2, pm);
 		fps->sensorList->insertItem(lvi);
 	}
 	connect(fps->sColorButton, SIGNAL(clicked()),
@@ -132,6 +148,10 @@ FancyPlotter::settings()
 			this, SLOT(settingsDelete()));
 	connect(fps->sensorList, SIGNAL(selectionChanged(QListViewItem*)),
 			this, SLOT(settingsSelectionChanged(QListViewItem*)));
+	connect(fps->moveUpButton, SIGNAL(clicked()),
+			this, SLOT(settingsMoveUp()));
+	connect(fps->moveDownButton, SIGNAL(clicked()),
+			this, SLOT(settingsMoveDown()));
 
 	if (fps->exec())
 		applySettings();
@@ -146,14 +166,30 @@ FancyPlotter::applySettings()
 	frame->setTitle(fps->title->text());
 	plotter->setTitle(fps->title->text());
 	if (fps->autoRange->isChecked())
-		plotter->changeRange(0, 0.0, 0.0);
-	else
+		plotter->autoRange = true;
+	else {
+		plotter->autoRange = false;
 		plotter->changeRange(0, fps->minVal->text().toDouble(),
 							 fps->maxVal->text().toDouble());
+	}
+
+	if (fps->styleGroup->selected() == fps->style0)
+		plotter->graphStyle = GRAPH_ORIGINAL;
+	else if (fps->styleGroup->selected() == fps->style1)
+		plotter->graphStyle = GRAPH_BASIC_POLY;
+
+	if (plotter->hScale != fps->hScale->value())
+	{
+		plotter->hScale = fps->hScale->value();
+		// Can someone think of a useful QResizeEvent to pass?
+		// It doesn't really matter anyway because it's not used.
+		emit resizeEvent(0);
+	}
 
 	plotter->vLines = fps->vLines->isChecked();
 	plotter->vColor = fps->vColor->getColor();
 	plotter->vDistance = fps->vDistance->text().toUInt();
+	plotter->vScroll = fps->vScroll->isChecked();
 
 	plotter->hLines = fps->hLines->isChecked();
 	plotter->hColor = fps->hColor->getColor();
@@ -165,22 +201,36 @@ FancyPlotter::applySettings()
 
 	plotter->bColor = fps->bColor->getColor();
 
-    QListViewItemIterator it(fps->sensorList);
-	/* Iterate through all items of the listview and reverse iterate
-	 * through the registered sensors. */
-	for (uint i = sensors.count() - 1; i < sensors.count(); --i)
+	/* Iterate through registered sensors and through the items of the
+	 * listview. Where a sensor cannot be matched, it is removed. */
+	uint delCount = 0;
+
+	for (uint i = 0; i < sensors.count(); ++i)
 	{
-		if (it.current() &&
-			it.current()->text(0) == sensors.at(i)->hostName &&
-			it.current()->text(1) == 
-			SensorMgr->translateSensor(sensors.at(i)->name))
+		bool found = false;
+		QListViewItemIterator it(fps->sensorList);
+		for (; it.current(); ++it)
 		{
-			plotter->beamColor[i] = it.current()->pixmap(1)->
-				convertToImage().pixel(1, 1);
-			it++;
+			if (it.current()->text(0) == QString("%1").arg(i + 1 + delCount))
+			{
+				plotter->beamColor[i] = it.current()->pixmap(2)->
+																convertToImage().pixel(1, 1);
+				found = true;
+				if (delCount > 0) {
+					it.current()->setText(0, QString("%1").arg(i + 1));
+				}
+				continue;
+			}
 		}
-		else
-			removeSensor(i);
+
+		if (! found)
+		{
+			if (removeSensor(i))
+			{
+				i--;
+				delCount++;
+			}
+		}
 	}
 
 	plotter->repaint();
@@ -195,13 +245,13 @@ FancyPlotter::settingsSetColor()
 	if (!lvi)
 		return;
 
-	QColor c = lvi->pixmap(1)->convertToImage().pixel(1, 1);
+	QColor c = lvi->pixmap(2)->convertToImage().pixel(1, 1);
 	int result = KColorDialog::getColor(c);
 	if (result == KColorDialog::Accepted)
 	{
 		QPixmap newPm(12, 12);
 		newPm.fill(c);
-		lvi->setPixmap(1, newPm);
+		lvi->setPixmap(2, newPm);
 	}
 }
 
@@ -238,11 +288,56 @@ FancyPlotter::settingsDelete()
 	}
 }
 
+/** Moves the selected item up one */
+void
+FancyPlotter::settingsMoveUp(){
+	if (fps->sensorList->currentItem() != 0)
+	{
+		QListViewItem* temp = fps->sensorList->currentItem()->itemAbove();
+		if (temp)
+		{
+			if (temp->itemAbove())
+				fps->sensorList->currentItem()->moveItem(temp->itemAbove());
+			else
+				fps->sensorList->currentItem()->moveItem(temp->parent());
+		}
+
+		// Re-calculate the "sensor number" field
+		QListViewItem* i = fps->sensorList->firstChild();
+		for (uint count = 1; i; i = i->itemBelow(), count++)
+		{
+			i->setText(0, QString("%1").arg(count));
+		}
+	}
+}
+
+/** Moves the selected item down one */
+void
+FancyPlotter::settingsMoveDown(){
+	if (fps->sensorList->currentItem() != 0)
+	{
+		if (fps->sensorList->currentItem()->itemBelow())
+		{
+			fps->sensorList->currentItem()->moveItem(fps->sensorList->currentItem()->itemBelow());
+		}
+
+		// Re-calculate the "sensor number" field
+		QListViewItem* i = fps->sensorList->firstChild();
+		for (uint count = 1; i; i = i->itemBelow(), count++)
+		{
+			i->setText(0, QString("%1").arg(count));
+		}
+		//settingsSelectionChanged(fps->sensorList()->currentItem());
+	}
+}
+
 void
 FancyPlotter::settingsSelectionChanged(QListViewItem* lvi)
 {
 	fps->sColorButton->setEnabled(lvi != 0);
 	fps->deleteButton->setEnabled(lvi != 0);
+	fps->moveUpButton->setEnabled(lvi != 0 && lvi->itemAbove());
+	fps->moveDownButton->setEnabled(lvi != 0 && lvi->itemBelow());
 }
 
 void
@@ -409,8 +504,7 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 	else if (id >= 100)
 	{
 		SensorFloatInfo info(answer);
-		if (plotter->minValue == 0.0 && plotter->maxValue == 0.0 &&
-			plotter->autoRange)
+		if (plotter->autoRange)
 		{
 			/* We only use this information from the sensor when the
 			 * display is still using the default values. If the
@@ -424,42 +518,53 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 }
 
 bool
-FancyPlotter::createFromDOM(QDomElement& domElem)
+FancyPlotter::createFromDOM(QDomElement& element)
 {
-	QString title = domElem.attribute("title");
+	QString title = element.attribute("title");
 	if (!title.isEmpty())
 	{
 		frame->setTitle(title);
 		plotter->setTitle(title);
 	}
 
-	plotter->changeRange(0, domElem.attribute("min").toDouble(),
-						 domElem.attribute("max").toDouble());
+	if (element.attribute("autoRange").toInt())
+		plotter->autoRange = true;
+	else {
+		plotter->autoRange = false;
+		plotter->changeRange(0, element.attribute("min").toDouble(),
+						 element.attribute("max").toDouble());
+	}
 
-	plotter->vLines = domElem.attribute("vLines", "1").toUInt();
-	plotter->vColor = restoreColorFromDOM(domElem, "vColor",
+	plotter->vLines = element.attribute("vLines", "1").toUInt();
+	plotter->vColor = restoreColorFromDOM(element, "vColor",
 										  Style->getFgColor1());
-	plotter->vDistance = domElem.attribute("vDistance", "30").toUInt();
+	plotter->vDistance = element.attribute("vDistance", "30").toUInt();
+	plotter->vScroll = element.attribute("vScroll", "1").toUInt();
 
-	plotter->hLines = domElem.attribute("hLines", "1").toUInt();
-	plotter->hColor = restoreColorFromDOM(domElem, "hColor",
+	plotter->graphStyle = element.attribute("graphStyle", "1").toUInt();
+	plotter->hScale = element.attribute("hScale", "5").toUInt();
+
+	plotter->hLines = element.attribute("hLines", "1").toUInt();
+	plotter->hColor = restoreColorFromDOM(element, "hColor",
 										  Style->getFgColor2());
-	plotter->hCount = domElem.attribute("hCount", "5").toUInt();
+	plotter->hCount = element.attribute("hCount", "5").toUInt();
 
-	plotter->labels = domElem.attribute("labels", "1").toUInt();
-	plotter->topBar = domElem.attribute("topBar", "0").toUInt();
-	plotter->fontSize = domElem.attribute(
+	plotter->labels = element.attribute("labels", "1").toUInt();
+	plotter->topBar = element.attribute("topBar", "0").toUInt();
+	plotter->fontSize = element.attribute(
 		"fontSize", QString("%1").arg(Style->getFontSize())).toUInt();
 
-	plotter->bColor = restoreColorFromDOM(domElem, "bColor",
+	plotter->bColor = restoreColorFromDOM(element, "bColor",
 										  Style->getBackgroundColor());
 
-	QDomNodeList dnList = domElem.elementsByTagName("beam");
+	QDomNodeList dnList = element.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)
 	{
 		QDomElement el = dnList.item(i).toElement();
 		addSensor(el.attribute("hostName"), el.attribute("sensorName"), (el.attribute("sensorType").isEmpty() ? "integer" : el.attribute("sensorType")), "", restoreColorFromDOM(el, "color", Style->getSensorColor(i)));
 	}
+
+	internCreateFromDOM(element);
 
 	setModified(false);
 
@@ -467,34 +572,42 @@ FancyPlotter::createFromDOM(QDomElement& domElem)
 }
 
 bool
-FancyPlotter::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
+FancyPlotter::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 {
-	display.setAttribute("title", frame->title());
-	display.setAttribute("min", plotter->getMin());
-	display.setAttribute("max", plotter->getMax());
-	display.setAttribute("vLines", plotter->vLines);
-	addColorToDOM(display, "vColor", plotter->vColor);
-	display.setAttribute("vDistance", plotter->vDistance);
+	element.setAttribute("title", frame->title());
+	element.setAttribute("min", plotter->getMin());
+	element.setAttribute("max", plotter->getMax());
+	element.setAttribute("autoRange", plotter->autoRange);
+	element.setAttribute("vLines", plotter->vLines);
+	addColorToDOM(element, "vColor", plotter->vColor);
+	element.setAttribute("vDistance", plotter->vDistance);
+	element.setAttribute("vScroll", plotter->vScroll);
 
-	display.setAttribute("hLines", plotter->hLines);
-	addColorToDOM(display, "hColor", plotter->hColor);
-	display.setAttribute("hCount", plotter->hCount);
+	element.setAttribute("graphStyle", plotter->graphStyle);
+	element.setAttribute("hScale", plotter->hScale);
 
-	display.setAttribute("labels", plotter->labels);
-	display.setAttribute("topBar", plotter->topBar);
-	display.setAttribute("fontSize", plotter->fontSize);
+	element.setAttribute("hLines", plotter->hLines);
+	addColorToDOM(element, "hColor", plotter->hColor);
+	element.setAttribute("hCount", plotter->hCount);
 
-	addColorToDOM(display, "bColor", plotter->bColor);
+	element.setAttribute("labels", plotter->labels);
+	element.setAttribute("topBar", plotter->topBar);
+	element.setAttribute("fontSize", plotter->fontSize);
+
+	addColorToDOM(element, "bColor", plotter->bColor);
 
 	for (uint i = 0; i < beams; ++i)
 	{
 		QDomElement beam = doc.createElement("beam");
-		display.appendChild(beam);
+		element.appendChild(beam);
 		beam.setAttribute("hostName", sensors.at(i)->hostName);
 		beam.setAttribute("sensorName", sensors.at(i)->name);
 		beam.setAttribute("sensorType", sensors.at(i)->type);
 		addColorToDOM(beam, "color", plotter->beamColor[i]);
 	}
+
+	internAddToDOM(doc, element);
+
 	if (save)
 		setModified(false);
 

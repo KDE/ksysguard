@@ -52,7 +52,9 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name)
 
 	samples = 0;
 	minValue = maxValue = 0.0;
-	autoRange = true;
+	autoRange = false;
+
+	graphStyle = GRAPH_BASIC_POLY;
 
 	// Anything smaller than this does not make sense.
 	setMinimumSize(16, 16);
@@ -67,6 +69,9 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name)
 	vLines = true;
 	vColor = Style->getFgColor1();
 	vDistance = 30;
+	vScroll = true;
+	vOffset = 0;
+	hScale = 5;
 
 	hLines = true;
 	hColor = Style->getFgColor2();
@@ -114,6 +119,15 @@ SignalPlotter::addSample(const QValueList<double>& sampleBuf)
 		}
 	}
 
+	/* If the vertical lines are scrolling, increment the offset
+	 * so they move with the data. The vOffset / hScale confusion
+	 * is because v refers to Vertical Lines, and h to the horizontal
+	 * distance between the vertical lines. */
+	if (vScroll)
+	{
+		vOffset = (vOffset + hScale) % vDistance;
+	}
+
 	// Shift data buffers one sample down and insert new samples.
 	QValueList<double>::ConstIterator s;
 	for (d = beamData.first(), s = sampleBuf.begin(); d;
@@ -133,16 +147,8 @@ SignalPlotter::changeRange(int beam, double min, double max)
 	if (beam > 1)
 		return;
 
-	if (min == max)
-	{
-		autoRange = TRUE;
-	}
-	else
-	{
-		minValue = min;
-		maxValue = max;
-		autoRange = FALSE;
-	}
+	minValue = min;
+	maxValue = max;
 }
 
 void
@@ -157,29 +163,36 @@ SignalPlotter::resizeEvent(QResizeEvent*)
 	 * lost due to shrinking the buffers cannot be recovered on
 	 * enlarging though. */
 
+	/* Determine new number of samples first.
+	 *  +0.5 to ensure rounding up
+	 *  +2 for extra data points so there is
+	 *     1) no wasted space and
+	 *     2) no loss of precision when drawing the first data point. */
+	uint newSampleNum = static_cast<uint>(((width() - 2) / hScale) + 2.5);
+
 	// overlap between the old and the new buffers.
-	int overlap = min(samples, width() - 2);
+	int overlap = min(samples, newSampleNum);
 
 	for (uint i = 0; i < beamData.count(); ++i)
 	{
-		double* nd = new double[width() - 2];
+		double* nd = new double[newSampleNum];
 
 		// initialize new part of the new buffer
-		if (width() - 2 > overlap)
-			memset(nd, 0, sizeof(double) * (width() - 2 - overlap));
+		if (newSampleNum > overlap)
+			memset(nd, 0, sizeof(double) * (newSampleNum - overlap));
 
 		// copy overlap from old buffer to new buffer
-		memcpy(nd + ((width() - 2) - overlap),
+		memcpy(nd + (newSampleNum - overlap),
 			   beamData.at(i) + (samples - overlap),
 			   overlap * sizeof(double));
 
 		beamData.remove(i);
 		beamData.insert(i, nd);
 	}
-	samples = width() - 2;
+	samples = newSampleNum;
 }
 
-void 
+void
 SignalPlotter::paintEvent(QPaintEvent*)
 {
 	uint w = width();
@@ -278,7 +291,7 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	if (vLines && w > 60)
 	{
 		p.setPen(vColor);
-		for (uint x = vDistance; x < (w - 2); x += vDistance)
+		for (uint x = vOffset; x < (w - 2); x += vDistance)
 			p.drawLine(w - x, top, w - x, h + top - 2);
 	}
 
@@ -293,13 +306,25 @@ SignalPlotter::paintEvent(QPaintEvent*)
 		minValue = maxValue = 0.0;
 	/* Plot stacked values */
 	double scaleFac = (h - 2) / range;
+	int prevVals[beamData.count()];
+	int hack[4];
+	int x1 = w - ((samples + 1) * hScale);
+
 	for (int i = 0; i < samples; i++)
 	{
-		double bias = -minVal;
 		QValueList<QColor>::Iterator col;
 		col = beamColor.begin();
 		double sum = 0.0;
-		for (double* d = beamData.first(); d; d = beamData.next(), ++col)
+		int y = top + h - 2;
+		int oldY = h;
+		int oldPrevY = oldY;
+		int height = 0;
+		int j = 0;
+		int jMax = beamData.count() - 1;
+		x1 += hScale;
+		int x2 = x1 + hScale;
+
+		for (double* d = beamData.first(); d; d = beamData.next(), ++col, j++)
 		{
 			if (autoRange)
 			{
@@ -309,34 +334,74 @@ SignalPlotter::paintEvent(QPaintEvent*)
 				if (sum > maxValue)
 					maxValue = sum;
 			}
-			int start = top + h - 2 - (int) (bias * scaleFac);
-			int end = top + h - 2 - (int) ((bias + d[i]) * scaleFac);
-			bias += d[i];
+			height = (int) ((d[i] - minVal) * scaleFac);
+			y -= height;
 			/* If the line is longer than 2 pixels we draw only the last
 			 * 2 pixels with the bright color. The rest is painted with
 			 * a 50% darker color. */
-			if (end - start > 2)
-			{
-				p.setPen((*col).dark(150));
-				p.drawLine(i + 1, start, i + 1, end - 1);
-				p.setPen(*col);
-				p.drawLine(i + 1, end - 1, i + 1, end);
-			}
-			else if (start - end > 2)
-			{
-				p.setPen((*col).dark(150));
-				p.drawLine(i + 1, start, i + 1, end + 1);
-				p.setPen(*col);
-				p.drawLine(i + 1, end + 1, i + 1, end);
-			}
-			else
-			{
-				p.setPen(*col);
-				p.drawLine(i + 1, start, i + 1, end);
+
+			switch (graphStyle) {
+				case GRAPH_ORIGINAL:
+					// FIXME (not quite right yet)
+					if (height > 2)
+					{
+						p.fillRect(x1, y + 2, hScale, height - 2, (*col).dark(150));
+						p.fillRect(x1, y, hScale, 2, *col);
+					}
+					else
+						p.fillRect(x1, y, hScale, height, *col);
+					break;
+				case GRAPH_BASIC_POLY:
+					QPen lastPen = QPen(p.pen());
+					p.setPen((*col).dark(150));
+					p.setBrush((*col).dark(150));
+					QPointArray pa(4);
+					int prevY = (i == 0) ? y : prevVals[j];
+					pa.putPoints(0, 1, x1, prevY);
+					pa.putPoints(1, 1, x2, y);
+					pa.putPoints(2, 1, x2, oldY);
+					pa.putPoints(3, 1, x1, oldPrevY);
+					p.drawPolygon(pa);
+					p.setPen(lastPen);
+					if (jMax == 0)
+					{
+						// draw as normal, no deferred drawing req'd.
+						p.setPen(*col);
+						p.drawLine(x1, prevY, x2, y);
+					}
+					else if (j == jMax)
+					{
+						// draw previous values and current values
+						p.drawLine(hack[0], hack[1], hack[2], hack[3]);
+						p.setPen(*col);
+						p.drawLine(x1, prevY, x2, y);
+					}
+					else if (j == 0)
+					{
+						// save values only
+						hack[0] = x1;
+						hack[1] = prevY;
+						hack[2] = x2;
+						hack[3] = y;
+						p.setPen(*col);
+					}
+					else
+					{
+						p.drawLine(hack[0], hack[1], hack[2], hack[3]);
+						hack[0] = x1;
+						hack[1] = prevY;
+						hack[2] = x2;
+						hack[3] = y;
+						p.setPen(*col);
+					}
+					prevVals[j] = y;
+					oldY = y;
+					oldPrevY = prevY;
+					break;
 			}
 		}
 	}
-	
+
 	/* Draw horizontal lines and values. Lines are drawn when the
 	 * height is greater than 10 times hCount + 1, values are shown
 	 * when width is greater than 60 */

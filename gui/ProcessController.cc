@@ -312,28 +312,30 @@ ProcessController::sensorError(int, bool err)
 }
 
 bool
-ProcessController::createFromDOM(QDomElement& el)
+ProcessController::createFromDOM(QDomElement& element)
 {
-	bool result = addSensor(el.attribute("hostName"),
-							el.attribute("sensorName"), (el.attribute("sensorType").isEmpty() ? "table" : el.attribute("sensorType")),
+	bool result = addSensor(element.attribute("hostName"),
+							element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "table" : element.attribute("sensorType")),
 							QString::null);
 
-	xbTreeView->setChecked(el.attribute("tree").toInt());
-	setTreeView(el.attribute("tree").toInt());
-	xbPause->setChecked(el.attribute("pause").toInt());
-	togglePause(el.attribute("pause").toInt());
+	xbTreeView->setChecked(element.attribute("tree").toInt());
+	setTreeView(element.attribute("tree").toInt());
+	xbPause->setChecked(element.attribute("pause").toInt());
+	togglePause(element.attribute("pause").toInt());
 
-	uint filter = el.attribute("filter").toUInt();
+	uint filter = element.attribute("filter").toUInt();
 	cbFilter->setCurrentItem(filter);
 	filterModeChanged(filter);
 
-	uint col = el.attribute("sortColumn").toUInt();
-	bool inc = el.attribute("incrOrder").toUInt();
+	uint col = element.attribute("sortColumn").toUInt();
+	bool inc = element.attribute("incrOrder").toUInt();
 
-	if (!pList->load(el))
+	if (!pList->load(element))
 		return (false);
 
 	pList->setSortColumn(col, inc);
+
+	internCreateFromDOM(element);
 
 	setModified(false);
 
@@ -341,19 +343,21 @@ ProcessController::createFromDOM(QDomElement& el)
 }
 
 bool
-ProcessController::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
+ProcessController::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 {
-	display.setAttribute("hostName", sensors.at(0)->hostName);
-	display.setAttribute("sensorName", sensors.at(0)->name);
-	display.setAttribute("sensorType", sensors.at(0)->type);
-	display.setAttribute("tree", (uint) xbTreeView->isChecked());
-	display.setAttribute("pause", (uint) xbPause->isChecked());
-	display.setAttribute("filter", cbFilter->currentItem());
-	display.setAttribute("sortColumn", pList->getSortColumn());
-	display.setAttribute("incrOrder", pList->getIncreasing());
+	element.setAttribute("hostName", sensors.at(0)->hostName);
+	element.setAttribute("sensorName", sensors.at(0)->name);
+	element.setAttribute("sensorType", sensors.at(0)->type);
+	element.setAttribute("tree", (uint) xbTreeView->isChecked());
+	element.setAttribute("pause", (uint) xbPause->isChecked());
+	element.setAttribute("filter", cbFilter->currentItem());
+	element.setAttribute("sortColumn", pList->getSortColumn());
+	element.setAttribute("incrOrder", pList->getIncreasing());
 
-	if (!pList->save(doc, display))
+	if (!pList->save(doc, element))
 		return (false);
+
+	internAddToDOM(doc, element);
 
 	if (save)
 		setModified(false);

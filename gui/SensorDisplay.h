@@ -33,6 +33,8 @@
 #include "SensorClient.h"
 #include "SensorDisplay.h"
 
+#include "TimerSettings.h"
+
 #define NONE -1
 
 class QDomDocument;
@@ -140,6 +142,10 @@ public:
 
 	void collectHosts(QValueList<QString>& list);
 
+	void setupTimer(void);
+
+	bool globalUpdateInterval;
+
 public slots:
 	/**
 	 * This functions stops the timer that triggers the periodic events.
@@ -174,6 +180,8 @@ public slots:
 
 	virtual void applySettings() { }
 	virtual void applyStyle() { }
+
+	void timerToggled(bool);
 
 	virtual void setModified(bool mfd)
 	{
@@ -211,6 +219,9 @@ protected:
 	void addColorToDOM(QDomElement& de, const QString& attr,
 					   const QColor& col);
 
+	void internAddToDOM(QDomDocument& doc, QDomElement& display);
+	void internCreateFromDOM(QDomElement& display);
+
 	QPtrList<SensorProperties> sensors;
 
 	/// The frame around the other widgets.
@@ -221,6 +232,8 @@ protected:
 private:
 	int timerId;
 	int timerInterval;
-} ;
+
+	TimerSettings *ts;
+};
 
 #endif

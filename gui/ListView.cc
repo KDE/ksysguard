@@ -322,13 +322,15 @@ ListView::createFromDOM(QDomElement& element)
 
 	monitor->setPalette(QPalette(colorGroup, colorGroup, colorGroup));
 
+	internCreateFromDOM(element);
+
 	setModified(FALSE);
 
 	return (TRUE);
 }
 
 bool
-ListView::addToDOM(QDomDocument&, QDomElement& element, bool save)
+ListView::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 {
 	element.setAttribute("hostName", sensors.at(0)->hostName);
 	element.setAttribute("sensorName", sensors.at(0)->name);
@@ -339,6 +341,8 @@ ListView::addToDOM(QDomDocument&, QDomElement& element, bool save)
 	addColorToDOM(element, "gridColor", colorGroup.color(QColorGroup::Link));
 	addColorToDOM(element, "textColor", colorGroup.color(QColorGroup::Text));
 	addColorToDOM(element, "backgroundColor", colorGroup.color(QColorGroup::Base));
+
+	internAddToDOM(doc, element);
 
 	if (save)
 		setModified(FALSE);

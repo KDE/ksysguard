@@ -87,6 +87,8 @@ public slots:
 	void settingsSetColor();
 	void settingsDelete();
 	void settingsSelectionChanged(QListViewItem*);
+ void settingsMoveUp();
+ void settingsMoveDown();
 	virtual void applyStyle();
 
 protected:

@@ -19,23 +19,24 @@
 	$Id$
 */
 
-#include <stdlib.h>
 #include <iostream.h>
+#include <stdlib.h>
 
-#include <qevent.h>
 #include <qapplication.h>
+#include <qevent.h>
 #include <qstring.h>
+#include <qtimer.h>
 
+#include <kdebug.h>
+#include <kmessagebox.h>
 #include <klocale.h>
 #include <kprocess.h>
 #include <kpassdlg.h> 
-#include <kmessagebox.h>
-#include <kdebug.h>
 
-#include "SensorManager.h"
 #include "SensorAgent.h"
-#include "SensorClient.h"
 #include "SensorAgent.moc"
+#include "SensorClient.h"
+#include "SensorManager.h"
 
 /* This can be used to debug communication problems with the daemon.
  * Should be set to 0 in any production version. */
@@ -58,7 +59,7 @@ SensorAgent::SensorAgent(SensorManager* sm) :
 SensorAgent::~SensorAgent()
 {
 }
-	
+
 bool
 SensorAgent::sendRequest(const QString& req, SensorClient* client, int id)
 {

@@ -277,6 +277,13 @@ ProcessList::getSelectedPIds()
 bool
 ProcessList::update(const QString& list)
 {
+	/* Disable painting to avoid flickering effects,
+	 * especially when in tree view mode.
+	 * Ditto for the scrollbar. */
+	setUpdatesEnabled(false);
+	viewport()->setUpdatesEnabled(false);
+//	verticalScrollBar()->setUpdatesEnabled(false);
+
 	pl.clear();
 
 	// Convert ps answer in a list of tokenized lines
@@ -317,6 +324,14 @@ ProcessList::update(const QString& list)
 	setCurrentItem(itemAt(QPoint(1, currItemPos)));
 	verticalScrollBar()->setValue(vpos);
 	horizontalScrollBar()->setValue(hpos);
+
+	// Re-enable painting, and force an update.
+	viewport()->setUpdatesEnabled(true);
+	setUpdatesEnabled(true);
+//	verticalScrollBar()->setUpdatesEnabled(true);
+	//repaint();
+	triggerUpdate();
+
 
 	return (TRUE);
 }

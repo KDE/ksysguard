@@ -178,24 +178,26 @@ MultiMeter::setTitle(const QString& t, const QString& u)
 }
 
 bool
-MultiMeter::createFromDOM(QDomElement& el)
+MultiMeter::createFromDOM(QDomElement& element)
 {
-	title = el.attribute("title");
-	showUnit = el.attribute("showUnit").toInt();
+	title = element.attribute("title");
+	showUnit = element.attribute("showUnit").toInt();
 	setTitle(title, unit);
-	lowerLimitActive = el.attribute("lowerLimitActive").toInt();
-	lowerLimit = el.attribute("lowerLimit").toLong();
-	upperLimitActive = el.attribute("upperLimitActive").toInt();
-	upperLimit = el.attribute("upperLimit").toLong();
+	lowerLimitActive = element.attribute("lowerLimitActive").toInt();
+	lowerLimit = element.attribute("lowerLimit").toLong();
+	upperLimitActive = element.attribute("upperLimitActive").toInt();
+	upperLimit = element.attribute("upperLimit").toLong();
 
-	normalDigitColor = restoreColorFromDOM(el, "normalDigitColor",
+	normalDigitColor = restoreColorFromDOM(element, "normalDigitColor",
 										   Style->getFgColor1());
-	alarmDigitColor = restoreColorFromDOM(el, "alarmDigitColor",
+	alarmDigitColor = restoreColorFromDOM(element, "alarmDigitColor",
 										  Style->getAlarmColor());
-	setBackgroundColor(restoreColorFromDOM(el, "backgroundColor",
+	setBackgroundColor(restoreColorFromDOM(element, "backgroundColor",
 										   Style->getBackgroundColor()));
 
-	addSensor(el.attribute("hostName"), el.attribute("sensorName"), (el.attribute("sensorType").isEmpty() ? "integer" : el.attribute("sensorType")), "");
+	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "integer" : element.attribute("sensorType")), "");
+
+	internCreateFromDOM(element);
 
 	setModified(false);
 
@@ -203,21 +205,23 @@ MultiMeter::createFromDOM(QDomElement& el)
 }
 
 bool
-MultiMeter::addToDOM(QDomDocument&, QDomElement& display, bool save)
+MultiMeter::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 {
-	display.setAttribute("hostName", sensors.at(0)->hostName);
-	display.setAttribute("sensorName", sensors.at(0)->name);
-	display.setAttribute("sensorType", sensors.at(0)->type);
-	display.setAttribute("title", title);
-	display.setAttribute("showUnit", (int) showUnit);
-	display.setAttribute("lowerLimitActive", (int) lowerLimitActive);
-	display.setAttribute("lowerLimit", (int) lowerLimit);
-	display.setAttribute("upperLimitActive", (int) upperLimitActive);
-	display.setAttribute("upperLimit", (int) upperLimit);
+	element.setAttribute("hostName", sensors.at(0)->hostName);
+	element.setAttribute("sensorName", sensors.at(0)->name);
+	element.setAttribute("sensorType", sensors.at(0)->type);
+	element.setAttribute("title", title);
+	element.setAttribute("showUnit", (int) showUnit);
+	element.setAttribute("lowerLimitActive", (int) lowerLimitActive);
+	element.setAttribute("lowerLimit", (int) lowerLimit);
+	element.setAttribute("upperLimitActive", (int) upperLimitActive);
+	element.setAttribute("upperLimit", (int) upperLimit);
 
-	addColorToDOM(display, "normalDigitColor", normalDigitColor);
-	addColorToDOM(display, "alarmDigitColor", alarmDigitColor);
-	addColorToDOM(display, "backgroundColor", lcd->backgroundColor());
+	addColorToDOM(element, "normalDigitColor", normalDigitColor);
+	addColorToDOM(element, "alarmDigitColor", alarmDigitColor);
+	addColorToDOM(element, "backgroundColor", lcd->backgroundColor());
+
+	internAddToDOM(doc, element);
 
 	if (save)
 		setModified(FALSE);
