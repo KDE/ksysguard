@@ -20,7 +20,9 @@
 	$Id$
 */
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
 
 #include <stdio.h>
 #include <string.h>
@@ -44,6 +46,10 @@ readCommand(char* cmdBuf)
 	for (i = 0; i < CMDBUFSIZE - 1 && (c = getchar()) != '\n'; i++)
 		cmdBuf[i] = (char) c;
 	cmdBuf[i] = '\0';
+	if (feof(stdin)) {
+		printf("\nEOF processed, g'bye\n");
+		memset(cmdBuf, 0, CMDBUFSIZE);
+	}
 }
 
 /*
@@ -75,9 +81,9 @@ main(int argc, const char* argv[])
 		   "This program may be distributed under the GPL.\n"
 		   "ksysguardd> ", VERSION);
 	fflush(stdout);
-	do
-	{
+	do {
 		readCommand(cmdBuf);
+		if (!cmdBuf[0]) break;
 		executeCommand(cmdBuf);
 		printf("ksysguardd> ");
 		fflush(stdout);
