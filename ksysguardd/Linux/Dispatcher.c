@@ -82,7 +82,11 @@ static void
 startTimer(long sec)
 {
 	struct itimerval dum;
-	struct itimerval tv = { { sec, 0 }, { sec, 0 } };
+	struct itimerval tv;
+	tv.it_interval.tv_sec = sec;
+	tv.it_interval.tv_usec = 0;
+	tv.it_value.tv_sec = sec;
+	tv.it_value.tv_usec = 0;
 
 	setitimer(ITIMER_REAL, &tv, &dum);
 }
