@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -72,7 +72,6 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 	dockCnt++;
 
 	setAcceptDrops(TRUE);
-	show();
 }
 
 KSysGuardApplet::~KSysGuardApplet()
