@@ -88,9 +88,6 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 
 	setAcceptDrops(true);
 
-	KMessageBox::information(
-		this, i18n("Drag sensors from the sensor-tree of ksysguard to the empty fields in the applet"),
-		QString::null, "ShowSBUseInfo");
 }
 
 KSysGuardApplet::~KSysGuardApplet()
@@ -154,7 +151,8 @@ KSysGuardApplet::applySettings()
 
 	for (uint i = 0; i < dockCnt; ++i)
 		if (!docks[i]->isA("QFrame"))
-			((KSGRD::SensorDisplay*) docks[i])->setUpdateInterval(updateInterval());
+			((KSGRD::SensorDisplay*) docks[i])->
+				setUpdateInterval(updateInterval());
 
 	save();
 }
@@ -234,17 +232,20 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 				switch (popup.exec(QCursor::pos()))
 				{
 					case 1:
-						wdg = new FancyPlotter(this, "FancyPlotter", sensorDescr, 100.0, 100.0, true);
+						wdg = new FancyPlotter(this, "FancyPlotter",
+											   sensorDescr, 100.0, 100.0, true);
 						Q_CHECK_PTR(wdg);
 						break;
 
 					case 2:
-						wdg = new MultiMeter(this, "MultiMeter", sensorDescr, 100.0, 100.0, true);
+						wdg = new MultiMeter(this, "MultiMeter", sensorDescr,
+											 100.0, 100.0, true);
 						Q_CHECK_PTR(wdg);
 						break;
 
 					case 3:
-						wdg = new DancingBars(this, "DancingBars", sensorDescr, 100.0, 100.0, true);
+						wdg = new DancingBars(this, "DancingBars", sensorDescr,
+											  100.0, 100.0, true);
 						Q_CHECK_PTR(wdg);
 						break;
 				}
@@ -302,7 +303,8 @@ KSysGuardApplet::removeDisplay(KSGRD::SensorDisplay* sd)
 
 			docks[i] = new QFrame(this);
 			Q_CHECK_PTR(docks[i]);
-			((QFrame*) docks[i])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
+			((QFrame*) docks[i])->
+				setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
 			QToolTip::add(docks[i],
 						  i18n("Drag sensors from the KDE System Guard into "
 							   "this cell."));
@@ -440,11 +442,14 @@ KSysGuardApplet::load()
 		QString classType = element.attribute("class");
 		KSGRD::SensorDisplay* newDisplay;
 		if (classType == "FancyPlotter")
-			newDisplay = new FancyPlotter(this, "FancyPlotter", "Dummy", 100.0, 100.0, true);
+			newDisplay = new FancyPlotter(this, "FancyPlotter", "Dummy", 100.0, 
+										  100.0, true);
 		else if (classType == "MultiMeter")
-			newDisplay = new MultiMeter(this, "MultiMeter", "Dummy", 100.0, 100.0, true);
+			newDisplay = new MultiMeter(this, "MultiMeter", "Dummy", 100.0,
+									   	100.0, true);
 		else if (classType == "DancingBars")
-			newDisplay = new DancingBars(this, "DancingBars", "Dummy", 100.0, 100.0, true);
+			newDisplay = new DancingBars(this, "DancingBars", "Dummy", 100.0,
+										 100.0, true);
 		else
 		{
 			KMessageBox::sorry(
