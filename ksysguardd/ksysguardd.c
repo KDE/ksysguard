@@ -548,7 +548,7 @@ main(int argc, char* argv[])
 			return -1;
 		}
 
-		if (geteuid() != grentry->gr_gid) {
+		if (getegid() != grentry->gr_gid) {
 			fprintf(stderr, "ksysguardd can't be started because of permission conflicts!\n"
 					"Start the program as user 'root' or change its group to 'kmem' and set the sgid-bit\n");
 			return -1;
