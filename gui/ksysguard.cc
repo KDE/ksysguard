@@ -411,8 +411,6 @@ void TopLevel::readProperties( KConfig *cfg )
 
   mWorkSpace->readProperties( cfg );
 
-  setMinimumSize( sizeHint() );
-
   mActionOpenRecent->loadEntries( cfg );
 
   applyMainWindowSettings( cfg );

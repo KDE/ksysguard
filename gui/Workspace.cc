@@ -310,8 +310,6 @@ void Workspace::deleteWorkSheet()
 
     removePage( current );
     mSheetList.remove( current );
-
-    setMinimumSize( sizeHint() );
   } else {
     QString msg = i18n( "There are no worksheets that could be deleted!" );
     KMessageBox::error( this, msg );
@@ -334,8 +332,6 @@ void Workspace::deleteWorkSheet( const QString &fileName )
     if ( (*it)->fileName() == fileName ) {
       removePage( *it );
       mSheetList.remove( *it );
-
-      setMinimumSize( sizeHint() );
       return;
     }
 }

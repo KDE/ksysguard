@@ -515,11 +515,9 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
 
   if ( isVisible() ) {
     mDisplayList[ row ][ column ]->show();
-
-    // Notify parent about possibly new minimum size.
-    ((QWidget*)parent()->parent())->setMinimumSize(
-                                  ((QWidget*) parent()->parent())->sizeHint() );
   }
+
+  setMinimumSize(sizeHint());
 
   setModified( true );
 }
