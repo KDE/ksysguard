@@ -34,6 +34,7 @@
 #include <kstring.h>
 
 #include "version.h"
+#include "OSStatus.h"
 #include "ktop.moc"
 
 #define KTOP_MIN_W	524
@@ -152,7 +153,7 @@ TopLevel::menuHandler(int id)
 	}
 }
 
-/**
+/*
  * Print usage information.
  */
 static void 
@@ -161,12 +162,18 @@ usage(char *name)
 	printf("%s [kdeopts] [--help] [-p (list|tree|perf)]\n", name);
 }
 
-/**
+/*
  * Where it all begins.
  */
 int
 main(int argc, char** argv)
 {
+	/*
+	 * This OSStatus object will be used on platforms that require KTop to
+	 * use certain privileges to do it's job.
+	 */
+	OSStatus priv;
+
 	int i;
 	int sfolder = -1;
 
@@ -213,6 +220,12 @@ main(int argc, char** argv)
 	Kapp = new KApplication(argc, argv, "ktop");
 	Kapp->enableSessionManagement(true);
 
+	if (!priv.ok())
+	{
+		QMessageBox::critical(NULL, "ktop", priv.getErrMessage(), 0, 0);
+		return (-1);
+	}
+
 	// create top-level widget
 	QWidget *toplevel = new TopLevel(0, "Taskmanager", sfolder);
 	Kapp->setTopWidget(toplevel);
@@ -223,5 +236,5 @@ main(int argc, char** argv)
     delete toplevel;
 	delete Kapp;
 
-	return result;
+	return (result);
 }
