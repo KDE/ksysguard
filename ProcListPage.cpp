@@ -1,5 +1,5 @@
 /*
-    KTop, a taskmanager and cpu load monitor
+    KTop, the KDE Task Manager
    
     Copyright (C) 1997 Bernd Johannes Wuebben
                        wuebben@math.cornell.edu
@@ -180,7 +180,13 @@ ProcListPage::killTask()
 {
 	int pid = selectionPid();
 	if (pid < 0)
+	{
+		QMessageBox::warning(this, i18n("Task Manager"),
+							 i18n("You need to select a process before\n"
+								  "pressing the kill button!\n"),
+								  i18n("OK"), 0);   
 		return;
+	}
 
 	emit(killProcess(pid));
 

@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Taskmanager
+    KTop, the KDE Task Manager
    
 	Copyright (c) 1999 Chris Schlaeger
 	                   cs@axys.de
@@ -56,7 +56,7 @@ ProcessTree::ProcessTree(QWidget *parent, const char *name, WFlags f)
 	OSProcessList pl;
 	if (!pl.ok())
 	{
-		QMessageBox::critical(this, "ktop", pl.getErrMessage(), 0, 0);
+		QMessageBox::critical(this, "Task Manager", pl.getErrMessage(), 0, 0);
 		assert(0);
 	}
 
@@ -109,7 +109,7 @@ ProcessTree::loadProcesses()
 	// request current list of processes
 	if (!pl.update())
 	{
-		QMessageBox::critical(this, "ktop", pl.getErrMessage(), 0, 0);
+		QMessageBox::critical(this, "Task Manager", pl.getErrMessage(), 0, 0);
 		assert(0);
 	}
 

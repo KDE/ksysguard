@@ -50,12 +50,12 @@ MemMon::MemMon(QWidget *parent, const char *name, QWidget *child)
 	int dum, stotal;
 	if (!os.getMemoryInfo(physsize, dum, dum, dum, dum))
 	{
-		QMessageBox::critical(this, "ktop", os.getErrMessage(), 0, 0);
+		QMessageBox::critical(this, "Task Manager", os.getErrMessage(), 0, 0);
 		assert(0);
 	}
 	if (!os.getSwapInfo(stotal, dum))
 	{
-		QMessageBox::critical(this, "ktop", os.getErrMessage(), 0, 0);
+		QMessageBox::critical(this, "Task Manager", os.getErrMessage(), 0, 0);
 		assert(0);
 	}
 	mem_size = physsize + stotal;
@@ -118,12 +118,12 @@ MemMon::timerEvent(QTimerEvent *)
 
 	if (!os.getMemoryInfo(mtotal, mfree, dum, dum, dum))
 	{
-		QMessageBox::critical(this, "ktop", os.getErrMessage(), 0, 0);
+		QMessageBox::critical(this, "Task Manager", os.getErrMessage(), 0, 0);
 		assert(0);
 	}
 	if (!os.getSwapInfo(stotal, sfree))
 	{
-		QMessageBox::critical(this, "ktop", os.getErrMessage(), 0, 0);
+		QMessageBox::critical(this, "Task Manager", os.getErrMessage(), 0, 0);
 		assert(0);
 	}
     memmove(mem_values, &mem_values[1], sizeof(int) * (intervals - 1));

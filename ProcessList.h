@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Taskmanager
+    KTop, the KDE Task Manager
    
     Copyright (C) 1997 Bernd Johannes Wuebben
                        wuebben@math.cornell.edu
@@ -151,8 +151,6 @@ private:
 	}
 
 	void load();
-	void try2restoreSelection(); 
-	void restoreSelection();
 
 	void timerOff()
 	{

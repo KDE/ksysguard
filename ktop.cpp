@@ -225,12 +225,13 @@ main(int argc, char** argv)
 
 	if (!priv.ok())
 	{
-		QMessageBox::critical(NULL, "ktop", priv.getErrMessage(), 0, 0);
+		QMessageBox::critical(NULL, "KDE Task Manager", priv.getErrMessage(),
+							  0, 0);
 		return (-1);
 	}
 
 	// create top-level widget
-	QWidget *toplevel = new TopLevel(0, "Taskmanager", sfolder);
+	QWidget *toplevel = new TopLevel(0, "TaskManager", sfolder);
 	Kapp->setTopWidget(toplevel);
 
 	// run the application

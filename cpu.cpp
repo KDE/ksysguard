@@ -1,5 +1,5 @@
 /*
-    KTop, a taskmanager and cpu load monitor
+    KTop, the KDE Task Manager
    
     Copyright (C) 1997 Bernd Johannes Wuebben
                        wuebben@math.cornell.edu
@@ -134,7 +134,8 @@ CpuMon::timerEvent(QTimerEvent *)
 	int user, sys, nice, idle;
 	if (!stat.getCpuLoad(user, sys, nice, idle))
 	{
-		QMessageBox::critical(this, "ktop", stat.getErrMessage(), 0, 0);
+		QMessageBox::critical(this, "Task Manager", stat.getErrMessage(),
+							  0, 0);
 		assert(0);
 	}
 	load_values[intervals - 1] = user + sys + nice;

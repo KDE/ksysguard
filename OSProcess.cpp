@@ -101,12 +101,12 @@ OSProcess::OSProcess(int pid_)
 }
 
 bool
-OSProcess::read(const char* info)
+OSProcess::read(const void* info)
 {
 	FILE* fd;
 
 	QString buf;
-	buf.sprintf("/proc/%s/status", (const char *)info);
+	buf.sprintf("/proc/%s/status", (const char*) info);
 	if((fd = fopen(buf, "r")) == 0)
 	{
 		error = true;

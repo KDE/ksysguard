@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Taskmanager
+    KTop, the KDE Task Manager
    
     Copyright (C) 1997 Bernd Johannes Wuebben
                        wuebben@math.cornell.edu
@@ -255,12 +255,12 @@ TaskMan::killProcess(int pid, int sig, const char* sigName)
 	msg.sprintf(i18n("Send signal %s to process %d?\n"
 					 "(Process name: %s  Owner: %s)\n"), sigName, ps.getPid(),
 				ps.getName(), ps.getUserName().data());
-	switch(QMessageBox::warning(this, "ktop", msg,
+	switch(QMessageBox::warning(this, "Task Manager", msg,
 								i18n("Continue"), i18n("Abort"), 0, 1))
     { 
 	case 0: // continue
 		if (!ps.sendSignal(sig))
-			QMessageBox::warning(this, "ktop", ps.getErrMessage(),
+			QMessageBox::warning(this, "Task Manager", ps.getErrMessage(),
 								 i18n("Continue"), 0);
 		break;
 
@@ -278,7 +278,7 @@ TaskMan::reniceProcess(int pid)
 	int currentNiceLevel = ps.getNiceLevel();
 	if (!ps.ok()) 
 	{
-		QMessageBox::warning(this, i18n("ktop"),
+		QMessageBox::warning(this, i18n("Task Manager"),
 							 i18n("Renice error...\n"
 								  "Specified process does not exist\n"
 								  "or permission denied."),
@@ -296,7 +296,7 @@ TaskMan::reniceProcess(int pid)
 	{
 		if (!ps.setNiceLevel(newNiceLevel))
 		{
-			QMessageBox::warning(this, i18n("ktop"),
+			QMessageBox::warning(this, i18n("Task Manager"),
 								 i18n("Renice error...\n"
 									  "Specified process does not exist\n"
 									  "or permission denied."),

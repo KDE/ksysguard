@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Taskmanager
+    KTop, the KDE Task Manager
    
     Copyright (C) 1997 Bernd Johannes Wuebben
                        wuebben@math.cornell.edu
@@ -110,11 +110,7 @@ ProcessList::ProcessList(QWidget *parent = 0, const char* name = 0)
 
 	enableKey();
 
-	/*
-	 * The first selected process is ktop itself because we are sure it
-	 * exists and we can easyly get the pid.
-	 */
-	lastSelectionPid = getpid();
+	lastSelectionPid = NONE;
 
 	/*
 	 * The default filter mode is 'own processes'. This can be overridden by
@@ -135,7 +131,7 @@ ProcessList::ProcessList(QWidget *parent = 0, const char* name = 0)
 	// make sure we can retrieve process lists from the OS
 	if (!pl.ok())
 	{
-		QMessageBox::critical(this, "ktop", pl.getErrMessage(), 0, 0);
+		QMessageBox::critical(this, "Task Manager", pl.getErrMessage(), 0, 0);
 		assert(0);
 	}
 
@@ -232,7 +228,7 @@ ProcessList::update(void)
 	// retrieve current process list from OS and update tab dialog
 	load();
 
-	try2restoreSelection();
+//	try2restoreSelection();
 
 	// restore the top visible item if possible
 	setTopItem(top_Item);
@@ -254,7 +250,7 @@ ProcessList::load()
 	// request current list of processes
 	if (!pl.update())
 	{
-		QMessageBox::critical(this, "ktop", pl.getErrMessage(), 0, 0);
+		QMessageBox::critical(this, "Task Manager", pl.getErrMessage(), 0, 0);
 		assert(0);
 	}
 
@@ -263,6 +259,7 @@ ProcessList::load()
 	// clear the tab dialog's dictionary (stores the icons by name)
 	dict().clear();  
 
+	bool selectionMade = false;
 	while (!pl.isEmpty())
 	{
 		OSProcess* p = pl.first();
@@ -362,9 +359,16 @@ ProcessList::load()
 			tc++;
 
 			appendItem(line);
+			if (p->getPid() == lastSelectionPid)
+			{
+				setCurrentItem(count() - 1);
+				selectionMade = true;
+			}
 		}
 		pl.removeFirst();
     }
+	if (!selectionMade)
+		lastSelectionPid = NONE;
 }
 
 void 
@@ -372,44 +376,6 @@ ProcessList::userClickOnHeader(int colIndex)
 {
 	setSortColumn(colIndex);
 	update();
-}
-
-void 
-ProcessList::try2restoreSelection()
-{
-	int err = 0;
-
-	// Find out if the selected process in still in process list.
-	if (lastSelectionPid != NONE)
-		err = kill(lastSelectionPid, 0);
-
-	// If not select ktop again.
-	if (err || (lastSelectionPid == NONE))
-		lastSelectionPid = getpid();
- 	restoreSelection();
-}
-
-void 
-ProcessList::restoreSelection()
-{
-	QString txt;
-	int cnt = count();
-	int pid;
-	bool res = FALSE;
-
-	// Find the last selected process and select it again.
-	for (int i = 0; i < cnt; i++)
-	{
-		// the line starts with the pid
-		txt = text(i, 1);
-		res = FALSE;
-		pid = txt.toInt(&res);
-		if (res && (pid == lastSelectionPid))
-		{
-			setCurrentItem(i);
-			return;
-		}
-	}
 }
 
 void 

@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Taskmanager
+    KTop, the KDE Task Manager
    
 	Copyright (c) 1999 Chris Schlaeger
 	                   cs@axys.de

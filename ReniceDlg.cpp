@@ -1,5 +1,5 @@
 /*
-    KTop, a taskmanager and cpu load monitor
+    KTop, the KDE Task Manager
    
 	Copyright (c) 1999 Chris Schlaeger
 	                   cs@axys.de
@@ -28,13 +28,15 @@
 ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio)
 	: QDialog(parent, name, TRUE)
 {
+	setCaption(i18n("Renice Process"));
+
 	value = currentPPrio;
 
 	vLay = new QVBoxLayout(this, 20, -1, "ReniceLayout");
 
 	QString msg = i18n("You are about the change the scheduling priority of\n"
 					   "a process. Be aware that only the Superuser (root)\n"
-					   "can increase the nice level of a process. The smaller\n"
+					   "can decrease the nice level of a process. The smaller\n"
 					   "the number is the higher is the priority.\n\n"
 					   "Please enter the desired nice level:");
 	message = new QLabel(msg, this);
@@ -69,7 +71,7 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio)
 	sldLay->addWidget(lcd);
 
 	/*
-	 * Create two an "OK" and a "Cancel" button in a horizontal layout.
+	 * Create an "OK" and a "Cancel" button in a horizontal layout.
 	 */
 	butLay = new QHBoxLayout();
 	vLay->addLayout(butLay);
