@@ -122,6 +122,8 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 
 	gm->activate();
 
+	registerPlotterWidget(pList);
+
 	setMinimumSize(sizeHint());
 }
 
@@ -150,9 +152,9 @@ ProcessController::addSensor(const QString& hostName,
 	sendRequest(hostName, "test kill", 4);
 
 	if (title.isEmpty())
-		frame->setTitle(QString(i18n("%1: Running Processes")).arg(hostName));
+		setTitle(QString(i18n("%1: Running Processes")).arg(hostName));
 	else
-		frame->setTitle(title);
+		setTitle(title);
 
 	return (true);
 }

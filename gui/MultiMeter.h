@@ -63,7 +63,6 @@ public slots:
 	void applyStyle();
 
 private:
-	void setTitle(const QString& u);
 	void setDigitColor(const QColor& col);
 	void setBackgroundColor(const QColor& col);
 
@@ -71,9 +70,7 @@ private:
 	QColor normalDigitColor;
 	QColor alarmDigitColor;
 
-	QString unit;
 	MultiMeterSettings* mms;
-	bool showUnit;
 	bool lowerLimitActive;
 	double lowerLimit;
 	bool upperLimitActive;

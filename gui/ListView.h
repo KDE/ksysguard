@@ -106,8 +106,6 @@ public slots:
 private:
 	PrivateListView* monitor;
 	ListViewSettings* lvs;
-
-	QString title;
 };
 
 #endif

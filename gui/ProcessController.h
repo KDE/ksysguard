@@ -87,7 +87,7 @@ public:
 
 	virtual bool hasSettingsDialog() const
 	{
-		return (true);
+		return (false);
 	}
 
 public slots:

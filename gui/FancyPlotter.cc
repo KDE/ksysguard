@@ -71,6 +71,8 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 	 * SensorDisplay::eventFilter. */
 	plotter->installEventFilter(this);
 
+	registerPlotterWidget(plotter);
+
 	setModified(false);
 }
 
@@ -83,7 +85,7 @@ FancyPlotter::settings()
 {
 	fps = new FancyPlotterSettings(this, "FancyPlotterSettings", true);
 	Q_CHECK_PTR(fps);
-	fps->title->setText(title());
+	fps->title->setText(getTitle());
 	fps->title->setFocus();
 	fps->autoRange->setChecked(plotter->autoRange);
 	fps->minVal->setText(QString("%1").arg(plotter->getMin()));
@@ -158,8 +160,8 @@ FancyPlotter::settings()
 void
 FancyPlotter::applySettings()
 {
-	title(fps->title->text());
-	plotter->setTitle(title());
+	setTitle(fps->title->text());
+	plotter->setTitle(getTitle());
 	if (fps->autoRange->isChecked())
 		plotter->autoRange = true;
 	else {
@@ -526,8 +528,8 @@ FancyPlotter::createFromDOM(QDomElement& element)
 
 	internCreateFromDOM(element);
 
-	if (!title().isEmpty())
-		plotter->setTitle(title());
+	if (!getTitle().isEmpty())
+		plotter->setTitle(getTitle());
 
 
 	setModified(false);

@@ -41,6 +41,9 @@ LogFile::LogFile(QWidget *parent, const char *name, const QString& title)
 	Q_CHECK_PTR(monitor);
 	
 	setMinimumSize(50, 25);
+
+	registerPlotterWidget(monitor);
+
 	setModified(false);
 }
 
@@ -50,23 +53,24 @@ LogFile::~LogFile(void)
 }
 
 bool
-LogFile::addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& t)
+LogFile::addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& title)
 {
 	if (sensorType != "logfile")
 		return (false);
 
-	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, t));
+	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 
 	QString sensorID = sensorName.right(sensorName.length() - (sensorName.findRev("/") + 1));
 
 	sendRequest(sensors.at(0)->hostName, QString("logfile_register %1" ).arg(sensorID), 42);
 
-	if (t.isEmpty())
-		title(sensors.at(0)->hostName + ":" + sensorID);
+	if (title.isEmpty())
+		setTitle(sensors.at(0)->hostName + ":" + sensorID);
 	else
-		title(t);
+		setTitle(title);
 
 	setModified(true);
+
 	return (true);
 }
 
@@ -84,7 +88,7 @@ void LogFile::settings(void)
 	lfs->bgColor->setText(i18n("Background Color"));
 	lfs->fontButton->setFont(monitor->font());
 	lfs->ruleList->insertStringList(filterRules);
-	lfs->title->setText(title());
+	lfs->title->setText(getTitle());
 	
 	connect(lfs->okButton, SIGNAL(clicked()), lfs, SLOT(accept()));
 	connect(lfs->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
@@ -152,7 +156,7 @@ void LogFile::applySettings(void)
 	for (int i = 0; i < lfs->ruleList->count(); i++)
 		filterRules.append(lfs->ruleList->text(i));
 
-	title(lfs->title->text());
+	setTitle(lfs->title->text());
 
 	setModified(true);
 }
@@ -179,6 +183,8 @@ LogFile::createFromDOM(QDomElement& element)
 	cgroup.setColor(QColorGroup::Base, restoreColorFromDOM(element, "backgroundColor", Qt::black));
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 
+	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "logfile" : element.attribute("sensorType")), element.attribute("title"));
+
 	font.setRawName(element.attribute("font"));
 	monitor->setFont(font);
 
@@ -189,8 +195,6 @@ LogFile::createFromDOM(QDomElement& element)
 	}
 
 	internCreateFromDOM(element);
-
-	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "logfile" : element.attribute("sensorType")), title());
 
 	setModified(false);
 

@@ -50,25 +50,19 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name, const QString& t
 	// default interval is 2 seconds.
 	timerInterval = 2000;
 	globalUpdateInterval = true;
-	timerId = NONE;
 	modified = false;
+	showUnit = false;
+	timerId = NONE;
 	frame = NULL;
+	errorLabel = NULL;
+	plotterWdg = NULL;
 
 	timerOn();
 	QWhatsThis::add(this, "dummy");
 
-	frame = new QGroupBox(1, Qt::Vertical, "", this, "displayFrame"); 
+	frame = new QGroupBox(2, Qt::Vertical, "", this, "displayFrame"); 
 	Q_CHECK_PTR(frame);
-	frame->setTitle(title);
-
-	KIconLoader iconLoader;
-	QPixmap errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop,
-							KIcon::SizeSmall);
-	errorLabel = new QLabel(frame);
-	Q_CHECK_PTR(errorLabel);
-	errorLabel->setPixmap(errorIcon);
-	errorLabel->resize(errorIcon.size());
-	errorLabel->move(2, 2);
+	setTitle(title);
 
 	setMinimumSize(16, 16);
 	setModified(false);
@@ -156,6 +150,7 @@ void
 SensorDisplay::resizeEvent(QResizeEvent*)
 {
 	frame->setGeometry(0, 0, width(), height());
+	errorLabel->move(0, 0);
 }
 
 bool
@@ -282,7 +277,9 @@ SensorDisplay::addColorToDOM(QDomElement& de, const QString& attr,
 void
 SensorDisplay::internAddToDOM(QDomDocument& doc, QDomElement& element)
 {
-	element.setAttribute("title", title());
+	element.setAttribute("title", getTitle());
+	element.setAttribute("unit", getUnit());
+	element.setAttribute("showUnit", showUnit);
 
 	if (globalUpdateInterval)
 		element.setAttribute("globalUpdate", "1");
@@ -298,7 +295,9 @@ SensorDisplay::internAddToDOM(QDomDocument& doc, QDomElement& element)
 void
 SensorDisplay::internCreateFromDOM(QDomElement& element)
 {
-	title(element.attribute("title", QString::null));
+	showUnit = element.attribute("showUnit", "0").toInt();
+	setUnit(element.attribute("unit", QString::null));
+	setTitle(element.attribute("title", QString::null));
 
 	if (element.attribute("updateInterval") != QString::null) {
 		globalUpdateInterval = false;
@@ -417,19 +416,69 @@ void
 SensorDisplay::setSensorOk(bool ok)
 {
 	if (ok)
-		errorLabel->hide();
-	else
+	{
+		if (errorLabel)
+		{
+			delete errorLabel;
+			errorLabel = 0;
+		}
+	} else {
+		if (errorLabel)
+			return;
+
+		KIconLoader iconLoader;
+		QPixmap errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop,
+							KIcon::SizeSmall);
+		if (plotterWdg == 0)
+			return;
+
+		errorLabel = new QLabel(plotterWdg);
+		Q_CHECK_PTR(errorLabel);
+		errorLabel->setPixmap(errorIcon);
+		errorLabel->resize(errorIcon.size());
+		errorLabel->move(0, 0);
 		errorLabel->show();
+	}
 }
 
 void
-SensorDisplay::title(const QString& title)
+SensorDisplay::setTitle(const QString& t)
 {
-	frame->setTitle(title);
+	title = t;
+
+	/* Changing the frame title may increase the width of the frame and
+	 * hence breaks the layout. To avoid this, we save the original size
+	 * and restore it after we have set the frame title. */
+	QSize s = frame->size();
+
+	if (showUnit && !unit.isEmpty())
+		frame->setTitle(title + " [" + unit + "]");
+	else
+		frame->setTitle(title);
+
+	frame->setGeometry(0, 0, s.width(), s.height());
 }
 
 QString
-SensorDisplay::title()
+SensorDisplay::getTitle()
 {
-	return frame->title();
+	return title;
+}
+
+void
+SensorDisplay::setUnit(const QString& u)
+{
+	unit = u;
+}
+
+QString
+SensorDisplay::getUnit()
+{
+	return unit;
+}
+
+void
+SensorDisplay::registerPlotterWidget(QWidget* plotter)
+{
+	plotterWdg = plotter;
 }

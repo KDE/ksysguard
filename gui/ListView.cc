@@ -211,8 +211,8 @@ PrivateListView::addColumn(const QString& label, const QString& type)
 	setColumnWidth(col, fm.width(label) + 10);
 }
 
-ListView::ListView(QWidget* parent, const char* name, const QString& t,
-				   int, int) : KSGRD::SensorDisplay(parent, name)
+ListView::ListView(QWidget* parent, const char* name, const QString& title, int, int)
+	: KSGRD::SensorDisplay(parent, name, title)
 {
 	setBackgroundColor(KSGRD::Style->getBackgroundColor());
 
@@ -221,10 +221,11 @@ ListView::ListView(QWidget* parent, const char* name, const QString& t,
 	monitor->setSelectionMode(QListView::NoSelection);
 	monitor->setItemMargin(2);
 
-	title = t;
-	frame->setTitle(title);
-
 	setMinimumSize(50, 25);
+
+	registerPlotterWidget(monitor);
+
+	setModified(false);
 }
 
 bool
@@ -235,7 +236,7 @@ ListView::addSensor(const QString& hostName, const QString& sensorName, const QS
 
 	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 
-	frame->setTitle(title);
+	setTitle(title);
 
 	/* To differentiate between answers from value requests and info
 	 * requests we use 100 for info requests. */
@@ -297,9 +298,7 @@ ListView::resizeEvent(QResizeEvent*)
 bool
 ListView::createFromDOM(QDomElement& element)
 {
-	title = element.attribute("title");
-
-	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "listview" : element.attribute("sensorType")), title);
+	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "listview" : element.attribute("sensorType")), element.attribute("title"));
 
 	QColorGroup colorGroup = monitor->colorGroup();
 	colorGroup.setColor(QColorGroup::Link, restoreColorFromDOM(element, "gridColor", KSGRD::Style->getFgColor1()));
@@ -321,7 +320,6 @@ ListView::addToDOM(QDomDocument& doc, QDomElement& element, bool save)
 	element.setAttribute("hostName", sensors.at(0)->hostName);
 	element.setAttribute("sensorName", sensors.at(0)->name);
 	element.setAttribute("sensorType", sensors.at(0)->type);
-	element.setAttribute("title", title);
 
 	QColorGroup colorGroup = monitor->colorGroup();
 	addColorToDOM(element, "gridColor", colorGroup.color(QColorGroup::Link));
@@ -347,7 +345,7 @@ ListView::settings()
 	lvs->gridColor->setColor(colorGroup.color(QColorGroup::Link));
 	lvs->textColor->setColor(colorGroup.color(QColorGroup::Text));
 	lvs->backgroundColor->setColor(colorGroup.color(QColorGroup::Base));
-	lvs->title->setText(title);
+	lvs->title->setText(getTitle());
 
 	if (lvs->exec())
 		applySettings();
@@ -365,8 +363,7 @@ ListView::applySettings()
 	colorGroup.setColor(QColorGroup::Base, lvs->backgroundColor->getColor());
 	monitor->setPalette(QPalette(colorGroup, colorGroup, colorGroup));
 
-	title = lvs->title->text();
-	frame->setTitle(title);
+	setTitle(lvs->title->text());
 
 	setModified(true);
 }

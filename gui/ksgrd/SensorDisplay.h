@@ -115,9 +115,15 @@ public:
 
 	void setupTimer(void);
 
-	void title(const QString& title);
-	QString title();
+	void setTitle(const QString& title);
+	QString getTitle();
 
+	void setUnit(const QString& unit);
+	QString getUnit();
+
+	void registerPlotterWidget(QWidget *plotter);
+
+	bool showUnit;
 	bool globalUpdateInterval;
 
 public slots:
@@ -181,6 +187,11 @@ private:
 	int timerInterval;
 
 	QLabel* errorLabel;
+
+	QString title;
+	QString unit;
+
+	QWidget* plotterWdg;
 
 	TimerSettings* ts;
 };

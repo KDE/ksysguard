@@ -70,6 +70,8 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 	 * SensorDisplay::eventFilter. */
 	lcd->installEventFilter(this);
 
+	registerPlotterWidget(lcd);
+
 	setMinimumSize(16, 16);
 	setModified(false);
 }
@@ -103,7 +105,7 @@ MultiMeter::answerReceived(int id, const QString& answer)
 	if (id == 100)
 	{
 		KSGRD::SensorIntegerInfo info(answer);
-		setTitle(KSGRD::SensorMgr->translateUnit(info.getUnit()));
+		setUnit(KSGRD::SensorMgr->translateUnit(info.getUnit()));
 	}
 	else
 	{
@@ -143,27 +145,9 @@ MultiMeter::resizeEvent(QResizeEvent*)
 		frame->setGeometry(0, 0, width(), height());
 }
 
-void
-MultiMeter::setTitle(const QString& u)
-{
-	unit = u;
-	QString titleWithUnit = title();
-
-	if (!unit.isEmpty() && showUnit)
-		titleWithUnit = title() + " [" + unit + "]";
-
-	/* Changing the frame title may increase the width of the frame and
-	 * hence breaks the layout. To avoid this, we save the original size
-	 * and restore it after we have set the frame title. */
-	QSize s = frame->size();
-	frame->setTitle(titleWithUnit);
-	frame->setGeometry(0, 0, s.width(), s.height());
-}
-
 bool
 MultiMeter::createFromDOM(QDomElement& element)
 {
-	showUnit = element.attribute("showUnit").toInt();
 	lowerLimitActive = element.attribute("lowerLimitActive").toInt();
 	lowerLimit = element.attribute("lowerLimit").toLong();
 	upperLimitActive = element.attribute("upperLimitActive").toInt();
@@ -179,7 +163,6 @@ MultiMeter::createFromDOM(QDomElement& element)
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "integer" : element.attribute("sensorType")), "");
 
 	internCreateFromDOM(element);
-	setTitle(unit);
 
 	setModified(false);
 
@@ -215,7 +198,7 @@ MultiMeter::settings()
 {
 	mms = new MultiMeterSettings(this, "MultiMeterSettings", true);
 	Q_CHECK_PTR(mms);
-	mms->title->setText(title());
+	mms->title->setText(getTitle());
 	mms->title->setFocus();
 	mms->showUnit->setChecked(showUnit);
 	mms->lowerLimitActive->setChecked(lowerLimitActive);
@@ -241,8 +224,7 @@ void
 MultiMeter::applySettings()
 {
 	showUnit = mms->showUnit->isChecked();
-	title(mms->title->text());
-	setTitle(unit);
+	setTitle(mms->title->text());
 	lowerLimitActive = mms->lowerLimitActive->isChecked();
 	lowerLimit = mms->lowerLimit->text().toDouble();
 	upperLimitActive = mms->upperLimitActive->isChecked();

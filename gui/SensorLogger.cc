@@ -162,9 +162,11 @@ SensorLogger::SensorLogger(QWidget *parent, const char *name, const QString& tit
 
 	connect(monitor, SIGNAL(rightButtonClicked(QListViewItem*, const QPoint&, int)), this, SLOT(RMBClicked(QListViewItem*, const QPoint&, int)));
 	
-	frame->setTitle(i18n("Sensor Logger"));
+	setTitle(i18n("Sensor Logger"));
 
 	logSensors.setAutoDelete(true);
+
+	registerPlotterWidget(monitor);
 
 	setMinimumSize(50, 25);
 	setModified(false);
@@ -272,7 +274,7 @@ SensorLogger::settings()
 	sls->foregroundColor->setColor(cgroup.text());
 	sls->backgroundColor->setColor(cgroup.base());
 	sls->alarmColor->setColor(cgroup.foreground());
-	sls->title->setText(title());
+	sls->title->setText(getTitle());
 
 	if (sls->exec())
 		applySettings();
@@ -291,7 +293,7 @@ SensorLogger::applySettings()
 	cgroup.setColor(QColorGroup::Foreground, sls->alarmColor->getColor());
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 
-	title(sls->title->text());
+	setTitle(sls->title->text());
 
 	setModified(true);
 }

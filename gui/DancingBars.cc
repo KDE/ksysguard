@@ -61,6 +61,9 @@ DancingBars::DancingBars(QWidget* parent, const char* name,
 	/* All RMB clicks to the plotter widget will be handled by 
 	 * SensorDisplay::eventFilter. */
 	plotter->installEventFilter(this);
+
+	registerPlotterWidget(plotter);
+
 	setModified(false);
 }
 
@@ -74,7 +77,7 @@ DancingBars::settings()
 	dbs = new DancingBarsSettings(this, "DancingBarsSettings", true);
 	Q_CHECK_PTR(dbs);
 
-	dbs->title->setText(title());
+	dbs->title->setText(getTitle());
 	dbs->title->setFocus();
 	dbs->minVal->setValidator(new KFloatValidator(dbs->minVal));
 	dbs->minVal->setText(QString("%1").arg(plotter->getMin()));
@@ -126,7 +129,7 @@ DancingBars::settings()
 void
 DancingBars::applySettings()
 {
-	title(dbs->title->text());
+	setTitle(dbs->title->text());
 	plotter->changeRange(dbs->minVal->text().toDouble(),
 						 dbs->maxVal->text().toDouble());
 
