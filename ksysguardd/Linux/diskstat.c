@@ -144,6 +144,9 @@ int updateDiskStat( void )
 
     if ( strcmp( mnt_info->mnt_type, "proc" ) &&
          strcmp( mnt_info->mnt_type, "devfs" ) &&
+         strcmp( mnt_info->mnt_type, "usbfs" ) &&
+         strcmp( mnt_info->mnt_type, "sysfs" ) &&
+         strcmp( mnt_info->mnt_type, "tmpfs" ) &&
          strcmp( mnt_info->mnt_type, "devpts" ) ) {
       percent = ( ( (float)fs_info.f_blocks - (float)fs_info.f_bfree ) / 
                 (float)fs_info.f_blocks );
