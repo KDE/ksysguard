@@ -2,8 +2,6 @@
 appsdir = $(kde_appsdir)/System
 # set the include path for X, qt and KDE
 INCLUDES= $(all_includes)
-# claim, which subdirectories you want to install
-SUBDIRS =
  
 ####### This part is very ktop specific
 # you can add here more. This one gets installed 
@@ -31,7 +29,7 @@ ktop_LDADD   =       $(LIB_KDEUI)
 
 # this option you can leave out. Just, if you use "make dist", you need it
 noinst_HEADERS = MainMenu.h ReniceDlg.h SensorClient.h ktop.h ProcessMenu.h \
-	Workspace.h WorkSheet.h SensorBrowser.h
+	Workspace.h WorkSheet.h SensorBrowser.h \
 	SensorAgent.h SensorManager.h SensorDisplay.h \
 	FancyPlotter.h SignalPlotter.h MultiMeter.h \
 	version.h 
