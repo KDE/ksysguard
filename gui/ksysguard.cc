@@ -221,9 +221,9 @@ void
 TopLevel::toggleMainToolBar()
 {
 	if (toolbarTog->isChecked())
-		toolBar("mainToolBar")->enable(KToolBar::Show);
+		toolBar("mainToolBar")->show();
 	else
-		toolBar("mainToolBar")->enable(KToolBar::Hide);
+		toolBar("mainToolBar")->hide();
 }
 
 void
