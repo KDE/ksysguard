@@ -45,30 +45,6 @@
 
 #define NONE -1
 
-typedef struct pS
-{
-    char      name[101],
-		status,
-		statusTxt[10],
-		visited;
-    pid_t     pid, ppid;
-    uid_t     uid;
-    gid_t     gid;
-    unsigned  vm_size, 
-		vm_lock, 
-		vm_rss, 
-		vm_data, 
-		vm_stack, 
-		vm_exe, 
-		vm_lib;
-    int       otime, 
-		time, 
-		oabstime, 
-		abstime;
-    struct pS *next, 
-		*prev;  
-} psStruct, *psPtr;
-
 class KtopProcList : public KTabListBox
 {
     Q_OBJECT;
@@ -161,7 +137,6 @@ private:
 		timer_id = startTimer(timer_interval);
 	}
 
-    psPtr ps_list;
     int lastSelectionPid;
 	int filtermode;
 	OSProcessList::SORTKEY sort_method;

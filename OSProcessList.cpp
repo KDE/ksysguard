@@ -25,9 +25,12 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <dirent.h>
-#include <sys/time.h>
 
 #include "OSProcessList.h"
+#include "TimeStampList.h"
+
+TimeStampList* OldTStamps = NULL;
+TimeStampList* NewTStamps = NULL;
 
 inline int cmp(int a, int b)
 {
@@ -39,16 +42,21 @@ inline int cmp(unsigned int a, unsigned int b)
 	return (a < b ? -1 : (a > b ? 1 : 0));
 }
 
+inline int cmp(double a, double b)
+{
+	return (a < b ? -1 : (a > b ? 1 : 0));
+}
+
 bool
 OSProcess::loadInfo(const char* pidStr)
 {
 	char buffer[1024], temp[128];
 	FILE* fd;
-	int u1, u2, u3, u4, time1, time2;
+	int u1, u2, u3, u4;
 
 	sprintf(buffer, "/proc/%s/status", pidStr);
 	if((fd = fopen(buffer, "r")) == 0)
-		return (0);
+		return (false);
 
 	fscanf(fd, "%s %s", buffer, name);
 	fscanf(fd, "%s %c %s", buffer, &status, temp);
@@ -110,20 +118,34 @@ OSProcess::loadInfo(const char* pidStr)
 		return (0);
     
 	fscanf(fd, "%*s %*s %*s %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %d %d",
-		   &time1, &time2);
-	
-	struct timeval tv;
-	gettimeofday(&tv, 0);
-	oabstime = abstime;
-	abstime = tv.tv_sec * 100 + tv.tv_usec / 10000;
-    // if no time between two cycles - don't show any usable cpu percentage
-	if (oabstime == abstime)
-		oabstime = abstime - 100000;
-	otime = time;
-	time = time1 + time2;
+		   &userTime, &sysTime);
 	fclose(fd);
 
-	return 1;
+	TimeStamp* ts = new TimeStamp(pid, userTime, sysTime);
+	NewTStamps->inSort(ts);
+
+	if (OldTStamps->find(ts) >= 0)
+	{
+		int lastCentStamp = OldTStamps->current()->getCentStamp();
+		int lastUserTime = OldTStamps->current()->getUserTime();
+		int lastSysTime = OldTStamps->current()->getSysTime();
+
+		int timeDiff = ts->getCentStamp() - lastCentStamp;
+		int userDiff = userTime - lastUserTime;
+		int sysDiff =  sysTime - lastSysTime;
+
+		if (timeDiff > 0)
+		{
+			userLoad = ((double) userDiff / timeDiff) * 100.0;
+			sysLoad = ((double) sysDiff / timeDiff) * 100.0;
+		}
+		else
+			sysLoad = userLoad = 0.0;
+	}
+	else
+		sysLoad = userLoad = 0.0;
+
+	return (true);
 }
 
 void
@@ -135,6 +157,11 @@ OSProcessList::update(void)
 	// read in current process list via the /proc filesystem entry
 	DIR* dir;
 	struct dirent* entry;
+
+	NewTStamps = new TimeStampList;
+	// If there is no old list yet, we create an empty one.
+	if (!OldTStamps)
+		OldTStamps = new TimeStampList;
 
 	dir = opendir("/proc");
 	while ((entry = readdir(dir))) 
@@ -148,6 +175,11 @@ OSProcessList::update(void)
 			delete ps;
 	}
 	closedir(dir);
+
+	// make new list old one and discard the really old one
+	delete OldTStamps;
+	OldTStamps = NewTStamps;
+	NewTStamps = NULL;
 }
 
 int
@@ -173,7 +205,8 @@ OSProcessList::compareItems(GCI it1, GCI it2)
 		return strcmp(item1->getName(), item2->getName());
 
 	case SORTBY_TIME:
-		return (cmp(item1->getTime(), item2->getTime()) * -1);
+		return (cmp(item1->getUserTime() + item1->getSysTime(),
+					item2->getUserTime() + item2->getSysTime()) * -1);
 
 	case SORTBY_STATUS:
 		return cmp(item1->getStatus(), item2->getStatus());
@@ -189,8 +222,8 @@ OSProcessList::compareItems(GCI it1, GCI it2)
 
 	case SORTBY_CPU:
 	default:
-		return (cmp(item1->getTime() - item1->getOtime(),
-					item2->getTime() - item2->getOtime()) * -1);
+		return (cmp(item1->getUserLoad() + item1->getSysLoad(),
+					item2->getUserLoad() + item2->getSysLoad()) * -1);
 	}
 
 	return (0);

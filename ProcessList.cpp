@@ -30,11 +30,8 @@
 
 #include <ctype.h>
 #include <string.h>
-#include <unistd.h>
 #include <pwd.h>
-#include <dirent.h>
 #include <signal.h>
-
 #include <kapp.h>
 #include <klocale.h>
 
@@ -43,68 +40,56 @@
 
 // #define DEBUG_MODE
 
-#define PROC_BASE     "/proc"
-#define INIT_PID      1
 #define NONE -1
 
-#define NUM_COL 10
+typedef struct
+{
+	char* header;
+	char* placeholder;
+	bool visible;
+	KTabListBox::ColumnType type;
+} TABCOLUMN;
+
+/*
+ * The following array defined the setup of the tab dialog. It contains
+ * the column header, a placeholder to determine the column width, the
+ * visible flag and the type of the column.
+ *
+ * In later the columns can be turned on and off through an options dialog.
+ * The same mechanism can be used if a platform does not support a certain
+ * type of information.
+ *
+ * This table and the construction of the KTabListBox lines in
+ * ProcessList::load MUST be keept in sync!
+ */
+static TABCOLUMN TabCol[] =
+{
+	{ "",       "++++",           true, KTabListBox::MixedColumn },
+	{ "procID", "procID++",       true, KTabListBox::TextColumn },
+	{ "Name",   "kfontmanager++", true, KTabListBox::TextColumn },
+	{ "userID", "rootuseroot",    true, KTabListBox::TextColumn },
+	{ "CPU",    "100.00%+",       true, KTabListBox::TextColumn },
+	{ "Time",   "100:00++",       true, KTabListBox::TextColumn },
+	{ "Status", "Status+++",      true, KTabListBox::TextColumn },
+	{ "VmSize", "VmSize++",       true, KTabListBox::TextColumn },
+	{ "VmRss",  "VmSize++",       true, KTabListBox::TextColumn },
+	{ "VmLib",  "VmSize++",       true, KTabListBox::TextColumn }
+};
+
+static const MaxCols = sizeof(TabCol) / sizeof(TABCOLUMN);
 
 inline int max(int a, int b)
 {
 	return ((a) < (b) ? (b) : (a));
 }
 
-static const char *col_headers[] = 
-{
-	"  ",
-	"procID",
-	"Name",
-	"userID",
-	"CPU",
-	"Time",
-	"Status",
-	"VmSize",
-	"VmRss",
-	"VmLib",
-	0
-};
-
-static const char *dummies[] = 
-{
-     "++++"              ,
-     "procID++"          ,
-     "kfontmanager++"    ,
-     "rootuseroot"       ,
-     "100.00%+"          ,
-     "100:00++"          ,
-     "Status+++"         ,
-     "VmSize++"          ,
-     "VmSize++"          ,
-     "VmSize++"          ,
-     0
-};
-
-static KTabListBox::ColumnType col_types[] = 
-{
-     KTabListBox::MixedColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn,
-     KTabListBox::TextColumn
-};
-
 KtopProcList::KtopProcList(QWidget *parent = 0, const char* name = 0)
-	: KTabListBox(parent, name, NUM_COL)
+	: KTabListBox(parent, name)
 {
 	setSeparator(';');
 
 	// no process list generated yet
-	ps_list  = NULL;
+	//ps_list  = NULL;
 	// no timer started yet
 	timer_id = NONE;
 
@@ -130,17 +115,28 @@ KtopProcList::KtopProcList(QWidget *parent = 0, const char* name = 0)
 	icons = new KtopIconList;
 	CHECK_PTR(icons);
 
+	// determine the number of visible columns
+	int columns = 0;
+	int cnt;
+	for (cnt = 0; cnt < MaxCols; cnt++)
+		if (TabCol[cnt].visible)
+			columns++;
+	setNumCols(columns);
+
 	/*
 	 * Set the column witdh for all columns in the process list table.
 	 * A dummy string that is somewhat longer than the real text is used
 	 * to determine the width with the current font metrics.
 	 */
 	QFontMetrics fm = fontMetrics();
-	for (int cnt = 0; col_headers[cnt]; cnt++)
-		setColumn(cnt, i18n(col_headers[cnt]),
-				  max(fm.width(dummies[cnt]),
-					  fm.width(i18n(col_headers[cnt]))),
-				  col_types[cnt]);
+	for (cnt = 0; cnt < MaxCols ; cnt++)
+		if (TabCol[cnt].visible)
+		{
+			setColumn(cnt, i18n(TabCol[cnt].header),
+					  max(fm.width(TabCol[cnt].placeholder),
+						  fm.width(i18n(TabCol[cnt].header))),
+					  TabCol[cnt].type);
+		}
 
 	// Clicking on the header changes the sort order.
 	connect(this, SIGNAL(headerClicked(int)),
@@ -159,21 +155,12 @@ KtopProcList::~KtopProcList()
 	// switch off timer
 	if (timer_id != NONE)
 		killTimer(timer_id);
-
-	// delete process list
-	while (ps_list)
-	{
-		psPtr tmp = ps_list;
-		ps_list = ps_list->next;
-		delete tmp;
-	}
 }
 
 void 
 KtopProcList::setUpdateRate(int r)
 {
-	update_rate = r;
-	switch (update_rate)
+	switch (update_rate = r)
 	{
 	case UPDATE_SLOW:
 		timer_interval = UPDATE_SLOW_VALUE * 1000;
@@ -187,6 +174,7 @@ KtopProcList::setUpdateRate(int r)
 		break;
 	}
 
+	// only re-start the timer if auto mode is enabled
 	if (timer_id != NONE)
 	{
 		timerOff();
@@ -197,25 +185,42 @@ KtopProcList::setUpdateRate(int r)
 int 
 KtopProcList::setAutoUpdateMode(bool mode)
 {
+	/*
+	 * If auto mode is enabled the display is updated regurlarly triggered
+	 * by a timer event.
+	 */
+
+	// save current setting of the timer
 	int oldmode = (timer_id != NONE) ? TRUE : FALSE; 
 
+	// set new setting
 	if (mode)
 		timerOn();
 	else
 		timerOff();
 
+	// return the previous setting
 	return (oldmode);
 }
 
 void 
 KtopProcList::update(void)
 {
+	// save the index of the first row item
 	int top_Item = topItem();
+
+	// disable the auto-update and save current mode
 	int lastmode = setAutoUpdateMode(FALSE);
 	setAutoUpdate(FALSE);
+
+	// retrieve current process list from OS and update tab dialog
 	load();
+
 	try2restoreSelection();
+
+	// restore the top visible item if possible
 	setTopItem(top_Item);
+
 	setAutoUpdate(TRUE);
 	setAutoUpdateMode(lastmode);
 
@@ -229,19 +234,20 @@ KtopProcList::load()
 	OSProcessList pl;
 
 	pl.setSortCriteria(sort_method);
+
+	// request current list of processes
 	pl.update();
 
 	clear();
+
+	// clear the tab dialog's dictionary (stores the icons by name)
 	dict().clear();  
 
-	const QPixmap *pix;
-	char  usrName[32];
-	struct passwd *pwent;  
-	char line[256];
 	while (!pl.isEmpty())
 	{
 		OSProcess* p = pl.first();
 
+		// filter out processes we are not interested in
 		bool ignore;
 		switch (filtermode)
 		{
@@ -261,26 +267,72 @@ KtopProcList::load()
 		}
 		if (!ignore)
 		{
-			pwent = getpwuid(p->getUid());
-			if (pwent) 
-				strncpy(usrName, pwent->pw_name, 31);
-			else 
-				strcpy(usrName, "????");
-			pix = icons->procIcon((const char*)p->getName());
+			// find out user name with the process uid
+			struct passwd* pwent = getpwuid(p->getUid());
+			QString usrName = pwent ? pwent->pw_name : "????";
+
+			/*
+			 * Get icon from icon list might be appropriate for a process
+			 * with this name.
+			 */
+			const QPixmap* pix = icons->procIcon((const char*)p->getName());
+
+			// insert icon into tab dialog's dictionary
 			dict().insert((const char*)p->getName(), pix);
-			sprintf(line, "{%s};%d;%s;%s;%5.2f%%;%d:%02d;%s;%d;%d;%d", 
-					p->getName(),
-					p->getPid(),
-					p->getName(),
-					usrName,
-					1.0 * (p->getTime() - p->getOtime()) /
-					(p->getAbstime() - p->getOabstime()) * 100, 
-					(p->getTime() / 100) / 60,
-					(p->getTime() / 100) % 60, 
-					p->getStatusTxt(),
-					p->getVm_size(), 
-					p->getVm_rss(), 
-					p->getVm_lib());         
+
+			/*
+			 * Construct the string for the KTabListBox lines. These lines
+			 * and the TabCol array MUST be kept in sync!
+			 */
+			QString line = "";
+			QString s;
+
+			// icon
+			if (TabCol[0].visible)
+				line += QString("{") + p->getName() + "};";
+
+			// pid
+			if (TabCol[1].visible)
+				line += s.setNum(p->getPid()) + ";";
+
+			// process name
+			if (TabCol[2].visible)
+				line += p->getName() + QString(";");
+
+			// user name
+			if (TabCol[3].visible)
+				line += usrName + QString(";");
+
+			// CPU load
+			if (TabCol[4].visible)
+				line += s.sprintf("%.2f%%;",
+								  p->getUserLoad() + p->getSysLoad());
+
+			// total processing time
+			if (TabCol[5].visible)
+			{
+				int totalTime = p->getUserTime() + p->getSysTime();
+				line += s.sprintf("%d:%02d;",
+								  (totalTime / 100) / 60,
+								  (totalTime / 100) % 60);
+			}
+
+			// process status
+			if (TabCol[6].visible)
+				line += p->getStatusTxt() + QString(";");
+
+			// VM size
+			if (TabCol[7].visible)
+				line += s.setNum(p->getVm_size()) + ";";
+
+			// VM rss
+			if (TabCol[8].visible)
+				line += s.setNum(p->getVm_rss()) + ";";
+
+			// VM lib
+			if (TabCol[9].visible)
+				line += s.setNum(p->getVm_lib()) + ";";
+
 			appendItem(line);
 		}
 		pl.removeFirst();
@@ -366,5 +418,5 @@ KtopProcList::cellHeight(int row)
 	if (pix)
 		return (pix->height());
 
-	return (18);
+	return (18);	// Why not 42? How can we make this more sensible?
 }

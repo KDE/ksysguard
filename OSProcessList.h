@@ -25,9 +25,11 @@
 #ifndef _OSProcessList_h_
 #define _OSProcessList_h_
 
-#include "unistd.h"
+#include <unistd.h>
 
 #include <qlist.h>
+
+#include "TimeStampList.h"
 
 class OSProcess
 {
@@ -85,21 +87,21 @@ public:
 	{
 		return (vm_lib);
 	}
-	int getOtime(void) const
+	unsigned int getUserTime(void) const
 	{
-		return (otime);
+		return (userTime);
 	}
-	int getTime(void) const
+	unsigned int getSysTime(void) const
 	{
-		return (time);
+		return (sysTime);
 	}
-	int getOabstime(void) const
+	double getUserLoad(void) const
 	{
-		return (oabstime);
+		return (userLoad);
 	}
-	int getAbstime(void) const
+	double getSysLoad(void) const
 	{
-		return (abstime);
+		return (sysLoad);
 	}
 
 private:
@@ -117,10 +119,10 @@ private:
 	unsigned int vm_stack;
 	unsigned int vm_exe;
 	unsigned int vm_lib;
-	int otime;
-	int time;
-	int oabstime;
-	int abstime;
+	unsigned int userTime;
+	unsigned int sysTime;
+	double userLoad;
+	double sysLoad;
 } ;
 
 /**
