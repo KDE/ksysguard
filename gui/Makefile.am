@@ -54,8 +54,3 @@ METASOURCES = AUTO
 messages: rc.cpp
 	$(XGETTEXT) *.cpp *.cc -o $(podir)/ksysguard.pot
 
-
-
-
-
-
