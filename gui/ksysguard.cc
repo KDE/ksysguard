@@ -255,7 +255,7 @@ void TopLevel::beATaskManager()
   mSensorBrowser->hide();
 
 	// Show window centered on the desktop.
-  KWinModule kwm;
+  KWinModule kwm(0, KWinModule::INFO_DESKTOP);
   QRect workArea = kwm.workArea();
   int w = 600;
   if ( workArea.width() < w )
