@@ -63,7 +63,7 @@ SensorAgent::sendRequest(const QString& req, SensorClient* client, int id)
 	inputFIFO.prepend(new SensorRequest(req, client, id));
 
 #if SA_TRACE
-	kdDebug() << "-> " << req << "(" << inputFIFO.count() << "/"
+	kdDebug(1215) << "-> " << req << "(" << inputFIFO.count() << "/"
 			  << processingFIFO.count() << ")" << endl;
 #endif
 	executeCommand();
@@ -75,7 +75,7 @@ void
 SensorAgent::processAnswer(const QString& buf)
 {
 #if SA_TRACE
-	kdDebug() << "<- " << buf << endl;
+	kdDebug(1215) << "<- " << buf << endl;
 #endif
 	for (uint i = 0; i < buf.length(); i++)
 	{
@@ -108,7 +108,7 @@ SensorAgent::processAnswer(const QString& buf)
 	while ((end = answerBuffer.find("\nksysguardd> ")) >= 0)
 	{
 #if SA_TRACE
-		kdDebug() << "<= " << answerBuffer.left(end)
+		kdDebug(1215) << "<= " << answerBuffer.left(end)
 				  << "(" << inputFIFO.count() << "/"
 				  << processingFIFO.count() << ")" << endl;
 #endif
@@ -118,7 +118,7 @@ SensorAgent::processAnswer(const QString& buf)
 			 * ready to serve requests now. */
 			daemonOnLine = true;
 #if SA_TRACE
-			kdDebug() << "Daemon now online!" << endl;
+			kdDebug(1215) << "Daemon now online!" << endl;
 #endif
 			answerBuffer = QString::null;
 			break;
@@ -128,7 +128,7 @@ SensorAgent::processAnswer(const QString& buf)
 		SensorRequest* req = processingFIFO.last();
 		if (!req)
 		{
-			kdDebug()
+			kdDebug(1215)
 				<< "ERROR: Received answer but have no pending "
 				<< "request!" << endl;
 			return;
@@ -175,7 +175,7 @@ SensorAgent::executeCommand()
 		inputFIFO.removeLast();
 
 #if SA_TRACE
-		kdDebug() << ">> " << req->request.ascii() << "(" << inputFIFO.count()
+		kdDebug(1215) << ">> " << req->request.ascii() << "(" << inputFIFO.count()
 				  << "/" << processingFIFO.count() << ")" << endl;
 #endif
 		// send request to daemon
@@ -183,7 +183,7 @@ SensorAgent::executeCommand()
 		if (writeMsg(cmdWithNL.ascii(), cmdWithNL.length()))
 			transmitting = true;
 		else
-			kdDebug() << "SensorAgent::writeMsg() failed" << endl;
+			kdDebug(1215) << "SensorAgent::writeMsg() failed" << endl;
 	
 		// add request to processing FIFO
 		processingFIFO.prepend(req);

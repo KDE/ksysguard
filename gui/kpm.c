@@ -4,6 +4,6 @@
 
 int main()
 {
-   char *const args[3] = { "ksysguard", "--showprocesses", 0 };
-   return execvp("ksysguard", args);
+  char *const args[ 3 ] = { "ksysguard", "--showprocesses", 0 };
+  return execvp( "ksysguard", args );
 }

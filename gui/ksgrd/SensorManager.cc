@@ -293,7 +293,7 @@ SensorManager::resynchronize(const QString& hostname)
 
 	disengage(hostname);
 
-	kdDebug () << "Re-synchronizing connection to " << hostname << endl;
+	kdDebug (1215) << "Re-synchronizing connection to " << hostname << endl;
 
 	return (engage(hostname, shell, command));
 }

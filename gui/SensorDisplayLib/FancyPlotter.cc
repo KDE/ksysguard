@@ -416,7 +416,7 @@ FancyPlotter::removeSensor(uint idx)
 {
 	if (idx >= beams)
 	{
-		kdDebug() << "FancyPlotter::removeSensor: idx out of range ("
+		kdDebug(1215) << "FancyPlotter::removeSensor: idx out of range ("
 				  << idx << ")" << endl;
 		return (false);
 	}

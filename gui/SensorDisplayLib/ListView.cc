@@ -201,7 +201,7 @@ PrivateListView::addColumn(const QString& label, const QString& type)
 	}
 	else
 	{
-		kdDebug() << "Unknown type " << type << " of column " << label
+		kdDebug(1215) << "Unknown type " << type << " of column " << label
 				  << " in ListView!" << endl;
 		return;
 	}
@@ -266,7 +266,7 @@ ListView::answerReceived(int id, const QString& answer)
 			KSGRD::SensorTokenizer lines(answer, '\n');
 			if (lines.numberOfTokens() != 2)
 			{
-				kdDebug() << "wrong number of lines" << endl;
+				kdDebug(1215) << "wrong number of lines" << endl;
 				return;
 			}
 			KSGRD::SensorTokenizer headers(lines[0], '\t');

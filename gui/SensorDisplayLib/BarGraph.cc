@@ -76,7 +76,7 @@ BarGraph::removeBar(uint idx)
 {
 	if (idx >= bars)
 	{
-		kdDebug() << "BarGraph::removeBar: idx " << idx << " out of range "
+		kdDebug(1215) << "BarGraph::removeBar: idx " << idx << " out of range "
 				  << bars << endl;
 		return (false);
 	}

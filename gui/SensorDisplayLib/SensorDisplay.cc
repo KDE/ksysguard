@@ -133,7 +133,7 @@ SensorDisplay::setupTimer()
 
 			SensorBoard* sb = dynamic_cast<SensorBoard*>(parentWidget());
 			if (!sb) {
-				kdDebug() << "dynamic cast lacks" << endl;
+				kdDebug(1215) << "dynamic cast lacks" << endl;
 				setUpdateInterval(2);
 			} else {
 				setUpdateInterval(sb->updateInterval());
@@ -325,7 +325,7 @@ SensorDisplay::internCreateFromDOM(QDomElement& element)
 
 		SensorBoard* sb = dynamic_cast<SensorBoard*>(parentWidget());
 		if (!sb) {
-			kdDebug() << "dynamic cast lacks" << endl;
+			kdDebug(1215) << "dynamic cast lacks" << endl;
 			setUpdateInterval(2);
 		} else {
 			setUpdateInterval(sb->updateInterval());

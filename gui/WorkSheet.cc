@@ -149,8 +149,8 @@ bool WorkSheet::load( const QString &fileName )
     uint row = element.attribute( "row" ).toUInt();
     uint column = element.attribute( "column" ).toUInt();
     if ( row >= mRows || column >= mColumns) {
-      kdDebug() << "Row or Column out of range (" << row << ", "
-                << column << ")" << endl;
+      kdDebug(1215) << "Row or Column out of range (" << row << ", "
+                    << column << ")" << endl;
       return false;
     }
 
@@ -350,7 +350,7 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
     else if ( sensorType == "table" )
       newDisplay = new ProcessController( this );
     else {
-      kdDebug() << "Unkown sensor type: " <<  sensorType << endl;
+      kdDebug(1215) << "Unkown sensor type: " <<  sensorType << endl;
       return 0;
     }
 
@@ -476,7 +476,7 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
   else if ( classType == "ProcessController" )
     newDisplay = new ProcessController( this );
   else {
-    kdDebug() << "Unkown class " <<  classType << endl;
+    kdDebug(1215) << "Unkown class " <<  classType << endl;
     return false;
   }
 

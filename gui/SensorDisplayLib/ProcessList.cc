@@ -271,11 +271,11 @@ ProcessList::update(const QString& list)
 		{
 #if 0
 			// This is needed for debugging only.
-			kdDebug() << list << endl;
+			kdDebug(1215) << list << endl;
 			QString l;
 			for (uint j = 0; j < line->numberOfTokens(); j++)
 				l += (*line)[j] + "|";
-			kdDebug() << "Incomplete ps line:" << l << endl;
+			kdDebug(1215) << "Incomplete ps line:" << l << endl;
 #endif
 			return (false);
 		}
@@ -659,7 +659,7 @@ ProcessList::addColumn(const QString& label, const QString& type)
 	}
 	else
 	{
-		kdDebug() << "Unknown type " << type << " of column " << label
+		kdDebug(1215) << "Unknown type " << type << " of column " << label
 				  << " in ProcessList!" << endl;
 		return;
 	}
