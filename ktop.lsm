@@ -13,7 +13,7 @@ Author5:	cs@kde.org (Chris Schlaeger)
 Maintained-by: 	cs@kde.org (Chris Schlaeger)
 Primary-site: 	ftp://ftp.kde.org/pub/kde/stable/apps/utils
 Original-site: 	http://www.ert.rwth-aachen.de/~schlaege/ktop
-Platform: 	Linux 2.x or FreeBSD, needs Qt 1.4x and the KDE 1.x libs
+Platform: 	Linux 2.x or FreeBSD, Qt
 Copying-policy: GPL 
 End
 
