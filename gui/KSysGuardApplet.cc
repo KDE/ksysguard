@@ -99,6 +99,7 @@ KSysGuardApplet::~KSysGuardApplet()
 
 	delete KSGRD::Style;
 	delete KSGRD::SensorMgr;
+	KSGRD::SensorMgr = 0;
 }
 
 int
@@ -509,7 +510,7 @@ KSysGuardApplet::save()
 			host.setAttribute("port", port);
 		}
 	}
-	
+
 	for (i = 0; i < dockCnt; ++i)
 		if (!docks[i]->isA("QFrame"))
 		{

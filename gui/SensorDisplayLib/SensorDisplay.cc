@@ -84,7 +84,8 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name, const QString& t
 
 SensorDisplay::~SensorDisplay()
 {
-	SensorMgr->unlinkClient(this);
+	if (SensorMgr != 0)
+		SensorMgr->unlinkClient(this);
 	killTimer(timerId);
 }
 
