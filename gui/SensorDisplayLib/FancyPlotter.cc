@@ -127,7 +127,7 @@ FancyPlotter::settings()
 
 	for (uint i = 0; i < beams; ++i)
 	{
-		QString status = sensors.at(i)->ok ? i18n("Ok") : i18n("Error");
+		QString status = sensors.at(i)->ok ? i18n("OK") : i18n("Error");
 		QListViewItem* lvi = new QListViewItem(
 			fps->sensorList,
 			QString("%1").arg(i + 1),

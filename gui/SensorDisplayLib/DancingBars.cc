@@ -101,7 +101,7 @@ DancingBars::settings()
 
 	for (uint i = bars - 1; i < bars; i--)
 	{
-		QString status = sensors.at(i)->ok ? i18n("Ok") : i18n("Error");
+		QString status = sensors.at(i)->ok ? i18n("OK") : i18n("Error");
 		QListViewItem* lvi = new QListViewItem(
 			dbs->sensorList,
 			sensors.at(i)->hostName,
