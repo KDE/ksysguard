@@ -139,7 +139,7 @@ void PrivateListView::update(const QString& answer)
 
 int PrivateListView::columnType( uint pos ) const
 {
-  if ( pos < 0 || pos >= mColumnTypes.count() )
+  if ( pos >= mColumnTypes.count() )
     return 0;
 
   if ( mColumnTypes[ pos ] == "d" || mColumnTypes[ pos ] == "D" )
