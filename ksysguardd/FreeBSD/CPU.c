@@ -20,6 +20,12 @@
 	$Id$
 */
 
+#include <sys/types.h>
+#include <sys/dkstat.h>
+
+#include <kvm.h>
+#include <nlist.h>
+#include <devstat.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,215 +33,59 @@
 #include "CPU.h"
 #include "Command.h"
 
-typedef struct
-{
-	/* A CPU can be loaded with user processes, reniced processes and
-	 * system processes. Unused processing time is called idle load.
-	 * These variable store the percentage of each load type. */
-	int userLoad;
-	int niceLoad;
-	int sysLoad;
-	int idleLoad;
+long percentages(int cnt, int *out, long *new, long *old, long *diffs);
 
-	/* To calculate the loads we need to remember the tick values for each
-	 * load type. */
-	unsigned long userTicks;
-	unsigned long niceTicks;
-	unsigned long sysTicks;
-	unsigned long idleTicks;
-} CPULoadInfo;
+struct nlist my_nlist[] = {
+	{"_cp_time"},
+	{ 0 }
+};
 
-static FILE* Stat = 0;
+kvm_t *kd;
 
-CPULoadInfo CPULoad;
-CPULoadInfo* SMPLoad = 0;
-unsigned CPUCount = 0;
+unsigned long cp_time_offset;
 
-void
-updateCPULoad(const char* line, CPULoadInfo* load)
-{
-	unsigned long currUserTicks, currSysTicks, currNiceTicks, currIdleTicks;
-	unsigned long totalTicks;
-
-return;
-	sscanf(line, "%*s %lu %lu %lu %lu", &currUserTicks, &currNiceTicks,
-		   &currSysTicks, &currIdleTicks);
-
-	totalTicks = ((currUserTicks - load->userTicks) +
-				  (currSysTicks - load->sysTicks) +
-				  (currNiceTicks - load->niceTicks) +
-				  (currIdleTicks - load->idleTicks));
-
-	if (totalTicks > 10)
-	{
-		load->userLoad = (100 * (currUserTicks - load->userTicks))
-			/ totalTicks;
-		load->sysLoad = (100 * (currSysTicks - load->sysTicks))
-			/ totalTicks;
-		load->niceLoad = (100 * (currNiceTicks - load->niceTicks))
-			/ totalTicks;
-		load->idleLoad = (100 - (load->userLoad + load->sysLoad
-								 + load->niceLoad));
-	}
-	else
-		load->userLoad = load->sysLoad = load->niceLoad = load->idleLoad = 0;
-
-	load->userTicks = currUserTicks;
-	load->sysTicks = currSysTicks;
-	load->niceTicks = currNiceTicks;
-	load->idleTicks = currIdleTicks;
-}
-
-/*
-================================ public part ==================================
-*/
+long cp_time[CPUSTATES];
+long cp_old[CPUSTATES];
+long cp_diff[CPUSTATES];
+int cpu_states[CPUSTATES];
 
 void
 initCPU(void)
 {
-	/* The CPU load is calculated from the values in /proc/stat. The cpu
-	 * entry contains 4 counters. These counters count the number of ticks
-	 * the system has spend on user processes, system processes, nice
-	 * processes and idle time.
-	 *
-	 * SMP systems will have cpu1 to cpuN lines right after the cpu info. The
-	 * format is identical to cpu and reports the information for each cpu.
-	 * Linux kernels <= 2.0 do not provide this information!
-	 *
-	 * The /proc/stat file looks like this:
-	 *
-	 * cpu  1586 4 808 36274
-	 * disk 7797 0 0 0
-	 * disk_rio 6889 0 0 0
-	 * disk_wio 908 0 0 0
-	 * disk_rblk 13775 0 0 0
-	 * disk_wblk 1816 0 0 0
-	 * page 27575 1330
-	 * swap 1 0
-	 * intr 50444 38672 2557 0 0 0 0 2 0 2 0 0 3 1429 1 7778 0
-	 * ctxt 54155
-	 * btime 917379184
-	 * processes 347
-	 */
-	char format[32];
-	char buf[1024];
-
-return 0;
-	if ((Stat = fopen("/proc/stat", "r")) == NULL)
-	{
-		printf("ERROR: Cannot open file \'/proc/stat\'!\n"
-			   "The kernel needs to be compiled with support\n"
-			   "for /proc filesystem enabled!");
-		return;
-	}
-	/* Use unbuffered input for /proc/stat file. */
-    setvbuf(Stat, NULL, _IONBF, 0);
-
-	sprintf(format, "%%%d[^\n]", sizeof(buf) - 1);
-
-	while (fscanf(Stat, format, buf) == 1)
-	{
-		char tag[32];
-		char tagFormat[16];
-
-		buf[sizeof(buf) - 1] = '\0';
-		sprintf(tagFormat, "%%%ds", sizeof(tag) - 1);
-		sscanf(buf, tagFormat, tag);
-
-		if (strcmp("cpu", tag) == 0)
-		{
-			/* Total CPU load */
-		        registerMonitor("cpuuser", "integer", printCPUUser,
-					printCPUUserInfo);
-			registerMonitor("cpunice", "integer", printCPUNice,
-					printCPUNiceInfo);
-			registerMonitor("cpusys", "integer", printCPUSys,
-					printCPUSysInfo);
-			registerMonitor("cpuidle", "integer", printCPUIdle,
-					printCPUIdleInfo);
-		}
-		else if (strncmp("cpu", tag, 3) == 0)
-		{
-			char cmdName[16];
-			/* Load for each SMP CPU */
-			int id;
-			sscanf(tag + 3, "%d", &id);
-			CPUCount++;
-			sprintf(cmdName, "cpu%duser", id);
-			registerMonitor(cmdName, "integer", printCPUxUser,
-					printCPUxUserInfo);
-			sprintf(cmdName, "cpu%dnice", id);
-			registerMonitor(cmdName, "integer", printCPUxNice,
-					printCPUxNiceInfo);
-			sprintf(cmdName, "cpu%dsys", id);
-			registerMonitor(cmdName, "integer", printCPUxSys,
-					printCPUxSysInfo);
-			sprintf(cmdName, "cpu%didle", id);
-			registerMonitor(cmdName, "integer", printCPUxIdle,
-					printCPUxIdleInfo);
-		}
-	}
-
-	if (CPUCount > 0)
-		SMPLoad = (CPULoadInfo*) malloc(sizeof(CPULoadInfo) * CPUCount);
+	/* Total CPU load */
+	registerMonitor("cpuuser", "integer", printCPUUser,
+			printCPUUserInfo);
+	registerMonitor("cpunice", "integer", printCPUNice,
+			printCPUNiceInfo);
+	registerMonitor("cpusys", "integer", printCPUSys,
+			printCPUSysInfo);
+	registerMonitor("cpuidle", "integer", printCPUIdle,
+			printCPUIdleInfo);
+	kd = kvm_open(NULL, NULL, NULL, O_RDONLY, "kvm_open");
+	kvm_nlist(kd, my_nlist);
+	cp_time_offset = my_nlist[0].n_value;
+        kvm_read(kd, cp_time_offset, (char *)cp_time, sizeof(cp_time));
+        percentages(CPUSTATES, cpu_states, cp_time, cp_old, cp_diff);
 }
 
 void
 exitCPU(void)
 {
-	if (Stat)
-	{
-		fclose(Stat);
-		Stat = 0;
-	}
-
-	if (SMPLoad)
-	{
-		free(SMPLoad);
-		SMPLoad = 0;
-	}
+	kvm_close(kd);
 }
 
 int
 updateCPU(void)
 {
-	char format[32];
-	char buf[1024];
-
-return -1;
-	sprintf(format, "%%%d[^\n]", sizeof(buf) - 1);
-
-	rewind(Stat);
-	while (fscanf(Stat, format, buf) == 1)
-	{
-		char tag[32];
-		char tagFormat[16];
-
-		buf[sizeof(buf) - 1] = '\0';
-		sprintf(tagFormat, "%%%ds", sizeof(tag) - 1);
-		sscanf(buf, tagFormat, tag);
-
-		if (strcmp("cpu", tag) == 0)
-		{
-			/* Total CPU load */
-			updateCPULoad(buf, &CPULoad);
-		}
-		else if (strncmp("cpu", tag, 3) == 0)
-		{
-			/* Load for each SMP CPU */
-			int id;
-			sscanf(tag + 3, "%d", &id);
-			updateCPULoad(buf, &SMPLoad[id]);
-		}
-	}
-
+        kvm_read(kd, cp_time_offset, (char *)cp_time, sizeof(cp_time));
+        percentages(CPUSTATES, cpu_states, cp_time, cp_old, cp_diff);
 	return (0);
 }
 
 void
 printCPUUser(const char* cmd)
 {
-	printf("%d\n", CPULoad.userLoad);
+	printf("%d\n", cpu_states[CP_USER]/10);
 }
 
 void
@@ -247,7 +97,7 @@ printCPUUserInfo(const char* cmd)
 void
 printCPUNice(const char* cmd)
 {
-	printf("%d\n", CPULoad.niceLoad);
+	printf("%d\n", cpu_states[CP_NICE]/10);
 }
 
 void
@@ -259,7 +109,7 @@ printCPUNiceInfo(const char* cmd)
 void
 printCPUSys(const char* cmd)
 {
-	printf("%d\n", CPULoad.sysLoad);
+	printf("%d\n", cpu_states[CP_SYS]/10);
 }
 
 void
@@ -271,7 +121,7 @@ printCPUSysInfo(const char* cmd)
 void
 printCPUIdle(const char* cmd)
 {
-	printf("%d\n", CPULoad.idleLoad);
+	printf("%d\n", cpu_states[CP_IDLE]/10);
 }
 
 void
@@ -280,74 +130,77 @@ printCPUIdleInfo(const char* cmd)
 	printf("CPU Idle Load\t0\t100\t%%\n");
 }
 
-void
-printCPUxUser(const char* cmd)
+
+/* The part ripped from top... */
+/*
+ *  Top users/processes display for Unix
+ *  Version 3
+ *
+ *  This program may be freely redistributed,
+ *  but this entire comment MUST remain intact.
+ *
+ *  Copyright (c) 1984, 1989, William LeFebvre, Rice University
+ *  Copyright (c) 1989, 1990, 1992, William LeFebvre, Northwestern University
+ */
+
+/*
+ *  percentages(cnt, out, new, old, diffs) - calculate percentage change
+ *	between array "old" and "new", putting the percentages i "out".
+ *	"cnt" is size of each array and "diffs" is used for scratch space.
+ *	The array "old" is updated on each call.
+ *	The routine assumes modulo arithmetic.  This function is especially
+ *	useful on BSD mchines for calculating cpu state percentages.
+ */
+
+long percentages(cnt, out, new, old, diffs)
+
+int cnt;
+int *out;
+register long *new;
+register long *old;
+long *diffs;
+
 {
-	int id;
+    register int i;
+    register long change;
+    register long total_change;
+    register long *dp;
+    long half_total;
 
-	sscanf(cmd + 3, "%d", &id);
-	printf("%d\n", SMPLoad[id].userLoad);
-}
+    /* initialization */
+    total_change = 0;
+    dp = diffs;
 
-void
-printCPUxUserInfo(const char* cmd)
-{
-	int id;
+    /* calculate changes for each state and the overall change */
+    for (i = 0; i < cnt; i++)
+    {
+	if ((change = *new - *old) < 0)
+	{
+	    /* this only happens when the counter wraps */
+	    change = (int)
+		((unsigned long)*new-(unsigned long)*old);
+	}
+	total_change += (*dp++ = change);
+	*old++ = *new++;
+    }
 
-	sscanf(cmd + 3, "%d", &id);
-	printf("CPU%d User Load\t0\t100\t%%\n", id);
-}
+    /* avoid divide by zero potential */
+    if (total_change == 0)
+    {
+	total_change = 1;
+    }
 
-void
-printCPUxNice(const char* cmd)
-{
-	int id;
+    /* calculate percentages based on overall change, rounding up */
+    half_total = total_change / 2l;
 
-	sscanf(cmd + 3, "%d", &id);
-	printf("%d\n", SMPLoad[id].niceLoad);
-}
+    /* Do not divide by 0. Causes Floating point exception */
+    if(total_change) {
+        for (i = 0; i < cnt; i++)
+        {
+          *out++ = (int)((*diffs++ * 1000 + half_total) / total_change);
+        }
+    }
 
-void
-printCPUxNiceInfo(const char* cmd)
-{
-	int id;
-
-	sscanf(cmd + 3, "%d", &id);
-	printf("CPU%d Nice Load\t0\t100\t%%\n", id);
-}
-
-void
-printCPUxSys(const char* cmd)
-{
-	int id;
-
-	sscanf(cmd + 3, "%d", &id);
-	printf("%d\n", SMPLoad[id].sysLoad);
-}
-
-void
-printCPUxSysInfo(const char* cmd)
-{
-	int id;
-
-	sscanf(cmd + 3, "%d", &id);
-	printf("CPU%d System Load\t0\t100\t%%\n", id);
-}
-
-void
-printCPUxIdle(const char* cmd)
-{
-	int id;
-
-	sscanf(cmd + 3, "%d", &id);
-	printf("%d\n", SMPLoad[id].idleLoad);
-}
-
-void
-printCPUxIdleInfo(const char* cmd)
-{
-	int id;
-
-	sscanf(cmd + 3, "%d", &id);
-	printf("CPU%d Idle Load\t0\t100\t%%\n", id);
+    /* return the total in case the caller wants to use it */
+    return(total_change);
 }
