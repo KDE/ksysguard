@@ -28,8 +28,10 @@
  =============================================================================*/
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include <qpainter.h>
+#include <qmessagebox.h>
 
 #include "memory.moc"
 
@@ -46,8 +48,16 @@ MemMon::MemMon(QWidget *parent, const char *name, QWidget *child)
     memset(mem_values, 0, sizeof(int) * intervals);
 
 	int dum, stotal;
-	os.getMemoryInfo(physsize, dum, dum, dum, dum);
-	os.getSwapInfo(stotal, dum);
+	if (!os.getMemoryInfo(physsize, dum, dum, dum, dum))
+	{
+		QMessageBox::critical(this, "ktop", os.getErrMessage(), 0, 0);
+		assert(0);
+	}
+	if (!os.getSwapInfo(stotal, dum))
+	{
+		QMessageBox::critical(this, "ktop", os.getErrMessage(), 0, 0);
+		assert(0);
+	}
 	mem_size = physsize + stotal;
 
     brush_0 = QBrush(QColor("darkgreen"), SolidPattern);
@@ -106,8 +116,16 @@ MemMon::timerEvent(QTimerEvent *)
 	int mtotal, mfree, dum;
 	int stotal, sfree;
 
-	os.getMemoryInfo(mtotal, mfree, dum, dum, dum);
-	os.getSwapInfo(stotal, sfree);
+	if (!os.getMemoryInfo(mtotal, mfree, dum, dum, dum))
+	{
+		QMessageBox::critical(this, "ktop", os.getErrMessage(), 0, 0);
+		assert(0);
+	}
+	if (!os.getSwapInfo(stotal, sfree))
+	{
+		QMessageBox::critical(this, "ktop", os.getErrMessage(), 0, 0);
+		assert(0);
+	}
     memmove(mem_values, &mem_values[1], sizeof(int) * (intervals - 1));
     mem_values[intervals - 1] = (mtotal - mfree) + (stotal - sfree);
 

@@ -21,9 +21,69 @@
 
 // $Id$
 
+/*
+ * ATTENTION: PORTING INFORMATION!
+ * 
+ * If you plan to port KTop to a new platform please follow these instructions.
+ * They are designed to bring KTop to a maximum number of instructions without
+ * sacrifying the ability to improve it further by adding new features.
+ * The operation system abstraction classes were introduced to isolate OS
+ * specific code in a very small number of modules. These modules are called
+ * OSStatus and OSProcessList. OSStatus can be used to retrieve information
+ * about the current system status while OSProcessList provides a list of
+ * running processes.
+ *
+ * If you add support for a new platform try to make as little changes as
+ * possible. Idealy you only need to change the two OS*.cpp files. Please
+ * use a single #ifdef PLATFORM to add your code so that the files will look
+ * like this:
+ *
+ * #ifdef _PLATFORM_A_
+ * // Code for Platform A
+ * OSStatus::OSStatus()
+ * {
+ * ...
+ * OSStatus::getSwapInfo()
+ * {
+ * ...
+ * }
+ * #else
+ * #ifdef _PLATFORM_B_
+ * // Code for Platform B
+ * OSStatus::OSStatus()
+ * {
+ * ...
+ * OSStatus::getSwapInfo()
+ * {
+ * ...
+ * }
+ * #else
+ * // Code for Linux 2.x
+ * OSStatus::OSStatus()
+ * {
+ * ...
+ * OSStatus::getSwapInfo()
+ * {
+ * ...
+ * }
+ * #endif
+ *
+ * Please do _not_ put any #ifdef _PLATFORM_X_ in the other modules. Since
+ * these things make the code ugly and difficult to maintain I will not
+ * allow them unless you have _really_ good reasons for doing so.
+ */
+
 #include <kapp.h>
 
 #include "OSStatus.h"
+
+#ifdef _SOME_PLATFORM_
+
+// nothing here yet
+
+#else
+
+// Code for Linux 2.x
 
 OSStatus::OSStatus()
 {
@@ -40,8 +100,15 @@ OSStatus::OSStatus()
 
     setvbuf(stat, NULL, _IONBF, 0);
 
-	fscanf(stat, "%*s %d %d %d %d",
-		   &userTicks, &sysTicks, &niceTicks, &idleTicks);
+	if (fscanf(stat, "%*s %d %d %d %d",
+			   &userTicks, &sysTicks, &niceTicks, &idleTicks) != 4)
+	{
+		error = true;
+		errMessage = i18n("Cannot read file \'/proc/stat\'!\n"
+						  "The kernel needs to be compiled with support\n"
+						  "for /proc filesystem enabled!");
+		return;
+	}
 
 	/*
 	 * Contrary to /proc/stat the /proc/meminfo file cannot be left open.
@@ -61,14 +128,50 @@ OSStatus::OSStatus()
 	fclose(meminfo);
 }
 
+OSStatus::~OSStatus()
+{
+	if (stat)
+		fclose(stat);
+}
+
 bool
 OSStatus::getCpuLoad(int& user, int& sys, int& nice, int& idle)
 {
+	/*
+	 * The CPU load is calculated from the values in /proc/stat. The cpu
+	 * entry contains 4 counters. These counters count the number of ticks
+	 * the system has spend on user processes, system processes, nice
+	 * processes and idle time.
+	 *
+	 * The /proc/stat file looks like this:
+	 *
+	 * cpu  1586 4 808 36274
+	 * disk 7797 0 0 0
+	 * disk_rio 6889 0 0 0
+	 * disk_wio 908 0 0 0
+	 * disk_rblk 13775 0 0 0
+	 * disk_wblk 1816 0 0 0
+	 * page 27575 1330
+	 * swap 1 0
+	 * intr 50444 38672 2557 0 0 0 0 2 0 2 0 0 3 1429 1 7778 0
+	 * ctxt 54155
+	 * btime 917379184
+	 * processes 347 
+	 */
+
 	int currUserTicks, currSysTicks, currNiceTicks, currIdleTicks;
 
 	rewind(stat);
-	fscanf(stat, "%*s %d %d %d %d",
-		   &currUserTicks, &currNiceTicks, &currSysTicks, &currIdleTicks);
+	if (fscanf(stat, "%*s %d %d %d %d",
+			   &currUserTicks, &currNiceTicks,
+			   &currSysTicks, &currIdleTicks) != 4)
+	{
+		error = true;
+		errMessage = i18n("Cannot read file \'/proc/stat\'!\n"
+						  "The kernel needs to be compiled with support\n"
+						  "for /proc filesystem enabled!");
+		return (false);
+	}
 
 	int totalTicks = ((currUserTicks - userTicks) +
 					  (currSysTicks - sysTicks) +
@@ -163,3 +266,5 @@ OSStatus::getSwapInfo(int& stotal, int& sfree)
 
 	return (true);
 }
+
+#endif

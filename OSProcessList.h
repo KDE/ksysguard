@@ -24,6 +24,18 @@
 #ifndef _OSProcessList_h_
 #define _OSProcessList_h_
 
+/*
+ * ATTENTION: PORTING INFORMATION!
+ * 
+ * If you plan to port KTop to a new platform please follow these instructions.
+ * For general porting information please look at the file OSStatus.cpp!
+ *
+ * To keep this file readable and maintainable please keep the number of
+ * #ifdef _PLATFORM_ as low as possible. Ideally you dont have to make any
+ * platform specific changes in the header files. Please do not add any new
+ * features. This is planned for KTop version after 1.0.0!
+ */
+
 #include <unistd.h>
 #include <config.h>
 #ifdef HAVE_SYS_TYPES_H
@@ -35,12 +47,17 @@
 
 #include "TimeStampList.h"
 
+/**
+ * This class requests all needed information about a process and stores it
+ * for later retrival.
+ */
 class OSProcess
 {
 public:
-	OSProcess(const char* pidStr);
+	OSProcess(const char* pidStr, TimeStampList* lastTStamps,
+			  TimeStampList* newTStamps);
 	OSProcess(int pid_) : pid(pid_) { }
-	virtual ~OSProcess() {}
+	virtual ~OSProcess() { }
 
 	const char* getName(void) const
 	{
@@ -165,6 +182,7 @@ public:
 		SORTBY_USERNAME,
 		SORTBY_CPU,
 		SORTBY_TIME,
+		SORTBY_PRIORITY,
 		SORTBY_STATUS,
 		SORTBY_VMSIZE,
 		SORTBY_VMRSS,
@@ -173,7 +191,10 @@ public:
 
 	OSProcessList();
 
-	virtual ~OSProcessList() {}
+	virtual ~OSProcessList()
+	{
+		delete lastTStamps;
+	}
 
 	/**
 	 * This function clears the old process list and retrieves a current one
@@ -183,60 +204,27 @@ public:
 
 	/**
 	 * The 'has...' functions can be used to inquire if the OS supports a
-	 * specific process attribute. The return value may be hardcoded and
-	 * ifdef'd for each platform.
+	 * specific process attribute. The return value may be hardcoded
+	 * for each platform.
 	 */
-	bool hasName(void) const
-	{
-		return (true);
-	}
-	bool hasUid(void) const
-	{
-		return (true);
-	}
-	bool hasUserTime(void) const
-	{
-		return (true);
-	}
-	bool hasSysTime(void) const
-	{
-		return (true);
-	}
-	bool hasUserLoad(void) const
-	{
-		return (true);
-	}
-	bool hasSysLoad(void) const
-	{
-		return (true);
-	}
-	bool hasStatus(void) const
-	{
-		return (true);
-	}
-	bool hasPriority(void) const
-	{
-		return (false); // not yet implemented
-	}
-	bool hasVmSize(void) const
-	{
-		return (true);
-	}
-	bool hasVmRss(void) const
-	{
-		return (true);
-	}
-	bool hasVmLib(void) const
-	{
-		return (true);
-	}
+	bool hasName(void) const;
+	bool hasUid(void) const;
+	bool hasUserTime(void) const;
+	bool hasSysTime(void) const;
+	bool hasUserLoad(void) const;
+	bool hasSysLoad(void) const;
+	bool hasStatus(void) const;
+	bool hasPriority(void) const;
+	bool hasVmSize(void) const;
+	bool hasVmRss(void) const;
+	bool hasVmLib(void) const;
 
 	void setSortCriteria(SORTKEY sk)
 	{
 		sortCriteria = sk;
 	}
 
-	SORTKEY getSortCriteria(void)
+	SORTKEY getSortCriteria(void) const
 	{
 		return (sortCriteria);
 	}
@@ -266,6 +254,8 @@ private:
 
 	/// This variabled stores the criteria used to sort the list.
 	SORTKEY sortCriteria;
+
+	TimeStampList* lastTStamps;
 
 	/**
 	 * These variables are used for error handling. When an error has occured

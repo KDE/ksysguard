@@ -24,6 +24,18 @@
 #ifndef _OSStatus_h_
 #define _OSStatus_h_
 
+/*
+ * ATTENTION: PORTING INFORMATION!
+ * 
+ * If you plan to port KTop to a new platform please follow these instructions.
+ * For general porting information please look at the file OSStatus.cpp!
+ *
+ * To keep this file readable and maintainable please keep the number of
+ * #ifdef _PLATFORM_ as low as possible. Ideally you dont have to make any
+ * platform specific changes in the header files. Please do not add any new
+ * features. This is planned for KTop version after 1.0.0!
+ */
+
 #include <stdio.h>
 
 #include <qstring.h>
@@ -38,11 +50,7 @@ class OSStatus
 public:
 	OSStatus();
 
-	~OSStatus()
-	{
-		if (stat)
-			fclose(stat);
-	}
+	~OSStatus();
 
 	/**
 	 * If an error has occured the return value of this function will be

@@ -11,8 +11,8 @@ Author3: 	ralf@bj-ig.de (Ralf Mueller)
 Author4: 	nicknet@planete.net (Nicolas Leclercq)
 Author5:	cs@axys.de (Chris Schlaeger)
 Maintained-by: 	cs@axys.de (Chris Schlaeger)
-Primary-site: 	ftp://ftp.kde.org
-Platform: 	Linux, needs Qt and the kde libs
+Primary-site: 	ftp://ftp.kde.org/pub/kde/stable/1.1pre2/apps/utils/
+Platform: 	Linux, needs Qt 1.4x and the kde libs 1.x
 Copying-policy: GPL 
 End
 

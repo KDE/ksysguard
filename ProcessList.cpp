@@ -40,8 +40,6 @@
 #include "OSProcessList.h"
 #include "ProcessList.moc"
 
-// #define DEBUG_MODE
-
 #define NONE -1
 
 typedef struct
@@ -73,19 +71,21 @@ static TABCOLUMN TabCol[] =
 {
 	{ "", 0, "++++", true, true, KTabListBox::MixedColumn,
 	  OSProcessList::SORTBY_NAME },
-	{ "procID", 0, "procID++", true, true, KTabListBox::TextColumn,
+	{ "PID", 0, "++++++", true, true, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_PID },
 	{ "Name", 0, "kfontmanager++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_NAME},
-	{ "userID", 0, "rootuseroot", true, false, KTabListBox::TextColumn,
+	{ "User ID", 0, "rootuseroot", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_UID },
 	{ "CPU", 0, "100.00%+", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_CPU },
 	{ "Time", 0, "100:00++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_TIME },
+	{ "Prior.", 0, "-20+", true, false, KTabListBox::TextColumn,
+	  OSProcessList::SORTBY_PRIORITY },
 	{ "Status", 0, "Status+++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_STATUS },
-	{ "VmSize", 0, "VmSize++", true, false, KTabListBox::TextColumn,
+	{ "Memory", 0, "VmSize++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_VMSIZE },
 	{ "VmRss", 0, "VmSize++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_VMRSS },
@@ -131,14 +131,9 @@ ProcessList::ProcessList(QWidget *parent = 0, const char* name = 0)
 	CHECK_PTR(icons);
 
 	// make sure we can retrieve process lists from the OS
-	OSProcessList pl;
 	if (!pl.ok())
 	{
 		QMessageBox::critical(this, "ktop", pl.getErrMessage(), 0, 0);
-
-		/*
-		 * We need to do some better error handling here!
-		 */
 		assert(0);
 	}
 
@@ -250,7 +245,7 @@ ProcessList::update(void)
 void 
 ProcessList::load()
 {
-	OSProcessList pl;
+	pl.clear();
 
 	pl.setSortCriteria(TabCol[sortColumn].sortMethod);
 
@@ -334,20 +329,24 @@ ProcessList::load()
 								  (totalTime / 100) % 60);
 			}
 
-			// process status
+			// process priority
 			if (TabCol[6].visible && TabCol[6].supported)
+				line += s.sprintf("%d;", p->getPriority());
+
+			// process status
+			if (TabCol[7].visible && TabCol[6].supported)
 				line += p->getStatusTxt() + QString(";");
 
-			// VM size
-			if (TabCol[7].visible && TabCol[7].supported)
-				line += s.setNum(p->getVm_size()) + ";";
+			// VM size (total memory in kBytes)
+			if (TabCol[8].visible && TabCol[7].supported)
+				line += s.setNum(p->getVm_size() / 1024) + ";";
 
 			// VM rss
-			if (TabCol[8].visible && TabCol[8].supported)
+			if (TabCol[9].visible && TabCol[8].supported)
 				line += s.setNum(p->getVm_rss()) + ";";
 
 			// VM lib
-			if (TabCol[9].visible && TabCol[9].supported)
+			if (TabCol[10].visible && TabCol[9].supported)
 				line += s.setNum(p->getVm_lib()) + ";";
 
 			appendItem(line);
@@ -422,18 +421,16 @@ ProcessList::cellHeight(int row)
 void
 ProcessList::initTabCol(void)
 {
-	OSProcessList pl;
-
-	TabCol[1].trHeader = new char[strlen(i18n("procID")) + 1];
-	strcpy(TabCol[1].trHeader, i18n("procID"));
+	TabCol[1].trHeader = new char[strlen(i18n("PID")) + 1];
+	strcpy(TabCol[1].trHeader, i18n("PID"));
 
 	TabCol[2].trHeader = new char[strlen(i18n("Name")) + 1];
 	strcpy(TabCol[2].trHeader, i18n("Name"));
 	if (pl.hasName())
 		TabCol[2].supported = true;
 
-	TabCol[3].trHeader = new char[strlen(i18n("userID")) + 1];
-	strcpy(TabCol[3].trHeader, i18n("userID"));
+	TabCol[3].trHeader = new char[strlen(i18n("User ID")) + 1];
+	strcpy(TabCol[3].trHeader, i18n("User ID"));
 	if (pl.hasUid())
 		TabCol[3].supported = true;
 
@@ -447,25 +444,30 @@ ProcessList::initTabCol(void)
 	if (pl.hasUserTime() && pl.hasSysTime())
 		TabCol[5].supported = true;
 
-	TabCol[6].trHeader = new char[strlen(i18n("Status")) + 1];
-	strcpy(TabCol[6].trHeader, i18n("Status"));
-	if (pl.hasStatus())
+	TabCol[6].trHeader = new char[strlen(i18n("Prior.")) + 1];
+	strcpy(TabCol[6].trHeader, i18n("Prior."));
+	if (pl.hasPriority())
 		TabCol[6].supported = true;
 
-	TabCol[7].trHeader = new char[strlen(i18n("VmSize")) + 1];
-	strcpy(TabCol[7].trHeader, i18n("VmSize"));
-	if (pl.hasVmSize())
+	TabCol[7].trHeader = new char[strlen(i18n("Status")) + 1];
+	strcpy(TabCol[7].trHeader, i18n("Status"));
+	if (pl.hasStatus())
 		TabCol[7].supported = true;
 
-	TabCol[8].trHeader = new char[strlen(i18n("VmRss")) + 1];
-	strcpy(TabCol[8].trHeader, i18n("VmRss"));
-	if (pl.hasVmRss())
+	TabCol[8].trHeader = new char[strlen(i18n("Memory")) + 1];
+	strcpy(TabCol[8].trHeader, i18n("Memory"));
+	if (pl.hasVmSize())
 		TabCol[8].supported = true;
 
-	TabCol[9].trHeader = new char[strlen(i18n("VmLib")) + 1];
-	strcpy(TabCol[9].trHeader, i18n("VmLib"));
-	if (pl.hasVmLib())
+	TabCol[9].trHeader = new char[strlen(i18n("VmRss")) + 1];
+	strcpy(TabCol[9].trHeader, i18n("VmRss"));
+	if (pl.hasVmRss())
 		TabCol[9].supported = true;
+
+	TabCol[10].trHeader = new char[strlen(i18n("VmLib")) + 1];
+	strcpy(TabCol[10].trHeader, i18n("VmLib"));
+	if (pl.hasVmLib())
+		TabCol[10].supported = true;
 
 	// determine the number of visible columns
 	int columns = 0;
@@ -486,7 +488,7 @@ ProcessList::initTabCol(void)
 		{
 			setColumn(cnt, TabCol[cnt].trHeader,
 					  max(fm.width(TabCol[cnt].placeholder),
-						  fm.width(TabCol[cnt].trHeader)),
+						  fm.width(TabCol[cnt].trHeader) + 6),
 					  TabCol[cnt].type);
 		}
 }

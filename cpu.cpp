@@ -25,6 +25,9 @@
 // $Id$
 
 #include <string.h>
+#include <assert.h>
+
+#include <qmessagebox.h>
 
 #include "ktop.h"
 #include "settings.h"
@@ -129,7 +132,11 @@ CpuMon::timerEvent(QTimerEvent *)
 	memmove(load_values, &load_values[1], sizeof(unsigned) * (intervals - 1));
 
 	int user, sys, nice, idle;
-	stat.getCpuLoad(user, sys, nice, idle);
+	if (!stat.getCpuLoad(user, sys, nice, idle))
+	{
+		QMessageBox::critical(this, "ktop", stat.getErrMessage(), 0, 0);
+		assert(0);
+	}
 	load_values[intervals - 1] = user + sys + nice;
 
 	repaint();

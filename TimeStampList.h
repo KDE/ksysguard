@@ -22,6 +22,18 @@
 
 // $Id$
 
+/*
+ * ATTENTION: PORTING INFORMATION!
+ * 
+ * If you plan to port KTop to a new platform please follow these instructions.
+ * For general porting information please look at the file OSStatus.cpp!
+ *
+ * To keep this file readable and maintainable please keep the number of
+ * #ifdef _PLATFORM_ as low as possible. Ideally you dont have to make any
+ * platform specific changes in the header files. Please do not add any new
+ * features. This is planned for KTop version after 1.0.0!
+ */
+
 #ifndef _TimeStampList_h_
 #define _TimeStampList_h_
 
@@ -35,6 +47,12 @@
 
 #include <qlist.h>
 
+/**
+ * The TimeStamp class implements entities that contain the time stamp of
+ * it's creation. The resolution is 1/100 of a second. Additionally it stores
+ * a process id, user and system time information. This class is needed to	
+ * implement the OSProcessList class.
+ */
 class TimeStamp
 {
 public:
@@ -74,6 +92,9 @@ private:
 	int centStamp;
 } ;
 
+/**
+ * This class implements a list of TimeStamps.
+ */
 class TimeStampList : public QList<TimeStamp>
 {
 public:

@@ -175,6 +175,7 @@ private:
 	int timer_interval;
 	int timer_id;
 
+	OSProcessList pl;
     KtopIconList* icons;
 
  private slots:

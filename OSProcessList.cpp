@@ -21,6 +21,18 @@
 
 // $Id$
 
+/*
+ * ATTENTION: PORTING INFORMATION!
+ * 
+ * If you plan to port KTop to a new platform please follow these instructions.
+ * For general porting information please look at the file OSStatus.cpp!
+ *
+ * To keep this file readable and maintainable please keep the number of
+ * #ifdef _PLATFORM_ as low as possible. Ideally you dont have to make any
+ * platform specific changes in the header files. Please do not add any new
+ * features. This is planned for KTop version after 1.0.0!
+ */
+
 #include <stdio.h>
 #include <ctype.h>
 #include <dirent.h>
@@ -29,32 +41,17 @@
 #include <kapp.h>
 
 #include "OSProcessList.h"
-#include "TimeStampList.h"
 
-TimeStampList* OldTStamps = NULL;
-TimeStampList* NewTStamps = NULL;
+#ifdef _PLATFORM_A
 
-inline int cmp(int a, int b)
-{
-	return (a < b ? -1 : (a > b ? 1 : 0));
-}
+// nothing here yet
 
-inline int cmp(unsigned int a, unsigned int b)
-{
-	return (a < b ? -1 : (a > b ? 1 : 0));
-}
+#else
 
-inline int cmp(long a, long b)
-{
-	return (a < b ? -1 : (a > b ? 1 : 0));
-}
+// Code for Linux 2.x
 
-inline int cmp(double a, double b)
-{
-	return (a < b ? -1 : (a > b ? 1 : 0));
-}
-
-OSProcess::OSProcess(const char* pidStr)
+OSProcess::OSProcess(const char* pidStr, TimeStampList* lastTStamps,
+					 TimeStampList* newTStamps)
 {
 	char buffer[1024];
 	FILE* fd;
@@ -107,9 +104,10 @@ OSProcess::OSProcess(const char* pidStr)
 		return;
 	}
     
-	fscanf(fd, "%d %*s %c %d %d %*d %d %*d %*d %*d %*d %*d %*d %d %d",
+	fscanf(fd, "%d %*s %c %d %d %*d %d %*d %*u %*u %*u %*u %*u %d %d"
+		   "%*d %*d %*d %d %*u %*u %*d %u %u",
 		   (int*) &pid, &status, (int*) &ppid, (int*) &gid, &ttyNo,
-		   &userTime, &sysTime);
+		   &userTime, &sysTime, &priority, &vm_size, &vm_rss);
 	fclose(fd);
 
 	switch (status)
@@ -138,13 +136,13 @@ OSProcess::OSProcess(const char* pidStr)
 	}
 
 	TimeStamp* ts = new TimeStamp(pid, userTime, sysTime);
-	NewTStamps->inSort(ts);
+	newTStamps->inSort(ts);
 
-	if (OldTStamps->find(ts) >= 0)
+	if (lastTStamps->find(ts) >= 0)
 	{
-		int lastCentStamp = OldTStamps->current()->getCentStamp();
-		int lastUserTime = OldTStamps->current()->getUserTime();
-		int lastSysTime = OldTStamps->current()->getSysTime();
+		int lastCentStamp = lastTStamps->current()->getCentStamp();
+		int lastUserTime = lastTStamps->current()->getUserTime();
+		int lastSysTime = lastTStamps->current()->getSysTime();
 
 		int timeDiff = ts->getCentStamp() - lastCentStamp;
 		int userDiff = userTime - lastUserTime;
@@ -169,6 +167,8 @@ OSProcess::OSProcess(const char* pidStr)
 OSProcessList::OSProcessList()
 {
 	error = false;
+
+	lastTStamps = NULL;
 
 	sortCriteria = SORTBY_PID;
 	setAutoDelete(true);
@@ -201,10 +201,10 @@ OSProcessList::update(void)
 	DIR* dir;
 	struct dirent* entry;
 
-	NewTStamps = new TimeStampList;
+	TimeStampList* newTStamps = new TimeStampList;
 	// If there is no old list yet, we create an empty one.
-	if (!OldTStamps)
-		OldTStamps = new TimeStampList;
+	if (!lastTStamps)
+		lastTStamps = new TimeStampList;
 
 	if ((dir = opendir("/proc")) == NULL)
 	{
@@ -218,15 +218,16 @@ OSProcessList::update(void)
 	{
 		if (isdigit(entry->d_name[0]))
 		{
-			OSProcess* ps = new OSProcess(entry->d_name);
+			OSProcess* ps = new OSProcess(entry->d_name, lastTStamps,
+										  newTStamps);
 			if (!ps || !ps->ok())
 			{
 				error = true;
 				if (ps)
 					errMessage = ps->getErrMessage();
 				else
-					errMessage = i18n("Cannot read status of processes "
-									  "from /proc/* directories!\n");
+					errMessage = i18n("Cannot read status of processes"
+									  "from /proc/... directories!\n");
 				delete ps;
 				return (false);
 			}
@@ -238,11 +239,102 @@ OSProcessList::update(void)
 	closedir(dir);
 
 	// make new list old one and discard the really old one
-	delete OldTStamps;
-	OldTStamps = NewTStamps;
-	NewTStamps = NULL;
+	delete lastTStamps;
+	lastTStamps = newTStamps;
 
 	return (true);
+}
+
+bool 
+OSProcessList::hasName(void) const
+{
+	return (true);
+}
+
+bool 
+OSProcessList::hasUid(void) const
+{
+	return (true);
+}
+
+bool 
+OSProcessList::hasUserTime(void) const
+{
+	return (true);
+}
+
+bool
+OSProcessList::hasSysTime(void) const
+{
+	return (true);
+}
+
+bool 
+OSProcessList::hasUserLoad(void) const
+{
+	return (true);
+}
+
+bool
+OSProcessList::hasSysLoad(void) const
+{
+	return (true);
+}
+
+bool
+OSProcessList::hasStatus(void) const
+{
+	return (true);
+}
+
+bool
+OSProcessList::hasPriority(void) const
+{
+	return (true);
+}
+
+bool 
+OSProcessList::hasVmSize(void) const
+{
+	return (true);
+}
+
+bool
+OSProcessList::hasVmRss(void) const
+{
+	return (false);
+}
+
+bool 
+OSProcessList::hasVmLib(void) const
+{
+	return (false);
+}
+
+#endif
+
+/*
+ * The following code should be platform independant.
+ */
+
+inline int cmp(int a, int b)
+{
+	return (a < b ? -1 : (a > b ? 1 : 0));
+}
+
+inline int cmp(unsigned int a, unsigned int b)
+{
+	return (a < b ? -1 : (a > b ? 1 : 0));
+}
+
+inline int cmp(long a, long b)
+{
+	return (a < b ? -1 : (a > b ? 1 : 0));
+}
+
+inline int cmp(double a, double b)
+{
+	return (a < b ? -1 : (a > b ? 1 : 0));
 }
 
 int
@@ -276,6 +368,9 @@ OSProcessList::compareItems(GCI it1, GCI it2)
 	case SORTBY_TIME:
 		return (cmp(item1->getUserTime() + item1->getSysTime(),
 					item2->getUserTime() + item2->getSysTime()) * -1);
+
+	case SORTBY_PRIORITY:
+		return (cmp(item1->getPriority(), item2->getPriority()));
 
 	case SORTBY_STATUS:
 		return (cmp(item1->getStatus(), item2->getStatus()));
