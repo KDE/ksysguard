@@ -81,6 +81,7 @@ typedef struct DiskIOInfo
 
 static char StatBuf[ STATBUFSIZE ];
 static char VmStatBuf[ STATBUFSIZE ];
+static char IOStatBuf[ STATBUFSIZE ];	/* Buffer for /proc/diskstats */
 static int Dirty = 0;
 
 /* We have observed deviations of up to 5% in the accuracy of the timer
@@ -113,6 +114,7 @@ static void updateCPULoad( const char* line, CPULoadInfo* load );
 static int processDisk( char* tag, char* buf, const char* label, int idx );
 static void processStat( void );
 static int processDiskIO( const char* buf );
+static int process26DiskIO( const char* buf );
 static void cleanupDiskList( void );
 
 static int initStatDisk( char* tag, char* buf, const char* label,
@@ -274,6 +276,130 @@ static int processDiskIO( const char* buf )
   return 0;
 }
 
+static int process26DiskIO( const char* buf )
+{
+   /* Process values from /proc/diskstats (Linux >= 2.6.x) */
+
+   /* For each disk /proc/diskstats includes lines as follows:
+    *   3    0 hda 1314558 74053 26451438 14776742 1971172 4607401 52658448 202855090 0 9597019 217637839
+    *   3    1 hda1 178 360 0 0
+    *   3    2 hda2 354 360 0 0
+    *   3    3 hda3 354 360 0 0
+    *   3    4 hda4 0 0 0 0
+    *   3    5 hda5 529506 9616000 4745856 37966848
+    *
+    * - See Documentation/iostats.txt for details on the changes
+    */
+   int                      major, minor;
+   char                     devname[16];
+   unsigned long            total,
+                            rio, rmrg, rblk, rtim,
+                            wio, wmrg, wblk, wtim,
+                            ioprog, iotim, iotimw;
+   DiskIOInfo               *ptr = DiskIO;
+   DiskIOInfo               *last = 0;
+   char                     sensorName[128];
+
+   switch (sscanf(buf, "%d %d %s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",
+              &major, &minor, devname,
+              &rio, &rmrg, &rblk, &rtim,
+              &wio, &wmrg, &wblk, &wtim,
+              &ioprog, &iotim, &iotimw))
+   {
+      case 7:
+         /* Partition stats entry */
+         /* Adjust read fields rio rmrg rblk rtim -> rio rblk wio wblk */
+         wblk = rtim;
+         wio = rblk;
+         rblk = rmrg;
+
+         total = rio + wio;
+
+         break;
+      case 14:
+         /* Disk stats entry */
+         total = rio + wio;
+
+         break;
+      default:
+         /* Something unexepected */
+         return -1;
+   }
+
+   last = 0;
+   ptr = DiskIO;
+   while (ptr)
+   {
+      if (ptr->major == major && ptr->minor == minor)
+      {
+         /* The IO device has already been registered. */
+         ptr->total.delta = total - ptr->total.old;
+         ptr->total.old = total;
+         ptr->rio.delta = rio - ptr->rio.old;
+         ptr->rio.old = rio;
+         ptr->wio.delta = wio - ptr->wio.old;
+         ptr->wio.old = wio;
+         ptr->rblk.delta = rblk - ptr->rblk.old;
+         ptr->rblk.old = rblk;
+         ptr->wblk.delta = wblk - ptr->wblk.old;
+         ptr->wblk.old = wblk;
+         ptr->alive = 1;
+         break;
+      }
+
+      last = ptr;
+      ptr = ptr->next;
+   }
+
+   if (!ptr)
+   {
+      /* The IO device has not been registered yet. We need to add it. */
+      ptr = (DiskIOInfo*)malloc( sizeof( DiskIOInfo ) );
+      ptr->major = major;
+      ptr->minor = minor;
+      ptr->total.delta = 0;
+      ptr->total.old = total;
+      ptr->rio.delta = 0;
+      ptr->rio.old = rio;
+      ptr->wio.delta = 0;
+      ptr->wio.old = wio;
+      ptr->rblk.delta = 0;
+      ptr->rblk.old = rblk;
+      ptr->wblk.delta = 0;
+      ptr->wblk.old = wblk;
+      ptr->alive = 1;
+      ptr->next = 0;
+      if (last)
+      {
+         /* Append new entry at end of list. */
+         last->next = ptr;
+      }
+      else
+      {
+         /* List is empty, so we insert the fist element into the list. */
+         DiskIO = ptr;
+      }
+
+      sprintf(sensorName, "disk/%d:%d/total", major, minor);
+      registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo,
+         StatSM);
+      sprintf(sensorName, "disk/%d:%d/rio", major, minor);
+      registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo,
+         StatSM);
+      sprintf(sensorName, "disk/%d:%d/wio", major, minor);
+      registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo,
+         StatSM);
+      sprintf(sensorName, "disk/%d:%d/rblk", major, minor);
+      registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo,
+         StatSM);
+      sprintf(sensorName, "disk/%d:%d/wblk", major, minor);
+      registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo,
+         StatSM);
+   }
+
+   return 0;
+}
+
 static void cleanupDiskList( void )
 {
   DiskIOInfo* ptr = DiskIO;
@@ -323,6 +449,7 @@ static void processStat( void )
   char tag[ 32 ];
   char* statBufP = StatBuf;
   char* vmstatBufP = VmStatBuf;
+  char* iostatBufP = IOStatBuf;
 
   sprintf( format, "%%%d[^\n]\n", (int)sizeof( buf ) - 1 );
   sprintf( tagFormat, "%%%ds", (int)sizeof( tag ) - 1 );
@@ -397,6 +524,15 @@ static void processStat( void )
     }
   }
 
+  /* Process values from /proc/diskstats (Linux >= 2.6.x) */
+  while (sscanf(iostatBufP, format, buf) == 1)
+  {
+    buf[sizeof(buf) - 1] = '\0';
+    iostatBufP += strlen(buf) + 1;  /* move IOstatBufP to next line */
+
+    process26DiskIO(buf);
+  }
+
   /* save exact time inverval between this and the last read of /proc/stat */
   timeInterval = currSampling.tv_sec - lastSampling.tv_sec +
                  ( currSampling.tv_usec - lastSampling.tv_usec ) / 1000000.0;
@@ -439,6 +575,9 @@ void initStat( struct SensorModul* sm )
    *
    * Linux kernel >= 2.4.0 have one or more disk_io: lines instead of
    * the disk_* lines.
+   *
+   * Linux kernel >= 2.6.x(?) have disk I/O stats in /proc/diskstats
+   * and no disk relevant lines are found in /proc/stat
    */
 
   char format[ 32 ];
@@ -447,6 +586,7 @@ void initStat( struct SensorModul* sm )
   char tag[ 32 ];
   char* statBufP = StatBuf;
   char* vmstatBufP = VmStatBuf;
+  char* iostatBufP = IOStatBuf;
 
   StatSM = sm;
 
@@ -466,7 +606,7 @@ void initStat( struct SensorModul* sm )
       registerMonitor( "cpu/nice", "integer", printCPUNice, printCPUNiceInfo, StatSM );
       registerMonitor( "cpu/sys", "integer", printCPUSys, printCPUSysInfo, StatSM );
       registerMonitor( "cpu/idle", "integer", printCPUIdle, printCPUIdleInfo, StatSM );
-		} else if ( strncmp( "cpu", tag, 3 ) == 0 ) {
+    } else if ( strncmp( "cpu", tag, 3 ) == 0 ) {
       char cmdName[ 24 ];
       /* Load for each SMP CPU */
       int id;
@@ -562,6 +702,15 @@ void initStat( struct SensorModul* sm )
     }
   }
 
+   /* Process values from /proc/diskstats (Linux >= 2.6.x) */
+   while (sscanf(iostatBufP, format, buf) == 1)
+   {
+      buf[sizeof(buf) - 1] = '\0';
+      iostatBufP += strlen(buf) + 1;  /* move IOstatBufP to next line */
+
+      process26DiskIO(buf);
+   }
+
   if ( CPUCount > 0 )
     SMPLoad = (CPULoadInfo*)malloc( sizeof( CPULoadInfo ) * CPUCount );
 
@@ -579,7 +728,7 @@ void exitStat( void )
 
   free( OldIntr );
   OldIntr = 0;
-	
+
   free( Intr );
   Intr = 0;
 }
@@ -621,6 +770,21 @@ int updateStat( void )
 
   close( fd );
   VmStatBuf[ n ] = '\0';
+
+  /* Linux >= 2.6.x has disk I/O stats in /proc/diskstats */
+  IOStatBuf[ 0 ] = '\0';
+  if ( ( fd = open( "/proc/diskstats", O_RDONLY ) ) < 0 )
+    return 0; /* failure is okay, only exists for Linux >= 2.6.x */
+
+  if ( ( n = read( fd, IOStatBuf, STATBUFSIZE - 1 ) ) == STATBUFSIZE - 1 ) {
+    log_error( "Internal buffer too small to read \'/proc/diskstats\'" );
+
+    close( fd );
+    return -1;
+  }
+
+  close( fd );
+  IOStatBuf[ n ] = '\0';
 
   return 0;
 }
