@@ -156,7 +156,7 @@ ProcessController::addSensor(const QString& hostName,
 	sendRequest(hostName, "test kill", 4);
 
 	if (title.isEmpty())
-		setTitle(QString(i18n("%1: Running Processes")).arg(hostName));
+		setTitle(i18n("%1: Running Processes").arg(hostName));
 	else
 		setTitle(title);
 
@@ -276,17 +276,17 @@ ProcessController::answerReceived(int id, const QString& answer)
 			break;
 		case 1:	// unknown error
 			KSGRD::SensorMgr->notify(
-				QString(i18n("Error while attempting to kill process %1!"))
+				i18n("Error while attempting to kill process %1!")
 				.arg(vals[1]));
 			break;
 		case 2:
 			KSGRD::SensorMgr->notify(
-				QString(i18n("Insufficient permissions to kill "
-							 "process %1!")).arg(vals[1]));
+				i18n("Insufficient permissions to kill "
+							 "process %1!").arg(vals[1]));
 			break;
 		case 3:
 			KSGRD::SensorMgr->notify(
-				QString(i18n("Process %1 has already disappeared!"))
+				i18n("Process %1 has already disappeared!")
 				.arg(vals[1]));
 			break;
 		case 4:
@@ -311,17 +311,17 @@ ProcessController::answerReceived(int id, const QString& answer)
 			break;
 		case 1:	// unknown error
 			KSGRD::SensorMgr->notify(
-				QString(i18n("Error while attempting to renice process %1!"))
+				i18n("Error while attempting to renice process %1!")
 				.arg(vals[1]));
 			break;
 		case 2:
 			KSGRD::SensorMgr->notify(
-				QString(i18n("Insufficient permissions to renice "
-							 "process %1!")).arg(vals[1]));
+				i18n("Insufficient permissions to renice "
+							 "process %1!").arg(vals[1]));
 			break;
 		case 3:
 			KSGRD::SensorMgr->notify(
-				QString(i18n("Process %1 has already disappeared!"))
+				i18n("Process %1 has already disappeared!")
 				.arg(vals[1]));
 			break;
 		case 4:

@@ -222,12 +222,12 @@ void SensorDisplay::sensorError( int sensorId, bool err )
 
 void SensorDisplay::updateWhatsThis()
 {
-  QWhatsThis::add( this, QString( i18n(
+  QWhatsThis::add( this, i18n(
     "<qt><p>This is a sensor display. To customize a sensor display click "
     "and hold the right mouse button on either the frame or the "
     "display box and select the <i>Properties</i> entry from the popup "
     "menu. Select <i>Remove</i> to delete the display from the worksheet."
-    "</p>%1</qt>" ) ).arg( additionalWhatsThis() ) );
+    "</p>%1</qt>" ).arg( additionalWhatsThis() ) );
 }
 
 void SensorDisplay::hosts( QStringList& list )

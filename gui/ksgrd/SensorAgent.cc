@@ -86,9 +86,9 @@ void SensorAgent::processAnswer( const QString &buffer )
         else {
           /* We just received the end of an error message, so we
            * can display it. */
-          SensorMgr->notify( QString( i18n( "Message from %1:\n%2" )
+          SensorMgr->notify( i18n( "Message from %1:\n%2" )
                            .arg( mHostName )
-                           .arg( mErrorBuffer ) ) );
+                           .arg( mErrorBuffer ) );
         }
         mErrorBuffer = QString::null;
       }

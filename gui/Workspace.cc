@@ -129,7 +129,7 @@ void Workspace::newWorkSheet()
 
   int i = 1;
   do {
-    sheetName = QString( i18n( "Sheet %1" ) ).arg( i++ );
+    sheetName = i18n( "Sheet %1" ).arg( i++ );
     QPtrListIterator<WorkSheet> it( mSheetList );
     found = false;
     for ( ; it.current() && !found; ++it )
