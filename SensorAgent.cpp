@@ -79,7 +79,7 @@ SensorAgent::sendRequest(const QString& req, SensorClient* client, int id)
 {
 	/* The request is registered with the FIFO so that the answer can be
 	 * routed back to the requesting client. */
-	inputFIFO.prepend(new SensorRequest(req, client, id));
+	inputFIFO.insert(0, new SensorRequest(req, client, id));
 	if (ktopdOnLine && (inputFIFO.count() == 1))
 		executeCommand();
 }
@@ -161,5 +161,5 @@ SensorAgent::executeCommand(void)
 	ktopd->writeStdin(cmdWithNL.ascii(), cmdWithNL.length());
 
 	// add request to processing FIFO
-	processingFIFO.prepend(new SensorRequest(*req));
+	processingFIFO.insert(0, new SensorRequest(*req));
 }
