@@ -32,6 +32,7 @@
 #include <ctype.h>
 
 #include <ktmainwindow.h>
+#include <kwinmodule.h>
 #include <kconfig.h>
 #include <klocale.h>
 #include <kcmdlineargs.h>
@@ -59,6 +60,8 @@ static const char* Description = I18N_NOOP("KDE Task Manager");
 TopLevel::TopLevel(const char *name)
 	: KTMainWindow(name), DCOPObject("KGuardIface")
 {
+	dontSaveSession = FALSE;
+
 	splitter = new QSplitter(this, "Splitter");
 	CHECK_PTR(splitter);
 	splitter->setOrientation(Horizontal);
@@ -139,13 +142,41 @@ TopLevel::showProcesses()
 }
 
 void
+TopLevel::beATaskManager()
+{
+	ws->showProcesses();
+
+	QValueList<int> sizes;
+	sizes.append(0);
+	sizes.append(100);
+	splitter->setSizes(sizes);
+
+	// Show window centered on the desktop.
+	KWinModule kwm;
+	QRect workArea = kwm.workArea();
+	int w = 600;
+	if (workArea.width() < w)
+		w = workArea.width();
+	int h = 440;
+	if (workArea.height() < h)
+		h = workArea.height();
+	setGeometry((workArea.width() - w) / 2, (workArea.height() - h) / 2,
+				w, h);
+
+	dontSaveSession = TRUE;
+}
+
+void
 TopLevel::quitApp()
 {
-	if (!ws->saveOnQuit())
-		return;
+	if (!dontSaveSession)
+	{
+		if (!ws->saveOnQuit())
+			return;
 
-	saveProperties(kapp->config());
-	kapp->config()->sync();
+		saveProperties(kapp->config());
+		kapp->config()->sync();
+	}
 	qApp->quit();
 }
 
@@ -307,6 +338,8 @@ TopLevel::answerReceived(int id, const QString& answer)
 
 static const KCmdLineOptions options[] =
 {
+	{ "showprocesses", I18N_NOOP("show only process list of local host"),
+	  0 },
 	{ 0, 0, 0}
 };
 
@@ -337,13 +370,20 @@ main(int argc, char** argv)
 	SensorMgr = new SensorManager();
 	CHECK_PTR(SensorMgr);
 
+    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+
 	// create top-level widget
 	if (a.isRestored())
 		RESTORE(TopLevel)
 	else
 	{
 		TopLevel *toplevel = new TopLevel("TaskManager");
-		toplevel->readProperties(a.config());
+		if (args->isSet("showprocesses"))
+		{
+			toplevel->beATaskManager();
+		}
+		else
+			toplevel->readProperties(a.config());
 		toplevel->show();
 	}
 	if (KMainWindow::memberList->first())

@@ -59,6 +59,8 @@ public:
 
 	virtual void answerReceived(int id, const QString& s);
 
+	void beATaskManager();
+
 k_dcop:
 	ASYNC showProcesses();
 
@@ -81,6 +83,7 @@ private:
 	SensorBrowser* sb;
 	Workspace* ws;
 	int timerID;
+	bool dontSaveSession;
 };
 
 #endif

@@ -272,4 +272,7 @@ Workspace::showProcesses()
 	QString f = kstd->findResource("data", "Taskmanager.ktop");
 	if (!f.isEmpty())
 		restoreWorkSheet(f);
+	else
+		KMessageBox::warning(
+			this, i18n("Cannot find file Taskmanager.ktop!"));
 }
