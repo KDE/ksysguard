@@ -25,6 +25,8 @@
 #ifndef _DancingBars_h_
 #define _DancingBars_h_
 
+#include <qlistview.h>
+
 #include "SensorDisplay.h"
 #include "BarGraph.h"
 
@@ -40,7 +42,7 @@ class DancingBars : public SensorDisplay
 public:
 	DancingBars(QWidget* parent = 0, const char* name = 0,
 				const QString& title = QString::null, int min = 0,
-				int max = 100);
+				int max = 100, bool nf = 0);
 	virtual ~DancingBars();
 
 	void settings();
@@ -93,6 +95,7 @@ private:
 	 * been received. */
 	QArray<double> sampleBuf;
 	ulong flags;
+	bool noFrame;
 } ;
 
 #endif

@@ -22,28 +22,29 @@
 	$Id$
 */
 
-#include <qgroupbox.h>
-#include <qtextstream.h>
-#include <qlineedit.h>
-#include <qspinbox.h>
 #include <qcheckbox.h>
-#include <qtoolbutton.h>
 #include <qdom.h>
-#include <qlistview.h>
+#include <qgroupbox.h>
 #include <qimage.h>
+#include <qlineedit.h>
+#include <qlistview.h>
+#include <qspinbox.h>
+#include <qtextstream.h>
+#include <qtoolbutton.h>
+#include <qtooltip.h>
 
 #include <kapp.h>
+#include <kcolordialog.h>
+#include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <knumvalidator.h>
-#include <kcolordialog.h>
-#include <kdebug.h>
 
-#include "SensorManager.h"
-#include "StyleEngine.h"
-#include "FancyPlotterSettings.h"
 #include "ColorPicker.h"
 #include "FancyPlotter.moc"
+#include "FancyPlotterSettings.h"
+#include "SensorManager.h"
+#include "StyleEngine.h"
 
 FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 						   const QString& title, double, double,
@@ -312,6 +313,16 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 	sendRequest(hostName, sensorName + "?", beams + 100);
 
 	++beams;
+
+	if (noFrame) {
+		QString tooltip;
+		for (uint i = 0; i < beams; ++i)
+			tooltip += QString("%1:%2\n").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+
+		QToolTip::remove(plotter);
+		QToolTip::add(plotter, tooltip);
+	}
+
 	return (true);
 }
 
@@ -328,6 +339,15 @@ FancyPlotter::removeSensor(uint idx)
 	plotter->removeBeam(idx);
 	beams--;
 	SensorDisplay::removeSensor(idx);
+
+	if (noFrame) {
+		QString tooltip;
+		for (uint i = 0; i < beams; ++i)
+			tooltip += QString("%1:%2\n").arg(sensors.at(i)->hostName).arg(sensors.at(i)->name);
+
+		QToolTip::remove(plotter);
+		QToolTip::add(plotter, tooltip);
+	}
 
 	return (true);
 }

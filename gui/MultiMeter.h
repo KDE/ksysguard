@@ -38,7 +38,7 @@ class MultiMeter : public SensorDisplay
 
 public:
 	MultiMeter(QWidget* parent = 0, const char* name = 0,
-			   const QString& = QString::null, double min = 0, double max = 0);
+			   const QString& = QString::null, double min = 0, double max = 0, bool nf = 0);
 	virtual ~MultiMeter()
 	{
 	}
@@ -77,6 +77,7 @@ private:
 	QString title;
 	QString unit;
 	MultiMeterSettings* mms;
+	bool noFrame;
 	bool showUnit;
 	bool lowerLimitActive;
 	double lowerLimit;

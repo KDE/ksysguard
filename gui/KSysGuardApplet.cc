@@ -23,28 +23,28 @@
 	$Id$
 */
 
-#include <qdragobject.h>
-#include <qspinbox.h>
-#include <qframe.h>
-#include <qfile.h>
 #include <qdom.h>
+#include <qdragobject.h>
+#include <qfile.h>
+#include <qframe.h>
+#include <qpopupmenu.h>
+#include <qspinbox.h>
 #include <qtextstream.h>
 #include <qtooltip.h>
 
+#include <kdebug.h>
 #include <kglobal.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kstddirs.h>
-#include <kdebug.h>
 
-#include "SensorManager.h"
+#include "DancingBars.h"
 #include "FancyPlotter.h"
-#include "StyleEngine.h"
 #include "KSysGuardApplet.moc"
 #include "KSysGuardAppletSettings.h"
-
-#include <stdio.h>
-#define dbg(x) fprintf(stderr, x); fflush(stderr);
+#include "MultiMeter.h"
+#include "SensorManager.h"
+#include "StyleEngine.h"
 
 extern "C"
 {
@@ -72,6 +72,7 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 
 	dockCnt = 1;
 	docks = new QWidget*[dockCnt];
+	CHECK_PTR(docks);
 	docks[0] = new QFrame(this);
 	CHECK_PTR(docks[0]);
 	((QFrame*) docks[0])->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
@@ -90,7 +91,9 @@ KSysGuardApplet::~KSysGuardApplet()
 {
 	save();
 
-	delete ksgas;
+	if (ksgas)
+		delete ksgas;
+
 	delete Style;
 	delete SensorMgr;
 }
@@ -209,13 +212,50 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 		int dock = findDock(ev->pos());
 		if (docks[dock]->isA("QFrame"))
 		{
-			delete docks[dock];
-			docks[dock] = new FancyPlotter(this, "FancyPlotter",
-										   sensorDescr, 100.0, 100.0, true);
-			CHECK_PTR(docks[dock]);
+			if (sensorType == "integer")
+			{
+				QPopupMenu popup;
+				QWidget *wdg;
 
-			layout();
-			docks[dock]->show();
+				popup.insertItem(i18n("Select a display type"), 0);
+				popup.setItemEnabled(0, false);
+				popup.insertSeparator();
+				popup.insertItem(i18n("&Signal Plotter"), 1);
+				popup.insertItem(i18n("&Multimeter"), 2);
+				popup.insertItem(i18n("&Dancing Bars"), 3);
+				switch (popup.exec(QCursor::pos()))
+				{
+					case 1:
+						wdg = new FancyPlotter(this, "FancyPlotter", sensorDescr, 100.0, 100.0, true);
+						CHECK_PTR(wdg);
+						break;
+
+					case 2:
+						wdg = new MultiMeter(this, "MultiMeter", sensorDescr, 100.0, 100.0, true);
+						CHECK_PTR(wdg);
+						break;
+
+					case 3:
+						wdg = new DancingBars(this, "DancingBars", sensorDescr, 100.0, 100.0, true);
+						CHECK_PTR(wdg);
+						break;
+				}
+
+				if (wdg)
+				{
+					delete docks[dock];
+					docks[dock] = wdg;
+					layout();
+					docks[dock]->show();
+				}
+			 }
+			 else
+			 {
+				KMessageBox::sorry(
+					this,
+					i18n("The KSysGuard applet does not support displaying of\n"
+						 "this type of sensor. Please choose another sensor."));
+			 }
 		}
 		((SensorDisplay*) docks[dock])->
 			addSensor(hostName, sensorName, sensorDescr);
@@ -279,8 +319,9 @@ KSysGuardApplet::resizeDocks(uint newDockCnt)
 		tmp[i] = docks[i];
 	// Destruct old docks that are not needed anymore.
 	for (i = newDockCnt; i < dockCnt; ++i)
-		delete docks[i];
-
+		if (docks[i])
+			delete docks[i];
+	
 	for (i = dockCnt; i < newDockCnt; ++i)
 	{
 		tmp[i] = new QFrame(this);
@@ -293,7 +334,7 @@ KSysGuardApplet::resizeDocks(uint newDockCnt)
 			tmp[i]->show();
 	}
 	// Destruct old dock.
-	delete [] docks;
+	delete docks;
 
 	docks = tmp;
 	dockCnt = newDockCnt;
@@ -382,14 +423,11 @@ KSysGuardApplet::load()
 		QString classType = element.attribute("class");
 		SensorDisplay* newDisplay;
 		if (classType == "FancyPlotter")
-			newDisplay = new FancyPlotter(this, "Dummy", "Dummy",
-										  100.0, 100.0, true);
-#if 0
+			newDisplay = new FancyPlotter(this, "FancyPlotter", "Dummy", 100.0, 100.0, true);
 		else if (classType == "MultiMeter")
-			newDisplay = new MultiMeter(this);
+			newDisplay = new MultiMeter(this, "MultiMeter", "Dummy", 100.0, 100.0, true);
 		else if (classType == "DancingBars")
-			newDisplay = new DancingBars(this);
-#endif
+			newDisplay = new DancingBars(this, "DancingBars", "Dummy", 100.0, 100.0, true);
 		else
 		{
 			KMessageBox::sorry(

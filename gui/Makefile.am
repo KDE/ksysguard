@@ -56,14 +56,16 @@ lib_LTLIBRARIES = libksysguardapplet.la
 
 libksysguardapplet_la_SOURCES = \
 	ColorPicker.cc \
+	DancingBars.cc BarGraph.cc \
 	FancyPlotter.cc SignalPlotter.cc \
+	MultiMeter.cc MultiMeterSettings.cc \
 	SensorDisplay.cc \
 	StyleEngine.cc \
 	SensorManager.cc \
 	SensorAgent.cc SensorShellAgent.cc SensorSocketAgent.cc \
 	KSysGuardApplet.cc \
 	FancyPlotterSettings.ui HostConnector.ui KSysGuardAppletSettings.ui \
-	StyleSettings.ui
+	StyleSettings.ui DancingBarsSettings.ui BarGraphSettings.ui
 
 libksysguardapplet_la_METASOURCES = AUTO
 libksysguardapplet_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -module -no-undefined

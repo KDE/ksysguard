@@ -34,6 +34,7 @@
 #include <qcheckbox.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
+#include <qtooltip.h>
 
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -48,8 +49,8 @@
 #include "MultiMeter.moc"
 
 MultiMeter::MultiMeter(QWidget* parent, const char* name,
-					   const QString& t, double, double)
-	: SensorDisplay(parent, name)
+					   const QString& t, double, double, bool nf)
+	: SensorDisplay(parent, name), noFrame(nf)
 {
 	showUnit = TRUE;
 	lowerLimit = upperLimit = 0;
@@ -59,7 +60,10 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 
 	normalDigitColor = Style->getFgColor1();
 	alarmDigitColor = Style->getAlarmColor();
-	lcd = new QLCDNumber(frame, "meterLCD");
+	if (noFrame)
+		lcd = new QLCDNumber(this, "meterLCD");
+	else
+		lcd = new QLCDNumber(frame, "meterLCD");
 	CHECK_PTR(lcd);
 	lcd->setSegmentStyle(QLCDNumber::Filled);
 	setDigitColor(Style->getBackgroundColor());
@@ -93,6 +97,11 @@ MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
 	 * requests we use 100 for info requests. */
 	sendRequest(hostName, sensorName + "?", 100);
 
+	if (noFrame) {
+		QToolTip::remove(lcd);
+		QToolTip::add(lcd, QString("%1:%2").arg(hostName).arg(sensorName));
+	}
+
 	setModified(TRUE);
 	return (TRUE);
 }
@@ -113,10 +122,17 @@ MultiMeter::answerReceived(int id, const QString& answer)
 	{
 		double val = answer.toDouble();
 		int digits = (int) log10(val) + 1;
-		if (digits > 5)
-			lcd->setNumDigits(digits);
+
+		if (noFrame)
+			lcd->setNumDigits(2);
 		else
-			lcd->setNumDigits(5);
+		{
+			if (digits > 5)
+				lcd->setNumDigits(digits);
+			else
+				lcd->setNumDigits(5);
+		}
+
 		lcd->display(val);
 		if (lowerLimitActive && val < lowerLimit)
 		{
@@ -134,7 +150,10 @@ MultiMeter::answerReceived(int id, const QString& answer)
 void
 MultiMeter::resizeEvent(QResizeEvent*)
 {
-	frame->setGeometry(0, 0, width(), height());
+	if (noFrame)
+		lcd->setGeometry(0, 0, width() - 1, height() - 1);
+	else
+		frame->setGeometry(0, 0, width(), height());
 }
 
 void

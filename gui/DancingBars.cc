@@ -47,8 +47,8 @@
 #include "DancingBars.moc"
 
 DancingBars::DancingBars(QWidget* parent, const char* name,
-						 const QString& title, int, int)
-	: SensorDisplay(parent, name)
+						 const QString& title, int, int, bool nf)
+	: SensorDisplay(parent, name), noFrame(nf)
 {
 	if (!title.isEmpty())
 		frame->setTitle(title);
@@ -56,7 +56,10 @@ DancingBars::DancingBars(QWidget* parent, const char* name,
 	bars = 0;
 	flags = 0;
 
-	plotter = new BarGraph(frame, "signalPlotter");
+	if (noFrame)
+		plotter = new BarGraph(this, "signalPlotter");
+	else
+		plotter = new BarGraph(frame, "signalPlotter");
 	CHECK_PTR(plotter);
 
 	setMinimumSize(sizeHint());
@@ -299,13 +302,19 @@ DancingBars::removeSensor(uint idx)
 void
 DancingBars::resizeEvent(QResizeEvent*)
 {
-	frame->setGeometry(0, 0, width(), height());
+	if (noFrame)
+		plotter->setGeometry(0, 0, width(), height());
+	else
+		frame->setGeometry(0, 0, width(), height());
 }
 
 QSize
 DancingBars::sizeHint(void)
 {
-	return (frame->sizeHint());
+	if (noFrame)
+		return (plotter->sizeHint());
+	else
+		return (frame->sizeHint());
 }
 
 void
