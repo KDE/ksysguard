@@ -51,9 +51,6 @@
 
 static const char* Description = I18N_NOOP("KDE Task Manager");
 
-#define KTOP_MIN_W	500
-#define KTOP_MIN_H	300
-
 /*
  * This is the constructor for the main widget. It sets up the menu and the
  * TaskMan widget.
@@ -65,7 +62,6 @@ TopLevel::TopLevel(const char *name)
 	CHECK_PTR(splitter);
 	splitter->setOrientation(Horizontal);
 	splitter->setOpaqueResize(TRUE);
-	QValueList<int> sizes;
 	setView(splitter);
 
 	sb = new SensorBrowser(splitter, SensorMgr, "SensorBrowser");
@@ -73,11 +69,6 @@ TopLevel::TopLevel(const char *name)
 
 	ws = new Workspace(splitter, "Workspace");
 	CHECK_PTR(ws);
-
-	// start with a 30/70 ratio
-	sizes.append(30);
-	sizes.append(70);
-	splitter->setSizes(sizes);
 
 	/* Create the status bar. It displays some information about the
 	 * number of processes and the memory consumption of the local
@@ -99,35 +90,13 @@ TopLevel::TopLevel(const char *name)
 	// call timerEvent to fill the status bar with real values
 	timerEvent(0);
 
-	/* Restore size of the dialog box that was used at end of last
-	 * session.  Due to a bug in Qt we need to set the width to one
-	 * more than the defined min width. If this is not done the widget
-	 * is not drawn properly the first time. Subsequent redraws after
-	 * resize are no problem.
-	 *
-	 * I need to implement a propper session management some day! */
-	QString t = kapp->config()->readEntry(QString("G_Toplevel"));
-	if(!t.isNull())
-	{
-		if (t.length() == 19)
-		{ 
-			int xpos, ypos, ww, wh;
-			sscanf(t.data(), "%04d:%04d:%04d:%04d", &xpos, &ypos, &ww, &wh);
-			setGeometry(xpos, ypos,
-						ww <= KTOP_MIN_W ? KTOP_MIN_W + 1 : ww,
-						wh <= KTOP_MIN_H ? KTOP_MIN_H : wh);
-		}
-	}
-
-	setMinimumSize(sizeHint());
-	resize(500, 300);
-
 	timerID = startTimer(2000);
 
     // setup File menu
     KStdAction::openNew(ws, SLOT(newWorkSheet()), actionCollection());
     KStdAction::open(ws, SLOT(loadWorkSheet()), actionCollection());
 	KStdAction::close(ws, SLOT(deleteWorkSheet()), actionCollection());
+	KStdAction::saveAs(ws, SLOT(saveWorkSheetAs()), actionCollection());
 	KStdAction::save(ws, SLOT(saveWorkSheet()), actionCollection());
 	KStdAction::quit(this, SLOT(quitApp()), actionCollection());
 
@@ -138,6 +107,9 @@ TopLevel::TopLevel(const char *name)
 					   SLOT(disconnectHost()), actionCollection(),
 					   "disconnect_host");
 	createGUI("ktop.rc");
+
+	// Hide XML GUI generated toolbar.
+	enableToolBar(KToolBar::Hide);
 
 	// show the dialog box
 	show();
@@ -154,6 +126,9 @@ TopLevel::~TopLevel()
 void
 TopLevel::quitApp()
 {
+	if (!ws->saveOnQuit())
+		return;
+
 	saveProperties(kapp->config());
 	kapp->config()->sync();
 	qApp->quit();
@@ -186,15 +161,60 @@ TopLevel::timerEvent(QTimerEvent*)
 }
 
 void
-TopLevel::readProperties(KConfig* /*cfg*/)
+TopLevel::readProperties(KConfig* cfg)
 {
-	debug("TopLevel::readProperties");
+	cfg->setGroup("KTop Settings");
+
+	QString geom = cfg->readEntry("Size");
+	if(geom.isEmpty())
+	{
+		// the default size; a golden ratio
+		resize(600, 375);
+	}
+	else
+	{
+		int ww, wh;
+		sscanf(geom.data(), "%d:%d", &ww, &wh);
+		resize(ww, wh);
+	}
+
+	QValueList<int> sizes;
+	geom = cfg->readEntry("SplitterSizes");
+	if (geom.isEmpty())
+	{
+		// start with a 30/70 ratio
+		sizes.append(30);
+		sizes.append(70);
+	}
+	else
+	{
+		int s1, s2;
+		sscanf(geom.data(), "%d:%d", &s1, &s2);
+		sizes.append(s1);
+		sizes.append(s2);
+	}
+	splitter->setSizes(sizes);
+
+	ws->readProperties(cfg);
+
+	setMinimumSize(sizeHint());
 }
 
 void
-TopLevel::saveProperties(KConfig* /*cfg*/)
+TopLevel::saveProperties(KConfig* cfg)
 {
-	debug("TopLevel::saveProperties");
+	cfg->setGroup("KTop Settings");
+
+	// Save window geometry. TODO: x/y is not exaclty correct. Needs fixing.
+	QString geom = QString("%1:%2").arg(width()).arg(height());
+	cfg->writeEntry("Size", geom);
+
+	// Save splitter sizes.
+	QValueList<int> spSz = splitter->sizes();
+	geom = QString("%1:%2").arg(*spSz.at(0)).arg(*spSz.at(1));
+	cfg->writeEntry("SplitterSizes", geom);
+
+	ws->saveProperties(cfg);
 }
 
 void
@@ -239,7 +259,6 @@ TopLevel::answerReceived(int id, const QString& answer)
 
 static const KCmdLineOptions options[] =
 {
-	{ "p <show>", I18N_NOOP("What to Show (list|perf)"), "list" },
 	{ 0, 0, 0}
 };
 
@@ -279,7 +298,7 @@ main(int argc, char** argv)
 	{
 		a.setMainWidget(toplevel);
 		a.setTopWidget(toplevel);
-		toplevel->show();
+		toplevel->readProperties(a.config());
 	}
 
 	// run the application

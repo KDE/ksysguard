@@ -34,8 +34,6 @@
 #include "SensorManager.h"
 #include "ProcessController.moc"
 
-#define NONE -1
-
 ProcessController::ProcessController(QWidget* parent, const char* name)
 	: SensorDisplay(parent, name)
 {
@@ -48,7 +46,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	CHECK_PTR(pList);
 
 	// Create the check box to switch between tree view and list view.
-	xbTreeView = new QCheckBox("Show Tree", this, "xbTreeView");
+	xbTreeView = new QCheckBox("Tree", this, "xbTreeView");
 	CHECK_PTR(xbTreeView);
 	xbTreeView->setMinimumSize(xbTreeView->sizeHint());
 	connect(xbTreeView, SIGNAL(toggled(bool)),
@@ -128,12 +126,15 @@ ProcessController::resizeEvent(QResizeEvent* ev)
 bool
 ProcessController::addSensor(const QString& hostName,
 							 const QString& sensorName,
-							 const QString& /* title */)
+							 const QString& title)
 {
 	registerSensor(hostName, sensorName);
 	sendRequest(hostName, "ps?", 1);
 
-	box->setTitle(QString(i18n("%1: Running Processes")).arg(hostName));
+	if (title.isEmpty())
+		box->setTitle(QString(i18n("%1: Running Processes")).arg(hostName));
+	else
+		box->setTitle(title);
 
 	return (TRUE);
 }

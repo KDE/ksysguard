@@ -25,6 +25,8 @@
 #include <kmessagebox.h>
 #include <klocale.h>
 #include <kfiledialog.h>
+#include <kconfig.h>
+#include <kstddirs.h>
 
 #include "Workspace.h"
 #include "WorkSheet.h"
@@ -34,6 +36,65 @@
 Workspace::Workspace(QWidget* parent, const char* name)
 	: QTabWidget(parent, name)
 {
+}
+
+void
+Workspace::saveProperties(KConfig* cfg)
+{
+	cfg->writeEntry("WorkDir", workDir);
+	cfg->writeEntry("CurrentSheet", tabLabel(currentPage()));
+
+	QString sheetList;
+	QListIterator<WorkSheet> it(sheets);
+	for (int i = 0; it.current(); ++it, ++i)
+		cfg->writeEntry(QString("Sheet%1").arg(i), (*it)->getFileName());
+}
+
+void
+Workspace::readProperties(KConfig* cfg)
+{
+	QString currentSheet;
+
+	workDir = cfg->readEntry("WorkDir");
+
+	if (workDir.isEmpty())
+	{
+		/* If workDir is not specified in the config file, it's probably
+		 * the first time the user has started KTop. We then "restore" a
+		 * special default configuration. */
+		KStandardDirs* kstd = KGlobal::dirs();
+		kstd->addResourceType("data", "share/apps/ktop");
+
+		QString f = kstd->findResource("data", "SystemLoad.ktop");
+		if (!f.isEmpty())
+			restoreWorkSheet(f);
+
+		f = kstd->findResource("data", "ProcessTable.ktop");
+		if (!f.isEmpty())
+			restoreWorkSheet(f);
+
+		currentSheet = "SystemLoad";
+
+		workDir = kstd->saveLocation("data", "ktop/");
+	}
+	else
+	{
+		for (int i = 0; ; ++i)
+		{
+			QString fileName = cfg->readEntry(QString("Sheet%1").arg(i));
+			if (!fileName.isEmpty())
+				restoreWorkSheet(fileName);
+			else
+				break;
+		}
+		currentSheet = cfg->readEntry("CurrentSheet");
+	}
+
+	// Determine visible sheet.
+	QListIterator<WorkSheet> it(sheets);
+	for (; it.current(); ++it)
+		if (currentSheet == tabLabel(*it))
+			showPage(*it);
 }
 
 void
@@ -67,6 +128,26 @@ Workspace::newWorkSheet()
 	delete s;
 }
 
+bool
+Workspace::saveOnQuit()
+{
+	QListIterator<WorkSheet> it(sheets);
+	for (; it.current(); ++it)
+		if ((*it)->hasBeenModified())
+		{
+			int res = KMessageBox::warningYesNoCancel(this,
+				QString(i18n("The worksheet '%1' contains unsaved data\n"
+							 "Do you want to save the worksheet?"))
+						.arg(tabLabel(*it)));
+			if (res == KMessageBox::Yes)
+				saveWorkSheet(*it);
+			else if (res == KMessageBox::Cancel)
+				return FALSE;	// abort quit
+		}
+
+	return (TRUE);
+}
+
 void
 Workspace::loadWorkSheet()
 {
@@ -76,23 +157,42 @@ Workspace::loadWorkSheet()
 		return;
 
 	workDir = fileName.left(fileName.findRev('/'));
-	// extract filename without path
-	QString baseName = fileName.right(fileName.length() -
-									  fileName.findRev('/') - 1);
-	// chop off extension (usually '.ktop')
-	baseName = baseName.left(baseName.findRev('.'));
 
-	// Add a new sheet to the workspace.
-	WorkSheet* sheet = new WorkSheet(this);
-	CHECK_PTR(sheet);
-	insertTab(sheet, baseName);
-	sheets.append(sheet);
-	showPage(sheet);
-	sheet->load(fileName);
+	// Load sheet from file.
+	restoreWorkSheet(fileName);
 }
 
 void
-Workspace::saveWorkSheet()
+Workspace::saveWorkSheet(WorkSheet* sheet)
+{
+	if (!sheet)
+	{
+		KMessageBox::sorry(
+			this, i18n("You don't have a worksheet that could be saved!"));
+		return;
+	}
+
+	QString fileName = sheet->getFileName();
+	if (fileName.isEmpty())
+	{
+		KFileDialog fd(workDir, "*.ktop", this, "LoadFileDialog", TRUE);
+		fileName = fd.getSaveFileName(QString::null, "*.ktop");
+		if (fileName.isEmpty())
+			return;
+		workDir = fileName.left(fileName.findRev('/'));
+		// extract filename without path
+		QString baseName = fileName.right(fileName.length() -
+										  fileName.findRev('/') - 1);
+		// chop off extension (usually '.ktop')
+		baseName = baseName.left(baseName.findRev('.'));
+		changeTab(currentPage(), baseName);
+	}
+
+	sheet->save(fileName);
+}
+
+void
+Workspace::saveWorkSheetAs()
 {
 	WorkSheet* sheet = (WorkSheet*) currentPage();
 	if (!sheet)
@@ -127,6 +227,8 @@ Workspace::deleteWorkSheet()
 		removePage(current);
 		sheets.remove(current);
 		delete current;
+
+		setMinimumSize(sizeHint());
 	}
 	else
 	{
@@ -137,11 +239,19 @@ Workspace::deleteWorkSheet()
 }
 
 void
-Workspace::saveProperties()
+Workspace::restoreWorkSheet(const QString& fileName)
 {
-	QString sheetList;
-	QListIterator<WorkSheet> it(sheets);
-	for (; it.current(); ++it)
-		sheetList += tabLabel(*it);
-	// TODO: not finished yet.
+	// extract filename without path
+	QString baseName = fileName.right(fileName.length() -
+									  fileName.findRev('/') - 1);
+	// chop off extension (usually '.ktop')
+	baseName = baseName.left(baseName.findRev('.'));
+
+	WorkSheet* sheet = new WorkSheet(this);
+	CHECK_PTR(sheet);
+	insertTab(sheet, baseName);
+	sheets.append(sheet);
+	showPage(sheet);
+	if (!sheet->load(fileName))
+		delete sheet;
 }

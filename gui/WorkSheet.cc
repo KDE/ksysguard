@@ -43,6 +43,8 @@ WorkSheet::WorkSheet(QWidget* parent) :
 	lm = 0;
 	rows = columns = 0;
 	displays = 0;
+	modified = FALSE;
+	fileName = "";
 
 	setAcceptDrops(TRUE);
 }
@@ -52,6 +54,8 @@ WorkSheet::WorkSheet(QWidget* parent, int r, int c) :
 {
 	lm = 0;
 	displays = 0;
+	modified = FALSE;
+	fileName = "";
 	createGrid(r, c);
 
 	setAcceptDrops(TRUE);
@@ -66,9 +70,16 @@ WorkSheet::~WorkSheet()
 }
 
 bool
-WorkSheet::load(const QString& fileName)
+WorkSheet::hasBeenModified()
 {
-	QFile file(fileName);
+	// TODO: Check child widgets as well.
+	return (modified);
+}
+
+bool
+WorkSheet::load(const QString& fN)
+{
+	QFile file(fileName = fN);
 	if (!file.open(IO_ReadOnly))
 	{
 		KMessageBox::sorry(this, i18n("Can't open the file %1")
@@ -169,9 +180,9 @@ WorkSheet::load(const QString& fileName)
 }
 
 bool
-WorkSheet::save(const QString& fileName)
+WorkSheet::save(const QString& fN)
 {
-	QFile file(fileName);
+	QFile file(fileName = fN);
 	if (!file.open(IO_WriteOnly))
 	{
 		KMessageBox::sorry(this, i18n("Can't open the file %1")
@@ -220,13 +231,14 @@ WorkSheet::save(const QString& fileName)
 	s << "</WorkSheet>\n";
 
 	file.close();
+	modified = FALSE;
 	return (TRUE);
 }
 
 SensorDisplay*
 WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 					  const QString& sensorType,
-					  int r, int c, const QString& /*displayType*/)
+					  int r, int c, const QString& displayType)
 {
 	if (!SensorMgr->engage(hostName))
 	{
@@ -266,8 +278,9 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 	}
 
 	((SensorDisplay*) displays[r][c])->
-		addSensor(hostName, sensorName, "Unused");
+		addSensor(hostName, sensorName, displayType);
 
+	modified = TRUE;
 	return ((SensorDisplay*) displays[r][c]);
 }
 
@@ -280,6 +293,7 @@ WorkSheet::removeDisplay(SensorDisplay* display)
 			{
 				delete display;
 				insertDummyDisplay(i, j);
+				modified = TRUE;
 			}
 }
 
@@ -316,6 +330,10 @@ WorkSheet::dropEvent(QDropEvent* ev)
 				if (displays[i][j]->geometry().contains(ev->pos()))
 				{
 					addDisplay(hostName, sensorName, sensorType, i, j);
+
+					// Notify parent about possibly new minimum size.
+					((QWidget*) parent()->parent())->setMinimumSize(
+						((QWidget*) parent()->parent())->sizeHint());
 					return;
 				}
 	}
@@ -360,10 +378,14 @@ WorkSheet::createGrid(uint r, uint c)
 	CHECK_PTR(displays);
 	for (i = 0; i < rows; ++i)
 	{
+		lm->setRowStretch(i, 1);
 		displays[i] = new QWidget*[columns];
 		CHECK_PTR(displays[i]);
 		for (j = 0; j < columns; ++j)
+		{
+			lm->setColStretch(j, 1);
 			insertDummyDisplay(i, j);
+		}
 	}
 	lm->activate();
 }

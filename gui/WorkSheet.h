@@ -51,8 +51,15 @@ public:
 	WorkSheet(QWidget* parent, int rows, int columns);
 	~WorkSheet();
 
-	bool load(const QString& fileName);
-	bool save(const QString& fileName);
+	bool load(const QString& fN);
+	bool save(const QString& fN);
+
+	const QString& getFileName()
+	{
+		return (fileName);
+	}
+
+	bool hasBeenModified();
 
 	SensorDisplay* addDisplay(const QString& hostname,
 							  const QString& monitor,
@@ -73,6 +80,8 @@ private:
 
 	void createGrid(uint r, uint c);
 
+	QString fileName;
+	bool modified;
 	int rows;
 	int columns;
 	QGridLayout* lm;

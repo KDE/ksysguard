@@ -1,5 +1,7 @@
 # just set the variable
 appsdir = $(kde_appsdir)/System
+datadir = $(kde_datadir)/ktop
+
 # set the include path for X, qt and KDE
 INCLUDES= $(all_includes)
  
@@ -22,6 +24,8 @@ ktop_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 # the libraries to link against. Be aware of the order. First the libraries,
 # that depend on the following ones.
 ktop_LDADD   =       $(LIB_KDEUI) $(LIB_KFILE)
+
+data_DATA = ProcessTable.ktop SystemLoad.ktop
 
 # this option you can leave out. Just, if you use "make dist", you need it
 noinst_HEADERS = SensorClient.h ktop.h ProcessMenu.h \

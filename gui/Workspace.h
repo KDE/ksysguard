@@ -29,6 +29,7 @@
 #include <qstring.h>
 #include <qlist.h>
 
+class KConfig;
 class WorkSheet;
 
 class Workspace : public QTabWidget
@@ -38,15 +39,24 @@ public:
 	Workspace(QWidget* parent, const char* name = 0);
 	~Workspace() { }
 
-	void saveProperties();
+	void saveProperties(KConfig* cfg);
+	void readProperties(KConfig* cfg);
+	bool saveOnQuit();
 
 public slots:
 	void newWorkSheet();
 	void loadWorkSheet();
-	void saveWorkSheet();
+	void saveWorkSheet()
+	{
+		saveWorkSheet((WorkSheet*) currentPage());
+	}
+	void saveWorkSheet(WorkSheet* sheet);
+	void saveWorkSheetAs();
 	void deleteWorkSheet();
 
 private:
+	void restoreWorkSheet(const QString& fileName);
+
 	QList<WorkSheet> sheets;
 	/// Directory that was used for the last load/save.
 	QString workDir;

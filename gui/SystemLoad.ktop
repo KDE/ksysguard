@@ -1,0 +1,12 @@
+<!DOCTYPE ktopWorkSheet>
+<WorkSheet rows="2" columns="1">
+<host name="localhost" shell="" command="ktopd"/>
+<display row="0" column="0" class="FancyPlotter" title="CPU">
+<beam hostName="localhost" sensorName="cpu/user"/>
+<beam hostName="localhost" sensorName="cpu/sys"/>
+<beam hostName="localhost" sensorName="cpu/nice"/>
+</display>
+<display row="1" column="0" class="FancyPlotter" title="Memory">
+<beam hostName="localhost" sensorName="mem/used"/>
+</display>
+</WorkSheet>

@@ -1,0 +1,6 @@
+<!DOCTYPE ktopWorkSheet>
+<WorkSheet rows="1" columns="1">
+<host name="localhost" shell="" command="ktopd"/>
+<display row="0" column="0" class="ProcessController" hostName="localhost" sensorName="ps" tree="off" pause="off" filter="0">
+</display>
+</WorkSheet>

@@ -30,7 +30,6 @@
 
 #include "SensorDisplay.h"
 #include "SignalPlotter.h"
-#include "MultiMeter.h"
 
 class QGroupBox;
 
@@ -49,7 +48,6 @@ public:
 
 	void addSample(int s0, int s1 = 0, int s2 = 0, int s3 = 0, int s4 = 0)
 	{
-		multiMeter->updateValues(s0, s1, s2, s3, s4);
 		plotter->addSample(s0, s1, s2, s3, s4);
 	}
 
@@ -72,8 +70,6 @@ private:
 	int beams;
 
 	QGroupBox* meterFrame;
-
-	MultiMeter* multiMeter;
 
 	SignalPlotter* plotter;
 } ;
