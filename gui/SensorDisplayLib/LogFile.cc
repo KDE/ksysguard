@@ -187,7 +187,7 @@ LogFile::restoreSettings(QDomElement& element)
 
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "logfile" : element.attribute("sensorType")), element.attribute("title"));
 
-	font.setRawName(element.attribute("font"));
+	font.fromString( element.attribute( "font" ) );
 	monitor->setFont(font);
 
 	QDomNodeList dnList = element.elementsByTagName("filter");
@@ -210,7 +210,7 @@ LogFile::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 	element.setAttribute("sensorName", sensors().at(0)->name());
 	element.setAttribute("sensorType", sensors().at(0)->type());
 
-	element.setAttribute("font", monitor->font().rawName());
+	element.setAttribute("font", monitor->font().toString());
 
 	saveColor(element, "textColor", monitor->colorGroup().text());
 	saveColor(element, "backgroundColor", monitor->colorGroup().base());
