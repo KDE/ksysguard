@@ -30,12 +30,15 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <ctype.h>
 
 #include <ktmainwindow.h>
 #include <kconfig.h>
 #include <klocale.h>
 #include <kcmdlineargs.h>
 #include <kmessagebox.h>
+#include <kaboutdata.h>
+
 
 #include "SensorBrowser.h"
 #include "SensorManager.h"
@@ -199,14 +202,30 @@ TopLevel::answerReceived(int id, const QString& answer)
 	}
 }
 
+
+static const KCmdLineOptions options[] =
+{
+	{ "p <show>", I18N_NOOP("What to Show (list|perf)"), "list" },
+	{ 0, 0, 0}
+};
+
+
 /*
  * Where it all begins.
  */
 int
 main(int argc, char** argv)
 {
-	KCmdLineArgs::init(argc, argv, "ktop", description, KTOP_VERSION);
-
+	KAboutData aboutData( "ktop", I18N_NOOP("KDE Task Manager"),
+		KTOP_VERSION, description, KAboutData::License_GPL,
+		"(c) 1997-2000, The KTop Developers");
+	aboutData.addAuthor("Bernd Johannes Wuebben",0, "wuebben@math.cornell.edu");
+	aboutData.addAuthor("Nicolas Leclercq",0, "nicknet@planete.net");
+	aboutData.addAuthor("Chris Schlaeger","Current Maintainer", "cs@kde.org");
+	
+	KCmdLineArgs::init( argc, argv, &aboutData );
+	KCmdLineArgs::addCmdLineOptions( options );
+	
 	// initialize KDE application
 	KApplication a;
 
@@ -220,6 +239,19 @@ main(int argc, char** argv)
 	CHECK_PTR(toplevel);
 	a.setMainWidget(toplevel);
 	a.setTopWidget(toplevel);
+
+//	Commented out so that y'all can start to get this to work properly
+/*	{ // process command line arguments
+		KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+		if (tolower(args->getOption("p")[0])=='p')
+			sfolder = TaskMan::PAGE_PLIST;
+		else
+			sfolder = TaskMan::PAGE_PLIST;
+		
+		args->clear();
+    }
+*/
+    
 	toplevel->show();
 
 	// run the application
