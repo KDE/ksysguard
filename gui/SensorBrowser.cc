@@ -43,7 +43,7 @@ class HostItem : public QListViewItem
     {
       setExpandable( true );
     }
-   
+
     void setOpen( bool open )
     {
       if ( open && !mInited ) {
@@ -54,7 +54,7 @@ class HostItem : public QListViewItem
 
       QListViewItem::setOpen( open );
     }
-   
+
   private:
     bool mInited;
     int mId;
@@ -146,7 +146,7 @@ void SensorBrowser::newItemSelected( QListViewItem *item )
   if ( item && item->pixmap( 0 ) && showAnnoyingPopup)
   {
     showAnnoyingPopup = false;
-    KMessageBox::information( this, i18n( "Drag sensors to empty fields in a worksheet" ),
+    KMessageBox::information( this, i18n( "Drag sensors to empty fields in a worksheet." ),
                               QString::null, "ShowSBUseInfo" );
   }
 }
