@@ -21,6 +21,8 @@
 	$Id$
 */
 
+#include <config.h>
+
 #include <ctype.h>
 #include <dirent.h>
 #include <pwd.h>
@@ -228,7 +230,7 @@ updateProcess(int pid)
 			p.ki_vmspace->vm_dsize +
 			p.ki_vmspace->vm_ssize) * getpagesize();
 	ps->vmRss    = p.ki_vmspace->vm_rssize * getpagesize();
-	strncpy(ps->name,p.ki_comm? p.ki_comm:"????",sizeof(ps->name));
+	strlcpy(ps->name,p.ki_comm? p.ki_comm:"????",sizeof(ps->name));
 	strcpy(ps->status,(p.ki_stat>=1)&&(p.ki_stat<=5)? statuses[p.ki_stat-1]:"????");
 #else
         ps->userLoad = p.kp_proc.p_pctcpu / 100;
@@ -236,7 +238,7 @@ updateProcess(int pid)
 			p.kp_eproc.e_vm.vm_dsize +
 			p.kp_eproc.e_vm.vm_ssize) * getpagesize();
 	ps->vmRss    = p.kp_eproc.e_vm.vm_rssize * getpagesize();
-	strncpy(ps->name,p.kp_proc.p_comm ? p.kp_proc.p_comm : "????", sizeof(ps->name));
+	strlcpy(ps->name,p.kp_proc.p_comm ? p.kp_proc.p_comm : "????", sizeof(ps->name));
 	strcpy(ps->status,(p.kp_proc.p_stat>=1)&&(p.kp_proc.p_stat<=5)? statuses[p.kp_proc.p_stat-1]:"????");
 #endif
 

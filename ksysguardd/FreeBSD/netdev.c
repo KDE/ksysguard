@@ -19,6 +19,8 @@
 	$Id$
 */
 
+#include <config.h>
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/sysctl.h>
@@ -193,7 +195,7 @@ int updateNetDev(void)
 		len = sizeof(ifmd);
 		sysctl(name, 6, &ifmd, &len, NULL, 0);
 		if (ifmd.ifmd_flags & IFF_UP) {
-			strncpy(NetDevs[NetDevCnt].name, ifmd.ifmd_name, 32);
+			strlcpy(NetDevs[NetDevCnt].name, ifmd.ifmd_name, sizeof(NetDevs[NetDevCnt].name));
 			NetDevs[NetDevCnt].recBytes = ifmd.ifmd_data.ifi_ibytes - NetDevs[NetDevCnt].recBytes;
 			NetDevs[NetDevCnt].recPacks = ifmd.ifmd_data.ifi_ipackets - NetDevs[NetDevCnt].recPacks;
 			NetDevs[NetDevCnt].recErrs = ifmd.ifmd_data.ifi_ierrors - NetDevs[NetDevCnt].recErrs;

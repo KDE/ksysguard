@@ -19,6 +19,8 @@
 	$Id$
 */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -129,7 +131,7 @@ void registerLogFile(const char* cmd)
 			}
 
 			entry->fh = file;
-			strncpy(entry->name, conf->name, 256);
+			strlcpy(entry->name, conf->name, sizeof(entry->name));
 			entry->id = counter;
 
 			push_ctnr(LogFiles, entry);	
