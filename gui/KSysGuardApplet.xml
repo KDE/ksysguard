@@ -5,7 +5,7 @@
   <beam sensorName="cpu/sys" hostName="localhost" />
   <beam sensorName="cpu/nice" hostName="localhost" />
  </display>
- <display title="Application Memory" dock="1" class="FancyPlotter" min="0" max="255072" >
+ <display title="Application Memory" dock="1" class="FancyPlotter" min="0" max="523784" >
   <beam sensorName="mem/physical/application" hostName="localhost" />
   <beam sensorName="mem/physical/buf" hostName="localhost" />
   <beam sensorName="mem/physical/cached" hostName="localhost" />

@@ -27,7 +27,7 @@ ksysguard_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 # that depend on the following ones.
 ksysguard_LDADD   =       $(LIB_KDEUI) $(LIB_KFILE)
 
-data_DATA = ProcessTable.sgrd SystemLoad.sgrd
+data_DATA = ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml
 
 rcdir = $(kde_datadir)/ksysguard
 rc_DATA = ksysguardui.rc
