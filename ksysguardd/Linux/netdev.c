@@ -184,10 +184,10 @@ initNetDev(void)
 				char mon[128];
 				*pos = '\0';
 				strcpy(NetDevs[i].name, tag);
-				sprintf(mon, "network/%s/recBytes", tag);
+				sprintf(mon, "network/interfaces/%s/recBytes", tag);
 				registerMonitor(mon, "integer", printNetDevRecBytes,
 								printNetDevRecBytesInfo);
-				sprintf(mon, "network/%s/sentBytes", tag);
+				sprintf(mon, "network/interfaces/%s/sentBytes", tag);
 				registerMonitor(mon, "integer", printNetDevSentBytes,
 								printNetDevRecBytesInfo);
 				sscanf(pos + 1, "%ld %*d %*d %*d %*d %*d %*d %*d" 
@@ -211,9 +211,9 @@ exitNetDev(void)
 	for (i = 0; i < NetDevCnt; ++i)
 	{
 		char mon[128];
-		sprintf(mon, "network/%s/recBytes", NetDevs[i].name);
+		sprintf(mon, "network/interfaces/%s/recBytes", NetDevs[i].name);
 		removeMonitor(mon);
-		sprintf(mon, "network/%s/sentBytes", NetDevs[i].name);
+		sprintf(mon, "network/interfaces/%s/sentBytes", NetDevs[i].name);
 		removeMonitor(mon);
 	}
 	NetDevCnt = 0;
@@ -274,7 +274,7 @@ Inter-|   Receive                                                |  Transmit
 	if (OldHash != 0 && OldHash != hash)
 	{
 		/* TODO: Check whether fwrite() is reentrant! */
-		fwrite("RECONFIGURE\n", strlen("RECONFIGURE\n"), 1, currentClient);
+		fwrite("\033\033\033RECONFIGURE\n", strlen("\033\033\033RECONFIGURE\n"), 1, currentClient);
 		CheckSetupFlag = 1;
 	}
 	OldHash = hash;
@@ -302,6 +302,7 @@ printNetDevRecBytes(const char* cmd)
 	char dev[64];
 
 	beg = strchr(cmd, '/');
+	beg = strchr(beg + 1, '/');
 	end = strchr(beg + 1, '/');
 	strncpy(dev, beg + 1, end - beg - 1);
 	dev[end - beg - 1] = '\0';
@@ -333,6 +334,7 @@ printNetDevSentBytes(const char* cmd)
 	char dev[64];
 
 	beg = strchr(cmd, '/');
+	beg = strchr(beg + 1, '/');
 	end = strchr(beg + 1, '/');
 	strncpy(dev, beg + 1, end - beg - 1);
 	dev[end - beg - 1] = '\0';

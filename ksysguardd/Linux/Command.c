@@ -174,8 +174,8 @@ void
 executeCommand(const char* command)
 {
 	int i;
-	char tokenFormat[32];
-	char token[32];
+	char tokenFormat[64];
+	char token[64];
 
 	if (CheckSetupFlag)
 	{
