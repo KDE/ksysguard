@@ -86,12 +86,12 @@ WorkSheetSetup::getSheetName() const
 	return (sheetNameLE->text());
 }
 
-WorkSheetSetup::getRows() const
+int WorkSheetSetup::getRows() const
 {
 	return (rowNI->value());
 }
 
-WorkSheetSetup::getColumns() const
+int WorkSheetSetup::getColumns() const
 {
 	return (colNI->value());
 }
