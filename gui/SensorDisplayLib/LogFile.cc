@@ -263,6 +263,10 @@ LogFile::answerReceived(int id, const QString& answer)
 					delete expr;
 				}
 			}
+
+      monitor->setCurrentItem( monitor->count() - 1 );
+      monitor->ensureCurrentVisible();
+
 			break;
 		}
 
