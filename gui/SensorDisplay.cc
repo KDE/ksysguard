@@ -29,7 +29,10 @@
 SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 	QWidget(parent, name)
 {
-	timerId = startTimer(2000);
+	// default interval is 2 seconds.
+	timerInterval = 2000;
+
+	timerId = startTimer(timerInterval);
 	sensorNames.setAutoDelete(true);
 }
 

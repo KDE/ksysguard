@@ -68,6 +68,9 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 		dict.insert("cpu" + QString::number(i) + "user",
 					new QString(QString(i18n("CPU%1 User Load")).arg(i)));
 	}
+
+	// The sensor browser can be completely hidden.
+	setMinimumWidth(1);
 }
 
 void
@@ -76,11 +79,12 @@ SensorBrowser::update()
 	SensorManagerIterator it(sensorManager);
 
 	hostInfos.clear();
+	clear();
+
 	SensorAgent* host;
 	for (int i = 0 ; (host = it.current()); ++it, ++i)
 	{
 		QString hostName = sensorManager->getHostName(host);
-
 		QListViewItem* lvi = new QListViewItem(this, hostName);
 		CHECK_PTR(lvi);
 
@@ -115,6 +119,13 @@ SensorBrowser::answerReceived(int id, const QString& s)
 		QString sensorName = words[0];
 		QString sensorType = words[1];
 
+		/* Calling update() a rapid sequence will create pending 
+		 * requests that do not get erased by calling clear(). Subsequent
+		 * updates will receive the old pending answers so we need to make
+		 * sure that we register each sensor only once. */
+		if (hostInfos.at(id)->isRegistered(sensorName))
+			return;
+
 		// retrieve localized description from dictionary
 		QString sensorDescription;
 		if (!dict[sensorName])
@@ -130,6 +141,8 @@ SensorBrowser::answerReceived(int id, const QString& s)
 		hostInfos.at(id)->addSensor(lvi, sensorName, sensorDescription,
 									sensorType);
 	}
+	// The child indicator might need to be updated.
+	repaintItem(hostInfos.at(id)->getLVI());
 }
 
 void
@@ -142,7 +155,6 @@ SensorBrowser::viewportMouseMoveEvent(QMouseEvent* ev)
 	if (!(ev->state() & LeftButton))
 		return;
 
-	debug("SensorBrowser::MouseMoveEvent");
 	QListViewItem* item = itemAt(ev->pos());
 	if (!item)
 		return;		// no item under cursor
@@ -157,7 +169,6 @@ SensorBrowser::viewportMouseMoveEvent(QMouseEvent* ev)
 		;
 	assert(it.current());
 
-	debug("Drag object created");
 	// Create text drag object as "<hostname> <sensorname> <sensortype>".
 	dragText = (*it)->getHostName() + " "
 		+ (*it)->getSensorName(item) + " "

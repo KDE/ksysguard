@@ -44,6 +44,9 @@ public:
 public slots:
 	void newWorkSheet();
 	void deleteWorkSheet();
+
+private:
+	int tabCount;
 } ;
 
 #endif

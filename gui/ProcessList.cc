@@ -72,8 +72,8 @@ intKey(const char* text)
 {
 	int val;
 	sscanf(text, "%d", &val);
-	static char key[16];
-	sprintf(key, "%010d", val);
+	static char key[32];
+	sprintf(key, "%016d", val);
 
 	return (key);
 }
@@ -84,8 +84,8 @@ timeKey(const char* text)
 	int h, m;
 	sscanf(text, "%d:%d", &h, &m);
 	int t = h * 60 + m;
-	static char key[16];
-	sprintf(key, "%07d", t);
+	static char key[32];
+	sprintf(key, "%010d", t);
 
 	return (key);
 }
@@ -96,8 +96,8 @@ floatKey(const char* text)
 	double percent;
 	sscanf(text, "%lf", &percent);
 
-	static char key[16];
-	sprintf(key, "%06.2f", percent);
+	static char key[32];
+	sprintf(key, "%010.2f", percent);
 
 	return (key);
 }
@@ -116,31 +116,14 @@ ProcessLVI::key(int column, bool) const
 ProcessList::ProcessList(QWidget *parent, const char* name)
 	: QListView(parent, name)
 {
-	/*
-	 * The refresh rate can be changed from the main menu. If this happens
-	 * a signal is send. The menu has the current refresh rate checked. So we
-	 * need to send a signal to the menu if the rate was changed.
-	 */
-	connect(this, SIGNAL(refreshRateChanged(int)),
-			MainMenuBar, SLOT(checkRefreshRate(int)));
-	connect(MainMenuBar, SIGNAL(setRefreshRate(int)),
-			this, SLOT(setRefreshRate(int)));
-
-	/*
-	 * The filter mode is controlled by a combo box of the parent. If the
-	 * mode is changed we get a signal. To notify the combo box of mode
-	 * changes we send out a signal.
-	 */
-	connect(this, SIGNAL(filterModeChanged(int)),
-			parent, SLOT(filterModeChanged(int)));
+	/* The filter mode is controlled by a combo box of the parent. If
+	 * the mode is changed we get a signal. */
 	connect(parent, SIGNAL(setFilterMode(int)),
 			this, SLOT(setFilterMode(int)));
 
-	/*
-	 * When a new process is selected to receive a signal from the base
-	 * class and repeat the signal to the menu. The menu keeps track of the
-	 * currently selected process.
-	 */
+	/* When a new process is selected to receive a signal from the
+	 * base class and repeat the signal to the menu. The menu keeps
+	 * track of the currently selected process. */
 	connect(this, SIGNAL(selectionChanged(QListViewItem *)),
 			SLOT(selectionChangedSlot(QListViewItem*)));
 	connect(this, SIGNAL(processSelected(int)),
@@ -149,13 +132,13 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	/* As long as the scrollbar sliders are pressed and hold the process
 	 * list is frozen. */
 	connect(verticalScrollBar(), SIGNAL(sliderPressed(void)),
-			this, SLOT(timerOff()));
+			parent, SLOT(timerOff()));
 	connect(verticalScrollBar(), SIGNAL(sliderReleased(void)),
-			this, SLOT(timerOn()));
+			parent, SLOT(timerOn()));
 	connect(horizontalScrollBar(), SIGNAL(sliderPressed(void)),
-			this, SLOT(timerOff()));
+			parent, SLOT(timerOff()));
 	connect(horizontalScrollBar(), SIGNAL(sliderReleased(void)),
-			this, SLOT(timerOn()));
+			parent, SLOT(timerOn()));
 
 	treeViewEnabled = false;
 
@@ -175,6 +158,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	setAllColumnsShowFocus(TRUE);
 	setTreeStepSize(17);
 	setSorting(sortColumn, increasing);
+	setSelectionMode(Multi);
 
 	// Create RMB popup to modify process attributes
 	processMenu = new ProcessMenu();
@@ -208,19 +192,10 @@ ProcessList::loadSettings(void)
 
 	emit(treeViewChanged(treeViewEnabled));
 
-	/*
-	 * The default filter mode is 'own processes'. This can be overridden by
-	 * the config file.
-	 */
+	/* The default filter mode is 'own processes'. This can be overridden by
+	 * the config file. */
 	filterMode = Kapp->config()->readNumEntry("FilterMode", filterMode);
 	emit(filterModeChanged(filterMode));
-
-	/*
-	 * The default update rate is 'medium'. This can be overridden by the
-	 * config file.
-	 */
-	setRefreshRate(Kapp->config()->readNumEntry("RefreshRate",
-												   refreshRate));
 
 	// The default sorting is for the PID in decreasing order.
 	sortColumn = Kapp->config()->readNumEntry("SortColumn", 1);
@@ -235,7 +210,6 @@ ProcessList::saveSettings(void)
 #if 0
 	Kapp->config()->writeEntry("TreeView", treeViewEnabled);
 	Kapp->config()->writeEntry("FilterMode", filterMode);
-	Kapp->config()->writeEntry("RefreshRate", refreshRate);
 	Kapp->config()->writeEntry("SortColumn", sortColumn);
 	Kapp->config()->writeEntry("SortIncreasing", increasing);
 #endif
@@ -250,42 +224,13 @@ ProcessList::update(const QString& list)
 	SensorTokenizer procs(list, '\n');
 	for (unsigned int i = 0; i < procs.numberOfTokens(); i++)
 		pl.append(new SensorPSLine(procs[i]));
-	// remove all leaves that do not match the filter
-	if (treeViewEnabled)
-		deleteLeaves();
 
 	int vpos = verticalScrollBar()->value();
 	int hpos = horizontalScrollBar()->value();
 
-	int selectedProcess = selectedPid();
+	updateSelectedPIds();
 
 	clear();
-
-	ProcessLVI* newSelection;
-	if (treeViewEnabled)
-		newSelection = buildTree(selectedProcess);
-	else
-		newSelection = buildList(selectedProcess);
-
-	if (newSelection)
-	{
-		setSelected(newSelection, TRUE);
-		ensureItemVisible(newSelection);
-	}
-
-	/* This is necessary because the selected process may has
-	 * disappeared without ktop's interaction. Since there are widgets
-	 * that always need to know the currently selected process we send
-	 * out a processSelected signal. */
-	emit(processSelected(selectedPid()));
-
-	verticalScrollBar()->setValue(vpos);
-	horizontalScrollBar()->setValue(hpos);
-}
-
-void 
-ProcessList::load()
-{
 #if 0
 	/* This piece of code tries to work around the QListView
 	 * auto-shrink bug. The column width is always reset to the size
@@ -298,6 +243,14 @@ ProcessList::load()
 		if (TabCol[i].visible && TabCol[i].supported)
 			setColumnWidth(col++, fm.width(TabCol[i].trHeader) + 10);
 #endif
+
+	if (treeViewEnabled)
+		buildTree();
+	else
+		buildList();
+
+	verticalScrollBar()->setValue(vpos);
+	horizontalScrollBar()->setValue(hpos);
 }
 
 bool
@@ -322,16 +275,11 @@ ProcessList::matchesFilter(SensorPSLine* p) const
 	}
 }
 
-ProcessLVI*
-ProcessList::buildList(int selectedProcess)
+void
+ProcessList::buildList()
 {
-	ProcessLVI* newSelection = 0;
-
-	/*
-	 * Get the first process in the list, check whether it matches the filter
-	 * and append it to QListView widget if so.
-	 */
-
+	/* Get the first process in the list, check whether it matches the
+	 * filter and append it to QListView widget if so. */
 	while (!pl.isEmpty())
 	{
 		SensorPSLine* p = pl.first();
@@ -342,46 +290,43 @@ ProcessList::buildList(int selectedProcess)
 
 			addProcess(p, pli);
 
-			if (p->getPid() == selectedProcess)
-				newSelection = pli;
+			if (selectedPIds.findIndex(p->getPid()) != -1)
+				pli->setSelected(true);
 		}
 		pl.removeFirst();
     }
-
-	return (newSelection);
 }
 
-ProcessLVI*
-ProcessList::buildTree(int selectedProcess)
+void
+ProcessList::buildTree()
 {
-	debug("ProcessList::buildTree");
-	ProcessLVI* newSelection = 0;
+	// remove all leaves that do not match the filter
+	deleteLeaves();
 
-	if (treeViewEnabled)
+	SensorPSLine* ps = pl.first();
+
+	while (ps)
 	{
-		SensorPSLine* ps = pl.first();
-
-		while (ps)
+		if (ps->getPid() == INIT_PID)
 		{
-			if (ps->getPid() == INIT_PID)
-			{
-				// insert root item into the tree widget
-				ProcessLVI* pli = new ProcessLVI(this);
-				addProcess(ps, pli);
+			// insert root item into the tree widget
+			ProcessLVI* pli = new ProcessLVI(this);
+			addProcess(ps, pli);
 
-				if (ps->getPid() == selectedProcess)
-					newSelection = pli;
+			// remove the process from the process list, ps is now invalid
+			int pid = ps->getPid();
+			pl.remove();
 
-				extendTree(&pl, pli, ps->getPid(),
-						  &newSelection, selectedProcess);
-				break;
-			}
-			else
-				ps = pl.next();
+			if (selectedPIds.findIndex(pid) != -1)
+				pli->setSelected(true);
+
+			// insert all child processes of current process
+			extendTree(&pl, pli, pid);
+			break;
 		}
+		else
+			ps = pl.next();
 	}
-
-	return (newSelection);
 }
 
 void
@@ -412,8 +357,7 @@ ProcessList::isLeafProcess(int pid)
 }
 
 void
-ProcessList::extendTree(QList<SensorPSLine>* pl, ProcessLVI* parent, int ppid,
-						ProcessLVI** newSelection, int selectedProcess)
+ProcessList::extendTree(QList<SensorPSLine>* pl, ProcessLVI* parent, int ppid)
 {
 	SensorPSLine* ps;
 
@@ -429,41 +373,37 @@ ProcessList::extendTree(QList<SensorPSLine>* pl, ProcessLVI* parent, int ppid,
 			
 			addProcess(ps, pli);
 
-			// if process was the previous selected one save pointer to LVI
-			if (ps->getPid() == selectedProcess)
-				*newSelection = pli;
+			if (selectedPIds.findIndex(ps->getPid()) != -1)
+				pli->setSelected(true);
 
 			// set parent to 'open'
 			setOpen(parent, TRUE);
 
-			// remove the process from the process list
+			// remove the process from the process list, ps is now invalid
+			int pid = ps->getPid();
 			pl->remove();
 
 			// now look for the childs of the inserted process
-			extendTree(pl, pli, ps->getPid(), newSelection, selectedProcess);
+			extendTree(pl, pli, pid);
 
-			/*
-			 * Since buildTree can remove processes from the list we can't
-			 * find a "current" process. So we start searching at the top
-			 * again. It's no endless loops since this branch is only entered
-			 * when there are childs of the current parents in the list. When
-			 * we have removed them all the while loop will exit.
-			 */
+			/* Since buildTree can remove processes from the list we
+			 * can't find a "current" process. So we start searching
+			 * at the top again. It's no endless loops since this
+			 * branch is only entered when there are children of the
+			 * current parent in the list. When we have removed them
+			 * all the while loop will exit. */
 			ps = pl->first();
 		}
 		else
 			ps = pl->next();
 	}
-	
 }
 
 void
 ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 {
-	/*
-	 * Get icon from icon list that might be appropriate for a process
-	 * with this name.
-	 */
+	/* Get icon from icon list that might be appropriate for a process
+	 * with this name. */
 	QPixmap pix = icons->loadIcon(p->getName(), KIcon::Desktop,
 								  KIcon::SizeSmall);
 	if (pix.isNull())
@@ -474,10 +414,9 @@ ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 								  KIcon::SizeSmall);
 	}
 
-	/*
-	 * We copy the icon into a 24x16 pixmap to add a 4 pixel margin on the
-	 * left and right side. In tree view mode we use the original icon.
-	 */
+	/* We copy the icon into a 24x16 pixmap to add a 4 pixel margin on
+	 * the left and right side. In tree view mode we use the original
+	 * icon. */
 	QPixmap icon(24, 16, pix.depth());
 	if (!treeViewEnabled)
 	{
@@ -499,18 +438,19 @@ ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 		pli->setText(col, (*p)[col]);
 }
 
-int
-ProcessList::selectedPid(void) const
+void
+ProcessList::updateSelectedPIds(void)
 {
-	ProcessLVI* current = (ProcessLVI*) currentItem();
+	selectedPIds.clear();
 
-	if (!current || !isSelected(current))
-		return (NONE);
+    QListViewItemIterator it(this);
 
-	// get PID from 2nd column of the selected row
-	QString pidStr = current->text(1);
-
-	return (pidStr.toInt());
+	// iterate through all items of the listview
+	for ( ; it.current(); ++it )
+	{
+		if (it.current()->isSelected())
+			selectedPIds.append(it.current()->text(1).toInt());
+    }	
 }
 
 void
@@ -581,10 +521,8 @@ ProcessList::handleRMBPopup(int item)
 	switch (item)
 	{
 	case HEADER_REMOVE:
-		/*
-		 * The icon, name and PID columns cannot be removed, so currColumn
-		 * must be greater than 2.
-		 */
+		/* The icon, name and PID columns cannot be removed, so
+		 * currColumn must be greater than 2. */
 		if (currColumn > 2)
 		{
 			setColumnWidthMode(currColumn, Manual);
@@ -600,25 +538,19 @@ ProcessList::handleRMBPopup(int item)
 	}
 }
 
+#if 0
 void 
 ProcessList::viewportMousePressEvent(QMouseEvent* e)
 {
-	printf("mousePressEvent\n");
-	/*
-	 * I haven't found a better way to catch RMB clicks on the header than
-	 * this hacking of the mousePressEvent function. RMB clicks are dealt
-	 * with, all other events are passed through to the base class
-	 * implementation.
-	 */
+	/* I haven't found a better way to catch RMB clicks on the header
+	 * than this hacking of the mousePressEvent function. RMB clicks
+	 * are dealt with, all other events are passed through to the base
+	 * class implementation. */
 	if (e->button() == RightButton)
 	{
-		printf("RMB pressed\n");
-#if 0
-		/*
-		 * As long as QListView does not support removing or hiding of columns
-		 * I will probably not implement this feature. I hope the Trolls will
-		 * do this with the next Qt release!
-		 */
+		/* As long as QListView does not support removing or hiding of
+		 * columns I will probably not implement this feature. I hope
+		 * the Trolls will do this with the next Qt release! */
 		if (e->pos().y() <= 0)
 		{
 			/*
@@ -628,27 +560,25 @@ ProcessList::viewportMousePressEvent(QMouseEvent* e)
 			headerPM->popup(QCursor::pos());
 		}
 		else
-#endif
 		{
-			/*
-			 * The RMB was pressed over a process in the list. This process
-			 * gets selected and a context menu pops up. The context menu is
-			 * provided by the TaskMan class. A signal is emmited to notifiy
-			 * the TaskMan object.
-			 */
+			/* The RMB was pressed over a process in the list. This
+			 * process gets selected and a context menu pops up. The
+			 * context menu is provided by the TaskMan class. A signal
+			 * is emmited to notifiy the TaskMan object. */
 			ProcessLVI* lvi = (ProcessLVI*) itemAt(e->pos());
 			setSelected(lvi, TRUE);
-			/*
-			 * I tried e->pos() instead of QCursor::pos() but then the menu
-			 * appears centered above the cursor which is annoying.
-			 */
+			/* I tried e->pos() instead of QCursor::pos() but then the
+			 * menu appears centered above the cursor which is
+			 * annoying. */
 			processMenu->popup(QCursor::pos());
 		}
 	}
 	else if (e->button() == LeftButton)
+#if 0
 	{
-		printf("LMB pressed\n");
 	}
 	else
+#endif
 		QListView::mousePressEvent(e);
 }
+#endif

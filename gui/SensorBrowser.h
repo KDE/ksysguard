@@ -80,17 +80,17 @@ public:
 	}
 	~HostInfo() { }
 
-	const QString& getHostName()
+	const QString& getHostName() const
 	{
 		return (hostName);
 	}
 
-	QListViewItem* getLVI()
+	QListViewItem* getLVI() const
 	{
 		return (lvi);
 	}
 
-	const QString& getSensorName(const QListViewItem* lvi)
+	const QString& getSensorName(const QListViewItem* lvi) const
 	{
 		QListIterator<SensorInfo> it(sensors);
 		for ( ; it.current() && (*it)->getLVI() != lvi; ++it)
@@ -100,7 +100,7 @@ public:
 		return ((*it)->getName());
 	}
 
-	const QString& getSensorType(const QListViewItem* lvi)
+	const QString& getSensorType(const QListViewItem* lvi) const
 	{
 		QListIterator<SensorInfo> it(sensors);
 		for ( ; it.current() && (*it)->getLVI() != lvi; ++it)
@@ -116,6 +116,16 @@ public:
 		SensorInfo* si = new SensorInfo(lvi, name, descr, type);
 		CHECK_PTR(si);
 		sensors.append(si);
+	}
+
+	bool isRegistered(const QString& name) const
+	{
+		QListIterator<SensorInfo> it(sensors);
+		for ( ; it.current(); ++it)
+			if ((*it)->getName() == name)
+				return (true);
+
+		return (false);
 	}
 
 private:

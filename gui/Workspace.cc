@@ -33,13 +33,14 @@
 Workspace::Workspace(QWidget* parent, const char* name)
 	: QTabWidget(parent, name)
 {
+	tabCount = 0;
 }
 
 void
 Workspace::newWorkSheet()
 {
 	/* TODO: Pop-up a dialog and ask for name and number of columns. */
-	addSheet("Test", 2);
+	addSheet(QString(i18n("Sheet %1")).arg(++tabCount), 2);
 }
 
 void
@@ -50,6 +51,7 @@ Workspace::deleteWorkSheet()
 	if (current)
 	{
 		removePage(current);
+		--tabCount;
 		delete current;
 	}
 	else

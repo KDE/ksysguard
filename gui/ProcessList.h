@@ -28,20 +28,17 @@
 
 #include <qwidget.h>
 #include <qlistview.h>
-#
+#include <qvaluelist.h>
 #include <kiconloader.h>
 
 #include "ProcessMenu.h"
 #include "SensorClient.h"
 
-#define NONE -1
-
 typedef const char* (*KeyFunc)(const char*);
 
 /**
  * To support bi-directional sorting, and sorting of text, intergers etc. we
- * need a specialized version of QListViewItem. The only specialization is
- * the key function.
+ * need a specialized version of QListViewItem.
  */
 class ProcessLVI : public QListViewItem
 {
@@ -110,7 +107,7 @@ public:
 public slots:
 	void killProcess(void)
 	{
-		processMenu->killProcess(selectedPid());
+//		processMenu->killProcess(selectedPid());
 //		update();
 	}
 
@@ -128,23 +125,11 @@ public slots:
 	void setFilterMode(int fm)
 	{
 		filterMode = fm;
-//		update();
 	}
 
 signals:
-	// This signal is emitted whenever the refresh rate has been changed.
-	void refreshRateChanged(int);
-
-	// This signal is emitted whenever the filter mode has been changed.
-	void filterModeChanged(int);
-
-	void treeViewChanged(bool);
-
 	// This signal is emitted whenever a new process has been selected.
 	void processSelected(int);
-
-protected:
-	virtual void viewportMousePressEvent(QMouseEvent* e);
 
 private:
 	// items of table header RMB popup menu
@@ -159,10 +144,7 @@ private:
 	 * This function returns the process ID of the currently selected
 	 * process.  If there isn't any -1 is returned.
 	 */
-	int selectedPid(void) const;
-
-	// Get a current list of processes from the operating system.
-	void load();
+	void updateSelectedPIds(void);
 
 	/**
 	 * This function determines whether a process matches the current
@@ -176,14 +158,14 @@ private:
 	 * mode. It's a straightforward appending operation to the
 	 * QListView widget.
 	 */
-	ProcessLVI* buildList(int selectedProcess);
+	void buildList();
 
 	/**
 	 * This fuction constructs the tree of processes for tree mode. It
 	 * filters out leaf-sub-trees that contain no processes that match
 	 * the filter criteria.
 	 */
-	ProcessLVI* buildTree(int selectedProcess);
+	void buildTree();
 
 	/**
 	 * This function deletes the leaf-sub-trees that do not match the
@@ -202,8 +184,7 @@ private:
 	 * removing processes from the process list an inserting them into
 	 * the tree.
 	 */
-	void extendTree(QList<SensorPSLine>* pl, ProcessLVI* parent, int ppid,
-					ProcessLVI** newSelection, int selectedProcess);
+	void extendTree(QList<SensorPSLine>* pl, ProcessLVI* parent, int ppid);
 
 	/**
 	 * This function adds a process to the list/tree.
@@ -247,6 +228,7 @@ private:
 
 	QValueList<KeyFunc> sortFunc;
 
+	QValueList<int> selectedPIds;
     KIconLoader* icons;
 	ProcessMenu* processMenu;
 	QPopupMenu* headerPM;

@@ -29,6 +29,7 @@
 class QString;
 class KProcess;
 class SensorClient;
+class SensorManager;
 
 /**
  * This auxilliary class is used to store requests during their processing.
@@ -59,10 +60,11 @@ class SensorAgent : public QObject
 	Q_OBJECT
 
 public:
-	SensorAgent();
+	SensorAgent(SensorManager* sm);
 	~SensorAgent();
 
-	bool start(const QString& host, const QString& shell);
+	bool start(const QString& host, const QString& shell,
+			   const QString& userName = "");
 
 	bool sendRequest(const QString& req, SensorClient* client, int id = 0);
 
@@ -74,6 +76,8 @@ private slots:
 
 private:
 	void executeCommand();
+
+	SensorManager* sensorManager;
 
 	KProcess* ktopd;
 	bool ktopdOnLine;

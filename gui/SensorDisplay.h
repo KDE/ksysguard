@@ -32,6 +32,8 @@
 #include "SensorDisplay.h"
 #include "SensorAgent.h"
 
+#define NONE -1
+
 /**
  * This class is the base class for all displays for sensors. A
  * display is any kind of widget that can display the value of one or
@@ -52,11 +54,41 @@ public:
 		return (false);
 	}
 
+public slots:
+	/**
+	 * This functions stops the timer that triggers the periodic events.
+	 */
+	void timerOff()
+	{
+		if (timerId != NONE)
+		{
+			killTimer(timerId);
+			timerId = NONE;
+		} 
+	}
+
+	/**
+	 * This function starts the timer that triggers timer events. It
+	 * reads the interval from the member object timerInterval. To
+	 * change the interval the timer must be stoped first with
+	 * timerOff() and than started again with timeOn().
+	 */
+	void timerOn()
+	{
+		if (timerId == NONE)
+		{
+			timerId = startTimer(timerInterval);
+		}
+	}
+
+
 protected:
 	virtual void timerEvent(QTimerEvent*);
 
 private:
 	int timerId;
+
+	int timerInterval;
 
 	QList<const QString> sensorNames;
 	QList<SensorAgent> sensorAgents;

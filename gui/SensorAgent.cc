@@ -29,11 +29,13 @@
 
 #include <kprocess.h>
 
+#include "SensorManager.h"
 #include "SensorAgent.h"
 #include "SensorClient.h"
 #include "SensorAgent.moc"
 
-SensorAgent::SensorAgent()
+SensorAgent::SensorAgent(SensorManager* sm) :
+	sensorManager(sm)
 {
 	ktopd = 0;
 	ktopdOnLine = false;
@@ -59,8 +61,10 @@ SensorAgent::~SensorAgent()
 }
 	
 bool
-SensorAgent::start(const QString& /* host */, const QString& /* shell */)
+SensorAgent::start(const QString& host, const QString& shell,
+				   const QString& userName)
 {
+	debug("SensorAgent::start");
 	ktopd = new KProcess;
 	CHECK_PTR(ktopd);
 
@@ -73,11 +77,15 @@ SensorAgent::start(const QString& /* host */, const QString& /* shell */)
 	connect(ktopd, SIGNAL(wroteStdin(KProcess*)), this,
 			SLOT(msgSent(KProcess*)));
 
+	*ktopd << shell;
+	if (userName != "")
+		*ktopd << " -l" << userName;
+	*ktopd << host;
 	*ktopd << "ktopd";
 
 	if (!ktopd->start(KProcess::NotifyOnExit, KProcess::All))
 	{
-		cout << "Can't start ktopd" << endl;
+		debug("Can't start ktopd");
 		return (false);
 	}
 
@@ -153,14 +161,16 @@ void
 SensorAgent::errMsgRcvd(KProcess*, char* buffer, int /* buflen */)
 {
 	/* TODO: Better error handling */
-	cout << "RCVD Error: " << buffer << endl;
+	debug("RCVD Error: %s", buffer);
+	sensorManager->disengage(this);
 }
 
 void
 SensorAgent::ktopdExited(KProcess*)
 {
 	ktopdOnLine = false;
-	cout << "ktopd exited" << endl;
+	debug("ktopd exited");
+	sensorManager->disengage(this);
 }
 
 void

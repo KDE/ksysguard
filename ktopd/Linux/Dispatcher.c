@@ -33,7 +33,8 @@
 /* This variable will be set to 1 as soon as the first interrupt (SIGALRM)
  * has been received. */
 static volatile int DispatcherReady = 0;
-static unsigned PsRate = 1;
+static unsigned PsRate = 2;
+/* The process list is read every 2 seconds by default. */
 static int PsCounter = 1;
 
 /*

@@ -35,7 +35,7 @@
 #include "Command.h"
 #include "ProcessList.h"
 
-#ifndef PAGE_SIZE /* This happens on SPARC */
+#ifndef PAGE_SIZE /* Needed for SPARC */
 #include <asm/page.h>
 #endif
 
@@ -164,9 +164,14 @@ updateProcess(int pid)
 
 	if ((ps = findProcessInList(pid)) == 0)
 	{
+		struct timeval tv;
+
 		ps = (ProcessInfo*) malloc(sizeof(ProcessInfo));
 		ps->pid = pid;
-		ps->centStamp = 0;
+
+		gettimeofday(&tv, 0);
+		ps->centStamp = tv.tv_sec * 100 + tv.tv_usec / 10000;
+
 		push_ctnr(ProcessList, ps);
 		bsort_ctnr(ProcessList, processCmp, 0);
 	}
@@ -215,7 +220,6 @@ updateProcess(int pid)
 
 	ps->vmRss = (ps->vmRss + 3) * PAGE_SIZE;
 
-	if (ps->centStamp > 0)
 	{
 		int newCentStamp;
 		int timeDiff, userDiff, sysDiff;
@@ -226,12 +230,18 @@ updateProcess(int pid)
 
 		timeDiff = newCentStamp - ps->centStamp;
 		userDiff = userTime - ps->userTime;
-		sysDiff =  sysTime - ps->sysTime;
+		sysDiff = sysTime - ps->sysTime;
 
 		if (timeDiff > 0)
 		{
 			ps->userLoad = ((double) userDiff / timeDiff) * 100.0;
 			ps->sysLoad = ((double) sysDiff / timeDiff) * 100.0;
+			/* During startup we get bigger loads since the time diff
+			 * cannot be correct. So we force it to 0. */
+			if (ps->userLoad > 100.0)
+				ps->userLoad = 0.0;
+			if (ps->sysLoad > 100.0)
+				ps->sysLoad = 0.0;
 		}
 		else
 			ps->sysLoad = ps->userLoad = 0.0;
@@ -240,17 +250,13 @@ updateProcess(int pid)
 		ps->userTime = userTime;
 		ps->sysTime = sysTime;
 	}
-	else
-		ps->sysLoad = ps->userLoad = 0.0;
 
 	fclose(fd);
 
 	snprintf(buf, BUFSIZE - 1, "/proc/%d/cmdline", pid);
 	if ((fd = fopen(buf, "r")) == 0)
-	{
-		sprintf(buf, "Cannot open %s!\n", buf);
 		return (-1);
-	}
+
 	ps->cmdline[0] = '\0';
 	sprintf(buf, "%%%d[^\n]", sizeof(ps->cmdline) - 1);
 	fscanf(fd, buf, ps->cmdline);

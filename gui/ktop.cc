@@ -51,8 +51,8 @@
 
 static const char* Description = I18N_NOOP("KDE Task Manager");
 
-#define KTOP_MIN_W	50
-#define KTOP_MIN_H	50
+#define KTOP_MIN_W	500
+#define KTOP_MIN_H	300
 
 /*
  * This is the constructor for the main widget. It sets up the menu and the
@@ -61,8 +61,6 @@ static const char* Description = I18N_NOOP("KDE Task Manager");
 TopLevel::TopLevel(const char *name, int)
 	: KTMainWindow(name)
 {
-	setCaption(i18n("KDE Task Manager"));
-
 	// Create main menu
 	menubar = new MainMenu(this, "MainMenu");
 	CHECK_PTR(menubar);
@@ -96,6 +94,18 @@ TopLevel::TopLevel(const char *name, int)
 	setStatusBar(statusbar);
 
 	localhost = SensorMgr->engage("localhost");
+#if 0
+	SensorMgr->engage("levi");
+	SensorMgr->engage("lacondamine");
+	SensorMgr->engage("reiser");
+	SensorMgr->engage("zuse");
+	SensorMgr->engage("hilbert");
+	SensorMgr->engage("tschebyscheff");
+	SensorMgr->engage("einstein");
+	SensorMgr->engage("lagrange");
+	SensorMgr->engage("newton");
+#endif
+
 	/* Request info about the swapspace size and the units it is measured in.
 	 * The requested info will be received by answerReceived(). */
 	localhost->sendRequest("memswap?", (SensorClient*) this, 5);
@@ -124,6 +134,7 @@ TopLevel::TopLevel(const char *name, int)
 	}
 
 	setMinimumSize(sizeHint());
+	resize(500, 300);
 
 	readProperties(kapp->config());
 

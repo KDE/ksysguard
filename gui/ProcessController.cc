@@ -44,14 +44,11 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	pList = new ProcessList(this, "pList");    
 	CHECK_PTR(pList);
 
-	// no timer started yet
-	timerId = NONE;
-	refreshRate = REFRESH_MEDIUM;
-
-	treeViewCB = new QCheckBox("Show Tree", this, "TreeViewCB");
-	CHECK_PTR(treeViewCB);
-	treeViewCB->setMinimumSize(treeViewCB->sizeHint());
-	connect(treeViewCB, SIGNAL(toggled(bool)),
+	// Create the check box to switch between tree view and list view.
+	xbTreeView = new QCheckBox("Show Tree", this, "xbTreeView");
+	CHECK_PTR(xbTreeView);
+	xbTreeView->setMinimumSize(xbTreeView->sizeHint());
+	connect(xbTreeView, SIGNAL(toggled(bool)),
 			this, SLOT(setTreeView(bool)));
 
 	/* Create the combo box to configure the process filter. The
@@ -70,14 +67,20 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	connect(cbFilter, SIGNAL(activated(int)),
 			pList, SLOT(setFilterMode(int)));
 
-	// Create the 'Refresh Now' button.
-	bRefresh = new QPushButton(i18n("Refresh Now"), this, "pList_bRefresh");
+	// Create the check box to pause the automatic list update.
+	xbPause = new QCheckBox("Pause", this, "xbPause");
+	CHECK_PTR(xbPause);
+	xbPause->setMinimumSize(xbPause->sizeHint());
+	connect(xbPause, SIGNAL(toggled(bool)), this, SLOT(togglePause(bool)));
+
+	// Create the 'Refresh' button.
+	bRefresh = new QPushButton(i18n("Refresh"), this, "bRefresh");
 	CHECK_PTR(bRefresh);
 	bRefresh->setMinimumSize(bRefresh->sizeHint());
-	connect(bRefresh, SIGNAL(clicked()), pList, SLOT(update()));
+	connect(bRefresh, SIGNAL(clicked()), pList, SLOT(updateList()));
 
-	// Create the 'Kill task' button.
-	bKill = new QPushButton(i18n("Kill task"), this, "pList_bKill");
+	// Create the 'Kill' button.
+	bKill = new QPushButton(i18n("Kill"), this, "bKill");
 	CHECK_PTR(bKill);
 	bKill->setMinimumSize(bKill->sizeHint());
 	connect(bKill,SIGNAL(clicked()), pList, SLOT(killProcess()));
@@ -90,9 +93,11 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	gm1 = new QHBoxLayout();
 	gm->addLayout(gm1, 0);
 	gm1->addStretch();
-	gm1->addWidget(treeViewCB);
+	gm1->addWidget(xbTreeView);
 	gm1->addStretch();
 	gm1->addWidget(cbFilter);
+	gm1->addStretch();
+	gm1->addWidget(xbPause);
 	gm1->addStretch();
 	gm1->addWidget(bRefresh);
 	gm1->addStretch();
@@ -125,59 +130,6 @@ ProcessController::addSensor(SensorAgent* sa, const QString& /* sensorName */,
 	return (TRUE);
 }
 
-void 
-ProcessController::setRefreshRate(int r)
-{
-	assert(r >= REFRESH_MANUAL && r <= REFRESH_FAST);
-
-	timerOff();
-	switch (refreshRate = r)
-	{
-	case REFRESH_MANUAL:
-		break;
-
-	case REFRESH_SLOW:
-		timerInterval = 20000;
-		break;
-
-	case REFRESH_MEDIUM:
-		timerInterval = 7000;
-		break;
-
-	case REFRESH_FAST:
-	default:
-		timerInterval = 1000;
-		break;
-	}
-
-	// only re-start the timer if auto mode is enabled
-	if (refreshRate != REFRESH_MANUAL)
-		timerOn();
-
-//	emit(refreshRateChanged(refreshRate));
-}
-
-int
-ProcessController::setAutoUpdateMode(bool mode)
-{
-	/*
-	 * If auto mode is enabled the display is updated regurlarly triggered
-	 * by a timer event.
-	 */
-
-	// save current setting of the timer
-	int oldmode = (timerId != NONE) ? TRUE : FALSE; 
-
-	// set new setting
-	if (mode && (refreshRate != REFRESH_MANUAL))
-		timerOn();
-	else
-		timerOff();
-
-	// return the previous setting
-	return (oldmode);
-}
-
 void
 ProcessController::answerReceived(int id, const QString& answer)
 {
@@ -201,23 +153,12 @@ ProcessController::answerReceived(int id, const QString& answer)
 		for (unsigned int i = 0; i < headers.numberOfTokens(); i++)
 			pList->addColumn(headers[i], colTypes[i]);
 
-		// start automatic refreshing
-		setRefreshRate(refreshRate);
-
 		break;
 	}
 	case 2:
 		/* We have received the answer to a ps command that contains a
 		 * list of processes with various additional information. */
-
-		// disable the auto-update and save current mode
-		int lastmode = setAutoUpdateMode(FALSE);
-
 		pList->update(answer);
-
-		// restore update mode
-		setAutoUpdateMode(lastmode);
-
 		break;
 	}
 }

@@ -45,8 +45,8 @@ SensorManager::engage(const QString& hostname)
 
 	if ((ktopd = sensors.find(hostname)) == 0)
 	{
-		ktopd = new SensorAgent;
-		ktopd->start(hostname.ascii(), "rsh");
+		ktopd = new SensorAgent(this);
+		ktopd->start(hostname.ascii(), "ssh");
 		sensors.insert(hostname, ktopd);
 		emit update();
 	}
@@ -57,10 +57,14 @@ void
 SensorManager::disengage(const SensorAgent* sa)
 {
 	QDictIterator<SensorAgent> it(sensors);
-	
-	while (it.current())
+
+	debug("SensorManager::disengage");
+	for ( ; it.current(); ++it)
 		if (it.current() == sa)
+		{
 			sensors.remove(it.currentKey());
+			emit update();
+		}
 }
 
 const QString
@@ -71,8 +75,11 @@ SensorManager::getHostName(const SensorAgent* sensor) const
 	QDictIterator<SensorAgent> it(sensors);
 	
 	while (it.current())
+	{
 		if (it.current() == sensor)
 			return (it.currentKey());
+		++it;
+	}
 
 	return (dummy);
 }
