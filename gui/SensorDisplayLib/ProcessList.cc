@@ -762,7 +762,8 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 			currentNiceValue = lvi->text(i).toInt();
 
 	processPM = new QPopupMenu();
-	processPM->insertItem(i18n("Hide Column"), 5);
+  if (columnWidth(col) != 0)
+  	processPM->insertItem(i18n("Hide Column"), 5);
 	QPopupMenu* hiddenPM = new QPopupMenu(processPM);
 	for (int i = 0; i < columns(); ++i)
 		if (columnWidth(i) == 0)
