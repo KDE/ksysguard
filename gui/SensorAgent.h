@@ -64,7 +64,7 @@ public:
 	~SensorAgent();
 
 	bool start(const QString& host, const QString& shell,
-			   const QString& userName = "");
+			   const QString& command = "");
 
 	bool sendRequest(const QString& req, SensorClient* client, int id = 0);
 

@@ -38,16 +38,17 @@
 #include <kcmdlineargs.h>
 #include <kmessagebox.h>
 #include <kaboutdata.h>
-
+#include <kstdaccel.h>
+#include <kaction.h>
+#include <kstdaction.h>
 
 #include "SensorBrowser.h"
 #include "SensorManager.h"
 #include "SensorAgent.h"
 #include "Workspace.h"
+#include "HostConnector.h"
 #include "../version.h"
 #include "ktop.moc"
-
-
 
 static const char* Description = I18N_NOOP("KDE Task Manager");
 
@@ -61,13 +62,6 @@ static const char* Description = I18N_NOOP("KDE Task Manager");
 TopLevel::TopLevel(const char *name, int)
 	: KTMainWindow(name)
 {
-	// Create main menu
-	menubar = new MainMenu(this, "MainMenu");
-	CHECK_PTR(menubar);
-	connect(menubar, SIGNAL(quit()), this, SLOT(quitSlot()));
-	// register the menu bar with KTMainWindow
-	setMenu(menubar);
-
 	splitter = new QSplitter(this, "Splitter");
 	CHECK_PTR(splitter);
 	splitter->setOrientation(Horizontal);
@@ -78,8 +72,6 @@ TopLevel::TopLevel(const char *name, int)
 
 	ws = new Workspace(splitter, "Workspace");
 	CHECK_PTR(ws);
-	connect(menubar, SIGNAL(newWorkSheet()), ws, SLOT(newWorkSheet()));
-	connect(menubar, SIGNAL(deleteWorkSheet()), ws, SLOT(deleteWorkSheet()));
 
 	/* Create the status bar. It displays some information about the
 	 * number of processes and the memory consumption of the local
@@ -93,19 +85,7 @@ TopLevel::TopLevel(const char *name, int)
 							   "8888888 kB free"), 2);
 	setStatusBar(statusbar);
 
-	localhost = SensorMgr->engage("localhost");
-#if 0
-	SensorMgr->engage("levi");
-	SensorMgr->engage("lacondamine");
-	SensorMgr->engage("reiser");
-	SensorMgr->engage("zuse");
-	SensorMgr->engage("hilbert");
-	SensorMgr->engage("tschebyscheff");
-	SensorMgr->engage("einstein");
-	SensorMgr->engage("lagrange");
-	SensorMgr->engage("newton");
-#endif
-
+	localhost = SensorMgr->engage("localhost", "", "ssh ktopd");
 	/* Request info about the swapspace size and the units it is measured in.
 	 * The requested info will be received by answerReceived(). */
 	localhost->sendRequest("memswap?", (SensorClient*) this, 5);
@@ -140,6 +120,19 @@ TopLevel::TopLevel(const char *name, int)
 
 	timerID = startTimer(2000);
 
+    // setup File menu
+    KStdAction::openNew(ws, SLOT(newWorkSheet()), actionCollection());
+    KStdAction::open(ws, SLOT(loadWorkSheet()), actionCollection());
+	KStdAction::close(ws, SLOT(deleteWorkSheet()), actionCollection());
+	KStdAction::quit(this, SLOT(quitApp()), actionCollection());
+
+    (void) new KAction(i18n("C&onnect Host"), 0, this, SLOT(connectHost()),
+					   actionCollection(), "connect_host");
+    (void) new KAction(i18n("D&isconnect Host"), 0, this,
+					   SLOT(disconnectHost()),
+					   actionCollection(), "disconnect_host");
+	createGUI("ktop.rc");
+
 	// show the dialog box
 	show();
 }
@@ -148,18 +141,31 @@ TopLevel::~TopLevel()
 {
 	killTimer(timerID);
 
-	delete menubar;
 	delete statusbar;
 	delete splitter;
 }
 
-void 
-TopLevel::quitSlot()
+void
+TopLevel::quitApp()
 {
 	saveProperties(kapp->config());
 
 	kapp->config()->sync();
 	qApp->quit();
+}
+
+void 
+TopLevel::connectHost()
+{
+	QDialog* d = new HostConnector(0, "HostConnector");
+	d->exec();
+
+	delete d;
+}
+
+void 
+TopLevel::disconnectHost()
+{
 }
 
 void
@@ -229,13 +235,13 @@ main(int argc, char** argv)
 	KAboutData aboutData("ktop", I18N_NOOP("KDE Task Manager"),
 						 KTOP_VERSION, Description, KAboutData::License_GPL,
 						 I18N_NOOP("(c) 1996-2000, The KTop Developers"));
-	aboutData.addAuthor("Alex Sanda", 0, "alex@darkstart.ping.at");
-	aboutData.addAuthor("Ralf Mueller", 0, "rlaf@bj-ig.de");
-	aboutData.addAuthor("Bernd Johannes Wuebben", 0,
-						"wuebben@math.cornell.edu");
-	aboutData.addAuthor("Nicolas Leclercq",0, "nicknet@planete.net");
 	aboutData.addAuthor("Chris Schlaeger", "Current Maintainer",
 						"cs@kde.org");
+	aboutData.addAuthor("Nicolas Leclercq", 0, "nicknet@planete.net");
+	aboutData.addAuthor("Alex Sanda", 0, "alex@darkstart.ping.at");
+	aboutData.addAuthor("Bernd Johannes Wuebben", 0,
+						"wuebben@math.cornell.edu");
+	aboutData.addAuthor("Ralf Mueller", 0, "rlaf@bj-ig.de");
 	
 	KCmdLineArgs::init( argc, argv, &aboutData );
 	KCmdLineArgs::addCmdLineOptions( options );
@@ -254,18 +260,6 @@ main(int argc, char** argv)
 	a.setMainWidget(toplevel);
 	a.setTopWidget(toplevel);
 
-//	Commented out so that y'all can start to get this to work properly
-/*	{ // process command line arguments
-		KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-		if (tolower(args->getOption("p")[0])=='p')
-			sfolder = TaskMan::PAGE_PLIST;
-		else
-			sfolder = TaskMan::PAGE_PLIST;
-		
-		args->clear();
-    }
-*/
-    
 	toplevel->show();
 
 	// run the application

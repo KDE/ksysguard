@@ -58,10 +58,11 @@ protected:
 	virtual void paintEvent(QPaintEvent*);
 
 private:
+	void calcRange();
+
 	int minValue;
 	int maxValue;
-	int minValues[MAXBEAMS];
-	int maxValues[MAXBEAMS];
+	bool autoRange;
 	bool lowPass;
 	int* beamData[MAXBEAMS];
 	QColor beamColor[MAXBEAMS];

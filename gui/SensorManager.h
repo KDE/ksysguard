@@ -40,7 +40,8 @@ public:
 	SensorManager();
 	~SensorManager();
 
-	SensorAgent* engage(const QString& hostname);
+	SensorAgent* engage(const QString& hostname, const QString& shell = "ssh",
+						const QString& command = "");
 	void disengage(const SensorAgent* sensor);
 
 	const QString getHostName(const SensorAgent* sensor) const;

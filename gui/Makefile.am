@@ -10,7 +10,7 @@ bin_PROGRAMS = 	ktop
 # Which sources should be compiled for ktop.
 
 ktop_SOURCES = ktop.cc  SensorAgent.cc SensorManager.cc \
-	MainMenu.cc \
+	HostConnector.cc \
 	ProcessMenu.cc ReniceDlg.cc WorkSheet.cc Workspace.cc \
 	SensorBrowser.cc SensorDisplay.cc \
 	FancyPlotter.cc SignalPlotter.cc MultiMeter.cc \
@@ -24,8 +24,9 @@ ktop_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 ktop_LDADD   =       $(LIB_KDEUI)
 
 # this option you can leave out. Just, if you use "make dist", you need it
-noinst_HEADERS = MainMenu.h ReniceDlg.h SensorClient.h ktop.h ProcessMenu.h \
+noinst_HEADERS = SensorClient.h ktop.h ProcessMenu.h \
 	Workspace.h WorkSheet.h SensorBrowser.h \
+	HostConnector.h \
 	SensorAgent.h SensorManager.h SensorDisplay.h \
 	FancyPlotter.h SignalPlotter.h MultiMeter.h \
 	ProcessController.h ProcessList.h version.h 
@@ -35,5 +36,8 @@ METASOURCES = AUTO
 
 messages:
 	$(XGETTEXT) *.cc -o $(podir)/ktop.pot
+
+rcdir = $(kde_datadir)/ktop
+rc_DATA = ktop.rc
 
 apps_DATA = ktop.desktop

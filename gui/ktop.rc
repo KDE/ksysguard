@@ -1,0 +1,9 @@
+<!DOCTYPE kpartgui>
+<kpartgui name="ktop">
+<MenuBar>
+  <Menu name="file"><text>&amp;File</text>
+    <Action name="connect_host"/>
+    <Action name="disconnect_host"/>
+  </Menu>
+</MenuBar>
+</kpartgui>

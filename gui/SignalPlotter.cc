@@ -3,10 +3,9 @@
    
 	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -46,12 +45,8 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name, int min,
 
 	beams = 0;
 	lowPass = FALSE;
-	for (int i = 0; i < MAXBEAMS; i++)
-	{
-		minValues[i] = 0;
-		maxValues[i] = 0;
-		beamData[i] = 0;
-	}
+	minValue = maxValue = 0;
+	autoRange = true;
 
 	// Anything smaller than this does not make sense.
 	setMinimumSize(16, 16);
@@ -84,16 +79,25 @@ SignalPlotter::addSample(int s0, int s1, int s2, int s3, int s4)
 {
 	assert(width() > 3);
 
-	/*
-	 * Shift data buffers one sample down.
-	 */
+	/* To avoid unecessary calls to the fairly expensive calcRange
+	 * function we only do a recalc if the value to be dropped is
+	 * an extreme value. */
+	bool recalc = false;
+	for (int i = 0; i < beams; i++)
+		if (beamData[i][width() - 3] <= minValue ||
+			beamData[i][width() - 3] >= maxValue)
+		{
+			recalc = true;
+		}
+
+	// Shift data buffers one sample down.
 	for (int i = 0; i < beams; i++)
 		memmove(beamData[i], beamData[i] + 1, (width() - 3) * sizeof(int));
 
 	if (lowPass)
 	{
 		/* We use an FIR type low-pass filter to make the display look
-		 *a little nicer without becoming too inaccurate. */
+		 * a little nicer without becoming too inaccurate. */
 		if (beams > 0)
 			beamData[0][width() - 3] = (beamData[0][width() - 4] + s0) / 2;
 		if (beams > 1)
@@ -118,6 +122,8 @@ SignalPlotter::addSample(int s0, int s1, int s2, int s3, int s4)
 		if (beams > 4)
 			beamData[4][width() - 3] = s4;
 	}
+	if (autoRange && recalc)
+		calcRange();
 
 	repaint();
 }
@@ -131,17 +137,33 @@ SignalPlotter::changeRange(int beam, int min, int max)
 		return;
 	}
 
-	minValues[beam] = min;
-	maxValues[beam] = max;
-
-	minValue = maxValue = 0;
-	for (int i = 0; i < beams; i++)
+	if (min == max)
 	{
-		/* The plotter runs in accumulative mode, so we need to accumulate
-		 * the min and max values for each beam to determine the overall
-		 * signal range of the plotter. */
-		minValue += minValues[i];
-		maxValue += maxValues[i];
+		autoRange = true;
+		calcRange();
+	}
+	else
+	{
+		minValue = min;
+		maxValue = max;
+	}
+}
+
+void
+SignalPlotter::calcRange()
+{
+	int minValue = 0;
+	int maxValue = 0;
+
+	for (int i = 0; i < (width() - 2); i++)
+	{
+		for (int b = 0; b < beams; b++)
+		{
+			if (beamData[b][i] < minValue)
+				minValue = beamData[b][i];
+			if (beamData[b][i] > maxValue)
+				maxValue = beamData[b][i];
+		}
 	}
 }
 
@@ -150,13 +172,12 @@ SignalPlotter::resizeEvent(QResizeEvent* ev)
 {
 	assert(width() > 2);
 
-	/*
-	 * Since the data buffers for the beams are equal in size to the width
-	 * of the widget minus 2 we have to enlarge or shrink the buffers
-	 * accordingly when a resize occures. To have a nices display we try to
-	 * keep as much data as possible. Data that is lost due to shrinking the
-	 * buffers cannot be recovered on enlarging though.
-	 */
+	/* Since the data buffers for the beams are equal in size to the
+	 * width of the widget minus 2 we have to enlarge or shrink the
+	 * buffers accordingly when a resize occures. To have a nicer
+	 * display we try to keep as much data as possible. Data that is
+	 * lost due to shrinking the buffers cannot be recovered on
+	 * enlarging though. */
 	int* tmp[MAXBEAMS];
 
 	// overlap between the old and the new buffers.

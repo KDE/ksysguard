@@ -52,7 +52,6 @@
 #include <kmessagebox.h>
 #include <kstddirs.h>
 
-#include "MainMenu.h"
 #include "ProcessList.moc"
 
 #define NONE -1
@@ -126,8 +125,6 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	 * track of the currently selected process. */
 	connect(this, SIGNAL(selectionChanged(QListViewItem *)),
 			SLOT(selectionChangedSlot(QListViewItem*)));
-	connect(this, SIGNAL(processSelected(int)),
-			MainMenuBar, SLOT(processSelected(int)));
 
 	/* As long as the scrollbar sliders are pressed and hold the process
 	 * list is frozen. */

@@ -62,9 +62,8 @@ SensorAgent::~SensorAgent()
 	
 bool
 SensorAgent::start(const QString& host, const QString& shell,
-				   const QString& userName)
+				   const QString& command)
 {
-	debug("SensorAgent::start");
 	ktopd = new KProcess;
 	CHECK_PTR(ktopd);
 
@@ -77,11 +76,33 @@ SensorAgent::start(const QString& host, const QString& shell,
 	connect(ktopd, SIGNAL(wroteStdin(KProcess*)), this,
 			SLOT(msgSent(KProcess*)));
 
-	*ktopd << shell;
-	if (userName != "")
-		*ktopd << " -l" << userName;
-	*ktopd << host;
-	*ktopd << "ktopd";
+	if (command != "")
+	{
+		debug(command);
+		// We assume parameters to be seperated by a single blank.
+		QString s = command;
+		while (s.length() > 0)
+		{
+			int sep;
+
+			if ((sep = s.find(' ')) < 0)
+			{
+				*ktopd << s.utf8();
+				break;
+			}
+			else
+			{
+				*ktopd << s.left(sep).utf8();
+				s = s.remove(0, sep + 1);
+			}
+		}
+	}
+	else
+	{
+		*ktopd << shell;
+		*ktopd << host;
+		*ktopd << "ktopd";
+	}
 
 	if (!ktopd->start(KProcess::NotifyOnExit, KProcess::All))
 	{

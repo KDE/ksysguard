@@ -31,11 +31,9 @@
 
 #include <kapp.h>
 #include <ktmainwindow.h>
-#include <kmenubar.h>
 #include <kstatusbar.h>
 
 #include "SensorClient.h"
-#include "MainMenu.h"
 
 extern KApplication* Kapp;
 
@@ -53,16 +51,20 @@ public:
 
 	void closeEvent(QCloseEvent*)
 	{
-		quitSlot();
+		quitApp();
 	}
 
 	virtual void answerReceived(int id, const QString& s);
-	
+
 protected:
 	virtual void timerEvent(QTimerEvent*);
 
+protected slots:
+	void quitApp();
+	void connectHost();
+	void disconnectHost();
+
 private:
-	MainMenu* menubar;
 	KStatusBar* statusbar;
 
 	QSplitter* splitter;
@@ -71,11 +73,6 @@ private:
 	int timerID;
 
 	SensorAgent* localhost;
-
-protected slots:
-
-	void quitSlot();
-
 };
 
 #endif

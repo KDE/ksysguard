@@ -44,6 +44,12 @@ Workspace::newWorkSheet()
 }
 
 void
+Workspace::loadWorkSheet()
+{
+	debug("Not yet implemented");
+}
+
+void
 Workspace::deleteWorkSheet()
 {
 	WorkSheet* current = (WorkSheet*) currentPage();

@@ -43,6 +43,7 @@ public:
 
 public slots:
 	void newWorkSheet();
+	void loadWorkSheet();
 	void deleteWorkSheet();
 
 private:
