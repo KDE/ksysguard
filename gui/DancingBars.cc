@@ -28,6 +28,7 @@
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qcheckbox.h>
+#include <qspinbox.h>
 #include <qlistview.h>
 #include <qdom.h>
 #include <qlayout.h>
@@ -41,6 +42,7 @@
 #include "SensorManager.h"
 #include "ColorPicker.h"
 #include "DancingBarsSettings.h"
+#include "BarGraphSettings.h"
 #include "DancingBars.moc"
 
 DancingBars::DancingBars(QWidget* parent, const char* name,
@@ -116,15 +118,16 @@ DancingBars::settings()
 	dbs->normalColor->setColor(plotter->normalColor);
 	dbs->alarmColor->setColor(plotter->alarmColor);
 	dbs->backgroundColor->setColor(plotter->backgroundColor);
+	dbs->fontSize->setValue(plotter->fontSize);
 
-	for (uint i = 0; i < bars; ++i)
+	for (uint i = bars - 1; i >= 0 && i < bars; i--)
 	{
 		QString status = sensors.at(i)->ok ? i18n("Ok") : i18n("Error");
 		QListViewItem* lvi = new QListViewItem(
 			dbs->sensorList, sensors.at(i)->hostName,
 			SensorMgr->translateSensor(sensors.at(i)->name),
+			plotter->footers[i],
 			SensorMgr->translateUnit(sensors.at(i)->unit), status);
-		dbs->sensorList->insertItem(lvi);
 	}
 	connect(dbs->editButton, SIGNAL(clicked()),
 			this, SLOT(settingsEdit()));
@@ -160,6 +163,27 @@ DancingBars::applySettings()
 	plotter->normalColor = dbs->normalColor->getColor();
 	plotter->alarmColor = dbs->alarmColor->getColor();
 	plotter->backgroundColor = dbs->backgroundColor->getColor();
+	plotter->fontSize = dbs->fontSize->value();
+
+    QListViewItemIterator it(dbs->sensorList);
+	/* Iterate through all items of the listview and reverse iterate
+	 * through the registered sensors. */
+	for (int i = 0; i < sensors.count(); i++)
+	{
+		if (it.current() &&
+			it.current()->text(0) == sensors.at(i)->hostName &&
+			it.current()->text(1) == 
+			SensorMgr->translateSensor(sensors.at(i)->name))
+		{
+			plotter->footers[i] = it.current()->text(2);
+			it++;
+		}
+		else
+		{
+			removeSensor(i);
+			i--;
+		}
+	}
 
 	repaint();
 	modified = true;
@@ -172,6 +196,14 @@ DancingBars::settingsEdit()
 
 	if (!lvi)
 		return;
+
+	BarGraphSettings* bgs = new BarGraphSettings(
+		this, "BarsGraphSettings", true);
+	CHECK_PTR(dbs);
+
+	bgs->label->setText(lvi->text(2));
+	if (bgs->exec())
+		lvi->setText(2, bgs->label->text());
 }
 
 void
@@ -225,12 +257,29 @@ DancingBars::addSensor(const QString& hostName, const QString& sensorName,
 		return (false);
 
 	registerSensor(new SensorProperties(hostName, sensorName, title));
-	++bars;
-	sampleBuf.resize(bars);
 
 	/* To differentiate between answers from value requests and info
 	 * requests we add 100 to the beam index for info requests. */
 	sendRequest(hostName, sensorName + "?", bars + 100);
+	++bars;
+	sampleBuf.resize(bars);
+
+	return (true);
+}
+
+bool
+DancingBars::removeSensor(uint idx)
+{
+	if (idx >= bars)
+	{
+		kdDebug() << "DancingBars::removeSensor: idx out of range ("
+				  << idx << ")" << endl;
+		return (false);
+	}
+
+	plotter->removeBar(idx);
+	bars--;
+	SensorDisplay::removeSensor(idx);
 
 	return (true);
 }
@@ -252,8 +301,8 @@ DancingBars::answerReceived(int id, const QString& answer)
 {
 	/* We received something, so the sensor is probably ok. */
 	sensorError(id, false);
-
-	if (id <= 100)
+	
+	if (id < 100)
 	{
 		sampleBuf[id] = answer.toDouble();
 		if (flags & (1 << id))
@@ -270,13 +319,13 @@ DancingBars::answerReceived(int id, const QString& answer)
 			flags = 0;
 		}
 	}
-	else if (id > 100)
+	else if (id >= 100)
 	{
 		SensorIntegerInfo info(answer);
 		if (id == 100)
-		{
 			plotter->changeRange(info.getMin(), info.getMax());
-		}
+
+		sensors.at(id - 100)->unit = info.getUnit();
 		timerOn();
 	}
 }
@@ -288,12 +337,12 @@ DancingBars::createFromDOM(QDomElement& domElem)
 
 	frame->setTitle(domElem.attribute("title"));
 
-	plotter->changeRange(domElem.attribute("min").toDouble(),
-						 domElem.attribute("max").toDouble());
-	plotter->setLimits(domElem.attribute("lowlimit").toDouble(),
-					   domElem.attribute("lowlimitactive").toInt(),
-					   domElem.attribute("uplimit").toDouble(),
-					   domElem.attribute("uplimitactive").toInt());
+	plotter->changeRange(domElem.attribute("min", "0").toDouble(),
+						 domElem.attribute("max", "0").toDouble());
+	plotter->setLimits(domElem.attribute("lowlimit", "0").toDouble(),
+					   domElem.attribute("lowlimitactive", "0").toInt(),
+					   domElem.attribute("uplimit", "0").toDouble(),
+					   domElem.attribute("uplimitactive", "0").toInt());
 
 	plotter->normalColor = restoreColorFromDOM(domElem, "normalColor",
 											   Qt::green);
@@ -301,6 +350,7 @@ DancingBars::createFromDOM(QDomElement& domElem)
 											  Qt::red);
 	plotter->backgroundColor = restoreColorFromDOM(domElem, "backgroundColor",
 												   Qt::black);
+	plotter->fontSize = domElem.attribute("fontSize", "10").toInt();
 
 	QDomNodeList dnList = domElem.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)
@@ -330,6 +380,7 @@ DancingBars::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 	addColorToDOM(display, "normalColor", plotter->normalColor);
 	addColorToDOM(display, "alarmColor", plotter->alarmColor);
 	addColorToDOM(display, "backgroundColor", plotter->backgroundColor);
+	display.setAttribute("fontSize", plotter->fontSize);
 
 	for (int i = 0; i < bars; ++i)
 	{
@@ -337,7 +388,7 @@ DancingBars::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 		display.appendChild(beam);
 		beam.setAttribute("hostName", sensors.at(i)->hostName);
 		beam.setAttribute("sensorName", sensors.at(i)->name);
-		beam.setAttribute("sensorDescr", sensors.at(i)->description);
+		beam.setAttribute("sensorDescr", plotter->footers[i]);
 	}
 
 	if (save)

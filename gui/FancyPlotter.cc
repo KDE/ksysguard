@@ -165,7 +165,7 @@ FancyPlotter::applySettings()
     QListViewItemIterator it(fps->sensorList);
 	/* Iterate through all items of the listview and reverse iterate
 	 * through the registered sensors. */
-	for (int i = sensors.count() - 1; i >= 0; --i)
+	for (int i = sensors.count() - 1; i >= 0 && i < sensors.count(); --i)
 	{
 		if (it.current() &&
 			it.current()->text(0) == sensors.at(i)->hostName &&

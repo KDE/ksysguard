@@ -266,7 +266,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	errorIcon = QIconSet(icons->loadIcon("connect_creating", KIcon::Desktop,
 										 KIcon::SizeSmall));
 
-	setItemMargin(1);
+	setItemMargin(2);
 	setAllColumnsShowFocus(TRUE);
 	setTreeStepSize(17);
 	setSorting(sortColumn, increasing);

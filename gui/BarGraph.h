@@ -40,6 +40,8 @@ public:
 	~BarGraph();
 
 	bool addBar(const QString& footer);
+	bool removeBar(uint idx);
+
 	void updateSamples(const QArray<double>& newSamples);
 
 	double getMin() const
@@ -93,6 +95,7 @@ private:
 	QColor normalColor;
 	QColor alarmColor;
 	QColor backgroundColor;
+	int fontSize;
 
 	QPixmap errorIcon;
 	bool sensorOk;

@@ -14,8 +14,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>400</width>
-            <height>334</height>
+            <width>283</width>
+            <height>198</height>
         </rect>
     </property>
     <property stdset="1">
@@ -40,6 +40,14 @@
             <property stdset="1">
                 <name>name</name>
                 <cstring>frame</cstring>
+            </property>
+            <property stdset="1">
+                <name>frameShape</name>
+                <enum>Box</enum>
+            </property>
+            <property stdset="1">
+                <name>frameShadow</name>
+                <enum>Sunken</enum>
             </property>
             <property stdset="1">
                 <name>title</name>
@@ -272,7 +280,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>OK</string>
+                        <string>&amp;OK</string>
                     </property>
                     <property stdset="1">
                         <name>default</name>
@@ -287,7 +295,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Apply</string>
+                        <string>&amp;Apply</string>
                     </property>
                 </widget>
                 <spacer>
@@ -310,13 +318,6 @@
                             <height>20</height>
                         </size>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
                 </spacer>
                 <widget>
                     <class>QPushButton</class>
@@ -326,7 +327,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Cancel</string>
+                        <string>&amp;Cancel</string>
                     </property>
                 </widget>
             </hbox>

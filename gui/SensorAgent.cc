@@ -148,7 +148,8 @@ SensorAgent::processAnswer(const QString& buf)
 		}
 		if (answerBuffer.left(end) == "UNKNOWN COMMAND")
 		{
-			// Notify client of newly arrived answer.
+			/* Notify client that the sensor seems to be no longer
+			 * available. */
 			req->client->sensorLost(req->id);
 		}
 		else

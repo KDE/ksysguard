@@ -535,8 +535,13 @@ WorkSheet::removeDisplay(SensorDisplay* display)
 		for (uint c = 0; c < columns; ++c)
 			if (displays[r][c] == display)
 			{
-				replaceDisplay(r, c);
-				modified = true;
+				if (KMessageBox::warningYesNo(this, i18n(
+					"Do you really want to delete the display?")) ==
+					KMessageBox::Yes)
+				{				
+					replaceDisplay(r, c);
+					modified = true;
+				}
 				return;
 			}
 }

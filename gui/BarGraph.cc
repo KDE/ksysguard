@@ -48,6 +48,7 @@ BarGraph::BarGraph(QWidget* parent, const char* name)
 	normalColor = QColor(20, 255, 20);
 	alarmColor = QColor(255, 20, 20);
 	backgroundColor = QColor(0, 0, 0);
+	fontSize = 10;
 
 	// Anything smaller than this does not make sense.
 	setMinimumSize(16, 16);
@@ -69,6 +70,22 @@ BarGraph::addBar(const QString& footer)
 {
 	samples.resize(++bars);
 	footers.append(footer);
+
+	return (true);
+}
+
+bool
+BarGraph::removeBar(uint idx)
+{
+	if (idx >= bars)
+	{
+		kdDebug() << "BarGraph::removeBar: idx " << idx << " out of range "
+				  << bars << endl;
+		return (false);
+	}
+	samples.resize(--bars);
+	footers.remove(footers.at(idx));
+	update();
 
 	return (true);
 }
@@ -96,10 +113,11 @@ BarGraph::paintEvent(QPaintEvent*)
 	QPixmap pm(w, h);
 	QPainter p;
 	p.begin(&pm, this);
-	p.setFont(QFont("lucidatypewriter", 12));
-	QFontMetrics fm(QFont("lucidatypewriter", 12));
+	p.setFont(QFont(p.font().family(), fontSize));
+	QFontMetrics fm(p.font());
 
 	pm.fill(backgroundColor);
+
 	/* Draw white line along the bottom and the right side of the
 	 * widget to create a 3D like look. */
 	p.setPen(QColor(colorGroup().light()));
@@ -108,50 +126,54 @@ BarGraph::paintEvent(QPaintEvent*)
 
 	p.setClipRect(1, 1, w - 2, h - 2);
 
-	int barWidth = (w - 2) / bars;
-	int b;
-	/* Labels are only printed underneath the bars if the labels for all
-	 * bars are smaller than the bar width. If a single label does not fit
-	 * no label is shown. */
-	bool showLabels = true;
-	for (b = 0; b < bars; b++)
-		if (fm.width(footers[b]) > barWidth)
-			showLabels = false;
-
-	int barHeight;
-	if (showLabels)
-		barHeight = h - 2 - fm.lineSpacing() - 2;
-	else
-		barHeight = h - 2;
-	for (int b = 0; b < bars; b++)
+	if (bars > 0)
 	{
-		int topVal = (int) ((float) barHeight / maxValue
-							* (samples[b] - minValue));
-		/* TODO: This widget does not handle negative values properly. */
-		if (topVal < 0)
-			topVal = 0;
+		int barWidth = (w - 2) / bars;
+		int b;
+		/* Labels are only printed underneath the bars if the labels
+		 * for all bars are smaller than the bar width. If a single
+		 * label does not fit no label is shown. */
+		bool showLabels = true;
+		for (b = 0; b < bars; b++)
+			if (fm.width(footers[b]) > barWidth)
+				showLabels = false;
 
-		for (int i = 0; i < barHeight && i < topVal; i += 2)
+		int barHeight;
+		if (showLabels)
+			barHeight = h - 2 - fm.lineSpacing() - 2;
+		else
+			barHeight = h - 2;
+		for (int b = 0; b < bars; b++)
 		{
+			int topVal = (int) ((float) barHeight / maxValue
+								* (samples[b] - minValue));
+			/* TODO: This widget does not handle negative values properly. */
+			if (topVal < 0)
+				topVal = 0;
+
+			for (int i = 0; i < barHeight && i < topVal; i += 2)
+			{
+				if ((upperLimitActive && samples[b] > upperLimit) ||
+					(lowerLimitActive && samples[b] < lowerLimit))
+					p.setPen(alarmColor.light((int) 30 +
+											  (70.0 / (barHeight + 1) * i)));
+				else
+					p.setPen(normalColor.light((int) 30 +
+											   (70.0 / (barHeight + 1) * i)));
+				p.drawLine(b * barWidth + 3, barHeight - i,
+						   (b + 1) * barWidth - 3,
+						   barHeight - i);
+			}
 			if ((upperLimitActive && samples[b] > upperLimit) ||
 				(lowerLimitActive && samples[b] < lowerLimit))
-				p.setPen(alarmColor.light((int) 30 +
-										  (70.0 / (barHeight + 1) * i)));
+				p.setPen(alarmColor);
 			else
-				p.setPen(normalColor.light((int) 30 +
-										   (70.0 / (barHeight + 1) * i)));
-			p.drawLine(b * barWidth + 3, barHeight - i, (b + 1) * barWidth - 3,
-					   barHeight - i);
+				p.setPen(normalColor);
+			if (showLabels)
+				p.drawText(b * barWidth + 3, h - fm.lineSpacing() - 2,
+						   barWidth - 2 * 3, fm.lineSpacing(), Qt::AlignCenter,
+						   footers[b]);
 		}
-		if ((upperLimitActive && samples[b] > upperLimit) ||
-			(lowerLimitActive && samples[b] < lowerLimit))
-			p.setPen(alarmColor);
-		else
-			p.setPen(normalColor);
-		if (showLabels)
-			p.drawText(b * barWidth + 3, h - fm.lineSpacing() - 2,
-					   barWidth - 2 * 3, fm.lineSpacing(), Qt::AlignCenter,
-					   footers[b]);
 	}
 	
 	if (!sensorOk)
@@ -160,3 +182,4 @@ BarGraph::paintEvent(QPaintEvent*)
 	p.end();
 	bitBlt(this, 0, 0, &pm);
 }
+

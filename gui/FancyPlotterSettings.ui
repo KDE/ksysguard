@@ -13,7 +13,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>430</width>
+            <width>434</width>
             <height>275</height>
         </rect>
     </property>
@@ -717,7 +717,7 @@
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
-                                    <string>Set Color</string>
+                                    <string>&amp;Set Color</string>
                                 </property>
                                 <property>
                                     <name>whatsThis</name>
@@ -736,7 +736,7 @@
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
-                                    <string>Delete</string>
+                                    <string>&amp;Delete</string>
                                 </property>
                                 <property>
                                     <name>whatsThis</name>

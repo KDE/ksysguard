@@ -45,7 +45,9 @@ ListViewItem::ListViewItem(MyListView *parent)
 	backgroundColor = (QColor)parent->getBackgroundColor();
 }
 
-void ListViewItem::paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment)
+void 
+ListViewItem::paintCell(QPainter *p, const QColorGroup &cg, int column,
+						int width, int alignment)
 {
 	QColorGroup colorGroup(cg);
 
@@ -57,7 +59,8 @@ void ListViewItem::paintCell(QPainter *p, const QColorGroup &cg, int column, int
 	p->drawLine(0, height() - 1, width - 1, height() - 1);
 }
 
-void ListViewItem::paintFocus(QPainter *, const QColorGroup &, const QRect &)
+void
+ListViewItem::paintFocus(QPainter *, const QColorGroup &, const QRect &)
 {
 	// dummy function
 }
@@ -77,8 +80,8 @@ MyListView::MyListView(QWidget *parent)
 	this->setPalette(pal);
 }
 
-ListView::ListView(QWidget* parent, const char* name, const QString& title, int, int)
-	: SensorDisplay(parent, name)
+ListView::ListView(QWidget* parent, const char* name, const QString& title,
+				   int, int) : SensorDisplay(parent, name)
 {
 	frame = new QGroupBox(1, Qt::Vertical, title, this, "frame"); 
 	CHECK_PTR(frame);
@@ -87,9 +90,11 @@ ListView::ListView(QWidget* parent, const char* name, const QString& title, int,
 	CHECK_PTR(mainList);
 	mainList->setBackgroundColor(Qt::black);
 	mainList->setSelectionMode(QListView::NoSelection);
+	mainList->setItemMargin(2);
 
 	KIconLoader iconLoader;
-	QPixmap errorIcon = iconLoader.loadIcon("connect_creating", KIcon::Desktop, KIcon::SizeSmall);
+	QPixmap errorIcon = iconLoader.loadIcon("connect_creating",
+											KIcon::Desktop, KIcon::SizeSmall);
 
 	errorLabel = new QLabel(mainList);
 	CHECK_PTR(errorLabel);
@@ -98,7 +103,7 @@ ListView::ListView(QWidget* parent, const char* name, const QString& title, int,
 	errorLabel->resize(errorIcon.size());
 	errorLabel->move(2, 2);
 
-	/* All RMB clicks to the lcd widget will be handled by 
+	/* All RMB clicks on the frame will be handled by
 	 * SensorDisplay::eventFilter. */
 	frame->installEventFilter(this);
 

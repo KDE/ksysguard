@@ -13,7 +13,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>466</width>
+            <width>458</width>
             <height>251</height>
         </rect>
     </property>
@@ -118,7 +118,11 @@
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
-                                    <string>Minimum Value</string>
+                                    <string>M&amp;inimum Value</string>
+                                </property>
+                                <property>
+                                    <name>buddy</name>
+                                    <cstring>minVal</cstring>
                                 </property>
                             </widget>
                             <widget row="1"  column="1" >
@@ -133,6 +137,10 @@
                                         <width>80</width>
                                         <height>0</height>
                                     </size>
+                                </property>
+                                <property stdset="1">
+                                    <name>text</name>
+                                    <string></string>
                                 </property>
                                 <property stdset="1">
                                     <name>alignment</name>
@@ -175,7 +183,11 @@
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
-                                    <string>Maximum Value</string>
+                                    <string>&amp;Maximum Value</string>
+                                </property>
+                                <property>
+                                    <name>buddy</name>
+                                    <cstring>maxVal</cstring>
                                 </property>
                             </widget>
                             <widget row="1"  column="4" >
@@ -310,7 +322,11 @@
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
-                                    <string>Lower Limit</string>
+                                    <string>&amp;Lower Limit</string>
+                                </property>
+                                <property>
+                                    <name>buddy</name>
+                                    <cstring>lowerLimit</cstring>
                                 </property>
                             </widget>
                             <widget row="0"  column="3" >
@@ -396,7 +412,11 @@
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
-                                    <string>Upper Limit</string>
+                                    <string>&amp;Upper Limit</string>
+                                </property>
+                                <property>
+                                    <name>buddy</name>
+                                    <cstring>upperLimit</cstring>
                                 </property>
                             </widget>
                             <widget row="0"  column="3" >
@@ -529,7 +549,15 @@
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
-                                    <string>Font size</string>
+                                    <string>&amp;Font size</string>
+                                </property>
+                                <property>
+                                    <name>buddy</name>
+                                    <cstring>fontSize</cstring>
+                                </property>
+                                <property>
+                                    <name>toolTip</name>
+                                    <string></string>
                                 </property>
                             </widget>
                             <widget>
@@ -549,6 +577,10 @@
                                 <property stdset="1">
                                     <name>value</name>
                                     <number>10</number>
+                                </property>
+                                <property>
+                                    <name>whatsThis</name>
+                                    <string>This determines the size of the font used to print a label underneath the bars. Bars are automatically surpressed if one text becomes too large. So it is advisable to use a small font size here.</string>
                                 </property>
                             </widget>
                         </hbox>
@@ -570,6 +602,10 @@
                         <property>
                             <name>text</name>
                             <string>Background Color</string>
+                        </property>
+                        <property>
+                            <name>whatsThis</name>
+                            <string></string>
                         </property>
                     </widget>
                 </grid>
@@ -613,6 +649,20 @@
                             <property>
                                 <name>text</name>
                                 <string>Sensor</string>
+                            </property>
+                            <property>
+                                <name>clickable</name>
+                                <bool>true</bool>
+                            </property>
+                            <property>
+                                <name>resizeable</name>
+                                <bool>true</bool>
+                            </property>
+                        </column>
+                        <column>
+                            <property>
+                                <name>text</name>
+                                <string>Label</string>
                             </property>
                             <property>
                                 <name>clickable</name>
@@ -691,7 +741,7 @@
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
-                                    <string>Edit</string>
+                                    <string>&amp;Edit</string>
                                 </property>
                                 <property>
                                     <name>whatsThis</name>
@@ -710,7 +760,7 @@
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
-                                    <string>Delete</string>
+                                    <string>&amp;Delete</string>
                                 </property>
                                 <property>
                                     <name>whatsThis</name>
