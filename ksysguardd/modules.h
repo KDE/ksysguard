@@ -32,6 +32,7 @@
 #include "apm.h"
 #include "cpuinfo.h"
 #include "diskstat.h"
+#include "i8k.h"
 #include "lmsensors.h"
 #include "loadavg.h"
 #include "logfile.h"
@@ -95,6 +96,7 @@ struct SensorModul SensorModulList[] = {
 	{ "LmSensors", initLmSensors, exitLmSensors, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
 	{ "DiskStat", initDiskStat, exitDiskStat, updateDiskStat, checkDiskStat, 0, NULLTIME },
 	{ "LogFile", initLogFile, exitLogFile, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
+	{ "DellLaptop", initI8k, exitI8k, updateI8k, NULLVVFUNC, 0, NULLTIME },
 #endif /* OSTYPE_Linux */
 
 #ifdef OSTYPE_FreeBSD
@@ -128,6 +130,7 @@ struct SensorModul SensorModulList[] = {
 	{ "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC, 0, NULLTIME },
 	{ "NetDev", initNetDev, exitNetDev, updateNetDev, NULLVVFUNC, 0, NULLTIME },
 #endif /* OSTYPE_Tru64 */
+
 	{ NULL, NULLVSFUNC, NULLVVFUNC, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME }
 };
 

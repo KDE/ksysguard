@@ -22,6 +22,9 @@ AC_SUBST(UNAME)
 AC_CHECK_LIB(sensors, sensors_init, [LIBSENSORS="-lsensors"])
 AC_SUBST(LIBSENSORS)
 
+dnl Check for dell laptop support
+AM_CONDITIONAL(supports_i8k, test -e /proc/i8k)
+
 case "$UNAME" in
 	Linux) LIBHOSTS="$LIBSENSORS" ;;
 	FreeBSD) LIBHOSTS="$LIBSENSORS -lkvm" ;;

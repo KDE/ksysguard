@@ -76,6 +76,7 @@ void parseConfigFile(const char *filename)
 		push_ctnr(SensorList, strdup("LmSensors"));
 		push_ctnr(SensorList, strdup("DiskStat"));
 		push_ctnr(SensorList, strdup("LogFile"));
+		push_ctnr(SensorList, strdup("DellLaptop"));
 
 		return;
 	}
