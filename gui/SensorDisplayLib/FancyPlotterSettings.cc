@@ -94,7 +94,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   mMinValue->setEnabled( false );
   QWhatsThis::add( mMinValue, i18n( "Enter the minimum value for the display here. If both values are 0 automatic range detection is enabled." ) );
   boxLayout->addWidget( mMinValue, 1, 1 );
-  label->setBuddy( mMinValue );  
+  label->setBuddy( mMinValue );
 
   label = new QLabel( i18n( "Maximum value:" ), groupBox );
   boxLayout->addWidget( label, 1, 3 );
@@ -104,7 +104,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   mMaxValue->setEnabled( false );
   QWhatsThis::add( mMaxValue, i18n( "Enter the maximum value for the display here. If both values are 0 automatic range detection is enabled." ) );
   boxLayout->addWidget( mMaxValue, 1, 4 );
-  label->setBuddy( mMaxValue );  
+  label->setBuddy( mMaxValue );
 
   pageLayout->addWidget( groupBox, 0, 0 );
 
@@ -276,6 +276,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   connect( mRemoveButton, SIGNAL( clicked() ), SLOT( removeSensor() ) );
   connect( mMoveUpButton, SIGNAL( clicked() ), SLOT( moveUpSensor() ) );
   connect( mMoveDownButton, SIGNAL( clicked() ), SLOT( moveDownSensor() ) );
+  connect ( mSensorView, SIGNAL( doubleClicked( QListViewItem *, const QPoint &, int )), SLOT(editSensor()));
 
   KAcceleratorManager::manage( this );
 }
