@@ -327,7 +327,7 @@
                             </color>
                         </property>
                         <property name="text" stdset="0">
-                            <string>Normal Digit Color</string>
+                            <string>Normal digit color:</string>
                         </property>
                     </widget>
                     <widget class="ColorPicker" row="2" column="0">
@@ -342,7 +342,7 @@
                             </color>
                         </property>
                         <property name="text" stdset="0">
-                            <string>Background Color</string>
+                            <string>Background color:</string>
                         </property>
                     </widget>
                     <widget class="ColorPicker" row="1" column="0">
@@ -357,7 +357,7 @@
                             </color>
                         </property>
                         <property name="text" stdset="0">
-                            <string>Alarm Digit Color</string>
+                            <string>Alarm digit color:</string>
                         </property>
                     </widget>
                 </grid>

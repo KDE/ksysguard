@@ -141,7 +141,7 @@
                             <bool>false</bool>
                         </property>
                         <property name="text">
-                            <string>Change Color</string>
+                            <string>Change Color...</string>
                         </property>
                     </widget>
                     <spacer row="1" column="1">
@@ -198,12 +198,13 @@
                     <property name="name">
                         <cstring>buttonApply</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>&amp;Apply to Current Worksheet</string>
+                    <property name="text">
+                        <string>&amp;Apply</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
+                    </property>
+                    <property name="" stdset="0">
                     </property>
                 </widget>
                 <widget class="QPushButton">
@@ -238,7 +239,7 @@
 <customwidgets>
     <customwidget>
         <class>ColorPicker</class>
-        <header location="global">ColorPicker.h</header>
+        <header location="global">ksgrd/ColorPicker.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>

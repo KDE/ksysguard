@@ -83,9 +83,9 @@ void LogFile::settings(void)
 	Q_CHECK_PTR(lfs);
 	
 	lfs->fgColor->setColor(cgroup.text());
-	lfs->fgColor->setText(i18n("Foreground Color"));
+	lfs->fgColor->setText(i18n("Foreground color:"));
 	lfs->bgColor->setColor(cgroup.base());
-	lfs->bgColor->setText(i18n("Background Color"));
+	lfs->bgColor->setText(i18n("Background color:"));
 	lfs->fontButton->setFont(monitor->font());
 	lfs->ruleList->insertStringList(filterRules);
 	lfs->title->setText(getTitle());

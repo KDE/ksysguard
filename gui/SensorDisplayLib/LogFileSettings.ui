@@ -131,7 +131,7 @@
                                 </property>
                             </widget>
                             <spacer>
-                                <property name="name" stdset="0">
+                                <property name="name">
                                     <cstring>Spacer8</cstring>
                                 </property>
                                 <property name="orientation">
@@ -139,12 +139,6 @@
                                 </property>
                                 <property name="sizeType">
                                     <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
                                 </property>
                             </spacer>
                         </vbox>
@@ -167,7 +161,7 @@
                                 <number>6</number>
                             </property>
                             <spacer>
-                                <property name="name" stdset="0">
+                                <property name="name">
                                     <cstring>Spacer14</cstring>
                                 </property>
                                 <property name="orientation">
@@ -176,19 +170,13 @@
                                 <property name="sizeType">
                                     <enum>Expanding</enum>
                                 </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
-                                </property>
                             </spacer>
                             <widget class="QPushButton">
                                 <property name="name">
                                     <cstring>fontButton</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Font</string>
+                                    <string>Select Font...</string>
                                 </property>
                             </widget>
                         </hbox>
@@ -277,7 +265,7 @@
                                 </property>
                             </widget>
                             <spacer>
-                                <property name="name" stdset="0">
+                                <property name="name">
                                     <cstring>Spacer7_2</cstring>
                                 </property>
                                 <property name="orientation">
@@ -285,12 +273,6 @@
                                 </property>
                                 <property name="sizeType">
                                     <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>20</width>
-                                        <height>20</height>
-                                    </size>
                                 </property>
                             </spacer>
                         </vbox>
@@ -332,7 +314,7 @@
                     </property>
                 </widget>
                 <spacer>
-                    <property name="name" stdset="0">
+                    <property name="name">
                         <cstring>Spacer1</cstring>
                     </property>
                     <property name="orientation">
@@ -340,12 +322,6 @@
                     </property>
                     <property name="sizeType">
                         <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
                     </property>
                 </spacer>
                 <widget class="QPushButton">
@@ -375,13 +351,13 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-        <pixmap>image3</pixmap>
+        <pixmap>image0</pixmap>
         <property type="Color">color</property>
         <property type="String">text</property>
     </customwidget>
 </customwidgets>
 <images>
-    <image name="image3">
+    <image name="image0">
         <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1be245fc04c5a3201e4615f430059d0711ff5ddb2e6bb236ec90eed134cb5a19d8ef36602af5ecdbfeeac05dda0798d3abebde87e3faa374d3807fa0d633a52d38d8de6f679fe33fc776e196f53cd010188256a3600a292882096246517815ca99884606e18044a3a40d91824820924265a7923a2e8bcd05f33db1173e002913175f2a6be6d3294871a2d95fa00e8a94ee017b69d339d90df1e77c57ea072ede6758</data>
     </image>
 </images>

@@ -380,7 +380,7 @@
                             </color>
                         </property>
                         <property name="text" stdset="0">
-                            <string>Normal Bar Color</string>
+                            <string>Normal bar color:</string>
                         </property>
                     </widget>
                     <widget class="ColorPicker" row="1" column="0">
@@ -395,7 +395,7 @@
                             </color>
                         </property>
                         <property name="text" stdset="0">
-                            <string>Out-of-range Color</string>
+                            <string>Out-of-range color:</string>
                         </property>
                     </widget>
                     <widget class="QLayoutWidget" row="3" column="0">
@@ -457,7 +457,7 @@
                             </color>
                         </property>
                         <property name="text" stdset="0">
-                            <string>Background Color</string>
+                            <string>Background color:</string>
                         </property>
                         <property name="whatsThis" stdset="0">
                             <string></string>
@@ -570,7 +570,7 @@
                                     <bool>false</bool>
                                 </property>
                                 <property name="text">
-                                    <string>&amp;Edit</string>
+                                    <string>&amp;Edit...</string>
                                 </property>
                                 <property name="whatsThis" stdset="0">
                                     <string>Push this button to configure the label.</string>

@@ -172,7 +172,7 @@
                     </property>
                     <property>
                         <name>text</name>
-                        <string>Text Color</string>
+                        <string>Text color:</string>
                     </property>
                 </widget>
                 <spacer>
@@ -226,7 +226,7 @@
                     </property>
                     <property>
                         <name>text</name>
-                        <string>Grid Color</string>
+                        <string>Grid color:</string>
                     </property>
                 </widget>
                 <spacer>
@@ -280,7 +280,7 @@
                     </property>
                     <property>
                         <name>text</name>
-                        <string>Background Color</string>
+                        <string>Background color:</string>
                     </property>
                 </widget>
                 <spacer>

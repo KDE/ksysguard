@@ -47,7 +47,7 @@ ColorPicker::ColorPicker(QWidget* parent, const char* name)
 	l->addSpacing(8);
 
 	button = new QPushButton(this, "button");
-	button->setText(i18n("Change Color"));
+	button->setText(i18n("Change Color..."));
 	l->addWidget(button);
 
 	label->setBuddy(button);
