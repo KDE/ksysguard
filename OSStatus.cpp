@@ -273,6 +273,12 @@ OSStatus::getSwapInfo(int& stotal, int& sfree)
  * Copyright 1999 Hans Petter Bieker <zerium@webindex.no>.
  */
 
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#include <vm/vm_param.h>
+#include <sys/vmmeter.h>
+#include <unistd.h>
+
 OSStatus::OSStatus()
 {
 	error = false;
@@ -285,10 +291,10 @@ OSStatus::~OSStatus ()
 bool
 OSStatus::getCpuLoad(int& user, int& sys, int& nice, int& idle)
 {
-	user = 0;
-	sys = 0;
-	nice = 0;
-	idle = 100;
+	user = 0; // FIXME
+	sys = 0; // FIXME
+	nice = 0; // FIXME
+	idle = 100; // FIXME
 
 	return (true);
 }
@@ -297,11 +303,23 @@ bool
 OSStatus::getMemoryInfo(int& total, int& mfree, int& shared, int& buffers,
 						int& cached)
 {
-	total = 1000;
-	mfree = 0;
-	shared = 0;
-	buffers = 0;
-	cached = 0;
+	int mib[2];
+	mib[0] = CTL_VM;
+	mib[1] = VM_METER;
+
+	size_t len = sizeof (vmtotal);
+	struct vmtotal p;
+	sysctl(mib, 2, &p, &len, NULL, 0);
+
+	mib[0] = CTL_HW;
+	mib[1] = HW_PHYSMEM;
+	len = sizeof (total);
+
+	sysctl(mib, 2, &total, &len, NULL, 0);
+	mfree = p.t_free * getpagesize();
+	shared = p.t_rmshr * getpagesize();
+	buffers = 0; // FIXME
+	cached = 0; // FIXME
 
 	return (true);
 }
@@ -309,8 +327,8 @@ OSStatus::getMemoryInfo(int& total, int& mfree, int& shared, int& buffers,
 bool
 OSStatus::getSwapInfo(int& stotal, int& sfree)
 {
-	stotal = 0;
-	sfree = 0;
+	stotal = 0; // FIXME
+	sfree = 0; // FIXME
 
 	return (true);
 }

@@ -250,13 +250,24 @@ OSProcessList::update(void)
         struct kinfo_proc *p = (struct kinfo_proc *)malloc(len);
 	sysctl(mib, 3, p, &len, NULL, 0);
 
-	int num;
-	for (num = len / sizeof(struct kinfo_proc) - 1; num > -1; num--) {
-		if ( p[num].kp_proc.p_pid == 0) continue;
+	size_t num;
+	for (num = 0; num < len / sizeof(struct kinfo_proc) - 1; num++) {
+		if (!p[num].kp_proc.p_pid) continue;
 
 		QString pids;
 		pids.sprintf("%d", p[num].kp_proc.p_pid);
 		OSProcess* ps = new OSProcess(pids, lastTStamps, newTStamps);
+
+		if (!ps || !ps->ok())
+		{
+			error = true;
+			if (ps)
+				errMessage = ps->getErrMessage();
+			else
+				errMessage = i18n("Cannot read status of processes\n");
+			delete ps;
+			return (false);
+		}
 
 		// insert process into sorted list
 		inSort(ps);

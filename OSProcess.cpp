@@ -213,9 +213,9 @@ OSProcess::read(const char* pidStr)
 
 	struct kinfo_proc p;
 	size_t len = sizeof (struct kinfo_proc);
-	if (sysctl(mib, 4, &p, &len, NULL, 0) == -1)
+	if (sysctl(mib, 4, &p, &len, NULL, 0) == -1 || !len)
 		return (false);
-	
+
 	pid = p.kp_proc.p_pid;
 	ppid = p.kp_eproc.e_ppid;
 	strcpy(name, p.kp_proc.p_comm);
@@ -227,7 +227,7 @@ OSProcess::read(const char* pidStr)
 	userName = pwent ? pwent->pw_name : "????";
 	priority = p.kp_proc.p_nice;
 
-	// this isn't usertime -- it total time (??)
+	// this isn't usertime -- it's total time (??)
 #if __FreeBSD_version >= 300000
 	userTime = p.kp_proc.p_runtime / 10000;
 #else
@@ -241,7 +241,7 @@ OSProcess::read(const char* pidStr)
 	vm_size =  (p.kp_eproc.e_vm.vm_tsize +
                     p.kp_eproc.e_vm.vm_dsize +
                     p.kp_eproc.e_vm.vm_ssize) * getpagesize();
-	vm_rss = p.kp_eproc.e_vm.vm_rssize * getpagesize() / 1024;
+	vm_rss = p.kp_eproc.e_vm.vm_rssize * getpagesize();
 
 	statusTxt = p.kp_eproc.e_wmesg; // i18n() this FIXME
 
