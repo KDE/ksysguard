@@ -21,8 +21,8 @@
 
 // $Id$
 
+#include <stdio.h>
 #include <qgroupbox.h>
-
 #include <kapp.h>
 
 #include "FancyPlotter.moc"

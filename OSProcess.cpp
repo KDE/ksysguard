@@ -121,7 +121,7 @@ OSProcess::read(const void* info)
 	FILE* fd;
 
 	QString buf;
-	buf = QString("/proc/%1/status").arg(info);
+	buf = QString("/proc/%1/status").arg((char*)info);
 	if((fd = fopen(buf, "r")) == 0)
 	{
 		error = true;
@@ -161,7 +161,7 @@ OSProcess::read(const void* info)
 
 	fclose(fd);
 
-    buf = QString("/proc/%1/stat").arg(info);
+    buf = QString("/proc/%1/stat").arg((char*)info);
 	if ((fd = fopen(buf, "r")) == 0)
 	{
 		error = true;
@@ -178,7 +178,7 @@ OSProcess::read(const void* info)
 
 	fclose(fd);
 
-    buf = QString("/proc/%1/cmdline").arg(info);
+    buf = QString("/proc/%1/cmdline").arg((char*)info);
 	if ((fd = fopen(buf, "r")) == 0)
 	{
 		error = true;
@@ -231,49 +231,6 @@ OSProcess::read(const void* info)
  */
 
 #include <sys/sysctl.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
-#include <klocale.h>
 #include <klocale.h>
 
 OSProcess::OSProcess(const void* info, TimeStampList* /*lastTStamps*/,

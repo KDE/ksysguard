@@ -36,7 +36,7 @@
 
 #include "PerfMonPage.moc"
 
-PerfMonPage::PerfMonPage(QWidget* parent = 0, const char* name = 0)
+PerfMonPage::PerfMonPage(QWidget* parent, const char* name)
 	: QWidget(parent, name)
 {
 	noCpus = stat.getCpuCount();

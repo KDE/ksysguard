@@ -97,7 +97,7 @@
 #include <stdlib.h>
 #include <dirent.h>
 
-#include <kapp.h>
+#include <qdir.h>
 #include <klocale.h>
 
 #include "OSStatus.h"
@@ -428,17 +428,9 @@ isProcDir(const struct dirent* dir)
 int
 OSStatus::getNoProcesses(void)
 {
-	int processes;
-	struct dirent** namelist;
+        QDir d("/proc");
 
-
-	processes = scandir("/proc", &namelist, isProcDir, alphasort);
-
-	for (int i = 0; i < processes; i++)
-		free(namelist[i]);
-	free(namelist);
-
-	return (processes);
+        return d.count();
 }
 
 #elif __FreeBSD__
