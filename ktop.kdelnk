@@ -3,6 +3,7 @@
 BinaryPattern=ktop;
 Comment=Task Manager and Performance Monitor
 Comment[ca]=Monitor de rendiment i gestor de tasques
+Comment[cs]=Správce úloh a monitor výkonu
 Comment[de]=Programmverwaltung und Leistungsanzeige
 Comment[es]=Monitor de rendimiento
 Comment[fi]=Proessien- ja suorituskyvynhallinta
@@ -15,7 +16,7 @@ Comment[sk]=Správca úloh a monitorovanie výkonu
 Comment[sv]=Hanterar aktiviteter och visar prestanda
 Name=Task Manager
 Name[ca]=Gestor de temes
-Name[cs]=Správce témat
+Name[cs]=Správce úloh
 Name[de]=Taskmanager
 Name[eo]=Labortabula Regilo
 Name[es]=Gestor de usuarios
