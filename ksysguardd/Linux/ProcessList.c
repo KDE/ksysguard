@@ -361,7 +361,7 @@ cleanupProcessList(void)
 	}
 }
 
-void
+int
 updateProcessList(void)
 {
 	DIR* dir;
@@ -373,7 +373,7 @@ updateProcessList(void)
 		print_error("Cannot open directory \'/proc\'!\n"
 			   "The kernel needs to be compiled with support\n"
 			   "for /proc filesystem enabled!\n");
-		return;
+		return 0;
 	}
 	while ((entry = readdir(dir))) 
 	{
@@ -388,6 +388,7 @@ updateProcessList(void)
 	closedir(dir);
 
 	cleanupProcessList();
+	return 0;
 }
 
 /*

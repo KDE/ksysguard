@@ -26,7 +26,7 @@
 void initProcessList(void);
 void exitProcessList(void);
 
-void updateProcessList(void);
+int updateProcessList(void);
 
 void printProcessList(const char*);
 void printProcessListInfo(const char*);

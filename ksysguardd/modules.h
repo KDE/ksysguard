@@ -69,53 +69,63 @@ struct ModulListEntry {
 	char *configName;
 	void (*initCommand)(void);
 	void (*exitCommand)(void);
-	void (*updateCommand)(void);
+	int (*updateCommand)(void);
 	void (*checkCommand)(void);
 };
 
+typedef void (*VVFunc)(void);
+#define NULLVVFUNC ((VVFunc) 0)
+typedef int (*IVFunc)(void);
+#define NULLIVFUNC ((IVFunc) 0)
+
 struct ModulListEntry ModulList[] = {
 #ifdef OSTYPE_Linux
-	{ "ProcessList", initProcessList, exitProcessList, updateProcessList, NULL },
-	{ "Memory", initMemory, exitMemory, updateMemory, NULL },
-	{ "Stat", initStat, exitStat, updateStat, NULL },
-	{ "NetDev", initNetDev, exitNetDev, updateNetDev, NULL },
-	{ "NetStat", initNetStat, exitNetStat, NULL, NULL },
-	{ "Apm", initApm, exitApm, updateApm, NULL },
-	{ "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULL },
-	{ "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULL },
-	{ "LmSensors", initLmSensors, exitLmSensors, NULL, NULL },
+	{ "ProcessList", initProcessList, exitProcessList, updateProcessList, 
+		NULLVVFUNC },
+	{ "Memory", 
+		initMemory, 
+		exitMemory, 
+		updateMemory, 
+		NULLVVFUNC },
+	{ "Stat", initStat, exitStat, updateStat, NULLVVFUNC },
+	{ "NetDev", initNetDev, exitNetDev, updateNetDev, NULLVVFUNC },
+	{ "NetStat", initNetStat, exitNetStat, NULLIVFUNC, NULLVVFUNC },
+	{ "Apm", initApm, exitApm, updateApm, NULLVVFUNC },
+	{ "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULLVVFUNC },
+	{ "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC },
+	{ "LmSensors", initLmSensors, exitLmSensors, NULLIVFUNC, NULLVVFUNC },
 	{ "DiskStat", initDiskStat, exitDiskStat, updateDiskStat, checkDiskStat },
-	{ "LogFile", initLogFile, exitLogFile, NULL, NULL }
+	{ "LogFile", initLogFile, exitLogFile, NULLIVFUNC, NULLVVFUNC }
 };
 #define NUM_MODULES 11
 #endif /* OSTYPE_Linux */
 
 #ifdef OSTYPE_FreeBSD
-	{ "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULL },
-	{ "Memory", initMemory, exitMemory, updateMemory, NULL },
-	{ "ProcessList", initProcessList, exitProcessList, updateProcessList, NULL },
-	{ "Apm", initApm, exitApm, updateApm, NULL },
+	{ "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULLVVFUNC },
+	{ "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC },
+	{ "ProcessList", initProcessList, exitProcessList, updateProcessList, NULLVVFUNC },
+	{ "Apm", initApm, exitApm, updateApm, NULLVVFUNC },
 	{ "DiskStat", initDiskStat, exitDiskStat, updateDiskStat, checkDiskStat },
-	{ "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULL },
-	{ "LogFile", initLogFile, exitLogFile, NULL, NULL },
+	{ "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC },
+	{ "LogFile", initLogFile, exitLogFile, NULLVVFUNC, NULLVVFUNC },
 	{ "NetDev", initNetDev, exitNetDev, updateNetDev, checkNetDev },
 };
 #define NUM_MODULES 8
 #endif /* OSTYPE_FreeBSD */
 
 #ifdef OSTYPE_Solaris
-	{ "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULL },
-	{ "Memory", initMemory, exitMemory, updateMemory, NULL },
-	{ "NetDev", initNetDev, exitNetDev, updateNetDev, NULL },
-	{ "ProcessList", initProcessList, exitProcessList, updateProcessList, NULL },
+	{ "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC },
+	{ "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC },
+	{ "NetDev", initNetDev, exitNetDev, updateNetDev, NULLVVFUNC },
+	{ "ProcessList", initProcessList, exitProcessList, updateProcessList, NULLVVFUNC },
 };
 #define NUM_MODULES 4
 #endif /* OSTYPE_Solaris */
 
 #ifdef OSTYPE_Tru64
-	{ "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULL },
-	{ "Memory", initMemory, exitMemory, updateMemory, NULL },
-	{ "NetDev", initNetDev, exitNetDev, updateNetDev, NULL },
+	{ "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC },
+	{ "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC },
+	{ "NetDev", initNetDev, exitNetDev, updateNetDev, NULLVVFUNC },
 };
 #define NUM_MODULES 3
 #endif /* OSTYPE_Tru64 */

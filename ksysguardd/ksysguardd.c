@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999-2001 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000, 2001, 2002 Chris Schlaeger <cs@kde.org>
 				 Tobias Koenig <tokoe82@yahoo.de>
 
 	Solaris support by Torsten Kasch <tk@Genetik.Uni-Bielefeld.DE>
@@ -40,7 +40,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <errno.h>
-
+#include <../version.h>
 #include "modules.h"
 
 #define CMDBUFSIZE	128
@@ -109,10 +109,11 @@ printWelcome(FILE* out)
 {
 	fprintf(out,
 			"ksysguardd %s\n"
-			"(c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org> and\n"
+			"(c) 1999, 2000, 2001, 2002 Chris Schlaeger <cs@kde.org> and\n"
 			"(c) 2001 Tobias Koenig <tokoe82@yahoo.de>\n"
 			"This program is part of the KDE Project and licensed under\n"
-			"the GNU GPL version 2. See www.kde.org for details!\n", VERSION);
+			"the GNU GPL version 2. See www.kde.org for details!\n", 
+			KSYSGUARD_VERSION);
 	fflush(out);
 }
 
@@ -338,7 +339,7 @@ createServerSocket()
 	sin.sin_addr.s_addr = htonl(INADDR_ANY);
 	sin.sin_port = htons(SocketPort);
 
-	if (bind(newSocket, (struct sockaddr_in*) &sin, sizeof(sin)) < 0)
+	if (bind(newSocket, (struct sockaddr*) &sin, sizeof(sin)) < 0)
 	{
 		log_error("Cannot bind to port %d", SocketPort);
 		return -1;
@@ -421,7 +422,7 @@ handleSocketTraffic(int socket, const fd_set* fds)
 		if (FD_ISSET(socket, fds))
 		{
 			int clientSocket;
-			struct sockaddr_in addr;
+			struct sockaddr addr;
 			socklen_t addr_len;
 
 			/* a new connection */
