@@ -154,6 +154,7 @@ Name[zh_CN]=传感器警报
 Name[zh_TW]=感測器通知
 Name[zu]=uluvo_oluxwayisayo
 Comment=Sensor exceeded critical limit
+Comment[af]=sensor oorskry krities beperk
 Comment[bs]=Senzor je prekoračio kritičnu granicu
 Comment[cs]=Senzor překročil kritickou hodnotu
 Comment[he]=החיישן חרג מהמגבלה הקריטית
