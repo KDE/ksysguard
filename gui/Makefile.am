@@ -75,7 +75,6 @@ sysguard_panelapplet_la_SOURCES = \
 	KSysGuardAppletSettings.ui \
 	MultiMeterSettings.ui
 
-sysguard_panelapplet_la_METASOURCES = AUTO
 sysguard_panelapplet_la_LIBADD   = ksgrd/libksgrd.la $(LIB_KDEUI) $(LIB_KFILE)
 sysguard_panelapplet_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -module -no-undefined
 
