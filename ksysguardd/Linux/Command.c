@@ -120,7 +120,7 @@ executeCommand(const char* command)
 	char tokenFormat[32];
 	char token[32];
 
-	sprintf(tokenFormat, "%%%ds", sizeof(token) - 1);
+	sprintf(tokenFormat, "%%%lds", sizeof(token) - 1);
 	sscanf(command, tokenFormat, token);
 
 	for (i = 0; i < level_ctnr(CommandList); i++)

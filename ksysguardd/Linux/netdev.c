@@ -51,8 +51,8 @@ processNetDev(void)
 	char tag[64];
 	char* netDevBufP = NetDevBuf;
 
-	sprintf(format, "%%%d[^\n]\n", sizeof(buf) - 1);
-	sprintf(devFormat, "%%%ds", sizeof(tag) - 1);
+	sprintf(format, "%%%ld[^\n]\n", sizeof(buf) - 1);
+	sprintf(devFormat, "%%%lds", sizeof(tag) - 1);
 
 	/* skip 2 first lines */
 	for (i = 0; i < 2; i++)
@@ -117,8 +117,8 @@ initNetDev(void)
 	if (updateNetDev() < 0)
 		return;
 
-	sprintf(format, "%%%d[^\n]\n", sizeof(buf) - 1);
-	sprintf(devFormat, "%%%ds", sizeof(tag) - 1);
+	sprintf(format, "%%%ld[^\n]\n", sizeof(buf) - 1);
+	sprintf(devFormat, "%%%lds", sizeof(tag) - 1);
 
 	/* skip 2 first lines */
 	for (i = 0; i < 2; i++)

@@ -43,8 +43,8 @@ static void
 processMemInfo()
 {
 	sscanf(MemInfoBuf, "%*[^\n]\n"
-		   "%*s %d %d %d %*d %d %d\n"
-		   "%*s %d %d %d\n", 
+		   "%*s %ld %ld %ld %*d %ld %ld\n"
+		   "%*s %ld %ld %ld\n", 
 		   &Total, &Used, &MFree, &Buffers, &Cached,
 		   &STotal, &SUsed, &SFree);
 
@@ -134,7 +134,7 @@ printMFree(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("%d\n", MFree);
+	printf("%ld\n", MFree);
 }
 
 void
@@ -142,7 +142,7 @@ printMFreeInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Free Memory\t0\t%d\tKB\n", Total);
+	printf("Free Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -150,7 +150,7 @@ printUsed(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("%d\n", Used);
+	printf("%ld\n", Used);
 }
 
 void
@@ -158,7 +158,7 @@ printUsedInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Used Memory\t0\t%d\tKB\n", Total);
+	printf("Used Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -166,7 +166,7 @@ printAppl(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("%d\n", Appl);
+	printf("%ld\n", Appl);
 }
 
 void
@@ -174,7 +174,7 @@ printApplInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Application Memory\t0\t%d\tKB\n", Total);
+	printf("Application Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -182,7 +182,7 @@ printBuffers(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("%d\n", Buffers);
+	printf("%ld\n", Buffers);
 }
 
 void
@@ -190,7 +190,7 @@ printBuffersInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Buffer Memory\t0\t%d\tKB\n", Total);
+	printf("Buffer Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -198,7 +198,7 @@ printCached(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("%d\n", Cached);
+	printf("%ld\n", Cached);
 }
 
 void
@@ -206,7 +206,7 @@ printCachedInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Cached Memory\t0\t%d\tKB\n", Total);
+	printf("Cached Memory\t0\t%ld\tKB\n", Total);
 }
 
 void
@@ -214,7 +214,7 @@ printSwapUsed(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("%d\n", SUsed);
+	printf("%ld\n", SUsed);
 }
 
 void
@@ -222,7 +222,7 @@ printSwapUsedInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Used Swap Memory\t0\t%d\tKB\n", STotal);
+	printf("Used Swap Memory\t0\t%ld\tKB\n", STotal);
 }
 
 void
@@ -230,7 +230,7 @@ printSwapFree(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("%d\n", SFree);
+	printf("%ld\n", SFree);
 }
 
 void
@@ -238,5 +238,5 @@ printSwapFreeInfo(const char* cmd)
 {
 	if (Dirty)
 		processMemInfo();
-	printf("Free Swap Memory\t0\t%d\tKB\n", STotal);
+	printf("Free Swap Memory\t0\t%ld\tKB\n", STotal);
 }
