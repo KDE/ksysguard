@@ -33,7 +33,6 @@
 #include <kglobal.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <ksgrd/ColorPicker.h>
 #include <ksgrd/SensorManager.h>
 #include <ksgrd/StyleEngine.h>
 

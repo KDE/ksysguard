@@ -32,7 +32,6 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <knumvalidator.h>
-#include <ksgrd/ColorPicker.h>
 #include <ksgrd/SensorManager.h>
 #include <ksgrd/StyleEngine.h>
 

@@ -22,7 +22,6 @@
 #include <kiconloader.h>
 #include <klocale.h>
 
-#include <ksgrd/ColorPicker.h>
 #include <ksgrd/SensorManager.h>
 #include <ksgrd/StyleEngine.h>
 
