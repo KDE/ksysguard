@@ -65,6 +65,7 @@ TopLevel* Toplevel;
 TopLevel::TopLevel(const char *name)
 	: KMainWindow(0, name), DCOPObject("KSysGuardIface")
 {
+	setPlainCaption( i18n( "KDE System Guard" ) );
 	dontSaveSession = FALSE;
 
 	splitter = new QSplitter(this, "Splitter");
