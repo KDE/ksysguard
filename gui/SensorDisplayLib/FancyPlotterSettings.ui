@@ -170,7 +170,7 @@
                                     <cstring>style1</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Basic Polygons</string>
+                                    <string>Basic polygons</string>
                                 </property>
                             </widget>
                             <spacer>
@@ -241,7 +241,7 @@
                                     <cstring>autoRange</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Automatic Range Detection</string>
+                                    <string>Automatic range detection</string>
                                 </property>
                                 <property name="whatsThis" stdset="0">
                                     <string>Check this box if you want the display range to adapt dynamically to the currently displayed values. If you don't check this, you have to specify the range you want in the fields below.</string>
@@ -433,7 +433,7 @@
                                     <cstring>topBar</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Top Bar</string>
+                                    <string>Top bar</string>
                                 </property>
                                 <property name="whatsThis" stdset="0">
                                     <string>Check this to active the display title bar. This is probably only useful for applet displays. The bar is only visible if the display is large enough.</string>
@@ -567,7 +567,7 @@
                                             <bool>false</bool>
                                         </property>
                                         <property name="text">
-                                            <string>Vertical Lines Scroll</string>
+                                            <string>Vertical lines scroll</string>
                                         </property>
                                     </widget>
                                 </hbox>
@@ -577,7 +577,7 @@
                                     <cstring>hLines</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Horizontal Lines</string>
+                                    <string>Horizontal lines</string>
                                 </property>
                                 <property name="whatsThis" stdset="0">
                                     <string>Check this to enable horizontal lines if display is large enough.</string>
@@ -791,7 +791,7 @@
                                             <bool>false</bool>
                                         </property>
                                         <property name="text">
-                                            <string>&amp;Set Color</string>
+                                            <string>&amp;Set Color...</string>
                                         </property>
                                         <property name="whatsThis" stdset="0">
                                             <string>Push this button to configure the color of the sensor in the diagram.</string>
