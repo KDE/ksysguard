@@ -92,6 +92,7 @@ private:
 
 	KProcess* ktopd;
 	bool ktopdOnLine;
+	bool pwSent;
 	QString host;
 	QString shell;
 

@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,7 +26,9 @@
 #include <qapplication.h>
 #include <qstring.h>
 
+#include <klocale.h>
 #include <kprocess.h>
+#include <kpassdlg.h>
 
 #include "SensorManager.h"
 #include "SensorAgent.h"
@@ -39,6 +40,7 @@ SensorAgent::SensorAgent(SensorManager* sm) :
 {
 	ktopd = 0;
 	ktopdOnLine = false;
+	pwSent = false;
 }
 
 SensorAgent::~SensorAgent()
@@ -131,6 +133,13 @@ SensorAgent::sendRequest(const QString& req, SensorClient* client, int id)
 void
 SensorAgent::msgSent(KProcess*)
 {
+	if (pwSent)
+	{
+		debug("Password sent");
+		pwSent = false;
+		return;
+	}
+
 	// remove oldest (sent) request from input FIFO
 	SensorRequest* req = inputFIFO.last();
 	inputFIFO.removeLast();
@@ -148,6 +157,7 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 		char* aux = new char[buflen + 1];
 		strncpy(aux, buffer, buflen);
 		aux[buflen] = '\0';
+		debug("MSG: %s", aux);
 		answerBuffer += QString(aux);
 		delete [] aux;
 	}
@@ -157,6 +167,7 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 	{
 		if (!ktopdOnLine)
 		{
+			debug("Sensor is on-line");
 			/* First '\nktopd> ' signals that ktopd is ready to serve requests
 			 * now. */
 			ktopdOnLine = true;
@@ -174,7 +185,7 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 			// remove pending request from FIFO
 			SensorRequest* req = processingFIFO.last();
 			processingFIFO.removeLast();
-
+			
 			// Notify client of newly arrived answer.
 			req->client->answerReceived(req->id, answerBuffer.left(end));
 			delete req;
@@ -188,15 +199,34 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 void
 SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 {
+	QString errorBuffer;
 	if (buflen > 0)
 	{
 		char* aux = new char[buflen + 1];
 		strncpy(aux, buffer, buflen);
 		aux[buflen] = '\0';
-		debug("RCVD Error: %s", aux);
+		errorBuffer = aux;
+		debug("ERR: %s", aux);
 		delete [] aux;
 	}
-	sensorManager->disengage(this);
+
+	if (errorBuffer.find("assword: ") > 0)
+	{
+		QCString password;
+		int result = KPasswordDialog::
+			getPassword(password, errorBuffer);
+		QCString cmdWithNL;
+		if (result == KPasswordDialog::Accepted)
+			cmdWithNL = password + "\n";
+		else
+			cmdWithNL = "\n";
+		ktopd->writeStdin(cmdWithNL.data(), cmdWithNL.length());
+		pwSent = true;
+	}
+	else
+	{
+//		sensorManager->disengage(this);
+	}
 }
 
 void
