@@ -506,9 +506,9 @@ TaskMan::TaskMan( QWidget *parent, const char *name, int sfolder )
     pTree_update();        /* create process tree the first time */
 
     // add pages...
-    addTab(p0,"Processes &List");
-    addTab(p1,"Processes &Tree");
-    addTab(p2,"&Performance");
+    addTab(p0,ktr("Processes &List"));
+    addTab(p1,ktr("Processes &Tree"));
+    addTab(p2,ktr("&Performance"));
     move(0,0);
 }
 
