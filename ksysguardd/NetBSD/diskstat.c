@@ -19,6 +19,8 @@
 	$Id$
 */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -150,11 +152,11 @@ int updateDiskStat(void)
 				continue;
 			}
 			memset(disk_info, 0, sizeof(DiskInfo));
-			strncpy(disk_info->device, fs.f_mntfromname, 255);
+			strlcpy(disk_info->device, fs.f_mntfromname, sizeof(disk_info->device));
 			if (!strcmp(fs.f_mntonname, "/")) {
 				strncpy(disk_info->mntpnt, "/root", 6);
 			} else {
-				strncpy(disk_info->mntpnt, fs.f_mntonname, 255);
+				strlcpy(disk_info->mntpnt, fs.f_mntonname, sizeof(disk_info->mntpnt));
 			}
 			disk_info->blocks = fs.f_blocks;
 			disk_info->bfree = fs.f_bfree;
