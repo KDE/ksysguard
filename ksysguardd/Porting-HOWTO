@@ -1,10 +1,18 @@
 This document describes the interface between ksysguard and
 ksysguardd. ksysguardd is started as a child of ksysguard, either
-directly or via a shell. The communication runs over stdin, stdout and
-stderr. ksysguard sends commands and ksysguardd answers to them. Each
-answer ends with the string "\nksysguardd> ". The set of commands that
-each ksysguardd implementation supports can be very different. There
-are only a very few mandatory command and a few recommended commands.
+directly or via a shell. 
+
+This client/server design was chosen, because on some operating
+systems the back-end needs elevated permissions. Since C++ programs
+should NEVER have setgid/setuid permissions, a plain C back-end was
+needed. It also allowed for an easy network support using existing
+security mechanisms (ssh).
+
+The communication runs over stdin, stdout and stderr. ksysguard sends
+commands and ksysguardd answers to them. Each answer ends with the
+string "\nksysguardd> ". The set of commands that each ksysguardd
+implementation supports can be very different. There are only a very
+few mandatory command and a few recommended commands.
 
 The mandatory commands are 'monitors', 'test' and 'quit'.
 The recommended commands are:
@@ -25,7 +33,7 @@ pscount	integer
 
 Without these commands KSysGuard is not very helpful.
 
-The 'monitors' command retuns the list of available sensors. The
+The 'monitors' command returns the list of available sensors. The
 output looks like this:
 
 --------
@@ -35,14 +43,14 @@ pscount integer
 ksysguardd> 
 --------
 
-Sensor names can be hierachical. Each level is seperated by a
+Sensor names can be hierarchical. Each level is separated by a
 /. ksysguard uses a tree widget in the SensorBrowser to display the
 commands in a tree. Every sensor name must be followed by the type of
-the sensor seperated by a tab. Currently 3 different types of sensors
+the sensor separated by a tab. Currently 3 different types of sensors
 are supported, integer, float and table. The table sensor returns the
 information for the ProcessController widget. To find out more about a
 sensor an additional command must be implemented for each sensor that
-hash a questionsmark appended to the sensor name. It can be used to
+has a questionmark appended to the sensor name. It can be used to
 find out more about the sensor.
 
 --------
@@ -52,7 +60,7 @@ ksysguardd>
 --------
 
 integer and float sensor return a short description, the minimum and
-maximum value and the unit. All fields are again seperated by
+maximum value and the unit. All fields are again separated by
 tabs. The minimum and maximum values can both be 0 to trigger the
 auto-range feature of the display.
 
@@ -62,9 +70,9 @@ Name    PID     PPID    UID     GID     Status  User%   System% Nice    VmSize V
 s       d       d       d       d       S       f       f       d       d      sksysguardd>
 --------
 
-This is the output of the ps? inquiery command. The ps command is the
+This is the output of the ps? inquiry command. The ps command is the
 only recommended command. The answer to ps? consists of 2 lines. Both
-lines have the same number of fields each seperated by a tab. The
+lines have the same number of fields each separated by a tab. The
 first line specifies the name of the columns and the second the type
 of the values in the column.
 
@@ -96,3 +104,9 @@ again and adapt it's layout accordingly. If ksysguardd receives a
 command it doesn't know it has to reply with "UNKNOWN
 COMMAND\nksysguardd> ".
 
+ksysguardd does not handle native language support. In order to have a
+minimum installation (only a single file) on the monitored machine,
+all translation are handled by the front-end. Please see the files
+gui/SensorManger.cc and gui/ProcessTable.cc if you add new strings.
+
+Chris <cs@kde.org>
