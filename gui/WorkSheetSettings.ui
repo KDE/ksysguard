@@ -13,7 +13,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>254</width>
+            <width>250</width>
             <height>228</height>
         </rect>
     </property>
@@ -54,6 +54,10 @@
                     <property stdset="1">
                         <name>text</name>
                         <string>OK</string>
+                    </property>
+                    <property stdset="1">
+                        <name>default</name>
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <spacer>

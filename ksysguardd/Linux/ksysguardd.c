@@ -30,6 +30,7 @@
 #include "Memory.h"
 #include "stat.h"
 #include "netdev.h"
+#include "netstat.h"
 #include "apm.h"
 #include "cpuinfo.h"
 #include "loadavg.h"
@@ -71,6 +72,7 @@ main(int argc, const char* argv[])
 	initMemory();
 	initStat();
 	initNetDev();
+	initNetStat();
 	initApm();
 	initCpuInfo();
 	initLoadAvg();
@@ -100,6 +102,7 @@ main(int argc, const char* argv[])
 	exitCpuInfo();
 	exitApm();
 	exitDispatcher();
+	exitNetDev();
 	exitNetDev();
 	exitStat();
 	exitMemory();

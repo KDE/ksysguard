@@ -73,6 +73,12 @@ SensorDisplay::registerSensor(const QString& hostName,
 }
 
 void
+SensorDisplay::unregisterSensor(uint idx)
+{
+	sensors.remove(idx);
+}
+
+void
 SensorDisplay::timerEvent(QTimerEvent*)
 {
 	int i = 0;

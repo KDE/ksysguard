@@ -122,7 +122,7 @@ FancyPlotter::settings()
 	connect(fps->bColorButton, SIGNAL(clicked()),
 			this, SLOT(bColorSettings()));
 
-	for (int i = 0; i < beams; ++i)
+	for (uint i = 0; i < beams; ++i)
 	{
 		QString status = sensors.at(i)->ok ? i18n("Ok") : i18n("Error");
 		QListViewItem* lvi = new QListViewItem(
@@ -135,12 +135,10 @@ FancyPlotter::settings()
 	}
 	connect(fps->sColorButton, SIGNAL(clicked()),
 			this, SLOT(settingsSetColor()));
-	connect(fps->upButton, SIGNAL(clicked()),
-			this, SLOT(settingsUp()));
-	connect(fps->downButton, SIGNAL(clicked()),
-			this, SLOT(settingsDown()));
 	connect(fps->deleteButton, SIGNAL(clicked()),
 			this, SLOT(settingsDelete()));
+	connect(fps->sensorList, SIGNAL(selectionChanged(QListViewItem*)),
+			this, SLOT(settingsSelectionChanged(QListViewItem*)));
 
 	if (fps->exec())
 		applySettings();
@@ -175,10 +173,22 @@ FancyPlotter::applySettings()
 												   QColorGroup::Background);
 
     QListViewItemIterator it(fps->sensorList);
-	// iterate through all items of the listview
-	for (int i = 0; it.current(); ++it, ++i )
-		plotter->beamColor[i] = it.current()->pixmap(1)->
-			convertToImage().pixel(1, 1);
+	/* Iterate through all items of the listview and reverse iterate
+	 * through the registered sensors. */
+	for (int i = sensors.count() - 1; i >= 0; --i)
+	{
+		if (it.current() &&
+			it.current()->text(0) == sensors.at(i)->hostName &&
+			it.current()->text(1) == 
+			SensorMgr->translateSensor(sensors.at(i)->name))
+		{
+			plotter->beamColor[i] = it.current()->pixmap(1)->
+				convertToImage().pixel(1, 1);
+			it++;
+		}
+		else
+			removeSensor(i);
+	}
 
 	modified = true;
 }
@@ -241,24 +251,25 @@ FancyPlotter::settingsSetColor()
 }
 
 void
-FancyPlotter::settingsUp()
-{
-}
-
-void
-FancyPlotter::settingsDown()
-{
-}
-
-void
 FancyPlotter::settingsDelete()
 {
+	QListViewItem* lvi = fps->sensorList->currentItem();
+
+	if (lvi)
+		delete lvi;
+}
+
+void
+FancyPlotter::settingsSelectionChanged(QListViewItem* lvi)
+{
+	fps->sColorButton->setEnabled(lvi != 0);
+	fps->deleteButton->setEnabled(lvi != 0);
 }
 
 void
 FancyPlotter::sensorError(int sensorId, bool err)
 {
-	if (sensorId >= beams || sensorId < 0)
+	if ((uint) sensorId >= beams || sensorId < 0)
 		return;
 
 	if (err == sensors.at(sensorId)->ok)
@@ -267,7 +278,7 @@ FancyPlotter::sensorError(int sensorId, bool err)
 		sensors.at(sensorId)->ok = !err;
 
 		bool ok = true;
-		for (int i = 0; i < beams; ++i)
+		for (uint i = 0; i < beams; ++i)
 			if (!sensors.at(i)->ok)
 			{
 				ok = false;
@@ -313,6 +324,23 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 	return (true);
 }
 
+bool
+FancyPlotter::removeSensor(uint idx)
+{
+	if (idx >= beams)
+	{
+		kdDebug() << "FancyPlotter::removeSensor: idx out of range ("
+				  << idx << ")" << endl;
+		return (false);
+	}
+
+	plotter->removeBeam(idx);
+	beams--;
+	SensorDisplay::removeSensor(idx);
+
+	return (true);
+}
+
 void
 FancyPlotter::resizeEvent(QResizeEvent*)
 {
@@ -334,7 +362,7 @@ FancyPlotter::sizeHint(void)
 void
 FancyPlotter::answerReceived(int id, const QString& answer)
 {
-	if (id < beams)
+	if ((uint) id < beams)
 	{
 		if (id != (int) sampleBuf.count())
 		{
@@ -347,7 +375,7 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 		/* We received something, so the sensor is probably ok. */
 		sensorError(id, false);
 
-		if (id == beams - 1)
+		if (id == (int) beams - 1)
 		{
 			plotter->addSample(sampleBuf);
 			sampleBuf.clear();
@@ -359,14 +387,6 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 		plotter->changeRange(id - 100, info.getMin(), info.getMax());
 		timerOn();
 	}
-}
-
-QString
-FancyPlotter::additionalWhatsThis()
-{
-	return (i18n("<p>The following sensors are connected:</p>"
-				 "<center><table><tr><th>Beam</th><th>Host</th>"
-				 "<th>Sensor Code</th></tr>\n</table></center>"));
 }
 
 bool
@@ -465,7 +485,7 @@ FancyPlotter::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 	plotter->bColor.rgb(&r, &g, &b);
 	display.setAttribute("bColor", (r << 16) | (g << 8) | b);
 
-	for (int i = 0; i < beams; ++i)
+	for (uint i = 0; i < beams; ++i)
 	{
 		QDomElement beam = doc.createElement("beam");
 		display.appendChild(beam);

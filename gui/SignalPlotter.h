@@ -47,6 +47,12 @@ public:
 	bool addBeam(QColor col);
 	void addSample(const QValueList<double>& samples);
 
+	void removeBeam(uint idx)
+	{
+		beamColor.remove(beamColor.at(idx));
+		beamData.remove(idx);
+	}
+
 	double getMin() const
 	{
 		return (autoRange ? 0 : minValue);

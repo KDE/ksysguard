@@ -17,6 +17,7 @@ ksysguard_SOURCES = \
 	MultiMeter.cc \
 	DancingBars.cc BarGraph.cc \
 	ProcessController.cc ProcessList.cc \
+	ListView.cc \
 	SensorBrowser.cc  \
 	SensorManager.cc SensorAgent.cc \
 	WorkSheet.cc Workspace.cc \

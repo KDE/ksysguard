@@ -34,6 +34,7 @@
 #include "SensorDisplay.h"
 #include "SignalPlotter.h"
 
+class QListViewItem;
 class FancyPlotterSettings;
 
 class FancyPlotter : public SensorDisplay
@@ -52,6 +53,7 @@ public:
 				   const QString& title);
 	bool addSensor(const QString& hostName, const QString& sensorName,
 				   const QString& title, const QColor& col);
+	bool removeSensor(uint idx);
 
 	void addSample(double s0, double s1 = 0, double s2 = 0, double s3 = 0,
 				   double s4 = 0)
@@ -68,8 +70,6 @@ public:
 	virtual QSize sizeHint(void);
 
 	virtual void answerReceived(int id, const QString& s);
-
-	virtual QString additionalWhatsThis();
 
 	virtual bool createFromDOM(QDomElement& el);
 	virtual bool addToDOM(QDomDocument& doc, QDomElement& display,
@@ -93,15 +93,14 @@ public slots:
 	void hColorSettings();
 	void bColorSettings();
 	void settingsSetColor();
-	void settingsUp();
-	void settingsDown();
 	void settingsDelete();
+	void settingsSelectionChanged(QListViewItem*);
 
 protected:
 	virtual void resizeEvent(QResizeEvent*);
 
 private:
-	int beams;
+	uint beams;
 	bool modified;
 	bool noFrame;
 

@@ -66,9 +66,17 @@ public:
 	SensorDisplay(QWidget* parent = 0, const char* name = 0);
 	virtual ~SensorDisplay();
 
-	virtual bool addSensor(const QString&, const QString&, const QString&)
+	virtual bool addSensor(const QString& hn, const QString& sn,
+						   const QString& res1)
 	{
-		return (FALSE);
+		registerSensor(hn, sn, res1);
+		return (true);
+	}
+
+	virtual bool removeSensor(uint idx)
+	{
+		unregisterSensor(idx);
+		return (true);
 	}
 
 	/**
@@ -168,6 +176,8 @@ protected:
 
 	void registerSensor(const QString& hostName, const QString& sensorName,
 						const QString& sensorDescr);
+
+	void unregisterSensor(uint idx);
 
 	virtual void focusInEvent(QFocusEvent*)
 	{

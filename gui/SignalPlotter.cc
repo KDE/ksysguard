@@ -226,8 +226,8 @@ SignalPlotter::paintEvent(QPaintEvent*)
 
 	p.setClipRect(1, 1, w - 2, h - 2);
 	double range = maxValue - minValue;
-	/* If the range too small we will force it to 1.0 since it looks
-	 * a lot nicer. */
+	/* If the range is too small we will force it to 1.0 since it
+	 * looks a lot nicer. */
 	if (range < 0.000001)
 		range = 1.0;
 
