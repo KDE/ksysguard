@@ -143,7 +143,7 @@
                             </property>
                             <property stdset="1">
                                 <name>text</name>
-                                <string>use update interval of worksheet</string>
+                                <string>Use update interval of worksheet</string>
                             </property>
                         </widget>
                         <widget>

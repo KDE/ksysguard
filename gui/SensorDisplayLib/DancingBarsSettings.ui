@@ -246,7 +246,7 @@
                         </property>
                         <property stdset="1">
                             <name>title</name>
-                            <string>Alarm for minimum value</string>
+                            <string>Alarm for Minimum Value</string>
                         </property>
                         <grid>
                             <property stdset="1">
@@ -265,7 +265,7 @@
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
-                                    <string>&amp;Enable Alarm</string>
+                                    <string>&amp;Enable alarm</string>
                                 </property>
                                 <property>
                                     <name>whatsThis</name>
@@ -357,7 +357,7 @@
                         </property>
                         <property stdset="1">
                             <name>title</name>
-                            <string>Alarm for maximum value</string>
+                            <string>Alarm for Maximum Value</string>
                         </property>
                         <grid>
                             <property stdset="1">
@@ -376,7 +376,7 @@
                                 </property>
                                 <property stdset="1">
                                     <name>text</name>
-                                    <string>E&amp;nable Alarm</string>
+                                    <string>E&amp;nable alarm</string>
                                 </property>
                                 <property>
                                     <name>whatsThis</name>

@@ -191,7 +191,7 @@
             </property>
             <property stdset="1">
                 <name>title</name>
-                <string>Connection type</string>
+                <string>Connection Type</string>
             </property>
             <grid>
                 <property stdset="1">
