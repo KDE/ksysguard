@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager
+    KSysGuard, the KDE Task Manager
    
     Copyright (C) 1997 Bernd Johannes Wuebben
                        <wuebben@math.cornell.edu>
@@ -21,7 +21,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
+	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
 	not commit any changes without consulting me first. Thanks!
 
 	$Id$
@@ -136,44 +136,84 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	if (aliases.isEmpty())
 	{
 		aliases.insert("init", new QString("penguin"));
-		aliases.insert("kswapd", new QString("kcmmemory"));
-		aliases.insert("keventd", new QString("kcmmemory"));
-		aliases.insert("kreclaimd", new QString("kcmmemory"));
-		aliases.insert("kbdflush", new QString("kcmmemory"));
-		aliases.insert("kupdated", new QString("kcmmemory"));
-		aliases.insert("klogd", new QString("kcmmemory"));
-		aliases.insert("khubd", new QString("kcmmemory"));
-		aliases.insert("scsi_eh_0", new QString("kcmmemory"));
-		aliases.insert("scsi_eh_1", new QString("kcmmemory"));
-		aliases.insert("scsi_eh_2", new QString("kcmmemory"));
-		aliases.insert("scsi_eh_3", new QString("kcmmemory"));
-		aliases.insert("scsi_eh_4", new QString("kcmmemory"));
-		aliases.insert("scsi_eh_5", new QString("kcmmemory"));
-		aliases.insert("scsi_eh_6", new QString("kcmmemory"));
-		aliases.insert("scsi_eh_7", new QString("kcmmemory"));
-		aliases.insert("ksoftirqd_CPU0", new QString("kcmmemory"));
-		aliases.insert("ksoftirqd_CPU1", new QString("kcmmemory"));
-		aliases.insert("ksoftirqd_CPU2", new QString("kcmmemory"));
-		aliases.insert("ksoftirqd_CPU3", new QString("kcmmemory"));
-		aliases.insert("ksoftirqd_CPU4", new QString("kcmmemory"));
-		aliases.insert("ksoftirqd_CPU5", new QString("kcmmemory"));
-		aliases.insert("ksoftirqd_CPU6", new QString("kcmmemory"));
-		aliases.insert("ksoftirqd_CPU7", new QString("kcmmemory"));
-		aliases.insert("usbmgr", new QString("kcmmemory"));
-		aliases.insert("automount", new QString("gv"));
-		aliases.insert("cupsd", new QString("gv"));
-		aliases.insert("atd", new QString("gv"));
-		aliases.insert("syslogd", new QString("gv"));
-		aliases.insert("rpc.statd", new QString("gv"));
-		aliases.insert("sshd", new QString("gv"));
-		aliases.insert("portmap", new QString("gv"));
-		aliases.insert("in.identd", new QString("gv"));
-		aliases.insert("sendmail", new QString("gv"));
-		aliases.insert("ypbind", new QString("gv"));
-		aliases.insert("xntpd", new QString("gv"));
-		aliases.insert("nscd", new QString("gv"));
-		aliases.insert("cron", new QString("gv"));
-		aliases.insert("rpciod", new QString("gv"));
+		/* kernel stuff */
+		aliases.insert("bdflush", new QString("kernel"));
+		aliases.insert("dhcpcd", new QString("kernel"));
+		aliases.insert("kapm-idled", new QString("kernel"));
+		aliases.insert("keventd", new QString("kernel"));
+		aliases.insert("khubd", new QString("kernel"));
+		aliases.insert("klogd", new QString("kernel"));
+		aliases.insert("kreclaimd", new QString("kernel"));
+		aliases.insert("kreiserfsd", new QString("kernel"));
+		aliases.insert("ksoftirqd_CPU0", new QString("kernel"));
+		aliases.insert("ksoftirqd_CPU1", new QString("kernel"));
+		aliases.insert("ksoftirqd_CPU2", new QString("kernel"));
+		aliases.insert("ksoftirqd_CPU3", new QString("kernel"));
+		aliases.insert("ksoftirqd_CPU4", new QString("kernel"));
+		aliases.insert("ksoftirqd_CPU5", new QString("kernel"));
+		aliases.insert("ksoftirqd_CPU6", new QString("kernel"));
+		aliases.insert("ksoftirqd_CPU7", new QString("kernel"));
+		aliases.insert("kswapd", new QString("kernel"));
+		aliases.insert("kupdated", new QString("kernel"));
+		aliases.insert("scsi_eh_0", new QString("kernel"));
+		aliases.insert("scsi_eh_1", new QString("kernel"));
+		aliases.insert("scsi_eh_2", new QString("kernel"));
+		aliases.insert("scsi_eh_3", new QString("kernel"));
+		aliases.insert("scsi_eh_4", new QString("kernel"));
+		aliases.insert("scsi_eh_5", new QString("kernel"));
+		aliases.insert("scsi_eh_6", new QString("kernel"));
+		aliases.insert("scsi_eh_7", new QString("kernel"));
+		aliases.insert("usbmgr", new QString("kernel"));
+		/* daemon and other service providers */
+		aliases.insert("atd", new QString("daemon"));
+		aliases.insert("automount", new QString("daemon"));
+		aliases.insert("cardmgr", new QString("daemon"));
+		aliases.insert("cron", new QString("daemon"));
+		aliases.insert("cupsd", new QString("daemon"));
+		aliases.insert("in.identd", new QString("daemon"));
+		aliases.insert("lpd", new QString("daemon"));
+		aliases.insert("mingetty", new QString("daemon"));
+		aliases.insert("nscd", new QString("daemon"));
+		aliases.insert("portmap", new QString("daemon"));
+		aliases.insert("rpc.statd", new QString("daemon"));
+		aliases.insert("rpciod", new QString("daemon"));
+		aliases.insert("sendmail", new QString("daemon"));
+		aliases.insert("sshd", new QString("daemon"));
+		aliases.insert("syslogd", new QString("daemon"));
+		aliases.insert("wwwoffled", new QString("daemon"));
+		aliases.insert("xntpd", new QString("daemon"));
+		aliases.insert("ypbind", new QString("daemon"));
+		/* kde applications */
+		aliases.insert("appletproxy", new QString("kdeapp"));
+		aliases.insert("dcopserver", new QString("kdeapp"));
+		aliases.insert("kcookiejar", new QString("kdeapp"));
+		aliases.insert("kded", new QString("kdeapp"));
+		aliases.insert("kdeinit", new QString("kdeapp"));
+		aliases.insert("kdesktop", new QString("kdeapp"));
+		aliases.insert("kdesud", new QString("kdeapp"));
+		aliases.insert("kdm", new QString("kdeapp"));
+		aliases.insert("khotkeys", new QString("kdeapp"));
+		aliases.insert("kio_file", new QString("kdeapp"));
+		aliases.insert("kio_uiserver", new QString("kdeapp"));
+		aliases.insert("klauncher", new QString("kdeapp"));
+		aliases.insert("ksmserver", new QString("kdeapp"));
+		aliases.insert("kwrited", new QString("kdeapp"));
+		aliases.insert("kxmlrpcd", new QString("kdeapp"));
+		aliases.insert("startkde", new QString("kdeapp"));
+		/* other processes */
+		aliases.insert("bash", new QString("shell"));
+		aliases.insert("cat", new QString("tools"));
+		aliases.insert("egrep", new QString("tools"));
+		aliases.insert("fgrep", new QString("tools"));
+		aliases.insert("find", new QString("tools"));
+		aliases.insert("grep", new QString("tools"));
+		aliases.insert("ksh", new QString("shell"));
+		aliases.insert("sh", new QString("shell"));
+		aliases.insert("sort", new QString("tools"));
+		aliases.insert("ssh", new QString("shell"));
+		aliases.insert("su", new QString("tools"));
+		aliases.insert("tcsh", new QString("shell"));
+		aliases.insert("tee", new QString("tools"));
 	}
 
 	/* The filter mode is controlled by a combo box of the parent. If

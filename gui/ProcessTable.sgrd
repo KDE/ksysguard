@@ -1,19 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE KSysGuardWorkSheet ><WorkSheet rows="1" columns="1" >
- <host shell="" name="localhost" command="ksysguardd" />
- <display class="ProcessController" row="0" sensorName="ps" column="0" filter="0" sortColumn="6" hostName="localhost" incrOrder="0" tree="0" pause="0" >
-  <column currentWidth="155" savedWidth="155" index="0" />
-  <column currentWidth="38" savedWidth="46" index="1" />
-  <column currentWidth="0" savedWidth="38" index="2" />
-  <column currentWidth="0" savedWidth="32" index="3" />
-  <column currentWidth="0" savedWidth="31" index="4" />
-  <column currentWidth="53" savedWidth="48" index="5" />
-  <column currentWidth="47" savedWidth="45" index="6" />
-  <column currentWidth="61" savedWidth="48" index="7" />
-  <column currentWidth="0" savedWidth="36" index="8" />
-  <column currentWidth="52" savedWidth="65" index="9" />
-  <column currentWidth="48" savedWidth="30" index="10" />
-  <column currentWidth="48" savedWidth="150" index="11" />
-  <column currentWidth="48" savedWidth="150" index="12" />
-  <column currentWidth="524" savedWidth="150" index="13" />
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE KSysGuardWorkSheet ><WorkSheet rows="1" interval="2" columns="1" >
+ <host port="-1" shell="" name="localhost" command="ksysguardd" />
+ <display class="ProcessController" row="0" sensorName="ps" column="0" filter="0" sortColumn="0" hostName="localhost" incrOrder="0" tree="0" pause="0" >
+  <column currentWidth="126" savedWidth="126" index="0" />
+  <column currentWidth="42" savedWidth="46" index="1" />
+  <column currentWidth="42" savedWidth="38" index="2" />
+  <column currentWidth="33" savedWidth="32" index="3" />
+  <column currentWidth="0" savedWidth="42" index="4" />
+  <column currentWidth="66" savedWidth="48" index="5" />
+  <column currentWidth="52" savedWidth="45" index="6" />
+  <column currentWidth="72" savedWidth="48" index="7" />
+  <column currentWidth="38" savedWidth="36" index="8" />
+  <column currentWidth="57" savedWidth="65" index="9" />
+  <column currentWidth="52" savedWidth="30" index="10" />
+  <column currentWidth="56" savedWidth="150" index="11" />
+  <column currentWidth="856" savedWidth="150" index="12" />
  </display>
 </WorkSheet>

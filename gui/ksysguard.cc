@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE Task Manager and System Monitor
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     

@@ -48,7 +48,7 @@ public:
 	bool addSensor(const QString& hostName, const QString& sensorName,
 				   const QString& title);
 
-	void updateSamples(const QArray<long>& newSamples)
+	void updateSamples(const QArray<double>& newSamples)
 	{
 		plotter->updateSamples(newSamples);
 	}
@@ -74,6 +74,9 @@ public:
 
 public slots:
 	void applySettings();
+	void settingsEdit();
+	void settingsDelete();
+	void settingsSelectionChanged(QListViewItem*);
 
 protected:
 	virtual void resizeEvent(QResizeEvent*);
@@ -92,7 +95,7 @@ private:
 	 * samples for each beam until all samples of the period have been
 	 * received. The flags variable is used to ensure that all samples have
 	 * been received. */
-	QArray<long> sampleBuf;
+	QArray<double> sampleBuf;
 	ulong flags;
 } ;
 

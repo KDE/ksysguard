@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE Task Manager and System Monitor
    
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
@@ -16,8 +16,8 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+	Please do not commit any changes without consulting me first. Thanks!
 
 	$Id$
 */
@@ -33,15 +33,21 @@
 
 #include "BarGraph.moc"
 
-BarGraph::BarGraph(QWidget* parent, const char* name, int min, int max)
-	: QWidget(parent, name), minValue(min), maxValue(max)
+BarGraph::BarGraph(QWidget* parent, const char* name)
+	: QWidget(parent, name)
 {
 	// paintEvent covers whole widget so we use no background to avoid flicker
 	setBackgroundMode(NoBackground);
 
 	bars = 0;
+	minValue = 0.0;
+	maxValue = 100.0;
+	lowerLimit = upperLimit = 0.0;
 	lowerLimitActive = upperLimitActive = false;
-	autoRange = (min == max);
+
+	normalColor = QColor(20, 255, 20);
+	alarmColor = QColor(255, 20, 20);
+	backgroundColor = QColor(0, 0, 0);
 
 	// Anything smaller than this does not make sense.
 	setMinimumSize(16, 16);
@@ -68,25 +74,17 @@ BarGraph::addBar(const QString& footer)
 }
 
 void
-BarGraph::updateSamples(const QArray<long>& newSamples)
+BarGraph::updateSamples(const QArray<double>& newSamples)
 {
 	samples = newSamples;
 	update();
 }
 
 void
-BarGraph::changeRange(long min, long max)
+BarGraph::changeRange(double min, double max)
 {
-	if (min == max)
-	{
-		autoRange = TRUE;
-	}
-	else
-	{
-		minValue = min;
-		maxValue = max;
-		autoRange = FALSE;
-	}
+	minValue = min;
+	maxValue = max;
 }
 
 void 
@@ -101,7 +99,7 @@ BarGraph::paintEvent(QPaintEvent*)
 	p.setFont(QFont("lucidatypewriter", 12));
 	QFontMetrics fm(QFont("lucidatypewriter", 12));
 
-	pm.fill(black);
+	pm.fill(backgroundColor);
 	/* Draw white line along the bottom and the right side of the
 	 * widget to create a 3D like look. */
 	p.setPen(QColor(colorGroup().light()));
@@ -127,23 +125,29 @@ BarGraph::paintEvent(QPaintEvent*)
 		barHeight = h - 2;
 	for (int b = 0; b < bars; b++)
 	{
-		int topVal = (int) ((float) barHeight / maxValue * samples[b]);
+		int topVal = (int) ((float) barHeight / maxValue
+							* (samples[b] - minValue));
+		/* TODO: This widget does not handle negative values properly. */
+		if (topVal < 0)
+			topVal = 0;
 
 		for (int i = 0; i < barHeight && i < topVal; i += 2)
 		{
-			if (upperLimitActive && samples[b] > upperLimit)
-				p.setPen(QColor(128 + (int) ((float) 128 / barHeight * i), 0,
-								0));
+			if ((upperLimitActive && samples[b] > upperLimit) ||
+				(lowerLimitActive && samples[b] < lowerLimit))
+				p.setPen(alarmColor.light((int) 30 +
+										  (70.0 / (barHeight + 1) * i)));
 			else
-				p.setPen(QColor(0, 128 + (int) ((float) 128 / barHeight * i),
-								0));
+				p.setPen(normalColor.light((int) 30 +
+										   (70.0 / (barHeight + 1) * i)));
 			p.drawLine(b * barWidth + 3, barHeight - i, (b + 1) * barWidth - 3,
 					   barHeight - i);
 		}
-		if (upperLimitActive && samples[b] > upperLimit)
-			p.setPen(QColor("red"));
+		if ((upperLimitActive && samples[b] > upperLimit) ||
+			(lowerLimitActive && samples[b] < lowerLimit))
+			p.setPen(alarmColor);
 		else
-			p.setPen(QColor("green"));
+			p.setPen(normalColor);
 		if (showLabels)
 			p.drawText(b * barWidth + 3, h - fm.lineSpacing() - 2,
 					   barWidth - 2 * 3, fm.lineSpacing(), Qt::AlignCenter,

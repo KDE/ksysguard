@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE Task Manager and System Monitor
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -16,8 +16,9 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+	Please do not commit any changes without consulting me
+	first. Thanks!
 
 	$Id$
 */
@@ -96,11 +97,7 @@ void
 SignalPlotter::addSample(const QValueList<double>& sampleBuf)
 {
 	if (beamData.count() != sampleBuf.count())
-	{
-		kdDebug() << "ERROR: beamData buffer and and samples buffer "
-			"don't match" << endl;
 		return;
-	}
 
 	/* To avoid unecessary calls to the fairly expensive calcRange
 	 * function we only do a recalc if the value to be dropped is

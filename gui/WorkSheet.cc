@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE Task Manager and System Monitor
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -16,7 +16,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
+	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
 	not commit any changes without consulting me first. Thanks!
 
 	$Id$
@@ -329,7 +329,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 		/* If the sensor type is supported by more than one display
 		 * type we popup a menu so the user can select what display is
 		 * wanted. */
-		if (sensorType == "integer")
+		if (sensorType == "integer" || sensorType == "float")
 		{
 			QPopupMenu pm;
 			pm.insertItem(i18n("Select a display type"), 0);
@@ -352,25 +352,6 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 				break;
 			default:
 				return (0);
-			}
-		}
-		else if (sensorType == "float")
-		{
-			QPopupMenu pm;
-			pm.insertItem(i18n("Select a display type"), 0);
-			pm.setItemEnabled(0, false);
-			pm.insertSeparator();
-			pm.insertItem(i18n("&Signal Plotter"), 1);
-			pm.insertItem(i18n("&Multimeter"), 2);
-			switch (pm.exec(QCursor::pos()))
-			{
-			case 1:
-				newDisplay = new FancyPlotter(this, "FancyPlotter",
-											  sensorDescr);
-				break;
-			case 2:
-				newDisplay = new MultiMeter(this, "MultiMeter", sensorDescr);
-				break;
 			}
 		}
 		else if (sensorType == "listview")

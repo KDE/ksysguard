@@ -1,5 +1,5 @@
 /*
-    KTop, the KDE Task Manager and System Monitor
+    KSysGuard, the KDE Task Manager and System Monitor
    
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
@@ -16,8 +16,9 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KTop is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+	KSysGuard is currently maintained by Chris Schlaeger
+	<cs@kde.org>. Please do not commit any changes without consulting
+	me first. Thanks!
 
 	$Id$
 */
@@ -27,16 +28,18 @@
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qcheckbox.h>
+#include <qlistview.h>
 #include <qdom.h>
 #include <qlayout.h>
 
 #include <kapp.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <knuminput.h>
+#include <knumvalidator.h>
 #include <kdebug.h>
 
 #include "SensorManager.h"
+#include "ColorPicker.h"
 #include "DancingBarsSettings.h"
 #include "DancingBars.moc"
 
@@ -50,7 +53,7 @@ DancingBars::DancingBars(QWidget* parent, const char* name,
 	bars = 0;
 	flags = 0;
 
-	plotter = new BarGraph(frame, "signalPlotter", min, max);
+	plotter = new BarGraph(frame, "signalPlotter");
 	CHECK_PTR(plotter);
 
 	setMinimumSize(sizeHint());
@@ -95,13 +98,40 @@ DancingBars::settings()
 
 	dbs->title->setText(frame->title());
 	dbs->title->setFocus();
-	dbs->maximumValue->setValue(plotter->getMax());
-	long l, u;
+	dbs->minVal->setValidator(new KFloatValidator(dbs->minVal));
+	dbs->minVal->setText(QString("%1").arg(plotter->getMin()));
+	dbs->maxVal->setValidator(new KFloatValidator(dbs->maxVal));
+	dbs->maxVal->setText(QString("%1").arg(plotter->getMax()));
+
+	double l, u;
 	bool la, ua;
 	plotter->getLimits(l, la, u, ua);
-	if (ua)
-		dbs->enableAlarm->setChecked(true);
-	dbs->limit->setValue(u);
+	dbs->upperLimitActive->setChecked(ua);
+	dbs->upperLimit->setValidator(new KFloatValidator(dbs->upperLimit));
+	dbs->upperLimit->setText(QString("%1").arg(u));
+	dbs->lowerLimitActive->setChecked(la);
+	dbs->lowerLimit->setValidator(new KFloatValidator(dbs->lowerLimit));
+	dbs->lowerLimit->setText(QString("%1").arg(l));
+
+	dbs->normalColor->setColor(plotter->normalColor);
+	dbs->alarmColor->setColor(plotter->alarmColor);
+	dbs->backgroundColor->setColor(plotter->backgroundColor);
+
+	for (uint i = 0; i < bars; ++i)
+	{
+		QString status = sensors.at(i)->ok ? i18n("Ok") : i18n("Error");
+		QListViewItem* lvi = new QListViewItem(
+			dbs->sensorList, sensors.at(i)->hostName,
+			SensorMgr->translateSensor(sensors.at(i)->name),
+			SensorMgr->translateUnit(sensors.at(i)->unit), status);
+		dbs->sensorList->insertItem(lvi);
+	}
+	connect(dbs->editButton, SIGNAL(clicked()),
+			this, SLOT(settingsEdit()));
+	connect(dbs->deleteButton, SIGNAL(clicked()),
+			this, SLOT(settingsDelete()));
+	connect(dbs->sensorList, SIGNAL(selectionChanged(QListViewItem*)),
+			this, SLOT(settingsSelectionChanged(QListViewItem*)));
 
 	connect(dbs->applyButton, SIGNAL(clicked()),
 			this, SLOT(applySettings()));
@@ -117,15 +147,71 @@ void
 DancingBars::applySettings()
 {
 	frame->setTitle(dbs->title->text());
-	plotter->changeRange(plotter->getMin(),
-						 dbs->maximumValue->text().toLong());
-	if (dbs->enableAlarm->isChecked())
-		plotter->setLimits(0, false, dbs->limit->text().toLong(), true);
-	else
-		plotter->setLimits(0, false, 0, false);
+	plotter->changeRange(dbs->minVal->text().toDouble(),
+						 dbs->maxVal->text().toDouble());
+
+	plotter->setLimits(dbs->lowerLimitActive->isChecked() ?
+					   dbs->lowerLimit->text().toDouble() : 0,
+					   dbs->lowerLimitActive->isChecked(),
+					   dbs->upperLimitActive->isChecked() ?
+					   dbs->upperLimit->text().toDouble() : 0,
+					   dbs->upperLimitActive->isChecked());
+
+	plotter->normalColor = dbs->normalColor->getColor();
+	plotter->alarmColor = dbs->alarmColor->getColor();
+	plotter->backgroundColor = dbs->backgroundColor->getColor();
 
 	repaint();
 	modified = true;
+}
+
+void
+DancingBars::settingsEdit()
+{
+	QListViewItem* lvi = dbs->sensorList->currentItem();
+
+	if (!lvi)
+		return;
+}
+
+void
+DancingBars::settingsDelete()
+{
+	QListViewItem* lvi = dbs->sensorList->currentItem();
+
+	if (lvi)
+	{
+		/* Before we delete the currently selected item, we determine a
+		 * new item to be selected. That way we can ensure that multiple
+		 * items can be deleted without forcing the user to select a new
+		 * item between the deletes. If all items are deleted, the buttons
+		 * are disabled again. */
+		QListViewItem* newSelected = 0;
+		if (lvi->itemBelow())
+		{
+			lvi->itemBelow()->setSelected(true);
+			newSelected = lvi->itemBelow();
+		}
+		else if (lvi->itemAbove())
+		{
+			lvi->itemAbove()->setSelected(true);
+			newSelected = lvi->itemAbove();
+		}
+		else
+			settingsSelectionChanged(0);
+			
+		delete lvi;
+
+		if (newSelected)
+			dbs->sensorList->ensureItemVisible(newSelected);
+	}
+}
+
+void
+DancingBars::settingsSelectionChanged(QListViewItem* lvi)
+{
+	dbs->editButton->setEnabled(lvi != 0);
+	dbs->deleteButton->setEnabled(lvi != 0);
 }
 
 bool
@@ -169,7 +255,7 @@ DancingBars::answerReceived(int id, const QString& answer)
 
 	if (id <= 100)
 	{
-		sampleBuf[id] = answer.toLong();
+		sampleBuf[id] = answer.toDouble();
 		if (flags & (1 << id))
 		{
 			kdDebug() << "ERROR: DancingBars lost sample (" << flags
@@ -202,12 +288,19 @@ DancingBars::createFromDOM(QDomElement& domElem)
 
 	frame->setTitle(domElem.attribute("title"));
 
-	plotter->changeRange(domElem.attribute("min").toLong(),
-						 domElem.attribute("max").toLong());
-	plotter->setLimits(domElem.attribute("lowlimit").toLong(),
+	plotter->changeRange(domElem.attribute("min").toDouble(),
+						 domElem.attribute("max").toDouble());
+	plotter->setLimits(domElem.attribute("lowlimit").toDouble(),
 					   domElem.attribute("lowlimitactive").toInt(),
-					   domElem.attribute("uplimit").toLong(),
+					   domElem.attribute("uplimit").toDouble(),
 					   domElem.attribute("uplimitactive").toInt());
+
+	plotter->normalColor = restoreColorFromDOM(domElem, "normalColor",
+											   Qt::green);
+	plotter->alarmColor = restoreColorFromDOM(domElem, "alarmColor",
+											  Qt::red);
+	plotter->backgroundColor = restoreColorFromDOM(domElem, "backgroundColor",
+												   Qt::black);
 
 	QDomNodeList dnList = domElem.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)
@@ -224,15 +317,19 @@ bool
 DancingBars::addToDOM(QDomDocument& doc, QDomElement& display, bool save)
 {
 	display.setAttribute("title", frame->title());
-	display.setAttribute("min", (int) plotter->getMin());
-	display.setAttribute("max", (int) plotter->getMax());
-	long l, u;
+	display.setAttribute("min", plotter->getMin());
+	display.setAttribute("max", plotter->getMax());
+	double l, u;
 	bool la, ua;
 	plotter->getLimits(l, la, u, ua);
-	display.setAttribute("lowlimit", (int) l);
+	display.setAttribute("lowlimit", l);
 	display.setAttribute("lowlimitactive", la);
-	display.setAttribute("uplimit", (int) u);
+	display.setAttribute("uplimit", u);
 	display.setAttribute("uplimitactive", ua);
+
+	addColorToDOM(display, "normalColor", plotter->normalColor);
+	addColorToDOM(display, "alarmColor", plotter->alarmColor);
+	addColorToDOM(display, "backgroundColor", plotter->backgroundColor);
 
 	for (int i = 0; i < bars; ++i)
 	{

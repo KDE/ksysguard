@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager and System Monitor
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -33,30 +33,31 @@ class BarGraph : public QWidget
 {
 	Q_OBJECT
 
+	friend class DancingBars;
+
 public:
-	BarGraph(QWidget* parent = 0, const char* name = 0, int min = 0,
-				  int max = 100);
+	BarGraph(QWidget* parent = 0, const char* name = 0);
 	~BarGraph();
 
 	bool addBar(const QString& footer);
-	void updateSamples(const QArray<long>& newSamples);
+	void updateSamples(const QArray<double>& newSamples);
 
-	long getMin() const
+	double getMin() const
 	{
-		return (autoRange ? 0 : minValue);
+		return minValue;
 	}
-	long getMax() const
+	double getMax() const
 	{
-		return (autoRange ? 0 : maxValue);
+		return maxValue;
 	}
-	void getLimits(long& l, bool& la, long& u, bool& ua) const
+	void getLimits(double& l, bool& la, double& u, bool& ua) const
 	{
 		l = lowerLimit;
 		la = lowerLimitActive;
 		u = upperLimit;
 		ua = upperLimitActive;
 	}
-	void setLimits(long l, bool la, long u, bool ua)
+	void setLimits(double l, bool la, double u, bool ua)
 	{
 		lowerLimit = l;
 		lowerLimitActive = la;
@@ -64,7 +65,7 @@ public:
 		upperLimitActive = ua;
 	}
 
-	void changeRange(long min, long max);
+	void changeRange(double min, double max);
 
 	void setSensorOk(bool ok)
 	{
@@ -79,16 +80,19 @@ protected:
 	virtual void paintEvent(QPaintEvent*);
 
 private:
-	long minValue;
-	long maxValue;
-	long lowerLimit;
-	bool lowerLimitActive;
-	long upperLimit;
+	double minValue;
+	double maxValue;
+	double lowerLimit;
+	double lowerLimitActive;
+	double upperLimit;
 	bool upperLimitActive;
 	bool autoRange;
-	QArray<long> samples;
+	QArray<double> samples;
 	QStringList footers;
 	int bars;
+	QColor normalColor;
+	QColor alarmColor;
+	QColor backgroundColor;
 
 	QPixmap errorIcon;
 	bool sensorOk;
