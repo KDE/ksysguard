@@ -1,4 +1,4 @@
-AM_CFLAGS = -Wall $(CONFIGFLAGS)
+AM_CFLAGS = -Wall
 
 INCLUDES = -I$(srcdir)/../../CContLib -I..
 

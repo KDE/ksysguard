@@ -1,5 +1,5 @@
 AM_CPPFLAGS = -D_GNU_SOURCE
-AM_CFLAGS = -Wall $(CONFIGFLAGS)
+AM_CFLAGS = -Wall 
 
 INCLUDES = -I$(srcdir)/../../CContLib -I$(srcdir)/..
 
