@@ -153,7 +153,7 @@ void LogFile::applySettings(void)
 	monitor->setFont(lfs->fontButton->font());
 
 	filterRules.clear();
-	for (int i = 0; i < lfs->ruleList->count(); i++)
+	for (uint i = 0; i < lfs->ruleList->count(); i++)
 		filterRules.append(lfs->ruleList->text(i));
 
 	setTitle(lfs->title->text());
