@@ -42,6 +42,7 @@
 #include <qpopupmenu.h>
 
 #include <kdebug.h>
+#include <kglobal.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 
@@ -590,7 +591,9 @@ ProcessList::addProcess(KSGRD::SensorPSLine* p, ProcessLVI* pli)
 	{
 		if (columnTypes[col] == "S" && columnDict[(*p)[col]])
 			pli->setText(col, *columnDict[(*p)[col]]);
-		else
+		else if ( columnTypes[col] == "f" )
+      pli->setText( col, KGlobal::locale()->formatNumber( (*p)[col].toFloat() ) );
+    else
 			pli->setText(col, (*p)[col]);
 	}
 }
