@@ -57,3 +57,5 @@ libsensordisplayincludedir = $(includedir)/SensorDisplayLib
 
 # just to make sure, automake makes them 
 METASOURCES = AUTO
+
+SensorDisplay.lo: ../ksgrd/TimerSettings.h
