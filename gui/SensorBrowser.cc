@@ -56,6 +56,7 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	dict.insert("memfree", new QString(i18n("Free Memory")));
 	dict.insert("pscount", new QString(i18n("Process Count")));
 	dict.insert("ps", new QString(i18n("Process Controller")));
+#if 0
 	for (int i = 0; i < 32; i++)
 	{
 		dict.insert("cpu" + QString::number(i) + "idle",
@@ -64,6 +65,7 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 		dict.insert("cpunice", new QString(i18n("Nice Load")));
 		dict.insert("cpuuser", new QString(i18n("User Load")));
 	}
+#endif
 }
 
 void
