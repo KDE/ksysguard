@@ -44,6 +44,7 @@ typedef struct {
 
 static CONTAINER DiskStatList = 0;
 static struct SensorModul* DiskStatSM;
+char *getMntPnt(const char *cmd);
 
 char *getMntPnt(const char *cmd)
 {

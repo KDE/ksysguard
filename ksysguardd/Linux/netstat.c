@@ -58,6 +58,12 @@ typedef struct {
 	char path[256];
 } UnixInfo;
 
+char *get_serv_name(int port, const char *proto);
+char *get_host_name(int addr);
+char *get_proto_name(int number);
+int get_num_sockets(FILE *netstat);
+void printSocketInfo(SocketInfo* socket_info);
+
 static time_t TcpUdpRaw_timeStamp = 0;
 static time_t Unix_timeStamp = 0;
 static time_t NetStat_timeStamp = 0;
@@ -98,13 +104,13 @@ static const char *conn_state[] =
 	"closing"
 };
 
-char *get_serv_name(int port, char *proto)
+char *get_serv_name(int port, const char *proto)
 {
 	static char buffer[1024];
 	struct servent *service;
 
 	if (port == 0) {
-		return "*";
+		return (char *)"*";
 	}
 
 	memset(buffer, 0, sizeof(buffer));
@@ -125,7 +131,7 @@ char *get_host_name(int addr)
 	struct in_addr a_addr;
 
 	if (addr == 0) {
-		return "*";
+		return (char *)"*";
 	}
 
 	memset(buffer, 0, sizeof(buffer));
@@ -145,7 +151,7 @@ char *get_proto_name(int number)
 	struct protoent *protocol;
 
 	if (number == 0) {
-		return "*";
+		return (char *)"*";
 	}
 
 	memset(buffer, 0, sizeof(buffer));

@@ -20,8 +20,6 @@
 */
 
 #include <config.h>
-#ifdef HAVE_SENSORS_SENSORS_H
-#include <sensors/sensors.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,6 +28,9 @@
 #include "ccont.h"
 #include "ksysguardd.h"
 #include "lmsensors.h"
+
+#ifdef HAVE_SENSORS_SENSORS_H
+#include <sensors/sensors.h>
 
 typedef struct
 {
@@ -178,7 +179,7 @@ printLmSensorInfo(const char* cmd)
 /* dummy version for systems that have no lmsensors support */
 
 void
-initLmSensors(void)
+initLmSensors(struct SensorModul* sm)
 {
 }
 

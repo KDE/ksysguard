@@ -116,6 +116,8 @@ static long OldHash = 0;
 #define MAXNETDEVS 64
 static NetDevInfo NetDevs[MAXNETDEVS];
 
+void processNetDev(void);
+
 FORALL(DECLAREFUNC)
 
 static int

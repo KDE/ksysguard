@@ -41,7 +41,7 @@ extern int RunAsDaemon;
 extern FILE* CurrentClient;
 
 struct SensorModul {
-	char *configName;
+	const char *configName;
 	void (*initCommand)(struct SensorModul*);
 	void (*exitCommand)(void);
 	int (*updateCommand)(void);

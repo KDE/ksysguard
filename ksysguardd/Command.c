@@ -43,6 +43,8 @@ typedef struct
 static CONTAINER CommandList;
 static sigset_t SignalSet;
 
+void _Command(void* v);
+
 void 
 _Command(void* v)
 {
@@ -137,7 +139,6 @@ void
 removeCommand(const char* command)
 {
 	Command* cmd;
-	int i;
 
 	for (cmd = first_ctnr(CommandList); cmd; cmd = next_ctnr(CommandList))
 	{

@@ -56,8 +56,15 @@ static int ServerSocket;
 static ClientInfo ClientList[MAX_CLIENTS];
 static int SocketPort = -1;
 static int CurrentSocket;
-static char *LockFile = "/var/run/ksysguardd.pid";
-static char *ConfigFile = KSYSGUARDDRCFILE;
+static const char *LockFile = "/var/run/ksysguardd.pid";
+static const char *ConfigFile = KSYSGUARDDRCFILE;
+
+void signalHandler(int sig);
+void makeDaemon(void);
+void resetClientList(void);
+int addClient(int client);
+int delClient(int client);
+int createServerSocket();
 
 /* This variable is set to 1 if a module requests that the daemon should
  * be terminated. */
@@ -228,7 +235,7 @@ makeDaemon(void)
 static int
 readCommand(int fd, char* cmdBuf, size_t len)
 {
-	int i;
+	unsigned int i;
 	char c;
 	for (i = 0; (i < len) && (read(fd, &c, 1) == 1) && (c != '\n'); ++i)
 		cmdBuf[i] = c;

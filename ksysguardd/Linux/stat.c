@@ -105,16 +105,16 @@ static unsigned int NumOfInts = 0;
 static unsigned long* OldIntr = 0;
 static unsigned long* Intr = 0;
 
-static int initStatDisk(char* tag, char* buf, char* label, char* shortLabel,
+static int initStatDisk(char* tag, char* buf, const char* label, const char* shortLabel,
 						int index, cmdExecutor ex, cmdExecutor iq);
 static void updateCPULoad(const char* line, CPULoadInfo* load);
-static int processDisk(char* tag, char* buf, char* label, int index);
+static int processDisk(char* tag, char* buf, const char* label, int index);
 static void processStat(void);
 static int processDiskIO(const char* buf);
 static void cleanupDiskList(void);
 
 static int
-initStatDisk(char* tag, char* buf, char* label, char* shortLabel, int index,
+initStatDisk(char* tag, char* buf, const char* label, const char* shortLabel, int index,
 			 cmdExecutor ex, cmdExecutor iq)
 {
 	char sensorName[128];
@@ -123,7 +123,7 @@ initStatDisk(char* tag, char* buf, char* label, char* shortLabel, int index,
 
 	if (strcmp(label, tag) == 0)
 	{
-		int i;
+		unsigned int i;
 		buf = buf + strlen(label) + 1;
 		
 		for (i = 0; i < DiskCount; ++i)
@@ -178,12 +178,12 @@ updateCPULoad(const char* line, CPULoadInfo* load)
 }
 
 static int
-processDisk(char* tag, char* buf, char* label, int index)
+processDisk(char* tag, char* buf, const char* label, int index)
 {
 	if (strcmp(label, tag) == 0)
 	{
 		unsigned long val;
-		int i;
+		unsigned int i;
 		buf = buf + strlen(label) + 1;
 		
 		for (i = 0; i < DiskCount; ++i)
@@ -401,7 +401,7 @@ processStat(void)
 		}
 		else if (strcmp("intr", tag) == 0)
 		{
-			int i = 0;
+			unsigned int i = 0;
 			char* p = buf + 5;
 
 			for (i = 0; i < NumOfInts; i++)
@@ -566,7 +566,7 @@ initStat(struct SensorModul* sm)
 		}
 		else if (strcmp("intr", tag) == 0)
 		{
-			int i;
+			unsigned int i;
 			char cmdName[32];
 			char* p = buf + 5;
 			/* Count the number of listed values in the intr line. */

@@ -29,6 +29,9 @@
 CONTAINER LogFileList = 0;
 CONTAINER SensorList = 0;
 
+void destrLogFileList(void *ptr);
+void freeConfigFile(void);
+
 void destrLogFileList(void *ptr)
 {
 	if (ptr) {

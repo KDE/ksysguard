@@ -39,6 +39,8 @@ typedef struct
 static CONTAINER UIDCache = 0;
 static time_t lastCleanup = 0;
 
+void destrCachedPWUID(void* c);
+
 static int 
 uidCmp(void* p1, void* p2)
 {
