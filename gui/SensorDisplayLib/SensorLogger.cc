@@ -19,14 +19,9 @@
 	$Id$
 */
 
-#include <qcheckbox.h>
-#include <qpushbutton.h>
-
 #include <kapplication.h>
-#include <kfiledialog.h>
 #include <kiconloader.h>
 #include <klocale.h>
-#include <knumvalidator.h>
 
 #include <ksgrd/ColorPicker.h>
 #include <ksgrd/SensorManager.h>
@@ -41,6 +36,8 @@ SLListViewItem::SLListViewItem(QListView *parent)
 }
 
 LogSensor::LogSensor(QListView *parent)
+	: timerID( NONE ), lowerLimitActive( 0 ), upperLimitActive( 0 ),
+	  lowerLimit( 0 ), upperLimit( 0 )
 {
 	Q_CHECK_PTR(parent);
 
@@ -49,16 +46,8 @@ LogSensor::LogSensor(QListView *parent)
 	lvi = new SLListViewItem(monitor);
 	Q_CHECK_PTR(lvi);
 
-	lowerLimit = 0;
-	lowerLimitActive = 0;
-	upperLimit = 0;
-	upperLimitActive = 0;
-
-	KIconLoader *icons = new KIconLoader();
-	Q_CHECK_PTR(icons);
-	pixmap_running = icons->loadIcon("running", KIcon::Small, KIcon::SizeSmall);
-	pixmap_waiting = icons->loadIcon("waiting", KIcon::Small, KIcon::SizeSmall);
-	delete icons;
+	pixmap_running = UserIcon( "running" );
+	pixmap_waiting = UserIcon( "waiting" );
 
 	lvi->setPixmap(0, pixmap_waiting);
 	lvi->setTextColor(monitor->colorGroup().text());
@@ -148,10 +137,10 @@ SensorLogger::SensorLogger(QWidget *parent, const char *name, const QString& tit
 	Q_CHECK_PTR(monitor);
 
 	monitor->addColumn(i18n("Logging"));
-	monitor->addColumn(i18n("TimerInterval"));
-	monitor->addColumn(i18n("SensorName"));
-	monitor->addColumn(i18n("HostName"));
-	monitor->addColumn(i18n("LogFile"));
+	monitor->addColumn(i18n("Timer Interval"));
+	monitor->addColumn(i18n("Sensor Name"));
+	monitor->addColumn(i18n("Host Name"));
+	monitor->addColumn(i18n("Log File"));
 
 	QColorGroup cgroup = monitor->colorGroup();
 	cgroup.setColor(QColorGroup::Text, KSGRD::Style->firstForegroundColor());
@@ -182,25 +171,22 @@ SensorLogger::addSensor(const QString& hostName, const QString& sensorName, cons
 	if (sensorType != "integer" && sensorType != "float")
 		return (false);
 
-	sld = new SensorLoggerDlg(this, "SensorLoggerDlg", true);
+	sld = new SensorLoggerDlg(this, "SensorLoggerDlg");
 	Q_CHECK_PTR(sld);
 
-	sld->applyButton->hide();
-	connect(sld->fileButton, SIGNAL(clicked()), this, SLOT(fileSelect()));
-
 	if (sld->exec()) {
-		if (!sld->fileName->text().isEmpty()) {
+		if (!sld->fileName().isEmpty()) {
 			LogSensor *sensor = new LogSensor(monitor);
 			Q_CHECK_PTR(sensor);
 
 			sensor->setHostName(hostName);
 			sensor->setSensorName(sensorName);
-			sensor->setFileName(sld->fileName->text());
-			sensor->setTimerInterval(sld->timer->text().toInt());
-			sensor->setLowerLimitActive(sld->lowerLimitActive->isChecked());
-			sensor->setUpperLimitActive(sld->upperLimitActive->isChecked());
-			sensor->setLowerLimit(sld->lowerLimit->text().toDouble());
-			sensor->setUpperLimit(sld->upperLimit->text().toDouble());
+			sensor->setFileName(sld->fileName());
+			sensor->setTimerInterval(sld->timerInterval());
+			sensor->setLowerLimitActive(sld->lowerLimitActive());
+			sensor->setUpperLimitActive(sld->upperLimitActive());
+			sensor->setLowerLimit(sld->lowerLimit());
+			sensor->setUpperLimit(sld->upperLimit());
 
 			logSensors.append(sensor);
 
@@ -217,30 +203,24 @@ SensorLogger::addSensor(const QString& hostName, const QString& sensorName, cons
 bool
 SensorLogger::editSensor(LogSensor* sensor)
 {
-	sld = new SensorLoggerDlg(this, "SensorLoggerDlg", true);
+	sld = new SensorLoggerDlg(this, "SensorLoggerDlg");
 	Q_CHECK_PTR(sld);
 
-	connect(sld->fileButton, SIGNAL(clicked()), this, SLOT(fileSelect()));
-
-	sld->fileName->setText(sensor->getFileName());
-	sld->timer->setValue(sensor->getTimerInterval());
-	sld->lowerLimitActive->setChecked(sensor->getLowerLimitActive());
-	sld->lowerLimit->setText(QString("%1").arg(sensor->getLowerLimit()));
-	sld->lowerLimit->setValidator(new KFloatValidator(sld->lowerLimit));
-	sld->upperLimitActive->setChecked(sensor->getUpperLimitActive());
-	sld->upperLimit->setText(QString("%1").arg(sensor->getUpperLimit()));
-	sld->upperLimit->setValidator(new KFloatValidator(sld->upperLimit));
-
+	sld->setFileName(sensor->getFileName());
+	sld->setTimerInterval(sensor->getTimerInterval());
+	sld->setLowerLimitActive(sensor->getLowerLimitActive());
+	sld->setLowerLimit(sensor->getLowerLimit());
+	sld->setUpperLimitActive(sensor->getUpperLimitActive());
+	sld->setUpperLimit(sensor->getUpperLimit());
 
 	if (sld->exec()) {
-		if (!sld->fileName->text().isEmpty()) {
-			sensor->stopLogging();
-			sensor->setFileName(sld->fileName->text());
-			sensor->setTimerInterval(sld->timer->text().toInt());
-			sensor->setLowerLimitActive(sld->lowerLimitActive->isChecked());
-			sensor->setUpperLimitActive(sld->upperLimitActive->isChecked());
-			sensor->setLowerLimit(sld->lowerLimit->text().toDouble());
-			sensor->setUpperLimit(sld->upperLimit->text().toDouble());
+		if (!sld->fileName().isEmpty()) {
+			sensor->setFileName(sld->fileName());
+			sensor->setTimerInterval(sld->timerInterval());
+			sensor->setLowerLimitActive(sld->lowerLimitActive());
+			sensor->setUpperLimitActive(sld->upperLimitActive());
+			sensor->setLowerLimit(sld->lowerLimit());
+			sensor->setUpperLimit(sld->upperLimit());
 
 			setModified(true);
 		}
@@ -253,28 +233,19 @@ SensorLogger::editSensor(LogSensor* sensor)
 }
 
 void
-SensorLogger::fileSelect(void)
-{
-	QString fileName = KFileDialog::getSaveFileName();
-	if (!fileName.isEmpty())
-		sld->fileName->setText(fileName);
-}
-
-
-void
 SensorLogger::configureSettings()
 {
 	QColorGroup cgroup = monitor->colorGroup();
 
-	sls = new SensorLoggerSettings(this, "SensorLoggerSettings", true);
+	sls = new SensorLoggerSettings(this, "SensorLoggerSettings");
 	Q_CHECK_PTR(sls);
 
-	connect(sls->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
+	connect( sls, SIGNAL( applyClicked() ), SLOT( applySettings() ) );
 
-	sls->foregroundColor->setColor(cgroup.text());
-	sls->backgroundColor->setColor(cgroup.base());
-	sls->alarmColor->setColor(cgroup.foreground());
-	sls->title->setText(title());
+	sls->setTitle(title());
+	sls->setForegroundColor(cgroup.text());
+	sls->setBackgroundColor(cgroup.base());
+	sls->setAlarmColor(cgroup.foreground());
 
 	if (sls->exec())
 		applySettings();
@@ -288,12 +259,12 @@ SensorLogger::applySettings()
 {
 	QColorGroup cgroup = monitor->colorGroup();
 
-	cgroup.setColor(QColorGroup::Text, sls->foregroundColor->color());
-	cgroup.setColor(QColorGroup::Base, sls->backgroundColor->color());
-	cgroup.setColor(QColorGroup::Foreground, sls->alarmColor->color());
-	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
+	setTitle(sls->title());
 
-	setTitle(sls->title->text());
+	cgroup.setColor(QColorGroup::Text, sls->foregroundColor());
+	cgroup.setColor(QColorGroup::Base, sls->backgroundColor());
+	cgroup.setColor(QColorGroup::Foreground, sls->alarmColor());
+	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 
 	setModified(true);
 }
@@ -413,9 +384,22 @@ SensorLogger::RMBClicked(QListViewItem* item, const QPoint& point, int)
 	pm.insertItem(i18n("&Remove Display"), 2);
 	pm.insertSeparator(-1);
 	pm.insertItem(i18n("&Remove Sensor"), 3);
-	pm.insertItem(i18n("&Edit Sensor"), 4);
-	pm.insertItem(i18n("S&tart Logging"), 5);
-	pm.insertItem(i18n("St&op Logging"), 6);
+	pm.insertItem(i18n("&Edit Sensor..."), 4);
+
+	if ( !item )
+	{
+		pm.setItemEnabled( 3, false );
+		pm.setItemEnabled( 4, false );
+	}
+	else
+	{
+		LogSensor* sensor = getLogSensor(item);
+
+		if ( sensor->isLogging() )
+			pm.insertItem(i18n("St&op Logging"), 6);
+		else
+			pm.insertItem(i18n("S&tart Logging"), 5);
+	}
 
 	switch (pm.exec(point))
 	{
@@ -437,7 +421,7 @@ SensorLogger::RMBClicked(QListViewItem* item, const QPoint& point, int)
 	case 4: {
 		LogSensor* sensor = getLogSensor(item);
 		if (sensor)
-			this->editSensor(sensor);
+			editSensor(sensor);
 		break;
 		}
 	case 5: {

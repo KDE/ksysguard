@@ -19,16 +19,20 @@ libsensordisplays_la_SOURCES = \
 	ListView.cc \
 	LogFile.cc \
 	MultiMeter.cc \
+	MultiMeterSettings.cc \
 	ProcessController.cc \
 	ProcessList.cc \
 	ReniceDlg.cc \
 	SensorLogger.cc \
+	SensorLoggerDlg.cc \
+	SensorLoggerSettings.cc \
+	ListViewSettings.cc \
 	SignalPlotter.cc \
-	ListViewSettings.ui \
+	ListViewSettingsWidget.ui \
 	LogFileSettings.ui \
-	MultiMeterSettings.ui \
-	SensorLoggerDlg.ui \
-	SensorLoggerSettings.ui
+	MultiMeterSettingsWidget.ui \
+	SensorLoggerDlgWidget.ui \
+	SensorLoggerSettingsWidget.ui
 
 # just to make sure, automake makes them 
 METASOURCES = AUTO

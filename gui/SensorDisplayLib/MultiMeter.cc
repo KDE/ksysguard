@@ -25,17 +25,11 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <qcheckbox.h>
 #include <qdom.h>
-#include <qlabel.h>
 #include <qlcdnumber.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
 #include <qtooltip.h>
 
 #include <kdebug.h>
-#include <kiconloader.h>
-#include <knumvalidator.h>
 
 #include <ksgrd/ColorPicker.h>
 #include <ksgrd/SensorManager.h>
@@ -196,22 +190,19 @@ MultiMeter::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 void
 MultiMeter::configureSettings()
 {
-	mms = new MultiMeterSettings(this, "MultiMeterSettings", true);
+	mms = new MultiMeterSettings(this, "MultiMeterSettings");
 	Q_CHECK_PTR(mms);
-	mms->title->setText(title());
-	mms->title->setFocus();
-	mms->showUnit->setChecked(showUnit());
-	mms->lowerLimitActive->setChecked(lowerLimitActive);
-	mms->lowerLimit->setText(QString("%1").arg(lowerLimit));
-	mms->lowerLimit->setValidator(new KFloatValidator(mms->lowerLimit));
-	mms->upperLimitActive->setChecked(upperLimitActive);
-	mms->upperLimit->setText(QString("%1").arg(upperLimit));
-	mms->upperLimit->setValidator(new KFloatValidator(mms->upperLimit));
-	mms->normalDigitColor->setColor(normalDigitColor);
-	mms->alarmDigitColor->setColor(alarmDigitColor);
-	mms->backgroundColor->setColor(lcd->backgroundColor());
-	connect(mms->applyButton, SIGNAL(clicked()),
-			this, SLOT(applySettings()));
+	mms->setTitle(title());
+	mms->setShowUnit(showUnit());
+	mms->setLowerLimitActive(lowerLimitActive);
+	mms->setLowerLimit(lowerLimit);
+	mms->setUpperLimitActive(upperLimitActive);
+	mms->setUpperLimit(upperLimit);
+	mms->setNormalDigitColor(normalDigitColor);
+	mms->setAlarmDigitColor(alarmDigitColor);
+	mms->setMeterBackgroundColor(lcd->backgroundColor());
+
+	connect(mms, SIGNAL(applyClicked()), SLOT(applySettings()));
 
 	if (mms->exec())
 		applySettings();
@@ -223,16 +214,16 @@ MultiMeter::configureSettings()
 void
 MultiMeter::applySettings()
 {
-	setShowUnit( mms->showUnit->isChecked() );
-	setTitle(mms->title->text());
-	lowerLimitActive = mms->lowerLimitActive->isChecked();
-	lowerLimit = mms->lowerLimit->text().toDouble();
-	upperLimitActive = mms->upperLimitActive->isChecked();
-	upperLimit = mms->upperLimit->text().toDouble();
+	setShowUnit( mms->showUnit() );
+	setTitle(mms->title());
+	lowerLimitActive = mms->lowerLimitActive();
+	lowerLimit = mms->lowerLimit();
+	upperLimitActive = mms->upperLimitActive();
+	upperLimit = mms->upperLimit();
 
-	normalDigitColor = mms->normalDigitColor->color();
-	alarmDigitColor = mms->alarmDigitColor->color();
-	setBackgroundColor(mms->backgroundColor->color());
+	normalDigitColor = mms->normalDigitColor();
+	alarmDigitColor = mms->alarmDigitColor();
+	setBackgroundColor(mms->meterBackgroundColor());
 
 	repaint();
 	setModified(true);

@@ -1,35 +1,26 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
-<class>MultiMeterSettings</class>
-<author>Chris Schlaeger &lt;cs@kde.org&gt;</author>
-<widget class="QDialog">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>MultiMeterSettingsWidget</class>
+<comment>MultiMeterSettingsWidget</comment>
+<widget class="QWidget">
     <property name="name">
-        <cstring>MultiMeterSettings</cstring>
+        <cstring>MultiMeterSettingsWidget</cstring>
     </property>
     <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>368</width>
-            <height>311</height>
+            <width>378</width>
+            <height>228</height>
         </rect>
     </property>
     <property name="caption">
-        <string>Multimeter Settings</string>
+        <string>MultiMeterSettingsWidget</string>
     </property>
-    <property name="sizeGripEnabled">
-        <bool>true</bool>
-    </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <property name="margin">
-            <number>11</number>
-        </property>
-        <property name="spacing">
-            <number>6</number>
-        </property>
-        <widget class="QGroupBox" row="0" column="0">
+        <widget class="QGroupBox">
             <property name="name">
                 <cstring>GroupBox7</cstring>
             </property>
@@ -48,7 +39,7 @@
                 </property>
                 <widget class="QLineEdit" row="0" column="0">
                     <property name="name">
-                        <cstring>title</cstring>
+                        <cstring>m_title</cstring>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>Enter the title of the display here.</string>
@@ -56,7 +47,7 @@
                 </widget>
                 <widget class="QCheckBox" row="0" column="1">
                     <property name="name">
-                        <cstring>showUnit</cstring>
+                        <cstring>m_showUnit</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;Show unit</string>
@@ -67,61 +58,7 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QLayoutWidget" row="2" column="0">
-            <property name="name">
-                <cstring>Layout12</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>okButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;OK</string>
-                    </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>applyButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Apply</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>Spacer4</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>cancelButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Cancel</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QTabWidget" row="1" column="0">
+        <widget class="QTabWidget">
             <property name="name">
                 <cstring>TabWidget2</cstring>
             </property>
@@ -161,7 +98,7 @@
                             </property>
                             <widget class="QCheckBox" row="0" column="0">
                                 <property name="name">
-                                    <cstring>upperLimitActive</cstring>
+                                    <cstring>m_upperLimitActive</cstring>
                                 </property>
                                 <property name="text">
                                     <string>E&amp;nable alarm</string>
@@ -180,10 +117,19 @@
                                 <property name="sizeType">
                                     <enum>Expanding</enum>
                                 </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
                             </spacer>
                             <widget class="QLabel" row="0" column="2">
                                 <property name="name">
-                                    <cstring>TextLabel2_2</cstring>
+                                    <cstring>m_lblUpperLimit</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
                                 </property>
                                 <property name="text">
                                     <string>Upper limit:</string>
@@ -191,7 +137,7 @@
                             </widget>
                             <widget class="QLineEdit" row="0" column="3">
                                 <property name="name">
-                                    <cstring>upperLimit</cstring>
+                                    <cstring>m_upperLimit</cstring>
                                 </property>
                                 <property name="enabled">
                                     <bool>false</bool>
@@ -203,17 +149,6 @@
                                     </size>
                                 </property>
                             </widget>
-                            <spacer row="1" column="2">
-                                <property name="name">
-                                    <cstring>Spacer2</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                            </spacer>
                         </grid>
                     </widget>
                     <widget class="QGroupBox" row="0" column="0">
@@ -235,7 +170,7 @@
                             </property>
                             <widget class="QCheckBox" row="0" column="0">
                                 <property name="name">
-                                    <cstring>lowerLimitActive</cstring>
+                                    <cstring>m_lowerLimitActive</cstring>
                                 </property>
                                 <property name="text">
                                     <string>&amp;Enable alarm</string>
@@ -244,17 +179,6 @@
                                     <string>Enable the minimum value alarm.</string>
                                 </property>
                             </widget>
-                            <spacer row="1" column="2">
-                                <property name="name">
-                                    <cstring>Spacer1_3</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                            </spacer>
                             <spacer row="0" column="1">
                                 <property name="name">
                                     <cstring>Spacer1</cstring>
@@ -265,10 +189,19 @@
                                 <property name="sizeType">
                                     <enum>Expanding</enum>
                                 </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
                             </spacer>
                             <widget class="QLabel" row="0" column="2">
                                 <property name="name">
-                                    <cstring>TextLabel2</cstring>
+                                    <cstring>m_lblLowerLimit</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
                                 </property>
                                 <property name="text">
                                     <string>Lower limit:</string>
@@ -276,7 +209,7 @@
                             </widget>
                             <widget class="QLineEdit" row="0" column="3">
                                 <property name="name">
-                                    <cstring>lowerLimit</cstring>
+                                    <cstring>m_lowerLimit</cstring>
                                 </property>
                                 <property name="enabled">
                                     <bool>false</bool>
@@ -311,7 +244,7 @@
                     </property>
                     <widget class="ColorPicker" row="0" column="0">
                         <property name="name">
-                            <cstring>normalDigitColor</cstring>
+                            <cstring>m_normalDigitColor</cstring>
                         </property>
                         <property name="minimumSize">
                             <size>
@@ -332,7 +265,7 @@
                     </widget>
                     <widget class="ColorPicker" row="2" column="0">
                         <property name="name">
-                            <cstring>backgroundColor</cstring>
+                            <cstring>m_backgroundColor</cstring>
                         </property>
                         <property name="color" stdset="0">
                             <color>
@@ -347,7 +280,7 @@
                     </widget>
                     <widget class="ColorPicker" row="1" column="0">
                         <property name="name">
-                            <cstring>alarmDigitColor</cstring>
+                            <cstring>m_alarmDigitColor</cstring>
                         </property>
                         <property name="color" stdset="0">
                             <color>
@@ -363,12 +296,12 @@
                 </grid>
             </widget>
         </widget>
-    </grid>
+    </vbox>
 </widget>
 <customwidgets>
     <customwidget>
         <class>ColorPicker</class>
-        <header location="global">ksgrd/ColorPicker.h</header>
+        <header location="local">ksgrd/ColorPicker.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>
@@ -392,46 +325,63 @@
 </images>
 <connections>
     <connection>
-        <sender>okButton</sender>
-        <signal>clicked()</signal>
-        <receiver>MultiMeterSettings</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
-        <sender>cancelButton</sender>
-        <signal>clicked()</signal>
-        <receiver>MultiMeterSettings</receiver>
-        <slot>reject()</slot>
-    </connection>
-    <connection>
-        <sender>lowerLimitActive</sender>
+        <sender>m_lowerLimitActive</sender>
         <signal>toggled(bool)</signal>
-        <receiver>lowerLimit</receiver>
+        <receiver>m_lowerLimit</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
     <connection>
-        <sender>upperLimitActive</sender>
+        <sender>m_upperLimitActive</sender>
         <signal>toggled(bool)</signal>
-        <receiver>upperLimit</receiver>
+        <receiver>m_upperLimit</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>m_lowerLimitActive</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_lblLowerLimit</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>m_upperLimitActive</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_lblUpperLimit</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
 </connections>
-<tabstops>
-    <tabstop>title</tabstop>
-    <tabstop>showUnit</tabstop>
-    <tabstop>lowerLimitActive</tabstop>
-    <tabstop>lowerLimit</tabstop>
-    <tabstop>upperLimitActive</tabstop>
-    <tabstop>upperLimit</tabstop>
-    <tabstop>okButton</tabstop>
-    <tabstop>applyButton</tabstop>
-    <tabstop>cancelButton</tabstop>
-</tabstops>
 <includes>
-    <include location="global" impldecl="in declaration">klocale.h</include>
+    <include location="global" impldecl="in implementation">kdialog.h</include>
+    <include location="global" impldecl="in implementation">knumvalidator.h</include>
+    <include location="local" impldecl="in implementation">MultiMeterSettingsWidget.ui.h</include>
 </includes>
 <slots>
-    <slot>applyClicked()</slot>
+    <slot>setMeterBackgroundColor( const QColor &amp; c )</slot>
 </slots>
-<layoutdefaults spacing="6" margin="11"/>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function specifier="non virtual" returnType="QString">title()</function>
+    <function specifier="non virtual" returnType="bool">showUnit()</function>
+    <function returnType="bool">lowerLimitActive()</function>
+    <function specifier="non virtual" returnType="double">lowerLimit()</function>
+    <function returnType="bool">upperLimitActive()</function>
+    <function returnType="double">upperLimit()</function>
+    <function specifier="non virtual" returnType="QColor">normalDigitColor()</function>
+    <function specifier="non virtual" returnType="QColor">alarmDigitColor()</function>
+    <function returnType="QColor">meterBackgroundColor()</function>
+    <function specifier="non virtual">setTitle( const QString &amp; s )</function>
+    <function specifier="non virtual">setShowUnit( bool b )</function>
+    <function specifier="non virtual">setLowerLimitActive( bool b )</function>
+    <function specifier="non virtual">setLowerLimit( double d )</function>
+    <function specifier="non virtual">setUpperLimitActive( bool b )</function>
+    <function specifier="non virtual">setUpperLimit( double d )</function>
+    <function specifier="non virtual">setNormalDigitColor( const QColor &amp; c )</function>
+    <function specifier="non virtual">setAlarmDigitColor( const QColor &amp; c )</function>
+</functions>
+<layoutdefaults spacing="6" margin="0"/>
+<layoutfunctions spacing="KDialog::spacingHint"/>
+<includehints>
+    <includehint>colorpicker.h</includehint>
+    <includehint>colorpicker.h</includehint>
+    <includehint>colorpicker.h</includehint>
+</includehints>
 </UI>

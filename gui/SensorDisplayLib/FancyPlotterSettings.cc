@@ -55,7 +55,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
 
   // Style page
   page = addPage( i18n( "Style" ) );
-  pageLayout = new QGridLayout( page, 2, 2, marginHint(), spacingHint() );
+  pageLayout = new QGridLayout( page, 3, 2, 0, spacingHint() );
 
   label = new QLabel( i18n( "Title:" ), page );
   pageLayout->addWidget( label, 0, 0 );
@@ -76,7 +76,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
 
   // Scales page
   page = addPage( i18n( "Scales" ) );
-  pageLayout = new QGridLayout( page, 2, 1, marginHint(), spacingHint() );
+  pageLayout = new QGridLayout( page, 2, 1, 0, spacingHint() );
 
   groupBox = new QGroupBox( 0, Qt::Vertical, i18n( "Vertical Scale" ), page );
   boxLayout = new QGridLayout( groupBox->layout(), 2, 5, spacingHint() );
@@ -124,7 +124,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
 
   // Grid page
   page = addPage( i18n( "Grid" ) );
-  pageLayout = new QGridLayout( page, 2, 2, marginHint(), spacingHint() );
+  pageLayout = new QGridLayout( page, 3, 2, 0, spacingHint() );
 
   groupBox = new QGroupBox( 0, Qt::Vertical, i18n( "Lines" ), page );
   boxLayout = new QGridLayout( groupBox->layout(), 2, 5, spacingHint() );
@@ -161,10 +161,12 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   boxLayout->addWidget( mHorizontalLinesCount , 1, 3 );
   label->setBuddy( mHorizontalLinesCount );
 
+  boxLayout->setRowStretch( 2, 1 );
+
   pageLayout->addMultiCellWidget( groupBox, 0, 0, 0, 1 );
 
   groupBox = new QGroupBox( 0, Qt::Vertical, i18n( "Text" ), page );
-  boxLayout = new QGridLayout( groupBox->layout(), 2, 4, spacingHint() );
+  boxLayout = new QGridLayout( groupBox->layout(), 3, 4, spacingHint() );
   boxLayout->setColStretch( 1, 1 );
 
   mShowLabels = new QCheckBox( i18n( "Labels" ), groupBox );
@@ -184,10 +186,12 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   QWhatsThis::add( mShowTopBar, i18n( "Check this to active the display title bar. This is probably only useful for applet displays. The bar is only visible if the display is large enough." ) );
   boxLayout->addWidget( mShowTopBar, 1, 0 );
 
+  boxLayout->setRowStretch( 2, 1 );
+
   pageLayout->addWidget( groupBox, 1, 0 );
 
   groupBox = new QGroupBox( 0, Qt::Vertical, i18n( "Colors" ), page );
-  boxLayout = new QGridLayout( groupBox->layout(), 3, 2, spacingHint() );
+  boxLayout = new QGridLayout( groupBox->layout(), 4, 2, spacingHint() );
 
   label = new QLabel( i18n( "Vertical lines:" ), groupBox );
   boxLayout->addWidget( label, 0, 0 );
@@ -210,11 +214,15 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   boxLayout->addWidget( mBackgroundColor, 2, 1 );
   label->setBuddy( mBackgroundColor );
 
+  boxLayout->setRowStretch( 3, 1 );
+
   pageLayout->addWidget( groupBox, 1, 1 );
+
+  pageLayout->setRowStretch( 2, 1 );
 
   // Sensors page
   page = addPage( i18n( "Sensors" ) );
-  pageLayout = new QGridLayout( page, 6, 2, marginHint(), spacingHint() );
+  pageLayout = new QGridLayout( page, 6, 2, 0, spacingHint() );
   pageLayout->setRowStretch( 2, 1 );
   pageLayout->setRowStretch( 5, 1 );
 

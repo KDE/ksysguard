@@ -28,8 +28,6 @@
 
 #include <config.h>
 #include <qdom.h>
-#include <qlabel.h>
-#include <qlineedit.h>
 
 #include <kcolorbutton.h>
 #include <kdebug.h>
@@ -317,15 +315,15 @@ ListView::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 void
 ListView::configureSettings()
 {
-	lvs = new ListViewSettings(this, "ListViewSettings", true);
+	lvs = new ListViewSettings(this, "ListViewSettings");
 	Q_CHECK_PTR(lvs);
-	connect(lvs->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
+	connect(lvs, SIGNAL(applyClicked()), SLOT(applySettings()));
 
 	QColorGroup colorGroup = monitor->colorGroup();
-	lvs->gridColor->setColor(colorGroup.color(QColorGroup::Link));
-	lvs->textColor->setColor(colorGroup.color(QColorGroup::Text));
-	lvs->backgroundColor->setColor(colorGroup.color(QColorGroup::Base));
-	lvs->title->setText(title());
+	lvs->setGridColor(colorGroup.color(QColorGroup::Link));
+	lvs->setTextColor(colorGroup.color(QColorGroup::Text));
+	lvs->setBackgroundColor(colorGroup.color(QColorGroup::Base));
+	lvs->setTitle(title());
 
 	if (lvs->exec())
 		applySettings();
@@ -338,12 +336,12 @@ void
 ListView::applySettings()
 {
 	QColorGroup colorGroup = monitor->colorGroup();
-	colorGroup.setColor(QColorGroup::Link, lvs->gridColor->color());
-	colorGroup.setColor(QColorGroup::Text, lvs->textColor->color());
-	colorGroup.setColor(QColorGroup::Base, lvs->backgroundColor->color());
+	colorGroup.setColor(QColorGroup::Link, lvs->gridColor());
+	colorGroup.setColor(QColorGroup::Text, lvs->textColor());
+	colorGroup.setColor(QColorGroup::Base, lvs->backgroundColor());
 	monitor->setPalette(QPalette(colorGroup, colorGroup, colorGroup));
 
-	setTitle(lvs->title->text());
+	setTitle(lvs->title());
 
 	setModified(true);
 }

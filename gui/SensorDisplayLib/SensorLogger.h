@@ -81,13 +81,13 @@ public:
 	void setLowerLimit(double value) { lowerLimit = value; }
 
 	void setTimerInterval(int interval) {
-		if (timerID != NONE)
-			timerOff();
-
 		timerInterval = interval;
 
 		if (timerID != NONE)
+		{
+			timerOff();
 			timerOn();
+		}
 
 		lvi->setText(1, QString("%1").arg(interval));
 	}
@@ -113,6 +113,8 @@ public slots:
 	{
 		timerID = startTimer(timerInterval * 1000);
 	}
+
+	bool isLogging() { return timerID != NONE; }
 
 	void startLogging(void);
 	void stopLogging(void);
@@ -168,7 +170,6 @@ public:
 public slots:
 	void applySettings();
 	void applyStyle();
-	void fileSelect();
 	void RMBClicked(QListViewItem*, const QPoint&, int);
 
 protected:

@@ -41,12 +41,12 @@
 #include "DancingBarsSettings.h"
 
 DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
-  : KDialogBase( Tabbed, i18n( "Edit BarGraph Preferences" ), Ok | Apply | Cancel,
-                 Ok, parent, name, true, true )
+  : KDialogBase( Tabbed, i18n( "Edit BarGraph Preferences" ), 
+    Ok | Apply | Cancel, Ok, parent, name, true, true )
 {
   // Range page
   QFrame *page = addPage( i18n( "Range" ) );
-  QGridLayout *pageLayout = new QGridLayout( page, 2, 1, marginHint(), spacingHint() );
+  QGridLayout *pageLayout = new QGridLayout( page, 3, 1, 0, spacingHint() );
 
   QGroupBox *groupBox = new QGroupBox( 0, Qt::Vertical, i18n( "Title" ), page );
   QGridLayout *boxLayout = new QGridLayout( groupBox->layout(), 1, 1 );
@@ -79,9 +79,11 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
 
   pageLayout->addWidget( groupBox, 1, 0 );
 
+  pageLayout->setRowStretch( 2, 1 );
+
   // Alarm page
   page = addPage( i18n( "Alarms" ) );
-  pageLayout = new QGridLayout( page, 2, 1, marginHint(), spacingHint() );
+  pageLayout = new QGridLayout( page, 3, 1, 0, spacingHint() );
 
   groupBox = new QGroupBox( 0, Qt::Vertical, i18n( "Alarm for Minimum value" ), page );
   boxLayout = new QGridLayout( groupBox->layout(), 1, 4 );
@@ -119,9 +121,11 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
 
   pageLayout->addWidget( groupBox, 1, 0 );
 
+  pageLayout->setRowStretch( 2, 1 );
+
   // Look page
   page = addPage( i18n( "Look" ) );
-  pageLayout = new QGridLayout( page, 4, 2, marginHint(), spacingHint() );
+  pageLayout = new QGridLayout( page, 5, 2, 0, spacingHint() );
 
   label = new QLabel( i18n( "Normal bar color:" ), page );
   pageLayout->addWidget( label, 0, 0 );
@@ -152,9 +156,11 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   pageLayout->addWidget( mFontSize, 3, 1 );
   label->setBuddy( mFontSize );  
 
+  pageLayout->setRowStretch( 4, 1 );
+
   // Sensor page
   page = addPage( i18n( "Sensors" ) );
-  pageLayout = new QGridLayout( page, 3, 2, marginHint(), spacingHint() );
+  pageLayout = new QGridLayout( page, 3, 2, 0, spacingHint() );
   pageLayout->setRowStretch( 2, 1 );
 
   mSensorView = new KListView( page );
