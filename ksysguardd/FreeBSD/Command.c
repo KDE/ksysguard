@@ -70,7 +70,8 @@ print_error(const char *fmt, ...)
 	vsnprintf(errmsg, 1024, fmt, az);
 	va_end(az);
 
-	fprintf(CurrentClient, "\033%s\033", errmsg);
+	if (CurrentClient)
+		fprintf(CurrentClient, "\033%s\033", errmsg);
 }
 
 void
@@ -210,8 +211,10 @@ executeCommand(const char* command)
 		}
 	}
 
-	fprintf(CurrentClient, "UNKNOWN COMMAND\n");
-	fflush(CurrentClient);
+	if (CurrentClient) {
+		fprintf(CurrentClient, "UNKNOWN COMMAND\n");
+		fflush(CurrentClient);
+	}
 }
 
 void

@@ -37,7 +37,7 @@
 #include <sys/user.h>
 #include <unistd.h>
 
-
+#include "../../gui/SignalIDs.h"
 #include "Command.h"
 #include "ProcessList.h"
 #include "ccont.h"
@@ -235,14 +235,15 @@ updateProcess(int pid)
 			p.kp_eproc.e_vm.vm_dsize +
 			p.kp_eproc.e_vm.vm_ssize) * getpagesize();
 	ps->vmRss    = p.kp_eproc.e_vm.vm_rssize * getpagesize();
-	strncpy(ps->name,p.kp_proc.p_comm? p.kp_proc.p_comm:"????",sizeof(ps->name));
+	strncpy(ps->name,p.kp_proc.p_comm ? p.kp_proc.p_comm : "????", sizeof(ps->name));
 	strcpy(ps->status,(p.kp_proc.p_stat>=1)&&(p.kp_proc.p_stat<=5)? statuses[p.kp_proc.p_stat-1]:"????");
 #endif
 
         /* process command line */
-        /*strncpy(ps->cmdline,p.kp_proc.p_args->ar_args,sizeof(ps->cmdline));
-	ps->cmdline[sizeof(ps->cmdline)-1]='\0';*/
-	strcpy(ps->cmdline,"????");
+	/* the following line causes segfaults on some FreeBSD systems... why?
+		strncpy(ps->cmdline, p.kp_proc.p_args->ar_args, sizeof(ps->cmdline) - 1);
+	*/
+	strcpy(ps->cmdline, "????");
 
 	return (0);
 }
@@ -285,6 +286,12 @@ initProcessList(void)
 
 	registerMonitor("ps", "table", printProcessList, printProcessListInfo);
 	registerMonitor("pscount", "integer", printProcessCount, printProcessCountInfo);
+
+	if (!RunAsDaemon)
+	{
+		registerCommand("kill", killProcess);
+		registerCommand("setpriority", setPriority);
+	}
 
 	updateProcessList();
 }
@@ -330,9 +337,8 @@ updateProcessList(void)
 void
 printProcessListInfo(const char* cmd)
 {
-	fprintf(CurrentClient, "Name\tPID\tPPID\tStatus\tNice\tVmSize\tVmRss\tVmLib\tUser"
-		   "\tSystem\tUser\tCommand\n");
-	fprintf(CurrentClient, "s\td\td\ts\td\td\td\td\tf\tf\ts\ts\n");
+	fprintf(CurrentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize\tVmRss\tLogin\tCommand\n");
+	fprintf(CurrentClient, "s\td\td\td\td\tS\tf\tf\td\td\td\ts\ts\n");
 }
 
 void
@@ -340,14 +346,15 @@ printProcessList(const char* cmd)
 {
 	int i;
 
-	for (i = 0; i < level_ctnr(ProcessList); i++)
+	for (i = 1; i < level_ctnr(ProcessList); i++)
 	{
 		ProcessInfo* ps = get_ctnr(ProcessList, i);
 
-		fprintf(CurrentClient, "%s\t%d\t%d\t%s\t%d\t%d\t%d\t%d\t%3.2f%%\t%3.2f%%\t%s\t%s\n\n",
-			   ps->name, (int) ps->pid, (int) ps->ppid, ps->status,
-			   ps->niceLevel, ps->vmSize, ps->vmRss, ps->vmLib,
-			   ps->userLoad, ps->sysLoad, ps->userName, ps->cmdline);
+		fprintf(CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d\t%s\t%s\n",
+			   ps->name, (long)ps->pid, (long)ps->ppid,
+			   (long)ps->uid, (long)ps->gid, ps->status,
+			   ps->userLoad, ps->sysLoad, ps->niceLevel,
+			   ps->vmSize / 1024, ps->vmRss / 1024, ps->userName, ps->cmdline);
 	}
 }
 
@@ -361,4 +368,122 @@ void
 printProcessCountInfo(const char* cmd)
 {
 	fprintf(CurrentClient, "Number of Processes\t1\t65535\t\n");
+}
+
+void
+killProcess(const char* cmd)
+{
+	int sig, pid;
+
+	sscanf(cmd, "%*s %d %d", &pid, &sig);
+	switch(sig)
+	{
+	case MENU_ID_SIGABRT:
+		sig = SIGABRT;
+		break;
+	case MENU_ID_SIGALRM:
+		sig = SIGALRM;
+		break;
+	case MENU_ID_SIGCHLD:
+		sig = SIGCHLD;
+		break;
+	case MENU_ID_SIGCONT:
+		sig = SIGCONT;
+		break;
+	case MENU_ID_SIGFPE:
+		sig = SIGFPE;
+		break;
+	case MENU_ID_SIGHUP:
+		sig = SIGHUP;
+		break;
+	case MENU_ID_SIGILL:
+		sig = SIGILL;
+		break;
+	case MENU_ID_SIGINT:
+		sig = SIGINT;
+		break;
+	case MENU_ID_SIGKILL:
+		sig = SIGKILL;
+		break;
+	case MENU_ID_SIGPIPE:
+		sig = SIGPIPE;
+		break;
+	case MENU_ID_SIGQUIT:
+		sig = SIGQUIT;
+		break;
+	case MENU_ID_SIGSEGV:
+		sig = SIGSEGV;
+		break;
+	case MENU_ID_SIGSTOP:
+		sig = SIGSTOP;
+		break;
+	case MENU_ID_SIGTERM:
+		sig = SIGTERM;
+		break;
+	case MENU_ID_SIGTSTP:
+		sig = SIGTSTP;
+		break;
+	case MENU_ID_SIGTTIN:
+		sig = SIGTTIN;
+		break;
+	case MENU_ID_SIGTTOU:
+		sig = SIGTTOU;
+		break;
+	case MENU_ID_SIGUSR1:
+		sig = SIGUSR1;
+		break;
+	case MENU_ID_SIGUSR2:
+		sig = SIGUSR2;
+		break;
+	}
+	if (kill((pid_t) pid, sig))
+	{
+		switch(errno)
+		{
+		case EINVAL:
+			fprintf(CurrentClient, "4\t%d\n", pid);
+			break;
+		case ESRCH:
+			fprintf(CurrentClient, "3\t%d\n", pid);
+			break;
+		case EPERM:
+			fprintf(CurrentClient, "2\t%d\n", pid);
+			break;
+		default:
+			fprintf(CurrentClient, "1\t%d\n", pid);	/* unkown error */
+			break;
+		}
+
+	}
+	else
+		fprintf(CurrentClient, "0\t%d\n", pid);
+}
+
+void
+setPriority(const char* cmd)
+{
+	int pid, prio;
+
+	sscanf(cmd, "%*s %d %d", &pid, &prio);
+	if (setpriority(PRIO_PROCESS, pid, prio))
+	{
+		switch(errno)
+		{
+		case EINVAL:
+			fprintf(CurrentClient, "4\n");
+			break;
+		case ESRCH:
+			fprintf(CurrentClient, "3\n");
+			break;
+		case EPERM:
+		case EACCES:
+			fprintf(CurrentClient, "2\n");
+			break;
+		default:
+			fprintf(CurrentClient, "1\n");	/* unkown error */
+			break;
+		}
+	}
+	else
+		fprintf(CurrentClient, "0\n");
 }
