@@ -982,7 +982,8 @@ void TaskMan::pList_load()
 		if(ps->oabstime==ps->abstime)
 			ps->oabstime=ps->abstime-100000;
 		ps->otime=ps->time;
-		ps->time = p[num].kp_proc.p_rtime.tv_sec*100+p[num].kp_proc.p_rtime.tv_usec/10000;
+//		ps->time=p[num].kp_proc.p_rtime.tv_sec*100+p[num].kp_proc.p_rtime.tv_usec/10000;
+		ps->time=0;
 
 		// set other data
 		ps->vm_size = (p[num].kp_eproc.e_vm.vm_tsize +
