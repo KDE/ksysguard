@@ -30,16 +30,14 @@
 */
 
 #include <config.h>
+
+#include <sys/types.h>
+
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
-#if HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-#if HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
 
 #include <qheader.h>
 #include <qpixmap.h>

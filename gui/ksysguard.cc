@@ -53,7 +53,20 @@
 #include "Workspace.h"
 #include "HostConnector.h"
 #include "../version.h"
-#include "ksysguard.moc"
+
+#include "ksysguard.h"
+
+#undef RESTORE
+#define RESTORE(type)\
+{\
+  int n = 1;\
+  while (KMainWindow::canBeRestored(n)) {\
+      (new type)->restore(n);\
+      n++;\
+fprintf(stderr,"N IS %d\n", n); fflush(stderr);\
+  }\
+}
+
 
 static const char* Description = I18N_NOOP("KDE System Guard");
 TopLevel* Toplevel;
@@ -118,14 +131,18 @@ TopLevel::TopLevel(const char *name)
 	statusBarTog = KStdAction::showStatusbar(this, SLOT(showStatusBar()),
 											 actionCollection(),
 											 "showstatusbar");
+fprintf(stderr,"NOT WANTING TO, ATTEMPTING TO\n");fflush(stderr);
 	statusBarTog->setChecked(FALSE);
 	createGUI("ksysguard.rc");
+fprintf(stderr,"NOT WANTING TO, ATTEMPTING TO\n");fflush(stderr);
 
 	// Hide XML GUI generated toolbar.
-	enableToolBar(KToolBar::Hide);
+	//enableToolBar(KToolBar::Hide);
 
+fprintf(stderr,"NOT WANTING TO, ATTEMPTING TO\n");fflush(stderr);
 	// show the dialog box
 	show();
+fprintf(stderr,"NOT WANTING TO, ATTEMPTING TO\n");fflush(stderr);
 }
 
 TopLevel::~TopLevel()
@@ -421,35 +438,43 @@ main(int argc, char** argv)
 	KCmdLineArgs::addCmdLineOptions(options);
 	
 	// initialize KDE application
-	KApplication a;
+	KApplication *a = new KApplication;
 
 	SensorMgr = new SensorManager();
 	CHECK_PTR(SensorMgr);
 
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
+
 	// create top-level widget
-	if (a.isRestored())
+	if (a->isRestored()) {
+		fprintf(stderr,"RESTORING\n");
+fflush(stderr);
 		RESTORE(TopLevel)
-	else
+	} else
 	{
+fprintf(stderr,"WANTED TO ALLOCATED NEW TOPLEV\n");fflush(stderr);
 		Toplevel = new TopLevel("KSysGuard");
+fprintf(stderr,"ALLOCATED NEW TOPLEV\n");fflush(stderr);
 		if (args->isSet("showprocesses"))
 		{
 			Toplevel->beATaskManager();
 		}
 		else
-			Toplevel->readProperties(a.config());
+			Toplevel->readProperties(a->config());
 		Toplevel->show();
 	}
 	if (KMainWindow::memberList->first())
 	{
-		a.dcopClient()->registerAs("ksysguard", FALSE);
-		a.dcopClient()->setDefaultObject("KSysGuardIface");
+		a->dcopClient()->registerAs("ksysguard", FALSE);
+		a->dcopClient()->setDefaultObject("KSysGuardIface");
 	}
 
 	// run the application
-	int result = a.exec();
+	int result = a->exec();
 
 	return (result);
 }
+
+#include "ksysguard.moc"
+
