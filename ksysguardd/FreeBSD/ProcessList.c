@@ -210,7 +210,7 @@ updateProcess(int pid)
 #elif __FreeBSD_version >= 300000
         ps->userTime = p.kp_proc.p_runtime / 10000;
 #else
-	 ps->userTime = p.kp_proc.p_rtime.tv_sec*100+p.kp_proc.p_rtime.tv_usec/100;
+	ps->userTime = p.kp_proc.p_rtime.tv_sec*100+p.kp_proc.p_rtime.tv_usec/100;
 #endif
         ps->sysTime  = 0;
         ps->sysLoad  = 0;
@@ -328,7 +328,7 @@ updateProcessList(void)
 #else
 		updateProcess(p[num].kp_proc.p_pid);
 #endif
-
+	free(p);
 	cleanupProcessList();
 
 	return (0);

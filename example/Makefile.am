@@ -1,4 +1,4 @@
-datadir = $(kde_appsdir)/ksysguard
+datadir = $(kde_datadir)/ksysguard
 data_DATA = eventsrc
 
 etcdir = $(sysconfdir)

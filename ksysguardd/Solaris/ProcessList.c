@@ -311,6 +311,8 @@ void printProcessList( const char *cmd ) {
 			ps->Prio,
 			ps->CmdLine);
 	}
+
+	fprintf(CurrentClient, "\n");
 }
 
 void printProcessCount( const char *cmd ) {

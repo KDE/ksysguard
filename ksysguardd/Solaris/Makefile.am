@@ -1,8 +1,10 @@
 #
 #  $Id$
 #
-INCLUDES = -I$(srcdir)/../../CContLib
 CFLAGS = -Wall $(CONFIGFLAGS)
+KSYSGUARDDRCFILE=@sysconfdir@/ksysguarddrc
+
+INCLUDES = -DKSYSGUARDDRCFILE="\"$(KSYSGUARDDRCFILE)\"" -I$(srcdir)/../../CContLib
 
 bin_PROGRAMS = ksysguardd
 
