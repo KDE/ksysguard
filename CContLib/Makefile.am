@@ -10,4 +10,6 @@ libccont_a_SOURCES = ccont.c dll.c pga.c sll.c
 conttest_SOURCES = conttest.c
 conttest_LDADD = -L. -lccont
 
+conttest: libccont.a
+
 CLEANFILES = *~ 
