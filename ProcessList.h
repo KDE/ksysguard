@@ -31,11 +31,6 @@
 #ifndef _ProcessList_h_
 #define _ProcessList_h_
 
-#include <sys/time.h>
-#include <sys/resource.h>       
-#include <sys/types.h>
-#include <sys/stat.h>
-
 #include <qwidget.h>
 
 #include <ktablistbox.h>
@@ -47,7 +42,7 @@
 
 class KtopProcList : public KTabListBox
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
 	enum rateID
@@ -83,7 +78,7 @@ public:
 		return (sort_method);
 	}
 
-	int filterMode()
+	int getFilterMode()
 	{
 		return (filtermode);
 	}
@@ -93,9 +88,14 @@ public:
 		filtermode = m;
 	}
 
-	void setSortMethod(OSProcessList::SORTKEY m)
+	int getSortMethod()
 	{
-		sort_method = m;
+		return (sort_method);
+	}
+
+	void setSortMethod(int m)
+	{
+		sort_method = (OSProcessList::SORTKEY) m;
 	}
 
 	int selectionPid(void)

@@ -38,17 +38,17 @@
 #include "cpu.h"
 #include "memory.h"
 #include "settings.h"
-#include "ptree.h"
 #include "IconList.h"
 #include "ProcessList.h"
 #include "ProcessTree.h"
 #include "ProcListPage.h"
+#include "ProcTreePage.h"
 
 //#define ADD_SWAPMON
 
 class TaskMan : public QTabDialog
 {
-	Q_OBJECT;
+	Q_OBJECT
 
 public:
 	enum 
@@ -94,9 +94,9 @@ private:
 	virtual void resizeEvent(QResizeEvent*);
 
 	ProcListPage* procListPage;
-	QPushButton* pTree_bRefresh;
-	QPushButton* pTree_bRoot;
-	QPushButton* pTree_bKill; 
+
+	ProcTreePage* procTreePage;
+
     QWidget* pages[3];
 	QWidget* mem_cur;
 	QWidget* cpu_cur;
@@ -105,21 +105,16 @@ private:
 	QGroupBox* cpubox1;
 	QGroupBox* membox1;
 	
-	QComboBox* pTree_cbSort;
-	QGroupBox* pTree_box;
-	KtopProcTree* pTree;
 	QPopupMenu* pSig;
 	CpuMon* cpumon;
 	MemMon* memmon;
 	AppSettings* settings;
 
-	int pTree_sortby;
     int timer_interval;
 	int tid;
 	int startup_page;
 	int filtermode;
 	char cfgkey_startUpPage[12];
-	char cfgkey_pTreeSort[12];
 	bool restoreStartupPage;
 
 #ifdef ADD_SWAPMON
@@ -138,12 +133,10 @@ public slots:
 	{
 		pSig->popup(QCursor::pos());
 	}
-
-	void pTree_update();
-	void pTree_cbSortActivated(int);
-	void pTree_popupMenu(QPoint);
-	void pTree_killTask();
-	void pTree_changeRoot();
+	void popupMenu(QPoint)
+	{
+		pSig->popup(QCursor::pos());
+	}
 };
 
 class SetNice : public QDialog

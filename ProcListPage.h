@@ -35,21 +35,25 @@
 #include <qpushbutton.h>
 #include <qcombobox.h>
 
+#include <kapp.h>
+
 #include "ProcessList.h"
+
+extern KApplication* Kapp;
 
 class ProcListPage : public QWidget
 {
-	Q_OBJECT;
+	Q_OBJECT
 
 public:
 	ProcListPage(QWidget *parent = 0, const char *name = 0);
 	~ProcListPage()
 	{
-		delete pList_bKill;
-		delete pList_bRefresh;
-		delete pList_box;
-		delete pList_cbRefresh;
-		delete pList_cbFilter;
+		delete bKill;
+		delete bRefresh;
+		delete box;
+		delete cbRefresh;
+		delete cbFilter;
 		delete pList;
 	}
 
@@ -67,26 +71,43 @@ public:
 	void saveSettings(void);
 
 public slots:
-	void pList_update()
+	void update()
 	{
 		pList->update();
 	}
-	void pList_cbRefreshActivated (int);
-	void pList_cbProcessFilter(int);
-	void pList_popupMenu(int, int);
-	void pList_killTask();
+	void cbRefreshActivated (int);
+	void cbProcessFilter(int);
+	void popupMenu(int, int);
+	void killTask();
 
 private:
-	QPushButton* pList_bKill;
-	QPushButton* pList_bRefresh;
+	/**
+	 * This function gets an int value from the config file. The value is
+	 * specified with the tag string. If no value is found the 'val'
+	 * cal-by-ref parameter is not changed.
+	 */
+	bool loadSetting(int& val, const char* tag)
+	{
+		QString tmpStr = Kapp->getConfig()->readEntry(tag);
+		bool res;
+		int tmpInt = tmpStr.toInt(&res);
+		if (res)
+		{
+			val = tmpInt;
+			return (true);
+		}
+		return (false);
+	}
 
-    QGroupBox* pList_box;
-	QComboBox* pList_cbRefresh;
-	QComboBox* pList_cbFilter;
+	QPushButton* bKill;
+	QPushButton* bRefresh;
+
+    QGroupBox* box;
+	QComboBox* cbRefresh;
+	QComboBox* cbFilter;
     KtopProcList* pList;
 
-	int pList_sortby;
-	int pList_refreshRate;
+	int refreshRate;
 	char cfgkey_pListUpdate[12];
 	char cfgkey_pListFilter[12];
 	char cfgkey_pListSort[12];

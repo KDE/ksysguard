@@ -34,7 +34,7 @@
 //-----------------------------------------------------------------------------
 class MemMon : public QWidget
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:     
      MemMon (QWidget *parent = 0, const char *name = 0, QWidget *child = 0);
@@ -59,7 +59,7 @@ protected:
 //-----------------------------------------------------------------------------
 class SwapMon : public QWidget
 {
-  Q_OBJECT;
+  Q_OBJECT
 
 public:
 

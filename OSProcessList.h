@@ -32,6 +32,7 @@
 #endif
 
 #include <qlist.h>
+#include <qstring.h>
 
 #include "TimeStampList.h"
 
@@ -58,6 +59,10 @@ public:
 	const char* getStatusTxt(void) const
 	{
 		return (statusTxt);
+	}
+	const QString& getUserName(void) const
+	{
+		return (userName);
 	}
 	pid_t getPid(void) const
 	{
@@ -114,6 +119,7 @@ private:
 	char statusTxt[10];
 	pid_t pid;
 	pid_t ppid;
+	QString userName;
 	uid_t uid;
 	gid_t gid;
 	unsigned int vm_size;
@@ -139,9 +145,11 @@ class OSProcessList : public QList<OSProcess>
 public:
  	enum SORTKEY
 	{
-		SORTBY_PID = 0, 
+		SORTBY_PID = 0,
+		SORTBY_PPID,
 		SORTBY_NAME, 
-		SORTBY_UID, 
+		SORTBY_UID,
+		SORTBY_USERNAME,
 		SORTBY_CPU,
 		SORTBY_TIME,
 		SORTBY_STATUS,

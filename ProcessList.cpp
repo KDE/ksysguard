@@ -30,7 +30,6 @@
 
 #include <ctype.h>
 #include <string.h>
-#include <pwd.h>
 #include <signal.h>
 #include <kapp.h>
 #include <klocale.h>
@@ -48,6 +47,7 @@ typedef struct
 	char* placeholder;
 	bool visible;
 	KTabListBox::ColumnType type;
+	OSProcessList::SORTKEY sortMethod;
 } TABCOLUMN;
 
 /*
@@ -64,16 +64,26 @@ typedef struct
  */
 static TABCOLUMN TabCol[] =
 {
-	{ "",       "++++",           true, KTabListBox::MixedColumn },
-	{ "procID", "procID++",       true, KTabListBox::TextColumn },
-	{ "Name",   "kfontmanager++", true, KTabListBox::TextColumn },
-	{ "userID", "rootuseroot",    true, KTabListBox::TextColumn },
-	{ "CPU",    "100.00%+",       true, KTabListBox::TextColumn },
-	{ "Time",   "100:00++",       true, KTabListBox::TextColumn },
-	{ "Status", "Status+++",      true, KTabListBox::TextColumn },
-	{ "VmSize", "VmSize++",       true, KTabListBox::TextColumn },
-	{ "VmRss",  "VmSize++",       true, KTabListBox::TextColumn },
-	{ "VmLib",  "VmSize++",       true, KTabListBox::TextColumn }
+	{ "",       "++++",           true, KTabListBox::MixedColumn,
+	  OSProcessList::SORTBY_NAME },
+	{ "procID", "procID++",       true, KTabListBox::TextColumn,
+	  OSProcessList::SORTBY_PID },
+	{ "Name",   "kfontmanager++", true, KTabListBox::TextColumn,
+	  OSProcessList::SORTBY_NAME},
+	{ "userID", "rootuseroot",    true, KTabListBox::TextColumn,
+	  OSProcessList::SORTBY_UID },
+	{ "CPU",    "100.00%+",       true, KTabListBox::TextColumn,
+	  OSProcessList::SORTBY_CPU },
+	{ "Time",   "100:00++",       true, KTabListBox::TextColumn,
+	  OSProcessList::SORTBY_TIME },
+	{ "Status", "Status+++",      true, KTabListBox::TextColumn,
+	  OSProcessList::SORTBY_STATUS },
+	{ "VmSize", "VmSize++",       true, KTabListBox::TextColumn,
+	  OSProcessList::SORTBY_VMSIZE },
+	{ "VmRss",  "VmSize++",       true, KTabListBox::TextColumn,
+	  OSProcessList::SORTBY_VMRSS },
+	{ "VmLib",  "VmSize++",       true, KTabListBox::TextColumn,
+	  OSProcessList::SORTBY_VMLIB }
 };
 
 static const MaxCols = sizeof(TabCol) / sizeof(TABCOLUMN);
@@ -267,10 +277,6 @@ KtopProcList::load()
 		}
 		if (!ignore)
 		{
-			// find out user name with the process uid
-			struct passwd* pwent = getpwuid(p->getUid());
-			QString usrName = pwent ? pwent->pw_name : "????";
-
 			/*
 			 * Get icon from icon list might be appropriate for a process
 			 * with this name.
@@ -301,7 +307,7 @@ KtopProcList::load()
 
 			// user name
 			if (TabCol[3].visible)
-				line += usrName + QString(";");
+				line += p->getUserName() + QString(";");
 
 			// CPU load
 			if (TabCol[4].visible)
@@ -340,29 +346,10 @@ KtopProcList::load()
 }
 
 void 
-KtopProcList::userClickOnHeader(int indxCol)
+KtopProcList::userClickOnHeader(int colIndex)
 {
-	if (indxCol)
-	{
-		switch (indxCol - 1)
-		{
-		case OSProcessList::SORTBY_PID: 
-		case OSProcessList::SORTBY_NAME: 
-		case OSProcessList::SORTBY_UID: 
-		case OSProcessList::SORTBY_CPU: 
-		case OSProcessList::SORTBY_TIME:
-		case OSProcessList::SORTBY_STATUS:
-		case OSProcessList::SORTBY_VMSIZE:
-		case OSProcessList::SORTBY_VMRSS:
-		case OSProcessList::SORTBY_VMLIB:
-			setSortMethod((OSProcessList::SORTKEY) (indxCol - 1));
-			break;
-		default: 
-			return;
-			break;
-		}
-		update();
-	}
+	setSortMethod(TabCol[colIndex].sortMethod);
+	update();
 }
 
 void 

@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <dirent.h>
+#include <pwd.h>
 
 #include "OSProcessList.h"
 #include "TimeStampList.h"
@@ -52,10 +53,10 @@ OSProcess::loadInfo(const char* pidStr)
 {
 	char buffer[1024], temp[128];
 	FILE* fd;
-	int u1, u2, u3, u4;
 
-	sprintf(buffer, "/proc/%s/status", pidStr);
-	if((fd = fopen(buffer, "r")) == 0)
+	QString buf;
+	buf.sprintf("/proc/%s/status", pidStr);
+	if((fd = fopen(buf, "r")) == 0)
 		return (false);
 
 	fscanf(fd, "%s %s", buffer, name);
@@ -86,10 +87,8 @@ OSProcess::loadInfo(const char* pidStr)
 	}
 	fscanf(fd, "%s %d", buffer, &pid);
 	fscanf(fd, "%s %d", buffer, &ppid);
-	fscanf(fd, "%s %d %d %d %d", buffer, &u1, &u2, &u3, &u4);
-	uid = u1;
-	fscanf(fd, "%s %d %d %d %d", buffer, &u1, &u2, &u3, &u4);
-	gid = u1;
+	fscanf(fd, "%*s %d %*d %*d %*d", (int*) &uid);
+	fscanf(fd, "%*s %d %*d %*d %*d", (int*) &gid);
 	fscanf(fd, "%s %d %*s\n", buffer, &vm_size);
 	if (strcmp(buffer, "VmSize:"))
 		vm_size = 0;
@@ -145,6 +144,10 @@ OSProcess::loadInfo(const char* pidStr)
 	else
 		sysLoad = userLoad = 0.0;
 
+	// find out user name with the process uid
+	struct passwd* pwent = getpwuid(uid);
+	userName = pwent ? pwent->pw_name : "????";
+
 	return (true);
 }
 
@@ -196,20 +199,26 @@ OSProcessList::compareItems(GCI it1, GCI it2)
 	switch (sortCriteria)
 	{
 	case SORTBY_PID:
-		return cmp(item1->getPid(), item2->getPid());
+		return (cmp(item1->getPid(), item2->getPid()));
+
+	case SORTBY_PPID:
+		return (cmp(item1->getPpid(), item2->getPpid()));
 
 	case SORTBY_UID:
-		return cmp(item1->getUid(), item2->getUid());
+		return (cmp(item1->getUid(), item2->getUid()));
+
+	case SORTBY_USERNAME:
+		return (strcmp(item1->getUserName(), item2->getUserName()));
 
 	case SORTBY_NAME:
-		return strcmp(item1->getName(), item2->getName());
+		return (strcmp(item1->getName(), item2->getName()));
 
 	case SORTBY_TIME:
 		return (cmp(item1->getUserTime() + item1->getSysTime(),
 					item2->getUserTime() + item2->getSysTime()) * -1);
 
 	case SORTBY_STATUS:
-		return cmp(item1->getStatus(), item2->getStatus());
+		return (cmp(item1->getStatus(), item2->getStatus()));
 
 	case SORTBY_VMSIZE:
 		return (cmp(item1->getVm_size(), item2->getVm_size()) * -1);

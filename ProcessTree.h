@@ -1,12 +1,6 @@
 /*
     KTop, a taskmanager and cpu load monitor
    
-    Copyright (C) 1997 Bernd Johannes Wuebben
-                       wuebben@math.cornell.edu
-
-    Copyright (C) 1998 Nicolas Leclercq
-                       nicknet@planete.net
-
 	Copyright (c) 1999 Chris Schlaeger
 	                   cs@axys.de
     
@@ -26,54 +20,66 @@
 
 */
 
-#include "ptree.h"
-#include "IconList.h"
+// $Id$
 
 #ifndef _ProcessTree_h_
 #define _ProcessTree_h_
 
-class KtopProcTree : public ProcTree
+#include <qlist.h>
+
+#include <ktreelist.h>
+
+#include "IconList.h"
+#include "OSProcessList.h"
+
+class KtopProcTree : public KTreeList
 {
-    Q_OBJECT;
+	Q_OBJECT
 
-public  :
-     enum sortID { SORTBY_PID=0, 
-                   SORTBY_NAME , 
-                   SORTBY_UID     
-          	 };
+public:
+	KtopProcTree(QWidget *parent = 0, const char *name = 0, WFlags f = 0);
+    ~KtopProcTree()
+	{
+		delete icons;
+	}
 
-     KtopProcTree(QWidget *parent=0, const char *name=0, WFlags f= 0);
-    ~KtopProcTree();
+	void update();
 
-     void update             ( );
-     int  sortMethod         ( );
-     void setSortMethod      ( int );
-     int  selectionPid       ( );
-     void changeRoot         ( );
+	void setSortMethod(OSProcessList::SORTKEY m)
+	{
+		sortKey = m;
+	}
+
+	int selectedProcess(void);
+
+	void setRootProcess(void);
 
 signals:
-    void popupMenu(QPoint);
+	void popupMenu(QPoint);
 
-private :
-	void           sort                ( );
-	void           readProcDir         ( );
-	void           reorder             ( ProcTree* );
-    static  ProcTreeItem*  parentItem          ( ProcTreeItem* , int ); 
-    static  ProcTreeItem*  sortByName          ( ProcTreeItem* );
-    static  ProcTreeItem*  sortByPid           ( ProcTreeItem* , bool reverse=FALSE );
-    static  ProcTreeItem*  sortByUid           ( ProcTreeItem* );
-            void           try2restoreSelection( ); 
-            ProcTreeItem*  restoreSelection    ( ProcTreeItem* item ); 
+protected:
+	virtual void mouseReleaseEvent (QMouseEvent* e)
+	{
+		if ((currentItem() >= 0) && (e->button() == RightButton))
+			emit popupMenu(e->pos());
+	}
 
-    KtopIconList *icons;
-    bool          updating,
-                  mouseRightButton;
-    int           lastSelectionPid,
-                  sort_method;
+private:
+	void loadProcesses(void);
+	void buildTree(int parentIdx, int ppid, OSProcessList* pl, int& cntr);
 
-private slots:
-    void procHighlighted(int);
-    void mouseEvent(QMouseEvent*);
+	KtopIconList* icons;
+	OSProcessList::SORTKEY sortKey;
+
+	/**
+	 * This list stores the PIDs of the items in the tree widget. The index
+	 * in the KTreeList widget and the position in the list correspond. I
+	 * think this double book-keeping is cleaner than reverse-engineering the
+	 * pid from the item text.
+	 */
+	QList<int> pids;
+
+	int rootProcess;
 };
 
 #endif

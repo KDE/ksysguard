@@ -28,8 +28,15 @@
 
 // $Id$
 
+#include <config.h>
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
+#include <sys/resource.h>       
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <string.h>
 #include <signal.h>
 
@@ -60,14 +67,6 @@
 #define NONE         -1
 
 //#define DEBUG_MODE    // uncomment to activate "printf lines"
-
-static const char *sortmethodsTree[] =
-{
-	"Sort by ID",
-	"Sort by Name",
-	"Sort by Owner (UID)",
-	0
-};
 
 static const char *sig[] = 
 {
@@ -118,42 +117,14 @@ TaskMan::TaskMan(QWidget *parent, const char *name, int sfolder)
     /*
      * set up page 0 (process list viewer)
      */
-
-    procListPage = new ProcListPage(this, "ProcListPage");
+    pages[0] = procListPage = new ProcListPage(this, "ProcListPage");
     CHECK_PTR(procListPage);
-
-    /*----------------------------------------------
-     set up page 1 (process tree)
-     ----------------------------------------------*/
-    pages[1] = new QWidget(this, "page1"); 
-    CHECK_PTR(pages[1]);
-    pTree_box = new QGroupBox(pages[1],"pTree_box"); 
-    CHECK_PTR(pTree_box); 
-    pTree = new KtopProcTree(pages[1],"pTree"); 
-    CHECK_PTR(pTree); 
-    pTree->setExpandLevel(20); 
-    pTree->setSmoothScrolling(TRUE);
-    connect(pTree,SIGNAL(popupMenu(QPoint)),SLOT(pTree_popupMenu(QPoint)));
-
-    // now, three buttons which should appear on the sheet (just below the tree box)
-    pTree_bRefresh = new QPushButton(i18n("Refresh Now"), pages[1], "pTree_bRefresh");
-    CHECK_PTR(pTree_bRefresh);
-    connect(pTree_bRefresh, SIGNAL(clicked()), this, SLOT(pTree_update()));
-    pTree_bRoot = new QPushButton(i18n("Change Root"), pages[1],"pTree_bRoot");
-    CHECK_PTR(pTree_bRoot);
-    connect(pTree_bRoot,SIGNAL(clicked()), this,SLOT(pTree_changeRoot()));
-    pTree_bKill = new QPushButton(i18n("Kill task"), pages[1], "pTree_bKill");
-    CHECK_PTR(pTree_bKill);
-    connect(pTree_bKill,SIGNAL(clicked()), this, SLOT(pTree_killTask()));
-    pTree_box->setTitle(i18n("Running processes"));
-
-    pTree_cbSort = new QComboBox(pages[1],"pTree_cbSort");
-    CHECK_PTR(pTree_cbSort);
-    for ( int i=0 ; sortmethodsTree[i] ; i++ ) {
-        pTree_cbSort->insertItem( klocale->translate(sortmethodsTree[i])
-                                               ,i+(KtopProcTree::SORTBY_PID));
-    } 
-    connect(pTree_cbSort,SIGNAL(activated(int)),SLOT(pTree_cbSortActivated(int)));
+	
+	/*
+	 * set up page 1 (process tree)
+	 */
+    pages[1] = procTreePage = new ProcTreePage(this, "ProcTreePage"); 
+    CHECK_PTR(procTreePage);
     
     /*----------------------------------------------
      set up page 2 (This is the performance monitor)
@@ -201,7 +172,6 @@ TaskMan::TaskMan(QWidget *parent, const char *name, int sfolder)
      settings
      ----------------------------------------------*/
     strcpy(cfgkey_startUpPage, "startUpPage");
-    strcpy(cfgkey_pTreeSort, "pTreeSort");
 
     // startup_page settings...
 	startup_page = PAGE_PLIST;
@@ -225,25 +195,11 @@ TaskMan::TaskMan(QWidget *parent, const char *name, int sfolder)
 #endif
 	}
 
-    // restore sort method for pTree...
-    pTree_sortby=KtopProcTree::SORTBY_NAME;
-    tmp = Kapp->getConfig()->readEntry(QString(cfgkey_pTreeSort));
-    if( ! tmp.isNull() ) {
-        bool res = FALSE;
-        pTree_sortby = tmp.toInt(&res);
-        if (!res) pTree_sortby=KtopProcTree::SORTBY_NAME;
-    }
-    pTree->setSortMethod(pTree_sortby);
-    pTree_cbSort->setCurrentItem(pTree_sortby);
-
     installEventFilter(this);
-
-    
-    pTree->update(); /* create process tree */
 
     // add pages...
     addTab(procListPage, "Processes &List");
-    addTab(pages[1], "Processes &Tree");
+    addTab(procTreePage, "Processes &Tree");
     addTab(pages[2], "&Performance");
     move(0,0);
 #ifdef DEBUG_MODE
@@ -281,22 +237,14 @@ void TaskMan::raiseStartUpPage()
 void 
 TaskMan::resizeEvent(QResizeEvent *ev)
 {
-    QTabDialog::resizeEvent(ev);
+	QTabDialog::resizeEvent(ev);
 
-    if( ! procListPage || !pages[1] || !pages[2] )
-          return;
+	if(!procListPage || !procTreePage || !pages[2])
+		return;
 
     int w = pages[2]->width();
     int h = pages[2]->height();
    
-    // processes tree
-	pTree_box->setGeometry(5, 5, w - 10, h - 20);
-   	pTree->setGeometry(10, 30, w - 20, h - 90);
-	pTree_cbSort->setGeometry(10, h - 50,140, 25);
-	pTree_bRefresh->setGeometry(w - 270, h - 50, 80, 25);
-	pTree_bRoot->setGeometry(w - 180, h - 50, 80, 25);
-	pTree_bKill->setGeometry(w - 90, h - 50, 80, 25);
-
     // performances page
 
     #ifdef ADD_SWAPMON
@@ -365,7 +313,7 @@ TaskMan::pSigHandler( int id )
       if ( selection == NONE ) return;
       break;
      case PAGE_PTREE:
-      selection = pTree->selectionPid();
+      selection = procTreePage->selectionPid();
       if ( selection == NONE ) return;
       break;
      default:
@@ -398,7 +346,7 @@ TaskMan::pSigHandler( int id )
 		"Renice error...\nSpecified process does not exists\nor permission denied.",
 		"Ok", 0); 
 	  	procListPage->update();
-		pTree->update();
+		procTreePage->update();
 		return;
 	}
 
@@ -421,7 +369,7 @@ TaskMan::pSigHandler( int id )
       if ( err != -1 ) procListPage->update();
       break;
      case PAGE_PTREE:
-      if ( err != -1 ) pTree->update();
+      if ( err != -1 ) procTreePage->update();
       break;
      default:
       return;
@@ -447,7 +395,7 @@ TaskMan::tabBarSelected (int tabIndx)
 		break;
 	case PAGE_PTREE :
 		procListPage->setAutoUpdateMode(FALSE);
-		pTree->update();
+		procTreePage->update();
 		break;
 	case PAGE_PERF  :
 		procListPage->setAutoUpdateMode(FALSE);
@@ -499,93 +447,9 @@ TaskMan::saveSettings()
 
 	procListPage->saveSettings();
 
-	/* save sort criterium (process tree) */
-	Kapp->getConfig()->writeEntry(QString(cfgkey_pTreeSort),
-					   t.setNum(pTree_sortby), TRUE);
+	procTreePage->saveSettings();
 
 	Kapp->getConfig()->sync();
-}
-
-void 
-TaskMan::pTree_update( void )
-{
-  pTree->update();
-}
-
-void 
-TaskMan::pTree_cbSortActivated(int indx)
-{ 
- #ifdef DEBUG_MODE
-    printf("KTop debug : TaskMan::pTree_cbSortActivated : item=%d.\n",indx);
- #endif
- 
- pTree_sortby = indx;
- pTree->setSortMethod(indx);
- pTree->update();
-}
-
-void 
-TaskMan::pTree_changeRoot()
-{  
-  pTree->changeRoot();
-}
-
-void 
-TaskMan::pTree_popupMenu(QPoint p)
-{ 
-  #ifdef DEBUG_MODE
-    printf("KTop debug : TaskMan::pTree_popupMenu.\n");
-  #endif
-
-  pSig->popup(p);
-} 
-
-void 
-TaskMan::pTree_killTask()
-{
- int cur = pTree->currentItem();
- if ( cur == NONE ) return;
-
- ProcTreeItem *item = pTree->itemAt(cur);
- if ( ! item ) return;
- 
- ProcInfo pInfo = item->getProcInfo();
- 
- #ifdef DEBUG_MODE
-   printf("KTop debug : TaskMan::pTree_killTask : selection pid=%d\n",pInfo.pid); 
-   printf("KTop debug : TaskMan::pTree_killTask : selection pname = %s\n",pInfo.name);
-   printf("KTop debug : TaskMan::pTree_killTask : selection uname = %s\n",pInfo.uname);
- #endif
-
- if ( pTree->selectionPid() != pInfo.pid ) {
-      QMessageBox::warning(this,"ktop",
-                                "Selection changed !\n\n",
-                                "Abort",0);
-      return;
- }
-
- int  err;
- char msg[256];
- sprintf(msg,"Kill process %d (%s - %s) ?\n",pInfo.pid,pInfo.name,pInfo.uname);
-
- switch( QMessageBox::warning(this,"ktop",
-                                    msg,
-                                   "Continue", "Abort",
-                                    0, 1 )
-       )
-    { 
-      case 0: // continue
-          err = kill(pTree->selectionPid(),SIGKILL);
-          if ( err ) {
-              QMessageBox::warning(this,"ktop",
-              "Kill error !\nThe following error occured...\n",
-              strerror(errno),0);   
-          }
-          pTree->update();
-          break;
-      case 1: // abort
-          break;
-    }
 }
 
 SetNice::SetNice( QWidget *parent, const char *name , int currentPPrio )
