@@ -12,9 +12,6 @@
             <height>202</height>
         </rect>
     </property>
-    <property name="caption">
-        <string>SensorLoggerSettingsWidget</string>
-    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
