@@ -47,6 +47,7 @@
 #include "loadavg.h"
 #include "logfile.h"
 #include "apm.h"
+#include <version.h>
 
 #define CMDBUFSIZE	128
 #define MAX_CLIENTS	100
@@ -117,7 +118,7 @@ printWelcome(FILE* out)
 			"(c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org> and\n"
 			"(c) 2001 Tobias Koenig <tokoe82@yahoo.de>\n"
 			"This program is part of the KDE Project and licensed under\n"
-			"the GNU GPL version 2. See www.kde.org for details!\n", VERSION);
+			"the GNU GPL version 2. See www.kde.org for details!\n", KSYSGUARD_VERSION);
 	fflush(out);
 }
 
