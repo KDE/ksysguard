@@ -27,6 +27,8 @@
 
 // $Id$
 
+#include <assert.h>
+
 #include <qmenubar.h>
 #include <qmessagebox.h>
 #include <kconfig.h>
@@ -52,6 +54,7 @@ KApplication* Kapp;
 TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	: QWidget(parent, name)
 {
+	assert(Kapp);
 	setCaption(i18n("KDE Task Manager"));
 	setMinimumSize(KTOP_MIN_W, KTOP_MIN_H);
 
@@ -168,6 +171,10 @@ usage(char *name)
 int
 main(int argc, char** argv)
 {
+	// initialize KDE application
+	Kapp = new KApplication(argc, argv, "ktop");
+	Kapp->enableSessionManagement(true);
+
 	/*
 	 * This OSStatus object will be used on platforms that require KTop to
 	 * use certain privileges to do it's job.
@@ -215,10 +222,6 @@ main(int argc, char** argv)
 			}
 		}
     }
-
-	// initialize KDE application
-	Kapp = new KApplication(argc, argv, "ktop");
-	Kapp->enableSessionManagement(true);
 
 	if (!priv.ok())
 	{
