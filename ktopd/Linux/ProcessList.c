@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,10 +25,13 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <sys/resource.h>
 #include <sys/user.h>
 #include <unistd.h>
 #include <pwd.h>
 #include <dirent.h>
+#include <signal.h>
+#include <errno.h>
 
 #include "ccont.h"
 #include "Command.h"
@@ -315,6 +317,9 @@ initProcessList(void)
 	registerMonitor("pscount", "integer", printProcessCount,
 					printProcessCountInfo);
 	registerMonitor("ps", "table", printProcessList, printProcessListInfo);
+
+	registerCommand("kill", killProcess);
+	registerCommand("setpriority", setPriority);
 }
 
 void
@@ -393,4 +398,61 @@ void
 printProcessCountInfo(const char* cmd)
 {
 	printf("Number of Processes\t1\t65535\t\n");
+}
+
+void
+killProcess(const char* cmd)
+{
+	int sig, pid;
+
+	sscanf(cmd, "%*s %d %d", &pid, &sig);
+	if (kill((pid_t) pid, sig))
+	{
+		switch(errno)
+		{
+		case EINVAL:
+			printf("4\n");
+			break;
+		case ESRCH:
+			printf("3\n");
+			break;
+		case EPERM:
+			printf("2\n");
+			break;
+		default:
+			printf("1\n");	/* unkown error */
+			break;
+		}
+	}
+	else
+		printf("0\n");
+}
+
+void
+setPriority(const char* cmd)
+{
+	int pid, prio;
+
+	sscanf(cmd, "%*s %d %d", &pid, &prio);
+	if (setpriority(PRIO_PROCESS, pid, prio))
+	{
+		switch(errno)
+		{
+		case EINVAL:
+			printf("4\n");
+			break;
+		case ESRCH:
+			printf("3\n");
+			break;
+		case EPERM:
+		case EACCES:
+			printf("2\n");
+			break;
+		default:
+			printf("1\n");	/* unkown error */
+			break;
+		}
+	}
+	else
+		printf("0\n");
 }
