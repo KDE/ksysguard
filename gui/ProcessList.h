@@ -34,7 +34,6 @@
 
 #include <kiconloader.h>
 
-#include "ProcessMenu.h"
 #include "SensorClient.h"
 
 typedef const char* (*KeyFunc)(const char*);
@@ -132,12 +131,11 @@ public:
 		return (sortFunc);
 	}
 
+	bool load(QDomElement& el);
+	bool save(QDomDocument& doc, QDomElement& display);
+
 public slots:
-	void setTreeView(bool tv)
-	{
-		if (treeViewEnabled = tv)
-			openAll = TRUE;
-	}
+	void setTreeView(bool tv);
 
 	/**
 	 * This slot allows the filter mode to be set by other
@@ -152,9 +150,24 @@ public slots:
 
 	void sortingChanged(int col);
 
+	void handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col);
+
+	void sizeChanged(int, int, int)
+	{
+		modified = true;
+	}
+
+	void indexChanged(int, int, int)
+	{
+		modified = true;
+	}
+
 signals:
 	// This signal is emitted whenever a new process has been selected.
 	void processSelected(int);
+
+	// This signal is emitted when process pid should receive signal sig.
+	void killProcess(int pid, int sig);
 
 private:
 	// items of table header RMB popup menu
@@ -217,22 +230,7 @@ private:
 	 */
 	void addProcess(SensorPSLine* p, ProcessLVI* pli);
 
-	/**
-	 * Since some columns of our process table might be invisible the
-	 * columns of the QListView and the data structure do not
-	 * match. We have to map the visible columns to the table columns
-	 * (V2T).
-	 */
-	int mapV2T(int vcol);
-
-	/**
-	 * This function maps a table columns index to a visible columns
-	 * index.
-	 */
-	int mapT2V(int tcol);
-
 private slots:
-	void handleRMBPopup(int item);
 	void selectionChangedSlot(QListViewItem* lvi)
 	{
 		if (lvi)
@@ -243,6 +241,9 @@ private slots:
 	}
 
 private:
+	void selectAll(bool select);
+	void selectAllChilds(int pid, bool select);
+
 	bool modified;
 	int filterMode;
 	int sortColumn;
@@ -251,6 +252,12 @@ private:
 	int currColumn;
 	bool treeViewEnabled;
 	bool openAll;
+
+	/* The following lists are primarily used to store table specs between
+	 * load() and the actual table creation in addColumn(). */
+	QValueList<int> savedWidth;
+	QValueList<int> currentWidth;
+	QValueList<int> index;
 
 	QList<SensorPSLine> pl;
 
@@ -263,7 +270,7 @@ private:
 	QValueList<int> closedSubTrees;
 
     KIconLoader* icons;
-	ProcessMenu* processMenu;
+	QPopupMenu* processPM;
 	QPopupMenu* headerPM;
 };
 

@@ -44,13 +44,17 @@
 #include <qpixmap.h>
 #include <qbitmap.h>
 #include <qpaintdevice.h>
+#include <qpopupmenu.h>
+#include <qdom.h>
 
 #include <kapp.h>
 #include <klocale.h>
 #include <kconfig.h>
 #include <kstddirs.h>
 #include <kdebug.h>
+#include <kmessagebox.h>
 
+#include "SignalIDs.h"
 #include "ProcessController.h"
 #include "SensorManager.h"
 #include "ProcessList.moc"
@@ -157,6 +161,12 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	connect(horizontalScrollBar(), SIGNAL(sliderReleased(void)),
 			parent, SLOT(timerOn()));
 
+	/* We need to catch this signal to show various popup menues. */
+	connect(this,
+			SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)),
+			this,
+			SLOT(handleRMBPressed(QListViewItem*, const QPoint&, int)));
+
 	/* Since Qt does not tell us the sorting details we have to do our
 	 * own bookkeping, so we can save and restore the sorting
 	 * settings. */
@@ -183,18 +193,16 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	setSorting(sortColumn, increasing);
 	setSelectionMode(Multi);
 
-	// Create RMB popup to modify process attributes
-	processMenu = new ProcessMenu();
-	connect(this, SIGNAL(processSelected(int)),
-			processMenu, SLOT(processSelected(int)));
-
 	// Create popup menu for RMB clicks on table header
 	headerPM = new QPopupMenu();
-	connect(headerPM, SIGNAL(activated(int)),
-			this, SLOT(handleRMBPopup(int)));
 	headerPM->insertItem(i18n("Remove Column"), HEADER_REMOVE);
 	headerPM->insertItem(i18n("Add Column"), HEADER_ADD);
 	headerPM->insertItem(i18n("Help on Column"), HEADER_HELP);
+
+	connect(header(), SIGNAL(sizeChange(int, int, int)),
+			this, SLOT(sizeChanged(int, int, int)));
+	connect(header(), SIGNAL(indexChange(int, int, int)),
+			this, SLOT(indexChanged(int, int, int)));
 
 	modified = false;
 }
@@ -204,7 +212,6 @@ ProcessList::~ProcessList()
 	// remove icon list from memory
 	delete icons;
 
-	delete(processMenu);
 	delete(headerPM);
 }
 
@@ -231,34 +238,84 @@ ProcessList::update(const QString& list)
 			pl.append(line);
 	}
 
+	int currItemPos = itemRect(currentItem()).y();
 	int vpos = verticalScrollBar()->value();
 	int hpos = horizontalScrollBar()->value();
-
+	
 	updateMetaInfo();
 
 	clear();
-#if 0
-	/* This piece of code tries to work around the QListView
-	 * auto-shrink bug. The column width is always reset to the size
-	 * required for the header. If any column entry needs more space
-	 * QListView will resize the column again. Unfortunately this
-	 * causes heavy flickering! */
-	QFontMetrics fm = fontMetrics();
-	int col = 0;
-	for (int i = 0; i < MaxCols; i++)
-		if (TabCol[i].visible && TabCol[i].supported)
-			setColumnWidth(col++, fm.width(TabCol[i].trHeader) + 10);
-#endif
 
 	if (treeViewEnabled)
 		buildTree();
 	else
 		buildList();
 
+	setCurrentItem(itemAt(QPoint(1, currItemPos)));
 	verticalScrollBar()->setValue(vpos);
 	horizontalScrollBar()->setValue(hpos);
 
 	return (TRUE);
+}
+
+void
+ProcessList::setTreeView(bool tv)
+{
+	if (treeViewEnabled = tv)
+	{
+		savedWidth[0] = columnWidth(0);
+		openAll = TRUE;
+	}
+	else
+	{
+		/* In tree view the first column is wider than in list view mode.
+		 * So we shrink it to 1 pixel. The next update will resize it again
+		 * appropriately. */
+		setColumnWidth(0, savedWidth[0]);
+	}
+}
+
+bool
+ProcessList::load(QDomElement& el)
+{
+	QDomNodeList dnList = el.elementsByTagName("column");
+	for (uint i = 0; i < dnList.count(); ++i)
+	{
+		QDomElement lel = dnList.item(i).toElement();
+		if (savedWidth.count() <= i)
+			savedWidth.append(lel.attribute("savedWidth").toInt());
+		else
+			savedWidth[i] = lel.attribute("savedWidth").toInt();
+		if (currentWidth.count() <= i)
+			currentWidth.append(lel.attribute("currentWidth").toInt());
+		else
+			currentWidth[i] = lel.attribute("currentWidth").toInt();
+		if (index.count() <= i)
+			index.append(lel.attribute("index").toInt());
+		else
+			index[i] = lel.attribute("index").toInt();
+	}
+
+	modified = false;
+
+	return (true);
+}
+
+bool
+ProcessList::save(QDomDocument& doc, QDomElement& display)
+{
+	for (int i = 0; i < columns(); ++i)
+	{
+		QDomElement col = doc.createElement("column");
+		display.appendChild(col);
+		col.setAttribute("currentWidth", columnWidth(i));
+		col.setAttribute("savedWidth", savedWidth[i]);
+		col.setAttribute("index", header()->mapToIndex(i));
+	}
+
+	modified = false;
+
+	return (true);
 }
 
 void
@@ -498,10 +555,10 @@ ProcessList::removeColumns(void)
 }
 
 void
-ProcessList::addColumn(const QString& header, const QString& type)
+ProcessList::addColumn(const QString& label, const QString& type)
 {
 	uint col = sortFunc.count();
-	QListView::addColumn(header);
+	QListView::addColumn(label);
 	if (type == "s" || type == "S")
 	{
 		setColumnAlignment(col, AlignLeft);
@@ -524,107 +581,191 @@ ProcessList::addColumn(const QString& header, const QString& type)
 	}
 	else
 	{
-		kdDebug() << "Unknown type " << type << " of column " << header
+		kdDebug() << "Unknown type " << type << " of column " << label
 				  << " in ProcessList!" << endl;
 		return;
 	}
 
 	columnTypes.append(type);
-	setSorting(sortColumn, increasing);
-}
 
-int 
-ProcessList::mapV2T(int vcol)
-{
-#if 0
-	int tcol;
-	int i = 0;
-	for (tcol = 0; !TabCol[tcol].visible || (i < vcol); tcol++)
-		if (TabCol[tcol].visible)
-			i++;
-	return (tcol);
-#endif
-	return vcol;
-}
+	/* Just use some sensible default values as initial setting. */
+	QFontMetrics fm = fontMetrics();
+	setColumnWidth(col, fm.width(label) + 10);
 
-int
-ProcessList::mapT2V(int tcol)
-{
-#if 0
-	int vcol = 0;
-	for (int i = 0; i < tcol; i++)
-		if (TabCol[i].visible)
-			vcol++;
-
-	return (vcol);
-#endif
-	return (tcol);
+	if (currentWidth.count() - 1 == col)
+	{
+		/* Table has been loaded from file. We can restore the settings
+		 * when the last column has been added. */
+		for (uint i = 0; i < col; ++i)
+		{
+			/* In case the language has been changed the column width
+			 * might need to be increased. */
+			if (currentWidth[i] == 0)
+			{
+				if (fm.width(header()->label(i)) + 10 > savedWidth[i])
+					savedWidth[i] = fm.width(header()->label(i)) + 10;
+				setColumnWidth(i, 0);
+			}
+			else
+			{
+				if (fm.width(header()->label(i)) + 10 > currentWidth[i])
+					setColumnWidth(i, fm.width(header()->label(i)) + 10);
+				else
+					setColumnWidth(i, currentWidth[i]);
+			}
+			setColumnWidthMode(i, currentWidth[i] == 0 ?
+							   QListView::Manual : QListView::Maximum);
+			header()->moveSection(i, index[i]);
+		}
+		setSorting(sortColumn, increasing);
+	}
 }
 
 void
-ProcessList::handleRMBPopup(int item)
+ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 {
-	switch (item)
-	{
-	case HEADER_REMOVE:
-		/* The icon, name and PID columns cannot be removed, so
-		 * currColumn must be greater than 2. */
-		if (currColumn > 2)
-		{
-			setColumnWidthMode(currColumn, Manual);
-			setColumnWidth(currColumn, 0);
-//			header()->setCellSize(currColumn, 0);
-//			update();
-		}
-		break;
-	case HEADER_ADD:
-		break;
-	case HEADER_HELP:
-		break;
-	}
-}
+	if (!lvi)
+		return;
 
-#if 0
-void 
-ProcessList::viewportMousePressEvent(QMouseEvent* e)
-{
-	/* I haven't found a better way to catch RMB clicks on the header
-	 * than this hacking of the mousePressEvent function. RMB clicks
-	 * are dealt with, all other events are passed through to the base
-	 * class implementation. */
-	if (e->button() == RightButton)
+	/* Qt (un)selectes LVIs on RMB clicks. Since we don't want this, we have
+	 * to invert it again. */
+	lvi->setSelected(!lvi->isSelected());
+
+	/* lvi is only valid until the next time we hit the main event
+	 * loop. So we need to save the information we need after calling
+	 * processPM->exec(). */
+	int currentPId = lvi->text(1).toInt();
+
+	processPM = new QPopupMenu();
+	processPM->insertItem(i18n("Hide column"), 5);
+	QPopupMenu* hiddenPM = new QPopupMenu(processPM);
+	for (int i = 0; i < columns(); ++i)
+		if (columnWidth(i) == 0)
+			hiddenPM->insertItem(header()->label(i), i + 100);
+	processPM->insertItem(i18n("Show column"), hiddenPM);
+
+	processPM->insertSeparator();
+	
+	processPM->insertItem(i18n("Select all processes"), 1);
+	processPM->insertItem(i18n("Unselect all processes"), 2);
+
+	QPopupMenu* signalPM = new QPopupMenu(processPM);
+	if (lvi->isSelected())
 	{
-		/* As long as QListView does not support removing or hiding of
-		 * columns I will probably not implement this feature. I hope
-		 * the Trolls will do this with the next Qt release! */
-		if (e->pos().y() <= 0)
+		processPM->insertSeparator();
+		processPM->insertItem(i18n("Select all child processes"), 3);
+		processPM->insertItem(i18n("Unselect all child processes"), 4);
+
+		signalPM->insertItem(i18n("SIGABRT"), MENU_ID_SIGABRT);
+		signalPM->insertItem(i18n("SIGALRM"), MENU_ID_SIGALRM);
+		signalPM->insertItem(i18n("SIGCHLD"), MENU_ID_SIGCHLD);
+		signalPM->insertItem(i18n("SIGCONT"), MENU_ID_SIGCONT);
+		signalPM->insertItem(i18n("SIGFPE"), MENU_ID_SIGFPE);
+		signalPM->insertItem(i18n("SIGHUP"), MENU_ID_SIGHUP);
+		signalPM->insertItem(i18n("SIGILL"), MENU_ID_SIGILL);
+		signalPM->insertItem(i18n("SIGINT"), MENU_ID_SIGINT);
+		signalPM->insertItem(i18n("SIGKILL"), MENU_ID_SIGKILL);
+		signalPM->insertItem(i18n("SIGPIPE"), MENU_ID_SIGPIPE);
+		signalPM->insertItem(i18n("SIGQUIT"), MENU_ID_SIGQUIT);
+		signalPM->insertItem(i18n("SIGSEGV"), MENU_ID_SIGSEGV);
+		signalPM->insertItem(i18n("SIGSTOP"), MENU_ID_SIGSTOP);
+		signalPM->insertItem(i18n("SIGTERM"), MENU_ID_SIGTERM);
+		signalPM->insertItem(i18n("SIGTSTP"), MENU_ID_SIGTSTP);
+		signalPM->insertItem(i18n("SIGTTIN"), MENU_ID_SIGTTIN);
+		signalPM->insertItem(i18n("SIGTTOU"), MENU_ID_SIGTTOU);
+		signalPM->insertItem(i18n("SIGUSR1"), MENU_ID_SIGUSR1);
+		signalPM->insertItem(i18n("SIGUSR2"), MENU_ID_SIGUSR2);
+
+		processPM->insertSeparator();
+		processPM->insertItem(i18n("Send Signal"), signalPM);
+	}
+
+	int id;
+	switch (id = processPM->exec(p))
+	{
+	case -1:
+		break;
+	case 1:
+	case 2:
+		selectAll(id & 1);
+		break;
+	case 3:
+	case 4:
+		selectAllChilds(currentPId, id & 1);
+		break;
+	case 5:
+		setColumnWidthMode(col, QListView::Manual);
+		savedWidth[col] = columnWidth(col);
+		setColumnWidth(col, 0);
+		break;
+	default:
+		if (id < 100)
 		{
-			/*
-			 * e->pos().y() <= 0 means header.
-			 */
-			currColumn = header()->cellAt(e->pos().x());
-			headerPM->popup(QCursor::pos());
+			/* IDs < 100 are used for signals. */
+			QString msg = i18n("Do you really want to send signal %1\n"
+							   "to the %2 selected process(es)?")
+				.arg(signalPM->text(id)).arg(selectedPIds.count());
+			int answ;
+			switch(answ = KMessageBox::questionYesNo(this, msg))
+			{
+			case KMessageBox::Yes:
+			{
+				QValueList<int>::Iterator it;
+				for (it = selectedPIds.begin(); it != selectedPIds.end(); ++it)
+					emit (killProcess(*it, id));
+				break;
+			}
+			default:
+				break;
+			}
 		}
 		else
 		{
-			/* The RMB was pressed over a process in the list. This
-			 * process gets selected and a context menu pops up. The
-			 * context menu is provided by the TaskMan class. A signal
-			 * is emmited to notifiy the TaskMan object. */
-			ProcessLVI* lvi = (ProcessLVI*) itemAt(e->pos());
-			setSelected(lvi, TRUE);
-			/* I tried e->pos() instead of QCursor::pos() but then the
-			 * menu appears centered above the cursor which is
-			 * annoying. */
-			processMenu->popup(QCursor::pos());
+			/* IDs >= 100 are used for hidden columns. */
+			int col = id - 100;
+			setColumnWidthMode(col, QListView::Maximum);
+			setColumnWidth(col, savedWidth[col]);
 		}
 	}
-	else if (e->button() == LeftButton)
-#if 0
-	{
-	}
-	else
-#endif
-		QListView::mousePressEvent(e);
+	delete processPM;
 }
-#endif
+
+void
+ProcessList::selectAll(bool select)
+{
+	selectedPIds.clear();
+
+    QListViewItemIterator it(this);
+
+	// iterate through all items of the listview
+	for ( ; it.current(); ++it )
+	{
+		it.current()->setSelected(select);
+		repaintItem(it.current());
+		if (select)
+			selectedPIds.append(it.current()->text(1).toInt());
+    }
+}
+
+void
+ProcessList::selectAllChilds(int pid, bool select)
+{
+    QListViewItemIterator it(this);
+
+	// iterate through all items of the listview
+	for ( ; it.current(); ++it )
+	{
+		// Check if PPID matches the pid (current is a child of pid)
+		if (it.current()->text(2).toInt() == pid)
+		{
+			int currPId = it.current()->text(1).toInt();
+			it.current()->setSelected(select);
+			repaintItem(it.current());
+			if (select)
+				selectedPIds.append(currPId);
+			else
+				selectedPIds.remove(currPId);
+			selectAllChilds(currPId, select);
+		}
+    }
+}

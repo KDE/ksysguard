@@ -36,6 +36,7 @@
 #include "Command.h"
 #include "ProcessList.h"
 #include "PWUIDCache.h"
+#include "../../gui/SignalIDs.h"
 
 #ifndef PAGE_SIZE /* Needed for SPARC */
 #include <asm/page.h>
@@ -473,6 +474,66 @@ killProcess(const char* cmd)
 	int sig, pid;
 
 	sscanf(cmd, "%*s %d %d", &pid, &sig);
+	switch(sig)
+	{
+	case MENU_ID_SIGABRT:
+		sig = SIGABRT;
+		break;
+	case MENU_ID_SIGALRM:
+		sig = SIGALRM;
+		break;
+	case MENU_ID_SIGCHLD:
+		sig = SIGCHLD;
+		break;
+	case MENU_ID_SIGCONT:
+		sig = SIGCONT;
+		break;
+	case MENU_ID_SIGFPE:
+		sig = SIGFPE;
+		break;
+	case MENU_ID_SIGHUP:
+		sig = SIGHUP;
+		break;
+	case MENU_ID_SIGILL:
+		sig = SIGILL;
+		break;
+	case MENU_ID_SIGINT:
+		sig = SIGINT;
+		break;
+	case MENU_ID_SIGKILL:
+		sig = SIGKILL;
+		break;
+	case MENU_ID_SIGPIPE:
+		sig = SIGPIPE;
+		break;
+	case MENU_ID_SIGQUIT:
+		sig = SIGQUIT;
+		break;
+	case MENU_ID_SIGSEGV:
+		sig = SIGSEGV;
+		break;
+	case MENU_ID_SIGSTOP:
+		sig = SIGSTOP;
+		break;
+	case MENU_ID_SIGTERM:
+		sig = SIGTERM;
+		break;
+	case MENU_ID_SIGTSTP:
+		sig = SIGTSTP;
+		break;
+	case MENU_ID_SIGTTIN:
+		sig = SIGTTIN;
+		break;
+	case MENU_ID_SIGTTOU:
+		sig = SIGTTOU;
+		break;
+	case MENU_ID_SIGUSR1:
+		sig = SIGUSR1;
+		break;
+	case MENU_ID_SIGUSR2:
+		sig = SIGUSR2;
+		break;
+	}
 	if (kill((pid_t) pid, sig))
 	{
 		switch(errno)

@@ -31,6 +31,7 @@
 #include <kmessagebox.h>
 #include <kdebug.h>
 
+#include "SignalIDs.h"
 #include "ksysguard.h"
 #include "SensorManager.h"
 #include "ProcessController.moc"
@@ -64,6 +65,8 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	// Create the table that lists the processes.
 	pList = new ProcessList(this, "pList");    
 	CHECK_PTR(pList);
+	connect(pList, SIGNAL(killProcess(int, int)),
+			this, SLOT(killProcess(int, int)));
 
 	/* All RMB clicks to the plist widget will be handled by 
 	 * SensorDisplay::eventFilter. */
@@ -136,7 +139,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 
 	setMinimumSize(sizeHint());
 
-	modified = FALSE;
+	modified = false;
 }
 
 void
@@ -160,7 +163,7 @@ ProcessController::addSensor(const QString& hostName,
 	else
 		box->setTitle(title);
 
-	return (TRUE);
+	return (true);
 }
 
 void
@@ -170,7 +173,14 @@ ProcessController::updateList()
 }
 
 void
-ProcessController::killProcess(void)
+ProcessController::killProcess(int pid, int sig)
+{
+	sendRequest(*hostNames.at(0), QString("kill %1 %2" ).arg(pid).arg(sig), 3);
+	updateList();
+}
+
+void
+ProcessController::killProcess()
 {
 	const QValueList<int>& selectedPIds = pList->getSelectedPIds();
 
@@ -194,7 +204,9 @@ ProcessController::killProcess(void)
 	// send kill signal to all seleted processes
 	QValueListConstIterator<int> it;
 	for (it = selectedPIds.begin(); it != selectedPIds.end(); ++it)
-		sendRequest(*hostNames.at(0), QString("kill %1 9" ).arg(*it), 3);
+		sendRequest(*hostNames.at(0), QString("kill %1 %2" ).arg(*it)
+					.arg(MENU_ID_SIGKILL), 3);
+	updateList();
 }
 
 void
@@ -279,15 +291,19 @@ ProcessController::load(QDomElement& el)
 
 	uint col = el.attribute("sortColumn").toUInt();
 	bool inc = el.attribute("incrOrder").toUInt();
+
+	if (!pList->load(el))
+		return (false);
+
 	pList->setSortColumn(col, inc);
 
-	modified = FALSE;
+	modified = false;
 
 	return (result);
 }
 
 bool
-ProcessController::save(QDomDocument&, QDomElement& display)
+ProcessController::save(QDomDocument& doc, QDomElement& display)
 {
 	display.setAttribute("hostName", *hostNames.at(0));
 	display.setAttribute("sensorName", *sensorNames.at(0));
@@ -297,7 +313,10 @@ ProcessController::save(QDomDocument&, QDomElement& display)
 	display.setAttribute("sortColumn", pList->getSortColumn());
 	display.setAttribute("incrOrder", pList->getIncreasing());
 
-	modified = FALSE;
+	if (!pList->save(doc, display))
+		return (false);
 
-	return (TRUE);
+	modified = false;
+
+	return (true);
 }

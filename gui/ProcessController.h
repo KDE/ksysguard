@@ -112,6 +112,7 @@ public slots:
 	}
 
 	void killProcess();
+	void killProcess(int pid, int sig);
 
 	void updateList();
 
