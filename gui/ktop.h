@@ -40,6 +40,8 @@
 extern KApplication* Kapp;
 
 class SensorAgent;
+class SensorBrowser;
+class Workspace;
 
 class TopLevel : public KTMainWindow, public SensorClient
 {

@@ -1,5 +1,5 @@
 # just set the variable
-appsdir = $(kde_appsdir)/System
+appsdir = $(kde_appsdir)/Programs/System
 
 # claim, which subdirectories you want to install
 SUBDIRS = CContLib ktopd gui pics
