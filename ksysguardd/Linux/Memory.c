@@ -32,7 +32,7 @@
 
 #define MEMINFOBUFSIZE 1024
 static char MemInfoBuf[MEMINFOBUFSIZE];
-static int Dirty = 0;
+static int Dirty = 1;
 
 static unsigned long Total = 0;
 static unsigned long MFree = 0;
@@ -73,13 +73,10 @@ processMemInfo()
 void
 initMemory(void)
 {
-	FILE* meminfo;
-
 	/* Make sure that /proc/meminfo exists and is readable. If not we do
 	 * not register any monitors for memory. */
-	if ((meminfo = fopen("/proc/meminfo", "r")) == NULL)
+	if (updateMemory() < 0)
 		return;
-	fclose(meminfo);
 
 	registerMonitor("mem/physical/free", "integer", printMFree,
 					printMFreeInfo);

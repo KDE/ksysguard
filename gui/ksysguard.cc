@@ -274,7 +274,7 @@ void
 TopLevel::initStatusBar()
 {
 	SensorMgr->engage("localhost", "", "ksysguardd");
-	/* Request info about the swapspace size and the units it is
+	/* Request info about the swap space size and the units it is
 	 * measured in.  The requested info will be received by
 	 * answerReceived(). */
 	SensorMgr->sendRequest("localhost", "mem/swap/used?",
