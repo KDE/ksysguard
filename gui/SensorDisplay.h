@@ -28,6 +28,7 @@
 #include <qwidget.h>
 #include <qvaluelist.h>
 #include <qgroupbox.h>
+#include <knotifyclient.h>
 
 #include "SensorClient.h"
 #include "SensorDisplay.h"

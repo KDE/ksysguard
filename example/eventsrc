@@ -1,0 +1,16 @@
+[!Global!]
+IconName=ksysguard
+Comment=KDE System Guard
+Comment[de]=KDE-Systemwächter
+
+[pattern_match]
+Name=pattern_match
+Name[de]=pattern_match
+Comment=search pattern matched
+Comment[de]=Suchmuster trifft zu
+
+[sensor_alarm]
+Name=sensor_alarm
+Name[de]=sensor_alarm
+Comment=sensor exceted critical limit
+Comment[de]=Sensor hat kritischen Wert überschritten

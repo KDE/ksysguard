@@ -329,6 +329,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 			pm.insertItem(i18n("&Signal Plotter"), 1);
 			pm.insertItem(i18n("&Multimeter"), 2);
 			pm.insertItem(i18n("&BarGraph"), 3);
+			pm.insertItem(i18n("S&ensorLogger"), 4);
 			switch (pm.exec(QCursor::pos()))
 			{
 			case 1:
@@ -340,6 +341,9 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 				break;
 			case 3:
 				newDisplay = new DancingBars(this, "DancingBars", sensorDescr);
+				break;
+			case 4:
+				newDisplay = new SensorLogger(this, "SensorLogger", sensorDescr);
 				break;
 			default:
 				return (0);

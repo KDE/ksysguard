@@ -13,8 +13,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>211</width>
-            <height>177</height>
+            <width>294</width>
+            <height>305</height>
         </rect>
     </property>
     <property stdset="1">
@@ -25,7 +25,7 @@
         <name>sizeGripEnabled</name>
         <bool>true</bool>
     </property>
-    <grid>
+    <vbox>
         <property stdset="1">
             <name>margin</name>
             <number>11</number>
@@ -34,7 +34,7 @@
             <name>spacing</name>
             <number>6</number>
         </property>
-        <widget row="0"  column="0" >
+        <widget>
             <class>QGroupBox</class>
             <property stdset="1">
                 <name>name</name>
@@ -89,15 +89,15 @@
                                 <cstring>fileButton</cstring>
                             </property>
                             <property stdset="1">
-                                <name>text</name>
-                                <string></string>
-                            </property>
-                            <property stdset="1">
                                 <name>maximumSize</name>
                                 <size>
                                     <width>30</width>
                                     <height>30</height>
                                 </size>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string></string>
                             </property>
                             <property stdset="1">
                                 <name>pixmap</name>
@@ -108,7 +108,7 @@
                 </widget>
             </grid>
         </widget>
-        <widget row="1"  column="0" >
+        <widget>
             <class>QGroupBox</class>
             <property stdset="1">
                 <name>name</name>
@@ -134,12 +134,12 @@
                         <cstring>timer</cstring>
                     </property>
                     <property stdset="1">
-                        <name>minValue</name>
-                        <number>2</number>
-                    </property>
-                    <property stdset="1">
                         <name>specialValueText</name>
                         <string></string>
+                    </property>
+                    <property stdset="1">
+                        <name>minValue</name>
+                        <number>2</number>
                     </property>
                     <property stdset="1">
                         <name>value</name>
@@ -148,25 +148,65 @@
                 </widget>
             </hbox>
         </widget>
-        <widget row="2"  column="0" >
-            <class>QLayoutWidget</class>
+        <widget>
+            <class>QGroupBox</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout2</cstring>
+                <cstring>GroupBox1</cstring>
             </property>
-            <hbox>
+            <property stdset="1">
+                <name>title</name>
+                <string>Alarm for minimum value</string>
+            </property>
+            <grid>
                 <property stdset="1">
                     <name>margin</name>
-                    <number>0</number>
+                    <number>11</number>
                 </property>
                 <property stdset="1">
                     <name>spacing</name>
                     <number>6</number>
                 </property>
-                <spacer>
+                <widget row="0"  column="0" >
+                    <class>QCheckBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>lowerLimitActive</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>&amp;Enable Alarm</string>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enable the minimum value alarm.</string>
+                    </property>
+                </widget>
+                <spacer row="1"  column="2" >
                     <property>
                         <name>name</name>
-                        <cstring>spacer1</cstring>
+                        <cstring>Spacer1_3</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <spacer row="0"  column="1" >
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer1</cstring>
                     </property>
                     <property stdset="1">
                         <name>orientation</name>
@@ -183,6 +223,85 @@
                             <height>20</height>
                         </size>
                     </property>
+                </spacer>
+                <widget row="0"  column="2" >
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Lower Limit</string>
+                    </property>
+                </widget>
+                <widget row="0"  column="3" >
+                    <class>QLineEdit</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>lowerLimit</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>enabled</name>
+                        <bool>false</bool>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>70</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget>
+            <class>QGroupBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>GroupBox1_2</cstring>
+            </property>
+            <property stdset="1">
+                <name>title</name>
+                <string>Alarm for maximum value</string>
+            </property>
+            <grid>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>11</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget row="0"  column="0" >
+                    <class>QCheckBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>upperLimitActive</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>E&amp;nable Alarm</string>
+                    </property>
+                    <property>
+                        <name>whatsThis</name>
+                        <string>Enable the maximum value alarm.</string>
+                    </property>
+                </widget>
+                <spacer row="0"  column="1" >
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer1_2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
                     <property>
                         <name>sizeHint</name>
                         <size>
@@ -191,6 +310,73 @@
                         </size>
                     </property>
                 </spacer>
+                <widget row="0"  column="2" >
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel2_2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Upper Limit</string>
+                    </property>
+                </widget>
+                <widget row="0"  column="3" >
+                    <class>QLineEdit</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>upperLimit</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>enabled</name>
+                        <bool>false</bool>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>70</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </widget>
+                <spacer row="1"  column="2" >
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </grid>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout12</cstring>
+            </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
                 <widget>
                     <class>QPushButton</class>
                     <property stdset="1">
@@ -206,10 +392,21 @@
                         <bool>true</bool>
                     </property>
                 </widget>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>applyButton</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>&amp;Apply</string>
+                    </property>
+                </widget>
                 <spacer>
                     <property>
                         <name>name</name>
-                        <cstring>spacer2</cstring>
+                        <cstring>Spacer4</cstring>
                     </property>
                     <property stdset="1">
                         <name>orientation</name>
@@ -218,13 +415,6 @@
                     <property stdset="1">
                         <name>sizeType</name>
                         <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
                     </property>
                     <property>
                         <name>sizeHint</name>
@@ -245,45 +435,29 @@
                         <string>&amp;Cancel</string>
                     </property>
                 </widget>
-                <spacer>
-                    <property>
-                        <name>name</name>
-                        <cstring>spacer3</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
             </hbox>
         </widget>
-    </grid>
+    </vbox>
 </widget>
 <images>
     <image>
         <name>image0</name>
-        <data format="XPM.GZ" length="3532">789c6dd55b73ea460c00e0f7fc0ae6e8ed4c47071bdbe0e9f48190e4e442eef774fa206c130897700fa4d3ff5e59d2ba9bb6d998e4435aedb2f62e3fbed79eaece6bdf7fec2d57b41a66b56c408bdaf77c3d99ec7effe3b73ff7be85618d7f8338ad85df7ed9fb8654cb6a17efd342b0f1f1ee63e463e623f1917ba02fa5d73e563e863e963e9a3eea3e263e8e7cecfbd8f9f8f431f071e863eee3c347e663ebe3d9c7d4c7c2c7ab8f731f6f3e5efc45fcd2a7e7a3efe1facb8a828fb68fc2c7980175f991a1a6e2563d52e353e9a01ed4eb2d89ef9c03cddf9a23353e8a5b2e1f1f9c2dbf6fb67c383373134b3cac072d1b6f5f1d46a1d63f10a7654571c79c597d33e7a76230b7cc6d73a6867231a01154fd3fd52e4e4be74620f90fea4664cec5693963994fd7ecd6e3deece6fbb3b27ede9d9aebe9786fe696d6c78bd25150e567620a3333a91b363e944f07c461e5b6b3ae1f3c9a238b83b3c52fd4713d22f19b732c4705c46272a672734012c679acf9a7ea2448343e1153922612a7f2408166c3191ae6dc2cebd5ec35f3664f8ca55b8d38b6fb75a2e6e56888efc4bd56ded2fce3d2695439744e2319bf50a78179638ed520f727cdd899c4d19c9a17e65c0d51698a925cef1fdcaa5d9c56cea4e3add51458ff23678dc38d39360fc55955ff5cdd0cec7999ab892cffb0b2d6df9a0b35956738f4222a7a9affa1ee85e68d3951d3409c37d3489ff7545dc5c79573895f9bc9ea1d54d6f8da5ca8a9fc1a812c7686c0398bc52b75169aebe6444db2ffb29cadfd5b66b2fc65651d4ff6471e678579e89c6bfe429d8756efc9d9e21d73627e1117959b6632cf2bcb790b3373a126d9cf45e20c897391882fd54568de37276ad47841b1ed9f67b58bc37b65ad3f3593f9ca5ca851ee6f3fa1c0f6f3a73956e3b1b9b0f126ea7ed8d7f146e6448d725ef4fb9cafe74757dd0bb53f46e6c4ea0d9c9bb2bff1cc4ce6bbcab2bff1549d85e686b39e0f78624ecc4165cdbf35939d17afce7a1ee095b9d0fd8aa13a0f2d7e5359e3d7e6c4dc72b6fd3956f7a9dfd7ef6c84f242f25a8faf0c737ecdb19077faf88aba5e03f110df7064d9e3aa959ae054aabde348f2e94b1bffa7cdac1f59fd398f34632d78ecf13fb12fbd4946c86dfe844b8dcae728bde6ab9099fbf964f3d9e007bf6eabaa1bdce1278fd9f6eaeff3d5aee6df917620ff1f72adc37fad97b623cbff89c77882a778865d3cff9fbcaae9f72b5ee2155ee30ddee21ddee3033e727baafe3ee30bd6bdfc2e069c1d6203238cffa7753933e1f9376dfd2fb86e8bb353400020e8f195f1bb17d8851c0aec40df7d6eab7f0baf308021bcc108c67c4d600aef3083392c60092b58c3063e600b3bab1f60009fd0e6d814f639730e1dc93be0ac4338829f700c27700a676efed08573b8e0ca977065b5b5c735f7b8815bb8837b78a8d6e78ce7fe084f9cf3ccd9e51897f0c2ae432023dc42088df2ae59fd082288b9e60be7bdf3954093b35b5c3f2debf3c3704240fc47ebf3dc7bb0a51ed7bf841965527b4939cf3f2de74f059c529fdcf3dfa501cfbd1cbd9c51079e6828b5cbecad557ff3ef2f6434e2155b718fa5b47a994d63cee6b9f3f7e2c43de5721e4fe99d471ff14c0f386b56bef2ff1f34e7da0b9ecb3d2dfde707ceb8c28ab1e2953ea2355f6568c39977bceef7f4415b3f9f76f0c09ffe93dab4ac2ee0577e2c689f3ab4f39ecfbf7eddfb1b1d713e9d</data>
+        <data format="XPM.GZ" length="3038">789c8dd55973e2381007f0f77c0a2afd96daeab1856d4c6ded43c87d9040c8055bfb205f8110c845cea9fdeedbee6e29d7d466c643323ffaaf96902de6c74ae3bcd76dacfc58ba5fd8c5246fe4637bd758291e66b397bffff9ebe7d2b2310dfa1b9ab06196ff585aee2f1a79e3e07a5ed6402040c07f6ac3013b0d2231ded70e83300852ae0f9d43c99fab2331deb15397c75b67cd6fa9350f564d17e7b76b9b204c75be506c2223fd3376bbeec8b6ea5cfb1931e5dbec8e3a5507ea5c8cbc9e66e8c78fc4ae0e03e766c8be123723316eb2dbf58ad963b5db8f1bb55b6fee2df9404cfd64be5d75aafd27b5a3d0e737d8d6e4ea3571d3cdbf5e3b36dec659f60f66ea48eb1d67ad17e238882cd7f79d637e78e0916dbdcf6a27262e62ce03889330917a976d937622f5c3daada6f7425da8a7ecac55b4329e7fb576da8c63bd1f28a6ed68b22fd9595aa4926fd76e47ce70efdc8ed89be276a83e55c7624cd93939e7faaabaad3e5217ea87da364a0abd7f13b1af1f3b5b99ef446c43a963cb59eb63752cc63d76eefbe7e256a8ee8badd57ce22dfd47ea520cdc2f8b6c99497e28ce8cfa5c9d8881cf6356b4da913cffaf625fdff72ed8176aabfd626faee399bad47caf761e7bdf39e731e74fc5b911c3ad3a51f379c80bb28c7f515b1d7fe22d753e2f459c97ea1de742f2c7e2c2687deeacf5489d8881cf77517a3fabade607def27d7ba42ec5c0e7b54cbc9f9ccb845d8a4b23c6a63a51f3f35f9636d6f3732df6f5beb7ccdf535b3154ea52eb7c7fabc486729e3154c7ea425dca7c7828ae4c25f375d5899af7a3aa282fdf079938333afe499da8779d5b7cbef1426dd5d7de72de2b716ed48fcef2fd80a53a512fbc253f575bf58eb37e1f4cd5a59ed7077161b43ef396fa953a51bf38ebf93c1057b6aae43fe3dfbf7e9d4770d7f7f9b7ecdb98b7719ff39f7b7e9ee763feebfc6ec4ffaffffbfe68f9ca7e6f7f30c7024bacf002c7dfe771829738c52b9ce11caff1066ff18eae7bf7fb4b7e8c0b4a3fe0233ee1f32faef197fe737ca1f42bae6207d7709d5e1bf4ee843a6de2167dae6df7b9b5ff1c777017f7701fbb7840af43ec611f8f7080c77882a77886e738c41106da7f415788866a3d6c52728011e7624a25d8c214dbd41cc0baf543063914d885122aedcd23e002873086095cc214aefcfa2ff0156630c708ae294d73d0b81b98c32ddcd53350fe1ef8ee6bff277880473ca24c897dca3ec133a55fa8ff2bf75fa5d574deed4f487b328235ea5fd2a8f5ba379ec006c694a7f5c326ad7deb6dff611b0a9e9d564463e6b053f7e6f448bbef7ed8ff0dd8a31d3b855bfa8c74d1ef3abd4f3b58af7d13baee89e3efa70338a4cc1e7db29852bdfa27fd7b087dea7d44e9290cdedf5fb0f4de31cd7a4c3bdd82137aadd2754aef5ed2be4fe10cce3fe48770051d18410003ffead0cf0e5d211818be7b7efefd73e93fcb5fd5ab</data>
     </image>
 </images>
 <connections>
+    <connection>
+        <sender>lowerLimitActive</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>lowerLimit</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>upperLimitActive</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>upperLimit</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
     <connection>
         <sender>okButton</sender>
         <signal>clicked()</signal>
@@ -299,7 +473,5 @@
     <slot access="public">applyClicked()</slot>
 </connections>
 <tabstops>
-    <tabstop>okButton</tabstop>
-    <tabstop>cancelButton</tabstop>
 </tabstops>
 </UI>

@@ -25,6 +25,7 @@
 #include "conf.h"
 
 CONTAINER LogFileList = 0;
+CONTAINER SensorList = 0;
 
 int strpos(char *str, char sign)
 {
@@ -41,8 +42,9 @@ void parseConfigFile(const char *filename)
 {
 	FILE* config;
 	char line[2048];
-	char *begin, *token, *tmp;
+	char *begin, *token, *tmp, *confSensor;
 	ConfigLogFile *confLog;
+	
 
 	if ((config = fopen(filename, "r")) == NULL) {
 		log_error("can't open config file '%s'", filename);
@@ -53,7 +55,11 @@ void parseConfigFile(const char *filename)
 	if (LogFileList)
 		destr_ctnr(LogFileList, free);
 
+	if (SensorList)
+		destr_ctnr(SensorList, free);
+
 	LogFileList = new_ctnr(CT_DLL);
+	SensorList = new_ctnr(CT_DLL);
 
 	while (fgets(line, sizeof(line), config) != NULL) {
 		if ((line[0] == '#') || (strlen(line) == 0)) {
@@ -84,7 +90,29 @@ void parseConfigFile(const char *filename)
 				push_ctnr(LogFileList, confLog);
 			}
 		}
+		if (!strncmp(line, "Sensors", 7)) {
+			begin = strchr(line, '=');
+			begin++;
+
+			for (token = strtok(begin, ","); token; token = strtok(NULL, ",")) {
+				confSensor = strdup(token);
+				push_ctnr(SensorList, confSensor);
+			}
+		}
 	}
 
 	fclose(config);
+}
+
+int sensorAvailable(const char *sensor)
+{
+	int i;
+	
+	for (i = 0; i < level_ctnr(SensorList); i++) {
+		char* name = get_ctnr(SensorList, i);
+		if (!strcmp(name, sensor))
+			return 1;
+	}
+
+	return 0;
 }

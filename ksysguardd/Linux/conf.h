@@ -29,4 +29,6 @@ typedef struct {
 
 void parseConfigFile(const char *filename);
 
+int sensorAvailable(const char* sensor);
+
 #endif

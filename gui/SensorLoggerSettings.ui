@@ -81,13 +81,6 @@
                             <height>20</height>
                         </size>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
                 </spacer>
             </vbox>
         </widget>
@@ -185,7 +178,7 @@
                 <spacer>
                     <property>
                         <name>name</name>
-                        <cstring>Spacer2</cstring>
+                        <cstring>Spacer3</cstring>
                     </property>
                     <property stdset="1">
                         <name>orientation</name>
@@ -240,6 +233,60 @@
                     <property>
                         <name>name</name>
                         <cstring>Spacer4</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Vertical</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget>
+                    <class>ColorPicker</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>alarmColor</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>0</width>
+                            <height>40</height>
+                        </size>
+                    </property>
+                    <property>
+                        <name>color</name>
+                        <color>
+                            <red>255</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property>
+                        <name>text</name>
+                        <string>Alarm Color</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer5</cstring>
                     </property>
                     <property stdset="1">
                         <name>orientation</name>

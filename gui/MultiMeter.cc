@@ -121,36 +121,10 @@ MultiMeter::answerReceived(int id, const QString& answer)
 		if (lowerLimitActive && val < lowerLimit)
 		{
 			setDigitColor(alarmDigitColor);	
-#if 0
-			/* TODO: Sent notification to event logger */
-			timerOff();
-			if (KMessageBox::questionYesNo(
-				this, QString(i18n("%1\nLower limit exceeded!")).arg(title),
-							  i18n("Alarm"),
-							  i18n("Acknowledge"),
-							  i18n("Disable Alarm")) == KMessageBox::No)
-			{
-				lowerLimitActive = FALSE;
-			}
-			timerOn();
-#endif
 		}
 		else if (upperLimitActive && val > upperLimit)
 		{
 			setDigitColor(alarmDigitColor);
-#if 0
-			/* TODO: Sent notification to event logger */
-			timerOff();
-			if (KMessageBox::questionYesNo(
-				this, QString(i18n("%1\nUpper limit exceeded!")).arg(title),
-							  i18n("Alarm"),
-							  i18n("Acknowledge"),
-							  i18n("Disable Alarm")) == KMessageBox::No)
-			{
-				upperLimitActive = FALSE;
-			}
-			timerOn();
-#endif
 		}
 		else
 			setDigitColor(normalDigitColor);

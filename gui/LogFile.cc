@@ -17,9 +17,11 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <kdebug.h>
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <knotifyclient.h>
 
 #include <sys/types.h>
 #include <regex.h>
@@ -214,7 +216,9 @@ LogFile::answerReceived(int id, const QString& answer)
 				for (QStringList::Iterator it = filterRules.begin(); it != filterRules.end(); it++) {
 					regcomp(&token, (*it).latin1(), REG_NEWLINE|REG_EXTENDED);
 					if (!regexec(&token, lines[i].latin1(), 0, NULL, 0)) {
-						/* TODO: Sent notification to event logger */
+						QString info;
+						info.sprintf("rule '%s' matched", (*it).latin1());
+						KNotifyClient::event("pattern_match", info);
 					}
 					regfree(&token);
 				}

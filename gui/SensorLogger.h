@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
 	Copyright (c) 2001 Tobias Koenig <tokoe82@yahoo.de>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -37,6 +37,26 @@
 
 class SensorLoggerSettings;
 
+class SLListViewItem : public QListViewItem
+{
+public:
+	SLListViewItem(QListView *parent = 0);
+
+	void setTextColor(const QColor& color) { textColor = color; }
+
+	void paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment) {
+		QColorGroup cgroup(cg);
+		cgroup.setColor(QColorGroup::Text, textColor);
+		QListViewItem::paintCell(p, cgroup, column, width, alignment);
+	
+	}
+
+	void paintFocus(QPainter *, const QColorGroup, const QRect) {}
+
+private:
+	QColor textColor;
+};	
+
 class LogSensor : public QObject, public SensorClient
 {
 	Q_OBJECT
@@ -53,6 +73,10 @@ public:
 		fileName = name;
 		lvi->setText(4, name);
 	}
+	void setUpperLimitActive(bool value) { upperLimitActive = value; }
+	void setLowerLimitActive(bool value) { lowerLimitActive = value; }
+	void setUpperLimit(double value) { upperLimit = value; }
+	void setLowerLimit(double value) { lowerLimit = value; }
 
 	void setTimerInterval(int interval) {
 		if (timerID != NONE)
@@ -70,6 +94,10 @@ public:
 	QString getHostName(void) { return hostName; }
 	QString getFileName(void) { return fileName; }
 	int getTimerInterval(void) { return timerInterval; }
+	bool getUpperLimitActive(void) { return upperLimitActive; }
+	bool getLowerLimitActive(void) { return lowerLimitActive; }
+	double getUpperLimit(void) { return upperLimit; }
+	double getLowerLimit(void) { return lowerLimit; }
 	QListViewItem* getListViewItem(void) { return lvi; }
 
 public slots:
@@ -89,23 +117,25 @@ public slots:
 
 protected:
 	virtual void timerEvent(QTimerEvent*);
-	
+
 private:
 	QFile* logFile;
-
 	QListView* monitor;
-
-	QListViewItem* lvi;
-
+	SLListViewItem* lvi;
 	QPixmap pixmap_running;
 	QPixmap pixmap_waiting;
-
 	QString sensorName;
 	QString hostName;
 	QString fileName;
 
 	int timerInterval;
 	int timerID;
+
+	bool lowerLimitActive;
+	bool upperLimitActive;
+
+	double lowerLimit;
+	double upperLimit;
 };
 
 class SensorLogger : public SensorDisplay
@@ -148,10 +178,8 @@ private:
 
 	QList<LogSensor> logSensors;
 
-	SensorLoggerDlg *SLDlg;
+	SensorLoggerDlg *sld;
 	SensorLoggerSettings *sls;
-
-	bool skip;
 };
 
 #endif // _SensorLogger_h

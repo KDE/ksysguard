@@ -228,13 +228,6 @@ SensorBrowser::answerReceived(int id, const QString& s)
 		}
 	}
 
-	QListViewItem* lvi = new QListViewItem((*it)->getLVI(), "SensorLogger");
-	CHECK_PTR(lvi);
-
-	QPixmap pix = icons->loadIcon("ksysguardd", KIcon::Desktop, KIcon::SizeSmall);
-	lvi->setPixmap(0, pix);
-	lvi->setText(1, "sensorlogger");
-	(*it)->addSensor(lvi, "SensorLogger", "SensorLogger", "sensorlogger");
 	repaintItem((*it)->getLVI());
 }
 

@@ -84,6 +84,9 @@ int RunAsDaemon = 0;
  * the currently served client. This is stdout for non-daemon mode. */
 FILE* CurrentClient = 0;
 
+/* The list of the sensors which will be included in ksysguardd */
+extern CONTAINER SensorList;
+
 static int
 processArguments(int argc, char* argv[])
 {
@@ -482,17 +485,28 @@ initModules()
 {
 	/* initialize all sensors */
 	initCommand();
-	initProcessList();
-	initMemory();
-	initStat();
-	initNetDev();
-	initNetStat();
-	initApm();
-	initCpuInfo();
-	initLoadAvg();
-	initLmSensors();
-	initDiskStat();
-	initLogFile();
+	if (sensorAvailable("ProcessList"))
+		initProcessList();
+	if (sensorAvailable("Memory"))
+		initMemory();
+	if (sensorAvailable("Stat"))
+		initStat();
+	if (sensorAvailable("NetDev"))
+		initNetDev();
+	if (sensorAvailable("NetStat"))
+		initNetStat();
+	if (sensorAvailable("Apm"))
+		initApm();
+	if (sensorAvailable("CpuInfo"))
+		initCpuInfo();
+	if (sensorAvailable("LoadAvg"))
+		initLoadAvg();
+	if (sensorAvailable("LmSensors"))
+		initLmSensors();
+	if (sensorAvailable("DiskStat"))
+		initDiskStat();
+	if (sensorAvailable("LogFile"))
+		initLogFile();
 
 	ReconfigureFlag = 0;
 }
@@ -500,17 +514,29 @@ initModules()
 static void
 exitModules()
 {
-	exitLogFile();
-	exitDiskStat();
-	exitLmSensors();
-	exitLoadAvg();
-	exitCpuInfo();
-	exitApm();
-	exitNetDev();
-	exitNetDev();
-	exitStat();
-	exitMemory();
-	exitProcessList();
+	if (sensorAvailable("LogFile"))
+		exitLogFile();
+	if (sensorAvailable("DiskStat"))
+		exitDiskStat();
+	if (sensorAvailable("LmSensors"))
+		exitLmSensors();
+	if (sensorAvailable("LoadAvg"))
+		exitLoadAvg();
+	if (sensorAvailable("CpuInfo"))
+		exitCpuInfo();
+	if (sensorAvailable("Apm"))
+		exitApm();
+	if (sensorAvailable("NetDev"))
+		exitNetDev();
+	if (sensorAvailable("NetStat"))
+		exitNetStat();
+	if (sensorAvailable("Stat"))
+		exitStat();
+	if (sensorAvailable("Memory"))
+		exitMemory();
+	if (sensorAvailable("LogFile"))
+		exitProcessList();
+
 	exitCommand();
 }
 

@@ -19,6 +19,8 @@
     $Id$
 */
 
+//#define HAVE_SENSORS_SENSORS_H
+
 #ifdef HAVE_SENSORS_SENSORS_H
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,6 +30,7 @@
 #include <ccont.h>
 
 #include "Command.h"
+#include "ksysguardd.h"
 #include "lmsensors.h"
 
 typedef struct
@@ -149,12 +152,12 @@ printLmSensor(const char* cmd)
 	if ((s = findMatchingSensor(cmd)) == 0)
 	{
 		/* should never happen */
-		fprintf(currentClient, "0\n");
+		fprintf(CurrentClient, "0\n");
 		return;
 	}
 
 	sensors_get_feature(*(s->scn), s->sfd->number, &value);
-	fprintf(currentClient, "%f\n", value);
+	fprintf(CurrentClient, "%f\n", value);
 }
 
 void
@@ -165,11 +168,11 @@ printLmSensorInfo(const char* cmd)
 	if ((s = findMatchingSensor(cmd)) == 0)
 	{
 		/* should never happen */
-		fprintf(currentClient, "0\n");
+		fprintf(CurrentClient, "0\n");
 		return;
 	}
 	/* TODO: print real name here */
-	fprintf(currentClient, "Sensor Info\t0\t0\t\n");
+	fprintf(CurrentClient, "Sensor Info\t0\t0\t\n");
 }
 
 #else /* HAVE_SENSORS_SENSORS_H */
