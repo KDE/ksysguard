@@ -21,6 +21,7 @@ Comment[eu]=KDEren sistemaren kontrola
 Comment[fa]=محافظ سیستم KDE
 Comment[fi]=KDE:n järjestelmänvalvonta
 Comment[fr]=Surveillance du système
+Comment[ga]=Garda an Chórais KDE
 Comment[gl]=Vixiante do Sistema de KDE
 Comment[he]=משמר המערכת של KDE
 Comment[hi]=केडीई तंत्र गार्ड
@@ -38,7 +39,7 @@ Comment[mn]=КДЭ-Системийн хяналт
 Comment[mt]=Gwardja tas-Sistema KDE
 Comment[nb]=KDE Systemovervåker
 Comment[nds]=KDE Systeemwachter
-Comment[nl]=KDE Systeem Bewaking
+Comment[nl]=KDE systeembewaking
 Comment[nn]=KDE Systemvakt
 Comment[nso]=Thlokomelo ya System ya KDE
 Comment[pa]=KDE ਸਿਸਟਮ ਸੁਰੱਖਿਅਕ
@@ -141,7 +142,6 @@ Comment[xx]=xxSearch pattern matchedxx
 
 [sensor_alarm]
 Name=sensor_alarm
-Name[az]=sensor_alarmı
 Name[bn]=বিপদ_সংকেত
 Name[cy]=larwm_synhwyrydd
 Name[de]=Sensormeldung
