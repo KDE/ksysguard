@@ -41,12 +41,22 @@ extern int CheckSetupFlag;
 /**
   Delivers the error message to the front end.
  */
-void print_error( const char*, ... );
+void print_error( const char*, ... )
+#ifdef __GNUC__
+    __attribute__ (  (  format (  printf, 1, 2 ) ) )
+#endif
+    ;
 
 /**
   Writes the error message to the syslog daemon.
  */
-void log_error( const char*, ... );
+void log_error( const char*, ... )
+ #ifdef __GNUC__
+    __attribute__ (  (  format (  printf, 1, 2 ) ) )
+#endif
+    ;
+
+   
 
 /**
   Use this function to register a command with the name
