@@ -71,7 +71,7 @@ intKey(const char* text)
 {
 	// TODO: For some yet unknown reason text is sometimes 0.
 	if (!text)
-		return (FALSE);
+		return (0);
 
 	int val;
 	sscanf(text, "%d", &val);
@@ -86,7 +86,7 @@ timeKey(const char* text)
 {
 	// TODO: For some yet unknown reason text is sometimes 0.
 	if (!text)
-		return (FALSE);
+		return (0);
 
 	int h, m;
 	sscanf(text, "%d:%d", &h, &m);
@@ -102,7 +102,7 @@ floatKey(const char* text)
 {
 	// TODO: For some yet unknown reason text is sometimes 0.
 	if (!text)
-		return (FALSE);
+		return (0);
 
 	double percent;
 	sscanf(text, "%lf", &percent);
