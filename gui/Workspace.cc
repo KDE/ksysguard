@@ -138,7 +138,7 @@ void Workspace::newWorkSheet()
 
   WorkSheetSettings dlg( this );
   dlg.setSheetTitle( sheetName );
-	if ( dlg.exec() ) {
+  if ( dlg.exec() ) {
     WorkSheet* sheet = new WorkSheet( dlg.rows(), dlg.columns(), dlg.interval(), this );
     sheet->setTitle( dlg.sheetTitle() );
     insertTab( sheet, dlg.sheetTitle() );
@@ -162,7 +162,7 @@ bool Workspace::saveOnQuit()
         if ( res == KMessageBox::Yes )
           saveWorkSheet( *it );
         else if ( res == KMessageBox::Cancel )
-          return false;	// abort quit
+          return false; // abort quit
       } else
         saveWorkSheet(*it);
     }
@@ -175,7 +175,7 @@ void Workspace::loadWorkSheet()
   KFileDialog dlg( 0, i18n( "*.sgrd|Sensor Files" ), this,
                    "LoadFileDialog", true );
 
-	KURL url = dlg.getOpenURL( mWorkDir, "*.sgrd", 0, i18n( "Select Worksheet to Load" ) );
+  KURL url = dlg.getOpenURL( mWorkDir, "*.sgrd", 0, i18n( "Select Worksheet to Load" ) );
 
   loadWorkSheet( url );
 }
@@ -220,7 +220,7 @@ void Workspace::saveWorkSheetAs()
 void Workspace::saveWorkSheet( WorkSheet *sheet )
 {
   if ( !sheet ) {
-    KMessageBox::sorry(	this, i18n( "You don't have a worksheet that could be saved!" ) );
+    KMessageBox::sorry( this, i18n( "You don't have a worksheet that could be saved!" ) );
     return;
   }
 
@@ -239,7 +239,7 @@ void Workspace::saveWorkSheet( WorkSheet *sheet )
     // extract filename without path
     QString baseName = fileName.right( fileName.length() - fileName.findRev( '/' ) - 1 );
 
-		// chop off extension (usually '.sgrd')
+    // chop off extension (usually '.sgrd')
     baseName = baseName.left( baseName.findRev( '.' ) );
     changeTab( sheet, baseName );
   }
@@ -304,7 +304,7 @@ void Workspace::deleteWorkSheet()
 
         if ( res == KMessageBox::Yes )
           saveWorkSheet( current );
-      }	else
+      } else
         saveWorkSheet( current );
     }
 
@@ -312,7 +312,7 @@ void Workspace::deleteWorkSheet()
     mSheetList.remove( current );
 
     setMinimumSize( sizeHint() );
-	} else {
+  } else {
     QString msg = i18n( "There are no worksheets that could be deleted!" );
     KMessageBox::error( this, msg );
   }
@@ -354,11 +354,11 @@ bool Workspace::restoreWorkSheet( const QString &fileName, const QString &newNam
   // extract filename without path
   QString baseName = tmpStr.right( tmpStr.length() - tmpStr.findRev( '/' ) - 1 );
 
-	// chop off extension (usually '.sgrd')
+  // chop off extension (usually '.sgrd')
   baseName = baseName.left( baseName.findRev( '.' ) );
 
   WorkSheet *sheet = new WorkSheet( this );
-	sheet->setTitle( baseName );
+  sheet->setTitle( baseName );
   insertTab( sheet, baseName );
   showPage( sheet );
 

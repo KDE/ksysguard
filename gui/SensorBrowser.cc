@@ -69,7 +69,7 @@ SensorBrowser::SensorBrowser( QWidget* parent, KSGRD::SensorManager* sm,
   mHostInfoList.setAutoDelete(true);
 
   connect( mSensorManager, SIGNAL( update() ), SLOT( update() ) );
-	connect( this, SIGNAL( selectionChanged( QListViewItem* ) ),
+  connect( this, SIGNAL( selectionChanged( QListViewItem* ) ),
            SLOT( newItemSelected( QListViewItem* ) ) );
 
   addColumn( i18n( "Sensor Browser" ) );
@@ -80,7 +80,7 @@ SensorBrowser::SensorBrowser( QWidget* parent, KSGRD::SensorManager* sm,
 
   mIconLoader = new KIconLoader();
 
-	// The sensor browser can be completely hidden.
+  // The sensor browser can be completely hidden.
   setMinimumWidth( 1 );
 
   QWhatsThis::add( this, i18n( "The sensor browser lists the connected hosts and the sensors "

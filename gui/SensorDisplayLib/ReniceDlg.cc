@@ -28,7 +28,7 @@
 
 ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 					 int pid)
-	: KDialogBase( parent, "renicedialog", true, i18n("Renice Process"),
+	: KDialogBase( parent, name, true, i18n("Renice Process"),
                        KDialogBase::Ok|KDialogBase::Cancel, KDialogBase::Ok, true )
 {
 	value = currentPPrio;

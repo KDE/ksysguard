@@ -66,7 +66,7 @@ class SignalPlotter : public QWidget
     void setGraphStyle( uint style );
     uint graphStyle() const;
 
-    void setHorizontalScale( int scale );
+    void setHorizontalScale( uint scale );
     int horizontalScale() const;
 
     void setShowVerticalLines( bool value );

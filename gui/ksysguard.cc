@@ -80,8 +80,8 @@ TopLevel::TopLevel( const char *name )
 
   mSensorBrowser = new SensorBrowser( mSplitter, KSGRD::SensorMgr );
 
-	mWorkSpace = new Workspace( mSplitter );
-	connect( mWorkSpace, SIGNAL( announceRecentURL( const KURL& ) ),
+  mWorkSpace = new Workspace( mSplitter );
+  connect( mWorkSpace, SIGNAL( announceRecentURL( const KURL& ) ),
            SLOT( registerRecentURL( const KURL& ) ) );
   connect( mWorkSpace, SIGNAL( setCaption( const QString&, bool ) ),
            SLOT( setCaption( const QString&, bool ) ) );
@@ -98,7 +98,7 @@ TopLevel::TopLevel( const char *name )
                                      "888888888 kB free" ), 2 );
   statusBar()->hide();
 
-	// create actions for menue entries
+  // create actions for menue entries
   KStdAction::openNew( mWorkSpace, SLOT( newWorkSheet() ), actionCollection() );
   KStdAction::open( mWorkSpace, SLOT( loadWorkSheet() ), actionCollection() );
   mActionOpenRecent = KStdAction::openRecent( mWorkSpace,
@@ -250,10 +250,10 @@ void TopLevel::beATaskManager()
 {
   mWorkSpace->showProcesses();
 
-	// Avoid displaying splitter widget
+  // Avoid displaying splitter widget
   mSensorBrowser->hide();
 
-	// Show window centered on the desktop.
+  // Show window centered on the desktop.
   KWinModule kwm(0, KWinModule::INFO_DESKTOP);
   QRect workArea = kwm.workArea();
   int w = 600;
@@ -316,7 +316,7 @@ void TopLevel::showStatusBar()
     timerEvent( 0 );
   } else {
     statusBar()->hide();
-    if ( mTimerId != -1 )	{
+    if ( mTimerId != -1 ) {
       killTimer( mTimerId );
       mTimerId = -1;
     }
@@ -352,7 +352,7 @@ void TopLevel::customEvent( QCustomEvent *e )
      * triggered by objects that have died already. */
     KMessageBox::error( this, *((QString*)e->data()) );
     delete (QString*)e->data();
-	}
+  }
 }
 
 void TopLevel::timerEvent( QTimerEvent* )
@@ -490,7 +490,7 @@ void TopLevel::answerReceived( int id, const QString &answer )
     }
     case 133: {
       QCString replyType = "QString";
-		  QByteArray replyData;
+      QByteArray replyData;
       QDataStream reply( replyData, IO_WriteOnly );
       reply << answer;
 

@@ -197,7 +197,7 @@ uint SignalPlotter::graphStyle() const
   return mGraphStyle;
 }
 
-void SignalPlotter::setHorizontalScale( int scale )
+void SignalPlotter::setHorizontalScale( uint scale )
 {
   if (scale == mHorizontalScale)
      return;

@@ -57,7 +57,7 @@ WorkSheet::WorkSheet( QWidget *parent, const char *name )
 
 WorkSheet::WorkSheet( uint rows, uint columns, uint interval, QWidget* parent,
                       const char *name )
-  :	QWidget( parent, name )
+  : QWidget( parent, name )
 {
   mRows = mColumns = 0;
   mGridLayout = 0;
@@ -102,15 +102,15 @@ bool WorkSheet::load( const QString &fileName )
     return false;
   }
 
-	// Check for proper document type.
+  // Check for proper document type.
   if ( doc.doctype().name() != "KSysGuardWorkSheet" ) {
-    KMessageBox::sorry( this,	i18n( "The file %1 does not contain a valid worksheet "
+    KMessageBox::sorry( this, i18n( "The file %1 does not contain a valid worksheet "
                                     "definition, which must have a document type 'KSysGuardWorkSheet'.")
                         .arg( mFileName ) );
     return false;
   }
 
-	// Check for proper size.
+  // Check for proper size.
   QDomElement element = doc.documentElement();
   updateInterval( element.attribute( "interval" ).toUInt() );
   if ( updateInterval() < 2 || updateInterval() > 300 )
@@ -120,7 +120,7 @@ bool WorkSheet::load( const QString &fileName )
   uint rows = element.attribute( "rows" ).toUInt( &rowsOk );
   uint columns = element.attribute( "columns" ).toUInt( &columnsOk );
   if ( !( rowsOk && columnsOk ) ) {
-    KMessageBox::sorry(	this, i18n("The file %1 has an invalid worksheet size.")
+    KMessageBox::sorry( this, i18n("The file %1 has an invalid worksheet size.")
                         .arg( mFileName ) );
     return false;
   }
@@ -155,7 +155,7 @@ bool WorkSheet::load( const QString &fileName )
     }
 
     replaceDisplay( row, column, element );
-	}
+  }
 
   // Fill empty cells with dummy displays
   for ( uint r = 0; r < mRows; ++r )
@@ -213,7 +213,7 @@ bool WorkSheet::save( const QString &fileName )
         element.setAttribute( "class", display->className() );
 
         display->saveSettings( doc, element );
-      }	
+      }
 
   QFile file( mFileName );
   if ( !file.open( IO_WriteOnly ) ) {
@@ -260,12 +260,12 @@ void WorkSheet::paste()
     return;
 
   QClipboard* clip = QApplication::clipboard();
-	
+
   QDomDocument doc;
   /* Get text from clipboard and check for a valid XML header and 
    * proper document type. */
-  if ( !doc.setContent( clip->text() ) ||	doc.doctype().name() != "KSysGuardDisplay" ) {
-    KMessageBox::sorry(	this,	i18n("The clipboard does not contain a valid display "
+  if ( !doc.setContent( clip->text() ) || doc.doctype().name() != "KSysGuardDisplay" ) {
+    KMessageBox::sorry( this, i18n("The clipboard does not contain a valid display "
                         "description." ) );
     return;
   }
@@ -310,7 +310,7 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
 
   /* If the by 'row' and 'column' specified display is a QGroupBox dummy
    * display we replace the widget. Otherwise we just try to add
-	 * the new sensor to an existing display. */
+   * the new sensor to an existing display. */
   if ( mDisplayList[ row ][ column ]->isA( "DummyDisplay" ) ) {
     KSGRD::SensorDisplay* newDisplay = 0;
     /* If the sensor type is supported by more than one display
@@ -368,8 +368,8 @@ void WorkSheet::settings()
 {
   WorkSheetSettings dlg( this );
 
-	/* The sheet name should be changed with the "Save as..." function,
-	 * so we don't have to display the display frame. */
+  /* The sheet name should be changed with the "Save as..." function,
+   * so we don't have to display the display frame. */
   dlg.setSheetTitle( mTitle );
   dlg.setRows( mRows );
   dlg.setColumns( mColumns );
@@ -423,7 +423,7 @@ void WorkSheet::dropEvent( QDropEvent *e )
   QString dragObject;
 
   if ( QTextDrag::decode( e, dragObject) ) {
-		// The host name, sensor name and type are seperated by a ' '.
+    // The host name, sensor name and type are seperated by a ' '.
     QStringList parts = QStringList::split( ' ', dragObject );
 
     QString hostName = parts[ 0 ];
@@ -451,7 +451,7 @@ void WorkSheet::customEvent( QCustomEvent *e )
   if ( e->type() == QEvent::User ) {
     // SensorDisplays send out this event if they want to be removed.
     if ( KMessageBox::warningYesNo( this, i18n( "Do you really want to delete the display?" ) )
-         == KMessageBox::Yes ) {				
+         == KMessageBox::Yes ) {
       removeDisplay( (KSGRD::SensorDisplay*)e->data() );
     }
   }
@@ -495,7 +495,7 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
 void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* newDisplay )
 {
   // remove the old display at this location
-	delete mDisplayList[ row ][ column ];
+  delete mDisplayList[ row ][ column ];
 
   // insert new display
   if ( !newDisplay )
@@ -511,15 +511,15 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
   }
 
 
-  mGridLayout->addWidget( mDisplayList[ row ][ column ], row, column );	
-	
+  mGridLayout->addWidget( mDisplayList[ row ][ column ], row, column );
+
   if ( isVisible() ) {
     mDisplayList[ row ][ column ]->show();
 
     // Notify parent about possibly new minimum size.
     ((QWidget*)parent()->parent())->setMinimumSize(
                                   ((QWidget*) parent()->parent())->sizeHint() );
-	}
+  }
 
   setModified( true );
 }
@@ -572,9 +572,9 @@ void WorkSheet::resizeGrid( uint newRows, uint newColumns )
 {
   uint r, c;
 
-	/* Create new array for display pointers */
-	KSGRD::SensorDisplay*** newDisplayList = new KSGRD::SensorDisplay**[ newRows ];
-	for ( r = 0; r < newRows; ++r ) {
+  /* Create new array for display pointers */
+  KSGRD::SensorDisplay*** newDisplayList = new KSGRD::SensorDisplay**[ newRows ];
+  for ( r = 0; r < newRows; ++r ) {
     newDisplayList[ r ] = new KSGRD::SensorDisplay*[ newColumns ];
     for ( c = 0; c < newColumns; ++c ) {
       if ( c < mColumns && r < mRows )
