@@ -29,6 +29,9 @@
 #include <qwidget.h>
 #include <qlistview.h>
 #include <qvaluelist.h>
+#include <qstringlist.h>
+#include <qdict.h>
+
 #include <kiconloader.h>
 
 #include "ProcessMenu.h"
@@ -250,6 +253,9 @@ private:
 	bool openAll;
 
 	QList<SensorPSLine> pl;
+
+	QStringList columnTypes;
+	QDict<QString> columnDict;
 
 	QValueList<KeyFunc> sortFunc;
 

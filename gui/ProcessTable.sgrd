@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE KSysGuardWorkSheet ><KSysGuardWorkSheet rows="1" columns="1" >
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE KSysGuardWorkSheet ><WorkSheet rows="1" columns="1" >
  <host shell="" name="localhost" command="ksysguardd" />
- <display class="ProcessController" row="0" sensorName="ps" column="0" filter="0" hostName="localhost" tree="0" pause="0" />
-</KSysGuardWorkSheet>
+ <display class="ProcessController" row="0" sensorName="ps" column="0" filter="0" sortColumn="6" hostName="localhost" incrOrder="0" tree="0" pause="0" />
+</WorkSheet>

@@ -238,6 +238,44 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	/* We enforce a minimum range of 1.0 to avoid division by 0 errors. */
 	if (range < 1.0)
 		range = 1.0;
+
+	if (autoRange)
+	{
+		/* Massage the range so that the grid shows some nice values. The
+		 * lowest printed value should only have 2 non-zero digits. */
+		double step = range / 5.0;
+		if (step >= 100)
+		{
+			int shift = 0;
+			while (step >= 100)
+			{
+				shift++;
+				step /= 10;
+			}
+			if (((double) ((int) step)) != step)
+				step = ((int) step) + 1.0;
+			else
+				step = (int) step;
+			while (--shift >= 0)
+				step *= 10;
+		}
+		else
+		{
+			int shift = 0;
+			while (step < 10)
+			{
+				shift++;
+				step *= 10;
+			}
+			if (((double) ((int) step)) != step)
+				step = ((int) step) + 1.0;
+			else
+				step = (int) step;
+			while (--shift >= 0)
+				step /= 10;
+		}
+		range = 5.0 * step;
+	}
 	double maxVal = minValue + range;
 
 	/* Draw scope-like grid vertical lines */

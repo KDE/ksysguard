@@ -128,6 +128,13 @@ ProcessLVI::key(int column, bool) const
 ProcessList::ProcessList(QWidget *parent, const char* name)
 	: QListView(parent, name)
 {
+	columnDict.setAutoDelete(true);
+	columnDict.insert("idle", new QString(i18n("process status", "idle")));
+	columnDict.insert("run", new QString(i18n("process status", "run")));
+	columnDict.insert("sleep", new QString(i18n("process status", "sleep")));
+	columnDict.insert("stop", new QString(i18n("process status", "stop")));
+	columnDict.insert("zombie", new QString(i18n("process status", "zombie")));
+
 	/* The filter mode is controlled by a combo box of the parent. If
 	 * the mode is changed we get a signal. */
 	connect(parent, SIGNAL(setFilterMode(int)),
@@ -446,7 +453,12 @@ ProcessList::addProcess(SensorPSLine* p, ProcessLVI* pli)
 
 	// insert remaining field into table
 	for (unsigned int col = 1; col < p->numberOfTokens(); col++)
-		pli->setText(col, (*p)[col]);
+	{
+		if (columnTypes[col] == "S" && columnDict[(*p)[col]])
+			pli->setText(col, *columnDict[(*p)[col]]);
+		else
+			pli->setText(col, (*p)[col]);
+	}
 }
 
 void
@@ -490,7 +502,7 @@ ProcessList::addColumn(const QString& header, const QString& type)
 {
 	uint col = sortFunc.count();
 	QListView::addColumn(header);
-	if (type == "s")
+	if (type == "s" || type == "S")
 	{
 		setColumnAlignment(col, AlignLeft);
 		sortFunc.append(0);
@@ -505,11 +517,19 @@ ProcessList::addColumn(const QString& header, const QString& type)
 		setColumnAlignment(col, AlignRight);
 		sortFunc.append(&timeKey);
 	}
-	else	// should be type "f"
+	else if (type == "f")
 	{
 		setColumnAlignment(col, AlignRight);
 		sortFunc.append(floatKey);
 	}
+	else
+	{
+		kdDebug() << "Unknown type " << type << " of column " << header
+				  << " in ProcessList!" << endl;
+		return;
+	}
+
+	columnTypes.append(type);
 	setSorting(sortColumn, increasing);
 }
 
