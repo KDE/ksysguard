@@ -105,13 +105,13 @@ KSysGuardApplet::~KSysGuardApplet()
 int
 KSysGuardApplet::widthForHeight(int h) const
 {
-	return ((int) (h * sizeRatio) * dockCnt);
+	return ((int) (h * sizeRatio + 0.5) * dockCnt);
 }
 
 int
 KSysGuardApplet::heightForWidth(int w) const
 {
-	return ((int) (w * sizeRatio) * dockCnt);
+	return ((int) (w * sizeRatio + 0.5) * dockCnt);
 }
 
 void
@@ -131,7 +131,7 @@ KSysGuardApplet::preferences()
 			this, SLOT(applySettings()));
 
 	ksgas->dockCnt->setValue(dockCnt);
-	ksgas->ratio->setValue(sizeRatio * 100.0);
+	ksgas->ratio->setValue(sizeRatio * 100.0 + 0.5);
 	ksgas->interval->setValue(updateInterval());
 
 	if (ksgas->exec())
@@ -164,7 +164,7 @@ KSysGuardApplet::layout()
 	if (orientation() == Horizontal)
 	{
 		int h = height();
-		int w = (int) (h * sizeRatio);
+		int w = (int) (h * sizeRatio + 0.5);
 		for (uint i = 0; i < dockCnt; ++i)
 			if (docks[i])
 				docks[i]->setGeometry(i * w, 0, w, h);
@@ -172,7 +172,7 @@ KSysGuardApplet::layout()
 	else
 	{
 		int w = width();
-		int h = (int) (w * sizeRatio);
+		int h = (int) (w * sizeRatio + 0.5);
 		for (uint i = 0; i < dockCnt; ++i)
 			if (docks[i])
 				docks[i]->setGeometry(0, i * h, w, h);
@@ -183,9 +183,9 @@ int
 KSysGuardApplet::findDock(const QPoint& p)
 {
 	if (orientation() == Horizontal)
-		return (p.x() / (int) (height() * sizeRatio));
+		return (p.x() / (int) (height() * sizeRatio + 0.5));
 	else
-		return (p.y() / (int) (width() * sizeRatio));
+		return (p.y() / (int) (width() * sizeRatio + 0.5));
 }
 
 void
