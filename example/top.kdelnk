@@ -13,6 +13,7 @@ Comment=Informations about your system status
 Comment[cs]=Informace o stavu va╧eho systИmu
 Comment[no]=Informasjon om din systemstatus
 Comment[pt_BR]=InformaГУes sobre o status de seu sistema
+Comment[ru]=Информация о состоянии системы
 Exec=ktop --start-folder
 icon=Info.xpm
 Type=Application
