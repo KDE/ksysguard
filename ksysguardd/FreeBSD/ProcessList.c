@@ -67,7 +67,7 @@ typedef struct
 	gid_t gid;
 
 	/* a character description of the process status */
-    char status;
+    char status[16];
 
 	/* the number of the tty the process owns */
 	int ttyNo;
@@ -159,6 +159,8 @@ findProcessInList(int pid)
 static int
 updateProcess(int pid)
 {
+	static char *statuses[] = { "idle","run","sleep","stop","zombie" };
+	
 	ProcessInfo* ps;
 	int userTime, sysTime;
 	struct passwd* pwent;
@@ -186,17 +188,11 @@ updateProcess(int pid)
 	if (sysctl(mib, 4, &p, &len, NULL, 0) == -1 || !len)
 		return -1;
 
-	/* ?? */
-        ps->pid = p.kp_proc.p_pid;
-        ps->ppid = p.kp_eproc.e_ppid;
-        strcpy(ps->name, p.kp_proc.p_comm);
-        ps->uid = p.kp_eproc.e_ucred.cr_uid;
-        ps->gid = p.kp_eproc.e_pgid;
-
-        /* find out user name with the process uid */
-        pwent = getpwuid(ps->uid);
-	strcpy(ps->userName, pwent ? pwent->pw_name : "????");
-        ps->priority = p.kp_proc.p_priority;
+        ps->pid       = p.kp_proc.p_pid;
+        ps->ppid      = p.kp_eproc.e_ppid;
+        ps->uid       = p.kp_eproc.e_ucred.cr_uid;
+        ps->gid       = p.kp_eproc.e_pgid;
+        ps->priority  = p.kp_proc.p_priority;
         ps->niceLevel = p.kp_proc.p_nice;
 
         /* this isn't usertime -- it's total time (??) */
@@ -205,17 +201,32 @@ updateProcess(int pid)
 #else
         ps->userTime = p.kp_proc.p_rtime.tv_sec*100+p.kp_proc.p_rtime.tv_usec/100
 #endif
-        ps->sysTime = 0;
+        ps->sysTime  = 0;
         ps->userLoad = p.kp_proc.p_pctcpu / 100;
-        ps->sysLoad = 0;
+        ps->sysLoad  = 0;
 
         /* memory */
-        ps->vmSize =  (p.kp_eproc.e_vm.vm_tsize +
-                    p.kp_eproc.e_vm.vm_dsize +
-                    p.kp_eproc.e_vm.vm_ssize) * getpagesize();
-        ps->vmRss = p.kp_eproc.e_vm.vm_rssize * getpagesize();
+        ps->vmSize   = (p.kp_eproc.e_vm.vm_tsize +
+                       p.kp_eproc.e_vm.vm_dsize +
+                       p.kp_eproc.e_vm.vm_ssize) * getpagesize();
+        ps->vmRss    = p.kp_eproc.e_vm.vm_rssize * getpagesize();
 
-        ps->status = p.kp_proc.p_stat;
+        /* process name */
+        strncpy(ps->name,p.kp_proc.p_comm? p.kp_proc.p_comm:"????",sizeof(ps->name));
+        ps->name[sizeof(ps->name)-1]='\0';
+	
+        /* find out user name with the process uid */
+        pwent = getpwuid(ps->uid);
+	strncpy(ps->userName,pwent&&pwent->pw_name? pwent->pw_name:"????",sizeof(ps->userName));
+        ps->userName[sizeof(ps->userName)-1]='\0';
+	
+        /* status, a character, not a number */
+        strcpy(ps->status,(p.kp_proc.p_stat>=1)&&(p.kp_proc.p_stat<=5)? statuses[p.kp_proc.p_stat-1]:"????");
+
+        /* process command line */
+        /*strncpy(ps->cmdline,p.kp_proc.p_args->ar_args,sizeof(ps->cmdline));
+	ps->cmdline[sizeof(ps->cmdline)-1]='\0';*/
+	strcpy(ps->cmdline,"????");
 
 	return (0);
 }
@@ -228,7 +239,7 @@ cleanupProcessList(void)
 	ProcessCount = 0;
 	/* All processes that do not have the active flag set are assumed dead
 	 * and will be removed from the list. The alive flag is cleared. */
-	for (i = 0; i < level_ctnr(ProcessList); i++)
+	for (i = 1; i < level_ctnr(ProcessList); i++)
 	{
 		ProcessInfo* ps = get_ctnr(ProcessList, i);
 		if (ps->alive)
@@ -305,11 +316,11 @@ printProcessList(const char* cmd)
 {
 	int i;
 
-	for (i = 0; i < level_ctnr(ProcessList); i++)
+	for (i = 1; i < level_ctnr(ProcessList); i++)
 	{
 		ProcessInfo* ps = get_ctnr(ProcessList, i);
 
-		printf("%s\t%d\t%d\t%c\t%d\t%d\t%d\t%d\t%3.2f%%\t%3.2f%%\t%s\t%s\n",
+		printf("%s\t%d\t%d\t%s\t%d\t%d\t%d\t%d\t%3.2f%%\t%3.2f%%\t%s\t%s\n",
 			   ps->name, (int) ps->pid, (int) ps->ppid, ps->status,
 			   ps->niceLevel, ps->vmSize, ps->vmRss, ps->vmLib,
 			   ps->userLoad, ps->sysLoad, ps->userName, ps->cmdline);
