@@ -72,11 +72,8 @@ print_error(const char *fmt, ...)
 	va_list az;
 	
 	va_start(az, fmt);
-#ifdef __osf__
-	vsprintf(errmsg, fmt, az);
-#else
-	vsnprintf(errmsg, 1024, fmt, az);
-#endif
+	vsnprintf(errmsg, sizeof(errmsg)-1, fmt, az);
+        errmsg[sizeof(errmsg)-1] = '\0';
 	va_end(az);
 
 	if (CurrentClient)
@@ -90,15 +87,12 @@ log_error(const char *fmt, ...)
 	va_list az;
 	
 	va_start(az, fmt);
-#ifdef __osf__
-	vsprintf(errmsg, fmt, az);
-#else
-	vsnprintf(errmsg, 1024, fmt, az);
-#endif
+	vsnprintf(errmsg, sizeof(errmsg)-1, fmt, az);
+        errmsg[sizeof(errmsg)-1] = '\0';
 	va_end(az);
 
 	openlog("ksysguardd", LOG_PID, LOG_DAEMON);
-	syslog(LOG_ERR, errmsg);
+	syslog(LOG_ERR, "%s", errmsg);
 	closelog();
 }
 
