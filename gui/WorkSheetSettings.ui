@@ -1,15 +1,11 @@
-<!DOCTYPE UI><UI>
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>WorkSheetSettings</class>
 <author>Chris Schlaeger &lt;cs@kde.org&gt;</author>
-<include location="global">locale.h</include>
-<widget>
-    <class>QDialog</class>
-    <property stdset="1">
-        <name>name</name>
+<widget class="QDialog">
+    <property name="name">
         <cstring>WorkSheetSettings</cstring>
     </property>
-    <property stdset="1">
-        <name>geometry</name>
+    <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
@@ -17,244 +13,189 @@
             <height>228</height>
         </rect>
     </property>
-    <property stdset="1">
-        <name>caption</name>
+    <property name="caption">
         <string>Worksheet Properties</string>
     </property>
     <grid>
-        <property stdset="1">
-            <name>margin</name>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
             <number>11</number>
         </property>
-        <property stdset="1">
-            <name>spacing</name>
+        <property name="spacing">
             <number>6</number>
         </property>
-        <widget row="2"  column="0" >
-            <class>QLayoutWidget</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="QLayoutWidget" row="2" column="0">
+            <property name="name">
                 <cstring>Layout4</cstring>
             </property>
             <hbox>
-                <property stdset="1">
-                    <name>margin</name>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
                     <number>0</number>
                 </property>
-                <property stdset="1">
-                    <name>spacing</name>
+                <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QPushButton">
+                    <property name="name">
                         <cstring>okButton</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>OK</string>
+                    <property name="text">
+                        <string>&amp;OK</string>
                     </property>
-                    <property stdset="1">
-                        <name>default</name>
+                    <property name="default">
                         <bool>true</bool>
                     </property>
                 </widget>
                 <spacer>
-                    <property>
-                        <name>name</name>
+                    <property name="name">
                         <cstring>Spacer1</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>orientation</name>
+                    <property name="orientation">
                         <enum>Horizontal</enum>
                     </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
+                    <property name="sizeType">
                         <enum>Expanding</enum>
                     </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
                 </spacer>
-                <widget>
-                    <class>QPushButton</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QPushButton">
+                    <property name="name">
                         <cstring>cancelButton</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
-                        <string>Cancel</string>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
                     </property>
                 </widget>
             </hbox>
         </widget>
-        <widget row="1"  column="0" >
-            <class>QGroupBox</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="QGroupBox" row="1" column="0">
+            <property name="name">
                 <cstring>Properties</cstring>
             </property>
-            <property stdset="1">
-                <name>title</name>
+            <property name="title">
                 <string>Properties</string>
             </property>
             <grid>
-                <property stdset="1">
-                    <name>margin</name>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
                     <number>11</number>
                 </property>
-                <property stdset="1">
-                    <name>spacing</name>
+                <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget row="1"  column="1" >
-                    <class>QSpinBox</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QSpinBox" row="1" column="1">
+                    <property name="name">
                         <cstring>columns</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>maxValue</name>
+                    <property name="maxValue">
                         <number>42</number>
                     </property>
-                    <property stdset="1">
-                        <name>minValue</name>
+                    <property name="minValue">
                         <number>1</number>
                     </property>
-                    <property stdset="1">
-                        <name>value</name>
+                    <property name="value">
                         <number>1</number>
                     </property>
-                    <property>
-                        <name>whatsThis</name>
+                    <property name="whatsThis" stdset="0">
                         <string>Enter the number of columns the sheet should have.</string>
                     </property>
                 </widget>
-                <widget row="2"  column="1" >
-                    <class>QSpinBox</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QSpinBox" row="2" column="1">
+                    <property name="name">
                         <cstring>interval</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>maxValue</name>
+                    <property name="maxValue">
                         <number>300</number>
                     </property>
-                    <property stdset="1">
-                        <name>minValue</name>
+                    <property name="minValue">
                         <number>2</number>
                     </property>
-                    <property stdset="1">
-                        <name>value</name>
+                    <property name="value">
                         <number>2</number>
                     </property>
-                    <property>
-                        <name>whatsThis</name>
+                    <property name="whatsThis" stdset="0">
                         <string>All displays of the sheet are updated at the rate specified here.</string>
                     </property>
                 </widget>
-                <widget row="0"  column="1" >
-                    <class>QSpinBox</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QSpinBox" row="0" column="1">
+                    <property name="name">
                         <cstring>rows</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>maxValue</name>
+                    <property name="maxValue">
                         <number>42</number>
                     </property>
-                    <property stdset="1">
-                        <name>minValue</name>
+                    <property name="minValue">
                         <number>1</number>
                     </property>
-                    <property stdset="1">
-                        <name>value</name>
+                    <property name="value">
                         <number>1</number>
                     </property>
-                    <property>
-                        <name>whatsThis</name>
+                    <property name="whatsThis" stdset="0">
                         <string>Enter the number of rows the sheet should have.</string>
                     </property>
                 </widget>
-                <widget row="2"  column="0" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
                         <cstring>TextLabel1</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
+                    <property name="text">
                         <string>Update interval:</string>
                     </property>
                 </widget>
-                <widget row="0"  column="0" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
                         <cstring>TextLabel2</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
+                    <property name="text">
                         <string>Rows:</string>
                     </property>
                 </widget>
-                <widget row="1"  column="0" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
                         <cstring>TextLabel3</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
+                    <property name="text">
                         <string>Columns:</string>
                     </property>
                 </widget>
-                <widget row="2"  column="2" >
-                    <class>QLabel</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLabel" row="2" column="2">
+                    <property name="name">
                         <cstring>TextLabel5</cstring>
                     </property>
-                    <property stdset="1">
-                        <name>text</name>
+                    <property name="text">
                         <string>sec.</string>
                     </property>
                 </widget>
             </grid>
         </widget>
-        <widget row="0"  column="0" >
-            <class>QGroupBox</class>
-            <property stdset="1">
-                <name>name</name>
+        <widget class="QGroupBox" row="0" column="0">
+            <property name="name">
                 <cstring>titleFrame</cstring>
             </property>
-            <property stdset="1">
-                <name>title</name>
+            <property name="title">
                 <string>Title</string>
             </property>
             <grid>
-                <property stdset="1">
-                    <name>margin</name>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
                     <number>11</number>
                 </property>
-                <property stdset="1">
-                    <name>spacing</name>
+                <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget row="0"  column="0" >
-                    <class>QLineEdit</class>
-                    <property stdset="1">
-                        <name>name</name>
+                <widget class="QLineEdit" row="0" column="0">
+                    <property name="name">
                         <cstring>sheetName</cstring>
                     </property>
-                    <property>
-                        <name>toolTip</name>
+                    <property name="toolTip" stdset="0">
                         <string>Enter the title of the worksheet here.</string>
                     </property>
                 </widget>
@@ -276,4 +217,8 @@
         <slot>reject()</slot>
     </connection>
 </connections>
+<includes>
+    <include location="global" impldecl="in declaration">locale.h</include>
+</includes>
+<layoutdefaults spacing="6" margin="11"/>
 </UI>
