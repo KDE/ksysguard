@@ -84,7 +84,7 @@ void StyleEngine::saveProperties( KConfig *cfg )
   cfg->writeEntry( "fgColor2", mSecondForegroundColor );
   cfg->writeEntry( "alarmColor", mAlarmColor );
   cfg->writeEntry( "backgroundColor", mBackgroundColor );
-  cfg->writeEntry(" fontSize", mFontSize );
+  cfg->writeEntry( "fontSize", mFontSize );
 
   QStringList list;
   QValueList<QColor>::Iterator it;
