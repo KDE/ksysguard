@@ -214,7 +214,8 @@ OSStatus::getCpuCount(void)
 				 * purpose.
 				 */
 				error = false;
-				
+				errMessage = "";
+
 				if (cpuCount > 1)
 				{
 					/*
@@ -225,6 +226,7 @@ OSStatus::getCpuCount(void)
 					sysTicksX = new int[cpuCount];
 					niceTicksX = new int[cpuCount];
 					idleTicksX = new int[cpuCount];
+					return (cpuCount - 1);
 				}
 				return (cpuCount);
 			}
