@@ -116,6 +116,12 @@ PrivateListView::PrivateListView(QWidget *parent, const char *name)
 
 void PrivateListView::update(const QString& answer)
 {
+	setUpdatesEnabled(false);
+	viewport()->setUpdatesEnabled(false);
+
+	int vpos = verticalScrollBar()->value();
+	int hpos = horizontalScrollBar()->value();
+
 	clear();
 
 	KSGRD::SensorTokenizer lines(answer, '\n');
@@ -133,6 +139,14 @@ void PrivateListView::update(const QString& answer)
 
 		insertItem(item);
 	}
+
+	verticalScrollBar()->setValue(vpos);
+	horizontalScrollBar()->setValue(hpos);
+
+	viewport()->setUpdatesEnabled(true);
+	setUpdatesEnabled(true);
+
+	triggerUpdate();
 }
 
 int PrivateListView::columnType( uint pos ) const
