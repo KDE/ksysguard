@@ -65,7 +65,7 @@ Workspace::~Workspace()
 
 void Workspace::saveProperties( KConfig *cfg )
 {
-  cfg->writeEntry( "WorkDir", mWorkDir );
+  cfg->writePathEntry( "WorkDir", mWorkDir );
   cfg->writeEntry( "CurrentSheet", tabLabel( currentPage() ) );
 
   QPtrListIterator<WorkSheet> it( mSheetList);
@@ -75,14 +75,14 @@ void Workspace::saveProperties( KConfig *cfg )
     if ( !(*it)->fileName().isEmpty() )
       list.append( (*it)->fileName() );
 
-  cfg->writeEntry( "Sheets", list );
+  cfg->writePathEntry( "Sheets", list );
 }
 
 void Workspace::readProperties( KConfig *cfg )
 {
   QString currentSheet;
 
-  mWorkDir = cfg->readEntry( "WorkDir" );
+  mWorkDir = cfg->readPathEntry( "WorkDir" );
 
   if ( mWorkDir.isEmpty() ) {
     /* If workDir is not specified in the config file, it's
@@ -106,7 +106,7 @@ void Workspace::readProperties( KConfig *cfg )
     currentSheet = i18n( "System Load" );
   } else {
     currentSheet = cfg->readEntry( "CurrentSheet" );
-    QStringList list = cfg->readListEntry( "Sheets" );
+    QStringList list = cfg->readPathListEntry( "Sheets" );
     for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it )
       restoreWorkSheet( *it );
   }
