@@ -37,6 +37,7 @@
 #include "ProcessList.h"
 #include "PWUIDCache.h"
 #include "../../gui/SignalIDs.h"
+#include "ksysguardd.h"
 
 #ifndef PAGE_SIZE /* Needed for SPARC */
 #include <asm/page.h>
@@ -414,8 +415,11 @@ initProcessList(void)
 					printProcessCountInfo);
 	registerMonitor("ps", "table", printProcessList, printProcessListInfo);
 
-	registerCommand("kill", killProcess);
-	registerCommand("setpriority", setPriority);
+	if (!RunAsDaemon)
+	{
+		registerCommand("kill", killProcess);
+		registerCommand("setpriority", setPriority);
+	}
 }
 
 void
@@ -542,22 +546,22 @@ killProcess(const char* cmd)
 		switch(errno)
 		{
 		case EINVAL:
-			fprintf(currentClient, "4\n");
+			fprintf(currentClient, "4\t%d\n", pid);
 			break;
 		case ESRCH:
-			fprintf(currentClient, "3\n");
+			fprintf(currentClient, "3\t%d\n", pid);
 			break;
 		case EPERM:
-			fprintf(currentClient, "2\n");
+			fprintf(currentClient, "2\t%d\n", pid);
 			break;
 		default:
-			fprintf(currentClient, "1\n");	/* unkown error */
+			fprintf(currentClient, "1\t%d\n", pid);	/* unkown error */
 			break;
 		}
 
 	}
 	else
-		fprintf(currentClient, "0\n");
+		fprintf(currentClient, "0\t%d\n", pid);
 }
 
 void

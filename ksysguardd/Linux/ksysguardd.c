@@ -34,6 +34,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+#include "ksysguardd.h"
 #include "Dispatcher.h"
 #include "Command.h"
 #include "ProcessList.h"
@@ -51,12 +52,10 @@
 #define MAX_CLIENTS	100
 #define PORT_NUMBER	2001
 
-/* Special version of perror for use in signal handler functions. */
-#define print(a) write(STDOUT_FILENO, (a), strlen(a))
-
 static int client_list[MAX_CLIENTS];
 static int curr_socket;
-int QuitApp = 0;
+static int QuitApp = 0;
+int RunAsDaemon = 0;
 
 static void
 readCommand(char* cmdBuf)
@@ -171,7 +170,6 @@ main(int argc, char* argv[])
 	fd_set fds;
 	struct sockaddr_in addr;
 	socklen_t addr_len;
-	int use_socket = 0;
 	int socket_port = PORT_NUMBER;
 
 	opterr = 0;
@@ -181,7 +179,7 @@ main(int argc, char* argv[])
 				socket_port = atoi(optarg);
 				break;
 			case 'd':
-				use_socket = 1;
+				RunAsDaemon = 1;
 				break;
 			case '?':
 				fprintf(stderr, "usage: %s [-d] [-p port]\n", argv[0]);
@@ -210,7 +208,7 @@ main(int argc, char* argv[])
 		;
 	ReconfigureFlag = 0;
 
-	if (use_socket) {
+	if (RunAsDaemon) {
 		make_daemon();
 
 		if ((socket = createServerSocket(socket_port)) < 0) {
@@ -276,7 +274,7 @@ main(int argc, char* argv[])
 		}
 	}
 
-	if (use_socket == 0) {
+	if (RunAsDaemon == 0) {
 		currentClient = stdout;
 		
 	printf("ksysguardd %s  (c) 1999, 2000 Chris Schlaeger <cs@kde.org>\n"

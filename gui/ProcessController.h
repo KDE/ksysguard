@@ -131,6 +131,8 @@ private:
 
 	QVBoxLayout* gm;
 
+	bool killSupported;
+
 	/// The process list.
     ProcessList* pList;
 

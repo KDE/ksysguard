@@ -104,11 +104,14 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	connect(bRefresh, SIGNAL(clicked()), this, SLOT(updateList()));
 
 	// Create the 'Kill' button.
-	// TODO: we need to check first if the backend supports the 'kill' command.
 	bKill = new QPushButton(i18n("&Kill"), this, "bKill");
 	CHECK_PTR(bKill);
 	bKill->setMinimumSize(bKill->sizeHint());
 	connect(bKill, SIGNAL(clicked()), this, SLOT(killProcess()));
+	/* Disable the kill button until we know that the daemon supports the
+	 * kill command. */
+	bKill->setEnabled(false);
+	killSupported = false;
 
 	// Setup the geometry management.
 	gm = new QVBoxLayout(this, 10);
@@ -154,6 +157,7 @@ ProcessController::addSensor(const QString& hostName,
 {
 	registerSensor(hostName, sensorName, title);
 	sendRequest(hostName, "ps?", 1);
+	sendRequest(hostName, "test kill", 4);
 
 	if (title.isEmpty())
 		frame->setTitle(QString(i18n("%1: Running Processes")).arg(hostName));
@@ -190,9 +194,10 @@ ProcessController::killProcess()
 	}
 	else
 	{
-		if (KMessageBox::warningYesNo(this,
-									  i18n("Do you want to kill the\n"
-										   "selected processes?")) ==
+		if (KMessageBox::warningYesNo(
+			this, QString(i18n("Do you want to kill the\n"
+							   "selected %1 process(es)?"))
+			.arg(selectedPIds.count())) ==
 			KMessageBox::No)
 		{
 			return;
@@ -258,7 +263,38 @@ ProcessController::answerReceived(int id, const QString& answer)
 		}
 		break;
 	case 3:
-		// result of kill operation, we currently don't care about it.
+	{
+		// result of kill operation
+		kdDebug() << answer << endl;
+		SensorTokenizer vals(answer, '\t');
+		switch (vals[0].toInt())
+		{
+		case 0:	// successfull kill operation
+			break;
+		case 1:	// unknown error
+			SensorMgr->notify(
+				QString(i18n("Error during kill of process %1!"))
+				.arg(vals[1]));
+			break;
+		case 2:
+			SensorMgr->notify(
+				QString(i18n("Insufficient permissions to kill "
+							 "process %1!")).arg(vals[1]));
+			break;
+		case 3:
+			SensorMgr->notify(
+				QString(i18n("Process %1 disappeared already!")).arg(vals[1]));
+			break;
+		case 4:
+			SensorMgr->notify(i18n("Invalid Signal!"));
+			break;
+		}
+		break;
+	}
+	case 4:
+		killSupported = (answer.toInt() == 1);
+		pList->setKillSupported(killSupported);
+		bKill->setEnabled(killSupported);
 		break;
 	}
 }

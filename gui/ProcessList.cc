@@ -200,6 +200,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 
 	sensorOk = false;
 	modified = false;
+	killSupported = false;
 }
 
 ProcessList::~ProcessList()
@@ -208,6 +209,19 @@ ProcessList::~ProcessList()
 	delete icons;
 
 	delete(headerPM);
+}
+
+const QValueList<int>& 
+ProcessList::getSelectedPIds()
+{
+	selectedPIds.clear();
+	// iterate through all items of the listview and find selected processes
+    QListViewItemIterator it(this);
+	for ( ; it.current(); ++it )
+		if (it.current()->isSelected())
+			selectedPIds.append(it.current()->text(1).toInt());
+
+	return (selectedPIds);
 }
 
 bool
@@ -660,10 +674,8 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 	processPM->insertItem(i18n("Select all processes"), 1);
 	processPM->insertItem(i18n("Unselect all processes"), 2);
 
-	/* TODO: We need to check if the back-end actually supports the kill
-	 * command. */
 	QPopupMenu* signalPM = new QPopupMenu(processPM);
-	if (lvi->isSelected())
+	if (killSupported && lvi->isSelected())
 	{
 		processPM->insertSeparator();
 		processPM->insertItem(i18n("Select all child processes"), 3);

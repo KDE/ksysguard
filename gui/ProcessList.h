@@ -113,10 +113,7 @@ public:
 		emit(processSelected(-1));
 	}
 
-	const QValueList<int>& getSelectedPIds()
-	{
-		return (selectedPIds);
-	}
+	const QValueList<int>& getSelectedPIds();
 
 	/**
 	 * The udpate function can be used to update the displayed process
@@ -132,6 +129,11 @@ public:
 	}
 
 	void setSensorOk(bool ok);
+
+	void setKillSupported(bool supported)
+	{
+		killSupported = supported;
+	}
 
 	bool load(QDomElement& el);
 	bool save(QDomDocument& doc, QDomElement& display);
@@ -252,6 +254,7 @@ private:
 	bool increasing;
 	int refreshRate;
 	int currColumn;
+	bool killSupported;
 	bool treeViewEnabled;
 	bool openAll;
 	bool sensorOk;
