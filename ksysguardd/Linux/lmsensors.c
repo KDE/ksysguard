@@ -21,6 +21,8 @@
 
 //#define HAVE_SENSORS_SENSORS_H
 
+#include <config.h>
+
 #ifdef HAVE_SENSORS_SENSORS_H
 #include <stdio.h>
 #include <stdlib.h>
