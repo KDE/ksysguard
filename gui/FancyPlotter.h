@@ -57,11 +57,6 @@ public:
 		plotter->addSample(s0, s1, s2, s3, s4);
 	}
 
-	void setLowPass(bool lp)
-	{
-		plotter->setLowPass(lp);
-	}
-
 	virtual QSize sizeHint(void);
 
 	virtual void answerReceived(int id, const QString& s);

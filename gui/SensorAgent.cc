@@ -68,7 +68,7 @@ bool
 SensorAgent::start(const QString& host_, const QString& shell_,
 				   const QString& command_)
 {
-	daemon = new KProcess;
+	daemon = new KShellProcess;
 	CHECK_PTR(daemon);
 
 	host = host_;
@@ -86,34 +86,10 @@ SensorAgent::start(const QString& host_, const QString& shell_,
 
 	QString cmd;
 	if (command != "")
-	{
-		// We assume parameters to be seperated by a single blank.
-		QString s = command;
-		while (!s.isEmpty())
-		{
-			int sep;
-
-			if ((sep = s.find(' ')) < 0)
-			{
-				*daemon << s.latin1();
-				cmd += s + " ";
-				break;
-			}
-			else
-			{
-				*daemon << s.left(sep).latin1();
-				cmd += s.left(sep) + " ";
-				s = s.remove(0, sep + 1);
-			}
-		}
-	}
+		cmd =  command;
 	else
-	{
-		*daemon << shell;
-		*daemon << host;
-		*daemon << "ksysguardd";
 		cmd = shell + " " + host + " ksysguardd";
-	}
+	*daemon << cmd;
 
 	if (!daemon->start(KProcess::NotifyOnExit, KProcess::All))
 	{
@@ -215,40 +191,14 @@ void
 SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 {
 	QString errorBuffer = QString::fromLocal8Bit(buffer, buflen);
-	kdDebug () << "ERR: " << errorBuffer << endl;
-
-	if (errorBuffer.find("assword: ") > 0)
-	{
-#if 0
-		/* Unfortunately ssh reads the password from the controlling
-		 * terminal and not from stdin. Since KProcess does not emulate
-		 * a terminal we have no way of passing the password to ssh.
-		 * So I disable the password dialog until this has been fixed. */
-		QCString password;
-		int result = KPasswordDialog::
-			getPassword(password, errorBuffer);
-		QCString cmdWithNL;
-		if (result == KPasswordDialog::Accepted)
-			cmdWithNL = password + "\n";
-		else
-			cmdWithNL = "\n";
-		daemon->writeStdin(cmdWithNL.data(), cmdWithNL.length());
-		pwSent = true;
-#endif
-		KMessageBox::error(0,
-			"KSysGuard does not support password entry for ssh.\n"
-			"Please add the contense of your ~/.ssh/identity.pub file\n"
-			"on the local hosts to your ~/.ssh/authorized_keys file\n"
-			"on the remote hosts.");
-		sensorManager->disengage(this);
-	}
+	KMessageBox::error(0, QString(i18n("Message from %1:\n%2").arg(host)
+								  .arg(errorBuffer)));
 }
 
 void
 SensorAgent::daemonExited(KProcess*)
 {
 	daemonOnLine = false;
-	kdDebug () << "ksysguardd exited" << endl;
 	sensorManager->hostLost(this);
 	sensorManager->disengage(this);
 }

@@ -46,7 +46,6 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name, double min,
 	setBackgroundMode(NoBackground);
 
 	beams = samples = 0;
-	lowPass = FALSE;
 	autoRange = (min == max);
 
 	// Anything smaller than this does not make sense.
@@ -93,34 +92,17 @@ SignalPlotter::addSample(double s0, double s1, double s2, double s3, double s4)
 	for (int i = 0; i < beams; i++)
 		memmove(beamData[i], beamData[i] + 1, (samples - 1) * sizeof(double));
 
-	if (lowPass)
-	{
-		/* We use an FIR type low-pass filter to make the display look
-		 * a little nicer without becoming too inaccurate. */
-		if (beams > 0)
-			beamData[0][samples - 1] = (beamData[0][samples - 2] + s0) / 2;
-		if (beams > 1)
-			beamData[1][samples - 1] = (beamData[1][samples - 2] + s1) / 2;
-		if (beams > 2)
-			beamData[2][samples - 1] = (beamData[2][samples - 2] + s2) / 2;
-		if (beams > 3)
-			beamData[3][samples - 1] = (beamData[3][samples - 2] + s3) / 2;
-		if (beams > 4)
-			beamData[4][samples - 1] = (beamData[4][samples - 2] + s4) / 2;
-	}
-	else
-	{
-		if (beams > 0)
-			beamData[0][samples - 1] = s0;
-		if (beams > 1)
-			beamData[1][samples - 1] = s1;
-		if (beams > 2)
-			beamData[2][samples - 1] = s2;
-		if (beams > 3)
-			beamData[3][samples - 1] = s3;
-		if (beams > 4)
-			beamData[4][samples - 1] = s4;
-	}
+	if (beams > 0)
+		beamData[0][samples - 1] = s0;
+	if (beams > 1)
+		beamData[1][samples - 1] = s1;
+	if (beams > 2)
+		beamData[2][samples - 1] = s2;
+	if (beams > 3)
+		beamData[3][samples - 1] = s3;
+	if (beams > 4)
+		beamData[4][samples - 1] = s4;
+
 	for (int i = 0; i < beams; i++)
 		if (beamData[i][samples - 1] <= minValue ||
 			beamData[i][samples - 1] >= maxValue)

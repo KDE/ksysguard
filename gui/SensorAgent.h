@@ -27,6 +27,7 @@
 
 class QString;
 class KProcess;
+class KShellProcess;
 class SensorClient;
 class SensorManager;
 
@@ -101,7 +102,7 @@ private:
 
 	SensorManager* sensorManager;
 
-	KProcess* daemon;
+	KShellProcess* daemon;
 	bool daemonOnLine;
 	bool pwSent;
 	QString host;

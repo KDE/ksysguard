@@ -43,9 +43,10 @@ SensorManager::SensorManager()
 	// TODO: translated descriptions not yet implemented.
 
 	units.setAutoDelete(TRUE);
-	units.insert("1/s", new QString(i18n("1/s")));
+	units.insert("1/s", new QString(i18n("the unit 1 per second", "1/s")));
 	units.insert("kBytes", new QString(i18n("kBytes")));
-	units.insert("min", new QString(i18n("min")));
+	units.insert("min", new QString(i18n("the unit minutes", "min")));
+	units.insert("MHz", new QString(i18n("the frequency unit", "MHz")));
 }
 
 SensorManager::~SensorManager()

@@ -88,6 +88,7 @@ SensorBrowser::SensorBrowser(QWidget* parent, SensorManager* sm,
 	dict.insert("loadavg1", new QString(i18n("Load Average (1 min)")));
 	dict.insert("loadavg5", new QString(i18n("Load Average (5 min)")));
 	dict.insert("loadavg15", new QString(i18n("Load Average (15 min)")));
+	dict.insert("clock", new QString(i18n("Clock Frequency")));
 
 	for (int i = 0; i < 32; i++)
 	{

@@ -57,11 +57,6 @@ public:
 
 	void changeRange(int beam, double min, double max);
 
-	void setLowPass(bool lp)
-	{
-		lowPass = lp;
-	}
-
 protected:
 	virtual void resizeEvent(QResizeEvent*);
 	virtual void paintEvent(QPaintEvent*);
@@ -72,7 +67,6 @@ private:
 	double minValue;
 	double maxValue;
 	bool autoRange;
-	bool lowPass;
 	double* beamData[MAXBEAMS];
 	QColor beamColor[MAXBEAMS];
 	int beams;

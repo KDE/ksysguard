@@ -23,8 +23,7 @@
 	KSysGuard has been written with some source code and ideas from
 	ktop (<1.0). Early versions of ktop have been written by Bernd
 	Johannes Wuebben <wuebben@math.cornell.edu> and Nicolas Leclercq
-	<nicknet@planete.net>.  While I tried to preserve their original
-	ideas, KSysGuard is a much more powerful tool.
+	<nicknet@planete.net>.
 
 	$Id$
 */
@@ -32,6 +31,8 @@
 #include <assert.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <stdlib.h>
 
 #include <qstringlist.h>
 
@@ -58,6 +59,7 @@
 #include "ksysguard.moc"
 
 static const char* Description = I18N_NOOP("KDE System Guard");
+static int CtrlTty;
 TopLevel* Toplevel;
 
 /*
@@ -412,10 +414,21 @@ static const KCmdLineOptions options[] =
 int
 main(int argc, char** argv)
 {
-	/* Create a new session. This is needed so the ssh calls do not use
-	 * the controlling terminal for password requests. ssh will use
-	 * ssh-askpass if it was compiled with X support. */
+#ifndef NDEBUG
+	/* This will put ksysguard in it's on session not having a controlling
+	 * terminal attached to it. This prevents ssh from using this terminal
+	 * for password requests. Unfortunately you now need a ssh with
+	 * ssh-askpass support to popup an X dialog to enter the password. */
+	pid_t pid;
+	if ((pid = fork()) < 0)
+		return (-1);
+	else
+		if (pid != 0)
+		{
+			exit(0);
+		}
 	setsid();
+#endif
 
 	KAboutData aboutData("ksysguard", I18N_NOOP("KDE System Guard"),
 						 KSYSGUARD_VERSION, Description,
