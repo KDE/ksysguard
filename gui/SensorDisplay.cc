@@ -29,6 +29,7 @@
 #include <kapp.h>
 #include <klocale.h>
 #include <kiconloader.h>
+#include <kmessagebox.h>
 
 #include "SensorDisplay.h"
 #include "SensorDisplay.moc"
@@ -63,6 +64,18 @@ SensorDisplay::~SensorDisplay()
 void
 SensorDisplay::registerSensor(SensorProperties* sp)
 {
+	/* Make sure that we have a connection established to the specified
+	 * host. When a work sheet has been saved while it had dangling
+	 * sensors, the connect info is not saved in the work sheet. In such
+	 * a case the user can re-enter the connect information and the
+	 * connection will be established. */
+	if (!SensorMgr->engageHost(sp->hostName))
+	{
+		QString msg = i18n("Impossible to connect to \'%1\'!")
+			.arg(sp->hostName);
+		KMessageBox::error(this, msg);
+	}
+
 	sensors.append(sp);
 }
 

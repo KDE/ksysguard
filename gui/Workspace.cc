@@ -75,7 +75,8 @@ Workspace::saveProperties(KConfig* cfg)
 	int i;
 	QStringList list;
 	for (i = 0; it.current(); ++it, ++i)
-		list.append((*it)->getFileName());
+		if ((*it)->getFileName() != "")
+			list.append((*it)->getFileName());
 	cfg->writeEntry("Sheets", list);
 }
 

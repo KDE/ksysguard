@@ -206,14 +206,6 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 			return;
 		}
 
-		if (!SensorMgr->engageHost(hostName))
-		{
-			QString msg = i18n("Impossible to connect to \'%1\'!")
-				.arg(hostName);
-			KMessageBox::error(this, msg);
-			return;
-		}
-
 		int dock = findDock(ev->pos());
 		if (docks[dock]->isA("QFrame"))
 		{
