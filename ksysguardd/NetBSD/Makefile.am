@@ -1,4 +1,6 @@
-AM_CFLAGS = -Wall
+#
+# $Id$
+#
 
 INCLUDES = -I$(srcdir)/../../CContLib -I$(srcdir)/..
 
