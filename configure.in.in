@@ -3,6 +3,7 @@ AC_MSG_CHECKING([if ksysguardd can be compiled])
 case "$host" in 
   *-*-linux*) ksysguardd_compile=yes; UNAME='Linux' ;;
   *-*-freebsd*) ksysguardd_compile=yes; UNAME='FreeBSD' ;;
+  *-*-netbsd*) ksysguardd_compile=yes; UNAME='NetBSD' ;;
   *-*-solaris*) ksysguardd_compile=yes; UNAME='Solaris' ;;
   *-*-osf*) ksysguardd_compile=yes; UNAME='Tru64' ;;
   *-*-irix*) ksysguardd_compile=yes; UNAME='Irix' ;;
@@ -14,6 +15,7 @@ AC_MSG_RESULT($ksysguardd_compile)
 AM_CONDITIONAL(include_ksysguardd, test "$ksysguardd_compile" = "yes")
 AM_CONDITIONAL(include_ksysguardd_linux, test "$UNAME" = Linux)
 AM_CONDITIONAL(include_ksysguardd_freebsd, test "$UNAME" = FreeBSD)
+AM_CONDITIONAL(include_ksysguardd_netbsd, test "$UNAME" = NetBSD)
 AM_CONDITIONAL(include_ksysguardd_solaris, test "$UNAME" = Solaris)
 AM_CONDITIONAL(include_ksysguardd_tru64, test "$UNAME" = Tru64)
 AM_CONDITIONAL(include_ksysguardd_irix, test "$UNAME" = Irix)
