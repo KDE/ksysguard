@@ -630,7 +630,7 @@ ProcessList::addProcess(OSProcess* p, ProcessLVI* pli)
 
 	// process nice level
 	if (tc->visible && tc->supported)
-		pli->setText(col++, s.sprintf("%d", p->getNiceLevel()));
+		pli->setText(col++, s.setNum(p->getNiceLevel()));
 	tc++;
 
 	// process status
