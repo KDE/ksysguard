@@ -46,6 +46,7 @@
 #include "ksysguardd.h"
 #include "loadavg.h"
 #include "logfile.h"
+#include "netdev.h"
 #include "apm.h"
 #include <version.h>
 
