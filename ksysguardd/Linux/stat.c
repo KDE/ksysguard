@@ -340,14 +340,14 @@ static void processStat( void )
       int id;
       sscanf( tag + 3, "%d", &id );
       updateCPULoad( buf, &SMPLoad[ id ]  );
-    } else if ( processDisk( tag, buf, "disk", 0 ) );
-    else if ( processDisk( tag, buf, "disk_rio", 1 ) );
-    else if ( processDisk( tag, buf, "disk_wio", 2 ) );
-    else if ( processDisk( tag, buf, "disk_rblk", 3 ) );
-    else if ( processDisk( tag, buf, "disk_wblk", 4 ) );
-    else if ( strcmp( "disk_io:", tag ) == 0 )
+    } else if ( processDisk( tag, buf, "disk", 0 ) ) {
+    } else if ( processDisk( tag, buf, "disk_rio", 1 ) ) {
+    } else if ( processDisk( tag, buf, "disk_wio", 2 ) ) {
+    } else if ( processDisk( tag, buf, "disk_rblk", 3 ) ) {
+    } else if ( processDisk( tag, buf, "disk_wblk", 4 ) ) {
+    } else if ( strcmp( "disk_io:", tag ) == 0 ) {
       processDiskIO( buf );
-    else if ( strcmp( "page", tag ) == 0 ) {
+    } else if ( strcmp( "page", tag ) == 0 ) {
       unsigned long v1, v2;
       sscanf( buf + 5, "%lu %lu", &v1, &v2 );
       PageIn = v1 - OldPageIn;
