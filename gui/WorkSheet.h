@@ -1,7 +1,7 @@
 /*
-    KKSysGuard, the KDE System Guard
+    KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999 - 2002 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 1999 - 2002 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,120 +16,115 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-	Please do not commit any changes without consulting me first. Thanks!
+    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+    Please do not commit any changes without consulting me first. Thanks!
 
-	$Id$
+    $Id$
 */
 
-#ifndef _WorkSheet_h_
-#define _WorkSheet_h_
+#ifndef KSG_WORKSHEET_H
+#define KSG_WORKSHEET_H
 
-#include <qvaluelist.h>
 #include <qwidget.h>
 
 #include <SensorDisplay.h>
 
-class QGridLayout;
+class QDomElement;
 class QDragEnterEvent;
 class QDropEvent;
+class QGridLayout;
 class QString;
-class QDomElement;
-class QTextStream;
+class QStringList;
 
 /**
- * A WorkSheet contains the displays to visualize the sensor results. When
- * creating the WorkSheet you must specify the number of columns. Displays
- * can be added and removed on the fly. The grid layout will handle the
- * layout. The number of columns can not be changed. Displays are added by
- * dragging a sensor from the sensor browser over the WorkSheet.
+  A WorkSheet contains the displays to visualize the sensor results. When
+  creating the WorkSheet you must specify the number of columns. Displays
+  can be added and removed on the fly. The grid layout will handle the
+  layout. The number of columns can not be changed. Displays are added by
+  dragging a sensor from the sensor browser over the WorkSheet.
  */
 class WorkSheet : public QWidget, public KSGRD::SensorBoard
 {
-	Q_OBJECT
-public:
-	WorkSheet(QWidget* parent);
-	WorkSheet(QWidget* parent, uint rows, uint columns, uint interval);
-	~WorkSheet();
+  Q_OBJECT
 
-	bool load(const QString& fN);
-	bool save(const QString& fN);
+  public:
+    WorkSheet( QWidget* parent, const char *name = 0 );
+    WorkSheet( uint rows, uint columns, uint interval, QWidget* parent,
+               const char *name = 0  );
+    ~WorkSheet();
 
-	void cut();
-	void copy();
-	void paste();
+    bool load( const QString &fileName );
+    bool save( const QString &fileName );
 
-	const QString& getFileName() const
-	{
-		return (fileName);
-	}
+    void cut();
+    void copy();
+    void paste();
 
-	void setFileName(const QString& fN)
-	{
-		fileName = fN;
-		setModified(true);
-	}
+    void setFileName( const QString &fileName );
+    const QString& fileName() const;
 
-	bool hasBeenModified() const
-	{
-		return modified;
-	}
+    bool modified() const;
 
-	void setName(const QString& _name)
-	{
-		name = _name;
-	}
+    void setTitle( const QString &title );
 
-	KSGRD::SensorDisplay* addDisplay(const QString& hostname,
-							  const QString& monitor,
-							  const QString& sensorType,
-							  const QString& sensorDescr, uint r, uint c);
-	void settings();
+    KSGRD::SensorDisplay* addDisplay( const QString &hostname,
+                                      const QString &monitor,
+                                      const QString &sensorType,
+                                      const QString &sensorDescr,
+                                      uint rows, uint columns );
 
-	void setIsOnTop(bool onTop);
-	
-public slots:
-	void showPopupMenu(KSGRD::SensorDisplay* display);
-	void setModified(bool mfd);
-	void applyStyle();
+    void settings();
 
-signals:
-	void sheetModified(QWidget* sheet);
+    void setIsOnTop( bool onTop );
 
-protected:
-	void dragEnterEvent(QDragEnterEvent* ev);
-	void dropEvent(QDropEvent* ev);
-	void customEvent(QCustomEvent* ev);
+  public slots:
+    void showPopupMenu( KSGRD::SensorDisplay *display );
+    void setModified( bool mfd );
+    void applyStyle();
 
-private:
-	void removeDisplay(KSGRD::SensorDisplay* display);
+  signals:
+    void sheetModified( QWidget *sheet );
 
-	bool replaceDisplay(uint r, uint c, QDomElement& element);
+  protected:
+	  void dragEnterEvent( QDragEnterEvent* );
+    void dropEvent( QDropEvent* );
+    void customEvent( QCustomEvent* );
 
-	void replaceDisplay(uint r, uint c, KSGRD::SensorDisplay* display = 0);
+  private:
+    void removeDisplay( KSGRD::SensorDisplay *display );
 
-	void collectHosts(QValueList<QString>& l);
+    bool replaceDisplay( uint row, uint column, QDomElement& element );
 
-	void createGrid(uint r, uint c);
+    void replaceDisplay( uint row, uint column,
+                         KSGRD::SensorDisplay* display = 0 );
 
-	void resizeGrid(uint r, uint c);
+    void collectHosts( QStringList &list );
 
-	KSGRD::SensorDisplay* currentDisplay(uint* r = 0, uint* c = 0);
+    void createGrid( uint rows, uint columns );
 
-	void fixTabOrder();
+    void resizeGrid( uint rows, uint columns );
 
-	QString currentDisplayAsXML();
+    KSGRD::SensorDisplay* currentDisplay( uint* row = 0, uint* column = 0 );
 
-	QString fileName;
-	QString name;
-	bool modified;
-	uint rows;
-	uint columns;
-	QGridLayout* lm;
-	/* This two dimensional array stores the pointers to the sensor displays
-	 * or if no sensor is present at a position a pointer to a dummy widget.
-	 * The size of the array corresponds to the size of the grid layout. */
-	KSGRD::SensorDisplay*** displays;
-} ;
+    void fixTabOrder();
+
+    QString currentDisplayAsXML();
+
+    bool mModified;
+
+    uint mRows;
+    uint mColumns;
+
+    QGridLayout* mGridLayout;
+    QString mFileName;
+    QString mTitle;
+
+    /**
+      This two dimensional array stores the pointers to the sensor displays
+	    or if no sensor is present at a position a pointer to a dummy widget.
+  	  The size of the array corresponds to the size of the grid layout.
+     */
+    KSGRD::SensorDisplay*** mDisplayList;
+};
 
 #endif

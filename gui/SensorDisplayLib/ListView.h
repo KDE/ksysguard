@@ -56,7 +56,7 @@ class PrivateListViewItem : public QListViewItem
 public:
 	PrivateListViewItem(PrivateListView *parent = 0);
 
-	void paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment) {
+	void paintCell(QPainter *p, const QColorGroup &, int column, int width, int alignment) {
 		QColorGroup cgroup = _parent->colorGroup();
 		QListViewItem::paintCell(p, cgroup, column, width, alignment);
 		p->setPen(cgroup.color(QColorGroup::Link));

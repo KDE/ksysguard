@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,73 +16,69 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-	not commit any changes without consulting me first. Thanks!
+    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
+    not commit any changes without consulting me first. Thanks!
 
-	$Id$
+    $Id$
 */
 
-#ifndef _Workspace_h_
-#define _Workspace_h_
+#ifndef KSG_WORKSPACE_H
+#define KSG_WORKSPACE_H
 
 #include <qptrlist.h>
-#include <qstring.h>
 #include <qtabwidget.h>
 
-#include <kurl.h>
-
 class KConfig;
+class KURL;
+class QString;
 class WorkSheet;
 
 class Workspace : public QTabWidget
 {
-	Q_OBJECT
-public:
-	Workspace(QWidget* parent, const char* name = 0);
-	~Workspace();
+  Q_OBJECT
 
-	void saveProperties(KConfig* cfg);
-	void readProperties(KConfig* cfg);
-	bool saveOnQuit();
+  public:
+    Workspace( QWidget* parent, const char* name = 0 );
+    ~Workspace();
 
-	void showProcesses();
+    void saveProperties( KConfig* );
+    void readProperties( KConfig* );
 
-	bool restoreWorkSheet(const QString& fileName,
-						  const QString& newName = QString::null);
-	void deleteWorkSheet(const QString& fileName);
+    bool saveOnQuit();
 
-public slots:
-	void newWorkSheet();
-	void loadWorkSheet();
-	void loadWorkSheet(const KURL&);
-	void saveWorkSheet()
-	{
-		saveWorkSheet((WorkSheet*) currentPage());
-	}
-	void saveWorkSheet(WorkSheet* sheet);
-	void saveWorkSheetAs()
-	{
-		saveWorkSheetAs((WorkSheet*) currentPage());
-	}
-	void saveWorkSheetAs(WorkSheet* sheet);
-	void deleteWorkSheet();
-	void removeAllWorkSheets();
-	void cut();
-	void copy();
-	void paste();
-	void configure();
-	void updateCaption(QWidget*);
-	void applyStyle();
-	
-signals:
-	void announceRecentURL(const KURL& url);
-	void setCaption(const QString& text, bool modified);
+    void showProcesses();
 
-private:
-	QPtrList<WorkSheet> sheets;
-	/// Directory that was used for the last load/save.
-	QString workDir;
-	bool autoSave;
-} ;
+    bool restoreWorkSheet( const QString &fileName,
+                           const QString &newName = QString::null );
+    void deleteWorkSheet( const QString &fileName );
+
+  public slots:
+    void newWorkSheet();
+    void loadWorkSheet();
+    void loadWorkSheet( const KURL& );
+    void saveWorkSheet();
+    void saveWorkSheet( WorkSheet *sheet );
+    void saveWorkSheetAs();
+    void saveWorkSheetAs( WorkSheet *sheet );
+    void deleteWorkSheet();
+    void removeAllWorkSheets();
+    void cut();
+    void copy();
+    void paste();
+    void configure();
+    void updateCaption( QWidget* );
+    void applyStyle();
+
+  signals:
+    void announceRecentURL( const KURL &url );
+    void setCaption( const QString &text, bool modified );
+
+  private:
+    QPtrList<WorkSheet> mSheetList;
+
+    // Directory that was used for the last load/save.
+    QString mWorkDir;
+    bool mAutoSave;
+};
 
 #endif

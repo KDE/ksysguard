@@ -27,7 +27,7 @@ bin_PROGRAMS = ksysguard kpm
 ksysguard_SOURCES = \
 	SensorBrowser.cc \
 	WorkSheet.cc \
-	WorkSheetSettings.ui \
+	WorkSheetSettings.cc \
 	Workspace.cc \
 	ksysguard.cc ksysguard.skel
 
