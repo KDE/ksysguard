@@ -32,8 +32,36 @@ dialog available from the menu.
 <P>
 <P>The Process List Page gives you a list of processes on your
 system. The list can be sorted by each column. Just press the left
-mouse button over the head of the column. Underneath the table you
-find four buttons which will be described now from left to right.
+mouse button over the head of the column. 
+<P>The list shows the following information about each process. Please note that not all properties are available on every operating system.
+<P>
+<UL>
+<LI> <B>PID</B> The process ID. A unique number for each process.
+</LI>
+<LI> <B>Name</B> The name of the executable that started the process.
+</LI>
+<LI> <B>User ID</B> The login name of the user that started the process.
+</LI>
+<LI> <B>CPU</B> The processor load of the process in percent.
+</LI>
+<LI> <B>Time</B> The total computation time of the process so far.
+</LI>
+<LI> <B>Prior.</B> The scheduling priority.
+</LI>
+<LI> <B>Status</B> The process status.
+</LI>
+<LI> <B>Memory</B> The total amount of memory (in kBytes) the process
+uses. This includes shared memory.
+</LI>
+<LI> <B>Resident</B> The amount of physical memory (in kBytes) the
+process uses.
+</LI>
+<LI> <B>Shared</B> The amount of memory (in kBytes) the process shares
+with other processes.
+</LI>
+</UL>
+<P>Underneath the table you find four buttons which will be described now
+from left to right.
 <P>
 <H4>The Refresh Rate </H4>
 
@@ -108,7 +136,7 @@ selected process by pressing this button.
 
 <P>
 <P>The Performance Meter Page provides two meters that show the overall
-processor load and the total memory used by the system. The read line
+processor load and the total memory used by the system. The red line
 in the memory history is the separation between physical memory (RAM)
 and swap space memory. Most Unixes try to minimize the accesses to the
 hard disk by caching files in memory. Therefore it is normal to always

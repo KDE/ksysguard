@@ -87,9 +87,9 @@ static TABCOLUMN TabCol[] =
 	  OSProcessList::SORTBY_STATUS },
 	{ "Memory", 0, "VmSize++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_VMSIZE },
-	{ "VmRss", 0, "VmSize++", true, false, KTabListBox::TextColumn,
+	{ "Resident", 0, "VmSize++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_VMRSS },
-	{ "VmLib", 0, "VmSize++", true, false, KTabListBox::TextColumn,
+	{ "Shared", 0, "VmSize++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_VMLIB }
 };
 
@@ -107,6 +107,8 @@ ProcessList::ProcessList(QWidget *parent = 0, const char* name = 0)
 
 	// no timer started yet
 	timer_id = NONE;
+
+	enableKey();
 
 	/*
 	 * The first selected process is ktop itself because we are sure it
@@ -351,12 +353,12 @@ ProcessList::load()
 
 			// VM rss
 			if (tc->visible && tc->supported)
-				line += s.setNum(p->getVm_rss()) + ";";
+				line += s.setNum(p->getVm_rss() / 1024) + ";";
 			tc++;
 
 			// VM lib
 			if (tc->visible && tc->supported)
-				line += s.setNum(p->getVm_lib()) + ";";
+				line += s.setNum(p->getVm_lib() / 1024) + ";";
 			tc++;
 
 			appendItem(line);
@@ -451,8 +453,8 @@ ProcessList::initTabCol(void)
 	SETTABCOL(i18n("Prior."), pl.hasPriority());
 	SETTABCOL(i18n("Status"), pl.hasStatus());
 	SETTABCOL(i18n("Memory"), pl.hasVmSize());
-	SETTABCOL(i18n("VmRss"), pl.hasVmRss());
-	SETTABCOL(i18n("VmLib"), pl.hasVmLib());
+	SETTABCOL(i18n("Resident"), pl.hasVmRss());
+	SETTABCOL(i18n("Shared"), pl.hasVmLib());
 
 	// determine the number of visible columns
 	int columns = 0;

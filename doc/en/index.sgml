@@ -76,7 +76,11 @@ on <url url="ftp://ftp.kde.org/pub/kde/">.
 At the moment the following flavors of UNIX are supported:
 
 <itemize>
-<item> Linux 2.x
+<item> Linux 2.x <p> 
+For KTop to work it is necessary to compile the
+Linux-Kernel with the /proc-Filesystem enabled. This is the default
+setting and most Linux-Distribution have it already.
+
 </itemize>
 
 Support for other platforms is in preparation. Your help is greatly
@@ -115,8 +119,39 @@ dialog available from the menu.
 
 The Process List Page gives you a list of processes on your
 system. The list can be sorted by each column. Just press the left
-mouse button over the head of the column. Underneath the table you
-find four buttons which will be described now from left to right.
+mouse button over the head of the column. 
+
+The list shows the following information about each process. Please note that not all properties are available on every operating system.
+
+<itemize>
+
+<item> <bf/PID/ The process ID. A unique number for each process.
+
+<item> <bf/Name/ The name of the executable that started the process.
+
+<item> <bf/User ID/ The login name of the user that started the process.
+
+<item> <bf/CPU/ The processor load of the process in percent.
+
+<item> <bf/Time/ The total computation time of the process so far.
+
+<item> <bf/Prior./ The scheduling priority.
+
+<item> <bf/Status/ The process status.
+
+<item> <bf/Memory/ The total amount of memory (in kBytes) the process
+uses. This includes shared memory.
+
+<item> <bf/Resident/ The amount of physical memory (in kBytes) the
+process uses.
+
+<item> <bf/Shared/ The amount of memory (in kBytes) the process shares
+with other processes.
+
+</itemize>
+
+Underneath the table you find four buttons which will be described now
+from left to right.
 
 <sect2> The Refresh Rate <p>
 
@@ -181,7 +216,7 @@ selected process by pressing this button.
 <sect1> The Performance Meter Page <p>
 
 The Performance Meter Page provides two meters that show the overall
-processor load and the total memory used by the system. The read line
+processor load and the total memory used by the system. The red line
 in the memory history is the separation between physical memory (RAM)
 and swap space memory. Most Unixes try to minimize the accesses to the
 hard disk by caching files in memory. Therefore it is normal to always
