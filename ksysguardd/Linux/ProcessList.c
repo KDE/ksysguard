@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <sys/user.h>
@@ -40,11 +41,11 @@
 #include <asm/page.h>
 #endif
 
-static CONTAINER ProcessList = 0;
-static int TimeOut = 0;
-
 #define BUFSIZE 1024
 #define KDEINITLEN strlen("kdeinit: ")
+
+static CONTAINER ProcessList = 0;
+static time_t timeStamp = 0;
 
 typedef struct
 {
@@ -346,6 +347,44 @@ cleanupProcessList(void)
 	}
 }
 
+static int
+updateProcessList(void)
+{
+	/* There no way that this function can avoid the use of
+	 * non-reentrant glibc functions. We cannot use it from within
+	 * signal handlers. So we use the timeStamp variable to find out
+	 * if the last update was more than 2 seconds ago and refresh the
+	 * list by calling this function. */
+	DIR* dir;
+	struct dirent* entry;
+
+	/* read in current process list via the /proc filesystem entry */
+	if ((dir = opendir("/proc")) == NULL)
+	{
+		perror("ERROR: Cannot open directory \'/proc\'!\n"
+			   "The kernel needs to be compiled with support\n"
+			   "for /proc filesystem enabled!");
+		return (-1);
+	}
+	while ((entry = readdir(dir))) 
+	{
+		if (isdigit(entry->d_name[0]))
+		{
+			int pid;
+
+			pid = atoi(entry->d_name);
+			updateProcess(pid); 
+		}
+	}
+	closedir(dir);
+
+	cleanupProcessList();
+
+	timeStamp = time(0);
+
+	return (0);
+}
+
 /*
 ================================ public part =================================
 */
@@ -373,44 +412,6 @@ exitProcessList(void)
 	exitPWUIDCache();
 }
 
-int
-updateProcessList(void)
-{
-	DIR* dir;
-	struct dirent* entry;
-
-	/* If the process information has not been requested for 10 intervals
-	 * we save CPU time by not updating the list. The next request will
-	 * re-enable the updates again. */
-	if (TimeOut > 10)
-		return (0);
-	TimeOut++;
-
-	/* read in current process list via the /proc filesystem entry */
-	if ((dir = opendir("/proc")) == NULL)
-	{
-		fprintf(stderr, "ERROR: Cannot open directory \'/proc\'!\n"
-				"The kernel needs to be compiled with support\n"
-				"for /proc filesystem enabled!");
-		return (-1);
-	}
-	while ((entry = readdir(dir))) 
-	{
-		if (isdigit(entry->d_name[0]))
-		{
-			int pid;
-
-			pid = atoi(entry->d_name);
-			updateProcess(pid); 
-		}
-	}
-	closedir(dir);
-
-	cleanupProcessList();
-
-	return (0);
-}
-
 void
 printProcessListInfo(const char* cmd)
 {
@@ -424,7 +425,8 @@ printProcessList(const char* cmd)
 {
 	int i;
 
-	TimeOut = 0;
+	if ((time(0) - timeStamp) > 2)
+		updateProcessList();
 
 	for (i = 0; i < level_ctnr(ProcessList); i++)
 	{
@@ -443,7 +445,9 @@ printProcessList(const char* cmd)
 void
 printProcessCount(const char* cmd)
 {
-	TimeOut = 0;
+	if ((time(0) - timeStamp) > 2)
+		updateProcessList();
+
 	printf("%d\n", ProcessCount);
 }
 

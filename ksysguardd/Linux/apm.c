@@ -19,6 +19,10 @@
 	$Id$
 */
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <stdio.h>
 
 #include "Command.h"
@@ -26,6 +30,22 @@
 
 static int ApmOK = 0;
 static int BatFill, BatTime;
+
+#define APMBUFSIZE 128
+static char ApmBuf[APMBUFSIZE];
+static int Dirty = 0;
+
+static void
+processApm(void)
+{
+	sscanf(ApmBuf, "%*f %*f %*x %*x %*x %*x %d%% %d min",
+		   &BatFill, &BatTime);
+	Dirty = 0;
+}
+
+/*
+================================ public part =================================
+*/
 
 void
 initApm(void)
@@ -50,19 +70,29 @@ exitApm(void)
 int
 updateApm(void)
 {
-	FILE* apm;
+	/* ATTENTION: This function is called from a signal handler! Rules for
+	 * signal handlers must be obeyed! */
+	size_t n;
+	int fd;
 
 	if (ApmOK < 0)
 		return (-1);
 
-	if ((apm = fopen("/proc/apm", "r")) == NULL)
+	if ((fd = open("/proc/apm", O_RDONLY)) < 0)
+	{
+		if (ApmOK != 0)
+			perror("ERROR: Cannot open file \'/proc/apm\'!");
 		return (-1);
-
-	if (fscanf(apm, "%*f %*f %*x %*x %*x %*x %d%% %d min",
-			   &BatFill, &BatTime) != 2)
+	}
+	if ((n = read(fd, ApmBuf, APMBUFSIZE - 1)) == APMBUFSIZE - 1)
+	{
+		perror("ERROR: Internal buffer too small to read "
+			   "/proc/apm!");
 		return (-1);
-
-	fclose(apm);
+	}
+	close(fd);
+	ApmBuf[n] = '\0';
+	Dirty = 1;
 
 	return (0);
 }
@@ -70,6 +100,9 @@ updateApm(void)
 void
 printApmBatFill(const char* c)
 {
+	if (Dirty)
+		processApm();
+
 	printf("%d\n", BatFill);
 }
 
@@ -82,6 +115,9 @@ printApmBatFillInfo(const char* c)
 void
 printApmBatTime(const char* c)
 {
+	if (Dirty)
+		processApm();
+
 	printf("%d\n", BatTime);
 }
 

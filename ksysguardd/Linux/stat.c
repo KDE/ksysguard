@@ -19,6 +19,10 @@
 	$Id$
 */
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,9 +31,13 @@
 #include "stat.h"
 #include "Command.h"
 
+/* Special version of perror for use in signal handler functions. */
+#define perror(a) write(STDERR_FILENO, (a), strlen(a))
+
 typedef struct
 {
-	/* A CPU can be loaded with user processes, reniced processes and	 * system processes. Unused processing time is called idle load.
+	/* A CPU can be loaded with user processes, reniced processes and
+	 * system processes. Unused processing time is called idle load.
 	 * These variable store the percentage of each load type. */
 	int userLoad;
 	int niceLoad;
@@ -441,18 +449,25 @@ exitStat(void)
 int
 updateStat(void)
 {
+	/* ATTENTION: This function is called from a signal handler! Rules for
+	 * signal handlers must be obeyed! */
 	size_t n;
-	FILE* stat;
+	int fd;
 
-	if ((stat = fopen("/proc/stat", "r")) == NULL)
+	if ((fd = open("/proc/stat", O_RDONLY)) < 0)
 	{
-		fprintf(stderr, "ERROR: Cannot open file \'/proc/stat\'!\n"
-				"The kernel needs to be compiled with support\n"
-				"for /proc filesystem enabled!");
+		perror("ERROR: Cannot open file \'/proc/stat\'!\n"
+			   "The kernel needs to be compiled with support\n"
+			   "for /proc filesystem enabled!");
 		return (-1);
 	}
-	n = fread(StatBuf, 1, STATBUFSIZE - 1, stat);
-	fclose(stat);
+	if ((n = read(fd, StatBuf, STATBUFSIZE - 1)) == STATBUFSIZE - 1)
+	{
+		perror("ERROR: Internal buffer too small to read "
+			   "/proc/stat!");
+		return (-1);
+	}
+	close(fd);
 	StatBuf[n] = '\0';
 	Dirty = 1;
 

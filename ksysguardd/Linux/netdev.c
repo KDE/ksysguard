@@ -19,11 +19,18 @@
 	$Id$
 */
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 
 #include <Command.h>
 #include "netdev.h"
+
+/* Special version of perror for use in signal handler functions. */
+#define perror(a) write(STDERR_FILENO, (a), strlen(a))
 
 typedef struct
 {
@@ -167,6 +174,9 @@ exitNetDev(void)
 int
 updateNetDev(void)
 {
+	/* ATTENTION: This function is called from a signal handler! Rules for
+	 * signal handlers must be obeyed! */
+
 	/* We read the information about the network interfaces from
 	   /proc/net/dev. The file should look like this:
 
@@ -180,13 +190,22 @@ Inter-|   Receive                                                |  Transmit
 
 	*/
 
-	FILE* netdev;
+	size_t n;
+	int fd;
 
-	if ((netdev = fopen("/proc/net/dev", "r")) == NULL)
+	if ((fd = open("/proc/net/dev", O_RDONLY)) < 0)
+	{
+		/* /proc/net/dev may not exist on some machines. */
+		return (0);
+	}
+	if ((n = read(fd, NetDevBuf, NETDEVBUFSIZE - 1)) == NETDEVBUFSIZE - 1)
+	{
+		perror("ERROR: Internal buffer too small to read "
+			   "/proc/net/dev!");
 		return (-1);
-
-	fread(NetDevBuf, 1, NETDEVBUFSIZE - 1, netdev);
-	fclose(netdev);
+	}
+	close(fd);
+	NetDevBuf[n] = '\0';
 	Dirty = 1;
 
 	return (0);

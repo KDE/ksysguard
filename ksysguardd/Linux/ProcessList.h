@@ -1,7 +1,7 @@
 /*
     KTop, the KDE Task Manager
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@
 
 void initProcessList(void);
 void exitProcessList(void);
-int updateProcessList(void);
 void printProcessList(const char*);
 void printProcessListInfo(const char*);
 void printProcessCount(const char* cmd);

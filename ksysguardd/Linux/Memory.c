@@ -19,11 +19,18 @@
 	$Id$
 */
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 #include "Command.h"
 #include "Memory.h"
+
+/* Special version of perror for use in signal handler functions. */
+#define perror(a) write(STDERR_FILENO, (a), strlen(a))
 
 #define MEMINFOBUFSIZE 1024
 static char MemInfoBuf[MEMINFOBUFSIZE];
@@ -99,7 +106,9 @@ exitMemory(void)
 int
 updateMemory(void)
 {
-	/*
+	/* ATTENTION: This function is called from a signal handler! Rules for
+	 * signal handlers must be obeyed!
+	 *
 	 * The amount of total and used memory is read from the /proc/meminfo.
 	 * It also contains the information about the swap space.
 	 * The 'file' looks like this:
@@ -116,13 +125,25 @@ updateMemory(void)
 	 * SwapFree:     67260 kB
 	 */
 
-	FILE* meminfo;
+	int fd;
+	size_t n;
 
-	if ((meminfo = fopen("/proc/meminfo", "r")) == NULL)
+	if ((fd = open("/proc/meminfo", O_RDONLY)) < 0)
+	{
+		perror("ERROR: Cannot open /proc/meminfo!\n"
+			   "The kernel needs to be compiled with support\n"
+			   "for /proc filesystem enabled!");
 		return (-1);
+	}
+	if ((n = read(fd, MemInfoBuf, MEMINFOBUFSIZE - 1)) ==
+		MEMINFOBUFSIZE - 1)
+	{
+		perror("ERROR: Internal buffer too small to read /proc/mem!");
+		return (-1);
+	}
 
-	fread(MemInfoBuf, 1, MEMINFOBUFSIZE - 1, meminfo);
-	fclose(meminfo);
+	close(fd);
+	MemInfoBuf[n] = '\0';
 	Dirty = 1;
 
 	return (0);

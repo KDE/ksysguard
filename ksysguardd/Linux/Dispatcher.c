@@ -1,7 +1,7 @@
-/*
+ /*
     KTop, the KDE Task Manager
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <signal.h>
+#include <unistd.h>
+#include <errno.h>
 
 #include "Dispatcher.h"
 #include "Command.h"
@@ -32,9 +34,14 @@
 #include "netdev.h"
 #include "apm.h"
 
+/* Special version of perror for use in signal handler functions. */
+#define perror(a) write(STDERR_FILENO, (a), strlen(a))
+
 /* This variable will be set to 1 as soon as the first interrupt (SIGALRM)
  * has been received. */
 static volatile int DispatcherReady = 0;
+
+static struct sigaction Action, OldAction;
 
 /*
  * signalHandler()
@@ -43,19 +50,13 @@ static volatile int DispatcherReady = 0;
 static void 
 signalHandler(int sig)
 {
-	/* ignore further alarms while processing one */
-	if (signal(sig, SIG_IGN) == SIG_ERR)
-	{
-		perror("signalHandler");
-		exit(1);
-	}
+	int errnoSave = errno;
 
 	switch (sig)
     {
     case SIGINT:
 		break;
 	case SIGALRM:
-		updateProcessList();
 		updateMemory();
 		updateStat();
 		updateNetDev();
@@ -71,13 +72,7 @@ signalHandler(int sig)
 	default:
 		break;
     }
-
-	/* restore the trap table */
-	if (signal(sig, signalHandler) == SIG_ERR)
-	{
-		perror("signalHandler");
-		exit(1);
-	}
+	errno = errnoSave;
 }
 
 static void
@@ -100,7 +95,13 @@ startTimer(long sec)
 void
 initDispatcher(void)
 {
-	signal(SIGALRM, signalHandler);
+	Action.sa_handler = signalHandler;
+	sigemptyset(&Action.sa_mask);
+	sigaddset(&Action.sa_mask, SIGALRM);
+	/* make sure that interrupted system calls are restarted. */
+	Action.sa_flags = SA_RESTART;
+	sigaction(SIGALRM, &Action, &OldAction);
+
 	startTimer(TIMERINTERVAL);
 }
 
@@ -108,7 +109,7 @@ void
 exitDispatcher(void)
 {
 	/* restore signal handler */
-	signal(SIGALRM, SIG_IGN);
+	sigaction(SIGALRM, &OldAction, 0);
 }
 
 int
