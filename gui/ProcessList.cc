@@ -181,38 +181,6 @@ ProcessList::~ProcessList()
 	delete(headerPM);
 }
 
-void
-ProcessList::loadSettings(void)
-{
-#if 0
-	treeViewEnabled = Kapp->config()->readNumEntry("TreeView",
-												   treeViewEnabled);
-
-	emit(treeViewChanged(treeViewEnabled));
-
-	/* The default filter mode is 'own processes'. This can be overridden by
-	 * the config file. */
-	filterMode = Kapp->config()->readNumEntry("FilterMode", filterMode);
-	emit(filterModeChanged(filterMode));
-
-	// The default sorting is for the PID in decreasing order.
-	sortColumn = Kapp->config()->readNumEntry("SortColumn", 1);
-	increasing = Kapp->config()->readNumEntry("SortIncreasing", FALSE);
-	setSorting(sortColumn, increasing);
-#endif
-}
-
-void
-ProcessList::saveSettings(void)
-{
-#if 0
-	Kapp->config()->writeEntry("TreeView", treeViewEnabled);
-	Kapp->config()->writeEntry("FilterMode", filterMode);
-	Kapp->config()->writeEntry("SortColumn", sortColumn);
-	Kapp->config()->writeEntry("SortIncreasing", increasing);
-#endif
-}
-
 void 
 ProcessList::update(const QString& list)
 {

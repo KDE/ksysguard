@@ -47,24 +47,36 @@ public:
 	void addSample(int s0, int s1 = 0, int s2 = 0, int s3 = 0, int s4 = 0);
 
 	void changeRange(int beam, int min, int max);
+	long getMin() const
+	{
+		return (autoRange ? 0 : minValue);
+	}
+	long getMax() const
+	{
+		return (autoRange ? 0 : maxValue);
+	}
 
 	void setLowPass(bool lp)
 	{
 		lowPass = lp;
 	}
 
+signals:
+	void rmbPressed();
+
 protected:
 	virtual void resizeEvent(QResizeEvent*);
 	virtual void paintEvent(QPaintEvent*);
+	virtual void mousePressEvent(QMouseEvent*);
 
 private:
 	void calcRange();
 
-	int minValue;
-	int maxValue;
+	long minValue;
+	long maxValue;
 	bool autoRange;
 	bool lowPass;
-	int* beamData[MAXBEAMS];
+	long* beamData[MAXBEAMS];
 	QColor beamColor[MAXBEAMS];
 	int beams;
 } ;

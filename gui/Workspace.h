@@ -60,6 +60,7 @@ private:
 	QList<WorkSheet> sheets;
 	/// Directory that was used for the last load/save.
 	QString workDir;
+	bool autoSave;
 } ;
 
 #endif

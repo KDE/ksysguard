@@ -166,14 +166,7 @@ WorkSheet::load(const QString& fN)
 		if (!newDisplay->load(element))
 			return (FALSE);
 
-		// remove the old display at this location
-		delete displays[row][column];
-		// insert new display
-		lm->addWidget(newDisplay, row, column);
-		newDisplay->show();
-		displays[row][column] = newDisplay;
-		connect(newDisplay, SIGNAL(removeDisplay(SensorDisplay*)),
-				this, SLOT(removeDisplay(SensorDisplay*)));
+		replaceDisplay(row, column, newDisplay);
 	}
 
 	return (TRUE);
@@ -266,15 +259,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 			debug("Unkown sensor type: " + sensorType);
 			return (0);
 		}
-
-		// remove the old display at this location
-		delete displays[r][c];
-		// insert new display
-		lm->addWidget(newDisplay, r, c);
-		newDisplay->show();
-		displays[r][c] = newDisplay;
-		connect(newDisplay, SIGNAL(removeDisplay(SensorDisplay*)),
-				this, SLOT(removeDisplay(SensorDisplay*)));
+		replaceDisplay(r, c, newDisplay);
 	}
 
 	((SensorDisplay*) displays[r][c])->
@@ -282,6 +267,12 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 
 	modified = TRUE;
 	return ((SensorDisplay*) displays[r][c]);
+}
+
+void
+WorkSheet::showPopupMenu(SensorDisplay* display)
+{
+	display->settings();
 }
 
 void
@@ -348,6 +339,22 @@ WorkSheet::insertDummyDisplay(int r, int c)
 	displays[r][c] = dummy;
 	lm->addWidget(dummy, r, c);
 	displays[r][c]->show();
+}
+
+void
+WorkSheet::replaceDisplay(int r, int c, SensorDisplay* newDisplay)
+{
+	// remove the old display at this location
+	delete displays[r][c];
+
+	// insert new display
+	lm->addWidget(newDisplay, r, c);
+	newDisplay->show();
+	displays[r][c] = newDisplay;
+	connect(newDisplay, SIGNAL(removeDisplay(SensorDisplay*)),
+			this, SLOT(removeDisplay(SensorDisplay*)));
+	connect(newDisplay, SIGNAL(showPopupMenu(SensorDisplay*)),
+			this, SLOT(showPopupMenu(SensorDisplay*)));
 }
 
 void

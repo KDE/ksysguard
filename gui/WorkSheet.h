@@ -68,6 +68,7 @@ public:
 
 public slots:
 	void removeDisplay(SensorDisplay* display);
+	void showPopupMenu(SensorDisplay* display);
 
 protected:
 	void dragEnterEvent(QDragEnterEvent* ev);
@@ -75,6 +76,8 @@ protected:
 
 private:
 	void insertDummyDisplay(int r, int c);
+
+	void replaceDisplay(int r, int c, SensorDisplay* display);
 
 	void collectHosts(QValueList<QString>& l);
 

@@ -28,10 +28,36 @@
 #include <qlabel.h>
 #include <qsize.h>
 
+#include <kdialogbase.h>
+
 #include "SensorDisplay.h"
 #include "SignalPlotter.h"
 
 class QGroupBox;
+class QLineEdit;
+class KIntNumInput;
+
+class FancyPlotterSettings : public KDialogBase
+{
+	Q_OBJECT
+
+public:
+	FancyPlotterSettings(const QString& oldTitle, long min, long max);
+	~FancyPlotterSettings()
+	{
+		delete mainWidget;
+	}
+
+	QString getTitle() const;
+	long getMin() const;
+	long getMax() const;
+
+private:
+	QLineEdit* titleLE;
+	KIntNumInput* minNI;
+	KIntNumInput* maxNI;
+	QWidget* mainWidget;
+} ;
 
 class FancyPlotter : public SensorDisplay
 {
@@ -42,6 +68,8 @@ public:
 				 const char* title = 0, int min = 0,
 				 int max = 100);
 	~FancyPlotter();
+
+	void settings();
 
 	bool addSensor(const QString& hostName, const QString& sensorName,
 				   const QString& title);

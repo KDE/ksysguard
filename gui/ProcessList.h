@@ -75,10 +75,6 @@ public:
 	/// The destructor.
 	~ProcessList();
 
-	void saveSettings(void);
-
-	void loadSettings(void);
-
 	void removeColumns(void);
 
 	void addColumn(const QString& header, const QString& type);

@@ -58,6 +58,12 @@ SignalPlotter::~SignalPlotter()
 		delete [] beamData[i];
 }
 
+void
+SignalPlotter::mousePressEvent(QMouseEvent*)
+{
+	emit (rmbPressed());
+}
+
 bool
 SignalPlotter::addBeam(QColor col)
 {
@@ -66,7 +72,7 @@ SignalPlotter::addBeam(QColor col)
 	if (beams == MAXBEAMS)
 		return (false);
 
-	beamData[beams] = new int[width() - 2];
+	beamData[beams] = new long[width() - 2];
 	memset(beamData[beams], 0, sizeof(int) * (width() - 2));
 	beamColor[beams] = col;
 	beams++;
@@ -122,6 +128,13 @@ SignalPlotter::addSample(int s0, int s1, int s2, int s3, int s4)
 		if (beams > 4)
 			beamData[4][width() - 3] = s4;
 	}
+	for (int i = 0; i < beams; i++)
+		if (beamData[i][0] <= minValue ||
+			beamData[i][0] >= maxValue)
+		{
+			recalc = true;
+		}
+
 	if (autoRange && recalc)
 		calcRange();
 
@@ -137,23 +150,28 @@ SignalPlotter::changeRange(int beam, int min, int max)
 		return;
 	}
 
+	// Only the first beam affects range calculation.
+	if (beam)
+		return;
+
 	if (min == max)
 	{
-		autoRange = true;
+		autoRange = TRUE;
 		calcRange();
 	}
 	else
 	{
 		minValue = min;
 		maxValue = max;
+		autoRange = FALSE;
 	}
 }
 
 void
 SignalPlotter::calcRange()
 {
-	int minValue = 0;
-	int maxValue = 0;
+	minValue = 0;
+	maxValue = 0;
 
 	for (int i = 0; i < (width() - 2); i++)
 	{
@@ -178,14 +196,14 @@ SignalPlotter::resizeEvent(QResizeEvent* ev)
 	 * display we try to keep as much data as possible. Data that is
 	 * lost due to shrinking the buffers cannot be recovered on
 	 * enlarging though. */
-	int* tmp[MAXBEAMS];
+	long* tmp[MAXBEAMS];
 
 	// overlap between the old and the new buffers.
 	int overlap = min(ev->oldSize().width() - 2, width() - 2);
 
 	for (int i = 0; i < beams; i++)
 	{
-		tmp[i] = new int[width() - 2];
+		tmp[i] = new long[width() - 2];
 
 		// initialize new part of the new buffer
 		if (width() - 2 > overlap)
@@ -224,6 +242,10 @@ SignalPlotter::paintEvent(QPaintEvent*)
 
 	p.setClipRect(1, 1, w - 2, h - 2);
 	int range = maxValue - minValue;
+	/* It makes no sense to have a range that is smaller than the 20
+	 * in pixels. So we force the range to at least be 20. */
+	if (range < 20)
+		range = 20;
 	p.scale(1.0f, (float) h / range);
 
 	for (int i = 0; i < (w - 2); i++)

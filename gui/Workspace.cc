@@ -36,6 +36,7 @@
 Workspace::Workspace(QWidget* parent, const char* name)
 	: QTabWidget(parent, name)
 {
+	autoSave = TRUE;
 }
 
 void
@@ -135,14 +136,20 @@ Workspace::saveOnQuit()
 	for (; it.current(); ++it)
 		if ((*it)->hasBeenModified())
 		{
-			int res = KMessageBox::warningYesNoCancel(this,
-				QString(i18n("The worksheet '%1' contains unsaved data\n"
-							 "Do you want to save the worksheet?"))
-						.arg(tabLabel(*it)));
-			if (res == KMessageBox::Yes)
+			if (!autoSave)
+			{
+				int res = KMessageBox::warningYesNoCancel(
+					this,
+					QString(i18n("The worksheet '%1' contains unsaved data\n"
+								 "Do you want to save the worksheet?"))
+					.arg(tabLabel(*it)));
+				if (res == KMessageBox::Yes)
+					saveWorkSheet(*it);
+				else if (res == KMessageBox::Cancel)
+					return FALSE;	// abort quit
+			}
+			else
 				saveWorkSheet(*it);
-			else if (res == KMessageBox::Cancel)
-				return FALSE;	// abort quit
 		}
 
 	return (TRUE);

@@ -24,11 +24,14 @@
 
 #include <qgroupbox.h>
 #include <qtextstream.h>
+#include <qlineedit.h>
 #include <qdom.h>
+#include <qlayout.h>
 
 #include <kapp.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <knuminput.h>
 
 #include "SensorManager.h"
 #include "FancyPlotter.moc"
@@ -36,6 +39,72 @@
 static const int FrameMargin = 0;
 static const int Margin = 5;
 static const int HeadHeight = 10;
+
+FancyPlotterSettings::FancyPlotterSettings(const QString& oldTitle,
+										   long min, long max)
+	: KDialogBase(0, 0, true, QString::null, Ok | Apply | Cancel)
+{
+	mainWidget = new QWidget(this);
+	CHECK_PTR(mainWidget);
+	QVBoxLayout* vLay = new QVBoxLayout(mainWidget, 0, spacingHint());
+	CHECK_PTR(vLay);
+
+	// create input field for sheet name
+	QHBoxLayout* subLay = new QHBoxLayout();
+	CHECK_PTR(subLay);
+	vLay->addLayout(subLay);
+	QLabel* titleL = new QLabel("Title:", mainWidget, "titleL");
+	CHECK_PTR(titleL);
+	subLay->addWidget(titleL);
+	titleLE = new QLineEdit(oldTitle, mainWidget, "titleLE");
+	CHECK_PTR(titleLE);
+	titleLE->setMinimumWidth(fontMetrics().maxWidth() * 20);
+	subLay->addWidget(titleLE);
+
+	// create numeric input for number of columns
+	subLay = new QHBoxLayout();
+	CHECK_PTR(subLay);
+	vLay->addLayout(subLay);
+	QLabel* minLB = new QLabel("Minimum Value:", mainWidget, "minLB");
+	CHECK_PTR(minLB);
+	subLay->addWidget(minLB);
+	minNI = new KIntNumInput(min, mainWidget, 10, "minNI");
+	CHECK_PTR(minNI);
+	subLay->addWidget(minNI);
+
+	// create numeric input for number of columns
+	subLay = new QHBoxLayout();
+	CHECK_PTR(subLay);
+	vLay->addLayout(subLay);
+	QLabel* maxLB = new QLabel("Maximum Value:", mainWidget, "maxLB");
+	CHECK_PTR(maxLB);
+	subLay->addWidget(maxLB);
+	maxNI = new KIntNumInput(max, mainWidget, 10, "maxNI");
+	CHECK_PTR(maxNI);
+	subLay->addWidget(maxNI);
+
+	vLay->addStretch(10);
+
+	setMainWidget(mainWidget);
+}
+
+QString
+FancyPlotterSettings::getTitle() const
+{
+	return (titleLE->text());
+}
+
+long
+FancyPlotterSettings::getMin() const
+{
+	return (minNI->value());
+}
+
+long
+FancyPlotterSettings::getMax() const
+{
+	return (maxNI->value());
+}
 
 FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 						   const char* title, int min, int max)
@@ -51,6 +120,7 @@ FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 
 	plotter = new SignalPlotter(this, "signalPlotter", min, max);
 	CHECK_PTR(plotter);
+	connect(plotter, SIGNAL(rmbPressed()), this, SLOT(rmbPressed()));
 
 	setMinimumSize(sizeHint());
 }
@@ -59,6 +129,18 @@ FancyPlotter::~FancyPlotter()
 {
 	delete plotter;
 	delete meterFrame;
+}
+
+void
+FancyPlotter::settings()
+{
+	FancyPlotterSettings s(meterFrame->title(), plotter->getMin(),
+						   plotter->getMax());
+	if (s.exec())
+	{
+		meterFrame->setTitle(s.getTitle());
+		plotter->changeRange(0, s.getMin(), s.getMax());
+	}
 }
 
 bool
@@ -132,6 +214,9 @@ FancyPlotter::load(QDomElement& domElem)
 	QString title = domElem.attribute("title");
 	if (!title.isEmpty())
 		meterFrame->setTitle(title);
+	plotter->changeRange(0, domElem.attribute("min").toLong(),
+						 domElem.attribute("max").toLong());
+
 	QDomNodeList dnList = domElem.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)
 	{
@@ -145,7 +230,9 @@ FancyPlotter::load(QDomElement& domElem)
 bool
 FancyPlotter::save(QTextStream& s)
 {
-	s << "title=\"" << meterFrame->title() << "\">\n";
+	s << "title=\"" << meterFrame->title() << "\" "
+	  << "min=\"" << plotter->getMin() << "\" "
+	  << "max=\"" << plotter->getMax() << "\">\n";
 
 	for (int i = 0; i < beams; ++i)
 	{

@@ -74,6 +74,8 @@ public:
 		return (TRUE);
 	}
 
+	virtual void settings() { }
+
 	void collectHosts(QValueList<QString>& list);
 
 public slots:
@@ -103,8 +105,14 @@ public slots:
 		}
 	}
 
+	void rmbPressed()
+	{
+		emit(showPopupMenu(this));
+	}
+
 signals:
 	void removeDisplay(SensorDisplay* display);
+	void showPopupMenu(SensorDisplay* display);
 
 protected:
 	virtual void timerEvent(QTimerEvent*);
