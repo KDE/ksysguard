@@ -229,6 +229,8 @@ protected:
 
 	bool modified;
 
+	bool noFrame;
+
 private:
 	int timerId;
 	int timerInterval;

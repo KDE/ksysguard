@@ -95,7 +95,6 @@ private:
 	 * been received. */
 	QMemArray<double> sampleBuf;
 	ulong flags;
-	bool noFrame;
-} ;
+};
 
 #endif

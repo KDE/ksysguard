@@ -37,7 +37,10 @@
 #include "SensorDisplay.h"
 #include "SensorDisplay.moc"
 #include "SensorManager.h"
+
+// bad dependences... FIXME
 #include "WorkSheet.h"
+#include "KSysGuardApplet.h"
 
 SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 	QWidget(parent, name)
@@ -47,6 +50,7 @@ SensorDisplay::SensorDisplay(QWidget* parent, const char* name) :
 	// default interval is 2 seconds.
 	timerInterval = 2000;
 	globalUpdateInterval = true;
+	noFrame = 0;
 	timerId = NONE;
 	modified = false;
 	timerOn();
@@ -254,6 +258,9 @@ void SensorDisplay::internCreateFromDOM(QDomElement& element)
 		setUpdateInterval(element.attribute("updateInterval", "2").toInt());
 	} else {
 		globalUpdateInterval = true;
-		setUpdateInterval(((WorkSheet *)parentWidget())->updateInterval);
+		if (noFrame)
+			setUpdateInterval(((KSysGuardApplet *)parentWidget())->updateInterval);
+		else
+			setUpdateInterval(((WorkSheet *)parentWidget())->updateInterval);
 	}
 }

@@ -52,12 +52,13 @@
 FancyPlotter::FancyPlotter(QWidget* parent, const char* name,
 						   const QString& title, double, double,
 						   bool nf)
-	: SensorDisplay(parent, name), noFrame(nf)
+	: SensorDisplay(parent, name)
 {
 	if (!title.isEmpty())
 		frame->setTitle(title);
 
 	beams = 0;
+	noFrame = nf;
 
 	if (noFrame)
 	{
@@ -290,7 +291,8 @@ FancyPlotter::settingsDelete()
 
 /** Moves the selected item up one */
 void
-FancyPlotter::settingsMoveUp(){
+FancyPlotter::settingsMoveUp()
+{
 	if (fps->sensorList->currentItem() != 0)
 	{
 		QListViewItem* temp = fps->sensorList->currentItem()->itemAbove();
@@ -313,7 +315,8 @@ FancyPlotter::settingsMoveUp(){
 
 /** Moves the selected item down one */
 void
-FancyPlotter::settingsMoveDown(){
+FancyPlotter::settingsMoveDown()
+{
 	if (fps->sensorList->currentItem() != 0)
 	{
 		if (fps->sensorList->currentItem()->itemBelow())

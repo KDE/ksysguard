@@ -316,7 +316,7 @@ SignalPlotter::paintEvent(QPaintEvent*)
 		col = beamColor.begin();
 		double sum = 0.0;
 		int y = top + h - 2;
-		int oldY = h;
+		int oldY = top + h;
 		int oldPrevY = oldY;
 		int height = 0;
 		int j = 0;

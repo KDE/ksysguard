@@ -49,13 +49,14 @@
 
 DancingBars::DancingBars(QWidget* parent, const char* name,
 						 const QString& title, int, int, bool nf)
-	: SensorDisplay(parent, name), noFrame(nf)
+	: SensorDisplay(parent, name)
 {
 	if (!title.isEmpty())
 		frame->setTitle(title);
 
 	bars = 0;
 	flags = 0;
+	noFrame = nf;
 
 	if (noFrame)
 		plotter = new BarGraph(this, "signalPlotter");

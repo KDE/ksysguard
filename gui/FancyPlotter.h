@@ -97,7 +97,6 @@ protected:
 private:
 	uint beams;
 	bool modified;
-	bool noFrame;
 
 	SignalPlotter* plotter;
 

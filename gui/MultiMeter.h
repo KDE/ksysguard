@@ -77,12 +77,11 @@ private:
 	QString title;
 	QString unit;
 	MultiMeterSettings* mms;
-	bool noFrame;
 	bool showUnit;
 	bool lowerLimitActive;
 	double lowerLimit;
 	bool upperLimitActive;
 	double upperLimit;
-} ;
+};
 
 #endif

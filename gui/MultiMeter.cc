@@ -50,11 +50,12 @@
 
 MultiMeter::MultiMeter(QWidget* parent, const char* name,
 					   const QString& t, double, double, bool nf)
-	: SensorDisplay(parent, name), noFrame(nf)
+	: SensorDisplay(parent, name)
 {
 	showUnit = TRUE;
 	lowerLimit = upperLimit = 0;
 	lowerLimitActive = upperLimitActive = FALSE;
+	noFrame = nf;
 
 	setTitle(t, unit);
 
