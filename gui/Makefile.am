@@ -16,7 +16,7 @@ ksysguard_SOURCES = ksysguard.cc ksysguard.skel SensorAgent.cc \
 	ProcessMenu.cc ReniceDlg.cc WorkSheet.cc Workspace.cc \
 	SensorBrowser.cc SensorDisplay.cc \
 	FancyPlotter.cc SignalPlotter.cc MultiMeter.cc \
-	MultiMeterSettings.cc DancingBars.cc BarGraph.cc \
+	MultiMeterSettings.ui DancingBars.cc BarGraph.cc \
 	ProcessController.cc ProcessList.cc
 
 # the library search path
