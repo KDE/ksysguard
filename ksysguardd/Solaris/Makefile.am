@@ -1,7 +1,9 @@
 #
 #  $Id$
 #
-AM_CFLAGS = -Wall 
+
+# Sun's C++ compiler doesn't support -Wall
+#AM_CFLAGS = -Wall 
 
 INCLUDES = -I$(srcdir)/../../CContLib -I$(srcdir)/..
 
