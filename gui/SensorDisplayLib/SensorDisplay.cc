@@ -140,7 +140,7 @@ SensorDisplay::setupTimer()
 			}
 		} else {
 			globalUpdateInterval = false;
-			setUpdateInterval(ts->interval->text().toInt());
+			setUpdateInterval(ts->interval->value());
 		}
 		setModified(true);
 	}
