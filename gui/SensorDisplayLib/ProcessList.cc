@@ -710,6 +710,8 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 	if (!lvi)
 		return;
 
+  lvi->setSelected( true );
+
 	/* lvi is only valid until the next time we hit the main event
 	 * loop. So we need to save the information we need after calling
 	 * processPM->exec(). */
