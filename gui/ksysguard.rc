@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="ksysguard">
+<kpartgui name="ksysguard" version="1">
 <MenuBar>
   <Menu name="file"><text>&amp;File</text>
     <Action name="connect_host"/>
