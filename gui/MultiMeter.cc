@@ -102,7 +102,7 @@ MultiMeter::answerReceived(int id, const QString& answer)
 			if (KMessageBox::questionYesNo(
 				this, QString(i18n("%1\nLower limit exceeded!")).arg(title),
 							  i18n("Alarm"),
-							  i18n("Acknoledge"),
+							  i18n("Acknowledge"),
 							  i18n("Disable Alarm")) == KMessageBox::No)
 			{
 				lowerLimitActive = FALSE;
@@ -118,7 +118,7 @@ MultiMeter::answerReceived(int id, const QString& answer)
 			if (KMessageBox::questionYesNo(
 				this, QString(i18n("%1\nUpper limit exceeded!")).arg(title),
 							  i18n("Alarm"),
-							  i18n("Acknoledge"),
+							  i18n("Acknowledge"),
 							  i18n("Disable Alarm")) == KMessageBox::No)
 			{
 				upperLimitActive = FALSE;
