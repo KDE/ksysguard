@@ -56,8 +56,7 @@ findMatchingSensor(const char* name)
 	LMSENSOR key;
 	LMSENSOR* s;
 
-	key.fullName = (char*) malloc(strlen(name) + 1);
-	strcpy(key.fullName, name);
+	key.fullName = strdup(name);
 	if ((idx = search_ctnr(LmSensors, sensorCmp, &key)) < 0)
 	{
 		free(key.fullName);

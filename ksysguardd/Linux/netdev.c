@@ -19,6 +19,8 @@
 	$Id$
 */
 
+#include <config.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -31,6 +33,8 @@
 #include "Command.h"
 #include "netdev.h"
 
+#define MON_SIZE	128
+
 #define CALC(a, b, c, d, e) \
 { \
 	NetDevs[i].a = a - NetDevs[i].Old##a; \
@@ -39,14 +43,14 @@
 
 #define REGISTERSENSOR(a, b, c, d, e) \
 { \
-	sprintf(mon, "network/interfaces/%s/%s", tag, b); \
+	snprintf(mon, MON_SIZE, "network/interfaces/%s/%s", tag, b); \
 	registerMonitor(mon, "integer", printNetDev##a, \
 					printNetDev##a##Info, NetDevSM); \
 }
 
 #define UNREGISTERSENSOR(a, b, c, d, e) \
 { \
-	sprintf(mon, "network/interfaces/%s/%s", NetDevs[i].name, b); \
+	snprintf(mon, MON_SIZE, "network/interfaces/%s/%s", NetDevs[i].name, b); \
 	removeMonitor(mon); \
 }
 
@@ -244,9 +248,9 @@ initNetDev(struct SensorModul* sm)
 			char* pos = strchr(tag, ':');
 			if (pos)
 			{
-				char mon[128];
+				char mon[MON_SIZE];
 				*pos = '\0';
-				strcpy(NetDevs[i].name, tag);
+				strlcpy(NetDevs[i].name, tag, sizeof(NetDevs[i].name));
 				FORALL(REGISTERSENSOR);
 				sscanf(pos + 1, "%lu %lu %lu %lu %lu %lu %lu %lu" 
 					   "%lu %lu %lu %lu %lu %lu %lu %lu",
@@ -283,7 +287,7 @@ exitNetDev(void)
 
 	for (i = 0; i < NetDevCnt; ++i)
 	{
-		char mon[128];
+		char mon[MON_SIZE];
 		FORALL(UNREGISTERSENSOR);
 	}
 	NetDevCnt = 0;

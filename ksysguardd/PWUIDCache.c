@@ -108,13 +108,11 @@ getCachedPWUID(uid_t uid)
 		pwent = getpwuid(uid);
 		if (pwent)
 		{
-			entry->uName = malloc(strlen(pwent->pw_name) + 1);
-			strcpy(entry->uName, pwent->pw_name);
+			entry->uName = strdup(pwent->pw_name);
 		}
 		else
 		{
-			entry->uName = malloc(strlen("?") + 1);
-			strcpy(entry->uName, "?");
+			entry->uName = strdup("?");
 		}
 		push_ctnr(UIDCache, entry);
 		bsort_ctnr(UIDCache, uidCmp);

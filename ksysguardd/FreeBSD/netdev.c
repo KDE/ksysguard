@@ -58,26 +58,21 @@ static struct SensorModul* NetDevSM;
 
 char **parseCommand(const char *cmd)
 {
-	char tmp_cmd[1024];
+	char *tmp_cmd = strdup(cmd);
 	char *begin;
-	static char sensor[100];
-	static char interface[100];
-	static char* retval[2];
-
-	strncpy(tmp_cmd, cmd, 1024);
+	char *retval = malloc(sizeof(char *)*2);
 
 	begin = rindex(tmp_cmd, '/');
 	*begin = '\0';
 	begin++;
-	strcpy(sensor, begin);
-	retval[1] = sensor;
+	retval[1] = strdup(begin); // sensor
 
 	begin = rindex(tmp_cmd, '/');
 	*begin = '\0';
 	begin = rindex(tmp_cmd, '/');
 	begin++;
-	strcpy(interface, begin);
-	retval[0] = interface;
+	retval[0] = strdup(begin); // interface
+	free(tmp_cmd);
 
 	return retval;
 }
@@ -233,7 +228,7 @@ void printNetDevRecBytes(const char *cmd)
 	
 	retval = parseCommand(cmd);
 	
-	if (retval[0] == NULL || retval[1] == NULL)
+	if (retval == NULL)
 		return;
 
 	for (i = 0; i < NetDevCnt; i++) {
@@ -250,6 +245,9 @@ void printNetDevRecBytes(const char *cmd)
 				fprintf(CurrentClient, "%lu", NetDevs[i].recMulticast);
 		}
 	}
+	free(retval[0]);
+	free(retval[1]);
+	free(retval);
 
 	fprintf(CurrentClient, "\n");
 }
@@ -260,7 +258,7 @@ void printNetDevRecBytesInfo(const char *cmd)
 	
 	retval = parseCommand(cmd);
 	
-	if (retval[1] == NULL)
+	if (retval == NULL)
 		return;
 
 	if (!strncmp(retval[1], "data", 4))
@@ -273,6 +271,10 @@ void printNetDevRecBytesInfo(const char *cmd)
 		fprintf(CurrentClient, "Receiver Drops\t0\t0\t1/s\n");
 	if (!strncmp(retval[1], "multicast", 9))
 		fprintf(CurrentClient, "Received Multicast Packets\t0\t0\t1/s\n");
+	
+	free(retval[0]);
+	free(retval[1]);
+	free(retval);
 }
 
 void printNetDevSentBytes(const char *cmd)
@@ -282,7 +284,7 @@ void printNetDevSentBytes(const char *cmd)
 	
 	retval = parseCommand(cmd);
 	
-	if (retval[0] == NULL || retval[1] == NULL)
+	if (retval == NULL)
 		return;
 
 	for (i = 0; i < NetDevCnt; i++) {
@@ -299,6 +301,9 @@ void printNetDevSentBytes(const char *cmd)
 				fprintf(CurrentClient, "%lu", NetDevs[i].sentColls);
 		}
 	}
+	free(retval[0]);
+	free(retval[1]);
+	free(retval);
 
 	fprintf(CurrentClient, "\n");
 }
@@ -309,7 +314,7 @@ void printNetDevSentBytesInfo(const char *cmd)
 	
 	retval = parseCommand(cmd);
 	
-	if (retval[1] == NULL)
+	if (retval == NULL)
 		return;
 
 	if (!strncmp(retval[1], "data", 4))
@@ -322,4 +327,8 @@ void printNetDevSentBytesInfo(const char *cmd)
 		fprintf(CurrentClient, "Sent Multicast Packets\t0\t0\t1/s\n");
 	if (!strncmp(retval[1], "collisions", 10))
 		fprintf(CurrentClient, "Transmitter Collisions\t0\t0\t1/s\n");
+
+	free(retval[0]);
+	free(retval[1]);
+	free(retval);
 }

@@ -21,6 +21,8 @@
 	$Id$
 */
 
+#include <config.h>
+
 #include <ctype.h>
 #include <dirent.h>
 #include <pwd.h>
@@ -201,7 +203,7 @@ updateProcess(int pid)
         /* memory, process name, process uid */
 	/* find out user name with process uid */
 	pwent = getpwuid(ps->uid);
-	strncpy(ps->userName,pwent&&pwent->pw_name? pwent->pw_name:"????",sizeof(ps->userName));
+	strlcpy(ps->userName,pwent&&pwent->pw_name? pwent->pw_name:"????",sizeof(ps->userName));
 	ps->userName[sizeof(ps->userName)-1]='\0';
 
         ps->userLoad = p.kp_proc.p_pctcpu / 100;
@@ -209,8 +211,8 @@ updateProcess(int pid)
 			p.kp_eproc.e_vm.vm_dsize +
 			p.kp_eproc.e_vm.vm_ssize) * getpagesize();
 	ps->vmRss    = p.kp_eproc.e_vm.vm_rssize * getpagesize();
-	strncpy(ps->name,p.kp_proc.p_comm ? p.kp_proc.p_comm : "????", sizeof(ps->name));
-	strcpy(ps->status,(p.kp_proc.p_stat>=1)&&(p.kp_proc.p_stat<=5)? statuses[p.kp_proc.p_stat-1]:"????");
+	strlcpy(ps->name,p.kp_proc.p_comm ? p.kp_proc.p_comm : "????", sizeof(ps->name));
+	strlcpy(ps->status,(p.kp_proc.p_stat>=1)&&(p.kp_proc.p_stat<=5)? statuses[p.kp_proc.p_stat-1]:"????", sizeof(ps->status));
 
         /* process command line */
 	/* the following line causes segfaults on some FreeBSD systems... why?
