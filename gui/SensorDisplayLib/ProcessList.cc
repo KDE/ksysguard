@@ -789,13 +789,13 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 	case 300:
 		{
 		ReniceDlg *reniceDlg = new ReniceDlg(this, "reniceDlg", currentNiceValue, currentPId);
-		Q_CHECK_PTR(reniceDlg);
+		Q_CHECK_PTR( reniceDlg );
 
 		int reniceVal;
-		if ((reniceVal = reniceDlg->exec()) != 40)
+		if ((reniceVal = reniceDlg->exec()) != 40) {
+			delete reniceDlg;
 			emit reniceProcess(currentPId, reniceVal);
-
-		delete reniceDlg;
+    }
 		}
 		break;
 	default:

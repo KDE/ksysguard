@@ -1,6 +1,6 @@
 <!DOCTYPE UI><UI>
 <class>ListViewSettings</class>
-<author>Tobias Koenig &lt;tokoe82@yahoo.de&gt;</author>
+<author>Tobias Koenig &lt;tokoe@kde.org&gt;</author>
 <include location="global">klocale.h</include>
 <include location="global">kcolorbutton.h</include>
 <widget>

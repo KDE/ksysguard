@@ -1,6 +1,6 @@
 <!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>TimerSettings</class>
-<author>Tobias Koenig &lt;tokoe82@yahoo.de&gt;</author>
+<author>Tobias Koenig &lt;tokoe@kde.org&gt;</author>
 <widget class="QDialog">
     <property name="name">
         <cstring>TimerSettings</cstring>

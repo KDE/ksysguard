@@ -603,7 +603,7 @@ main(int argc, char** argv)
 						 I18N_NOOP("(c) 1996-2002 The KSysGuard Developers"));
 	aboutData.addAuthor("Chris Schlaeger", "Current Maintainer",
 						"cs@kde.org");
-	aboutData.addAuthor("Tobias Koenig", 0, "tokoe82@yahoo.de");
+	aboutData.addAuthor("Tobias Koenig", 0, "tokoe@kde.org");
 	aboutData.addAuthor("Nicolas Leclercq", 0, "nicknet@planete.net");
 	aboutData.addAuthor("Alex Sanda", 0, "alex@darkstart.ping.at");
 	aboutData.addAuthor("Bernd Johannes Wuebben", 0,
