@@ -80,9 +80,9 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 	 * SensorDisplay::eventFilter. */
 	lcd->installEventFilter(this);
 
-	setMinimumSize(50, 25);
-	modified = FALSE;
+	setMinimumSize(16, 16);
 
+	modified = FALSE;
 }
 
 bool
@@ -171,7 +171,12 @@ MultiMeter::setTitle(const QString& t, const QString& u)
 	if (!unit.isEmpty() && showUnit)
 		titleWithUnit = title + " [" + unit + "]";
 
+	/* Changing the frame title may increase the width of the frame and
+	 * hence breaks the layout. To avoid this, we save the original size
+	 * and restore it after we have set the frame title. */
+	QSize s = frame->size();
 	frame->setTitle(titleWithUnit);
+	frame->setGeometry(0, 0, s.width(), s.height());
 }
 
 bool

@@ -138,6 +138,9 @@ SensorAgent::msgSent(KProcess*)
 void 
 SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 {
+	if (!buffer || buflen == 0)
+		return;
+
 	QString aux = QString::fromLocal8Bit(buffer, buflen);
 	answerBuffer += aux;
 
@@ -198,6 +201,9 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 void
 SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 {
+	if (!buffer || buflen == 0)
+		return;
+
 	errorBuffer += QString::fromLocal8Bit(buffer, buflen);
 
 	int start = 0;

@@ -33,6 +33,7 @@ class SensorDisplay;
 class QDragEnterEvent;
 class QDropEvent;
 class QPoint;
+class KSysGuardAppletSettings;
 
 class KSysGuardApplet : public KPanelApplet
 {
@@ -54,13 +55,22 @@ protected:
 	void dropEvent(QDropEvent* ev);
 	void customEvent(QCustomEvent* ev);
 
+private slots:
+	void applySettings();
+
 private:
 	void layout();
+	void resizeDocks(uint newDockCnt);
+
+	bool load();
+	bool save();
+
 	int findDock(const QPoint& p);
 	void removeDisplay(SensorDisplay* sd);
 
 	uint dockCnt;
 	SensorDisplay** docks;
+	KSysGuardAppletSettings* ksgas;
 };
 
 #endif

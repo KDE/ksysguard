@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE KSysGuardApplet ><WorkSheet dockCnt="2" >
+ <host shell="" name="localhost" command="ksysguardd" />
+ <display title="User Load" dock="0" class="FancyPlotter" min="0" max="100" >
+  <beam sensorName="cpu/user" hostName="localhost" />
+  <beam sensorName="cpu/sys" hostName="localhost" />
+  <beam sensorName="cpu/nice" hostName="localhost" />
+ </display>
+ <display title="Application Memory" dock="1" class="FancyPlotter" min="0" max="255072" >
+  <beam sensorName="mem/physical/application" hostName="localhost" />
+  <beam sensorName="mem/physical/buf" hostName="localhost" />
+  <beam sensorName="mem/physical/cached" hostName="localhost" />
+ </display>
+</WorkSheet>
