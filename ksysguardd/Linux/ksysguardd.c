@@ -70,7 +70,7 @@ static ClientInfo ClientList[MAX_CLIENTS];
 static int SocketPort = -1;
 static int CurrentSocket;
 static char *LockFile = "/var/run/ksysguardd.pid";
-static char *ConfigFile = "/etc/ksysguardd.conf";
+static char *ConfigFile = "/etc/ksysguarddrc";
 
 /* This variable is set to 1 if a module requests that the daemon should
  * be terminated. */
@@ -338,7 +338,7 @@ createServerSocket()
   
 	if (bind(newSocket, (struct sockaddr_in*) &sin, sizeof(sin)) < 0)
 	{
-		log_error("bind()");
+		log_error("Cannot bind to port %d", SocketPort);
 		return -1;
 	}
 	

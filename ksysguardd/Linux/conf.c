@@ -27,17 +27,6 @@
 CONTAINER LogFileList = 0;
 CONTAINER SensorList = 0;
 
-int strpos(char *str, char sign)
-{
-	int i;
-	
-	for (i = 0; i < strlen(str); i++)
-		if (str[i] == sign)
-			return i;
-
-	return 0;
-}
-
 void parseConfigFile(const char *filename)
 {
 	FILE* config;
@@ -66,8 +55,8 @@ void parseConfigFile(const char *filename)
 			continue;
 		}
 
-		if (strchr(line, '#') != NULL)
-			line[strpos(line, '#')] = '\0';
+		if (strchr(line, '#'))
+			*(strchr(line, '#')) = '\0';
 
 		if (line[strlen(line) - 1] == '\n')
 			line[strlen(line) - 1] = '\0';

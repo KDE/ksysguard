@@ -538,7 +538,8 @@ static const KCmdLineOptions options[] =
 int
 main(int argc, char** argv)
 {
-#ifndef NDEBUG
+#if 0
+//#ifndef NDEBUG
 	/* This forking will put ksysguard in it's on session not having a
 	 * controlling terminal attached to it. This prevents ssh from
 	 * using this terminal for password requests. Unfortunately you
