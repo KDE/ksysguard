@@ -22,6 +22,7 @@
 #ifndef _ksysguardd_h_
 #define _ksysguardd_h_
 
+extern int QuitApp;
 extern int RunAsDaemon;
 
 #endif

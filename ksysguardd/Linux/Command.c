@@ -29,6 +29,7 @@
 
 #include "ccont.h"
 #include "Command.h"
+#include "ksysguardd.h"
 #include "netdev.h"		/* TODO: Ugly dependancy. Should fix this later. */
 
 typedef struct
@@ -100,6 +101,9 @@ initCommand(void)
 
 	registerCommand("monitors", printMonitors);
 	registerCommand("test", printTest);
+
+	if (RunAsDaemon == 0)
+		registerCommand("quit", exQuit);
 }
 
 void
@@ -259,4 +263,10 @@ printTest(const char* c)
 	}
 	fprintf(currentClient, "0\n");
 	fflush(currentClient);
+}
+
+void
+exQuit(const char* cmd)
+{
+	QuitApp = 1;
 }

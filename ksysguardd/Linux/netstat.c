@@ -424,6 +424,8 @@ printNetStatTcpUdpRaw(const char *cmd)
 			SocketInfo* socket_info = get_ctnr(TcpSocketList, i);
 			printSocketInfo(socket_info);
 		}
+		if (level_ctnr(TcpSocketList) == 0)
+			fprintf(currentClient, "\n");
 	}
 
 	if (strstr(cmd, "udp")) {
@@ -434,6 +436,8 @@ printNetStatTcpUdpRaw(const char *cmd)
 			SocketInfo* socket_info = get_ctnr(UdpSocketList, i);
 			printSocketInfo(socket_info);
 		}
+		if (level_ctnr(UdpSocketList) == 0)
+			fprintf(currentClient, "\n");
 	}
 
 	if (strstr(cmd, "raw")) {
@@ -444,6 +448,8 @@ printNetStatTcpUdpRaw(const char *cmd)
 			SocketInfo* socket_info = get_ctnr(RawSocketList, i);
 			printSocketInfo(socket_info);
 		}
+		if (level_ctnr(RawSocketList) == 0)
+			fprintf(currentClient, "\n");
 	}
 }
 
@@ -470,6 +476,8 @@ void printNetStatUnix(const char *cmd)
 			unix_info->inode,
 			unix_info->path);
 	}
+	if (level_ctnr(UnixSocketList) == 0)
+		fprintf(currentClient, "\n");
 }
 
 void printNetStatUnixInfo(const char *cmd)

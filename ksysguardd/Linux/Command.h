@@ -53,4 +53,6 @@ void printMonitors(const char* cmd);
 
 void printTest(const char* cmd);
 
+void exQuit(const char* cmd);
+
 #endif
