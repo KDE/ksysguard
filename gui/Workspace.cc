@@ -273,6 +273,6 @@ Workspace::showProcesses()
 	if (!f.isEmpty())
 		restoreWorkSheet(f);
 	else
-		KMessageBox::warning(
+		KMessageBox::error(
 			this, i18n("Cannot find file Taskmanager.ktop!"));
 }

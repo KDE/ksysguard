@@ -56,6 +56,7 @@ signalHandler(int sig)
 		updateProcessList();
 		updateMemory();
 		updateStat();
+		updateNetDev();
 		DispatcherReady = 1;
 		break;
     case SIGQUIT:

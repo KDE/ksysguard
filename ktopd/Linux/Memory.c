@@ -1,12 +1,11 @@
 /*
     KTop, the KDE Task Manager
    
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -65,6 +64,15 @@ processMemInfo()
 void
 initMemory(void)
 {
+	FILE* meminfo;
+	size_t n;
+
+	/* Make sure that /proc/meminfo exists and is readable. If not we do
+	 * not register any monitors for memory. */
+	if ((meminfo = fopen("/proc/meminfo", "r")) == NULL)
+		return;
+	fclose(meminfo);
+
 	registerMonitor("mem/free", "integer", printMFree, printMFreeInfo);
 	registerMonitor("mem/used", "integer", printUsed, printUsedInfo);
 	registerMonitor("mem/buf", "integer", printBuffers, printBuffersInfo);
@@ -101,12 +109,8 @@ updateMemory(void)
 	size_t n;
 
 	if ((meminfo = fopen("/proc/meminfo", "r")) == NULL)
-	{
-		fprintf(stderr, "ERROR: Cannot open file \'/proc/meminfo\'!\n"
-				"The kernel needs to be compiled with support\n"
-				"for /proc filesystem enabled!");
 		return (-1);
-	}
+
 	n = fread(MemInfoBuf, 1, MEMINFOBUFSIZE - 1, meminfo);
 	fclose(meminfo);
 	Dirty = 1;

@@ -183,7 +183,7 @@ updateProcess(int pid)
 	snprintf(buf, BUFSIZE - 1, "/proc/%d/status", pid);
 	if((fd = fopen(buf, "r")) == 0)
 	{
-		// process has terminated in the mean time
+		/* process has terminated in the mean time */
 		return (-1);
 	}
 

@@ -29,6 +29,7 @@
 #include "ProcessList.h"
 #include "Memory.h"
 #include "stat.h"
+#include "netdev.h"
 
 #define CMDBUFSIZE 128
 
@@ -66,6 +67,7 @@ main(int argc, const char* argv[])
 	initProcessList();
 	initMemory();
 	initStat();
+	initNetDev();
 
 	while (!dispatcherReady())
 		;
@@ -82,6 +84,7 @@ main(int argc, const char* argv[])
 		fflush(stdout);
 	} while (!QuitApp);
 
+	exitNetDev();
 	exitStat();
 	exitMemory();
 	exitProcessList();
