@@ -57,15 +57,22 @@ WorkSheet::WorkSheet(QWidget* parent) :
 	setAcceptDrops(true);
 }
 
-WorkSheet::WorkSheet(QWidget* parent, uint r, uint c, uint i) :
+WorkSheet::WorkSheet(QWidget* parent, uint rs, uint cs, uint i) :
 	QWidget(parent)
 {
 	lm = 0;
 	displays = 0;
+	updateInterval = i;
 	modified = false;
 	fileName = "";
-	createGrid(r, c);
-	updateInterval = i;
+	createGrid(rs, cs);
+
+	// Initialize worksheet with dummy displays.
+	for (uint r = 0; r < rows; ++r)
+		for (uint c = 0; c < columns; ++c)
+			replaceDisplay(r, c);
+
+	lm->activate();
 
 	setAcceptDrops(true);
 }
@@ -170,6 +177,12 @@ WorkSheet::load(const QString& fN)
 		replaceDisplay(row, column, element);
 	}
 
+	// Fill empty cells with dummy displays
+	for (r = 0; r < rows; ++r)
+		for (c = 0; c < columns; ++c)
+			if (!displays[r][c])
+				replaceDisplay(r, c);
+
 	modified = false;
 
 	return (true);
@@ -241,6 +254,9 @@ WorkSheet::save(const QString& fN)
 void
 WorkSheet::cut()
 {
+	if (!currentDisplay() || currentDisplay()->isA("DummyDisplay"))
+		return;
+
 	QClipboard* clip = QApplication::clipboard();
 
 	clip->setText(currentDisplayAsXML());
@@ -251,6 +267,9 @@ WorkSheet::cut()
 void
 WorkSheet::copy()
 {
+	if (!currentDisplay() || currentDisplay()->isA("DummyDisplay"))
+		return;
+
 	QClipboard* clip = QApplication::clipboard();
 
 	clip->setText(currentDisplayAsXML());
@@ -357,9 +376,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 		replaceDisplay(r, c, newDisplay);
 	}
 
-	((SensorDisplay*) displays[r][c])->
-		addSensor(hostName, sensorName, sensorDescr);
-	((SensorDisplay*) displays[r][c])->setUpdateInterval(updateInterval);
+	displays[r][c]->addSensor(hostName, sensorName, sensorDescr);
 
 	modified = true;
 	return ((SensorDisplay*) displays[r][c]);
@@ -400,23 +417,6 @@ WorkSheet::showPopupMenu(SensorDisplay* display)
 }
 
 void
-WorkSheet::removeDisplay(SensorDisplay* display)
-{
-	if (!display)
-		return;
-
-	for (uint i = 0; i < rows; ++i)
-		for (uint j = 0; j < columns; ++j)
-			if (displays[i][j] == display)
-			{
-				delete display;
-				insertDummyDisplay(i, j);
-				modified = true;
-				return;
-			}
-}
-
-void
 WorkSheet::dragEnterEvent(QDragEnterEvent* ev)
 {
     ev->accept(QTextDrag::canDecode(ev));
@@ -452,10 +452,6 @@ WorkSheet::dropEvent(QDropEvent* ev)
 				{
 					addDisplay(hostName, sensorName, sensorType,
 							   sensorDescr, i, j);
-					// Notify parent about possibly new minimum size.
-					((QWidget*) parent()->parent())->setMinimumSize(
-						((QWidget*) parent()->parent())->sizeHint());
-					lm->invalidate();
 					return;
 				}
 	}
@@ -508,31 +504,44 @@ WorkSheet::replaceDisplay(uint r, uint c, SensorDisplay* newDisplay)
 	delete displays[r][c];
 
 	// insert new display
-	lm->addWidget(newDisplay, r, c);
-	newDisplay->show();
-	displays[r][c] = newDisplay;
-	connect(newDisplay, SIGNAL(showPopupMenu(SensorDisplay*)),
-			this, SLOT(showPopupMenu(SensorDisplay*)));
+	if (!newDisplay)
+		displays[r][c] = new DummyDisplay(this, "dummy frame");
+	else
+	{
+		displays[r][c] = newDisplay;
+		displays[r][c]->setUpdateInterval(updateInterval);
+		connect(newDisplay, SIGNAL(showPopupMenu(SensorDisplay*)),
+				this, SLOT(showPopupMenu(SensorDisplay*)));
+	}
+	lm->addWidget(displays[r][c], r, c);	
 	fixTabOrder();
+	
+	if (isVisible())
+	{
+		displays[r][c]->show();
 
-	// Notify parent about possibly new minimum size.
-	((QWidget*) parent()->parent())->setMinimumSize(
-		((QWidget*) parent()->parent())->sizeHint());
-	lm->invalidate();
+		// Notify parent about possibly new minimum size.
+		((QWidget*) parent()->parent())->setMinimumSize(
+			((QWidget*) parent()->parent())->sizeHint());
+	}
+
+	modified = true;
 }
 
 void
-WorkSheet::insertDummyDisplay(uint r, uint c)
+WorkSheet::removeDisplay(SensorDisplay* display)
 {
-	displays[r][c] = new DummyDisplay(this, "dummy frame");
-	lm->addWidget(displays[r][c], r, c);
-	fixTabOrder();
-	displays[r][c]->show();
+	if (!display)
+		return;
 
-	// Notify parent about possibly new minimum size.
-	((QWidget*) parent()->parent())->setMinimumSize(
-		((QWidget*) parent()->parent())->sizeHint());
-	lm->invalidate();
+	for (uint r = 0; r < rows; ++r)
+		for (uint c = 0; c < columns; ++c)
+			if (displays[r][c] == display)
+			{
+				replaceDisplay(r, c);
+				modified = true;
+				return;
+			}
 }
 
 void
@@ -547,9 +556,6 @@ WorkSheet::collectHosts(QValueList<QString>& list)
 void
 WorkSheet::createGrid(uint r, uint c)
 {
-	if (lm)
-		delete lm;
-
 	rows = r;
 	columns = c;
 
@@ -557,7 +563,6 @@ WorkSheet::createGrid(uint r, uint c)
 	lm = new QGridLayout(this, r, c, 5);
 	CHECK_PTR(lm);
 
-	// and fill it with dummy displays
 	displays = new SensorDisplay**[rows];
 	CHECK_PTR(displays);
 	for (r = 0; r < rows; ++r)
@@ -565,16 +570,14 @@ WorkSheet::createGrid(uint r, uint c)
 		displays[r] = new SensorDisplay*[columns];
 		CHECK_PTR(displays[r]);
 		for (c = 0; c < columns; ++c)
-			displays[r][c] = new DummyDisplay(this, "dummy frame");
+			displays[r][c] = 0;
 	}
 
 	/* set stretch factors for rows and columns */
 	for (r = 0; r < rows; ++r)
-		lm->setRowStretch(r, 1);
+		lm->setRowStretch(r, 100);
 	for (c = 0; c < columns; ++c)
-		lm->setColStretch(c, 1);
-
-	lm->activate();
+		lm->setColStretch(c, 100);
 }
 
 void
@@ -589,8 +592,12 @@ WorkSheet::resizeGrid(uint newRows, uint newColumns)
 		newDisplays[r] = new SensorDisplay*[newColumns];
 		CHECK_PTR(displays[r]);
 		for (c = 0; c < newColumns; ++c)
+		{
 			if (c < columns && r < rows)
 				newDisplays[r][c] = displays[r][c];
+			else
+				newDisplays[r][c] = 0;
+		}
 	}
 
 	/* remove obsolete displays */
@@ -610,13 +617,13 @@ WorkSheet::resizeGrid(uint newRows, uint newColumns)
 	for (r = 0; r < newRows; ++r)
 		for (c = 0; c < newColumns; ++c)
 			if (r >= rows || c >= columns)
-				insertDummyDisplay(r, c);
+				replaceDisplay(r, c);
 
 	/* set stretch factors for new rows and columns (if any) */
 	for (r = rows; r < newRows; ++r)
-		lm->setRowStretch(r, 1);
+		lm->setRowStretch(r, 100);
 	for (c = columns; c < newColumns; ++c)
-		lm->setColStretch(c, 1);
+		lm->setColStretch(c, 100);
 	/* Obviously Qt does not shrink the size of the QGridLayout
 	 * automatically.  So we simply force the rows and columns that
 	 * are no longer used to have a strech factor of 0 and hence be

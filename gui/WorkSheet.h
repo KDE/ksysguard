@@ -87,11 +87,9 @@ protected:
 	void customEvent(QCustomEvent* ev);
 
 private:
-	void insertDummyDisplay(uint r, uint c);
-
 	bool replaceDisplay(uint r, uint c, QDomElement& element);
 
-	void replaceDisplay(uint r, uint c, SensorDisplay* display);
+	void replaceDisplay(uint r, uint c, SensorDisplay* display = 0);
 
 	void collectHosts(QValueList<QString>& l);
 

@@ -241,14 +241,26 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	if (range < 0.000001)
 		range = 1.0;
 
+	double minVal = minValue;
 	if (autoRange)
 	{
+		if (minValue != 0.0)
+		{
+			double dim = pow(10, floor(log10(fabs(minValue)))) / 2;
+			if (minValue < 0.0)
+				minVal = dim * floor(minValue / dim);
+			else
+				minVal = dim * ceil(minValue / dim);
+			range = maxValue - minVal;
+			if (range < 0.000001)
+				range = 1.0;
+		}
 		// Massage the range so that the grid shows some nice values.
 		double step = range / hCount;
-		double dim = pow(10, floor(log10(step)));
+		double dim = pow(10, floor(log10(step))) / 2;
 		range = dim * ceil(step / dim) * hCount;
 	}
-	double maxVal = minValue + range;
+	double maxVal = minVal + range;
 
 	int top = 0;
 	if (topBar && h > (fontSize + 2 + hCount * 10))
@@ -256,16 +268,16 @@ SignalPlotter::paintEvent(QPaintEvent*)
 		/* Draw horizontal bar with current sensor values at top of display. */
 		p.setPen(hColor);
 		int x0 = w / 2;
-		p.setFont(QFont("lucidatypewriter", fontSize));
-		top = fontMetrics().height() - 1;
+		p.setFont(QFont(p.font().family(), fontSize));
+		top = p.fontMetrics().height() + 2;
 		h -= top;
 		int h0 = top - 2;
-		p.drawText(1, 1, x0, top - 1, Qt::AlignCenter, title);
+		p.drawText(0, 0, x0, top - 2, Qt::AlignCenter, title);
 
 		p.drawLine(x0 - 1, 1, x0 - 1, h0);
 		p.drawLine(0, top - 1, w - 2, top - 1);
 
-		double bias = -minValue;
+		double bias = -minVal;
 		double scaleFac = (w - x0 - 2) / range;
 		for (int b = 0; b < beams; b++)
 		{
@@ -310,7 +322,7 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	double scaleFac = (h - 2) / range;
 	for (int i = 0; i < samples; i++)
 	{
-		double bias = -minValue;
+		double bias = -minVal;
 		for (int b = 0; b < beams; b++)
 		{
 			int start = top + h - 2 - (int) (bias * scaleFac);
@@ -347,7 +359,7 @@ SignalPlotter::paintEvent(QPaintEvent*)
 	if (hLines && h > (10 * (hCount + 1)))
 	{
 		p.setPen(hColor);
-		p.setFont(QFont("lucidatypewriter", fontSize));
+		p.setFont(QFont(p.font().family(), fontSize));
 		QString val;
 		for (uint y = 1; y < hCount; y++)
 		{
@@ -361,7 +373,7 @@ SignalPlotter::paintEvent(QPaintEvent*)
 		}
 		if (labels && h > (fontSize + 1) * (hCount + 1) && w > 60)
 		{
-			val = QString("%1").arg(minValue);
+			val = QString("%1").arg(minVal);
 			p.drawText(6, top + h - 2, val);
 		}
 	}

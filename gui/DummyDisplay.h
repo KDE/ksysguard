@@ -39,6 +39,8 @@ public:
 	}
 
 	void resizeEvent(QResizeEvent*);
+
+	virtual bool eventFilter(QObject*, QEvent*);
 } ;
 
 #endif

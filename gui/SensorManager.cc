@@ -81,6 +81,7 @@ SensorManager::SensorManager()
 	dict.insert("loadavg5", new QString(i18n("Load Average (5 min)")));
 	dict.insert("loadavg15", new QString(i18n("Load Average (15 min)")));
 	dict.insert("clock", new QString(i18n("Clock Frequency")));
+	dict.insert("lmsensors", new QString(i18n("Hardware Sensors")));
 
 	for (int i = 0; i < 32; i++)
 	{
@@ -90,6 +91,13 @@ SensorManager::SensorManager()
 					new QString(QString(i18n("Disk%1")).arg(i)));
 	}
 
+	for (int i = 0; i < 6; i++)
+	{
+		dict.insert("fan" + QString::number(i),
+					new QString(QString(i18n("Fan%1")).arg(i)));
+		dict.insert("temp" + QString::number(i),
+					new QString(QString(i18n("Temperature%1")).arg(i)));
+	}
 	dict.insert("int00", new QString(i18n("Total")));
 	for (int i = 1; i < 25; i++)
 	{
