@@ -238,7 +238,7 @@
 <customwidgets>
     <customwidget>
         <class>ColorPicker</class>
-        <header location="global">ksgrd/ColorPicker.h</header>
+        <header location="global">ColorPicker.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>
