@@ -66,21 +66,14 @@ updateMemory(void)
         FILE *file;
         char buf[256];
 
-
-        mib[0] = CTL_HW;
-        mib[1] = HW_PHYSMEM;
         len = sizeof (Total);
-        sysctl(mib, 2, &Total, &len, NULL, 0);
+        sysctlbyname("hw.physmem", &Total, &len, NULL, 0);
         Total /= 1024;
 
-
         /* Q&D hack for swap display. Borrowed from xsysinfo-1.4 */
-        if ((file = popen("/usr/sbin/pstat -ks", "r")) == NULL)
-        {
+        if ((file = popen("/usr/sbin/pstat -ks", "r")) == NULL) {
                 STotal = SFree = 0;
-        }
-	else
-	{
+        } else {
 		char *total_str, *free_str;
 
 		fgets(buf, sizeof(buf), file);
@@ -112,10 +105,8 @@ updateMemory(void)
 
 
 	/* initializes the pointer to the vmmeter struct */
-	mib[0] = CTL_VM;
-	mib[1] = VM_METER;
 	len = sizeof (p);
-	sysctl(mib, 2, &p, &len, NULL, 0);
+	sysctlbyname("vm.vmmeter", &p, &len, NULL, 0);
         MFree = p.t_free * getpagesize() / 1024;
         Used = p.t_arm * getpagesize() / 1024 + Buffers + Cached;
 
