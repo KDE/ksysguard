@@ -89,6 +89,8 @@ public:
 
 	virtual void getHostInfo(QString& sh, QString& cmd, int& port) const = 0;
 
+	void unlinkClient(SensorClient* client);
+	
 signals:
 	void reconfigure(const SensorAgent*);
 

@@ -45,7 +45,8 @@ min(int a, int b)
 SignalPlotter::SignalPlotter(QWidget* parent, const char* name)
 	: QWidget(parent, name)
 {
-	beamData.setAutoDelete(true);
+	// Auto deletion does not work for pointer to arrays.
+	beamData.setAutoDelete(FALSE);
 
 	// paintEvent covers whole widget so we use no background to avoid flicker
 	setBackgroundMode(NoBackground);
@@ -81,6 +82,8 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name)
 
 SignalPlotter::~SignalPlotter()
 {
+	for (double* p = beamData.first(); p; p = beamData.next())
+		delete [] p;
 }
 
 bool

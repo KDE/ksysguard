@@ -104,6 +104,8 @@ public:
 	void readProperties(KConfig* cfg);
 	void saveProperties(KConfig* cfg);
 
+	void unlinkClient(SensorClient* client);
+	
 public slots:
 	void reconfigure(const SensorAgent* sensor);
 

@@ -64,7 +64,8 @@ BarGraph::~BarGraph()
 bool
 BarGraph::addBar(const QString& footer)
 {
-	samples.resize(++bars);
+	samples.resize(bars + 1);
+	samples[bars++] = 0.0;
 	footers.append(footer);
 
 	return (true);

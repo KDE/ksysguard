@@ -136,9 +136,8 @@ SensorAgent::processAnswer(const QString& buf)
 				
 		if (!req->client)
 		{
-			kdDebug ()
-				<< "ERROR: No client registered for request!"
-				<< endl;
+			/* The client has disappeared before receiving the answer
+			 * to his request. */
 			processingFIFO.removeLast();
 			return;
 		}
@@ -189,4 +188,12 @@ SensorAgent::executeCommand()
 		// add request to processing FIFO
 		processingFIFO.prepend(req);
 	}
+}
+
+void
+SensorAgent::unlinkClient(SensorClient* client)
+{
+	for (SensorRequest* sr = inputFIFO.first(); sr; sr = inputFIFO.next())	
+		if (sr->client == client)
+			sr->client = 0;
 }

@@ -441,3 +441,12 @@ SensorManager::helpConnectHost()
 	kapp->invokeHelp("CONNECTINGTOOTHERHOSTS",
 					 "ksysguard/the-sensor-browser.html");
 }
+
+void
+SensorManager::unlinkClient(SensorClient* client)
+{
+	QDictIterator<SensorAgent> it(sensors);
+
+	for ( ; it.current(); ++it)
+		it.current()->unlinkClient(client);
+}
