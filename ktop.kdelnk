@@ -2,7 +2,6 @@
 [KDE Desktop Entry]
 BinaryPattern=ktop;
 Comment=The KDE Taskmanager
-Comment[de]=Der KDE Prozessmanager
 Name=KTop
 Exec=ktop
 Icon=ktop.xpm
