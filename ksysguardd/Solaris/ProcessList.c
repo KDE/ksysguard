@@ -190,13 +190,21 @@ static int updateProcess( pid_t pid ) {
 		free( ps->State );
 	ps->State = lwpStateName( psinfo.pr_lwp );
 
+	/*
+	 * the following data is invalid for zombies, so...
+	 */
 	if( (ps->nThreads = psinfo.pr_nlwp ) != 0 ) {
 		ps->Prio = psinfo.pr_lwp.pr_pri;
 		ps->Time = psinfo.pr_lwp.pr_time.tv_sec * 100
 			+ psinfo.pr_lwp.pr_time.tv_nsec * 10000000;
 		ps->Load = (double) psinfo.pr_lwp.pr_pctcpu
 			/ (double) 0x8000 * 100.0;
+	} else {
+		ps->Prio = 0;
+		ps->Time = 0;
+		ps->Load = 0.0;
 	}
+
 	ps->Size = psinfo.pr_size;
 	ps->RSSize = psinfo.pr_rssize;
 
@@ -208,6 +216,8 @@ static int updateProcess( pid_t pid ) {
 	ps->CmdLine = strdup( psinfo.pr_psargs );
 
 	validateStr( ps->Command );
+	validateStr( ps->CmdLine );
+
 	ps->alive = 1;
 	timeStamp = time( NULL );
 
