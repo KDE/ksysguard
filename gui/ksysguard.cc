@@ -120,8 +120,7 @@ TopLevel::TopLevel(const char *name)
 	(void) new KAction(i18n("&Work Sheet Properties..."), "configure", 0, ws,
 					   SLOT(configure()), actionCollection(),
 					   "configure_sheet");
-	toolbarTog = KStdAction::showToolbar(this, SLOT(toggleMainToolBar()), actionCollection());
-	toolbarTog->setChecked(false);
+	KStdAction::showToolbar("mainToolBar", actionCollection());
 	statusBarTog = KStdAction::showStatusbar(this, SLOT(showStatusBar()), actionCollection());
 	KStdAction::configureToolbars(this, SLOT(editToolbars()), actionCollection());
 	statusBarTog->setChecked(false);
@@ -237,10 +236,9 @@ TopLevel::beATaskManager()
 				w, h);
 
 	// No toolbar and status bar in taskmanager mode.
+	toolBar("mainToolBar")->hide();
 	statusBarTog->setChecked(false);
 	showStatusBar();
-
-	showMainToolBar(false);
 
 	dontSaveSession = true;
 
@@ -250,7 +248,7 @@ TopLevel::beATaskManager()
 void
 TopLevel::showRequestedSheets()
 {
-	showMainToolBar(false);
+	toolBar("mainToolBar")->hide();
 
 	QValueList<int> sizes;
 	sizes.append(0);
@@ -280,15 +278,6 @@ void
 TopLevel::disconnectHost()
 {
 	sb->disconnect();
-}
-
-void
-TopLevel::toggleMainToolBar()
-{
-	if (toolbarTog->isChecked())
-		toolBar("mainToolBar")->show();
-	else
-		toolBar("mainToolBar")->hide();
 }
 
 void
@@ -407,9 +396,9 @@ TopLevel::readProperties(KConfig* cfg)
 	}
 	splitter->setSizes(sizes);
 
-	showMainToolBar(!cfg->readNumEntry("ToolBarHidden", 1));
+	applyMainWindowSettings(cfg);
 
-	if (!cfg->readNumEntry("StatusBarHidden", 1))
+	if (!statusBar()->isHidden())
 	{
 		statusBarTog->setChecked(true);
 		showStatusBar();
@@ -436,8 +425,8 @@ TopLevel::saveProperties(KConfig* cfg)
 	cfg->writeEntry("SizeY", height());
 	cfg->writeEntry("isMinimized", isMinimized());
 	cfg->writeEntry("SplitterSizeList", splitter->sizes());
-	cfg->writeEntry("ToolBarHidden", !toolbarTog->isChecked());
-	cfg->writeEntry("StatusBarHidden", !statusBarTog->isChecked());
+
+	saveMainWindowSettings(cfg);
 
 	KSGRD::Style->saveProperties(cfg);
 	KSGRD::SensorMgr->saveProperties(cfg);
@@ -523,13 +512,6 @@ TopLevel::answerReceived(int id, const QString& answer)
 		break;
 	}
 	}
-}
-
-void
-TopLevel::showMainToolBar(bool show)
-{
-	toolbarTog->setChecked(show);
-	toggleMainToolBar();
 }
 
 static const KCmdLineOptions options[] =

@@ -81,21 +81,17 @@ protected:
 protected slots:
 	void connectHost();
 	void disconnectHost();
-	void toggleMainToolBar();
 	void showStatusBar();
 	void editToolbars();
 	void editStyle();
 
 private:
-	void showMainToolBar(bool show);
-
 	KStatusBar* statusbar;
 
 	QPtrList<DCOPClientTransaction> dcopFIFO;
 
 	QSplitter* splitter;
 	KRecentFilesAction* openRecent;
-	KToggleAction* toolbarTog;
 	KToggleAction* statusBarTog;
 	SensorBrowser* sb;
 	Workspace* ws;
