@@ -30,6 +30,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <signal.h>
+#include <assert.h>
 
 #include <qmessagebox.h>
 
@@ -49,6 +50,7 @@ typedef struct
 	char* trHeader;
 	char* placeholder;
 	bool visible;
+	bool supported;
 	KTabListBox::ColumnType type;
 	OSProcessList::SORTKEY sortMethod;
 } TABCOLUMN;
@@ -63,31 +65,31 @@ typedef struct
  * type of information.
  *
  * This table, the construction of the KTabListBox lines in
- * ProcessList::initTabCol and KtopProcList::load() MUST be keept in sync!
+ * ProcessList::initTabCol and ProcessList::load() MUST be keept in sync!
  * Also, the order and existance of the first two columns (icon and
  * pid) is mandatory! This i18n() mechanism is way too inflexible!
  */
 static TABCOLUMN TabCol[] =
 {
-	{ "", 0, "++++", true, KTabListBox::MixedColumn,
+	{ "", 0, "++++", true, true, KTabListBox::MixedColumn,
 	  OSProcessList::SORTBY_NAME },
-	{ "procID", 0, "procID++", true, KTabListBox::TextColumn,
+	{ "procID", 0, "procID++", true, true, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_PID },
-	{ "Name", 0, "kfontmanager++", true, KTabListBox::TextColumn,
+	{ "Name", 0, "kfontmanager++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_NAME},
-	{ "userID", 0, "rootuseroot", true, KTabListBox::TextColumn,
+	{ "userID", 0, "rootuseroot", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_UID },
-	{ "CPU", 0, "100.00%+", true, KTabListBox::TextColumn,
+	{ "CPU", 0, "100.00%+", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_CPU },
-	{ "Time", 0, "100:00++", true, KTabListBox::TextColumn,
+	{ "Time", 0, "100:00++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_TIME },
-	{ "Status", 0, "Status+++", true, KTabListBox::TextColumn,
+	{ "Status", 0, "Status+++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_STATUS },
-	{ "VmSize", 0, "VmSize++", true, KTabListBox::TextColumn,
+	{ "VmSize", 0, "VmSize++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_VMSIZE },
-	{ "VmRss", 0, "VmSize++", true, KTabListBox::TextColumn,
+	{ "VmRss", 0, "VmSize++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_VMRSS },
-	{ "VmLib", 0, "VmSize++", true, KTabListBox::TextColumn,
+	{ "VmLib", 0, "VmSize++", true, false, KTabListBox::TextColumn,
 	  OSProcessList::SORTBY_VMLIB }
 };
 
@@ -98,7 +100,7 @@ inline int max(int a, int b)
 	return ((a) < (b) ? (b) : (a));
 }
 
-KtopProcList::KtopProcList(QWidget *parent = 0, const char* name = 0)
+ProcessList::ProcessList(QWidget *parent = 0, const char* name = 0)
 	: KTabListBox(parent, name)
 {
 	setSeparator(';');
@@ -137,17 +139,8 @@ KtopProcList::KtopProcList(QWidget *parent = 0, const char* name = 0)
 		/*
 		 * We need to do some better error handling here!
 		 */
-
-		return;
+		assert(0);
 	}
-
-	// determine the number of visible columns
-	int columns = 0;
-	int cnt;
-	for (cnt = 0; cnt < MaxCols; cnt++)
-		if (TabCol[cnt].visible)
-			columns++;
-	setNumCols(columns);
 
 	initTabCol();
 
@@ -160,7 +153,7 @@ KtopProcList::KtopProcList(QWidget *parent = 0, const char* name = 0)
 			SLOT(procHighlighted(int, int)));
 }
 
-KtopProcList::~KtopProcList()
+ProcessList::~ProcessList()
 {
 	// remove icon list from memory
 	delete icons;
@@ -171,7 +164,7 @@ KtopProcList::~KtopProcList()
 }
 
 void 
-KtopProcList::setUpdateRate(int r)
+ProcessList::setUpdateRate(int r)
 {
 	switch (update_rate = r)
 	{
@@ -196,7 +189,7 @@ KtopProcList::setUpdateRate(int r)
 }
 
 void
-KtopProcList::setSortColumn(int c)
+ProcessList::setSortColumn(int c)
 {
 	/*
 	 * We need to make sure that the specified column is visible. If it's not
@@ -209,7 +202,7 @@ KtopProcList::setSortColumn(int c)
 }
 
 int 
-KtopProcList::setAutoUpdateMode(bool mode)
+ProcessList::setAutoUpdateMode(bool mode)
 {
 	/*
 	 * If auto mode is enabled the display is updated regurlarly triggered
@@ -230,7 +223,7 @@ KtopProcList::setAutoUpdateMode(bool mode)
 }
 
 void 
-KtopProcList::update(void)
+ProcessList::update(void)
 {
 	// save the index of the first row item
 	int top_Item = topItem();
@@ -255,7 +248,7 @@ KtopProcList::update(void)
 }
 
 void 
-KtopProcList::load()
+ProcessList::load()
 {
 	OSProcessList pl;
 
@@ -265,8 +258,7 @@ KtopProcList::load()
 	if (!pl.update())
 	{
 		QMessageBox::critical(this, "ktop", pl.getErrMessage(), 0, 0);
-		qApp->quit();
-		return;
+		assert(0);
 	}
 
 	clear();
@@ -321,20 +313,20 @@ KtopProcList::load()
 			line += s.setNum(p->getPid()) + ";";
 
 			// process name
-			if (TabCol[2].visible)
+			if (TabCol[2].visible && TabCol[2].supported)
 				line += p->getName() + QString(";");
 
 			// user name
-			if (TabCol[3].visible)
+			if (TabCol[3].visible && TabCol[3].supported)
 				line += p->getUserName() + QString(";");
 
 			// CPU load
-			if (TabCol[4].visible)
+			if (TabCol[4].visible && TabCol[4].supported)
 				line += s.sprintf("%.2f%%;",
 								  p->getUserLoad() + p->getSysLoad());
 
 			// total processing time
-			if (TabCol[5].visible)
+			if (TabCol[5].visible && TabCol[5].supported)
 			{
 				int totalTime = p->getUserTime() + p->getSysTime();
 				line += s.sprintf("%d:%02d;",
@@ -343,19 +335,19 @@ KtopProcList::load()
 			}
 
 			// process status
-			if (TabCol[6].visible)
+			if (TabCol[6].visible && TabCol[6].supported)
 				line += p->getStatusTxt() + QString(";");
 
 			// VM size
-			if (TabCol[7].visible)
+			if (TabCol[7].visible && TabCol[7].supported)
 				line += s.setNum(p->getVm_size()) + ";";
 
 			// VM rss
-			if (TabCol[8].visible)
+			if (TabCol[8].visible && TabCol[8].supported)
 				line += s.setNum(p->getVm_rss()) + ";";
 
 			// VM lib
-			if (TabCol[9].visible)
+			if (TabCol[9].visible && TabCol[9].supported)
 				line += s.setNum(p->getVm_lib()) + ";";
 
 			appendItem(line);
@@ -365,14 +357,14 @@ KtopProcList::load()
 }
 
 void 
-KtopProcList::userClickOnHeader(int colIndex)
+ProcessList::userClickOnHeader(int colIndex)
 {
 	setSortColumn(colIndex);
 	update();
 }
 
 void 
-KtopProcList::try2restoreSelection()
+ProcessList::try2restoreSelection()
 {
 	int err = 0;
 
@@ -387,7 +379,7 @@ KtopProcList::try2restoreSelection()
 }
 
 void 
-KtopProcList::restoreSelection()
+ProcessList::restoreSelection()
 {
 	QString txt;
 	int cnt = count();
@@ -410,14 +402,14 @@ KtopProcList::restoreSelection()
 }
 
 void 
-KtopProcList::procHighlighted(int indx, int)
+ProcessList::procHighlighted(int indx, int)
 { 
 	lastSelectionPid = NONE;
 	sscanf(text(indx, 1), "%d", &lastSelectionPid);
 } 
 
 int 
-KtopProcList::cellHeight(int row)
+ProcessList::cellHeight(int row)
 {
 	const QPixmap *pix = icons->procIcon(text(row, 2));
 
@@ -428,34 +420,60 @@ KtopProcList::cellHeight(int row)
 }
 
 void
-KtopProcList::initTabCol(void)
+ProcessList::initTabCol(void)
 {
+	OSProcessList pl;
+
 	TabCol[1].trHeader = new char[strlen(i18n("procID")) + 1];
 	strcpy(TabCol[1].trHeader, i18n("procID"));
 
 	TabCol[2].trHeader = new char[strlen(i18n("Name")) + 1];
 	strcpy(TabCol[2].trHeader, i18n("Name"));
+	if (pl.hasName())
+		TabCol[2].supported = true;
 
 	TabCol[3].trHeader = new char[strlen(i18n("userID")) + 1];
 	strcpy(TabCol[3].trHeader, i18n("userID"));
+	if (pl.hasUid())
+		TabCol[3].supported = true;
 
 	TabCol[4].trHeader = new char[strlen(i18n("CPU")) + 1];
 	strcpy(TabCol[4].trHeader, i18n("CPU"));
+	if (pl.hasUserLoad && pl.hasSysLoad())
+		TabCol[4].supported = true;
 
 	TabCol[5].trHeader = new char[strlen(i18n("Time")) + 1];
 	strcpy(TabCol[5].trHeader, i18n("Time"));
+	if (pl.hasUserTime() && pl.hasSysTime())
+		TabCol[5].supported = true;
 
 	TabCol[6].trHeader = new char[strlen(i18n("Status")) + 1];
 	strcpy(TabCol[6].trHeader, i18n("Status"));
+	if (pl.hasStatus())
+		TabCol[6].supported = true;
 
 	TabCol[7].trHeader = new char[strlen(i18n("VmSize")) + 1];
 	strcpy(TabCol[7].trHeader, i18n("VmSize"));
+	if (pl.hasVmSize())
+		TabCol[7].supported = true;
 
 	TabCol[8].trHeader = new char[strlen(i18n("VmRss")) + 1];
 	strcpy(TabCol[8].trHeader, i18n("VmRss"));
+	if (pl.hasVmRss())
+		TabCol[8].supported = true;
 
 	TabCol[9].trHeader = new char[strlen(i18n("VmLib")) + 1];
 	strcpy(TabCol[9].trHeader, i18n("VmLib"));
+	if (pl.hasVmLib())
+		TabCol[9].supported = true;
+
+	// determine the number of visible columns
+	int columns = 0;
+	int cnt;
+	for (cnt = 0; cnt < MaxCols; cnt++)
+		if (TabCol[cnt].visible && TabCol[cnt].supported)
+			columns++;
+	setNumCols(columns);
 
 	/*
 	 * Set the column witdh for all columns in the process list table.
@@ -463,8 +481,8 @@ KtopProcList::initTabCol(void)
 	 * to determine the width with the current font metrics.
 	 */
 	QFontMetrics fm = fontMetrics();
-	for (int cnt = 0; cnt < MaxCols; cnt++)
-		if (TabCol[cnt].visible)
+	for (cnt = 0; cnt < MaxCols; cnt++)
+		if (TabCol[cnt].visible && TabCol[cnt].supported)
 		{
 			setColumn(cnt, TabCol[cnt].trHeader,
 					  max(fm.width(TabCol[cnt].placeholder),

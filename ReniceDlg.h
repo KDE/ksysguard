@@ -27,60 +27,41 @@
 
 // $Id$
 
-#include <qmenubar.h>
-#include <qpopupmenu.h>
+#ifndef _ReniceDlg_h_
+#define _ReniceDlg_h_
 
-#include <kapp.h>
+#include <qdialog.h>
 
-#include "TaskMan.h"
-
-extern KApplication* Kapp;
-
-class TopLevel : public QWidget
+/**
+ * This class creates and handles a simple dialog to change the scheduling
+ * priority of a process.
+ */
+class ReniceDlg : public QDialog
 {
 	Q_OBJECT
 
 public:
+	ReniceDlg(QWidget* parent, const char* name, int currentPPrio);
 
-    enum
+public slots:
+	void ok()
 	{
-		MENU_ID_ABOUT = 100,
-		MENU_ID_PROCSETTINGS = 50, 
-	    MENU_ID_QUIT = 20,
-		MENU_ID_HELP = 30
-	};
-    
-	TopLevel(QWidget *parent = 0, const char *name = 0, int sfolder = 0);
-	~TopLevel()
-	{
-		delete taskman;
-		delete menubar;
-		delete file;
-		delete settings;
-		delete help;
+		done(value);
 	}
 
-	void closeEvent(QCloseEvent*)
+	void cancel()
 	{
-		quitSlot();
+		done(40);
 	}
 
-protected:
+private:
+	int value;
 
-	void resizeEvent(QResizeEvent*);
-
-	QMenuBar* menubar;
-	QPopupMenu* file;
-	QPopupMenu* settings;
-	QPopupMenu* help;
-
-	TaskMan* taskman;
-
-protected slots:
-
-	void menuHandler(int);
-	void quitSlot();
-
+private slots:
+	void setPriorityValue(int priority)
+	{
+		value = priority;
+	}
 };
 
-
+#endif

@@ -24,9 +24,10 @@ SUBDIRS = doc pics example
 bin_PROGRAMS = 	ktop
 
 # Which sources should be compiled for ktop.
-ktop_SOURCES	= ktop.cpp memory.cpp settings.cpp cpu.cpp widgets.cpp \
+ktop_SOURCES	= ktop.cpp memory.cpp settings.cpp cpu.cpp TaskMan.cpp \
 	ProcListPage.cpp ProcTreePage.cpp IconList.cpp ProcessList.cpp \
-	ProcessTree.cpp OSProcessList.cpp PerfMonPage.cpp OSStatus.cpp
+	ProcessTree.cpp OSProcessList.cpp PerfMonPage.cpp OSStatus.cpp \
+	ReniceDlg.cpp
 
 # the library search path
 ktop_LDFLAGS = $(all_libraries) $(KDE_RPATH)
@@ -37,14 +38,12 @@ ktop_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 ktop_LDADD   =      $(LIB_KFM) $(LIB_KDEUI)
 
 # this option you can leave out. Just, if you use "make dist", you need it
-noinst_HEADERS = ktop.h memory.h settings.h cpu.h widgets.h ProcListPage.h\
+noinst_HEADERS = ktop.h memory.h settings.h cpu.h TaskMan.h ProcListPage.h\
 	IconList.h ProcessList.h ProcessTree.h OSProcessList.h ProcTreePage.h \
-	PerfMonPage.h OSStatus.h
+	PerfMonPage.h OSStatus.h ReniceDlg.h
 
 # just to make sure, automake makes them 
-BUILTSOURCES =	ktop.moc memory.moc settings.moc cpu.moc widgets.moc \
-	ProcListPage.moc IconList.moc ProcessList.moc ProcessTree.moc \
-	ProcTreePage.moc PerfMonPage.moc
+BUILTSOURCES =	ktop.moc memory.moc settings.moc cpu.moc TaskMan.moc ProcListPage.moc IconList.moc ProcessList.moc ProcessTree.moc ProcTreePage.moc PerfMonPage.moc ReniceDlg.moc
 
 # if you "make distclean", this files get removed. If you want to remove
 # them while "make clean", use CLEANFILES
@@ -87,13 +86,17 @@ cpu.cpp:cpu.moc
 cpu.moc: cpu.h
 	$(MOC) cpu.h -o cpu.moc
 
-widgets.cpp:widgets.moc
-widgets.moc: widgets.h
-	$(MOC) widgets.h -o widgets.moc
+TaskMan.cpp:TaskMan.moc
+TaskMan.moc: TaskMan.h
+	$(MOC) TaskMan.h -o TaskMan.moc
 
 settings.cpp:settings.moc
 settings.moc: settings.h
 	$(MOC) settings.h -o settings.moc
+
+ReniceDlg.cpp : ReniceDlg.moc
+ReniceDlg.moc : ReniceDlg.h
+	$(MOC) ReniceDlg.h -o ReniceDlg.moc
 	
 ProcListPage.cpp : ProcListPage.moc
 ProcListPage.moc : ProcListPage.h

@@ -38,14 +38,9 @@
 class OSProcess
 {
 public:
-	OSProcess() {}
+	OSProcess(const char* pidStr);
+	OSProcess(int pid_) : pid(pid_) { }
 	virtual ~OSProcess() {}
-
-	/**
-	 * This functions retrieves the kernel information about the process with
-	 * the id 'pidStr' (decimal number passed as string).
-	 */
-	bool loadInfo(const char* pidStr);
 
 	const char* getName(void) const
 	{
@@ -116,15 +111,26 @@ public:
 		return (sysLoad);
 	}
 
+	bool ok(void) const
+	{
+		return (!error);
+	}
+
+	const QString& getErrMessage(void) const
+	{
+		return (errMessage);
+	}
+
 private:
 	char name[101];
 	char status;
-	char statusTxt[10];
+	QString statusTxt;
 	pid_t pid;
 	pid_t ppid;
 	QString userName;
 	uid_t uid;
 	gid_t gid;
+	int ttyNo;
 	int priority;
 	unsigned int vm_size;
 	unsigned int vm_lock;
@@ -137,6 +143,9 @@ private:
 	unsigned int sysTime;
 	double userLoad;
 	double sysLoad;
+
+	bool error;
+	QString errMessage;
 } ;
 
 /**
@@ -177,6 +186,34 @@ public:
 	 * specific process attribute. The return value may be hardcoded and
 	 * ifdef'd for each platform.
 	 */
+	bool hasName(void) const
+	{
+		return (true);
+	}
+	bool hasUid(void) const
+	{
+		return (true);
+	}
+	bool hasUserTime(void) const
+	{
+		return (true);
+	}
+	bool hasSysTime(void) const
+	{
+		return (true);
+	}
+	bool hasUserLoad(void) const
+	{
+		return (true);
+	}
+	bool hasSysLoad(void) const
+	{
+		return (true);
+	}
+	bool hasStatus(void) const
+	{
+		return (true);
+	}
 	bool hasPriority(void) const
 	{
 		return (false); // not yet implemented
@@ -189,7 +226,7 @@ public:
 	{
 		return (true);
 	}
-	bool hasVmList(void) const
+	bool hasVmLib(void) const
 	{
 		return (true);
 	}
@@ -204,21 +241,37 @@ public:
 		return (sortCriteria);
 	}
 
+	/**
+	 * This function is needed mainly because we can have errors during the
+	 * constructor execution. Since it has no return value we can call this
+	 * function to find out if the class is fully operational.
+	 */
 	bool ok(void) const
 	{
 		return (!error);
 	}
 
+	/**
+	 * This function can be used when calls to ok() return false to find out
+	 * what has happened.
+	 */
 	const QString& getErrMessage(void) const
 	{
 		return (errMessage);
 	}
 
 private:
+	/// This function is needed by the parent class to sort the list.
 	virtual int compareItems(GCI it1, GCI it2);
 
+	/// This variabled stores the criteria used to sort the list.
 	SORTKEY sortCriteria;
 
+	/**
+	 * These variables are used for error handling. When an error has occured
+	 * error is set to true and the errMessage contains a more detailed
+	 * description of the problem.
+	 */
 	bool error;
 	QString errMessage;
 } ;

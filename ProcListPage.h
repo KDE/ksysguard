@@ -42,7 +42,7 @@ extern KApplication* Kapp;
 
 /**
  * This widget implements a process list page. Besides the process list which
- * is implemented as a KtopProcList, it contains two comboxes and two buttons.
+ * is implemented as a ProcessList, it contains two comboxes and two buttons.
  * The combo boxes are used to set the update rate and the process filter.
  * The buttons are used to force an immediate update and to kill a process.
  */
@@ -112,7 +112,7 @@ private:
     QGroupBox* box;
 
 	/// The process list.
-    KtopProcList* pList;
+    ProcessList* pList;
 
 	/// These combo boxes control the refresh rate and the process filter.
 	QComboBox* cbRefresh;

@@ -23,14 +23,16 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
 */
 
 // $Id$
 
-#ifndef TASKMAN_H
-#define TASKMAN_H
+#ifndef _TaskMan_h_
+#define _TaskMan_h_
 
+#include <signal.h>
+
+#include <qwidget.h>
 #include <qtabdialog.h>
 
 #include <ktablistbox.h>
@@ -43,8 +45,11 @@
 #include "ProcTreePage.h"
 #include "PerfMonPage.h"
 
-//#define ADD_SWAPMON
-
+/**
+ * This class creates the main dialog widget of ktop. It consists of a 
+ * 3 entry tab dialog. The tabs contain a process list, a process tree and
+ * a performance meter.
+ */
 class TaskMan : public QTabDialog
 {
 	Q_OBJECT
@@ -88,28 +93,6 @@ public:
 	static void TaskMan_clearIconList();
 	static const QPixmap* TaskMan_getProcIcon(const char*);
 
-private:
-
-	virtual void resizeEvent(QResizeEvent*);
-
-	ProcListPage* procListPage;
-
-	ProcTreePage* procTreePage;
-
-	PerfMonPage* perfMonPage;
-
-    QWidget* pages[3];
-	
-	QPopupMenu* pSig;
-	AppSettings* settings;
-
-    int timer_interval;
-	int tid;
-	int startup_page;
-	int filtermode;
-	char cfgkey_startUpPage[12];
-	bool restoreStartupPage;
-
 public slots:
 	void pSigHandler(int);
 	void tabBarSelected(int);
@@ -122,26 +105,28 @@ public slots:
 	{
 		pSig->popup(QCursor::pos());
 	}
-	void killProcess(int);
-
-};
-
-class SetNice : public QDialog
-{
-	Q_OBJECT
-
-public:
-	SetNice(QWidget *parent, const char *name , int currentPPrio);
+	void killProcess(int pid)
+	{
+		killProcess(pid, SIGKILL, "SIGKILL");
+	}
 
 private:
-	int value;
+	void reniceProcess(int pid);
+	void killProcess(int, int sig, const char*);
 
-private slots:
-	void setPriorityValue(int);
+	ProcListPage* procListPage;
 
-public slots:
-	void ok();
-	void cancel();
+	ProcTreePage* procTreePage;
+
+	PerfMonPage* perfMonPage;
+
+    QWidget* pages[3];
+	
+	QPopupMenu* pSig;
+	AppSettings* settings;
+
+	int startup_page;
+	bool restoreStartupPage;
 };
 
 #endif

@@ -44,50 +44,36 @@ inline int cmp(unsigned int a, unsigned int b)
 	return (a < b ? -1 : (a > b ? 1 : 0));
 }
 
+inline int cmp(long a, long b)
+{
+	return (a < b ? -1 : (a > b ? 1 : 0));
+}
+
 inline int cmp(double a, double b)
 {
 	return (a < b ? -1 : (a > b ? 1 : 0));
 }
 
-bool
-OSProcess::loadInfo(const char* pidStr)
+OSProcess::OSProcess(const char* pidStr)
 {
-	char buffer[1024], temp[128];
+	char buffer[1024];
 	FILE* fd;
+
+	error = false;
 
 	QString buf;
 	buf.sprintf("/proc/%s/status", pidStr);
 	if((fd = fopen(buf, "r")) == 0)
-		return (false);
+	{
+		error = true;
+		errMessage.sprintf(i18n("Cannot open %s!\n"), buf.data());
+		return;
+	}
 
 	fscanf(fd, "%s %s", buffer, name);
-	fscanf(fd, "%s %c %s", buffer, &status, temp);
-	switch (status)
-	{
-	case 'R':
-		strcpy(statusTxt, i18n("Run"));
-		break;
-	case 'S':
-		strcpy(statusTxt, i18n("Sleep"));
-		break;
-	case 'D': 
-		strcpy(statusTxt, i18n("Disk"));
-		break;
-	case 'Z': 
-		strcpy(statusTxt, i18n("Zombie"));
-		break;
-	case 'T': 
-		strcpy(statusTxt, i18n("Stop"));
-		break;
-	case 'W': 
-		strcpy(statusTxt, i18n("Swap"));
-		break;
-	default:
-		strcpy(statusTxt,"????");
-		break;
-	}
-	fscanf(fd, "%s %d", buffer, &pid);
-	fscanf(fd, "%s %d", buffer, &ppid);
+	fscanf(fd, "%s %c %*s", buffer, &status);
+	fscanf(fd, "%*s %*d");
+	fscanf(fd, "%*s %*d");
 	fscanf(fd, "%*s %d %*d %*d %*d", (int*) &uid);
 	fscanf(fd, "%*s %d %*d %*d %*d", (int*) &gid);
 	fscanf(fd, "%s %d %*s\n", buffer, &vm_size);
@@ -113,13 +99,43 @@ OSProcess::loadInfo(const char* pidStr)
 		vm_lib = 0;
 	fclose(fd);
 
-    sprintf(buffer, "/proc/%s/stat", pidStr);
-	if ((fd = fopen(buffer, "r")) == 0)
-		return (false);
+    buf.sprintf("/proc/%s/stat", pidStr);
+	if ((fd = fopen(buf, "r")) == 0)
+	{
+		error = true;
+		errMessage.sprintf(i18n("Cannot open %s!\n"), buf.data());
+		return;
+	}
     
-	fscanf(fd, "%*s %*s %*s %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %d %d",
+	fscanf(fd, "%d %*s %c %d %d %*d %d %*d %*d %*d %*d %*d %*d %d %d",
+		   (int*) &pid, &status, (int*) &ppid, (int*) &gid, &ttyNo,
 		   &userTime, &sysTime);
 	fclose(fd);
+
+	switch (status)
+	{
+	case 'R':
+		statusTxt = i18n("Run");
+		break;
+	case 'S':
+		statusTxt = i18n("Sleep");
+		break;
+	case 'D': 
+		statusTxt = i18n("Disk");
+		break;
+	case 'Z': 
+		statusTxt = i18n("Zombie");
+		break;
+	case 'T': 
+		statusTxt = i18n("Stop");
+		break;
+	case 'W': 
+		statusTxt = i18n("Swap");
+		break;
+	default:
+		statusTxt = i18n("????");
+		break;
+	}
 
 	TimeStamp* ts = new TimeStamp(pid, userTime, sysTime);
 	NewTStamps->inSort(ts);
@@ -148,8 +164,6 @@ OSProcess::loadInfo(const char* pidStr)
 	// find out user name with the process uid
 	struct passwd* pwent = getpwuid(uid);
 	userName = pwent ? pwent->pw_name : "????";
-
-	return (true);
 }
 
 OSProcessList::OSProcessList()
@@ -202,13 +216,24 @@ OSProcessList::update(void)
 	}
 	while ((entry = readdir(dir))) 
 	{
-		OSProcess* ps = new OSProcess();
-		if (isdigit(entry->d_name[0]) && ps->loadInfo(entry->d_name))
+		if (isdigit(entry->d_name[0]))
 		{
+			OSProcess* ps = new OSProcess(entry->d_name);
+			if (!ps || !ps->ok())
+			{
+				error = true;
+				if (ps)
+					errMessage = ps->getErrMessage();
+				else
+					errMessage = i18n("Cannot read status of processes"
+									  "from /proc/* directories!\n");
+				delete ps;
+				return (false);
+			}
+
+			// insert process into sorted list
 			inSort(ps);
 		}
-		else
-			delete ps;
 	}
 	closedir(dir);
 

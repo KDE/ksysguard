@@ -23,7 +23,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
 */
 
 // $Id$
@@ -47,7 +46,7 @@
  * and killing of processes. The display is updated automatically when
  * auto mode is enabled.
  */
-class KtopProcList : public KTabListBox
+class ProcessList : public KTabListBox
 {
     Q_OBJECT
 
@@ -67,10 +66,10 @@ public:
 	};
 
 	/// The constructor.
-	KtopProcList(QWidget* parent , const char* name);
+	ProcessList(QWidget* parent , const char* name);
 
 	/// The destructor.
-	~KtopProcList();
+	~ProcessList();
 
 	/**
 	 * The udpate function can be used to update the displayed process list.

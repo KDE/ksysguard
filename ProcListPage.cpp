@@ -56,7 +56,7 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	box->resize(380, 380);
 
 	// Create the table that lists the processes.
-	pList = new KtopProcList(this, "pList");    
+	pList = new ProcessList(this, "pList");    
 	CHECK_PTR(pList);
 	connect(pList, SIGNAL(popupMenu(int, int)),
 			SLOT(popupMenu(int, int)));
@@ -69,11 +69,11 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	cbRefresh = new QComboBox(this, "pList_cbRefresh");
 	CHECK_PTR(cbRefresh);
 	cbRefresh->insertItem(i18n("Refresh rate: Slow"),
-						  (KtopProcList::UPDATE_SLOW));
+						  (ProcessList::UPDATE_SLOW));
 	cbRefresh->insertItem(i18n("Refresh rate: Medium"),
-						  (KtopProcList::UPDATE_MEDIUM));
+						  (ProcessList::UPDATE_MEDIUM));
 	cbRefresh->insertItem(i18n("Refresh rate: Fast"),
-						  (KtopProcList::UPDATE_FAST));
+						  (ProcessList::UPDATE_FAST));
 	cbRefresh->setCurrentItem(pList->getUpdateRate());
 	connect(cbRefresh, SIGNAL(activated(int)),
 			SLOT(cbRefreshActivated(int)));
@@ -100,7 +100,7 @@ ProcListPage::ProcListPage(QWidget* parent = 0, const char* name = 0)
 	connect(bKill,SIGNAL(clicked()), this, SLOT(killTask()));
 
 	// restore refresh rate settings...
-	refreshRate = KtopProcList::UPDATE_MEDIUM;
+	refreshRate = ProcessList::UPDATE_MEDIUM;
 	loadSetting(refreshRate, "pListUpdate");
 	cbRefresh->setCurrentItem(refreshRate);
 	pList->setUpdateRate(refreshRate);

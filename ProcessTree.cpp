@@ -24,6 +24,9 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <signal.h>
+#include <assert.h>
+
+#include <qmessagebox.h>
 
 #include <kapp.h>
 
@@ -48,6 +51,14 @@ ProcessTree::ProcessTree(QWidget *parent, const char *name, WFlags f)
 	// load icons
 	icons = new KtopIconList;
 	CHECK_PTR(icons);
+
+	// make sure we can retrieve process lists from the OS
+	OSProcessList pl;
+	if (!pl.ok())
+	{
+		QMessageBox::critical(this, "ktop", pl.getErrMessage(), 0, 0);
+		assert(0);
+	}
 
 	// set the rootProcess to the id of 'init' process
 	rootProcess = INIT_PID;
@@ -96,7 +107,11 @@ ProcessTree::loadProcesses()
 	pl.setSortCriteria(sortKey);
 
 	// request current list of processes
-	pl.update();
+	if (!pl.update())
+	{
+		QMessageBox::critical(this, "ktop", pl.getErrMessage(), 0, 0);
+		assert(0);
+	}
 
 	// remove all items from the tree widget
 	clear();

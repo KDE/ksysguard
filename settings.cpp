@@ -53,10 +53,8 @@
 #include <klocale.h>
 #include <kapp.h>
 
+#include "TaskMan.h"
 #include "settings.moc"
-#include "cpu.h"
-#include "memory.h"
-#include "widgets.h"
 
 AppSettings::AppSettings(QWidget *parent, const char *name)
             :QDialog(parent, name, TRUE)
