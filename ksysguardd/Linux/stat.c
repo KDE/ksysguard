@@ -1052,10 +1052,10 @@ void
 printDiskIO(const char* cmd)
 {
 	int major, minor;
-	char name[16];
+	char name[17];
 	DiskIOInfo* ptr;
 
-	sscanf(cmd, "disk/%d:%d/%s", &major, &minor, name);
+	sscanf(cmd, "disk/%d:%d/%16s", &major, &minor, name);
 
 	if (Dirty)
 		processStat();
@@ -1098,10 +1098,10 @@ void
 printDiskIOInfo(const char* cmd)
 {
 	int major, minor;
-	char name[16];
+	char name[17];
 	DiskIOInfo* ptr = DiskIO;
 
-	sscanf(cmd, "disk/%d:%d/%s", &major, &minor, name);
+	sscanf(cmd, "disk/%d:%d/%16s", &major, &minor, name);
 
 	while (ptr && (ptr->major != major || ptr->minor != minor))
 		ptr = ptr->next;
