@@ -24,6 +24,7 @@
 */
 
 #include <qdragobject.h>
+#include <qlabel.h>
 
 #include <kglobal.h>
 #include <klocale.h>
@@ -53,17 +54,22 @@ KSysGuardApplet::KSysGuardApplet(const QString& configFile, Type t,
 	CHECK_PTR(SensorMgr);
 	SensorMgr->engage("localhost", "", "ksysguardd");
 
-	dockCnt = 2;
+	dockCnt = 0;
 	docks = new SensorDisplay*[dockCnt];
-	docks[0] = new FancyPlotter(this, "LoadMeter", "Load", 100.0, 100.0, true);
-	docks[0]->addSensor("localhost", "cpu/user", "Load");
-	docks[0]->addSensor("localhost", "cpu/sys", "Load");
-	docks[0]->addSensor("localhost", "cpu/nice", "Load");
+	docks[dockCnt] = new FancyPlotter(this, "LoadMeter", "Load", 100.0, 100.0,
+									  true);
+	docks[dockCnt]->addSensor("localhost", "cpu/user", "Load");
+	docks[dockCnt]->addSensor("localhost", "cpu/sys", "Load");
+	docks[dockCnt]->addSensor("localhost", "cpu/nice", "Load");
+	dockCnt++;
 
-	docks[1] = new FancyPlotter(this, "Memory", "Memory", 100.0, 100.0, true);
-	docks[1]->addSensor("localhost", "mem/physical/application", "Memory");
-	docks[1]->addSensor("localhost", "mem/physical/buf", "Memory");
-	docks[1]->addSensor("localhost", "mem/physical/cached", "Memory");
+	docks[dockCnt] = new FancyPlotter(this, "Memory", "Memory", 100.0, 100.0,
+									  true);
+	docks[dockCnt]->addSensor("localhost", "mem/physical/application",
+							  "Memory");
+	docks[dockCnt]->addSensor("localhost", "mem/physical/buf", "Memory");
+	docks[dockCnt]->addSensor("localhost", "mem/physical/cached", "Memory");
+	dockCnt++;
 
 	setAcceptDrops(TRUE);
 	show();
@@ -106,10 +112,12 @@ KSysGuardApplet::layout()
 
 	if (orientation() == Horizontal)
 		for (uint i = 0; i < dockCnt; ++i)
-			docks[i]->setGeometry(i * h, 0, h, h);
+			if (docks[i])
+				docks[i]->setGeometry(i * h, 0, h, h);
 	else
 		for (uint i = 0; i < dockCnt; ++i)
-			docks[i]->setGeometry(0, i * w, w, w);
+			if (docks[i])
+				docks[i]->setGeometry(0, i * w, w, w);
 }
 
 int
@@ -153,12 +161,13 @@ KSysGuardApplet::dropEvent(QDropEvent* ev)
 		if (docks[dock] == 0)
 		{
 			docks[dock] = new FancyPlotter(this, "FancyPlotter",
-										   sensorDescr);
+										   sensorDescr, 100.0, 100.0, true);
 			layout();
 			kdDebug() << "New display added" << endl;
 
 		}
 		docks[dock]->addSensor(hostName, sensorName, sensorDescr);
+		docks[dock]->show();
 	}
 }
 
@@ -169,7 +178,6 @@ KSysGuardApplet::customEvent(QCustomEvent* ev)
 	{
 		// SensorDisplays send out this event if they want to be removed.
 		removeDisplay((SensorDisplay*) ev->data());
-		delete ev;
 	}
 }
 

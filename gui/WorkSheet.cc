@@ -97,11 +97,11 @@ WorkSheet::load(const QString& fN)
 						   .arg(fileName));
 		return (FALSE);
 	}
-    
+
 	// Parse the XML file.
 	QDomDocument doc;
 	// Read in file and check for a valid XML header.
-	if (!doc.setContent(&file))
+	if (!doc.setContent(QString::fromUtf8(file.readAll())))
 	{
 		KMessageBox::sorry(
 			this,
@@ -245,7 +245,7 @@ WorkSheet::save(const QString& fN)
 		return (FALSE);
 	}
 	QTextStream s(&file);
-	s << doc;
+	s << doc.toString().utf8();
 	file.close();
 
 	modified = FALSE;
@@ -404,7 +404,6 @@ WorkSheet::customEvent(QCustomEvent* ev)
 	{
 		// SensorDisplays send out this event if they want to be removed.
 		removeDisplay((SensorDisplay*) ev->data());
-		delete ev;
 	}
 }
 
