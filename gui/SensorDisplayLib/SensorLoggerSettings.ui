@@ -2,7 +2,7 @@
 <class>SensorLoggerSettings</class>
 <author>Tobias Koenig &lt;tokoe82@yahoo.de&gt;</author>
 <include location="global">klocale.h</include>
-<include location="global">kcolorbtn.h</include>
+<include location="global">kcolorbutton.h</include>
 <widget>
     <class>QDialog</class>
     <property stdset="1">
