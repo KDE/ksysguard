@@ -40,6 +40,7 @@
 #include <kcmdlineargs.h>
 #include <kdebug.h>
 #include <kedittoolbar.h>
+#include <kglobal.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <ksgrd/SensorAgent.h>
@@ -90,10 +91,10 @@ TopLevel::TopLevel( const char *name )
    * number of processes and the memory consumption of the local
    * host. */
   statusBar()->insertFixedItem( i18n( "88888 Processes" ), 0 );
-  statusBar()->insertFixedItem( i18n( "Memory: 8888888 kB used, "
-                                     "8888888 kB free" ), 1 );
-  statusBar()->insertFixedItem( i18n( "Swap: 8888888 kB used, "
-                                     "8888888 kB free" ), 2 );
+  statusBar()->insertFixedItem( i18n( "Memory: 88888888888 kB used, "
+                                     "88888888888 kB free" ), 1 );
+  statusBar()->insertFixedItem( i18n( "Swap: 888888888 kB used, "
+                                     "888888888 kB free" ), 2 );
   statusBar()->hide();
 
 	// create actions for menue entries
@@ -462,14 +463,16 @@ void TopLevel::answerReceived( int id, const QString &answer )
     case 2:
       mUsed = answer.toLong();
       s = i18n( "Memory: %1 %2 used, %3 %4 free" )
-              .arg( mUsed ).arg( unit ).arg( mFree ).arg( unit );
+              .arg( KGlobal::locale()->formatNumber( mUsed ) ).arg( unit )
+              .arg( KGlobal::locale()->formatNumber( mFree ) ).arg( unit );
       statusBar()->changeItem( s, 1 );
       break;
 
     case 3:
       sFree = answer.toLong();
       s = i18n( "Swap: %1 %2 used, %3 %4 free" )
-              .arg( sTotal - sFree ).arg( unit ).arg( sFree ).arg( unit );
+              .arg( KGlobal::locale()->formatNumber( sTotal - sFree ) ).arg( unit )
+              .arg( KGlobal::locale()->formatNumber( sFree ) ).arg( unit );
       statusBar()->changeItem( s, 2 );
       break;
 
