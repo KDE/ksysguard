@@ -31,6 +31,7 @@
 #include "stat.h"
 #include "netdev.h"
 #include "apm.h"
+#include "loadavg.h"
 
 #define CMDBUFSIZE 128
 
@@ -69,6 +70,7 @@ main(int argc, const char* argv[])
 	initStat();
 	initNetDev();
 	initApm();
+	initLoadAvg();
 	initDispatcher();
 
 	while (!dispatcherReady())
@@ -87,6 +89,7 @@ main(int argc, const char* argv[])
 		fflush(stdout);
 	} while (!QuitApp);
 
+	exitLoadAvg();
 	exitApm();
 	exitDispatcher();
 	exitNetDev();

@@ -417,7 +417,7 @@ printProcessListInfo(const char* cmd)
 {
 	printf("Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize"
 		   "\tVmRss\tVmLib\tLogin\tCommand\n");
-	printf("s\td\td\td\td\ts\td\td\td\td\tf\tf\ts\ts\n");
+	printf("s\td\td\td\td\ts\tf\tf\td\td\td\td\ts\ts\n");
 }
 
 void
