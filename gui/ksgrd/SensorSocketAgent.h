@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,11 +16,11 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	$Id$
+    $Id$
 */
 
-#ifndef _SensorSocketAgent_h_
-#define _SensorSocketAgent_h_
+#ifndef KSG_SENSORSOCKETAGENT_H
+#define KSG_SENSORSOCKETAGENT_H
 
 #include <qptrlist.h>
 #include <qsocket.h>
@@ -34,46 +34,39 @@ namespace KSGRD {
 class SensorClient;
 
 /**
- * The SensorSocketAgent connects to a ksysguardd via a TCP
- * connection. It keeps a list of pending requests that have not been
- * answered yet by ksysguard. The current implementation only allowes
- * one pending requests. Incoming requests are queued in an input
- * FIFO.
-*/
+  The SensorSocketAgent connects to a ksysguardd via a TCP
+  connection. It keeps a list of pending requests that have not been
+  answered yet by ksysguard. The current implementation only allowes
+  one pending requests. Incoming requests are queued in an input
+  FIFO.
+ */
 class SensorSocketAgent : public SensorAgent
 {
-	Q_OBJECT
+  Q_OBJECT
 
-public:
-	SensorSocketAgent(SensorManager* sm);
-	~SensorSocketAgent();
+  public:
+    SensorSocketAgent( SensorManager *sm );
+    ~SensorSocketAgent();
 
-	bool start(const QString& host, const QString& shell,
-			   const QString& command = "", int port = -1);
+    bool start( const QString &host, const QString &shell,
+                const QString &command = "", int port = -1 );
 
-	void getHostInfo(QString& s, QString& c, int& p) const
-	{
-		s = QString::null;
-		c = QString::null;
-		p = port;
-	}
+    void hostInfo( QString &shell, QString &command, int &port ) const;
 
-private slots:
-	void connectionClosed();
-	void msgSent(int);
-	void msgRcvd();
-	void error(int);
+  private slots:
+    void connectionClosed();
+    void msgSent( int );
+    void msgRcvd();
+    void error( int );
 
-private:
-	bool writeMsg(const char* msg, int len);
-	bool txReady()
-	{
-		return (!transmitting);
-	}
+  private:
+    bool writeMsg( const char *msg, int len );
+    bool txReady();
 
-	QSocket socket;
-	int port;
+    QSocket mSocket;
+    int mPort;
 };
-};
+
+}
 	
 #endif

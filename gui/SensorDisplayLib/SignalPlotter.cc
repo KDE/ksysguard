@@ -63,21 +63,21 @@ SignalPlotter::SignalPlotter(QWidget* parent, const char* name)
 							  QSizePolicy::Expanding, false));
 
 	vLines = true;
-	vColor = KSGRD::Style->getFgColor1();
+	vColor = KSGRD::Style->firstForegroundColor();
 	vDistance = 30;
 	vScroll = true;
 	vOffset = 0;
 	hScale = 1;
 
 	hLines = true;
-	hColor = KSGRD::Style->getFgColor2();
+	hColor = KSGRD::Style->secondForegroundColor();
 	hCount = 5;
 
 	labels = true;
 	topBar = false;
-	fontSize = KSGRD::Style->getFontSize();
+	fontSize = KSGRD::Style->fontSize();
 
-	bColor = KSGRD::Style->getBackgroundColor();
+	bColor = KSGRD::Style->backgroundColor();
 }
 
 SignalPlotter::~SignalPlotter()

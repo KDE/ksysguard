@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,112 +16,119 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	$Id$
+    $Id$
 */
 
 #include <stdlib.h>
 
+#include <kdebug.h>
 #include <klocale.h>
 #include <kpassdlg.h> 
-#include <kdebug.h>
 
-#include "SensorManager.h"
 #include "SensorClient.h"
-#include "SensorSocketAgent.moc"
+#include "SensorManager.h"
+
+#include "SensorSocketAgent.h"
 
 using namespace KSGRD;
 
-SensorSocketAgent::SensorSocketAgent(SensorManager* sm) :
-	SensorAgent(sm)
+SensorSocketAgent::SensorSocketAgent( SensorManager *sm )
+  : SensorAgent( sm )
 {
-	connect(&socket, SIGNAL(error(int)), this, SLOT(error(int)));
-	connect(&socket, SIGNAL(bytesWritten(int)),
-			this, SLOT(msgSent(int)));
-	connect(&socket, SIGNAL(readyRead()),
-			this, SLOT(msgRcvd()));
-	connect(&socket, SIGNAL(connectionClosed()),
-			this, SLOT(connectionClosed()));
+  connect( &mSocket, SIGNAL( error( int ) ), SLOT( error( int ) ) );
+  connect( &mSocket, SIGNAL( bytesWritten( int ) ), SLOT( msgSent( int ) ) );
+  connect( &mSocket, SIGNAL( readyRead() ), SLOT( msgRcvd() ) );
+  connect( &mSocket, SIGNAL( connectionClosed() ), SLOT( connectionClosed() ) );
 }
 
 SensorSocketAgent::~SensorSocketAgent()
 {
-	socket.writeBlock("quit\n", strlen("quit\n"));
-	socket.flush();
+  mSocket.writeBlock( "quit\n", strlen( "quit\n" ) );
+  mSocket.flush();
 }
 	
-bool
-SensorSocketAgent::start(const QString& host_, const QString&,
-				   const QString&, int port_)
+bool SensorSocketAgent::start( const QString &host, const QString&,
+                               const QString&, int port )
 {
-	if (port_ <= 0)
-		kdDebug(1215) << "SensorSocketAgent::start: Illegal port " << port_
-				  << endl;
+  if ( port <= 0 )
+    kdDebug(1215) << "SensorSocketAgent::start: Illegal port " << port << endl;
 
-	host = host_;
-	port = port_;
+  setHostName( host );
+  mPort = port;
 
-	socket.connectToHost(host, port);
-	return (true);
+  mSocket.connectToHost( hostName(), mPort );
+
+  return true;
 }
 
-void
-SensorSocketAgent::msgSent(int)
+void SensorSocketAgent::hostInfo( QString &shell, QString &command, int &port ) const
 {
-	if (socket.bytesToWrite() != 0)
-		return;
-
-	transmitting = false;
-	// Try to send next request if available.
-	executeCommand();
+  shell = QString::null;
+  command = QString::null;
+  port = mPort;
 }
 
-void 
-SensorSocketAgent::msgRcvd()
+void SensorSocketAgent::msgSent( int )
 {
-	int buflen = socket.bytesAvailable();
-	char* buffer = new char[buflen];
-	socket.readBlock(buffer, buflen);
-	QString buf = QString::fromLocal8Bit(buffer, buflen);
-	delete [] buffer;
+  if ( mSocket.bytesToWrite() != 0 )
+    return;
 
-	processAnswer(buf);
+  setTransmitting( false );
+
+  // Try to send next request if available.
+  executeCommand();
 }
 
-void
-SensorSocketAgent::connectionClosed()
+void SensorSocketAgent::msgRcvd()
 {
-	daemonOnLine = false;
-	sensorManager->hostLost(this);
-	sensorManager->requestDisengage(this);
+  int buflen = mSocket.bytesAvailable();
+  char* buffer = new char[ buflen ];
+
+  mSocket.readBlock( buffer, buflen );
+  QString buf = QString::fromLocal8Bit( buffer, buflen );
+  delete [] buffer;
+
+  processAnswer( buf );
 }
 
-void
-SensorSocketAgent::error(int id)
+void SensorSocketAgent::connectionClosed()
 {
-	switch (id)
-	{
-	case QSocket::ErrConnectionRefused:
-		SensorMgr->notify(QString(i18n("Connection to %1 refused").arg(host)));
-		break;
-
-	case QSocket::ErrHostNotFound:
-		SensorMgr->notify(QString(i18n("Host %1 not found").arg(host)));
-		break;
-
-	case QSocket::ErrSocketRead:
-		SensorMgr->notify(QString(i18n("Read error at host %1").arg(host)));
-		break;
-
-	default:
-		kdDebug(1215) << "SensorSocketAgent::error() unkown error " << id << endl;
-	}
-
-	daemonOnLine = false;
-	sensorManager->requestDisengage(this);
+  setDaemonOnLine( false );
+  sensorManager()->hostLost( this );
+  sensorManager()->requestDisengage( this );
 }
 
-bool
-SensorSocketAgent::writeMsg(const char* msg, int len)
+void SensorSocketAgent::error( int id )
 {
-	return (socket.writeBlock(msg, len) == len);
+  switch ( id ) {
+    case QSocket::ErrConnectionRefused:
+      SensorMgr->notify( QString( i18n( "Connection to %1 refused" )
+                         .arg( hostName() ) ) );
+      break;
+    case QSocket::ErrHostNotFound:
+      SensorMgr->notify( QString( i18n( "Host %1 not found" )
+                         .arg( hostName() ) ) );
+      break;
+    case QSocket::ErrSocketRead:
+      SensorMgr->notify( QString( i18n( "Read error at host %1")
+                         .arg( hostName() ) ) );
+      break;
+    default:
+      kdDebug(1215) << "SensorSocketAgent::error() unkown error " << id << endl;
+  }
+
+  setDaemonOnLine( false );
+  sensorManager()->requestDisengage( this );
 }
+
+bool SensorSocketAgent::writeMsg( const char *msg, int len )
+{
+  return ( mSocket.writeBlock( msg, len ) == len );
+}
+
+bool SensorSocketAgent::txReady()
+{
+  return !transmitting();
+}
+
+#include "SensorSocketAgent.moc"

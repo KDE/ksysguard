@@ -53,19 +53,19 @@ MultiMeter::MultiMeter(QWidget* parent, const char* name,
 	lowerLimitActive = upperLimitActive = false;
 	noFrame = nf;
 
-	normalDigitColor = KSGRD::Style->getFgColor1();
-	alarmDigitColor = KSGRD::Style->getAlarmColor();
+	normalDigitColor = KSGRD::Style->firstForegroundColor();
+	alarmDigitColor = KSGRD::Style->alarmColor();
 	if (noFrame)
 		lcd = new QLCDNumber(this, "meterLCD");
 	else
 		lcd = new QLCDNumber(frame, "meterLCD");
 	Q_CHECK_PTR(lcd);
 	lcd->setSegmentStyle(QLCDNumber::Filled);
-	setDigitColor(KSGRD::Style->getBackgroundColor());
+	setDigitColor(KSGRD::Style->backgroundColor());
 	lcd->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
 					   QSizePolicy::Expanding, false));
 
-	setBackgroundColor(KSGRD::Style->getBackgroundColor());
+	setBackgroundColor(KSGRD::Style->backgroundColor());
 	/* All RMB clicks to the lcd widget will be handled by 
 	 * SensorDisplay::eventFilter. */
 	lcd->installEventFilter(this);
@@ -105,7 +105,7 @@ MultiMeter::answerReceived(int id, const QString& answer)
 	if (id == 100)
 	{
 		KSGRD::SensorIntegerInfo info(answer);
-		setUnit(KSGRD::SensorMgr->translateUnit(info.getUnit()));
+		setUnit(KSGRD::SensorMgr->translateUnit(info.unit()));
 	}
 	else
 	{
@@ -154,11 +154,11 @@ MultiMeter::createFromDOM(QDomElement& element)
 	upperLimit = element.attribute("upperLimit").toLong();
 
 	normalDigitColor = restoreColorFromDOM(element, "normalDigitColor",
-						KSGRD::Style->getFgColor1());
+						KSGRD::Style->firstForegroundColor());
 	alarmDigitColor = restoreColorFromDOM(element, "alarmDigitColor",
-						KSGRD::Style->getAlarmColor());
+						KSGRD::Style->alarmColor());
 	setBackgroundColor(restoreColorFromDOM(element, "backgroundColor",
-						KSGRD::Style->getBackgroundColor()));
+						KSGRD::Style->backgroundColor()));
 
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "integer" : element.attribute("sensorType")), "");
 
@@ -230,9 +230,9 @@ MultiMeter::applySettings()
 	upperLimitActive = mms->upperLimitActive->isChecked();
 	upperLimit = mms->upperLimit->text().toDouble();
 
-	normalDigitColor = mms->normalDigitColor->getColor();
-	alarmDigitColor = mms->alarmDigitColor->getColor();
-	setBackgroundColor(mms->backgroundColor->getColor());
+	normalDigitColor = mms->normalDigitColor->color();
+	alarmDigitColor = mms->alarmDigitColor->color();
+	setBackgroundColor(mms->backgroundColor->color());
 
 	repaint();
 	setModified(true);
@@ -241,8 +241,8 @@ MultiMeter::applySettings()
 void
 MultiMeter::applyStyle()
 {
-	normalDigitColor = KSGRD::Style->getFgColor1();
-	setBackgroundColor(KSGRD::Style->getBackgroundColor());
+	normalDigitColor = KSGRD::Style->firstForegroundColor();
+	setBackgroundColor(KSGRD::Style->backgroundColor());
 	repaint();
 	setModified(true);
 }

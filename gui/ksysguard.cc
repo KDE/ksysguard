@@ -478,8 +478,8 @@ void TopLevel::answerReceived( int id, const QString &answer )
 
     case 5: {
       KSGRD::SensorIntegerInfo info( answer );
-      sTotal = info.getMax();
-      unit = KSGRD::SensorMgr->translateUnit(info.getUnit());
+      sTotal = info.max();
+      unit = KSGRD::SensorMgr->translateUnit(info.unit());
       break;
     }
     case 133: {
@@ -502,7 +502,7 @@ void TopLevel::answerReceived( int id, const QString &answer )
 
       KSGRD::SensorTokenizer lines( answer, '\n' );
 
-      for ( unsigned int i = 0; i < lines.numberOfTokens(); i++ )
+      for ( unsigned int i = 0; i < lines.count(); i++ )
         resultList.append( lines[ i ] );
 
       reply << resultList;

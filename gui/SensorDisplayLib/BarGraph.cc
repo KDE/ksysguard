@@ -46,10 +46,10 @@ BarGraph::BarGraph(QWidget* parent, const char* name)
 	lowerLimit = upperLimit = 0.0;
 	lowerLimitActive = upperLimitActive = false;
 
-	normalColor = KSGRD::Style->getFgColor1();
-	alarmColor = KSGRD::Style->getAlarmColor();
-	backgroundColor = KSGRD::Style->getBackgroundColor();
-	fontSize = KSGRD::Style->getFontSize();
+	normalColor = KSGRD::Style->firstForegroundColor();
+	alarmColor = KSGRD::Style->alarmColor();
+	backgroundColor = KSGRD::Style->backgroundColor();
+	fontSize = KSGRD::Style->fontSize();
 
 	// Anything smaller than this does not make sense.
 	setMinimumSize(16, 16);

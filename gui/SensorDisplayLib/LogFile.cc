@@ -147,8 +147,8 @@ void LogFile::applySettings(void)
 {
 	QColorGroup cgroup = monitor->colorGroup();
 
-	cgroup.setColor(QColorGroup::Text, lfs->fgColor->getColor());
-	cgroup.setColor(QColorGroup::Base, lfs->bgColor->getColor());
+	cgroup.setColor(QColorGroup::Text, lfs->fgColor->color());
+	cgroup.setColor(QColorGroup::Base, lfs->bgColor->color());
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 	monitor->setFont(lfs->fontButton->font());
 
@@ -166,8 +166,8 @@ LogFile::applyStyle()
 {
 	QColorGroup cgroup = monitor->colorGroup();
 
-	cgroup.setColor(QColorGroup::Text, KSGRD::Style->getFgColor1());
-	cgroup.setColor(QColorGroup::Base, KSGRD::Style->getBackgroundColor());
+	cgroup.setColor(QColorGroup::Text, KSGRD::Style->firstForegroundColor());
+	cgroup.setColor(QColorGroup::Base, KSGRD::Style->backgroundColor());
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 
 	setModified(true);
@@ -247,7 +247,7 @@ LogFile::answerReceived(int id, const QString& answer)
 		case 19: {
 			KSGRD::SensorTokenizer lines(answer, '\n');
 
-			for (uint i = 0; i < lines.numberOfTokens(); i++) {
+			for (uint i = 0; i < lines.count(); i++) {
 				if (monitor->count() == MAXLINES)
 					monitor->removeItem(0);
 

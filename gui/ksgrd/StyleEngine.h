@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,93 +16,66 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-	Please do not commit any changes without consulting me first. Thanks!
+    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+    Please do not commit any changes without consulting me first. Thanks!
 
-	$Id$
+    $Id$
 */
 
-#ifndef _StyleEngine_h_
-#define _StyleEngine_h_
+#ifndef KSG_STYLEENGINE_H
+#define KSG_STYLEENGINE_H
 
 #include <qcolor.h>
 #include <qobject.h>
 #include <qptrlist.h>
 
 class KConfig;
+
 class QListBoxItem;
+
 class StyleSettings;
 
 namespace KSGRD {
 
 class StyleEngine : public QObject
 {
-	Q_OBJECT
+  Q_OBJECT
 
-public:
-	StyleEngine();
-	~StyleEngine();
+  public:
+    StyleEngine();
+    ~StyleEngine();
 
-	void readProperties(KConfig* cfg);
-	void saveProperties(KConfig* cfg);
+    void readProperties( KConfig* );
+    void saveProperties( KConfig* );
 
-	const QColor& getFgColor1() const
-	{
-		return fgColor1;
-	}
-	const QColor& getFgColor2() const
-	{
-		return fgColor2;
-	}
-	const QColor& getAlarmColor() const
-	{
-		return alarmColor;
-	}
-	const QColor& getBackgroundColor() const
-	{
-		return backgroundColor;
-	}
-	uint getFontSize() const
-	{
-		return fontSize;
-	}
-	const QColor& getSensorColor(uint i)
-	{
-		static QColor dummy;
-		if (i < sensorColors.count())
-			return *(sensorColors.at(i));
-		else
-			return dummy;
-	}
-	uint getSensorColorCount() const
-	{
-		return sensorColors.count();
-	}
+    const QColor& firstForegroundColor() const;
+    const QColor& secondForegroundColor() const;
+    const QColor& alarmColor() const;
+    const QColor& backgroundColor() const;
 
-public slots:
-	void configure();
-	void editColor();
-	void selectionChanged(QListBoxItem*);
-	void applyToWorksheet()
-	{
-		apply();
-		emit applyStyleToWorksheet();
-	}
+    uint fontSize() const;
 
-signals:
-	void applyStyleToWorksheet();
+    const QColor& sensorColor( uint pos );
+    uint numSensorColors() const;
 
-private:
-	void apply();
+  public slots:
+    void configure();
+    void applyToWorksheet();
 
-	StyleSettings* ss;
+  signals:
+	  void applyStyleToWorksheet();
 
-	QColor fgColor1;
-	QColor fgColor2;
-	QColor alarmColor;
-	QColor backgroundColor;
-	uint fontSize;
-	QPtrList<QColor> sensorColors;
+  private:
+    void apply();
+
+    QColor mFirstForegroundColor;
+    QColor mSecondForegroundColor;
+    QColor mAlarmColor;
+    QColor mBackgroundColor;
+    uint mFontSize;
+    QValueList<QColor> mSensorColors;
+
+    StyleSettings *mSettingsDialog;
 };
 
 extern StyleEngine* Style;

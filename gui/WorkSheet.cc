@@ -192,7 +192,7 @@ bool WorkSheet::save( const QString &fileName )
     QString shell, command;
     int port;
 
-    if ( KSGRD::SensorMgr->getHostInfo( *it, shell, command, port ) ) {
+    if ( KSGRD::SensorMgr->hostInfo( *it, shell, command, port ) ) {
       QDomElement host = doc.createElement( "host" );
       ws.appendChild( host );
       host.setAttribute( "name", *it );

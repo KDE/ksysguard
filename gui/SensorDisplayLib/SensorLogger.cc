@@ -154,9 +154,9 @@ SensorLogger::SensorLogger(QWidget *parent, const char *name, const QString& tit
 	monitor->addColumn(i18n("LogFile"));
 
 	QColorGroup cgroup = monitor->colorGroup();
-	cgroup.setColor(QColorGroup::Text, KSGRD::Style->getFgColor1());
-	cgroup.setColor(QColorGroup::Base, KSGRD::Style->getBackgroundColor());
-	cgroup.setColor(QColorGroup::Foreground, KSGRD::Style->getAlarmColor());
+	cgroup.setColor(QColorGroup::Text, KSGRD::Style->firstForegroundColor());
+	cgroup.setColor(QColorGroup::Base, KSGRD::Style->backgroundColor());
+	cgroup.setColor(QColorGroup::Foreground, KSGRD::Style->alarmColor());
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 	monitor->setSelectionMode(QListView::NoSelection);
 
@@ -288,9 +288,9 @@ SensorLogger::applySettings()
 {
 	QColorGroup cgroup = monitor->colorGroup();
 
-	cgroup.setColor(QColorGroup::Text, sls->foregroundColor->getColor());
-	cgroup.setColor(QColorGroup::Base, sls->backgroundColor->getColor());
-	cgroup.setColor(QColorGroup::Foreground, sls->alarmColor->getColor());
+	cgroup.setColor(QColorGroup::Text, sls->foregroundColor->color());
+	cgroup.setColor(QColorGroup::Base, sls->backgroundColor->color());
+	cgroup.setColor(QColorGroup::Foreground, sls->alarmColor->color());
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 
 	setTitle(sls->title->text());
@@ -303,9 +303,9 @@ SensorLogger::applyStyle(void)
 {
 	QColorGroup cgroup = monitor->colorGroup();
 
-	cgroup.setColor(QColorGroup::Text, KSGRD::Style->getFgColor1());
-	cgroup.setColor(QColorGroup::Base, KSGRD::Style->getBackgroundColor());
-	cgroup.setColor(QColorGroup::Foreground, KSGRD::Style->getAlarmColor());
+	cgroup.setColor(QColorGroup::Text, KSGRD::Style->firstForegroundColor());
+	cgroup.setColor(QColorGroup::Base, KSGRD::Style->backgroundColor());
+	cgroup.setColor(QColorGroup::Foreground, KSGRD::Style->alarmColor());
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 
 	setModified(true);

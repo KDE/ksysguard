@@ -237,7 +237,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 		/* We have received the answer to a ps? command that contains
 		 * the information about the table headers. */
 		KSGRD::SensorTokenizer lines(answer, '\n');
-		if (lines.numberOfTokens() != 2)
+		if (lines.count() != 2)
 		{
 			kdDebug (1215) << "ProcessController::answerReceived(1)"
 				  "wrong number of lines [" <<  answer << "]" << endl;
@@ -248,7 +248,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 		KSGRD::SensorTokenizer colTypes(lines[1], '\t');
 
 		pList->removeColumns();
-		for (unsigned int i = 0; i < headers.numberOfTokens(); i++)
+		for (unsigned int i = 0; i < headers.count(); i++)
 		{
 			QString header;
 			if (dict[headers[i]])

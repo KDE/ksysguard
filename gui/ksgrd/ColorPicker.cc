@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,76 +16,78 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-	Please do not commit any changes without consulting me first. Thanks!
+    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
+    Please do not commit any changes without consulting me first. Thanks!
 
-	$Id$
+    $Id$
 */
 
-#include <qlayout.h>
 #include <qlabel.h>
+#include <qlayout.h>
 #include <qpushbutton.h>
 
 #include <kcolordialog.h>
 #include <klocale.h>
 
+#include "ColorPicker.h"
+
+ColorPicker::ColorPicker( QWidget *parent, const char *name )
+  : QWidget( parent, name )
+{
+  QHBoxLayout *layout = new QHBoxLayout( this );
+
+  mText = new QLabel( this );
+  layout->addWidget( mText );
+  layout->addSpacing( 8 );
+
+  mColorBox = new QFrame( this );
+  mColorBox->setFixedSize( 16, 16 );
+  mColorBox->setFrameShape( QFrame::WinPanel );
+  mColorBox->setFrameShadow( QFrame::Sunken );
+  layout->addWidget( mColorBox );
+  layout->addSpacing( 8 );
+
+  mButton = new QPushButton( this );
+  mButton->setText( i18n( "Change Color..." ) );
+  layout->addWidget( mButton );
+
+  mText->setBuddy( mButton );
+
+  connect( mButton, SIGNAL( clicked() ), SLOT( raiseColorDialog() ) );
+}
+
+ColorPicker::~ColorPicker()
+{
+}
+
+void ColorPicker::raiseColorDialog()
+{
+  QColor c = color();
+
+	if ( KColorDialog::getColor( c, this->parentWidget() ) == KColorDialog::Accepted )
+    setColor( c );
+}
+
+QString ColorPicker::text() const
+{
+  return mText->text();
+}
+
+void ColorPicker::setText( const QString &text )
+{
+  mText->setText( text );
+}
+
+QColor ColorPicker::color() const
+{
+  return mColorBox->palette().color( QPalette::Normal, QColorGroup::Background );
+}
+
+void ColorPicker::setColor( const QColor &color )
+{
+  QPalette palette = mColorBox->palette();
+  palette.setColor( QPalette::Normal, QColorGroup::Background, color );
+  mColorBox->setPalette( palette );
+}
+
 #include "ColorPicker.moc"
-
-ColorPicker::ColorPicker(QWidget* parent, const char* name)
-	: QWidget(parent, name)
-{
-	l = new QHBoxLayout(this);
-	label = new QLabel(this, "label");
-	l->addWidget(label);
-	l->addSpacing(8);
-
-	box = new QFrame(this, "box");
-	box->setFixedSize(16, 16);
-	box->setFrameShape(QFrame::WinPanel);
-	box->setFrameShadow(QFrame::Sunken);
-	l->addWidget(box);
-	l->addSpacing(8);
-
-	button = new QPushButton(this, "button");
-	button->setText(i18n("Change Color..."));
-	l->addWidget(button);
-
-	label->setBuddy(button);
-
-	connect(button, SIGNAL(clicked()), this, SLOT(colorDialog()));
-}
-
-void
-ColorPicker::colorDialog()
-{
-	QColor col = getColor();
-	if (KColorDialog::getColor(col, this->parentWidget()) == KColorDialog::Accepted)
-		setColor(col);
-}
-
-QString 
-ColorPicker::getText() const
-{
-	return (label->text());
-}
-
-void
-ColorPicker::setText(const QString& t)
-{
-	label->setText(t);
-}
-
-QColor
-ColorPicker::getColor() const
-{
-	return (box->palette().color(QPalette::Normal,
-								 QColorGroup::Background));
-}
-
-void
-ColorPicker::setColor(const QColor& c)
-{
-	QPalette cp = box->palette();
-	cp.setColor(QPalette::Normal, QColorGroup::Background, c);
-	box->setPalette(cp);
-}

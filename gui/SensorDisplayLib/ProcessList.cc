@@ -265,16 +265,16 @@ ProcessList::update(const QString& list)
 
 	// Convert ps answer in a list of tokenized lines
 	KSGRD::SensorTokenizer procs(list, '\n');
-	for (unsigned int i = 0; i < procs.numberOfTokens(); i++)
+	for (unsigned int i = 0; i < procs.count(); i++)
 	{
 		KSGRD::SensorPSLine* line = new KSGRD::SensorPSLine(procs[i]);
-		if (line->numberOfTokens() != (uint) columns())
+		if (line->count() != (uint) columns())
 		{
 #if 0
 			// This is needed for debugging only.
 			kdDebug(1215) << list << endl;
 			QString l;
-			for (uint j = 0; j < line->numberOfTokens(); j++)
+			for (uint j = 0; j < line->count(); j++)
 				l += (*line)[j] + "|";
 			kdDebug(1215) << "Incomplete ps line:" << l << endl;
 #endif
@@ -398,14 +398,14 @@ ProcessList::matchesFilter(KSGRD::SensorPSLine* p) const
 		return (true);
 
 	case FILTER_SYSTEM:
-		return (p->getUId() < 100 ? true : false);
+		return (p->uid() < 100 ? true : false);
 
 	case FILTER_USER:
-		return (p->getUId() >= 100 ? true : false);
+		return (p->uid() >= 100 ? true : false);
 
 	case FILTER_OWN:
 	default:
-		return (p->getUId() == (long) getuid() ? true : false);
+		return (p->uid() == (long) getuid() ? true : false);
 	}
 }
 
@@ -424,7 +424,7 @@ ProcessList::buildList()
 
 			addProcess(p, pli);
 
-			if (selectedPIds.findIndex(p->getPid()) != -1)
+			if (selectedPIds.findIndex(p->pid()) != -1)
 				pli->setSelected(true);
 		}
 		pl.removeFirst();
@@ -441,14 +441,14 @@ ProcessList::buildTree()
 
 	while (ps)
 	{
-		if (ps->getPid() == INIT_PID)
+		if (ps->pid() == INIT_PID)
 		{
 			// insert root item into the tree widget
 			ProcessLVI* pli = new ProcessLVI(this);
 			addProcess(ps, pli);
 
 			// remove the process from the process list, ps is now invalid
-			int pid = ps->getPid();
+			int pid = ps->pid();
 			pl.remove();
 
 			if (selectedPIds.findIndex(pid) != -1)
@@ -470,7 +470,7 @@ ProcessList::deleteLeaves(void)
 	{
 		unsigned int i;
 		for (i = 0; i < pl.count() &&
-				 (!isLeafProcess(pl.at(i)->getPid()) ||
+				 (!isLeafProcess(pl.at(i)->pid()) ||
 				  matchesFilter(pl.at(i))); i++)
 			;
 		if (i == pl.count())
@@ -484,7 +484,7 @@ bool
 ProcessList::isLeafProcess(int pid)
 {
 	for (unsigned int i = 0; i < pl.count(); i++)
-		if (pl.at(i)->getPPid() == pid)
+		if (pl.at(i)->ppid() == pid)
 			return (false);
 
 	return (true);
@@ -501,22 +501,22 @@ ProcessList::extendTree(QPtrList<KSGRD::SensorPSLine>* pl, ProcessLVI* parent, i
 	while (ps)
 	{
 		// look for a child process of the current parent
-		if (ps->getPPid() == ppid)
+		if (ps->ppid() == ppid)
 		{
 			ProcessLVI* pli = new ProcessLVI(parent);
 
 			addProcess(ps, pli);
 
-			if (selectedPIds.findIndex(ps->getPid()) != -1)
+			if (selectedPIds.findIndex(ps->pid()) != -1)
 				pli->setSelected(true);
 
-			if (ps->getPPid() != INIT_PID && closedSubTrees.findIndex(ps->getPPid()) != -1)
+			if (ps->ppid() != INIT_PID && closedSubTrees.findIndex(ps->ppid()) != -1)
 				parent->setOpen(false);
 			else
 				parent->setOpen(true);
 
 			// remove the process from the process list, ps is now invalid
-			int pid = ps->getPid();
+			int pid = ps->pid();
 			pl->remove();
 
 			// now look for the childs of the inserted process
@@ -537,7 +537,7 @@ ProcessList::extendTree(QPtrList<KSGRD::SensorPSLine>* pl, ProcessLVI* parent, i
 void
 ProcessList::addProcess(KSGRD::SensorPSLine* p, ProcessLVI* pli)
 {
-	QString name = p->getName();
+	QString name = p->name();
 	if (aliases[name])
 		name = *aliases[name];
 
@@ -584,10 +584,10 @@ ProcessList::addProcess(KSGRD::SensorPSLine* p, ProcessLVI* pli)
 
 	// icon + process name
 	pli->setPixmap(0, pix);
-	pli->setText(0, p->getName());
+	pli->setText(0, p->name());
 
 	// insert remaining field into table
-	for (unsigned int col = 1; col < p->numberOfTokens(); col++)
+	for (unsigned int col = 1; col < p->count(); col++)
 	{
 		if (columnTypes[col] == "S" && columnDict[(*p)[col]])
 			pli->setText(col, *columnDict[(*p)[col]]);

@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,16 +16,16 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	$Id$
+    $Id$
 */
 
-#ifndef _SensorManager_h_
-#define _SensorManager_h_
-
-#include <qobject.h>
-#include <qdict.h>
+#ifndef KSG_SENSORMANAGER_H
+#define KSG_SENSORMANAGER_H
 
 #include <kconfig.h>
+
+#include <qdict.h>
+#include <qobject.h>
 
 #include <SensorAgent.h>
 
@@ -36,113 +36,95 @@ namespace KSGRD {
 class SensorManagerIterator;
 
 /**
- * The SensorManager handles all interaction with the connected
- * hosts. Connections to a specific hosts are handled by
- * SensorAgents. Use engage() to establish a connection and
- * disengage() to terminate the connection. If you don't know if a
- * certain host is already connected use engageHost(). If there is no
- * connection yet or the hostname is empty, a dialog will be shown to
- * enter the connections details.
+  The SensorManager handles all interaction with the connected
+  hosts. Connections to a specific hosts are handled by
+  SensorAgents. Use engage() to establish a connection and
+  disengage() to terminate the connection. If you don't know if a
+  certain host is already connected use engageHost(). If there is no
+  connection yet or the hostname is empty, a dialog will be shown to
+  enter the connections details.
  */
 class SensorManager : public QObject
 {
-	Q_OBJECT
+  Q_OBJECT
 
-	friend class SensorManagerIterator;
+  friend class SensorManagerIterator;
 
-public:
-	SensorManager();
-	~SensorManager();
+  public:
+    SensorManager();
+    ~SensorManager();
 
-	bool engageHost(const QString& hostname);
-	bool engage(const QString& hostname, const QString& shell = "ssh",
-				const QString& command = "", int port = -1);
-	void requestDisengage(const SensorAgent* sensor);
-	bool disengage(const SensorAgent* sensor);
-	bool disengage(const QString& hostname);
-	bool resynchronize(const QString& hostname);
-	void hostLost(const SensorAgent* sensor);
-	void notify(const QString& msg) const;
-	void setBroadcaster(QWidget* bc)
-	{
-		broadcaster = bc;
-	}
-	virtual bool event(QEvent* e);
+    bool engageHost( const QString &hostName );
+    bool engage( const QString &hostName, const QString &shell = "ssh",
+                 const QString &command = "", int port = -1 );
 
-	bool sendRequest(const QString& hostname, const QString& req,
-					 SensorClient* client, int id = 0);
+    void requestDisengage( const SensorAgent *agent );
+    bool disengage( const SensorAgent *agent );
+    bool disengage( const QString &hostName );
+    bool resynchronize( const QString &hostName );
+    void hostLost( const SensorAgent *agent );
+    void notify( const QString &msg ) const;
 
-	const QString getHostName(const SensorAgent* sensor) const;
-	bool getHostInfo(const QString& host, QString& shell, QString& command,
-					 int& port);
+    void setBroadcaster( QWidget *wdg );
 
-	const QString& translateUnit(const QString& u) const
-	{
-		if (!u.isEmpty() && units[u])
-			return (*units[u]);
-		else
-			return (u);
-	}
+    virtual bool event( QEvent *event );
 
-	const QString& trSensorPath(const QString& u) const
-	{
-		if (!u.isEmpty() && dict[u])
-			return (*dict[u]);
-		else
-			return (u);
-	}
+    bool sendRequest( const QString &hostName, const QString &request,
+                      SensorClient *client, int id = 0 );
+
+    const QString hostName( const SensorAgent *sensor ) const;
+    bool hostInfo( const QString &host, QString &shell,
+                   QString &command, int &port );
+
+    const QString& translateUnit( const QString &unit ) const;
+    const QString& translateSensorPath( const QString &path ) const;
+    const QString& translateSensorType( const QString &type ) const;
+    QString translateSensor(const QString& u) const;
+
+    void readProperties( KConfig *cfg );
+    void saveProperties( KConfig *cfg );
+
+    void disconnectClient( SensorClient *client );
 	
-	const QString& trSensorType(const QString& u) const
-	{
-		if (!u.isEmpty() && types[u])
-			return (*types[u]);
-		else
-			return (u);
-	}
-	
-	QString translateSensor(const QString& u) const;
-	void readProperties(KConfig* cfg);
-	void saveProperties(KConfig* cfg);
+  public slots:
+    void reconfigure( const SensorAgent *agent );
 
-	void unlinkClient(SensorClient* client);
-	
-public slots:
-	void reconfigure(const SensorAgent* sensor);
+  signals:
+    void update();
+    void hostConnectionLost( const QString &hostName );
 
-signals:
-	void update();
-	void hostConnectionLost(const QString& hostName);
+  protected:
+    QDict<SensorAgent> mAgents;
 
-protected:
-	QDict<SensorAgent> sensors;
+  protected slots:
+    void helpConnectHost();
 
-protected slots:
-	void helpConnectHost();
+  private:
+    /**
+      These dictionary stores the localized versions of the sensor
+      descriptions and units.
+     */
+    QDict<QString> mDescriptions;
+    QDict<QString> mUnits;
+    QDict<QString> mDict;
+    QDict<QString> mTypes;
 
-private:
-	/**
-	 * These dictionary stores the localized versions of the sensor
-	 * descriptions and units.
-	 */
-	QDict<QString> descriptions;
-	QDict<QString> units;
-	QDict<QString> dict;
-	QDict<QString> types;
+    QWidget* mBroadcaster;
 
-	QWidget* broadcaster;
-
-	HostConnector* hostConnector;
-} ;
+    HostConnector* mHostConnector;
+};
 
 extern SensorManager* SensorMgr;
 
 class SensorManagerIterator : public QDictIterator<SensorAgent>
 {
-public:
-	SensorManagerIterator(const SensorManager* sm) :
-		QDictIterator<SensorAgent>(sm->sensors) { }
-	~SensorManagerIterator() { }
+  public:
+    SensorManagerIterator( const SensorManager *sm )
+      : QDictIterator<SensorAgent>( sm->mAgents ) { }
+
+    ~SensorManagerIterator() { }
 };
-};
+
+}
 
 #endif

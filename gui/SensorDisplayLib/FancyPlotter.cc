@@ -184,19 +184,19 @@ FancyPlotter::applySettings()
 	}
 
 	plotter->vLines = fps->vLines->isChecked();
-	plotter->vColor = fps->vColor->getColor();
+	plotter->vColor = fps->vColor->color();
 	plotter->vDistance = fps->vDistance->text().toUInt();
 	plotter->vScroll = fps->vScroll->isChecked();
 
 	plotter->hLines = fps->hLines->isChecked();
-	plotter->hColor = fps->hColor->getColor();
+	plotter->hColor = fps->hColor->color();
 	plotter->hCount = fps->hCount->text().toUInt();
 
 	plotter->labels = fps->labels->isChecked();
 	plotter->topBar = fps->topBar->isChecked();
 	plotter->fontSize = fps->fontSize->text().toUInt();
 
-	plotter->bColor = fps->bColor->getColor();
+	plotter->bColor = fps->bColor->color();
 
 	/* Iterate through registered sensors and through the items of the
 	 * listview. Where a sensor cannot be matched, it is removed. */
@@ -345,13 +345,13 @@ FancyPlotter::settingsSelectionChanged(QListViewItem* lvi)
 void
 FancyPlotter::applyStyle()
 {
-	plotter->vColor = KSGRD::Style->getFgColor1();
-	plotter->hColor = KSGRD::Style->getFgColor2();
-	plotter->bColor = KSGRD::Style->getBackgroundColor();
-	plotter->fontSize = KSGRD::Style->getFontSize();
+	plotter->vColor = KSGRD::Style->firstForegroundColor();
+	plotter->hColor = KSGRD::Style->secondForegroundColor();
+	plotter->bColor = KSGRD::Style->backgroundColor();
+	plotter->fontSize = KSGRD::Style->fontSize();
 	for (uint i = 0; i < plotter->beamColor.count() &&
-		 i < KSGRD::Style->getSensorColorCount(); ++i)
-		plotter->beamColor[i] = KSGRD::Style->getSensorColor(i);
+		 i < KSGRD::Style->numSensorColors(); ++i)
+		plotter->beamColor[i] = KSGRD::Style->sensorColor(i);
 	plotter->update();
 	setModified(true);
 }
@@ -361,7 +361,7 @@ FancyPlotter::addSensor(const QString& hostName, const QString& sensorName,
 					const QString& sensorType, const QString& title)
 {
 	return (addSensor(hostName, sensorName, sensorType, title,
-					  KSGRD::Style->getSensorColor(beams)));
+					  KSGRD::Style->sensorColor(beams)));
 }
 
 bool
@@ -491,11 +491,11 @@ FancyPlotter::answerReceived(int id, const QString& answer)
 			 * display is still using the default values. If the
 			 * sensor has been restored we don't touch the already set
 			 * values. */
-			plotter->changeRange(id - 100, info.getMin(), info.getMax());
-			if (info.getMin() == 0.0 && info.getMax() == 0.0)
+			plotter->changeRange(id - 100, info.min(), info.max());
+			if (info.min() == 0.0 && info.max() == 0.0)
 				plotter->setAutoRange(TRUE);
 		}
-		sensors.at(id - 100)->unit = info.getUnit();
+		sensors.at(id - 100)->unit = info.unit();
 	}
 }
 
@@ -518,7 +518,7 @@ FancyPlotter::createFromDOM(QDomElement& element)
 
 	plotter->vLines = element.attribute("vLines", "1").toUInt();
 	plotter->vColor = restoreColorFromDOM(element, "vColor",
-						KSGRD::Style->getFgColor1());
+						KSGRD::Style->firstForegroundColor());
 	plotter->vDistance = element.attribute("vDistance", "30").toUInt();
 	plotter->vScroll = element.attribute("vScroll", "1").toUInt();
 	plotter->graphStyle = element.attribute("graphStyle", "0").toUInt();
@@ -526,16 +526,16 @@ FancyPlotter::createFromDOM(QDomElement& element)
 
 	plotter->hLines = element.attribute("hLines", "1").toUInt();
 	plotter->hColor = restoreColorFromDOM(element, "hColor",
-						KSGRD::Style->getFgColor2());
+						KSGRD::Style->secondForegroundColor());
 	plotter->hCount = element.attribute("hCount", "5").toUInt();
 
 	plotter->labels = element.attribute("labels", "1").toUInt();
 	plotter->topBar = element.attribute("topBar", "0").toUInt();
 	plotter->fontSize = element.attribute(
-		"fontSize", QString("%1").arg(KSGRD::Style->getFontSize())).toUInt();
+		"fontSize", QString("%1").arg(KSGRD::Style->fontSize())).toUInt();
 
 	plotter->bColor = restoreColorFromDOM(element, "bColor",
-					  KSGRD::Style->getBackgroundColor());
+					  KSGRD::Style->backgroundColor());
 
 	QDomNodeList dnList = element.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)
@@ -545,7 +545,7 @@ FancyPlotter::createFromDOM(QDomElement& element)
 				  (el.attribute("sensorType").isEmpty() ? "integer" :
 				   el.attribute("sensorType")), "",
 				  restoreColorFromDOM(el, "color",
-									  KSGRD::Style->getSensorColor(i)));
+									  KSGRD::Style->sensorColor(i)));
 	}
 
 	internCreateFromDOM(element);

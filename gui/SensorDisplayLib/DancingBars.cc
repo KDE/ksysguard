@@ -140,9 +140,9 @@ DancingBars::applySettings()
 					   dbs->upperLimit->text().toDouble() : 0,
 					   dbs->upperLimitActive->isChecked());
 
-	plotter->normalColor = dbs->normalColor->getColor();
-	plotter->alarmColor = dbs->alarmColor->getColor();
-	plotter->backgroundColor = dbs->backgroundColor->getColor();
+	plotter->normalColor = dbs->normalColor->color();
+	plotter->alarmColor = dbs->alarmColor->color();
+	plotter->backgroundColor = dbs->backgroundColor->color();
 	plotter->fontSize = dbs->fontSize->value();
 
 	QListViewItemIterator it(dbs->sensorList);
@@ -172,10 +172,10 @@ DancingBars::applySettings()
 void
 DancingBars::applyStyle()
 {
-	plotter->normalColor = KSGRD::Style->getFgColor1();
-	plotter->alarmColor = KSGRD::Style->getAlarmColor();
-	plotter->backgroundColor = KSGRD::Style->getBackgroundColor();
-	plotter->fontSize = KSGRD::Style->getFontSize();
+	plotter->normalColor = KSGRD::Style->firstForegroundColor();
+	plotter->alarmColor = KSGRD::Style->alarmColor();
+	plotter->backgroundColor = KSGRD::Style->backgroundColor();
+	plotter->fontSize = KSGRD::Style->fontSize();
 
 	repaint();
 	setModified(true);
@@ -349,10 +349,10 @@ DancingBars::answerReceived(int id, const QString& answer)
 				 * display is still using the default values. If the
 				 * sensor has been restored we don't touch the already set
 				 * values. */
-				plotter->changeRange(info.getMin(), info.getMax());
+				plotter->changeRange(info.min(), info.max());
 			}
 
-		sensors.at(id - 100)->unit = info.getUnit();
+		sensors.at(id - 100)->unit = info.unit();
 	}
 }
 
@@ -368,13 +368,13 @@ DancingBars::createFromDOM(QDomElement& element)
 					element.attribute("uplimitactive", "0").toInt());
 
 	plotter->normalColor = restoreColorFromDOM(element, "normalColor",
-											   KSGRD::Style->getFgColor1());
+											   KSGRD::Style->firstForegroundColor());
 	plotter->alarmColor = restoreColorFromDOM(element, "alarmColor",
-											  KSGRD::Style->getAlarmColor());
+											  KSGRD::Style->alarmColor());
 	plotter->backgroundColor = restoreColorFromDOM(
-		element, "backgroundColor", KSGRD::Style->getBackgroundColor());
+		element, "backgroundColor", KSGRD::Style->backgroundColor());
 	plotter->fontSize = element.attribute(
-		"fontSize", QString("%1").arg(KSGRD::Style->getFontSize())).toInt();
+		"fontSize", QString("%1").arg(KSGRD::Style->fontSize())).toInt();
 
 	QDomNodeList dnList = element.elementsByTagName("beam");
 	for (uint i = 0; i < dnList.count(); ++i)

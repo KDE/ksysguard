@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,114 +16,122 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-	$Id$
+    $Id$
 */
 
 #include <stdlib.h>
 
-#include <kprocess.h>
-#include <kpassdlg.h> 
 #include <kdebug.h>
+#include <kpassdlg.h> 
+#include <kprocess.h>
 
-#include "SensorManager.h"
 #include "SensorClient.h"
-#include "SensorShellAgent.moc"
+#include "SensorManager.h"
+
+#include "SensorShellAgent.h"
 
 using namespace KSGRD;
 
-SensorShellAgent::SensorShellAgent(SensorManager* sm) :
-	SensorAgent(sm)
+SensorShellAgent::SensorShellAgent( SensorManager *sm )
+  : SensorAgent( sm )
 {
 }
 
 SensorShellAgent::~SensorShellAgent()
 {
-	if (daemon)
-	{
-		daemon->writeStdin("quit\n", strlen("quit\n"));
-		delete daemon;
-		daemon = 0;
-	}
+  if ( mDaemon ) {
+    mDaemon->writeStdin( "quit\n", strlen( "quit\n" ) );
+    delete mDaemon;
+		mDaemon = 0;
+  }
 }
 	
-bool
-SensorShellAgent::start(const QString& host_, const QString& shell_,
-						const QString& command_, int)
+bool SensorShellAgent::start( const QString &host, const QString &shell,
+                              const QString &command, int )
 {
-	daemon = new KShellProcess;
-	Q_CHECK_PTR(daemon);
+  mDaemon = new KShellProcess;
 
-	host = host_;
-	shell = shell_;
-	command = command_;
+	setHostName( host );
+	mShell = shell;
+	mCommand = command;
 
-	connect(daemon, SIGNAL(processExited(KProcess *)),
-			this, SLOT(daemonExited(KProcess*)));
-	connect(daemon, SIGNAL(receivedStdout(KProcess *, char*, int)),
-			this, SLOT(msgRcvd(KProcess*, char*, int)));
-	connect(daemon, SIGNAL(receivedStderr(KProcess *, char*, int)),
-			this, SLOT(errMsgRcvd(KProcess*, char*, int)));
-	connect(daemon, SIGNAL(wroteStdin(KProcess*)), this,
-			SLOT(msgSent(KProcess*)));
+  connect( mDaemon, SIGNAL( processExited( KProcess* ) ),
+           SLOT( daemonExited( KProcess* ) ) );
+  connect( mDaemon, SIGNAL( receivedStdout( KProcess*, char*, int ) ),
+           SLOT( msgRcvd( KProcess*, char*, int ) ) );
+  connect( mDaemon, SIGNAL( receivedStderr( KProcess*, char*, int ) ),
+           SLOT( errMsgRcvd( KProcess*, char*, int ) ) );
+  connect( mDaemon, SIGNAL( wroteStdin( KProcess* ) ),
+           SLOT( msgSent( KProcess* ) ) );
 
-	QString cmd;
-	if (command != "")
-		cmd =  command;
-	else
-		cmd = shell + " " + host + " ksysguardd";
-	*daemon << cmd;
+  QString cmd;
+  if ( !command.isEmpty() )
+    cmd =  command;
+  else
+    cmd = mShell + " " + hostName() + " ksysguardd";
+  *mDaemon << cmd;
 
-	if (!daemon->start(KProcess::NotifyOnExit, KProcess::All))
-	{
-		sensorManager->hostLost(this);
-		kdDebug (1215) << "Command '" << cmd << "' failed"  << endl;
-		return (false);
-	}
+  if ( !mDaemon->start( KProcess::NotifyOnExit, KProcess::All ) ) {
+    sensorManager()->hostLost( this );
+    kdDebug (1215) << "Command '" << cmd << "' failed"  << endl;
+    return false;
+  }
 
-	return (true);
+  return true;
 }
 
-void
-SensorShellAgent::msgSent(KProcess*)
+void SensorShellAgent::hostInfo( QString &shell, QString &command,
+                                 int &port) const
 {
-	transmitting = false;
+  shell = mShell;
+  command = mCommand;
+	port = -1;
+}
+
+void SensorShellAgent::msgSent( KProcess* )
+{
+  setTransmitting( false );
+
 	// Try to send next request if available.
-	executeCommand();
+  executeCommand();
 }
 
-void 
-SensorShellAgent::msgRcvd(KProcess*, char* buffer, int buflen)
+void SensorShellAgent::msgRcvd( KProcess*, char *buffer, int buflen )
 {
-	if (!buffer || buflen == 0)
-		return;
+  if ( !buffer || buflen == 0 )
+    return;
 
-	QString aux = QString::fromLocal8Bit(buffer, buflen);
+  QString aux = QString::fromLocal8Bit( buffer, buflen );
 
-	processAnswer(aux);
+  processAnswer( aux );
 }
 
-void
-SensorShellAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
+void SensorShellAgent::errMsgRcvd( KProcess*, char *buffer, int buflen )
 {
-	if (!buffer || buflen == 0)
-		return;
+  if ( !buffer || buflen == 0 )
+    return;
 
-	QString buf = QString::fromLocal8Bit(buffer, buflen);
+  QString buf = QString::fromLocal8Bit( buffer, buflen );
 
-	kdDebug(1215) << "SensorShellAgent: Warning, received text over stderr!"
-			  << endl << buf << endl;
+  kdDebug(1215) << "SensorShellAgent: Warning, received text over stderr!"
+                << endl << buf << endl;
 }
 
-void
-SensorShellAgent::daemonExited(KProcess*)
+void SensorShellAgent::daemonExited( KProcess* )
 {
-	daemonOnLine = false;
-	sensorManager->hostLost(this);
-	sensorManager->disengage(this);
+  setDaemonOnLine( false );
+  sensorManager()->hostLost( this );
+  sensorManager()->disengage( this );
 }
 
-bool
-SensorShellAgent::writeMsg(const char* msg, int len)
+bool SensorShellAgent::writeMsg( const char *msg, int len )
 {
-	return (daemon->writeStdin(msg, len));
+  return mDaemon->writeStdin( msg, len );
 }
+
+bool SensorShellAgent::txReady()
+{
+  return !transmitting();
+}
+
+#include "SensorShellAgent.moc"

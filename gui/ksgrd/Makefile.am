@@ -15,8 +15,8 @@ libksgrd_la_SOURCES = \
 	SensorShellAgent.cc \
 	SensorSocketAgent.cc \
 	StyleEngine.cc \
+	StyleSettings.cc \
 	HostConnector.ui \
-	StyleSettings.ui \
 	TimerSettings.ui
 
 ksgrdincludedir = $(includedir)/ksgrd

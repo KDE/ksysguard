@@ -125,7 +125,7 @@ void SensorBrowser::update()
 
   KSGRD::SensorAgent* host;
   for ( int i = 0 ; ( host = it.current() ); ++it, ++i ) {
-    QString hostName = mSensorManager->getHostName( host );
+    QString hostName = mSensorManager->hostName( host );
     HostItem* lvi = new HostItem( this, hostName, id, host );
 
     QPixmap pix = mIconLoader->loadIcon( "computer", KIcon::Desktop, KIcon::SizeSmall );
@@ -170,7 +170,7 @@ void SensorBrowser::answerReceived( int id, const QString &answer )
 
   KSGRD::SensorTokenizer lines( answer, '\n' );
 
-  for ( uint i = 0; i < lines.numberOfTokens(); ++i ) {
+  for ( uint i = 0; i < lines.count(); ++i ) {
     if ( lines[ i ].isEmpty() )
       break;
 
@@ -194,9 +194,9 @@ void SensorBrowser::answerReceived( int id, const QString &answer )
     KSGRD::SensorTokenizer absolutePath( sensorName, '/' );
 
     QListViewItem* parent = (*it)->listViewItem();
-    for ( uint j = 0; j < absolutePath.numberOfTokens(); ++j ) {
+    for ( uint j = 0; j < absolutePath.count(); ++j ) {
       // Localize the sensor name part by part.
-      QString name = KSGRD::SensorMgr->trSensorPath( absolutePath[ j ] );
+      QString name = KSGRD::SensorMgr->translateSensorPath( absolutePath[ j ] );
 
       bool found = false;
       QListViewItem* sibling = parent->firstChild();
@@ -209,11 +209,11 @@ void SensorBrowser::answerReceived( int id, const QString &answer )
       }
       if ( !found ) {
         QListViewItem* lvi = new QListViewItem( parent, name );
-        if ( j == absolutePath.numberOfTokens() - 1 ) {
+        if ( j == absolutePath.count() - 1 ) {
           QPixmap pix = mIconLoader->loadIcon( "ksysguardd", KIcon::Desktop,
                                                KIcon::SizeSmall );
           lvi->setPixmap( 0, pix );
-          lvi->setText( 1, KSGRD::SensorMgr->trSensorType( sensorType ) );
+          lvi->setText( 1, KSGRD::SensorMgr->translateSensorType( sensorType ) );
 
           // add sensor info to internal data structure
           (*it)->addSensor( lvi, sensorName, name, sensorType );

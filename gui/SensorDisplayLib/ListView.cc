@@ -137,9 +137,9 @@ PrivateListView::PrivateListView(QWidget *parent, const char *name)
 {
 	QColorGroup cg = colorGroup();
 
-	cg.setColor(QColorGroup::Link, KSGRD::Style->getFgColor1());
-	cg.setColor(QColorGroup::Text, KSGRD::Style->getFgColor2());
-	cg.setColor(QColorGroup::Base, KSGRD::Style->getBackgroundColor());
+	cg.setColor(QColorGroup::Link, KSGRD::Style->firstForegroundColor());
+	cg.setColor(QColorGroup::Text, KSGRD::Style->secondForegroundColor());
+	cg.setColor(QColorGroup::Base, KSGRD::Style->backgroundColor());
 
 	setPalette(QPalette(cg, cg, cg));
 }
@@ -149,10 +149,10 @@ void PrivateListView::update(const QString& answer)
 	clear();
 
 	KSGRD::SensorTokenizer lines(answer, '\n');
-	for (uint i = 0; i < lines.numberOfTokens(); i++) {
+	for (uint i = 0; i < lines.count(); i++) {
 		PrivateListViewItem *item = new PrivateListViewItem(this);
 		KSGRD::SensorTokenizer records(lines[i], '\t');
-		for (uint j = 0; j < records.numberOfTokens(); j++) {
+		for (uint j = 0; j < records.count(); j++) {
       if ( mColumnTypes[ j ] == "f" )
         item->setText(j, KGlobal::locale()->formatNumber( records[j].toFloat() ) );
       else if ( mColumnTypes[ j ] == "D" )
@@ -223,7 +223,7 @@ PrivateListView::addColumn(const QString& label, const QString& type)
 ListView::ListView(QWidget* parent, const char* name, const QString& title, int, int)
 	: KSGRD::SensorDisplay(parent, name, title)
 {
-	setBackgroundColor(KSGRD::Style->getBackgroundColor());
+	setBackgroundColor(KSGRD::Style->backgroundColor());
 
 	monitor = new PrivateListView(frame);
 	Q_CHECK_PTR(monitor);
@@ -273,7 +273,7 @@ ListView::answerReceived(int id, const QString& answer)
 			/* We have received the answer to a '?' command that contains
 			 * the information about the table headers. */
 			KSGRD::SensorTokenizer lines(answer, '\n');
-			if (lines.numberOfTokens() != 2)
+			if (lines.count() != 2)
 			{
 				kdDebug(1215) << "wrong number of lines" << endl;
 				return;
@@ -285,7 +285,7 @@ ListView::answerReceived(int id, const QString& answer)
 			monitor->removeColumns();
 
 			/* add the new columns */
-			for (unsigned int i = 0; i < headers.numberOfTokens(); i++)
+			for (unsigned int i = 0; i < headers.count(); i++)
 				/* TODO: Implement translation support for header texts */
 				monitor->addColumn(headers[i], colTypes[i]);
 			break;
@@ -310,9 +310,9 @@ ListView::createFromDOM(QDomElement& element)
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "listview" : element.attribute("sensorType")), element.attribute("title"));
 
 	QColorGroup colorGroup = monitor->colorGroup();
-	colorGroup.setColor(QColorGroup::Link, restoreColorFromDOM(element, "gridColor", KSGRD::Style->getFgColor1()));
-	colorGroup.setColor(QColorGroup::Text, restoreColorFromDOM(element, "textColor", KSGRD::Style->getFgColor2()));
-	colorGroup.setColor(QColorGroup::Base, restoreColorFromDOM(element, "backgroundColor", KSGRD::Style->getBackgroundColor()));
+	colorGroup.setColor(QColorGroup::Link, restoreColorFromDOM(element, "gridColor", KSGRD::Style->firstForegroundColor()));
+	colorGroup.setColor(QColorGroup::Text, restoreColorFromDOM(element, "textColor", KSGRD::Style->secondForegroundColor()));
+	colorGroup.setColor(QColorGroup::Base, restoreColorFromDOM(element, "backgroundColor", KSGRD::Style->backgroundColor()));
 
 	monitor->setPalette(QPalette(colorGroup, colorGroup, colorGroup));
 
@@ -367,9 +367,9 @@ void
 ListView::applySettings()
 {
 	QColorGroup colorGroup = monitor->colorGroup();
-	colorGroup.setColor(QColorGroup::Link, lvs->gridColor->getColor());
-	colorGroup.setColor(QColorGroup::Text, lvs->textColor->getColor());
-	colorGroup.setColor(QColorGroup::Base, lvs->backgroundColor->getColor());
+	colorGroup.setColor(QColorGroup::Link, lvs->gridColor->color());
+	colorGroup.setColor(QColorGroup::Text, lvs->textColor->color());
+	colorGroup.setColor(QColorGroup::Base, lvs->backgroundColor->color());
 	monitor->setPalette(QPalette(colorGroup, colorGroup, colorGroup));
 
 	setTitle(lvs->title->text());
@@ -381,9 +381,9 @@ void
 ListView::applyStyle()
 {
 	QColorGroup colorGroup = monitor->colorGroup();
-	colorGroup.setColor(QColorGroup::Link, KSGRD::Style->getFgColor1());
-	colorGroup.setColor(QColorGroup::Text, KSGRD::Style->getFgColor2());
-	colorGroup.setColor(QColorGroup::Base, KSGRD::Style->getBackgroundColor());
+	colorGroup.setColor(QColorGroup::Link, KSGRD::Style->firstForegroundColor());
+	colorGroup.setColor(QColorGroup::Text, KSGRD::Style->secondForegroundColor());
+	colorGroup.setColor(QColorGroup::Base, KSGRD::Style->backgroundColor());
 	monitor->setPalette(QPalette(colorGroup, colorGroup, colorGroup));
 
 	setModified(true);
