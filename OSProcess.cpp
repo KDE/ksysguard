@@ -61,6 +61,8 @@ OSProcess::OSProcess(const void* info, TimeStampList* lastTStamps,
 {
 	error = false;
 
+	userName = "????";
+
 	if (!read((const char*) info))
 		return;
 
@@ -195,8 +197,9 @@ OSProcess::read(const void* info)
 	}
 
 	// find out user name with the process uid
-	struct passwd* pwent = getpwuid(uid);
-	userName = pwent ? pwent->pw_name : "????";
+//	struct passwd* pwent = getpwuid(uid);
+//	if (pwent)
+//		userName = pwent->pw_name;
 
 	return (true);
 }

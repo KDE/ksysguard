@@ -92,6 +92,11 @@ inline int max(int a, int b)
 	return ((a) < (b) ? (b) : (a));
 }
 
+/*
+ * The *key functions are used to sort the list. Since QListView can only sort
+ * strings we have to massage the original contense so that the string sort
+ * will produce the expected result.
+ */
 static const char*
 intKey(const char* text)
 {
@@ -149,10 +154,10 @@ ProcessList::ProcessList(QWidget *parent = 0, const char* name = 0)
 	filtermode = FILTER_OWN;
 
 	/*
-	 * The default update rate is 'fast'. This can be overridden by the
+	 * The default update rate is 'medium'. This can be overridden by the
 	 * config file.
 	 */
-	update_rate = UPDATE_FAST;
+	update_rate = UPDATE_MEDIUM;
 
 	// The default sorting is for the PID in decreasing order.
 	sortColumn = 1;
@@ -387,12 +392,12 @@ ProcessList::load()
 				pli->setText(col++, s.setNum(p->getVm_size() / 1024));
 			tc++;
 
-			// VM rss
+			// VM RSS (Resident memory in kBytes)
 			if (tc->visible && tc->supported)
 				pli->setText(col++, s.setNum(p->getVm_rss() / 1024));
 			tc++;
 
-			// VM lib
+			// VM LIB (Shared memory in kBytes)
 			if (tc->visible && tc->supported)
 				pli->setText(col++, s.setNum(p->getVm_lib() / 1024));
 			tc++;
@@ -518,7 +523,8 @@ ProcessList::handleRMBPopup(int item)
 		 */
 		if (currColumn > 2)
 		{
-			TabCol[mapV2T(currColumn)].visible = FALSE;
+			setColumnWidthMode(currColumn, Manual);
+			setColumnWidth(currColumn, 0);
 			update();
 		}
 		break;
@@ -540,6 +546,12 @@ ProcessList::mousePressEvent(QMouseEvent* e)
 	 */
 	if (e->button() == RightButton)
 	{
+#if 0
+		/*
+		 * As long as QListView does not support removing or hiding of columns
+		 * I will probably not implement this feature. I hope the Trolls will
+		 * do this with the next Qt release!
+		 */
 		if (e->pos().y() <= 0)
 		{
 			/*
@@ -549,6 +561,7 @@ ProcessList::mousePressEvent(QMouseEvent* e)
 			headerPM->popup(QCursor::pos());
 		}
 		else
+#endif
 		{
 			/*
 			 * The RMB was pressed over a process in the list. This process

@@ -71,11 +71,23 @@ public:
 	}
 
 	/**
-	 * This function calculates the system load. The load is split into
+	 * This function calculates the overall system load. The load is split into
 	 * user, system, nice and idle load. The values are in percent (0 - 100).
 	 * If an error occured the return value is false, otherwise true.
 	 */
 	bool getCpuLoad(int& user, int& sys, int& nice, int& idle);
+
+	/**
+	 * This function returns the number of CPUs installed.
+	 */
+	int getCpuCount(void);
+
+	/**
+	 * This function calculates the load for CPU 'cpu'. The load is split into
+	 * user, system, nice and idle load. The values are in percent (0 - 100).
+	 * If an error occured the return value is false, otherwise true.
+	 */
+	bool getCpuXLoad(int cpu, int& user, int& sys, int& nice, int& idle);
 
 	/**
 	 * This function determines the memory usage of the system. All values

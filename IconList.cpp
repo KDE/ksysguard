@@ -90,42 +90,43 @@ KtopIconList::KtopIconList()
 	 * Check whether the icons have already been loaded from another instance
 	 * of this class. If not, load the icons.
 	 */
-	if (!KtopIconList::instCounter)
+	if (!instCounter)
 	{
-		KtopIconList::load();
+		load();
 		defaultIcon = new QPixmap(execXpm);
 		CHECK_PTR(defaultIcon);
 	}
 
 	// Increase the instance counter, we have created another instance.
-	KtopIconList::instCounter++;
+	instCounter++;
 }
 
 KtopIconList::~KtopIconList()
 { 
 	// Decrease the instance counter.
-	KtopIconList::instCounter--;
+	instCounter--;
 
 	/*
 	 * If all instances have called the destructor we can delete the icon
 	 * list.
 	 */
-	if (!KtopIconList::instCounter)
+	if (!instCounter)
 	{
 		// delete default icon
-		delete KtopIconList::defaultIcon;
+		delete defaultIcon;
 
 		// delete other icons
-		KtopIconList::icnList->setAutoDelete(TRUE);
-		KtopIconList::icnList->clear();
+		icnList->setAutoDelete(TRUE);
+//		icnList->clear();
+		delete icnList;
 	}
 }
 
 const QPixmap* 
 KtopIconList::procIcon(const char* pname)
 {
-	KtopIconListElem* cur = KtopIconList::icnList->first();
-	KtopIconListElem* last = KtopIconList::icnList->getLast();
+	KtopIconListElem* cur = icnList->first();
+	KtopIconListElem* last = icnList->getLast();
 	bool goOn = TRUE;
 
 	/*
@@ -150,7 +151,7 @@ KtopIconList::procIcon(const char* pname)
 			else
 				return (defaultIcon);
 		}
-		cur = KtopIconList::icnList->next(); 
+		cur = icnList->next(); 
 	} while (goOn);
 
  end: 

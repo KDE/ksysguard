@@ -139,6 +139,9 @@ OSStatus::getCpuLoad(int& user, int& sys, int& nice, int& idle)
 	 * the system has spend on user processes, system processes, nice
 	 * processes and idle time.
 	 *
+	 * SMP systems will have cpu1 to cpuN lines right after the cpu info. The
+	 * format is identical to cpu and reports the information for each cpu.
+	 *
 	 * The /proc/stat file looks like this:
 	 *
 	 * cpu  1586 4 808 36274
@@ -190,6 +193,18 @@ OSStatus::getCpuLoad(int& user, int& sys, int& nice, int& idle)
 	idleTicks = currIdleTicks;
 
 	return (true);
+}
+
+int
+OSStatus::getCpuCount(void)
+{
+	return (1);	// SMP support not yet implemented!
+}
+
+bool
+OSStatus::getCpuXLoad(int, int& user, int& sys, int& nice, int& idle)
+{
+	getCpuLoad(user, sys, nice, idle);	// SMP support not yet implemented!
 }
 
 bool
@@ -294,6 +309,18 @@ OSStatus::getCpuLoad(int& user, int& sys, int& nice, int& idle)
 	idle = 100 - (user + sys + nice);
 
 	return (true);
+}
+
+int
+OSStatus::getCpuCount(void)
+{
+	return (1);	// SMP support not yet implemented!
+}
+
+bool
+OSStatus::getCpuXLoad(int, int& user, int& sys, int& nice, int& idle)
+{
+	getCpuLoad(user, sys, nice, idle);	// SMP support not yet implemented!
 }
 
 bool
