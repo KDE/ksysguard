@@ -33,13 +33,26 @@
 Workspace::Workspace(QWidget* parent, const char* name)
 	: QTabWidget(parent, name)
 {
-	tabCount = 0;
 }
 
 void
 Workspace::newWorkSheet()
 {
-	QString sheetName = QString(i18n("Sheet %1")).arg(++tabCount);
+	/* Find a name of the form "Sheet %d" that is not yet used by any
+	 * of the existing worksheets. */
+	int i = 1;
+	bool found;
+	QString sheetName;
+	do
+	{
+		sheetName = QString(i18n("Sheet %1")).arg(i++);
+		QListIterator<WorkSheet> it(sheets);
+		found = FALSE;
+		for (; it.current() && !found; ++it)
+			if (tabLabel(*it) == sheetName)
+				found = TRUE;
+	} while (found);
+
 	WorkSheetSetup* s = new WorkSheetSetup(sheetName);
 	if (s->exec())
 		addSheet(s->getSheetName(), s->getRows(), s->getColumns());
@@ -60,6 +73,7 @@ Workspace::deleteWorkSheet()
 	if (current)
 	{
 		removePage(current);
+		sheets.remove(current);
 		delete current;
 	}
 	else
@@ -75,5 +89,18 @@ Workspace::addSheet(const QString& title, int rows, int columns)
 {
 	WorkSheet* sheet = new WorkSheet(this, rows, columns);
 	insertTab(sheet, title);
+	sheets.append(sheet);
 	showPage(sheet);
+}
+
+void
+Workspace::saveProperties()
+{
+	QString sheetList;
+	QListIterator<WorkSheet> it(sheets);
+	for (; it.current(); ++it)
+		sheetList += tabLabel(*it);
+
+	
+	return (TRUE);
 }

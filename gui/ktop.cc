@@ -130,11 +130,12 @@ TopLevel::TopLevel(const char *name)
 	KStdAction::close(ws, SLOT(deleteWorkSheet()), actionCollection());
 	KStdAction::quit(this, SLOT(quitApp()), actionCollection());
 
-    (void) new KAction(i18n("C&onnect Host"), 0, this, SLOT(connectHost()),
-					   actionCollection(), "connect_host");
-    (void) new KAction(i18n("D&isconnect Host"), 0, this,
-					   SLOT(disconnectHost()),
-					   actionCollection(), "disconnect_host");
+    (void) new KAction(i18n("C&onnect Host"), "connect_established", 0,
+					   this, SLOT(connectHost()), actionCollection(),
+					   "connect_host");
+    (void) new KAction(i18n("D&isconnect Host"), "connect_no", 0, this,
+					   SLOT(disconnectHost()), actionCollection(),
+					   "disconnect_host");
 	createGUI("ktop.rc");
 
 	// show the dialog box
