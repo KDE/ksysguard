@@ -63,6 +63,7 @@ public:
 k_dcop:
 	// calling ksysguard with kwin/kicker hot-key
 	ASYNC showProcesses();
+	ASYNC showOnCurrentDesktop();
 	ASYNC loadWorkSheet(const QString& fileName);
 	ASYNC removeWorkSheet(const QString& fileName);
 	QStringList listHosts();

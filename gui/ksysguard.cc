@@ -43,6 +43,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kstdaction.h>
+#include <kwin.h>
 #include <kwinmodule.h>
 #include <kstandarddirs.h>
 
@@ -145,6 +146,13 @@ TopLevel::~TopLevel()
 
 void TopLevel::resetWorkSheets()
 {
+	if ( KMessageBox::questionYesNo( this,
+			i18n( "Do you really want restore the default work sheets?" ),
+			i18n( "Reset all work sheets" ),
+			KStdGuiItem::yes(), KStdGuiItem::no(),
+			"AskResetWorkSheets") == KMessageBox::No )
+		return;
+
 	ws->removeAllWorkSheets();
 
 	KStandardDirs* kstd = KGlobal::dirs();
@@ -168,6 +176,12 @@ void
 TopLevel::showProcesses()
 {
 	ws->showProcesses();
+}
+
+void
+TopLevel::showOnCurrentDesktop()
+{
+	KWin::setOnDesktop( winId(), KWin::currentDesktop() );
 }
 
 void
@@ -637,6 +651,11 @@ main(int argc, char** argv)
 
 			// run the application
 			result = a->exec();
+		}
+		else
+		{
+			QByteArray data;
+			a->dcopClient()->send( "ksysguard_taskmanager", "KSysGuardIface", "showOnCurrentDesktop()", data );
 		}
 	}
 	else

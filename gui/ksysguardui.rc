@@ -8,6 +8,7 @@
     <Action name="file_save"/>
     <Action name="file_save_as"/>
     <Action name="file_close"/>
+    <Action name="file_revert"/>
     <Action name="connect_host"/>
     <Action name="disconnect_host"/>
     <Action name="edit_copy"/>

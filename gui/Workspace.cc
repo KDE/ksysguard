@@ -342,7 +342,10 @@ Workspace::removeAllWorkSheets()
 {
 	WorkSheet *sheet;
 	while ( sheet = ( WorkSheet * )currentPage() )
+	{
 		removePage( sheet );
+		sheets.remove( sheet );
+	}
 }
 
 void
