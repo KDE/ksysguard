@@ -58,12 +58,6 @@ MainMenu::MainMenu(QWidget* parent, const char* name) :
 			 KTOP_VERSION);
 	help = Kapp->getHelpMenu(true, about);
 
-	// 'Options' submenu
-	settings = new QPopupMenu();
-	settings->insertItem(i18n("StartUp Preferences..."),
-						 MENU_ID_PROCSETTINGS, -1);
-	connect(settings, SIGNAL(activated(int)), this, SLOT(handler(int)));
-
 	// 'Refresh Rate' submenu
 	refresh = new QPopupMenu();
 	refresh->setCheckable(true);
@@ -82,7 +76,6 @@ MainMenu::MainMenu(QWidget* parent, const char* name) :
 	// register submenues
 	setLineWidth(1);
 	insertItem(i18n("&File"), file, 2, -1);
-	insertItem(i18n("&Options"), settings, 3, -1);
 	insertItem(i18n("&Refresh Rate"), refresh, MENU_ID_MENU_REFRESH, -1);
 	insertItem(i18n("&Process"), process, MENU_ID_MENU_PROCESS, -1);
 
@@ -97,10 +90,6 @@ MainMenu::handler(int id)
 	{
 	case MENU_ID_QUIT:
 		emit(quit());
-		break;
-
-	case MENU_ID_PROCSETTINGS:
-//		taskman->invokeSettings();
 		break;
 
 	case MENU_ID_REFRESH_MANUAL:

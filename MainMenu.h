@@ -28,6 +28,11 @@
 
 #include "ProcessMenu.h"
 
+/**
+ * This class implements the main menu. All triggered actions are activated
+ * through signals. For on-the-fly modification of the menus slots are
+ * provided.
+ */
 class MainMenu : public KMenuBar
 {
 	Q_OBJECT
@@ -36,22 +41,20 @@ public:
     enum
 	{
 		MENU_ID_ABOUT = 100,
-		MENU_ID_PROCSETTINGS = 50,
 		MENU_ID_MENU_REFRESH,
 		MENU_ID_REFRESH_MANUAL,
 		MENU_ID_REFRESH_SLOW,
 		MENU_ID_REFRESH_MEDIUM,
 		MENU_ID_REFRESH_FAST,
-		MENU_ID_MENU_PROCESS = 60,
-	    MENU_ID_QUIT = 20,
-		MENU_ID_HELP = 30
+		MENU_ID_MENU_PROCESS,
+	    MENU_ID_QUIT,
+		MENU_ID_HELP
 	};
     
 	MainMenu(QWidget* parent = 0, const char* name = 0);
 	~MainMenu()
 	{
 		delete file;
-		delete settings;
 		delete refresh;
 		delete process;
 		delete help;
@@ -83,7 +86,6 @@ private slots:
 
 private:
 	QPopupMenu* file;
-	QPopupMenu* settings;
 	QPopupMenu* refresh;
 	ProcessMenu* process;
 	QPopupMenu* help;

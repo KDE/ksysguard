@@ -33,7 +33,6 @@
 #include <kapp.h>
 
 #include "ktop.h"
-#include "settings.h"
 #include "ReniceDlg.h"
 #include "ProcListPage.h"
 #include "OSProcessList.h"
@@ -49,37 +48,16 @@
 TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
 	: QTabDialog(parent, name, FALSE, 0)
 {
-	pages[0] = pages[1] = pages[2] = NULL;
-	settings = NULL;
-	restoreStartupPage = FALSE;
-
-	setStyle(WindowsStyle);
+	pages[0] = pages[1] = NULL;
 
     // Delete the OK button, it is created by default by the constructor.
 	setOkButton(0);
 
 	connect(tabBar(), SIGNAL(selected(int)), SLOT(tabBarSelected(int)));
+	connect(this, SIGNAL(enableRefreshMenu(bool)),
+			MainMenuBar, SLOT(enableRefreshMenu(bool)));
+						 
 
-	/*
-	 * set up popup menu pSig
-	 */
-	pSig = new QPopupMenu(NULL,"_psig");
-	CHECK_PTR(pSig);
-	OSProcessList pl;
-	if (pl.hasNiceLevel())
-	{
-		pSig->insertItem(i18n("Renice Task..."),MENU_ID_RENICE);
-		pSig->insertSeparator();
-	}
-	pSig->insertItem(i18n("send SIGINT\t(ctrl-c)"), MENU_ID_SIGINT);
-	pSig->insertItem(i18n("send SIGQUIT\t(core)"), MENU_ID_SIGQUIT);
-	pSig->insertItem(i18n("send SIGTERM\t(term.)"), MENU_ID_SIGTERM);
-	pSig->insertItem(i18n("send SIGKILL\t(term.)"), MENU_ID_SIGKILL);
-	pSig->insertSeparator();
-	pSig->insertItem(i18n("send SIGUSR1\t(user1)"), MENU_ID_SIGUSR1);
-	pSig->insertItem(i18n("send SIGUSR2\t(user2)"), MENU_ID_SIGUSR2);
-	connect(pSig, SIGNAL(activated(int)), this, SLOT(pSigHandler(int)));
-  
     /*
      * set up page 0 (process list viewer)
      */
@@ -87,33 +65,20 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
     CHECK_PTR(procListPage);
 	
 	/*
-	 * set up page 1 (process tree)
+	 * set up page 1 (performance monitor)
 	 */
-    pages[1] = procTreePage = new ProcTreePage(this, "ProcTreePage"); 
-    CHECK_PTR(procTreePage);
-	connect(procTreePage, SIGNAL(killProcess(int)),
-			this, SLOT(killProcess(int)));
-
-	/*
-	 * set up page 2 (performance monitor)
-	 */
-    pages[2] = perfMonPage = new PerfMonPage(this, "PerfMonPage");
+    pages[1] = perfMonPage = new PerfMonPage(this, "PerfMonPage");
     CHECK_PTR(perfMonPage);
 
-    // startup_page settings...
-	startup_page = Kapp->getConfig()->readNumEntry("startUpPage", PAGE_PLIST);
+	currentPage = PAGE_PLIST;
 
 	// setting from config file can be overidden by command line option
 	if (sfolder >= 0)
-	{ 
-		restoreStartupPage = TRUE;
-		startup_page = sfolder;
-	}
+		currentPage = sfolder;
 
     // add pages...
     addTab(procListPage, i18n("Processes &List"));
-    addTab(procTreePage, i18n("Processes &Tree"));
-    addTab(perfMonPage, i18n("&Performance"));
+    addTab(perfMonPage, i18n("Performance &Meter"));
 
     move(0,0);
 }
@@ -121,105 +86,16 @@ TaskMan::TaskMan(QWidget* parent, const char* name, int sfolder)
 void 
 TaskMan::raiseStartUpPage()
 {
-	// tell QTabDialog to raise the specified startup page
-	showPage(pages[startup_page]);
+    // startup_page settings...
+	currentPage = Kapp->getConfig()->readNumEntry("StartUpPage", currentPage);
 
-	/*
-	 * In case the startup_page has been forced on the command line we restore
-	 * the startup_page variable from the config file again so we use the
-	 * forced value only for this session.
-	 */
-	if (restoreStartupPage)
-	{
-		startup_page = Kapp->getConfig()->readNumEntry("startUpPage",
-													   startup_page);
-	}
+	// tell QTabDialog to raise the specified startup page
+	showPage(pages[currentPage]);
 } 
 
 void 
-TaskMan::pSigHandler(int id)
-{
-	int the_sig = 0;
-	bool renice = false;
-
-	// Find out the signal number and the same, or if we need to do a renice.
-	/*
-	 * I'm not sure whether it makes sense to i18n the signal names. But who
-	 * knows. I'll leave that decision to the translators.
-	 */
-	QString sigName;
-	switch (id)
-	{
-	case MENU_ID_SIGINT:
-		the_sig = SIGINT;
-		sigName = i18n("SIGINT");
-		break;
-	case MENU_ID_SIGQUIT:
-		the_sig = SIGQUIT;
-		sigName = i18n("SIGQUIT");
-		break;
-	case MENU_ID_SIGTERM:
-		the_sig = SIGTERM;
-		sigName = i18n("SIGTERM");
-		break;
-	case MENU_ID_SIGKILL:
-		the_sig = SIGKILL;
-		sigName = i18n("SIGKILL");
-		break;
-	case MENU_ID_SIGUSR1:
-		the_sig = SIGUSR1;
-		sigName = i18n("SIGUSR1");
-		break;
-	case MENU_ID_SIGUSR2:
-		the_sig = SIGUSR2;
-		sigName = i18n("SIGUSR2");
-		break;
-	case MENU_ID_RENICE:
-		renice = true;
-		break;
-	default:
-		return;
-	}
-
-	// Find out the pid of the currently selected process.
-	int pid;
-	switch (tabBar()->currentTab())
-	{
-	case PAGE_PTREE:
-		pid = procTreePage->selectionPid();
-		if (pid == NONE)
-			return;
-		break;
-	default:
-		return;
-	}
-
-	// We are about to display a modal dialog so we turn auto update mode off.
-	int lastmode = procListPage->setAutoUpdateMode(FALSE);
-
-	if (renice) 
-		reniceProcess(pid);
-	else
- 		killProcess(pid, the_sig, sigName.data());
-
-	// Restore the auto update mode if necessary.
-	procListPage->setAutoUpdateMode(lastmode);
-
-	// Update the currently displayed process list/tree.
-	switch (tabBar()->currentTab()) 
-	{
-	case PAGE_PLIST:
-		procListPage->update();
-		break;
-	case PAGE_PTREE:
-		procTreePage->update();
-		break;
-	}
-}
-
-void 
 TaskMan::tabBarSelected(int tabIndx)
-{ 
+{
 	switch (tabIndx)
 	{
 	case PAGE_PLIST:
@@ -228,98 +104,13 @@ TaskMan::tabBarSelected(int tabIndx)
 		procListPage->update();
 		emit(enableRefreshMenu(TRUE));
 		break;
-	case PAGE_PTREE:
-		procTreePage->clearSelection();
-		procListPage->setAutoUpdateMode(FALSE);
-		procTreePage->update();
-		emit(enableRefreshMenu(FALSE));
-		break;
 	case PAGE_PERF:
 		procListPage->clearSelection();
-		procTreePage->clearSelection();
 		procListPage->setAutoUpdateMode(FALSE);
 		emit(enableRefreshMenu(FALSE));
 		break;
 	}
-}
-
-void 
-TaskMan::killProcess(int pid, int sig, const char* sigName)
-{
-	OSProcess ps(pid);
-
-	// Make sure user really want to send the signal to that process.
-	QString msg;
-	msg.sprintf(i18n("Send signal %s to process %d?\n"
-			 "(Process name: %s  Owner: %s)\n"), 
-		    sigName, ps.getPid(),
-		    ps.getName(), ps.getUserName().data());
-	switch(QMessageBox::warning(this, "Task Manager", msg,
-				    i18n("Continue"), i18n("Abort"), 0, 1))
-    { 
-	case 0: // continue
-		if (!ps.sendSignal(sig))
-		  QMessageBox::warning(this, "Task Manager", ps.getErrMessage(),
-				       i18n("Continue"), 0);
-		break;
-
-	case 1: // abort
-		break;
-	}
-}
-
-void
-TaskMan::reniceProcess(int pid)
-{
-	OSProcess ps(pid);
-
-	// get current priority of the process with pid
-	int currentNiceLevel = ps.getNiceLevel();
-	if (!ps.ok()) 
-	{
-		QMessageBox::warning(this, i18n("Task Manager"),
-				     i18n("Renice error...\n"
-					  "Specified process does not exist\n"
-					  "or permission denied."),
-				     i18n("OK"), 0); 
-		return;
-	}
-
-	// create a dialog widget
-	ReniceDlg dialog(this, "nice", currentNiceLevel);
-
-	// request new nice value with dialog box and set the new nice level
-	int newNiceLevel;
-	if ((newNiceLevel = dialog.exec()) <= 20 && (newNiceLevel >= -20) &&
-		(newNiceLevel != currentNiceLevel)) 
-	{
-		if (!ps.setNiceLevel(newNiceLevel))
-		{
-			QMessageBox::warning(this, i18n("Task Manager"),
-					     i18n("Renice error...\n"
-						  "Specified process does not exist\n"
-						  "or permission denied."),
-					     i18n("OK"), 0);
-		}
-	}
-}
-
-void 
-TaskMan::invokeSettings(void)
-{
-	// Display and handle preferences dialog.
-	if(!settings)
-	{
-		settings = new AppSettings(0,"proc_options");
-		CHECK_PTR(settings);      
-	}
-
-	settings->setStartUpPage(startup_page);
-	if (settings->exec())
-	{
-		startup_page = settings->getStartUpPage();
-		saveSettings();
-	}
+	currentPage = tabIndx;
 }
 
 void 
@@ -327,20 +118,17 @@ TaskMan::saveSettings()
 {
 	QString tmp;
 
-	// save window size
+	// save window size, isn't this ancient history?
 	tmp.sprintf("%04d:%04d:%04d:%04d",
 				parentWidget()->x(), parentWidget()->y(),
 				parentWidget()->width(), parentWidget()->height());
 	Kapp->getConfig()->writeEntry("G_Toplevel", tmp);
 
 	// save startup page (tab)
-	Kapp->getConfig()->writeEntry("startUpPage", startup_page, TRUE);
+	Kapp->getConfig()->writeEntry("StartUpPage", currentPage, TRUE);
 
 	// save process list settings
 	procListPage->saveSettings();
-
-	// save process tree settings
-	procTreePage->saveSettings();
 
 	Kapp->getConfig()->sync();
 }

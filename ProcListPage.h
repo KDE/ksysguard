@@ -34,6 +34,7 @@
 #include <qcheckbox.h>
 #include <qpushbutton.h>
 #include <qcombobox.h>
+#include <qgroupbox.h>
 #include <qlayout.h>
 
 #include <kapp.h>

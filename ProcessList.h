@@ -248,7 +248,7 @@ private slots:
 	void handleRMBPopup(int item);
 	void selectionChangedSlot(QListViewItem* lvi)
 	{
-		QString pidStr = lvi->text(2);
+		QString pidStr = lvi->text(1);
 		emit(processSelected(pidStr.toInt()));
 	}
 

@@ -28,6 +28,7 @@
 // $Id$
 
 #include <qpopupmenu.h>
+#include <qlayout.h>
 
 #include <kapp.h>
 #include <ktmainwindow.h>

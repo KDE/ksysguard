@@ -51,7 +51,7 @@ class ReniceDlg : public QDialog
 	Q_OBJECT
 
 public:
-	ReniceDlg(QWidget* parent, const char* name, int currentPPrio);
+	ReniceDlg(QWidget* parent, const char* name, int currentPPrio, int pid);
 	~ReniceDlg()
 	{
 		delete message;

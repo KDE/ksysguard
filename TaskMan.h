@@ -37,12 +37,9 @@
 
 #include <ktablistbox.h>
 
-#include "settings.h"
 #include "IconList.h"
 #include "ProcessList.h"
-#include "ProcessTree.h"
 #include "ProcListPage.h"
-#include "ProcTreePage.h"
 #include "PerfMonPage.h"
 
 /**
@@ -57,18 +54,7 @@ class TaskMan : public QTabDialog
 public:
 	enum 
 	{
-		MENU_ID_SIGINT = 500,
-		MENU_ID_SIGQUIT,
-		MENU_ID_SIGTERM,
-		MENU_ID_SIGKILL,
-		MENU_ID_SIGUSR1,
-		MENU_ID_SIGUSR2,
-	    MENU_ID_RENICE 
-	};
-	enum 
-	{
 		PAGE_PLIST = 0, 
-		PAGE_PTREE, 
 		PAGE_PERF
 	};
 
@@ -77,31 +63,12 @@ public:
     ~TaskMan()
 	{
 		delete procListPage;
-		delete procTreePage;
 		delete perfMonPage;
-		delete pSig;
-		delete settings;
 	}
      
 	void invokeSettings();
 	void raiseStartUpPage();
 	void saveSettings();
-
-public slots:
-	void pSigHandler(int);
-	void tabBarSelected(int);
-	void popupMenu(int, int)
-	{
-		pSig->popup(QCursor::pos());
-	}
-	void popupMenu(QPoint)
-	{
-		pSig->popup(QCursor::pos());
-	}
-	void killProcess(int pid)
-	{
-		killProcess(pid, SIGKILL, "SIGKILL");
-	}
 
 signals:
 	void refreshRateSelected(int);
@@ -111,20 +78,18 @@ private:
 	void reniceProcess(int pid);
 	void killProcess(int, int sig, const char*);
 
-	ProcListPage* procListPage;
+private slots:
+	void tabBarSelected(int);
 
-	ProcTreePage* procTreePage;
+private:
+	ProcListPage* procListPage;
 
 	PerfMonPage* perfMonPage;
 
 	/// This is only an alias for procListPage, procTreePage and perfMonPage
-    QWidget* pages[3];
-	
-	QPopupMenu* pSig;
-	AppSettings* settings;
+    QWidget* pages[2];
 
-	int startup_page;
-	bool restoreStartupPage;
+	int currentPage;
 };
 
 #endif

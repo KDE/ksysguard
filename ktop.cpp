@@ -76,7 +76,6 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 
 	assert(Kapp);
 	setCaption(i18n("KDE Task Manager"));
-	setMinimumSize(KTOP_MIN_W, KTOP_MIN_H);
 
 	// create the tab dialog
 	taskman = new TaskMan(this, "", sfolder);
@@ -87,13 +86,13 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 	connect(taskman, SIGNAL(enableRefreshMenu(bool)),
 			menubar, SLOT(enableRefreshMenu(bool)));
 
-//	setMinimumSize(sizeHint());
-
 	/*
 	 * Restore size of the dialog box that was used at end of last session.
 	 * Due to a bug in Qt we need to set the width to one more than the
 	 * defined min width. If this is not done the widget is not drawn
 	 * properly the first time. Subsequent redraws after resize are no problem.
+	 *
+	 * I need to implement some propper session management some day!
 	 */
 	QString t = Kapp->getConfig()->readEntry(QString("G_Toplevel"));
 	if(!t.isNull())
@@ -107,8 +106,8 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 						wh <= KTOP_MIN_H ? KTOP_MIN_H : wh);
 		}
 	}
-	else 
-		setGeometry(0,0, KTOP_MIN_W + 1, KTOP_MIN_H);
+
+	readProperties(Kapp->getConfig());
 
 	timerID = startTimer(2000);
 
@@ -122,7 +121,10 @@ TopLevel::TopLevel(QWidget *parent, const char *name, int sfolder)
 void 
 TopLevel::quitSlot()
 {
+	saveProperties(Kapp->getConfig());
+
 	taskman->saveSettings();
+
 	Kapp->getConfig()->sync();
 	qApp->quit();
 }
@@ -152,7 +154,7 @@ TopLevel::timerEvent(QTimerEvent*)
 static void 
 usage(char *name) 
 {
-	printf("%s [kdeopts] [--help] [-p (list|tree|perf)]\n", name);
+	printf("%s [kdeopts] [--help] [-p (list|perf)]\n", name);
 }
 
 /*
@@ -199,11 +201,6 @@ main(int argc, char** argv)
 				// process list
 				sfolder = TaskMan::PAGE_PLIST;
 			}
-			else if (strstr(argv[i], "tree"))
-			{
-				// process tree
-				sfolder=TaskMan::PAGE_PTREE;
-			}
 			else
 			{
 				// print usage information
@@ -221,7 +218,7 @@ main(int argc, char** argv)
 	}
 
 	// create top-level widget
-	QWidget *toplevel = new TopLevel(0, "TaskManager", sfolder);
+	TopLevel *toplevel = new TopLevel(0, "TaskManager", sfolder);
 	Kapp->setTopWidget(toplevel);
 
 	// run the application

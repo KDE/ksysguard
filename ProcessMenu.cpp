@@ -81,9 +81,9 @@ ProcessMenu::killProcess(int pid, int sig)
 
 	if (!ps.ok())
 	{
-		QMessageBox::warning(this, i18n("Task Manager"),
-							 i18n("The process is no longer persistent."),
-							 i18n("OK"), 0);
+		QString msg;
+		msg.sprintf(i18n("The process %d is no longer persistent."), pid);
+		QMessageBox::warning(this, i18n("Task Manager"), msg, i18n("OK"), 0);
 		return;
 	}
 
@@ -145,9 +145,9 @@ ProcessMenu::reniceProcess(int pid)
 
 	if (!ps.ok())
 	{
-		QMessageBox::warning(this, i18n("Task Manager"),
-							 i18n("The process is no longer persistent."),
-							 i18n("OK"), 0);
+		QString msg;
+		msg.sprintf(i18n("The process %d is no longer persistent."), pid);
+		QMessageBox::warning(this, i18n("Task Manager"), msg, i18n("OK"), 0);
 		return;
 	}
 
@@ -164,7 +164,7 @@ ProcessMenu::reniceProcess(int pid)
 	}
 
 	// create a dialog widget
-	ReniceDlg dialog(this, "nice", currentNiceLevel);
+	ReniceDlg dialog(this, "nice", currentNiceLevel, pid);
 
 	// request new nice value with dialog box and set the new nice level
 	int newNiceLevel;
