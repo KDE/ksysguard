@@ -2,7 +2,6 @@
 IconName=ksysguard
 Comment=KDE System Guard
 Comment[af]=Kde Stelsel Wag
-Comment[ar]=حارس النظام
 Comment[az]=KDE Sistem Cangüdəni
 Comment[bg]=Cистемен монитор на KDE
 Comment[bs]=KDE zaštita sistema
@@ -83,7 +82,6 @@ Name[zh_TW]=比對正確
 Name[zu]=ukufanana_kwephathini
 Comment=search pattern matched
 Comment[af]=soektog patroon ooreengestem
-Comment[ar]=تم ايجاد تماثل
 Comment[az]=axtarılan naxış uyğundur
 Comment[bg]=търси съвпадения в образец
 Comment[bs]=pronađen uzorak za pretragu
