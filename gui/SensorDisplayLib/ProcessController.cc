@@ -291,7 +291,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 		case 2:
 			KSGRD::SensorMgr->notify(
 				i18n("Insufficient permissions to kill "
-							 "process %1!").arg(vals[1]));
+							 "process %1.").arg(vals[1]));
 			break;
 		case 3:
 			KSGRD::SensorMgr->notify(
@@ -326,7 +326,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 		case 2:
 			KSGRD::SensorMgr->notify(
 				i18n("Insufficient permissions to renice "
-							 "process %1!").arg(vals[1]));
+							 "process %1.").arg(vals[1]));
 			break;
 		case 3:
 			KSGRD::SensorMgr->notify(

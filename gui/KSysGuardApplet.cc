@@ -302,7 +302,7 @@ bool KSysGuardApplet::load()
 
   QFile file( fileName );
   if ( !file.open( IO_ReadOnly ) ) {
-    KMessageBox::sorry( this, i18n( "Can't open the file %1." ).arg( fileName ) );
+    KMessageBox::sorry( this, i18n( "Cannot open the file %1." ).arg( fileName ) );
     return false;
   }
 

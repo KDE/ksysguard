@@ -260,7 +260,7 @@ void Workspace::saveWorkSheet( WorkSheet *sheet )
 void Workspace::saveWorkSheetAs( WorkSheet *sheet )
 {
   if ( !sheet ) {
-    KMessageBox::sorry( this, i18n( "You don't have a worksheet that could be saved!" ) );
+    KMessageBox::sorry( this, i18n( "You do not have a worksheet that could be saved." ) );
     return;
   }
 

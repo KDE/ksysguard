@@ -89,7 +89,7 @@ bool WorkSheet::load( const QString &fileName )
   mFileName = fileName;
   QFile file( mFileName );
   if ( !file.open( IO_ReadOnly ) ) {
-    KMessageBox::sorry( this, i18n( "Can't open the file %1." ).arg( mFileName ) );
+    KMessageBox::sorry( this, i18n( "Cannot open the file %1." ).arg( mFileName ) );
     return false;
   }
 
