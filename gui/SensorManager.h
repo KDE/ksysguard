@@ -24,24 +24,42 @@
 #define _SensorManager_h_
 
 #include <qobject.h>
+#include <qdict.h>
 
-class SensorAgent;
+#include "SensorAgent.h"
+
+class SensorManagerIterator;
 
 class SensorManager : public QObject
 {
 	Q_OBJECT
+
+	friend SensorManagerIterator;
 
 public:
 	SensorManager();
 	~SensorManager();
 
 	SensorAgent* engage(const QString& hostname);
-	void disengage(const SensorAgent* da);
+	void disengage(const SensorAgent* sensor);
 
-private:
-	QList<SensorAgent> daList;
+	const QString getHostName(const SensorAgent* sensor) const;
+
+signals:
+	void update(void);
+
+protected:
+	QDict<SensorAgent> sensors;
 } ;
 
 extern SensorManager* SensorMgr;
+
+class SensorManagerIterator : public QDictIterator<SensorAgent>
+{
+public:
+	SensorManagerIterator(const SensorManager* sm) :
+		QDictIterator<SensorAgent>(sm->sensors)
+	{ }
+} ;
 
 #endif

@@ -68,7 +68,8 @@ SensorAgent::start(const QString& host, const QString& shell)
 			this, SLOT(errMsgRcvd(KProcess*, char*, int)));
 	connect(ktopd, SIGNAL(wroteStdin(KProcess*)), this,
 			SLOT(msgSent(KProcess*)));
-	*ktopd << "ktopd/Linux/ktopd";
+	// Hack! Works only for KDEII!
+	*ktopd << "ssh" << "/home2/cschlaeg/bin/ktopd";
 
 	if (!ktopd->start(KProcess::NotifyOnExit, KProcess::All))
 		cout << "Can't start ktopd" << endl;

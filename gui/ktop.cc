@@ -66,11 +66,12 @@ TopLevel::TopLevel(const char *name, int sfolder)
 	// register the menu bar with KTMainWindow
 	setMenu(menubar);
 
-	// create the tab dialog
-//	taskman = new TaskMan(this, "TaskMan", sfolder);
+	splitter = new QSplitter(this, "Splitter");
+	splitter->setOrientation(Horizontal);
+	setView(splitter);
 
-	// register the tab dialog with KTMainWindow as client widget
-//	setView(taskman);
+	sb = new SensorBrowser(splitter, SensorMgr, "SensorBrowser");
+	ws = new Workspace(splitter, "Workspace");
 
 //	connect(taskman, SIGNAL(enableRefreshMenu(bool)),
 //			menubar, SLOT(enableRefreshMenu(bool)));
@@ -120,6 +121,15 @@ TopLevel::TopLevel(const char *name, int sfolder)
 
 	// show the dialog box
 	show();
+}
+
+TopLevel::~TopLevel()
+{
+	killTimer(timerID);
+
+	delete menubar;
+	delete statusbar;
+	delete splitter;
 }
 
 void 
@@ -199,10 +209,10 @@ main(int argc, char** argv)
 	// initialize KDE application
 	Kapp = new KApplication(argc, argv, "ktop");
 
-	SensorMgr = new SensorManager();
-
 	int i;
 	int sfolder = -1;
+
+	SensorMgr = new SensorManager();
 
 	// create top-level widget
 	TopLevel *toplevel = new TopLevel("TaskManager", sfolder);

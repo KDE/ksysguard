@@ -108,7 +108,37 @@ private:
 	QString unit;
 } ;
 
+class SensorLinesTokenizer
+{
+public:
+	SensorLinesTokenizer(const QString& info)
+	{
+		tokens.setAutoDelete(TRUE);
+
+		QString s = info;
+		while (s.length() > 0)
+		{
+			int newline;
+
+			if ((newline = s.find('\n')) < 0)
+			{
+				tokens.append(new QString(s));
+				break;
+			}
+			else
+			{
+				tokens.append(new QString(s.left(newline)));
+				s = s.remove(0, newline + 1);
+			}
+		}
+	}
+	~SensorLinesTokenizer() { }
+
+	const QString& operator[](int idx) { return *(tokens.at(idx)); }
+	unsigned numberOfTokens(void) { return (tokens.count()); }
+
+private:
+	QList<QString> tokens;
+} ;
+
 #endif
-
-
-

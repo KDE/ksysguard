@@ -31,28 +31,49 @@ SensorManager* SensorMgr;
 
 SensorManager::SensorManager()
 {
+	sensors.setAutoDelete(true);
 }
 
 SensorManager::~SensorManager()
 {
-	QListIterator<SensorAgent> it(daList);
-	for (; it.current(); ++it)
-		delete(it.current());
 }
 
 SensorAgent*
 SensorManager::engage(const QString& hostname)
 {
 	SensorAgent* ktopd;
-	ktopd = new SensorAgent;
-	ktopd->start(hostname.ascii(), "rsh");
-	daList.append(ktopd);
 
+	if ((ktopd = sensors.find(hostname)) == 0)
+	{
+		debug("New Sensor added");
+		ktopd = new SensorAgent;
+		ktopd->start(hostname.ascii(), "rsh");
+		sensors.insert(hostname, ktopd);
+		emit update();
+	}
 	return (ktopd);
 }
 
 void
-SensorManager::disengage(const SensorAgent* da)
+SensorManager::disengage(const SensorAgent* sa)
 {
-	// remove daemon agent for daList
+	QDictIterator<SensorAgent> it(sensors);
+	
+	while (it.current())
+		if (it.current() == sa)
+			sensors.remove(it.currentKey());
+}
+
+const QString
+SensorManager::getHostName(const SensorAgent* sensor) const
+{
+	static QString dummy;
+
+	QDictIterator<SensorAgent> it(sensors);
+	
+	while (it.current())
+		if (it.current() == sensor)
+			return (it.currentKey());
+
+	return (dummy);
 }

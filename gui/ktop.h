@@ -23,18 +23,19 @@
 	$Id$
 */
 
-
 #ifndef _ktop_h_
 #define _ktop_h_
 
 #include <qpopupmenu.h>
-#include <qlayout.h>
+#include <qsplitter.h>
 
 #include <kapp.h>
 #include <ktmainwindow.h>
 #include <kmenubar.h>
 #include <kstatusbar.h>
 
+#include "SensorBrowser.h"
+#include "Workspace.h"
 #include "SensorClient.h"
 #include "MainMenu.h"
 
@@ -48,13 +49,7 @@ class TopLevel : public KTMainWindow, public SensorClient
 
 public:
 	TopLevel(const char *name = 0, int sfolder = 0);
-	~TopLevel()
-	{
-		killTimer(timerID);
-
-		delete menubar;
-		delete statusbar;
-	}
+	~TopLevel();
 
 	void closeEvent(QCloseEvent*)
 	{
@@ -70,6 +65,9 @@ private:
 	MainMenu* menubar;
 	KStatusBar* statusbar;
 
+	QSplitter* splitter;
+	SensorBrowser* sb;
+	Workspace* ws;
 	int timerID;
 
 	SensorAgent* localhost;
