@@ -104,6 +104,9 @@ Name[zh_CN]=模式匹配
 Name[zh_TW]=比對正確
 Name[zu]=ukufanisa_iphethini
 Comment=Search pattern matched
+Comment[et]=Otsingu muster sobib
+Comment[pt]=Padrão de pesquisa encontrado
+Comment[pt_BR]=Padrão de pesquisa encontrado
 
 [sensor_alarm]
 Name=sensor_alarm
