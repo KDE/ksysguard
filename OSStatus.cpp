@@ -226,7 +226,6 @@ OSStatus::getCpuCount(void)
 					sysTicksX = new int[cpuCount];
 					niceTicksX = new int[cpuCount];
 					idleTicksX = new int[cpuCount];
-					return (cpuCount - 1);
 				}
 				return (cpuCount);
 			}
@@ -242,7 +241,7 @@ OSStatus::getCpuXLoad(int cpu, int& user, int& sys, int& nice, int& idle)
 	int currUserTicks, currSysTicks, currNiceTicks, currIdleTicks;
 
 	QString cpuName;
-	cpuName.sprintf("cpu%d", cpuCount);
+	cpuName.sprintf("cpu%d", cpu);
 
 	if (!readCpuInfo(cpuName, &currUserTicks, &currSysTicks,
 					 &currNiceTicks, &currIdleTicks))
