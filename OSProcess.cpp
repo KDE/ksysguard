@@ -56,7 +56,7 @@
 
 // nothing here yet
 
-#else
+#elif linux
 
 // Code for Linux 2.x
 
@@ -173,6 +173,95 @@ OSProcess::read(const char* pidStr)
 	return (true);
 }
 
+#elif __FreeBSD__
+/* Port to FreeBSD by Hans Petter Bieker <zerium@webindex.no>.
+ *
+ * Copyright 1999 Hans Petter Bieker <zerium@webindex.no>.
+ */
+
+#include <sys/param.h>
+#include <stdlib.h>
+#include <sys/sysctl.h>
+#include <sys/user.h>                    
+
+OSProcess::OSProcess(const char* pidStr, TimeStampList* lastTStamps,
+                                         TimeStampList* newTStamps)
+{
+	error = false;
+
+	read(pidStr);
+}
+
+OSProcess::OSProcess(int pid_)
+{
+	error = false;
+
+	QString pidStr;
+	pidStr.sprintf("%d", pid_);
+
+	read(pidStr);
+}
+
+bool
+OSProcess::read(const char* pidStr)
+{
+	int mib[4];
+        mib[0] = CTL_KERN;
+        mib[1] = KERN_PROC;
+        mib[2] = KERN_PROC_PID;
+        mib[3] = atoi(pidStr);
+
+	struct kinfo_proc p;
+	size_t len = sizeof (struct kinfo_proc);
+	if (sysctl(mib, 4, &p, &len, NULL, 0) == -1)
+		return (false);
+	
+	pid = p.kp_proc.p_pid;
+	ppid = p.kp_eproc.e_ppid;
+	strcpy(name, p.kp_proc.p_comm);
+	uid = p.kp_eproc.e_ucred.cr_uid;
+	gid = p.kp_eproc.e_pgid;
+
+	// find out user name with the process uid
+	struct passwd* pwent = getpwuid(uid);
+	userName = pwent ? pwent->pw_name : "????";
+	priority = p.kp_proc.p_priority - PZERO;
+
+	// this isn't usertime -- it total time (??)
+#if __FreeBSD_version >= 300000
+	userTime = p.kp_proc.p_runtime / 10000;
+#else
+	userTime = p.kp_proc.p_rtime.tv_sec*100+p.kp_proc.p_rtime.tv_usec/10000;
+#endif
+	sysTime = 0;
+	userLoad = p.kp_proc.p_pctcpu / 100;
+	sysLoad = 0;
+
+	// memory
+	vm_size =  (p.kp_eproc.e_vm.vm_tsize +
+                    p.kp_eproc.e_vm.vm_dsize +
+                    p.kp_eproc.e_vm.vm_ssize) * getpagesize();
+	vm_rss = p.kp_eproc.e_vm.vm_rssize * getpagesize() / 1024;
+
+	statusTxt = p.kp_eproc.e_wmesg; // i18n() this FIXME
+
+	return (true);
+}
+
+#else
+OSProcess::OSProcess(const char* pidStr, TimeStampList* lastTStamps,
+                                         TimeStampList* newTStamps)
+{
+}
+
+OSProcess::OSProcess(int pid_)
+{
+}
+
+bool
+OSProcess::read(const char* pidStr)
+{
+}
 #endif
 
 /*

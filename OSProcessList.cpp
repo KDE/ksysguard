@@ -206,6 +206,138 @@ OSProcessList::hasVmLib(void) const
 	return (false);
 }
 
+#elif __FreeBSD__
+/* Port to FreeBSD by Hans Petter Bieker <zerium@webindex.no>.
+ *
+ * Copyright 1999 Hans Petter Bieker <zerium@webindex.no>.
+ */
+
+#include <stdlib.h>
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#include <sys/user.h>
+
+OSProcessList::OSProcessList()
+{
+	error = false;
+
+	lastTStamps = NULL;
+
+	sortCriteria = SORTBY_PID;
+	setAutoDelete(true);
+}
+
+
+bool
+OSProcessList::update(void)
+{
+	// delete old process list
+	clear();
+
+	TimeStampList* newTStamps = new TimeStampList;
+	// If there is no old list yet, we create an empty one.
+	if (!lastTStamps)
+		lastTStamps = new TimeStampList;
+
+        int mib[3];
+        size_t len;
+        struct kinfo_proc *p;
+
+        mib[0] = CTL_KERN;
+        mib[1] = KERN_PROC;
+        mib[2] = KERN_PROC_ALL;
+	sysctl(mib, 3, NULL, &len, NULL, 0);
+
+        p = (struct kinfo_proc *)malloc(len);
+	sysctl(mib, 3, p, &len, NULL, 0);
+
+	int num;
+	for (num = len / sizeof(struct kinfo_proc) - 1; num > -1; num--) {
+		if ( p[num].kp_proc.p_pid == 0) continue;
+
+		QString pids;
+		pids.sprintf("%d", p[num].kp_proc.p_pid);
+		OSProcess* ps = new OSProcess(pids, lastTStamps, newTStamps);
+
+		// insert process into sorted list
+		inSort(ps);
+	}
+	
+	// make new list old one and discard the really old one
+	delete lastTStamps;
+	lastTStamps = newTStamps;
+
+	return (true);
+}
+
+bool 
+OSProcessList::hasName(void) const
+{
+	return (true);
+}
+
+bool 
+OSProcessList::hasUid(void) const
+{
+	return (true);
+}
+
+bool 
+OSProcessList::hasUserTime(void) const
+{
+	return (true);
+}
+
+bool
+OSProcessList::hasSysTime(void) const
+{
+	return (true);
+}
+
+bool 
+OSProcessList::hasUserLoad(void) const
+{
+	return (true);
+}
+
+bool
+OSProcessList::hasSysLoad(void) const
+{
+	return (true);
+}
+
+bool
+OSProcessList::hasStatus(void) const
+{
+	return (true);
+}
+
+bool
+OSProcessList::hasPriority(void) const
+{
+	return (true);
+}
+
+bool 
+OSProcessList::hasVmSize(void) const
+{
+	return (true);
+}
+
+bool
+OSProcessList::hasVmRss(void) const
+{
+	return (true);
+}
+
+bool 
+OSProcessList::hasVmLib(void) const
+{
+	// FreeBSD doesn't support this!??!
+	return (false);
+}
+
+
 #else
 
 OSProcessList::OSProcessList()

@@ -267,6 +267,39 @@ OSStatus::getSwapInfo(int& stotal, int& sfree)
 	return (true);
 }
 
+#elif __FreeBSD__
+/* Port to FreeBSD by Hans Petter Bieker <zerium@webindex.no>.
+ *
+ * Copyright 1999 Hans Petter Bieker <zerium@webindex.no>.
+ */
+
+OSStatus::OSStatus()
+{
+	error = false;
+}
+
+OSStatus::~OSStatus ()
+{
+}
+
+bool
+OSStatus::getCpuLoad(int &, int &, int &, int &)
+{
+	return (true);
+}
+
+bool
+OSStatus::getMemoryInfo(int &, int &, int &, int &, int &)
+{
+	return (true);
+}
+
+bool
+OSStatus::getSwapInfo(int &, int &)
+{
+	return (true);
+}
+
 #else
 
 OSStatus::OSStatus()
