@@ -119,7 +119,7 @@ TopLevel::TopLevel( const char *name )
   new KAction( i18n( "&Worksheet Properties" ), "configure", 0, mWorkSpace,
                SLOT( configure() ), actionCollection(), "configure_sheet" );
 
-  new KAction( i18n( "Load standard sheets" ), "revert",
+  new KAction( i18n( "Load Standard Sheets" ), "revert",
                0, this, SLOT( resetWorkSheets() ),
                actionCollection(), "file_revert"  );
 
