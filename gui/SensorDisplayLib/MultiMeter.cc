@@ -30,7 +30,7 @@
 
 #include <kdebug.h>
 
-#include <ksgrd/ColorPicker.h>
+//#include <ksgrd/ColorPicker.h>
 #include <ksgrd/SensorManager.h>
 #include <ksgrd/StyleEngine.h>
 

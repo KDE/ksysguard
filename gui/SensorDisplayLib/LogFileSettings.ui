@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>LogFileSettings</class>
 <author>Tobias Koenig &lt;tokoe@kde.org&gt;</author>
 <widget class="QDialog">
@@ -70,41 +70,67 @@
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
-                            <widget class="ColorPicker">
+                            <widget class="QLayoutWidget">
                                 <property name="name">
-                                    <cstring>fgColor</cstring>
+                                    <cstring>layout6</cstring>
                                 </property>
-                                <property name="minimumSize">
-                                    <size>
-                                        <width>16</width>
-                                        <height>24</height>
-                                    </size>
-                                </property>
-                                <property name="color" stdset="0">
-                                    <color>
-                                        <red>0</red>
-                                        <green>0</green>
-                                        <blue>0</blue>
-                                    </color>
-                                </property>
-                            </widget>
-                            <widget class="ColorPicker">
-                                <property name="name">
-                                    <cstring>bgColor</cstring>
-                                </property>
-                                <property name="minimumSize">
-                                    <size>
-                                        <width>16</width>
-                                        <height>24</height>
-                                    </size>
-                                </property>
-                                <property name="color" stdset="0">
-                                    <color>
-                                        <red>0</red>
-                                        <green>0</green>
-                                        <blue>0</blue>
-                                    </color>
-                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLayoutWidget">
+                                        <property name="name">
+                                            <cstring>layout5</cstring>
+                                        </property>
+                                        <vbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <widget class="QLabel">
+                                                <property name="name">
+                                                    <cstring>textLabel1</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Foreground Color:</string>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel">
+                                                <property name="name">
+                                                    <cstring>textLabel2</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Background Color:</string>
+                                                </property>
+                                            </widget>
+                                        </vbox>
+                                    </widget>
+                                    <widget class="QLayoutWidget">
+                                        <property name="name">
+                                            <cstring>layout4</cstring>
+                                        </property>
+                                        <vbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <widget class="KColorButton">
+                                                <property name="name">
+                                                    <cstring>fgColor</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string></string>
+                                                </property>
+                                            </widget>
+                                            <widget class="KColorButton">
+                                                <property name="name">
+                                                    <cstring>bgColor</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string></string>
+                                                </property>
+                                            </widget>
+                                        </vbox>
+                                    </widget>
+                                </hbox>
                             </widget>
                             <spacer>
                                 <property name="name">
@@ -115,6 +141,12 @@
                                 </property>
                                 <property name="sizeType">
                                     <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>16</height>
+                                    </size>
                                 </property>
                             </spacer>
                         </vbox>
@@ -139,6 +171,12 @@
                                 </property>
                                 <property name="sizeType">
                                     <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
                                 </property>
                             </spacer>
                             <widget class="QPushButton">
@@ -226,6 +264,12 @@
                                 <property name="sizeType">
                                     <enum>Expanding</enum>
                                 </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>20</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
                             </spacer>
                         </vbox>
                     </widget>
@@ -269,6 +313,12 @@
                     <property name="sizeType">
                         <enum>Expanding</enum>
                     </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
                 </spacer>
                 <widget class="QPushButton">
                     <property name="name">
@@ -282,31 +332,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-    <customwidget>
-        <class>ColorPicker</class>
-        <header location="global">ksgrd/ColorPicker.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>-1</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-        <property type="Color">color</property>
-        <property type="String">text</property>
-    </customwidget>
-</customwidgets>
-<images>
-    <image name="image0">
-        <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1be245fc04c5a3201e4615f430059d0711ff5ddb2e6bb236ec90eed134cb5a19d8ef36602af5ecdbfeeac05dda0798d3abebde87e3faa374d3807fa0d633a52d38d8de6f679fe33fc776e196f53cd010188256a3600a292882096246517815ca99884606e18044a3a40d91824820924265a7923a2e8bcd05f33db1173e002913175f2a6be6d3294871a2d95fa00e8a94ee017b69d339d90df1e77c57ea072ede6758</data>
-    </image>
-</images>
 <tabstops>
     <tabstop>okButton</tabstop>
     <tabstop>applyButton</tabstop>

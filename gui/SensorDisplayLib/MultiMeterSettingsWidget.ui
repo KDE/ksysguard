@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>MultiMeterSettingsWidget</class>
 <comment>MultiMeterSettingsWidget</comment>
 <widget class="QWidget">
@@ -10,8 +10,11 @@
             <x>0</x>
             <y>0</y>
             <width>378</width>
-            <height>228</height>
+            <height>229</height>
         </rect>
+    </property>
+    <property name="caption">
+        <string>MultiMeterSettingsWidget</string>
     </property>
     <vbox>
         <property name="name">
@@ -205,70 +208,101 @@
                 <attribute name="title">
                     <string>Colors</string>
                 </attribute>
-                <grid>
+                <hbox>
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
-                    <widget class="ColorPicker" row="0" column="0">
+                    <widget class="QLayoutWidget">
                         <property name="name">
-                            <cstring>m_normalDigitColor</cstring>
+                            <cstring>layout1</cstring>
                         </property>
-                        <property name="minimumSize">
-                            <size>
-                                <width>0</width>
-                                <height>0</height>
-                            </size>
-                        </property>
-                        <property name="color" stdset="0">
-                            <color>
-                                <red>0</red>
-                                <green>255</green>
-                                <blue>0</blue>
-                            </color>
-                        </property>
-                        <property name="text" stdset="0">
-                            <string>Normal digit color:</string>
-                        </property>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>textLabel1</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Normal digit color:</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>textLabel2</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Alarm digit color:</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>textLabel3</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Background color:</string>
+                                </property>
+                            </widget>
+                        </vbox>
                     </widget>
-                    <widget class="ColorPicker" row="2" column="0">
+                    <widget class="QLayoutWidget">
                         <property name="name">
-                            <cstring>m_backgroundColor</cstring>
+                            <cstring>layout2</cstring>
                         </property>
-                        <property name="color" stdset="0">
-                            <color>
-                                <red>0</red>
-                                <green>0</green>
-                                <blue>0</blue>
-                            </color>
-                        </property>
-                        <property name="text" stdset="0">
-                            <string>Background color:</string>
-                        </property>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="KColorButton">
+                                <property name="name">
+                                    <cstring>m_normalDigitColor</cstring>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                                <property name="color">
+                                    <color>
+                                        <red>0</red>
+                                        <green>255</green>
+                                        <blue>0</blue>
+                                    </color>
+                                </property>
+                            </widget>
+                            <widget class="KColorButton">
+                                <property name="name">
+                                    <cstring>m_alarmDigitColor</cstring>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                                <property name="color">
+                                    <color>
+                                        <red>255</red>
+                                        <green>0</green>
+                                        <blue>0</blue>
+                                    </color>
+                                </property>
+                            </widget>
+                            <widget class="KColorButton">
+                                <property name="name">
+                                    <cstring>m_backgroundColor</cstring>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                            </widget>
+                        </vbox>
                     </widget>
-                    <widget class="ColorPicker" row="1" column="0">
-                        <property name="name">
-                            <cstring>m_alarmDigitColor</cstring>
-                        </property>
-                        <property name="color" stdset="0">
-                            <color>
-                                <red>255</red>
-                                <green>0</green>
-                                <blue>0</blue>
-                            </color>
-                        </property>
-                        <property name="text" stdset="0">
-                            <string>Alarm digit color:</string>
-                        </property>
-                    </widget>
-                </grid>
+                </hbox>
             </widget>
         </widget>
     </vbox>
 </widget>
 <customwidgets>
     <customwidget>
-        <class>ColorPicker</class>
-        <header location="local">ksgrd/ColorPicker.h</header>
+        <class>KColorButton</class>
+        <header location="local">kcolorbutton.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>
@@ -281,13 +315,105 @@
             <verstretch>0</verstretch>
         </sizepolicy>
         <pixmap>image0</pixmap>
-        <property type="Color">color</property>
+        <signal>destroyed()</signal>
+        <signal>destroyed(QObject*)</signal>
+        <signal>pressed()</signal>
+        <signal>released()</signal>
+        <signal>clicked()</signal>
+        <signal>toggled(bool)</signal>
+        <signal>stateChanged(int)</signal>
+        <signal>changed(const QColor&amp;)</signal>
+        <slot access="public" specifier="">deleteLater()</slot>
+        <slot access="private" specifier="">cleanupEventFilter(QObject*)</slot>
+        <slot access="public" specifier="">setEnabled(bool)</slot>
+        <slot access="public" specifier="">setDisabled(bool)</slot>
+        <slot access="public" specifier="">setCaption(const QString&amp;)</slot>
+        <slot access="public" specifier="">setIcon(const QPixmap&amp;)</slot>
+        <slot access="public" specifier="">setIconText(const QString&amp;)</slot>
+        <slot access="public" specifier="">setMouseTracking(bool)</slot>
+        <slot access="public" specifier="">setFocus()</slot>
+        <slot access="public" specifier="">clearFocus()</slot>
+        <slot access="public" specifier="">setUpdatesEnabled(bool)</slot>
+        <slot access="public" specifier="">update()</slot>
+        <slot access="public" specifier="">update(int,int,int,int)</slot>
+        <slot access="public" specifier="">update(const QRect&amp;)</slot>
+        <slot access="public" specifier="">repaint()</slot>
+        <slot access="public" specifier="">repaint(bool)</slot>
+        <slot access="public" specifier="">repaint(int,int,int,int)</slot>
+        <slot access="public" specifier="">repaint(int,int,int,int,bool)</slot>
+        <slot access="public" specifier="">repaint(const QRect&amp;)</slot>
+        <slot access="public" specifier="">repaint(const QRect&amp;,bool)</slot>
+        <slot access="public" specifier="">repaint(const QRegion&amp;)</slot>
+        <slot access="public" specifier="">repaint(const QRegion&amp;,bool)</slot>
+        <slot access="public" specifier="">show()</slot>
+        <slot access="public" specifier="">hide()</slot>
+        <slot access="public" specifier="">setShown(bool)</slot>
+        <slot access="public" specifier="">setHidden(bool)</slot>
+        <slot access="public" specifier="">iconify()</slot>
+        <slot access="public" specifier="">showMinimized()</slot>
+        <slot access="public" specifier="">showMaximized()</slot>
+        <slot access="public" specifier="">showFullScreen()</slot>
+        <slot access="public" specifier="">showNormal()</slot>
+        <slot access="public" specifier="">polish()</slot>
+        <slot access="public" specifier="">constPolish()</slot>
+        <slot access="public" specifier="">close()</slot>
+        <slot access="public" specifier="">raise()</slot>
+        <slot access="public" specifier="">lower()</slot>
+        <slot access="public" specifier="">stackUnder(QWidget*)</slot>
+        <slot access="public" specifier="">move(int,int)</slot>
+        <slot access="public" specifier="">move(const QPoint&amp;)</slot>
+        <slot access="public" specifier="">resize(int,int)</slot>
+        <slot access="public" specifier="">resize(const QSize&amp;)</slot>
+        <slot access="public" specifier="">setGeometry(int,int,int,int)</slot>
+        <slot access="public" specifier="">setGeometry(const QRect&amp;)</slot>
+        <slot access="public" specifier="">adjustSize()</slot>
+        <slot access="private" specifier="">focusProxyDestroyed()</slot>
+        <slot access="public" specifier="">animateClick()</slot>
+        <slot access="public" specifier="">toggle()</slot>
+        <slot access="private" specifier="">animateTimeout()</slot>
+        <slot access="private" specifier="">autoRepeatTimeout()</slot>
+        <slot access="private" specifier="">emulateClick()</slot>
+        <slot access="public" specifier="">setOn(bool)</slot>
+        <slot access="private" specifier="">popupPressed()</slot>
+        <slot access="protected" specifier="">chooseColor()</slot>
+        <property type="CString">name</property>
+        <property type="Bool">enabled</property>
+        <property type="Rect">geometry</property>
+        <property type="SizePolicy">sizePolicy</property>
+        <property type="Size">minimumSize</property>
+        <property type="Size">maximumSize</property>
+        <property type="Size">sizeIncrement</property>
+        <property type="Size">baseSize</property>
+        <property type="Color">paletteForegroundColor</property>
+        <property type="Color">paletteBackgroundColor</property>
+        <property type="Pixmap">paletteBackgroundPixmap</property>
+        <property type="Palette">palette</property>
+        <property type="BackgroundOrigin">backgroundOrigin</property>
+        <property type="Font">font</property>
+        <property type="Cursor">cursor</property>
+        <property type="String">caption</property>
+        <property type="Pixmap">icon</property>
+        <property type="String">iconText</property>
+        <property type="Bool">mouseTracking</property>
+        <property type="FocusPolicy">focusPolicy</property>
+        <property type="Bool">acceptDrops</property>
         <property type="String">text</property>
+        <property type="Pixmap">pixmap</property>
+        <property type="KeySequence">accel</property>
+        <property type="Bool">autoRepeat</property>
+        <property type="Bool">autoDefault</property>
+        <property type="Bool">default</property>
+        <property type="IconSet">iconSet</property>
+        <property type="Bool">toggleButton</property>
+        <property type="Bool">on</property>
+        <property type="Bool">flat</property>
+        <property type="Bool">autoMask</property>
+        <property type="Color">color</property>
     </customwidget>
 </customwidgets>
 <images>
     <image name="image0">
-        <data format="XPM.GZ" length="646">789c6dd2c10ac2300c00d07bbf2234b7229d1be245fc04c5a3201e4615f430059d0711ff5ddb2e6bb236ec90eed134cb5a19d8ef36602af5ecdbfeeac05dda0798d3abebde87e3faa374d3807fa0d633a52d38d8de6f679fe33fc776e196f53cd010188256a3600a292882096246517815ca99884606e18044a3a40d91824820924265a7923a2e8bcd05f33db1173e002913175f2a6be6d3294871a2d95fa00e8a94ee017b69d339d90df1e77c57ea072ede6758</data>
+        <data format="PNG" length="827">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000030249444154789cad953188db6614c77f0e1a9ee0029fc10509ae20c30de7d1852e4733f846d30c2e74483aa5812ea54bba35590a693a640e1d0e0e0ae16e282443e1321cd499eca5d4072951e10af26090e00ef40d013d88411d3ed967f91228e4de22f4e97dbff7d7ff7b7a6a9465c9221a8d0657116559d258801ffcf080ce76076b6d996629f99bfc7f41acb524a709e33fc73067a9cc5b287dfaeb53c28f294dbb2042d1b9228b0ccf25fbd5b598afec9ec33401dd13262fb50407f7562a97a65d90d923f23c0114df578ab7423613f2730584660bda6d453640ab02721dc210262b6fb204a7594a8456508bef0baf5f1986bf5be2130b68952944dbc2eec0b0d303e66e5da46ed1129cbfc9d1b92ea1a3211cfc92b94d1b427bdb201ea43365fa8fb2ff73463635dcbe232b45df01765ac0f7e1f52ba9a04aeff380fe40687e0488a21a327a5170b097717498110411fd2f9b80ad81afad9729de0ac3e77609fdea1ba1195a104b7e26fcf13ca73ff0f9fabb00109e1d5aecf9bac4f55b0fb29910ff6d31c6d01f0878163c506bd87facc42796fc0ceede6b323e76b971ec6c7abf62a84e5f09a3eaf52be89347ee104d4bf8e48620a6a0d37527964eb532f23d60d7a72e41c4799aa786278f94f8c4151481f6a6ef9e7b0b985cb2e292e266cb25263345b5c9f8254ea91182c090cd2c0fefa7c49326e9a9eb8630f2d731f53ac5dc357fb4254cff55462f0afab77cf233c3ce0d21dcf479781fb2a9e5a76f135415d312badd8274566fb94b8a6503fa0303c0c15ec6e8b8e0eebd26dd1e44dd9cef7f6c630283b5169d2bbb838070eb92e07567dc67bad3836c66787698b1ff38637c2c743a0202e9698a9eeb72e75f434b723344bcfa87b23a2b2ee0285fdc114c1071f49beb86f8e4a2b86909fd41c46868b1aaa882b5752b96e0e434619a00d72fe0fd81b0d30b8963433a75ebe1a64ff7d382700b766f864ea497134feae04659966ec07b94ddcf8430ac5a6dce7264caa20d6bc629e209d6423c51d24cb16eb434ea6017251f16f541ffae071f1ad7c0fda3ae3a967d7c95f0b22cf90f71e859c3d57176e60000000049454e44ae426082</data>
     </image>
 </images>
 <connections>
@@ -347,8 +473,6 @@
 <layoutdefaults spacing="6" margin="11"/>
 <layoutfunctions spacing="KDialog::spacingHint" margin="KDialog::marginHint"/>
 <includehints>
-    <includehint>colorpicker.h</includehint>
-    <includehint>colorpicker.h</includehint>
-    <includehint>colorpicker.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
 </includehints>
 </UI>

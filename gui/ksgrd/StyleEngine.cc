@@ -28,7 +28,6 @@
 #include <kconfig.h>
 #include <klocale.h>
 
-#include "ColorPicker.h"
 #include "StyleSettings.h"
 
 #include "StyleEngine.h"

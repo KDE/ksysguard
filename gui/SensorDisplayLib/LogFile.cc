@@ -30,8 +30,8 @@
 #include <kfontdialog.h>
 #include <kdebug.h>
 #include <klocale.h>
+#include <kcolorbutton.h>
 
-#include <ksgrd/ColorPicker.h>
 #include <ksgrd/StyleEngine.h>
 
 #include "LogFile.moc"
