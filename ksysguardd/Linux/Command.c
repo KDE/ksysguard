@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#inlcude <string.h>
 
 #include "ccont.h"
 #include "Command.h"
