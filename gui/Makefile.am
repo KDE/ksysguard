@@ -59,6 +59,6 @@ EXTRA_DIST = $(lnk_DATA)
 # just to make sure, automake makes them 
 METASOURCES = AUTO
 
-messages: rc.cpp
-	$(EXTRACTRC) ksgrd/*.ui >> rc.cpp
-	$(XGETTEXT) ksgrd/*.cc *.cpp *.cc -o $(podir)/ksysguard.pot
+messages: 
+	$(EXTRACTRC) `find . -name "*.ui"` > rc.cpp
+	$(XGETTEXT) `find . -name "*.cpp" -o -name "*.cc"` -o $(podir)/ksysguard.pot
