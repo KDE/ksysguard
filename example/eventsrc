@@ -1,6 +1,7 @@
 [!Global!]
 IconName=ksysguard
 Comment=KDE System Guard
+Comment[af]=kde stelsel wag
 Comment[az]=KDE Sistem Cangüdəni
 Comment[bg]=Cистемен монитор на KDE
 Comment[cs]=Kontrola systému pro prostředí KDE
@@ -39,6 +40,7 @@ Comment[zh_CN.GB2312]=KDE 系统卫士
 
 [pattern_match]
 Name=pattern_match
+Name[af]=patroon_ooreenstem
 Name[az]=uyğun_naxış
 Name[bg]=образец за съвпадение
 Name[da]=mønster_tilpasning
@@ -58,6 +60,7 @@ Name[sl]=vzorec_zadetek
 Name[sv]=mönsterigenkänning
 Name[zh_CN.GB2312]=模式匹配
 Comment=search pattern matched
+Comment[af]=soektog patroon ooreengestem
 Comment[az]=axtarılan naxış uyğundur
 Comment[bg]=търси съвпадения в образец
 Comment[cs]=hledat odpovídající vzor
