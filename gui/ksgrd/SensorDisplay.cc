@@ -373,7 +373,7 @@ SensorDisplay::createFromDOM(QDomElement&)
 }
 
 bool
-SensorDisplay::addToDOM(QDomDocument&, QDomElement&, bool = true)
+SensorDisplay::addToDOM(QDomDocument&, QDomElement&, bool)
 {
 	// should never been used.
 	return (false);
