@@ -28,6 +28,8 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 
+#include <kdebug.h>
+
 #include "SignalPlotter.moc"
 
 static inline int
@@ -137,7 +139,7 @@ SignalPlotter::changeRange(int beam, long min, long max)
 {
 	if (beam < 0 || beam >= MAXBEAMS)
 	{
-		qDebug("SignalPlotter::changeRange: beam index out of range");
+		kdDebug() << "SignalPlotter::changeRange: beam index out of range" << endl;
 		return;
 	}
 

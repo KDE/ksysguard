@@ -30,6 +30,7 @@
 #include <kprocess.h>
 #include <kpassdlg.h> 
 #include <kmessagebox.h>
+#include <kdebug.h>
 
 #include "SensorManager.h"
 #include "SensorAgent.h"
@@ -117,7 +118,7 @@ SensorAgent::start(const QString& host_, const QString& shell_,
 	if (!daemon->start(KProcess::NotifyOnExit, KProcess::All))
 	{
 		sensorManager->hostLost(this);
-		qDebug("Command \'%s\' failed", cmd.latin1());
+		kdDebug () << "Command '" << cmd << "' failed"  << endl;
 		return (false);
 	}
 
@@ -144,7 +145,7 @@ SensorAgent::msgSent(KProcess*)
 {
 	if (pwSent)
 	{
-		qDebug("Password sent");
+		kdDebug () << "Password sent" << endl;
 		pwSent = false;
 		return;
 	}
@@ -187,14 +188,14 @@ SensorAgent::msgRcvd(KProcess*, char* buffer, int buflen)
 			SensorRequest* req = processingFIFO.last();
 			if (!req)
 			{
-				qDebug("ERROR: Received answer but have no pending request!");
+				kdDebug() << "ERROR: Received answer but have no pending request!" << endl;
 				return;
 			}
 			processingFIFO.removeLast();
 			
 			if (!req->client)
 			{
-				qDebug("ERROR: No client registered for request!");
+				kdDebug () << "ERROR: No client registered for request!" << endl;
 				return;
 			}
 			// Notify client of newly arrived answer.
@@ -211,7 +212,7 @@ void
 SensorAgent::errMsgRcvd(KProcess*, char* buffer, int buflen)
 {
 	QString errorBuffer = QString::fromLocal8Bit(buffer, buflen);
-	qDebug("ERR: %s", errorBuffer.latin1());
+	kdDebug () << "ERR: " << errorBuffer << endl;
 
 	if (errorBuffer.find("assword: ") > 0)
 	{
@@ -244,7 +245,7 @@ void
 SensorAgent::daemonExited(KProcess*)
 {
 	daemonOnLine = false;
-	qDebug("ksysguardd exited");
+	kdDebug () << "ksysguardd exited" << endl;
 	sensorManager->hostLost(this);
 	sensorManager->disengage(this);
 }

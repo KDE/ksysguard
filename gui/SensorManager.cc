@@ -26,6 +26,7 @@
 
 #include <kapp.h>
 #include <klocale.h>
+#include <kdebug.h>
 
 #include "ksysguard.h"
 #include "SensorManager.h"
@@ -108,7 +109,7 @@ SensorManager::resynchronize(const QString& hostname)
 	getHostInfo(hostname, shell, command);
 	disengage(hostname);
 
-	qDebug("Re-synchronizing connection to %s", hostname.latin1());
+	kdDebug () << "Re-synchronizing connection to " << hostname << endl;
 
 	return (engage(hostname, shell, command));
 }

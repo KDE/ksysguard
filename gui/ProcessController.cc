@@ -29,6 +29,7 @@
 #include <kapp.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kdebug.h>
 
 #include "ksysguard.h"
 #include "SensorManager.h"
@@ -193,8 +194,8 @@ ProcessController::answerReceived(int id, const QString& answer)
 		SensorTokenizer lines(answer, '\n');
 		if (lines.numberOfTokens() != 2)
 		{
-			qDebug("ProcessController::answerReceived(1)"
-				  "wrong number of lines [%s]", answer.latin1());
+			kdDebug () << "ProcessController::answerReceived(1)"
+				  "wrong number of lines [" <<  answer << "]" << endl;
 			return;
 		}
 		SensorTokenizer headers(lines[0], '\t');

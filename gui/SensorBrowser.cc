@@ -31,6 +31,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kiconloader.h>
+#include <kdebug.h>
 
 #include "SensorBrowser.h"
 #include "SensorManager.h"
@@ -109,7 +110,7 @@ SensorBrowser::disconnect()
 	for (; it.current(); ++it)
 		if ((*it)->getLVI()->isSelected())
 		{
-			qDebug("Disconnecting %s", (*it)->getHostName().ascii());
+			kdDebug() << "Disconnecting " <<  (*it)->getHostName().ascii() << endl;
 			SensorMgr->disengage((*it)->getSensorAgent());
 		}
 }

@@ -49,6 +49,7 @@
 #include <klocale.h>
 #include <kconfig.h>
 #include <kstddirs.h>
+#include <kdebug.h>
 
 #include "ProcessController.h"
 #include "SensorManager.h"
@@ -205,12 +206,11 @@ ProcessList::update(const QString& list)
 		SensorPSLine* line = new SensorPSLine(procs[i]);
 		if (line->numberOfTokens() != (uint) columns())
 		{
-			qDebug("%s", list.latin1());
-			qDebug("Incomplete ps line:");
+			kdDebug() << list << endl;
 			QString l;
 			for (uint j = 0; j < line->numberOfTokens(); j++)
 				l += (*line)[i] + "|";
-			qDebug("%s", l.latin1());
+			kdDebug() << "Incomplete ps line:" << l << endl;
 			return (FALSE);
 		}
 		else

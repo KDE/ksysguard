@@ -30,6 +30,7 @@
 #include <qpopupmenu.h>
 #include <kmessagebox.h>
 #include <klocale.h>
+#include <kdebug.h>
 
 #include "WorkSheet.h"
 #include "SensorManager.h"
@@ -152,7 +153,7 @@ WorkSheet::load(const QString& fN)
 		int column = element.attribute("column").toUInt();
 		if (row >= rows || column >= columns)
 		{
-			qDebug("Row or Column out of range (%d/%d)", row, column);
+			kdDebug () << "Row or Column out of range (" << row << ", " << column << ")" << endl;
 			return (FALSE);
 		}
 
@@ -166,7 +167,7 @@ WorkSheet::load(const QString& fN)
 			newDisplay = new ProcessController(this);
 		else
 		{
-			qDebug("Unkown class %s", classType.latin1());
+			kdDebug () << "Unkown class " <<  classType << endl;
 			return (FALSE);
 		}
 		CHECK_PTR(newDisplay);
@@ -294,7 +295,7 @@ WorkSheet::addDisplay(const QString& hostName, const QString& sensorName,
 			newDisplay = new ProcessController(this);
 		else
 		{
-			qDebug("Unkown sensor type: %s", sensorType.latin1());
+			kdDebug() << "Unkown sensor type: " <<  sensorType << endl;
 			return (0);
 		}
 		replaceDisplay(r, c, newDisplay);
