@@ -116,7 +116,7 @@ MemMon::MemMon(QWidget *parent, const char *name, QWidget *child)
     mib_usermem[1] = HW_USERMEM;
     sysctl(mib_usermem, 2, &usermem, &len, NULL, 0);
 
-    int tempsw = swapInfo(&sw_avail, &sw_free);
+    swapInfo(&sw_avail, &sw_free);
 
     mem_size = physmem / 1024 + sw_avail;
 
@@ -248,7 +248,7 @@ int MemMon::swapInfo(int *retavail, int *retfree)
             (perdev = (long *)malloc(nswdev * sizeof(*perdev))) == NULL)
             fprintf(stderr, "Fatal in MemMon::swapInfo - malloc failed\n");
 	KGET1(VM_SWDEVT, &ptr, sizeof(ptr), "swdevt");
-	KGET2(ptr, sw, nswdev * sizeof(*sw), "*swdevt");
+	KGET2(ptr, sw, (ssize_t)(nswdev * sizeof(*sw)), "*swdevt");
 
 	/* Count up swap space. */
 	nfree = 0;
@@ -382,8 +382,8 @@ void MemMon::timerEvent(QTimerEvent *)
 {
 #ifdef __FreeBSD__
 
-    u_long usermem;
-    int len = sizeof(usermem);
+    unsigned long usermem;
+    unsigned int len = sizeof(usermem);
     
     kvm_read(kvm, cnt_offset, &vmstat, sizeof(vmstat));
     kvm_read(kvm, buf_offset, &bufspace, sizeof(bufspace));
@@ -428,7 +428,6 @@ void MemMon::timerEvent(QTimerEvent *)
 #ifdef __FreeBSD__
 void MemMon::setTargetLabels(QLabel **labels)
 {
-    QLabel *temp;
     memstat_labels = labels;
 }
 #endif
