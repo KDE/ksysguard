@@ -60,9 +60,9 @@ kpm_SOURCES = kpm.c
 data_DATA = ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml
 
 # This stuff is now for the kicker applet
-kde_module_LTLIBRARIES = libksysguardapplet.la
+kde_module_LTLIBRARIES = sysguard_panelapplet.la
 
-libksysguardapplet_la_SOURCES = \
+sysguard_panelapplet_la_SOURCES = \
 	BarGraph.cc \
 	DancingBars.cc \
 	FancyPlotter.cc \
@@ -75,9 +75,9 @@ libksysguardapplet_la_SOURCES = \
 	KSysGuardAppletSettings.ui \
 	MultiMeterSettings.ui
 
-libksysguardapplet_la_METASOURCES = AUTO
-libksysguardapplet_la_LIBADD   = ksgrd/libksgrd.la $(LIB_KDEUI) $(LIB_KFILE)
-libksysguardapplet_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -module -no-undefined
+sysguard_panelapplet_la_METASOURCES = AUTO
+sysguard_panelapplet_la_LIBADD   = ksgrd/libksgrd.la $(LIB_KDEUI) $(LIB_KFILE)
+sysguard_panelapplet_la_LDFLAGS = $(all_libraries) -version-info 1:0:0 -module -no-undefined
 
 EXTRA_DIST = $(lnk_DATA)
 
