@@ -30,7 +30,7 @@
 #include <qevent.h>
 
 #include <kapp.h>
-#include <ktmainwindow.h>
+#include <kmainwindow.h>
 #include <kstatusbar.h>
 #include <dcopobject.h>
 
@@ -41,7 +41,7 @@ class SensorAgent;
 class SensorBrowser;
 class Workspace;
 
-class TopLevel : public KTMainWindow, public SensorClient, public DCOPObject
+class TopLevel : public KMainWindow, public SensorClient, public DCOPObject
 {
 	Q_OBJECT
 	K_DCOP

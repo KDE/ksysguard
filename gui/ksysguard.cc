@@ -34,7 +34,6 @@
 
 #include <qstringlist.h>
 
-#include <ktmainwindow.h>
 #include <kwinmodule.h>
 #include <kconfig.h>
 #include <klocale.h>
@@ -64,7 +63,7 @@ TopLevel* Toplevel;
  * TaskMan widget.
  */
 TopLevel::TopLevel(const char *name)
-	: KTMainWindow(name), DCOPObject("KSysGuardIface")
+	: KMainWindow(0, name), DCOPObject("KSysGuardIface")
 {
 	dontSaveSession = FALSE;
 
@@ -72,7 +71,7 @@ TopLevel::TopLevel(const char *name)
 	CHECK_PTR(splitter);
 	splitter->setOrientation(Horizontal);
 	splitter->setOpaqueResize(TRUE);
-	setView(splitter);
+	setCentralWidget(splitter);
 
 	sb = new SensorBrowser(splitter, SensorMgr, "SensorBrowser");
 	CHECK_PTR(sb);
@@ -90,8 +89,7 @@ TopLevel::TopLevel(const char *name)
 							   "8888888 kB free"), 1);
 	statusbar->insertFixedItem(i18n("Swap: 8888888 kB used, "
 							   "8888888 kB free"), 2);
-	setStatusBar(statusbar);
-	enableStatusBar(KStatusBar::Hide);
+	statusBar()->hide();
 
 	// call timerEvent to fill the status bar with real values
 	timerEvent(0);
@@ -196,7 +194,7 @@ TopLevel::beATaskManager()
 				w, h);
 
 	// No toolbar and status bar in taskmanager mode.
-	enableStatusBar(KStatusBar::Hide);
+	statusBar()->hide();
 	statusBarTog->setChecked(FALSE);
 
 	showMainToolBar(FALSE);
@@ -222,21 +220,19 @@ TopLevel::disconnectHost()
 void
 TopLevel::toggleMainToolBar()
 {
-	KToolBar *toolbar = static_cast<KToolBar *>(
-		child("mainToolBar", "KToolBar"));
-
-	if (!toolbar)
-		return;
-	if (toolbar->isVisible())
-		toolbar->hide();
+	if (toolbarTog->isChecked())
+		toolBar("mainToolBar")->enable(KToolBar::Show);
 	else
-		toolbar->show();
+		toolBar("mainToolBar")->enable(KToolBar::Hide);
 }
 
 void
 TopLevel::showStatusBar()
 {
-	enableStatusBar(KStatusBar::Toggle);
+	if (statusBarTog->isChecked())
+		statusBar()->show();
+	else
+		statusBar()->hide();
 }
 
 void
@@ -313,7 +309,7 @@ TopLevel::readProperties(KConfig* cfg)
 
 	if (!cfg->readNumEntry("StatusBarHidden", 1))
 	{
-		enableStatusBar(KStatusBar::Show);
+		statusBar()->show();
 		statusBarTog->setChecked(TRUE);
 	}
 		
@@ -385,16 +381,8 @@ TopLevel::answerReceived(int id, const QString& answer)
 void
 TopLevel::showMainToolBar(bool show)
 {
-	KToolBar *toolbar = static_cast<KToolBar *>(
-		child("mainToolBar", "KToolBar"));
-
-	if (!toolbar)
-		return;
-	if (show)
-		toolbar->show();
-	else
-		toolbar->hide();
 	toolbarTog->setChecked(show);
+	toggleMainToolBar();
 }
 
 static const KCmdLineOptions options[] =
