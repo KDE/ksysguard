@@ -26,6 +26,7 @@
 
 #include <qtimer.h>
 
+#include <kapplication.h>
 #include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -201,7 +202,7 @@ ProcessController::killProcess()
 		QString  msg = i18n("Do you want to kill the selected process?", 
 				"Do you want to kill the %n selected processes?", 
 				selectedPIds.count());
-		if (KMessageBox::warningYesNo(this, msg) != KMessageBox::Yes)
+		if (KMessageBox::warningContinueCancel(this, msg, kapp->makeStdCaption(i18n("Kill Process")), i18n("&Kill")) != KMessageBox::Continue)
 		{
 			return;
 		}
