@@ -112,6 +112,7 @@ Comment[nl]=Zoekpatroon komt overeen
 Comment[pt]=Padrão de pesquisa encontrado
 Comment[pt_BR]=Padrão de pesquisa encontrado
 Comment[sv]=Sökmönster igenkänt
+Comment[tr]=Eşleşen örüntüyü ara
 
 [sensor_alarm]
 Name=sensor_alarm
