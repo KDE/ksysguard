@@ -31,6 +31,7 @@
 #include <qpicture.h>
 #include <qevent.h>
 #include <qpainter.h>
+#include <qlabel.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,7 +44,6 @@
 #include <sys/rlist.h>
 #include <sys/conf.h>
 #include <vm/vm_param.h>
-#include <qlabel.h>
 #include <osreldate.h>        // important, catch kernel changes 2.2.x > 3.x.x
 #endif
 
