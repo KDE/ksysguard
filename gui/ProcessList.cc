@@ -180,12 +180,6 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	connect(parent, SIGNAL(setFilterMode(int)),
 			this, SLOT(setFilterMode(int)));
 
-	/* When a new process is selected to receive a signal from the
-	 * base class and repeat the signal to the menu. The menu keeps
-	 * track of the currently selected process. */
-	connect(this, SIGNAL(selectionChanged(QListViewItem *)),
-			SLOT(selectionChangedSlot(QListViewItem*)));
-
 	/* We need to catch this signal to show various popup menues. */
 	connect(this,
 			SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)),
@@ -801,9 +795,22 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 		setModified(true);
 		break;
 	default:
+		/* IDs < 100 are used for signals. */
 		if (id < 100)
 		{
-			/* IDs < 100 are used for signals. */
+			/* we go through list to get all task also
+			   when update interval is paused */
+			selectedPIds.clear();
+			QListViewItemIterator it(this);
+
+			// iterate through all items of the listview
+			for ( ; it.current(); ++it )
+			{
+				if (it.current()->isSelected()) {
+					selectedPIds.append(it.current()->text(1).toInt());
+				}
+			}
+
 			QString msg = i18n("Do you really want to send signal %1\n"
 							   "to the %2 selected process(es)?")
 				.arg(signalPM->text(id)).arg(selectedPIds.count());
@@ -838,7 +845,7 @@ ProcessList::selectAll(bool select)
 {
 	selectedPIds.clear();
 
-    QListViewItemIterator it(this);
+	QListViewItemIterator it(this);
 
 	// iterate through all items of the listview
 	for ( ; it.current(); ++it )
@@ -847,13 +854,13 @@ ProcessList::selectAll(bool select)
 		repaintItem(it.current());
 		if (select)
 			selectedPIds.append(it.current()->text(1).toInt());
-    }
+	}
 }
 
 void
 ProcessList::selectAllChilds(int pid, bool select)
 {
-    QListViewItemIterator it(this);
+	QListViewItemIterator it(this);
 
 	// iterate through all items of the listview
 	for ( ; it.current(); ++it )
@@ -870,5 +877,5 @@ ProcessList::selectAllChilds(int pid, bool select)
 				selectedPIds.remove(currPId);
 			selectAllChilds(currPId, select);
 		}
-    }
+	}
 }

@@ -242,16 +242,6 @@ private:
 	 */
 	void addProcess(SensorPSLine* p, ProcessLVI* pli);
 
-private slots:
-	void selectionChangedSlot(QListViewItem* lvi)
-	{
-		if (lvi)
-		{
-			QString pidStr = lvi->text(1);
-			emit(processSelected(pidStr.toInt()));
-		}
-	}
-
 private:
 	void selectAll(bool select);
 	void selectAllChilds(int pid, bool select);
@@ -289,7 +279,7 @@ private:
 
 	QDict<QPixmap> iconCache;
 
-    KIconLoader* icons;
+	KIconLoader* icons;
 	QPopupMenu* processPM;
 	QPopupMenu* headerPM;
 };
