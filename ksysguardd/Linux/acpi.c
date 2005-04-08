@@ -322,6 +322,5 @@ void printThermalZoneTemperature(const char *cmd) {
 
 void printThermalZoneTemperatureInfo(const char *cmd)
 {
-	int temperature = getCurrentTemperature(cmd);
-	fprintf(CurrentClient, "Current temperature: %d C\n", temperature);
+	fprintf(CurrentClient, "Current temperature\t0\t0\tC\n");
 }

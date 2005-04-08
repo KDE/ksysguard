@@ -91,6 +91,8 @@ SensorManager::SensorManager()
   mDict.insert( "list", new QString( i18n( "Table" ) ) );
   mDict.insert( "apm", new QString( i18n( "Advanced Power Management" ) ) );
   mDict.insert( "acpi", new QString( i18n( "ACPI" ) ) );
+  mDict.insert( "thermal_zone", new QString( i18n( "Thermal Zone" ) ) );
+  mDict.insert( "temperature", new QString( i18n( "Temperature" ) ) );
   mDict.insert( "battery", new QString( i18n( "Battery" ) ) );
   mDict.insert( "batterycharge", new QString( i18n( "Battery Charge" ) ) );
   mDict.insert( "batteryusage", new QString( i18n( "Battery Usage" ) ) );
