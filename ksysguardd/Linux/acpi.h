@@ -32,13 +32,14 @@ void printAcpiBatFillInfo( const char* );
 void printAcpiBatUsage( const char* );
 void printAcpiBatUsageInfo( const char* );
 
-/**
- * Returns number of detected thermal zones,
- * 0 if none, -1 if no thermal zone module.
- */
 void initAcpiThermal( struct SensorModul * );
 int updateAcpiThermal(void);
 void printThermalZoneTemperature(const char *cmd);
 void printThermalZoneTemperatureInfo(const char *cmd);
+
+void initAcpiFan( struct SensorModul * );
+int updateAcpiFan(void);
+void printFanState(const char *cmd);
+void printFanStateInfo(const char *cmd);
 
 #endif

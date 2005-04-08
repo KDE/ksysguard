@@ -42,6 +42,7 @@ static int AcpiBatteryCharge[ ACPIBATTERYNUMMAX ];
 static int AcpiBatteryUsage[ ACPIBATTERYNUMMAX ];
 
 static int AcpiThermalZones = -1;
+static int AcpiFans = -1;
 /*
 ================================ public part =================================
 */
@@ -49,24 +50,22 @@ static int AcpiThermalZones = -1;
 void initAcpi(struct SensorModul* sm)
 {
 	initAcpiBattery(sm);
+	initAcpiFan(sm);
 	initAcpiThermal(sm);
 }
 
 int updateAcpi( void )
 {
-	if (AcpiBatteryNum > 0) {
-		updateAcpiBattery();
-	}
-	if (AcpiThermalZones > 0) {
-		updateAcpiThermal();
-	}
-
+	if (AcpiBatteryNum > 0) updateAcpiBattery();
+	if (AcpiFans > 0) updateAcpiFan();
+	if (AcpiThermalZones > 0) updateAcpiThermal();
 	return 0;
 }
 
 void exitAcpi( void )
 {
   AcpiBatteryNum = -1;
+  AcpiFans = -1;
   AcpiThermalZones = -1;
 }
 
@@ -324,3 +323,96 @@ void printThermalZoneTemperatureInfo(const char *cmd)
 {
 	fprintf(CurrentClient, "Current temperature\t0\t0\tC\n");
 }
+
+/********** ACPI Fan State***************/
+
+#define FAN_DIR "/proc/acpi/fan"
+#define FAN_STATE_FILE "state"
+#define FAN_STATE_FILE_MAXLEN 255
+
+void initAcpiFan(struct SensorModul *sm)
+{
+
+  char th_ref[ ACPIFILENAMELENGTHMAX ];
+  DIR *d = NULL;
+  struct dirent *de;
+
+  d = opendir(FAN_DIR);
+  if (d == NULL) {
+/*	  print_error( "Directory \'" THERMAL_ZONE_DIR
+		"\' does not exist or is not readable.\n"
+	  "Load the ACPI thermal kernel module or compile it into your kernel.\n" );
+*/
+	  AcpiFans = -1;
+	  return;
+  }
+
+  AcpiFans = 0;
+  while ( (de = readdir(d)) != NULL ) {
+	  if ( ( strcmp( de->d_name, "." ) == 0 )
+			  || ( strcmp( de->d_name, ".." ) == 0 ) ) {
+		  continue;
+	  }
+
+	  AcpiFans++;
+	  snprintf(th_ref, sizeof(th_ref), 
+			  "acpi/fan/%s/state", de->d_name);
+	  registerMonitor(th_ref, "integer", printFanState,
+			  printFanStateInfo, sm);
+  }
+
+  return;
+}
+
+int updateAcpiFan()
+{
+	/* TODO: stub */
+	return 0;
+}
+
+static int getFanState(const char *cmd)
+{
+	char fan_state_file[ ACPIFILENAMELENGTHMAX ];
+	char input_buf[ FAN_STATE_FILE_MAXLEN ];
+	char *fan_name = NULL;
+	int read_bytes = 0, fd = 0, len_fan_name = 0;
+	char fan_state[4];
+
+	len_fan_name = extract_zone_name(&fan_name, cmd);
+	if (len_fan_name <= 0) return -1;
+
+	snprintf(fan_state_file, sizeof(fan_state_file),
+			FAN_DIR "/%.*s/" FAN_STATE_FILE,
+			len_fan_name, fan_name);
+
+	fd = open(fan_state_file, O_RDONLY);
+	if (fd < 0) {
+		print_error( "Cannot open file \'%s\'!\n"
+		"Load the fan ACPI kernel module or\n"
+		"compile it into your kernel.\n", fan_state_file );
+      return -1;
+	}
+
+	read_bytes = read( fd, input_buf, sizeof(input_buf) - 1 );
+    if ( read_bytes == sizeof(input_buf) - 1 ) {
+      log_error( "Internal buffer too small to read \'%s\'", fan_state_file );
+      close( fd );
+      return -1;
+    }
+	close(fd);
+
+	sscanf(input_buf, "status: %2s", fan_state);
+	return (fan_state[1] == 'n') ? 1 : 0;
+}
+
+void printFanState(const char *cmd) {
+	int fan_state = getFanState(cmd);
+	fprintf(CurrentClient, "%d\n", fan_state);
+}
+
+void printFanStateInfo(const char *cmd)
+{
+	fprintf(CurrentClient, "Fan status\t0\t1\tboolean\n");
+}
+
+

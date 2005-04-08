@@ -93,6 +93,8 @@ SensorManager::SensorManager()
   mDict.insert( "acpi", new QString( i18n( "ACPI" ) ) );
   mDict.insert( "thermal_zone", new QString( i18n( "Thermal Zone" ) ) );
   mDict.insert( "temperature", new QString( i18n( "Temperature" ) ) );
+  mDict.insert( "fan", new QString( i18n( "Fan" ) ) );
+  mDict.insert( "state", new QString( i18n( "State" ) ) );
   mDict.insert( "battery", new QString( i18n( "Battery" ) ) );
   mDict.insert( "batterycharge", new QString( i18n( "Battery Charge" ) ) );
   mDict.insert( "batteryusage", new QString( i18n( "Battery Usage" ) ) );
