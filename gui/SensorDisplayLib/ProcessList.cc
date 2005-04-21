@@ -243,7 +243,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	setAllColumnsShowFocus(true);
 	setTreeStepSize(17);
 	setSorting(sortColumn, increasing);
-	setSelectionMode(Multi);
+	setSelectionMode(Extended);
 
 	// Create popup menu for RMB clicks on table header
 	headerPM = new QPopupMenu();
@@ -821,7 +821,7 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 		break;
 	case 1:
 	case 2:
-		selectAll(id & 1);
+		selectAllItems(id & 1);
 		break;
 	case 3:
 	case 4:
@@ -893,7 +893,7 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 }
 
 void
-ProcessList::selectAll(bool select)
+ProcessList::selectAllItems(bool select)
 {
 	selectedPIds.clear();
 

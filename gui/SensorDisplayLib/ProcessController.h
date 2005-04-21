@@ -58,11 +58,6 @@ public:
 
 	void resizeEvent(QResizeEvent*);
 
-	void clearSelection(void)
-	{
-		pList->clearSelection();
-	}
-
 	bool restoreSettings(QDomElement& element);
 
 	bool saveSettings(QDomDocument& doc, QDomElement& element, bool save = true);

@@ -100,16 +100,6 @@ public:
 		return increasing;
 	}
 
-	/**
-	 * This function clears the current selection and sends out a signal.
-	 */
-	void clearSelection()
-	{
-		if (currentItem())
-			setSelected(currentItem(), false);
-		emit(processSelected(-1));
-	}
-
 	const QValueList<int>& getSelectedPIds();
 
 	/**
@@ -171,9 +161,6 @@ public slots:
 	}
 
 signals:
-	// This signal is emitted whenever a new process has been selected.
-	void processSelected(int);
-
 	// This signal is emitted when process pid should receive signal sig.
 	void killProcess(int pid, int sig);
 
@@ -244,7 +231,7 @@ private:
 	void addProcess(KSGRD::SensorPSLine* p, ProcessLVI* pli);
 
 private:
-	void selectAll(bool select);
+	void selectAllItems(bool select);
 	void selectAllChilds(int pid, bool select);
 
 	bool modified;
