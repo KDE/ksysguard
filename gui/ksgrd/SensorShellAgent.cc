@@ -32,7 +32,7 @@
 using namespace KSGRD;
 
 SensorShellAgent::SensorShellAgent( SensorManager *sm )
-  : SensorAgent( sm )
+  : SensorAgent( sm ), mDaemon( 0 )
 {
 }
 
@@ -40,7 +40,7 @@ SensorShellAgent::~SensorShellAgent()
 {
   if ( mDaemon ) {
     mDaemon->writeStdin( "quit\n", strlen( "quit\n" ) );
-    delete mDaemon;
+    delete (KShellProcess*)mDaemon;
 		mDaemon = 0;
   }
 }
@@ -116,11 +116,13 @@ void SensorShellAgent::errMsgRcvd( KProcess*, char *buffer, int buflen )
                 << endl << buf << endl;
 }
 
-void SensorShellAgent::daemonExited( KProcess* )
+void SensorShellAgent::daemonExited( KProcess *process )
 {
   setDaemonOnLine( false );
   sensorManager()->hostLost( this );
   sensorManager()->disengage( this );
+
+  process->deleteLater();
 }
 
 bool SensorShellAgent::writeMsg( const char *msg, int len )

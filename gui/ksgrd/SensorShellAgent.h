@@ -23,13 +23,14 @@
 
 #include <qobject.h>
 #include <qptrlist.h>
+#include <qguardedptr.h>
 
 #include <SensorAgent.h>
 
+class QString;
+
 class KProcess;
 class KShellProcess;
-
-class QString;
 
 namespace KSGRD {
 
@@ -66,7 +67,7 @@ class SensorShellAgent : public SensorAgent
     bool writeMsg( const char *msg, int len );
     bool txReady();
 
-    KShellProcess *mDaemon;
+    QGuardedPtr<KShellProcess> mDaemon;
     QString mShell;
     QString mCommand;
 };
