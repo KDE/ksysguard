@@ -172,6 +172,7 @@ void TopLevel::showProcesses()
 void TopLevel::showOnCurrentDesktop()
 {
   KWin::setOnDesktop( winId(), KWin::currentDesktop() );
+  KWin::forceActiveWindow( winId() );
 }
 
 void TopLevel::loadWorkSheet( const QString &fileName )
