@@ -139,11 +139,11 @@ TopLevel::TopLevel( const char *name )
  */
 void TopLevel::resetWorkSheets()
 {
-  if ( KMessageBox::questionYesNo( this,
+  if ( KMessageBox::warningContinueCancel( this,
        i18n( "Do you really want to restore the default worksheets?" ),
        i18n( "Reset All Worksheets" ),
-       KStdGuiItem::yes(), KStdGuiItem::no(),
-       "AskResetWorkSheets") == KMessageBox::No )
+       i18n("Reset"),
+       "AskResetWorkSheets") == KMessageBox::Cancel )
     return;
 
   mWorkSpace->removeAllWorkSheets();
