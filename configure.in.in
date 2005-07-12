@@ -23,11 +23,19 @@ AM_CONDITIONAL(include_ksysguardd_irix, test "$UNAME" = Irix)
 AM_CONDITIONAL(include_ksysguardd_openbsd, test "$UNAME" = OpenBSD)
 AC_SUBST(UNAME)
 
-KDE_CHECK_LIB(sensors, sensors_init, [LIBSENSORS="-lsensors"])
-AC_SUBST(LIBSENSORS)
+AC_ARG_WITH(sensors,
+	[AS_HELP_STRING(--with-sensors,
+		[enable support for lm_sensors @<:@default=check@:>@])],
+	[], with_sensors=check)
 
-dnl Check for dell laptop support
-AM_CONDITIONAL(supports_i8k, test -f /proc/i8k)
+if test "x$with_sensors" != xno; then
+	KDE_CHECK_HEADERS(sensors/sensors.h)
+	KDE_CHECK_LIB(sensors, sensors_init, [LIBSENSORS="-lsensors"])
+
+	if test "x$with_readline" != xcheck && test -z "$LIBSENSORS"; then
+        	AC_MSG_FAILURE([--with-sensors was given, but test for lm_sensors failed])
+	fi
+fi
 
 case "$UNAME" in
 	Linux) LIBHOSTS="$LIBSENSORS" ;;
@@ -35,5 +43,7 @@ case "$UNAME" in
 	Solaris) LIBHOSTS="$LIBSENSORS -lkstat -lsocket" ;;
 esac
 AC_SUBST(LIBHOSTS)
+AC_SUBST(LIBSENSORS)
 
-KDE_CHECK_HEADERS(sensors/sensors.h)
+dnl Check for dell laptop support
+AM_CONDITIONAL(supports_i8k, test -f /proc/i8k)
