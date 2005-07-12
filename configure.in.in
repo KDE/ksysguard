@@ -32,7 +32,7 @@ if test "x$with_sensors" != xno; then
 	KDE_CHECK_HEADERS(sensors/sensors.h)
 	KDE_CHECK_LIB(sensors, sensors_init, [LIBSENSORS="-lsensors"])
 
-	if test "x$with_readline" != xcheck && test -z "$LIBSENSORS"; then
+	if test "x$with_sensors" != xcheck && test -z "$LIBSENSORS"; then
         	AC_MSG_FAILURE([--with-sensors was given, but test for lm_sensors failed])
 	fi
 fi
