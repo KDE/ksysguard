@@ -29,6 +29,8 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kdialogbase.h>
+#include <klistviewsearchline.h>
 
 #include <ksgrd/SensorManager.h>
 
@@ -66,6 +68,8 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	// Create the table that lists the processes.
 	pList = new ProcessList(this, "pList");
 	Q_CHECK_PTR(pList);
+	pListSearchLine = new KListViewSearchLineWidget(pList, this, "process_list_search_line");
+
 	connect(pList, SIGNAL(killProcess(int, int)),
 			this, SLOT(killProcess(int, int)));
 	connect(pList, SIGNAL(reniceProcess(int, int)),
@@ -97,7 +101,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 			this, SLOT(filterModeChanged(int)));
 
 	// Create the 'Refresh' button.
-    bRefresh = new KPushButton( KGuiItem(  i18n( "&Refresh" ), "reload" ),
+	bRefresh = new KPushButton( KGuiItem(  i18n( "&Refresh" ), "reload" ),
             this, "bRefresh" );
 	Q_CHECK_PTR(bRefresh);
 	bRefresh->setMinimumSize(bRefresh->sizeHint());
@@ -117,6 +121,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	gm = new QVBoxLayout(this, 10);
 	Q_CHECK_PTR(gm);
 	gm->addSpacing(15);
+	gm->addWidget(pListSearchLine, 0);
 	gm->addWidget(pList, 1);
 
 	gm1 = new QHBoxLayout();
@@ -145,7 +150,7 @@ ProcessController::resizeEvent(QResizeEvent* ev)
 {
 	frame()->setGeometry(0, 0, width(), height());
 
-    QWidget::resizeEvent(ev);
+	QWidget::resizeEvent(ev);
 }
 
 bool
@@ -194,9 +199,8 @@ ProcessController::killProcess(int pid, int sig)
 void
 ProcessController::killProcess()
 {
-	const QValueList<int>& selectedPIds = pList->getSelectedPIds();
-
-	if (selectedPIds.isEmpty())
+	const QStringList& selectedAsStrings = pList->getSelectedAsStrings();
+	if (selectedAsStrings.isEmpty())
 	{
 		KMessageBox::sorry(this,
 						   i18n("You need to select a process first."));
@@ -206,12 +210,28 @@ ProcessController::killProcess()
 	{
 		QString  msg = i18n("Do you want to kill the selected process?",
 				"Do you want to kill the %n selected processes?",
-				selectedPIds.count());
-		if (KMessageBox::warningContinueCancel(this, msg, kapp->makeStdCaption(i18n("Kill Process")), i18n("&Kill")) != KMessageBox::Continue)
+				selectedAsStrings.count());
+
+		KDialogBase *dlg = new KDialogBase (  i18n ("Kill Process"), 
+						      KDialogBase::Yes | KDialogBase::Cancel,
+						      KDialogBase::Yes, KDialogBase::Cancel, this->parentWidget(),
+						      "killconfirmation",
+			       			      true, true, KGuiItem(i18n("Kill")));
+
+		bool dontAgain = false;
+		
+		int res = KMessageBox::createKMessageBox(dlg, QMessageBox::Question,
+			                                 msg, selectedAsStrings,
+							 i18n("Do not ask again"), &dontAgain, 
+							 KMessageBox::Notify);
+
+		if (res != KDialogBase::Yes)
 		{
 			return;
 		}
 	}
+
+	const QValueList<int>& selectedPIds = pList->getSelectedPIds();
 
 	// send kill signal to all seleted processes
 	QValueListConstIterator<int> it;
@@ -220,10 +240,10 @@ ProcessController::killProcess()
 					.arg(MENU_ID_SIGKILL), 3);
 
 	if ( !timerOn())
-	    // give ksysguardd time to update its proccess list
-	    QTimer::singleShot(3000, this, SLOT(updateList()));
+		// give ksysguardd time to update its proccess list
+		QTimer::singleShot(3000, this, SLOT(updateList()));
 	else
-	updateList();
+		updateList();
 }
 
 void
@@ -231,6 +251,7 @@ ProcessController::reniceProcess(int pid, int niceValue)
 {
 	sendRequest(sensors().at(0)->hostName(),
 				QString("setpriority %1 %2" ).arg(pid).arg(niceValue), 5);
+	sendRequest(sensors().at(0)->hostName(), "ps", 2);  //update the display afterwards
 }
 
 void
@@ -273,6 +294,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 		/* We have received the answer to a ps command that contains a
 		 * list of processes with various additional information. */
 		pList->update(answer);
+		pListSearchLine->searchLine()->updateSearch(); //re-apply the filter
 		break;
 	case 3:
 	{
@@ -353,8 +375,9 @@ ProcessController::sensorError(int, bool err)
 			 * (re-)established we need to requests the full set of
 			 * properties again, since the back-end might be a new
 			 * one. */
-			sendRequest(sensors().at(0)->hostName(), "ps?", 1);
 			sendRequest(sensors().at(0)->hostName(), "test kill", 4);
+			sendRequest(sensors().at(0)->hostName(), "ps?", 1);
+			sendRequest(sensors().at(0)->hostName(), "ps", 2);
 		}
 
 		/* This happens only when the sensorOk status needs to be changed. */

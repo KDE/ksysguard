@@ -515,6 +515,14 @@ void killProcess( const char* cmd )
         fprintf( CurrentClient, "3\t%d\n", pid );
         break;
       case EPERM:
+	if(vfork() == 0) {
+	  char *argv[2];
+	  argv[0] = strdup("xclock");
+	  argv[1] = NULL;
+		/*Were the child process.  Parent is suspended until we execve or exit*/
+	  execve("kdesu", argv, NULL);
+	  exit(0);/* Won't execute unless execve fails.  Need this for the parent process to continue */
+	}
         fprintf( CurrentClient, "2\t%d\n", pid );
         break;
       default: /* unknown error */

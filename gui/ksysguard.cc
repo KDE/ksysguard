@@ -36,6 +36,7 @@
 
 #include <kaboutdata.h>
 #include <kaction.h>
+#include <kapplication.h>
 #include <kcmdlineargs.h>
 #include <kdebug.h>
 #include <kedittoolbar.h>
@@ -51,6 +52,7 @@
 #include <kstdaction.h>
 #include <kwin.h>
 #include <kwinmodule.h>
+
 
 #include "../version.h"
 #include "SensorBrowser.h"
@@ -172,6 +174,7 @@ void TopLevel::showProcesses()
 void TopLevel::showOnCurrentDesktop()
 {
   KWin::setOnDesktop( winId(), KWin::currentDesktop() );
+  kapp->updateUserTimestamp();
   KWin::forceActiveWindow( winId() );
 }
 

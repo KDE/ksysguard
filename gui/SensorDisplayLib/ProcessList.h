@@ -33,6 +33,7 @@
 #include <qwidget.h>
 
 #include <kiconloader.h>
+#include <klistview.h>
 
 #include "SensorClient.h"
 
@@ -57,7 +58,7 @@ class QPopupMenu;
  * This class implementes a table filled with information about the running
  * processes. The table is derived from QListView.
  */
-class ProcessList : public QListView
+class ProcessList : public KListView
 {
     Q_OBJECT
 
@@ -101,6 +102,7 @@ public:
 	}
 
 	const QValueList<int>& getSelectedPIds();
+	const QStringList& getSelectedAsStrings();
 
 	/**
 	 * The udpate function can be used to update the displayed process
@@ -257,6 +259,7 @@ private:
 
 	QValueList<int> selectedPIds;
 	QValueList<int> closedSubTrees;
+	QStringList selectedAsStrings;
 
 	static QDict<QString> aliases;
 

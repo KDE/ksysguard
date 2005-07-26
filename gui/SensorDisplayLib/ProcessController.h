@@ -38,6 +38,7 @@ class QHBoxLayout;
 class QCheckBox;
 class QComboBox;
 class KPushButton;
+class KListViewSearchLineWidget;
 
 extern KApplication* Kapp;
 
@@ -128,7 +129,7 @@ private:
 
 	/// The process list.
 	ProcessList* pList;
-
+	KListViewSearchLineWidget *pListSearchLine;
 	QHBoxLayout* gm1;
 
 	/// Checkbox to switch between tree and list view

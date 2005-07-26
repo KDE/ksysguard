@@ -101,7 +101,7 @@ int ProcessLVI::compare( QListViewItem *item, int col, bool ascending ) const
 }
 
 ProcessList::ProcessList(QWidget *parent, const char* name)
-	: QListView(parent, name)
+	: KListView(parent, name)
 {
 	iconCache.setAutoDelete(true);
 
@@ -243,7 +243,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	setAllColumnsShowFocus(true);
 	setTreeStepSize(17);
 	setSorting(sortColumn, increasing);
-	setSelectionMode(Extended);
+	setSelectionMode(QListView::Extended);
 
 	// Create popup menu for RMB clicks on table header
 	headerPM = new QPopupMenu();
@@ -281,6 +281,21 @@ ProcessList::getSelectedPIds()
 	return (selectedPIds);
 }
 
+const QStringList&
+ProcessList::getSelectedAsStrings()
+{
+	selectedAsStrings.clear();
+	// iterate through all items of the listview and find selected processes
+	QListViewItemIterator it(this);
+	QString spaces;
+	for ( ; it.current(); ++it )
+		if (it.current()->isSelected()) {
+			spaces.fill(QChar(' '), 7 - it.current()->text(1).length());
+			selectedAsStrings.append("(PID: " + it.current()->text(1) + ")" + spaces + " " + it.current()->text(0));
+		}	
+
+	return (selectedAsStrings);
+}
 bool
 ProcessList::update(const QString& list)
 {
@@ -326,14 +341,14 @@ ProcessList::update(const QString& list)
 	else
 		buildList();
 
-  QListViewItemIterator it( this );
-  while ( it.current() ) {
-    if ( itemPos( it.current() ) == currItemPos ) {
-      setCurrentItem( it.current() );
-      break;
-    }
-    ++it;
-  }
+	QListViewItemIterator it( this );
+	while ( it.current() ) {
+		if ( itemPos( it.current() ) == currItemPos ) {
+			setCurrentItem( it.current() );
+			break;
+		}
+		++it;
+	}
 
 	verticalScrollBar()->setValue(vpos);
 	horizontalScrollBar()->setValue(hpos);
