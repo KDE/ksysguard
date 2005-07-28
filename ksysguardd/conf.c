@@ -92,8 +92,7 @@ void parseConfigFile( const char *filename )
     if ( line[ strlen( line ) - 1 ] == '\n' )
       line[ strlen( line ) - 1 ] = '\0';
 
-    if ( !strncmp( line, "LogFiles", 8 ) ) {
-      begin = strchr( line, '=' );
+    if ( !strncmp( line, "LogFiles", 8 ) && (begin = strchr( line, '=' )) ) {
       begin++;
 
       for ( token = strtok( begin, "," ); token; token = strtok( NULL, "," ) ) {
@@ -111,8 +110,7 @@ void parseConfigFile( const char *filename )
       }
     }
 
-    if ( !strncmp( line, "Sensors", 7 ) ) {
-      begin = strchr( line, '=' );
+    if ( !strncmp( line, "Sensors", 7 ) && (begin = strchr( line, '=' )) ) {
       begin++;
 
       for ( token = strtok( begin, ","); token; token = strtok( NULL, "," ) )

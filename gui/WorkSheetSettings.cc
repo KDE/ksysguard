@@ -26,12 +26,15 @@
 #include <knuminput.h>
 #include <klocale.h>
 
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qlabel.h>
 #include <qspinbox.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+
+//Added by qt3to4:
+#include <QVBoxLayout>
+#include <QGridLayout>
 
 #include "WorkSheetSettings.h"
 
@@ -45,7 +48,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
 
   QVBoxLayout *topLayout = new QVBoxLayout( page, 0, spacingHint() );
 
-  QGroupBox *group = new QGroupBox( 0, Qt::Vertical, i18n( "Title" ), page );
+  Q3GroupBox *group = new Q3GroupBox( 0, Qt::Vertical, i18n( "Title" ), page );
   group->layout()->setMargin( marginHint() );
   group->layout()->setSpacing( spacingHint() );
 
@@ -57,7 +60,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
 
   topLayout->addWidget( group );
 
-  group = new QGroupBox( 0, Qt::Vertical, i18n( "Properties" ), page );
+  group = new Q3GroupBox( 0, Qt::Vertical, i18n( "Properties" ), page );
   group->layout()->setMargin( marginHint() );
   group->layout()->setSpacing( spacingHint() );
 
@@ -94,9 +97,9 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
 
   topLayout->addWidget( group );
 
-  QWhatsThis::add( mRows, i18n( "Enter the number of rows the sheet should have." ) );
-  QWhatsThis::add( mColumns, i18n( "Enter the number of columns the sheet should have." ) );
-  QWhatsThis::add( mInterval, i18n( "All displays of the sheet are updated at the rate specified here." ) );
+  mRows->setWhatsThis( i18n( "Enter the number of rows the sheet should have." ) );
+  mColumns->setWhatsThis( i18n( "Enter the number of columns the sheet should have." ) );
+  mInterval->setWhatsThis( i18n( "All displays of the sheet are updated at the rate specified here." ) );
   QToolTip::add( mSheetTitle, i18n( "Enter the title of the worksheet here." ) );
 
   KAcceleratorManager::manage( page );

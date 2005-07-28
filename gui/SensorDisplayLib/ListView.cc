@@ -41,12 +41,12 @@
 #include "ListViewSettings.h"
 
 PrivateListViewItem::PrivateListViewItem(PrivateListView *parent)
-	: QListViewItem(parent)
+	: Q3ListViewItem(parent)
 {
 	_parent = parent;
 }
 
-int PrivateListViewItem::compare( QListViewItem *item, int col, bool ascending ) const
+int PrivateListViewItem::compare( Q3ListViewItem *item, int col, bool ascending ) const
 {
   int type = ((PrivateListView*)listView())->columnType( col );
 
@@ -103,7 +103,7 @@ int PrivateListViewItem::compare( QListViewItem *item, int col, bool ascending )
 }
 
 PrivateListView::PrivateListView(QWidget *parent, const char *name)
-	: QListView(parent, name)
+	: Q3ListView(parent, name)
 {
 	QColorGroup cg = colorGroup();
 
@@ -174,19 +174,19 @@ void PrivateListView::removeColumns(void)
 
 void PrivateListView::addColumn(const QString& label, const QString& type)
 {
-	QListView::addColumn( label );
+	Q3ListView::addColumn( label );
   int col = columns() - 1;
 
   if (type == "s" || type == "S")
-    setColumnAlignment(col, AlignLeft);
+    setColumnAlignment(col, Qt::AlignLeft);
 	else if (type == "d" || type == "D")
-		setColumnAlignment(col, AlignRight);
+		setColumnAlignment(col, Qt::AlignRight);
 	else if (type == "t")
-		setColumnAlignment(col, AlignRight);
+		setColumnAlignment(col, Qt::AlignRight);
 	else if (type == "f")
-		setColumnAlignment(col, AlignRight);
+		setColumnAlignment(col, Qt::AlignRight);
 	else if (type == "M")
-		setColumnAlignment(col, AlignLeft);
+		setColumnAlignment(col, Qt::AlignLeft);
 	else
 	{
 		kdDebug(1215) << "Unknown type " << type << " of column " << label
@@ -208,7 +208,7 @@ ListView::ListView(QWidget* parent, const char* name, const QString& title, int,
 
 	monitor = new PrivateListView( frame() );
 	Q_CHECK_PTR(monitor);
-	monitor->setSelectionMode(QListView::NoSelection);
+	monitor->setSelectionMode(Q3ListView::NoSelection);
 	monitor->setItemMargin(2);
 
 	setMinimumSize(50, 25);

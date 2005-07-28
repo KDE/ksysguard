@@ -25,6 +25,8 @@
 #define KSG_DANCINGBARSSETTINGS_H
 
 #include <kdialogbase.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 class KColorButton;
 class KDoubleSpinBox;
@@ -33,7 +35,7 @@ class KLineEdit;
 class KListView;
 
 class QCheckBox;
-class QListViewItem;
+class Q3ListViewItem;
 class QPushButton;
 
 class DancingBarsSettings : public KDialogBase
@@ -77,13 +79,13 @@ class DancingBarsSettings : public KDialogBase
     void setFontSize( int size );
     int fontSize() const;
 
-    void setSensors( const QValueList< QStringList > &list );
-    QValueList< QStringList > sensors() const;
+    void setSensors( const Q3ValueList< QStringList > &list );
+    Q3ValueList< QStringList > sensors() const;
 
   private slots:
     void editSensor();
     void removeSensor();
-    void selectionChanged( QListViewItem* );
+    void selectionChanged( Q3ListViewItem* );
 
   private:
     KColorButton *mForegroundColor;

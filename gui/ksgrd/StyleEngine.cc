@@ -85,7 +85,7 @@ void StyleEngine::saveProperties( KConfig *cfg )
   cfg->writeEntry( "fontSize", mFontSize );
 
   QStringList list;
-  QValueList<QColor>::Iterator it;
+  Q3ValueList<QColor>::Iterator it;
   for ( it = mSensorColors.begin(); it != mSensorColors.end(); ++it )
     list.append( (*it).name() );
 

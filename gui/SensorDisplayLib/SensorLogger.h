@@ -25,10 +25,15 @@
 #include <qfile.h>
 #include <qlabel.h>
 #include <qlineedit.h>
-#include <qlistview.h>
-#include <qpopupmenu.h>
+#include <q3listview.h>
+#include <q3popupmenu.h>
 #include <qspinbox.h>
 #include <qstring.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3PtrList>
+#include <QTimerEvent>
+#include <QResizeEvent>
 
 #include <SensorDisplay.h>
 
@@ -38,17 +43,17 @@
 
 class SensorLoggerSettings;
 
-class SLListViewItem : public QListViewItem
+class SLListViewItem : public Q3ListViewItem
 {
 public:
-	SLListViewItem(QListView *parent = 0);
+	SLListViewItem(Q3ListView *parent = 0);
 
 	void setTextColor(const QColor& color) { textColor = color; }
 
 	void paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment) {
 		QColorGroup cgroup(cg);
 		cgroup.setColor(QColorGroup::Text, textColor);
-		QListViewItem::paintCell(p, cgroup, column, width, alignment);
+		Q3ListViewItem::paintCell(p, cgroup, column, width, alignment);
 	
 	}
 
@@ -62,7 +67,7 @@ class LogSensor : public QObject, public KSGRD::SensorClient
 {
 	Q_OBJECT
 public:
-	LogSensor(QListView *parent);
+	LogSensor(Q3ListView *parent);
 	~LogSensor(void);
 
 	void answerReceived(int id, const QString& answer);
@@ -99,7 +104,7 @@ public:
 	bool getLowerLimitActive(void) { return lowerLimitActive; }
 	double getUpperLimit(void) { return upperLimit; }
 	double getLowerLimit(void) { return lowerLimit; }
-	QListViewItem* getListViewItem(void) { return lvi; }
+	Q3ListViewItem* getListViewItem(void) { return lvi; }
 
 public slots:
 	void timerOff()
@@ -123,7 +128,7 @@ protected:
 
 private:
 	QFile* logFile;
-	QListView* monitor;
+	Q3ListView* monitor;
 	SLListViewItem* lvi;
 	QPixmap pixmap_running;
 	QPixmap pixmap_waiting;
@@ -169,15 +174,15 @@ public:
 public slots:
 	void applySettings();
 	void applyStyle();
-	void RMBClicked(QListViewItem*, const QPoint&, int);
+	void RMBClicked(Q3ListViewItem*, const QPoint&, int);
 
 protected:
-	LogSensor* getLogSensor(QListViewItem*);
+	LogSensor* getLogSensor(Q3ListViewItem*);
 
 private:
-	QListView* monitor;
+	Q3ListView* monitor;
 
-	QPtrList<LogSensor> logSensors;
+	Q3PtrList<LogSensor> logSensors;
 
 	SensorLoggerDlg *sld;
 	SensorLoggerSettings *sls;

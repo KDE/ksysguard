@@ -26,13 +26,15 @@
 
 #include <qcolor.h>
 #include <qobject.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 #include <kdemacros.h>
 
 class KConfig;
 
-class QListBoxItem;
+class Q3ListBoxItem;
 
 class StyleSettings;
 
@@ -74,7 +76,7 @@ class KDE_EXPORT StyleEngine : public QObject
     QColor mAlarmColor;
     QColor mBackgroundColor;
     uint mFontSize;
-    QValueList<QColor> mSensorColors;
+    Q3ValueList<QColor> mSensorColors;
 
     StyleSettings *mSettingsDialog;
 };

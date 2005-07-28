@@ -27,10 +27,12 @@
 #include <kdialogbase.h>
 
 #include <qcolor.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 class KColorButton;
 
-class QListBoxItem;
+class Q3ListBoxItem;
 class QPushButton;
 
 class StyleSettings : public KDialogBase
@@ -56,12 +58,12 @@ class StyleSettings : public KDialogBase
     void setFontSize( uint size );
     uint fontSize() const;
 
-    void setSensorColors( const QValueList<QColor> &list );
-    QValueList<QColor> sensorColors();
+    void setSensorColors( const Q3ValueList<QColor> &list );
+    Q3ValueList<QColor> sensorColors();
 
   private slots:
     void editSensorColor();
-    void selectionChanged( QListBoxItem* );
+    void selectionChanged( Q3ListBoxItem* );
 
   private:
     KColorButton *mFirstForegroundColor;
@@ -71,7 +73,7 @@ class StyleSettings : public KDialogBase
 
     QSpinBox *mFontSize;
 
-    QListBox *mColorListBox;
+    Q3ListBox *mColorListBox;
     QPushButton *mEditColorButton;
 };
 

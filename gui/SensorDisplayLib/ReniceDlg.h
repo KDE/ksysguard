@@ -42,6 +42,8 @@
 #include <qlcdnumber.h>
 #include <qpushbutton.h>
 #include <qslider.h>
+//Added by qt3to4:
+#include <QBoxLayout>
 
 /**
  * This class creates and handles a simple dialog to change the scheduling

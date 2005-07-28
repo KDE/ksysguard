@@ -26,6 +26,7 @@
 
 #include <qpainter.h>
 #include <qpixmap.h>
+#include <Q3PointArray>
 
 #include <kdebug.h>
 #include <ksgrd/StyleEngine.h>
@@ -43,7 +44,7 @@ SignalPlotter::SignalPlotter( QWidget *parent, const char *name )
   // Auto deletion does not work for pointer to arrays.
   mBeamData.setAutoDelete( false );
 
-  setBackgroundMode( NoBackground );
+  setBackgroundMode( Qt::NoBackground );
 
   mSamples = 0;
   mMinValue = mMaxValue = 0.0;
@@ -90,7 +91,7 @@ bool SignalPlotter::addBeam( const QColor &color )
   return true;
 }
 
-void SignalPlotter::addSample( const QValueList<double>& sampleBuf )
+void SignalPlotter::addSample( const QList<double>& sampleBuf )
 {
   if ( mBeamData.count() != sampleBuf.count() )
     return;
@@ -117,7 +118,7 @@ void SignalPlotter::addSample( const QValueList<double>& sampleBuf )
   }
 
   // Shift data buffers one sample down and insert new samples.
-  QValueList<double>::ConstIterator s;
+  QList<double>::ConstIterator s;
   for ( d = mBeamData.first(), s = sampleBuf.begin(); d; d = mBeamData.next(), ++s ) {
     memmove( d, d + 1, ( mSamples - 1 ) * sizeof( double ) );
     d[ mSamples - 1 ] = *s;
@@ -136,7 +137,7 @@ void SignalPlotter::changeRange( int beam, double min, double max )
   mMaxValue = max;
 }
 
-QValueList<QColor> &SignalPlotter::beamColors()
+QList<QColor> &SignalPlotter::beamColors()
 {
   return mBeamColor;
 }
@@ -430,7 +431,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
 
     double bias = -minValue;
     double scaleFac = ( w - x0 - 2 ) / range;
-    QValueList<QColor>::Iterator col;
+    QList<QColor>::Iterator col;
     col = mBeamColor.begin();
     for ( double* d = mBeamData.first(); d; d = mBeamData.next(), ++col ) {
       int start = x0 + (int)( bias * scaleFac );
@@ -480,7 +481,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
     int xPos = 0;
     for ( int i = 0; i < mSamples; i++, xPos += mHorizontalScale ) {
       double bias = -minValue;
-      QValueList<QColor>::Iterator col;
+      QList<QColor>::Iterator col;
       col = mBeamColor.begin();
       double sum = 0.0;
       for ( double* d = mBeamData.first(); d; d = mBeamData.next(), ++col ) {
@@ -514,7 +515,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
     int x1 = w - ( ( mSamples + 1 ) * mHorizontalScale );
 
     for ( int i = 0; i < mSamples; i++ ) {
-      QValueList<QColor>::Iterator col;
+      QList<QColor>::Iterator col;
       col = mBeamColor.begin();
       double sum = 0.0;
       int y = top + h - 2;
@@ -543,7 +544,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
         QPen lastPen = QPen( p.pen() );
         p.setPen( (*col).dark( 150 ) );
         p.setBrush( (*col).dark( 150 ) );
-        QPointArray pa( 4 );
+        Q3PointArray pa( 4 );
         int prevY = ( i == 0 ) ? y : prevVals[ j ];
         pa.putPoints( 0, 1, x1, prevY );
         pa.putPoints( 1, 1, x2, y );

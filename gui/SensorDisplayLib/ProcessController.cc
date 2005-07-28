@@ -234,7 +234,7 @@ ProcessController::killProcess()
 	const QValueList<int>& selectedPIds = pList->getSelectedPIds();
 
 	// send kill signal to all seleted processes
-	QValueListConstIterator<int> it;
+	QList<int>::const_iterator it;
 	for (it = selectedPIds.begin(); it != selectedPIds.end(); ++it)
 		sendRequest(sensors().at(0)->hostName(), QString("kill %1 %2" ).arg(*it)
 					.arg(MENU_ID_SIGKILL), 3);

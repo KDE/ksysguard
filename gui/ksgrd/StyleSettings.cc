@@ -24,11 +24,15 @@
 #include <qimage.h>
 #include <qlabel.h>
 #include <qlayout.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qpixmap.h>
 #include <qpushbutton.h>
 #include <qspinbox.h>
 #include <qtabwidget.h>
+//Added by qt3to4:
+#include <Q3Frame>
+#include <Q3ValueList>
+#include <QGridLayout>
 
 #include <kaccelmanager.h>
 #include <kcolorbutton.h>
@@ -85,16 +89,16 @@ StyleSettings::StyleSettings( QWidget *parent, const char *name )
   page = addPage( i18n( "Sensor Colors" ) );
   layout = new QGridLayout( page, 1, 2, 0, spacingHint() );
 
-  mColorListBox = new QListBox( page );
+  mColorListBox = new Q3ListBox( page );
   layout->addWidget( mColorListBox, 0, 0 );
 
   mEditColorButton = new QPushButton( i18n( "Change Color..." ), page );
   mEditColorButton->setEnabled( false );
   layout->addWidget( mEditColorButton, 0, 1, Qt::AlignTop );
 
-  connect( mColorListBox, SIGNAL( selectionChanged( QListBoxItem* ) ),
-           SLOT( selectionChanged( QListBoxItem* ) ) );
-  connect( mColorListBox, SIGNAL( doubleClicked( QListBoxItem* ) ),
+  connect( mColorListBox, SIGNAL( selectionChanged( Q3ListBoxItem* ) ),
+           SLOT( selectionChanged( Q3ListBoxItem* ) ) );
+  connect( mColorListBox, SIGNAL( doubleClicked( Q3ListBoxItem* ) ),
            SLOT( editSensorColor() ) );
   connect( mEditColorButton, SIGNAL( clicked() ),
            SLOT( editSensorColor() ) );
@@ -156,20 +160,20 @@ uint StyleSettings::fontSize() const
   return mFontSize->value();
 }
 
-void StyleSettings::setSensorColors( const QValueList<QColor> &list )
+void StyleSettings::setSensorColors( const Q3ValueList<QColor> &list )
 {
   mColorListBox->clear();
 
-  for ( uint i = 0; i < list.count(); ++i ) {
+  for ( int i = 0; i < list.count(); ++i ) {
     QPixmap pm( 12, 12 );
 		pm.fill( *list.at( i ) );
     mColorListBox->insertItem( pm, i18n( "Color %1" ).arg( i ) );
 	}
 }
 
-QValueList<QColor> StyleSettings::sensorColors()
+Q3ValueList<QColor> StyleSettings::sensorColors()
 {
-  QValueList<QColor> list;
+  Q3ValueList<QColor> list;
 
   for ( uint i = 0; i < mColorListBox->count(); ++i )
     list.append( QColor( mColorListBox->pixmap( i )->convertToImage().pixel( 1, 1 ) ) );
@@ -193,7 +197,7 @@ void StyleSettings::editSensorColor()
 	}
 }
 
-void StyleSettings::selectionChanged( QListBoxItem *item )
+void StyleSettings::selectionChanged( Q3ListBoxItem *item )
 {
   mEditColorButton->setEnabled( item != 0 );
 }

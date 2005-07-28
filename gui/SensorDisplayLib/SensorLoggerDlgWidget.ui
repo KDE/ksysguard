@@ -21,7 +21,7 @@
                 <cstring>fileFrame</cstring>
             </property>
             <property name="frameShape">
-                <enum>GroupBoxPanel</enum>
+                <enum>Box</enum>
             </property>
             <property name="frameShadow">
                 <enum>Sunken</enum>
@@ -97,7 +97,7 @@
                         <cstring>Spacer1</cstring>
                     </property>
                     <property name="orientation">
-                        <enum>Horizontal</enum>
+                        <enum>Qt::Horizontal</enum>
                     </property>
                     <property name="sizeType">
                         <enum>Expanding</enum>
@@ -163,7 +163,7 @@
                         <cstring>Spacer1_2</cstring>
                     </property>
                     <property name="orientation">
-                        <enum>Horizontal</enum>
+                        <enum>Qt::Horizontal</enum>
                     </property>
                     <property name="sizeType">
                         <enum>Expanding</enum>
@@ -250,7 +250,13 @@
     <function specifier="non virtual">setUpperLimitActive( bool b )</function>
     <function specifier="non virtual">setUpperLimit( double d )</function>
 </functions>
-
+<customwidgets>
+    <customwidget>
+        <class>KIntNumInput</class>
+        <header location="global">knuminput.h</header>
+        <container>0</container>
+    </customwidget>
+</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
 <layoutfunctions spacing="KDialog::spacingHint" margin="KDialog::marginHint"/>
 <includehints>

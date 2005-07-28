@@ -88,7 +88,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
   private:
     void setSwapInfo( long, long, const QString& );
 
-    QPtrList<DCOPClientTransaction> mDCopFIFO;
+    Q3PtrList<DCOPClientTransaction> mDCopFIFO;
 
     QSplitter* mSplitter;
     KRecentFilesAction* mActionOpenRecent;
@@ -104,7 +104,7 @@ extern TopLevel* Toplevel;
 
 /*
    since there is only a forward declaration of DCOPClientTransaction
-   in dcopclient.h we have to redefine it here, otherwise QPtrList
+   in dcopclient.h we have to redefine it here, otherwise Q3PtrList
    causes errors
 */
 typedef unsigned long CARD32;
@@ -114,7 +114,7 @@ class DCOPClientTransaction
   public:
     Q_INT32 id;
     CARD32 key;
-    QCString senderId;
+    Q3CString senderId;
 };
 
 #endif

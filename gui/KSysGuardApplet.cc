@@ -24,11 +24,19 @@
 
 #include <qcursor.h>
 #include <qdom.h>
-#include <qdragobject.h>
+#include <q3dragobject.h>
 #include <qfile.h>
 #include <qpushbutton.h>
 #include <qspinbox.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <QTextStream>
+#include <QEvent>
+#include <QDropEvent>
+#include <Q3Frame>
+#include <QResizeEvent>
+#include <QDragEnterEvent>
+#include <QCustomEvent>
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -47,18 +55,20 @@
 
 #include "KSysGuardApplet.h"
 
+#include "utils.h"
+
 extern "C"
 {
   KDE_EXPORT KPanelApplet* init( QWidget *parent, const QString& configFile )
   {
     KGlobal::locale()->insertCatalogue( "ksysguard" );
-    return new KSysGuardApplet( configFile, KPanelApplet::Normal,
-                                KPanelApplet::Preferences, parent,
+    return new KSysGuardApplet( configFile, Plasma::Normal,
+                                Plasma::Preferences, parent,
                                 "ksysguardapplet" );
   }
 }
 
-KSysGuardApplet::KSysGuardApplet( const QString& configFile, Type type,
+KSysGuardApplet::KSysGuardApplet( const QString& configFile, Plasma::Type type,
                                   int actions, QWidget *parent,
                                   const char *name )
   : KPanelApplet( configFile, type, actions, parent, name)
@@ -147,7 +157,7 @@ void KSysGuardApplet::sensorDisplayModified( bool modified )
 
 void KSysGuardApplet::layout()
 {
-  if ( orientation() == Horizontal ) {
+  if ( orientation() == Qt::Horizontal ) {
     int h = height();
     int w = (int) ( h * mSizeRatio + 0.5 );
     for ( uint i = 0; i < mDockCount; ++i )
@@ -164,7 +174,7 @@ void KSysGuardApplet::layout()
 
 int KSysGuardApplet::findDock( const QPoint& point )
 {
-  if ( orientation() == Horizontal )
+  if ( orientation() == Qt::Horizontal )
     return ( point.x() / (int) ( height() * mSizeRatio + 0.5 ) );
   else
     return ( point.y() / (int) ( width() * mSizeRatio + 0.5 ) );
@@ -172,14 +182,14 @@ int KSysGuardApplet::findDock( const QPoint& point )
 
 void KSysGuardApplet::dragEnterEvent( QDragEnterEvent *e )
 {
-  e->accept( QTextDrag::canDecode( e ) );
+  e->accept( Q3TextDrag::canDecode( e ) );
 }
 
 void KSysGuardApplet::dropEvent( QDropEvent *e )
 {
   QString dragObject;
 
-  if ( QTextDrag::decode( e, dragObject ) ) {
+  if ( Q3TextDrag::decode( e, dragObject ) ) {
     // The host name, sensor name and type are seperated by a ' '.
     QStringList parts = QStringList::split( ' ', dragObject );
 
@@ -309,7 +319,7 @@ bool KSysGuardApplet::load()
   QString fileName = kstd->findResource( "data", "KSysGuardApplet.xml" );
 
   QFile file( fileName );
-  if ( !file.open( IO_ReadOnly ) ) {
+  if ( !file.open( QIODevice::ReadOnly ) ) {
     KMessageBox::sorry( this, i18n( "Cannot open the file %1." ).arg( fileName ) );
     return false;
   }
@@ -456,7 +466,7 @@ bool KSysGuardApplet::save()
   fileName += "/KSysGuardApplet.xml";
 
   QFile file( fileName );
-  if ( !file.open( IO_WriteOnly ) ) {
+  if ( !file.open( QIODevice::WriteOnly ) ) {
     KMessageBox::sorry( this, i18n( "Cannot save file %1" ).arg( fileName ) );
     return false;
   }
@@ -471,8 +481,8 @@ bool KSysGuardApplet::save()
 
 void KSysGuardApplet::addEmptyDisplay( QWidget **dock, uint pos )
 {
-  dock[ pos ] = new QFrame( this );
-  ((QFrame*)dock[ pos ])->setFrameStyle( QFrame::WinPanel | QFrame::Sunken );
+  dock[ pos ] = new Q3Frame( this );
+  ((Q3Frame*)dock[ pos ])->setFrameStyle( Q3Frame::WinPanel | Q3Frame::Sunken );
   QToolTip::add( dock[ pos ],
                  i18n( "Drag sensors from the KDE System Guard into this cell." ) );
 

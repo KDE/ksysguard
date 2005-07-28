@@ -29,8 +29,11 @@
 #include <SensorDisplay.h>
 
 #include "SignalPlotter.h"
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <QResizeEvent>
 
-class QListViewItem;
+class Q3ListViewItem;
 class FancyPlotterSettings;
 
 class FPSensorProperties : public KSGRD::SensorProperties
@@ -99,7 +102,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
       received. The flags variable is used to ensure that all samples have
       been received.
      */
-    QValueList<double> mSampleBuf;
+    Q3ValueList<double> mSampleBuf;
 };
 
 #endif

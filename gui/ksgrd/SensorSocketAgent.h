@@ -21,8 +21,8 @@
 #ifndef KSG_SENSORSOCKETAGENT_H
 #define KSG_SENSORSOCKETAGENT_H
 
-#include <qptrlist.h>
-#include <qsocket.h>
+#include <q3ptrlist.h>
+#include <q3socket.h>
 
 #include <SensorAgent.h>
 
@@ -62,7 +62,7 @@ class SensorSocketAgent : public SensorAgent
     bool writeMsg( const char *msg, int len );
     bool txReady();
 
-    QSocket mSocket;
+    Q3Socket mSocket;
     int mPort;
 };
 

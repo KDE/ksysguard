@@ -100,15 +100,15 @@ void SensorSocketAgent::connectionClosed()
 void SensorSocketAgent::error( int id )
 {
   switch ( id ) {
-    case QSocket::ErrConnectionRefused:
+    case Q3Socket::ErrConnectionRefused:
       SensorMgr->notify( i18n( "Connection to %1 refused" )
                          .arg( hostName() ) );
       break;
-    case QSocket::ErrHostNotFound:
+    case Q3Socket::ErrHostNotFound:
       SensorMgr->notify( i18n( "Host %1 not found" )
                          .arg( hostName() ) );
       break;
-    case QSocket::ErrSocketRead:
+    case Q3Socket::ErrSocketRead:
       SensorMgr->notify( i18n( "Read error at host %1")
                          .arg( hostName() ) );
       break;

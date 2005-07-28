@@ -95,7 +95,7 @@ void FancyPlotter::configureSettings()
 
   mSettingsDialog->setBackgroundColor( mPlotter->backgroundColor() );
 
-  QValueList< QStringList > list;
+  QList< QStringList > list;
   for ( uint i = 0; i < mBeams; ++i ) {
     QStringList entry;
     entry << QString( "%1" ).arg( i + 1 );
@@ -162,8 +162,8 @@ void FancyPlotter::applySettings()
    * listview. Where a sensor cannot be matched, it is removed. */
   uint delCount = 0;
 
-  QValueList< QStringList > list = mSettingsDialog->sensors();
-  QValueList< QStringList >::Iterator it;
+  QList< QStringList > list = mSettingsDialog->sensors();
+  QList< QStringList >::Iterator it;
 
   for ( uint i = 0; i < sensors().count(); ++i ) {
     bool found = false;
@@ -195,7 +195,7 @@ void FancyPlotter::applyStyle()
   mPlotter->setHorizontalLinesColor( KSGRD::Style->secondForegroundColor() );
   mPlotter->setBackgroundColor( KSGRD::Style->backgroundColor() );
   mPlotter->setFontSize( KSGRD::Style->fontSize() );
-  for ( uint i = 0; i < mPlotter->beamColors().count() &&
+  for ( int i = 0; i < mPlotter->beamColors().count() &&
         i < KSGRD::Style->numSensorColors(); ++i )
     mPlotter->beamColors()[ i ] = KSGRD::Style->sensorColor( i );
 
@@ -363,7 +363,7 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
                                    KSGRD::Style->backgroundColor() ) );
 
   QDomNodeList dnList = element.elementsByTagName( "beam" );
-  for ( uint i = 0; i < dnList.count(); ++i ) {
+  for ( int i = 0; i < dnList.count(); ++i ) {
     QDomElement el = dnList.item( i ).toElement();
     addSensor( el.attribute( "hostName" ), el.attribute( "sensorName" ),
                ( el.attribute( "sensorType" ).isEmpty() ? "integer" :

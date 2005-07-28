@@ -23,8 +23,10 @@
 
 #include <kconfig.h>
 
-#include <qdict.h>
+#include <q3dict.h>
 #include <qobject.h>
+//Added by qt3to4:
+#include <QEvent>
 
 #include <SensorAgent.h>
 
@@ -93,17 +95,17 @@ class KDE_EXPORT SensorManager : public QObject
     void hostConnectionLost( const QString &hostName );
 
   protected:
-    QDict<SensorAgent> mAgents;
+    Q3Dict<SensorAgent> mAgents;
 
   private:
     /**
       These dictionary stores the localized versions of the sensor
       descriptions and units.
      */
-    QDict<QString> mDescriptions;
-    QDict<QString> mUnits;
-    QDict<QString> mDict;
-    QDict<QString> mTypes;
+    Q3Dict<QString> mDescriptions;
+    Q3Dict<QString> mUnits;
+    Q3Dict<QString> mDict;
+    Q3Dict<QString> mTypes;
 
     QWidget* mBroadcaster;
 
@@ -112,11 +114,11 @@ class KDE_EXPORT SensorManager : public QObject
 
 KDE_EXPORT extern SensorManager* SensorMgr;
 
-class KDE_EXPORT SensorManagerIterator : public QDictIterator<SensorAgent>
+class KDE_EXPORT SensorManagerIterator : public Q3DictIterator<SensorAgent>
 {
   public:
     SensorManagerIterator( const SensorManager *sm )
-      : QDictIterator<SensorAgent>( sm->mAgents ) { }
+      : Q3DictIterator<SensorAgent>( sm->mAgents ) { }
 
     ~SensorManagerIterator() { }
 };

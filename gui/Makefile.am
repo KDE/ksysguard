@@ -14,7 +14,7 @@ lnk_DATA = ksysguardapplet.desktop
 SUBDIRS = ksgrd SensorDisplayLib
 
 # set the include path for X, qt and KDE
-INCLUDES = -I$(srcdir)/ksgrd -I$(srcdir)/SensorDisplayLib -I$(top_builddir)/ksysguard/gui/SensorDisplayLib $(all_includes)
+INCLUDES = -I$(srcdir)/ksgrd -I$(srcdir)/SensorDisplayLib -I$(top_builddir)/ksysguard/gui/SensorDisplayLib -I$(top_builddir)/kicker/libkicker/ $(all_includes)
  
 ####### This part is very ksysguard specific
 # you can add here more. This one gets installed 
@@ -49,7 +49,7 @@ sysguard_panelapplet_la_SOURCES = \
 sysguard_panelapplet_la_LIBADD = \
 	ksgrd/libksgrd.la \
 	SensorDisplayLib/libsensordisplays.la \
-	$(LIB_KDEUI) $(LIB_KIO)
+	$(top_builddir)/kicker/libkicker/libkickermain.la $(LIB_KDEUI) $(LIB_KIO)
 sysguard_panelapplet_la_LDFLAGS = -module $(KDE_PLUGIN) $(all_libraries)
 
 EXTRA_DIST = $(lnk_DATA)

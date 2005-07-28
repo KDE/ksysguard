@@ -25,6 +25,9 @@
 #define KSG_DUMMYDISPLAY_H
 
 #include <SensorDisplay.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QEvent>
 
 class DummyDisplay : public KSGRD::SensorDisplay
 {

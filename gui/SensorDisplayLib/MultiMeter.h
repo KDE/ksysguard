@@ -25,8 +25,11 @@
 #define _MultiMeter_h_
 
 #include <SensorDisplay.h>
+//Added by qt3to4:
+#include <QLabel>
+#include <QResizeEvent>
 
-class QGroupBox;
+class Q3GroupBox;
 class QLCDNumber;
 class QLabel;
 class MultiMeterSettings;

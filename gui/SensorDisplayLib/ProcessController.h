@@ -24,8 +24,13 @@
 #ifndef _ProcessController_h_
 #define _ProcessController_h_
 
-#include <qdict.h>
+#include <q3dict.h>
 #include <qwidget.h>
+//Added by qt3to4:
+#include <QTimerEvent>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QResizeEvent>
 
 #include <kapplication.h>
 
@@ -143,7 +148,7 @@ private:
 	KPushButton* bKill;
 
 	/// Dictionary for header translations.
-	QDict<QString> dict;
+	Q3Dict<QString> dict;
 };
 
 #endif

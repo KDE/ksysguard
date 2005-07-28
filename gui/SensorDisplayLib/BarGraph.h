@@ -24,9 +24,11 @@
 #ifndef KSG_BARGRAPH_H
 #define KSG_BARGRAPH_H
 
-#include <qmemarray.h>
-#include <qptrvector.h>
+
+#include <q3ptrvector.h>
 #include <qwidget.h>
+//Added by qt3to4:
+#include <QPaintEvent>
 
 class BarGraph : public QWidget
 {
@@ -41,7 +43,7 @@ class BarGraph : public QWidget
     bool addBar( const QString &footer );
     bool removeBar( uint idx );
 
-    void updateSamples( const QMemArray<double> &newSamples );
+    void updateSamples( const QVector<double> &newSamples );
 
     double getMin() const
     {
@@ -82,7 +84,7 @@ class BarGraph : public QWidget
     double upperLimit;
     bool upperLimitActive;
     bool autoRange;
-    QMemArray<double> samples;
+    QVector<double> samples;
     QStringList footers;
     uint bars;
     QColor normalColor;

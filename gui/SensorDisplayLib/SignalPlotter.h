@@ -24,10 +24,13 @@
 #ifndef KSG_SIGNALPLOTTER_H
 #define KSG_SIGNALPLOTTER_H
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qstring.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qwidget.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QPaintEvent>
 
 #define GRAPH_POLYGON     0
 #define	GRAPH_ORIGINAL    1
@@ -43,13 +46,13 @@ class SignalPlotter : public QWidget
     ~SignalPlotter();
 
     bool addBeam( const QColor &color );
-    void addSample( const QValueList<double> &samples );
+    void addSample( const QList<double> &samples );
 
     void removeBeam( uint pos );
 
     void changeRange( int beam, double min, double max );
 
-    QValueList<QColor> &beamColors();
+    QList<QColor> &beamColors();
 
     void setTitle( const QString &title );
     QString title() const;
@@ -132,8 +135,8 @@ class SignalPlotter : public QWidget
 
     QColor mBackgroundColor;
 
-    QPtrList<double> mBeamData;
-    QValueList<QColor> mBeamColor;
+    Q3PtrList<double> mBeamData;
+    QList<QColor> mBeamColor;
 
     int mSamples;
 

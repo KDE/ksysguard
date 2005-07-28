@@ -24,7 +24,7 @@
 #ifndef KSG_WORKSPACE_H
 #define KSG_WORKSPACE_H
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qtabwidget.h>
 
 class KConfig;
@@ -73,7 +73,7 @@ class Workspace : public QTabWidget
     void setCaption( const QString &text, bool modified );
 
   private:
-    QPtrList<WorkSheet> mSheetList;
+    Q3PtrList<WorkSheet> mSheetList;
 
     // Directory that was used for the last load/save.
     QString mWorkDir;

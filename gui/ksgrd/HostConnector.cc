@@ -23,13 +23,16 @@
 #include <kcombobox.h>
 #include <klocale.h>
 
-#include <qbuttongroup.h>
+#include <q3buttongroup.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qradiobutton.h>
 #include <qspinbox.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+
+//Added by qt3to4:
+#include <Q3Frame>
+#include <QGridLayout>
 
 #include "HostConnector.h"
 
@@ -51,13 +54,13 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   mHostNames->setDuplicatesEnabled( false );
   layout->addWidget( mHostNames, 0, 1 );
   label->setBuddy( mHostNames );
-  QWhatsThis::add( mHostNames, i18n( "Enter the name of the host you want to connect to." ) );
+  mHostNames->setWhatsThis( i18n( "Enter the name of the host you want to connect to." ) );
 
   mHostNameLabel = new QLabel( page );
   mHostNameLabel->hide();
   layout->addWidget( mHostNameLabel, 0, 1 );
 
-  QButtonGroup *group = new QButtonGroup( 0, Qt::Vertical,
+  Q3ButtonGroup *group = new Q3ButtonGroup( 0, Qt::Vertical,
                                           i18n( "Connection Type" ), page );
   QGridLayout *groupLayout = new QGridLayout( group->layout(), 4, 4,
       spacingHint() );
@@ -66,19 +69,19 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   mUseSsh = new QRadioButton( i18n( "ssh" ), group );
   mUseSsh->setEnabled( true );
   mUseSsh->setChecked( true );
-  QWhatsThis::add( mUseSsh, i18n( "Select this to use the secure shell to login to the remote host." ) );
+  mUseSsh->setWhatsThis( i18n( "Select this to use the secure shell to login to the remote host." ) );
   groupLayout->addWidget( mUseSsh, 0, 0 );
 
   mUseRsh = new QRadioButton( i18n( "rsh" ), group );
-  QWhatsThis::add( mUseRsh, i18n( "Select this to use the remote shell to login to the remote host." ) );
+  mUseRsh->setWhatsThis( i18n( "Select this to use the remote shell to login to the remote host." ) );
   groupLayout->addWidget( mUseRsh, 0, 1 );
 
   mUseDaemon = new QRadioButton( i18n( "Daemon" ), group );
-  QWhatsThis::add( mUseDaemon, i18n( "Select this if you want to connect to a ksysguard daemon that is running on the machine you want to connect to, and is listening for client requests." ) );
+  mUseDaemon->setWhatsThis( i18n( "Select this if you want to connect to a ksysguard daemon that is running on the machine you want to connect to, and is listening for client requests." ) );
   groupLayout->addWidget( mUseDaemon, 0, 2 );
 
   mUseCustom = new QRadioButton( i18n( "Custom command" ), group );
-  QWhatsThis::add( mUseCustom, i18n( "Select this to use the command you entered below to start ksysguardd on the remote host." ) );
+  mUseCustom->setWhatsThis( i18n( "Select this to use the command you entered below to start ksysguardd on the remote host." ) );
   groupLayout->addWidget( mUseCustom, 0, 3 );
 
   label = new QLabel( i18n( "Port:" ), group );
@@ -102,7 +105,7 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   mCommands->setInsertionPolicy( QComboBox::AtTop );
   mCommands->setAutoCompletion( true );
   mCommands->setDuplicatesEnabled( false );
-  QWhatsThis::add( mCommands, i18n( "Enter the command that runs ksysguardd on the host you want to monitor." ) );
+  mCommands->setWhatsThis( i18n( "Enter the command that runs ksysguardd on the host you want to monitor." ) );
   groupLayout->addMultiCellWidget( mCommands, 2, 2, 2, 3 );
   label->setBuddy( mCommands );
 

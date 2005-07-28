@@ -23,10 +23,19 @@
 
 #include <qcheckbox.h>
 #include <qdom.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qspinbox.h>
-#include <qwhatsthis.h>
+
 #include <qbitmap.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <QFocusEvent>
+#include <Q3PtrList>
+#include <QEvent>
+#include <QTimerEvent>
+#include <QResizeEvent>
+#include <QMouseEvent>
+#include <QCustomEvent>
 
 #include <kapplication.h>
 #include <kdebug.h>
@@ -58,9 +67,9 @@ SensorDisplay::SensorDisplay( QWidget *parent, const char *name,
   mPlotterWdg = 0;
 
   setTimerOn( true );
-  QWhatsThis::add( this, "dummy" );
+  this->setWhatsThis( "dummy" );
 
-  mFrame = new QGroupBox( 2, Qt::Vertical, "", this, "displayFrame");
+  mFrame = new Q3GroupBox( 2, Qt::Vertical, "", this, "displayFrame");
 
   setTitle( title );
 
@@ -75,7 +84,7 @@ SensorDisplay::SensorDisplay( QWidget *parent, const char *name,
   /* Let's call updateWhatsThis() in case the derived class does not do
    * this. */
   updateWhatsThis();
-  setFocusPolicy( QWidget::StrongFocus );
+  setFocusPolicy( Qt::StrongFocus );
 }
 
 SensorDisplay::~SensorDisplay()
@@ -148,8 +157,8 @@ void SensorDisplay::resizeEvent( QResizeEvent* )
 bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
 {
   if ( event->type() == QEvent::MouseButtonPress &&
-     ( (QMouseEvent*)event)->button() == RightButton ) {
-    QPopupMenu pm;
+     ( (QMouseEvent*)event)->button() == Qt::RightButton ) {
+    Q3PopupMenu pm;
     if ( hasSettingsDialog() )
       pm.insertItem( i18n( "&Properties" ), 1 );
     pm.insertItem( i18n( "&Remove Display" ), 2 );
@@ -185,7 +194,7 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
 
     return true;
   } else if ( event->type() == QEvent::MouseButtonRelease &&
-            ( ( QMouseEvent*)event)->button() == LeftButton ) {
+            ( ( QMouseEvent*)event)->button() == Qt::LeftButton ) {
     setFocus();
   }
 
@@ -221,7 +230,7 @@ void SensorDisplay::sensorError( int sensorId, bool err )
 
 void SensorDisplay::updateWhatsThis()
 {
-  QWhatsThis::add( this, i18n(
+  this->setWhatsThis( i18n(
     "<qt><p>This is a sensor display. To customize a sensor display click "
     "and hold the right mouse button on either the frame or the "
     "display box and select the <i>Properties</i> entry from the popup "
@@ -382,7 +391,7 @@ bool SensorDisplay::modified() const
   return mModified;
 }
 
-QPtrList<SensorProperties> &SensorDisplay::sensors()
+Q3PtrList<SensorProperties> &SensorDisplay::sensors()
 {
   return mSensors;
 }
@@ -410,12 +419,13 @@ void SensorDisplay::setModified( bool value )
 
 void SensorDisplay::focusInEvent( QFocusEvent* )
 {
-  mFrame->setLineWidth( 2 );
+#warning "Port to qt4"		
+  //mFrame->setLineWidth( 2 );
 }
 
 void SensorDisplay::focusOutEvent( QFocusEvent* )
 {
-  mFrame->setLineWidth( 1 );
+  //mFrame->setLineWidth( 1 );
 }
 
 void SensorDisplay::setSensorOk( bool ok )
@@ -436,9 +446,12 @@ void SensorDisplay::setSensorOk( bool ok )
     mErrorIndicator = new QWidget( mPlotterWdg );
     mErrorIndicator->setErasePixmap( errorIcon );
     mErrorIndicator->resize( errorIcon.size() );
-    if ( errorIcon.mask() )
+#warning "Port to qt4 I don't know how to convert it"
+#if 0
+	if ( errorIcon.mask() )
       mErrorIndicator->setMask( *errorIcon.mask() );
-    mErrorIndicator->move( 0, 0 );
+#endif
+	mErrorIndicator->move( 0, 0 );
     mErrorIndicator->show();
   }
 }

@@ -24,7 +24,7 @@
 #ifndef KSG_SENSORCLIENT_H
 #define KSG_SENSORCLIENT_H
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qstring.h>
 
 namespace KSGRD {

@@ -26,6 +26,7 @@
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <qspinbox.h>
+#include <Q3DictIterator>
 
 #include <kapplication.h>
 #include <kdebug.h>
@@ -233,7 +234,7 @@ void SensorManager::requestDisengage( const SensorAgent *agent )
 
 bool SensorManager::disengage( const SensorAgent *agent )
 {
-  QDictIterator<SensorAgent> it( mAgents );
+  Q3DictIterator<SensorAgent> it( mAgents );
 
   for ( ; it.current(); ++it )
     if ( it.current() == agent ) {
@@ -333,7 +334,7 @@ bool SensorManager::sendRequest( const QString &hostName, const QString &req,
 
 const QString SensorManager::hostName( const SensorAgent *agent) const
 {
-  QDictIterator<SensorAgent> it( mAgents );
+  Q3DictIterator<SensorAgent> it( mAgents );
 	
   while ( it.current() ) {
     if ( it.current() == agent )
@@ -413,7 +414,7 @@ SensorManager::saveProperties( KConfig *cfg )
 
 void SensorManager::disconnectClient( SensorClient *client )
 {
-  QDictIterator<SensorAgent> it( mAgents );
+  Q3DictIterator<SensorAgent> it( mAgents );
 
   for ( ; it.current(); ++it)
     it.current()->disconnectClient( client );

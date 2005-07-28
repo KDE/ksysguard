@@ -24,10 +24,16 @@
 #ifndef KSG_SENSORDISPLAY_H
 #define KSG_SENSORDISPLAY_H
 
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qlabel.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qwidget.h>
+//Added by qt3to4:
+#include <QTimerEvent>
+#include <QFocusEvent>
+#include <QResizeEvent>
+#include <QEvent>
+#include <Q3PtrList>
 
 #include <knotifyclient.h>
 
@@ -263,7 +269,7 @@ class SensorDisplay : public QWidget, public SensorClient
     void setNoFrame( bool value );
     bool noFrame() const;
 
-    QPtrList<SensorProperties> &sensors();
+    Q3PtrList<SensorProperties> &sensors();
 
   private:
     void updateWhatsThis();
@@ -277,9 +283,9 @@ class SensorDisplay : public QWidget, public SensorClient
     int mUpdateInterval;
 
     // The frame around the other widgets.
-    QGroupBox* mFrame;
+    Q3GroupBox* mFrame;
 
-    QPtrList<SensorProperties> mSensors;
+    Q3PtrList<SensorProperties> mSensors;
 
     QString mTitle;
     QString mUnit;

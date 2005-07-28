@@ -25,6 +25,10 @@
 #include <klocale.h>
 
 #include "ReniceDlg.moc"
+//Added by qt3to4:
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 					 int pid)
@@ -54,11 +58,11 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 	sldLay = new QHBoxLayout();
 	vLay->addLayout(sldLay);
 
-	slider = new QSlider(-20, 19, 1, 0, QSlider::Horizontal, page, "prio" );
+	slider = new QSlider(-20, 19, 1, 0, Qt::Horizontal, page, "prio" );
 	slider->setMaximumSize(210, 25);
 	slider->setMinimumSize(210, 25);
-	slider->setTickmarks((QSlider::TickSetting) 2);
-	slider->setFocusPolicy(QWidget::TabFocus);
+	slider->setTickmarks(QSlider::TicksBelow);
+	slider->setFocusPolicy(Qt::TabFocus);
 	slider->setFixedHeight(slider->sizeHint().height());
 	slider->setValue(value);
 	sldLay->addWidget(slider);

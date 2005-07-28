@@ -21,9 +21,12 @@
 
 */
 
-#include <qdragobject.h>
+#include <q3dragobject.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+
+//Added by qt3to4:
+#include <QPixmap>
+#include <QMouseEvent>
 
 #include <kdebug.h>
 #include <kiconloader.h>
@@ -33,12 +36,12 @@
 
 #include "SensorBrowser.h"
 
-class HostItem : public QListViewItem
+class HostItem : public Q3ListViewItem
 {
   public:
     HostItem( SensorBrowser *parent, const QString &text, int id,
               KSGRD::SensorAgent *host)
-      : QListViewItem( parent, text ), mInited( false ), mId( id ),
+      : Q3ListViewItem( parent, text ), mInited( false ), mId( id ),
         mHost( host ), mParent( parent )
     {
       setExpandable( true );
@@ -52,7 +55,7 @@ class HostItem : public QListViewItem
         mHost->sendRequest( "monitors", mParent, mId );
       }
 
-      QListViewItem::setOpen( open );
+      Q3ListViewItem::setOpen( open );
     }
 
   private:
@@ -69,10 +72,10 @@ SensorBrowser::SensorBrowser( QWidget* parent, KSGRD::SensorManager* sm,
   mHostInfoList.setAutoDelete(true);
 
   connect( mSensorManager, SIGNAL( update() ), SLOT( update() ) );
-  connect( this, SIGNAL( clicked( QListViewItem* ) ),
-           SLOT( newItemSelected( QListViewItem* ) ) );
-  connect( this, SIGNAL( returnPressed( QListViewItem* ) ),
-           SLOT( newItemSelected( QListViewItem* ) ) );
+  connect( this, SIGNAL( clicked( Q3ListViewItem* ) ),
+           SLOT( newItemSelected( Q3ListViewItem* ) ) );
+  connect( this, SIGNAL( returnPressed( Q3ListViewItem* ) ),
+           SLOT( newItemSelected( Q3ListViewItem* ) ) );
 
   addColumn( i18n( "Sensor Browser" ) );
   addColumn( i18n( "Sensor Type" ) );
@@ -87,7 +90,7 @@ SensorBrowser::SensorBrowser( QWidget* parent, KSGRD::SensorManager* sm,
   // The sensor browser can be completely hidden.
   setMinimumWidth( 1 );
 
-  QWhatsThis::add( this, i18n( "The sensor browser lists the connected hosts and the sensors "
+  this->setWhatsThis( i18n( "The sensor browser lists the connected hosts and the sensors "
                                "that they provide. Click and drag sensors into drop zones "
                                "of a worksheet or the panel applet. A display will appear "
                                "that visualizes the "
@@ -103,7 +106,7 @@ SensorBrowser::~SensorBrowser()
 
 void SensorBrowser::disconnect()
 {
-  QPtrListIterator<HostInfo> it( mHostInfoList );
+  Q3PtrListIterator<HostInfo> it( mHostInfoList );
 
   for ( ; it.current(); ++it )
     if ( (*it)->listViewItem()->isSelected() ) {
@@ -142,7 +145,7 @@ void SensorBrowser::update()
   setMouseTracking( false );
 }
 
-void SensorBrowser::newItemSelected( QListViewItem *item )
+void SensorBrowser::newItemSelected( Q3ListViewItem *item )
 {
   static bool showAnnoyingPopup = true;
   if ( item && item->pixmap( 0 ) && showAnnoyingPopup)
@@ -164,7 +167,7 @@ void SensorBrowser::answerReceived( int id, const QString &answer )
      ps       table
   */
 
-  QPtrListIterator<HostInfo> it( mHostInfoList );
+  Q3PtrListIterator<HostInfo> it( mHostInfoList );
 
   /* Check if id is still valid. It can get obsolete by rapid calls
    * of update() or when the sensor died. */
@@ -200,13 +203,13 @@ void SensorBrowser::answerReceived( int id, const QString &answer )
      * depth of nodes. */
     KSGRD::SensorTokenizer absolutePath( sensorName, '/' );
 
-    QListViewItem* parent = (*it)->listViewItem();
+    Q3ListViewItem* parent = (*it)->listViewItem();
     for ( uint j = 0; j < absolutePath.count(); ++j ) {
       // Localize the sensor name part by part.
       QString name = KSGRD::SensorMgr->translateSensorPath( absolutePath[ j ] );
 
       bool found = false;
-      QListViewItem* sibling = parent->firstChild();
+      Q3ListViewItem* sibling = parent->firstChild();
       while ( sibling && !found ) {
         if (sibling->text( 0 ) == name ) {
           // The node or sensor is already known.
@@ -215,7 +218,7 @@ void SensorBrowser::answerReceived( int id, const QString &answer )
           sibling = sibling->nextSibling();
       }
       if ( !found ) {
-        QListViewItem* lvi = new QListViewItem( parent, name );
+        Q3ListViewItem* lvi = new Q3ListViewItem( parent, name );
         if ( j == absolutePath.count() - 1 ) {
           QPixmap pix = mIconLoader->loadIcon( "ksysguardd", KIcon::Desktop,
                                                KIcon::SizeSmall );
@@ -243,15 +246,15 @@ void SensorBrowser::viewportMouseMoveEvent( QMouseEvent *e )
    * mouse tracking cannot be turned off. So we have to check each event
    * whether the LMB is really pressed. */
 
-  if ( !( e->state() & LeftButton ) )
+  if ( !( e->state() & Qt::LeftButton ) )
     return;
 
-  QListViewItem* item = itemAt( e->pos() );
+  Q3ListViewItem* item = itemAt( e->pos() );
   if ( !item ) // no item under cursor
     return;
 
   // Make sure that a sensor and not a node or hostname has been picked.
-  QPtrListIterator<HostInfo> it( mHostInfoList );
+  Q3PtrListIterator<HostInfo> it( mHostInfoList );
   for ( ; it.current() && !(*it)->isRegistered( item ); ++it );
   if ( !it.current() )
     return;
@@ -264,7 +267,7 @@ void SensorBrowser::viewportMouseMoveEvent( QMouseEvent *e )
               (*it)->sensorType( item ) + " " +
               (*it)->sensorDescription( item );
 
-  QDragObject* dragObject = new QTextDrag( mDragText, this );
+  Q3DragObject* dragObject = new Q3TextDrag( mDragText, this );
   dragObject->dragCopy();
 }
 
@@ -272,7 +275,7 @@ QStringList SensorBrowser::listHosts()
 {
   QStringList hostList;
 
-  QPtrListIterator<HostInfo> it( mHostInfoList );
+  Q3PtrListIterator<HostInfo> it( mHostInfoList );
   for ( ; it.current(); ++it )
     hostList.append( (*it)->hostName() );
 
@@ -281,7 +284,7 @@ QStringList SensorBrowser::listHosts()
 
 QStringList SensorBrowser::listSensors( const QString &hostName )
 {
-  QPtrListIterator<HostInfo> it( mHostInfoList );
+  Q3PtrListIterator<HostInfo> it( mHostInfoList );
   for ( ; it.current(); ++it ) {
     if ( (*it)->hostName() == hostName ) {
       return (*it)->allSensorNames();
@@ -294,13 +297,13 @@ QStringList SensorBrowser::listSensors( const QString &hostName )
 /**
  Helper classes
  */
-SensorInfo::SensorInfo( QListViewItem *lvi, const QString &name,
+SensorInfo::SensorInfo( Q3ListViewItem *lvi, const QString &name,
                         const QString &desc, const QString &type )
   : mLvi( lvi ), mName( name ), mDesc( desc ), mType( type )
 {
 }
 
-QListViewItem* SensorInfo::listViewItem() const
+Q3ListViewItem* SensorInfo::listViewItem() const
 {
   return mLvi;
 }
@@ -321,7 +324,7 @@ const QString& SensorInfo::description() const
 }
 
 HostInfo::HostInfo( int id, const KSGRD::SensorAgent *agent,
-                    const QString &name, QListViewItem *lvi )
+                    const QString &name, Q3ListViewItem *lvi )
   : mId( id ), mSensorAgent( agent ), mHostName( name ), mLvi( lvi )
 {
   mSensorList.setAutoDelete( true );
@@ -342,14 +345,14 @@ const QString& HostInfo::hostName() const
   return mHostName;
 }
 
-QListViewItem* HostInfo::listViewItem() const
+Q3ListViewItem* HostInfo::listViewItem() const
 {
   return mLvi;
 }
 
-const QString& HostInfo::sensorName( const QListViewItem *lvi ) const
+const QString& HostInfo::sensorName( const Q3ListViewItem *lvi ) const
 {
-  QPtrListIterator<SensorInfo> it( mSensorList );
+  Q3PtrListIterator<SensorInfo> it( mSensorList );
   for ( ; it.current() && (*it)->listViewItem() != lvi; ++it );
 
   Q_ASSERT( it.current() );
@@ -360,32 +363,32 @@ QStringList HostInfo::allSensorNames() const
 {
   QStringList list;
 
-  QPtrListIterator<SensorInfo> it( mSensorList );
+  Q3PtrListIterator<SensorInfo> it( mSensorList );
   for ( ; it.current(); ++it )
     list.append( it.current()->name() );
 
   return list;
 }
 
-const QString& HostInfo::sensorType( const QListViewItem *lvi ) const
+const QString& HostInfo::sensorType( const Q3ListViewItem *lvi ) const
 {
-  QPtrListIterator<SensorInfo> it( mSensorList );
+  Q3PtrListIterator<SensorInfo> it( mSensorList );
   for ( ; it.current() && (*it)->listViewItem() != lvi; ++it );
 
   Q_ASSERT( it.current() );
   return ( (*it)->type() );
 }
 
-const QString& HostInfo::sensorDescription( const QListViewItem *lvi ) const
+const QString& HostInfo::sensorDescription( const Q3ListViewItem *lvi ) const
 {
-  QPtrListIterator<SensorInfo> it( mSensorList );
+  Q3PtrListIterator<SensorInfo> it( mSensorList );
   for ( ; it.current() && (*it)->listViewItem() != lvi; ++it );
 
   Q_ASSERT( it.current() );
   return ( (*it)->description() );
 }
 
-void HostInfo::addSensor( QListViewItem *lvi, const QString& name,
+void HostInfo::addSensor( Q3ListViewItem *lvi, const QString& name,
                           const QString& desc, const QString& type )
 {
   SensorInfo* info = new SensorInfo( lvi, name, desc, type );
@@ -394,7 +397,7 @@ void HostInfo::addSensor( QListViewItem *lvi, const QString& name,
 
 bool HostInfo::isRegistered( const QString& name ) const
 {
-  QPtrListIterator<SensorInfo> it( mSensorList );
+  Q3PtrListIterator<SensorInfo> it( mSensorList );
   for ( ; it.current(); ++it )
     if ( (*it)->name() == name )
       return true;
@@ -402,9 +405,9 @@ bool HostInfo::isRegistered( const QString& name ) const
   return false;
 }
 
-bool HostInfo::isRegistered( QListViewItem *lvi ) const
+bool HostInfo::isRegistered( Q3ListViewItem *lvi ) const
 {
-  QPtrListIterator<SensorInfo> it( mSensorList );
+  Q3PtrListIterator<SensorInfo> it( mSensorList );
   for ( ; it.current(); ++it )
     if ( (*it)->listViewItem() == lvi )
       return true;

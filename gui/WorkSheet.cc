@@ -23,8 +23,15 @@
 
 #include <qclipboard.h>
 #include <qcursor.h>
-#include <qdragobject.h>
+#include <q3dragobject.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <QTextStream>
+#include <QGridLayout>
+#include <QEvent>
+#include <QDropEvent>
+#include <QDragEnterEvent>
+#include <QCustomEvent>
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -89,7 +96,7 @@ bool WorkSheet::load( const QString &fileName )
 
   mFileName = fileName;
   QFile file( mFileName );
-  if ( !file.open( IO_ReadOnly ) ) {
+  if ( !file.open( QIODevice::ReadOnly ) ) {
     KMessageBox::sorry( this, i18n( "Cannot open the file %1." ).arg( mFileName ) );
     return false;
   }
@@ -128,7 +135,7 @@ bool WorkSheet::load( const QString &fileName )
 
   createGrid( rows, columns );
 
-  uint i;
+  int i;
   /* Load lists of hosts that are needed for the work sheet and try
    * to establish a connection. */
   QDomNodeList dnList = element.elementsByTagName( "host" );
@@ -217,7 +224,7 @@ bool WorkSheet::save( const QString &fileName )
       }
 
   QFile file( mFileName );
-  if ( !file.open( IO_WriteOnly ) ) {
+  if ( !file.open( QIODevice::WriteOnly ) ) {
     KMessageBox::sorry( this, i18n( "Cannot save file %1" ).arg( mFileName ) );
     return false;
   }
@@ -414,14 +421,14 @@ void WorkSheet::applyStyle()
 
 void WorkSheet::dragEnterEvent( QDragEnterEvent *e )
 {
-  e->accept( QTextDrag::canDecode( e ) );
+  e->accept( Q3TextDrag::canDecode( e ) );
 }
 
 void WorkSheet::dropEvent( QDropEvent *e )
 {
   QString dragObject;
 
-  if ( QTextDrag::decode( e, dragObject) ) {
+  if ( Q3TextDrag::decode( e, dragObject) ) {
     // The host name, sensor name and type are seperated by a ' '.
     QStringList parts = QStringList::split( ' ', dragObject );
 

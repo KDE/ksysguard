@@ -76,7 +76,7 @@ void SensorAgent::processAnswer( const QString &buffer )
   kdDebug(1215) << "<- " << buffer << endl;
 #endif
 
-  for ( uint i = 0; i < buffer.length(); i++ ) {
+  for ( int i = 0; i < buffer.length(); i++ ) {
     if ( buffer[ i ] == '\033' ) {
       mState = ( mState + 1 ) & 1;
       if ( !mErrorBuffer.isEmpty() && mState == 0 ) {

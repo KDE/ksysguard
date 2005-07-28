@@ -36,9 +36,13 @@
 #include <unistd.h>
 
 #include <qbitmap.h>
-#include <qheader.h>
+#include <q3header.h>
 #include <qimage.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3PtrList>
+#include <Q3ValueList>
 
 #include <kdebug.h>
 #include <kglobal.h>
@@ -57,9 +61,9 @@
 //extern const char* timeKey(const char* text);
 //extern const char* floatKey(const char* text);
 
-QDict<QString> ProcessList::aliases;
+Q3Dict<QString> ProcessList::aliases;
 
-int ProcessLVI::compare( QListViewItem *item, int col, bool ascending ) const
+int ProcessLVI::compare( Q3ListViewItem *item, int col, bool ascending ) const
 {
   int type = ((ProcessList*)listView())->columnType( col );
 
@@ -215,9 +219,9 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 
 	/* We need to catch this signal to show various popup menues. */
 	connect(this,
-			SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)),
+			SIGNAL(rightButtonPressed(Q3ListViewItem*, const QPoint&, int)),
 			this,
-			SLOT(handleRMBPressed(QListViewItem*, const QPoint&, int)));
+			SLOT(handleRMBPressed(Q3ListViewItem*, const QPoint&, int)));
 
 	/* Since Qt does not tell us the sorting details we have to do our
 	 * own bookkeping, so we can save and restore the sorting
@@ -246,7 +250,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	setSelectionMode(QListView::Extended);
 
 	// Create popup menu for RMB clicks on table header
-	headerPM = new QPopupMenu();
+	headerPM = new Q3PopupMenu();
 	headerPM->insertItem(i18n("Remove Column"), HEADER_REMOVE);
 	headerPM->insertItem(i18n("Add Column"), HEADER_ADD);
 	headerPM->insertItem(i18n("Help on Column"), HEADER_HELP);
@@ -258,6 +262,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 
 	killSupported = false;
 	setModified(false);
+	savedWidth.append(0); //Make sure [0] is there
 }
 
 ProcessList::~ProcessList()
@@ -268,12 +273,12 @@ ProcessList::~ProcessList()
 	delete(headerPM);
 }
 
-const QValueList<int>&
+const Q3ValueList<int>&
 ProcessList::getSelectedPIds()
 {
 	selectedPIds.clear();
 	// iterate through all items of the listview and find selected processes
-	QListViewItemIterator it(this);
+	Q3ListViewItemIterator it(this);
 	for ( ; it.current(); ++it )
 		if (it.current()->isSelected())
 			selectedPIds.append(it.current()->text(1).toInt());
@@ -386,7 +391,7 @@ bool
 ProcessList::load(QDomElement& el)
 {
 	QDomNodeList dnList = el.elementsByTagName("column");
-	for (uint i = 0; i < dnList.count(); ++i)
+	for (int i = 0; i < dnList.count(); ++i)
 	{
 		QDomElement lel = dnList.item(i).toElement();
 		if (savedWidth.count() <= i)
@@ -439,7 +444,7 @@ ProcessList::sortingChanged(int col)
 	setModified(true);
 }
 
-int ProcessList::columnType( uint pos ) const
+int ProcessList::columnType( int pos ) const
 {
   if ( pos >= mColumnTypes.count() )
     return 0;
@@ -558,7 +563,7 @@ ProcessList::isLeafProcess(int pid)
 }
 
 void
-ProcessList::extendTree(QPtrList<KSGRD::SensorPSLine>* pl, ProcessLVI* parent, int ppid)
+ProcessList::extendTree(Q3PtrList<KSGRD::SensorPSLine>* pl, ProcessLVI* parent, int ppid)
 {
 	KSGRD::SensorPSLine* ps;
 
@@ -634,13 +639,13 @@ ProcessList::addProcess(KSGRD::SensorPSLine* p, ProcessLVI* pli)
 		/* We copy the icon into a 24x16 pixmap to add a 4 pixel margin on
 		 * the left and right side. In tree view mode we use the original
 		 * icon. */
-		QPixmap icon(24, 16, pix.depth());
+		QPixmap icon(24, 16);
 		if (!treeViewEnabled)
 		{
 			icon.fill();
 			bitBlt(&icon, 4, 0, &pix, 0, 0, pix.width(), pix.height());
 			QBitmap mask(24, 16, true);
-			bitBlt(&mask, 4, 0, pix.mask(), 0, 0, pix.width(), pix.height());
+			bitBlt(&mask, 4, 0, &pix.mask(), 0, 0, pix.width(), pix.height());
 			icon.setMask(mask);
 			pix = icon;
 		}
@@ -673,7 +678,7 @@ ProcessList::updateMetaInfo(void)
 	selectedPIds.clear();
 	closedSubTrees.clear();
 
-	QListViewItemIterator it(this);
+	Q3ListViewItemIterator it(this);
 
 	// iterate through all items of the listview
 	for ( ; it.current(); ++it )
@@ -706,16 +711,16 @@ ProcessList::removeColumns(void)
 void
 ProcessList::addColumn(const QString& label, const QString& type)
 {
-	QListView::addColumn(label);
-	uint col = columns() - 1;
+	Q3ListView::addColumn(label);
+	int col = columns() - 1;
 	if (type == "s" || type == "S")
-		setColumnAlignment(col, AlignLeft);
+		setColumnAlignment(col, Qt::AlignLeft);
 	else if (type == "d" || type == "D")
-		setColumnAlignment(col, AlignRight);
+		setColumnAlignment(col, Qt::AlignRight);
 	else if (type == "t")
-		setColumnAlignment(col, AlignRight);
+		setColumnAlignment(col, Qt::AlignRight);
 	else if (type == "f")
-		setColumnAlignment(col, AlignRight);
+		setColumnAlignment(col, Qt::AlignRight);
 	else
 	{
 		kdDebug(1215) << "Unknown type " << type << " of column " << label
@@ -733,7 +738,7 @@ ProcessList::addColumn(const QString& label, const QString& type)
 	{
 		/* Table has been loaded from file. We can restore the settings
 		 * when the last column has been added. */
-		for (uint i = 0; i < col; ++i)
+		for (int i = 0; i < col; ++i)
 		{
 			/* In case the language has been changed the column width
 			 * might need to be increased. */
@@ -751,7 +756,7 @@ ProcessList::addColumn(const QString& label, const QString& type)
 					setColumnWidth(i, currentWidth[i]);
 			}
 			setColumnWidthMode(i, currentWidth[i] == 0 ?
-							   QListView::Manual : QListView::Maximum);
+							   Q3ListView::Manual : Q3ListView::Maximum);
 			header()->moveSection(i, index[i]);
 		}
 		setSorting(sortColumn, increasing);
@@ -759,7 +764,7 @@ ProcessList::addColumn(const QString& label, const QString& type)
 }
 
 void
-ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
+ProcessList::handleRMBPressed(Q3ListViewItem* lvi, const QPoint& p, int col)
 {
 	if (!lvi)
 		return;
@@ -776,10 +781,10 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 		if (QString::compare(header()->label(i), i18n("Nice")) == 0)
 			currentNiceValue = lvi->text(i).toInt();
 
-	processPM = new QPopupMenu();
+	processPM = new Q3PopupMenu();
   if (columnWidth(col) != 0)
   	processPM->insertItem(i18n("Hide Column"), 5);
-	QPopupMenu* hiddenPM = new QPopupMenu(processPM);
+	Q3PopupMenu* hiddenPM = new Q3PopupMenu(processPM);
 	for (int i = 0; i < columns(); ++i)
 		if (columnWidth(i) == 0)
 			hiddenPM->insertItem(header()->label(i), i + 100);
@@ -790,7 +795,7 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 	processPM->insertItem(i18n("Select All Processes"), 1);
 	processPM->insertItem(i18n("Unselect All Processes"), 2);
 
-	QPopupMenu* signalPM = new QPopupMenu(processPM);
+	Q3PopupMenu* signalPM = new Q3PopupMenu(processPM);
 	if (killSupported && lvi->isSelected())
 	{
 		processPM->insertSeparator();
@@ -843,7 +848,7 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 		selectAllChilds(currentPId, id & 1);
 		break;
 	case 5:
-		setColumnWidthMode(col, QListView::Manual);
+		setColumnWidthMode(col, Q3ListView::Manual);
 		savedWidth[col] = columnWidth(col);
 		setColumnWidth(col, 0);
 		setModified(true);
@@ -867,7 +872,7 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 			/* we go through list to get all task also
 			   when update interval is paused */
 			selectedPIds.clear();
-			QListViewItemIterator it(this);
+			Q3ListViewItemIterator it(this);
 
 			// iterate through all items of the listview
 			for ( ; it.current(); ++it )
@@ -886,7 +891,7 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 			{
 			case KMessageBox::Yes:
 			{
-				QValueList<int>::Iterator it;
+				Q3ValueList<int>::Iterator it;
 				for (it = selectedPIds.begin(); it != selectedPIds.end(); ++it)
 					emit (killProcess(*it, id));
 				break;
@@ -899,7 +904,7 @@ ProcessList::handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col)
 		{
 			/* IDs >= 100 are used for hidden columns. */
 			int col = id - 100;
-			setColumnWidthMode(col, QListView::Maximum);
+			setColumnWidthMode(col, Q3ListView::Maximum);
 			setColumnWidth(col, savedWidth[col]);
 			setModified(true);
 		}
@@ -912,7 +917,7 @@ ProcessList::selectAllItems(bool select)
 {
 	selectedPIds.clear();
 
-	QListViewItemIterator it(this);
+	Q3ListViewItemIterator it(this);
 
 	// iterate through all items of the listview
 	for ( ; it.current(); ++it )
@@ -927,7 +932,7 @@ ProcessList::selectAllItems(bool select)
 void
 ProcessList::selectAllChilds(int pid, bool select)
 {
-	QListViewItemIterator it(this);
+	Q3ListViewItemIterator it(this);
 
 	// iterate through all items of the listview
 	for ( ; it.current(); ++it )

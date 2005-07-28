@@ -25,7 +25,9 @@
 #include <qregexp.h>
 
 #include <qfile.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
+//Added by qt3to4:
+#include <QResizeEvent>
 
 #include <kfontdialog.h>
 #include <kdebug.h>
@@ -39,7 +41,7 @@
 LogFile::LogFile(QWidget *parent, const char *name, const QString& title)
 	: KSGRD::SensorDisplay(parent, name, title)
 {
-	monitor = new QListBox(this);
+	monitor = new Q3ListBox(this);
 	Q_CHECK_PTR(monitor);
 
 	setMinimumSize(50, 25);

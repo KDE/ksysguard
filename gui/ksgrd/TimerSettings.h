@@ -25,6 +25,8 @@
 #define KSG_TIMERSETTINGS_H
 
 #include <kdialogbase.h>
+//Added by qt3to4:
+#include <QLabel>
 
 class QCheckBox;
 class QLabel;

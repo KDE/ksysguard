@@ -91,7 +91,7 @@ void DancingBars::configureSettings()
   mSettingsDialog->setBackgroundColor( mPlotter->backgroundColor );
   mSettingsDialog->setFontSize( mPlotter->fontSize );
 
-  QValueList< QStringList > list;
+  QList< QStringList > list;
   for ( uint i = mBars - 1; i < mBars; i-- ) {
     QStringList entry;
     entry << sensors().at( i )->hostName();
@@ -129,8 +129,8 @@ void DancingBars::applySettings()
   mPlotter->backgroundColor = mSettingsDialog->backgroundColor();
   mPlotter->fontSize = mSettingsDialog->fontSize();
 
-  QValueList< QStringList > list = mSettingsDialog->sensors();
-  QValueList< QStringList >::Iterator it;
+  QList< QStringList > list = mSettingsDialog->sensors();
+  QList< QStringList >::Iterator it;
 
   for ( uint i = 0; i < sensors().count(); i++ ) {
     bool found = false;
@@ -218,7 +218,7 @@ bool DancingBars::removeSensor( uint pos )
   return true;
 }
 
-void DancingBars::updateSamples( const QMemArray<double> &samples )
+void DancingBars::updateSamples( const QVector<double> &samples )
 {
   mPlotter->updateSamples( samples );
 }
@@ -294,7 +294,7 @@ bool DancingBars::restoreSettings( QDomElement &element )
                                           KSGRD::Style->fontSize() ) ).toInt();
 
   QDomNodeList dnList = element.elementsByTagName( "beam" );
-  for ( uint i = 0; i < dnList.count(); ++i ) {
+  for ( int i = 0; i < dnList.count(); ++i ) {
     QDomElement el = dnList.item( i ).toElement();
     addSensor( el.attribute( "hostName" ), el.attribute( "sensorName" ),
                ( el.attribute( "sensorType" ).isEmpty() ? "integer" :

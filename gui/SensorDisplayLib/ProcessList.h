@@ -25,12 +25,16 @@
 #ifndef _ProcessList_h_
 #define _ProcessList_h_
 
-#include <qdict.h>
+#include <q3dict.h>
 #include <qdom.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qstringlist.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qwidget.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3PopupMenu>
+#include <Q3PtrList>
 
 #include <kiconloader.h>
 #include <klistview.h>
@@ -43,16 +47,16 @@ typedef const char* (*KeyFunc)(const char*);
  * To support bi-directional sorting, and sorting of text, integers etc. we
  * need a specialized version of QListViewItem.
  */
-class ProcessLVI : public QListViewItem
+class ProcessLVI : public Q3ListViewItem
 {
 public:
-	ProcessLVI(QListView* lv) : QListViewItem(lv) { }
-	ProcessLVI(QListViewItem* lvi) : QListViewItem(lvi) { }
+	ProcessLVI(Q3ListView* lv) : Q3ListViewItem(lv) { }
+	ProcessLVI(Q3ListViewItem* lvi) : Q3ListViewItem(lvi) { }
 
-	virtual int compare( QListViewItem *item, int column, bool ) const;
+	virtual int compare( Q3ListViewItem *item, int column, bool ) const;
 };
 
-class QPopupMenu;
+class Q3PopupMenu;
 
 /**
  * This class implementes a table filled with information about the running
@@ -101,7 +105,7 @@ public:
 		return increasing;
 	}
 
-	const QValueList<int>& getSelectedPIds();
+	const Q3ValueList<int>& getSelectedPIds();
 	const QStringList& getSelectedAsStrings();
 
 	/**
@@ -112,7 +116,7 @@ public:
 	 */
 	bool update(const QString& list);
 
-	int columnType( uint col ) const;
+	int columnType( int col ) const;
 
 	void setSensorOk(bool ok);
 
@@ -141,7 +145,7 @@ public slots:
 
 	void sortingChanged(int col);
 
-	void handleRMBPressed(QListViewItem* lvi, const QPoint& p, int col);
+	void handleRMBPressed(Q3ListViewItem* lvi, const QPoint& p, int col);
 
 	void sizeChanged(int, int, int)
 	{
@@ -225,7 +229,7 @@ private:
 	 * removing processes from the process list an inserting them into
 	 * the tree.
 	 */
-	void extendTree(QPtrList<KSGRD::SensorPSLine>* pl, ProcessLVI* parent, int ppid);
+	void extendTree(Q3PtrList<KSGRD::SensorPSLine>* pl, ProcessLVI* parent, int ppid);
 
 	/**
 	 * This function adds a process to the list/tree.
@@ -248,26 +252,26 @@ private:
 
 	/* The following lists are primarily used to store table specs between
 	 * load() and the actual table creation in addColumn(). */
-	QValueList<int> savedWidth;
-	QValueList<int> currentWidth;
-	QValueList<int> index;
+	Q3ValueList<int> savedWidth;
+	Q3ValueList<int> currentWidth;
+	Q3ValueList<int> index;
 
-	QPtrList<KSGRD::SensorPSLine> pl;
+	Q3PtrList<KSGRD::SensorPSLine> pl;
 
 	QStringList mColumnTypes;
-	QDict<QString> columnDict;
+	Q3Dict<QString> columnDict;
 
-	QValueList<int> selectedPIds;
-	QValueList<int> closedSubTrees;
+	Q3ValueList<int> selectedPIds;
+	Q3ValueList<int> closedSubTrees;
 	QStringList selectedAsStrings;
 
-	static QDict<QString> aliases;
+	static Q3Dict<QString> aliases;
 
-	QDict<QPixmap> iconCache;
+	Q3Dict<QPixmap> iconCache;
 
 	KIconLoader* icons;
-	QPopupMenu* processPM;
-	QPopupMenu* headerPM;
+	Q3PopupMenu* processPM;
+	Q3PopupMenu* headerPM;
 };
 
 #endif

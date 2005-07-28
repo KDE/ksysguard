@@ -25,12 +25,15 @@
 #define KSG_DANCINGBARS_H
 
 #include <SensorDisplay.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QVector>
 
 class KIntNumInput;
 
-class QGroupBox;
+class Q3GroupBox;
 class QLineEdit;
-class QListViewItem;
+class Q3ListViewItem;
 
 class BarGraph;
 class DancingBarsSettings;
@@ -51,7 +54,7 @@ class DancingBars : public KSGRD::SensorDisplay
                     const QString &type, const QString &title );
     bool removeSensor( uint pos );
 
-    void updateSamples( const QMemArray<double> &samples );
+    void updateSamples( const QVector<double> &samples );
 
     virtual QSize sizeHint();
 
@@ -82,7 +85,7 @@ class DancingBars : public KSGRD::SensorDisplay
       received. The flags variable is used to ensure that all samples have
       been received.
      */
-    QMemArray<double> mSampleBuffer;
+    QVector<double> mSampleBuffer;
     ulong mFlags;
 };
 

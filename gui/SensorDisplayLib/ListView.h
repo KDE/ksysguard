@@ -24,8 +24,12 @@
 #ifndef _ListView_h_
 #define _ListView_h_
 
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qpainter.h>
+//Added by qt3to4:
+#include <QLabel>
+#include <QTimerEvent>
+#include <QResizeEvent>
 
 #include <SensorDisplay.h>
 
@@ -35,7 +39,7 @@ class QLabel;
 class QBoxGroup;
 class ListViewSettings;
 
-class PrivateListView : public QListView
+class PrivateListView : public Q3ListView
 {
 	Q_OBJECT
 public:
@@ -52,21 +56,21 @@ private:
   QStringList mColumnTypes;
 };
 
-class PrivateListViewItem : public QListViewItem
+class PrivateListViewItem : public Q3ListViewItem
 {
 public:
 	PrivateListViewItem(PrivateListView *parent = 0);
 
 	void paintCell(QPainter *p, const QColorGroup &, int column, int width, int alignment) {
 		QColorGroup cgroup = _parent->colorGroup();
-		QListViewItem::paintCell(p, cgroup, column, width, alignment);
+		Q3ListViewItem::paintCell(p, cgroup, column, width, alignment);
 		p->setPen(cgroup.color(QColorGroup::Link));
 		p->drawLine(0, height() - 1, width - 1, height() - 1);
 	}
 
 	void paintFocus(QPainter *, const QColorGroup, const QRect) {}
 
-	virtual int compare( QListViewItem*, int column, bool ascending ) const;
+	virtual int compare( Q3ListViewItem*, int column, bool ascending ) const;
 
 private:
 	QWidget *_parent;

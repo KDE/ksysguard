@@ -18,6 +18,8 @@
 
 */
 
+#include <QTextStream>
+
 #include <kapplication.h>
 #include <kiconloader.h>
 #include <klocale.h>
@@ -28,12 +30,12 @@
 #include "SensorLogger.moc"
 #include "SensorLoggerSettings.h"
 
-SLListViewItem::SLListViewItem(QListView *parent)
-	: QListViewItem(parent)
+SLListViewItem::SLListViewItem(Q3ListView *parent)
+	: Q3ListViewItem(parent)
 {
 }
 
-LogSensor::LogSensor(QListView *parent)
+LogSensor::LogSensor(Q3ListView *parent)
 	: timerID( NONE ), lowerLimitActive( 0 ), upperLimitActive( 0 ),
 	  lowerLimit( 0 ), upperLimit( 0 )
 {
@@ -131,7 +133,7 @@ LogSensor::answerReceived(int id, const QString& answer)
 SensorLogger::SensorLogger(QWidget *parent, const char *name, const QString& title)
 	: KSGRD::SensorDisplay(parent, name, title)
 {
-	monitor = new QListView(this, "monitor");
+	monitor = new Q3ListView(this, "monitor");
 	Q_CHECK_PTR(monitor);
 
 	monitor->addColumn(i18n("Logging"));
@@ -145,9 +147,9 @@ SensorLogger::SensorLogger(QWidget *parent, const char *name, const QString& tit
 	cgroup.setColor(QColorGroup::Base, KSGRD::Style->backgroundColor());
 	cgroup.setColor(QColorGroup::Foreground, KSGRD::Style->alarmColor());
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
-	monitor->setSelectionMode(QListView::NoSelection);
+	monitor->setSelectionMode(Q3ListView::NoSelection);
 
-	connect(monitor, SIGNAL(rightButtonClicked(QListViewItem*, const QPoint&, int)), this, SLOT(RMBClicked(QListViewItem*, const QPoint&, int)));
+	connect(monitor, SIGNAL(rightButtonClicked(Q3ListViewItem*, const QPoint&, int)), this, SLOT(RMBClicked(Q3ListViewItem*, const QPoint&, int)));
 
 	setTitle(i18n("Sensor Logger"));
 
@@ -293,7 +295,7 @@ SensorLogger::restoreSettings(QDomElement& element)
 	logSensors.clear();
 
 	QDomNodeList dnList = element.elementsByTagName("logsensors");
-	for (uint i = 0; i < dnList.count(); i++) {
+	for (int i = 0; i < dnList.count(); i++) {
 		QDomElement element = dnList.item(i).toElement();
 		LogSensor* sensor = new LogSensor(monitor);
 		Q_CHECK_PTR(sensor);
@@ -361,7 +363,7 @@ SensorLogger::resizeEvent(QResizeEvent*)
 }
 
 LogSensor*
-SensorLogger::getLogSensor(QListViewItem* item)
+SensorLogger::getLogSensor(Q3ListViewItem* item)
 {
 	for (LogSensor* sensor = logSensors.first(); sensor != 0; sensor = logSensors.next())
 	{
@@ -374,9 +376,9 @@ SensorLogger::getLogSensor(QListViewItem* item)
 }
 
 void
-SensorLogger::RMBClicked(QListViewItem* item, const QPoint& point, int)
+SensorLogger::RMBClicked(Q3ListViewItem* item, const QPoint& point, int)
 {
-	QPopupMenu pm;
+	Q3PopupMenu pm;
 	if (hasSettingsDialog())
 		pm.insertItem(i18n("&Properties"), 1);
 	pm.insertItem(i18n("&Remove Display"), 2);

@@ -49,7 +49,7 @@ void DummyDisplay::resizeEvent( QResizeEvent* )
 bool DummyDisplay::eventFilter( QObject* object, QEvent* event )
 {
   if ( event->type() == QEvent::MouseButtonRelease &&
-       ( (QMouseEvent*)event)->button() == LeftButton )
+       ( (QMouseEvent*)event)->button() == Qt::LeftButton )
     setFocus();
 
 	return QWidget::eventFilter( object, event );

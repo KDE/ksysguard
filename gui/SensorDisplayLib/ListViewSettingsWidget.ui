@@ -56,7 +56,7 @@
                 <string>Colors</string>
             </property>
             <property name="alignment">
-                <set>WordBreak|AlignVCenter|AlignLeft</set>
+                <set>Qt::TextWordWrap|Qt::AlignVCenter|Qt::AlignLeft</set>
             </property>
             <property name="vAlign" stdset="0">
             </property>
@@ -117,9 +117,9 @@
                             </property>
                             <property name="color">
                                 <color>
-                                    <red>0</red>
-                                    <green>255</green>
-                                    <blue>0</blue>
+                                    <Qt::red>0</Qt::red>
+                                    <Qt::green>255</Qt::green>
+                                    <Qt::blue>0</Qt::blue>
                                 </color>
                             </property>
                         </widget>
@@ -132,9 +132,9 @@
                             </property>
                             <property name="color">
                                 <color>
-                                    <red>0</red>
-                                    <green>0</green>
-                                    <blue>0</blue>
+                                    <Qt::red>0</Qt::red>
+                                    <Qt::green>0</Qt::green>
+                                    <Qt::blue>0</Qt::blue>
                                 </color>
                             </property>
                         </widget>
@@ -147,9 +147,9 @@
                             </property>
                             <property name="color">
                                 <color>
-                                    <red>255</red>
-                                    <green>0</green>
-                                    <blue>0</blue>
+                                    <Qt::red>255</Qt::red>
+                                    <Qt::green>0</Qt::green>
+                                    <Qt::blue>0</Qt::blue>
                                 </color>
                             </property>
                         </widget>

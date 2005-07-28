@@ -37,7 +37,7 @@ BarGraph::BarGraph( QWidget *parent, const char *name )
   : QWidget( parent, name )
 {
   // paintEvent covers whole widget so we use no background to avoid flicker
-  setBackgroundMode( NoBackground );
+  setBackgroundMode( Qt::NoBackground );
 
   bars = 0;
   minValue = 0.0;
@@ -84,7 +84,7 @@ bool BarGraph::removeBar( uint idx )
   return true;
 }
 
-void BarGraph::updateSamples( const QMemArray<double> &newSamples )
+void BarGraph::updateSamples( const QVector<double> &newSamples )
 {
   samples = newSamples;
   update();

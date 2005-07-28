@@ -70,7 +70,7 @@ void Workspace::saveProperties( KConfig *cfg )
   cfg->writePathEntry( "WorkDir", mWorkDir );
   cfg->writeEntry( "CurrentSheet", tabLabel( currentPage() ) );
 
-  QPtrListIterator<WorkSheet> it( mSheetList);
+  Q3PtrListIterator<WorkSheet> it( mSheetList);
 
   QStringList list;
   for ( int i = 0; it.current(); ++it, ++i )
@@ -114,7 +114,7 @@ void Workspace::readProperties( KConfig *cfg )
   }
 
   // Determine visible sheet.
-  QPtrListIterator<WorkSheet> it( mSheetList );
+  Q3PtrListIterator<WorkSheet> it( mSheetList );
   for ( ; it.current(); ++it )
     if ( currentSheet == tabLabel(*it) ) {
       showPage( *it );
@@ -132,7 +132,7 @@ void Workspace::newWorkSheet()
   int i = 1;
   do {
     sheetName = i18n( "Sheet %1" ).arg( i++ );
-    QPtrListIterator<WorkSheet> it( mSheetList );
+    Q3PtrListIterator<WorkSheet> it( mSheetList );
     found = false;
     for ( ; it.current() && !found; ++it )
       if ( tabLabel(*it) == sheetName )
@@ -154,7 +154,7 @@ void Workspace::newWorkSheet()
 
 bool Workspace::saveOnQuit()
 {
-  QPtrListIterator<WorkSheet> it( mSheetList );
+  Q3PtrListIterator<WorkSheet> it( mSheetList );
   for ( ; it.current(); ++it )
     if ( (*it)->modified() ) {
       if ( !mAutoSave || (*it)->fileName().isEmpty() ) {
@@ -330,7 +330,7 @@ void Workspace::removeAllWorkSheets()
 
 void Workspace::deleteWorkSheet( const QString &fileName )
 {
-  QPtrListIterator<WorkSheet> it( mSheetList );
+  Q3PtrListIterator<WorkSheet> it( mSheetList );
   for ( ; it.current(); ++it )
     if ( (*it)->fileName() == fileName ) {
       removePage( *it );

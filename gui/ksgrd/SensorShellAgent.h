@@ -22,8 +22,8 @@
 #define KSG_SENSORSHELLAGENT_H
 
 #include <qobject.h>
-#include <qptrlist.h>
-#include <qguardedptr.h>
+#include <q3ptrlist.h>
+#include <qpointer.h>
 
 #include <SensorAgent.h>
 
@@ -67,7 +67,7 @@ class SensorShellAgent : public SensorAgent
     bool writeMsg( const char *msg, int len );
     bool txReady();
 
-    QGuardedPtr<KShellProcess> mDaemon;
+    QPointer<KShellProcess> mDaemon;
     QString mShell;
     QString mCommand;
 };

@@ -1,3 +1,6 @@
+//Added by qt3to4:
+#include <QTimerEvent>
+#include <QResizeEvent>
 /*
     KSysGuard, the KDE System Guard
 
@@ -24,10 +27,10 @@
 #define MAXLINES 500
 
 class QFile;
-class QListBox;
+class Q3ListBox;
 
 #include <qdom.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qstring.h>
 #include <qstringlist.h>
 
@@ -76,7 +79,7 @@ public slots:
 
 private:
 	LogFileSettings* lfs;
-	QListBox* monitor;
+	Q3ListBox* monitor;
 	QStringList filterRules;
 
 	unsigned long logFileID;

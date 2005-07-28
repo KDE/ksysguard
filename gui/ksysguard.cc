@@ -75,7 +75,7 @@ TopLevel::TopLevel( const char *name )
   mTimerId = -1;
 
   mSplitter = new QSplitter( this );
-  mSplitter->setOrientation( Horizontal );
+  mSplitter->setOrientation( Qt::Horizontal );
   mSplitter->setOpaqueResize( KGlobalSettings::opaqueResize() );
   setCentralWidget( mSplitter );
 
@@ -257,7 +257,7 @@ void TopLevel::showRequestedSheets()
 {
   toolBar( "mainToolBar" )->hide();
 
-  QValueList<int> sizes;
+  QList<int> sizes;
   sizes.append( 0 );
   sizes.append( 100 );
   mSplitter->setSizes( sizes );
@@ -367,7 +367,7 @@ void TopLevel::readProperties( KConfig *cfg )
   if ( cfg->readBoolEntry( "isMinimized" ) == true )
     showMinimized();
 
-  QValueList<int> sizes = cfg->readIntListEntry( "SplitterSizeList" );
+  QList<int> sizes = cfg->readIntListEntry( "SplitterSizeList" );
   if ( sizes.isEmpty() ) {
     // start with a 30/70 ratio
     sizes.append( 30 );
@@ -447,9 +447,9 @@ void TopLevel::answerReceived( int id, const QString &answer )
     }
 
     case 133: {
-      QCString replyType = "QString";
+      DCOPCString replyType = "QString";
       QByteArray replyData;
-      QDataStream reply( replyData, IO_WriteOnly );
+      QDataStream reply( &replyData, IO_WriteOnly );
       reply << answer;
 
       DCOPClientTransaction *dcopTransaction = mDCopFIFO.last();
@@ -460,9 +460,9 @@ void TopLevel::answerReceived( int id, const QString &answer )
 
     case 134: {
       QStringList resultList;
-      QCString replyType = "QStringList";
+      DCOPCString replyType = "QStringList";
       QByteArray replyData;
-      QDataStream reply( replyData, IO_WriteOnly );
+      QDataStream reply( &replyData, IO_WriteOnly );
 
       KSGRD::SensorTokenizer lines( answer, '\n' );
 

@@ -25,6 +25,8 @@
 #define FANCYPLOTTERSETTINGS_H
 
 #include <kdialogbase.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 class KColorButton;
 class KIntNumInput;
@@ -32,7 +34,7 @@ class KLineEdit;
 class KListView;
 
 class QCheckBox;
-class QListViewItem;
+class Q3ListViewItem;
 class QPushButton;
 class QRadioButton;
 
@@ -95,15 +97,15 @@ class FancyPlotterSettings : public KDialogBase
     void setBackgroundColor( const QColor &color );
     QColor backgroundColor() const;
 
-    void setSensors( const QValueList< QStringList > &list );
-    QValueList< QStringList > sensors() const;
+    void setSensors( const Q3ValueList< QStringList > &list );
+    Q3ValueList< QStringList > sensors() const;
 
   private slots:
     void editSensor();
     void removeSensor();
     void moveUpSensor();
     void moveDownSensor();
-    void selectionChanged( QListViewItem* );
+    void selectionChanged( Q3ListViewItem* );
 
   private:
 
