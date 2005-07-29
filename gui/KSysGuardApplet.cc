@@ -361,7 +361,7 @@ bool KSysGuardApplet::load()
   /* Load lists of hosts that are needed for the work sheet and try
    * to establish a connection. */
   QDomNodeList dnList = element.elementsByTagName( "host" );
-  uint i;
+  int i;
   for ( i = 0; i < dnList.count(); ++i ) {
     QDomElement element = dnList.item( i ).toElement();
     int port = element.attribute( "port" ).toInt( &ok );
