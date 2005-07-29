@@ -193,7 +193,7 @@ LogFile::restoreSettings(QDomElement& element)
 	monitor->setFont(font);
 
 	QDomNodeList dnList = element.elementsByTagName("filter");
-	for (uint i = 0; i < dnList.count(); i++) {
+	for (int i = 0; i < dnList.count(); i++) {
 		QDomElement element = dnList.item(i).toElement();
 		filterRules.append(element.attribute("rule"));
 	}

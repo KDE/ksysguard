@@ -247,7 +247,7 @@ ProcessList::ProcessList(QWidget *parent, const char* name)
 	setAllColumnsShowFocus(true);
 	setTreeStepSize(17);
 	setSorting(sortColumn, increasing);
-	setSelectionMode(QListView::Extended);
+	setSelectionMode(Q3ListView::Extended);
 
 	// Create popup menu for RMB clicks on table header
 	headerPM = new Q3PopupMenu();
@@ -291,13 +291,13 @@ ProcessList::getSelectedAsStrings()
 {
 	selectedAsStrings.clear();
 	// iterate through all items of the listview and find selected processes
-	QListViewItemIterator it(this);
+	Q3ListViewItemIterator it(this);
 	QString spaces;
 	for ( ; it.current(); ++it )
 		if (it.current()->isSelected()) {
 			spaces.fill(QChar(' '), 7 - it.current()->text(1).length());
 			selectedAsStrings.append("(PID: " + it.current()->text(1) + ")" + spaces + " " + it.current()->text(0));
-		}	
+		}
 
 	return (selectedAsStrings);
 }
@@ -346,7 +346,7 @@ ProcessList::update(const QString& list)
 	else
 		buildList();
 
-	QListViewItemIterator it( this );
+	Q3ListViewItemIterator it( this );
 	while ( it.current() ) {
 		if ( itemPos( it.current() ) == currItemPos ) {
 			setCurrentItem( it.current() );
@@ -882,7 +882,7 @@ ProcessList::handleRMBPressed(Q3ListViewItem* lvi, const QPoint& p, int col)
 				}
 			}
 
-			QString msg = i18n("Do you really want to send signal %1 to the selected process?", 
+			QString msg = i18n("Do you really want to send signal %1 to the selected process?",
 					"Do you really want to send signal %1 to the %n selected processes?",
 					selectedPIds.count())
 				.arg(signalPM->text(id));

@@ -22,8 +22,12 @@
 */
 
 #include <assert.h>
-
 #include <qtimer.h>
+//Added by qt3to4:
+#include <QVBoxLayout>
+#include <Q3ValueList>
+#include <QHBoxLayout>
+#include <QResizeEvent>
 
 #include <kapplication.h>
 #include <kdebug.h>
@@ -39,7 +43,7 @@
 
 #include <qcheckbox.h>
 #include <qcombobox.h>
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qlayout.h>
 
 #include <kapplication.h>
@@ -212,17 +216,17 @@ ProcessController::killProcess()
 				"Do you want to kill the %n selected processes?",
 				selectedAsStrings.count());
 
-		KDialogBase *dlg = new KDialogBase (  i18n ("Kill Process"), 
+		KDialogBase *dlg = new KDialogBase (  i18n ("Kill Process"),
 						      KDialogBase::Yes | KDialogBase::Cancel,
 						      KDialogBase::Yes, KDialogBase::Cancel, this->parentWidget(),
 						      "killconfirmation",
 			       			      true, true, KGuiItem(i18n("Kill")));
 
 		bool dontAgain = false;
-		
+
 		int res = KMessageBox::createKMessageBox(dlg, QMessageBox::Question,
 			                                 msg, selectedAsStrings,
-							 i18n("Do not ask again"), &dontAgain, 
+							 i18n("Do not ask again"), &dontAgain,
 							 KMessageBox::Notify);
 
 		if (res != KDialogBase::Yes)
@@ -231,14 +235,12 @@ ProcessController::killProcess()
 		}
 	}
 
-	const QValueList<int>& selectedPIds = pList->getSelectedPIds();
+	const QList<int>& selectedPIds = pList->getSelectedPIds();
 
-	// send kill signal to all seleted processes
-	QList<int>::const_iterator it;
-	for (it = selectedPIds.begin(); it != selectedPIds.end(); ++it)
-		sendRequest(sensors().at(0)->hostName(), QString("kill %1 %2" ).arg(*it)
-					.arg(MENU_ID_SIGKILL), 3);
-
+        for (int i = 0; i < selectedPIds.size(); ++i) {
+            sendRequest(sensors().at(0)->hostName(), QString("kill %1 %2" ).arg(selectedPIds.at( i ))
+                       .arg(MENU_ID_SIGKILL), 3);
+        }
 	if ( !timerOn())
 		// give ksysguardd time to update its proccess list
 		QTimer::singleShot(3000, this, SLOT(updateList()));
