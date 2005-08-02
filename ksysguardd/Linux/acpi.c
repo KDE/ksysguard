@@ -43,6 +43,9 @@ static int AcpiBatteryUsage[ ACPIBATTERYNUMMAX ];
 
 static int AcpiThermalZones = -1;
 static int AcpiFans = -1;
+static int AcpiBatteryOk = 1;
+static int AcpiThermalZonesOk = 1;
+static int AcpiFansOk = 1;
 /*
 ================================ public part =================================
 */
@@ -56,9 +59,9 @@ void initAcpi(struct SensorModul* sm)
 
 int updateAcpi( void )
 {
-	if (AcpiBatteryNum > 0) updateAcpiBattery();
-	if (AcpiFans > 0) updateAcpiFan();
-	if (AcpiThermalZones > 0) updateAcpiThermal();
+	if (AcpiBatteryOk && AcpiBatteryNum > 0) updateAcpiBattery();
+	if (AcpiFansOk && AcpiFans > 0) updateAcpiFan();
+	if (AcpiThermalZonesOk && AcpiThermalZones > 0) updateAcpiThermal();
 	return 0;
 }
 
@@ -67,6 +70,9 @@ void exitAcpi( void )
   AcpiBatteryNum = -1;
   AcpiFans = -1;
   AcpiThermalZones = -1;
+  AcpiBatteryOk = 0;
+  AcpiFansOk = 0;
+  AcpiThermalZonesOk = 0;
 }
 
 
@@ -80,9 +86,11 @@ void initAcpiBattery( struct SensorModul* sm )
 
   if ( ( d = opendir( "/proc/acpi/battery" ) ) == NULL ) {
 	AcpiBatteryNum = -1;
-    return;
+	AcpiBatteryOk = 0;
+	return;
   } else {
 	AcpiBatteryNum = 0;
+	AcpiBatteryOk = 1;
     while ( ( de = readdir( d ) ) )
       if ( ( strcmp( de->d_name, "." ) != 0 ) && ( strcmp( de->d_name, ".." ) != 0 ) ) {
 		  strncpy( AcpiBatteryNames[ AcpiBatteryNum ], de->d_name, 8 );
@@ -118,12 +126,14 @@ int updateAcpiBattery( void )
       print_error( "Cannot open file \'%s\'!\n"
                    "Load the battery ACPI kernel module or\n"
                    "compile it into your kernel.\n", s );
+      AcpiBatteryOk = 0;
       return -1;
     }
     if ( ( n = read( fd, AcpiBatInfoBuf, ACPIBATTERYINFOBUFSIZE - 1 ) ) ==
          ACPIBATTERYINFOBUFSIZE - 1 ) {
       log_error( "Internal buffer too small to read \'%s\'", s );
       close( fd );
+      AcpiBatteryOk = 0;
       return -1;
     }
     close( fd );
@@ -140,12 +150,14 @@ int updateAcpiBattery( void )
       print_error( "Cannot open file \'%s\'!\n"
                    "Load the battery ACPI kernel module or\n"
                    "compile it into your kernel.\n", s );
+      AcpiBatteryOk = 0;
       return -1;
     }
     if ( ( n = read( fd, AcpiBatStateBuf, ACPIBATTERYSTATEBUFSIZE - 1 ) ) ==
          ACPIBATTERYSTATEBUFSIZE - 1 ) {
       log_error( "Internal buffer too small to read \'%s\'", s);
       close( fd );
+      AcpiBatteryOk = 0;
       return -1;
     }
     close( fd );
@@ -173,7 +185,7 @@ int updateAcpiBattery( void )
     else
       AcpiBatteryCharge[ i ] = 0;
   } 
-
+  AcpiBatteryOk = 1;
   return 0;
 }
 
@@ -253,6 +265,7 @@ void initAcpiThermal(struct SensorModul *sm)
 	  "Load the ACPI thermal kernel module or compile it into your kernel.\n" );
 */
 	  AcpiThermalZones = -1;
+	  AcpiThermalZonesOk = 0;
 	  return;
   }
 
@@ -299,15 +312,17 @@ static int getCurrentTemperature(const char *cmd)
 		print_error( "Cannot open file \'%s\'!\n"
 		"Load the thermal ACPI kernel module or\n"
 		"compile it into your kernel.\n", th_file );
-      return -1;
+		AcpiThermalZonesOk = 0;
+		return -1;
 	}
 
 	read_bytes = read( fd, input_buf, sizeof(input_buf) - 1 );
-    if ( read_bytes == sizeof(input_buf) - 1 ) {
-      log_error( "Internal buffer too small to read \'%s\'", th_file );
-      close( fd );
-      return -1;
-    }
+	if ( read_bytes == sizeof(input_buf) - 1 ) {
+		log_error( "Internal buffer too small to read \'%s\'", th_file );
+		close( fd );
+		AcpiThermalZonesOk = 0;
+		return -1;
+	}
 	close(fd);
 
 	sscanf(input_buf, "temperature: %d C", &temperature);
@@ -344,6 +359,7 @@ void initAcpiFan(struct SensorModul *sm)
 	  "Load the ACPI thermal kernel module or compile it into your kernel.\n" );
 */
 	  AcpiFans = -1;
+	  AcpiFansOk = 0;
 	  return;
   }
 
@@ -379,7 +395,10 @@ static int getFanState(const char *cmd)
 	char fan_state[4];
 
 	len_fan_name = extract_zone_name(&fan_name, cmd);
-	if (len_fan_name <= 0) return -1;
+	if (len_fan_name <= 0) {
+		return -1;
+		AcpiFansOk = 0;
+	}
 
 	snprintf(fan_state_file, sizeof(fan_state_file),
 			FAN_DIR "/%.*s/" FAN_STATE_FILE,
@@ -390,15 +409,18 @@ static int getFanState(const char *cmd)
 		print_error( "Cannot open file \'%s\'!\n"
 		"Load the fan ACPI kernel module or\n"
 		"compile it into your kernel.\n", fan_state_file );
-      return -1;
+
+	  	AcpiFansOk = 0;
+		return -1;
 	}
 
 	read_bytes = read( fd, input_buf, sizeof(input_buf) - 1 );
-    if ( read_bytes == sizeof(input_buf) - 1 ) {
-      log_error( "Internal buffer too small to read \'%s\'", fan_state_file );
-      close( fd );
-      return -1;
-    }
+	if ( read_bytes == sizeof(input_buf) - 1 ) {
+		log_error( "Internal buffer too small to read \'%s\'", fan_state_file );
+		close( fd );
+		AcpiFansOk = 0;
+		return -1;
+	}
 	close(fd);
 
 	sscanf(input_buf, "status: %2s", fan_state);
