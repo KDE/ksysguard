@@ -42,7 +42,7 @@
 //Added by qt3to4:
 #include <QGridLayout>
 #include <Q3Frame>
-#include <Q3ValueList>
+#include <QList>
 
 #include "FancyPlotterSettings.h"
 
@@ -470,11 +470,11 @@ QColor FancyPlotterSettings::backgroundColor() const
   return mBackgroundColor->color();
 }
 
-void FancyPlotterSettings::setSensors( const Q3ValueList< QStringList > &list )
+void FancyPlotterSettings::setSensors( const QList< QStringList > &list )
 {
   mSensorView->clear();
 
-  Q3ValueList< QStringList >::ConstIterator it;
+  QList< QStringList >::ConstIterator it;
   for ( it = list.begin(); it != list.end(); ++it ) {
     Q3ListViewItem* lvi = new Q3ListViewItem( mSensorView,
                                             (*it)[ 0 ],   // id
@@ -489,9 +489,9 @@ void FancyPlotterSettings::setSensors( const Q3ValueList< QStringList > &list )
   }
 }
 
-Q3ValueList< QStringList > FancyPlotterSettings::sensors() const
+QList< QStringList > FancyPlotterSettings::sensors() const
 {
-  Q3ValueList< QStringList > list;
+  QList< QStringList > list;
 
   Q3ListViewItemIterator it( mSensorView );
 

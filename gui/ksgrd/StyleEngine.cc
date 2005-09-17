@@ -27,6 +27,7 @@
 
 #include <kconfig.h>
 #include <klocale.h>
+#include <QList>
 
 #include "StyleSettings.h"
 
@@ -85,7 +86,7 @@ void StyleEngine::saveProperties( KConfig *cfg )
   cfg->writeEntry( "fontSize", mFontSize );
 
   QStringList list;
-  Q3ValueList<QColor>::Iterator it;
+  QList<QColor>::Iterator it;
   for ( it = mSensorColors.begin(); it != mSensorColors.end(); ++it )
     list.append( (*it).name() );
 
@@ -122,7 +123,7 @@ const QColor& StyleEngine::sensorColor( uint pos )
   static QColor dummy;
 
   if ( pos < mSensorColors.count() )
-    return *mSensorColors.at( pos );
+    return mSensorColors.at( pos );
   else
     return dummy;
 }

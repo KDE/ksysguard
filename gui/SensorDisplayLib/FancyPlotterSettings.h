@@ -26,7 +26,7 @@
 
 #include <kdialogbase.h>
 //Added by qt3to4:
-#include <Q3ValueList>
+#include <QList>
 
 class KColorButton;
 class KIntNumInput;
@@ -97,8 +97,8 @@ class FancyPlotterSettings : public KDialogBase
     void setBackgroundColor( const QColor &color );
     QColor backgroundColor() const;
 
-    void setSensors( const Q3ValueList< QStringList > &list );
-    Q3ValueList< QStringList > sensors() const;
+    void setSensors( const QList< QStringList > &list );
+    QList< QStringList > sensors() const;
 
   private slots:
     void editSensor();

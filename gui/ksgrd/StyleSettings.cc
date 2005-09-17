@@ -31,7 +31,7 @@
 #include <qtabwidget.h>
 //Added by qt3to4:
 #include <Q3Frame>
-#include <Q3ValueList>
+#include <QList>
 #include <QGridLayout>
 
 #include <kaccelmanager.h>
@@ -160,20 +160,20 @@ uint StyleSettings::fontSize() const
   return mFontSize->value();
 }
 
-void StyleSettings::setSensorColors( const Q3ValueList<QColor> &list )
+void StyleSettings::setSensorColors( const QList<QColor> &list )
 {
   mColorListBox->clear();
 
   for ( int i = 0; i < list.count(); ++i ) {
     QPixmap pm( 12, 12 );
-		pm.fill( *list.at( i ) );
+		pm.fill( list.at( i ) );
     mColorListBox->insertItem( pm, i18n( "Color %1" ).arg( i ) );
 	}
 }
 
-Q3ValueList<QColor> StyleSettings::sensorColors()
+QList<QColor> StyleSettings::sensorColors()
 {
-  Q3ValueList<QColor> list;
+  QList<QColor> list;
 
   for ( uint i = 0; i < mColorListBox->count(); ++i )
     list.append( QColor( mColorListBox->pixmap( i )->convertToImage().pixel( 1, 1 ) ) );

@@ -28,7 +28,7 @@
 
 #include <qcolor.h>
 //Added by qt3to4:
-#include <Q3ValueList>
+#include <QList>
 
 class KColorButton;
 
@@ -58,8 +58,8 @@ class StyleSettings : public KDialogBase
     void setFontSize( uint size );
     uint fontSize() const;
 
-    void setSensorColors( const Q3ValueList<QColor> &list );
-    Q3ValueList<QColor> sensorColors();
+    void setSensorColors( const QList<QColor> &list );
+    QList<QColor> sensorColors();
 
   private slots:
     void editSensorColor();

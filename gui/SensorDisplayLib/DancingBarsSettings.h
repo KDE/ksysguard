@@ -26,7 +26,7 @@
 
 #include <kdialogbase.h>
 //Added by qt3to4:
-#include <Q3ValueList>
+#include <QList>
 
 class KColorButton;
 class KDoubleSpinBox;
@@ -79,8 +79,8 @@ class DancingBarsSettings : public KDialogBase
     void setFontSize( int size );
     int fontSize() const;
 
-    void setSensors( const Q3ValueList< QStringList > &list );
-    Q3ValueList< QStringList > sensors() const;
+    void setSensors( const QList< QStringList > &list );
+    QList< QStringList > sensors() const;
 
   private slots:
     void editSensor();

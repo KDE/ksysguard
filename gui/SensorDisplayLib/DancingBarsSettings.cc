@@ -37,7 +37,7 @@
 #include <qpushbutton.h>
 
 //Added by qt3to4:
-#include <Q3ValueList>
+#include <QList>
 #include <QGridLayout>
 
 #include "DancingBarsSettings.h"
@@ -313,11 +313,11 @@ int DancingBarsSettings::fontSize() const
   return mFontSize->value();
 }
 
-void DancingBarsSettings::setSensors( const Q3ValueList< QStringList > &list )
+void DancingBarsSettings::setSensors( const QList< QStringList > &list )
 {
   mSensorView->clear();
 
-  Q3ValueList< QStringList >::ConstIterator it;
+  QList< QStringList >::ConstIterator it;
   for ( it = list.begin(); it != list.end(); ++it ) {
     new Q3ListViewItem( mSensorView,
                        (*it)[ 0 ],   // host name
@@ -328,9 +328,9 @@ void DancingBarsSettings::setSensors( const Q3ValueList< QStringList > &list )
   }
 }
 
-Q3ValueList< QStringList > DancingBarsSettings::sensors() const
+QList< QStringList > DancingBarsSettings::sensors() const
 {
-  Q3ValueList< QStringList > list;
+  QList< QStringList > list;
 
   Q3ListViewItemIterator it( mSensorView );
   while ( it.current() && !it.current()->text( 0 ).isEmpty() ) {

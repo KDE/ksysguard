@@ -30,7 +30,7 @@
 
 #include "SignalPlotter.h"
 //Added by qt3to4:
-#include <Q3ValueList>
+#include <QList>
 #include <QResizeEvent>
 
 class Q3ListViewItem;
@@ -102,7 +102,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
       received. The flags variable is used to ensure that all samples have
       been received.
      */
-    Q3ValueList<double> mSampleBuf;
+    QList<double> mSampleBuf;
 };
 
 #endif
