@@ -90,7 +90,7 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   mPort = new QSpinBox( 1, 65535, 1, group );
   mPort->setEnabled( false );
   mPort->setValue( 3112 );
-  QToolTip::add( mPort, i18n( "Enter the port number on which the ksysguard daemon is listening for connections." ) );
+  mPort->setToolTip( i18n( "Enter the port number on which the ksysguard daemon is listening for connections." ) );
   groupLayout->addWidget( mPort, 1, 2 );
 
   label = new QLabel( i18n( "e.g.  3112" ), group );

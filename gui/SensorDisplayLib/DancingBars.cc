@@ -189,7 +189,7 @@ bool DancingBars::addSensor( const QString &hostName, const QString &name,
                                    .arg( sensors().at( i )->name() );
   }
   QToolTip::remove( mPlotter );
-  QToolTip::add( mPlotter, tooltip );
+  mPlotter->setToolTip( tooltip );
 
   return true;
 }
@@ -213,7 +213,7 @@ bool DancingBars::removeSensor( uint pos )
                                    .arg( sensors().at( i )->name() );
   }
   QToolTip::remove( mPlotter );
-  QToolTip::add( mPlotter, tooltip );
+  mPlotter->setToolTip( tooltip );
 
   return true;
 }

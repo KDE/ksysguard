@@ -82,7 +82,7 @@ MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
 	sendRequest(hostName, sensorName + "?", 100);
 
 	QToolTip::remove(lcd);
-	QToolTip::add(lcd, QString("%1:%2").arg(hostName).arg(sensorName));
+	lcd->setToolTip( QString("%1:%2").arg(hostName).arg(sensorName));
 
 	setModified(true);
 	return (true);

@@ -100,7 +100,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
   mRows->setWhatsThis( i18n( "Enter the number of rows the sheet should have." ) );
   mColumns->setWhatsThis( i18n( "Enter the number of columns the sheet should have." ) );
   mInterval->setWhatsThis( i18n( "All displays of the sheet are updated at the rate specified here." ) );
-  QToolTip::add( mSheetTitle, i18n( "Enter the title of the worksheet here." ) );
+  mSheetTitle->setToolTip( i18n( "Enter the title of the worksheet here." ) );
 
   KAcceleratorManager::manage( page );
 

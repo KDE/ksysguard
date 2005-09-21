@@ -483,7 +483,7 @@ void KSysGuardApplet::addEmptyDisplay( QWidget **dock, uint pos )
 {
   dock[ pos ] = new Q3Frame( this );
   ((Q3Frame*)dock[ pos ])->setFrameStyle( Q3Frame::WinPanel | Q3Frame::Sunken );
-  QToolTip::add( dock[ pos ],
+  dock[ pos ]->setToolTip(
                  i18n( "Drag sensors from the KDE System Guard into this cell." ) );
 
   layout();

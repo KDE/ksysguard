@@ -246,7 +246,7 @@ bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
   }
 
   QToolTip::remove( mPlotter );
-  QToolTip::add( mPlotter, tooltip );
+  mPlotter->setToolTip( tooltip );
 
   return true;
 }
@@ -271,7 +271,7 @@ bool FancyPlotter::removeSensor( uint pos )
   }
 
   QToolTip::remove( mPlotter );
-  QToolTip::add( mPlotter, tooltip );
+  mPlotter->setToolTip( tooltip );
 
   return true;
 }
