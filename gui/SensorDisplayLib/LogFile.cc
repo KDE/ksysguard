@@ -64,7 +64,7 @@ LogFile::addSensor(const QString& hostName, const QString& sensorName, const QSt
 
 	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 
-	QString sensorID = sensorName.right(sensorName.length() - (sensorName.findRev("/") + 1));
+	QString sensorID = sensorName.right(sensorName.length() - (sensorName.lastIndexOf("/") + 1));
 
 	sendRequest(sensors().at(0)->hostName(), QString("logfile_register %1" ).arg(sensorID), 42);
 

@@ -193,7 +193,7 @@ void Workspace::loadWorkSheet( const KURL &url )
    * code. */
   QString tmpFile;
   KIO::NetAccess::download( url, tmpFile, this );
-  mWorkDir = tmpFile.left( tmpFile.findRev( '/' ) );
+  mWorkDir = tmpFile.left( tmpFile.lastIndexOf( '/' ) );
 
   // Load sheet from file.
   if ( !restoreWorkSheet( tmpFile ) )
@@ -237,13 +237,13 @@ void Workspace::saveWorkSheet( WorkSheet *sheet )
     if ( fileName.isEmpty() )
       return;
 
-    mWorkDir = fileName.left( fileName.findRev( '/' ) );
+    mWorkDir = fileName.left( fileName.lastIndexOf( '/' ) );
 
     // extract filename without path
-    QString baseName = fileName.right( fileName.length() - fileName.findRev( '/' ) - 1 );
+    QString baseName = fileName.right( fileName.length() - fileName.lastIndexOf( '/' ) - 1 );
 
     // chop off extension (usually '.sgrd')
-    baseName = baseName.left( baseName.findRev( '.' ) );
+    baseName = baseName.left( baseName.lastIndexOf( '.' ) );
     changeTab( sheet, baseName );
   }
 
@@ -275,13 +275,13 @@ void Workspace::saveWorkSheetAs( WorkSheet *sheet )
     if ( fileName.isEmpty() )
       return;
 
-    mWorkDir = fileName.left( fileName.findRev( '/' ) );
+    mWorkDir = fileName.left( fileName.lastIndexOf( '/' ) );
 
     // extract filename without path
-    QString baseName = fileName.right( fileName.length() - fileName.findRev( '/' ) - 1 );
+    QString baseName = fileName.right( fileName.length() - fileName.lastIndexOf( '/' ) - 1 );
 
     // chop off extension (usually '.sgrd')
-    baseName = baseName.left( baseName.findRev( '.' ) );
+    baseName = baseName.left( baseName.lastIndexOf( '.' ) );
     changeTab( sheet, baseName );
   } while ( !sheet->save( fileName ) );
 
@@ -351,10 +351,10 @@ bool Workspace::restoreWorkSheet( const QString &fileName, const QString &newNam
     tmpStr = newName;
 
   // extract filename without path
-  QString baseName = tmpStr.right( tmpStr.length() - tmpStr.findRev( '/' ) - 1 );
+  QString baseName = tmpStr.right( tmpStr.length() - tmpStr.lastIndexOf( '/' ) - 1 );
 
   // chop off extension (usually '.sgrd')
-  baseName = baseName.left( baseName.findRev( '.' ) );
+  baseName = baseName.left( baseName.lastIndexOf( '.' ) );
 
   WorkSheet *sheet = new WorkSheet( this );
   sheet->setTitle( baseName );

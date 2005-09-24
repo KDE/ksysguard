@@ -83,7 +83,7 @@ class SensorTokenizer
   public:
     SensorTokenizer( const QString &info, QChar separator )
     {
-      mTokens = QStringList::split( separator, info );
+      mTokens = info.split( separator);
     }
 
     ~SensorTokenizer() { }
