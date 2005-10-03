@@ -19,9 +19,10 @@
 */
 
 #include <kapplication.h>
-#include <kaccelmanager.h>
+#include <kacceleratormanager.h>
 #include <kcombobox.h>
 #include <klocale.h>
+#include <ktoolinvocation.h>
 
 #include <q3buttongroup.h>
 #include <qlabel.h>
@@ -214,7 +215,7 @@ bool HostConnector::useCustom() const
 
 void HostConnector::slotHelp()
 {
-  kapp->invokeHelp( "CONNECTINGTOOTHERHOSTS", "ksysguard/the-sensor-browser.html" );
+  KToolInvocation::invokeHelp( "CONNECTINGTOOTHERHOSTS", "ksysguard/the-sensor-browser.html" );
 }
 
 #include "HostConnector.moc"

@@ -79,7 +79,7 @@ public:
     enum ColumnType { Text, Int, Float, Time };
 
 	/// The constructor.
-	ProcessList(QWidget* parent = 0, const char* name = 0);
+	ProcessList(QWidget* parent = 0);
 
 	/// The destructor.
 	~ProcessList();

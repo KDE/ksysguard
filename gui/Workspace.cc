@@ -31,7 +31,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
-#include <kaccelmanager.h>
+#include <kacceleratormanager.h>
 
 #include "WorkSheet.h"
 #include "WorkSheetSettings.h"

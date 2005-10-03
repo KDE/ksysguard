@@ -34,7 +34,7 @@
 #include <QList>
 #include <QGridLayout>
 
-#include <kaccelmanager.h>
+#include <kacceleratormanager.h>
 #include <kcolorbutton.h>
 #include <kcolordialog.h>
 #include <klocale.h>

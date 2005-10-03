@@ -21,7 +21,7 @@
 
 */
 
-#include <kaccelmanager.h>
+#include <kacceleratormanager.h>
 #include <kcolorbutton.h>
 #include <kcolordialog.h>
 #include <klineedit.h>

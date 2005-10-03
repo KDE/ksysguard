@@ -104,8 +104,8 @@ int ProcessLVI::compare( Q3ListViewItem *item, int col, bool ascending ) const
   return key( col, ascending ).localeAwareCompare( item->key( col, ascending ) );
 }
 
-ProcessList::ProcessList(QWidget *parent, const char* name)
-	: KListView(parent, name)
+ProcessList::ProcessList(QWidget *parent)
+	: KListView(parent)
 {
 	iconCache.setAutoDelete(true);
 

@@ -70,9 +70,11 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	dict.insert("Command", new QString(i18n("Command")));
 
 	// Create the table that lists the processes.
-	pList = new ProcessList(this, "pList");
+	pList = new ProcessList(this);
+	pList->setObjectName("pList");
 	Q_CHECK_PTR(pList);
-	pListSearchLine = new KListViewSearchLineWidget(pList, this, "process_list_search_line");
+	pListSearchLine = new KListViewSearchLineWidget(pList, this);
+	pListSearchLine->setObjectName("process_list_search_line");
 
 	connect(pList, SIGNAL(killProcess(int, int)),
 			this, SLOT(killProcess(int, int)));
@@ -82,7 +84,8 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 			this, SLOT(setModified(bool)));
 
 	// Create the check box to switch between tree view and list view.
-	xbTreeView = new QCheckBox(i18n("&Tree"), this, "xbTreeView");
+	xbTreeView = new QCheckBox(i18n("&Tree"), this);
+	xbTreeView->setObjectName("xbTreeView");
 	Q_CHECK_PTR(xbTreeView);
 	xbTreeView->setMinimumSize(xbTreeView->sizeHint());
 	connect(xbTreeView, SIGNAL(toggled(bool)),
@@ -91,7 +94,8 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	/* Create the combo box to configure the process filter. The
 	 * cbFilter must be created prior to constructing pList as the
 	 * pList constructor sets cbFilter to its start value. */
-	cbFilter = new QComboBox(this, "pList_cbFilter");
+	cbFilter = new QComboBox(this);
+	cbFilter->setObjectName("pList_cbFilter");
 	Q_CHECK_PTR(cbFilter);
 	cbFilter->insertItem(i18n("All Processes"), 0);
 	cbFilter->insertItem(i18n("System Processes"), 1);

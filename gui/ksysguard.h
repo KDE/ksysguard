@@ -30,6 +30,7 @@
 #include <dcopobject.h>
 #include <kapplication.h>
 #include <kmainwindow.h>
+#include <Q3CString>
 
 #include <ksgrd/SensorClient.h>
 

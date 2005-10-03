@@ -21,7 +21,7 @@
 #include <qlabel.h>
 #include <qlayout.h>
 
-#include <kaccelmanager.h>
+#include <kacceleratormanager.h>
 #include <klocale.h>
 #include <knuminput.h>
 

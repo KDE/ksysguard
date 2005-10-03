@@ -52,7 +52,7 @@
 #include <kstdaction.h>
 #include <kwin.h>
 #include <kwinmodule.h>
-
+#include <QSplitter>
 
 #include "../version.h"
 #include "SensorBrowser.h"

@@ -21,7 +21,7 @@
 
 */
 
-#include <kaccelmanager.h>
+#include <kacceleratormanager.h>
 #include <klineedit.h>
 #include <knuminput.h>
 #include <klocale.h>

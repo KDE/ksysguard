@@ -19,6 +19,7 @@
 */
 
 #include <QTextStream>
+#include <QDate>
 
 #include <kapplication.h>
 #include <kiconloader.h>

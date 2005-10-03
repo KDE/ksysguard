@@ -36,7 +36,7 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 
 #include <SensorManager.h>
 
@@ -325,28 +325,23 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
      * type we popup a menu so the user can select what display is
      * wanted. */
     if ( sensorType == "integer" || sensorType == "float" ) {
-      KPopupMenu pm;
-      pm.insertTitle( i18n( "Select Display Type" ) );
-      pm.insertItem( i18n( "&Signal Plotter" ), 1 );
-      pm.insertItem( i18n( "&Multimeter" ), 2 );
-      pm.insertItem( i18n( "&BarGraph" ), 3 );
-      pm.insertItem( i18n( "S&ensorLogger" ), 4 );
-      switch ( pm.exec( QCursor::pos() ) ) {
-        case 1:
-          newDisplay = new FancyPlotter( this, "FancyPlotter", sensorDescr );
-          break;
-        case 2:
-          newDisplay = new MultiMeter( this, "MultiMeter", sensorDescr );
-          break;
-        case 3:
-          newDisplay = new DancingBars( this, "DancingBars", sensorDescr );
-          break;
-        case 4:
-          newDisplay = new SensorLogger( this, "SensorLogger", sensorDescr );
-          break;
-        default:
-          return 0;
-      }
+      KMenu pm;
+      pm.addTitle( i18n( "Select Display Type" ) );
+      QAction *a1 = pm.addAction( i18n( "&Signal Plotter" ) );
+      QAction *a2 = pm.addAction( i18n( "&Multimeter" ) );
+      QAction *a3 = pm.addAction( i18n( "&BarGraph" ) );
+      QAction *a4 = pm.addAction( i18n( "S&ensorLogger" ) );
+      QAction *execed = pm.exec( QCursor::pos() );
+      if (execed == a1)
+	newDisplay = new FancyPlotter( this, "FancyPlotter", sensorDescr );
+      else if (execed == a2)
+	newDisplay = new MultiMeter( this, "MultiMeter", sensorDescr );
+      else if (execed == a3)
+	 newDisplay = new DancingBars( this, "DancingBars", sensorDescr ); 
+      else if (execed == a4)
+	newDisplay = new SensorLogger( this, "SensorLogger", sensorDescr );
+      else
+	 return 0;
     } else if ( sensorType == "listview" )
       newDisplay = new ListView( this, "ListView", sensorDescr );
     else if ( sensorType == "logfile" )

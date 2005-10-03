@@ -42,7 +42,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 
 #include <ksgrd/SensorClient.h>
 #include <ksgrd/SensorManager.h>
@@ -61,7 +61,7 @@ extern "C"
 {
   KDE_EXPORT KPanelApplet* init( QWidget *parent, const QString& configFile )
   {
-    KGlobal::locale()->insertCatalogue( "ksysguard" );
+    KGlobal::locale()->insertCatalog( "ksysguard" );
     return new KSysGuardApplet( configFile, Plasma::Normal,
                                 Plasma::Preferences, parent,
                                 "ksysguardapplet" );
@@ -204,29 +204,23 @@ void KSysGuardApplet::dropEvent( QDropEvent *e )
     int dock = findDock( e->pos() );
     if ( mDockList[ dock ]->isA( "QFrame" ) ) {
       if ( sensorType == "integer" || sensorType == "float" ) {
-        KPopupMenu popup;
+        KMenu popup;
         QWidget *wdg = 0;
 
-        popup.insertTitle( i18n( "Select Display Type" ) );
-        popup.insertItem( i18n( "&Signal Plotter" ), 1 );
-        popup.insertItem( i18n( "&Multimeter" ), 2 );
-        popup.insertItem( i18n( "&Dancing Bars" ), 3 );
-        switch ( popup.exec( QCursor::pos() ) ) {
-          case 1:
+        popup.addTitle( i18n( "Select Display Type" ) );
+        QAction *a1 = popup.addAction( i18n( "&Signal Plotter" ) );
+        QAction *a2 = popup.addAction( i18n( "&Multimeter" ) );
+        QAction *a3 = popup.addAction( i18n( "&Dancing Bars" ) );
+	QAction *execed = popup.exec( QCursor::pos() );
+	if (execed == a1)
             wdg = new FancyPlotter( this, "FancyPlotter", sensorDescr,
                                     100.0, 100.0, true );
-						break;
-
-          case 2:
+	else if (execed == a2)
             wdg = new MultiMeter( this, "MultiMeter", sensorDescr,
                                   100.0, 100.0, true );
-            break;
-
-          case 3:
+	else if (execed == a3)
             wdg = new DancingBars( this, "DancingBars", sensorDescr,
                                    100, 100, true );
-            break;
-				}
 
         if ( wdg ) {
           delete mDockList[ dock ];
@@ -378,7 +372,7 @@ bool KSysGuardApplet::load()
   for ( i = 0; i < dnList.count(); ++i ) {
     QDomElement element = dnList.item( i ).toElement();
     uint dock = element.attribute( "dock" ).toUInt();
-    if ( i >= mDockCount ) {
+    if ( i >= (int)mDockCount ) {
       kdDebug (1215) << "Dock number " << i << " out of range "
                      << mDockCount << endl;
       return false;

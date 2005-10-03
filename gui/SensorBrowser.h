@@ -52,7 +52,7 @@ class SensorBrowser : public KListView, public KSGRD::SensorClient
   Q_OBJECT
 
   public:
-    SensorBrowser( QWidget* parent, KSGRD::SensorManager* sm, const char* name = 0 );
+    SensorBrowser( QWidget* parent, KSGRD::SensorManager* sm );
     ~SensorBrowser();
 
     QStringList listHosts();
