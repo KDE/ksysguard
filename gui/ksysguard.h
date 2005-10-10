@@ -113,7 +113,7 @@ typedef unsigned long CARD32;
 class DCOPClientTransaction
 {
   public:
-    Q_INT32 id;
+    qint32 id;
     CARD32 key;
     Q3CString senderId;
 };
