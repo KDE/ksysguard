@@ -50,6 +50,7 @@
 #include <kstandarddirs.h>
 #include <kstatusbar.h>
 #include <kstdaction.h>
+#include <kurl.h>
 #include <kwin.h>
 #include <kwinmodule.h>
 #include <QSplitter>
@@ -608,7 +609,7 @@ int main( int argc, char** argv )
       for ( int i = 0; i < args->count(); ++i )
         topLevel->loadWorkSheet( args->arg( i ) );
     } else {
-      if ( app->isRestored() )
+      if ( app->isSessionRestored() )
         topLevel->restore( 1 );
       else
         topLevel->readProperties( app->config() );

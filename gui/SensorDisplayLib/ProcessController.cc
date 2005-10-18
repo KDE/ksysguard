@@ -109,14 +109,13 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 			this, SLOT(filterModeChanged(int)));
 
 	// Create the 'Refresh' button.
-	bRefresh = new KPushButton( KGuiItem(  i18n( "&Refresh" ), "reload" ),
-            this, "bRefresh" );
+	bRefresh = new KPushButton(KGuiItem(i18n("&Refresh"), "reload"), this);
 	Q_CHECK_PTR(bRefresh);
 	bRefresh->setMinimumSize(bRefresh->sizeHint());
 	connect(bRefresh, SIGNAL(clicked()), this, SLOT(updateList()));
 
 	// Create the 'Kill' button.
-	bKill = new KPushButton(i18n("&Kill"), this, "bKill");
+	bKill = new KPushButton(i18n("&Kill"), this);
 	Q_CHECK_PTR(bKill);
 	bKill->setMinimumSize(bKill->sizeHint());
 	connect(bKill, SIGNAL(clicked()), this, SLOT(killProcess()));
