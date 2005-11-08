@@ -300,7 +300,7 @@ void TopLevel::disconnectHost()
 
 void TopLevel::editToolbars()
 {
-  saveMainWindowSettings( kapp->config() );
+  saveMainWindowSettings( KGlobal::config() );
   KEditToolbar dlg( actionCollection() );
   connect( &dlg, SIGNAL( newToolbarConfig() ), this,
            SLOT( slotNewToolbarConfig() ) );
@@ -311,7 +311,7 @@ void TopLevel::editToolbars()
 void TopLevel::slotNewToolbarConfig()
 {
   createGUI();
-  applyMainWindowSettings( kapp->config() );
+  applyMainWindowSettings( KGlobal::config() );
 }
 
 void TopLevel::editStyle()
@@ -354,8 +354,8 @@ bool TopLevel::queryClose()
     if ( !mWorkSpace->saveOnQuit() )
       return false;
 
-    saveProperties( kapp->config() );
-    kapp->config()->sync();
+    saveProperties( KGlobal::config() );
+    KGlobal::config()->sync();
   }
 
   return true;
