@@ -450,7 +450,7 @@ void TopLevel::answerReceived( int id, const QString &answer )
     case 133: {
       DCOPCString replyType = "QString";
       QByteArray replyData;
-      QDataStream reply( &replyData, IO_WriteOnly );
+      QDataStream reply( &replyData, QIODevice::WriteOnly );
       reply << answer;
 
       DCOPClientTransaction *dcopTransaction = mDCopFIFO.last();
@@ -463,7 +463,7 @@ void TopLevel::answerReceived( int id, const QString &answer )
       QStringList resultList;
       DCOPCString replyType = "QStringList";
       QByteArray replyData;
-      QDataStream reply( &replyData, IO_WriteOnly );
+      QDataStream reply( &replyData, QIODevice::WriteOnly );
 
       KSGRD::SensorTokenizer lines( answer, '\n' );
 

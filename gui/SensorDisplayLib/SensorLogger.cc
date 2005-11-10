@@ -90,7 +90,7 @@ LogSensor::answerReceived(int id, const QString& answer)
 	logFile = new QFile(fileName);
 	Q_CHECK_PTR(logFile);
 
-	if (!logFile->open(IO_ReadWrite | IO_Append))
+	if (!logFile->open(QIODevice::ReadWrite | QIODevice::Append))
 	{
 		stopLogging();
 		delete logFile;
