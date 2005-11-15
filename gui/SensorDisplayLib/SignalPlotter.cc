@@ -26,7 +26,7 @@
 
 #include <qpainter.h>
 #include <qpixmap.h>
-#include <Q3PointArray>
+#include <QPolygon>
 
 #include <kdebug.h>
 #include <ksgrd/StyleEngine.h>
@@ -544,7 +544,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
         QPen lastPen = QPen( p.pen() );
         p.setPen( (*col).dark( 150 ) );
         p.setBrush( (*col).dark( 150 ) );
-        Q3PointArray pa( 4 );
+        QPolygon pa( 4 );
         int prevY = ( i == 0 ) ? y : prevVals[ j ];
         pa.putPoints( 0, 1, x1, prevY );
         pa.putPoints( 1, 1, x2, y );
