@@ -42,7 +42,6 @@
 //Added by qt3to4:
 #include <QPixmap>
 #include <Q3PtrList>
-#include <Q3ValueList>
 
 #include <kdebug.h>
 #include <kglobal.h>
@@ -273,7 +272,7 @@ ProcessList::~ProcessList()
 	delete(headerPM);
 }
 
-const Q3ValueList<int>&
+const QList<int>&
 ProcessList::getSelectedPIds()
 {
 	selectedPIds.clear();
@@ -891,7 +890,7 @@ ProcessList::handleRMBPressed(Q3ListViewItem* lvi, const QPoint& p, int col)
 			{
 			case KMessageBox::Yes:
 			{
-				Q3ValueList<int>::Iterator it;
+				QList<int>::Iterator it;
 				for (it = selectedPIds.begin(); it != selectedPIds.end(); ++it)
 					emit (killProcess(*it, id));
 				break;

@@ -105,7 +105,7 @@ public:
 		return increasing;
 	}
 
-	const Q3ValueList<int>& getSelectedPIds();
+	const QList<int>& getSelectedPIds();
 	const QStringList& getSelectedAsStrings();
 
 	/**
@@ -252,17 +252,17 @@ private:
 
 	/* The following lists are primarily used to store table specs between
 	 * load() and the actual table creation in addColumn(). */
-	Q3ValueList<int> savedWidth;
-	Q3ValueList<int> currentWidth;
-	Q3ValueList<int> index;
+	QList<int> savedWidth;
+	QList<int> currentWidth;
+	QList<int> index;
 
 	Q3PtrList<KSGRD::SensorPSLine> pl;
 
 	QStringList mColumnTypes;
 	Q3Dict<QString> columnDict;
 
-	Q3ValueList<int> selectedPIds;
-	Q3ValueList<int> closedSubTrees;
+	QList<int> selectedPIds;
+	QList<int> closedSubTrees;
 	QStringList selectedAsStrings;
 
 	static Q3Dict<QString> aliases;
