@@ -612,7 +612,10 @@ int main( int argc, char** argv )
       if ( app->isSessionRestored() )
         topLevel->restore( 1 );
       else
-        topLevel->readProperties( app->config() );
+		{
+#warning "kde4: port it !"				
+        //topLevel->readProperties( app->config() );
+		}
     }
 
     topLevel->initStatusBar();
