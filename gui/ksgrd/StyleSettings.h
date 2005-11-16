@@ -29,7 +29,7 @@
 #include <qcolor.h>
 //Added by qt3to4:
 #include <QList>
-
+#include <Q3ListBox>
 class KColorButton;
 
 class Q3ListBoxItem;
