@@ -30,8 +30,6 @@
 #include <qradiobutton.h>
 #include <qspinbox.h>
 #include <qtooltip.h>
-
-#include <Q3Frame>
 #include <QGridLayout>
 #include <QLineEdit>
 

@@ -1,6 +1,3 @@
-//Added by qt3to4:
-#include <QTimerEvent>
-#include <QResizeEvent>
 /*
     KSysGuard, the KDE System Guard
 
@@ -30,9 +27,11 @@ class QFile;
 class Q3ListBox;
 
 #include <qdom.h>
-#include <q3popupmenu.h>
 #include <qstring.h>
 #include <qstringlist.h>
+//Added by qt3to4:
+#include <QTimerEvent>
+#include <QResizeEvent>
 
 #include <SensorDisplay.h>
 

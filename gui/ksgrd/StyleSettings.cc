@@ -30,7 +30,6 @@
 #include <qspinbox.h>
 #include <qtabwidget.h>
 //Added by qt3to4:
-#include <Q3Frame>
 #include <QList>
 #include <QGridLayout>
 
