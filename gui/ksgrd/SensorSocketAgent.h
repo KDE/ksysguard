@@ -21,7 +21,6 @@
 #ifndef KSG_SENSORSOCKETAGENT_H
 #define KSG_SENSORSOCKETAGENT_H
 
-#include <q3ptrlist.h>
 #include <q3socket.h>
 
 #include <SensorAgent.h>

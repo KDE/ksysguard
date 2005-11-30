@@ -31,9 +31,7 @@
 
 class KIntNumInput;
 
-class Q3GroupBox;
 class QLineEdit;
-class Q3ListViewItem;
 
 class BarGraph;
 class DancingBarsSettings;

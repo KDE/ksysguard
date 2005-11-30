@@ -31,6 +31,7 @@
 #include <kapplication.h>
 #include <kmainwindow.h>
 #include <Q3CString>
+#include <Q3PtrList>
 
 #include <ksgrd/SensorClient.h>
 

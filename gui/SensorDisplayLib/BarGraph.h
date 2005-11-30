@@ -24,8 +24,6 @@
 #ifndef KSG_BARGRAPH_H
 #define KSG_BARGRAPH_H
 
-
-#include <q3ptrvector.h>
 #include <qwidget.h>
 //Added by qt3to4:
 #include <QPaintEvent>

@@ -33,7 +33,6 @@
 #include <QList>
 #include <QResizeEvent>
 
-class Q3ListViewItem;
 class FancyPlotterSettings;
 
 class FPSensorProperties : public KSGRD::SensorProperties

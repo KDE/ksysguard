@@ -29,7 +29,6 @@
 #include <QLabel>
 #include <QResizeEvent>
 
-class Q3GroupBox;
 class QLCDNumber;
 class QLabel;
 class MultiMeterSettings;

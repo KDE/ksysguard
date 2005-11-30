@@ -24,7 +24,6 @@
 #ifndef KSG_SENSORBROWSER_H
 #define KSG_SENSORBROWSER_H
 
-#include <q3dict.h>
 //Added by qt3to4:
 #include <QMouseEvent>
 #include <Q3PtrList>

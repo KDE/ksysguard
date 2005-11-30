@@ -43,7 +43,6 @@
 
 #include <qcheckbox.h>
 #include <qcombobox.h>
-#include <q3groupbox.h>
 #include <qlayout.h>
 
 #include <kapplication.h>
