@@ -118,7 +118,7 @@ uint StyleEngine::fontSize() const
   return mFontSize;
 }
 
-const QColor& StyleEngine::sensorColor( uint pos )
+const QColor& StyleEngine::sensorColor( int pos )
 {
   static QColor dummy;
 

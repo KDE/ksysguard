@@ -57,7 +57,7 @@ class KDE_EXPORT StyleEngine : public QObject
 
     uint fontSize() const;
 
-    const QColor& sensorColor( uint pos );
+    const QColor& sensorColor( int pos );
     uint numSensorColors() const;
 
   public slots:

@@ -50,7 +50,7 @@ public:
 	void addColumn(const QString& label, const QString& type);
 	void removeColumns(void);
 	void update(const QString& answer);
-	int columnType( uint pos ) const;
+	int columnType( int pos ) const;
 
 private:
   QStringList mColumnTypes;
