@@ -70,7 +70,7 @@ void registerCommand( const char* command, cmdExecutor ex );
 void removeCommand( const char* command );
 
 /**
-  Use this function to add a new montior with the name @ref monitor
+  Use this function to add a new monitior with the name @ref monitor
   from the type @ref type.
   @ref ex is a pointer to the function that is called to get a value
   and @ref iq is a pointer to the function that returns informations
@@ -82,7 +82,7 @@ void registerMonitor( const char* monitor, const char* type, cmdExecutor ex,
                       cmdExecutor iq, struct SensorModul* sm );
 
 /**
-  Use this function to remove the montior with the name @ref monitor.
+  Use this function to remove the monitior with the name @ref monitor.
  */
 void removeMonitor( const char* monitor );
 
