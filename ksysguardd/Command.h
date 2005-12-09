@@ -82,7 +82,7 @@ void registerMonitor( const char* monitor, const char* type, cmdExecutor ex,
                       cmdExecutor iq, struct SensorModul* sm );
 
 /**
-  Use this function to add the montior with the name @ref monitor.
+  Use this function to remove the montior with the name @ref monitor.
  */
 void removeMonitor( const char* monitor );
 
