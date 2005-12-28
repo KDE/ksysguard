@@ -28,7 +28,7 @@
 #include <q3listbox.h>
 //Added by qt3to4:
 #include <QResizeEvent>
-
+#include <QListWidget>
 #include <kfontdialog.h>
 #include <kdebug.h>
 #include <klocale.h>
@@ -41,7 +41,7 @@
 LogFile::LogFile(QWidget *parent, const char *name, const QString& title)
 	: KSGRD::SensorDisplay(parent, name, title)
 {
-	monitor = new Q3ListBox(this);
+	monitor = new QListWidget(this);
 	Q_CHECK_PTR(monitor);
 
 	setMinimumSize(50, 25);
@@ -253,9 +253,9 @@ LogFile::answerReceived(int id, const QString& answer)
 
 			for (uint i = 0; i < lines.count(); i++) {
 				if (monitor->count() == MAXLINES)
-					monitor->removeItem(0);
+					monitor->takeItem(0);
 
-				monitor->insertItem(lines[i], -1);
+				monitor->addItem(lines[i]);
 
 				for (QStringList::Iterator it = filterRules.begin(); it != filterRules.end(); it++) {
 					QRegExp *expr = new QRegExp((*it).latin1());
@@ -266,8 +266,10 @@ LogFile::answerReceived(int id, const QString& answer)
 				}
 			}
 
-      monitor->setCurrentItem( monitor->count() - 1 );
-      monitor->ensureCurrentVisible();
+      monitor->setCurrentRow( monitor->count() - 1 );
+      // I don't believe the call from Q3ListBox below is 
+      // necessary now. Please correct if I am in error here.
+      // monitor->ensureCurrentVisible();
 
 			break;
 		}

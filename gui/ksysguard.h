@@ -30,8 +30,6 @@
 #include <dcopobject.h>
 #include <kapplication.h>
 #include <kmainwindow.h>
-#include <Q3CString>
-#include <Q3PtrList>
 
 #include <ksgrd/SensorClient.h>
 
@@ -90,7 +88,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
   private:
     void setSwapInfo( long, long, const QString& );
 
-    Q3PtrList<DCOPClientTransaction> mDCopFIFO;
+    QList<DCOPClientTransaction *> mDCopFIFO;
 
     QSplitter* mSplitter;
     KRecentFilesAction* mActionOpenRecent;
@@ -116,7 +114,7 @@ class DCOPClientTransaction
   public:
     qint32 id;
     CARD32 key;
-    Q3CString senderId;
+    QByteArray senderId;
 };
 
 #endif

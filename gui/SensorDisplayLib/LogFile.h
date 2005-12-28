@@ -24,7 +24,7 @@
 #define MAXLINES 500
 
 class QFile;
-class Q3ListBox;
+class QListWidget;
 
 #include <qdom.h>
 #include <qstring.h>
@@ -78,7 +78,7 @@ public slots:
 
 private:
 	LogFileSettings* lfs;
-	Q3ListBox* monitor;
+	QListWidget* monitor;
 	QStringList filterRules;
 
 	unsigned long logFileID;
