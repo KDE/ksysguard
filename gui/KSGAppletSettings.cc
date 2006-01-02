@@ -28,7 +28,7 @@
 #include "KSGAppletSettings.h"
 
 KSGAppletSettings::KSGAppletSettings( QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, QString::null, Ok|Apply|Cancel, 
+    : KDialogBase( parent, name, true, QString(), Ok|Apply|Cancel, 
       Ok, true )
 {
   setCaption( i18n( "KSysGuard Applet Settings" ) );

@@ -151,7 +151,7 @@ void SensorBrowser::newItemSelected( Q3ListViewItem *item )
   {
     showAnnoyingPopup = false;
     KMessageBox::information( this, i18n( "Drag sensors to empty fields in a worksheet." ),
-                              QString::null, "ShowSBUseInfo" );
+                              QString(), "ShowSBUseInfo" );
   }
 }
 

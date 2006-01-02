@@ -42,7 +42,7 @@ class DancingBars : public KSGRD::SensorDisplay
 
   public:
     DancingBars( QWidget *parent = 0, const char *name = 0,
-                 const QString &title = QString::null, int min = 0,
+                 const QString &title = QString(), int min = 0,
                  int max = 100, bool noFrame = 0 );
     virtual ~DancingBars();
 

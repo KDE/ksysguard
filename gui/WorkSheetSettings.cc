@@ -39,7 +39,7 @@
 #include "WorkSheetSettings.h"
 
 WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
-  : KDialogBase( parent, name, true, QString::null, Ok|Cancel, Ok, true )
+  : KDialogBase( parent, name, true, QString(), Ok|Cancel, Ok, true )
 {
   setCaption( i18n( "Worksheet Properties" ) );
 

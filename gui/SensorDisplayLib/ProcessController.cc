@@ -395,7 +395,7 @@ ProcessController::restoreSettings(QDomElement& element)
 {
 	bool result = addSensor(element.attribute("hostName"),
 							element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "table" : element.attribute("sensorType")),
-							QString::null);
+							QString());
 
 	xbTreeView->setChecked(element.attribute("tree").toInt());
 	setTreeView(element.attribute("tree").toInt());

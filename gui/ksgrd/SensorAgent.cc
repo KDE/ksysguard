@@ -89,7 +89,7 @@ void SensorAgent::processAnswer( const QString &buffer )
                            .arg( mHostName )
                            .arg( mErrorBuffer ) );
         }
-        mErrorBuffer = QString::null;
+        mErrorBuffer.clear();
       }
     } else if ( mState == 0 ) // receiving to answerBuffer
       mAnswerBuffer += buffer[ i ];
@@ -112,7 +112,7 @@ void SensorAgent::processAnswer( const QString &buffer )
 #if SA_TRACE
       kdDebug(1215) << "Daemon now online!" << endl;
 #endif
-      mAnswerBuffer = QString::null;
+      mAnswerBuffer.clear();
       break;
     }
 	

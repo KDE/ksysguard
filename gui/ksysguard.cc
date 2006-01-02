@@ -211,7 +211,7 @@ QString TopLevel::readIntegerSensor( const QString &sensorLocator )
   KSGRD::SensorMgr->engage( host, "", "ksysguardd" );
   KSGRD::SensorMgr->sendRequest( host, sensor, (KSGRD::SensorClient*)this, 133 );
 
-  return QString::null;
+  return QString();
 }
 
 QStringList TopLevel::readListSensor( const QString& sensorLocator )

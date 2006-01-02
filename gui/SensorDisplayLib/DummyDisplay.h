@@ -35,7 +35,7 @@ class DummyDisplay : public KSGRD::SensorDisplay
 
   public:
     DummyDisplay( QWidget* parent = 0, const char* name = 0,
-                  const QString& = QString::null, double min = 0,
+                  const QString& = QString(), double min = 0,
                   double max = 0 );
     virtual ~DummyDisplay() {}
 

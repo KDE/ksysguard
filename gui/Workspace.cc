@@ -161,7 +161,7 @@ bool Workspace::saveOnQuit()
         int res = KMessageBox::warningYesNoCancel( this,
                   i18n( "The worksheet '%1' contains unsaved data.\n"
                         "Do you want to save the worksheet?")
-                  .arg( tabLabel( *it ) ), QString::null, KStdGuiItem::save(), KStdGuiItem::discard() );
+                  .arg( tabLabel( *it ) ), QString(), KStdGuiItem::save(), KStdGuiItem::discard() );
         if ( res == KMessageBox::Yes )
           saveWorkSheet( *it );
         else if ( res == KMessageBox::Cancel )
@@ -204,7 +204,7 @@ void Workspace::loadWorkSheet( const KURL &url )
   KURL tmpFileUrl;
   tmpFileUrl.setPath( tmpFile );
   if ( tmpFileUrl != url.url() )
-    mSheetList.last()->setFileName( QString::null );
+    mSheetList.last()->setFileName( QString() );
   KIO::NetAccess::removeTempFile( tmpFile );
 
   emit announceRecentURL( KURL( url ) );
@@ -301,7 +301,7 @@ void Workspace::deleteWorkSheet()
         int res = KMessageBox::warningYesNoCancel( this,
                             i18n( "The worksheet '%1' contains unsaved data.\n"
                                   "Do you want to save the worksheet?" )
-                            .arg( tabLabel( current ) ), QString::null, KStdGuiItem::save(), KStdGuiItem::discard() );
+                            .arg( tabLabel( current ) ), QString(), KStdGuiItem::save(), KStdGuiItem::discard() );
         if ( res == KMessageBox::Cancel )
           return;
 
@@ -417,7 +417,7 @@ void Workspace::updateCaption( QWidget* wdg )
   if ( wdg )
     emit setCaption( tabLabel( wdg ), ((WorkSheet*)wdg)->modified() );
   else
-    emit setCaption( QString::null, false );
+    emit setCaption( QString(), false );
 
   for ( WorkSheet* s = mSheetList.first(); s != 0; s = mSheetList.next() )
     ((WorkSheet*)s)->setIsOnTop( s == wdg );

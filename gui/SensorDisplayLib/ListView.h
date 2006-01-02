@@ -81,7 +81,7 @@ class ListView : public KSGRD::SensorDisplay
 	Q_OBJECT
 public:
 	ListView(QWidget* parent = 0, const char* name = 0,
-			const QString& = QString::null, int min = 0, int max = 0);
+			const QString& = QString(), int min = 0, int max = 0);
 	~ListView() {}
 
 	bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& sensorDescr);

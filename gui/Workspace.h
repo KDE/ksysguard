@@ -48,7 +48,7 @@ class Workspace : public QTabWidget
     void showProcesses();
 
     bool restoreWorkSheet( const QString &fileName,
-                           const QString &newName = QString::null );
+                           const QString &newName = QString() );
     void deleteWorkSheet( const QString &fileName );
 
   public slots:

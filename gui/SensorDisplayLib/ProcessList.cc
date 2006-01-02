@@ -886,7 +886,7 @@ ProcessList::handleRMBPressed(Q3ListViewItem* lvi, const QPoint& p, int col)
 					selectedPIds.count())
 				.arg(signalPM->text(id));
 			int answ;
-			switch(answ = KMessageBox::questionYesNo(this, msg, QString::null, i18n("Send"), KStdGuiItem::cancel()))
+			switch(answ = KMessageBox::questionYesNo(this, msg, QString(), i18n("Send"), KStdGuiItem::cancel()))
 			{
 			case KMessageBox::Yes:
 			{

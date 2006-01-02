@@ -311,7 +311,7 @@ bool SensorDisplay::useGlobalUpdateInterval() const
 
 QString SensorDisplay::additionalWhatsThis()
 {
-  return QString::null;
+  return QString();
 }
 
 void SensorDisplay::sensorLost( int reqId )
@@ -322,10 +322,10 @@ void SensorDisplay::sensorLost( int reqId )
 bool SensorDisplay::restoreSettings( QDomElement &element )
 {
   mShowUnit = element.attribute( "showUnit", "0" ).toInt();
-  setUnit( element.attribute( "unit", QString::null ) );
-  setTitle( element.attribute( "title", QString::null ) );
+  setUnit( element.attribute( "unit", QString() ) );
+  setTitle( element.attribute( "title", QString() ) );
 
-  if ( element.attribute( "updateInterval" ) != QString::null ) {
+  if ( element.attribute( "updateInterval" ) != QString() ) {
     mUseGlobalUpdateInterval = false;
     setUpdateInterval( element.attribute( "updateInterval", "2" ).toInt() );
   } else {

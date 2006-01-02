@@ -660,7 +660,7 @@ QString WorkSheet::currentDisplayAsXML()
 {
   KSGRD::SensorDisplay* display = currentDisplay();
   if ( !display )
-    return QString::null;
+    return QString();
 
   /* We create an XML description of the current display. */
   QDomDocument doc( "KSysGuardDisplay" );

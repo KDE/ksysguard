@@ -62,8 +62,8 @@ bool SensorSocketAgent::start( const QString &host, const QString&,
 
 void SensorSocketAgent::hostInfo( QString &shell, QString &command, int &port ) const
 {
-  shell = QString::null;
-  command = QString::null;
+  shell.clear();
+  command.clear();
   port = mPort;
 }
 

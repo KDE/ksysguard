@@ -342,7 +342,7 @@ const QString SensorManager::hostName( const SensorAgent *agent) const
     ++it;
   }
 
-  return QString::null;
+  return QString();
 }
 
 bool SensorManager::hostInfo( const QString &hostName, QString &shell,
