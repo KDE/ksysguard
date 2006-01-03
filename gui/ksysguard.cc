@@ -365,7 +365,7 @@ void TopLevel::readProperties( KConfig *cfg )
 {
   /* we can ignore 'isMaximized' because we can't set the window
      maximized, so we save the coordinates instead */
-  if ( cfg->readBoolEntry( "isMinimized" ) == true )
+  if ( cfg->readEntry( "isMinimized" , QVariant(false)).toBool() == true )
     showMinimized();
 
   QList<int> sizes = cfg->readIntListEntry( "SplitterSizeList" );
