@@ -113,16 +113,16 @@ SensorManager::SensorManager()
 
   for ( int i = 0; i < 32; i++ ) {
     mDict.insert( "cpu" + QString::number( i ),
-                 new QString( QString( i18n( "CPU%1" ) ).arg( i ) ) );
+                 new QString( i18n( "CPU%1" ).arg( i )) );
     mDict.insert( "disk" + QString::number( i ),
-                 new QString( QString( i18n( "Disk%1" ) ).arg( i ) ) );
+                 new QString( i18n( "Disk%1" ) .arg( i ) ) );
   }
 
   for ( int i = 0; i < 6; i++) {
     mDict.insert( "fan" + QString::number( i ),
-                 new QString( QString( i18n( "Fan%1" ) ).arg( i ) ) );
+                 new QString( i18n( "Fan%1" ).arg( i ) ) );
     mDict.insert( "temp" + QString::number( i ),
-                 new QString( QString( i18n( "Temperature%1" ) ).arg( i ) ) );
+                 new QString( i18n( "Temperature%1" ).arg( i ) ) );
   }
 
   mDict.insert( "int00", new QString( i18n( "Total" ) ) );
@@ -131,7 +131,7 @@ SensorManager::SensorManager()
   for ( int i = 1; i < 25; i++ ) {
     num.sprintf( "%.2d", i );
 		mDict.insert( "int" + num,
-                 new QString( QString( i18n( "Int%1" ) ).arg( i - 1, 3 ) ) );
+                 new QString( i18n( "Int%1" ).arg( i - 1, 3 ) ) );
 	}
 
   mDescriptions.setAutoDelete( true );
