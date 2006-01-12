@@ -62,10 +62,10 @@ StyleEngine::~StyleEngine()
 
 void StyleEngine::readProperties( KConfig *cfg )
 {
-  mFirstForegroundColor = cfg->readColorEntry( "fgColor1", &mFirstForegroundColor );
-  mSecondForegroundColor = cfg->readColorEntry( "fgColor2", &mSecondForegroundColor );
-  mAlarmColor = cfg->readColorEntry( "alarmColor", &mAlarmColor );
-  mBackgroundColor = cfg->readColorEntry( "backgroundColor", &mBackgroundColor );
+  mFirstForegroundColor = cfg->readEntry( "fgColor1", mFirstForegroundColor );
+  mSecondForegroundColor = cfg->readEntry( "fgColor2", mSecondForegroundColor );
+  mAlarmColor = cfg->readEntry( "alarmColor", mAlarmColor );
+  mBackgroundColor = cfg->readEntry( "backgroundColor", mBackgroundColor );
   mFontSize = cfg->readEntry( "fontSize", mFontSize );
 
   QStringList list = cfg->readListEntry( "sensorColors" );
