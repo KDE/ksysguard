@@ -205,7 +205,7 @@ class SensorDisplay : public QWidget, public SensorClient
      */
     virtual void sensorLost( int reqId );
 
-  public slots:
+  public Q_SLOTS:
     /**
       If @ref value is true, this method starts the timer that triggers
       timer events. If @ref value is false, the timer is stopped.
@@ -237,7 +237,7 @@ class SensorDisplay : public QWidget, public SensorClient
     virtual void applyStyle();
 
 		
-  signals:
+  Q_SIGNALS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
     void modified( bool modified );
 

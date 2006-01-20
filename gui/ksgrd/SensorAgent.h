@@ -74,7 +74,7 @@ class KDE_EXPORT SensorAgent : public QObject
 
     const QString &hostName() const;
 	
-  signals:
+  Q_SIGNALS:
     void reconfigure( const SensorAgent* );
 
   protected:

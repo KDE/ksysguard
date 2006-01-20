@@ -51,7 +51,7 @@ class SensorSocketAgent : public SensorAgent
 
     void hostInfo( QString &shell, QString &command, int &port ) const;
 
-  private slots:
+  private Q_SLOTS:
     void connectionClosed();
     void msgSent( int );
     void msgRcvd();

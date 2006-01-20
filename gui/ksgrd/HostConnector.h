@@ -56,7 +56,7 @@ class HostConnector : public KDialogBase
     bool useDaemon() const;
     bool useCustom() const;
 
-  protected slots:
+  protected Q_SLOTS:
     virtual void slotHelp();
     void slotHostNameChanged( const QString &_text );
   private:

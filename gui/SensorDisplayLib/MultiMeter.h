@@ -59,7 +59,7 @@ public:
 
 	void configureSettings();
 
-public slots:
+public Q_SLOTS:
 	void applySettings();
 	void applyStyle();
 

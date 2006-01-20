@@ -106,7 +106,7 @@ public:
 	double getLowerLimit(void) { return lowerLimit; }
 	Q3ListViewItem* getListViewItem(void) { return lvi; }
 
-public slots:
+public Q_SLOTS:
 	void timerOff()
 	{
 		killTimer(timerID);
@@ -171,7 +171,7 @@ public:
 		return (true);
 	}
 
-public slots:
+public Q_SLOTS:
 	void applySettings();
 	void applyStyle();
 	void RMBClicked(Q3ListViewItem*, const QPoint&, int);

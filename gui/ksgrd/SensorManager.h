@@ -87,10 +87,10 @@ class KDE_EXPORT SensorManager : public QObject
 
     void disconnectClient( SensorClient *client );
 	
-  public slots:
+  public Q_SLOTS:
     void reconfigure( const SensorAgent *agent );
 
-  signals:
+  Q_SIGNALS:
     void update();
     void hostConnectionLost( const QString &hostName );
 

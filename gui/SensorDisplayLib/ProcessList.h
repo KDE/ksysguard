@@ -128,7 +128,7 @@ public:
 	bool load(QDomElement& el);
 	bool save(QDomDocument& doc, QDomElement& display);
 
-public slots:
+public Q_SLOTS:
 	void setTreeView(bool tv);
 
 	/**
@@ -166,7 +166,7 @@ public slots:
 		}
 	}
 
-signals:
+Q_SIGNALS:
 	// This signal is emitted when process pid should receive signal sig.
 	void killProcess(int pid, int sig);
 

@@ -68,7 +68,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
     QString readIntegerSensor( const QString &sensorLocator );
     QStringList readListSensor( const QString &sensorLocator );
 
-  public slots:
+  public Q_SLOTS:
     void registerRecentURL( const KURL &url );
     void resetWorkSheets();
 
@@ -77,7 +77,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
     virtual void timerEvent( QTimerEvent* );
     virtual bool queryClose();
 
-  protected slots:
+  protected Q_SLOTS:
     void connectHost();
     void disconnectHost();
     void updateStatusBar();

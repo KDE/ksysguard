@@ -51,7 +51,7 @@ class Workspace : public QTabWidget
                            const QString &newName = QString() );
     void deleteWorkSheet( const QString &fileName );
 
-  public slots:
+  public Q_SLOTS:
     void newWorkSheet();
     void loadWorkSheet();
     void loadWorkSheet( const KURL& );
@@ -68,7 +68,7 @@ class Workspace : public QTabWidget
     void updateCaption( QWidget* );
     void applyStyle();
 
-  signals:
+  Q_SIGNALS:
     void announceRecentURL( const KURL &url );
     void setCaption( const QString &text, bool modified );
 

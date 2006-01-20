@@ -63,7 +63,7 @@ class DancingBars : public KSGRD::SensorDisplay
 
     virtual bool hasSettingsDialog() const;
 
-  public slots:
+  public Q_SLOTS:
     void applySettings();
     virtual void applyStyle();
 

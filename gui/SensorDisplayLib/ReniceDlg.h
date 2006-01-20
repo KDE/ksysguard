@@ -63,7 +63,7 @@ public:
 		delete lcd;
 		delete vLay;
 	}
-public slots:
+public Q_SLOTS:
     void slotOk();
     void slotCancel();
 
@@ -79,7 +79,7 @@ private:
 	QSlider* slider;
 	QLCDNumber* lcd;
 
-private slots:
+private Q_SLOTS:
 	void setPriorityValue(int priority)
 	{
 		value = priority;

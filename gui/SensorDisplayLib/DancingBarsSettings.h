@@ -82,7 +82,7 @@ class DancingBarsSettings : public KDialogBase
     void setSensors( const QList< QStringList > &list );
     QList< QStringList > sensors() const;
 
-  private slots:
+  private Q_SLOTS:
     void editSensor();
     void removeSensor();
     void selectionChanged( Q3ListViewItem* );

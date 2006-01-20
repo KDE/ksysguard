@@ -46,7 +46,7 @@ class KDE_EXPORT TimerSettings : public KDialogBase
     void setInterval( int interval );
     int interval() const;
 
-  private slots:
+  private Q_SLOTS:
     void globalUpdateChanged( bool );
 
   private:

@@ -60,11 +60,11 @@ class KDE_EXPORT StyleEngine : public QObject
     const QColor& sensorColor( int pos );
     uint numSensorColors() const;
 
-  public slots:
+  public Q_SLOTS:
     void configure();
     void applyToWorksheet();
 
-  signals:
+  Q_SIGNALS:
 	  void applyStyleToWorksheet();
 
   private:

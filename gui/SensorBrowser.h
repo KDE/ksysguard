@@ -57,7 +57,7 @@ class SensorBrowser : public KListView, public KSGRD::SensorClient
     QStringList listHosts();
     QStringList listSensors( const QString &hostName );
 
-  public slots:
+  public Q_SLOTS:
     void disconnect();
     void hostReconfigured( const QString &hostName );
     void update();

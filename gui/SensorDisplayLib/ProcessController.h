@@ -91,7 +91,7 @@ public:
 		return (false);
 	}
 
-public slots:
+public Q_SLOTS:
 	void filterModeChanged(int filter)
 	{
 		pList->setFilterMode(filter);
@@ -124,7 +124,7 @@ public slots:
 
 	void updateList();
 
-signals:
+Q_SIGNALS:
 	void setFilterMode(int);
 
 private:

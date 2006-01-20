@@ -76,12 +76,12 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
 
     void setIsOnTop( bool onTop );
 
-  public slots:
+  public Q_SLOTS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
     void setModified( bool mfd );
     void applyStyle();
 
-  signals:
+  Q_SIGNALS:
     void sheetModified( QWidget *sheet );
 
   protected:

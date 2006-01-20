@@ -56,7 +56,7 @@ class SensorShellAgent : public SensorAgent
 
     void hostInfo( QString &shell, QString &command, int &port) const;
 
-  private slots:
+  private Q_SLOTS:
     void msgSent( KProcess* );
     void msgRcvd( KProcess*, char *buffer, int buflen );
     void errMsgRcvd( KProcess*, char *buffer, int buflen );

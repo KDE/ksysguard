@@ -66,7 +66,7 @@ public:
 		return (true);
 	}
 
-public slots:
+public Q_SLOTS:
 	void applySettings();
 	void applyStyle();
 

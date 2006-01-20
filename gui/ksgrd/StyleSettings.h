@@ -61,7 +61,7 @@ class StyleSettings : public KDialogBase
     void setSensorColors( const QList<QColor> &list );
     QList<QColor> sensorColors();
 
-  private slots:
+  private Q_SLOTS:
     void editSensorColor();
     void selectionChanged( Q3ListBoxItem* );
 
