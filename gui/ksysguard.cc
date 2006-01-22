@@ -368,7 +368,7 @@ void TopLevel::readProperties( KConfig *cfg )
   if ( cfg->readEntry( "isMinimized" , QVariant(false)).toBool() == true )
     showMinimized();
 
-  QList<int> sizes = cfg->readIntListEntry( "SplitterSizeList" );
+  QList<int> sizes = cfg->readEntry( "SplitterSizeList",QList<int>() );
   if ( sizes.isEmpty() ) {
     // start with a 30/70 ratio
     sizes.append( 30 );
