@@ -28,7 +28,7 @@
 #include <qtabwidget.h>
 
 class KConfig;
-class KURL;
+class KUrl;
 class QString;
 class WorkSheet;
 
