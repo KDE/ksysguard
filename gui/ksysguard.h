@@ -69,7 +69,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
     QStringList readListSensor( const QString &sensorLocator );
 
   public Q_SLOTS:
-    void registerRecentURL( const KURL &url );
+    void registerRecentURL( const KUrl &url );
     void resetWorkSheets();
 
   protected:
