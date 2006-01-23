@@ -21,7 +21,7 @@
 #include <stdlib.h>
 
 #include <kdebug.h>
-#include <kpassdlg.h> 
+#include <kpassworddialog.h> 
 #include <kprocess.h>
 
 #include "SensorClient.h"

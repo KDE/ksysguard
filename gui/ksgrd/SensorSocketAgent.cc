@@ -22,7 +22,7 @@
 
 #include <kdebug.h>
 #include <klocale.h>
-#include <kpassdlg.h> 
+#include <kpassworddialog.h> 
 
 #include "SensorClient.h"
 #include "SensorManager.h"
