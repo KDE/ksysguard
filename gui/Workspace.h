@@ -54,7 +54,7 @@ class Workspace : public QTabWidget
   public Q_SLOTS:
     void newWorkSheet();
     void loadWorkSheet();
-    void loadWorkSheet( const KURL& );
+    void loadWorkSheet( const KUrl& );
     void saveWorkSheet();
     void saveWorkSheet( WorkSheet *sheet );
     void saveWorkSheetAs();
@@ -69,7 +69,7 @@ class Workspace : public QTabWidget
     void applyStyle();
 
   Q_SIGNALS:
-    void announceRecentURL( const KURL &url );
+    void announceRecentURL( const KUrl &url );
     void setCaption( const QString &text, bool modified );
 
   private:

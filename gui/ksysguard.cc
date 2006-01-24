@@ -83,8 +83,8 @@ TopLevel::TopLevel( const char *name )
   mSensorBrowser = new SensorBrowser( mSplitter, KSGRD::SensorMgr );
 
   mWorkSpace = new Workspace( mSplitter );
-  connect( mWorkSpace, SIGNAL( announceRecentURL( const KURL& ) ),
-           SLOT( registerRecentURL( const KURL& ) ) );
+  connect( mWorkSpace, SIGNAL( announceRecentURL( const KUrl& ) ),
+           SLOT( registerRecentURL( const KUrl& ) ) );
   connect( mWorkSpace, SIGNAL( setCaption( const QString&, bool ) ),
            SLOT( setCaption( const QString&, bool ) ) );
   connect( KSGRD::Style, SIGNAL( applyStyleToWorksheet() ), mWorkSpace,
@@ -104,7 +104,7 @@ TopLevel::TopLevel( const char *name )
   KStdAction::openNew( mWorkSpace, SLOT( newWorkSheet() ), actionCollection() );
   KStdAction::open( mWorkSpace, SLOT( loadWorkSheet() ), actionCollection() );
   mActionOpenRecent = KStdAction::openRecent( mWorkSpace,
-                    SLOT( loadWorkSheet( const KURL& ) ), actionCollection() );
+                    SLOT( loadWorkSheet( const KUrl& ) ), actionCollection() );
   KStdAction::close( mWorkSpace, SLOT( deleteWorkSheet() ), actionCollection() );
 
   KStdAction::saveAs( mWorkSpace, SLOT( saveWorkSheetAs() ), actionCollection() );
@@ -234,7 +234,7 @@ QStringList TopLevel::readListSensor( const QString& sensorLocator )
  * End of DCOP Interface section
  */
 
-void TopLevel::registerRecentURL( const KURL &url )
+void TopLevel::registerRecentURL( const KUrl &url )
 {
   mActionOpenRecent->addURL( url );
 }

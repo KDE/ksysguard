@@ -178,12 +178,12 @@ void Workspace::loadWorkSheet()
   KFileDialog dlg( 0, i18n( "*.sgrd|Sensor Files" ), this,
                    "LoadFileDialog", true );
 
-  KURL url = dlg.getOpenURL( mWorkDir, "*.sgrd", 0, i18n( "Select Worksheet to Load" ) );
+  KUrl url = dlg.getOpenURL( mWorkDir, "*.sgrd", 0, i18n( "Select Worksheet to Load" ) );
 
   loadWorkSheet( url );
 }
 
-void Workspace::loadWorkSheet( const KURL &url )
+void Workspace::loadWorkSheet( const KUrl &url )
 {
   if ( url.isEmpty() )
     return;
@@ -201,7 +201,7 @@ void Workspace::loadWorkSheet( const KURL &url )
 
   /* If we have loaded a non-local file we clear the file name so that
    * the users is prompted for a new name for saving the file. */
-  KURL tmpFileUrl;
+  KUrl tmpFileUrl;
   tmpFileUrl.setPath( tmpFile );
   if ( tmpFileUrl != url.url() )
     mSheetList.last()->setFileName( QString() );
@@ -255,7 +255,7 @@ void Workspace::saveWorkSheet( WorkSheet *sheet )
   }
 
   /* Add file to recent documents menue. */
-  KURL url;
+  KUrl url;
   url.setPath( fileName );
   emit announceRecentURL( url );
 }
@@ -286,7 +286,7 @@ void Workspace::saveWorkSheetAs( WorkSheet *sheet )
   } while ( !sheet->save( fileName ) );
 
   /* Add file to recent documents menue. */
-  KURL url;
+  KUrl url;
   url.setPath( fileName );
   emit announceRecentURL( url );
 }
