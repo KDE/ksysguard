@@ -401,8 +401,8 @@ QString SensorManager::translateSensor( const QString &sensor ) const
 
 void SensorManager::readProperties( KConfig *cfg )
 {
-  mHostConnector->setHostNames( cfg->readListEntry( "HostList" ) );
-  mHostConnector->setCommands( cfg->readListEntry( "CommandList" ) );
+  mHostConnector->setHostNames( cfg->readEntry( "HostList" ,QStringList()) );
+  mHostConnector->setCommands( cfg->readEntry( "CommandList",QStringList() ) );
 }
 
 void

@@ -68,7 +68,7 @@ void StyleEngine::readProperties( KConfig *cfg )
   mBackgroundColor = cfg->readEntry( "backgroundColor", mBackgroundColor );
   mFontSize = cfg->readEntry( "fontSize", mFontSize );
 
-  QStringList list = cfg->readListEntry( "sensorColors" );
+  QStringList list = cfg->readEntry( "sensorColors",QStringList() );
   if ( !list.isEmpty() ) {
     mSensorColors.clear();
     QStringList::Iterator it;
