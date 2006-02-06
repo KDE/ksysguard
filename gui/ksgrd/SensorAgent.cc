@@ -62,7 +62,7 @@ bool SensorAgent::sendRequest( const QString &req, SensorClient *client, int id 
   mInputFIFO.prepend( new SensorRequest( req, client, id ) );
 
 #if SA_TRACE
-  kdDebug(1215) << "-> " << req << "(" << mInputFIFO.count() << "/"
+  kDebug(1215) << "-> " << req << "(" << mInputFIFO.count() << "/"
                 << mProcessingFIFO.count() << ")" << endl;
 #endif
   executeCommand();
@@ -73,7 +73,7 @@ bool SensorAgent::sendRequest( const QString &req, SensorClient *client, int id 
 void SensorAgent::processAnswer( const QString &buffer )
 {
 #if SA_TRACE
-  kdDebug(1215) << "<- " << buffer << endl;
+  kDebug(1215) << "<- " << buffer << endl;
 #endif
 
   for ( int i = 0; i < buffer.length(); i++ ) {
@@ -101,7 +101,7 @@ void SensorAgent::processAnswer( const QString &buffer )
   // And now the real information
   while ( ( end = mAnswerBuffer.find( "\nksysguardd> " ) ) >= 0 ) {
 #if SA_TRACE
-    kdDebug(1215) << "<= " << mAnswerBuffer.left( end )
+    kDebug(1215) << "<= " << mAnswerBuffer.left( end )
                   << "(" << mInputFIFO.count() << "/"
                   << mProcessingFIFO.count() << ")" << endl;
 #endif
@@ -110,7 +110,7 @@ void SensorAgent::processAnswer( const QString &buffer )
        * ready to serve requests now. */
       mDaemonOnLine = true;
 #if SA_TRACE
-      kdDebug(1215) << "Daemon now online!" << endl;
+      kDebug(1215) << "Daemon now online!" << endl;
 #endif
       mAnswerBuffer.clear();
       break;
@@ -119,7 +119,7 @@ void SensorAgent::processAnswer( const QString &buffer )
     // remove pending request from FIFO
     SensorRequest* req = mProcessingFIFO.last();
     if ( !req ) {
-      kdDebug(1215)	<< "ERROR: Received answer but have no pending "
+      kDebug(1215)	<< "ERROR: Received answer but have no pending "
                     << "request!" << endl;
       return;
     }
@@ -160,7 +160,7 @@ void SensorAgent::executeCommand()
     mInputFIFO.removeLast();
 
 #if SA_TRACE
-    kdDebug(1215) << ">> " << req->request().ascii() << "(" << mInputFIFO.count()
+    kDebug(1215) << ">> " << req->request().ascii() << "(" << mInputFIFO.count()
                   << "/" << mProcessingFIFO.count() << ")" << endl;
 #endif
     // send request to daemon
@@ -168,7 +168,7 @@ void SensorAgent::executeCommand()
     if ( writeMsg( cmdWithNL.ascii(), cmdWithNL.length() ) )
       mTransmitting = true;
     else
-      kdDebug(1215) << "SensorAgent::writeMsg() failed" << endl;
+      kDebug(1215) << "SensorAgent::writeMsg() failed" << endl;
 
     // add request to processing FIFO
     mProcessingFIFO.prepend( req );

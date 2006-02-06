@@ -109,7 +109,7 @@ void SensorBrowser::disconnect()
 
   for ( ; it.current(); ++it )
     if ( (*it)->listViewItem()->isSelected() ) {
-      kdDebug(1215) << "Disconnecting " <<  (*it)->hostName() << endl;
+      kDebug(1215) << "Disconnecting " <<  (*it)->hostName() << endl;
       KSGRD::SensorMgr->disengage( (*it)->sensorAgent() );
     }
 }

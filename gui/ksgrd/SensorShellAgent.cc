@@ -72,7 +72,7 @@ bool SensorShellAgent::start( const QString &host, const QString &shell,
 
   if ( !mDaemon->start( KProcess::NotifyOnExit, KProcess::All ) ) {
     sensorManager()->hostLost( this );
-    kdDebug (1215) << "Command '" << cmd << "' failed"  << endl;
+    kDebug (1215) << "Command '" << cmd << "' failed"  << endl;
     return false;
   }
 
@@ -112,7 +112,7 @@ void SensorShellAgent::errMsgRcvd( KProcess*, char *buffer, int buflen )
 
   QString buf = QString::fromLocal8Bit( buffer, buflen );
 
-  kdDebug(1215) << "SensorShellAgent: Warning, received text over stderr!"
+  kDebug(1215) << "SensorShellAgent: Warning, received text over stderr!"
                 << endl << buf << endl;
 }
 

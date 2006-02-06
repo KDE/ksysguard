@@ -50,7 +50,7 @@ bool SensorSocketAgent::start( const QString &host, const QString&,
                                const QString&, int port )
 {
   if ( port <= 0 )
-    kdDebug(1215) << "SensorSocketAgent::start: Illegal port " << port << endl;
+    kDebug(1215) << "SensorSocketAgent::start: Illegal port " << port << endl;
 
   setHostName( host );
   mPort = port;
@@ -113,7 +113,7 @@ void SensorSocketAgent::error( int id )
                          .arg( hostName() ) );
       break;
     default:
-      kdDebug(1215) << "SensorSocketAgent::error() unknown error " << id << endl;
+      kDebug(1215) << "SensorSocketAgent::error() unknown error " << id << endl;
   }
 
   setDaemonOnLine( false );

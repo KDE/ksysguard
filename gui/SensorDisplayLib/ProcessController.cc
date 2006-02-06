@@ -273,7 +273,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 		KSGRD::SensorTokenizer lines(answer, '\n');
 		if (lines.count() != 2)
 		{
-			kdDebug (1215) << "ProcessController::answerReceived(1)"
+			kDebug (1215) << "ProcessController::answerReceived(1)"
 				  "wrong number of lines [" <<  answer << "]" << endl;
 			sensorError(id, true);
 			return;
@@ -303,7 +303,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 	case 3:
 	{
 		// result of kill operation
-		kdDebug(1215) << answer << endl;
+		kDebug(1215) << answer << endl;
 		KSGRD::SensorTokenizer vals(answer, '\t');
 		switch (vals[0].toInt())
 		{
@@ -338,7 +338,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 	case 5:
 	{
 		// result of renice operation
-		kdDebug(1215) << answer << endl;
+		kDebug(1215) << answer << endl;
 		KSGRD::SensorTokenizer vals(answer, '\t');
 		switch (vals[0].toInt())
 		{

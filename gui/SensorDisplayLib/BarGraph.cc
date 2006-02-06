@@ -72,7 +72,7 @@ bool BarGraph::addBar( const QString &footer )
 bool BarGraph::removeBar( uint idx )
 {
   if ( idx >= bars ) {
-    kdDebug(1215) << "BarGraph::removeBar: idx " << idx << " out of range "
+    kDebug(1215) << "BarGraph::removeBar: idx " << idx << " out of range "
                   << bars << endl;
     return false;
   }

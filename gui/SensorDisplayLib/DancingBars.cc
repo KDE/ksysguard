@@ -197,7 +197,7 @@ bool DancingBars::addSensor( const QString &hostName, const QString &name,
 bool DancingBars::removeSensor( uint pos )
 {
   if ( pos >= mBars ) {
-    kdDebug(1215) << "DancingBars::removeSensor: idx out of range ("
+    kDebug(1215) << "DancingBars::removeSensor: idx out of range ("
                   << pos << ")" << endl;
     return false;
   }
@@ -247,7 +247,7 @@ void DancingBars::answerReceived( int id, const QString &answer )
   if ( id < 100 ) {
     mSampleBuffer[ id ] = answer.toDouble();
     if ( mFlags & ( 1 << id ) ) {
-      kdDebug(1215) << "ERROR: DancingBars lost sample (" << mFlags
+      kDebug(1215) << "ERROR: DancingBars lost sample (" << mFlags
                     << ", " << mBars << ")" << endl;
       sensorError( id, true );
     }

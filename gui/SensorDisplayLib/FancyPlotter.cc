@@ -254,7 +254,7 @@ bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
 bool FancyPlotter::removeSensor( uint pos )
 {
   if ( pos >= mBeams ) {
-    kdDebug(1215) << "FancyPlotter::removeSensor: idx out of range ("
+    kDebug(1215) << "FancyPlotter::removeSensor: idx out of range ("
                   << pos << ")" << endl;
     return false;
   }

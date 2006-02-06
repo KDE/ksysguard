@@ -373,7 +373,7 @@ bool KSysGuardApplet::load()
     QDomElement element = dnList.item( i ).toElement();
     uint dock = element.attribute( "dock" ).toUInt();
     if ( i >= (int)mDockCount ) {
-      kdDebug (1215) << "Dock number " << i << " out of range "
+      kDebug (1215) << "Dock number " << i << " out of range "
                      << mDockCount << endl;
       return false;
     }

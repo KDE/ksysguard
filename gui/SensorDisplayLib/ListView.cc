@@ -189,7 +189,7 @@ void PrivateListView::addColumn(const QString& label, const QString& type)
 		setColumnAlignment(col, Qt::AlignLeft);
 	else
 	{
-		kdDebug(1215) << "Unknown type " << type << " of column " << label
+		kDebug(1215) << "Unknown type " << type << " of column " << label
 				  << " in ListView!" << endl;
 		return;
 	}
@@ -256,7 +256,7 @@ ListView::answerReceived(int id, const QString& answer)
 			KSGRD::SensorTokenizer lines(answer, '\n');
 			if (lines.count() != 2)
 			{
-				kdDebug(1215) << "wrong number of lines" << endl;
+				kDebug(1215) << "wrong number of lines" << endl;
 				return;
 			}
 			KSGRD::SensorTokenizer headers(lines[0], '\t');
