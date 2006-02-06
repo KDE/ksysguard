@@ -115,8 +115,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   boxLayout->setRowStretch( 1, 1 );
 
   mHorizontalScale = new KIntNumInput( 1, groupBox );
-  mHorizontalScale->setMinValue( 1 );
-  mHorizontalScale->setMaxValue( 50 );
+  mHorizontalScale->setMinimum( 1 );
+  mHorizontalScale->setMaximum( 50 );
   boxLayout->addWidget( mHorizontalScale, 0, 0 );
 
   label = new QLabel( i18n( "pixel(s) per time period" ), groupBox );
@@ -140,8 +140,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   boxLayout->addWidget( label, 0, 2 );
 
   mVerticalLinesDistance = new KIntNumInput( 0, groupBox );
-  mVerticalLinesDistance->setMinValue( 10 );
-  mVerticalLinesDistance->setMaxValue( 120 );
+  mVerticalLinesDistance->setMinimum( 10 );
+  mVerticalLinesDistance->setMaximum( 120 );
   mVerticalLinesDistance->setWhatsThis( i18n( "Enter the distance between two vertical lines here." ) );
   boxLayout->addWidget( mVerticalLinesDistance , 0, 3 );
   label->setBuddy( mVerticalLinesDistance );
@@ -157,8 +157,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   boxLayout->addWidget( label, 1, 2 );
 
   mHorizontalLinesCount = new KIntNumInput( 0, groupBox );
-  mHorizontalLinesCount->setMinValue( 2 );
-  mHorizontalLinesCount->setMaxValue( 20 );
+  mHorizontalLinesCount->setMinimum( 2 );
+  mHorizontalLinesCount->setMaximum( 20 );
   mHorizontalLinesCount->setWhatsThis( i18n( "Enter the number of horizontal lines here." ) );
   boxLayout->addWidget( mHorizontalLinesCount , 1, 3 );
   label->setBuddy( mHorizontalLinesCount );
@@ -179,8 +179,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   boxLayout->addWidget( label, 0, 2 );
 
   mFontSize = new KIntNumInput( 9, groupBox );
-  mFontSize->setMinValue( 5 );
-  mFontSize->setMaxValue( 24 );
+  mFontSize->setMinimum( 5 );
+  mFontSize->setMaximum( 24 );
   boxLayout->addWidget( mFontSize, 0, 3 );
   label->setBuddy( mFontSize );
 
