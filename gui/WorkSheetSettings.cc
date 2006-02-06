@@ -71,8 +71,8 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
   groupLayout->addWidget( label, 0, 0 );
 
   mRows = new KIntNumInput( 1, group );
-  mRows->setMaxValue( 42 );
-  mRows->setMinValue( 1 );
+  mRows->setMaximum( 42 );
+  mRows->setMinimum( 1 );
   groupLayout->addWidget( mRows, 0, 1 );
   label->setBuddy( mRows );
 
@@ -80,8 +80,8 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
   groupLayout->addWidget( label, 1, 0 );
 
   mColumns = new KIntNumInput( 1, group );
-  mColumns->setMaxValue( 42 );
-  mColumns->setMinValue( 1 );
+  mColumns->setMaximum( 42 );
+  mColumns->setMinimum( 1 );
   groupLayout->addWidget( mColumns, 1, 1 );
   label->setBuddy( mColumns );
 
@@ -89,8 +89,8 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
   groupLayout->addWidget( label, 2, 0 );
 
   mInterval = new KIntNumInput( 2, group );
-  mInterval->setMaxValue( 300 );
-  mInterval->setMinValue( 1 );
+  mInterval->setMaximum( 300 );
+  mInterval->setMinimum( 1 );
   mInterval->setSuffix( i18n( " sec" ) );
   groupLayout->addWidget( mInterval, 2, 1 );
   label->setBuddy( mInterval );

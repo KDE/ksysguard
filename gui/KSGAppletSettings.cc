@@ -43,8 +43,8 @@ KSGAppletSettings::KSGAppletSettings( QWidget *parent, const char *name )
   topLayout->addWidget( label, 0, 0 );
 
   mNumDisplay = new KIntNumInput( 1, page );
-  mNumDisplay->setMinValue( 1 );
-  mNumDisplay->setMaxValue( 32 );
+  mNumDisplay->setMinimum( 1 );
+  mNumDisplay->setMaximum( 32 );
   topLayout->addWidget( mNumDisplay, 0, 1 );
   label->setBuddy( mNumDisplay );
 
@@ -52,8 +52,8 @@ KSGAppletSettings::KSGAppletSettings( QWidget *parent, const char *name )
   topLayout->addWidget( label, 1, 0 );
 
   mSizeRatio = new KIntNumInput( 100, page );
-  mSizeRatio->setMinValue( 20 );
-  mSizeRatio->setMaxValue( 500 );
+  mSizeRatio->setMinimum( 20 );
+  mSizeRatio->setMaximum( 500 );
   mSizeRatio->setSuffix( i18n( "%" ) );
   topLayout->addWidget( mSizeRatio, 1, 1 );
   label->setBuddy( mSizeRatio );
@@ -62,8 +62,8 @@ KSGAppletSettings::KSGAppletSettings( QWidget *parent, const char *name )
   topLayout->addWidget( label, 2, 0 );
 
   mInterval = new KIntNumInput( 2, page );
-  mInterval->setMinValue( 1 );
-  mInterval->setMaxValue( 300 );
+  mInterval->setMinimum( 1 );
+  mInterval->setMaximum( 300 );
   mInterval->setSuffix( i18n( " sec" ) );
   topLayout->addWidget( mInterval, 2, 1 );
   label->setBuddy( mInterval );
