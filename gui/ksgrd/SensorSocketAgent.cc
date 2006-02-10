@@ -83,7 +83,7 @@ void SensorSocketAgent::msgRcvd()
   int buflen = mSocket.bytesAvailable();
   char* buffer = new char[ buflen ];
 
-  mSocket.readBlock( buffer, buflen );
+  mSocket.read( buffer, buflen );
   QString buf = QString::fromLocal8Bit( buffer, buflen );
   delete [] buffer;
 
