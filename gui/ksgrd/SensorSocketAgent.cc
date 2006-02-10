@@ -42,7 +42,7 @@ SensorSocketAgent::SensorSocketAgent( SensorManager *sm )
 
 SensorSocketAgent::~SensorSocketAgent()
 {
-  mSocket.writeBlock( "quit\n", strlen( "quit\n" ) );
+  mSocket.write( "quit\n", strlen( "quit\n" ) );
   mSocket.flush();
 }
 	
@@ -122,7 +122,7 @@ void SensorSocketAgent::error( int id )
 
 bool SensorSocketAgent::writeMsg( const char *msg, int len )
 {
-  return ( mSocket.writeBlock( msg, len ) == len );
+  return ( mSocket.write( msg, len ) == len );
 }
 
 bool SensorSocketAgent::txReady()
