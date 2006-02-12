@@ -207,7 +207,7 @@ void Workspace::loadWorkSheet( const KUrl &url )
     mSheetList.last()->setFileName( QString() );
   KIO::NetAccess::removeTempFile( tmpFile );
 
-  emit announceRecentURL( KURL( url ) );
+  emit announceRecentURL( KUrl( url ) );
 }
 
 void Workspace::saveWorkSheet()

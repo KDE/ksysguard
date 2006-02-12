@@ -181,7 +181,7 @@ void TopLevel::showOnCurrentDesktop()
 
 void TopLevel::loadWorkSheet( const QString &fileName )
 {
-  mWorkSpace->loadWorkSheet( KURL( fileName ) );
+  mWorkSpace->loadWorkSheet( KUrl( fileName ) );
 }
 
 void TopLevel::removeWorkSheet( const QString &fileName )
