@@ -97,7 +97,7 @@ TopLevel::TopLevel( const char *name )
   statusBar()->insertFixedItem( i18n( "Memory: 88888888888 kB used, "
                                       "88888888888 kB free" ), 1 );
   statusBar()->insertFixedItem( i18n( "Swap: 888888888 kB used, "
-                                      "888888888 kB free" ), 2
+                                      "888888888 kB free" ), 2);
   statusBar()->hide();
 
   // create actions for menue entries
