@@ -95,9 +95,9 @@ TopLevel::TopLevel( const char *name )
    * host. */
   statusBar()->insertFixedItem( i18n( "88888 Processes" ), 0 );
   statusBar()->insertFixedItem( i18n( "Memory: 88888888888 kB used, "
-                                     "88888888888 kB free" ), 1 );
+                                      "88888888888 kB free" ), 1 );
   statusBar()->insertFixedItem( i18n( "Swap: 888888888 kB used, "
-                                     "888888888 kB free" ), 2 );
+                                      "888888888 kB free" ), 2
   statusBar()->hide();
 
   // create actions for menue entries
@@ -111,9 +111,9 @@ TopLevel::TopLevel( const char *name )
   KStdAction::save( mWorkSpace, SLOT( saveWorkSheet() ), actionCollection() );
   KStdAction::quit( this, SLOT( close() ), actionCollection() );
 
-  new KAction( i18n( "C&onnect Host..." ), "connect_established", 0, this,
+  new KAction( i18n( "Monitor remote machine..." ), "connect_established", 0, this,
                SLOT( connectHost() ), actionCollection(), "connect_host" );
-  new KAction( i18n( "D&isconnect Host" ), "connect_no", 0, this,
+  new KAction( i18n( "D&isconnect" ), "connect_no", 0, this,
                SLOT( disconnectHost() ), actionCollection(), "disconnect_host" );
 
   KStdAction::cut( mWorkSpace, SLOT( cut() ), actionCollection() );
@@ -402,6 +402,7 @@ void TopLevel::saveProperties( KConfig *cfg )
 
 void TopLevel::answerReceived( int id, const QString &answer )
 {
+  // we have recieved an answer from the daemon.
   QString s;
   static QString unit;
   static long mUsed = 0;
@@ -411,11 +412,6 @@ void TopLevel::answerReceived( int id, const QString &answer )
 
   switch ( id ) {
     case 0:
-      // yes, I know there is never 1 process, but that's the way
-      // singular vs. plural works :/
-      //
-      // To use pluralForms, though, you need to convert to
-      // an integer, not use the QString straight.
       s = i18n( "1 Process", "%n Processes", answer.toInt() );
       statusBar()->changeItem( s, 0 );
       break;
@@ -452,10 +448,13 @@ void TopLevel::answerReceived( int id, const QString &answer )
       QByteArray replyData;
       QDataStream reply( &replyData, QIODevice::WriteOnly );
       reply << answer;
-
-      DCOPClientTransaction *dcopTransaction = mDCopFIFO.last();
-      kapp->dcopClient()->endTransaction( dcopTransaction, replyType, replyData );
-      mDCopFIFO.removeLast();
+      if(mDCopFIFO.isEmpty()) {
+        kDebug() << "We had a reply when it appears we sent no question.  Reply was '" << answer << "'" << endl;
+      } else {
+        DCOPClientTransaction *dcopTransaction = mDCopFIFO.last();
+        kapp->dcopClient()->endTransaction( dcopTransaction, replyType, replyData );
+        mDCopFIFO.removeLast();
+      }
       break;
     }
 
@@ -471,10 +470,13 @@ void TopLevel::answerReceived( int id, const QString &answer )
         resultList.append( lines[ i ] );
 
       reply << resultList;
-
-      DCOPClientTransaction *dcopTransaction = mDCopFIFO.last();
-      kapp->dcopClient()->endTransaction( dcopTransaction, replyType, replyData );
-      mDCopFIFO.removeLast();
+      if(mDCopFIFO.isEmpty()) {
+        kDebug() << "We had a reply when it appears we sent no question.  Reply was '" << answer << "'" << endl;
+      } else {
+        DCOPClientTransaction *dcopTransaction = mDCopFIFO.last();
+        kapp->dcopClient()->endTransaction( dcopTransaction, replyType, replyData );
+        mDCopFIFO.removeLast();
+      }
       break;
     }
   }
@@ -538,8 +540,9 @@ int main( int argc, char** argv )
 
   KAboutData aboutData( "ksysguard", I18N_NOOP( "KDE System Guard" ),
                         KSYSGUARD_VERSION, Description, KAboutData::License_GPL,
-                        I18N_NOOP( "(c) 1996-2002 The KSysGuard Developers" ) );
-  aboutData.addAuthor( "Chris Schlaeger", "Current Maintainer", "cs@kde.org" );
+                        I18N_NOOP( "(c) 1996-2005 The KSysGuard Developers" ) );
+  aboutData.addAuthor( "John Tapsell", "Current Maintainer", "john.tapsell@kdemail.org" );
+  aboutData.addAuthor( "Chris Schlaeger", "Previous Maintainer", "cs@kde.org" );
   aboutData.addAuthor( "Tobias Koenig", 0, "tokoe@kde.org" );
   aboutData.addAuthor( "Nicolas Leclercq", 0, "nicknet@planete.net" );
   aboutData.addAuthor( "Alex Sanda", 0, "alex@darkstart.ping.at" );
