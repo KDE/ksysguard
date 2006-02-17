@@ -22,6 +22,7 @@ libsensordisplays_la_SOURCES = \
 	MultiMeterSettings.cc \
 	ProcessController.cc \
 	ProcessList.cc \
+	ProcessModel.cc \
 	ReniceDlg.cc \
 	SensorLogger.cc \
 	SensorLoggerDlg.cc \
@@ -32,7 +33,8 @@ libsensordisplays_la_SOURCES = \
 	LogFileSettings.ui \
 	MultiMeterSettingsWidget.ui \
 	SensorLoggerDlgWidget.ui \
-	SensorLoggerSettingsWidget.ui
+	SensorLoggerSettingsWidget.ui \
+	ProcessWidgetUI.ui
 
 # just to make sure, automake makes them 
 METASOURCES = AUTO

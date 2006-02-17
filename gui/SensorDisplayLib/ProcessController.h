@@ -24,13 +24,15 @@
 #ifndef _ProcessController_h_
 #define _ProcessController_h_
 
-#include <q3dict.h>
-#include <qwidget.h>
+#include <QWidget>
+#include <QAbstractItemModel>
+
 //Added by qt3to4:
 #include <QTimerEvent>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QResizeEvent>
+
 
 #include <kapplication.h>
 
@@ -38,12 +40,8 @@
 
 #include "ProcessList.h"
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QCheckBox;
-class QComboBox;
-class KPushButton;
-class KListViewSearchLineWidget;
+#include "ProcessWidgetUI.h"
+#include "ProcessModel.h"
 
 extern KApplication* Kapp;
 
@@ -62,6 +60,8 @@ public:
 	ProcessController(QWidget* parent = 0, const char* name = 0);
 	virtual ~ProcessController() { }
 
+	/* Functions for SensorDisplay*/
+	
 	void resizeEvent(QResizeEvent*);
 
 	bool restoreSettings(QDomElement& element);
@@ -91,30 +91,30 @@ public:
 		return (false);
 	}
 
-public Q_SLOTS:
+public slots:
 	void filterModeChanged(int filter)
 	{
-		pList->setFilterMode(filter);
+/*		mUi->pList->setFilterMode(filter);
 		updateList();
-		setModified(true);
+		setModified(true);*/
 	}
 
 	void setTreeView(bool tv)
 	{
-		pList->setTreeView(tv);
+/*		pList->setTreeView(tv);
 		updateList();
-		setModified(true);
+		setModified(true);*/
 	}
 
 	virtual void setModified(bool mfd)
 	{
-		if (mfd != modified())
+/*		if (mfd != modified())
 		{
 			SensorDisplay::setModified( mfd );
 			if (!mfd)
 				pList->setModified(0);
 			emit modified(modified());
-		}
+		}*/
 	}
 
 	void killProcess();
@@ -124,31 +124,17 @@ public Q_SLOTS:
 
 	void updateList();
 
-Q_SIGNALS:
+signals:
 	void setFilterMode(int);
 
 private:
-	QVBoxLayout* gm;
-
 	bool killSupported;
+	QStringList mHeader;
+	QStringList mColType;
+	QList<QStringList> mData;
 
-	/// The process list.
-	ProcessList* pList;
-	KListViewSearchLineWidget *pListSearchLine;
-	QHBoxLayout* gm1;
-
-	/// Checkbox to switch between tree and list view
-	QCheckBox* xbTreeView;
-
-	/// This combo boxes control the process filter.
-	QComboBox* cbFilter;
-
-	/// These buttons force an immedeate refresh or kill a process.
-	KPushButton* bRefresh;
-	KPushButton* bKill;
-
-	/// Dictionary for header translations.
-	Q3Dict<QString> dict;
+	ProcessModel mModel;
+	Ui::ProcessWidget mUi;
 };
 
 #endif
