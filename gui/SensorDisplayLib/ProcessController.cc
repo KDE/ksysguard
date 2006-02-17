@@ -28,6 +28,7 @@
 #include <QList>
 #include <QHBoxLayout>
 #include <QResizeEvent>
+#include <QSortFilterProxyModel>
 
 #include <kapplication.h>
 #include <kdebug.h>
@@ -52,8 +53,11 @@
 ProcessController::ProcessController(QWidget* parent, const char* name)
 	: KSGRD::SensorDisplay(parent, name), mModel(parent)
 {
+	QSortFilterProxyModel *filterModel = new QSortFilterProxyModel(parent);
+	filterModel->setSourceModel(&mModel);
+	
 	mUi.setupUi(this);
-	mUi.treeView->setModel(&mModel);
+	mUi.treeView->setModel(filterModel);
 	connect(mUi.btnRefresh, SIGNAL(clicked()), this, SLOT(updateList()));
 	connect(mUi.btnKillProcess, SIGNAL(clicked()), this, SLOT(killProcess()));
 	setPlotterWidget(this);
