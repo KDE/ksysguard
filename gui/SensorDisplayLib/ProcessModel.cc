@@ -64,18 +64,23 @@ int ProcessModel::rowCount(const QModelIndex &parent) const
 	return mData.count();
 }
 
+int ProcessModel::columnCount ( const QModelIndex & parent ) const
+{
+	if(parent.isValid()) return 0;
+	return mHeader.count();
+}
+
 QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & parent ) const
 {
-	if(parent.isValid())
+	if(parent.isValid() || !hasIndex(row, column, parent))
 		return QModelIndex();
-	if(row >= mData.count())
-		return QModelIndex();
-	if(column >= mData.at(row).count() || mData.at(row).count() < 2) {
+	if(mData.at(row).count() < 2) {
 		kDebug() << "Bad data at " << row << "," << column << ". '" << mData.at(row).join(" ") << "'" << endl;
 		return QModelIndex();
-	}	
+	}
 	return createIndex(row,column, mData.at(row).at(1/*PID*/).toInt());
 }
+
 QModelIndex ProcessModel::parent ( const QModelIndex & index ) const
 {
 	return QModelIndex();
@@ -101,22 +106,17 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 
 	if (role != Qt::DisplayRole)
 		return QVariant(); //error
-	if(section >= mHeader.count()) return QVariant(); //error
+	if(section < 0 || section >= mHeader.count()) return QVariant(); //error
 
 	return i18n("process headings", mHeader.at(section).utf8()); //translate the header if possible
 }
 
-int ProcessModel::columnCount ( const QModelIndex & parent ) const
-{
-	return mHeader.count();
-}
-
 QVariant ProcessModel::data(const QModelIndex &index, int role) const
 {
-	if (role != Qt::DisplayRole)	
+	if (role != Qt::DisplayRole)
 		return QVariant();
 	if (!index.isValid())
-		return QVariant();	
+		return QVariant();
 	if (index.parent().isValid())
 		return QVariant();
 	if (index.row() >= mData.count())
