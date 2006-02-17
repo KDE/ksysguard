@@ -26,6 +26,7 @@
 
 #include <QObject>
 #include <QAbstractItemModel>
+#include <QSortFilterProxyModel>
 #include <QStringList>
 #include <QList>
 #include <QVariant>
@@ -36,7 +37,7 @@ extern KApplication* Kapp;
 class ProcessModel : public QAbstractItemModel
 {
 	Q_OBJECT
-
+		
 public:
 	ProcessModel(QObject* parent = 0);
 	virtual ~ProcessModel() { }
@@ -57,6 +58,19 @@ public:
 	}
 	void setColType(const QStringList &coltype) {mColType = coltype;}
 	void setData(const QList<QStringList> &data);
+
+	class Filter : public QSortFilterProxyModel
+	{
+	public:
+		Filter(QObject *parent=0) : QSortFilterProxyModel(parent) {}
+		virtual ~Filter() {}
+	protected:
+		virtual bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) {
+			return false;
+			if(source_row>10) return false;
+			return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+		}
+	};
 
 private:
 	QStringList mHeader;

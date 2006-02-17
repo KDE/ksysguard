@@ -29,6 +29,7 @@
 #include <QHBoxLayout>
 #include <QResizeEvent>
 #include <QSortFilterProxyModel>
+#include <QHeaderView>
 
 #include <kapplication.h>
 #include <kdebug.h>
@@ -51,20 +52,22 @@
 
 
 ProcessController::ProcessController(QWidget* parent, const char* name)
-	: KSGRD::SensorDisplay(parent, name), mModel(parent)
+	: KSGRD::SensorDisplay(parent, name), mModel(parent), mFilterModel(parent)
 {
-	QSortFilterProxyModel *filterModel = new QSortFilterProxyModel(parent);
-	filterModel->setSourceModel(&mModel);
-	
+	mFilterModel.setSourceModel(&mModel);
 	mUi.setupUi(this);
-	mUi.treeView->setModel(filterModel);
+	mUi.treeView->setModel(&mFilterModel);
+	
+	mUi.treeView->header()->setClickable(true);
+	mUi.treeView->header()->setSortIndicatorShown(true);
+	mUi.treeView->header()->setStretchLastSection(true);
+	
 	connect(mUi.btnRefresh, SIGNAL(clicked()), this, SLOT(updateList()));
 	connect(mUi.btnKillProcess, SIGNAL(clicked()), this, SLOT(killProcess()));
+	
 	setPlotterWidget(this);
 	setMinimumSize(sizeHint());
 }
-
-
 
 void ProcessController::resizeEvent(QResizeEvent* ev)
 {
@@ -192,6 +195,8 @@ ProcessController::answerReceived(int id, const QString& answer)
 		}
 		mModel.setHeader(lines.at(0).split('\t'));
 		mModel.setColType(lines.at(1).split('\t'));
+
+		mFilterModel.setFilterKeyColumn(0);
 
 		break;
 	}

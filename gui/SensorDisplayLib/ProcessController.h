@@ -134,6 +134,7 @@ private:
 	QList<QStringList> mData;
 
 	ProcessModel mModel;
+	ProcessModel::Filter mFilterModel;
 	Ui::ProcessWidget mUi;
 };
 
