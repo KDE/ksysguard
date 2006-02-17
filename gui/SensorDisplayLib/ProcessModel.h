@@ -64,10 +64,9 @@ public:
 	public:
 		Filter(QObject *parent=0) : QSortFilterProxyModel(parent) {}
 		virtual ~Filter() {}
+		
 	protected:
-		virtual bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) {
-			return false;
-			if(source_row>10) return false;
+		virtual bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const {
 			return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 		}
 	};

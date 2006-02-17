@@ -64,6 +64,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	
 	connect(mUi.btnRefresh, SIGNAL(clicked()), this, SLOT(updateList()));
 	connect(mUi.btnKillProcess, SIGNAL(clicked()), this, SLOT(killProcess()));
+	connect(mUi.txtFilter, SIGNAL(textChanged(const QString &)), &mFilterModel, SLOT(setFilterRegExp(const QString &)));
 	
 	setPlotterWidget(this);
 	setMinimumSize(sizeHint());

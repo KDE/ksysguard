@@ -32,9 +32,6 @@
      </property>
      <item>
       <widget class="QLineEdit" name="txtFilter" >
-       <property name="enabled" >
-        <bool>false</bool>
-       </property>
        <property name="sizePolicy" >
         <sizepolicy>
          <hsizetype>7</hsizetype>

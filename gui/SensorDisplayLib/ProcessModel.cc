@@ -123,7 +123,6 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		return QVariant();
 	if (index.column() >= mData.at(index.row()).count())
 		return QVariant();
-	kDebug() << mColType.at(index.column()) << endl;
 	
 	QString value = mData.at(index.row()).at(index.column());
 	QString type = mColType.at(index.column());
