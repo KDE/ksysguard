@@ -23,6 +23,8 @@
 #define PROCESSMODEL_H_
 
 #include <kapplication.h>
+#include <kiconloader.h>
+#include <QPixmap>
 #include <QObject>
 #include <QAbstractItemModel>
 #include <QStringList>
@@ -68,12 +70,27 @@ public:
 	 */
 	void setIsLocalhost(bool isLocalhost);
 
+	/** The iconname is the name of the process or an aliases for it (like 'daemon' etc)
+	 *  @return A QPixmap, that may or may not be null.
+	 */
+	QPixmap getIcon(const QString& iconname) const;
 private:
+	QHash<QString,QString> mAliases;
 	QStringList mHeader;
 	QStringList mColType;
 	QList<QStringList> mData;
 	QHash<int,int> mPidList;
+	/** Cache for the icons to show next to the process.
+	 *  Name is the process name, or an alias (like 'daemon' etc).
+	 *  @see getIcon(const QString& iconname)
+	 */
+	mutable QHash<QString,QPixmap> mIconCache;
+	
+	KIconLoader mIcons;
+
+	/** @see setIsLocalhost */
 	bool mIsLocalhost;
 };
 
 #endif
+
