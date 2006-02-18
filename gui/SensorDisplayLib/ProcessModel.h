@@ -2,6 +2,7 @@
     KSysGuard, the KDE System Guard
 
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 2006 John Tapsell <john.tapsell@kdemail.net>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -16,21 +17,24 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-	Please do not commit any changes without consulting me first. Thanks!
-
 */
 
 #ifndef PROCESSMODEL_H_
 #define PROCESSMODEL_H_
 
+#include <kapplication.h>
 #include <QObject>
 #include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
 #include <QStringList>
 #include <QList>
 #include <QVariant>
 #include <QHash>
+
+#define PROCESS_NAME 0
+#define PROCESS_PID 1
+#define PROCESS_PPID 2
+#define PROCESS_UID 3
+
 
 extern KApplication* Kapp;
 
@@ -59,17 +63,6 @@ public:
 	void setColType(const QStringList &coltype) {mColType = coltype;}
 	void setData(const QList<QStringList> &data);
 
-	class Filter : public QSortFilterProxyModel
-	{
-	public:
-		Filter(QObject *parent=0) : QSortFilterProxyModel(parent) {}
-		virtual ~Filter() {}
-		
-	protected:
-		virtual bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const {
-			return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
-		}
-	};
 
 private:
 	QStringList mHeader;

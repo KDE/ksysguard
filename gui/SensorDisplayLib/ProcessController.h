@@ -2,6 +2,7 @@
     KSysGuard, the KDE System Guard
 
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 2006 John Tapsell <john.tapsell@kdemail.net>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -15,9 +16,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-	Please do not commit any changes without consulting me first. Thanks!
 
 */
 
@@ -42,6 +40,8 @@
 
 #include "ProcessWidgetUI.h"
 #include "ProcessModel.h"
+
+#include "ProcessFilter.h"
 
 extern KApplication* Kapp;
 
@@ -134,7 +134,7 @@ private:
 	QList<QStringList> mData;
 
 	ProcessModel mModel;
-	ProcessModel::Filter mFilterModel;
+	ProcessFilter mFilterModel;
 	Ui::ProcessWidget mUi;
 };
 

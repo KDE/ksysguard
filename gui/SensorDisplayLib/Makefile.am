@@ -23,6 +23,7 @@ libsensordisplays_la_SOURCES = \
 	ProcessController.cc \
 	ProcessList.cc \
 	ProcessModel.cc \
+	ProcessFilter.cc \
 	ReniceDlg.cc \
 	SensorLogger.cc \
 	SensorLoggerDlg.cc \

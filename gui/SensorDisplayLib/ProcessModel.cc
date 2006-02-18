@@ -21,6 +21,8 @@
 
 */
 
+
+
 #include <assert.h>
 #include <qtimer.h>
 
@@ -78,7 +80,7 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 		kDebug() << "Bad data at " << row << "," << column << ". '" << mData.at(row).join(" ") << "'" << endl;
 		return QModelIndex();
 	}
-	return createIndex(row,column, mData.at(row).at(1/*PID*/).toInt());
+	return createIndex(row,column, mData.at(row).at(PROCESS_PID).toInt());
 }
 
 QModelIndex ProcessModel::parent ( const QModelIndex & index ) const
