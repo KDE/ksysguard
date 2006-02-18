@@ -92,29 +92,10 @@ public:
 	}
 
 public slots:
-	void filterModeChanged(int filter)
-	{
-/*		mUi->pList->setFilterMode(filter);
-		updateList();
-		setModified(true);*/
-	}
-
 	void setTreeView(bool tv)
 	{
 /*		pList->setTreeView(tv);
-		updateList();
-		setModified(true);*/
-	}
-
-	virtual void setModified(bool mfd)
-	{
-/*		if (mfd != modified())
-		{
-			SensorDisplay::setModified( mfd );
-			if (!mfd)
-				pList->setModified(0);
-			emit modified(modified());
-		}*/
+		updateList(); */
 	}
 
 	void killProcess();

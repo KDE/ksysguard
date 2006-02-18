@@ -113,16 +113,17 @@ void ProcessController::killProcess(int pid, int sig)
 	sendRequest(sensors().at(0)->hostName(),
 				QString("kill %1 %2" ).arg(pid).arg(sig), 3);
 
-/*	if ( !timerOn() )
+	if ( !timerOn() )
 	    // give ksysguardd time to update its proccess list
 	    QTimer::singleShot(3000, this, SLOT(updateList()));
 	else
-	    updateList();*/
+	    updateList();
 }
 
 void
 ProcessController::killProcess()
 {
+//	mUi.treeView->
 /*	const QStringList& selectedAsStrings = pList->getSelectedAsStrings();
 	if (selectedAsStrings.isEmpty())
 	{
@@ -171,10 +172,9 @@ ProcessController::killProcess()
 void
 ProcessController::reniceProcess(int pid, int niceValue)
 {
-/*	sendRequest(sensors().at(0)->hostName(),
+	sendRequest(sensors().at(0)->hostName(),
 				QString("setpriority %1 %2" ).arg(pid).arg(niceValue), 5);
 	sendRequest(sensors().at(0)->hostName(), "ps", 2);  //update the display afterwards
-	*/
 }
 
 void
@@ -248,7 +248,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 	case 4:
 		killSupported = (answer.toInt() == 1);
 		//pList->setKillSupported(killSupported);
-		//bKill->setEnabled(killSupported);
+		//mUi.btnKillProcess->setEnabled(killSupported);
 		break;
 	case 5:
 	{
@@ -312,23 +312,21 @@ ProcessController::restoreSettings(QDomElement& element)
 				element.attribute("sensorName"),
 				(element.attribute("sensorType").isEmpty() ? "table" : element.attribute("sensorType")),
 				QString());
-/*
-	xbTreeView->setChecked(element.attribute("tree").toInt());
+	mUi.chkTreeView->setChecked(element.attribute("tree").toInt());
 	setTreeView(element.attribute("tree").toInt());
 
 	uint filter = element.attribute("filter").toUInt();
-	cbFilter->setCurrentItem(filter);
+	mUi.cmbFilter->setCurrentItem(filter);
 	filterModeChanged(filter);
 
 	uint col = element.attribute("sortColumn").toUInt();
 	bool inc = element.attribute("incrOrder").toUInt();
 
-	if (!pList->load(element))
-		return (false);
+//	if (!pList->load(element))
+//		return (false);
 
-	pList->setSortColumn(col, inc);
-
-*/
+	mFilterModel.sort(col,(inc)?Qt::AscendingOrder:Qt::DescendingOrder);
+	
 	SensorDisplay::restoreSettings(element);
 	setModified(false);
 
@@ -338,21 +336,23 @@ ProcessController::restoreSettings(QDomElement& element)
 bool
 ProcessController::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 {
-/*	element.setAttribute("hostName", sensors().at(0)->hostName());
+	element.setAttribute("hostName", sensors().at(0)->hostName());
 	element.setAttribute("sensorName", sensors().at(0)->name());
 	element.setAttribute("sensorType", sensors().at(0)->type());
-	element.setAttribute("tree", (uint) xbTreeView->isChecked());
-	element.setAttribute("filter", cbFilter->currentItem());
-	element.setAttribute("sortColumn", pList->getSortColumn());
-	element.setAttribute("incrOrder", pList->getIncreasing());
+	element.setAttribute("tree", (uint) mUi.chkTreeView->isChecked());
+	element.setAttribute("filter", mUi.cmbFilter->currentItem());
+//FIXME There is currently no way to get this information from qt!!
+//	element.setAttribute("sortColumn", pList->getSortColumn());
+//	element.setAttribute("incrOrder", pList->getIncreasing());
 
-	if (!pList->save(doc, element))
-		return (false);
+//	if (!pList->save(doc, element))
+//		return (false);
 
 	SensorDisplay::saveSettings(doc, element);
 
 	if (save)
 		setModified(false);
-*/
+
 	return (true);
 }
+
