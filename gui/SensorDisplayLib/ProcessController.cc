@@ -317,7 +317,6 @@ ProcessController::restoreSettings(QDomElement& element)
 
 	uint filter = element.attribute("filter").toUInt();
 	mUi.cmbFilter->setCurrentItem(filter);
-	filterModeChanged(filter);
 
 	uint col = element.attribute("sortColumn").toUInt();
 	bool inc = element.attribute("incrOrder").toUInt();
