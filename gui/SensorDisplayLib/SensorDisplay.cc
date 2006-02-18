@@ -526,8 +526,9 @@ SensorProperties::SensorProperties()
 
 SensorProperties::SensorProperties( const QString &hostName, const QString &name,
                                     const QString &type, const QString &description )
-  : mHostName( hostName ), mName( name ), mType( type ), mDescription( description )
+  : mName( name ), mType( type ), mDescription( description )
 {
+  setHostName(hostName);
   mOk = false;
 }
 
@@ -538,6 +539,12 @@ SensorProperties::~SensorProperties()
 void SensorProperties::setHostName( const QString &hostName )
 {
   mHostName = hostName;
+  mIsLocalhost = (mHostName.toLower() == "localhost" || mHostName.isEmpty());
+}
+
+bool SensorProperties::isLocalhost() const
+{
+  return mIsLocalhost;
 }
 
 QString SensorProperties::hostName() const

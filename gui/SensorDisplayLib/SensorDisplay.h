@@ -304,6 +304,8 @@ class SensorProperties
     void setHostName( const QString &hostName );
     QString hostName() const;
 
+    bool isLocalhost() const;
+
     void setName( const QString &name );
     QString name() const;
 
@@ -320,6 +322,7 @@ class SensorProperties
     bool isOk() const;
 
   private:
+    bool mIsLocalhost;
     QString mHostName;
     QString mName;
     QString mType;

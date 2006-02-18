@@ -29,6 +29,7 @@
 #include <kapplication.h>
 #include <kdebug.h>
 #include <klocale.h>
+#include <kuser.h>
 
 #include <ksgrd/SensorManager.h>
 
@@ -43,13 +44,10 @@
 #include <kapplication.h>
 #include <kpushbutton.h>
 
-/* For getpwuid() */
-#include <sys/types.h>
-#include <pwd.h>
-
 ProcessModel::ProcessModel(QObject* parent)
 	: QAbstractItemModel(parent)
 {
+	mIsLocalhost = false; //this really shouldn't matter, because setIsLocalhost should be called before setData()
 }
 
 void ProcessModel::setData(const QList<QStringList> &data)
@@ -131,13 +129,23 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		
 		long long uid = mData.at(index.row()).at(PROCESS_UID).toLong();
 		if(role == Qt::UserRole) return uid; //If we query with this role, then we want the raw UID for this.
-		struct passwd *user = getpwuid(uid);
-		if(!user || !user->pw_name) return uid;
-		
-		if(role == Qt::ToolTipRole)
-			return i18n("Full name: %1").arg(QString(user->pw_gecos).section(',',0,0));
-		if(role == Qt::DisplayRole)
-			return user->pw_name;
+		if(!mIsLocalhost) {
+			if(role == Qt::DisplayRole) return uid;
+			else return QVariant();
+		}
+		//since we are on localhost, we can give more useful information about the username
+		KUser user(uid);
+		if(!user.isValid()) {
+			if( role == Qt::ToolTipRole)
+				return i18n("This user is not recognised for some reason");
+			if( role == Qt::DisplayRole)
+			       	return uid;
+		} else {
+			if(role == Qt::ToolTipRole)
+				return i18n("<qt>Full name: <i>%1</i></qt>").arg(user.fullName());
+			if(role == Qt::DisplayRole)
+				return user.loginName();
+		}
 	}
 	
 	if (role != Qt::DisplayRole)
@@ -150,4 +158,11 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	if(type == "D") return value.toDouble();
 	else return value;
 }
+
+
+void ProcessModel::setIsLocalhost(bool isLocalhost)
+{
+	mIsLocalhost = isLocalhost;
+}
+
 

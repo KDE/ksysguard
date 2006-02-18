@@ -53,7 +53,7 @@ public:
         QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 	QModelIndex index ( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
 	QModelIndex parent ( const QModelIndex & index ) const;
-
+	
 	/* Functions for setting the model */
 	void setHeader(const QStringList &header) {
 		beginInsertColumns(QModelIndex(), 0, header.count()-1);
@@ -62,13 +62,18 @@ public:
 	}
 	void setColType(const QStringList &coltype) {mColType = coltype;}
 	void setData(const QList<QStringList> &data);
-
+	/** By telling the model whether the sensor it is recieving the data from is for the localhost,
+	 *  then we can provide more information to the user.  For example, we can show the actual username
+	 *  rather than just the userid.
+	 */
+	void setIsLocalhost(bool isLocalhost);
 
 private:
 	QStringList mHeader;
 	QStringList mColType;
 	QList<QStringList> mData;
 	QHash<int,int> mPidList;
+	bool mIsLocalhost;
 };
 
 #endif

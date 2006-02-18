@@ -91,6 +91,7 @@ bool ProcessController::addSensor(const QString& hostName,
 	 * requests are send whenever the sensor reconnects (detected in
 	 * sensorError(). */
 
+	mModel.setIsLocalhost(sensors().at(0)->isLocalhost()); //If we tell our model that this is localhost, then it can provide more information about the data it has
 	sendRequest(hostName, "test kill", 4);
 
 	if (title.isEmpty())
