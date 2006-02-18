@@ -141,8 +141,15 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			if( role == Qt::DisplayRole)
 			       	return uid;
 		} else {
-			if(role == Qt::ToolTipRole)
-				return i18n("<qt>Full name: <i>%1</i></qt>").arg(user.fullName());
+			if(role == Qt::ToolTipRole) {
+				QString tooltip = "<qt>";
+				if(!user.fullName().isEmpty()) tooltip += i18n("<b>%1</b><br/>").arg(user.fullName());
+				tooltip += i18n("Login Name: %1<br/>").arg(user.loginName());
+				if(!user.roomNumber().isEmpty()) tooltip += i18n("Room Number: %1<br/>").arg(user.roomNumber());
+				if(!user.workPhone().isEmpty()) tooltip += i18n("Work Phone: %1<br/>").arg(user.workPhone());
+				tooltip += i18n("User ID: %1</qt>").arg(uid);
+				return tooltip;
+			}
 			if(role == Qt::DisplayRole)
 				return user.loginName();
 		}
