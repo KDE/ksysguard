@@ -37,7 +37,7 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 	}
 	QModelIndex source_index = sourceModel()->index(source_row, PROCESS_UID, source_parent);
 	bool ok;
-	long uid = sourceModel()->data(source_index, Qt::DisplayRole).toInt(&ok);
+	long uid = sourceModel()->data(source_index, Qt::UserRole).toInt(&ok);
 	if(!ok) {
 		kDebug() << "Serious error with data.  The UID is not a number? Maybe 'ps' is not returning the data correctly.  UID is: " << source_parent.child(source_row,PROCESS_UID).data().toString() << endl;
 		return true;

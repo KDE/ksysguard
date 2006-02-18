@@ -43,6 +43,9 @@
 #include <kapplication.h>
 #include <kpushbutton.h>
 
+/* For getpwuid() */
+#include <sys/types.h>
+#include <pwd.h>
 
 ProcessModel::ProcessModel(QObject* parent)
 	: QAbstractItemModel(parent)
@@ -115,8 +118,6 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 
 QVariant ProcessModel::data(const QModelIndex &index, int role) const
 {
-	if (role != Qt::DisplayRole)
-		return QVariant();
 	if (!index.isValid())
 		return QVariant();
 	if (index.parent().isValid())
@@ -126,9 +127,25 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	if (index.column() >= mData.at(index.row()).count())
 		return QVariant();
 	
+	if(index.column() == PROCESS_UID) {
+		
+		long long uid = mData.at(index.row()).at(PROCESS_UID).toLong();
+		if(role == Qt::UserRole) return uid; //If we query with this role, then we want the raw UID for this.
+		struct passwd *user = getpwuid(uid);
+		if(!user || !user->pw_name) return uid;
+		
+		if(role == Qt::ToolTipRole)
+			return i18n("Full name: %1").arg(QString(user->pw_gecos).section(',',0,0));
+		if(role == Qt::DisplayRole)
+			return user->pw_name;
+	}
+	
+	if (role != Qt::DisplayRole)
+		return QVariant();
 	QString value = mData.at(index.row()).at(index.column());
 	QString type = mColType.at(index.column());
-	if(type == "d") return value.toInt();
+	
+	if(type == "d") return value.toLongLong();
 	if(type == "f") return value.toDouble();
 	if(type == "D") return value.toDouble();
 	else return value;
