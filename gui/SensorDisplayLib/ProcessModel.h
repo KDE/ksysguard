@@ -56,6 +56,7 @@ public:
 	QModelIndex index ( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
 	QModelIndex parent ( const QModelIndex & index ) const;
 	
+	bool hasChildren ( const QModelIndex & parent) const;
 	/* Functions for setting the model */
 	void setHeader(const QStringList &header) {
 		beginInsertColumns(QModelIndex(), 0, header.count()-1);
@@ -78,8 +79,16 @@ private:
 	QHash<QString,QString> mAliases;
 	QStringList mHeader;
 	QStringList mColType;
-	QList<QStringList> mData;
-	QHash<int,int> mPidList;
+	QHash<long long, QStringList> mData;
+	
+	/** For a given process id, it returns all the children that have this pid,
+	 *  sorted in order of pid.
+	 */
+	QHash<long long, QList<long long> > mPpidToPidMapping;
+	/** For a given process id, it returns the parent process id.
+	 */
+	QHash<long long, long long> mPidToPpidMapping;
+	
 	/** Cache for the icons to show next to the process.
 	 *  Name is the process name, or an alias (like 'daemon' etc).
 	 *  @see getIcon(const QString& iconname)

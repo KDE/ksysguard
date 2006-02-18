@@ -54,9 +54,10 @@
 ProcessController::ProcessController(QWidget* parent, const char* name)
 	: KSGRD::SensorDisplay(parent, name), mModel(parent), mFilterModel(parent)
 {
-	mFilterModel.setSourceModel(&mModel);
+//	mFilterModel.setSourceModel(&mModel);
 	mUi.setupUi(this);
-	mUi.treeView->setModel(&mFilterModel);
+//	mUi.treeView->setModel(&mFilterModel);
+	mUi.treeView->setModel(&mModel);
 	
 	mUi.treeView->header()->setClickable(true);
 	mUi.treeView->header()->setSortIndicatorShown(true);

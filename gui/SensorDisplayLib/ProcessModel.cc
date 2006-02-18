@@ -100,19 +100,44 @@ ProcessModel::ProcessModel(QObject* parent)
 }
 void ProcessModel::setData(const QList<QStringList> &data)
 {
-	mData = data;
-	mPidList.clear();
-/*	for(int i = 0; i < mData.size(); i++) {
-		int pid = mData.at(i).at(2).toInt();
-		mPidList.insert(pid,i);
-	}*/
-	emit reset();
+//	mData.clear();
+//	mPidToPpidMapping.clear();
+//	mPpidToPidMapping.clear();
+	bool needreset = false;
+	for(long i = 0; i < data.size(); i++) {
+		//Note that init always exists, and has pid 1.  It's ppid is 0. No process will have pid 0
+		QStringList pid_data = data.at(i);
+		long long pid = pid_data.at(PROCESS_PID).toLongLong();
+		long long ppid = pid_data.at(PROCESS_PPID).toLongLong();
+		QStringList &old_pid_data = mData[pid];
+	        if(old_pid_data.isEmpty()) {
+			needreset = true;
+			old_pid_data = pid_data;
+		}
+		long long &old_ppid = mPidToPpidMapping[pid];
+		if(old_ppid != ppid) {
+			needreset = true;
+			old_ppid = ppid;
+		}
+		if(!mPpidToPidMapping[ppid].contains(pid))
+		{
+			mPpidToPidMapping[ppid] << pid;
+		}
+	}
+	if(needreset) {
+		emit layoutChanged();
+		reset();
+	}
 }
 
 int ProcessModel::rowCount(const QModelIndex &parent) const
 {
-	if(parent.isValid()) return 0;
-	return mData.count();
+	if(parent.isValid()) {
+		return mPpidToPidMapping[parent.internalId()/*pid*/].count();
+	} else {
+	//	Q_ASSERT(mPpidToPidMapping[0].count() == 1);
+		return mPpidToPidMapping[0].count();
+	}
 }
 
 int ProcessModel::columnCount ( const QModelIndex & parent ) const
@@ -121,20 +146,40 @@ int ProcessModel::columnCount ( const QModelIndex & parent ) const
 	return mHeader.count();
 }
 
-QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & parent ) const
+bool ProcessModel::hasChildren ( const QModelIndex & parent = QModelIndex() ) const
 {
-	if(parent.isValid() || !hasIndex(row, column, parent))
-		return QModelIndex();
-	if(mData.at(row).count() < 2) {
-		kDebug() << "Bad data at " << row << "," << column << ". '" << mData.at(row).join(" ") << "'" << endl;
-		return QModelIndex();
+	return rowCount(parent) > 0;
+}
+
+QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & parent ) const
+{	
+	if(row<0) return QModelIndex();
+	long long ppid = 0;
+	if(parent.isValid()) //not valid for init, and init has ppid of 0
+	{
+		ppid = parent.internalId()/*pid*/;
 	}
-	return createIndex(row,column, mData.at(row).at(PROCESS_PID).toInt());
+	const QList<long long> &siblings = mPpidToPidMapping[ppid];
+	if(siblings.count() > row)
+		return createIndex(row,column, siblings[row]);
+	else
+		return QModelIndex();
 }
 
 QModelIndex ProcessModel::parent ( const QModelIndex & index ) const
 {
-	return QModelIndex();
+	if(!index.isValid()) return QModelIndex();
+	if(index.internalId() == 0) return QModelIndex();
+	long long parent_pid = mPidToPpidMapping[ index.internalId()/*pid*/ ];
+	if(parent_pid == 0) return QModelIndex();
+	long long parent_ppid = mPidToPpidMapping[ parent_pid ];
+	
+	//note init will have ppid 0 which won't exist
+	long row = mPpidToPidMapping[parent_ppid].indexOf(parent_pid); //Our row is where we are in the list of siblings with the same parent
+	
+	if(row == -1) // not found.  probably because ppid == 0 so we are the init process, but might be due to some wierd error
+		return QModelIndex();
+	return createIndex(row,0,parent_pid);	
 }
 
 QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
@@ -166,16 +211,14 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 {
 	if (!index.isValid())
 		return QVariant();
-	if (index.parent().isValid())
-		return QVariant();
-	if (index.row() >= mData.count())
-		return QVariant();
-	if (index.column() >= mData.at(index.row()).count())
+	long long pid = index.internalId();
+	const QStringList &process_data = mData[pid];
+	if (index.column() >= process_data.count())
 		return QVariant();
 	
 	if(index.column() == PROCESS_UID) {
 		
-		long long uid = mData.at(index.row()).at(PROCESS_UID).toLong();
+		long long uid = process_data.at(PROCESS_UID).toLong();
 		if(role == Qt::UserRole) return uid; //If we query with this role, then we want the raw UID for this.
 		if(!mIsLocalhost) {
 			if(role == Qt::DisplayRole) return uid;
@@ -205,9 +248,9 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	if(index.column() == PROCESS_NAME) {
 		//The first column - the process name (e.g.  'bash' or 'mozilla')
 		if (role == Qt::DisplayRole) {
-			return mData.at(index.row()).at(PROCESS_NAME);
+			return process_data.at(PROCESS_NAME);
 		} else if(role == Qt::DecorationRole) {
-			QString name = mData.at(index.row()).at(PROCESS_NAME);
+			QString name = process_data.at(PROCESS_NAME);
 			QString iconname = mAliases[name];
 			if(iconname.isEmpty()) iconname = name;
 			//so iconname tries to guess as what icon to use.
@@ -219,7 +262,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	
 	if (role != Qt::DisplayRole)
 		return QVariant();
-	QString value = mData.at(index.row()).at(index.column());
+	QString value = process_data.at(index.column());
 	QString type = mColType.at(index.column());
 	
 	if(type == "d") return value.toLongLong();
@@ -234,7 +277,6 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		(void)I18N_NOOP2("process status", "stopped");
 		(void)I18N_NOOP2("process status", "paging");
 		(void)I18N_NOOP2("process status", "idle");
-		
 		return i18n("process status", value.latin1());
 	}
 	
