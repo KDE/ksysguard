@@ -333,8 +333,8 @@ ProcessController::restoreSettings(QDomElement& element)
 				element.attribute("sensorName"),
 				(element.attribute("sensorType").isEmpty() ? "table" : element.attribute("sensorType")),
 				QString());
-	mUi.chkTreeView->setChecked(element.attribute("tree").toInt());
-	setTreeView(element.attribute("tree").toInt());
+//	mUi.chkTreeView->setChecked(element.attribute("tree").toInt());
+//	setTreeView(element.attribute("tree").toInt());
 
 	uint filter = element.attribute("filter").toUInt();
 	mUi.cmbFilter->setCurrentItem(filter);
@@ -359,7 +359,7 @@ ProcessController::saveSettings(QDomDocument& doc, QDomElement& element, bool sa
 	element.setAttribute("hostName", sensors().at(0)->hostName());
 	element.setAttribute("sensorName", sensors().at(0)->name());
 	element.setAttribute("sensorType", sensors().at(0)->type());
-	element.setAttribute("tree", (uint) mUi.chkTreeView->isChecked());
+//	element.setAttribute("tree", (uint) mUi.chkTreeView->isChecked());
 	element.setAttribute("filter", mUi.cmbFilter->currentItem());
 //FIXME There is currently no way to get this information from qt!!
 //	element.setAttribute("sortColumn", pList->getSortColumn());
