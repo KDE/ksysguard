@@ -100,33 +100,58 @@ ProcessModel::ProcessModel(QObject* parent)
 }
 void ProcessModel::setData(const QList<QStringList> &data)
 {
-//	mData.clear();
-//	mPidToPpidMapping.clear();
-//	mPpidToPidMapping.clear();
 	bool needreset = false;
-	for(long i = 0; i < data.size(); i++) {
+
+	//This code will cause a reset if there are any processes created/destroyed/reparented etc
+	//Only existing processes changing will not cause a reset
+	
+	if(data.count() != mData.count()) {
+		//A new processes has been added/removed.
+		//This still works 1 process was added and another removed, because although it won't be caught here
+		//it will be caught in the next bit when it finds a new process.
+		needreset = true;
+	}
+	for(long i = 0; i < data.size() && !needreset; i++) {	
 		//Note that init always exists, and has pid 1.  It's ppid is 0. No process will have pid 0
-		QStringList pid_data = data.at(i);
-		long long pid = pid_data.at(PROCESS_PID).toLongLong();
-		long long ppid = pid_data.at(PROCESS_PPID).toLongLong();
-		QStringList &old_pid_data = mData[pid];
-	        if(old_pid_data.isEmpty()) {
+		QStringList new_pid_data = data.at(i);
+		long long pid = new_pid_data.at(PROCESS_PID).toLongLong();
+		long long ppid = new_pid_data.at(PROCESS_PPID).toLongLong();
+		QStringList &current_pid_data = mData[pid];
+	        if(current_pid_data.isEmpty()) {
+			//new item.  just reset instead of trying with insert/remove :/
 			needreset = true;
-			old_pid_data = pid_data;
-		}
-		long long &old_ppid = mPidToPpidMapping[pid];
-		if(old_ppid != ppid) {
-			needreset = true;
-			old_ppid = ppid;
-		}
-		if(!mPpidToPidMapping[ppid].contains(pid))
-		{
-			mPpidToPidMapping[ppid] << pid;
+			break;
+		} else {
+			changeProcess(pid, new_pid_data, current_pid_data);
+			long long old_ppid = mPidToPpidMapping[pid];
+			if(old_ppid != ppid) {
+				//reparented? reset!
+				needreset = true;
+				break;
+			}
+			if(!mPpidToPidMapping[ppid].contains(pid)) {
+				//we already existed, but the parent didn't know about us?  probably a reparent or something.
+				//reset!
+				needreset = true;
+				break;
+			}
 		}
 	}
 	if(needreset) {
-		emit layoutChanged();
+		mData.clear();
+		//fixme - save selection
+		mPidToPpidMapping.clear();
+		mPpidToPidMapping.clear();
+		for(long i = 0; i < data.size(); i++) {
+			QStringList new_pid_data = data.at(i);
+			long long pid = new_pid_data.at(PROCESS_PID).toLongLong();
+			long long ppid = new_pid_data.at(PROCESS_PPID).toLongLong();
+			mData[pid] = data[i];
+			mPidToPpidMapping[pid] = ppid;
+			mPpidToPidMapping[ppid] << pid;
+		}
 		reset();
+		emit layoutChanged();
 	}
 }
 
@@ -135,7 +160,7 @@ int ProcessModel::rowCount(const QModelIndex &parent) const
 	if(parent.isValid()) {
 		return mPpidToPidMapping[parent.internalId()/*pid*/].count();
 	} else {
-	//	Q_ASSERT(mPpidToPidMapping[0].count() == 1);
+	//	Q_ASSERT(mPpidToPidMapping[0].count() <= 1);  Just incase something goes wrong, we want to cope gracefully and not crash, so commented out
 		return mPpidToPidMapping[0].count();
 	}
 }
@@ -166,20 +191,51 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 		return QModelIndex();
 }
 
+
+void ProcessModel::changeProcess(const long long &pid, const QStringList &new_pid_data, QStringList &current_pid_data) 
+{
+	Q_ASSERT(pid != 0);
+	Q_ASSERT(new_pid_data.count() == current_pid_data.count());
+	int first_column_changed = -1;
+	int last_column_changed=-1;
+	for(int i = 0; i<current_pid_data.count(); i++) {
+		if(current_pid_data[i] != new_pid_data[i]) {
+			current_pid_data[i] = new_pid_data[i]; //copy across now
+			if(first_column_changed == -1) first_column_changed = i;
+			last_column_changed = i;
+		}
+	}
+	//Now all the data has been changed for this process.
+	if(last_column_changed == -1)
+		return; 
+
+	//Tell the view we changed something
+	long long ppid = mPidToPpidMapping[ pid ];
+	int row = mPpidToPidMapping[ppid].indexOf(pid);
+	if(row == -1) //something has gone really wrong
+		return;
+	QModelIndex startIndex = createIndex(row, first_column_changed, pid);
+	QModelIndex endIndex = createIndex(row, last_column_changed, pid);
+	emit dataChanged(startIndex, endIndex);
+}
+			
+QModelIndex ProcessModel::getQModelIndex ( const long long &pid, int column) const
+{
+	if(pid == 0) return QModelIndex();
+	long long ppid = mPidToPpidMapping[ pid ];
+	int row = mPpidToPidMapping[ppid].indexOf(pid);
+	if(row == -1) //something has gone really wrong
+		return QModelIndex();
+	return createIndex(row, 0, pid);
+	
+}
+
 QModelIndex ProcessModel::parent ( const QModelIndex & index ) const
 {
 	if(!index.isValid()) return QModelIndex();
 	if(index.internalId() == 0) return QModelIndex();
 	long long parent_pid = mPidToPpidMapping[ index.internalId()/*pid*/ ];
-	if(parent_pid == 0) return QModelIndex();
-	long long parent_ppid = mPidToPpidMapping[ parent_pid ];
-	
-	//note init will have ppid 0 which won't exist
-	long row = mPpidToPidMapping[parent_ppid].indexOf(parent_pid); //Our row is where we are in the list of siblings with the same parent
-	
-	if(row == -1) // not found.  probably because ppid == 0 so we are the init process, but might be due to some wierd error
-		return QModelIndex();
-	return createIndex(row,0,parent_pid);	
+	return getQModelIndex(parent_pid,0);
 }
 
 QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
@@ -207,84 +263,118 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 	return i18n("process headings", mHeader.at(section).utf8()); //translate the header if possible
 }
 
+QString ProcessModel::getTooltipForUser(const long long &localhost_uid) const {
+	QString &userTooltip = mUserTooltips[localhost_uid];
+	if(userTooltip.isEmpty()) {
+		KUser user(localhost_uid);
+		if(!user.isValid())
+			userTooltip = i18n("This user is not recognised for some reason");
+		else
+			userTooltip = "<qt>";
+			if(!user.fullName().isEmpty()) userTooltip += i18n("<b>%1</b><br/>").arg(user.fullName());
+			userTooltip += i18n("Login Name: %1<br/>").arg(user.loginName());
+			if(!user.roomNumber().isEmpty()) userTooltip += i18n("Room Number: %1<br/>").arg(user.roomNumber());
+			if(!user.workPhone().isEmpty()) userTooltip += i18n("Work Phone: %1<br/>").arg(user.workPhone());
+			userTooltip += i18n("User ID: %1</qt>").arg(localhost_uid);
+	}
+	return userTooltip;
+}
+
+QVariant ProcessModel::getUsernameForUser(const long long &localhost_uid) const {
+	QVariant &username = mUserUsername[localhost_uid];
+	if(!username.isValid()) {
+		KUser user(localhost_uid);
+		if(!user.isValid())
+			username = localhost_uid;
+		username = user.loginName();
+	}
+	return username;
+}
+
 QVariant ProcessModel::data(const QModelIndex &index, int role) const
 {
+	//This function must be super duper ultra fast because it's called thousands of times every few second :(
+	//I think it should be optomised for role first, hence the switch statement (fastest possible case)
+	//but at the cost of duplicate code.  To avoid the typing, I use a #define.  Please forgive me.
+#define PROCESS_MODEL_DATA_INITIALISATION \
+	long long pid = index.internalId();\
+	const QStringList &process_data = mData[pid];\
+	if (index.column() >= process_data.count()) \
+	     return QVariant();
+		     
 	if (!index.isValid())
 		return QVariant();
-	long long pid = index.internalId();
-	const QStringList &process_data = mData[pid];
-	if (index.column() >= process_data.count())
-		return QVariant();
-	
-	if(index.column() == PROCESS_UID) {
-		
-		long long uid = process_data.at(PROCESS_UID).toLong();
-		if(role == Qt::UserRole) return uid; //If we query with this role, then we want the raw UID for this.
-		if(!mIsLocalhost) {
-			if(role == Qt::DisplayRole) return uid;
-			else return QVariant();
+	switch (role){
+	case Qt::DisplayRole: {
+		PROCESS_MODEL_DATA_INITIALISATION
+		switch(index.column()) {
+		case PROCESS_UID: {
+			long long uid = process_data.at(PROCESS_UID).toLongLong();
+			if(!mIsLocalhost)
+				return uid;
+			//since we are on localhost, we can give more useful information about the username
+			return getUsernameForUser(uid);
 		}
-		//since we are on localhost, we can give more useful information about the username
-		KUser user(uid);
-		if(!user.isValid()) {
-			if( role == Qt::ToolTipRole)
-				return i18n("This user is not recognised for some reason");
-			if( role == Qt::DisplayRole)
-			       	return uid;
-		} else {
-			if(role == Qt::ToolTipRole) {
-				QString tooltip = "<qt>";
-				if(!user.fullName().isEmpty()) tooltip += i18n("<b>%1</b><br/>").arg(user.fullName());
-				tooltip += i18n("Login Name: %1<br/>").arg(user.loginName());
-				if(!user.roomNumber().isEmpty()) tooltip += i18n("Room Number: %1<br/>").arg(user.roomNumber());
-				if(!user.workPhone().isEmpty()) tooltip += i18n("Work Phone: %1<br/>").arg(user.workPhone());
-				tooltip += i18n("User ID: %1</qt>").arg(uid);
-				return tooltip;
-			}
-			if(role == Qt::DisplayRole)
-				return user.loginName();
-		}
-	}
-	if(index.column() == PROCESS_NAME) {
-		//The first column - the process name (e.g.  'bash' or 'mozilla')
-		if (role == Qt::DisplayRole) {
+		case PROCESS_NAME:
 			return process_data.at(PROCESS_NAME);
-		} else if(role == Qt::DecorationRole) {
-			QString name = process_data.at(PROCESS_NAME);
-			QString iconname = mAliases[name];
-			if(iconname.isEmpty()) iconname = name;
-			//so iconname tries to guess as what icon to use.
-			return getIcon(iconname); //return this pixmap now
+		default:
+			QString value = process_data.at(index.column());
+			switch(mColType.at(index.column()))
+			{
+				case 'd': return value.toLongLong();
+				case 'D': 
+				case 'f': return value.toDouble();
+				case 'S': {
+					//This indicates it's a process status
+					(void)I18N_NOOP2("process status", "running");
+					(void)I18N_NOOP2("process status", "sleeping");
+					(void)I18N_NOOP2("process status", "disk sleep");
+					(void)I18N_NOOP2("process status", "zombie");
+					(void)I18N_NOOP2("process status", "stopped");
+					(void)I18N_NOOP2("process status", "paging");
+					(void)I18N_NOOP2("process status", "idle");
+					return i18n("process status", value.latin1());
+				}
+				default:
+					  return value;
+			}
+				
+			
 		}
-		//unsupported role
+		break;
+	}
+	case Qt::ToolTipRole: {
+		if(!mIsLocalhost) return QVariant();//you might have to move this into the switch if you add more tooltips
+		PROCESS_MODEL_DATA_INITIALISATION
+		switch(index.column()) {
+		case PROCESS_UID: {
+			long long uid = process_data.at(PROCESS_UID).toLongLong();
+			//since we are on localhost, we can give more useful information about the username
+			return getTooltipForUser(uid);	
+		}
+		default:
+			return QVariant();
+		}
+	}
+	case Qt::UserRole: {
+		if(index.column() != PROCESS_UID) return QVariant();  //If we query with this role, then we want the raw UID for this.
+		PROCESS_MODEL_DATA_INITIALISATION
+		return process_data.at(PROCESS_UID).toLongLong();
+	}
+	case Qt::DecorationRole: {
+		if(index.column() != PROCESS_NAME) return QVariant(); //you might have to change this into a switch if you add more decorations
+		PROCESS_MODEL_DATA_INITIALISATION
+		QString name = process_data.at(PROCESS_NAME);
+		QString iconname = mAliases[name];
+		if(iconname.isEmpty()) iconname = name;
+		//so iconname tries to guess as what icon to use.
+		return getIcon(iconname); //return this pixmap now
+	}
+	default: //This is a very very common case, so the route to this must be very minimal
 		return QVariant();
 	}
-	
-	if (role != Qt::DisplayRole)
-		return QVariant();
-	QString value = process_data.at(index.column());
-	QString type = mColType.at(index.column());
-	
-	if(type == "d") return value.toLongLong();
-	if(type == "f") return value.toDouble();
-	if(type == "D") return value.toDouble();
-	if(type == "S") {
-		//This indicates it's a process status
-		(void)I18N_NOOP2("process status", "running");
-		(void)I18N_NOOP2("process status", "sleeping");
-		(void)I18N_NOOP2("process status", "disk sleep");
-		(void)I18N_NOOP2("process status", "zombie");
-		(void)I18N_NOOP2("process status", "stopped");
-		(void)I18N_NOOP2("process status", "paging");
-		(void)I18N_NOOP2("process status", "idle");
-		return i18n("process status", value.latin1());
-	}
-	
-	else return value;
 
-
-
-	
+	return QVariant(); //never get here, but make compilier happy
 }
 
 QPixmap ProcessModel::getIcon(const QString&iconname) const {

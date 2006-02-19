@@ -63,7 +63,10 @@ public:
 		mHeader = header;
 		endInsertColumns();
 	}
-	void setColType(const QStringList &coltype) {mColType = coltype;}
+	void setColType(const QList<char> &coltype) {mColType = coltype;}
+	/** This is called from outside every few seconds when we have a new answer.
+	 *  It checks the new data against what we have currently, and tries to be efficent in merging in the new data.
+	 */
 	void setData(const QList<QStringList> &data);
 	/** By telling the model whether the sensor it is recieving the data from is for the localhost,
 	 *  then we can provide more information to the user.  For example, we can show the actual username
@@ -75,10 +78,21 @@ public:
 	 *  @return A QPixmap, that may or may not be null.
 	 */
 	QPixmap getIcon(const QString& iconname) const;
+
 private:
+	/** This returns a QModelIndex for the given process.  It has to look up the parent for this pid, find the offset this 
+	 *  pid is from the parent, and return that.  It's not that slow, but does involve a couple of hash table lookups.
+	 */
+	QModelIndex getQModelIndex ( const long long &pid, int column) const;
+	/** Change the data for a process.
+	 *  This basically copies new_pid_data across to current_pid_data, but also keeps track of what changed and then
+	 *  emits dataChanged for the range that changed.  This makes the redrawing quicker.
+	 */
+	void changeProcess(const long long &pid, const QStringList &new_pid_data, QStringList &current_pid_data) ;
+
 	QHash<QString,QString> mAliases;
 	QStringList mHeader;
-	QStringList mColType;
+	QList<char> mColType;
 	QHash<long long, QStringList> mData;
 	
 	/** For a given process id, it returns all the children that have this pid,
@@ -88,7 +102,20 @@ private:
 	/** For a given process id, it returns the parent process id.
 	 */
 	QHash<long long, long long> mPidToPpidMapping;
-	
+
+	/** Return a qt markup tooltip string for a local user.  It will have their full name etc.
+	 *  This will be slow the first time, as it practically indirectly reads the whole of /etc/passwd
+	 *  But the second time will be as fast as hash lookup as we cache the result
+	 */
+	inline QString getTooltipForUser(const long long &localhost_uid) const;
+
+	/** Return a username (as a QString) for a local user if it can, otherwise just their uid (as a long long).
+	 *  This will be slow the first time, as it practically indirectly reads the whole of /etc/passwd
+	 *  But the second time will be as fast as hash lookup as we cache the result
+	 */
+	inline QVariant getUsernameForUser(const long long &localhost_uid) const;
+
+		
 	/** Cache for the icons to show next to the process.
 	 *  Name is the process name, or an alias (like 'daemon' etc).
 	 *  @see getIcon(const QString& iconname)
@@ -99,6 +126,14 @@ private:
 
 	/** @see setIsLocalhost */
 	bool mIsLocalhost;
+
+	/** A caching hash for tooltips for a user.
+	 *  @see getTooltipForUser */
+	mutable QHash<long long,QString> mUserTooltips;
+
+	/** A caching hash for (QString) username for a user. If the username can't be found, it returns the uid as a long long.
+	 *  @see getUsernameForUser */
+	mutable QHash<long long, QVariant> mUserUsername;
 };
 
 #endif

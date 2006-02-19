@@ -198,7 +198,12 @@ ProcessController::answerReceived(int id, const QString& answer)
 			return;
 		}
 		mModel.setHeader(lines.at(0).split('\t'));
-		mModel.setColType(lines.at(1).split('\t'));
+		QString line = lines.at(1);
+		QList<char> coltype;
+		for(int i = 0; i < line.size(); i++)  //coltype is in the form "d\tf\tS\t" etc, so split into a list of char
+			if(line[i] != '\t')
+				coltype << line[i].toLatin1();//FIMXE: the answer should really be a QByteArray, not a string
+		mModel.setColType(coltype);
 
 		mFilterModel.setFilterKeyColumn(0);
 
