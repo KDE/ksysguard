@@ -100,11 +100,11 @@ ProcessModel::ProcessModel(QObject* parent)
 }
 void ProcessModel::setData(const QList<QStringList> &data)
 {
-
-
 	//We have our new data, and our current data.
 	//First we pull all the information from data so it's in the same format as the existing data.
-	//Then we 
+	//Then we delete all those that have stopped running
+	//Then insert all the new ones
+	//Then finally update the rest that might have changed
 	
 	QHash<long long, QStringList> newData;
 	QHash<long long, QList<long long> > newPpidToPidMapping;

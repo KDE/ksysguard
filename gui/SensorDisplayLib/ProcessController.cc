@@ -54,8 +54,8 @@
 ProcessController::ProcessController(QWidget* parent, const char* name)
 	: KSGRD::SensorDisplay(parent, name), mModel(parent), mFilterModel(parent)
 {
-//	mFilterModel.setSourceModel(&mModel);
 	mUi.setupUi(this);
+//	mFilterModel.setSourceModel(&mModel);
 //	mUi.treeView->setModel(&mFilterModel);
 	mUi.treeView->setModel(&mModel);
 	mSetupTreeView = false;

@@ -123,37 +123,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QCheckBox" name="chkTreeView" >
-       <property name="enabled" >
-        <bool>false</bool>
-       </property>
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>0</hsizetype>
-         <vsizetype>0</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text" >
-        <string>&amp;Tree</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
       <widget class="QPushButton" name="btnRefresh" >
        <property name="sizePolicy" >
         <sizepolicy>
