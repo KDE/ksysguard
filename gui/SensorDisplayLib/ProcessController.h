@@ -104,12 +104,16 @@ public slots:
 	void reniceProcess(int pid, int niceValue);
 
 	void updateList();
-
+private slots:
+	void setupTreeView();
+	void expandRows( const QModelIndex & parent, int start, int end );
 signals:
 	void setFilterMode(int);
 
 private:
 	bool killSupported;
+	/** Whether we have setup the tree yet*/
+	bool mSetupTreeView;
 	QStringList mHeader;
 	QStringList mColType;
 	QList<QStringList> mData;

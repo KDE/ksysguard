@@ -58,7 +58,7 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	mUi.setupUi(this);
 //	mUi.treeView->setModel(&mFilterModel);
 	mUi.treeView->setModel(&mModel);
-	
+	mSetupTreeView = false;
 	mUi.treeView->header()->setClickable(true);
 	mUi.treeView->header()->setSortIndicatorShown(true);
 	mUi.treeView->header()->setStretchLastSection(true);
@@ -67,9 +67,24 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	connect(mUi.btnKillProcess, SIGNAL(clicked()), this, SLOT(killProcess()));
 	connect(mUi.txtFilter, SIGNAL(textChanged(const QString &)), &mFilterModel, SLOT(setFilterRegExp(const QString &)));
 	connect(mUi.cmbFilter, SIGNAL(currentIndexChanged(int)), &mFilterModel, SLOT(setFilter(int)));
+	connect(&mModel, SIGNAL(columnsInserted(const QModelIndex &, int, int)), this, SLOT(setupTreeView()));
+	connect(&mModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)), this, SLOT(expandRows(const QModelIndex &, int, int)));
 	
+
 	setPlotterWidget(this);
 	setMinimumSize(sizeHint());
+}
+void ProcessController::expandRows( const QModelIndex & parent, int start, int end )
+{
+	for(int i = start; i <= end; i++) {
+		mUi.treeView->expand(mModel.index(i,0, parent));
+	}
+}
+void ProcessController::setupTreeView()
+{
+	mUi.treeView->resizeColumnToContents(0);
+	mUi.treeView->hideColumn(1);
+	mUi.treeView->hideColumn(2);
 }
 
 void ProcessController::resizeEvent(QResizeEvent* ev)

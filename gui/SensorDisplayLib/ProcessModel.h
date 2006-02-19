@@ -31,6 +31,7 @@
 #include <QList>
 #include <QVariant>
 #include <QHash>
+#include <QSet>
 
 #define PROCESS_NAME 0
 #define PROCESS_PID 1
@@ -84,6 +85,13 @@ private:
 	 *  pid is from the parent, and return that.  It's not that slow, but does involve a couple of hash table lookups.
 	 */
 	QModelIndex getQModelIndex ( const long long &pid, int column) const;
+
+	/** Insert the pid given, plus all its parents
+	 */
+	void insertRow( const long long &pid, const QHash<long long, QStringList> &newData, const QHash<long long, long long> &newPidToPpidMapping);
+	/** Remove the given row from our internal model and notify the view, and do so for all the children of the given pid
+	 */
+	void removeRow( const long long &pid );
 	/** Change the data for a process.
 	 *  This basically copies new_pid_data across to current_pid_data, but also keeps track of what changed and then
 	 *  emits dataChanged for the range that changed.  This makes the redrawing quicker.
@@ -134,6 +142,9 @@ private:
 	/** A caching hash for (QString) username for a user. If the username can't be found, it returns the uid as a long long.
 	 *  @see getUsernameForUser */
 	mutable QHash<long long, QVariant> mUserUsername;
+
+	/** A set of all the pids we know about.  Stored in a set so we can easily compare them against new data sets*/
+	QSet<long long> mPids;
 };
 
 #endif

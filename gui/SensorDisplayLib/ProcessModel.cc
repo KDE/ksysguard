@@ -100,15 +100,49 @@ ProcessModel::ProcessModel(QObject* parent)
 }
 void ProcessModel::setData(const QList<QStringList> &data)
 {
-	bool needreset = false;
 
-	//This code will cause a reset if there are any processes created/destroyed/reparented etc
-	//Only existing processes changing will not cause a reset
+
+	//We have our new data, and our current data.
+	//First we pull all the information from data so it's in the same format as the existing data.
+	//Then we 
 	
+	QHash<long long, QStringList> newData;
+	QHash<long long, QList<long long> > newPpidToPidMapping;
+	QHash<long long, long long> newPidToPpidMapping;
+
+	QSet<long long> new_pids;
+	for(long i = 0; i < data.size(); i++) {
+		QStringList new_pid_data = data.at(i);
+		long long pid = new_pid_data.at(PROCESS_PID).toLongLong();
+		long long ppid = new_pid_data.at(PROCESS_PPID).toLongLong();
+		new_pids << pid;
+		newData[pid] = data[i];
+		newPidToPpidMapping[pid] = ppid;
+		newPpidToPidMapping[ppid] << pid;
+	}
+
+	//so we have a set of new_pids and a set of the current mPids
+	QSet<long long> pids_to_delete = mPids;
+	pids_to_delete.subtract(new_pids);
+	//By deleting, we may delete children that haven't actually died, so do the delete first, then insert which will reinsert the children
+	foreach(long long pid, pids_to_delete)
+		removeRow(pid);
+	QSet<long long> pids_to_insert = new_pids;
+	pids_to_insert.subtract(mPids);
+	foreach(long long pid, pids_to_insert)	
+		insertRow(pid, newData, newPidToPpidMapping);
+	//now only changing what is there should be needed.
+
+	Q_ASSERT(mPids.count() == new_pids.count());
+	
+	//This code will cause a reset if there are any processes reparented or any other wierd cases
+	
+	bool needreset = false;
 	if(data.count() != mData.count()) {
 		//A new processes has been added/removed.
 		//This still works 1 process was added and another removed, because although it won't be caught here
 		//it will be caught in the next bit when it finds a new process.
+		kDebug() << "mData and data contain different number of processes!!" << endl;
 		needreset = true;
 	}
 	for(long i = 0; i < data.size() && !needreset; i++) {	
@@ -118,7 +152,7 @@ void ProcessModel::setData(const QList<QStringList> &data)
 		long long ppid = new_pid_data.at(PROCESS_PPID).toLongLong();
 		QStringList &current_pid_data = mData[pid];
 	        if(current_pid_data.isEmpty()) {
-			//new item.  just reset instead of trying with insert/remove :/
+			//new item.  something has gone wrong.  reset back to sane value.  This shouldn't ever happen
 			needreset = true;
 			break;
 		} else {
@@ -138,18 +172,12 @@ void ProcessModel::setData(const QList<QStringList> &data)
 		}
 	}
 	if(needreset) {
-		mData.clear();
 		//fixme - save selection
-		mPidToPpidMapping.clear();
-		mPpidToPidMapping.clear();
-		for(long i = 0; i < data.size(); i++) {
-			QStringList new_pid_data = data.at(i);
-			long long pid = new_pid_data.at(PROCESS_PID).toLongLong();
-			long long ppid = new_pid_data.at(PROCESS_PPID).toLongLong();
-			mData[pid] = data[i];
-			mPidToPpidMapping[pid] = ppid;
-			mPpidToPidMapping[ppid] << pid;
-		}
+		kDebug() << "HAD TO RESET!" << endl;
+		mPidToPpidMapping = newPidToPpidMapping;
+		mPpidToPidMapping = newPpidToPidMapping;
+		mData = newData;
+		mPids = new_pids;
 		reset();
 		emit layoutChanged();
 	}
@@ -218,7 +246,44 @@ void ProcessModel::changeProcess(const long long &pid, const QStringList &new_pi
 	QModelIndex endIndex = createIndex(row, last_column_changed, pid);
 	emit dataChanged(startIndex, endIndex);
 }
-			
+
+void ProcessModel::insertRow( const long long &pid, const QHash<long long, QStringList> &newData, const QHash<long long, long long> &newPidToPpidMapping)
+{
+	if(pid <= 0) return; //init has parent pid 0
+	if(mPids.contains(pid)) return; //we may have already inserted.  any modification of the data will be done later
+	long long ppid = newPidToPpidMapping[pid];
+	insertRow(ppid, newData, newPidToPpidMapping);
+	int row = 0;
+	QModelIndex parentModel;
+	if(ppid != 0) {
+		row = mPpidToPidMapping[ppid].count();
+		parentModel = getQModelIndex(ppid, 0);
+	}	
+	beginInsertRows(parentModel, row, row);
+	mData[pid] << newData[pid];
+	mPpidToPidMapping[ppid] << pid;
+	mPidToPpidMapping[pid] = ppid;
+	mPids << pid;
+	endInsertRows();
+}
+void ProcessModel::removeRow( const long long &pid ) 
+{
+	if(!mPidToPpidMapping.contains(pid)) return;
+	long long ppid = mPidToPpidMapping[ pid ];
+	int row = mPpidToPidMapping[ppid].indexOf(pid);
+	if(row == -1) return;
+	QModelIndex parentModel = getQModelIndex(ppid, 0);
+	QList<long long> children = mPpidToPidMapping[pid];
+	//we should remove all the children first, recursively.
+	for(int i =0; i < children.size(); i++) removeRow(children[i]);
+	//so no more children left!
+	beginRemoveRows(parentModel, row, row);
+	mPpidToPidMapping[ppid].removeAll(pid);
+	mPidToPpidMapping.remove(pid);
+	mPids.remove(pid);
+	endRemoveRows();
+}
+
 QModelIndex ProcessModel::getQModelIndex ( const long long &pid, int column) const
 {
 	if(pid == 0) return QModelIndex();
