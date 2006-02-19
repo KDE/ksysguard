@@ -99,7 +99,7 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   groupLayout->addWidget( label, 2, 0 );
 
   mCommands = new KComboBox( true, group );
-  mCommands->setEnabled( FALSE );
+  mCommands->setEnabled( false );
   mCommands->setMaxCount( 20 );
   mCommands->setInsertionPolicy( QComboBox::AtTop );
   mCommands->setAutoCompletion( true );
