@@ -33,11 +33,12 @@
 #include <QHash>
 #include <QSet>
 
+/** These are where the data is stored in the new data.  This should only be used in a few places just to parse the new data */
 #define PROCESS_NAME 0
 #define PROCESS_PID 1
 #define PROCESS_PPID 2
 #define PROCESS_UID 3
-
+#define PROCESS_DATASTART 4
 
 extern KApplication* Kapp;
 
@@ -80,48 +81,62 @@ public:
 	 */
 	QPixmap getIcon(const QString& iconname) const;
 
+	class Process {
+	  public:
+		typedef enum { Daemon, Kernel, Init, Other, Invalid } ProcessType;
+		Process() { uid = 0; pid = 0; parent_pid = 0; processType=Invalid;}
+		Process(const QString &_name, long long _pid, long long _ppid, long long _uid, ProcessType _processType )  {
+			name = _name; pid=_pid; parent_pid=_ppid; uid = _uid; processType=_processType;}
+		bool isValid() {return processType != Process::Invalid;}
+		
+		long long pid;    //The systems ID for this process
+		long long parent_pid;  //The systems ID for the parent of this process.  0 for init.
+		long long uid;
+		ProcessType processType;
+		QString name;  //The name (e.g. "ksysguard", "konversation", "init")
+		QList<long long> children_pids;
+		QList<QVariant> data;  //The column data, excluding the name, pid, ppid and uid
+	};
+
 private:
 	/** This returns a QModelIndex for the given process.  It has to look up the parent for this pid, find the offset this 
 	 *  pid is from the parent, and return that.  It's not that slow, but does involve a couple of hash table lookups.
 	 */
-	QModelIndex getQModelIndex ( const long long &pid, int column) const;
+	QModelIndex getQModelIndex ( long long pid, int column) const;
 
 	/** Insert the pid given, plus all its parents
 	 */
-	void insertRow( const long long &pid, const QHash<long long, QStringList> &newData, const QHash<long long, long long> &newPidToPpidMapping);
+	void insertOrChangeRows( long long pid ) ;
 	/** Remove the given row from our internal model and notify the view, and do so for all the children of the given pid
 	 */
-	void removeRow( const long long &pid );
+	void removeRow( long long pid );
 	/** Change the data for a process.
 	 *  This basically copies new_pid_data across to current_pid_data, but also keeps track of what changed and then
 	 *  emits dataChanged for the range that changed.  This makes the redrawing quicker.
 	 */
-	void changeProcess(const long long &pid, const QStringList &new_pid_data, QStringList &current_pid_data) ;
+	void changeProcess(long long pid) ;
 
-	QHash<QString,QString> mAliases;
+	
+	QHash<QString,Process::ProcessType> mProcessType;
 	QStringList mHeader;
 	QList<char> mColType;
-	QHash<long long, QStringList> mData;
 	
-	/** For a given process id, it returns all the children that have this pid,
-	 *  sorted in order of pid.
+	/** For a given process id, it returns a Process structure.
+	 *  @see class Process
 	 */
-	QHash<long long, QList<long long> > mPpidToPidMapping;
-	/** For a given process id, it returns the parent process id.
-	 */
-	QHash<long long, long long> mPidToPpidMapping;
+	QHash<long long, Process> mPidToProcess;
 
 	/** Return a qt markup tooltip string for a local user.  It will have their full name etc.
 	 *  This will be slow the first time, as it practically indirectly reads the whole of /etc/passwd
 	 *  But the second time will be as fast as hash lookup as we cache the result
 	 */
-	inline QString getTooltipForUser(const long long &localhost_uid) const;
+	inline QString getTooltipForUser(long long localhost_uid) const;
 
 	/** Return a username (as a QString) for a local user if it can, otherwise just their uid (as a long long).
 	 *  This will be slow the first time, as it practically indirectly reads the whole of /etc/passwd
 	 *  But the second time will be as fast as hash lookup as we cache the result
 	 */
-	inline QVariant getUsernameForUser(const long long &localhost_uid) const;
+	inline QVariant getUsernameForUser(long long localhost_uid) const;
 
 		
 	/** Cache for the icons to show next to the process.
@@ -135,6 +150,8 @@ private:
 	/** @see setIsLocalhost */
 	bool mIsLocalhost;
 
+	/** Set to true when something has gone really wrong with the model and we should just reload from disk */
+	bool mNeedReset;
 	/** A caching hash for tooltips for a user.
 	 *  @see getTooltipForUser */
 	mutable QHash<long long,QString> mUserTooltips;
@@ -145,6 +162,12 @@ private:
 
 	/** A set of all the pids we know about.  Stored in a set so we can easily compare them against new data sets*/
 	QSet<long long> mPids;
+
+	/** This are used when there is new data.  There are cleared as soon as the data is merged into the current model */
+	QSet<long long> new_pids;
+	QHash<long long, QStringList> newData;
+	QHash<long long, long long> newPidToPpidMapping;
+		
 };
 
 #endif
