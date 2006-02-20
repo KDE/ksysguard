@@ -283,11 +283,10 @@ const QList<int>&
 ProcessList::getSelectedPIds()
 {
 	selectedPIds.clear();
-	// iterate through all items of the listview and find selected processes
-	Q3ListViewItemIterator it(this);
+	// iterate through all selected visible items of the listview
+	Q3ListViewItemIterator it(this, Q3ListViewItemIterator::Visible | Q3ListViewItemIterator::Selected );
 	for ( ; it.current(); ++it )
-		if (it.current()->isSelected())
-			selectedPIds.append(it.current()->text(1).toInt());
+		selectedPIds.append(it.current()->text(1).toInt());
 
 	return (selectedPIds);
 }
@@ -296,14 +295,13 @@ const QStringList&
 ProcessList::getSelectedAsStrings()
 {
 	selectedAsStrings.clear();
-	// iterate through all items of the listview and find selected processes
-	Q3ListViewItemIterator it(this);
+	// iterate through all selected visible items of the listview
+	Q3ListViewItemIterator it(this, Q3ListViewItemIterator::Visible | Q3ListViewItemIterator::Selected);
 	QString spaces;
-	for ( ; it.current(); ++it )
-		if (it.current()->isSelected()) {
-			spaces.fill(QChar(' '), 7 - it.current()->text(1).length());
-			selectedAsStrings.append("(PID: " + it.current()->text(1) + ")" + spaces + " " + it.current()->text(0));
-		}
+	for ( ; it.current(); ++it ) {
+		spaces.fill(QChar(' '), 7 - it.current()->text(1).length());
+		selectedAsStrings.append("(PID: " + it.current()->text(1) + ")" + spaces + " " + it.current()->text(0));
+	}
 
 	return (selectedAsStrings);
 }
@@ -878,14 +876,12 @@ ProcessList::handleRMBPressed(Q3ListViewItem* lvi, const QPoint& p, int col)
 			/* we go through list to get all task also
 			   when update interval is paused */
 			selectedPIds.clear();
-			Q3ListViewItemIterator it(this);
+			Q3ListViewItemIterator it(this, Q3ListViewItemIterator::Visible | Q3ListViewItemIterator::Selected);
 
-			// iterate through all items of the listview
+			// iterate through all selected visible items of the listview
 			for ( ; it.current(); ++it )
 			{
-				if (it.current()->isSelected()) {
-					selectedPIds.append(it.current()->text(1).toInt());
-				}
+				selectedPIds.append(it.current()->text(1).toInt());
 			}
 
 			QString msg = i18n("Do you really want to send signal %1 to the selected process?",
