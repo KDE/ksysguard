@@ -175,8 +175,8 @@ bool Workspace::saveOnQuit()
 
 void Workspace::loadWorkSheet()
 {
-  KFileDialog dlg( 0, i18n( "*.sgrd|Sensor Files" ), this,
-                   "LoadFileDialog", true );
+  KFileDialog dlg( 0, i18n( "*.sgrd|Sensor Files" ), this);
+  dlg.setObjectName("LoadFileDialog");
 
   KUrl url = dlg.getOpenURL( mWorkDir, "*.sgrd", 0, i18n( "Select Worksheet to Load" ) );
 
@@ -229,8 +229,8 @@ void Workspace::saveWorkSheet( WorkSheet *sheet )
 
   QString fileName = sheet->fileName();
   if ( fileName.isEmpty() ) {
-    KFileDialog dlg( 0, i18n( "*.sgrd|Sensor Files" ), this,
-                     "LoadFileDialog", true );
+    KFileDialog dlg( 0, i18n( "*.sgrd|Sensor Files" ), this);
+	dlg.setObjectName("LoadFileDialog");
     fileName = dlg.getSaveFileName( mWorkDir + "/" + tabLabel( sheet ) +
                                     ".sgrd", "*.sgrd", 0,
                                     i18n( "Save Current Worksheet As" ) );
@@ -269,7 +269,8 @@ void Workspace::saveWorkSheetAs( WorkSheet *sheet )
 
   QString fileName;
   do {
-    KFileDialog dlg( 0, "*.sgrd", this, "LoadFileDialog", true );
+    KFileDialog dlg( 0, "*.sgrd", this);
+	dlg.setObjectName("LoadFileDialog");
     fileName = dlg.getSaveFileName( mWorkDir + "/" + tabLabel( currentPage() ) +
                                     ".sgrd", "*.sgrd" );
     if ( fileName.isEmpty() )
