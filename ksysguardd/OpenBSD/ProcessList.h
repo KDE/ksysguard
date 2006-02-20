@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-    Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,29 +19,20 @@
 
 */
 
-#ifndef _memory_h_
-#define _memory_h_
+#ifndef _process_list_h_
+#define _process_list_h_
 
-struct SensorModul;
+void initProcessList(struct SensorModul* sm);
+void exitProcessList(void);
 
-void initMemory(struct SensorModul* sm);
-void exitMemory(void);
+int updateProcessList(void);
 
-int updateMemory(void);
+void printProcessList(const char*);
+void printProcessListInfo(const char*);
+void printProcessCount(const char* cmd);
+void printProcessCountInfo(const char* cmd);
 
-void printMFree(const char* cmd);
-void printMFreeInfo(const char* cmd);
-void printActive(const char* cmd);
-void printActiveInfo(const char* cmd);
-void printInActive(const char* cmd);
-void printInActiveInfo(const char* cmd);
-void printUsed(const char* cmd);
-void printUsedInfo(const char* cmd);
-void printApplication(const char* cmd);
-void printApplicationInfo(const char* cmd);
-void printSwapUsed(const char* cmd);
-void printSwapUsedInfo(const char* cmd);
-void printSwapFree(const char* cmd);
-void printSwapFreeInfo(const char* cmd);
+void killProcess(const char* cmd);
+void setPriority(const char* cmd);
 
 #endif

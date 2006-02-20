@@ -79,6 +79,7 @@
 #ifdef OSTYPE_OpenBSD
 #include "cpu.h"
 #include "memory.h"
+#include "ProcessList.h"
 #endif /* OSTYPE_OpenBSD */
 
 typedef void (*VSFunc)( struct SensorModul* );
@@ -143,6 +144,7 @@ struct SensorModul SensorModulList[] = {
 #ifdef OSTYPE_OpenBSD
   { "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULLVVFUNC, 0, NULLTIME },
   { "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC, 0, NULLTIME },
+  { "ProcessList", initProcessList, exitProcessList, updateProcessList, NULLVVFUNC, 0, NULLTIME },
 #endif /* OSTYPE_OpenBSD */
 
   { NULL, NULLVSFUNC, NULLVVFUNC, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME }
