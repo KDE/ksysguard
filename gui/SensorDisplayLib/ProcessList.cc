@@ -153,15 +153,20 @@ ProcessList::ProcessList(QWidget *parent)
 		aliases.insert("scsi_eh_6", new QString("kernel"));
 		aliases.insert("scsi_eh_7", new QString("kernel"));
 		/* daemon and other service providers */
+		aliases.insert("apmd", new QString("daemon"));
 		aliases.insert("artsd", new QString("daemon"));
 		aliases.insert("atd", new QString("daemon"));
 		aliases.insert("automount", new QString("daemon"));
 		aliases.insert("cardmgr", new QString("daemon"));
 		aliases.insert("cron", new QString("daemon"));
 		aliases.insert("cupsd", new QString("daemon"));
+		aliases.insert("getty", new QString("daemon"));
 		aliases.insert("in.identd", new QString("daemon"));
+		aliases.insert("inetd", new QString("daemon"));
 		aliases.insert("lpd", new QString("daemon"));
 		aliases.insert("mingetty", new QString("daemon"));
+		aliases.insert("mountd", new QString("daemon"));
+		aliases.insert("nfsd", new QString("daemon"));
 		aliases.insert("nscd", new QString("daemon"));
 		aliases.insert("portmap", new QString("daemon"));
 		aliases.insert("rpc.statd", new QString("daemon"));
@@ -170,6 +175,7 @@ ProcessList::ProcessList(QWidget *parent)
 		aliases.insert("sshd", new QString("daemon"));
 		aliases.insert("syslogd", new QString("daemon"));
 		aliases.insert("usbmgr", new QString("daemon"));
+		aliases.insert("wsmoused", new QString("daemon"));
 		aliases.insert("wwwoffled", new QString("daemon"));
 		aliases.insert("xntpd", new QString("daemon"));
 		aliases.insert("ypbind", new QString("daemon"));
@@ -209,6 +215,7 @@ ProcessList::ProcessList(QWidget *parent)
 		aliases.insert("tcsh", new QString("shell"));
 		aliases.insert("tee", new QString("tools"));
 		aliases.insert("vi", new QString("wordprocessing"));
+		aliases.insert("vim", new QString("wordprocessing"));
 	}
 
 	/* The filter mode is controlled by a combo box of the parent. If
