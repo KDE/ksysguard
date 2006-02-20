@@ -210,7 +210,8 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 	if(parent.isValid()) //not valid for init, and init has ppid of 0
 		ppid = parent.internalId()/*pid*/;
 	
-	const QList<long long> &siblings = mPidToProcess[ppid].children_pids;
+        // Using QList<long long>& instead of QList<long long> creates an internal error in gcc 3.3.1
+	const QList<long long> siblings = mPidToProcess[ppid].children_pids;
 	if(siblings.count() > row)
 		return createIndex(row,column, siblings[row]);
 	else
