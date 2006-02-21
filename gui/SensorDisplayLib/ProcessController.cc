@@ -21,7 +21,8 @@
 
 #include <assert.h>
 #include <qtimer.h>
-//Added by qt3to4:
+
+#include <QDomElement>
 #include <QVBoxLayout>
 #include <QList>
 #include <QHBoxLayout>

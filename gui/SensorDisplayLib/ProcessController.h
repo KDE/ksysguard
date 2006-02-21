@@ -36,8 +36,6 @@
 
 #include <SensorDisplay.h>
 
-#include "ProcessList.h"
-
 #include "ProcessWidgetUI.h"
 #include "ProcessModel.h"
 

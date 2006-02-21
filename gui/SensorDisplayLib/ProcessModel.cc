@@ -58,6 +58,7 @@ ProcessModel::ProcessModel(QObject* parent)
 {
 	mIsLocalhost = false; //this default really shouldn't matter, because setIsLocalhost should be called before setData()
 	mPidToProcess[0] = Process();  //Add a fake process for process '0', the parent for init.  This lets us remove checks everywhere for init process
+	mPidColumn = -1;
 
 	//Translatable strings for the status
 	(void)I18N_NOOP2("process status", "running"); 
@@ -135,6 +136,11 @@ ProcessModel::ProcessModel(QObject* parent)
 }
 void ProcessModel::setData(const QList<QStringList> &data)
 {
+
+	if(mPidColumn == -1) {
+		kDebug(1215) << "We have recieved a setData()  before we know about our headings." << endl;
+		return;
+	}
 	// We can set this from anywhere to basically say something has gone wrong, and the code is buggy, so reset and get all the data again
 	// It shouldn't happen, but just-in-case
 	mNeedReset = false;

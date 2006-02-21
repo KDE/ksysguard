@@ -21,7 +21,6 @@ libsensordisplays_la_SOURCES = \
 	MultiMeter.cc \
 	MultiMeterSettings.cc \
 	ProcessController.cc \
-	ProcessList.cc \
 	ProcessModel.cc \
 	ProcessFilter.cc \
 	ReniceDlg.cc \
