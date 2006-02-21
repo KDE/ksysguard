@@ -33,12 +33,13 @@
 #include <QHash>
 #include <QSet>
 
-/** These are where the data is stored in the new data.  This should only be used in a few places just to parse the new data */
-#define PROCESS_NAME 0
-#define PROCESS_PID 1
-#define PROCESS_PPID 2
-#define PROCESS_UID 3
-#define PROCESS_DATASTART 4
+/** For new data that comes in, this gives the type of it. @see mColtype */
+#define DATA_COLUMN_LOGIN 'L'
+#define DATA_COLUMN_GID 'G'
+#define DATA_COLUMN_PID 'P'
+#define DATA_COLUMN_PPID 'Q'
+#define DATA_COLUMN_UID 'U'
+#define DATA_COLUMN_NAME 'N'
 
 extern KApplication* Kapp;
 
@@ -60,12 +61,8 @@ public:
 	
 	bool hasChildren ( const QModelIndex & parent) const;
 	/* Functions for setting the model */
-	void setHeader(const QStringList &header) {
-		beginInsertColumns(QModelIndex(), 0, header.count()-1);
-		mHeader = header;
-		endInsertColumns();
-	}
-	void setColType(const QList<char> &coltype) {mColType = coltype;}
+	/** Set the untranslated heading names for the model */
+	bool setHeader(const QStringList &header, QList<char> coltype);
 	/** This is called from outside every few seconds when we have a new answer.
 	 *  It checks the new data against what we have currently, and tries to be efficent in merging in the new data.
 	 */
@@ -84,14 +81,15 @@ public:
 	class Process {
 	  public:
 		typedef enum { Daemon, Kernel, Init, Other, Invalid } ProcessType;
-		Process() { uid = 0; pid = 0; parent_pid = 0; processType=Invalid;}
-		Process(const QString &_name, long long _pid, long long _ppid, long long _uid, ProcessType _processType )  {
-			name = _name; pid=_pid; parent_pid=_ppid; uid = _uid; processType=_processType;}
+		Process() { uid = 0; pid = 0; parent_pid = 0; gid = -1; processType=Invalid;}
+		Process(long long _pid, long long _ppid)  {
+			uid = 0; pid = _pid; parent_pid = _ppid; gid = -1; processType=Invalid;}
 		bool isValid() {return processType != Process::Invalid;}
 		
 		long long pid;    //The systems ID for this process
 		long long parent_pid;  //The systems ID for the parent of this process.  0 for init.
-		long long uid;
+		long long uid; //The user id that the process is running as
+		long long gid; //The group id that the process is running as
 		ProcessType processType;
 		QString name;  //The name (e.g. "ksysguard", "konversation", "init")
 		QList<long long> children_pids;
@@ -130,13 +128,14 @@ private:
 	 *  This will be slow the first time, as it practically indirectly reads the whole of /etc/passwd
 	 *  But the second time will be as fast as hash lookup as we cache the result
 	 */
-	inline QString getTooltipForUser(long long localhost_uid) const;
+	inline QString getTooltipForUser(long long uid, long long gid) const;
 
 	/** Return a username (as a QString) for a local user if it can, otherwise just their uid (as a long long).
-	 *  This will be slow the first time, as it practically indirectly reads the whole of /etc/passwd
+	 *  This may have been given from the result of "ps" (but not necessarily).  If it's not found, then it
+	 *  needs to find out the username from the uid. This will be slow the first time, as it practically indirectly reads the whole of /etc/passwd
 	 *  But the second time will be as fast as hash lookup as we cache the result
 	 */
-	inline QVariant getUsernameForUser(long long localhost_uid) const;
+	inline QVariant getUsernameForUser(long long uid) const;
 
 		
 	/** Cache for the icons to show next to the process.
@@ -156,18 +155,30 @@ private:
 	 *  @see getTooltipForUser */
 	mutable QHash<long long,QString> mUserTooltips;
 
-	/** A caching hash for (QString) username for a user. If the username can't be found, it returns the uid as a long long.
+	/** A caching hash for (QString) username for a user uid, or just their uid if it can't be found (as a long long)
 	 *  @see getUsernameForUser */
 	mutable QHash<long long, QVariant> mUserUsername;
 
 	/** A set of all the pids we know about.  Stored in a set so we can easily compare them against new data sets*/
 	QSet<long long> mPids;
 
+	enum { HeadingUser, HeadingName, HeadingOther };
+	
 	/** This are used when there is new data.  There are cleared as soon as the data is merged into the current model */
 	QSet<long long> new_pids;
 	QHash<long long, QStringList> newData;
 	QHash<long long, long long> newPidToPpidMapping;
-		
+
+	/** A translated list of headings (column titles) in the order we want to display them. Used in headerData() */
+	QStringList mHeadings;
+	/** A list that matches up with headings and gives the type of each, using the enum HeadingUser, etc. Used in data() */
+	QList<int> mHeadingsToType;
+	/** For new data that comes in, this list matches up with that, and gives the type of each heading using a letter. */
+	QList<char> mColtype; 
+
+	int mPidColumn;
+	int mPPidColumn;
+	
 };
 
 #endif

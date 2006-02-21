@@ -35,11 +35,13 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 	if(source_parent.isValid()) {
 		return true; //no such thing at the moment
 	}
-	QModelIndex source_index = sourceModel()->index(source_row, PROCESS_UID, source_parent);
+	//We need the uid for this, so we have a special understanding with the model.
+	//We query the first row with Qt:UserRole, and it gives us the uid.  Nasty but works.
+	QModelIndex source_index = sourceModel()->index(source_row, 0, source_parent);
 	bool ok;
 	long uid = sourceModel()->data(source_index, Qt::UserRole).toInt(&ok);
 	if(!ok) {
-		kDebug() << "Serious error with data.  The UID is not a number? Maybe 'ps' is not returning the data correctly.  UID is: " << source_parent.child(source_row,PROCESS_UID).data().toString() << endl;
+		kDebug() << "Serious error with data.  The UID is not a number? Maybe 'ps' is not returning the data correctly.  UID is: " << source_parent.child(source_row,0).data().toString() << endl;
 		return true;
 	}
 	switch(mFilter) {

@@ -2,6 +2,7 @@
     KSysGuard, the KDE System Guard
 
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+	Copyright (c) 2006 John Tapsell <john.tapsell@kdemail.net>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms version 2 of of the GNU General Public
@@ -15,9 +16,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-	KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-	Please do not commit any changes without consulting me first. Thanks!
 
 */
 
@@ -83,8 +81,6 @@ void ProcessController::expandRows( const QModelIndex & parent, int start, int e
 void ProcessController::setupTreeView()
 {
 	mUi.treeView->resizeColumnToContents(0);
-	mUi.treeView->hideColumn(1);
-	mUi.treeView->hideColumn(2);
 }
 
 void ProcessController::resizeEvent(QResizeEvent* ev)
@@ -212,13 +208,21 @@ ProcessController::answerReceived(int id, const QString& answer)
 			sensorError(id, true);
 			return;
 		}
-		mModel.setHeader(lines.at(0).split('\t'));
 		QString line = lines.at(1);
 		QList<char> coltype;
 		for(int i = 0; i < line.size(); i++)  //coltype is in the form "d\tf\tS\t" etc, so split into a list of char
 			if(line[i] != '\t')
 				coltype << line[i].toLatin1();//FIMXE: the answer should really be a QByteArray, not a string
-		mModel.setColType(coltype);
+		QStringList header = lines.at(0).split('\t');
+		if(coltype.count() != header.count()) {
+			kDebug(1215) << "ProcessControll::answerReceived.  Invalid data from a client - column type and data don't match in number.  Discarding" << endl;
+			sensorError(id, true);
+			return;
+		}
+		if(!mModel.setHeader(header, coltype)) {
+			sensorError(id,true);
+			return;
+		}
 
 		mFilterModel.setFilterKeyColumn(0);
 
