@@ -68,7 +68,7 @@ Workspace::~Workspace()
 void Workspace::saveProperties( KConfig *cfg )
 {
   cfg->writePathEntry( "WorkDir", mWorkDir );
-  cfg->writeEntry( "CurrentSheet", tabLabel( currentPage() ) );
+  cfg->writeEntry( "CurrentSheet", tabLabel( currentWidget() ) );
 
   Q3PtrListIterator<WorkSheet> it( mSheetList);
 
@@ -212,12 +212,12 @@ void Workspace::loadWorkSheet( const KUrl &url )
 
 void Workspace::saveWorkSheet()
 {
-  saveWorkSheet( (WorkSheet*)currentPage() );
+  saveWorkSheet( (WorkSheet*)currentWidget() );
 }
 
 void Workspace::saveWorkSheetAs()
 {
-  saveWorkSheetAs( (WorkSheet*)currentPage() );
+  saveWorkSheetAs( (WorkSheet*)currentWidget() );
 }
 
 void Workspace::saveWorkSheet( WorkSheet *sheet )
@@ -271,7 +271,7 @@ void Workspace::saveWorkSheetAs( WorkSheet *sheet )
   do {
     KFileDialog dlg( 0, "*.sgrd", this);
 	dlg.setObjectName("LoadFileDialog");
-    fileName = dlg.getSaveFileName( mWorkDir + "/" + tabLabel( currentPage() ) +
+    fileName = dlg.getSaveFileName( mWorkDir + "/" + tabLabel( currentWidget() ) +
                                     ".sgrd", "*.sgrd" );
     if ( fileName.isEmpty() )
       return;
@@ -294,7 +294,7 @@ void Workspace::saveWorkSheetAs( WorkSheet *sheet )
 
 void Workspace::deleteWorkSheet()
 {
-  WorkSheet *current = (WorkSheet*)currentPage();
+  WorkSheet *current = (WorkSheet*)currentWidget();
 
   if ( current ) {
     if ( current->modified() ) {
@@ -323,7 +323,7 @@ void Workspace::deleteWorkSheet()
 void Workspace::removeAllWorkSheets()
 {
   WorkSheet *sheet;
-  while ( ( sheet = (WorkSheet*)currentPage() ) != 0 ) {
+  while ( ( sheet = (WorkSheet*)currentWidget() ) != 0 ) {
     removePage( sheet );
     mSheetList.remove( sheet );
   }
@@ -381,7 +381,7 @@ bool Workspace::restoreWorkSheet( const QString &fileName, const QString &newNam
 
 void Workspace::cut()
 {
-  WorkSheet *current = (WorkSheet*)currentPage();
+  WorkSheet *current = (WorkSheet*)currentWidget();
 
   if ( current )
     current->cut();
@@ -389,7 +389,7 @@ void Workspace::cut()
 
 void Workspace::copy()
 {
-  WorkSheet *current = (WorkSheet*)currentPage();
+  WorkSheet *current = (WorkSheet*)currentWidget();
 
   if ( current )
     current->copy();
@@ -397,7 +397,7 @@ void Workspace::copy()
 
 void Workspace::paste()
 {
-  WorkSheet *current = (WorkSheet*)currentPage();
+  WorkSheet *current = (WorkSheet*)currentWidget();
 
   if ( current )
     current->paste();
@@ -405,7 +405,7 @@ void Workspace::paste()
 
 void Workspace::configure()
 {
-  WorkSheet *current = (WorkSheet*)currentPage();
+  WorkSheet *current = (WorkSheet*)currentWidget();
 
   if ( !current )
     return;
@@ -426,8 +426,8 @@ void Workspace::updateCaption( QWidget* wdg )
 
 void Workspace::applyStyle()
 {
-  if ( currentPage() )
-    ((WorkSheet*)currentPage())->applyStyle();
+  if ( currentWidget() )
+    ((WorkSheet*)currentWidget())->applyStyle();
 }
 
 void Workspace::showProcesses()
