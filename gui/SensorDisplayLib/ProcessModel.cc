@@ -133,6 +133,46 @@ ProcessModel::ProcessModel(QObject* parent)
 	mProcessType.insert("syslogd", Process::Daemon);
 	mProcessType.insert("usbmgr", Process::Daemon);
 	mProcessType.insert("wwwoffled", Process::Daemon);
+	mProcessType.insert("xntpd", Process::Daemon);
+	mProcessType.insert("ypbind", Process::Daemon);
+	 /* kde applications */
+	mProcessType.insert("appletproxy", Process::Kdeapp);
+	mProcessType.insert("dcopserver", Process::Kdeapp);
+	mProcessType.insert("kcookiejar", Process::Kdeapp);
+	mProcessType.insert("kde", Process::Kdeapp);
+	mProcessType.insert("kded", Process::Kdeapp);
+	mProcessType.insert("kdeinit", Process::Kdeapp);
+	mProcessType.insert("kdesktop", Process::Kdeapp);
+	mProcessType.insert("kdesud", Process::Kdeapp);
+	mProcessType.insert("kdm", Process::Kdeapp);
+	mProcessType.insert("khotkeys", Process::Kdeapp);
+	mProcessType.insert("kio_file", Process::Kdeapp);
+	mProcessType.insert("kio_uiserver", Process::Kdeapp);
+	mProcessType.insert("klauncher", Process::Kdeapp);
+	mProcessType.insert("ksmserver", Process::Kdeapp);
+	mProcessType.insert("kwrapper", Process::Kdeapp);
+	mProcessType.insert("kwrited", Process::Kdeapp);
+	mProcessType.insert("kxmlrpcd", Process::Kdeapp);
+	mProcessType.insert("startkde", Process::Kdeapp);
+	 /* other processes */
+	mProcessType.insert("bash", Process::Shell);
+	mProcessType.insert("cat", Process::Tools);
+	mProcessType.insert("egrep", Process::Tools);
+	mProcessType.insert("emacs", Process::Wordprocessing);
+	mProcessType.insert("fgrep", Process::Tools);
+	mProcessType.insert("find", Process::Tools);
+	mProcessType.insert("grep", Process::Tools);
+	mProcessType.insert("ksh", Process::Shell);
+	mProcessType.insert("screen", Process::Openterm);
+	mProcessType.insert("sh", Process::Shell);
+	mProcessType.insert("sort", Process::Tools);
+	mProcessType.insert("ssh", Process::Shell);
+	mProcessType.insert("su", Process::Tools);
+	mProcessType.insert("tcsh", Process::Shell);
+	mProcessType.insert("tee", Process::Tools);
+	mProcessType.insert("vi", Process::Wordprocessing);
+	mProcessType.insert("vim", Process::Wordprocessing);
+	
 }
 void ProcessModel::setData(const QList<QStringList> &data)
 {
