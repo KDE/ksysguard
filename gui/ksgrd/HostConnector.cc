@@ -48,7 +48,7 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
 
   mHostNames = new KComboBox( true, page );
   mHostNames->setMaxCount( 20 );
-  mHostNames->setInsertionPolicy( QComboBox::AtTop );
+  mHostNames->setInsertPolicy( QComboBox::AtTop );
   mHostNames->setAutoCompletion( true );
   mHostNames->setDuplicatesEnabled( false );
   layout->addWidget( mHostNames, 0, 1 );
@@ -101,7 +101,7 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   mCommands = new KComboBox( true, group );
   mCommands->setEnabled( false );
   mCommands->setMaxCount( 20 );
-  mCommands->setInsertionPolicy( QComboBox::AtTop );
+  mCommands->setInsertPolicy( QComboBox::AtTop );
   mCommands->setAutoCompletion( true );
   mCommands->setDuplicatesEnabled( false );
   mCommands->setWhatsThis( i18n( "Enter the command that runs ksysguardd on the host you want to monitor." ) );
