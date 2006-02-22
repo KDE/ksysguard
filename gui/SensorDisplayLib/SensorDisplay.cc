@@ -260,7 +260,7 @@ void SensorDisplay::saveColor( QDomElement &element, const QString &attr,
                                const QColor &color )
 {
   int r, g, b;
-  color.rgb( &r, &g, &b );
+  color.getRgb( &r, &g, &b );
   element.setAttribute( attr, (r << 16) | (g << 8) | b );
 }
 
