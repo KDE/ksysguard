@@ -80,7 +80,7 @@ public:
 
 	class Process {
 	  public:
-		typedef enum { Daemon, Kernel, Init, Kdeapp, Shell, Tools, Wordprocessing, Openterm, Other, Invalid } ProcessType;
+		typedef enum { Daemon, Kernel, Init, Kdeapp, Shell, Tools, Wordprocessing, Term, Other, Invalid } ProcessType;
 		Process() { uid = 0; pid = 0; parent_pid = 0; gid = -1; processType=Invalid;}
 		Process(long long _pid, long long _ppid)  {
 			uid = 0; pid = _pid; parent_pid = _ppid; gid = -1; processType=Invalid;}

@@ -163,7 +163,7 @@ ProcessModel::ProcessModel(QObject* parent)
 	mProcessType.insert("find", Process::Tools);
 	mProcessType.insert("grep", Process::Tools);
 	mProcessType.insert("ksh", Process::Shell);
-	mProcessType.insert("screen", Process::Openterm);
+	mProcessType.insert("screen", Process::Term);
 	mProcessType.insert("sh", Process::Shell);
 	mProcessType.insert("sort", Process::Tools);
 	mProcessType.insert("ssh", Process::Shell);
@@ -606,8 +606,19 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				return getIcon("daemon");
 			case Process::Kernel:
 				return getIcon("kernel");
+			case Process::Kdeapp:
+				return getIcon("kdeapp");
+			case Process::Tools:
+				return getIcon("tools");
+			case Process::Shell:
+				return getIcon("shell");
+			case Process::Wordprocessing:
+				return getIcon("wordprocessing");
+			case Process::Term:
+				return getIcon("openterm");
 			case Process::Invalid:
 				return QVariant();
+//			case Process::Other:
 			default:
 				//so iconname tries to guess as what icon to use.
 				return getIcon(process.name);
@@ -642,8 +653,7 @@ QPixmap ProcessModel::getIcon(const QString&iconname) const {
 						 KIcon::SizeSmall, KIcon::DefaultState,
 						 0L, true);
 		if (pix.isNull() || !pix.mask())
-		    pix = mIcons.loadIcon("unknownapp", KIcon::User,
-							 KIcon::SizeSmall);
+		    pix = SmallIcon("unknownapp");
 
 		if (pix.width() != 16 || pix.height() != 16)
 		{
