@@ -153,6 +153,11 @@ void ProcessModel::setData(const QList<QStringList> &data)
 	
 	for(long i = 0; i < data.size(); i++) {
 		QStringList new_pid_data = data.at(i);
+		if(new_pid_data.count() <= mPidColumn || new_pid_data.count() <= mPPidColumn) {
+			kDebug() << "Something wrong with the ps data comming from ksysguardd daemon.  Ignoring it." << endl;
+			kDebug() << new_pid_data.join(",") << endl;
+			return;
+		}
 		long long pid = new_pid_data.at(mPidColumn).toLongLong();
 		long long ppid = 0;
 		if(mPPidColumn >= 0)
@@ -489,8 +494,14 @@ QString ProcessModel::getTooltipForUser(long long uid, long long gid) const {
 			}
 		}
 	}
-	if(gid != -1)
-		return userTooltip + i18n("<br/>Group ID: %1").arg(gid);
+	if(gid != -1) {
+		if(!mIsLocalhost)
+			return userTooltip + i18n("<br/>Group ID: %1").arg(gid);
+		QString groupname = KUserGroup(gid).name();
+		if(groupname.isEmpty())
+			return userTooltip + i18n("<br/>Group ID: %1").arg(gid);
+		return userTooltip +  i18n("<br/>Group Name: %1").arg(groupname)+ i18n("<br/>Group ID: %1").arg(gid);
+	}
 	return userTooltip;
 }
 

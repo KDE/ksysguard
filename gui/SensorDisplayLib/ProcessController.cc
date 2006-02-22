@@ -239,6 +239,10 @@ ProcessController::answerReceived(int id, const QString& answer)
 		while(i.hasNext()) {
 		  data << i.next().split('\t');
 		}
+		if(data.isEmpty()) {
+			kDebug(1215) << "No data in the answer from 'ps'" << endl;
+			break;
+		}
 		mModel.setData(data);
 		break;
 	}
