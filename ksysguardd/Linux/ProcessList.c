@@ -65,6 +65,9 @@ typedef struct {
   /* The real group ID */
   gid_t gid;
 
+  /* The process ID of any application that is debugging this one. 0 if none */
+  pid_t tracerpid;
+
   /* A character description of the process status */
   char status[ 16 ];
 
@@ -190,7 +193,10 @@ static int updateProcess( int pid )
     /* process has terminated in the mean time */
     return -1;
   }
-
+  ps->uid = 0;
+  ps->gid = 0;
+  ps->tracerpid = 0;
+  
   sprintf( format, "%%%d[^\n]\n", (int)sizeof( buf ) - 1 );
   sprintf( tagformat, "%%%ds", (int)sizeof( tag ) - 1 );
   for ( ;; ) {
@@ -202,8 +208,13 @@ static int updateProcess( int pid )
     if ( strcmp( tag, "Name:" ) == 0 ) {
       sscanf( buf, "%*s %63s", ps->name );
       validateStr( ps->name );
-    } else if ( strcmp( tag, "Uid:" ) == 0 )
+    } else if ( strcmp( tag, "Uid:" ) == 0 ) {
       sscanf( buf, "%*s %d %*d %*d %*d", (int*)&ps->uid );
+    } else if ( strcmp( tag, "Gid:" ) == 0 ) {
+      sscanf( buf, "%*s %d %*d %*d %*d", (int*)&ps->gid );
+    } else if ( strcmp( tag, "TracerPid:" ) == 0 ) {
+      sscanf( buf, "%*s %d", (int*)&ps->tracerpid );
+    }
   }
 
   if ( fclose( fd ) )
@@ -214,11 +225,11 @@ static int updateProcess( int pid )
   if ( ( fd = fopen( buf, "r" ) ) == 0 )
     return -1;
 
-  if ( fscanf( fd, "%*d %*s %c %d %d %*d %d %*d %*u %*u %*u %*u %*u %d %d"
+  if ( fscanf( fd, "%*d %*s %c %d %*d %*d %d %*d %*u %*u %*u %*u %*u %d %d"
                    "%*d %*d %*d %d %*u %*u %*d %u %u",
-                   &status, (int*)&ps->ppid, (int*)&ps->gid, &ps->ttyNo,
+                   &status, (int*)&ps->ppid, &ps->ttyNo,
                    &userTime, &sysTime, &ps->niceLevel, &ps->vmSize,
-                   &ps->vmRss) != 9 ) {
+                   &ps->vmRss) != 8 ) {
     fclose( fd );
     return -1;
   }
@@ -408,8 +419,8 @@ void printProcessListInfo( const char* cmd )
 {
   (void)cmd;
   fprintf( CurrentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize"
-                          "\tVmRss\tLogin\tCommand\n" );
-  fprintf( CurrentClient, "s\td\td\td\td\tS\tf\tf\td\tD\tD\ts\ts\n" );
+                          "\tVmRss\tLogin\tTracerPID\tCommand\n" );
+  fprintf( CurrentClient, "s\td\td\td\td\tS\tf\tf\td\tD\tD\ts\td\ts\n" );
 }
 
 void printProcessList( const char* cmd )
@@ -420,10 +431,10 @@ void printProcessList( const char* cmd )
 
   for ( ps = first_ctnr( ProcessList ); ps; ps = next_ctnr( ProcessList ) ) {
     fprintf( CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d"
-             "\t%s\t%s\n", ps->name, (long)ps->pid, (long)ps->ppid,
+             "\t%s\t%ld\t%s\n", ps->name, (long)ps->pid, (long)ps->ppid,
              (long)ps->uid, (long)ps->gid, ps->status, ps->userLoad,
              ps->sysLoad, ps->niceLevel, ps->vmSize / 1024, ps->vmRss / 1024,
-             ps->userName, ps->cmdline );
+             ps->userName, (long)ps->tracerpid, ps->cmdline );
   }
 
   fprintf( CurrentClient, "\n" );
