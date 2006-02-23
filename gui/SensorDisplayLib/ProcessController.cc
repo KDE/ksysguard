@@ -68,7 +68,6 @@ ProcessController::ProcessController(QWidget* parent, const char* name)
 	connect(mUi.cmbFilter, SIGNAL(currentIndexChanged(int)), &mFilterModel, SLOT(setFilter(int)));
 	connect(&mModel, SIGNAL(columnsInserted(const QModelIndex &, int, int)), this, SLOT(setupTreeView()));
 	connect(&mModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)), this, SLOT(expandRows(const QModelIndex &, int, int)));
-	
 
 	setPlotterWidget(this);
 	setMinimumSize(sizeHint());

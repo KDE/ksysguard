@@ -33,13 +33,23 @@
 #include <QHash>
 #include <QSet>
 
-/** For new data that comes in, this gives the type of it. @see mColtype */
+/** For new data that comes in, this gives the type of it. 
+  * If you want to add one, just chose a letter that isn't used yet
+  * @see mColtype 
+  */
+/* These are used only internally.  Initially the columns come in as the set below, but we map to these types if we know them */
 #define DATA_COLUMN_LOGIN 'L'
 #define DATA_COLUMN_GID 'G'
 #define DATA_COLUMN_PID 'P'
 #define DATA_COLUMN_PPID 'Q'
 #define DATA_COLUMN_UID 'U'
 #define DATA_COLUMN_NAME 'N'
+#define DATA_COLUMN_TRACERPID 'T'
+/* These ones are known and used in ksysguardd so don't change unless you change there too*/
+#define DATA_COLUMN_STATUS 'S'
+#define DATA_COLUMN_OTHER_LONG 'd'
+#define DATA_COLUMN_OTHER_PRETTY_LONG 'D' /*Printed as e.g 100,000,000 */
+#define DATA_COLUMN_OTHER_PRETTY_FLOAT 'f'
 
 extern KApplication* Kapp;
 
@@ -81,15 +91,16 @@ public:
 	class Process {
 	  public:
 		typedef enum { Daemon, Kernel, Init, Kdeapp, Shell, Tools, Wordprocessing, Term, Other, Invalid } ProcessType;
-		Process() { uid = 0; pid = 0; parent_pid = 0; gid = -1; processType=Invalid;}
+		Process() { uid = 0; pid = 0; parent_pid = 0; gid = -1; processType=Invalid; tracerpid = 0;}
 		Process(long long _pid, long long _ppid)  {
-			uid = 0; pid = _pid; parent_pid = _ppid; gid = -1; processType=Invalid;}
+			uid = 0; pid = _pid; parent_pid = _ppid; gid = -1; processType=Invalid; tracerpid = 0;}
 		bool isValid() {return processType != Process::Invalid;}
 		
 		long long pid;    //The systems ID for this process
 		long long parent_pid;  //The systems ID for the parent of this process.  0 for init.
 		long long uid; //The user id that the process is running as
 		long long gid; //The group id that the process is running as
+		long long tracerpid; //If this is being debugged, this is the process that is debugging it
 		ProcessType processType;
 		QString name;  //The name (e.g. "ksysguard", "konversation", "init")
 		QList<long long> children_pids;

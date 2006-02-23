@@ -335,12 +335,19 @@ void ProcessModel::changeProcess(long long pid)
 					changed = true;
 				} 
 			} break;
+			case DATA_COLUMN_TRACERPID: {
+				long long tracerpid = newDataRow[i].toLongLong();
+				if(process.tracerpid != tracerpid) {
+					process.tracerpid = tracerpid;
+					changed = true;
+				}
+			} break;
 			case DATA_COLUMN_PID: break; //Already dealt with
 			case DATA_COLUMN_PPID: break; //Already dealt with
-			case 'd': value = newDataRow[i].toLongLong(); break;
-			case 'D': value = KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
-			case 'f': value = KGlobal::locale()->formatNumber( newDataRow[i].toDouble() ); break;
-			case 'S': value = i18n("process status", newDataRow[i].latin1()); break;  //This indicates it's a process status.  See the I18N_NOOP2 strings in the constructor
+			case DATA_COLUMN_OTHER_LONG: value = newDataRow[i].toLongLong(); break;
+			case DATA_COLUMN_OTHER_PRETTY_LONG: value = KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
+			case DATA_COLUMN_OTHER_PRETTY_FLOAT: value = KGlobal::locale()->formatNumber( newDataRow[i].toDouble() ); break;
+			case DATA_COLUMN_STATUS: value = i18n("process status", newDataRow[i].latin1()); break;  //This indicates it's a process status.  See the I18N_NOOP2 strings in the constructor
 			default: {
 				value = newDataRow[i]; break;
 			}
@@ -418,12 +425,13 @@ void ProcessModel::insertOrChangeRows( long long pid)
 			case DATA_COLUMN_UID: new_process.uid = newDataRow[i].toLongLong(); break;
 			case DATA_COLUMN_LOGIN: loginName = newDataRow[i]; break; //we might not know the uid yet, so remember the login name then at the end modify mUserUsername
 			case DATA_COLUMN_GID: new_process.gid = newDataRow[i].toLongLong(); break;
+			case DATA_COLUMN_TRACERPID: new_process.tracerpid = newDataRow[i].toLongLong(); break;
 			case DATA_COLUMN_PID: break; //Already dealt with
 			case DATA_COLUMN_PPID: break; //Already dealt with
-			case 'd': data << newDataRow[i].toLongLong(); break;
-			case 'D': data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
-			case 'f': data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble() ); break;
-			case 'S': data << i18n("process status", newDataRow[i].latin1()); break;  //This indicates it's a process status.  See the I18N_NOOP2 strings in the constructor
+			case DATA_COLUMN_OTHER_LONG: data << newDataRow[i].toLongLong(); break;
+			case DATA_COLUMN_OTHER_PRETTY_LONG: data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
+			case DATA_COLUMN_OTHER_PRETTY_FLOAT: data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble() ); break;
+			case DATA_COLUMN_STATUS: data << i18n("process status", newDataRow[i].latin1()); break;  //This indicates it's a process status.  See the I18N_NOOP2 strings in the constructor
 			default:
 				data << newDataRow[i]; break;
 		}
@@ -583,11 +591,29 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	}
 	case Qt::ToolTipRole: {
 		const Process &process = mPidToProcess[index.internalId()/*pid*/];
+		QString tracer;
+		if(process.tracerpid > 0) {
+			if(mPidToProcess.contains(process.tracerpid)) { //this can not happen in certain race conditions
+				const Process &process_tracer = mPidToProcess[process.tracerpid];
+				tracer = i18n("tooltip. name,pid ","This process is being debugged by %1 (%2)").arg(process_tracer.name).arg(process.tracerpid);
+			}
+		}
 		switch(mHeadingsToType[index.column()]) {
+		case HeadingName: {
+			QString tooltip = i18n("name column tooltip. first item is the name","<b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3").arg(process.name).arg(process.pid).arg(process.parent_pid);
+			
+			if(!tracer.isEmpty())
+				return tooltip + "<br/>" + tracer;
+			return tooltip;
+		}
 		case HeadingUser: {
+			if(!tracer.isEmpty())
+				return getTooltipForUser(process.uid, process.gid) + "<br/>" + tracer;
 			return getTooltipForUser(process.uid, process.gid);
 		}
+		
 		default:
+			tracer.isEmpty(); return tracer;
 			return QVariant();
 		}
 	}
@@ -628,6 +654,10 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	case Qt::BackgroundColorRole: {
 		if(!mIsLocalhost) return QVariant();
 		const Process &process = mPidToProcess[index.internalId()/*pid*/];
+		if(process.tracerpid >0) {
+			//It's being debugged, so probably important.  Let's mark it as such
+			return QColor("yellow");
+		}
 		if(process.uid == getuid()) {
 			return QColor("red"); 
 		}
@@ -718,6 +748,9 @@ bool ProcessModel::setHeader(const QStringList &header, QList<char> coltype) {
 			found_uid = i;
 		} else if(header[i] == "Name") {
 			coltype[i] = DATA_COLUMN_NAME;
+			found_name = i;
+		} else if(header[i] == "TracerPID") {
+			coltype[i] = DATA_COLUMN_TRACERPID;
 			found_name = i;
 		} else {
 			headings << header[i];
