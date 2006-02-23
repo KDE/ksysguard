@@ -20,6 +20,7 @@ libsensordisplays_la_SOURCES = \
 	LogFile.cc \
 	MultiMeter.cc \
 	MultiMeterSettings.cc \
+	Process.cc \
 	ProcessController.cc \
 	ProcessModel.cc \
 	ProcessFilter.cc \

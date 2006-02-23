@@ -57,7 +57,7 @@ ProcessModel::ProcessModel(QObject* parent)
 	: QAbstractItemModel(parent)
 {
 	mIsLocalhost = false; //this default really shouldn't matter, because setIsLocalhost should be called before setData()
-	mPidToProcess[0] = Process();  //Add a fake process for process '0', the parent for init.  This lets us remove checks everywhere for init process
+	mPidToProcess[0] = new Process();  //Add a fake process for process '0', the parent for init.  This lets us remove checks everywhere for init process
 	mPidColumn = -1;
 
 	//Translatable strings for the status
@@ -242,7 +242,7 @@ void ProcessModel::setData(const QList<QStringList> &data)
 int ProcessModel::rowCount(const QModelIndex &parent) const
 {
 	long long ppid = (parent.isValid())?parent.internalId():0; //when parent is invalid, it must be the root level which we set as 0
-	return mPidToProcess[ppid].children_pids.count();
+	return mPidToProcess[ppid]->children_pids.count();
 }
 
 int ProcessModel::columnCount ( const QModelIndex & parent ) const
@@ -264,7 +264,7 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 		ppid = parent.internalId()/*pid*/;
 	
         // Using QList<long long>& instead of QList<long long> creates an internal error in gcc 3.3.1
-	const QList<long long> siblings = mPidToProcess[ppid].children_pids;
+	const QList<long long> siblings = mPidToProcess[ppid]->children_pids;
 	if(siblings.count() > row)
 		return createIndex(row,column, siblings[row]);
 	else
@@ -276,7 +276,7 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 void ProcessModel::changeProcess(long long pid)
 {
 	Q_ASSERT(pid != 0);
-	long long ppid = mPidToProcess[pid].parent_pid;
+	long long ppid = mPidToProcess[pid]->parent_pid;
 	long long new_ppid = newPidToPpidMapping[pid];
 	//This is called from insertOrChangeRows and after the parent is checked, so we know the (new) parent won't change under us
 	
@@ -299,11 +299,11 @@ void ProcessModel::changeProcess(long long pid)
 	//We know the pid is the same (obviously), and ppid.  So check name (and update processType?),uid and data.  children_pids will take care
 	//of themselves as they are inserted later.
 
-	Process &process = mPidToProcess[pid];
+	QPointer<Process> process = mPidToProcess[pid];
 
 	const QStringList &newDataRow = newData[pid];
 
-	//Use i for the index in the new data, and j for the index for the process.data structure that we are copying into
+	//Use i for the index in the new data, and j for the index for the process->data structure that we are copying into
 	int j = 0;
 	bool changed = false;
 	QString loginName;
@@ -314,31 +314,31 @@ void ProcessModel::changeProcess(long long pid)
 		switch(mColType[i]) {
 			case DATA_COLUMN_NAME: {
 				QString name = newDataRow[i];
-				if(process.name != name) {
-					process.name = name;
-					process.processType = (mProcessType.contains(name))?mProcessType[name]:Process::Other;
+				if(process->name != name) {
+					process->name = name;
+					process->processType = (mProcessType.contains(name))?mProcessType[name]:Process::Other;
 					changed = true;
 				}
 			} break;
 			case DATA_COLUMN_UID: {
 				long long uid = newDataRow[i].toLongLong();
-				if(process.uid != uid) {
-					process.uid = uid;
+				if(process->uid != uid) {
+					process->uid = uid;
 					changed = true;
 				}
 			} break;
 			case DATA_COLUMN_LOGIN: loginName = newDataRow[i]; break; //we might not know the uid yet, so remember the login name then at the end modify mUserUsername
 			case DATA_COLUMN_GID: {
 				long long gid = newDataRow[i].toLongLong();
-				if(process.gid != gid) {
-					process.gid = gid;
+				if(process->gid != gid) {
+					process->gid = gid;
 					changed = true;
 				} 
 			} break;
 			case DATA_COLUMN_TRACERPID: {
 				long long tracerpid = newDataRow[i].toLongLong();
-				if(process.tracerpid != tracerpid) {
-					process.tracerpid = tracerpid;
+				if(process->tracerpid != tracerpid) {
+					process->tracerpid = tracerpid;
 					changed = true;
 				}
 			} break;
@@ -353,21 +353,21 @@ void ProcessModel::changeProcess(long long pid)
 			}
 		}
 		if(value.isValid()) {
-			if(value != process.data[j]) {
-				process.data[j] = value;
+			if(value != process->data[j]) {
+				process->data[j] = value;
 				changed = true;
 			}
 			j++;
 		}
 	}
-	if(process.uid != -1)
-		mUserUsername[process.uid] = loginName;
+	if(process->uid != -1)
+		mUserUsername[process->uid] = loginName;
 	
-	//Now all the data has been changed for this process.
+	//Now all the data has been changed for this process->
 	if(!changed)
 		return; 
 
-	int row = mPidToProcess[ process.parent_pid ].children_pids.indexOf(process.pid);
+	int row = mPidToProcess[ process->parent_pid ]->children_pids.indexOf(process->pid);
 	if(row == -1) //something has gone really wrong
 		return;
 	QModelIndex startIndex = createIndex(row, 0, pid);
@@ -405,27 +405,27 @@ void ProcessModel::insertOrChangeRows( long long pid)
 	//    then in changed() it will call this function to recursively insert its parents
 	
 
-	QList<long long> &parents_children = mPidToProcess[ppid].children_pids;
+	QList<long long> &parents_children = mPidToProcess[ppid]->children_pids;
 	int row = parents_children.count();
 	QModelIndex parentModel = getQModelIndex(ppid, 0);
 
 	const QStringList &newDataRow = newData[pid];
 
-	Process new_process(pid, ppid);
-	QList<QVariant> &data = new_process.data;
+	QPointer<Process> new_process = new Process(pid, ppid);
+	QList<QVariant> &data = new_process->data;
 	QString loginName;
 	for (int i = 0; i < mColType.count(); i++)
 	{  //At the moment the data is just a string, so turn it into a list of variants instead and insert the variants into our new process
 		switch(mColType[i]) {
 
 			case DATA_COLUMN_NAME:
-				new_process.name = newDataRow[i];
-				new_process.processType = (mProcessType.contains(new_process.name))?mProcessType[new_process.name]:Process::Other;
+				new_process->name = newDataRow[i];
+				new_process->processType = (mProcessType.contains(new_process->name))?mProcessType[new_process->name]:Process::Other;
 				break;
-			case DATA_COLUMN_UID: new_process.uid = newDataRow[i].toLongLong(); break;
+			case DATA_COLUMN_UID: new_process->uid = newDataRow[i].toLongLong(); break;
 			case DATA_COLUMN_LOGIN: loginName = newDataRow[i]; break; //we might not know the uid yet, so remember the login name then at the end modify mUserUsername
-			case DATA_COLUMN_GID: new_process.gid = newDataRow[i].toLongLong(); break;
-			case DATA_COLUMN_TRACERPID: new_process.tracerpid = newDataRow[i].toLongLong(); break;
+			case DATA_COLUMN_GID: new_process->gid = newDataRow[i].toLongLong(); break;
+			case DATA_COLUMN_TRACERPID: new_process->tracerpid = newDataRow[i].toLongLong(); break;
 			case DATA_COLUMN_PID: break; //Already dealt with
 			case DATA_COLUMN_PPID: break; //Already dealt with
 			case DATA_COLUMN_OTHER_LONG: data << newDataRow[i].toLongLong(); break;
@@ -436,15 +436,15 @@ void ProcessModel::insertOrChangeRows( long long pid)
 				data << newDataRow[i]; break;
 		}
 	}
-	if(new_process.uid != -1)
-		mUserUsername[new_process.uid] = loginName;
+	if(new_process->uid != -1)
+		mUserUsername[new_process->uid] = loginName;
 	//Only here can we actually change the model.  First notify the view/proxy models then modify
 	
-//	kDebug() << "inserting " << pid << "(" << new_process.pid << "] at "<< row << " in parent " << new_process.parent_pid <<endl;
+//	kDebug() << "inserting " << pid << "(" << new_process->pid << "] at "<< row << " in parent " << new_process->parent_pid <<endl;
 	beginInsertRows(parentModel, row, row);
-		mPidToProcess[new_process.pid] = new_process;
-		parents_children << new_process.pid;  //add ourselves to the parent
-		mPids << new_process.pid;
+		mPidToProcess[new_process->pid] = new_process;
+		parents_children << new_process->pid;  //add ourselves to the parent
+		mPids << new_process->pid;
 	endInsertRows();
 }
 void ProcessModel::removeRow( long long pid ) 
@@ -455,7 +455,7 @@ void ProcessModel::removeRow( long long pid )
 		return; //we may have already deleted for some reason?
 	}
 
-	Process *process = &mPidToProcess[pid];	
+	QPointer<Process> process = mPidToProcess[pid];	
 
 	{
 		QList<long long> *children = &(process->children_pids); //remove all the children now
@@ -472,7 +472,7 @@ void ProcessModel::removeRow( long long pid )
 
 	
 	long long ppid = process->parent_pid;
-	QList<long long> &parents_children = mPidToProcess[ppid].children_pids;
+	QList<long long> &parents_children = mPidToProcess[ppid]->children_pids;
 	int row = parents_children.indexOf(pid);
 	QModelIndex parentModel = getQModelIndex(ppid, 0);
 	if(row == -1) return;
@@ -491,10 +491,10 @@ void ProcessModel::removeRow( long long pid )
 QModelIndex ProcessModel::getQModelIndex ( long long pid, int column) const
 {
 	if(pid == 0) return QModelIndex();
-	long long ppid = mPidToProcess[pid].parent_pid;
+	long long ppid = mPidToProcess[pid]->parent_pid;
 	int row = 0;
 	if(ppid != 0) {
-		row = mPidToProcess[ppid].children_pids.indexOf(pid);
+		row = mPidToProcess[ppid]->children_pids.indexOf(pid);
 		if(row == -1) //something has gone really wrong
 			return QModelIndex();
 	}
@@ -506,7 +506,7 @@ QModelIndex ProcessModel::parent ( const QModelIndex & index ) const
 	if(!index.isValid()) return QModelIndex();
 	if(index.internalId() == 0) return QModelIndex();
 	
-	long long parent_pid = mPidToProcess[ index.internalId()/*pid*/ ].parent_pid;
+	long long parent_pid = mPidToProcess[ index.internalId()/*pid*/ ]->parent_pid;
 	return getQModelIndex(parent_pid,0);
 }
 
@@ -578,29 +578,29 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	Q_ASSERT(index.column() < mHeadingsToType.count());
 	switch (role){
 	case Qt::DisplayRole: {
-		const Process &process = mPidToProcess[index.internalId()/*pid*/];
+		QPointer<Process> process = mPidToProcess[index.internalId()/*pid*/];
 		switch(mHeadingsToType[index.column()]) {
 		case HeadingName:
-			return process.name;
+			return process->name;
 		case HeadingUser:
-			return getUsernameForUser(process.uid);
+			return getUsernameForUser(process->uid);
 		default:
-			return process.data.at(index.column() - HeadingOther);
+			return process->data.at(index.column() - HeadingOther);
 		}
 		break;
 	}
 	case Qt::ToolTipRole: {
-		const Process &process = mPidToProcess[index.internalId()/*pid*/];
+		QPointer<Process> process = mPidToProcess[index.internalId()/*pid*/];
 		QString tracer;
-		if(process.tracerpid > 0) {
-			if(mPidToProcess.contains(process.tracerpid)) { //this can not happen in certain race conditions
-				const Process &process_tracer = mPidToProcess[process.tracerpid];
-				tracer = i18n("tooltip. name,pid ","This process is being debugged by %1 (%2)").arg(process_tracer.name).arg(process.tracerpid);
+		if(process->tracerpid > 0) {
+			if(mPidToProcess.contains(process->tracerpid)) { //this can not happen in certain race conditions
+				QPointer<Process> process_tracer = mPidToProcess[process->tracerpid];
+				tracer = i18n("tooltip. name,pid ","This process is being debugged by %1 (%2)").arg(process_tracer->name).arg(process->tracerpid);
 			}
 		}
 		switch(mHeadingsToType[index.column()]) {
 		case HeadingName: {
-			QString tooltip = i18n("name column tooltip. first item is the name","<b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3").arg(process.name).arg(process.pid).arg(process.parent_pid);
+			QString tooltip = i18n("name column tooltip. first item is the name","<b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3").arg(process->name).arg(process->pid).arg(process->parent_pid);
 			
 			if(!tracer.isEmpty())
 				return tooltip + "<br/>" + tracer;
@@ -608,8 +608,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		}
 		case HeadingUser: {
 			if(!tracer.isEmpty())
-				return getTooltipForUser(process.uid, process.gid) + "<br/>" + tracer;
-			return getTooltipForUser(process.uid, process.gid);
+				return getTooltipForUser(process->uid, process->gid) + "<br/>" + tracer;
+			return getTooltipForUser(process->uid, process->gid);
 		}
 		
 		default:
@@ -620,12 +620,12 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	case Qt::UserRole: {
 		//We have a special understanding with the filter.  If it queries us as UserRole in column 0, return uid
 		if(index.column() != 0) return QVariant();  //If we query with this role, then we want the raw UID for this.
-		return mPidToProcess[index.internalId()/*pid*/].uid;
+		return mPidToProcess[index.internalId()/*pid*/]->uid;
 	}
 	case Qt::DecorationRole: {
 		if(mHeadingsToType[index.column()] != HeadingName) return QVariant(); //you might have to change this into a switch if you add more decorations
-		const Process &process = mPidToProcess[index.internalId()/*pid*/];
-		switch (process.processType){
+		QPointer<Process> process = mPidToProcess[index.internalId()/*pid*/];
+		switch (process->processType){
 			case Process::Init:
 				return getIcon("penguin");
 			case Process::Daemon:
@@ -647,21 +647,21 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 //			case Process::Other:
 			default:
 				//so iconname tries to guess as what icon to use.
-				return getIcon(process.name);
+				return getIcon(process->name);
 		}
 		return QVariant(); //keep compilier happy
 	}
 	case Qt::BackgroundColorRole: {
 		if(!mIsLocalhost) return QVariant();
-		const Process &process = mPidToProcess[index.internalId()/*pid*/];
-		if(process.tracerpid >0) {
+		QPointer<Process> process = mPidToProcess[index.internalId()/*pid*/];
+		if(process->tracerpid >0) {
 			//It's being debugged, so probably important.  Let's mark it as such
 			return QColor("yellow");
 		}
-		if(process.uid == getuid()) {
+		if(process->uid == getuid()) {
 			return QColor("red"); 
 		}
-		if(process.uid < 100)
+		if(process->uid < 100)
 			return QColor("gainsboro");
 		return QColor("mediumaquamarine");
 	}
@@ -729,7 +729,7 @@ bool ProcessModel::setHeader(const QStringList &header, QList<char> coltype) {
 	int found_name = -1;
 	QStringList headings;
 	QList<int> headingsToType;
-	int num_of_others = 0; //Number of headings found that we dont know about.  Will match the index in process.data[index]
+	int num_of_others = 0; //Number of headings found that we dont know about.  Will match the index in process->data[index]
 	for(int i = 0; i < header.count(); i++) {
 		if(header[i] == "Login") {
 			coltype[i] = DATA_COLUMN_LOGIN;
