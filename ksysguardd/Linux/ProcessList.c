@@ -44,6 +44,14 @@
 
 static CONTAINER ProcessList = 0;
 
+#define USING_XRES
+
+#ifdef USING_XRES
+extern int setup_xres();
+extern void xrestop_populate_client_data();
+static int using_xres = 0;
+#endif
+
 typedef struct {
   /**
     This flag is set for all found processes at the beginning of the
@@ -125,6 +133,7 @@ typedef struct {
 
   /* The login name of the user that owns this process */
   char userName[ 32 ];
+
 } ProcessInfo;
 
 static unsigned ProcessCount;
@@ -321,8 +330,11 @@ static int updateProcess( int pid )
   strncpy( ps->userName, uName, sizeof( ps->userName ) - 1 );
   ps->userName[ sizeof( ps->userName ) - 1 ] = '\0';
   validateStr( ps->userName );
-
+  
   ps->alive = 1;
+
+
+  
 
   return 0;
 }
@@ -391,11 +403,18 @@ void initProcessList( struct SensorModul* sm )
 
   registerMonitor( "pscount", "integer", printProcessCount, printProcessCountInfo, sm );
   registerMonitor( "ps", "table", printProcessList, printProcessListInfo, sm );
+#ifdef USING_XRES
+  registerMonitor( "xres", "table", printXresList, printXresListInfo, sm);
+#endif
 
   if ( !RunAsDaemon ) {
     registerCommand( "kill", killProcess );
     registerCommand( "setpriority", setPriority );
   }
+
+#ifdef USING_XRES
+  using_xres = setup_xres();
+#endif
 
   updateProcessList();
 }
@@ -414,13 +433,32 @@ void exitProcessList( void )
 
   exitPWUIDCache();
 }
+#ifdef USING_XRES
+void printXresListInfo( const char *cmd)
+{
+  (void)cmd;
+  fprintf(CurrentClient, "xPid\tXIdentifier\tXPxmMem\tXNumPxm\n");
+  fprintf(CurrentClient, "d\ts\td\td");
+}
+
+void printXresList(const char*cmd)
+{
+  (void)cmd;
+  printXres(CurrentClient);
+}
+
+#endif
 
 void printProcessListInfo( const char* cmd )
 {
   (void)cmd;
   fprintf( CurrentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize"
                           "\tVmRss\tLogin\tTracerPID\tCommand\n" );
-  fprintf( CurrentClient, "s\td\td\td\td\tS\tf\tf\td\tD\tD\ts\td\ts\n" );
+  fprintf( CurrentClient, "s\td\td\td\td\tS\tf\tf\td\tD\tD"
+#ifdef USING_XRES
+		  "\ts\td\td"
+#endif
+		  "\n" );
 }
 
 void printProcessList( const char* cmd )
@@ -428,13 +466,18 @@ void printProcessList( const char* cmd )
   ProcessInfo* ps;
 
   (void)cmd;
-
+  /*We return 0 for tracerpid (the pid of any debugger attached to the process) if there is none
+    x_identifier is empty if none was found
+    x_pxmmem is -1 if not found
+    x_numpxm is -1 if not found
+    */
   for ( ps = first_ctnr( ProcessList ); ps; ps = next_ctnr( ProcessList ) ) {
-    fprintf( CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d"
-             "\t%s\t%ld\t%s\n", ps->name, (long)ps->pid, (long)ps->ppid,
+    fprintf( CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d\t%s\t%ld\t%s\n",
+	     ps->name, (long)ps->pid, (long)ps->ppid,
              (long)ps->uid, (long)ps->gid, ps->status, ps->userLoad,
              ps->sysLoad, ps->niceLevel, ps->vmSize / 1024, ps->vmRss / 1024,
-             ps->userName, (long)ps->tracerpid, ps->cmdline );
+             ps->userName, (long)ps->tracerpid, ps->cmdline
+	     );
   }
 
   fprintf( CurrentClient, "\n" );

@@ -31,6 +31,8 @@ void printProcessList( const char* );
 void printProcessListInfo( const char* );
 void printProcessCount( const char* );
 void printProcessCountInfo( const char* );
+void printXresListInfo( const char *);
+void printXresList( const char *);
 
 void killProcess( const char* );
 void setPriority( const char* );

@@ -1,5 +1,5 @@
 AM_CPPFLAGS = -D_GNU_SOURCE
-AM_CFLAGS = -Wall 
+AM_CFLAGS = -Wall @XLIBS_CFLAGS@
 
 # add all supported modules
 if supports_i8k
@@ -11,4 +11,5 @@ INCLUDES = -I$(srcdir)/../../CContLib -I$(srcdir)/.. $(KSGRD_SUPPORTS) $(all_inc
 
 noinst_LIBRARIES = libksysguardd.a
 libksysguardd_a_SOURCES = ProcessList.c	Memory.c stat.c netdev.c apm.c acpi.c \
-	loadavg.c cpuinfo.c lmsensors.c netstat.c diskstat.c logfile.c i8k.c
+	loadavg.c cpuinfo.c lmsensors.c netstat.c diskstat.c logfile.c i8k.c \
+	xres.c
