@@ -287,11 +287,9 @@ recurse_win_tree(XResTopClient *client, Window win_top)
 
   for (i=0; i<nchildren; i++) 
     {
-      if (recurse_win_tree(client, children[i]))
-	{
-	  w = children[i];
+      w = recurse_win_tree(client, children[i]);
+      if(w != 0)
 	  break;
-	}
     }
 
   if (children) XFree ((char *)children);
@@ -377,7 +375,7 @@ printXres(FILE *CurrentClient)
       goto cleanup;
     }
 
-  Window found = None;
+  Window window = None;
   pid_t pid;
   XResTopClient client;
   for(i = 0; i < app->n_clients; i++) 
@@ -391,13 +389,13 @@ printXres(FILE *CurrentClient)
       client.n_pixmaps = 0;
       
       client.identifier[0] = 0;
-      found = recurse_win_tree(&client, app->win_root);
-      if (found && client.identifier[0] != 0) {
-        pid = window_get_pid(found);
+      window = recurse_win_tree(&client, app->win_root);
+      if (window && client.identifier[0] != 0) {
+        pid = window_get_pid(window);
         if(pid != -1) {
           xrestop_client_get_stats(&client); 
 	  /*"xPid\tXIdentifier\tXPxmMem\tXNumPxm\n"*/
-	  fprintf(CurrentClient, "%d\t%s\t%ld\t%ld\n", pid, client.identifier, client.pixmap_bytes, client.n_pixmaps);
+	  fprintf(CurrentClient, "%d\t%s\t%ld\t%d\n", pid, client.identifier, client.pixmap_bytes, client.n_pixmaps);
         }
       }
     }
