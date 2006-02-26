@@ -48,59 +48,15 @@ AC_SUBST(LIBSENSORS)
 dnl Check for dell laptop support
 AM_CONDITIONAL(supports_i8k, test -f /proc/i8k)
 
-dnl THIS IS ALL XRES STUFF NOW, taken from xrestop
-
-XRES_LIBS=	
-
-PKG_CHECK_MODULES(X11, x11, [have_libx11pc="yes"], [have_libx11pc="no"])
-
-if test $have_libx11pc = yes; then
-   PKG_CHECK_MODULES(XLIBS, x11 xres xext)
+dnl XRes check
+KDE_CHECK_HEADER(X11/extensions/XRes.h, [xres_h=yes], [xres_h=no], [#include <X11/Xlib.h>])
+if test "x$xres_h" = "xyes"; then
+  KDE_CHECK_LIB(XRes, XResQueryClientResources, [
+    LIB_XRES=-lXRes
+    AC_DEFINE_UNQUOTED(HAVE_XRES, 1, [Define if you have the XRes extension])
+  ], [], -lXext -X11 $X_EXTRA_LIBS)
 else
-dnl **** Check for xlibs 'non pc' way ****
-AC_PATH_XTRA
-
-ALL_X_LIBS="$X_LIBS -lX11"
-
-found_xres_lib=no
-AC_CHECK_LIB(XRes, XResQueryClients, XRES_LIBS=-lXRes found_xres_lib=yes,,
-	-lXext $ALL_X_LIBS)
-
-if test "x$found_xres_lib" = "xno"; then
-    # Try again, overriding defaults for certain platforms
-    case `uname -sr` in
-      	"SunOS 5"*)
-	    # Solaris ships libXres in /usr/openwin/sfw/lib
-	    save_LDFLAGS=$LDFLAGS
-	    SOL_XRES_LDFLAGS="-L/usr/openwin/sfw/lib -R/usr/openwin/sfw/lib"
-	    LDFLAGS="$LDFLAGS $SOL_XRES_LDFLAGS"
-	    AC_CHECK_LIB(XRes, XResQueryClientResources, 
-		found_xres_lib=yes XRES_LIBS="$SOL_XRES_LDFLAGS -lXRes",
-		,-lXext $ALL_X_LIBS)
-	    LDFLAGS="$save_LDFLAGS"
-	;;
-    esac
+  LIB_XRES=
 fi
-
-
-if test "x$found_xres_lib" = "xno"; then
-   AC_MSG_ERROR([Cannot find XRes extension library])
-   exit 1
-fi
-
-found_xres=no
-
-AC_CHECK_HEADER(X11/extensions/XRes.h,found_xres=yes,,[#include <X11/Xlib.h>])
-
-if test "x$found_xres" = "xno"; then
-   AC_MSG_ERROR([Cannot find XRes extension headers])
-   exit 1
-fi
-
-XLIBS_LIBS="$XRES_LIBS -lXext $ALL_X_LIBS"
-   	
-fi
-
-AC_SUBST(XLIBS_CFLAGS)
-AC_SUBST(XLIBS_LIBS)
+AC_SUBST(LIB_XRES)
 

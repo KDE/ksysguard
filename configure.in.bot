@@ -1,0 +1,12 @@
+dnl put here things which have to be done as very last part of configure
+
+if test "x$xres_h" = "xno"; then
+  echo ""
+  echo "No XRes libraries and developer headers found"
+  echo "If your X Server supports the XRes extension then install"
+  echo "the libxres-dev and libxres1 packages or as applicable for"
+  echo "your distribution if you want ksysguard to give pixmap etc"
+  echo "information"
+  echo ""
+fi
+

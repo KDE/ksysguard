@@ -32,6 +32,5 @@ bin_PROGRAMS = ksysguardd
 
 ksysguardd_SOURCES = Command.c conf.c ksysguardd.c PWUIDCache.c
 ksysguardd_LDFLAGS = $(all_libraries)
-ksysguardd_LDADD =  $(top_builddir)/workspace/ksysguard/ksysguardd/$(UNAME)/libksysguardd.a ../CContLib/libccont.a -lkdefakes_nonpic $(LIBHOSTS) 
-### FIXME: ksysguardd_LDADD had also @XLIBS_LIBS@ but it crashes unsermake
+ksysguardd_LDADD =  $(top_builddir)/workspace/ksysguard/ksysguardd/$(UNAME)/libksysguardd.a ../CContLib/libccont.a -lkdefakes_nonpic $(LIBHOSTS) $(LIB_XFIXES)
 
