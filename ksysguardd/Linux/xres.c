@@ -15,6 +15,9 @@
  *  GNU General Public License for more details.
  */
 
+/*This is defined by configure checks. If not found, we'll just #ifdef out the whole file */
+#ifdef HAVE_XRES
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -483,3 +486,4 @@ int setup_xres()
   return 1;
 }
 
+#endif /*For ifndef HAVE_XRES */

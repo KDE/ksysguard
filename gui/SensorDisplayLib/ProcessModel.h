@@ -74,7 +74,8 @@ public:
 	
 	bool hasChildren ( const QModelIndex & parent) const;
 	/* Functions for setting the model */
-	/** Set the untranslated heading names for the model */
+	/** Set the untranslated heading names for the incomming data that will be sent in setData.
+	 *  The column names we show to the user are based mostly on this information, translated if known, hidden if not necessary etc */
 	bool setHeader(const QStringList &header, QList<char> coltype);
 	/** This is called from outside every few seconds when we have a new answer.
 	 *  It checks the new data against what we have currently, and tries to be efficent in merging in the new data.
@@ -84,12 +85,25 @@ public:
 	 *  then we can provide more information to the user.  For example, we can show the actual username
 	 *  rather than just the userid.
 	 */
+
+	/** Set the heading names for the incomming data that will be sent in setXResData */
+	bool setXResHeader(const QStringList &header, QList<char> coltype);
+	/** Set the XRes data for a single process with the columns matching those given in setXResHeader.
+	 *
+	 *  XRes is an X server extension that returns information about an X process, such as the identifier (The window title),
+	 *  the amount of memory the window is using for pixmaps, etc.
+	 */
+	void setXResData(const QStringList& data);
+	
+	/** If we are localhost, then we can offer additional help such as looking up information about a user, offering superuser
+	 *  'kill' etc. */
 	void setIsLocalhost(bool isLocalhost);
 
 	/** The iconname is the name of the process or an aliases for it (like 'daemon' etc)
 	 *  @return A QPixmap, that may or may not be null.
 	 */
 	QPixmap getIcon(const QString& iconname) const;
+	
 
 
 private:
@@ -158,7 +172,7 @@ private:
 	/** A set of all the pids we know about.  Stored in a set so we can easily compare them against new data sets*/
 	QSet<long long> mPids;
 
-	enum { HeadingUser, HeadingName, HeadingOther };
+	enum { HeadingUser, HeadingName, HeadingXIdentifier, HeadingOther };
 	
 	/** This are used when there is new data.  There are cleared as soon as the data is merged into the current model */
 	QSet<long long> new_pids;
@@ -174,6 +188,12 @@ private:
 
 	int mPidColumn;
 	int mPPidColumn;
+	
+	int mXResNumColumns;
+	int mXResPidColumn;
+	int mXResIdentifierColumn;
+	int mXResPxmMemColumn;
+	int mXResNumPxmColumn;
 	
 };
 

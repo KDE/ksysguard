@@ -104,7 +104,7 @@ bool ProcessController::addSensor(const QString& hostName,
 	 * sensorError(). */
 
 	mModel.setIsLocalhost(sensors().at(0)->isLocalhost()); //by telling our model that this is localhost, it can provide more information about the data it has
-	sendRequest(hostName, "test kill", 4);
+	sendRequest(hostName, "test kill", Kill_Supported_Command);
 
 	if (title.isEmpty())
 		setTitle(i18n("%1: Running Processes").arg(hostName));
@@ -117,13 +117,14 @@ bool ProcessController::addSensor(const QString& hostName,
 void
 ProcessController::updateList()
 {
-	sendRequest(sensors().at(0)->hostName(), "ps", 2);
+	sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);
+	sendRequest(sensors().at(0)->hostName(), "xres", XRes_Command);
 }
 
 void ProcessController::killProcess(int pid, int sig)
 {
 	sendRequest(sensors().at(0)->hostName(),
-				QString("kill %1 %2" ).arg(pid).arg(sig), 3);
+				QString("kill %1 %2" ).arg(pid).arg(sig), Kill_Command);
 
 	if ( !timerOn() )
 	    // give ksysguardd time to update its proccess list
@@ -172,7 +173,7 @@ ProcessController::killProcess()
 
         for (int i = 0; i < selectedPIds.size(); ++i) {
             sendRequest(sensors().at(0)->hostName(), QString("kill %1 %2" ).arg(selectedPIds.at( i ))
-                       .arg(MENU_ID_SIGKILL), 3);
+                       .arg(MENU_ID_SIGKILL), Kill_Command);
         }
 	if ( !timerOn())
 		// give ksysguardd time to update its proccess list
@@ -185,8 +186,8 @@ void
 ProcessController::reniceProcess(int pid, int niceValue)
 {
 	sendRequest(sensors().at(0)->hostName(),
-				QString("setpriority %1 %2" ).arg(pid).arg(niceValue), 5);
-	sendRequest(sensors().at(0)->hostName(), "ps", 2);  //update the display afterwards
+				QString("setpriority %1 %2" ).arg(pid).arg(niceValue), Renice_Command);
+	sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);  //update the display afterwards
 }
 
 void
@@ -196,14 +197,14 @@ ProcessController::answerReceived(int id, const QString& answer)
 	sensorError(id, false);
 	switch (id)
 	{
-	case 1:
+	case Ps_Info_Command:
 	{
 		/* We have received the answer to a ps? command that contains
 		 * the information about the table headers. */
 		QStringList lines = answer.trimmed().split('\n');
 		if (lines.count() != 2)
 		{
-			kDebug (1215) << "ProcessController::answerReceived(1)"
+			kDebug (1215) << "ProcessController::answerReceived(Ps_Info_Command)"
 				  "wrong number of lines [" <<  answer << "]" << endl;
 			sensorError(id, true);
 			return;
@@ -212,7 +213,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 		QList<char> coltype;
 		for(int i = 0; i < line.size(); i++)  //coltype is in the form "d\tf\tS\t" etc, so split into a list of char
 			if(line[i] != '\t')
-				coltype << line[i].toLatin1();//FIMXE: the answer should really be a QByteArray, not a string
+				coltype << line[i].toLatin1();//FIXME: the answer should really be a QByteArray, not a string
 		QStringList header = lines.at(0).split('\t');
 		if(coltype.count() != header.count()) {
 			kDebug(1215) << "ProcessControll::answerReceived.  Invalid data from a client - column type and data don't match in number.  Discarding" << endl;
@@ -228,7 +229,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 
 		break;
 	}
-	case 2:
+	case Ps_Command:
 	{
 		/* We have received the answer to a ps command that contains a
 		 * list of processes with various additional information. */
@@ -245,7 +246,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 		mModel.setData(data);
 		break;
 	}
-	case 3:
+	case Kill_Command:
 	{
 		// result of kill operation
 		KSGRD::SensorTokenizer vals(answer.trimmed(), '\t');
@@ -274,12 +275,12 @@ ProcessController::answerReceived(int id, const QString& answer)
 		}
 		break;
 	}
-	case 4:
-		killSupported = (answer.toInt() == 1);
-		//pList->setKillSupported(killSupported);
-		//mUi.btnKillProcess->setEnabled(killSupported);
+	case Kill_Supported_Command:
+		mKillSupported = (answer.toInt() == 1);
+		//pList->setKillSupported(mKillSupported);
+		//mUi.btnKillProcess->setEnabled(mKillSupported);
 		break;
-	case 5:
+	case Renice_Command:
 	{
 		// result of renice operation
 		kDebug(1215) << answer << endl;
@@ -309,6 +310,51 @@ ProcessController::answerReceived(int id, const QString& answer)
 		}
 		break;
 	}
+	case XRes_Info_Command:
+	{
+		QStringList lines = answer.trimmed().split('\n');
+		if (lines.count() != 2)
+		{
+			kDebug (1215) << "ProcessController::answerReceived(XRes_Info_Command)"
+				  "wrong number of lines [" <<  answer << "]" << endl;
+			sensorError(id, true);
+			return;
+		}
+		QString line = lines.at(1);
+		QList<char> coltype;
+		for(int i = 0; i < line.size(); i++)  //coltype is in the form "d\tf\tS\t" etc, so split into a list of char
+			if(line[i] != '\t')
+				coltype << line[i].toLatin1();//FIXME: the answer should really be a QByteArray, not a string
+		QStringList header = lines.at(0).split('\t');
+		if(coltype.count() != header.count()) {
+			kDebug(1215) << "ProcessControll::answerReceived.  Invalid data from a client - column type and data don't match in number.  Discarding" << endl;
+			sensorError(id, true);
+			return;
+		}
+		if(!mModel.setXResHeader(header, coltype)) {
+			sensorError(id,true);
+			return;
+		}
+
+		break;
+	}
+	case XRes_Command:
+	{
+		/* We have received the answer to a xres command that contains a
+		 * list of processes that we should already know about, with various additional information. */
+		QStringList lines = answer.trimmed().split('\n');
+		QStringListIterator i(lines);
+		while(i.hasNext()) {
+		  mModel.setXResData(i.next().split('\t'));
+		}
+		break;
+	}
+	case XRes_Supported_Command:
+	{
+		mXResSupported = (answer.toInt() == 1);
+		break;
+	}
+
 	}
 }
 
@@ -323,9 +369,11 @@ ProcessController::sensorError(int, bool err)
 			 * (re-)established we need to requests the full set of
 			 * properties again, since the back-end might be a new
 			 * one. */
-			sendRequest(sensors().at(0)->hostName(), "test kill", 4);
-			sendRequest(sensors().at(0)->hostName(), "ps?", 1);
-			sendRequest(sensors().at(0)->hostName(), "ps", 2);
+			sendRequest(sensors().at(0)->hostName(), "test kill", Kill_Supported_Command);
+			sendRequest(sensors().at(0)->hostName(), "test xres", XRes_Supported_Command);
+			sendRequest(sensors().at(0)->hostName(), "ps?", Ps_Info_Command);
+			sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
+			sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);
 		}
 
 		/* This happens only when the sensorOk status needs to be changed. */

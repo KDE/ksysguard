@@ -45,6 +45,9 @@ class Process : public QObject {
 	QString name;  //The name (e.g. "ksysguard", "konversation", "init")
 	QList<long long> children_pids;
 	QList<QVariant> data;  //The column data, excluding the name, pid, ppid and uid
+	QString xResIdentifier;  //The window title.  Empty if unknown
+	QString xResPxmMem;      //The amount of memory used in X server pixmaps
+	QString xResNumPxm;      //The number of x server pixmaps
 };
 
 #endif

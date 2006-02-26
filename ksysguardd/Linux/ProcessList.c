@@ -44,12 +44,10 @@
 
 static CONTAINER ProcessList = 0;
 
-#define USING_XRES
-
-#ifdef USING_XRES
+#ifdef HAVE_XRES
 extern int setup_xres();
 extern void xrestop_populate_client_data();
-static int using_xres = 0;
+static int have_xres = 0;
 #endif
 
 typedef struct {
@@ -403,7 +401,7 @@ void initProcessList( struct SensorModul* sm )
 
   registerMonitor( "pscount", "integer", printProcessCount, printProcessCountInfo, sm );
   registerMonitor( "ps", "table", printProcessList, printProcessListInfo, sm );
-#ifdef USING_XRES
+#ifdef HAVE_XRES
   registerMonitor( "xres", "table", printXresList, printXresListInfo, sm);
 #endif
 
@@ -412,8 +410,8 @@ void initProcessList( struct SensorModul* sm )
     registerCommand( "setpriority", setPriority );
   }
 
-#ifdef USING_XRES
-  using_xres = setup_xres();
+#ifdef HAVE_XRES
+  have_xres = setup_xres();
 #endif
 
   updateProcessList();
@@ -424,6 +422,9 @@ void exitProcessList( void )
   removeMonitor( "ps" );
   removeMonitor( "pscount" );
 
+#ifdef HAVE_XRES
+  removeMonitor( "xres" );
+#endif
   if ( !RunAsDaemon ) {
     removeCommand( "kill" );
     removeCommand( "setpriority" );
@@ -433,11 +434,11 @@ void exitProcessList( void )
 
   exitPWUIDCache();
 }
-#ifdef USING_XRES
+#ifdef HAVE_XRES
 void printXresListInfo( const char *cmd)
 {
   (void)cmd;
-  fprintf(CurrentClient, "xPid\tXIdentifier\tXPxmMem\tXNumPxm\n");
+  fprintf(CurrentClient, "XPid\tXIdentifier\tXPxmMem\tXNumPxm\n");
   fprintf(CurrentClient, "d\ts\td\td");
 }
 
@@ -454,11 +455,7 @@ void printProcessListInfo( const char* cmd )
   (void)cmd;
   fprintf( CurrentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize"
                           "\tVmRss\tLogin\tTracerPID\tCommand\n" );
-  fprintf( CurrentClient, "s\td\td\td\td\tS\tf\tf\td\tD\tD"
-#ifdef USING_XRES
-		  "\ts\td\td"
-#endif
-		  "\n" );
+  fprintf( CurrentClient, "s\td\td\td\td\tS\tf\tf\td\tD\tD\ts\td\ts\n" );
 }
 
 void printProcessList( const char* cmd )

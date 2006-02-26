@@ -577,13 +577,16 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	switch (role){
 	case Qt::DisplayRole: {
 		QPointer<Process> process = mPidToProcess[index.internalId()/*pid*/];
-		switch(mHeadingsToType[index.column()]) {
+		int headingType = mHeadingsToType[index.column()];
+		switch(headingType) {
 		case HeadingName:
 			return process->name;
 		case HeadingUser:
 			return getUsernameForUser(process->uid);
+		case HeadingXIdentifier:
+			return process->xResIdentifier;
 		default:
-			return process->data.at(index.column() - HeadingOther);
+			return process->data.at(headingType-HeadingOther);
 		}
 		break;
 	}
@@ -775,4 +778,56 @@ bool ProcessModel::setHeader(const QStringList &header, QList<char> coltype) {
 	endInsertColumns();
 	return true;
 }
+bool ProcessModel::setXResHeader(const QStringList &header, QList<char> coltype)
+{
+	kDebug() << "SetXResHeader" << header.join(",") << endl;
+		
+	mXResPidColumn = -1;
+	mXResIdentifierColumn = -1;
+	mXResNumPxmColumn = -1;
+	mXResNumColumns = header.count();
+	if(mXResNumColumns < 4) return false;
+	for(int i = 0; i < mXResNumColumns; i++) {
+		if(header[i] == "XPid")
+			mXResPidColumn = 1;
+		else if(header[i] == "XIdentifier")
+			mXResIdentifierColumn = i;
+		else if(header[i] == "XPxmMem")
+			mXResPxmMemColumn = i;
+		else if(header[i] == "XNumPxm")
+			mXResNumPxmColumn = i;
+	}
+	return true;
+	beginInsertColumns(QModelIndex(), mHeadings.count()-1, mHeadings.count());
+		mHeadings << i18n("process heading", "Application");
+		mHeadingsToType << HeadingXIdentifier;
+	endInsertColumns();
+}
+void ProcessModel::setXResData(const QStringList& data)
+{
+	if(data.count() < mXResNumColumns) return;
+	if(mXResPidColumn == -1) return;
+
+	long long pid = data[mXResPidColumn].toLongLong();
+	QPointer<Process> process = mPidToProcess[pid];
+	if(process.isNull()) return;
+	
+	if(mXResIdentifierColumn != -1)
+		process->xResIdentifier = data[mXResIdentifierColumn];
+	if(mXResPxmMemColumn != -1)
+		process->xResPxmMem = data[mXResPxmMemColumn].toLong();
+	if(mXResNumPxmColumn != -1)
+		process->xResNumPxm = data[mXResNumPxmColumn].toInt();
+
+	QPointer<Process> parent_process = mPidToProcess[ process->parent_pid ];
+	if(parent_process.isNull()) return;
+	int row = parent_process->children_pids.indexOf(process->pid);
+	if(row == -1) //something has gone really wrong
+		return;
+        QModelIndex startIndex = createIndex(row, 0, pid);
+	QModelIndex endIndex = createIndex(row, mHeadings.count()-1, pid);
+        emit dataChanged(startIndex, endIndex);
+
+}
+
 

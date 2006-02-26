@@ -31,8 +31,11 @@ void printProcessList( const char* );
 void printProcessListInfo( const char* );
 void printProcessCount( const char* );
 void printProcessCountInfo( const char* );
+
+#ifdef HAVE_XRES
 void printXresListInfo( const char *);
 void printXresList( const char *);
+#endif
 
 void killProcess( const char* );
 void setPriority( const char* );
