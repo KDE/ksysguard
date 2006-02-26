@@ -1,5 +1,5 @@
 AM_CPPFLAGS = -D_GNU_SOURCE
-AM_CFLAGS = -Wall @XLIBS_CFLAGS@
+AM_CFLAGS = -Wall
 
 # add all supported modules
 if supports_i8k
