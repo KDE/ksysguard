@@ -364,6 +364,7 @@ bool TopLevel::queryClose()
 
 void TopLevel::readProperties( KConfig *cfg )
 {
+
   /* we can ignore 'isMaximized' because we can't set the window
      maximized, so we save the coordinates instead */
   if ( cfg->readEntry( "isMinimized" , QVariant(false)).toBool() == true )
@@ -616,10 +617,9 @@ int main( int argc, char** argv )
       if ( app->isSessionRestored() )
         topLevel->restore( 1 );
       else
-		{
-#warning "kde4: port it !"				
-        //topLevel->readProperties( app->config() );
-		}
+      {
+        topLevel->readProperties( app->sessionConfig() );
+      }
     }
 
     topLevel->initStatusBar();

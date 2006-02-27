@@ -99,7 +99,6 @@ void Workspace::readProperties( KConfig *cfg )
     QString newFile = mWorkDir + "/" + i18n( "System Load" ) + ".sgrd";
     if ( !origFile.isEmpty() )
       restoreWorkSheet( origFile, newFile );
-
     origFile = kstd->findResource( "data", "ProcessTable.sgrd" );
     newFile = mWorkDir + "/" + i18n( "Process Table" ) + ".sgrd";
     if ( !origFile.isEmpty() )
