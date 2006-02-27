@@ -36,23 +36,11 @@
 
 #include <Process.h>
 
-/** For new data that comes in, this gives the type of it. 
-  * If you want to add one, just chose a letter that isn't used yet
-  * @see mColtype 
-  */
-/* These are used only internally.  Initially the columns come in as the set below, but we map to these types if we know them */
-#define DATA_COLUMN_LOGIN 'L'
-#define DATA_COLUMN_GID 'G'
-#define DATA_COLUMN_PID 'P'
-#define DATA_COLUMN_PPID 'Q'
-#define DATA_COLUMN_UID 'U'
-#define DATA_COLUMN_NAME 'N'
-#define DATA_COLUMN_TRACERPID 'T'
-/* These ones are known and used in ksysguardd so don't change unless you change there too*/
+/* These are known and used in ksysguardd so don't change unless you change there too */
 #define DATA_COLUMN_STATUS 'S'
-#define DATA_COLUMN_OTHER_LONG 'd'
-#define DATA_COLUMN_OTHER_PRETTY_LONG 'D' /*Printed as e.g 100,000,000 */
-#define DATA_COLUMN_OTHER_PRETTY_FLOAT 'f'
+#define DATA_COLUMN_LONG 'd'
+#define DATA_COLUMN_PRETTY_LONG 'D' /*Printed as e.g 100,000,000 */
+#define DATA_COLUMN_PRETTY_FLOAT 'f'
 
 extern KApplication* Kapp;
 
@@ -76,7 +64,7 @@ public:
 	/* Functions for setting the model */
 	/** Set the untranslated heading names for the incomming data that will be sent in setData.
 	 *  The column names we show to the user are based mostly on this information, translated if known, hidden if not necessary etc */
-	bool setHeader(const QStringList &header, QList<char> coltype);
+	bool setHeader(const QStringList &header, const QList<char> &coltype);
 	/** This is called from outside every few seconds when we have a new answer.
 	 *  It checks the new data against what we have currently, and tries to be efficent in merging in the new data.
 	 */
@@ -87,7 +75,7 @@ public:
 	 */
 
 	/** Set the heading names for the incomming data that will be sent in setXResData */
-	bool setXResHeader(const QStringList &header, QList<char> coltype);
+	bool setXResHeader(const QStringList &header, const QList<char>& coltype);
 	/** Set the XRes data for a single process with the columns matching those given in setXResHeader.
 	 *
 	 *  XRes is an X server extension that returns information about an X process, such as the identifier (The window title),
@@ -172,7 +160,7 @@ private:
 	/** A set of all the pids we know about.  Stored in a set so we can easily compare them against new data sets*/
 	QSet<long long> mPids;
 
-	enum { HeadingUser, HeadingName, HeadingXIdentifier, HeadingOther };
+	enum { HeadingUser, HeadingName, HeadingXIdentifier, HeadingXMemory, HeadingCPUUsage, HeadingRSSMemory, HeadingMemory, HeadingOther };
 	
 	/** This are used when there is new data.  There are cleared as soon as the data is merged into the current model */
 	QSet<long long> new_pids;
@@ -183,6 +171,9 @@ private:
 	QStringList mHeadings;
 	/** A list that matches up with headings and gives the type of each, using the enum HeadingUser, etc. Used in data() */
 	QList<int> mHeadingsToType;
+
+	typedef enum { DataColumnLogin, DataColumnGid, DataColumnPid, DataColumnPPid, DataColumnUid, DataColumnName, DataColumnTracerPid, DataColumnUserUsage, DataColumnSystemUsage, DataColumnNice, DataColumnVmSize, DataColumnVmRss, DataColumnCommand, DataColumnStatus, DataColumnOtherLong, DataColumnOtherPrettyLong, DataColumnOtherPrettyFloat, DataColumnError } DataColumnType;
+
 	/** For new data that comes in, this list matches up with that, and gives the type of each heading using a letter. */
 	QList<char> mColtype; 
 
@@ -194,6 +185,7 @@ private:
 	int mXResIdentifierColumn;
 	int mXResPxmMemColumn;
 	int mXResNumPxmColumn;
+	int mXResMemOtherColumn;
 	
 };
 

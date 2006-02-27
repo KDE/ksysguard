@@ -326,7 +326,7 @@ static Bool recurse_win_tree(XResTopClient *client, Window win_top)
 	      return True;
       client->pid = pid;
       xrestop_client_get_stats(client);
-      /*"xPid\tXIdentifier\tXPxmMem\tXNumPxm\tXNumOther\n"*/
+      /*"xPid\tXIdentifier\tXPxmMem\tXNumPxm\tXMemOther\n"*/
       fprintf(sCurrentClient, "%d\t%s\t%ld\t%d\t%ld\n", pid, client->identifier, client->pixmap_bytes, client->n_pixmaps, client->other_bytes);
     }
   }

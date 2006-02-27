@@ -67,22 +67,6 @@ ProcessModel::ProcessModel(QObject* parent)
 	(void)I18N_NOOP2("process status", "paging");
 	(void)I18N_NOOP2("process status", "idle");
 
-	//Translatable strings for the column headings
-	(void)I18N_NOOP2("process headings", "Name");
-	(void)I18N_NOOP2("process headings", "PID");
-	(void)I18N_NOOP2("process headings", "PPID");
-	(void)I18N_NOOP2("process headings", "UID");
-	(void)I18N_NOOP2("process headings", "GID");
-	(void)I18N_NOOP2("process headings", "Status");
-
-	(void)I18N_NOOP2("process headings", "User%");
-	(void)I18N_NOOP2("process headings", "System%");
-	(void)I18N_NOOP2("process headings", "Nice");
-	(void)I18N_NOOP2("process headings", "VmSize");
-	(void)I18N_NOOP2("process headings", "VmRss");
-	(void)I18N_NOOP2("process headings", "Login");
-	(void)I18N_NOOP2("process headings", "Command");
-
 	mProcessType.insert("init", Process::Init);
 	/* kernel stuff */
 	mProcessType.insert("bdflush", Process::Kernel);
@@ -310,7 +294,51 @@ void ProcessModel::changeProcess(long long pid)
 		
 		QVariant value;
 		switch(mColType[i]) {
-			case DATA_COLUMN_NAME: {
+
+			case DataColumnUserUsage: {
+				float usage = newDataRow[i].toFloat();
+				if(process->userUsage != usage) {
+					process->userUsage = usage;
+					changed = true;
+				}
+			} break;
+			case DataColumnSystemUsage: {
+				float usage = newDataRow[i].toFloat();
+				if(process->sysUsage != usage) {
+					process->sysUsage = usage;
+					changed = true;
+				}
+			} break;
+			case DataColumnNice: {
+				int nice = newDataRow[i].toInt();
+				if(process->nice != nice) {
+					process->nice = nice;
+					changed = true;
+				}
+			} break;
+			case DataColumnVmSize: {
+				int vmsize = newDataRow[i].toInt();
+				if(process->vmSize != vmsize) {
+					process->vmSize = vmsize;
+					changed = true;
+				}
+			} break;
+
+			case DataColumnVmRss: {
+				int vmrss = newDataRow[i].toInt();
+				if(process->vmRSS != vmrss) {
+					process->vmRSS = vmrss;
+					changed = true;
+				}
+			} break;
+
+			case DataColumnCommand: {
+				if(process->command != newDataRow[i]) {
+					process->command = newDataRow[i];
+					changed = true;
+				}
+			} break;
+			case DataColumnName: {
 				QString name = newDataRow[i];
 				if(process->name != name) {
 					process->name = name;
@@ -318,36 +346,45 @@ void ProcessModel::changeProcess(long long pid)
 					changed = true;
 				}
 			} break;
-			case DATA_COLUMN_UID: {
+			case DataColumnUid: {
 				long long uid = newDataRow[i].toLongLong();
 				if(process->uid != uid) {
 					process->uid = uid;
 					changed = true;
 				}
 			} break;
-			case DATA_COLUMN_LOGIN: loginName = newDataRow[i]; break; //we might not know the uid yet, so remember the login name then at the end modify mUserUsername
-			case DATA_COLUMN_GID: {
+			case DataColumnLogin: loginName = newDataRow[i]; break; //we might not know the uid yet, so remember the login name then at the end modify mUserUsername
+			case DataColumnGid: {
 				long long gid = newDataRow[i].toLongLong();
 				if(process->gid != gid) {
 					process->gid = gid;
 					changed = true;
 				} 
 			} break;
-			case DATA_COLUMN_TRACERPID: {
+			case DataColumnTracerPid: {
 				long long tracerpid = newDataRow[i].toLongLong();
 				if(process->tracerpid != tracerpid) {
 					process->tracerpid = tracerpid;
 					changed = true;
 				}
 			} break;
-			case DATA_COLUMN_PID: break; //Already dealt with
-			case DATA_COLUMN_PPID: break; //Already dealt with
-			case DATA_COLUMN_OTHER_LONG: value = newDataRow[i].toLongLong(); break;
-			case DATA_COLUMN_OTHER_PRETTY_LONG: value = KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
-			case DATA_COLUMN_OTHER_PRETTY_FLOAT: value = KGlobal::locale()->formatNumber( newDataRow[i].toDouble() ); break;
-			case DATA_COLUMN_STATUS: value = i18n("process status", newDataRow[i].latin1()); break;  //This indicates it's a process status.  See the I18N_NOOP2 strings in the constructor
+			case DataColumnPid: break; //Already dealt with
+			case DataColumnPPid: break; //Already dealt with
+			case DataColumnOtherLong: value = newDataRow[i].toLongLong(); break;
+			case DataColumnOtherPrettyLong: value = KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
+			case DataColumnOtherPrettyFloat: value = KGlobal::locale()->formatNumber( newDataRow[i].toDouble() ); break;
+			case DataColumnStatus: {
+				QByteArray status = newDataRow[i].toLatin1(); 
+				if(process->status != status) {
+					process->status = status;
+					changed = true;
+				}
+				break;  
+		        }
 			default: {
-				value = newDataRow[i]; break;
+				value = newDataRow[i];
+				kDebug() << "Un caught column: " << value << endl;
+				break;
 			}
 		}
 		if(value.isValid()) {
@@ -415,21 +452,27 @@ void ProcessModel::insertOrChangeRows( long long pid)
 	for (int i = 0; i < mColType.count(); i++)
 	{  //At the moment the data is just a string, so turn it into a list of variants instead and insert the variants into our new process
 		switch(mColType[i]) {
-
-			case DATA_COLUMN_NAME:
+			case DataColumnLogin: loginName = newDataRow[i]; break; //we might not know the uid yet, so remember the login name then at the end modify mUserUsername
+			case DataColumnName:
 				new_process->name = newDataRow[i];
 				new_process->processType = (mProcessType.contains(new_process->name))?mProcessType[new_process->name]:Process::Other;
 				break;
-			case DATA_COLUMN_UID: new_process->uid = newDataRow[i].toLongLong(); break;
-			case DATA_COLUMN_LOGIN: loginName = newDataRow[i]; break; //we might not know the uid yet, so remember the login name then at the end modify mUserUsername
-			case DATA_COLUMN_GID: new_process->gid = newDataRow[i].toLongLong(); break;
-			case DATA_COLUMN_TRACERPID: new_process->tracerpid = newDataRow[i].toLongLong(); break;
-			case DATA_COLUMN_PID: break; //Already dealt with
-			case DATA_COLUMN_PPID: break; //Already dealt with
-			case DATA_COLUMN_OTHER_LONG: data << newDataRow[i].toLongLong(); break;
-			case DATA_COLUMN_OTHER_PRETTY_LONG: data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
-			case DATA_COLUMN_OTHER_PRETTY_FLOAT: data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble() ); break;
-			case DATA_COLUMN_STATUS: data << i18n("process status", newDataRow[i].latin1()); break;  //This indicates it's a process status.  See the I18N_NOOP2 strings in the constructor
+			case DataColumnGid: new_process->gid = newDataRow[i].toLongLong(); break;
+			case DataColumnPid: break;  //Already dealt with
+			case DataColumnPPid: break; //Already dealt with
+			case DataColumnUid: new_process->uid = newDataRow[i].toLongLong(); break;
+			case DataColumnTracerPid: new_process->tracerpid = newDataRow[i].toLongLong(); break;
+			case DataColumnUserUsage: new_process->userUsage = newDataRow[i].toFloat(); break;
+			case DataColumnSystemUsage: new_process->sysUsage = newDataRow[i].toFloat(); break;
+			case DataColumnNice: new_process->nice = newDataRow[i].toInt(); break;
+			case DataColumnVmSize: new_process->vmSize = newDataRow[i].toLong(); break;
+			case DataColumnVmRss: new_process->vmRSS = newDataRow[i].toLong(); break;
+			case DataColumnCommand: new_process->command = newDataRow[i]; break;
+			case DataColumnStatus: new_process->status = newDataRow[i].toLatin1(); break;
+			case DataColumnOtherLong: data << newDataRow[i].toLongLong(); break;
+			case DataColumnOtherPrettyLong:  data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
+			case DataColumnOtherPrettyFloat: data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble() ); break;
+			case DataColumnError:
 			default:
 				data << newDataRow[i]; break;
 		}
@@ -585,6 +628,15 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			return getUsernameForUser(process->uid);
 		case HeadingXIdentifier:
 			return process->xResIdentifier;
+		case HeadingXMemory:
+			if(process->xResMemOtherBytes == 0 && process->xResPxmMemBytes == 0) return QVariant();
+			return QString::number((process->xResMemOtherBytes + process->xResPxmMemBytes )/ 1024.0, 'f', 0);
+		case HeadingCPUUsage:
+			return QString::number((process->userUsage > process->sysUsage)?process->userUsage:process->sysUsage, 'f', 2) + "%";
+		case HeadingRSSMemory:
+			return QString::number(process->vmRSS);
+		case HeadingMemory:
+			return QString::number(process->vmSize);
 		default:
 			return process->data.at(headingType-HeadingOther);
 		}
@@ -594,14 +646,14 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		QPointer<Process> process = mPidToProcess[index.internalId()/*pid*/];
 		QString tracer;
 		if(process->tracerpid > 0) {
-			if(mPidToProcess.contains(process->tracerpid)) { //this can not happen in certain race conditions
+			if(mPidToProcess.contains(process->tracerpid)) { //it is possible for this to be not the case in certain race conditions
 				QPointer<Process> process_tracer = mPidToProcess[process->tracerpid];
 				tracer = i18n("tooltip. name,pid ","This process is being debugged by %1 (%2)").arg(process_tracer->name).arg(process->tracerpid);
 			}
 		}
 		switch(mHeadingsToType[index.column()]) {
 		case HeadingName: {
-			QString tooltip = i18n("name column tooltip. first item is the name","<b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3").arg(process->name).arg(process->pid).arg(process->parent_pid);
+			QString tooltip = i18n("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3").arg(process->name).arg(process->pid).arg(process->parent_pid);
 			
 			if(!tracer.isEmpty())
 				return tooltip + "<br/>" + tracer;
@@ -612,7 +664,20 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				return getTooltipForUser(process->uid, process->gid) + "<br/>" + tracer;
 			return getTooltipForUser(process->uid, process->gid);
 		}
-		
+		case HeadingXMemory: {
+			QString tooltip = i18n("<qt>Number of pixmaps: %1<br/>Amount of memory used by pixmaps: %2 KiB<br/>Other X server memory used: %3 KiB");
+#warning Use klocale::formatByteString  when kdelibs trunk is synced 
+			tooltip = tooltip.arg(process->xResNumPxm).arg(process->xResPxmMemBytes/1024.0).arg(process->xResMemOtherBytes/1024.0);
+			if(!tracer.isEmpty())
+				return tooltip + "<br/>" + tracer;
+			return tooltip;
+		}
+		case HeadingCPUUsage: {
+			QString tooltip = i18n("<qt>User CPU usage: %1%<br/>System CPU usage: %2%").arg(process->userUsage).arg(process->sysUsage);
+			if(!tracer.isEmpty())
+				return tooltip + "<br/>" + tracer;
+			return tooltip;
+		}
 		default:
 			tracer.isEmpty(); return tracer;
 			return QVariant();
@@ -721,53 +786,75 @@ void ProcessModel::setIsLocalhost(bool isLocalhost)
 }
 
 /** Set the untranslated heading names for the model */
-bool ProcessModel::setHeader(const QStringList &header, QList<char> coltype) {	
-	int found_login = -1;
+bool ProcessModel::setHeader(const QStringList &header, const QList<char> &coltype_) {
 	mPidColumn = -1;  //We need to be able to access the pid directly, so remember which column it will be in
 	mPPidColumn = -1; //Same, although this may not always be found :/
-	int found_uid = -1;
-	int found_gid = -1;
-	int found_name = -1;
 	QStringList headings;
 	QList<int> headingsToType;
 	int num_of_others = 0; //Number of headings found that we dont know about.  Will match the index in process->data[index]
+	QList<char> coltype;
 	for(int i = 0; i < header.count(); i++) {
+		bool other = false;
 		if(header[i] == "Login") {
-			coltype[i] = DATA_COLUMN_LOGIN;
-			found_login = i;
+			coltype << DataColumnLogin;
 		} else if(header[i] == "GID") {
-			coltype[i] = DATA_COLUMN_GID;
-			found_gid = i;
+			coltype << DataColumnGid;
 		} else if(header[i] == "PID") {
-			coltype[i] = DATA_COLUMN_PID;
+			coltype << DataColumnPid;
 			mPidColumn = i;
 		} else if(header[i] == "PPID") {
-			coltype[i] = DATA_COLUMN_PPID;
+			coltype << DataColumnPPid;
 			mPPidColumn = i;
 		} else if(header[i] == "UID") {
-			coltype[i] = DATA_COLUMN_UID;
-			found_uid = i;
+			headings.prepend(i18n("process heading", "User"));   //The heading for the top of the qtreeview
+			headingsToType.prepend(HeadingUser);
+			coltype << DataColumnUid;
 		} else if(header[i] == "Name") {
-			coltype[i] = DATA_COLUMN_NAME;
-			found_name = i;
+			coltype << DataColumnName;
 		} else if(header[i] == "TracerPID") {
-			coltype[i] = DATA_COLUMN_TRACERPID;
-			found_name = i;
+			coltype << DataColumnTracerPid;
+		} else if(header[i] == "User%") {
+			coltype << DataColumnUserUsage;
+			headings << i18n("process heading", "CPU %");
+			headingsToType << HeadingCPUUsage;
+		} else if(header[i] == "System%") {
+			coltype << DataColumnSystemUsage;
+		} else if(header[i] == "Nice") {
+			coltype << DataColumnNice;
+		} else if(header[i] == "VmSize") {
+			coltype << DataColumnVmSize;
+			headings << i18n("process heading", "Memory");
+			headingsToType << HeadingMemory;
+		} else if(header[i] == "VmRss") {
+			coltype << DataColumnVmRss;	
+			headings << i18n("process heading", "RSS Memory");
+			headingsToType << HeadingRSSMemory;
+		} else if(header[i] == "Command") {
+			coltype << DataColumnCommand;
+		} else if(coltype_[i] == DATA_COLUMN_STATUS) {
+			coltype << DataColumnStatus;
+		} else if(coltype_[i] == DATA_COLUMN_LONG) {
+			coltype << DataColumnOtherLong;
+			other = true;
+		} else if(coltype_[i] == DATA_COLUMN_PRETTY_LONG) {
+			coltype << DataColumnOtherPrettyLong;
+			other = true;
+		} else if(coltype_[i] == DATA_COLUMN_PRETTY_FLOAT) {
+			coltype << DataColumnOtherPrettyFloat;
+			other = true;
 		} else {
+			coltype << DataColumnError;
+		}	
+		if(other) { //If we don't know about this column, just automatically add it
 			headings << header[i];
 			headingsToType << (HeadingOther + num_of_others++);
-			//coltype will remain as it is, saying what type it is
-		}	
+		}
 	}
-	if(mPidColumn == -1 || found_name == -1) {
+	if(mPidColumn == -1 || !coltype.contains(DataColumnName)) {
 		kDebug(1215) << "Data from daemon for 'ps' is missing pid or name. Bad data." << endl;
 		return false;
 	}
-
-	if(found_uid) {
-		headings.prepend(i18n("process heading", "User"));   //The heading for the top of the qtreeview
-		headingsToType.prepend(HeadingUser);
-	}
+	
 	headings.prepend(i18n("process heading", "Name"));
 	headingsToType.prepend(HeadingName);
 	
@@ -778,13 +865,14 @@ bool ProcessModel::setHeader(const QStringList &header, QList<char> coltype) {
 	endInsertColumns();
 	return true;
 }
-bool ProcessModel::setXResHeader(const QStringList &header, QList<char> coltype)
+bool ProcessModel::setXResHeader(const QStringList &header, const QList<char> &)
 {
 	kDebug() << "SetXResHeader" << header.join(",") << endl;
 		
 	mXResPidColumn = -1;
 	mXResIdentifierColumn = -1;
 	mXResNumPxmColumn = -1;
+	mXResMemOtherColumn = -1;
 	mXResNumColumns = header.count();
 	if(mXResNumColumns < 4) return false;
 	for(int i = 0; i < mXResNumColumns; i++) {
@@ -796,10 +884,28 @@ bool ProcessModel::setXResHeader(const QStringList &header, QList<char> coltype)
 			mXResPxmMemColumn = i;
 		else if(header[i] == "XNumPxm")
 			mXResNumPxmColumn = i;
+		else if(header[i] == "XMemOther")
+			mXResMemOtherColumn = i;
 	}
-	beginInsertColumns(QModelIndex(), mHeadings.count()-1, mHeadings.count());
-		mHeadings << i18n("process heading", "Application");
-		mHeadingsToType << HeadingXIdentifier;
+	bool insertXIdentifier =
+	  mXResIdentifierColumn != -1 &&
+	  !mHeadingsToType.contains(HeadingXIdentifier);  //we can end up inserting twice without this check if we add then remove the sensor or something
+	bool insertXMemory = (mXResMemOtherColumn != -1 &&
+		   mXResPxmMemColumn != -1 && 
+		   mXResNumPxmColumn != -1 && 
+		   !mHeadingsToType.contains(HeadingXMemory));
+	if(!insertXIdentifier && !insertXMemory) return true; //nothing to do - already inserted
+		
+	beginInsertColumns(QModelIndex(), mHeadings.count()-1, mHeadings.count() + (insertXMemory && insertXIdentifier)?1:0);
+	
+		if(insertXIdentifier) {
+			mHeadings << i18n("process heading", "Application");
+			mHeadingsToType << HeadingXIdentifier;
+		}
+		if(insertXMemory) {
+			mHeadings << i18n("process heading", "X Server Memory");
+			mHeadingsToType << HeadingXMemory;
+		}
 	endInsertColumns();
 	return true;
 }
@@ -821,14 +927,35 @@ void ProcessModel::setXResData(const QStringList& data)
 		kDebug() << "XRes Data for process '" << data[mXResPidColumn] << "'(int) which we don't know about" << endl;
 		return;
 	}
-	
+ 	bool changed = false;
 	if(mXResIdentifierColumn != -1)
-		process->xResIdentifier = data[mXResIdentifierColumn];
-	if(mXResPxmMemColumn != -1)
-		process->xResPxmMem = data[mXResPxmMemColumn].toLong();
-	if(mXResNumPxmColumn != -1)
-		process->xResNumPxm = data[mXResNumPxmColumn].toInt();
-
+		if(process->xResIdentifier != data[mXResIdentifierColumn]) {
+		  changed = true;
+		  process->xResIdentifier = data[mXResIdentifierColumn];
+		}	
+	if(mXResPxmMemColumn != -1) {
+		long long pxmMem = data[mXResPxmMemColumn].toLongLong();
+		if(process->xResPxmMemBytes != pxmMem) {
+		  changed = true;
+		  process->xResPxmMemBytes = pxmMem;
+		}
+	}
+	if(mXResNumPxmColumn != -1) {
+		int numPxm =  data[mXResNumPxmColumn].toInt();
+		if(process->xResNumPxm != numPxm) {
+		  changed = true;
+		  process->xResNumPxm = numPxm;
+		}
+	}
+	if(mXResMemOtherColumn != -1) {
+		long long memOther = data[mXResMemOtherColumn].toInt();
+		if(process->xResMemOtherBytes != memOther) {
+		  changed = true;
+		 process->xResMemOtherBytes = memOther;
+		}
+	}
+	if(!changed)
+		return;
 	QPointer<Process> parent_process = mPidToProcess[ process->parent_pid ];
 	if(parent_process.isNull()) return;
 	int row = parent_process->children_pids.indexOf(process->pid);
