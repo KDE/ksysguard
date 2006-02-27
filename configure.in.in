@@ -53,7 +53,7 @@ KDE_CHECK_HEADER(X11/extensions/XRes.h, [xres_h=yes], [xres_h=no], [#include <X1
 if test "x$xres_h" = "xyes"; then
   KDE_CHECK_LIB(XRes, XResQueryClientResources, [
     LIB_XRES=-lXRes
-    AC_DEFINE_UNQUOTED(HAVE_XRES, 1, [Define if you have the XRes extension])
+    AC_DEFINE(HAVE_XRES, 1, [Define if you have the XRes extension])
   ], [], -lXext -X11 $X_EXTRA_LIBS)
 else
   LIB_XRES=
