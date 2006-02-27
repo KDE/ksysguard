@@ -112,6 +112,7 @@ typedef struct XResTopApp
 
 
 XResTopApp *app = NULL;
+FILE *sCurrentClient = NULL;
 
 /* X Error trapping */
 
@@ -214,19 +215,8 @@ check_win_for_info(XResTopClient *client, Window win)
   XTextProperty  text_prop;
   XID            match_xid ;
   char *identifier;
-
-  /* 
-   *  Figure out if a window belongs in a XResClients resource range,
-   *  and if it does try and get a name for it.
-   *
-   *  XXX Should also check for CLASS and TRANSIENT props so we 
-   *      get the name for top level window. 
-   */
-
-  match_xid = (client->resource_base & ~client->resource_mask);
-
-  if ( (win & ~client->resource_mask) == match_xid )
-    {
+ 
+  {
       trap_errors(); 
       identifier = window_get_utf8_name(win);
       if (identifier == NULL)
@@ -266,17 +256,43 @@ check_win_for_info(XResTopClient *client, Window win)
   return False;
 }
 
-static XID
+static Bool
 recurse_win_tree(XResTopClient *client, Window win_top)
 {
   Window       *children, dummy;
   unsigned int  nchildren;
   int           i;
-  XID           w = 0;
+  pid_t pid = -1;
   Status        qtres;
-  
-  if (check_win_for_info(client, win_top))
-    return win_top;
+  client->resource_base = win_top;
+  client->resource_mask = 0;
+  client->identifier[0] = 0;
+  client->pixmap_bytes = 0;
+  client->other_bytes = 0;
+  client->n_pixmaps = 0;
+  client->n_windows = 0; 
+  client->n_gcs = 0;
+  client->n_pictures = 0;
+  client->n_glyphsets = 0; 
+  client->n_fonts = 0;
+  client->n_colormaps = 0;
+  client->n_passive_grabs = 0;
+  client->n_cursors = 0;
+  client->n_other = 0;
+
+  if (check_win_for_info(client, win_top)) {
+    pid = window_get_pid(win_top);
+
+    if(pid != -1) {
+      /*If we have seen this pid before don't bother recalculating.  It won't catch all cases, but will catch most for minimal effort */
+      if(pid == client->pid)
+	      return True;
+      client->pid = pid;
+      xrestop_client_get_stats(client);
+      /*"xPid\tXIdentifier\tXPxmMem\tXNumPxm\n"*/
+      fprintf(sCurrentClient, "%d\t%s\t%ld\t%d\n", pid, client->identifier, client->pixmap_bytes, client->n_pixmaps);
+    }
+  }
   
   trap_errors();
 
@@ -285,21 +301,20 @@ recurse_win_tree(XResTopClient *client, Window win_top)
   if (untrap_errors())
     {
       app->n_xerrors++;
-      return 0;
+      return False;
     }
 
-  if (!qtres) return 0;
+  if (!qtres) return False;
 
   for (i=0; i<nchildren; i++) 
-    {
-      w = recurse_win_tree(client, children[i]);
-      if(w != 0)
-	  break;
-    }
+  {
+    if(!recurse_win_tree(client, children[i]))
+      return False;	      /*some error*/
+  }
 
   if (children) XFree ((char *)children);
 
-  return w;
+  return True;
 }
 
 void
@@ -371,7 +386,13 @@ printXres(FILE *CurrentClient)
   XResClient *clients;
 
   trap_errors();
+  sCurrentClient = CurrentClient;
 
+  XResTopClient client;
+  client.pid = -1;
+  recurse_win_tree(&client, app->win_root);
+  return;
+#if 0
   XResQueryClients(app->dpy, &app->n_clients, &clients); 
 
   if (untrap_errors())
@@ -381,8 +402,6 @@ printXres(FILE *CurrentClient)
     }
 
   Window window = None;
-  pid_t pid;
-  XResTopClient client;
   for(i = 0; i < app->n_clients; i++) 
   {
     if ( (clients[i].resource_base & ~clients[i].resource_mask)
@@ -394,7 +413,6 @@ printXres(FILE *CurrentClient)
       client.n_pixmaps = 0;
       
       client.identifier[0] = 0;
-      window = recurse_win_tree(&client, app->win_root);
       if (window && client.identifier[0] != 0) {
         pid = window_get_pid(window);
         if(pid != -1) {
@@ -409,6 +427,7 @@ printXres(FILE *CurrentClient)
  cleanup:
 
   if (clients) XFree(clients);
+#endif
 }
 
 #if 0
