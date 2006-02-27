@@ -789,7 +789,7 @@ bool ProcessModel::setXResHeader(const QStringList &header, QList<char> coltype)
 	if(mXResNumColumns < 4) return false;
 	for(int i = 0; i < mXResNumColumns; i++) {
 		if(header[i] == "XPid")
-			mXResPidColumn = 1;
+			mXResPidColumn = i;
 		else if(header[i] == "XIdentifier")
 			mXResIdentifierColumn = i;
 		else if(header[i] == "XPxmMem")
@@ -797,20 +797,30 @@ bool ProcessModel::setXResHeader(const QStringList &header, QList<char> coltype)
 		else if(header[i] == "XNumPxm")
 			mXResNumPxmColumn = i;
 	}
-	return true;
 	beginInsertColumns(QModelIndex(), mHeadings.count()-1, mHeadings.count());
 		mHeadings << i18n("process heading", "Application");
 		mHeadingsToType << HeadingXIdentifier;
 	endInsertColumns();
+	return true;
 }
 void ProcessModel::setXResData(const QStringList& data)
 {
-	if(data.count() < mXResNumColumns) return;
-	if(mXResPidColumn == -1) return;
+	if(data.count() < mXResNumColumns) {
+		kDebug() << "Invalid data in setXResData. Not enough columns: " << data.join(",") << endl;
+		return;
+	}
+	if(mXResPidColumn == -1) {
+		kDebug() << "XRes data recieved when we still don't know which column the XPid is in" << endl;
+		return;
+	}
+		
 
 	long long pid = data[mXResPidColumn].toLongLong();
 	QPointer<Process> process = mPidToProcess[pid];
-	if(process.isNull()) return;
+	if(process.isNull()) {
+		kDebug() << "XRes Data for process '" << data[mXResPidColumn] << "'(int) which we don't know about" << endl;
+		return;
+	}
 	
 	if(mXResIdentifierColumn != -1)
 		process->xResIdentifier = data[mXResIdentifierColumn];

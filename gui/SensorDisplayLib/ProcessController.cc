@@ -312,6 +312,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 	}
 	case XRes_Info_Command:
 	{
+		kDebug() << "XRES INFO" << endl;
 		QStringList lines = answer.trimmed().split('\n');
 		if (lines.count() != 2)
 		{
@@ -370,7 +371,7 @@ ProcessController::sensorError(int, bool err)
 			 * properties again, since the back-end might be a new
 			 * one. */
 			sendRequest(sensors().at(0)->hostName(), "test kill", Kill_Supported_Command);
-			sendRequest(sensors().at(0)->hostName(), "test xres", XRes_Supported_Command);
+			sendRequest(sensors().at(0)->hostName(), "test xres", Kill_Supported_Command);
 			sendRequest(sensors().at(0)->hostName(), "ps?", Ps_Info_Command);
 			sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
 			sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);

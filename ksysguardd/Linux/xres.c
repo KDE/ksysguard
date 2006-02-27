@@ -16,8 +16,9 @@
  */
 
 /*This is defined by configure checks. If not found, we'll just #ifdef out the whole file */
-#ifdef HAVE_XRES
 
+#include "config.h" /*For HAVE_XRES*/
+#ifdef HAVE_XRES
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,6 +28,7 @@
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <X11/extensions/XRes.h>
+
 
 #define DEBUG 1
 

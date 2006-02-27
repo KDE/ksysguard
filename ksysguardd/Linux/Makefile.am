@@ -6,8 +6,11 @@ if supports_i8k
 KSGRD_SUPPORTS = -DHAVE_I8K_SUPPORT
 endif
 
+if supports_xres
+XRES_DEFINE = -DHAVE_XRES
+endif
 
-INCLUDES = -I$(srcdir)/../../CContLib -I$(srcdir)/.. $(KSGRD_SUPPORTS) $(all_includes)
+INCLUDES = -I$(srcdir)/../../CContLib -I$(srcdir)/.. $(KSGRD_SUPPORTS) $(XRES_DEFINE) $(all_includes)
 
 noinst_LIBRARIES = libksysguardd.a
 libksysguardd_a_SOURCES = ProcessList.c	Memory.c stat.c netdev.c apm.c acpi.c \

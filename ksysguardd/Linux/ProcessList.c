@@ -44,6 +44,7 @@
 
 static CONTAINER ProcessList = 0;
 
+#include "config.h" /*For HAVE_XRES*/
 #ifdef HAVE_XRES
 extern int setup_xres();
 extern void xrestop_populate_client_data();
@@ -439,7 +440,7 @@ void printXresListInfo( const char *cmd)
 {
   (void)cmd;
   fprintf(CurrentClient, "XPid\tXIdentifier\tXPxmMem\tXNumPxm\n");
-  fprintf(CurrentClient, "d\ts\td\td");
+  fprintf(CurrentClient, "d\ts\td\td\n");
 }
 
 void printXresList(const char*cmd)
