@@ -21,8 +21,8 @@
 #ifndef KSG_SENSORAGENT_H
 #define KSG_SENSORAGENT_H
 
-#include <qobject.h>
-#include <q3ptrlist.h>
+#include <QObject>
+#include <QQueue>
 
 class KProcess;
 class KShellProcess;
@@ -96,8 +96,8 @@ class KDE_EXPORT SensorAgent : public QObject
     virtual bool txReady() = 0;
 
     int mState;
-    Q3PtrList<SensorRequest> mInputFIFO;
-    Q3PtrList<SensorRequest> mProcessingFIFO;
+    QQueue< SensorRequest* > mInputFIFO;
+    QQueue< SensorRequest* > mProcessingFIFO;
     QString mAnswerBuffer;
     QString mErrorBuffer;
 

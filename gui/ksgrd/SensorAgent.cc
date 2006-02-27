@@ -40,12 +40,6 @@ using namespace KSGRD;
 SensorAgent::SensorAgent( SensorManager *sm )
   : mSensorManager( sm )
 {
-  /* SensorRequests migrate from the inputFIFO to the processingFIFO. So
-   * we only have to delete them when they are removed from the
-   * processingFIFO. */
-  mInputFIFO.setAutoDelete( false );
-  mProcessingFIFO.setAutoDelete( true );
-
   mDaemonOnLine = false;
   mTransmitting = false;
   mState = 0;
@@ -60,7 +54,7 @@ bool SensorAgent::sendRequest( const QString &req, SensorClient *client, int id 
   /* The request is registered with the FIFO so that the answer can be
    * routed back to the requesting client. */
   if(mInputFIFO.count() < 10)   //If we have too many requests, just simply drop the request.  Not great but better than nothing..
-    mInputFIFO.prepend( new SensorRequest( req, client, id ) );
+    mInputFIFO.enqueue( new SensorRequest( req, client, id ) );
 
 #if SA_TRACE
   kDebug(1215) << "-> " << req << "(" << mInputFIFO.count() << "/"
@@ -118,17 +112,18 @@ void SensorAgent::processAnswer( const QString &buffer )
     }
 	
     // remove pending request from FIFO
-    SensorRequest* req = mProcessingFIFO.last();
-    if ( !req ) {
+    if ( mProcessingFIFO.isEmpty() ) {
       kDebug(1215)	<< "ERROR: Received answer but have no pending "
                     << "request!" << endl;
       return;
     }
+
+    SensorRequest *req = mProcessingFIFO.dequeue();
 		
     if ( !req->client() ) {
       /* The client has disappeared before receiving the answer
        * to his request. */
-      mProcessingFIFO.removeLast();
+      delete req;
       return;
     }
 
@@ -140,10 +135,9 @@ void SensorAgent::processAnswer( const QString &buffer )
       // Notify client of newly arrived answer.
       req->client()->answerReceived( req->id(), mAnswerBuffer.left( end ) );
     }
-    mProcessingFIFO.removeLast();
-
+    delete req;
     // chop of processed part of the answer buffer
-    mAnswerBuffer.remove( 0, end + strlen( "\nksysguardd> " ) );
+    mAnswerBuffer.remove( 0, end + sizeof( "\nksysguardd> " )-1 );  /*sizeof(x)-1  is a hackish way to save us from having to do strlen :) */
   }
 
   executeCommand();
@@ -156,9 +150,7 @@ void SensorAgent::executeCommand()
    * if the daemon is online and there is no other command currently
    * being sent. */
   if ( mDaemonOnLine && txReady() && !mInputFIFO.isEmpty() ) {
-    // take oldest request for input FIFO
-    SensorRequest* req = mInputFIFO.last();
-    mInputFIFO.removeLast();
+    SensorRequest *req = mInputFIFO.dequeue();
 
 #if SA_TRACE
     kDebug(1215) << ">> " << req->request().ascii() << "(" << mInputFIFO.count()
@@ -172,15 +164,15 @@ void SensorAgent::executeCommand()
       kDebug(1215) << "SensorAgent::writeMsg() failed" << endl;
 
     // add request to processing FIFO
-    mProcessingFIFO.prepend( req );
+    mProcessingFIFO.enqueue( req );
   }
 }
 
 void SensorAgent::disconnectClient( SensorClient *client )
 {
-  for ( SensorRequest *req = mInputFIFO.first(); req; req = mInputFIFO.next() )
-    if ( req->client() == client )
-      req->setClient( 0 );
+  for (int i = 0; i < mInputFIFO.size(); ++i)
+    if ( mInputFIFO[i]->client() == client )
+      mInputFIFO[i]->setClient(0);
 }
 
 SensorManager *SensorAgent::sensorManager()
