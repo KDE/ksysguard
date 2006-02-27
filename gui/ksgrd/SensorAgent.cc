@@ -59,7 +59,8 @@ bool SensorAgent::sendRequest( const QString &req, SensorClient *client, int id 
 {
   /* The request is registered with the FIFO so that the answer can be
    * routed back to the requesting client. */
-  mInputFIFO.prepend( new SensorRequest( req, client, id ) );
+  if(mInputFIFO.count() < 10)   //If we have too many requests, just simply drop the request.  Not great but better than nothing..
+    mInputFIFO.prepend( new SensorRequest( req, client, id ) );
 
 #if SA_TRACE
   kDebug(1215) << "-> " << req << "(" << mInputFIFO.count() << "/"
