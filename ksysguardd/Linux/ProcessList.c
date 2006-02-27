@@ -439,8 +439,8 @@ void exitProcessList( void )
 void printXresListInfo( const char *cmd)
 {
   (void)cmd;
-  fprintf(CurrentClient, "XPid\tXIdentifier\tXPxmMem\tXNumPxm\n");
-  fprintf(CurrentClient, "d\ts\td\td\n");
+  fprintf(CurrentClient, "XPid\tXIdentifier\tXPxmMem\tXNumPxm\tXNumOther\n");
+  fprintf(CurrentClient, "d\ts\tD\td\tD\n");
 }
 
 void printXresList(const char*cmd)
