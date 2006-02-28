@@ -1,0 +1,133 @@
+kde4_header()
+
+add_subdirectory( ksgrd ) 
+add_subdirectory( SensorDisplayLib ) 
+
+include_directories( ${CMAKE_SOURCE_DIR}/kicker/libkicker/ ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}  )
+
+
+########### next target ###############
+
+set(ksysguard_SRCS 
+   SensorBrowser.cc 
+   WorkSheet.cc 
+   WorkSheetSettings.cc 
+   Workspace.cc 
+   ksysguard.cc )
+
+kde4_automoc(${ksysguard_SRCS})
+
+kde4_add_dcop_skels(ksysguard_SRCS ksysguard.h )
+
+kde4_add_executable(ksysguard ${ksysguard_SRCS})
+
+target_link_libraries(ksysguard  ${QT_AND_KDECORE_LIBS} ksgrd sensordisplays kdeui kio )
+
+install_targets(/bin ksysguard )
+
+
+########### next target ###############
+
+set(kpm_SRCS kpm.c )
+
+kde4_automoc(${kpm_SRCS})
+
+kde4_add_executable(kpm ${kpm_SRCS})
+
+target_link_libraries(kpm  ${QT_AND_KDECORE_LIBS} )
+
+install_targets(/bin kpm )
+
+
+########### next target ###############
+
+set(sysguard_panelapplet_PART_SRCS KSysGuardApplet.cc KSGAppletSettings.cc )
+
+kde4_automoc(${sysguard_panelapplet_PART_SRCS})
+
+kde4_add_plugin(sysguard_panelapplet ${sysguard_panelapplet_PART_SRCS})
+
+kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} sysguard_panelapplet )
+
+target_link_libraries(sysguard_panelapplet  ${QT_AND_KDECORE_LIBS} ksgrd sensordisplays kickermain kdeui kio )
+
+install_targets(${LIB_INSTALL_DIR}/kde4 sysguard_panelapplet )
+
+
+########### install files ###############
+
+install_files( ${XDG_APPS_DIR} FILES ksysguard.desktop )
+install_files( ${DATA_INSTALL_DIR}/ksysguard FILES ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml )
+install_files( ${MIME_INSTALL_DIR}/application FILES x-ksysguard.desktop )
+install_files( ${DATA_INSTALL_DIR}/ksysguard FILES ksysguardui.rc )
+install_files( ${DATA_INSTALL_DIR}/kicker/applets FILES ksysguardapplet.desktop )
+
+kde4_footer()
+
+
+
+#original Makefile.am contents follow:
+
+#
+#kdemimedir = $(kde_mimedir)/application
+#kdemime_DATA = x-ksysguard.desktop
+#
+#rcdir = $(kde_datadir)/ksysguard
+#rc_DATA = ksysguardui.rc
+#
+#xdg_apps_DATA = ksysguard.desktop
+#
+#lnkdir = $(kde_datadir)/kicker/applets
+#lnk_DATA = ksysguardapplet.desktop
+#
+## claim, which subdirectories you want to install
+#SUBDIRS = ksgrd SensorDisplayLib
+#
+## set the include path for X, qt and KDE
+#INCLUDES = -I$(srcdir)/ksgrd -I$(srcdir)/SensorDisplayLib -ISensorDisplayLib -I$(top_srcdir)/kicker/libkicker/ $(all_includes)
+# 
+######## This part is very ksysguard specific
+## you can add here more. This one gets installed 
+#bin_PROGRAMS = ksysguard kpm
+#
+## Which sources should be compiled for ksysguard.
+#ksysguard_SOURCES = \
+#	SensorBrowser.cc \
+#	WorkSheet.cc \
+#	WorkSheetSettings.cc \
+#	Workspace.cc \
+#	ksysguard.cc ksysguard.skel
+#
+#ksysguard_LDADD = \
+#	ksgrd/libksgrd.la \
+#	SensorDisplayLib/libsensordisplays.la \
+#	$(LIB_KDEUI) $(LIB_KIO)
+#ksysguard_LDFLAGS = $(all_libraries) $(KDE_RPATH)
+#
+#kpm_SOURCES = kpm.c
+#
+#appdatadir = $(kde_datadir)/ksysguard
+#appdata_DATA = ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml
+#
+## This stuff is now for the kicker applet
+#kde_module_LTLIBRARIES = sysguard_panelapplet.la
+#
+#sysguard_panelapplet_la_SOURCES = \
+#	KSysGuardApplet.cc \
+#	KSGAppletSettings.cc
+#
+#sysguard_panelapplet_la_LIBADD = \
+#	ksgrd/libksgrd.la \
+#	SensorDisplayLib/libsensordisplays.la \
+#	$(top_builddir)/kicker/libkicker/libkickermain.la $(LIB_KDEUI) $(LIB_KIO)
+#sysguard_panelapplet_la_LDFLAGS = -module $(KDE_PLUGIN) $(all_libraries)
+#
+#EXTRA_DIST = $(lnk_DATA)
+#
+## just to make sure, automake makes them 
+#METASOURCES = AUTO
+#
+#messages: rc.cpp
+#	$(EXTRACTRC) `find . -name "*.ui"` >> rc.cpp
+#	$(EXTRACTRC) `find . -name "*.sgrd"` >> rc.cpp
+#	$(XGETTEXT) `find . -name "*.cpp" -o -name "*.cc"` -o $(podir)/ksysguard.pot
