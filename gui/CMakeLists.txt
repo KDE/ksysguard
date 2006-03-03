@@ -8,7 +8,39 @@ include_directories( ${CMAKE_SOURCE_DIR}/kicker/libkicker/ ${KDE4_INCLUDE_DIR} $
 
 ########### next target ###############
 
-set(ksysguard_SRCS 
+set(libsensordisplays_SRCS
+	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorDisplay.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/BarGraph.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/DancingBars.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/DancingBarsSettings.cc 
+	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/DummyDisplay.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/FancyPlotter.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/FancyPlotterSettings.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ListView.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/LogFile.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/MultiMeter.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/MultiMeterSettings.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/Process.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ProcessController.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ProcessModel.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ProcessFilter.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ReniceDlg.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorLogger.cc
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorLoggerDlg.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorLoggerSettings.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ListViewSettings.cc 
+   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SignalPlotter.cc 
+	)
+kde4_add_ui3_files( libsensordisplays_SRCS
+   ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ListViewSettingsWidget.ui 
+   ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/LogFileSettings.ui 
+   ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/MultiMeterSettingsWidget.ui 
+   ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorLoggerDlgWidget.ui 
+   ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorLoggerSettingsWidget.ui 
+   ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ProcessWidgetUI.ui )
+
+
+set(ksysguard_SRCS ${libsensordisplays_SRCS}
    SensorBrowser.cc 
    WorkSheet.cc 
    WorkSheetSettings.cc 
