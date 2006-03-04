@@ -3,7 +3,7 @@ kde4_header()
 add_subdirectory( ksgrd ) 
 add_subdirectory( SensorDisplayLib ) 
 
-include_directories( ${CMAKE_SOURCE_DIR}/kicker/libkicker/ ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}  ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/ksgrd/ ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/)
+include_directories(${CMAKE_SOURCE_DIR}/workspace/kicker/libkicker/ ${CMAKE_SOURCE_DIR}/kicker/libkicker/ ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}  ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/ksgrd/ ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/)
 
 
 ########### next target ###############
@@ -36,8 +36,9 @@ kde4_add_ui3_files( libsensordisplays_SRCS
    ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/LogFileSettings.ui 
    ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/MultiMeterSettingsWidget.ui 
    ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorLoggerDlgWidget.ui 
-   ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorLoggerSettingsWidget.ui 
-   ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ProcessWidgetUI.ui )
+   ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorLoggerSettingsWidget.ui )
+
+kde4_add_ui_files( libsensordisplays_SRCS ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ProcessWidgetUI.ui )
 
 
 set(ksysguard_SRCS ${libsensordisplays_SRCS}
@@ -53,7 +54,7 @@ kde4_add_dcop_skels(ksysguard_SRCS ksysguard.h )
 
 kde4_add_executable(ksysguard ${ksysguard_SRCS})
 
-target_link_libraries(ksysguard  ${QT_AND_KDECORE_LIBS} ksgrd sensordisplays kdeui kio )
+target_link_libraries(ksysguard  ${LIB_KIO} ksgrd  )
 
 install_targets(/bin ksysguard )
 
@@ -73,7 +74,7 @@ install_targets(/bin kpm )
 
 ########### next target ###############
 
-set(sysguard_panelapplet_PART_SRCS KSysGuardApplet.cc KSGAppletSettings.cc )
+set(sysguard_panelapplet_PART_SRCS KSysGuardApplet.cc KSGAppletSettings.cc ${libsensordisplays_SRCS} )
 
 kde4_automoc(${sysguard_panelapplet_PART_SRCS})
 
@@ -81,7 +82,7 @@ kde4_add_plugin(sysguard_panelapplet ${sysguard_panelapplet_PART_SRCS})
 
 kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} sysguard_panelapplet )
 
-target_link_libraries(sysguard_panelapplet  ${QT_AND_KDECORE_LIBS} ksgrd sensordisplays kickermain kdeui kio )
+target_link_libraries(sysguard_panelapplet  ${LIB_KIO} ${QT_QTXML_LIBRARY} ksgrd  kickermain  )
 
 install_targets(${LIB_INSTALL_DIR}/kde4 sysguard_panelapplet )
 
