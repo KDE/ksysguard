@@ -394,7 +394,7 @@ ProcessController::restoreSettings(QDomElement& element)
 //	setTreeView(element.attribute("tree").toInt());
 
 	uint filter = element.attribute("filter").toUInt();
-	mUi.cmbFilter->setCurrentItem(filter);
+	mUi.cmbFilter->setCurrentIndex(filter);
 
 	uint col = element.attribute("sortColumn").toUInt();
 	bool inc = element.attribute("incrOrder").toUInt();
