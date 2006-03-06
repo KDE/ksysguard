@@ -417,7 +417,7 @@ ProcessController::saveSettings(QDomDocument& doc, QDomElement& element, bool sa
 	element.setAttribute("sensorName", sensors().at(0)->name());
 	element.setAttribute("sensorType", sensors().at(0)->type());
 //	element.setAttribute("tree", (uint) mUi.chkTreeView->isChecked());
-	element.setAttribute("filter", mUi.cmbFilter->currentItem());
+	element.setAttribute("filter", mUi.cmbFilter->currentIndex());
 //FIXME There is currently no way to get this information from qt!!
 //	element.setAttribute("sortColumn", pList->getSortColumn());
 //	element.setAttribute("incrOrder", pList->getIncreasing());
