@@ -632,7 +632,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			if(process->xResMemOtherBytes == 0 && process->xResPxmMemBytes == 0) return QVariant();
 			return QString::number((process->xResMemOtherBytes + process->xResPxmMemBytes )/ 1024.0, 'f', 0);
 		case HeadingCPUUsage:
-			return QString::number((process->userUsage > process->sysUsage)?process->userUsage:process->sysUsage, 'f', 2) + "%";
+			return QString::number(process->userUsage + process->sysUsage, 'f', 2) + "%";
 		case HeadingRSSMemory:
 			return QString::number(process->vmRSS);
 		case HeadingMemory:
