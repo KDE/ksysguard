@@ -7,12 +7,15 @@ message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(solaris_SUBDIR)")
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(tru64_SUBDIR)")
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(irix_SUBDIR)")
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(openbsd_SUBDIR)")
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}  )
+include_directories(${CMAKE_SOURCE_DIR}/workspace/ksysguard/CContLib/  ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}  )
 
 
 ########### next target ###############
 
-set(ksysguardd_SRCS 
+set(libccont_SRCS 
+	${CMAKE_SOURCE_DIR}/workspace/ksysguard/CContLib/ccont.c )
+
+set(ksysguardd_SRCS ${libccont_SRCS}
    Command.c 
    conf.c 
    ksysguardd.c 
