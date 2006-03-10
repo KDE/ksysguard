@@ -62,7 +62,7 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   QLabel *label = new QLabel( i18n( "Minimum value:" ), groupBox );
   boxLayout->addWidget( label, 0, 0 );
 
-  mMinValue = new KDoubleSpinBox( 0, 100, 0.5, 0, groupBox, 2 );
+  mMinValue = new KDoubleSpinBox( 0, 10000, 0.5, 0, groupBox, 2 );
   mMinValue->setWhatsThis( i18n( "Enter the minimum value for the display here. If both values are 0 automatic range detection is enabled." ) );
   boxLayout->addWidget( mMinValue, 0, 1 );
   label->setBuddy( mMinValue );
