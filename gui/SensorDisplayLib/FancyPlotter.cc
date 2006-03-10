@@ -192,7 +192,7 @@ void FancyPlotter::applyStyle()
   mPlotter->setHorizontalLinesColor( KSGRD::Style->secondForegroundColor() );
   mPlotter->setBackgroundColor( KSGRD::Style->backgroundColor() );
   mPlotter->setFontSize( KSGRD::Style->fontSize() );
-  for ( int i = 0; i < mPlotter->beamColors().count() &&
+  for ( unsigned int i = 0; i < mPlotter->beamColors().count() &&
         i < KSGRD::Style->numSensorColors(); ++i )
     mPlotter->beamColors()[ i ] = KSGRD::Style->sensorColor( i );
 

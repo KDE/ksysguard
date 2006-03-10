@@ -35,14 +35,10 @@ static inline int min( int a, int b )
   return ( a < b ? a : b );
 }
 
-SignalPlotter::SignalPlotter( QWidget *parent, const char *name )
-  : QWidget( parent, name )
+SignalPlotter::SignalPlotter( QWidget *parent)
+  : QWidget( parent)
 {
-  // Auto deletion does not work for pointer to arrays.
-  mBeamData.setAutoDelete( false );
-
-  setBackgroundMode( Qt::NoBackground );
-
+  mBezierCurveOffset = 0;
   mSamples = 0;
   mMinValue = mMaxValue = 0.0;
   mUseAutoRange = true;
@@ -51,8 +47,9 @@ SignalPlotter::SignalPlotter( QWidget *parent, const char *name )
 
   // Anything smaller than this does not make sense.
   setMinimumSize( 16, 16 );
-  setSizePolicy( QSizePolicy( QSizePolicy::Expanding,
-                 QSizePolicy::Expanding, false ) );
+  QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  sizePolicy.setHeightForWidth(false);
+  setSizePolicy( sizePolicy );
 
   mShowVerticalLines = true;
   mVerticalLinesColor = KSGRD::Style->firstForegroundColor();
@@ -74,53 +71,43 @@ SignalPlotter::SignalPlotter( QWidget *parent, const char *name )
 
 SignalPlotter::~SignalPlotter()
 {
-  for ( double* p = mBeamData.first(); p; p = mBeamData.next() )
-    delete [] p;
 }
 
 bool SignalPlotter::addBeam( const QColor &color )
 {
-  double* d = new double[ mSamples ];
-  memset( d, 0, sizeof(double) * mSamples );
-  mBeamData.append( d );
-  mBeamColor.append( color );
-
+  mBeamColors.append(color);
   return true;
 }
 
 void SignalPlotter::addSample( const QList<double>& sampleBuf )
 {
-  if ( mBeamData.count() != sampleBuf.count() )
-    return;
+  mBeamData.prepend(sampleBuf);
+  if(mBeamData.size() > mSamples) {
+    mBeamData.removeLast(); // we have too many.  Remove the last item
+    if(mBeamData.size() > mSamples)
+      mBeamData.removeLast(); // If we still have too many, then we have resized the widget.  Remove one more.  That way we will slowly resize to the new size
+  }
 
-  double* d;
-  if ( mUseAutoRange ) {
+  if(mBezierCurveOffset >= 2) mBezierCurveOffset = 0;
+  else mBezierCurveOffset++;
+  
+  //FIXME: IS THIS NEEDED STILL?
+  if ( mUseAutoRange ) { /* When all the data points are stacked on top of each other, the range will be up to the sum of them all */
     double sum = 0;
-    for ( d = mBeamData.first(); d; d = mBeamData.next() ) {
-      sum += d[ 0 ];
-      if ( sum < mMinValue )
-        mMinValue = sum;
-      if ( sum > mMaxValue )
-        mMaxValue = sum;
-    }
+    for(int i =0; i < sampleBuf.size(); i++)
+      sum += sampleBuf[i];
+    if ( sum < mMinValue )
+      mMinValue = sum;
+    if ( sum > mMaxValue )
+      mMaxValue = sum;
   }
 
   /* If the vertical lines are scrolling, increment the offset
-   * so they move with the data. The vOffset / hScale confusion
-   * is because v refers to Vertical Lines, and h to the horizontal
-   * distance between the vertical lines. */
+   * so they move with the data. */
   if ( mVerticalLinesScroll ) {
     mVerticalLinesOffset = ( mVerticalLinesOffset + mHorizontalScale)
                            % mVerticalLinesDistance;
   }
-
-  // Shift data buffers one sample down and insert new samples.
-  QList<double>::ConstIterator s;
-  for ( d = mBeamData.first(), s = sampleBuf.begin(); d; d = mBeamData.next(), ++s ) {
-    memmove( d, d + 1, ( mSamples - 1 ) * sizeof( double ) );
-    d[ mSamples - 1 ] = *s;
-  }
-
   update();
 }
 
@@ -136,13 +123,19 @@ void SignalPlotter::changeRange( int beam, double min, double max )
 
 QList<QColor> &SignalPlotter::beamColors()
 {
-  return mBeamColor;
+  return mBeamColors;
 }
 
 void SignalPlotter::removeBeam( uint pos )
 {
-  mBeamColor.remove( mBeamColor.at( pos ) );
-  mBeamData.remove( pos );
+  if(pos >= mBeamColors.size()) return;
+  mBeamColors.removeAt( pos );
+
+  QLinkedList< QList<double> >::Iterator i;
+  for(i = mBeamData.begin(); i != mBeamData.end(); ++i) {
+    if( (*i).size() >= pos)
+      (*i).removeAt(pos);
+  }
 }
 
 void SignalPlotter::setTitle( const QString &title )
@@ -329,40 +322,16 @@ void SignalPlotter::resizeEvent( QResizeEvent* )
 
 void SignalPlotter::updateDataBuffers()
 {
-  /* Since the data buffers for the beams are equal in size to the
-   * width of the widget minus 2 we have to enlarge or shrink the
-   * buffers accordingly when a resize occures. To have a nicer
-   * display we try to keep as much data as possible. Data that is
-   * lost due to shrinking the buffers cannot be recovered on
-   * enlarging though. */
 
-  /* Determine new number of samples first.
+  /*  This is called when the widget has resized
+   *
+   *  Determine new number of samples first.
    *  +0.5 to ensure rounding up
-   *  +2 for extra data points so there is
+   *  +4 for extra data points so there is
    *     1) no wasted space and
    *     2) no loss of precision when drawing the first data point. */
-  uint newSampleNum = static_cast<uint>( ( ( width() - 2 ) /
-                                         mHorizontalScale ) + 2.5 );
-
-  // overlap between the old and the new buffers.
-  int overlap = min( mSamples, newSampleNum );
-
-  for ( uint i = 0; i < mBeamData.count(); ++i ) {
-    double* nd = new double[ newSampleNum ];
-
-    // initialize new part of the new buffer
-    if ( newSampleNum > (uint)overlap )
-      memset( nd, 0, sizeof( double ) * ( newSampleNum - overlap ) );
-
-    // copy overlap from old buffer to new buffer
-    memcpy( nd + ( newSampleNum - overlap ), mBeamData.at( i ) +
-            ( mSamples - overlap ), overlap * sizeof( double ) );
-
-    mBeamData.remove( i );
-    mBeamData.insert( i, nd );
-  }
-
-  mSamples = newSampleNum;
+  mSamples = static_cast<uint>( ( ( width() - 2 ) /
+                                mHorizontalScale ) + 4.5 );
 }
 
 void SignalPlotter::paintEvent( QPaintEvent* )
@@ -373,12 +342,11 @@ void SignalPlotter::paintEvent( QPaintEvent* )
   /* Do not do repaints when the widget is not yet setup properly. */
   if ( w <= 2 )
     return;
+  QPainter p(this);
 
-  QPixmap pm( w, h );
-  QPainter p;
-  p.begin( &pm, this );
+  p.setRenderHint(QPainter::Antialiasing, true);
 
-  pm.fill( mBackgroundColor );
+  p.fillRect(0,0,w, h, mBackgroundColor);
   /* Draw white line along the bottom and the right side of the
    * widget to create a 3D like look. */
   p.setPen( QColor( colorGroup().light() ) );
@@ -429,10 +397,15 @@ void SignalPlotter::paintEvent( QPaintEvent* )
     double bias = -minValue;
     double scaleFac = ( w - x0 - 2 ) / range;
     QList<QColor>::Iterator col;
-    col = mBeamColor.begin();
-    for ( double* d = mBeamData.first(); d; d = mBeamData.next(), ++col ) {
+    col = mBeamColors.begin();
+
+    /* The top bar shows the current values of all the beam data.  This iterates through each different beam and plots the newest data for each*/
+    QList<double> newestData = mBeamData.first();
+    QList<double>::Iterator i;
+    for(i = newestData.begin(); i != newestData.end(); ++i, ++col) {
+      double newest_datapoint = *i;
       int start = x0 + (int)( bias * scaleFac );
-      int end = x0 + (int)( ( bias += d[ w - 3 ] ) * scaleFac );
+      int end = x0 + (int)( ( bias += newest_datapoint ) * scaleFac );
       /* If the rect is wider than 2 pixels we draw only the last
        * pixels with the bright color. The rest is painted with
        * a 50% darker color. */
@@ -476,22 +449,28 @@ void SignalPlotter::paintEvent( QPaintEvent* )
   double scaleFac = ( h - 2 ) / range;
   if ( mGraphStyle == GRAPH_ORIGINAL ) {
     int xPos = 0;
-    for ( int i = 0; i < mSamples; i++, xPos += mHorizontalScale ) {
+
+    QLinkedList< QList<double> >::Iterator it = mBeamData.begin();
+    for(int i = 0; it != mBeamData.end() && i < mSamples; ++it, ++i) {
+      xPos += mHorizontalScale;
+      
       double bias = -minValue;
       QList<QColor>::Iterator col;
-      col = mBeamColor.begin();
+      col = mBeamColors.begin();
       double sum = 0.0;
-      for ( double* d = mBeamData.first(); d; d = mBeamData.next(), ++col ) {
+      const QList<double> &datapoints = *it;
+      QList<double>::ConstIterator datapoint = datapoints.begin(); //The list of data points using all the colors for a particular point in time
+      for (; datapoint != datapoints.end() && col != mBeamColors.end(); ++datapoint, ++col ) {
         if ( mUseAutoRange ) {
-          sum += d[ i ];
+          sum += *datapoint;
           if ( sum < mMinValue )
             mMinValue = sum;
           if ( sum > mMaxValue )
             mMaxValue = sum;
         }
         int start = top + h - 2 - (int)( bias * scaleFac );
-        int end = top + h - 2 - (int)( ( bias + d[ i ] ) * scaleFac );
-        bias += d[ i ];
+        int end = top + h - 2 - (int)( ( bias + *datapoint ) * scaleFac );
+        bias += *datapoint;
         /* If the line is longer than 2 pixels we draw only the last
          * 2 pixels with the bright color. The rest is painted with
          * a 50% darker color. */
@@ -507,13 +486,135 @@ void SignalPlotter::paintEvent( QPaintEvent* )
       }
     }
   } else if ( mGraphStyle == GRAPH_POLYGON ) {
+    int xPos = 0;
+    QLinkedList< QList<double> >::Iterator it = mBeamData.begin();
+
+    /* mBezierCurveOffset is how many points we have at the start.
+     * All the bezier curves are in groups of 3, with the first of the next group being the last point of the previous group.
+     *
+     * Example, when mBezierCurveOffset == 0, and we have data, then just plot a normal bezier curve (we will have at least 3 points in this case)
+     * When mBezierCurveOffset == 1, then we want a bezier curve that uses the first data point and the second data point.  Then the next group starts
+     *   from the second data point.
+     * When mBezierCurveOffset == 2, then we want a bezier curve that uses the first, second and third data 
+     * 
+     *
+     */
+    
+    for(int i = 0; it != mBeamData.end() && i < mSamples; ++i) {
+      double bias = -minValue;
+      double sum = 0.0;
+      QPen pen;
+      pen.setWidth(2);
+      pen.setCapStyle(Qt::RoundCap);
+
+      // We will plot 1 bezier curve for every 3 points, with the 4th point being the end of one bezier curve and the start of the second.
+      // This does means the bezier curves will not join nicely, but it should be better than nothing.
+
+      QList<double> datapoints = *it;
+      QList<double> prev_datapoints = datapoints;
+      QList<double> prev_prev_datapoints = datapoints;
+      QList<double> prev_prev_prev_datapoints = datapoints;
+
+      if(i == 0 && mBezierCurveOffset>0) {
+	//We are plotting an incomplete bezier curve - we don't have all the data we want.  Try to cope
+        xPos += mHorizontalScale*mBezierCurveOffset;
+	if(mBezierCurveOffset == 1) {
+	  prev_datapoints = *it;
+          ++it; //Now we are on the first element of the next group, if it exists
+	  if(it != mBeamData.end()) {
+            prev_prev_prev_datapoints = prev_prev_datapoints = *it;
+	  } else {
+            prev_prev_prev_datapoints = prev_prev_datapoints = prev_datapoints;
+	  }
+	} else {
+          prev_datapoints = *it;
+	  ++it;
+	  prev_prev_datapoints = *it;
+	  ++it; //Now we are on the first element of the next group, if it exists
+	  if(it != mBeamData.end()) {
+            prev_prev_prev_datapoints = *it;
+	  } else {
+            prev_prev_prev_datapoints = prev_prev_datapoints;
+	  }
+	}
+      } else {
+	//We have a group of 3 points at least.  That's 1 start point and 2 control points.
+        xPos += mHorizontalScale*3;
+	it++;
+	if(it != mBeamData.end()) {
+          prev_datapoints = *it;
+          it++;
+	  if(it != mBeamData.end()) {
+            prev_prev_datapoints = *it;
+	    it++;  //We are now on the next set of data points
+            if(it != mBeamData.end()) {
+              prev_prev_prev_datapoints = *it; //We have this datapoint, so use it for our finish point
+            } else {
+              prev_prev_prev_datapoints = prev_prev_datapoints;  //we don't have the next set, so use our last control point as our finish point
+	    }
+	  } else {
+            prev_prev_prev_datapoints = prev_prev_datapoints = prev_datapoints;
+	  }
+	} else {
+            prev_prev_prev_datapoints = prev_prev_datapoints = prev_datapoints = datapoints;
+	}
+      }
+      
+      for(int j = 0; j < datapoints.size() && j < mBeamColors.size(); ++j) {
+        if ( mUseAutoRange ) {
+          sum += datapoints[j];
+          if ( sum < mMinValue )
+            mMinValue = sum;
+          if ( sum > mMaxValue )
+            mMaxValue = sum;
+        }
+//        int start = top + h - 2 - (int)( bias * scaleFac );
+//        int end = top + h - 2 - (int)( ( bias + *datapoint ) * scaleFac );
+//        bias += *datapoint;
+	
+	pen.setColor(mBeamColors[j]);
+	p.setPen(pen);
+	QPolygon curve(3);
+	curve.putPoints(0,4, w - xPos + 3*mHorizontalScale, h - (int)((datapoints[j] - minValue)*scaleFac),
+			     w - xPos + 2*mHorizontalScale, h - (int)((prev_datapoints[j] - minValue)*scaleFac),
+			     w - xPos + mHorizontalScale, h - (int)((prev_prev_datapoints[j] - minValue)*scaleFac),
+			     w - xPos, h - (int)((prev_prev_prev_datapoints[j] - minValue)*scaleFac));
+
+	p.drawCubicBezier(curve);
+//	p.drawLine( w - xPos, h - (int)((prev_prev_datapoints[i] - minValue)*scaleFac),
+//		    w - xPos - mHorizontalScale + 1, h - (int)((prev_datapoints[i] - minValue)*scaleFac));
+			
+//	p.drawLine( w - xPos, h - (int)((prev_datapoints[i] - minValue)*scaleFac), w - xPos - mHorizontalScale + 1, h- (int)((datapoints[i] - minValue)*scaleFac));
+        /* If the line is longer than 2 pixels we draw only the last
+         * 2 pixels with the bright color. The rest is painted with
+         * a 50% darker color. */
+/*        if ( end - start > 2 ) {
+//          p.fillRect( xPos, start, mHorizontalScale, end - start - 1, (*col).dark( 150 ) );
+	  p.drawLine( xPos+1, end -1, xPos + mHorizontalScale-1, end -1);
+//          p.fillRect( xPos, end - 1, mHorizontalScale, 2, *col );
+        } else if ( start - end > 2 ) {
+//          p.fillRect( xPos, start, mHorizontalScale, end - start + 1, (*col).dark( 150 ) );
+	  pen.setColor(*col);
+	  p.setPen(pen);
+	  p.drawLine( xPos+1, end + 1, xPos + mHorizontalScale-1,  end+1);
+//          p.fillRect( xPos, end + 1, mHorizontalScale, 2, *col );
+        } else
+          p.fillRect( xPos, start, mHorizontalScale, end - start, *col );
+*/
+      }
+    }
+
+
+
+	  
+#if 0
     int *prevVals = new int[ mBeamData.count() ];
     int hack[ 4 ];
     int x1 = w - ( ( mSamples + 1 ) * mHorizontalScale );
 
     for ( int i = 0; i < mSamples; i++ ) {
       QList<QColor>::Iterator col;
-      col = mBeamColor.begin();
+      col = mBeamColors.begin();
       double sum = 0.0;
       int y = top + h - 2;
       int oldY = top + h;
@@ -581,6 +682,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
     }
 
     delete[] prevVals;
+#endif
   }
 
   /* Draw horizontal lines and values. Lines are drawn when the
@@ -606,9 +708,6 @@ void SignalPlotter::paintEvent( QPaintEvent* )
       p.drawText( 6, top + h - 2, val );
     }
   }
-
-  p.end();
-  bitBlt( this, 0, 0, &pm );
 }
 
 #include "SignalPlotter.moc"

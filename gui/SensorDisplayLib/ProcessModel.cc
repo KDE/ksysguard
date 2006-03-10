@@ -449,7 +449,7 @@ void ProcessModel::insertOrChangeRows( long long pid)
 	QPointer<Process> new_process = new Process(pid, ppid);
 	QList<QVariant> &data = new_process->data;
 	QString loginName;
-	for (int i = 0; i < mColType.count(); i++)
+	for (int i = 0; i < mColType.count() && i < newDataRow.count(); i++)
 	{  //At the moment the data is just a string, so turn it into a list of variants instead and insert the variants into our new process
 		switch(mColType[i]) {
 			case DataColumnLogin: loginName = newDataRow[i]; break; //we might not know the uid yet, so remember the login name then at the end modify mUserUsername

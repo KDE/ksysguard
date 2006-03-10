@@ -21,12 +21,11 @@
 #ifndef KSG_SIGNALPLOTTER_H
 #define KSG_SIGNALPLOTTER_H
 
-#include <q3ptrlist.h>
-#include <qstring.h>
-#include <qwidget.h>
-//Added by qt3to4:
+#include <QString>
+#include <QWidget>
 #include <QResizeEvent>
 #include <QPaintEvent>
+#include <QLinkedList>
 
 #define GRAPH_POLYGON     0
 #define	GRAPH_ORIGINAL    1
@@ -38,7 +37,7 @@ class SignalPlotter : public QWidget
   Q_OBJECT
 
   public:
-    SignalPlotter( QWidget *parent = 0, const char *name = 0 );
+    SignalPlotter( QWidget *parent = 0);
     ~SignalPlotter();
 
     bool addBeam( const QColor &color );
@@ -127,14 +126,16 @@ class SignalPlotter : public QWidget
 
     bool mShowLabels;
     bool mShowTopBar;
+    uint mBezierCurveOffset;
     uint mFontSize;
 
     QColor mBackgroundColor;
 
-    Q3PtrList<double> mBeamData;
-    QList<QColor> mBeamColor;
+    QLinkedList < QList<double> > mBeamData; // Every item in the linked list contains a set of data points to plot.  The first item is the newest
+    QList< QColor> mBeamColors;  //These colors match up against the QList<double> above
 
-    int mSamples;
+    int mSamples; //This is what mBeamData.size() should equal when full.  When we start off and have no data then mSamples will be higher.  If we resize the widget so it's smaller, then for a short while this will be smaller
+    int mNewestIndex; //The index to the newest item added.  newestIndex+1   is the second newest, and so on
 
     QString mTitle;
 };
