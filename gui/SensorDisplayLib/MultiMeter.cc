@@ -101,14 +101,9 @@ MultiMeter::answerReceived(int id, const QString& answer)
 		int digits = (int) log10(val) + 1;
 
 		if (noFrame())
-			lcd->setNumDigits(2);
+			lcd->setNumDigits(qMin(4,digits));
 		else
-		{
-			if (digits > 5)
-				lcd->setNumDigits(digits);
-			else
-				lcd->setNumDigits(5);
-		}
+			lcd->setNumDigits(qMin(5,digits));
 
 		lcd->display(val);
 		if (lowerLimitActive && val < lowerLimit)
