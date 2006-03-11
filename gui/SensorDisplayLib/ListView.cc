@@ -65,8 +65,8 @@ int PrivateListViewItem::compare( Q3ListViewItem *item, int col, bool ascending 
       return 1;
   } else if ( type == PrivateListView::Time ) {
     int hourPrev, hourNext, minutesPrev, minutesNext;
-    sscanf( key( col, ascending ).latin1(), "%d:%d", &hourPrev, &minutesPrev );
-    sscanf( item->key( col, ascending ).latin1(), "%d:%d", &hourNext, &minutesNext );
+    sscanf( key( col, ascending ).toLatin1(), "%d:%d", &hourPrev, &minutesPrev );
+    sscanf( item->key( col, ascending ).toLatin1(), "%d:%d", &hourNext, &minutesNext );
     int prev = hourPrev * 60 + minutesPrev;
     int next = hourNext * 60 + minutesNext;
     if ( prev < next )
@@ -83,14 +83,14 @@ int PrivateListViewItem::compare( Q3ListViewItem *item, int col, bool ascending 
     uint counter = prev.length();
     for ( uint i = 0; i < counter; ++i )
       if ( prev[ i ].isDigit() ) {
-        prevKey.sprintf( "%s%016d", prev.left( i ).latin1(), prev.mid( i ).toInt() );
+        prevKey.sprintf( "%s%016d", prev.left( i ).toLatin1(), prev.mid( i ).toInt() );
         break;
       }
 
     counter = next.length();
     for ( uint i = 0; i < counter; ++i )
       if ( next[ i ].isDigit() ) {
-        nextKey.sprintf( "%s%016d", next.left( i ).latin1(), next.mid( i ).toInt() );
+        nextKey.sprintf( "%s%016d", next.left( i ).toLatin1(), next.mid( i ).toInt() );
         break;
       }
 
@@ -198,12 +198,11 @@ void PrivateListView::addColumn(const QString& label, const QString& type)
 	setColumnWidth(col, fm.width(label) + 10);
 }
 
-ListView::ListView(QWidget* parent, const char* name, const QString& title, int, int)
-	: KSGRD::SensorDisplay(parent, name, title)
+ListView::ListView(QWidget* parent, const QString& title, bool isApplet)
+	: KSGRD::SensorDisplay(parent, title, isApplet)
 {
 	setBackgroundColor(KSGRD::Style->backgroundColor());
-
-	monitor = new PrivateListView( frame() );
+	monitor = new PrivateListView( this );
 	Q_CHECK_PTR(monitor);
 	monitor->setSelectionMode(Q3ListView::NoSelection);
 	monitor->setItemMargin(2);
@@ -278,7 +277,6 @@ ListView::answerReceived(int id, const QString& answer)
 void
 ListView::resizeEvent(QResizeEvent*)
 {
-	frame()->setGeometry(0, 0, width(), height());
 	monitor->setGeometry(10, 20, width() - 20, height() - 30);
 }
 

@@ -24,9 +24,7 @@
 #include <qspinbox.h>
 
 #include <qbitmap.h>
-//Added by qt3to4:
 #include <QPixmap>
-#include <QFocusEvent>
 #include <Q3PtrList>
 #include <QEvent>
 #include <QTimerEvent>
@@ -39,6 +37,9 @@
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <krun.h>
+#include <kurl.h>
+#include <kservice.h>
 
 #include "SensorManager.h"
 #include "TimerSettings.h"
@@ -47,10 +48,10 @@
 
 using namespace KSGRD;
 
-SensorDisplay::SensorDisplay( QWidget *parent, const char *name,
-                              const QString &title)
-  :	QWidget( parent, name )
+SensorDisplay::SensorDisplay( QWidget *parent, const QString &title, bool isApplet)
+  :	QWidget( parent )
 {
+  mIsApplet = isApplet;
   mSensors.setAutoDelete( true );
 
   // default interval is 2 seconds.
@@ -59,24 +60,16 @@ SensorDisplay::SensorDisplay( QWidget *parent, const char *name,
   mModified = false;
   mShowUnit = false;
   mTimerId = NONE;
-  mFrame = 0;
   mErrorIndicator = 0;
   mPlotterWdg = 0;
 
   setTimerOn( true );
   this->setWhatsThis( "dummy" );
 
-  mFrame = new Q3GroupBox( 2, Qt::Vertical, "", this, "displayFrame");
-
-  setTitle( title );
-
   setMinimumSize( 16, 16 );
   setModified( false );
   setSensorOk( false );
 
-  /* All RMB clicks to the box frame will be handled by
-   * SensorDisplay::eventFilter. */
-  mFrame->installEventFilter( this );
 
   /* Let's call updateWhatsThis() in case the derived class does not do
    * this. */
@@ -122,14 +115,8 @@ void SensorDisplay::configureUpdateInterval()
   if ( dlg.exec() ) {
     if ( dlg.useGlobalUpdate() ) {
       mUseGlobalUpdateInterval = true;
-
-      SensorBoard* sb = dynamic_cast<SensorBoard*>( parentWidget() );
-      if ( !sb ) {
-        kDebug(1215) << "dynamic cast lacks" << endl;
-        setUpdateInterval( 2 );
-      } else {
-        setUpdateInterval( sb->updateInterval() );
-      }
+	/*FIXME Get update interval from parent*/
+      setUpdateInterval( 2 );
     } else {
       mUseGlobalUpdateInterval = false;
       setUpdateInterval( dlg.interval() );
@@ -146,44 +133,47 @@ void SensorDisplay::timerEvent( QTimerEvent* )
     sendRequest( s->hostName(), s->name(), i );
 }
 
-void SensorDisplay::resizeEvent( QResizeEvent* )
-{
-  mFrame->setGeometry( rect() );
-}
-
 bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
 {
   if ( event->type() == QEvent::MouseButtonPress &&
      ( (QMouseEvent*)event)->button() == Qt::RightButton ) {
     Q3PopupMenu pm;
+    if ( mIsApplet ) {
+      pm.insertItem( i18n( "Launch &System Guard"), 1 );
+      pm.insertSeparator();
+    }
+    
     if ( hasSettingsDialog() )
-      pm.insertItem( i18n( "&Properties" ), 1 );
-    pm.insertItem( i18n( "&Remove Display" ), 2 );
+      pm.insertItem( i18n( "&Properties" ), 2 );
+    pm.insertItem( i18n( "&Remove Display" ), 3 );
     pm.insertSeparator();
-    pm.insertItem( i18n( "&Setup Update Interval..." ), 3 );
+    pm.insertItem( i18n( "&Setup Update Interval..." ), 4 );
     if ( !timerOn() )
-      pm.insertItem( i18n( "&Continue Update" ), 4 );
+      pm.insertItem( i18n( "&Continue Update" ), 5 );
     else
-      pm.insertItem( i18n( "P&ause Update" ), 5 );
+      pm.insertItem( i18n( "P&ause Update" ), 6 );
 
     switch ( pm.exec( QCursor::pos() ) ) {
       case 1:
+        KRun::run(*KService::serviceByDesktopName("ksysguard"), KUrl::List());
+	break;
+      case 2:
         configureSettings();
         break;
-      case 2: {
+      case 3: {
           QCustomEvent *e = new QCustomEvent( QEvent::User );
           e->setData( this );
           kapp->postEvent( parent(), e );
         }
         break;
-      case 3:
+      case 4:
         configureUpdateInterval();
         break;
-      case 4:
+      case 5:
         setTimerOn( true );
         setModified( true );
         break;
-      case 5:
+      case 6:
         setTimerOn( false );
         setModified( true );
         break;
@@ -229,8 +219,8 @@ void SensorDisplay::updateWhatsThis()
 {
   this->setWhatsThis( i18n(
     "<qt><p>This is a sensor display. To customize a sensor display click "
-    "and hold the right mouse button on either the frame or the "
-    "display box and select the <i>Properties</i> entry from the popup "
+    "the right mouse button here "
+    "and select the <i>Properties</i> entry from the popup "
     "menu. Select <i>Remove</i> to delete the display from the worksheet."
     "</p>%1</qt>" ).arg( additionalWhatsThis() ) );
 }
@@ -327,13 +317,8 @@ bool SensorDisplay::restoreSettings( QDomElement &element )
     setUpdateInterval( element.attribute( "updateInterval", "2" ).toInt() );
   } else {
     mUseGlobalUpdateInterval = true;
-
-    SensorBoard* sb = dynamic_cast<SensorBoard*>( parentWidget() );
-    if ( !sb ) {
-      kDebug(1215) << "dynamic cast lacks" << endl;
-      setUpdateInterval( 2 );
-    } else
-      setUpdateInterval( sb->updateInterval() );
+    /*FIXME Get update interval from parent*/
+    setUpdateInterval( 2 );
   }
 
   if ( element.attribute( "pause", "0" ).toInt() == 0 )
@@ -414,17 +399,6 @@ void SensorDisplay::setModified( bool value )
   }
 }
 
-void SensorDisplay::focusInEvent( QFocusEvent* )
-{
-#warning "Port to qt4"		
-  //mFrame->setLineWidth( 2 );
-}
-
-void SensorDisplay::focusOutEvent( QFocusEvent* )
-{
-  //mFrame->setLineWidth( 1 );
-}
-
 void SensorDisplay::setSensorOk( bool ok )
 {
   if ( ok ) {
@@ -456,18 +430,7 @@ void SensorDisplay::setSensorOk( bool ok )
 void SensorDisplay::setTitle( const QString &title )
 {
   mTitle = title;
-
-  /* Changing the frame title may increase the width of the frame and
-   * hence breaks the layout. To avoid this, we save the original size
-   * and restore it after we have set the frame title. */
-  QSize s = mFrame->size();
-
-  if ( mShowUnit && !mUnit.isEmpty() )
-    mFrame->setTitle( mTitle + " [" + mUnit + "]" );
-  else
-    mFrame->setTitle( mTitle );
-
-  mFrame->setGeometry( 0, 0, s.width(), s.height() );
+  emit changeTitle(title);
 }
 
 QString SensorDisplay::title() const
@@ -499,23 +462,6 @@ void SensorDisplay::setPlotterWidget( QWidget *wdg )
 {
   mPlotterWdg = wdg;
 }
-
-QWidget *SensorDisplay::frame()
-{
-  return mFrame;
-}
-
-void SensorDisplay::setNoFrame( bool value )
-{
-  mNoFrame = value;
-}
-
-bool SensorDisplay::noFrame() const
-{
-  return mNoFrame;
-}
-
-
 
 SensorProperties::SensorProperties()
 {

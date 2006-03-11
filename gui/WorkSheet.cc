@@ -32,6 +32,8 @@
 #include <QDropEvent>
 #include <QDragEnterEvent>
 #include <QCustomEvent>
+#include <QFile>
+#include <QByteArray>
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -50,9 +52,10 @@
 #include "SensorLogger.h"
 #include "WorkSheet.h"
 #include "WorkSheetSettings.h"
+#include "SensorFrame.h"
 
-WorkSheet::WorkSheet( QWidget *parent, const char *name )
-  : QWidget( parent, name )
+WorkSheet::WorkSheet( QWidget *parent )
+  : QWidget( parent )
 {
   mGridLayout = 0;
   mRows = mColumns = 0;
@@ -63,9 +66,8 @@ WorkSheet::WorkSheet( QWidget *parent, const char *name )
   setAcceptDrops( true );
 }
 
-WorkSheet::WorkSheet( uint rows, uint columns, uint interval, QWidget* parent,
-                      const char *name )
-  : QWidget( parent, name )
+WorkSheet::WorkSheet( uint rows, uint columns, uint interval, QWidget* parent )
+  : QWidget( parent)
 {
   mRows = mColumns = 0;
   mGridLayout = 0;
@@ -212,13 +214,13 @@ bool WorkSheet::save( const QString &fileName )
 
   for ( uint r = 0; r < mRows; ++r )
     for (uint c = 0; c < mColumns; ++c )
-      if ( !mDisplayList[ r ][ c ]->isA( "DummyDisplay" ) ) {
+      if ( QByteArray("DummyDisplay") != mDisplayList[ r ][ c ]->metaObject()->className()) {
         KSGRD::SensorDisplay* display = (KSGRD::SensorDisplay*)mDisplayList[ r ][ c ];
         QDomElement element = doc.createElement( "display" );
         ws.appendChild( element );
         element.setAttribute( "row", r );
         element.setAttribute( "column", c );
-        element.setAttribute( "class", display->className() );
+        element.setAttribute( "class", display->metaObject()->className() );
 
         display->saveSettings( doc, element );
       }
@@ -241,7 +243,7 @@ bool WorkSheet::save( const QString &fileName )
 
 void WorkSheet::cut()
 {
-  if ( !currentDisplay() || currentDisplay()->isA( "DummyDisplay" ) )
+  if ( !currentDisplay() || currentDisplay()->metaObject()->className() == QByteArray("DummyDisplay" ) )
     return;
 
   QClipboard* clip = QApplication::clipboard();
@@ -253,7 +255,7 @@ void WorkSheet::cut()
 
 void WorkSheet::copy()
 {
-  if ( !currentDisplay() || currentDisplay()->isA( "DummyDisplay" ) )
+  if ( !currentDisplay() || currentDisplay()->metaObject()->className() == QByteArray( "DummyDisplay" ) )
     return;
 
   QClipboard* clip = QApplication::clipboard();
@@ -319,7 +321,7 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
   /* If the by 'row' and 'column' specified display is a QGroupBox dummy
    * display we replace the widget. Otherwise we just try to add
    * the new sensor to an existing display. */
-  if ( mDisplayList[ row ][ column ]->isA( "DummyDisplay" ) ) {
+  if ( mDisplayList[ row ][ column ]->metaObject()->className() == QByteArray( "DummyDisplay" ) ) {
     KSGRD::SensorDisplay* newDisplay = 0;
     /* If the sensor type is supported by more than one display
      * type we popup a menu so the user can select what display is
@@ -333,23 +335,23 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
       QAction *a4 = pm.addAction( i18n( "S&ensorLogger" ) );
       QAction *execed = pm.exec( QCursor::pos() );
       if (execed == a1)
-	newDisplay = new FancyPlotter( this, "FancyPlotter", sensorDescr );
+	newDisplay = new FancyPlotter( this, sensorDescr, false );	
       else if (execed == a2)
-	newDisplay = new MultiMeter( this, "MultiMeter", sensorDescr );
+	newDisplay = new MultiMeter( this, sensorDescr, false );
       else if (execed == a3)
-	 newDisplay = new DancingBars( this, "DancingBars", sensorDescr ); 
+	 newDisplay = new DancingBars( this, sensorDescr, false ); 
       else if (execed == a4)
-	newDisplay = new SensorLogger( this, "SensorLogger", sensorDescr );
+	newDisplay = new SensorLogger( this, sensorDescr, false );
       else
 	 return 0;
     } else if ( sensorType == "listview" )
-      newDisplay = new ListView( this, "ListView", sensorDescr );
+      newDisplay = new ListView( this, sensorDescr, false );
     else if ( sensorType == "logfile" )
-      newDisplay = new LogFile( this, "LogFile", sensorDescr );
+      newDisplay = new LogFile( this, sensorDescr, false );
     else if ( sensorType == "sensorlogger" )
-      newDisplay = new SensorLogger( this, "SensorLogger", sensorDescr );
+      newDisplay = new SensorLogger( this, sensorDescr, false );
     else if ( sensorType == "table" )
-      newDisplay = new ProcessController( this );
+      newDisplay = new ProcessController( this, sensorDescr);
     else {
       kDebug(1215) << "Unkown sensor type: " <<  sensorType << endl;
       return 0;
@@ -468,24 +470,26 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
 {
   QString classType = element.attribute( "class" );
   KSGRD::SensorDisplay* newDisplay;
+ 
+
   if ( classType == "FancyPlotter" )
-    newDisplay = new FancyPlotter( this );
+    newDisplay = new FancyPlotter( 0, i18n("Dummy"), false );
   else if ( classType == "MultiMeter" )
-    newDisplay = new MultiMeter( this );
+    newDisplay = new MultiMeter( 0, i18n("Dummy"), false );
   else if ( classType == "DancingBars" )
-    newDisplay = new DancingBars( this );
+    newDisplay = new DancingBars( 0, i18n("Dummy"), false );
   else if ( classType == "ListView" )
-    newDisplay = new ListView( this );
+    newDisplay = new ListView( 0, i18n("Dummy"), false );
   else if ( classType == "LogFile" )
-    newDisplay = new LogFile( this );
+    newDisplay = new LogFile( 0, i18n("Dummy"), false );
   else if ( classType == "SensorLogger" )
-    newDisplay = new SensorLogger( this );
+    newDisplay = new SensorLogger( 0, i18n("Dummy"), false );
   else if ( classType == "ProcessController" )
-    newDisplay = new ProcessController( this );
+    newDisplay = new ProcessController( 0, i18n("Dummy"));
   else {
-    kDebug(1215) << "Unkown class " <<  classType << endl;
+    kDebug(1215) << "Unknown class " <<  classType << endl;
     return false;
-  }
+  }  
 
   if ( newDisplay->useGlobalUpdateInterval() )
     newDisplay->setUpdateInterval( updateInterval() );
@@ -498,6 +502,7 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
 
   return true;
 }
+
 
 void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* newDisplay )
 {
@@ -517,9 +522,9 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
              SLOT( setModified( bool ) ) );
   }
 
+  SensorFrame *frame = new SensorFrame(mDisplayList[ row ][ column ]);
 
-  mGridLayout->addWidget( mDisplayList[ row ][ column ], row, column );
-
+  mGridLayout->addWidget( frame, row, column );
   if ( isVisible() ) {
     mDisplayList[ row ][ column ]->show();
   }
@@ -547,7 +552,7 @@ void WorkSheet::collectHosts( QStringList &list )
 {
   for ( uint r = 0; r < mRows; ++r )
     for ( uint c = 0; c < mColumns; ++c )
-      if ( !mDisplayList[ r ][ c ]->isA( "DummyDisplay" ) )
+      if ( mDisplayList[ r ][ c ]->metaObject()->className() != QByteArray( "DummyDisplay" ) )
         ((KSGRD::SensorDisplay*)mDisplayList[ r ][ c ])->hosts( list );
 }
 
@@ -556,7 +561,7 @@ void WorkSheet::createGrid( uint rows, uint columns )
   mRows = rows;
   mColumns = columns;
 
-  // create grid layout with specified dimentions
+  // create grid layout with specified dimensions
   mGridLayout = new QGridLayout( this, mRows, mColumns, 5 );
 
   mDisplayList = new KSGRD::SensorDisplay**[ mRows ];
@@ -669,7 +674,7 @@ QString WorkSheet::currentDisplayAsXML()
 
   QDomElement element = doc.createElement( "display" );
   doc.appendChild( element );
-  element.setAttribute( "class", display->className() );
+  element.setAttribute( "class", display->metaObject()->className() );
   display->saveSettings( doc, element );
 
   return doc.toString();

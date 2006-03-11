@@ -21,14 +21,10 @@
 #ifndef _SensorLogger_h
 #define _SensorLogger_h
 
-#include <qdom.h>
-#include <qfile.h>
-#include <qlabel.h>
-#include <qlineedit.h>
+#include <QLabel>
 #include <q3listview.h>
 #include <q3popupmenu.h>
-#include <qspinbox.h>
-#include <qstring.h>
+#include <QString>
 //Added by qt3to4:
 #include <QPixmap>
 #include <Q3PtrList>
@@ -42,6 +38,8 @@
 #define NONE -1
 
 class SensorLoggerSettings;
+class QDomElement;
+class QFile;
 
 class SLListViewItem : public Q3ListViewItem
 {
@@ -127,7 +125,7 @@ protected:
 	virtual void timerEvent(QTimerEvent*);
 
 private:
-	QFile* logFile;
+	QFile* mLogFile;
 	Q3ListView* monitor;
 	SLListViewItem* lvi;
 	QPixmap pixmap_running;
@@ -150,7 +148,7 @@ class SensorLogger : public KSGRD::SensorDisplay
 {
 	Q_OBJECT
 public:
-	SensorLogger(QWidget *parent = 0, const char *name = 0, const QString& title = 0);
+	SensorLogger(QWidget *parent, const QString& title, bool isApplet);
 	~SensorLogger(void);
 
 	bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType,

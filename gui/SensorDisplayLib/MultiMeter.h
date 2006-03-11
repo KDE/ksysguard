@@ -35,8 +35,7 @@ class MultiMeter : public KSGRD::SensorDisplay
 	Q_OBJECT
 
 public:
-	MultiMeter(QWidget* parent = 0, const char* name = 0,
-			   const QString& = QString(), double min = 0, double max = 0, bool nf = 0);
+	MultiMeter(QWidget* parent, const QString& title, bool isApplet);
 	virtual ~MultiMeter()
 	{
 	}

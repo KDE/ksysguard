@@ -33,21 +33,16 @@
 #include "MultiMeter.moc"
 #include "MultiMeterSettings.h"
 
-MultiMeter::MultiMeter(QWidget* parent, const char* name,
-				   const QString& title, double, double, bool nf)
-	: KSGRD::SensorDisplay(parent, name, title)
+MultiMeter::MultiMeter(QWidget* parent, const QString& title, bool isApplet)
+	: KSGRD::SensorDisplay(parent, title, isApplet)
 {
 	setShowUnit( true );
 	lowerLimit = upperLimit = 0;
 	lowerLimitActive = upperLimitActive = false;
-	setNoFrame( nf );
 
 	normalDigitColor = KSGRD::Style->firstForegroundColor();
 	alarmDigitColor = KSGRD::Style->alarmColor();
-	if (noFrame())
-		lcd = new QLCDNumber(this, "meterLCD");
-	else
-		lcd = new QLCDNumber(frame(), "meterLCD");
+	lcd = new QLCDNumber(this, "meterLCD");
 	Q_CHECK_PTR(lcd);
 	lcd->setSegmentStyle(QLCDNumber::Filled);
 	setDigitColor(KSGRD::Style->backgroundColor());
@@ -100,7 +95,7 @@ MultiMeter::answerReceived(int id, const QString& answer)
 		double val = answer.toDouble();
 		int digits = (int) log10(val) + 1;
 
-		if (noFrame())
+		if (isApplet())
 			lcd->setNumDigits(qMin(4,digits));
 		else
 			lcd->setNumDigits(qMin(5,digits));
@@ -122,10 +117,7 @@ MultiMeter::answerReceived(int id, const QString& answer)
 void
 MultiMeter::resizeEvent(QResizeEvent*)
 {
-	if (noFrame())
-		lcd->setGeometry(0, 0, width() - 1, height() - 1);
-	else
-		frame()->setGeometry(0, 0, width(), height());
+	lcd->setGeometry(0, 0, width() - 1, height() - 1);
 }
 
 bool

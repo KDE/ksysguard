@@ -20,6 +20,10 @@
 
 #include <QTextStream>
 #include <QDate>
+#include <QFile>
+#include <QDomNodeList>
+#include <QDomDocument>
+#include <QDomElement>
 
 #include <kapplication.h>
 #include <kiconloader.h>
@@ -30,6 +34,7 @@
 
 #include "SensorLogger.moc"
 #include "SensorLoggerSettings.h"
+#include "SensorLogger.h"
 
 SLListViewItem::SLListViewItem(Q3ListView *parent)
 	: Q3ListViewItem(parent)
@@ -87,20 +92,20 @@ LogSensor::timerEvent(QTimerEvent*)
 void
 LogSensor::answerReceived(int id, const QString& answer)
 {
-	logFile = new QFile(fileName);
-	Q_CHECK_PTR(logFile);
+	mLogFile = new QFile(fileName);
+	Q_CHECK_PTR(mLogFile);
 
-	if (!logFile->open(QIODevice::ReadWrite | QIODevice::Append))
+	if (!mLogFile->open(QIODevice::ReadWrite | QIODevice::Append))
 	{
 		stopLogging();
-		delete logFile;
+		delete mLogFile;
 		return;
 	}
 
 	switch (id)
 	{
 		case 42: {
-			QTextStream stream(logFile);
+			QTextStream stream(mLogFile);
 			double value = answer.toDouble();
 
 			if (lowerLimitActive && value < lowerLimit)
@@ -127,12 +132,12 @@ LogSensor::answerReceived(int id, const QString& answer)
 		}
 	}
 
-	logFile->close();
-	delete logFile;
+	mLogFile->close();
+	delete mLogFile;
 }
 
-SensorLogger::SensorLogger(QWidget *parent, const char *name, const QString& title)
-	: KSGRD::SensorDisplay(parent, name, title)
+SensorLogger::SensorLogger(QWidget *parent, const QString& title, bool isApplet)
+	: KSGRD::SensorDisplay(parent, title, isApplet)
 {
 	monitor = new Q3ListView(this, "monitor");
 	Q_CHECK_PTR(monitor);
@@ -359,7 +364,6 @@ SensorLogger::answerReceived(int, const QString&)
 void
 SensorLogger::resizeEvent(QResizeEvent*)
 {
-	frame()->setGeometry(0, 0, this->width(), this->height());
 	monitor->setGeometry(10, 20, this->width() - 20, this->height() - 30);
 }
 

@@ -55,7 +55,7 @@ class ProcessController : public KSGRD::SensorDisplay
 	Q_OBJECT
 
 public:
-	ProcessController(QWidget* parent = 0, const char* name = 0);
+	ProcessController(QWidget* parent, const QString& title);
 	virtual ~ProcessController() { }
 
 	/* Functions for SensorDisplay*/

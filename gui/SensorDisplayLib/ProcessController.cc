@@ -50,8 +50,8 @@
 #include <kpushbutton.h>
 
 
-ProcessController::ProcessController(QWidget* parent, const char* name)
-	: KSGRD::SensorDisplay(parent, name), mModel(parent), mFilterModel(parent)
+ProcessController::ProcessController(QWidget* parent, const QString &title)
+	: KSGRD::SensorDisplay(parent, title, false/*isApplet.  Can't be applet, so false*/), mModel(parent), mFilterModel(parent)
 {
 	mUi.setupUi(this);
 //	mFilterModel.setSourceModel(&mModel);
@@ -85,8 +85,6 @@ void ProcessController::setupTreeView()
 
 void ProcessController::resizeEvent(QResizeEvent* ev)
 {
-	frame()->setGeometry(0, 0, width(), height());
-
 	QWidget::resizeEvent(ev);
 }
 

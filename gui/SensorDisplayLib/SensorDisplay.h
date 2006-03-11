@@ -26,8 +26,6 @@
 #include <qwidget.h>
 //Added by qt3to4:
 #include <QTimerEvent>
-#include <QFocusEvent>
-#include <QResizeEvent>
 #include <QEvent>
 #include <Q3PtrList>
 
@@ -58,8 +56,7 @@ class SensorDisplay : public QWidget, public SensorClient
     /**
       Constructor.
      */
-    SensorDisplay( QWidget *parent = 0, const char *name = 0, 
-                   const QString& title = 0 );
+    SensorDisplay( QWidget *parent, const QString& title, bool isApplet );
 
     /**
       Destructor.
@@ -237,12 +234,10 @@ class SensorDisplay : public QWidget, public SensorClient
   Q_SIGNALS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
     void modified( bool modified );
+    void changeTitle(const QString&);
 
   protected:
     virtual bool eventFilter( QObject*, QEvent* );
-    virtual void focusInEvent( QFocusEvent* );
-    virtual void focusOutEvent( QFocusEvent* );
-    virtual void resizeEvent( QResizeEvent* );
     virtual void timerEvent( QTimerEvent* );
 
     void registerSensor( SensorProperties *sp );
@@ -259,11 +254,7 @@ class SensorDisplay : public QWidget, public SensorClient
 
     bool modified() const;
     bool timerOn() const;
-
-    QWidget *frame();
-
-    void setNoFrame( bool value );
-    bool noFrame() const;
+    bool isApplet() const {return mIsApplet;}
 
     Q3PtrList<SensorProperties> &sensors();
 
@@ -273,13 +264,10 @@ class SensorDisplay : public QWidget, public SensorClient
     bool mShowUnit;
     bool mUseGlobalUpdateInterval;
     bool mModified;
-    bool mNoFrame;
+    bool mIsApplet;
 
     int mTimerId;
     int mUpdateInterval;
-
-    // The frame around the other widgets.
-    Q3GroupBox* mFrame;
 
     Q3PtrList<SensorProperties> mSensors;
 

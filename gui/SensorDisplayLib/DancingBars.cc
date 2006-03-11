@@ -37,18 +37,13 @@
 
 #include "DancingBars.h"
 
-DancingBars::DancingBars( QWidget *parent, const char *name, const QString &title,
-                          int, int, bool noFrame_ )
-  : KSGRD::SensorDisplay( parent, name, title )
+DancingBars::DancingBars( QWidget *parent, const QString &title, bool isApplet )
+  : KSGRD::SensorDisplay( parent, title, isApplet)
 {
   mBars = 0;
-	mFlags = 0;
-	setNoFrame( noFrame_ );
+  mFlags = 0;
 
-  if ( noFrame() )
-    mPlotter = new BarGraph( this );
-  else
-    mPlotter = new BarGraph( frame() );
+  mPlotter = new BarGraph( this );
 
   setMinimumSize( sizeHint() );
 
@@ -220,18 +215,12 @@ void DancingBars::updateSamples( const QVector<double> &samples )
 
 void DancingBars::resizeEvent( QResizeEvent* )
 {
-  if ( noFrame() )
-    mPlotter->setGeometry( 0, 0, width(), height() );
-  else
-    frame()->setGeometry( 0, 0, width(), height() );
+  mPlotter->setGeometry( 0, 0, width(), height() );
 }
 
 QSize DancingBars::sizeHint()
 {
-  if ( noFrame() )
-    return ( mPlotter->sizeHint() );
-  else
-    return ( frame()->sizeHint() );
+  return mPlotter->sizeHint();
 }
 
 void DancingBars::answerReceived( int id, const QString &answer )

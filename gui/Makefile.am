@@ -23,6 +23,7 @@ bin_PROGRAMS = ksysguard kpm
 # Which sources should be compiled for ksysguard.
 ksysguard_SOURCES = \
 	SensorBrowser.cc \
+	SensorFrame.cc \
 	WorkSheet.cc \
 	WorkSheetSettings.cc \
 	Workspace.cc \

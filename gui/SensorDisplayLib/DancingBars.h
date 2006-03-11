@@ -38,9 +38,7 @@ class DancingBars : public KSGRD::SensorDisplay
   Q_OBJECT
 
   public:
-    DancingBars( QWidget *parent = 0, const char *name = 0,
-                 const QString &title = QString(), int min = 0,
-                 int max = 100, bool noFrame = 0 );
+    DancingBars( QWidget *parent, const QString &title, bool isApplet);
     virtual ~DancingBars();
 
     void configureSettings();

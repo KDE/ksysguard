@@ -53,9 +53,8 @@ class FancyPlotter : public KSGRD::SensorDisplay
   Q_OBJECT
 
   public:
-    FancyPlotter( QWidget* parent = 0, const char* name = 0,
-                  const QString& title = QString(), double min = 0,
-                  double max = 100, bool noFrame = false );
+    FancyPlotter( QWidget* parent,
+                  const QString& title, bool isWidget);
     virtual ~FancyPlotter();
 
     void configureSettings();

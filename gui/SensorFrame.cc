@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-
-    Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-
+   
+    Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+    
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -18,21 +18,25 @@
 
 */
 
-#ifndef KSG_DUMMYDISPLAY_H
-#define KSG_DUMMYDISPLAY_H
+#include "SensorFrame.h"
+#include <QBoxLayout>
+#include <QString>
 
-#include <SensorDisplay.h>
-#include <QEvent>
 
-class DummyDisplay : public KSGRD::SensorDisplay
+SensorFrame::SensorFrame(KSGRD::SensorDisplay* display)
 {
-  Q_OBJECT
+  setAlignment(Qt::AlignHCenter);
+  QHBoxLayout *layout = new QHBoxLayout;
+  layout->setMargin(2);
+  layout->addWidget(display);
+  setLayout(layout);
+  connect(display, SIGNAL(changeTitle(const QString&)), SLOT(setTitle(const QString&)));
+  setTitle(display->title());
+  setFlat(true);
+}
+void SensorFrame::setTitle(const QString& title) {
+  QGroupBox::setTitle(title);
+}
 
-  public:
-    DummyDisplay( QWidget* parent, bool isApplet);
-    virtual ~DummyDisplay() {}
+#include "SensorFrame.moc"
 
-    virtual bool eventFilter( QObject*, QEvent* );
-};
-
-#endif

@@ -213,14 +213,14 @@ void KSysGuardApplet::dropEvent( QDropEvent *e )
         QAction *a3 = popup.addAction( i18n( "&Dancing Bars" ) );
 	QAction *execed = popup.exec( QCursor::pos() );
 	if (execed == a1)
-            wdg = new FancyPlotter( this, "FancyPlotter", sensorDescr,
-                                    100.0, 100.0, true );
+            wdg = new FancyPlotter( this, sensorDescr,
+                                    true );
 	else if (execed == a2)
-            wdg = new MultiMeter( this, "MultiMeter", sensorDescr,
-                                  100.0, 100.0, true );
+            wdg = new MultiMeter( this, sensorDescr,
+                                  true );
 	else if (execed == a3)
-            wdg = new DancingBars( this, "DancingBars", sensorDescr,
-                                   100, 100, true );
+            wdg = new DancingBars( this, sensorDescr,
+                                   true );
 
         if ( wdg ) {
           delete mDockList[ dock ];
@@ -381,11 +381,11 @@ bool KSysGuardApplet::load()
     QString classType = element.attribute( "class" );
     KSGRD::SensorDisplay* newDisplay;
     if ( classType == "FancyPlotter" )
-      newDisplay = new FancyPlotter( this, "FancyPlotter", "Dummy", 100.0, 100.0, true );
+      newDisplay = new FancyPlotter( this, i18n("Dummy"), true );
     else if ( classType == "MultiMeter" )
-      newDisplay = new MultiMeter( this, "MultiMeter", "Dummy", 100.0, 100.0, true );
+      newDisplay = new MultiMeter( this, i18n("Dummy"), true );
     else if ( classType == "DancingBars" )
-      newDisplay = new DancingBars( this, "DancingBars", "Dummy", 100, 100, true );
+      newDisplay = new DancingBars( this, i18n("Dummy"), true );
     else {
       KMessageBox::sorry( this, i18n( "The KSysGuard applet does not support displaying of "
                           "this type of sensor. Please choose another sensor." ) );

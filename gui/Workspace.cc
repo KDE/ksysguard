@@ -141,7 +141,7 @@ void Workspace::newWorkSheet()
   WorkSheetSettings dlg( this );
   dlg.setSheetTitle( sheetName );
   if ( dlg.exec() ) {
-    WorkSheet* sheet = new WorkSheet( dlg.rows(), dlg.columns(), dlg.interval(), this );
+    WorkSheet* sheet = new WorkSheet( dlg.rows(), dlg.columns(), dlg.interval(), 0 );
     sheet->setTitle( dlg.sheetTitle() );
     insertTab( sheet, dlg.sheetTitle() );
     mSheetList.append( sheet );
@@ -356,7 +356,7 @@ bool Workspace::restoreWorkSheet( const QString &fileName, const QString &newNam
   // chop off extension (usually '.sgrd')
   baseName = baseName.left( baseName.lastIndexOf( '.' ) );
 
-  WorkSheet *sheet = new WorkSheet( this );
+  WorkSheet *sheet = new WorkSheet( 0 );
   sheet->setTitle( baseName );
   insertTab( sheet, baseName );
   showPage( sheet );

@@ -47,9 +47,8 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
   Q_OBJECT
 
   public:
-    WorkSheet( QWidget* parent, const char *name = 0 );
-    WorkSheet( uint rows, uint columns, uint interval, QWidget* parent,
-               const char *name = 0  );
+    WorkSheet( QWidget* parent);
+    WorkSheet( uint rows, uint columns, uint interval, QWidget* parent);
     ~WorkSheet();
 
     bool load( const QString &fileName );

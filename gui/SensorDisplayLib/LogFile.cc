@@ -38,8 +38,8 @@
 
 #include "LogFile.moc"
 
-LogFile::LogFile(QWidget *parent, const char *name, const QString& title)
-	: KSGRD::SensorDisplay(parent, name, title)
+LogFile::LogFile(QWidget *parent, const QString& title, bool isApplet)
+	: KSGRD::SensorDisplay(parent, title, isApplet)
 {
 	monitor = new QListWidget(this);
 	Q_CHECK_PTR(monitor);
@@ -258,9 +258,9 @@ LogFile::answerReceived(int id, const QString& answer)
 				monitor->addItem(lines[i]);
 
 				for (QStringList::Iterator it = filterRules.begin(); it != filterRules.end(); it++) {
-					QRegExp *expr = new QRegExp((*it).latin1());
-					if (expr->search(lines[i].latin1()) != -1) {
-						KNotifyClient::event(winId(), "pattern_match", QString("rule '%1' matched").arg((*it).latin1()));
+					QRegExp *expr = new QRegExp((*it).toLatin1());
+					if (expr->search(lines[i]) != -1) {
+						KNotifyClient::event(winId(), "pattern_match", QString("rule '%1' matched").arg(*it));
 					}
 					delete expr;
 				}
@@ -284,6 +284,5 @@ LogFile::answerReceived(int id, const QString& answer)
 void
 LogFile::resizeEvent(QResizeEvent*)
 {
-	frame()->setGeometry(0, 0, this->width(), this->height());
 	monitor->setGeometry(10, 20, this->width() - 20, this->height() - 30);
 }

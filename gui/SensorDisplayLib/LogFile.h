@@ -41,7 +41,7 @@ class LogFile : public KSGRD::SensorDisplay
 {
 	Q_OBJECT
 public:
-	LogFile(QWidget *parent = 0, const char *name = 0, const QString& title = 0);
+	LogFile(QWidget *parent, const QString& title, bool isApplet);
 	~LogFile(void);
 
 	bool addSensor(const QString& hostName, const QString& sensorName,

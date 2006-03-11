@@ -33,19 +33,14 @@
 
 #include "FancyPlotter.h"
 
-FancyPlotter::FancyPlotter( QWidget* parent, const char* name,
-                            const QString &title, double, double,
-                            bool nf)
-  : KSGRD::SensorDisplay( parent, name, title )
+FancyPlotter::FancyPlotter( QWidget* parent,
+                            const QString &title,
+                            bool isApplet)
+  : KSGRD::SensorDisplay( parent, title, isApplet )
 {
   mBeams = 0;
-  setNoFrame( nf );
-
-  if ( noFrame() ) {
-    mPlotter = new SignalPlotter( this );
-    mPlotter->setShowTopBar( true );
-	} else
-    mPlotter = new SignalPlotter( frame() );
+  mPlotter = new SignalPlotter( this );
+  mPlotter->setShowTopBar( true );
 
   if ( !title.isEmpty() )
     mPlotter->setTitle( title );
@@ -273,18 +268,12 @@ bool FancyPlotter::removeSensor( uint pos )
 
 void FancyPlotter::resizeEvent( QResizeEvent* )
 {
-  if ( noFrame() )
-    mPlotter->setGeometry( 0, 0, width(), height() );
-  else
-    frame()->setGeometry( 0, 0, width(), height() );
+  mPlotter->setGeometry( 0, 0, width(), height() );
 }
 
 QSize FancyPlotter::sizeHint()
 {
-  if ( noFrame() )
-    return mPlotter->sizeHint();
-  else
-    return frame()->sizeHint();
+  return mPlotter->sizeHint();
 }
 
 void FancyPlotter::answerReceived( int id, const QString &answer )
