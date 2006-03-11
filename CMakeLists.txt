@@ -4,8 +4,9 @@ add_subdirectory( CContLib )
 add_subdirectory( gui ) 
 add_subdirectory( pics ) 
 add_subdirectory( example ) 
+# Laurent 'readd test for it'
+#add_subdirectory( ksysguardd )
 
-message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(KSYSGUARDD_DIR)")
 include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}  )
 
 
