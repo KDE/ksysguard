@@ -33,9 +33,6 @@
 BarGraph::BarGraph( QWidget *parent, const char *name )
   : QWidget( parent, name )
 {
-  // paintEvent covers whole widget so we use no background to avoid flicker
-  setBackgroundMode( Qt::NoBackground );
-
   bars = 0;
   minValue = 0.0;
   maxValue = 100.0;
@@ -44,7 +41,7 @@ BarGraph::BarGraph( QWidget *parent, const char *name )
 
   normalColor = KSGRD::Style->firstForegroundColor();
   alarmColor = KSGRD::Style->alarmColor();
-  backgroundColor = KSGRD::Style->backgroundColor();
+  mBackgroundColor = KSGRD::Style->backgroundColor();
   fontSize = KSGRD::Style->fontSize();
 
   // Anything smaller than this does not make sense.
@@ -98,17 +95,16 @@ void BarGraph::paintEvent( QPaintEvent* )
   int w = width();
   int h = height();
 
-  QPixmap pm( w, h );
-  QPainter p;
-  p.begin( &pm, this );
+  QPainter p( this );
+
+  p.fillRect(0,0,w, h, mBackgroundColor);
+
+  p.setBrush( palette().light() );
   p.setFont( QFont( p.font().family(), fontSize ) );
   QFontMetrics fm( p.font() );
 
-  pm.fill( backgroundColor );
-
   /* Draw white line along the bottom and the right side of the
    * widget to create a 3D like look. */
-  p.setPen( QColor( colorGroup().light() ) );
   p.drawLine( 0, h - 1, w - 1, h - 1 );
   p.drawLine( w - 1, 0, w - 1, h - 1 );
 
@@ -168,7 +164,6 @@ void BarGraph::paintEvent( QPaintEvent* )
   }
 
   p.end();
-  bitBlt( this, 0, 0, &pm );
 }
 
 #include "BarGraph.moc"

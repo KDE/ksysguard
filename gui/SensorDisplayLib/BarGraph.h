@@ -84,7 +84,7 @@ class BarGraph : public QWidget
     uint bars;
     QColor normalColor;
     QColor alarmColor;
-    QColor backgroundColor;
+    QColor mBackgroundColor;
     int fontSize;
 };
 

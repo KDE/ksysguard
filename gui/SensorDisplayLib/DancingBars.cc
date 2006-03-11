@@ -80,7 +80,7 @@ void DancingBars::configureSettings()
 
   mSettingsDialog->setForegroundColor( mPlotter->normalColor );
   mSettingsDialog->setAlarmColor( mPlotter->alarmColor );
-  mSettingsDialog->setBackgroundColor( mPlotter->backgroundColor );
+  mSettingsDialog->setBackgroundColor( mPlotter->mBackgroundColor );
   mSettingsDialog->setFontSize( mPlotter->fontSize );
 
   QList< QStringList > list;
@@ -118,7 +118,7 @@ void DancingBars::applySettings()
 
   mPlotter->normalColor = mSettingsDialog->foregroundColor();
   mPlotter->alarmColor = mSettingsDialog->alarmColor();
-  mPlotter->backgroundColor = mSettingsDialog->backgroundColor();
+  mPlotter->mBackgroundColor = mSettingsDialog->backgroundColor();
   mPlotter->fontSize = mSettingsDialog->fontSize();
 
   QList< QStringList > list = mSettingsDialog->sensors();
@@ -147,7 +147,7 @@ void DancingBars::applyStyle()
 {
   mPlotter->normalColor = KSGRD::Style->firstForegroundColor();
   mPlotter->alarmColor = KSGRD::Style->alarmColor();
-  mPlotter->backgroundColor = KSGRD::Style->backgroundColor();
+  mPlotter->mBackgroundColor = KSGRD::Style->backgroundColor();
   mPlotter->fontSize = KSGRD::Style->fontSize();
 
   repaint();
@@ -272,7 +272,7 @@ bool DancingBars::restoreSettings( QDomElement &element )
                                         KSGRD::Style->firstForegroundColor() );
   mPlotter->alarmColor = restoreColor( element, "alarmColor",
                                        KSGRD::Style->alarmColor() );
-  mPlotter->backgroundColor = restoreColor( element, "backgroundColor",
+  mPlotter->mBackgroundColor = restoreColor( element, "backgroundColor",
                                             KSGRD::Style->backgroundColor() );
   mPlotter->fontSize = element.attribute( "fontSize", QString( "%1" ).arg(
                                           KSGRD::Style->fontSize() ) ).toInt();
@@ -305,7 +305,7 @@ bool DancingBars::saveSettings( QDomDocument &doc, QDomElement &element,
 
   saveColor( element, "normalColor", mPlotter->normalColor );
   saveColor( element, "alarmColor", mPlotter->alarmColor );
-	saveColor( element, "backgroundColor", mPlotter->backgroundColor );
+	saveColor( element, "backgroundColor", mPlotter->mBackgroundColor );
   element.setAttribute( "fontSize", mPlotter->fontSize );
 
   for ( uint i = 0; i < mBars; ++i ) {
