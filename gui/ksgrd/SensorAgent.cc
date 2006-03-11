@@ -158,7 +158,7 @@ void SensorAgent::executeCommand()
 #endif
     // send request to daemon
     QString cmdWithNL = req->request() + "\n";
-    if ( writeMsg( cmdWithNL.ascii(), cmdWithNL.length() ) )
+    if ( writeMsg( cmdWithNL.toLatin1(), cmdWithNL.length() ) )
       mTransmitting = true;
     else
       kDebug(1215) << "SensorAgent::writeMsg() failed" << endl;
@@ -173,6 +173,10 @@ void SensorAgent::disconnectClient( SensorClient *client )
   for (int i = 0; i < mInputFIFO.size(); ++i)
     if ( mInputFIFO[i]->client() == client )
       mInputFIFO[i]->setClient(0);
+  for (int i = 0; i < mProcessingFIFO.size(); ++i)
+    if ( mProcessingFIFO[i]->client() == client )
+      mProcessingFIFO[i]->setClient( 0 );
+  
 }
 
 SensorManager *SensorAgent::sensorManager()

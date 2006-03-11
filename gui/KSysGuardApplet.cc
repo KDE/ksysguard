@@ -41,6 +41,7 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <ksavefile.h>
 #include <kstandarddirs.h>
 #include <kmenu.h>
 
@@ -459,15 +460,10 @@ bool KSysGuardApplet::save()
   QString fileName = kstd->saveLocation( "data", "ksysguard" );
   fileName += "/KSysGuardApplet.xml";
 
-  QFile file( fileName );
-  if ( !file.open( QIODevice::WriteOnly ) ) {
-    KMessageBox::sorry( this, i18n( "Cannot save file %1" ).arg( fileName ) );
-    return false;
-  }
+  KSaveFile file( fileName, 0644 );
+  file.textStream()->setEncoding( QTextStream::UnicodeUTF8 );
+  *(file.textStream()) << doc;
 
-  QTextStream s( &file );
-  s.setEncoding( QTextStream::UnicodeUTF8 );
-  s << doc;
   file.close();
 
   return true;
