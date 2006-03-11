@@ -64,6 +64,7 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
     bool modified() const;
 
     void setTitle( const QString &title );
+    const QString &title();
 
     KSGRD::SensorDisplay* addDisplay( const QString &hostname,
                                       const QString &monitor,
@@ -82,6 +83,7 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
 
   Q_SIGNALS:
     void sheetModified( QWidget *sheet );
+    void titleChanged( QWidget *sheet );
 
   protected:
     virtual QSize sizeHint() const;

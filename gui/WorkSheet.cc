@@ -303,6 +303,11 @@ bool WorkSheet::modified() const
 void WorkSheet::setTitle( const QString &title )
 {
   mTitle = title;
+  emit titleChanged(this);
+}
+
+const QString &WorkSheet::title() {
+  return mTitle;
 }
 
 KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
@@ -386,6 +391,7 @@ void WorkSheet::settings()
           mDisplayList[ r ][ c ]->setUpdateInterval( updateInterval() );
 
     resizeGrid( dlg.rows(), dlg.columns() );
+    setTitle(dlg.sheetTitle());
 
     setModified( true );
   }

@@ -148,7 +148,15 @@ void Workspace::newWorkSheet()
     showPage( sheet );
     connect( sheet, SIGNAL( sheetModified( QWidget* ) ),
              SLOT( updateCaption( QWidget* ) ) );
+    connect( sheet, SIGNAL( titleChanged( QWidget* ) ),
+	     SLOT( updateSheetTitle( QWidget* )));
   }
+}
+
+void Workspace::updateSheetTitle( QWidget* wdg )
+{
+  if ( wdg )
+    changeTab( wdg, static_cast<WorkSheet*>( wdg )->title() );
 }
 
 bool Workspace::saveOnQuit()
