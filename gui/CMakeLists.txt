@@ -43,7 +43,8 @@ kde4_add_ui_files( libsensordisplays_SRCS ${CMAKE_SOURCE_DIR}/workspace/ksysguar
 
 set(ksysguard_SRCS ${libsensordisplays_SRCS}
    SensorBrowser.cc 
-   WorkSheet.cc 
+   WorkSheet.cc
+   SensorFrame.cc
    WorkSheetSettings.cc 
    Workspace.cc 
    ksysguard.cc )
