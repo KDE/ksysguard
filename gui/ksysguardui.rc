@@ -2,24 +2,29 @@
 <kpartgui name="ksysguard" version="5">
 <State name="showProcessState">
   <Disable>
-    <Action name="file_new"/>
-    <Action name="file_open"/>
-    <Action name="file_open_recent"/>
-    <Action name="file_close"/>
-    <Action name="file_revert"/>
+    <Action name="new_worksheet"/>
+    <Action name="import_worksheet"/>
+    <Action name="recent_import_worksheet"/>
+    <Action name="export_worksheet"/>
+    <Action name="remove_worksheet"/>
+    <Action name="revert_all_worksheets"/>
     <Action name="connect_host"/>
-    <Action name="disconnect_host"/>
-    <Action name="edit_copy"/>
-    <Action name="edit_cut"/>
-    <Action name="edit_paste"/>
     <Action name="configure_sheet"/>
     <Action name="configure_style"/>
   </Disable>
 </State>
 <MenuBar>
   <Menu name="file"><text>&amp;File</text>
+    <Action name="new_worksheet"/>
+    <Action name="recent_import_worksheet"/>
+    <Action name="import_worksheet"/>
+    <Separator/>
+    <Action name="export_worksheet"/>
+    <Separator/>
+    <Action name="remove_worksheet"/>
+    <Action name="revert_all_worksheets"/>
+    <Separator/>
     <Action name="connect_host"/>
-    <Action name="disconnect_host"/>
   </Menu>
   <Menu name="edit"><text>&amp;Edit</text>
     <Action name="configure_sheet"/>
@@ -29,18 +34,14 @@
   </Menu>
 </MenuBar>
 <ToolBar name="mainToolBar" noMerge="1"><text>Main Toolbar</text>
-    <Action name="file_new"/>
-    <Action name="file_open"/>
-    <Action name="file_save"/>
+    <Action name="new_worksheet"/>
+    <Action name="import_worksheet"/>
+    <Action name="export_worksheet"/>
     <Separator/>
     <Action name="connect_host"/>
-    <Action name="disconnect_host"/>
-    <Separator/>
-    <Action name="edit_copy"/>
-    <Action name="edit_cut"/>
-    <Action name="edit_paste"/>
     <Separator/>
     <Action name="configure_sheet"/>
     <Action name="configure_style"/>
 </ToolBar>
 </kpartgui>
+

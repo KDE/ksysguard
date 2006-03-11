@@ -102,30 +102,31 @@ TopLevel::TopLevel( const char *name )
   statusBar()->hide();
 
   // create actions for menue entries
-  KStdAction::openNew( mWorkSpace, SLOT( newWorkSheet() ), actionCollection() );
-  KStdAction::open( mWorkSpace, SLOT( loadWorkSheet() ), actionCollection() );
-  mActionOpenRecent = KStdAction::openRecent( mWorkSpace,
-                    SLOT( loadWorkSheet( const KUrl& ) ), actionCollection() );
-  KStdAction::close( mWorkSpace, SLOT( deleteWorkSheet() ), actionCollection() );
-
-  KStdAction::saveAs( mWorkSpace, SLOT( saveWorkSheetAs() ), actionCollection() );
-  KStdAction::save( mWorkSpace, SLOT( saveWorkSheet() ), actionCollection() );
+  new KAction( i18n( "&New Worksheet..." ), "tab_new", 0, mWorkSpace,
+		  SLOT( newWorkSheet() ), actionCollection(), "new_worksheet" );
+  new KAction( i18n( "Import Worksheet..." ), "fileopen", 0, mWorkSpace,
+		  SLOT( loadWorkSheet() ), actionCollection(), "import_worksheet" );
+  mActionOpenRecent = new KRecentFilesAction( i18n( "&Import Recent Worksheet" ),"fileopen", 0,
+		  mWorkSpace, SLOT( loadWorkSheet( const KURL& ) ), actionCollection(), "recent_import_worksheet" );
+  new KAction( i18n( "&Remove Worksheet" ), "tab_remove", 0, mWorkSpace,
+		  SLOT( deleteWorkSheet() ), actionCollection(), "remove_worksheet" );
+  new KAction( i18n( "&Export Worksheet..." ), "filesaveas", 0, mWorkSpace,
+		  SLOT( saveWorkSheetAs() ), actionCollection(), "export_worksheet" );
+  
   KStdAction::quit( this, SLOT( close() ), actionCollection() );
 
   new KAction( i18n( "Monitor remote machine..." ), "connect_established", 0, this,
                SLOT( connectHost() ), actionCollection(), "connect_host" );
-  new KAction( i18n( "D&isconnect" ), "connect_no", 0, this,
-               SLOT( disconnectHost() ), actionCollection(), "disconnect_host" );
 
-  KStdAction::cut( mWorkSpace, SLOT( cut() ), actionCollection() );
-  KStdAction::copy( mWorkSpace, SLOT( copy() ), actionCollection() );
-  KStdAction::paste( mWorkSpace, SLOT( paste() ), actionCollection() );
+//  KStdAction::cut( mWorkSpace, SLOT( cut() ), actionCollection() );
+//  KStdAction::copy( mWorkSpace, SLOT( copy() ), actionCollection() );
+//  KStdAction::paste( mWorkSpace, SLOT( paste() ), actionCollection() );
   new KAction( i18n( "&Worksheet Properties" ), "configure", 0, mWorkSpace,
                SLOT( configure() ), actionCollection(), "configure_sheet" );
 
   new KAction( i18n( "Load Standard Sheets" ), "revert",
                0, this, SLOT( resetWorkSheets() ),
-               actionCollection(), "file_revert"  );
+               actionCollection(), "revert_all_worksheets"  );
 
   new KAction( i18n( "Configure &Style..." ), "colorize", 0, this,
                SLOT( editStyle() ), actionCollection(), "configure_style" );
