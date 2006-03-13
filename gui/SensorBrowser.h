@@ -25,7 +25,7 @@
 #include <QMouseEvent>
 #include <Q3PtrList>
 
-#include <klistview.h>
+#include <k3listview.h>
 #include <ksgrd/SensorClient.h>
 
 class QMouseEvent;
@@ -43,7 +43,7 @@ class HostInfo;
  * The SensorBrowser is the graphical front-end of the SensorManager. It
  * displays the currently available hosts and their sensors.
  */
-class SensorBrowser : public KListView, public KSGRD::SensorClient
+class SensorBrowser : public K3ListView, public KSGRD::SensorClient
 {
   Q_OBJECT
 

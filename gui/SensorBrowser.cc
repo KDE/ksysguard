@@ -66,7 +66,7 @@ class HostItem : public Q3ListViewItem
 };
 
 SensorBrowser::SensorBrowser( QWidget* parent, KSGRD::SensorManager* sm )
-  : KListView( parent ), mSensorManager( sm )
+  : K3ListView( parent ), mSensorManager( sm )
 {
   mHostInfoList.setAutoDelete(true);
 

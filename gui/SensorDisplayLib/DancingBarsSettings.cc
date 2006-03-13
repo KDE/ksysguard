@@ -22,7 +22,7 @@
 #include <kcolorbutton.h>
 #include <klineedit.h>
 #include <kinputdialog.h>
-#include <klistview.h>
+#include <k3listview.h>
 #include <klocale.h>
 #include <knuminput.h>
 
@@ -161,7 +161,7 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   pageLayout = new QGridLayout( page, 3, 2, 0, spacingHint() );
   pageLayout->setRowStretch( 2, 1 );
 
-  mSensorView = new KListView( page );
+  mSensorView = new K3ListView( page );
   mSensorView->addColumn( i18n( "Host" ) );
   mSensorView->addColumn( i18n( "Sensor" ) );
   mSensorView->addColumn( i18n( "Label" ) );

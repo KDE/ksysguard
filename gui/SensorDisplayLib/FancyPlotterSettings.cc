@@ -22,7 +22,7 @@
 #include <kcolorbutton.h>
 #include <kcolordialog.h>
 #include <klineedit.h>
-#include <klistview.h>
+#include <k3listview.h>
 #include <klocale.h>
 #include <knuminput.h>
 
@@ -225,7 +225,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   pageLayout->setRowStretch( 2, 1 );
   pageLayout->setRowStretch( 5, 1 );
 
-  mSensorView = new KListView( page );
+  mSensorView = new K3ListView( page );
   mSensorView->addColumn( i18n( "#" ) );
   mSensorView->addColumn( i18n( "Host" ) );
   mSensorView->addColumn( i18n( "Sensor" ) );
