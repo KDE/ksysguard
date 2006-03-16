@@ -1,5 +1,7 @@
 kde4_header()
 
+project(ksysguard)
+
 add_subdirectory( CContLib ) 
 add_subdirectory( gui ) 
 add_subdirectory( pics ) 
