@@ -55,7 +55,7 @@ kde4_add_dcop_skels(ksysguard_SRCS ksysguard.h )
 
 kde4_add_executable(ksysguard ${ksysguard_SRCS})
 
-target_link_libraries(ksysguard  ${LIB_KIO} ksgrd  )
+target_link_libraries(ksysguard  ${KDE4_KIO_LIBS} ksgrd  )
 
 install_targets(/bin ksysguard )
 
@@ -83,7 +83,7 @@ kde4_add_plugin(sysguard_panelapplet ${sysguard_panelapplet_PART_SRCS})
 
 kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} sysguard_panelapplet )
 
-target_link_libraries(sysguard_panelapplet  ${LIB_KIO} ${QT_QTXML_LIBRARY} ksgrd  kickermain  )
+target_link_libraries(sysguard_panelapplet  ${KDE4_KIO_LIBS} ${QT_QTXML_LIBRARY} ksgrd  kickermain  )
 
 install_targets(${LIB_INSTALL_DIR}/kde4 sysguard_panelapplet )
 
