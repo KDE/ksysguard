@@ -133,7 +133,7 @@ void SensorBrowser::update()
     QString hostName = mSensorManager->hostName( host );
     HostItem* lvi = new HostItem( this, hostName, id, host );
 
-    QPixmap pix = mIconLoader->loadIcon( "computer", KIcon::Desktop, KIcon::SizeSmall );
+    QPixmap pix = mIconLoader->loadIcon( "computer", K3Icon::Desktop, K3Icon::SizeSmall );
     lvi->setPixmap( 0, pix );
 
     HostInfo* hostInfo = new HostInfo( id, host, hostName, lvi );
@@ -219,8 +219,8 @@ void SensorBrowser::answerReceived( int id, const QString &answer )
       if ( !found ) {
         Q3ListViewItem* lvi = new Q3ListViewItem( parent, name );
         if ( j == absolutePath.count() - 1 ) {
-          QPixmap pix = mIconLoader->loadIcon( "ksysguardd", KIcon::Desktop,
-                                               KIcon::SizeSmall );
+          QPixmap pix = mIconLoader->loadIcon( "ksysguardd", K3Icon::Desktop,
+                                               K3Icon::SizeSmall );
           lvi->setPixmap( 0, pix );
           lvi->setText( 1, KSGRD::SensorMgr->translateSensorType( sensorType ) );
 

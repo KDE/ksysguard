@@ -745,8 +745,8 @@ QPixmap ProcessModel::getIcon(const QString&iconname) const {
 	QPixmap pix = mIconCache[iconname];
 	if (pix.isNull())
 	{
-		pix = mIcons.loadIcon(iconname, KIcon::Small,
-						 KIcon::SizeSmall, KIcon::DefaultState,
+		pix = mIcons.loadIcon(iconname, K3Icon::Small,
+						 K3Icon::SizeSmall, K3Icon::DefaultState,
 						 0L, true);
 		if (pix.isNull() || !pix.mask())
 		    pix = SmallIcon("unknownapp");

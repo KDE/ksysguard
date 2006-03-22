@@ -409,8 +409,8 @@ void SensorDisplay::setSensorOk( bool ok )
       return;
 
     KIconLoader iconLoader;
-    QPixmap errorIcon = iconLoader.loadIcon( "connect_creating", KIcon::Desktop,
-                                             KIcon::SizeSmall );
+    QPixmap errorIcon = iconLoader.loadIcon( "connect_creating", K3Icon::Desktop,
+                                             K3Icon::SizeSmall );
     if ( !mPlotterWdg )
       return;
 

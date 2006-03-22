@@ -238,7 +238,7 @@ QStringList TopLevel::readListSensor( const QString& sensorLocator )
 
 void TopLevel::registerRecentURL( const KUrl &url )
 {
-  mActionOpenRecent->addURL( url );
+  mActionOpenRecent->addUrl( url );
 }
 
 void TopLevel::beATaskManager()
