@@ -68,7 +68,7 @@ kde4_automoc(${kpm_SRCS})
 
 kde4_add_executable(kpm ${kpm_SRCS})
 
-target_link_libraries(kpm  ${QT_AND_KDECORE_LIBS} )
+target_link_libraries(kpm  ${KDE4_KDECORE_LIBS} )
 
 install_targets(/bin kpm )
 

@@ -25,7 +25,7 @@ kde4_automoc(${ksysguardd_SRCS})
 
 kde4_add_executable(ksysguardd ${ksysguardd_SRCS})
 
-target_link_libraries(ksysguardd  ${QT_AND_KDECORE_LIBS} kdefakes_nonpic )
+target_link_libraries(ksysguardd  ${KDE4_KDECORE_LIBS} kdefakes_nonpic )
 
 install_targets(/bin ksysguardd )
 
