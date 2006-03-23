@@ -2,8 +2,7 @@ kde4_header()
 
 add_subdirectory( ksgrd ) 
 add_subdirectory( SensorDisplayLib ) 
-
-include_directories(${CMAKE_SOURCE_DIR}/workspace/kicker/libkicker/ ${CMAKE_SOURCE_DIR}/kicker/libkicker/ ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}  ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/ksgrd/ ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/)
+include_directories( ${CMAKE_SOURCE_DIR}/workspace/kicker/libkicker/ ${CMAKE_SOURCE_DIR}/kicker/libkicker/  ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/ksgrd/ ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} )
 
 
 ########### next target ###############
