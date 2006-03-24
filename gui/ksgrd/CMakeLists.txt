@@ -18,7 +18,7 @@ kde4_automoc(${ksgrd_LIB_SRCS})
 
 kde4_add_library(ksgrd SHARED ${ksgrd_LIB_SRCS})
 
-target_link_libraries(ksgrd  ${KDE4_KDECORE_LIBS} kdeui ${QT_QTGUI_LIBRARY} ${QT_QT3SUPPORT_LIBRARY})
+target_link_libraries(ksgrd  ${KDE4_KDEUI_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QT3SUPPORT_LIBRARY})
 
 set_target_properties(ksgrd PROPERTIES VERSION 1.2.0 SOVERSION 1 )
 install_targets(${LIB_INSTALL_DIR} ksgrd )
