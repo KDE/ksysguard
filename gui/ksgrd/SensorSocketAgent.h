@@ -23,7 +23,7 @@
 
 #include <q3socket.h>
 
-#include <SensorAgent.h>
+#include "SensorAgent.h"
 
 class QString;
 

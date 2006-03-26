@@ -28,7 +28,7 @@
 //Added by qt3to4:
 #include <QEvent>
 
-#include <SensorAgent.h>
+#include "SensorAgent.h"
 
 class HostConnector;
 
