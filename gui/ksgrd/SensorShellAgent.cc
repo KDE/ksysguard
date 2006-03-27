@@ -41,7 +41,7 @@ SensorShellAgent::~SensorShellAgent()
   if ( mDaemon ) {
     mDaemon->writeStdin( "quit\n", strlen( "quit\n" ) );
     delete (KShellProcess*)mDaemon;
-		mDaemon = 0;
+    mDaemon = 0;
   }
 }
 	
@@ -50,9 +50,9 @@ bool SensorShellAgent::start( const QString &host, const QString &shell,
 {
   mDaemon = new KShellProcess;
 
-	setHostName( host );
-	mShell = shell;
-	mCommand = command;
+  setHostName( host );
+  mShell = shell;
+  mCommand = command;
 
   connect( mDaemon, SIGNAL( processExited( KProcess* ) ),
            SLOT( daemonExited( KProcess* ) ) );
@@ -84,7 +84,7 @@ void SensorShellAgent::hostInfo( QString &shell, QString &command,
 {
   shell = mShell;
   command = mCommand;
-	port = -1;
+  port = -1;
 }
 
 void SensorShellAgent::msgSent( KProcess* )
@@ -122,7 +122,8 @@ void SensorShellAgent::daemonExited( KProcess *process )
   sensorManager()->hostLost( this );
   sensorManager()->disengage( this );
 
-  process->deleteLater();
+  if ( mDaemon )
+    mDaemon->deleteLater();
 }
 
 bool SensorShellAgent::writeMsg( const char *msg, int len )
