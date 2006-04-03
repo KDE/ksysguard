@@ -4,7 +4,7 @@ include_directories( ${KDE4_INCLUDES} )
 
 ########### install files ###############
 
-install_files( ${KDE4_SYSCONF_INSTALL_DIR} FILES ksysguarddrc )
+install_files( ${SYSCONF_INSTALL_DIR} FILES ksysguarddrc )
 install_files( ${DATA_INSTALL_DIR}/ksysguard FILES eventsrc )
 
 kde4_footer()
