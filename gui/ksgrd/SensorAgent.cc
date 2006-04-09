@@ -94,7 +94,7 @@ void SensorAgent::processAnswer( const QString &buffer )
 
   int end;
   // And now the real information
-  while ( ( end = mAnswerBuffer.find( "\nksysguardd> " ) ) >= 0 ) {
+  while ( ( end = mAnswerBuffer.indexOf( "\nksysguardd> " ) ) >= 0 ) {
 #if SA_TRACE
     kDebug(1215) << "<= " << mAnswerBuffer.left( end )
                   << "(" << mInputFIFO.count() << "/"

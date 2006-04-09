@@ -203,9 +203,9 @@ QStringList TopLevel::listHosts()
 
 QString TopLevel::readIntegerSensor( const QString &sensorLocator )
 {
-  QString host = sensorLocator.left( sensorLocator.find( ':' ) );
+  QString host = sensorLocator.left( sensorLocator.indexOf( ':' ) );
   QString sensor = sensorLocator.right( sensorLocator.length() -
-                                        sensorLocator.find( ':' ) - 1 );
+                                        sensorLocator.indexOf( ':' ) - 1 );
 
   DCOPClientTransaction *dcopTransaction = kapp->dcopClient()->beginTransaction();
   mDCopFIFO.prepend( dcopTransaction );
@@ -220,9 +220,9 @@ QStringList TopLevel::readListSensor( const QString& sensorLocator )
 {
   QStringList retval;
 
-  QString host = sensorLocator.left( sensorLocator.find( ':' ) );
+  QString host = sensorLocator.left( sensorLocator.indexOf( ':' ) );
   QString sensor = sensorLocator.right( sensorLocator.length() -
-                                        sensorLocator.find( ':' ) - 1 );
+                                        sensorLocator.indexOf( ':' ) - 1 );
 
   DCOPClientTransaction *dcopTransaction = kapp->dcopClient()->beginTransaction();
   mDCopFIFO.prepend( dcopTransaction );

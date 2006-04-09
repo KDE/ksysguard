@@ -386,7 +386,7 @@ QString SensorManager::translateSensor( const QString &sensor ) const
   QString token, out;
   int start = 0, end = 0;
   for ( ; ; ) {
-    end = sensor.find( '/', start );
+    end = sensor.indexOf( '/', start );
     if ( end > 0 )
       out += translateSensorPath( sensor.mid( start, end - start ) ) + "/";
     else {
