@@ -240,7 +240,7 @@ void DancingBars::answerReceived( int id, const QString &answer )
 
     if ( mFlags.testBit( ( 1 << mBars ) - 1 ) == true ) {
       mPlotter->updateSamples( mSampleBuffer );
-      mFlags = 0;
+      mFlags.clear();
     }
   } else if ( id >= 100 ) {
     KSGRD::SensorIntegerInfo info( answer );
