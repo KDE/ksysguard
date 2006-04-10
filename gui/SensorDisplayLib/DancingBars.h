@@ -22,7 +22,8 @@
 #define KSG_DANCINGBARS_H
 
 #include <SensorDisplay.h>
-//Added by qt3to4:
+
+#include <QBitArray>
 #include <QResizeEvent>
 #include <QVector>
 
@@ -79,7 +80,7 @@ class DancingBars : public KSGRD::SensorDisplay
       been received.
      */
     QVector<double> mSampleBuffer;
-    ulong mFlags;
+    QBitArray mFlags;
 };
 
 #endif

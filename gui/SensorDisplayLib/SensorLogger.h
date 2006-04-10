@@ -39,7 +39,6 @@
 
 class SensorLoggerSettings;
 class QDomElement;
-class QFile;
 
 class SLListViewItem : public Q3ListViewItem
 {
@@ -125,7 +124,6 @@ protected:
 	virtual void timerEvent(QTimerEvent*);
 
 private:
-	QFile* mLogFile;
 	Q3ListView* monitor;
 	SLListViewItem* lvi;
 	QPixmap pixmap_running;

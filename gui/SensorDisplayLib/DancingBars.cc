@@ -41,7 +41,8 @@ DancingBars::DancingBars( QWidget *parent, const QString &title, bool isApplet )
   : KSGRD::SensorDisplay( parent, title, isApplet)
 {
   mBars = 0;
-  mFlags = 0;
+  mFlags = QBitArray( 100 );
+  mFlags.fill( false );
 
   mPlotter = new BarGraph( this );
 
@@ -230,14 +231,14 @@ void DancingBars::answerReceived( int id, const QString &answer )
 	
   if ( id < 100 ) {
     mSampleBuffer[ id ] = answer.toDouble();
-    if ( mFlags & ( 1 << id ) ) {
+    if ( mFlags.testBit( id ) == true ) {
       kDebug(1215) << "ERROR: DancingBars lost sample (" << mFlags
                     << ", " << mBars << ")" << endl;
       sensorError( id, true );
     }
-    mFlags |= 1 << id;
+    mFlags.setBit( id, true );
 
-    if ( mFlags == (uint)( ( 1 << mBars ) - 1 ) ) {
+    if ( mFlags.testBit( ( 1 << mBars ) - 1 ) == true ) {
       mPlotter->updateSamples( mSampleBuffer );
       mFlags = 0;
     }

@@ -18,12 +18,13 @@
 
 */
 
-#include <QTextStream>
+
 #include <QDate>
-#include <QFile>
 #include <QDomNodeList>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QFile>
+#include <QTextStream>
 
 #include <kapplication.h>
 #include <kiconloader.h>
@@ -92,20 +93,18 @@ LogSensor::timerEvent(QTimerEvent*)
 void
 LogSensor::answerReceived(int id, const QString& answer)
 {
-	mLogFile = new QFile(fileName);
-	Q_CHECK_PTR(mLogFile);
+	QFile mLogFile(fileName);
 
-	if (!mLogFile->open(QIODevice::ReadWrite | QIODevice::Append))
+	if (!mLogFile.open(QIODevice::ReadWrite | QIODevice::Append))
 	{
 		stopLogging();
-		delete mLogFile;
 		return;
 	}
 
 	switch (id)
 	{
 		case 42: {
-			QTextStream stream(mLogFile);
+			QTextStream stream(&mLogFile);
 			double value = answer.toDouble();
 
 			if (lowerLimitActive && value < lowerLimit)
@@ -132,8 +131,7 @@ LogSensor::answerReceived(int id, const QString& answer)
 		}
 	}
 
-	mLogFile->close();
-	delete mLogFile;
+	mLogFile.close();
 }
 
 SensorLogger::SensorLogger(QWidget *parent, const QString& title, bool isApplet)
