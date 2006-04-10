@@ -44,7 +44,7 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 			   "process %1. Be aware that only the Superuser (root)\n"
 			   "can decrease the nice level of a process. The lower\n"
 			   "the number is the higher the priority.\n\n"
-			   "Please enter the desired nice level:").arg(pid);
+			   "Please enter the desired nice level:", pid);
 	message = new QLabel(msg, page);
 	message->setMinimumSize(message->sizeHint());
 	vLay->addWidget(message);

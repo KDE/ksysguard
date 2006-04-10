@@ -101,16 +101,16 @@ void SensorSocketAgent::error( int id )
 {
   switch ( id ) {
     case Q3Socket::ErrConnectionRefused:
-      SensorMgr->notify( i18n( "Connection to %1 refused" )
-                         .arg( hostName() ) );
+      SensorMgr->notify( i18n( "Connection to %1 refused" ,
+                           hostName() ) );
       break;
     case Q3Socket::ErrHostNotFound:
-      SensorMgr->notify( i18n( "Host %1 not found" )
-                         .arg( hostName() ) );
+      SensorMgr->notify( i18n( "Host %1 not found" ,
+                           hostName() ) );
       break;
     case Q3Socket::ErrSocketRead:
-      SensorMgr->notify( i18n( "Read error at host %1")
-                         .arg( hostName() ) );
+      SensorMgr->notify( i18n( "Read error at host %1",
+                           hostName() ) );
       break;
     default:
       kDebug(1215) << "SensorSocketAgent::error() unknown error " << id << endl;

@@ -315,7 +315,7 @@ bool KSysGuardApplet::load()
 
   QFile file( fileName );
   if ( !file.open( QIODevice::ReadOnly ) ) {
-    KMessageBox::sorry( this, i18n( "Cannot open the file %1." ).arg( fileName ) );
+    KMessageBox::sorry( this, i18n( "Cannot open the file %1." ,  fileName ) );
     return false;
   }
 
@@ -324,16 +324,16 @@ bool KSysGuardApplet::load()
 
   // Read in file and check for a valid XML header.
   if ( !doc.setContent( &file ) ) {
-    KMessageBox::sorry( this, i18n( "The file %1 does not contain valid XML." )
-                        .arg( fileName ) );
+    KMessageBox::sorry( this, i18n( "The file %1 does not contain valid XML." ,
+                          fileName ) );
     return false;
   }
 
 	// Check for proper document type.
   if ( doc.doctype().name() != "KSysGuardApplet" ) {
     KMessageBox::sorry( this, i18n( "The file %1 does not contain a valid applet "
-                        "definition, which must have a document type 'KSysGuardApplet'." )
-                        .arg( fileName ) );
+                        "definition, which must have a document type 'KSysGuardApplet'." ,
+                          fileName ) );
     return false;
   }
 

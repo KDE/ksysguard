@@ -99,7 +99,7 @@ bool WorkSheet::load( const QString &fileName )
   mFileName = fileName;
   QFile file( mFileName );
   if ( !file.open( QIODevice::ReadOnly ) ) {
-    KMessageBox::sorry( this, i18n( "Cannot open the file %1." ).arg( mFileName ) );
+    KMessageBox::sorry( this, i18n( "Cannot open the file %1." ,  mFileName ) );
     return false;
   }
 
@@ -107,16 +107,16 @@ bool WorkSheet::load( const QString &fileName )
 
   // Read in file and check for a valid XML header.
   if ( !doc.setContent( &file) ) {
-    KMessageBox::sorry( this, i18n( "The file %1 does not contain valid XML." )
-                        .arg( mFileName ) );
+    KMessageBox::sorry( this, i18n( "The file %1 does not contain valid XML." ,
+                          mFileName ) );
     return false;
   }
 
   // Check for proper document type.
   if ( doc.doctype().name() != "KSysGuardWorkSheet" ) {
     KMessageBox::sorry( this, i18n( "The file %1 does not contain a valid worksheet "
-                                    "definition, which must have a document type 'KSysGuardWorkSheet'.")
-                        .arg( mFileName ) );
+                                    "definition, which must have a document type 'KSysGuardWorkSheet'.",
+                          mFileName ) );
     return false;
   }
 
@@ -130,8 +130,8 @@ bool WorkSheet::load( const QString &fileName )
   uint rows = element.attribute( "rows" ).toUInt( &rowsOk );
   uint columns = element.attribute( "columns" ).toUInt( &columnsOk );
   if ( !( rowsOk && columnsOk ) ) {
-    KMessageBox::sorry( this, i18n("The file %1 has an invalid worksheet size.")
-                        .arg( mFileName ) );
+    KMessageBox::sorry( this, i18n("The file %1 has an invalid worksheet size.",
+                          mFileName ) );
     return false;
   }
 
@@ -227,7 +227,7 @@ bool WorkSheet::save( const QString &fileName )
 
   QFile file( mFileName );
   if ( !file.open( QIODevice::WriteOnly ) ) {
-    KMessageBox::sorry( this, i18n( "Cannot save file %1" ).arg( mFileName ) );
+    KMessageBox::sorry( this, i18n( "Cannot save file %1" ,  mFileName ) );
     return false;
   }
 
@@ -317,7 +317,7 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
                                              uint row, uint column )
 {
   if ( !KSGRD::SensorMgr->engageHost( hostName ) ) {
-    QString msg = i18n( "It is impossible to connect to \'%1\'." ).arg( hostName );
+    QString msg = i18n( "It is impossible to connect to \'%1\'." ,  hostName );
     KMessageBox::error( this, msg );
 
     return 0;

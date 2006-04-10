@@ -93,7 +93,7 @@ void SensorDisplay::registerSensor( SensorProperties *sp )
    * a case the user can re-enter the connect information and the
    * connection will be established. */
   if ( !SensorMgr->engageHost( sp->hostName() ) ) {
-    QString msg = i18n( "It is impossible to connect to \'%1\'." ).arg( sp->hostName() );
+    QString msg = i18n( "It is impossible to connect to \'%1\'." ,  sp->hostName() );
     KMessageBox::error( this, msg );
   }
 
@@ -222,7 +222,7 @@ void SensorDisplay::updateWhatsThis()
     "the right mouse button here "
     "and select the <i>Properties</i> entry from the popup "
     "menu. Select <i>Remove</i> to delete the display from the worksheet."
-    "</p>%1</qt>" ).arg( additionalWhatsThis() ) );
+    "</p>%1</qt>" ,  additionalWhatsThis() ) );
 }
 
 void SensorDisplay::hosts( QStringList& list )

@@ -415,7 +415,7 @@ void TopLevel::answerReceived( int id, const QString &answer )
 
   switch ( id ) {
     case 0:
-      s = i18n( "1 Process", "%n Processes", answer.toInt() );
+      s = i18np( "1 Process", "%n Processes", answer.toInt() );
       statusBar()->changeItem( s, 0 );
       break;
 
@@ -425,9 +425,9 @@ void TopLevel::answerReceived( int id, const QString &answer )
 
     case 2:
       mUsed = answer.toLong();
-      s = i18n( "Memory: %1 %2 used, %3 %4 free" )
-              .arg( KGlobal::locale()->formatNumber( mUsed, 0 ) ).arg( unit )
-              .arg( KGlobal::locale()->formatNumber( mFree, 0 ) ).arg( unit );
+      s = i18n( "Memory: %1 %2 used, %3 %4 free" ,
+                KGlobal::locale()->formatNumber( mUsed, 0 ) ,  unit ,
+                KGlobal::locale()->formatNumber( mFree, 0 ) ,  unit );
       statusBar()->changeItem( s, 1 );
       break;
 
@@ -491,9 +491,9 @@ void TopLevel::setSwapInfo( long used, long free, const QString &unit )
   if ( used == 0 && free == 0 ) // no swap available
     msg = i18n( "No swap space available" );
   else {
-    msg = i18n( "Swap: %1 %2 used, %3 %4 free" )
-              .arg( KGlobal::locale()->formatNumber( used, 0 ) ).arg( unit )
-              .arg( KGlobal::locale()->formatNumber( free, 0 ) ).arg( unit );
+    msg = i18n( "Swap: %1 %2 used, %3 %4 free" ,
+                KGlobal::locale()->formatNumber( used, 0 ) ,  unit ,
+                KGlobal::locale()->formatNumber( free, 0 ) ,  unit );
   }
 
   statusBar()->changeItem( msg, 2 );

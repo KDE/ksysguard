@@ -130,7 +130,7 @@ void Workspace::newWorkSheet()
 
   int i = 1;
   do {
-    sheetName = i18n( "Sheet %1" ).arg( i++ );
+    sheetName = i18n( "Sheet %1" ,  i++ );
     Q3PtrListIterator<WorkSheet> it( mSheetList );
     found = false;
     for ( ; it.current() && !found; ++it )
@@ -167,8 +167,8 @@ bool Workspace::saveOnQuit()
       if ( !mAutoSave || (*it)->fileName().isEmpty() ) {
         int res = KMessageBox::warningYesNoCancel( this,
                   i18n( "The worksheet '%1' contains unsaved data.\n"
-                        "Do you want to save the worksheet?")
-                  .arg( tabLabel( *it ) ), QString(), KStdGuiItem::save(), KStdGuiItem::discard() );
+                        "Do you want to save the worksheet?",
+                    tabLabel( *it ) ), QString(), KStdGuiItem::save(), KStdGuiItem::discard() );
         if ( res == KMessageBox::Yes )
           saveWorkSheet( *it );
         else if ( res == KMessageBox::Cancel )
@@ -308,8 +308,8 @@ void Workspace::deleteWorkSheet()
       if ( !mAutoSave || current->fileName().isEmpty() ) {
         int res = KMessageBox::warningYesNoCancel( this,
                             i18n( "The worksheet '%1' contains unsaved data.\n"
-                                  "Do you want to save the worksheet?" )
-                            .arg( tabLabel( current ) ), QString(), KStdGuiItem::save(), KStdGuiItem::discard() );
+                                  "Do you want to save the worksheet?" ,
+                              tabLabel( current ) ), QString(), KStdGuiItem::save(), KStdGuiItem::discard() );
         if ( res == KMessageBox::Cancel )
           return;
 

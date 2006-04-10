@@ -64,7 +64,7 @@ SensorManager::SensorManager()
   mDict.insert( "pscount", new QString( i18n( "Process Count" ) ) );
   mDict.insert( "ps", new QString( i18n( "Process Controller" ) ) );
   mDict.insert( "disk", new QString( i18n( "Disk Throughput" ) ) );
-  mDict.insert( "load", new QString( i18n( "CPU Load", "Load" ) ) );
+  mDict.insert( "load", new QString( i18nc( "CPU Load", "Load" ) ) );
   mDict.insert( "total", new QString( i18n( "Total Accesses" ) ) );
   mDict.insert( "rio", new QString( i18n( "Read Accesses" ) ) );
   mDict.insert( "wio", new QString( i18n( "Write Accesses" ) ) );
@@ -113,16 +113,16 @@ SensorManager::SensorManager()
 
   for ( int i = 0; i < 32; i++ ) {
     mDict.insert( "cpu" + QString::number( i ),
-                 new QString( i18n( "CPU%1" ).arg( i )) );
+                 new QString( i18n( "CPU%1" ,  i )) );
     mDict.insert( "disk" + QString::number( i ),
-                 new QString( i18n( "Disk%1" ) .arg( i ) ) );
+                 new QString( i18n( "Disk%1"  ,  i ) ) );
   }
 
   for ( int i = 0; i < 6; i++) {
     mDict.insert( "fan" + QString::number( i ),
-                 new QString( i18n( "Fan%1" ).arg( i ) ) );
+                 new QString( i18n( "Fan%1" ,  i ) ) );
     mDict.insert( "temp" + QString::number( i ),
-                 new QString( i18n( "Temperature%1" ).arg( i ) ) );
+                 new QString( i18n( "Temperature%1" ,  i ) ) );
   }
 
   mDict.insert( "int00", new QString( i18n( "Total" ) ) );
@@ -131,17 +131,17 @@ SensorManager::SensorManager()
   for ( int i = 1; i < 25; i++ ) {
     num.sprintf( "%.2d", i );
 		mDict.insert( "int" + num,
-                 new QString( i18n( "Int%1" ).arg( i - 1, 3 ) ) );
+                 new QString( ki18n( "Int%1" ).subs( i - 1, 3 ).toString() ) );
 	}
 
   mDescriptions.setAutoDelete( true );
   // TODO: translated descriptions not yet implemented.
 
   mUnits.setAutoDelete( true );
-  mUnits.insert( "1/s", new QString( i18n( "the unit 1 per second", "1/s" ) ) );
+  mUnits.insert( "1/s", new QString( i18nc( "the unit 1 per second", "1/s" ) ) );
   mUnits.insert( "kBytes", new QString( i18n( "kBytes" ) ) );
-  mUnits.insert( "min", new QString( i18n( "the unit minutes", "min" ) ) );
-  mUnits.insert( "MHz", new QString( i18n( "the frequency unit", "MHz" ) ) );
+  mUnits.insert( "min", new QString( i18nc( "the unit minutes", "min" ) ) );
+  mUnits.insert( "MHz", new QString( i18nc( "the frequency unit", "MHz" ) ) );
 
   mTypes.setAutoDelete( true );
   mTypes.insert( "integer", new QString( i18n( "Integer Value" ) ) );
@@ -282,8 +282,8 @@ void SensorManager::hostLost( const SensorAgent *agent )
 
   if ( mBroadcaster ) {
     QCustomEvent *event = new QCustomEvent( QEvent::User );
-    event->setData( new QString( i18n( "Connection to %1 has been lost." )
-                    .arg( agent->hostName() ) ) );
+    event->setData( new QString( i18n( "Connection to %1 has been lost." ,
+                      agent->hostName() ) ) );
     kapp->postEvent( mBroadcaster, event );
   }
 }

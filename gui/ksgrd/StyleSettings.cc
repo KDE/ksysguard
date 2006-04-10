@@ -166,7 +166,7 @@ void StyleSettings::setSensorColors( const QList<QColor> &list )
   for ( int i = 0; i < list.count(); ++i ) {
     QPixmap pm( 12, 12 );
 		pm.fill( list.at( i ) );
-    mColorListBox->insertItem( pm, i18n( "Color %1" ).arg( i ) );
+    mColorListBox->insertItem( pm, i18n( "Color %1" ,  i ) );
 	}
 }
 

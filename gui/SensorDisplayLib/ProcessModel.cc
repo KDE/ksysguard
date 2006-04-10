@@ -567,29 +567,29 @@ QString ProcessModel::getTooltipForUser(long long uid, long long gid) const {
 		if(!mIsLocalhost) {
 			QVariant username = getUsernameForUser(uid);
 			userTooltip = "<qt>";
-			userTooltip += i18n("Login Name: %1<br/>").arg(username.toString());
-			userTooltip += i18n("User ID: %1").arg(uid);
+			userTooltip += i18n("Login Name: %1<br/>", username.toString());
+			userTooltip += i18n("User ID: %1", (long int)uid);
 		} else {
 			KUser user(uid);
 			if(!user.isValid())
 				userTooltip = i18n("This user is not recognised for some reason");
 			else {
 				userTooltip = "<qt>";
-				if(!user.fullName().isEmpty()) userTooltip += i18n("<b>%1</b><br/>").arg(user.fullName());
-				userTooltip += i18n("Login Name: %1<br/>").arg(user.loginName());
-				if(!user.roomNumber().isEmpty()) userTooltip += i18n("Room Number: %1<br/>").arg(user.roomNumber());
-				if(!user.workPhone().isEmpty()) userTooltip += i18n("Work Phone: %1<br/>").arg(user.workPhone());
-				userTooltip += i18n("User ID: %1").arg(uid);
+				if(!user.fullName().isEmpty()) userTooltip += i18n("<b>%1</b><br/>", user.fullName());
+				userTooltip += i18n("Login Name: %1<br/>", user.loginName());
+				if(!user.roomNumber().isEmpty()) userTooltip += i18n("Room Number: %1<br/>", user.roomNumber());
+				if(!user.workPhone().isEmpty()) userTooltip += i18n("Work Phone: %1<br/>", user.workPhone());
+				userTooltip += i18n("User ID: %1", (long int)uid);
 			}
 		}
 	}
 	if(gid != -1) {
 		if(!mIsLocalhost)
-			return userTooltip + i18n("<br/>Group ID: %1").arg(gid);
+			return userTooltip + i18n("<br/>Group ID: %1", (long int)gid);
 		QString groupname = KUserGroup(gid).name();
 		if(groupname.isEmpty())
-			return userTooltip + i18n("<br/>Group ID: %1").arg(gid);
-		return userTooltip +  i18n("<br/>Group Name: %1").arg(groupname)+ i18n("<br/>Group ID: %1").arg(gid);
+			return userTooltip + i18n("<br/>Group ID: %1", (long int)gid);
+		return userTooltip +  i18n("<br/>Group Name: %1", groupname)+ i18n("<br/>Group ID: %1", (long int)gid);
 	}
 	return userTooltip;
 }
@@ -648,12 +648,12 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		if(process->tracerpid > 0) {
 			if(mPidToProcess.contains(process->tracerpid)) { //it is possible for this to be not the case in certain race conditions
 				QPointer<Process> process_tracer = mPidToProcess[process->tracerpid];
-				tracer = i18n("tooltip. name,pid ","This process is being debugged by %1 (%2)").arg(process_tracer->name).arg(process->tracerpid);
+				tracer = i18nc("tooltip. name,pid ","This process is being debugged by %1 (%2)", process_tracer->name, (long int)process->tracerpid);
 			}
 		}
 		switch(mHeadingsToType[index.column()]) {
 		case HeadingName: {
-			QString tooltip = i18n("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3").arg(process->name).arg(process->pid).arg(process->parent_pid);
+			QString tooltip = i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3", process->name, (long int)process->pid, (long int)process->parent_pid);
 			
 			if(!tracer.isEmpty())
 				return tooltip + "<br/>" + tracer;
@@ -665,15 +665,14 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			return getTooltipForUser(process->uid, process->gid);
 		}
 		case HeadingXMemory: {
-			QString tooltip = i18n("<qt>Number of pixmaps: %1<br/>Amount of memory used by pixmaps: %2 KiB<br/>Other X server memory used: %3 KiB");
 #warning Use klocale::formatByteString  when kdelibs trunk is synced 
-			tooltip = tooltip.arg(process->xResNumPxm).arg(process->xResPxmMemBytes/1024.0).arg(process->xResMemOtherBytes/1024.0);
+			QString tooltip = i18n("<qt>Number of pixmaps: %1<br/>Amount of memory used by pixmaps: %2 KiB<br/>Other X server memory used: %3 KiB", process->xResNumPxm, process->xResPxmMemBytes/1024.0, process->xResMemOtherBytes/1024.0);
 			if(!tracer.isEmpty())
 				return tooltip + "<br/>" + tracer;
 			return tooltip;
 		}
 		case HeadingCPUUsage: {
-			QString tooltip = i18n("<qt>User CPU usage: %1%<br/>System CPU usage: %2%").arg(process->userUsage).arg(process->sysUsage);
+			QString tooltip = i18n("<qt>User CPU usage: %1%<br/>System CPU usage: %2%", process->userUsage, process->sysUsage);
 			if(!tracer.isEmpty())
 				return tooltip + "<br/>" + tracer;
 			return tooltip;
@@ -806,7 +805,7 @@ bool ProcessModel::setHeader(const QStringList &header, const QList<char> &colty
 			coltype << DataColumnPPid;
 			mPPidColumn = i;
 		} else if(header[i] == "UID") {
-			headings.prepend(i18n("process heading", "User"));   //The heading for the top of the qtreeview
+			headings.prepend(i18nc("process heading", "User"));   //The heading for the top of the qtreeview
 			headingsToType.prepend(HeadingUser);
 			coltype << DataColumnUid;
 		} else if(header[i] == "Name") {
@@ -815,7 +814,7 @@ bool ProcessModel::setHeader(const QStringList &header, const QList<char> &colty
 			coltype << DataColumnTracerPid;
 		} else if(header[i] == "User%") {
 			coltype << DataColumnUserUsage;
-			headings << i18n("process heading", "CPU %");
+			headings << i18nc("process heading", "CPU %");
 			headingsToType << HeadingCPUUsage;
 		} else if(header[i] == "System%") {
 			coltype << DataColumnSystemUsage;
@@ -823,11 +822,11 @@ bool ProcessModel::setHeader(const QStringList &header, const QList<char> &colty
 			coltype << DataColumnNice;
 		} else if(header[i] == "VmSize") {
 			coltype << DataColumnVmSize;
-			headings << i18n("process heading", "Memory");
+			headings << i18nc("process heading", "Memory");
 			headingsToType << HeadingMemory;
 		} else if(header[i] == "VmRss") {
 			coltype << DataColumnVmRss;	
-			headings << i18n("process heading", "RSS Memory");
+			headings << i18nc("process heading", "RSS Memory");
 			headingsToType << HeadingRSSMemory;
 		} else if(header[i] == "Command") {
 			coltype << DataColumnCommand;
@@ -855,7 +854,7 @@ bool ProcessModel::setHeader(const QStringList &header, const QList<char> &colty
 		return false;
 	}
 	
-	headings.prepend(i18n("process heading", "Name"));
+	headings.prepend(i18nc("process heading", "Name"));
 	headingsToType.prepend(HeadingName);
 	
 	beginInsertColumns(QModelIndex(), 0, header.count()-1);
@@ -899,11 +898,11 @@ bool ProcessModel::setXResHeader(const QStringList &header, const QList<char> &)
 	beginInsertColumns(QModelIndex(), mHeadings.count()-1, mHeadings.count() + (insertXMemory && insertXIdentifier)?1:0);
 	
 		if(insertXIdentifier) {
-			mHeadings << i18n("process heading", "Application");
+			mHeadings << i18nc("process heading", "Application");
 			mHeadingsToType << HeadingXIdentifier;
 		}
 		if(insertXMemory) {
-			mHeadings << i18n("process heading", "X Server Memory");
+			mHeadings << i18nc("process heading", "X Server Memory");
 			mHeadingsToType << HeadingXMemory;
 		}
 	endInsertColumns();
