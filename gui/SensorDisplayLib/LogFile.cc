@@ -259,7 +259,7 @@ LogFile::answerReceived(int id, const QString& answer)
 
 				for (QStringList::Iterator it = filterRules.begin(); it != filterRules.end(); it++) {
 					QRegExp *expr = new QRegExp((*it).toLatin1());
-					if (expr->search(lines[i]) != -1) {
+					if (expr->indexIn(lines[i]) != -1) {
 						KNotifyClient::event(winId(), "pattern_match", QString("rule '%1' matched").arg(*it));
 					}
 					delete expr;

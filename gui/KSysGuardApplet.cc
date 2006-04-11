@@ -183,7 +183,7 @@ int KSysGuardApplet::findDock( const QPoint& point )
 
 void KSysGuardApplet::dragEnterEvent( QDragEnterEvent *e )
 {
-  e->accept( Q3TextDrag::canDecode( e ) );
+  e->setAccepted( Q3TextDrag::canDecode( e ) );
 }
 
 void KSysGuardApplet::dropEvent( QDropEvent *e )

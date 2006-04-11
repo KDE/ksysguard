@@ -424,7 +424,7 @@ void WorkSheet::applyStyle()
 
 void WorkSheet::dragEnterEvent( QDragEnterEvent *e )
 {
-  e->accept( Q3TextDrag::canDecode( e ) );
+  e->setAccepted( Q3TextDrag::canDecode( e ) );
 }
 
 void WorkSheet::dropEvent( QDropEvent *e )

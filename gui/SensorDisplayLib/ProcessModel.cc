@@ -524,7 +524,7 @@ void ProcessModel::removeRow( long long pid )
 	//so no more children left, we are free to delete now
 	beginRemoveRows(parentModel, row, row);
 		mPidToProcess.remove(pid);
-		parents_children.remove(pid);  //remove ourselves from the parent
+		parents_children.removeAll(pid);  //remove ourselves from the parent
 		mPids.remove(pid);
 	endRemoveRows();
 }
