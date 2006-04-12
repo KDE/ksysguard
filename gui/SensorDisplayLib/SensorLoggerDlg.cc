@@ -30,7 +30,9 @@ SensorLoggerDlg::SensorLoggerDlg( QWidget *parent, const char *name )
 {
   QWidget *main = new QWidget( this );
 
-  QVBoxLayout *topLayout = new QVBoxLayout( main, 0, KDialog::spacingHint() );
+  QVBoxLayout *topLayout = new QVBoxLayout( main );
+  topLayout->setMargin( 0 );
+  topLayout->setSpacing( KDialog::spacingHint() );
 
   m_loggerWidget = new SensorLoggerDlgWidget( main, "m_loggerWidget" );
   topLayout->addWidget( m_loggerWidget );

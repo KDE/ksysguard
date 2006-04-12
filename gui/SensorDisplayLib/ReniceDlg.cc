@@ -56,17 +56,21 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 	sldLay = new QHBoxLayout();
 	vLay->addLayout(sldLay);
 
-	slider = new QSlider(-20, 19, 1, 0, Qt::Horizontal, page, "prio" );
+	slider = new QSlider(Qt::Horizontal, page ); 
+	slider->setMinimum(-20);
+	slider->setMaximum(19);
+	slider->setPageStep(1);
+	slider->setObjectName("prio");
 	slider->setMaximumSize(210, 25);
 	slider->setMinimumSize(210, 25);
-	slider->setTickmarks(QSlider::TicksBelow);
+	slider->setTickPosition(QSlider::TicksBelow);
 	slider->setFocusPolicy(Qt::TabFocus);
 	slider->setFixedHeight(slider->sizeHint().height());
 	slider->setValue(value);
 	sldLay->addWidget(slider);
 	sldLay->addSpacing(10);
 
-	lcd = new QLCDNumber(3, page, "lcd");
+	lcd = new QLCDNumber(3, page);
 	lcd->setMaximumSize(55, 23);
 	lcd->setMinimumSize(55, 23);
 	lcd->display(value);

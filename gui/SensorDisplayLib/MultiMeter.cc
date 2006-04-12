@@ -42,7 +42,7 @@ MultiMeter::MultiMeter(QWidget* parent, const QString& title, bool isApplet)
 
 	normalDigitColor = KSGRD::Style->firstForegroundColor();
 	alarmDigitColor = KSGRD::Style->alarmColor();
-	lcd = new QLCDNumber(this, "meterLCD");
+	lcd = new QLCDNumber(this);
 	Q_CHECK_PTR(lcd);
 	lcd->setSegmentStyle(QLCDNumber::Filled);
 	setDigitColor(KSGRD::Style->backgroundColor());
