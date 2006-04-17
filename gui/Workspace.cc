@@ -23,7 +23,6 @@
 
 #include <qlineedit.h>
 #include <qspinbox.h>
-#include <qwhatsthis.h>
 
 #include <kdebug.h>
 #include <kfiledialog.h>
@@ -49,7 +48,7 @@ Workspace::Workspace( QWidget* parent, const char* name )
   connect( this, SIGNAL( currentChanged( QWidget* ) ),
            SLOT( updateCaption( QWidget* ) ) );
 
-  QWhatsThis::add( this, i18n( "This is your work space. It holds your worksheets. You need "
+  this->setWhatsThis( i18n( "This is your work space. It holds your worksheets. You need "
                                "to create a new worksheet (Menu File->New) before "
                                "you can drag sensors here." ) );
 }

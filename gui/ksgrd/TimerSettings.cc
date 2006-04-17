@@ -51,7 +51,7 @@ TimerSettings::TimerSettings( QWidget *parent, const char *name )
   mInterval->setSuffix( i18n( " sec" ) );
   layout->addWidget( mInterval, 1, 1 );
   mLabel->setBuddy( mInterval );
-  QWhatsThis::add( mInterval, i18n( "All displays of the sheet are updated at the rate specified here." ) );
+  mInterval->setWhatsThis( i18n( "All displays of the sheet are updated at the rate specified here." ) );
 
   connect( mUseGlobalUpdate, SIGNAL( toggled( bool ) ),
            SLOT( globalUpdateChanged( bool ) ) );
