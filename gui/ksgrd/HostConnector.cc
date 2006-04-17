@@ -134,7 +134,7 @@ void HostConnector::slotHostNameChanged( const QString &_text )
 
 void HostConnector::setHostNames( const QStringList &list )
 {
-  mHostNames->insertStringList( list );
+  mHostNames->addItems( list );
 }
 
 QStringList HostConnector::hostNames() const
@@ -149,7 +149,7 @@ QStringList HostConnector::hostNames() const
 
 void HostConnector::setCommands( const QStringList &list )
 {
-  mCommands->insertStringList( list );
+  mCommands->addItems( list );
 }
 
 QStringList HostConnector::commands() const
