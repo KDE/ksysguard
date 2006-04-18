@@ -84,7 +84,7 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} sysguard_panelapplet )
 
 target_link_libraries(sysguard_panelapplet  ${KDE4_KIO_LIBS} ${QT_QTXML_LIBRARY} ksgrd  kickermain  )
 
-install_targets(${LIB_INSTALL_DIR}/kde4 sysguard_panelapplet )
+install_targets(${PLUGIN_INSTALL_DIR} sysguard_panelapplet )
 
 
 ########### install files ###############
