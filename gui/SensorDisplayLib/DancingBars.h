@@ -50,7 +50,7 @@ class DancingBars : public KSGRD::SensorDisplay
 
     void updateSamples( const QVector<double> &samples );
 
-    virtual QSize sizeHint();
+    virtual QSize sizeHint() const;
 
     virtual void answerReceived( int id, const QString &answer );
 

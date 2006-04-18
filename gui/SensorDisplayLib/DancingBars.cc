@@ -219,7 +219,7 @@ void DancingBars::resizeEvent( QResizeEvent* )
   mPlotter->setGeometry( 0, 0, width(), height() );
 }
 
-QSize DancingBars::sizeHint()
+QSize DancingBars::sizeHint() const
 {
   return mPlotter->sizeHint();
 }
