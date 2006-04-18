@@ -271,7 +271,7 @@ void FancyPlotter::resizeEvent( QResizeEvent* )
   mPlotter->setGeometry( 0, 0, width(), height() );
 }
 
-QSize FancyPlotter::sizeHint()
+QSize FancyPlotter::sizeHint() const
 {
   return mPlotter->sizeHint();
 }
