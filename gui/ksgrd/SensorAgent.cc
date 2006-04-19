@@ -153,7 +153,7 @@ void SensorAgent::executeCommand()
     SensorRequest *req = mInputFIFO.dequeue();
 
 #if SA_TRACE
-    kDebug(1215) << ">> " << req->request().ascii() << "(" << mInputFIFO.count()
+    kDebug(1215) << ">> " << req->request().toAscii() << "(" << mInputFIFO.count()
                   << "/" << mProcessingFIFO.count() << ")" << endl;
 #endif
     // send request to daemon

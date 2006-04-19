@@ -204,7 +204,7 @@ bool SensorManager::engage( const QString &hostName, const QString &shell,
     else
       agent = new SensorSocketAgent( this );
 
-    if ( !agent->start( hostName.ascii(), shell, command, port ) ) {
+    if ( !agent->start( hostName.toAscii(), shell, command, port ) ) {
       delete agent;
       return false;
     }
