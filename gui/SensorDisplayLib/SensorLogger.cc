@@ -398,7 +398,7 @@ SensorLogger::RMBClicked(Q3ListViewItem* item, const QPoint& point, int)
 	{
 		LogSensor* sensor = getLogSensor(item);
 
-		if ( sensor->isLogging() )
+		if ( sensor && sensor->isLogging() )
 			pm.insertItem(i18n("St&op Logging"), 6);
 		else
 			pm.insertItem(i18n("S&tart Logging"), 5);
