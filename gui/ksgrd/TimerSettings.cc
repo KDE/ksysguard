@@ -41,7 +41,7 @@ TimerSettings::TimerSettings( QWidget *parent, const char *name )
   QGridLayout *layout = new QGridLayout( page, 2, 2, 0, spacingHint() );
 
   mUseGlobalUpdate = new QCheckBox( i18n( "Use update interval of worksheet" ), page );
-  layout->addMultiCellWidget( mUseGlobalUpdate, 0, 0, 0, 1 );
+  layout->addWidget( mUseGlobalUpdate, 0, 0, 1, 2 );
 
   mLabel = new QLabel( i18n( "Update interval:" ), page );
   layout->addWidget( mLabel, 1, 0 );

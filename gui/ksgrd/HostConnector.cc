@@ -105,13 +105,13 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   mCommands->setAutoCompletion( true );
   mCommands->setDuplicatesEnabled( false );
   mCommands->setWhatsThis( i18n( "Enter the command that runs ksysguardd on the host you want to monitor." ) );
-  groupLayout->addMultiCellWidget( mCommands, 2, 2, 2, 3 );
+  groupLayout->addWidget( mCommands, 2, 2, 1, 2 );
   label->setBuddy( mCommands );
 
   label = new QLabel( i18n( "e.g. ssh -l root remote.host.org ksysguardd" ), group );
-  groupLayout->addMultiCellWidget( label, 3, 3, 2, 3 );
+  groupLayout->addWidget( label, 3, 2, 1, 2 );
 
-  layout->addMultiCellWidget( group, 1, 1, 0, 1 );
+  layout->addWidget( group, 1, 0, 1, 2 );
 
   connect( mUseCustom, SIGNAL( toggled( bool ) ),
            mCommands, SLOT( setEnabled( bool ) ) );

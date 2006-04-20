@@ -168,7 +168,7 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   mSensorView->addColumn( i18n( "Unit" ) );
   mSensorView->addColumn( i18n( "Status" ) );
   mSensorView->setAllColumnsShowFocus( true );
-  pageLayout->addMultiCellWidget( mSensorView, 0, 2, 0, 0 );
+  pageLayout->addWidget( mSensorView, 0, 0, 3, 1);
 
   mEditButton = new QPushButton( i18n( "Edit..." ), page );
   mEditButton->setEnabled( false );

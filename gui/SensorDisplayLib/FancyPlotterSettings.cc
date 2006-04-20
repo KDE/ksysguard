@@ -71,7 +71,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   mUsePolygonStyle->setChecked( true );
   mUseOriginalStyle = new QRadioButton( i18n( "Original - single line per data point" ), buttonBox );
 
-  pageLayout->addMultiCellWidget( buttonBox, 1, 1, 0, 1 );
+  pageLayout->addWidget( buttonBox, 1, 0, 1, 2 );
 
   // Scales page
   page = addPage( i18n( "Scales" ) );
@@ -83,7 +83,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
 
   mUseAutoRange = new QCheckBox( i18n( "Automatic range detection" ), groupBox );
   mUseAutoRange->setWhatsThis( i18n( "Check this box if you want the display range to adapt dynamically to the currently displayed values; if you do not check this, you have to specify the range you want in the fields below." ) );
-  boxLayout->addMultiCellWidget( mUseAutoRange, 0, 0, 0, 4 );
+  boxLayout->addWidget( mUseAutoRange, 0, 0, 1, 5 );
 
   label = new QLabel( i18n( "Minimum value:" ), groupBox );
   boxLayout->addWidget( label, 1, 0 );
@@ -162,7 +162,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
 
   boxLayout->setRowStretch( 2, 1 );
 
-  pageLayout->addMultiCellWidget( groupBox, 0, 0, 0, 1 );
+  pageLayout->addWidget( groupBox, 0, 0, 1, 2 );
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Text" ), page );
   boxLayout = new QGridLayout( groupBox->layout(), 3, 4, spacingHint() );
@@ -232,7 +232,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   mSensorView->addColumn( i18n( "Unit" ) );
   mSensorView->addColumn( i18n( "Status" ) );
   mSensorView->setAllColumnsShowFocus( true );
-  pageLayout->addMultiCellWidget( mSensorView, 0, 5, 0, 0 );
+  pageLayout->addWidget( mSensorView, 0, 0, 6, 1 );
   mSensorView->setSortColumn ( -1 );
   mEditButton = new QPushButton( i18n( "Set Color..." ), page );
   mEditButton->setEnabled( false );
