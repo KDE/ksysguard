@@ -91,7 +91,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   mMinValue = new KLineEdit( groupBox );
   mMinValue->setAlignment( Qt::AlignRight );
   mMinValue->setEnabled( false );
-  mMinValue->setWhatsThis( i18n( "Enter the minimum value for the display here. If both values are 0 automatic range detection is enabled." ) );
+  mMinValue->setWhatsThis( i18n( "Enter the minimum value for the display here. If both values are 0, automatic range detection is enabled." ) );
   boxLayout->addWidget( mMinValue, 1, 1 );
   label->setBuddy( mMinValue );
 
@@ -101,7 +101,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   mMaxValue = new KLineEdit( groupBox );
   mMaxValue->setAlignment( Qt::AlignRight );
   mMaxValue->setEnabled( false );
-  mMaxValue->setWhatsThis( i18n( "Enter the maximum value for the display here. If both values are 0 automatic range detection is enabled." ) );
+  mMaxValue->setWhatsThis( i18n( "Enter the maximum value for the display here. If both values are 0, automatic range detection is enabled." ) );
   boxLayout->addWidget( mMaxValue, 1, 4 );
   label->setBuddy( mMaxValue );
 
