@@ -79,7 +79,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Vertical Scale" ), page );
   boxLayout = new QGridLayout( groupBox->layout(), 2, 5, spacingHint() );
-  boxLayout->setColStretch( 2, 1 );
+  boxLayout->setColumnStretch( 2, 1 );
 
   mUseAutoRange = new QCheckBox( i18n( "Automatic range detection" ), groupBox );
   mUseAutoRange->setWhatsThis( i18n( "Check this box if you want the display range to adapt dynamically to the currently displayed values; if you do not check this, you have to specify the range you want in the fields below." ) );
@@ -127,7 +127,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Lines" ), page );
   boxLayout = new QGridLayout( groupBox->layout(), 2, 5, spacingHint() );
-  boxLayout->setColStretch( 1, 1 );
+  boxLayout->setColumnStretch( 1, 1 );
 
   mShowVerticalLines = new QCheckBox( i18n( "Vertical lines" ), groupBox );
   mShowVerticalLines->setWhatsThis( i18n( "Check this to activate the vertical lines if display is large enough." ) );
@@ -166,7 +166,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Text" ), page );
   boxLayout = new QGridLayout( groupBox->layout(), 3, 4, spacingHint() );
-  boxLayout->setColStretch( 1, 1 );
+  boxLayout->setColumnStretch( 1, 1 );
 
   mShowLabels = new QCheckBox( i18n( "Labels" ), groupBox );
   mShowLabels->setWhatsThis( i18n( "Check this box if horizontal lines should be decorated with the values they mark." ) );

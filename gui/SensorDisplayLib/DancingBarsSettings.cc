@@ -57,7 +57,7 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Display Range" ), page );
   boxLayout = new QGridLayout( groupBox->layout(), 1, 5 );
-  boxLayout->setColStretch( 2, 1 );
+  boxLayout->setColumnStretch( 2, 1 );
 
   QLabel *label = new QLabel( i18n( "Minimum value:" ), groupBox );
   boxLayout->addWidget( label, 0, 0 );
@@ -85,7 +85,7 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Alarm for Minimum Value" ), page );
   boxLayout = new QGridLayout( groupBox->layout(), 1, 4 );
-  boxLayout->setColStretch( 1, 1 );
+  boxLayout->setColumnStretch( 1, 1 );
 
   mUseLowerLimit = new QCheckBox( i18n( "Enable alarm" ), groupBox );
   mUseLowerLimit->setWhatsThis( i18n( "Enable the minimum value alarm." ) );
@@ -103,7 +103,7 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Alarm for Maximum Value" ), page );
   boxLayout = new QGridLayout( groupBox->layout(), 1, 4 );
-  boxLayout->setColStretch( 1, 1 );
+  boxLayout->setColumnStretch( 1, 1 );
 
   mUseUpperLimit = new QCheckBox( i18n( "Enable alarm" ), groupBox );
   mUseUpperLimit->setWhatsThis( i18n( "Enable the maximum value alarm." ) );

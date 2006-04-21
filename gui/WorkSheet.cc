@@ -581,7 +581,7 @@ void WorkSheet::createGrid( uint rows, uint columns )
   for ( uint r = 0; r < mRows; ++r )
     mGridLayout->setRowStretch( r, 100 );
   for ( uint c = 0; c < mColumns; ++c )
-    mGridLayout->setColStretch( c, 100 );
+    mGridLayout->setColumnStretch( c, 100 );
 }
 
 void WorkSheet::resizeGrid( uint newRows, uint newColumns )
@@ -622,7 +622,7 @@ void WorkSheet::resizeGrid( uint newRows, uint newColumns )
   for ( r = mRows; r < newRows; ++r )
     mGridLayout->setRowStretch( r, 100 );
   for ( c = mColumns; c < newColumns; ++c )
-    mGridLayout->setColStretch( c, 100 );
+    mGridLayout->setColumnStretch( c, 100 );
 
   /* Obviously Qt does not shrink the size of the QGridLayout
    * automatically.  So we simply force the rows and columns that
@@ -631,7 +631,7 @@ void WorkSheet::resizeGrid( uint newRows, uint newColumns )
   for ( r = newRows; r < mRows; ++r )
     mGridLayout->setRowStretch( r, 0 );
   for ( c = newColumns; c < mColumns; ++c )
-    mGridLayout->setColStretch( c, 0 );
+    mGridLayout->setColumnStretch( c, 0 );
 
   mRows = newRows;
   mColumns = newColumns;
