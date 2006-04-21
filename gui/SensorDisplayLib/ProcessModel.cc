@@ -758,7 +758,7 @@ QPixmap ProcessModel::getIcon(const QString&iconname) const {
 			 * added this safeguard. */
 			QImage img;
 			img = pix;
-			img.smoothScale(16, 16);
+			img.scaled(16, 16, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 			pix = img;
 		}
 		/* We copy the icon into a 24x16 pixmap to add a 4 pixel margin on
