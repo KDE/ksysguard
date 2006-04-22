@@ -498,7 +498,7 @@ QList< QStringList > FancyPlotterSettings::sensors() const
     entry << it.current()->text( 2 );
     entry << it.current()->text( 3 );
     entry << it.current()->text( 4 );
-    QRgb rgb = it.current()->pixmap( 2 )->convertToImage().pixel( 1, 1 );
+    QRgb rgb = it.current()->pixmap( 2 )->toImage().pixel( 1, 1 );
     QColor color( qRed( rgb ), qGreen( rgb ), qBlue( rgb ) );
     entry << ( color.name() );
 
@@ -515,7 +515,7 @@ void FancyPlotterSettings::editSensor()
   if ( !lvi )
     return;
 
-  QColor color = lvi->pixmap( 2 )->convertToImage().pixel( 1, 1 );
+  QColor color = lvi->pixmap( 2 )->toImage().pixel( 1, 1 );
   int result = KColorDialog::getColor( color, parentWidget() );
   if ( result == KColorDialog::Accepted ) {
     QPixmap newPm( 12, 12 );

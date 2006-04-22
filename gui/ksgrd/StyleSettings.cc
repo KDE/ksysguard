@@ -175,7 +175,7 @@ QList<QColor> StyleSettings::sensorColors()
   QList<QColor> list;
 
   for ( uint i = 0; i < mColorListBox->count(); ++i )
-    list.append( QColor( mColorListBox->pixmap( i )->convertToImage().pixel( 1, 1 ) ) );
+    list.append( QColor( mColorListBox->pixmap( i )->toImage().pixel( 1, 1 ) ) );
 
   return list;
 }
@@ -187,7 +187,7 @@ void StyleSettings::editSensorColor()
   if ( pos < 0 )
     return;
 
-  QColor color = mColorListBox->pixmap( pos )->convertToImage().pixel( 1, 1 );
+  QColor color = mColorListBox->pixmap( pos )->toImage().pixel( 1, 1 );
 
   if ( KColorDialog::getColor( color ) == KColorDialog::Accepted ) {
     QPixmap pm( 12, 12 );
