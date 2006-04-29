@@ -30,8 +30,8 @@
 
 #include "BarGraph.h"
 
-BarGraph::BarGraph( QWidget *parent, const char *name )
-  : QWidget( parent, name )
+BarGraph::BarGraph( QWidget *parent )
+  : QWidget( parent )
 {
   bars = 0;
   minValue = 0.0;
