@@ -49,7 +49,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
 
   /* All RMB clicks to the mPlotter widget will be handled by 
    * SensorDisplay::eventFilter. */
-	mPlotter->installEventFilter( this );
+  mPlotter->installEventFilter( this );
 
   setPlotterWidget( mPlotter );
 
@@ -177,7 +177,7 @@ void FancyPlotter::applySettings()
     }
   }
 
-  mPlotter->repaint();
+  mPlotter->update();
   setModified( true );
 }
 
