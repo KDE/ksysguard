@@ -232,7 +232,7 @@ bool WorkSheet::save( const QString &fileName )
   }
 
   QTextStream s( &file );
-  s.setEncoding( QTextStream::UnicodeUTF8 );
+  s.setCodec( "UTF-8" );
   s << doc;
   file.close();
 
@@ -340,11 +340,11 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
       QAction *a4 = pm.addAction( i18n( "S&ensorLogger" ) );
       QAction *execed = pm.exec( QCursor::pos() );
       if (execed == a1)
-	newDisplay = new FancyPlotter( this, sensorDescr, false );	
+	newDisplay = new FancyPlotter( this, sensorDescr, false );
       else if (execed == a2)
 	newDisplay = new MultiMeter( this, sensorDescr, false );
       else if (execed == a3)
-	 newDisplay = new DancingBars( this, sensorDescr, false ); 
+	 newDisplay = new DancingBars( this, sensorDescr, false );
       else if (execed == a4)
 	newDisplay = new SensorLogger( this, sensorDescr, false );
       else
@@ -476,7 +476,7 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
 {
   QString classType = element.attribute( "class" );
   KSGRD::SensorDisplay* newDisplay;
- 
+
 
   if ( classType == "FancyPlotter" )
     newDisplay = new FancyPlotter( 0, i18n("Dummy"), false );
@@ -495,7 +495,7 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
   else {
     kDebug(1215) << "Unknown class " <<  classType << endl;
     return false;
-  }  
+  }
 
   if ( newDisplay->useGlobalUpdateInterval() )
     newDisplay->setUpdateInterval( updateInterval() );

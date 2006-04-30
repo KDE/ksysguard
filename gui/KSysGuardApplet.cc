@@ -461,7 +461,7 @@ bool KSysGuardApplet::save()
   fileName += "/KSysGuardApplet.xml";
 
   KSaveFile file( fileName, 0644 );
-  file.textStream()->setEncoding( QTextStream::UnicodeUTF8 );
+  file.textStream()->setCodec( "UTF-8" );
   *(file.textStream()) << doc;
 
   file.close();
