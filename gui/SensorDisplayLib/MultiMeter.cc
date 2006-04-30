@@ -223,7 +223,7 @@ void
 MultiMeter::setDigitColor(const QColor& col)
 {
 	QPalette p = lcd->palette();
-	p.setColor(QColorGroup::Foreground, col);
+	p.setColor(QPalette::Foreground, col);
 	lcd->setPalette(p);
 }
 
@@ -233,7 +233,7 @@ MultiMeter::setBackgroundColor(const QColor& col)
 	lcd->setBackgroundColor(col);
 
 	QPalette p = lcd->palette();
-	p.setColor(QColorGroup::Light, col);
-	p.setColor(QColorGroup::Dark, col);
+	p.setColor(QPalette::Light, col);
+	p.setColor(QPalette::Dark, col);
 	lcd->setPalette(p);
 }

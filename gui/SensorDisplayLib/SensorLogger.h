@@ -49,7 +49,7 @@ public:
 
 	void paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment) {
 		QColorGroup cgroup(cg);
-		cgroup.setColor(QColorGroup::Text, textColor);
+		cgroup.setColor(QPalette::Text, textColor);
 		Q3ListViewItem::paintCell(p, cgroup, column, width, alignment);
 	
 	}
