@@ -2,7 +2,7 @@
     KSysGuard, the KDE System Guard
 
     Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -42,7 +42,7 @@ public:
   enum ColumnType { Text, Int, Float, Time, DiskStat };
 
 	PrivateListView(QWidget *parent = 0, const char *name = 0);
-	
+
 	void addColumn(const QString& label, const QString& type);
 	void removeColumns(void);
 	void update(const QString& answer);
@@ -58,9 +58,9 @@ public:
 	PrivateListViewItem(PrivateListView *parent = 0);
 
 	void paintCell(QPainter *p, const QColorGroup &, int column, int width, int alignment) {
-		QColorGroup cgroup = _parent->colorGroup();
+		QColorGroup cgroup = QColorGroup( _parent->palette() );
 		Q3ListViewItem::paintCell(p, cgroup, column, width, alignment);
-		p->setPen(cgroup.color(QColorGroup::Link));
+		p->setPen(cgroup.color(QPalette::Link));
 		p->drawLine(0, height() - 1, width - 1, height() - 1);
 	}
 
@@ -70,7 +70,7 @@ public:
 
 private:
 	QWidget *_parent;
-};	
+};
 
 class ListView : public KSGRD::SensorDisplay
 {

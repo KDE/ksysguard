@@ -81,7 +81,7 @@ LogFile::addSensor(const QString& hostName, const QString& sensorName, const QSt
 
 void LogFile::configureSettings(void)
 {
-	QColorGroup cgroup = monitor->colorGroup();
+	QPalette cgroup = monitor->palette();
 
 	lfs = new LogFileSettings(this);
 	Q_CHECK_PTR(lfs);
@@ -149,11 +149,11 @@ void LogFile::settingsRuleListSelected(int index)
 
 void LogFile::applySettings(void)
 {
-	QColorGroup cgroup = monitor->colorGroup();
+	QPalette cgroup = monitor->palette();
 
-	cgroup.setColor(QColorGroup::Text, lfs->fgColor->color());
-	cgroup.setColor(QColorGroup::Base, lfs->bgColor->color());
-	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
+	cgroup.setColor(QPalette::Text, lfs->fgColor->color());
+	cgroup.setColor(QPalette::Base, lfs->bgColor->color());
+	monitor->setPalette( cgroup );
 	monitor->setFont(lfs->fontButton->font());
 
 	filterRules.clear();
@@ -168,11 +168,11 @@ void LogFile::applySettings(void)
 void
 LogFile::applyStyle()
 {
-	QColorGroup cgroup = monitor->colorGroup();
+	QPalette cgroup = monitor->palette();
 
-	cgroup.setColor(QColorGroup::Text, KSGRD::Style->firstForegroundColor());
-	cgroup.setColor(QColorGroup::Base, KSGRD::Style->backgroundColor());
-	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
+	cgroup.setColor(QPalette::Text, KSGRD::Style->firstForegroundColor());
+	cgroup.setColor(QPalette::Base, KSGRD::Style->backgroundColor());
+	monitor->setPalette( cgroup );
 
 	setModified(true);
 }
@@ -181,10 +181,10 @@ bool
 LogFile::restoreSettings(QDomElement& element)
 {
 	QFont font;
-	QColorGroup cgroup = monitor->colorGroup();
+	QPalette cgroup = monitor->palette();
 
-	cgroup.setColor(QColorGroup::Text, restoreColor(element, "textColor", Qt::green));
-	cgroup.setColor(QColorGroup::Base, restoreColor(element, "backgroundColor", Qt::black));
+	cgroup.setColor(QPalette::Text, restoreColor(element, "textColor", Qt::green));
+	cgroup.setColor(QPalette::Base, restoreColor(element, "backgroundColor", Qt::black));
 	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
 
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "logfile" : element.attribute("sensorType")), element.attribute("title"));
@@ -214,8 +214,8 @@ LogFile::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 
 	element.setAttribute("font", monitor->font().toString());
 
-	saveColor(element, "textColor", monitor->colorGroup().text());
-	saveColor(element, "backgroundColor", monitor->colorGroup().base());
+	saveColor(element, "textColor", monitor->palette().color( QPalette::Text ) );
+	saveColor(element, "backgroundColor", monitor->palette().color( QPalette::Base ) );
 
 	for (QStringList::Iterator it = filterRules.begin();
 		 it != filterRules.end(); it++)
@@ -267,7 +267,7 @@ LogFile::answerReceived(int id, const QString& answer)
 			}
 
       monitor->setCurrentRow( monitor->count() - 1 );
-      // I don't believe the call from Q3ListBox below is 
+      // I don't believe the call from Q3ListBox below is
       // necessary now. Please correct if I am in error here.
       // monitor->ensureCurrentVisible();
 

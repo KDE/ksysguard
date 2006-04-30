@@ -90,7 +90,7 @@ void SignalPlotter::addSample( const QList<double>& sampleBuf )
 
   if(mBezierCurveOffset >= 2) mBezierCurveOffset = 0;
   else mBezierCurveOffset++;
-  
+
   //FIXME: IS THIS NEEDED STILL?
   if ( mUseAutoRange ) { /* When all the data points are stacked on top of each other, the range will be up to the sum of them all */
     double sum = 0;
@@ -349,7 +349,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
   p.fillRect(0,0,w, h, mBackgroundColor);
   /* Draw white line along the bottom and the right side of the
    * widget to create a 3D like look. */
-  p.setPen( QColor( colorGroup().light() ) );
+  p.setPen( palette().color( QPalette::Light ) );
   p.drawLine( 0, h - 1, w - 1, h - 1 );
   p.drawLine( w - 1, 0, w - 1, h - 1 );
 
@@ -453,7 +453,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
     QLinkedList< QList<double> >::Iterator it = mBeamData.begin();
     for(int i = 0; it != mBeamData.end() && i < mSamples; ++it, ++i) {
       xPos += mHorizontalScale;
-      
+
       double bias = -minValue;
       QList<QColor>::Iterator col;
       col = mBeamColors.begin();
@@ -495,11 +495,11 @@ void SignalPlotter::paintEvent( QPaintEvent* )
      * Example, when mBezierCurveOffset == 0, and we have data, then just plot a normal bezier curve (we will have at least 3 points in this case)
      * When mBezierCurveOffset == 1, then we want a bezier curve that uses the first data point and the second data point.  Then the next group starts
      *   from the second data point.
-     * When mBezierCurveOffset == 2, then we want a bezier curve that uses the first, second and third data 
-     * 
+     * When mBezierCurveOffset == 2, then we want a bezier curve that uses the first, second and third data
+     *
      *
      */
-    
+
     for(int i = 0; it != mBeamData.end() && i < mSamples; ++i) {
       double bias = -minValue;
       double sum = 0.0;
@@ -559,7 +559,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
             prev_prev_prev_datapoints = prev_prev_datapoints = prev_datapoints = datapoints;
 	}
       }
-      
+
       for(int j = 0; j < datapoints.size() && j < mBeamColors.size(); ++j) {
         if ( mUseAutoRange ) {
           sum += datapoints[j];
@@ -571,7 +571,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
 //        int start = top + h - 2 - (int)( bias * scaleFac );
 //        int end = top + h - 2 - (int)( ( bias + *datapoint ) * scaleFac );
 //        bias += *datapoint;
-	
+
 	pen.setColor(mBeamColors[j]);
 	p.setPen(pen);
 	QPolygon curve(3);
@@ -583,7 +583,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
 	p.drawCubicBezier(curve);
 //	p.drawLine( w - xPos, h - (int)((prev_prev_datapoints[i] - minValue)*scaleFac),
 //		    w - xPos - mHorizontalScale + 1, h - (int)((prev_datapoints[i] - minValue)*scaleFac));
-			
+
 //	p.drawLine( w - xPos, h - (int)((prev_datapoints[i] - minValue)*scaleFac), w - xPos - mHorizontalScale + 1, h- (int)((datapoints[i] - minValue)*scaleFac));
         /* If the line is longer than 2 pixels we draw only the last
          * 2 pixels with the bright color. The rest is painted with
@@ -606,7 +606,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
 
 
 
-	  
+
 #if 0
     int *prevVals = new int[ mBeamData.count() ];
     int hack[ 4 ];

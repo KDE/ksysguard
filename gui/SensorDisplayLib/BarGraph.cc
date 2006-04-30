@@ -99,7 +99,7 @@ void BarGraph::paintEvent( QPaintEvent* )
 
   p.fillRect(0,0,w, h, mBackgroundColor);
 
-  p.setBrush( palette().light() );
+  p.setBrush( palette().color( QPalette::Light) );
   p.setFont( QFont( p.font().family(), fontSize ) );
   QFontMetrics fm( p.font() );
 

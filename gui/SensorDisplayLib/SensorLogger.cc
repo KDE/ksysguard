@@ -57,7 +57,7 @@ LogSensor::LogSensor(Q3ListView *parent)
 	pixmap_waiting = UserIcon( "waiting" );
 
 	lvi->setPixmap(0, pixmap_waiting);
-	lvi->setTextColor(monitor->colorGroup().text());
+	lvi->setTextColor(monitor->palette().color( QPalette::Text ) );
 
 	monitor->insertItem(lvi);
 }
@@ -79,7 +79,7 @@ void
 LogSensor::stopLogging(void)
 {
 	lvi->setPixmap(0, pixmap_waiting);
-	lvi->setTextColor(monitor->colorGroup().text());
+	lvi->setTextColor(monitor->palette().color( QPalette::Text ) );
 	lvi->repaint();
 	timerOff();
 }
@@ -111,7 +111,7 @@ LogSensor::answerReceived(int id, const QString& answer)
 			{
 				timerOff();
 				lowerLimitActive = false;
-				lvi->setTextColor(monitor->colorGroup().foreground());
+				lvi->setTextColor(monitor->palette().color( QPalette::Foreground ) );
 				lvi->repaint();
 				KNotifyClient::event(monitor->winId(), "sensor_alarm", QString("sensor '%1' at '%2' reached lower limit").arg(sensorName).arg(hostName));
 				timerOn();
@@ -119,7 +119,7 @@ LogSensor::answerReceived(int id, const QString& answer)
 			{
 				timerOff();
 				upperLimitActive = false;
-				lvi->setTextColor(monitor->colorGroup().foreground());
+				lvi->setTextColor(monitor->palette().color( QPalette::Foreground ) );
 				lvi->repaint();
 				KNotifyClient::event(monitor->winId(), "sensor_alarm", QString("sensor '%1' at '%2' reached upper limit").arg(sensorName).arg(hostName));
 				timerOn();
@@ -146,11 +146,11 @@ SensorLogger::SensorLogger(QWidget *parent, const QString& title, bool isApplet)
 	monitor->addColumn(i18n("Host Name"));
 	monitor->addColumn(i18n("Log File"));
 
-	QColorGroup cgroup = monitor->colorGroup();
-	cgroup.setColor(QColorGroup::Text, KSGRD::Style->firstForegroundColor());
-	cgroup.setColor(QColorGroup::Base, KSGRD::Style->backgroundColor());
-	cgroup.setColor(QColorGroup::Foreground, KSGRD::Style->alarmColor());
-	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
+	QPalette cgroup = monitor->palette();
+	cgroup.setColor(QPalette::Text, KSGRD::Style->firstForegroundColor());
+	cgroup.setColor(QPalette::Base, KSGRD::Style->backgroundColor());
+	cgroup.setColor(QPalette::Foreground, KSGRD::Style->alarmColor());
+	monitor->setPalette( cgroup );
 	monitor->setSelectionMode(Q3ListView::NoSelection);
 
 	connect(monitor, SIGNAL(rightButtonClicked(Q3ListViewItem*, const QPoint&, int)), this, SLOT(RMBClicked(Q3ListViewItem*, const QPoint&, int)));
@@ -239,7 +239,7 @@ SensorLogger::editSensor(LogSensor* sensor)
 void
 SensorLogger::configureSettings()
 {
-	QColorGroup cgroup = monitor->colorGroup();
+	QPalette cgroup = monitor->palette();
 
 	sls = new SensorLoggerSettings(this, "SensorLoggerSettings");
 	Q_CHECK_PTR(sls);
@@ -249,7 +249,7 @@ SensorLogger::configureSettings()
 	sls->setTitle(title());
 	sls->setForegroundColor(cgroup.text());
 	sls->setBackgroundColor(cgroup.base());
-	sls->setAlarmColor(cgroup.foreground());
+	sls->setAlarmColor( cgroup.color( QPalette::Foreground ) );
 
 	if (sls->exec())
 		applySettings();
@@ -261,14 +261,14 @@ SensorLogger::configureSettings()
 void
 SensorLogger::applySettings()
 {
-	QColorGroup cgroup = monitor->colorGroup();
+	QPalette cgroup = monitor->palette();
 
 	setTitle(sls->title());
 
-	cgroup.setColor(QColorGroup::Text, sls->foregroundColor());
-	cgroup.setColor(QColorGroup::Base, sls->backgroundColor());
-	cgroup.setColor(QColorGroup::Foreground, sls->alarmColor());
-	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
+	cgroup.setColor(QPalette::Text, sls->foregroundColor());
+	cgroup.setColor(QPalette::Base, sls->backgroundColor());
+	cgroup.setColor(QPalette::Foreground, sls->alarmColor());
+	monitor->setPalette( cgroup );
 
 	setModified(true);
 }
@@ -276,12 +276,12 @@ SensorLogger::applySettings()
 void
 SensorLogger::applyStyle(void)
 {
-	QColorGroup cgroup = monitor->colorGroup();
+	QPalette cgroup = monitor->palette();
 
-	cgroup.setColor(QColorGroup::Text, KSGRD::Style->firstForegroundColor());
-	cgroup.setColor(QColorGroup::Base, KSGRD::Style->backgroundColor());
-	cgroup.setColor(QColorGroup::Foreground, KSGRD::Style->alarmColor());
-	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
+	cgroup.setColor(QPalette::Text, KSGRD::Style->firstForegroundColor());
+	cgroup.setColor(QPalette::Base, KSGRD::Style->backgroundColor());
+	cgroup.setColor(QPalette::Foreground, KSGRD::Style->alarmColor());
+	monitor->setPalette( cgroup );
 
 	setModified(true);
 }
@@ -289,12 +289,12 @@ SensorLogger::applyStyle(void)
 bool
 SensorLogger::restoreSettings(QDomElement& element)
 {
-	QColorGroup cgroup = monitor->colorGroup();
+	QPalette cgroup = monitor->palette();
 
-	cgroup.setColor(QColorGroup::Text, restoreColor(element, "textColor", Qt::green));
-	cgroup.setColor(QColorGroup::Base, restoreColor(element, "backgroundColor", Qt::black));
-	cgroup.setColor(QColorGroup::Foreground, restoreColor(element, "alarmColor", Qt::red));
-	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
+	cgroup.setColor(QPalette::Text, restoreColor(element, "textColor", Qt::green));
+	cgroup.setColor(QPalette::Base, restoreColor(element, "backgroundColor", Qt::black));
+	cgroup.setColor(QPalette::Foreground, restoreColor(element, "alarmColor", Qt::red));
+	monitor->setPalette( cgroup );
 
 	logSensors.clear();
 
@@ -326,9 +326,9 @@ SensorLogger::restoreSettings(QDomElement& element)
 bool
 SensorLogger::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 {
-	saveColor(element, "textColor", monitor->colorGroup().text());
-	saveColor(element, "backgroundColor", monitor->colorGroup().base());
-	saveColor(element, "alarmColor", monitor->colorGroup().foreground());
+        saveColor(element, "textColor", monitor->palette().color( QPalette::Text ) );
+	saveColor(element, "backgroundColor", monitor->palette().color( QPalette::Base ) );
+	saveColor(element, "alarmColor", monitor->palette().color( QPalette::Foreground) );
 
 	for (LogSensor* sensor = logSensors.first(); sensor != 0; sensor = logSensors.next())
 	{

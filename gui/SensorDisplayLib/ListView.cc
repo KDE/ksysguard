@@ -79,7 +79,7 @@ int PrivateListViewItem::compare( Q3ListViewItem *item, int col, bool ascending 
     QString prev = key( col, ascending );
     QString next = item->key( col, ascending );
     QString prevKey, nextKey;
-    
+
     uint counter = prev.length();
     for ( uint i = 0; i < counter; ++i )
       if ( prev[ i ].isDigit() ) {
@@ -102,11 +102,11 @@ int PrivateListViewItem::compare( Q3ListViewItem *item, int col, bool ascending 
 PrivateListView::PrivateListView(QWidget *parent, const char *name)
 	: Q3ListView(parent, name)
 {
-	QColorGroup cg = colorGroup();
+        QPalette cg = palette();
 
-	cg.setColor(QColorGroup::Link, KSGRD::Style->firstForegroundColor());
-	cg.setColor(QColorGroup::Text, KSGRD::Style->secondForegroundColor());
-	cg.setColor(QColorGroup::Base, KSGRD::Style->backgroundColor());
+	cg.setColor(QPalette::Link, KSGRD::Style->firstForegroundColor());
+	cg.setColor(QPalette::Text, KSGRD::Style->secondForegroundColor());
+	cg.setColor(QPalette::Base, KSGRD::Style->backgroundColor());
 
 	setPalette(QPalette(cg, cg, cg));
 }
@@ -285,12 +285,15 @@ ListView::restoreSettings(QDomElement& element)
 {
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "listview" : element.attribute("sensorType")), element.attribute("title"));
 
-	QColorGroup colorGroup = monitor->colorGroup();
-	colorGroup.setColor(QColorGroup::Link, restoreColor(element, "gridColor", KSGRD::Style->firstForegroundColor()));
-	colorGroup.setColor(QColorGroup::Text, restoreColor(element, "textColor", KSGRD::Style->secondForegroundColor()));
-	colorGroup.setColor(QColorGroup::Base, restoreColor(element, "backgroundColor", KSGRD::Style->backgroundColor()));
+	QPalette pal = monitor->palette();
+	pal.setColor(QPalette::Link, restoreColor(element, "gridColor",
+                                                  KSGRD::Style->firstForegroundColor()));
+	pal.setColor(QPalette::Text, restoreColor(element, "textColor",
+                                                  KSGRD::Style->secondForegroundColor()));
+	pal.setColor(QPalette::Base, restoreColor(element, "backgroundColor",
+                                                  KSGRD::Style->backgroundColor()));
 
-	monitor->setPalette(QPalette(colorGroup, colorGroup, colorGroup));
+	monitor->setPalette( pal );
 
 	SensorDisplay::restoreSettings(element);
 
@@ -306,10 +309,10 @@ ListView::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 	element.setAttribute("sensorName", sensors().at(0)->name());
 	element.setAttribute("sensorType", sensors().at(0)->type());
 
-	QColorGroup colorGroup = monitor->colorGroup();
-	saveColor(element, "gridColor", colorGroup.color(QColorGroup::Link));
-	saveColor(element, "textColor", colorGroup.color(QColorGroup::Text));
-	saveColor(element, "backgroundColor", colorGroup.color(QColorGroup::Base));
+	QPalette pal = monitor->palette();
+	saveColor(element, "gridColor", pal.color(QPalette::Link));
+	saveColor(element, "textColor", pal.color(QPalette::Text));
+	saveColor(element, "backgroundColor", pal.color(QPalette::Base));
 
 	SensorDisplay::saveSettings(doc, element);
 
@@ -326,10 +329,10 @@ ListView::configureSettings()
 	Q_CHECK_PTR(lvs);
 	connect(lvs, SIGNAL(applyClicked()), SLOT(applySettings()));
 
-	QColorGroup colorGroup = monitor->colorGroup();
-	lvs->setGridColor(colorGroup.color(QColorGroup::Link));
-	lvs->setTextColor(colorGroup.color(QColorGroup::Text));
-	lvs->setBackgroundColor(colorGroup.color(QColorGroup::Base));
+	QPalette pal = monitor->palette();
+	lvs->setGridColor(pal.color(QPalette::Link));
+	lvs->setTextColor(pal.color(QPalette::Text));
+	lvs->setBackgroundColor(pal.color(QPalette::Base));
 	lvs->setTitle(title());
 
 	if (lvs->exec())
@@ -342,11 +345,11 @@ ListView::configureSettings()
 void
 ListView::applySettings()
 {
-	QColorGroup colorGroup = monitor->colorGroup();
-	colorGroup.setColor(QColorGroup::Link, lvs->gridColor());
-	colorGroup.setColor(QColorGroup::Text, lvs->textColor());
-	colorGroup.setColor(QColorGroup::Base, lvs->backgroundColor());
-	monitor->setPalette(QPalette(colorGroup, colorGroup, colorGroup));
+	QPalette pal = monitor->palette();
+	pal.setColor(QPalette::Link, lvs->gridColor());
+	pal.setColor(QPalette::Text, lvs->textColor());
+	pal.setColor(QPalette::Base, lvs->backgroundColor());
+	monitor->setPalette(QPalette(pal, pal, pal));
 
 	setTitle(lvs->title());
 
@@ -356,11 +359,11 @@ ListView::applySettings()
 void
 ListView::applyStyle()
 {
-	QColorGroup colorGroup = monitor->colorGroup();
-	colorGroup.setColor(QColorGroup::Link, KSGRD::Style->firstForegroundColor());
-	colorGroup.setColor(QColorGroup::Text, KSGRD::Style->secondForegroundColor());
-	colorGroup.setColor(QColorGroup::Base, KSGRD::Style->backgroundColor());
-	monitor->setPalette(QPalette(colorGroup, colorGroup, colorGroup));
+	QPalette pal = monitor->palette();
+	pal.setColor(QPalette::Link, KSGRD::Style->firstForegroundColor());
+	pal.setColor(QPalette::Text, KSGRD::Style->secondForegroundColor());
+	pal.setColor(QPalette::Base, KSGRD::Style->backgroundColor());
+	monitor->setPalette( pal );
 
 	setModified(true);
 }
