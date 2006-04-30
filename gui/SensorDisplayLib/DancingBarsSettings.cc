@@ -39,15 +39,18 @@
 #include "DancingBarsSettings.h"
 
 DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
-  : KDialogBase( Tabbed, i18n( "Edit BarGraph Preferences" ), 
+  : KDialogBase( Tabbed, i18n( "Edit BarGraph Preferences" ),
     Ok | Apply | Cancel, Ok, parent, name, true, true )
 {
   // Range page
   QFrame *page = addPage( i18n( "Range" ) );
-  QGridLayout *pageLayout = new QGridLayout( page, 3, 1, 0, spacingHint() );
+  QGridLayout *pageLayout = new QGridLayout( page );
+  pageLayout->setSpacing( spacingHint() );
+  pageLayout->setMargin( 0 );
 
   Q3GroupBox *groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Title" ), page );
-  QGridLayout *boxLayout = new QGridLayout( groupBox->layout(), 1, 1 );
+  QGridLayout *boxLayout = new QGridLayout(  );
+  groupBox->layout()->addItem( boxLayout );
 
   mTitle = new KLineEdit( groupBox );
   mTitle->setWhatsThis( i18n( "Enter the title of the display here." ) );
@@ -56,7 +59,8 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   pageLayout->addWidget( groupBox, 0, 0 );
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Display Range" ), page );
-  boxLayout = new QGridLayout( groupBox->layout(), 1, 5 );
+  boxLayout = new QGridLayout(  );
+  groupBox->layout()->addItem( boxLayout );
   boxLayout->setColumnStretch( 2, 1 );
 
   QLabel *label = new QLabel( i18n( "Minimum value:" ), groupBox );
@@ -81,10 +85,13 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
 
   // Alarm page
   page = addPage( i18n( "Alarms" ) );
-  pageLayout = new QGridLayout( page, 3, 1, 0, spacingHint() );
+  pageLayout = new QGridLayout( page );
+  pageLayout->setSpacing( spacingHint() );
+  pageLayout->setMargin( 0 );
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Alarm for Minimum Value" ), page );
-  boxLayout = new QGridLayout( groupBox->layout(), 1, 4 );
+  boxLayout = new QGridLayout( );
+  groupBox->layout()->addItem( boxLayout );
   boxLayout->setColumnStretch( 1, 1 );
 
   mUseLowerLimit = new QCheckBox( i18n( "Enable alarm" ), groupBox );
@@ -102,7 +109,8 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   pageLayout->addWidget( groupBox, 0, 0 );
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Alarm for Maximum Value" ), page );
-  boxLayout = new QGridLayout( groupBox->layout(), 1, 4 );
+  boxLayout = new QGridLayout( );
+  groupBox->layout()->addItem( boxLayout );
   boxLayout->setColumnStretch( 1, 1 );
 
   mUseUpperLimit = new QCheckBox( i18n( "Enable alarm" ), groupBox );
@@ -123,28 +131,30 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
 
   // Look page
   page = addPage( i18n( "Look" ) );
-  pageLayout = new QGridLayout( page, 5, 2, 0, spacingHint() );
+  pageLayout = new QGridLayout( page );
+  pageLayout->setSpacing( spacingHint() );
+  pageLayout->setMargin( 0 );
 
   label = new QLabel( i18n( "Normal bar color:" ), page );
   pageLayout->addWidget( label, 0, 0 );
 
   mForegroundColor = new KColorButton( page );
   pageLayout->addWidget( mForegroundColor, 0, 1 );
-  label->setBuddy( mForegroundColor );  
+  label->setBuddy( mForegroundColor );
 
   label = new QLabel( i18n( "Out-of-range color:" ), page );
   pageLayout->addWidget( label, 1, 0 );
 
   mAlarmColor = new KColorButton( page );
   pageLayout->addWidget( mAlarmColor, 1, 1 );
-  label->setBuddy( mAlarmColor );  
+  label->setBuddy( mAlarmColor );
 
   label = new QLabel( i18n( "Background color:" ), page );
   pageLayout->addWidget( label, 2, 0 );
 
   mBackgroundColor = new KColorButton( page );
   pageLayout->addWidget( mBackgroundColor, 2, 1 );
-  label->setBuddy( mBackgroundColor );  
+  label->setBuddy( mBackgroundColor );
 
   label = new QLabel( i18n( "Font size:" ), page );
   pageLayout->addWidget( label, 3, 0 );
@@ -152,13 +162,15 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   mFontSize = new KIntNumInput( 9, page );
   mFontSize->setWhatsThis( i18n( "This determines the size of the font used to print a label underneath the bars. Bars are automatically suppressed if text becomes too large, so it is advisable to use a small font size here." ) );
   pageLayout->addWidget( mFontSize, 3, 1 );
-  label->setBuddy( mFontSize );  
+  label->setBuddy( mFontSize );
 
   pageLayout->setRowStretch( 4, 1 );
 
   // Sensor page
   page = addPage( i18n( "Sensors" ) );
-  pageLayout = new QGridLayout( page, 3, 2, 0, spacingHint() );
+  pageLayout = new QGridLayout( page );
+  pageLayout->setSpacing( spacingHint() );
+  pageLayout->setMargin( 0 );
   pageLayout->setRowStretch( 2, 1 );
 
   mSensorView = new K3ListView( page );

@@ -54,7 +54,8 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
   group->layout()->setMargin( marginHint() );
   group->layout()->setSpacing( spacingHint() );
 
-  QGridLayout *groupLayout = new QGridLayout( group->layout(), 1, 1 );
+  QGridLayout *groupLayout = new QGridLayout(  );
+  group->layout()->addItem( groupLayout );
   groupLayout->setAlignment( Qt::AlignTop );
 
   mSheetTitle = new KLineEdit( group );
@@ -66,7 +67,8 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
   group->layout()->setMargin( marginHint() );
   group->layout()->setSpacing( spacingHint() );
 
-  groupLayout = new QGridLayout( group->layout(), 3, 2 );
+  groupLayout = new QGridLayout();
+  group->layout()->addItem( groupLayout );
   groupLayout->setAlignment( Qt::AlignTop );
 
   QLabel *label = new QLabel( i18n( "Rows:" ), group );

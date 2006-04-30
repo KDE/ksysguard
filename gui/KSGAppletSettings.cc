@@ -28,7 +28,7 @@
 #include "KSGAppletSettings.h"
 
 KSGAppletSettings::KSGAppletSettings( QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, QString(), Ok|Apply|Cancel, 
+    : KDialogBase( parent, name, true, QString(), Ok|Apply|Cancel,
       Ok, true )
 {
   setCaption( i18n( "KSysGuard Applet Settings" ) );
@@ -36,8 +36,9 @@ KSGAppletSettings::KSGAppletSettings( QWidget *parent, const char *name )
   QWidget *page = new QWidget( this );
   setMainWidget( page );
 
-  QGridLayout *topLayout = new QGridLayout( page, 3, 2, KDialog::marginHint(),
-                                            KDialog::spacingHint() ); 
+  QGridLayout *topLayout = new QGridLayout( page );
+  topLayout->setMargin( KDialog::marginHint() );
+  topLayout->setSpacing( KDialog::spacingHint() );
 
   QLabel *label = new QLabel( i18n( "Number of displays:" ), page );
   topLayout->addWidget( label, 0, 0 );

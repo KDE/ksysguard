@@ -54,7 +54,9 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
 
   // Style page
   page = addPage( i18n( "Style" ) );
-  pageLayout = new QGridLayout( page, 3, 2, 0, spacingHint() );
+  pageLayout = new QGridLayout( page );
+  pageLayout->setSpacing( spacingHint() );
+  pageLayout->setMargin( 0 );
 
   label = new QLabel( i18n( "Title:" ), page );
   pageLayout->addWidget( label, 0, 0 );
@@ -75,10 +77,14 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
 
   // Scales page
   page = addPage( i18n( "Scales" ) );
-  pageLayout = new QGridLayout( page, 2, 1, 0, spacingHint() );
+  pageLayout = new QGridLayout( page );
+  pageLayout->setSpacing( spacingHint() );
+  pageLayout->setMargin( 0 );
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Vertical Scale" ), page );
-  boxLayout = new QGridLayout( groupBox->layout(), 2, 5, spacingHint() );
+  boxLayout = new QGridLayout(  );
+  groupBox->layout()->addItem( boxLayout );
+  boxLayout->setSpacing( spacingHint() );
   boxLayout->setColumnStretch( 2, 1 );
 
   mUseAutoRange = new QCheckBox( i18n( "Automatic range detection" ), groupBox );
@@ -108,7 +114,9 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   pageLayout->addWidget( groupBox, 0, 0 );
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Horizontal Scale" ), page );
-  boxLayout = new QGridLayout( groupBox->layout(), 2, 2, spacingHint() );
+  boxLayout = new QGridLayout(  );
+  groupBox->layout()->addItem( boxLayout );
+  boxLayout->setSpacing( spacingHint() );
   boxLayout->setRowStretch( 1, 1 );
 
   mHorizontalScale = new KIntNumInput( 1, groupBox );
@@ -123,10 +131,14 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
 
   // Grid page
   page = addPage( i18n( "Grid" ) );
-  pageLayout = new QGridLayout( page, 3, 2, 0, spacingHint() );
+  pageLayout = new QGridLayout( page );
+  pageLayout->setSpacing( spacingHint() );
+  pageLayout->setMargin( 0 );
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Lines" ), page );
-  boxLayout = new QGridLayout( groupBox->layout(), 2, 5, spacingHint() );
+  boxLayout = new QGridLayout(  );
+  groupBox->layout()->addItem( boxLayout );
+  boxLayout->setSpacing( spacingHint() );
   boxLayout->setColumnStretch( 1, 1 );
 
   mShowVerticalLines = new QCheckBox( i18n( "Vertical lines" ), groupBox );
@@ -165,7 +177,9 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   pageLayout->addWidget( groupBox, 0, 0, 1, 2 );
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Text" ), page );
-  boxLayout = new QGridLayout( groupBox->layout(), 3, 4, spacingHint() );
+  boxLayout = new QGridLayout( );
+  groupBox->layout()->addItem( boxLayout );
+  boxLayout->setSpacing( spacingHint() );
   boxLayout->setColumnStretch( 1, 1 );
 
   mShowLabels = new QCheckBox( i18n( "Labels" ), groupBox );
@@ -190,7 +204,9 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   pageLayout->addWidget( groupBox, 1, 0 );
 
   groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Colors" ), page );
-  boxLayout = new QGridLayout( groupBox->layout(), 4, 2, spacingHint() );
+  boxLayout = new QGridLayout( );
+  groupBox->layout()->addItem( boxLayout );
+  boxLayout->setSpacing( spacingHint() );
 
   label = new QLabel( i18n( "Vertical lines:" ), groupBox );
   boxLayout->addWidget( label, 0, 0 );
@@ -221,7 +237,9 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
 
   // Sensors page
   page = addPage( i18n( "Sensors" ) );
-  pageLayout = new QGridLayout( page, 6, 2, 0, spacingHint() );
+  pageLayout = new QGridLayout( page );
+  pageLayout->setSpacing( spacingHint() );
+  pageLayout->setMargin( 0 );
   pageLayout->setRowStretch( 2, 1 );
   pageLayout->setRowStretch( 5, 1 );
 

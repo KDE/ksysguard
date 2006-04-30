@@ -568,7 +568,8 @@ void WorkSheet::createGrid( uint rows, uint columns )
   mColumns = columns;
 
   // create grid layout with specified dimensions
-  mGridLayout = new QGridLayout( this, mRows, mColumns, 5 );
+  mGridLayout = new QGridLayout( this );
+  mGridLayout->setSpacing( 5 );
 
   mDisplayList = new KSGRD::SensorDisplay**[ mRows ];
   for ( uint r = 0; r < mRows; ++r ) {
