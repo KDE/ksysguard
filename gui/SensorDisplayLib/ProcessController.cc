@@ -102,8 +102,9 @@ bool ProcessController::addSensor(const QString& hostName,
 	 * sensorError(). */
 
 	mModel.setIsLocalhost(sensors().at(0)->isLocalhost()); //by telling our model that this is localhost, it can provide more information about the data it has
-	sendRequest(hostName, "test kill", Kill_Supported_Command);
 
+	sendRequest(hostName, "test kill", Kill_Supported_Command);
+	sendRequest(hostName, "test xres", XRes_Supported_Command);
 	if (title.isEmpty())
 		setTitle(i18n("%1: Running Processes", hostName));
 	else
@@ -116,7 +117,8 @@ void
 ProcessController::updateList()
 {
 	sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);
-	sendRequest(sensors().at(0)->hostName(), "xres", XRes_Command);
+	if(mXResSupported)
+		sendRequest(sensors().at(0)->hostName(), "xres", XRes_Command);
 }
 
 void ProcessController::killProcess(int pid, int sig)
@@ -351,6 +353,9 @@ ProcessController::answerReceived(int id, const QString& answer)
 	case XRes_Supported_Command:
 	{
 		mXResSupported = (answer.toInt() == 1);
+		if(mXResSupported) {
+			sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
+		}
 		break;
 	}
 
@@ -369,9 +374,8 @@ ProcessController::sensorError(int, bool err)
 			 * properties again, since the back-end might be a new
 			 * one. */
 			sendRequest(sensors().at(0)->hostName(), "test kill", Kill_Supported_Command);
-			sendRequest(sensors().at(0)->hostName(), "test xres", Kill_Supported_Command);
+			sendRequest(sensors().at(0)->hostName(), "test xres", XRes_Supported_Command);
 			sendRequest(sensors().at(0)->hostName(), "ps?", Ps_Info_Command);
-			sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
 			sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);
 		}
 

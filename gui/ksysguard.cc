@@ -201,7 +201,7 @@ QStringList TopLevel::listHosts()
   return mSensorBrowser->listHosts();
 }
 
-QString TopLevel::readIntegerSensor( const QString &sensorLocator )
+void TopLevel::readIntegerSensor( const QString &sensorLocator )
 {
   QString host = sensorLocator.left( sensorLocator.indexOf( ':' ) );
   QString sensor = sensorLocator.right( sensorLocator.length() -
@@ -212,14 +212,10 @@ QString TopLevel::readIntegerSensor( const QString &sensorLocator )
 
   KSGRD::SensorMgr->engage( host, "", "ksysguardd" );
   KSGRD::SensorMgr->sendRequest( host, sensor, (KSGRD::SensorClient*)this, 133 );
-
-  return QString();
 }
 
-QStringList TopLevel::readListSensor( const QString& sensorLocator )
+void TopLevel::readListSensor( const QString& sensorLocator )
 {
-  QStringList retval;
-
   QString host = sensorLocator.left( sensorLocator.indexOf( ':' ) );
   QString sensor = sensorLocator.right( sensorLocator.length() -
                                         sensorLocator.indexOf( ':' ) - 1 );
@@ -229,8 +225,6 @@ QStringList TopLevel::readListSensor( const QString& sensorLocator )
 
   KSGRD::SensorMgr->engage( host, "", "ksysguardd" );
   KSGRD::SensorMgr->sendRequest( host, sensor, (KSGRD::SensorClient*)this, 134 );
-
-  return retval;
 }
 /*
  * End of DCOP Interface section

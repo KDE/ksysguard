@@ -65,8 +65,8 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
     ASYNC removeWorkSheet( const QString &fileName );
     QStringList listHosts();
     QStringList listSensors( const QString &hostName );
-    QString readIntegerSensor( const QString &sensorLocator );
-    QStringList readListSensor( const QString &sensorLocator );
+    void readIntegerSensor( const QString &sensorLocator );
+    void readListSensor( const QString &sensorLocator );
 
   public Q_SLOTS:
     void registerRecentURL( const KUrl &url );
