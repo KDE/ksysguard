@@ -37,7 +37,10 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 
          QWidget *page = new QWidget( this );
          setMainWidget(page);
-	vLay = new QVBoxLayout(page, 20, -1, "ReniceLayout");
+	vLay = new QVBoxLayout(page);
+	vLay->setObjectName("ReniceLayout");
+	vLay->setSpacing(-1);
+	vLay->setMargin(20);
 
 	QString msg;
 	msg = i18n("You are about to change the scheduling priority of\n"
