@@ -32,9 +32,6 @@
 
 bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const
 {
-	if(source_parent.isValid()) {
-		return true; //no such thing at the moment
-	}
 	//We need the uid for this, so we have a special understanding with the model.
 	//We query the first row with Qt:UserRole, and it gives us the uid.  Nasty but works.
 	QModelIndex source_index = sourceModel()->index(source_row, 0, source_parent);
@@ -44,20 +41,43 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 		kDebug() << "Serious error with data.  The UID is not a number? Maybe 'ps' is not returning the data correctly.  UID is: " << source_parent.child(source_row,0).data().toString() << endl;
 		return true;
 	}
+	bool accepted = true;
 	switch(mFilter) {
 	case PROCESS_FILTER_ALL:
 		break;
         case PROCESS_FILTER_SYSTEM:
-                if(uid >= 100) return false;
+                if(uid >= 100) accepted = false;
 		break;
         case PROCESS_FILTER_USER:
-		if(uid < 100) return false;
+		if(uid < 100) accepted = false;
+		break;
         case PROCESS_FILTER_OWN:
         default:
-                if(uid != (long) getuid()) return false;
+                if(uid != (long) getuid()) accepted = false;
         }
-	return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+	if(accepted) {
+		//Our filter accepted it.  Pass it on to qsortfilterproxymodel's filter	
+		accepted = QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+	}
+	if(!accepted) {
+		//We did not accept this row at all.  However one of our children might be accepted, so accept this row if our children are accepted.
+		for(int i = 0 ; i < sourceModel()->rowCount(source_index); i++) {
+			if(filterAcceptsRow(i, source_index)) return true;
+		}
+		return false;
+	}
+	return true;
 }
+
+bool ProcessFilter::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+	QVariant l = (left.model() ? left.model()->data(left, Qt::UserRole+1) : QVariant());
+	QVariant r = (right.model() ? right.model()->data(right, Qt::UserRole+1) : QVariant());
+
+	if(l.isNull() && r.isNull()) return QSortFilterProxyModel::lessThan(left,right);
+	return l.toLongLong() < r.toLongLong();
+}
+
 
 void ProcessFilter::setFilter(int index) {
 	mFilter = index; 

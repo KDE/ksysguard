@@ -92,7 +92,9 @@ public:
 	 */
 	QPixmap getIcon(const QString& iconname) const;
 	
-
+	/** Return a string with the pid of the process and the name of the process.  E.g.  13343: ksyguard
+	 */
+	QString getStringForProcess(long long pid) const;
 
 private:
 	/** This returns a QModelIndex for the given process.  It has to look up the parent for this pid, find the offset this 

@@ -38,6 +38,7 @@ class ProcessFilter : public QSortFilterProxyModel
 	ProcessFilter(QObject *parent=0) : QSortFilterProxyModel(parent) {mFilter = 0;}
 	virtual ~ProcessFilter() {}
 	int mFilter;
+	bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
 
   public slots:
 	void setFilter(int index);

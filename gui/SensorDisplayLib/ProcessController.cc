@@ -49,18 +49,15 @@
 #include <kapplication.h>
 #include <kpushbutton.h>
 
-
 ProcessController::ProcessController(QWidget* parent, const QString &title)
 	: KSGRD::SensorDisplay(parent, title, false/*isApplet.  Can't be applet, so false*/), mModel(parent), mFilterModel(parent)
 {
 	mUi.setupUi(this);
-//	mFilterModel.setSourceModel(&mModel);
-//	mUi.treeView->setModel(&mFilterModel);
-	mUi.treeView->setModel(&mModel);
+	mFilterModel.setSourceModel(&mModel);
+	mUi.treeView->setModel(&mFilterModel);
 	mSetupTreeView = false;
 	mUi.treeView->header()->setClickable(true);
 	mUi.treeView->header()->setSortIndicatorShown(true);
-	mUi.treeView->header()->setStretchLastSection(true);
 	
 	connect(mUi.btnRefresh, SIGNAL(clicked()), this, SLOT(updateList()));
 	connect(mUi.btnKillProcess, SIGNAL(clicked()), this, SLOT(killProcess()));
@@ -68,15 +65,35 @@ ProcessController::ProcessController(QWidget* parent, const QString &title)
 	connect(mUi.cmbFilter, SIGNAL(currentIndexChanged(int)), &mFilterModel, SLOT(setFilter(int)));
 	connect(&mModel, SIGNAL(columnsInserted(const QModelIndex &, int, int)), this, SLOT(setupTreeView()));
 	connect(&mModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)), this, SLOT(expandRows(const QModelIndex &, int, int)));
-
+	connect(mUi.treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
+	connect(mUi.treeView, SIGNAL(collapsed(const QModelIndex &)), this, SLOT(resizeFirstColumn()));
+	
+	connect(mUi.treeView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex & , const QModelIndex & )), this, SLOT(currentRowChanged(const QModelIndex &)));
 	setPlotterWidget(this);
 	setMinimumSize(sizeHint());
+}
+void ProcessController::currentRowChanged(const QModelIndex &current)
+{
+	mUi.btnKillProcess->setEnabled(current.isValid() && mKillSupported);
+}
+void ProcessController::expandAllChildren(const QModelIndex &parent) 
+{
+	QModelIndex sourceParent = mFilterModel.mapToSource(parent);
+	for(int i = 0; i <= mModel.rowCount(sourceParent); i++) 
+		mUi.treeView->expand(mFilterModel.mapFromSource(mModel.index(i,0, sourceParent)));
+	resizeFirstColumn();
+}
+
+void ProcessController::resizeFirstColumn()
+{
+	mUi.treeView->resizeColumnToContents(0);
 }
 void ProcessController::expandRows( const QModelIndex & parent, int start, int end )
 {
 	for(int i = start; i <= end; i++) {
-		mUi.treeView->expand(mModel.index(i,0, parent));
+		mUi.treeView->expand(mFilterModel.mapFromSource(mModel.index(i,0, parent)));
 	}
+	resizeFirstColumn();
 }
 void ProcessController::setupTreeView()
 {
@@ -136,17 +153,25 @@ void ProcessController::killProcess(int pid, int sig)
 void
 ProcessController::killProcess()
 {
-//	mUi.treeView->
-/*	const QStringList& selectedAsStrings = pList->getSelectedAsStrings();
+	QModelIndexList selectedIndexes = mUi.treeView->selectionModel()->selectedIndexes();
+	QStringList selectedAsStrings;
+	QList< long long> selectedPids;
+	for (int i = 0; i < selectedIndexes.size(); ++i) {
+		if(selectedIndexes.at(i).column() == 0) { //I can't work out how to get selectedIndexes() to only return 1 index per row
+			long long pid = mFilterModel.mapToSource(selectedIndexes.at(i)).internalId();
+			selectedPids << pid;
+			selectedAsStrings << mModel.getStringForProcess(pid);
+		}
+	}
+	
 	if (selectedAsStrings.isEmpty())
 	{
-		KMessageBox::sorry(this,
-						   i18n("You need to select a process first."));
+		KMessageBox::sorry(this, i18n("You need to select a process first."));
 		return;
 	}
 	else
 	{
-		QString  msg = i18n("Do you want to kill the selected process?",
+		QString  msg = i18np("Do you want to kill the selected process?",
 				"Do you want to kill the %n selected processes?",
 				selectedAsStrings.count());
 
@@ -169,17 +194,16 @@ ProcessController::killProcess()
 		}
 	}
 
-	const QList<int>& selectedPIds = pList->getSelectedPIds();
-
-        for (int i = 0; i < selectedPIds.size(); ++i) {
-            sendRequest(sensors().at(0)->hostName(), QString("kill %1 %2" ).arg(selectedPIds.at( i ))
+	Q_ASSERT(selectedPids.size() == selectedAsStrings.size());
+        for (int i = 0; i < selectedPids.size(); ++i) {
+            sendRequest(sensors().at(0)->hostName(), QString("kill %1 %2" ).arg(selectedPids.at( i ))
                        .arg(MENU_ID_SIGKILL), Kill_Command);
         }
 	if ( !timerOn())
 		// give ksysguardd time to update its proccess list
 		QTimer::singleShot(3000, this, SLOT(updateList()));
 	else
-		updateList();*/
+		updateList();
 }
 
 void
@@ -404,7 +428,7 @@ ProcessController::restoreSettings(QDomElement& element)
 //	if (!pList->load(element))
 //		return (false);
 
-	mFilterModel.sort(col,(inc)?Qt::AscendingOrder:Qt::DescendingOrder);
+	//mFilterModel.sort(col,(inc)?Qt::AscendingOrder:Qt::DescendingOrder);
 	
 	SensorDisplay::restoreSettings(element);
 	setModified(false);

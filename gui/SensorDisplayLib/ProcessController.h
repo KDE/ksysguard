@@ -90,12 +90,11 @@ public:
 	}
 
 public slots:
-	void setTreeView(bool tv)
-	{
-/*		pList->setTreeView(tv);
-		updateList(); */
-	}
 
+	void expandAllChildren(const QModelIndex &parent);
+	void currentRowChanged(const QModelIndex &current);
+	void resizeFirstColumn();
+		
 	void killProcess();
 	void killProcess(int pid, int sig);
 
