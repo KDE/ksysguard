@@ -2,42 +2,42 @@ kde4_header()
 
 add_subdirectory( ksgrd ) 
 add_subdirectory( SensorDisplayLib ) 
-include_directories( ${CMAKE_SOURCE_DIR}/workspace/kicker/libkicker/ ${CMAKE_SOURCE_DIR}/kicker/libkicker/  ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/ksgrd/ ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/ ${KDE4_INCLUDES} )
+include_directories( ${CMAKE_SOURCE_DIR}/workspace/kicker/libkicker/ ${CMAKE_SOURCE_DIR}/kicker/libkicker/  ${CMAKE_CURRENT_SOURCE_DIR}/ksgrd/ ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ ${CMAKE_CURRENT_SOURCE_DIR}/ ${KDE4_INCLUDES} )
 
 
 ########### next target ###############
 
 set(libsensordisplays_SRCS
-	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorDisplay.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/BarGraph.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/DancingBars.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/DancingBarsSettings.cc 
-	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/DummyDisplay.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/FancyPlotter.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/FancyPlotterSettings.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ListView.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/LogFile.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/MultiMeter.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/MultiMeterSettings.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/Process.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ProcessController.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ProcessModel.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ProcessFilter.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ReniceDlg.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorLogger.cc
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorLoggerDlg.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorLoggerSettings.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ListViewSettings.cc 
-   	${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SignalPlotter.cc 
+	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorDisplay.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/BarGraph.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/DancingBars.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/DancingBarsSettings.cc 
+	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/DummyDisplay.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/FancyPlotter.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/FancyPlotterSettings.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ListView.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/LogFile.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/MultiMeter.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/MultiMeterSettings.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/Process.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ProcessController.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ProcessModel.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ProcessFilter.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ReniceDlg.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLogger.cc
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLoggerDlg.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLoggerSettings.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ListViewSettings.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SignalPlotter.cc 
 	)
 kde4_add_ui3_files( libsensordisplays_SRCS
-   ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ListViewSettingsWidget.ui 
-   ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/LogFileSettings.ui 
-   ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/MultiMeterSettingsWidget.ui 
-   ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorLoggerDlgWidget.ui 
-   ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/SensorLoggerSettingsWidget.ui )
+   ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ListViewSettingsWidget.ui 
+   ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/LogFileSettings.ui 
+   ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/MultiMeterSettingsWidget.ui 
+   ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLoggerDlgWidget.ui 
+   ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLoggerSettingsWidget.ui )
 
-kde4_add_ui_files( libsensordisplays_SRCS ${CMAKE_SOURCE_DIR}/workspace/ksysguard/gui/SensorDisplayLib/ProcessWidgetUI.ui )
+kde4_add_ui_files( libsensordisplays_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ProcessWidgetUI.ui )
 
 
 set(ksysguard_SRCS ${libsensordisplays_SRCS}
