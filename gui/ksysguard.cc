@@ -124,9 +124,8 @@ TopLevel::TopLevel( const char *name )
   action = new KAction(KIcon("configure"),  i18n( "&Worksheet Properties" ), actionCollection(), "configure_sheet" );
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( configure() ));
 
-  action = new KAction( i18n( "Load Standard Sheets" ), "revert",
-                        0, this, SLOT( resetWorkSheets() ),
-                        actionCollection(), "revert_all_worksheets"  );
+  action = new KAction(KIcon("revert"),  i18n( "Load Standard Sheets" ), actionCollection(), "revert_all_worksheets"  );
+  connect(action, SIGNAL(triggered(bool) ), SLOT( resetWorkSheets() ));
 
   action = new KAction(KIcon("colorize"),  i18n( "Configure &Style..." ), actionCollection(), "configure_style" );
   connect(action, SIGNAL(triggered(bool)), SLOT( editStyle() ));
