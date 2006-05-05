@@ -102,34 +102,34 @@ TopLevel::TopLevel( const char *name )
   statusBar()->hide();
 
   // create actions for menue entries
-  new KAction( i18n( "&New Worksheet..." ), "tab_new", 0, mWorkSpace,
-		  SLOT( newWorkSheet() ), actionCollection(), "new_worksheet" );
-  new KAction( i18n( "Import Worksheet..." ), "fileopen", 0, mWorkSpace,
-		  SLOT( loadWorkSheet() ), actionCollection(), "import_worksheet" );
+  KAction *action = new KAction(KIcon("tab_new"),  i18n( "&New Worksheet..." ), actionCollection(), "new_worksheet" );
+  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( newWorkSheet() ));
+  action = new KAction(KIcon("fileopen"),  i18n( "Import Worksheet..." ), actionCollection(), "import_worksheet" );
+  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( loadWorkSheet() ));
   mActionOpenRecent = new KRecentFilesAction( i18n( "&Import Recent Worksheet" ),"fileopen", 0,
 		  mWorkSpace, SLOT( loadWorkSheet( const KURL& ) ), actionCollection(), "recent_import_worksheet" );
-  new KAction( i18n( "&Remove Worksheet" ), "tab_remove", 0, mWorkSpace,
-		  SLOT( deleteWorkSheet() ), actionCollection(), "remove_worksheet" );
-  new KAction( i18n( "&Export Worksheet..." ), "filesaveas", 0, mWorkSpace,
-		  SLOT( saveWorkSheetAs() ), actionCollection(), "export_worksheet" );
-  
+  action = new KAction(KIcon("tab_remove"),  i18n( "&Remove Worksheet" ), actionCollection(), "remove_worksheet" );
+  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( deleteWorkSheet() ));
+  action = new KAction(KIcon("filesaveas"),  i18n( "&Export Worksheet..." ), actionCollection(), "export_worksheet" );
+  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( saveWorkSheetAs() ));
+
   KStdAction::quit( this, SLOT( close() ), actionCollection() );
 
-  new KAction( i18n( "Monitor remote machine..." ), "connect_established", 0, this,
-               SLOT( connectHost() ), actionCollection(), "connect_host" );
+  action = new KAction(KIcon("connect_established"),  i18n( "Monitor remote machine..." ), actionCollection(), "connect_host" );
+  connect(action, SIGNAL(triggered(bool)), SLOT( connectHost() ));
 
 //  KStdAction::cut( mWorkSpace, SLOT( cut() ), actionCollection() );
 //  KStdAction::copy( mWorkSpace, SLOT( copy() ), actionCollection() );
 //  KStdAction::paste( mWorkSpace, SLOT( paste() ), actionCollection() );
-  new KAction( i18n( "&Worksheet Properties" ), "configure", 0, mWorkSpace,
-               SLOT( configure() ), actionCollection(), "configure_sheet" );
+  action = new KAction(KIcon("configure"),  i18n( "&Worksheet Properties" ), actionCollection(), "configure_sheet" );
+  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( configure() ));
 
-  new KAction( i18n( "Load Standard Sheets" ), "revert",
-               0, this, SLOT( resetWorkSheets() ),
-               actionCollection(), "revert_all_worksheets"  );
+  action = new KAction( i18n( "Load Standard Sheets" ), "revert",
+                        0, this, SLOT( resetWorkSheets() ),
+                        actionCollection(), "revert_all_worksheets"  );
 
-  new KAction( i18n( "Configure &Style..." ), "colorize", 0, this,
-               SLOT( editStyle() ), actionCollection(), "configure_style" );
+  action = new KAction(KIcon("colorize"),  i18n( "Configure &Style..." ), actionCollection(), "configure_style" );
+  connect(action, SIGNAL(triggered(bool)), SLOT( editStyle() ));
 
   // TODO remove resize and fix so sizeHints() determines default size.
   if (!initialGeometrySet())
@@ -269,7 +269,7 @@ void TopLevel::initStatusBar()
   KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/used?",
                                  (KSGRD::SensorClient*)this, 5 );
   updateStatusBar();
-  
+
   KToggleAction *sb = dynamic_cast<KToggleAction*>(action("options_show_statusbar"));
   if (sb)
      connect(sb, SIGNAL(toggled(bool)), this, SLOT(updateStatusBar()));
