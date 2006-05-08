@@ -57,7 +57,7 @@ char *getMntPnt( const char* cmd )
 
   ptr = (char*)rindex( device, '/' );
   *ptr = '\0';
-		
+
   return (char*)device;
 }
 
@@ -148,9 +148,14 @@ int updateDiskStat( void )
          strcmp( mnt_info->mnt_type, "sysfs" ) &&
          strcmp( mnt_info->mnt_type, "tmpfs" ) &&
          strcmp( mnt_info->mnt_type, "devpts" ) ) {
-      percent = ( ( (float)fs_info.f_blocks - (float)fs_info.f_bfree ) / 
+      if ( fs_info.f_blocks != 0 )
+      {
+          percent = ( ( (float)fs_info.f_blocks - (float)fs_info.f_bfree ) /
                 (float)fs_info.f_blocks );
-      percent = percent * 100;
+          percent = percent * 100;
+      }
+      else
+          percent = 0;
 
       if ( ( disk_info = (DiskInfo *)malloc( sizeof( DiskInfo ) ) ) == NULL )
         continue;
