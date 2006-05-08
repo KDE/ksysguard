@@ -44,12 +44,14 @@
 #include <kglobalsettings.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <krecentfilesaction.h>
 #include <ksgrd/SensorAgent.h>
 #include <ksgrd/SensorManager.h>
 #include <ksgrd/StyleEngine.h>
 #include <kstandarddirs.h>
 #include <kstatusbar.h>
 #include <kstdaction.h>
+#include <ktoggleaction.h>
 #include <ktoolbar.h>
 #include <kurl.h>
 #include <kwin.h>
