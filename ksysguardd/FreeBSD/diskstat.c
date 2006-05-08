@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-	   
+
 	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -57,7 +57,7 @@ char *getMntPnt(const char *cmd)
 
 	ptr = (char *)rindex(device, '/');
 	*ptr = '\0';
-		
+
 	return (char *)device;
 }
 
@@ -145,8 +145,13 @@ int updateDiskStat(void)
 	for (i = 0; i < mntcount; i++) {
 		fs = fs_info[i];
 		if (strcmp(fs.f_fstypename, "procfs") && strcmp(fs.f_fstypename, "devfs") && strcmp(fs.f_fstypename, "devfs")) {
-			percent = (((float)fs.f_blocks - (float)fs.f_bfree)/(float)fs.f_blocks);
-			percent = percent * 100;
+			if ( fs.f_blocks != 0 )
+			{
+					percent = (((float)fs.f_blocks - (float)fs.f_bfree)/(float)fs.f_blocks);
+					percent = percent * 100;
+			}
+			else
+			  percent = 0;
 			if ((disk_info = (DiskInfo *)malloc(sizeof(DiskInfo))) == NULL) {
 				continue;
 			}
@@ -165,14 +170,14 @@ int updateDiskStat(void)
 			push_ctnr(DiskStatList, disk_info);
 		}
 	}
-	
+
 	return 0;
 }
 
 void printDiskStat(const char* cmd)
 {
 	DiskInfo* disk_info;
-	
+
 	for (disk_info = first_ctnr(DiskStatList); disk_info; disk_info = next_ctnr(DiskStatList)) {
 		fprintf(CurrentClient, "%s\t%ld\t%ld\t%ld\t%d\t%s\n",
 			disk_info->device,
