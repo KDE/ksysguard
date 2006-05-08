@@ -29,6 +29,8 @@
 #include <QResizeEvent>
 #include <QSortFilterProxyModel>
 #include <QHeaderView>
+#include <QAction>
+#include <QMenu>
 
 #include <kapplication.h>
 #include <kdebug.h>
@@ -55,7 +57,12 @@ ProcessController::ProcessController(QWidget* parent, const QString &title)
 	mUi.setupUi(this);
 	mFilterModel.setSourceModel(&mModel);
 	mUi.treeView->setModel(&mFilterModel);
+	mColumnContextMenu = new QMenu(mUi.treeView->header());
+	connect(mColumnContextMenu, SIGNAL(triggered(QAction*)), this, SLOT(showOrHideColumn(QAction *)));
+	
 	mSetupTreeView = false;
+	mUi.treeView->header()->setContextMenuPolicy(Qt::CustomContextMenu);
+	
 	mUi.treeView->header()->setClickable(true);
 	mUi.treeView->header()->setSortIndicatorShown(true);
 	
@@ -69,6 +76,8 @@ ProcessController::ProcessController(QWidget* parent, const QString &title)
 	connect(mUi.treeView, SIGNAL(collapsed(const QModelIndex &)), this, SLOT(resizeFirstColumn()));
 	
 	connect(mUi.treeView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex & , const QModelIndex & )), this, SLOT(currentRowChanged(const QModelIndex &)));
+	connect(mUi.treeView->header(), SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
+	
 	setPlotterWidget(this);
 	setMinimumSize(sizeHint());
 }
@@ -76,10 +85,54 @@ void ProcessController::currentRowChanged(const QModelIndex &current)
 {
 	mUi.btnKillProcess->setEnabled(current.isValid() && mKillSupported);
 }
+void ProcessController::showContextMenu(const QPoint &point){
+	mColumnContextMenu->clear();
+	
+	{
+		int index = mUi.treeView->header()->logicalIndexAt(point);
+		if(index >= 0) {
+			//selected a column.  Give the option to hide it
+			QAction *action = new QAction(mColumnContextMenu);
+			action->setData(-index-1); //We set data to be negative (and minus 1) to hide a column, and positive to show a column
+			action->setText(i18n("Hide column '%1'", mFilterModel.headerData(index, Qt::Horizontal, Qt::DisplayRole).toString()));
+			mColumnContextMenu->addAction(action);
+			if(mUi.treeView->header()->sectionsHidden()) {
+				mColumnContextMenu->addSeparator();
+			}
+		}
+	}
+
+	if(mUi.treeView->header()->sectionsHidden()) {
+		int num_headings = mFilterModel.columnCount();
+		for(int i = 0; i < num_headings; ++i) {
+			if(mUi.treeView->header()->isSectionHidden(i)) {
+				QAction *action = new QAction(mColumnContextMenu);
+				action->setText(i18n("Show column '%1'", mFilterModel.headerData(i, Qt::Horizontal, Qt::DisplayRole).toString()));
+				action->setData(i); //We set data to be negative (and minus 1)to hide a column, and positive to show a column
+				mColumnContextMenu->addAction(action);
+			}
+		}
+	}
+	mColumnContextMenu->exec(mUi.treeView->header()->mapToGlobal(point));	
+}
+
+void ProcessController::showOrHideColumn(QAction *action)
+{
+	int index = action->data().toInt();
+	//We set data to be negative to hide a column, and positive to show a column
+	if(index < 0)
+		mUi.treeView->hideColumn(-1-index);
+	else {
+		mUi.treeView->showColumn(index);
+		mUi.treeView->resizeColumnToContents(index);
+		mUi.treeView->resizeColumnToContents(mFilterModel.columnCount());
+	}
+		
+}
 void ProcessController::expandAllChildren(const QModelIndex &parent) 
 {
 	QModelIndex sourceParent = mFilterModel.mapToSource(parent);
-	for(int i = 0; i <= mModel.rowCount(sourceParent); i++) 
+	for(int i = 0; i < mModel.rowCount(sourceParent); i++) 
 		mUi.treeView->expand(mFilterModel.mapFromSource(mModel.index(i,0, sourceParent)));
 	resizeFirstColumn();
 }

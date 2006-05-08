@@ -30,6 +30,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QResizeEvent>
+#include <QList>
 
 
 #include <kapplication.h>
@@ -40,6 +41,8 @@
 #include "ProcessModel.h"
 
 #include "ProcessFilter.h"
+
+class QAction;
 
 extern KApplication* Kapp;
 
@@ -104,6 +107,8 @@ public slots:
 private slots:
 	void setupTreeView();
 	void expandRows( const QModelIndex & parent, int start, int end );
+	void showContextMenu(const QPoint &point);
+	void showOrHideColumn(QAction *);
 signals:
 	void setFilterMode(int);
 
@@ -115,6 +120,10 @@ private:
 	bool mXResSupported;
 	/** Whether we have setup the tree yet*/
 	bool mSetupTreeView;
+	
+	/** The column context menu when you right click on a column.*/
+	QMenu *mColumnContextMenu;
+	
 	QStringList mHeader;
 	QStringList mColType;
 	QList<QStringList> mData;
