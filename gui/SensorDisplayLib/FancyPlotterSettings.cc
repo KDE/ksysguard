@@ -26,14 +26,14 @@
 #include <klocale.h>
 #include <knuminput.h>
 
-#include <qcheckbox.h>
+#include <QCheckBox>
 #include <q3buttongroup.h>
 #include <q3groupbox.h>
 #include <qimage.h>
-#include <qlabel.h>
-#include <qlayout.h>
+#include <QLabel>
+#include <QLayout>
 #include <qpixmap.h>
-#include <qpushbutton.h>
+#include <QPushButton>
 #include <qradiobutton.h>
 
 //Added by qt3to4:

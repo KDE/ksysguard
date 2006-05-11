@@ -24,7 +24,7 @@
 #include <kconfig.h>
 
 #include <q3dict.h>
-#include <qobject.h>
+#include <QObject>
 //Added by qt3to4:
 #include <QEvent>
 

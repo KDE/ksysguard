@@ -22,7 +22,7 @@
 
 
 #include <assert.h>
-#include <qtimer.h>
+#include <QTimer>
 
 #include <kapplication.h>
 #include <kdebug.h>
@@ -44,9 +44,9 @@
 #include "ProcessModel.h"
 #include "SignalIDs.h"
 
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qlayout.h>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QLayout>
 
 #include <kapplication.h>
 #include <kpushbutton.h>

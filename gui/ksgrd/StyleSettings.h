@@ -26,7 +26,7 @@
 
 #include <kdialogbase.h>
 
-#include <qcolor.h>
+#include <QColor>
 //Added by qt3to4:
 #include <QList>
 #include <Q3ListBox>

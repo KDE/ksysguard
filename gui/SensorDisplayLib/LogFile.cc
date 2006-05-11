@@ -21,10 +21,10 @@
 #include <stdio.h>
 #include <sys/types.h>
 
-#include <qpushbutton.h>
-#include <qregexp.h>
+#include <QPushButton>
+#include <QRegExp>
 
-#include <qfile.h>
+#include <QFile>
 #include <q3listbox.h>
 //Added by qt3to4:
 #include <QResizeEvent>

@@ -23,7 +23,7 @@
 
 #include <qdom.h>
 #include <qlcdnumber.h>
-#include <qtooltip.h>
+#include <QToolTip>
 
 #include <kdebug.h>
 

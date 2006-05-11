@@ -24,8 +24,8 @@
 #ifndef KSG_STYLEENGINE_H
 #define KSG_STYLEENGINE_H
 
-#include <qcolor.h>
-#include <qobject.h>
+#include <QColor>
+#include <QObject>
 //Added by qt3to4:
 #include <QList>
 

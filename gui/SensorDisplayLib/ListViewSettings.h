@@ -23,8 +23,8 @@
 
 #include <kdialogbase.h>
 
-#include <qstring.h>
-#include <qcolor.h>
+#include <QString>
+#include <QColor>
 
 class ListViewSettingsWidget;
 

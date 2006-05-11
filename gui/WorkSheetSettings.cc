@@ -24,10 +24,10 @@
 #include <klocale.h>
 
 #include <q3groupbox.h>
-#include <qlabel.h>
-#include <qspinbox.h>
-#include <qlayout.h>
-#include <qtooltip.h>
+#include <QLabel>
+#include <QSpinBox>
+#include <QLayout>
+#include <QToolTip>
 
 //Added by qt3to4:
 #include <QVBoxLayout>

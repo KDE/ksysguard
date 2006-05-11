@@ -24,7 +24,7 @@
 #include <qclipboard.h>
 #include <qcursor.h>
 #include <q3dragobject.h>
-#include <qlayout.h>
+#include <QLayout>
 //Added by qt3to4:
 #include <QTextStream>
 #include <QGridLayout>

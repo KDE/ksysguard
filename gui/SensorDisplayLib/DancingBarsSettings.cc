@@ -26,11 +26,11 @@
 #include <klocale.h>
 #include <knuminput.h>
 
-#include <qcheckbox.h>
+#include <QCheckBox>
 #include <q3groupbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
+#include <QLabel>
+#include <QLayout>
+#include <QPushButton>
 
 //Added by qt3to4:
 #include <QList>

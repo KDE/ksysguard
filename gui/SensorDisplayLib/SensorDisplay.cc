@@ -18,10 +18,10 @@
 
 */
 
-#include <qcheckbox.h>
+#include <QCheckBox>
 #include <qdom.h>
 #include <q3popupmenu.h>
-#include <qspinbox.h>
+#include <QSpinBox>
 
 #include <qbitmap.h>
 #include <QPixmap>

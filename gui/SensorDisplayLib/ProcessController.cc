@@ -20,7 +20,7 @@
 */
 
 #include <assert.h>
-#include <qtimer.h>
+#include <QTimer>
 
 #include <QDomElement>
 #include <QVBoxLayout>
@@ -44,9 +44,9 @@
 #include "ProcessController.h"
 #include "SignalIDs.h"
 
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qlayout.h>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QLayout>
 
 #include <kapplication.h>
 #include <kpushbutton.h>

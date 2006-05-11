@@ -24,7 +24,7 @@
 #ifndef KSG_WORKSHEET_H
 #define KSG_WORKSHEET_H
 
-#include <qwidget.h>
+#include <QWidget>
 
 #include <SensorDisplay.h>
 

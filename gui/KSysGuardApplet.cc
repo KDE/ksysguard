@@ -25,10 +25,10 @@
 #include <qcursor.h>
 #include <qdom.h>
 #include <q3dragobject.h>
-#include <qfile.h>
-#include <qpushbutton.h>
-#include <qspinbox.h>
-#include <qtooltip.h>
+#include <QFile>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QToolTip>
 //Added by qt3to4:
 #include <QTextStream>
 #include <QEvent>

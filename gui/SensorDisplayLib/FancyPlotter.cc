@@ -20,7 +20,7 @@
 
 #include <qdom.h>
 #include <qimage.h>
-#include <qtooltip.h>
+#include <QToolTip>
 
 #include <kdebug.h>
 #include <klocale.h>

@@ -20,7 +20,7 @@
 #include "SensorLoggerDlg.h"
 #include "SensorLoggerDlgWidget.h"
 
-#include <qlayout.h>
+#include <QLayout>
 
 #include <klocale.h>
 

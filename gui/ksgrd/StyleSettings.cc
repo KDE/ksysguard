@@ -22,12 +22,12 @@
 */
 
 #include <qimage.h>
-#include <qlabel.h>
-#include <qlayout.h>
+#include <QLabel>
+#include <QLayout>
 #include <q3listbox.h>
 #include <qpixmap.h>
-#include <qpushbutton.h>
-#include <qspinbox.h>
+#include <QPushButton>
+#include <QSpinBox>
 #include <qtabwidget.h>
 //Added by qt3to4:
 #include <QList>

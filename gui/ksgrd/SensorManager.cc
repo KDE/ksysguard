@@ -21,11 +21,11 @@
 
 */
 
-#include <qcombobox.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
+#include <QComboBox>
+#include <QLabel>
+#include <QPushButton>
 #include <qradiobutton.h>
-#include <qspinbox.h>
+#include <QSpinBox>
 #include <Q3DictIterator>
 
 #include <kapplication.h>

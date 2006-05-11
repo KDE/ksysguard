@@ -22,8 +22,8 @@
 */
 
 #include <qimage.h>
-#include <qpushbutton.h>
-#include <qspinbox.h>
+#include <QPushButton>
+#include <QSpinBox>
 
 #include <kconfig.h>
 #include <klocale.h>

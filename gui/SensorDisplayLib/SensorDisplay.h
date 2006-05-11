@@ -22,8 +22,8 @@
 #define KSG_SENSORDISPLAY_H
 
 #include <q3groupbox.h>
-#include <qlabel.h>
-#include <qwidget.h>
+#include <QLabel>
+#include <QWidget>
 //Added by qt3to4:
 #include <QTimerEvent>
 #include <QEvent>

@@ -21,8 +21,8 @@
 
 */
 
-#include <qlineedit.h>
-#include <qspinbox.h>
+#include <QLineEdit>
+#include <QSpinBox>
 
 #include <kdebug.h>
 #include <kfiledialog.h>

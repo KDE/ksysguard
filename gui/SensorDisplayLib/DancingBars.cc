@@ -18,13 +18,13 @@
 
 */
 
-#include <qcheckbox.h>
+#include <QCheckBox>
 #include <qdom.h>
-#include <qlineedit.h>
+#include <QLineEdit>
 #include <qlistview.h>
-#include <qpushbutton.h>
-#include <qspinbox.h>
-#include <qtooltip.h>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QToolTip>
 
 #include <kdebug.h>
 #include <klocale.h>
