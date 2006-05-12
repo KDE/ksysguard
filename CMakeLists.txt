@@ -8,7 +8,7 @@ add_subdirectory( pics )
 add_subdirectory( example ) 
 # Laurent 'readd test for it'
 #add_subdirectory( ksysguardd )
-include_directories( ${KDE4_INCLUDES} )
+
 
 
 ########### install files ###############
