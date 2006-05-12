@@ -1,4 +1,3 @@
-kde4_header()
 
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(linux_SUBDIR)")
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(freebsd_SUBDIR)")
@@ -33,7 +32,6 @@ install(TARGETS ksysguardd DESTINATION bin)
 ########### install files ###############
 
 
-kde4_footer()
 
 
 

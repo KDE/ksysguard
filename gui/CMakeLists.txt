@@ -1,4 +1,3 @@
-kde4_header()
 
 add_subdirectory( ksgrd ) 
 add_subdirectory( SensorDisplayLib ) 
@@ -96,7 +95,6 @@ install_files( ${MIME_INSTALL_DIR}/application FILES x-ksysguard.desktop )
 install_files( ${DATA_INSTALL_DIR}/ksysguard FILES ksysguardui.rc )
 install_files( ${DATA_INSTALL_DIR}/kicker/applets FILES ksysguardapplet.desktop )
 
-kde4_footer()
 
 
 

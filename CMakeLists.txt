@@ -1,4 +1,3 @@
-kde4_header()
 
 project(ksysguard)
 
@@ -16,7 +15,6 @@ add_subdirectory( example )
 
 kde4_install_icons( ${ICON_INSTALL_DIR} crystalsvg )
 
-kde4_footer()
 
 
 

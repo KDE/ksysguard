@@ -1,4 +1,3 @@
-kde4_header()
 
 
 
@@ -28,7 +27,6 @@ install_targets(${LIB_INSTALL_DIR} ksgrd )
 
 install_files( /include/ksgrd FILES HostConnector.h  	SensorAgent.h  	SensorClient.h  	SensorManager.h  	SensorShellAgent.h  	SensorSocketAgent.h  	StyleEngine.h  	StyleSettings.h  	TimerSettings.h )
 
-kde4_footer()
 
 
 

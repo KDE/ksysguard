@@ -1,4 +1,3 @@
-kde4_header()
 
 
 
@@ -7,7 +6,6 @@ kde4_header()
 install_files( ${SYSCONF_INSTALL_DIR} FILES ksysguarddrc )
 install_files( ${DATA_INSTALL_DIR}/ksysguard FILES eventsrc )
 
-kde4_footer()
 
 
 
