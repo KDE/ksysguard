@@ -29,12 +29,12 @@
 #include <QCheckBox>
 #include <q3buttongroup.h>
 #include <q3groupbox.h>
-#include <qimage.h>
+#include <QImage>
 #include <QLabel>
 #include <QLayout>
-#include <qpixmap.h>
+#include <QPixmap>
 #include <QPushButton>
-#include <qradiobutton.h>
+#include <QRadioButton>
 
 //Added by qt3to4:
 #include <QGridLayout>

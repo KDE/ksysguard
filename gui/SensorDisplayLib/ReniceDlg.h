@@ -38,7 +38,7 @@
 #include <QLayout>
 #include <qlcdnumber.h>
 #include <QPushButton>
-#include <qslider.h>
+#include <QSlider>
 //Added by qt3to4:
 #include <QBoxLayout>
 

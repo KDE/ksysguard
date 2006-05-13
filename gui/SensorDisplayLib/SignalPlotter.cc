@@ -21,8 +21,8 @@
 #include <math.h>
 #include <string.h>
 
-#include <qpainter.h>
-#include <qpixmap.h>
+#include <QPainter>
+#include <QPixmap>
 #include <QPolygon>
 
 #include <kdebug.h>

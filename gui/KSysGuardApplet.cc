@@ -22,7 +22,7 @@
 
 */
 
-#include <qcursor.h>
+#include <QCursor>
 #include <qdom.h>
 #include <q3dragobject.h>
 #include <QFile>

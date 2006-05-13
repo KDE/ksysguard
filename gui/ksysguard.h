@@ -24,7 +24,7 @@
 #ifndef KSG_KSYSGUARD_H
 #define KSG_KSYSGUARD_H
 
-#include <qevent.h>
+#include <QEvent>
 
 #include <dcopclient.h>
 #include <dcopobject.h>

@@ -19,7 +19,7 @@
 */
 
 #include <qdom.h>
-#include <qimage.h>
+#include <QImage>
 #include <QToolTip>
 
 #include <kdebug.h>

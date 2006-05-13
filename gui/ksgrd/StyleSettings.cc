@@ -21,14 +21,14 @@
 
 */
 
-#include <qimage.h>
+#include <QImage>
 #include <QLabel>
 #include <QLayout>
 #include <q3listbox.h>
-#include <qpixmap.h>
+#include <QPixmap>
 #include <QPushButton>
 #include <QSpinBox>
-#include <qtabwidget.h>
+#include <QTabWidget>
 //Added by qt3to4:
 #include <QList>
 #include <QGridLayout>

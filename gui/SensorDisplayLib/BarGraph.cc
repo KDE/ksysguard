@@ -21,7 +21,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include <qpainter.h>
+#include <QPainter>
 
 #include <kdebug.h>
 #include <kiconloader.h>

@@ -21,8 +21,8 @@
 
 */
 
-#include <qclipboard.h>
-#include <qcursor.h>
+#include <QClipboard>
+#include <QCursor>
 #include <q3dragobject.h>
 #include <QLayout>
 //Added by qt3to4:

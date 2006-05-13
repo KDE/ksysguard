@@ -22,7 +22,7 @@
 #define KSG_SENSORSHELLAGENT_H
 
 #include <QObject>
-#include <qpointer.h>
+#include <QPointer>
 
 #include "SensorAgent.h"
 

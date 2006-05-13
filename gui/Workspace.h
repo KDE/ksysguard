@@ -25,7 +25,7 @@
 #define KSG_WORKSPACE_H
 
 #include <q3ptrlist.h>
-#include <qtabwidget.h>
+#include <QTabWidget>
 
 class KConfig;
 class KUrl;

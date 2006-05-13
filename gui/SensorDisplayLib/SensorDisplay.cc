@@ -23,7 +23,7 @@
 #include <q3popupmenu.h>
 #include <QSpinBox>
 
-#include <qbitmap.h>
+#include <QBitmap>
 #include <QPixmap>
 #include <Q3PtrList>
 #include <QEvent>

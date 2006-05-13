@@ -24,7 +24,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QPushButton>
-#include <qradiobutton.h>
+#include <QRadioButton>
 #include <QSpinBox>
 #include <Q3DictIterator>
 

@@ -21,7 +21,7 @@
 
 */
 
-#include <qimage.h>
+#include <QImage>
 #include <QPushButton>
 #include <QSpinBox>
 

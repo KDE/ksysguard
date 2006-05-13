@@ -28,7 +28,7 @@
 #include <QLabel>
 #include <QLayout>
 #include <QSpinBox>
-#include <qwhatsthis.h>
+#include <QWhatsThis>
 
 #include "TimerSettings.h"
 
