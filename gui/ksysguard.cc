@@ -109,7 +109,7 @@ TopLevel::TopLevel( const char *name )
   action = new KAction(KIcon("fileopen"),  i18n( "Import Worksheet..." ), actionCollection(), "import_worksheet" );
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( loadWorkSheet() ));
   mActionOpenRecent = new KRecentFilesAction( i18n( "&Import Recent Worksheet" ),"fileopen", 0,
-		  mWorkSpace, SLOT( loadWorkSheet( const KURL& ) ), actionCollection(), "recent_import_worksheet" );
+		  mWorkSpace, SLOT( loadWorkSheet( const KUrl& ) ), actionCollection(), "recent_import_worksheet" );
   action = new KAction(KIcon("tab_remove"),  i18n( "&Remove Worksheet" ), actionCollection(), "remove_worksheet" );
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( deleteWorkSheet() ));
   action = new KAction(KIcon("filesaveas"),  i18n( "&Export Worksheet..." ), actionCollection(), "export_worksheet" );
