@@ -201,7 +201,9 @@ void PrivateListView::addColumn(const QString& label, const QString& type)
 ListView::ListView(QWidget* parent, const QString& title, bool isApplet)
 	: KSGRD::SensorDisplay(parent, title, isApplet)
 {
-	setBackgroundColor(KSGRD::Style->backgroundColor());
+	QPalette palette;
+	palette.setColor(backgroundRole(), KSGRD::Style->backgroundColor());
+	setPalette(palette);
 	monitor = new PrivateListView( this );
 	Q_CHECK_PTR(monitor);
 	monitor->setSelectionMode(Q3ListView::NoSelection);
