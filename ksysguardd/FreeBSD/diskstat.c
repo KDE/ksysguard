@@ -147,8 +147,7 @@ int updateDiskStat(void)
 		if (strcmp(fs.f_fstypename, "procfs") && strcmp(fs.f_fstypename, "devfs") && strcmp(fs.f_fstypename, "devfs")) {
 			if ( fs.f_blocks != 0 )
 			{
-					percent = (((float)fs.f_blocks - (float)fs.f_bfree)/(float)fs.f_blocks);
-					percent = percent * 100;
+					percent = (((float)fs.f_blocks - (float)fs.f_bfree)*100.0/(float)fs.f_blocks);
 			}
 			else
 			  percent = 0;

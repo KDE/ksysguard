@@ -150,9 +150,8 @@ int updateDiskStat( void )
          strcmp( mnt_info->mnt_type, "devpts" ) ) {
       if ( fs_info.f_blocks != 0 )
       {
-          percent = ( ( (float)fs_info.f_blocks - (float)fs_info.f_bfree ) /
+          percent = ( ( (float)fs_info.f_blocks - (float)fs_info.f_bfree ) * 100.0/
                 (float)fs_info.f_blocks );
-          percent = percent * 100;
       }
       else
           percent = 0;
