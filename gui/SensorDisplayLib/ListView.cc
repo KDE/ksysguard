@@ -83,14 +83,14 @@ int PrivateListViewItem::compare( Q3ListViewItem *item, int col, bool ascending 
     uint counter = prev.length();
     for ( uint i = 0; i < counter; ++i )
       if ( prev[ i ].isDigit() ) {
-        prevKey.sprintf( "%s%016d", prev.left( i ).toLatin1(), prev.mid( i ).toInt() );
+        prevKey.sprintf( "%s%016d", prev.left( i ).toLatin1().constData(), prev.mid( i ).toInt() );
         break;
       }
 
     counter = next.length();
     for ( uint i = 0; i < counter; ++i )
       if ( next[ i ].isDigit() ) {
-        nextKey.sprintf( "%s%016d", next.left( i ).toLatin1(), next.mid( i ).toInt() );
+        nextKey.sprintf( "%s%016d", next.left( i ).toLatin1().constData(), next.mid( i ).toInt() );
         break;
       }
 
@@ -111,7 +111,7 @@ PrivateListView::PrivateListView(QWidget *parent, const char *name)
 	setPalette(QPalette(cg, cg, cg));
 }
 
-void PrivateListView::update(const QString& answer)
+void PrivateListView::update(const QStringList& answer)
 {
 	setUpdatesEnabled(false);
 	viewport()->setUpdatesEnabled(false);
@@ -121,19 +121,17 @@ void PrivateListView::update(const QString& answer)
 
 	clear();
 
-	KSGRD::SensorTokenizer lines(answer, '\n');
-	for (uint i = 0; i < lines.count(); i++) {
+	for (uint i = 0; i < answer.count(); i++) {
 		PrivateListViewItem *item = new PrivateListViewItem(this);
-		KSGRD::SensorTokenizer records(lines[i], '\t');
+		KSGRD::SensorTokenizer records(answer[i], '\t');
 		for (uint j = 0; j < records.count(); j++) {
-      if ( mColumnTypes[ j ] == "f" )
-        item->setText(j, KGlobal::locale()->formatNumber( records[j].toFloat() ) );
-      else if ( mColumnTypes[ j ] == "D" )
-        item->setText(j, KGlobal::locale()->formatNumber( records[j].toDouble(), 0 ) );
-      else
-			  item->setText(j, records[j]);
-    }
-
+			if ( mColumnTypes[ j ] == "f" )
+				item->setText(j, KGlobal::locale()->formatNumber( records[j].toFloat() ) );
+			else if ( mColumnTypes[ j ] == "D" )
+				item->setText(j, KGlobal::locale()->formatNumber( records[j].toDouble(), 0 ) );
+			else
+				item->setText(j, records[j]);
+		}
 		insertItem(item);
 	}
 
@@ -241,7 +239,7 @@ ListView::updateList()
 }
 
 void
-ListView::answerReceived(int id, const QString& answer)
+ListView::answerReceived(int id, const QStringList& answer)
 {
 	/* We received something, so the sensor is probably ok. */
 	sensorError(id, false);
@@ -251,14 +249,13 @@ ListView::answerReceived(int id, const QString& answer)
 		case 100: {
 			/* We have received the answer to a '?' command that contains
 			 * the information about the table headers. */
-			KSGRD::SensorTokenizer lines(answer, '\n');
-			if (lines.count() != 2)
+			if (answer.count() != 2)
 			{
 				kDebug(1215) << "wrong number of lines" << endl;
 				return;
 			}
-			KSGRD::SensorTokenizer headers(lines[0], '\t');
-			KSGRD::SensorTokenizer colTypes(lines[1], '\t');
+			KSGRD::SensorTokenizer headers(answer[0], '\t');
+			KSGRD::SensorTokenizer colTypes(answer[1], '\t');
 
 			/* remove all columns from list */
 			monitor->removeColumns();

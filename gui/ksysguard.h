@@ -51,7 +51,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
   virtual void saveProperties( KConfig* );
   virtual void readProperties( KConfig* );
 
-  virtual void answerReceived( int id, const QString& );
+  virtual void answerReceived( int id, const QStringList& );
 
   void beATaskManager();
   void showRequestedSheets();
@@ -96,7 +96,6 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
     SensorBrowser* mSensorBrowser;
     Workspace* mWorkSpace;
 
-    bool mDontSaveSession;
     int mTimerId;
 };
 

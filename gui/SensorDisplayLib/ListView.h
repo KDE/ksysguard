@@ -45,7 +45,7 @@ public:
 
 	void addColumn(const QString& label, const QString& type);
 	void removeColumns(void);
-	void update(const QString& answer);
+	void update(const QStringList& answer);
 	int columnType( int pos ) const;
 
 private:
@@ -80,7 +80,7 @@ public:
 	~ListView() {}
 
 	bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& sensorDescr);
-	void answerReceived(int id, const QString& answer);
+	void answerReceived(int id, const QStringList& answerlist);
 	void resizeEvent(QResizeEvent*);
 	void updateList();
 

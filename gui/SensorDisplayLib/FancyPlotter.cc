@@ -276,8 +276,10 @@ QSize FancyPlotter::sizeHint() const
   return mPlotter->sizeHint();
 }
 
-void FancyPlotter::answerReceived( int id, const QString &answer )
+void FancyPlotter::answerReceived( int id, const QStringList &answerlist )
 {
+  QString answer;
+  if(!answerlist.isEmpty()) answer = answerlist[0];
   if ( (uint)id < mBeams ) {
     if ( id != (int)mSampleBuf.count() ) {
       if ( id == 0 )

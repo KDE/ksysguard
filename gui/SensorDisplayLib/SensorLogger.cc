@@ -91,7 +91,7 @@ LogSensor::timerEvent(QTimerEvent*)
 }
 
 void
-LogSensor::answerReceived(int id, const QString& answer)
+LogSensor::answerReceived(int id, const QStringList& answer)
 {
 	QFile mLogFile(fileName);
 
@@ -105,7 +105,9 @@ LogSensor::answerReceived(int id, const QString& answer)
 	{
 		case 42: {
 			QTextStream stream(&mLogFile);
-			double value = answer.toDouble();
+			double value = 0;
+			if(!answer.isEmpty())
+			  value = answer[0].toDouble();
 
 			if (lowerLimitActive && value < lowerLimit)
 			{
@@ -354,7 +356,7 @@ SensorLogger::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 }
 
 void
-SensorLogger::answerReceived(int, const QString&)
+SensorLogger::answerReceived(int, const QStringList&)
 {
  // we do not use this, since all answers are received by the LogSensors
 }

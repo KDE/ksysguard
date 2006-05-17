@@ -241,7 +241,7 @@ LogFile::updateMonitor()
 }
 
 void
-LogFile::answerReceived(int id, const QString& answer)
+LogFile::answerReceived(int id, const QStringList& answer)
 {
 	/* We received something, so the sensor is probably ok. */
 	sensorError(id, false);
@@ -249,33 +249,34 @@ LogFile::answerReceived(int id, const QString& answer)
 	switch (id)
 	{
 		case 19: {
-			KSGRD::SensorTokenizer lines(answer, '\n');
-
-			for (uint i = 0; i < lines.count(); i++) {
+			for (uint i = 0; i < answer.count(); i++) {
 				if (monitor->count() == MAXLINES)
 					monitor->takeItem(0);
 
-				monitor->addItem(lines[i]);
+				monitor->addItem(answer[i]);
 
 				for (QStringList::Iterator it = filterRules.begin(); it != filterRules.end(); it++) {
 					QRegExp *expr = new QRegExp((*it).toLatin1());
-					if (expr->indexIn(lines[i]) != -1) {
+					if (expr->indexIn(answer[i]) != -1) {
 						KNotifyClient::event(winId(), "pattern_match", QString("rule '%1' matched").arg(*it));
 					}
 					delete expr;
 				}
 			}
 
-      monitor->setCurrentRow( monitor->count() - 1 );
-      // I don't believe the call from Q3ListBox below is
-      // necessary now. Please correct if I am in error here.
-      // monitor->ensureCurrentVisible();
+			monitor->setCurrentRow( monitor->count() - 1 );
+			// I don't believe the call from Q3ListBox below is
+			// necessary now. Please correct if I am in error here.
+			// monitor->ensureCurrentVisible();
 
 			break;
 		}
 
 		case 42: {
-			logFileID = answer.toULong();
+			if(answer.isEmpty())
+				logFileID= 0;
+			else
+				logFileID = answer[0].toULong();
 			break;
 		}
 	}

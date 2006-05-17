@@ -78,7 +78,7 @@ class KDE_EXPORT SensorAgent : public QObject
     void reconfigure( const SensorAgent* );
 
   protected:
-    void processAnswer( const QString &buffer );
+    void processAnswer( const char *buf, int buflen );
     void executeCommand();
 
     SensorManager *sensorManager();
@@ -95,11 +95,12 @@ class KDE_EXPORT SensorAgent : public QObject
     virtual bool writeMsg( const char *msg, int len ) = 0;
     virtual bool txReady() = 0;
 
-    int mState;
+    bool mFoundError;
     QQueue< SensorRequest* > mInputFIFO;
     QQueue< SensorRequest* > mProcessingFIFO;
-    QString mAnswerBuffer;
+    QStringList mAnswerBuffer;  ///A single reply can be on multiple lines.  
     QString mErrorBuffer;
+    QByteArray mLeftOverBuffer; ///Any data read in but not terminated is copied into here, awaiting the next load of data
 
     SensorManager *mSensorManager;
 

@@ -24,7 +24,7 @@
 
 #include <kapplication.h>
 #include <kiconloader.h>
-#include <QPointer>
+#include <kuser.h>
 #include <QPixmap>
 #include <QObject>
 #include <QAbstractItemModel>
@@ -64,18 +64,19 @@ public:
 	/* Functions for setting the model */
 	/** Set the untranslated heading names for the incomming data that will be sent in setData.
 	 *  The column names we show to the user are based mostly on this information, translated if known, hidden if not necessary etc */
-	bool setHeader(const QStringList &header, const QList<char> &coltype);
+	bool setHeader(const QStringList &header, const QByteArray &coltype);
 	/** This is called from outside every few seconds when we have a new answer.
 	 *  It checks the new data against what we have currently, and tries to be efficent in merging in the new data.
+	 *  @returns Whether the operation was successful.  Returns false if there was a problem with the data/sensor
 	 */
-	void setData(const QList<QStringList> &data);
+	bool setData(const QList<QStringList> &data);
 	/** By telling the model whether the sensor it is recieving the data from is for the localhost,
 	 *  then we can provide more information to the user.  For example, we can show the actual username
 	 *  rather than just the userid.
 	 */
 
 	/** Set the heading names for the incomming data that will be sent in setXResData */
-	bool setXResHeader(const QStringList &header, const QList<char>& coltype);
+	bool setXResHeader(const QStringList &header, const QByteArray& coltype);
 	/** Set the XRes data for a single process with the columns matching those given in setXResHeader.
 	 *
 	 *  XRes is an X server extension that returns information about an X process, such as the identifier (The window title),
@@ -94,13 +95,17 @@ public:
 	
 	/** Return a string with the pid of the process and the name of the process.  E.g.  13343: ksyguard
 	 */
-	QString getStringForProcess(long long pid) const;
+	QString getStringForProcess(Process *process) const;
+	inline Process *getProcess(long long pid) { return mPidToProcess[pid]; }
+public slots:
+	void setShowTotals(int totals);
+	
 
 private:
 	/** This returns a QModelIndex for the given process.  It has to look up the parent for this pid, find the offset this 
 	 *  pid is from the parent, and return that.  It's not that slow, but does involve a couple of hash table lookups.
 	 */
-	QModelIndex getQModelIndex ( long long pid, int column) const;
+	QModelIndex getQModelIndex ( Process *process, int column) const;
 
 	/** Insert the pid given, plus all its parents
 	 */
@@ -117,12 +122,15 @@ private:
 	
 	QHash<QString,Process::ProcessType> mProcessType;
 	QStringList mHeader;
-	QList<char> mColType;
+
+	/** For new data that comes in, this list matches up with that, and gives the type of each heading using a letter. */
+	QByteArray mColType;
 	
 	/** For a given process id, it returns a Process structure.
+	 *  When a process is made, it will be stored here.  If the process is removed for here, it must be deleted to avoid leaking.
 	 *  @see class Process
 	 */
-	QHash<long long, QPointer<Process> > mPidToProcess;
+	QHash<long long, Process *> mPidToProcess;
 
 	/** Return a qt markup tooltip string for a local user.  It will have their full name etc.
 	 *  This will be slow the first time, as it practically indirectly reads the whole of /etc/passwd
@@ -136,7 +144,16 @@ private:
 	 *  But the second time will be as fast as hash lookup as we cache the result
 	 */
 	inline QVariant getUsernameForUser(long long uid) const;
+	/** Returns whether this user can log in or not.
+	 *  @see mUidCanLogin
+	 */
+	inline bool canUserLogin(long long uid) const;
 
+	/** Each process keeps track of the system and user cpu usage of itself and all its children.
+	 *  So when a process is changed/added/removed, those totals have to be updated for all its parents.
+	 *  This function does that.  It is called when a process is changed/added/removed
+	 */
+	void updateProcessTotals(Process *process, double sysChange, double userChange, int numChildrenChange);
 		
 	/** Cache for the icons to show next to the process.
 	 *  Name is the process name, or an alias (like 'daemon' etc).
@@ -159,6 +176,14 @@ private:
 	 *  @see getUsernameForUser */
 	mutable QHash<long long, QVariant> mUserUsername;
 
+	/** A mapping of a user id to whether this user can log in.  We have to guess based on the shell. All are set to true to non localhost.
+	 *  It is set to:
+	 *    0 if the user cannot login
+	 *    1 is the user can login
+	 *  The reason for using an int and not a bool is so that we can do  mUidCanLogin.value(uid,-1)  and thus we get a tristate for whether
+	 *  they are logged in, not logged in, or not known yet.
+	 *  */
+	mutable QHash<long long, int> mUidCanLogin; 
 	/** A set of all the pids we know about.  Stored in a set so we can easily compare them against new data sets*/
 	QSet<long long> mPids;
 
@@ -174,13 +199,17 @@ private:
 	/** A list that matches up with headings and gives the type of each, using the enum HeadingUser, etc. Used in data() */
 	QList<int> mHeadingsToType;
 
+	/** A mapping of running,stopped,etc  to a friendly description like 'Stopped, either by a job control signal or because it is being traced.'*/
+	QHash<QString, QString> mStatusDescription; 
+
+	bool mShowChildTotals; ///If set to true, a parent will return the CPU usage of all its children recursively
+
 	typedef enum { DataColumnLogin, DataColumnGid, DataColumnPid, DataColumnPPid, DataColumnUid, DataColumnName, DataColumnTracerPid, DataColumnUserUsage, DataColumnSystemUsage, DataColumnNice, DataColumnVmSize, DataColumnVmRss, DataColumnCommand, DataColumnStatus, DataColumnOtherLong, DataColumnOtherPrettyLong, DataColumnOtherPrettyFloat, DataColumnError } DataColumnType;
 
-	/** For new data that comes in, this list matches up with that, and gives the type of each heading using a letter. */
-	QList<char> mColtype; 
 
-	int mPidColumn;
-	int mPPidColumn;
+	int mPidColumn;  ///Column the PID is in, so we can extract it quickly and easily from incomming data
+	int mPPidColumn; ///Column the Parent's PID is in, so we can extract it quickly and easily from incomming data
+	int mCPUHeading; ///Heading in the table that we show in which the memory is shown in - so that we can update it efficently
 	
 	int mXResNumColumns;
 	int mXResPidColumn;

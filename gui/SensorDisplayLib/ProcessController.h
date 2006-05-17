@@ -81,7 +81,7 @@ public:
 
 	virtual bool addSensor(const QString&, const QString&, const QString&, const QString&);
 
-	virtual void answerReceived(int id, const QString& answer);
+	virtual void answerReceived(int id, const QStringList& answer);
 
 	virtual void sensorError(int, bool err);
 
@@ -105,8 +105,8 @@ public slots:
 
 	void updateList();
 private slots:
-	void setupTreeView();
-	void expandRows( const QModelIndex & parent, int start, int end );
+	void rowsInserted( const QModelIndex & parent, int start, int end );
+	void expandInit();
 	void showContextMenu(const QPoint &point);
 	void showOrHideColumn(QAction *);
 signals:
@@ -118,11 +118,13 @@ private:
 	bool mKillSupported;
 	/** Is the XRes extension supported where the ksysguardd daemon is? (And does the daemon support it) */
 	bool mXResSupported;
-	/** Whether we have setup the tree yet*/
-	bool mSetupTreeView;
 	
 	/** The column context menu when you right click on a column.*/
 	QMenu *mColumnContextMenu;
+	
+	/** We do not want to send out a "ps" command before we have the results from "ps?" so this is set to false until we get a result from ps?
+	 */
+	bool mReadyForPs;
 	
 	QStringList mHeader;
 	QStringList mColType;

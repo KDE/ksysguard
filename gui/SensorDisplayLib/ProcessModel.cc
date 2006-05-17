@@ -27,7 +27,6 @@
 #include <kapplication.h>
 #include <kdebug.h>
 #include <klocale.h>
-#include <kuser.h>
 #include <QBitmap>
 
 #define GET_OWN_ID
@@ -56,6 +55,9 @@ ProcessModel::ProcessModel(QObject* parent)
 {
 	mIsLocalhost = false; //this default really shouldn't matter, because setIsLocalhost should be called before setData()
 	mPidToProcess[0] = new Process();  //Add a fake process for process '0', the parent for init.  This lets us remove checks everywhere for init process
+	
+	mShowChildTotals = true;
+
 	mPidColumn = -1;
 
 	//Translatable strings for the status
@@ -66,6 +68,10 @@ ProcessModel::ProcessModel(QObject* parent)
 	(void)I18N_NOOP2("process status", "stopped");
 	(void)I18N_NOOP2("process status", "paging");
 	(void)I18N_NOOP2("process status", "idle");
+	mStatusDescription["running"] = i18n("- Process is doing some work");
+	mStatusDescription["sleeping"] = i18n("- Process is waiting for something to happen");
+	mStatusDescription["stopped"] = i18n("- Process has been stopped. It will not respond to user input at the moment");	
+	mStatusDescription["zombie"] = i18n("- Process has finished and is now dead, but the parent has not noticed yet");
 
 	mProcessType.insert("init", Process::Init);
 	/* kernel stuff */
@@ -156,15 +162,15 @@ ProcessModel::ProcessModel(QObject* parent)
 	mProcessType.insert("vim", Process::Wordprocessing);
 
 }
-void ProcessModel::setData(const QList<QStringList> &data)
+bool ProcessModel::setData(const QList<QStringList> &data)
 {
 
 	if(mPidColumn == -1) {
 		kDebug(1215) << "We have recieved a setData()  before we know about our headings." << endl;
-		return;
+		return false;
 	}
-	// We can set this from anywhere to basically say something has gone wrong, and the code is buggy, so reset and get all the data again
-	// It shouldn't happen, but just-in-case
+	// We can set this from anywhere to basically say something has gone wrong, and that the code is buggy, so reset and get all the data again
+	// It shouldn't happen, but just-in-case.  From 2006-05-13 I have not seen any resets for a while, just for reference.
 	mNeedReset = false;
 
 	//We have our new data, and our current data.
@@ -176,9 +182,9 @@ void ProcessModel::setData(const QList<QStringList> &data)
 	for(long i = 0; i < data.size(); i++) {
 		QStringList new_pid_data = data.at(i);
 		if(new_pid_data.count() <= mPidColumn || new_pid_data.count() <= mPPidColumn) {
-			kDebug(1215) << "Something wrong with the ps data comming from ksysguardd daemon.  Ignoring it." << endl;
+			kDebug(1215) << "Something wrong with the ps data coming from ksysguardd daemon.  Ignoring it." << endl;
 			kDebug(1215) << new_pid_data.join(",") << endl;
-			return;
+			return false; //returning false will trigger a sensor error
 		}
 		long long pid = new_pid_data.at(mPidColumn).toLongLong();
 		long long ppid = 0;
@@ -220,19 +226,21 @@ void ProcessModel::setData(const QList<QStringList> &data)
 		mNeedReset = false;
 		emit layoutChanged();
 	}
+	return true;
 }
 
 int ProcessModel::rowCount(const QModelIndex &parent) const
 {
-	long long ppid = (parent.isValid())?parent.internalId():0; //when parent is invalid, it must be the root level which we set as 0
-	Q_ASSERT(mPidToProcess.contains(ppid));
-	int num_rows = mPidToProcess[ppid]->children_pids.count();
+	if(!parent.isValid()) return (mPidToProcess.isEmpty())?0:1;
+	
+	Process *process = reinterpret_cast< Process * > (parent.internalPointer()); //when parent is invalid, it must be the root level which we set as 0
+	Q_ASSERT(process);
+	int num_rows = process->children.count();
 	return num_rows;
 }
 
-int ProcessModel::columnCount ( const QModelIndex & parent ) const
+int ProcessModel::columnCount ( const QModelIndex & ) const
 {
-	//if(parent.isValid()) return 0;
 	return mHeadings.count();
 }
 
@@ -246,29 +254,70 @@ bool ProcessModel::hasChildren ( const QModelIndex & parent = QModelIndex() ) co
 QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & parent ) const
 {
 	if(row<0) return QModelIndex();
-	long long ppid = 0;
+	Process *parent_process = 0;
+	
 	if(parent.isValid()) //not valid for init, and init has ppid of 0
-		ppid = parent.internalId()/*pid*/;
+		parent_process = reinterpret_cast< Process * > (parent.internalPointer());
+	else
+		parent_process = mPidToProcess[0];
+	Q_ASSERT(parent_process);
+
         // Using QList<long long>& instead of QList<long long> creates an internal error in gcc 3.3.1
-	const QList<long long> siblings = mPidToProcess[ppid]->children_pids;
-	if(siblings.count() > row)
-		return createIndex(row,column, siblings[row]);
+	if(parent_process->children.count() > row)
+		return createIndex(row,column, parent_process->children[row]);
 	else
 	{
 		return QModelIndex();
 	}
 }
 
+void ProcessModel::updateProcessTotals(Process *process, double sysChange, double userChange, int numChildrenChange)
+{
+	
+	if(process == NULL || process->pid == 0) return;
+	Q_ASSERT(process);
+
+	for(;;) {
+		//update the pid to that of the parent
+		process->totalSysUsage += sysChange;
+		process->totalUserUsage += userChange;
+		process->numChildren += numChildrenChange;
+		//Okay we have finished updating the process.  Now change to the parent process
+
+		//If we are init, then our ppid is 0, so leave our row as 0.  If we are not, then we need to find our parent process
+		//and find which child item we are in that
+		if(process->parent_pid == 0) {
+			if(mCPUHeading != -1 && mShowChildTotals) {
+				QModelIndex index = createIndex(0, mCPUHeading, process);
+				emit dataChanged(index, index);
+			}
+			return;
+		}
+		Process *parent_process = process->parent;
+		Q_ASSERT(parent_process);
+		//Get the row in this parent where the child process is
+		int row = parent_process->children.indexOf(process);
+		Q_ASSERT(row != -1); //something has gone really wrong
+	
+		//Update the process we modified
+		if(mCPUHeading != -1 && mShowChildTotals) {
+			QModelIndex index = createIndex(row, mCPUHeading, process);
+			emit dataChanged(index, index);
+		}
+
+		//Switch to the parent, and repeat
+		process = parent_process;
+	}
+}
 
 //only to be called if the (new) parent will not change under us!
 void ProcessModel::changeProcess(long long pid)
 {
 	Q_ASSERT(pid != 0);
-	long long ppid = mPidToProcess[pid]->parent_pid;
 	long long new_ppid = newPidToPpidMapping[pid];
 	//This is called from insertOrChangeRows and after the parent is checked, so we know the (new) parent won't change under us
 
-	if(new_ppid != ppid) {
+	if(new_ppid != mPidToProcess[pid]->parent_pid) {
 		//Process has reparented.  Delete and reinsert
 		//again, we know that the new parent won't change under us
 		removeRow(pid);
@@ -284,10 +333,10 @@ void ProcessModel::changeProcess(long long pid)
 	}
 	new_pids.remove(pid); //we will now deal with this pid for certain, so remove it from the list
 
-	//We know the pid is the same (obviously), and ppid.  So check name (and update processType?),uid and data.  children_pids will take care
+	//We know the pid is the same (obviously), and ppid.  So check name (and update processType?),uid and data.  children will take care
 	//of themselves as they are inserted later.
 
-	QPointer<Process> process = mPidToProcess[pid];
+	Process *process = mPidToProcess[pid];
 
 	const QStringList &newDataRow = newData[pid];
 
@@ -295,15 +344,18 @@ void ProcessModel::changeProcess(long long pid)
 	int j = 0;
 	bool changed = false;
 	QString loginName;
+	double sysUsageChange = 0;
+	double userUsageChange = 0;
 	for (int i = 0; i < newDataRow.count(); i++)
 	{  //At the moment the data is just a string, so turn it into a list of variants instead and insert the variants into our new process
 
 		QVariant value;
-		switch(mColType[i]) {
+		switch(mColType.at(i)) {
 
 			case DataColumnUserUsage: {
 				float usage = newDataRow[i].toFloat();
 				if(process->userUsage != usage) {
+					userUsageChange = usage - process->userUsage;
 					process->userUsage = usage;
 					changed = true;
 				}
@@ -311,6 +363,7 @@ void ProcessModel::changeProcess(long long pid)
 			case DataColumnSystemUsage: {
 				float usage = newDataRow[i].toFloat();
 				if(process->sysUsage != usage) {
+					sysUsageChange = usage - process->sysUsage;
 					process->sysUsage = usage;
 					changed = true;
 				}
@@ -404,16 +457,25 @@ void ProcessModel::changeProcess(long long pid)
 	if(process->uid != -1)
 		mUserUsername[process->uid] = loginName;
 
-	//Now all the data has been changed for this process->
+	//Now all the data has been changed for this process.
+	//If nothing changed, no need to update the display etc
 	if(!changed)
 		return;
 
-	int row = mPidToProcess[ process->parent_pid ]->children_pids.indexOf(process->pid);
-	if(row == -1) //something has gone really wrong
-		return;
-	QModelIndex startIndex = createIndex(row, 0, pid);
-	QModelIndex endIndex = createIndex(row, mHeadings.count()-1, pid);
+	//If the user or sys values changed, then we need to update their and their parents totals
+	if(sysUsageChange != 0 || userUsageChange != 0) {
+
+		process->totalSysUsage += sysUsageChange;
+		process->totalUserUsage += userUsageChange;
+		updateProcessTotals(process->parent, sysUsageChange, userUsageChange, 0);
+	}
+
+	int row = process->parent->children.indexOf(process);
+	Q_ASSERT(row != -1);  //Something has gone very wrong
+	QModelIndex startIndex = createIndex(row, 0, process);
+	QModelIndex endIndex = createIndex(row, mHeadings.count()-1, process);
 	emit dataChanged(startIndex, endIndex);
+
 }
 
 void ProcessModel::insertOrChangeRows( long long pid)
@@ -443,19 +505,26 @@ void ProcessModel::insertOrChangeRows( long long pid)
 	// b) If the children already exist (a bit wierd, but possible if a new process is created, then an existing one is reparented to it)
 	//    then in changed() it will call this function to recursively insert its parents
 
+	Process *parent = mPidToProcess[ppid];
+	if(!parent) {
+		kDebug(1215) << "Internal problem with data structure.  Possibly a race condition hit.  We were told there is process " << pid << " with parent " << ppid << "But we can't find the process structure for that parent process." << endl;
+		mNeedReset = true;
+		return;
+	}
 
-	QList<long long> &parents_children = mPidToProcess[ppid]->children_pids;
-	int row = parents_children.count();
-	QModelIndex parentModel = getQModelIndex(ppid, 0);
+	int row = parent->children.count();
+	QModelIndex parentModel = getQModelIndex(parent, 0);
 
 	const QStringList &newDataRow = newData[pid];
+	Q_ASSERT(parent);
+	Process *new_process = new Process(pid, ppid, parent);
+	Q_CHECK_PTR(new_process);
 
-	QPointer<Process> new_process = new Process(pid, ppid);
 	QList<QVariant> &data = new_process->data;
 	QString loginName;
-	for (int i = 0; i < mColType.count() && i < newDataRow.count(); i++)
+	for (int i = 0; i < mColType.size() && i < newDataRow.count(); i++)
 	{  //At the moment the data is just a string, so turn it into a list of variants instead and insert the variants into our new process
-		switch(mColType[i]) {
+		switch(mColType.at(i)) {
 			case DataColumnLogin: loginName = newDataRow[i]; break; //we might not know the uid yet, so remember the login name then at the end modify mUserUsername
 			case DataColumnName:
 				new_process->name = newDataRow[i];
@@ -483,14 +552,18 @@ void ProcessModel::insertOrChangeRows( long long pid)
 	}
 	if(new_process->uid != -1)
 		mUserUsername[new_process->uid] = loginName;
+	//Update the totals
+	new_process->totalSysUsage += new_process->sysUsage;
+	new_process->totalUserUsage += new_process->userUsage;
+	updateProcessTotals(parent, new_process->sysUsage, new_process->userUsage, 1);
+	
 	//Only here can we actually change the model.  First notify the view/proxy models then modify
 
 	beginInsertRows(parentModel, row, row);
 		mPidToProcess[new_process->pid] = new_process;
-		parents_children << new_process->pid;  //add ourselves to the parent
+		parent->children << new_process;  //add ourselves to the parent
 		mPids << new_process->pid;
 	endInsertRows();
-	emit dataChanged(parentModel, parentModel);
 }
 void ProcessModel::removeRow( long long pid )
 {
@@ -499,60 +572,70 @@ void ProcessModel::removeRow( long long pid )
 		return; //we may have already deleted for some reason?
 	}
 
-	QPointer<Process> process = mPidToProcess[pid];
+	Process *process = mPidToProcess[pid];
 
 	{
-		QList<long long> *children = &(process->children_pids); //remove all the children now
-		foreach(long long child_pid, *children) {
-			if(child_pid == pid) {
+		QList<Process *> *children = &(process->children); //remove all the children now
+		foreach(Process *child, *children) {
+			if(child == process) {
 				kDebug(1215) << "A process is its own child? Something has gone wrong.  Reseting model" << endl;
 				mNeedReset = true;
 				return;
 			}
-			removeRow(child_pid);
+			removeRow(child->pid);
 		}
 		children = NULL;
 	}
 
 
-	long long ppid = process->parent_pid;
-	QList<long long> &parents_children = mPidToProcess[ppid]->children_pids;
-	int row = parents_children.indexOf(pid);
-	QModelIndex parentModel = getQModelIndex(ppid, 0);
+	int row = process->parent->children.indexOf(process);
+	QModelIndex parentModel = getQModelIndex(process->parent, 0);
 	if(row == -1) {
 		kDebug(1215) << "A serious problem occured in remove row." << endl;
 		return;
 	}
-	process = NULL;  //okay, now we aren't pointing to Process or any of its structures at all now. Should be safe to remove now.
+
+	//Subtract the current totals from the parent processes
+/*	if(process->sysUsage != 0 || process->userUsage != 0) {
+#ifndef QT_NO_DEBUG
+		if(process->totalSysUsage != process->sysUsage) qDebug("Internal error with consistency with keeping track of sys totals");
+		if(process->totalUserUsage != process->userUsage) qDebug("Internal error with consistency with keeping track of user totals");
+#endif
+		updateProcessTotals(process->parent, -process->sysUsage, -process->userUsage, -1);
+	}*/
+
 
 	//so no more children left, we are free to delete now
 	beginRemoveRows(parentModel, row, row);
 		mPidToProcess.remove(pid);
-		parents_children.removeAll(pid);  //remove ourselves from the parent
+		process->parent->children.removeAll(process);  //remove ourselves from the parent
 		mPids.remove(pid);
 	endRemoveRows();
+
+	delete process;
+	process = NULL;  //okay, now we aren't pointing to Process or any of its structures at all now. Should be safe to remove now.
 }
 
-QModelIndex ProcessModel::getQModelIndex ( long long pid, int column) const
+QModelIndex ProcessModel::getQModelIndex( Process *process, int column) const
 {
-	if(pid == 0) return QModelIndex();
-	long long ppid = mPidToProcess[pid]->parent_pid;
+	Q_ASSERT(process);
+	int pid = process->pid;
+	if(pid == 0) return QModelIndex(); //pid 0 is our fake process meaning the very root.  To represent that, we return QModelIndex() which also means the top element
 	int row = 0;
-	if(ppid != 0) {
-		row = mPidToProcess[ppid]->children_pids.indexOf(pid);
-		if(row == -1) //something has gone really wrong
-			return QModelIndex();
+	if(process->parent) {
+		row = process->parent->children.indexOf(process);
+		Q_ASSERT(row != -1);
 	}
-	return createIndex(row, column, pid);
+	return createIndex(row, column, process);
 }
 
 QModelIndex ProcessModel::parent ( const QModelIndex & index ) const
 {
 	if(!index.isValid()) return QModelIndex();
-	if(index.internalId() == 0) return QModelIndex();
+	Process *process = reinterpret_cast< Process * > (index.internalPointer());
+	Q_ASSERT(process);
 
-	long long parent_pid = mPidToProcess[ index.internalId()/*pid*/ ]->parent_pid;
-	return getQModelIndex(parent_pid,0);
+	return getQModelIndex(process->parent,0);
 }
 
 QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
@@ -560,8 +643,36 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 {
 	if (role != Qt::DisplayRole)
 		return QVariant(); //error
+	if(orientation != Qt::Horizontal)
+		return QVariant();
 	if(section < 0 || section >= mHeadings.count()) return QVariant(); //error
 	return mHeadings[section];
+}
+
+bool ProcessModel::canUserLogin(long long uid ) const
+{
+	if(!mIsLocalhost) return true; //We only deal with localhost.  Just always return true for non localhost
+
+	int canLogin = mUidCanLogin.value(uid, -1); //Returns 0 if we cannot login, 1 if we can, and the default is -1 meaning we don't know
+	if(canLogin != -1) return canLogin; //We know whether they can log in
+
+	//We got the default, -1, so we don't know.  Look it up
+	
+	KUser user(uid);
+	if(!user.isValid()) { 
+		//for some reason the user isn't recognised.  This might happen under certain security situations.
+		//Just return true to be safe
+		mUidCanLogin[uid] = 1;
+		return true;
+	}
+	QString shell = user.shell();
+	if(shell == "/bin/false" )  //FIXME - add in any other shells it could be for false
+	{
+		mUidCanLogin[uid] = 0;
+		return false;
+	}
+	mUidCanLogin[uid] = 1;
+	return true;
 }
 
 QString ProcessModel::getTooltipForUser(long long uid, long long gid) const
@@ -598,9 +709,8 @@ QString ProcessModel::getTooltipForUser(long long uid, long long gid) const
 	return userTooltip;
 }
 
-QString ProcessModel::getStringForProcess(long long pid) const {
-	QPointer<Process> process = mPidToProcess[pid];		
-	return i18nc("Short description of a process. PID, name", "%1: %2", (long)pid, process->name);
+QString ProcessModel::getStringForProcess(Process *process) const {
+	return i18nc("Short description of a process. PID, name", "%1: %2", (long)(process->pid), process->name);
 }
 
 QVariant ProcessModel::getUsernameForUser(long long uid) const {
@@ -628,7 +738,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	Q_ASSERT(index.column() < mHeadingsToType.count());
 	switch (role){
 	case Qt::DisplayRole: {
-		QPointer<Process> process = mPidToProcess[index.internalId()/*pid*/];
+		Process *process = reinterpret_cast< Process * > (index.internalPointer());
 		int headingType = mHeadingsToType[index.column()];
 		switch(headingType) {
 		case HeadingName:
@@ -641,7 +751,17 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			if(process->xResMemOtherBytes + process->xResPxmMemBytes == 0) return QVariant();
 			return KGlobal::locale()->formatByteSize(process->xResMemOtherBytes + process->xResPxmMemBytes);
 		case HeadingCPUUsage:
-			return QString::number(process->userUsage + process->sysUsage, 'f', 2) + "%";
+			{
+				double total;
+				if(mShowChildTotals) total = process->totalUserUsage + process->totalSysUsage;
+				else total = process->userUsage + process->sysUsage;
+
+				if(total <= 0.1)
+					return "";
+				if(total > 100) total = 100;
+
+				return QString::number(total, 'f', 2) + "%";
+			}
 		case HeadingRSSMemory:
 			if(process->vmRSS == 0) return QVariant();
 			return KGlobal::locale()->formatByteSize(process->vmRSS);
@@ -654,11 +774,11 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		break;
 	}
 	case Qt::ToolTipRole: {
-		QPointer<Process> process = mPidToProcess[index.internalId()/*pid*/];
+		Process *process = reinterpret_cast< Process * > (index.internalPointer());
 		QString tracer;
 		if(process->tracerpid > 0) {
 			if(mPidToProcess.contains(process->tracerpid)) { //it is possible for this to be not the case in certain race conditions
-				QPointer<Process> process_tracer = mPidToProcess[process->tracerpid];
+				Process *process_tracer = mPidToProcess[process->tracerpid];
 				tracer = i18nc("tooltip. name,pid ","This process is being debugged by %1 (%2)", process_tracer->name, (long int)process->tracerpid);
 			}
 		}
@@ -682,7 +802,22 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			return tooltip;
 		}
 		case HeadingCPUUsage: {
-			QString tooltip = i18n("<qt>User CPU usage: %1%<br/>System CPU usage: %2%", process->userUsage, process->sysUsage);
+			QString tooltip = i18n("<qt>Process status: %1 %2<br/>"
+						"User CPU usage: %3%<br/>System CPU usage: %4%",
+						i18nc("process status", process->status),
+						mStatusDescription.value(process->status, ""),
+					        QString::number(process->userUsage, 'f', 2),
+						QString::number(process->sysUsage, 'f', 2));
+			if(process->numChildren > 0) {
+				tooltip += i18n("<br/>Number of children: %1<br/>Total User CPU usage: %2%<br/>"
+						"Total System CPU usage: %3%<br/>Total CPU usage: %4%",
+						process->numChildren,
+						QString::number(process->totalUserUsage, 'f', 2),
+						QString::number(process->totalSysUsage, 'f', 2),
+						QString::number(process->totalUserUsage + process->totalSysUsage, 'f', 2)
+						);
+			}
+
 			if(!tracer.isEmpty())
 				return tooltip + "<br/>" + tracer;
 			return tooltip;
@@ -695,18 +830,44 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	case Qt::UserRole: {
 		//We have a special understanding with the filter.  If it queries us as UserRole in column 0, return uid
 		if(index.column() != 0) return QVariant();  //If we query with this role, then we want the raw UID for this.
-		return mPidToProcess[index.internalId()/*pid*/]->uid;
+		Process *process = reinterpret_cast< Process * > (index.internalPointer());
+		return process->uid;
 	}
 
 	case Qt::UserRole+1: {
 		//We have a special understanding with the filter sort. This returns an int (in a qvariant) that can be sorted by
-		QPointer<Process> process = mPidToProcess[index.internalId()/*pid*/];
+		Process *process = reinterpret_cast< Process * > (index.internalPointer());
 		int headingType = mHeadingsToType[index.column()];
 		switch(headingType) {
+		case HeadingUser: {
+			//Sorting by user will be the default and the most common.
+			//We want to sort in the most useful way that we can. We need to return a number though.
+			//First the user we are running as should be at the top.  We add 2,000,000 for this
+			//Then any other users in the system.  We add 1,000,000 for this,
+			//Then at the bottom the 'system' processes.  We add 0 for this
+
+			//One special exception is a traced process since that's probably important. We should put that at the top
+			if(process->tracerpid >0) return (long long)99999999;
+			
+			long long base = 0;
+			if(process->uid == getuid())
+				base = 2000000;
+			else if(process->uid < 100 || !canUserLogin(process->uid))
+				base = 0;
+			else base = 1000000;
+
+			//However we can of course have lots of processes with the same user.  Next we sort by CPU.
+			long long sub_sort = 0;
+			if(mShowChildTotals)
+				sub_sort = (long long)((process->totalUserUsage + process->totalSysUsage)*100);
+			else
+				sub_sort = (long long)((process->userUsage + process->sysUsage)*100);
+			return base+sub_sort;
+		}
 		case HeadingXMemory:
 			return (long long)(process->xResMemOtherBytes + process->xResPxmMemBytes);
 		case HeadingCPUUsage:
-			return (long long)process->userUsage + process->sysUsage;
+			return (long long)process->totalUserUsage + process->totalSysUsage;
 		case HeadingRSSMemory:
 			return (long long)process->vmRSS;
 		case HeadingMemory:
@@ -715,37 +876,43 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 
 	}
 	case Qt::DecorationRole: {
-		if(mHeadingsToType[index.column()] != HeadingName) return QVariant(); //you might have to change this into a switch if you add more decorations
-		QPointer<Process> process = mPidToProcess[index.internalId()/*pid*/];
-		switch (process->processType){
-			case Process::Init:
-				return getIcon("penguin");
-			case Process::Daemon:
-				return getIcon("daemon");
-			case Process::Kernel:
-				return getIcon("kernel");
-			case Process::Kdeapp:
-				return getIcon("kdeapp");
-			case Process::Tools:
-				return getIcon("tools");
-			case Process::Shell:
-				return getIcon("shell");
-			case Process::Wordprocessing:
-				return getIcon("wordprocessing");
-			case Process::Term:
-				return getIcon("openterm");
-			case Process::Invalid:
-				return QVariant();
-//			case Process::Other:
-			default:
-				//so iconname tries to guess as what icon to use.
-				return getIcon(process->name);
+		if(mHeadingsToType[index.column()] == HeadingName) {
+			Process *process = reinterpret_cast< Process * > (index.internalPointer());
+			switch (process->processType){
+				case Process::Init:
+					return getIcon("penguin");
+				case Process::Daemon:
+					return getIcon("daemon");
+				case Process::Kernel:
+					return getIcon("kernel");
+				case Process::Kdeapp:
+					return getIcon("kdeapp");
+				case Process::Tools:
+					return getIcon("tools");
+				case Process::Shell:
+					return getIcon("shell");
+				case Process::Wordprocessing:
+					return getIcon("wordprocessing");
+				case Process::Term:
+					return getIcon("openterm");
+				case Process::Invalid:
+					return QVariant();
+	//			case Process::Other:
+				default:
+					//so iconname tries to guess as what icon to use.
+					return getIcon(process->name);
+			}
+		} else if (mHeadingsToType[index.column()] == HeadingCPUUsage) {
+			Process *process = reinterpret_cast< Process * > (index.internalPointer());
+			if(process->status == "stopped" || process->status == "zombie") {
+				return getIcon("button_cancel");
+			}
 		}
-		return QVariant(); //keep compilier happy
+		return QVariant();
 	}
 	case Qt::BackgroundColorRole: {
 		if(!mIsLocalhost) return QVariant();
-		QPointer<Process> process = mPidToProcess[index.internalId()/*pid*/];
+		Process *process = reinterpret_cast< Process * > (index.internalPointer());
 		if(process->tracerpid >0) {
 			//It's being debugged, so probably important.  Let's mark it as such
 			return QColor("yellow");
@@ -753,9 +920,20 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		if(process->uid == getuid()) {
 			return QColor(216,212,255);
 		}
-		if(process->uid < 100)
+		if(process->uid < 100 || !canUserLogin(process->uid))
 			return QColor("gainsboro");
 		return QColor("mediumaquamarine");
+	}
+	case Qt::FontRole: {
+		if(index.column() == mCPUHeading) {
+			Process *process = reinterpret_cast< Process * > (index.internalPointer());
+			if(process->userUsage + process->sysUsage <= 0.1) {
+				QFont font;
+				font.setItalic(true);
+				return font;
+			}
+		}
+		return QVariant();
 	}
 	default: //This is a very very common case, so the route to this must be very minimal
 		return QVariant();
@@ -811,64 +989,66 @@ void ProcessModel::setIsLocalhost(bool isLocalhost)
 }
 
 /** Set the untranslated heading names for the model */
-bool ProcessModel::setHeader(const QStringList &header, const QList<char> &coltype_) {
+bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltype_) {
 	mPidColumn = -1;  //We need to be able to access the pid directly, so remember which column it will be in
 	mPPidColumn = -1; //Same, although this may not always be found :/
+	mCPUHeading = -1;
 	QStringList headings;
 	QList<int> headingsToType;
 	int num_of_others = 0; //Number of headings found that we dont know about.  Will match the index in process->data[index]
-	QList<char> coltype;
+	QByteArray coltype;
 	for(int i = 0; i < header.count(); i++) {
 		bool other = false;
 		if(header[i] == "Login") {
-			coltype << DataColumnLogin;
+			coltype += DataColumnLogin;
 		} else if(header[i] == "GID") {
-			coltype << DataColumnGid;
+			coltype += DataColumnGid;
 		} else if(header[i] == "PID") {
-			coltype << DataColumnPid;
+			coltype += DataColumnPid;
 			mPidColumn = i;
 		} else if(header[i] == "PPID") {
-			coltype << DataColumnPPid;
+			coltype += DataColumnPPid;
 			mPPidColumn = i;
 		} else if(header[i] == "UID") {
 			headings.prepend(i18nc("process heading", "User"));   //The heading for the top of the qtreeview
 			headingsToType.prepend(HeadingUser);
-			coltype << DataColumnUid;
+			coltype += DataColumnUid;
 		} else if(header[i] == "Name") {
-			coltype << DataColumnName;
+			coltype += DataColumnName;
 		} else if(header[i] == "TracerPID") {
-			coltype << DataColumnTracerPid;
+			coltype += DataColumnTracerPid;
 		} else if(header[i] == "User%") {
-			coltype << DataColumnUserUsage;
+			coltype += DataColumnUserUsage;
 			headings << i18nc("process heading", "CPU %");
 			headingsToType << HeadingCPUUsage;
+			mCPUHeading = headingsToType.size();
 		} else if(header[i] == "System%") {
-			coltype << DataColumnSystemUsage;
+			coltype += DataColumnSystemUsage;
 		} else if(header[i] == "Nice") {
-			coltype << DataColumnNice;
+			coltype += DataColumnNice;
 		} else if(header[i] == "VmSize") {
-			coltype << DataColumnVmSize;
+			coltype += DataColumnVmSize;
 			headings << i18nc("process heading", "Memory");
 			headingsToType << HeadingMemory;
 		} else if(header[i] == "VmRss") {
-			coltype << DataColumnVmRss;
+			coltype += DataColumnVmRss;
 			headings << i18nc("process heading", "RSS Memory");
 			headingsToType << HeadingRSSMemory;
 		} else if(header[i] == "Command") {
-			coltype << DataColumnCommand;
+			coltype += DataColumnCommand;
 		} else if(coltype_[i] == DATA_COLUMN_STATUS) {
-			coltype << DataColumnStatus;
+			coltype += DataColumnStatus;
 		} else if(coltype_[i] == DATA_COLUMN_LONG) {
-			coltype << DataColumnOtherLong;
+			coltype += DataColumnOtherLong;
 			other = true;
 		} else if(coltype_[i] == DATA_COLUMN_PRETTY_LONG) {
-			coltype << DataColumnOtherPrettyLong;
+			coltype += DataColumnOtherPrettyLong;
 			other = true;
 		} else if(coltype_[i] == DATA_COLUMN_PRETTY_FLOAT) {
-			coltype << DataColumnOtherPrettyFloat;
+			coltype += DataColumnOtherPrettyFloat;
 			other = true;
 		} else {
-			coltype << DataColumnError;
+			coltype += DataColumnError;
 		}
 		if(other) { //If we don't know about this column, just automatically add it
 			headings << header[i];
@@ -890,7 +1070,7 @@ bool ProcessModel::setHeader(const QStringList &header, const QList<char> &colty
 	endInsertColumns();
 	return true;
 }
-bool ProcessModel::setXResHeader(const QStringList &header, const QList<char> &)
+bool ProcessModel::setXResHeader(const QStringList &header, const QByteArray &)
 {
 	mXResPidColumn = -1;
 	mXResIdentifierColumn = -1;
@@ -945,49 +1125,66 @@ void ProcessModel::setXResData(const QStringList& data)
 
 
 	long long pid = data[mXResPidColumn].toLongLong();
-	QPointer<Process> process = mPidToProcess[pid];
-	if(process.isNull()) {
+	Process *process = mPidToProcess[pid];
+	if(!process) {
 		kDebug(1215) << "XRes Data for process '" << data[mXResPidColumn] << "'(int) which we don't know about" << endl;
 		return;
 	}
  	bool changed = false;
 	if(mXResIdentifierColumn != -1)
 		if(process->xResIdentifier != data[mXResIdentifierColumn]) {
-		  changed = true;
-		  process->xResIdentifier = data[mXResIdentifierColumn];
+			changed = true;
+			process->xResIdentifier = data[mXResIdentifierColumn];
 		}
 	if(mXResPxmMemColumn != -1) {
 		long long pxmMem = data[mXResPxmMemColumn].toLongLong();
 		if(process->xResPxmMemBytes != pxmMem) {
-		  changed = true;
-		  process->xResPxmMemBytes = pxmMem;
+			changed = true;
+			process->xResPxmMemBytes = pxmMem;
 		}
 	}
 	if(mXResNumPxmColumn != -1) {
 		int numPxm =  data[mXResNumPxmColumn].toInt();
 		if(process->xResNumPxm != numPxm) {
-		  changed = true;
-		  process->xResNumPxm = numPxm;
+			changed = true;
+			process->xResNumPxm = numPxm;
 		}
 	}
 	if(mXResMemOtherColumn != -1) {
 		long long memOther = data[mXResMemOtherColumn].toInt();
 		if(process->xResMemOtherBytes != memOther) {
-		  changed = true;
-		 process->xResMemOtherBytes = memOther;
+			 changed = true;
+			process->xResMemOtherBytes = memOther;
 		}
 	}
 	if(!changed)
 		return;
-	QPointer<Process> parent_process = mPidToProcess[ process->parent_pid ];
-	if(parent_process.isNull()) return;
-	int row = parent_process->children_pids.indexOf(process->pid);
-	if(row == -1) //something has gone really wrong
-		return;
-        QModelIndex startIndex = createIndex(row, 0, pid);
-	QModelIndex endIndex = createIndex(row, mHeadings.count()-1, pid);
+	Process *parent_process = process->parent;
+	Q_ASSERT(parent_process);
+
+	int row = parent_process->children.indexOf(process);
+	Q_ASSERT(row != -1);
+        
+	QModelIndex startIndex = createIndex(row, 0, process);
+	QModelIndex endIndex = createIndex(row, mHeadings.count()-1, process);
         emit dataChanged(startIndex, endIndex);
 
 }
 
+void ProcessModel::setShowTotals(int totals)  //slot
+{
+	mShowChildTotals = totals;
 
+	QModelIndex index;
+	Process *process;
+	
+	QList<Process *> processes = mPidToProcess.values();
+	for(int i = 0; i < processes.size(); i++) {
+		process = processes.at(i);
+		if(process->numChildren > 0) {
+			int row = process->parent->children.indexOf(process);
+			index = createIndex(row, mCPUHeading, process);
+			emit dataChanged(index, index);
+		}
+	}
+}

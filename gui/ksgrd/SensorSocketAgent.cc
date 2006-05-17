@@ -84,10 +84,9 @@ void SensorSocketAgent::msgRcvd()
   char* buffer = new char[ buflen ];
 
   mSocket.read( buffer, buflen );
-  QString buf = QString::fromLocal8Bit( buffer, buflen );
-  delete [] buffer;
 
-  processAnswer( buf );
+  processAnswer( buffer, buflen ); 
+  delete [] buffer;
 }
 
 void SensorSocketAgent::connectionClosed()

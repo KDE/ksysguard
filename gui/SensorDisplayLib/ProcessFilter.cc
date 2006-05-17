@@ -34,13 +34,24 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 {
 	//We need the uid for this, so we have a special understanding with the model.
 	//We query the first row with Qt:UserRole, and it gives us the uid.  Nasty but works.
-	QModelIndex source_index = sourceModel()->index(source_row, 0, source_parent);
-	bool ok;
-	long uid = sourceModel()->data(source_index, Qt::UserRole).toInt(&ok);
-	if(!ok) {
-		kDebug() << "Serious error with data.  The UID is not a number? Maybe 'ps' is not returning the data correctly.  UID is: " << source_parent.child(source_row,0).data().toString() << endl;
+	
+	if(mFilter == PROCESS_FILTER_ALL && filterRegExp().isEmpty()) return true; //Shortcut for common case 
+	
+	Process *parent_process;
+	if(source_parent.isValid()) {
+		parent_process = reinterpret_cast<Process *>(source_parent.internalPointer());
+	} else {
+		parent_process = static_cast<ProcessModel *>(sourceModel())->getProcess(0); //Get our 'special' process which should have all the root children
+	}
+
+	if(source_row >= parent_process->children.size()) {
+		kDebug() << "Serious error with data.  Source row requested for a non existant row." << endl;
 		return true;
 	}
+	const Process *process = parent_process->children.at(source_row);
+	Q_ASSERT(process);
+	long uid = process->uid;
+	
 	bool accepted = true;
 	switch(mFilter) {
 	case PROCESS_FILTER_ALL:
@@ -55,18 +66,25 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
         default:
                 if(uid != (long) getuid()) accepted = false;
         }
-	if(accepted) {
-		//Our filter accepted it.  Pass it on to qsortfilterproxymodel's filter	
-		accepted = QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+
+	if(accepted) { 
+		if(filterRegExp().isEmpty()) return true;
+		
+		//Allow the user to search by PID
+		if(QString::number(process->pid).contains(filterRegExp())) return true;
+
+		//None of our tests have rejected it.  Pass it on to qsortfilterproxymodel's filter	
+		if(QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent))
+			return true;
 	}
-	if(!accepted) {
-		//We did not accept this row at all.  However one of our children might be accepted, so accept this row if our children are accepted.
-		for(int i = 0 ; i < sourceModel()->rowCount(source_index); i++) {
-			if(filterAcceptsRow(i, source_index)) return true;
-		}
-		return false;
+
+
+	//We did not accept this row at all.  However one of our children might be accepted, so accept this row if our children are accepted.
+	QModelIndex source_index = sourceModel()->index(source_row, 0, source_parent);
+	for(int i = 0 ; i < sourceModel()->rowCount(source_index); i++) {
+		if(filterAcceptsRow(i, source_index)) return true;
 	}
-	return true;
+	return false;
 }
 
 bool ProcessFilter::lessThan(const QModelIndex &left, const QModelIndex &right) const

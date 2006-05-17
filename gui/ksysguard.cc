@@ -64,6 +64,9 @@
 
 #include "ksysguard.h"
 
+//Comment out to stop ksysguard from forking.  Good for debugging
+//#define FORK_KSYSGUARD
+
 static const char Description[] = I18N_NOOP( "KDE system guard" );
 TopLevel* topLevel;
 
@@ -75,7 +78,6 @@ TopLevel::TopLevel( const char *name )
   : KMainWindow( 0, name ), DCOPObject( "KSysGuardIface" )
 {
   setPlainCaption( i18n( "KDE System Guard" ) );
-  mDontSaveSession = false;
   mTimerId = -1;
 
   mSplitter = new QSplitter( this );
@@ -246,8 +248,6 @@ void TopLevel::beATaskManager()
   // No toolbar and status bar in taskmanager mode.
   toolBar( "mainToolBar" )->hide();
 
-  mDontSaveSession = true;
-
   stateChanged( "showProcessState" );
 }
 
@@ -347,13 +347,11 @@ void TopLevel::timerEvent( QTimerEvent* )
 
 bool TopLevel::queryClose()
 {
-  if ( !mDontSaveSession ) {
-    if ( !mWorkSpace->saveOnQuit() )
-      return false;
+  if ( !mWorkSpace->saveOnQuit() )
+    return false;
 
-    saveProperties( KGlobal::config() );
-    KGlobal::config()->sync();
-  }
+  saveProperties( KGlobal::config() );
+  KGlobal::config()->sync();
 
   return true;
 }
@@ -398,9 +396,11 @@ void TopLevel::saveProperties( KConfig *cfg )
   mWorkSpace->saveProperties( cfg );
 }
 
-void TopLevel::answerReceived( int id, const QString &answer )
+void TopLevel::answerReceived( int id, const QStringList &answerList )
 {
   // we have recieved an answer from the daemon.
+  QString answer;
+  if(!answerList.isEmpty()) answer = answerList[0];
   QString s;
   static QString unit;
   static long mUsed = 0;
@@ -507,16 +507,17 @@ int main( int argc, char** argv )
 {
   // initpipe is used to keep the parent process around till the child
   // has registered with dcop.
+#ifdef FORK_KSYSGUARD
   int initpipe[ 2 ];
-  pipe( initpipe );
-
+  pipe( initpipe );*/
+#endif
   /* This forking will put ksysguard in it's on session not having a
    * controlling terminal attached to it. This prevents ssh from
    * using this terminal for password requests. Unfortunately you
    * now need a ssh with ssh-askpass support to popup an X dialog to
    * enter the password. Currently only the original ssh provides this
    * but not open-ssh. */
-
+#ifdef FORK_KSYSGUARD
   pid_t pid;
   if ( ( pid = fork() ) < 0 )
     return -1;
@@ -535,6 +536,7 @@ int main( int argc, char** argv )
 
   close( initpipe[ 0 ] );
   setsid();
+#endif
 
   KAboutData aboutData( "ksysguard", I18N_NOOP( "KDE System Guard" ),
                         KSYSGUARD_VERSION, Description, KAboutData::License_GPL,
@@ -573,10 +575,11 @@ int main( int argc, char** argv )
     if ( app->dcopClient()->registerAs( "ksysguard_taskmanager", false ) ==
                                                     "ksysguard_taskmanager" ) {
       // We have registered with DCOP, our parent can exit now.
-      char c = 0;
+#ifdef FORK_KSYSGUARD
+      char c = 0;      
       write( initpipe[ 1 ], &c, 1 );
       close( initpipe[ 1 ] );
-
+#endif
       topLevel = new TopLevel( "KSysGuard" );
       topLevel->beATaskManager();
       topLevel->initStatusBar();
@@ -595,10 +598,11 @@ int main( int argc, char** argv )
     app->dcopClient()->setDefaultObject( "KSysGuardIface" );
 
     // We have registered with DCOP, our parent can exit now.
+#ifdef FORK_KSYSGUARD
     char c = 0;
     write( initpipe[ 1 ], &c, 1 );
     close( initpipe[ 1 ] );
-
+#endif
     topLevel = new TopLevel( "KSysGuard" );
 
     // create top-level widget

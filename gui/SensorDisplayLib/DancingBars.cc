@@ -224,11 +224,12 @@ QSize DancingBars::sizeHint() const
   return mPlotter->sizeHint();
 }
 
-void DancingBars::answerReceived( int id, const QString &answer )
+void DancingBars::answerReceived( int id, const QStringList &answerlist )
 {
   /* We received something, so the sensor is probably ok. */
   sensorError( id, false );
-	
+  QString answer;
+  if(!answerlist.isEmpty()) answer = answerlist[0];
   if ( id < 100 ) {
     mSampleBuffer[ id ] = answer.toDouble();
     if ( mFlags.testBit( id ) == true ) {

@@ -100,9 +100,7 @@ void SensorShellAgent::msgRcvd( KProcess*, char *buffer, int buflen )
   if ( !buffer || buflen == 0 )
     return;
 
-  QString aux = QString::fromLocal8Bit( buffer, buflen );
-
-  processAnswer( aux );
+  processAnswer( buffer, buflen );
 }
 
 void SensorShellAgent::errMsgRcvd( KProcess*, char *buffer, int buflen )
@@ -116,7 +114,7 @@ void SensorShellAgent::errMsgRcvd( KProcess*, char *buffer, int buflen )
                 << endl << buf << endl;
 }
 
-void SensorShellAgent::daemonExited( KProcess *process )
+void SensorShellAgent::daemonExited( KProcess * )
 {
   setDaemonOnLine( false );
   sensorManager()->hostLost( this );

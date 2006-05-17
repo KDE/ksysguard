@@ -180,6 +180,7 @@ bool WorkSheet::load( const QString &fileName )
 
 bool WorkSheet::save( const QString &fileName )
 {
+  kDebug() << "SAVING - IN WORKSHEET" << endl;
   mFileName = fileName;
 
   QDomDocument doc( "KSysGuardWorkSheet" );

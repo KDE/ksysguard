@@ -31,6 +31,7 @@
 #include <QHeaderView>
 #include <QAction>
 #include <QMenu>
+#include <QTime>
 
 #include <kapplication.h>
 #include <kdebug.h>
@@ -54,13 +55,14 @@
 ProcessController::ProcessController(QWidget* parent, const QString &title)
 	: KSGRD::SensorDisplay(parent, title, false/*isApplet.  Can't be applet, so false*/), mModel(parent), mFilterModel(parent)
 {
+
+	mReadyForPs = false;
 	mUi.setupUi(this);
 	mFilterModel.setSourceModel(&mModel);
 	mUi.treeView->setModel(&mFilterModel);
 	mColumnContextMenu = new QMenu(mUi.treeView->header());
 	connect(mColumnContextMenu, SIGNAL(triggered(QAction*)), this, SLOT(showOrHideColumn(QAction *)));
 	
-	mSetupTreeView = false;
 	mUi.treeView->header()->setContextMenuPolicy(Qt::CustomContextMenu);
 	
 	mUi.treeView->header()->setClickable(true);
@@ -70,13 +72,12 @@ ProcessController::ProcessController(QWidget* parent, const QString &title)
 	connect(mUi.btnKillProcess, SIGNAL(clicked()), this, SLOT(killProcess()));
 	connect(mUi.txtFilter, SIGNAL(textChanged(const QString &)), &mFilterModel, SLOT(setFilterRegExp(const QString &)));
 	connect(mUi.cmbFilter, SIGNAL(currentIndexChanged(int)), &mFilterModel, SLOT(setFilter(int)));
-	connect(&mModel, SIGNAL(columnsInserted(const QModelIndex &, int, int)), this, SLOT(setupTreeView()));
-	connect(&mModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)), this, SLOT(expandRows(const QModelIndex &, int, int)));
 	connect(mUi.treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
 	connect(mUi.treeView, SIGNAL(collapsed(const QModelIndex &)), this, SLOT(resizeFirstColumn()));
-	
+	connect(&mModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)), this, SLOT(rowsInserted(const QModelIndex &, int, int)));
 	connect(mUi.treeView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex & , const QModelIndex & )), this, SLOT(currentRowChanged(const QModelIndex &)));
 	connect(mUi.treeView->header(), SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
+	connect(mUi.chkShowTotals, SIGNAL(stateChanged(int)), &mModel, SLOT(setShowTotals(int)));
 	
 	setPlotterWidget(this);
 	setMinimumSize(sizeHint());
@@ -134,23 +135,25 @@ void ProcessController::expandAllChildren(const QModelIndex &parent)
 	QModelIndex sourceParent = mFilterModel.mapToSource(parent);
 	for(int i = 0; i < mModel.rowCount(sourceParent); i++) 
 		mUi.treeView->expand(mFilterModel.mapFromSource(mModel.index(i,0, sourceParent)));
-	resizeFirstColumn();
+	QTimer::singleShot(0,this,SLOT(resizeFirstColumn())); //compress events, as this can end up being called for each child
 }
 
 void ProcessController::resizeFirstColumn()
 {
 	mUi.treeView->resizeColumnToContents(0);
 }
-void ProcessController::expandRows( const QModelIndex & parent, int start, int end )
+void ProcessController::rowsInserted( const QModelIndex & parent, int , int )
 {
-	for(int i = start; i <= end; i++) {
-		mUi.treeView->expand(mFilterModel.mapFromSource(mModel.index(i,0, parent)));
+	if(!parent.isValid()) { //init has been added - expand it!
+		//We can't expand straight away - it's only just been added.  We need to wait till all its children have been added first
+		//So we just fire off a singleshot.  This will call expandInit() in the event loop which is after all the children have been added
+		QTimer::singleShot(0, this, SLOT(expandInit()));
 	}
-	resizeFirstColumn();
 }
-void ProcessController::setupTreeView()
+void ProcessController::expandInit()
 {
-	mUi.treeView->resizeColumnToContents(0);
+	mUi.treeView->expand(mFilterModel.mapFromSource(mModel.index(0,0, QModelIndex())));
+	QTimer::singleShot(0,this,SLOT(resizeFirstColumn())); //compress events, as this can end up being called for each child
 }
 
 void ProcessController::resizeEvent(QResizeEvent* ev)
@@ -164,7 +167,7 @@ bool ProcessController::addSensor(const QString& hostName,
 				  const QString& title)
 {
 	if (sensorType != "table")
-		return (false);
+		return false;
 
 	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 	/* This just triggers the first communication. The full set of
@@ -172,20 +175,31 @@ bool ProcessController::addSensor(const QString& hostName,
 	 * sensorError(). */
 
 	mModel.setIsLocalhost(sensors().at(0)->isLocalhost()); //by telling our model that this is localhost, it can provide more information about the data it has
-
+	
+	sensors().at(0)->setIsOk(true); //Assume it is okay from the start
+	setSensorOk(sensors().at(0)->isOk());
+	
+	kDebug() << "Sending ps? in addsensor " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+	sendRequest(hostName, "ps?", Ps_Info_Command);
+	kDebug() << "Sending ps in addsensor " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+	sendRequest(hostName, "ps", Ps_Command);
 	sendRequest(hostName, "test kill", Kill_Supported_Command);
 	sendRequest(hostName, "test xres", XRes_Supported_Command);
+
 	if (title.isEmpty())
 		setTitle(i18n("%1: Running Processes", hostName));
 	else
 		setTitle(title);
 
-	return (true);
+	return true;
 }
 
 void
 ProcessController::updateList()
 {
+	if(!mReadyForPs) {
+		return;
+	}
 	sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);
 	if(mXResSupported)
 		sendRequest(sensors().at(0)->hostName(), "xres", XRes_Command);
@@ -211,9 +225,9 @@ ProcessController::killProcess()
 	QList< long long> selectedPids;
 	for (int i = 0; i < selectedIndexes.size(); ++i) {
 		if(selectedIndexes.at(i).column() == 0) { //I can't work out how to get selectedIndexes() to only return 1 index per row
-			long long pid = mFilterModel.mapToSource(selectedIndexes.at(i)).internalId();
-			selectedPids << pid;
-			selectedAsStrings << mModel.getStringForProcess(pid);
+			Process *process = reinterpret_cast<Process *> (mFilterModel.mapToSource(selectedIndexes.at(i)).internalPointer());
+			selectedPids << process->pid;
+			selectedAsStrings << mModel.getStringForProcess(process);
 		}
 	}
 	
@@ -268,7 +282,7 @@ ProcessController::reniceProcess(int pid, int niceValue)
 }
 
 void
-ProcessController::answerReceived(int id, const QString& answer)
+ProcessController::answerReceived(int id, const QStringList& answer)
 {
 	/* We received something, so the sensor is probably ok. */
 	sensorError(id, false);
@@ -276,22 +290,23 @@ ProcessController::answerReceived(int id, const QString& answer)
 	{
 	case Ps_Info_Command:
 	{
+
+		kDebug() << "PS_INFO_COMMAND: Received ps info at " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 		/* We have received the answer to a ps? command that contains
 		 * the information about the table headers. */
-		QStringList lines = answer.trimmed().split('\n');
-		if (lines.count() != 2)
+		if (answer.count() != 2)
 		{
 			kDebug (1215) << "ProcessController::answerReceived(Ps_Info_Command)"
 				  "wrong number of lines [" <<  answer << "]" << endl;
 			sensorError(id, true);
 			return;
 		}
-		QString line = lines.at(1);
-		QList<char> coltype;
+		QString line = answer.at(1);
+		QByteArray coltype;
 		for(int i = 0; i < line.size(); i++)  //coltype is in the form "d\tf\tS\t" etc, so split into a list of char
 			if(line[i] != '\t')
-				coltype << line[i].toLatin1();//FIXME: the answer should really be a QByteArray, not a string
-		QStringList header = lines.at(0).split('\t');
+				coltype += line[i].toLatin1();
+		QStringList header = answer.at(0).split('\t');
 		if(coltype.count() != header.count()) {
 			kDebug(1215) << "ProcessControll::answerReceived.  Invalid data from a client - column type and data don't match in number.  Discarding" << endl;
 			sensorError(id, true);
@@ -303,48 +318,65 @@ ProcessController::answerReceived(int id, const QString& answer)
 		}
 
 		mFilterModel.setFilterKeyColumn(0);
+		kDebug() << "PS_INFO_COMMAND: We are now ready for ps.  " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+		mReadyForPs = true;
+//		sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);
 
 		break;
 	}
 	case Ps_Command:
 	{
+		kDebug() << "We recieved ps data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 		/* We have received the answer to a ps command that contains a
 		 * list of processes with various additional information. */
-		QStringList lines = answer.trimmed().split('\n');
+		if(!mReadyForPs) {
+			kDebug(1215) << "Process data arrived before we were ready for it. hmm" << endl;
+			break;
+		}
 		QList<QStringList> data;
-		QStringListIterator i(lines);
+		QStringListIterator i(answer);
 		while(i.hasNext()) {
-		  data << i.next().split('\t');
+			QString row = i.next();
+			if(!row.trimmed().isEmpty())
+				data << row.split('\t');
 		}
 		if(data.isEmpty()) {
 			kDebug(1215) << "No data in the answer from 'ps'" << endl;
 			break;
 		}
-		mModel.setData(data);
+		if(!mModel.setData(data)) {
+			sensorError(id, true);
+			return;
+		}
+
+		kDebug() << "We finished with ps data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 		break;
 	}
 	case Kill_Command:
 	{
 		// result of kill operation
-		KSGRD::SensorTokenizer vals(answer.trimmed(), '\t');
-		switch (vals[0].toInt())
+		if(answer.count() != 2) {
+			kDebug(1215) << "Invalid answer from a kill request" << endl;
+			break;
+		}
+		switch (answer[0].toInt())
 		{
 		case 0:	// successful kill operation
 			break;
 		case 1:	// unknown error
 			KSGRD::SensorMgr->notify(
 				i18n("Error while attempting to kill process %1.",
-				 vals[1]));
+				 answer[1]));
 			break;
 		case 2:
 			KSGRD::SensorMgr->notify(
 				i18n("Insufficient permissions to kill "
-							 "process %1.", vals[1]));
+							 "process %1.", answer[1]));
 			break;
 		case 3:
 			KSGRD::SensorMgr->notify(
 				i18n("Process %1 has already disappeared.",
-				 vals[1]));
+				 answer[1]));
 			break;
 		case 4:
 			KSGRD::SensorMgr->notify(i18n("Invalid Signal."));
@@ -353,33 +385,35 @@ ProcessController::answerReceived(int id, const QString& answer)
 		break;
 	}
 	case Kill_Supported_Command:
-		mKillSupported = (answer.toInt() == 1);
-		//pList->setKillSupported(mKillSupported);
-		//mUi.btnKillProcess->setEnabled(mKillSupported);
+		kDebug() << "We recieved kill supported data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+		if(!answer.isEmpty())
+			mKillSupported = (answer[0].toInt() == 1);
 		break;
 	case Renice_Command:
 	{
 		// result of renice operation
-		kDebug(1215) << answer << endl;
-		KSGRD::SensorTokenizer vals(answer.trimmed(), '\t');
-		switch (vals[0].toInt())
+		if(answer.count() != 2) {
+			kDebug(1215) << "Invalid answer from a renice request" << endl;
+			break;
+		}
+		switch (answer[0].toInt())
 		{
 		case 0:	// successful renice operation
 			break;
 		case 1:	// unknown error
 			KSGRD::SensorMgr->notify(
 				i18n("Error while attempting to renice process %1.",
-				 vals[1]));
+				 answer[1]));
 			break;
 		case 2:
 			KSGRD::SensorMgr->notify(
 				i18n("Insufficient permissions to renice "
-							 "process %1.", vals[1]));
+							 "process %1.", answer[1]));
 			break;
 		case 3:
 			KSGRD::SensorMgr->notify(
 				i18n("Process %1 has already disappeared.",
-				 vals[1]));
+				 answer[1]));
 			break;
 		case 4:
 			KSGRD::SensorMgr->notify(i18n("Invalid argument."));
@@ -390,21 +424,20 @@ ProcessController::answerReceived(int id, const QString& answer)
 	case XRes_Info_Command:
 	{
 		kDebug() << "XRES INFO" << endl;
-		QStringList lines = answer.trimmed().split('\n');
-		if (lines.count() != 2)
+		if (answer.count() != 2)
 		{
 			kDebug (1215) << "ProcessController::answerReceived(XRes_Info_Command)"
 				  "wrong number of lines [" <<  answer << "]" << endl;
 			sensorError(id, true);
 			return;
 		}
-		QString line = lines.at(1);
-		QList<char> coltype;
+		QString line = answer.at(1);
+		QByteArray coltype;
 		for(int i = 0; i < line.size(); i++)  //coltype is in the form "d\tf\tS\t" etc, so split into a list of char
 			if(line[i] != '\t')
-				coltype << line[i].toLatin1();//FIXME: the answer should really be a QByteArray, not a string
-		QStringList header = lines.at(0).split('\t');
-		if(coltype.count() != header.count()) {
+				coltype += line[i].toLatin1();//FIXME: the answer should really be a QByteArray, not a string
+		QStringList header = answer.at(0).split('\t');
+		if(coltype.size() != header.count()) {
 			kDebug(1215) << "ProcessControll::answerReceived.  Invalid data from a client - column type and data don't match in number.  Discarding" << endl;
 			sensorError(id, true);
 			return;
@@ -420,8 +453,7 @@ ProcessController::answerReceived(int id, const QString& answer)
 	{
 		/* We have received the answer to a xres command that contains a
 		 * list of processes that we should already know about, with various additional information. */
-		QStringList lines = answer.trimmed().split('\n');
-		QStringListIterator i(lines);
+		QStringListIterator i(answer);
 		while(i.hasNext()) {
 		  mModel.setXResData(i.next().split('\t'));
 		}
@@ -429,8 +461,12 @@ ProcessController::answerReceived(int id, const QString& answer)
 	}
 	case XRes_Supported_Command:
 	{
-		mXResSupported = (answer.toInt() == 1);
-		if(mXResSupported) {
+		kDebug() << "We recieved xres supported. " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+		if(answer.isEmpty())
+		  mXResSupported = false;
+		else {
+		  mXResSupported = (answer[0].toInt() == 1);
+		  if(mXResSupported) 
 			sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
 		}
 		break;
@@ -450,12 +486,17 @@ ProcessController::sensorError(int, bool err)
 			 * (re-)established we need to requests the full set of
 			 * properties again, since the back-end might be a new
 			 * one. */
+
+			mReadyForPs = false;
+			kDebug() << "Sending ps1? " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 			sendRequest(sensors().at(0)->hostName(), "test kill", Kill_Supported_Command);
 			sendRequest(sensors().at(0)->hostName(), "test xres", XRes_Supported_Command);
+			kDebug() << "Sending ps? command" << endl;
+			kDebug() << "Sending ps2? " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 			sendRequest(sensors().at(0)->hostName(), "ps?", Ps_Info_Command);
-			sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);
+		} else {
+			kDebug() << "SensorError called with an error" << endl;
 		}
-
 		/* This happens only when the sensorOk status needs to be changed. */
 		sensors().at(0)->setIsOk( !err );
 	}
@@ -465,6 +506,7 @@ ProcessController::sensorError(int, bool err)
 bool
 ProcessController::restoreSettings(QDomElement& element)
 {
+	kDebug() << "RESTORING SETTINGS " << endl;
 	bool result = addSensor(element.attribute("hostName"),
 				element.attribute("sensorName"),
 				(element.attribute("sensorType").isEmpty() ? "table" : element.attribute("sensorType")),
@@ -472,16 +514,15 @@ ProcessController::restoreSettings(QDomElement& element)
 //	mUi.chkTreeView->setChecked(element.attribute("tree").toInt());
 //	setTreeView(element.attribute("tree").toInt());
 
-	uint filter = element.attribute("filter").toUInt();
+	uint filter = element.attribute("filter", "0").toUInt();
 	mUi.cmbFilter->setCurrentIndex(filter);
 
-	uint col = element.attribute("sortColumn").toUInt();
-	bool inc = element.attribute("incrOrder").toUInt();
+	uint col = element.attribute("sortColumn", "1").toUInt(); //Default to sorting the user column
+	bool inc = element.attribute("incrOrder", "0").toUInt();  //Default to descending order
+	mFilterModel.sort(col,(inc)?Qt::AscendingOrder:Qt::DescendingOrder);
 
-//	if (!pList->load(element))
-//		return (false);
-
-	//mFilterModel.sort(col,(inc)?Qt::AscendingOrder:Qt::DescendingOrder);
+	bool showTotals = element.attribute("showTotals", "1").toUInt();
+	mUi.chkShowTotals->setCheckState( (showTotals)?Qt::Checked:Qt::Unchecked );
 	
 	SensorDisplay::restoreSettings(element);
 	setModified(false);
@@ -492,17 +533,16 @@ ProcessController::restoreSettings(QDomElement& element)
 bool
 ProcessController::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 {
+	kDebug() << "SAVING SETTINGS " << endl;
 	element.setAttribute("hostName", sensors().at(0)->hostName());
 	element.setAttribute("sensorName", sensors().at(0)->name());
 	element.setAttribute("sensorType", sensors().at(0)->type());
 //	element.setAttribute("tree", (uint) mUi.chkTreeView->isChecked());
+	element.setAttribute("showTotals", (uint) (mUi.chkShowTotals->checkState() == Qt::Unchecked));
+	
 	element.setAttribute("filter", mUi.cmbFilter->currentIndex());
-//FIXME There is currently no way to get this information from qt!!
-//	element.setAttribute("sortColumn", pList->getSortColumn());
-//	element.setAttribute("incrOrder", pList->getIncreasing());
-
-//	if (!pList->save(doc, element))
-//		return (false);
+	element.setAttribute("sortColumn", mUi.treeView->header()->sortIndicatorSection());
+	element.setAttribute("incrOrder", (uint) (mUi.treeView->header()->sortIndicatorOrder() == Qt::AscendingOrder));
 
 	SensorDisplay::saveSettings(doc, element);
 

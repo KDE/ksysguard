@@ -80,10 +80,12 @@ MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
 }
 
 void
-MultiMeter::answerReceived(int id, const QString& answer)
+MultiMeter::answerReceived(int id, const QStringList& answerlist)
 {
 	/* We received something, so the sensor is probably ok. */
 	sensorError(id, false);
+	QString answer;
+	if(!answerlist.isEmpty()) answer = answerlist[0];
 
 	if (id == 100)
 	{

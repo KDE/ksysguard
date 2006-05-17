@@ -155,7 +155,7 @@ void SensorBrowser::newItemSelected( Q3ListViewItem *item )
   }
 }
 
-void SensorBrowser::answerReceived( int id, const QString &answer )
+void SensorBrowser::answerReceived( int id, const QStringList &answer )
 {
   /* An answer has the following format:
 
@@ -177,13 +177,11 @@ void SensorBrowser::answerReceived( int id, const QString &answer )
   if ( !it.current() )
     return;
 
-  KSGRD::SensorTokenizer lines( answer, '\n' );
-
-  for ( uint i = 0; i < lines.count(); ++i ) {
-    if ( lines[ i ].isEmpty() )
+  for ( uint i = 0; i < answer.count(); ++i ) {
+    if ( answer[ i ].isEmpty() )
       break;
 
-    KSGRD::SensorTokenizer words( lines[ i ], '\t' );
+    KSGRD::SensorTokenizer words( answer[ i ], '\t' );
     QString sensorName = words[ 0 ];
     QString sensorType = words[ 1 ];
 

@@ -45,7 +45,7 @@ class SensorClient
       been received by the sensor agent. This function must be reimplemented
       by the sensor client to receive and process this information.
      */
-    virtual void answerReceived( int, const QString& ) { }
+    virtual void answerReceived( int, const QStringList& ) { }
 
     /**
       In case of an unexpected fatal problem with the sensor the sensor
@@ -88,7 +88,8 @@ class SensorTokenizer
     ~SensorTokenizer() { }
 
     const QString& operator[]( unsigned idx )
-	  {
+    {
+      Q_ASSERT(idx < (unsigned)(mTokens.count()));
       return mTokens[ idx ];
     }
 

@@ -52,7 +52,7 @@ class DancingBars : public KSGRD::SensorDisplay
 
     virtual QSize sizeHint() const;
 
-    virtual void answerReceived( int id, const QString &answer );
+    virtual void answerReceived( int id, const QStringList &answerlist );
 
     bool restoreSettings( QDomElement& );
     bool saveSettings( QDomDocument&, QDomElement&, bool save = true );

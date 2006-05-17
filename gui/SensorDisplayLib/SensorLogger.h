@@ -67,7 +67,7 @@ public:
 	LogSensor(Q3ListView *parent);
 	~LogSensor(void);
 
-	void answerReceived(int id, const QString& answer);
+	void answerReceived(int id, const QStringList& answer);
 
 	void setHostName(const QString& name) { hostName = name; lvi->setText(3, name); }
 	void setSensorName(const QString& name) { sensorName = name; lvi->setText(2, name); }
@@ -154,7 +154,7 @@ public:
 
 	bool editSensor(LogSensor*);
 
-	void answerReceived(int id, const QString& answer);
+	void answerReceived(int id, const QStringList& answer);
 	void resizeEvent(QResizeEvent*);
 
 	bool restoreSettings(QDomElement& element);

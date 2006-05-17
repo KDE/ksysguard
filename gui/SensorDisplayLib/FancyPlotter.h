@@ -69,7 +69,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
 
     virtual QSize sizeHint(void) const;
 
-    virtual void answerReceived( int id, const QString &answer );
+    virtual void answerReceived( int id, const QStringList &answerlist );
 
     virtual bool restoreSettings( QDomElement &element );
     virtual bool saveSettings( QDomDocument &doc, QDomElement &element,

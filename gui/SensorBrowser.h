@@ -64,7 +64,7 @@ class SensorBrowser : public K3ListView, public KSGRD::SensorClient
     virtual void viewportMouseMoveEvent( QMouseEvent* );
 
   private:
-    void answerReceived( int id, const QString& );
+    void answerReceived( int id, const QStringList& );
 
     KIconLoader* mIconLoader;
     KSGRD::SensorManager* mSensorManager;

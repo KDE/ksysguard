@@ -160,9 +160,9 @@ void Workspace::updateSheetTitle( QWidget* wdg )
 
 bool Workspace::saveOnQuit()
 {
+  kDebug() << "In saveOnQuit()" << endl;
   Q3PtrListIterator<WorkSheet> it( mSheetList );
   for ( ; it.current(); ++it )
-    if ( (*it)->modified() ) {
       if ( !mAutoSave || (*it)->fileName().isEmpty() ) {
         int res = KMessageBox::warningYesNoCancel( this,
                   i18n( "The worksheet '%1' contains unsaved data.\n"
@@ -174,7 +174,6 @@ bool Workspace::saveOnQuit()
           return false; // abort quit
       } else
         saveWorkSheet(*it);
-    }
 
   return true;
 }
