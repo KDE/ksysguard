@@ -20,7 +20,7 @@
 
 #include <QCheckBox>
 #include <qdom.h>
-#include <q3popupmenu.h>
+#include <QMenu>
 #include <QSpinBox>
 
 #include <QBitmap>
@@ -137,46 +137,60 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
 {
   if ( event->type() == QEvent::MouseButtonPress &&
      ( (QMouseEvent*)event)->button() == Qt::RightButton ) {
-    Q3PopupMenu pm;
-    if ( mIsApplet ) {
-      pm.insertItem( i18n( "Launch &System Guard"), 1 );
-      pm.insertSeparator();
-    }
-    
-    if ( hasSettingsDialog() )
-      pm.insertItem( i18n( "&Properties" ), 2 );
-    pm.insertItem( i18n( "&Remove Display" ), 3 );
-    pm.insertSeparator();
-    pm.insertItem( i18n( "&Setup Update Interval..." ), 4 );
-    if ( !timerOn() )
-      pm.insertItem( i18n( "&Continue Update" ), 5 );
-    else
-      pm.insertItem( i18n( "P&ause Update" ), 6 );
 
-    switch ( pm.exec( QCursor::pos() ) ) {
-      case 1:
-        KRun::run(*KService::serviceByDesktopName("ksysguard"), KUrl::List());
-	break;
-      case 2:
-        configureSettings();
-        break;
-      case 3: {
-          QCustomEvent *e = new QCustomEvent( QEvent::User );
-          e->setData( this );
-          kapp->postEvent( parent(), e );
-        }
-        break;
-      case 4:
-        configureUpdateInterval();
-        break;
-      case 5:
-        setTimerOn( true );
-        setModified( true );
-        break;
-      case 6:
-        setTimerOn( false );
-        setModified( true );
-        break;
+    QMenu pm;
+    QAction *action = 0;
+    if ( mIsApplet ) {
+      action = pm.addAction( i18n( "Launch &System Guard") );
+      action->setData( 1 );
+      pm.addSeparator();
+    }
+
+    if ( hasSettingsDialog() ) {
+      action = pm.addAction( i18n( "&Properties" ) );
+      action->setData( 2 );
+    }
+    action = pm.addAction( i18n( "&Remove Display" ) );
+    action->setData( 3 );
+    action = pm.addSeparator();
+    action = pm.addAction( i18n( "&Setup Update Interval..." ) );
+    action->setData( 4 );
+
+    if ( !timerOn() ) {
+      action = pm.addAction( i18n( "&Continue Update" ) );
+      action->setData( 5 );
+    } else {
+      action = pm.addAction( i18n( "P&ause Update" ) );
+      action->setData( 6 );
+    }
+
+    action = pm.exec( QCursor::pos() );
+    if ( action ) {
+      switch ( action->data().toInt() ) {
+        case 1:
+          KRun::run(*KService::serviceByDesktopName("ksysguard"), KUrl::List());
+          break;
+        case 2:
+          configureSettings();
+          break;
+        case 3: {
+            QCustomEvent *e = new QCustomEvent( QEvent::User );
+            e->setData( this );
+            kapp->postEvent( parent(), e );
+          }
+          break;
+        case 4:
+          configureUpdateInterval();
+          break;
+        case 5:
+          setTimerOn( true );
+          setModified( true );
+          break;
+        case 6:
+          setTimerOn( false );
+          setModified( true );
+          break;
+      }
     }
 
     return true;
