@@ -278,22 +278,94 @@ swapIt:
 
 void bsort_ctnr(CONTAINER rootNode, COMPARE_FUNC compare_func)
 {
-	INDEX right, i, level, last;
+	/* Use mergesort adapted from http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.c */
+	
+	CONTAINER p, q, e, tail, oldhead;
+	INDEX insize, nmerges, psize, qsize, i;
 
 	if (rootNode == NIL || compare_func == NIL) {
-		rpterr("destr_ctnr: NIL argument");
+		rpterr("bsort_ctnr: NIL argument");
 		return;
 	}
 
-	last = level = level_ctnr(rootNode);
-	do
-	{
-		right = last;
-		last = 0;
-		for (i = 1; i < right; i++)
-			if (compare_func(get_ctnr(rootNode, i - 1), get_ctnr(rootNode, i)) > 0)
-				swop_ctnr(rootNode, i - 1, last = i);
-	} while (last > 0);
+	if (level_ctnr(rootNode) == 0) {
+		/* Nothing to sort */
+		return;
+	}
+
+	insize = 1;
+
+	while (1) {
+		p = rootNode->next;
+		oldhead = rootNode;	  /* only used for circular linkage */
+		rootNode->next = NULL;
+		tail = NULL;
+
+		nmerges = 0;  /* count number of merges we do in this pass */
+
+		while (p) {
+			nmerges++;  /* there exists a merge to be done */
+			/* step `insize' places along from p */
+			q = p;
+			psize = 0;
+			for (i = 0; i < insize; i++) {
+				psize++;
+				q = (q->next == oldhead ? NULL : q->next);
+				if (!q) break;
+			}
+
+			/* if q hasn't fallen off end, we have two lists to merge */
+			qsize = insize;
+
+			/* now we have two lists; merge them */
+			while (psize > 0 || (qsize > 0 && q)) {
+				/* decide whether next element of merge comes from p or q */
+				if (psize == 0) {
+					/* p is empty; e must come from q. */
+					e = q; q = q->next; qsize--;
+					if (q == oldhead) q = NULL;
+				} else if (qsize == 0 || !q) {
+					/* q is empty; e must come from p. */
+					e = p; p = p->next; psize--;
+					if (p == oldhead) p = NULL;
+				} else if (compare_func(p,q) <= 0) {
+					/* First element of p is lower (or same);
+					 * e must come from p. */
+					e = p; p = p->next; psize--;
+					if (p == oldhead) p = NULL;
+				} else {
+					/* First element of q is lower; e must come from q. */
+					e = q; q = q->next; qsize--;
+					if (q == oldhead) q = NULL;
+				}
+
+				/* add the next element to the merged list */
+				if (tail) {
+					tail->next = e;
+					e->prev = tail;
+				} else {
+					rootNode->next = e;
+					e->prev = rootNode;
+				}
+
+				tail = e;
+			}
+
+			/* now p has stepped `insize' places along, and q has too */
+			p = q;
+		}
+		
+		tail->next = rootNode;
+		rootNode->prev = tail;
+
+		/* If we have done only one merge, we're finished. */
+		if (nmerges <= 1) {  /* allow for nmerges==0, the empty list case */
+			break;
+		}
+
+		/* Otherwise repeat, merging lists twice the size */
+		insize *= 2;
+	}
 }
 
 void* first_ctnr(CONTAINER rootNode)
