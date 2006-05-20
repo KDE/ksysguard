@@ -244,36 +244,28 @@ void swop_ctnr(CONTAINER rootNode, INDEX pos1, INDEX pos2)
 	if (pos1 == pos2)
 		return;
 
-	/**
-	 * it is a bit hackish because of the 'goto' but it's fast
-	 * since we have to run through the list only once
-	 */
 	for (it = rootNode->next; it != rootNode; it = it->next) {
 		if (counter == pos1) {
 			node1 = it;
-			if (found)
-				goto swapIt;
-			else
-				found = 1;
+			found++;
+			if (found == 2)
+				break;
 		}
 		if (counter == pos2) {
 			node2 = it;
-			if (found)
-				goto swapIt;
-			else
-				found = 1;
+			found++;
+			if (found == 2)
+				break;
 		}
 
 		counter++;
 	}	
 
-	return;
-
-swapIt:
-	tmpData = node1->data;
-	node1->data = node2->data;
-	node2->data = tmpData;
-	return;
+	if (found == 2) {
+		tmpData = node1->data;
+		node1->data = node2->data;
+		node2->data = tmpData;
+	}
 }
 
 void bsort_ctnr(CONTAINER rootNode, COMPARE_FUNC compare_func)
