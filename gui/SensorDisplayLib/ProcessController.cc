@@ -326,7 +326,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 	}
 	case Ps_Command:
 	{
-		kDebug() << "We recieved ps data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+		kDebug() << "We received ps data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 		/* We have received the answer to a ps command that contains a
 		 * list of processes with various additional information. */
 		if(!mReadyForPs) {
@@ -385,7 +385,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		break;
 	}
 	case Kill_Supported_Command:
-		kDebug() << "We recieved kill supported data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+		kDebug() << "We received kill supported data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 		if(!answer.isEmpty())
 			mKillSupported = (answer[0].toInt() == 1);
 		break;
@@ -461,7 +461,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 	}
 	case XRes_Supported_Command:
 	{
-		kDebug() << "We recieved xres supported. " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+		kDebug() << "We received xres supported. " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 		if(answer.isEmpty())
 		  mXResSupported = false;
 		else {

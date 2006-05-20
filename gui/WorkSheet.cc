@@ -433,7 +433,7 @@ void WorkSheet::dropEvent( QDropEvent *e )
   QString dragObject;
 
   if ( Q3TextDrag::decode( e, dragObject) ) {
-    // The host name, sensor name and type are seperated by a ' '.
+    // The host name, sensor name and type are separated by a ' '.
     QStringList parts = dragObject.split( ' ');
 
     QString hostName = parts[ 0 ];

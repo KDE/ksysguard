@@ -398,7 +398,7 @@ void TopLevel::saveProperties( KConfig *cfg )
 
 void TopLevel::answerReceived( int id, const QStringList &answerList )
 {
-  // we have recieved an answer from the daemon.
+  // we have received an answer from the daemon.
   QString answer;
   if(!answerList.isEmpty()) answer = answerList[0];
   QString s;

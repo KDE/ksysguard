@@ -82,7 +82,7 @@ static void processCpuInfo( void )
     } else if ( strcmp( tag, "cpu MHz" ) == 0 )
       sscanf( value, "%f", &Clocks[ cpuId ] );
 
-    /* Move cibp to begining of next line, if there is one. */
+    /* Move cibp to beginning of next line, if there is one. */
     cibp = strchr( cibp, '\n' );
     if ( cibp )
       cibp++;

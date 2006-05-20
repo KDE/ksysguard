@@ -103,7 +103,7 @@ class SensorTokenizer
 };
 
 /**
-  An integer info contains 4 fields seperated by TABS, a description
+  An integer info contains 4 fields separated by TABS, a description
   (name), the minimum and the maximum values and the unit.
   e.g. Swap Memory	0	133885952	KB
  */
@@ -137,7 +137,7 @@ class SensorIntegerInfo : public SensorTokenizer
 };
 
 /**
-  An float info contains 4 fields seperated by TABS, a description
+  An float info contains 4 fields separated by TABS, a description
   (name), the minimum and the maximum values and the unit.
   e.g. CPU Voltage 0.0	5.0	V
  */
@@ -172,7 +172,7 @@ class SensorFloatInfo : public SensorTokenizer
 
 /**
   A PS line consists of information about a process. Each piece of 
-  information is seperated by a TAB. The first 4 fields are process name,
+  information is separated by a TAB. The first 4 fields are process name,
   PID, PPID and real user ID. Those fields are mandatory.
  */
 class SensorPSLine : public SensorTokenizer
