@@ -1,8 +1,32 @@
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../../CContLib ${CMAKE_CURRENT_SOURCE_DIR}/../ )
 
+ADD_LIBRARY(libksysguardd STATIC 
+            acpi.c
+            apm.c
+            cpuinfo.c
+            diskstat.c
+            i8k.c
+            lmsensors.c
+            loadavg.c
+            logfile.c
+            Memory.c
+            netdev.c
+            netstat.c
+            ProcessList.c
+            stat.c
+            xres.c)
 
+FIND_LIBRARY(XRES_LIBRARY libXRes)
+ADD_DEFINITIONS(-DHAVE_XRES)
+FIND_LIBRARY(LMSENSORS_LIBRARY libsensors)
+ADD_DEFINITIONS(-DHAVE_SENSORS_SENSORS_H)
+TARGET_LINK_LIBRARIES(libksysguardd ${XRES_LIBRARY} ${LMSENSORS_LIBRARY})
+
+IF(EXISTS /proc/i8k)
+ADD_DEFINITIONS(-DHAVE_I8K_SUPPORT)
+ENDIF(EXISTS /proc/i8k)
 
 ########### install files ###############
-
 
 
 

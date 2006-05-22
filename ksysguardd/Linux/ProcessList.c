@@ -48,6 +48,7 @@ static CONTAINER ProcessList = 0;
 #ifdef HAVE_XRES
 extern int setup_xres();
 extern void xrestop_populate_client_data();
+extern void printXres(FILE *CurrentClient);
 static int have_xres = 0;
 #endif
 

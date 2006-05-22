@@ -1,12 +1,11 @@
 
 project(ksysguard)
-
-add_subdirectory( CContLib ) 
-add_subdirectory( gui ) 
-add_subdirectory( pics ) 
-add_subdirectory( example ) 
-# Laurent 'readd test for it'
-#add_subdirectory( ksysguardd )
+message(STATUS "Building KSysGuard")
+add_subdirectory( CContLib )
+add_subdirectory( gui )
+add_subdirectory( pics )
+add_subdirectory( example )
+add_subdirectory( ksysguardd )
 
 
 
