@@ -98,11 +98,9 @@ TopLevel::TopLevel( const char *name )
   /* Create the status bar. It displays some information about the
    * number of processes and the memory consumption of the local
    * host. */
-  statusBar()->insertFixedItem( i18n( "88888 Processes" ), 0 );
-  statusBar()->insertFixedItem( i18n( "Memory: 88888888888 kB used, "
-                                      "88888888888 kB free" ), 1 );
-  statusBar()->insertFixedItem( i18n( "Swap: 888888888 kB used, "
-                                      "888888888 kB free" ), 2);
+  statusBar()->insertFixedItem( i18n( " Loading Processes Count.. " ), 0 );
+  statusBar()->insertFixedItem( i18n( "              Loading Memory Totals..              " ), 1 );
+  statusBar()->insertFixedItem( i18n( "              Loading Swap Totals..              " ), 2);
   statusBar()->hide();
 
   // create actions for menue entries
