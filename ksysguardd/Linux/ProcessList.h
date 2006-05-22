@@ -22,7 +22,7 @@
 #ifndef KSG_PROCESSLIST_H
 #define KSG_PROCESSLIST_H
 
-#include "config.h" /*For HAVE_XRES*/
+#include "config-ksysguardd.h" /*For HAVE_XRES*/
 
 void initProcessList( struct SensorModul* );
 void exitProcessList( void );

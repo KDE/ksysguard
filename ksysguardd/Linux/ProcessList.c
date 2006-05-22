@@ -44,7 +44,7 @@
 
 static CONTAINER ProcessList = 0;
 
-#include "config.h" /*For HAVE_XRES*/
+#include "config-ksysguardd.h" /*For HAVE_XRES*/
 #ifdef HAVE_XRES
 extern int setup_xres();
 extern void xrestop_populate_client_data();

@@ -21,6 +21,7 @@
 #ifndef KSG_MODULES_H
 #define KSG_MODULES_H
 
+#include "config-ksysguardd.h"
 #include "Command.h"
 #include "conf.h"
 #include "ksysguardd.h"
@@ -101,7 +102,9 @@ struct SensorModul SensorModulList[] = {
   { "Acpi", initAcpi, exitAcpi, updateAcpi, NULLVVFUNC, 0, NULLTIME },
   { "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULLVVFUNC, 0, NULLTIME },
   { "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC, 0, NULLTIME },
+#ifdef HAVE_LMSENSORS
   { "LmSensors", initLmSensors, exitLmSensors, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
+#endif
   { "DiskStat", initDiskStat, exitDiskStat, updateDiskStat, checkDiskStat, 0, NULLTIME },
   { "LogFile", initLogFile, exitLogFile, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
   { "DellLaptop", initI8k, exitI8k, updateI8k, NULLVVFUNC, 0, NULLTIME },

@@ -3,6 +3,15 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../CContLib/ )
 ADD_DEFINITIONS( -DKSYSGUARDDRCFILE=\"\\"${CMAKE_INSTALL_PREFIX}${SYSCONF_INSTALL_DIR}/ksysguarddrc\\"\" )
 
 ADD_DEFINITIONS(-DOSTYPE_${CMAKE_SYSTEM_NAME})
+
+macro_optional_find_package(Sensors)
+macro_bool_to_01(SENSORS_FOUND, HAVE_LMSENSORS)
+FIND_LIBRARY(XRES_LIBRARY XRes)
+if(XRES_LIBRARY)
+  set(HAVE_XRES 1)
+endif(XRES_LIBRARY)
+configure_file(config-ksysguardd.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-ksysguardd.h)
+
 add_subdirectory( ${CMAKE_SYSTEM_NAME} )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_SYSTEM_NAME} )
 
@@ -22,7 +31,8 @@ kde4_automoc(${ksysguardd_SRCS})
 
 kde4_add_executable(ksysguardd ${ksysguardd_SRCS})
 
-target_link_libraries(ksysguardd  ${KDE4_KDECORE_LIBS} kdefakes_nonpic )
+# was kdefakes_nonpic...
+target_link_libraries(ksysguardd  ${KDE4_KDECORE_LIBS} kdefakes )
 
 ADD_DEPENDENCIES(ksysguardd libksysguardd)
 TARGET_LINK_LIBRARIES(ksysguardd libksysguardd)

@@ -17,7 +17,7 @@
 
 /*This is defined by configure checks. If not found, we'll just #ifdef out the whole file */
 
-#include "config.h" /*For HAVE_XRES*/
+#include "config-ksysguardd.h" /*For HAVE_XRES*/
 #ifdef HAVE_XRES
 #include <stdio.h>
 #include <stdlib.h>

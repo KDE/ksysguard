@@ -18,6 +18,8 @@
 
 */
 
+#include "config-ksysguardd.h"
+
 #include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,7 +31,7 @@
 
 #include "lmsensors.h"
 
-#ifdef HAVE_SENSORS_SENSORS_H
+#ifdef HAVE_LMSENSORS
 #include <sensors/sensors.h>
 
 typedef struct
@@ -155,7 +157,7 @@ void printLmSensorInfo( const char* cmd )
   fprintf( CurrentClient, "Sensor Info\t0\t0\t\n" );
 }
 
-#else /* HAVE_SENSORS_SENSORS_H */
+#else /* HAVE_LMSENSORS */
 
 /* dummy version for systems that have no lmsensors support */
 

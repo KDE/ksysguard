@@ -18,6 +18,8 @@
 
 */
 
+#include "config-ksysguardd.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -74,7 +76,9 @@ void parseConfigFile( const char *filename )
     push_ctnr( SensorList, strdup( "Acpi" ) );
     push_ctnr( SensorList, strdup( "CpuInfo" ) );
     push_ctnr( SensorList, strdup( "LoadAvg" ) );
+#ifdef HAVE_LMSENSORS
     push_ctnr( SensorList, strdup( "LmSensors" ) );
+#endif
     push_ctnr( SensorList, strdup( "DiskStat" ) );
     push_ctnr( SensorList, strdup( "LogFile" ) );
     push_ctnr( SensorList, strdup( "DellLaptop" ) );
