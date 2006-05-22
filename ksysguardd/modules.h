@@ -27,8 +27,6 @@
 #include "ksysguardd.h"
 
 #ifdef OSTYPE_Linux
-#include "Memory.h"
-#include "ProcessList.h"
 #include "acpi.h"
 #include "apm.h"
 #include "cpuinfo.h"
@@ -37,24 +35,54 @@
 #include "lmsensors.h"
 #include "loadavg.h"
 #include "logfile.h"
+#include "Memory.h"
 #include "netdev.h"
 #include "netstat.h"
+#include "ProcessList.h"
 #include "stat.h"
 #endif /* OSTYPE_Linux */
 
 #ifdef OSTYPE_FreeBSD
 #include <grp.h>
-#include "CPU.h"
-#include "Memory.h"
-#include "ProcessList.h"
 #ifdef __i386__
-#include "apm.h"
+ #include "apm.h"
 #endif
+#include "CPU.h"
 #include "diskstat.h"
 #include "loadavg.h"
 #include "logfile.h"
+#include "Memory.h"
 #include "netdev.h"
+#include "ProcessList.h"
 #endif /* OSTYPE_FreeBSD */
+
+#ifdef OSTYPE_Irix
+#include "cpu.h"
+#include "LoadAvg.h"
+#include "Memory.h"
+#include "NetDev.h"
+#include "ProcessList.h"
+#endif /* OSTYPE_Irix */
+
+#ifdef OSTYPE_NetBSD
+#include <grp.h>
+#ifdef __i386__
+ #include "apm.h"
+#endif
+#include "CPU.h"
+#include "diskstat.h"
+#include "loadavg.h"
+#include "logfile.h"
+#include "Memory.h"
+#include "netdev.h"
+#include "ProcessList.h"
+#endif /* OSTYPE_NetBSD */
+
+#ifdef OSTYPE_OpenBSD
+#include "cpu.h"
+#include "memory.h"
+#include "ProcessList.h"
+#endif /* OSTYPE_OpenBSD */
 
 #ifdef OSTYPE_Solaris
 #include "LoadAvg.h"
@@ -63,25 +91,12 @@
 #include "ProcessList.h"
 #endif /* OSTYPE_Solaris */
 
-#ifdef OSTYPE_Irix
-#include "LoadAvg.h"
-#include "Memory.h"
-#include "NetDev.h"
-#include "ProcessList.h"
-#include "cpu.h"
-#endif /* OSTYPE_Irix */
-
 #ifdef OSTYPE_Tru64
 #include "LoadAvg.h"
 #include "Memory.h"
 #include "NetDev.h"
 #endif /* OSTYPE_Tru64 */
 
-#ifdef OSTYPE_OpenBSD
-#include "cpu.h"
-#include "memory.h"
-#include "ProcessList.h"
-#endif /* OSTYPE_OpenBSD */
 
 typedef void (*VSFunc)( struct SensorModul* );
 #define NULLVSFUNC ((VSFunc) 0)
@@ -114,21 +129,14 @@ struct SensorModul SensorModulList[] = {
   { "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULLVVFUNC, 0, NULLTIME },
   { "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC, 0, NULLTIME },
   { "ProcessList", initProcessList, exitProcessList, updateProcessList, NULLVVFUNC, 0, NULLTIME },
-#ifdef __i386__
-  { "Apm", initApm, exitApm, updateApm, NULLVVFUNC, 0, NULLTIME },
-#endif
+  #ifdef __i386__
+    { "Apm", initApm, exitApm, updateApm, NULLVVFUNC, 0, NULLTIME },
+  #endif
   { "DiskStat", initDiskStat, exitDiskStat, updateDiskStat, checkDiskStat, 0, NULLTIME },
   { "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC, 0, NULLTIME },
   { "LogFile", initLogFile, exitLogFile, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
   { "NetDev", initNetDev, exitNetDev, updateNetDev, checkNetDev, 0, NULLTIME },
 #endif /* OSTYPE_FreeBSD */
-
-#ifdef OSTYPE_Solaris
-  { "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC, 0, NULLTIME },
-  { "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC, 0, NULLTIME },
-  { "NetDev", initNetDev, exitNetDev, updateNetDev, NULLVVFUNC, 0, NULLTIME },
-  { "ProcessList", initProcessList, exitProcessList, updateProcessList, NULLVVFUNC, 0, NULLTIME },
-#endif /* OSTYPE_Solaris */
 
 #ifdef OSTYPE_Irix
   { "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULLVVFUNC, 0, NULLTIME },
@@ -138,17 +146,39 @@ struct SensorModul SensorModulList[] = {
   { "ProcessList", initProcessList, exitProcessList, updateProcessList, NULLVVFUNC, 0, NULLTIME },
 #endif /* OSTYPE_Irix */
 
-#ifdef OSTYPE_Tru64
-  { "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC, 0, NULLTIME },
+#ifdef OSTYPE_NetBSD
+  { "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULLVVFUNC, 0, NULLTIME },
   { "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC, 0, NULLTIME },
-  { "NetDev", initNetDev, exitNetDev, updateNetDev, NULLVVFUNC, 0, NULLTIME },
-#endif /* OSTYPE_Tru64 */
+  { "ProcessList", initProcessList, exitProcessList, updateProcessList, NULLVVFUNC, 0, NULLTIME },
+  #ifdef __i386__
+    { "Apm", initApm, exitApm, updateApm, NULLVVFUNC, 0, NULLTIME },
+  #endif
+  { "DiskStat", initDiskStat, exitDiskStat, updateDiskStat, checkDiskStat, 0, NULLTIME },
+  { "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC, 0, NULLTIME },
+  { "LogFile", initLogFile, exitLogFile, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
+  { "NetDev", initNetDev, exitNetDev, updateNetDev, checkNetDev, 0, NULLTIME },
+#endif /* OSTYPE_NetBSD */
 
 #ifdef OSTYPE_OpenBSD
   { "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULLVVFUNC, 0, NULLTIME },
   { "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC, 0, NULLTIME },
   { "ProcessList", initProcessList, exitProcessList, updateProcessList, NULLVVFUNC, 0, NULLTIME },
 #endif /* OSTYPE_OpenBSD */
+
+#ifdef OSTYPE_Solaris
+  { "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC, 0, NULLTIME },
+  { "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC, 0, NULLTIME },
+  { "NetDev", initNetDev, exitNetDev, updateNetDev, NULLVVFUNC, 0, NULLTIME },
+  { "ProcessList", initProcessList, exitProcessList, updateProcessList, NULLVVFUNC, 0, NULLTIME },
+#endif /* OSTYPE_Solaris */
+
+#ifdef OSTYPE_Tru64
+  { "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC, 0, NULLTIME },
+  { "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC, 0, NULLTIME },
+  { "NetDev", initNetDev, exitNetDev, updateNetDev, NULLVVFUNC, 0, NULLTIME },
+#endif /* OSTYPE_Tru64 */
+
+
 
   { NULL, NULLVSFUNC, NULLVVFUNC, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME }
 };
