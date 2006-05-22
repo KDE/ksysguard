@@ -55,7 +55,7 @@ double SensorLoggerDlgWidget::upperLimit()
 
 void SensorLoggerDlgWidget::setFileName( const QString &url )
 {
-    m_fileName->setURL(url);
+    m_fileName->setUrl(url);
 }
 
 
