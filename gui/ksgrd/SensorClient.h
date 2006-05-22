@@ -82,7 +82,28 @@ class SensorTokenizer
   public:
     SensorTokenizer( const QString &info, QChar separator )
     {
-      mTokens = info.split( separator);
+      if ( separator == '/' ) {
+        //This is a special case where we assume that info is a '\' escaped string
+
+        int i=0;
+        int lastTokenAt = -1;
+
+        for( ; i < info.length(); ++i ) {
+          if( info[i] == '\\' ) {
+            ++i;
+          }
+          else if ( info[i] == separator ) {
+            mTokens.append( unEscapeString( info.mid( lastTokenAt + 1, i - lastTokenAt - 1 ) ) );
+            lastTokenAt = i;
+          }
+        }
+
+        //Add everything after the last token
+        mTokens.append( unEscapeString( info.mid( lastTokenAt + 1, i - lastTokenAt - 1 ) ) );
+      }
+      else {
+        mTokens = info.split( separator );
+      }
     }
 
     ~SensorTokenizer() { }
@@ -100,6 +121,21 @@ class SensorTokenizer
 
   private:
     QStringList mTokens;
+
+    QString unEscapeString( const QString &string ) {
+
+      int i=0;
+      QString result = string;
+
+      for( ; i < result.length(); ++i ) {
+        if( result[i] == '\\' ) {
+          result.remove( i, 1 );
+          ++i;
+        }
+      }
+
+      return result;
+    }
 };
 
 /**
