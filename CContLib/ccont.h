@@ -121,7 +121,7 @@ INDEX search_ctnr(CONTAINER ctnr, COMPARE_FUNC compare_func, void* pattern);
  * @param pos1 Position of the first object.
  * @param pos2 Position of the second object.
  */
-void swop_ctnr(CONTAINER ctnr, INDEX pos1, INDEX pos2);
+void swap_ctnr(CONTAINER ctnr, INDEX pos1, INDEX pos2);
 
 /**
  * Sort all entries of container.

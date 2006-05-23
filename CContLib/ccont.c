@@ -229,7 +229,7 @@ INDEX search_ctnr(CONTAINER rootNode, COMPARE_FUNC compare_func, void* pattern)
 	return -1;
 }
 
-void swop_ctnr(CONTAINER rootNode, INDEX pos1, INDEX pos2)
+void swap_ctnr(CONTAINER rootNode, INDEX pos1, INDEX pos2)
 {
 	CONTAINER it, node1, node2;
 	INDEX counter = 0;
@@ -237,7 +237,7 @@ void swop_ctnr(CONTAINER rootNode, INDEX pos1, INDEX pos2)
 	void* tmpData;
 
 	if (rootNode == NIL) {
-		rpterr("swop_ctnr: NIL argument");
+		rpterr("swap_ctnr: NIL argument");
 		return;
 	}
 
