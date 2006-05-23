@@ -47,15 +47,17 @@ ksysguardd>
 --------
 
 Sensor names can be hierarchical. Each level is separated by a
-/. ksysguard uses a tree widget in the SensorBrowser to display the
-commands in a tree. Every sensor name must be followed by the type of
-the sensor separated by a tab. Currently 4 different types of sensors
-are supported, integer, float, listview and table. The table sensor
-returns the information for the ProcessController widget. listview
-sensors use a generic table to display information. To find out more
-about a sensor an additional command must be implemented for each
-sensor that has a questionmark appended to the sensor name. It can be
-used to find out more about the sensor.
+/. If you don't want a '/' character to be interpreted as a hierarchy
+delimiter, you can escape it with a preceding '\'. ksysguard uses a tree
+widget in the SensorBrowser to display the commands in a tree. Every
+sensor name must be followed by the type of the sensor separated by a
+tab. Currently 4 different types of sensors are supported, integer,
+float, listview and table. The table sensor returns the information for
+the ProcessController widget. listview sensors use a generic table to
+display information. To find out more about a sensor an additional
+command must be implemented for each sensor that has a questionmark
+appended to the sensor name. It can be used to find out more about the
+sensor.
 
 --------
 ksysguardd> mem/physical/free?
