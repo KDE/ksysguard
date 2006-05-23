@@ -51,7 +51,7 @@ static int sensorCmp( void* s1, void* s2 )
 
 static LMSENSOR* findMatchingSensor( const char* name )
 {
-  long idx;
+  INDEX idx;
   LMSENSOR key;
   LMSENSOR* s;
 
