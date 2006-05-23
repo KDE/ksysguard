@@ -72,8 +72,9 @@ auto-range feature of the display.
 
 --------
 ksysguardd> ps?
-Name    PID     PPID    UID     GID     Status  User%   System% Nice    VmSize VmRss    VmLib   Login   Command
-s       d       d       d       d       S       f       f       d       d      sksysguardd>
+Name    PID     PPID    UID     GID     Status  User%   System% Nice    VmSize  VmRss   Login   TracerPID       Command
+s       d       d       d       d       S       f       f       d       D       D       s       d       s
+ksysguardd>
 --------
 
 This is the output of the ps? inquiry command. The ps command is the
