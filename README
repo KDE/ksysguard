@@ -1,26 +1,9 @@
 What is KSysGuard?
 ------------------
 
-KSysGuard, formerly known as KTop is a program to monitor various elements
-of your system, or any other remote system with the KSysGuard daemon
-(ksysgardd) installed.  Currently the daemon has been ported to FreeBSD
-and Linux with varying degrees of completion.
+KSysGuard is a program to monitor various elements of your system, or any
+other remote system with the KSysGuard daemon (ksysgardd) installed. 
+Currently the daemon has been ported to Linux, FreeBSD, Irix, NetBSD,
+OpenBSD, Solaris and Tru64 with varying degrees of completion.
 
-Notes from the author
----------------------
-
-KSysGuard, formerly known as KTop is work in progress! Although I only try
-to check in reasonably stable versions, I cannot guarantee this. I
-typically develop on SuSE Linux 6.x with 2.2 kernel. If your system is
-different, this program might not even compile.
-
-If you want to join this development please contact me first. Please
-do *NOT* check in unsolicited code as I might am rearranging the code
-and merging becomes a real headache so your code will be lost.
-
-This does not mean that I don't appreciate your help. Especially
-porting to other platforms is difficult for me. Each platform has it's
-specific back-end. See the ksysguardd directory for details.
-
-5-Jan-2000 Chris Schlaeger <cs@kde.org>
 
