@@ -40,7 +40,7 @@ SensorShellAgent::~SensorShellAgent()
 {
   if ( mDaemon ) {
     mDaemon->writeStdin( "quit\n", strlen( "quit\n" ) );
-    delete (KShellProcess*)mDaemon;
+    delete mDaemon;
     mDaemon = 0;
   }
 }
@@ -118,10 +118,7 @@ void SensorShellAgent::daemonExited( KProcess * )
 {
   setDaemonOnLine( false );
   sensorManager()->hostLost( this );
-  sensorManager()->disengage( this );
-
-  if ( mDaemon )
-    mDaemon->deleteLater();
+  sensorManager()->requestDisengage( this );
 }
 
 bool SensorShellAgent::writeMsg( const char *msg, int len )
