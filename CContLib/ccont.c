@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 struct container_info {
 	INDEX count;
@@ -67,8 +68,8 @@ void zero_destr_ctnr(CONTAINER rootNode, DESTR_FUNC destr_func)
 	for (counter = level_ctnr(rootNode); counter > -1; --counter)
 		destr_func(pop_ctnr(rootNode));
 
-	if (rootNode->data)
-		free(rootNode->data);
+	assert(rootNode->data);
+	free(rootNode->data);
 
 	free(rootNode);
 	rootNode = 0;
@@ -231,7 +232,7 @@ INDEX search_ctnr(CONTAINER rootNode, COMPARE_FUNC compare_func, void* pattern)
 
 void swap_ctnr(CONTAINER rootNode, INDEX pos1, INDEX pos2)
 {
-	CONTAINER it, node1, node2;
+	CONTAINER it, node1 = 0, node2 = 0;
 	INDEX counter = 0;
 	int found = 0;
 	void* tmpData;
@@ -313,10 +314,12 @@ void bsort_ctnr(CONTAINER rootNode, COMPARE_FUNC compare_func)
 			while (psize > 0 || (qsize > 0 && q)) {
 				/* decide whether next element of merge comes from p or q */
 				if (psize == 0) {
+					assert(q);
 					/* p is empty; e must come from q. */
 					e = q; q = q->next; qsize--;
 					if (q == oldhead) q = NULL;
 				} else if (qsize == 0 || !q) {
+					assert(p);
 					/* q is empty; e must come from p. */
 					e = p; p = p->next; psize--;
 					if (p == oldhead) p = NULL;
@@ -347,7 +350,8 @@ void bsort_ctnr(CONTAINER rootNode, COMPARE_FUNC compare_func)
 			p = q;
 		}
 		
-		tail->next = rootNode;
+		if (tail)
+			tail->next = rootNode;
 		rootNode->prev = tail;
 
 		/* If we have done only one merge, we're finished. */

@@ -292,7 +292,8 @@ int updateNetDev( void )
     return 0;
   }
 
-  if ( ( n = read( fd, NetDevBuf, NETDEVBUFSIZE - 1 ) ) == NETDEVBUFSIZE - 1 ) {
+  n = read( fd, NetDevBuf, NETDEVBUFSIZE - 1 );
+  if ( n == NETDEVBUFSIZE - 1 || n <= 0) {
     log_error( "Internal buffer too small to read \'/proc/net/dev\'" );
     NetDevOk = -1;
 

@@ -206,11 +206,13 @@ static Bool check_win_for_info(XResTopClient *client, Window win)
 	  else
 	    {
 	      XFetchName(app->dpy, win, (char **)(&client->identifier));
+#if 0 /* impossible to reach */
 	      if(identifier) {
 	        strncpy((char*)client->identifier, (char*)identifier, MAX_SIZE_IDENTIFIER);
 		XFree(identifier);
 		identifier = NULL;
 	      }
+#endif
 	    }
 	}
       else {

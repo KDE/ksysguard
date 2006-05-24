@@ -131,7 +131,8 @@ int updateCpuInfo( void )
     return -1;
   }
 
-  if ( ( n = read( fd, CpuInfoBuf, CPUINFOBUFSIZE - 1 ) ) == CPUINFOBUFSIZE - 1 ) {
+  n = read( fd, CpuInfoBuf, CPUINFOBUFSIZE - 1 );
+  if ( n == CPUINFOBUFSIZE - 1 || n <= 0 ) {
     log_error( "Internal buffer too small to read \'/proc/cpuinfo\'" );
     CpuInfoOK = 0;
 

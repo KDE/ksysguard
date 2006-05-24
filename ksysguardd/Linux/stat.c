@@ -745,7 +745,8 @@ int updateStat( void )
     return -1;
   }
 
-  if ( ( n = read( fd, StatBuf, STATBUFSIZE - 1 ) ) == STATBUFSIZE - 1 ) {
+  n = read( fd, StatBuf, STATBUFSIZE - 1 );
+  if ( n == STATBUFSIZE - 1 || n <= 0) {
     log_error( "Internal buffer too small to read \'/proc/stat\'" );
 
     close( fd );
@@ -761,7 +762,8 @@ int updateStat( void )
   if ( ( fd = open( "/proc/vmstat", O_RDONLY ) ) < 0 )
     return 0; /* failure is okay, only exists for Linux >= 2.5.x */
 
-  if ( ( n = read( fd, VmStatBuf, STATBUFSIZE - 1 ) ) == STATBUFSIZE - 1 ) {
+  n = read( fd, VmStatBuf, STATBUFSIZE - 1 );
+  if ( n == STATBUFSIZE - 1 || n <= 0 ) {
     log_error( "Internal buffer too small to read \'/proc/vmstat\'" );
 
     close( fd );
@@ -776,7 +778,8 @@ int updateStat( void )
   if ( ( fd = open( "/proc/diskstats", O_RDONLY ) ) < 0 )
     return 0; /* failure is okay, only exists for Linux >= 2.6.x */
 
-  if ( ( n = read( fd, IOStatBuf, STATBUFSIZE - 1 ) ) == STATBUFSIZE - 1 ) {
+  n = read( fd, IOStatBuf, STATBUFSIZE - 1 );
+  if ( n == STATBUFSIZE - 1 || n <= 0 ) {
     log_error( "Internal buffer too small to read \'/proc/diskstats\'" );
 
     close( fd );

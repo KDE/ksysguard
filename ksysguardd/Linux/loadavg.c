@@ -80,7 +80,8 @@ int updateLoadAvg( void )
     return -1;
   }
 
-  if ( ( n = read( fd, LoadAvgBuf, LOADAVGBUFSIZE - 1 ) ) == LOADAVGBUFSIZE - 1 ) {
+  n = read( fd, LoadAvgBuf, LOADAVGBUFSIZE - 1 );
+  if ( n == LOADAVGBUFSIZE - 1 || n <= 0 ) {
     log_error( "Internal buffer too small to read \'/proc/loadavg\'" );
 
     close( fd );

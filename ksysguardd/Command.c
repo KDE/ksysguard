@@ -127,10 +127,9 @@ void removeCommand( const char* command )
   Command* cmd;
 
   for ( cmd = first_ctnr( CommandList ); cmd; cmd = next_ctnr( CommandList ) ) {
-    if ( strcmp( cmd->command, command ) == 0 ) {
+    if ( cmd->command && strcmp( cmd->command, command ) == 0 ) {
       remove_ctnr( CommandList );
-      if ( cmd->command )
-        free( cmd->command );
+      free( cmd->command );
       if ( cmd->type )
         free( cmd->type );
       free( cmd );
