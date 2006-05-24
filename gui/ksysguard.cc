@@ -509,12 +509,12 @@ int main( int argc, char** argv )
   int initpipe[ 2 ];
   pipe( initpipe );*/
 #endif
-  /* This forking will put ksysguard in it's on session not having a
+  /* This forking will put ksysguard in it's own session not having a
    * controlling terminal attached to it. This prevents ssh from
    * using this terminal for password requests. Unfortunately you
    * now need a ssh with ssh-askpass support to popup an X dialog to
    * enter the password. Currently only the original ssh provides this
-   * but not open-ssh. */
+   * but not OpenSSH. */
 #ifdef FORK_KSYSGUARD
   pid_t pid;
   if ( ( pid = fork() ) < 0 )
