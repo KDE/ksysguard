@@ -513,9 +513,60 @@ static void exitModules()
   exitCommand();
 }
 
+
+
 /*
 ================================ public part =================================
 */
+
+/*
+ *  Will replace a "/" with "\/"
+ *  Allocates a new string, so when calling this make sure to free the original.
+ */
+char* escapeString( char* string ) {
+  int i, length;
+  char* result;
+  char* endOfResult;
+  int charsToEscape = 0;
+  int lastUnescapedChar = 0;
+
+  /* Count how many characters we need to escape so that we know how much memory we'll have to allocate */
+  i = 0;
+  while (string[i] != '\0') {
+    if( string[i] == '/' ) {
+      ++charsToEscape;
+    }
+
+    ++i;
+  }
+
+  /* Note: length doesn't count the \0 at the end of the string */
+  length = i;
+
+  /* Allocate a new string, result, with enough room for the escaped characters */
+  result = (char *)malloc( sizeof(char) * length + charsToEscape + 1 );
+  endOfResult = result;
+
+  /* Fill result with an escaped version of string */
+  i = 0;
+  while (string[i] != '\0') {
+    if( string[i] == '/' ) {
+      memcpy(endOfResult, &string[lastUnescapedChar], i-lastUnescapedChar);
+      endOfResult += i-lastUnescapedChar;
+      *endOfResult = '\\';
+      ++endOfResult;
+
+      lastUnescapedChar = i;
+    }
+
+    ++i;
+  }
+
+  /* Don't forget about the stuff after the last '/' char */
+  memcpy(endOfResult, &string[lastUnescapedChar], i-lastUnescapedChar);
+
+  return result;
+}
 
 int main( int argc, char* argv[] )
 {

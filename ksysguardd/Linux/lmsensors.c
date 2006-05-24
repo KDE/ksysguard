@@ -96,14 +96,19 @@ void initLmSensors( struct SensorModul* sm )
         LMSENSOR* p;
         char* label;
         char* s;
+        char* prefixEscaped, labelEscaped;
 
         sensors_get_label( *scn, sfd->number, &label );
         p = (LMSENSOR*)malloc( sizeof( LMSENSOR ) );
 
+        prefixEscaped = escapeString( scn->prefix );
+        labelEscaped = escapeString( label );
         p->fullName = (char*)malloc( strlen( "lmsensors/" ) +
-                                     strlen( scn->prefix ) + 1 +
-                                     strlen( label ) + 1 );
-        sprintf( p->fullName, "lmsensors/%s/%s", scn->prefix, label );
+                                     strlen( prefixEscaped ) + 1 +
+                                     strlen( labelEscaped ) + 1 );
+        sprintf( p->fullName, "lmsensors/%s/%s", prefixEscaped, labelEscaped );
+        free( prefixEscaped );
+        free( labelEscaped );
 
         /* Make sure that name contains only propper characters. */
         for ( s = p->fullName; *s; s++ )

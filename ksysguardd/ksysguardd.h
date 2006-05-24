@@ -49,4 +49,6 @@ struct SensorModul {
   time_t time;
 };
 
+char* escapeString( char* string );
+
 #endif
