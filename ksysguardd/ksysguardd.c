@@ -544,7 +544,7 @@ char* escapeString( char* string ) {
   length = i;
 
   /* Allocate a new string, result, with enough room for the escaped characters */
-  result = (char *)malloc( sizeof(char) * length + charsToEscape + 1 );
+  result = (char *)malloc( length + charsToEscape + 1 );
   endOfResult = result;
 
   /* Fill result with an escaped version of string */
