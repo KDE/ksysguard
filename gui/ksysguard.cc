@@ -538,7 +538,7 @@ int main( int argc, char** argv )
 
   KAboutData aboutData( "ksysguard", I18N_NOOP( "KDE System Guard" ),
                         KSYSGUARD_VERSION, Description, KAboutData::License_GPL,
-                        I18N_NOOP( "(c) 1996-2005 The KSysGuard Developers" ) );
+                        I18N_NOOP( "(c) 1996-2006 The KSysGuard Developers" ) );
   aboutData.addAuthor( "John Tapsell", "Current Maintainer", "john.tapsell@kdemail.org" );
   aboutData.addAuthor( "Greg Martyn", "Assistant Maintainer", "greg.martyn@gmail.com" );
   aboutData.addAuthor( "Chris Schlaeger", "Previous Maintainer", "cs@kde.org" );
