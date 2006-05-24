@@ -68,6 +68,8 @@ typedef struct DiskIOInfo
 {
   int major;
   int minor;
+  char* devname;
+
   int alive;
   DiskLoadSample total;
   DiskLoadSample rio;
@@ -78,6 +80,7 @@ typedef struct DiskIOInfo
 } DiskIOInfo;
 
 #define STATBUFSIZE (32 * 1024)
+#define DISKDEVNAMELEN 16
 
 static char StatBuf[ STATBUFSIZE ];
 static char VmStatBuf[ STATBUFSIZE ];
@@ -234,6 +237,11 @@ static int processDiskIO( const char* buf )
       ptr = (DiskIOInfo*)malloc( sizeof( DiskIOInfo ) );
       ptr->major = major;
       ptr->minor = minor;
+
+      /* 2.6 gives us a nice device name. On 2.4 we get nothing */
+      ptr->devname = (char *)malloc( DISKDEVNAMELEN );
+      ptr->devname = '\0';
+
       ptr->total.delta = 0;
       ptr->total.old = total;
       ptr->rio.delta = 0;
@@ -254,18 +262,18 @@ static int processDiskIO( const char* buf )
         DiskIO = ptr;
       }
 
-      sprintf( sensorName, "disk/%d:%d/total", major, minor );
+      sprintf( sensorName, "disk/%s_(%d:%d)/total", ptr->devname, major, minor );
       registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
-      sprintf( sensorName, "disk/%d:%d/rio", major, minor );
+      sprintf( sensorName, "disk/%s_(%d:%d)/rio", ptr->devname, major, minor );
       registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
-      sprintf( sensorName, "disk/%d:%d/wio", major, minor );
+      sprintf( sensorName, "disk/%s_(%d:%d)/wio", ptr->devname, major, minor );
       registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
-      sprintf( sensorName, "disk/%d:%d/rblk", major, minor );
+      sprintf( sensorName, "disk/%s_(%d:%d)/rblk", ptr->devname, major, minor );
       registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
-      sprintf( sensorName, "disk/%d:%d/wblk", major, minor );
+      sprintf( sensorName, "disk/%s_(%d:%d)/wblk", ptr->devname, major, minor );
       registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
     }
-    /* Move p after the sencond ')'. We can safely assume that
+    /* Move p after the second ')'. We can safely assume that
      * those two ')' exist. */
     p = strchr( p, ')' ) + 1;
     p = strchr( p, ')' ) + 1;
@@ -291,7 +299,7 @@ static int process26DiskIO( const char* buf )
     * - See Documentation/iostats.txt for details on the changes
     */
    int                      major, minor;
-   char                     devname[16];
+   char                     devname[DISKDEVNAMELEN];
    unsigned long            total,
                             rio, rmrg, rblk, rtim,
                             wio, wmrg, wblk, wtim,
@@ -357,6 +365,7 @@ static int process26DiskIO( const char* buf )
       ptr = (DiskIOInfo*)malloc( sizeof( DiskIOInfo ) );
       ptr->major = major;
       ptr->minor = minor;
+      ptr->devname = devname;
       ptr->total.delta = 0;
       ptr->total.old = total;
       ptr->rio.delta = 0;
@@ -380,19 +389,19 @@ static int process26DiskIO( const char* buf )
          DiskIO = ptr;
       }
 
-      sprintf(sensorName, "disk/%d:%d/total", major, minor);
+      sprintf(sensorName, "disk/%s_(%d:%d)/total", devname, major, minor);
       registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
          StatSM);
-      sprintf(sensorName, "disk/%d:%d/rio", major, minor);
+      sprintf(sensorName, "disk/%s_(%d:%d)/rio", devname, major, minor);
       registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
          StatSM);
-      sprintf(sensorName, "disk/%d:%d/wio", major, minor);
+      sprintf(sensorName, "disk/%s_(%d:%d)/wio", devname, major, minor);
       registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
          StatSM);
-      sprintf(sensorName, "disk/%d:%d/rblk", major, minor);
+      sprintf(sensorName, "disk/%s_(%d:%d)/rblk", devname, major, minor);
       registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
          StatSM);
-      sprintf(sensorName, "disk/%d:%d/wblk", major, minor);
+      sprintf(sensorName, "disk/%s_(%d:%d)/wblk", devname, major, minor);
       registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
          StatSM);
    }
@@ -412,15 +421,15 @@ static void cleanupDiskList( void )
 
       /* Disk device has disappeared. We have to remove it from
        * the list and unregister the monitors. */
-      sprintf( sensorName, "disk/%d:%d/total", ptr->major, ptr->minor );
+      sprintf( sensorName, "disk/%s_(%d:%d)/total", ptr->devname, ptr->major, ptr->minor );
       removeMonitor( sensorName );
-      sprintf( sensorName, "disk/%d:%d/rio", ptr->major, ptr->minor );
+      sprintf( sensorName, "disk/%s_(%d:%d)/rio", ptr->devname, ptr->major, ptr->minor );
       removeMonitor( sensorName );
-      sprintf( sensorName, "disk/%d:%d/wio", ptr->major, ptr->minor );
+      sprintf( sensorName, "disk/%s_(%d:%d)/wio", ptr->devname, ptr->major, ptr->minor );
       removeMonitor( sensorName );
-      sprintf( sensorName, "disk/%d:%d/rblk", ptr->major, ptr->minor );
+      sprintf( sensorName, "disk/%s_(%d:%d)/rblk", ptr->devname, ptr->major, ptr->minor );
       removeMonitor( sensorName );
-      sprintf( sensorName, "disk/%d:%d/wblk", ptr->major, ptr->minor );
+      sprintf( sensorName, "disk/%s_(%d:%d)/wblk", ptr->devname, ptr->major, ptr->minor );
       removeMonitor( sensorName );
       if ( last ) {
         last->next = ptr->next;
@@ -1104,10 +1113,11 @@ void printCtxtInfo( const char* cmd )
 void printDiskIO( const char* cmd )
 {
   int major, minor;
+  char devname[DISKDEVNAMELEN];
   char name[ 17 ];
   DiskIOInfo* ptr;
 
-  sscanf( cmd, "disk/%d:%d/%16s", &major, &minor, name );
+  sscanf( cmd, "disk/%[^_]_(%d:%d)/%16s", devname, &major, &minor, name );
 
   if ( Dirty )
     processStat();
@@ -1148,10 +1158,11 @@ void printDiskIO( const char* cmd )
 void printDiskIOInfo( const char* cmd )
 {
   int major, minor;
+  char devname[DISKDEVNAMELEN];
   char name[ 17 ];
   DiskIOInfo* ptr = DiskIO;
 
-  sscanf( cmd, "disk/%d:%d/%16s", &major, &minor, name );
+  sscanf( cmd, "disk/%[^_]_(%d:%d)/%16s", devname, &major, &minor, name );
 
   while ( ptr && ( ptr->major != major || ptr->minor != minor ) )
     ptr = ptr->next;
@@ -1166,20 +1177,20 @@ void printDiskIOInfo( const char* cmd )
   name[ strlen( name ) - 1 ] = '\0';
 
   if ( strcmp( name, "total" ) == 0 )
-    fprintf( CurrentClient, "Total accesses device %d, %d\t0\t0\t1/s\n",
-             major, minor );
+    fprintf( CurrentClient, "Total accesses device %s (%d:%d)\t0\t0\t1/s\n",
+             devname, major, minor );
   else if ( strcmp( name, "rio" ) == 0 )
-    fprintf( CurrentClient, "Read data device %d, %d\t0\t0\t1/s\n",
-             major, minor );
+    fprintf( CurrentClient, "Read data device %s (%d:%d)\t0\t0\t1/s\n",
+             devname, major, minor );
   else if ( strcmp( name, "wio" ) == 0 )
-    fprintf( CurrentClient, "Write data device %d, %d\t0\t0\t1/s\n",
-             major, minor );
+    fprintf( CurrentClient, "Write data device %s (%d:%d)\t0\t0\t1/s\n",
+             devname, major, minor );
   else if ( strcmp( name, "rblk" ) == 0 )
-    fprintf( CurrentClient, "Read accesses device %d, %d\t0\t0\tkBytes/s\n",
-             major, minor );
+    fprintf( CurrentClient, "Read accesses device %s (%d:%d)\t0\t0\tkBytes/s\n",
+             devname, major, minor );
   else if ( strcmp( name, "wblk" ) == 0 )
-    fprintf( CurrentClient, "Write accesses device %d, %d\t0\t0\tkBytes/s\n",
-             major, minor );
+    fprintf( CurrentClient, "Write accesses device %s (%d:%d)\t0\t0\tkBytes/s\n",
+             devname, major, minor );
   else {
     fprintf( CurrentClient, "Dummy\t0\t0\t\n" );
     log_error( "Request for unknown device property \'%s\'",	name );
