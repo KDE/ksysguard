@@ -540,6 +540,7 @@ int main( int argc, char** argv )
                         KSYSGUARD_VERSION, Description, KAboutData::License_GPL,
                         I18N_NOOP( "(c) 1996-2005 The KSysGuard Developers" ) );
   aboutData.addAuthor( "John Tapsell", "Current Maintainer", "john.tapsell@kdemail.org" );
+  aboutData.addAuthor( "Greg Martyn", "Assistant Maintainer", "greg.martyn@gmail.com" );
   aboutData.addAuthor( "Chris Schlaeger", "Previous Maintainer", "cs@kde.org" );
   aboutData.addAuthor( "Tobias Koenig", 0, "tokoe@kde.org" );
   aboutData.addAuthor( "Nicolas Leclercq", 0, "nicknet@planete.net" );
