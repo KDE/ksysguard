@@ -38,10 +38,10 @@ typedef struct
   /* A CPU can be loaded with user processes, reniced processes and
    * system processes. Unused processing time is called idle load.
    * These variable store the percentage of each load type. */
-  int userLoad;
-  int niceLoad;
-  int sysLoad;
-  int idleLoad;
+  float userLoad;
+  float niceLoad;
+  float sysLoad;
+  float idleLoad;
 
   /* To calculate the loads we need to remember the tick values for each
    * load type. */
@@ -133,7 +133,7 @@ static int initStatDisk( char* tag, char* buf, const char* label,
       while ( *buf && isblank( *buf++ ) );
       while ( *buf && isdigit( *buf++ ) );
       sprintf( sensorName, "disk/disk%d/%s", i, shortLabel );
-      registerMonitor( sensorName, "integer", ex, iq, StatSM );
+      registerMonitor( sensorName, "float", ex, iq, StatSM );
     }
 
     return 1;
@@ -156,12 +156,12 @@ static void updateCPULoad( const char* line, CPULoadInfo* load )
                ( currIdleTicks - load->idleTicks );
 
   if ( totalTicks > 10 ) {
-    load->userLoad = ( 100 * ( currUserTicks - load->userTicks ) ) / totalTicks;
-    load->sysLoad = ( 100 * ( currSysTicks - load->sysTicks ) ) / totalTicks;
-    load->niceLoad = ( 100 * ( currNiceTicks - load->niceTicks ) ) / totalTicks;
-    load->idleLoad = ( 100 - ( load->userLoad + load->sysLoad + load->niceLoad ) );
+    load->userLoad = ( 100.0 * ( currUserTicks - load->userTicks ) ) / totalTicks;
+    load->sysLoad = ( 100.0 * ( currSysTicks - load->sysTicks ) ) / totalTicks;
+    load->niceLoad = ( 100.0 * ( currNiceTicks - load->niceTicks ) ) / totalTicks;
+    load->idleLoad = ( 100.0 - ( load->userLoad + load->sysLoad + load->niceLoad ) );
   } else
-    load->userLoad = load->sysLoad = load->niceLoad = load->idleLoad = 0;
+    load->userLoad = load->sysLoad = load->niceLoad = load->idleLoad = 0.0;
 
   load->userTicks = currUserTicks;
   load->sysTicks = currSysTicks;
@@ -255,15 +255,15 @@ static int processDiskIO( const char* buf )
       }
 
       sprintf( sensorName, "disk/%d:%d/total", major, minor );
-      registerMonitor( sensorName, "integer", printDiskIO, printDiskIOInfo, StatSM );
+      registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
       sprintf( sensorName, "disk/%d:%d/rio", major, minor );
-      registerMonitor( sensorName, "integer", printDiskIO, printDiskIOInfo, StatSM );
+      registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
       sprintf( sensorName, "disk/%d:%d/wio", major, minor );
-      registerMonitor( sensorName, "integer", printDiskIO, printDiskIOInfo, StatSM );
+      registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
       sprintf( sensorName, "disk/%d:%d/rblk", major, minor );
-      registerMonitor( sensorName, "integer", printDiskIO, printDiskIOInfo, StatSM );
+      registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
       sprintf( sensorName, "disk/%d:%d/wblk", major, minor );
-      registerMonitor( sensorName, "integer", printDiskIO, printDiskIOInfo, StatSM );
+      registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
     }
     /* Move p after the sencond ')'. We can safely assume that
      * those two ')' exist. */
@@ -381,19 +381,19 @@ static int process26DiskIO( const char* buf )
       }
 
       sprintf(sensorName, "disk/%d:%d/total", major, minor);
-      registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo,
+      registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
          StatSM);
       sprintf(sensorName, "disk/%d:%d/rio", major, minor);
-      registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo,
+      registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
          StatSM);
       sprintf(sensorName, "disk/%d:%d/wio", major, minor);
-      registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo,
+      registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
          StatSM);
       sprintf(sensorName, "disk/%d:%d/rblk", major, minor);
-      registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo,
+      registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
          StatSM);
       sprintf(sensorName, "disk/%d:%d/wblk", major, minor);
-      registerMonitor(sensorName, "integer", printDiskIO, printDiskIOInfo,
+      registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
          StatSM);
    }
 
@@ -602,10 +602,10 @@ void initStat( struct SensorModul* sm )
 
     if ( strcmp( "cpu", tag ) == 0 ) {
       /* Total CPU load */
-      registerMonitor( "cpu/user", "integer", printCPUUser, printCPUUserInfo, StatSM );
-      registerMonitor( "cpu/nice", "integer", printCPUNice, printCPUNiceInfo, StatSM );
-      registerMonitor( "cpu/sys", "integer", printCPUSys, printCPUSysInfo, StatSM );
-      registerMonitor( "cpu/idle", "integer", printCPUIdle, printCPUIdleInfo, StatSM );
+      registerMonitor( "cpu/user", "float", printCPUUser, printCPUUserInfo, StatSM );
+      registerMonitor( "cpu/nice", "float", printCPUNice, printCPUNiceInfo, StatSM );
+      registerMonitor( "cpu/sys", "float", printCPUSys, printCPUSysInfo, StatSM );
+      registerMonitor( "cpu/idle", "float", printCPUIdle, printCPUIdleInfo, StatSM );
     } else if ( strncmp( "cpu", tag, 3 ) == 0 ) {
       char cmdName[ 24 ];
       /* Load for each SMP CPU */
@@ -614,13 +614,13 @@ void initStat( struct SensorModul* sm )
       sscanf( tag + 3, "%d", &id );
       CPUCount++;
       sprintf( cmdName, "cpu%d/user", id );
-      registerMonitor( cmdName, "integer", printCPUxUser, printCPUxUserInfo, StatSM );
+      registerMonitor( cmdName, "float", printCPUxUser, printCPUxUserInfo, StatSM );
       sprintf( cmdName, "cpu%d/nice", id );
-      registerMonitor( cmdName, "integer", printCPUxNice, printCPUxNiceInfo, StatSM );
+      registerMonitor( cmdName, "float", printCPUxNice, printCPUxNiceInfo, StatSM );
       sprintf( cmdName, "cpu%d/sys", id );
-      registerMonitor( cmdName, "integer", printCPUxSys, printCPUxSysInfo, StatSM );
+      registerMonitor( cmdName, "float", printCPUxSys, printCPUxSysInfo, StatSM );
       sprintf( cmdName, "cpu%d/idle", id );
-      registerMonitor( cmdName, "integer", printCPUxIdle, printCPUxIdleInfo, StatSM );
+      registerMonitor( cmdName, "float", printCPUxIdle, printCPUxIdleInfo, StatSM );
     } else if ( strcmp( "disk", tag ) == 0 ) {
       unsigned long val;
       char* b = buf + 5;
@@ -646,9 +646,9 @@ void initStat( struct SensorModul* sm )
       processDiskIO( buf );
     else if ( strcmp( "page", tag ) == 0 ) {
       sscanf( buf + 5, "%lu %lu", &OldPageIn, &OldPageOut );
-      registerMonitor( "cpu/pageIn", "integer", printPageIn,
+      registerMonitor( "cpu/pageIn", "float", printPageIn,
                        printPageInInfo, StatSM );
-      registerMonitor( "cpu/pageOut", "integer", printPageOut,
+      registerMonitor( "cpu/pageOut", "float", printPageOut,
                        printPageOutInfo, StatSM );
     } else if ( strcmp( "intr", tag ) == 0 ) {
       unsigned int i;
@@ -676,12 +676,12 @@ void initStat( struct SensorModul* sm )
         while ( *p && *p == ' ' )
           p++;
         sprintf( cmdName, "cpu/interrupts/int%02d", i );
-        registerMonitor( cmdName, "integer", printInterruptx,
+        registerMonitor( cmdName, "float", printInterruptx,
                          printInterruptxInfo, StatSM );
       }
     } else if ( strcmp( "ctxt", tag ) == 0 ) {
       sscanf( buf + 5, "%lu", &OldCtxt );
-      registerMonitor( "cpu/context", "integer", printCtxt,
+      registerMonitor( "cpu/context", "float", printCtxt,
                        printCtxtInfo, StatSM );
     }
   }
@@ -693,11 +693,11 @@ void initStat( struct SensorModul* sm )
 
     if ( strcmp( "pgpgin", tag ) == 0 ) {
       sscanf( buf + 7, "%lu", &OldPageIn );
-      registerMonitor( "cpu/pageIn", "integer", printPageIn,
+      registerMonitor( "cpu/pageIn", "float", printPageIn,
                        printPageInInfo, StatSM );
     } else if ( strcmp( "pgpgout", tag ) == 0 ) {
       sscanf( buf + 7, "%lu", &OldPageOut );
-      registerMonitor( "cpu/pageOut", "integer", printPageOut,
+      registerMonitor( "cpu/pageOut", "float", printPageOut,
                        printPageOutInfo, StatSM );
     }
   }
@@ -799,7 +799,7 @@ void printCPUUser( const char* cmd )
   if ( Dirty )
     processStat();
 
-  fprintf( CurrentClient, "%d\n", CPULoad.userLoad );
+  fprintf( CurrentClient, "%f\n", CPULoad.userLoad );
 }
 
 void printCPUUserInfo( const char* cmd )
@@ -815,7 +815,7 @@ void printCPUNice( const char* cmd )
   if ( Dirty )
     processStat();
 
-  fprintf( CurrentClient, "%d\n", CPULoad.niceLoad );
+  fprintf( CurrentClient, "%f\n", CPULoad.niceLoad );
 }
 
 void printCPUNiceInfo( const char* cmd )
@@ -831,7 +831,7 @@ void printCPUSys( const char* cmd )
   if ( Dirty )
     processStat();
 
-  fprintf( CurrentClient, "%d\n", CPULoad.sysLoad );
+  fprintf( CurrentClient, "%f\n", CPULoad.sysLoad );
 }
 
 void printCPUSysInfo( const char* cmd )
@@ -847,7 +847,7 @@ void printCPUIdle( const char* cmd )
   if ( Dirty )
     processStat();
 
-  fprintf( CurrentClient, "%d\n", CPULoad.idleLoad );
+  fprintf( CurrentClient, "%f\n", CPULoad.idleLoad );
 }
 
 void printCPUIdleInfo( const char* cmd )
@@ -864,7 +864,7 @@ void printCPUxUser( const char* cmd )
     processStat();
 
   sscanf( cmd + 3, "%d", &id );
-  fprintf( CurrentClient, "%d\n", SMPLoad[ id ].userLoad );
+  fprintf( CurrentClient, "%f\n", SMPLoad[ id ].userLoad );
 }
 
 void printCPUxUserInfo( const char* cmd )
@@ -883,7 +883,7 @@ void printCPUxNice( const char* cmd )
     processStat();
 
   sscanf( cmd + 3, "%d", &id );
-  fprintf( CurrentClient, "%d\n", SMPLoad[ id ].niceLoad );
+  fprintf( CurrentClient, "%f\n", SMPLoad[ id ].niceLoad );
 }
 
 void printCPUxNiceInfo( const char* cmd )
@@ -902,7 +902,7 @@ void printCPUxSys( const char* cmd )
     processStat();
 
   sscanf( cmd + 3, "%d", &id );
-  fprintf( CurrentClient, "%d\n", SMPLoad[ id ].sysLoad );
+  fprintf( CurrentClient, "%f\n", SMPLoad[ id ].sysLoad );
 }
 
 void printCPUxSysInfo( const char* cmd )
@@ -921,7 +921,7 @@ void printCPUxIdle( const char* cmd )
     processStat();
 
   sscanf( cmd + 3, "%d", &id );
-  fprintf( CurrentClient, "%d\n", SMPLoad[ id ].idleLoad );
+  fprintf( CurrentClient, "%f\n", SMPLoad[ id ].idleLoad );
 }
 
 void printCPUxIdleInfo( const char* cmd )
@@ -940,7 +940,7 @@ void printDiskTotal( const char* cmd )
     processStat();
 
   sscanf( cmd + 9, "%d", &id );
-  fprintf( CurrentClient, "%lu\n", (unsigned long)( DiskLoad[ id ].s[ 0 ].delta
+  fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 0 ].delta
                                                     / timeInterval ) );
 }
 
@@ -960,7 +960,7 @@ void printDiskRIO( const char* cmd )
     processStat();
 
   sscanf( cmd + 9, "%d", &id );
-  fprintf( CurrentClient, "%lu\n", (unsigned long)( DiskLoad[ id ].s[ 1 ].delta
+  fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 1 ].delta
                                                     / timeInterval ) );
 }
 
@@ -980,7 +980,7 @@ void printDiskWIO( const char* cmd )
     processStat();
 
   sscanf( cmd + 9, "%d", &id );
-  fprintf( CurrentClient, "%lu\n", (unsigned long)( DiskLoad[ id ].s[ 2 ].delta
+  fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 2 ].delta
                                                     / timeInterval ) );
 }
 
@@ -1001,7 +1001,7 @@ void printDiskRBlk( const char* cmd )
 
   sscanf( cmd + 9, "%d", &id );
   /* a block is 512 bytes or 1/2 kBytes */
-  fprintf( CurrentClient, "%lu\n", (unsigned long)( DiskLoad[ id ].s[ 3 ].delta
+  fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 3 ].delta
                                                     / timeInterval * 2 ) );
 }
 
@@ -1022,7 +1022,7 @@ void printDiskWBlk( const char* cmd )
 
   sscanf( cmd + 9, "%d", &id );
   /* a block is 512 bytes or 1/2 kBytes */
-  fprintf( CurrentClient, "%lu\n", (unsigned long)( DiskLoad[ id ].s[ 4 ].delta
+  fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 4 ].delta
                                                     / timeInterval * 2 ) );
 }
 
@@ -1041,7 +1041,7 @@ void printPageIn( const char* cmd )
   if ( Dirty )
     processStat();
 
-  fprintf( CurrentClient, "%lu\n", (unsigned long)( PageIn / timeInterval ) );
+  fprintf( CurrentClient, "%f\n", (float)( PageIn / timeInterval ) );
 }
 
 void printPageInInfo( const char* cmd )
@@ -1057,7 +1057,7 @@ void printPageOut( const char* cmd )
   if ( Dirty )
     processStat();
 
-  fprintf( CurrentClient, "%lu\n", (unsigned long)( PageOut / timeInterval ) );
+  fprintf( CurrentClient, "%f\n", (float)( PageOut / timeInterval ) );
 }
 
 void printPageOutInfo( const char* cmd )
@@ -1074,7 +1074,7 @@ void printInterruptx( const char* cmd )
     processStat();
 
   sscanf( cmd + strlen( "cpu/interrupts/int" ), "%d", &id );
-  fprintf( CurrentClient, "%lu\n", (unsigned long)( Intr[ id ] / timeInterval ) );
+  fprintf( CurrentClient, "%f\n", (float)( Intr[ id ] / timeInterval ) );
 }
 
 void printInterruptxInfo( const char* cmd )
@@ -1092,7 +1092,7 @@ void printCtxt( const char* cmd )
   if ( Dirty )
     processStat();
 
-  fprintf( CurrentClient, "%lu\n", (unsigned long)( Ctxt / timeInterval ) );
+  fprintf( CurrentClient, "%f\n", (float)( Ctxt / timeInterval ) );
 }
 
 void printCtxtInfo( const char* cmd )
@@ -1125,19 +1125,19 @@ void printDiskIO( const char* cmd )
   }
 
   if ( strcmp( name, "total" ) == 0 )
-    fprintf( CurrentClient, "%lu\n", (unsigned long)( ptr->total.delta
+    fprintf( CurrentClient, "%f\n", (float)( ptr->total.delta
                                                       / timeInterval ) );
   else if ( strcmp( name, "rio" ) == 0 )
-    fprintf( CurrentClient, "%lu\n", (unsigned long)( ptr->rio.delta
+    fprintf( CurrentClient, "%f\n", (float)( ptr->rio.delta
                                                       / timeInterval ) );
   else if ( strcmp( name, "wio" ) == 0 )
-    fprintf( CurrentClient, "%lu\n", (unsigned long)( ptr->wio.delta
+    fprintf( CurrentClient, "%f\n", (float)( ptr->wio.delta
                                                       / timeInterval ) );
   else if ( strcmp( name, "rblk" ) == 0 )
-    fprintf( CurrentClient, "%lu\n", (unsigned long)( ptr->rblk.delta
+    fprintf( CurrentClient, "%f\n", (float)( ptr->rblk.delta
                                                       / ( timeInterval * 2 ) ) );
   else if ( strcmp( name, "wblk" ) == 0 )
-    fprintf( CurrentClient, "%lu\n", (unsigned long)( ptr->wblk.delta
+    fprintf( CurrentClient, "%f\n", (float)( ptr->wblk.delta
                                                       / ( timeInterval * 2 ) ) );
   else {
     fprintf( CurrentClient, "0\n" );
