@@ -10,6 +10,8 @@ ADD_LIBRARY(libksysguardd STATIC
             netdev.c
             ProcessList.c)
 
+TARGET_LINK_LIBRARIES(libksysguardd kvm)
+
 
 ########### install files ###############
 
