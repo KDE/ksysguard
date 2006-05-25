@@ -614,6 +614,7 @@ void initStat( struct SensorModul* sm )
       registerMonitor( "cpu/user", "float", printCPUUser, printCPUUserInfo, StatSM );
       registerMonitor( "cpu/nice", "float", printCPUNice, printCPUNiceInfo, StatSM );
       registerMonitor( "cpu/sys", "float", printCPUSys, printCPUSysInfo, StatSM );
+      registerMonitor( "cpu/TotalLoad", "float", printCPUTotalLoad, printCPUTotalLoadInfo, StatSM );
       registerMonitor( "cpu/idle", "float", printCPUIdle, printCPUIdleInfo, StatSM );
     } else if ( strncmp( "cpu", tag, 3 ) == 0 ) {
       char cmdName[ 24 ];
@@ -628,6 +629,8 @@ void initStat( struct SensorModul* sm )
       registerMonitor( cmdName, "float", printCPUxNice, printCPUxNiceInfo, StatSM );
       sprintf( cmdName, "cpu%d/sys", id );
       registerMonitor( cmdName, "float", printCPUxSys, printCPUxSysInfo, StatSM );
+      sprintf( cmdName, "cpu%d/TotalLoad", id );
+      registerMonitor( cmdName, "float", printCPUxTotalLoad, printCPUxTotalLoadInfo, StatSM );
       sprintf( cmdName, "cpu%d/idle", id );
       registerMonitor( cmdName, "float", printCPUxIdle, printCPUxIdleInfo, StatSM );
     } else if ( strcmp( "disk", tag ) == 0 ) {
@@ -849,6 +852,22 @@ void printCPUSysInfo( const char* cmd )
   fprintf( CurrentClient, "CPU System Load\t0\t100\t%%\n" );
 }
 
+void printCPUTotalLoad( const char* cmd )
+{
+  (void)cmd;
+
+  if ( Dirty )
+    processStat();
+
+  fprintf( CurrentClient, "%f\n", CPULoad.userLoad + CPULoad.sysLoad + CPULoad.niceLoad );
+}
+
+void printCPUTotalLoadInfo( const char* cmd )
+{
+  (void)cmd;
+  fprintf( CurrentClient, "CPU Total Load\t0\t100\t%%\n" );
+}
+
 void printCPUIdle( const char* cmd )
 {
   (void)cmd;
@@ -920,6 +939,25 @@ void printCPUxSysInfo( const char* cmd )
 
   sscanf( cmd + 3, "%d", &id );
   fprintf( CurrentClient, "CPU%d System Load\t0\t100\t%%\n", id );
+}
+
+void printCPUxTotalLoad( const char* cmd )
+{
+  int id;
+
+  if ( Dirty )
+    processStat();
+
+  sscanf( cmd + 3, "%d", &id );
+  fprintf( CurrentClient, "%f\n", SMPLoad[ id ].userLoad + SMPLoad[ id ].sysLoad + SMPLoad[ id ].niceLoad );
+}
+
+void printCPUxTotalLoadInfo( const char* cmd )
+{
+  int id;
+
+  sscanf( cmd + 3, "%d", &id );
+  fprintf( CurrentClient, "CPU%d Total Load\t0\t100\t%%\n", id );
 }
 
 void printCPUxIdle( const char* cmd )

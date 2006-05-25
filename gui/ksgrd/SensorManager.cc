@@ -52,6 +52,7 @@ SensorManager::SensorManager()
   mDict.insert( "idle", new QString( i18n( "Idle Load" ) ) );
   mDict.insert( "sys", new QString( i18n( "System Load" ) ) );
   mDict.insert( "nice", new QString( i18n( "Nice Load" ) ) );
+  mDict.insert( "TotalLoad", new QString( i18n( "Total Load" ) ) );
   mDict.insert( "user", new QString( i18n( "User Load" ) ) );
   mDict.insert( "mem", new QString( i18n( "Memory" ) ) );
   mDict.insert( "physical", new QString( i18n( "Physical Memory" ) ) );
