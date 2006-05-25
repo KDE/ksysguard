@@ -335,10 +335,10 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
     if ( sensorType == "integer" || sensorType == "float" ) {
       KMenu pm;
       pm.addTitle( i18n( "Select Display Type" ) );
-      QAction *a1 = pm.addAction( i18n( "&Signal Plotter" ) );
-      QAction *a2 = pm.addAction( i18n( "&Multimeter" ) );
-      QAction *a3 = pm.addAction( i18n( "&Bar Graph" ) );
-      QAction *a4 = pm.addAction( i18n( "S&ensor Logger" ) );
+      QAction *a1 = pm.addAction( i18n( "&Signal plotter" ) );
+      QAction *a2 = pm.addAction( i18n( "&Digital display" ) );
+      QAction *a3 = pm.addAction( i18n( "&Bar graph" ) );
+      QAction *a4 = pm.addAction( i18n( "Log to a &file" ) );
       QAction *execed = pm.exec( QCursor::pos() );
       if (execed == a1)
 	newDisplay = new FancyPlotter( this, sensorDescr, false );
