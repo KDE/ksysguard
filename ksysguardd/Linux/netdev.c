@@ -307,7 +307,8 @@ int updateNetDev( void )
   NetDevBuf[ n ] = '\0';
 
   /* Calculate hash over the first 7 characters of each line starting
-   * after the first newline. */
+   * after the first newline. This will detect whether any interfaces
+   * have either appeared or disappeared. */
   for ( p = NetDevBuf, hash = 0; *p; ++p )
     if ( *p == '\n' )
       for ( ++p; *p && *p != ':' && *p != '|'; ++p )
