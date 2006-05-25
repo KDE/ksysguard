@@ -44,7 +44,7 @@
 #define REGISTERSENSOR( a, b, c, d, e ) \
 { \
   snprintf( mon, MON_SIZE, "network/interfaces/%s/%s", tag, b ); \
-  registerMonitor( mon, "integer", printNetDev##a, printNetDev##a##Info, NetDevSM ); \
+  registerMonitor( mon, "float", printNetDev##a, printNetDev##a##Info, NetDevSM ); \
 }
 
 #define UNREGISTERSENSOR( a, b, c, d, e ) \
@@ -352,7 +352,7 @@ void printNetDev##a( const char* cmd ) \
  \
   for ( i = 0; i < MAXNETDEVS; ++i ) \
     if ( strcmp( NetDevs[ i ].name, dev ) == 0) { \
-      fprintf( CurrentClient, "%lu\n", (unsigned long) \
+      fprintf( CurrentClient, "%f\n", (float) \
                ( NetDevs[ i ].a / ( NetDevs[ i ].a##Scale * timeInterval ) ) ); \
       return; \
     } \
