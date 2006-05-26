@@ -335,7 +335,7 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
     if ( sensorType == "integer" || sensorType == "float" ) {
       KMenu pm;
       pm.addTitle( i18n( "Select Display Type" ) );
-      QAction *a1 = pm.addAction( i18n( "&Signal plotter" ) );
+      QAction *a1 = pm.addAction( i18n( "&Line graph" ) );
       QAction *a2 = pm.addAction( i18n( "&Digital display" ) );
       QAction *a3 = pm.addAction( i18n( "&Bar graph" ) );
       QAction *a4 = pm.addAction( i18n( "Log to a &file" ) );
