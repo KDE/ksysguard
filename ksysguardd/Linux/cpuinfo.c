@@ -73,7 +73,7 @@ static void processCpuInfo( void )
           if ( Clocks )
             free( Clocks );
           CPUs = cpuId + 1;
-          Clocks = malloc( CPUs * sizeof( float ) );
+          Clocks = (float*) malloc( CPUs * sizeof( float ) );
           snprintf( cmdName, sizeof( cmdName ) - 1, "cpu%d/clock", cpuId );
           registerMonitor( cmdName, "float", printCPUxClock, printCPUxClockInfo,
                            CpuInfoSM );
