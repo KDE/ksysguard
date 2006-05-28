@@ -110,7 +110,7 @@ void initLmSensors( struct SensorModul* sm )
         free( prefixEscaped );
         free( labelEscaped );
 
-        /* Make sure that name contains only propper characters. */
+        /* Make sure that name contains only proper characters. */
         for ( s = p->fullName; *s; s++ )
           if ( *s == ' ' )
             *s = '_';
