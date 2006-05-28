@@ -243,9 +243,12 @@ static void cleanupProcessList( void ) {
 	ProcessCount = 0;
 	for( ps = first_ctnr( ProcessList ); ps; ps = next_ctnr( ProcessList )) {
 		if( ps->alive ) {
+			/* Process is still alive. Just clear flag. */
 			ps->alive = 0;
 			ProcessCount++;
 		} else {
+			/* Process has probably died. We remove it from the list and
+			 * destruct the data structure. */
 			free( remove_ctnr( ProcessList ));
 		}
 	}

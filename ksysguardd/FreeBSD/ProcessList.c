@@ -303,8 +303,7 @@ cleanupProcessList(void)
 		else
 		{
 			/* Process has probably died. We remove it from the list and
-			 * destruct the data structure. i needs to be decremented so
-			 * that after i++ the next list element will be inspected. */
+			 * destruct the data structure. */
 			free(remove_ctnr(ProcessList));
 		}
 	}

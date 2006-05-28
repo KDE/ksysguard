@@ -56,6 +56,7 @@ CONTAINER new_ctnr(void)
 	return rootNode;
 }
 
+/* O(n) */
 void zero_destr_ctnr(CONTAINER rootNode, DESTR_FUNC destr_func)
 {
 	INDEX counter;
@@ -77,6 +78,23 @@ void zero_destr_ctnr(CONTAINER rootNode, DESTR_FUNC destr_func)
 	return;
 }
 
+/* O(n) */
+void empty_ctnr(CONTAINER rootNode)
+{
+	INDEX i;
+
+	if (rootNode == NIL) {
+		rpterr("empty_ctnr: NIL argument");
+		return;
+	}
+
+	for ( i = level_ctnr( rootNode ); i >= 0; --i )
+		free( pop_ctnr( rootNode ) );
+
+	return;
+}
+
+/* O(1) */
 INDEX level_ctnr(CONTAINER rootNode)
 {
 	if (rootNode == NIL) {
@@ -87,6 +105,8 @@ INDEX level_ctnr(CONTAINER rootNode)
 	return ((CONTAINER_INFO)rootNode->data)->count;
 }
 
+/* This function is never used */
+/* O(n) */
 void insert_ctnr(CONTAINER rootNode, void* object, INDEX pos)
 {
 	CONTAINER it;
@@ -115,6 +135,7 @@ void insert_ctnr(CONTAINER rootNode, void* object, INDEX pos)
 	}
 }
 
+/* O(1) */
 void push_ctnr(CONTAINER rootNode, void* object)
 {
 	CONTAINER newNode;
@@ -134,6 +155,8 @@ void push_ctnr(CONTAINER rootNode, void* object)
 	((CONTAINER_INFO)rootNode->data)->count++;
 }
 
+/* This function is never used */
+/* O(n) */
 void* remove_at_ctnr(CONTAINER rootNode, INDEX pos)
 {
 	CONTAINER it;
@@ -164,6 +187,8 @@ void* remove_at_ctnr(CONTAINER rootNode, INDEX pos)
 	return NIL;
 }
 
+/* This function is only used within ccont.c */
+/* O(1) */
 void* pop_ctnr(CONTAINER rootNode)
 {
 	CONTAINER ptr;
@@ -190,6 +215,7 @@ void* pop_ctnr(CONTAINER rootNode)
 	return retval;
 }
 
+/* O(n) */
 void* get_ctnr(CONTAINER rootNode, INDEX pos)
 {
 	CONTAINER it;
@@ -210,6 +236,10 @@ void* get_ctnr(CONTAINER rootNode, INDEX pos)
 	return NIL;
 }
 
+/* This should return a reference to the node found instead of its index.
+   The index is never used, except as an argument to a O(n) function to
+   get a reference to the node. */
+/* O(n) */
 INDEX search_ctnr(CONTAINER rootNode, COMPARE_FUNC compare_func, void* pattern)
 {
 	CONTAINER it;
@@ -230,6 +260,8 @@ INDEX search_ctnr(CONTAINER rootNode, COMPARE_FUNC compare_func, void* pattern)
 	return -1;
 }
 
+/* This function is never used */
+/* O(n) */
 void swap_ctnr(CONTAINER rootNode, INDEX pos1, INDEX pos2)
 {
 	CONTAINER it, node1 = 0, node2 = 0;
@@ -269,6 +301,7 @@ void swap_ctnr(CONTAINER rootNode, INDEX pos1, INDEX pos2)
 	}
 }
 
+/* O(n log n) */
 void bsort_ctnr(CONTAINER rootNode, COMPARE_FUNC compare_func)
 {
 	/* Use mergesort adapted from http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.c */
@@ -364,6 +397,7 @@ void bsort_ctnr(CONTAINER rootNode, COMPARE_FUNC compare_func)
 	}
 }
 
+/* O(1) */
 void* first_ctnr(CONTAINER rootNode)
 {
 	if (rootNode == NIL) {
@@ -379,6 +413,7 @@ void* first_ctnr(CONTAINER rootNode)
 	return rootNode->next->data;
 }
 
+/* O(1) */
 void* next_ctnr(CONTAINER rootNode)
 {
 	CONTAINER_INFO info;
@@ -398,6 +433,7 @@ void* next_ctnr(CONTAINER rootNode)
 	return info->currentNode->data;
 }
 
+/* O(1) */
 void* remove_ctnr(CONTAINER rootNode)
 {
 	CONTAINER currentNode, tmp;

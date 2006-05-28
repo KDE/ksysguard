@@ -137,8 +137,7 @@ int updateDiskStat(void)
 
 	/* let's hope there is no difference between the DiskStatList and
 	   the number of mounted filesystems */
-	for (i = level_ctnr(DiskStatList); i >= 0; --i)
-		free(pop_ctnr(DiskStatList));
+	empty_ctnr(DiskStatList);
 
 	mntcount = getmntinfo(&fs_info, MNT_WAIT);
 

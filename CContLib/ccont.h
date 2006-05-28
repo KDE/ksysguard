@@ -53,7 +53,7 @@ CONTAINER new_ctnr(void);
 /**
  * Remove all entries from @p ctnr and reset its
  * internal structure. Use @ref new_ctnr() @em before @em
- * access the container next time.
+ * accessing the container again.
  *
  * Note: use the 'destr_ctnr' macro to get zeroed pointer
  *       automatically.
@@ -62,6 +62,13 @@ CONTAINER new_ctnr(void);
  *                   free the single entries.
  */
 void zero_destr_ctnr(CONTAINER ctnr, DESTR_FUNC destr_func);
+
+/**
+ * Remove all entries from @p ctnr. There is no need to use
+ * @ref new_ctnr() for subsequent access to the container.
+ *
+ */
+void empty_ctnr(CONTAINER rootNode);
 
 /**
  * @return the number of entries in @p ctnr.

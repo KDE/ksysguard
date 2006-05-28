@@ -274,20 +274,17 @@ updateNetStatTcpUdpRaw(const char *cmd)
 
 	if (strstr(cmd, "tcp")) {
 		snprintf(buffer, sizeof(buffer), "/proc/net/tcp");
-		for (i = level_ctnr(TcpSocketList); i >= 0; --i)
-			free(pop_ctnr(TcpSocketList));
+		empty_ctnr(TcpSocketList);
 	}
 
 	if (strstr(cmd, "udp")) {
 		snprintf(buffer, sizeof(buffer), "/proc/net/udp");
-		for (i = level_ctnr(UdpSocketList); i >= 0; --i)
-			free(pop_ctnr(UdpSocketList));
+		empty_ctnr(UdpSocketList);
 	}
 
 	if (strstr(cmd, "raw")) {
 		snprintf(buffer, sizeof(buffer), "/proc/net/raw");
-		for (i = level_ctnr(RawSocketList); i >= 0; --i)
-			free(pop_ctnr(RawSocketList));
+		empty_ctnr(RawSocketList);
 	}
 
 	if ((netstat = fopen(buffer, "r")) == NULL) {
@@ -363,8 +360,7 @@ updateNetStatUnix(void)
 		return -1;
 	}
 
-	for (i = level_ctnr(UnixSocketList); i >= 0; --i)
-		free(pop_ctnr(UnixSocketList));
+	empty_ctnr(UnixSocketList);
 
 	fgets(buffer, sizeof(buffer), file);
 
