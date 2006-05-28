@@ -802,20 +802,21 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			return tooltip;
 		}
 		case HeadingCPUUsage: {
-			QString tooltip = i18n("<qt>Process status: %1 %2<br/>"
-						"User CPU usage: %3%<br/>System CPU usage: %4%",
-						i18nc("process status", process->status),
-						mStatusDescription.value(process->status, ""),
-					        QString::number(process->userUsage, 'f', 2),
-						QString::number(process->sysUsage, 'f', 2));
+			QString tooltip = ki18n("<qt>Process status: %1 %2<br/>"
+						"User CPU usage: %3%<br/>System CPU usage: %4%")
+						.subs(i18nc("process status", process->status))
+						.subs(mStatusDescription.value(process->status, ""))
+					        .subs(process->userUsage, 0, 'f', 2)
+						.subs(process->sysUsage, 0, 'f', 2)
+						.toString();
 			if(process->numChildren > 0) {
-				tooltip += i18n("<br/>Number of children: %1<br/>Total User CPU usage: %2%<br/>"
-						"Total System CPU usage: %3%<br/>Total CPU usage: %4%",
-						process->numChildren,
-						QString::number(process->totalUserUsage, 'f', 2),
-						QString::number(process->totalSysUsage, 'f', 2),
-						QString::number(process->totalUserUsage + process->totalSysUsage, 'f', 2)
-						);
+				tooltip += ki18n("<br/>Number of children: %1<br/>Total User CPU usage: %2%<br/>"
+						"Total System CPU usage: %3%<br/>Total CPU usage: %4%")
+						.subs(process->numChildren)
+						.subs(process->totalUserUsage, 0, 'f', 2)
+						.subs(process->totalSysUsage, 0, 'f', 2)
+						.subs(process->totalUserUsage + process->totalSysUsage, 0, 'f', 2)
+						.toString();
 			}
 
 			if(!tracer.isEmpty())
