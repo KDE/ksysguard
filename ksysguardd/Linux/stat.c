@@ -159,14 +159,15 @@ static void updateCPULoad( const char* line, CPULoadInfo* load ) {
 		load->sysLoad = ( 100.0 * ( currSysTicks - load->sysTicks ) ) / totalTicks;
 		load->niceLoad = ( 100.0 * ( currNiceTicks - load->niceTicks ) ) / totalTicks;
 		load->idleLoad = ( 100.0 - ( load->userLoad + load->sysLoad + load->niceLoad ) );
-	} else
+	}
+	else
 		load->userLoad = load->sysLoad = load->niceLoad = load->idleLoad = 0.0;
 		
-		load->userTicks = currUserTicks;
-		load->sysTicks = currSysTicks;
-		load->niceTicks = currNiceTicks;
-		load->idleTicks = currIdleTicks;
-	}
+	load->userTicks = currUserTicks;
+	load->sysTicks = currSysTicks;
+	load->niceTicks = currNiceTicks;
+	load->idleTicks = currIdleTicks;
+}
 	
 static int processDisk( char* tag, char* buf, const char* label, int idx ) {
 	if ( strcmp( label, tag ) == 0 ) {
