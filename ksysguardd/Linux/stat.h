@@ -66,5 +66,7 @@ void printCtxt( const char* );
 void printCtxtInfo( const char* );
 void printDiskIO( const char* );
 void printDiskIOInfo( const char* );
+void printUptime( const char* );
+void printUptimeInfo( const char* );
 
 #endif

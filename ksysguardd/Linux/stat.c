@@ -80,11 +80,13 @@ typedef struct DiskIOInfo
 } DiskIOInfo;
 
 #define STATBUFSIZE (32 * 1024)
+#define UPTIMEBUFSIZE 64
 #define DISKDEVNAMELEN 16
 
 static char StatBuf[ STATBUFSIZE ];
 static char VmStatBuf[ STATBUFSIZE ];
 static char IOStatBuf[ STATBUFSIZE ];	/* Buffer for /proc/diskstats */
+static char UptimeBuf[ UPTIMEBUFSIZE ];	/* Buffer for /proc/uptime */
 static int Dirty = 0;
 
 /* We have observed deviations of up to 5% in the accuracy of the timer
@@ -596,6 +598,7 @@ void initStat( struct SensorModul* sm )
   char* statBufP = StatBuf;
   char* vmstatBufP = VmStatBuf;
   char* iostatBufP = IOStatBuf;
+  char* uptimeBufP = UptimeBuf;
 
   StatSM = sm;
 
@@ -714,6 +717,13 @@ void initStat( struct SensorModul* sm )
     }
   }
 
+   /* Process values from /proc/uptime */
+   if (sscanf(uptimeBufP, format, buf) == 1)
+   {
+      buf[sizeof(buf) - 1] = '\0';
+      registerMonitor( "system/uptime", "float", printUptime, printUptimeInfo, StatSM );
+   }
+
    /* Process values from /proc/diskstats (Linux >= 2.6.x) */
    while (sscanf(iostatBufP, format, buf) == 1)
    {
@@ -784,6 +794,23 @@ int updateStat( void )
 
   close( fd );
   VmStatBuf[ n ] = '\0';
+
+
+  UptimeBuf[ 0 ] = '\0';
+  if ( ( fd = open( "/proc/uptime", O_RDONLY ) ) < 0 )
+    return 0; /* failure is okay */
+
+  n = read( fd, UptimeBuf, UPTIMEBUFSIZE - 1 );
+  if ( n == UPTIMEBUFSIZE - 1 || n <= 0 ) {
+    log_error( "Internal buffer too small to read \'/proc/uptime\'" );
+
+    close( fd );
+    return -1;
+  }
+
+  close( fd );
+  UptimeBuf[ n ] = '\0';
+
 
   /* Linux >= 2.6.x has disk I/O stats in /proc/diskstats */
   IOStatBuf[ 0 ] = '\0';
@@ -1233,4 +1260,48 @@ void printDiskIOInfo( const char* cmd )
     fprintf( CurrentClient, "Dummy\t0\t0\t\n" );
     log_error( "Request for unknown device property \'%s\'",	name );
   }
+}
+
+void printUptime( const char* cmd ) {
+/* Process values from /proc/uptime */
+  (void)cmd;
+
+  size_t n;
+  int fd;
+  char format[ 32 ];
+  char buf[ 1024 ];
+  char* uptimeBufP = UptimeBuf;
+  float uptime;
+
+  sprintf( format, "%%%d[^\n]\n", (int)sizeof( buf ) - 1 );
+
+
+  UptimeBuf[ 0 ] = '\0';
+  if ( ( fd = open( "/proc/uptime", O_RDONLY ) ) < 0 )
+    return; /* couldn't open /proc/uptime */
+
+  n = read( fd, UptimeBuf, UPTIMEBUFSIZE - 1 );
+  if ( n == UPTIMEBUFSIZE - 1 || n <= 0 ) {
+    log_error( "Internal buffer too small to read \'/proc/uptime\'" );
+
+    close( fd );
+    return;
+  }
+
+  close( fd );
+  UptimeBuf[ n ] = '\0';
+
+
+  if (sscanf(uptimeBufP, format, buf) == 1)
+  {
+     buf[sizeof(buf) - 1] = '\0';
+     sscanf( buf, "%f", &uptime );
+     fprintf( CurrentClient, "%f\n", uptime );
+  }
+}
+
+void printUptimeInfo( const char* cmd ) {
+  (void)cmd;
+
+  fprintf( CurrentClient, "System uptime\t0\t0\ts\n" );
 }

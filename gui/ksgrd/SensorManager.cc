@@ -111,6 +111,8 @@ SensorManager::SensorManager()
   mDict.insert( "usedspace", new QString( i18n( "Used Space" ) ) );
   mDict.insert( "freespace", new QString( i18n( "Free Space" ) ) );
   mDict.insert( "filllevel", new QString( i18n( "Fill Level" ) ) );
+  mDict.insert( "system", new QString( i18n( "System" ) ) );
+  mDict.insert( "uptime", new QString( i18n( "Uptime" ) ) );
 
   for ( int i = 0; i < 32; i++ ) {
     mDict.insert( "cpu" + QString::number( i ),
