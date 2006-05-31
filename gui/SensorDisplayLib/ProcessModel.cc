@@ -166,7 +166,7 @@ bool ProcessModel::setData(const QList<QStringList> &data)
 {
 
 	if(mPidColumn == -1) {
-		kDebug(1215) << "We have recieved a setData()  before we know about our headings." << endl;
+		kDebug(1215) << "We have received a setData()  before we know about our headings." << endl;
 		return false;
 	}
 	// We can set this from anywhere to basically say something has gone wrong, and that the code is buggy, so reset and get all the data again
@@ -502,7 +502,7 @@ void ProcessModel::insertOrChangeRows( long long pid)
 
 	//This process may have children, however we are now guaranteed that:
 	// a) If the children are new, then they will be inserted after the parent because in this function we recursively check the parent(s) first.
-	// b) If the children already exist (a bit wierd, but possible if a new process is created, then an existing one is reparented to it)
+	// b) If the children already exist (a bit weird, but possible if a new process is created, then an existing one is reparented to it)
 	//    then in changed() it will call this function to recursively insert its parents
 
 	Process *parent = mPidToProcess[ppid];
@@ -591,7 +591,7 @@ void ProcessModel::removeRow( long long pid )
 	int row = process->parent->children.indexOf(process);
 	QModelIndex parentModel = getQModelIndex(process->parent, 0);
 	if(row == -1) {
-		kDebug(1215) << "A serious problem occured in remove row." << endl;
+		kDebug(1215) << "A serious problem occurred in remove row." << endl;
 		return;
 	}
 
@@ -760,7 +760,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 					return "";
 				if(total > 100) total = 100;
 
-				return QString::number(total, 'f', 2) + "%";
+				return QString::number(total, 'f', 2) + '%';
 			}
 		case HeadingRSSMemory:
 			if(process->vmRSS == 0) return QVariant();
@@ -996,7 +996,7 @@ bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltyp
 	mCPUHeading = -1;
 	QStringList headings;
 	QList<int> headingsToType;
-	int num_of_others = 0; //Number of headings found that we dont know about.  Will match the index in process->data[index]
+	int num_of_others = 0; //Number of headings found that we don't know about.  Will match the index in process->data[index]
 	QByteArray coltype;
 	for(int i = 0; i < header.count(); i++) {
 		bool other = false;
@@ -1120,7 +1120,7 @@ void ProcessModel::setXResData(const QStringList& data)
 		return;
 	}
 	if(mXResPidColumn == -1) {
-		kDebug(1215) << "XRes data recieved when we still don't know which column the XPid is in" << endl;
+		kDebug(1215) << "XRes data received when we still don't know which column the XPid is in" << endl;
 		return;
 	}
 

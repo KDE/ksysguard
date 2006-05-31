@@ -95,11 +95,11 @@ void Workspace::readProperties( KConfig *cfg )
     mWorkDir = kstd->saveLocation( "data", "ksysguard" );
 
     QString origFile = kstd->findResource( "data", "SystemLoad.sgrd" );
-    QString newFile = mWorkDir + "/" + i18n( "System Load" ) + ".sgrd";
+    QString newFile = mWorkDir + '/' + i18n( "System Load" ) + ".sgrd";
     if ( !origFile.isEmpty() )
       restoreWorkSheet( origFile, newFile );
     origFile = kstd->findResource( "data", "ProcessTable.sgrd" );
-    newFile = mWorkDir + "/" + i18n( "Process Table" ) + ".sgrd";
+    newFile = mWorkDir + '/' + i18n( "Process Table" ) + ".sgrd";
     if ( !origFile.isEmpty() )
       restoreWorkSheet( origFile, newFile );
 
@@ -236,7 +236,7 @@ void Workspace::saveWorkSheet( WorkSheet *sheet )
   if ( fileName.isEmpty() ) {
     KFileDialog dlg( 0, i18n( "*.sgrd|Sensor Files" ), this);
 	dlg.setObjectName("LoadFileDialog");
-    fileName = dlg.getSaveFileName( mWorkDir + "/" + tabLabel( sheet ) +
+    fileName = dlg.getSaveFileName( mWorkDir + '/' + tabLabel( sheet ) +
                                     ".sgrd", "*.sgrd", 0,
                                     i18n( "Save Current Worksheet As" ) );
     if ( fileName.isEmpty() )
@@ -276,7 +276,7 @@ void Workspace::saveWorkSheetAs( WorkSheet *sheet )
   do {
     KFileDialog dlg( 0, "*.sgrd", this);
 	dlg.setObjectName("LoadFileDialog");
-    fileName = dlg.getSaveFileName( mWorkDir + "/" + tabLabel( currentWidget() ) +
+    fileName = dlg.getSaveFileName( mWorkDir + '/' + tabLabel( currentWidget() ) +
                                     ".sgrd", "*.sgrd" );
     if ( fileName.isEmpty() )
       return;

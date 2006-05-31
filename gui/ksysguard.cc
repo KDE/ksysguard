@@ -160,12 +160,12 @@ void TopLevel::resetWorkSheets()
   QString workDir = kstd->saveLocation( "data", "ksysguard" );
 
   QString file = kstd->findResource( "data", "SystemLoad.sgrd" );
-  QString newFile = workDir + "/" + i18n( "System Load" ) + ".sgrd";
+  QString newFile = workDir + '/' + i18n( "System Load" ) + ".sgrd";
   if ( !file.isEmpty() )
     mWorkSpace->restoreWorkSheet( file, newFile );
 
   file = kstd->findResource( "data", "ProcessTable.sgrd" );
-  newFile = workDir + "/" + i18n( "Process Table" ) + ".sgrd";
+  newFile = workDir + '/' + i18n( "Process Table" ) + ".sgrd";
   if ( !file.isEmpty() )
     mWorkSpace->restoreWorkSheet( file, newFile );
 }

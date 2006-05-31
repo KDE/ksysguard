@@ -67,7 +67,7 @@ bool SensorShellAgent::start( const QString &host, const QString &shell,
   if ( !command.isEmpty() )
     cmd =  command;
   else
-    cmd = mShell + " " + hostName() + " ksysguardd";
+    cmd = mShell + ' ' + hostName() + " ksysguardd";
   *mDaemon << cmd;
 
   if ( !mDaemon->start( KProcess::NotifyOnExit, KProcess::All ) ) {

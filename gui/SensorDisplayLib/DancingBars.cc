@@ -171,7 +171,7 @@ bool DancingBars::addSensor( const QString &hostName, const QString &name,
 
   /* To differentiate between answers from value requests and info
    * requests we add 100 to the beam index for info requests. */
-  sendRequest( hostName, name + "?", mBars + 100 );
+  sendRequest( hostName, name + '?', mBars + 100 );
   ++mBars;
   mSampleBuffer.resize( mBars );
 

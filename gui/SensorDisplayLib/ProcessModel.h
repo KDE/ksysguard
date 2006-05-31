@@ -62,11 +62,11 @@ public:
 	
 	bool hasChildren ( const QModelIndex & parent) const;
 	/* Functions for setting the model */
-	/** Set the untranslated heading names for the incomming data that will be sent in setData.
+	/** Set the untranslated heading names for the incoming data that will be sent in setData.
 	 *  The column names we show to the user are based mostly on this information, translated if known, hidden if not necessary etc */
 	bool setHeader(const QStringList &header, const QByteArray &coltype);
 	/** This is called from outside every few seconds when we have a new answer.
-	 *  It checks the new data against what we have currently, and tries to be efficent in merging in the new data.
+	 *  It checks the new data against what we have currently, and tries to be efficient in merging in the new data.
 	 *  @returns Whether the operation was successful.  Returns false if there was a problem with the data/sensor
 	 */
 	bool setData(const QList<QStringList> &data);
@@ -75,7 +75,7 @@ public:
 	 *  rather than just the userid.
 	 */
 
-	/** Set the heading names for the incomming data that will be sent in setXResData */
+	/** Set the heading names for the incoming data that will be sent in setXResData */
 	bool setXResHeader(const QStringList &header, const QByteArray& coltype);
 	/** Set the XRes data for a single process with the columns matching those given in setXResHeader.
 	 *
@@ -207,9 +207,9 @@ private:
 	typedef enum { DataColumnLogin, DataColumnGid, DataColumnPid, DataColumnPPid, DataColumnUid, DataColumnName, DataColumnTracerPid, DataColumnUserUsage, DataColumnSystemUsage, DataColumnNice, DataColumnVmSize, DataColumnVmRss, DataColumnCommand, DataColumnStatus, DataColumnOtherLong, DataColumnOtherPrettyLong, DataColumnOtherPrettyFloat, DataColumnError } DataColumnType;
 
 
-	int mPidColumn;  ///Column the PID is in, so we can extract it quickly and easily from incomming data
-	int mPPidColumn; ///Column the Parent's PID is in, so we can extract it quickly and easily from incomming data
-	int mCPUHeading; ///Heading in the table that we show in which the memory is shown in - so that we can update it efficently
+	int mPidColumn;  ///Column the PID is in, so we can extract it quickly and easily from incoming data
+	int mPPidColumn; ///Column the Parent's PID is in, so we can extract it quickly and easily from incoming data
+	int mCPUHeading; ///Heading in the table that we show in which the memory is shown in - so that we can update it efficiently
 	
 	int mXResNumColumns;
 	int mXResPidColumn;

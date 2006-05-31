@@ -226,7 +226,7 @@ ListView::addSensor(const QString& hostName, const QString& sensorName, const QS
 
 	/* To differentiate between answers from value requests and info
 	 * requests we use 100 for info requests. */
-	sendRequest(hostName, sensorName + "?", 100);
+	sendRequest(hostName, sensorName + '?', 100);
 	sendRequest(hostName, sensorName, 19);
 	setModified(true);
 	return (true);

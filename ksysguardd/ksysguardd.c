@@ -345,7 +345,7 @@ int createServerSocket()
     if ( ( service = getservbyname( "ksysguardd", "tcp" ) ) == NULL ) {
       /**
         No entry in service directory and no command line request,
-        so we take the build-in default (the offical IANA port).
+        so we take the build-in default (the official IANA port).
        */
       SocketPort = PORT_NUMBER;
     } else

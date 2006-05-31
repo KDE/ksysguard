@@ -69,7 +69,7 @@ LogFile::addSensor(const QString& hostName, const QString& sensorName, const QSt
 	sendRequest(sensors().at(0)->hostName(), QString("logfile_register %1" ).arg(sensorID), 42);
 
 	if (title.isEmpty())
-		setTitle(sensors().at(0)->hostName() + ":" + sensorID);
+		setTitle(sensors().at(0)->hostName() + ':' + sensorID);
 	else
 		setTitle(title);
 

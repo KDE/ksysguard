@@ -84,7 +84,7 @@ void SensorAgent::processAnswer( const char *buf, int buflen )
   for ( int i = 0; i < buffer.size(); i++ ) {
     if ( buffer.at(i) == '\033' ) {  // 033 in octal is the escape character.  The signifies the start of an error
       //The first time we see 033 we simply set mFoundError to true
-      //Then the error message will come, and then we will recieve another escape character.
+      //Then the error message will come, and then we will receive another escape character.
       
       mFoundError = !mFoundError;
       if ( !mFoundError ) {  //We found the end of the error
@@ -187,7 +187,7 @@ void SensorAgent::executeCommand()
                   << "/" << mProcessingFIFO.count() << ")" << endl;
 #endif
     // send request to daemon
-    QString cmdWithNL = req->request() + "\n";
+    QString cmdWithNL = req->request() + '\n';
     if ( writeMsg( cmdWithNL.toLatin1(), cmdWithNL.length() ) )
       mTransmitting = true;
     else
