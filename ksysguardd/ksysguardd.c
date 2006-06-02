@@ -3,6 +3,7 @@
 
     Copyright (c) 1999 - 2003 Chris Schlaeger <cs@kde.org>
                               Tobias Koenig <tokoe@kde.org>
+                         2006 Greg Martyn <greg.martyn@gmail.com>
 
     Solaris support by Torsten Kasch <tk@Genetik.Uni-Bielefeld.DE>
 
@@ -120,8 +121,9 @@ static int processArguments( int argc, char* argv[] )
 static void printWelcome( FILE* out )
 {
   fprintf( out, "ksysguardd %s\n"
-           "(c) 1999, 2000, 2001, 2002 Chris Schlaeger <cs@kde.org> and\n"
+           "(c) 1999, 2000, 2001, 2002 Chris Schlaeger <cs@kde.org>\n"
            "(c) 2001 Tobias Koenig <tokoe@kde.org>\n"
+           "(c) 2006 Greg Martyn <greg.martyn@gmail.com>\n"
            "This program is part of the KDE Project and licensed under\n"
            "the GNU GPL version 2. See http://www.kde.org for details.\n", 
            KSYSGUARD_VERSION );
