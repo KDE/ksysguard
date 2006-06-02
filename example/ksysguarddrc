@@ -17,4 +17,5 @@ LogFiles=messages:/var/log/messages,kern:/var/log/kern.log,daemon:/var/log/daemo
 #	DiskStat        partition space. Data comes from mtab, getmntent() and statfs()
 #	LogFile         local logfiles
 #	DiskStats       disk throughput. Data comes from /etc/diskstats
-Sensors=ProcessList,Memory,Stat,NetDev,NetStat,Apm,Acpi,CpuInfo,LoadAvg,LmSensors,DiskStat,LogFile,DiskStats
+#	Uptime          System uptime. Data comes from /etc/uptime
+Sensors=ProcessList,Memory,Stat,NetDev,NetStat,Apm,Acpi,CpuInfo,LoadAvg,LmSensors,DiskStat,LogFile,DiskStats,Uptime

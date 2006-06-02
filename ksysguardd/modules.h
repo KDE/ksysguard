@@ -41,6 +41,7 @@
 #include "netstat.h"
 #include "ProcessList.h"
 #include "stat.h"
+#include "uptime.h"
 #endif /* OSTYPE_Linux */
 
 #ifdef OSTYPE_FreeBSD
@@ -125,6 +126,7 @@ struct SensorModul SensorModulList[] = {
   { "DiskStat", initDiskStat, exitDiskStat, updateDiskStat, checkDiskStat, 0, NULLTIME },
   { "LogFile", initLogFile, exitLogFile, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
   { "DellLaptop", initI8k, exitI8k, updateI8k, NULLVVFUNC, 0, NULLTIME },
+  { "Uptime", initUptime, exitUptime, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
 #endif /* OSTYPE_Linux */
 
 #ifdef OSTYPE_FreeBSD

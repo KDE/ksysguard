@@ -13,7 +13,8 @@ SET(LIBKSYSGUARDD_FILES
             netdev.c
             netstat.c
             ProcessList.c
-            stat.c)
+            stat.c
+            uptime.c)
 
 if(XRES_LIBRARY)
   SET(LIBKSYSGUARDD_FILES ${LIBKSYSGUARDD_FILES} xres.c)
