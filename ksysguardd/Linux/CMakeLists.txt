@@ -5,6 +5,7 @@ SET(LIBKSYSGUARDD_FILES
             apm.c
             cpuinfo.c
             diskstat.c
+            diskstats.c
             i8k.c
             loadavg.c
             logfile.c

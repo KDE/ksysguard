@@ -70,6 +70,7 @@ void parseConfigFile( const char *filename )
     push_ctnr( SensorList, strdup( "ProcessList" ) );
     push_ctnr( SensorList, strdup( "Memory" ) );
     push_ctnr( SensorList, strdup( "Stat" ) );
+    push_ctnr( SensorList, strdup( "DiskStats" ) );
     push_ctnr( SensorList, strdup( "NetDev" ) );
     push_ctnr( SensorList, strdup( "NetStat" ) );
     push_ctnr( SensorList, strdup( "Apm" ) );

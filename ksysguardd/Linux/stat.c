@@ -16,6 +16,9 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
+/*
+ * stat.c is used to read from /proc/[pid]/stat
+*/
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -80,7 +83,6 @@ typedef struct DiskIOInfo {
 
 static char StatBuf[ STATBUFSIZE ];
 static char VmStatBuf[ STATBUFSIZE ];
-static char IOStatBuf[ STATBUFSIZE ];	/* Buffer for /proc/diskstats */
 static char UptimeBuf[ UPTIMEBUFSIZE ];	/* Buffer for /proc/uptime */
 static int Dirty = 0;
 
@@ -111,11 +113,10 @@ static unsigned long* Intr = 0;
 static int initStatDisk( char* tag, char* buf, const char* label, const char* shortLabel,
 			int idx, cmdExecutor ex, cmdExecutor iq );
 static void updateCPULoad( const char* line, CPULoadInfo* load );
-static int processDisk( char* tag, char* buf, const char* label, int idx );
-static void processStat( void );
-static int processDiskIO( const char* buf );
-static int process26DiskIO( const char* buf );
-static void cleanupDiskList( void );
+static int process24Disk( char* tag, char* buf, const char* label, int idx );
+static void process24Stat( void );
+static int process24DiskIO( const char* buf );
+static void cleanup24DiskList( void );
 	
 static int initStatDisk( char* tag, char* buf, const char* label,
 			const char* shortLabel, int idx, cmdExecutor ex, cmdExecutor iq )
@@ -169,7 +170,7 @@ static void updateCPULoad( const char* line, CPULoadInfo* load ) {
 	load->idleTicks = currIdleTicks;
 }
 	
-static int processDisk( char* tag, char* buf, const char* label, int idx ) {
+static int process24Disk( char* tag, char* buf, const char* label, int idx ) {
 	if ( strcmp( label, tag ) == 0 ) {
 		unsigned long val;
 		unsigned int i;
@@ -189,7 +190,7 @@ static int processDisk( char* tag, char* buf, const char* label, int idx ) {
 	return 0;
 }
 
-static int processDiskIO( const char* buf ) {
+static int process24DiskIO( const char* buf ) {
 	/* Process disk_io lines as provided by 2.4.x kernels.
 	* disk_io: (2,0):(3,3,6,0,0) (3,0):(1413012,511622,12155382,901390,26486215) */
 	int major, minor;
@@ -259,16 +260,16 @@ static int processDiskIO( const char* buf ) {
 				DiskIO = ptr;
 			}
 			
-			sprintf( sensorName, "disk/%s_(%d:%d)/total", ptr->devname, major, minor );
-			registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
-			sprintf( sensorName, "disk/%s_(%d:%d)/rio", ptr->devname, major, minor );
-			registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
-			sprintf( sensorName, "disk/%s_(%d:%d)/wio", ptr->devname, major, minor );
-			registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
-			sprintf( sensorName, "disk/%s_(%d:%d)/rblk", ptr->devname, major, minor );
-			registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
-			sprintf( sensorName, "disk/%s_(%d:%d)/wblk", ptr->devname, major, minor );
-			registerMonitor( sensorName, "float", printDiskIO, printDiskIOInfo, StatSM );
+			sprintf( sensorName, "disk/%s_(%d:%d)24/total", ptr->devname, major, minor );
+			registerMonitor( sensorName, "float", print24DiskIO, print24DiskIOInfo, StatSM );
+			sprintf( sensorName, "disk/%s_(%d:%d)24/rio", ptr->devname, major, minor );
+			registerMonitor( sensorName, "float", print24DiskIO, print24DiskIOInfo, StatSM );
+			sprintf( sensorName, "disk/%s_(%d:%d)24/wio", ptr->devname, major, minor );
+			registerMonitor( sensorName, "float", print24DiskIO, print24DiskIOInfo, StatSM );
+			sprintf( sensorName, "disk/%s_(%d:%d)24/rblk", ptr->devname, major, minor );
+			registerMonitor( sensorName, "float", print24DiskIO, print24DiskIOInfo, StatSM );
+			sprintf( sensorName, "disk/%s_(%d:%d)24/wblk", ptr->devname, major, minor );
+			registerMonitor( sensorName, "float", print24DiskIO, print24DiskIOInfo, StatSM );
 		}
 
 		/* Move p after the second ')'. We can safely assume that
@@ -282,127 +283,7 @@ static int processDiskIO( const char* buf ) {
 	return 0;
 }
 
-static int process26DiskIO( const char* buf ) {
-	/* Process values from /proc/diskstats (Linux >= 2.6.x) */
-	
-	/* For each disk /proc/diskstats includes lines as follows:
-	*   3    0 hda 1314558 74053 26451438 14776742 1971172 4607401 52658448 202855090 0 9597019 217637839
-	*   3    1 hda1 178 360 0 0
-	*   3    2 hda2 354 360 0 0
-	*   3    3 hda3 354 360 0 0
-	*   3    4 hda4 0 0 0 0
-	*   3    5 hda5 529506 9616000 4745856 37966848
-	*
-	* - See Documentation/iostats.txt for details on the changes
-	*/
-	int                      major, minor;
-	char                     devname[DISKDEVNAMELEN];
-	unsigned long            total,
-				rio, rmrg, rblk, rtim,
-				wio, wmrg, wblk, wtim,
-				ioprog, iotim, iotimw;
-	DiskIOInfo               *ptr = DiskIO;
-	DiskIOInfo               *last = 0;
-	char                     sensorName[128];
-	
-	switch (sscanf(buf, "%d %d %s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",
-		&major, &minor, devname,
-		&rio, &rmrg, &rblk, &rtim,
-		&wio, &wmrg, &wblk, &wtim,
-		&ioprog, &iotim, &iotimw))
-	{
-	case 7:
-		/* Partition stats entry */
-		/* Adjust read fields rio rmrg rblk rtim -> rio rblk wio wblk */
-		wblk = rtim;
-		wio = rblk;
-		rblk = rmrg;
-	
-		total = rio + wio;
-	
-		break;
-	case 14:
-		/* Disk stats entry */
-		total = rio + wio;
-	
-		break;
-	default:
-		/* Something unexepected */
-		return -1;
-	}
-	
-	last = 0;
-	ptr = DiskIO;
-	while (ptr) {
-		if (ptr->major == major && ptr->minor == minor)
-		{
-			/* The IO device has already been registered. */
-			ptr->total.delta = total - ptr->total.old;
-			ptr->total.old = total;
-			ptr->rio.delta = rio - ptr->rio.old;
-			ptr->rio.old = rio;
-			ptr->wio.delta = wio - ptr->wio.old;
-			ptr->wio.old = wio;
-			ptr->rblk.delta = rblk - ptr->rblk.old;
-			ptr->rblk.old = rblk;
-			ptr->wblk.delta = wblk - ptr->wblk.old;
-			ptr->wblk.old = wblk;
-			ptr->alive = 1;
-			break;
-		}
-		
-		last = ptr;
-		ptr = ptr->next;
-	}
-	
-	if (!ptr) {
-		/* The IO device has not been registered yet. We need to add it. */
-		ptr = (DiskIOInfo*)malloc( sizeof( DiskIOInfo ) );
-		ptr->major = major;
-		ptr->minor = minor;
-		ptr->devname = devname;
-		ptr->total.delta = 0;
-		ptr->total.old = total;
-		ptr->rio.delta = 0;
-		ptr->rio.old = rio;
-		ptr->wio.delta = 0;
-		ptr->wio.old = wio;
-		ptr->rblk.delta = 0;
-		ptr->rblk.old = rblk;
-		ptr->wblk.delta = 0;
-		ptr->wblk.old = wblk;
-		ptr->alive = 1;
-		ptr->next = 0;
-		if (last) {
-			/* Append new entry at end of list. */
-			last->next = ptr;
-		}
-		else {
-			/* List is empty, so we insert the fist element into the list. */
-			DiskIO = ptr;
-		}
-		
-		sprintf(sensorName, "disk/%s_(%d:%d)/total", devname, major, minor);
-		registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
-			StatSM);
-		sprintf(sensorName, "disk/%s_(%d:%d)/rio", devname, major, minor);
-		registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
-			StatSM);
-		sprintf(sensorName, "disk/%s_(%d:%d)/wio", devname, major, minor);
-		registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
-			StatSM);
-		sprintf(sensorName, "disk/%s_(%d:%d)/rblk", devname, major, minor);
-		registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
-			StatSM);
-		sprintf(sensorName, "disk/%s_(%d:%d)/wblk", devname, major, minor);
-		registerMonitor(sensorName, "float", printDiskIO, printDiskIOInfo,
-			StatSM);
-	}
-	
-	return 0;
-}
-
-static void cleanupDiskList( void ) {
+static void cleanup24DiskList( void ) {
 	DiskIOInfo* ptr = DiskIO;
 	DiskIOInfo* last = 0;
 	
@@ -413,15 +294,15 @@ static void cleanupDiskList( void ) {
 			
 			/* Disk device has disappeared. We have to remove it from
 			* the list and unregister the monitors. */
-			sprintf( sensorName, "disk/%s_(%d:%d)/total", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)26/total", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)/rio", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)26/rio", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)/wio", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)26/wio", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)/rblk", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)26/rblk", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)/wblk", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)26/wblk", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
 			if ( last ) {
 				last->next = ptr->next;
@@ -444,14 +325,13 @@ static void cleanupDiskList( void ) {
 	}
 }
 
-static void processStat( void ) {
+static void process24Stat( void ) {
 	char format[ 32 ];
 	char tagFormat[ 16 ];
 	char buf[ 1024 ];
 	char tag[ 32 ];
 	char* statBufP = StatBuf;
 	char* vmstatBufP = VmStatBuf;
-	char* iostatBufP = IOStatBuf;
 	
 	sprintf( format, "%%%d[^\n]\n", (int)sizeof( buf ) - 1 );
 	sprintf( tagFormat, "%%%ds", (int)sizeof( tag ) - 1 );
@@ -471,18 +351,18 @@ static void processStat( void ) {
 			sscanf( tag + 3, "%d", &id );
 			updateCPULoad( buf, &SMPLoad[ id ]  );
 		}
-		else if ( processDisk( tag, buf, "disk", 0 ) ) {
+		else if ( process24Disk( tag, buf, "disk", 0 ) ) {
 		}
-		else if ( processDisk( tag, buf, "disk_rio", 1 ) ) {
+		else if ( process24Disk( tag, buf, "disk_rio", 1 ) ) {
 		}
-		else if ( processDisk( tag, buf, "disk_wio", 2 ) ) {
+		else if ( process24Disk( tag, buf, "disk_wio", 2 ) ) {
 		}
-		else if ( processDisk( tag, buf, "disk_rblk", 3 ) ) {
+		else if ( process24Disk( tag, buf, "disk_rblk", 3 ) ) {
 		}
-		else if ( processDisk( tag, buf, "disk_wblk", 4 ) ) {
+		else if ( process24Disk( tag, buf, "disk_wblk", 4 ) ) {
 		}
 		else if ( strcmp( "disk_io:", tag ) == 0 ) {
-			processDiskIO( buf );
+			process24DiskIO( buf );
 		}
 		else if ( strcmp( "page", tag ) == 0 ) {
 			unsigned long v1, v2;
@@ -536,20 +416,12 @@ static void processStat( void ) {
 		}
 	}
 	
-	/* Process values from /proc/diskstats (Linux >= 2.6.x) */
-	while (sscanf(iostatBufP, format, buf) == 1) {
-		buf[sizeof(buf) - 1] = '\0';
-		iostatBufP += strlen(buf) + 1;  /* move IOstatBufP to next line */
-		
-		process26DiskIO(buf);
-	}
-	
 	/* save exact time inverval between this and the last read of /proc/stat */
 	timeInterval = currSampling.tv_sec - lastSampling.tv_sec +
 			( currSampling.tv_usec - lastSampling.tv_usec ) / 1000000.0;
 	lastSampling = currSampling;
 	
-	cleanupDiskList();
+	cleanup24DiskList();
 	
 	Dirty = 0;
 }
@@ -596,7 +468,6 @@ void initStat( struct SensorModul* sm ) {
 	char tag[ 32 ];
 	char* statBufP = StatBuf;
 	char* vmstatBufP = VmStatBuf;
-	char* iostatBufP = IOStatBuf;
 	char* uptimeBufP = UptimeBuf;
 	
 	StatSM = sm;
@@ -650,14 +521,14 @@ void initStat( struct SensorModul* sm ) {
 			if ( DiskCount > 0 )
 				DiskLoad = (DiskLoadInfo*)malloc( sizeof( DiskLoadInfo ) * DiskCount );
 
-			initStatDisk( tag, buf, "disk", "disk", 0, printDiskTotal, printDiskTotalInfo );
+			initStatDisk( tag, buf, "disk", "disk", 0, print24DiskTotal, print24DiskTotalInfo );
 		}
-		else if ( initStatDisk( tag, buf, "disk_rio", "rio", 1, printDiskRIO, printDiskRIOInfo ) );
-		else if ( initStatDisk( tag, buf, "disk_wio", "wio", 2, printDiskWIO, printDiskWIOInfo ) );
-		else if ( initStatDisk( tag, buf, "disk_rblk", "rblk", 3, printDiskRBlk, printDiskRBlkInfo ) );
-		else if ( initStatDisk( tag, buf, "disk_wblk", "wblk", 4, printDiskWBlk, printDiskWBlkInfo ) );
+		else if ( initStatDisk( tag, buf, "disk_rio", "rio", 1, print24DiskRIO, print24DiskRIOInfo ) );
+		else if ( initStatDisk( tag, buf, "disk_wio", "wio", 2, print24DiskWIO, print24DiskWIOInfo ) );
+		else if ( initStatDisk( tag, buf, "disk_rblk", "rblk", 3, print24DiskRBlk, print24DiskRBlkInfo ) );
+		else if ( initStatDisk( tag, buf, "disk_wblk", "wblk", 4, print24DiskWBlk, print24DiskWBlkInfo ) );
 		else if ( strcmp( "disk_io:", tag ) == 0 )
-			processDiskIO( buf );
+			process24DiskIO( buf );
 		else if ( strcmp( "page", tag ) == 0 ) {
 			sscanf( buf + 5, "%lu %lu", &OldPageIn, &OldPageOut );
 			registerMonitor( "cpu/pageIn", "float", printPageIn, printPageInInfo, StatSM );
@@ -719,19 +590,11 @@ void initStat( struct SensorModul* sm ) {
 		registerMonitor( "system/uptime", "float", printUptime, printUptimeInfo, StatSM );
 	}
 	
-	/* Process values from /proc/diskstats (Linux >= 2.6.x) */
-	while (sscanf(iostatBufP, format, buf) == 1) {
-		buf[sizeof(buf) - 1] = '\0';
-		iostatBufP += strlen(buf) + 1;  /* move IOstatBufP to next line */
-		
-		process26DiskIO(buf);
-	}
-	
 	if ( CPUCount > 0 )
 		SMPLoad = (CPULoadInfo*)malloc( sizeof( CPULoadInfo ) * CPUCount );
 	
-	/* Call processStat to eliminate initial peek values. */
-	processStat();
+	/* Call process24Stat to eliminate initial peek values. */
+	process24Stat();
 }
 	
 void exitStat( void ) {
@@ -752,6 +615,10 @@ int updateStat( void ) {
 	size_t n;
 	int fd;
 	
+	gettimeofday( &currSampling, 0 );
+	Dirty = 1;
+	
+	StatBuf[ 0 ] = '\0';
 	if ( ( fd = open( "/proc/stat", O_RDONLY ) ) < 0 ) {
 		print_error( "Cannot open file \'/proc/stat\'!\n"
 				"The kernel needs to be compiled with support\n"
@@ -759,7 +626,6 @@ int updateStat( void ) {
 
 		return -1;
 	}
-	
 	n = read( fd, StatBuf, STATBUFSIZE - 1 );
 	if ( n == STATBUFSIZE - 1 || n <= 0) {
 		log_error( "Internal buffer too small to read \'/proc/stat\'" );
@@ -767,11 +633,9 @@ int updateStat( void ) {
 		close( fd );
 		return -1;
 	}
-	
-	gettimeofday( &currSampling, 0 );
 	close( fd );
 	StatBuf[ n ] = '\0';
-	Dirty = 1;
+	
 	
 	VmStatBuf[ 0 ] = '\0';
 	if ( ( fd = open( "/proc/vmstat", O_RDONLY ) ) < 0 )
@@ -784,7 +648,6 @@ int updateStat( void ) {
 		close( fd );
 		return -1;
 	}
-	
 	close( fd );
 	VmStatBuf[ n ] = '\0';
 	
@@ -800,26 +663,9 @@ int updateStat( void ) {
 		close( fd );
 		return -1;
 	}
-	
 	close( fd );
 	UptimeBuf[ n ] = '\0';
 	
-	
-	/* Linux >= 2.6.x has disk I/O stats in /proc/diskstats */
-	IOStatBuf[ 0 ] = '\0';
-	if ( ( fd = open( "/proc/diskstats", O_RDONLY ) ) < 0 )
-		return 0; /* failure is okay, only exists for Linux >= 2.6.x */
-	
-	n = read( fd, IOStatBuf, STATBUFSIZE - 1 );
-	if ( n == STATBUFSIZE - 1 || n <= 0 ) {
-		log_error( "Internal buffer too small to read \'/proc/diskstats\'" );
-		
-		close( fd );
-		return -1;
-	}
-	
-	close( fd );
-	IOStatBuf[ n ] = '\0';
 	
 	return 0;
 }
@@ -828,7 +674,7 @@ void printCPUUser( const char* cmd ) {
 	(void)cmd;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	fprintf( CurrentClient, "%f\n", CPULoad.userLoad );
 }
@@ -843,7 +689,7 @@ void printCPUNice( const char* cmd ) {
 	(void)cmd;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	fprintf( CurrentClient, "%f\n", CPULoad.niceLoad );
 }
@@ -858,7 +704,7 @@ void printCPUSys( const char* cmd ) {
 	(void)cmd;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	fprintf( CurrentClient, "%f\n", CPULoad.sysLoad );
 }
@@ -873,7 +719,7 @@ void printCPUTotalLoad( const char* cmd ) {
 	(void)cmd;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	fprintf( CurrentClient, "%f\n", CPULoad.userLoad + CPULoad.sysLoad + CPULoad.niceLoad );
 }
@@ -888,7 +734,7 @@ void printCPUIdle( const char* cmd ) {
 	(void)cmd;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	fprintf( CurrentClient, "%f\n", CPULoad.idleLoad );
 }
@@ -903,7 +749,7 @@ void printCPUxUser( const char* cmd ) {
 	int id;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	sscanf( cmd + 3, "%d", &id );
 	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].userLoad );
@@ -920,7 +766,7 @@ void printCPUxNice( const char* cmd ) {
 	int id;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	sscanf( cmd + 3, "%d", &id );
 	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].niceLoad );
@@ -937,7 +783,7 @@ void printCPUxSys( const char* cmd ) {
 	int id;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	sscanf( cmd + 3, "%d", &id );
 	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].sysLoad );
@@ -954,7 +800,7 @@ void printCPUxTotalLoad( const char* cmd ) {
 	int id;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	sscanf( cmd + 3, "%d", &id );
 	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].userLoad + SMPLoad[ id ].sysLoad + SMPLoad[ id ].niceLoad );
@@ -971,7 +817,7 @@ void printCPUxIdle( const char* cmd ) {
 	int id;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	sscanf( cmd + 3, "%d", &id );
 	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].idleLoad );
@@ -984,90 +830,90 @@ void printCPUxIdleInfo( const char* cmd ) {
 	fprintf( CurrentClient, "CPU%d Idle Load\t0\t100\t%%\n", id );
 }
 
-void printDiskTotal( const char* cmd ) {
+void print24DiskTotal( const char* cmd ) {
 	int id;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	sscanf( cmd + 9, "%d", &id );
 	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 0 ].delta
 							/ timeInterval ) );
 }
 
-void printDiskTotalInfo( const char* cmd ) {
+void print24DiskTotalInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
 	fprintf( CurrentClient, "Disk%d Total Load\t0\t0\tkBytes/s\n", id );
 }
 
-void printDiskRIO( const char* cmd ) {
+void print24DiskRIO( const char* cmd ) {
 	int id;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	sscanf( cmd + 9, "%d", &id );
 	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 1 ].delta
 							/ timeInterval ) );
 }
 
-void printDiskRIOInfo( const char* cmd ) {
+void print24DiskRIOInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
 	fprintf( CurrentClient, "Disk%d Read\t0\t0\tkBytes/s\n", id );
 }
 
-void printDiskWIO( const char* cmd ) {
+void print24DiskWIO( const char* cmd ) {
 	int id;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	sscanf( cmd + 9, "%d", &id );
 	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 2 ].delta
 							/ timeInterval ) );
 }
 
-void printDiskWIOInfo( const char* cmd ) {
+void print24DiskWIOInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
 	fprintf( CurrentClient, "Disk%d Write\t0\t0\tkBytes/s\n", id );
 }
 
-void printDiskRBlk( const char* cmd ) {
+void print24DiskRBlk( const char* cmd ) {
 	int id;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	sscanf( cmd + 9, "%d", &id );
 	/* a block is 512 bytes or 1/2 kBytes */
 	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 3 ].delta / timeInterval * 2 ) );
 }
 
-void printDiskRBlkInfo( const char* cmd ) {
+void print24DiskRBlkInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
 	fprintf( CurrentClient, "Disk%d Read Data\t0\t0\tkBytes/s\n", id );
 }
 
-void printDiskWBlk( const char* cmd ) {
+void print24DiskWBlk( const char* cmd ) {
 	int id;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	sscanf( cmd + 9, "%d", &id );
 	/* a block is 512 bytes or 1/2 kBytes */
 	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 4 ].delta / timeInterval * 2 ) );
 }
 
-void printDiskWBlkInfo( const char* cmd ) {
+void print24DiskWBlkInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
@@ -1078,7 +924,7 @@ void printPageIn( const char* cmd ) {
 	(void)cmd;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	fprintf( CurrentClient, "%f\n", (float)( PageIn / timeInterval ) );
 }
@@ -1093,7 +939,7 @@ void printPageOut( const char* cmd ) {
 	(void)cmd;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	fprintf( CurrentClient, "%f\n", (float)( PageOut / timeInterval ) );
 }
@@ -1108,7 +954,7 @@ void printInterruptx( const char* cmd ) {
 	int id;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	sscanf( cmd + strlen( "cpu/interrupts/int" ), "%d", &id );
 	fprintf( CurrentClient, "%f\n", (float)( Intr[ id ] / timeInterval ) );
@@ -1125,7 +971,7 @@ void printCtxt( const char* cmd ) {
 	(void)cmd;
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	fprintf( CurrentClient, "%f\n", (float)( Ctxt / timeInterval ) );
 }
@@ -1136,16 +982,16 @@ void printCtxtInfo( const char* cmd ) {
 	fprintf( CurrentClient, "Context switches\t0\t0\t1/s\n" );
 }
 
-void printDiskIO( const char* cmd ) {
+void print24DiskIO( const char* cmd ) {
 	int major, minor;
 	char devname[DISKDEVNAMELEN];
 	char name[ 17 ];
 	DiskIOInfo* ptr;
 	
-	sscanf( cmd, "disk/%[^_]_(%d:%d)/%16s", devname, &major, &minor, name );
+	sscanf( cmd, "disk/%[^_]_(%d:%d)26/%16s", devname, &major, &minor, name );
 	
 	if ( Dirty )
-		processStat();
+		process24Stat();
 	
 	ptr = DiskIO;
 	while ( ptr && ( ptr->major != major || ptr->minor != minor ) )
@@ -1175,13 +1021,13 @@ void printDiskIO( const char* cmd ) {
 	}
 }
 
-void printDiskIOInfo( const char* cmd ) {
+void print24DiskIOInfo( const char* cmd ) {
 	int major, minor;
 	char devname[DISKDEVNAMELEN];
 	char name[ 17 ];
 	DiskIOInfo* ptr = DiskIO;
 	
-	sscanf( cmd, "disk/%[^_]_(%d:%d)/%16s", devname, &major, &minor, name );
+	sscanf( cmd, "disk/%[^_]_(%d:%d)26/%16s", devname, &major, &minor, name );
 	
 	while ( ptr && ( ptr->major != major || ptr->minor != minor ) )
 		ptr = ptr->next;
@@ -1197,25 +1043,25 @@ void printDiskIOInfo( const char* cmd ) {
 	
 	if ( strcmp( name, "total" ) == 0 )
 		fprintf( CurrentClient, "Total accesses device %s (%d:%d)\t0\t0\t1/s\n",
-			devname, major, minor );
+			 devname, major, minor );
 	else if ( strcmp( name, "rio" ) == 0 )
 		fprintf( CurrentClient, "Read data device %s (%d:%d)\t0\t0\t1/s\n",
-			devname, major, minor );
+			 devname, major, minor );
 	else if ( strcmp( name, "wio" ) == 0 )
 		fprintf( CurrentClient, "Write data device %s (%d:%d)\t0\t0\t1/s\n",
-			devname, major, minor );
+			 devname, major, minor );
 	else if ( strcmp( name, "rblk" ) == 0 )
 		fprintf( CurrentClient, "Read accesses device %s (%d:%d)\t0\t0\tkBytes/s\n",
-			devname, major, minor );
+			 devname, major, minor );
 	else if ( strcmp( name, "wblk" ) == 0 )
 		fprintf( CurrentClient, "Write accesses device %s (%d:%d)\t0\t0\tkBytes/s\n",
-			devname, major, minor );
+			 devname, major, minor );
 	else {
 		fprintf( CurrentClient, "Dummy\t0\t0\t\n" );
 		log_error( "Request for unknown device property \'%s\'",	name );
 	}
 }
-	
+
 void printUptime( const char* cmd ) {
 	/* Process values from /proc/uptime */
 	(void)cmd;

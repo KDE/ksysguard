@@ -6,7 +6,7 @@ LogFiles=messages:/var/log/messages,kern:/var/log/kern.log,daemon:/var/log/daemo
 # Sensors: the list of all accessable sensors
 #	ProcessList     current processes
 #	Memory          physical memory and swap
-#	Stat            interrupts, CPU and disk throughput 
+#	Stat            interrupts, CPU and disk throughput. Data comes from /etc/stat
 #	NetDev          throughput of network interfaces
 #	NetStat         number of TCP/UDP/ICMP/Unix sockets
 #	Apm             Advanced Power Managment
@@ -14,6 +14,7 @@ LogFiles=messages:/var/log/messages,kern:/var/log/kern.log,daemon:/var/log/daemo
 #	CpuInfo         CPU-Clock informations
 #	LoadAvg         system load values
 #	LmSensors       informations about motherboard and CPU
-#	DiskStat        partition space
+#	DiskStat        partition space. Data comes from mtab, getmntent() and statfs()
 #	LogFile         local logfiles
-Sensors=ProcessList,Memory,Stat,NetDev,NetStat,Apm,Acpi,CpuInfo,LoadAvg,LmSensors,DiskStat,LogFile
+#	DiskStats       disk throughput. Data comes from /etc/diskstats
+Sensors=ProcessList,Memory,Stat,NetDev,NetStat,Apm,Acpi,CpuInfo,LoadAvg,LmSensors,DiskStat,LogFile,DiskStats

@@ -31,6 +31,7 @@
 #include "apm.h"
 #include "cpuinfo.h"
 #include "diskstat.h"
+#include "diskstats.h"
 #include "i8k.h"
 #include "lmsensors.h"
 #include "loadavg.h"
@@ -111,6 +112,7 @@ struct SensorModul SensorModulList[] = {
   { "ProcessList", initProcessList, exitProcessList, updateProcessList, NULLVVFUNC, 0, NULLTIME },
   { "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC, 0, NULLTIME },
   { "Stat", initStat, exitStat, updateStat, NULLVVFUNC, 0, NULLTIME },
+  { "DiskStats", initDiskstats, exitDiskstats, updateDiskstats, NULLVVFUNC, 0, NULLTIME },
   { "NetDev", initNetDev, exitNetDev, updateNetDev, NULLVVFUNC, 0, NULLTIME },
   { "NetStat", initNetStat, exitNetStat, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
   { "Apm", initApm, exitApm, updateApm, NULLVVFUNC, 0, NULLTIME },
