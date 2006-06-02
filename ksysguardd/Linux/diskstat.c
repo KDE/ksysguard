@@ -100,7 +100,7 @@ void exitDiskStat( void )
     removeMonitor( monitor );
     snprintf( monitor, sizeof( monitor ), "partitions%s/filllevel", disk_info->mntpnt );
     removeMonitor( monitor );
-	}
+  }
 
   destr_ctnr( DiskStatList, free );
 }
@@ -163,7 +163,7 @@ int updateDiskStat( void )
       if ( !strcmp( mnt_info->mnt_dir, "/" ) )
         strlcpy( disk_info->mntpnt, "/root", sizeof( disk_info->mntpnt ) );
       else
-				strlcpy( disk_info->mntpnt, mnt_info->mnt_dir, sizeof( disk_info->mntpnt ) );
+        strlcpy( disk_info->mntpnt, mnt_info->mnt_dir, sizeof( disk_info->mntpnt ) );
 
       disk_info->blocks = fs_info.f_blocks;
       disk_info->bfree = fs_info.f_bfree;
