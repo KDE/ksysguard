@@ -50,7 +50,6 @@ set(ksysguard_SRCS ${libsensordisplays_SRCS}
 
 kde4_automoc(${ksysguard_SRCS})
 
-kde4_add_dcop_skels(ksysguard_SRCS ksysguard.h )
 
 kde4_add_executable(ksysguard ${ksysguard_SRCS})
 
