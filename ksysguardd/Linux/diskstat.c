@@ -159,11 +159,14 @@ int updateDiskStat( void )
         continue;
 
       memset( disk_info, 0, sizeof( DiskInfo ) );
-      strlcpy( disk_info->device, mnt_info->mnt_fsname, sizeof( disk_info->device ) );
+      strncpy( disk_info->device, mnt_info->mnt_fsname, sizeof( disk_info->device ) );
+      disk_info->device[ sizeof(disk_info->device) -1] = 0;
+      
       if ( !strcmp( mnt_info->mnt_dir, "/" ) )
-        strlcpy( disk_info->mntpnt, "/root", sizeof( disk_info->mntpnt ) );
+        strncpy( disk_info->mntpnt, "/root", sizeof( disk_info->mntpnt ) );
       else
-        strlcpy( disk_info->mntpnt, mnt_info->mnt_dir, sizeof( disk_info->mntpnt ) );
+        strncpy( disk_info->mntpnt, mnt_info->mnt_dir, sizeof( disk_info->mntpnt ) );
+      disk_info->mntpnt[ sizeof(disk_info->mntpnt) - 1] = 0;
 
       disk_info->blocks = fs_info.f_blocks;
       disk_info->bfree = fs_info.f_bfree;

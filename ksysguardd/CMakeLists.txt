@@ -27,12 +27,7 @@ set(ksysguardd_SRCS ${libccont_SRCS}
    ksysguardd.c 
    PWUIDCache.c )
 
-kde4_automoc(${ksysguardd_SRCS})
-
-kde4_add_executable(ksysguardd ${ksysguardd_SRCS})
-
-# was kdefakes_nonpic...
-target_link_libraries(ksysguardd  ${KDE4_KDECORE_LIBS} kdefakes )
+add_executable(ksysguardd ${ksysguardd_SRCS})
 
 ADD_DEPENDENCIES(ksysguardd libksysguardd)
 TARGET_LINK_LIBRARIES(ksysguardd libksysguardd)
