@@ -1,0 +1,62 @@
+dnl Check whether ksysguardd can run; 
+AC_MSG_CHECKING([if ksysguardd can be compiled])
+case "$host" in 
+  *-*-linux*) ksysguardd_compile=yes; UNAME='Linux' ;;
+  *-*-freebsd*) ksysguardd_compile=yes; UNAME='FreeBSD' ;;
+  *-*-netbsd*) ksysguardd_compile=yes; UNAME='NetBSD' ;;
+  *-*-solaris*) ksysguardd_compile=yes; UNAME='Solaris' ;;
+  *-*-osf*) ksysguardd_compile=yes; UNAME='Tru64' ;;
+  *-*-irix*) ksysguardd_compile=yes; UNAME='Irix' ;;
+  *-*-openbsd*) ksysguardd_compile=yes; UNAME='OpenBSD' ;;
+  *) ksysguardd_compile=no; UNAME='' ;;
+esac
+
+AC_MSG_RESULT($ksysguardd_compile)
+
+AM_CONDITIONAL(include_ksysguardd, test "$ksysguardd_compile" = "yes")
+AM_CONDITIONAL(include_ksysguardd_linux, test "$UNAME" = Linux)
+AM_CONDITIONAL(include_ksysguardd_freebsd, test "$UNAME" = FreeBSD)
+AM_CONDITIONAL(include_ksysguardd_netbsd, test "$UNAME" = NetBSD)
+AM_CONDITIONAL(include_ksysguardd_solaris, test "$UNAME" = Solaris)
+AM_CONDITIONAL(include_ksysguardd_tru64, test "$UNAME" = Tru64)
+AM_CONDITIONAL(include_ksysguardd_irix, test "$UNAME" = Irix)
+AM_CONDITIONAL(include_ksysguardd_openbsd, test "$UNAME" = OpenBSD)
+AC_SUBST(UNAME)
+
+AC_ARG_WITH(sensors,
+	[AC_HELP_STRING(--with-sensors,
+		[enable support for lm_sensors @<:@default=check@:>@])],
+	[], with_sensors=check)
+
+if test "x$with_sensors" != xno; then
+	KDE_CHECK_HEADERS(sensors/sensors.h)
+	KDE_CHECK_LIB(sensors, sensors_init, [LIBSENSORS="-lsensors"])
+
+	if test "x$with_sensors" != xcheck && test -z "$LIBSENSORS"; then
+        	AC_MSG_ERROR([--with-sensors was given, but test for lm_sensors failed])
+	fi
+fi
+
+case "$UNAME" in
+	Linux) LIBHOSTS="$LIBSENSORS" ;;
+	FreeBSD) LIBHOSTS="$LIBSENSORS -lkvm" ;;
+	Solaris) LIBHOSTS="$LIBSENSORS -lkstat -lsocket" ;;
+esac
+AC_SUBST(LIBHOSTS)
+AC_SUBST(LIBSENSORS)
+
+dnl Check for dell laptop support
+AM_CONDITIONAL(supports_i8k, test -f /proc/i8k)
+
+dnl XRes check
+KDE_CHECK_HEADER(X11/extensions/XRes.h, [xres_h=yes], [xres_h=no], [#include <X11/Xlib.h>])
+if test "x$xres_h" = "xyes"; then
+  KDE_CHECK_LIB(XRes, XResQueryClientResources, [
+    LIB_XRES=-lXRes
+    AC_DEFINE(HAVE_XRES, 1, [Define if you have the XRes extension])
+  ], [], -lXext -X11 $X_EXTRA_LIBS)
+else
+  LIB_XRES=
+fi
+AC_SUBST(LIB_XRES)
+
