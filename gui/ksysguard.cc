@@ -64,6 +64,8 @@
 
 #include "ksysguard.h"
 
+
+
 //Comment out to stop ksysguard from forking.  Good for debugging
 //#define FORK_KSYSGUARD
 
@@ -75,8 +77,9 @@ TopLevel* topLevel;
   TaskMan widget.
  */
 TopLevel::TopLevel( const char *name )
-  : KMainWindow( 0, name ), DCOPObject( "KSysGuardIface" )
+  : KMainWindow( 0, name )
 {
+  QDBus::sessionBus().registerObject("/main", this, QDBusConnection::ExportSlots);
   setPlainCaption( i18n( "KDE System Guard" ) );
   mTimerId = -1;
 
@@ -141,7 +144,7 @@ TopLevel::TopLevel( const char *name )
 
 
 /*
- * DCOP Interface functions
+ * DBUS Interface functions
  */
 void TopLevel::resetWorkSheets()
 {
@@ -202,34 +205,31 @@ QStringList TopLevel::listHosts()
   return mSensorBrowser->listHosts();
 }
 
-void TopLevel::readIntegerSensor( const QString &sensorLocator )
+QString TopLevel::readSensor( const QString &sensorLocator, const QDBusMessage &msg )
 {
   QString host = sensorLocator.left( sensorLocator.indexOf( ':' ) );
   QString sensor = sensorLocator.right( sensorLocator.length() -
                                         sensorLocator.indexOf( ':' ) - 1 );
-
-  DCOPClientTransaction *dcopTransaction = kapp->dcopClient()->beginTransaction();
-  mDCopFIFO.prepend( dcopTransaction );
-
+  
+  mDBusReply = QDBusMessage::methodReply(msg);
+  
   KSGRD::SensorMgr->engage( host, "", "ksysguardd" );
   KSGRD::SensorMgr->sendRequest( host, sensor, (KSGRD::SensorClient*)this, 133 );
+  return QString();  //ignored
 }
 
-void TopLevel::readListSensor( const QString& sensorLocator )
+QStringList TopLevel::readListSensor( const QString& sensorLocator, const QDBusMessage &msg )
 {
   QString host = sensorLocator.left( sensorLocator.indexOf( ':' ) );
   QString sensor = sensorLocator.right( sensorLocator.length() -
                                         sensorLocator.indexOf( ':' ) - 1 );
 
-  DCOPClientTransaction *dcopTransaction = kapp->dcopClient()->beginTransaction();
-  mDCopFIFO.prepend( dcopTransaction );
+  mDBusReply = QDBusMessage::methodReply(msg);
 
   KSGRD::SensorMgr->engage( host, "", "ksysguardd" );
   KSGRD::SensorMgr->sendRequest( host, sensor, (KSGRD::SensorClient*)this, 134 );
+  return QStringList(); //ignored
 }
-/*
- * End of DCOP Interface section
- */
 
 void TopLevel::registerRecentURL( const KUrl &url )
 {
@@ -440,23 +440,16 @@ void TopLevel::answerReceived( int id, const QStringList &answerList )
     }
 
     case 133: {
-      DCOPCString replyType = "QString";
       QByteArray replyData;
       QDataStream reply( &replyData, QIODevice::WriteOnly );
       reply << answer;
-      if(mDCopFIFO.isEmpty()) {
-        kDebug() << "We had a reply when it appears we sent no question.  Reply was '" << answer << "'" << endl;
-      } else {
-        DCOPClientTransaction *dcopTransaction = mDCopFIFO.last();
-        kapp->dcopClient()->endTransaction( dcopTransaction, replyType, replyData );
-        mDCopFIFO.removeLast();
-      }
+      mDBusReply << QString(replyData);
+      mDBusReply.connection().send(mDBusReply);
       break;
     }
 
     case 134: {
       QStringList resultList;
-      DCOPCString replyType = "QStringList";
       QByteArray replyData;
       QDataStream reply( &replyData, QIODevice::WriteOnly );
 
@@ -465,14 +458,8 @@ void TopLevel::answerReceived( int id, const QStringList &answerList )
       for ( unsigned int i = 0; i < lines.count(); i++ )
         resultList.append( lines[ i ] );
 
-      reply << resultList;
-      if(mDCopFIFO.isEmpty()) {
-        kDebug() << "We had a reply when it appears we sent no question.  Reply was '" << answer << "'" << endl;
-      } else {
-        DCOPClientTransaction *dcopTransaction = mDCopFIFO.last();
-        kapp->dcopClient()->endTransaction( dcopTransaction, replyType, replyData );
-        mDCopFIFO.removeLast();
-      }
+      mDBusReply << resultList;
+      mDBusReply.connection().send(mDBusReply);
       break;
     }
   }
@@ -504,7 +491,7 @@ static const KCmdLineOptions options[] = {
 int main( int argc, char** argv )
 {
   // initpipe is used to keep the parent process around till the child
-  // has registered with dcop.
+  // has registered with dbus
 #ifdef FORK_KSYSGUARD
   int initpipe[ 2 ];
   pipe( initpipe );*/
@@ -555,8 +542,6 @@ int main( int argc, char** argv )
 
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options );
-
-  KApplication::disableAutoDcopRegistration();
   // initialize KDE application
   KApplication *app = new KApplication;
 
@@ -571,8 +556,8 @@ int main( int argc, char** argv )
     /* To avoid having multiple instances of ksysguard in
      * taskmanager mode we check if another taskmanager is running
      * already. If so, we terminate this one immediately. */
-    if ( app->dcopClient()->registerAs( "ksysguard_taskmanager", false ) ==
-                                                    "ksysguard_taskmanager" ) {
+//    if ( app->dcopClient()->registerAs( "ksysguard_taskmanager", false ) ==
+//                                                    "ksysguard_taskmanager" ) {
       // We have registered with DCOP, our parent can exit now.
 #ifdef FORK_KSYSGUARD
       char c = 0;      
@@ -587,16 +572,16 @@ int main( int argc, char** argv )
 
       // run the application
       result = app->exec();
-    } else {
-      QByteArray data;
-      app->dcopClient()->send( "ksysguard_taskmanager", "KSysGuardIface",
-                               "showOnCurrentDesktop()", data );
-    }
-  } else {
-    app->dcopClient()->registerAs( "ksysguard" );
-    app->dcopClient()->setDefaultObject( "KSysGuardIface" );
+//    } else {
+//      QByteArray data;
+//      app->dcopClient()->send( "ksysguard_taskmanager", "KSysGuardIface",
+//                               "showOnCurrentDesktop()", data );
+//    }
+//  } else {
+//    app->dcopClient()->registerAs( "ksysguard" );
+//    app->dcopClient()->setDefaultObject( "KSysGuardIface" );
+//    // We have registered with DCOP, our parent can exit now.
 
-    // We have registered with DCOP, our parent can exit now.
 #ifdef FORK_KSYSGUARD
     char c = 0;
     write( initpipe[ 1 ], &c, 1 );

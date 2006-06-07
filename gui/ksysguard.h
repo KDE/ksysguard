@@ -25,9 +25,8 @@
 #define KSG_KSYSGUARD_H
 
 #include <QEvent>
+#include <dbus/qdbus.h>
 
-#include <dcopclient.h>
-#include <dcopobject.h>
 #include <kapplication.h>
 #include <kmainwindow.h>
 
@@ -40,10 +39,10 @@ class QSplitter;
 class SensorBrowser;
 class Workspace;
 
-class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObject
+class TopLevel : public KMainWindow, public KSGRD::SensorClient
 {
   Q_OBJECT
-  K_DCOP
+  Q_CLASSINFO("D-Bus Interface", "org.kde.SystemMonitor")
 
   public:
     TopLevel( const char *name = 0 );
@@ -57,18 +56,17 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
   void showRequestedSheets();
   void initStatusBar();
 
-  k_dcop:
-    // calling ksysguard with kwin/kicker hot-key
-    ASYNC showProcesses();
-    ASYNC showOnCurrentDesktop();
-    ASYNC loadWorkSheet( const QString &fileName );
-    ASYNC removeWorkSheet( const QString &fileName );
-    QStringList listHosts();
-    QStringList listSensors( const QString &hostName );
-    void readIntegerSensor( const QString &sensorLocator );
-    void readListSensor( const QString &sensorLocator );
-
   public Q_SLOTS:
+     // calling ksysguard with kwin/kicker hot-key
+    Q_SCRIPTABLE Q_ASYNC void showProcesses();
+    Q_SCRIPTABLE Q_ASYNC void showOnCurrentDesktop();
+    Q_SCRIPTABLE Q_ASYNC void loadWorkSheet( const QString &fileName );
+    Q_SCRIPTABLE Q_ASYNC void removeWorkSheet( const QString &fileName );
+    Q_SCRIPTABLE QStringList listHosts();
+    Q_SCRIPTABLE QStringList listSensors( const QString &hostName );
+    Q_SCRIPTABLE QString readSensor( const QString &sensorLocator, const QDBusMessage &msg );
+    Q_SCRIPTABLE QStringList readListSensor( const QString &sensorLocator, const QDBusMessage &msg );
+
     void registerRecentURL( const KUrl &url );
     void resetWorkSheets();
 
@@ -88,7 +86,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
   private:
     void setSwapInfo( long, long, const QString& );
 
-    QList<DCOPClientTransaction *> mDCopFIFO;
+    QDBusMessage mDBusReply;
 
     QSplitter* mSplitter;
     KRecentFilesAction* mActionOpenRecent;
@@ -100,20 +98,5 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient, public DCOPObje
 };
 
 extern TopLevel* Toplevel;
-
-/*
-   since there is only a forward declaration of DCOPClientTransaction
-   in dcopclient.h we have to redefine it here, otherwise Q3PtrList
-   causes errors
-*/
-typedef unsigned long CARD32;
-
-class DCOPClientTransaction
-{
-  public:
-    qint32 id;
-    CARD32 key;
-    QByteArray senderId;
-};
 
 #endif
