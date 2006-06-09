@@ -520,7 +520,7 @@ ProcessController::restoreSettings(QDomElement& element)
 	uint col = element.attribute("sortColumn", "1").toUInt(); //Default to sorting the user column
 	bool inc = element.attribute("incrOrder", "0").toUInt();  //Default to descending order
 	mFilterModel.sort(col,(inc)?Qt::AscendingOrder:Qt::DescendingOrder);
-
+	kDebug() << "RESTORE Sort column is " << col << endl;
 	bool showTotals = element.attribute("showTotals", "1").toUInt();
 	mUi.chkShowTotals->setCheckState( (showTotals)?Qt::Checked:Qt::Unchecked );
 	
@@ -544,6 +544,9 @@ ProcessController::saveSettings(QDomDocument& doc, QDomElement& element, bool sa
 	element.setAttribute("sortColumn", mUi.treeView->header()->sortIndicatorSection());
 	element.setAttribute("incrOrder", (uint) (mUi.treeView->header()->sortIndicatorOrder() == Qt::AscendingOrder));
 
+	kDebug() << "SAVE Sort column is " << mUi.treeView->header()->sortIndicatorSection() << endl;
+	kDebug() << "SAVE Sort column is " << element.attribute("sortColumn", "1").toUInt() << endl;
+	
 	SensorDisplay::saveSettings(doc, element);
 
 	if (save)

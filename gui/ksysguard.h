@@ -64,8 +64,6 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
     Q_SCRIPTABLE Q_ASYNC void removeWorkSheet( const QString &fileName );
     Q_SCRIPTABLE QStringList listHosts();
     Q_SCRIPTABLE QStringList listSensors( const QString &hostName );
-    Q_SCRIPTABLE QString readSensor( const QString &sensorLocator, const QDBusMessage &msg );
-    Q_SCRIPTABLE QStringList readListSensor( const QString &sensorLocator, const QDBusMessage &msg );
 
     void registerRecentURL( const KUrl &url );
     void resetWorkSheets();

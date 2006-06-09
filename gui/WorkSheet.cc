@@ -163,7 +163,7 @@ bool WorkSheet::load( const QString &fileName )
                     << column << ")" << endl;
       return false;
     }
-
+    kDebug() << "loading " << fileName << endl;
     replaceDisplay( row, column, element );
   }
 
@@ -224,6 +224,8 @@ bool WorkSheet::save( const QString &fileName )
         element.setAttribute( "class", display->metaObject()->className() );
 
         display->saveSettings( doc, element );
+
+	kDebug() << "SAVE Sort column is " << element.attribute("sortColumn", "1").toUInt() << endl;
       }
 
   QFile file( mFileName );
@@ -233,6 +235,7 @@ bool WorkSheet::save( const QString &fileName )
   }
 
   QTextStream s( &file );
+  kDebug() << "Saving to " << fileName << endl;
   s.setCodec( "UTF-8" );
   s << doc;
   file.close();

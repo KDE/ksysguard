@@ -855,15 +855,11 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				base = 2000000;
 			else if(process->uid < 100 || !canUserLogin(process->uid))
 				base = 0;
-			else base = 1000000;
+			else
+				base = 1000000;
 
 			//However we can of course have lots of processes with the same user.  Next we sort by CPU.
-			long long sub_sort = 0;
-			if(mShowChildTotals)
-				sub_sort = (long long)((process->totalUserUsage + process->totalSysUsage)*100);
-			else
-				sub_sort = (long long)((process->userUsage + process->sysUsage)*100);
-			return base+sub_sort;
+			return base + (long long)((process->totalUserUsage + process->totalSysUsage)*100);
 		}
 		case HeadingXMemory:
 			return (long long)(process->xResMemOtherBytes + process->xResPxmMemBytes);

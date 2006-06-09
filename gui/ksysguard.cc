@@ -1,6 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
 
+    Copyright (c) 2006 John Tapsell <john.tapsell@kdemail.org>
     Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
 
     This program is free software; you can redistribute it and/or
@@ -15,10 +16,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-    KSysGuard is currently maintained by Chris Schlaeger
-    <cs@kde.org>. Please do not commit any changes without consulting
-    me first. Thanks!
 
     KSysGuard has been written with some source code and ideas from
     ktop (<1.0). Early versions of ktop have been written by Bernd
@@ -79,8 +76,8 @@ TopLevel* topLevel;
 TopLevel::TopLevel( const char *name )
   : KMainWindow( 0, name )
 {
-  QDBus::sessionBus().registerObject("/main", this, QDBusConnection::ExportSlots);
-  setPlainCaption( i18n( "KDE System Guard" ) );
+  QDBus::sessionBus().registerObject("/", this, QDBusConnection::ExportSlots);
+  setPlainCaption( i18n( "System Monitor" ) );
   mTimerId = -1;
 
   mSplitter = new QSplitter( this );
@@ -203,32 +200,6 @@ QStringList TopLevel::listSensors( const QString &hostName )
 QStringList TopLevel::listHosts()
 {
   return mSensorBrowser->listHosts();
-}
-
-QString TopLevel::readSensor( const QString &sensorLocator, const QDBusMessage &msg )
-{
-  QString host = sensorLocator.left( sensorLocator.indexOf( ':' ) );
-  QString sensor = sensorLocator.right( sensorLocator.length() -
-                                        sensorLocator.indexOf( ':' ) - 1 );
-  
-  mDBusReply = QDBusMessage::methodReply(msg);
-  
-  KSGRD::SensorMgr->engage( host, "", "ksysguardd" );
-  KSGRD::SensorMgr->sendRequest( host, sensor, (KSGRD::SensorClient*)this, 133 );
-  return QString();  //ignored
-}
-
-QStringList TopLevel::readListSensor( const QString& sensorLocator, const QDBusMessage &msg )
-{
-  QString host = sensorLocator.left( sensorLocator.indexOf( ':' ) );
-  QString sensor = sensorLocator.right( sensorLocator.length() -
-                                        sensorLocator.indexOf( ':' ) - 1 );
-
-  mDBusReply = QDBusMessage::methodReply(msg);
-
-  KSGRD::SensorMgr->engage( host, "", "ksysguardd" );
-  KSGRD::SensorMgr->sendRequest( host, sensor, (KSGRD::SensorClient*)this, 134 );
-  return QStringList(); //ignored
 }
 
 void TopLevel::registerRecentURL( const KUrl &url )
@@ -438,30 +409,6 @@ void TopLevel::answerReceived( int id, const QStringList &answerList )
       KSGRD::SensorIntegerInfo info( answer );
       unit = KSGRD::SensorMgr->translateUnit( info.unit() );
     }
-
-    case 133: {
-      QByteArray replyData;
-      QDataStream reply( &replyData, QIODevice::WriteOnly );
-      reply << answer;
-      mDBusReply << QString(replyData);
-      mDBusReply.connection().send(mDBusReply);
-      break;
-    }
-
-    case 134: {
-      QStringList resultList;
-      QByteArray replyData;
-      QDataStream reply( &replyData, QIODevice::WriteOnly );
-
-      KSGRD::SensorTokenizer lines( answer, '\n' );
-
-      for ( unsigned int i = 0; i < lines.count(); i++ )
-        resultList.append( lines[ i ] );
-
-      mDBusReply << resultList;
-      mDBusReply.connection().send(mDBusReply);
-      break;
-    }
   }
 }
 
@@ -523,7 +470,7 @@ int main( int argc, char** argv )
   setsid();
 #endif
 
-  KAboutData aboutData( "ksysguard", I18N_NOOP( "KDE System Guard" ),
+  KAboutData aboutData( "ksysguard", I18N_NOOP( "System Monitor" ),
                         KSYSGUARD_VERSION, Description, KAboutData::License_GPL,
                         I18N_NOOP( "(c) 1996-2006 The KSysGuard Developers" ) );
   aboutData.addAuthor( "John Tapsell", "Current Maintainer", "john.tapsell@kdemail.org" );
@@ -577,7 +524,7 @@ int main( int argc, char** argv )
 //      app->dcopClient()->send( "ksysguard_taskmanager", "KSysGuardIface",
 //                               "showOnCurrentDesktop()", data );
 //    }
-//  } else {
+  } else {
 //    app->dcopClient()->registerAs( "ksysguard" );
 //    app->dcopClient()->setDefaultObject( "KSysGuardIface" );
 //    // We have registered with DCOP, our parent can exit now.
