@@ -37,14 +37,11 @@
 
 #include "Workspace.h"
 
-Workspace::Workspace( QWidget* parent, const char* name )
-  : QTabWidget( parent, name )
+Workspace::Workspace( QWidget* parent)
+  : QTabWidget( parent )
 {
   KAcceleratorManager::setNoAccel(this);
  
-  mSheetList.setAutoDelete( true );
-  mAutoSave = true;
-
   connect( this, SIGNAL( currentChanged( QWidget* ) ),
            SLOT( updateCaption( QWidget* ) ) );
 
@@ -66,85 +63,87 @@ Workspace::~Workspace()
 
 void Workspace::saveProperties( KConfig *cfg )
 {
-  cfg->writePathEntry( "WorkDir", mWorkDir );
-  cfg->writeEntry( "CurrentSheet", tabLabel( currentWidget() ) );
-
-  Q3PtrListIterator<WorkSheet> it( mSheetList);
+  cfg->writeEntry( "CurrentSheet", tabText(indexOf( currentWidget() )) );
 
   QStringList list;
-  for ( int i = 0; it.current(); ++it, ++i )
-    if ( !(*it)->fileName().isEmpty() )
-      list.append( (*it)->fileName() );
+  for(int i =0; i< mSheetList.size(); i++)
+    if ( !mSheetList.at(i)->fileName().isEmpty() )
+      list.append( mSheetList.at(i)->fileName() );
 
-  cfg->writePathEntry( "Sheets", list );
+  cfg->writePathEntry( "SelectedSheets", list );
 }
 
 void Workspace::readProperties( KConfig *cfg )
 {
-  QString currentSheet;
-
-  mWorkDir = cfg->readPathEntry( "WorkDir" );
-
-  if ( mWorkDir.isEmpty() ) {
-    /* If workDir is not specified in the config file, it's
-     * probably the first time the user has started KSysGuard. We
-     * then "restore" a special default configuration. */
-    KStandardDirs* kstd = KGlobal::dirs();
-    kstd->addResourceType( "data", "share/apps/ksysguard" );
-
-    mWorkDir = kstd->saveLocation( "data", "ksysguard" );
-
-    QString origFile = kstd->findResource( "data", "SystemLoad.sgrd" );
-    QString newFile = mWorkDir + '/' + i18n( "System Load" ) + ".sgrd";
-    if ( !origFile.isEmpty() )
-      restoreWorkSheet( origFile, newFile );
-    origFile = kstd->findResource( "data", "ProcessTable.sgrd" );
-    newFile = mWorkDir + '/' + i18n( "Process Table" ) + ".sgrd";
-    if ( !origFile.isEmpty() )
-      restoreWorkSheet( origFile, newFile );
-
-    currentSheet = i18n( "System Load" );
-  } else {
-    currentSheet = cfg->readEntry( "CurrentSheet" );
-    QStringList list = cfg->readPathListEntry( "Sheets" );
-    for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it )
-      restoreWorkSheet( *it );
+  QStringList selectedSheets = cfg->readEntry( "SelectedSheets", QStringList() );
+  //This is from KDE 3.5 - we should port it over 
+//  QStringList custom_sheets_list = cfg->readPathListEntry( "Sheets" );
+  
+  if ( selectedSheets.isEmpty() ) {
+   /* If SelectedSheets config entry is not there, then it's
+    * probably the first time the user has started KSysGuard. We
+    * then "restore" a special default configuration. */
+    selectedSheets << "SystemLoad.sgrd";
+    selectedSheets << "ProcessTable.sgrd";
+  }
+ 
+  KStandardDirs* kstd = KGlobal::dirs();
+  QString filename;
+  for ( QStringList::Iterator it = selectedSheets.begin(); it != selectedSheets.end(); ++it ) {
+    filename = kstd->findResource( "data", "ksysguard/" + *it);
+    if(!filename.isEmpty()) {
+      restoreWorkSheet( filename);
+    }
   }
 
+  QString currentSheet = cfg->readEntry( "CurrentSheet" , "ProcessTable.sgrd");
+  
   // Determine visible sheet.
-  Q3PtrListIterator<WorkSheet> it( mSheetList );
-  for ( ; it.current(); ++it )
-    if ( currentSheet == tabLabel(*it) ) {
-      showPage( *it );
+  for(int i = 0; i < mSheetList.size(); i++) 
+    if ( currentSheet == tabText(indexOf(mSheetList.at(i))) ) {
+      setCurrentIndex(indexOf( mSheetList.at(i) ));
       break;
     }
+}
+
+QString Workspace::makeNameForNewSheet() const
+{
+  /* Find a name of the form "Sheet %d" that is not yet used by any
+   * of the existing worksheets. */
+  int i = 1;
+  bool found = false;
+  QString sheetName;
+  KStandardDirs* kstd = KGlobal::dirs();
+  do {
+    sheetName = i18n( "Sheet %1" ,  i++ );
+    //Check we don't have any existing files with this name
+    found = !(kstd->findResource( "data", "ksysguard/" + sheetName + ".sgrd").isEmpty());
+    
+    //Check if we have any sheets with the same tab name or file name
+    for(int i = 0; !found && i < mSheetList.size(); i++)
+      if ( tabText(indexOf(mSheetList.at(i))) == sheetName  || sheetName+".sgrd" == mSheetList.at(i)->fileName())
+        found = true;
+
+  } while ( found );
+
+  return sheetName;
 }
 
 void Workspace::newWorkSheet()
 {
   /* Find a name of the form "Sheet %d" that is not yet used by any
    * of the existing worksheets. */
-  QString sheetName;
-  bool found;
-
-  int i = 1;
-  do {
-    sheetName = i18n( "Sheet %1" ,  i++ );
-    Q3PtrListIterator<WorkSheet> it( mSheetList );
-    found = false;
-    for ( ; it.current() && !found; ++it )
-      if ( tabLabel(*it) == sheetName )
-        found = true;
-  } while ( found );
+  QString sheetName  = makeNameForNewSheet();
 
   WorkSheetSettings dlg( this );
   dlg.setSheetTitle( sheetName );
   if ( dlg.exec() ) {
     WorkSheet* sheet = new WorkSheet( dlg.rows(), dlg.columns(), dlg.interval(), 0 );
     sheet->setTitle( dlg.sheetTitle() );
-    insertTab( sheet, dlg.sheetTitle() );
+    sheet->setFileName( sheetName + ".sgrd" );
+    insertTab(-1, sheet, dlg.sheetTitle() );
     mSheetList.append( sheet );
-    showPage( sheet );
+    setCurrentIndex(indexOf( sheet ));
     connect( sheet, SIGNAL( sheetModified( QWidget* ) ),
              SLOT( updateCaption( QWidget* ) ) );
     connect( sheet, SIGNAL( titleChanged( QWidget* ) ),
@@ -155,40 +154,38 @@ void Workspace::newWorkSheet()
 void Workspace::updateSheetTitle( QWidget* wdg )
 {
   if ( wdg )
-    changeTab( wdg, static_cast<WorkSheet*>( wdg )->title() );
+    setTabText( indexOf(wdg), static_cast<WorkSheet*>( wdg )->title() );
 }
 
 bool Workspace::saveOnQuit()
 {
   kDebug() << "In saveOnQuit()" << endl;
-  Q3PtrListIterator<WorkSheet> it( mSheetList );
-  for ( ; it.current(); ++it )
-      if ( !mAutoSave || (*it)->fileName().isEmpty() ) {
+  for(int i = 0; i < mSheetList.size(); i++) {
+      if ( mSheetList.at(i)->fileName().isEmpty() ) {
         int res = KMessageBox::warningYesNoCancel( this,
                   i18n( "The worksheet '%1' contains unsaved data.\n"
                         "Do you want to save the worksheet?",
-                    tabLabel( *it ) ), QString(), KStdGuiItem::save(), KStdGuiItem::discard() );
+                    tabText(indexOf( mSheetList.at(i) )) ), QString(), KStdGuiItem::save(), KStdGuiItem::discard() );
         if ( res == KMessageBox::Yes )
-          saveWorkSheet( *it );
+          saveWorkSheet( mSheetList.at(i) );
         else if ( res == KMessageBox::Cancel )
           return false; // abort quit
       } else
-        saveWorkSheet(*it);
-
+        saveWorkSheet(mSheetList.at(i));
+  }
   return true;
 }
 
-void Workspace::loadWorkSheet()
+void Workspace::importWorkSheet()
 {
   KFileDialog dlg( 0, i18n( "*.sgrd|Sensor Files" ), this);
-  dlg.setObjectName("LoadFileDialog");
 
-  KUrl url = dlg.getOpenURL( mWorkDir, "*.sgrd", 0, i18n( "Select Worksheet to Load" ) );
+  KUrl url = dlg.getOpenURL( QString(), "*.sgrd", 0, i18n( "Select Worksheet to Import" ) );
 
-  loadWorkSheet( url );
+  importWorkSheet( url );
 }
 
-void Workspace::loadWorkSheet( const KUrl &url )
+void Workspace::importWorkSheet( const KUrl &url )
 {
   if ( url.isEmpty() )
     return;
@@ -198,74 +195,38 @@ void Workspace::loadWorkSheet( const KUrl &url )
    * code. */
   QString tmpFile;
   KIO::NetAccess::download( url, tmpFile, this );
-  mWorkDir = tmpFile.left( tmpFile.lastIndexOf( '/' ) );
 
-  // Load sheet from file.
+  // Import sheet from file.
   if ( !restoreWorkSheet( tmpFile ) )
     return;
 
-  /* If we have loaded a non-local file we clear the file name so that
-   * the users is prompted for a new name for saving the file. */
-  KUrl tmpFileUrl;
-  tmpFileUrl.setPath( tmpFile );
-  if ( tmpFileUrl != url.url() )
-    mSheetList.last()->setFileName( QString() );
+  mSheetList.last()->setFileName( makeNameForNewSheet() + ".sgrd");
+  
   KIO::NetAccess::removeTempFile( tmpFile );
-
-  emit announceRecentURL( KUrl( url ) );
 }
 
-void Workspace::saveWorkSheet()
-{
-  saveWorkSheet( (WorkSheet*)currentWidget() );
-}
-
-void Workspace::saveWorkSheetAs()
-{
-  saveWorkSheetAs( (WorkSheet*)currentWidget() );
-}
-
-void Workspace::saveWorkSheet( WorkSheet *sheet )
+bool Workspace::saveWorkSheet( WorkSheet *sheet )
 {
   if ( !sheet ) {
     KMessageBox::sorry( this, i18n( "You do not have a worksheet that could be saved." ) );
-    return;
+    return false;
   }
 
-  QString fileName = sheet->fileName();
-  if ( fileName.isEmpty() ) {
-    KFileDialog dlg( 0, i18n( "*.sgrd|Sensor Files" ), this);
-	dlg.setObjectName("LoadFileDialog");
-    fileName = dlg.getSaveFileName( mWorkDir + '/' + tabLabel( sheet ) +
-                                    ".sgrd", "*.sgrd", 0,
-                                    i18n( "Save Current Worksheet As" ) );
-    if ( fileName.isEmpty() )
-      return;
+  KStandardDirs* kstd = KGlobal::dirs();
+  QString fileName = kstd->saveLocation( "data", "ksysguard") + sheet->fileName() + ".sgrd";
 
-    mWorkDir = fileName.left( fileName.lastIndexOf( '/' ) );
-
-    // extract filename without path
-    QString baseName = fileName.right( fileName.length() - fileName.lastIndexOf( '/' ) - 1 );
-
-    // chop off extension (usually '.sgrd')
-    baseName = baseName.left( baseName.lastIndexOf( '.' ) );
-    changeTab( sheet, baseName );
-  }
-
-  /* If we cannot save the file is probably write protected. So we need
-   * to ask the user for a new name. */
   if ( !sheet->save( fileName ) ) {
-    saveWorkSheetAs( sheet );
-    return;
+    return false;
   }
-
-  /* Add file to recent documents menue. */
-  KUrl url;
-  url.setPath( fileName );
-  emit announceRecentURL( url );
+  return true;
 }
 
-void Workspace::saveWorkSheetAs( WorkSheet *sheet )
+void Workspace::exportWorkSheet()
+{
+  exportWorkSheet( (WorkSheet*)currentWidget() );
+}
+
+void Workspace::exportWorkSheet( WorkSheet *sheet )
 {
   if ( !sheet ) {
     KMessageBox::sorry( this, i18n( "You do not have a worksheet that could be saved." ) );
@@ -275,50 +236,26 @@ void Workspace::saveWorkSheetAs( WorkSheet *sheet )
   QString fileName;
   do {
     KFileDialog dlg( 0, "*.sgrd", this);
-	dlg.setObjectName("LoadFileDialog");
-    fileName = dlg.getSaveFileName( mWorkDir + '/' + tabLabel( currentWidget() ) +
-                                    ".sgrd", "*.sgrd" );
+    fileName = dlg.getSaveFileName( tabText(indexOf( currentWidget() ))+ ".sgrd",
+		                    "*.sgrd", this, i18n("Export Work Sheet") );
     if ( fileName.isEmpty() )
       return;
 
-    mWorkDir = fileName.left( fileName.lastIndexOf( '/' ) );
+  } while ( !sheet->exportWorkSheet( fileName ) );
 
-    // extract filename without path
-    QString baseName = fileName.right( fileName.length() - fileName.lastIndexOf( '/' ) - 1 );
-
-    // chop off extension (usually '.sgrd')
-    baseName = baseName.left( baseName.lastIndexOf( '.' ) );
-    changeTab( sheet, baseName );
-  } while ( !sheet->save( fileName ) );
-
-  /* Add file to recent documents menue. */
-  KUrl url;
-  url.setPath( fileName );
-  emit announceRecentURL( url );
 }
 
-void Workspace::deleteWorkSheet()
+void Workspace::removeWorkSheet()
 {
   WorkSheet *current = (WorkSheet*)currentWidget();
 
   if ( current ) {
     if ( current->modified() ) {
-      if ( !mAutoSave || current->fileName().isEmpty() ) {
-        int res = KMessageBox::warningYesNoCancel( this,
-                            i18n( "The worksheet '%1' contains unsaved data.\n"
-                                  "Do you want to save the worksheet?" ,
-                              tabLabel( current ) ), QString(), KStdGuiItem::save(), KStdGuiItem::discard() );
-        if ( res == KMessageBox::Cancel )
-          return;
-
-        if ( res == KMessageBox::Yes )
-          saveWorkSheet( current );
-      } else
-        saveWorkSheet( current );
+      saveWorkSheet( current );
     }
 
-    removePage( current );
-    mSheetList.remove( current );
+    removeTab(indexOf( current ));
+    mSheetList.removeAll( current );
   } else {
     QString msg = i18n( "There are no worksheets that could be deleted." );
     KMessageBox::error( this, msg );
@@ -329,57 +266,45 @@ void Workspace::removeAllWorkSheets()
 {
   WorkSheet *sheet;
   while ( ( sheet = (WorkSheet*)currentWidget() ) != 0 ) {
-    removePage( sheet );
-    mSheetList.remove( sheet );
+    if(sheet->modified() ) {
+      saveWorkSheet( sheet );
+    }
+    removeTab(indexOf( sheet ));
+    mSheetList.removeAll( sheet );
+    delete sheet;
   }
 }
 
-void Workspace::deleteWorkSheet( const QString &fileName )
+void Workspace::removeWorkSheet( const QString &fileName )
 {
-  Q3PtrListIterator<WorkSheet> it( mSheetList );
-  for ( ; it.current(); ++it )
-    if ( (*it)->fileName() == fileName ) {
-      removePage( *it );
-      mSheetList.remove( *it );
+  for(int i = 0; i < mSheetList.size(); i++) {
+    WorkSheet *sheet = mSheetList.at(i);
+    if ( sheet->fileName() == fileName ) {
+      removeTab(indexOf( sheet ));
+      mSheetList.removeAt( i );
+      delete sheet;
       return;
     }
+  }
 }
 
-bool Workspace::restoreWorkSheet( const QString &fileName, const QString &newName )
+bool Workspace::restoreWorkSheet( const QString &fileName)
 {
-  /* We might want to save the worksheet under a different name later. This
-   * name can be specified by newName. If newName is empty we use the
-   * original name to save the work sheet. */
-  QString tmpStr;
-  if ( newName.isEmpty() )
-    tmpStr = fileName;
-  else
-    tmpStr = newName;
-
   // extract filename without path
-  QString baseName = tmpStr.right( tmpStr.length() - tmpStr.lastIndexOf( '/' ) - 1 );
-
-  // chop off extension (usually '.sgrd')
-  baseName = baseName.left( baseName.lastIndexOf( '.' ) );
+  QString baseName = fileName.right( fileName.length() - fileName.lastIndexOf( '/' ) - 1 );
 
   WorkSheet *sheet = new WorkSheet( 0 );
-  sheet->setTitle( baseName );
-  insertTab( sheet, baseName );
-  showPage( sheet );
-
+  sheet->setFileName( baseName );
   if ( !sheet->load( fileName ) ) {
     delete sheet;
     return false;
   }
-  
   mSheetList.append( sheet );
+  insertTab(-1, sheet, sheet->title() );
+  setCurrentIndex(indexOf(sheet));
+  
   connect( sheet, SIGNAL( sheetModified( QWidget* ) ),
            SLOT( updateCaption( QWidget* ) ) );
-
-  /* Force the file name to be the new name. This also sets the modified
-   * flag, so that the file will get saved on exit. */
-  if ( !newName.isEmpty() )
-    sheet->setFileName( newName );
 
   return true;
 }
@@ -421,30 +346,18 @@ void Workspace::configure()
 void Workspace::updateCaption( QWidget* wdg )
 {
   if ( wdg )
-    emit setCaption( tabLabel( wdg ), ((WorkSheet*)wdg)->modified() );
+    emit setCaption( tabText(indexOf( wdg )), ((WorkSheet*)wdg)->modified() );
   else
     emit setCaption( QString(), false );
 
-  for ( WorkSheet* s = mSheetList.first(); s != 0; s = mSheetList.next() )
-    ((WorkSheet*)s)->setIsOnTop( s == wdg );
+  for( int i = 0; i < mSheetList.size(); i++)
+    mSheetList.at(i)->setIsOnTop( mSheetList.at(i) == wdg );
 }
 
 void Workspace::applyStyle()
 {
   if ( currentWidget() )
     ((WorkSheet*)currentWidget())->applyStyle();
-}
-
-void Workspace::showProcesses()
-{
-  KStandardDirs* kstd = KGlobal::dirs();
-  kstd->addResourceType( "data", "share/apps/ksysguard" );
-
-  QString file = kstd->findResource( "data", "ProcessTable.sgrd" );
-  if ( !file.isEmpty() )
-    restoreWorkSheet( file );
-  else
-    KMessageBox::error( this, i18n( "Cannot find file ProcessTable.sgrd." ) );
 }
 
 #include "Workspace.moc"

@@ -37,7 +37,7 @@ class Workspace : public QTabWidget
   Q_OBJECT
 
   public:
-    Workspace( QWidget* parent, const char* name = 0 );
+    Workspace( QWidget* parent);
     ~Workspace();
 
     void saveProperties( KConfig* );
@@ -45,21 +45,17 @@ class Workspace : public QTabWidget
 
     bool saveOnQuit();
 
-    void showProcesses();
-
-    bool restoreWorkSheet( const QString &fileName,
-                           const QString &newName = QString() );
-    void deleteWorkSheet( const QString &fileName );
+    bool restoreWorkSheet( const QString &fileName );
+    void removeWorkSheet( const QString &fileName );
 
   public Q_SLOTS:
     void newWorkSheet();
-    void loadWorkSheet();
-    void loadWorkSheet( const KUrl& );
-    void saveWorkSheet();
-    void saveWorkSheet( WorkSheet *sheet );
-    void saveWorkSheetAs();
-    void saveWorkSheetAs( WorkSheet *sheet );
-    void deleteWorkSheet();
+    void importWorkSheet();
+    void importWorkSheet( const KUrl& );
+    bool saveWorkSheet( WorkSheet *sheet );
+    void exportWorkSheet();
+    void exportWorkSheet( WorkSheet *sheet );
+    void removeWorkSheet();
     void removeAllWorkSheets();
     void cut();
     void copy();
@@ -70,15 +66,12 @@ class Workspace : public QTabWidget
     void applyStyle();
 
   Q_SIGNALS:
-    void announceRecentURL( const KUrl &url );
     void setCaption( const QString &text, bool modified );
 
   private:
-    Q3PtrList<WorkSheet> mSheetList;
-
-    // Directory that was used for the last load/save.
-    QString mWorkDir;
-    bool mAutoSave;
+    QList<WorkSheet *> mSheetList;
+    
+    QString makeNameForNewSheet() const;
 };
 
 #endif

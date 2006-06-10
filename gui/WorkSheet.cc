@@ -126,6 +126,8 @@ bool WorkSheet::load( const QString &fileName )
   if ( updateInterval() < 1 || updateInterval() > 300 )
     updateInterval( 2 );
 
+  mTitle = element.attribute( "title");
+  
   bool rowsOk, columnsOk;
   uint rows = element.attribute( "rows" ).toUInt( &rowsOk );
   uint columns = element.attribute( "columns" ).toUInt( &columnsOk );
@@ -182,7 +184,11 @@ bool WorkSheet::save( const QString &fileName )
 {
   kDebug() << "SAVING - IN WORKSHEET" << endl;
   mFileName = fileName;
+  return exportWorkSheet(fileName);
+}
 
+bool WorkSheet::exportWorkSheet( const QString &fileName )
+{
   QDomDocument doc( "KSysGuardWorkSheet" );
   doc.appendChild( doc.createProcessingInstruction(
                    "xml", "version=\"1.0\" encoding=\"UTF-8\"" ) );
@@ -190,6 +196,7 @@ bool WorkSheet::save( const QString &fileName )
   // save work sheet information
   QDomElement ws = doc.createElement( "WorkSheet" );
   doc.appendChild( ws );
+  ws.setAttribute( "title", mTitle );
   ws.setAttribute( "interval", updateInterval() );
   ws.setAttribute( "rows", mRows );
   ws.setAttribute( "columns", mColumns );
@@ -380,8 +387,6 @@ void WorkSheet::settings()
 {
   WorkSheetSettings dlg( this );
 
-  /* The sheet name should be changed with the "Save as..." function,
-   * so we don't have to display the display frame. */
   dlg.setSheetTitle( mTitle );
   dlg.setRows( mRows );
   dlg.setColumns( mColumns );

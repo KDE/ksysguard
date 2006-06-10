@@ -32,7 +32,6 @@
 
 #include <ksgrd/SensorClient.h>
 
-class KRecentFilesAction;
 class KToggleAction;
 
 class QSplitter;
@@ -58,15 +57,11 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
 
   public Q_SLOTS:
      // calling ksysguard with kwin/kicker hot-key
-    Q_SCRIPTABLE Q_ASYNC void showProcesses();
     Q_SCRIPTABLE Q_ASYNC void showOnCurrentDesktop();
-    Q_SCRIPTABLE Q_ASYNC void loadWorkSheet( const QString &fileName );
+    Q_SCRIPTABLE Q_ASYNC void importWorkSheet( const QString &fileName );
     Q_SCRIPTABLE Q_ASYNC void removeWorkSheet( const QString &fileName );
     Q_SCRIPTABLE QStringList listHosts();
     Q_SCRIPTABLE QStringList listSensors( const QString &hostName );
-
-    void registerRecentURL( const KUrl &url );
-    void resetWorkSheets();
 
   protected:
     virtual void customEvent( QCustomEvent* );
@@ -87,7 +82,6 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
     QDBusMessage mDBusReply;
 
     QSplitter* mSplitter;
-    KRecentFilesAction* mActionOpenRecent;
 
     SensorBrowser* mSensorBrowser;
     Workspace* mWorkSpace;

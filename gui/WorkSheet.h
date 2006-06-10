@@ -53,6 +53,7 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
 
     bool load( const QString &fileName );
     bool save( const QString &fileName );
+    bool exportWorkSheet( const QString &fileName );
 
     void cut();
     void copy();

@@ -310,8 +310,7 @@ void KSysGuardApplet::resizeDocks( uint newDockCount )
 bool KSysGuardApplet::load()
 {
   KStandardDirs* kstd = KGlobal::dirs();
-  kstd->addResourceType( "data", "share/apps/ksysguard" );
-  QString fileName = kstd->findResource( "data", "KSysGuardApplet.xml" );
+  QString fileName = kstd->findResource( "data", "ksysguard/KSysGuardApplet.xml" );
 
   QFile file( fileName );
   if ( !file.open( QIODevice::ReadOnly ) ) {
@@ -456,7 +455,6 @@ bool KSysGuardApplet::save()
     }
 
   KStandardDirs* kstd = KGlobal::dirs();
-  kstd->addResourceType( "data", "share/apps/ksysguard" );
   QString fileName = kstd->saveLocation( "data", "ksysguard" );
   fileName += "/KSysGuardApplet.xml";
 

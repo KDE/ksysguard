@@ -41,7 +41,6 @@
 #include <kglobalsettings.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <krecentfilesaction.h>
 #include <ksgrd/SensorAgent.h>
 #include <ksgrd/SensorManager.h>
 #include <ksgrd/StyleEngine.h>
@@ -88,8 +87,6 @@ TopLevel::TopLevel( const char *name )
   mSensorBrowser = new SensorBrowser( mSplitter, KSGRD::SensorMgr );
 
   mWorkSpace = new Workspace( mSplitter );
-  connect( mWorkSpace, SIGNAL( announceRecentURL( const KUrl& ) ),
-           SLOT( registerRecentURL( const KUrl& ) ) );
   connect( mWorkSpace, SIGNAL( setCaption( const QString&, bool ) ),
            SLOT( setCaption( const QString&, bool ) ) );
   connect( KSGRD::Style, SIGNAL( applyStyleToWorksheet() ), mWorkSpace,
@@ -107,13 +104,11 @@ TopLevel::TopLevel( const char *name )
   KAction *action = new KAction(KIcon("tab_new"),  i18n( "&New Worksheet..." ), actionCollection(), "new_worksheet" );
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( newWorkSheet() ));
   action = new KAction(KIcon("fileopen"),  i18n( "Import Worksheet..." ), actionCollection(), "import_worksheet" );
-  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( loadWorkSheet() ));
-  mActionOpenRecent = new KRecentFilesAction( i18n( "&Import Recent Worksheet" ),"fileopen", 0,
-		  mWorkSpace, SLOT( loadWorkSheet( const KUrl& ) ), actionCollection(), "recent_import_worksheet" );
+  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( importWorkSheet() ));
   action = new KAction(KIcon("tab_remove"),  i18n( "&Remove Worksheet" ), actionCollection(), "remove_worksheet" );
-  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( deleteWorkSheet() ));
+  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( removeWorkSheet() ));
   action = new KAction(KIcon("filesaveas"),  i18n( "&Export Worksheet..." ), actionCollection(), "export_worksheet" );
-  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( saveWorkSheetAs() ));
+  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( exportWorkSheet() ));
 
   KStdAction::quit( this, SLOT( close() ), actionCollection() );
 
@@ -125,9 +120,6 @@ TopLevel::TopLevel( const char *name )
 //  KStdAction::paste( mWorkSpace, SLOT( paste() ), actionCollection() );
   action = new KAction(KIcon("configure"),  i18n( "&Worksheet Properties" ), actionCollection(), "configure_sheet" );
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( configure() ));
-
-  action = new KAction(KIcon("revert"),  i18n( "Load Standard Sheets" ), actionCollection(), "revert_all_worksheets"  );
-  connect(action, SIGNAL(triggered(bool) ), SLOT( resetWorkSheets() ));
 
   action = new KAction(KIcon("colorize"),  i18n( "Configure &Style..." ), actionCollection(), "configure_style" );
   connect(action, SIGNAL(triggered(bool)), SLOT( editStyle() ));
@@ -143,37 +135,6 @@ TopLevel::TopLevel( const char *name )
 /*
  * DBUS Interface functions
  */
-void TopLevel::resetWorkSheets()
-{
-  if ( KMessageBox::warningContinueCancel( this,
-       i18n( "Do you really want to restore the default worksheets?" ),
-       i18n( "Reset All Worksheets" ),
-       i18n("Reset"),
-       "AskResetWorkSheets") == KMessageBox::Cancel )
-    return;
-
-  mWorkSpace->removeAllWorkSheets();
-
-  KStandardDirs* kstd = KGlobal::dirs();
-  kstd->addResourceType( "data", "share/apps/ksysguard" );
-
-  QString workDir = kstd->saveLocation( "data", "ksysguard" );
-
-  QString file = kstd->findResource( "data", "SystemLoad.sgrd" );
-  QString newFile = workDir + '/' + i18n( "System Load" ) + ".sgrd";
-  if ( !file.isEmpty() )
-    mWorkSpace->restoreWorkSheet( file, newFile );
-
-  file = kstd->findResource( "data", "ProcessTable.sgrd" );
-  newFile = workDir + '/' + i18n( "Process Table" ) + ".sgrd";
-  if ( !file.isEmpty() )
-    mWorkSpace->restoreWorkSheet( file, newFile );
-}
-
-void TopLevel::showProcesses()
-{
-  mWorkSpace->showProcesses();
-}
 
 void TopLevel::showOnCurrentDesktop()
 {
@@ -182,14 +143,14 @@ void TopLevel::showOnCurrentDesktop()
   KWin::forceActiveWindow( winId() );
 }
 
-void TopLevel::loadWorkSheet( const QString &fileName )
+void TopLevel::importWorkSheet( const QString &fileName )
 {
-  mWorkSpace->loadWorkSheet( KUrl( fileName ) );
+  mWorkSpace->importWorkSheet( KUrl( fileName ) );
 }
 
 void TopLevel::removeWorkSheet( const QString &fileName )
 {
-  mWorkSpace->deleteWorkSheet( fileName );
+  mWorkSpace->removeWorkSheet( fileName );
 }
 
 QStringList TopLevel::listSensors( const QString &hostName )
@@ -200,24 +161,6 @@ QStringList TopLevel::listSensors( const QString &hostName )
 QStringList TopLevel::listHosts()
 {
   return mSensorBrowser->listHosts();
-}
-
-void TopLevel::registerRecentURL( const KUrl &url )
-{
-  mActionOpenRecent->addUrl( url );
-}
-
-void TopLevel::beATaskManager()
-{
-  mWorkSpace->showProcesses();
-
-  // Avoid displaying splitter widget
-  mSensorBrowser->hide();
-
-  // No toolbar and status bar in taskmanager mode.
-  toolBar( "mainToolBar" )->hide();
-
-  stateChanged( "showProcessState" );
 }
 
 void TopLevel::showRequestedSheets()
@@ -346,15 +289,11 @@ void TopLevel::readProperties( KConfig *cfg )
 
   mWorkSpace->readProperties( cfg );
 
-  mActionOpenRecent->loadEntries( cfg );
-
   applyMainWindowSettings( cfg );
 }
 
 void TopLevel::saveProperties( KConfig *cfg )
 {
-  mActionOpenRecent->saveEntries( cfg );
-
   cfg->writeEntry( "isMinimized", isMinimized() );
   cfg->writeEntry( "SplitterSizeList", mSplitter->sizes() );
 
@@ -474,8 +413,8 @@ int main( int argc, char** argv )
                         KSYSGUARD_VERSION, Description, KAboutData::License_GPL,
                         I18N_NOOP( "(c) 1996-2006 The KSysGuard Developers" ) );
   aboutData.addAuthor( "John Tapsell", "Current Maintainer", "john.tapsell@kdemail.org" );
-  aboutData.addAuthor( "Greg Martyn", "Current Maintainer", "greg.martyn@gmail.com" );
   aboutData.addAuthor( "Chris Schlaeger", "Previous Maintainer", "cs@kde.org" );
+  aboutData.addAuthor( "Greg Martyn", 0, "greg.martyn@gmail.com" );
   aboutData.addAuthor( "Tobias Koenig", 0, "tokoe@kde.org" );
   aboutData.addAuthor( "Nicolas Leclercq", 0, "nicknet@planete.net" );
   aboutData.addAuthor( "Alex Sanda", 0, "alex@darkstart.ping.at" );
@@ -499,67 +438,32 @@ int main( int argc, char** argv )
 
   int result = 0;
 
-  if ( args->isSet( "showprocesses" ) ) {
-    /* To avoid having multiple instances of ksysguard in
-     * taskmanager mode we check if another taskmanager is running
-     * already. If so, we terminate this one immediately. */
-//    if ( app->dcopClient()->registerAs( "ksysguard_taskmanager", false ) ==
-//                                                    "ksysguard_taskmanager" ) {
-      // We have registered with DCOP, our parent can exit now.
-#ifdef FORK_KSYSGUARD
-      char c = 0;      
-      write( initpipe[ 1 ], &c, 1 );
-      close( initpipe[ 1 ] );
-#endif
-      topLevel = new TopLevel( "KSysGuard" );
-      topLevel->beATaskManager();
-      topLevel->initStatusBar();
-      topLevel->show();
-      KSGRD::SensorMgr->setBroadcaster( topLevel );
-
-      // run the application
-      result = app->exec();
-//    } else {
-//      QByteArray data;
-//      app->dcopClient()->send( "ksysguard_taskmanager", "KSysGuardIface",
-//                               "showOnCurrentDesktop()", data );
-//    }
-  } else {
 //    app->dcopClient()->registerAs( "ksysguard" );
 //    app->dcopClient()->setDefaultObject( "KSysGuardIface" );
 //    // We have registered with DCOP, our parent can exit now.
 
 #ifdef FORK_KSYSGUARD
-    char c = 0;
-    write( initpipe[ 1 ], &c, 1 );
-    close( initpipe[ 1 ] );
+  char c = 0;
+  write( initpipe[ 1 ], &c, 1 );
+  close( initpipe[ 1 ] );
 #endif
-    topLevel = new TopLevel( "KSysGuard" );
+  topLevel = new TopLevel( "KSysGuard" );
 
-    // create top-level widget
-    if ( args->count() > 0 ) {
-      /* The user has specified a list of worksheets to load. In this
-       * case we do not restore any previous settings but load all the
-       * requested worksheets. */
-      topLevel->showRequestedSheets();
-      for ( int i = 0; i < args->count(); ++i )
-        topLevel->loadWorkSheet( args->arg( i ) );
-    } else {
-      if ( app->isSessionRestored() )
-        topLevel->restore( 1 );
-      else
-      {
-        topLevel->readProperties( app->sessionConfig() );
-      }
-    }
-
-    topLevel->initStatusBar();
-    topLevel->show();
-    KSGRD::SensorMgr->setBroadcaster( topLevel );
-
-    // run the application
-    result = app->exec();
+  // create top-level widget
+  if ( app->isSessionRestored() )
+    topLevel->restore( 1 );
+  else
+  {
+    topLevel->readProperties( app->sessionConfig() );
   }
+
+  topLevel->initStatusBar();
+  topLevel->show();
+  KSGRD::SensorMgr->setBroadcaster( topLevel );
+
+  // run the application
+  result = app->exec();
+
 
   delete KSGRD::Style;
   delete KSGRD::SensorMgr;
