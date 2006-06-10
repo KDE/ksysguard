@@ -35,8 +35,8 @@
 
 #include "WorkSheetSettings.h"
 
-WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
-  : KDialogBase( parent, name, true, QString(), Ok|Cancel, Ok, true )
+WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked)
+  : KDialogBase( KDialogBase::Swallow, Qt::MSWindowsFixedSizeDialogHint, parent, 0, true, i18n("Work Sheet Settings"), Ok|Cancel, Ok)
 {
   setCaption( i18n( "Worksheet Properties" ) );
 
@@ -68,38 +68,41 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
   group->layout()->addItem( groupLayout );
   groupLayout->setAlignment( Qt::AlignTop );
 
-  QLabel *label = new QLabel( i18n( "Rows:" ), group );
-  groupLayout->addWidget( label, 0, 0 );
+  int row_num = -1;
+  QLabel *label;
+  if(!locked) {
+	  label = new QLabel( i18n( "Rows:" ), group );
+	  groupLayout->addWidget( label, ++row_num, 0 );
 
-  mRows = new KIntNumInput( 1, group );
-  mRows->setMaximum( 42 );
-  mRows->setMinimum( 1 );
-  groupLayout->addWidget( mRows, 0, 1 );
-  label->setBuddy( mRows );
+	  mRows = new KIntNumInput( 1, group );
+	  mRows->setMaximum( 42 );
+	  mRows->setMinimum( 1 );
+	  groupLayout->addWidget( mRows, row_num, 1 );
+	  label->setBuddy( mRows );
 
-  label = new QLabel( i18n( "Columns:" ), group );
-  groupLayout->addWidget( label, 1, 0 );
+	  label = new QLabel( i18n( "Columns:" ), group );
+	  groupLayout->addWidget( label, ++row_num, 0 );
 
-  mColumns = new KIntNumInput( 1, group );
-  mColumns->setMaximum( 42 );
-  mColumns->setMinimum( 1 );
-  groupLayout->addWidget( mColumns, 1, 1 );
-  label->setBuddy( mColumns );
-
+	  mColumns = new KIntNumInput( row_num, group );
+	  mColumns->setMaximum( 42 );
+	  mColumns->setMinimum( 1 );
+	  groupLayout->addWidget( mColumns, 1, 1 );
+	  label->setBuddy( mColumns );
+	  mRows->setWhatsThis( i18n( "Enter the number of rows the sheet should have." ) );
+	  mColumns->setWhatsThis( i18n( "Enter the number of columns the sheet should have." ) );
+  }
   label = new QLabel( i18n( "Update interval:" ), group );
-  groupLayout->addWidget( label, 2, 0 );
+  groupLayout->addWidget( label, ++row_num, 0 );
 
-  mInterval = new KIntNumInput( 2, group );
+  mInterval = new KIntNumInput( row_num, group );
   mInterval->setMaximum( 300 );
   mInterval->setMinimum( 1 );
   mInterval->setSuffix( i18n( " sec" ) );
-  groupLayout->addWidget( mInterval, 2, 1 );
+  groupLayout->addWidget( mInterval, row_num, 1 );
   label->setBuddy( mInterval );
 
   topLayout->addWidget( group );
 
-  mRows->setWhatsThis( i18n( "Enter the number of rows the sheet should have." ) );
-  mColumns->setWhatsThis( i18n( "Enter the number of columns the sheet should have." ) );
   mInterval->setWhatsThis( i18n( "All displays of the sheet are updated at the rate specified here." ) );
   mSheetTitle->setToolTip( i18n( "Enter the title of the worksheet here." ) );
 

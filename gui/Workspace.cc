@@ -137,7 +137,7 @@ void Workspace::newWorkSheet()
    * of the existing worksheets. */
   QString sheetName  = makeNameForNewSheet();
 
-  WorkSheetSettings dlg( this );
+  WorkSheetSettings dlg( this, false /*not locked.  New custom sheets aren't locked*/ );
   dlg.setSheetTitle( sheetName );
   if ( dlg.exec() ) {
     WorkSheet* sheet = new WorkSheet( dlg.rows(), dlg.columns(), dlg.interval(), 0 );

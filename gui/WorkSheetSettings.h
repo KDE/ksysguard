@@ -34,7 +34,7 @@ class WorkSheetSettings : public KDialogBase
   Q_OBJECT
 
   public:
-    WorkSheetSettings( QWidget* parent = 0, const char* name = 0 );
+    WorkSheetSettings( QWidget* parent, bool locked);
     ~WorkSheetSettings();
 
     void setRows( int rows );

@@ -114,6 +114,7 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
     QString currentDisplayAsXML();
 
     bool mModified;
+    /** Some sheets are locked so the uesr can't modify them. Such as the process list etc */
     bool mLocked;
 
     uint mRows;

@@ -384,12 +384,14 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
 
 void WorkSheet::settings()
 {
-  WorkSheetSettings dlg( this );
-
+  WorkSheetSettings dlg( this, mLocked );
   dlg.setSheetTitle( mTitle );
-  dlg.setRows( mRows );
-  dlg.setColumns( mColumns );
   dlg.setInterval( updateInterval() );
+
+  if(!mLocked) {
+    dlg.setRows( mRows );
+    dlg.setColumns( mColumns );
+  }
 
   if ( dlg.exec() ) {
     updateInterval( dlg.interval() );
@@ -398,7 +400,8 @@ void WorkSheet::settings()
         if ( mDisplayList[ r ][ c ]->useGlobalUpdateInterval() )
           mDisplayList[ r ][ c ]->setUpdateInterval( updateInterval() );
 
-    resizeGrid( dlg.rows(), dlg.columns() );
+    if(!mLocked)
+	    resizeGrid( dlg.rows(), dlg.columns() );
     setTitle(dlg.sheetTitle());
 
     setModified( true );
