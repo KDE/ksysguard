@@ -96,10 +96,9 @@ bool WorkSheet::load( const QString &fileName )
 {
   setModified( false );
 
-  mFileName = fileName;
-  QFile file( mFileName );
+  QFile file( fileName );
   if ( !file.open( QIODevice::ReadOnly ) ) {
-    KMessageBox::sorry( this, i18n( "Cannot open the file %1." ,  mFileName ) );
+    KMessageBox::sorry( this, i18n( "Cannot open the file %1." ,  fileName ) );
     return false;
   }
 
@@ -108,7 +107,7 @@ bool WorkSheet::load( const QString &fileName )
   // Read in file and check for a valid XML header.
   if ( !doc.setContent( &file) ) {
     KMessageBox::sorry( this, i18n( "The file %1 does not contain valid XML." ,
-                          mFileName ) );
+                          fileName ) );
     return false;
   }
 
@@ -116,7 +115,7 @@ bool WorkSheet::load( const QString &fileName )
   if ( doc.doctype().name() != "KSysGuardWorkSheet" ) {
     KMessageBox::sorry( this, i18n( "The file %1 does not contain a valid worksheet "
                                     "definition, which must have a document type 'KSysGuardWorkSheet'.",
-                          mFileName ) );
+                          fileName ) );
     return false;
   }
 
@@ -133,7 +132,7 @@ bool WorkSheet::load( const QString &fileName )
   uint columns = element.attribute( "columns" ).toUInt( &columnsOk );
   if ( !( rowsOk && columnsOk ) ) {
     KMessageBox::sorry( this, i18n("The file %1 has an invalid worksheet size.",
-                          mFileName ) );
+                          fileName ) );
     return false;
   }
 
@@ -183,7 +182,6 @@ bool WorkSheet::load( const QString &fileName )
 bool WorkSheet::save( const QString &fileName )
 {
   kDebug() << "SAVING - IN WORKSHEET" << endl;
-  mFileName = fileName;
   return exportWorkSheet(fileName);
 }
 
@@ -235,9 +233,9 @@ bool WorkSheet::exportWorkSheet( const QString &fileName )
 	kDebug() << "SAVE Sort column is " << element.attribute("sortColumn", "1").toUInt() << endl;
       }
 
-  QFile file( mFileName );
+  QFile file( fileName );
   if ( !file.open( QIODevice::WriteOnly ) ) {
-    KMessageBox::sorry( this, i18n( "Cannot save file %1" ,  mFileName ) );
+    KMessageBox::sorry( this, i18n( "Cannot save file %1" ,  fileName ) );
     return false;
   }
 
