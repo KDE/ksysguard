@@ -197,15 +197,19 @@ static void dropPrivileges( void )
 {
   struct passwd *pwd;
 
-  if ( ( pwd = getpwnam( "nobody" ) ) != NULL )
-    setuid( pwd->pw_uid );
-	else {
+  if ( ( pwd = getpwnam( "nobody" ) ) != NULL ) {
+    if ( !setgid(pwd->pw_gid) )
+      setuid(pwd->pw_uid);
+    if (!geteuid() && getuid() != pwd->pw_uid)
+      _exit(1);
+  }
+  else {
     log_error( "User 'nobody' does not exist." );
     /**
       We exit here to avoid becoming vulnerable just because
       user nobody does not exist.
      */
-    exit( 1 );
+    _exit(1);
   }
 }
 
@@ -221,7 +225,7 @@ void makeDaemon( void )
       chdir( "/" );
       umask( 0 );
       if ( createLockFile() < 0 )
-        exit( 1 );
+        _exit( 1 );
 
       dropPrivileges();
       installSignalHandler();
