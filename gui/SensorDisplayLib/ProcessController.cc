@@ -244,20 +244,11 @@ ProcessController::killProcess()
 				"Do you want to kill the %n selected processes?",
 				selectedAsStrings.count());
 
-		KDialogBase *dlg = new KDialogBase (  i18n ("Kill Process"),
-						      KDialogBase::Yes | KDialogBase::Cancel,
-						      KDialogBase::Yes, KDialogBase::Cancel, this->parentWidget(),
-						      "killconfirmation",
-			       			      true, true, KGuiItem(i18n("Kill")));
-
-		bool dontAgain = false;
-
-		int res = KMessageBox::createKMessageBox(dlg, QMessageBox::Question,
-			                                 msg, selectedAsStrings,
-							 i18n("Do not ask again"), &dontAgain,
-							 KMessageBox::Notify);
-
-		if (res != KDialogBase::Yes)
+		int res = KMessageBox::warningContinueCancelList(this, msg, selectedAsStrings,
+				                                 i18n("Kill Process"),
+								 KGuiItem(i18n("Kill")),
+								 "killconfirmation");
+		if (res != KMessageBox::Continue)
 		{
 			return;
 		}
@@ -335,7 +326,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 	}
 	case Ps_Command:
 	{
-		kDebug() << "We received ps data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+//		kDebug() << "We received ps data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 		/* We have received the answer to a ps command that contains a
 		 * list of processes with various additional information. */
 		if(!mReadyForPs) {
@@ -358,7 +349,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 			return;
 		}
 
-		kDebug() << "We finished with ps data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+//		kDebug() << "We finished with ps data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 		break;
 	}
 	case Kill_Command:
