@@ -55,7 +55,9 @@
 ProcessController::ProcessController(QWidget* parent, const QString &title)
 	: KSGRD::SensorDisplay(parent, title, false/*isApplet.  Can't be applet, so false*/), mModel(parent), mFilterModel(parent)
 {
-
+	mInitialSortCol = 1;
+        mInitialSortInc = false;
+	mXResSupported = false;
 	mReadyForPs = false;
 	mUi.setupUi(this);
 	mFilterModel.setSourceModel(&mModel);
@@ -318,6 +320,13 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		}
 
 		mFilterModel.setFilterKeyColumn(0);
+		//When we loaded the settings, we set mInitialSort* to the column and direction to sort in/
+		//Since we have just added the columns no, we should set the sort now.
+		
+		mUi.treeView->sortByColumn(mInitialSortCol);
+		mFilterModel.sort(mInitialSortCol,(mInitialSortInc)?Qt::AscendingOrder:Qt::DescendingOrder);
+		kDebug() << "We have added the columns and now setting the sort by col " << mInitialSortCol << endl;
+
 		kDebug() << "PS_INFO_COMMAND: We are now ready for ps.  " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 		mReadyForPs = true;
 //		sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);
@@ -506,7 +515,6 @@ ProcessController::sensorError(int, bool err)
 bool
 ProcessController::restoreSettings(QDomElement& element)
 {
-	kDebug() << "RESTORING SETTINGS " << endl;
 	bool result = addSensor(element.attribute("hostName"),
 				element.attribute("sensorName"),
 				(element.attribute("sensorType").isEmpty() ? "table" : element.attribute("sensorType")),
@@ -520,7 +528,12 @@ ProcessController::restoreSettings(QDomElement& element)
 	uint col = element.attribute("sortColumn", "1").toUInt(); //Default to sorting the user column
 	bool inc = element.attribute("incrOrder", "0").toUInt();  //Default to descending order
 	mFilterModel.sort(col,(inc)?Qt::AscendingOrder:Qt::DescendingOrder);
-	kDebug() << "RESTORE Sort column is " << col << endl;
+	//The above sort command won't work if we have no columns (most likely).  So we save
+	//the column to sort by until we have added the columns (from PS_INFO_COMMAND)
+	mInitialSortCol = col;
+	mInitialSortInc = inc;
+	kDebug() << "Settings mInitialSortCol to " << mInitialSortCol << endl;
+
 	bool showTotals = element.attribute("showTotals", "1").toUInt();
 	mUi.chkShowTotals->setCheckState( (showTotals)?Qt::Checked:Qt::Unchecked );
 	
@@ -533,7 +546,6 @@ ProcessController::restoreSettings(QDomElement& element)
 bool
 ProcessController::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 {
-	kDebug() << "SAVING SETTINGS " << endl;
 	element.setAttribute("hostName", sensors().at(0)->hostName());
 	element.setAttribute("sensorName", sensors().at(0)->name());
 	element.setAttribute("sensorType", sensors().at(0)->type());
@@ -544,9 +556,6 @@ ProcessController::saveSettings(QDomDocument& doc, QDomElement& element, bool sa
 	element.setAttribute("sortColumn", mUi.treeView->header()->sortIndicatorSection());
 	element.setAttribute("incrOrder", (uint) (mUi.treeView->header()->sortIndicatorOrder() == Qt::AscendingOrder));
 
-	kDebug() << "SAVE Sort column is " << mUi.treeView->header()->sortIndicatorSection() << endl;
-	kDebug() << "SAVE Sort column is " << element.attribute("sortColumn", "1").toUInt() << endl;
-	
 	SensorDisplay::saveSettings(doc, element);
 
 	if (save)

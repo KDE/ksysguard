@@ -126,6 +126,14 @@ private:
 	 */
 	bool mReadyForPs;
 	
+	/** When we restore the settings, we remember which column to sort by here.
+	 *  Then when columns are actually added, we can set the column to sort by.
+	 */
+	int mInitialSortCol;
+	/** Same as mInitialSortCol but for the direction to sort
+	 */
+        bool mInitialSortInc;
+	
 	QStringList mHeader;
 	QStringList mColType;
 	QList<QStringList> mData;
