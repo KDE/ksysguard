@@ -63,6 +63,7 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
     const QString& fileName() const;
 
     bool modified() const;
+    bool isLocked() const {return mLocked;}
 
     void setTitle( const QString &title );
     const QString &title();
@@ -113,6 +114,7 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
     QString currentDisplayAsXML();
 
     bool mModified;
+    bool mLocked;
 
     uint mRows;
     uint mColumns;

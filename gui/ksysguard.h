@@ -75,6 +75,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
     void editToolbars();
     void editStyle();
     void slotNewToolbarConfig();
+    void currentTabChanged(int index);
 
   private:
     void setSwapInfo( long, long, const QString& );
@@ -87,6 +88,8 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
     Workspace* mWorkSpace;
 
     int mTimerId;
+    KAction *mTabRemoveAction;
+    KAction *mTabExportAction;
 };
 
 extern TopLevel* Toplevel;

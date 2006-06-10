@@ -62,6 +62,7 @@ WorkSheet::WorkSheet( QWidget *parent )
   mDisplayList = 0;
   mModified = false;
   mFileName = "";
+  mLocked = false;
 
   setAcceptDrops( true );
 }
@@ -75,6 +76,7 @@ WorkSheet::WorkSheet( uint rows, uint columns, uint interval, QWidget* parent )
   updateInterval( interval );
   mModified = false;
   mFileName = "";
+  mLocked = false;
 
   createGrid( rows, columns );
 
@@ -126,6 +128,9 @@ bool WorkSheet::load( const QString &fileName )
     updateInterval( 2 );
 
   mTitle = element.attribute( "title");
+  bool ok;
+  mLocked = element.attribute( "locked" ).toUInt( &ok );
+  if(!ok) mLocked = false;
   
   bool rowsOk, columnsOk;
   uint rows = element.attribute( "rows" ).toUInt( &rowsOk );
@@ -195,6 +200,7 @@ bool WorkSheet::exportWorkSheet( const QString &fileName )
   QDomElement ws = doc.createElement( "WorkSheet" );
   doc.appendChild( ws );
   ws.setAttribute( "title", mTitle );
+  ws.setAttribute( "locked", mLocked?"1":"0" );
   ws.setAttribute( "interval", updateInterval() );
   ws.setAttribute( "rows", mRows );
   ws.setAttribute( "columns", mColumns );

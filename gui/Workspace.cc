@@ -42,8 +42,8 @@ Workspace::Workspace( QWidget* parent)
 {
   KAcceleratorManager::setNoAccel(this);
  
-  connect( this, SIGNAL( currentChanged( QWidget* ) ),
-           SLOT( updateCaption( QWidget* ) ) );
+  connect( this, SIGNAL( currentChanged( int ) ),
+           SLOT( updateCaption( int ) ) );
 
   this->setWhatsThis( i18n( "This is your work space. It holds your worksheets. You need "
                                "to create a new worksheet (Menu File->New) before "
@@ -57,8 +57,8 @@ Workspace::~Workspace()
    * administration data is already deleted but slots are still
    * being triggered. TODO: I need to ask the Trolls about this. */
 
-  disconnect( this, SIGNAL( currentChanged( QWidget* ) ), this,
-              SLOT( updateCaption( QWidget* ) ) );
+  disconnect( this, SIGNAL( currentChanged( int ) ), this,
+              SLOT( updateCaption( int ) ) );
 }
 
 void Workspace::saveProperties( KConfig *cfg )
@@ -75,7 +75,9 @@ void Workspace::saveProperties( KConfig *cfg )
 
 void Workspace::readProperties( KConfig *cfg )
 {
+  kDebug() << "Reading from " << cfg->group() << endl;
   QStringList selectedSheets = cfg->readEntry( "SelectedSheets", QStringList() );
+  kDebug() << "Selected Sheets = " << selectedSheets << endl;
   //This is from KDE 3.5 - we should port it over 
 //  QStringList custom_sheets_list = cfg->readPathListEntry( "Sheets" );
   
@@ -213,7 +215,7 @@ bool Workspace::saveWorkSheet( WorkSheet *sheet )
   }
 
   KStandardDirs* kstd = KGlobal::dirs();
-  QString fileName = kstd->saveLocation( "data", "ksysguard") + sheet->fileName() + ".sgrd";
+  QString fileName = kstd->saveLocation( "data", "ksysguard") + sheet->fileName();
 
   if ( !sheet->save( fileName ) ) {
     return false;
@@ -343,10 +345,15 @@ void Workspace::configure()
   current->settings();
 }
 
-void Workspace::updateCaption( QWidget* wdg )
+void Workspace::updateCaption( QWidget *wdg)
 {
+  updateCaption( indexOf(wdg) );
+}
+void Workspace::updateCaption( int index )
+{
+  WorkSheet *wdg = static_cast<WorkSheet *>(widget(index));
   if ( wdg )
-    emit setCaption( tabText(indexOf( wdg )), ((WorkSheet*)wdg)->modified() );
+    emit setCaption( tabText(index), wdg->modified() );
   else
     emit setCaption( QString(), false );
 

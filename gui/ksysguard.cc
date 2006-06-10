@@ -57,6 +57,7 @@
 #include "../version.h"
 #include "SensorBrowser.h"
 #include "Workspace.h"
+#include "WorkSheet.h"
 
 #include "ksysguard.h"
 
@@ -89,6 +90,8 @@ TopLevel::TopLevel( const char *name )
   mWorkSpace = new Workspace( mSplitter );
   connect( mWorkSpace, SIGNAL( setCaption( const QString&, bool ) ),
            SLOT( setCaption( const QString&, bool ) ) );
+  connect( mWorkSpace, SIGNAL( currentChanged( int ) ),
+           SLOT( currentTabChanged( int ) ) );
   connect( KSGRD::Style, SIGNAL( applyStyleToWorksheet() ), mWorkSpace,
            SLOT( applyStyle() ) );
 
@@ -105,10 +108,10 @@ TopLevel::TopLevel( const char *name )
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( newWorkSheet() ));
   action = new KAction(KIcon("fileopen"),  i18n( "Import Worksheet..." ), actionCollection(), "import_worksheet" );
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( importWorkSheet() ));
-  action = new KAction(KIcon("tab_remove"),  i18n( "&Remove Worksheet" ), actionCollection(), "remove_worksheet" );
-  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( removeWorkSheet() ));
-  action = new KAction(KIcon("filesaveas"),  i18n( "&Export Worksheet..." ), actionCollection(), "export_worksheet" );
-  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( exportWorkSheet() ));
+  mTabRemoveAction = new KAction(KIcon("tab_remove"),  i18n( "&Remove Worksheet" ), actionCollection(), "remove_worksheet" );
+  connect(mTabRemoveAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( removeWorkSheet() ));
+  mTabExportAction = new KAction(KIcon("filesaveas"),  i18n( "&Export Worksheet..." ), actionCollection(), "export_worksheet" );
+  connect(mTabExportAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( exportWorkSheet() ));
 
   KStdAction::quit( this, SLOT( close() ), actionCollection() );
 
@@ -129,6 +132,18 @@ TopLevel::TopLevel( const char *name )
     resize( 640, 480 );
   setupGUI(ToolBar | Keys | StatusBar | Create);
   setAutoSaveSettings();
+}
+
+void TopLevel::currentTabChanged(int index)
+{
+  kDebug() << "Current tab changed to " << index << endl;
+  QWidget *wdg = mWorkSpace->widget(index);
+  WorkSheet *sheet = (WorkSheet *)(wdg);
+  Q_ASSERT(sheet);
+  bool locked = !sheet || sheet->isLocked();
+  mTabRemoveAction->setVisible(!locked);
+  mTabExportAction->setVisible(!locked);
+  mSensorBrowser->setVisible(!locked);    
 }
 
 
@@ -380,7 +395,7 @@ int main( int argc, char** argv )
   // has registered with dbus
 #ifdef FORK_KSYSGUARD
   int initpipe[ 2 ];
-  pipe( initpipe );*/
+  pipe( initpipe );
 #endif
   /* This forking will put ksysguard in it's own session not having a
    * controlling terminal attached to it. This prevents ssh from
@@ -434,13 +449,6 @@ int main( int argc, char** argv )
   KSGRD::SensorMgr = new KSGRD::SensorManager();
   KSGRD::Style = new KSGRD::StyleEngine();
 
-  KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
-  int result = 0;
-
-//    app->dcopClient()->registerAs( "ksysguard" );
-//    app->dcopClient()->setDefaultObject( "KSysGuardIface" );
-//    // We have registered with DCOP, our parent can exit now.
 
 #ifdef FORK_KSYSGUARD
   char c = 0;
@@ -454,7 +462,7 @@ int main( int argc, char** argv )
     topLevel->restore( 1 );
   else
   {
-    topLevel->readProperties( app->sessionConfig() );
+    topLevel->readProperties( KGlobal::config() );
   }
 
   topLevel->initStatusBar();
@@ -462,7 +470,7 @@ int main( int argc, char** argv )
   KSGRD::SensorMgr->setBroadcaster( topLevel );
 
   // run the application
-  result = app->exec();
+  int result = app->exec();
 
 
   delete KSGRD::Style;

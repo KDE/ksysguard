@@ -538,8 +538,8 @@ ProcessController::saveSettings(QDomDocument& doc, QDomElement& element, bool sa
 	element.setAttribute("sensorName", sensors().at(0)->name());
 	element.setAttribute("sensorType", sensors().at(0)->type());
 //	element.setAttribute("tree", (uint) mUi.chkTreeView->isChecked());
-	element.setAttribute("showTotals", (uint) (mUi.chkShowTotals->checkState() == Qt::Unchecked));
-	
+	element.setAttribute("showTotals", (uint) (mUi.chkShowTotals->checkState() == Qt::Checked));
+
 	element.setAttribute("filter", mUi.cmbFilter->currentIndex());
 	element.setAttribute("sortColumn", mUi.treeView->header()->sortIndicatorSection());
 	element.setAttribute("incrOrder", (uint) (mUi.treeView->header()->sortIndicatorOrder() == Qt::AscendingOrder));

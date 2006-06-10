@@ -15,9 +15,7 @@
   <Menu name="file"><text>&amp;File</text>
     <Action name="new_worksheet"/>
     <Action name="import_worksheet"/>
-    <Separator/>
     <Action name="export_worksheet"/>
-    <Separator/>
     <Action name="remove_worksheet"/>
     <Separator/>
     <Action name="connect_host"/>
