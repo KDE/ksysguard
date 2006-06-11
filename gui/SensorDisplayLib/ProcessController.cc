@@ -55,6 +55,8 @@
 ProcessController::ProcessController(QWidget* parent, const QString &title)
 	: KSGRD::SensorDisplay(parent, title, false/*isApplet.  Can't be applet, so false*/), mModel(parent), mFilterModel(parent)
 {
+	//When XResCountdown reaches 0, we call 'xres'.
+	mXResCountdown = 0;
 	mInitialSortCol = 1;
         mInitialSortInc = false;
 	mXResSupported = false;
@@ -181,12 +183,17 @@ bool ProcessController::addSensor(const QString& hostName,
 	sensors().at(0)->setIsOk(true); //Assume it is okay from the start
 	setSensorOk(sensors().at(0)->isOk());
 	
+
 	kDebug() << "Sending ps? in addsensor " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 	sendRequest(hostName, "ps?", Ps_Info_Command);
+
+	sendRequest(hostName, "test kill", Kill_Supported_Command);
+	kDebug() << "Sending test xres in addsensor" << endl;
+	sendRequest(hostName, "test xres", XRes_Supported_Command);
+	sendRequest(hostName, "xres?", XRes_Info_Command);
+
 	kDebug() << "Sending ps in addsensor " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 	sendRequest(hostName, "ps", Ps_Command);
-	sendRequest(hostName, "test kill", Kill_Supported_Command);
-	sendRequest(hostName, "test xres", XRes_Supported_Command);
 
 	if (title.isEmpty())
 		setTitle(i18n("%1: Running Processes", hostName));
@@ -203,8 +210,14 @@ ProcessController::updateList()
 		return;
 	}
 	sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);
-	if(mXResSupported)
-		sendRequest(sensors().at(0)->hostName(), "xres", XRes_Command);
+	//The 'xres' call is very expensive - takes about 2 seconds on my machine. Rather than calling it every 2 seconds
+	//instead just call it every 5th time that we call ps.  It won't change much.
+	if(mXResSupported) {
+		if(--mXResCountdown <= 0) {
+			mXResCountdown = 5;
+			sendRequest(sensors().at(0)->hostName(), "xres", XRes_Command);
+		}
+	}
 }
 
 void ProcessController::killProcess(int pid, int sig)
@@ -466,8 +479,8 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		  mXResSupported = false;
 		else {
 		  mXResSupported = (answer[0].toInt() == 1);
-		  if(mXResSupported) 
-			sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
+//		  if(mXResSupported) 
+//			sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
 		}
 		break;
 	}

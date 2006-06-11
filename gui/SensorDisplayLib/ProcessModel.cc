@@ -1096,7 +1096,7 @@ bool ProcessModel::setXResHeader(const QStringList &header, const QByteArray &)
 		   !mHeadingsToType.contains(HeadingXMemory));
 	if(!insertXIdentifier && !insertXMemory) return true; //nothing to do - already inserted
 
-	beginInsertColumns(QModelIndex(), mHeadings.count()-1, mHeadings.count() + (insertXMemory && insertXIdentifier)?1:0);
+	beginInsertColumns(QModelIndex(), mHeadings.count()-1, mHeadings.count() + ((insertXMemory && insertXIdentifier)?1:0));
 
 		if(insertXIdentifier) {
 			mHeadings << i18nc("process heading", "Application");
