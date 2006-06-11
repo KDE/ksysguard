@@ -784,7 +784,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		}
 		switch(mHeadingsToType[index.column()]) {
 		case HeadingName: {
-			QString tooltip = i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3", process->name, (long int)process->pid, (long int)process->parent_pid);
+			QString tooltip = i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3<br/>Command: %4", process->name, (long int)process->pid, (long int)process->parent_pid, process->command);
 
 			if(!tracer.isEmpty())
 				return tooltip + "<br/>" + tracer;
