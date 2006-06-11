@@ -796,7 +796,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			return getTooltipForUser(process->uid, process->gid);
 		}
 		case HeadingXMemory: {
-			QString tooltip = i18n("<qt>Number of pixmaps: %1<br/>Amount of memory used by pixmaps: %2 KiB<br/>Other X server memory used: %3 KiB", process->xResNumPxm, KGlobal::locale()->formatByteSize(process->xResPxmMemBytes), KGlobal::locale()->formatByteSize(process->xResMemOtherBytes));
+			QString tooltip = i18n("<qt>Number of pixmaps: %1<br/>Amount of memory used by pixmaps: %2<br/>Other X server memory used: %3", process->xResNumPxm, KGlobal::locale()->formatByteSize(process->xResPxmMemBytes), KGlobal::locale()->formatByteSize(process->xResMemOtherBytes));
 			if(!tracer.isEmpty())
 				return tooltip + "<br/>" + tracer;
 			return tooltip;
@@ -1097,14 +1097,13 @@ bool ProcessModel::setXResHeader(const QStringList &header, const QByteArray &)
 	if(!insertXIdentifier && !insertXMemory) return true; //nothing to do - already inserted
 
 	beginInsertColumns(QModelIndex(), mHeadings.count()-1, mHeadings.count() + ((insertXMemory && insertXIdentifier)?1:0));
-
-		if(insertXIdentifier) {
-			mHeadings << i18nc("process heading", "Application");
-			mHeadingsToType << HeadingXIdentifier;
-		}
 		if(insertXMemory) {
 			mHeadings << i18nc("process heading", "X Server Memory");
 			mHeadingsToType << HeadingXMemory;
+		}
+		if(insertXIdentifier) {
+			mHeadings << i18nc("process heading", "Application");
+			mHeadingsToType << HeadingXIdentifier;
 		}
 	endInsertColumns();
 	return true;
