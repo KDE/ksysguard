@@ -30,7 +30,7 @@ set(ksysguardd_SRCS ${libccont_SRCS}
 add_executable(ksysguardd ${ksysguardd_SRCS})
 
 ADD_DEPENDENCIES(ksysguardd libksysguardd)
-TARGET_LINK_LIBRARIES(ksysguardd libksysguardd)
+TARGET_LINK_LIBRARIES(ksysguardd libksysguardd kdefakes)
 
 install(TARGETS ksysguardd DESTINATION bin)
 
