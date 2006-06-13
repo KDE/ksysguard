@@ -21,11 +21,11 @@
 #ifndef KSG_APPLETSETTINGS_H
 #define KSG_APPLETSETTINGS_H
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 class KIntNumInput;
 
-class KSGAppletSettings : public KDialogBase
+class KSGAppletSettings : public KDialog
 {
   public:
     KSGAppletSettings( QWidget *parent = 0, const char *name = 0 );

@@ -21,7 +21,7 @@
 #ifndef KSG_DANCINGBARSSETTINGS_H
 #define KSG_DANCINGBARSSETTINGS_H
 
-#include <kdialogbase.h>
+#include <kpagedialog.h>
 //Added by qt3to4:
 #include <QList>
 
@@ -35,7 +35,7 @@ class QCheckBox;
 class Q3ListViewItem;
 class QPushButton;
 
-class DancingBarsSettings : public KDialogBase
+class DancingBarsSettings : public KPageDialog
 {
   Q_OBJECT
 

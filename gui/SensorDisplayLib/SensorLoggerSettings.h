@@ -21,14 +21,14 @@
 #ifndef SENSORLOGGERSETTINGS_H
 #define SENSORLOGGERSETTINGS_H
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 #include <QString>
 #include <QColor>
 
 class SensorLoggerSettingsWidget;
 
-class SensorLoggerSettings : public KDialogBase
+class SensorLoggerSettings : public KDialog
 {
   Q_OBJECT
 

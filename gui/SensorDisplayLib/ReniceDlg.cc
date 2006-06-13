@@ -30,13 +30,22 @@
 
 ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 					 int pid)
-	: KDialogBase( parent, name, true, i18n("Renice Process"),
-                       KDialogBase::Ok|KDialogBase::Cancel, KDialogBase::Ok, true )
+	: KDialog( parent )
 {
+  setObjectName( name );
+  setModal( true );
+  setCaption( i18n("Renice Process") );
+  setButtons( Ok | Cancel );
+  enableButtonSeparator( true );
+
+  connect( this, SIGNAL( okClicked() ), SLOT( slotOk() ) );
+  connect( this, SIGNAL( cancelClicked() ), SLOT( slotCancel() ) );
+
 	value = currentPPrio;
 
-         QWidget *page = new QWidget( this );
-         setMainWidget(page);
+  QWidget *page = new QWidget( this );
+  setMainWidget(page);
+
 	vLay = new QVBoxLayout(page);
 	vLay->setObjectName("ReniceLayout");
 	vLay->setSpacing(-1);
@@ -87,10 +96,10 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 
 void ReniceDlg::slotOk()
 {
-    done(value);
+  done(value);
 }
 
 void ReniceDlg::slotCancel()
 {
-    done(40);
+  done(40);
 }

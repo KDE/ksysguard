@@ -24,12 +24,12 @@
 #ifndef KSG_WORKSHEETSETTINGS_H
 #define KSG_WORKSHEETSETTINGS_H
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 class KLineEdit;
 class KIntNumInput;
 
-class WorkSheetSettings : public KDialogBase
+class WorkSheetSettings : public KDialog
 {
   Q_OBJECT
 

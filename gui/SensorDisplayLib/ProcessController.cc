@@ -37,7 +37,7 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 #include <ksgrd/SensorManager.h>
 

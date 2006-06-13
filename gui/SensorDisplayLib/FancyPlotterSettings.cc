@@ -43,9 +43,15 @@
 #include "FancyPlotterSettings.h"
 
 FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
-  : KDialogBase( Tabbed, i18n( "Signal Plotter Settings" ), Ok | Apply | Cancel,
-                 Ok, parent, name, true, true )
+  : KPageDialog( parent )
 {
+  setFaceType( Tabbed );
+  setCaption( i18n( "Signal Plotter Settings" ) );
+  setButtons( Ok | Apply | Cancel );
+  setObjectName( name );
+  setModal( true );
+  enableButtonSeparator( true );
+
   QFrame *page = 0;
   QGridLayout *pageLayout = 0;
   QGridLayout *boxLayout = 0;
@@ -53,7 +59,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   QLabel *label = 0;
 
   // Style page
-  page = addPage( i18n( "Style" ) );
+  page = new QFrame( this );
+  addPage( page, i18n( "Style" ) );
   pageLayout = new QGridLayout( page );
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
@@ -76,7 +83,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   pageLayout->addWidget( buttonBox, 1, 0, 1, 2 );
 
   // Scales page
-  page = addPage( i18n( "Scales" ) );
+  page = new QFrame( this );
+  addPage( page, i18n( "Scales" ) );
   pageLayout = new QGridLayout( page );
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
@@ -130,7 +138,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   pageLayout->addWidget( groupBox, 1, 0 );
 
   // Grid page
-  page = addPage( i18n( "Grid" ) );
+  page = new QFrame( this );
+  addPage( page, i18n( "Grid" ) );
   pageLayout = new QGridLayout( page );
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
@@ -236,7 +245,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   pageLayout->setRowStretch( 2, 1 );
 
   // Sensors page
-  page = addPage( i18n( "Sensors" ) );
+  page = new QFrame( this );
+  addPage( page, i18n( "Sensors" ) );
   pageLayout = new QGridLayout( page );
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );

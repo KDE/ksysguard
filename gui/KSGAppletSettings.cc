@@ -28,10 +28,13 @@
 #include "KSGAppletSettings.h"
 
 KSGAppletSettings::KSGAppletSettings( QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, QString(), Ok|Apply|Cancel,
-      Ok, true )
+    : KDialog( parent )
 {
+  setObjectName( name );
+  setModal( true );
   setCaption( i18n( "KSysGuard Applet Settings" ) );
+  setButtons( Ok|Apply|Cancel );
+  enableButtonSeparator( true );
 
   QWidget *page = new QWidget( this );
   setMainWidget( page );

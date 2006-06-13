@@ -23,9 +23,14 @@
 #include <klocale.h>
 
 ListViewSettings::ListViewSettings( QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, i18n( "List View Settings" ),
-      Ok|Apply|Cancel, Ok, true )
+    : KDialog( parent )
 {
+  setObjectName( name );
+  setModal( true );
+  setCaption( i18n( "List View Settings" ) );
+  setButtons( Ok | Apply | Cancel );
+  enableButtonSeparator( true );
+
   m_settingsWidget = new ListViewSettingsWidget( this, "m_settingsWidget" );
   setMainWidget( m_settingsWidget );
 }

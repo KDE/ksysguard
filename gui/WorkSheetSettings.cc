@@ -35,10 +35,14 @@
 
 #include "WorkSheetSettings.h"
 
-WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked)
-  : KDialogBase( KDialogBase::Swallow, Qt::MSWindowsFixedSizeDialogHint, parent, 0, true, i18n("Work Sheet Settings"), Ok|Cancel, Ok)
+WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
+  : KDialog( parent )
 {
+  setObjectName( name );
+  setModal( true );
   setCaption( i18n( "Worksheet Properties" ) );
+  setButtons( Ok|Cancel );
+  enableButtonSeparator( true );
 
   QWidget *page = new QWidget( this );
   setMainWidget( page );

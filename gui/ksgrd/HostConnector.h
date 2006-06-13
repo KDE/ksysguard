@@ -21,17 +21,16 @@
 #ifndef KSG_HOSTCONNECTOR_H
 #define KSG_HOSTCONNECTOR_H
 
-#include <kdialogbase.h>
-//Added by qt3to4:
 #include <QLabel>
+
+#include <kdialog.h>
 
 class KComboBox;
 
-class QLabel;
 class QRadioButton;
 class QSpinBox;
 
-class HostConnector : public KDialogBase
+class HostConnector : public KDialog
 {
   Q_OBJECT
 

@@ -39,11 +39,18 @@
 #include "DancingBarsSettings.h"
 
 DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
-  : KDialogBase( Tabbed, i18n( "Edit BarGraph Preferences" ),
-    Ok | Apply | Cancel, Ok, parent, name, true, true )
+  : KPageDialog( parent )
 {
+  setFaceType( Tabbed );
+  setCaption( i18n( "Edit BarGraph Preferences" ) );
+  setButtons( Ok | Apply | Cancel );
+  setObjectName( name );
+  setModal( true );
+  enableButtonSeparator( true );
+
   // Range page
-  QFrame *page = addPage( i18n( "Range" ) );
+  QFrame *page = new QFrame( this );
+  addPage( page, i18n( "Range" ) );
   QGridLayout *pageLayout = new QGridLayout( page );
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
@@ -84,7 +91,8 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   pageLayout->setRowStretch( 2, 1 );
 
   // Alarm page
-  page = addPage( i18n( "Alarms" ) );
+  page = new QFrame( this );
+  addPage( page, i18n( "Alarms" ) );
   pageLayout = new QGridLayout( page );
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
@@ -130,7 +138,8 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   pageLayout->setRowStretch( 2, 1 );
 
   // Look page
-  page = addPage( i18n( "Look" ) );
+  page = new QFrame( this );
+  addPage( page, i18n( "Look" ) );
   pageLayout = new QGridLayout( page );
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
@@ -167,7 +176,8 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   pageLayout->setRowStretch( 4, 1 );
 
   // Sensor page
-  page = addPage( i18n( "Sensors" ) );
+  page = new QFrame( this );
+  addPage( page, i18n( "Sensors" ) );
   pageLayout = new QGridLayout( page );
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );

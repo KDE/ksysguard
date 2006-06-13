@@ -24,15 +24,14 @@
 #ifndef KSG_TIMERSETTINGS_H
 #define KSG_TIMERSETTINGS_H
 
-#include <kdialogbase.h>
-//Added by qt3to4:
 #include <QLabel>
 
+#include <kdialog.h>
+
 class QCheckBox;
-class QLabel;
 class QSpinBox;
 
-class KDE_EXPORT TimerSettings : public KDialogBase
+class KDE_EXPORT TimerSettings : public KDialog
 {
   Q_OBJECT
 

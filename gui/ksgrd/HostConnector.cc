@@ -36,10 +36,17 @@
 #include "HostConnector.h"
 
 HostConnector::HostConnector( QWidget *parent, const char *name )
-  : KDialogBase( Plain, i18n( "Connect Host" ), Help | Ok | Cancel, Ok,
-                 parent, name, true, true )
+  : KDialog( parent )
 {
-  QFrame *page = plainPage();
+  setObjectName( name );
+  setModal( true );
+  setCaption( i18n( "Connect Host" ) );
+  setButtons( Help | Ok | Cancel );
+  enableButtonSeparator( true );
+
+  QFrame *page = new QFrame( this );
+  setMainWidget( page );
+
   QGridLayout *layout = new QGridLayout( page );
   layout->setSpacing( spacingHint() );
   layout->setMargin( 0 );

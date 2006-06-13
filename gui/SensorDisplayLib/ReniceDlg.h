@@ -33,7 +33,7 @@
 #undef Below
 #endif
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 #include <QLabel>
 #include <QLayout>
 #include <qlcdnumber.h>
@@ -46,7 +46,7 @@
  * This class creates and handles a simple dialog to change the scheduling
  * priority of a process.
  */
-class ReniceDlg : public KDialogBase
+class ReniceDlg : public KDialog
 {
 	Q_OBJECT
 

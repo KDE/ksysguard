@@ -24,10 +24,9 @@
 #ifndef KSG_STYLESETTINGS_H
 #define KSG_STYLESETTINGS_H
 
-#include <kdialogbase.h>
+#include <kpagedialog.h>
 
 #include <QColor>
-//Added by qt3to4:
 #include <QList>
 #include <Q3ListBox>
 class KColorButton;
@@ -35,7 +34,7 @@ class KColorButton;
 class Q3ListBoxItem;
 class QPushButton;
 
-class StyleSettings : public KDialogBase
+class StyleSettings : public KPageDialog
 {
   Q_OBJECT
 

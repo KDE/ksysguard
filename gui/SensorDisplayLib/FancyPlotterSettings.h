@@ -21,9 +21,9 @@
 #ifndef FANCYPLOTTERSETTINGS_H
 #define FANCYPLOTTERSETTINGS_H
 
-#include <kdialogbase.h>
-//Added by qt3to4:
 #include <QList>
+
+#include <kpagedialog.h>
 
 class KColorButton;
 class KIntNumInput;
@@ -35,7 +35,7 @@ class Q3ListViewItem;
 class QPushButton;
 class QRadioButton;
 
-class FancyPlotterSettings : public KDialogBase
+class FancyPlotterSettings : public KPageDialog
 {
   Q_OBJECT
 

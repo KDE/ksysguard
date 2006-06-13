@@ -25,9 +25,14 @@
 #include <klocale.h>
 
 SensorLoggerDlg::SensorLoggerDlg( QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, i18n( "Sensor Logger" ),
-      Ok|Cancel, Ok, true )
+    : KDialog( parent )
 {
+  setObjectName( name );
+  setModal( true );
+  setCaption( i18n( "Sensor Logger" ) );
+  setButtons( Ok|Cancel );
+  enableButtonSeparator( true );
+
   QWidget *main = new QWidget( this );
 
   QVBoxLayout *topLayout = new QVBoxLayout( main );

@@ -23,9 +23,14 @@
 #include <klocale.h>
 
 MultiMeterSettings::MultiMeterSettings( QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, i18n( "Multimeter Settings" ),
-      Ok|Apply|Cancel, Ok, true )
+    : KDialog( parent )
 {
+  setObjectName( name );
+  setModal( true );
+  setCaption( i18n( "Multimeter Settings" ) );
+  setButtons( Ok|Apply|Cancel );
+  enableButtonSeparator( true );
+
   m_settingsWidget = new MultiMeterSettingsWidget( this, "m_settingsWidget" );
   setMainWidget( m_settingsWidget );
 }

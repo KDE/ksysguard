@@ -41,10 +41,17 @@
 #include "StyleSettings.h"
 
 StyleSettings::StyleSettings( QWidget *parent, const char *name )
-  : KDialogBase( Tabbed, i18n( "Global Style Settings" ), Help | Ok | Apply |
-                 Cancel, Ok, parent, name, true, true )
+  : KPageDialog( parent )
 {
-  QFrame *page = addPage( i18n( "Display Style" ) );
+  setFaceType( Tabbed );
+  setObjectName( name );
+  setModal( true );
+  setCaption( i18n( "Global Style Settings" ) );
+  setButtons( Help | Ok | Apply | Cancel );
+  enableButtonSeparator( true );
+
+  QFrame *page = new QFrame( this );
+  addPage( page, i18n( "Display Style" ) );
   QGridLayout *layout = new QGridLayout( page );
   layout->setSpacing( spacingHint() );
   layout->setMargin( 0 );
@@ -87,7 +94,8 @@ StyleSettings::StyleSettings( QWidget *parent, const char *name )
 
   layout->setRowStretch( 5, 1 );
 
-  page = addPage( i18n( "Sensor Colors" ) );
+  page = new QFrame( this );
+  addPage( page, i18n( "Sensor Colors" ) );
   layout = new QGridLayout( page );
   layout->setSpacing( spacingHint() );
   layout->setMargin( 0 );

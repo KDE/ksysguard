@@ -33,10 +33,16 @@
 #include "TimerSettings.h"
 
 TimerSettings::TimerSettings( QWidget *parent, const char *name )
-  : KDialogBase( Plain, i18n( "Timer Settings" ), Ok | Cancel,
-                 Ok, parent, name, true, true )
+  : KDialog( parent )
 {
-  QFrame *page = plainPage();
+  setObjectName( name );
+  setModal( true );
+  setCaption( i18n( "Timer Settings" ) );
+  setButtons( Ok | Cancel );
+  enableButtonSeparator( true );
+
+  QFrame *page = new QFrame( this );
+  setMainWidget( page );
 
   QGridLayout *layout = new QGridLayout( page );
   layout->setSpacing( spacingHint() );

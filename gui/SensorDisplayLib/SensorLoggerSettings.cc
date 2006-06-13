@@ -23,9 +23,14 @@
 #include <klocale.h>
 
 SensorLoggerSettings::SensorLoggerSettings( QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, i18n( "Sensor Logger Settings" ),
-      Ok|Apply|Cancel, Ok, true )
+    : KDialog( parent )
 {
+  setObjectName( name );
+  setModal( true );
+  setCaption( i18n( "Sensor Logger Settings" ) );
+  setButtons( Ok|Apply|Cancel );
+  enableButtonSeparator( true );
+
   m_settingsWidget = new SensorLoggerSettingsWidget( this, "m_settingsWidget" );
   setMainWidget( m_settingsWidget );
 }

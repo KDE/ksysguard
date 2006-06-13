@@ -21,14 +21,14 @@
 #ifndef LISTVIEWSETTINGS_H
 #define LISTVIEWSETTINGS_H
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 #include <QString>
 #include <QColor>
 
 class ListViewSettingsWidget;
 
-class ListViewSettings : public KDialogBase
+class ListViewSettings : public KDialog
 {
   Q_OBJECT
 
