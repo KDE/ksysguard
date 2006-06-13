@@ -21,8 +21,6 @@
 #ifndef KSG_FANCYPLOTTER_H
 #define KSG_FANCYPLOTTER_H
 
-#include <kdialogbase.h>
-
 #include <SensorDisplay.h>
 
 #include "SignalPlotter.h"
