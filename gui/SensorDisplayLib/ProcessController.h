@@ -25,12 +25,12 @@
 #include <QWidget>
 #include <QAbstractItemModel>
 
-//Added by qt3to4:
 #include <QTimerEvent>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QResizeEvent>
 #include <QList>
+#include <QProcess>
 
 
 #include <kapplication.h>
@@ -69,11 +69,6 @@ public:
 
 	bool saveSettings(QDomDocument& doc, QDomElement& element, bool save = true);
 
-	void refreshList(void)
-	{
-		updateList();
-	}
-
 	virtual void timerEvent(QTimerEvent*)
 	{
 		updateList();
@@ -109,6 +104,7 @@ private slots:
 	void expandInit();
 	void showContextMenu(const QPoint &point);
 	void showOrHideColumn(QAction *);
+	void killFailed();
 signals:
 	void setFilterMode(int);
 
@@ -139,6 +135,7 @@ private:
 	 */
 	int mXResCountdown;
 	
+	QProcess *mKillProcess;
 	QStringList mHeader;
 	QStringList mColType;
 	QList<QStringList> mData;

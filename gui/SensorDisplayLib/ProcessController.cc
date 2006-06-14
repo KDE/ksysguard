@@ -55,6 +55,7 @@
 ProcessController::ProcessController(QWidget* parent, const QString &title)
 	: KSGRD::SensorDisplay(parent, title, false/*isApplet.  Can't be applet, so false*/), mModel(parent), mFilterModel(parent)
 {
+	mKillProcess = 0;
 	//When XResCountdown reaches 0, we call 'xres'.
 	mXResCountdown = 0;
 	mInitialSortCol = 1;
@@ -72,7 +73,6 @@ ProcessController::ProcessController(QWidget* parent, const QString &title)
 	mUi.treeView->header()->setClickable(true);
 	mUi.treeView->header()->setSortIndicatorShown(true);
 	
-	connect(mUi.btnRefresh, SIGNAL(clicked()), this, SLOT(updateList()));
 	connect(mUi.btnKillProcess, SIGNAL(clicked()), this, SLOT(killProcess()));
 	connect(mUi.txtFilter, SIGNAL(textChanged(const QString &)), &mFilterModel, SLOT(setFilterRegExp(const QString &)));
 	connect(mUi.cmbFilter, SIGNAL(currentIndexChanged(int)), &mFilterModel, SLOT(setFilter(int)));
@@ -190,7 +190,6 @@ bool ProcessController::addSensor(const QString& hostName,
 	sendRequest(hostName, "test kill", Kill_Supported_Command);
 	kDebug() << "Sending test xres in addsensor" << endl;
 	sendRequest(hostName, "test xres", XRes_Supported_Command);
-	sendRequest(hostName, "xres?", XRes_Info_Command);
 
 	kDebug() << "Sending ps in addsensor " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 	sendRequest(hostName, "ps", Ps_Command);
@@ -224,12 +223,6 @@ void ProcessController::killProcess(int pid, int sig)
 {
 	sendRequest(sensors().at(0)->hostName(),
 				QString("kill %1 %2" ).arg(pid).arg(sig), Kill_Command);
-
-	if ( !timerOn() )
-	    // give ksysguardd time to update its proccess list
-	    QTimer::singleShot(3000, this, SLOT(updateList()));
-	else
-	    updateList();
 }
 
 void
@@ -272,11 +265,6 @@ ProcessController::killProcess()
             sendRequest(sensors().at(0)->hostName(), QString("kill %1 %2" ).arg(selectedPids.at( i ))
                        .arg(MENU_ID_SIGKILL), Kill_Command);
         }
-	if ( !timerOn())
-		// give ksysguardd time to update its proccess list
-		QTimer::singleShot(3000, this, SLOT(updateList()));
-	else
-		updateList();
 }
 
 void
@@ -381,11 +369,33 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 				i18n("Error while attempting to kill process %1.",
 				 answer[1]));
 			break;
-		case 2:
-			KSGRD::SensorMgr->notify(
-				i18n("Insufficient permissions to kill "
-							 "process %1.", answer[1]));
+		case 2: {
+			if(!sensors().at(0)->isLocalhost()) {
+				KSGRD::SensorMgr->notify(
+					i18n("You do not have the permission to kill process %1 on host %2 and due to security "
+					     "considerations, KDE cannot execute root commands remotely",
+					     answer[1], sensors().at(0)->hostName()));
+				break;
+			} 
+			//Run as root with kdesu to get round insufficent privillages
+			QStringList arguments;
+			bool ok;
+			int pid = answer[1].toInt(&ok);
+			//I want to be extra careful here.  Make sure the pid really is a number. 
+			if(!ok) {
+				//something has gone seriously wrong.
+				KSGRD::SensorMgr->notify(i18n("There was an internal safety check problem trying to kill the process."));
+				break;
+			}
+			arguments << "kill" << QString(pid);
+			if(mKillProcess == 0) {
+				mKillProcess = new QProcess(this);
+				connect(mKillProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(killFailed()));
+			}
+			mKillProcess->start("kdesu", arguments);
+			
 			break;
+		}
 		case 3:
 			KSGRD::SensorMgr->notify(
 				i18n("Process %1 has already disappeared.",
@@ -395,7 +405,8 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 			KSGRD::SensorMgr->notify(i18n("Invalid Signal."));
 			break;
 		}
-		break;
+		QTimer::singleShot(0, this, SLOT(updateList())); //use a single shot incase we have multiple kill_command results
+		break;	
 	}
 	case Kill_Supported_Command:
 		kDebug() << "We received kill supported data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
@@ -459,7 +470,6 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 			sensorError(id,true);
 			return;
 		}
-
 		break;
 	}
 	case XRes_Command:
@@ -479,13 +489,19 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		  mXResSupported = false;
 		else {
 		  mXResSupported = (answer[0].toInt() == 1);
-//		  if(mXResSupported) 
-//			sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
+		  if(mXResSupported) 
+			sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
 		}
 		break;
 	}
 
 	}
+}
+
+void ProcessController::killFailed()
+{
+	KSGRD::SensorMgr->notify(i18n("You do not have the permission to kill process %1 and there "
+				      "was a problem trying to run as root"));
 }
 
 void
