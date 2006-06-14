@@ -35,10 +35,10 @@
 
 #include "WorkSheetSettings.h"
 
-WorkSheetSettings::WorkSheetSettings( QWidget* parent, const char* name )
+WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
   : KDialog( parent )
 {
-  setObjectName( name );
+  setObjectName( "WorkSheetSettings" );
   setModal( true );
   setCaption( i18n( "Worksheet Properties" ) );
   setButtons( Ok|Cancel );
