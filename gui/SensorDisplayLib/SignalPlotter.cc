@@ -81,6 +81,13 @@ bool SignalPlotter::addBeam( const QColor &color )
 
 void SignalPlotter::addSample( const QList<double>& sampleBuf )
 {
+  if(mSamples < 4) {
+    //It might be possible, under some race conditions, for addSample to be called before mSamples is set
+    //This is just to be safe
+    updateDataBuffers();
+    if(mSamples < 4)
+      return;
+  }
   mBeamData.prepend(sampleBuf);
   if(mBeamData.size() > mSamples) {
     mBeamData.removeLast(); // we have too many.  Remove the last item
@@ -91,6 +98,8 @@ void SignalPlotter::addSample( const QList<double>& sampleBuf )
   if(mBezierCurveOffset >= 2) mBezierCurveOffset = 0;
   else mBezierCurveOffset++;
 
+  Q_ASSERT(mBeamData.size() >= mBezierCurveOffset);
+  
   //FIXME: IS THIS NEEDED STILL?
   if ( mUseAutoRange ) { /* When all the data points are stacked on top of each other, the range will be up to the sum of them all */
     double sum = 0;
@@ -128,12 +137,12 @@ QList<QColor> &SignalPlotter::beamColors()
 
 void SignalPlotter::removeBeam( uint pos )
 {
-  if(pos >= mBeamColors.size()) return;
+  if(pos >= (uint)mBeamColors.size()) return;
   mBeamColors.removeAt( pos );
 
   QLinkedList< QList<double> >::Iterator i;
   for(i = mBeamData.begin(); i != mBeamData.end(); ++i) {
-    if( (*i).size() >= pos)
+    if( (uint)(*i).size() >= pos)
       (*i).removeAt(pos);
   }
 }
@@ -194,8 +203,7 @@ void SignalPlotter::setHorizontalScale( uint scale )
      return;
 
   mHorizontalScale = scale;
-  if (isVisible())
-     updateDataBuffers();
+  updateDataBuffers();
 }
 
 int SignalPlotter::horizontalScale() const
@@ -490,13 +498,14 @@ void SignalPlotter::paintEvent( QPaintEvent* )
     QLinkedList< QList<double> >::Iterator it = mBeamData.begin();
 
     /* mBezierCurveOffset is how many points we have at the start.
-     * All the bezier curves are in groups of 3, with the first of the next group being the last point of the previous group.
+     * All the bezier curves are in groups of 3, with the first of the next group being the last point
+     * of the previous group.
      *
-     * Example, when mBezierCurveOffset == 0, and we have data, then just plot a normal bezier curve (we will have at least 3 points in this case)
-     * When mBezierCurveOffset == 1, then we want a bezier curve that uses the first data point and the second data point.  Then the next group starts
-     *   from the second data point.
+     * Example, when mBezierCurveOffset == 0, and we have data, then just plot a normal bezier curve 
+     * (we will have at least 3 points in this case)
+     * When mBezierCurveOffset == 1, then we want a bezier curve that uses the first data point and 
+     * the second data point.  Then the next group starts from the second data point.
      * When mBezierCurveOffset == 2, then we want a bezier curve that uses the first, second and third data
-     *
      *
      */
 
@@ -527,9 +536,12 @@ void SignalPlotter::paintEvent( QPaintEvent* )
             prev_prev_prev_datapoints = prev_prev_datapoints = prev_datapoints;
 	  }
 	} else {
+	  //mBezierCurveOffset must be 2 now
           prev_datapoints = *it;
+	  Q_ASSERT(it != mBeamData.end());
 	  ++it;
 	  prev_prev_datapoints = *it;
+	  Q_ASSERT(it != mBeamData.end());
 	  ++it; //Now we are on the first element of the next group, if it exists
 	  if(it != mBeamData.end()) {
             prev_prev_prev_datapoints = *it;

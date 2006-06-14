@@ -190,7 +190,8 @@ bool ProcessController::addSensor(const QString& hostName,
 	sendRequest(hostName, "test kill", Kill_Supported_Command);
 	kDebug() << "Sending test xres in addsensor" << endl;
 	sendRequest(hostName, "test xres", XRes_Supported_Command);
-
+	
+	sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
 	kDebug() << "Sending ps in addsensor " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 	sendRequest(hostName, "ps", Ps_Command);
 
@@ -489,8 +490,8 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		  mXResSupported = false;
 		else {
 		  mXResSupported = (answer[0].toInt() == 1);
-		  if(mXResSupported) 
-			sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
+//		  if(mXResSupported) 
+//			sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
 		}
 		break;
 	}
@@ -520,6 +521,7 @@ ProcessController::sensorError(int, bool err)
 			kDebug() << "Sending ps1? " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 			sendRequest(sensors().at(0)->hostName(), "test kill", Kill_Supported_Command);
 			sendRequest(sensors().at(0)->hostName(), "test xres", XRes_Supported_Command);
+			sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
 			kDebug() << "Sending ps? command" << endl;
 			kDebug() << "Sending ps2? " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 			sendRequest(sensors().at(0)->hostName(), "ps?", Ps_Info_Command);
