@@ -36,7 +36,6 @@
 #include <QPushButton>
 #include <QRadioButton>
 
-//Added by qt3to4:
 #include <QGridLayout>
 #include <QList>
 
@@ -59,7 +58,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   QLabel *label = 0;
 
   // Style page
-  page = new QFrame( this );
+  page = new QFrame();
   addPage( page, i18n( "Style" ) );
   pageLayout = new QGridLayout( page );
   pageLayout->setSpacing( spacingHint() );
@@ -83,7 +82,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   pageLayout->addWidget( buttonBox, 1, 0, 1, 2 );
 
   // Scales page
-  page = new QFrame( this );
+  page = new QFrame();
   addPage( page, i18n( "Scales" ) );
   pageLayout = new QGridLayout( page );
   pageLayout->setSpacing( spacingHint() );
@@ -138,7 +137,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   pageLayout->addWidget( groupBox, 1, 0 );
 
   // Grid page
-  page = new QFrame( this );
+  page = new QFrame( );
   addPage( page, i18n( "Grid" ) );
   pageLayout = new QGridLayout( page );
   pageLayout->setSpacing( spacingHint() );
@@ -245,7 +244,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   pageLayout->setRowStretch( 2, 1 );
 
   // Sensors page
-  page = new QFrame( this );
+  page = new QFrame( );
   addPage( page, i18n( "Sensors" ) );
   pageLayout = new QGridLayout( page );
   pageLayout->setSpacing( spacingHint() );
