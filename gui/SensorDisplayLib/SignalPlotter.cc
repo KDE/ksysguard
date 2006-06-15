@@ -84,7 +84,9 @@ void SignalPlotter::addSample( const QList<double>& sampleBuf )
   if(mSamples < 4) {
     //It might be possible, under some race conditions, for addSample to be called before mSamples is set
     //This is just to be safe
+    kDebug() << "Error - mSamples is only " << mSamples << endl;
     updateDataBuffers();
+    kDebug() << "mSamples is now " << mSamples << endl;
     if(mSamples < 4)
       return;
   }

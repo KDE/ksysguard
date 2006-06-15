@@ -157,7 +157,7 @@ void FancyPlotter::applySettings()
   QList< QStringList > list = mSettingsDialog->sensors();
   QList< QStringList >::Iterator it;
 
-  for ( uint i = 0; i < sensors().count(); ++i ) {
+  for ( uint i = 0; i < (uint)(sensors().count()); ++i ) {
     bool found = false;
     for ( it = list.begin(); it != list.end(); ++it ) {
       if ( (*it)[ 0 ].toInt() == (int)( i + 1 + delCount ) ) {
@@ -230,15 +230,8 @@ bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
 
   ++mBeams;
 
-  QString tooltip;
-  for ( uint i = 0; i < mBeams; ++i ) {
-    tooltip += QString( "%1%2:%3" ).arg( i != 0 ? "\n" : "" )
-                                   .arg( sensors().at( mBeams - i - 1 )->hostName() )
-                                   .arg( sensors().at( mBeams - i - 1  )->name() );
-  }
-
-  mPlotter->setToolTip( tooltip );
-
+  setTooltip();
+  
   return true;
 }
 
@@ -254,16 +247,29 @@ bool FancyPlotter::removeSensor( uint pos )
   mBeams--;
   KSGRD::SensorDisplay::removeSensor( pos );
 
+  setTooltip();
+
+  return true;
+}
+
+void FancyPlotter::setTooltip()
+{
   QString tooltip;
   for ( uint i = 0; i < mBeams; ++i ) {
-    tooltip += QString( "%1%2:%3" ).arg( i != 0 ? "\n" : "" )
+    if(sensors().at( mBeams -i - 1)->isLocalhost()) {
+      tooltip += QString( "%1%2%3" ).arg( i != 0 ? "<br>" : "<qt>")
+				    .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">#</font>")
+                                    .arg( sensors().at( mBeams - i - 1  )->description() );
+    } else {
+      tooltip += QString( "%1%2%3:%4" ).arg( i != 0 ? "<br>" : "<qt>" )
+	      			   .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">#</font>")
                                    .arg( sensors().at( mBeams - i - 1 )->hostName() )
-                                   .arg( sensors().at( mBeams - i - 1  )->name() );
+                                   .arg( sensors().at( mBeams - i - 1  )->description() );
+    }
   }
 
   mPlotter->setToolTip( tooltip );
 
-  return true;
 }
 
 void FancyPlotter::resizeEvent( QResizeEvent* )
@@ -309,12 +315,14 @@ void FancyPlotter::answerReceived( int id, const QStringList &answerlist )
         mPlotter->setUseAutoRange( true );
     }
     sensors().at( id - 100 )->setUnit( info.unit() );
+    sensors().at( id - 100 )->setDescription( info.name() );
+    setTooltip();
   }
 }
 
 bool FancyPlotter::restoreSettings( QDomElement &element )
 {
-  /* autoRage was added after KDE 2.x and was brokenly emulated by
+  /* autoRange was added after KDE 2.x and was brokenly emulated by
    * min == 0.0 and max == 0.0. Since we have to be able to read old
    * files as well we have to emulate the old behaviour as well. */
   double min = element.attribute( "min", "0.0" ).toDouble();

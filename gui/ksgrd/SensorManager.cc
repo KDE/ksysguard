@@ -145,6 +145,7 @@ SensorManager::SensorManager()
   mUnits.insert( "kBytes", new QString( i18n( "kBytes" ) ) );
   mUnits.insert( "min", new QString( i18nc( "the unit minutes", "min" ) ) );
   mUnits.insert( "MHz", new QString( i18nc( "the frequency unit", "MHz" ) ) );
+  mUnits.insert( "%", new QString( i18nc( "a percentage", "%" ) ) );
 
   mTypes.setAutoDelete( true );
   mTypes.insert( "integer", new QString( i18n( "Integer Value" ) ) );

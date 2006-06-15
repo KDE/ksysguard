@@ -81,7 +81,8 @@ class FancyPlotter : public KSGRD::SensorDisplay
 
   protected:
     virtual void resizeEvent( QResizeEvent* );
-
+    void setTooltip();
+    
   private:
     uint mBeams;
 

@@ -21,13 +21,10 @@
 #ifndef KSG_SENSORDISPLAY_H
 #define KSG_SENSORDISPLAY_H
 
-#include <q3groupbox.h>
 #include <QLabel>
 #include <QWidget>
-//Added by qt3to4:
 #include <QTimerEvent>
 #include <QEvent>
-#include <Q3PtrList>
 
 #include <knotifyclient.h>
 
@@ -256,7 +253,7 @@ class SensorDisplay : public QWidget, public SensorClient
     bool timerOn() const;
     bool isApplet() const {return mIsApplet;}
 
-    Q3PtrList<SensorProperties> &sensors();
+    QList<SensorProperties *> &sensors();
 
   private:
     void updateWhatsThis();
@@ -269,7 +266,7 @@ class SensorDisplay : public QWidget, public SensorClient
     int mTimerId;
     int mUpdateInterval;
 
-    Q3PtrList<SensorProperties> mSensors;
+    QList<SensorProperties *> mSensors;
 
     QString mTitle;
     QString mUnit;

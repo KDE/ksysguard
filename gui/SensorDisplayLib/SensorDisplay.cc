@@ -52,7 +52,6 @@ SensorDisplay::SensorDisplay( QWidget *parent, const QString &title, bool isAppl
   :	QWidget( parent )
 {
   mIsApplet = isApplet;
-  mSensors.setAutoDelete( true );
 
   // default interval is 2 seconds.
   mUpdateInterval = 2;
@@ -102,7 +101,7 @@ void SensorDisplay::registerSensor( SensorProperties *sp )
 
 void SensorDisplay::unregisterSensor( uint pos )
 {
-  mSensors.remove( pos );
+  delete mSensors.takeAt( pos );
 }
 
 void SensorDisplay::configureUpdateInterval()
@@ -129,8 +128,9 @@ void SensorDisplay::configureUpdateInterval()
 void SensorDisplay::timerEvent( QTimerEvent* )
 {
   int i = 0;
-  for ( SensorProperties *s = mSensors.first(); s; s = mSensors.next(), ++i )
-    sendRequest( s->hostName(), s->name(), i );
+
+  foreach( SensorProperties *s, mSensors)
+    sendRequest( s->hostName(), s->name(), i++ );
 }
 
 bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
@@ -220,7 +220,7 @@ void SensorDisplay::sensorError( int sensorId, bool err )
 	}
 
   bool ok = true;
-  for ( uint i = 0; i < mSensors.count(); ++i )
+  for ( uint i = 0; i < (uint)mSensors.count(); ++i )
     if ( !mSensors.at( i )->isOk() ) {
       ok = false;
       break;
@@ -241,7 +241,7 @@ void SensorDisplay::updateWhatsThis()
 
 void SensorDisplay::hosts( QStringList& list )
 {
-  for ( SensorProperties *s = mSensors.first(); s; s = mSensors.next() )
+  foreach( SensorProperties *s, mSensors)
     if ( !list.contains( s->hostName() ) )
       list.append( s->hostName() );
 }
@@ -387,7 +387,7 @@ bool SensorDisplay::modified() const
   return mModified;
 }
 
-Q3PtrList<SensorProperties> &SensorDisplay::sensors()
+QList<SensorProperties *> &SensorDisplay::sensors()
 {
   return mSensors;
 }
