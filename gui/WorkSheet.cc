@@ -330,21 +330,21 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
       QAction *a4 = pm.addAction( i18n( "Log to a &file" ) );
       QAction *execed = pm.exec( QCursor::pos() );
       if (execed == a1)
-	newDisplay = new FancyPlotter( this, sensorDescr, false );
+	newDisplay = new FancyPlotter( this, sensorDescr, &mSharedSettings );
       else if (execed == a2)
-	newDisplay = new MultiMeter( this, sensorDescr, false );
+	newDisplay = new MultiMeter( this, sensorDescr, &mSharedSettings);
       else if (execed == a3)
-	 newDisplay = new DancingBars( this, sensorDescr, false );
+	 newDisplay = new DancingBars( this, sensorDescr, &mSharedSettings);
       else if (execed == a4)
-	newDisplay = new SensorLogger( this, sensorDescr, false );
+	newDisplay = new SensorLogger( this, sensorDescr, &mSharedSettings);
       else
 	 return 0;
     } else if ( sensorType == "listview" )
-      newDisplay = new ListView( this, sensorDescr, false );
+      newDisplay = new ListView( this, sensorDescr, &mSharedSettings);
     else if ( sensorType == "logfile" )
-      newDisplay = new LogFile( this, sensorDescr, false );
+      newDisplay = new LogFile( this, sensorDescr, &mSharedSettings );
     else if ( sensorType == "sensorlogger" )
-      newDisplay = new SensorLogger( this, sensorDescr, false );
+      newDisplay = new SensorLogger( this, sensorDescr, &mSharedSettings );
     else if ( sensorType == "table" )
       newDisplay = new ProcessController( this, sensorDescr, &mSharedSettings);
     else {
@@ -453,17 +453,17 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
 
 
   if ( classType == "FancyPlotter" )
-    newDisplay = new FancyPlotter( 0, i18n("Dummy"), false );
+    newDisplay = new FancyPlotter( 0, i18n("Dummy"), &mSharedSettings );
   else if ( classType == "MultiMeter" )
-    newDisplay = new MultiMeter( 0, i18n("Dummy"), false );
+    newDisplay = new MultiMeter( 0, i18n("Dummy"), &mSharedSettings );
   else if ( classType == "DancingBars" )
-    newDisplay = new DancingBars( 0, i18n("Dummy"), false );
+    newDisplay = new DancingBars( 0, i18n("Dummy"), &mSharedSettings );
   else if ( classType == "ListView" )
-    newDisplay = new ListView( 0, i18n("Dummy"), false );
+    newDisplay = new ListView( 0, i18n("Dummy"), &mSharedSettings );
   else if ( classType == "LogFile" )
-    newDisplay = new LogFile( 0, i18n("Dummy"), false );
+    newDisplay = new LogFile( 0, i18n("Dummy"), &mSharedSettings );
   else if ( classType == "SensorLogger" )
-    newDisplay = new SensorLogger( 0, i18n("Dummy"), false );
+    newDisplay = new SensorLogger( 0, i18n("Dummy"), &mSharedSettings );
   else if ( classType == "ProcessController" )
     newDisplay = new ProcessController( 0, i18n("Dummy"), &mSharedSettings);
   else {
