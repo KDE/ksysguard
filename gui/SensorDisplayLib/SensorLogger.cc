@@ -136,8 +136,8 @@ LogSensor::answerReceived(int id, const QStringList& answer)
 	mLogFile.close();
 }
 
-SensorLogger::SensorLogger(QWidget *parent, const QString& title, bool isApplet)
-	: KSGRD::SensorDisplay(parent, title, isApplet)
+SensorLogger::SensorLogger(QWidget *parent, const QString& title, SharedSettings *workSheetSettings)
+	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
 	monitor = new Q3ListView(this, "monitor");
 	Q_CHECK_PTR(monitor);
@@ -164,7 +164,6 @@ SensorLogger::SensorLogger(QWidget *parent, const QString& title, bool isApplet)
 	setPlotterWidget(monitor);
 
 	setMinimumSize(50, 25);
-	setModified(false);
 }
 
 SensorLogger::~SensorLogger(void)
@@ -195,8 +194,6 @@ SensorLogger::addSensor(const QString& hostName, const QString& sensorName, cons
 			sensor->setUpperLimit(sld->upperLimit());
 
 			logSensors.append(sensor);
-
-			setModified(true);
 		}
 	}
 
@@ -227,8 +224,6 @@ SensorLogger::editSensor(LogSensor* sensor)
 			sensor->setUpperLimitActive(sld->upperLimitActive());
 			sensor->setLowerLimit(sld->lowerLimit());
 			sensor->setUpperLimit(sld->upperLimit());
-
-			setModified(true);
 		}
 	}
 
@@ -271,8 +266,6 @@ SensorLogger::applySettings()
 	cgroup.setColor(QPalette::Base, sls->backgroundColor());
 	cgroup.setColor(QPalette::Foreground, sls->alarmColor());
 	monitor->setPalette( cgroup );
-
-	setModified(true);
 }
 
 void
@@ -284,8 +277,6 @@ SensorLogger::applyStyle(void)
 	cgroup.setColor(QPalette::Base, KSGRD::Style->backgroundColor());
 	cgroup.setColor(QPalette::Foreground, KSGRD::Style->alarmColor());
 	monitor->setPalette( cgroup );
-
-	setModified(true);
 }
 
 bool
@@ -319,14 +310,11 @@ SensorLogger::restoreSettings(QDomElement& element)
 	}
 
 	SensorDisplay::restoreSettings(element);
-
-	setModified(false);
-
 	return (true);
 }
 
 bool
-SensorLogger::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
+SensorLogger::saveSettings(QDomDocument& doc, QDomElement& element)
 {
         saveColor(element, "textColor", monitor->palette().color( QPalette::Text ) );
 	saveColor(element, "backgroundColor", monitor->palette().color( QPalette::Base ) );
@@ -348,9 +336,6 @@ SensorLogger::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 	}
 
 	SensorDisplay::saveSettings(doc, element);
-
-	if (save)
-		setModified(false);
 
 	return (true);
 }

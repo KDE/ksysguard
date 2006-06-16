@@ -33,8 +33,8 @@
 #include "MultiMeter.moc"
 #include "MultiMeterSettings.h"
 
-MultiMeter::MultiMeter(QWidget* parent, const QString& title, bool isApplet)
-	: KSGRD::SensorDisplay(parent, title, isApplet)
+MultiMeter::MultiMeter(QWidget* parent, const QString& title, SharedSettings *workSheetSettings)
+	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
 	setShowUnit( true );
 	lowerLimit = upperLimit = 0;
@@ -57,7 +57,6 @@ MultiMeter::MultiMeter(QWidget* parent, const QString& title, bool isApplet)
 	setPlotterWidget(lcd);
 
 	setMinimumSize(16, 16);
-	setModified(false);
 }
 
 bool
@@ -75,7 +74,6 @@ MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
 
 	lcd->setToolTip( QString("%1:%2").arg(hostName).arg(sensorName));
 
-	setModified(true);
 	return (true);
 }
 
@@ -97,7 +95,7 @@ MultiMeter::answerReceived(int id, const QStringList& answerlist)
 		double val = answer.toDouble();
 		int digits = (int) log10(val) + 1;
 
-		if (isApplet())
+		if (mSharedSettings->isApplet)
 			lcd->setNumDigits(qMin(4,digits));
 		else
 			lcd->setNumDigits(qMin(5,digits));
@@ -141,13 +139,12 @@ MultiMeter::restoreSettings(QDomElement& element)
 
 	SensorDisplay::restoreSettings(element);
 
-	setModified(false);
 
 	return (true);
 }
 
 bool
-MultiMeter::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
+MultiMeter::saveSettings(QDomDocument& doc, QDomElement& element)
 {
 	element.setAttribute("hostName", sensors().at(0)->hostName());
 	element.setAttribute("sensorName", sensors().at(0)->name());
@@ -163,9 +160,6 @@ MultiMeter::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 	saveColor(element, "backgroundColor", lcd->backgroundColor());
 
 	SensorDisplay::saveSettings(doc, element);
-
-	if (save)
-		setModified(false);
 
 	return (true);
 }
@@ -209,7 +203,6 @@ MultiMeter::applySettings()
 	setBackgroundColor(mms->meterBackgroundColor());
 
 	repaint();
-	setModified(true);
 }
 
 void
@@ -218,7 +211,6 @@ MultiMeter::applyStyle()
 	normalDigitColor = KSGRD::Style->firstForegroundColor();
 	setBackgroundColor(KSGRD::Style->backgroundColor());
 	repaint();
-	setModified(true);
 }
 
 void

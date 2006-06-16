@@ -38,8 +38,8 @@
 
 #include "LogFile.moc"
 
-LogFile::LogFile(QWidget *parent, const QString& title, bool isApplet)
-	: KSGRD::SensorDisplay(parent, title, isApplet)
+LogFile::LogFile(QWidget *parent, const QString& title, SharedSettings *workSheetSettings)
+	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
 	monitor = new QListWidget(this);
 	Q_CHECK_PTR(monitor);
@@ -47,8 +47,6 @@ LogFile::LogFile(QWidget *parent, const QString& title, bool isApplet)
 	setMinimumSize(50, 25);
 
 	setPlotterWidget(monitor);
-
-	setModified(false);
 }
 
 LogFile::~LogFile(void)
@@ -72,8 +70,6 @@ LogFile::addSensor(const QString& hostName, const QString& sensorName, const QSt
 		setTitle(sensors().at(0)->hostName() + ':' + sensorID);
 	else
 		setTitle(title);
-
-	setModified(true);
 
 	return (true);
 }
@@ -161,8 +157,6 @@ void LogFile::applySettings(void)
 		filterRules.append(lfs->ruleList->text(i));
 
 	setTitle(lfs->title->text());
-
-	setModified(true);
 }
 
 void
@@ -173,8 +167,6 @@ LogFile::applyStyle()
 	cgroup.setColor(QPalette::Text, KSGRD::Style->firstForegroundColor());
 	cgroup.setColor(QPalette::Base, KSGRD::Style->backgroundColor());
 	monitor->setPalette( cgroup );
-
-	setModified(true);
 }
 
 bool
@@ -200,13 +192,11 @@ LogFile::restoreSettings(QDomElement& element)
 
 	SensorDisplay::restoreSettings(element);
 
-	setModified(false);
-
 	return true;
 }
 
 bool
-LogFile::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
+LogFile::saveSettings(QDomDocument& doc, QDomElement& element)
 {
 	element.setAttribute("hostName", sensors().at(0)->hostName());
 	element.setAttribute("sensorName", sensors().at(0)->name());
@@ -226,9 +216,6 @@ LogFile::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 	}
 
 	SensorDisplay::saveSettings(doc, element);
-
-	if (save)
-		setModified(false);
 
 	return true;
 }

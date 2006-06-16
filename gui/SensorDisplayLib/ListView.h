@@ -76,7 +76,7 @@ class ListView : public KSGRD::SensorDisplay
 {
 	Q_OBJECT
 public:
-	ListView(QWidget* parent, const QString& title, bool isApplet);
+	ListView(QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
 	~ListView() {}
 
 	bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& sensorDescr);
@@ -85,7 +85,7 @@ public:
 	void updateList();
 
 	bool restoreSettings(QDomElement& element);
-	bool saveSettings(QDomDocument& doc, QDomElement& element, bool save = true);
+	bool saveSettings(QDomDocument& doc, QDomElement& element);
 
 	virtual bool hasSettingsDialog() const
 	{

@@ -48,15 +48,14 @@
 
 using namespace KSGRD;
 
-SensorDisplay::SensorDisplay( QWidget *parent, const QString &title, bool isApplet)
+SensorDisplay::SensorDisplay( QWidget *parent, const QString &title, SharedSettings *workSheetSettings)
   :	QWidget( parent )
 {
-  mIsApplet = isApplet;
+  mSharedSettings = workSheetSettings;
 
   // default interval is 2 seconds.
   mUpdateInterval = 2;
   mUseGlobalUpdateInterval = true;
-  mModified = false;
   mShowUnit = false;
   mTimerId = NONE;
   mErrorIndicator = 0;
@@ -66,8 +65,8 @@ SensorDisplay::SensorDisplay( QWidget *parent, const QString &title, bool isAppl
   this->setWhatsThis( "dummy" );
 
   setMinimumSize( 16, 16 );
-  setModified( false );
   setSensorOk( false );
+  setTitle(title);
 
 
   /* Let's call updateWhatsThis() in case the derived class does not do
@@ -120,8 +119,6 @@ void SensorDisplay::configureUpdateInterval()
       mUseGlobalUpdateInterval = false;
       setUpdateInterval( dlg.interval() );
     }
-
-    setModified( true );
   }
 }
 
@@ -140,7 +137,7 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
 
     QMenu pm;
     QAction *action = 0;
-    if ( mIsApplet ) {
+    if ( mSharedSettings->isApplet ) {
       action = pm.addAction( i18n( "Launch &System Guard") );
       action->setData( 1 );
       pm.addSeparator();
@@ -184,11 +181,9 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
           break;
         case 5:
           setTimerOn( true );
-          setModified( true );
           break;
         case 6:
           setTimerOn( false );
-          setModified( true );
           break;
       }
     }
@@ -343,7 +338,7 @@ bool SensorDisplay::restoreSettings( QDomElement &element )
   return true;
 }
 
-bool SensorDisplay::saveSettings( QDomDocument&, QDomElement &element, bool )
+bool SensorDisplay::saveSettings( QDomDocument&, QDomElement &element )
 {
   element.setAttribute( "title", title() );
   element.setAttribute( "unit", unit() );
@@ -382,11 +377,6 @@ bool SensorDisplay::timerOn() const
   return ( mTimerId != NONE );
 }
 
-bool SensorDisplay::modified() const
-{
-  return mModified;
-}
-
 QList<SensorProperties *> &SensorDisplay::sensors()
 {
   return mSensors;
@@ -403,14 +393,6 @@ void SensorDisplay::applySettings()
 
 void SensorDisplay::applyStyle()
 {
-}
-
-void SensorDisplay::setModified( bool value )
-{
-  if ( value != mModified ) {
-    mModified = value;
-    emit modified( mModified );
-  }
 }
 
 void SensorDisplay::setSensorOk( bool ok )

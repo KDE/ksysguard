@@ -29,6 +29,7 @@
 #include <knotifyclient.h>
 
 #include <ksgrd/SensorClient.h>
+#include "SharedSettings.h"
 
 #define NONE -1
 
@@ -53,7 +54,7 @@ class SensorDisplay : public QWidget, public SensorClient
     /**
       Constructor.
      */
-    SensorDisplay( QWidget *parent, const QString& title, bool isApplet );
+    SensorDisplay( QWidget *parent, const QString &title, SharedSettings *workSheetSettings );
 
     /**
       Destructor.
@@ -181,7 +182,7 @@ class SensorDisplay : public QWidget, public SensorClient
     /**
       Reimplement this method to save the displays config data.
      */
-    virtual bool saveSettings( QDomDocument&, QDomElement&, bool = true );
+    virtual bool saveSettings( QDomDocument&, QDomElement&);
 
     /**
       Reimplement this method to catch error messages from the SensorManager.
@@ -210,11 +211,6 @@ class SensorDisplay : public QWidget, public SensorClient
     void rmbPressed();
 
     /**
-      Sets whether the display is modified of not.
-     */
-    void setModified( bool modified );
-    
-    /**
       This method can be used to apply the new settings. Just connect
       the applyClicked() signal of your configuration dialog with this
       slot and reimplement it.
@@ -230,7 +226,6 @@ class SensorDisplay : public QWidget, public SensorClient
 		
   Q_SIGNALS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
-    void modified( bool modified );
     void changeTitle(const QString&);
 
   protected:
@@ -249,19 +244,17 @@ class SensorDisplay : public QWidget, public SensorClient
 
     void setSensorOk( bool ok );
 
-    bool modified() const;
     bool timerOn() const;
-    bool isApplet() const {return mIsApplet;}
 
     QList<SensorProperties *> &sensors();
+
+    SharedSettings *mSharedSettings;
 
   private:
     void updateWhatsThis();
 
     bool mShowUnit;
     bool mUseGlobalUpdateInterval;
-    bool mModified;
-    bool mIsApplet;
 
     int mTimerId;
     int mUpdateInterval;

@@ -39,7 +39,7 @@ class DancingBars : public KSGRD::SensorDisplay
   Q_OBJECT
 
   public:
-    DancingBars( QWidget *parent, const QString &title, bool isApplet);
+    DancingBars( QWidget *parent, const QString &title, SharedSettings *workSheetSettings);
     virtual ~DancingBars();
 
     void configureSettings();
@@ -55,7 +55,7 @@ class DancingBars : public KSGRD::SensorDisplay
     virtual void answerReceived( int id, const QStringList &answerlist );
 
     bool restoreSettings( QDomElement& );
-    bool saveSettings( QDomDocument&, QDomElement&, bool save = true );
+    bool saveSettings( QDomDocument&, QDomElement&);
 
     virtual bool hasSettingsDialog() const;
 

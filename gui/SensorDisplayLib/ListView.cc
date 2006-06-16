@@ -196,8 +196,8 @@ void PrivateListView::addColumn(const QString& label, const QString& type)
 	setColumnWidth(col, fm.width(label) + 10);
 }
 
-ListView::ListView(QWidget* parent, const QString& title, bool isApplet)
-	: KSGRD::SensorDisplay(parent, title, isApplet)
+ListView::ListView(QWidget* parent, const QString& title, SharedSettings *workSheetSettings)
+	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
 	QPalette palette;
 	palette.setColor(backgroundRole(), KSGRD::Style->backgroundColor());
@@ -210,8 +210,6 @@ ListView::ListView(QWidget* parent, const QString& title, bool isApplet)
 	setMinimumSize(50, 25);
 
 	setPlotterWidget(monitor);
-
-	setModified(false);
 }
 
 bool
@@ -228,7 +226,6 @@ ListView::addSensor(const QString& hostName, const QString& sensorName, const QS
 	 * requests we use 100 for info requests. */
 	sendRequest(hostName, sensorName + '?', 100);
 	sendRequest(hostName, sensorName, 19);
-	setModified(true);
 	return (true);
 }
 
@@ -296,13 +293,11 @@ ListView::restoreSettings(QDomElement& element)
 
 	SensorDisplay::restoreSettings(element);
 
-	setModified(false);
-
 	return (true);
 }
 
 bool
-ListView::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
+ListView::saveSettings(QDomDocument& doc, QDomElement& element)
 {
 	element.setAttribute("hostName", sensors().at(0)->hostName());
 	element.setAttribute("sensorName", sensors().at(0)->name());
@@ -314,9 +309,6 @@ ListView::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
 	saveColor(element, "backgroundColor", pal.color(QPalette::Base));
 
 	SensorDisplay::saveSettings(doc, element);
-
-	if (save)
-		setModified(false);
 
 	return (true);
 }
@@ -352,7 +344,6 @@ ListView::applySettings()
 
 	setTitle(lvs->title());
 
-	setModified(true);
 }
 
 void
@@ -363,6 +354,4 @@ ListView::applyStyle()
 	pal.setColor(QPalette::Text, KSGRD::Style->secondForegroundColor());
 	pal.setColor(QPalette::Base, KSGRD::Style->backgroundColor());
 	monitor->setPalette( pal );
-
-	setModified(true);
 }

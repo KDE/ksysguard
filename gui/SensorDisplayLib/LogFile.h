@@ -41,7 +41,7 @@ class LogFile : public KSGRD::SensorDisplay
 {
 	Q_OBJECT
 public:
-	LogFile(QWidget *parent, const QString& title, bool isApplet);
+	LogFile(QWidget *parent, const QString& title, SharedSettings *workSheetSettings);
 	~LogFile(void);
 
 	bool addSensor(const QString& hostName, const QString& sensorName,
@@ -50,7 +50,7 @@ public:
 	void resizeEvent(QResizeEvent*);
 
 	bool restoreSettings(QDomElement& element);
-	bool saveSettings(QDomDocument& doc, QDomElement& element, bool save = true);
+	bool saveSettings(QDomDocument& doc, QDomElement& element);
 
 	void updateMonitor(void);
 

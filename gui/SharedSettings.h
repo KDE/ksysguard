@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-
-    Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-
+   
+    Copyright (c) 2006 John Tapsell <tapsell@kde.org>
+    
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -18,21 +18,19 @@
 
 */
 
-#ifndef KSG_DUMMYDISPLAY_H
-#define KSG_DUMMYDISPLAY_H
+#ifndef SHARED_SETTINGS_H
+#define SHARED_SETTINGS_H
 
-#include <SensorDisplay.h>
-#include <QEvent>
-
-class DummyDisplay : public KSGRD::SensorDisplay
+/** There will be an instance of this for each WorkSheet.  A pointer will be passed to every widget on that
+ *  WorkSheet.  That way the worksheet can easily update the settings for all the widgets on it.
+ */
+class SharedSettings 
 {
-  Q_OBJECT
-
   public:
-    DummyDisplay( QWidget* parent, SharedSettings *workSheetSettings);
-    virtual ~DummyDisplay() {}
-
-    virtual bool eventFilter( QObject*, QEvent* );
+	SharedSettings() { isApplet = false; locked = false; modified = false; }
+	bool isApplet;
+	bool locked;
+	bool modified;
 };
 
 #endif

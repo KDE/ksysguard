@@ -35,8 +35,8 @@
 
 FancyPlotter::FancyPlotter( QWidget* parent,
                             const QString &title,
-                            bool isApplet)
-  : KSGRD::SensorDisplay( parent, title, isApplet )
+                            SharedSettings *workSheetSettings)
+  : KSGRD::SensorDisplay( parent, title, workSheetSettings )
 {
   mBeams = 0;
   mPlotter = new SignalPlotter( this );
@@ -52,8 +52,6 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   mPlotter->installEventFilter( this );
 
   setPlotterWidget( mPlotter );
-
-  setModified( false );
 }
 
 FancyPlotter::~FancyPlotter()
@@ -62,7 +60,7 @@ FancyPlotter::~FancyPlotter()
 
 void FancyPlotter::configureSettings()
 {
-  mSettingsDialog = new FancyPlotterSettings( this );
+  mSettingsDialog = new FancyPlotterSettings( this, mSharedSettings->locked );
 
   mSettingsDialog->setTitle( title() );
   mSettingsDialog->setUseAutoRange( mPlotter->useAutoRange() );
@@ -178,7 +176,6 @@ void FancyPlotter::applySettings()
   }
 
   mPlotter->update();
-  setModified( true );
 }
 
 void FancyPlotter::applyStyle()
@@ -192,7 +189,6 @@ void FancyPlotter::applyStyle()
     mPlotter->beamColors()[ i ] = KSGRD::Style->sensorColor( i );
 
   mPlotter->update();
-  setModified( true );
 }
 
 bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
@@ -370,13 +366,10 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
   if ( !title().isEmpty() )
     mPlotter->setTitle( title() );
 
-  setModified( false );
-
   return true;
 }
 
-bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element,
-                                 bool save )
+bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element)
 {
   element.setAttribute( "min", mPlotter->minValue() );
   element.setAttribute( "max", mPlotter->maxValue() );
@@ -409,9 +402,6 @@ bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element,
   }
 
   SensorDisplay::saveSettings( doc, element );
-
-  if ( save )
-    setModified( false );
 
   return true;
 }

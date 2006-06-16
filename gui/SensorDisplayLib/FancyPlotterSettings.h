@@ -40,7 +40,7 @@ class FancyPlotterSettings : public KPageDialog
   Q_OBJECT
 
   public:
-    FancyPlotterSettings( QWidget* parent = 0, const char* name = 0 );
+    FancyPlotterSettings( QWidget* parent, bool locked );
     ~FancyPlotterSettings();
 
     void setTitle( const QString &title );

@@ -37,8 +37,8 @@
 
 #include "DancingBars.h"
 
-DancingBars::DancingBars( QWidget *parent, const QString &title, bool isApplet )
-  : KSGRD::SensorDisplay( parent, title, isApplet)
+DancingBars::DancingBars( QWidget *parent, const QString &title, SharedSettings *workSheetSettings)
+  : KSGRD::SensorDisplay( parent, title, workSheetSettings)
 {
   mBars = 0;
   mFlags = QBitArray( 100 );
@@ -54,7 +54,6 @@ DancingBars::DancingBars( QWidget *parent, const QString &title, bool isApplet )
 
   setPlotterWidget( mPlotter );
 
-  setModified( false );
 }
 
 DancingBars::~DancingBars()
@@ -125,7 +124,7 @@ void DancingBars::applySettings()
   QList< QStringList > list = mSettingsDialog->sensors();
   QList< QStringList >::Iterator it;
 
-  for ( uint i = 0; i < sensors().count(); i++ ) {
+  for ( uint i = 0; i < (uint)sensors().count(); i++ ) {
     bool found = false;
     for ( it = list.begin(); it != list.end(); ++it ) {
       if ( (*it)[ 0 ] == sensors().at( i )->hostName() &&
@@ -141,7 +140,6 @@ void DancingBars::applySettings()
   }
 
   repaint();
-  setModified( true );
 }
 
 void DancingBars::applyStyle()
@@ -152,7 +150,6 @@ void DancingBars::applyStyle()
   mPlotter->fontSize = KSGRD::Style->fontSize();
 
   repaint();
-  setModified( true );
 }
 
 bool DancingBars::addSensor( const QString &hostName, const QString &name,
@@ -287,13 +284,11 @@ bool DancingBars::restoreSettings( QDomElement &element )
                el.attribute( "sensorType" ) ), el.attribute( "sensorDescr" ) );
   }
 
-  setModified( false );
 
   return true;
 }
 
-bool DancingBars::saveSettings( QDomDocument &doc, QDomElement &element,
-                                bool save )
+bool DancingBars::saveSettings( QDomDocument &doc, QDomElement &element)
 {
   element.setAttribute( "min", mPlotter->getMin() );
   element.setAttribute( "max", mPlotter->getMax() );
@@ -320,9 +315,6 @@ bool DancingBars::saveSettings( QDomDocument &doc, QDomElement &element,
   }
 
   SensorDisplay::saveSettings( doc, element );
-
-  if ( save )
-    setModified( false );
 
   return true;
 }

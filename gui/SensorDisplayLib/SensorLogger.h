@@ -146,7 +146,7 @@ class SensorLogger : public KSGRD::SensorDisplay
 {
 	Q_OBJECT
 public:
-	SensorLogger(QWidget *parent, const QString& title, bool isApplet);
+	SensorLogger(QWidget *parent, const QString& title, SharedSettings *workSheetSettings);
 	~SensorLogger(void);
 
 	bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType,
@@ -158,7 +158,7 @@ public:
 	void resizeEvent(QResizeEvent*);
 
 	bool restoreSettings(QDomElement& element);
-	bool saveSettings(QDomDocument& doc, QDomElement& element, bool save = true);
+	bool saveSettings(QDomDocument& doc, QDomElement& element);
 
 	void configureSettings(void);
 

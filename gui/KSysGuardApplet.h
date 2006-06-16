@@ -38,6 +38,8 @@ class QDropEvent;
 class QPoint;
 class KSGAppletSettings;
 
+class SharedSettings;
+
 class KSysGuardApplet : public KPanelApplet, public KSGRD::SensorBoard
 {
 	Q_OBJECT
@@ -78,6 +80,7 @@ class KSysGuardApplet : public KPanelApplet, public KSGRD::SensorBoard
     uint mDockCount;
     KSGAppletSettings* mSettingsDlg;
     QWidget** mDockList;
+    SharedSettings mSharedSettings;
 };
 
 #endif

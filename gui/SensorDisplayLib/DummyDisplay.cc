@@ -24,8 +24,8 @@
 
 #include "DummyDisplay.h"
 
-DummyDisplay::DummyDisplay( QWidget* parent, bool isApplet )
-  : KSGRD::SensorDisplay( parent, i18n( "Drop Sensor Here" ), isApplet )
+DummyDisplay::DummyDisplay( QWidget* parent, SharedSettings *workSheetSettings )
+  : KSGRD::SensorDisplay( parent, i18n( "Drop Sensor Here" ), workSheetSettings )
 {
   setMinimumSize( 16, 16 );
 

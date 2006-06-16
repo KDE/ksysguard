@@ -67,7 +67,7 @@ class Workspace : public QTabWidget
     void applyStyle();
 
   Q_SIGNALS:
-    void setCaption( const QString &text, bool modified );
+    void setCaption( const QString &text);
 
   private:
     QList<WorkSheet *> mSheetList;

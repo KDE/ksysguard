@@ -16,16 +16,12 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-    Please do not commit any changes without consulting me first. Thanks!
-
 */
 
 #include <QClipboard>
 #include <QCursor>
 #include <q3dragobject.h>
 #include <QLayout>
-//Added by qt3to4:
 #include <QTextStream>
 #include <QGridLayout>
 #include <QEvent>
@@ -60,9 +56,7 @@ WorkSheet::WorkSheet( QWidget *parent )
   mGridLayout = 0;
   mRows = mColumns = 0;
   mDisplayList = 0;
-  mModified = false;
   mFileName = "";
-  mLocked = false;
 
   setAcceptDrops( true );
 }
@@ -74,9 +68,7 @@ WorkSheet::WorkSheet( uint rows, uint columns, uint interval, QWidget* parent )
   mGridLayout = 0;
   mDisplayList = 0;
   updateInterval( interval );
-  mModified = false;
   mFileName = "";
-  mLocked = false;
 
   createGrid( rows, columns );
 
@@ -96,8 +88,6 @@ WorkSheet::~WorkSheet()
 
 bool WorkSheet::load( const QString &fileName )
 {
-  setModified( false );
-
   QFile file( fileName );
   if ( !file.open( QIODevice::ReadOnly ) ) {
     KMessageBox::sorry( this, i18n( "Cannot open the file %1." ,  fileName ) );
@@ -129,8 +119,8 @@ bool WorkSheet::load( const QString &fileName )
 
   mTitle = element.attribute( "title");
   bool ok;
-  mLocked = element.attribute( "locked" ).toUInt( &ok );
-  if(!ok) mLocked = false;
+  mSharedSettings.locked = element.attribute( "locked" ).toUInt( &ok );
+  if(!ok) mSharedSettings.locked = false;
   
   bool rowsOk, columnsOk;
   uint rows = element.attribute( "rows" ).toUInt( &rowsOk );
@@ -178,8 +168,6 @@ bool WorkSheet::load( const QString &fileName )
       if ( !mDisplayList[ r ][ c ] )
         replaceDisplay( r, c );
 
-  setModified( false );
-
   return true;
 }
 
@@ -198,7 +186,7 @@ bool WorkSheet::exportWorkSheet( const QString &fileName )
   QDomElement ws = doc.createElement( "WorkSheet" );
   doc.appendChild( ws );
   ws.setAttribute( "title", mTitle );
-  ws.setAttribute( "locked", mLocked?"1":"0" );
+  ws.setAttribute( "locked", mSharedSettings.locked?"1":"0" );
   ws.setAttribute( "interval", updateInterval() );
   ws.setAttribute( "rows", mRows );
   ws.setAttribute( "columns", mColumns );
@@ -245,8 +233,6 @@ bool WorkSheet::exportWorkSheet( const QString &fileName )
   s.setCodec( "UTF-8" );
   s << doc;
   file.close();
-
-  setModified( false );
 
   return true;
 }
@@ -297,17 +283,11 @@ void WorkSheet::paste()
 void WorkSheet::setFileName( const QString &fileName )
 {
   mFileName = fileName;
-  setModified( true );
 }
 
 const QString& WorkSheet::fileName() const
 {
   return mFileName;
-}
-
-bool WorkSheet::modified() const
-{
-  return mModified;
 }
 
 void WorkSheet::setTitle( const QString &title )
@@ -366,7 +346,7 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
     else if ( sensorType == "sensorlogger" )
       newDisplay = new SensorLogger( this, sensorDescr, false );
     else if ( sensorType == "table" )
-      newDisplay = new ProcessController( this, sensorDescr);
+      newDisplay = new ProcessController( this, sensorDescr, &mSharedSettings);
     else {
       kDebug(1215) << "Unkown sensor type: " <<  sensorType << endl;
       return 0;
@@ -377,18 +357,16 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
 
   mDisplayList[ row ][ column ]->addSensor( hostName, sensorName, sensorType, sensorDescr );
 
-  setModified( true );
-
   return ((KSGRD::SensorDisplay*)mDisplayList[ row ][ column ] );
 }
 
 void WorkSheet::settings()
 {
-  WorkSheetSettings dlg( this, mLocked );
+  WorkSheetSettings dlg( this, mSharedSettings.locked );
   dlg.setSheetTitle( mTitle );
   dlg.setInterval( updateInterval() );
 
-  if(!mLocked) {
+  if(!mSharedSettings.locked) {
     dlg.setRows( mRows );
     dlg.setColumns( mColumns );
   }
@@ -400,30 +378,15 @@ void WorkSheet::settings()
         if ( mDisplayList[ r ][ c ]->useGlobalUpdateInterval() )
           mDisplayList[ r ][ c ]->setUpdateInterval( updateInterval() );
 
-    if(!mLocked)
+    if(!mSharedSettings.locked)
 	    resizeGrid( dlg.rows(), dlg.columns() );
     setTitle(dlg.sheetTitle());
-
-    setModified( true );
   }
 }
 
 void WorkSheet::showPopupMenu( KSGRD::SensorDisplay *display )
 {
   display->configureSettings();
-}
-
-void WorkSheet::setModified( bool modified )
-{
-  if ( modified != mModified ) {
-    mModified = modified;
-    if ( !modified )
-      for ( uint r = 0; r < mRows; ++r )
-        for ( uint c = 0; c < mColumns; ++c )
-          mDisplayList[ r ][ c ]->setModified( false );
-
-    emit sheetModified( this );
-  }
 }
 
 void WorkSheet::applyStyle()
@@ -502,7 +465,7 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
   else if ( classType == "SensorLogger" )
     newDisplay = new SensorLogger( 0, i18n("Dummy"), false );
   else if ( classType == "ProcessController" )
-    newDisplay = new ProcessController( 0, i18n("Dummy"));
+    newDisplay = new ProcessController( 0, i18n("Dummy"), &mSharedSettings);
   else {
     kDebug(1215) << "Unknown class " <<  classType << endl;
     return false;
@@ -528,15 +491,13 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
 
   // insert new display
   if ( !newDisplay )
-    mDisplayList[ row ][ column ] = new DummyDisplay( this, "DummyDisplay" );
+    mDisplayList[ row ][ column ] = new DummyDisplay( this, &mSharedSettings );
   else {
     mDisplayList[ row ][ column ] = newDisplay;
     if ( mDisplayList[ row ][ column ]->useGlobalUpdateInterval() )
       mDisplayList[ row ][ column ]->setUpdateInterval( updateInterval() );
     connect( newDisplay, SIGNAL( showPopupMenu( KSGRD::SensorDisplay* ) ),
              SLOT( showPopupMenu( KSGRD::SensorDisplay* ) ) );
-    connect( newDisplay, SIGNAL( modified( bool ) ),
-             SLOT( setModified( bool ) ) );
   }
 
   SensorFrame *frame = new SensorFrame(mDisplayList[ row ][ column ]);
@@ -547,8 +508,6 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
   }
 
   setMinimumSize(sizeHint());
-
-  setModified( true );
 }
 
 void WorkSheet::removeDisplay( KSGRD::SensorDisplay *display )
@@ -560,7 +519,6 @@ void WorkSheet::removeDisplay( KSGRD::SensorDisplay *display )
     for ( uint c = 0; c < mColumns; ++c )
       if ( mDisplayList[ r ][ c ] == display ) {
         replaceDisplay( r, c );
-        setModified( true );
         return;
       }
 }

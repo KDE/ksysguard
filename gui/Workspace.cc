@@ -146,8 +146,6 @@ void Workspace::newWorkSheet()
     insertTab(-1, sheet, dlg.sheetTitle() );
     mSheetList.append( sheet );
     setCurrentIndex(indexOf( sheet ));
-    connect( sheet, SIGNAL( sheetModified( QWidget* ) ),
-             SLOT( updateCaption( QWidget* ) ) );
     connect( sheet, SIGNAL( titleChanged( QWidget* ) ),
 	     SLOT( updateSheetTitle( QWidget* )));
   }
@@ -252,9 +250,7 @@ void Workspace::removeWorkSheet()
   WorkSheet *current = (WorkSheet*)currentWidget();
 
   if ( current ) {
-    if ( current->modified() ) {
-      saveWorkSheet( current );
-    }
+    saveWorkSheet( current );
 
     removeTab(indexOf( current ));
     mSheetList.removeAll( current );
@@ -268,9 +264,7 @@ void Workspace::removeAllWorkSheets()
 {
   WorkSheet *sheet;
   while ( ( sheet = (WorkSheet*)currentWidget() ) != 0 ) {
-    if(sheet->modified() ) {
-      saveWorkSheet( sheet );
-    }
+    saveWorkSheet( sheet );
     removeTab(indexOf( sheet ));
     mSheetList.removeAll( sheet );
     delete sheet;
@@ -305,9 +299,6 @@ bool Workspace::restoreWorkSheet( const QString &fileName)
   insertTab(-1, sheet, sheet->title() );
   setCurrentIndex(indexOf(sheet));
   
-  connect( sheet, SIGNAL( sheetModified( QWidget* ) ),
-           SLOT( updateCaption( QWidget* ) ) );
-
   return true;
 }
 
@@ -353,9 +344,9 @@ void Workspace::updateCaption( int index )
 {
   WorkSheet *wdg = static_cast<WorkSheet *>(widget(index));
   if ( wdg )
-    emit setCaption( tabText(index), wdg->modified() );
+    emit setCaption( tabText(index) );
   else
-    emit setCaption( QString(), false );
+    emit setCaption( QString() );
 
   for( int i = 0; i < mSheetList.size(); i++)
     mSheetList.at(i)->setIsOnTop( mSheetList.at(i) == wdg );

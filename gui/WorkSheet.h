@@ -27,6 +27,7 @@
 #include <QWidget>
 
 #include <SensorDisplay.h>
+#include "SharedSettings.h"
 
 class QDomElement;
 class QDragEnterEvent;
@@ -62,8 +63,7 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
     void setFileName( const QString &fileName );
     const QString& fileName() const;
 
-    bool modified() const;
-    bool isLocked() const {return mLocked;}
+    bool isLocked() const {return mSharedSettings.locked;}
 
     void setTitle( const QString &title );
     const QString &title();
@@ -80,11 +80,9 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
 
   public Q_SLOTS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
-    void setModified( bool mfd );
     void applyStyle();
 
   Q_SIGNALS:
-    void sheetModified( QWidget *sheet );
     void titleChanged( QWidget *sheet );
 
   protected:
@@ -113,16 +111,14 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
 
     QString currentDisplayAsXML();
 
-    bool mModified;
-    /** Some sheets are locked so the uesr can't modify them. Such as the process list etc */
-    bool mLocked;
-
     uint mRows;
     uint mColumns;
 
     QGridLayout* mGridLayout;
     QString mFileName;
     QString mTitle;
+
+    SharedSettings mSharedSettings;
 
     /**
       This two dimensional array stores the pointers to the sensor displays

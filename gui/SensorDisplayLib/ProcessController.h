@@ -58,7 +58,7 @@ class ProcessController : public KSGRD::SensorDisplay
 	Q_OBJECT
 
 public:
-	ProcessController(QWidget* parent, const QString& title);
+	ProcessController(QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
 	virtual ~ProcessController() { }
 
 	/* Functions for SensorDisplay*/
@@ -67,7 +67,7 @@ public:
 
 	bool restoreSettings(QDomElement& element);
 
-	bool saveSettings(QDomDocument& doc, QDomElement& element, bool save = true);
+	bool saveSettings(QDomDocument& doc, QDomElement& element);
 
 	virtual void timerEvent(QTimerEvent*)
 	{

@@ -35,7 +35,7 @@ class MultiMeter : public KSGRD::SensorDisplay
 	Q_OBJECT
 
 public:
-	MultiMeter(QWidget* parent, const QString& title, bool isApplet);
+	MultiMeter(QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
 	virtual ~MultiMeter()
 	{
 	}
@@ -46,7 +46,7 @@ public:
 	void resizeEvent(QResizeEvent*);
 
 	bool restoreSettings(QDomElement& element);
-	bool saveSettings(QDomDocument& doc, QDomElement& element, bool save = true);
+	bool saveSettings(QDomDocument& doc, QDomElement& element);
 
 	virtual bool hasSettingsDialog() const
 	{

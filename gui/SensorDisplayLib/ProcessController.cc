@@ -52,8 +52,8 @@
 #include <kapplication.h>
 #include <kpushbutton.h>
 
-ProcessController::ProcessController(QWidget* parent, const QString &title)
-	: KSGRD::SensorDisplay(parent, title, false/*isApplet.  Can't be applet, so false*/), mModel(parent), mFilterModel(parent)
+ProcessController::ProcessController(QWidget* parent, const QString &title, SharedSettings *workSheetSettings)
+	: KSGRD::SensorDisplay(parent, title, workSheetSettings), mModel(parent), mFilterModel(parent)
 {
 	mKillProcess = 0;
 	//When XResCountdown reaches 0, we call 'xres'.
@@ -560,18 +560,15 @@ ProcessController::restoreSettings(QDomElement& element)
 	mUi.chkShowTotals->setCheckState( (showTotals)?Qt::Checked:Qt::Unchecked );
 	
 	SensorDisplay::restoreSettings(element);
-	setModified(false);
-
 	return (result);
 }
 
 bool
-ProcessController::saveSettings(QDomDocument& doc, QDomElement& element, bool save)
+ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 {
 	element.setAttribute("hostName", sensors().at(0)->hostName());
 	element.setAttribute("sensorName", sensors().at(0)->name());
 	element.setAttribute("sensorType", sensors().at(0)->type());
-//	element.setAttribute("tree", (uint) mUi.chkTreeView->isChecked());
 	element.setAttribute("showTotals", (uint) (mUi.chkShowTotals->checkState() == Qt::Checked));
 
 	element.setAttribute("filter", mUi.cmbFilter->currentIndex());
@@ -579,9 +576,6 @@ ProcessController::saveSettings(QDomDocument& doc, QDomElement& element, bool sa
 	element.setAttribute("incrOrder", (uint) (mUi.treeView->header()->sortIndicatorOrder() == Qt::AscendingOrder));
 
 	SensorDisplay::saveSettings(doc, element);
-
-	if (save)
-		setModified(false);
 
 	return (true);
 }

@@ -22,11 +22,11 @@
 #define KSG_FANCYPLOTTER_H
 
 #include <SensorDisplay.h>
-
-#include "SignalPlotter.h"
-//Added by qt3to4:
 #include <QList>
 #include <QResizeEvent>
+
+#include "SignalPlotter.h"
+#include "SharedSettings.h"
 
 class FancyPlotterSettings;
 
@@ -51,8 +51,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
   Q_OBJECT
 
   public:
-    FancyPlotter( QWidget* parent,
-                  const QString& title, bool isWidget);
+    FancyPlotter( QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
     virtual ~FancyPlotter();
 
     void configureSettings();
@@ -70,8 +69,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
     virtual void answerReceived( int id, const QStringList &answerlist );
 
     virtual bool restoreSettings( QDomElement &element );
-    virtual bool saveSettings( QDomDocument &doc, QDomElement &element,
-                               bool save = true );
+    virtual bool saveSettings( QDomDocument &doc, QDomElement &element );
 
     virtual bool hasSettingsDialog() const;
 

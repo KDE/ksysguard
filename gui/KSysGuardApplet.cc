@@ -29,7 +29,6 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QToolTip>
-//Added by qt3to4:
 #include <QTextStream>
 #include <QEvent>
 #include <QDropEvent>
@@ -55,6 +54,7 @@
 #include "MultiMeter.h"
 
 #include "KSysGuardApplet.h"
+#include "SharedSettings.h"
 
 #include "utils.h"
 
@@ -84,6 +84,7 @@ KSysGuardApplet::KSysGuardApplet( const QString& configFile, Plasma::Type type,
   mDockList = new QWidget*[ mDockCount ];
 
   mSizeRatio = 1.0;
+  mSharedSettings.isApplet = true;
   addEmptyDisplay( mDockList, 0 );
 
   updateInterval( 2 );
@@ -214,14 +215,11 @@ void KSysGuardApplet::dropEvent( QDropEvent *e )
         QAction *a3 = popup.addAction( i18n( "&Dancing Bars" ) );
 	QAction *execed = popup.exec( QCursor::pos() );
 	if (execed == a1)
-            wdg = new FancyPlotter( this, sensorDescr,
-                                    true );
+            wdg = new FancyPlotter( this, sensorDescr, &mSharedSettings );
 	else if (execed == a2)
-            wdg = new MultiMeter( this, sensorDescr,
-                                  true );
+            wdg = new MultiMeter( this, sensorDescr, &mSharedSettings );
 	else if (execed == a3)
-            wdg = new DancingBars( this, sensorDescr,
-                                   true );
+            wdg = new DancingBars( this, sensorDescr, &mSharedSettings );
 
         if ( wdg ) {
           delete mDockList[ dock ];
@@ -381,11 +379,11 @@ bool KSysGuardApplet::load()
     QString classType = element.attribute( "class" );
     KSGRD::SensorDisplay* newDisplay;
     if ( classType == "FancyPlotter" )
-      newDisplay = new FancyPlotter( this, i18n("Dummy"), true );
+      newDisplay = new FancyPlotter( this, i18n("Dummy"), &mSharedSettings );
     else if ( classType == "MultiMeter" )
-      newDisplay = new MultiMeter( this, i18n("Dummy"), true );
+      newDisplay = new MultiMeter( this, i18n("Dummy"), &mSharedSettings );
     else if ( classType == "DancingBars" )
-      newDisplay = new DancingBars( this, i18n("Dummy"), true );
+      newDisplay = new DancingBars( this, i18n("Dummy"), &mSharedSettings );
     else {
       KMessageBox::sorry( this, i18n( "The KSysGuard applet does not support displaying of "
                           "this type of sensor. Please choose another sensor." ) );

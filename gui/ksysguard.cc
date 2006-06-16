@@ -88,8 +88,8 @@ TopLevel::TopLevel( const char *name )
   mSensorBrowser = new SensorBrowser( mSplitter, KSGRD::SensorMgr );
 
   mWorkSpace = new Workspace( mSplitter );
-  connect( mWorkSpace, SIGNAL( setCaption( const QString&, bool ) ),
-           SLOT( setCaption( const QString&, bool ) ) );
+  connect( mWorkSpace, SIGNAL( setCaption( const QString&) ),
+           SLOT( setCaption( const QString&) ) );
   connect( mWorkSpace, SIGNAL( currentChanged( int ) ),
            SLOT( currentTabChanged( int ) ) );
   connect( KSGRD::Style, SIGNAL( applyStyleToWorksheet() ), mWorkSpace,

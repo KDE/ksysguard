@@ -41,13 +41,13 @@
 
 #include "FancyPlotterSettings.h"
 
-FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
+FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   : KPageDialog( parent )
 {
   setFaceType( Tabbed );
   setCaption( i18n( "Signal Plotter Settings" ) );
   setButtons( Ok | Apply | Cancel );
-  setObjectName( name );
+  setObjectName( "FancyPlotterSettings" );
   setModal( true );
   enableButtonSeparator( true );
 
@@ -131,7 +131,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   mHorizontalScale->setMaximum( 50 );
   boxLayout->addWidget( mHorizontalScale, 0, 0 );
 
-  label = new QLabel( i18n( "pixel(s) per time period" ), groupBox );
+  label = new QLabel( i18n( "pixels per time period" ), groupBox );
   boxLayout->addWidget( label, 0, 1 );
 
   pageLayout->addWidget( groupBox, 1, 0 );
@@ -266,6 +266,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   mEditButton->setWhatsThis( i18n( "Push this button to configure the color of the sensor in the diagram." ) );
   pageLayout->addWidget( mEditButton, 0, 1 );
 
+  if(!locked) {
+	  
   mRemoveButton = new QPushButton( i18n( "Delete" ), page );
   mRemoveButton->setEnabled( false );
   mRemoveButton->setWhatsThis( i18n( "Push this button to delete the sensor." ) );
@@ -278,7 +280,13 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
   mMoveDownButton = new QPushButton( i18n( "Move Down" ), page );
   mMoveDownButton->setEnabled( false );
   pageLayout->addWidget( mMoveDownButton, 4, 1 );
+  
+  connect( mRemoveButton, SIGNAL( clicked() ), SLOT( removeSensor() ) );
+  connect( mMoveUpButton, SIGNAL( clicked() ), SLOT( moveUpSensor() ) );
+  connect( mMoveDownButton, SIGNAL( clicked() ), SLOT( moveDownSensor() ) );
 
+  }
+  
   connect( mUseAutoRange, SIGNAL( toggled( bool ) ), mMinValue,
            SLOT( setDisabled( bool ) ) );
   connect( mUseAutoRange, SIGNAL( toggled( bool ) ), mMaxValue,
@@ -299,9 +307,6 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, const char* name )
            SLOT( selectionChanged( Q3ListViewItem* ) ) );
 
   connect( mEditButton, SIGNAL( clicked() ), SLOT( editSensor() ) );
-  connect( mRemoveButton, SIGNAL( clicked() ), SLOT( removeSensor() ) );
-  connect( mMoveUpButton, SIGNAL( clicked() ), SLOT( moveUpSensor() ) );
-  connect( mMoveDownButton, SIGNAL( clicked() ), SLOT( moveDownSensor() ) );
   connect ( mSensorView, SIGNAL( doubleClicked( Q3ListViewItem *, const QPoint &, int )), SLOT(editSensor()));
 
   KAcceleratorManager::manage( this );
