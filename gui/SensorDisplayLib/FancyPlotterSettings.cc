@@ -266,6 +266,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   mEditButton->setWhatsThis( i18n( "Push this button to configure the color of the sensor in the diagram." ) );
   pageLayout->addWidget( mEditButton, 0, 1 );
 
+  
   if(!locked) {
 	  
   mRemoveButton = new QPushButton( i18n( "Delete" ), page );
@@ -285,6 +286,10 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   connect( mMoveUpButton, SIGNAL( clicked() ), SLOT( moveUpSensor() ) );
   connect( mMoveDownButton, SIGNAL( clicked() ), SLOT( moveDownSensor() ) );
 
+  } else {
+    mRemoveButton = 0;
+    mMoveUpButton = 0;
+    mMoveDownButton = 0;
   }
   
   connect( mUseAutoRange, SIGNAL( toggled( bool ) ), mMinValue,
@@ -627,9 +632,12 @@ void FancyPlotterSettings::selectionChanged( Q3ListViewItem *item )
   bool state = ( item != 0 );
 
   mEditButton->setEnabled( state );
-  mRemoveButton->setEnabled( state );
-  mMoveUpButton->setEnabled( state && item->itemAbove() );
-  mMoveDownButton->setEnabled( state && item->itemBelow() );
+
+  if(mRemoveButton) {
+    mRemoveButton->setEnabled( state );
+    mMoveUpButton->setEnabled( state && item->itemAbove() );
+    mMoveDownButton->setEnabled( state && item->itemBelow() );
+  }
 }
 
 #include "FancyPlotterSettings.moc"
