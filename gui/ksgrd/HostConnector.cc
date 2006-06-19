@@ -129,7 +129,7 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
            mPort, SLOT( setEnabled( bool ) ) );
   connect( mHostNames->lineEdit(),  SIGNAL( textChanged ( const QString & ) ),
            this, SLOT(  slotHostNameChanged( const QString & ) ) );
-  enableButtonOK( !mHostNames->lineEdit()->text().isEmpty() );
+  enableButtonOk( !mHostNames->lineEdit()->text().isEmpty() );
   KAcceleratorManager::manage( this );
 }
 
@@ -139,7 +139,7 @@ HostConnector::~HostConnector()
 
 void HostConnector::slotHostNameChanged( const QString &_text )
 {
-    enableButtonOK( !_text.isEmpty() );
+    enableButtonOk( !_text.isEmpty() );
 }
 
 void HostConnector::setHostNames( const QStringList &list )
@@ -178,7 +178,7 @@ void HostConnector::setCurrentHostName( const QString &hostName )
     mHostNames->hide();
     mHostNameLabel->setText( hostName );
     mHostNameLabel->show();
-    enableButtonOK( true );//enable true when mHostNames is empty and hidden fix #66955
+    enableButtonOk( true );//enable true when mHostNames is empty and hidden fix #66955
   } else {
     mHostNameLabel->hide();
     mHostNames->show();
