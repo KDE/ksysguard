@@ -54,12 +54,12 @@
 }
 
 #define DEFMEMBERS( a, b, c, d, e ) \
-unsigned long Old##a; \
-unsigned long a; \
+unsigned long long Old##a; \
+unsigned long long a; \
 unsigned long a##Scale;
 
 #define DEFVARS( a, b, c, d, e ) \
-unsigned long a;
+unsigned long long a;
 
 #define FORALL( a ) \
   a( recBytes, "receiver/data", "Received Data", "kBytes/s", 1024 ) \
@@ -147,8 +147,8 @@ static int processNetDev_( void )
         FORALL( DEFVARS );
         *pos = '\0';
         FORALL( SETZERO );
-        sscanf( buf + 7, "%lu %lu %lu %lu %lu %lu %lu %lu " 
-                "%lu %lu %lu %lu %lu %lu %lu %lu",
+        sscanf( buf + 7, "%llu %llu %llu %llu %llu %llu %llu %llu " 
+                "%llu %llu %llu %llu %llu %llu %llu %llu",
                 &recBytes, &recPacks, &recErrs, &recDrop, &recFifo,
                 &recFrame, &recCompressed, &recMulticast,
                 &sentBytes, &sentPacks, &sentErrs, &sentDrop,
@@ -234,8 +234,8 @@ void initNetDev( struct SensorModul* sm )
         strncpy( NetDevs[ i ].name, tag, sizeof( NetDevs[ i ].name ) );
 	NetDevs[ i ].name[ sizeof( NetDevs[ i ].name )-1] = 0;
         FORALL( REGISTERSENSOR );
-        sscanf( pos + 1, "%lu %lu %lu %lu %lu %lu %lu %lu" 
-                "%lu %lu %lu %lu %lu %lu %lu %lu",
+        sscanf( pos + 1, "%llu %llu %llu %llu %llu %llu %llu %llu" 
+                "%llu %llu %llu %llu %llu %llu %llu %llu",
                 &NetDevs[ i ].recBytes, &NetDevs[ i ].recPacks,
                 &NetDevs[ i ].recErrs, &NetDevs[ i ].recDrop,
                 &NetDevs[ i ].recFifo, &NetDevs[ i ].recFrame,
