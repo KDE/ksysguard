@@ -39,7 +39,7 @@ TimerSettings::TimerSettings( QWidget *parent, const char *name )
   setModal( true );
   setCaption( i18n( "Timer Settings" ) );
   setButtons( Ok | Cancel );
-  enableButtonSeparator( true );
+  showButtonSeparator( true );
 
   QFrame *page = new QFrame( this );
   setMainWidget( page );

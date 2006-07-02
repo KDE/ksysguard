@@ -36,7 +36,7 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
   setModal( true );
   setCaption( i18n("Renice Process") );
   setButtons( Ok | Cancel );
-  enableButtonSeparator( true );
+  showButtonSeparator( true );
 
   connect( this, SIGNAL( okClicked() ), SLOT( slotOk() ) );
   connect( this, SIGNAL( cancelClicked() ), SLOT( slotCancel() ) );

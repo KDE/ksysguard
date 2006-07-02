@@ -34,7 +34,7 @@ KSGAppletSettings::KSGAppletSettings( QWidget *parent, const char *name )
   setModal( true );
   setCaption( i18n( "KSysGuard Applet Settings" ) );
   setButtons( Ok|Apply|Cancel );
-  enableButtonSeparator( true );
+  showButtonSeparator( true );
 
   QWidget *page = new QWidget( this );
   setMainWidget( page );

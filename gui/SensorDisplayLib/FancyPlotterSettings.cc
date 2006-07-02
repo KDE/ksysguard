@@ -49,7 +49,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   setButtons( Ok | Apply | Cancel );
   setObjectName( "FancyPlotterSettings" );
   setModal( true );
-  enableButtonSeparator( true );
+  showButtonSeparator( true );
 
   QFrame *page = 0;
   QGridLayout *pageLayout = 0;

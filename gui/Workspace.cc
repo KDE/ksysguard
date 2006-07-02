@@ -178,7 +178,7 @@ bool Workspace::saveOnQuit()
 
 void Workspace::importWorkSheet()
 {
-  KFileDialog dlg( 0, i18n( "*.sgrd|Sensor Files" ), this);
+  KFileDialog dlg( QString(), i18n( "*.sgrd|Sensor Files" ), this);
 
   KUrl url = dlg.getOpenURL( QString(), "*.sgrd", 0, i18n( "Select Worksheet to Import" ) );
 
@@ -235,7 +235,7 @@ void Workspace::exportWorkSheet( WorkSheet *sheet )
 
   QString fileName;
   do {
-    KFileDialog dlg( 0, "*.sgrd", this);
+    KFileDialog dlg( QString(), "*.sgrd", this);
     fileName = dlg.getSaveFileName( tabText(indexOf( currentWidget() ))+ ".sgrd",
 		                    "*.sgrd", this, i18n("Export Work Sheet") );
     if ( fileName.isEmpty() )

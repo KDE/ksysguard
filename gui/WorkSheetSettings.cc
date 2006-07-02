@@ -42,7 +42,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
   setModal( true );
   setCaption( i18n( "Worksheet Properties" ) );
   setButtons( Ok|Cancel );
-  enableButtonSeparator( true );
+  showButtonSeparator( true );
 
   QWidget *page = new QWidget( this );
   setMainWidget( page );

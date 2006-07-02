@@ -29,7 +29,7 @@ SensorLoggerSettings::SensorLoggerSettings( QWidget *parent, const char *name )
   setModal( true );
   setCaption( i18n( "Sensor Logger Settings" ) );
   setButtons( Ok|Apply|Cancel );
-  enableButtonSeparator( true );
+  showButtonSeparator( true );
 
   m_settingsWidget = new SensorLoggerSettingsWidget( this, "m_settingsWidget" );
   setMainWidget( m_settingsWidget );

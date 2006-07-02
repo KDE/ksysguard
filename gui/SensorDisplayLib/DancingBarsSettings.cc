@@ -46,7 +46,7 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   setButtons( Ok | Apply | Cancel );
   setObjectName( name );
   setModal( true );
-  enableButtonSeparator( true );
+  showButtonSeparator( true );
 
   // Range page
   QFrame *page = new QFrame( this );

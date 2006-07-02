@@ -29,7 +29,7 @@ MultiMeterSettings::MultiMeterSettings( QWidget *parent, const char *name )
   setModal( true );
   setCaption( i18n( "Multimeter Settings" ) );
   setButtons( Ok|Apply|Cancel );
-  enableButtonSeparator( true );
+  showButtonSeparator( true );
 
   m_settingsWidget = new MultiMeterSettingsWidget( this, "m_settingsWidget" );
   setMainWidget( m_settingsWidget );

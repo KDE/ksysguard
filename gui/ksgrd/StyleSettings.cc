@@ -48,7 +48,7 @@ StyleSettings::StyleSettings( QWidget *parent, const char *name )
   setModal( true );
   setCaption( i18n( "Global Style Settings" ) );
   setButtons( Help | Ok | Apply | Cancel );
-  enableButtonSeparator( true );
+  showButtonSeparator( true );
 
   QFrame *page = new QFrame( this );
   addPage( page, i18n( "Display Style" ) );

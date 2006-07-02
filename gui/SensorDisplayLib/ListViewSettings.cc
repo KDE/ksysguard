@@ -29,7 +29,7 @@ ListViewSettings::ListViewSettings( QWidget *parent, const char *name )
   setModal( true );
   setCaption( i18n( "List View Settings" ) );
   setButtons( Ok | Apply | Cancel );
-  enableButtonSeparator( true );
+  showButtonSeparator( true );
 
   m_settingsWidget = new ListViewSettingsWidget( this, "m_settingsWidget" );
   setMainWidget( m_settingsWidget );
