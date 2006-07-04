@@ -3,8 +3,8 @@
 
 ########### install files ###############
 
-install_files( ${SYSCONF_INSTALL_DIR} FILES ksysguarddrc )
-install_files( ${DATA_INSTALL_DIR}/ksysguard FILES eventsrc )
+install( FILES ksysguarddrc  DESTINATION  ${SYSCONF_INSTALL_DIR} )
+install( FILES eventsrc  DESTINATION  ${DATA_INSTALL_DIR}/ksysguard )
 
 
 

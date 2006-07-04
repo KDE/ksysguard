@@ -83,14 +83,14 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} sysguard_panelapplet )
 
 target_link_libraries(sysguard_panelapplet  ${KDE4_KIO_LIBS} ${QT_QTXML_LIBRARY} ksgrd  kickermain  )
 
-install_targets(${PLUGIN_INSTALL_DIR} sysguard_panelapplet )
+install(TARGETS sysguard_panelapplet  DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-install_files( ${XDG_APPS_DIR} FILES ksysguard.desktop )
-install_files( ${DATA_INSTALL_DIR}/ksysguard FILES ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml )
-install_files( ${MIME_INSTALL_DIR}/application FILES x-ksysguard.desktop )
-install_files( ${DATA_INSTALL_DIR}/ksysguard FILES ksysguardui.rc )
-install_files( ${DATA_INSTALL_DIR}/kicker/applets FILES ksysguardapplet.desktop )
+install( FILES ksysguard.desktop  DESTINATION  ${XDG_APPS_DIR} )
+install( FILES ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml  DESTINATION  ${DATA_INSTALL_DIR}/ksysguard )
+install( FILES x-ksysguard.desktop  DESTINATION  ${MIME_INSTALL_DIR}/application )
+install( FILES ksysguardui.rc  DESTINATION  ${DATA_INSTALL_DIR}/ksysguard )
+install( FILES ksysguardapplet.desktop  DESTINATION  ${DATA_INSTALL_DIR}/kicker/applets )
 

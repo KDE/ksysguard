@@ -20,7 +20,7 @@ kde4_add_library(ksgrd SHARED ${ksgrd_LIB_SRCS})
 target_link_libraries(ksgrd  ${KDE4_KDEUI_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QT3SUPPORT_LIBRARY})
 
 set_target_properties(ksgrd PROPERTIES VERSION 2.0.0 SOVERSION 2 )
-install_targets(${LIB_INSTALL_DIR} ksgrd )
+install(TARGETS ksgrd  DESTINATION ${LIB_INSTALL_DIR} )
 
 
 ########### install files ###############
