@@ -180,7 +180,7 @@ void Workspace::importWorkSheet()
 {
   KFileDialog dlg( QString(), i18n( "*.sgrd|Sensor Files" ), this);
 
-  KUrl url = dlg.getOpenURL( QString(), "*.sgrd", 0, i18n( "Select Worksheet to Import" ) );
+  KUrl url = dlg.getOpenUrl( QString(), "*.sgrd", 0, i18n( "Select Worksheet to Import" ) );
 
   importWorkSheet( url );
 }
