@@ -27,7 +27,7 @@
 #include <knuminput.h>
 
 #include <QCheckBox>
-#include <q3buttongroup.h>
+#include <QGroupBox>
 #include <q3groupbox.h>
 #include <QImage>
 #include <QLabel>
@@ -72,13 +72,18 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   pageLayout->addWidget( mTitle, 0, 1 );
   label->setBuddy( mTitle );
 
-  Q3ButtonGroup *buttonBox = new Q3ButtonGroup( 2, Qt::Vertical,
-                                              i18n( "Graph Drawing Style" ), page );
+  QGroupBox *buttonBox = new QGroupBox(i18n( "Graph Drawing Style" ),page);
+  
 
-  mUsePolygonStyle = new QRadioButton( i18n( "Basic polygons" ), buttonBox );
+  QVBoxLayout *vbox = new QVBoxLayout;
+  vbox->addStretch(2);
+  mUsePolygonStyle = new QRadioButton( i18n( "Basic polygons" ) );
+  vbox->addWidget(mUsePolygonStyle);
   mUsePolygonStyle->setChecked( true );
-  mUseOriginalStyle = new QRadioButton( i18n( "Original - single line per data point" ), buttonBox );
+  mUseOriginalStyle = new QRadioButton( i18n( "Original - single line per data point" ) );
+  vbox->addWidget(mUseOriginalStyle);
 
+  buttonBox->setLayout(vbox);
   pageLayout->addWidget( buttonBox, 1, 0, 1, 2 );
 
   // Scales page
