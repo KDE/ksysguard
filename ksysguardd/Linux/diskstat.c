@@ -127,7 +127,6 @@ int updateDiskStat( void )
   FILE *fh;
   struct mntent *mnt_info;
   float percent;
-  int i;
   struct statfs fs_info;
 
   if ( ( fh = setmntent( "/etc/mtab", "r" ) ) == NULL ) {
