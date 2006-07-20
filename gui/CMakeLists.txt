@@ -55,7 +55,7 @@ kde4_add_executable(ksysguard ${ksysguard_SRCS})
 
 target_link_libraries(ksysguard  ${KDE4_KIO_LIBS} ksgrd  )
 
-install(TARGETS ksysguard DESTINATION bin)
+install(TARGETS ksysguard DESTINATION ${BIN_INSTALL_DIR})
 
 
 ########### next target ###############
@@ -68,7 +68,7 @@ kde4_add_executable(kpm ${kpm_SRCS})
 
 target_link_libraries(kpm  ${KDE4_KDECORE_LIBS} )
 
-install(TARGETS kpm DESTINATION bin)
+install(TARGETS kpm DESTINATION ${BIN_INSTALL_DIR})
 
 
 ########### next target ###############

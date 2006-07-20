@@ -32,7 +32,7 @@ add_executable(ksysguardd ${ksysguardd_SRCS})
 ADD_DEPENDENCIES(ksysguardd libksysguardd)
 TARGET_LINK_LIBRARIES(ksysguardd libksysguardd kdefakes)
 
-install(TARGETS ksysguardd DESTINATION bin)
+install(TARGETS ksysguardd DESTINATION ${BIN_INSTALL_DIR})
 
 
 ########### install files ###############
