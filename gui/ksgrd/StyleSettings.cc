@@ -87,7 +87,8 @@ StyleSettings::StyleSettings( QWidget *parent, const char *name )
   label = new QLabel( i18n( "Font size:" ), page );
   layout->addWidget( label, 4, 0 );
 
-  mFontSize = new QSpinBox( 7, 48, 1, page );
+  mFontSize = new QSpinBox( page );
+  mFontSize->setRange( 7, 48 );
   mFontSize->setValue( 8 );
   layout->addWidget( mFontSize, 4, 1 );
   label->setBuddy( mFontSize );

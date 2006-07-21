@@ -96,7 +96,8 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   label = new QLabel( i18n( "Port:" ), group );
   groupLayout->addWidget( label, 1, 0 );
 
-  mPort = new QSpinBox( 1, 65535, 1, group );
+  mPort = new QSpinBox( group );
+  mPort->setRange( 1, 65535 );
   mPort->setEnabled( false );
   mPort->setValue( 3112 );
   mPort->setToolTip( i18n( "Enter the port number on which the ksysguard daemon is listening for connections." ) );

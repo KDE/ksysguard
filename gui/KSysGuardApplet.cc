@@ -64,15 +64,13 @@ extern "C"
   {
     KGlobal::locale()->insertCatalog( "ksysguard" );
     return new KSysGuardApplet( configFile, Plasma::Normal,
-                                Plasma::Preferences, parent,
-                                "ksysguardapplet" );
+                                Plasma::Preferences, parent );
   }
 }
 
 KSysGuardApplet::KSysGuardApplet( const QString& configFile, Plasma::Type type,
-                                  int actions, QWidget *parent,
-                                  const char *name )
-  : KPanelApplet( configFile, type, actions, parent, name)
+                                  int actions, QWidget *parent )
+  : KPanelApplet( configFile, type, actions, parent)
 {
   mSettingsDlg = 0;
 

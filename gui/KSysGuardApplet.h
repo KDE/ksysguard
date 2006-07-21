@@ -46,8 +46,7 @@ class KSysGuardApplet : public KPanelApplet, public KSGRD::SensorBoard
 
   public:
     KSysGuardApplet( const QString& configFile, Plasma::Type type = Plasma::Normal,
-                     int actions = 0, QWidget *parent = 0,
-                     const char *name = 0 );
+                     int actions = 0, QWidget *parent = 0 );
     virtual ~KSysGuardApplet();
 
     virtual int heightForWidth( int width ) const;

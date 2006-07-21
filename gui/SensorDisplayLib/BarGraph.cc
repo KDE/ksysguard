@@ -47,7 +47,7 @@ BarGraph::BarGraph( QWidget *parent )
   // Anything smaller than this does not make sense.
   setMinimumSize( 16, 16 );
   setSizePolicy( QSizePolicy( QSizePolicy::Expanding,
-                 QSizePolicy::Expanding, false ) );
+                 QSizePolicy::Expanding ) );
 }
 
 BarGraph::~BarGraph()

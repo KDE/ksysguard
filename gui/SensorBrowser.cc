@@ -177,7 +177,7 @@ void SensorBrowser::answerReceived( int id, const QStringList &answer )
   if ( !it.current() )
     return;
 
-  for ( uint i = 0; i < answer.count(); ++i ) {
+  for ( int i = 0; i < answer.count(); ++i ) {
     if ( answer[ i ].isEmpty() )
       break;
 

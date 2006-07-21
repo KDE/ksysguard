@@ -46,8 +46,7 @@ MultiMeter::MultiMeter(QWidget* parent, const QString& title, SharedSettings *wo
 	Q_CHECK_PTR(lcd);
 	lcd->setSegmentStyle(QLCDNumber::Filled);
 	setDigitColor(KSGRD::Style->backgroundColor());
-	lcd->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,
-					   QSizePolicy::Expanding, false));
+	lcd->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 
 	setBackgroundColor(KSGRD::Style->backgroundColor());
 	/* All RMB clicks to the lcd widget will be handled by 

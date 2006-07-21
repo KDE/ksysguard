@@ -44,7 +44,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
   Q_CLASSINFO("D-Bus Interface", "org.kde.SystemMonitor")
 
   public:
-    TopLevel( const char *name = 0 );
+    TopLevel();
 
   virtual void saveProperties( KConfig* );
   virtual void readProperties( KConfig* );

@@ -121,7 +121,7 @@ void PrivateListView::update(const QStringList& answer)
 
 	clear();
 
-	for (uint i = 0; i < answer.count(); i++) {
+	for (int i = 0; i < answer.count(); i++) {
 		PrivateListViewItem *item = new PrivateListViewItem(this);
 		KSGRD::SensorTokenizer records(answer[i], '\t');
 		for (uint j = 0; j < records.count(); j++) {

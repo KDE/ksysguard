@@ -19,7 +19,7 @@ void SensorLoggerDlgWidget::init()
 
 QString SensorLoggerDlgWidget::fileName()
 {
-    return m_fileName->url();
+    return m_fileName->url().toString();
 }
 
 

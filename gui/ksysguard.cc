@@ -73,8 +73,8 @@ TopLevel* topLevel;
   This is the constructor for the main widget. It sets up the menu and the
   TaskMan widget.
  */
-TopLevel::TopLevel( const char *name )
-  : KMainWindow( 0, name )
+TopLevel::TopLevel()
+  : KMainWindow( 0 )
 {
   QDBus::sessionBus().registerObject("/", this, QDBusConnection::ExportSlots);
   setPlainCaption( i18n( "System Monitor" ) );
@@ -455,7 +455,7 @@ int main( int argc, char** argv )
   write( initpipe[ 1 ], &c, 1 );
   close( initpipe[ 1 ] );
 #endif
-  topLevel = new TopLevel( "KSysGuard" );
+  topLevel = new TopLevel();
 
   // create top-level widget
   if ( app->isSessionRestored() )
