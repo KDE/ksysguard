@@ -25,7 +25,7 @@ install(TARGETS ksgrd  DESTINATION ${LIB_INSTALL_DIR} )
 
 ########### install files ###############
 
-install_files( /include/ksgrd FILES HostConnector.h  	SensorAgent.h  	SensorClient.h  	SensorManager.h  	SensorShellAgent.h  	SensorSocketAgent.h  	StyleEngine.h  	StyleSettings.h  	TimerSettings.h )
+install(FILES HostConnector.h SensorAgent.h SensorClient.h SensorManager.h SensorShellAgent.h SensorSocketAgent.h StyleEngine.h StyleSettings.h TimerSettings.h DESTINATION ${INCLUDE_INSTALL_DIR}/ksgrd )
 
 
 
