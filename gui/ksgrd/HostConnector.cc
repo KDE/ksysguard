@@ -71,6 +71,7 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   Q3ButtonGroup *group = new Q3ButtonGroup( 0, Qt::Vertical,
                                           i18n( "Connection Type" ), page );
   QGridLayout *groupLayout = new QGridLayout();
+  group->setExclusive ( true );
   group->layout()->addItem( groupLayout );
   groupLayout->setSpacing( spacingHint() );
   groupLayout->setAlignment( Qt::AlignTop );
