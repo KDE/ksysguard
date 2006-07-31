@@ -233,8 +233,7 @@ void Workspace::exportWorkSheet( WorkSheet *sheet )
 
   QString fileName;
   do {
-    KFileDialog dlg( QString(), "*.sgrd", this);
-    fileName = dlg.getSaveFileName( tabText(indexOf( currentWidget() ))+ ".sgrd",
+    fileName = KFileDialog::getSaveFileName( tabText(indexOf( currentWidget() ))+ ".sgrd",
 		                    "*.sgrd", this, i18n("Export Work Sheet") );
     if ( fileName.isEmpty() )
       return;
