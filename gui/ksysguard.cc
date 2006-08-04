@@ -39,6 +39,7 @@
 #include <kedittoolbar.h>
 #include <kglobal.h>
 #include <kglobalsettings.h>
+#include <kicon.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <ksgrd/SensorAgent.h>
