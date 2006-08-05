@@ -29,7 +29,7 @@
 #include <kapplication.h>
 #include <kiconloader.h>
 #include <klocale.h>
-
+#include <knotification.h>
 #include <ksgrd/SensorManager.h>
 #include <ksgrd/StyleEngine.h>
 
@@ -115,7 +115,7 @@ LogSensor::answerReceived(int id, const QStringList& answer)
 				lowerLimitActive = false;
 				lvi->setTextColor(monitor->palette().color( QPalette::Foreground ) );
 				lvi->repaint();
-				KNotifyClient::event(monitor->winId(), "sensor_alarm", QString("sensor '%1' at '%2' reached lower limit").arg(sensorName).arg(hostName));
+				KNotification::event("sensor_alarm", QString("sensor '%1' at '%2' reached lower limit").arg(sensorName).arg(hostName),QPixmap(),monitor);
 				timerOn();
 			} else if (upperLimitActive && value > upperLimit)
 			{
@@ -123,7 +123,7 @@ LogSensor::answerReceived(int id, const QStringList& answer)
 				upperLimitActive = false;
 				lvi->setTextColor(monitor->palette().color( QPalette::Foreground ) );
 				lvi->repaint();
-				KNotifyClient::event(monitor->winId(), "sensor_alarm", QString("sensor '%1' at '%2' reached upper limit").arg(sensorName).arg(hostName));
+				KNotification::event("sensor_alarm", QString("sensor '%1' at '%2' reached upper limit").arg(sensorName).arg(hostName),QPixmap(),monitor);
 				timerOn();
 			}
 			QDate date = QDateTime::currentDateTime().date();

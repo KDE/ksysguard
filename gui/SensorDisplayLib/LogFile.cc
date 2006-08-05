@@ -33,7 +33,7 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <kcolorbutton.h>
-
+#include <knotification.h>
 #include <ksgrd/StyleEngine.h>
 
 #include "LogFile.moc"
@@ -245,7 +245,7 @@ LogFile::answerReceived(int id, const QStringList& answer)
 				for (QStringList::Iterator it = filterRules.begin(); it != filterRules.end(); it++) {
 					QRegExp *expr = new QRegExp((*it).toLatin1());
 					if (expr->indexIn(answer[i]) != -1) {
-						KNotifyClient::event(winId(), "pattern_match", QString("rule '%1' matched").arg(*it));
+						KNotification::event("pattern_match", QString("rule '%1' matched").arg(*it),QPixmap(),this);
 					}
 					delete expr;
 				}
