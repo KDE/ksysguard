@@ -50,7 +50,7 @@ StyleSettings::StyleSettings( QWidget *parent, const char *name )
   setButtons( Help | Ok | Apply | Cancel );
   showButtonSeparator( true );
 
-  QFrame *page = new QFrame( this );
+  QFrame *page = new QFrame;
   addPage( page, i18n( "Display Style" ) );
   QGridLayout *layout = new QGridLayout( page );
   layout->setSpacing( spacingHint() );
@@ -95,7 +95,7 @@ StyleSettings::StyleSettings( QWidget *parent, const char *name )
 
   layout->setRowStretch( 5, 1 );
 
-  page = new QFrame( this );
+  page = new QFrame;
   addPage( page, i18n( "Sensor Colors" ) );
   layout = new QGridLayout( page );
   layout->setSpacing( spacingHint() );
