@@ -150,14 +150,14 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
     action = pm.addAction( i18n( "&Remove Display" ) );
     action->setData( 3 );
     action = pm.addSeparator();
-    action = pm.addAction( i18n( "&Setup Update Interval..." ) );
+    action = pm.addAction( i18n( "&Change Update Interval..." ) );
     action->setData( 4 );
 
     if ( !timerOn() ) {
-      action = pm.addAction( i18n( "&Continue Update" ) );
+      action = pm.addAction( i18n( "Re&sume" ) );
       action->setData( 5 );
     } else {
-      action = pm.addAction( i18n( "P&ause Update" ) );
+      action = pm.addAction( i18n( "P&ause" ) );
       action->setData( 6 );
     }
 
