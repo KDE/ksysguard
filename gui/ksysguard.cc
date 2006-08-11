@@ -105,7 +105,7 @@ TopLevel::TopLevel()
   statusBar()->insertItem( i18n( "Loading Swap Totals.." ), 2, STATUSBAR_STRETCH);
   statusBar()->hide();
 
-  // create actions for menue entries
+  // create actions for menu entries
   KAction *action = new KAction(KIcon("tab_new"),  i18n( "&New Worksheet..." ), actionCollection(), "new_worksheet" );
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( newWorkSheet() ));
   action = new KAction(KIcon("fileopen"),  i18n( "Import Worksheet..." ), actionCollection(), "import_worksheet" );
