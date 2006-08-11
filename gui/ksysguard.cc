@@ -400,10 +400,9 @@ int main( int argc, char** argv )
 #endif
   /* This forking will put ksysguard in it's own session not having a
    * controlling terminal attached to it. This prevents ssh from
-   * using this terminal for password requests. Unfortunately you
-   * now need a ssh with ssh-askpass support to popup an X dialog to
-   * enter the password. Currently only the original ssh provides this
-   * but not OpenSSH. */
+   * using this terminal for password requests. Thus, you
+   * need a ssh with ssh-askpass support to popup an X dialog to
+   * enter the password. */
 #ifdef FORK_KSYSGUARD
   pid_t pid;
   if ( ( pid = fork() ) < 0 )
