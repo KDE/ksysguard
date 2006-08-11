@@ -987,6 +987,10 @@ void ProcessModel::setIsLocalhost(bool isLocalhost)
 
 /** Set the untranslated heading names for the model */
 bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltype_) {
+	//Argument examples:
+	//header: (Name,PID,PPID,UID,GID,Status,User%,System%,Nice,VmSize,VmRss,Login,TracerPID,Command)
+	//coltype_: sddddSffdDDsds
+
 	mPidColumn = -1;  //We need to be able to access the pid directly, so remember which column it will be in
 	mPPidColumn = -1; //Same, although this may not always be found :/
 	mCPUHeading = -1;
