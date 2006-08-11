@@ -129,9 +129,6 @@ TopLevel::TopLevel()
   action = new KAction(KIcon("colorize"),  i18n( "Configure &Style..." ), actionCollection(), "configure_style" );
   connect(action, SIGNAL(triggered(bool)), SLOT( editStyle() ));
 
-  // TODO remove resize and fix so sizeHints() determines default size.
-  if (!initialGeometrySet())
-    resize( 640, 480 );
   setupGUI(ToolBar | Keys | StatusBar | Create);
 }
 
