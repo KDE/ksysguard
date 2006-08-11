@@ -133,7 +133,6 @@ TopLevel::TopLevel()
   if (!initialGeometrySet())
     resize( 640, 480 );
   setupGUI(ToolBar | Keys | StatusBar | Create);
-  setAutoSaveSettings();
 }
 
 void TopLevel::currentTabChanged(int index)
