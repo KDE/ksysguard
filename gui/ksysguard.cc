@@ -99,9 +99,10 @@ TopLevel::TopLevel()
   /* Create the status bar. It displays some information about the
    * number of processes and the memory consumption of the local
    * host. */
-  statusBar()->insertFixedItem( i18n( " Loading Processes Count.. " ), 0 );
-  statusBar()->insertFixedItem( i18n( "              Loading Memory Totals..              " ), 1 );
-  statusBar()->insertFixedItem( i18n( "              Loading Swap Totals..              " ), 2);
+  const int STATUSBAR_STRETCH=1;
+  statusBar()->insertItem( i18n( "Loading Processes Count.." ), 0, STATUSBAR_STRETCH );
+  statusBar()->insertItem( i18n( "Loading Memory Totals.." ), 1, STATUSBAR_STRETCH );
+  statusBar()->insertItem( i18n( "Loading Swap Totals.." ), 2, STATUSBAR_STRETCH);
   statusBar()->hide();
 
   // create actions for menue entries
