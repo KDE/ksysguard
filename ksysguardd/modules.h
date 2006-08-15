@@ -18,6 +18,8 @@
 
 */
 
+/* TODO: Port to Win32 */
+
 #ifndef KSG_MODULES_H
 #define KSG_MODULES_H
 
