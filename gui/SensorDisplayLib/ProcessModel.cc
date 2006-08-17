@@ -262,7 +262,7 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 		parent_process = mPidToProcess[0];
 	Q_ASSERT(parent_process);
 
-        // Using QList<long long>& instead of QList<long long> creates an internal error in gcc 3.3.1
+	// Using QList<long long>& instead of QList<long long> creates an internal error in gcc 3.3.1
 	if(parent_process->children.count() > row)
 		return createIndex(row,column, parent_process->children[row]);
 	else
@@ -439,7 +439,7 @@ void ProcessModel::changeProcess(long long pid)
 					changed = true;
 				}
 				break;
-		        }
+			}
 			default: {
 				value = newDataRow[i];
 				kDebug(1215) << "Uncaught column: " << value << endl;
@@ -645,8 +645,8 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 		return QVariant(); //error
 	if(orientation != Qt::Horizontal)
 		return QVariant();
-       if(section < 0 || section >= mHeadings.count())
-               return QVariant(); //TODO: Find out why this is needed
+	if(section < 0 || section >= mHeadings.count())
+		return QVariant(); //TODO: Find out why this is needed
 	return mHeadings[section];
 }
 
@@ -810,7 +810,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 						"User CPU usage: %3%<br/>System CPU usage: %4%")
 						.subs(i18nc("process status", process->status))
 						.subs(mStatusDescription.value(process->status, ""))
-					        .subs(process->userUsage, 0, 'f', 2)
+						.subs(process->userUsage, 0, 'f', 2)
 						.subs(process->sysUsage, 0, 'f', 2)
 						.toString();
 			if(process->numChildren > 0) {
@@ -954,7 +954,7 @@ QPixmap ProcessModel::getIcon(const QString&iconname) const {
 						 K3Icon::SizeSmall, K3Icon::DefaultState,
 						 0L, true);
 		if (pix.isNull() || !pix.mask())
-		    pix = SmallIcon("unknownapp");
+			pix = SmallIcon("unknownapp");
 
 		if (pix.width() != 16 || pix.height() != 16)
 		{
@@ -962,7 +962,7 @@ QPixmap ProcessModel::getIcon(const QString&iconname) const {
 			 * scale the pixmaps already appropriately. Since I got a bug
 			 * report claiming that it doesn't work with GNOME apps I've
 			 * added this safeguard. */
-                        QImage img = pix.toImage();
+			QImage img = pix.toImage();
 			img.scaled(16, 16, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 			pix = QPixmap::fromImage( img );
 		}
@@ -1105,9 +1105,9 @@ bool ProcessModel::setXResHeader(const QStringList &header, const QByteArray &)
 	  mXResIdentifierColumn != -1 &&
 	  !mHeadingsToType.contains(HeadingXIdentifier);  //we can end up inserting twice without this check if we add then remove the sensor or something
 	bool insertXMemory = (mXResMemOtherColumn != -1 &&
-		   mXResPxmMemColumn != -1 &&
-		   mXResNumPxmColumn != -1 &&
-		   !mHeadingsToType.contains(HeadingXMemory));
+				mXResPxmMemColumn != -1 &&
+				mXResNumPxmColumn != -1 &&
+				!mHeadingsToType.contains(HeadingXMemory));
 	if(!insertXIdentifier && !insertXMemory) return true; //nothing to do - already inserted
 
 	beginInsertColumns(QModelIndex(), mHeadings.count()-1, mHeadings.count() + ((insertXMemory && insertXIdentifier)?1:0));
@@ -1174,11 +1174,10 @@ void ProcessModel::setXResData(const QStringList& data)
 
 	int row = parent_process->children.indexOf(process);
 	Q_ASSERT(row != -1);
-        
+
 	QModelIndex startIndex = createIndex(row, 0, process);
 	QModelIndex endIndex = createIndex(row, mHeadings.count()-1, process);
-        emit dataChanged(startIndex, endIndex);
-
+	emit dataChanged(startIndex, endIndex);
 }
 
 void ProcessModel::setShowTotals(int totals)  //slot
