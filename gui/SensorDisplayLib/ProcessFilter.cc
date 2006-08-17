@@ -99,6 +99,6 @@ bool ProcessFilter::lessThan(const QModelIndex &left, const QModelIndex &right) 
 
 void ProcessFilter::setFilter(int index) {
 	mFilter = index; 
-	clear();//Tell the proxy view to refresh all its information
+	reset();//Tell the proxy view to refresh all its information
 }
 #include "ProcessFilter.moc"

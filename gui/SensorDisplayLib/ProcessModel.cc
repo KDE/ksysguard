@@ -645,7 +645,8 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 		return QVariant(); //error
 	if(orientation != Qt::Horizontal)
 		return QVariant();
-	if(section < 0 || section >= mHeadings.count()) return QVariant(); //error
+       if(section < 0 || section >= mHeadings.count())
+               return QVariant(); //TODO: Find out why this is needed
 	return mHeadings[section];
 }
 
@@ -735,7 +736,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 
 	if (!index.isValid())
 		return QVariant();
-	Q_ASSERT(index.column() < mHeadingsToType.count());
+	if (index.column() >= mHeadingsToType.count())
+		return QVariant(); //TODO: Find out why this is needed
 	switch (role){
 	case Qt::DisplayRole: {
 		Process *process = reinterpret_cast< Process * > (index.internalPointer());
@@ -768,6 +770,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		case HeadingMemory:
 			if(process->vmSize == 0) return QVariant();
 			return KGlobal::locale()->formatByteSize(process->vmSize);
+		case HeadingCommand:
+			return process->command;
 		default:
 			return process->data.at(headingType-HeadingOther);
 		}
@@ -1037,6 +1041,8 @@ bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltyp
 			headingsToType << HeadingRSSMemory;
 		} else if(header[i] == "Command") {
 			coltype += DataColumnCommand;
+			headings << i18nc("process heading", "Command");
+			headingsToType << HeadingCommand;
 		} else if(coltype_[i] == DATA_COLUMN_STATUS) {
 			coltype += DataColumnStatus;
 		} else if(coltype_[i] == DATA_COLUMN_LONG) {
@@ -1069,6 +1075,10 @@ bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltyp
 		mColType = coltype;
 		mHeadings = headings;
 	endInsertColumns();
+	reset();
+
+	assert(mHeadingsToType.size() == mHeadings.size());
+
 	return true;
 }
 bool ProcessModel::setXResHeader(const QStringList &header, const QByteArray &)

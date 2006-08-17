@@ -187,7 +187,7 @@ private:
 	/** A set of all the pids we know about.  Stored in a set so we can easily compare them against new data sets*/
 	QSet<long long> mPids;
 
-	enum { HeadingUser, HeadingName, HeadingXIdentifier, HeadingXMemory, HeadingCPUUsage, HeadingRSSMemory, HeadingMemory, HeadingOther };
+	enum { HeadingUser, HeadingName, HeadingXIdentifier, HeadingXMemory, HeadingCPUUsage, HeadingRSSMemory, HeadingMemory, HeadingCommand, HeadingOther };
 	
 	/** This are used when there is new data.  There are cleared as soon as the data is merged into the current model */
 	QSet<long long> new_pids;
