@@ -402,9 +402,6 @@ void initProcessList( struct SensorModul* sm )
 
   registerMonitor( "pscount", "integer", printProcessCount, printProcessCountInfo, sm );
   registerMonitor( "ps", "table", printProcessList, printProcessListInfo, sm );
-#ifdef HAVE_XRES
-  registerMonitor( "xres", "table", printXresList, printXresListInfo, sm);
-#endif
 
   if ( !RunAsDaemon ) {
     registerCommand( "kill", killProcess );
@@ -413,6 +410,9 @@ void initProcessList( struct SensorModul* sm )
 
 #ifdef HAVE_XRES
   have_xres = setup_xres();
+  if(have_xres) {
+    registerMonitor( "xres", "table", printXresList, printXresListInfo, sm);
+  }
 #endif
 
   updateProcessList();
@@ -424,7 +424,8 @@ void exitProcessList( void )
   removeMonitor( "pscount" );
 
 #ifdef HAVE_XRES
-  removeMonitor( "xres" );
+  if(have_xres) 
+    removeMonitor( "xres" );
 #endif
   if ( !RunAsDaemon ) {
     removeCommand( "kill" );
