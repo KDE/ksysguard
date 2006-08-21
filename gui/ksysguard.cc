@@ -77,7 +77,7 @@ TopLevel* topLevel;
 TopLevel::TopLevel()
   : KMainWindow( 0 )
 {
-  QDBus::sessionBus().registerObject("/", this, QDBusConnection::ExportSlots);
+  QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportScriptableSlots);
   setPlainCaption( i18n( "System Monitor" ) );
   mTimerId = -1;
 
