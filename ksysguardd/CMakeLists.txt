@@ -7,6 +7,8 @@ ADD_DEFINITIONS(-DOSTYPE_${CMAKE_SYSTEM_NAME})
 macro_optional_find_package(Sensors)
 macro_bool_to_01(SENSORS_FOUND, HAVE_LMSENSORS)
 FIND_LIBRARY(XRES_LIBRARY XRes)
+FIND_LIBRARY(X11_LIBRARY  X11)
+FIND_LIBRARY(XEXT_LIBRARY Xext)
 if(XRES_LIBRARY)
   set(HAVE_XRES 1)
 endif(XRES_LIBRARY)
@@ -30,7 +32,7 @@ set(ksysguardd_SRCS ${libccont_SRCS}
 add_executable(ksysguardd ${ksysguardd_SRCS})
 
 ADD_DEPENDENCIES(ksysguardd libksysguardd)
-TARGET_LINK_LIBRARIES(ksysguardd libksysguardd kdefakes)
+TARGET_LINK_LIBRARIES(ksysguardd libksysguardd kdefakes ${XRES_LIBRARY} ${X11_LIBRARY} ${XEXT_LIBRARY})
 
 install(TARGETS ksysguardd DESTINATION ${BIN_INSTALL_DIR})
 
