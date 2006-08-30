@@ -40,6 +40,33 @@
 
 using namespace KSGRD;
 
+class AgentEvent : public QEvent
+{
+  public:
+    AgentEvent( const SensorAgent *agent )
+      : QEvent( QEvent::User ), mAgent( agent )
+    {
+    }
+
+    const SensorAgent *agent() const
+    {
+      return mAgent;
+    }
+
+  private:
+    const SensorAgent *mAgent;
+};
+
+SensorManager::MessageEvent::MessageEvent( const QString &message )
+  : QEvent( QEvent::User ), mMessage( message )
+{
+}
+
+QString SensorManager::MessageEvent::message() const
+{
+  return mMessage;
+}
+
 SensorManager* KSGRD::SensorMgr;
 
 SensorManager::SensorManager()
@@ -232,7 +259,7 @@ void SensorManager::requestDisengage( const SensorAgent *agent )
 	 * while we are still in a SensorAgent member function.
 	 * So we have to post an event which is later caught by
 	 * SensorManger::customEvent(). */
-  QCustomEvent* event = new QCustomEvent( QEvent::User, (void*)agent );
+  AgentEvent* event = new AgentEvent( agent );
   kapp->postEvent( this, event );
 }
 
@@ -275,7 +302,7 @@ bool SensorManager::resynchronize( const QString &hostName )
 
   disengage( hostName );
 
-	kDebug (1215) << "Re-synchronizing connection to " << hostName << endl;
+  kDebug (1215) << "Re-synchronizing connection to " << hostName << endl;
 
   return engage( hostName, shell, command );
 }
@@ -284,12 +311,7 @@ void SensorManager::hostLost( const SensorAgent *agent )
 {
   emit hostConnectionLost( agent->hostName() );
 
-  if ( mBroadcaster ) {
-    QCustomEvent *event = new QCustomEvent( QEvent::User );
-    event->setData( new QString( i18n( "Connection to %1 has been lost." ,
-                      agent->hostName() ) ) );
-    kapp->postEvent( mBroadcaster, event );
-  }
+  notify( i18n( "Connection to %1 has been lost." ).arg( agent->hostName() ) );
 }
 
 void SensorManager::notify( const QString &msg ) const
@@ -298,8 +320,7 @@ void SensorManager::notify( const QString &msg ) const
    * displays the message in a pop-up box. It must be used for objects
    * that might have been deleted before the pop-up box is closed. */
   if ( mBroadcaster ) {
-    QCustomEvent *event = new QCustomEvent( QEvent::User );
-    event->setData( new QString( msg ) );
+    MessageEvent *event = new MessageEvent( msg );
     kapp->postEvent( mBroadcaster, event );
   }
 }
@@ -317,7 +338,7 @@ void SensorManager::reconfigure( const SensorAgent* )
 bool SensorManager::event( QEvent *event )
 {
   if ( event->type() == QEvent::User ) {
-    disengage( (const SensorAgent*)((QCustomEvent*)event)->data() );
+    disengage( static_cast<AgentEvent*>( event )->agent() );
     return true;
   }
 

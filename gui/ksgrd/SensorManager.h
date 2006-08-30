@@ -52,6 +52,17 @@ class KDE_EXPORT SensorManager : public QObject
   friend class SensorManagerIterator;
 
   public:
+    class MessageEvent : public QEvent
+    {
+      public:
+        MessageEvent( const QString &message );
+
+        QString message() const;
+
+      private:
+        QString mMessage;
+    };
+
     SensorManager();
     ~SensorManager();
 

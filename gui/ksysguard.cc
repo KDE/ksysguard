@@ -241,14 +241,13 @@ void TopLevel::editStyle()
   KSGRD::Style->configure();
 }
 
-void TopLevel::customEvent( QCustomEvent *e )
+void TopLevel::event( QEvent *e )
 {
   if ( e->type() == QEvent::User ) {
     /* Due to the asynchronous communication between ksysguard and its
      * back-ends, we sometimes need to show message boxes that were
      * triggered by objects that have died already. */
-    KMessageBox::error( this, *((QString*)e->data()) );
-    delete (QString*)e->data();
+    KMessageBox::error( this, static_cast<KSGRD::SensorManager::MessageEvent*>(e).message() );
   }
 }
 
