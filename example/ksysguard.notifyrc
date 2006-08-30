@@ -1,10 +1,10 @@
-[!Global!]
+[Global]
 IconName=ksysguard
 Comment=KDE System Guard
 Comment[fr]=Surveillance du système
 Comment[x-test]=xxKDE System Guardxx
 
-[pattern_match]
+[Event/pattern_match]
 Name=pattern_match
 Name[fr]=correspondance_avec_motif
 Name[x-test]=xxpattern_matchxx
@@ -12,7 +12,7 @@ Comment=Search pattern matched
 Comment[fr]=Motif de recherche trouvé
 Comment[x-test]=xxSearch pattern matchedxx
 
-[sensor_alarm]
+[Event/sensor_alarm]
 Name=sensor_alarm
 Name[fr]=alarme_des_capteurs
 Name[x-test]=xxsensor_alarmxx
