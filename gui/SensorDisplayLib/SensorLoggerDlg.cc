@@ -48,7 +48,7 @@ SensorLoggerDlg::~SensorLoggerDlg()
 
 QString SensorLoggerDlg::fileName() const
 {
-  return m_loggerWidget->m_fileName->url().toString();
+  return m_loggerWidget->m_fileName->url().path();
 }
 
 int SensorLoggerDlg::timerInterval() const
