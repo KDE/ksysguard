@@ -419,13 +419,15 @@ void WorkSheet::dropEvent( QDropEvent *e )
 
     /* Find the sensor display that is supposed to get the drop
      * event and replace or add sensor. */
-    for ( uint r = 0; r < mRows; ++r )
-      for ( uint c = 0; c < mColumns; ++c )
+    for ( uint r = 0; r < mRows; ++r ) {
+      for ( uint c = 0; c < mColumns; ++c ) {
         const QPoint pos = mDisplayList[ r ][ c ]->mapFrom( this, e->pos() );
         if ( mDisplayList[ r ][ c ]->geometry().contains( pos ) ) {
           addDisplay( hostName, sensorName, sensorType, sensorDescr, r, c );
           return;
         }
+      }
+    }
   }
 }
 
