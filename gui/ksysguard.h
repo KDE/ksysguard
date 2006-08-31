@@ -64,7 +64,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
     Q_SCRIPTABLE QStringList listSensors( const QString &hostName );
 
   protected:
-    virtual void event( QEvent* );
+    virtual void customEvent( QEvent* );
     virtual void timerEvent( QTimerEvent* );
     virtual bool queryClose();
 
