@@ -123,13 +123,12 @@ void SensorBrowser::update()
 {
   static int id = 0;
 
-  KSGRD::SensorManagerIterator it( mSensorManager );
-
   mHostInfoList.clear();
   clear();
 
-  KSGRD::SensorAgent* host;
-  for ( int i = 0 ; ( host = it.current() ); ++it, ++i ) {
+  KSGRD::SensorManagerIterator it( mSensorManager );
+  while ( it.hasNext() ) {
+    KSGRD::SensorAgent* host = it.next().value();
     QString hostName = mSensorManager->hostName( host );
     HostItem* lvi = new HostItem( this, hostName, id, host );
 
@@ -243,7 +242,7 @@ void SensorBrowser::viewportMouseMoveEvent( QMouseEvent *e )
    * mouse tracking cannot be turned off. So we have to check each event
    * whether the LMB is really pressed. */
 
-  if ( !( e->state() & Qt::LeftButton ) )
+  if ( !( e->buttons() & Qt::LeftButton ) )
     return;
 
   Q3ListViewItem* item = itemAt( e->pos() );

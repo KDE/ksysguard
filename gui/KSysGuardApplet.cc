@@ -99,9 +99,9 @@ KSysGuardApplet::~KSysGuardApplet()
   delete mSettingsDlg;
   mSettingsDlg = 0;
 
-	delete KSGRD::Style;
-	delete KSGRD::SensorMgr;
-	KSGRD::SensorMgr = 0;
+  delete KSGRD::Style;
+  delete KSGRD::SensorMgr;
+  KSGRD::SensorMgr = 0;
 }
 
 int KSysGuardApplet::widthForHeight( int height ) const
@@ -132,8 +132,8 @@ void KSysGuardApplet::preferences()
   if ( mSettingsDlg->exec() )
     applySettings();
 
-	delete mSettingsDlg;
-	mSettingsDlg = 0;
+  delete mSettingsDlg;
+  mSettingsDlg = 0;
 }
 
 void KSysGuardApplet::applySettings()
@@ -143,7 +143,7 @@ void KSysGuardApplet::applySettings()
   resizeDocks( mSettingsDlg->numDisplay() );
 
   for ( uint i = 0; i < mDockCount; ++i )
-    if ( !mDockList[ i ]->isA( "QFrame" ) )
+    if ( mDockList[ i ]->metaObject()->className() != "QFrame"  )
       ((KSGRD::SensorDisplay*)mDockList[ i ])->setUpdateInterval( updateInterval() );
 
   save();
@@ -202,7 +202,7 @@ void KSysGuardApplet::dropEvent( QDropEvent *e )
       return;
 
     int dock = findDock( e->pos() );
-    if ( mDockList[ dock ]->isA( "QFrame" ) ) {
+    if ( mDockList[ dock ]->metaObject()->className() == "QFrame" ) {
       if ( sensorType == "integer" || sensorType == "float" ) {
         KMenu popup;
         QWidget *wdg = 0;
@@ -211,12 +211,12 @@ void KSysGuardApplet::dropEvent( QDropEvent *e )
         QAction *a1 = popup.addAction( i18n( "&Signal Plotter" ) );
         QAction *a2 = popup.addAction( i18n( "&Multimeter" ) );
         QAction *a3 = popup.addAction( i18n( "&Dancing Bars" ) );
-	QAction *execed = popup.exec( QCursor::pos() );
-	if (execed == a1)
+        QAction *execed = popup.exec( QCursor::pos() );
+        if (execed == a1)
             wdg = new FancyPlotter( this, sensorDescr, &mSharedSettings );
-	else if (execed == a2)
+        else if (execed == a2)
             wdg = new MultiMeter( this, sensorDescr, &mSharedSettings );
-	else if (execed == a3)
+        else if (execed == a3)
             wdg = new DancingBars( this, sensorDescr, &mSharedSettings );
 
         if ( wdg ) {
@@ -238,7 +238,7 @@ void KSysGuardApplet::dropEvent( QDropEvent *e )
       }
     }
 
-    if ( !mDockList[ dock ]->isA( "QFrame" ) )
+    if ( mDockList[ dock ]->metaObject()->className() != "QFrame" )
       ((KSGRD::SensorDisplay*)mDockList[ dock ])->
                   addSensor( hostName, sensorName, sensorType, sensorDescr );
   }
@@ -251,7 +251,7 @@ void KSysGuardApplet::customEvent( QCustomEvent *e )
   if ( e->type() == QEvent::User ) {
     if ( KMessageBox::warningContinueCancel( this,
          i18n( "Do you really want to delete the display?" ), i18n("Delete Display"),
-	 KStdGuiItem::del() ) == KMessageBox::Continue ) {
+               KStdGuiItem::del() ) == KMessageBox::Continue ) {
       // SensorDisplays send out this event if they want to be removed.
       removeDisplay( (KSGRD::SensorDisplay*)e->data() );
       save();
@@ -324,7 +324,7 @@ bool KSysGuardApplet::load()
     return false;
   }
 
-	// Check for proper document type.
+  // Check for proper document type.
   if ( doc.doctype().name() != "KSysGuardApplet" ) {
     KMessageBox::sorry( this, i18n( "The file %1 does not contain a valid applet "
                         "definition, which must have a document type 'KSysGuardApplet'." ,
@@ -336,7 +336,7 @@ bool KSysGuardApplet::load()
   bool ok;
   uint count = element.attribute( "dockCnt" ).toUInt( &ok );
   if ( !ok )
-		count = 1;
+    count = 1;
 
   mSizeRatio = element.attribute( "sizeRatio" ).toDouble( &ok );
   if ( !ok )
@@ -421,7 +421,7 @@ bool KSysGuardApplet::save()
   QStringList hosts;
   uint i;
   for ( i = 0; i < mDockCount; ++i )
-    if ( !mDockList[ i ]->isA( "QFrame" ) )
+    if ( mDockList[ i ]->metaObject()->className() != "QFrame" )
       ((KSGRD::SensorDisplay*)mDockList[ i ])->hosts( hosts );
 
   // save host information (name, shell, etc.)
@@ -441,11 +441,11 @@ bool KSysGuardApplet::save()
   }
 
   for ( i = 0; i < mDockCount; ++i )
-    if ( !mDockList[ i ]->isA( "QFrame" ) ) {
+    if ( mDockList[ i ]->metaObject()->className() != "QFrame" ) {
       QDomElement element = doc.createElement( "display" );
       ws.appendChild( element );
       element.setAttribute( "dock", i );
-      element.setAttribute( "class", mDockList[ i ]->className() );
+      element.setAttribute( "class", mDockList[ i ]->metaObject()->className() );
 
       ((KSGRD::SensorDisplay*)mDockList[ i ])->saveSettings( doc, element );
     }

@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
     Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -23,10 +23,9 @@
 
 #include <kconfig.h>
 
-#include <q3dict.h>
-#include <QObject>
-//Added by qt3to4:
-#include <QEvent>
+#include <QtCore/QEvent>
+#include <QtCore/QHash>
+#include <QtCore/QObject>
 
 #include "SensorAgent.h"
 
@@ -88,16 +87,16 @@ class KDE_EXPORT SensorManager : public QObject
     bool hostInfo( const QString &host, QString &shell,
                    QString &command, int &port );
 
-    const QString& translateUnit( const QString &unit ) const;
-    const QString& translateSensorPath( const QString &path ) const;
-    const QString& translateSensorType( const QString &type ) const;
+    QString translateUnit( const QString &unit ) const;
+    QString translateSensorPath( const QString &path ) const;
+    QString translateSensorType( const QString &type ) const;
     QString translateSensor(const QString& u) const;
 
     void readProperties( KConfig *cfg );
     void saveProperties( KConfig *cfg );
 
     void disconnectClient( SensorClient *client );
-	
+
   public Q_SLOTS:
     void reconfigure( const SensorAgent *agent );
 
@@ -106,17 +105,17 @@ class KDE_EXPORT SensorManager : public QObject
     void hostConnectionLost( const QString &hostName );
 
   protected:
-    Q3Dict<SensorAgent> mAgents;
+    QHash<QString, SensorAgent*> mAgents;
 
   private:
     /**
       These dictionary stores the localized versions of the sensor
       descriptions and units.
      */
-    Q3Dict<QString> mDescriptions;
-    Q3Dict<QString> mUnits;
-    Q3Dict<QString> mDict;
-    Q3Dict<QString> mTypes;
+    QHash<QString, QString> mDescriptions;
+    QHash<QString, QString> mUnits;
+    QHash<QString, QString> mDict;
+    QHash<QString, QString> mTypes;
 
     QWidget* mBroadcaster;
 
@@ -125,11 +124,11 @@ class KDE_EXPORT SensorManager : public QObject
 
 KDE_EXPORT extern SensorManager* SensorMgr;
 
-class KDE_EXPORT SensorManagerIterator : public Q3DictIterator<SensorAgent>
+class KDE_EXPORT SensorManagerIterator : public QHashIterator<QString, SensorAgent*>
 {
   public:
     SensorManagerIterator( const SensorManager *sm )
-      : Q3DictIterator<SensorAgent>( sm->mAgents ) { }
+      : QHashIterator<QString, SensorAgent*>( sm->mAgents ) { }
 
     ~SensorManagerIterator() { }
 };
