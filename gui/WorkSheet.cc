@@ -27,7 +27,6 @@
 #include <QEvent>
 #include <QDropEvent>
 #include <QDragEnterEvent>
-#include <QCustomEvent>
 #include <QFile>
 #include <QByteArray>
 
@@ -422,7 +421,8 @@ void WorkSheet::dropEvent( QDropEvent *e )
      * event and replace or add sensor. */
     for ( uint r = 0; r < mRows; ++r )
       for ( uint c = 0; c < mColumns; ++c )
-        if ( mDisplayList[ r ][ c ]->geometry().contains( e->pos() ) ) {
+        const QPoint pos = mDisplayList[ r ][ c ]->mapFrom( this, e->pos() );
+        if ( mDisplayList[ r ][ c ]->geometry().contains( pos ) ) {
           addDisplay( hostName, sensorName, sensorType, sensorDescr, r, c );
           return;
         }
@@ -434,16 +434,21 @@ QSize WorkSheet::sizeHint() const
   return QSize( 200,150 );
 }
 
-void WorkSheet::customEvent( QCustomEvent *e )
+bool WorkSheet::event( QEvent *e )
 {
   if ( e->type() == QEvent::User ) {
     // SensorDisplays send out this event if they want to be removed.
     if ( KMessageBox::warningContinueCancel( this, i18n( "Do you really want to delete the display?" ),
       i18n("Delete Display"), KStdGuiItem::del() )
          == KMessageBox::Continue ) {
-      removeDisplay( (KSGRD::SensorDisplay*)e->data() );
+      KSGRD::SensorDisplay::DeleteEvent *event = static_cast<KSGRD::SensorDisplay::DeleteEvent*>( e );
+      removeDisplay( event->display() );
+
+      return true;
     }
   }
+
+  return QWidget::event( e );
 }
 
 bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )

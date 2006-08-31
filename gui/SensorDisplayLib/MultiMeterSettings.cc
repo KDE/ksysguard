@@ -18,9 +18,10 @@
 */
 
 #include "MultiMeterSettings.h"
-#include "MultiMeterSettingsWidget.h"
+#include "ui_MultiMeterSettingsWidget.h"
 
 #include <klocale.h>
+#include <knumvalidator.h>
 
 MultiMeterSettings::MultiMeterSettings( QWidget *parent, const char *name )
     : KDialog( parent )
@@ -31,98 +32,111 @@ MultiMeterSettings::MultiMeterSettings( QWidget *parent, const char *name )
   setButtons( Ok|Apply|Cancel );
   showButtonSeparator( true );
 
-  m_settingsWidget = new MultiMeterSettingsWidget( this, "m_settingsWidget" );
-  setMainWidget( m_settingsWidget );
+  QWidget *mainWidget = new QWidget( this );
+
+  m_settingsWidget = new Ui_MultiMeterSettingsWidget;
+  m_settingsWidget->setupUi( mainWidget );
+  m_settingsWidget->m_lowerLimit->setValidator(new KDoubleValidator(m_settingsWidget->m_lowerLimit));
+  m_settingsWidget->m_upperLimit->setValidator(new KDoubleValidator(m_settingsWidget->m_upperLimit));
+
+  m_settingsWidget->m_title->setFocus();
+
+  setMainWidget( mainWidget );
+}
+
+MultiMeterSettings::~MultiMeterSettings()
+{
+  delete m_settingsWidget;
 }
 
 QString MultiMeterSettings::title()
 {
-  return m_settingsWidget->title();
+  return m_settingsWidget->m_title->text();
 }
 
 bool MultiMeterSettings::showUnit()
 {
-  return m_settingsWidget->showUnit();
+  return m_settingsWidget->m_showUnit->isChecked();
 }
 
 bool MultiMeterSettings::lowerLimitActive()
 {
-  return m_settingsWidget->lowerLimitActive();
+  return m_settingsWidget->m_lowerLimitActive->isChecked();
 }
 
 bool MultiMeterSettings::upperLimitActive()
 {
-  return m_settingsWidget->upperLimitActive();
+  return m_settingsWidget->m_upperLimitActive->isChecked();
 }
 
 double MultiMeterSettings::lowerLimit()
 {
-  return m_settingsWidget->lowerLimit();
+  return m_settingsWidget->m_lowerLimit->text().toDouble();
 }
 
 double MultiMeterSettings::upperLimit()
 {
-  return m_settingsWidget->upperLimit();
+  return m_settingsWidget->m_upperLimit->text().toDouble();
 }
 
 QColor MultiMeterSettings::normalDigitColor()
 {
-  return m_settingsWidget->normalDigitColor();
+  return m_settingsWidget->m_normalDigitColor->color();
 }
 
 QColor MultiMeterSettings::alarmDigitColor()
 {
-  return m_settingsWidget->alarmDigitColor();
+  return m_settingsWidget->m_alarmDigitColor->color();
 }
 
 QColor MultiMeterSettings::meterBackgroundColor()
 {
-  return m_settingsWidget->meterBackgroundColor();
+  return m_settingsWidget->m_backgroundColor->color();
 }
 
 void MultiMeterSettings::setTitle( const QString &title )
 {
-  m_settingsWidget->setTitle( title );
+  m_settingsWidget->m_title->setText( title );
 }
 
 void MultiMeterSettings::setShowUnit( bool b )
 {
-  m_settingsWidget->setShowUnit( b );
+  m_settingsWidget->m_showUnit->setChecked( b );
 }
 
 void MultiMeterSettings::setLowerLimitActive( bool b )
 {
-  m_settingsWidget->setLowerLimitActive( b );
+  m_settingsWidget->m_lowerLimitActive->setChecked( b );
 }
 
 void MultiMeterSettings::setUpperLimitActive( bool b )
 {
-  m_settingsWidget->setUpperLimitActive( b );
+  m_settingsWidget->m_upperLimitActive->setChecked( b );
 }
 
 void MultiMeterSettings::setLowerLimit( double limit )
 {
-  m_settingsWidget->setLowerLimit( limit );
+  m_settingsWidget->m_lowerLimit->setText( QString::number( limit ) );
 }
 
 void MultiMeterSettings::setUpperLimit( double limit )
 {
-  m_settingsWidget->setUpperLimit( limit );
+  m_settingsWidget->m_upperLimit->setText( QString::number( limit ) );
 }
 
 void MultiMeterSettings::setNormalDigitColor( const QColor &c )
 {
-  m_settingsWidget->setNormalDigitColor( c );
+  m_settingsWidget->m_normalDigitColor->setColor( c );
 }
 
 void MultiMeterSettings::setAlarmDigitColor( const QColor &c )
 {
-  m_settingsWidget->setAlarmDigitColor( c );
+  m_settingsWidget->m_alarmDigitColor->setColor( c );
 }
 
 void MultiMeterSettings::setMeterBackgroundColor( const QColor &c )
 {
-  m_settingsWidget->setMeterBackgroundColor( c );
+  m_settingsWidget->m_backgroundColor->setColor( c );
 }
 
 #include "MultiMeterSettings.moc"

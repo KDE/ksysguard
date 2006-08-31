@@ -102,13 +102,21 @@ int PrivateListViewItem::compare( Q3ListViewItem *item, int col, bool ascending 
 PrivateListView::PrivateListView(QWidget *parent, const char *name)
 	: Q3ListView(parent, name)
 {
-        QPalette cg = palette();
+  QPalette pal = palette();
 
-	cg.setColor(QPalette::Link, KSGRD::Style->firstForegroundColor());
-	cg.setColor(QPalette::Text, KSGRD::Style->secondForegroundColor());
-	cg.setColor(QPalette::Base, KSGRD::Style->backgroundColor());
+  pal.setColor( QPalette::Active, QPalette::Link, KSGRD::Style->firstForegroundColor() );
+  pal.setColor( QPalette::Active, QPalette::Text, KSGRD::Style->secondForegroundColor() );
+  pal.setColor( QPalette::Active, QPalette::Base, KSGRD::Style->backgroundColor() );
 
-	setPalette(QPalette(cg, cg, cg));
+  pal.setColor( QPalette::Disabled, QPalette::Link, KSGRD::Style->firstForegroundColor() );
+  pal.setColor( QPalette::Disabled, QPalette::Text, KSGRD::Style->secondForegroundColor() );
+  pal.setColor( QPalette::Disabled, QPalette::Base, KSGRD::Style->backgroundColor() );
+
+  pal.setColor( QPalette::Inactive, QPalette::Link, KSGRD::Style->firstForegroundColor() );
+  pal.setColor( QPalette::Inactive, QPalette::Text, KSGRD::Style->secondForegroundColor() );
+  pal.setColor( QPalette::Inactive, QPalette::Base, KSGRD::Style->backgroundColor() );
+
+  setPalette( pal );
 }
 
 void PrivateListView::update(const QStringList& answer)
@@ -336,14 +344,22 @@ ListView::configureSettings()
 void
 ListView::applySettings()
 {
-	QPalette pal = monitor->palette();
-	pal.setColor(QPalette::Link, lvs->gridColor());
-	pal.setColor(QPalette::Text, lvs->textColor());
-	pal.setColor(QPalette::Base, lvs->backgroundColor());
-	monitor->setPalette(QPalette(pal, pal, pal));
+  QPalette pal = monitor->palette();
+  pal.setColor(QPalette::Active, QPalette::Link, lvs->gridColor());
+  pal.setColor(QPalette::Active, QPalette::Text, lvs->textColor());
+  pal.setColor(QPalette::Active, QPalette::Base, lvs->backgroundColor());
 
-	setTitle(lvs->title());
+  pal.setColor(QPalette::Disabled, QPalette::Link, lvs->gridColor());
+  pal.setColor(QPalette::Disabled, QPalette::Text, lvs->textColor());
+  pal.setColor(QPalette::Disabled, QPalette::Base, lvs->backgroundColor());
 
+  pal.setColor(QPalette::Inactive, QPalette::Link, lvs->gridColor());
+  pal.setColor(QPalette::Inactive, QPalette::Text, lvs->textColor());
+  pal.setColor(QPalette::Inactive, QPalette::Base, lvs->backgroundColor());
+
+  monitor->setPalette( pal );
+
+  setTitle(lvs->title());
 }
 
 void

@@ -26,7 +26,7 @@
 #include <QString>
 #include <QColor>
 
-class SensorLoggerSettingsWidget;
+class Ui_SensorLoggerSettingsWidget;
 
 class SensorLoggerSettings : public KDialog
 {
@@ -35,6 +35,7 @@ class SensorLoggerSettings : public KDialog
   public:
 
     SensorLoggerSettings( QWidget *parent=0, const char *name=0 );
+    ~SensorLoggerSettings();
 
     QString title();
     QColor foregroundColor();
@@ -48,7 +49,7 @@ class SensorLoggerSettings : public KDialog
 
   private:
 
-    SensorLoggerSettingsWidget *m_settingsWidget;
+    Ui_SensorLoggerSettingsWidget *m_settingsWidget;
 };
 
 #endif // SENSORLOGGERSETTINGS_H

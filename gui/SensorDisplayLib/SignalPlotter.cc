@@ -21,9 +21,10 @@
 #include <math.h>
 #include <string.h>
 
-#include <QPainter>
-#include <QPixmap>
-#include <QPolygon>
+#include <QtGui/QPainter>
+#include <QtGui/QPixmap>
+#include <QtGui/QPainterPath>
+#include <QtGui/QPolygon>
 
 #include <kdebug.h>
 #include <ksgrd/StyleEngine.h>
@@ -100,7 +101,7 @@ void SignalPlotter::addSample( const QList<double>& sampleBuf )
   if(mBezierCurveOffset >= 2) mBezierCurveOffset = 0;
   else mBezierCurveOffset++;
 
-  Q_ASSERT(mBeamData.size() >= mBezierCurveOffset);
+  Q_ASSERT((uint)mBeamData.size() >= mBezierCurveOffset);
   
   //FIXME: IS THIS NEEDED STILL?
   if ( mUseAutoRange ) { /* When all the data points are stacked on top of each other, the range will be up to the sum of them all */
@@ -512,7 +513,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
      */
 
     for(int i = 0; it != mBeamData.end() && i < mSamples; ++i) {
-      double bias = -minValue;
+      // double bias = -minValue;
       double sum = 0.0;
       QPen pen;
       pen.setWidth(2);
@@ -594,7 +595,10 @@ void SignalPlotter::paintEvent( QPaintEvent* )
 			     w - xPos + mHorizontalScale, h - (int)((prev_prev_datapoints[j] - minValue)*scaleFac),
 			     w - xPos, h - (int)((prev_prev_prev_datapoints[j] - minValue)*scaleFac));
 
-	p.drawCubicBezier(curve);
+        QPainterPath path;
+        path.moveTo( curve.at( 0 ) );
+        path.cubicTo( curve.at( 1 ), curve.at( 2 ), curve.at( 3 ) );
+        p.strokePath( path, p.pen() );
 //	p.drawLine( w - xPos, h - (int)((prev_prev_datapoints[i] - minValue)*scaleFac),
 //		    w - xPos - mHorizontalScale + 1, h - (int)((prev_datapoints[i] - minValue)*scaleFac));
 

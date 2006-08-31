@@ -26,7 +26,7 @@
 #include <QString>
 #include <QColor>
 
-class ListViewSettingsWidget;
+class Ui_ListViewSettingsWidget;
 
 class ListViewSettings : public KDialog
 {
@@ -35,6 +35,7 @@ class ListViewSettings : public KDialog
   public:
 
     ListViewSettings( QWidget *parent=0, const char *name=0 );
+    ~ListViewSettings();
 
     QString title() const;
     QColor textColor() const;
@@ -48,7 +49,7 @@ class ListViewSettings : public KDialog
 
   private:
 
-    ListViewSettingsWidget *m_settingsWidget;
+    Ui_ListViewSettingsWidget *m_settingsWidget;
 };
 
 #endif // LISTVIEWSETTINGS_H

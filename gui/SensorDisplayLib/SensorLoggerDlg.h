@@ -26,7 +26,7 @@
 #include <QString>
 #include <QColor>
 
-class SensorLoggerDlgWidget;
+class Ui_SensorLoggerDlgWidget;
 
 class SensorLoggerDlg : public KDialog
 {
@@ -35,6 +35,7 @@ class SensorLoggerDlg : public KDialog
   public:
 
     SensorLoggerDlg( QWidget *parent=0, const char *name=0 );
+    ~SensorLoggerDlg();
 
     QString fileName() const;
     int timerInterval() const;
@@ -52,7 +53,7 @@ class SensorLoggerDlg : public KDialog
 
   private:
 
-    SensorLoggerDlgWidget *m_loggerWidget;
+    Ui_SensorLoggerDlgWidget *m_loggerWidget;
 };
 
 #endif // SENSORLOGGERDLG_H

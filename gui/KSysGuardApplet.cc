@@ -35,7 +35,6 @@
 #include <QFrame>
 #include <QResizeEvent>
 #include <QDragEnterEvent>
-#include <QCustomEvent>
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -246,17 +245,22 @@ void KSysGuardApplet::dropEvent( QDropEvent *e )
   save();
 }
 
-void KSysGuardApplet::customEvent( QCustomEvent *e )
+bool KSysGuardApplet::event( QEvent *e )
 {
   if ( e->type() == QEvent::User ) {
     if ( KMessageBox::warningContinueCancel( this,
          i18n( "Do you really want to delete the display?" ), i18n("Delete Display"),
                KStdGuiItem::del() ) == KMessageBox::Continue ) {
       // SensorDisplays send out this event if they want to be removed.
-      removeDisplay( (KSGRD::SensorDisplay*)e->data() );
+      KSGRD::SensorDisplay::DeleteEvent *event = static_cast<KSGRD::SensorDisplay::DeleteEvent*>( e );
+      removeDisplay( event->display() );
       save();
+
+      return true;
     }
   }
+
+  return KPanelApplet::event( e );
 }
 
 void KSysGuardApplet::removeDisplay( KSGRD::SensorDisplay *display )

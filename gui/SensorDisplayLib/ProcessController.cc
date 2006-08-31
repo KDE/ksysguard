@@ -501,9 +501,8 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 
 void ProcessController::killFailed()
 {
-	#warning i18n: Missing argument to message below
-	KSGRD::SensorMgr->notify(i18n("You do not have the permission to kill process %1 and there "
-				      "was a problem trying to run as root"));
+  KSGRD::SensorMgr->notify(i18n("You do not have the permission to kill the process and there "
+                                "was a problem trying to run as root"));
 }
 
 void

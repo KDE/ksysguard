@@ -18,7 +18,7 @@
 */
 
 #include "ListViewSettings.h"
-#include "ListViewSettingsWidget.h"
+#include "ui_ListViewSettingsWidget.h"
 
 #include <klocale.h>
 
@@ -31,48 +31,56 @@ ListViewSettings::ListViewSettings( QWidget *parent, const char *name )
   setButtons( Ok | Apply | Cancel );
   showButtonSeparator( true );
 
-  m_settingsWidget = new ListViewSettingsWidget( this, "m_settingsWidget" );
-  setMainWidget( m_settingsWidget );
+  QWidget *widget = new QWidget( this );
+  m_settingsWidget = new Ui_ListViewSettingsWidget;
+  m_settingsWidget->setupUi( widget );
+
+  setMainWidget( widget );
+}
+
+ListViewSettings::~ListViewSettings()
+{
+  delete m_settingsWidget;
 }
 
 QString ListViewSettings::title() const
 {
-  return m_settingsWidget->title();
+  return m_settingsWidget->m_title->text();
 }
 
 QColor ListViewSettings::textColor() const
 {
-  return m_settingsWidget->textColor();
+  return m_settingsWidget->m_textColor->color();
 }
 
 QColor ListViewSettings::backgroundColor() const
 {
-  return m_settingsWidget->backgroundColor();
+  return m_settingsWidget->m_backgroundColor->color();
 }
 
 QColor ListViewSettings::gridColor() const
 {
-  return m_settingsWidget->gridColor();
+  return m_settingsWidget->m_gridColor->color();
 }
 
 void ListViewSettings::setTitle( const QString &title )
 {
-  m_settingsWidget->setTitle( title );
+  m_settingsWidget->m_title->setText( title );
 }
 
 void ListViewSettings::setBackgroundColor( const QColor &c )
 {
-  m_settingsWidget->setBackgroundColor( c );
+  m_settingsWidget->m_backgroundColor->setColor( c );
 }
 
 void ListViewSettings::setTextColor( const QColor &c )
 {
-  m_settingsWidget->setTextColor( c );
+  m_settingsWidget->m_textColor->setColor( c );
 }
 
 void ListViewSettings::setGridColor( const QColor &c )
 {
-  m_settingsWidget->setGridColor( c );
+  m_settingsWidget->m_gridColor->setColor( c );
 }
 
 #include "ListViewSettings.moc"

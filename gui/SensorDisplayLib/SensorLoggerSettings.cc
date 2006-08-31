@@ -18,7 +18,7 @@
 */
 
 #include "SensorLoggerSettings.h"
-#include "SensorLoggerSettingsWidget.h"
+#include "ui_SensorLoggerSettingsWidget.h"
 
 #include <klocale.h>
 
@@ -31,48 +31,57 @@ SensorLoggerSettings::SensorLoggerSettings( QWidget *parent, const char *name )
   setButtons( Ok|Apply|Cancel );
   showButtonSeparator( true );
 
-  m_settingsWidget = new SensorLoggerSettingsWidget( this, "m_settingsWidget" );
-  setMainWidget( m_settingsWidget );
+  QWidget *widget = new QWidget( this );
+
+  m_settingsWidget = new Ui_SensorLoggerSettingsWidget;
+  m_settingsWidget->setupUi( widget );
+
+  setMainWidget( widget );
+}
+
+SensorLoggerSettings::~SensorLoggerSettings()
+{
+  delete m_settingsWidget;
 }
 
 QString SensorLoggerSettings::title()
 {
-  return m_settingsWidget->title();
+  return m_settingsWidget->m_title->text();
 }
 
 QColor SensorLoggerSettings::foregroundColor()
 {
-  return m_settingsWidget->foregroundColor();
+  return m_settingsWidget->m_foregroundColor->color();
 }
 
 QColor SensorLoggerSettings::backgroundColor()
 {
-  return m_settingsWidget->backgroundColor();
+  return m_settingsWidget->m_backgroundColor->color();
 }
 
 QColor SensorLoggerSettings::alarmColor()
 {
-  return m_settingsWidget->alarmColor();
+  return m_settingsWidget->m_alarmColor->color();
 }
 
 void SensorLoggerSettings::setTitle( const QString &title )
 {
-  m_settingsWidget->setTitle( title );
+  m_settingsWidget->m_title->setText( title );
 }
 
 void SensorLoggerSettings::setBackgroundColor( const QColor &c )
 {
-  m_settingsWidget->setBackgroundColor( c );
+  m_settingsWidget->m_backgroundColor->setColor( c );
 }
 
 void SensorLoggerSettings::setForegroundColor( const QColor &c )
 {
-  m_settingsWidget->setForegroundColor( c );
+  m_settingsWidget->m_foregroundColor->setColor( c );
 }
 
 void SensorLoggerSettings::setAlarmColor( const QColor &c )
 {
-  m_settingsWidget->setAlarmColor( c );
+  m_settingsWidget->m_alarmColor->setColor( c );
 }
 
 #include "SensorLoggerSettings.moc"

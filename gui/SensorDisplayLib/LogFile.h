@@ -35,7 +35,7 @@ class QListWidget;
 
 #include <SensorDisplay.h>
 
-#include "LogFileSettings.h"
+class Ui_LogFileSettings;
 
 class LogFile : public KSGRD::SensorDisplay
 {
@@ -77,7 +77,7 @@ public Q_SLOTS:
 	void settingsRuleListSelected(int index);
 
 private:
-	LogFileSettings* lfs;
+  Ui_LogFileSettings* lfs;
 	QListWidget* monitor;
 	QStringList filterRules;
 

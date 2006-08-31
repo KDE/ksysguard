@@ -156,7 +156,7 @@ MultiMeter::saveSettings(QDomDocument& doc, QDomElement& element)
 
 	saveColor(element, "normalDigitColor", normalDigitColor);
 	saveColor(element, "alarmDigitColor", alarmDigitColor);
-	saveColor(element, "backgroundColor", lcd->backgroundColor());
+	saveColor(element, "backgroundColor", lcd->palette().color(lcd->backgroundRole()));
 
 	SensorDisplay::saveSettings(doc, element);
 
@@ -176,7 +176,7 @@ MultiMeter::configureSettings()
 	mms->setUpperLimit(upperLimit);
 	mms->setNormalDigitColor(normalDigitColor);
 	mms->setAlarmDigitColor(alarmDigitColor);
-	mms->setMeterBackgroundColor(lcd->backgroundColor());
+	mms->setMeterBackgroundColor(lcd->palette().color(lcd->backgroundRole()));
 
 	connect(mms, SIGNAL(applyClicked()), SLOT(applySettings()));
 
@@ -223,10 +223,8 @@ MultiMeter::setDigitColor(const QColor& col)
 void
 MultiMeter::setBackgroundColor(const QColor& col)
 {
-	lcd->setBackgroundColor(col);
-
-	QPalette p = lcd->palette();
-	p.setColor(QPalette::Light, col);
-	p.setColor(QPalette::Dark, col);
-	lcd->setPalette(p);
+  QPalette p = lcd->palette();
+  p.setBrush(QPalette::Background, QBrush( col ) );
+  p.setColor(QPalette::Background, col );
+  lcd->setPalette(p);
 }

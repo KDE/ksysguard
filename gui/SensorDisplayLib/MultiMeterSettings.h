@@ -26,7 +26,7 @@
 #include <QString>
 #include <QColor>
 
-class MultiMeterSettingsWidget;
+class Ui_MultiMeterSettingsWidget;
 
 class MultiMeterSettings : public KDialog
 {
@@ -35,6 +35,7 @@ class MultiMeterSettings : public KDialog
   public:
 
     MultiMeterSettings( QWidget *parent=0, const char *name=0 );
+    ~MultiMeterSettings();
 
     QString title();
     bool showUnit();
@@ -58,7 +59,7 @@ class MultiMeterSettings : public KDialog
 
   private:
 
-    MultiMeterSettingsWidget *m_settingsWidget;
+    Ui_MultiMeterSettingsWidget *m_settingsWidget;
 };
 
 #endif // MULTIMETERSETTINGS_H

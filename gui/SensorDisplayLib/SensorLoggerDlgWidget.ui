@@ -1,269 +1,232 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
-<class>SensorLoggerDlgWidget</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>SensorLoggerDlgWidget</cstring>
+<ui version="4.0" stdsetdef="1" >
+  <author></author>
+  <comment></comment>
+  <exportmacro></exportmacro>
+  <class>SensorLoggerDlgWidget</class>
+  <widget class="QWidget" name="SensorLoggerDlgWidget" >
+    <property name="geometry" >
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>363</width>
+        <height>254</height>
+      </rect>
     </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>363</width>
-            <height>254</height>
-        </rect>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>fileFrame</cstring>
+    <layout class="QVBoxLayout" >
+      <item>
+        <widget class="Q3GroupBox" name="fileFrame" >
+          <property name="title" >
+            <string>File</string>
+          </property>
+          <layout class="QHBoxLayout" >
+            <property name="margin" >
+              <number>0</number>
             </property>
-            <property name="frameShape">
-                <enum>Box</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="title">
-                <string>File</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="KUrlRequester">
-                    <property name="name">
-                        <cstring>m_fileName</cstring>
-                    </property>
-                </widget>
-            </hbox>
+            <item>
+              <widget class="KUrlRequester" name="m_fileName" />
+            </item>
+          </layout>
         </widget>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>timerFrame</cstring>
+      </item>
+      <item>
+        <widget class="Q3GroupBox" name="timerFrame" >
+          <property name="title" >
+            <string>Timer Interval</string>
+          </property>
+          <layout class="QHBoxLayout" >
+            <property name="margin" >
+              <number>0</number>
             </property>
-            <property name="title">
-                <string>Timer Interval</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
+            <item>
+              <widget class="KIntNumInput" name="m_timerInterval" >
+                <property name="value" >
+                  <number>2</number>
                 </property>
-                <widget class="KIntNumInput">
-                    <property name="name">
-                        <cstring>m_timerInterval</cstring>
-                    </property>
-                    <property name="value">
-                        <number>2</number>
-                    </property>
-                    <property name="minimum">
-                        <number>1</number>
-                    </property>
-                    <property name="maximum">
-                        <number>99</number>
-                    </property>
-                    <property name="suffix">
-                        <string> sec</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>GroupBox1</cstring>
-            </property>
-            <property name="title">
-                <string>Alarm for Minimum Value</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
+                <property name="minimum" >
+                  <number>1</number>
                 </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>m_lowerLimitActive</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Enable alarm</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Enable the minimum value alarm.</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>Spacer1</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>16</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>m_lblLowerLimit</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>Lower limit:</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>m_lowerLimit</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>70</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>GroupBox1_2</cstring>
-            </property>
-            <property name="title">
-                <string>Alarm for Maximum Value</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
+                <property name="maximum" >
+                  <number>99</number>
                 </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>m_upperLimitActive</cstring>
-                    </property>
-                    <property name="text">
-                        <string>E&amp;nable alarm</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Enable the maximum value alarm.</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>Spacer1_2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>16</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>m_lblUpperLimit</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>Upper limit:</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>m_upperLimit</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>70</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </widget>
-            </hbox>
+                <property name="suffix" >
+                  <string> sec</string>
+                </property>
+              </widget>
+            </item>
+          </layout>
         </widget>
-    </vbox>
-</widget>
-<connections>
-    <connection>
-        <sender>m_lowerLimitActive</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>m_lowerLimit</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>m_upperLimitActive</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>m_upperLimit</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>m_lowerLimitActive</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>m_lblLowerLimit</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>m_upperLimitActive</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>m_lblUpperLimit</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="global" impldecl="in implementation">kdialog.h</include>
-    <include location="global" impldecl="in implementation">knumvalidator.h</include>
-    <include location="local" impldecl="in implementation">SensorLoggerDlgWidget.ui.h</include>
-</includes>
-<functions>
-    <function access="private" specifier="non virtual">init()</function>
-    <function specifier="non virtual" returnType="QString">fileName()</function>
-    <function specifier="non virtual" returnType="int">timerInterval()</function>
-    <function specifier="non virtual" returnType="bool">lowerLimitActive()</function>
-    <function specifier="non virtual" returnType="double">lowerLimit()</function>
-    <function returnType="bool">upperLimitActive()</function>
-    <function specifier="non virtual" returnType="double">upperLimit()</function>
-    <function specifier="non virtual">setFileName( const QString &amp; url )</function>
-    <function specifier="non virtual">setTimerInterval( int i )</function>
-    <function specifier="non virtual">setLowerLimitActive( bool b )</function>
-    <function specifier="non virtual">setLowerLimit( double d )</function>
-    <function specifier="non virtual">setUpperLimitActive( bool b )</function>
-    <function specifier="non virtual">setUpperLimit( double d )</function>
-</functions>
-<customwidgets>
+      </item>
+      <item>
+        <widget class="Q3GroupBox" name="GroupBox1" >
+          <property name="title" >
+            <string>Alarm for Minimum Value</string>
+          </property>
+          <layout class="QHBoxLayout" >
+            <property name="margin" >
+              <number>0</number>
+            </property>
+            <item>
+              <widget class="QCheckBox" name="m_lowerLimitActive" >
+                <property name="text" >
+                  <string>&amp;Enable alarm</string>
+                </property>
+                <property name="whatsThis" stdset="0" >
+                  <string>Enable the minimum value alarm.</string>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <spacer name="Spacer1" >
+                <property name="sizeHint" >
+                  <size>
+                    <width>16</width>
+                    <height>20</height>
+                  </size>
+                </property>
+                <property name="sizeType" >
+                  <enum>Expanding</enum>
+                </property>
+                <property name="orientation" >
+                  <enum>Qt::Horizontal</enum>
+                </property>
+              </spacer>
+            </item>
+            <item>
+              <widget class="QLabel" name="m_lblLowerLimit" >
+                <property name="enabled" >
+                  <bool>false</bool>
+                </property>
+                <property name="text" >
+                  <string>Lower limit:</string>
+                </property>
+                <property name="wordWrap" >
+                  <bool>false</bool>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="QLineEdit" name="m_lowerLimit" >
+                <property name="enabled" >
+                  <bool>false</bool>
+                </property>
+                <property name="minimumSize" >
+                  <size>
+                    <width>70</width>
+                    <height>0</height>
+                  </size>
+                </property>
+              </widget>
+            </item>
+          </layout>
+        </widget>
+      </item>
+      <item>
+        <widget class="Q3GroupBox" name="GroupBox1_2" >
+          <property name="title" >
+            <string>Alarm for Maximum Value</string>
+          </property>
+          <layout class="QHBoxLayout" >
+            <property name="margin" >
+              <number>0</number>
+            </property>
+            <item>
+              <widget class="QCheckBox" name="m_upperLimitActive" >
+                <property name="text" >
+                  <string>E&amp;nable alarm</string>
+                </property>
+                <property name="whatsThis" stdset="0" >
+                  <string>Enable the maximum value alarm.</string>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <spacer name="Spacer1_2" >
+                <property name="sizeHint" >
+                  <size>
+                    <width>16</width>
+                    <height>20</height>
+                  </size>
+                </property>
+                <property name="sizeType" >
+                  <enum>Expanding</enum>
+                </property>
+                <property name="orientation" >
+                  <enum>Qt::Horizontal</enum>
+                </property>
+              </spacer>
+            </item>
+            <item>
+              <widget class="QLabel" name="m_lblUpperLimit" >
+                <property name="enabled" >
+                  <bool>false</bool>
+                </property>
+                <property name="text" >
+                  <string>Upper limit:</string>
+                </property>
+                <property name="wordWrap" >
+                  <bool>false</bool>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="QLineEdit" name="m_upperLimit" >
+                <property name="enabled" >
+                  <bool>false</bool>
+                </property>
+                <property name="minimumSize" >
+                  <size>
+                    <width>70</width>
+                    <height>0</height>
+                  </size>
+                </property>
+              </widget>
+            </item>
+          </layout>
+        </widget>
+      </item>
+    </layout>
+  </widget>
+  <layoutdefault spacing="6" margin="11" />
+  <layoutfunction spacing="KDialog::spacingHint" margin="KDialog::marginHint" />
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <customwidgets>
     <customwidget>
-        <class>KIntNumInput</class>
-        <header location="global">knuminput.h</header>
-        <container>0</container>
+      <class>KIntNumInput</class>
+      <header location="global" >knuminput.h</header>
+      <container>0</container>
     </customwidget>
-</customwidgets>
-<layoutdefaults spacing="6" margin="11"/>
-<layoutfunctions spacing="KDialog::spacingHint" margin="KDialog::marginHint"/>
-<includehints>
-    <includehint>kurlrequester.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>knuminput.h</includehint>
-</includehints>
-</UI>
+  </customwidgets>
+  <includes>
+    <include location="local" >kurlrequester.h</include>
+    <include location="local" >klineedit.h</include>
+    <include location="local" >kpushbutton.h</include>
+    <include location="local" >knuminput.h</include>
+    <include location="local" >knuminput.h</include>
+  </includes>
+  <connections>
+    <connection>
+      <sender>m_lowerLimitActive</sender>
+      <signal>toggled(bool)</signal>
+      <receiver>m_lowerLimit</receiver>
+      <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+      <sender>m_upperLimitActive</sender>
+      <signal>toggled(bool)</signal>
+      <receiver>m_upperLimit</receiver>
+      <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+      <sender>m_lowerLimitActive</sender>
+      <signal>toggled(bool)</signal>
+      <receiver>m_lblLowerLimit</receiver>
+      <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+      <sender>m_upperLimitActive</sender>
+      <signal>toggled(bool)</signal>
+      <receiver>m_lblUpperLimit</receiver>
+      <slot>setEnabled(bool)</slot>
+    </connection>
+  </connections>
+</ui>

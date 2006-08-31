@@ -18,7 +18,7 @@
 */
 
 #include "SensorLoggerDlg.h"
-#include "SensorLoggerDlgWidget.h"
+#include "ui_SensorLoggerDlgWidget.h"
 
 #include <QLayout>
 
@@ -35,75 +35,75 @@ SensorLoggerDlg::SensorLoggerDlg( QWidget *parent, const char *name )
 
   QWidget *main = new QWidget( this );
 
-  QVBoxLayout *topLayout = new QVBoxLayout( main );
-  topLayout->setMargin( 0 );
-  topLayout->setSpacing( KDialog::spacingHint() );
-
-  m_loggerWidget = new SensorLoggerDlgWidget( main, "m_loggerWidget" );
-  topLayout->addWidget( m_loggerWidget );
-  topLayout->addStretch();
+  m_loggerWidget = new Ui_SensorLoggerDlgWidget;
+  m_loggerWidget->setupUi( main );
 
   setMainWidget( main );
 }
 
+SensorLoggerDlg::~SensorLoggerDlg()
+{
+  delete m_loggerWidget;
+}
+
 QString SensorLoggerDlg::fileName() const
 {
-  return m_loggerWidget->fileName();
+  return m_loggerWidget->m_fileName->url().toString();
 }
 
 int SensorLoggerDlg::timerInterval() const
 {
-  return m_loggerWidget->timerInterval();
+  return m_loggerWidget->m_timerInterval->value();
 }
 
 bool SensorLoggerDlg::lowerLimitActive() const
 {
-  return m_loggerWidget->lowerLimitActive();
+  return m_loggerWidget->m_lowerLimitActive->isChecked();
 }
 
 bool SensorLoggerDlg::upperLimitActive() const
 {
-  return m_loggerWidget->upperLimitActive();
+  return m_loggerWidget->m_upperLimitActive->isChecked();
 }
 
 double SensorLoggerDlg::lowerLimit() const
 {
-  return m_loggerWidget->lowerLimit();
+  return m_loggerWidget->m_lowerLimit->text().toDouble();
 }
 
 double SensorLoggerDlg::upperLimit() const
 {
-  return m_loggerWidget->upperLimit();
+  return m_loggerWidget->m_upperLimit->text().toDouble();
 }
 
 void SensorLoggerDlg::setFileName( const QString &url )
 {
-  m_loggerWidget->setFileName( url );
+  m_loggerWidget->m_fileName->setUrl( url );
 }
 
 void SensorLoggerDlg::setTimerInterval( int i )
 {
-  m_loggerWidget->setTimerInterval( i );
+  m_loggerWidget->m_timerInterval->setValue( i );
 }
 
 void SensorLoggerDlg::setLowerLimitActive( bool b )
 {
-  m_loggerWidget->setLowerLimitActive( b );
+  m_loggerWidget->m_lowerLimitActive->setChecked( b );
 }
 
 void SensorLoggerDlg::setUpperLimitActive( bool b )
 {
-  m_loggerWidget->setUpperLimitActive( b );
+  m_loggerWidget->m_upperLimitActive->setChecked( b );
 }
 
 void SensorLoggerDlg::setLowerLimit( double limit )
 {
-  m_loggerWidget->setLowerLimit( limit );
+  m_loggerWidget->m_lowerLimit->setText( QString::number( limit ) );
 }
 
 void SensorLoggerDlg::setUpperLimit( double limit )
 {
-  m_loggerWidget->setUpperLimit( limit );
+  m_loggerWidget->m_upperLimit->setText( QString::number( limit ) );
 }
 
 #include "SensorLoggerDlg.moc"

@@ -51,6 +51,17 @@ class SensorDisplay : public QWidget, public SensorClient
   Q_OBJECT
 
   public:
+    class DeleteEvent : public QEvent
+    {
+      public:
+        DeleteEvent( SensorDisplay *display );
+
+        SensorDisplay* display() const;
+
+      private:
+        SensorDisplay *mDisplay;
+    };
+
     /**
       Constructor.
      */

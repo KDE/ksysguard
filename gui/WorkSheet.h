@@ -89,7 +89,7 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
     virtual QSize sizeHint() const;
     void dragEnterEvent( QDragEnterEvent* );
     void dropEvent( QDropEvent* );
-    void customEvent( QCustomEvent* );
+    bool event( QEvent* );
 
   private:
     void removeDisplay( KSGRD::SensorDisplay *display );

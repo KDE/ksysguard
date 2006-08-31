@@ -48,8 +48,18 @@
 
 using namespace KSGRD;
 
+SensorDisplay::DeleteEvent::DeleteEvent( SensorDisplay *display )
+  : QEvent( QEvent::User ), mDisplay( display )
+{
+}
+
+SensorDisplay* SensorDisplay::DeleteEvent::display() const
+{
+  return mDisplay;
+}
+
 SensorDisplay::SensorDisplay( QWidget *parent, const QString &title, SharedSettings *workSheetSettings)
-  :	QWidget( parent )
+  : QWidget( parent )
 {
   mSharedSettings = workSheetSettings;
 
@@ -107,13 +117,13 @@ void SensorDisplay::configureUpdateInterval()
 {
   TimerSettings dlg( this );
 
-	dlg.setUseGlobalUpdate( mUseGlobalUpdateInterval );
+  dlg.setUseGlobalUpdate( mUseGlobalUpdateInterval );
   dlg.setInterval( mUpdateInterval );
 
   if ( dlg.exec() ) {
     if ( dlg.useGlobalUpdate() ) {
       mUseGlobalUpdateInterval = true;
-	/*FIXME Get update interval from parent*/
+      // FIXME: Get update interval from parent
       setUpdateInterval( 2 );
     } else {
       mUseGlobalUpdateInterval = false;
@@ -171,9 +181,8 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
           configureSettings();
           break;
         case 3: {
-            QCustomEvent *e = new QCustomEvent( QEvent::User );
-            e->setData( this );
-            kapp->postEvent( parent(), e );
+            DeleteEvent *event = new DeleteEvent( this );
+            kapp->postEvent( parent(), event );
           }
           break;
         case 4:
@@ -211,8 +220,8 @@ void SensorDisplay::sensorError( int sensorId, bool err )
 
   if ( err == mSensors.at( sensorId )->isOk() ) {
     // this happens only when the sensorOk status needs to be changed.
-		mSensors.at( sensorId )->setIsOk( !err );
-	}
+    mSensors.at( sensorId )->setIsOk( !err );
+  }
 
   bool ok = true;
   for ( uint i = 0; i < (uint)mSensors.count(); ++i )
@@ -326,7 +335,7 @@ bool SensorDisplay::restoreSettings( QDomElement &element )
     setUpdateInterval( element.attribute( "updateInterval", "2" ).toInt() );
   } else {
     mUseGlobalUpdateInterval = true;
-    /*FIXME Get update interval from parent*/
+    // FIXME: Get update interval from parent
     setUpdateInterval( 2 );
   }
 
@@ -411,14 +420,14 @@ void SensorDisplay::setSensorOk( bool ok )
       return;
 
     mErrorIndicator = new QWidget( mPlotterWdg );
-    mErrorIndicator->setErasePixmap( errorIcon );
+    QPalette palette = mErrorIndicator->palette();
+    palette.setBrush( mErrorIndicator->backgroundRole(), QBrush( errorIcon ) );
+    mErrorIndicator->setPalette( palette );
     mErrorIndicator->resize( errorIcon.size() );
-#warning "Port to qt4 I don't know how to convert it"
-#if 0
-	if ( errorIcon.mask() )
-      mErrorIndicator->setMask( *errorIcon.mask() );
-#endif
-	mErrorIndicator->move( 0, 0 );
+    if ( !errorIcon.mask().isNull() )
+      mErrorIndicator->setMask( errorIcon.mask() );
+
+    mErrorIndicator->move( 0, 0 );
     mErrorIndicator->show();
   }
 }

@@ -58,7 +58,7 @@ class KSysGuardApplet : public KPanelApplet, public KSGRD::SensorBoard
     void resizeEvent( QResizeEvent* );
     void dragEnterEvent( QDragEnterEvent* );
     void dropEvent( QDropEvent* );
-    void customEvent( QCustomEvent* );
+    bool event( QEvent* );
 
   private Q_SLOTS:
     void applySettings();

@@ -36,6 +36,8 @@
 #include <knotification.h>
 #include <ksgrd/StyleEngine.h>
 
+#include "ui_LogFileSettings.h"
+
 #include "LogFile.moc"
 
 LogFile::LogFile(QWidget *parent, const QString& title, SharedSettings *workSheetSettings)
@@ -79,20 +81,22 @@ void LogFile::configureSettings(void)
 {
 	QPalette cgroup = monitor->palette();
 
-	lfs = new LogFileSettings(this);
+	lfs = new Ui_LogFileSettings;
 	Q_CHECK_PTR(lfs);
+  QDialog dlg;
+  lfs->setupUi(&dlg);
 
-	lfs->fgColor->setColor(cgroup.text());
+	lfs->fgColor->setColor(cgroup.color( QPalette::Text ));
 	lfs->fgColor->setText(i18n("Foreground color:"));
-	lfs->bgColor->setColor(cgroup.base());
+	lfs->bgColor->setColor(cgroup.color( QPalette::Base ));
 	lfs->bgColor->setText(i18n("Background color:"));
 	lfs->fontButton->setFont(monitor->font());
 	lfs->ruleList->insertStringList(filterRules);
 	lfs->title->setText(title());
 
-	connect(lfs->okButton, SIGNAL(clicked()), lfs, SLOT(accept()));
+	connect(lfs->okButton, SIGNAL(clicked()), &dlg, SLOT(accept()));
 	connect(lfs->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
-	connect(lfs->cancelButton, SIGNAL(clicked()), lfs, SLOT(reject()));
+	connect(lfs->cancelButton, SIGNAL(clicked()), &dlg, SLOT(reject()));
 
 	connect(lfs->fontButton, SIGNAL(clicked()), this, SLOT(settingsFontSelection()));
 	connect(lfs->addButton, SIGNAL(clicked()), this, SLOT(settingsAddRule()));
@@ -101,7 +105,7 @@ void LogFile::configureSettings(void)
 	connect(lfs->ruleList, SIGNAL(selected(int)), this, SLOT(settingsRuleListSelected(int)));
 	connect(lfs->ruleText, SIGNAL(returnPressed()), this, SLOT(settingsAddRule()));
 
-	if (lfs->exec()) {
+	if (dlg.exec()) {
 		applySettings();
 	}
 
@@ -175,9 +179,13 @@ LogFile::restoreSettings(QDomElement& element)
 	QFont font;
 	QPalette cgroup = monitor->palette();
 
-	cgroup.setColor(QPalette::Text, restoreColor(element, "textColor", Qt::green));
-	cgroup.setColor(QPalette::Base, restoreColor(element, "backgroundColor", Qt::black));
-	monitor->setPalette(QPalette(cgroup, cgroup, cgroup));
+	cgroup.setColor(QPalette::Active, QPalette::Text, restoreColor(element, "textColor", Qt::green));
+	cgroup.setColor(QPalette::Active, QPalette::Base, restoreColor(element, "backgroundColor", Qt::black));
+	cgroup.setColor(QPalette::Disabled, QPalette::Text, restoreColor(element, "textColor", Qt::green));
+	cgroup.setColor(QPalette::Disabled, QPalette::Base, restoreColor(element, "backgroundColor", Qt::black));
+	cgroup.setColor(QPalette::Inactive, QPalette::Text, restoreColor(element, "textColor", Qt::green));
+	cgroup.setColor(QPalette::Inactive, QPalette::Base, restoreColor(element, "backgroundColor", Qt::black));
+	monitor->setPalette(cgroup);
 
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "logfile" : element.attribute("sensorType")), element.attribute("title"));
 
@@ -236,7 +244,7 @@ LogFile::answerReceived(int id, const QStringList& answer)
 	switch (id)
 	{
 		case 19: {
-			for (uint i = 0; i < answer.count(); i++) {
+			for (int i = 0; i < answer.count(); i++) {
 				if (monitor->count() == MAXLINES)
 					monitor->takeItem(0);
 
