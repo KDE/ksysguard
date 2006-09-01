@@ -329,15 +329,15 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
       QAction *a4 = pm.addAction( i18n( "Log to a &file" ) );
       QAction *execed = pm.exec( QCursor::pos() );
       if (execed == a1)
-	newDisplay = new FancyPlotter( this, sensorDescr, &mSharedSettings );
+        newDisplay = new FancyPlotter( this, sensorDescr, &mSharedSettings );
       else if (execed == a2)
-	newDisplay = new MultiMeter( this, sensorDescr, &mSharedSettings);
+        newDisplay = new MultiMeter( this, sensorDescr, &mSharedSettings);
       else if (execed == a3)
-	 newDisplay = new DancingBars( this, sensorDescr, &mSharedSettings);
+        newDisplay = new DancingBars( this, sensorDescr, &mSharedSettings);
       else if (execed == a4)
-	newDisplay = new SensorLogger( this, sensorDescr, &mSharedSettings);
+        newDisplay = new SensorLogger( this, sensorDescr, &mSharedSettings);
       else
-	 return 0;
+        return 0;
     } else if ( sensorType == "listview" )
       newDisplay = new ListView( this, sensorDescr, &mSharedSettings);
     else if ( sensorType == "logfile" )
@@ -377,8 +377,9 @@ void WorkSheet::settings()
         if ( mDisplayList[ r ][ c ]->useGlobalUpdateInterval() )
           mDisplayList[ r ][ c ]->setUpdateInterval( updateInterval() );
 
-    if(!mSharedSettings.locked)
-	    resizeGrid( dlg.rows(), dlg.columns() );
+    if (!mSharedSettings.locked)
+      resizeGrid( dlg.rows(), dlg.columns() );
+
     setTitle(dlg.sheetTitle());
   }
 }
@@ -501,8 +502,14 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
 
 void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* newDisplay )
 {
-  // remove the old display at this location
-  delete mDisplayList[ row ][ column ];
+  // remove the old display && sensor frame at this location
+  if ( mDisplayList[ row ][ column ] ) {
+    if ( qstrcmp( mDisplayList[ row ][ column ]->parent()->metaObject()->className(), "SensorFrame" ) == 0 ) {
+      delete mDisplayList[ row ][ column ]->parent(); // destroys the child (display) as well
+    } else {
+      delete mDisplayList[ row ][ column ];
+    }
+  }
 
   // insert new display
   if ( !newDisplay )
