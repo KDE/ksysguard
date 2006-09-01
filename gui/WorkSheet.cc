@@ -421,8 +421,16 @@ void WorkSheet::dropEvent( QDropEvent *e )
      * event and replace or add sensor. */
     for ( uint r = 0; r < mRows; ++r ) {
       for ( uint c = 0; c < mColumns; ++c ) {
-        const QPoint pos = mDisplayList[ r ][ c ]->mapFrom( this, e->pos() );
-        if ( mDisplayList[ r ][ c ]->geometry().contains( pos ) ) {
+        const QSize displaySize = mDisplayList[ r ][ c ]->size();
+
+        const QPoint displayPoint( displaySize.width(), displaySize.height() );
+
+        const QRect widgetRect = QRect( mDisplayList[ r ][ c ]->mapToGlobal( QPoint( 0, 0 ) ),
+                                        mDisplayList[ r ][ c ]->mapToGlobal( displayPoint ) );
+
+        const QPoint globalPos = mapToGlobal( e->pos() );
+
+        if ( widgetRect.contains( globalPos ) ) {
           addDisplay( hostName, sensorName, sensorType, sensorDescr, r, c );
           return;
         }
