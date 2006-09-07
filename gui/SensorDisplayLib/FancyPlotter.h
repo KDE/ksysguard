@@ -74,19 +74,16 @@ class FancyPlotter : public KSGRD::SensorDisplay
     virtual bool hasSettingsDialog() const;
 
   public Q_SLOTS:
-    void applySettings();
     virtual void applyStyle();
 
   protected:
     virtual void resizeEvent( QResizeEvent* );
     void setTooltip();
-    
+
   private:
     uint mBeams;
 
     SignalPlotter* mPlotter;
-
-    FancyPlotterSettings* mSettingsDialog;
 
     /**
       The sample buffer and the flags are needed to store the incoming

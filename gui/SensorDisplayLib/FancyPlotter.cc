@@ -60,29 +60,29 @@ FancyPlotter::~FancyPlotter()
 
 void FancyPlotter::configureSettings()
 {
-  mSettingsDialog = new FancyPlotterSettings( this, mSharedSettings->locked );
+  FancyPlotterSettings dlg( this, mSharedSettings->locked );
 
-  mSettingsDialog->setTitle( title() );
-  mSettingsDialog->setUseAutoRange( mPlotter->useAutoRange() );
-  mSettingsDialog->setMinValue( mPlotter->minValue() );
-  mSettingsDialog->setMaxValue( mPlotter->maxValue() );
+  dlg.setTitle( title() );
+  dlg.setUseAutoRange( mPlotter->useAutoRange() );
+  dlg.setMinValue( mPlotter->minValue() );
+  dlg.setMaxValue( mPlotter->maxValue() );
 
-  mSettingsDialog->setHorizontalScale( mPlotter->horizontalScale() );
+  dlg.setHorizontalScale( mPlotter->horizontalScale() );
 
-  mSettingsDialog->setShowVerticalLines( mPlotter->showVerticalLines() );
-  mSettingsDialog->setVerticalLinesColor( mPlotter->verticalLinesColor() );
-  mSettingsDialog->setVerticalLinesDistance( mPlotter->verticalLinesDistance() );
-  mSettingsDialog->setVerticalLinesScroll( mPlotter->verticalLinesScroll() );
+  dlg.setShowVerticalLines( mPlotter->showVerticalLines() );
+  dlg.setVerticalLinesColor( mPlotter->verticalLinesColor() );
+  dlg.setVerticalLinesDistance( mPlotter->verticalLinesDistance() );
+  dlg.setVerticalLinesScroll( mPlotter->verticalLinesScroll() );
 
-  mSettingsDialog->setShowHorizontalLines( mPlotter->showHorizontalLines() );
-  mSettingsDialog->setHorizontalLinesColor( mPlotter->horizontalLinesColor() );
-  mSettingsDialog->setHorizontalLinesCount( mPlotter->horizontalLinesCount() );
+  dlg.setShowHorizontalLines( mPlotter->showHorizontalLines() );
+  dlg.setHorizontalLinesColor( mPlotter->horizontalLinesColor() );
+  dlg.setHorizontalLinesCount( mPlotter->horizontalLinesCount() );
 
-  mSettingsDialog->setShowLabels( mPlotter->showLabels() );
-  mSettingsDialog->setShowTopBar( mPlotter->showTopBar() );
-  mSettingsDialog->setFontSize( mPlotter->fontSize() );
+  dlg.setShowLabels( mPlotter->showLabels() );
+  dlg.setShowTopBar( mPlotter->showTopBar() );
+  dlg.setFontSize( mPlotter->fontSize() );
 
-  mSettingsDialog->setBackgroundColor( mPlotter->backgroundColor() );
+  dlg.setBackgroundColor( mPlotter->backgroundColor() );
 
   SensorEntry::List list;
   for ( uint i = 0; i < mBeams; ++i ) {
@@ -96,82 +96,73 @@ void FancyPlotter::configureSettings()
 
     list.append( entry );
   }
-  mSettingsDialog->setSensors( list );
+  dlg.setSensors( list );
 
-  connect( mSettingsDialog, SIGNAL( applyClicked() ), SLOT( applySettings() ) );
+  if ( dlg.exec() ) {
+    setTitle( dlg.title() );
+    mPlotter->setTitle( title() );
 
-  if ( mSettingsDialog->exec() )
-    applySettings();
+    if ( dlg.useAutoRange() )
+      mPlotter->setUseAutoRange( true );
+    else {
+      mPlotter->setUseAutoRange( false );
+      mPlotter->changeRange( 0, dlg.minValue(),
+                            dlg.maxValue() );
+    }
 
-  delete mSettingsDialog;
-  mSettingsDialog = 0;
-}
+    if ( mPlotter->horizontalScale() != dlg.horizontalScale() ) {
+      mPlotter->setHorizontalScale( dlg.horizontalScale() );
+      // Can someone think of a useful QResizeEvent to pass?
+      // It doesn't really matter anyway because it's not used.
+      emit resizeEvent( 0 );
+    }
 
-void FancyPlotter::applySettings()
-{
-  setTitle( mSettingsDialog->title() );
-  mPlotter->setTitle( title() );
+    mPlotter->setShowVerticalLines( dlg.showVerticalLines() );
+    mPlotter->setVerticalLinesColor( dlg.verticalLinesColor() );
+    mPlotter->setVerticalLinesDistance( dlg.verticalLinesDistance() );
+    mPlotter->setVerticalLinesScroll( dlg.verticalLinesScroll() );
 
-  if ( mSettingsDialog->useAutoRange() )
-    mPlotter->setUseAutoRange( true );
-  else {
-    mPlotter->setUseAutoRange( false );
-    mPlotter->changeRange( 0, mSettingsDialog->minValue(),
-                          mSettingsDialog->maxValue() );
-  }
+    mPlotter->setShowHorizontalLines( dlg.showHorizontalLines() );
+    mPlotter->setHorizontalLinesColor( dlg.horizontalLinesColor() );
+    mPlotter->setHorizontalLinesCount( dlg.horizontalLinesCount() );
 
-  if ( mPlotter->horizontalScale() != mSettingsDialog->horizontalScale() ) {
-    mPlotter->setHorizontalScale( mSettingsDialog->horizontalScale() );
-    // Can someone think of a useful QResizeEvent to pass?
-    // It doesn't really matter anyway because it's not used.
-    emit resizeEvent( 0 );
-  }
+    mPlotter->setShowLabels( dlg.showLabels() );
+    mPlotter->setShowTopBar( dlg.showTopBar() );
+    mPlotter->setFontSize( dlg.fontSize() );
 
-  mPlotter->setShowVerticalLines( mSettingsDialog->showVerticalLines() );
-  mPlotter->setVerticalLinesColor( mSettingsDialog->verticalLinesColor() );
-  mPlotter->setVerticalLinesDistance( mSettingsDialog->verticalLinesDistance() );
-  mPlotter->setVerticalLinesScroll( mSettingsDialog->verticalLinesScroll() );
+    mPlotter->setBackgroundColor( dlg.backgroundColor() );
 
-  mPlotter->setShowHorizontalLines( mSettingsDialog->showHorizontalLines() );
-  mPlotter->setHorizontalLinesColor( mSettingsDialog->horizontalLinesColor() );
-  mPlotter->setHorizontalLinesCount( mSettingsDialog->horizontalLinesCount() );
+    /* Iterate through registered sensors and through the items of the
+     * listview. Where a sensor cannot be matched, it is removed. */
+    uint delCount = 0;
 
-  mPlotter->setShowLabels( mSettingsDialog->showLabels() );
-  mPlotter->setShowTopBar( mSettingsDialog->showTopBar() );
-  mPlotter->setFontSize( mSettingsDialog->fontSize() );
+    SensorEntry::List list = dlg.sensors();
 
-  mPlotter->setBackgroundColor( mSettingsDialog->backgroundColor() );
+    for ( int i = 0; i < sensors().count(); ++i ) {
+      bool found = false;
+      for ( int j = 0; j < list.count(); ++j ) {
+        if ( list[ j ].id() == (int)( i + delCount ) ) {
+          mPlotter->beamColors()[ i ] = list[ j ].color();
+          found = true;
+          if ( delCount > 0 )
+            list[ j ].setId( i );
 
-  /* Iterate through registered sensors and through the items of the
-   * listview. Where a sensor cannot be matched, it is removed. */
-  uint delCount = 0;
+          continue;
+        }
+      }
 
-  SensorEntry::List list = mSettingsDialog->sensors();
-
-  for ( int i = 0; i < sensors().count(); ++i ) {
-    bool found = false;
-    for ( int j = 0; j < list.count(); ++j ) {
-      if ( list[ j ].id() == (int)( i + delCount ) ) {
-        mPlotter->beamColors()[ i ] = list[ j ].color();
-        found = true;
-        if ( delCount > 0 )
-          list[ j ].setId( i );
-
-        continue;
+      if ( !found ) {
+        if ( removeSensor(i) ) {
+          i--;
+          delCount++;
+        }
       }
     }
 
-    if ( !found ) {
-      if ( removeSensor(i) ) {
-        i--;
-        delCount++;
-      }
-    }
+    mPlotter->update();
+
+    setTooltip();
   }
-
-  mPlotter->update();
-
-  setTooltip();
 }
 
 void FancyPlotter::applyStyle()

@@ -180,7 +180,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
 {
   setFaceType( Tabbed );
   setCaption( i18n( "Signal Plotter Settings" ) );
-  setButtons( Ok | Apply | Cancel );
+  setButtons( Ok | Cancel );
   setObjectName( "FancyPlotterSettings" );
   setModal( true );
   showButtonSeparator( true );
@@ -393,7 +393,6 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   mRemoveButton = 0;
   if ( !locked ) {
     mRemoveButton = new QPushButton( i18n( "Delete" ), page );
-    mRemoveButton->setEnabled( false );
     mRemoveButton->setWhatsThis( i18n( "Push this button to delete the sensor." ) );
     pageLayout->addWidget( mRemoveButton, 1, 1 );
 
