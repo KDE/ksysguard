@@ -75,6 +75,7 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	
 	connect(mUi.btnKillProcess, SIGNAL(clicked()), this, SLOT(killProcess()));
 	connect(mUi.txtFilter, SIGNAL(textChanged(const QString &)), &mFilterModel, SLOT(setFilterRegExp(const QString &)));
+	connect(mUi.txtFilter, SIGNAL(textChanged(const QString &)), this, SLOT(expandInit()));
 	connect(mUi.cmbFilter, SIGNAL(currentIndexChanged(int)), &mFilterModel, SLOT(setFilter(int)));
 	connect(mUi.treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
 	connect(mUi.treeView, SIGNAL(collapsed(const QModelIndex &)), this, SLOT(resizeFirstColumn()));
