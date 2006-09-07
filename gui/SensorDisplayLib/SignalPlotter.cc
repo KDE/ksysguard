@@ -44,8 +44,6 @@ SignalPlotter::SignalPlotter( QWidget *parent)
   mMinValue = mMaxValue = 0.0;
   mUseAutoRange = true;
 
-  mGraphStyle = GRAPH_POLYGON;
-
   // Anything smaller than this does not make sense.
   setMinimumSize( 16, 16 );
   QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -188,16 +186,6 @@ void SignalPlotter::setMaxValue( double max )
 double SignalPlotter::maxValue() const
 {
   return ( mUseAutoRange ? 0 : mMaxValue );
-}
-
-void SignalPlotter::setGraphStyle( uint style )
-{
-  mGraphStyle = style;
-}
-
-uint SignalPlotter::graphStyle() const
-{
-  return mGraphStyle;
 }
 
 void SignalPlotter::setHorizontalScale( uint scale )
@@ -463,251 +451,119 @@ void SignalPlotter::paintEvent( QPaintEvent* )
 
   /* Plot stacked values */
   double scaleFac = ( h - 2 ) / range;
-  if ( mGraphStyle == GRAPH_ORIGINAL ) {
-    int xPos = 0;
 
-    QLinkedList< QList<double> >::Iterator it = mBeamData.begin();
-    for(int i = 0; it != mBeamData.end() && i < mSamples; ++it, ++i) {
-      xPos += mHorizontalScale;
+  int xPos = 0;
+  QLinkedList< QList<double> >::Iterator it = mBeamData.begin();
 
-      double bias = -minValue;
-      QList<QColor>::Iterator col;
-      col = mBeamColors.begin();
-      double sum = 0.0;
-      const QList<double> &datapoints = *it;
-      QList<double>::ConstIterator datapoint = datapoints.begin(); //The list of data points using all the colors for a particular point in time
-      for (; datapoint != datapoints.end() && col != mBeamColors.end(); ++datapoint, ++col ) {
-        if ( mUseAutoRange ) {
-          sum += *datapoint;
-          if ( sum < mMinValue )
-            mMinValue = sum;
-          if ( sum > mMaxValue )
-            mMaxValue = sum;
-        }
-        int start = top + h - 2 - (int)( bias * scaleFac );
-        int end = top + h - 2 - (int)( ( bias + *datapoint ) * scaleFac );
-        bias += *datapoint;
-        /* If the line is longer than 2 pixels we draw only the last
-         * 2 pixels with the bright color. The rest is painted with
-         * a 50% darker color. */
-        if ( end - start > 2 ) {
-          p.fillRect( xPos, start, mHorizontalScale, end - start - 1, (*col).dark( 150 ) );
-          p.fillRect( xPos, end - 1, mHorizontalScale, 2, *col );
-        } else if ( start - end > 2 ) {
-          p.fillRect( xPos, start, mHorizontalScale, end - start + 1, (*col).dark( 150 ) );
-          p.fillRect( xPos, end + 1, mHorizontalScale, 2, *col );
-        } else
-          p.fillRect( xPos, start, mHorizontalScale, end - start, *col );
+  /* mBezierCurveOffset is how many points we have at the start.
+   * All the bezier curves are in groups of 3, with the first of the next group being the last point
+   * of the previous group.
+   *
+   * Example, when mBezierCurveOffset == 0, and we have data, then just plot a normal bezier curve 
+   * (we will have at least 3 points in this case)
+   * When mBezierCurveOffset == 1, then we want a bezier curve that uses the first data point and 
+   * the second data point.  Then the next group starts from the second data point.
+   * When mBezierCurveOffset == 2, then we want a bezier curve that uses the first, second and third data
+   *
+   */
 
-      }
-    }
-  } else if ( mGraphStyle == GRAPH_POLYGON ) {
-    int xPos = 0;
-    QLinkedList< QList<double> >::Iterator it = mBeamData.begin();
+  for (int i = 0; it != mBeamData.end() && i < mSamples; ++i) {
+    double sum = 0.0;
+    QPen pen;
+    pen.setWidth(2);
+    pen.setCapStyle(Qt::RoundCap);
 
-    /* mBezierCurveOffset is how many points we have at the start.
-     * All the bezier curves are in groups of 3, with the first of the next group being the last point
-     * of the previous group.
-     *
-     * Example, when mBezierCurveOffset == 0, and we have data, then just plot a normal bezier curve 
-     * (we will have at least 3 points in this case)
-     * When mBezierCurveOffset == 1, then we want a bezier curve that uses the first data point and 
-     * the second data point.  Then the next group starts from the second data point.
-     * When mBezierCurveOffset == 2, then we want a bezier curve that uses the first, second and third data
-     *
+    /**
+     * We will plot 1 bezier curve for every 3 points, with the 4th point being the end
+     * of one bezier curve and the start of the second.
+     * This does means the bezier curves will not join nicely,
+     * but it should be better than nothing.
      */
 
-    for(int i = 0; it != mBeamData.end() && i < mSamples; ++i) {
-      // double bias = -minValue;
-      double sum = 0.0;
-      QPen pen;
-      pen.setWidth(2);
-      pen.setCapStyle(Qt::RoundCap);
+    QList<double> datapoints = *it;
+    QList<double> prev_datapoints = datapoints;
+    QList<double> prev_prev_datapoints = datapoints;
+    QList<double> prev_prev_prev_datapoints = datapoints;
 
-      // We will plot 1 bezier curve for every 3 points, with the 4th point being the end of one bezier curve and the start of the second.
-      // This does means the bezier curves will not join nicely, but it should be better than nothing.
-
-      QList<double> datapoints = *it;
-      QList<double> prev_datapoints = datapoints;
-      QList<double> prev_prev_datapoints = datapoints;
-      QList<double> prev_prev_prev_datapoints = datapoints;
-
-      if(i == 0 && mBezierCurveOffset>0) {
-	//We are plotting an incomplete bezier curve - we don't have all the data we want.  Try to cope
-        xPos += mHorizontalScale*mBezierCurveOffset;
-	if(mBezierCurveOffset == 1) {
-	  prev_datapoints = *it;
-          ++it; //Now we are on the first element of the next group, if it exists
-	  if(it != mBeamData.end()) {
-            prev_prev_prev_datapoints = prev_prev_datapoints = *it;
-	  } else {
-            prev_prev_prev_datapoints = prev_prev_datapoints = prev_datapoints;
-	  }
-	} else {
-	  //mBezierCurveOffset must be 2 now
-          prev_datapoints = *it;
-	  Q_ASSERT(it != mBeamData.end());
-	  ++it;
-	  prev_prev_datapoints = *it;
-	  Q_ASSERT(it != mBeamData.end());
-	  ++it; //Now we are on the first element of the next group, if it exists
-	  if(it != mBeamData.end()) {
-            prev_prev_prev_datapoints = *it;
-	  } else {
-            prev_prev_prev_datapoints = prev_prev_datapoints;
-	  }
-	}
-      } else {
-	//We have a group of 3 points at least.  That's 1 start point and 2 control points.
-        xPos += mHorizontalScale*3;
-	it++;
-	if(it != mBeamData.end()) {
-          prev_datapoints = *it;
-          it++;
-	  if(it != mBeamData.end()) {
-            prev_prev_datapoints = *it;
-	    it++;  //We are now on the next set of data points
-            if(it != mBeamData.end()) {
-              prev_prev_prev_datapoints = *it; //We have this datapoint, so use it for our finish point
-            } else {
-              prev_prev_prev_datapoints = prev_prev_datapoints;  //we don't have the next set, so use our last control point as our finish point
-	    }
-	  } else {
-            prev_prev_prev_datapoints = prev_prev_datapoints = prev_datapoints;
-	  }
-	} else {
-            prev_prev_prev_datapoints = prev_prev_datapoints = prev_datapoints = datapoints;
-	}
-      }
-
-      for(int j = 0; j < datapoints.size() && j < mBeamColors.size(); ++j) {
-        if ( mUseAutoRange ) {
-          sum += datapoints[j];
-          if ( sum < mMinValue )
-            mMinValue = sum;
-          if ( sum > mMaxValue )
-            mMaxValue = sum;
-        }
-//        int start = top + h - 2 - (int)( bias * scaleFac );
-//        int end = top + h - 2 - (int)( ( bias + *datapoint ) * scaleFac );
-//        bias += *datapoint;
-
-	pen.setColor(mBeamColors[j]);
-	p.setPen(pen);
-	QPolygon curve(3);
-	curve.putPoints(0,4, w - xPos + 3*mHorizontalScale, h - (int)((datapoints[j] - minValue)*scaleFac),
-			     w - xPos + 2*mHorizontalScale, h - (int)((prev_datapoints[j] - minValue)*scaleFac),
-			     w - xPos + mHorizontalScale, h - (int)((prev_prev_datapoints[j] - minValue)*scaleFac),
-			     w - xPos, h - (int)((prev_prev_prev_datapoints[j] - minValue)*scaleFac));
-
-        if ( curve.size() >=4 ) {
-          QPainterPath path;
-          path.moveTo( curve.at( 0 ) );
-          path.cubicTo( curve.at( 1 ), curve.at( 2 ), curve.at( 3 ) );
-          p.strokePath( path, p.pen() );
-        }
-//	p.drawLine( w - xPos, h - (int)((prev_prev_datapoints[i] - minValue)*scaleFac),
-//		    w - xPos - mHorizontalScale + 1, h - (int)((prev_datapoints[i] - minValue)*scaleFac));
-
-//	p.drawLine( w - xPos, h - (int)((prev_datapoints[i] - minValue)*scaleFac), w - xPos - mHorizontalScale + 1, h- (int)((datapoints[i] - minValue)*scaleFac));
-        /* If the line is longer than 2 pixels we draw only the last
-         * 2 pixels with the bright color. The rest is painted with
-         * a 50% darker color. */
-/*        if ( end - start > 2 ) {
-//          p.fillRect( xPos, start, mHorizontalScale, end - start - 1, (*col).dark( 150 ) );
-	  p.drawLine( xPos+1, end -1, xPos + mHorizontalScale-1, end -1);
-//          p.fillRect( xPos, end - 1, mHorizontalScale, 2, *col );
-        } else if ( start - end > 2 ) {
-//          p.fillRect( xPos, start, mHorizontalScale, end - start + 1, (*col).dark( 150 ) );
-	  pen.setColor(*col);
-	  p.setPen(pen);
-	  p.drawLine( xPos+1, end + 1, xPos + mHorizontalScale-1,  end+1);
-//          p.fillRect( xPos, end + 1, mHorizontalScale, 2, *col );
-        } else
-          p.fillRect( xPos, start, mHorizontalScale, end - start, *col );
-*/
-      }
-    }
-
-
-
-
-#if 0
-    int *prevVals = new int[ mBeamData.count() ];
-    int hack[ 4 ];
-    int x1 = w - ( ( mSamples + 1 ) * mHorizontalScale );
-
-    for ( int i = 0; i < mSamples; i++ ) {
-      QList<QColor>::Iterator col;
-      col = mBeamColors.begin();
-      double sum = 0.0;
-      int y = top + h - 2;
-      int oldY = top + h;
-      int oldPrevY = oldY;
-      int height = 0;
-      int j = 0;
-      int jMax = mBeamData.count() - 1;
-      x1 += mHorizontalScale;
-      int x2 = x1 + mHorizontalScale;
-
-      for ( double* d = mBeamData.first(); d; d = mBeamData.next(), ++col, j++ ) {
-        if ( mUseAutoRange ) {
-          sum += d[ i ];
-          if ( sum < mMinValue )
-            mMinValue = sum;
-          if ( sum > mMaxValue )
-            mMaxValue = sum;
-        }
-        height = (int)( ( d[ i ] - minValue ) * scaleFac );
-        y -= height;
-
-        /* If the line is longer than 2 pixels we draw only the last
-         * 2 pixels with the bright color. The rest is painted with
-         * a 50% darker color. */
-        QPen lastPen = QPen( p.pen() );
-        p.setPen( (*col).dark( 150 ) );
-        p.setBrush( (*col).dark( 150 ) );
-        QPolygon pa( 4 );
-        int prevY = ( i == 0 ) ? y : prevVals[ j ];
-        pa.putPoints( 0, 1, x1, prevY );
-        pa.putPoints( 1, 1, x2, y );
-        pa.putPoints( 2, 1, x2, oldY );
-        pa.putPoints( 3, 1, x1, oldPrevY );
-        p.drawPolygon( pa );
-        p.setPen( lastPen );
-        if ( jMax == 0 ) {
-          // draw as normal, no deferred drawing req'd.
-          p.setPen( *col );
-          p.drawLine( x1, prevY, x2, y );
-        } else if ( j == jMax ) {
-          // draw previous values and current values
-          p.drawLine( hack[ 0 ], hack[ 1 ], hack[ 2 ], hack[ 3 ] );
-          p.setPen( *col );
-          p.drawLine( x1, prevY, x2, y );
-        } else if ( j == 0 ) {
-          // save values only
-          hack[ 0 ] = x1;
-          hack[ 1 ] = prevY;
-          hack[ 2 ] = x2;
-          hack[ 3 ] = y;
-          p.setPen( *col );
+    if (i == 0 && mBezierCurveOffset>0) {
+      /**
+       * We are plotting an incomplete bezier curve - we don't have all the data we want.
+       * Try to cope
+       */
+      xPos += mHorizontalScale*mBezierCurveOffset;
+      if (mBezierCurveOffset == 1) {
+        prev_datapoints = *it;
+        ++it; //Now we are on the first element of the next group, if it exists
+        if (it != mBeamData.end()) {
+          prev_prev_prev_datapoints = prev_prev_datapoints = *it;
         } else {
-          p.drawLine( hack[ 0 ], hack[ 1 ], hack[ 2 ], hack[ 3 ] );
-          hack[ 0 ] = x1;
-          hack[ 1 ] = prevY;
-          hack[ 2 ] = x2;
-          hack[ 3 ] = y;
-          p.setPen( *col );
+          prev_prev_prev_datapoints = prev_prev_datapoints = prev_datapoints;
         }
-
-        prevVals[ j ] = y;
-        oldY = y;
-        oldPrevY = prevY;
+      } else {
+        // mBezierCurveOffset must be 2 now
+        prev_datapoints = *it;
+        Q_ASSERT(it != mBeamData.end());
+        ++it;
+        prev_prev_datapoints = *it;
+        Q_ASSERT(it != mBeamData.end());
+        ++it; //Now we are on the first element of the next group, if it exists
+        if (it != mBeamData.end()) {
+          prev_prev_prev_datapoints = *it;
+        } else {
+          prev_prev_prev_datapoints = prev_prev_datapoints;
+        }
+      }
+    } else {
+      /**
+       * We have a group of 3 points at least.  That's 1 start point and 2 control points.
+       */
+      xPos += mHorizontalScale*3;
+      it++;
+      if (it != mBeamData.end()) {
+        prev_datapoints = *it;
+        it++;
+        if (it != mBeamData.end()) {
+          prev_prev_datapoints = *it;
+          it++;  //We are now on the next set of data points
+          if (it != mBeamData.end()) {
+            // We have this datapoint, so use it for our finish point
+            prev_prev_prev_datapoints = *it;
+          } else {
+            // We don't have the next set, so use our last control point as our finish point
+            prev_prev_prev_datapoints = prev_prev_datapoints;
+          }
+        } else {
+          prev_prev_prev_datapoints = prev_prev_datapoints = prev_datapoints;
+        }
+      } else {
+          prev_prev_prev_datapoints = prev_prev_datapoints = prev_datapoints = datapoints;
       }
     }
 
-    delete[] prevVals;
-#endif
+    for (int j = 0; j < datapoints.size() && j < mBeamColors.size(); ++j) {
+      if ( mUseAutoRange ) {
+        sum += datapoints[j];
+        if ( sum < mMinValue )
+          mMinValue = sum;
+        if ( sum > mMaxValue )
+          mMaxValue = sum;
+      }
+
+      pen.setColor(mBeamColors[j]);
+      p.setPen(pen);
+      QPolygon curve(3);
+      curve.putPoints(0,4, w - xPos + 3*mHorizontalScale, h - (int)((datapoints[j] - minValue)*scaleFac),
+                      w - xPos + 2*mHorizontalScale, h - (int)((prev_datapoints[j] - minValue)*scaleFac),
+                      w - xPos + mHorizontalScale, h - (int)((prev_prev_datapoints[j] - minValue)*scaleFac),
+                      w - xPos, h - (int)((prev_prev_prev_datapoints[j] - minValue)*scaleFac));
+
+      if ( curve.size() >=4 ) {
+        QPainterPath path;
+        path.moveTo( curve.at( 0 ) );
+        path.cubicTo( curve.at( 1 ), curve.at( 2 ), curve.at( 3 ) );
+        p.strokePath( path, p.pen() );
+      }
+    }
   }
 
   /* Draw horizontal lines and values. Lines are drawn when the

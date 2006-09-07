@@ -19,8 +19,8 @@
 */
 
 #include <qdom.h>
-#include <QImage>
-#include <QToolTip>
+#include <QtGui/QImage>
+#include <QtGui/QToolTip>
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -67,7 +67,6 @@ void FancyPlotter::configureSettings()
   mSettingsDialog->setMinValue( mPlotter->minValue() );
   mSettingsDialog->setMaxValue( mPlotter->maxValue() );
 
-  mSettingsDialog->setUsePolygonStyle( mPlotter->graphStyle() == GRAPH_POLYGON );
   mSettingsDialog->setHorizontalScale( mPlotter->horizontalScale() );
 
   mSettingsDialog->setShowVerticalLines( mPlotter->showVerticalLines() );
@@ -85,15 +84,15 @@ void FancyPlotter::configureSettings()
 
   mSettingsDialog->setBackgroundColor( mPlotter->backgroundColor() );
 
-  QList< QStringList > list;
+  SensorEntry::List list;
   for ( uint i = 0; i < mBeams; ++i ) {
-    QStringList entry;
-    entry << QString( "%1" ).arg( i + 1 );
-    entry << sensors().at( i )->hostName();
-    entry << KSGRD::SensorMgr->translateSensor( sensors().at( i )->name() );
-    entry << KSGRD::SensorMgr->translateUnit( sensors().at( i )->unit() );
-    entry << ( sensors().at( i )->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
-    entry << ( mPlotter->beamColors()[ i ].name() );
+    SensorEntry entry;
+    entry.setId( i );
+    entry.setHostName( sensors().at( i )->hostName() );
+    entry.setSensorName( KSGRD::SensorMgr->translateSensor( sensors().at( i )->name() ) );
+    entry.setUnit( KSGRD::SensorMgr->translateUnit( sensors().at( i )->unit() ) );
+    entry.setStatus( sensors().at( i )->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
+    entry.setColor( mPlotter->beamColors()[ i ] );
 
     list.append( entry );
   }
@@ -121,11 +120,6 @@ void FancyPlotter::applySettings()
                           mSettingsDialog->maxValue() );
   }
 
-  if ( mSettingsDialog->usePolygonStyle() )
-    mPlotter->setGraphStyle( GRAPH_POLYGON );
-  else
-    mPlotter->setGraphStyle( GRAPH_ORIGINAL );
-
   if ( mPlotter->horizontalScale() != mSettingsDialog->horizontalScale() ) {
     mPlotter->setHorizontalScale( mSettingsDialog->horizontalScale() );
     // Can someone think of a useful QResizeEvent to pass?
@@ -152,17 +146,17 @@ void FancyPlotter::applySettings()
    * listview. Where a sensor cannot be matched, it is removed. */
   uint delCount = 0;
 
-  QList< QStringList > list = mSettingsDialog->sensors();
-  QList< QStringList >::Iterator it;
+  SensorEntry::List list = mSettingsDialog->sensors();
 
-  for ( uint i = 0; i < (uint)(sensors().count()); ++i ) {
+  for ( int i = 0; i < sensors().count(); ++i ) {
     bool found = false;
-    for ( it = list.begin(); it != list.end(); ++it ) {
-      if ( (*it)[ 0 ].toInt() == (int)( i + 1 + delCount ) ) {
-        mPlotter->beamColors()[ i ] = QColor( (*it)[ 5 ] );
+    for ( int j = 0; j < list.count(); ++j ) {
+      if ( list[ j ].id() == (int)( i + delCount ) ) {
+        mPlotter->beamColors()[ i ] = list[ j ].color();
         found = true;
         if ( delCount > 0 )
-          (*it)[ 0 ] = QString( "%1" ).arg( i + 1 );
+          list[ j ].setId( i );
+
         continue;
       }
     }
@@ -176,6 +170,8 @@ void FancyPlotter::applySettings()
   }
 
   mPlotter->update();
+
+  setTooltip();
 }
 
 void FancyPlotter::applyStyle()
@@ -227,7 +223,7 @@ bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
   ++mBeams;
 
   setTooltip();
-  
+
   return true;
 }
 
@@ -254,11 +250,11 @@ void FancyPlotter::setTooltip()
   for ( uint i = 0; i < mBeams; ++i ) {
     if(sensors().at( mBeams -i - 1)->isLocalhost()) {
       tooltip += QString( "%1%2%3" ).arg( i != 0 ? "<br>" : "<qt>")
-				    .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">#</font>")
+            .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">#</font>")
                                     .arg( sensors().at( mBeams - i - 1  )->description() );
     } else {
       tooltip += QString( "%1%2%3:%4" ).arg( i != 0 ? "<br>" : "<qt>" )
-	      			   .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">#</font>")
+                 .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">#</font>")
                                    .arg( sensors().at( mBeams - i - 1 )->hostName() )
                                    .arg( sensors().at( mBeams - i - 1  )->description() );
     }
@@ -336,7 +332,6 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
                                    KSGRD::Style->firstForegroundColor() ) );
   mPlotter->setVerticalLinesDistance( element.attribute( "vDistance", "30" ).toUInt() );
   mPlotter->setVerticalLinesScroll( element.attribute( "vScroll", "1" ).toUInt() );
-  mPlotter->setGraphStyle( element.attribute( "graphStyle", "0" ).toUInt() );
   mPlotter->setHorizontalScale( element.attribute( "hScale", "1" ).toUInt() );
 
   mPlotter->setShowHorizontalLines( element.attribute( "hLines", "1" ).toUInt() );
@@ -379,7 +374,6 @@ bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element)
   element.setAttribute( "vDistance", mPlotter->verticalLinesDistance() );
   element.setAttribute( "vScroll", mPlotter->verticalLinesScroll() );
 
-  element.setAttribute( "graphStyle", mPlotter->graphStyle() );
   element.setAttribute( "hScale", mPlotter->horizontalScale() );
 
   element.setAttribute( "hLines", mPlotter->showHorizontalLines() );
@@ -426,7 +420,7 @@ FPSensorProperties::FPSensorProperties( const QString &hostName,
     mColor( color )
 {
 }
-                                        
+
 FPSensorProperties::~FPSensorProperties()
 {
 }

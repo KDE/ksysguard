@@ -27,9 +27,6 @@
 #include <QPaintEvent>
 #include <QLinkedList>
 
-#define GRAPH_POLYGON     0
-#define	GRAPH_ORIGINAL    1
-
 class QColor;
 
 class SignalPlotter : public QWidget
@@ -60,9 +57,6 @@ class SignalPlotter : public QWidget
 
     void setMaxValue( double max );
     double maxValue() const;
-
-    void setGraphStyle( uint style );
-    uint graphStyle() const;
 
     void setHorizontalScale( uint scale );
     int horizontalScale() const;

@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
     Copyright (c) 2003 Tobias Koenig <tokoe@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -21,19 +21,51 @@
 #ifndef FANCYPLOTTERSETTINGS_H
 #define FANCYPLOTTERSETTINGS_H
 
-#include <QList>
+#include <QtCore/QList>
 
 #include <kpagedialog.h>
 
 class KColorButton;
 class KIntNumInput;
 class KLineEdit;
-class K3ListView;
 
 class QCheckBox;
-class Q3ListViewItem;
 class QPushButton;
-class QRadioButton;
+class QTreeView;
+
+class SensorModel;
+
+class SensorEntry
+{
+  public:
+    typedef QList<SensorEntry> List;
+
+    void setId( int id ) { mId = id; }
+    int id() const { return mId; }
+
+    void setHostName( const QString &hostName ) { mHostName = hostName; }
+    QString hostName() const { return mHostName; }
+
+    void setSensorName( const QString &sensorName ) { mSensorName = sensorName; }
+    QString sensorName() const { return mSensorName; }
+
+    void setUnit( const QString &unit ) { mUnit = unit; }
+    QString unit() const { return mUnit; }
+
+    void setStatus( const QString &status ) { mStatus = status; }
+    QString status() const { return mStatus; }
+
+    void setColor( const QColor &color ) { mColor = color; }
+    QColor color() const { return mColor; }
+
+  private:
+    int mId;
+    QString mHostName;
+    QString mSensorName;
+    QString mUnit;
+    QString mStatus;
+    QColor mColor;
+};
 
 class FancyPlotterSettings : public KPageDialog
 {
@@ -54,9 +86,6 @@ class FancyPlotterSettings : public KPageDialog
 
     void setMaxValue( double max );
     double maxValue() const;
-
-    void setUsePolygonStyle( bool value );
-    bool usePolygonStyle() const;
 
     void setHorizontalScale( int scale );
     int horizontalScale() const;
@@ -94,18 +123,14 @@ class FancyPlotterSettings : public KPageDialog
     void setBackgroundColor( const QColor &color );
     QColor backgroundColor() const;
 
-    void setSensors( const QList< QStringList > &list );
-    QList< QStringList > sensors() const;
+    void setSensors( const SensorEntry::List &list );
+    SensorEntry::List sensors() const;
 
   private Q_SLOTS:
     void editSensor();
     void removeSensor();
-    void moveUpSensor();
-    void moveDownSensor();
-    void selectionChanged( Q3ListViewItem* );
 
   private:
-
     KColorButton *mVerticalLinesColor;
     KColorButton *mHorizontalLinesColor;
     KColorButton *mBackgroundColor;
@@ -116,7 +141,6 @@ class FancyPlotterSettings : public KPageDialog
     KIntNumInput *mVerticalLinesDistance;
     KIntNumInput *mHorizontalLinesCount;
     KIntNumInput *mFontSize;
-    K3ListView *mSensorView;
 
     QCheckBox *mShowVerticalLines;
     QCheckBox *mShowHorizontalLines;
@@ -126,10 +150,9 @@ class FancyPlotterSettings : public KPageDialog
     QCheckBox *mShowTopBar;
     QPushButton *mEditButton;
     QPushButton *mRemoveButton;
-    QPushButton *mMoveUpButton;
-    QPushButton *mMoveDownButton;
-    QRadioButton *mUsePolygonStyle;
-    QRadioButton *mUseOriginalStyle;
+
+    QTreeView *mView;
+    SensorModel *mModel;
 };
 
 #endif

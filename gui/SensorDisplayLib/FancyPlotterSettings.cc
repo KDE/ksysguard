@@ -22,27 +22,161 @@
 #include <kcolorbutton.h>
 #include <kcolordialog.h>
 #include <klineedit.h>
-#include <k3listview.h>
 #include <klocale.h>
 #include <knuminput.h>
 
-#include <QCheckBox>
-#include <QGroupBox>
-#include <q3groupbox.h>
-#include <QImage>
-#include <QLabel>
-#include <QLayout>
-#include <QPixmap>
-#include <QPushButton>
-#include <QRadioButton>
-
-#include <QGridLayout>
-#include <QList>
+#include <QtCore/QAbstractTableModel>
+#include <QtCore/QList>
+#include <QtGui/QCheckBox>
+#include <QtGui/QGridLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QHeaderView>
+#include <QtGui/QImage>
+#include <QtGui/QLabel>
+#include <QtGui/QLayout>
+#include <QtGui/QPixmap>
+#include <QtGui/QPushButton>
+#include <QtGui/QTreeView>
 
 #include "FancyPlotterSettings.h"
 
+class SensorModel : public QAbstractTableModel
+{
+  public:
+    SensorModel( QObject *parent = 0 )
+      : QAbstractTableModel( parent )
+    {
+    }
+
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const
+    {
+      Q_UNUSED( parent );
+
+      return 4;
+    }
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const
+    {
+      Q_UNUSED( parent );
+
+      return mSensors.count();
+    }
+
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const
+    {
+      if ( !index.isValid() )
+        return QVariant();
+
+      if ( index.row() >= mSensors.count() || index.row() < 0 )
+        return QVariant();
+
+      SensorEntry sensor = mSensors[ index.row() ];
+
+      if ( role == Qt::DisplayRole ) {
+        switch ( index.column() ) {
+          case 0:
+            return sensor.hostName();
+            break;
+          case 1:
+            return sensor.sensorName();
+            break;
+          case 2:
+            return sensor.unit();
+            break;
+          case 3:
+            return sensor.status();
+            break;
+        }
+      } else if ( role == Qt::DecorationRole ) {
+        QPixmap pm( 12, 12 );
+        pm.fill( sensor.color() );
+
+        if ( index.column() == 1 )
+          return pm;
+      }
+
+      return QVariant();
+    }
+
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const
+    {
+      if ( orientation == Qt::Vertical )
+        return QVariant();
+
+      if ( role == Qt::DisplayRole ) {
+        switch ( section ) {
+          case 0:
+            return i18n( "Host" );
+            break;
+          case 1:
+            return i18n( "Sensor" );
+            break;
+          case 2:
+            return i18n( "Unit" );
+            break;
+          case 3:
+            return i18n( "Status" );
+            break;
+          default:
+            return QVariant();
+        }
+      }
+
+      return QVariant();
+    }
+
+    void setSensors( const SensorEntry::List &sensors )
+    {
+      mSensors = sensors;
+
+      emit layoutChanged();
+    }
+
+    SensorEntry::List sensors() const
+    {
+      return mSensors;
+    }
+
+    void setSensor( const SensorEntry &sensor, const QModelIndex &index )
+    {
+      if ( !index.isValid() )
+        return;
+
+      if ( index.row() < 0 || index.row() >= mSensors.count() )
+        return;
+
+      mSensors[ index.row() ] = sensor;
+
+      emit dataChanged( index, index );
+    }
+
+    void removeSensor( const QModelIndex &index )
+    {
+      if ( !index.isValid() )
+        return;
+
+      if ( index.row() < 0 || index.row() >= mSensors.count() )
+        return;
+
+      mSensors.removeAt( index.row() );
+
+      emit layoutChanged();
+    }
+
+    SensorEntry sensor( const QModelIndex &index ) const
+    {
+      if ( !index.isValid() || index.row() >= mSensors.count() || index.row() < 0 )
+        return SensorEntry();
+
+      return mSensors[ index.row() ];
+    }
+
+  private:
+    SensorEntry::List mSensors;
+};
+
 FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
-  : KPageDialog( parent )
+  : KPageDialog( parent ), mModel( new SensorModel( this ) )
 {
   setFaceType( Tabbed );
   setCaption( i18n( "Signal Plotter Settings" ) );
@@ -54,12 +188,12 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   QFrame *page = 0;
   QGridLayout *pageLayout = 0;
   QGridLayout *boxLayout = 0;
-  Q3GroupBox *groupBox = 0;
+  QGroupBox *groupBox = 0;
   QLabel *label = 0;
 
   // Style page
   page = new QFrame();
-  addPage( page, i18n( "Style" ) );
+  addPage( page, i18n( "General" ) );
   pageLayout = new QGridLayout( page );
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
@@ -72,19 +206,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   pageLayout->addWidget( mTitle, 0, 1 );
   label->setBuddy( mTitle );
 
-  QGroupBox *buttonBox = new QGroupBox(i18n( "Graph Drawing Style" ),page);
-  
-
-  QVBoxLayout *vbox = new QVBoxLayout;
-  vbox->addStretch(2);
-  mUsePolygonStyle = new QRadioButton( i18n( "Basic polygons" ) );
-  vbox->addWidget(mUsePolygonStyle);
-  mUsePolygonStyle->setChecked( true );
-  mUseOriginalStyle = new QRadioButton( i18n( "Original - single line per data point" ) );
-  vbox->addWidget(mUseOriginalStyle);
-
-  buttonBox->setLayout(vbox);
-  pageLayout->addWidget( buttonBox, 1, 0, 1, 2 );
+  pageLayout->setRowStretch( 1, 1 );
 
   // Scales page
   page = new QFrame();
@@ -93,9 +215,9 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
 
-  groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Vertical Scale" ), page );
-  boxLayout = new QGridLayout(  );
-  groupBox->layout()->addItem( boxLayout );
+  groupBox = new QGroupBox( i18n( "Vertical Scale" ), page );
+  boxLayout = new QGridLayout;
+  groupBox->setLayout( boxLayout );
   boxLayout->setSpacing( spacingHint() );
   boxLayout->setColumnStretch( 2, 1 );
 
@@ -125,9 +247,9 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
 
   pageLayout->addWidget( groupBox, 0, 0 );
 
-  groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Horizontal Scale" ), page );
-  boxLayout = new QGridLayout(  );
-  groupBox->layout()->addItem( boxLayout );
+  groupBox = new QGroupBox( i18n( "Horizontal Scale" ), page );
+  boxLayout = new QGridLayout;
+  groupBox->setLayout( boxLayout );
   boxLayout->setSpacing( spacingHint() );
   boxLayout->setRowStretch( 1, 1 );
 
@@ -148,9 +270,9 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
 
-  groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Lines" ), page );
-  boxLayout = new QGridLayout(  );
-  groupBox->layout()->addItem( boxLayout );
+  groupBox = new QGroupBox( i18n( "Lines" ), page );
+  boxLayout = new QGridLayout;
+  groupBox->setLayout( boxLayout );
   boxLayout->setSpacing( spacingHint() );
   boxLayout->setColumnStretch( 1, 1 );
 
@@ -189,9 +311,9 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
 
   pageLayout->addWidget( groupBox, 0, 0, 1, 2 );
 
-  groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Text" ), page );
-  boxLayout = new QGridLayout( );
-  groupBox->layout()->addItem( boxLayout );
+  groupBox = new QGroupBox( i18n( "Text" ), page );
+  boxLayout = new QGridLayout;
+  groupBox->setLayout( boxLayout );
   boxLayout->setSpacing( spacingHint() );
   boxLayout->setColumnStretch( 1, 1 );
 
@@ -216,9 +338,9 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
 
   pageLayout->addWidget( groupBox, 1, 0 );
 
-  groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Colors" ), page );
-  boxLayout = new QGridLayout( );
-  groupBox->layout()->addItem( boxLayout );
+  groupBox = new QGroupBox( i18n( "Colors" ), page );
+  boxLayout = new QGridLayout;
+  groupBox->setLayout( boxLayout );
   boxLayout->setSpacing( spacingHint() );
 
   label = new QLabel( i18n( "Vertical lines:" ), groupBox );
@@ -257,46 +379,27 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   pageLayout->setRowStretch( 2, 1 );
   pageLayout->setRowStretch( 5, 1 );
 
-  mSensorView = new K3ListView( page );
-  mSensorView->addColumn( i18n( "#" ) );
-  mSensorView->addColumn( i18n( "Host" ) );
-  mSensorView->addColumn( i18n( "Sensor" ) );
-  mSensorView->addColumn( i18n( "Unit" ) );
-  mSensorView->addColumn( i18n( "Status" ) );
-  mSensorView->setAllColumnsShowFocus( true );
-  pageLayout->addWidget( mSensorView, 0, 0, 6, 1 );
-  mSensorView->setSortColumn ( -1 );
+  mView = new QTreeView( page );
+  mView->header()->setStretchLastSection( true );
+  mView->setRootIsDecorated( false );
+  mView->setItemsExpandable( false );
+  mView->setModel( mModel );
+  pageLayout->addWidget( mView, 0, 0, 6, 1 );
+
   mEditButton = new QPushButton( i18n( "Set Color..." ), page );
-  mEditButton->setEnabled( false );
   mEditButton->setWhatsThis( i18n( "Push this button to configure the color of the sensor in the diagram." ) );
   pageLayout->addWidget( mEditButton, 0, 1 );
 
-  
-  if(!locked) {
-	  
-  mRemoveButton = new QPushButton( i18n( "Delete" ), page );
-  mRemoveButton->setEnabled( false );
-  mRemoveButton->setWhatsThis( i18n( "Push this button to delete the sensor." ) );
-  pageLayout->addWidget( mRemoveButton, 1, 1 );
+  mRemoveButton = 0;
+  if ( !locked ) {
+    mRemoveButton = new QPushButton( i18n( "Delete" ), page );
+    mRemoveButton->setEnabled( false );
+    mRemoveButton->setWhatsThis( i18n( "Push this button to delete the sensor." ) );
+    pageLayout->addWidget( mRemoveButton, 1, 1 );
 
-  mMoveUpButton = new QPushButton( i18n( "Move Up" ), page );
-  mMoveUpButton->setEnabled( false );
-  pageLayout->addWidget( mMoveUpButton, 3, 1 );
-
-  mMoveDownButton = new QPushButton( i18n( "Move Down" ), page );
-  mMoveDownButton->setEnabled( false );
-  pageLayout->addWidget( mMoveDownButton, 4, 1 );
-  
-  connect( mRemoveButton, SIGNAL( clicked() ), SLOT( removeSensor() ) );
-  connect( mMoveUpButton, SIGNAL( clicked() ), SLOT( moveUpSensor() ) );
-  connect( mMoveDownButton, SIGNAL( clicked() ), SLOT( moveDownSensor() ) );
-
-  } else {
-    mRemoveButton = 0;
-    mMoveUpButton = 0;
-    mMoveDownButton = 0;
+    connect( mRemoveButton, SIGNAL( clicked() ), SLOT( removeSensor() ) );
   }
-  
+
   connect( mUseAutoRange, SIGNAL( toggled( bool ) ), mMinValue,
            SLOT( setDisabled( bool ) ) );
   connect( mUseAutoRange, SIGNAL( toggled( bool ) ), mMaxValue,
@@ -313,11 +416,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
            SLOT( setEnabled( bool ) ) );
   connect( mShowHorizontalLines, SIGNAL( toggled( bool ) ), mShowLabels,
            SLOT( setEnabled( bool ) ) );
-  connect( mSensorView, SIGNAL( selectionChanged( Q3ListViewItem* ) ),
-           SLOT( selectionChanged( Q3ListViewItem* ) ) );
 
   connect( mEditButton, SIGNAL( clicked() ), SLOT( editSensor() ) );
-  connect ( mSensorView, SIGNAL( doubleClicked( Q3ListViewItem *, const QPoint &, int )), SLOT(editSensor()));
 
   KAcceleratorManager::manage( this );
 }
@@ -366,19 +466,6 @@ void FancyPlotterSettings::setMaxValue( double max )
 double FancyPlotterSettings::maxValue() const
 {
   return mMaxValue->text().toDouble();
-}
-
-void FancyPlotterSettings::setUsePolygonStyle( bool value )
-{
-  if ( value )
-    mUsePolygonStyle->setChecked( true );
-  else
-    mUseOriginalStyle->setChecked( true );
-}
-
-bool FancyPlotterSettings::usePolygonStyle() const
-{
-  return mUsePolygonStyle->isChecked();
 }
 
 void FancyPlotterSettings::setHorizontalScale( int scale )
@@ -508,141 +595,48 @@ QColor FancyPlotterSettings::backgroundColor() const
   return mBackgroundColor->color();
 }
 
-void FancyPlotterSettings::setSensors( const QList< QStringList > &list )
+void FancyPlotterSettings::setSensors( const SensorEntry::List &list )
 {
-  mSensorView->clear();
+  mModel->setSensors( list );
 
-  QList< QStringList >::ConstIterator it;
-  for ( it = list.begin(); it != list.end(); ++it ) {
-    Q3ListViewItem* lvi = new Q3ListViewItem( mSensorView,
-                                            (*it)[ 0 ],   // id
-                                            (*it)[ 1 ],   // host name
-                                            (*it)[ 2 ],   // sensor name
-                                            (*it)[ 3 ],   // unit
-                                            (*it)[ 4 ] ); // status
-    QPixmap pm( 12, 12 );
-    pm.fill( QColor( (*it)[ 5 ] ) );
-    lvi->setPixmap( 2, pm );
-    mSensorView->insertItem( lvi );
-  }
+  mView->selectionModel()->setCurrentIndex( mModel->index( 0, 0 ), QItemSelectionModel::SelectCurrent |
+                                                                   QItemSelectionModel::Rows );
 }
 
-QList< QStringList > FancyPlotterSettings::sensors() const
+SensorEntry::List FancyPlotterSettings::sensors() const
 {
-  QList< QStringList > list;
-
-  Q3ListViewItemIterator it( mSensorView );
-
-  for ( ; it.current(); ++it ) {
-    QStringList entry;
-    entry << it.current()->text( 0 );
-    entry << it.current()->text( 1 );
-    entry << it.current()->text( 2 );
-    entry << it.current()->text( 3 );
-    entry << it.current()->text( 4 );
-    QRgb rgb = it.current()->pixmap( 2 )->toImage().pixel( 1, 1 );
-    QColor color( qRed( rgb ), qGreen( rgb ), qBlue( rgb ) );
-    entry << ( color.name() );
-
-    list.append( entry );
-  }
-
-  return list;
+  return mModel->sensors();
 }
 
 void FancyPlotterSettings::editSensor()
 {
-  Q3ListViewItem* lvi = mSensorView->currentItem();
-
-  if ( !lvi )
+  if ( !mView->selectionModel() )
     return;
 
-  QColor color = lvi->pixmap( 2 )->toImage().pixel( 1, 1 );
+  const QModelIndex index = mView->selectionModel()->currentIndex();
+  if ( !index.isValid() )
+    return;
+
+  SensorEntry sensor = mModel->sensor( index );
+
+  QColor color = sensor.color();
   int result = KColorDialog::getColor( color, parentWidget() );
   if ( result == KColorDialog::Accepted ) {
-    QPixmap newPm( 12, 12 );
-    newPm.fill( color );
-    lvi->setPixmap( 2, newPm );
+    sensor.setColor( color );
+    mModel->setSensor( sensor, index );
   }
 }
 
 void FancyPlotterSettings::removeSensor()
 {
-  Q3ListViewItem* lvi = mSensorView->currentItem();
+  if ( !mView->selectionModel() )
+    return;
 
-  if ( lvi ) {
-    /* Before we delete the currently selected item, we determine a
-     * new item to be selected. That way we can ensure that multiple
-     * items can be deleted without forcing the user to select a new
-     * item between the deletes. If all items are deleted, the buttons
-     * are disabled again. */
-    Q3ListViewItem* newSelected = 0;
-    if ( lvi->itemBelow() ) {
-      lvi->itemBelow()->setSelected( true );
-      newSelected = lvi->itemBelow();
-    } else if ( lvi->itemAbove() ) {
-      lvi->itemAbove()->setSelected( true );
-      newSelected = lvi->itemAbove();
-    } else
-      selectionChanged( 0 );
+  const QModelIndex index = mView->selectionModel()->currentIndex();
+  if ( !index.isValid() )
+    return;
 
-    delete lvi;
-
-    if ( newSelected )
-      mSensorView->ensureItemVisible( newSelected );
-  }
-}
-
-void FancyPlotterSettings::moveUpSensor()
-{
-  if ( mSensorView->currentItem() != 0 ) {
-    Q3ListViewItem* item = mSensorView->currentItem()->itemAbove();
-    if ( item ) {
-      if ( item->itemAbove() )
-      {
-        mSensorView->currentItem()->moveItem( item->itemAbove() );
-      }
-      else
-      {
-        item->moveItem( mSensorView->currentItem() );
-      }
-    }
-
-    // Re-calculate the "sensor number" field
-    item = mSensorView->firstChild();
-    for ( uint count = 1; item; item = item->itemBelow(), count++ )
-      item->setText( 0, QString( "%1" ).arg( count ) );
-
-    selectionChanged( mSensorView->currentItem() );
-  }
-}
-
-void FancyPlotterSettings::moveDownSensor()
-{
-  if ( mSensorView->currentItem() != 0 ) {
-    if ( mSensorView->currentItem()->itemBelow() )
-      mSensorView->currentItem()->moveItem( mSensorView->currentItem()->itemBelow() );
-
-    // Re-calculate the "sensor number" field
-    Q3ListViewItem* item = mSensorView->firstChild();
-    for ( uint count = 1; item; item = item->itemBelow(), count++ )
-      item->setText( 0, QString( "%1" ).arg( count ) );
-
-    selectionChanged( mSensorView->currentItem() );
-  }
-}
-
-void FancyPlotterSettings::selectionChanged( Q3ListViewItem *item )
-{
-  bool state = ( item != 0 );
-
-  mEditButton->setEnabled( state );
-
-  if(mRemoveButton) {
-    mRemoveButton->setEnabled( state );
-    mMoveUpButton->setEnabled( state && item->itemAbove() );
-    mMoveDownButton->setEnabled( state && item->itemBelow() );
-  }
+  mModel->removeSensor( index );
 }
 
 #include "FancyPlotterSettings.moc"
