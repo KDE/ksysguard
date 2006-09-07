@@ -53,7 +53,7 @@
 #include <kpushbutton.h>
 
 ProcessController::ProcessController(QWidget* parent, const QString &title, SharedSettings *workSheetSettings)
-	: KSGRD::SensorDisplay(parent, title, workSheetSettings), mModel(parent), mFilterModel(parent)
+	: KSGRD::SensorDisplay(parent, title, workSheetSettings), mModel(this), mFilterModel(this)
 {
 	mKillProcess = 0;
 	//When XResCountdown reaches 0, we call 'xres'.
