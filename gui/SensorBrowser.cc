@@ -77,7 +77,6 @@ SensorBrowser::SensorBrowser( QWidget* parent, KSGRD::SensorManager* sm )
            SLOT( newItemSelected( Q3ListViewItem* ) ) );
 
   addColumn( i18n( "Sensor Browser" ) );
-  addColumn( i18n( "Sensor Type" ) );
   setFullWidth( true );
 
   this->setToolTip( i18n( "Drag sensors to empty cells of a worksheet "
@@ -219,7 +218,6 @@ void SensorBrowser::answerReceived( int id, const QStringList &answer )
           QPixmap pix = mIconLoader->loadIcon( "ksysguardd", K3Icon::Desktop,
                                                K3Icon::SizeSmall );
           lvi->setPixmap( 0, pix );
-          lvi->setText( 1, KSGRD::SensorMgr->translateSensorType( sensorType ) );
 
           // add sensor info to internal data structure
           (*it)->addSensor( lvi, sensorName, name, sensorType );
