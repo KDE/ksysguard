@@ -551,13 +551,21 @@ void SignalPlotter::paintEvent( QPaintEvent* )
 
       pen.setColor(mBeamColors[j]);
       p.setPen(pen);
-      QPolygon curve(3);
-      curve.putPoints(0,4, w - xPos + 3*mHorizontalScale, h - (int)((datapoints[j] - minValue)*scaleFac),
-                      w - xPos + 2*mHorizontalScale, h - (int)((prev_datapoints[j] - minValue)*scaleFac),
-                      w - xPos + mHorizontalScale, h - (int)((prev_prev_datapoints[j] - minValue)*scaleFac),
-                      w - xPos, h - (int)((prev_prev_prev_datapoints[j] - minValue)*scaleFac));
 
-      if ( curve.size() >=4 ) {
+      /**
+       * Draw polygon only if enough data points are available.
+       */
+      if ( j < prev_prev_prev_datapoints.count() &&
+           j < prev_prev_datapoints.count() &&
+           j < prev_datapoints.count() ) {
+
+        QPolygon curve( 4 );
+
+        curve.setPoint( 0, w - xPos + 3*mHorizontalScale, h - (int)((datapoints[j] - minValue)*scaleFac) );
+        curve.setPoint( 1, w - xPos + 2*mHorizontalScale, h - (int)((prev_datapoints[j] - minValue)*scaleFac) );
+        curve.setPoint( 2, w - xPos + mHorizontalScale, h - (int)((prev_prev_datapoints[j] - minValue)*scaleFac) );
+        curve.setPoint( 3, w - xPos, h - (int)((prev_prev_prev_datapoints[j] - minValue)*scaleFac) );
+
         QPainterPath path;
         path.moveTo( curve.at( 0 ) );
         path.cubicTo( curve.at( 1 ), curve.at( 2 ), curve.at( 3 ) );
