@@ -595,10 +595,12 @@ void SignalPlotter::paintEvent( QPaintEvent* )
 			     w - xPos + mHorizontalScale, h - (int)((prev_prev_datapoints[j] - minValue)*scaleFac),
 			     w - xPos, h - (int)((prev_prev_prev_datapoints[j] - minValue)*scaleFac));
 
-        QPainterPath path;
-        path.moveTo( curve.at( 0 ) );
-        path.cubicTo( curve.at( 1 ), curve.at( 2 ), curve.at( 3 ) );
-        p.strokePath( path, p.pen() );
+        if ( curve.size() >=4 ) {
+          QPainterPath path;
+          path.moveTo( curve.at( 0 ) );
+          path.cubicTo( curve.at( 1 ), curve.at( 2 ), curve.at( 3 ) );
+          p.strokePath( path, p.pen() );
+        }
 //	p.drawLine( w - xPos, h - (int)((prev_prev_datapoints[i] - minValue)*scaleFac),
 //		    w - xPos - mHorizontalScale + 1, h - (int)((prev_datapoints[i] - minValue)*scaleFac));
 
