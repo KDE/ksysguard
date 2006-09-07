@@ -410,31 +410,36 @@ void SignalPlotter::paintEvent( QPaintEvent* )
     QList<QColor>::Iterator col;
     col = mBeamColors.begin();
 
-    /* The top bar shows the current values of all the beam data.  This iterates through each different beam and plots the newest data for each*/
-    QList<double> newestData = mBeamData.first();
-    QList<double>::Iterator i;
-    for(i = newestData.begin(); i != newestData.end(); ++i, ++col) {
-      double newest_datapoint = *i;
-      int start = x0 + (int)( bias * scaleFac );
-      int end = x0 + (int)( ( bias += newest_datapoint ) * scaleFac );
-      /* If the rect is wider than 2 pixels we draw only the last
-       * pixels with the bright color. The rest is painted with
-       * a 50% darker color. */
-      if ( end - start > 1 ) {
-        p.setPen( (*col).dark( 150 ) );
-        p.setBrush( (*col).dark( 150 ) );
-        p.drawRect( start, 1, end - start, h0 );
-        p.setPen( *col );
-        p.drawLine( end, 1, end, h0 );
-      } else if ( start - end > 1 ) {
-        p.setPen( (*col).dark( 150 ) );
-        p.setBrush( (*col).dark( 150 ) );
-        p.drawRect( end, 1, start - end, h0 );
-        p.setPen( *col );
-        p.drawLine( end, 1, end, h0 );
-      } else {
-        p.setPen( *col );
-        p.drawLine( start, 1, start, h0 );
+    /**
+     * The top bar shows the current values of all the beam data.
+     * This iterates through each different beam and plots the newest data for each
+     */
+    if ( !mBeamData.isEmpty() ) {
+      QList<double> newestData = mBeamData.first();
+      QList<double>::Iterator i;
+      for(i = newestData.begin(); i != newestData.end(); ++i, ++col) {
+        double newest_datapoint = *i;
+        int start = x0 + (int)( bias * scaleFac );
+        int end = x0 + (int)( ( bias += newest_datapoint ) * scaleFac );
+        /* If the rect is wider than 2 pixels we draw only the last
+         * pixels with the bright color. The rest is painted with
+         * a 50% darker color. */
+        if ( end - start > 1 ) {
+          p.setPen( (*col).dark( 150 ) );
+          p.setBrush( (*col).dark( 150 ) );
+          p.drawRect( start, 1, end - start, h0 );
+          p.setPen( *col );
+          p.drawLine( end, 1, end, h0 );
+        } else if ( start - end > 1 ) {
+          p.setPen( (*col).dark( 150 ) );
+          p.setBrush( (*col).dark( 150 ) );
+          p.drawRect( end, 1, start - end, h0 );
+          p.setPen( *col );
+          p.drawLine( end, 1, end, h0 );
+        } else {
+          p.setPen( *col );
+          p.drawLine( start, 1, start, h0 );
+        }
       }
     }
   }
