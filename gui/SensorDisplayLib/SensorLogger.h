@@ -21,7 +21,7 @@
 #ifndef SENSORLOGGER_H
 #define SENSORLOGGER_H
 
-#include <QtGui/QTableView>
+#include <QtGui/QTreeView>
 
 #include <SensorDisplay.h>
 
@@ -98,7 +98,7 @@ class LogSensor : public QObject, public KSGRD::SensorClient
     bool mLimitReached;
 };
 
-class LogSensorView : public QTableView
+class LogSensorView : public QTreeView
 {
   Q_OBJECT
 

@@ -25,7 +25,7 @@
 #include <QtGui/QContextMenuEvent>
 #include <QtGui/QHeaderView>
 #include <QtGui/QMenu>
-#include <QtGui/QTableView>
+#include <QtGui/QTreeView>
 #include <QtXml/QDomNodeList>
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
@@ -44,7 +44,7 @@
 #define NONE -1
 
 LogSensorView::LogSensorView( QWidget *parent )
- : QTableView( parent )
+ : QTreeView( parent )
 {
 }
 
@@ -405,7 +405,9 @@ SensorLogger::SensorLogger( QWidget *parent, const QString& title, SharedSetting
   mModel->setAlarmColor( KSGRD::Style->alarmColor() );
 
   mView = new LogSensorView( this );
-  mView->horizontalHeader()->setStretchLastSection( true );
+  mView->header()->setStretchLastSection( true );
+  mView->setRootIsDecorated( false );
+  mView->setItemsExpandable( false );
   mView->setModel( mModel );
   setPlotterWidget( mView );
 
@@ -535,6 +537,10 @@ bool SensorLogger::restoreSettings( QDomElement& element )
   }
 
   SensorDisplay::restoreSettings( element );
+
+  QPalette palette = mView->palette();
+  palette.setColor( QPalette::Base, mModel->backgroundColor() );
+  mView->setPalette( palette );
 
   return true;
 }
