@@ -46,14 +46,14 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
   public:
     TopLevel();
 
-  virtual void saveProperties( KConfig* );
-  virtual void readProperties( KConfig* );
+    virtual void saveProperties( KConfig* );
+    virtual void readProperties( KConfig* );
 
-  virtual void answerReceived( int id, const QStringList& );
+    virtual void answerReceived( int id, const QStringList& );
 
-  void beATaskManager();
-  void showRequestedSheets();
-  void initStatusBar();
+    void beATaskManager();
+    void showRequestedSheets();
+    void initStatusBar();
 
   public Q_SLOTS:
      // calling ksysguard with kwin/kicker hot-key

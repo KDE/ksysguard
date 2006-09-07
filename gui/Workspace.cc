@@ -41,7 +41,7 @@ Workspace::Workspace( QWidget* parent)
   : QTabWidget( parent )
 {
   KAcceleratorManager::setNoAccel(this);
- 
+
   connect( this, SIGNAL( currentChanged( int ) ),
            SLOT( updateCaption( int ) ) );
 
@@ -76,11 +76,9 @@ void Workspace::saveProperties( KConfig *cfg )
 void Workspace::readProperties( KConfig *cfg )
 {
   kDebug() << "Reading from " << cfg->group() << endl;
-  QStringList selectedSheets = cfg->readEntry( "SelectedSheets", QStringList() );
+  QStringList selectedSheets = cfg->readPathListEntry( "SelectedSheets" );
   kDebug() << "Selected Sheets = " << selectedSheets << endl;
-  //This is from KDE 3.5 - we should port it over 
-//  QStringList custom_sheets_list = cfg->readPathListEntry( "Sheets" );
-  
+
   if ( selectedSheets.isEmpty() ) {
    /* If SelectedSheets config entry is not there, then it's
     * probably the first time the user has started KSysGuard. We
@@ -88,7 +86,7 @@ void Workspace::readProperties( KConfig *cfg )
     selectedSheets << "SystemLoad.sgrd";
     selectedSheets << "ProcessTable.sgrd";
   }
- 
+
   KStandardDirs* kstd = KGlobal::dirs();
   QString filename;
   for ( QStringList::Iterator it = selectedSheets.begin(); it != selectedSheets.end(); ++it ) {
@@ -99,7 +97,7 @@ void Workspace::readProperties( KConfig *cfg )
   }
 
   QString currentSheet = cfg->readEntry( "CurrentSheet" , "ProcessTable.sgrd");
-  
+
   // Determine visible sheet.
   for(int i = 0; i < mSheetList.size(); i++) 
     if ( currentSheet == tabText(indexOf(mSheetList.at(i))) ) {

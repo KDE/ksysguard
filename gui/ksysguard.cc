@@ -120,9 +120,6 @@ TopLevel::TopLevel()
   action = new KAction(KIcon("connect_established"),  i18n( "Monitor remote machine..." ), actionCollection(), "connect_host" );
   connect(action, SIGNAL(triggered(bool)), SLOT( connectHost() ));
 
-//  KStdAction::cut( mWorkSpace, SLOT( cut() ), actionCollection() );
-//  KStdAction::copy( mWorkSpace, SLOT( copy() ), actionCollection() );
-//  KStdAction::paste( mWorkSpace, SLOT( paste() ), actionCollection() );
   action = new KAction(KIcon("configure"),  i18n( "&Worksheet Properties" ), actionCollection(), "configure_sheet" );
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( configure() ));
 
@@ -141,7 +138,7 @@ void TopLevel::currentTabChanged(int index)
   bool locked = !sheet || sheet->isLocked();
   mTabRemoveAction->setVisible(!locked);
   mTabExportAction->setVisible(!locked);
-  mSensorBrowser->setVisible(!locked);    
+  mSensorBrowser->setVisible(!locked);
 }
 
 
@@ -252,7 +249,7 @@ bool TopLevel::event( QEvent *e )
     return true;
   }
 
-  return false;
+  return KMainWindow::event( e );
 }
 
 void TopLevel::timerEvent( QTimerEvent* )
@@ -471,7 +468,6 @@ int main( int argc, char** argv )
 
   // run the application
   int result = app->exec();
-
 
   delete KSGRD::Style;
   delete KSGRD::SensorMgr;

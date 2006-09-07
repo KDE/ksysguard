@@ -32,9 +32,6 @@
 #include <kdemacros.h>
 
 class KConfig;
-
-class Q3ListBoxItem;
-
 class StyleSettings;
 
 namespace KSGRD {
@@ -65,7 +62,7 @@ class KDE_EXPORT StyleEngine : public QObject
     void applyToWorksheet();
 
   Q_SIGNALS:
-	  void applyStyleToWorksheet();
+    void applyStyleToWorksheet();
 
   private:
     void apply();
