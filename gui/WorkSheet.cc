@@ -520,6 +520,7 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
       mDisplayList[ row ][ column ]->setUpdateInterval( updateInterval() );
     connect( newDisplay, SIGNAL( showPopupMenu( KSGRD::SensorDisplay* ) ),
              SLOT( showPopupMenu( KSGRD::SensorDisplay* ) ) );
+    newDisplay->setDeleteNotifier( this );
   }
 
   SensorFrame *frame = new SensorFrame(mDisplayList[ row ][ column ]);

@@ -21,17 +21,16 @@
 #ifndef KSG_SENSORDISPLAY_H
 #define KSG_SENSORDISPLAY_H
 
-#include <QLabel>
-#include <QWidget>
-#include <QTimerEvent>
-#include <QEvent>
+#include <QtCore/QEvent>
+#include <QtCore/QPointer>
+#include <QtCore/QTimerEvent>
+#include <QtGui/QLabel>
+#include <QtGui/QWidget>
 
 #include <knotifyclient.h>
 
 #include <ksgrd/SensorClient.h>
 #include "SharedSettings.h"
-
-#define NONE -1
 
 class QDomDocument;
 class QDomElement;
@@ -145,7 +144,7 @@ class SensorDisplay : public QWidget, public SensorClient
 
     /**
       Add a sensor to the display.
-      
+
       @param hostName The name of the host, the sensor belongs to.
       @param name The sensor name.
       @param type The type of the sensor.
@@ -197,7 +196,7 @@ class SensorDisplay : public QWidget, public SensorClient
 
     /**
       Reimplement this method to catch error messages from the SensorManager.
-      
+
       @param sensorId The unique id of the sensor.
       @param mode The mode: true = error, false = everthing ok
      */
@@ -207,6 +206,11 @@ class SensorDisplay : public QWidget, public SensorClient
       Normaly you shouldn't reimplement this methode
      */
     virtual void sensorLost( int reqId );
+
+    /**
+     * Sets the object where the delete events will be send to.
+     */
+    void setDeleteNotifier( QObject *object );
 
   public Q_SLOTS:
     /**
@@ -234,7 +238,6 @@ class SensorDisplay : public QWidget, public SensorClient
      */
     virtual void applyStyle();
 
-		
   Q_SIGNALS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
     void changeTitle(const QString&);
@@ -277,6 +280,8 @@ class SensorDisplay : public QWidget, public SensorClient
 
     QWidget* mErrorIndicator;
     QWidget* mPlotterWdg;
+
+    QPointer<QObject> mDeleteNotifier;
 };
 
 class SensorProperties

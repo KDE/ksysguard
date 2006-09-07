@@ -46,6 +46,8 @@
 
 #include "SensorDisplay.h"
 
+#define NONE -1
+
 using namespace KSGRD;
 
 SensorDisplay::DeleteEvent::DeleteEvent( SensorDisplay *display )
@@ -181,8 +183,10 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
           configureSettings();
           break;
         case 3: {
-            DeleteEvent *event = new DeleteEvent( this );
-            kapp->postEvent( parent(), event );
+            if ( mDeleteNotifier ) {
+              DeleteEvent *event = new DeleteEvent( this );
+              kapp->postEvent( mDeleteNotifier, event );
+            }
           }
           break;
         case 4:
@@ -322,6 +326,11 @@ QString SensorDisplay::additionalWhatsThis()
 void SensorDisplay::sensorLost( int reqId )
 {
   sensorError( reqId, true );
+}
+
+void SensorDisplay::setDeleteNotifier( QObject *object )
+{
+  mDeleteNotifier = object;
 }
 
 bool SensorDisplay::restoreSettings( QDomElement &element )

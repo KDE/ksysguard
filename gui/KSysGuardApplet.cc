@@ -204,7 +204,7 @@ void KSysGuardApplet::dropEvent( QDropEvent *e )
     if ( mDockList[ dock ]->metaObject()->className() == "QFrame" ) {
       if ( sensorType == "integer" || sensorType == "float" ) {
         KMenu popup;
-        QWidget *wdg = 0;
+        KSGRD::SensorDisplay *wdg = 0;
 
         popup.addTitle( i18n( "Select Display Type" ) );
         QAction *a1 = popup.addAction( i18n( "&Signal Plotter" ) );
@@ -223,6 +223,7 @@ void KSysGuardApplet::dropEvent( QDropEvent *e )
           mDockList[ dock ] = wdg;
           layout();
 
+          wdg->setDeleteNotifier( this );
           connect( wdg, SIGNAL( modified( bool ) ),
                    SLOT( sensorDisplayModified( bool ) ) );
 
