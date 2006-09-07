@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
 
-	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
+  Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -18,170 +18,133 @@
 
 */
 
-#ifndef _SensorLogger_h
-#define _SensorLogger_h
+#ifndef SENSORLOGGER_H
+#define SENSORLOGGER_H
 
-#include <QLabel>
-#include <q3listview.h>
-#include <q3popupmenu.h>
-#include <QString>
-//Added by qt3to4:
-#include <QPixmap>
-#include <Q3PtrList>
-#include <QTimerEvent>
-#include <QResizeEvent>
+#include <QtGui/QTableView>
 
 #include <SensorDisplay.h>
 
-#include "SensorLoggerDlg.h"
-
-#define NONE -1
-
-class SensorLoggerSettings;
+class LogSensorModel;
 class QDomElement;
-
-class SLListViewItem : public Q3ListViewItem
-{
-public:
-	SLListViewItem(Q3ListView *parent = 0);
-
-	void setTextColor(const QColor& color) { textColor = color; }
-
-	void paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment) {
-		QColorGroup cgroup(cg);
-		cgroup.setColor(QPalette::Text, textColor);
-		Q3ListViewItem::paintCell(p, cgroup, column, width, alignment);
-	
-	}
-
-	void paintFocus(QPainter *, const QColorGroup, const QRect) {}
-
-private:
-	QColor textColor;
-};	
+class QResizeEvent;
+class QTimerEvent;
 
 class LogSensor : public QObject, public KSGRD::SensorClient
 {
-	Q_OBJECT
-public:
-	LogSensor(Q3ListView *parent);
-	~LogSensor(void);
+  Q_OBJECT
 
-	void answerReceived(int id, const QStringList& answer);
+  public:
+    LogSensor( QObject *parent );
+    ~LogSensor();
 
-	void setHostName(const QString& name) { hostName = name; lvi->setText(3, name); }
-	void setSensorName(const QString& name) { sensorName = name; lvi->setText(2, name); }
-	void setFileName(const QString& name)
-	{
-		fileName = name;
-		lvi->setText(4, name);
-	}
-	void setUpperLimitActive(bool value) { upperLimitActive = value; }
-	void setLowerLimitActive(bool value) { lowerLimitActive = value; }
-	void setUpperLimit(double value) { upperLimit = value; }
-	void setLowerLimit(double value) { lowerLimit = value; }
+    void answerReceived( int id, const QStringList& answer );
 
-	void setTimerInterval(int interval) {
-		timerInterval = interval;
+    void setHostName( const QString& name );
+    QString hostName() const;
 
-		if (timerID != NONE)
-		{
-			timerOff();
-			timerOn();
-		}
+    void setSensorName( const QString& name );
+    QString sensorName() const;
 
-		lvi->setText(1, QString("%1").arg(interval));
-	}
+    void setFileName( const QString& name );
+    QString fileName() const;
 
-	QString getSensorName(void) { return sensorName; }
-	QString getHostName(void) { return hostName; }
-	QString getFileName(void) { return fileName; }
-	int getTimerInterval(void) { return timerInterval; }
-	bool getUpperLimitActive(void) { return upperLimitActive; }
-	bool getLowerLimitActive(void) { return lowerLimitActive; }
-	double getUpperLimit(void) { return upperLimit; }
-	double getLowerLimit(void) { return lowerLimit; }
-	Q3ListViewItem* getListViewItem(void) { return lvi; }
+    void setUpperLimitActive( bool value );
+    bool upperLimitActive() const;
 
-public Q_SLOTS:
-	void timerOff()
-	{
-		killTimer(timerID);
-		timerID = NONE;
-	}
+    void setLowerLimitActive( bool value );
+    bool lowerLimitActive() const;
 
-	void timerOn()
-	{
-		timerID = startTimer(timerInterval * 1000);
-	}
+    void setUpperLimit( double value );
+    double upperLimit() const;
 
-	bool isLogging() { return timerID != NONE; }
+    void setLowerLimit( double value );
+    double lowerLimit() const;
 
-	void startLogging(void);
-	void stopLogging(void);
+    void setTimerInterval( int interval );
+    int timerInterval() const;
 
-protected:
-	virtual void timerEvent(QTimerEvent*);
+    bool isLogging() const;
 
-private:
-	Q3ListView* monitor;
-	SLListViewItem* lvi;
-	QPixmap pixmap_running;
-	QPixmap pixmap_waiting;
-	QString sensorName;
-	QString hostName;
-	QString fileName;
+    bool limitReached() const;
 
-	int timerInterval;
-	int timerID;
+  public Q_SLOTS:
+    void timerOff();
+    void timerOn();
 
-	bool lowerLimitActive;
-	bool upperLimitActive;
+    void startLogging();
+    void stopLogging();
 
-	double lowerLimit;
-	double upperLimit;
+  Q_SIGNALS:
+    void changed();
+
+  protected:
+    virtual void timerEvent(QTimerEvent*);
+
+  private:
+    QString mSensorName;
+    QString mHostName;
+    QString mFileName;
+
+    int mTimerInterval;
+    int mTimerID;
+
+    bool mLowerLimitActive;
+    bool mUpperLimitActive;
+
+    double mLowerLimit;
+    double mUpperLimit;
+
+    bool mLimitReached;
+};
+
+class LogSensorView : public QTableView
+{
+  Q_OBJECT
+
+  public:
+    LogSensorView( QWidget *parent = 0 );
+
+  Q_SIGNALS:
+    void contextMenuRequest( const QModelIndex &index, const QPoint &pos );
+
+  protected:
+    virtual void contextMenuEvent( QContextMenuEvent *event );
 };
 
 class SensorLogger : public KSGRD::SensorDisplay
 {
-	Q_OBJECT
-public:
-	SensorLogger(QWidget *parent, const QString& title, SharedSettings *workSheetSettings);
-	~SensorLogger(void);
+  Q_OBJECT
 
-	bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType,
-				   const QString& sensorDescr);
+  public:
+    SensorLogger( QWidget *parent, const QString& title, SharedSettings *workSheetSettings );
+    ~SensorLogger();
 
-	bool editSensor(LogSensor*);
+    bool addSensor( const QString& hostName, const QString& sensorName,
+                    const QString& sensorType, const QString& sensorDescr);
 
-	void answerReceived(int id, const QStringList& answer);
-	void resizeEvent(QResizeEvent*);
+    bool editSensor( LogSensor* );
 
-	bool restoreSettings(QDomElement& element);
-	bool saveSettings(QDomDocument& doc, QDomElement& element);
+    void answerReceived( int, const QStringList& );
+    void resizeEvent( QResizeEvent* );
 
-	void configureSettings(void);
+    bool restoreSettings( QDomElement& );
+    bool saveSettings( QDomDocument&, QDomElement& );
 
-	virtual bool hasSettingsDialog() const
-	{
-		return (true);
-	}
+    void configureSettings();
 
-public Q_SLOTS:
-	void applySettings();
-	void applyStyle();
-	void RMBClicked(Q3ListViewItem*, const QPoint&, int);
+    virtual bool hasSettingsDialog() const
+    {
+      return true;
+    }
 
-protected:
-	LogSensor* getLogSensor(Q3ListViewItem*);
+  public Q_SLOTS:
+    void applyStyle();
+    void contextMenuRequest( const QModelIndex &index, const QPoint &pos );
 
-private:
-	Q3ListView* monitor;
-
-	Q3PtrList<LogSensor> logSensors;
-
-	SensorLoggerDlg *sld;
-	SensorLoggerSettings *sls;
+  private:
+    LogSensorModel *mModel;
+    LogSensorView *mView;
 };
 
-#endif // _SensorLogger_h
+#endif
