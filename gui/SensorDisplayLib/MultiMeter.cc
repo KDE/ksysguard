@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
-	Copyright (c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org>
-    
+
+  Copyright (c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org>
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -22,209 +22,197 @@
 #include <stdlib.h>
 
 #include <qdom.h>
-#include <qlcdnumber.h>
-#include <QToolTip>
+#include <QtGui/QLCDNumber>
+#include <QtGui/QResizeEvent>
+#include <QtGui/QToolTip>
 
 #include <kdebug.h>
 
 #include <ksgrd/SensorManager.h>
 #include <ksgrd/StyleEngine.h>
 
-#include "MultiMeter.moc"
+#include "MultiMeter.h"
 #include "MultiMeterSettings.h"
 
 MultiMeter::MultiMeter(QWidget* parent, const QString& title, SharedSettings *workSheetSettings)
-	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
+  : KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
-	setShowUnit( true );
-	lowerLimit = upperLimit = 0;
-	lowerLimitActive = upperLimitActive = false;
+  setShowUnit( true );
+  mLowerLimit = mUpperLimit = 0;
+  mLowerLimitActive = mUpperLimitActive = false;
 
-	normalDigitColor = KSGRD::Style->firstForegroundColor();
-	alarmDigitColor = KSGRD::Style->alarmColor();
-	lcd = new QLCDNumber(this);
-	Q_CHECK_PTR(lcd);
-	lcd->setSegmentStyle(QLCDNumber::Filled);
-	setDigitColor(KSGRD::Style->backgroundColor());
-	lcd->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+  mNormalDigitColor = KSGRD::Style->firstForegroundColor();
+  mAlarmDigitColor = KSGRD::Style->alarmColor();
 
-	setBackgroundColor(KSGRD::Style->backgroundColor());
-	/* All RMB clicks to the lcd widget will be handled by 
-	 * SensorDisplay::eventFilter. */
-	lcd->installEventFilter(this);
+  mLcd = new QLCDNumber( this );
+  mLcd->setSegmentStyle( QLCDNumber::Filled );
+  setDigitColor( KSGRD::Style->firstForegroundColor() );
+  mLcd->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
-	setPlotterWidget(lcd);
+  setBackgroundColor( KSGRD::Style->backgroundColor() );
 
-	setMinimumSize(16, 16);
+  /* All RMB clicks to the mLcd widget will be handled by 
+   * SensorDisplay::eventFilter. */
+  mLcd->installEventFilter( this );
+
+  setPlotterWidget( mLcd );
+
+  setMinimumSize( 16, 16 );
 }
 
-bool
-MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
-					const QString& sensorType, const QString& title)
+bool MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
+          const QString& sensorType, const QString& title)
 {
-	if (sensorType != "integer" && sensorType != "float")
-		return (false);
+  if (sensorType != "integer" && sensorType != "float")
+    return (false);
 
-	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
+  registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 
-	/* To differentiate between answers from value requests and info
-	 * requests we use 100 for info requests. */
-	sendRequest(hostName, sensorName + '?', 100);
+  /* To differentiate between answers from value requests and info
+   * requests we use 100 for info requests. */
+  sendRequest(hostName, sensorName + '?', 100);
 
-	lcd->setToolTip( QString("%1:%2").arg(hostName).arg(sensorName));
+  mLcd->setToolTip( QString("%1:%2").arg(hostName).arg(sensorName));
 
-	return (true);
+  return true;
 }
 
-void
-MultiMeter::answerReceived(int id, const QStringList& answerlist)
+void MultiMeter::answerReceived(int id, const QStringList& answerlist)
 {
-	/* We received something, so the sensor is probably ok. */
-	sensorError(id, false);
-	QString answer;
-	if(!answerlist.isEmpty()) answer = answerlist[0];
+  /* We received something, so the sensor is probably ok. */
+  sensorError(id, false);
+  QString answer;
+  if(!answerlist.isEmpty()) answer = answerlist[0];
 
-	if (id == 100)
-	{
-		KSGRD::SensorIntegerInfo info(answer);
-		setUnit(KSGRD::SensorMgr->translateUnit(info.unit()));
-	}
-	else
-	{
-		double val = answer.toDouble();
-		int digits = (int) log10(val) + 1;
+  if (id == 100)
+  {
+    KSGRD::SensorIntegerInfo info(answer);
+    setUnit(KSGRD::SensorMgr->translateUnit(info.unit()));
+  }
+  else
+  {
+    double val = answer.toDouble();
+    int digits = (int) log10(val) + 1;
 
-		if (mSharedSettings->isApplet)
-			lcd->setNumDigits(qMin(4,digits));
-		else
-			lcd->setNumDigits(qMin(5,digits));
+    if (mSharedSettings->isApplet)
+      mLcd->setNumDigits(qMin(4,digits));
+    else
+      mLcd->setNumDigits(qMin(5,digits));
 
-		lcd->display(val);
-		if (lowerLimitActive && val < lowerLimit)
-		{
-			setDigitColor(alarmDigitColor);	
-		}
-		else if (upperLimitActive && val > upperLimit)
-		{
-			setDigitColor(alarmDigitColor);
-		}
-		else
-			setDigitColor(normalDigitColor);
-	}
+    mLcd->display(val);
+    if (mLowerLimitActive && val < mLowerLimit)
+    {
+      setDigitColor(mAlarmDigitColor);  
+    }
+    else if (mUpperLimitActive && val > mUpperLimit)
+    {
+      setDigitColor(mAlarmDigitColor);
+    }
+    else
+      setDigitColor(mNormalDigitColor);
+  }
 }
 
-void
-MultiMeter::resizeEvent(QResizeEvent*)
+void MultiMeter::resizeEvent( QResizeEvent *event )
 {
-	lcd->setGeometry(0, 0, width() - 1, height() - 1);
+  mLcd->setGeometry(0, 0, width() - 1, height() - 1);
+
+  QWidget::resizeEvent( event );
 }
 
-bool
-MultiMeter::restoreSettings(QDomElement& element)
+bool MultiMeter::restoreSettings(QDomElement& element)
 {
-	lowerLimitActive = element.attribute("lowerLimitActive").toInt();
-	lowerLimit = element.attribute("lowerLimit").toLong();
-	upperLimitActive = element.attribute("upperLimitActive").toInt();
-	upperLimit = element.attribute("upperLimit").toLong();
+  mLowerLimitActive = element.attribute("lowerLimitActive").toInt();
+  mLowerLimit = element.attribute("lowerLimit").toLong();
+  mUpperLimitActive = element.attribute("upperLimitActive").toInt();
+  mUpperLimit = element.attribute("upperLimit").toLong();
 
-	normalDigitColor = restoreColor(element, "normalDigitColor",
-						KSGRD::Style->firstForegroundColor());
-	alarmDigitColor = restoreColor(element, "alarmDigitColor",
-						KSGRD::Style->alarmColor());
-	setBackgroundColor(restoreColor(element, "backgroundColor",
-						KSGRD::Style->backgroundColor()));
+  mNormalDigitColor = restoreColor(element, "normalDigitColor",
+            KSGRD::Style->firstForegroundColor());
+  mAlarmDigitColor = restoreColor(element, "mAlarmDigitColor",
+            KSGRD::Style->alarmColor());
+  setBackgroundColor(restoreColor(element, "backgroundColor",
+            KSGRD::Style->backgroundColor()));
 
-	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "integer" : element.attribute("sensorType")), "");
+  addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "integer" : element.attribute("sensorType")), "");
 
-	SensorDisplay::restoreSettings(element);
+  SensorDisplay::restoreSettings(element);
 
-
-	return (true);
+  return true;
 }
 
-bool
-MultiMeter::saveSettings(QDomDocument& doc, QDomElement& element)
+bool MultiMeter::saveSettings(QDomDocument& doc, QDomElement& element)
 {
-	element.setAttribute("hostName", sensors().at(0)->hostName());
-	element.setAttribute("sensorName", sensors().at(0)->name());
-	element.setAttribute("sensorType", sensors().at(0)->type());
-	element.setAttribute("showUnit", showUnit());
-	element.setAttribute("lowerLimitActive", (int) lowerLimitActive);
-	element.setAttribute("lowerLimit", (int) lowerLimit);
-	element.setAttribute("upperLimitActive", (int) upperLimitActive);
-	element.setAttribute("upperLimit", (int) upperLimit);
+  element.setAttribute("hostName", sensors().at(0)->hostName());
+  element.setAttribute("sensorName", sensors().at(0)->name());
+  element.setAttribute("sensorType", sensors().at(0)->type());
+  element.setAttribute("showUnit", showUnit());
+  element.setAttribute("lowerLimitActive", (int) mLowerLimitActive);
+  element.setAttribute("lowerLimit", (int) mLowerLimit);
+  element.setAttribute("upperLimitActive", (int) mUpperLimitActive);
+  element.setAttribute("upperLimit", (int) mUpperLimit);
 
-	saveColor(element, "normalDigitColor", normalDigitColor);
-	saveColor(element, "alarmDigitColor", alarmDigitColor);
-	saveColor(element, "backgroundColor", lcd->palette().color(lcd->backgroundRole()));
+  saveColor(element, "normalDigitColor", mNormalDigitColor);
+  saveColor(element, "mAlarmDigitColor", mAlarmDigitColor);
+  saveColor(element, "backgroundColor", mBackgroundColor);
 
-	SensorDisplay::saveSettings(doc, element);
+  SensorDisplay::saveSettings(doc, element);
 
-	return (true);
+  return true;
 }
 
-void
-MultiMeter::configureSettings()
+void MultiMeter::configureSettings()
 {
-	mms = new MultiMeterSettings(this, "MultiMeterSettings");
-	Q_CHECK_PTR(mms);
-	mms->setTitle(title());
-	mms->setShowUnit(showUnit());
-	mms->setLowerLimitActive(lowerLimitActive);
-	mms->setLowerLimit(lowerLimit);
-	mms->setUpperLimitActive(upperLimitActive);
-	mms->setUpperLimit(upperLimit);
-	mms->setNormalDigitColor(normalDigitColor);
-	mms->setAlarmDigitColor(alarmDigitColor);
-	mms->setMeterBackgroundColor(lcd->palette().color(lcd->backgroundRole()));
+  MultiMeterSettings dlg( this );
 
-	connect(mms, SIGNAL(applyClicked()), SLOT(applySettings()));
+  dlg.setTitle(title());
+  dlg.setShowUnit(showUnit());
+  dlg.setLowerLimitActive(mLowerLimitActive);
+  dlg.setLowerLimit(mLowerLimit);
+  dlg.setUpperLimitActive(mUpperLimitActive);
+  dlg.setUpperLimit(mUpperLimit);
+  dlg.setNormalDigitColor(mNormalDigitColor);
+  dlg.setAlarmDigitColor(mAlarmDigitColor);
+  dlg.setMeterBackgroundColor(mBackgroundColor);
 
-	if (mms->exec())
-		applySettings();
+  if ( dlg.exec() ) {
+    setShowUnit( dlg.showUnit() );
+    setTitle( dlg.title() );
+    mLowerLimitActive = dlg.lowerLimitActive();
+    mLowerLimit = dlg.lowerLimit();
+    mUpperLimitActive = dlg.upperLimitActive();
+    mUpperLimit = dlg.upperLimit();
 
-	delete mms;
-	mms = 0;
+    mNormalDigitColor = dlg.normalDigitColor();
+    mAlarmDigitColor = dlg.alarmDigitColor();
+    setBackgroundColor( dlg.meterBackgroundColor() );
+
+    repaint();
+  }
 }
 
-void
-MultiMeter::applySettings()
+void MultiMeter::applyStyle()
 {
-	setShowUnit( mms->showUnit() );
-	setTitle(mms->title());
-	lowerLimitActive = mms->lowerLimitActive();
-	lowerLimit = mms->lowerLimit();
-	upperLimitActive = mms->upperLimitActive();
-	upperLimit = mms->upperLimit();
+  mNormalDigitColor = KSGRD::Style->firstForegroundColor();
+  setBackgroundColor( KSGRD::Style->backgroundColor() );
 
-	normalDigitColor = mms->normalDigitColor();
-	alarmDigitColor = mms->alarmDigitColor();
-	setBackgroundColor(mms->meterBackgroundColor());
-
-	repaint();
+  repaint();
 }
 
-void
-MultiMeter::applyStyle()
+void MultiMeter::setDigitColor( const QColor& color )
 {
-	normalDigitColor = KSGRD::Style->firstForegroundColor();
-	setBackgroundColor(KSGRD::Style->backgroundColor());
-	repaint();
+  QPalette palette = mLcd->palette();
+  palette.setColor( QPalette::WindowText, color );
+  mLcd->setPalette( palette );
 }
 
-void
-MultiMeter::setDigitColor(const QColor& col)
+void MultiMeter::setBackgroundColor( const QColor& color )
 {
-	QPalette p = lcd->palette();
-	p.setColor(QPalette::Foreground, col);
-	lcd->setPalette(p);
+  mBackgroundColor = color;
+
+  QPalette pal = mLcd->palette();
+  pal.setColor( mLcd->backgroundRole(), mBackgroundColor );
+  mLcd->setPalette( pal );
 }
 
-void
-MultiMeter::setBackgroundColor(const QColor& col)
-{
-  QPalette p = lcd->palette();
-  p.setBrush(QPalette::Background, QBrush( col ) );
-  p.setColor(QPalette::Background, col );
-  lcd->setPalette(p);
-}
+#include "MultiMeter.moc"

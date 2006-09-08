@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
    
-	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+  Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -22,56 +22,52 @@
 #define _MultiMeter_h_
 
 #include <SensorDisplay.h>
-//Added by qt3to4:
-#include <QLabel>
-#include <QResizeEvent>
 
 class QLCDNumber;
 class QLabel;
-class MultiMeterSettings;
+class QResizeEvent;
 
 class MultiMeter : public KSGRD::SensorDisplay
 {
-	Q_OBJECT
+  Q_OBJECT
 
-public:
-	MultiMeter(QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
-	virtual ~MultiMeter()
-	{
-	}
+  public:
+    MultiMeter(QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
+    virtual ~MultiMeter()
+    {
+    }
 
-	bool addSensor(const QString& hostName, const QString& sensorName,
-				const QString& sensorType, const QString& sensorDescr);
-	void answerReceived(int id, const QStringList& answerlist);
-	void resizeEvent(QResizeEvent*);
+    bool addSensor(const QString& hostName, const QString& sensorName,
+                   const QString& sensorType, const QString& sensorDescr);
+    void answerReceived(int id, const QStringList& answerlist);
+    void resizeEvent(QResizeEvent*);
 
-	bool restoreSettings(QDomElement& element);
-	bool saveSettings(QDomDocument& doc, QDomElement& element);
+    bool restoreSettings(QDomElement& element);
+    bool saveSettings(QDomDocument& doc, QDomElement& element);
 
-	virtual bool hasSettingsDialog() const
-	{
-		return (true);
-	}
+    virtual bool hasSettingsDialog() const
+    {
+      return true;
+    }
 
-	void configureSettings();
+    void configureSettings();
 
-public Q_SLOTS:
-	void applySettings();
-	void applyStyle();
+  public Q_SLOTS:
+    void applyStyle();
 
-private:
-	void setDigitColor(const QColor& col);
-	void setBackgroundColor(const QColor& col);
+  private:
+    void setDigitColor(const QColor&);
+    void setBackgroundColor(const QColor&);
 
-	QLCDNumber* lcd;
-	QColor normalDigitColor;
-	QColor alarmDigitColor;
+    QLCDNumber* mLcd;
+    QColor mNormalDigitColor;
+    QColor mAlarmDigitColor;
+    QColor mBackgroundColor;
 
-	MultiMeterSettings* mms;
-	bool lowerLimitActive;
-	double lowerLimit;
-	bool upperLimitActive;
-	double upperLimit;
+    bool mLowerLimitActive;
+    double mLowerLimit;
+    bool mUpperLimitActive;
+    double mUpperLimit;
 };
 
 #endif
