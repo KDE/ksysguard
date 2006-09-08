@@ -20,18 +20,14 @@
 
 #include <kacceleratormanager.h>
 #include <klineedit.h>
-#include <knuminput.h>
 #include <klocale.h>
+#include <knuminput.h>
 
-#include <q3groupbox.h>
-#include <QLabel>
-#include <QSpinBox>
-#include <QLayout>
-#include <QToolTip>
-
-//Added by qt3to4:
-#include <QVBoxLayout>
-#include <QGridLayout>
+#include <QtGui/QGroupBox>
+#include <QtGui/QLabel>
+#include <QtGui/QLayout>
+#include <QtGui/QSpinBox>
+#include <QtGui/QToolTip>
 
 #include "WorkSheetSettings.h"
 
@@ -41,7 +37,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
   setObjectName( "WorkSheetSettings" );
   setModal( true );
   setCaption( i18n( "Worksheet Properties" ) );
-  setButtons( Ok|Cancel );
+  setButtons( Ok | Cancel );
   showButtonSeparator( true );
 
   QWidget *page = new QWidget( this );
@@ -51,12 +47,10 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
   topLayout->setMargin( 0 );
   topLayout->setSpacing( spacingHint() );
 
-  Q3GroupBox *group = new Q3GroupBox( 0, Qt::Vertical, i18n( "Title" ), page );
-  group->layout()->setMargin( marginHint() );
-  group->layout()->setSpacing( spacingHint() );
+  QGroupBox *group = new QGroupBox( i18n( "Title" ), page );
 
-  QGridLayout *groupLayout = new QGridLayout(  );
-  group->layout()->addItem( groupLayout );
+  QGridLayout *groupLayout = new QGridLayout;
+  group->setLayout( groupLayout );
   groupLayout->setAlignment( Qt::AlignTop );
 
   mSheetTitle = new KLineEdit( group );
@@ -64,36 +58,34 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
 
   topLayout->addWidget( group );
 
-  group = new Q3GroupBox( 0, Qt::Vertical, i18n( "Properties" ), page );
-  group->layout()->setMargin( marginHint() );
-  group->layout()->setSpacing( spacingHint() );
+  group = new QGroupBox( i18n( "Properties" ), page );
 
-  groupLayout = new QGridLayout();
-  group->layout()->addItem( groupLayout );
+  groupLayout = new QGridLayout;
+  group->setLayout( groupLayout );
   groupLayout->setAlignment( Qt::AlignTop );
 
   int row_num = -1;
   QLabel *label;
-  if(!locked) {
-	  label = new QLabel( i18n( "Rows:" ), group );
-	  groupLayout->addWidget( label, ++row_num, 0 );
+  if ( !locked ) {
+    label = new QLabel( i18n( "Rows:" ), group );
+    groupLayout->addWidget( label, ++row_num, 0 );
 
-	  mRows = new KIntNumInput( 1, group );
-	  mRows->setMaximum( 42 );
-	  mRows->setMinimum( 1 );
-	  groupLayout->addWidget( mRows, row_num, 1 );
-	  label->setBuddy( mRows );
+    mRows = new KIntNumInput( 1, group );
+    mRows->setMaximum( 42 );
+    mRows->setMinimum( 1 );
+    groupLayout->addWidget( mRows, row_num, 1 );
+    label->setBuddy( mRows );
 
-	  label = new QLabel( i18n( "Columns:" ), group );
-	  groupLayout->addWidget( label, ++row_num, 0 );
+    label = new QLabel( i18n( "Columns:" ), group );
+    groupLayout->addWidget( label, ++row_num, 0 );
 
-	  mColumns = new KIntNumInput( row_num, group );
-	  mColumns->setMaximum( 42 );
-	  mColumns->setMinimum( 1 );
-	  groupLayout->addWidget( mColumns, 1, 1 );
-	  label->setBuddy( mColumns );
-	  mRows->setWhatsThis( i18n( "Enter the number of rows the sheet should have." ) );
-	  mColumns->setWhatsThis( i18n( "Enter the number of columns the sheet should have." ) );
+    mColumns = new KIntNumInput( row_num, group );
+    mColumns->setMaximum( 42 );
+    mColumns->setMinimum( 1 );
+    groupLayout->addWidget( mColumns, 1, 1 );
+    label->setBuddy( mColumns );
+    mRows->setWhatsThis( i18n( "Enter the number of rows the sheet should have." ) );
+    mColumns->setWhatsThis( i18n( "Enter the number of columns the sheet should have." ) );
   }
   label = new QLabel( i18n( "Update interval:" ), group );
   groupLayout->addWidget( label, ++row_num, 0 );

@@ -22,19 +22,16 @@
 
 */
 
-#include <QCursor>
-#include <qdom.h>
-#include <q3dragobject.h>
-#include <QFile>
-#include <QPushButton>
-#include <QSpinBox>
-#include <QToolTip>
-#include <QTextStream>
-#include <QEvent>
-#include <QDropEvent>
-#include <QFrame>
-#include <QResizeEvent>
-#include <QDragEnterEvent>
+#include <QtCore/QEvent>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
+#include <QtGui/QCursor>
+#include <QtGui/QDragEnterEvent>
+#include <QtGui/QDropEvent>
+#include <QtGui/QFrame>
+#include <QtGui/QResizeEvent>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -179,69 +176,71 @@ int KSysGuardApplet::findDock( const QPoint& point )
     return ( point.y() / (int) ( width() * mSizeRatio + 0.5 ) );
 }
 
-void KSysGuardApplet::dragEnterEvent( QDragEnterEvent *e )
+void KSysGuardApplet::dragEnterEvent( QDragEnterEvent *event )
 {
-  e->setAccepted( Q3TextDrag::canDecode( e ) );
+  if ( event->mimeData()->hasText() )
+    event->acceptProposedAction();
 }
 
-void KSysGuardApplet::dropEvent( QDropEvent *e )
+void KSysGuardApplet::dropEvent( QDropEvent *event )
 {
-  QString dragObject;
+  if ( !event->mimeData()->hasText() )
+    return;
 
-  if ( Q3TextDrag::decode( e, dragObject ) ) {
-    // The host name, sensor name and type are separated by a ' '.
-    QStringList parts = dragObject.split( ' ');
+  const QString dragObject = event->mimeData()->text();
 
-    QString hostName = parts[ 0 ];
-    QString sensorName = parts[ 1 ];
-    QString sensorType = parts[ 2 ];
-    QString sensorDescr = parts[ 3 ];
+  // The host name, sensor name and type are separated by a ' '.
+  QStringList parts = dragObject.split( ' ');
 
-    if ( hostName.isEmpty() || sensorName.isEmpty() || sensorType.isEmpty() )
-      return;
+  QString hostName = parts[ 0 ];
+  QString sensorName = parts[ 1 ];
+  QString sensorType = parts[ 2 ];
+  QString sensorDescr = parts[ 3 ];
 
-    int dock = findDock( e->pos() );
-    if ( mDockList[ dock ]->metaObject()->className() == "QFrame" ) {
-      if ( sensorType == "integer" || sensorType == "float" ) {
-        KMenu popup;
-        KSGRD::SensorDisplay *wdg = 0;
+  if ( hostName.isEmpty() || sensorName.isEmpty() || sensorType.isEmpty() )
+    return;
 
-        popup.addTitle( i18n( "Select Display Type" ) );
-        QAction *a1 = popup.addAction( i18n( "&Signal Plotter" ) );
-        QAction *a2 = popup.addAction( i18n( "&Multimeter" ) );
-        QAction *a3 = popup.addAction( i18n( "&Dancing Bars" ) );
-        QAction *execed = popup.exec( QCursor::pos() );
-        if (execed == a1)
-            wdg = new FancyPlotter( this, sensorDescr, &mSharedSettings );
-        else if (execed == a2)
-            wdg = new MultiMeter( this, sensorDescr, &mSharedSettings );
-        else if (execed == a3)
-            wdg = new DancingBars( this, sensorDescr, &mSharedSettings );
+  int dock = findDock( event->pos() );
+  if ( mDockList[ dock ]->metaObject()->className() == "QFrame" ) {
+    if ( sensorType == "integer" || sensorType == "float" ) {
+      KMenu popup;
+      KSGRD::SensorDisplay *wdg = 0;
 
-        if ( wdg ) {
-          delete mDockList[ dock ];
-          mDockList[ dock ] = wdg;
-          layout();
+      popup.addTitle( i18n( "Select Display Type" ) );
+      QAction *a1 = popup.addAction( i18n( "&Signal Plotter" ) );
+      QAction *a2 = popup.addAction( i18n( "&Multimeter" ) );
+      QAction *a3 = popup.addAction( i18n( "&Dancing Bars" ) );
+      QAction *execed = popup.exec( QCursor::pos() );
+      if (execed == a1)
+          wdg = new FancyPlotter( this, sensorDescr, &mSharedSettings );
+      else if (execed == a2)
+          wdg = new MultiMeter( this, sensorDescr, &mSharedSettings );
+      else if (execed == a3)
+          wdg = new DancingBars( this, sensorDescr, &mSharedSettings );
 
-          wdg->setDeleteNotifier( this );
-          connect( wdg, SIGNAL( modified( bool ) ),
-                   SLOT( sensorDisplayModified( bool ) ) );
-
-          mDockList[ dock ]->show();
-        }
-      } else {
-        KMessageBox::sorry( this,
-          i18n( "The KSysGuard applet does not support displaying of "
-                "this type of sensor. Please choose another sensor." ) );
-
+      if ( wdg ) {
+        delete mDockList[ dock ];
+        mDockList[ dock ] = wdg;
         layout();
-      }
-    }
 
-    if ( mDockList[ dock ]->metaObject()->className() != "QFrame" )
-      ((KSGRD::SensorDisplay*)mDockList[ dock ])->
-                  addSensor( hostName, sensorName, sensorType, sensorDescr );
+        wdg->setDeleteNotifier( this );
+        connect( wdg, SIGNAL( modified( bool ) ),
+                 SLOT( sensorDisplayModified( bool ) ) );
+
+        mDockList[ dock ]->show();
+      }
+    } else {
+      KMessageBox::sorry( this,
+        i18n( "The KSysGuard applet does not support displaying of "
+              "this type of sensor. Please choose another sensor." ) );
+
+      layout();
+    }
   }
+
+  if ( mDockList[ dock ]->metaObject()->className() != "QFrame" )
+    ((KSGRD::SensorDisplay*)mDockList[ dock ])->
+                addSensor( hostName, sensorName, sensorType, sensorDescr );
 
   save();
 }

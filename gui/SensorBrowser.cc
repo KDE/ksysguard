@@ -21,12 +21,9 @@
 
 */
 
-#include <q3dragobject.h>
-#include <QToolTip>
-
-//Added by qt3to4:
-#include <QPixmap>
-#include <QMouseEvent>
+#include <QtGui/QDrag>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QPixmap>
 
 #include <kdebug.h>
 #include <kiconloader.h>
@@ -261,8 +258,12 @@ void SensorBrowser::viewportMouseMoveEvent( QMouseEvent *e )
               (*it)->sensorType( item ) + ' ' +
               (*it)->sensorDescription( item );
 
-  Q3DragObject* dragObject = new Q3TextDrag( mDragText, this );
-  dragObject->dragCopy();
+  QDrag *drag = new QDrag( this );
+  QMimeData *mimeData = new QMimeData;
+
+  mimeData->setText( mDragText );
+  drag->setMimeData( mimeData );
+  drag->start();
 }
 
 QStringList SensorBrowser::listHosts()

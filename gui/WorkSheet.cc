@@ -396,45 +396,46 @@ void WorkSheet::applyStyle()
       mDisplayList[ r ][ c ]->applyStyle();
 }
 
-void WorkSheet::dragEnterEvent( QDragEnterEvent *e )
+void WorkSheet::dragEnterEvent( QDragEnterEvent *event )
 {
-  e->setAccepted( Q3TextDrag::canDecode( e ) );
+  if ( event->mimeData()->hasText() )
+    event->acceptProposedAction();
 }
 
-void WorkSheet::dropEvent( QDropEvent *e )
+void WorkSheet::dropEvent( QDropEvent *event )
 {
-  QString dragObject;
+  if ( !event->mimeData()->hasText() )
+    return;
 
-  if ( Q3TextDrag::decode( e, dragObject) ) {
-    // The host name, sensor name and type are separated by a ' '.
-    QStringList parts = dragObject.split( ' ');
+  const QString dragObject = event->mimeData()->text();
 
-    QString hostName = parts[ 0 ];
-    QString sensorName = parts[ 1 ];
-    QString sensorType = parts[ 2 ];
-    QString sensorDescr = parts[ 3 ];
+  // The host name, sensor name and type are separated by a ' '.
+  QStringList parts = dragObject.split( ' ');
 
-    if ( hostName.isEmpty() || sensorName.isEmpty() || sensorType.isEmpty() ) {
-      return;
-    }
+  QString hostName = parts[ 0 ];
+  QString sensorName = parts[ 1 ];
+  QString sensorType = parts[ 2 ];
+  QString sensorDescr = parts[ 3 ];
 
-    /* Find the sensor display that is supposed to get the drop
-     * event and replace or add sensor. */
-    for ( uint r = 0; r < mRows; ++r ) {
-      for ( uint c = 0; c < mColumns; ++c ) {
-        const QSize displaySize = mDisplayList[ r ][ c ]->size();
+  if ( hostName.isEmpty() || sensorName.isEmpty() || sensorType.isEmpty() )
+    return;
 
-        const QPoint displayPoint( displaySize.width(), displaySize.height() );
+  /* Find the sensor display that is supposed to get the drop
+   * event and replace or add sensor. */
+  for ( uint r = 0; r < mRows; ++r ) {
+    for ( uint c = 0; c < mColumns; ++c ) {
+      const QSize displaySize = mDisplayList[ r ][ c ]->size();
 
-        const QRect widgetRect = QRect( mDisplayList[ r ][ c ]->mapToGlobal( QPoint( 0, 0 ) ),
-                                        mDisplayList[ r ][ c ]->mapToGlobal( displayPoint ) );
+      const QPoint displayPoint( displaySize.width(), displaySize.height() );
 
-        const QPoint globalPos = mapToGlobal( e->pos() );
+      const QRect widgetRect = QRect( mDisplayList[ r ][ c ]->mapToGlobal( QPoint( 0, 0 ) ),
+                                      mDisplayList[ r ][ c ]->mapToGlobal( displayPoint ) );
 
-        if ( widgetRect.contains( globalPos ) ) {
-          addDisplay( hostName, sensorName, sensorType, sensorDescr, r, c );
-          return;
-        }
+      const QPoint globalPos = mapToGlobal( event->pos() );
+
+      if ( widgetRect.contains( globalPos ) ) {
+        addDisplay( hostName, sensorName, sensorType, sensorDescr, r, c );
+        return;
       }
     }
   }
