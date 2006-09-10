@@ -126,7 +126,7 @@ int updateCpuInfo( void )
     if ( CpuInfoOK != 0 )
       print_error( "Cannot open file \'/proc/cpuinfo\'!\n"
                    "The kernel needs to be compiled with support\n"
-                   "for /proc filesystem enabled!\n" );
+                   "for /proc file system enabled!\n" );
     CpuInfoOK = -1;
     return -1;
   }

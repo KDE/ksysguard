@@ -109,7 +109,7 @@ updateMemory(void)
     }
   }
  
-  /* can't find NetBSD filesystem buffer info */
+  /* can't find NetBSD file system buffer info */
   Buffers = -1;
  
   /* NetBSD doesn't know about vm.stats */

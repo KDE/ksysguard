@@ -73,7 +73,7 @@ int updateI8k( void )
   if ( ( fd = open( "/proc/i8k", O_RDONLY ) ) < 0 ) {
     print_error( "Cannot open file \'/proc/i8k\'!\n"
                  "The kernel needs to be compiled with support\n"
-                 "for /proc filesystem enabled!\n" );
+                 "for /proc file system enabled!\n" );
     return -1;
   }
 

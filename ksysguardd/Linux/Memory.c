@@ -135,7 +135,7 @@ int updateMemory( void )
   if ( ( fd = open( "/proc/meminfo", O_RDONLY ) ) < 0 ) {
     print_error( "Cannot open \'/proc/meminfo\'!\n"
                  "The kernel needs to be compiled with support\n"
-                 "for /proc filesystem enabled!\n" );
+                 "for /proc file system enabled!\n" );
     return -1;
   }
 

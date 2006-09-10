@@ -368,11 +368,11 @@ int updateProcessList( void )
   DIR* dir;
   struct dirent* entry;
 
-  /* read in current process list via the /proc filesystem entry */
+  /* read in current process list via the /proc file system entry */
   if ( ( dir = opendir( "/proc" ) ) == NULL ) {
     print_error( "Cannot open directory \'/proc\'!\n"
                  "The kernel needs to be compiled with support\n"
-                 "for /proc filesystem enabled!\n" );
+                 "for /proc file system enabled!\n" );
     return 0;
   }
 

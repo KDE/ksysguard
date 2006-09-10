@@ -101,7 +101,7 @@ void initDiskStat(struct SensorModul* sm)
 void checkDiskStat(void)
 {
 	if (numMntPnt() != level_ctnr(DiskStatList)) {
-		/* a filesystem was mounted or unmounted
+		/* a file system was mounted or unmounted
 		   so we do a reset */
 		exitDiskStat();
 		initDiskStat(DiskStatSM);
@@ -136,7 +136,7 @@ int updateDiskStat(void)
 	DiskInfo *disk_info;
 
 	/* let's hope there is no difference between the DiskStatList and
-	   the number of mounted filesystems */
+	   the number of mounted file systems */
 	empty_ctnr(DiskStatList);
 
 	mntcount = getmntinfo(&fs_info, MNT_WAIT);

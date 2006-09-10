@@ -293,7 +293,7 @@ updateNetStatTcpUdpRaw(const char *cmd)
 	if ((netstat = fopen(buffer, "r")) == NULL) {
 		print_error("Cannot open \'%s\'!\n"
 		   "The kernel needs to be compiled with support\n"
-		   "for /proc filesystem enabled!\n", buffer);
+		   "for /proc file system enabled!\n", buffer);
 		return -1;
 	}
 
@@ -373,7 +373,7 @@ updateNetStatUnix(void)
 	if ((file = fopen("/proc/net/unix", "r")) == NULL) {
 		print_error("Cannot open \'/proc/net/unix\'!\n"
 		   "The kernel needs to be compiled with support\n"
-		   "for /proc filesystem enabled!\n");
+		   "for /proc file system enabled!\n");
 		return -1;
 	}
 

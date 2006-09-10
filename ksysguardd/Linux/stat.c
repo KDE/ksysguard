@@ -613,7 +613,7 @@ int updateStat( void ) {
 	if ( ( fd = open( "/proc/stat", O_RDONLY ) ) < 0 ) {
 		print_error( "Cannot open file \'/proc/stat\'!\n"
 				"The kernel needs to be compiled with support\n"
-				"for /proc filesystem enabled!\n" );
+				"for /proc file system enabled!\n" );
 
 		return -1;
 	}
