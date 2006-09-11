@@ -69,9 +69,8 @@ class SensorBrowser : public K3ListView, public KSGRD::SensorClient
     KIconLoader* mIconLoader;
     KSGRD::SensorManager* mSensorManager;
 
-    Q3PtrList<HostInfo> mHostInfoList;
+    QMap<int, HostInfo*> mHostInfoMap;
     QString mDragText;
-
 };
 
 /**
@@ -80,9 +79,9 @@ class SensorBrowser : public K3ListView, public KSGRD::SensorClient
 class SensorInfo
 {
   public:
-    SensorInfo( Q3ListViewItem *lvi, const QString &name, const QString &desc,
-                const QString &type );
-    ~SensorInfo() {}
+    SensorInfo( Q3ListViewItem *lvi, const QString &name,
+                const QString &description, const QString &type );
+    ~SensorInfo();
 
     /**
       Returns a pointer to the list view item of the sensor.
@@ -92,17 +91,17 @@ class SensorInfo
     /**
       Returns the name of the sensor.
      */
-    const QString& name() const;
+    QString name() const;
 
     /**
       Returns the description of the sensor.
      */
-    const QString& description() const;
+    QString description() const;
 
     /**
       Returns the type of the sensor.
      */
-    const QString& type() const;
+    QString type() const;
 
   private:
     Q3ListViewItem* mLvi;
@@ -116,7 +115,7 @@ class HostInfo
   public:
     HostInfo( int id, const KSGRD::SensorAgent *agent, const QString &name,
               Q3ListViewItem *lvi );
-    ~HostInfo() { }
+    ~HostInfo();
 
     /**
       Returns the unique id of the host.
@@ -131,7 +130,7 @@ class HostInfo
     /**
       Returns the name of the host.
      */
-    const QString& hostName() const;
+    QString hostName() const;
 
     /**
       Returns the a pointer to the list view item of the host.
@@ -141,7 +140,7 @@ class HostInfo
     /**
       Returns the sensor name of a special list view item.
      */
-    const QString& sensorName( const Q3ListViewItem *lvi ) const;
+    QString sensorName( const Q3ListViewItem *lvi ) const;
 
     /**
       Returns all sensor names of the host.
@@ -151,16 +150,16 @@ class HostInfo
     /**
       Returns the type of a special list view item.
      */
-    const QString& sensorType( const Q3ListViewItem *lvi ) const;
+    QString sensorType( const Q3ListViewItem *lvi ) const;
 
     /**
       Returns the description of a special list view item.
      */
-    const QString& sensorDescription( const Q3ListViewItem *lvi ) const;
+    QString sensorDescription( const Q3ListViewItem *lvi ) const;
 
     /**
       Adds a new Sensor to the host.
-      
+
       @param lvi  The list view item.
       @param name The sensor name.
       @param desc A description.
@@ -179,16 +178,18 @@ class HostInfo
       Returns whether the sensor with @ref lvi
       is registered at the host.
      */
-    bool isRegistered( Q3ListViewItem *lvi ) const;
+    bool isRegistered( const Q3ListViewItem *lvi ) const;
 
   private:
+    SensorInfo* findInfo( const Q3ListViewItem *item ) const;
+
     int mId;
 
     const KSGRD::SensorAgent* mSensorAgent;
     const QString mHostName;
     Q3ListViewItem* mLvi;
 
-    Q3PtrList<SensorInfo> mSensorList;
+    QList<SensorInfo*> mSensorList;
 };
 
 #endif
