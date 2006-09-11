@@ -173,16 +173,6 @@ QStringList TopLevel::listHosts()
   return mSensorBrowser->listHosts();
 }
 
-void TopLevel::showRequestedSheets()
-{
-  toolBar( "mainToolBar" )->hide();
-
-  QList<int> sizes;
-  sizes.append( 0 );
-  sizes.append( 100 );
-  mSplitter->setSizes( sizes );
-}
-
 void TopLevel::initStatusBar()
 {
   KSGRD::SensorMgr->engage( "localhost", "", "ksysguardd" );

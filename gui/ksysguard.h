@@ -52,7 +52,6 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
     virtual void answerReceived( int id, const QStringList& );
 
     void beATaskManager();
-    void showRequestedSheets();
     void initStatusBar();
 
   public Q_SLOTS:
