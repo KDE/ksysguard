@@ -25,6 +25,8 @@
 
 #include <kpagedialog.h>
 
+#include "SensorModel.h"
+
 class KColorButton;
 class KIntNumInput;
 class KLineEdit;
@@ -32,40 +34,6 @@ class KLineEdit;
 class QCheckBox;
 class QPushButton;
 class QTreeView;
-
-class SensorModel;
-
-class SensorEntry
-{
-  public:
-    typedef QList<SensorEntry> List;
-
-    void setId( int id ) { mId = id; }
-    int id() const { return mId; }
-
-    void setHostName( const QString &hostName ) { mHostName = hostName; }
-    QString hostName() const { return mHostName; }
-
-    void setSensorName( const QString &sensorName ) { mSensorName = sensorName; }
-    QString sensorName() const { return mSensorName; }
-
-    void setUnit( const QString &unit ) { mUnit = unit; }
-    QString unit() const { return mUnit; }
-
-    void setStatus( const QString &status ) { mStatus = status; }
-    QString status() const { return mStatus; }
-
-    void setColor( const QColor &color ) { mColor = color; }
-    QColor color() const { return mColor; }
-
-  private:
-    int mId;
-    QString mHostName;
-    QString mSensorName;
-    QString mUnit;
-    QString mStatus;
-    QColor mColor;
-};
 
 class FancyPlotterSettings : public KPageDialog
 {
@@ -123,8 +91,8 @@ class FancyPlotterSettings : public KPageDialog
     void setBackgroundColor( const QColor &color );
     QColor backgroundColor() const;
 
-    void setSensors( const SensorEntry::List &list );
-    SensorEntry::List sensors() const;
+    void setSensors( const SensorModelEntry::List &list );
+    SensorModelEntry::List sensors() const;
 
   private Q_SLOTS:
     void editSensor();

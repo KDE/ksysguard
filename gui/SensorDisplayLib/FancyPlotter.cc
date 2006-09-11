@@ -84,9 +84,9 @@ void FancyPlotter::configureSettings()
 
   dlg.setBackgroundColor( mPlotter->backgroundColor() );
 
-  SensorEntry::List list;
+  SensorModelEntry::List list;
   for ( uint i = 0; i < mBeams; ++i ) {
-    SensorEntry entry;
+    SensorModelEntry entry;
     entry.setId( i );
     entry.setHostName( sensors().at( i )->hostName() );
     entry.setSensorName( KSGRD::SensorMgr->translateSensor( sensors().at( i )->name() ) );
@@ -136,7 +136,7 @@ void FancyPlotter::configureSettings()
      * listview. Where a sensor cannot be matched, it is removed. */
     uint delCount = 0;
 
-    SensorEntry::List list = dlg.sensors();
+    SensorModelEntry::List list = dlg.sensors();
 
     for ( int i = 0; i < sensors().count(); ++i ) {
       bool found = false;

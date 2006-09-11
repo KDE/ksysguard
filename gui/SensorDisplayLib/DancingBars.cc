@@ -62,81 +62,81 @@ DancingBars::~DancingBars()
 
 void DancingBars::configureSettings()
 {
-  mSettingsDialog = new DancingBarsSettings( this );
+  DancingBarsSettings dlg( this );
 
-  mSettingsDialog->setTitle( title() );
-  mSettingsDialog->setMinValue( mPlotter->getMin() );
-  mSettingsDialog->setMaxValue( mPlotter->getMax() );
+  dlg.setTitle( title() );
+  dlg.setMinValue( mPlotter->getMin() );
+  dlg.setMaxValue( mPlotter->getMax() );
 
   double l, u;
   bool la, ua;
   mPlotter->getLimits( l, la, u, ua );
 
-  mSettingsDialog->setUseUpperLimit( ua );
-  mSettingsDialog->setUpperLimit( u );
+  dlg.setUseUpperLimit( ua );
+  dlg.setUpperLimit( u );
 
-  mSettingsDialog->setUseLowerLimit( la );
-  mSettingsDialog->setLowerLimit( l );
+  dlg.setUseLowerLimit( la );
+  dlg.setLowerLimit( l );
 
-  mSettingsDialog->setForegroundColor( mPlotter->normalColor );
-  mSettingsDialog->setAlarmColor( mPlotter->alarmColor );
-  mSettingsDialog->setBackgroundColor( mPlotter->mBackgroundColor );
-  mSettingsDialog->setFontSize( mPlotter->fontSize );
+  dlg.setForegroundColor( mPlotter->normalColor );
+  dlg.setAlarmColor( mPlotter->alarmColor );
+  dlg.setBackgroundColor( mPlotter->mBackgroundColor );
+  dlg.setFontSize( mPlotter->fontSize );
 
-  QList< QStringList > list;
+  SensorModelEntry::List list;
   for ( uint i = mBars - 1; i < mBars; i-- ) {
-    QStringList entry;
-    entry << sensors().at( i )->hostName();
-    entry << KSGRD::SensorMgr->translateSensor( sensors().at( i )->name() );
-    entry << mPlotter->footers[ i ];
-    entry << KSGRD::SensorMgr->translateUnit( sensors().at( i )->unit() );
-    entry << ( sensors().at( i )->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
+    SensorModelEntry entry;
+    entry.setId( i );
+    entry.setHostName( sensors().at( i )->hostName() );
+    entry.setSensorName( KSGRD::SensorMgr->translateSensor( sensors().at( i )->name() ) );
+    entry.setLabel( mPlotter->footers[ i ] );
+    entry.setUnit( KSGRD::SensorMgr->translateUnit( sensors().at( i )->unit() ) );
+    entry.setStatus( sensors().at( i )->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
 
     list.append( entry );
   }
-  mSettingsDialog->setSensors( list );
+  dlg.setSensors( list );
 
-  connect( mSettingsDialog, SIGNAL( applyClicked() ), SLOT( applySettings() ) );
+  if ( !dlg.exec() )
+    return;
 
-  if ( mSettingsDialog->exec() )
-    applySettings();
+  setTitle( dlg.title() );
+  mPlotter->changeRange( dlg.minValue(), dlg.maxValue() );
+  mPlotter->setLimits( dlg.useLowerLimit() ?
+                       dlg.lowerLimit() : 0,
+                       dlg.useLowerLimit(),
+                       dlg.useUpperLimit() ?
+                       dlg.upperLimit() : 0,
+                       dlg.useUpperLimit() );
 
-  delete mSettingsDialog;
-  mSettingsDialog = 0;
-}
+  mPlotter->normalColor = dlg.foregroundColor();
+  mPlotter->alarmColor = dlg.alarmColor();
+  mPlotter->mBackgroundColor = dlg.backgroundColor();
+  mPlotter->fontSize = dlg.fontSize();
 
-void DancingBars::applySettings()
-{
-  setTitle( mSettingsDialog->title() );
-  mPlotter->changeRange( mSettingsDialog->minValue(), mSettingsDialog->maxValue() );
-  mPlotter->setLimits( mSettingsDialog->useLowerLimit() ?
-                       mSettingsDialog->lowerLimit() : 0,
-                       mSettingsDialog->useLowerLimit(),
-                       mSettingsDialog->useUpperLimit() ?
-                       mSettingsDialog->upperLimit() : 0,
-                       mSettingsDialog->useUpperLimit() );
+  uint delCount = 0;
 
-  mPlotter->normalColor = mSettingsDialog->foregroundColor();
-  mPlotter->alarmColor = mSettingsDialog->alarmColor();
-  mPlotter->mBackgroundColor = mSettingsDialog->backgroundColor();
-  mPlotter->fontSize = mSettingsDialog->fontSize();
+  list = dlg.sensors();
 
-  QList< QStringList > list = mSettingsDialog->sensors();
-  QList< QStringList >::Iterator it;
-
-  for ( uint i = 0; i < (uint)sensors().count(); i++ ) {
+  for ( int i = 0; i < sensors().count(); ++i ) {
     bool found = false;
-    for ( it = list.begin(); it != list.end(); ++it ) {
-      if ( (*it)[ 0 ] == sensors().at( i )->hostName() &&
-           (*it)[ 1 ] == KSGRD::SensorMgr->translateSensor( sensors().at( i )->name() ) ) {
-        mPlotter->footers[ i ] = (*it)[ 2 ];
+    for ( int j = 0; j < list.count(); ++j ) {
+      if ( list[ j ].id() == (int)( i + delCount ) ) {
+        mPlotter->footers[ i ] = list[ j ].label();
         found = true;
-        break;
+        if ( delCount > 0 )
+          list[ j ].setId( i );
+
+        continue;
       }
     }
 
-    if ( !found )
-      removeSensor( i );
+    if ( !found ) {
+      if ( removeSensor(i) ) {
+        i--;
+        delCount++;
+      }
+    }
   }
 
   repaint();
@@ -236,9 +236,13 @@ void DancingBars::answerReceived( int id, const QStringList &answerlist )
     }
     mFlags.setBit( id, true );
 
-    if ( mFlags.testBit( ( 1 << mBars ) - 1 ) == true ) {
+    bool allBitsAvailable = true;
+    for ( uint i = 0; i < mBars; ++i )
+      allBitsAvailable &= mFlags.testBit( i );
+
+    if ( allBitsAvailable ) {
       mPlotter->updateSamples( mSampleBuffer );
-      mFlags.clear();
+      mFlags.fill( false );
     }
   } else if ( id >= 100 ) {
     KSGRD::SensorIntegerInfo info( answer );
@@ -249,10 +253,10 @@ void DancingBars::answerReceived( int id, const QStringList &answerlist )
          * sensor has been restored we don't touch the already set
          * values. */
         mPlotter->changeRange( info.min(), info.max() );
-			}
+      }
 
     sensors().at( id - 100 )->setUnit( info.unit() );
-	}
+  }
 }
 
 bool DancingBars::restoreSettings( QDomElement &element )

@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
     Copyright (c) 2003 Tobias Koenig <tokoe@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -21,19 +21,20 @@
 #ifndef KSG_DANCINGBARSSETTINGS_H
 #define KSG_DANCINGBARSSETTINGS_H
 
+#include <QtCore/QList>
+
 #include <kpagedialog.h>
-//Added by qt3to4:
-#include <QList>
+
+#include "SensorModel.h"
 
 class KColorButton;
 class KDoubleSpinBox;
 class KIntNumInput;
 class KLineEdit;
-class K3ListView;
 
 class QCheckBox;
-class Q3ListViewItem;
 class QPushButton;
+class QTreeView;
 
 class DancingBarsSettings : public KPageDialog
 {
@@ -76,13 +77,12 @@ class DancingBarsSettings : public KPageDialog
     void setFontSize( int size );
     int fontSize() const;
 
-    void setSensors( const QList< QStringList > &list );
-    QList< QStringList > sensors() const;
+    void setSensors( const SensorModelEntry::List &list );
+    SensorModelEntry::List sensors() const;
 
   private Q_SLOTS:
     void editSensor();
     void removeSensor();
-    void selectionChanged( Q3ListViewItem* );
 
   private:
     KColorButton *mForegroundColor;
@@ -93,13 +93,15 @@ class DancingBarsSettings : public KPageDialog
     KDoubleSpinBox *mLowerLimit;
     KDoubleSpinBox *mUpperLimit;
     KLineEdit *mTitle;
-    K3ListView *mSensorView;
     KIntNumInput *mFontSize;
 
     QCheckBox *mUseLowerLimit;
     QCheckBox *mUseUpperLimit;
     QPushButton *mEditButton;
     QPushButton *mRemoveButton;
+
+    QTreeView *mView;
+    SensorModel *mModel;
 };
 
 #endif

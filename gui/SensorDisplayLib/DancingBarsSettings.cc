@@ -22,31 +22,30 @@
 #include <kcolorbutton.h>
 #include <klineedit.h>
 #include <kinputdialog.h>
-#include <k3listview.h>
 #include <klocale.h>
 #include <knuminput.h>
 
-#include <QCheckBox>
-#include <q3groupbox.h>
-#include <QLabel>
-#include <QLayout>
-#include <QPushButton>
-
-//Added by qt3to4:
-#include <QList>
-#include <QGridLayout>
+#include <QtGui/QCheckBox>
+#include <QtGui/QGroupBox>
+#include <QtGui/QHeaderView>
+#include <QtGui/QLabel>
+#include <QtGui/QLayout>
+#include <QtGui/QPushButton>
+#include <QtGui/QTreeView>
 
 #include "DancingBarsSettings.h"
 
 DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
-  : KPageDialog( parent )
+  : KPageDialog( parent ), mModel( new SensorModel( this ) )
 {
   setFaceType( Tabbed );
   setCaption( i18n( "Edit BarGraph Preferences" ) );
-  setButtons( Ok | Apply | Cancel );
+  setButtons( Ok | Cancel );
   setObjectName( name );
   setModal( true );
   showButtonSeparator( true );
+
+  mModel->setHasLabel( true );
 
   // Range page
   QFrame *page = new QFrame( this );
@@ -55,9 +54,9 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
 
-  Q3GroupBox *groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Title" ), page );
-  QGridLayout *boxLayout = new QGridLayout(  );
-  groupBox->layout()->addItem( boxLayout );
+  QGroupBox *groupBox = new QGroupBox( i18n( "Title" ), page );
+  QGridLayout *boxLayout = new QGridLayout;
+  groupBox->setLayout( boxLayout );
 
   mTitle = new KLineEdit( groupBox );
   mTitle->setWhatsThis( i18n( "Enter the title of the display here." ) );
@@ -65,9 +64,9 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
 
   pageLayout->addWidget( groupBox, 0, 0 );
 
-  groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Display Range" ), page );
-  boxLayout = new QGridLayout(  );
-  groupBox->layout()->addItem( boxLayout );
+  groupBox = new QGroupBox( i18n( "Display Range" ), page );
+  boxLayout = new QGridLayout;
+  groupBox->setLayout( boxLayout );
   boxLayout->setColumnStretch( 2, 1 );
 
   QLabel *label = new QLabel( i18n( "Minimum value:" ), groupBox );
@@ -97,9 +96,9 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
 
-  groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Alarm for Minimum Value" ), page );
-  boxLayout = new QGridLayout( );
-  groupBox->layout()->addItem( boxLayout );
+  groupBox = new QGroupBox( i18n( "Alarm for Minimum Value" ), page );
+  boxLayout = new QGridLayout;
+  groupBox->setLayout( boxLayout );
   boxLayout->setColumnStretch( 1, 1 );
 
   mUseLowerLimit = new QCheckBox( i18n( "Enable alarm" ), groupBox );
@@ -116,9 +115,9 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
 
   pageLayout->addWidget( groupBox, 0, 0 );
 
-  groupBox = new Q3GroupBox( 0, Qt::Vertical, i18n( "Alarm for Maximum Value" ), page );
-  boxLayout = new QGridLayout( );
-  groupBox->layout()->addItem( boxLayout );
+  groupBox = new QGroupBox( i18n( "Alarm for Maximum Value" ), page );
+  boxLayout = new QGridLayout;
+  groupBox->setLayout( boxLayout );
   boxLayout->setColumnStretch( 1, 1 );
 
   mUseUpperLimit = new QCheckBox( i18n( "Enable alarm" ), groupBox );
@@ -128,7 +127,7 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   label = new QLabel( i18n( "Upper limit:" ), groupBox );
   boxLayout->addWidget( label, 0, 2 );
 
-  mUpperLimit = new KDoubleSpinBox( 0, 100, 0.5, 0, groupBox, 2 );
+  mUpperLimit = new KDoubleSpinBox( 0, 1000, 0.5, 0, groupBox, 2 );
   mUpperLimit->setEnabled( false );
   boxLayout->addWidget( mUpperLimit, 0, 3 );
   label->setBuddy( mUpperLimit );
@@ -183,22 +182,18 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   pageLayout->setMargin( 0 );
   pageLayout->setRowStretch( 2, 1 );
 
-  mSensorView = new K3ListView( page );
-  mSensorView->addColumn( i18n( "Host" ) );
-  mSensorView->addColumn( i18n( "Sensor" ) );
-  mSensorView->addColumn( i18n( "Label" ) );
-  mSensorView->addColumn( i18n( "Unit" ) );
-  mSensorView->addColumn( i18n( "Status" ) );
-  mSensorView->setAllColumnsShowFocus( true );
-  pageLayout->addWidget( mSensorView, 0, 0, 3, 1);
+  mView = new QTreeView( page );
+  mView->header()->setStretchLastSection( true );
+  mView->setRootIsDecorated( false );
+  mView->setItemsExpandable( false );
+  mView->setModel( mModel );
+  pageLayout->addWidget( mView, 0, 0, 3, 1);
 
   mEditButton = new QPushButton( i18n( "Edit..." ), page );
-  mEditButton->setEnabled( false );
   mEditButton->setWhatsThis( i18n( "Push this button to configure the label." ) );
   pageLayout->addWidget( mEditButton, 0, 1 );
 
   mRemoveButton = new QPushButton( i18n( "Delete" ), page );
-  mRemoveButton->setEnabled( false );
   mRemoveButton->setWhatsThis( i18n( "Push this button to delete the sensor." ) );
   pageLayout->addWidget( mRemoveButton, 1, 1 );
 
@@ -206,9 +201,6 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
            mLowerLimit, SLOT( setEnabled( bool ) ) );
   connect( mUseUpperLimit, SIGNAL( toggled( bool ) ),
            mUpperLimit, SLOT( setEnabled( bool ) ) );
-
-  connect( mSensorView, SIGNAL( selectionChanged( Q3ListViewItem* ) ),
-           SLOT( selectionChanged( Q3ListViewItem* ) ) );
   connect( mEditButton, SIGNAL( clicked() ), SLOT( editSensor() ) );
   connect( mRemoveButton, SIGNAL( clicked() ), SLOT( removeSensor() ) );
 
@@ -331,89 +323,49 @@ int DancingBarsSettings::fontSize() const
   return mFontSize->value();
 }
 
-void DancingBarsSettings::setSensors( const QList< QStringList > &list )
+void DancingBarsSettings::setSensors( const SensorModelEntry::List &list )
 {
-  mSensorView->clear();
+  mModel->setSensors( list );
 
-  QList< QStringList >::ConstIterator it;
-  for ( it = list.begin(); it != list.end(); ++it ) {
-    new Q3ListViewItem( mSensorView,
-                       (*it)[ 0 ],   // host name
-                       (*it)[ 1 ],   // sensor name
-                       (*it)[ 2 ],   // footer title
-                       (*it)[ 3 ],   // unit
-                       (*it)[ 4 ] ); // status
-  }
+  mView->selectionModel()->setCurrentIndex( mModel->index( 0, 0 ), QItemSelectionModel::SelectCurrent |
+                                                                   QItemSelectionModel::Rows );
 }
 
-QList< QStringList > DancingBarsSettings::sensors() const
+SensorModelEntry::List DancingBarsSettings::sensors() const
 {
-  QList< QStringList > list;
-
-  Q3ListViewItemIterator it( mSensorView );
-  while ( it.current() && !it.current()->text( 0 ).isEmpty() ) {
-    QStringList entry;
-    entry << it.current()->text( 0 );
-    entry << it.current()->text( 1 );
-    entry << it.current()->text( 2 );
-    entry << it.current()->text( 3 );
-    entry << it.current()->text( 4 );
-
-    list.append( entry );
-    ++it;
-  }
-
-  return list;
+  return mModel->sensors();
 }
 
 void DancingBarsSettings::editSensor()
 {
-  Q3ListViewItem *lvi = mSensorView->currentItem();
-
-  if ( !lvi )
+  if ( !mView->selectionModel() )
     return;
 
+  const QModelIndex index = mView->selectionModel()->currentIndex();
+  if ( !index.isValid() )
+    return;
+
+  SensorModelEntry sensor = mModel->sensor( index );
+
   bool ok;
-  QString str = KInputDialog::getText( i18n( "Label of Bar Graph" ),
-    i18n( "Enter new label:" ), lvi->text( 2 ), &ok, this );
-  if ( ok )
-    lvi->setText( 2, str );
+  const QString name = KInputDialog::getText( i18n( "Label of Bar Graph" ),
+                                              i18n( "Enter new label:" ), sensor.label(), &ok, this );
+  if ( ok ) {
+    sensor.setLabel( name );
+    mModel->setSensor( sensor, index );
+  }
 }
 
 void DancingBarsSettings::removeSensor()
 {
-  Q3ListViewItem *lvi = mSensorView->currentItem();
+  if ( !mView->selectionModel() )
+    return;
 
-  if ( lvi ) {
-    /* Before we delete the currently selected item, we determine a
-     * new item to be selected. That way we can ensure that multiple
-     * items can be deleted without forcing the user to select a new
-     * item between the deletes. If all items are deleted, the buttons
-     * are disabled again. */
-    Q3ListViewItem* newSelected = 0;
-    if ( lvi->itemBelow() ) {
-      lvi->itemBelow()->setSelected( true );
-      newSelected = lvi->itemBelow();
-    } else if ( lvi->itemAbove() ) {
-      lvi->itemAbove()->setSelected( true );
-      newSelected = lvi->itemAbove();
-    } else
-      selectionChanged( 0 );
+  const QModelIndex index = mView->selectionModel()->currentIndex();
+  if ( !index.isValid() )
+    return;
 
-    delete lvi;
-
-    if ( newSelected )
-      mSensorView->ensureItemVisible( newSelected );
-  }
+  mModel->removeSensor( index );
 }
-
-void DancingBarsSettings::selectionChanged( Q3ListViewItem* lvi )
-{
-  bool state = ( lvi != 0 );
-
-  mEditButton->setEnabled( state );
-  mRemoveButton->setEnabled( state );
-}
-
 
 #include "DancingBarsSettings.moc"

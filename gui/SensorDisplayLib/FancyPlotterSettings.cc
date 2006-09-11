@@ -40,141 +40,6 @@
 
 #include "FancyPlotterSettings.h"
 
-class SensorModel : public QAbstractTableModel
-{
-  public:
-    SensorModel( QObject *parent = 0 )
-      : QAbstractTableModel( parent )
-    {
-    }
-
-    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const
-    {
-      Q_UNUSED( parent );
-
-      return 4;
-    }
-
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const
-    {
-      Q_UNUSED( parent );
-
-      return mSensors.count();
-    }
-
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const
-    {
-      if ( !index.isValid() )
-        return QVariant();
-
-      if ( index.row() >= mSensors.count() || index.row() < 0 )
-        return QVariant();
-
-      SensorEntry sensor = mSensors[ index.row() ];
-
-      if ( role == Qt::DisplayRole ) {
-        switch ( index.column() ) {
-          case 0:
-            return sensor.hostName();
-            break;
-          case 1:
-            return sensor.sensorName();
-            break;
-          case 2:
-            return sensor.unit();
-            break;
-          case 3:
-            return sensor.status();
-            break;
-        }
-      } else if ( role == Qt::DecorationRole ) {
-        QPixmap pm( 12, 12 );
-        pm.fill( sensor.color() );
-
-        if ( index.column() == 1 )
-          return pm;
-      }
-
-      return QVariant();
-    }
-
-    virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const
-    {
-      if ( orientation == Qt::Vertical )
-        return QVariant();
-
-      if ( role == Qt::DisplayRole ) {
-        switch ( section ) {
-          case 0:
-            return i18n( "Host" );
-            break;
-          case 1:
-            return i18n( "Sensor" );
-            break;
-          case 2:
-            return i18n( "Unit" );
-            break;
-          case 3:
-            return i18n( "Status" );
-            break;
-          default:
-            return QVariant();
-        }
-      }
-
-      return QVariant();
-    }
-
-    void setSensors( const SensorEntry::List &sensors )
-    {
-      mSensors = sensors;
-
-      emit layoutChanged();
-    }
-
-    SensorEntry::List sensors() const
-    {
-      return mSensors;
-    }
-
-    void setSensor( const SensorEntry &sensor, const QModelIndex &index )
-    {
-      if ( !index.isValid() )
-        return;
-
-      if ( index.row() < 0 || index.row() >= mSensors.count() )
-        return;
-
-      mSensors[ index.row() ] = sensor;
-
-      emit dataChanged( index, index );
-    }
-
-    void removeSensor( const QModelIndex &index )
-    {
-      if ( !index.isValid() )
-        return;
-
-      if ( index.row() < 0 || index.row() >= mSensors.count() )
-        return;
-
-      mSensors.removeAt( index.row() );
-
-      emit layoutChanged();
-    }
-
-    SensorEntry sensor( const QModelIndex &index ) const
-    {
-      if ( !index.isValid() || index.row() >= mSensors.count() || index.row() < 0 )
-        return SensorEntry();
-
-      return mSensors[ index.row() ];
-    }
-
-  private:
-    SensorEntry::List mSensors;
-};
-
 FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   : KPageDialog( parent ), mModel( new SensorModel( this ) )
 {
@@ -594,7 +459,7 @@ QColor FancyPlotterSettings::backgroundColor() const
   return mBackgroundColor->color();
 }
 
-void FancyPlotterSettings::setSensors( const SensorEntry::List &list )
+void FancyPlotterSettings::setSensors( const SensorModelEntry::List &list )
 {
   mModel->setSensors( list );
 
@@ -602,7 +467,7 @@ void FancyPlotterSettings::setSensors( const SensorEntry::List &list )
                                                                    QItemSelectionModel::Rows );
 }
 
-SensorEntry::List FancyPlotterSettings::sensors() const
+SensorModelEntry::List FancyPlotterSettings::sensors() const
 {
   return mModel->sensors();
 }
@@ -616,7 +481,7 @@ void FancyPlotterSettings::editSensor()
   if ( !index.isValid() )
     return;
 
-  SensorEntry sensor = mModel->sensor( index );
+  SensorModelEntry sensor = mModel->sensor( index );
 
   QColor color = sensor.color();
   int result = KColorDialog::getColor( color, parentWidget() );

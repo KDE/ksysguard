@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
     Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -32,14 +32,13 @@ class KIntNumInput;
 class QLineEdit;
 
 class BarGraph;
-class DancingBarsSettings;
 
 class DancingBars : public KSGRD::SensorDisplay
 {
   Q_OBJECT
 
   public:
-    DancingBars( QWidget *parent, const QString &title, SharedSettings *workSheetSettings);
+    DancingBars( QWidget *parent, const QString &title, SharedSettings *workSheetSettings );
     virtual ~DancingBars();
 
     void configureSettings();
@@ -55,12 +54,11 @@ class DancingBars : public KSGRD::SensorDisplay
     virtual void answerReceived( int id, const QStringList &answerlist );
 
     bool restoreSettings( QDomElement& );
-    bool saveSettings( QDomDocument&, QDomElement&);
+    bool saveSettings( QDomDocument&, QDomElement& );
 
     virtual bool hasSettingsDialog() const;
 
   public Q_SLOTS:
-    void applySettings();
     virtual void applyStyle();
 
   protected:
@@ -70,8 +68,6 @@ class DancingBars : public KSGRD::SensorDisplay
     uint mBars;
 
     BarGraph* mPlotter;
-
-    DancingBarsSettings* mSettingsDialog;
 
     /**
       The sample buffer and the flags are needed to store the incoming
