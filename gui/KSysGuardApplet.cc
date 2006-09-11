@@ -139,16 +139,10 @@ void KSysGuardApplet::applySettings()
   resizeDocks( mSettingsDlg->numDisplay() );
 
   for ( uint i = 0; i < mDockCount; ++i )
-    if ( mDockList[ i ]->metaObject()->className() != "QFrame"  )
+    if ( QLatin1String( "QFrame" ) != mDockList[ i ]->metaObject()->className() )
       ((KSGRD::SensorDisplay*)mDockList[ i ])->setUpdateInterval( updateInterval() );
 
   save();
-}
-
-void KSysGuardApplet::sensorDisplayModified( bool modified )
-{
-  if ( modified )
-    save();
 }
 
 void KSysGuardApplet::layout()
@@ -201,7 +195,7 @@ void KSysGuardApplet::dropEvent( QDropEvent *event )
     return;
 
   int dock = findDock( event->pos() );
-  if ( mDockList[ dock ]->metaObject()->className() == "QFrame" ) {
+  if ( QLatin1String( "QFrame" ) == mDockList[ dock ]->metaObject()->className() ) {
     if ( sensorType == "integer" || sensorType == "float" ) {
       KMenu popup;
       KSGRD::SensorDisplay *wdg = 0;
@@ -224,8 +218,6 @@ void KSysGuardApplet::dropEvent( QDropEvent *event )
         layout();
 
         wdg->setDeleteNotifier( this );
-        connect( wdg, SIGNAL( modified( bool ) ),
-                 SLOT( sensorDisplayModified( bool ) ) );
 
         mDockList[ dock ]->show();
       }
@@ -238,7 +230,7 @@ void KSysGuardApplet::dropEvent( QDropEvent *event )
     }
   }
 
-  if ( mDockList[ dock ]->metaObject()->className() != "QFrame" )
+  if ( QLatin1String( "QFrame" ) != mDockList[ dock ]->metaObject()->className() )
     ((KSGRD::SensorDisplay*)mDockList[ dock ])->
                 addSensor( hostName, sensorName, sensorType, sensorDescr );
 
@@ -393,16 +385,17 @@ bool KSysGuardApplet::load()
     }
 
     newDisplay->setUpdateInterval( updateInterval() );
+    newDisplay->setDeleteNotifier( this );
 
     // load display specific settings
-    if ( !newDisplay->restoreSettings( element ) )
+    if ( !newDisplay->restoreSettings( element ) ) {
+      delete newDisplay;
       return false;
+    }
 
     delete mDockList[ dock ];
     mDockList[ dock ] = newDisplay;
 
-    connect( newDisplay, SIGNAL( modified( bool ) ),
-             SLOT( sensorDisplayModified( bool ) ) );
   }
 
   return true;
@@ -425,7 +418,7 @@ bool KSysGuardApplet::save()
   QStringList hosts;
   uint i;
   for ( i = 0; i < mDockCount; ++i )
-    if ( mDockList[ i ]->metaObject()->className() != "QFrame" )
+    if ( QLatin1String( "QFrame" ) != mDockList[ i ]->metaObject()->className() )
       ((KSGRD::SensorDisplay*)mDockList[ i ])->hosts( hosts );
 
   // save host information (name, shell, etc.)
@@ -445,7 +438,7 @@ bool KSysGuardApplet::save()
   }
 
   for ( i = 0; i < mDockCount; ++i )
-    if ( mDockList[ i ]->metaObject()->className() != "QFrame" ) {
+    if ( QLatin1String( "QFrame" ) != mDockList[ i ]->metaObject()->className() ) {
       QDomElement element = doc.createElement( "display" );
       ws.appendChild( element );
       element.setAttribute( "dock", i );
