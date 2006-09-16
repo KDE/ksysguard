@@ -452,10 +452,18 @@ bool KSysGuardApplet::save()
   fileName += "/KSysGuardApplet.xml";
 
   KSaveFile file( fileName, 0644 );
-  file.textStream()->setCodec( "UTF-8" );
-  *(file.textStream()) << doc;
 
-  file.close();
+  if ( file.status() == 0 )
+  {
+    file.textStream()->setCodec( "UTF-8" );
+    *(file.textStream()) << doc;
+    file.close();
+  }
+  else
+  {
+    KMessageBox::sorry( this, i18n( "Cannot save file %1" ).arg( fileName ) );
+    return false;
+  }
 
   return true;
 }
