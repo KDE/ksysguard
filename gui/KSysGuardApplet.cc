@@ -453,17 +453,15 @@ bool KSysGuardApplet::save()
 
   KSaveFile file( fileName, 0644 );
 
-  if ( file.status() == 0 )
-  {
-    file.textStream()->setCodec( "UTF-8" );
-    *(file.textStream()) << doc;
-    file.close();
-  }
-  else
+  if ( file.status() != 0 /* 0 means successful.  See errno.h */ )
   {
     KMessageBox::sorry( this, i18n( "Cannot save file %1" ).arg( fileName ) );
     return false;
   }
+  
+  file.textStream()->setCodec( "UTF-8" );
+  *(file.textStream()) << doc;
+  file.close();
 
   return true;
 }
