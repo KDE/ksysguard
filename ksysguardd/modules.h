@@ -126,7 +126,7 @@ struct SensorModul SensorModulList[] = {
   { "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC, 0, NULLTIME },
   { "NetDev", initNetDev, exitNetDev, updateNetDev, NULLVVFUNC, 0, NULLTIME },
   { "NetStat", initNetStat, exitNetStat, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
-  { "ProcessList", initProcessList, exitProcessList, updateProcessList, NULLVVFUNC, 0, NULLTIME },
+  { "ProcessList", initProcessList, exitProcessList, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
   { "Stat", initStat, exitStat, updateStat, NULLVVFUNC, 0, NULLTIME },
   { "Uptime", initUptime, exitUptime, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
 #endif /* OSTYPE_Linux */

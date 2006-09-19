@@ -42,8 +42,6 @@
 #define TAGSIZE 32
 #define KDEINITLEN strlen( "kdeinit: " )
 
-static CONTAINER ProcessList = 0;
-
 #include "config-ksysguardd.h" /*For HAVE_XRES*/
 #ifdef HAVE_XRES
 extern int setup_xres();
@@ -154,24 +152,7 @@ static void validateStr( char* str )
     strcpy( str, " " );
 }
 
-static int processCmp( void* p1, void* p2 )
-{
-  return ( ((ProcessInfo*)p1)->pid - ((ProcessInfo*)p2)->pid );
-}
-
-static ProcessInfo* findProcessInList( int pid )
-{
-  ProcessInfo key;
-  long idx;
-
-  key.pid = pid;
-  if ( ( idx = search_ctnr( ProcessList, processCmp, &key ) ) < 0 )
-    return 0;
-
-  return get_ctnr( ProcessList, idx );
-}
-
-static int updateProcess( int pid )
+static ProcessInfo* getProcess( int pid )
 {
   ProcessInfo* ps;
   FILE* fd;
@@ -183,24 +164,19 @@ static int updateProcess( int pid )
   const char* uName;
   char status;
 
-  if ( ( ps = findProcessInList( pid ) ) == 0 ) {
-    struct timeval tv;
+  struct timeval tv;
 
-    ps = (ProcessInfo*)malloc( sizeof( ProcessInfo ) );
-    ps->pid = pid;
-    ps->alive = 0;
+  ps = (ProcessInfo*)malloc( sizeof( ProcessInfo ) );
+  ps->pid = pid;
+  ps->alive = 0;
 
-    gettimeofday( &tv, 0 );
-    ps->centStamp = tv.tv_sec * 100 + tv.tv_usec / 10000;
-
-    push_ctnr( ProcessList, ps );
-    bsort_ctnr( ProcessList, processCmp );
-  }
+  gettimeofday( &tv, 0 );
+  ps->centStamp = tv.tv_sec * 100 + tv.tv_usec / 10000;
 
   snprintf( buf, BUFSIZE - 1, "/proc/%d/status", pid );
   if ( ( fd = fopen( buf, "r" ) ) == 0 ) {
     /* process has terminated in the mean time */
-    return -1;
+    return NULL;
   }
   ps->uid = 0;
   ps->gid = 0;
@@ -227,12 +203,12 @@ static int updateProcess( int pid )
   }
 
   if ( fclose( fd ) )
-    return -1;
+    return NULL;
 
   snprintf( buf, BUFSIZE - 1, "/proc/%d/stat", pid );
   buf[ BUFSIZE - 1 ] = '\0';
   if ( ( fd = fopen( buf, "r" ) ) == 0 )
-    return -1;
+    return NULL;
 
   if ( fscanf( fd, "%*d %*s %c %d %*d %*d %d %*d %*u %*u %*u %*u %*u %d %d"
                    "%*d %*d %*d %d %*u %*u %*d %u %u",
@@ -240,11 +216,11 @@ static int updateProcess( int pid )
                    &userTime, &sysTime, &ps->niceLevel, &ps->vmSize,
                    &ps->vmRss) != 8 ) {
     fclose( fd );
-    return -1;
+    return NULL;
   }
 
   if ( fclose( fd ) )
-    return -1;
+    return NULL;
 
   /* status decoding as taken from fs/proc/array.c */
   if ( status == 'R' )
@@ -297,7 +273,7 @@ static int updateProcess( int pid )
 
   snprintf( buf, BUFSIZE - 1, "/proc/%d/cmdline", pid );
   if ( ( fd = fopen( buf, "r" ) ) == 0 )
-    return -1;
+    return NULL;
 
   ps->cmdline[ 0 ] = '\0';
   sprintf( buf, "%%%d[^\n]", (int)sizeof( ps->cmdline ) - 1 );
@@ -305,7 +281,7 @@ static int updateProcess( int pid )
   ps->cmdline[ sizeof( ps->cmdline ) - 1 ] = '\0';
   validateStr( ps->cmdline );
   if ( fclose( fd ) )
-    return -1;
+    return NULL;
 
   /* Ugly hack to "fix" program name for kdeinit launched programs. */
   if ( strcmp( ps->name, "kdeinit" ) == 0 &&
@@ -336,35 +312,12 @@ static int updateProcess( int pid )
 
   
 
-  return 0;
+  return ps;
 }
 
-static void cleanupProcessList( void )
+void printProcessList( const char* cmd)
 {
-  ProcessInfo* ps;
-
-  ProcessCount = 0;
-  /**
-    All processes that do not have the active flag set are assumed dead
-    and will be removed from the list. The alive flag is cleared.
-   */
-  for ( ps = first_ctnr( ProcessList ); ps; ps = next_ctnr( ProcessList ) ) {
-    if ( ps->alive ) {
-      /* Process is still alive. Just clear flag. */
-      ps->alive = 0;
-      ProcessCount++;
-    } else {
-      /**
-        Process has probably died. We remove it from the list and
-        destruct the data structure.
-       */
-      free( remove_ctnr( ProcessList ) );
-    }
-  }
-}
-
-int updateProcessList( void )
-{
+  (void)cmd;
   DIR* dir;
   struct dirent* entry;
 
@@ -373,7 +326,7 @@ int updateProcessList( void )
     print_error( "Cannot open directory \'/proc\'!\n"
                  "The kernel needs to be compiled with support\n"
                  "for /proc file system enabled!\n" );
-    return 0;
+    return;
   }
 
   while ( ( entry = readdir( dir ) ) ) {
@@ -381,13 +334,18 @@ int updateProcessList( void )
       int pid;
 
       pid = atoi( entry->d_name );
-      updateProcess( pid ); 
+      ProcessInfo* ps = getProcess( pid );
+      fprintf( CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d\t%s\t%ld\t%s\n",
+	     ps->name, (long)ps->pid, (long)ps->ppid,
+             (long)ps->uid, (long)ps->gid, ps->status, ps->userLoad,
+             ps->sysLoad, ps->niceLevel, ps->vmSize / 1024, ps->vmRss / 1024,
+             ps->userName, (long)ps->tracerpid, ps->cmdline
+	     );
     }
   }
+  fprintf( CurrentClient, "\n" );
   closedir( dir );
-
-  cleanupProcessList();
-  return 0;
+  return;
 }
 
 /*
@@ -397,8 +355,6 @@ int updateProcessList( void )
 void initProcessList( struct SensorModul* sm )
 {
   initPWUIDCache();
-
-  ProcessList = new_ctnr();
 
   registerMonitor( "pscount", "integer", printProcessCount, printProcessCountInfo, sm );
   registerMonitor( "ps", "table", printProcessList, printProcessListInfo, sm );
@@ -414,8 +370,6 @@ void initProcessList( struct SensorModul* sm )
     registerMonitor( "xres", "table", printXresList, printXresListInfo, sm);
   }
 #endif
-
-  updateProcessList();
 }
 
 void exitProcessList( void )
@@ -431,8 +385,6 @@ void exitProcessList( void )
     removeCommand( "kill" );
     removeCommand( "setpriority" );
   }
-
-  destr_ctnr( ProcessList, free );
 
   exitPWUIDCache();
 }
@@ -458,28 +410,6 @@ void printProcessListInfo( const char* cmd )
   fprintf( CurrentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize"
                           "\tVmRss\tLogin\tTracerPID\tCommand\n" );
   fprintf( CurrentClient, "s\td\td\td\td\tS\tf\tf\td\tD\tD\ts\td\ts\n" );
-}
-
-void printProcessList( const char* cmd )
-{
-  ProcessInfo* ps;
-
-  (void)cmd;
-  /*We return 0 for tracerpid (the pid of any debugger attached to the process) if there is none
-    x_identifier is empty if none was found
-    x_pxmmem is -1 if not found
-    x_numpxm is -1 if not found
-    */
-  for ( ps = first_ctnr( ProcessList ); ps; ps = next_ctnr( ProcessList ) ) {
-    fprintf( CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d\t%s\t%ld\t%s\n",
-	     ps->name, (long)ps->pid, (long)ps->ppid,
-             (long)ps->uid, (long)ps->gid, ps->status, ps->userLoad,
-             ps->sysLoad, ps->niceLevel, ps->vmSize / 1024, ps->vmRss / 1024,
-             ps->userName, (long)ps->tracerpid, ps->cmdline
-	     );
-  }
-
-  fprintf( CurrentClient, "\n" );
 }
 
 void printProcessCount( const char* cmd )

@@ -27,8 +27,6 @@
 void initProcessList( struct SensorModul* );
 void exitProcessList( void );
 
-int updateProcessList( void );
-
 void printProcessList( const char* );
 void printProcessListInfo( const char* );
 void printProcessCount( const char* );
