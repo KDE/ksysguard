@@ -42,6 +42,11 @@
 #define TAGSIZE 32
 #define KDEINITLEN strlen( "kdeinit: " )
 
+#ifndef bool
+#define bool char
+#define true 1
+#define false 0
+#endif
 #include "config-ksysguardd.h" /*For HAVE_XRES*/
 #ifdef HAVE_XRES
 extern int setup_xres();
@@ -51,16 +56,6 @@ static int have_xres = 0;
 #endif
 
 typedef struct {
-  /**
-    This flag is set for all found processes at the beginning of the
-    process list update. Processes that do not have this flag set will
-    be assumed dead and removed from the list. The flag is cleared after
-    each list update.
-   */
-  int alive;
-
-  /* The process ID */
-  pid_t pid;
 
   /* The parent process ID */
   pid_t ppid;
@@ -80,25 +75,25 @@ typedef struct {
   /* The number of the tty the process owns */
   int ttyNo;
 
-	/**
+  /**
     The nice level. The range should be -20 to 20. I'm not sure
     whether this is true for all platforms.
    */
   int niceLevel;
 
-	/* The scheduling priority. */
+  /* The scheduling priority. */
   int priority;
 
-	/**
+  /**
     The total amount of memory the process uses. This includes shared and
     swapped memory.
    */
   unsigned int vmSize;
 
-	/* The amount of physical memory the process currently uses. */
+  /* The amount of physical memory the process currently uses. */
   unsigned int vmRss;
 
-	/**
+  /**
     The number of 1/100 of a second the process has spend in user space.
     If a machine has an uptime of 1 1/2 years or longer this is not a
     good idea. I never thought that the stability of UNIX could get me
@@ -106,7 +101,7 @@ typedef struct {
    */
   unsigned int userTime;
 
-	/**
+  /**
     The number of 1/100 of a second the process has spend in system space.
     If a machine has an uptime of 1 1/2 years or longer this is not a
     good idea. I never thought that the stability of UNIX could get me
@@ -152,9 +147,8 @@ static void validateStr( char* str )
     strcpy( str, " " );
 }
 
-static ProcessInfo* getProcess( int pid )
+static bool getProcess( int pid, ProcessInfo *ps )
 {
-  ProcessInfo* ps;
   FILE* fd;
   char buf[ BUFSIZE ];
   char tag[ TAGSIZE ];
@@ -166,17 +160,13 @@ static ProcessInfo* getProcess( int pid )
 
   struct timeval tv;
 
-  ps = (ProcessInfo*)malloc( sizeof( ProcessInfo ) );
-  ps->pid = pid;
-  ps->alive = 0;
-
   gettimeofday( &tv, 0 );
   ps->centStamp = tv.tv_sec * 100 + tv.tv_usec / 10000;
 
   snprintf( buf, BUFSIZE - 1, "/proc/%d/status", pid );
   if ( ( fd = fopen( buf, "r" ) ) == 0 ) {
     /* process has terminated in the mean time */
-    return NULL;
+    return false;
   }
   ps->uid = 0;
   ps->gid = 0;
@@ -203,12 +193,12 @@ static ProcessInfo* getProcess( int pid )
   }
 
   if ( fclose( fd ) )
-    return NULL;
+    return false;
 
   snprintf( buf, BUFSIZE - 1, "/proc/%d/stat", pid );
   buf[ BUFSIZE - 1 ] = '\0';
   if ( ( fd = fopen( buf, "r" ) ) == 0 )
-    return NULL;
+    return false;
 
   if ( fscanf( fd, "%*d %*s %c %d %*d %*d %d %*d %*u %*u %*u %*u %*u %d %d"
                    "%*d %*d %*d %d %*u %*u %*d %u %u",
@@ -216,11 +206,11 @@ static ProcessInfo* getProcess( int pid )
                    &userTime, &sysTime, &ps->niceLevel, &ps->vmSize,
                    &ps->vmRss) != 8 ) {
     fclose( fd );
-    return NULL;
+    return false;
   }
 
   if ( fclose( fd ) )
-    return NULL;
+    return false;
 
   /* status decoding as taken from fs/proc/array.c */
   if ( status == 'R' )
@@ -273,7 +263,7 @@ static ProcessInfo* getProcess( int pid )
 
   snprintf( buf, BUFSIZE - 1, "/proc/%d/cmdline", pid );
   if ( ( fd = fopen( buf, "r" ) ) == 0 )
-    return NULL;
+    return false;
 
   ps->cmdline[ 0 ] = '\0';
   sprintf( buf, "%%%d[^\n]", (int)sizeof( ps->cmdline ) - 1 );
@@ -281,7 +271,7 @@ static ProcessInfo* getProcess( int pid )
   ps->cmdline[ sizeof( ps->cmdline ) - 1 ] = '\0';
   validateStr( ps->cmdline );
   if ( fclose( fd ) )
-    return NULL;
+    return false;
 
   /* Ugly hack to "fix" program name for kdeinit launched programs. */
   if ( strcmp( ps->name, "kdeinit" ) == 0 &&
@@ -300,19 +290,12 @@ static ProcessInfo* getProcess( int pid )
       ps->name[ len ] = '\0';
     }
   }
-
   /* find out user name with the process uid */
   uName = getCachedPWUID( ps->uid );
   strncpy( ps->userName, uName, sizeof( ps->userName ) - 1 );
   ps->userName[ sizeof( ps->userName ) - 1 ] = '\0';
   validateStr( ps->userName );
-  
-  ps->alive = 1;
-
-
-  
-
-  return ps;
+  return true;
 }
 
 void printProcessList( const char* cmd)
@@ -328,18 +311,18 @@ void printProcessList( const char* cmd)
                  "for /proc file system enabled!\n" );
     return;
   }
-
+  ProcessInfo ps;
   while ( ( entry = readdir( dir ) ) ) {
     if ( isdigit( entry->d_name[ 0 ] ) ) {
-      int pid;
+      long pid;
 
-      pid = atoi( entry->d_name );
-      ProcessInfo* ps = getProcess( pid );
-      fprintf( CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d\t%s\t%ld\t%s\n",
-	     ps->name, (long)ps->pid, (long)ps->ppid,
-             (long)ps->uid, (long)ps->gid, ps->status, ps->userLoad,
-             ps->sysLoad, ps->niceLevel, ps->vmSize / 1024, ps->vmRss / 1024,
-             ps->userName, (long)ps->tracerpid, ps->cmdline
+      pid = atol( entry->d_name );
+      if(getProcess( pid, &ps ))
+        fprintf( CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d\t%s\t%ld\t%s\n",
+	     ps.name, pid, (long)ps.ppid,
+             (long)ps.uid, (long)ps.gid, ps.status, ps.userLoad,
+             ps.sysLoad, ps.niceLevel, ps.vmSize / 1024, ps.vmRss / 1024,
+             ps.userName, (long)ps.tracerpid, ps.cmdline
 	     );
     }
   }
