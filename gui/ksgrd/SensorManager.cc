@@ -24,6 +24,7 @@
 #include <kapplication.h>
 #include <kdebug.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 
 #include "HostConnector.h"
 #include "SensorShellAgent.h"
@@ -132,13 +133,13 @@ SensorManager::SensorManager()
   mDict.insert( QLatin1String( "uptime" ), i18n( "Uptime" ) );
 
   for ( int i = 0; i < 32; i++ ) {
-    mDict.insert( QLatin1String( "cpu%1" ) + QString::number( i ), i18n( "CPU%1", i ) );
-    mDict.insert( QLatin1String( "disk%1" ) + QString::number( i ), i18n( "Disk%1", i ) );
+    mDict.insert( QLatin1String( "cpu%1" ) + QString::number( i ), i18n( "CPU %1", i ) );
+    mDict.insert( QLatin1String( "disk%1" ) + QString::number( i ), i18n( "Disk %1", i ) );
   }
 
   for ( int i = 0; i < 6; i++) {
-    mDict.insert( QLatin1String( "fan" ) + QString::number( i ), i18n( "Fan%1", i ) );
-    mDict.insert( QLatin1String( "temp" ) + QString::number( i ), i18n( "Temperature%1", i ) );
+    mDict.insert( QLatin1String( "fan" ) + QString::number( i ), i18n( "Fan %1", i ) );
+    mDict.insert( QLatin1String( "temp" ) + QString::number( i ), i18n( "Temperature %1", i ) );
   }
 
   mDict.insert( QLatin1String( "int00" ), i18n( "Total" ) );
@@ -146,7 +147,7 @@ SensorManager::SensorManager()
   QString num;
   for ( int i = 1; i < 25; i++ ) {
     num.sprintf( "%.2d", i );
-    mDict.insert( QLatin1String( "int" ) + num, ki18n( "Int%1" ).subs( i - 1, 3 ).toString() );
+    mDict.insert( QLatin1String( "int" ) + num, ki18n( "Int %1" ).subs( i - 1, 3 ).toString() );
   }
 
   // TODO: translated descriptions not yet implemented.
@@ -164,46 +165,55 @@ SensorManager::SensorManager()
 
   mBroadcaster = 0;
 
-  mHostConnector = new HostConnector( 0 );
 }
 
 SensorManager::~SensorManager()
 {
-  delete mHostConnector;
 }
 
-bool SensorManager::engageHost( const QString &hostName )
+bool SensorManager::engageHost( const QString &hostName, QWidget *parent )
 {
-  bool retVal = true;
-
-  if ( hostName.isEmpty() || !mAgents.contains( hostName ) ) {
-    mHostConnector->setCurrentHostName( hostName );
-
-    if ( mHostConnector->exec() ) {
-      QString shell = "";
-      QString command = "";
-      int port = -1;
-
-      /* Check which radio button is selected and set parameters
-       * appropriately. */
-      if ( mHostConnector->useSsh() )
-        shell = "ssh";
-      else if ( mHostConnector->useRsh() )
-        shell = "rsh";
-      else if ( mHostConnector->useDaemon() )
-        port = mHostConnector->port();
-      else
-        command = mHostConnector->currentCommand();
-
-      if ( hostName.isEmpty() )
-        retVal = engage( mHostConnector->currentHostName(), shell,
-                         command, port );
-      else
-        retVal = engage( hostName, shell, command, port );
+  HostConnector hostConnector( parent );
+  
+  hostConnector.setHostNames( mHostList );
+  hostConnector.setCommands( mCommandList );
+  if ( !hostName.isEmpty()) {
+    if( mAgents.contains( hostName ) )
+      return true;
+    if( hostName == "localhost" || hostName == "127.0.0.1") {
+      KMessageBox::sorry( parent, i18n( "Something has gone wrong - cannot connect to local ksysguard daemon") );
+      return false;
     }
   }
 
-  return retVal;
+  hostConnector.setCurrentHostName( hostName );
+
+  if ( !hostConnector.exec() )
+    return true;
+
+  mHostList = hostConnector.hostNames();
+  mCommandList = hostConnector.commands();
+  
+  QString shell = "";
+  QString command = "";
+  int port = -1;
+
+  /* Check which radio button is selected and set parameters
+   * appropriately. */
+  if ( hostConnector.useSsh() )
+    shell = "ssh";
+  else if ( hostConnector.useRsh() )
+    shell = "rsh";
+  else if ( hostConnector.useDaemon() )
+    port = hostConnector.port();
+  else
+    command = hostConnector.currentCommand();
+
+  if ( hostName.isEmpty() )
+    return engage( hostConnector.currentHostName(), shell,
+                     command, port );
+ else
+    return engage( hostName, shell, command, port );
 }
 
 bool SensorManager::engage( const QString &hostName, const QString &shell,
@@ -399,15 +409,15 @@ QString SensorManager::translateSensor( const QString &sensor ) const
 
 void SensorManager::readProperties( KConfig *cfg )
 {
-  mHostConnector->setHostNames( cfg->readEntry( "HostList" ,QStringList()) );
-  mHostConnector->setCommands( cfg->readEntry( "CommandList",QStringList() ) );
+  mHostList = cfg->readEntry( "HostList" ,QStringList());
+  mCommandList = cfg->readEntry( "CommandList",QStringList() );
 }
 
 void
 SensorManager::saveProperties( KConfig *cfg )
 {
-  cfg->writeEntry( "HostList", mHostConnector->hostNames() );
-  cfg->writeEntry( "CommandList", mHostConnector->commands() );
+  cfg->writeEntry( "HostList", mHostList );
+  cfg->writeEntry( "CommandList", mCommandList );
 }
 
 void SensorManager::disconnectClient( SensorClient *client )

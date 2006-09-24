@@ -61,8 +61,6 @@ class Workspace : public QTabWidget
     void copy();
     void paste();
     void configure();
-    void updateCaption( QWidget* );
-    void updateCaption( int );
     void updateSheetTitle( QWidget* );
     void applyStyle();
 

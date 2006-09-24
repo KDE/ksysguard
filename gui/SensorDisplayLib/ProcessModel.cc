@@ -794,13 +794,24 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				return tooltip + "<br/>" + tracer;
 			return tooltip;
 		}
+
+		case HeadingCommand: {
+			QString tooltip =
+				i18n("<qt>This process was run with the following command:<br/>%1", process->command);
+		        if(tracer.isEmpty()) return tooltip;
+			return tooltip + "<br/>" + tracer;
+		}
 		case HeadingUser: {
 			if(!tracer.isEmpty())
 				return getTooltipForUser(process->uid, process->gid) + "<br/>" + tracer;
 			return getTooltipForUser(process->uid, process->gid);
 		}
 		case HeadingXMemory: {
-			QString tooltip = i18n("<qt>Number of pixmaps: %1<br/>Amount of memory used by pixmaps: %2<br/>Other X server memory used: %3", process->xResNumPxm, KGlobal::locale()->formatByteSize(process->xResPxmMemBytes), KGlobal::locale()->formatByteSize(process->xResMemOtherBytes));
+			QString tooltip;
+			if(process->xResMemOtherBytes + process->xResPxmMemBytes == 0 && process->xResIdentifier.isEmpty())
+				tooltip = i18n("<qt>This is a program that does not have graphical user interface.");
+			else 
+				tooltip = i18n("<qt>Number of pixmaps: %1<br/>Amount of memory used by pixmaps: %2<br/>Other X server memory used: %3", process->xResNumPxm, KGlobal::locale()->formatByteSize(process->xResPxmMemBytes), KGlobal::locale()->formatByteSize(process->xResMemOtherBytes));
 			if(!tracer.isEmpty())
 				return tooltip + "<br/>" + tracer;
 			return tooltip;

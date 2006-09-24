@@ -16,9 +16,6 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-    not commit any changes without consulting me first. Thanks!
-
 */
 
 #ifndef KSG_SIGNALIDS_H

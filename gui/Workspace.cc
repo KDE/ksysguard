@@ -16,9 +16,6 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-    Please do not commit any changes without consulting me first. Thanks!
-
 */
 
 #include <QLineEdit>
@@ -42,9 +39,6 @@ Workspace::Workspace( QWidget* parent)
 {
   KAcceleratorManager::setNoAccel(this);
 
-  connect( this, SIGNAL( currentChanged( int ) ),
-           SLOT( updateCaption( int ) ) );
-
   this->setWhatsThis( i18n( "This is your work space. It holds your worksheets. You need "
                                "to create a new worksheet (Menu File->New) before "
                                "you can drag sensors here." ) );
@@ -52,13 +46,6 @@ Workspace::Workspace( QWidget* parent)
 
 Workspace::~Workspace()
 {
-  /* This workaround is necessary to prevent a crash when the last
-   * page is not the current page. It seems like the the signal/slot
-   * administration data is already deleted but slots are still
-   * being triggered. TODO: I need to ask the Trolls about this. */
-
-  disconnect( this, SIGNAL( currentChanged( int ) ), this,
-              SLOT( updateCaption( int ) ) );
 }
 
 void Workspace::saveProperties( KConfig *cfg )
@@ -329,22 +316,6 @@ void Workspace::configure()
     return;
 
   current->settings();
-}
-
-void Workspace::updateCaption( QWidget *wdg)
-{
-  updateCaption( indexOf(wdg) );
-}
-void Workspace::updateCaption( int index )
-{
-  WorkSheet *wdg = static_cast<WorkSheet *>(widget(index));
-  if ( wdg )
-    emit setCaption( tabText(index) );
-  else
-    emit setCaption( QString() );
-
-  for( int i = 0; i < mSheetList.size(); i++)
-    mSheetList.at(i)->setIsOnTop( mSheetList.at(i) == wdg );
 }
 
 void Workspace::applyStyle()

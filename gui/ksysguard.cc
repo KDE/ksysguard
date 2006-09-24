@@ -199,7 +199,7 @@ void TopLevel::updateStatusBar()
 
 void TopLevel::connectHost()
 {
-  KSGRD::SensorMgr->engageHost( "" );
+  KSGRD::SensorMgr->engageHost( "" , this);
 }
 
 void TopLevel::disconnectHost()

@@ -29,8 +29,6 @@
 
 #include "SensorAgent.h"
 
-class HostConnector;
-
 namespace KSGRD {
 
 class SensorManagerIterator;
@@ -65,7 +63,7 @@ class KDE_EXPORT SensorManager : public QObject
     SensorManager();
     ~SensorManager();
 
-    bool engageHost( const QString &hostName );
+    bool engageHost( const QString &hostName, QWidget *parent );
     bool engage( const QString &hostName, const QString &shell = "ssh",
                  const QString &command = "", int port = -1 );
 
@@ -116,10 +114,12 @@ class KDE_EXPORT SensorManager : public QObject
     QHash<QString, QString> mUnits;
     QHash<QString, QString> mDict;
     QHash<QString, QString> mTypes;
-
+   
+    /** Store the data from the config file to pass to the MostConnector dialog box*/ 
+    QStringList mHostList;
+    QStringList mCommandList;
+    
     QWidget* mBroadcaster;
-
-    HostConnector* mHostConnector;
 };
 
 KDE_EXPORT extern SensorManager* SensorMgr;

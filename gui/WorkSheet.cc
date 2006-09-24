@@ -305,8 +305,8 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
                                              const QString& sensorDescr,
                                              uint row, uint column )
 {
-  if ( !KSGRD::SensorMgr->engageHost( hostName ) ) {
-    QString msg = i18n( "It is impossible to connect to \'%1\'." ,  hostName );
+  if ( !KSGRD::SensorMgr->engageHost( hostName, this) ) {
+    QString msg = i18n( "It was not possible to connect to \'%1\'." ,  hostName );
     KMessageBox::error( this, msg );
 
     return 0;

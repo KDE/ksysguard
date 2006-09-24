@@ -41,7 +41,7 @@
 #include <kurl.h>
 #include <kservice.h>
 
-#include "SensorManager.h"
+#include "ksgrd/SensorManager.h"
 #include "TimerSettings.h"
 
 #include "SensorDisplay.h"
@@ -102,8 +102,8 @@ void SensorDisplay::registerSensor( SensorProperties *sp )
    * sensors, the connect info is not saved in the work sheet. In such
    * a case the user can re-enter the connect information and the
    * connection will be established. */
-  if ( !SensorMgr->engageHost( sp->hostName() ) ) {
-    QString msg = i18n( "It is impossible to connect to \'%1\'." ,  sp->hostName() );
+  if ( !SensorMgr->engageHost( sp->hostName(), this ) ) {
+    QString msg = i18n( "It was not possible to connect to \'%1\'." ,  sp->hostName() );
     KMessageBox::error( this, msg );
   }
 
