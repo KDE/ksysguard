@@ -45,7 +45,7 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 	}
 
 	if(source_row >= parent_process->children.size()) {
-		kDebug() << "Serious error with data.  Source row requested for a non existant row." << endl;
+		kDebug() << "Serious error with data.  Source row requested for a non existant row. Requested " << source_row << " of " << parent_process->children.size() << " for " << parent_process->pid << endl;
 		return true;
 	}
 	const Process *process = parent_process->children.at(source_row);

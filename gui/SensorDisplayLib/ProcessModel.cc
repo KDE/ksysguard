@@ -2,7 +2,7 @@
     KSysGuard, the KDE System Guard
 
 	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
-	Copyright (c) 2006 John Tapsell <john.tapsell@kdemail.net>
+	Copyright (c) 2006 John Tapsell <john.tapsell@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms version 2 of of the GNU General Public
@@ -20,9 +20,6 @@
 */
 
 
-
-#include <assert.h>
-#include <QTimer>
 
 #include <kapplication.h>
 #include <kdebug.h>
@@ -42,13 +39,6 @@
 #include "ProcessModel.moc"
 #include "ProcessModel.h"
 #include "SignalIDs.h"
-
-#include <QCheckBox>
-#include <QComboBox>
-#include <QLayout>
-
-#include <kapplication.h>
-#include <kpushbutton.h>
 
 ProcessModel::ProcessModel(QObject* parent)
 	: QAbstractItemModel(parent)
@@ -1088,7 +1078,7 @@ bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltyp
 	endInsertColumns();
 	reset();
 
-	assert(mHeadingsToType.size() == mHeadings.size());
+	Q_ASSERT(mHeadingsToType.size() == mHeadings.size());
 
 	return true;
 }

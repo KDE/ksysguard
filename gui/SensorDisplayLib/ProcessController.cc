@@ -72,7 +72,7 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	
 	mUi.treeView->header()->setClickable(true);
 	mUi.treeView->header()->setSortIndicatorShown(true);
-	
+	mUi.txtFilter->setClearButtonShown(true);
 	connect(mUi.btnKillProcess, SIGNAL(clicked()), this, SLOT(killProcess()));
 	connect(mUi.txtFilter, SIGNAL(textChanged(const QString &)), &mFilterModel, SLOT(setFilterRegExp(const QString &)));
 	connect(mUi.txtFilter, SIGNAL(textChanged(const QString &)), this, SLOT(expandInit()));
@@ -319,6 +319,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		
 		mUi.treeView->sortByColumn(mInitialSortCol);
 		mFilterModel.sort(mInitialSortCol,(mInitialSortInc)?Qt::AscendingOrder:Qt::DescendingOrder);
+		mFilterModel.setDynamicSortFilter(true);
 		kDebug() << "We have added the columns and now setting the sort by col " << mInitialSortCol << endl;
 
 		kDebug() << "PS_INFO_COMMAND: We are now ready for ps.  " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;

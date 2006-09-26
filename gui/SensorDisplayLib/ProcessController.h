@@ -84,7 +84,7 @@ public:
 
 	virtual bool hasSettingsDialog() const
 	{
-		return (false);
+		return false;
 	}
 
 public slots:
@@ -129,7 +129,7 @@ private:
 	/** Same as mInitialSortCol but for the direction to sort
 	 */
         bool mInitialSortInc;
-	/** The 'xres' call is very expensive - takes around 2 seconds for me.
+	/** The 'xres' call is very expensive - takes around 1 second for me.
 	 *  So rather than calling it every time, instead we just call it occasionally.
 	 *  When this countdown reaches 0 then we call xres again.
 	 */

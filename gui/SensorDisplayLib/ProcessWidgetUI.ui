@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>ProcessWidget</class>
  <widget class="QWidget" name="ProcessWidget" >
   <property name="geometry" >
@@ -31,14 +28,15 @@
       <number>6</number>
      </property>
      <item>
-      <widget class="QLineEdit" name="txtFilter" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>0</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+      <widget class="KLineEdit" name="txtFilter" >
+       <property name="styleSheet" >
+        <string/>
+       </property>
+       <property name="urlDropsEnabled" >
+        <bool>false</bool>
+       </property>
+       <property name="clickMessage" >
+        <string>Quick search</string>
        </property>
       </widget>
      </item>
@@ -186,7 +184,13 @@
    </item>
   </layout>
  </widget>
- <pixmapfunction></pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>KLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>klineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
