@@ -48,7 +48,7 @@ class SensorShellAgent : public SensorAgent
   Q_OBJECT
 
   public:
-    SensorShellAgent( SensorManager *sm );
+    explicit SensorShellAgent( SensorManager *sm );
     ~SensorShellAgent();
 
     bool start( const QString &host, const QString &shell,

@@ -32,7 +32,7 @@ class BarGraph : public QWidget
   friend class DancingBars;
 
   public:
-    BarGraph( QWidget *parent );
+    explicit BarGraph( QWidget *parent );
     ~BarGraph();
 
     bool addBar( const QString &footer );

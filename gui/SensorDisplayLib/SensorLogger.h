@@ -35,7 +35,7 @@ class LogSensor : public QObject, public KSGRD::SensorClient
   Q_OBJECT
 
   public:
-    LogSensor( QObject *parent );
+    explicit LogSensor( QObject *parent );
     ~LogSensor();
 
     void answerReceived( int id, const QStringList& answer );

@@ -35,7 +35,7 @@ class HostConnector : public KDialog
   Q_OBJECT
 
   public:
-    HostConnector( QWidget *parent, const char *name = 0 );
+    explicit HostConnector( QWidget *parent, const char *name = 0 );
     ~HostConnector();
 
     void setHostNames( const QStringList &list );

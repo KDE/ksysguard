@@ -37,7 +37,7 @@ namespace KSGRD {
 class SensorClient
 {
   public:
-    SensorClient() { }
+    explicit SensorClient() { }
     virtual ~SensorClient() { }
 
     /**

@@ -43,7 +43,7 @@ class SensorSocketAgent : public SensorAgent
   Q_OBJECT
 
   public:
-    SensorSocketAgent( SensorManager *sm );
+    explicit SensorSocketAgent( SensorManager *sm );
     ~SensorSocketAgent();
 
     bool start( const QString &host, const QString &shell,

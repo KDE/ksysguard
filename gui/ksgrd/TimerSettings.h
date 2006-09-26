@@ -36,7 +36,7 @@ class KDE_EXPORT TimerSettings : public KDialog
   Q_OBJECT
 
   public:
-    TimerSettings( QWidget *parent, const char *name = 0 );
+    explicit TimerSettings( QWidget *parent, const char *name = 0 );
     ~TimerSettings();
 
     void setUseGlobalUpdate( bool value );

@@ -60,7 +60,7 @@ class KDE_EXPORT SensorManager : public QObject
         QString mMessage;
     };
 
-    SensorManager();
+    explicit SensorManager();
     ~SensorManager();
 
     bool engageHost( const QString &hostName, QWidget *parent );

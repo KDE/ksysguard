@@ -1,8 +1,7 @@
 /*
- *  XResTop - A 'top' like tool for monitoring X Client server resource
- *            usage.
+ *  This code was originally taken from XResTop, Copyright 2003 Matthew Allum, by John Tapsell in 2006
  *
- *  Copyright 2003 Matthew Allum
+ *   Copyright (c) 2006 John Tapsell <john.tapsell@kde.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

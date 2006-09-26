@@ -48,7 +48,7 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
   Q_OBJECT
 
   public:
-    WorkSheet( QWidget* parent);
+    explicit WorkSheet( QWidget* parent);
     WorkSheet( uint rows, uint columns, uint interval, QWidget* parent);
     ~WorkSheet();
 

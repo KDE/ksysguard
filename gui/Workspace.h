@@ -37,7 +37,7 @@ class Workspace : public QTabWidget
   Q_OBJECT
 
   public:
-    Workspace( QWidget* parent);
+    explicit Workspace( QWidget* parent);
     ~Workspace();
 
     void saveProperties( KConfig* );

@@ -31,7 +31,7 @@ class SensorFrame : public QGroupBox
 {
   Q_OBJECT
   public:
-    SensorFrame(KSGRD::SensorDisplay* display);
+    explicit SensorFrame(KSGRD::SensorDisplay* display);
   private slots:
     void setTitle(const QString& title);
 };

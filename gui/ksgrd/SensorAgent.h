@@ -48,7 +48,7 @@ class KDE_EXPORT SensorAgent : public QObject
   Q_OBJECT
 
   public:
-    SensorAgent( SensorManager *sm );
+    explicit SensorAgent( SensorManager *sm );
     virtual ~SensorAgent();
 
     virtual bool start( const QString &host, const QString &shell,
