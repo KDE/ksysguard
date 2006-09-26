@@ -18,7 +18,7 @@ INCLUDES = -I$(srcdir)/ksgrd -I$(srcdir)/SensorDisplayLib -ISensorDisplayLib -I$
  
 ####### This part is very ksysguard specific
 # you can add here more. This one gets installed 
-bin_PROGRAMS = ksysguard kpm
+bin_PROGRAMS = ksysguard
 
 # Which sources should be compiled for ksysguard.
 ksysguard_SOURCES = \
@@ -34,8 +34,6 @@ ksysguard_LDADD = \
 	SensorDisplayLib/libsensordisplays.la \
 	$(LIB_KDEUI) $(LIB_KIO)
 ksysguard_LDFLAGS = $(all_libraries) $(KDE_RPATH)
-
-kpm_SOURCES = kpm.c
 
 appdatadir = $(kde_datadir)/ksysguard
 appdata_DATA = ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml

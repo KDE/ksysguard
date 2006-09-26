@@ -61,19 +61,6 @@ install(TARGETS ksysguard DESTINATION ${BIN_INSTALL_DIR})
 
 ########### next target ###############
 
-set(kpm_SRCS kpm.c )
-
-kde4_automoc(${kpm_SRCS})
-
-kde4_add_executable(kpm ${kpm_SRCS})
-
-target_link_libraries(kpm  ${KDE4_KDECORE_LIBS} )
-
-install(TARGETS kpm DESTINATION ${BIN_INSTALL_DIR})
-
-
-########### next target ###############
-
 set(sysguard_panelapplet_PART_SRCS KSysGuardApplet.cc KSGAppletSettings.cc ${libsensordisplays_SRCS} )
 
 kde4_automoc(${sysguard_panelapplet_PART_SRCS})
