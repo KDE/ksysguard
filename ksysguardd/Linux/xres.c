@@ -101,8 +101,12 @@ typedef struct XResTopApp
 void printXres(FILE *CurrentClient);
 int setup_xres();
 
-XResTopApp *app = NULL;
-FILE *sCurrentClient = NULL;
+static XResTopApp *app = NULL;
+static FILE *sCurrentClient = NULL;
+static Window sDummy; /*used to pass into functions that modify this but we dont care*/
+static long prev_pid = 0;
+static long prev_prev_pid = 0;
+static long prev_prev_prev_pid = 0;
 
 /* X Error trapping */
 
@@ -297,7 +301,7 @@ static void xrestop_client_get_stats(XResTopClient *client)
 
 static Bool recurse_win_tree(XResTopClient *client, Window win_top)
 {
-  Window       *children, dummy;
+  Window       *children;
   unsigned int  nchildren;
   unsigned int  i;
   pid_t pid = -1;
@@ -318,23 +322,28 @@ static Bool recurse_win_tree(XResTopClient *client, Window win_top)
   client->n_cursors = 0;
   client->n_other = 0;
 
-  if (check_win_for_info(client, win_top)) {
-    pid = window_get_pid(win_top);
+  pid = window_get_pid(win_top);
+  /*If we have seen this pid before don't bother recalculating.  It won't catch all cases, but will catch most for minimal effort */
+  if (pid != -1 && pid != client->pid && 
+      pid != prev_pid &&
+      pid != prev_prev_pid &&
+      pid != prev_prev_prev_pid &&
+      check_win_for_info(client, win_top)) {
 
-    if(pid != -1) {
-      /*If we have seen this pid before don't bother recalculating.  It won't catch all cases, but will catch most for minimal effort */
-      if(pid == client->pid)
-	      return True;
       client->pid = pid;
+      
+      prev_prev_prev_pid = prev_prev_pid;
+      prev_prev_pid = prev_pid;
+      prev_pid = pid;
+       
       xrestop_client_get_stats(client);
       /*"xPid\tXIdentifier\tXPxmMem\tXNumPxm\tXMemOther\n"*/
       fprintf(sCurrentClient, "%d\t%s\t%ld\t%d\t%ld\n", pid, client->identifier, client->pixmap_bytes, client->n_pixmaps, client->other_bytes);
-    }
   }
   
   trap_errors();
 
-  qtres = XQueryTree(app->dpy, win_top, &dummy, &dummy, &children, &nchildren);
+  qtres = XQueryTree(app->dpy, win_top, &sDummy, &sDummy, &children, &nchildren);
 
   if (untrap_errors())
     {
