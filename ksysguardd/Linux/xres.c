@@ -1,5 +1,5 @@
 /*
- *  This code was originally taken from XResTop, Copyright 2003 Matthew Allum, by John Tapsell in 2006
+ *  This code is based on code from XResTop written by Matthew Allum. It was copied by John Tapsell in 2006
  *
  *   Copyright (c) 2006 John Tapsell <john.tapsell@kde.org>
  *
