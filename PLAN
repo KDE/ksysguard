@@ -1,0 +1,6 @@
+This is just a rough plan:
+
+* Applications will use the Solid library through its API
+* Each library instance (one per app) will communicate via dbus to a kded session ksysguard daemon (I like the name "KDE Solid Daemon" perhaps or "KDE System Guard")
+* This session daemon connects to a local ksysguardd via KProcess with stdin/stdout, and optionally remotely via ssh
+* The session daemon also monitors SMART (hard disk status), RAID and so on
