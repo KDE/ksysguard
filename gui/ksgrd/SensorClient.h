@@ -180,7 +180,7 @@ class SensorIntegerInfo : public SensorTokenizer
 class SensorFloatInfo : public SensorTokenizer
 {
   public:
-    SensorFloatInfo( const QString &info )
+    explicit SensorFloatInfo( const QString &info )
       : SensorTokenizer( info, '\t' ) { }
 
     ~SensorFloatInfo() { }

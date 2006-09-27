@@ -127,7 +127,7 @@ KDE_EXPORT extern SensorManager* SensorMgr;
 class KDE_EXPORT SensorManagerIterator : public QHashIterator<QString, SensorAgent*>
 {
   public:
-    SensorManagerIterator( const SensorManager *sm )
+    explicit SensorManagerIterator( const SensorManager *sm )
       : QHashIterator<QString, SensorAgent*>( sm->mAgents ) { }
 
     ~SensorManagerIterator() { }
