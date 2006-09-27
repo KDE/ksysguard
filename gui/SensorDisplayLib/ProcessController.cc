@@ -19,7 +19,6 @@
 
 */
 
-#include <assert.h>
 #include <QTimer>
 
 #include <QDomElement>
@@ -32,6 +31,8 @@
 #include <QAction>
 #include <QMenu>
 #include <QTime>
+#include <QSet>
+
 
 #include <kapplication.h>
 #include <kdebug.h>
@@ -50,7 +51,6 @@
 #include <QLayout>
 
 #include <kapplication.h>
-#include <kpushbutton.h>
 
 ProcessController::ProcessController(QWidget* parent, const QString &title, SharedSettings *workSheetSettings)
 	: KSGRD::SensorDisplay(parent, title, workSheetSettings), mModel(this), mFilterModel(this)
@@ -62,6 +62,8 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
         mInitialSortInc = false;
 	mXResSupported = false;
 	mReadyForPs = false;
+	mWillUpdateList = false;
+	mUpdateCountdown = 2;
 	mUi.setupUi(this);
 	mFilterModel.setSourceModel(&mModel);
 	mUi.treeView->setModel(&mFilterModel);
@@ -78,8 +80,6 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	connect(mUi.txtFilter, SIGNAL(textChanged(const QString &)), this, SLOT(expandInit()));
 	connect(mUi.cmbFilter, SIGNAL(currentIndexChanged(int)), &mFilterModel, SLOT(setFilter(int)));
 	connect(mUi.treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
-	connect(mUi.treeView, SIGNAL(collapsed(const QModelIndex &)), this, SLOT(resizeFirstColumn()));
-	connect(&mModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)), this, SLOT(rowsInserted(const QModelIndex &, int, int)));
 	connect(mUi.treeView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex & , const QModelIndex & )), this, SLOT(currentRowChanged(const QModelIndex &)));
 	connect(mUi.treeView->header(), SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
 	connect(mUi.chkShowTotals, SIGNAL(stateChanged(int)), &mModel, SLOT(setShowTotals(int)));
@@ -130,35 +130,25 @@ void ProcessController::showOrHideColumn(QAction *action)
 		mUi.treeView->hideColumn(-1-index);
 	else {
 		mUi.treeView->showColumn(index);
-		mUi.treeView->resizeColumnToContents(index);
 		mUi.treeView->resizeColumnToContents(mFilterModel.columnCount());
 	}
 		
 }
 void ProcessController::expandAllChildren(const QModelIndex &parent) 
 {
+	//This is called when the user expands a node.  This then expands all of its children.  This will trigger this function again
+	//recursively.
 	QModelIndex sourceParent = mFilterModel.mapToSource(parent);
 	for(int i = 0; i < mModel.rowCount(sourceParent); i++) 
 		mUi.treeView->expand(mFilterModel.mapFromSource(mModel.index(i,0, sourceParent)));
-	QTimer::singleShot(0,this,SLOT(resizeFirstColumn())); //compress events, as this can end up being called for each child
 }
 
-void ProcessController::resizeFirstColumn()
-{
-	mUi.treeView->resizeColumnToContents(0);
-}
-void ProcessController::rowsInserted( const QModelIndex & parent, int , int )
-{
-	if(!parent.isValid()) { //init has been added - expand it!
-		//We can't expand straight away - it's only just been added.  We need to wait till all its children have been added first
-		//So we just fire off a singleshot.  This will call expandInit() in the event loop which is after all the children have been added
-		QTimer::singleShot(0, this, SLOT(expandInit()));
-	}
-}
 void ProcessController::expandInit()
 {
+	//When we expand the items, make sure we dont call our expand all children function
+	disconnect(mUi.treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
 	mUi.treeView->expand(mFilterModel.mapFromSource(mModel.index(0,0, QModelIndex())));
-	QTimer::singleShot(0,this,SLOT(resizeFirstColumn())); //compress events, as this can end up being called for each child
+	connect(mUi.treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
 }
 
 void ProcessController::resizeEvent(QResizeEvent* ev)
@@ -207,11 +197,16 @@ bool ProcessController::addSensor(const QString& hostName,
 void
 ProcessController::updateList()
 {
+	mWillUpdateList = false;
 	if(!mReadyForPs) {
+		kDebug() << "updateList called but ps? not ready" << endl;
 		return;
 	}
+	if(mUpdateCountdown > 0) {
+		mUpdateCountdown--;
+	}
 	sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);
-	//The 'xres' call is very expensive - takes about 2 seconds on my machine. Rather than calling it every 2 seconds
+	//The 'xres' call is very expensive - Rather than calling it every 2 seconds
 	//instead just call it every 5th time that we call ps.  It won't change much.
 	if(mXResSupported) {
 		if(--mXResCountdown <= 0) {
@@ -304,7 +299,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 				coltype += line[i].toLatin1();
 		QStringList header = answer.at(0).split('\t');
 		if(coltype.count() != header.count()) {
-			kDebug(1215) << "ProcessControll::answerReceived.  Invalid data from a client - column type and data don't match in number.  Discarding" << endl;
+			kDebug(1215) << "ProcessController::answerReceived.  Invalid data from a client - column type and data don't match in number.  Discarding" << endl;
 			sensorError(id, true);
 			return;
 		}
@@ -312,12 +307,18 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 			sensorError(id,true);
 			return;
 		}
-
+		//Logical column 0 will always be the tree bit with the process name.  We expand this automatically in code,
+		//so dont let the user change it
 		mFilterModel.setFilterKeyColumn(0);
+		//Process names seem to always be in lowercase, but might as well make the filter case insensitive anyway
+		mFilterModel.setFilterCaseSensitivity(Qt::CaseInsensitive);
+		mUi.treeView->header()->setResizeMode(0, QHeaderView::ResizeToContents);
+		//set the last section to stretch to take up all the room.  We also set this again in xres_info to be sure
+		mUi.treeView->header()->setStretchLastSection(true);
 		//When we loaded the settings, we set mInitialSort* to the column and direction to sort in/
 		//Since we have just added the columns no, we should set the sort now.
 		
-		mUi.treeView->sortByColumn(mInitialSortCol);
+		mUi.treeView->sortByColumn(mInitialSortCol, (mInitialSortInc)?Qt::AscendingOrder:Qt::DescendingOrder);
 		mFilterModel.sort(mInitialSortCol,(mInitialSortInc)?Qt::AscendingOrder:Qt::DescendingOrder);
 		mFilterModel.setDynamicSortFilter(true);
 		kDebug() << "We have added the columns and now setting the sort by col " << mInitialSortCol << endl;
@@ -348,11 +349,12 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 			kDebug(1215) << "No data in the answer from 'ps'" << endl;
 			break;
 		}
+		//We are now ready to send this data to the model.  
 		if(!mModel.setData(data)) {
 			sensorError(id, true);
 			return;
 		}
-
+		expandInit(); //This will expand the init process
 //		kDebug() << "We finished with ps data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 		break;
 	}
@@ -408,7 +410,10 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 			KSGRD::SensorMgr->notify(i18n("Invalid Signal."));
 			break;
 		}
-		QTimer::singleShot(0, this, SLOT(updateList())); //use a single shot incase we have multiple kill_command results
+		if(!mWillUpdateList) {
+			QTimer::singleShot(0, this, SLOT(updateList())); //use a single shot incase we have multiple kill_command results
+			mWillUpdateList = true;
+		}
 		break;	
 	}
 	case Kill_Supported_Command:
@@ -465,7 +470,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 				coltype += line[i].toLatin1();//FIXME: the answer should really be a QByteArray, not a string
 		QStringList header = answer.at(0).split('\t');
 		if(coltype.size() != header.count()) {
-			kDebug(1215) << "ProcessControll::answerReceived.  Invalid data from a client - column type and data don't match in number.  Discarding" << endl;
+			kDebug(1215) << "ProcessController::answerReceived.  Invalid data from a client - column type and data don't match in number.  Discarding" << endl;
 			sensorError(id, true);
 			return;
 		}
@@ -473,15 +478,26 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 			sensorError(id,true);
 			return;
 		}
+		mUi.treeView->header()->setStretchLastSection(true);
 		break;
 	}
 	case XRes_Command:
 	{
 		/* We have received the answer to a xres command that contains a
-		 * list of processes that we should already know about, with various additional information. */
+		 * list of processes that we should already know about, with various additional information. 
+		 * We first clear existing xres data, then add in the new data*/
 		QStringListIterator i(answer);
+		QSet<long long> pids;  //most programs have multiple windows.  we are only interested in the first window as this is just most likely to be the main window
+		
 		while(i.hasNext()) {
-		  mModel.setXResData(i.next().split('\t'));
+		  QStringList data = i.next().split('\t');
+		  if(!data.isEmpty()) {
+		    long long pid = data[0].toLongLong();
+		    if(!pids.contains(pid)) {
+		      mModel.setXResData(pid, data);
+		      pids.insert(pid);
+		    }  
+		  }  
 		}
 		break;
 	}
@@ -551,6 +567,7 @@ ProcessController::restoreSettings(QDomElement& element)
 
 	uint col = element.attribute("sortColumn", "1").toUInt(); //Default to sorting the user column
 	bool inc = element.attribute("incrOrder", "0").toUInt();  //Default to descending order
+	mUi.treeView->sortByColumn(mInitialSortCol, (mInitialSortInc)?Qt::AscendingOrder:Qt::DescendingOrder);
 	mFilterModel.sort(col,(inc)?Qt::AscendingOrder:Qt::DescendingOrder);
 	//The above sort command won't work if we have no columns (most likely).  So we save
 	//the column to sort by until we have added the columns (from PS_INFO_COMMAND)

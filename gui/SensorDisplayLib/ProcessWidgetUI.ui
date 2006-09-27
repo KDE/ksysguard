@@ -100,6 +100,9 @@
      <property name="itemsExpandable" >
       <bool>true</bool>
      </property>
+     <property name="sortingEnabled" >
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>

@@ -91,7 +91,6 @@ public slots:
 
 	void expandAllChildren(const QModelIndex &parent);
 	void currentRowChanged(const QModelIndex &current);
-	void resizeFirstColumn();
 		
 	void killProcess();
 	void killProcess(int pid, int sig);
@@ -100,7 +99,6 @@ public slots:
 
 	void updateList();
 private slots:
-	void rowsInserted( const QModelIndex & parent, int start, int end );
 	void expandInit();
 	void showContextMenu(const QPoint &point);
 	void showOrHideColumn(QAction *);
@@ -114,6 +112,8 @@ private:
 	bool mKillSupported;
 	/** Is the XRes extension supported where the ksysguardd daemon is? (And does the daemon support it) */
 	bool mXResSupported;
+	/** To compress function calls, we set these bools then set single shot timers.  Then in the function, we unset these*/
+	bool mWillUpdateList;
 	
 	/** The column context menu when you right click on a column.*/
 	QMenu *mColumnContextMenu;
@@ -143,6 +143,12 @@ private:
 	ProcessModel mModel;
 	ProcessFilter mFilterModel;
 	Ui::ProcessWidget mUi;
+
+	/** This is a fairly nasty hack.  At start up we can basically wait longer before we update the process list.  So we can just ignore
+	 *  the first couple of updates. This is set to some initial value in the constructor and is counted down to zero
+	 *  in updateList.  Updates will only be sent when it reaches 0.
+	 */	
+	int mUpdateCountdown;
 };
 
 #endif

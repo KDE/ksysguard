@@ -70,8 +70,8 @@ void Workspace::readProperties( KConfig *cfg )
    /* If SelectedSheets config entry is not there, then it's
     * probably the first time the user has started KSysGuard. We
     * then "restore" a special default configuration. */
-    selectedSheets << "SystemLoad.sgrd";
     selectedSheets << "ProcessTable.sgrd";
+    selectedSheets << "SystemLoad.sgrd";
   }
 
   KStandardDirs* kstd = KGlobal::dirs();

@@ -22,7 +22,6 @@
 
 #include <q3listview.h>
 #include <QPainter>
-//Added by qt3to4:
 #include <QLabel>
 #include <QTimerEvent>
 #include <QResizeEvent>

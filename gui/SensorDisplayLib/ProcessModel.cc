@@ -912,7 +912,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		}
 		return QVariant();
 	}
-	case Qt::BackgroundColorRole: {
+	case Qt::BackgroundRole: {
 		if(!mIsLocalhost) return QVariant();
 		Process *process = reinterpret_cast< Process * > (index.internalPointer());
 		if(process->tracerpid >0) {
@@ -1071,6 +1071,7 @@ bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltyp
 	headings.prepend(i18nc("process heading", "Name"));
 	headingsToType.prepend(HeadingName);
 
+	kDebug() << "Adding " << header.count() << " columns: " << header <<endl;
 	beginInsertColumns(QModelIndex(), 0, header.count()-1);
 		mHeadingsToType = headingsToType;
 		mColType = coltype;
@@ -1111,7 +1112,7 @@ bool ProcessModel::setXResHeader(const QStringList &header, const QByteArray &)
 				!mHeadingsToType.contains(HeadingXMemory));
 	if(!insertXIdentifier && !insertXMemory) return true; //nothing to do - already inserted
 
-	beginInsertColumns(QModelIndex(), mHeadings.count()-1, mHeadings.count() + ((insertXMemory && insertXIdentifier)?1:0));
+	beginInsertColumns(QModelIndex(), mHeadings.count(), mHeadings.count() + ((insertXMemory && insertXIdentifier)?1:0));
 		if(insertXMemory) {
 			mHeadings << i18nc("process heading", "X Server Memory");
 			mHeadingsToType << HeadingXMemory;
@@ -1123,7 +1124,7 @@ bool ProcessModel::setXResHeader(const QStringList &header, const QByteArray &)
 	endInsertColumns();
 	return true;
 }
-void ProcessModel::setXResData(const QStringList& data)
+void ProcessModel::setXResData(long long pid, const QStringList& data)
 {
 	if(data.count() < mXResNumColumns) {
 		kDebug(1215) << "Invalid data in setXResData. Not enough columns: " << data.join(",") << endl;
@@ -1133,9 +1134,7 @@ void ProcessModel::setXResData(const QStringList& data)
 		kDebug(1215) << "XRes data received when we still don't know which column the XPid is in" << endl;
 		return;
 	}
-
-
-	long long pid = data[mXResPidColumn].toLongLong();
+	
 	Process *process = mPidToProcess[pid];
 	if(!process) {
 		kDebug(1215) << "XRes Data for process '" << data[mXResPidColumn] << "'(int) which we don't know about" << endl;

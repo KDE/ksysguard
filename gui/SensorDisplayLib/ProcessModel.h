@@ -82,7 +82,7 @@ public:
 	 *  XRes is an X server extension that returns information about an X process, such as the identifier (The window title),
 	 *  the amount of memory the window is using for pixmaps, etc.
 	 */
-	void setXResData(const QStringList& data);
+	void setXResData(long long pid, const QStringList& data);
 	
 	/** If we are localhost, then we can offer additional help such as looking up information about a user, offering superuser
 	 *  'kill' etc. */
