@@ -18,11 +18,10 @@
 
 */
 
-#include <stdlib.h>
+//#include <stdlib.h>
 
 #include <kdebug.h>
 #include <klocale.h>
-#include <kpassworddialog.h> 
 
 #include "SensorClient.h"
 #include "SensorManager.h"

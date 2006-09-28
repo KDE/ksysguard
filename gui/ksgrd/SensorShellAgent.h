@@ -33,7 +33,6 @@ class KShellProcess;
 
 namespace KSGRD {
 
-class SensorClient;
 class SensorManager;
 
 /**

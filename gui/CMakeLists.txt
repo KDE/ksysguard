@@ -29,7 +29,7 @@ set(libsensordisplays_SRCS
    	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLoggerSettings.cc 
    	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorModel.cc 
    	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ListViewSettings.cc 
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SignalPlotter.cc 
+   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SignalPlotter.cc
 	)
 
 kde4_add_ui_files( libsensordisplays_SRCS
@@ -46,7 +46,11 @@ set(ksysguard_SRCS ${libsensordisplays_SRCS}
    WorkSheet.cc
    SensorFrame.cc
    WorkSheetSettings.cc 
-   Workspace.cc 
+   Workspace.cc
+   HostConnector.cc
+   StyleEngine.cc
+   StyleSettings.cc
+   TimerSettings.cc 
    ksysguard.cc )
 
 kde4_automoc(${ksysguard_SRCS})
@@ -61,7 +65,7 @@ install(TARGETS ksysguard DESTINATION ${BIN_INSTALL_DIR})
 
 ########### next target ###############
 
-set(sysguard_panelapplet_PART_SRCS KSysGuardApplet.cc KSGAppletSettings.cc ${libsensordisplays_SRCS} )
+set(sysguard_panelapplet_PART_SRCS KSysGuardApplet.cc KSGAppletSettings.cc ${libsensordisplays_SRCS} StyleEngine.cc StyleSettings.cc TimerSettings.cc)
 
 kde4_automoc(${sysguard_panelapplet_PART_SRCS})
 

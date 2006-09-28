@@ -26,7 +26,7 @@
 #include <kdebug.h>
 #include <kiconloader.h>
 
-#include <ksgrd/StyleEngine.h>
+#include "StyleEngine.h"
 
 #include "BarGraph.h"
 

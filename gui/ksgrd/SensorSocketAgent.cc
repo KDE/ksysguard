@@ -18,11 +18,10 @@
 
 */
 
-#include <stdlib.h>
+//#include <stdlib.h>
 
 #include <kdebug.h>
 #include <klocale.h>
-#include <kpassworddialog.h> 
 
 #include "SensorClient.h"
 #include "SensorManager.h"
@@ -34,15 +33,15 @@ using namespace KSGRD;
 SensorSocketAgent::SensorSocketAgent( SensorManager *sm )
   : SensorAgent( sm )
 {
-  connect( &mSocket, SIGNAL( error( int ) ), SLOT( error( int ) ) );
-  connect( &mSocket, SIGNAL( bytesWritten( int ) ), SLOT( msgSent( int ) ) );
+  connect( &mSocket, SIGNAL( error( QAbstractSocket::SocketError ) ), SLOT( error( QAbstractSocket::SocketError ) ) );
+  connect( &mSocket, SIGNAL( bytesWritten( qint64 ) ), SLOT( msgSent( ) ) );
   connect( &mSocket, SIGNAL( readyRead() ), SLOT( msgRcvd() ) );
-  connect( &mSocket, SIGNAL( connectionClosed() ), SLOT( connectionClosed() ) );
+  connect( &mSocket, SIGNAL( disconnected() ), SLOT( disconnected() ) );
 }
 
 SensorSocketAgent::~SensorSocketAgent()
 {
-  mSocket.write( "quit\n", strlen( "quit\n" ) );
+  mSocket.write( "quit\n", sizeof( "quit\n" ) );
   mSocket.flush();
 }
 	
@@ -50,7 +49,7 @@ bool SensorSocketAgent::start( const QString &host, const QString&,
                                const QString&, int port )
 {
   if ( port <= 0 )
-    kDebug(1215) << "SensorSocketAgent::start: Illegal port " << port << endl;
+    kDebug(1215) << "SensorSocketAgent::start: Invalid port " << port << endl;
 
   setHostName( host );
   mPort = port;
@@ -67,7 +66,7 @@ void SensorSocketAgent::hostInfo( QString &shell, QString &command, int &port ) 
   port = mPort;
 }
 
-void SensorSocketAgent::msgSent( int )
+void SensorSocketAgent::msgSent( )
 {
   if ( mSocket.bytesToWrite() != 0 )
     return;
@@ -96,23 +95,24 @@ void SensorSocketAgent::connectionClosed()
   sensorManager()->requestDisengage( this );
 }
 
-void SensorSocketAgent::error( int id )
+void SensorSocketAgent::error( QAbstractSocket::SocketError id )
 {
   switch ( id ) {
-    case Q3Socket::ErrConnectionRefused:
+    case QAbstractSocket::ConnectionRefusedError:
       SensorMgr->notify( i18n( "Connection to %1 refused" ,
                            hostName() ) );
       break;
-    case Q3Socket::ErrHostNotFound:
+    case QAbstractSocket::HostNotFoundError:
       SensorMgr->notify( i18n( "Host %1 not found" ,
                            hostName() ) );
       break;
-    case Q3Socket::ErrSocketRead:
-      SensorMgr->notify( i18n( "Read error at host %1",
+    case QAbstractSocket::NetworkError:
+      SensorMgr->notify( i18n( "An error occurred with the network (e.g., the network cable was accidentally plugged out) for host %1",
                            hostName() ) );
       break;
     default:
-      kDebug(1215) << "SensorSocketAgent::error() unknown error " << id << endl;
+      SensorMgr->notify( i18n( "Error for host %1: %2",
+                           hostName(), mSocket.errorString() ) );
   }
 
   setDaemonOnLine( false );

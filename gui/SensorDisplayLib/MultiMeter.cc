@@ -29,7 +29,7 @@
 #include <kdebug.h>
 
 #include <ksgrd/SensorManager.h>
-#include <ksgrd/StyleEngine.h>
+#include "StyleEngine.h"
 
 #include "MultiMeter.h"
 #include "MultiMeterSettings.h"

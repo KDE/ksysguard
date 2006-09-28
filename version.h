@@ -1,1 +1,1 @@
-#define KSYSGUARD_VERSION "1.2.0"
+#define KSYSGUARD_VERSION "4"

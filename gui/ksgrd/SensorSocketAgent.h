@@ -21,7 +21,7 @@
 #ifndef KSG_SENSORSOCKETAGENT_H
 #define KSG_SENSORSOCKETAGENT_H
 
-#include <q3socket.h>
+#include <QTcpSocket>
 
 #include "SensorAgent.h"
 
@@ -53,15 +53,15 @@ class SensorSocketAgent : public SensorAgent
 
   private Q_SLOTS:
     void connectionClosed();
-    void msgSent( int );
+    void msgSent();
     void msgRcvd();
-    void error( int );
+    void error( QAbstractSocket::SocketError );
 
   private:
     bool writeMsg( const char *msg, int len );
     bool txReady();
 
-    Q3Socket mSocket;
+    QTcpSocket mSocket;
     int mPort;
 };
 

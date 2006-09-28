@@ -1,11 +1,8 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=KSysGuard
+Name=System Monitor
 Name[fr]=Surveillance du système
-Name[x-test]=xxKSysGuardxx
-GenericName=Performance Monitor
-GenericName[fr]=Indicateurs de performance
-GenericName[x-test]=xxPerformance Monitorxx
+Name[x-test]=xxSystem Monitorxx
 Exec=ksysguard %U
 Icon=ksysguard
 Type=Application

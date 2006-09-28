@@ -1,10 +1,10 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=KSysGuard
+Name=System Monitor
 Name[fr]=Surveillance du système
-Name[x-test]=xxKSysGuardxx
-Comment=An applet which swallows KDE system guard displays
-Comment[x-test]=xxAn applet which swallows KDE system guard displaysxx
+Name[x-test]=xxSystem Monitorxx
+Comment=An applet which monitors system information
+Comment[x-test]=xxAn applet which monitors system informationxx
 Icon=ksysguard
 X-KDE-Library=sysguard_panelapplet
 X-KDE-UniqueApplet=true

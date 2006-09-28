@@ -44,7 +44,6 @@
 #include <kmessagebox.h>
 #include <ksgrd/SensorAgent.h>
 #include <ksgrd/SensorManager.h>
-#include <ksgrd/StyleEngine.h>
 #include <kstandarddirs.h>
 #include <kstatusbar.h>
 #include <kstdaction.h>
@@ -59,6 +58,8 @@
 #include "SensorBrowser.h"
 #include "Workspace.h"
 #include "WorkSheet.h"
+#include "StyleEngine.h"
+#include "HostConnector.h"
 
 #include "ksysguard.h"
 
@@ -67,7 +68,7 @@
 //Comment out to stop ksysguard from forking.  Good for debugging
 //#define FORK_KSYSGUARD
 
-static const char Description[] = I18N_NOOP( "KDE system guard" );
+static const char Description[] = I18N_NOOP( "KDE System Monitor" );
 TopLevel* topLevel;
 
 /**
@@ -199,7 +200,35 @@ void TopLevel::updateStatusBar()
 
 void TopLevel::connectHost()
 {
-  KSGRD::SensorMgr->engageHost( "" , this);
+  HostConnector hostConnector( this );
+  
+//  hostConnector.setHostNames( mHostList );
+//  hostConnector.setCommands( mCommandList );
+
+//  hostConnector.setCurrentHostName( "" );
+
+  if ( !hostConnector.exec() )
+    return;
+
+//  mHostList = hostConnector.hostNames();
+//  mCommandList = hostConnector.commands();
+  
+  QString shell = "";
+  QString command = "";
+  int port = -1;
+
+  /* Check which radio button is selected and set parameters
+   * appropriately. */
+  if ( hostConnector.useSsh() )
+    shell = "ssh";
+  else if ( hostConnector.useRsh() )
+    shell = "rsh";
+  else if ( hostConnector.useDaemon() )
+    port = hostConnector.port();
+  else
+    command = hostConnector.currentCommand();
+
+  KSGRD::SensorMgr->engage( hostConnector.currentHostName(), shell, command, port );
 }
 
 void TopLevel::disconnectHost()
@@ -413,8 +442,8 @@ int main( int argc, char** argv )
 
   KAboutData aboutData( "ksysguard", I18N_NOOP( "System Monitor" ),
                         KSYSGUARD_VERSION, Description, KAboutData::License_GPL,
-                        I18N_NOOP( "(c) 1996-2006 The KSysGuard Developers" ) );
-  aboutData.addAuthor( "John Tapsell", "Current Maintainer", "john.tapsell@kdemail.org" );
+                        I18N_NOOP( "(c) 1996-2006 The KDE System Monitor Developers" ) );
+  aboutData.addAuthor( "John Tapsell", "Current Maintainer", "john.tapsell@kde.org" );
   aboutData.addAuthor( "Chris Schlaeger", "Previous Maintainer", "cs@kde.org" );
   aboutData.addAuthor( "Greg Martyn", 0, "greg.martyn@gmail.com" );
   aboutData.addAuthor( "Tobias Koenig", 0, "tokoe@kde.org" );

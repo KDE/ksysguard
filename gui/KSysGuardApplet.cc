@@ -16,10 +16,6 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-    KSysGuard is currently maintained by Chris Schlaeger
-    <cs@kde.org>. Please do not commit any changes without consulting
-    me first. Thanks!
-
 */
 
 #include <QtCore/QEvent>
@@ -42,12 +38,12 @@
 
 #include <ksgrd/SensorClient.h>
 #include <ksgrd/SensorManager.h>
-#include <ksgrd/StyleEngine.h>
 
 #include "DancingBars.h"
 #include "FancyPlotter.h"
 #include "KSGAppletSettings.h"
 #include "MultiMeter.h"
+#include "StyleEngine.h"
 
 #include "KSysGuardApplet.h"
 #include "SharedSettings.h"

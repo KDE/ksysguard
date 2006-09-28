@@ -16,17 +16,12 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-    Please do not commit any changes without consulting me first. Thanks!
-
 */
 
 #include <kapplication.h>
 #include <kdebug.h>
 #include <klocale.h>
-#include <kmessagebox.h>
 
-#include "HostConnector.h"
 #include "SensorShellAgent.h"
 #include "SensorSocketAgent.h"
 
@@ -133,13 +128,13 @@ SensorManager::SensorManager()
   mDict.insert( QLatin1String( "uptime" ), i18n( "Uptime" ) );
 
   for ( int i = 0; i < 32; i++ ) {
-    mDict.insert( QLatin1String( "cpu%1" ) + QString::number( i ), i18n( "CPU %1", i ) );
-    mDict.insert( QLatin1String( "disk%1" ) + QString::number( i ), i18n( "Disk %1", i ) );
+    mDict.insert( QLatin1String( "cpu" ) + QString::number( i ), i18n( "CPU %1", i+1 ) );
+    mDict.insert( QLatin1String( "disk" ) + QString::number( i ), i18n( "Disk %1", i+1 ) );
   }
 
   for ( int i = 0; i < 6; i++) {
-    mDict.insert( QLatin1String( "fan" ) + QString::number( i ), i18n( "Fan %1", i ) );
-    mDict.insert( QLatin1String( "temp" ) + QString::number( i ), i18n( "Temperature %1", i ) );
+    mDict.insert( QLatin1String( "fan" ) + QString::number( i ), i18n( "Fan %1", i+1 ) );
+    mDict.insert( QLatin1String( "temp" ) + QString::number( i ), i18n( "Temperature %1", i+1 ) );
   }
 
   mDict.insert( QLatin1String( "int00" ), i18n( "Total" ) );
@@ -171,51 +166,6 @@ SensorManager::~SensorManager()
 {
 }
 
-bool SensorManager::engageHost( const QString &hostName, QWidget *parent )
-{
-  HostConnector hostConnector( parent );
-  
-  hostConnector.setHostNames( mHostList );
-  hostConnector.setCommands( mCommandList );
-  if ( !hostName.isEmpty()) {
-    if( mAgents.contains( hostName ) )
-      return true;
-    if( hostName == "localhost" || hostName == "127.0.0.1") {
-      KMessageBox::sorry( parent, i18n( "Something has gone wrong - cannot connect to local ksysguard daemon") );
-      return false;
-    }
-  }
-
-  hostConnector.setCurrentHostName( hostName );
-
-  if ( !hostConnector.exec() )
-    return true;
-
-  mHostList = hostConnector.hostNames();
-  mCommandList = hostConnector.commands();
-  
-  QString shell = "";
-  QString command = "";
-  int port = -1;
-
-  /* Check which radio button is selected and set parameters
-   * appropriately. */
-  if ( hostConnector.useSsh() )
-    shell = "ssh";
-  else if ( hostConnector.useRsh() )
-    shell = "rsh";
-  else if ( hostConnector.useDaemon() )
-    port = hostConnector.port();
-  else
-    command = hostConnector.currentCommand();
-
-  if ( hostName.isEmpty() )
-    return engage( hostConnector.currentHostName(), shell,
-                     command, port );
- else
-    return engage( hostName, shell, command, port );
-}
-
 bool SensorManager::engage( const QString &hostName, const QString &shell,
                             const QString &command, int port )
 {
@@ -245,7 +195,7 @@ bool SensorManager::engage( const QString &hostName, const QString &shell,
 
 void SensorManager::requestDisengage( const SensorAgent *agent )
 {
-  /* When a sensor agent becomes disfunctional it calles this function
+  /* When a sensor agent becomes disfunctional it calls this function
    * to request that it is being removed from the SensorManager. It must
    * not call disengage() directly since it would trigger ~SensorAgent()
    * while we are still in a SensorAgent member function.
@@ -268,6 +218,10 @@ bool SensorManager::disengage( const SensorAgent *agent )
   return false;
 }
 
+bool SensorManager::isConnected( const QString &hostName )
+{
+  return mAgents.contains( hostName );
+}
 bool SensorManager::disengage( const QString &hostName )
 {
   if ( mAgents.contains( hostName ) ) {

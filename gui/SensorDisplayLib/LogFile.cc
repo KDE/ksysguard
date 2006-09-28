@@ -34,7 +34,7 @@
 #include <klocale.h>
 #include <kcolorbutton.h>
 #include <knotification.h>
-#include <ksgrd/StyleEngine.h>
+#include "StyleEngine.h"
 
 #include "ui_LogFileSettings.h"
 

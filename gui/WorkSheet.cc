@@ -305,12 +305,6 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
                                              const QString& sensorDescr,
                                              uint row, uint column )
 {
-  if ( !KSGRD::SensorMgr->engageHost( hostName, this) ) {
-    QString msg = i18n( "It was not possible to connect to \'%1\'." ,  hostName );
-    KMessageBox::error( this, msg );
-
-    return 0;
-  }
 
   /* If the by 'row' and 'column' specified display is a QGroupBox dummy
    * display we replace the widget. Otherwise we just try to add

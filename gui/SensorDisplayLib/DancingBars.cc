@@ -30,7 +30,7 @@
 #include <klocale.h>
 #include <knumvalidator.h>
 #include <ksgrd/SensorManager.h>
-#include <ksgrd/StyleEngine.h>
+#include "StyleEngine.h"
 
 #include "BarGraph.h"
 #include "DancingBarsSettings.h"

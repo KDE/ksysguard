@@ -97,16 +97,6 @@ SensorDisplay::~SensorDisplay()
 
 void SensorDisplay::registerSensor( SensorProperties *sp )
 {
-  /* Make sure that we have a connection established to the specified
-   * host. When a work sheet has been saved while it had dangling
-   * sensors, the connect info is not saved in the work sheet. In such
-   * a case the user can re-enter the connect information and the
-   * connection will be established. */
-  if ( !SensorMgr->engageHost( sp->hostName(), this ) ) {
-    QString msg = i18n( "It was not possible to connect to \'%1\'." ,  sp->hostName() );
-    KMessageBox::error( this, msg );
-  }
-
   mSensors.append( sp );
 }
 

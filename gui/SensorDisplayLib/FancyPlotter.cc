@@ -27,7 +27,7 @@
 #include <kmessagebox.h>
 
 #include <ksgrd/SensorManager.h>
-#include <ksgrd/StyleEngine.h>
+#include "StyleEngine.h"
 
 #include "FancyPlotterSettings.h"
 

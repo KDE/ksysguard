@@ -37,10 +37,7 @@ class SensorManagerIterator;
   The SensorManager handles all interaction with the connected
   hosts. Connections to a specific hosts are handled by
   SensorAgents. Use engage() to establish a connection and
-  disengage() to terminate the connection. If you don't know if a
-  certain host is already connected use engageHost(). If there is no
-  connection yet or the hostname is empty, a dialog will be shown to
-  enter the connections details.
+  disengage() to terminate the connection.
  */
 class KDE_EXPORT SensorManager : public QObject
 {
@@ -63,10 +60,11 @@ class KDE_EXPORT SensorManager : public QObject
     explicit SensorManager();
     ~SensorManager();
 
-    bool engageHost( const QString &hostName, QWidget *parent );
     bool engage( const QString &hostName, const QString &shell = "ssh",
                  const QString &command = "", int port = -1 );
-
+    /* Returns true if we are connected or trying to connect to the host given
+     */
+    bool isConnected( const QString &hostName );
     void requestDisengage( const SensorAgent *agent );
     bool disengage( const SensorAgent *agent );
     bool disengage( const QString &hostName );

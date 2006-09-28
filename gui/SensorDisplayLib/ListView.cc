@@ -31,7 +31,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <ksgrd/SensorManager.h>
-#include <ksgrd/StyleEngine.h>
+#include "StyleEngine.h"
 
 #include "ListView.h"
 #include "ListView.moc"

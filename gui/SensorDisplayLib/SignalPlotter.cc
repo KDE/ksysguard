@@ -27,7 +27,7 @@
 #include <QtGui/QPolygon>
 
 #include <kdebug.h>
-#include <ksgrd/StyleEngine.h>
+#include "StyleEngine.h"
 
 #include "SignalPlotter.h"
 

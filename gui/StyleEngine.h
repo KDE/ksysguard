@@ -16,9 +16,6 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-    Please do not commit any changes without consulting me first. Thanks!
-
 */
 
 #ifndef KSG_STYLEENGINE_H
@@ -26,17 +23,12 @@
 
 #include <QColor>
 #include <QObject>
-//Added by qt3to4:
 #include <QList>
-
-#include <kdemacros.h>
 
 class KConfig;
 class StyleSettings;
-
 namespace KSGRD {
-
-class KDE_EXPORT StyleEngine : public QObject
+class StyleEngine : public QObject
 {
   Q_OBJECT
 
@@ -76,8 +68,7 @@ class KDE_EXPORT StyleEngine : public QObject
 
     StyleSettings *mSettingsDialog;
 };
-
-KDE_EXPORT extern StyleEngine* Style;
+extern StyleEngine* Style;
 
 }
 

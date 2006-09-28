@@ -35,7 +35,7 @@
 #include <klocale.h>
 #include <knotification.h>
 #include <ksgrd/SensorManager.h>
-#include <ksgrd/StyleEngine.h>
+#include "StyleEngine.h"
 
 #include "SensorLoggerDlg.h"
 #include "SensorLoggerSettings.h"

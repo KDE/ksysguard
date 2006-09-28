@@ -18,13 +18,10 @@
 
 */
 
-#include <stdlib.h>
-
 #include <kdebug.h>
-#include <kpassworddialog.h> 
 #include <kprocess.h>
 
-#include "SensorClient.h"
+//#include "SensorClient.h"
 #include "SensorManager.h"
 
 #include "SensorShellAgent.h"
@@ -108,7 +105,7 @@ void SensorShellAgent::errMsgRcvd( KProcess*, char *buffer, int buflen )
   if ( !buffer || buflen == 0 )
     return;
 
-  QString buf = QString::fromLocal8Bit( buffer, buflen );
+  QString buf = QString::fromUtf8( buffer, buflen );
 
   kDebug(1215) << "SensorShellAgent: Warning, received text over stderr!"
                 << endl << buf << endl;
