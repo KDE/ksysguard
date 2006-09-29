@@ -41,7 +41,7 @@ class SensorClient
     virtual ~SensorClient() { }
 
     /**
-      This function is called whenever the information form the sensor has
+      This function is called whenever the information from the sensor has
       been received by the sensor agent. This function must be reimplemented
       by the sensor client to receive and process this information.
      */
