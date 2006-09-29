@@ -1,8 +1,6 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=System Monitor
-Name[fr]=Surveillance du système
-Name[x-test]=xxSystem Monitorxx
 Exec=ksysguard %U
 Icon=ksysguard
 Type=Application
