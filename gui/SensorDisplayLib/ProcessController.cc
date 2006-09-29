@@ -182,7 +182,7 @@ bool ProcessController::addSensor(const QString& hostName,
 	kDebug() << "Sending test xres in addsensor" << endl;
 	sendRequest(hostName, "test xres", XRes_Supported_Command);
 	
-	sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
+	//sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
 	kDebug() << "Sending ps in addsensor " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 	sendRequest(hostName, "ps", Ps_Command);
 
@@ -205,6 +205,7 @@ ProcessController::updateList()
 	if(mUpdateCountdown > 0) {
 		mUpdateCountdown--;
 	}
+    kDebug() << "updateList - sending ps" <<endl;
 	sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);
 	//The 'xres' call is very expensive - Rather than calling it every 2 seconds
 	//instead just call it every 5th time that we call ps.  It won't change much.
@@ -331,7 +332,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 	}
 	case Ps_Command:
 	{
-//		kDebug() << "We received ps data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+		kDebug() << "We received ps data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 		/* We have received the answer to a ps command that contains a
 		 * list of processes with various additional information. */
 		if(!mReadyForPs) {
@@ -503,13 +504,13 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 	}
 	case XRes_Supported_Command:
 	{
-		kDebug() << "We received xres supported. " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+		kDebug() << "We received a reply as to whether xres is supported. " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 		if(answer.isEmpty())
 		  mXResSupported = false;
 		else {
 		  mXResSupported = (answer[0].toInt() == 1);
-//		  if(mXResSupported) 
-//			sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
+		  if(mXResSupported) 
+		    sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
 		}
 		break;
 	}
