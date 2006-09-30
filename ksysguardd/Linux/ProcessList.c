@@ -40,7 +40,7 @@
 
 #define BUFSIZE 1024
 #define TAGSIZE 32
-#define KDEINITLEN strlen( "kdeinit: " )
+#define KDEINITLEN sizeof( "kdeinit: " )
 
 #ifndef bool
 #define bool char
@@ -130,7 +130,7 @@ typedef struct {
 } ProcessInfo;
 
 static unsigned ProcessCount;
-
+static DIR* procDir;
 static void validateStr( char* str )
 {
   char* s = str;
@@ -301,21 +301,14 @@ static bool getProcess( int pid, ProcessInfo *ps )
 void printProcessList( const char* cmd)
 {
   (void)cmd;
-  DIR* dir;
   struct dirent* entry;
 
-  /* read in current process list via the /proc file system entry */
-  if ( ( dir = opendir( "/proc" ) ) == NULL ) {
-    print_error( "Cannot open directory \'/proc\'!\n"
-                 "The kernel needs to be compiled with support\n"
-                 "for /proc file system enabled!\n" );
-    return;
-  }
   ProcessInfo ps;
-  while ( ( entry = readdir( dir ) ) ) {
+  ProcessCount = 0;
+  rewinddir(procDir);
+  while ( ( entry = readdir( procDir ) ) ) {
     if ( isdigit( entry->d_name[ 0 ] ) ) {
       long pid;
-
       pid = atol( entry->d_name );
       if(getProcess( pid, &ps ))
         fprintf( CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d\t%s\t%ld\t%s\n",
@@ -327,7 +320,6 @@ void printProcessList( const char* cmd)
     }
   }
   fprintf( CurrentClient, "\n" );
-  closedir( dir );
   return;
 }
 
@@ -353,6 +345,14 @@ void initProcessList( struct SensorModul* sm )
     registerMonitor( "xres", "table", printXresList, printXresListInfo, sm);
   }
 #endif
+  /*open /proc now in advance*/
+  /* read in current process list via the /proc file system entry */
+  if ( ( procDir = opendir( "/proc" ) ) == NULL ) {
+    print_error( "Cannot open directory \'/proc\'!\n"
+                 "The kernel needs to be compiled with support\n"
+                 "for /proc file system enabled!\n" );
+    return;
+  }
 }
 
 void exitProcessList( void )
@@ -398,6 +398,14 @@ void printProcessListInfo( const char* cmd )
 void printProcessCount( const char* cmd )
 {
   (void)cmd;
+  struct dirent* entry;
+  ProcessCount = 0;
+  rewinddir(procDir);
+  while ( ( entry = readdir( procDir ) ) )
+    if ( isdigit( entry->d_name[ 0 ] ) )
+      ProcessCount++;
+
+
   fprintf( CurrentClient, "%d\n", ProcessCount );
 }
 
