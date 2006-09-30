@@ -17,14 +17,3 @@ kde4_install_icons( ${ICON_INSTALL_DIR}  )
 
 
 
-#original Makefile.am contents follow:
-
-#if include_ksysguardd
-#KSYSGUARDD_DIR = ksysguardd
-#endif
-#
-## claim, which subdirectories you want to install
-#SUBDIRS = CContLib $(KSYSGUARDD_DIR) gui pics example
-#
-#KDE_ICON = ksysguard
-#
