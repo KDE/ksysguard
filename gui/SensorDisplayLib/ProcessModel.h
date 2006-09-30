@@ -97,6 +97,13 @@ public:
 	 */
 	QString getStringForProcess(Process *process) const;
 	inline Process *getProcess(long long pid) { return mPidToProcess[pid]; }
+        
+	/** Returns whether this user can log in or not.
+	 *  @see mUidCanLogin
+	 */
+	bool canUserLogin(long long uid) const;
+
+
 public slots:
 	void setShowTotals(int totals);
 	
@@ -144,10 +151,6 @@ private:
 	 *  But the second time will be as fast as hash lookup as we cache the result
 	 */
 	inline QVariant getUsernameForUser(long long uid) const;
-	/** Returns whether this user can log in or not.
-	 *  @see mUidCanLogin
-	 */
-	inline bool canUserLogin(long long uid) const;
 
 	/** Each process keeps track of the system and user cpu usage of itself and all its children.
 	 *  So when a process is changed/added/removed, those totals have to be updated for all its parents.

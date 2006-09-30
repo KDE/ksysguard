@@ -221,8 +221,8 @@ bool ProcessModel::setData(const QList<QStringList> &data)
 
 int ProcessModel::rowCount(const QModelIndex &parent) const
 {
-	if(!parent.isValid()) return (mPidToProcess.isEmpty())?0:1;
-	
+	if(!parent.isValid()) return (mPidToProcess.count() == 1 )?0:1;
+	if(parent.column() != 0) return 0;  //For a treeview we say that only the first column has children
 	Process *process = reinterpret_cast< Process * > (parent.internalPointer()); //when parent is invalid, it must be the root level which we set as 0
 	Q_ASSERT(process);
 	int num_rows = process->children.count();
@@ -244,6 +244,7 @@ bool ProcessModel::hasChildren ( const QModelIndex & parent = QModelIndex() ) co
 QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & parent ) const
 {
 	if(row<0) return QModelIndex();
+	if(column<0) return QModelIndex();
 	Process *parent_process = 0;
 	
 	if(parent.isValid()) //not valid for init, and init has ppid of 0
@@ -724,10 +725,13 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	//This function must be super duper ultra fast because it's called thousands of times every few second :(
 	//I think it should be optomised for role first, hence the switch statement (fastest possible case)
 
-	if (!index.isValid())
+	if (!index.isValid()) {
 		return QVariant();
-	if (index.column() >= mHeadingsToType.count())
-		return QVariant(); //TODO: Find out why this is needed
+	}
+	if (index.column() >= mHeadingsToType.count()) {
+		return QVariant(); 
+	}
+
 	switch (role){
 	case Qt::DisplayRole: {
 		Process *process = reinterpret_cast< Process * > (index.internalPointer());
@@ -740,7 +744,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		case HeadingXIdentifier:
 			return process->xResIdentifier;
 		case HeadingXMemory:
-			if(process->xResMemOtherBytes + process->xResPxmMemBytes == 0) return QVariant();
+			if(process->xResMemOtherBytes + process->xResPxmMemBytes == 0) return QVariant(QVariant::String);
 			return KGlobal::locale()->formatByteSize(process->xResMemOtherBytes + process->xResPxmMemBytes);
 		case HeadingCPUUsage:
 			{
@@ -755,10 +759,10 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				return QString::number(total, 'f', 2) + '%';
 			}
 		case HeadingRSSMemory:
-			if(process->vmRSS == 0) return QVariant();
+			if(process->vmRSS == 0) return QVariant(QVariant::String);
 			return KGlobal::locale()->formatByteSize(process->vmRSS);
 		case HeadingMemory:
-			if(process->vmSize == 0) return QVariant();
+			if(process->vmSize == 0) return QVariant(QVariant::String);
 			return KGlobal::locale()->formatByteSize(process->vmSize);
 		case HeadingCommand:
 			return process->command;
@@ -830,7 +834,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		}
 		default:
 			tracer.isEmpty(); return tracer;
-			return QVariant();
+			return QVariant(QVariant::String);
 		}
 	}
 	case Qt::UserRole: {

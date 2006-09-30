@@ -41,7 +41,6 @@
 #include "ProcessModel.h"
 
 #include "ProcessFilter.h"
-
 class QAction;
 
 extern KApplication* Kapp;

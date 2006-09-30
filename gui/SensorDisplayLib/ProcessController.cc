@@ -67,6 +67,7 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	mUi.setupUi(this);
 	mFilterModel.setSourceModel(&mModel);
 	mUi.treeView->setModel(&mFilterModel);
+
 	mColumnContextMenu = new QMenu(mUi.treeView->header());
 	connect(mColumnContextMenu, SIGNAL(triggered(QAction*)), this, SLOT(showOrHideColumn(QAction *)));
 	
@@ -198,10 +199,6 @@ void
 ProcessController::updateList()
 {
 	mWillUpdateList = false;
-	if(!mReadyForPs) {
-		kDebug() << "updateList called but ps? not ready" << endl;
-		return;
-	}
 	if(mUpdateCountdown > 0) {
 		mUpdateCountdown--;
 	}
@@ -336,6 +333,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		/* We have received the answer to a ps command that contains a
 		 * list of processes with various additional information. */
 		if(!mReadyForPs) {
+			sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command); //send another request - we will be ready next time, honest!
 			kDebug(1215) << "Process data arrived before we were ready for it. hmm" << endl;
 			break;
 		}
@@ -356,6 +354,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 			return;
 		}
 		expandInit(); //This will expand the init process
+
 //		kDebug() << "We finished with ps data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 		break;
 	}

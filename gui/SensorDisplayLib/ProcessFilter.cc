@@ -34,16 +34,16 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 {
 	//We need the uid for this, so we have a special understanding with the model.
 	//We query the first row with Qt:UserRole, and it gives us the uid.  Nasty but works.
-	
 	if(mFilter == PROCESS_FILTER_ALL && filterRegExp().isEmpty()) return true; //Shortcut for common case 
 	
 	Process *parent_process;
+	ProcessModel *model = static_cast<ProcessModel *>(sourceModel());
 	if(source_parent.isValid()) {
 		parent_process = reinterpret_cast<Process *>(source_parent.internalPointer());
 	} else {
-		parent_process = static_cast<ProcessModel *>(sourceModel())->getProcess(0); //Get our 'special' process which should have all the root children
+		parent_process = model->getProcess(0); //Get our 'special' process which should have the root init child
 	}
-
+        Q_ASSERT(parent_process);
 	if(source_row >= parent_process->children.size()) {
 		kDebug() << "Serious error with data.  Source row requested for a non existant row. Requested " << source_row << " of " << parent_process->children.size() << " for " << parent_process->pid << endl;
 		return true;
@@ -57,10 +57,10 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 	case PROCESS_FILTER_ALL:
 		break;
         case PROCESS_FILTER_SYSTEM:
-                if(uid >= 100) accepted = false;
+                if(uid >= 100 && model->canUserLogin(uid)) accepted = false;
 		break;
         case PROCESS_FILTER_USER:
-		if(uid < 100) accepted = false;
+		if(uid < 100 || !model->canUserLogin(uid)) accepted = false;
 		break;
         case PROCESS_FILTER_OWN:
         default:
@@ -89,16 +89,20 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 
 bool ProcessFilter::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
-	QVariant l = (left.model() ? left.model()->data(left, Qt::UserRole+1) : QVariant());
-	QVariant r = (right.model() ? right.model()->data(right, Qt::UserRole+1) : QVariant());
-
-	if(l.isNull() && r.isNull()) return QSortFilterProxyModel::lessThan(left,right);
-	return l.toLongLong() < r.toLongLong();
+	if(right.isValid() && left.isValid()) {
+		Q_ASSERT(left.model());
+		Q_ASSERT(right.model());
+		QVariant l = (left.model() ? left.model()->data(left, Qt::UserRole+1) : QVariant());
+		QVariant r = (right.model() ? right.model()->data(right, Qt::UserRole+1) : QVariant());
+		if(l.isValid() && r.isValid() && !l.isNull() && !r.isNull())
+			return l.toLongLong() < r.toLongLong();
+	}
+	return QSortFilterProxyModel::lessThan(left,right);
 }
 
 
 void ProcessFilter::setFilter(int index) {
 	mFilter = index; 
-	reset();//Tell the proxy view to refresh all its information
+	filterChanged();//Tell the proxy view to refresh all its information
 }
 #include "ProcessFilter.moc"
