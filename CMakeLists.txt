@@ -1,6 +1,5 @@
 
 project(ksysguard)
-message(STATUS "Building KSysGuard")
 add_subdirectory( CContLib )
 add_subdirectory( gui )
 add_subdirectory( pics )
