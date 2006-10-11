@@ -451,7 +451,7 @@ bool KSysGuardApplet::save()
 
   if ( file.status() != 0 /* 0 means successful.  See errno.h */ )
   {
-    KMessageBox::sorry( this, i18n( "Cannot save file %1" ).arg( fileName ) );
+    KMessageBox::sorry( this, i18n( "Cannot save file %1", fileName ) );
     return false;
   }
   

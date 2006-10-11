@@ -256,7 +256,7 @@ void SensorManager::hostLost( const SensorAgent *agent )
 {
   emit hostConnectionLost( agent->hostName() );
 
-  notify( i18n( "Connection to %1 has been lost." ).arg( agent->hostName() ) );
+  notify( i18n( "Connection to %1 has been lost.", agent->hostName() ) );
 }
 
 void SensorManager::notify( const QString &msg ) const
