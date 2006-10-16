@@ -235,7 +235,7 @@ static int process24DiskIO( const char* buf ) {
 			
 			/* 2.6 gives us a nice device name. On 2.4 we get nothing */
 			ptr->devname = (char *)malloc( DISKDEVNAMELEN );
-			ptr->devname = '\0';
+			memset( ptr->devname, 0, DISKDEVNAMELEN );
 			
 			ptr->total.delta = 0;
 			ptr->total.old = total;

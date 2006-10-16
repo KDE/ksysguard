@@ -60,6 +60,8 @@ void initLogFile( struct SensorModul* sm )
       snprintf( monitor, 1024, "logfiles/%s", entry->name );
       registerMonitor( monitor, "logfile", printLogFile, printLogFileInfo, sm );
     }
+
+    fclose( fp );
   }
 
   LogFiles = new_ctnr();
