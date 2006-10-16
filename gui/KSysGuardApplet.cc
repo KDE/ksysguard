@@ -447,17 +447,20 @@ bool KSysGuardApplet::save()
   QString fileName = kstd->saveLocation( "data", "ksysguard" );
   fileName += "/KSysGuardApplet.xml";
 
-  KSaveFile file( fileName, 0644 );
+  KSaveFile file( fileName );
 
-  if ( file.status() != 0 /* 0 means successful.  See errno.h */ )
+  if ( !file.open() )
   {
     KMessageBox::sorry( this, i18n( "Cannot save file %1", fileName ) );
     return false;
   }
+  file.setPermissions(QFile::ReadUser|QFile::WriteUser|QFile::ReadGroup|QFile::ReadOther);
   
-  file.textStream()->setCodec( "UTF-8" );
-  *(file.textStream()) << doc;
-  file.close();
+  QTextStream ts ( &file );
+  ts.setCodec( "UTF-8" );
+  ts << doc;
+  ts.flush();
+  file.finalize(); //check for error here?
 
   return true;
 }
