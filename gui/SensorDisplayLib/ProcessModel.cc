@@ -1038,11 +1038,11 @@ bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltyp
 			coltype += DataColumnNice;
 		} else if(header[i] == "VmSize") {
 			coltype += DataColumnVmSize;
-			headings << i18nc("process heading", "Memory");
+			headings << i18nc("process heading", "Virtual Size");
 			headingsToType << HeadingMemory;
 		} else if(header[i] == "VmRss") {
 			coltype += DataColumnVmRss;
-			headings << i18nc("process heading", "RSS Memory");
+			headings << i18nc("process heading", "Memory");
 			headingsToType << HeadingRSSMemory;
 		} else if(header[i] == "Command") {
 			coltype += DataColumnCommand;
