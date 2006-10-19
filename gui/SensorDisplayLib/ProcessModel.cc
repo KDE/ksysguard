@@ -760,10 +760,10 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			}
 		case HeadingRSSMemory:
 			if(process->vmRSS == 0) return QVariant(QVariant::String);
-			return KGlobal::locale()->formatByteSize(process->vmRSS);
+			return KGlobal::locale()->formatByteSize(process->vmRSS * 1024);
 		case HeadingMemory:
 			if(process->vmSize == 0) return QVariant(QVariant::String);
-			return KGlobal::locale()->formatByteSize(process->vmSize);
+			return KGlobal::locale()->formatByteSize(process->vmSize * 1024);
 		case HeadingCommand:
 			return process->command;
 		default:
