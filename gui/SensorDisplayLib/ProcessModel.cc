@@ -498,7 +498,7 @@ void ProcessModel::insertOrChangeRows( long long pid)
 
 	Process *parent = mPidToProcess[ppid];
 	if(!parent) {
-		kDebug(1215) << "Internal problem with data structure.  Possibly a race condition hit.  We were told there is process " << pid << " with parent " << ppid << "But we can't find the process structure for that parent process." << endl;
+		kDebug(1215) << "Internal problem with data structure.  Possibly a race condition hit.  We were told there is process " << pid << " with parent " << ppid << ", but we can't find the process structure for that parent process." << endl;
 		mNeedReset = true;
 		return;
 	}
@@ -1141,7 +1141,7 @@ void ProcessModel::setXResData(long long pid, const QStringList& data)
 	
 	Process *process = mPidToProcess[pid];
 	if(!process) {
-		kDebug(1215) << "XRes Data for process '" << data[mXResPidColumn] << "'(int) which we don't know about" << endl;
+		kDebug(1215) << "XRes Data for process with PID=" << pid << ",  which we don't know about" << endl;
 		return;
 	}
  	bool changed = false;
@@ -1194,7 +1194,10 @@ void ProcessModel::setShowTotals(int totals)  //slot
 	QList<Process *> processes = mPidToProcess.values();
 	for(int i = 0; i < processes.size(); i++) {
 		process = processes.at(i);
-		if(process->numChildren > 0) {
+		if (!process) {
+			kDebug(1215) << "One of the processes in our QHash, mPidToProcess is invalid. We found it at index " << i << " after converting to a QList. QList<Process *> processes = mPidToProcess.values(). processes.size() was " << processes.size() << "." << endl;
+		}
+		else if(process->numChildren > 0) {
 			int row = process->parent->children.indexOf(process);
 			index = createIndex(row, mCPUHeading, process);
 			emit dataChanged(index, index);
