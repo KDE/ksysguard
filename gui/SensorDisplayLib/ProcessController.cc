@@ -57,13 +57,12 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 {
 	mKillProcess = 0;
 	//When XResCountdown reaches 0, we call 'xres'.
-	mXResCountdown = 0;
+	mXResCountdown = 2;
 	mInitialSortCol = 1;
         mInitialSortInc = false;
 	mXResSupported = false;
 	mReadyForPs = false;
 	mWillUpdateList = false;
-	mUpdateCountdown = 2;
 	mUi.setupUi(this);
 	mFilterModel.setSourceModel(&mModel);
 	mUi.treeView->setModel(&mFilterModel);
@@ -199,9 +198,6 @@ void
 ProcessController::updateList()
 {
 	mWillUpdateList = false;
-	if(mUpdateCountdown > 0) {
-		mUpdateCountdown--;
-	}
     kDebug() << "updateList - sending ps" <<endl;
 	sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);
 	//The 'xres' call is very expensive - Rather than calling it every 2 seconds

@@ -142,12 +142,6 @@ private:
 	ProcessModel mModel;
 	ProcessFilter mFilterModel;
 	Ui::ProcessWidget mUi;
-
-	/** This is a fairly nasty hack.  At start up we can basically wait longer before we update the process list.  So we can just ignore
-	 *  the first couple of updates. This is set to some initial value in the constructor and is counted down to zero
-	 *  in updateList.  Updates will only be sent when it reaches 0.
-	 */	
-	int mUpdateCountdown;
 };
 
 #endif
