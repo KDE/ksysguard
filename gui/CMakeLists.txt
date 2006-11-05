@@ -71,7 +71,6 @@ kde4_automoc(${sysguard_panelapplet_PART_SRCS})
 
 kde4_add_plugin(sysguard_panelapplet ${sysguard_panelapplet_PART_SRCS})
 
-kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} sysguard_panelapplet )
 
 target_link_libraries(sysguard_panelapplet  ${KDE4_KIO_LIBS} ${QT_QTXML_LIBRARY} ksgrd  kickermain  )
 
