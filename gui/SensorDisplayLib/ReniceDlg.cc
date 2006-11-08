@@ -21,6 +21,7 @@
 */
 
 #include <klocale.h>
+#include <knuminput.h>
 
 #include "ReniceDlg.moc"
 //Added by qt3to4:
@@ -32,19 +33,18 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 					 int pid)
 	: KDialog( parent )
 {
-  setObjectName( name );
-  setModal( true );
-  setCaption( i18n("Renice Process") );
-  setButtons( Ok | Cancel );
-  showButtonSeparator( true );
+	setObjectName( name );
+	setModal( true );
+	setCaption( i18n("Renice Process") );
+	setButtons( Ok | Cancel );
+	showButtonSeparator( true );
 
-  connect( this, SIGNAL( okClicked() ), SLOT( slotOk() ) );
-  connect( this, SIGNAL( cancelClicked() ), SLOT( slotCancel() ) );
+	connect( this, SIGNAL( okClicked() ), SLOT( slotOk() ) );
+	connect( this, SIGNAL( cancelClicked() ), SLOT( slotCancel() ) );
 
-	value = currentPPrio;
 
-  QWidget *page = new QWidget( this );
-  setMainWidget(page);
+	QWidget *page = new QWidget( this );
+	setMainWidget(page);
 
 	vLay = new QVBoxLayout(page);
 	vLay->setObjectName("ReniceLayout");
@@ -68,35 +68,14 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 	sldLay = new QHBoxLayout();
 	vLay->addLayout(sldLay);
 
-	slider = new QSlider(Qt::Horizontal, page ); 
-	slider->setMinimum(-20);
-	slider->setMaximum(19);
-	slider->setPageStep(1);
-	slider->setObjectName("prio");
-	slider->setMaximumSize(210, 25);
-	slider->setMinimumSize(210, 25);
-	slider->setTickPosition(QSlider::TicksBelow);
-	slider->setFocusPolicy(Qt::TabFocus);
-	slider->setFixedHeight(slider->sizeHint().height());
-	slider->setValue(value);
-	sldLay->addWidget(slider);
-	sldLay->addSpacing(10);
-
-	lcd = new QLCDNumber(3, page);
-	lcd->setMaximumSize(55, 23);
-	lcd->setMinimumSize(55, 23);
-	lcd->display(value);
-	QObject::connect(slider, SIGNAL(valueChanged(int)), lcd,
-					 SLOT(display(int)));
-	QObject::connect(slider, SIGNAL(valueChanged(int)),
-					 SLOT(setPriorityValue(int)));
-	sldLay->addWidget(lcd);
-	vLay->activate();
+	input = new KIntNumInput(currentPPrio, page, 10);
+	input->setRange(-20, 19);
+	vLay->addWidget(input);
 }
 
 void ReniceDlg::slotOk()
 {
-  done(value);
+  done(input->value());
 }
 
 void ReniceDlg::slotCancel()

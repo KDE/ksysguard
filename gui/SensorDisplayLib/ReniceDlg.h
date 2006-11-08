@@ -22,25 +22,15 @@
 #ifndef _ReniceDlg_h_
 #define _ReniceDlg_h_
 
-/*
- * kapp.h includes a dirty X.h file that contains marcos that collide with
- * qslider.h. The following defines work around this problem.
- */
-#ifdef Above
-#undef Above
-#endif
-#ifdef Below
-#undef Below
-#endif
-
 #include <kdialog.h>
 #include <QLabel>
 #include <QLayout>
 #include <qlcdnumber.h>
 #include <QPushButton>
 #include <QSlider>
-//Added by qt3to4:
 #include <QBoxLayout>
+
+class KIntNumInput;
 
 /**
  * This class creates and handles a simple dialog to change the scheduling
@@ -52,35 +42,18 @@ class ReniceDlg : public KDialog
 
 public:
 	ReniceDlg(QWidget* parent, const char* name, int currentPPrio, int pid);
-	~ReniceDlg()
-	{
-		delete message;
 
-		delete slider;
-		delete lcd;
-		delete vLay;
-	}
 public Q_SLOTS:
     void slotOk();
     void slotCancel();
 
 private:
-	int value;
-
 	QBoxLayout* vLay;
 	QBoxLayout* butLay;
 	QBoxLayout* sldLay;
 
 	QLabel* message;
-
-	QSlider* slider;
-	QLCDNumber* lcd;
-
-private Q_SLOTS:
-	void setPriorityValue(int priority)
-	{
-		value = priority;
-	}
+	KIntNumInput* input;
 };
 
 #endif
