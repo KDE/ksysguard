@@ -152,6 +152,7 @@ void TopLevel::currentTabChanged(int index)
 void TopLevel::startSensorBrowserWidget()
 {
   if(mSensorBrowser) return;
+  kDebug() << "Creating sensor browser" << endl;
   mSensorBrowser = new SensorBrowserWidget( 0, KSGRD::SensorMgr );
   mSplitter->insertWidget(0,mSensorBrowser);
   mSplitter->setSizes( mSplitterSize );

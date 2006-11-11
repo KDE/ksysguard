@@ -45,7 +45,7 @@ class Workspace : public QTabWidget
 
     bool saveOnQuit();
 
-    bool restoreWorkSheet( const QString &fileName );
+    bool restoreWorkSheet( const QString &fileName, bool switchToTab = true);
     void removeWorkSheet( const QString &fileName );
 
   public Q_SLOTS:

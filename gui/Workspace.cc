@@ -2,6 +2,7 @@
     KSysGuard, the KDE System Guard
 
     Copyright (c) 1999 - 2002 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 2006 John Tapsell <tapsell@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -50,8 +51,6 @@ Workspace::~Workspace()
 
 void Workspace::saveProperties( KConfig *cfg )
 {
-  cfg->writeEntry( "CurrentSheet", tabText(indexOf( currentWidget() )) );
-
   QStringList list;
   for(int i =0; i< mSheetList.size(); i++)
     if ( !mSheetList.at(i)->fileName().isEmpty() )
@@ -79,18 +78,12 @@ void Workspace::readProperties( KConfig *cfg )
   for ( QStringList::Iterator it = selectedSheets.begin(); it != selectedSheets.end(); ++it ) {
     filename = kstd->findResource( "data", "ksysguard/" + *it);
     if(!filename.isEmpty()) {
-      restoreWorkSheet( filename);
+      restoreWorkSheet( filename, false);
     }
   }
 
-  QString currentSheet = cfg->readEntry( "CurrentSheet" , "ProcessTable.sgrd");
-
-  // Determine visible sheet.
-  for(int i = 0; i < mSheetList.size(); i++) 
-    if ( currentSheet == tabText(indexOf(mSheetList.at(i))) ) {
-      setCurrentIndex(indexOf( mSheetList.at(i) ));
-      break;
-    }
+  //FIXME We need to make sure that this is really is the process table on the first tab. No GUI way of changing this, but should make sure anyway
+  setCurrentIndex(0);
 }
 
 QString Workspace::makeNameForNewSheet() const
@@ -266,7 +259,7 @@ void Workspace::removeWorkSheet( const QString &fileName )
   }
 }
 
-bool Workspace::restoreWorkSheet( const QString &fileName)
+bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)
 {
   // extract filename without path
   QString baseName = fileName.right( fileName.length() - fileName.lastIndexOf( '/' ) - 1 );
@@ -279,7 +272,8 @@ bool Workspace::restoreWorkSheet( const QString &fileName)
   }
   mSheetList.append( sheet );
   insertTab(-1, sheet, sheet->title() );
-  setCurrentIndex(indexOf(sheet));
+  if(switchToTab)
+   setCurrentIndex(indexOf(sheet));
   
   return true;
 }

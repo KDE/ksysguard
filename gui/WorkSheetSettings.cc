@@ -70,7 +70,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
     label = new QLabel( i18n( "Rows:" ), group );
     groupLayout->addWidget( label, ++row_num, 0 );
 
-    mRows = new KIntNumInput( 1, group );
+    mRows = new KIntNumInput( 2, group );
     mRows->setMaximum( 42 );
     mRows->setMinimum( 1 );
     groupLayout->addWidget( mRows, row_num, 1 );
@@ -79,7 +79,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
     label = new QLabel( i18n( "Columns:" ), group );
     groupLayout->addWidget( label, ++row_num, 0 );
 
-    mColumns = new KIntNumInput( row_num, group );
+    mColumns = new KIntNumInput( 2, group );
     mColumns->setMaximum( 42 );
     mColumns->setMinimum( 1 );
     groupLayout->addWidget( mColumns, 1, 1 );
