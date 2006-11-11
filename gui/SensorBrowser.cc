@@ -16,9 +16,6 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>. Please do
-    not commit any changes without consulting me first. Thanks!
-
 */
 
 #include <QtGui/QDrag>
@@ -26,61 +23,269 @@
 #include <QtGui/QMouseEvent>
 #include <QtGui/QPainter>
 #include <QtGui/QPixmap>
+#include <QStringList>
+#include <QMimeData>
 
 #include <kdebug.h>
-#include <kiconloader.h>
+#include <kicon.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <ksgrd/SensorManager.h>
 
 #include "SensorBrowser.h"
 
-class HostItem : public Q3ListViewItem
+SensorBrowserModel::SensorBrowserModel()
 {
-  public:
-    HostItem( SensorBrowser *parent, const QString &text, int id,
-              KSGRD::SensorAgent *host)
-      : Q3ListViewItem( parent, text ), mInited( false ), mId( id ),
-        mHost( host ), mParent( parent )
-    {
-      setExpandable( true );
-    }
+  mIdCount=1;
+}
+SensorBrowserModel::~SensorBrowserModel()
+{
 
-    void setOpen( bool open )
-    {
-      if ( open && !mInited ) {
-        mInited = true;
-        // request sensor list from host
-        mHost->sendRequest( "monitors", mParent, mId );
+  qDeleteAll( mHostInfoMap );
+  mHostInfoMap.clear();
+  qDeleteAll( mSensorInfoMap );
+  mSensorInfoMap.clear();
+}
+
+int SensorBrowserModel::columnCount( const QModelIndex &) const { //virtual 
+  return 1;
+}
+
+QVariant SensorBrowserModel::data( const QModelIndex & index, int role) const { //virtual
+  if(!index.isValid()) return QVariant();
+  switch(role) {
+    case Qt::DisplayRole: {
+      if(index.column()==0) {
+        uint id = index.internalId();
+        if(mSensorInfoMap.contains(id)) {
+	    Q_ASSERT(mSensorInfoMap.value(id));
+	    SensorInfo *sensorInfo = mSensorInfoMap.value(id);
+	    return sensorInfo->description() + " (" +sensorInfo->type() +")" ;
+        }
+        if(mTreeNodeNames.contains(id)) return mTreeNodeNames.value(id);
+        if(mHostInfoMap.contains(id)) {
+	    Q_ASSERT(mHostInfoMap.value(id));
+	    return mHostInfoMap.value(id)->hostName();
+        }
       }
+      return QString();
+    }
+    case Qt::DecorationRole: {
+      if(mHostInfoMap.contains(index.internalId()))
+        return KIcon("computer");
+      break;
+    }
+  } //switch
+  return QVariant();
+}
 
-      Q3ListViewItem::setOpen( open );
+QVariant SensorBrowserModel::headerData ( int section, Qt::Orientation , int role) const { //virtual
+	if(role != Qt::DisplayRole) return QVariant();
+	if(section==0) return i18n("Sensor Browser");
+	return QVariant();
+}
+
+QModelIndex SensorBrowserModel::index ( int row, int column, const QModelIndex & parent) const { //virtual
+  QList<int> ids;
+  if(!parent.isValid()) {
+    ids = mHostInfoMap.keys();
+  }
+  else {
+    ids = mTreeMap.value(parent.internalId());
+  }
+  if( row >= ids.size() || row< 0 || column <0 || column >1) {
+    return QModelIndex();
+  }
+  QModelIndex index = createIndex(row, column, ids[row]);
+  Q_ASSERT(index.isValid());
+  return index;
+}
+
+QStringList SensorBrowserModel::listHosts() const
+{
+  QStringList hostList;
+
+  QMapIterator<int, HostInfo*> it( mHostInfoMap );
+  while ( it.hasNext() ) {
+    it.next();
+    Q_ASSERT(it.value());
+    hostList.append( it.value()->hostName() );
+  }
+
+  return hostList;
+}
+
+QStringList SensorBrowserModel::listSensors( const QString &hostName ) const
+{
+  QMapIterator<int, HostInfo*> it( mHostInfoMap );
+  while ( it.hasNext() ) {
+    it.next();
+    Q_ASSERT(it.value());
+    if ( it.value()->hostName() == hostName ) {
+      Q_ASSERT(mSensorInfoMap.contains(it.key()));
+      return listSensors( it.key() );
+    }
+  }
+  return QStringList();
+}
+
+QStringList SensorBrowserModel::listSensors( int parentId) const
+{
+  SensorInfo *sensor=mSensorInfoMap.value(parentId);
+  if(sensor) return QStringList(sensor->name());
+
+  QStringList childSensors;
+  QList<int> children = mTreeMap.value(parentId);
+  for(int i=0; i < children.size(); i++) {
+    childSensors+= listSensors(children[i]); 
+  }
+  return childSensors; 
+}
+SensorInfo *SensorBrowserModel::getSensorInfo(QModelIndex index) const
+{
+  if(!index.isValid()) return NULL;
+  return mSensorInfoMap.value(index.internalId());
+}
+
+int SensorBrowserModel::makeSensor(HostInfo *hostInfo, int parentId, const QString &sensorName, const QString &name, const QString &sensorType) {
+//sensorName is the full version.  e.g.  mem/free
+//name is the short version. e.g. free
+//sensortype is e.g. Integer
+  QList<int> children = mTreeMap.value(parentId);
+  for(int i=0; i<children.size(); i++)
+    if(mSensorInfoMap.contains(children[i])) {
+      Q_ASSERT(mSensorInfoMap.value(children[i]));
+      if(mSensorInfoMap.value(children[i])->name() == sensorName) 
+        return children[i];
     }
 
-  private:
-    bool mInited;
-    int mId;
-    KSGRD::SensorAgent* mHost;
-    SensorBrowser* mParent;
-};
+  QModelIndex parentModelIndex;
+  if(hostInfo->id() == parentId) {
+    parentModelIndex = createIndex(mHostInfoMap.keys().indexOf(parentId), 0 , parentId);
+  } else {
+    int parentsParentId = mParentsTreeMap.value(parentId);
+    parentModelIndex = createIndex(mTreeMap.value(parentsParentId).indexOf(parentId), 0, parentId);
+  }
+  Q_ASSERT(parentModelIndex.isValid());
+  QList<int> &parentTreemap = mTreeMap[parentId];
+  SensorInfo *sensorInfo = new SensorInfo(hostInfo, sensorName, name, sensorType);
+  beginInsertRows( parentModelIndex , parentTreemap.size(), parentTreemap.size() );
+    parentTreemap << mIdCount;
+    mParentsTreeMap.insert( mIdCount, parentId );
+    mSensorInfoMap.insert(mIdCount, sensorInfo);
+    mHostSensorsMap[hostInfo->id()].insert(sensorName, true);
+  endInsertRows();
+  return mIdCount++;  //NOTE mIdCount is next available number. Se we use it, then increment it, but return the number of the one that we use  
+}
+int SensorBrowserModel::makeTreeBranch(int parentId, const QString &name) {
+  QList<int> children = mTreeMap.value(parentId);
+  for(int i=0; i<children.size(); i++)
+    if(mTreeNodeNames.value(children[i]) == name) return children[i];
 
-SensorBrowser::SensorBrowser( QWidget* parent, KSGRD::SensorManager* sm )
-  : K3ListView( parent ), mSensorManager( sm )
+  QModelIndex parentModelIndex;
+  if(mHostInfoMap.contains(parentId)) {
+    parentModelIndex = createIndex(mHostInfoMap.keys().indexOf(parentId), 0 , parentId);
+  } else {
+    int parentsParentId = mParentsTreeMap.value(parentId);
+    parentModelIndex = createIndex(mTreeMap.value(parentsParentId).indexOf(parentId), 0, parentId);
+  }
+  Q_ASSERT(parentModelIndex.isValid());
+  QList<int> &parentTreemap = mTreeMap[parentId];
+  beginInsertRows( parentModelIndex , parentTreemap.size(), parentTreemap.size() );
+    parentTreemap << mIdCount;
+    mParentsTreeMap.insert( mIdCount, parentId );
+    mTreeMap[mIdCount];  //create with empty qlist
+    mTreeNodeNames.insert(mIdCount, name);
+  endInsertRows();
+  
+  return mIdCount++;
+}
+
+void SensorBrowserModel::answerReceived( int hostId, const QStringList &answer )
+{
+  /* An answer has the following example format:
+
+     cpu/idle integer
+     cpu/sys  integer
+     cpu/nice integer
+     cpu/user integer
+     ps       table
+  */
+
+  HostInfo *hostInfo = getHostInfo(hostId);
+  if(!hostInfo) {
+    kDebug() << "SensorBrowserModel::answerRecieved with invalid hostId " << hostId  << endl;
+    return;
+  }  
+  for ( int i = 0; i < answer.count(); ++i ) {
+    if ( answer[ i ].isEmpty() )
+      break;
+
+    QStringList words = answer[ i ].split('\t');
+    QString sensorName = words[ 0 ];
+    QString sensorType = words[ 1 ];
+
+    if ( hasSensor(hostId, sensorName))
+      break;
+    if(sensorName.isEmpty()) break;
+
+    /* The sensor browser can display sensors in a hierachical order.
+     * Sensors can be grouped into nodes by seperating the hierachical
+     * nodes through slashes in the sensor name. E. g. cpu/user is
+     * the sensor user in the cpu node. There is no limit for the
+     * depth of nodes. */
+    int currentNodeId = hostId;  //Start from the host branch and work our way down the tree
+    QStringList absolutePath = sensorName.split( '/' );
+    for ( int j = 0; j < absolutePath.count()-1; ++j ) {
+      // Localize the sensor name part by part.
+      QString name = KSGRD::SensorMgr->translateSensorPath( absolutePath[ j ] );
+      currentNodeId = makeTreeBranch(currentNodeId, name);
+    }
+    QString name = KSGRD::SensorMgr->translateSensorPath( absolutePath[ absolutePath.size()-1] );
+    makeSensor(hostInfo, currentNodeId, sensorName, name, sensorType);
+  }
+  emit sensorsAddedToHost( createIndex( mHostInfoMap.keys().indexOf(hostId), 0, hostId ) )  ;
+}
+
+QModelIndex SensorBrowserModel::parent ( const QModelIndex & index ) const { //virtual
+  if(!index.isValid())
+    return QModelIndex();
+  if(mHostInfoMap.contains(index.internalId())) return QModelIndex();
+  if(!mParentsTreeMap.contains(index.internalId())) {
+	  kDebug() << "Something is wrong with the model.  Doesn't contain " << index.internalId() << endl;
+	  return QModelIndex();
+  }
+  int parentId = mParentsTreeMap.value(index.internalId());
+
+  QModelIndex parentModelIndex;
+  if(mHostInfoMap.contains(parentId)) {
+    parentModelIndex = createIndex(mHostInfoMap.keys().indexOf(parentId), 0 , parentId);
+  } else {
+    int parentsParentId = mParentsTreeMap.value(parentId);
+    parentModelIndex = createIndex(mTreeMap.value(parentsParentId).indexOf(parentId), 0, parentId);
+  }
+  Q_ASSERT(parentModelIndex.isValid());
+  return parentModelIndex;
+}
+int SensorBrowserModel::rowCount ( const QModelIndex & parent ) const {  //virtual
+  if(!parent.isValid()) return mHostInfoMap.size();
+  return mTreeMap.value(parent.internalId()).size();
+}
+Qt::ItemFlags SensorBrowserModel::flags ( const QModelIndex & index ) const {  //virtual
+  if(mSensorInfoMap.contains(index.internalId())) return Qt::ItemIsDragEnabled | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+  else return Qt::ItemIsEnabled;
+}
+
+SensorBrowserWidget::SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager* sm )
+  : QTreeView( parent ), mSensorManager( sm )
 {
   connect( mSensorManager, SIGNAL( update() ), SLOT( update() ) );
-  connect( this, SIGNAL( clicked( Q3ListViewItem* ) ),
-           SLOT( newItemSelected( Q3ListViewItem* ) ) );
-  connect( this, SIGNAL( returnPressed( Q3ListViewItem* ) ),
-           SLOT( newItemSelected( Q3ListViewItem* ) ) );
-
-  addColumn( i18n( "Sensor Browser" ) );
-  setFullWidth( true );
+  setModel(&mSensorBrowserModel);
 
   this->setToolTip( i18n( "Drag sensors to empty cells of a worksheet "
                              "or the panel applet." ) );
-  setRootIsDecorated( true );
-
-  mIconLoader = new KIconLoader();
+  setRootIsDecorated( false );
+  setDragDropMode(QAbstractItemView::DragOnly);
 
   // The sensor browser can be completely hidden.
   setMinimumWidth( 1 );
@@ -92,252 +297,102 @@ SensorBrowser::SensorBrowser( QWidget* parent, KSGRD::SensorManager* sm )
                                "values provided by the sensor. Some sensor displays can "
                                "display values of multiple sensors. Simply drag other "
                                "sensors on to the display to add more sensors." ) );
+  connect( &mSensorBrowserModel, SIGNAL(sensorsAddedToHost(const QModelIndex&)), this, SLOT(expand(const QModelIndex&)));
 }
 
-SensorBrowser::~SensorBrowser()
+SensorBrowserWidget::~SensorBrowserWidget()
 {
-  delete mIconLoader;
-
-  qDeleteAll( mHostInfoMap );
-  mHostInfoMap.clear();
 }
 
-void SensorBrowser::disconnect()
+void SensorBrowserWidget::disconnect()
 {
-  QMapIterator<int, HostInfo*> it( mHostInfoMap );
-
-  while ( it.hasNext() ) {
-    it.next();
-    if ( it.value()->listViewItem()->isSelected() ) {
-      kDebug(1215) << "Disconnecting " <<  it.value()->hostName() << endl;
-      KSGRD::SensorMgr->requestDisengage( it.value()->sensorAgent() );
-    }
+  QModelIndexList indexlist = selectionModel()->selectedRows();
+  for(int i=0; i < indexlist.size(); i++)
+  {
+    mSensorBrowserModel.disconnectHost(indexlist.value(i).internalId());
   }
 }
 
-void SensorBrowser::hostReconfigured( const QString& )
+void SensorBrowserWidget::hostReconfigured( const QString& )
 {
   // TODO: not yet implemented.
 }
 
-void SensorBrowser::update()
-{
-  static int id = 0;
-
-  qDeleteAll( mHostInfoMap );
+void SensorBrowserModel::clear() {
+  qDeleteAll(mHostInfoMap);
   mHostInfoMap.clear();
-  clear();
+
+}
+
+void SensorBrowserModel::disconnectHost(uint id)
+{
+  disconnectHost(mHostInfoMap.value(id));
+}
+void SensorBrowserModel::disconnectHost(const HostInfo *hostInfo)
+{
+  KSGRD::SensorMgr->requestDisengage( hostInfo->sensorAgent() );
+}
+void SensorBrowserModel::disconnectHost(const QString &hostname)
+{
+  QMapIterator<int, HostInfo*> it( mHostInfoMap );
+  while ( it.hasNext() ) {
+    it.next();
+    if(it.value()->hostName() == hostname) {
+      disconnectHost(it.value());
+      return;
+    }
+  }
+}
+
+void SensorBrowserModel::addHost(KSGRD::SensorAgent *sensorAgent, const QString &hostName)
+{
+  beginInsertRows( QModelIndex() , mHostInfoMap.size(), mHostInfoMap.size() );
+    HostInfo* hostInfo = new HostInfo( mIdCount, sensorAgent, hostName);
+    mHostInfoMap.insert(mIdCount, hostInfo);
+    mTreeMap.insert(mIdCount, QList<int>());
+    mHostSensorsMap.insert(mIdCount, QHash<QString, bool>());
+    mIdCount++;
+  endInsertRows();
+
+  hostInfo->sensorAgent()->sendRequest( "monitors", this, mIdCount-1 );
+}
+
+void SensorBrowserWidget::update()
+{
+  mSensorBrowserModel.clear();
 
   KSGRD::SensorManagerIterator it( mSensorManager );
   while ( it.hasNext() ) {
-    KSGRD::SensorAgent* host = it.next().value();
-    QString hostName = mSensorManager->hostName( host );
-    HostItem* lvi = new HostItem( this, hostName, id, host );
-
-    QPixmap pix = mIconLoader->loadIcon( "computer", K3Icon::Desktop, K3Icon::SizeSmall );
-    lvi->setPixmap( 0, pix );
-
-    HostInfo* hostInfo = new HostInfo( id, host, hostName, lvi );
-    mHostInfoMap.insert( id, hostInfo );
-    ++id;
-  }
-
-  setMouseTracking( false );
-}
-
-void SensorBrowser::newItemSelected( Q3ListViewItem *item )
-{
-  static bool showAnnoyingPopup = true;
-  if ( item && item->pixmap( 0 ) && showAnnoyingPopup)
-  {
-    showAnnoyingPopup = false;
-    KMessageBox::information( this, i18n( "Drag sensors to empty fields in a worksheet." ),
-                              QString(), "ShowSBUseInfo" );
+    KSGRD::SensorAgent* sensorAgent = it.next().value();
+    QString hostName = mSensorManager->hostName( sensorAgent );
+    mSensorBrowserModel.addHost(sensorAgent, hostName);
   }
 }
-
-void SensorBrowser::answerReceived( int id, const QStringList &answer )
-{
-  /* An answer has the following format:
-
-     cpu/idle integer
-     cpu/sys  integer
-     cpu/nice integer
-     cpu/user integer
-     ps       table
-  */
-
-  if ( !mHostInfoMap.contains( id ) )
-    return;
-
-  HostInfo *info = mHostInfoMap[ id ];
-
-  for ( int i = 0; i < answer.count(); ++i ) {
-    if ( answer[ i ].isEmpty() )
-      break;
-
-    KSGRD::SensorTokenizer words( answer[ i ], '\t' );
-    QString sensorName = words[ 0 ];
-    QString sensorType = words[ 1 ];
-
-    /* Calling update() a rapid sequence will create pending
-     * requests that do not get erased by calling
-     * clear(). Subsequent updates will receive the old pending
-     * answers so we need to make sure that we register each
-     * sensor only once. */
-    if ( info->isRegistered( sensorName ) )
-      return;
-
-    /* The sensor browser can display sensors in a hierachical order.
-     * Sensors can be grouped into nodes by seperating the hierachical
-     * nodes through slashes in the sensor name. E. g. cpu/user is
-     * the sensor user in the cpu node. There is no limit for the
-     * depth of nodes. */
-    KSGRD::SensorTokenizer absolutePath( sensorName, '/' );
-
-    Q3ListViewItem* parent = info->listViewItem();
-    for ( uint j = 0; j < absolutePath.count(); ++j ) {
-      // Localize the sensor name part by part.
-      QString name = KSGRD::SensorMgr->translateSensorPath( absolutePath[ j ] );
-
-      bool found = false;
-      Q3ListViewItem* sibling = parent->firstChild();
-      while ( sibling && !found ) {
-        if (sibling->text( 0 ) == name ) {
-          // The node or sensor is already known.
-          found = true;
-        } else
-          sibling = sibling->nextSibling();
-      }
-      if ( !found ) {
-        Q3ListViewItem* lvi = new Q3ListViewItem( parent, name );
-        if ( j == absolutePath.count() - 1 ) {
-          QPixmap pix = mIconLoader->loadIcon( "ksysguardd", K3Icon::Desktop,
-                                               K3Icon::SizeSmall );
-          lvi->setPixmap( 0, pix );
-
-          // add sensor info to internal data structure
-          info->addSensor( lvi, sensorName, name, sensorType );
-        } else
-          parent = lvi;
-
-        // The child indicator might need to be updated.
-        repaintItem( parent );
-      } else
-        parent = sibling;
-    }
-  }
-
-  repaintItem( info->listViewItem() );
-}
-
-void SensorBrowser::viewportMouseMoveEvent( QMouseEvent *e )
-{
-  /* setMouseTracking(false) seems to be broken. With current Qt
-   * mouse tracking cannot be turned off. So we have to check each event
-   * whether the LMB is really pressed. */
-
-  if ( !( e->buttons() & Qt::LeftButton ) )
-    return;
-
-  Q3ListViewItem* item = itemAt( e->pos() );
-  if ( !item ) // no item under cursor
-    return;
-
-  // Make sure that a sensor and not a node or hostname has been picked.
-  HostInfo *info = 0;
-
-  QMapIterator<int, HostInfo*> it( mHostInfoMap );
-  while ( it.hasNext() ) {
-    it.next();
-    if ( it.value()->isRegistered( item ) ) {
-      info = it.value();
-      break;
-    }
-  }
-
-  if ( !info )
-    return;
-
+QMimeData * SensorBrowserModel::mimeData ( const QModelIndexList & indexes ) const { //virtual 
+  QMimeData *mimeData = new QMimeData();
+  if(indexes.size() != 1) return mimeData;
+  SensorInfo *sensor = getSensorInfo(indexes[0]);
+  if(!sensor) return mimeData;
   // Create text drag object as
   // "<hostname> <sensorname> <sensortype> <sensordescription>".
   // Only the description may contain blanks.
-  mDragText = info->hostName() + ' ' +
-              info->sensorName( item ) + ' ' +
-              info->sensorType( item ) + ' ' +
-              info->sensorDescription( item );
+  Q_ASSERT(sensor);
+  Q_ASSERT(sensor->hostInfo());
+  QString mDragText = sensor->hostInfo()->hostName() + ' ' +
+                      sensor->name() + ' ' +
+                      sensor->type()+ ' ' +
+	              sensor->description();
 
-  QDrag *drag = new QDrag( this );
-  QMimeData *mimeData = new QMimeData;
 
   mimeData->setText( mDragText );
-  drag->setMimeData( mimeData );
-
-  /**
-   * Create nice drag pixmap
-   */
-  QLabel *label = new QLabel( this );
-  label->setMargin( 3 );
-  label->setText( QString( "<html style=\"font-size:small\"><b>%1</b>&nbsp;&nbsp;&nbsp;(%2)</html>" )
-                         .arg( info->sensorDescription( item ), info->sensorName( item ) ) );
-  label->resize( label->sizeHint() );
-
-  QPixmap pixmap = QPixmap::grabWidget( label );
-  delete label;
-
-  QPainter painter;
-  painter.begin( &pixmap );
-  painter.setPen( Qt::gray );
-  painter.drawRect( 0, 0, pixmap.width() - 1, pixmap.height() - 1 );
-  painter.end();
-
-  drag->setPixmap( pixmap );
-
-  drag->start();
+  return mimeData;
 }
 
-QStringList SensorBrowser::listHosts()
-{
-  QStringList hostList;
-
-  QMapIterator<int, HostInfo*> it( mHostInfoMap );
-  while ( it.hasNext() ) {
-    it.next();
-    hostList.append( it.value()->hostName() );
-  }
-
-  return hostList;
-}
-
-QStringList SensorBrowser::listSensors( const QString &hostName )
-{
-  QMapIterator<int, HostInfo*> it( mHostInfoMap );
-  while ( it.hasNext() ) {
-    it.next();
-    if ( it.value()->hostName() == hostName ) {
-      return it.value()->allSensorNames();
-    }
-  }
-
-  return QStringList();
-}
-
-/**
- Helper classes
- */
-SensorInfo::SensorInfo( Q3ListViewItem *lvi, const QString &name,
+SensorInfo::SensorInfo( HostInfo *hostInfo, const QString &name,
                         const QString &desc, const QString &type )
-  : mLvi( lvi ), mName( name ), mDesc( desc ), mType( type )
+  : mName( name ), mDesc( desc ), mType( type ), mHostInfo( hostInfo )
 {
-}
-
-SensorInfo::~SensorInfo()
-{
-}
-
-Q3ListViewItem* SensorInfo::listViewItem() const
-{
-  return mLvi;
+  Q_ASSERT(mHostInfo);
 }
 
 QString SensorInfo::name() const
@@ -355,109 +410,11 @@ QString SensorInfo::description() const
   return mDesc;
 }
 
-HostInfo::HostInfo( int id, const KSGRD::SensorAgent *agent,
-                    const QString &name, Q3ListViewItem *lvi )
-  : mId( id ), mSensorAgent( agent ), mHostName( name ), mLvi( lvi )
+HostInfo *SensorInfo::hostInfo() const
 {
+  return mHostInfo;
 }
 
-HostInfo::~HostInfo()
-{
-  qDeleteAll( mSensorList );
-  mSensorList.clear();
-}
 
-int HostInfo::id() const
-{
-  return mId;
-}
-
-const KSGRD::SensorAgent* HostInfo::sensorAgent() const
-{
-  return mSensorAgent;
-}
-
-QString HostInfo::hostName() const
-{
-  return mHostName;
-}
-
-Q3ListViewItem* HostInfo::listViewItem() const
-{
-  return mLvi;
-}
-
-QString HostInfo::sensorName( const Q3ListViewItem *lvi ) const
-{
-  const SensorInfo *info = findInfo( lvi );
-  if ( !info )
-    return QString();
-
-  return info->name();
-}
-
-QStringList HostInfo::allSensorNames() const
-{
-  QStringList list;
-
-  QListIterator<SensorInfo*> it( mSensorList );
-  while ( it.hasNext() )
-    list.append( it.next()->name() );
-
-  return list;
-}
-
-QString HostInfo::sensorType( const Q3ListViewItem *lvi ) const
-{
-  const SensorInfo *info = findInfo( lvi );
-  if ( !info )
-    return QString();
-
-  return info->type();
-}
-
-QString HostInfo::sensorDescription( const Q3ListViewItem *lvi ) const
-{
-  const SensorInfo *info = findInfo( lvi );
-  if ( !info )
-    return QString();
-
-  return info->description();
-}
-
-void HostInfo::addSensor( Q3ListViewItem *lvi, const QString& name,
-                          const QString& desc, const QString& type )
-{
-  SensorInfo* info = new SensorInfo( lvi, name, desc, type );
-  mSensorList.append( info );
-}
-
-bool HostInfo::isRegistered( const QString& name ) const
-{
-  QListIterator<SensorInfo*> it( mSensorList );
-  while ( it.hasNext() ) {
-    if ( it.next()->name() == name )
-      return true;
-  }
-
-  return false;
-}
-
-bool HostInfo::isRegistered( const Q3ListViewItem *lvi ) const
-{
-  return ( findInfo( lvi ) != 0 );
-}
-
-SensorInfo* HostInfo::findInfo( const Q3ListViewItem *item ) const
-{
-  QListIterator<SensorInfo*> it( mSensorList );
-  while ( it.hasNext() ) {
-    SensorInfo *info = it.next();
-    if ( info->listViewItem() == item )
-      return info;
-  }
-
-  return 0;
-}
 
 #include "SensorBrowser.moc"

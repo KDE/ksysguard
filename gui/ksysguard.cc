@@ -87,7 +87,7 @@ TopLevel::TopLevel()
   mSplitter->setOpaqueResize( KGlobalSettings::opaqueResize() );
   setCentralWidget( mSplitter );
 
-  mSensorBrowser = new SensorBrowser( mSplitter, KSGRD::SensorMgr );
+  mSensorBrowser = new SensorBrowserWidget( mSplitter, KSGRD::SensorMgr );
 
   mWorkSpace = new Workspace( mSplitter );
   connect( mWorkSpace, SIGNAL( setCaption( const QString&) ),

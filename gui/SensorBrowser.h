@@ -21,15 +21,13 @@
 #ifndef KSG_SENSORBROWSER_H
 #define KSG_SENSORBROWSER_H
 
-//Added by qt3to4:
 #include <QMouseEvent>
-#include <Q3PtrList>
-
-#include <k3listview.h>
+#include <QTreeWidget>
+#include <QMap>
+#include <QHash>
 #include <ksgrd/SensorClient.h>
 
 class QMouseEvent;
-class KIconLoader;
 
 namespace KSGRD {
 class SensorManager;
@@ -39,157 +37,138 @@ class SensorAgent;
 class SensorInfo;
 class HostInfo;
 
+
+class SensorBrowserModel : public QAbstractItemModel, private KSGRD::SensorClient
+{
+  Q_OBJECT
+  public:
+    SensorBrowserModel();
+    ~SensorBrowserModel();
+    virtual int columnCount( const QModelIndex &) const;
+    virtual QVariant data( const QModelIndex & parent, int role) const;
+    virtual QVariant headerData ( int section, Qt::Orientation orientation, int role) const;
+    virtual QModelIndex index ( int row, int column, const QModelIndex & parent) const;
+    virtual QModelIndex parent ( const QModelIndex & index ) const;
+    virtual int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
+
+
+    QStringList listSensors( const QString &hostName ) const;  ///Returns a list of sensors names.  E.g. (cpu/0, mem/free, mem/cache, etc)
+    QStringList listSensors( int parentId ) const; ///Used recursively by listSensor(QString)
+    QStringList listHosts( ) const; ///Returns a list of host names.  E.g. (localhost, 192.168.0.1,...)
+    SensorInfo *getSensorInfo(QModelIndex index) const;
+    HostInfo *getHostInfo(int hostId) const { return mHostInfoMap.value(hostId);}
+    bool hasSensor(int hostId, const QString &sensor) const { return mHostSensorsMap.value(hostId).contains(sensor);} 
+    int makeTreeBranch(int parentId, const QString &name);
+    int makeSensor(HostInfo *hostInfo, int parentId, const QString &sensorName, const QString &name, const QString &sensorType);
+    void addHost(KSGRD::SensorAgent *sensorAgent, const QString &hostName);
+    void clear();
+    void disconnectHost(uint id);
+    void disconnectHost(const HostInfo *hostInfo);
+    void disconnectHost(const QString &hostname);
+    virtual Qt::ItemFlags flags ( const QModelIndex & index ) const;
+    virtual QMimeData * mimeData ( const QModelIndexList & indexes ) const;
+  Q_SIGNALS:
+    void sensorsAddedToHost(const QModelIndex &index );
+  private:
+
+    void answerReceived( int id, const QStringList& );
+
+    int mIdCount; ///The lowest id that has not been used yet
+    QMap<int, HostInfo*> mHostInfoMap; ///So each host has a number
+    QHash<int, QList<int> > mTreeMap;   ///This describes the structure of the tree. It maps a parent branch number (which can be equal to the hostinfo number if it's a host branch) to a list of children.  The children themselves either have branches in the map, or else just relate to a sensor info
+    QHash<int, int > mParentsTreeMap; ///
+    QHash<int, QString> mTreeNodeNames; ///Maps the mTreeMap node id's to (translated) names
+    QHash<int, QHash<QString,bool> > mHostSensorsMap; ///Maps a host id to a hash of sensor names.  Let's us quickly check if a sensor is registered for a given host. bool is just ignored
+    QHash<int, SensorInfo *> mSensorInfoMap; ///Each sensor has a unique number as well.  This relates to the ID in mTreeMap
+};
+
+
 /**
- * The SensorBrowser is the graphical front-end of the SensorManager. It
+ * The SensorBrowserWidget is the graphical front-end of the SensorManager. It
  * displays the currently available hosts and their sensors.
  */
-class SensorBrowser : public K3ListView, public KSGRD::SensorClient
+class SensorBrowserWidget : public QTreeView
 {
   Q_OBJECT
 
   public:
-    SensorBrowser( QWidget* parent, KSGRD::SensorManager* sm );
-    ~SensorBrowser();
+    SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager* sm );
+    ~SensorBrowserWidget();
 
-    QStringList listHosts();
-    QStringList listSensors( const QString &hostName );
+    QStringList listHosts() const 
+      { return mSensorBrowserModel.listHosts(); }
+    QStringList listSensors( const QString &hostName ) const 
+      { return mSensorBrowserModel.listSensors(hostName); }
 
   public Q_SLOTS:
     void disconnect();
     void hostReconfigured( const QString &hostName );
     void update();
-    void newItemSelected( Q3ListViewItem *item );
-
-  protected:
-    virtual void viewportMouseMoveEvent( QMouseEvent* );
 
   private:
-    void answerReceived( int id, const QStringList& );
-
-    KIconLoader* mIconLoader;
     KSGRD::SensorManager* mSensorManager;
 
-    QMap<int, HostInfo*> mHostInfoMap;
     QString mDragText;
+    SensorBrowserModel mSensorBrowserModel;
 };
 
-/**
- Helper classes
- */
 class SensorInfo
 {
   public:
-    SensorInfo( Q3ListViewItem *lvi, const QString &name,
+    SensorInfo( HostInfo *hostInfo, const QString &name,
                 const QString &description, const QString &type );
-    ~SensorInfo();
 
     /**
-      Returns a pointer to the list view item of the sensor.
-     */
-    Q3ListViewItem* listViewItem() const;
-
-    /**
-      Returns the name of the sensor.
+      Returns the name of the sensor.  e.g. "cpu/free"
      */
     QString name() const;
 
     /**
-      Returns the description of the sensor.
+      Returns the description of the sensor.  e.g. "free"
      */
     QString description() const;
 
     /**
-      Returns the type of the sensor.
+      Returns the type of the sensor. e.g. "Integer"
      */
     QString type() const;
 
+    /**
+      Returns the host that this sensor is on. 
+     */
+    HostInfo *hostInfo() const;
+
   private:
-    Q3ListViewItem* mLvi;
     QString mName;
     QString mDesc;
     QString mType;
+    HostInfo *mHostInfo;
 };
 
 class HostInfo
 {
   public:
-    HostInfo( int id, const KSGRD::SensorAgent *agent, const QString &name,
-              Q3ListViewItem *lvi );
-    ~HostInfo();
+    HostInfo( int id, KSGRD::SensorAgent *agent, const QString &name) : mId(id), mSensorAgent(agent), mHostName(name) {}
 
     /**
       Returns the unique id of the host.
      */
-    int id() const;
+    int id() const {return mId;}
 
     /**
       Returns a pointer to the sensor agent of the host.
      */
-    const KSGRD::SensorAgent* sensorAgent() const;
+    KSGRD::SensorAgent* sensorAgent() const {return mSensorAgent;}
 
     /**
       Returns the name of the host.
      */
-    QString hostName() const;
-
-    /**
-      Returns the a pointer to the list view item of the host.
-     */
-    Q3ListViewItem* listViewItem() const;
-
-    /**
-      Returns the sensor name of a special list view item.
-     */
-    QString sensorName( const Q3ListViewItem *lvi ) const;
-
-    /**
-      Returns all sensor names of the host.
-     */
-    QStringList allSensorNames() const;
-
-    /**
-      Returns the type of a special list view item.
-     */
-    QString sensorType( const Q3ListViewItem *lvi ) const;
-
-    /**
-      Returns the description of a special list view item.
-     */
-    QString sensorDescription( const Q3ListViewItem *lvi ) const;
-
-    /**
-      Adds a new Sensor to the host.
-
-      @param lvi  The list view item.
-      @param name The sensor name.
-      @param desc A description.
-      @param type The type of the sensor.
-     */
-    void addSensor( Q3ListViewItem *lvi, const QString& name,
-                    const QString& desc, const QString& type );
-
-    /**
-      Returns whether the sensor with @ref name
-      is registered at the host.
-     */
-    bool isRegistered( const QString& name ) const;
-
-    /**
-      Returns whether the sensor with @ref lvi
-      is registered at the host.
-     */
-    bool isRegistered( const Q3ListViewItem *lvi ) const;
+    QString hostName() const { return mHostName;}
 
   private:
-    SensorInfo* findInfo( const Q3ListViewItem *item ) const;
-
     int mId;
-
-    const KSGRD::SensorAgent* mSensorAgent;
+    KSGRD::SensorAgent* mSensorAgent;
     const QString mHostName;
-    Q3ListViewItem* mLvi;
-
-    QList<SensorInfo*> mSensorList;
 };
 
 #endif
