@@ -78,6 +78,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
     QDBusMessage mDBusReply;
 
     QSplitter* mSplitter;
+    void startSensorBrowserWidget();  ///creates an mSensorBrowser if it doesn't exist
 
     SensorBrowserWidget* mSensorBrowser;
     Workspace* mWorkSpace;

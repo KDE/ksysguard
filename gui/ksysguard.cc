@@ -140,15 +140,22 @@ void TopLevel::currentTabChanged(int index)
   mTabRemoveAction->setVisible(!locked);
   mTabExportAction->setVisible(!locked);
   if(!locked && !mSensorBrowser) {
-    mSensorBrowser = new SensorBrowserWidget( 0, KSGRD::SensorMgr );
-    mSplitter->insertWidget(0,mSensorBrowser);
-    mSplitter->setSizes( mSplitterSize );
+    startSensorBrowserWidget();
   }
-//  mSplitter->setVisible(true);
-  if(mSensorBrowser)
+  if(mSensorBrowser) {
+    if(mSensorBrowser->isVisible() && locked) //going from visible to not visible to save the state
+      mSplitterSize = mSplitter->sizes();
     mSensorBrowser->setVisible(!locked);
+    
+  }
 }
-
+void TopLevel::startSensorBrowserWidget()
+{
+  if(mSensorBrowser) return;
+  mSensorBrowser = new SensorBrowserWidget( 0, KSGRD::SensorMgr );
+  mSplitter->insertWidget(0,mSensorBrowser);
+  mSplitter->setSizes( mSplitterSize );
+}
 
 /*
  * DBUS Interface functions
@@ -173,18 +180,14 @@ void TopLevel::removeWorkSheet( const QString &fileName )
 
 QStringList TopLevel::listSensors( const QString &hostName )
 {
-//  if(!mSensorBrowser)
-//    mSensorBrowser = new SensorBrowserWidget( mSplitter, KSGRD::SensorMgr );
-//  return mSensorBrowser->listSensors( hostName );
-  return QStringList();
+  startSensorBrowserWidget();
+  return mSensorBrowser->listSensors( hostName );
 }
 
 QStringList TopLevel::listHosts()
 {
-//  if(!mSensorBrowser)
- //   mSensorBrowser = new SensorBrowserWidget( mSplitter, KSGRD::SensorMgr );
-  //return mSensorBrowser->listHosts();
-  return QStringList();
+  startSensorBrowserWidget();
+  return mSensorBrowser->listHosts();
 }
 
 void TopLevel::initStatusBar()
@@ -340,7 +343,10 @@ void TopLevel::readProperties( KConfig *cfg )
 void TopLevel::saveProperties( KConfig *cfg )
 {
   cfg->writeEntry( "isMinimized", isMinimized() );
-  if(mSplitterSize.size() == 2 && mSplitterSize.value(0) != 0 && mSplitterSize.value(1) != 0)
+
+  if(mSensorBrowser->isVisible()) 
+    cfg->writeEntry( "SplitterSizeList",  mSplitter->sizes());
+  else if(mSplitterSize.size() == 2 && mSplitterSize.value(0) != 0 && mSplitterSize.value(1) != 0)
     cfg->writeEntry( "SplitterSizeList", mSplitterSize );
 
   KSGRD::Style->saveProperties( cfg );
