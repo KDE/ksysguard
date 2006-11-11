@@ -87,7 +87,7 @@ TopLevel::TopLevel()
   mSplitter->setOpaqueResize( KGlobalSettings::opaqueResize() );
   setCentralWidget( mSplitter );
 
-  mSensorBrowser = new SensorBrowserWidget( mSplitter, KSGRD::SensorMgr );
+  mSensorBrowser = 0;
 
   mWorkSpace = new Workspace( mSplitter );
   connect( mWorkSpace, SIGNAL( setCaption( const QString&) ),
@@ -139,7 +139,14 @@ void TopLevel::currentTabChanged(int index)
   bool locked = !sheet || sheet->isLocked();
   mTabRemoveAction->setVisible(!locked);
   mTabExportAction->setVisible(!locked);
-  mSensorBrowser->setVisible(!locked);
+  if(!locked && !mSensorBrowser) {
+    mSensorBrowser = new SensorBrowserWidget( 0, KSGRD::SensorMgr );
+    mSplitter->insertWidget(0,mSensorBrowser);
+    mSplitter->setSizes( mSplitterSize );
+  }
+//  mSplitter->setVisible(true);
+  if(mSensorBrowser)
+    mSensorBrowser->setVisible(!locked);
 }
 
 
@@ -166,12 +173,18 @@ void TopLevel::removeWorkSheet( const QString &fileName )
 
 QStringList TopLevel::listSensors( const QString &hostName )
 {
-  return mSensorBrowser->listSensors( hostName );
+//  if(!mSensorBrowser)
+//    mSensorBrowser = new SensorBrowserWidget( mSplitter, KSGRD::SensorMgr );
+//  return mSensorBrowser->listSensors( hostName );
+  return QStringList();
 }
 
 QStringList TopLevel::listHosts()
 {
-  return mSensorBrowser->listHosts();
+//  if(!mSensorBrowser)
+ //   mSensorBrowser = new SensorBrowserWidget( mSplitter, KSGRD::SensorMgr );
+  //return mSensorBrowser->listHosts();
+  return QStringList();
 }
 
 void TopLevel::initStatusBar()
@@ -233,7 +246,8 @@ void TopLevel::connectHost()
 
 void TopLevel::disconnectHost()
 {
-  mSensorBrowser->disconnect();
+  if(mSensorBrowser)
+    mSensorBrowser->disconnect();
 }
 
 void TopLevel::editToolbars()
@@ -308,13 +322,12 @@ void TopLevel::readProperties( KConfig *cfg )
   if ( cfg->readEntry( "isMinimized" , QVariant(false)).toBool() == true )
     showMinimized();
 
-  QList<int> sizes = cfg->readEntry( "SplitterSizeList",QList<int>() );
-  if ( sizes.isEmpty() ) {
+  mSplitterSize = cfg->readEntry( "SplitterSizeList",QList<int>() );
+  if ( mSplitterSize.isEmpty() ) {
     // start with a 30/70 ratio
-    sizes.append( 30 );
-    sizes.append( 70 );
-  }
-  mSplitter->setSizes( sizes );
+    mSplitterSize.append( 10 );
+    mSplitterSize.append( 90 );
+  } 
 
   KSGRD::SensorMgr->readProperties( cfg );
   KSGRD::Style->readProperties( cfg );
@@ -327,7 +340,8 @@ void TopLevel::readProperties( KConfig *cfg )
 void TopLevel::saveProperties( KConfig *cfg )
 {
   cfg->writeEntry( "isMinimized", isMinimized() );
-  cfg->writeEntry( "SplitterSizeList", mSplitter->sizes() );
+  if(mSplitterSize.size() == 2 && mSplitterSize.value(0) != 0 && mSplitterSize.value(1) != 0)
+    cfg->writeEntry( "SplitterSizeList", mSplitterSize );
 
   KSGRD::Style->saveProperties( cfg );
   KSGRD::SensorMgr->saveProperties( cfg );

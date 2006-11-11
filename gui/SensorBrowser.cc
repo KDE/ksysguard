@@ -287,8 +287,7 @@ SensorBrowserWidget::SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager*
   setRootIsDecorated( false );
   setDragDropMode(QAbstractItemView::DragOnly);
 
-  // The sensor browser can be completely hidden.
-  setMinimumWidth( 1 );
+  //setMinimumWidth( 1 );
 
   this->setWhatsThis( i18n( "The sensor browser lists the connected hosts and the sensors "
                                "that they provide. Click and drag sensors into drop zones "
@@ -298,6 +297,7 @@ SensorBrowserWidget::SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager*
                                "display values of multiple sensors. Simply drag other "
                                "sensors on to the display to add more sensors." ) );
   connect( &mSensorBrowserModel, SIGNAL(sensorsAddedToHost(const QModelIndex&)), this, SLOT(expand(const QModelIndex&)));
+  update();
 }
 
 SensorBrowserWidget::~SensorBrowserWidget()

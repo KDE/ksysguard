@@ -85,6 +85,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
     int mTimerId;
     KAction *mTabRemoveAction;
     KAction *mTabExportAction;
+    QList<int> mSplitterSize;
 };
 
 extern TopLevel* Toplevel;
