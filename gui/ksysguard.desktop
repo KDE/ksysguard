@@ -9,5 +9,5 @@ DocPath=ksysguard/index.html
 Terminal=false
 Path=
 X-KDE-StartupNotify=true
-X-DCOP-ServiceType=Multi
+X-DBUS-StartupType=Multi
 Categories=Qt;KDE;System;
