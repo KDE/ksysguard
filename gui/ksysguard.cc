@@ -345,7 +345,7 @@ void TopLevel::saveProperties( KConfig *cfg )
 {
   cfg->writeEntry( "isMinimized", isMinimized() );
 
-  if(mSensorBrowser->isVisible()) 
+  if(mSensorBrowser && mSensorBrowser->isVisible()) 
     cfg->writeEntry( "SplitterSizeList",  mSplitter->sizes());
   else if(mSplitterSize.size() == 2 && mSplitterSize.value(0) != 0 && mSplitterSize.value(1) != 0)
     cfg->writeEntry( "SplitterSizeList", mSplitterSize );
