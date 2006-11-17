@@ -60,10 +60,11 @@ kde4_add_kdeinit_executable(ksysguard ${ksysguard_KDEINIT_SRCS})
 
 target_link_libraries(kdeinit_ksysguard  ${KDE4_KIO_LIBS} ksgrd  )
 
-install(TARGETS kdeinit_ksysguard DESTINATION ${BIN_INSTALL_DIR})
+install(TARGETS kdeinit_ksysguard DESTINATION ${LIB_INSTALL_DIR})
 
 target_link_libraries(ksysguard kdeinit_ksysguard)
 
+install(TARGETS ksysguard DESTINATION ${BIN_INSTALL_DIR})
 ########### next target ###############
 
 set(sysguard_panelapplet_PART_SRCS KSysGuardApplet.cc KSGAppletSettings.cc ${libsensordisplays_SRCS} StyleEngine.cc StyleSettings.cc TimerSettings.cc)
