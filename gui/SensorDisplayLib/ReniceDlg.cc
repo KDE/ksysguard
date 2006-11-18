@@ -24,23 +24,21 @@
 #include <knuminput.h>
 
 #include "ReniceDlg.moc"
-//Added by qt3to4:
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
-					 int pid)
+ReniceDlg::ReniceDlg(QWidget* parent, int currentPPrio,
+					 const QStringList& processes)
 	: KDialog( parent )
 {
-	setObjectName( name );
+	setObjectName( "Renice Dialog" );
 	setModal( true );
 	setCaption( i18n("Renice Process") );
 	setButtons( Ok | Cancel );
 	showButtonSeparator( true );
 
 	connect( this, SIGNAL( okClicked() ), SLOT( slotOk() ) );
-	connect( this, SIGNAL( cancelClicked() ), SLOT( slotCancel() ) );
 
 
 	QWidget *page = new QWidget( this );
@@ -52,33 +50,28 @@ ReniceDlg::ReniceDlg(QWidget* parent, const char* name, int currentPPrio,
 	vLay->setMargin(20);
 
 	QString msg;
-	msg = i18n("You are about to change the scheduling priority of\n"
-			   "process %1. Be aware that only the Superuser (root)\n"
-			   "can decrease the nice level of a process. The lower\n"
-			   "the number is the higher the priority.\n\n"
-			   "Please enter the desired nice level:", pid);
+	msg = i18n("<qt>You are about to change the scheduling priority for:<br>"
+			   "<i>%1</i><br>"
+			   "Be aware that only the Superuser (root) "
+			   "can decrease the nice level of a process. The lower "
+			   "the number is the higher the priority. "
+			   "Please enter the desired nice level:", processes.join("\n"));
 	message = new QLabel(msg, page);
+	message->setWordWrap(true);
 	message->setMinimumSize(message->sizeHint());
 	vLay->addWidget(message);
 
-	/*
-	 * Create a slider with an LCD display to the right using a horizontal
-	 * layout. The slider and the LCD are kept in sync through signals
-	 */
 	sldLay = new QHBoxLayout();
 	vLay->addLayout(sldLay);
 
 	input = new KIntNumInput(currentPPrio, page, 10);
 	input->setRange(-20, 19);
 	vLay->addWidget(input);
+	newPriority = 40;
 }
 
 void ReniceDlg::slotOk()
 {
-  done(input->value());
+  newPriority = input->value();
 }
 
-void ReniceDlg::slotCancel()
-{
-  done(40);
-}

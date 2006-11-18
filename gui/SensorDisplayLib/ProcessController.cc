@@ -44,6 +44,7 @@
 
 #include "ProcessController.moc"
 #include "ProcessController.h"
+#include "ReniceDlg.h"
 #include "SignalIDs.h"
 
 #include <QCheckBox>
@@ -69,8 +70,12 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 
 	mColumnContextMenu = new QMenu(mUi.treeView->header());
 	connect(mColumnContextMenu, SIGNAL(triggered(QAction*)), this, SLOT(showOrHideColumn(QAction *)));
-	
 	mUi.treeView->header()->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(mUi.treeView->header(), SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
+
+	mProcessContextMenu = new QMenu(mUi.treeView);
+	mUi.treeView->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(mUi.treeView, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showProcessContextMenu(const QPoint&)));
 	
 	mUi.treeView->header()->setClickable(true);
 	mUi.treeView->header()->setSortIndicatorShown(true);
@@ -81,7 +86,6 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	connect(mUi.cmbFilter, SIGNAL(currentIndexChanged(int)), &mFilterModel, SLOT(setFilter(int)));
 	connect(mUi.treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
 	connect(mUi.treeView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex & , const QModelIndex & )), this, SLOT(currentRowChanged(const QModelIndex &)));
-	connect(mUi.treeView->header(), SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
 	connect(mUi.chkShowTotals, SIGNAL(stateChanged(int)), &mModel, SLOT(setShowTotals(int)));
 	
 	setPlotterWidget(this);
@@ -90,6 +94,23 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 void ProcessController::currentRowChanged(const QModelIndex &current)
 {
 	mUi.btnKillProcess->setEnabled(current.isValid() && mKillSupported);
+}
+void ProcessController::showProcessContextMenu(const QPoint &point){
+	mProcessContextMenu->clear();
+	QAction *renice = new QAction(mProcessContextMenu);
+	renice->setText(i18n("Renice process"));
+	mProcessContextMenu->addAction(renice);
+
+	QAction *kill = new QAction(mProcessContextMenu);
+	kill->setText(i18n("Kill process"));
+	mProcessContextMenu->addAction(kill);
+
+	QAction *result = mProcessContextMenu->exec(mUi.treeView->mapToGlobal(point));	
+	if(result == renice) {
+		reniceProcess();
+	} else if(result == kill) {
+		killProcess();
+	}
 }
 void ProcessController::showContextMenu(const QPoint &point){
 	mColumnContextMenu->clear();
@@ -216,18 +237,47 @@ void ProcessController::killProcess(int pid, int sig)
 				QString("kill %1 %2" ).arg(pid).arg(sig), Kill_Command);
 }
 
-void
-ProcessController::killProcess()
+void ProcessController::reniceProcess()
 {
-	QModelIndexList selectedIndexes = mUi.treeView->selectionModel()->selectedIndexes();
+	QModelIndexList selectedIndexes = mUi.treeView->selectionModel()->selectedRows();
+	QStringList selectedAsStrings;
+	QList< long long> selectedPids;
+	int firstPriority = 0;
+	for (int i = 0; i < selectedIndexes.size(); ++i) {
+		Process *process = reinterpret_cast<Process *> (mFilterModel.mapToSource(selectedIndexes.at(i)).internalPointer());
+		if(i==0) firstPriority = process->nice;
+		selectedPids << process->pid;
+		selectedAsStrings << mModel.getStringForProcess(process);
+	}
+	
+	if (selectedAsStrings.isEmpty())
+	{
+		KMessageBox::sorry(this, i18n("You need to select a process first."));
+		return;
+	}
+	else
+	{
+		ReniceDlg reniceDlg(mUi.treeView, firstPriority, selectedAsStrings);
+		if(reniceDlg.exec() == QDialog::Rejected) return;
+		int newPriority = reniceDlg.newPriority;
+		Q_ASSERT(newPriority <= 20 && newPriority >= -19); 
+
+		Q_ASSERT(selectedPids.size() == selectedAsStrings.size());
+	        for (int i = 0; i < selectedPids.size(); ++i) 
+	            sendRequest(sensors().at(0)->hostName(), QString("setpriority %1 %2" ).arg(selectedPids.at( i ))
+                       .arg(newPriority), Renice_Command);
+		sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);  //update the display afterwards
+        }
+}
+void ProcessController::killProcess()
+{
+	QModelIndexList selectedIndexes = mUi.treeView->selectionModel()->selectedRows();
 	QStringList selectedAsStrings;
 	QList< long long> selectedPids;
 	for (int i = 0; i < selectedIndexes.size(); ++i) {
-		if(selectedIndexes.at(i).column() == 0) { //I can't work out how to get selectedIndexes() to only return 1 index per row
-			Process *process = reinterpret_cast<Process *> (mFilterModel.mapToSource(selectedIndexes.at(i)).internalPointer());
-			selectedPids << process->pid;
-			selectedAsStrings << mModel.getStringForProcess(process);
-		}
+		Process *process = reinterpret_cast<Process *> (mFilterModel.mapToSource(selectedIndexes.at(i)).internalPointer());
+		selectedPids << process->pid;
+		selectedAsStrings << mModel.getStringForProcess(process);
 	}
 	
 	if (selectedAsStrings.isEmpty())
@@ -256,6 +306,7 @@ ProcessController::killProcess()
             sendRequest(sensors().at(0)->hostName(), QString("kill %1 %2" ).arg(selectedPids.at( i ))
                        .arg(MENU_ID_SIGKILL), Kill_Command);
         }
+	sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);  //update the display afterwards
 }
 
 void
@@ -378,7 +429,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 					     answer[1], sensors().at(0)->hostName()));
 				break;
 			} 
-			//Run as root with kdesu to get round insufficent privillages
+			//Run as root with kdesu to get around insufficent privillages
 			QStringList arguments;
 			bool ok;
 			int pid = answer[1].toInt(&ok);
@@ -420,10 +471,34 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 	case Renice_Command:
 	{
 		// result of renice operation
-		if(answer.count() != 2) {
-			kDebug(1215) << "Invalid answer from a renice request" << endl;
+		if(answer.count() != 2 && answer.count() != 1) {
+			kDebug(1215) << "Invalid answer from a renice request: " << answer.count() << " " << answer.join(", ") << endl;
 			break;
 		}
+		if(answer.count() == 1) { //Unfortunetly kde3 ksysguardd does not return the pid of the process,  This means we need to handle the two cases seperately
+			switch (answer[0].toInt())
+			{
+			case 0:	// successful renice operation
+				break;
+			case 1:	// unknown error
+				KSGRD::SensorMgr->notify(
+					i18n("Error while attempting to renice process."));
+				break;
+			case 2:
+				KSGRD::SensorMgr->notify(
+					i18n("Insufficient permissions to renice process"));
+				break;
+			case 3:
+				KSGRD::SensorMgr->notify(i18n("Process has already disappeared."));
+				break;
+			case 4:
+				KSGRD::SensorMgr->notify(i18n("Internal communication problem."));
+				break;
+			}
+			break;
+		} 
+		// In kde4, ksysguardd returns the pid of the process.  If renice-ing failed, and localhost, then
+		// attempt a renice with ksudo
 		switch (answer[0].toInt())
 		{
 		case 0:	// successful renice operation

@@ -41,11 +41,11 @@ class ReniceDlg : public KDialog
 	Q_OBJECT
 
 public:
-	ReniceDlg(QWidget* parent, const char* name, int currentPPrio, int pid);
+	ReniceDlg(QWidget* parent, int currentPPrio, const QStringList& pid);
+	int newPriority;
 
 public Q_SLOTS:
     void slotOk();
-    void slotCancel();
 
 private:
 	QBoxLayout* vLay;

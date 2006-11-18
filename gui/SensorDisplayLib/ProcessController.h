@@ -94,12 +94,14 @@ public slots:
 	void killProcess();
 	void killProcess(int pid, int sig);
 
+	void reniceProcess();
 	void reniceProcess(int pid, int niceValue);
 
 	void updateList();
 private slots:
 	void expandInit();
 	void showContextMenu(const QPoint &point);
+	void showProcessContextMenu(const QPoint &point);
 	void showOrHideColumn(QAction *);
 	void killFailed();
 signals:
@@ -116,6 +118,8 @@ private:
 	
 	/** The column context menu when you right click on a column.*/
 	QMenu *mColumnContextMenu;
+	/** The context menu when you right click on a process */
+	QMenu *mProcessContextMenu;
 	
 	/** We do not want to send out a "ps" command before we have the results from "ps?" so this is set to false until we get a result from ps?
 	 */
