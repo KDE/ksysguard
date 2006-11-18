@@ -510,19 +510,19 @@ void setPriority( const char* cmd )
   if ( setpriority( PRIO_PROCESS, pid, prio ) ) {
     switch ( errno ) {
       case EINVAL:
-        fprintf( CurrentClient, "4\n" );
+        fprintf( CurrentClient, "4\t%d\t%d\n", pid, prio  );
         break;
       case ESRCH:
-        fprintf( CurrentClient, "3\n" );
+        fprintf( CurrentClient, "3\t%d\t%d\nn", pid, prio );
         break;
       case EPERM:
       case EACCES:
-        fprintf( CurrentClient, "2\n" );
+        fprintf( CurrentClient, "2\t%d\t%d\n", pid, prio );
         break;
       default: /* unknown error */
-        fprintf( CurrentClient, "1\n" );
+        fprintf( CurrentClient, "1\t%d\t%d\n", pid, prio );
         break;
     }
   } else
-    fprintf( CurrentClient, "0\n" );
+    fprintf( CurrentClient, "0\t%d\t%d\n",pid, prio );
 }
