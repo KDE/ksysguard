@@ -104,6 +104,7 @@ private slots:
 	void showProcessContextMenu(const QPoint &point);
 	void showOrHideColumn(QAction *);
 	void killFailed();
+	void reniceFailed();
 signals:
 	void setFilterMode(int);
 
@@ -139,6 +140,7 @@ private:
 	int mXResCountdown;
 	
 	QProcess *mKillProcess;
+	QProcess *mReniceProcess;
 	QStringList mHeader;
 	QStringList mColType;
 	QList<QStringList> mData;

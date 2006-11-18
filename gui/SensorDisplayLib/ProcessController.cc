@@ -407,39 +407,45 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 	}
 	case Kill_Command:
 	{
-		// result of kill operation
-		if(answer.count() != 2) {
+		// we should get a reply like  {"0\t3230"}  - i.e. just one string containing the error code and the pid
+		if(answer.count() != 1) {
 			kDebug(1215) << "Invalid answer from a kill request" << endl;
 			break;
 		}
-		switch (answer[0].toInt())
+
+		QStringList answer2 = answer[0].split('\t');
+		if(answer2.count() != 2) {
+			kDebug(1215) << "Invalid answer from a kill request" << endl;
+			break;
+		}
+		switch (answer2[0].toInt())
 		{
 		case 0:	// successful kill operation
 			break;
 		case 1:	// unknown error
 			KSGRD::SensorMgr->notify(
 				i18n("Error while attempting to kill process %1.",
-				 answer[1]));
+				 answer2[1]));
 			break;
 		case 2: {
 			if(!sensors().at(0)->isLocalhost()) {
 				KSGRD::SensorMgr->notify(
 					i18n("You do not have the permission to kill process %1 on host %2 and due to security "
 					     "considerations, KDE cannot execute root commands remotely",
-					     answer[1], sensors().at(0)->hostName()));
+					     answer2[1], sensors().at(0)->hostName()));
 				break;
 			} 
 			//Run as root with kdesu to get around insufficent privillages
 			QStringList arguments;
 			bool ok;
-			int pid = answer[1].toInt(&ok);
+			int pid = answer2[1].toInt(&ok);
 			//I want to be extra careful here.  Make sure the pid really is a number. 
 			if(!ok) {
 				//something has gone seriously wrong.
 				KSGRD::SensorMgr->notify(i18n("There was an internal safety check problem trying to kill the process."));
 				break;
 			}
-			arguments << "kill" << QString(pid);
+			arguments << "kill" << QString::number(pid);
 			if(mKillProcess == 0) {
 				mKillProcess = new QProcess(this);
 				connect(mKillProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(killFailed()));
@@ -451,7 +457,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		case 3:
 			KSGRD::SensorMgr->notify(
 				i18n("Process %1 has already disappeared.",
-				 answer[1]));
+				 answer2[1]));
 			break;
 		case 4:
 			KSGRD::SensorMgr->notify(i18n("Invalid Signal."));
@@ -470,13 +476,22 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		break;
 	case Renice_Command:
 	{
-		// result of renice operation
-		if(answer.count() != 2 && answer.count() != 1) {
-			kDebug(1215) << "Invalid answer from a renice request: " << answer.count() << " " << answer.join(", ") << endl;
+		// we should get a reply like  {"0\t3230"}  - i.e. just one string containing the error code and the pid
+		if(answer.count() != 1) {
+			kDebug(1215) << "Invalid answer from a renice request" << endl;
 			break;
 		}
-		if(answer.count() == 1) { //Unfortunetly kde3 ksysguardd does not return the pid of the process,  This means we need to handle the two cases seperately
-			switch (answer[0].toInt())
+
+		QStringList answer2 = answer[0].split('\t');
+
+		kDebug(1215) << "Answer from a renice request: " << answer2.count() << " " << answer2.join(", ") << endl;
+		// result of renice operation
+		if(answer2.count() != 3 && answer2.count() != 1) {
+			kDebug(1215) << "Invalid answer from a renice request: " << answer2.count() << " " << answer2.join(", ") << endl;
+			break;
+		}
+		if(answer2.count() == 1) { //Unfortunetly kde3 ksysguardd does not return the pid of the process,  This means we need to handle the two cases seperately
+			switch (answer2[0].toInt())
 			{
 			case 0:	// successful renice operation
 				break;
@@ -489,7 +504,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 					i18n("Insufficient permissions to renice process"));
 				break;
 			case 3:
-				KSGRD::SensorMgr->notify(i18n("Process has already disappeared."));
+				KSGRD::SensorMgr->notify(i18n("Process has disappeared."));
 				break;
 			case 4:
 				KSGRD::SensorMgr->notify(i18n("Internal communication problem."));
@@ -499,27 +514,50 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		} 
 		// In kde4, ksysguardd returns the pid of the process.  If renice-ing failed, and localhost, then
 		// attempt a renice with ksudo
-		switch (answer[0].toInt())
+		switch (answer2[0].toInt())
 		{
 		case 0:	// successful renice operation
 			break;
 		case 1:	// unknown error
 			KSGRD::SensorMgr->notify(
 				i18n("Error while attempting to renice process %1.",
-				 answer[1]));
+				 answer2[1]));
 			break;
-		case 2:
-			KSGRD::SensorMgr->notify(
-				i18n("Insufficient permissions to renice "
-							 "process %1.", answer[1]));
-			break;
+		case 2: {
+			if(!sensors().at(0)->isLocalhost()) {
+				KSGRD::SensorMgr->notify(
+					i18n("You do not have the permission to renice process %1 on host %2 and due to security "
+					     "considerations, KDE cannot execute root commands remotely",
+					     answer2[1], sensors().at(0)->hostName()));
+				break;
+			} 
+			//Run as root with kdesu to get around insufficent privillages
+			QStringList arguments;
+			bool ok,ok2;
+			int pid = answer2[1].toInt(&ok);
+			int prio = answer2[2].toInt(&ok2);
+			//I want to be extra careful here.  Make sure the pid really is a number. 
+			if(!ok || !ok2) {
+				//something has gone seriously wrong.
+				KSGRD::SensorMgr->notify(i18n("There was an internal safety check problem trying to renice the process."));
+				break;
+			}
+			arguments << "renice" << QString::number(prio) << QString::number(pid);
+			if(mReniceProcess == 0) {
+				mReniceProcess = new QProcess(this);
+				connect(mReniceProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(reniceFailed()));
+			}
+			mReniceProcess->start("kdesu", arguments);
+
+			break;  
+		} 
 		case 3:
 			KSGRD::SensorMgr->notify(
-				i18n("Process %1 has already disappeared.",
-				 answer[1]));
+				i18n("Process %1 has disappeared.",
+				 answer2[1]));
 			break;
-		case 4:
-			KSGRD::SensorMgr->notify(i18n("Invalid argument."));
+		case 4:  
+			KSGRD::SensorMgr->notify(i18n("Internal communication problem."));
 			break;
 		}
 		break;
@@ -587,7 +625,11 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 
 	}
 }
-
+void ProcessController::reniceFailed()
+{
+  KSGRD::SensorMgr->notify(i18n("You do not have the permission to renice the process and there "
+                                "was a problem trying to run as root"));
+}
 void ProcessController::killFailed()
 {
   KSGRD::SensorMgr->notify(i18n("You do not have the permission to kill the process and there "
