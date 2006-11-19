@@ -88,6 +88,7 @@ void Workspace::readProperties( KConfig *cfg )
   }
   //We know that the first tab is the process table
   setCurrentIndex(0);
+  emit currentChanged(0);
 }
 
 QString Workspace::makeNameForNewSheet() const

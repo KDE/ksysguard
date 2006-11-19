@@ -118,14 +118,14 @@ TopLevel::TopLevel()
 
   KStdAction::quit( this, SLOT( close() ), actionCollection() );
 
-  action = new KAction(KIcon("connect_established"),  i18n( "Monitor remote machine..." ), actionCollection(), "connect_host" );
-  connect(action, SIGNAL(triggered(bool)), SLOT( connectHost() ));
+  mMonitorRemoteAction = new KAction(KIcon("connect_established"),  i18n( "Monitor remote machine..." ), actionCollection(), "connect_host" );
+  connect(mMonitorRemoteAction, SIGNAL(triggered(bool)), SLOT( connectHost() ));
 
   action = new KAction(KIcon("configure"),  i18n( "&Worksheet Properties" ), actionCollection(), "configure_sheet" );
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( configure() ));
 
-  action = new KAction(KIcon("colorize"),  i18n( "Configure &Style..." ), actionCollection(), "configure_style" );
-  connect(action, SIGNAL(triggered(bool)), SLOT( editStyle() ));
+  mColorizeAction = new KAction(KIcon("colorize"),  i18n( "Configure &Style..." ), actionCollection(), "configure_style" );
+  connect(mColorizeAction, SIGNAL(triggered(bool)), SLOT( editStyle() ));
 
   setupGUI(ToolBar | Keys | StatusBar | Create);
 }
@@ -139,6 +139,9 @@ void TopLevel::currentTabChanged(int index)
   bool locked = !sheet || sheet->isLocked();
   mTabRemoveAction->setVisible(!locked);
   mTabExportAction->setVisible(!locked);
+  mMonitorRemoteAction->setVisible(!locked);
+  mColorizeAction->setVisible(!locked);
+
   if(!locked && !mSensorBrowser) {
     startSensorBrowserWidget();
   }
