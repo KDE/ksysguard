@@ -27,7 +27,7 @@
     <Action name="configure_style"/>
   </Menu>
 </MenuBar>
-<ToolBar name="mainToolBar" noMerge="1"><text>Main Toolbar</text>
+<ToolBar name="mainToolBar" noMerge="1" hidden="true"><text>Main Toolbar</text>
     <Action name="new_worksheet"/>
     <Action name="import_worksheet"/>
     <Action name="export_worksheet"/>
