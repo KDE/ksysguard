@@ -71,6 +71,11 @@ void Workspace::readProperties( KConfig *cfg )
     * then "restore" a special default configuration. */
     selectedSheets << "ProcessTable.sgrd";
     selectedSheets << "SystemLoad.sgrd";
+  } else if(selectedSheets[0] != "ProcessTable.sgrd") {
+    //We need to make sure that this is really is the process table on the first tab. No GUI way of changing this, but should make sure anyway.
+    //Plus this migrates users from the kde3 setup
+    selectedSheets.removeAll("ProcessTable.sgrd");
+    selectedSheets.prepend( "ProcessTable.sgrd");
   }
 
   KStandardDirs* kstd = KGlobal::dirs();
@@ -81,8 +86,7 @@ void Workspace::readProperties( KConfig *cfg )
       restoreWorkSheet( filename, false);
     }
   }
-
-  //FIXME We need to make sure that this is really is the process table on the first tab. No GUI way of changing this, but should make sure anyway
+  //We know that the first tab is the process table
   setCurrentIndex(0);
 }
 
