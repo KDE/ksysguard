@@ -34,7 +34,8 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 {
 	//We need the uid for this, so we have a special understanding with the model.
 	//We query the first row with Qt:UserRole, and it gives us the uid.  Nasty but works.
-	if(mFilter == PROCESS_FILTER_ALL && filterRegExp().isEmpty()) return true; //Shortcut for common case 
+	if( (mFilter == PROCESS_FILTER_ALL_SIMPLE || mFilter == PROCESS_FILTER_ALL_TREE) 
+			&& filterRegExp().isEmpty()) return true; //Shortcut for common case 
 	
 	Process *parent_process;
 	ProcessModel *model = static_cast<ProcessModel *>(sourceModel());
@@ -54,7 +55,8 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 	
 	bool accepted = true;
 	switch(mFilter) {
-	case PROCESS_FILTER_ALL:
+	case PROCESS_FILTER_ALL_TREE:
+	case PROCESS_FILTER_ALL_SIMPLE:
 		break;
         case PROCESS_FILTER_SYSTEM:
                 if(uid >= 100 && model->canUserLogin(uid)) accepted = false;
@@ -79,7 +81,13 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 	}
 
 
-	//We did not accept this row at all.  However one of our children might be accepted, so accept this row if our children are accepted.
+	//We did not accept this row at all.  
+	
+	//If we are in flat mode, then give up now
+	if(mFilter == PROCESS_FILTER_ALL_SIMPLE)
+		return false;
+
+	//one of our children might be accepted, so accept this row if our children are accepted.
 	QModelIndex source_index = sourceModel()->index(source_row, 0, source_parent);
 	for(int i = 0 ; i < sourceModel()->rowCount(source_index); i++) {
 		if(filterAcceptsRow(i, source_index)) return true;

@@ -105,11 +105,13 @@ private slots:
 	void showOrHideColumn(QAction *);
 	void killFailed();
 	void reniceFailed();
+	void setSimpleMode(int index);
 signals:
 	void setFilterMode(int);
 
 private:
-
+	
+	bool areXResColumnsHidden() const;
 	enum { Ps_Info_Command = 1, Ps_Command, Kill_Command, Kill_Supported_Command, Renice_Command, XRes_Info_Command, XRes_Command, XRes_Supported_Command };
 	bool mKillSupported;
 	/** Is the XRes extension supported where the ksysguardd daemon is? (And does the daemon support it) */
@@ -139,6 +141,10 @@ private:
 	 */
 	int mXResCountdown;
 	
+	/** Whether we are in simple mode.  Must be kept in sync with the cmbFilter and mModel.mSimple
+	 */
+	bool mSimple;
+
 	QProcess *mKillProcess;
 	QProcess *mReniceProcess;
 	QStringList mHeader;
@@ -148,6 +154,12 @@ private:
 	ProcessModel mModel;
 	ProcessFilter mFilterModel;
 	Ui::ProcessWidget mUi;
+	/** The logical index in the header of the xres headings inclusive
+	 */
+	int mXResHeadingStart;
+	/** The logical index in the header of the xres headings inclusive
+	 */
+	int mXResHeadingEnd;
 };
 
 #endif

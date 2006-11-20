@@ -24,10 +24,11 @@
 
 #include <QSortFilterProxyModel>
 #include <QObject>
-#define PROCESS_FILTER_ALL 0
-#define PROCESS_FILTER_SYSTEM 1
-#define PROCESS_FILTER_USER 2
-#define PROCESS_FILTER_OWN 3
+#define PROCESS_FILTER_ALL_SIMPLE 0
+#define PROCESS_FILTER_ALL_TREE 1
+#define PROCESS_FILTER_SYSTEM 2
+#define PROCESS_FILTER_USER 3
+#define PROCESS_FILTER_OWN 4
 
 class QModelIndex;
 

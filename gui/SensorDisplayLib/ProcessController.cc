@@ -57,6 +57,7 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	: KSGRD::SensorDisplay(parent, title, workSheetSettings), mModel(this), mFilterModel(this)
 {
 	mKillProcess = 0;
+	mSimple = true;
 	//When XResCountdown reaches 0, we call 'xres'.
 	mXResCountdown = 2;
 	mInitialSortCol = 1;
@@ -64,6 +65,7 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	mXResSupported = false;
 	mReadyForPs = false;
 	mWillUpdateList = false;
+	mXResHeadingStart = mXResHeadingEnd = -1;
 	mUi.setupUi(this);
 	mFilterModel.setSourceModel(&mModel);
 	mUi.treeView->setModel(&mFilterModel);
@@ -79,17 +81,40 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	
 	mUi.treeView->header()->setClickable(true);
 	mUi.treeView->header()->setSortIndicatorShown(true);
+	mUi.treeView->header()->setCascadingSectionResizes(true);
 	mUi.txtFilter->setClearButtonShown(true);
 	connect(mUi.btnKillProcess, SIGNAL(clicked()), this, SLOT(killProcess()));
 	connect(mUi.txtFilter, SIGNAL(textChanged(const QString &)), &mFilterModel, SLOT(setFilterRegExp(const QString &)));
 	connect(mUi.txtFilter, SIGNAL(textChanged(const QString &)), this, SLOT(expandInit()));
 	connect(mUi.cmbFilter, SIGNAL(currentIndexChanged(int)), &mFilterModel, SLOT(setFilter(int)));
+	connect(mUi.cmbFilter, SIGNAL(currentIndexChanged(int)), this, SLOT(setSimpleMode(int)));
 	connect(mUi.treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
 	connect(mUi.treeView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex & , const QModelIndex & )), this, SLOT(currentRowChanged(const QModelIndex &)));
 	connect(mUi.chkShowTotals, SIGNAL(stateChanged(int)), &mModel, SLOT(setShowTotals(int)));
 	
 	setPlotterWidget(this);
 	setMinimumSize(sizeHint());
+}
+void ProcessController::setSimpleMode(int index)
+{  //index is the item the user selected in the combo box
+	bool simple = (index == PROCESS_FILTER_ALL_SIMPLE);
+	if(simple == mSimple) return; //Optomisation - don't bother changing anything if the simple mode hasn't been toggled
+	mSimple = simple;
+	mModel.setSimpleMode(mSimple);
+	
+//	mUi.treeView->header()->setStretchLastSection(false);
+	for(int i = mXResHeadingStart; i <= mXResHeadingEnd; i++) {
+		if(mSimple)
+			mUi.treeView->header()->hideSection(i);
+		else
+			mUi.treeView->header()->showSection(i);
+	}
+	if(!mSimple) {
+		for(int i = 0; i <  mUi.treeView->header()->count()-1; i++) {
+			mUi.treeView->header()->resizeSection(i, mUi.treeView->header()->sectionSizeHint(i));
+		}
+	}
+//	mUi.treeView->header()->setStretchLastSection(true);
 }
 void ProcessController::currentRowChanged(const QModelIndex &current)
 {
@@ -111,6 +136,17 @@ void ProcessController::showProcessContextMenu(const QPoint &point){
 	} else if(result == kill) {
 		killProcess();
 	}
+}
+bool ProcessController::areXResColumnsHidden() const {
+	if(!mUi.treeView->header()->sectionsHidden()) return false;
+	//All the xres headings have a column index between mXResHeadingStart and mXResHeadingEnd INCLUSIVE
+	if(!mXResSupported || mXResHeadingStart == -1) return true; //There are no xres headings so I guess they count as hidden
+	Q_ASSERT(mXResHeadingStart <= mXResHeadingEnd);
+	for(int i = mXResHeadingStart; i <= mXResHeadingEnd; i++) {
+		if(!mUi.treeView->header()->isSectionHidden(i)) 
+			return false;  //There is an xres section being shown
+	}
+	return true;
 }
 void ProcessController::showContextMenu(const QPoint &point){
 	mColumnContextMenu->clear();
@@ -219,11 +255,11 @@ void
 ProcessController::updateList()
 {
 	mWillUpdateList = false;
-    kDebug() << "updateList - sending ps" <<endl;
+	kDebug() << "updateList - sending ps" <<endl;
 	sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);
 	//The 'xres' call is very expensive - Rather than calling it every 2 seconds
 	//instead just call it every 5th time that we call ps.  It won't change much.
-	if(mXResSupported) {
+	if(!areXResColumnsHidden()) {
 		if(--mXResCountdown <= 0) {
 			mXResCountdown = 5;
 			sendRequest(sensors().at(0)->hostName(), "xres", XRes_Command);
@@ -564,6 +600,8 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 	}
 	case XRes_Info_Command:
 	{
+		//Note: It makes things easier to just send and accept the xres info command even when in simple mode
+
 		kDebug() << "XRES INFO" << endl;
 		if (answer.count() != 2)
 		{
@@ -576,22 +614,32 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		QByteArray coltype;
 		for(int i = 0; i < line.size(); i++)  //coltype is in the form "d\tf\tS\t" etc, so split into a list of char
 			if(line[i] != '\t')
-				coltype += line[i].toLatin1();//FIXME: the answer should really be a QByteArray, not a string
+				coltype += line[i].toLatin1();
 		QStringList header = answer.at(0).split('\t');
 		if(coltype.size() != header.count()) {
 			kDebug(1215) << "ProcessController::answerReceived.  Invalid data from a client - column type and data don't match in number.  Discarding" << endl;
 			sensorError(id, true);
 			return;
 		}
+		mXResHeadingStart = mUi.treeView->header()->count();
 		if(!mModel.setXResHeader(header, coltype)) {
 			sensorError(id,true);
+			mXResHeadingStart = -1;
 			return;
+		}
+		mXResHeadingEnd = mUi.treeView->header()->count() -1;
+	        for(int i = mXResHeadingStart; i <= mXResHeadingEnd; i++) {
+	                if(mSimple)
+				mUi.treeView->header()->hideSection(i);
+			else
+				mUi.treeView->header()->showSection(i);
 		}
 		mUi.treeView->header()->setStretchLastSection(true);
 		break;
 	}
 	case XRes_Command:
 	{
+		if(areXResColumnsHidden()) break;
 		/* We have received the answer to a xres command that contains a
 		 * list of processes that we should already know about, with various additional information. 
 		 * We first clear existing xres data, then add in the new data*/
@@ -657,6 +705,7 @@ ProcessController::sensorError(int, bool err)
 			kDebug() << "Sending ps2? " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 			sendRequest(sensors().at(0)->hostName(), "ps?", Ps_Info_Command);
 		} else {
+			mXResHeadingStart = mXResHeadingEnd = -1;
 			kDebug() << "SensorError called with an error" << endl;
 		}
 		/* This happens only when the sensorOk status needs to be changed. */
@@ -675,8 +724,8 @@ ProcessController::restoreSettings(QDomElement& element)
 //	mUi.chkTreeView->setChecked(element.attribute("tree").toInt());
 //	setTreeView(element.attribute("tree").toInt());
 
-	uint filter = element.attribute("filter", "0").toUInt();
-	mUi.cmbFilter->setCurrentIndex(filter);
+//	uint filter = element.attribute("filter", "0").toUInt();
+//	mUi.cmbFilter->setCurrentIndex(filter);
 
 	uint col = element.attribute("sortColumn", "1").toUInt(); //Default to sorting the user column
 	bool inc = element.attribute("incrOrder", "0").toUInt();  //Default to descending order

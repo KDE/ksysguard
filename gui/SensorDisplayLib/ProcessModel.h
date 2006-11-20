@@ -102,7 +102,13 @@ public:
 	 *  @see mUidCanLogin
 	 */
 	bool canUserLogin(long long uid) const;
-
+	/** In simple mode, everything is flat, with no icons, few if any colors, no xres etc.
+	 *  This can be changed at any time.  It is a fairly quick operation.  Basically it resets the model
+	 */ 
+	void setSimpleMode(bool simple) { mSimple = simple;}
+	/** In simple mode, everything is flat, with no icons, few if any colors, no xres etc
+	 */
+	bool isSimpleMode() { return mSimple;}
 
 public slots:
 	void setShowTotals(int totals);
@@ -220,6 +226,8 @@ private:
 	int mXResPxmMemColumn;
 	int mXResNumPxmColumn;
 	int mXResMemOtherColumn;
+
+	bool mSimple; //In simple mode, the model returns everything as flat, with no icons, no xres etc.  This is set by changing cmbFilter
 	
 };
 

@@ -43,6 +43,7 @@
 ProcessModel::ProcessModel(QObject* parent)
 	: QAbstractItemModel(parent)
 {
+	mSimple = true;
 	mIsLocalhost = false; //this default really shouldn't matter, because setIsLocalhost should be called before setData()
 	mPidToProcess[0] = new Process();  //Add a fake process for process '0', the parent for init.  This lets us remove checks everywhere for init process
 	
@@ -152,6 +153,7 @@ ProcessModel::ProcessModel(QObject* parent)
 	mProcessType.insert("vim", Process::Wordprocessing);
 
 }
+
 bool ProcessModel::setData(const QList<QStringList> &data)
 {
 
@@ -882,6 +884,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 
 	}
 	case Qt::DecorationRole: {
+		if(mSimple) return QVariant();
 		if(mHeadingsToType[index.column()] == HeadingName) {
 			Process *process = reinterpret_cast< Process * > (index.internalPointer());
 			switch (process->processType){
@@ -918,6 +921,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	}
 	case Qt::BackgroundRole: {
 		if(!mIsLocalhost) return QVariant();
+		if(mSimple) return QVariant();  //Simple mode means no colors 
 		Process *process = reinterpret_cast< Process * > (index.internalPointer());
 		if(process->tracerpid >0) {
 			//It's being debugged, so probably important.  Let's mark it as such
@@ -1020,7 +1024,7 @@ bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltyp
 			coltype += DataColumnPPid;
 			mPPidColumn = i;
 		} else if(header[i] == "UID") {
-			headings.prepend(i18nc("process heading", "User"));   //The heading for the top of the qtreeview
+			headings.prepend(i18nc("process heading", "User Name"));   //The heading for the top of the qtreeview
 			headingsToType.prepend(HeadingUser);
 			coltype += DataColumnUid;
 		} else if(header[i] == "Name") {
@@ -1118,7 +1122,7 @@ bool ProcessModel::setXResHeader(const QStringList &header, const QByteArray &)
 
 	beginInsertColumns(QModelIndex(), mHeadings.count(), mHeadings.count() + ((insertXMemory && insertXIdentifier)?1:0));
 		if(insertXMemory) {
-			mHeadings << i18nc("process heading", "X Server Memory");
+			mHeadings << i18nc("process heading", "Graphics Memory");
 			mHeadingsToType << HeadingXMemory;
 		}
 		if(insertXIdentifier) {
