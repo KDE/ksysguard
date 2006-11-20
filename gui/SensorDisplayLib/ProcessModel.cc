@@ -223,9 +223,12 @@ bool ProcessModel::setData(const QList<QStringList> &data)
 
 int ProcessModel::rowCount(const QModelIndex &parent) const
 {
-	if(!parent.isValid()) return (mPidToProcess.count() == 1 )?0:1;
-	if(parent.column() != 0) return 0;  //For a treeview we say that only the first column has children
-	Process *process = reinterpret_cast< Process * > (parent.internalPointer()); //when parent is invalid, it must be the root level which we set as 0
+	Process *process;
+	if(parent.isValid()) {
+		if(parent.column() != 0) return 0;  //For a treeview we say that only the first column has children
+		process = reinterpret_cast< Process * > (parent.internalPointer()); //when parent is invalid, it must be the root level which we set as 0
+	} else
+		process = mPidToProcess[0];
 	Q_ASSERT(process);
 	int num_rows = process->children.count();
 	return num_rows;
@@ -246,7 +249,7 @@ bool ProcessModel::hasChildren ( const QModelIndex & parent = QModelIndex() ) co
 QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & parent ) const
 {
 	if(row<0) return QModelIndex();
-	if(column<0) return QModelIndex();
+	if(column<0 || column >= mHeadings.count() ) return QModelIndex();
 	Process *parent_process = 0;
 	
 	if(parent.isValid()) //not valid for init, and init has ppid of 0
@@ -582,7 +585,7 @@ void ProcessModel::removeRow( long long pid )
 
 
 	int row = process->parent->children.indexOf(process);
-	QModelIndex parentModel = getQModelIndex(process->parent, 0);
+	QModelIndex parentIndex = getQModelIndex(process->parent, 0);
 	if(row == -1) {
 		kDebug(1215) << "A serious problem occurred in remove row." << endl;
 		return;
@@ -597,11 +600,11 @@ void ProcessModel::removeRow( long long pid )
 		updateProcessTotals(process->parent, -process->sysUsage, -process->userUsage, -1);
 	}*/
 
-
 	//so no more children left, we are free to delete now
-	beginRemoveRows(parentModel, row, row);
+	beginRemoveRows(parentIndex, row, row);
 		mPidToProcess.remove(pid);
 		process->parent->children.removeAll(process);  //remove ourselves from the parent
+		process->parent = 0;
 		mPids.remove(pid);
 	endRemoveRows();
 

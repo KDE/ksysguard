@@ -53,6 +53,9 @@
 
 #include <kapplication.h>
 
+#ifdef DO_MODELCHECK
+#include "modeltest.h"
+#endif
 ProcessController::ProcessController(QWidget* parent, const QString &title, SharedSettings *workSheetSettings)
 	: KSGRD::SensorDisplay(parent, title, workSheetSettings), mModel(this), mFilterModel(this)
 {
@@ -69,6 +72,9 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	mUi.setupUi(this);
 	mFilterModel.setSourceModel(&mModel);
 	mUi.treeView->setModel(&mFilterModel);
+#ifdef DO_MODELCHECK
+	new Modeltest(&mModel, this);
+#endif
 
 	mColumnContextMenu = new QMenu(mUi.treeView->header());
 	connect(mColumnContextMenu, SIGNAL(triggered(QAction*)), this, SLOT(showOrHideColumn(QAction *)));
