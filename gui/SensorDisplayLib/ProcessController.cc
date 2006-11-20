@@ -91,7 +91,7 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	connect(mUi.treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
 	connect(mUi.treeView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex & , const QModelIndex & )), this, SLOT(currentRowChanged(const QModelIndex &)));
 	connect(mUi.chkShowTotals, SIGNAL(stateChanged(int)), &mModel, SLOT(setShowTotals(int)));
-	
+	mUi.chkShowTotals->setVisible(!mSimple);
 	setPlotterWidget(this);
 	setMinimumSize(sizeHint());
 }
@@ -102,6 +102,7 @@ void ProcessController::setSimpleMode(int index)
 	mSimple = simple;
 	mModel.setSimpleMode(mSimple);
 	
+	mUi.chkShowTotals->setVisible(!mSimple);
 //	mUi.treeView->header()->setStretchLastSection(false);
 	for(int i = mXResHeadingStart; i <= mXResHeadingEnd; i++) {
 		if(mSimple)

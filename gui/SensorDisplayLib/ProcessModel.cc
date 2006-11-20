@@ -180,7 +180,7 @@ bool ProcessModel::setData(const QList<QStringList> &data)
 		}
 		long long pid = new_pid_data.at(mPidColumn).toLongLong();
 		long long ppid = 0;
-		if(mPPidColumn >= 0)
+		if(mPPidColumn >= 0 && !mSimple)
 			ppid = new_pid_data.at(mPPidColumn).toLongLong();
 		new_pids << pid;
 		newData[pid] = data[i];
@@ -280,7 +280,7 @@ void ProcessModel::updateProcessTotals(Process *process, double sysChange, doubl
 		//If we are init, then our ppid is 0, so leave our row as 0.  If we are not, then we need to find our parent process
 		//and find which child item we are in that
 		if(process->parent_pid == 0) {
-			if(mCPUHeading != -1 && mShowChildTotals) {
+			if(mCPUHeading != -1 && mShowChildTotals && !mSimple) {
 				QModelIndex index = createIndex(0, mCPUHeading, process);
 				emit dataChanged(index, index);
 			}
@@ -293,7 +293,7 @@ void ProcessModel::updateProcessTotals(Process *process, double sysChange, doubl
 		Q_ASSERT(row != -1); //something has gone really wrong
 	
 		//Update the process we modified
-		if(mCPUHeading != -1 && mShowChildTotals) {
+		if(mCPUHeading != -1 && mShowChildTotals && !mSimple) {
 			QModelIndex index = createIndex(row, mCPUHeading, process);
 			emit dataChanged(index, index);
 		}
@@ -751,7 +751,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		case HeadingCPUUsage:
 			{
 				double total;
-				if(mShowChildTotals) total = process->totalUserUsage + process->totalSysUsage;
+				if(mShowChildTotals && !mSimple) total = process->totalUserUsage + process->totalSysUsage;
 				else total = process->userUsage + process->sysUsage;
 
 				if(total <= 0.1)
@@ -784,7 +784,11 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		}
 		switch(mHeadingsToType[index.column()]) {
 		case HeadingName: {
-			QString tooltip = i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3<br/>Command: %4", process->name, (long int)process->pid, (long int)process->parent_pid, process->command);
+			QString tooltip;
+			if(process->parent_pid == 0)
+				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Command: %3", process->name, (long int)process->pid, process->command);
+			else
+				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3<br/>Command: %4", process->name, (long int)process->pid, (long int)process->parent_pid, process->command);
 
 			if(!tracer.isEmpty())
 				return tooltip + "<br/>" + tracer;
