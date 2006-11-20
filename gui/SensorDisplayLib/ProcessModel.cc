@@ -22,6 +22,7 @@
 
 
 #include <kapplication.h>
+#include <kiconloader.h>
 #include <kdebug.h>
 #include <klocale.h>
 #include <QBitmap>
@@ -46,6 +47,8 @@ ProcessModel::ProcessModel(QObject* parent)
 	mSimple = true;
 	mIsLocalhost = false; //this default really shouldn't matter, because setIsLocalhost should be called before setData()
 	mPidToProcess[0] = new Process();  //Add a fake process for process '0', the parent for init.  This lets us remove checks everywhere for init process
+	mXResPidColumn = -1;
+	mIcons = NULL;
 	
 	mShowChildTotals = true;
 
@@ -64,6 +67,11 @@ ProcessModel::ProcessModel(QObject* parent)
 	mStatusDescription["stopped"] = i18n("- Process has been stopped. It will not respond to user input at the moment");	
 	mStatusDescription["zombie"] = i18n("- Process has finished and is now dead, but the parent has not noticed yet");
 
+	
+}
+void ProcessModel::setupProcessType()
+{
+	if(!mProcessType.isEmpty()) return;
 	mProcessType.insert("init", Process::Init);
 	/* kernel stuff */
 	mProcessType.insert("bdflush", Process::Kernel);
@@ -151,7 +159,6 @@ ProcessModel::ProcessModel(QObject* parent)
 	mProcessType.insert("tee", Process::Tools);
 	mProcessType.insert("vi", Process::Wordprocessing);
 	mProcessType.insert("vim", Process::Wordprocessing);
-
 }
 
 bool ProcessModel::setData(const QList<QStringList> &data)
@@ -241,8 +248,16 @@ int ProcessModel::columnCount ( const QModelIndex & ) const
 
 bool ProcessModel::hasChildren ( const QModelIndex & parent = QModelIndex() ) const
 {
-	int num_children = rowCount(parent);
-	bool has_children = num_children > 0;
+	Process *process;
+	if(parent.isValid()) {
+		if(parent.column() != 0) return false;  //For a treeview we say that only the first column has children
+		process = reinterpret_cast< Process * > (parent.internalPointer()); //when parent is invalid, it must be the root level which we set as 0
+	} else
+		process = mPidToProcess[0];
+	Q_ASSERT(process);
+	bool has_children = !process->children.isEmpty();
+
+	Q_ASSERT((rowCount(parent) > 0) == has_children);
 	return has_children;
 }
 
@@ -258,7 +273,6 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 		parent_process = mPidToProcess[0];
 	Q_ASSERT(parent_process);
 
-	// Using QList<long long>& instead of QList<long long> creates an internal error in gcc 3.3.1
 	if(parent_process->children.count() > row)
 		return createIndex(row,column, parent_process->children[row]);
 	else
@@ -966,7 +980,10 @@ QPixmap ProcessModel::getIcon(const QString&iconname) const {
 	QPixmap pix = mIconCache[iconname];
 	if (pix.isNull())
 	{
-		pix = mIcons.loadIcon(iconname, K3Icon::Small,
+		if(!mIcons) {
+			mIcons = new KIconLoader();
+		}
+		pix = mIcons->loadIcon(iconname, K3Icon::Small,
 						 K3Icon::SizeSmall, K3Icon::DefaultState,
 						 0L, true);
 		if (pix.isNull() || !pix.mask())
@@ -1141,12 +1158,13 @@ bool ProcessModel::setXResHeader(const QStringList &header, const QByteArray &)
 }
 void ProcessModel::setXResData(long long pid, const QStringList& data)
 {
-	if(data.count() < mXResNumColumns) {
-		kDebug(1215) << "Invalid data in setXResData. Not enough columns: " << data.join(",") << endl;
-		return;
-	}
 	if(mXResPidColumn == -1) {
 		kDebug(1215) << "XRes data received when we still don't know which column the XPid is in" << endl;
+		return;
+	}
+
+	if(data.count() < mXResNumColumns) {
+		kDebug(1215) << "Invalid data in setXResData. Not enough columns: " << data.join(",") << endl;
 		return;
 	}
 	

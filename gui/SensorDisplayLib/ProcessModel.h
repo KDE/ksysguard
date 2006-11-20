@@ -23,7 +23,6 @@
 #define PROCESSMODEL_H_
 
 #include <kapplication.h>
-#include <kiconloader.h>
 #include <kuser.h>
 #include <QPixmap>
 #include <QObject>
@@ -43,6 +42,7 @@
 #define DATA_COLUMN_PRETTY_FLOAT 'f'
 
 extern KApplication* Kapp;
+class KIconLoader;
 
 class ProcessModel : public QAbstractItemModel
 {
@@ -105,10 +105,14 @@ public:
 	/** In simple mode, everything is flat, with no icons, few if any colors, no xres etc.
 	 *  This can be changed at any time.  It is a fairly quick operation.  Basically it resets the model
 	 */ 
-	void setSimpleMode(bool simple) { mSimple = simple;}
+	void setSimpleMode(bool simple) { 
+		if(simple && !mSimple)
+			setupProcessType();
+		mSimple = simple;
+	}
 	/** In simple mode, everything is flat, with no icons, few if any colors, no xres etc
 	 */
-	bool isSimpleMode() { return mSimple;}
+	bool isSimpleMode() const { return mSimple;}
 
 public slots:
 	void setShowTotals(int totals);
@@ -119,7 +123,7 @@ private:
 	 *  pid is from the parent, and return that.  It's not that slow, but does involve a couple of hash table lookups.
 	 */
 	QModelIndex getQModelIndex ( Process *process, int column) const;
-
+	void setupProcessType();
 	/** Insert the pid given, plus all its parents
 	 */
 	void insertOrChangeRows( long long pid ) ;
@@ -170,7 +174,7 @@ private:
 	 */
 	mutable QHash<QString,QPixmap> mIconCache;
 	
-	KIconLoader mIcons;
+	mutable KIconLoader *mIcons; ///Created when the first icon is loaded
 
 	/** @see setIsLocalhost */
 	bool mIsLocalhost;

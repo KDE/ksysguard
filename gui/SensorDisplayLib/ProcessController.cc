@@ -52,7 +52,7 @@
 #include <QLayout>
 
 #include <kapplication.h>
-
+//#define DO_MODELCHECK
 #ifdef DO_MODELCHECK
 #include "modeltest.h"
 #endif
@@ -73,7 +73,7 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	mFilterModel.setSourceModel(&mModel);
 	mUi.treeView->setModel(&mFilterModel);
 #ifdef DO_MODELCHECK
-	new Modeltest(&mModel, this);
+	new Modeltest(&mFilterModel, this);
 #endif
 
 	mColumnContextMenu = new QMenu(mUi.treeView->header());
