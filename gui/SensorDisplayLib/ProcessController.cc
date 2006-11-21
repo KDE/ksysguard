@@ -39,6 +39,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kdialog.h>
+#include <kicon.h>
 
 #include <ksgrd/SensorManager.h>
 
@@ -129,12 +130,14 @@ void ProcessController::currentRowChanged(const QModelIndex &current)
 }
 void ProcessController::showProcessContextMenu(const QPoint &point){
 	mProcessContextMenu->clear();
+
 	QAction *renice = new QAction(mProcessContextMenu);
 	renice->setText(i18n("Renice process"));
 	mProcessContextMenu->addAction(renice);
 
 	QAction *kill = new QAction(mProcessContextMenu);
 	kill->setText(i18n("Kill process"));
+	kill->setIcon(KIcon("stop"));
 	mProcessContextMenu->addAction(kill);
 
 	QAction *result = mProcessContextMenu->exec(mUi.treeView->mapToGlobal(point));	
