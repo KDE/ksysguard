@@ -621,7 +621,6 @@ void ProcessModel::removeRow( long long pid )
 		process->parent = 0;
 		mPids.remove(pid);
 	endRemoveRows();
-
 	delete process;
 	process = NULL;  //okay, now we aren't pointing to Process or any of its structures at all now. Should be safe to remove now.
 }
@@ -1002,16 +1001,6 @@ QPixmap ProcessModel::getIcon(const QString&iconname) const {
 		/* We copy the icon into a 24x16 pixmap to add a 4 pixel margin on
 		 * the left and right side. In tree view mode we use the original
 		 * icon. */
-/*		QPixmap icon(24, 16);
-		if (!treeViewEnabled)
-		{
-			icon.fill();
-			bitBlt(&icon, 4, 0, &pix, 0, 0, pix.width(), pix.height());
-			QBitmap mask(24, 16, true);
-			bitBlt(&mask, 4, 0, &pix.mask(), 0, 0, pix.width(), pix.height());
-			icon.setMask(mask);
-			pix = icon;
-		}*/
 		mIconCache.insert(iconname,pix);
 	}
 	return pix;
