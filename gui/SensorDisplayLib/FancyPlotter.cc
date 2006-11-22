@@ -39,7 +39,11 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   : KSGRD::SensorDisplay( parent, title, workSheetSettings )
 {
   mBeams = 0;
-  mPlotter = new SignalPlotter( this );
+  mPlotter = new KSignalPlotter( this );
+  mPlotter->setVerticalLinesColor(KSGRD::Style->firstForegroundColor());
+  mPlotter->setHorizontalLinesColor(KSGRD::Style->secondForegroundColor());
+  mPlotter->setBackgroundColor(KSGRD::Style->backgroundColor());
+  mPlotter->setFontSize( KSGRD::Style->fontSize() );
   mPlotter->setShowTopBar( true );
 
   if ( !title.isEmpty() )
@@ -287,6 +291,17 @@ void FancyPlotter::answerReceived( int id, const QStringList &answerlist )
     }
   } else if ( id >= 100 ) {
     KSGRD::SensorFloatInfo info( answer );
+    QString unit = info.unit();
+    if(unit.toUpper() == "KB" || unit.toUpper() == "KiB") {
+      if(info.max() >= 1024*1024) {
+        mPlotter->setScaleDownBy(1024*1024);
+	unit = "GiB";
+      } else if(info.max() > 1024) {
+        mPlotter->setScaleDownBy(1024);
+	unit = "MiB";
+      }
+    }
+
     if ( !mPlotter->useAutoRange() && mPlotter->minValue() == 0.0 &&
          mPlotter->maxValue() == 0.0 ) {
       /* We only use this information from the sensor when the
@@ -298,6 +313,8 @@ void FancyPlotter::answerReceived( int id, const QStringList &answerlist )
         mPlotter->setUseAutoRange( true );
     }
     sensors().at( id - 100 )->setUnit( info.unit() );
+
+    mPlotter->setTranslatedUnit( KSGRD::SensorMgr->translateUnit( unit ) );
     sensors().at( id - 100 )->setDescription( info.name() );
     setTooltip();
   }

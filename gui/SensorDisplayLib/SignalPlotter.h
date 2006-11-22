@@ -18,8 +18,8 @@
 
 */
 
-#ifndef KSG_SIGNALPLOTTER_H
-#define KSG_SIGNALPLOTTER_H
+#ifndef KSIGNALPLOTTER_H
+#define KSIGNALPLOTTER_H
 
 #include <QString>
 #include <QWidget>
@@ -29,13 +29,13 @@
 
 class QColor;
 
-class SignalPlotter : public QWidget
+class KSignalPlotter : public QWidget
 {
   Q_OBJECT
 
   public:
-    SignalPlotter( QWidget *parent = 0);
-    ~SignalPlotter();
+    KSignalPlotter( QWidget *parent = 0);
+    ~KSignalPlotter();
 
     bool addBeam( const QColor &color );
     void addSample( const QList<double> &samples );
@@ -48,6 +48,12 @@ class SignalPlotter : public QWidget
 
     void setTitle( const QString &title );
     QString title() const;
+
+    void setTranslatedUnit( const QString &unit );
+    QString translatedUnit() const;
+
+    void setScaleDownBy( double value );
+    double scaleDownBy() const;
 
     void setUseAutoRange( bool value );
     bool useAutoRange() const;
@@ -103,6 +109,7 @@ class SignalPlotter : public QWidget
   private:
     double mMinValue;
     double mMaxValue;
+    double mScaleDownBy;
     bool mUseAutoRange;
 
     uint mGraphStyle;
@@ -132,6 +139,7 @@ class SignalPlotter : public QWidget
     int mNewestIndex; //The index to the newest item added.  newestIndex+1   is the second newest, and so on
 
     QString mTitle;
+    QString mUnit;
 };
 
 #endif

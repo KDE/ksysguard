@@ -83,7 +83,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
   private:
     uint mBeams;
 
-    SignalPlotter* mPlotter;
+    KSignalPlotter* mPlotter;
 
     /**
       The sample buffer and the flags are needed to store the incoming

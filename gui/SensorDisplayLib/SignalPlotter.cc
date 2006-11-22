@@ -2,6 +2,7 @@
     KSysGuard, the KDE System Guard
 
     Copyright (c) 1999 - 2002 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 2006 John Tapsell <tapsell@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -27,7 +28,8 @@
 #include <QtGui/QPolygon>
 
 #include <kdebug.h>
-#include "StyleEngine.h"
+#include <kglobal.h>
+#include <klocale.h>
 
 #include "SignalPlotter.h"
 
@@ -36,13 +38,14 @@ static inline int min( int a, int b )
   return ( a < b ? a : b );
 }
 
-SignalPlotter::SignalPlotter( QWidget *parent)
+KSignalPlotter::KSignalPlotter( QWidget *parent)
   : QWidget( parent)
 {
   mBezierCurveOffset = 0;
   mSamples = 0;
   mMinValue = mMaxValue = 0.0;
   mUseAutoRange = true;
+  mScaleDownBy = 1;
 
   // Anything smaller than this does not make sense.
   setMinimumSize( 16, 16 );
@@ -51,34 +54,42 @@ SignalPlotter::SignalPlotter( QWidget *parent)
   setSizePolicy( sizePolicy );
 
   mShowVerticalLines = true;
-  mVerticalLinesColor = KSGRD::Style->firstForegroundColor();
+  mVerticalLinesColor = QColor("green");
   mVerticalLinesDistance = 30;
   mVerticalLinesScroll = true;
   mVerticalLinesOffset = 0;
   mHorizontalScale = 1;
 
   mShowHorizontalLines = true;
-  mHorizontalLinesColor = KSGRD::Style->secondForegroundColor();
+  mHorizontalLinesColor = QColor("green");
   mHorizontalLinesCount = 5;
 
   mShowLabels = true;
   mShowTopBar = false;
-  mFontSize = KSGRD::Style->fontSize();
+  mFontSize = 8;
 
-  mBackgroundColor = KSGRD::Style->backgroundColor();
+  mBackgroundColor = QColor(0,0,0);
 }
 
-SignalPlotter::~SignalPlotter()
+KSignalPlotter::~KSignalPlotter()
 {
 }
 
-bool SignalPlotter::addBeam( const QColor &color )
+QString KSignalPlotter::translatedUnit() const {
+  return mUnit;
+}
+void KSignalPlotter::setTranslatedUnit(const QString &unit) {
+  mUnit= unit;
+}
+
+
+bool KSignalPlotter::addBeam( const QColor &color )
 {
   mBeamColors.append(color);
   return true;
 }
 
-void SignalPlotter::addSample( const QList<double>& sampleBuf )
+void KSignalPlotter::addSample( const QList<double>& sampleBuf )
 {
   if(mSamples < 4) {
     //It might be possible, under some race conditions, for addSample to be called before mSamples is set
@@ -121,7 +132,7 @@ void SignalPlotter::addSample( const QList<double>& sampleBuf )
   update();
 }
 
-void SignalPlotter::changeRange( int beam, double min, double max )
+void KSignalPlotter::changeRange( int beam, double min, double max )
 {
   // Only the first beam affects range calculation.
   if ( beam > 1 )
@@ -131,12 +142,12 @@ void SignalPlotter::changeRange( int beam, double min, double max )
   mMaxValue = max;
 }
 
-QList<QColor> &SignalPlotter::beamColors()
+QList<QColor> &KSignalPlotter::beamColors()
 {
   return mBeamColors;
 }
 
-void SignalPlotter::removeBeam( uint pos )
+void KSignalPlotter::removeBeam( uint pos )
 {
   if(pos >= (uint)mBeamColors.size()) return;
   mBeamColors.removeAt( pos );
@@ -148,47 +159,50 @@ void SignalPlotter::removeBeam( uint pos )
   }
 }
 
-void SignalPlotter::setTitle( const QString &title )
+void KSignalPlotter::setScaleDownBy( double value ) { mScaleDownBy = value; }
+double KSignalPlotter::scaleDownBy() const { return mScaleDownBy; }
+
+void KSignalPlotter::setTitle( const QString &title )
 {
   mTitle = title;
 }
 
-QString SignalPlotter::title() const
+QString KSignalPlotter::title() const
 {
   return mTitle;
 }
 
-void SignalPlotter::setUseAutoRange( bool value )
+void KSignalPlotter::setUseAutoRange( bool value )
 {
   mUseAutoRange = value;
 }
 
-bool SignalPlotter::useAutoRange() const
+bool KSignalPlotter::useAutoRange() const
 {
   return mUseAutoRange;
 }
 
-void SignalPlotter::setMinValue( double min )
+void KSignalPlotter::setMinValue( double min )
 {
   mMinValue = min;
 }
 
-double SignalPlotter::minValue() const
+double KSignalPlotter::minValue() const
 {
   return ( mUseAutoRange ? 0 : mMinValue );
 }
 
-void SignalPlotter::setMaxValue( double max )
+void KSignalPlotter::setMaxValue( double max )
 {
   mMaxValue = max;
 }
 
-double SignalPlotter::maxValue() const
+double KSignalPlotter::maxValue() const
 {
   return ( mUseAutoRange ? 0 : mMaxValue );
 }
 
-void SignalPlotter::setHorizontalScale( uint scale )
+void KSignalPlotter::setHorizontalScale( uint scale )
 {
   if (scale == mHorizontalScale)
      return;
@@ -197,129 +211,129 @@ void SignalPlotter::setHorizontalScale( uint scale )
   updateDataBuffers();
 }
 
-int SignalPlotter::horizontalScale() const
+int KSignalPlotter::horizontalScale() const
 {
   return mHorizontalScale;
 }
 
-void SignalPlotter::setShowVerticalLines( bool value )
+void KSignalPlotter::setShowVerticalLines( bool value )
 {
   mShowVerticalLines = value;
 }
 
-bool SignalPlotter::showVerticalLines() const
+bool KSignalPlotter::showVerticalLines() const
 {
   return mShowVerticalLines;
 }
 
-void SignalPlotter::setVerticalLinesColor( const QColor &color )
+void KSignalPlotter::setVerticalLinesColor( const QColor &color )
 {
   mVerticalLinesColor = color;
 }
 
-QColor SignalPlotter::verticalLinesColor() const
+QColor KSignalPlotter::verticalLinesColor() const
 {
   return mVerticalLinesColor;
 }
 
-void SignalPlotter::setVerticalLinesDistance( int distance )
+void KSignalPlotter::setVerticalLinesDistance( int distance )
 {
   mVerticalLinesDistance = distance;
 }
 
-int SignalPlotter::verticalLinesDistance() const
+int KSignalPlotter::verticalLinesDistance() const
 {
   return mVerticalLinesDistance;
 }
 
-void SignalPlotter::setVerticalLinesScroll( bool value )
+void KSignalPlotter::setVerticalLinesScroll( bool value )
 {
   mVerticalLinesScroll = value;
 }
 
-bool SignalPlotter::verticalLinesScroll() const
+bool KSignalPlotter::verticalLinesScroll() const
 {
   return mVerticalLinesScroll;
 }
 
-void SignalPlotter::setShowHorizontalLines( bool value )
+void KSignalPlotter::setShowHorizontalLines( bool value )
 {
   mShowHorizontalLines = value;
 }
 
-bool SignalPlotter::showHorizontalLines() const
+bool KSignalPlotter::showHorizontalLines() const
 {
   return mShowHorizontalLines;
 }
 
-void SignalPlotter::setHorizontalLinesColor( const QColor &color )
+void KSignalPlotter::setHorizontalLinesColor( const QColor &color )
 {
   mHorizontalLinesColor = color;
 }
 
-QColor SignalPlotter::horizontalLinesColor() const
+QColor KSignalPlotter::horizontalLinesColor() const
 {
   return mHorizontalLinesColor;
 }
 
-void SignalPlotter::setHorizontalLinesCount( int count )
+void KSignalPlotter::setHorizontalLinesCount( int count )
 {
   mHorizontalLinesCount = count;
 }
 
-int SignalPlotter::horizontalLinesCount() const
+int KSignalPlotter::horizontalLinesCount() const
 {
   return mHorizontalLinesCount;
 }
 
-void SignalPlotter::setShowLabels( bool value )
+void KSignalPlotter::setShowLabels( bool value )
 {
   mShowLabels = value;
 }
 
-bool SignalPlotter::showLabels() const
+bool KSignalPlotter::showLabels() const
 {
   return mShowLabels;
 }
 
-void SignalPlotter::setShowTopBar( bool value )
+void KSignalPlotter::setShowTopBar( bool value )
 {
   mShowTopBar = value;
 }
 
-bool SignalPlotter::showTopBar() const
+bool KSignalPlotter::showTopBar() const
 {
   return mShowTopBar;
 }
 
-void SignalPlotter::setFontSize( int size )
+void KSignalPlotter::setFontSize( int size )
 {
   mFontSize = size;
 }
 
-int SignalPlotter::fontSize() const
+int KSignalPlotter::fontSize() const
 {
   return mFontSize;
 }
 
-void SignalPlotter::setBackgroundColor( const QColor &color )
+void KSignalPlotter::setBackgroundColor( const QColor &color )
 {
   mBackgroundColor = color;
 }
 
-QColor SignalPlotter::backgroundColor() const
+QColor KSignalPlotter::backgroundColor() const
 {
   return mBackgroundColor;
 }
 
-void SignalPlotter::resizeEvent( QResizeEvent* )
+void KSignalPlotter::resizeEvent( QResizeEvent* )
 {
   Q_ASSERT( width() > 2 );
 
   updateDataBuffers();
 }
 
-void SignalPlotter::updateDataBuffers()
+void KSignalPlotter::updateDataBuffers()
 {
 
   /*  This is called when the widget has resized
@@ -333,7 +347,7 @@ void SignalPlotter::updateDataBuffers()
                                 mHorizontalScale ) + 4.5 );
 }
 
-void SignalPlotter::paintEvent( QPaintEvent* )
+void KSignalPlotter::paintEvent( QPaintEvent* )
 {
   uint w = width();
   uint h = height();
@@ -577,7 +591,7 @@ void SignalPlotter::paintEvent( QPaintEvent* )
   /* Draw horizontal lines and values. Lines are drawn when the
    * height is greater than 10 times hCount + 1, values are shown
    * when width is greater than 60 */
-  if ( mShowHorizontalLines && h > ( 10 * ( mHorizontalLinesCount + 1 ) ) ) {
+  if ( mShowHorizontalLines && h > ( 10 * ( mHorizontalLinesCount + 1 ) ) ) { 
     p.setPen( mHorizontalLinesColor );
     p.setFont( QFont( p.font().family(), mFontSize ) );
     QString val;
@@ -586,14 +600,18 @@ void SignalPlotter::paintEvent( QPaintEvent* )
                   top + y * ( h / mHorizontalLinesCount ) );
       if ( mShowLabels && h > ( mFontSize + 1 ) * ( mHorizontalLinesCount + 1 )
            && w > 60 ) {
-        val = QString( "%1" ).arg( maxValue - y * ( range / mHorizontalLinesCount ) );
+	double value = (maxValue - y * ( range / mHorizontalLinesCount ))/mScaleDownBy;
+        QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:1);
+        val = QString( "%1 %2" ).arg( number, mUnit );
         p.drawText( 6, top + y * ( h / mHorizontalLinesCount ) - 1, val );
       }
     }
 
     if ( mShowLabels && h > ( mFontSize + 1 ) * ( mHorizontalLinesCount + 1 )
          && w > 60 ) {
-      val = QString( "%1" ).arg( minValue );
+      double value = minValue / mScaleDownBy;
+      QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:1);
+      val = QString( "%1 %2" ).arg( number, mUnit);
       p.drawText( 6, top + h - 2, val );
     }
   }
