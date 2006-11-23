@@ -518,9 +518,12 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
     newDisplay->setDeleteNotifier( this );
   }
 
-  SensorFrame *frame = new SensorFrame(mDisplayList[ row ][ column ]);
-
-  mGridLayout->addWidget( frame, row, column );
+  if(mRows == 1 && mColumns == 1) {  //if there's only item, then why bother with a frame?
+    mGridLayout->addWidget( mDisplayList[ row ][ column ], row, column );
+  } else {
+    SensorFrame *frame = new SensorFrame(mDisplayList[ row ][ column ]);
+    mGridLayout->addWidget( frame, row, column );
+  }
   if ( isVisible() ) {
     mDisplayList[ row ][ column ]->show();
   }
