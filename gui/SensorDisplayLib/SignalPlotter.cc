@@ -66,7 +66,6 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
 
   mShowLabels = true;
   mShowTopBar = false;
-  mFontSize = 8;
 
   mBackgroundColor = QColor(0,0,0);
 }
@@ -265,6 +264,16 @@ bool KSignalPlotter::showHorizontalLines() const
 {
   return mShowHorizontalLines;
 }
+void KSignalPlotter::setFontColor( const QColor &color )
+{
+  mFontColor = color;
+}
+
+QColor KSignalPlotter::fontColor() const
+{
+  return mFontColor;
+}
+
 
 void KSignalPlotter::setHorizontalLinesColor( const QColor &color )
 {
@@ -306,14 +315,14 @@ bool KSignalPlotter::showTopBar() const
   return mShowTopBar;
 }
 
-void KSignalPlotter::setFontSize( int size )
+void KSignalPlotter::setFont( const QFont &font )
 {
-  mFontSize = size;
+  mFont = font;
 }
 
-int KSignalPlotter::fontSize() const
+QFont KSignalPlotter::font() const
 {
-  return mFontSize;
+  return mFont;
 }
 
 void KSignalPlotter::setBackgroundColor( const QColor &color )
@@ -356,6 +365,7 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   if ( w <= 2 )
     return;
   QPainter p(this);
+  p.setFont( mFont );
 
   p.setRenderHint(QPainter::Antialiasing, true);
 
@@ -393,54 +403,58 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   }
   double maxValue = minValue + range;
 
-  int top = 0;
-  if ( mShowTopBar && h > ( mFontSize + 2 + mHorizontalLinesCount * 10 ) ) {
-    /* Draw horizontal bar with current sensor values at top of display. */
-    p.setPen( mHorizontalLinesColor );
+  int top = 0; //The y position of the top of the graph.  Basically this is the height of the top bar
+  if ( mShowTopBar ) {
     int x0 = w / 2;
-    p.setFont( QFont( p.font().family(), mFontSize ) );
     top = p.fontMetrics().height();
-    h -= top;
-    int h0 = top - 2;
-    p.drawText(0, 0, x0, top - 2, Qt::AlignCenter, mTitle );
+    //Before we continue, check if there's enough room.  So enough room for a bar at the top, plus horizontal lines each of a size with room for a scale
+    if( h <= (top + 2 + mHorizontalLinesCount * qMax(10, top)) ) {
+      top = 0;
+    } else {
+      h -= top;
+      /* Draw horizontal bar with current sensor values at top of display. */
+      int h0 = top - 2;
+      p.setPen( mFontColor );
+      p.drawText(0, 0, x0, top - 2, Qt::AlignCenter, mTitle );
+      p.setPen( mHorizontalLinesColor );
+      p.drawLine( x0 - 1, 1, x0 - 1, h0 );
+      p.drawLine( 0, top - 1, w - 2, top - 1 );
 
-    p.drawLine( x0 - 1, 1, x0 - 1, h0 );
-    p.drawLine( 0, top - 1, w - 2, top - 1 );
+      double bias = -minValue;
+      double scaleFac = ( w - x0 - 2 ) / range;
+      QList<QColor>::Iterator col;
+      col = mBeamColors.begin();
 
-    double bias = -minValue;
-    double scaleFac = ( w - x0 - 2 ) / range;
-    QList<QColor>::Iterator col;
-    col = mBeamColors.begin();
-
-    /**
-     * The top bar shows the current values of all the beam data.
-     * This iterates through each different beam and plots the newest data for each
-     */
-    if ( !mBeamData.isEmpty() ) {
-      QList<double> newestData = mBeamData.first();
-      QList<double>::Iterator i;
-      for(i = newestData.begin(); i != newestData.end(); ++i, ++col) {
-        double newest_datapoint = *i;
-        int start = x0 + (int)( bias * scaleFac );
-        int end = x0 + (int)( ( bias += newest_datapoint ) * scaleFac );
-        /* If the rect is wider than 2 pixels we draw only the last
-         * pixels with the bright color. The rest is painted with
-         * a 50% darker color. */
-        if ( end - start > 1 ) {
-          p.setPen( (*col).dark( 150 ) );
-          p.setBrush( (*col).dark( 150 ) );
-          p.drawRect( start, 1, end - start, h0 );
-          p.setPen( *col );
-          p.drawLine( end, 1, end, h0 );
-        } else if ( start - end > 1 ) {
-          p.setPen( (*col).dark( 150 ) );
-          p.setBrush( (*col).dark( 150 ) );
-          p.drawRect( end, 1, start - end, h0 );
-          p.setPen( *col );
-          p.drawLine( end, 1, end, h0 );
-        } else {
-          p.setPen( *col );
-          p.drawLine( start, 1, start, h0 );
+      /**
+       * The top bar shows the current values of all the beam data.
+       * This iterates through each different beam and plots the newest data for each
+       */
+      if ( !mBeamData.isEmpty() ) {
+        QList<double> newestData = mBeamData.first();
+        QList<double>::Iterator i;
+        for(i = newestData.begin(); i != newestData.end(); ++i, ++col) {
+          double newest_datapoint = *i;
+          int start = x0 + (int)( bias * scaleFac );
+          int end = x0 + (int)( ( bias += newest_datapoint ) * scaleFac );
+          /* If the rect is wider than 2 pixels we draw only the last
+           * pixels with the bright color. The rest is painted with
+           * a 50% darker color. */
+          if ( end - start > 1 ) {
+            p.setPen( (*col).dark( 150 ) );
+            p.setBrush( (*col).dark( 150 ) );
+            p.drawRect( start, 1, end - start, h0 );
+            p.setPen( *col );
+            p.drawLine( end, 1, end, h0 );
+          } else if ( start - end > 1 ) {
+            p.setPen( (*col).dark( 150 ) );
+            p.setBrush( (*col).dark( 150 ) );
+            p.drawRect( end, 1, start - end, h0 );
+            p.setPen( *col );
+            p.drawLine( end, 1, end, h0 );
+          } else {
+            p.setPen( *col );
+            p.drawLine( start, 1, start, h0 );
+          }
         }
       }
     }
@@ -566,7 +580,7 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
       pen.setColor(mBeamColors[j]);
       p.setPen(pen);
 
-      /**
+      /*
        * Draw polygon only if enough data points are available.
        */
       if ( j < prev_prev_prev_datapoints.count() &&
@@ -574,11 +588,17 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
            j < prev_datapoints.count() ) {
 
         QPolygon curve( 4 );
-
-        curve.setPoint( 0, w - xPos + 3*mHorizontalScale, h - (int)((datapoints[j] - minValue)*scaleFac) );
-        curve.setPoint( 1, w - xPos + 2*mHorizontalScale, h - (int)((prev_datapoints[j] - minValue)*scaleFac) );
-        curve.setPoint( 2, w - xPos + mHorizontalScale, h - (int)((prev_prev_datapoints[j] - minValue)*scaleFac) );
-        curve.setPoint( 3, w - xPos, h - (int)((prev_prev_prev_datapoints[j] - minValue)*scaleFac) );
+        /* The height of the whole widget is h+top.  The height of the area we are plotting in is just h.
+	 * The y coordinate system starts from the top, so at the bottom the y coordinate is h+top
+	 * So to draw a point at value y', we need to put this at  h+top-y'
+	 */
+	double y;
+	y = h + top - (int)((datapoints[j] - minValue)*scaleFac);
+	Q_ASSERT(y >= top);
+        curve.setPoint( 0, w - xPos + 3*mHorizontalScale, y );
+        curve.setPoint( 1, w - xPos + 2*mHorizontalScale, h + top - (int)((prev_datapoints[j] - minValue)*scaleFac) );
+        curve.setPoint( 2, w - xPos + mHorizontalScale, h + top - (int)((prev_prev_datapoints[j] - minValue)*scaleFac) );
+        curve.setPoint( 3, w - xPos, h + top - (int)((prev_prev_prev_datapoints[j] - minValue)*scaleFac) );
 
         QPainterPath path;
         path.moveTo( curve.at( 0 ) );
@@ -591,27 +611,30 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   /* Draw horizontal lines and values. Lines are drawn when the
    * height is greater than 10 times hCount + 1, values are shown
    * when width is greater than 60 */
+  int fontheight = p.fontMetrics().height();
   if ( mShowHorizontalLines && h > ( 10 * ( mHorizontalLinesCount + 1 ) ) ) { 
-    p.setPen( mHorizontalLinesColor );
-    p.setFont( QFont( p.font().family(), mFontSize ) );
     QString val;
     for ( uint y = 1; y < mHorizontalLinesCount; y++ ) {
+      p.setPen( mHorizontalLinesColor );
       p.drawLine( 0, top + y * ( h / mHorizontalLinesCount ), w - 2,
                   top + y * ( h / mHorizontalLinesCount ) );
-      if ( mShowLabels && h > ( mFontSize + 1 ) * ( mHorizontalLinesCount + 1 )
+      if ( mShowLabels && h > ( fontheight + 1 ) * ( mHorizontalLinesCount + 1 )
            && w > 60 ) {
 	double value = (maxValue - y * ( range / mHorizontalLinesCount ))/mScaleDownBy;
-        QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:1);
+
+        QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:2);
         val = QString( "%1 %2" ).arg( number, mUnit );
-        p.drawText( 6, top + y * ( h / mHorizontalLinesCount ) - 1, val );
+        p.setPen( mFontColor );
+        p.drawText( 6, top + y * ( h / mHorizontalLinesCount ) - 2, val );
       }
     }
 
-    if ( mShowLabels && h > ( mFontSize + 1 ) * ( mHorizontalLinesCount + 1 )
+    if ( mShowLabels && h > ( fontheight + 1 ) * ( mHorizontalLinesCount + 1 )
          && w > 60 ) {
-      double value = minValue / mScaleDownBy;
+      int value = minValue / mScaleDownBy;
       QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:1);
       val = QString( "%1 %2" ).arg( number, mUnit);
+      p.setPen( mFontColor );
       p.drawText( 6, top + h - 2, val );
     }
   }

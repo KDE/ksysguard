@@ -85,6 +85,12 @@ class KSignalPlotter : public QWidget
     void setHorizontalLinesColor( const QColor &color );
     QColor horizontalLinesColor() const;
 
+    void setFontColor( const QColor &color );
+    QColor fontColor() const;
+
+    void setFont( const QFont &font );
+    QFont font() const;
+
     void setHorizontalLinesCount( int count );
     int horizontalLinesCount() const;
 
@@ -93,9 +99,6 @@ class KSignalPlotter : public QWidget
 
     void setShowTopBar( bool value );
     bool showTopBar() const;
-
-    void setFontSize( int size );
-    int fontSize() const;
 
     void setBackgroundColor( const QColor &color );
     QColor backgroundColor() const;
@@ -128,9 +131,9 @@ class KSignalPlotter : public QWidget
     bool mShowLabels;
     bool mShowTopBar;
     uint mBezierCurveOffset;
-    uint mFontSize;
 
     QColor mBackgroundColor;
+    QColor mFontColor;
 
     QLinkedList < QList<double> > mBeamData; // Every item in the linked list contains a set of data points to plot.  The first item is the newest
     QList< QColor> mBeamColors;  //These colors match up against the QList<double> above
@@ -140,6 +143,8 @@ class KSignalPlotter : public QWidget
 
     QString mTitle;
     QString mUnit;
+
+    QFont mFont;
 };
 
 #endif

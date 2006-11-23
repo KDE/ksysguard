@@ -105,12 +105,11 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 void ProcessController::setSimpleMode(int index)
 {  //index is the item the user selected in the combo box
 	bool simple = (index == PROCESS_FILTER_ALL_SIMPLE);
-	if(simple == mSimple) return; //Optomisation - don't bother changing anything if the simple mode hasn't been toggled
+	if(simple == mSimple) return; //Optimization - don't bother changing anything if the simple mode hasn't been toggled
 	mSimple = simple;
 	mModel.setSimpleMode(mSimple);
 	
 	mUi.chkShowTotals->setVisible(!mSimple);
-//	mUi.treeView->header()->setStretchLastSection(false);
 	for(int i = mXResHeadingStart; i <= mXResHeadingEnd; i++) {
 		if(mSimple)
 			mUi.treeView->header()->hideSection(i);
@@ -122,7 +121,6 @@ void ProcessController::setSimpleMode(int index)
 			mUi.treeView->header()->resizeSection(i, mUi.treeView->header()->sectionSizeHint(i));
 		}
 	}
-//	mUi.treeView->header()->setStretchLastSection(true);
 }
 void ProcessController::currentRowChanged(const QModelIndex &current)
 {
@@ -611,8 +609,8 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 	case XRes_Info_Command:
 	{
 		//Note: It makes things easier to just send and accept the xres info command even when in simple mode
-
 		kDebug() << "XRES INFO" << endl;
+		if(mXResHeadingStart != -1) break; //Already has xres info
 		if (answer.count() != 2)
 		{
 			kDebug (1215) << "ProcessController::answerReceived(XRes_Info_Command)"

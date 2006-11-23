@@ -43,7 +43,10 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   mPlotter->setVerticalLinesColor(KSGRD::Style->firstForegroundColor());
   mPlotter->setHorizontalLinesColor(KSGRD::Style->secondForegroundColor());
   mPlotter->setBackgroundColor(KSGRD::Style->backgroundColor());
-  mPlotter->setFontSize( KSGRD::Style->fontSize() );
+  QFont font;
+  font.setPointSize( KSGRD::Style->fontSize() );
+  mPlotter->setFont( font );
+  mPlotter->setFontColor( KSGRD::Style->firstForegroundColor() );
   mPlotter->setShowTopBar( true );
 
   if ( !title.isEmpty() )
@@ -84,7 +87,9 @@ void FancyPlotter::configureSettings()
 
   dlg.setShowLabels( mPlotter->showLabels() );
   dlg.setShowTopBar( mPlotter->showTopBar() );
-  dlg.setFontSize( mPlotter->fontSize() );
+
+  dlg.setFontSize( mPlotter->font().pointSize()  );
+  dlg.setFontColor( mPlotter->fontColor() );
 
   dlg.setBackgroundColor( mPlotter->backgroundColor() );
 
@@ -132,7 +137,11 @@ void FancyPlotter::configureSettings()
 
     mPlotter->setShowLabels( dlg.showLabels() );
     mPlotter->setShowTopBar( dlg.showTopBar() );
-    mPlotter->setFontSize( dlg.fontSize() );
+
+    QFont font;
+    font.setPointSize( dlg.fontSize() );
+    mPlotter->setFont( font );
+    mPlotter->setFontColor( dlg.fontColor() );
 
     mPlotter->setBackgroundColor( dlg.backgroundColor() );
 
@@ -174,7 +183,9 @@ void FancyPlotter::applyStyle()
   mPlotter->setVerticalLinesColor( KSGRD::Style->firstForegroundColor() );
   mPlotter->setHorizontalLinesColor( KSGRD::Style->secondForegroundColor() );
   mPlotter->setBackgroundColor( KSGRD::Style->backgroundColor() );
-  mPlotter->setFontSize( KSGRD::Style->fontSize() );
+  QFont font = mPlotter->font();
+  font.setPointSize(KSGRD::Style->fontSize() );
+  mPlotter->setFont( font );
   for ( int i = 0; i < mPlotter->beamColors().count() &&
         (unsigned int)i < KSGRD::Style->numSensorColors(); ++i )
     mPlotter->beamColors()[ i ] = KSGRD::Style->sensorColor( i );
@@ -336,8 +347,8 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
   }
 
   mPlotter->setShowVerticalLines( element.attribute( "vLines", "1" ).toUInt() );
-  mPlotter->setVerticalLinesColor( restoreColor( element, "vColor",
-                                   KSGRD::Style->firstForegroundColor() ) );
+  QColor vcolor = restoreColor( element, "vColor",KSGRD::Style->firstForegroundColor() );
+  mPlotter->setVerticalLinesColor( vcolor );
   mPlotter->setVerticalLinesDistance( element.attribute( "vDistance", "30" ).toUInt() );
   mPlotter->setVerticalLinesScroll( element.attribute( "vScroll", "1" ).toUInt() );
   mPlotter->setHorizontalScale( element.attribute( "hScale", "1" ).toUInt() );
@@ -349,8 +360,14 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
 
   mPlotter->setShowLabels( element.attribute( "labels", "1" ).toUInt() );
   mPlotter->setShowTopBar( element.attribute( "topBar", "0" ).toUInt() );
-  mPlotter->setFontSize( element.attribute( "fontSize",
-                   QString( "%1" ).arg( KSGRD::Style->fontSize() ) ).toUInt() );
+  uint fontsize = element.attribute( "fontSize", "0").toUInt();
+  if(fontsize == 0) fontsize =  KSGRD::Style->fontSize();
+  QFont font;
+  font.setPointSize( fontsize );
+
+  mPlotter->setFont( font );
+
+  mPlotter->setFontColor( restoreColor( element, "fontColor", vcolor ) );  //make the default to be the same as the vertical line color
 
   mPlotter->setBackgroundColor( restoreColor( element, "bColor",
                                    KSGRD::Style->backgroundColor() ) );
@@ -390,7 +407,8 @@ bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element)
 
   element.setAttribute( "labels", mPlotter->showLabels() );
   element.setAttribute( "topBar", mPlotter->showTopBar() );
-  element.setAttribute( "fontSize", mPlotter->fontSize() );
+  element.setAttribute( "fontSize", mPlotter->font().pointSize() );
+  saveColor ( element, "fontColor", mPlotter->fontColor());
 
   saveColor( element, "bColor", mPlotter->backgroundColor() );
 

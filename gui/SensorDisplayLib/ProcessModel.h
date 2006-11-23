@@ -109,7 +109,6 @@ public:
 		if(simple && !mSimple)
 			setupProcessType();
 		mSimple = simple;
-		reset();
 	}
 	/** In simple mode, everything is flat, with no icons, few if any colors, no xres etc
 	 */

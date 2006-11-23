@@ -208,28 +208,34 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   groupBox->setLayout( boxLayout );
   boxLayout->setSpacing( spacingHint() );
 
-  label = new QLabel( i18n( "Vertical lines:" ), groupBox );
+  label = new QLabel( i18n( "Font:" ), groupBox );
   boxLayout->addWidget( label, 0, 0 );
+  mFontColor = new KColorButton( groupBox );
+  boxLayout->addWidget( mFontColor, 0, 1 );
+  label->setBuddy( mFontColor );
 
+
+  label = new QLabel( i18n( "Vertical lines:" ), groupBox );
+  boxLayout->addWidget( label, 1, 0 );
   mVerticalLinesColor = new KColorButton( groupBox );
-  boxLayout->addWidget( mVerticalLinesColor, 0, 1 );
+  boxLayout->addWidget( mVerticalLinesColor, 1, 1 );
   label->setBuddy( mVerticalLinesColor );
 
   label = new QLabel( i18n( "Horizontal lines:" ), groupBox );
-  boxLayout->addWidget( label, 1, 0 );
+  boxLayout->addWidget( label, 2, 0 );
 
   mHorizontalLinesColor = new KColorButton( groupBox );
-  boxLayout->addWidget( mHorizontalLinesColor, 1, 1 );
+  boxLayout->addWidget( mHorizontalLinesColor, 2, 1 );
   label->setBuddy( mHorizontalLinesColor );
 
   label = new QLabel( i18n( "Background:" ), groupBox );
-  boxLayout->addWidget( label, 2, 0 );
+  boxLayout->addWidget( label, 3, 0 );
 
   mBackgroundColor = new KColorButton( groupBox );
-  boxLayout->addWidget( mBackgroundColor, 2, 1 );
+  boxLayout->addWidget( mBackgroundColor, 3, 1 );
   label->setBuddy( mBackgroundColor );
 
-  boxLayout->setRowStretch( 3, 1 );
+  boxLayout->setRowStretch( 4, 1 );
 
   pageLayout->addWidget( groupBox, 1, 1 );
 
@@ -448,7 +454,15 @@ int FancyPlotterSettings::fontSize() const
 {
   return mFontSize->value();
 }
+void FancyPlotterSettings::setFontColor( const QColor &color )
+{
+  mFontColor->setColor( color );
+}
 
+QColor FancyPlotterSettings::fontColor() const
+{
+  return mFontColor->color();
+}
 void FancyPlotterSettings::setBackgroundColor( const QColor &color )
 {
   mBackgroundColor->setColor( color );

@@ -1092,13 +1092,12 @@ bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltyp
 	headings.prepend(i18nc("process heading", "Name"));
 	headingsToType.prepend(HeadingName);
 
-	kDebug() << "Adding " << header.count() << " columns: " << header <<endl;
-	beginInsertColumns(QModelIndex(), 0, header.count()-1);
+	kDebug() << "Adding " << headings.count() << " columns: " << headings <<endl;
+	beginInsertColumns(QModelIndex(), 0, headings.count()-1);
 		mHeadingsToType = headingsToType;
 		mColType = coltype;
 		mHeadings = headings;
 	endInsertColumns();
-	reset();
 
 	Q_ASSERT(mHeadingsToType.size() == mHeadings.size());
 

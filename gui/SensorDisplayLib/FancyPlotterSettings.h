@@ -61,6 +61,9 @@ class FancyPlotterSettings : public KPageDialog
     void setShowVerticalLines( bool value );
     bool showVerticalLines() const;
 
+    void setFontColor( const QColor &color );
+    QColor fontColor() const;
+
     void setVerticalLinesColor( const QColor &color );
     QColor verticalLinesColor() const;
 
@@ -102,6 +105,7 @@ class FancyPlotterSettings : public KPageDialog
     KColorButton *mVerticalLinesColor;
     KColorButton *mHorizontalLinesColor;
     KColorButton *mBackgroundColor;
+    KColorButton *mFontColor;
     KLineEdit *mMinValue;
     KLineEdit *mMaxValue;
     KLineEdit *mTitle;
