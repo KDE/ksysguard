@@ -1211,10 +1211,8 @@ void ProcessModel::setShowTotals(int totals)  //slot
 	QList<Process *> processes = mPidToProcess.values();
 	for(int i = 0; i < processes.size(); i++) {
 		process = processes.at(i);
-		if (!process) {
-			kDebug(1215) << "One of the processes in our QHash, mPidToProcess is invalid. We found it at index " << i << " after converting to a QList. QList<Process *> processes = mPidToProcess.values(). processes.size() was " << processes.size() << "." << endl;
-		}
-		else if(process->numChildren > 0) {
+		Q_ASSERT(process);
+		if(process->numChildren > 0) {
 			int row = process->parent->children.indexOf(process);
 			index = createIndex(row, mCPUHeading, process);
 			emit dataChanged(index, index);
