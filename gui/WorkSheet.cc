@@ -291,6 +291,7 @@ const QString& WorkSheet::fileName() const
 
 void WorkSheet::setTitle( const QString &title )
 {
+  kDebug() << "Set title " << title << endl;
   mTitle = title;
   emit titleChanged(this);
 }
@@ -374,7 +375,11 @@ void WorkSheet::settings()
     if (!mSharedSettings.locked)
       resizeGrid( dlg.rows(), dlg.columns() );
 
-    setTitle(dlg.sheetTitle());
+    if(mRows == 1 && mColumns ==1) {
+      mDisplayList[ 0 ][ 0 ]->setTitle(dlg.sheetTitle());
+    } else {
+      setTitle(dlg.sheetTitle());
+    }
   }
 }
 
@@ -520,6 +525,8 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
 
   if(mRows == 1 && mColumns == 1) {  //if there's only item, then why bother with a frame?
     mGridLayout->addWidget( mDisplayList[ row ][ column ], row, column );
+    connect( newDisplay, SIGNAL(changeTitle(const QString&)), SLOT(setTitle(const QString&)));
+    setTitle(newDisplay->title());
   } else {
     SensorFrame *frame = new SensorFrame(mDisplayList[ row ][ column ]);
     mGridLayout->addWidget( frame, row, column );

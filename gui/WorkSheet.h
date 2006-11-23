@@ -65,7 +65,6 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
 
     bool isLocked() const {return mSharedSettings.locked;}
 
-    void setTitle( const QString &title );
     const QString &title();
 
     KSGRD::SensorDisplay* addDisplay( const QString &hostname,
@@ -80,6 +79,7 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
 
   public Q_SLOTS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
+    void setTitle( const QString &title );
     void applyStyle();
 
   Q_SIGNALS:

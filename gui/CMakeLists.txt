@@ -30,6 +30,7 @@ set(libsensordisplays_SRCS
    	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorModel.cc 
    	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ListViewSettings.cc 
    	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SignalPlotter.cc
+	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/modeltest.cpp
 	)
 
 kde4_add_ui_files( libsensordisplays_SRCS

@@ -136,6 +136,7 @@ void Workspace::newWorkSheet()
 
 void Workspace::updateSheetTitle( QWidget* wdg )
 {
+  kDebug() << "update sheet title" << endl;
   if ( wdg )
     setTabText( indexOf(wdg), static_cast<WorkSheet*>( wdg )->title() );
 }
@@ -276,6 +277,10 @@ bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)
     return false;
   }
   mSheetList.append( sheet );
+
+  connect( sheet, SIGNAL( titleChanged( QWidget* ) ),
+    SLOT( updateSheetTitle( QWidget* )));
+
   insertTab(-1, sheet, sheet->title() );
   if(switchToTab)
    setCurrentIndex(indexOf(sheet));

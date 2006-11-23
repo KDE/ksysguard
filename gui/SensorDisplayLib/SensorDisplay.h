@@ -72,9 +72,9 @@ class SensorDisplay : public QWidget, public SensorClient
     virtual ~SensorDisplay();
 
     /**
-      Sets the title of the display.
+      Sets the title of the display.  If you override, please call this
      */
-    void setTitle( const QString &title );
+    virtual void setTitle( const QString &title );
 
     /**
       Returns the title of the display.

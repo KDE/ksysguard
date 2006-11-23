@@ -49,8 +49,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   mPlotter->setFontColor( KSGRD::Style->firstForegroundColor() );
   mPlotter->setShowTopBar( true );
 
-  if ( !title.isEmpty() )
-    mPlotter->setTitle( title );
+  setTitle(title);
 
   setMinimumSize( sizeHint() );
 
@@ -63,6 +62,12 @@ FancyPlotter::FancyPlotter( QWidget* parent,
 
 FancyPlotter::~FancyPlotter()
 {
+}
+
+void FancyPlotter::setTitle( const QString &title ) { //virtual
+  if(mPlotter)
+    mPlotter->setTitle( title );
+  KSGRD::SensorDisplay::setTitle( title );
 }
 
 void FancyPlotter::configureSettings()
@@ -109,7 +114,6 @@ void FancyPlotter::configureSettings()
 
   if ( dlg.exec() ) {
     setTitle( dlg.title() );
-    mPlotter->setTitle( title() );
 
     if ( dlg.useAutoRange() )
       mPlotter->setUseAutoRange( true );
@@ -382,9 +386,6 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
   }
 
   SensorDisplay::restoreSettings( element );
-
-  if ( !title().isEmpty() )
-    mPlotter->setTitle( title() );
 
   return true;
 }
