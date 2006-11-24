@@ -67,7 +67,7 @@ ProcessModel::ProcessModel(QObject* parent)
 	mStatusDescription["stopped"] = i18n("- Process has been stopped. It will not respond to user input at the moment");	
 	mStatusDescription["zombie"] = i18n("- Process has finished and is now dead, but the parent has not noticed yet");
 
-	
+	setupProcessType();	
 }
 void ProcessModel::setupProcessType()
 {
@@ -909,7 +909,11 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			Process *process = reinterpret_cast< Process * > (index.internalPointer());
 			switch (process->processType){
 				case Process::Init:
+#ifdef Q_OS_LINUX
 					return getIcon("penguin");
+#else
+					return getIcon("system");
+#endif
 				case Process::Daemon:
 					return getIcon("daemon");
 				case Process::Kernel:
@@ -929,7 +933,9 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	//			case Process::Other:
 				default:
 					//so iconname tries to guess as what icon to use.
-					return getIcon(process->name);
+					QPixmap pix = getIcon(process->name);
+					if(pix.isNull()) return QVariant();
+					return pix;
 			}
 		} else if (mHeadingsToType[index.column()] == HeadingCPUUsage) {
 			Process *process = reinterpret_cast< Process * > (index.internalPointer());
@@ -976,33 +982,34 @@ QPixmap ProcessModel::getIcon(const QString&iconname) const {
 
 	/* Get icon from icon list that might be appropriate for a process
 	 * with this name. */
-	QPixmap pix = mIconCache[iconname];
-	if (pix.isNull())
-	{
-		if(!mIcons) {
-			mIcons = new KIconLoader();
-		}
-		pix = mIcons->loadIcon(iconname, K3Icon::Small,
-						 K3Icon::SizeSmall, K3Icon::DefaultState,
-						 0L, true);
-		if (pix.isNull() || !pix.mask())
-			pix = SmallIcon("unknownapp");
+	if(mIconCache.contains(iconname))
+		return mIconCache[iconname];
+	QPixmap pix;
 
-		if (pix.width() != 16 || pix.height() != 16)
-		{
-			/* I guess this isn't needed too often. The KIconLoader should
-			 * scale the pixmaps already appropriately. Since I got a bug
-			 * report claiming that it doesn't work with GNOME apps I've
-			 * added this safeguard. */
-			QImage img = pix.toImage();
-			img.scaled(16, 16, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-			pix = QPixmap::fromImage( img );
-		}
-		/* We copy the icon into a 24x16 pixmap to add a 4 pixel margin on
-		 * the left and right side. In tree view mode we use the original
-		 * icon. */
-		mIconCache.insert(iconname,pix);
+	if(!mIcons) {
+		mIcons = new KIconLoader();
 	}
+	pix = mIcons->loadIcon(iconname, K3Icon::Small,
+					 K3Icon::SizeSmall, K3Icon::DefaultState,
+					 0L, true);
+	if (pix.isNull() || !pix.mask())
+		pix = SmallIcon("unknownapp");
+//		pix = QPixmap();
+
+	if (pix.width() != 16 || pix.height() != 16)
+	{
+		/* I guess this isn't needed too often. The KIconLoader should
+		 * scale the pixmaps already appropriately. Since I got a bug
+		 * report claiming that it doesn't work with GNOME apps I've
+		 * added this safeguard. */
+		QImage img = pix.toImage();
+		img.scaled(16, 16, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+		pix = QPixmap::fromImage( img );
+	}
+	/* We copy the icon into a 24x16 pixmap to add a 4 pixel margin on
+	 * the left and right side. In tree view mode we use the original
+	 * icon. */
+	mIconCache.insert(iconname,pix);
 	return pix;
 }
 

@@ -106,8 +106,6 @@ public:
 	 *  This can be changed at any time.  It is a fairly quick operation.  Basically it resets the model
 	 */ 
 	void setSimpleMode(bool simple) { 
-		if(simple && !mSimple)
-			setupProcessType();
 		mSimple = simple;
 	}
 	/** In simple mode, everything is flat, with no icons, few if any colors, no xres etc
