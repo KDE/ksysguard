@@ -18,6 +18,8 @@
 
 */
 
+//APM only on NetBSD/i386 ?  raphael.langerhorst@kdemail.net
+#if !defined(__NetBSD__) || defined(__i386__)
 
 #include <fcntl.h>
 #include <machine/apmvar.h>
@@ -98,3 +100,4 @@ printApmBatTimeInfo(const char* c)
 	fprintf(CurrentClient, "Remaining battery time\t0\t0\tmin\n");
 }
 
+#endif

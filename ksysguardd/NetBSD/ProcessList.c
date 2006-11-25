@@ -191,7 +191,7 @@ updateProcess(int pid)
         ps->ppid      = p.kp_eproc.e_ppid;
         ps->uid       = p.kp_eproc.e_ucred.cr_uid;
         ps->gid       = p.kp_eproc.e_pgid;
-        ps->priority  = p.kp_proc.p_priority;
+        ps->priority  = 0; //p.kp_proc.p_priority; ### TODO NetBSD: migrate to kinfo_proc2
         ps->niceLevel = p.kp_proc.p_nice;
 
         /* this isn't usertime -- it's total time (??) */

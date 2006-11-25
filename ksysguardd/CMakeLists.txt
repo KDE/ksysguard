@@ -36,6 +36,10 @@ TARGET_LINK_LIBRARIES(ksysguardd libksysguardd kdefakes ${X11_LIBRARY} ${XEXT_LI
 if(XRES_LIBRARY)
   TARGET_LINK_LIBRARIES(ksysguardd ${XRES_LIBRARY})
 endif(XRES_LIBRARY)
+if( ${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" )
+  message(STATUS "Adding kvm library on NetBSD")
+  TARGET_LINK_LIBRARIES(ksysguardd kvm)
+endif( ${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" )
 
 install(TARGETS ksysguardd DESTINATION ${BIN_INSTALL_DIR})
 
