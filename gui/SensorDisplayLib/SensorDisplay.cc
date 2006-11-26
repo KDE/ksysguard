@@ -84,7 +84,6 @@ SensorDisplay::SensorDisplay( QWidget *parent, const QString &title, SharedSetti
   /* Let's call updateWhatsThis() in case the derived class does not do
    * this. */
   updateWhatsThis();
-  setFocusPolicy( Qt::StrongFocus );
 }
 
 SensorDisplay::~SensorDisplay()
