@@ -234,7 +234,8 @@ bool ProcessController::addSensor(const QString& hostName,
 	 * requests are send whenever the sensor reconnects (detected in
 	 * sensorError(). */
 
-	mModel.setIsLocalhost(sensors().at(0)->isLocalhost()); //by telling our model that this is localhost, it can provide more information about the data it has
+	bool isLocalhost = sensors().at(0)->isLocalhost();
+	mModel.setIsLocalhost(isLocalhost); //by telling our model that this is localhost, it can provide more information about the data it has
 	
 	sensors().at(0)->setIsOk(true); //Assume it is okay from the start
 	setSensorOk(sensors().at(0)->isOk());
@@ -255,7 +256,8 @@ bool ProcessController::addSensor(const QString& hostName,
 		setTitle(i18n("%1: Running Processes", hostName));
 	else
 		setTitle(title);
-
+	if(isLocalhost)
+		QTimer::singleShot(0, mUi.txtFilter, SLOT(setFocus()));
 	return true;
 }
 
