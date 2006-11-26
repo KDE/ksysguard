@@ -148,8 +148,10 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
       action = pm.addAction( i18n( "&Properties" ) );
       action->setData( 2 );
     }
-    action = pm.addAction( i18n( "&Remove Display" ) );
-    action->setData( 3 );
+    if(!mSharedSettings->locked) {  
+      action = pm.addAction( i18n( "&Remove Display" ) );
+      action->setData( 3 );
+    }
     action = pm.addSeparator();
     action = pm.addAction( i18n( "&Change Update Interval..." ) );
     action->setData( 4 );
