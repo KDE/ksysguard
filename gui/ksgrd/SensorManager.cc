@@ -18,7 +18,7 @@
 
 */
 
-#include <kapplication.h>
+#include <qapplication.h>
 #include <kdebug.h>
 #include <klocale.h>
 
@@ -202,7 +202,7 @@ void SensorManager::requestDisengage( const SensorAgent *agent )
    * So we have to post an event which is later caught by
    * SensorManger::customEvent(). */
   AgentEvent* event = new AgentEvent( agent );
-  kapp->postEvent( this, event );
+  qApp->postEvent( this, event );
 }
 
 bool SensorManager::disengage( const SensorAgent *agent )
@@ -266,7 +266,7 @@ void SensorManager::notify( const QString &msg ) const
    * that might have been deleted before the pop-up box is closed. */
   if ( mBroadcaster ) {
     MessageEvent *event = new MessageEvent( msg );
-    kapp->postEvent( mBroadcaster, event );
+    qApp->postEvent( mBroadcaster, event );
   }
 }
 
