@@ -125,7 +125,7 @@ QVariant SensorModel::data( const QModelIndex &index, int role ) const
   if ( role == Qt::DisplayRole ) {
     switch ( index.column() ) {
       case 0:
-        return sensor.hostName();
+        return QString::number(sensor.id()) + " " +  sensor.hostName();
         break;
       case 1:
         return sensor.sensorName();
@@ -217,9 +217,38 @@ void SensorModel::removeSensor( const QModelIndex &index )
   if ( index.row() < 0 || index.row() >= mSensors.count() )
     return;
 
+  mDeleted.append( mSensors[index.row() ].id());
   mSensors.removeAt( index.row() );
 
   emit layoutChanged();
+}
+
+QList<int> SensorModel::deleted() const
+{
+  return mDeleted;
+}
+
+void SensorModel::clearDeleted()
+{
+  mDeleted.clear();
+}
+QList<int> SensorModel::order() const
+{
+  QList<int> newOrder;
+  for(int i = 0; i < mSensors.count(); i++)
+  {
+    newOrder.append(mSensors[i].id());
+  }
+  return newOrder;
+
+}
+void SensorModel::resetOrder() {
+  //Renumber the items 3, 2, 1, 0  etc
+  for(int i = 0; i < mSensors.count(); i++)
+  {
+    mSensors[i].setId(i);
+  }
+  reset();
 }
 
 SensorModelEntry SensorModel::sensor( const QModelIndex &index ) const
@@ -234,5 +263,7 @@ void SensorModel::setHasLabel( bool hasLabel )
 {
   mHasLabel = hasLabel;
 }
+
+
 
 #include "SensorModel.moc"

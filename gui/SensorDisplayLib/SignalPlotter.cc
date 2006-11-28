@@ -100,6 +100,8 @@ void KSignalPlotter::addSample( const QList<double>& sampleBuf )
       return;
   }
   mBeamData.prepend(sampleBuf);
+  kDebug() << "AddSample.  New size is " << mBeamData.count() << ".  Just added " << sampleBuf.count() << " samples" <<  endl;
+  Q_ASSERT(sampleBuf.count() == mBeamColors.count());
   if(mBeamData.size() > mSamples) {
     mBeamData.removeLast(); // we have too many.  Remove the last item
     if(mBeamData.size() > mSamples)
@@ -130,6 +132,38 @@ void KSignalPlotter::addSample( const QList<double>& sampleBuf )
   }
   update();
 }
+
+void KSignalPlotter::reorderBeams( const QList<int>& newOrder )
+{
+  if(newOrder.count() != mBeamColors.count()) {
+    kDebug() << "neworder has " << newOrder.count() << " and beam colors is " << mBeamColors.count() << endl;
+    return;
+  }
+  QLinkedList< QList<double> >::Iterator it;
+  for(it = mBeamData.begin(); it != mBeamData.end(); ++it) {
+    kDebug() << "beamdata[i] has " << (*it).count() << " and neworder has " << newOrder.count() << endl;
+    if(newOrder.count() != (*it).count()) {
+      kDebug() << "Serious problem in move sample.  beamdata[i] has " << (*it).count() << " and neworder has " << newOrder.count() << endl;
+    } else {
+     QList<double> newBeam;
+     for(int i = 0; i < newOrder.count(); i++) {
+        int newIndex = newOrder[i];
+        kDebug() << "reorderBeams.  " << i << " becomes " << newIndex << endl;
+        newBeam.append((*it).at(newIndex));
+      }
+      (*it) = newBeam;
+    }
+  }
+  QList< QColor> newBeamColors;
+  for(int i = 0; i < newOrder.count(); i++) {
+    int newIndex = newOrder[i];
+    newBeamColors.append(mBeamColors.at(newIndex));
+  }
+  mBeamColors = newBeamColors;
+
+
+}
+
 
 void KSignalPlotter::changeRange( int beam, double min, double max )
 {
@@ -494,7 +528,6 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
    * When mBezierCurveOffset == 2, then we want a bezier curve that uses the first, second and third data
    *
    */
-
   for (int i = 0; it != mBeamData.end() && i < mSamples; ++i) {
     double sum = 0.0;
     QPen pen;
@@ -592,7 +625,7 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
 	 * The y coordinate system starts from the top, so at the bottom the y coordinate is h+top
 	 * So to draw a point at value y', we need to put this at  h+top-y'
 	 */
-	double y;
+	int y;
 	y = h + top - (int)((datapoints[j] - minValue)*scaleFac);
 	Q_ASSERT(y >= top);
         curve.setPoint( 0, w - xPos + 3*mHorizontalScale, y );
@@ -631,7 +664,7 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
 
     if ( mShowLabels && h > ( fontheight + 1 ) * ( mHorizontalLinesCount + 1 )
          && w > 60 ) {
-      int value = minValue / mScaleDownBy;
+      int value = (int)(minValue / mScaleDownBy);
       QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:1);
       val = QString( "%1 %2" ).arg( number, mUnit);
       p.setPen( mFontColor );

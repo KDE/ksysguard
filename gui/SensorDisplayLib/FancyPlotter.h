@@ -77,6 +77,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
 
   public Q_SLOTS:
     virtual void applyStyle();
+    void applySettings();
 
   protected:
     virtual void resizeEvent( QResizeEvent* );
@@ -94,6 +95,8 @@ class FancyPlotter : public KSGRD::SensorDisplay
       been received.
      */
     QList<double> mSampleBuf;
+
+    FancyPlotterSettings* mSettingsDialog;
 };
 
 #endif

@@ -39,6 +39,7 @@ class KSignalPlotter : public QWidget
 
     bool addBeam( const QColor &color );
     void addSample( const QList<double> &samples );
+    void reorderBeams( const QList<int>& newOrder );
 
     void removeBeam( uint pos );
 

@@ -45,7 +45,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
 {
   setFaceType( Tabbed );
   setCaption( i18n( "Signal Plotter Settings" ) );
-  setButtons( Ok | Cancel );
+  setButtons( Ok | Apply | Cancel );
   setObjectName( "FancyPlotterSettings" );
   setModal( true );
   showButtonSeparator( true );
@@ -262,12 +262,26 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   pageLayout->addWidget( mEditButton, 0, 1 );
 
   mRemoveButton = 0;
+  mMoveUpButton = 0;
+  mMoveDownButton = 0;
   if ( !locked ) {
     mRemoveButton = new QPushButton( i18n( "Delete" ), page );
     mRemoveButton->setWhatsThis( i18n( "Push this button to delete the sensor." ) );
     pageLayout->addWidget( mRemoveButton, 1, 1 );
-
     connect( mRemoveButton, SIGNAL( clicked() ), SLOT( removeSensor() ) );
+
+    mMoveUpButton = new QPushButton( i18n( "Move Up" ), page );
+    mMoveUpButton->setEnabled( false );
+    pageLayout->addWidget( mMoveUpButton, 2, 1 );
+    connect( mMoveUpButton, SIGNAL( clicked() ), SLOT( moveUpSensor() ) );
+
+    mMoveDownButton = new QPushButton( i18n( "Move Down" ), page );
+    mMoveDownButton->setEnabled( false );
+    pageLayout->addWidget( mMoveDownButton, 3, 1 );
+    connect( mMoveDownButton, SIGNAL( clicked() ), SLOT( moveDownSensor() ) );
+
+    connect(mView->selectionModel(), SIGNAL(currentRowChanged( const QModelIndex &, const QModelIndex &)), this, SLOT( selectionChanged(const QModelIndex &)));
+
   }
 
   connect( mUseAutoRange, SIGNAL( toggled( bool ) ), mMinValue,
@@ -294,6 +308,12 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
 
 FancyPlotterSettings::~FancyPlotterSettings()
 {
+}
+
+void FancyPlotterSettings::selectionChanged(const QModelIndex &newCurrent)
+{
+  mMoveUpButton->setEnabled(newCurrent.isValid() && newCurrent.row() > 0);
+  mMoveDownButton->setEnabled(newCurrent.isValid() && newCurrent.row() < mModel->rowCount() -1 );
 }
 
 void FancyPlotterSettings::setTitle( const QString &title )
@@ -513,8 +533,29 @@ void FancyPlotterSettings::removeSensor()
   const QModelIndex index = mView->selectionModel()->currentIndex();
   if ( !index.isValid() )
     return;
-
   mModel->removeSensor( index );
 }
+
+void FancyPlotterSettings::clearDeleted()
+{
+  mModel->clearDeleted();
+}
+
+QList<int> FancyPlotterSettings::deleted() const
+{
+  return mModel->deleted();
+}
+
+QList<int> FancyPlotterSettings::order() const
+{
+  return mModel->order();
+}
+
+void FancyPlotterSettings::resetOrder()
+{
+  mModel->resetOrder();
+}
+
+
 
 #include "FancyPlotterSettings.moc"

@@ -79,11 +79,17 @@ class SensorModel : public QAbstractTableModel
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+    QList<int> order() const;
+    QList<int> deleted() const;
+    void clearDeleted();
+    void resetOrder();
 
   private:
     SensorModelEntry::List mSensors;
 
     bool mHasLabel;
+    /** The numbers of the sensors to be deleted.*/
+    QList<int> mDeleted;
 };
 
 #endif

@@ -260,6 +260,7 @@ class SensorDisplay : public QWidget, public SensorClient
 
     bool timerOn() const;
 
+    void reorderSensors(const QList<int> &orderOfSensors);
     QList<SensorProperties *> &sensors();
 
     SharedSettings *mSharedSettings;

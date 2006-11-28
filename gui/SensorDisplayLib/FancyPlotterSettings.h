@@ -96,10 +96,16 @@ class FancyPlotterSettings : public KPageDialog
 
     void setSensors( const SensorModelEntry::List &list );
     SensorModelEntry::List sensors() const;
+    QList<int> order() const;
+    QList<int> deleted() const;
+    void clearDeleted();
+    void resetOrder();
+
 
   private Q_SLOTS:
     void editSensor();
     void removeSensor();
+    void selectionChanged(const QModelIndex &newCurrent);
 
   private:
     KColorButton *mVerticalLinesColor;
@@ -122,9 +128,13 @@ class FancyPlotterSettings : public KPageDialog
     QCheckBox *mShowTopBar;
     QPushButton *mEditButton;
     QPushButton *mRemoveButton;
+    QPushButton *mMoveUpButton;
+    QPushButton *mMoveDownButton;
+
 
     QTreeView *mView;
     SensorModel *mModel;
+
 };
 
 #endif
