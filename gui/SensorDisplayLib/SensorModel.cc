@@ -217,10 +217,10 @@ void SensorModel::removeSensor( const QModelIndex &index )
   if ( index.row() < 0 || index.row() >= mSensors.count() )
     return;
 
-  mDeleted.append( mSensors[index.row() ].id());
-  mSensors.removeAt( index.row() );
-
-  emit layoutChanged();
+  beginRemoveRows( QModelIndex(), index.row(), index.row());
+    mDeleted.append( mSensors[index.row() ].id());
+    mSensors.removeAt( index.row() );
+  endRemoveRows();
 }
 
 QList<int> SensorModel::deleted() const
