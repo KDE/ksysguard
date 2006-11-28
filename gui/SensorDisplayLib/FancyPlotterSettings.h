@@ -106,6 +106,8 @@ class FancyPlotterSettings : public KPageDialog
     void editSensor();
     void removeSensor();
     void selectionChanged(const QModelIndex &newCurrent);
+    void moveUpSensor();
+    void moveDownSensor();
 
   private:
     KColorButton *mVerticalLinesColor;

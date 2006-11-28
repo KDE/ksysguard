@@ -84,6 +84,12 @@ void KSignalPlotter::setTranslatedUnit(const QString &unit) {
 
 bool KSignalPlotter::addBeam( const QColor &color )
 {
+  QLinkedList< QList<double> >::Iterator it;
+  //When we add a new beam, go back and set the data for this beam to 0 for all the other times. This is because it makes it easier for
+  //moveSensors
+  for(it = mBeamData.begin(); it != mBeamData.end(); ++it) {
+    (*it).append(0);
+  }
   mBeamColors.append(color);
   return true;
 }
@@ -100,7 +106,6 @@ void KSignalPlotter::addSample( const QList<double>& sampleBuf )
       return;
   }
   mBeamData.prepend(sampleBuf);
-  kDebug() << "AddSample.  New size is " << mBeamData.count() << ".  Just added " << sampleBuf.count() << " samples" <<  endl;
   Q_ASSERT(sampleBuf.count() == mBeamColors.count());
   if(mBeamData.size() > mSamples) {
     mBeamData.removeLast(); // we have too many.  Remove the last item
@@ -141,14 +146,12 @@ void KSignalPlotter::reorderBeams( const QList<int>& newOrder )
   }
   QLinkedList< QList<double> >::Iterator it;
   for(it = mBeamData.begin(); it != mBeamData.end(); ++it) {
-    kDebug() << "beamdata[i] has " << (*it).count() << " and neworder has " << newOrder.count() << endl;
     if(newOrder.count() != (*it).count()) {
       kDebug() << "Serious problem in move sample.  beamdata[i] has " << (*it).count() << " and neworder has " << newOrder.count() << endl;
     } else {
      QList<double> newBeam;
      for(int i = 0; i < newOrder.count(); i++) {
         int newIndex = newOrder[i];
-        kDebug() << "reorderBeams.  " << i << " becomes " << newIndex << endl;
         newBeam.append((*it).at(newIndex));
       }
       (*it) = newBeam;

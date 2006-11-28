@@ -73,6 +73,8 @@ class SensorModel : public QAbstractTableModel
     void removeSensor( const QModelIndex &index );
     SensorModelEntry sensor( const QModelIndex &index ) const;
 
+    void moveDownSensor(const QModelIndex &index);
+    void moveUpSensor(const QModelIndex &index);
     void setHasLabel( bool hasLabel );
 
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;

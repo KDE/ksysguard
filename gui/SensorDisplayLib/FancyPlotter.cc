@@ -172,7 +172,6 @@ void FancyPlotter::applySettings() {
     SensorModelEntry::List list = mSettingsDialog->sensors();
 
     for ( int i = 0; i < sensors().count(); ++i ) {
-	  kDebug() << "item " << i << " has id " << list[i].id() << endl;
           mPlotter->beamColors()[ i ] = list[ i ].color();
     }
 

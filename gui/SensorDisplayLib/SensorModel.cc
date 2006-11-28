@@ -125,7 +125,7 @@ QVariant SensorModel::data( const QModelIndex &index, int role ) const
   if ( role == Qt::DisplayRole ) {
     switch ( index.column() ) {
       case 0:
-        return QString::number(sensor.id()) + " " +  sensor.hostName();
+        return sensor.hostName();
         break;
       case 1:
         return sensor.sensorName();
@@ -218,11 +218,38 @@ void SensorModel::removeSensor( const QModelIndex &index )
     return;
 
   beginRemoveRows( QModelIndex(), index.row(), index.row());
-    mDeleted.append( mSensors[index.row() ].id());
+    int id = mSensors[index.row() ].id();
+    mDeleted.append(id);
+
     mSensors.removeAt( index.row() );
+    for(int i = 0; i < mSensors.count(); i++) {
+      if(mSensors[i].id() > id) 
+        mSensors[i].setId(mSensors[i].id()-1);
+    }
   endRemoveRows();
+
 }
 
+void SensorModel::moveDownSensor(const QModelIndex &sindex)
+{
+  int row = sindex.row();
+  if(row >= mSensors.count()) return;
+  mSensors.move(row, row+1);
+  
+  for( int i = 0; i < columnCount(); i++)
+    changePersistentIndex(index(row, i), index(row+1, i));
+ 
+  emit dataChanged(sindex, index(row+1, columnCount()-1));
+}
+void SensorModel::moveUpSensor(const QModelIndex &sindex)
+{
+  int row = sindex.row();
+  if(row <= 0) return;
+  mSensors.move(row, row-1);
+  for( int i = 0; i < columnCount(); i++)
+    changePersistentIndex(index(row, i), index(row-1, i));
+  emit dataChanged(sindex, index(row-1, columnCount()-1));
+}
 QList<int> SensorModel::deleted() const
 {
   return mDeleted;

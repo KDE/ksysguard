@@ -310,10 +310,22 @@ FancyPlotterSettings::~FancyPlotterSettings()
 {
 }
 
+void FancyPlotterSettings::moveUpSensor()
+{
+  mModel->moveUpSensor(mView->selectionModel()->currentIndex());
+  selectionChanged(mView->selectionModel()->currentIndex());
+}
+void FancyPlotterSettings::moveDownSensor()
+{
+  mModel->moveDownSensor(mView->selectionModel()->currentIndex());
+  selectionChanged(mView->selectionModel()->currentIndex());
+}
 void FancyPlotterSettings::selectionChanged(const QModelIndex &newCurrent)
 {
   mMoveUpButton->setEnabled(newCurrent.isValid() && newCurrent.row() > 0);
   mMoveDownButton->setEnabled(newCurrent.isValid() && newCurrent.row() < mModel->rowCount() -1 );
+  mEditButton->setEnabled(newCurrent.isValid());
+  mRemoveButton->setEnabled(newCurrent.isValid());
 }
 
 void FancyPlotterSettings::setTitle( const QString &title )
@@ -534,6 +546,7 @@ void FancyPlotterSettings::removeSensor()
   if ( !index.isValid() )
     return;
   mModel->removeSensor( index );
+  selectionChanged( mView->selectionModel()->currentIndex() );
 }
 
 void FancyPlotterSettings::clearDeleted()
