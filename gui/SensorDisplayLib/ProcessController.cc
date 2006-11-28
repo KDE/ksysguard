@@ -89,6 +89,7 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	mUi.treeView->header()->setClickable(true);
 	mUi.treeView->header()->setSortIndicatorShown(true);
 	mUi.treeView->header()->setCascadingSectionResizes(true);
+	mUi.treeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 	mUi.txtFilter->setClearButtonShown(true);
 	connect(mUi.btnKillProcess, SIGNAL(clicked()), this, SLOT(killProcess()));
 	connect(mUi.txtFilter, SIGNAL(textChanged(const QString &)), &mFilterModel, SLOT(setFilterRegExp(const QString &)));
