@@ -166,8 +166,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   boxLayout->addWidget( label, 1, 2 );
 
   mHorizontalLinesCount = new KIntNumInput( 0, groupBox );
-  mHorizontalLinesCount->setMinimum( 2 );
-  mHorizontalLinesCount->setMaximum( 20 );
+  mHorizontalLinesCount->setMinimum( 1 );
+  mHorizontalLinesCount->setMaximum( 100 );
   mHorizontalLinesCount->setWhatsThis( i18n( "Enter the number of horizontal lines here." ) );
   boxLayout->addWidget( mHorizontalLinesCount , 1, 3 );
   label->setBuddy( mHorizontalLinesCount );

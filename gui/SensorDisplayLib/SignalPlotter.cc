@@ -434,9 +434,9 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
         range = 1.0;
     }
     // Massage the range so that the grid shows some nice values.
-    double step = range / mHorizontalLinesCount;
+    double step = range / (mHorizontalLinesCount+1);
     double dim = pow( 10, floor( log10( step ) ) ) / 2;
-    range = dim * ceil( step / dim ) * mHorizontalLinesCount;
+    range = dim * ceil( step / dim ) * (mHorizontalLinesCount+1);
   }
   double maxValue = minValue + range;
 
@@ -445,7 +445,7 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
     int x0 = w / 2;
     top = p.fontMetrics().height();
     //Before we continue, check if there's enough room.  So enough room for a bar at the top, plus horizontal lines each of a size with room for a scale
-    if( h <= (top + 2 + mHorizontalLinesCount * qMax(10, top)) ) {
+    if( h <= (top/*top bar size*/ + 2/*padding*/ +5/*smallest reasonable size for a graph*/ ) ) {
       top = 0;
     } else {
       h -= top;
@@ -644,16 +644,23 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
     }
   }
 
-  /* Draw horizontal lines and values. Lines are drawn when the
-   * height is greater than 10 times hCount + 1, values are shown
-   * when width is greater than 60 */
+  /* Draw horizontal lines and values. Lines are always drawn.
+   * Values are only draw when width is greater than 60 */
   int fontheight = p.fontMetrics().height();
-  if ( mShowHorizontalLines && h > ( 10 * ( mHorizontalLinesCount + 1 ) ) ) { 
+  if ( mShowHorizontalLines ) { 
     QString val;
-    for ( uint y = 1; y < mHorizontalLinesCount; y++ ) {
+    /* top = 0 or  font.height    depending on whether there's a topbar or not
+     * h = graphing area.height   - i.e. the actual space we have to draw inside
+     *
+     * Note we are drawing from 0,0 as the top left corner.  So we have to add on top to get to the top of where we are drawing
+     * so top+h is the height of the widget
+     */
+
+    for ( uint y = 1; y <= mHorizontalLinesCount; y++ ) {
+      int y_coord =  top + (y * h) / (mHorizontalLinesCount+1);  //Make sure it's y*h first to avoid rounding bugs
+
       p.setPen( mHorizontalLinesColor );
-      p.drawLine( 0, top + y * ( h / mHorizontalLinesCount ), w - 2,
-                  top + y * ( h / mHorizontalLinesCount ) );
+      p.drawLine( 0, y_coord, w - 2, y_coord);
       if ( mShowLabels && h > ( fontheight + 1 ) * ( mHorizontalLinesCount + 1 )
            && w > 60 ) {
 	double value = (maxValue - y * ( range / mHorizontalLinesCount ))/mScaleDownBy;
@@ -661,10 +668,11 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
         QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:2);
         val = QString( "%1 %2" ).arg( number, mUnit );
         p.setPen( mFontColor );
-        p.drawText( 6, top + y * ( h / mHorizontalLinesCount ) - 2, val );
+        p.drawText( 6, y_coord - 2, val );
       }
     }
 
+    //Draw the bottom most (minimum) number as well
     if ( mShowLabels && h > ( fontheight + 1 ) * ( mHorizontalLinesCount + 1 )
          && w > 60 ) {
       int value = (int)(minValue / mScaleDownBy);
