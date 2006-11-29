@@ -512,9 +512,10 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
   }
 
   // insert new display
-  if ( !newDisplay )
-    mDisplayList[ row ][ column ] = new DummyDisplay( this, &mSharedSettings );
-  else {
+  if ( !newDisplay ) {
+    newDisplay = new DummyDisplay( this, &mSharedSettings );
+    mDisplayList[ row ][ column ] = newDisplay;
+  }  else {
     mDisplayList[ row ][ column ] = newDisplay;
     if ( mDisplayList[ row ][ column ]->useGlobalUpdateInterval() )
       mDisplayList[ row ][ column ]->setUpdateInterval( updateInterval() );
