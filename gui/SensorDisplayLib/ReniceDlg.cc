@@ -21,12 +21,11 @@
 */
 
 #include <klocale.h>
-#include <knuminput.h>
 
 #include "ReniceDlg.moc"
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <QListWidget>
+#include <QSpinBox>
+#include "ui_ReniceDlgUi.h"
 
 ReniceDlg::ReniceDlg(QWidget* parent, int currentPPrio,
 					 const QStringList& processes)
@@ -40,38 +39,18 @@ ReniceDlg::ReniceDlg(QWidget* parent, int currentPPrio,
 
 	connect( this, SIGNAL( okClicked() ), SLOT( slotOk() ) );
 
+	QWidget *widget = new QWidget(this);
+	setMainWidget(widget);
 
-	QWidget *page = new QWidget( this );
-	setMainWidget(page);
-
-	vLay = new QVBoxLayout(page);
-	vLay->setObjectName("ReniceLayout");
-	vLay->setSpacing(-1);
-	vLay->setMargin(20);
-
-	QString msg;
-	msg = i18n("<qt>You are about to change the scheduling priority for:<br>"
-			   "<i>%1</i><br>"
-			   "Be aware that only the Superuser (root) "
-			   "can decrease the nice level of a process. The lower "
-			   "the number is the higher the priority. "
-			   "Please enter the desired nice level:", processes.join("\n"));
-	message = new QLabel(msg, page);
-	message->setWordWrap(true);
-	message->setMinimumSize(message->sizeHint());
-	vLay->addWidget(message);
-
-	sldLay = new QHBoxLayout();
-	vLay->addLayout(sldLay);
-
-	input = new KIntNumInput(currentPPrio, page, 10);
-	input->setRange(-20, 19);
-	vLay->addWidget(input);
-	newPriority = 40;
+	reniceDlgUi = new Ui_ReniceDlgUi();
+	reniceDlgUi->setupUi(widget);
+	reniceDlgUi->listWidget->insertItems(0, processes);
+	reniceDlgUi->spinBoxPriority->setValue(currentPPrio);
+       	newPriority = 40;
 }
 
 void ReniceDlg::slotOk()
 {
-  newPriority = input->value();
+  newPriority = reniceDlgUi->spinBoxPriority->value();
 }
 

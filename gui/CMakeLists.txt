@@ -40,6 +40,7 @@ kde4_add_ui_files( libsensordisplays_SRCS
    ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ProcessWidgetUI.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLoggerDlgWidget.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLoggerSettingsWidget.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ReniceDlgUi.ui
 )
 
 set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}

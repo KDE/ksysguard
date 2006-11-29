@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
 
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 2006 John Tapsell <tapsell@kde.org>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,14 +23,8 @@
 #define _ReniceDlg_h_
 
 #include <kdialog.h>
-#include <QLabel>
-#include <QLayout>
-#include <qlcdnumber.h>
-#include <QPushButton>
-#include <QSlider>
-#include <QBoxLayout>
 
-class KIntNumInput;
+class Ui_ReniceDlgUi;
 
 /**
  * This class creates and handles a simple dialog to change the scheduling
@@ -45,15 +39,10 @@ public:
 	int newPriority;
 
 public Q_SLOTS:
-    void slotOk();
+	void slotOk();
 
 private:
-	QBoxLayout* vLay;
-	QBoxLayout* butLay;
-	QBoxLayout* sldLay;
-
-	QLabel* message;
-	KIntNumInput* input;
+	Ui_ReniceDlgUi *reniceDlgUi;
 };
 
 #endif

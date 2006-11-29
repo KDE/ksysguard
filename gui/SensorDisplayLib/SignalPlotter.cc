@@ -440,7 +440,7 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   }
   double maxValue = minValue + range;
 
-  int top = 0; //The y position of the top of the graph.  Basically this is the height of the top bar
+  uint top = 0; //The y position of the top of the graph.  Basically this is the height of the top bar
   if ( mShowTopBar ) {
     int x0 = w / 2;
     top = p.fontMetrics().height();
@@ -629,12 +629,21 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
 	 * So to draw a point at value y', we need to put this at  h+top-y'
 	 */
 	int y;
-	y = h + top - (int)((datapoints[j] - minValue)*scaleFac);
-	Q_ASSERT(y >= top);
+        y = h + top - (int)((datapoints[j] - minValue)*scaleFac);
+	if(y < (int)top) y = top;
         curve.setPoint( 0, w - xPos + 3*mHorizontalScale, y );
-        curve.setPoint( 1, w - xPos + 2*mHorizontalScale, h + top - (int)((prev_datapoints[j] - minValue)*scaleFac) );
-        curve.setPoint( 2, w - xPos + mHorizontalScale, h + top - (int)((prev_prev_datapoints[j] - minValue)*scaleFac) );
-        curve.setPoint( 3, w - xPos, h + top - (int)((prev_prev_prev_datapoints[j] - minValue)*scaleFac) );
+
+	y = h + top - (int)((prev_datapoints[j] - minValue)*scaleFac);
+	if(y < (int)top) y = top;
+        curve.setPoint( 1, w - xPos + 2*mHorizontalScale, y);
+
+	y=   h + top - (int)((prev_prev_datapoints[j] - minValue)*scaleFac);
+	if(y < (int)top) y = top;
+        curve.setPoint( 2, w - xPos + mHorizontalScale, y );
+
+	y =  h + top - (int)((prev_prev_prev_datapoints[j] - minValue)*scaleFac);
+	if(y < (int)top) y = top;
+        curve.setPoint( 3, w - xPos, y );
 
         QPainterPath path;
         path.moveTo( curve.at( 0 ) );
@@ -663,7 +672,7 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
       p.drawLine( 0, y_coord, w - 2, y_coord);
       if ( mShowLabels && h > ( fontheight + 1 ) * ( mHorizontalLinesCount + 1 )
            && w > 60 ) {
-	double value = (maxValue - y * ( range / mHorizontalLinesCount ))/mScaleDownBy;
+	double value = (maxValue - (y * range) / (mHorizontalLinesCount+1) )/mScaleDownBy;
 
         QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:2);
         val = QString( "%1 %2" ).arg( number, mUnit );
