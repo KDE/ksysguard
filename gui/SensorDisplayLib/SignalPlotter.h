@@ -26,9 +26,11 @@
 #include <QResizeEvent>
 #include <QPaintEvent>
 #include <QLinkedList>
+#include <QImage>
 
 class QColor;
 class QSvgRenderer;
+
 
 class KSignalPlotter : public QWidget
 {
@@ -117,6 +119,8 @@ class KSignalPlotter : public QWidget
   private:
     QSvgRenderer *mSvgRenderer;
     QString mSvgFilename;
+    QImage mBackgroundImage;  //A cache of the svg
+
     double mMinValue;
     double mMaxValue;
     double mScaleDownBy;

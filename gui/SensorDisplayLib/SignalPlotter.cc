@@ -375,17 +375,17 @@ void KSignalPlotter::setSvgBackground( const QString &filename )
   QString file = kstd->findResource( "data", "ksysguard/" + filename);
 
   if(!mSvgRenderer) {
-    if(file.isEmpty()) return;
-
+    if(file.isEmpty()) return; //nothing changed
     mSvgRenderer = new QSvgRenderer(file, this);
   } else {
     if(file.isEmpty()) {
       delete mSvgRenderer;
       mSvgRenderer = 0;
-      return;
-    } 
-    mSvgRenderer->load(file);
+    } else {
+      mSvgRenderer->load(file);
+    }
   }
+  mBackgroundImage = QImage(); //we changed the svg, so reset the cache
 }
 
 void KSignalPlotter::setBackgroundColor( const QColor &color )
@@ -401,7 +401,7 @@ QColor KSignalPlotter::backgroundColor() const
 void KSignalPlotter::resizeEvent( QResizeEvent* )
 {
   Q_ASSERT( width() > 2 );
-
+  mBackgroundImage = QImage(); //set to null.  If it's invalid, it will be rerendered.
   updateDataBuffers();
 }
 
@@ -430,16 +430,27 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   QPainter p(this);
   p.setFont( mFont );
 
+  if(mBackgroundImage.isNull()) {
+    kDebug() << "setting up image" << endl;
+    mBackgroundImage = QImage(w, h, QImage::Format_RGB32);
+    QPainter pCache(&mBackgroundImage);
+    pCache.setRenderHint(QPainter::Antialiasing, false);
+    
+    pCache.fillRect(0,0,w, h, mBackgroundColor);
+    if(mSvgRenderer)
+      mSvgRenderer->render(&pCache);
+
+    /* Draw white line along the bottom and the right side of the
+     * widget to create a 3D like look. */
+    p.setPen( palette().color( QPalette::Light ) );
+    p.drawLine( 0, h - 1, w - 1, h - 1 );
+    p.drawLine( w - 1, 0, w - 1, h - 1 );
+    p.setClipRect( 1, 1, w - 2, h - 2 );
+
+  }
+  p.drawImage(0,0, mBackgroundImage);
   p.setRenderHint(QPainter::Antialiasing, true);
 
-  p.fillRect(0,0,w, h, mBackgroundColor);
-  if(mSvgRenderer)
-    mSvgRenderer->render(&p);
-  /* Draw white line along the bottom and the right side of the
-   * widget to create a 3D like look. */
-  p.setPen( palette().color( QPalette::Light ) );
-  p.drawLine( 0, h - 1, w - 1, h - 1 );
-  p.drawLine( w - 1, 0, w - 1, h - 1 );
 
   p.setClipRect( 1, 1, w - 2, h - 2 );
   double range = mMaxValue - mMinValue;
