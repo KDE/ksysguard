@@ -28,6 +28,7 @@
 #include <QLinkedList>
 
 class QColor;
+class QSvgRenderer;
 
 class KSignalPlotter : public QWidget
 {
@@ -104,6 +105,9 @@ class KSignalPlotter : public QWidget
     void setBackgroundColor( const QColor &color );
     QColor backgroundColor() const;
 
+    void setSvgBackground( const QString &filename );
+    QString svgBackground() const;
+
   protected:
     void updateDataBuffers();
 
@@ -111,6 +115,8 @@ class KSignalPlotter : public QWidget
     virtual void paintEvent( QPaintEvent* );
 
   private:
+    QSvgRenderer *mSvgRenderer;
+    QString mSvgFilename;
     double mMinValue;
     double mMaxValue;
     double mScaleDownBy;

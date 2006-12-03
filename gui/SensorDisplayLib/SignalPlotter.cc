@@ -26,7 +26,9 @@
 #include <QtGui/QPixmap>
 #include <QtGui/QPainterPath>
 #include <QtGui/QPolygon>
+#include <QtSvg/QSvgRenderer>
 
+#include <kstandarddirs.h>
 #include <kdebug.h>
 #include <kglobal.h>
 #include <klocale.h>
@@ -41,6 +43,7 @@ static inline int min( int a, int b )
 KSignalPlotter::KSignalPlotter( QWidget *parent)
   : QWidget( parent)
 {
+  mSvgRenderer = 0;
   mBezierCurveOffset = 0;
   mSamples = 0;
   mMinValue = mMaxValue = 0.0;
@@ -361,6 +364,29 @@ QFont KSignalPlotter::font() const
 {
   return mFont;
 }
+QString KSignalPlotter::svgBackground() const {
+  return mSvgFilename;
+}
+void KSignalPlotter::setSvgBackground( const QString &filename )
+{
+  mSvgFilename = filename;
+
+  KStandardDirs* kstd = KGlobal::dirs();
+  QString file = kstd->findResource( "data", "ksysguard/" + filename);
+
+  if(!mSvgRenderer) {
+    if(file.isEmpty()) return;
+
+    mSvgRenderer = new QSvgRenderer(file, this);
+  } else {
+    if(file.isEmpty()) {
+      delete mSvgRenderer;
+      mSvgRenderer = 0;
+      return;
+    } 
+    mSvgRenderer->load(file);
+  }
+}
 
 void KSignalPlotter::setBackgroundColor( const QColor &color )
 {
@@ -407,6 +433,8 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   p.setRenderHint(QPainter::Antialiasing, true);
 
   p.fillRect(0,0,w, h, mBackgroundColor);
+  if(mSvgRenderer)
+    mSvgRenderer->render(&p);
   /* Draw white line along the bottom and the right side of the
    * widget to create a 3D like look. */
   p.setPen( palette().color( QPalette::Light ) );

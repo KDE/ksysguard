@@ -20,56 +20,12 @@
 #ifndef _ListView_h_
 #define _ListView_h_
 
-#include <q3listview.h>
-#include <QPainter>
-#include <QLabel>
-#include <QTimerEvent>
-#include <QResizeEvent>
-
+#include <QStandardItemModel>
+#include <QList>
 #include <SensorDisplay.h>
 
-typedef const char* (*KeyFunc)(const char*);
-
-class QLabel;
-class QBoxGroup;
 class ListViewSettings;
-
-class PrivateListView : public Q3ListView
-{
-	Q_OBJECT
-public:
-  enum ColumnType { Text, Int, Float, Time, DiskStat };
-
-	PrivateListView(QWidget *parent = 0, const char *name = 0);
-
-	void addColumn(const QString& label, const QString& type);
-	void removeColumns(void);
-	void update(const QStringList& answer);
-	int columnType( int pos ) const;
-
-private:
-  QStringList mColumnTypes;
-};
-
-class PrivateListViewItem : public Q3ListViewItem
-{
-public:
-	PrivateListViewItem(PrivateListView *parent = 0);
-
-	void paintCell(QPainter *p, const QColorGroup &, int column, int width, int alignment) {
-		QColorGroup cgroup = QColorGroup( _parent->palette() );
-		Q3ListViewItem::paintCell(p, cgroup, column, width, alignment);
-		p->setPen(cgroup.color(QPalette::Link));
-		p->drawLine(0, height() - 1, width - 1, height() - 1);
-	}
-
-	void paintFocus(QPainter *, const QColorGroup, const QRect) {}
-
-	virtual int compare( Q3ListViewItem*, int column, bool ascending ) const;
-
-private:
-	QWidget *_parent;
-};
+class QTreeView;
 
 class ListView : public KSGRD::SensorDisplay
 {
@@ -80,7 +36,6 @@ public:
 
 	bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& sensorDescr);
 	void answerReceived(int id, const QStringList& answerlist);
-	void resizeEvent(QResizeEvent*);
 	void updateList();
 
 	bool restoreSettings(QDomElement& element);
@@ -88,7 +43,7 @@ public:
 
 	virtual bool hasSettingsDialog() const
 	{
-		return (true);
+		return true;
 	}
 
 	virtual void timerEvent(QTimerEvent*)
@@ -103,8 +58,15 @@ public Q_SLOTS:
 	void applyStyle();
 
 private:
-	PrivateListView* monitor;
+
+	typedef enum { Text, Int, Float, Time, DiskStat } ColumnType;
+
+	QStandardItemModel mModel;
+	QTreeView *mView;
 	ListViewSettings* lvs;
+	
+	QList<ColumnType> mColumnTypes;
+        ColumnType convertColumnType(const QString &type) const;
 };
 
 #endif

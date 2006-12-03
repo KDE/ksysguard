@@ -361,6 +361,8 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
                                      KSGRD::Style->secondForegroundColor() ) );
   mPlotter->setHorizontalLinesCount( element.attribute( "hCount", "5" ).toUInt() );
 
+  mPlotter->setSvgBackground( element.attribute( "svgBackground") );
+
   mPlotter->setShowLabels( element.attribute( "labels", "1" ).toUInt() );
   mPlotter->setShowTopBar( element.attribute( "topBar", "0" ).toUInt() );
   uint fontsize = element.attribute( "fontSize", "0").toUInt();
@@ -404,6 +406,8 @@ bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element)
   element.setAttribute( "hLines", mPlotter->showHorizontalLines() );
   saveColor( element, "hColor", mPlotter->horizontalLinesColor() );
   element.setAttribute( "hCount", mPlotter->horizontalLinesCount() );
+
+  element.setAttribute( "svgBackground", mPlotter->svgBackground() );
 
   element.setAttribute( "labels", mPlotter->showLabels() );
   element.setAttribute( "topBar", mPlotter->showTopBar() );
