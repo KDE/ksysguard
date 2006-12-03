@@ -431,7 +431,6 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   p.setFont( mFont );
 
   if(mBackgroundImage.isNull()) {
-    kDebug() << "setting up image" << endl;
     mBackgroundImage = QImage(w, h, QImage::Format_RGB32);
     QPainter pCache(&mBackgroundImage);
     pCache.setRenderHint(QPainter::Antialiasing, false);
@@ -442,10 +441,10 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
 
     /* Draw white line along the bottom and the right side of the
      * widget to create a 3D like look. */
-    p.setPen( palette().color( QPalette::Light ) );
-    p.drawLine( 0, h - 1, w - 1, h - 1 );
-    p.drawLine( w - 1, 0, w - 1, h - 1 );
-    p.setClipRect( 1, 1, w - 2, h - 2 );
+    pCache.setPen( palette().color( QPalette::Light ) );
+    pCache.drawLine( 0, h - 1, w - 1, h - 1 );
+    pCache.drawLine( w - 1, 0, w - 1, h - 1 );
+    pCache.setClipRect( 1, 1, w - 2, h - 2 );
 
   }
   p.drawImage(0,0, mBackgroundImage);
