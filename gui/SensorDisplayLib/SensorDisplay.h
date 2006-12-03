@@ -208,7 +208,7 @@ class SensorDisplay : public QWidget, public SensorClient
     virtual void sensorLost( int reqId );
 
     /**
-     * Sets the object where the delete events will be send to.
+     * Sets the object where the delete events will be sent to.
      */
     void setDeleteNotifier( QObject *object );
 

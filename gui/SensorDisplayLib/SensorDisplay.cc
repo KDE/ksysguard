@@ -193,14 +193,10 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
     }
 
     return true;
-  } else if ( event->type() == QEvent::MouseButtonRelease &&
-            ( ( QMouseEvent*)event)->button() == Qt::LeftButton ) {
-    setFocus();
-  }
+  } 
 
   return QWidget::eventFilter( object, event );
 }
-
 void SensorDisplay::sendRequest( const QString &hostName,
                                  const QString &command, int id )
 {

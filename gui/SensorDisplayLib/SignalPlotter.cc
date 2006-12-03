@@ -444,16 +444,16 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
     pCache.setPen( palette().color( QPalette::Light ) );
     pCache.drawLine( 0, h - 1, w - 1, h - 1 );
     pCache.drawLine( w - 1, 0, w - 1, h - 1 );
-    pCache.setClipRect( 1, 1, w - 2, h - 2 );
-
   }
   p.drawImage(0,0, mBackgroundImage);
   p.setRenderHint(QPainter::Antialiasing, true);
 
+  //We have a 'frame' in the bottom and right - so subtract them from the view
+  h-=1;
+  w-=1;
+  p.setClipRect( 0, 0, w , h );
 
-  p.setClipRect( 1, 1, w - 2, h - 2 );
   double range = mMaxValue - mMinValue;
-
   /* If the range is too small we will force it to 1.0 since it
    * looks a lot nicer. */
   if ( range < 0.000001 )
@@ -722,8 +722,8 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
     //Draw the bottom most (minimum) number as well
     if ( mShowLabels && h > ( fontheight + 1 ) * ( mHorizontalLinesCount + 1 )
          && w > 60 ) {
-      int value = (int)(minValue / mScaleDownBy);
-      QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:1);
+      double value = minValue / mScaleDownBy;
+      QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:2);
       val = QString( "%1 %2" ).arg( number, mUnit);
       p.setPen( mFontColor );
       p.drawText( 6, top + h - 2, val );
@@ -731,4 +731,11 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   }
 }
 
+QString KSignalPlotter::lastValue( int i) const
+{
+  if(mBeamData.isEmpty()) return QString::null;
+  double value = mBeamData.first()[i] / mScaleDownBy; //retrieve the newest value for this beam then scale it correct
+  QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:2);
+  return QString( "%1 %2").arg(number, mUnit);
+}
 #include "SignalPlotter.moc"

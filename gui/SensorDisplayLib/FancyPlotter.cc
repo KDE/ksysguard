@@ -70,6 +70,14 @@ void FancyPlotter::setTitle( const QString &title ) { //virtual
   KSGRD::SensorDisplay::setTitle( title );
 }
 
+bool FancyPlotter::eventFilter( QObject* object, QEvent* event ) {	//virtual
+  if(event->type() == QEvent::ToolTip)
+  {
+    setTooltip();
+  }
+  return SensorDisplay::eventFilter(object, event);
+}
+
 void FancyPlotter::configureSettings()
 {
   mSettingsDialog = new FancyPlotterSettings( this, mSharedSettings->locked );
@@ -176,9 +184,6 @@ void FancyPlotter::applySettings() {
     }
 
     mPlotter->update();
-
-    setTooltip();
-  
 }
 
 void FancyPlotter::applyStyle()
@@ -231,8 +236,6 @@ bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
 
   ++mBeams;
 
-  setTooltip();
-
   return true;
 }
 
@@ -248,8 +251,6 @@ bool FancyPlotter::removeSensor( uint pos )
   mBeams--;
   KSGRD::SensorDisplay::removeSensor( pos );
 
-  setTooltip();
-
   return true;
 }
 
@@ -258,19 +259,21 @@ void FancyPlotter::setTooltip()
   QString tooltip;
   for ( uint i = 0; i < mBeams; ++i ) {
     if(sensors().at( mBeams -i - 1)->isLocalhost()) {
-      tooltip += QString( "%1%2%3" ).arg( i != 0 ? "<br>" : "<qt>")
+      tooltip += QString( "%1%2%3 (%4)" ).arg( i != 0 ? "<br>" : "<qt>")
             .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">#</font>")
-                                    .arg( sensors().at( mBeams - i - 1  )->description() );
+            .arg( sensors().at( mBeams - i - 1  )->description() )
+	    .arg( mPlotter->lastValue(i) );
+
     } else {
-      tooltip += QString( "%1%2%3:%4" ).arg( i != 0 ? "<br>" : "<qt>" )
+      tooltip += QString( "%1%2%3:%4 (%5)" ).arg( i != 0 ? "<br>" : "<qt>" )
                  .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">#</font>")
-                                   .arg( sensors().at( mBeams - i - 1 )->hostName() )
-                                   .arg( sensors().at( mBeams - i - 1  )->description() );
+                 .arg( sensors().at( mBeams - i - 1 )->hostName() )
+                 .arg( sensors().at( mBeams - i - 1  )->description() )
+	         .arg( mPlotter->lastValue(i) );
     }
   }
 
   mPlotter->setToolTip( tooltip );
-
 }
 
 void FancyPlotter::resizeEvent( QResizeEvent* )
@@ -330,7 +333,6 @@ void FancyPlotter::answerReceived( int id, const QStringList &answerlist )
 
     mPlotter->setTranslatedUnit( KSGRD::SensorMgr->translateUnit( unit ) );
     sensors().at( id - 100 )->setDescription( info.name() );
-    setTooltip();
   }
 }
 

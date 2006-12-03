@@ -80,6 +80,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
     void applySettings();
 
   protected:
+    virtual bool eventFilter( QObject*, QEvent* );
     virtual void resizeEvent( QResizeEvent* );
     void setTooltip();
 

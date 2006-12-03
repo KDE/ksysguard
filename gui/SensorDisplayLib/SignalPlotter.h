@@ -110,6 +110,10 @@ class KSignalPlotter : public QWidget
     void setSvgBackground( const QString &filename );
     QString svgBackground() const;
 
+    /** Return a translated string like:   "34 %" or "100 KB" for beam i
+     */
+    QString lastValue( int i) const;
+
   protected:
     void updateDataBuffers();
 
