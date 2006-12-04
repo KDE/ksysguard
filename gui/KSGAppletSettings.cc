@@ -31,8 +31,8 @@ KSGAppletSettings::KSGAppletSettings( QWidget *parent, const char *name )
     : KDialog( parent )
 {
   setObjectName( name );
-  setModal( true );
-  setCaption( i18n( "KSysGuard Applet Settings" ) );
+  setModal( false );
+  setCaption( i18n( "System Guard Applet Settings" ) );
   setButtons( Ok|Apply|Cancel );
   showButtonSeparator( true );
 
