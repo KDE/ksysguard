@@ -57,7 +57,7 @@ MultiMeter::MultiMeter(QWidget* parent, const QString& title, SharedSettings *wo
 
   setPlotterWidget( mLcd );
 
-  setMinimumSize( 16, 16 );
+  setMinimumSize( 5, 5 );
 }
 
 bool MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
@@ -115,7 +115,7 @@ void MultiMeter::answerReceived(int id, const QStringList& answerlist)
 
 void MultiMeter::resizeEvent( QResizeEvent *event )
 {
-  mLcd->setGeometry(0, 0, width() - 1, height() - 1);
+  mLcd->setGeometry(0, 0, width(), height());
 
   QWidget::resizeEvent( event );
 }
