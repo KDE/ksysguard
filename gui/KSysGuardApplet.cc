@@ -116,15 +116,18 @@ void KSysGuardApplet::preferences()
   mSettingsDlg = new KSGAppletSettings( this );
 
   connect( mSettingsDlg, SIGNAL( applyClicked() ), SLOT( applySettings() ) );
+  connect( mSettingsDlg, SIGNAL( okClicked() ), SLOT( applySettings() ) );
+  connect( mSettingsDlg, SIGNAL( finished() ), SLOT( preferencesFinished() ) );
 
   mSettingsDlg->setNumDisplay( mDockCount );
   mSettingsDlg->setSizeRatio( (int) ( mSizeRatio * 100.0 + 0.5 ) );
   mSettingsDlg->setUpdateInterval( updateInterval() );
 
-  if ( mSettingsDlg->exec() )
-    applySettings();
-
-  delete mSettingsDlg;
+  mSettingsDlg->show();
+}
+void KSysGuardApplet::preferencesFinished()
+{
+  mSettingsDlg->delayedDestruct();
   mSettingsDlg = 0;
 }
 

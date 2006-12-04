@@ -20,10 +20,10 @@
 
 #include <QLabel>
 #include <QLayout>
+#include <QSpinBox>
 
 #include <kacceleratormanager.h>
 #include <klocale.h>
-#include <knuminput.h>
 
 #include "KSGAppletSettings.h"
 
@@ -46,18 +46,21 @@ KSGAppletSettings::KSGAppletSettings( QWidget *parent, const char *name )
   QLabel *label = new QLabel( i18n( "Number of displays:" ), page );
   topLayout->addWidget( label, 0, 0 );
 
-  mNumDisplay = new KIntNumInput( 1, page );
+  mNumDisplay = new QSpinBox( page );
   mNumDisplay->setMinimum( 1 );
   mNumDisplay->setMaximum( 32 );
+  mNumDisplay->setValue(2);
   topLayout->addWidget( mNumDisplay, 0, 1 );
   label->setBuddy( mNumDisplay );
 
   label = new QLabel( i18n( "Size ratio:" ), page );
   topLayout->addWidget( label, 1, 0 );
 
-  mSizeRatio = new KIntNumInput( 100, page );
+  mSizeRatio = new QSpinBox(page );
+  mSizeRatio->setValue(100);
   mSizeRatio->setMinimum( 20 );
   mSizeRatio->setMaximum( 500 );
+  mSizeRatio->setSingleStep(50);
   mSizeRatio->setSuffix( i18n( "%" ) );
   topLayout->addWidget( mSizeRatio, 1, 1 );
   label->setBuddy( mSizeRatio );
@@ -65,9 +68,10 @@ KSGAppletSettings::KSGAppletSettings( QWidget *parent, const char *name )
   label = new QLabel( i18n( "Update interval:" ), page );
   topLayout->addWidget( label, 2, 0 );
 
-  mInterval = new KIntNumInput( 2, page );
+  mInterval = new QSpinBox( page );
   mInterval->setMinimum( 1 );
   mInterval->setMaximum( 300 );
+  mInterval->setValue(2);
   mInterval->setSuffix( i18n( " sec" ) );
   topLayout->addWidget( mInterval, 2, 1 );
   label->setBuddy( mInterval );

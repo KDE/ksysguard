@@ -62,6 +62,7 @@ class KSysGuardApplet : public KPanelApplet, public KSGRD::SensorBoard
 
   private Q_SLOTS:
     void applySettings();
+    void preferencesFinished();
 
   private:
     void layout();

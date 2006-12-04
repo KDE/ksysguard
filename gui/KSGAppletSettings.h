@@ -23,7 +23,7 @@
 
 #include <kdialog.h>
 
-class KIntNumInput;
+class QSpinBox;
 
 class KSGAppletSettings : public KDialog
 {
@@ -41,9 +41,9 @@ class KSGAppletSettings : public KDialog
     int updateInterval() const;
 
   private:
-    KIntNumInput *mInterval;
-    KIntNumInput *mNumDisplay;
-    KIntNumInput *mSizeRatio;
+    QSpinBox *mInterval;
+    QSpinBox *mNumDisplay;
+    QSpinBox *mSizeRatio;
 };
 
 #endif
