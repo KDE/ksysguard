@@ -40,6 +40,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
 {
   mBeams = 0;
   mNumAccountedFor = 0;
+  mSettingsDialog = 0;
   mPlotter = new KSignalPlotter( this );
   mPlotter->setVerticalLinesColor(KSGRD::Style->firstForegroundColor());
   mPlotter->setHorizontalLinesColor(KSGRD::Style->secondForegroundColor());
@@ -81,6 +82,8 @@ bool FancyPlotter::eventFilter( QObject* object, QEvent* event ) {	//virtual
 
 void FancyPlotter::configureSettings()
 {
+  if(mSettingsDialog)
+    return;
   mSettingsDialog = new FancyPlotterSettings( this, mSharedSettings->locked );
 
   mSettingsDialog->setTitle( title() );
@@ -122,11 +125,15 @@ void FancyPlotter::configureSettings()
   mSettingsDialog->setSensors( list );
 
   connect( mSettingsDialog, SIGNAL( applyClicked() ), this, SLOT( applySettings() ) );
+  connect( mSettingsDialog, SIGNAL( okClicked() ), this, SLOT( applySettings() ) );
+  connect( mSettingsDialog, SIGNAL( finished() ), this, SLOT( settingsFinished() ) );
 
+  mSettingsDialog->show();
+}
 
-  if( mSettingsDialog->exec() )
-    applySettings();
-  delete mSettingsDialog;
+void FancyPlotter::settingsFinished()
+{
+  mSettingsDialog->delayedDestruct();
   mSettingsDialog = 0;
 }
 

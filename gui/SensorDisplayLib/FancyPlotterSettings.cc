@@ -47,7 +47,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   setCaption( i18n( "Signal Plotter Settings" ) );
   setButtons( Ok | Apply | Cancel );
   setObjectName( "FancyPlotterSettings" );
-  setModal( true );
+  setModal( false );
   showButtonSeparator( true );
 
   QFrame *page = 0;

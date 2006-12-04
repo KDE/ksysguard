@@ -77,6 +77,8 @@ class FancyPlotter : public KSGRD::SensorDisplay
 
   public Q_SLOTS:
     virtual void applyStyle();
+  private Q_SLOTS:
+    void settingsFinished();
     void applySettings();
 
   protected:

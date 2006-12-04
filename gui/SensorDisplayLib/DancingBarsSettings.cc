@@ -42,7 +42,7 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   setCaption( i18n( "Edit BarGraph Preferences" ) );
   setButtons( Ok | Cancel );
   setObjectName( name );
-  setModal( true );
+  setModal( false );
   showButtonSeparator( true );
 
   mModel->setHasLabel( true );
