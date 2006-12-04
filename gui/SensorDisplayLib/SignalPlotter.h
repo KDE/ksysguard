@@ -113,6 +113,10 @@ class KSignalPlotter : public QWidget
     /** Return a translated string like:   "34 %" or "100 KB" for beam i
      */
     QString lastValue( int i) const;
+    
+    /**  Whether to show a white line on the left and bottom of the widget, for a 3D effect
+     */
+    void setThinFrame( bool set) { mShowThinFrame = set; }
 
   protected:
     void updateDataBuffers();
@@ -129,6 +133,9 @@ class KSignalPlotter : public QWidget
     double mMaxValue;
     double mScaleDownBy;
     bool mUseAutoRange;
+
+    /**  Whether to show a white line on the left and bottom of the widget, for a 3D effect */
+    bool mShowThinFrame;
 
     uint mGraphStyle;
 

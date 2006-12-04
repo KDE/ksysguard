@@ -49,6 +49,7 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
   mMinValue = mMaxValue = 0.0;
   mUseAutoRange = true;
   mScaleDownBy = 1;
+  mShowThinFrame = true;
 
   // Anything smaller than this does not make sense.
   setMinimumSize( 16, 16 );
@@ -442,16 +443,20 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
     /* Draw white line along the bottom and the right side of the
      * widget to create a 3D like look. */
     pCache.setPen( palette().color( QPalette::Light ) );
-    pCache.drawLine( 0, h - 1, w - 1, h - 1 );
-    pCache.drawLine( w - 1, 0, w - 1, h - 1 );
+    if(mShowThinFrame) {
+      pCache.drawLine( 0, h - 1, w - 1, h - 1 );
+      pCache.drawLine( w - 1, 0, w - 1, h - 1 );
+    }
   }
   p.drawImage(0,0, mBackgroundImage);
   p.setRenderHint(QPainter::Antialiasing, true);
 
-  //We have a 'frame' in the bottom and right - so subtract them from the view
-  h-=1;
-  w-=1;
-  p.setClipRect( 0, 0, w , h );
+  if(mShowThinFrame) {
+    //We have a 'frame' in the bottom and right - so subtract them from the view
+    h-=1;
+    w-=1;
+    p.setClipRect( 0, 0, w , h );
+  }
 
   double range = mMaxValue - mMinValue;
   /* If the range is too small we will force it to 1.0 since it

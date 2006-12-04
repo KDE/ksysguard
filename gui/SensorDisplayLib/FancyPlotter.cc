@@ -51,6 +51,8 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   mPlotter->setFontColor( KSGRD::Style->firstForegroundColor() );
   mPlotter->setShowTopBar( true );
 
+  mPlotter->setThinFrame(!(workSheetSettings && workSheetSettings->isApplet));
+ 
   setTitle(title);
 
   setMinimumSize( sizeHint() );
