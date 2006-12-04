@@ -403,7 +403,8 @@ void SensorDisplay::applyStyle()
 void SensorDisplay::setSensorOk( bool ok )
 {
   if ( ok ) {
-    delete mErrorIndicator;
+    if(mErrorIndicator)
+      delete mErrorIndicator;
     mErrorIndicator = 0;
   } else {
     if ( mErrorIndicator )

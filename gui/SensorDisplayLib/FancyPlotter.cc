@@ -39,6 +39,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   : KSGRD::SensorDisplay( parent, title, workSheetSettings )
 {
   mBeams = 0;
+  mNumAccountedFor = 0;
   mPlotter = new KSignalPlotter( this );
   mPlotter->setVerticalLinesColor(KSGRD::Style->firstForegroundColor());
   mPlotter->setHorizontalLinesColor(KSGRD::Style->secondForegroundColor());
@@ -257,19 +258,32 @@ bool FancyPlotter::removeSensor( uint pos )
 void FancyPlotter::setTooltip()
 {
   QString tooltip;
+
+  QString description;
+  QString lastValue;
   for ( uint i = 0; i < mBeams; ++i ) {
-    if(sensors().at( mBeams -i - 1)->isLocalhost()) {
+    description = sensors().at(i)->description();
+    if(description.isEmpty()) {
+      description = sensors().at(i)->name();
+    }
+    if(sensors().at( i)->isOk()) {
+      lastValue = mPlotter->lastValue(i);
+    } else {
+      lastValue = i18n("Error");
+    }
+    if(sensors().at( i)->isLocalhost()) {
+      
       tooltip += QString( "%1%2%3 (%4)" ).arg( i != 0 ? "<br>" : "<qt>")
             .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">#</font>")
-            .arg( sensors().at( mBeams - i - 1  )->description() )
-	    .arg( mPlotter->lastValue(i) );
+            .arg( description )
+	    .arg( lastValue );
 
     } else {
       tooltip += QString( "%1%2%3:%4 (%5)" ).arg( i != 0 ? "<br>" : "<qt>" )
                  .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">#</font>")
-                 .arg( sensors().at( mBeams - i - 1 )->hostName() )
-                 .arg( sensors().at( mBeams - i - 1  )->description() )
-	         .arg( mPlotter->lastValue(i) );
+                 .arg( sensors().at( i )->hostName() )
+                 .arg( description )
+	         .arg( lastValue );
     }
   }
 
@@ -286,26 +300,34 @@ QSize FancyPlotter::sizeHint() const
   return mPlotter->sizeHint();
 }
 
+void FancyPlotter::timerEvent( QTimerEvent*event ) //virtual
+{
+  if(!mSampleBuf.isEmpty()) {
+    while((uint)mSampleBuf.count() < mBeams)
+      mSampleBuf.append(0); //we might have invalid sensors missing so set their values to 0 at least
+    mPlotter->addSample( mSampleBuf );
+  }
+  mSampleBuf.clear();
+  SensorDisplay::timerEvent(event);
+}
 void FancyPlotter::answerReceived( int id, const QStringList &answerlist )
 {
   QString answer;
   if(!answerlist.isEmpty()) answer = answerlist[0];
   if ( (uint)id < mBeams ) {
-    if ( id != (int)mSampleBuf.count() ) {
-      if ( id == 0 )
-        sensorError( mBeams - 1, true );
-      else
-        sensorError( id - 1, true );
-    }
-    mSampleBuf.append( answer.toDouble() );
 
+    //Make sure that we put the answer in the correct place.  It's index in the list should be equal to id
+    
+    while(id < mSampleBuf.count())
+      mSampleBuf.append(0);
+
+    if(id == mSampleBuf.count()) {
+      mSampleBuf.append( answer.toDouble() );
+    } else {
+      mSampleBuf[id] = answer.toDouble();
+    }
     /* We received something, so the sensor is probably ok. */
     sensorError( id, false );
-
-    if ( id == (int)mBeams - 1 ) {
-      mPlotter->addSample( mSampleBuf );
-      mSampleBuf.clear();
-    }
   } else if ( id >= 100 ) {
     KSGRD::SensorFloatInfo info( answer );
     QString unit = info.unit();
