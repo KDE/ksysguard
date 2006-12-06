@@ -357,7 +357,9 @@ bool KSysGuardApplet::load()
                               element.attribute( "shell" ),
                               element.attribute( "command" ), port );
   }
-
+  //if no hosts are specified, at least connect to localhost
+  if(dnList.count() == 0)
+    KSGRD::SensorMgr->engage( "localhost", "", "ksysguardd", -1);
   // Load the displays and place them into the work sheet.
   dnList = element.elementsByTagName( "display" );
   for ( i = 0; i < dnList.count(); ++i ) {

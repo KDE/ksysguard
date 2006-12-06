@@ -294,6 +294,11 @@ bool SensorManager::sendRequest( const QString &hostName, const QString &req,
                                  SensorClient *client, int id )
 {
   SensorAgent *agent = mAgents.value( hostName );
+  if ( !agent && hostName == "localhost") {
+    //we should always be able to reconnect to localhost
+    engage("localhost", "", "ksysguardd", -1);
+    agent = mAgents.value( hostName );
+  }
   if ( agent ) {
     agent->sendRequest( req, client, id );
     return true;

@@ -46,7 +46,7 @@ bool SensorShellAgent::start( const QString &host, const QString &shell,
                               const QString &command, int )
 {
   mDaemon = new KShellProcess;
-
+  mRetryCount=3;
   setHostName( host );
   mShell = shell;
   mCommand = command;
@@ -96,7 +96,7 @@ void SensorShellAgent::msgRcvd( KProcess*, char *buffer, int buflen )
 {
   if ( !buffer || buflen == 0 )
     return;
-
+  mRetryCount = 3; //we recieved an answer, so reset our retry count back to 3
   processAnswer( buffer, buflen );
 }
 
@@ -113,9 +113,11 @@ void SensorShellAgent::errMsgRcvd( KProcess*, char *buffer, int buflen )
 
 void SensorShellAgent::daemonExited( KProcess * )
 {
-  setDaemonOnLine( false );
-  sensorManager()->hostLost( this );
-  sensorManager()->requestDisengage( this );
+  if ( mRetryCount-- <= 0 || !mDaemon->start( KProcess::NotifyOnExit, KProcess::All ) ) {
+    setDaemonOnLine( false );
+    sensorManager()->hostLost( this );
+    sensorManager()->requestDisengage( this );
+  }
 }
 
 bool SensorShellAgent::writeMsg( const char *msg, int len )

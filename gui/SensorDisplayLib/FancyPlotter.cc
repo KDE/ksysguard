@@ -225,16 +225,6 @@ bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
   if ( type != "integer" && type != "float" )
     return false;
 
-  if ( mBeams > 0 && hostName != sensors().at( 0 )->hostName() ) {
-    KMessageBox::sorry( this, QString( "All sensors of this display need "
-                                       "to be from the host %1!" )
-                        .arg( sensors().at( 0 )->hostName() ) );
-
-    /* We have to enforce this since the answers to value requests
-     * need to be received in order. */
-    return false;
-  }
-
   if ( !mPlotter->addBeam( color ) )
     return false;
 
