@@ -55,7 +55,7 @@ class Process : public QObject {
 	unsigned long numChildren; ///Number of children recursively that this process has.  From 0+
 	int nice;      ///Niceness (-20 to 20) of this process
 	long vmSize;   ///KiloBytes used in total by process (KiB)
-	long vmRSS;    ///KiloBytes used by actual process - the main memory it uses without shared/X/etc (KiB)
+	long vmRSS;    ///KiloBytes used by actual process - the main memory it uses without shared/X/etc (KiB). If it's swapped out, it's not counted
 	ProcessType processType;
 	QString name;  ///The name (e.g. "ksysguard", "konversation", "init")
 	QString command; ///The command the process was launched with

@@ -859,6 +859,10 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			return QVariant(QVariant::String);
 		}
 	}
+	case Qt::TextAlignmentRole:
+		if( mHeadingsToType[index.column()] == HeadingUser)
+			return QVariant(Qt::AlignCenter);
+		return QVariant();
 	case Qt::UserRole: {
 		//We have a special understanding with the filter.  If it queries us as UserRole in column 0, return uid
 		if(index.column() != 0) return QVariant();  //If we query with this role, then we want the raw UID for this.
@@ -883,14 +887,14 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			
 			long long base = 0;
 			if(process->uid == getuid())
-				base = 2000000;
+				base = 200000000;
 			else if(process->uid < 100 || !canUserLogin(process->uid))
-				base = 0;
+				base = process->uid * 100;
 			else
-				base = 1000000;
+				base = 100000000 + process->uid * 100;
 
 			//However we can of course have lots of processes with the same user.  Next we sort by CPU.
-			return base + (long long)((process->totalUserUsage + process->totalSysUsage)*100);
+			return base + (long long)((process->totalUserUsage + process->totalSysUsage));
 		}
 		case HeadingXMemory:
 			return (long long)(process->xResMemOtherBytes + process->xResPxmMemBytes);
@@ -946,19 +950,21 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		return QVariant();
 	}
 	case Qt::BackgroundRole: {
+                if(mHeadingsToType[index.column()] != HeadingUser) return QVariant();
 		if(!mIsLocalhost) return QVariant();
-		if(mSimple) return QVariant();  //Simple mode means no colors 
+//		if(mSimple) return QVariant();  //Simple mode means no colors 
 		Process *process = reinterpret_cast< Process * > (index.internalPointer());
 		if(process->tracerpid >0) {
 			//It's being debugged, so probably important.  Let's mark it as such
 			return QColor("yellow");
 		}
-		if(process->uid == getuid()) {
-			return QColor(216,212,255);
+		if(process->uid == getuid()) { //own user
+			return QColor(0, 208, 214, 50);
 		}
 		if(process->uid < 100 || !canUserLogin(process->uid))
-			return QColor("gainsboro");
-		return QColor("mediumaquamarine");
+			return QColor(218, 220,215, 50); //no color for system tasks
+		//other users
+		return QColor(2, 154, 54, 50);
 	}
 	case Qt::FontRole: {
 		if(index.column() == mCPUHeading) {
