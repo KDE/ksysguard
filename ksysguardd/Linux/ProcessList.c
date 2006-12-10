@@ -88,10 +88,10 @@ typedef struct {
     The total amount of memory the process uses. This includes shared and
     swapped memory.
    */
-  unsigned int vmSize;
+  unsigned long vmSize;
 
   /* The amount of physical memory the process currently uses. */
-  unsigned int vmRss;
+  unsigned long vmRss;
 
   /**
     The number of 1/100 of a second the process has spend in user space.
@@ -99,24 +99,17 @@ typedef struct {
     good idea. I never thought that the stability of UNIX could get me
     into trouble! ;)
    */
-  unsigned int userTime;
+  unsigned long userTime;
 
   /**
-    The number of 1/100 of a second the process has spend in system space.
+    The number of 1/100 of a second the process has spent in system space.
     If a machine has an uptime of 1 1/2 years or longer this is not a
     good idea. I never thought that the stability of UNIX could get me
     into trouble! ;)
    */
-  unsigned int sysTime;
+  unsigned long sysTime;
 
-  /* The system time as multime of 100ms */
-  int centStamp;
-
-  /* The current CPU load (in %) from user space */
-  double userLoad;
-
-  /* The current CPU load (in %) from system space */
-  double sysLoad;
+  /* NOTE:  To get the user/system percentage, record the userTime and sysTime from between calls, then use the difference divided by the difference in time measure in 100th's of a second */
 
   /* The name of the process */
   char name[ 64 ];
@@ -154,14 +147,8 @@ static bool getProcess( int pid, ProcessInfo *ps )
   char tag[ TAGSIZE ];
   char format[ 32 ];
   char tagformat[ 32 ];
-  int userTime, sysTime;
   const char* uName;
   char status;
-
-  struct timeval tv;
-
-  gettimeofday( &tv, 0 );
-  ps->centStamp = tv.tv_sec * 100 + tv.tv_usec / 10000;
 
   snprintf( buf, BUFSIZE - 1, "/proc/%d/status", pid );
   if ( ( fd = fopen( buf, "r" ) ) == 0 ) {
@@ -200,10 +187,10 @@ static bool getProcess( int pid, ProcessInfo *ps )
   if ( ( fd = fopen( buf, "r" ) ) == 0 )
     return false;
 
-  if ( fscanf( fd, "%*d %*s %c %d %*d %*d %d %*d %*u %*u %*u %*u %*u %d %d"
-                   "%*d %*d %*d %d %*u %*u %*d %u %u",
+  if ( fscanf( fd, "%*d %*s %c %d %*d %*d %d %*d %*u %*u %*u %*u %*u %lu %lu"
+                   "%*d %*d %*d %d %*u %*u %*d %lu %lu",
                    &status, (int*)&ps->ppid, &ps->ttyNo,
-                   &userTime, &sysTime, &ps->niceLevel, &ps->vmSize,
+                   &ps->userTime, &ps->sysTime, &ps->niceLevel, &ps->vmSize,
                    &ps->vmRss) != 8 ) {
     fclose( fd );
     return false;
@@ -229,37 +216,6 @@ static bool getProcess( int pid, ProcessInfo *ps )
     sprintf( ps->status, "Unknown: %c", status );
 
   ps->vmRss = ( ps->vmRss + 3 ) * sysconf(_SC_PAGESIZE);
-
-  {
-    int newCentStamp;
-    int timeDiff, userDiff, sysDiff;
-    struct timeval tv;
-
-    gettimeofday( &tv, 0 );
-    newCentStamp = tv.tv_sec * 100 + tv.tv_usec / 10000;
-
-    timeDiff = newCentStamp - ps->centStamp;
-    userDiff = userTime - ps->userTime;
-    sysDiff = sysTime - ps->sysTime;
-
-    if ( ( timeDiff > 0 ) && ( userDiff >= 0 ) && ( sysDiff >= 0 ) ) {
-      ps->userLoad = ( (double)userDiff / timeDiff ) * 100.0;
-      ps->sysLoad = ( (double)sysDiff / timeDiff ) * 100.0;
-      /**
-        During startup we get bigger loads since the time diff
-        cannot be correct. So we force it to 0.
-       */
-      if ( ps->userLoad > 100.0 )
-        ps->userLoad = 0.0;
-      if ( ps->sysLoad > 100.0 )
-        ps->sysLoad = 0.0;
-    } else
-      ps->sysLoad = ps->userLoad = 0.0;
-
-    ps->centStamp = newCentStamp;
-    ps->userTime = userTime;
-    ps->sysTime = sysTime;
-  }
 
   snprintf( buf, BUFSIZE - 1, "/proc/%d/cmdline", pid );
   if ( ( fd = fopen( buf, "r" ) ) == 0 )
@@ -311,10 +267,10 @@ void printProcessList( const char* cmd)
       long pid;
       pid = atol( entry->d_name );
       if(getProcess( pid, &ps ))
-        fprintf( CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%d\t%d\t%s\t%ld\t%s\n",
+        fprintf( CurrentClient, "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%s\t%ld\t%s\n",
 	     ps.name, pid, (long)ps.ppid,
-             (long)ps.uid, (long)ps.gid, ps.status, ps.userLoad,
-             ps.sysLoad, ps.niceLevel, ps.vmSize / 1024, ps.vmRss / 1024,
+             (long)ps.uid, (long)ps.gid, ps.status, ps.userTime,
+             ps.sysTime, ps.niceLevel, ps.vmSize / 1024, ps.vmRss / 1024,
              ps.userName, (long)ps.tracerpid, ps.cmdline
 	     );
     }
@@ -390,9 +346,9 @@ void printXresList(const char*cmd)
 void printProcessListInfo( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser%%\tSystem%%\tNice\tVmSize"
+  fprintf( CurrentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser Time\tSystem Time\tNice\tVmSize"
                           "\tVmRss\tLogin\tTracerPID\tCommand\n" );
-  fprintf( CurrentClient, "s\td\td\td\td\tS\tf\tf\td\tD\tD\ts\td\ts\n" );
+  fprintf( CurrentClient, "s\td\td\td\td\tS\td\td\td\tD\tD\ts\td\ts\n" );
 }
 
 void printProcessCount( const char* cmd )
