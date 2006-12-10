@@ -48,6 +48,8 @@ class Process : public QObject {
 	long long uid; ///The user id that the process is running as
 	long long gid; ///The group id that the process is running as
 	long long tracerpid; ///If this is being debugged, this is the process that is debugging it
+	long userTime; ///The time, in 100ths of a second, spent in total on user calls. -1 if not known
+	long sysTime;  ///The time, in 100ths of a second, spent in total on system calls.  -1 if not known
 	float userUsage; ///Percentage (0 to 100)
 	float sysUsage;  ///Percentage (0 to 100)
 	double totalUserUsage; ///Percentage (0 to 100) from the sum of itself and all its children recursively.  If there's no children, it's equal to userUsage
@@ -67,7 +69,7 @@ class Process : public QObject {
 	int xResNumPxm;      ///The number of x server pixmaps
 	long long xResMemOtherBytes;  ///The amount of memory in bytes used in X server other than pixmaps
   private:
-	void clear() {pid = 0; parent_pid = 0; uid = 0; gid = -1; tracerpid = 0; userUsage=0; sysUsage=0; totalUserUsage=0; totalSysUsage=0; numChildren=0; nice=0; vmSize=0; vmRSS = 0; processType=Invalid; xResPxmMemBytes=0; xResNumPxm=0; xResMemOtherBytes=0; }
+	void clear() {pid = 0; parent_pid = 0; uid = 0; gid = -1; tracerpid = 0; userTime = -1; sysTime = -1; userUsage=0; sysUsage=0; totalUserUsage=0; totalSysUsage=0; numChildren=0; nice=0; vmSize=0; vmRSS = 0; processType=Invalid; xResPxmMemBytes=0; xResNumPxm=0; xResMemOtherBytes=0; }
 };
 
 #endif

@@ -171,7 +171,7 @@
         </sizepolicy>
        </property>
        <property name="text" >
-        <string>Kill</string>
+        <string>Kill process</string>
        </property>
       </widget>
      </item>

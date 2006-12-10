@@ -32,6 +32,7 @@
 #include <QVariant>
 #include <QHash>
 #include <QSet>
+#include <QTime>
 
 #include <Process.h>
 
@@ -215,7 +216,7 @@ private:
 
 	bool mShowChildTotals; ///If set to true, a parent will return the CPU usage of all its children recursively
 
-	typedef enum { DataColumnLogin, DataColumnGid, DataColumnPid, DataColumnPPid, DataColumnUid, DataColumnName, DataColumnTracerPid, DataColumnUserUsage, DataColumnSystemUsage, DataColumnNice, DataColumnVmSize, DataColumnVmRss, DataColumnCommand, DataColumnStatus, DataColumnOtherLong, DataColumnOtherPrettyLong, DataColumnOtherPrettyFloat, DataColumnError } DataColumnType;
+	typedef enum { DataColumnLogin, DataColumnGid, DataColumnPid, DataColumnPPid, DataColumnUid, DataColumnName, DataColumnTracerPid, DataColumnUserUsage, DataColumnSystemUsage, DataColumnUserTime, DataColumnSystemTime, DataColumnNice, DataColumnVmSize, DataColumnVmRss, DataColumnCommand, DataColumnStatus, DataColumnOtherLong, DataColumnOtherPrettyLong, DataColumnOtherPrettyFloat, DataColumnError } DataColumnType;
 
 
 	int mPidColumn;  ///Column the PID is in, so we can extract it quickly and easily from incoming data
@@ -229,8 +230,9 @@ private:
 	int mXResNumPxmColumn;
 	int mXResMemOtherColumn;
 
-	bool mSimple; //In simple mode, the model returns everything as flat, with no icons, no xres etc.  This is set by changing cmbFilter
-	
+	bool mSimple; ///In simple mode, the model returns everything as flat, with no icons, no xres etc.  This is set by changing cmbFilter
+	QTime mTime; ///Time that we last updated the processes.  This is used to turn process user/sys time into user/sys %
+	long mElapsedTimeCentiSeconds; ///Time elapsed since we last update the processes. Calculated from mTime
 };
 
 #endif

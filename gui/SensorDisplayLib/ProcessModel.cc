@@ -49,6 +49,7 @@ ProcessModel::ProcessModel(QObject* parent)
 	mPidToProcess[0] = new Process();  //Add a fake process for process '0', the parent for init.  This lets us remove checks everywhere for init process
 	mXResPidColumn = -1;
 	mIcons = NULL;
+	mElapsedTimeCentiSeconds = 0;
 	
 	mShowChildTotals = true;
 
@@ -201,6 +202,14 @@ bool ProcessModel::setData(const QList<QStringList> &data)
 	foreach(long long pid, pids_to_delete)
 		removeRow(pid);
 
+	//update the time elapsed;
+	if(mTime.isValid())
+		mElapsedTimeCentiSeconds = mTime.restart() / 10;
+	else {
+		mElapsedTimeCentiSeconds = 0;
+		mTime.start();
+	}
+
 	QSet<long long>::const_iterator i = new_pids.begin();
 	while( i != new_pids.end()) {
 		insertOrChangeRows(*i);
@@ -352,7 +361,8 @@ void ProcessModel::changeProcess(long long pid)
 
 	//Use i for the index in the new data, and j for the index for the process->data structure that we are copying into
 	int j = 0;
-	bool changed = false;
+	bool changed = false;  // set if any column other than cpu usage column changes.  so we can redraw the data
+	bool cpuchanged = false; // set if the cpu column changed.  Since this changes often, have one specifically for this
 	QString loginName;
 	double sysUsageChange = 0;
 	double userUsageChange = 0;
@@ -361,7 +371,30 @@ void ProcessModel::changeProcess(long long pid)
 
 		QVariant value;
 		switch(mColType.at(i)) {
-
+			case DataColumnUserTime: {
+				long oldUserTime = process->userTime;
+				process->userTime = newDataRow[i].toLong();
+				float usage = 0;
+				if(oldUserTime != -1 && mElapsedTimeCentiSeconds != 0) //it's -1 if it's invalid - i.e. not been set before
+					usage = (process->userTime - oldUserTime) * 100.0 / (double)(mElapsedTimeCentiSeconds);  //restart()  gives us the time elapsed in millisecond.  Divide by 10 to get that in centiseconds like userTime
+				if( process->userUsage != usage) {
+					userUsageChange = usage - process->userUsage;
+					process->userUsage = usage;
+					cpuchanged = true;
+				}
+			} break;
+			case DataColumnSystemTime: {
+				long oldSysTime = process->sysTime;
+				process->sysTime = newDataRow[i].toLong();
+				float usage = 0;
+				if(oldSysTime != -1 && mElapsedTimeCentiSeconds != 0) //it's -1 if it's invalid - i.e. not been set before
+					usage = (process->sysTime - oldSysTime) * 100.0/ (double)(mElapsedTimeCentiSeconds);  //restart()  gives us the time elapsed in millisecond.  Divide by 10 to get that in centiseconds like sysTime
+				if( process->sysUsage != usage) {
+					sysUsageChange = usage - process->sysUsage;
+					process->sysUsage = usage;
+					cpuchanged = true;
+				}
+			} break;
 			case DataColumnUserUsage: {
 				float usage = newDataRow[i].toFloat();
 				if(process->userUsage != usage) {
@@ -469,7 +502,7 @@ void ProcessModel::changeProcess(long long pid)
 
 	//Now all the data has been changed for this process.
 	//If nothing changed, no need to update the display etc
-	if(!changed)
+	if(!changed && !cpuchanged)
 		return;
 
 	//If the user or sys values changed, then we need to update their and their parents totals
@@ -482,9 +515,15 @@ void ProcessModel::changeProcess(long long pid)
 
 	int row = process->parent->children.indexOf(process);
 	Q_ASSERT(row != -1);  //Something has gone very wrong
-	QModelIndex startIndex = createIndex(row, 0, process);
-	QModelIndex endIndex = createIndex(row, mHeadings.count()-1, process);
-	emit dataChanged(startIndex, endIndex);
+	if(!changed) {
+		//Only the cpu usage changed, so only update that
+		QModelIndex index = createIndex(row, mCPUHeading, process);
+		emit dataChanged(index, index);	
+	} else {
+		QModelIndex startIndex = createIndex(row, 0, process);
+		QModelIndex endIndex = createIndex(row, mHeadings.count()-1, process);
+		emit dataChanged(startIndex, endIndex);
+	}
 
 }
 
@@ -545,6 +584,8 @@ void ProcessModel::insertOrChangeRows( long long pid)
 			case DataColumnPPid: break; //Already dealt with
 			case DataColumnUid: new_process->uid = newDataRow[i].toLongLong(); break;
 			case DataColumnTracerPid: new_process->tracerpid = newDataRow[i].toLongLong(); break;
+			case DataColumnUserTime: new_process->userTime = newDataRow[i].toLong(); break;
+			case DataColumnSystemTime: new_process->sysTime = newDataRow[i].toLong(); break;
 			case DataColumnUserUsage: new_process->userUsage = newDataRow[i].toFloat(); break;
 			case DataColumnSystemUsage: new_process->sysUsage = newDataRow[i].toFloat(); break;
 			case DataColumnNice: new_process->nice = newDataRow[i].toInt(); break;
@@ -770,7 +811,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				if(mShowChildTotals && !mSimple) total = process->totalUserUsage + process->totalSysUsage;
 				else total = process->userUsage + process->sysUsage;
 
-				if(total <= 0.1)
+				if(total <= 0.001)
 					return "";
 				if(total > 100) total = 100;
 
@@ -840,6 +881,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 						.subs(process->userUsage, 0, 'f', 2)
 						.subs(process->sysUsage, 0, 'f', 2)
 						.toString();
+
 			if(process->numChildren > 0) {
 				tooltip += ki18n("<br/>Number of children: %1<br/>Total User CPU usage: %2%<br/>"
 						"Total System CPU usage: %3%<br/>Total CPU usage: %4%")
@@ -849,6 +891,14 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 						.subs(process->totalUserUsage + process->totalSysUsage, 0, 'f', 2)
 						.toString();
 			}
+			if(process->userTime > 0) 
+				tooltip += ki18n("<br/><br/>Time spent running as user: %1 seconds")
+						.subs(process->userTime / 100.00, 0, 'f', 1)
+						.toString();
+			if(process->sysTime > 0) 
+				tooltip += ki18n("<br/>Time spent running in kernel: %1 seconds")
+						.subs(process->sysTime / 100.00, 0, 'f', 1)
+						.toString();
 
 			if(!tracer.isEmpty())
 				return tooltip + "<br/>" + tracer;
@@ -862,6 +912,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	case Qt::TextAlignmentRole:
 		if( mHeadingsToType[index.column()] == HeadingUser)
 			return QVariant(Qt::AlignCenter);
+		if( mHeadingsToType[index.column()] == HeadingCPUUsage)
+			return QVariant(Qt::AlignRight);
 		return QVariant();
 	case Qt::UserRole: {
 		//We have a special understanding with the filter.  If it queries us as UserRole in column 0, return uid
@@ -1057,6 +1109,23 @@ bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltyp
 			coltype += DataColumnName;
 		} else if(header[i] == "TracerPID") {
 			coltype += DataColumnTracerPid;
+		} else if(header[i] == "User Time") {
+
+
+			/* Okay, a few comments are needed about cpu percentage.
+			 * On some systems, we can get the cpu percentage directly (e.g sparc, hp etc)
+			 * On others we can't (e.g. linux etc).  We get the amount of time, in 100th's of a second, the process has spent
+			 * on the cpu, both for system calls and user calls.
+			 * We can track the difference in these times, and find the rate of change per second.  This gives us basically a percentage of the cpus
+			 * being used.
+			 */
+
+			coltype += DataColumnUserTime;
+			headings << i18nc("process heading", "CPU %");
+			headingsToType << HeadingCPUUsage;
+			mCPUHeading = headingsToType.size();
+		} else if(header[i] == "System Time") {
+			coltype += DataColumnSystemTime;
 		} else if(header[i] == "User%") {
 			coltype += DataColumnUserUsage;
 			headings << i18nc("process heading", "CPU %");
