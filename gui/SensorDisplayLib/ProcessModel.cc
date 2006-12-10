@@ -522,7 +522,7 @@ void ProcessModel::changeProcess(long long pid)
 	} else {
 		QModelIndex startIndex = createIndex(row, 0, process);
 		QModelIndex endIndex = createIndex(row, mHeadings.count()-1, process);
-		emit dataChanged(startIndex, endIndex);
+//		emit dataChanged(startIndex, endIndex);
 	}
 
 }
@@ -892,11 +892,11 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 						.toString();
 			}
 			if(process->userTime > 0) 
-				tooltip += ki18n("<br/><br/>Time spent running as user: %1 seconds")
+				tooltip += ki18n("<br/><br/>CPU time spent running as user: %1 seconds")
 						.subs(process->userTime / 100.00, 0, 'f', 1)
 						.toString();
 			if(process->sysTime > 0) 
-				tooltip += ki18n("<br/>Time spent running in kernel: %1 seconds")
+				tooltip += ki18n("<br/>CPU time spent running in kernel: %1 seconds")
 						.subs(process->sysTime / 100.00, 0, 'f', 1)
 						.toString();
 
@@ -910,10 +910,14 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		}
 	}
 	case Qt::TextAlignmentRole:
-		if( mHeadingsToType[index.column()] == HeadingUser)
-			return QVariant(Qt::AlignCenter);
-		if( mHeadingsToType[index.column()] == HeadingCPUUsage)
-			return QVariant(Qt::AlignRight);
+		switch(mHeadingsToType[index.column()] ) {
+			case HeadingUser:
+				return QVariant(Qt::AlignCenter);
+			case HeadingCPUUsage:
+			case HeadingMemory:
+			case HeadingRSSMemory:
+				return QVariant(Qt::AlignRight);
+		}
 		return QVariant();
 	case Qt::UserRole: {
 		//We have a special understanding with the filter.  If it queries us as UserRole in column 0, return uid
