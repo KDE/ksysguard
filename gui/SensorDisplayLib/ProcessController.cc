@@ -51,12 +51,46 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLayout>
+#include <QItemDelegate>
+#include <QPainter>
+#include <QStyleOptionViewItem>
+#include <QProgressBar>
 
 #include <kapplication.h>
 //#define DO_MODELCHECK
 #ifdef DO_MODELCHECK
 #include "modeltest.h"
 #endif
+
+class ProgressBarItemDelegate : public QItemDelegate 
+{
+  public:
+	ProgressBarItemDelegate(QObject *parent) : QItemDelegate(parent) {}
+  protected:
+	virtual void drawDisplay(QPainter *painter, const QStyleOptionViewItem &option,
+		                                 const QRect &rect, const QString &text) const
+	{
+		if(percentage > 0) {
+			QPen old = painter->pen();
+			painter->setPen(Qt::NoPen);
+			QLinearGradient  linearGrad( QPointF(rect.x(),rect.y()), QPointF(rect.x() + rect.width(), rect.y()));
+			linearGrad.setColorAt(0, QColor(0x00, 0x71, 0xBC, 100));
+			linearGrad.setColorAt(1, QColor(0x83, 0xDD, 0xF5, 100));
+			painter->fillRect( rect.x(), rect.y(), rect.width() * percentage /100 , rect.height(), QBrush(linearGrad));
+			painter->setPen( old );
+		}
+
+		QItemDelegate::drawDisplay( painter, option, rect, text);
+	}
+	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+	{
+		percentage = index.data(Qt::UserRole+2).toInt(); //we have set that UserRole+3  returns a number between 1 and 100 for the percentage to draw. 0 for none.
+		QItemDelegate::paint(painter, option, index);
+	}
+	mutable int percentage;
+
+};
+
 ProcessController::ProcessController(QWidget* parent, const QString &title, SharedSettings *workSheetSettings)
 	: KSGRD::SensorDisplay(parent, title, workSheetSettings), mModel(this), mFilterModel(this)
 {
@@ -69,6 +103,9 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	mXResSupported = false;
 	mReadyForPs = false;
 	mWillUpdateList = false;
+	mMemFree = -1;
+	mMemUsed = -1;
+	mMemTotal = -1;
 	mXResHeadingStart = mXResHeadingEnd = -1;
 	mUi.setupUi(this);
 	mFilterModel.setSourceModel(&mModel);
@@ -76,6 +113,7 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 #ifdef DO_MODELCHECK
 	new Modeltest(&mFilterModel, this);
 #endif
+	mUi.treeView->setItemDelegate(new ProgressBarItemDelegate(mUi.treeView));
 
 	mColumnContextMenu = new QMenu(mUi.treeView->header());
 	connect(mColumnContextMenu, SIGNAL(triggered(QAction*)), this, SLOT(showOrHideColumn(QAction *)));
@@ -252,6 +290,9 @@ bool ProcessController::addSensor(const QString& hostName,
 	//sendRequest(sensors().at(0)->hostName(), "xres?", XRes_Info_Command);
 	kDebug() << "Sending ps in addsensor " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 	sendRequest(hostName, "ps", Ps_Command);
+	
+	sendRequest( hostName, "mem/physical/free", MemFree_Command);
+        sendRequest( hostName, "mem/physical/used", MemUsed_Command);
 
 	if (title.isEmpty())
 		setTitle(i18n("%1: Running Processes", hostName));
@@ -681,7 +722,23 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		}
 		break;
 	}
+	case MemFree_Command:
+	case MemUsed_Command:
+		if(answer.count() != 1) {
+			kDebug(1215) << "Invalid answer from a mem free request" << endl;
+			break;
+		}
+		// We should get a reply like "235384" meaning the amount, kb, of free memory
+		if(id == MemFree_Command)
+			mMemFree = answer[0].toLong();
+		else
+			mMemUsed = answer[0].toLong();
 
+		if(mMemUsed != -1 && mMemFree != -1) {
+			mMemTotal = mMemUsed + mMemFree;
+			mModel.setTotalMemory(mMemTotal);
+		}
+		break;
 	}
 }
 void ProcessController::reniceFailed()

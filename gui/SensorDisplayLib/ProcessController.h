@@ -112,7 +112,7 @@ signals:
 private:
 	
 	bool areXResColumnsHidden() const;
-	enum { Ps_Info_Command = 1, Ps_Command, Kill_Command, Kill_Supported_Command, Renice_Command, XRes_Info_Command, XRes_Command, XRes_Supported_Command };
+	enum { Ps_Info_Command = 1, Ps_Command, Kill_Command, Kill_Supported_Command, Renice_Command, XRes_Info_Command, XRes_Command, XRes_Supported_Command, MemFree_Command, MemUsed_Command };
 	bool mKillSupported;
 	/** Is the XRes extension supported where the ksysguardd daemon is? (And does the daemon support it) */
 	bool mXResSupported;
@@ -128,6 +128,13 @@ private:
 	 */
 	bool mReadyForPs;
 	
+	/** The amount of real physical memory being used in total, in kilobytes */
+	long mMemUsed;
+	/** The amount of free physical memory, in kilobytes */
+	long mMemFree;
+	/** The total amount of physical memory in the machine, in kilobytes */
+	long mMemTotal;
+
 	/** When we restore the settings, we remember which column to sort by here.
 	 *  Then when columns are actually added, we can set the column to sort by.
 	 */

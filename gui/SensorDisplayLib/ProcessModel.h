@@ -112,10 +112,13 @@ public:
 	/** In simple mode, everything is flat, with no icons, few if any colors, no xres etc
 	 */
 	bool isSimpleMode() const { return mSimple;}
+	
+	/** Set the total amount of physical memory in the machine.  We can used this to determine the percentage of memory an app is using
+	 */
+	void setTotalMemory(long memTotal) { mMemTotal = memTotal; }
 
 public slots:
 	void setShowTotals(int totals);
-	
 
 private:
 	/** This returns a QModelIndex for the given process.  It has to look up the parent for this pid, find the offset this 
@@ -233,6 +236,8 @@ private:
 	bool mSimple; ///In simple mode, the model returns everything as flat, with no icons, no xres etc.  This is set by changing cmbFilter
 	QTime mTime; ///Time that we last updated the processes.  This is used to turn process user/sys time into user/sys %
 	long mElapsedTimeCentiSeconds; ///Time elapsed since we last update the processes. Calculated from mTime
+
+	long mMemTotal; /// the total amount of physical memory in the machine.  We can used this to determine the percentage of memory an app is using
 };
 
 #endif

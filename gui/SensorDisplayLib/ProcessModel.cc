@@ -49,6 +49,7 @@ ProcessModel::ProcessModel(QObject* parent)
 	mPidToProcess[0] = new Process();  //Add a fake process for process '0', the parent for init.  This lets us remove checks everywhere for init process
 	mXResPidColumn = -1;
 	mIcons = NULL;
+	mMemTotal = -1;
 	mElapsedTimeCentiSeconds = 0;
 	
 	mShowChildTotals = true;
@@ -823,8 +824,14 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		case HeadingMemory:
 			if(process->vmSize == 0) return QVariant(QVariant::String);
 			return KGlobal::locale()->formatByteSize(process->vmSize * 1024);
-		case HeadingCommand:
-			return process->command;
+		case HeadingCommand: 
+			{
+				return process->command;
+// It would be nice to embolded the process name in command, but this require that the itemdelegate to support html text
+//				QString command = process->command;
+//				command.replace(process->name, "<b>" + process->name + "</b>");
+//				return "<qt>" + command;
+			}
 		default:
 			return process->data.at(headingType-HeadingOther);
 		}
@@ -904,6 +911,16 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				return tooltip + "<br/>" + tracer;
 			return tooltip;
 		}
+		case HeadingMemory: {
+			QString tooltip = i18n("<qt>This is the amount of memory the process is using, included shared libraries, graphics memory, files on disk, and so on.");
+			return tooltip;
+		}
+		case HeadingRSSMemory: {
+			QString tooltip = i18n("<qt>This is the amount of real physical memory that this process is using directly.  It does not include any swapped out memory, nor shared libraries etc.");
+			if(mMemTotal != -1)
+				tooltip += i18n("<br/><br/>Memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize(process->vmRSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), QString::number(process->vmRSS*100/mMemTotal));
+			return tooltip;
+		}
 		default:
 			tracer.isEmpty(); return tracer;
 			return QVariant(QVariant::String);
@@ -912,8 +929,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	case Qt::TextAlignmentRole:
 		switch(mHeadingsToType[index.column()] ) {
 			case HeadingUser:
-				return QVariant(Qt::AlignCenter);
 			case HeadingCPUUsage:
+				return QVariant(Qt::AlignCenter);
 			case HeadingMemory:
 			case HeadingRSSMemory:
 				return QVariant(Qt::AlignRight);
@@ -961,7 +978,18 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		case HeadingMemory:
 			return (long long)process->vmSize;
 		}
-
+	}
+	case Qt::UserRole+2: {
+		//Return an int here for the cpu percentage
+		if(mHeadingsToType[index.column()] == HeadingCPUUsage) {
+			Process *process = reinterpret_cast< Process * > (index.internalPointer());
+			return (int)(process->userUsage + process->sysUsage);
+		}
+                if(mHeadingsToType[index.column()] == HeadingRSSMemory) {
+                        Process *process = reinterpret_cast< Process * > (index.internalPointer());
+			return (int)(process->vmRSS*100/mMemTotal);
+		}
+		return 0;
 	}
 	case Qt::DecorationRole: {
 		if(mSimple) return QVariant();
