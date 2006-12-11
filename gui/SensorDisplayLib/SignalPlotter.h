@@ -124,6 +124,19 @@ class KSignalPlotter : public QWidget
     virtual void resizeEvent( QResizeEvent* );
     virtual void paintEvent( QPaintEvent* );
 
+    void drawBackground(QPainter *p, int w, int h);
+    void drawThinFrame(QPainter *p, int w, int h);
+    /** Used from paint().  Draws all the beams on the paint device, given the top, width and height and the range of values to show
+     */
+    void drawBeams(QPainter *p, int top, int w, int h, int range);
+    void calculateNiceRange();
+    void drawTopBarFrame(QPainter *p, int fullWidth, int seperatorX, int height);
+    void drawTopBarContents(QPainter *p, int x, int width, int height);
+    void drawVerticalLines(QPainter *p, int top, int w, int h);
+    void drawBeams(QPainter *p, int top, int w, int h);
+    void drawAxisText(QPainter *p, int top, int h);
+    void drawHorizontalLines(QPainter *p, int top, int w, int h);
+
   private:
     QSvgRenderer *mSvgRenderer;
     QString mSvgFilename;
@@ -131,6 +144,11 @@ class KSignalPlotter : public QWidget
 
     double mMinValue;
     double mMaxValue;
+
+    double mNiceMinValue;
+    double mNiceMaxValue;
+    double mNiceRange;
+
     double mScaleDownBy;
     bool mUseAutoRange;
 
