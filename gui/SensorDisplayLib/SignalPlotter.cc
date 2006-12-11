@@ -828,7 +828,11 @@ void KSignalPlotter::drawAxisText(QPainter *p, int top, int h)
   for ( uint y = 1; y <= mHorizontalLinesCount+1; y++ ) {
     int y_coord =  top + (y * (h-1)) / (mHorizontalLinesCount+1);  //Make sure it's y*h first to avoid rounding bugs
 
-    double value = mNiceMaxValue/mScaleDownBy - y * stepsize;
+    double value;
+    if(y == mHorizontalLinesCount+1)
+        value = mNiceMinValue; //sometimes using the formulas gives us a value very slightly off
+    else
+        value = mNiceMaxValue/mScaleDownBy - y * stepsize;
 
     QString number = KGlobal::locale()->formatNumber( value, mPrecision);
     val = QString( "%1 %2" ).arg( number, mUnit );
