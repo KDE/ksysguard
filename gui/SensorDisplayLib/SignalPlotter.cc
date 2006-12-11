@@ -190,12 +190,19 @@ void KSignalPlotter::removeBeam( uint pos )
   }
 }
 
-void KSignalPlotter::setScaleDownBy( double value ) { mScaleDownBy = value; }
+void KSignalPlotter::setScaleDownBy( double value )
+{ 
+  if(mScaleDownBy == value) return;
+  mScaleDownBy = value;
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
+}
 double KSignalPlotter::scaleDownBy() const { return mScaleDownBy; }
 
 void KSignalPlotter::setTitle( const QString &title )
 {
+  if(mTitle == title) return;
   mTitle = title;
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
 
 QString KSignalPlotter::title() const
@@ -206,6 +213,7 @@ QString KSignalPlotter::title() const
 void KSignalPlotter::setUseAutoRange( bool value )
 {
   mUseAutoRange = value;
+  //this change will be detected in paint and the image cache regenerated
 }
 
 bool KSignalPlotter::useAutoRange() const
@@ -216,6 +224,7 @@ bool KSignalPlotter::useAutoRange() const
 void KSignalPlotter::setMinValue( double min )
 {
   mMinValue = min;
+  //this change will be detected in paint and the image cache regenerated
 }
 
 double KSignalPlotter::minValue() const
@@ -226,6 +235,7 @@ double KSignalPlotter::minValue() const
 void KSignalPlotter::setMaxValue( double max )
 {
   mMaxValue = max;
+  //this change will be detected in paint and the image cache regenerated
 }
 
 double KSignalPlotter::maxValue() const
@@ -240,6 +250,7 @@ void KSignalPlotter::setHorizontalScale( uint scale )
 
   mHorizontalScale = scale;
   updateDataBuffers();
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
 
 int KSignalPlotter::horizontalScale() const
@@ -249,7 +260,9 @@ int KSignalPlotter::horizontalScale() const
 
 void KSignalPlotter::setShowVerticalLines( bool value )
 {
+  if(mShowVerticalLines == value) return;
   mShowVerticalLines = value;
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
 
 bool KSignalPlotter::showVerticalLines() const
@@ -259,7 +272,9 @@ bool KSignalPlotter::showVerticalLines() const
 
 void KSignalPlotter::setVerticalLinesColor( const QColor &color )
 {
+  if(mVerticalLinesColor == color) return;
   mVerticalLinesColor = color;
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
 
 QColor KSignalPlotter::verticalLinesColor() const
@@ -267,9 +282,11 @@ QColor KSignalPlotter::verticalLinesColor() const
   return mVerticalLinesColor;
 }
 
-void KSignalPlotter::setVerticalLinesDistance( int distance )
+void KSignalPlotter::setVerticalLinesDistance( uint distance )
 {
+  if(distance == mVerticalLinesDistance) return;
   mVerticalLinesDistance = distance;
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
 
 int KSignalPlotter::verticalLinesDistance() const
@@ -279,7 +296,9 @@ int KSignalPlotter::verticalLinesDistance() const
 
 void KSignalPlotter::setVerticalLinesScroll( bool value )
 {
+  if(value == mVerticalLinesScroll) return;
   mVerticalLinesScroll = value;
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
 
 bool KSignalPlotter::verticalLinesScroll() const
@@ -289,7 +308,9 @@ bool KSignalPlotter::verticalLinesScroll() const
 
 void KSignalPlotter::setShowHorizontalLines( bool value )
 {
+  if(value == mShowHorizontalLines) return;
   mShowHorizontalLines = value;
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
 
 bool KSignalPlotter::showHorizontalLines() const
@@ -309,7 +330,9 @@ QColor KSignalPlotter::fontColor() const
 
 void KSignalPlotter::setHorizontalLinesColor( const QColor &color )
 {
+  if(color == mHorizontalLinesColor) return;
   mHorizontalLinesColor = color;
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
 
 QColor KSignalPlotter::horizontalLinesColor() const
@@ -317,9 +340,11 @@ QColor KSignalPlotter::horizontalLinesColor() const
   return mHorizontalLinesColor;
 }
 
-void KSignalPlotter::setHorizontalLinesCount( int count )
+void KSignalPlotter::setHorizontalLinesCount( uint count )
 {
+  if(count == mHorizontalLinesCount) return;
   mHorizontalLinesCount = count;
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
 
 int KSignalPlotter::horizontalLinesCount() const
@@ -329,7 +354,9 @@ int KSignalPlotter::horizontalLinesCount() const
 
 void KSignalPlotter::setShowLabels( bool value )
 {
+  if(value == mShowLabels) return;
   mShowLabels = value;
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
 
 bool KSignalPlotter::showLabels() const
@@ -339,7 +366,9 @@ bool KSignalPlotter::showLabels() const
 
 void KSignalPlotter::setShowTopBar( bool value )
 {
+  if(mShowTopBar == value) return;
   mShowTopBar = value;
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
 
 bool KSignalPlotter::showTopBar() const
@@ -350,6 +379,7 @@ bool KSignalPlotter::showTopBar() const
 void KSignalPlotter::setFont( const QFont &font )
 {
   mFont = font;
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
 
 QFont KSignalPlotter::font() const
@@ -382,7 +412,9 @@ void KSignalPlotter::setSvgBackground( const QString &filename )
 
 void KSignalPlotter::setBackgroundColor( const QColor &color )
 {
+  if(color == mBackgroundColor) return;
   mBackgroundColor = color;
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
 
 QColor KSignalPlotter::backgroundColor() const
@@ -390,6 +422,12 @@ QColor KSignalPlotter::backgroundColor() const
   return mBackgroundColor;
 }
 
+void KSignalPlotter::setThinFrame( bool set) 
+{
+  if(mShowThinFrame == set) return;
+  mShowThinFrame = set;
+  mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
+}
 void KSignalPlotter::resizeEvent( QResizeEvent* )
 {
   Q_ASSERT( width() > 2 );
@@ -423,59 +461,78 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   p.setFont( mFont );
 
   uint fontheight = p.fontMetrics().height();
-
+//  double oldNiceMinValue = mNiceMinValue;
+//  double oldNiceMaxValue = mNiceMaxValue;
   calculateNiceRange();
+  //If we draw the text labels on the cache, then we need the following code
+//  if(oldNiceMinValue != mNiceMinValue || oldNiceMaxValue != mNiceMaxValue) {
+    //range has changed, so we image cache is bad
+//    mBackgroundImage = QImage();
+//  }
 
+  uint top = 1; //The y position of the top of the graph.  Basically this is one more than the height of the top bar
+
+  //check if there's enough room to actually show a top bar. Must be enough room for a bar at the top, plus horizontal lines each of a size with room for a scale
+  bool showTopBar = mShowTopBar &&  h > (fontheight/*top bar size*/ +5/*smallest reasonable size for a graph*/ );
+  if(showTopBar) {
+    top = fontheight; //The top bar has the same height as fontheight. Thus the top of the graph is at fontheight
+    h -= top;
+  }
   if(mBackgroundImage.isNull()) {
-    mBackgroundImage = QImage(w, h, QImage::Format_RGB32);
+    mBackgroundImage = QImage(w, height(), QImage::Format_RGB32);
     QPainter pCache(&mBackgroundImage);
     pCache.setRenderHint(QPainter::Antialiasing, false);
+    pCache.setFont( mFont );
     
-    drawBackground(&pCache, w, h);
+    drawBackground(&pCache, w, height());
 
-    if(mShowThinFrame)
-      drawThinFrame(&pCache, w, h);
+    if(mShowThinFrame) {
+      drawThinFrame(&pCache, w, height());
+      //We have a 'frame' in the bottom and right - so subtract them from the view
+      h--;
+      w--;
+      pCache.setClipRect( 0, 0, w, height()-1 );
+    }
+    pCache.setRenderHint(QPainter::Antialiasing, true);
+    
+    if(showTopBar) { 
+      int seperatorX = w / 2;
+      drawTopBarFrame(&pCache, w, seperatorX, top-1);
+    }
+
+    /* Draw scope-like grid vertical lines if it doesn't move.  If it does move, draw it in the dynamic part of the code*/
+    if(!mVerticalLinesScroll && mShowVerticalLines && w > 60)
+      drawVerticalLines(&pCache, top, w, h);
+
+    if ( mShowHorizontalLines ) 
+      drawHorizontalLines(&pCache, top, w, h);
+  
+  } else {
+    if(mShowThinFrame) {
+      //We have a 'frame' in the bottom and right - so subtract them from the view
+      h--;
+      w--;
+   }  
   }
   p.drawImage(0,0, mBackgroundImage);
   p.setRenderHint(QPainter::Antialiasing, true);
 
-  if(mShowThinFrame) {
-    //We have a 'frame' in the bottom and right - so subtract them from the view
-    h-=1;
-    w-=1;
-    p.setClipRect( 0, 0, w , h );
+  if ( showTopBar ) {
+    int seperatorX = w / 2;
+    int topBarWidth = w - seperatorX -2;
+    drawTopBarContents(&p, seperatorX, topBarWidth, top -2);
   }
 
-
-  uint top = 0; //The y position of the top of the graph.  Basically this is the height of the top bar
-  if ( mShowTopBar ) {
-    //Before we continue, check if there's enough room.  So enough room for a bar at the top, plus horizontal lines each of a size with room for a scale
-    if( h > (fontheight/*top bar size*/ + 2/*padding*/ +5/*smallest reasonable size for a graph*/ ) ) {
-      
-      top = fontheight;
-      h -= top;
-      
-      int seperatorX = w / 2;
-      int h0 = top - 2;
-      drawTopBarFrame(&p, w, seperatorX, h0);
-
-      int topBarWidth = w - seperatorX -2;
-      drawTopBarContents(&p, seperatorX, topBarWidth, h0);
-    }
-  }
-
+  p.setClipRect( 0, top, w, h);
   /* Draw scope-like grid vertical lines */
-  if ( mShowVerticalLines && w > 60 ) {
+  if ( mVerticalLinesScroll && mShowVerticalLines && w > 60 )
     drawVerticalLines(&p, top, w, h);
-  }
 
   drawBeams(&p, top, w, h);
 
-  if ( mShowHorizontalLines ) { 
-    drawHorizontalLines(&p, top, w, h);
-    if( mShowLabels && w > 60 && h > ( fontheight + 1 ) * ( mHorizontalLinesCount + 1 ))   //if there's room to draw the labels, then draw them!
-      drawAxisText(&p, top, h);
-  }
+  if( mShowLabels && w > 60 && h > ( fontheight + 1 ) * ( mHorizontalLinesCount + 1 ))   //if there's room to draw the labels, then draw them!
+    drawAxisText(&p, top, h);
+
 }
 void KSignalPlotter::drawBackground(QPainter *p, int w, int h)
 {
@@ -525,15 +582,19 @@ void KSignalPlotter::calculateNiceRange()
 void KSignalPlotter::drawTopBarFrame(QPainter *p, int fullWidth, int seperatorX, int height)
 {
       /* Draw horizontal bar with current sensor values at top of display. */
+
+      //remember that it has a height of 'height'.  Thus the lowest pixel it can draw on is height-1 since we count from 0
+      p->setPen( Qt::NoPen);
+      p->fillRect( 0, 0, fullWidth, height-1, QBrush(QColor(0,0,0,60)));
       p->setPen( mFontColor );
-      p->drawText(0, 0, seperatorX, height, Qt::AlignCenter, mTitle );
+      p->drawText(0, 1, seperatorX, height, Qt::AlignCenter, mTitle );
       p->setPen( mHorizontalLinesColor );
-      p->drawLine( seperatorX - 1, 1, seperatorX - 1, height );
-      p->drawLine( 0, height+1, fullWidth - 2, height + 1 );
+      p->drawLine( seperatorX - 1, 1, seperatorX - 1, height-1 );
 }
 
 void KSignalPlotter::drawTopBarContents(QPainter *p, int x, int width, int height)
 {
+  //The height is the height of the contents, so this will be one pixel less than the height of the topbar
   double bias = -mNiceMinValue;
   double scaleFac = width / mNiceRange;
   QList<QColor>::Iterator col;
@@ -561,7 +622,7 @@ void KSignalPlotter::drawTopBarContents(QPainter *p, int x, int width, int heigh
       QLinearGradient  linearGrad( QPointF(start,1), QPointF(end, 1));
       linearGrad.setColorAt(0, (*col).dark(150));
       linearGrad.setColorAt(1, (*col));
-      p->fillRect( start, 1, end - start, height, QBrush(linearGrad));
+      p->fillRect( start, 1, end - start, height-1, QBrush(linearGrad));
     }
   }
 }
@@ -569,12 +630,12 @@ void KSignalPlotter::drawVerticalLines(QPainter *p, int top, int w, int h)
 {
   p->setPen( mVerticalLinesColor );
   for ( int x = mVerticalLinesOffset; x < ( w - 2 ); x += mVerticalLinesDistance )
-      p->drawLine( w - x, top, w - x, h + top - 2 );
+      p->drawLine( w - x, top, w - x, h + top -1 );
 }
 
 void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
 {
-  double scaleFac = ( h - 2 ) / mNiceRange;
+  double scaleFac = (h-1) / mNiceRange;
 
   int xPos = 0;
   QLinkedList< QList<double> >::Iterator it = mBeamData.begin();
@@ -700,19 +761,19 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
 	 * So to draw a point at value y', we need to put this at  h+top-y'
 	 */
 	int y;
-        y = h + top - (int)((datapoints[j] - mNiceMinValue)*scaleFac);
+        y = h - 1 + top - (int)((datapoints[j] - mNiceMinValue)*scaleFac);
 	if(y < (int)top) y = top;
         curve.setPoint( 0, w - xPos + 3*mHorizontalScale, y );
 
-	y = h + top - (int)((prev_datapoints[j] - mNiceMinValue)*scaleFac);
+	y = h - 1 + top - (int)((prev_datapoints[j] - mNiceMinValue)*scaleFac);
 	if(y < (int)top) y = top;
         curve.setPoint( 1, w - xPos + 2*mHorizontalScale, y);
 
-	y=   h + top - (int)((prev_prev_datapoints[j] - mNiceMinValue)*scaleFac);
+	y=   h - 1 + top - (int)((prev_prev_datapoints[j] - mNiceMinValue)*scaleFac);
 	if(y < (int)top) y = top;
         curve.setPoint( 2, w - xPos + mHorizontalScale, y );
 
-	y =  h + top - (int)((prev_prev_prev_datapoints[j] - mNiceMinValue)*scaleFac);
+	y =  h - 1 + top - (int)((prev_prev_prev_datapoints[j] - mNiceMinValue)*scaleFac);
 	if(y < (int)top) y = top;
         curve.setPoint( 3, w - xPos, y );
 
@@ -757,8 +818,9 @@ void KSignalPlotter::drawAxisText(QPainter *p, int top, int h)
 void KSignalPlotter::drawHorizontalLines(QPainter *p, int top, int w, int h)
 {
   p->setPen( mHorizontalLinesColor );
-  for ( uint y = 1; y <= mHorizontalLinesCount; y++ ) {
-    int y_coord =  top + (y * h) / (mHorizontalLinesCount+1);  //Make sure it's y*h first to avoid rounding bugs
+  for ( uint y = 0; y <= mHorizontalLinesCount+1; y++ ) {
+    //note that the y_coord starts from 0.  so we draw from pixel number 0 to h-1.  Thus the -1 in the y_coord
+    int y_coord =  top + (y * h) / (mHorizontalLinesCount+1) - 1;  //Make sure it's y*h first to avoid rounding bugs
     p->drawLine( 0, y_coord, w - 2, y_coord);
   }
 }

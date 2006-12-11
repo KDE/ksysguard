@@ -77,7 +77,7 @@ class KSignalPlotter : public QWidget
     void setVerticalLinesColor( const QColor &color );
     QColor verticalLinesColor() const;
 
-    void setVerticalLinesDistance( int distance );
+    void setVerticalLinesDistance( uint distance );
     int verticalLinesDistance() const;
 
     void setVerticalLinesScroll( bool value );
@@ -95,7 +95,7 @@ class KSignalPlotter : public QWidget
     void setFont( const QFont &font );
     QFont font() const;
 
-    void setHorizontalLinesCount( int count );
+    void setHorizontalLinesCount( uint count );
     int horizontalLinesCount() const;
 
     void setShowLabels( bool value );
@@ -116,7 +116,7 @@ class KSignalPlotter : public QWidget
     
     /**  Whether to show a white line on the left and bottom of the widget, for a 3D effect
      */
-    void setThinFrame( bool set) { mShowThinFrame = set; }
+    void setThinFrame( bool set);
 
   protected:
     void updateDataBuffers();
