@@ -469,14 +469,19 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
     //range has changed, so we image cache is bad
 //    mBackgroundImage = QImage();
 //  }
+  QPen pen;
+  pen.setWidth(2);
+  pen.setCapStyle(Qt::RoundCap);
+  p.setPen(pen);
 
-  uint top = 1; //The y position of the top of the graph.  Basically this is one more than the height of the top bar
+  uint top = p.pen().width() / 2; //The y position of the top of the graph.  Basically this is one more than the height of the top bar
+  h-= top;
 
   //check if there's enough room to actually show a top bar. Must be enough room for a bar at the top, plus horizontal lines each of a size with room for a scale
   bool showTopBar = mShowTopBar &&  h > (fontheight/*top bar size*/ +5/*smallest reasonable size for a graph*/ );
   if(showTopBar) {
-    top = fontheight; //The top bar has the same height as fontheight. Thus the top of the graph is at fontheight
-    h -= top;
+    top += fontheight; //The top bar has the same height as fontheight. Thus the top of the graph is at fontheight
+    h -= fontheight;
   }
   if(mBackgroundImage.isNull()) {
     mBackgroundImage = QImage(w, height(), QImage::Format_RGB32);
@@ -497,7 +502,7 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
     
     if(showTopBar) { 
       int seperatorX = w / 2;
-      drawTopBarFrame(&pCache, w, seperatorX, top-1);
+      drawTopBarFrame(&pCache, w, seperatorX, top);
     }
 
     /* Draw scope-like grid vertical lines if it doesn't move.  If it does move, draw it in the dynamic part of the code*/
@@ -520,7 +525,7 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   if ( showTopBar ) {
     int seperatorX = w / 2;
     int topBarWidth = w - seperatorX -2;
-    drawTopBarContents(&p, seperatorX, topBarWidth, top -2);
+    drawTopBarContents(&p, seperatorX, topBarWidth, top -1);
   }
 
   p.setClipRect( 0, top, w, h);
@@ -798,21 +803,15 @@ void KSignalPlotter::drawAxisText(QPainter *p, int top, int h)
    */
 
   p->setPen( mFontColor );
-  for ( uint y = 1; y <= mHorizontalLinesCount; y++ ) {
-    int y_coord =  top + (y * h) / (mHorizontalLinesCount+1);  //Make sure it's y*h first to avoid rounding bugs
+  for ( uint y = 1; y <= mHorizontalLinesCount+1; y++ ) {
+    int y_coord =  top + (y * (h-1)) / (mHorizontalLinesCount+1);  //Make sure it's y*h first to avoid rounding bugs
 
     double value = (mNiceMaxValue - (y * mNiceRange) / (mHorizontalLinesCount+1) )/mScaleDownBy;
 
     QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:2);
     val = QString( "%1 %2" ).arg( number, mUnit );
-    p->drawText( 6, y_coord - 2, val );
+    p->drawText( 6, y_coord - 3, val );
   }
-
-  //Draw the bottom most (minimum) number as well
-  double value = mNiceMinValue / mScaleDownBy;
-  QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:2);
-  val = QString( "%1 %2" ).arg( number, mUnit);
-  p->drawText( 6, top + h - 3, val );
 }
 
 void KSignalPlotter::drawHorizontalLines(QPainter *p, int top, int w, int h)
@@ -820,7 +819,7 @@ void KSignalPlotter::drawHorizontalLines(QPainter *p, int top, int w, int h)
   p->setPen( mHorizontalLinesColor );
   for ( uint y = 0; y <= mHorizontalLinesCount+1; y++ ) {
     //note that the y_coord starts from 0.  so we draw from pixel number 0 to h-1.  Thus the -1 in the y_coord
-    int y_coord =  top + (y * h) / (mHorizontalLinesCount+1) - 1;  //Make sure it's y*h first to avoid rounding bugs
+    int y_coord =  top + (y * (h-1)) / (mHorizontalLinesCount+1);  //Make sure it's y*h first to avoid rounding bugs
     p->drawLine( 0, y_coord, w - 2, y_coord);
   }
 }
