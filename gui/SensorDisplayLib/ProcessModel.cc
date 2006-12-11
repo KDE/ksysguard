@@ -816,7 +816,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 					return "";
 				if(total > 100) total = 100;
 
-				return QString::number(total, 'f', 2) + '%';
+				return QString::number(total, 'f', (total>=1)?0:1) + '%';
 			}
 		case HeadingRSSMemory:
 			if(process->vmRSS == 0) return QVariant(QVariant::String);
