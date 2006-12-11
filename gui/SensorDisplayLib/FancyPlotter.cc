@@ -331,8 +331,8 @@ void FancyPlotter::answerReceived( int id, const QStringList &answerlist )
     KSGRD::SensorFloatInfo info( answer );
     QString unit = info.unit();
     if(unit.toUpper() == "KB" || unit.toUpper() == "KiB") {
-      if(info.max() >= 1024*1024) {
-        mPlotter->setScaleDownBy(1024*1024);
+      if(info.max() >= 1024*1000) {
+        mPlotter->setScaleDownBy(1024*1000);
 	unit = "GiB";
       } else if(info.max() > 1024) {
         mPlotter->setScaleDownBy(1024);
