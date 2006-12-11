@@ -44,6 +44,7 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
   : QWidget( parent)
 {
   mSvgRenderer = 0;
+  mPrecision = 0;
   mBezierCurveOffset = 0;
   mSamples = 0;
   mMinValue = mMaxValue = 0.0;
@@ -171,6 +172,7 @@ void KSignalPlotter::changeRange( int beam, double min, double max )
 
   mMinValue = min;
   mMaxValue = max;
+  calculateNiceRange();
 }
 
 QList<QColor> &KSignalPlotter::beamColors()
@@ -195,6 +197,7 @@ void KSignalPlotter::setScaleDownBy( double value )
   if(mScaleDownBy == value) return;
   mScaleDownBy = value;
   mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
+  calculateNiceRange();
 }
 double KSignalPlotter::scaleDownBy() const { return mScaleDownBy; }
 
@@ -213,6 +216,7 @@ QString KSignalPlotter::title() const
 void KSignalPlotter::setUseAutoRange( bool value )
 {
   mUseAutoRange = value;
+  calculateNiceRange();
   //this change will be detected in paint and the image cache regenerated
 }
 
@@ -224,6 +228,7 @@ bool KSignalPlotter::useAutoRange() const
 void KSignalPlotter::setMinValue( double min )
 {
   mMinValue = min;
+  calculateNiceRange();
   //this change will be detected in paint and the image cache regenerated
 }
 
@@ -235,6 +240,7 @@ double KSignalPlotter::minValue() const
 void KSignalPlotter::setMaxValue( double max )
 {
   mMaxValue = max;
+  calculateNiceRange();
   //this change will be detected in paint and the image cache regenerated
 }
 
@@ -345,6 +351,7 @@ void KSignalPlotter::setHorizontalLinesCount( uint count )
   if(count == mHorizontalLinesCount) return;
   mHorizontalLinesCount = count;
   mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
+  calculateNiceRange();
 }
 
 int KSignalPlotter::horizontalLinesCount() const
@@ -463,7 +470,9 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   uint fontheight = p.fontMetrics().height();
 //  double oldNiceMinValue = mNiceMinValue;
 //  double oldNiceMaxValue = mNiceMaxValue;
-  calculateNiceRange();
+//
+  if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || mMaxValue < (mNiceRange*0.75 + mNiceMinValue))
+    calculateNiceRange();
   //If we draw the text labels on the cache, then we need the following code
 //  if(oldNiceMinValue != mNiceMinValue || oldNiceMaxValue != mNiceMaxValue) {
     //range has changed, so we image cache is bad
@@ -564,7 +573,7 @@ void KSignalPlotter::calculateNiceRange()
     mNiceRange = 1.0;
 
   mNiceMinValue = mMinValue;
-  if ( mUseAutoRange ) {
+//  if ( mUseAutoRange ) {
     if ( mMinValue != 0.0 ) {
       double dim = pow( 10, floor( log10( fabs( mMinValue ) ) ) ) / 2;
       if ( mMinValue < 0.0 )
@@ -576,11 +585,22 @@ void KSignalPlotter::calculateNiceRange()
         mNiceRange = 1.0;
     }
     // Massage the range so that the grid shows some nice values.
-    double step = mNiceRange / (mHorizontalLinesCount+1);
-    double dim = pow( 10, floor( log10( step ) ) ) / 2;
-    mNiceRange = dim * ceil( step / dim ) * (mHorizontalLinesCount+1);
-  }
+    double step = mNiceRange / (mScaleDownBy*(mHorizontalLinesCount+1));
+    int logdim = (int)floor( log10( step ) );
+    double dim = pow( 10, logdim ) / 2;
+    int a = (int)ceil( step / dim );
+    if(logdim >= 0)
+        mPrecision = 0;
+    else if( a % 2 == 0){
+        mPrecision =-logdim;
+    } else {
+	mPrecision = 1-logdim;
+    }
+    kDebug() << "Minvalue is " << mMinValue << " and maxValue is " << mMaxValue << " and precision is " << mPrecision << " when a is " << a << " and dim is " << dim << " and logdim is " << logdim << " and step is " << dim * a << endl;
+    mNiceRange = mScaleDownBy*dim * a * (mHorizontalLinesCount+1);
+//  }
   mNiceMaxValue = mNiceMinValue + mNiceRange;
+  kDebug() << "new maxvalue is " << mNiceMaxValue << endl;
 }
 
 
@@ -590,7 +610,7 @@ void KSignalPlotter::drawTopBarFrame(QPainter *p, int fullWidth, int seperatorX,
 
       //remember that it has a height of 'height'.  Thus the lowest pixel it can draw on is height-1 since we count from 0
       p->setPen( Qt::NoPen);
-      p->fillRect( 0, 0, fullWidth, height-1, QBrush(QColor(0,0,0,60)));
+//      p->fillRect( 0, 0, fullWidth, height-1, QBrush(QColor(255,255,255,60)));
       p->setPen( mFontColor );
       p->drawText(0, 1, seperatorX, height, Qt::AlignCenter, mTitle );
       p->setPen( mHorizontalLinesColor );
@@ -803,12 +823,14 @@ void KSignalPlotter::drawAxisText(QPainter *p, int top, int h)
    */
 
   p->setPen( mFontColor );
+  double stepsize = mNiceRange/(mScaleDownBy*(mHorizontalLinesCount+1));
+  
   for ( uint y = 1; y <= mHorizontalLinesCount+1; y++ ) {
     int y_coord =  top + (y * (h-1)) / (mHorizontalLinesCount+1);  //Make sure it's y*h first to avoid rounding bugs
 
-    double value = (mNiceMaxValue - (y * mNiceRange) / (mHorizontalLinesCount+1) )/mScaleDownBy;
+    double value = mNiceMaxValue/mScaleDownBy - y * stepsize;
 
-    QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:2);
+    QString number = KGlobal::locale()->formatNumber( value, mPrecision);
     val = QString( "%1 %2" ).arg( number, mUnit );
     p->drawText( 6, y_coord - 3, val );
   }

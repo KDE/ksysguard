@@ -158,6 +158,7 @@ class KSignalPlotter : public QWidget
     uint mGraphStyle;
 
     bool mShowVerticalLines;
+    int mPrecision;
     QColor mVerticalLinesColor;
     uint mVerticalLinesDistance;
     bool mVerticalLinesScroll;
