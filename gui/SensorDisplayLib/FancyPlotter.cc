@@ -340,8 +340,7 @@ void FancyPlotter::answerReceived( int id, const QStringList &answerlist )
       }
     }
 
-    if ( !mPlotter->useAutoRange() && mPlotter->minValue() == 0.0 &&
-         mPlotter->maxValue() == 0.0 ) {
+    if ( !mPlotter->useAutoRange()) {
       /* We only use this information from the sensor when the
        * display is still using the default values. If the
        * sensor has been restored we don't touch the already set
