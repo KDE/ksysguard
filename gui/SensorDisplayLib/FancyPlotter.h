@@ -90,7 +90,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
 
   private:
     uint mBeams;
-    /** Number of beams we've recieved an answer from since asking last */
+    /** Number of beams we've received an answer from since asking last */
     uint mNumAccountedFor;
 
     KSignalPlotter* mPlotter;

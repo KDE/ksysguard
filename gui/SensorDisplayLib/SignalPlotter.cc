@@ -851,7 +851,7 @@ void KSignalPlotter::drawHorizontalLines(QPainter *p, int top, int w, int h)
 
 QString KSignalPlotter::lastValue( int i) const
 {
-  if(mBeamData.isEmpty()) return QString::null;
+  if(mBeamData.isEmpty()) return QString();
   double value = mBeamData.first()[i] / mScaleDownBy; //retrieve the newest value for this beam then scale it correct
   QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:2);
   return QString( "%1 %2").arg(number, mUnit);

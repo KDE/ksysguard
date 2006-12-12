@@ -249,7 +249,7 @@ void ProcessController::expandAllChildren(const QModelIndex &parent)
 
 void ProcessController::expandInit()
 {
-	//When we expand the items, make sure we dont call our expand all children function
+	//When we expand the items, make sure we don't call our expand all children function
 	disconnect(mUi.treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
 	mUi.treeView->expand(mFilterModel.mapFromSource(mModel.index(0,0, QModelIndex())));
 	connect(mUi.treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
@@ -437,7 +437,7 @@ ProcessController::answerReceived(int id, const QList<QByteArray>& answer)
 			return;
 		}
 		//Logical column 0 will always be the tree bit with the process name.  We expand this automatically in code,
-		//so dont let the user change it
+		//so don't let the user change it
 		mFilterModel.setFilterKeyColumn(0);
 		//Process names can have mixed case. Make the filter case insensitive.
 		mFilterModel.setFilterCaseSensitivity(Qt::CaseInsensitive);
@@ -572,7 +572,7 @@ ProcessController::answerReceived(int id, const QList<QByteArray>& answer)
 		if(answer2.count() != 3 && answer2.count() != 1) 
 			break;
 		
-		if(answer2.count() == 1) { //Unfortunetly kde3 ksysguardd does not return the pid of the process,  This means we need to handle the two cases seperately
+		if(answer2.count() == 1) { //Unfortunetly kde3 ksysguardd does not return the pid of the process,  This means we need to handle the two cases separately
 			switch (answer2[0].toInt())
 			{
 			case 0:	// successful renice operation
