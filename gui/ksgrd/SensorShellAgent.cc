@@ -96,7 +96,7 @@ void SensorShellAgent::msgRcvd( KProcess*, char *buffer, int buflen )
 {
   if ( !buffer || buflen == 0 )
     return;
-  mRetryCount = 3; //we recieved an answer, so reset our retry count back to 3
+  mRetryCount = 3; //we received an answer, so reset our retry count back to 3
   processAnswer( buffer, buflen );
 }
 

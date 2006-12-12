@@ -60,7 +60,7 @@ QVariant SensorBrowserModel::data( const QModelIndex & index, int role) const { 
         if(mSensorInfoMap.contains(id)) {
 	    Q_ASSERT(mSensorInfoMap.value(id));
 	    SensorInfo *sensorInfo = mSensorInfoMap.value(id);
-	    return sensorInfo->description() + " (" +sensorInfo->type() +")" ;
+	    return sensorInfo->description() + " (" +sensorInfo->type() +')' ;
         }
         if(mTreeNodeNames.contains(id)) return mTreeNodeNames.value(id);
         if(mHostInfoMap.contains(id)) {
