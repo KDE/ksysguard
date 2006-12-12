@@ -103,7 +103,7 @@ int setup_xres();
 
 static XResTopApp *app = NULL;
 static FILE *sCurrentClient = NULL;
-static Window sDummy; /*used to pass into functions that modify this but we dont care*/
+static Window sDummy; /*used to pass into functions that modify this but we don't care*/
 static long prev_pid = 0;
 static long prev_prev_pid = 0;
 static long prev_prev_prev_pid = 0;
