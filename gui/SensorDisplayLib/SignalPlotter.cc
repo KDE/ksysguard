@@ -398,22 +398,15 @@ QString KSignalPlotter::svgBackground() const {
 }
 void KSignalPlotter::setSvgBackground( const QString &filename )
 {
+  if(mSvgFilename == filename) return;
   mSvgFilename = filename;
-
-  KStandardDirs* kstd = KGlobal::dirs();
-  QString file = kstd->findResource( "data", "ksysguard/" + filename);
-
-  if(!mSvgRenderer) {
-    if(file.isEmpty()) return; //nothing changed
-    mSvgRenderer = new QSvgRenderer(file, this);
-  } else {
-    if(file.isEmpty()) {
-      delete mSvgRenderer;
-      mSvgRenderer = 0;
-    } else {
-      mSvgRenderer->load(file);
-    }
+  if(mSvgRenderer) {
+    delete mSvgRenderer;
+    mSvgRenderer = 0;
   }
+
+  //The svg rendererer object will be created on demand in drawBackground
+
   mBackgroundImage = QImage(); //we changed the svg, so reset the cache
 }
 
@@ -551,6 +544,12 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
 void KSignalPlotter::drawBackground(QPainter *p, int w, int h)
 {
   p->fillRect(0,0,w, h, mBackgroundColor);
+  if(!mSvgRenderer && !mSvgFilename.isEmpty()) {
+    KStandardDirs* kstd = KGlobal::dirs();
+    QString file = kstd->findResource( "data", "ksysguard/" + mSvgFilename);
+
+    mSvgRenderer = new QSvgRenderer(file, this);
+  }
   if(mSvgRenderer)
     mSvgRenderer->render(p);
 }
