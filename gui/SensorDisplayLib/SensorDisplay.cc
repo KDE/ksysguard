@@ -409,12 +409,12 @@ void SensorDisplay::setSensorOk( bool ok )
   } else {
     if ( mErrorIndicator )
       return;
+    if ( !mPlotterWdg || mPlotterWdg->isVisible())
+      return;
 
     KIconLoader iconLoader;
     QPixmap errorIcon = iconLoader.loadIcon( "connect_creating", K3Icon::Desktop,
                                              K3Icon::SizeSmall );
-    if ( !mPlotterWdg )
-      return;
 
     mErrorIndicator = new QWidget( mPlotterWdg );
     QPalette palette = mErrorIndicator->palette();

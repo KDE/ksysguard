@@ -163,7 +163,7 @@ void ProcessModel::setupProcessType()
 	mProcessType.insert("vim", Process::Wordprocessing);
 }
 
-bool ProcessModel::setData(const QList<QStringList> &data)
+bool ProcessModel::setData(const QList<QList<QByteArray> > &data)
 {
 
 	if(mPidColumn == -1) {
@@ -181,10 +181,9 @@ bool ProcessModel::setData(const QList<QStringList> &data)
 	//Then finally update the rest that might have changed
 
 	for(long i = 0; i < data.size(); i++) {
-		QStringList new_pid_data = data.at(i);
+		QList<QByteArray> new_pid_data = data.at(i);
 		if(new_pid_data.count() <= mPidColumn || new_pid_data.count() <= mPPidColumn) {
 			kDebug(1215) << "Something wrong with the ps data coming from ksysguardd daemon.  Ignoring it." << endl;
-			kDebug(1215) << new_pid_data.join(",") << endl;
 			return false; //returning false will trigger a sensor error
 		}
 		long long pid = new_pid_data.at(mPidColumn).toLongLong();
@@ -358,7 +357,7 @@ void ProcessModel::changeProcess(long long pid)
 
 	Process *process = mPidToProcess[pid];
 
-	const QStringList &newDataRow = newData[pid];
+	const QList<QByteArray> &newDataRow = newData[pid];
 
 	//Use i for the index in the new data, and j for the index for the process->data structure that we are copying into
 	int j = 0;
@@ -477,7 +476,7 @@ void ProcessModel::changeProcess(long long pid)
 			case DataColumnOtherPrettyLong: value = KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
 			case DataColumnOtherPrettyFloat: value = KGlobal::locale()->formatNumber( newDataRow[i].toDouble() ); break;
 			case DataColumnStatus: {
-				QByteArray status = newDataRow[i].toLatin1();
+				QByteArray status = newDataRow[i];
 				if(process->status != status) {
 					process->status = status;
 					changed = true;
@@ -565,7 +564,7 @@ void ProcessModel::insertOrChangeRows( long long pid)
 	int row = parent->children.count();
 	QModelIndex parentModel = getQModelIndex(parent, 0);
 
-	const QStringList &newDataRow = newData[pid];
+	const QList<QByteArray> &newDataRow = newData[pid];
 	Q_ASSERT(parent);
 	Process *new_process = new Process(pid, ppid, parent);
 	Q_CHECK_PTR(new_process);
@@ -592,8 +591,8 @@ void ProcessModel::insertOrChangeRows( long long pid)
 			case DataColumnNice: new_process->nice = newDataRow[i].toInt(); break;
 			case DataColumnVmSize: new_process->vmSize = newDataRow[i].toLong(); break;
 			case DataColumnVmRss: new_process->vmRSS = newDataRow[i].toLong(); break;
-			case DataColumnCommand: new_process->command = newDataRow[i]; break;
-			case DataColumnStatus: new_process->status = newDataRow[i].toLatin1(); break;
+			case DataColumnCommand: new_process->command = QString::fromUtf8(newDataRow[i]); break;
+			case DataColumnStatus: new_process->status = newDataRow[i]; break;
 			case DataColumnOtherLong: data << newDataRow[i].toLongLong(); break;
 			case DataColumnOtherPrettyLong:  data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
 			case DataColumnOtherPrettyFloat: data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble() ); break;
@@ -1109,11 +1108,10 @@ void ProcessModel::setIsLocalhost(bool isLocalhost)
 }
 
 /** Set the untranslated heading names for the model */
-bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltype_) {
+bool ProcessModel::setHeader(const QList<QByteArray> &header, const QByteArray &coltype_) {
 	//Argument examples:
 	//header: (Name,PID,PPID,UID,GID,Status,User%,System%,Nice,VmSize,VmRss,Login,TracerPID,Command)
 	//coltype_: sddddSffdDDsds
-
 	mPidColumn = -1;  //We need to be able to access the pid directly, so remember which column it will be in
 	mPPidColumn = -1; //Same, although this may not always be found :/
 	mCPUHeading = -1;
@@ -1121,8 +1119,16 @@ bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltyp
 	QList<int> headingsToType;
 	int num_of_others = 0; //Number of headings found that we don't know about.  Will match the index in process->data[index]
 	QByteArray coltype;
+	bool other;
+
+	if(header.count() > coltype_.count()*2) {
+		//coltype_ is the column type is in the form "d\tf\tS\t" etc
+		//so for an index i in header, coltype_[2*i]  is the column type
+		return false;
+	}
+
 	for(int i = 0; i < header.count(); i++) {
-		bool other = false;
+		other = false;
 		if(header[i] == "Login") {
 			coltype += DataColumnLogin;
 		} else if(header[i] == "GID") {
@@ -1174,27 +1180,29 @@ bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltyp
 		} else if(header[i] == "VmRss") {
 			coltype += DataColumnVmRss;
 			headings << i18nc("process heading", "Memory");
-			headingsToType << HeadingRSSMemory;
+			headingsToType  << HeadingRSSMemory;
 		} else if(header[i] == "Command") {
 			coltype += DataColumnCommand;
 			headings << i18nc("process heading", "Command");
 			headingsToType << HeadingCommand;
-		} else if(coltype_[i] == DATA_COLUMN_STATUS) {
+		} else if(coltype_[2*i] == DATA_COLUMN_STATUS) {
+		        //coltype_ is the column type is in the form "d\tf\tS\t" etc
+			//so 2*i  is the letter
 			coltype += DataColumnStatus;
-		} else if(coltype_[i] == DATA_COLUMN_LONG) {
+		} else if(coltype_[2*i] == DATA_COLUMN_LONG) {
 			coltype += DataColumnOtherLong;
 			other = true;
-		} else if(coltype_[i] == DATA_COLUMN_PRETTY_LONG) {
+		} else if(coltype_[2*i] == DATA_COLUMN_PRETTY_LONG) {
 			coltype += DataColumnOtherPrettyLong;
 			other = true;
-		} else if(coltype_[i] == DATA_COLUMN_PRETTY_FLOAT) {
+		} else if(coltype_[2*i] == DATA_COLUMN_PRETTY_FLOAT) {
 			coltype += DataColumnOtherPrettyFloat;
 			other = true;
 		} else {
 			coltype += DataColumnError;
 		}
 		if(other) { //If we don't know about this column, just automatically add it
-			headings << header[i];
+			headings << QString::fromUtf8(header[i]);
 			headingsToType << (HeadingOther + num_of_others++);
 		}
 	}
@@ -1217,7 +1225,7 @@ bool ProcessModel::setHeader(const QStringList &header, const QByteArray &coltyp
 
 	return true;
 }
-bool ProcessModel::setXResHeader(const QStringList &header, const QByteArray &)
+bool ProcessModel::setXResHeader(const QList<QByteArray> &header)
 {
 	mXResPidColumn = -1;
 	mXResIdentifierColumn = -1;
@@ -1258,7 +1266,7 @@ bool ProcessModel::setXResHeader(const QStringList &header, const QByteArray &)
 	endInsertColumns();
 	return true;
 }
-void ProcessModel::setXResData(long long pid, const QStringList& data)
+void ProcessModel::setXResData(long long pid, const QList<QByteArray>& data)
 {
 	if(mXResPidColumn == -1) {
 		kDebug(1215) << "XRes data received when we still don't know which column the XPid is in" << endl;
@@ -1266,7 +1274,7 @@ void ProcessModel::setXResData(long long pid, const QStringList& data)
 	}
 
 	if(data.count() < mXResNumColumns) {
-		kDebug(1215) << "Invalid data in setXResData. Not enough columns: " << data.join(",") << endl;
+		kDebug(1215) << "Invalid data in setXResData. Not enough columns: " << data.count() << endl;
 		return;
 	}
 	
@@ -1276,11 +1284,13 @@ void ProcessModel::setXResData(long long pid, const QStringList& data)
 		return;
 	}
  	bool changed = false;
-	if(mXResIdentifierColumn != -1)
-		if(process->xResIdentifier != data[mXResIdentifierColumn]) {
+	if(mXResIdentifierColumn != -1) {
+		QString identifier = QString::fromUtf8(data[mXResIdentifierColumn]);
+		if(process->xResIdentifier != identifier) {
 			changed = true;
-			process->xResIdentifier = data[mXResIdentifierColumn];
+			process->xResIdentifier = identifier;
 		}
+	}
 	if(mXResPxmMemColumn != -1) {
 		long long pxmMem = data[mXResPxmMemColumn].toLongLong();
 		if(process->xResPxmMemBytes != pxmMem) {

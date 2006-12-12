@@ -65,25 +65,25 @@ public:
 	/* Functions for setting the model */
 	/** Set the untranslated heading names for the incoming data that will be sent in setData.
 	 *  The column names we show to the user are based mostly on this information, translated if known, hidden if not necessary etc */
-	bool setHeader(const QStringList &header, const QByteArray &coltype);
+	bool setHeader(const QList<QByteArray> &header, const QByteArray &coltype);
 	/** This is called from outside every few seconds when we have a new answer.
 	 *  It checks the new data against what we have currently, and tries to be efficient in merging in the new data.
 	 *  @returns Whether the operation was successful.  Returns false if there was a problem with the data/sensor
 	 */
-	bool setData(const QList<QStringList> &data);
+	bool setData(const QList<QList<QByteArray> > &data);
 	/** By telling the model whether the sensor it is recieving the data from is for the localhost,
 	 *  then we can provide more information to the user.  For example, we can show the actual username
 	 *  rather than just the userid.
 	 */
 
 	/** Set the heading names for the incoming data that will be sent in setXResData */
-	bool setXResHeader(const QStringList &header, const QByteArray& coltype);
+	bool setXResHeader(const QList<QByteArray> &header);
 	/** Set the XRes data for a single process with the columns matching those given in setXResHeader.
 	 *
 	 *  XRes is an X server extension that returns information about an X process, such as the identifier (The window title),
 	 *  the amount of memory the window is using for pixmaps, etc.
 	 */
-	void setXResData(long long pid, const QStringList& data);
+	void setXResData(long long pid, const QList<QByteArray>& data);
 	
 	/** If we are localhost, then we can offer additional help such as looking up information about a user, offering superuser
 	 *  'kill' etc. */
@@ -206,7 +206,7 @@ private:
 	
 	/** This are used when there is new data.  There are cleared as soon as the data is merged into the current model */
 	QSet<long long> new_pids;
-	QHash<long long, QStringList> newData;
+	QHash<long long, QList<QByteArray> > newData;
 	QHash<long long, long long> newPidToPpidMapping;
 
 	/** A translated list of headings (column titles) in the order we want to display them. Used in headerData() */

@@ -100,7 +100,7 @@ ListView::ColumnType ListView::convertColumnType(const QString &type) const
 }
 
 void
-ListView::answerReceived(int id, const QStringList& answer)
+ListView::answerReceived(int id, const QList<QByteArray>& answer)
 {
 	/* We received something, so the sensor is probably ok. */
 	sensorError(id, false);
@@ -122,7 +122,7 @@ ListView::answerReceived(int id, const QStringList& answer)
 			mModel.clear();
 			QStringList translatedHeaders;
 			for (uint i = 0; i < headers.count(); i++) {
-				translatedHeaders.append( i18nc("heading from daemon", headers[i].latin1()) );
+				translatedHeaders.append( i18nc("heading from daemon", headers[i]) );
 			}
 
 			for(uint i =0 ; i < colTypes.count(); i++) {

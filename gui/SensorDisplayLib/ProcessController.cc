@@ -406,7 +406,7 @@ ProcessController::reniceProcess(int pid, int niceValue)
 }
 
 void
-ProcessController::answerReceived(int id, const QStringList& answer)
+ProcessController::answerReceived(int id, const QList<QByteArray>& answer)
 {
 	/* We received something, so the sensor is probably ok. */
 	sensorError(id, false);
@@ -425,18 +425,14 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 			sensorError(id, true);
 			return;
 		}
-		QString line = answer.at(1);
-		QByteArray coltype;
-		for(int i = 0; i < line.size(); i++)  //coltype is in the form "d\tf\tS\t" etc, so split into a list of char
-			if(line[i] != '\t')
-				coltype += line[i].toLatin1();
-		QStringList header = answer.at(0).split('\t');
-		if(coltype.count() != header.count()) {
+		QList<QByteArray> header = answer[0].split('\t');
+		if(answer[1].count() != header.count() *2 -1) {
 			kDebug(1215) << "ProcessController::answerReceived.  Invalid data from a client - column type and data don't match in number.  Discarding" << endl;
 			sensorError(id, true);
 			return;
 		}
-		if(!mModel.setHeader(header, coltype)) {
+		//answer.at(1) is the column type is in the form "d\tf\tS\t" etc
+		if(!mModel.setHeader(header, answer[1])) {
 			sensorError(id,true);
 			return;
 		}
@@ -472,10 +468,10 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 			kDebug(1215) << "Process data arrived before we were ready for it. hmm" << endl;
 			break;
 		}
-		QList<QStringList> data;
-		QStringListIterator i(answer);
+		QList< QList<QByteArray> > data;
+		QListIterator<QByteArray> i(answer);
 		while(i.hasNext()) {
-			QString row = i.next();
+			QByteArray row = i.next();
 			if(!row.trimmed().isEmpty())
 				data << row.split('\t');
 		}
@@ -501,7 +497,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 			break;
 		}
 
-		QStringList answer2 = answer[0].split('\t');
+		QList<QByteArray> answer2 = answer[0].split('\t');
 		if(answer2.count() != 2) {
 			kDebug(1215) << "Invalid answer from a kill request" << endl;
 			break;
@@ -513,14 +509,14 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		case 1:	// unknown error
 			KSGRD::SensorMgr->notify(
 				i18n("Error while attempting to kill process %1.",
-				 answer2[1]));
+				 QString::fromUtf8(answer2[1])));
 			break;
 		case 2: {
 			if(!sensors().at(0)->isLocalhost()) {
 				KSGRD::SensorMgr->notify(
 					i18n("You do not have the permission to kill process %1 on host %2 and due to security "
 					     "considerations, KDE cannot execute root commands remotely",
-					     answer2[1], sensors().at(0)->hostName()));
+					     QString::fromUtf8(answer2[1]), sensors().at(0)->hostName()));
 				break;
 			} 
 			//Run as root with kdesu to get around insufficent privillages
@@ -545,7 +541,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		case 3:
 			KSGRD::SensorMgr->notify(
 				i18n("Process %1 has already disappeared.",
-				 answer2[1]));
+				 QString::fromUtf8(answer2[1])));
 			break;
 		case 4:
 			KSGRD::SensorMgr->notify(i18n("Invalid Signal."));
@@ -570,14 +566,12 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 			break;
 		}
 
-		QStringList answer2 = answer[0].split('\t');
+		QList<QByteArray> answer2 = answer[0].split('\t');
 
-		kDebug(1215) << "Answer from a renice request: " << answer2.count() << " " << answer2.join(", ") << endl;
 		// result of renice operation
-		if(answer2.count() != 3 && answer2.count() != 1) {
-			kDebug(1215) << "Invalid answer from a renice request: " << answer2.count() << " " << answer2.join(", ") << endl;
+		if(answer2.count() != 3 && answer2.count() != 1) 
 			break;
-		}
+		
 		if(answer2.count() == 1) { //Unfortunetly kde3 ksysguardd does not return the pid of the process,  This means we need to handle the two cases seperately
 			switch (answer2[0].toInt())
 			{
@@ -609,14 +603,14 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		case 1:	// unknown error
 			KSGRD::SensorMgr->notify(
 				i18n("Error while attempting to renice process %1.",
-				 answer2[1]));
+				 answer2[1].constData()));
 			break;
 		case 2: {
 			if(!sensors().at(0)->isLocalhost()) {
 				KSGRD::SensorMgr->notify(
 					i18n("You do not have the permission to renice process %1 on host %2 and due to security "
 					     "considerations, KDE cannot execute root commands remotely",
-					     answer2[1], sensors().at(0)->hostName()));
+					     answer2[1].constData(), sensors().at(0)->hostName()));
 				break;
 			} 
 			//Run as root with kdesu to get around insufficent privillages
@@ -642,7 +636,7 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		case 3:
 			KSGRD::SensorMgr->notify(
 				i18n("Process %1 has disappeared.",
-				 answer2[1]));
+				 answer2[1].constData()));
 			break;
 		case 4:  
 			KSGRD::SensorMgr->notify(i18n("Internal communication problem."));
@@ -658,23 +652,19 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		if (answer.count() != 2)
 		{
 			kDebug (1215) << "ProcessController::answerReceived(XRes_Info_Command)"
-				  "wrong number of lines [" <<  answer << "]" << endl;
+				  "wrong number of lines: " <<  answer.count() <<  endl;
 			sensorError(id, true);
 			return;
 		}
-		QString line = answer.at(1);
-		QByteArray coltype;
-		for(int i = 0; i < line.size(); i++)  //coltype is in the form "d\tf\tS\t" etc, so split into a list of char
-			if(line[i] != '\t')
-				coltype += line[i].toLatin1();
-		QStringList header = answer.at(0).split('\t');
-		if(coltype.size() != header.count()) {
-			kDebug(1215) << "ProcessController::answerReceived.  Invalid data from a client - column type and data don't match in number.  Discarding" << endl;
+		QList<QByteArray> header = answer.at(0).split('\t');
+		//answer[1] is the column type.  it looks like "f\tf\td"
+		if(answer[1].size() != header.count()*2-1) {
+			kDebug(1215) << "ProcessController::answerReceived.  Invalid data from a client - column type and data don't match in number. " << answer[1].size() << "," << header.count() << "  Discarding" << endl;
 			sensorError(id, true);
 			return;
 		}
 		mXResHeadingStart = mUi.treeView->header()->count();
-		if(!mModel.setXResHeader(header, coltype)) {
+		if(!mModel.setXResHeader(header)) {
 			sensorError(id,true);
 			mXResHeadingStart = -1;
 			return;
@@ -695,11 +685,11 @@ ProcessController::answerReceived(int id, const QStringList& answer)
 		/* We have received the answer to a xres command that contains a
 		 * list of processes that we should already know about, with various additional information. 
 		 * We first clear existing xres data, then add in the new data*/
-		QStringListIterator i(answer);
+		QListIterator<QByteArray> i(answer);
 		QSet<long long> pids;  //most programs have multiple windows.  we are only interested in the first window as this is just most likely to be the main window
 		
 		while(i.hasNext()) {
-		  QStringList data = i.next().split('\t');
+		  QList<QByteArray> data = i.next().split('\t');
 		  if(!data.isEmpty()) {
 		    long long pid = data[0].toLongLong();
 		    if(!pids.contains(pid)) {

@@ -104,10 +104,10 @@ void SensorAgent::processAnswer( const char *buf, int buflen )
     }
 
     //The spec was supposed to be that it returned "\nksysguardd> " but some seem to forget the space, so we have to compensate.  Sigh 
-    if( (buffer.size() -i >= (signed)(sizeof("\nksysguardd>")) -1 && qstrncmp(buffer.constData()+i, "\nksysguardd>", sizeof("\nksysguardd>")-1) == 0) ||
-        (i==0 && buffer.size() >= (signed)(sizeof("ksysguardd>"))-1 && qstrncmp(buffer.constData(), "ksysguardd>", sizeof("ksysguardd>")-1) == 0) ) {
-	
-	QString answer = QString::fromUtf8(buffer.constData()+startOfAnswer, i-startOfAnswer);
+    if( (i==0 && buffer.size() >= (signed)(sizeof("ksysguardd>"))-1 && qstrncmp(buffer.constData(), "ksysguardd>", sizeof("ksysguardd>")-1) == 0) ||
+	(buffer.size() -i >= (signed)(sizeof("\nksysguardd>")) -1 && qstrncmp(buffer.constData()+i, "\nksysguardd>", sizeof("\nksysguardd>")-1) == 0)) {
+
+	QByteArray answer(buffer.constData()+startOfAnswer, i-startOfAnswer);
 	if(!answer.isEmpty())
 		mAnswerBuffer << answer;
 #if SA_TRACE
@@ -163,7 +163,7 @@ void SensorAgent::processAnswer( const char *buf, int buflen )
 	delete req;
 	mAnswerBuffer.clear();
     } else if(buffer.at(i) == '\n'){
-	mAnswerBuffer << QString::fromUtf8(buffer.constData()+startOfAnswer, i-startOfAnswer);
+	mAnswerBuffer << QByteArray(buffer.constData()+startOfAnswer, i-startOfAnswer);
 	startOfAnswer = i+1;
     }
   }

@@ -35,7 +35,7 @@ public:
 	~ListView() {}
 
 	bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& sensorDescr);
-	void answerReceived(int id, const QStringList& answerlist);
+	void answerReceived(int id, const QList<QByteArray>& answerlist);
 	void updateList();
 
 	bool restoreSettings(QDomElement& element);

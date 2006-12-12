@@ -77,11 +77,11 @@ bool MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
   return true;
 }
 
-void MultiMeter::answerReceived(int id, const QStringList& answerlist)
+void MultiMeter::answerReceived(int id, const QList<QByteArray>& answerlist)
 {
   /* We received something, so the sensor is probably ok. */
   sensorError(id, false);
-  QString answer;
+  QByteArray answer;
   if(!answerlist.isEmpty()) answer = answerlist[0];
 
   if (id == 100)

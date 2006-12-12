@@ -68,7 +68,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
 
     virtual void setTitle( const QString &title );
 
-    virtual void answerReceived( int id, const QStringList &answerlist );
+    virtual void answerReceived( int id, const QList<QByteArray> &answerlist );
 
     virtual bool restoreSettings( QDomElement &element );
     virtual bool saveSettings( QDomDocument &doc, QDomElement &element );

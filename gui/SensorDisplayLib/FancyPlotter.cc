@@ -309,9 +309,9 @@ void FancyPlotter::timerEvent( QTimerEvent*event ) //virtual
   mSampleBuf.clear();
   SensorDisplay::timerEvent(event);
 }
-void FancyPlotter::answerReceived( int id, const QStringList &answerlist )
+void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
 {
-  QString answer;
+  QByteArray answer;
   if(!answerlist.isEmpty()) answer = answerlist[0];
   if ( (uint)id < mBeams ) {
 

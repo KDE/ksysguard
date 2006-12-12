@@ -45,7 +45,7 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
     virtual void saveProperties( KConfig* );
     virtual void readProperties( KConfig* );
 
-    virtual void answerReceived( int id, const QStringList& );
+    virtual void answerReceived( int id, const QList<QByteArray> & );
 
     void beATaskManager();
     void initStatusBar();

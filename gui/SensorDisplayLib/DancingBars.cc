@@ -221,18 +221,24 @@ QSize DancingBars::sizeHint() const
   return mPlotter->sizeHint();
 }
 
-void DancingBars::answerReceived( int id, const QStringList &answerlist )
+void DancingBars::answerReceived( int id, const QList<QByteArray> &answerlist )
 {
   /* We received something, so the sensor is probably ok. */
   sensorError( id, false );
-  QString answer;
+  QByteArray answer;
   if(!answerlist.isEmpty()) answer = answerlist[0];
   if ( id < 100 ) {
+    if(id >= mSampleBuffer.count()) {
+      kDebug(1215) << "ERROR: DancingBars received invalid data" << endl;
+      sensorError(id, true);
+      return;
+    }
     mSampleBuffer[ id ] = answer.toDouble();
     if ( mFlags.testBit( id ) == true ) {
       kDebug(1215) << "ERROR: DancingBars lost sample (" << mFlags
                     << ", " << mBars << ")" << endl;
       sensorError( id, true );
+      return;
     }
     mFlags.setBit( id, true );
 

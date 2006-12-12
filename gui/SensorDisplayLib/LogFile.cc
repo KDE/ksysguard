@@ -236,7 +236,7 @@ LogFile::updateMonitor()
 }
 
 void
-LogFile::answerReceived(int id, const QStringList& answer)
+LogFile::answerReceived(int id, const QList<QByteArray>& answer)
 {
 	/* We received something, so the sensor is probably ok. */
 	sensorError(id, false);
@@ -244,15 +244,17 @@ LogFile::answerReceived(int id, const QStringList& answer)
 	switch (id)
 	{
 		case 19: {
+			QString s;
 			for (int i = 0; i < answer.count(); i++) {
+				s = QString::fromUtf8(answer[i]);
 				if (monitor->count() == MAXLINES)
 					monitor->takeItem(0);
 
-				monitor->addItem(answer[i]);
+				monitor->addItem(s);
 
 				for (QStringList::Iterator it = filterRules.begin(); it != filterRules.end(); it++) {
 					QRegExp *expr = new QRegExp((*it).toLatin1());
-					if (expr->indexIn(answer[i]) != -1) {
+					if (expr->indexIn(s) != -1) {
 						KNotification::event("pattern_match", QString("rule '%1' matched").arg(*it),QPixmap(),this);
 					}
 					delete expr;

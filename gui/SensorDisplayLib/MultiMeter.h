@@ -39,7 +39,7 @@ class MultiMeter : public KSGRD::SensorDisplay
 
     bool addSensor(const QString& hostName, const QString& sensorName,
                    const QString& sensorType, const QString& sensorDescr);
-    void answerReceived(int id, const QStringList& answerlist);
+    void answerReceived(int id, const QList<QByteArray>& answerlist);
     void resizeEvent(QResizeEvent*);
 
     bool restoreSettings(QDomElement& element);

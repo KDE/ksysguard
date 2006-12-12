@@ -307,6 +307,8 @@ void TopLevel::timerEvent( QTimerEvent* )
                                    (KSGRD::SensorClient*)this, 3 );
     KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/used",
                                    (KSGRD::SensorClient*)this, 4 );
+    KSGRD::SensorMgr->sendRequest( "localhost", "mem/physical/application",
+                                   (KSGRD::SensorClient*)this, 6 );
   }
 }
 
@@ -360,21 +362,22 @@ void TopLevel::saveProperties( KConfig *cfg )
   mWorkSpace->saveProperties( cfg );
 }
 
-void TopLevel::answerReceived( int id, const QStringList &answerList )
+void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
 {
   // we have received an answer from the daemon.
-  QString answer;
+  QByteArray answer;
   if(!answerList.isEmpty()) answer = answerList[0];
   QString s;
   static QString unit;
-  static long mUsed = 0;
   static long mFree = 0;
+  static long mUsedApplication = 0;
+  static long mUsedTotal = 0;
   static long sUsed = 0;
   static long sFree = 0;
 
   switch ( id ) {
     case 0:
-      s = i18np( "1 Process", "%n Processes", answer.toInt() );
+      s = i18n( "Processes: %1", answer.toInt() );
       statusBar()->changeItem( s, 0 );
       break;
 
@@ -383,39 +386,42 @@ void TopLevel::answerReceived( int id, const QStringList &answerList )
       break;
 
     case 2:
-      mUsed = answer.toLong();
-      s = i18n( "Memory: %1 %2 used, %3 %4 free" ,
-                KGlobal::locale()->formatNumber( mUsed, 0 ) ,  unit ,
-                KGlobal::locale()->formatNumber( mFree, 0 ) ,  unit );
-      statusBar()->changeItem( s, 1 );
+      mUsedTotal = answer.toLong();
       break;
 
     case 3:
       sFree = answer.toLong();
-      setSwapInfo( sUsed, sFree, unit );
       break;
 
     case 4:
       sUsed = answer.toLong();
-      setSwapInfo( sUsed, sFree, unit );
       break;
 
     case 5: {
       KSGRD::SensorIntegerInfo info( answer );
       unit = KSGRD::SensorMgr->translateUnit( info.unit() );
+      break;
     }
+    case 6:
+      mUsedApplication = answer.toLong();
+      s = i18n( "Memory: %1 used, %2 total" ,
+                KGlobal::locale()->formatByteSize( mUsedApplication*1024),
+                KGlobal::locale()->formatByteSize( (mFree+mUsedTotal)*1024 ) );
+      statusBar()->changeItem( s, 1 );
+      setSwapInfo( sUsed, sFree, unit );
+      break;
   }
 }
 
-void TopLevel::setSwapInfo( long used, long free, const QString &unit )
+void TopLevel::setSwapInfo( long used, long free, const QString & )
 {
   QString msg;
   if ( used == 0 && free == 0 ) // no swap available
     msg = i18n( "No swap space available" );
   else {
-    msg = i18n( "Swap: %1 %2 used, %3 %4 free" ,
-                KGlobal::locale()->formatNumber( used, 0 ) ,  unit ,
-                KGlobal::locale()->formatNumber( free, 0 ) ,  unit );
+    msg = i18n( "Swap: %1 used, %3 free" ,
+                KGlobal::locale()->formatByteSize( used*1024 ),
+                KGlobal::locale()->formatByteSize( free*1024) );
   }
 
   statusBar()->changeItem( msg, 2 );

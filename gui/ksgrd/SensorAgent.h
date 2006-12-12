@@ -98,7 +98,7 @@ class KDE_EXPORT SensorAgent : public QObject
     bool mFoundError;
     QQueue< SensorRequest* > mInputFIFO;
     QQueue< SensorRequest* > mProcessingFIFO;
-    QStringList mAnswerBuffer;  ///A single reply can be on multiple lines.  
+    QList<QByteArray> mAnswerBuffer;  ///A single reply can be on multiple lines.  
     QString mErrorBuffer;
     QByteArray mLeftOverBuffer; ///Any data read in but not terminated is copied into here, awaiting the next load of data
 

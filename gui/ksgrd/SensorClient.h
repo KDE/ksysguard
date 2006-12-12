@@ -45,7 +45,7 @@ class SensorClient
       been received by the sensor agent. This function must be reimplemented
       by the sensor client to receive and process this information.
      */
-    virtual void answerReceived( int, const QStringList& ) { }
+    virtual void answerReceived( int, const QList<QByteArray>& ) { }
 
     /**
       In case of an unexpected fatal problem with the sensor the sensor
@@ -80,7 +80,7 @@ class SensorBoard
 class SensorTokenizer
 {
   public:
-    SensorTokenizer( const QString &info, QChar separator )
+    SensorTokenizer( const QByteArray &info, char separator )
     {
       if ( separator == '/' ) {
         //This is a special case where we assume that info is a '\' escaped string
@@ -108,7 +108,7 @@ class SensorTokenizer
 
     ~SensorTokenizer() { }
 
-    const QString& operator[]( unsigned idx )
+    const QByteArray& operator[]( unsigned idx )
     {
       Q_ASSERT(idx < (unsigned)(mTokens.count()));
       return mTokens[ idx ];
@@ -120,21 +120,19 @@ class SensorTokenizer
     }
 
   private:
-    QStringList mTokens;
+    QList<QByteArray> mTokens;
 
-    QString unEscapeString( const QString &string ) {
+    QByteArray unEscapeString( QByteArray string ) {
 
       int i=0;
-      QString result = string;
-
-      for( ; i < result.length(); ++i ) {
-        if( result[i] == '\\' ) {
-          result.remove( i, 1 );
+      for( ; i < string.length(); ++i ) {
+        if( string[i] == '\\' ) {
+          string.remove( i, 1 );
           ++i;
         }
       }
 
-      return result;
+      return string;
     }
 };
 
@@ -146,14 +144,14 @@ class SensorTokenizer
 class SensorIntegerInfo : public SensorTokenizer
 {
   public:
-    SensorIntegerInfo( const QString &info )
+    SensorIntegerInfo( const QByteArray &info )
       : SensorTokenizer( info, '\t' ) { }
 
     ~SensorIntegerInfo() { }
 
-    const QString &name()
+    QString name()
     {
-      return (*this)[ 0 ];
+      return QString::fromUtf8((*this)[ 0 ]);
     }
 
     long min()
@@ -166,9 +164,9 @@ class SensorIntegerInfo : public SensorTokenizer
       return (*this)[ 2 ].toLong();
     }
 
-    const QString &unit()
+    QString unit()
     {
-      return (*this)[ 3 ];
+      return QString::fromUtf8((*this)[ 3 ]);
     }
 };
 
@@ -180,14 +178,14 @@ class SensorIntegerInfo : public SensorTokenizer
 class SensorFloatInfo : public SensorTokenizer
 {
   public:
-    explicit SensorFloatInfo( const QString &info )
+    explicit SensorFloatInfo( const QByteArray &info )
       : SensorTokenizer( info, '\t' ) { }
 
     ~SensorFloatInfo() { }
 
-    const QString &name()
+    QString name()
     {
-      return (*this)[ 0 ];
+      return QString::fromUtf8((*this)[ 0 ]);
     }
 
     double min()
@@ -200,9 +198,9 @@ class SensorFloatInfo : public SensorTokenizer
       return (*this)[ 2 ].toDouble();
     }
 
-    const QString &unit()
+    QString unit()
     {
-      return (*this)[ 3 ];
+      return QString::fromUtf8((*this)[ 3 ]);
     }
 };
 
@@ -214,14 +212,14 @@ class SensorFloatInfo : public SensorTokenizer
 class SensorPSLine : public SensorTokenizer
 {
   public:
-    SensorPSLine( const QString &line )
+    SensorPSLine( const QByteArray &line )
       : SensorTokenizer( line, '\t' ) { }
 
     ~SensorPSLine() { }
 
-    const QString& name()
+    QString name()
     {
-      return (*this)[ 0 ];
+      return QString::fromUtf8((*this)[ 0 ]);
     }
 
     long pid()

@@ -46,7 +46,7 @@ public:
 
 	bool addSensor(const QString& hostName, const QString& sensorName,
 				   const QString& sensorType, const QString& sensorDescr);
-	void answerReceived(int id, const QStringList& answer);
+	void answerReceived(int id, const QList<QByteArray>& answer);
 	void resizeEvent(QResizeEvent*);
 
 	bool restoreSettings(QDomElement& element);
