@@ -107,8 +107,8 @@ class KSignalPlotter : public QWidget
     void setBackgroundColor( const QColor &color );
     QColor backgroundColor() const;
 
-    void setSvgBackground( const QString &filename );
-    QString svgBackground() const;
+    static void setSvgBackground( const QString &filename );
+    static QString svgBackground();
 
     /** Return a translated string like:   "34 %" or "100 KB" for beam i
      */
@@ -138,8 +138,9 @@ class KSignalPlotter : public QWidget
     void drawHorizontalLines(QPainter *p, int top, int w, int h);
 
   private:
-    QSvgRenderer *mSvgRenderer;
-    QString mSvgFilename;
+    static QSvgRenderer *sSvgRenderer; ///Made static to save memory and time. Each one takes up about 0.5MB of memory when loaded
+    static QString sSvgFilename; 
+
     QImage mBackgroundImage;  //A cache of the svg
 
     double mMinValue;

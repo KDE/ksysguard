@@ -35,6 +35,10 @@
 
 #include "SignalPlotter.h"
 
+QSvgRenderer *KSignalPlotter::sSvgRenderer = 0;
+QString KSignalPlotter::sSvgFilename;
+
+
 static inline int min( int a, int b )
 {
   return ( a < b ? a : b );
@@ -43,7 +47,6 @@ static inline int min( int a, int b )
 KSignalPlotter::KSignalPlotter( QWidget *parent)
   : QWidget( parent)
 {
-  mSvgRenderer = 0;
   mPrecision = 0;
   mBezierCurveOffset = 0;
   mSamples = 0;
@@ -393,21 +396,21 @@ QFont KSignalPlotter::font() const
 {
   return mFont;
 }
-QString KSignalPlotter::svgBackground() const {
-  return mSvgFilename;
+QString KSignalPlotter::svgBackground() {  //static
+  return sSvgFilename;
 }
-void KSignalPlotter::setSvgBackground( const QString &filename )
+void KSignalPlotter::setSvgBackground( const QString &filename ) //static
 {
-  if(mSvgFilename == filename) return;
-  mSvgFilename = filename;
-  if(mSvgRenderer) {
-    delete mSvgRenderer;
-    mSvgRenderer = 0;
+  if(sSvgFilename == filename) return;
+  sSvgFilename = filename;
+  if(sSvgRenderer) {
+    delete sSvgRenderer;
+    sSvgRenderer = 0;
   }
 
   //The svg rendererer object will be created on demand in drawBackground
 
-  mBackgroundImage = QImage(); //we changed the svg, so reset the cache
+  //mBackgroundImage = QImage(); //we changed the svg, so reset the cache
 }
 
 void KSignalPlotter::setBackgroundColor( const QColor &color )
@@ -544,14 +547,18 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
 void KSignalPlotter::drawBackground(QPainter *p, int w, int h)
 {
   p->fillRect(0,0,w, h, mBackgroundColor);
-  if(!mSvgRenderer && !mSvgFilename.isEmpty()) {
+  if(!sSvgRenderer && !sSvgFilename.isEmpty()) {
     KStandardDirs* kstd = KGlobal::dirs();
-    QString file = kstd->findResource( "data", "ksysguard/" + mSvgFilename);
+    QString file = kstd->findResource( "data", "ksysguard/" + sSvgFilename);
 
-    mSvgRenderer = new QSvgRenderer(file, this);
+    sSvgRenderer = new QSvgRenderer(file, this);
   }
-  if(mSvgRenderer)
-    mSvgRenderer->render(p);
+  if(sSvgRenderer) {
+    sSvgRenderer->render(p);
+
+//    delete sSvgRenderer; //save memory, delete the svg object afterwards
+//    sSvgRenderer = 0;
+  }
 }
 
 void KSignalPlotter::drawThinFrame(QPainter *p, int w, int h)
