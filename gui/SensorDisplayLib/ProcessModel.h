@@ -121,6 +121,8 @@ public slots:
 	void setShowTotals(int totals);
 
 private:
+        /** A mapping of running,stopped,etc  to a friendly description like 'Stopped, either by a job control signal or because it is being traced.'*/
+        QString getStatusDescription(const QByteArray & status) const;
 	/** This returns a QModelIndex for the given process.  It has to look up the parent for this pid, find the offset this 
 	 *  pid is from the parent, and return that.  It's not that slow, but does involve a couple of hash table lookups.
 	 */
@@ -213,9 +215,6 @@ private:
 	QStringList mHeadings;
 	/** A list that matches up with headings and gives the type of each, using the enum HeadingUser, etc. Used in data() */
 	QList<int> mHeadingsToType;
-
-	/** A mapping of running,stopped,etc  to a friendly description like 'Stopped, either by a job control signal or because it is being traced.'*/
-	QHash<QString, QString> mStatusDescription; 
 
 	bool mShowChildTotals; ///If set to true, a parent will return the CPU usage of all its children recursively
 

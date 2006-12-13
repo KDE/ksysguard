@@ -64,12 +64,16 @@ ProcessModel::ProcessModel(QObject* parent)
 	(void)I18N_NOOP2("process status", "stopped");
 	(void)I18N_NOOP2("process status", "paging");
 	(void)I18N_NOOP2("process status", "idle");
-	mStatusDescription["running"] = i18n("- Process is doing some work");
-	mStatusDescription["sleeping"] = i18n("- Process is waiting for something to happen");
-	mStatusDescription["stopped"] = i18n("- Process has been stopped. It will not respond to user input at the moment");	
-	mStatusDescription["zombie"] = i18n("- Process has finished and is now dead, but the parent has not noticed yet");
 
 	setupProcessType();	
+}
+QString ProcessModel::getStatusDescription(const QByteArray & status) const
+{
+	if( status == "running") return i18n("- Process is doing some work");
+	if( status == "sleeping") return i18n("- Process is waiting for something to happen");
+	if( status == "stopped") return i18n("- Process has been stopped. It will not respond to user input at the moment");
+	if( status == "zombie") return i18n("- Process has finished and is now dead, but the parent has not noticed yet");
+	return QString();
 }
 void ProcessModel::setupProcessType()
 {
@@ -883,7 +887,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			QString tooltip = ki18n("<qt>Process status: %1 %2<br/>"
 						"User CPU usage: %3%<br/>System CPU usage: %4%")
 						.subs(i18nc("process status", process->status))
-						.subs(mStatusDescription.value(process->status, ""))
+						.subs(getStatusDescription(process->status))
 						.subs(process->userUsage, 0, 'f', 2)
 						.subs(process->sysUsage, 0, 'f', 2)
 						.toString();
