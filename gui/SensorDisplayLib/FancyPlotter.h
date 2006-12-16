@@ -83,7 +83,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
 
   protected:
     /** When we receive a timer event, draw the beams */
-    virtual void timerEvent( QTimerEvent* );
+    virtual void timerTick( );
     virtual bool eventFilter( QObject*, QEvent* );
     virtual void resizeEvent( QResizeEvent* );
     void setTooltip();

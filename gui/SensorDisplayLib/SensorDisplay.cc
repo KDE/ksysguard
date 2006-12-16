@@ -27,7 +27,6 @@
 #include <QPixmap>
 #include <Q3PtrList>
 #include <QEvent>
-#include <QTimerEvent>
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include <QCustomEvent>
@@ -65,15 +64,11 @@ SensorDisplay::SensorDisplay( QWidget *parent, const QString &title, SharedSetti
 {
   mSharedSettings = workSheetSettings;
 
-  // default interval is 2 seconds.
-  mUpdateInterval = 2;
-  mUseGlobalUpdateInterval = true;
   mShowUnit = false;
   mTimerId = NONE;
   mErrorIndicator = 0;
   mPlotterWdg = 0;
 
-  setTimerOn( true );
   this->setWhatsThis( "dummy" );
 
   setMinimumSize( 16, 16 );
@@ -104,26 +99,7 @@ void SensorDisplay::unregisterSensor( uint pos )
   delete mSensors.takeAt( pos );
 }
 
-void SensorDisplay::configureUpdateInterval()
-{
-  TimerSettings dlg( this );
-
-  dlg.setUseGlobalUpdate( mUseGlobalUpdateInterval );
-  dlg.setInterval( mUpdateInterval );
-
-  if ( dlg.exec() ) {
-    if ( dlg.useGlobalUpdate() ) {
-      mUseGlobalUpdateInterval = true;
-      // FIXME: Get update interval from parent
-      setUpdateInterval( 2 );
-    } else {
-      mUseGlobalUpdateInterval = false;
-      setUpdateInterval( dlg.interval() );
-    }
-  }
-}
-
-void SensorDisplay::timerEvent( QTimerEvent* )
+void SensorDisplay::timerTick()
 {
   int i = 0;
 
@@ -138,32 +114,26 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
 
     QMenu pm;
     QAction *action = 0;
+    bool menuEmpty = true;
     if ( mSharedSettings->isApplet ) {
       action = pm.addAction( i18n( "Launch &System Guard") );
       action->setData( 1 );
       pm.addSeparator();
+      menuEmpty = false;
     }
 
     if ( hasSettingsDialog() ) {
       action = pm.addAction( i18n( "&Properties" ) );
       action->setData( 2 );
+      menuEmpty = false;
     }
     if(!mSharedSettings->locked) {  
       action = pm.addAction( i18n( "&Remove Display" ) );
       action->setData( 3 );
-    }
-    action = pm.addSeparator();
-    action = pm.addAction( i18n( "&Change Update Interval..." ) );
-    action->setData( 4 );
-
-    if ( !timerOn() ) {
-      action = pm.addAction( i18n( "Re&sume" ) );
-      action->setData( 5 );
-    } else {
-      action = pm.addAction( i18n( "P&ause" ) );
-      action->setData( 6 );
+      menuEmpty = false;
     }
 
+    if(menuEmpty) return true;
     action = pm.exec( QCursor::pos() );
     if ( action ) {
       switch ( action->data().toInt() ) {
@@ -179,15 +149,6 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
               kapp->postEvent( mDeleteNotifier, event );
             }
           }
-          break;
-        case 4:
-          configureUpdateInterval();
-          break;
-        case 5:
-          setTimerOn( true );
-          break;
-        case 6:
-          setTimerOn( false );
           break;
       }
     }
@@ -273,19 +234,6 @@ bool SensorDisplay::removeSensor( uint pos )
   return true;
 }
 
-void SensorDisplay::setUpdateInterval( uint interval )
-{
-  bool timerActive = timerOn();
-
-  if ( timerActive )
-    setTimerOn( false );
-
-  mUpdateInterval = interval;
-
-  if ( timerActive )
-    setTimerOn( true );
-}
-
 bool SensorDisplay::hasSettingsDialog() const
 {
   return false;
@@ -293,16 +241,6 @@ bool SensorDisplay::hasSettingsDialog() const
 
 void SensorDisplay::configureSettings()
 {
-}
-
-void SensorDisplay::setUseGlobalUpdateInterval( bool value )
-{
-  mUseGlobalUpdateInterval = value;
-}
-
-bool SensorDisplay::useGlobalUpdateInterval() const
-{
-  return mUseGlobalUpdateInterval;
 }
 
 QString SensorDisplay::additionalWhatsThis()
@@ -326,20 +264,6 @@ bool SensorDisplay::restoreSettings( QDomElement &element )
   setUnit( element.attribute( "unit", QString() ) );
   setTitle( element.attribute( "title", QString() ) );
 
-  if ( element.attribute( "updateInterval" ) != QString() ) {
-    mUseGlobalUpdateInterval = false;
-    setUpdateInterval( element.attribute( "updateInterval", "2" ).toInt() );
-  } else {
-    mUseGlobalUpdateInterval = true;
-    // FIXME: Get update interval from parent
-    setUpdateInterval( 2 );
-  }
-
-  if ( element.attribute( "pause", "0" ).toInt() == 0 )
-    setTimerOn( true );
-  else
-    setTimerOn( false );
-
   return true;
 }
 
@@ -349,37 +273,7 @@ bool SensorDisplay::saveSettings( QDomDocument&, QDomElement &element )
   element.setAttribute( "unit", unit() );
   element.setAttribute( "showUnit", mShowUnit );
 
-  if ( mUseGlobalUpdateInterval )
-    element.setAttribute( "globalUpdate", "1" );
-  else {
-    element.setAttribute( "globalUpdate", "0" );
-    element.setAttribute( "updateInterval", mUpdateInterval );
-  }
-
-  if ( !timerOn() )
-    element.setAttribute( "pause", 1 );
-  else
-    element.setAttribute( "pause", 0 );
-
   return true;
-}
-
-void SensorDisplay::setTimerOn( bool on )
-{
-  if ( on ) {
-    if ( mTimerId == NONE )
-      mTimerId = startTimer( mUpdateInterval * 1000 );
-  } else {
-    if ( mTimerId != NONE ) {
-      killTimer( mTimerId );
-      mTimerId = NONE;
-    }
-  }
-}
-
-bool SensorDisplay::timerOn() const
-{
-  return ( mTimerId != NONE );
 }
 
 QList<SensorProperties *> &SensorDisplay::sensors()

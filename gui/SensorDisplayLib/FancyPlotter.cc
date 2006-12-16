@@ -299,7 +299,7 @@ QSize FancyPlotter::sizeHint() const
   return mPlotter->sizeHint();
 }
 
-void FancyPlotter::timerEvent( QTimerEvent*event ) //virtual
+void FancyPlotter::timerTick( ) //virtual
 {
   if(!mSampleBuf.isEmpty()) {
     while((uint)mSampleBuf.count() < mBeams)
@@ -307,7 +307,7 @@ void FancyPlotter::timerEvent( QTimerEvent*event ) //virtual
     mPlotter->addSample( mSampleBuf );
   }
   mSampleBuf.clear();
-  SensorDisplay::timerEvent(event);
+  SensorDisplay::timerTick();
 }
 void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
 {

@@ -56,7 +56,7 @@ public:
 
 	void configureSettings(void);
 
-	virtual void timerEvent(QTimerEvent*)
+	virtual void timerTick()
 	{
 		updateMonitor();
 	}

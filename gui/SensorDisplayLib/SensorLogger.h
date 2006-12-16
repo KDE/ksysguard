@@ -79,7 +79,7 @@ class LogSensor : public QObject, public KSGRD::SensorClient
     void changed();
 
   protected:
-    virtual void timerEvent(QTimerEvent*);
+    virtual void timerTick();
 
   private:
     QString mSensorName;

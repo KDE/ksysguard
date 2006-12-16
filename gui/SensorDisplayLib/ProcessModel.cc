@@ -367,7 +367,7 @@ void ProcessModel::changeProcess(long long pid)
 	int j = 0;
 	bool changed = false;  // set if any column other than cpu usage column changes.  so we can redraw the data
 	bool cpuchanged = false; // set if the cpu column changed.  Since this changes often, have one specifically for this
-	QString loginName;
+	QByteArray loginName;
 	double sysUsageChange = 0;
 	double userUsageChange = 0;
 	for (int i = 0; i < newDataRow.count(); i++)
@@ -445,7 +445,7 @@ void ProcessModel::changeProcess(long long pid)
 				}
 			} break;
 			case DataColumnName: {
-				QString name = newDataRow[i];
+				QByteArray name = newDataRow[i];
 				if(process->name != name) {
 					process->name = name;
 					process->processType = (mProcessType.contains(name))?mProcessType[name]:Process::Other;
@@ -574,7 +574,7 @@ void ProcessModel::insertOrChangeRows( long long pid)
 	Q_CHECK_PTR(new_process);
 
 	QList<QVariant> &data = new_process->data;
-	QString loginName;
+	QByteArray loginName;
 	for (int i = 0; i < mColType.size() && i < newDataRow.count(); i++)
 	{  //At the moment the data is just a string, so turn it into a list of variants instead and insert the variants into our new process
 		switch(mColType.at(i)) {
@@ -595,7 +595,7 @@ void ProcessModel::insertOrChangeRows( long long pid)
 			case DataColumnNice: new_process->nice = newDataRow[i].toInt(); break;
 			case DataColumnVmSize: new_process->vmSize = newDataRow[i].toLong(); break;
 			case DataColumnVmRss: new_process->vmRSS = newDataRow[i].toLong(); break;
-			case DataColumnCommand: new_process->command = QString::fromUtf8(newDataRow[i]); break;
+			case DataColumnCommand: new_process->command = newDataRow[i]; break;
 			case DataColumnStatus: new_process->status = newDataRow[i]; break;
 			case DataColumnOtherLong: data << newDataRow[i].toLongLong(); break;
 			case DataColumnOtherPrettyLong:  data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
@@ -765,7 +765,7 @@ QString ProcessModel::getTooltipForUser(long long uid, long long gid) const
 }
 
 QString ProcessModel::getStringForProcess(Process *process) const {
-	return i18nc("Short description of a process. PID, name", "%1: %2", (long)(process->pid), process->name);
+	return i18nc("Short description of a process. PID, name", "%1: %2", (long)(process->pid), QString::fromUtf8(process->name));
 }
 
 QVariant ProcessModel::getUsernameForUser(long long uid) const {
@@ -846,16 +846,16 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		if(process->tracerpid > 0) {
 			if(mPidToProcess.contains(process->tracerpid)) { //it is possible for this to be not the case in certain race conditions
 				Process *process_tracer = mPidToProcess[process->tracerpid];
-				tracer = i18nc("tooltip. name,pid ","This process is being debugged by %1 (%2)", process_tracer->name, (long int)process->tracerpid);
+				tracer = i18nc("tooltip. name,pid ","This process is being debugged by %1 (%2)", process_tracer->name.constData(), (long int)process->tracerpid);
 			}
 		}
 		switch(mHeadingsToType[index.column()]) {
 		case HeadingName: {
 			QString tooltip;
 			if(process->parent_pid == 0)
-				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Command: %3", process->name, (long int)process->pid, process->command);
+				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Command: %3", process->name.constData(), (long int)process->pid, process->command.constData());
 			else
-				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3<br/>Command: %4", process->name, (long int)process->pid, (long int)process->parent_pid, process->command);
+				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3<br/>Command: %4", process->name.constData(), (long int)process->pid, (long int)process->parent_pid, process->command.constData());
 
 			if(!tracer.isEmpty())
 				return tooltip + "<br/>" + tracer;
@@ -864,7 +864,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 
 		case HeadingCommand: {
 			QString tooltip =
-				i18n("<qt>This process was run with the following command:<br/>%1", process->command);
+				i18n("<qt>This process was run with the following command:<br/>%1", process->command.constData());
 		        if(tracer.isEmpty()) return tooltip;
 			return tooltip + "<br/>" + tracer;
 		}
@@ -1071,7 +1071,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	return QVariant(); //never get here, but make compilier happy
 }
 
-QPixmap ProcessModel::getIcon(const QString&iconname) const {
+QPixmap ProcessModel::getIcon(const QByteArray&iconname) const {
 
 	/* Get icon from icon list that might be appropriate for a process
 	 * with this name. */

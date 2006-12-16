@@ -55,24 +55,6 @@ class SensorClient
 };
 
 /**
-  Every object that has a SensorClient as a child must inherit from
-  this class to support the advanced update interval settings.
- */
-class SensorBoard
-{
-  public:
-    SensorBoard() { }
-    virtual ~SensorBoard() { }
-
-    void updateInterval( int interval ) { mUpdateInterval = interval; }
-
-    int updateInterval() { return mUpdateInterval; }
-
-  private:
-    int mUpdateInterval;
-};
-
-/**
   The following classes are utility classes that provide a
   convenient way to retrieve pieces of information from the sensor
   answers. For each type of answer there is a separate class.

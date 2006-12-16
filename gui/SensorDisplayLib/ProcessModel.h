@@ -92,7 +92,7 @@ public:
 	/** The iconname is the name of the process or an aliases for it (like 'daemon' etc)
 	 *  @return A QPixmap, that may or may not be null.
 	 */
-	QPixmap getIcon(const QString& iconname) const;
+	QPixmap getIcon(const QByteArray& iconname) const;
 	
 	/** Return a string with the pid of the process and the name of the process.  E.g.  13343: ksyguard
 	 */
@@ -141,7 +141,7 @@ private:
 	void changeProcess(long long pid) ;
 
 	
-	QHash<QString,Process::ProcessType> mProcessType;
+	QHash<QByteArray,Process::ProcessType> mProcessType;
 	QStringList mHeader;
 
 	/** For new data that comes in, this list matches up with that, and gives the type of each heading using a letter. */
@@ -176,7 +176,7 @@ private:
 	 *  Name is the process name, or an alias (like 'daemon' etc).
 	 *  @see getIcon(const QString& iconname)
 	 */
-	mutable QHash<QString,QPixmap> mIconCache;
+	mutable QHash<QByteArray,QPixmap> mIconCache;
 	
 	mutable KIconLoader *mIcons; ///Created when the first icon is loaded
 

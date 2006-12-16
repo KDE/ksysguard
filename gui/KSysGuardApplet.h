@@ -29,7 +29,6 @@
 
 namespace KSGRD
 {
-class SensorBoard;
 class SensorDisplay;
 }
 
@@ -37,10 +36,11 @@ class QDragEnterEvent;
 class QDropEvent;
 class QPoint;
 class KSGAppletSettings;
+class QTimer;
 
 class SharedSettings;
 
-class KSysGuardApplet : public KPanelApplet, public KSGRD::SensorBoard
+class KSysGuardApplet : public KPanelApplet
 {
 	Q_OBJECT
 
@@ -59,6 +59,8 @@ class KSysGuardApplet : public KPanelApplet, public KSGRD::SensorBoard
     void dragEnterEvent( QDragEnterEvent* );
     void dropEvent( QDropEvent* );
     bool event( QEvent* );
+    void setUpdateInterval( unsigned int interval);
+    int updateInterval() const;
 
   private Q_SLOTS:
     void applySettings();
@@ -80,6 +82,7 @@ class KSysGuardApplet : public KPanelApplet, public KSGRD::SensorBoard
     KSGAppletSettings* mSettingsDlg;
     QWidget** mDockList;
     SharedSettings mSharedSettings;
+    QTimer mTimer;
 };
 
 #endif

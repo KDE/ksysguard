@@ -66,7 +66,7 @@ WorkSheet::WorkSheet( uint rows, uint columns, uint interval, QWidget* parent )
   mRows = mColumns = 0;
   mGridLayout = 0;
   mDisplayList = 0;
-  updateInterval( interval );
+  setUpdateInterval( interval );
   mFileName = "";
 
   createGrid( rows, columns );
@@ -112,9 +112,11 @@ bool WorkSheet::load( const QString &fileName )
 
   // Check for proper size.
   QDomElement element = doc.documentElement();
-  updateInterval( element.attribute( "interval" ).toUInt() );
-  if ( updateInterval() < 1 || updateInterval() > 300 )
-    updateInterval( 2 );
+  unsigned int interval = element.attribute( "interval", "2" ).toUInt();
+  if( interval  <1 || interval > 900 )  //make sure the interval is fairly sane
+    interval = 2;
+
+  setUpdateInterval(interval);
 
   mTitle = element.attribute( "title");
   bool ok;
@@ -369,11 +371,7 @@ void WorkSheet::settings()
   }
 
   if ( dlg.exec() ) {
-    updateInterval( dlg.interval() );
-    for (uint r = 0; r < mRows; ++r)
-      for (uint c = 0; c < mColumns; ++c)
-        if ( mDisplayList[ r ][ c ]->useGlobalUpdateInterval() )
-          mDisplayList[ r ][ c ]->setUpdateInterval( updateInterval() );
+    setUpdateInterval( dlg.interval() );
 
     if (!mSharedSettings.locked)
       resizeGrid( dlg.rows(), dlg.columns() );
@@ -490,8 +488,7 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
     return false;
   }
 
-  if ( newDisplay->useGlobalUpdateInterval() )
-    newDisplay->setUpdateInterval( updateInterval() );
+  connect(&mTimer, SIGNAL( timeout()), newDisplay, SLOT( timerTick()));
 
   // load display specific settings
   if ( !newDisplay->restoreSettings( element ) )
@@ -520,8 +517,6 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
     mDisplayList[ row ][ column ] = newDisplay;
   }  else {
     mDisplayList[ row ][ column ] = newDisplay;
-    if ( mDisplayList[ row ][ column ]->useGlobalUpdateInterval() )
-      mDisplayList[ row ][ column ]->setUpdateInterval( updateInterval() );
     connect( newDisplay, SIGNAL( showPopupMenu( KSGRD::SensorDisplay* ) ),
              SLOT( showPopupMenu( KSGRD::SensorDisplay* ) ) );
     newDisplay->setDeleteNotifier( this );
@@ -688,13 +683,21 @@ QString WorkSheet::currentDisplayAsXML()
   return doc.toString();
 }
 
-void WorkSheet::setIsOnTop( bool /* onTop */ )
+void WorkSheet::setUpdateInterval( unsigned int secs)
 {
-/*
-  for ( uint r = 0; r < mRows; ++r )
-    for ( uint c = 0; c < mColumns; ++c )
-      mDisplayList[ r ][ c ]->setIsOnTop( onTop );
-*/
+  if(secs == 0)
+    mTimer.stop();
+  else {
+    mTimer.setInterval(secs*1000);
+    mTimer.start();
+  }
+}
+int WorkSheet::updateInterval() const
+{
+  if(mTimer.isActive())
+    return mTimer.interval()/1000;
+  else
+    return 0;
 }
 
 #include "WorkSheet.moc"

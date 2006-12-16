@@ -23,7 +23,6 @@
 
 #include <QtCore/QEvent>
 #include <QtCore/QPointer>
-#include <QtCore/QTimerEvent>
 #include <QtGui/QLabel>
 #include <QtGui/QWidget>
 
@@ -104,30 +103,6 @@ class SensorDisplay : public QWidget, public SensorClient
     bool showUnit() const;
 
     /**
-      Sets whether the update interval of the work sheet should be
-      used instead of the one, set by @ref setUpdateInterval().
-     */
-    void setUseGlobalUpdateInterval( bool value );
-
-    /**
-      Returns whether the update interval of the work sheet should be
-      used instead of the one, set by @ref setUpdateInterval().
-      see @ref setUseGlobalUpdateInterval()
-     */
-    bool useGlobalUpdateInterval() const;
-
-    /**
-      Sets the update interval of the timer, which triggers the timer
-      events. The state of the timer can be set with @ref setTimerOn().
-     */
-    void setUpdateInterval( uint interval );
-
-    /**
-      Returns the update interval.
-     */
-    uint updateInterval() const;
-
-    /**
       This method appends all hosts of the display to @ref list.
      */
     void hosts( QStringList& list );
@@ -166,11 +141,6 @@ class SensorDisplay : public QWidget, public SensorClient
       handling by removing the display of necessary.
      */
     void sendRequest( const QString &hostName, const QString &cmd, int id );
-
-    /**
-      Raises the configure dialog to setup the update interval.
-     */
-    void configureUpdateInterval();
 
     /**
       Returns whether the display provides a settings dialog.
@@ -213,11 +183,6 @@ class SensorDisplay : public QWidget, public SensorClient
     void setDeleteNotifier( QObject *object );
 
   public Q_SLOTS:
-    /**
-      If @ref value is true, this method starts the timer that triggers
-      timer events. If @ref value is false, the timer is stopped.
-     */
-    void setTimerOn( bool value );
 
     /**
       Calling this method emits the @ref showPopupMenu() with this
@@ -238,13 +203,18 @@ class SensorDisplay : public QWidget, public SensorClient
      */
     virtual void applyStyle();
 
+    /**
+     * This is called when the display should request more information
+     * and update itself
+     */
+    virtual void timerTick();
+
   Q_SIGNALS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
     void changeTitle(const QString&);
 
   protected:
     virtual bool eventFilter( QObject*, QEvent* );
-    virtual void timerEvent( QTimerEvent* );
 
     void registerSensor( SensorProperties *sp );
     void unregisterSensor( uint pos );

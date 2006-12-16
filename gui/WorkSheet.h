@@ -16,15 +16,13 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-    KSysGuard is currently maintained by Chris Schlaeger <cs@kde.org>.
-    Please do not commit any changes without consulting me first. Thanks!
-
 */
 
 #ifndef KSG_WORKSHEET_H
 #define KSG_WORKSHEET_H
 
 #include <QWidget>
+#include <QTimer>
 
 #include <SensorDisplay.h>
 #include "SharedSettings.h"
@@ -43,7 +41,7 @@ class QStringList;
   layout. The number of columns can not be changed. Displays are added by
   dragging a sensor from the sensor browser over the WorkSheet.
  */
-class WorkSheet : public QWidget, public KSGRD::SensorBoard
+class WorkSheet : public QWidget
 {
   Q_OBJECT
 
@@ -75,8 +73,6 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
 
     void settings();
 
-    void setIsOnTop( bool onTop );
-
   public Q_SLOTS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
     void setTitle( const QString &title );
@@ -90,6 +86,8 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
     void dragEnterEvent( QDragEnterEvent* );
     void dropEvent( QDropEvent* );
     bool event( QEvent* );
+    void setUpdateInterval( unsigned int interval);
+    int updateInterval() const;
 
   private:
     void removeDisplay( KSGRD::SensorDisplay *display );
@@ -119,6 +117,8 @@ class WorkSheet : public QWidget, public KSGRD::SensorBoard
     QString mTitle;
 
     SharedSettings mSharedSettings;
+
+    QTimer mTimer;
 
     /**
       This two dimensional array stores the pointers to the sensor displays

@@ -339,7 +339,7 @@ void LogSensor::stopLogging()
   timerOff();
 }
 
-void LogSensor::timerEvent( QTimerEvent* )
+void LogSensor::timerTick( )
 {
   KSGRD::SensorMgr->sendRequest( mHostName, mSensorName, (KSGRD::SensorClient*) this, 42 );
 }

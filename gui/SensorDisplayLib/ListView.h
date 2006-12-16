@@ -46,7 +46,7 @@ public:
 		return true;
 	}
 
-	virtual void timerEvent(QTimerEvent*)
+	virtual void timerTickEvent()
 	{
 		updateList();
 	}

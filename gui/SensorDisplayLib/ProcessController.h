@@ -25,7 +25,6 @@
 #include <QWidget>
 #include <QAbstractItemModel>
 
-#include <QTimerEvent>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QResizeEvent>
@@ -68,7 +67,7 @@ public:
 
 	bool saveSettings(QDomDocument& doc, QDomElement& element);
 
-	virtual void timerEvent(QTimerEvent*)
+	virtual void timerTick()
 	{
 		updateList();
 	}

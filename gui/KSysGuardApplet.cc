@@ -28,6 +28,7 @@
 #include <QtGui/QResizeEvent>
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
+#include <QTimer>
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -77,7 +78,7 @@ KSysGuardApplet::KSysGuardApplet( const QString& configFile, Plasma::Type type,
   mSharedSettings.isApplet = true;
   addEmptyDisplay( mDockList, 0 );
 
-  updateInterval( 2 );
+  setUpdateInterval( 2 );
 
   load();
 
@@ -133,13 +134,9 @@ void KSysGuardApplet::preferencesFinished()
 
 void KSysGuardApplet::applySettings()
 {
-  updateInterval( mSettingsDlg->updateInterval() );
+  setUpdateInterval( mSettingsDlg->updateInterval() );
   mSizeRatio = mSettingsDlg->sizeRatio() / 100.0;
   resizeDocks( mSettingsDlg->numDisplay() );
-
-  for ( uint i = 0; i < mDockCount; ++i )
-    if ( QLatin1String( "QFrame" ) != mDockList[ i ]->metaObject()->className() )
-      ((KSGRD::SensorDisplay*)mDockList[ i ])->setUpdateInterval( updateInterval() );
 
   save();
 }
@@ -337,9 +334,11 @@ bool KSysGuardApplet::load()
   if ( !ok )
     mSizeRatio = 1.0;
 
-  updateInterval( element.attribute( "interval" ).toUInt( &ok ) );
+  unsigned int interval = element.attribute( "interval").toUInt( &ok );
   if ( !ok )
-    updateInterval( 2 );
+    interval = 2;
+  
+  setUpdateInterval( interval );
 
   resizeDocks( count );
 
@@ -385,7 +384,7 @@ bool KSysGuardApplet::load()
       return false;
     }
 
-    newDisplay->setUpdateInterval( updateInterval() );
+    connect(&mTimer, SIGNAL( timeout()), newDisplay, SLOT( timerTick()));
     newDisplay->setDeleteNotifier( this );
 
     // load display specific settings
@@ -480,6 +479,23 @@ void KSysGuardApplet::addEmptyDisplay( QWidget **dock, uint pos )
   layout();
   if ( isVisible() )
     dock[ pos ]->show();
+}
+
+void KSysGuardApplet::setUpdateInterval( unsigned int secs)
+{
+  if(secs == 0)
+    mTimer.stop();
+  else {
+    mTimer.setInterval(secs*1000);
+    mTimer.start();
+  }
+}
+int KSysGuardApplet::updateInterval() const
+{
+  if(mTimer.isActive())
+    return mTimer.interval();
+  else
+    return 0;
 }
 
 #include "KSysGuardApplet.moc"
