@@ -102,7 +102,7 @@ bool ProcessFilter::lessThan(const QModelIndex &left, const QModelIndex &right) 
 		Q_ASSERT(right.model());
 		QVariant l = (left.model() ? left.model()->data(left, Qt::UserRole+1) : QVariant());
 		QVariant r = (right.model() ? right.model()->data(right, Qt::UserRole+1) : QVariant());
-		if(l.isValid() && r.isValid() && !l.isNull() && !r.isNull())
+		if(l.isValid() && r.isValid())
 			return l.toLongLong() < r.toLongLong();
 	}
 	return QSortFilterProxyModel::lessThan(left,right);

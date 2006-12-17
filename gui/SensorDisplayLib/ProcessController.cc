@@ -437,11 +437,11 @@ ProcessController::answerReceived(int id, const QList<QByteArray>& answer)
 			sensorError(id,true);
 			return;
 		}
-		//Logical column 0 will always be the tree bit with the process name.  We expand this automatically in code,
-		//so don't let the user change it
 		mFilterModel.setFilterKeyColumn(0);
 		//Process names can have mixed case. Make the filter case insensitive.
 		mFilterModel.setFilterCaseSensitivity(Qt::CaseInsensitive);
+		//Logical column 0 will always be the tree bit with the process name.  We expand this automatically in code,
+		//so don't let the user change it
 		mUi.treeView->header()->setResizeMode(0, QHeaderView::ResizeToContents);
 		//set the last section to stretch to take up all the room.  We also set this again in xres_info to be sure
 		mUi.treeView->header()->setStretchLastSection(true);

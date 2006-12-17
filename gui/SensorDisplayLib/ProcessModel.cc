@@ -949,6 +949,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	case Qt::UserRole+1: {
 		//We have a special understanding with the filter sort. This returns an int (in a qvariant) that can be sorted by
 		Process *process = reinterpret_cast< Process * > (index.internalPointer());
+		Q_ASSERT(process);
 		int headingType = mHeadingsToType[index.column()];
 		switch(headingType) {
 		case HeadingUser: {
@@ -981,6 +982,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		case HeadingMemory:
 			return (long long)process->vmSize;
 		}
+		return QVariant();
 	}
 	case Qt::UserRole+2: {
 		//Return an int here for the cpu percentage
