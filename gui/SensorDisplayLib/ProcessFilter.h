@@ -43,6 +43,12 @@ class ProcessFilter : public QSortFilterProxyModel
 
   public slots:
 	void setFilter(int index);
+        /** This slot calls filterChanged().
+	 *  This is because for example we sort the username also by the cpu used.  Tell the model that the cpu changed
+	 *  woudln't normally trigger a resort if we are sorting by the user, so we basically call resort every 3 seconds.
+	 *  While this sounds kinda hackish, it's actually the preferable action anyway.  We don't want the processes to jump about
+	 *  constantly. */
+  	void resort();
 	
   protected:
 	virtual bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const;

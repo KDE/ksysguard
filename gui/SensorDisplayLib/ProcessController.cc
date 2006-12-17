@@ -140,6 +140,11 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	mUi.chkShowTotals->setVisible(!mSimple);
 	setPlotterWidget(this);
 	setMinimumSize(sizeHint());
+
+	//If the view resorts continually, then it can be hard to keep track of processes.  By doing it only every 3 seconds it reduces the 'jumping around'
+	QTimer *mTimer = new QTimer(this);
+	connect(mTimer, SIGNAL(timeout()), &mFilterModel, SLOT(resort()));
+	mTimer->start(3000); 
 }
 void ProcessController::setSimpleMode(int index)
 {  //index is the item the user selected in the combo box

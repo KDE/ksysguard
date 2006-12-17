@@ -148,7 +148,7 @@ private:
 	 *  When this countdown reaches 0 then we call xres again.
 	 */
 	int mXResCountdown;
-	
+
 	/** Whether we are in simple mode.  Must be kept in sync with the cmbFilter and mModel.mSimple
 	 */
 	bool mSimple;

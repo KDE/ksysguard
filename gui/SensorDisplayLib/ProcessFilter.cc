@@ -113,4 +113,8 @@ void ProcessFilter::setFilter(int index) {
 	mFilter = index; 
 	filterChanged();//Tell the proxy view to refresh all its information
 }
+void ProcessFilter::resort() {
+	filterChanged();//Tell the proxy view to refresh all its information
+
+}
 #include "ProcessFilter.moc"

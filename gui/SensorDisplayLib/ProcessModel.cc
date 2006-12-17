@@ -522,11 +522,11 @@ void ProcessModel::changeProcess(long long pid)
 	if(!changed) {
 		//Only the cpu usage changed, so only update that
 		QModelIndex index = createIndex(row, mCPUHeading, process);
-		emit dataChanged(index, index);	
+		emit dataChanged(index, index);
 	} else {
 		QModelIndex startIndex = createIndex(row, 0, process);
 		QModelIndex endIndex = createIndex(row, mHeadings.count()-1, process);
-//		emit dataChanged(startIndex, endIndex);
+		emit dataChanged(startIndex, endIndex);
 	}
 
 }
@@ -955,32 +955,41 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		case HeadingUser: {
 			//Sorting by user will be the default and the most common.
 			//We want to sort in the most useful way that we can. We need to return a number though.
-			//First the user we are running as should be at the top.  We add 2,000,000 for this
-			//Then any other users in the system.  We add 1,000,000 for this,
-			//Then at the bottom the 'system' processes.  We add 0 for this
+			//This code is based on that sorting ascendingly should put the current user at the top
+			//
+			//First the user we are running as should be at the top.  We add 0 for this
+			//Then any other users in the system.  We add 100,000,000 for this (remember it's ascendingly sorted)
+			//Then at the bottom the 'system' processes.  We add 200,000,000 for this
 
 			//One special exception is a traced process since that's probably important. We should put that at the top
-			if(process->tracerpid >0) return (long long)99999999;
+			//
+			//We subtract the uid to sort ascendingly by that, then subtract the cpu usage to sort by that, then finally subtract the memory
+			if(process->tracerpid >0) return (long long)0;
 			
 			long long base = 0;
 			if(process->uid == getuid())
-				base = 200000000;
+				base = 0;
 			else if(process->uid < 100 || !canUserLogin(process->uid))
-				base = process->uid * 100;
+				base = 200000000 - process->uid * 10000;
 			else
-				base = 100000000 + process->uid * 100;
+				base = 100000000 - process->uid * 10000;
 
 			//However we can of course have lots of processes with the same user.  Next we sort by CPU.
-			return base + (long long)((process->totalUserUsage + process->totalSysUsage));
+			return (long long)(base - ((process->totalUserUsage + process->totalSysUsage)*100) + process->vmRSS*100.0/mMemTotal);
 		}
 		case HeadingXMemory:
-			return (long long)(process->xResMemOtherBytes + process->xResPxmMemBytes);
+			//FIXME Okay this is a hack, but here's the deal:
+			//when you click on a column, it sorts ascendingly by default.  But this is not useful - we really want it to be descendingly by default.
+			//However I cannot find a way to do this!
+			//So we return a negative number.
+			//I really hope Qt gives us a way to set the default sort direction for a column
+			return (long long)-(process->xResMemOtherBytes + process->xResPxmMemBytes);
 		case HeadingCPUUsage:
-			return (long long)process->totalUserUsage + process->totalSysUsage;
+			return (long long)-(process->totalUserUsage + process->totalSysUsage);
 		case HeadingRSSMemory:
-			return (long long)process->vmRSS;
+			return (long long)-process->vmRSS;
 		case HeadingMemory:
-			return (long long)process->vmSize;
+			return (long long)-process->vmSize;
 		}
 		return QVariant();
 	}
