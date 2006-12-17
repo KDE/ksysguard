@@ -109,9 +109,9 @@ void KSignalPlotter::addSample( const QList<double>& sampleBuf )
   if(mSamples < 4) {
     //It might be possible, under some race conditions, for addSample to be called before mSamples is set
     //This is just to be safe
-    kDebug() << "Error - mSamples is only " << mSamples << endl;
+    kDebug(1215) << "Error - mSamples is only " << mSamples << endl;
     updateDataBuffers();
-    kDebug() << "mSamples is now " << mSamples << endl;
+    kDebug(1215) << "mSamples is now " << mSamples << endl;
     if(mSamples < 4)
       return;
   }
@@ -140,13 +140,13 @@ void KSignalPlotter::addSample( const QList<double>& sampleBuf )
 void KSignalPlotter::reorderBeams( const QList<int>& newOrder )
 {
   if(newOrder.count() != mBeamColors.count()) {
-    kDebug() << "neworder has " << newOrder.count() << " and beam colors is " << mBeamColors.count() << endl;
+    kDebug(1215) << "neworder has " << newOrder.count() << " and beam colors is " << mBeamColors.count() << endl;
     return;
   }
   QLinkedList< QList<double> >::Iterator it;
   for(it = mBeamData.begin(); it != mBeamData.end(); ++it) {
     if(newOrder.count() != (*it).count()) {
-      kDebug() << "Serious problem in move sample.  beamdata[i] has " << (*it).count() << " and neworder has " << newOrder.count() << endl;
+      kDebug(1215) << "Serious problem in move sample.  beamdata[i] has " << (*it).count() << " and neworder has " << newOrder.count() << endl;
     } else {
      QList<double> newBeam;
      for(int i = 0; i < newOrder.count(); i++) {
@@ -602,11 +602,9 @@ void KSignalPlotter::calculateNiceRange()
     } else {
 	mPrecision = 1-logdim;
     }
-    kDebug() << "Minvalue is " << mMinValue << " and maxValue is " << mMaxValue << " and precision is " << mPrecision << " when a is " << a << " and dim is " << dim << " and logdim is " << logdim << " and step is " << dim * a << endl;
     mNiceRange = mScaleDownBy*dim * a * (mHorizontalLinesCount+1);
 //  }
   mNiceMaxValue = mNiceMinValue + mNiceRange;
-  kDebug() << "new maxvalue is " << mNiceMaxValue << endl;
 }
 
 
