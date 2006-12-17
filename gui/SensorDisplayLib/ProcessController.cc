@@ -185,9 +185,9 @@ void ProcessController::showProcessContextMenu(const QPoint &point){
 	}
 }
 bool ProcessController::areXResColumnsHidden() const {
-	if(!mUi.treeView->header()->sectionsHidden()) return false;
+	if(!mXResSupported || mXResHeadingStart == -1) return true; //There are no xres headings so I they count as 'hidden'
+	if(!mUi.treeView->header()->sectionsHidden()) return false; //we know there are xres headings, but all headings are being shown, so return false
 	//All the xres headings have a column index between mXResHeadingStart and mXResHeadingEnd INCLUSIVE
-	if(!mXResSupported || mXResHeadingStart == -1) return true; //There are no xres headings so I guess they count as hidden
 	Q_ASSERT(mXResHeadingStart <= mXResHeadingEnd);
 	for(int i = mXResHeadingStart; i <= mXResHeadingEnd; i++) {
 		if(!mUi.treeView->header()->isSectionHidden(i)) 
@@ -312,6 +312,7 @@ ProcessController::updateList()
 	//The 'xres' call is very expensive - Rather than calling it every 2 seconds
 	//instead just call it every 5th time that we call ps.  It won't change much.
 	if(!areXResColumnsHidden()) {
+		kDebug() << "updateList - getting xres data" << endl;
 		if(--mXResCountdown <= 0) {
 			mXResCountdown = 5;
 			sendRequest(sensors().at(0)->hostName(), "xres", XRes_Command);
