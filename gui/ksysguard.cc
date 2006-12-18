@@ -46,7 +46,7 @@
 #include <ksgrd/SensorManager.h>
 #include <kstandarddirs.h>
 #include <kstatusbar.h>
-#include <kstdaction.h>
+#include <kstandardaction.h>
 #include <ktoggleaction.h>
 #include <ktoolbar.h>
 #include <kurl.h>
@@ -116,7 +116,7 @@ TopLevel::TopLevel()
   mTabExportAction = new KAction(KIcon("filesaveas"),  i18n( "&Export Worksheet..." ), actionCollection(), "export_worksheet" );
   connect(mTabExportAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( exportWorkSheet() ));
 
-  KStdAction::quit( this, SLOT( close() ), actionCollection() );
+  KStandardAction::quit( this, SLOT( close() ), actionCollection() );
 
   mMonitorRemoteAction = new KAction(KIcon("connect_established"),  i18n( "Monitor remote machine..." ), actionCollection(), "connect_host" );
   connect(mMonitorRemoteAction, SIGNAL(triggered(bool)), SLOT( connectHost() ));
