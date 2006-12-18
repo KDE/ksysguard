@@ -148,7 +148,7 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 }
 void ProcessController::setSimpleMode(int index)
 {  //index is the item the user selected in the combo box
-	bool simple = (index == PROCESS_FILTER_ALL_SIMPLE);
+	bool simple = (index != PROCESS_FILTER_ALL_TREE);
 	if(simple == mSimple) return; //Optimization - don't bother changing anything if the simple mode hasn't been toggled
 	mSimple = simple;
 	mModel.setSimpleMode(mSimple);
