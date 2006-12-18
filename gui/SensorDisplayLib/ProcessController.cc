@@ -84,7 +84,7 @@ class ProgressBarItemDelegate : public QItemDelegate
 	}
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 	{
-		percentage = index.data(Qt::UserRole+2).toInt(); //we have set that UserRole+3  returns a number between 1 and 100 for the percentage to draw. 0 for none.
+		percentage = index.data(Qt::UserRole+2).toInt(); //we have set that UserRole+2  returns a number between 1 and 100 for the percentage to draw. 0 for none.
 		QItemDelegate::paint(painter, option, index);
 	}
 	mutable int percentage;
