@@ -48,7 +48,6 @@ ProcessModel::ProcessModel(QObject* parent)
 	mIsLocalhost = false; //this default really shouldn't matter, because setIsLocalhost should be called before setData()
 	mPidToProcess[0] = new Process();  //Add a fake process for process '0', the parent for init.  This lets us remove checks everywhere for init process
 	mXResPidColumn = -1;
-	mIcons = NULL;
 	mMemTotal = -1;
 	mElapsedTimeCentiSeconds = 0;
 	
@@ -1088,12 +1087,7 @@ QPixmap ProcessModel::getIcon(const QByteArray&iconname) const {
 	 * with this name. */
 	if(mIconCache.contains(iconname))
 		return mIconCache[iconname];
-	QPixmap pix;
-
-	if(!mIcons) {
-		mIcons = new KIconLoader();
-	}
-	pix = mIcons->loadIcon(iconname, K3Icon::Small,
+	QPixmap pix = KGlobal::iconLoader()->loadIcon(iconname, K3Icon::Small,
 					 K3Icon::SizeSmall, K3Icon::DefaultState,
 					 0L, true);
 	if (pix.isNull() || !pix.mask())

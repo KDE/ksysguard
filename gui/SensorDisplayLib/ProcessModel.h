@@ -178,8 +178,6 @@ private:
 	 */
 	mutable QHash<QByteArray,QPixmap> mIconCache;
 	
-	mutable KIconLoader *mIcons; ///Created when the first icon is loaded
-
 	/** @see setIsLocalhost */
 	bool mIsLocalhost;
 

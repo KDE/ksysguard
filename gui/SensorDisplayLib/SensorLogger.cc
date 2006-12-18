@@ -103,8 +103,8 @@ class LogSensorModel : public QAbstractTableModel
             break;
         }
       } else if ( role == Qt::DecorationRole ) {
-        static QPixmap runningPixmap = mIconLoader.loadIcon( "running", K3Icon::Small, K3Icon::SizeSmall );
-        static QPixmap waitingPixmap = mIconLoader.loadIcon( "waiting", K3Icon::Small, K3Icon::SizeSmall );
+        static QPixmap runningPixmap = KGlobal::iconLoader()->loadIcon( "running", K3Icon::Small, K3Icon::SizeSmall );
+        static QPixmap waitingPixmap = KGlobal::iconLoader()->loadIcon( "waiting", K3Icon::Small, K3Icon::SizeSmall );
 
         if ( index.column() == 0 ) {
           if ( sensor->isLogging() )
@@ -199,7 +199,6 @@ class LogSensorModel : public QAbstractTableModel
     QColor alarmColor() const { return mAlarmColor; }
 
   private:
-  	KIconLoader mIconLoader;
 
     QColor mForegroundColor;
     QColor mBackgroundColor;
