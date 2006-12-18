@@ -107,8 +107,8 @@ class KSignalPlotter : public QWidget
     void setBackgroundColor( const QColor &color );
     QColor backgroundColor() const;
 
-    static void setSvgBackground( const QString &filename );
-    static QString svgBackground();
+    void setSvgBackground( const QString &filename );
+    QString svgBackground();
 
     /** Return a translated string like:   "34 %" or "100 KB" for beam i
      */
@@ -138,8 +138,10 @@ class KSignalPlotter : public QWidget
     void drawHorizontalLines(QPainter *p, int top, int w, int h);
 
   private:
-    static QSvgRenderer *sSvgRenderer; ///Made static to save memory and time. Each one takes up about 0.5MB of memory when loaded
-    static QString sSvgFilename; 
+    /** We make the svg renderer static so that an svg renderer is shared among all of the images.  This is because a svg renderer takes up a lot of memory, so we want to 
+     *  share them as much as we can */
+    static QHash<QString, QSvgRenderer *> sSvgRenderer; 
+    QString mSvgFilename; 
 
     QImage mBackgroundImage;  //A cache of the svg
 
