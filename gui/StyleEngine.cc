@@ -35,15 +35,15 @@ StyleEngine* KSGRD::Style;
 
 StyleEngine::StyleEngine()
 {
-  mFirstForegroundColor = QColor( 0x6894c9 );  // light blue
-  mSecondForegroundColor = QColor( 0x6894c9 ); // light blue
+  mFirstForegroundColor = QColor( 0x0057ae );  // light blue
+  mSecondForegroundColor = QColor( 0x0057ae ); // light blue
   mAlarmColor = QColor( 255, 0, 0 );
   mBackgroundColor = QColor( 0x313031 );       // almost black
   mFontSize = 9;
 
-  mSensorColors.append( QColor( 0x1889ff ) );  // soft blue
-  mSensorColors.append( QColor( 0xff7f08 ) );  // reddish
-  mSensorColors.append( QColor( 0xffeb14 ) );  // bright yellow
+  mSensorColors.append( QColor( 0x0057ae ) );  // soft blue
+  mSensorColors.append( QColor( 0xe20800 ) );  // reddish
+  mSensorColors.append( QColor( 0xf3c300 ) );  // bright yellow
 
   uint v = 0x00ff00;
   for ( uint i = mSensorColors.count(); i < 32; ++i ) {
