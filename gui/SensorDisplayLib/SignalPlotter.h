@@ -118,6 +118,9 @@ class KSignalPlotter : public QWidget
      */
     void setThinFrame( bool set);
 
+    void setStackBeams( bool stack) { mStackBeams = stack; mFillBeams = stack; }
+    bool stackBeams() const { return mStackBeams;}
+
   protected:
     void updateDataBuffers();
 
@@ -157,6 +160,11 @@ class KSignalPlotter : public QWidget
 
     /**  Whether to show a white line on the left and bottom of the widget, for a 3D effect */
     bool mShowThinFrame;
+
+    /** Whether to stack the beams on top of each other */
+    bool mStackBeams;
+    /** Whether to fill the area underneath the beams */
+    bool mFillBeams;
 
     uint mGraphStyle;
 

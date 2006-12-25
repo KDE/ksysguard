@@ -74,6 +74,8 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
 
   mShowLabels = true;
   mShowTopBar = false;
+  mStackBeams = true;
+  mFillBeams = true;
 
   mBackgroundColor = QColor(0,0,0);
 }
@@ -532,7 +534,13 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   if ( mVerticalLinesScroll && mShowVerticalLines && w > 60 )
     drawVerticalLines(&p, top, w, h);
 
-  drawBeams(&p, top, w, h);
+  QImage beamImage(w, height(), QImage::Format_ARGB32_Premultiplied);
+  QPainter beamPainter(&beamImage);
+  beamPainter.setRenderHint(QPainter::Antialiasing, true);
+  beamPainter.setCompositionMode( QPainter::CompositionMode_DestinationOver );
+
+  drawBeams(&beamPainter, top, w, h);
+  p.drawImage(0,0, beamImage);
 
   if( mShowLabels && w > 60 && h > ( fontheight + 1 ) * ( mHorizontalLinesCount + 1 ))   //if there's room to draw the labels, then draw them!
     drawAxisText(&p, top, h);
@@ -665,6 +673,7 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
   int xPos = 0;
   QLinkedList< QList<double> >::Iterator it = mBeamData.begin();
 
+  p->setPen(Qt::NoPen);
   /* In autoRange mode we determine the range and plot the values in
    * one go. This is more efficiently than running through the
    * buffers twice but we do react on recently discarded samples as
@@ -764,14 +773,21 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
       }
     }
 
-    for (int j = 0; j < datapoints.size() && j < mBeamColors.size(); ++j) {
+
+    float x0 = w - xPos + 3.0*mHorizontalScale;
+    float x1 = w - xPos + 2.0*mHorizontalScale;
+    float x2 = w - xPos + 1.0*mHorizontalScale;
+    float x3 = w - xPos;
+    float y0 = h - 1 + top;
+    float y1 = y0;
+    float y2 = y0;
+    float y3 = y0;
+    
+    for (int j =  qMin(datapoints.size(), mBeamColors.size())-1; j >=0 ; --j) {
       if ( mUseAutoRange ) {
         mMinValue = qMin(datapoints[j], mMinValue);
 	mMaxValue = qMax(datapoints[j], mMaxValue);
       }
-
-      pen.setColor(mBeamColors[j]);
-      p->setPen(pen);
 
       /*
        * Draw polygon only if enough data points are available.
@@ -781,31 +797,59 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
            j < prev_datapoints.count() ) {
 
         QPolygon curve( 4 );
+
+
         /* The height of the whole widget is h+top->  The height of the area we are plotting in is just h.
 	 * The y coordinate system starts from the top, so at the bottom the y coordinate is h+top
 	 * So to draw a point at value y', we need to put this at  h+top-y'
 	 */
-	int y;
-        y = h - 1 + top - (int)((datapoints[j] - mNiceMinValue)*scaleFac);
-	if(y < (int)top) y = top;
-        curve.setPoint( 0, w - xPos + 3*mHorizontalScale, y );
+	float delta_y0;
+        delta_y0 = (datapoints[j] - mNiceMinValue)*scaleFac;
 
-	y = h - 1 + top - (int)((prev_datapoints[j] - mNiceMinValue)*scaleFac);
-	if(y < (int)top) y = top;
-        curve.setPoint( 1, w - xPos + 2*mHorizontalScale, y);
+	float delta_y1;
+	delta_y1 = (prev_datapoints[j] - mNiceMinValue)*scaleFac;
+	
+	float delta_y2;
+	delta_y2 = (prev_prev_datapoints[j] - mNiceMinValue)*scaleFac;
+	
+	float delta_y3;
+	delta_y3 = (prev_prev_prev_datapoints[j] - mNiceMinValue)*scaleFac;
 
-	y=   h - 1 + top - (int)((prev_prev_datapoints[j] - mNiceMinValue)*scaleFac);
-	if(y < (int)top) y = top;
-        curve.setPoint( 2, w - xPos + mHorizontalScale, y );
-
-	y =  h - 1 + top - (int)((prev_prev_prev_datapoints[j] - mNiceMinValue)*scaleFac);
-	if(y < (int)top) y = top;
-        curve.setPoint( 3, w - xPos, y );
-
+	
         QPainterPath path;
-        path.moveTo( curve.at( 0 ) );
-        path.cubicTo( curve.at( 1 ), curve.at( 2 ), curve.at( 3 ) );
-        p->strokePath( path, p->pen() );
+	path.moveTo( x0,y0-delta_y0);
+        path.cubicTo( x1,y1-delta_y1,x2,y2-delta_y2,x3,y3-delta_y3 );
+	p->setBrush(Qt::NoBrush);
+	pen.setColor(mBeamColors[j]);
+	p->setPen(pen);
+        p->drawPath( path );
+	
+	if(mFillBeams) {
+          QLinearGradient myGradient(0,(h-1+top),0,(h-1+top)/5);
+	  QColor c0(mBeamColors[j].dark(150));
+	  QColor c1(mBeamColors[j]);
+	  c0.setAlpha(150);
+	  c1.setAlpha(150);
+	  myGradient.setColorAt(0, c0);
+          myGradient.setColorAt(1, c1);
+
+          path.lineTo( x3,y3);
+	  if(mStackBeams)
+	    path.cubicTo( x2,y2,x1,y1,x0,y0);
+	  else
+	    path.lineTo(x0,y0);
+          p->setBrush(myGradient);
+          p->setPen(Qt::NoPen);
+          p->drawPath( path );
+	}
+	if(mStackBeams) {
+          //We can draw the beams stacked on top of each other.  This means that say beam 0 has the value 2 and beam
+	  // 1 has the value 3, then we plot beam 0 at 2 and beam 1 at 2+3 = 5.
+	  y0-=delta_y0;
+	  y1-=delta_y1;
+	  y2-=delta_y2;
+	  y3-=delta_y3;
+	}
       }
     }
   }

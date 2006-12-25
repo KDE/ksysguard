@@ -71,7 +71,10 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   pageLayout->addWidget( mTitle, 0, 1 );
   label->setBuddy( mTitle );
 
-  pageLayout->setRowStretch( 1, 1 );
+  mStackBeams = new QCheckBox( i18n("Stack the beams on top of each other"), page);
+  mStackBeams->setWhatsThis( i18n("The beams are stacked on top of each other, and the area is drawn filled in. So if one beam has a value of 2 and another beam has a value of 3, the first beam will be draw at value 2 and the other beam drawn at 2+3=5") );
+  pageLayout->addWidget( mStackBeams, 1, 0,1,2);
+  pageLayout->setRowStretch( 2, 1 );
 
   // Scales page
   page = new QFrame();
@@ -310,6 +313,13 @@ FancyPlotterSettings::~FancyPlotterSettings()
 {
 }
 
+void FancyPlotterSettings::setStackBeams( bool stack )
+{
+  mStackBeams->setChecked(stack);
+}
+bool FancyPlotterSettings::stackBeams() const {
+  return mStackBeams->isChecked();
+}
 void FancyPlotterSettings::moveUpSensor()
 {
   mModel->moveUpSensor(mView->selectionModel()->currentIndex());

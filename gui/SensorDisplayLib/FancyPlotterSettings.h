@@ -94,6 +94,9 @@ class FancyPlotterSettings : public KPageDialog
     void setBackgroundColor( const QColor &color );
     QColor backgroundColor() const;
 
+    void setStackBeams( bool stack );
+    bool stackBeams() const;
+
     void setSensors( const SensorModelEntry::List &list );
     SensorModelEntry::List sensors() const;
     QList<int> order() const;
@@ -132,6 +135,7 @@ class FancyPlotterSettings : public KPageDialog
     QPushButton *mRemoveButton;
     QPushButton *mMoveUpButton;
     QPushButton *mMoveDownButton;
+    QCheckBox *mStackBeams;
 
 
     QTreeView *mView;

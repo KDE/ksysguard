@@ -565,14 +565,13 @@ void ProcessModel::insertOrChangeRows( long long pid)
 	}
 
 	int row = parent->children.count();
-	QModelIndex parentModel = getQModelIndex(parent, 0);
+	QModelIndex parentModelIndex = getQModelIndex(parent, 0);
 
-	const QList<QByteArray> &newDataRow = newData[pid];
+	QList<QByteArray> newDataRow = newData[pid];
 	Q_ASSERT(parent);
 	Process *new_process = new Process(pid, ppid, parent);
 	Q_CHECK_PTR(new_process);
 
-	QList<QVariant> &data = new_process->data;
 	QByteArray loginName;
 	for (int i = 0; i < mColType.size() && i < newDataRow.count(); i++)
 	{  //At the moment the data is just a string, so turn it into a list of variants instead and insert the variants into our new process
@@ -596,12 +595,12 @@ void ProcessModel::insertOrChangeRows( long long pid)
 			case DataColumnVmRss: new_process->vmRSS = newDataRow[i].toLong(); break;
 			case DataColumnCommand: new_process->command = newDataRow[i]; break;
 			case DataColumnStatus: new_process->status = newDataRow[i]; break;
-			case DataColumnOtherLong: data << newDataRow[i].toLongLong(); break;
-			case DataColumnOtherPrettyLong:  data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
-			case DataColumnOtherPrettyFloat: data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble() ); break;
+			case DataColumnOtherLong: new_process->data << newDataRow[i].toLongLong(); break;
+			case DataColumnOtherPrettyLong:  new_process->data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
+			case DataColumnOtherPrettyFloat: new_process->data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble() ); break;
 			case DataColumnError:
 			default:
-				data << newDataRow[i]; break;
+				new_process->data << newDataRow[i]; break;
 		}
 	}
 	if(new_process->uid != -1)
@@ -613,7 +612,7 @@ void ProcessModel::insertOrChangeRows( long long pid)
 	
 	//Only here can we actually change the model.  First notify the view/proxy models then modify
 
-	beginInsertRows(parentModel, row, row);
+	beginInsertRows(parentModelIndex, row, row);
 		mPidToProcess[new_process->pid] = new_process;
 		parent->children << new_process;  //add ourselves to the parent
 		mPids << new_process->pid;

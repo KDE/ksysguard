@@ -93,6 +93,8 @@ void FancyPlotter::configureSettings()
   mSettingsDialog->setMinValue( mPlotter->minValue() );
   mSettingsDialog->setMaxValue( mPlotter->maxValue() );
 
+  mSettingsDialog->setStackBeams( mPlotter->stackBeams() );
+
   mSettingsDialog->setHorizontalScale( mPlotter->horizontalScale() );
 
   mSettingsDialog->setShowVerticalLines( mPlotter->showVerticalLines() );
@@ -156,6 +158,8 @@ void FancyPlotter::applySettings() {
       // It doesn't really matter anyway because it's not used.
       emit resizeEvent( 0 );
     }
+
+    mPlotter->setStackBeams( mSettingsDialog->stackBeams());
 
     mPlotter->setShowVerticalLines( mSettingsDialog->showVerticalLines() );
     mPlotter->setVerticalLinesColor( mSettingsDialog->verticalLinesColor() );
@@ -385,6 +389,8 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
 
   mPlotter->setSvgBackground( element.attribute( "svgBackground") );
 
+  mPlotter->setStackBeams( element.attribute( "stackBeams", "1" ).toUInt() );
+
   mPlotter->setShowLabels( element.attribute( "labels", "1" ).toUInt() );
   mPlotter->setShowTopBar( element.attribute( "topBar", "0" ).toUInt() );
   uint fontsize = element.attribute( "fontSize", "0").toUInt();
@@ -430,6 +436,7 @@ bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element)
   element.setAttribute( "hCount", mPlotter->horizontalLinesCount() );
 
   element.setAttribute( "svgBackground", mPlotter->svgBackground() );
+  element.setAttribute( "stackBeams", mPlotter->stackBeams() );
 
   element.setAttribute( "labels", mPlotter->showLabels() );
   element.setAttribute( "topBar", mPlotter->showTopBar() );
