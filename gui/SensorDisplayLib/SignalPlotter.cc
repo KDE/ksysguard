@@ -237,7 +237,7 @@ void KSignalPlotter::setMinValue( double min )
 
 double KSignalPlotter::minValue() const
 {
-  return ( mUseAutoRange ? 0 : mMinValue );
+  return mMinValue;
 }
 
 void KSignalPlotter::setMaxValue( double max )
@@ -249,7 +249,7 @@ void KSignalPlotter::setMaxValue( double max )
 
 double KSignalPlotter::maxValue() const
 {
-  return ( mUseAutoRange ? 0 : mMaxValue );
+  return mMaxValue;
 }
 
 void KSignalPlotter::setHorizontalScale( uint scale )

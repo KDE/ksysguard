@@ -93,6 +93,12 @@ class FancyPlotter : public KSGRD::SensorDisplay
     /** Number of beams we've received an answer from since asking last */
     uint mNumAccountedFor;
 
+    /** When we talk to the sensor, it tells us a range.  Record the max here.  equals 0 until we have an answer from it */
+    double mSensorReportedMax;
+    /** When we talk to the sensor, it tells us a range.  Record the min here.  equals 0 until we have an answer from it */
+    double mSensorReportedMin;
+
+
     KSignalPlotter* mPlotter;
 
     /**

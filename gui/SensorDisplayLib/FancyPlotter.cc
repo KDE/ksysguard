@@ -41,6 +41,8 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   mBeams = 0;
   mNumAccountedFor = 0;
   mSettingsDialog = 0;
+  mSensorReportedMax = 0;
+  mSensorReportedMin = 0;
   mPlotter = new KSignalPlotter( this );
   mPlotter->setVerticalLinesColor(KSGRD::Style->firstForegroundColor());
   mPlotter->setHorizontalLinesColor(KSGRD::Style->secondForegroundColor());
@@ -343,6 +345,9 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
 	unit = "MiB";
       }
     }
+
+    mSensorReportedMax = info.max();
+    mSensorReportedMin = info.min();
 
     if ( !mPlotter->useAutoRange()) {
       /* We only use this information from the sensor when the
