@@ -264,6 +264,9 @@ void FancyPlotter::setTooltip()
 {
   QString tooltip;
 
+  tooltip = "<qt><table>";
+// FIXME:  reenable (and re-code) the following line when qt 4.3 or greater comes up 
+//  tooltip += "<table><tr><td><img src=\"" + mPlotter->getSnapshotImage(500,500).name() + "\"></td><td>";
   QString description;
   QString lastValue;
   for ( uint i = 0; i < mBeams; ++i ) {
@@ -278,20 +281,20 @@ void FancyPlotter::setTooltip()
     }
     if(sensors().at( i)->isLocalhost()) {
       
-      tooltip += QString( "%1%2%3 (%4)" ).arg( i != 0 ? "<br>" : "<qt>")
+      tooltip += QString( "%1%2%3 (%4)" ).arg( i != 0 ? "<br>" : "")
             .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">"+QChar(0x25CF)+"</font>")
             .arg( description )
 	    .arg( lastValue );
 
     } else {
-      tooltip += QString( "%1%2%3:%4 (%5)" ).arg( i != 0 ? "<br>" : "<qt>" )
+      tooltip += QString( "%1%2%3:%4 (%5)" ).arg( i != 0 ? "<br>" : "" )
                  .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">"+QChar(0x25CF)+"</font>")
                  .arg( sensors().at( i )->hostName() )
                  .arg( description )
 	         .arg( lastValue );
     }
   }
-
+  tooltip += "</td></tr></table>";
   mPlotter->setToolTip( tooltip );
 }
 

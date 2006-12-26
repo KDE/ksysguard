@@ -447,7 +447,15 @@ void KSignalPlotter::updateDataBuffers()
   mSamples = static_cast<uint>( ( ( width() - 2 ) /
                                 mHorizontalScale ) + 4.5 );
 }
-
+QImage KSignalPlotter::getSnapshotImage(uint w, uint height)
+{
+  uint horizontalStep = (uint)((1.0*w/width())+0.5); //get the closest integer horizontal step
+  uint newWidth = horizontalStep * width();
+  QImage image = QImage(newWidth, height, QImage::Format_RGB32);
+  QPainter p(&image);
+  drawWidget(&p, newWidth, height, newWidth);
+  return image;
+}
 void KSignalPlotter::paintEvent( QPaintEvent* )
 {
   uint w = width();
@@ -457,17 +465,22 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   if ( w <= 2 )
     return;
   QPainter p(this);
-  p.setFont( mFont );
+  drawWidget(&p, w, h, mHorizontalScale);
+}
+void KSignalPlotter::drawWidget(QPainter *p, uint w, uint height, int horizontalScale)
+{
+  uint h = height; //h will become the height of just the bit we draw the beams in
+  p->setFont( mFont );
 
-  uint fontheight = p.fontMetrics().height();
+  uint fontheight = p->fontMetrics().height();
   if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || mMaxValue < (mNiceRange*0.75 + mNiceMinValue))
     calculateNiceRange();
   QPen pen;
   pen.setWidth(2);
   pen.setCapStyle(Qt::RoundCap);
-  p.setPen(pen);
+  p->setPen(pen);
 
-  uint top = p.pen().width() / 2; //The y position of the top of the graph.  Basically this is one more than the height of the top bar
+  uint top = p->pen().width() / 2; //The y position of the top of the graph.  Basically this is one more than the height of the top bar
   h-= top;
 
   //check if there's enough room to actually show a top bar. Must be enough room for a bar at the top, plus horizontal lines each of a size with room for a scale
@@ -476,20 +489,20 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
     top += fontheight; //The top bar has the same height as fontheight. Thus the top of the graph is at fontheight
     h -= fontheight;
   }
-  if(mBackgroundImage.isNull()) {
-    mBackgroundImage = QImage(w, height(), QImage::Format_RGB32);
+  if(mBackgroundImage.isNull() || (uint)mBackgroundImage.height() != height || (uint)mBackgroundImage.width() != w) { //recreate on resize etc
+    mBackgroundImage = QImage(w, height, QImage::Format_RGB32);
     QPainter pCache(&mBackgroundImage);
     pCache.setRenderHint(QPainter::Antialiasing, false);
     pCache.setFont( mFont );
     
-    drawBackground(&pCache, w, height());
+    drawBackground(&pCache, w, height);
 
     if(mShowThinFrame) {
-      drawThinFrame(&pCache, w, height());
+      drawThinFrame(&pCache, w, height);
       //We have a 'frame' in the bottom and right - so subtract them from the view
       h--;
       w--;
-      pCache.setClipRect( 0, 0, w, height()-1 );
+      pCache.setClipRect( 0, 0, w, height-1 );
     }
     pCache.setRenderHint(QPainter::Antialiasing, true);
     
@@ -512,24 +525,24 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
       w--;
    }  
   }
-  p.drawImage(0,0, mBackgroundImage);
-  p.setRenderHint(QPainter::Antialiasing, true);
+  p->drawImage(0,0, mBackgroundImage);
+  p->setRenderHint(QPainter::Antialiasing, true);
 
   if ( showTopBar ) {
     int seperatorX = w / 2;
     int topBarWidth = w - seperatorX -2;
-    drawTopBarContents(&p, seperatorX, topBarWidth, top -1);
+    drawTopBarContents(p, seperatorX, topBarWidth, top -1);
   }
 
-  p.setClipRect( 0, top, w, h);
+  p->setClipRect( 0, top, w, h);
   /* Draw scope-like grid vertical lines */
   if ( mVerticalLinesScroll && mShowVerticalLines && w > 60 )
-    drawVerticalLines(&p, top, w, h);
+    drawVerticalLines(p, top, w, h);
 
-  drawBeams(&p, top, w, h);
+  drawBeams(p, top, w, h, horizontalScale);
 
   if( mShowLabels && w > 60 && h > ( fontheight + 1 ) )   //if there's room to draw the labels, then draw them!
-    drawAxisText(&p, top, h);
+    drawAxisText(p, top, h);
 
 }
 void KSignalPlotter::drawBackground(QPainter *p, int w, int h)
@@ -652,7 +665,7 @@ void KSignalPlotter::drawVerticalLines(QPainter *p, int top, int w, int h)
       p->drawLine( w - x, top, w - x, h + top -1 );
 }
 
-void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
+void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizontalScale)
 {
   double scaleFac = (h-1) / mNiceRange;
 
@@ -709,7 +722,7 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
        * We are plotting an incomplete bezier curve - we don't have all the data we want.
        * Try to cope
        */
-      xPos += mHorizontalScale*mBezierCurveOffset;
+      xPos += horizontalScale*mBezierCurveOffset;
       if (mBezierCurveOffset == 1) {
         prev_datapoints = *it;
         ++it; //Now we are on the first element of the next group, if it exists
@@ -736,7 +749,7 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
       /**
        * We have a group of 3 points at least.  That's 1 start point and 2 control points.
        */
-      xPos += mHorizontalScale*3;
+      xPos += horizontalScale*3;
       it++;
       if (it != mBeamData.end()) {
         prev_datapoints = *it;
@@ -760,9 +773,9 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
     }
 
 
-    float x0 = w - xPos + 3.0*mHorizontalScale;
-    float x1 = w - xPos + 2.0*mHorizontalScale;
-    float x2 = w - xPos + 1.0*mHorizontalScale;
+    float x0 = w - xPos + 3.0*horizontalScale;
+    float x1 = w - xPos + 2.0*horizontalScale;
+    float x2 = w - xPos + 1.0*horizontalScale;
     float x3 = w - xPos;
     float y0 = h -1 + top;
     float y1 = y0;

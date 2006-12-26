@@ -120,6 +120,7 @@ class KSignalPlotter : public QWidget
 
     void setStackBeams( bool stack) { mStackBeams = stack; mFillBeams = stack; }
     bool stackBeams() const { return mStackBeams;}
+    QImage getSnapshotImage(uint width, uint height);
 
   protected:
     void updateDataBuffers();
@@ -127,16 +128,16 @@ class KSignalPlotter : public QWidget
     virtual void resizeEvent( QResizeEvent* );
     virtual void paintEvent( QPaintEvent* );
 
+    void drawWidget(QPainter *p, uint w, uint height, int horizontalScale);
     void drawBackground(QPainter *p, int w, int h);
     void drawThinFrame(QPainter *p, int w, int h);
-    /** Used from paint().  Draws all the beams on the paint device, given the top, width and height and the range of values to show
-     */
-    void drawBeams(QPainter *p, int top, int w, int h, int range);
     void calculateNiceRange();
     void drawTopBarFrame(QPainter *p, int fullWidth, int seperatorX, int height);
     void drawTopBarContents(QPainter *p, int x, int width, int height);
     void drawVerticalLines(QPainter *p, int top, int w, int h);
-    void drawBeams(QPainter *p, int top, int w, int h);
+    /** Used from paint().  Draws all the beams on the paint device, given the top, width and height and the range of values to show
+     */
+    void drawBeams(QPainter *p, int top, int w, int h, int horizontalScale);
     void drawAxisText(QPainter *p, int top, int h);
     void drawHorizontalLines(QPainter *p, int top, int w, int h);
 
