@@ -528,7 +528,7 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
 
   drawBeams(&p, top, w, h);
 
-  if( mShowLabels && w > 60 && h > ( fontheight + 1 ) * ( mHorizontalLinesCount + 1 ))   //if there's room to draw the labels, then draw them!
+  if( mShowLabels && w > 60 && h > ( fontheight + 1 ) )   //if there's room to draw the labels, then draw them!
     drawAxisText(&p, top, h);
 
 }
@@ -871,12 +871,13 @@ void KSignalPlotter::drawAxisText(QPainter *p, int top, int h)
 
   p->setPen( mFontColor );
   double stepsize = mNiceRange/(mScaleDownBy*(mHorizontalLinesCount+1));
-  
-  for ( uint y = 1; y <= mHorizontalLinesCount+1; y++ ) {
+  int step = (int)ceil((mHorizontalLinesCount+1) * (p->fontMetrics().height() + p->fontMetrics().leading()/2.0) / h);
+  if(step ==0) step = 1;
+  for ( int y = mHorizontalLinesCount+1; y >= 1; y-= step) {
     int y_coord =  top + (y * (h-1)) / (mHorizontalLinesCount+1);  //Make sure it's y*h first to avoid rounding bugs
-
+    if(y_coord - p->fontMetrics().ascent() < top) continue;  //at most, only allow 4 pixels of the text to be covered up by the top bar.  Otherwise just don't bother to draw it
     double value;
-    if(y == mHorizontalLinesCount+1)
+    if((uint)y == mHorizontalLinesCount+1)
         value = mNiceMinValue; //sometimes using the formulas gives us a value very slightly off
     else
         value = mNiceMaxValue/mScaleDownBy - y * stepsize;
