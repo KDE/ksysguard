@@ -769,10 +769,20 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
     float y2 = y0;
     float y3 = y0;
     int offset = 0; //Our line is 2 pixels thick.  This means that when we draw the area, we need to offset 
+    double max_y=0;
+    double min_y=0;
     for (int j =  qMin(datapoints.size(), mBeamColors.size())-1; j >=0 ; --j) {
-      if ( mUseAutoRange ) {
-        mMinValue = qMin(datapoints[j], mMinValue);
-	mMaxValue = qMax(datapoints[j], mMaxValue);
+      if ( mUseAutoRange) {
+        //If we use autorange, then we need to prepare the min and max values for _next_ time we paint
+	//if we are stacking the beams, then we need to add the maximums together
+	double current_maxvalue = qMax(datapoints[j], qMax(prev_datapoints[j], qMax(prev_prev_datapoints[j], prev_prev_prev_datapoints[j])));
+	double current_minvalue = qMin(datapoints[j], qMin(prev_datapoints[j], qMin(prev_prev_datapoints[j], prev_prev_prev_datapoints[j])));
+	mMaxValue = qMax(mMaxValue, current_maxvalue);
+	mMinValue = qMin(mMinValue, current_maxvalue);
+	if( mStackBeams ) {
+	  max_y += current_maxvalue;
+	  min_y += current_minvalue;
+	}
       }
 
       /*
@@ -839,7 +849,10 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
 	  y3-=delta_y3;
 	  offset = 1;  //see the comment further up for int offset;
 	}
-
+      }
+      if ( mUseAutoRange && mStackBeams) {
+	mMaxValue = qMax(max_y, mMaxValue);
+	mMinValue = qMin(min_y, mMinValue);
       }
     }
   }
