@@ -460,16 +460,8 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   p.setFont( mFont );
 
   uint fontheight = p.fontMetrics().height();
-//  double oldNiceMinValue = mNiceMinValue;
-//  double oldNiceMaxValue = mNiceMaxValue;
-//
   if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || mMaxValue < (mNiceRange*0.75 + mNiceMinValue))
     calculateNiceRange();
-  //If we draw the text labels on the cache, then we need the following code
-//  if(oldNiceMinValue != mNiceMinValue || oldNiceMaxValue != mNiceMaxValue) {
-    //range has changed, so we image cache is bad
-//    mBackgroundImage = QImage();
-//  }
   QPen pen;
   pen.setWidth(2);
   pen.setCapStyle(Qt::RoundCap);
@@ -534,13 +526,7 @@ void KSignalPlotter::paintEvent( QPaintEvent* )
   if ( mVerticalLinesScroll && mShowVerticalLines && w > 60 )
     drawVerticalLines(&p, top, w, h);
 
-  QImage beamImage(w, height(), QImage::Format_ARGB32_Premultiplied);
-  QPainter beamPainter(&beamImage);
-  beamPainter.setRenderHint(QPainter::Antialiasing, true);
-  beamPainter.setCompositionMode( QPainter::CompositionMode_DestinationOver );
-
-  drawBeams(&beamPainter, top, w, h);
-  p.drawImage(0,0, beamImage);
+  drawBeams(&p, top, w, h);
 
   if( mShowLabels && w > 60 && h > ( fontheight + 1 ) * ( mHorizontalLinesCount + 1 ))   //if there's room to draw the labels, then draw them!
     drawAxisText(&p, top, h);
@@ -704,7 +690,7 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
   for (int i = 0; it != mBeamData.end() && i < mSamples; ++i) {
     QPen pen;
     pen.setWidth(2);
-    pen.setCapStyle(Qt::RoundCap);
+    pen.setCapStyle(Qt::FlatCap);
 
     /**
      * We will plot 1 bezier curve for every 3 points, with the 4th point being the end
@@ -778,11 +764,11 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
     float x1 = w - xPos + 2.0*mHorizontalScale;
     float x2 = w - xPos + 1.0*mHorizontalScale;
     float x3 = w - xPos;
-    float y0 = h - 1 + top;
+    float y0 = h -1 + top;
     float y1 = y0;
     float y2 = y0;
     float y3 = y0;
-    
+    int offset = 0; //Our line is 2 pixels thick.  This means that when we draw the area, we need to offset 
     for (int j =  qMin(datapoints.size(), mBeamColors.size())-1; j >=0 ; --j) {
       if ( mUseAutoRange ) {
         mMinValue = qMin(datapoints[j], mMinValue);
@@ -819,12 +805,9 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
         QPainterPath path;
 	path.moveTo( x0,y0-delta_y0);
         path.cubicTo( x1,y1-delta_y1,x2,y2-delta_y2,x3,y3-delta_y3 );
-	p->setBrush(Qt::NoBrush);
-	pen.setColor(mBeamColors[j]);
-	p->setPen(pen);
-        p->drawPath( path );
-	
+        
 	if(mFillBeams) {
+	  QPainterPath path2(path);
           QLinearGradient myGradient(0,(h-1+top),0,(h-1+top)/5);
 	  QColor c0(mBeamColors[j].dark(150));
 	  QColor c1(mBeamColors[j]);
@@ -833,15 +816,20 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
 	  myGradient.setColorAt(0, c0);
           myGradient.setColorAt(1, c1);
 
-          path.lineTo( x3,y3);
+          path2.lineTo( x3,y3-offset);
 	  if(mStackBeams)
-	    path.cubicTo( x2,y2,x1,y1,x0,y0);
+	    path2.cubicTo( x2,y2-offset,x1,y1-offset,x0,y0-offset); //offet is set to 1 after the first beam is drawn, so we don't trample on top of the 2pt thick line
 	  else
-	    path.lineTo(x0,y0);
+	    path2.lineTo(x0,y0-1);
           p->setBrush(myGradient);
           p->setPen(Qt::NoPen);
-          p->drawPath( path );
+          p->drawPath( path2 );
 	}
+	p->setBrush(Qt::NoBrush);
+	pen.setColor(mBeamColors[j]);
+	p->setPen(pen);
+        p->drawPath( path );
+
 	if(mStackBeams) {
           //We can draw the beams stacked on top of each other.  This means that say beam 0 has the value 2 and beam
 	  // 1 has the value 3, then we plot beam 0 at 2 and beam 1 at 2+3 = 5.
@@ -849,7 +837,9 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h)
 	  y1-=delta_y1;
 	  y2-=delta_y2;
 	  y3-=delta_y3;
+	  offset = 1;  //see the comment further up for int offset;
 	}
+
       }
     }
   }
