@@ -279,22 +279,30 @@ void FancyPlotter::setTooltip()
     } else {
       lastValue = i18n("Error");
     }
+    QChar indicatorSymbol('#');
+    QFontMetrics fm(QToolTip::font());
+    if(fm.inFont(QChar(0x25CF)))
+      indicatorSymbol = QChar(0x25CF);
+    //The unicode character 0x25CF is a big filled in circle.  We would prefer to use this in the tooltip.
+    //However it's maybe possible that the font used to draw the tooltip won't have it.  So we fall back to a 
+    //"#" instead.
+    
+
     if(sensors().at( i)->isLocalhost()) {
-      
-      tooltip += QString( "%1%2%3 (%4)" ).arg( i != 0 ? "<br>" : "")
-            .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">"+QChar(0x25CF)+"</font>")
+      tooltip += QString( "%1%2%3 (%4)" ).arg( i != 0 ? "<br>" : "<qt>")
+            .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">"+indicatorSymbol+"</font>")
             .arg( description )
 	    .arg( lastValue );
 
     } else {
-      tooltip += QString( "%1%2%3:%4 (%5)" ).arg( i != 0 ? "<br>" : "" )
-                 .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">"+QChar(0x25CF)+"</font>")
+      tooltip += QString( "%1%2%3:%4 (%5)" ).arg( i != 0 ? "<br>" : "<qt>" )
+                 .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">"+indicatorSymbol+"</font>")
                  .arg( sensors().at( i )->hostName() )
                  .arg( description )
 	         .arg( lastValue );
     }
   }
-  tooltip += "</td></tr></table>";
+//  tooltip += "</td></tr></table>";
   mPlotter->setToolTip( tooltip );
 }
 
