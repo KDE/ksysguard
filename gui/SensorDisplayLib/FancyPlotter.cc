@@ -334,7 +334,7 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
 
     //Make sure that we put the answer in the correct place.  It's index in the list should be equal to id
     
-    while(id < mSampleBuf.count())
+    while(id > mSampleBuf.count())
       mSampleBuf.append(0);
 
     if(id == mSampleBuf.count()) {
