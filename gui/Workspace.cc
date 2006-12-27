@@ -149,7 +149,7 @@ bool Workspace::saveOnQuit()
         int res = KMessageBox::warningYesNoCancel( this,
                   i18n( "The worksheet '%1' contains unsaved data.\n"
                         "Do you want to save the worksheet?",
-                    tabText(indexOf( mSheetList.at(i) )) ), QString(), KStdGuiItem::save(), KStdGuiItem::discard() );
+                    tabText(indexOf( mSheetList.at(i) )) ), QString(), KStandardGuiItem::save(), KStandardGuiItem::discard() );
         if ( res == KMessageBox::Yes )
           saveWorkSheet( mSheetList.at(i) );
         else if ( res == KMessageBox::Cancel )
