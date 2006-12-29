@@ -637,9 +637,8 @@ void KSignalPlotter::drawTopBarContents(QPainter *p, int x, int width, int heigh
    */
   if ( !mBeamData.isEmpty() ) {
     QList<double> newestData = mBeamData.first();
-    QList<double>::Iterator i;
-    for(i = newestData.end(); i != newestData.begin(); --i, --col) {
-      double newest_datapoint = *i;
+    for(int i = newestData.count()-1; i != 0; --i) {
+      double newest_datapoint = newestData.at(i);
       int start = x + (int)( bias * scaleFac );
       int end = x + (int)( ( bias += newest_datapoint ) * scaleFac );
       int start2 = qMin(start,end);
@@ -652,8 +651,9 @@ void KSignalPlotter::drawTopBarContents(QPainter *p, int x, int width, int heigh
 
       p->setPen(Qt::NoPen);
       QLinearGradient  linearGrad( QPointF(start,1), QPointF(end, 1));
-      linearGrad.setColorAt(0, (*col).dark(150));
-      linearGrad.setColorAt(1, (*col));
+      QColor col = mBeamColors.at(i);
+      linearGrad.setColorAt(0, col.dark(150));
+      linearGrad.setColorAt(1, col);
       p->fillRect( start, 1, end - start, height-1, QBrush(linearGrad));
     }
   }
