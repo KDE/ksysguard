@@ -48,8 +48,22 @@ SensorAgent::~SensorAgent()
 {
 }
 
-bool SensorAgent::sendRequest( const QString &req, SensorClient *client, int id )
+void SensorAgent::sendRequest( const QString &req, SensorClient *client, int id )
 {
+  SensorRequest *sensorreq = 0;
+  for(int i =0; i < mInputFIFO.size(); ++i) {
+    sensorreq = mInputFIFO.at(i);
+    if(id == sensorreq->id() && client == sensorreq->client() && req == sensorreq->request()) {
+      executeCommand();
+      return; //don't bother to resend the same request if we already have it in our queue to send
+    }
+  }
+  for(int i =0; i < mProcessingFIFO.size(); ++i) {
+    sensorreq = mProcessingFIFO.at(i);
+    if(id == sensorreq->id() && client == sensorreq->client() && req == sensorreq->request())
+      return; //don't bother to resend the same request if we have already sent the request to client and just waiting for an answer
+  }
+
   /* The request is registered with the FIFO so that the answer can be
    * routed back to the requesting client. */
   mInputFIFO.enqueue( new SensorRequest( req, client, id ) );
@@ -59,8 +73,6 @@ bool SensorAgent::sendRequest( const QString &req, SensorClient *client, int id 
                 << mProcessingFIFO.count() << ")" << endl;
 #endif
   executeCommand();
-
-  return false;
 }
 
 void SensorAgent::processAnswer( const char *buf, int buflen )
@@ -144,6 +156,7 @@ void SensorAgent::processAnswer( const char *buf, int buflen )
 	}
 		
 	SensorRequest *req = mProcessingFIFO.dequeue();
+	// we are now responsible for the memory of req - we must delete it!
 	if ( !req->client() ) {
 		/* The client has disappeared before receiving the answer
 		 * to his request. */
@@ -192,7 +205,8 @@ void SensorAgent::executeCommand()
     else
       kDebug(1215) << "SensorAgent::writeMsg() failed" << endl;
 
-    // add request to processing FIFO
+    // add request to processing FIFO.
+    // Note that this means that mProcessingFIFO is now responsible for managing the memory for it.
     mProcessingFIFO.enqueue( req );
   }
 }

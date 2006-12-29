@@ -66,7 +66,7 @@ class KDE_EXPORT SensorAgent : public QObject
       used by the SensorAgent. So it can be any value the client suits to
       use.
      */
-    bool sendRequest( const QString &req, SensorClient *client, int id = 0 );
+    void sendRequest( const QString &req, SensorClient *client, int id = 0 );
 
     virtual void hostInfo( QString &sh, QString &cmd, int &port ) const = 0;
 
