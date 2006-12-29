@@ -826,6 +826,13 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizonta
 
 	
         QPainterPath path;
+	if(mStackBeams && offset) {
+		//we don't want the lines to overdraw each other.  This isn't a great solution though :(
+	  if(delta_y0 < 2) delta_y0=2;
+	  if(delta_y1 < 2) delta_y1=2;
+	  if(delta_y2 < 2) delta_y2=2;
+	  if(delta_y3 < 2) delta_y3=2;
+	}
 	path.moveTo( x0,y0-delta_y0);
         path.cubicTo( x1,y1-delta_y1,x2,y2-delta_y2,x3,y3-delta_y3 );
         
@@ -911,7 +918,12 @@ void KSignalPlotter::drawHorizontalLines(QPainter *p, int top, int w, int h)
   }
 }
 
-QString KSignalPlotter::lastValue( int i) const
+double KSignalPlotter::lastValue( int i) const
+{
+  if(mBeamData.isEmpty() || mBeamData.first().size() <= i) return 0;
+  return mBeamData.first()[i];
+}
+QString KSignalPlotter::lastValueAsString( int i) const
 {
   if(mBeamData.isEmpty()) return QString();
   double value = mBeamData.first()[i] / mScaleDownBy; //retrieve the newest value for this beam then scale it correct

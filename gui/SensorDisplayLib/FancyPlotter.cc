@@ -275,7 +275,7 @@ void FancyPlotter::setTooltip()
       description = sensors().at(i)->name();
     }
     if(sensors().at( i)->isOk()) {
-      lastValue = mPlotter->lastValue(i);
+      lastValue = mPlotter->lastValueString(i);
     } else {
       lastValue = i18n("Error");
     }
@@ -320,7 +320,7 @@ void FancyPlotter::timerTick( ) //virtual
 {
   if(!mSampleBuf.isEmpty()) {
     while((uint)mSampleBuf.count() < mBeams)
-      mSampleBuf.append(0); //we might have invalid sensors missing so set their values to 0 at least
+      mSampleBuf.append(mPlotter->lastValue(mSampleBuf.count())); //we might have sensors missing so set their values to the previously known value
     mPlotter->addSample( mSampleBuf );
   }
   mSampleBuf.clear();
@@ -335,7 +335,7 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
     //Make sure that we put the answer in the correct place.  It's index in the list should be equal to id
     
     while(id > mSampleBuf.count())
-      mSampleBuf.append(0);
+      mSampleBuf.append(mPlotter->lastValue(mSampleBuf.count())); //we might have sensors missing so set their values to the previously known value
 
     if(id == mSampleBuf.count()) {
       mSampleBuf.append( answer.toDouble() );

@@ -110,9 +110,13 @@ class KSignalPlotter : public QWidget
     void setSvgBackground( const QString &filename );
     QString svgBackground();
 
+    /** Return the last value that we have for beam i.
+     *  Returns 0 if not known
+     */
+    double lastValue( int i) const;
     /** Return a translated string like:   "34 %" or "100 KB" for beam i
      */
-    QString lastValue( int i) const;
+    QString lastValueString( int i) const;
     
     /**  Whether to show a white line on the left and bottom of the widget, for a 3D effect
      */
