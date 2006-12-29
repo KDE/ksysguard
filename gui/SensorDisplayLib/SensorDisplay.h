@@ -26,8 +26,6 @@
 #include <QtGui/QLabel>
 #include <QtGui/QWidget>
 
-#include <knotifyclient.h>
-
 #include <ksgrd/SensorClient.h>
 #include "SharedSettings.h"
 
