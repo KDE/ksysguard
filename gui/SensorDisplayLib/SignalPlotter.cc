@@ -630,7 +630,7 @@ void KSignalPlotter::drawTopBarContents(QPainter *p, int x, int width, int heigh
   double bias = -mNiceMinValue;
   double scaleFac = width / mNiceRange;
   QList<QColor>::Iterator col;
-  col = mBeamColors.begin();
+  col = mBeamColors.end();
   /**
    * The top bar shows the current values of all the beam data.
    * This iterates through each different beam and plots the newest data for each
@@ -638,7 +638,7 @@ void KSignalPlotter::drawTopBarContents(QPainter *p, int x, int width, int heigh
   if ( !mBeamData.isEmpty() ) {
     QList<double> newestData = mBeamData.first();
     QList<double>::Iterator i;
-    for(i = newestData.begin(); i != newestData.end(); ++i, ++col) {
+    for(i = newestData.end(); i != newestData.begin(); --i, --col) {
       double newest_datapoint = *i;
       int start = x + (int)( bias * scaleFac );
       int end = x + (int)( ( bias += newest_datapoint ) * scaleFac );
