@@ -275,7 +275,7 @@ void FancyPlotter::setTooltip()
       description = sensors().at(i)->name();
     }
     if(sensors().at( i)->isOk()) {
-      lastValue = mPlotter->lastValueString(i);
+      lastValue = mPlotter->lastValueAsString(i);
     } else {
       lastValue = i18n("Error");
     }
