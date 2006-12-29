@@ -637,7 +637,7 @@ void KSignalPlotter::drawTopBarContents(QPainter *p, int x, int width, int heigh
    */
   if ( !mBeamData.isEmpty() ) {
     QList<double> newestData = mBeamData.first();
-    for(int i = newestData.count()-1; i != 0; --i) {
+    for(int i = newestData.count()-1; i >= 0; --i) {
       double newest_datapoint = newestData.at(i);
       int start = x + (int)( bias * scaleFac );
       int end = x + (int)( ( bias += newest_datapoint ) * scaleFac );
