@@ -828,10 +828,10 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizonta
         QPainterPath path;
 	if(mStackBeams && offset) {
 		//we don't want the lines to overdraw each other.  This isn't a great solution though :(
-	  if(delta_y0 < 2) delta_y0=2;
-	  if(delta_y1 < 2) delta_y1=2;
-	  if(delta_y2 < 2) delta_y2=2;
-	  if(delta_y3 < 2) delta_y3=2;
+	  if(delta_y0 < 3) delta_y0=3;
+	  if(delta_y1 < 3) delta_y1=3;
+	  if(delta_y2 < 3) delta_y2=3;
+	  if(delta_y3 < 3) delta_y3=3;
 	}
 	path.moveTo( x0,y0-delta_y0);
         path.cubicTo( x1,y1-delta_y1,x2,y2-delta_y2,x3,y3-delta_y3 );
