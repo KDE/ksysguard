@@ -68,8 +68,9 @@ class Process : public QObject {
 	long long xResPxmMemBytes;     ///The amount of memory in bytes used in X server pixmaps
 	int xResNumPxm;      ///The number of x server pixmaps
 	long long xResMemOtherBytes;  ///The amount of memory in bytes used in X server other than pixmaps
+	bool isStoppedOrZombie; ///An optomisation value, true iff process->status == "stopped" || process->status == "zombie"
   private:
-	void clear() {pid = 0; parent_pid = 0; uid = 0; gid = -1; tracerpid = 0; userTime = -1; sysTime = -1; userUsage=0; sysUsage=0; totalUserUsage=0; totalSysUsage=0; numChildren=0; nice=0; vmSize=0; vmRSS = 0; processType=Invalid; xResPxmMemBytes=0; xResNumPxm=0; xResMemOtherBytes=0; }
+	void clear() {pid = 0; parent_pid = 0; uid = 0; gid = -1; tracerpid = 0; userTime = -1; sysTime = -1; userUsage=0; sysUsage=0; totalUserUsage=0; totalSysUsage=0; numChildren=0; nice=0; vmSize=0; vmRSS = 0; processType=Invalid; xResPxmMemBytes=0; xResNumPxm=0; xResMemOtherBytes=0; isStoppedOrZombie=false;}
 };
 
 #endif

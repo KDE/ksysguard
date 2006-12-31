@@ -71,7 +71,7 @@ QString ProcessModel::getStatusDescription(const QByteArray & status) const
 	if( status == "running") return i18n("- Process is doing some work");
 	if( status == "sleeping") return i18n("- Process is waiting for something to happen");
 	if( status == "stopped") return i18n("- Process has been stopped. It will not respond to user input at the moment");
-	if( status == "zombie") return i18n("- Process has finished and is now dead, but the parent has not noticed yet");
+	if( status == "zombie") return i18n("- Process has finished and is now dead, but the parent process has not cleaned up");
 	return QString();
 }
 void ProcessModel::setupProcessType()
@@ -482,7 +482,8 @@ void ProcessModel::changeProcess(long long pid)
 				QByteArray status = newDataRow[i];
 				if(process->status != status) {
 					process->status = status;
-					changed = true;
+					cpuchanged = true;
+					process->isStoppedOrZombie = process->status == "stopped" || process->status == "zombie";
 				}
 				break;
 			}
@@ -594,7 +595,7 @@ void ProcessModel::insertOrChangeRows( long long pid)
 			case DataColumnVmSize: new_process->vmSize = newDataRow[i].toLong(); break;
 			case DataColumnVmRss: new_process->vmRSS = newDataRow[i].toLong(); break;
 			case DataColumnCommand: new_process->command = newDataRow[i]; break;
-			case DataColumnStatus: new_process->status = newDataRow[i]; break;
+			case DataColumnStatus: new_process->status = newDataRow[i];  new_process->isStoppedOrZombie = new_process->status == "stopped" || new_process->status == "zombie";break;
 			case DataColumnOtherLong: new_process->data << newDataRow[i].toLongLong(); break;
 			case DataColumnOtherPrettyLong:  new_process->data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
 			case DataColumnOtherPrettyFloat: new_process->data << KGlobal::locale()->formatNumber( newDataRow[i].toDouble() ); break;
@@ -813,9 +814,12 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				if(mShowChildTotals && !mSimple) total = process->totalUserUsage + process->totalSysUsage;
 				else total = process->userUsage + process->sysUsage;
 
+				if(total <= 0.001 && process->isStoppedOrZombie)
+					return i18nc("process status", process->status);  //tell the user when the process is a zombie or stopped
 				if(total <= 0.001)
 					return "";
 				if(total > 100) total = 100;
+				
 
 				return QString::number(total, 'f', (total>=1)?0:1) + '%';
 			}
@@ -971,9 +975,12 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				base = 200000000 - process->uid * 10000;
 			else
 				base = 100000000 - process->uid * 10000;
+			double totalcpu = (process->totalUserUsage + process->totalSysUsage);
+			if(totalcpu <= 0.001 && process->isStoppedOrZombie) 
+				totalcpu = 0.001;  //stopped or zombied processes should be near the top of the list
 
 			//However we can of course have lots of processes with the same user.  Next we sort by CPU.
-			return (long long)(base - ((process->totalUserUsage + process->totalSysUsage)*100) + process->vmRSS*100.0/mMemTotal);
+			return (long long)(base - (totalcpu*100) -100 + process->vmRSS*100.0/mMemTotal);
 		}
 		case HeadingXMemory:
 			//FIXME Okay this is a hack, but here's the deal:
@@ -982,8 +989,12 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			//So we return a negative number.
 			//I really hope Qt gives us a way to set the default sort direction for a column
 			return (long long)-(process->xResMemOtherBytes + process->xResPxmMemBytes);
-		case HeadingCPUUsage:
-			return (long long)-(process->totalUserUsage + process->totalSysUsage);
+		case HeadingCPUUsage: {
+			double totalcpu = (process->totalUserUsage + process->totalSysUsage);
+			if(totalcpu <= 0.001 && process->isStoppedOrZombie) 
+				totalcpu = 1;  //stopped or zombied processes should be near the top of the list
+			return (long long)-totalcpu;
+		 }
 		case HeadingRSSMemory:
 			return (long long)-process->vmRSS;
 		case HeadingMemory:
@@ -1004,8 +1015,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		return 0;
 	}
 	case Qt::DecorationRole: {
-		if(mSimple) return QVariant();
 		if(mHeadingsToType[index.column()] == HeadingName) {
+			if(mSimple) return QVariant();
 			Process *process = reinterpret_cast< Process * > (index.internalPointer());
 			switch (process->processType){
 				case Process::Init:
@@ -1039,7 +1050,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			}
 		} else if (mHeadingsToType[index.column()] == HeadingCPUUsage) {
 			Process *process = reinterpret_cast< Process * > (index.internalPointer());
-			if(process->status == "stopped" || process->status == "zombie") {
+			if(process->isStoppedOrZombie) {
 				return getIcon("button_cancel");
 			}
 		}
@@ -1065,7 +1076,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	case Qt::FontRole: {
 		if(index.column() == mCPUHeading) {
 			Process *process = reinterpret_cast< Process * > (index.internalPointer());
-			if(process->userUsage + process->sysUsage <= 0.1) {
+			if(process->isStoppedOrZombie) {
 				QFont font;
 				font.setItalic(true);
 				return font;
