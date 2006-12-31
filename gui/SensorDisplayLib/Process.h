@@ -33,11 +33,12 @@ class Process : public QObject {
   public:
 	typedef enum { Daemon, Kernel, Init, Kdeapp, Shell, Tools, Wordprocessing, Term, Other, Invalid } ProcessType;
 	Process() { clear();}
-	Process(long long _pid, long long _ppid, Process *_parent)  {clear(); pid = _pid; parent_pid = _ppid; parent = _parent; }
+	Process(long long _pid, long long _ppid, Process *_parent)  {clear(); pid = _pid; parent_pid = tree_ppid = _ppid; parent = _parent; }
 	bool isValid() {return processType != Process::Invalid;}
 	
 	long long pid;    ///The systems ID for this process
-	long long parent_pid;  ///The systems ID for the parent of this process.  0 for init.
+	long long parent_pid;  ///The system ID for the parent of this process.  0 for init.
+	long long tree_ppid;  ///The internal pid for the parent of this process - this is set to 0 when in simple mode, otherwise equals parent_pid
 	
 	/** A guaranteed NON-NULL pointer to the parent process except for the fake process with pid 0.
 	 *  The Parent's pid is the same value as the parent_pid.  The parent process will be also pointed
@@ -70,7 +71,7 @@ class Process : public QObject {
 	long long xResMemOtherBytes;  ///The amount of memory in bytes used in X server other than pixmaps
 	bool isStoppedOrZombie; ///An optomisation value, true iff process->status == "stopped" || process->status == "zombie"
   private:
-	void clear() {pid = 0; parent_pid = 0; uid = 0; gid = -1; tracerpid = 0; userTime = -1; sysTime = -1; userUsage=0; sysUsage=0; totalUserUsage=0; totalSysUsage=0; numChildren=0; nice=0; vmSize=0; vmRSS = 0; processType=Invalid; xResPxmMemBytes=0; xResNumPxm=0; xResMemOtherBytes=0; isStoppedOrZombie=false;}
+	void clear() {pid = 0; tree_ppid = 0; parent_pid = 0; uid = 0; gid = -1; tracerpid = 0; userTime = -1; sysTime = -1; userUsage=0; sysUsage=0; totalUserUsage=0; totalSysUsage=0; numChildren=0; nice=0; vmSize=0; vmRSS = 0; processType=Invalid; xResPxmMemBytes=0; xResNumPxm=0; xResMemOtherBytes=0; isStoppedOrZombie=false;}
 };
 
 #endif

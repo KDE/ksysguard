@@ -115,7 +115,5 @@ void ProcessFilter::setFilter(int index) {
 }
 void ProcessFilter::resort() {
 	filterChanged();//Tell the proxy view to refresh all its information
-	kDebug() << "RESORT" << endl;
-
 }
 #include "ProcessFilter.moc"

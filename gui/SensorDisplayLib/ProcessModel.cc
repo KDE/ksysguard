@@ -308,7 +308,7 @@ void ProcessModel::updateProcessTotals(Process *process, double sysChange, doubl
 
 		//If we are init, then our ppid is 0, so leave our row as 0.  If we are not, then we need to find our parent process
 		//and find which child item we are in that
-		if(process->parent_pid == 0) {
+		if(process->tree_ppid == 0) {
 			if(mCPUHeading != -1 && mShowChildTotals && !mSimple) {
 				QModelIndex index = createIndex(0, mCPUHeading, process);
 				emit dataChanged(index, index);
@@ -339,7 +339,7 @@ void ProcessModel::changeProcess(long long pid)
 	long long new_ppid = newPidToPpidMapping[pid];
 	//This is called from insertOrChangeRows and after the parent is checked, so we know the (new) parent won't change under us
 
-	if(new_ppid != mPidToProcess[pid]->parent_pid) {
+	if(new_ppid != mPidToProcess[pid]->tree_ppid) {
 		//Process has reparented.  Delete and reinsert
 		//again, we know that the new parent won't change under us
 		removeRow(pid);
@@ -474,7 +474,7 @@ void ProcessModel::changeProcess(long long pid)
 				}
 			} break;
 			case DataColumnPid: break; //Already dealt with
-			case DataColumnPPid: break; //Already dealt with
+			case DataColumnPPid: if(process->parent_pid==0) {process->parent_pid = newDataRow[i].toLongLong();}  break;  //update the parent_pid if we are in simple mode, in which case the parent_pid is currently set to 0
 			case DataColumnOtherLong: value = newDataRow[i].toLongLong(); break;
 			case DataColumnOtherPrettyLong: value = KGlobal::locale()->formatNumber( newDataRow[i].toDouble(),0 ); break;
 			case DataColumnOtherPrettyFloat: value = KGlobal::locale()->formatNumber( newDataRow[i].toDouble() ); break;
