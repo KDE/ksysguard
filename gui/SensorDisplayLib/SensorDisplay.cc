@@ -306,7 +306,7 @@ void SensorDisplay::setSensorOk( bool ok )
     if ( !mPlotterWdg || mPlotterWdg->isVisible())
       return;
 
-    QPixmap errorIcon = KGlobal::iconLoader()->loadIcon( "connect_creating", K3Icon::Desktop,
+    QPixmap errorIcon = kapp->iconLoader()->loadIcon( "connect_creating", K3Icon::Desktop,
                                              K3Icon::SizeSmall );
 
     mErrorIndicator = new QWidget( mPlotterWdg );
