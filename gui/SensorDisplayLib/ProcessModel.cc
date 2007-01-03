@@ -917,11 +917,11 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			return tooltip;
 		}
 		case HeadingMemory: {
-			QString tooltip = i18n("<qt>This is the amount of memory the process is using, included shared libraries, graphics memory, files on disk, and so on.");
+			QString tooltip = i18n("<qt>This is the amount of virtual memory space that the process is using, included shared libraries, graphics memory, files on disk, and so on.  This number is almost meaningless.");
 			return tooltip;
 		}
 		case HeadingRSSMemory: {
-			QString tooltip = i18n("<qt>This is the amount of real physical memory that this process is using directly.  It does not include any swapped out memory, nor shared libraries etc.");
+			QString tooltip = i18n("<qt>This is the amount of real physical memory that this process is using.  It does not include any swapped out memory, but does include shared libraries etc.");
 			if(mMemTotal != -1)
 				tooltip += i18n("<br/><br/>Memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize(process->vmRSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), QString::number(process->vmRSS*100/mMemTotal));
 			return tooltip;
