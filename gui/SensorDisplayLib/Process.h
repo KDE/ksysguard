@@ -57,8 +57,9 @@ class Process : public QObject {
 	double totalSysUsage; ///Percentage (0 to 100) from the sum of itself and all its children recursively. If there's no children, it's equal to sysUsage
 	unsigned long numChildren; ///Number of children recursively that this process has.  From 0+
 	int nice;      ///Niceness (-20 to 20) of this process
-	long vmSize;   ///KiloBytes used in total by process (KiB)
-	long vmRSS;    ///KiloBytes used by actual process - the main memory it uses without shared/X/etc (KiB). If it's swapped out, it's not counted
+	long vmSize;   ///Virtual memory size in KiloBytes, including memory used, mmap'ed files, graphics memory etc,
+	long vmRSS;    ///Physical memory used by the process and its shared libraries.  If the process and libraries are swapped to disk, this could be 0
+	long vmURSS;   ///Physical memory used only by the process, and not counting the code for shared libraries. Set to -1 if unknown
 	ProcessType processType;
 	QByteArray name;  ///The name (e.g. "ksysguard", "konversation", "init")
 	QByteArray command; ///The command the process was launched with
@@ -71,7 +72,7 @@ class Process : public QObject {
 	long long xResMemOtherBytes;  ///The amount of memory in bytes used in X server other than pixmaps
 	bool isStoppedOrZombie; ///An optomisation value, true iff process->status == "stopped" || process->status == "zombie"
   private:
-	void clear() {pid = 0; tree_ppid = 0; parent_pid = 0; uid = 0; gid = -1; tracerpid = 0; userTime = -1; sysTime = -1; userUsage=0; sysUsage=0; totalUserUsage=0; totalSysUsage=0; numChildren=0; nice=0; vmSize=0; vmRSS = 0; processType=Invalid; xResPxmMemBytes=0; xResNumPxm=0; xResMemOtherBytes=0; isStoppedOrZombie=false;}
+	void clear() {pid = 0; tree_ppid = 0; parent_pid = 0; uid = 0; gid = -1; tracerpid = 0; userTime = -1; sysTime = -1; userUsage=0; sysUsage=0; totalUserUsage=0; totalSysUsage=0; numChildren=0; nice=0; vmSize=0; vmRSS = 0; vmURSS = 0; processType=Invalid; xResPxmMemBytes=0; xResNumPxm=0; xResMemOtherBytes=0; isStoppedOrZombie=false;}
 };
 
 #endif

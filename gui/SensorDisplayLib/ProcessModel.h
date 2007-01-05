@@ -202,7 +202,7 @@ private:
 	/** A set of all the pids we know about.  Stored in a set so we can easily compare them against new data sets*/
 	QSet<long long> mPids;
 
-	enum { HeadingUser, HeadingName, HeadingXIdentifier, HeadingXMemory, HeadingCPUUsage, HeadingRSSMemory, HeadingMemory, HeadingCommand, HeadingOther };
+	enum { HeadingUser, HeadingName, HeadingXIdentifier, HeadingXMemory, HeadingCPUUsage, HeadingVmSize, HeadingMemory, HeadingSharedMemory, HeadingCommand, HeadingOther };
 	
 	/** This are used when there is new data.  There are cleared as soon as the data is merged into the current model */
 	QSet<long long> new_pids;
@@ -216,7 +216,7 @@ private:
 
 	bool mShowChildTotals; ///If set to true, a parent will return the CPU usage of all its children recursively
 
-	typedef enum { DataColumnLogin, DataColumnGid, DataColumnPid, DataColumnPPid, DataColumnUid, DataColumnName, DataColumnTracerPid, DataColumnUserUsage, DataColumnSystemUsage, DataColumnUserTime, DataColumnSystemTime, DataColumnNice, DataColumnVmSize, DataColumnVmRss, DataColumnCommand, DataColumnStatus, DataColumnOtherLong, DataColumnOtherPrettyLong, DataColumnOtherPrettyFloat, DataColumnError } DataColumnType;
+	typedef enum { DataColumnLogin, DataColumnGid, DataColumnPid, DataColumnPPid, DataColumnUid, DataColumnName, DataColumnTracerPid, DataColumnUserUsage, DataColumnSystemUsage, DataColumnUserTime, DataColumnSystemTime, DataColumnNice, DataColumnVmSize, DataColumnRSSMemory, DataColumnURSSMemory, DataColumnCommand, DataColumnStatus, DataColumnOtherLong, DataColumnOtherPrettyLong, DataColumnOtherPrettyFloat, DataColumnError } DataColumnType;
 
 
 	int mPidColumn;  ///Column the PID is in, so we can extract it quickly and easily from incoming data

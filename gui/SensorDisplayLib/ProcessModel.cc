@@ -428,8 +428,14 @@ void ProcessModel::changeProcess(long long pid)
 					changed = true;
 				}
 			} break;
-
-			case DataColumnVmRss: {
+			case DataColumnURSSMemory: {
+				int vmurss = newDataRow[i].toInt();
+				if(process->vmURSS != vmurss) {
+					process->vmURSS = vmurss;
+					changed = true;
+				}
+			} break;
+			case DataColumnRSSMemory: {
 				int vmrss = newDataRow[i].toInt();
 				if(process->vmRSS != vmrss) {
 					process->vmRSS = vmrss;
@@ -593,7 +599,8 @@ void ProcessModel::insertOrChangeRows( long long pid)
 			case DataColumnSystemUsage: new_process->sysUsage = newDataRow[i].toFloat(); break;
 			case DataColumnNice: new_process->nice = newDataRow[i].toInt(); break;
 			case DataColumnVmSize: new_process->vmSize = newDataRow[i].toLong(); break;
-			case DataColumnVmRss: new_process->vmRSS = newDataRow[i].toLong(); break;
+			case DataColumnRSSMemory: new_process->vmRSS = newDataRow[i].toLong(); break;
+			case DataColumnURSSMemory: new_process->vmURSS = newDataRow[i].toLong(); break;
 			case DataColumnCommand: new_process->command = newDataRow[i]; break;
 			case DataColumnStatus: new_process->status = newDataRow[i];  new_process->isStoppedOrZombie = new_process->status == "stopped" || new_process->status == "zombie";break;
 			case DataColumnOtherLong: new_process->data << newDataRow[i].toLongLong(); break;
@@ -823,12 +830,21 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 
 				return QString::number(total, 'f', (total>=1)?0:1) + '%';
 			}
-		case HeadingRSSMemory:
-			if(process->vmRSS == 0) return QVariant(QVariant::String);
-			return KGlobal::locale()->formatByteSize(process->vmRSS * 1024);
 		case HeadingMemory:
+			if(process->vmRSS == 0) return QVariant(QVariant::String);
+			if(process->vmURSS == -1) {
+				//If we don't have the URSS (the memory used by only the process, not the shared libraries)
+				//then return the RSS (physical memory used by the process + shared library) as the next best thing
+				return KGlobal::locale()->formatByteSize(process->vmRSS * 1024);
+			} else {
+				return KGlobal::locale()->formatByteSize(process->vmURSS * 1024);
+			}
+		case HeadingVmSize:
 			if(process->vmSize == 0) return QVariant(QVariant::String);
 			return KGlobal::locale()->formatByteSize(process->vmSize * 1024);
+		case HeadingSharedMemory:
+			if(process->vmRSS - process->vmURSS <= 0 || process->vmURSS == -1) return QVariant(QVariant::String);
+			return KGlobal::locale()->formatByteSize( (process->vmRSS-process->vmURSS) * 1024);
 		case HeadingCommand: 
 			{
 				return process->command;
@@ -916,16 +932,36 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				return tooltip + "<br/>" + tracer;
 			return tooltip;
 		}
-		case HeadingMemory: {
+		case HeadingVmSize: {
 			QString tooltip = i18n("<qt>This is the amount of virtual memory space that the process is using, included shared libraries, graphics memory, files on disk, and so on.  This number is almost meaningless.");
 			return tooltip;
 		}
-		case HeadingRSSMemory: {
-			QString tooltip = i18n("<qt>This is the amount of real physical memory that this process is using.  It does not include any swapped out memory, but does include shared libraries etc.");
+		case HeadingMemory: {
+			QString tooltip;
+			if(process->vmURSS == -1)
+				//We don't have information about the URSS, so just fallback to RSS
+				tooltip = i18n("<qt>This is the amount of real physical memory that this process is using.  It does not include any swapped out memory, but does include the code size for shared libraries etc.<br/><br/>");
+			else {
+				tooltip = i18n("<qt>This is the amount of real physical memory that this process is using by itself.  It does not include any swapped out memory, nor the code size of its shared libraries.  This is often the most useful figure to judge the memory use of a program.<br/><br/>");
+				if(mMemTotal != -1)
+					tooltip += i18n("Memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize(process->vmURSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), QString::number(process->vmURSS*100/mMemTotal));
+				else
+					tooltip += i18n("Memory usage: %1", KGlobal::locale()->formatByteSize(process->vmURSS * 1024));
+			}
 			if(mMemTotal != -1)
-				tooltip += i18n("<br/><br/>Memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize(process->vmRSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), QString::number(process->vmRSS*100/mMemTotal));
+				tooltip += i18n("RSS Memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize(process->vmRSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), QString::number(process->vmRSS*100/mMemTotal));
+			else
+				tooltip += i18n("RSS Memory usage: %1", KGlobal::locale()->formatByteSize(process->vmRSS * 1024));
 			return tooltip;
 		}
+		case HeadingSharedMemory: {
+			if(process->vmURSS == -1)
+				return i18n("<qt>Your system does not seem to have this information for us to read, sorry.");
+			QString tooltip = i18n("<qt>This is the amount of real physical memory that this process's shared libraries are using.  This memory is shared among all processes that use this library");
+			tooltip += i18n("<br/><br/>Shared library memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize((process->vmRSS - process->vmURSS) * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), QString::number((process->vmRSS-process->vmURSS)*100/mMemTotal));
+			return tooltip;
+		}
+
 		default:
 			tracer.isEmpty(); return tracer;
 			return QVariant(QVariant::String);
@@ -937,7 +973,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			case HeadingCPUUsage:
 				return QVariant(Qt::AlignCenter);
 			case HeadingMemory:
-			case HeadingRSSMemory:
+			case HeadingSharedMemory:
+			case HeadingVmSize:
 				return QVariant(Qt::AlignRight);
 		}
 		return QVariant();
@@ -969,6 +1006,9 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			if(process->tracerpid >0) return (long long)0;
 			
 			long long base = 0;
+			long long memory = 0;
+			if(process->vmURSS != -1) memory = process->vmURSS;
+			else memory = process->vmRSS;
 			if(process->uid == getuid())
 				base = 0;
 			else if(process->uid < 100 || !canUserLogin(process->uid))
@@ -980,7 +1020,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				totalcpu = 0.001;  //stopped or zombied processes should be near the top of the list
 
 			//However we can of course have lots of processes with the same user.  Next we sort by CPU.
-			return (long long)(base - (totalcpu*100) -100 + process->vmRSS*100.0/mMemTotal);
+			return (long long)(base - (totalcpu*100) -100 + memory*100.0/mMemTotal);
 		}
 		case HeadingXMemory:
 			//FIXME Okay this is a hack, but here's the deal:
@@ -995,22 +1035,34 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				totalcpu = 1;  //stopped or zombied processes should be near the top of the list
 			return (long long)-totalcpu;
 		 }
-		case HeadingRSSMemory:
-			return (long long)-process->vmRSS;
 		case HeadingMemory:
+			if(process->vmURSS == -1) 
+				return (long long)-process->vmRSS;
+			else
+				return (long long)-process->vmURSS;
+		case HeadingVmSize:
 			return (long long)-process->vmSize;
+		case HeadingSharedMemory:
+			if(process->vmURSS == -1) return (long long)0;
+			return (long long)-(process->vmRSS - process->vmURSS);
 		}
 		return QVariant();
 	}
 	case Qt::UserRole+2: {
-		//Return an int here for the cpu percentage
+		//Return an int here to draw a percentage bar in the table
 		if(mHeadingsToType[index.column()] == HeadingCPUUsage) {
 			Process *process = reinterpret_cast< Process * > (index.internalPointer());
 			return (int)(process->userUsage + process->sysUsage);
-		}
-                if(mHeadingsToType[index.column()] == HeadingRSSMemory) {
+		}else if(mHeadingsToType[index.column()] == HeadingMemory) {
                         Process *process = reinterpret_cast< Process * > (index.internalPointer());
-			return (int)(process->vmRSS*100/mMemTotal);
+			long long memory = 0;
+			if(process->vmURSS != -1) memory = process->vmURSS;
+			else memory = process->vmRSS;
+			return (int)(memory*100/mMemTotal);
+		} else if(mHeadingsToType[index.column()] == HeadingSharedMemory) {
+                        Process *process = reinterpret_cast< Process * > (index.internalPointer());
+			if(process->vmURSS == -1) return 0;
+			return (int)((process->vmRSS - process->vmURSS)*100/mMemTotal);
 		}
 		return 0;
 	}
@@ -1129,8 +1181,8 @@ void ProcessModel::setIsLocalhost(bool isLocalhost)
 /** Set the untranslated heading names for the model */
 bool ProcessModel::setHeader(const QList<QByteArray> &header, const QByteArray &coltype_) {
 	//Argument examples:
-	//header: (Name,PID,PPID,UID,GID,Status,User%,System%,Nice,VmSize,VmRss,Login,TracerPID,Command)
-	//coltype_: sddddSffdDDsds
+	//header: (Name,PID,PPID,UID,GID,Status,User%,System%,Nice,VmSize,VmRss,VmURss, Login,TracerPID,Command)
+	//coltype_: sddddSffdDDDsds
 	mPidColumn = -1;  //We need to be able to access the pid directly, so remember which column it will be in
 	mPPidColumn = -1; //Same, although this may not always be found :/
 	mCPUHeading = -1;
@@ -1195,11 +1247,15 @@ bool ProcessModel::setHeader(const QList<QByteArray> &header, const QByteArray &
 		} else if(header[i] == "VmSize") {
 			coltype += DataColumnVmSize;
 			headings << i18nc("process heading", "Virtual Size");
-			headingsToType << HeadingMemory;
+			headingsToType << HeadingVmSize;
 		} else if(header[i] == "VmRss") {
-			coltype += DataColumnVmRss;
+			coltype += DataColumnRSSMemory;
 			headings << i18nc("process heading", "Memory");
-			headingsToType  << HeadingRSSMemory;
+			headingsToType  << HeadingMemory;
+		} else if(header[i] == "VmURss") {
+			coltype += DataColumnURSSMemory;
+			headings << i18nc("process heading", "Shared Mem");
+			headingsToType  << HeadingSharedMemory;
 		} else if(header[i] == "Command") {
 			coltype += DataColumnCommand;
 			headings << i18nc("process heading", "Command");

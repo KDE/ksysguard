@@ -85,13 +85,26 @@ typedef struct {
   int priority;
 
   /**
-    The total amount of memory the process uses. This includes shared and
-    swapped memory.
+    The total amount of virtual memory space that this process uses. This includes shared and
+    swapped memory, plus graphics memory and mmap'ed files and so on.
+
+    This is in KiB
    */
   unsigned long vmSize;
 
-  /* The amount of physical memory the process currently uses. */
+  /**
+    The amount of physical memory the process currently uses, including the physical memory used by any
+    shared libraries that it uses.  Hence 2 processes sharing a library will both report their vmRss as including
+    this shared memory, even though it's only allocated once. 
+   
+    This is in KiB
+   */
+  
   unsigned long vmRss;
+
+  /* The amount of physical memory that is used by this process, not including any memory used by any shared libraries.
+   * This is in KiB */
+  unsigned long vmURss;
 
   /**
     The number of 1/100 of a second the process has spend in user space.
@@ -196,8 +209,28 @@ static bool getProcess( int pid, ProcessInfo *ps )
     return false;
   }
 
+  /*There was a "(ps->vmRss+3) * sysconf(_SC_PAGESIZE)" here originally.  I have no idea why!  After comparing it to
+  meminfo and other tools, this means we report the RSS by 12 bytes different compared to them.  So I'm removing the +3
+  to be consistent.  NEXT TIME COMMENT STRANGE THINGS LIKE THAT! :-)*/
+  ps->vmRss = ps->vmRss * sysconf(_SC_PAGESIZE) / 1024; /*convert to KiB*/
+  ps->vmSize /= 1024; /* convert to KiB */
+
   if ( fclose( fd ) )
     return false;
+
+  snprintf( buf, BUFSIZE - 1, "/proc/%d/statm", pid );
+  buf[ BUFSIZE - 1 ] = '\0';
+  ps->vmURss = -1;
+  if ( ( fd = fopen( buf, "r" ) ) != 0 )  {
+    unsigned long shared;
+    if ( fscanf( fd, "%*d %*u %lu",
+                   &shared)==1) {
+      /* we use the rss - shared  to find the amount of memory just this app uses */
+      ps->vmURss = ps->vmRss - (shared * sysconf(_SC_PAGESIZE) / 1024);
+    }
+    fclose( fd );
+  }
+
 
   /* status decoding as taken from fs/proc/array.c */
   if ( status == 'R' )
@@ -215,7 +248,6 @@ static bool getProcess( int pid, ProcessInfo *ps )
   else
     sprintf( ps->status, "Unknown: %c", status );
 
-  ps->vmRss = ( ps->vmRss + 3 ) * sysconf(_SC_PAGESIZE);
 
   snprintf( buf, BUFSIZE - 1, "/proc/%d/cmdline", pid );
   if ( ( fd = fopen( buf, "r" ) ) == 0 )
@@ -267,10 +299,10 @@ void printProcessList( const char* cmd)
       long pid;
       pid = atol( entry->d_name );
       if(getProcess( pid, &ps ))
-        fprintf( CurrentClient, "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%s\t%ld\t%s\n",
+        fprintf( CurrentClient, "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%lu\t%s\t%ld\t%s\n",
 	     ps.name, pid, (long)ps.ppid,
              (long)ps.uid, (long)ps.gid, ps.status, ps.userTime,
-             ps.sysTime, ps.niceLevel, ps.vmSize / 1024, ps.vmRss / 1024,
+             ps.sysTime, ps.niceLevel, ps.vmSize, ps.vmRss, ps.vmURss,
              ps.userName, (long)ps.tracerpid, ps.cmdline
 	     );
     }
@@ -347,8 +379,8 @@ void printProcessListInfo( const char* cmd )
 {
   (void)cmd;
   fprintf( CurrentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser Time\tSystem Time\tNice\tVmSize"
-                          "\tVmRss\tLogin\tTracerPID\tCommand\n" );
-  fprintf( CurrentClient, "s\td\td\td\td\tS\td\td\td\tD\tD\ts\td\ts\n" );
+                          "\tVmRss\tVmURss\tLogin\tTracerPID\tCommand\n" );
+  fprintf( CurrentClient, "s\td\td\td\td\tS\td\td\td\tD\tD\tD\ts\td\ts\n" );
 }
 
 void printProcessCount( const char* cmd )

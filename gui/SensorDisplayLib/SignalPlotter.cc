@@ -403,9 +403,7 @@ void KSignalPlotter::setSvgBackground( const QString &filename )
 {
   if(mSvgFilename == filename) return;
   mSvgFilename = filename;
-  QSvgRenderer *svgRenderer = sSvgRenderer.take(filename);  //this will cause the svgrenderer to be recreated at paint time
-  if(svgRenderer) delete svgRenderer;
-
+  //NOTE:  We don't free the old svg renderer.  This means that it will leak if we set it to use one svg, then reset it to use another svg.  
   //The svg rendererer object will be created on demand in drawBackground
 }
 
@@ -430,7 +428,7 @@ void KSignalPlotter::setThinFrame( bool set)
 void KSignalPlotter::resizeEvent( QResizeEvent* )
 {
   Q_ASSERT( width() > 2 );
-  mBackgroundImage = QImage(); //set to null.  If it's invalid, it will be rerendered.
+//  mBackgroundImage = mBackgroundImage.scaled(width(), height()); //set to null.  If it's invalid, it will be rerendered.
   updateDataBuffers();
 }
 

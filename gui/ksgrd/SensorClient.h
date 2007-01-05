@@ -126,7 +126,7 @@ class SensorTokenizer
 class SensorIntegerInfo : public SensorTokenizer
 {
   public:
-    SensorIntegerInfo( const QByteArray &info )
+    explicit SensorIntegerInfo( const QByteArray &info )
       : SensorTokenizer( info, '\t' ) { }
 
     ~SensorIntegerInfo() { }
