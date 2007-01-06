@@ -101,6 +101,7 @@ bool KSignalPlotter::addBeam( const QColor &color )
     (*it).append(0);
   }
   mBeamColors.append(color);
+  mBeamColorsDark.append(color.dark(150));
   return true;
 }
 
@@ -157,13 +158,14 @@ void KSignalPlotter::reorderBeams( const QList<int>& newOrder )
     }
   }
   QList< QColor> newBeamColors;
+  QList< QColor> newBeamColorsDark;
   for(int i = 0; i < newOrder.count(); i++) {
     int newIndex = newOrder[i];
     newBeamColors.append(mBeamColors.at(newIndex));
+    newBeamColorsDark.append(mBeamColorsDark.at(newIndex));
   }
   mBeamColors = newBeamColors;
-
-
+  mBeamColorsDark = newBeamColorsDark;
 }
 
 
@@ -649,9 +651,8 @@ void KSignalPlotter::drawTopBarContents(QPainter *p, int x, int width, int heigh
 
       p->setPen(Qt::NoPen);
       QLinearGradient  linearGrad( QPointF(start,1), QPointF(end, 1));
-      QColor col = mBeamColors.at(i);
-      linearGrad.setColorAt(0, col.dark(150));
-      linearGrad.setColorAt(1, col);
+      linearGrad.setColorAt(0, mBeamColorsDark[i]);
+      linearGrad.setColorAt(1, mBeamColors[i]);
       p->fillRect( start, 1, end - start, height-1, QBrush(linearGrad));
     }
   }
@@ -837,7 +838,7 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizonta
 	if(mFillBeams) {
 	  QPainterPath path2(path);
           QLinearGradient myGradient(0,(h-1+top),0,(h-1+top)/5);
-	  QColor c0(mBeamColors[j].dark(150));
+	  QColor c0(mBeamColorsDark[j]);
 	  QColor c1(mBeamColors[j]);
 	  c0.setAlpha(150);
 	  c1.setAlpha(150);
