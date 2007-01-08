@@ -84,10 +84,10 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
     Workspace* mWorkSpace;
 
     int mTimerId;
-    KAction *mTabRemoveAction;
-    KAction *mTabExportAction;
-    KAction *mColorizeAction;
-    KAction *mMonitorRemoteAction;
+    QAction *mTabRemoveAction;
+    QAction *mTabExportAction;
+    QAction *mColorizeAction;
+    QAction *mMonitorRemoteAction;
     QList<int> mSplitterSize;
 };
 

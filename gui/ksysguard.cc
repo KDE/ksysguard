@@ -33,6 +33,7 @@
 
 #include <kaboutdata.h>
 #include <kaction.h>
+#include <kactioncollection.h>
 #include <kapplication.h>
 #include <kcmdlineargs.h>
 #include <kdebug.h>
@@ -107,24 +108,38 @@ TopLevel::TopLevel()
   statusBar()->hide();
 
   // create actions for menu entries
-  KAction *action = new KAction(KIcon("tab_new"),  i18n( "&New Worksheet..." ), actionCollection(), "new_worksheet" );
+  QAction *action = actionCollection()->addAction("new_worksheet");
+  action->setIcon(KIcon("tab_new"));
+  action->setText(i18n( "&New Worksheet..." ));
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( newWorkSheet() ));
-  action = new KAction(KIcon("fileopen"),  i18n( "Import Worksheet..." ), actionCollection(), "import_worksheet" );
+  action = actionCollection()->addAction("import_worksheet");
+  action->setIcon(KIcon("fileopen") );
+  action->setText(i18n( "Import Worksheet..." ));
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( importWorkSheet() ));
-  mTabRemoveAction = new KAction(KIcon("tab_remove"),  i18n( "&Remove Worksheet" ), actionCollection(), "remove_worksheet" );
+  mTabRemoveAction = actionCollection()->addAction( "remove_worksheet" );
+  mTabRemoveAction->setIcon( KIcon("tab_remove") );
+  mTabRemoveAction->setText( i18n( "&Remove Worksheet" ) );
   connect(mTabRemoveAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( removeWorkSheet() ));
-  mTabExportAction = new KAction(KIcon("filesaveas"),  i18n( "&Export Worksheet..." ), actionCollection(), "export_worksheet" );
+  mTabExportAction = actionCollection()->addAction( "export_worksheet" );
+  mTabExportAction->setIcon( KIcon("filesaveas") );
+  mTabExportAction->setText( i18n( "&Export Worksheet..." ) );
   connect(mTabExportAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( exportWorkSheet() ));
 
   KStandardAction::quit( this, SLOT( close() ), actionCollection() );
 
-  mMonitorRemoteAction = new KAction(KIcon("connect_established"),  i18n( "Monitor remote machine..." ), actionCollection(), "connect_host" );
+  mMonitorRemoteAction = actionCollection()->addAction( "connect_host" );
+  mMonitorRemoteAction->setIcon( KIcon("connect_established") );
+  mMonitorRemoteAction->setText( i18n( "Monitor remote machine..." ) );
   connect(mMonitorRemoteAction, SIGNAL(triggered(bool)), SLOT( connectHost() ));
 
-  action = new KAction(KIcon("configure"),  i18n( "&Worksheet Properties" ), actionCollection(), "configure_sheet" );
+  action = actionCollection()->addAction( "configure_sheet" );
+  action->setIcon( KIcon("configure") );
+  action->setText( i18n( "&Worksheet Properties" ) );
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( configure() ));
 
-  mColorizeAction = new KAction(KIcon("colorize"),  i18n( "Configure &Style..." ), actionCollection(), "configure_style" );
+  mColorizeAction = actionCollection()->addAction( "configure_style" );
+  mColorizeAction->setIcon( KIcon("colorize") );
+  mColorizeAction->setText( i18n( "Configure &Style..." ) );
   connect(mColorizeAction, SIGNAL(triggered(bool)), SLOT( editStyle() ));
 
   setupGUI(ToolBar | Keys | StatusBar | Create);
@@ -149,7 +164,7 @@ void TopLevel::currentTabChanged(int index)
     if(mSensorBrowser->isVisible() && locked) //going from visible to not visible to save the state
       mSplitterSize = mSplitter->sizes();
     mSensorBrowser->setVisible(!locked);
-    
+
   }
 }
 void TopLevel::startSensorBrowserWidget()
@@ -221,7 +236,7 @@ void TopLevel::updateStatusBar()
 void TopLevel::connectHost()
 {
   HostConnector hostConnector( this );
-  
+
 //  hostConnector.setHostNames( mHostList );
 //  hostConnector.setCommands( mCommandList );
 
@@ -232,7 +247,7 @@ void TopLevel::connectHost()
 
 //  mHostList = hostConnector.hostNames();
 //  mCommandList = hostConnector.commands();
-  
+
   QString shell = "";
   QString command = "";
   int port = -1;
@@ -336,7 +351,7 @@ void TopLevel::readProperties( KConfig *cfg )
     // start with a 30/70 ratio
     mSplitterSize.append( 10 );
     mSplitterSize.append( 90 );
-  } 
+  }
 
   KSGRD::SensorMgr->readProperties( cfg );
   KSGRD::Style->readProperties( cfg );
@@ -350,7 +365,7 @@ void TopLevel::saveProperties( KConfig *cfg )
 {
   cfg->writeEntry( "isMinimized", isMinimized() );
 
-  if(mSensorBrowser && mSensorBrowser->isVisible()) 
+  if(mSensorBrowser && mSensorBrowser->isVisible())
     cfg->writeEntry( "SplitterSizeList",  mSplitter->sizes());
   else if(mSplitterSize.size() == 2 && mSplitterSize.value(0) != 0 && mSplitterSize.value(1) != 0)
     cfg->writeEntry( "SplitterSizeList", mSplitterSize );
