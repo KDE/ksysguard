@@ -103,8 +103,8 @@ class LogSensorModel : public QAbstractTableModel
             break;
         }
       } else if ( role == Qt::DecorationRole ) {
-        static QPixmap runningPixmap = kapp->iconLoader()->loadIcon( "running", K3Icon::Small, K3Icon::SizeSmall );
-        static QPixmap waitingPixmap = kapp->iconLoader()->loadIcon( "waiting", K3Icon::Small, K3Icon::SizeSmall );
+        static QPixmap runningPixmap = KIconLoader::global()->loadIcon( "running", K3Icon::Small, K3Icon::SizeSmall );
+        static QPixmap waitingPixmap = KIconLoader::global()->loadIcon( "waiting", K3Icon::Small, K3Icon::SizeSmall );
 
         if ( index.column() == 0 ) {
           if ( sensor->isLogging() )

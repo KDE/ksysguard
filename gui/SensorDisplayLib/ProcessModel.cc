@@ -1149,7 +1149,7 @@ QPixmap ProcessModel::getIcon(const QByteArray&iconname) const {
 	 * with this name. */
 	if(mIconCache.contains(iconname))
 		return mIconCache[iconname];
-	QPixmap pix = kapp->iconLoader()->loadIcon(iconname, K3Icon::Small,
+	QPixmap pix = KIconLoader::global()->loadIcon(iconname, K3Icon::Small,
 					 K3Icon::SizeSmall, K3Icon::DefaultState,
 					 0L, true);
 	if (pix.isNull() || !pix.mask())
