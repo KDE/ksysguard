@@ -133,6 +133,7 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
            this, SLOT(  slotHostNameChanged( const QString & ) ) );
   enableButtonOk( !mHostNames->lineEdit()->text().isEmpty() );
   KAcceleratorManager::manage( this );
+  connect(this,SIGNAL(helpClicked()),this,SLOT(slotHelp()));
 }
 
 HostConnector::~HostConnector()
