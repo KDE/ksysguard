@@ -37,11 +37,6 @@
 
 QHash<QString, QSvgRenderer *> KSignalPlotter::sSvgRenderer ;
 
-static inline int min( int a, int b )
-{
-  return ( a < b ? a : b );
-}
-
 KSignalPlotter::KSignalPlotter( QWidget *parent)
   : QWidget( parent)
 {

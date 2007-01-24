@@ -196,7 +196,7 @@ class KSignalPlotter : public QWidget
     QList< QColor> mBeamColors;  //These colors match up against the QList<double>  in mBeamData
     QList< QColor> mBeamColorsDark;  //These colors match up against the QList<double> in mBeamData, and are darker than mBeamColors.  Done for gradient effects
 
-    int mSamples; //This is what mBeamData.size() should equal when full.  When we start off and have no data then mSamples will be higher.  If we resize the widget so it's smaller, then for a short while this will be smaller
+    unsigned int mSamples; //This is what mBeamData.size() should equal when full.  When we start off and have no data then mSamples will be higher.  If we resize the widget so it's smaller, then for a short while this will be smaller
     int mNewestIndex; //The index to the newest item added.  newestIndex+1   is the second newest, and so on
 
     QString mTitle;
