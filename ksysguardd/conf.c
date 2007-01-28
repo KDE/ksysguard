@@ -67,22 +67,23 @@ void parseConfigFile( const char *filename )
       If we can't open a config file we have to add the
       available sensors manually
      */
-    push_ctnr( SensorList, strdup( "ProcessList" ) );
-    push_ctnr( SensorList, strdup( "Memory" ) );
-    push_ctnr( SensorList, strdup( "Stat" ) );
-    push_ctnr( SensorList, strdup( "DiskStats" ) );
-    push_ctnr( SensorList, strdup( "NetDev" ) );
-    push_ctnr( SensorList, strdup( "NetStat" ) );
-    push_ctnr( SensorList, strdup( "Apm" ) );
     push_ctnr( SensorList, strdup( "Acpi" ) );
+    push_ctnr( SensorList, strdup( "Apm" ) );
     push_ctnr( SensorList, strdup( "CpuInfo" ) );
-    push_ctnr( SensorList, strdup( "LoadAvg" ) );
+    push_ctnr( SensorList, strdup( "DellLaptop" ) );
+    push_ctnr( SensorList, strdup( "DiskStat" ) );
+    push_ctnr( SensorList, strdup( "DiskStats" ) );
 #ifdef HAVE_LMSENSORS
     push_ctnr( SensorList, strdup( "LmSensors" ) );
 #endif
-    push_ctnr( SensorList, strdup( "DiskStat" ) );
+    push_ctnr( SensorList, strdup( "LoadAvg" ) );
     push_ctnr( SensorList, strdup( "LogFile" ) );
-    push_ctnr( SensorList, strdup( "DellLaptop" ) );
+    push_ctnr( SensorList, strdup( "Memory" ) );
+    push_ctnr( SensorList, strdup( "NetDev" ) );
+    push_ctnr( SensorList, strdup( "NetStat" ) );
+    push_ctnr( SensorList, strdup( "ProcessList" ) );
+    push_ctnr( SensorList, strdup( "Stat" ) );
+    push_ctnr( SensorList, strdup( "Uptime" ) );
 
     return;
   }
