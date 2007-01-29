@@ -117,6 +117,10 @@ public:
 	 */
 	void setTotalMemory(long memTotal) { mMemTotal = memTotal; }
 
+	/** The logical column that the vm size is in - so we can hide it by default
+	 */
+	int vmSizeColumn() const { return mVmSizeColumn; }
+
 public slots:
 	void setShowTotals(int totals);
 
@@ -222,7 +226,8 @@ private:
 	int mPidColumn;  ///Column the PID is in, so we can extract it quickly and easily from incoming data
 	int mPPidColumn; ///Column the Parent's PID is in, so we can extract it quickly and easily from incoming data
 	int mCPUHeading; ///Heading in the table that we show in which the memory is shown in - so that we can update it efficiently
-	
+	int mVmSizeColumn; ///Column the Virtual memory is in, so we can hide it by default since it's useless
+
 	int mXResNumColumns;
 	int mXResPidColumn;
 	int mXResIdentifierColumn;

@@ -50,6 +50,7 @@ ProcessModel::ProcessModel(QObject* parent)
 	mXResPidColumn = -1;
 	mMemTotal = -1;
 	mElapsedTimeCentiSeconds = 0;
+	mVmSizeColumn = -1;
 	
 	mShowChildTotals = true;
 
@@ -1248,6 +1249,7 @@ bool ProcessModel::setHeader(const QList<QByteArray> &header, const QByteArray &
 			coltype += DataColumnVmSize;
 			headings << i18nc("process heading", "Virtual Size");
 			headingsToType << HeadingVmSize;
+			mVmSizeColumn =  headingsToType.size();
 		} else if(header[i] == "VmRss") {
 			coltype += DataColumnRSSMemory;
 			headings << i18nc("process heading", "Memory");

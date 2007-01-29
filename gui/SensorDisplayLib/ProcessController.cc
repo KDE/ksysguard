@@ -442,6 +442,9 @@ ProcessController::answerReceived(int id, const QList<QByteArray>& answer)
 			sensorError(id,true);
 			return;
 		}
+		int vmSizeColumn = mModel.vmSizeColumn();
+		if(vmSizeColumn >=0)
+			mUi.treeView->header()->hideSection(vmSizeColumn);
 		mFilterModel.setFilterKeyColumn(0);
 		//Process names can have mixed case. Make the filter case insensitive.
 		mFilterModel.setFilterCaseSensitivity(Qt::CaseInsensitive);
