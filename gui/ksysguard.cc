@@ -274,7 +274,7 @@ void TopLevel::disconnectHost()
 
 void TopLevel::editToolbars()
 {
-  saveMainWindowSettings( KGlobal::config() );
+  saveMainWindowSettings( KGlobal::config().data() );
   KEditToolbar dlg( actionCollection() );
   connect( &dlg, SIGNAL( newToolbarConfig() ), this,
            SLOT( slotNewToolbarConfig() ) );
@@ -285,7 +285,7 @@ void TopLevel::editToolbars()
 void TopLevel::slotNewToolbarConfig()
 {
   createGUI();
-  applyMainWindowSettings( KGlobal::config() );
+  applyMainWindowSettings( KGlobal::config().data() );
 }
 
 void TopLevel::editStyle()
@@ -332,7 +332,7 @@ bool TopLevel::queryClose()
   if ( !mWorkSpace->saveOnQuit() )
     return false;
 
-  saveProperties( KGlobal::config() );
+  saveProperties( KGlobal::config().data() );
   KGlobal::config()->sync();
 
   return true;
@@ -523,7 +523,7 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
     topLevel->restore( 1 );
   else
   {
-    topLevel->readProperties( KGlobal::config() );
+    topLevel->readProperties( KGlobal::config().data() );
   }
 
   topLevel->initStatusBar();
