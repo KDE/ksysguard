@@ -38,7 +38,7 @@ class LogSensor : public QObject, public KSGRD::SensorClient
     explicit LogSensor( QObject *parent );
     ~LogSensor();
 
-    void answerReceived( int id, const QStringList& answer );
+    virtual void answerReceived( int id, const QList<QByteArray>&answer );
 
     void setHostName( const QString& name );
     QString hostName() const;
@@ -125,7 +125,7 @@ class SensorLogger : public KSGRD::SensorDisplay
 
     bool editSensor( LogSensor* );
 
-    void answerReceived( int, const QStringList& );
+    virtual void answerReceived( int, const QList<QByteArray>& );
     void resizeEvent( QResizeEvent* );
 
     bool restoreSettings( QDomElement& );

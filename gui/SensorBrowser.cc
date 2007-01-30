@@ -201,7 +201,7 @@ int SensorBrowserModel::makeTreeBranch(int parentId, const QString &name) {
   return mIdCount++;
 }
 
-void SensorBrowserModel::answerReceived( int hostId, const QStringList &answer )
+void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&answer )
 {
   /* An answer has the following example format:
 
@@ -221,9 +221,9 @@ void SensorBrowserModel::answerReceived( int hostId, const QStringList &answer )
     if ( answer[ i ].isEmpty() )
       break;
 
-    QStringList words = answer[ i ].split('\t');
-    QString sensorName = words[ 0 ];
-    QString sensorType = words[ 1 ];
+    QList<QByteArray> words = answer[ i ].split('\t');
+    QString sensorName = QString::fromUtf8(words[ 0 ]);
+    QString sensorType = QString::fromUtf8(words[ 1 ]);
 
     if ( hasSensor(hostId, sensorName))
       break;
@@ -284,7 +284,7 @@ SensorBrowserWidget::SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager*
 
   this->setToolTip( i18n( "Drag sensors to empty cells of a worksheet "
                              "or the panel applet." ) );
-  setRootIsDecorated( false );
+//  setRootIsDecorated( false );
   setDragDropMode(QAbstractItemView::DragOnly);
 
   //setMinimumWidth( 1 );
@@ -354,6 +354,7 @@ void SensorBrowserModel::addHost(KSGRD::SensorAgent *sensorAgent, const QString 
     mIdCount++;
   endInsertRows();
 
+  kDebug() << "Sent monitors request" << endl;
   hostInfo->sensorAgent()->sendRequest( "monitors", this, mIdCount-1 );
 }
 

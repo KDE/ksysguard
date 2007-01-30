@@ -71,7 +71,7 @@ class SensorBrowserModel : public QAbstractItemModel, private KSGRD::SensorClien
     void sensorsAddedToHost(const QModelIndex &index );
   private:
 
-    void answerReceived( int id, const QStringList& );
+    virtual void answerReceived( int id, const QList<QByteArray>& );
 
     int mIdCount; ///The lowest id that has not been used yet
     QMap<int, HostInfo*> mHostInfoMap; ///So each host has a number

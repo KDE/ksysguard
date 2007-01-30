@@ -343,7 +343,7 @@ void LogSensor::timerTick( )
   KSGRD::SensorMgr->sendRequest( mHostName, mSensorName, (KSGRD::SensorClient*) this, 42 );
 }
 
-void LogSensor::answerReceived( int id, const QStringList& answer )
+void LogSensor::answerReceived( int id, const QList<QByteArray>& answer ) //virtual
 {
   QFile mLogFile( mFileName );
 
@@ -571,7 +571,7 @@ bool SensorLogger::saveSettings( QDomDocument& doc, QDomElement& element )
   return true;
 }
 
-void SensorLogger::answerReceived( int, const QStringList& )
+void SensorLogger::answerReceived( int, const QList<QByteArray>& ) //virtual
 {
  // we do not use this, since all answers are received by the LogSensors
 }
