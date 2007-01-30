@@ -184,39 +184,6 @@ class SensorFloatInfo : public SensorTokenizer
     }
 };
 
-/**
-  A PS line consists of information about a process. Each piece of 
-  information is separated by a TAB. The first 4 fields are process name,
-  PID, PPID and real user ID. Those fields are mandatory.
- */
-class SensorPSLine : public SensorTokenizer
-{
-  public:
-    explicit SensorPSLine( const QByteArray &line )
-      : SensorTokenizer( line, '\t' ) { }
-
-    ~SensorPSLine() { }
-
-    QString name()
-    {
-      return QString::fromUtf8((*this)[ 0 ]);
-    }
-
-    long pid()
-    {
-      return (*this)[ 1 ].toLong();
-    }
-
-    long ppid()
-    {
-      return (*this)[ 2 ].toLong();
-    }
-
-    long uid()
-    {
-      return (*this)[ 3 ].toLong();
-    }
-};
 
 }
 
