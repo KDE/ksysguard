@@ -35,6 +35,7 @@
 #define MDSTATBUFSIZE (1 * 1024)
 #define MDADMSTATBUFSIZE (2 * 1024)
 #define ARRAYNAMELEN 32
+#define ARRAYNAMELENSTRING "32"
 
 static struct SensorModul* StatSM;
 
@@ -45,7 +46,7 @@ typedef struct {
 	bool Alive;
 
 	/* from /proc/mdstat */
-	char ArrayName[ ARRAYNAMELEN ];
+	char ArrayName[ ARRAYNAMELEN +1];
 	bool NumBlocksIsAlive;
 	bool NumBlocksIsRegistered;
 	int NumBlocks;
@@ -53,15 +54,11 @@ typedef struct {
 	/* from /sbin/mdadm --detail /dev/ArrayName */
 	bool ArraySizeIsAlive;
 	bool ArraySizeIsRegistered;
-	int ArraySizeBlocks;
-	float ArraySizeMiB;
-	float ArraySizeMB;
+	int ArraySizeKB;
 
 	bool UsedDeviceSizeIsAlive;
 	bool UsedDeviceSizeIsRegistered;
-	int UsedDeviceSizeBlocks;
-	float UsedDeviceSizeMiB;
-	float UsedDeviceSizeMB;
+	int UsedDeviceSizeKB;
 	
 	bool NumRaidDevicesIsAlive;
 	bool NumRaidDevicesIsRegistered;
@@ -118,24 +115,16 @@ void printArrayAttribute( const char* cmd ) {
 	ArrayInfo* foundArray;
 	char attribute[40];
 
-	if ( sscanf(cmd, "SoftRaid/%[^/]/%s", key.ArrayName, attribute) == 2 ) {
+	if ( sscanf(cmd, "SoftRaid/%[^/]/%39s", key.ArrayName, attribute) == 2 ) {
 		if ( ( idx = search_ctnr( ArrayInfos, ArrayInfoEqual, &key ) ) == 0 ) {
 			foundArray = get_ctnr( ArrayInfos, idx );
 
 			if ( strcmp( attribute, "NumBlocks" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->NumBlocks );
-			else if ( strcmp( attribute, "ArraySizeBlocks" ) == 0 )
-				fprintf( CurrentClient, "%d\n", foundArray->ArraySizeBlocks );
-			else if ( strcmp( attribute, "ArraySizeMiB" ) == 0 )
-				fprintf( CurrentClient, "%f\n", foundArray->ArraySizeMiB );
-			else if ( strcmp( attribute, "ArraySizeMB" ) == 0 )
-				fprintf( CurrentClient, "%f\n", foundArray->ArraySizeMB );
-			else if ( strcmp( attribute, "UsedDeviceSizeBlocks" ) == 0 )
-				fprintf( CurrentClient, "%d\n", foundArray->UsedDeviceSizeBlocks );
-			else if ( strcmp( attribute, "UsedDeviceSizeMiB" ) == 0 )
-				fprintf( CurrentClient, "%f\n", foundArray->UsedDeviceSizeMiB );
-			else if ( strcmp( attribute, "UsedDeviceSizeMB" ) == 0 )
-				fprintf( CurrentClient, "%f\n", foundArray->UsedDeviceSizeMB );
+			else if ( strcmp( attribute, "ArraySizeKB" ) == 0 )
+				fprintf( CurrentClient, "%d\n", foundArray->ArraySizeKB );
+			else if ( strcmp( attribute, "UsedDeviceSizeKB" ) == 0 )
+				fprintf( CurrentClient, "%d\n", foundArray->UsedDeviceSizeKB );
 			else if ( strcmp( attribute, "NumRaidDevices" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->NumRaidDevices );
 			else if ( strcmp( attribute, "TotalDevices" ) == 0 )
@@ -157,23 +146,15 @@ void printArrayAttribute( const char* cmd ) {
 }
 
 void printArrayAttributeInfo( const char* cmd ) {
-	char *attribute;
+	char attribute[40];
 
-	if ( sscanf(cmd, "SoftRaid/%*[^/]/%as[?]", &attribute) == 1 ) {
+	if ( sscanf(cmd, "SoftRaid/%*[^/]/%39s[?]", attribute) == 1 ) {
 		if ( strcmp( attribute, "NumBlocks?" ) == 0 )
 			fprintf( CurrentClient, "Num blocks\t0\t0\t\n" );
-		else if ( strcmp( attribute, "ArraySizeBlocks?" ) == 0 )
-			fprintf( CurrentClient, "Used Device Size in Blocks\t0\t0\t\n" );
-		else if ( strcmp( attribute, "ArraySizeMiB?" ) == 0 )
-			fprintf( CurrentClient, "Used Device Size in MiB\t0\t0\t\n" );
-		else if ( strcmp( attribute, "ArraySizeMB?" ) == 0 )
-			fprintf( CurrentClient, "Used Device Size in MB\t0\t0\t\n" );
-		else if ( strcmp( attribute, "UsedDeviceSizeBlocks?" ) == 0 )
-			fprintf( CurrentClient, "Used Device Size in Blocks\t0\t0\t\n" );
-		else if ( strcmp( attribute, "UsedDeviceSizeMiB?" ) == 0 )
-			fprintf( CurrentClient, "Used Device Size in MiB\t0\t0\t\n" );
-		else if ( strcmp( attribute, "UsedDeviceSizeMB?" ) == 0 )
-			fprintf( CurrentClient, "Used Device Size in MB\t0\t0\t\n" );
+		else if ( strcmp( attribute, "ArraySizeKB?" ) == 0 )
+			fprintf( CurrentClient, "Array size\t0\t0\tKB\n" );
+		else if ( strcmp( attribute, "UsedDeviceSizeKB?" ) == 0 )
+			fprintf( CurrentClient, "Used Device Size\t0\t0\tKB\n" );
 		else if ( strcmp( attribute, "NumRaidDevices?" ) == 0 )
 			fprintf( CurrentClient, "Total number of raid devices\t0\t0\t\n" );
 		else if ( strcmp( attribute, "TotalDevices?" ) == 0 )
@@ -189,8 +170,6 @@ void printArrayAttributeInfo( const char* cmd ) {
 		else if ( strcmp( attribute, "SpareDevices?" ) == 0 )
 			fprintf( CurrentClient, "Number of spare devices\t0\t0\t\n" );
 	}
-
-	free(attribute);
 }
 
 
@@ -253,15 +232,11 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 		lineBuf[sizeof(lineBuf) - 1] = '\0';
 		mdadmStatBufP += strlen(lineBuf) + 1;  /* move mdadmStatBufP to next line */
 		
-		if ( sscanf(lineBuf, "  Array Size : %d (%f MiB %f MB)", &MyArray->ArraySizeBlocks, &MyArray->ArraySizeMiB, &MyArray->ArraySizeMB) == 3 ) {
+		if ( sscanf(lineBuf, "  Array Size : %d", &MyArray->ArraySizeKB) == 1 ) {
 			MyArray->ArraySizeIsAlive = true;
 			if ( !MyArray->ArraySizeIsRegistered ) {
-				sprintf(sensorName, "SoftRaid/%s/ArraySizeBlocks", MyArray->ArrayName);
+				sprintf(sensorName, "SoftRaid/%s/ArraySizeKB", MyArray->ArrayName);
 				registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-				sprintf(sensorName, "SoftRaid/%s/ArraySizeMiB", MyArray->ArrayName);
-				registerMonitor(sensorName, "float", printArrayAttribute, printArrayAttributeInfo, StatSM );
-				sprintf(sensorName, "SoftRaid/%s/ArraySizeMB", MyArray->ArrayName);
-				registerMonitor(sensorName, "float", printArrayAttribute, printArrayAttributeInfo, StatSM );
 
 				MyArray->ArraySizeIsRegistered = true;
 			}
@@ -270,17 +245,12 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 		/* Versions of mdadm prior to 2.6 used "Device Size" instead of "Used Dev Size"
 		 * Also, note how the if statement takes advantage of short-circuit logic.
 		 */
-		else if ( ( sscanf(lineBuf, " Device Size : %d (%f MiB %f MB)", &MyArray->UsedDeviceSizeBlocks, &MyArray->UsedDeviceSizeMiB, &MyArray->UsedDeviceSizeMB) == 3 ) ||
-			( sscanf(lineBuf, " Used Dev Size : %d (%f MiB %f MB)", &MyArray->UsedDeviceSizeBlocks, &MyArray->UsedDeviceSizeMiB, &MyArray->UsedDeviceSizeMB) == 3 ) ) {
+		else if ( ( sscanf(lineBuf, " Device Size : %d", &MyArray->UsedDeviceSizeKB) == 1 ) ||
+			( sscanf(lineBuf, " Used Dev Size : %d", &MyArray->UsedDeviceSizeKB) == 1 ) ) {
 			MyArray->UsedDeviceSizeIsAlive = true;
 			if ( !MyArray->UsedDeviceSizeIsRegistered ) {
-				sprintf(sensorName, "SoftRaid/%s/UsedDeviceSizeBlocks", MyArray->ArrayName);
+				sprintf(sensorName, "SoftRaid/%s/UsedDeviceSizeKB", MyArray->ArrayName);
 				registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-				sprintf(sensorName, "SoftRaid/%s/UsedDeviceSizeMiB", MyArray->ArrayName);
-				registerMonitor(sensorName, "float", printArrayAttribute, printArrayAttributeInfo, StatSM );
-				sprintf(sensorName, "SoftRaid/%s/UsedDeviceSizeMB", MyArray->ArrayName);
-				registerMonitor(sensorName, "float", printArrayAttribute, printArrayAttributeInfo, StatSM );
-
 				MyArray->UsedDeviceSizeIsRegistered = true;
 			}
 		}
@@ -417,7 +387,7 @@ void scanForArrays() {
 		buf[sizeof(buf) - 1] = '\0';
 		mdstatBufP += strlen(buf) + 1;  /* move mdstatBufP to next line */
 		
-		if ( sscanf(buf, "%s %s %*s", key.ArrayName, colonstr) == 2 ) {
+		if ( sscanf(buf, "%" ARRAYNAMELENSTRING "s %127s %*s", key.ArrayName, colonstr) == 2 ) {
 			if ( strcmp(colonstr, ":") == 0 && strcmp(key.ArrayName, "Personalities") != 0 ) {
 				if ( ( idx = search_ctnr( ArrayInfos, ArrayInfoEqual, &key ) ) == 0 ) {
 					/* Found an existing array device */
