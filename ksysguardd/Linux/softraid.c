@@ -146,29 +146,36 @@ void printArrayAttribute( const char* cmd ) {
 }
 
 void printArrayAttributeInfo( const char* cmd ) {
+	INDEX idx;
+	ArrayInfo key;
+	ArrayInfo* foundArray;
 	char attribute[40];
 
-	if ( sscanf(cmd, "SoftRaid/%*[^/]/%39s[?]", attribute) == 1 ) {
-		if ( strcmp( attribute, "NumBlocks?" ) == 0 )
-			fprintf( CurrentClient, "Num blocks\t0\t0\t\n" );
-		else if ( strcmp( attribute, "ArraySizeKB?" ) == 0 )
-			fprintf( CurrentClient, "Array size\t0\t0\tKB\n" );
-		else if ( strcmp( attribute, "UsedDeviceSizeKB?" ) == 0 )
-			fprintf( CurrentClient, "Used Device Size\t0\t0\tKB\n" );
-		else if ( strcmp( attribute, "NumRaidDevices?" ) == 0 )
-			fprintf( CurrentClient, "Total number of raid devices\t0\t0\t\n" );
-		else if ( strcmp( attribute, "TotalDevices?" ) == 0 )
-			fprintf( CurrentClient, "Total number of devices\t0\t0\t\n" );
-		else if ( strcmp( attribute, "PreferredMinor?" ) == 0 )
-			fprintf( CurrentClient, "The preferred minor\t0\t0\t\n" );
-		else if ( strcmp( attribute, "ActiveDevices?" ) == 0 )
-			fprintf( CurrentClient, "Number of active devices\t0\t0\t\n" );
-		else if ( strcmp( attribute, "WorkingDevices?" ) == 0 )
-			fprintf( CurrentClient, "Number of working devices\t0\t0\t\n" );
-		else if ( strcmp( attribute, "FailedDevices?" ) == 0 )
-			fprintf( CurrentClient, "Number of failed devices\t0\t0\t\n" );
-		else if ( strcmp( attribute, "SpareDevices?" ) == 0 )
-			fprintf( CurrentClient, "Number of spare devices\t0\t0\t\n" );
+	if ( sscanf(cmd, "SoftRaid/%[^/]/%39s", key.ArrayName, attribute) == 2 ) {
+		if ( ( idx = search_ctnr( ArrayInfos, ArrayInfoEqual, &key ) ) == 0 ) {
+			foundArray = get_ctnr( ArrayInfos, idx );
+
+			if ( strcmp( attribute, "NumBlocks?" ) == 0 )
+				fprintf( CurrentClient, "Num blocks\t0\t0\t\n" );
+			else if ( strcmp( attribute, "ArraySizeKB?" ) == 0 )
+				fprintf( CurrentClient, "Array size\t0\t0\tKB\n" );
+			else if ( strcmp( attribute, "UsedDeviceSizeKB?" ) == 0 )
+				fprintf( CurrentClient, "Used Device Size\t0\t0\tKB\n" );
+			else if ( strcmp( attribute, "NumRaidDevices?" ) == 0 )
+				fprintf( CurrentClient, "Total number of raid devices\t0\t0\t\n" );
+			else if ( strcmp( attribute, "TotalDevices?" ) == 0 )
+				fprintf( CurrentClient, "Total number of devices\t0\t0\t\n" );
+			else if ( strcmp( attribute, "PreferredMinor?" ) == 0 )
+				fprintf( CurrentClient, "The preferred minor\t0\t0\t\n" );
+			else if ( strcmp( attribute, "ActiveDevices?" ) == 0 )
+				fprintf( CurrentClient, "Number of active devices\t0\t%d\t\n", foundArray->TotalDevices );
+			else if ( strcmp( attribute, "WorkingDevices?" ) == 0 )
+				fprintf( CurrentClient, "Number of working devices\t0\t%d\t\n", foundArray->TotalDevices );
+			else if ( strcmp( attribute, "FailedDevices?" ) == 0 )
+				fprintf( CurrentClient, "Number of failed devices\t0\t%d\t\n", foundArray->TotalDevices );
+			else if ( strcmp( attribute, "SpareDevices?" ) == 0 )
+				fprintf( CurrentClient, "Number of spare devices\t0\t%d\t\n", foundArray->TotalDevices );
+		}
 	}
 }
 
