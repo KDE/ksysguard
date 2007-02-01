@@ -227,6 +227,7 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 		dup2(fd[1], 1);
 		/* Close output side of pipe */
 		close(fd[0]);
+		close(2);
 
 		snprintf( arrayDevice, sizeof( arrayDevice ), "/dev/%s", MyArray->ArrayName );
 		execl ("/sbin/mdadm", "mdadm", "--detail", arrayDevice, (char *)0);
