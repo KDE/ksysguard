@@ -104,13 +104,13 @@ static void openUptimeFile() {
 		return; /* couldn't open /proc/uptime */
 	
 	n = read( fd, UptimeBuf, UPTIMEBUFSIZE - 1 );
+	close( fd );
+
 	if ( n == UPTIMEBUFSIZE - 1 || n <= 0 ) {
 		log_error( "Internal buffer too small to read \'/proc/uptime\'" );
-		
-		close( fd );
+
 		return;
 	}
 	
-	close( fd );
 	UptimeBuf[ n ] = '\0';
 }
