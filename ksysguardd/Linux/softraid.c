@@ -378,7 +378,6 @@ ArrayInfo *getOrCreateArrayInfo(char *array_name, int array_name_length) {
 		strcpy( MyArray->ArrayName, key.ArrayName );
 		/* Add this array to our list of array devices */
 		push_ctnr(ArrayInfos, MyArray);
-		MyArray->Alive = true;
 		char sensorName[128];
 		sprintf(sensorName, "SoftRaid/%s/NumBlocks", MyArray->ArrayName);
 		registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
@@ -471,7 +470,7 @@ bool scanForArrays() {
 		}
 		
 		MyArray = getOrCreateArrayInfo(current_word, current_word_length);
-		
+		MyArray->Alive = true;
 		getMdadmDetail ( MyArray );
 		MyArray->level = MyArray->pattern= NULL;
 		MyArray->ResyncingPercent = -1;
@@ -586,12 +585,12 @@ md1 : active raid1 sda2[0] sdb2[1]
 	
 	/* Look for dead arrays, and for NumBlocksIsRegistered */
 	for ( MyArray = first_ctnr( ArrayInfos ); MyArray; MyArray = next_ctnr( ArrayInfos ) ) {
-/*		if ( MyArray->Alive == false ) {
+		if ( MyArray->Alive == false ) {
 			print_error( "RECONFIGURE" );
 			
 			log_error( "Soft raid device disappeared" );
 			return false;
-		}*/
+		}
 	}
 	return true;
 }
