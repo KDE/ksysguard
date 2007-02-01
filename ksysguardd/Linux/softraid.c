@@ -72,7 +72,7 @@ typedef struct {
 	
 	int FailedDevices;		/* Number of failed devices */
 	
-	int SpareDevices;		/* Number of spare devices, including, strangely, spare-failed disks. */
+	int SpareDevices;		/* Number of spare devices,  WE DO NOT Include Failed devices here, unlike mdadm. */
 
         int  devnum; /* Raid array number.  e.g. if ArrayName is "md0", then devnum=0 */
         bool ArrayActive; /* Whether this raid is active */
@@ -548,13 +548,9 @@ md1 : active raid1 sda2[0] sdb2[1]
 				 (current_word[1] == 'U' || current_word[1] == '_')) {
 				MyArray->pattern = strndup(current_word+1, current_word_length-1);
 				
-				if (MyArray->pattern[current_word_length-2]==']') {
+				if (MyArray->pattern[current_word_length-2]==']')
 					MyArray->pattern[current_word_length-2] = '\0';
-					MyArray->ActiveDevices = current_word_length -2;
-				} else 
-					MyArray->ActiveDevices= current_word_length -1;
-				if(MyArray->ActiveDevices > (MyArray->TotalDevices - MyArray->SpareDevices - MyArray->FailedDevices))
-					MyArray->ActiveDevices = MyArray->TotalDevices - MyArray->SpareDevices - MyArray->FailedDevices;
+				MyArray->ActiveDevices = MyArray->TotalDevices - MyArray->SpareDevices - MyArray->FailedDevices;
 
 				MyArray->WorkingDevices=0;
 				MyArray->FailedDevices=0;
