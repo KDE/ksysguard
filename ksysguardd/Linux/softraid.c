@@ -79,7 +79,7 @@ typedef struct {
         char *level;
         char *pattern; /* U or up, _ for down */
         int  ResyncingPercent; /* -1 if not resyncing, otherwise between 0 to 100 */
-        bool CurrentlyReSyncing;
+        bool IsCurrentlyReSyncing; /* True if currently resyncing - */
 	
 } ArrayInfo;
 
@@ -119,6 +119,10 @@ void printArrayAttribute( const char* cmd ) {
 				fprintf( CurrentClient, "%d\n", foundArray->FailedDevices );
 			else if ( strcmp( attribute, "SpareDevices" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->SpareDevices );
+			else if( strcmp( attribute, "DeviceNumber" ) == 0 )
+				fprintf( CurrentClient, "%d\n", foundArray->devnum);
+			else if( strcmp( attribute, "ResyncingPercent" ) == 0 )
+				fprintf( CurrentClient, "%d\n", foundArray->ResyncingPercent);
 		}
 		else {
 			fprintf( CurrentClient, "\n");
@@ -160,6 +164,10 @@ void printArrayAttributeInfo( const char* cmd ) {
 				fprintf( CurrentClient, "Number of failed devices\t0\t%d\t\n", foundArray->TotalDevices );
 			else if ( strcmp( attribute, "SpareDevices?" ) == 0 )
 				fprintf( CurrentClient, "Number of spare devices\t0\t%d\t\n", foundArray->TotalDevices );
+			else if( strcmp( attribute, "DeviceNumber?" ) == 0 )
+				fprintf( CurrentClient, "Raid Device Number\t0\t0\t\n");
+			else if( strcmp( attribute, "ResyncingPercent?" ) == 0 )
+				fprintf( CurrentClient, "Resyncing Percentage Done. -1 if not resyncing\t-1\t100\t%%\n");
 		}
 		else {
 			fprintf( CurrentClient, "\n");
@@ -392,6 +400,13 @@ ArrayInfo *getOrCreateArrayInfo(char *array_name, int array_name_length) {
 
 		sprintf(sensorName, "SoftRaid/%s/ActiveDevices", MyArray->ArrayName);
 		registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+
+		sprintf(sensorName, "SoftRaid/%s/DeviceNumber", MyArray->ArrayName);
+		registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+
+		sprintf(sensorName, "SoftRaid/%s/ResyncingPercent", MyArray->ArrayName);
+		registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+
 	}
 	return MyArray;
 }
@@ -460,7 +475,7 @@ bool scanForArrays() {
 		getMdadmDetail ( MyArray );
 		MyArray->level = MyArray->pattern= NULL;
 		MyArray->ResyncingPercent = -1;
-		MyArray->CurrentlyReSyncing = false;
+		MyArray->IsCurrentlyReSyncing = false;
 		MyArray->devnum = devnum;
 		MyArray->ArrayActive = false;
 		MyArray->TotalDevices = MyArray->SpareDevices = MyArray->FailedDevices = 0;
@@ -555,10 +570,10 @@ md1 : active raid1 sda2[0] sdb2[1]
 				   (eq=strchr(current_word, '=')) != NULL ) {
 				MyArray->ResyncingPercent = atoi(eq+1);
 				if (strncmp(current_word,"resync", 4)==0)
-					MyArray->CurrentlyReSyncing = true;
+					MyArray->IsCurrentlyReSyncing = true;
 			} else if (MyArray->ResyncingPercent == -1 &&
 				   strncmp(current_word, "resync", 4)==0) {
-				MyArray->CurrentlyReSyncing = true;
+				MyArray->IsCurrentlyReSyncing = true;
 			} else if (MyArray->ResyncingPercent == -1 &&
 				   current_word[0] >= '0' && 
 				   current_word[0] <= '9' &&
