@@ -424,7 +424,7 @@ void scanForArrays() {
 				}
 				else {
 					/* Found a new array device. Create a data structure for it. */
-					MyArray = malloc(sizeof (ArrayInfo));
+					MyArray = calloc(1,sizeof (ArrayInfo));
 					if (MyArray == NULL) {
 						/* Memory could not be allocated, so print an error and exit. */
 						fprintf(stderr, "Couldn't allocate memory\n");
