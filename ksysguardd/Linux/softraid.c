@@ -140,6 +140,11 @@ void printArrayAttribute( const char* cmd ) {
 			else if ( strcmp( attribute, "SpareDevices" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->SpareDevices );
 		}
+		else {
+			fprintf( CurrentClient, "\n");
+		}
+	} else {
+		fprintf( CurrentClient, "\n");
 	}
 
 
@@ -176,6 +181,11 @@ void printArrayAttributeInfo( const char* cmd ) {
 			else if ( strcmp( attribute, "SpareDevices?" ) == 0 )
 				fprintf( CurrentClient, "Number of spare devices\t0\t%d\t\n", foundArray->TotalDevices );
 		}
+		else {
+			fprintf( CurrentClient, "\n");
+		}
+	} else {
+		fprintf( CurrentClient, "\n");
 	}
 }
 
