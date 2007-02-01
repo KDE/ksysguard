@@ -109,46 +109,46 @@ void KillArrayInfo(ArrayInfo* MyArray) {
 static int ArrayInfoEqual( void* s1, void* s2 )
 {
 	/* Returns 0 if both ArrayInfos have the same name.  */
-	return strcmp( ((ArrayInfo*)s1)->ArrayName, ((ArrayInfo*)s2)->ArrayName );
+	return strncmp( ((ArrayInfo*)s1)->ArrayName, ((ArrayInfo*)s2)->ArrayName,ARRAYNAMELEN );
 }
 
 void printArrayAttribute( const char* cmd ) {
 	INDEX idx;
 	ArrayInfo key;
 	ArrayInfo* foundArray;
-	char Attribute[32];
+	char attribute[40];
 
-	if ( sscanf(cmd, "SoftRaid/%[^/]/%s", key.ArrayName, Attribute) == 2 ) {
+	if ( sscanf(cmd, "SoftRaid/%[^/]/%s", key.ArrayName, attribute) == 2 ) {
 		if ( ( idx = search_ctnr( ArrayInfos, ArrayInfoEqual, &key ) ) == 0 ) {
 			foundArray = get_ctnr( ArrayInfos, idx );
 
-			if ( strcmp( Attribute, "NumBlocks" ) == 0 )
+			if ( strcmp( attribute, "NumBlocks" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->NumBlocks );
-			else if ( strcmp( Attribute, "ArraySizeBlocks" ) == 0 )
+			else if ( strcmp( attribute, "ArraySizeBlocks" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->ArraySizeBlocks );
-			else if ( strcmp( Attribute, "ArraySizeMiB" ) == 0 )
+			else if ( strcmp( attribute, "ArraySizeMiB" ) == 0 )
 				fprintf( CurrentClient, "%f\n", foundArray->ArraySizeMiB );
-			else if ( strcmp( Attribute, "ArraySizeMB" ) == 0 )
+			else if ( strcmp( attribute, "ArraySizeMB" ) == 0 )
 				fprintf( CurrentClient, "%f\n", foundArray->ArraySizeMB );
-			else if ( strcmp( Attribute, "UsedDeviceSizeBlocks" ) == 0 )
+			else if ( strcmp( attribute, "UsedDeviceSizeBlocks" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->UsedDeviceSizeBlocks );
-			else if ( strcmp( Attribute, "UsedDeviceSizeMiB" ) == 0 )
+			else if ( strcmp( attribute, "UsedDeviceSizeMiB" ) == 0 )
 				fprintf( CurrentClient, "%f\n", foundArray->UsedDeviceSizeMiB );
-			else if ( strcmp( Attribute, "UsedDeviceSizeMB" ) == 0 )
+			else if ( strcmp( attribute, "UsedDeviceSizeMB" ) == 0 )
 				fprintf( CurrentClient, "%f\n", foundArray->UsedDeviceSizeMB );
-			else if ( strcmp( Attribute, "NumRaidDevices" ) == 0 )
+			else if ( strcmp( attribute, "NumRaidDevices" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->NumRaidDevices );
-			else if ( strcmp( Attribute, "TotalDevices" ) == 0 )
+			else if ( strcmp( attribute, "TotalDevices" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->TotalDevices );
-			else if ( strcmp( Attribute, "PreferredMinor" ) == 0 )
+			else if ( strcmp( attribute, "PreferredMinor" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->PreferredMinor );
-			else if ( strcmp( Attribute, "ActiveDevices" ) == 0 )
+			else if ( strcmp( attribute, "ActiveDevices" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->ActiveDevices );
-			else if ( strcmp( Attribute, "WorkingDevices" ) == 0 )
+			else if ( strcmp( attribute, "WorkingDevices" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->WorkingDevices );
-			else if ( strcmp( Attribute, "FailedDevices" ) == 0 )
+			else if ( strcmp( attribute, "FailedDevices" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->FailedDevices );
-			else if ( strcmp( Attribute, "SpareDevices" ) == 0 )
+			else if ( strcmp( attribute, "SpareDevices" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->SpareDevices );
 		}
 	}
@@ -157,40 +157,40 @@ void printArrayAttribute( const char* cmd ) {
 }
 
 void printArrayAttributeInfo( const char* cmd ) {
-	char* Attribute;
+	char *attribute;
 
-	if ( sscanf(cmd, "SoftRaid/%*[^/]/%sa", Attribute) == 1 ) {
-		if ( strcmp( Attribute, "NumBlocks" ) == 0 )
-			fprintf( CurrentClient, "Num blocks\t0\t10\t%%\n" );
-		else if ( strcmp( Attribute, "ArraySizeBlocks" ) == 0 )
-			fprintf( CurrentClient, "Used Device Size in Blocks\t0\t10\t%%\n" );
-		else if ( strcmp( Attribute, "ArraySizeMiB" ) == 0 )
-			fprintf( CurrentClient, "Used Device Size in MiB\t0\t10\t%%\n" );
-		else if ( strcmp( Attribute, "ArraySizeMB" ) == 0 )
-			fprintf( CurrentClient, "Used Device Size in MB\t0\t10\t%%\n" );
-		else if ( strcmp( Attribute, "UsedDeviceSizeBlocks" ) == 0 )
-			fprintf( CurrentClient, "Used Device Size in Blocks\t0\t10\t%%\n" );
-		else if ( strcmp( Attribute, "UsedDeviceSizeMiB" ) == 0 )
-			fprintf( CurrentClient, "Used Device Size in MiB\t0\t10\t%%\n" );
-		else if ( strcmp( Attribute, "UsedDeviceSizeMB" ) == 0 )
-			fprintf( CurrentClient, "Used Device Size in MB\t0\t10\t%%\n" );
-		else if ( strcmp( Attribute, "NumRaidDevices" ) == 0 )
-			fprintf( CurrentClient, "Total number of raid devices\t0\t10\t%%\n" );
-		else if ( strcmp( Attribute, "TotalDevices" ) == 0 )
-			fprintf( CurrentClient, "Total number of devices\t0\t10\t%%\n" );
-		else if ( strcmp( Attribute, "PreferredMinor" ) == 0 )
-			fprintf( CurrentClient, "The preferred minor\t0\t10\t%%\n" );
-		else if ( strcmp( Attribute, "ActiveDevices" ) == 0 )
-			fprintf( CurrentClient, "Number of active devices\t0\t10\t%%\n" );
-		else if ( strcmp( Attribute, "WorkingDevices" ) == 0 )
-			fprintf( CurrentClient, "Number of working devices\t0\t10\t%%\n" );
-		else if ( strcmp( Attribute, "FailedDevices" ) == 0 )
-			fprintf( CurrentClient, "Number of failed devices\t0\t10\t%%\n" );
-		else if ( strcmp( Attribute, "SpareDevices" ) == 0 )
-			fprintf( CurrentClient, "Number of spare devices\t0\t10\t%%\n" );
+	if ( sscanf(cmd, "SoftRaid/%*[^/]/%as[?]", &attribute) == 1 ) {
+		if ( strcmp( attribute, "NumBlocks?" ) == 0 )
+			fprintf( CurrentClient, "Num blocks\t0\t0\t\n" );
+		else if ( strcmp( attribute, "ArraySizeBlocks?" ) == 0 )
+			fprintf( CurrentClient, "Used Device Size in Blocks\t0\t0\t\n" );
+		else if ( strcmp( attribute, "ArraySizeMiB?" ) == 0 )
+			fprintf( CurrentClient, "Used Device Size in MiB\t0\t0\t\n" );
+		else if ( strcmp( attribute, "ArraySizeMB?" ) == 0 )
+			fprintf( CurrentClient, "Used Device Size in MB\t0\t0\t\n" );
+		else if ( strcmp( attribute, "UsedDeviceSizeBlocks?" ) == 0 )
+			fprintf( CurrentClient, "Used Device Size in Blocks\t0\t0\t\n" );
+		else if ( strcmp( attribute, "UsedDeviceSizeMiB?" ) == 0 )
+			fprintf( CurrentClient, "Used Device Size in MiB\t0\t0\t\n" );
+		else if ( strcmp( attribute, "UsedDeviceSizeMB?" ) == 0 )
+			fprintf( CurrentClient, "Used Device Size in MB\t0\t0\t\n" );
+		else if ( strcmp( attribute, "NumRaidDevices?" ) == 0 )
+			fprintf( CurrentClient, "Total number of raid devices\t0\t0\t\n" );
+		else if ( strcmp( attribute, "TotalDevices?" ) == 0 )
+			fprintf( CurrentClient, "Total number of devices\t0\t0\t\n" );
+		else if ( strcmp( attribute, "PreferredMinor?" ) == 0 )
+			fprintf( CurrentClient, "The preferred minor\t0\t0\t\n" );
+		else if ( strcmp( attribute, "ActiveDevices?" ) == 0 )
+			fprintf( CurrentClient, "Number of active devices\t0\t0\t\n" );
+		else if ( strcmp( attribute, "WorkingDevices?" ) == 0 )
+			fprintf( CurrentClient, "Number of working devices\t0\t0\t\n" );
+		else if ( strcmp( attribute, "FailedDevices?" ) == 0 )
+			fprintf( CurrentClient, "Number of failed devices\t0\t0\t\n" );
+		else if ( strcmp( attribute, "SpareDevices?" ) == 0 )
+			fprintf( CurrentClient, "Number of spare devices\t0\t0\t\n" );
 	}
 
-	free(Attribute);
+	free(attribute);
 }
 
 
