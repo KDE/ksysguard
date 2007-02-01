@@ -1,7 +1,7 @@
 /*
 	KSysGuard, the KDE System Guard
 	
-	Copyright (c) 2007 Greg Martyn <greg.martyn@gmail.com>
+	Copyright (c) 2007 Greg Martyn <greg.martyn@gmail.com>, John Tapsell <tapsell@kde.org>
 	
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of version 2 of the GNU General Public
@@ -47,7 +47,6 @@ typedef struct {
 
 	/* from /proc/mdstat */
 	char ArrayName[ ARRAYNAMELEN +1];
-	bool NumBlocksIsAlive;
 	bool NumBlocksIsRegistered;
 	int NumBlocks;
 
@@ -59,49 +58,43 @@ typedef struct {
 	bool UsedDeviceSizeIsAlive;
 	bool UsedDeviceSizeIsRegistered;
 	int UsedDeviceSizeKB;
-	
-	bool NumRaidDevicesIsAlive;
-	bool NumRaidDevicesIsRegistered;
-	int NumRaidDevices;
-	
-	bool TotalDevicesIsAlive;
-	bool TotalDevicesIsRegistered;
-	int TotalDevices;
 
 	bool PreferredMinorIsAlive;
 	bool PreferredMinorIsRegistered;
 	int PreferredMinor;
 	
+	bool NumRaidDevicesIsAlive;
+	bool NumRaidDevicesIsRegistered;
+	int NumRaidDevices;		/* Number of 'useful' disks.  Included working and spare disks, but not failed. */
+	
+	bool TotalDevicesIsAlive;
+	bool TotalDevicesIsRegistered;
+	int TotalDevices;		/* Total number of devices, including failed and spare disks */
+	
 	bool ActiveDevicesIsAlive;
 	bool ActiveDevicesIsRegistered;
-	int ActiveDevices;
+	int ActiveDevices;		/* Active means it's fully synced, and working, so not a spare or failed */
 	
 	bool WorkingDevicesIsAlive;
 	bool WorkingDevicesIsRegistered;
-	int WorkingDevices;
+	int WorkingDevices;		/* Working means it's in the raid (not a spare or failed) but it may or may not be fully synced.  Active - Working  = number being synced */
 	
 	bool FailedDevicesIsAlive;
 	bool FailedDevicesIsRegistered;
-	int FailedDevices;
+	int FailedDevices;		/* Number of failed devices */
 	
 	bool SpareDevicesIsAlive;
 	bool SpareDevicesIsRegistered;
-	int SpareDevices;
+	int SpareDevices;		/* Number of spare devices, including, strangely, spare-failed disks. */
+
+        int  devnum; /* Raid array number.  e.g. if ArrayName is "md0", then devnum=0 */
+        bool ArrayActive; /* Whether this raid is active */
+        char *level;
+        char *pattern; /* U or up, _ for down */
+        int  ResyncingPercent; /* -1 if not resyncing, otherwise between 0 to 100 */
+        bool CurrentlyReSyncing;
+	
 } ArrayInfo;
-
-void KillArrayInfo(ArrayInfo* MyArray) {
-	MyArray->NumBlocksIsAlive = false;
-
-	MyArray->ArraySizeIsAlive = false;
-	MyArray->UsedDeviceSizeIsAlive = false;
-	MyArray->NumRaidDevicesIsAlive = false;
-	MyArray->TotalDevicesIsAlive = false;
-	MyArray->PreferredMinor = false;
-	MyArray->ActiveDevices = false;
-	MyArray->WorkingDevices = false;
-	MyArray->FailedDevices = false;
-	MyArray->SpareDevices = false;
-}
 
 static int ArrayInfoEqual( void* s1, void* s2 )
 {
@@ -337,7 +330,7 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 	}
 
 	/* Note: Don't test NumBlocksIsAlive, because it hasn't been set yet */
-	if (    (!MyArray->ArraySizeIsAlive      && MyArray->ArraySizeIsRegistered      ) ||
+	/*if (    (!MyArray->ArraySizeIsAlive      && MyArray->ArraySizeIsRegistered      ) ||
 		(!MyArray->UsedDeviceSizeIsAlive && MyArray->UsedDeviceSizeIsRegistered ) ||
 		(!MyArray->NumRaidDevicesIsAlive && MyArray->NumRaidDevicesIsRegistered ) ||
 		(!MyArray->TotalDevicesIsAlive   && MyArray->TotalDevicesIsRegistered   ) ||
@@ -352,7 +345,7 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 		
 		log_error( "Soft raid device disappeared" );
 		return;
-	}
+	}*/
 }
 
 void openMdstatFile() {
@@ -375,13 +368,12 @@ void openMdstatFile() {
 	mdstatBuf[ n ] = '\0';
 }
 
-void scanForArrays() {
-	char format[ 32 ];
-	char buf[ 1024 ];
+bool scanForArrays() {
 	char* mdstatBufP;
 	char sensorName[128];
 
-	char colonstr[128];
+	char* current_word;
+	int current_word_length = 0;
 	
 	INDEX idx;
 	ArrayInfo key;
@@ -396,60 +388,226 @@ void scanForArrays() {
 
 	openMdstatFile();
 
-	mdstatBufP = mdstatBuf;
-	sprintf( format, "%%%d[^\n]\n", (int)sizeof( buf ) - 1 );
+	current_word = mdstatBufP = mdstatBuf;
 
 	/* Process values from /proc/mdstat */
-	while (sscanf(mdstatBufP, format, buf) == 1) {
-		buf[sizeof(buf) - 1] = '\0';
-		mdstatBufP += strlen(buf) + 1;  /* move mdstatBufP to next line */
+
+	bool start = true;
+	while(mdstatBufP[0] != '\0') {
 		
-		if ( sscanf(buf, "%" ARRAYNAMELENSTRING "s %127s %*s", key.ArrayName, colonstr) == 2 ) {
-			if ( strcmp(colonstr, ":") == 0 && strcmp(key.ArrayName, "Personalities") != 0 ) {
-				if ( ( idx = search_ctnr( ArrayInfos, ArrayInfoEqual, &key ) ) == 0 ) {
-					/* Found an existing array device */
-					MyArray = get_ctnr( ArrayInfos, idx );
-				}
-				else {
-					/* Found a new array device. Create a data structure for it. */
-					MyArray = calloc(1,sizeof (ArrayInfo));
-					if (MyArray == NULL) {
-						/* Memory could not be allocated, so print an error and exit. */
-						fprintf(stderr, "Couldn't allocate memory\n");
-						exit(EXIT_FAILURE);
-					}
+		if(!start) {
+			/*advanced one line  at a time*/
+			while( mdstatBufP[0] != '\0' && mdstatBufP[0] != '\n') mdstatBufP++;
+			mdstatBufP++;
+		}
+		start = false;
+		
+		if( mdstatBufP[0] == '\0') break;
+		current_word_length = 0;
+		current_word = mdstatBufP;
+		
+		
+		if(mdstatBufP[0]=='\n')
+			continue;
 
-					strcpy( MyArray->ArrayName, key.ArrayName );
-
-					/* Add this array to our list of array devices */
-					push_ctnr(ArrayInfos, MyArray);
-				}
-				KillArrayInfo( MyArray );
-				MyArray->Alive = true;
-
-				getMdadmDetail ( MyArray );
+		if(mdstatBufP[0]=='#') /*skip comments */
+			continue;
+		if (strncmp(current_word, "Personalities", sizeof("Personalities")-1)==0)
+			continue;
+		if (strncmp(current_word, "read_ahead", sizeof("read_ahead")-1)==0)
+			continue;
+		if (strncmp(current_word, "unused", sizeof("unused")-1)==0)
+			continue;
+		/* Better be an md line.. */
+		if (strncmp(current_word, "md", 2)!= 0)
+			continue;
+		int devnum;
+		if (strncmp(current_word, "md_d", 4) == 0)
+			devnum = -1-strtoul(current_word+4, NULL, 10);
+		else  /* it's md0 etc */
+			devnum = strtoul(current_word+2, NULL, 10);		
+		while(  mdstatBufP[0] != '\0' &&mdstatBufP[0] != '\n' && mdstatBufP[0] != ' ' &&  mdstatBufP[0] != '\t') {
+			/*find the end of the word*/
+			mdstatBufP++; 
+			current_word_length++;
+		}
+		
+		/*We have the device name.  see if we already have a record for it*/
+		strncpy(key.ArrayName, current_word, current_word_length);
+		key.ArrayName[current_word_length]='\0';
+		if ( ( idx = search_ctnr( ArrayInfos, ArrayInfoEqual, &key ) ) == 0 ) {
+			/* Found an existing array device */
+			MyArray = get_ctnr( ArrayInfos, idx );
+		}
+		else {
+			/* Found a new array device. Create a data structure for it. */
+			MyArray = calloc(1,sizeof (ArrayInfo));
+			if (MyArray == NULL) {
+				/* Memory could not be allocated, so print an error and exit. */
+				fprintf(stderr, "Couldn't allocate memory\n");
+				exit(EXIT_FAILURE);
 			}
-			else if (MyArray && !MyArray->NumBlocksIsAlive && (sscanf(buf, " %d blocks ", &MyArray->NumBlocks) == 1) ) {
-				/* This line tells us the # of blocks. Useful b/c we didn't need mdadm --detail to get it */
-				MyArray->NumBlocksIsAlive = true;
+			strcpy( MyArray->ArrayName, key.ArrayName );
+			/* Add this array to our list of array devices */
+			push_ctnr(ArrayInfos, MyArray);
+			MyArray->Alive = true;
+		}
+		getMdadmDetail ( MyArray );
+		MyArray->level = MyArray->pattern= NULL;
+		MyArray->ResyncingPercent = -1;
+		MyArray->CurrentlyReSyncing = false;
+		MyArray->devnum = devnum;
+		MyArray->ArrayActive = false;
+		MyArray->TotalDevices = MyArray->SpareDevices = MyArray->FailedDevices = 0;
+		
+		/* In mdstat, we have something that looks like:
+
+md0 : active raid1 sda1[0] sdb1[1]
+      312568576 blocks [2/2] [UU]
+md1 : active raid1 sda2[0] sdb2[1]
+      452568576 blocks [2/2] [UU]
+		
+		We have so far read in the "md0" bit, and now want to continue reading the details for this raid group until
+		we reach the next raid group which we note as starting with a non whitespace.
+		*/
+		char buffer[100];
+		char status[100];
+		status[0] = 0;
+		int harddisk_index;
+		for(;;) {
+			
+			while(  mdstatBufP[0] != '\0' && ( (mdstatBufP[0] == '\n' && (mdstatBufP[1] == ' ' ||  mdstatBufP[1] == '\t')) || mdstatBufP[0] == ' ' ||  mdstatBufP[0] == '\t')) {				
+				mdstatBufP++;   /*Remove any whitespace first*/
+			}
+			if( mdstatBufP[0] == '\0' || mdstatBufP[0] == '\n') {
+				break; /*we are now at the end of the file or line.  Break this for loop*/
+			}
+			
+			current_word=mdstatBufP;  /*we are now pointing to the first non-whitespace of a word*/
+			current_word_length=0;
+			while(  mdstatBufP[0] != '\0' && mdstatBufP[0] != '\n' && mdstatBufP[0] != ' ' &&  mdstatBufP[0] != '\t') {
+				/*find the end of the word.  We do this now so that we know the length of the word*/
+				mdstatBufP++; 
+				current_word_length++;
+			}
+
+			char *eq;
+			int in_devs = 0;
+			
+			
+			if (strncmp(current_word, "active", sizeof("active")-1)==0)
+				MyArray->ArrayActive = true;
+			else if (strncmp(current_word, "inactive", sizeof("inactive")-1)==0)
+				MyArray->ArrayActive = false;
+			else if (MyArray->ArrayActive >=0 && MyArray->level == NULL && current_word[0] != '(' /*readonly*/) {
+				MyArray->level = strndup(current_word, current_word_length);
+				in_devs = 1;
+
+			} else if (sscanf(current_word, "%d blocks ", &MyArray->NumBlocks) == 1 ) {
 				if ( !MyArray->NumBlocksIsRegistered ) {
 					sprintf(sensorName, "SoftRaid/%s/NumBlocks", MyArray->ArrayName);
 					registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
 					MyArray->NumBlocksIsRegistered = true;
 				}
+			} else if (in_devs && strncmp(current_word, "blocks", sizeof("blocks")-1)==0)
+				in_devs = 0;
+			else if (in_devs && strncmp(current_word, "md", 2)==0) {
+				/* This has an md device as a component.  Maybe we should note this or something*/
+			} else if(sscanf(current_word, "%[^[ ][%d]%[^ ]", buffer, &harddisk_index, status) >= 2) {
+				/*Each device in the raid has an index.  We can find the total number of devices in the raid by 
+				  simply finding the device with the highest index + 1. */
+				if(harddisk_index >= MyArray->TotalDevices)  MyArray->TotalDevices = harddisk_index+1;
+				if(status[0] == '(') {
+					if(status[1] == 'S') /*Spare hard disk*/
+						MyArray->SpareDevices++;
+					else if(status[1] == 'F')
+						MyArray->FailedDevices++;
+				}
+				MyArray->NumRaidDevices = MyArray->TotalDevices - MyArray->FailedDevices;
+				if ( !MyArray->TotalDevicesIsRegistered ) {
+					sprintf(sensorName, "SoftRaid/%s/TotalDevices", MyArray->ArrayName);
+					registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+					MyArray->TotalDevicesIsRegistered = true;
+				}
+				if ( !MyArray->FailedDevicesIsRegistered ) {
+					sprintf(sensorName, "SoftRaid/%s/FailedDevices", MyArray->ArrayName);
+					registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+					MyArray->FailedDevicesIsRegistered = true;
+				}
+				if ( !MyArray->SpareDevicesIsRegistered ) {
+					sprintf(sensorName, "SoftRaid/%s/SpareDevices", MyArray->ArrayName);
+					registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+					MyArray->SpareDevicesIsRegistered = true;
+				}
+				if ( !MyArray->NumRaidDevicesIsRegistered ) {
+					sprintf(sensorName, "SoftRaid/%s/NumRaidDevices", MyArray->ArrayName);
+					registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+					MyArray->NumRaidDevicesIsRegistered = true;
+				}
+				status[0]=0; /*make sure we zero it again for next time*/
+			} else if (!MyArray->pattern &&
+				 current_word[0] == '[' &&
+				 (current_word[1] == 'U' || current_word[1] == '_')) {
+				MyArray->pattern = strndup(current_word+1, current_word_length-1);
+				
+				if (MyArray->pattern[current_word_length-2]==']') {
+					MyArray->pattern[current_word_length-2] = '\0';
+					MyArray->ActiveDevices = current_word_length -2;
+				} else 
+					MyArray->ActiveDevices= current_word_length -1;
+
+				MyArray->WorkingDevices=0;
+				MyArray->FailedDevices=0;
+				if ( !MyArray->WorkingDevicesIsRegistered ) {
+					sprintf(sensorName, "SoftRaid/%s/WorkingDevices", MyArray->ArrayName);
+					registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+					MyArray->WorkingDevicesIsRegistered = true;
+				}
+				if ( !MyArray->ActiveDevicesIsRegistered ) {
+					sprintf(sensorName, "SoftRaid/%s/ActiveDevices", MyArray->ArrayName);
+					registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+					MyArray->ActiveDevicesIsRegistered = true;
+				}				
+
+				for(;;) {
+					current_word++;
+					if(current_word[0] == 'U')
+						MyArray->WorkingDevices++;
+					else if(current_word[0] == '_')
+						MyArray->FailedDevices++;
+					else 
+						break;
+				}				
+			} else if (MyArray->ResyncingPercent == -1 &&
+				   strncmp(current_word, "re", 2)== 0 &&
+				   current_word[current_word_length-1] == '%' &&
+				   (eq=strchr(current_word, '=')) != NULL ) {
+				MyArray->ResyncingPercent = atoi(eq+1);
+				if (strncmp(current_word,"resync", 4)==0)
+					MyArray->CurrentlyReSyncing = true;
+			} else if (MyArray->ResyncingPercent == -1 &&
+				   strncmp(current_word, "resync", 4)==0) {
+				MyArray->CurrentlyReSyncing = true;
+			} else if (MyArray->ResyncingPercent == -1 &&
+				   current_word[0] >= '0' && 
+				   current_word[0] <= '9' &&
+				   current_word[current_word_length-1] == '%') {
+				MyArray->ResyncingPercent = atoi(current_word);
 			}
+			/*ignore anything not understood*/
 		}
 	}
 	
 	/* Look for dead arrays, and for NumBlocksIsRegistered */
 	for ( MyArray = first_ctnr( ArrayInfos ); MyArray; MyArray = next_ctnr( ArrayInfos ) ) {
-		if ( ( MyArray->Alive = false ) || ( !MyArray->NumBlocksIsAlive && MyArray->NumBlocksIsRegistered ) ) {
+		if ( ( MyArray->Alive = false ) || ( !MyArray->NumBlocksIsRegistered ) ) {
 			print_error( "RECONFIGURE" );
 			
 			log_error( "Soft raid device disappeared" );
-			return;
+			return false;
 		}
 	}
+	return true;
 }
 
 /* =========== Public part =========== */
@@ -458,7 +616,6 @@ void initSoftRaid( struct SensorModul* sm ) {
   	StatSM = sm;
 
 	ArrayInfos = new_ctnr();
-
 	updateSoftRaid();
 }
 
