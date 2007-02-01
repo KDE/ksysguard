@@ -14,6 +14,7 @@ SET(LIBKSYSGUARDD_FILES
             netstat.c
             ProcessList.c
             stat.c
+            softraid.c
             uptime.c)
 
 if(XRES_LIBRARY)

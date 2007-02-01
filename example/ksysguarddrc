@@ -16,6 +16,7 @@ LogFiles=messages:/var/log/messages,kern:/var/log/kern.log,daemon:/var/log/daemo
 #	NetDev          throughput of network interfaces
 #	NetStat         number of TCP/UDP/ICMP/Unix sockets
 #	ProcessList     current processes
+#	SoftRaid	Monitors software raid devices. See mdadm.
 #	Stat            interrupts, CPU and disk throughput. Data comes from /etc/stat
 #	Uptime          System uptime. Data comes from /etc/uptime
-Sensors=ProcessList,Memory,Stat,NetDev,NetStat,Apm,Acpi,CpuInfo,LoadAvg,LmSensors,DiskStat,LogFile,DiskStats,Uptime
+Sensors=ProcessList,Memory,Stat,NetDev,NetStat,Apm,Acpi,CpuInfo,LoadAvg,LmSensors,DiskStat,LogFile,DiskStats,Uptime,SoftRaid

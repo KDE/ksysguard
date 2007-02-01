@@ -43,6 +43,7 @@
 #include "netstat.h"
 #include "ProcessList.h"
 #include "stat.h"
+#include "softraid.h"
 #include "uptime.h"
 #endif /* OSTYPE_Linux */
 
@@ -128,6 +129,7 @@ struct SensorModul SensorModulList[] = {
   { "NetStat", initNetStat, exitNetStat, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
   { "ProcessList", initProcessList, exitProcessList, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
   { "Stat", initStat, exitStat, updateStat, NULLVVFUNC, 0, NULLTIME },
+  { "SoftRaid", initSoftRaid, exitSoftRaid, updateSoftRaid, NULLVVFUNC, 0, NULLTIME },
   { "Uptime", initUptime, exitUptime, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
 #endif /* OSTYPE_Linux */
 
