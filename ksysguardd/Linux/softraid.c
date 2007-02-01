@@ -47,7 +47,6 @@ typedef struct {
 
 	/* from /proc/mdstat */
 	char ArrayName[ ARRAYNAMELEN +1];
-	bool NumBlocksIsRegistered;
 	int NumBlocks;
 
 	/* from /sbin/mdadm --detail /dev/ArrayName */
@@ -63,28 +62,16 @@ typedef struct {
 	bool PreferredMinorIsRegistered;
 	int PreferredMinor;
 	
-	bool NumRaidDevicesIsAlive;
-	bool NumRaidDevicesIsRegistered;
 	int NumRaidDevices;		/* Number of 'useful' disks.  Included working and spare disks, but not failed. */
 	
-	bool TotalDevicesIsAlive;
-	bool TotalDevicesIsRegistered;
 	int TotalDevices;		/* Total number of devices, including failed and spare disks */
 	
-	bool ActiveDevicesIsAlive;
-	bool ActiveDevicesIsRegistered;
 	int ActiveDevices;		/* Active means it's fully synced, and working, so not a spare or failed */
 	
-	bool WorkingDevicesIsAlive;
-	bool WorkingDevicesIsRegistered;
 	int WorkingDevices;		/* Working means it's in the raid (not a spare or failed) but it may or may not be fully synced.  Active - Working  = number being synced */
 	
-	bool FailedDevicesIsAlive;
-	bool FailedDevicesIsRegistered;
 	int FailedDevices;		/* Number of failed devices */
 	
-	bool SpareDevicesIsAlive;
-	bool SpareDevicesIsRegistered;
 	int SpareDevices;		/* Number of spare devices, including, strangely, spare-failed disks. */
 
         int  devnum; /* Raid array number.  e.g. if ArrayName is "md0", then devnum=0 */
@@ -265,7 +252,7 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 			}
 		}
 
-		else if ( sscanf(lineBuf, "   Raid Devices : %d", &MyArray->NumRaidDevices) == 1 ) {
+/*		else if ( sscanf(lineBuf, "   Raid Devices : %d", &MyArray->NumRaidDevices) == 1 ) {
 			MyArray->NumRaidDevicesIsAlive = true;
 			if ( !MyArray->NumRaidDevicesIsRegistered ) {
 				sprintf(sensorName, "SoftRaid/%s/NumRaidDevices", MyArray->ArrayName);
@@ -282,7 +269,7 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 				MyArray->TotalDevicesIsRegistered = true;
 			}
 		}
-
+*/
 		else if ( sscanf(lineBuf, "Preferred Minor : %d", &MyArray->PreferredMinor) == 1 ) {
 			MyArray->PreferredMinorIsAlive = true;
 			if ( !MyArray->PreferredMinorIsRegistered ) {
@@ -291,7 +278,7 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 				MyArray->PreferredMinorIsRegistered = true;
 			}
 		}
-
+/*
 		else if ( sscanf(lineBuf, " Active Devices : %d", &MyArray->ActiveDevices) == 1 ) {
 			MyArray->ActiveDevicesIsAlive = true;
 			if ( !MyArray->ActiveDevicesIsRegistered ) {
@@ -327,25 +314,18 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 				MyArray->SpareDevicesIsRegistered = true;
 			}
 		}
+*/
 	}
 
 	/* Note: Don't test NumBlocksIsAlive, because it hasn't been set yet */
-	/*if (    (!MyArray->ArraySizeIsAlive      && MyArray->ArraySizeIsRegistered      ) ||
+	if (    (!MyArray->ArraySizeIsAlive      && MyArray->ArraySizeIsRegistered      ) ||
 		(!MyArray->UsedDeviceSizeIsAlive && MyArray->UsedDeviceSizeIsRegistered ) ||
-		(!MyArray->NumRaidDevicesIsAlive && MyArray->NumRaidDevicesIsRegistered ) ||
-		(!MyArray->TotalDevicesIsAlive   && MyArray->TotalDevicesIsRegistered   ) ||
-		(!MyArray->PreferredMinorIsAlive && MyArray->PreferredMinorIsRegistered ) ||
-		(!MyArray->ActiveDevicesIsAlive  && MyArray->ActiveDevicesIsRegistered  ) ||
-		(!MyArray->WorkingDevicesIsAlive && MyArray->WorkingDevicesIsRegistered ) ||
-		(!MyArray->FailedDevicesIsAlive  && MyArray->FailedDevicesIsRegistered  ) ||
-		(!MyArray->SpareDevicesIsAlive   && MyArray->SpareDevicesIsRegistered   )
+		(!MyArray->PreferredMinorIsAlive && MyArray->PreferredMinorIsRegistered ) 
 		) {
-
 		print_error( "RECONFIGURE" );
-		
 		log_error( "Soft raid device disappeared" );
 		return;
-	}*/
+	}
 }
 
 void openMdstatFile() {
@@ -368,15 +348,58 @@ void openMdstatFile() {
 	mdstatBuf[ n ] = '\0';
 }
 
+ArrayInfo *getOrCreateArrayInfo(char *array_name, int array_name_length) {
+	ArrayInfo key;
+	INDEX idx;
+	ArrayInfo* MyArray;
+	/*We have the array name.  see if we already have a record for it*/
+	strncpy(key.ArrayName, array_name, array_name_length);
+	key.ArrayName[array_name_length]='\0';
+	if ( ( idx = search_ctnr( ArrayInfos, ArrayInfoEqual, &key ) ) == 0 ) {
+		/* Found an existing array device */
+		MyArray = get_ctnr( ArrayInfos, idx );
+	}
+	else {
+		/* Found a new array device. Create a data structure for it. */
+		MyArray = calloc(1,sizeof (ArrayInfo));
+		if (MyArray == NULL) {
+			/* Memory could not be allocated, so print an error and exit. */
+			fprintf(stderr, "Couldn't allocate memory\n");
+			exit(EXIT_FAILURE);
+		}
+		strcpy( MyArray->ArrayName, key.ArrayName );
+		/* Add this array to our list of array devices */
+		push_ctnr(ArrayInfos, MyArray);
+		MyArray->Alive = true;
+		char sensorName[128];
+		sprintf(sensorName, "SoftRaid/%s/NumBlocks", MyArray->ArrayName);
+		registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+
+		sprintf(sensorName, "SoftRaid/%s/TotalDevices", MyArray->ArrayName);
+		registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+
+		sprintf(sensorName, "SoftRaid/%s/FailedDevices", MyArray->ArrayName);
+		registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+
+		sprintf(sensorName, "SoftRaid/%s/SpareDevices", MyArray->ArrayName);
+		registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+
+		sprintf(sensorName, "SoftRaid/%s/NumRaidDevices", MyArray->ArrayName);
+		registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+
+		sprintf(sensorName, "SoftRaid/%s/WorkingDevices", MyArray->ArrayName);
+		registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+
+		sprintf(sensorName, "SoftRaid/%s/ActiveDevices", MyArray->ArrayName);
+		registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+	}
+	return MyArray;
+}
+
 bool scanForArrays() {
 	char* mdstatBufP;
-	char sensorName[128];
-
 	char* current_word;
 	int current_word_length = 0;
-	
-	INDEX idx;
-	ArrayInfo key;
 
 	ArrayInfo* MyArray;
 
@@ -432,26 +455,8 @@ bool scanForArrays() {
 			current_word_length++;
 		}
 		
-		/*We have the device name.  see if we already have a record for it*/
-		strncpy(key.ArrayName, current_word, current_word_length);
-		key.ArrayName[current_word_length]='\0';
-		if ( ( idx = search_ctnr( ArrayInfos, ArrayInfoEqual, &key ) ) == 0 ) {
-			/* Found an existing array device */
-			MyArray = get_ctnr( ArrayInfos, idx );
-		}
-		else {
-			/* Found a new array device. Create a data structure for it. */
-			MyArray = calloc(1,sizeof (ArrayInfo));
-			if (MyArray == NULL) {
-				/* Memory could not be allocated, so print an error and exit. */
-				fprintf(stderr, "Couldn't allocate memory\n");
-				exit(EXIT_FAILURE);
-			}
-			strcpy( MyArray->ArrayName, key.ArrayName );
-			/* Add this array to our list of array devices */
-			push_ctnr(ArrayInfos, MyArray);
-			MyArray->Alive = true;
-		}
+		MyArray = getOrCreateArrayInfo(current_word, current_word_length);
+		
 		getMdadmDetail ( MyArray );
 		MyArray->level = MyArray->pattern= NULL;
 		MyArray->ResyncingPercent = -1;
@@ -504,11 +509,7 @@ md1 : active raid1 sda2[0] sdb2[1]
 				in_devs = 1;
 
 			} else if (sscanf(current_word, "%d blocks ", &MyArray->NumBlocks) == 1 ) {
-				if ( !MyArray->NumBlocksIsRegistered ) {
-					sprintf(sensorName, "SoftRaid/%s/NumBlocks", MyArray->ArrayName);
-					registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-					MyArray->NumBlocksIsRegistered = true;
-				}
+				/* we've just put the data in NumBlocks - nothing more is needed */
 			} else if (in_devs && strncmp(current_word, "blocks", sizeof("blocks")-1)==0)
 				in_devs = 0;
 			else if (in_devs && strncmp(current_word, "md", 2)==0) {
@@ -524,26 +525,6 @@ md1 : active raid1 sda2[0] sdb2[1]
 						MyArray->FailedDevices++;
 				}
 				MyArray->NumRaidDevices = MyArray->TotalDevices - MyArray->FailedDevices;
-				if ( !MyArray->TotalDevicesIsRegistered ) {
-					sprintf(sensorName, "SoftRaid/%s/TotalDevices", MyArray->ArrayName);
-					registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-					MyArray->TotalDevicesIsRegistered = true;
-				}
-				if ( !MyArray->FailedDevicesIsRegistered ) {
-					sprintf(sensorName, "SoftRaid/%s/FailedDevices", MyArray->ArrayName);
-					registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-					MyArray->FailedDevicesIsRegistered = true;
-				}
-				if ( !MyArray->SpareDevicesIsRegistered ) {
-					sprintf(sensorName, "SoftRaid/%s/SpareDevices", MyArray->ArrayName);
-					registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-					MyArray->SpareDevicesIsRegistered = true;
-				}
-				if ( !MyArray->NumRaidDevicesIsRegistered ) {
-					sprintf(sensorName, "SoftRaid/%s/NumRaidDevices", MyArray->ArrayName);
-					registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-					MyArray->NumRaidDevicesIsRegistered = true;
-				}
 				status[0]=0; /*make sure we zero it again for next time*/
 			} else if (!MyArray->pattern &&
 				 current_word[0] == '[' &&
@@ -558,16 +539,6 @@ md1 : active raid1 sda2[0] sdb2[1]
 
 				MyArray->WorkingDevices=0;
 				MyArray->FailedDevices=0;
-				if ( !MyArray->WorkingDevicesIsRegistered ) {
-					sprintf(sensorName, "SoftRaid/%s/WorkingDevices", MyArray->ArrayName);
-					registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-					MyArray->WorkingDevicesIsRegistered = true;
-				}
-				if ( !MyArray->ActiveDevicesIsRegistered ) {
-					sprintf(sensorName, "SoftRaid/%s/ActiveDevices", MyArray->ArrayName);
-					registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-					MyArray->ActiveDevicesIsRegistered = true;
-				}				
 
 				for(;;) {
 					current_word++;
@@ -600,12 +571,12 @@ md1 : active raid1 sda2[0] sdb2[1]
 	
 	/* Look for dead arrays, and for NumBlocksIsRegistered */
 	for ( MyArray = first_ctnr( ArrayInfos ); MyArray; MyArray = next_ctnr( ArrayInfos ) ) {
-		if ( ( MyArray->Alive = false ) || ( !MyArray->NumBlocksIsRegistered ) ) {
+/*		if ( MyArray->Alive == false ) {
 			print_error( "RECONFIGURE" );
 			
 			log_error( "Soft raid device disappeared" );
 			return false;
-		}
+		}*/
 	}
 	return true;
 }
