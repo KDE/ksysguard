@@ -76,7 +76,7 @@ typedef struct {
 
         int  devnum; /* Raid array number.  e.g. if ArrayName is "md0", then devnum=0 */
         bool ArrayActive; /* Whether this raid is active */
-        char *level;
+        char *level;   /* Raid1, Raid2, etc */
         char *pattern; /* U or up, _ for down */
         int  ResyncingPercent; /* -1 if not resyncing, otherwise between 0 to 100 */
         bool IsCurrentlyReSyncing; /* True if currently resyncing - */
@@ -123,6 +123,8 @@ void printArrayAttribute( const char* cmd ) {
 				fprintf( CurrentClient, "%d\n", foundArray->devnum);
 			else if( strcmp( attribute, "ResyncingPercent" ) == 0 )
 				fprintf( CurrentClient, "%d\n", foundArray->ResyncingPercent);
+			else if( strcmp( attribute, "RaidType" ) == 0 )
+				fprintf( CurrentClient, "%s\n", foundArray->level);
 		}
 		else {
 			fprintf( CurrentClient, "\n");
@@ -168,6 +170,8 @@ void printArrayAttributeInfo( const char* cmd ) {
 				fprintf( CurrentClient, "Raid Device Number\t0\t0\t\n");
 			else if( strcmp( attribute, "ResyncingPercent?" ) == 0 )
 				fprintf( CurrentClient, "Resyncing Percentage Done. -1 if not resyncing\t-1\t100\t%%\n");
+			else if( strcmp( attribute, "RaidType?" ) == 0 )
+				fprintf( CurrentClient, "Type of RAID array\n");
 		}
 		else {
 			fprintf( CurrentClient, "\n");
@@ -400,6 +404,9 @@ ArrayInfo *getOrCreateArrayInfo(char *array_name, int array_name_length) {
 		sprintf(sensorName, "SoftRaid/%s/ActiveDevices", MyArray->ArrayName);
 		registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
 
+		sprintf(sensorName, "SoftRaid/%s/RaidType", MyArray->ArrayName);
+		registerMonitor(sensorName, "string", printArrayAttribute, printArrayAttributeInfo, StatSM );
+
 		sprintf(sensorName, "SoftRaid/%s/DeviceNumber", MyArray->ArrayName);
 		registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
 
@@ -520,7 +527,7 @@ md1 : active raid1 sda2[0] sdb2[1]
 				MyArray->ArrayActive = true;
 			else if (strncmp(current_word, "inactive", sizeof("inactive")-1)==0)
 				MyArray->ArrayActive = false;
-			else if (MyArray->ArrayActive >=0 && MyArray->level == NULL && current_word[0] != '(' /*readonly*/) {
+			else if (MyArray->ArrayActive >=0 && MyArray->level == NULL && current_word[0] != '(' && current_word[0] != ':' /*readonly*/) {
 				MyArray->level = strndup(current_word, current_word_length);
 				in_devs = 1;
 
