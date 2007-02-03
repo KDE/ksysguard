@@ -45,9 +45,6 @@ char mdstatBuf[ MDSTATBUFSIZE ];	/* Buffer for /proc/mdstat */
 typedef struct {
 	bool Alive;
 
-	/* from /proc/mdstat */
-	char ArrayName[ ARRAYNAMELEN +1];
-	int NumBlocks;
 
 	/* from /sbin/mdadm --detail /dev/ArrayName */
 	bool ArraySizeIsAlive;
@@ -62,6 +59,10 @@ typedef struct {
 	bool PreferredMinorIsRegistered;
 	int PreferredMinor;
 	
+	/* from /proc/mdstat */
+	char ArrayName[ ARRAYNAMELEN +1];
+	int NumBlocks;
+
 	int NumRaidDevices;		/* Number of 'useful' disks.  Included working and spare disks, but not failed. */
 	
 	int TotalDevices;		/* Total number of devices, including failed and spare disks */
