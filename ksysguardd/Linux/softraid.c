@@ -42,6 +42,13 @@ static struct SensorModul* StatSM;
 static CONTAINER ArrayInfos = 0;
 char mdstatBuf[ MDSTATBUFSIZE ];	/* Buffer for /proc/mdstat */
 
+typedef struct Disks {
+	char *name;			/* e.g.  hda1 */
+	char status;			/* e.g.  F  for failed, S for spare.  U for fully synced, _ for syncing */
+	int index;			/* number in the array */
+	struct Disks *next;			/* A pointer to the next disk in this array. NULL if no next */
+} Disks;
+
 typedef struct {
 	bool Alive;
 
@@ -75,13 +82,13 @@ typedef struct {
 	
 	int SpareDevices;		/* Number of spare devices,  WE DO NOT Include Failed devices here, unlike mdadm. */
 
-        int  devnum; /* Raid array number.  e.g. if ArrayName is "md0", then devnum=0 */
-        bool ArrayActive; /* Whether this raid is active */
-        char *level;   /* Raid1, Raid2, etc */
-        char *pattern; /* U or up, _ for down */
-        int  ResyncingPercent; /* -1 if not resyncing, otherwise between 0 to 100 */
-        bool IsCurrentlyReSyncing; /* True if currently resyncing - */
-	
+        int  devnum; 			/* Raid array number.  e.g. if ArrayName is "md0", then devnum=0 */
+        bool ArrayActive; 		/* Whether this raid is active */
+        char *level;  			/* Raid1, Raid2, etc */
+        char *pattern;			/* U or up, _ for down */
+        int  ResyncingPercent; 		/* -1 if not resyncing, otherwise between 0 to 100 */
+        bool IsCurrentlyReSyncing; 	/* True if currently resyncing - */
+	Disks *first_disk;		/* A linked list of hard disks */
 } ArrayInfo;
 
 static int ArrayInfoEqual( void* s1, void* s2 )
@@ -126,6 +133,14 @@ void printArrayAttribute( const char* cmd ) {
 				fprintf( CurrentClient, "%d\n", foundArray->ResyncingPercent);
 			else if( strcmp( attribute, "RaidType" ) == 0 )
 				fprintf( CurrentClient, "%s\n", foundArray->level);
+			else if( strcmp( attribute, "DiskInfo" ) == 0 ) {
+				Disks *disk = foundArray->first_disk;
+				while(disk) {
+					fprintf( CurrentClient, "%s\t%d\t%c\n", disk->name, disk->index, disk->status);
+					disk = disk->next;
+				}
+				fprintf( CurrentClient, "\n");
+			}
 		}
 		else {
 			fprintf( CurrentClient, "\n");
@@ -173,6 +188,8 @@ void printArrayAttributeInfo( const char* cmd ) {
 				fprintf( CurrentClient, "Resyncing Percentage Done. -1 if not resyncing\t-1\t100\t%%\n");
 			else if( strcmp( attribute, "RaidType?" ) == 0 )
 				fprintf( CurrentClient, "Type of RAID array\n");
+			else if( strcmp( attribute, "DiskInfo?") == 0 )
+				fprintf( CurrentClient, "Disk Name\tIndex\tStatus\ns\td\tS\n");
 		}
 		else {
 			fprintf( CurrentClient, "\n");
@@ -413,6 +430,9 @@ ArrayInfo *getOrCreateArrayInfo(char *array_name, int array_name_length) {
 
 		sprintf(sensorName, "SoftRaid/%s/ResyncingPercent", MyArray->ArrayName);
 		registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
+		
+		sprintf(sensorName, "SoftRaid/%s/DiskInfo", MyArray->ArrayName);
+		registerMonitor(sensorName, "listview", printArrayAttribute, printArrayAttributeInfo, StatSM );
 
 	}
 	return MyArray;
@@ -488,6 +508,16 @@ bool scanForArrays() {
 		MyArray->TotalDevices = MyArray->SpareDevices = MyArray->FailedDevices = 0;
 		MyArray->NumBlocks = 0;
 		
+		Disks *disk = MyArray->first_disk;
+		MyArray->first_disk = NULL;
+		Disks *next;
+		while(disk) {
+			next =	disk->next;
+			free(disk);
+			disk = next;
+		}
+
+		
 		/* In mdstat, we have something that looks like:
 
 md0 : active raid1 sda1[0] sdb1[1]
@@ -542,12 +572,24 @@ md1 : active raid1 sda2[0] sdb2[1]
 				/*Each device in the raid has an index.  We can find the total number of devices in the raid by 
 				  simply finding the device with the highest index + 1. */
 				if(harddisk_index >= MyArray->TotalDevices)  MyArray->TotalDevices = harddisk_index+1;
+				Disks *new_disk = malloc(sizeof(Disks));
+				new_disk->name = strdup(buffer);
+				new_disk->index = harddisk_index;
+
+
 				if(status[0] == '(') {
+					new_disk->status = status[1];
 					if(status[1] == 'S') /*Spare hard disk*/
 						MyArray->SpareDevices++;
 					else if(status[1] == 'F')
 						MyArray->FailedDevices++;
-				}
+				} else
+					new_disk->status = 'U';
+
+				/* insert the new disk into the linked list of disks*/
+				new_disk->next = MyArray->first_disk;
+				MyArray->first_disk = new_disk;
+
 				MyArray->NumRaidDevices = MyArray->TotalDevices - MyArray->FailedDevices;
 				status[0]=0; /*make sure we zero it again for next time*/
 			} else if (!MyArray->pattern &&
@@ -560,16 +602,25 @@ md1 : active raid1 sda2[0] sdb2[1]
 				MyArray->ActiveDevices = MyArray->TotalDevices - MyArray->SpareDevices - MyArray->FailedDevices;
 
 				MyArray->WorkingDevices=0;
-				MyArray->FailedDevices=0;
-
+				int index=0;
 				for(;;) {
 					current_word++;
+
 					if(current_word[0] == 'U')
 						MyArray->WorkingDevices++;
-					else if(current_word[0] == '_')
-						MyArray->FailedDevices++;
-					else 
+					else if(current_word[0] == '_') {
+						Disks *disk = MyArray->first_disk;
+						while(disk) {
+							if(disk->index == index) {
+								if(disk->status == 'U')
+									disk->status = '_'; /* The disk hasn't failed, but is syncing */
+								break;
+							}
+							disk = disk->next;
+						}
+					} else 
 						break;
+					index++;
 				}				
 			} else if (MyArray->ResyncingPercent == -1 &&
 				   strncmp(current_word, "re", 2)== 0 &&
