@@ -229,6 +229,8 @@ void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&an
       break;
     if(sensorName.isEmpty()) break;
 
+    if(sensorType == "string") continue;
+
     /* The sensor browser can display sensors in a hierachical order.
      * Sensors can be grouped into nodes by seperating the hierachical
      * nodes through slashes in the sensor name. E. g. cpu/user is
