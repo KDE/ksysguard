@@ -36,7 +36,7 @@ set(ksysguardd_SRCS ${libccont_SRCS}
 add_executable(ksysguardd ${ksysguardd_SRCS})
 
 ADD_DEPENDENCIES(ksysguardd libksysguardd)
-TARGET_LINK_LIBRARIES(ksysguardd libksysguardd kdefakes ${X11_LIBRARY} ${XEXT_LIBRARY})
+TARGET_LINK_LIBRARIES(ksysguardd libksysguardd ${KDE4_KDEFAKES_LIBS} ${X11_LIBRARY} ${XEXT_LIBRARY})
 if(XRES_LIBRARY)
   TARGET_LINK_LIBRARIES(ksysguardd ${XRES_LIBRARY})
 endif(XRES_LIBRARY)
