@@ -204,7 +204,7 @@ void printArrayAttributeInfo( const char* cmd ) {
 void getMdadmDetail( ArrayInfo* MyArray ) {
 	int fd[2];
 	pid_t ChildPID;
-	int nbytes;
+	ssize_t nbytes;
 	
 	char sensorName[128];
 	char arrayDevice[ARRAYNAMELEN + 5];
@@ -250,7 +250,8 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 	
 	/* Fill mdadmStatBuf with pipe's output */
 	nbytes = read( fd[0], mdadmStatBuf, MDADMSTATBUFSIZE-1 );
-	mdadmStatBuf[nbytes] = '\0';
+        if (nbytes >= 0)
+	   mdadmStatBuf[nbytes] = '\0';
 
 	/* Now, go through mdadmStatBuf line by line. Register monitors along the way */
 	sprintf( format, "%%%d[^\n]\n", (int)sizeof( lineBuf ) - 1 );
