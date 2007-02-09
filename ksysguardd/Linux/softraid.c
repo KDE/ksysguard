@@ -359,7 +359,7 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 }
 
 void openMdstatFile() {
-	size_t n;
+	ssize_t n;
 	int fd;
 
 	mdstatBuf[ 0 ] = '\0';
