@@ -945,12 +945,12 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			else {
 				tooltip = i18n("<qt>This is the amount of real physical memory that this process is using by itself.  It does not include any swapped out memory, nor the code size of its shared libraries.  This is often the most useful figure to judge the memory use of a program.<br/><br/>");
 				if(mMemTotal != -1)
-					tooltip += i18n("Memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize(process->vmURSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), QString::number(process->vmURSS*100/mMemTotal));
+					tooltip += i18n("Memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize(process->vmURSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), process->vmURSS*100/mMemTotal);
 				else
 					tooltip += i18n("Memory usage: %1", KGlobal::locale()->formatByteSize(process->vmURSS * 1024));
 			}
 			if(mMemTotal != -1)
-				tooltip += i18n("RSS Memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize(process->vmRSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), QString::number(process->vmRSS*100/mMemTotal));
+				tooltip += i18n("RSS Memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize(process->vmRSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), process->vmRSS*100/mMemTotal);
 			else
 				tooltip += i18n("RSS Memory usage: %1", KGlobal::locale()->formatByteSize(process->vmRSS * 1024));
 			return tooltip;
@@ -959,7 +959,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			if(process->vmURSS == -1)
 				return i18n("<qt>Your system does not seem to have this information for us to read, sorry.");
 			QString tooltip = i18n("<qt>This is the amount of real physical memory that this process's shared libraries are using.  This memory is shared among all processes that use this library");
-			tooltip += i18n("<br/><br/>Shared library memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize((process->vmRSS - process->vmURSS) * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), QString::number((process->vmRSS-process->vmURSS)*100/mMemTotal));
+			tooltip += i18n("<br/><br/>Shared library memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize((process->vmRSS - process->vmURSS) * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), (process->vmRSS-process->vmURSS)*100/mMemTotal);
 			return tooltip;
 		}
 
