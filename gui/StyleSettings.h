@@ -28,10 +28,10 @@
 
 #include <QColor>
 #include <QList>
-#include <Q3ListBox>
+#include <QListWidget>
 class KColorButton;
 
-class Q3ListBoxItem;
+class QListWidgetItem;
 class QPushButton;
 
 class StyleSettings : public KPageDialog
@@ -62,7 +62,7 @@ class StyleSettings : public KPageDialog
 
   private Q_SLOTS:
     void editSensorColor();
-    void selectionChanged( Q3ListBoxItem* );
+    void selectionChanged( QListWidgetItem* );
 
   private:
     KColorButton *mFirstForegroundColor;
@@ -72,7 +72,7 @@ class StyleSettings : public KPageDialog
 
     QSpinBox *mFontSize;
 
-    Q3ListBox *mColorListBox;
+    QListWidget *mColorListBox;
     QPushButton *mEditColorButton;
 };
 

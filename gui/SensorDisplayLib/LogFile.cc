@@ -91,7 +91,7 @@ void LogFile::configureSettings(void)
 	lfs->bgColor->setColor(cgroup.color( QPalette::Base ));
 	lfs->bgColor->setText(i18n("Background color:"));
 	lfs->fontButton->setFont(monitor->font());
-	lfs->ruleList->insertStringList(filterRules);
+	lfs->ruleList->addItems(filterRules);
 	lfs->title->setText(title());
 
 	connect(lfs->okButton, SIGNAL(clicked()), &dlg, SLOT(accept()));
@@ -125,26 +125,26 @@ void LogFile::settingsFontSelection()
 void LogFile::settingsAddRule()
 {
 	if (!lfs->ruleText->text().isEmpty()) {
-		lfs->ruleList->insertItem(lfs->ruleText->text(), -1);
+		lfs->ruleList->addItem(lfs->ruleText->text());
 		lfs->ruleText->setText("");
 	}
 }
 
 void LogFile::settingsDeleteRule()
 {
-	lfs->ruleList->removeItem(lfs->ruleList->currentItem());
+	delete lfs->ruleList->takeItem(lfs->ruleList->currentRow());
 	lfs->ruleText->setText("");
 }
 
 void LogFile::settingsChangeRule()
 {
-	lfs->ruleList->changeItem(lfs->ruleText->text(), lfs->ruleList->currentItem());
+	lfs->ruleList->currentItem()->setText(lfs->ruleText->text());
 	lfs->ruleText->setText("");
 }
 
 void LogFile::settingsRuleListSelected(int index)
 {
-	lfs->ruleText->setText(lfs->ruleList->text(index));
+	lfs->ruleText->setText(lfs->ruleList->item(index)->text());
 }
 
 void LogFile::applySettings(void)
@@ -157,8 +157,8 @@ void LogFile::applySettings(void)
 	monitor->setFont(lfs->fontButton->font());
 
 	filterRules.clear();
-	for (uint i = 0; i < lfs->ruleList->count(); i++)
-		filterRules.append(lfs->ruleList->text(i));
+	for (int i = 0; i < lfs->ruleList->count(); i++)
+		filterRules.append(lfs->ruleList->item(i)->text());
 
 	setTitle(lfs->title->text());
 }

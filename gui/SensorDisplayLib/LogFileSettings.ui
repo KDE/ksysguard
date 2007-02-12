@@ -184,7 +184,7 @@
                     <widget class="QLineEdit" name="ruleText" />
                   </item>
                   <item>
-                    <widget class="Q3ListBox" name="ruleList" />
+                    <widget class="QListWidget" name="ruleList" />
                   </item>
                 </layout>
               </item>

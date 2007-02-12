@@ -97,7 +97,7 @@ StyleSettings::StyleSettings( QWidget *parent, const char *name )
   layout->setSpacing( spacingHint() );
   layout->setMargin( 0 );
 
-  mColorListBox = new Q3ListBox( page );
+  mColorListBox = new QListWidget( page );
   layout->addWidget( mColorListBox, 0, 0 );
 
   mEditColorButton = new QPushButton( i18n( "Change Color..." ), page );
@@ -175,7 +175,8 @@ void StyleSettings::setSensorColors( const QList<QColor> &list )
   for ( int i = 0; i < list.count(); ++i ) {
     QPixmap pm( 12, 12 );
 		pm.fill( list.at( i ) );
-    mColorListBox->insertItem( pm, i18n( "Color %1" ,  i ) );
+
+        new QListWidgetItem( pm , i18n( "Color %1" ,  i ) , mColorListBox );
 	}
 }
 
@@ -183,29 +184,33 @@ QList<QColor> StyleSettings::sensorColors()
 {
   QList<QColor> list;
 
-  for ( uint i = 0; i < mColorListBox->count(); ++i )
-    list.append( QColor( mColorListBox->pixmap( i )->toImage().pixel( 1, 1 ) ) );
+  for ( int i = 0; i < mColorListBox->count(); ++i ) {
+    const QPixmap pixmap = mColorListBox->item(i)->icon().pixmap( mColorListBox->iconSize() );
+    list.append( pixmap.toImage().pixel( 1, 1 ) ) ;
+  }
 
   return list;
 }
 
 void StyleSettings::editSensorColor()
 {
-  int pos = mColorListBox->currentItem();
+  int pos = mColorListBox->currentRow();
 
   if ( pos < 0 )
     return;
 
-  QColor color = mColorListBox->pixmap( pos )->toImage().pixel( 1, 1 );
+  const QPixmap pixmap = mColorListBox->item(pos)->icon().pixmap( mColorListBox->iconSize() );
+
+  QColor color = pixmap.toImage().pixel( 1, 1 );
 
   if ( KColorDialog::getColor( color ) == KColorDialog::Accepted ) {
     QPixmap pm( 12, 12 );
 		pm.fill( color );
-    mColorListBox->changeItem( pm, mColorListBox->text( pos ), pos );
+    mColorListBox->item(pos)->setIcon( pm );
 	}
 }
 
-void StyleSettings::selectionChanged( Q3ListBoxItem *item )
+void StyleSettings::selectionChanged( QListWidgetItem *item )
 {
   mEditColorButton->setEnabled( item != 0 );
 }
