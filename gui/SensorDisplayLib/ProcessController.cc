@@ -382,7 +382,7 @@ void ProcessController::killProcess()
 	else
 	{
 		QString  msg = i18np("Do you want to kill the selected process?",
-				"Do you want to kill the %n selected processes?",
+				"Do you want to kill the %1 selected processes?",
 				selectedAsStrings.count());
 
 		int res = KMessageBox::warningContinueCancelList(this, msg, selectedAsStrings,

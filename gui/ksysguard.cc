@@ -434,7 +434,7 @@ void TopLevel::setSwapInfo( long used, long free, const QString & )
   if ( used == 0 && free == 0 ) // no swap available
     msg = i18n( "No swap space available" );
   else {
-    msg = i18n( "Swap: %1 used, %3 free" ,
+    msg = i18n( "Swap: %1 used, %2 free" ,
                 KGlobal::locale()->formatByteSize( used*1024 ),
                 KGlobal::locale()->formatByteSize( free*1024) );
   }
