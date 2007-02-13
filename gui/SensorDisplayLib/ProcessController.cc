@@ -354,7 +354,7 @@ void ProcessController::reniceProcess()
 		ReniceDlg reniceDlg(mUi.treeView, firstPriority, selectedAsStrings);
 		if(reniceDlg.exec() == QDialog::Rejected) return;
 		int newPriority = reniceDlg.newPriority;
-		Q_ASSERT(newPriority <= 20 && newPriority >= -19); 
+		Q_ASSERT(newPriority <= 19 && newPriority >= -20); 
 
 		Q_ASSERT(selectedPids.size() == selectedAsStrings.size());
 	        for (int i = 0; i < selectedPids.size(); ++i) 
