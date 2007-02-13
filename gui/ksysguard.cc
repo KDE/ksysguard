@@ -392,7 +392,7 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
 
   switch ( id ) {
     case 0:
-      s = i18n( "Processes: %1", answer.toInt() );
+      s = i18n( " Processes: %1 ", answer.toInt() );
       statusBar()->changeItem( s, 0 );
       break;
 
@@ -419,7 +419,7 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
     }
     case 6:
       mUsedApplication = answer.toLong();
-      s = i18n( "Memory: %1 used, %2 total" ,
+      s = i18n( " Memory: %1 / %2 " ,
                 KGlobal::locale()->formatByteSize( mUsedApplication*1024),
                 KGlobal::locale()->formatByteSize( (mFree+mUsedTotal)*1024 ) );
       statusBar()->changeItem( s, 1 );
@@ -432,9 +432,9 @@ void TopLevel::setSwapInfo( long used, long free, const QString & )
 {
   QString msg;
   if ( used == 0 && free == 0 ) // no swap available
-    msg = i18n( "No swap space available" );
+    msg = i18n( " No swap space available " );
   else {
-    msg = i18n( "Swap: %1 used, %2 free" ,
+    msg = i18n( " Swap: %1 / %2 " ,
                 KGlobal::locale()->formatByteSize( used*1024 ),
                 KGlobal::locale()->formatByteSize( free*1024) );
   }
