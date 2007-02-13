@@ -395,7 +395,7 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
 
   switch ( id ) {
     case 0:
-      s = i18n( " Processes: %1 ", answer.toInt() );
+      s = i18n( " %1 Processes ", answer.toInt() );
       statusBar()->changeItem( s, 0 );
       break;
 
