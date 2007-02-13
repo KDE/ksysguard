@@ -103,8 +103,9 @@ TopLevel::TopLevel()
    * host. */
   const int STATUSBAR_STRETCH=1;
   statusBar()->insertItem( i18n( "Loading Processes Count.." ), 0, STATUSBAR_STRETCH );
-  statusBar()->insertItem( i18n( "Loading Memory Totals.." ), 1, STATUSBAR_STRETCH );
-  statusBar()->insertItem( i18n( "Loading Swap Totals.." ), 2, STATUSBAR_STRETCH);
+  statusBar()->insertItem( i18n( "Loading CPU Stat.." ), 1, STATUSBAR_STRETCH );
+  statusBar()->insertItem( i18n( "Loading Memory Totals.." ), 2, STATUSBAR_STRETCH );
+  statusBar()->insertItem( i18n( "Loading Swap Totals.." ), 3, STATUSBAR_STRETCH);
   statusBar()->hide();
 
   // create actions for menu entries
@@ -216,7 +217,7 @@ void TopLevel::initStatusBar()
    * measured in.  The requested info will be received by
    * answerReceived(). */
   KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/used?",
-                                 (KSGRD::SensorClient*)this, 5 );
+                                 (KSGRD::SensorClient*)this, 7 );
   updateStatusBar();
 
   KToggleAction *sb = dynamic_cast<KToggleAction*>(action("options_show_statusbar"));
@@ -314,15 +315,17 @@ void TopLevel::timerEvent( QTimerEvent* )
      * information will be received by answerReceived(). */
     KSGRD::SensorMgr->sendRequest( "localhost", "pscount",
                                    (KSGRD::SensorClient*)this, 0 );
-    KSGRD::SensorMgr->sendRequest( "localhost", "mem/physical/free",
+    KSGRD::SensorMgr->sendRequest( "localhost", "cpu/idle",
                                    (KSGRD::SensorClient*)this, 1 );
-    KSGRD::SensorMgr->sendRequest( "localhost", "mem/physical/used",
+    KSGRD::SensorMgr->sendRequest( "localhost", "mem/physical/free",
                                    (KSGRD::SensorClient*)this, 2 );
-    KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/free",
+    KSGRD::SensorMgr->sendRequest( "localhost", "mem/physical/used",
                                    (KSGRD::SensorClient*)this, 3 );
-    KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/used",
-                                   (KSGRD::SensorClient*)this, 4 );
     KSGRD::SensorMgr->sendRequest( "localhost", "mem/physical/application",
+                                   (KSGRD::SensorClient*)this, 4 );
+    KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/free",
+                                   (KSGRD::SensorClient*)this, 5 );
+    KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/used",
                                    (KSGRD::SensorClient*)this, 6 );
   }
 }
@@ -397,34 +400,40 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
       break;
 
     case 1:
-      mFree = answer.toLong();
+      s = i18n( " CPU: %1% ", (int) (100 - answer.toFloat()) );
+      statusBar()->changeItem( s, 1 );
       break;
 
     case 2:
-      mUsedTotal = answer.toLong();
+      mFree = answer.toLong();
       break;
 
     case 3:
-      sFree = answer.toLong();
+      mUsedTotal = answer.toLong();
       break;
 
     case 4:
-      sUsed = answer.toLong();
-      break;
-
-    case 5: {
-      KSGRD::SensorIntegerInfo info( answer );
-      unit = KSGRD::SensorMgr->translateUnit( info.unit() );
-      break;
-    }
-    case 6:
       mUsedApplication = answer.toLong();
       s = i18n( " Memory: %1 / %2 " ,
                 KGlobal::locale()->formatByteSize( mUsedApplication*1024),
                 KGlobal::locale()->formatByteSize( (mFree+mUsedTotal)*1024 ) );
-      statusBar()->changeItem( s, 1 );
+      statusBar()->changeItem( s, 2 );
       setSwapInfo( sUsed, sFree, unit );
       break;
+
+    case 5:
+      sFree = answer.toLong();
+      break;
+
+    case 6:
+      sUsed = answer.toLong();
+      break;
+
+    case 7: {
+      KSGRD::SensorIntegerInfo info( answer );
+      unit = KSGRD::SensorMgr->translateUnit( info.unit() );
+      break;
+    }
   }
 }
 
@@ -439,7 +448,7 @@ void TopLevel::setSwapInfo( long used, long free, const QString & )
                 KGlobal::locale()->formatByteSize( free*1024) );
   }
 
-  statusBar()->changeItem( msg, 2 );
+  statusBar()->changeItem( msg, 3 );
 }
 
 static const KCmdLineOptions options[] = {
