@@ -128,7 +128,6 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	mUi.treeView->header()->setSortIndicatorShown(true);
 	mUi.treeView->header()->setCascadingSectionResizes(true);
 	mUi.treeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
-	mUi.txtFilter->setClearButtonShown(true);
 	connect(mUi.btnKillProcess, SIGNAL(clicked()), this, SLOT(killProcess()));
 	connect(mUi.txtFilter, SIGNAL(textChanged(const QString &)), &mFilterModel, SLOT(setFilterRegExp(const QString &)));
 	connect(mUi.txtFilter, SIGNAL(textChanged(const QString &)), this, SLOT(expandInit()));
@@ -190,9 +189,9 @@ void ProcessController::showProcessContextMenu(const QPoint &point){
 	}
 }
 bool ProcessController::areXResColumnsHidden() const {
-	if(!mXResSupported || mXResHeadingStart == -1) return true; //There are no xres headings so I they count as 'hidden'
+	if(!mXResSupported || mXResHeadingStart == -1) return true; //There are no xres headings so they count as 'hidden'
 	if(!mUi.treeView->header()->sectionsHidden()) return false; //we know there are xres headings, but all headings are being shown, so return false
-	//All the xres headings have a column index between mXResHeadingStart and mXResHeadingEnd INCLUSIVE
+	//All the xres headings have a column index between mXResHeadingStart and mXResHeadingEnd inclusive
 	Q_ASSERT(mXResHeadingStart <= mXResHeadingEnd);
 	for(int i = mXResHeadingStart; i <= mXResHeadingEnd; i++) {
 		if(!mUi.treeView->header()->isSectionHidden(i)) 
@@ -223,7 +222,7 @@ void ProcessController::showContextMenu(const QPoint &point){
 			if(mUi.treeView->header()->isSectionHidden(i)) {
 				QAction *action = new QAction(mColumnContextMenu);
 				action->setText(i18n("Show column '%1'", mFilterModel.headerData(i, Qt::Horizontal, Qt::DisplayRole).toString()));
-				action->setData(i); //We set data to be negative (and minus 1)to hide a column, and positive to show a column
+				action->setData(i); //We set data to be negative (and minus 1) to hide a column, and positive to show a column
 				mColumnContextMenu->addAction(action);
 			}
 		}
