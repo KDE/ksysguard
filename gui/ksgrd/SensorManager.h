@@ -88,8 +88,8 @@ class KDE_EXPORT SensorManager : public QObject
     QString translateSensorType( const QString &type ) const;
     QString translateSensor(const QString& u) const;
 
-    void readProperties( KConfig *cfg );
-    void saveProperties( KConfig *cfg );
+    void readProperties( const KConfigGroup& cfg );
+    void saveProperties( KConfigGroup& cfg );
 
     void disconnectClient( SensorClient *client );
 
@@ -112,11 +112,11 @@ class KDE_EXPORT SensorManager : public QObject
     QHash<QString, QString> mUnits;
     QHash<QString, QString> mDict;
     QHash<QString, QString> mTypes;
-   
-    /** Store the data from the config file to pass to the MostConnector dialog box*/ 
+
+    /** Store the data from the config file to pass to the MostConnector dialog box*/
     QStringList mHostList;
     QStringList mCommandList;
-    
+
     QWidget* mBroadcaster;
 };
 

@@ -49,20 +49,20 @@ Workspace::~Workspace()
 {
 }
 
-void Workspace::saveProperties( KConfig *cfg )
+void Workspace::saveProperties( KConfigGroup& cfg )
 {
   QStringList list;
   for(int i =0; i< mSheetList.size(); i++)
     if ( !mSheetList.at(i)->fileName().isEmpty() )
       list.append( mSheetList.at(i)->fileName() );
 
-  cfg->writePathEntry( "SelectedSheets", list );
+  cfg.writePathEntry( "SelectedSheets", list );
 }
 
-void Workspace::readProperties( KConfig *cfg )
+void Workspace::readProperties( const KConfigGroup& cfg )
 {
-  kDebug() << "Reading from " << cfg->group() << endl;
-  QStringList selectedSheets = cfg->readPathListEntry( "SelectedSheets" );
+  kDebug() << "Reading from " << cfg.group() << endl;
+  QStringList selectedSheets = cfg.readPathListEntry( "SelectedSheets" );
   kDebug() << "Selected Sheets = " << selectedSheets << endl;
 
   if ( selectedSheets.isEmpty() ) {
@@ -103,7 +103,7 @@ QString Workspace::makeNameForNewSheet() const
     sheetName = i18n( "Sheet %1" ,  i++ );
     //Check we don't have any existing files with this name
     found = !(kstd->findResource( "data", "ksysguard/" + sheetName + ".sgrd").isEmpty());
-    
+
     //Check if we have any sheets with the same tab name or file name
     for(int i = 0; !found && i < mSheetList.size(); i++)
       if ( tabText(indexOf(mSheetList.at(i))) == sheetName  || sheetName+".sgrd" == mSheetList.at(i)->fileName())
@@ -183,7 +183,7 @@ void Workspace::importWorkSheet( const KUrl &url )
     return;
 
   mSheetList.last()->setFileName( makeNameForNewSheet() + ".sgrd");
-  
+
   KIO::NetAccess::removeTempFile( tmpFile );
 }
 
@@ -284,7 +284,7 @@ bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)
   insertTab(-1, sheet, sheet->title() );
   if(switchToTab)
    setCurrentIndex(indexOf(sheet));
-  
+
   return true;
 }
 

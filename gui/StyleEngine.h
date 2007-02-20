@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
     Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -25,7 +25,7 @@
 #include <QObject>
 #include <QList>
 
-class KConfig;
+class KConfigGroup;
 class StyleSettings;
 namespace KSGRD {
 class StyleEngine : public QObject
@@ -36,8 +36,8 @@ class StyleEngine : public QObject
     StyleEngine();
     ~StyleEngine();
 
-    void readProperties( KConfig* );
-    void saveProperties( KConfig* );
+    void readProperties( const KConfigGroup& cfg );
+    void saveProperties( KConfigGroup& cfg );
 
     const QColor& firstForegroundColor() const;
     const QColor& secondForegroundColor() const;

@@ -56,15 +56,15 @@ StyleEngine::~StyleEngine()
 {
 }
 
-void StyleEngine::readProperties( KConfig *cfg )
+void StyleEngine::readProperties( const KConfigGroup& cfg )
 {
-  mFirstForegroundColor = cfg->readEntry( "fgColor1", mFirstForegroundColor );
-  mSecondForegroundColor = cfg->readEntry( "fgColor2", mSecondForegroundColor );
-  mAlarmColor = cfg->readEntry( "alarmColor", mAlarmColor );
-  mBackgroundColor = cfg->readEntry( "backgroundColor", mBackgroundColor );
-  mFontSize = cfg->readEntry( "fontSize", mFontSize );
+  mFirstForegroundColor = cfg.readEntry( "fgColor1", mFirstForegroundColor );
+  mSecondForegroundColor = cfg.readEntry( "fgColor2", mSecondForegroundColor );
+  mAlarmColor = cfg.readEntry( "alarmColor", mAlarmColor );
+  mBackgroundColor = cfg.readEntry( "backgroundColor", mBackgroundColor );
+  mFontSize = cfg.readEntry( "fontSize", mFontSize );
 
-  QStringList list = cfg->readEntry( "sensorColors",QStringList() );
+  QStringList list = cfg.readEntry( "sensorColors",QStringList() );
   if ( !list.isEmpty() ) {
     mSensorColors.clear();
     QStringList::Iterator it;
@@ -73,20 +73,20 @@ void StyleEngine::readProperties( KConfig *cfg )
   }
 }
 
-void StyleEngine::saveProperties( KConfig *cfg )
+void StyleEngine::saveProperties( KConfigGroup& cfg )
 {
-  cfg->writeEntry( "fgColor1", mFirstForegroundColor );
-  cfg->writeEntry( "fgColor2", mSecondForegroundColor );
-  cfg->writeEntry( "alarmColor", mAlarmColor );
-  cfg->writeEntry( "backgroundColor", mBackgroundColor );
-  cfg->writeEntry( "fontSize", mFontSize );
+  cfg.writeEntry( "fgColor1", mFirstForegroundColor );
+  cfg.writeEntry( "fgColor2", mSecondForegroundColor );
+  cfg.writeEntry( "alarmColor", mAlarmColor );
+  cfg.writeEntry( "backgroundColor", mBackgroundColor );
+  cfg.writeEntry( "fontSize", mFontSize );
 
   QStringList list;
   QList<QColor>::Iterator it;
   for ( it = mSensorColors.begin(); it != mSensorColors.end(); ++it )
     list.append( (*it).name() );
 
-  cfg->writeEntry( "sensorColors", list );
+  cfg.writeEntry( "sensorColors", list );
 }
 
 const QColor &StyleEngine::firstForegroundColor() const

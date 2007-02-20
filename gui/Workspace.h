@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
     Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
     License as published by the Free Software Foundation.
@@ -40,8 +40,8 @@ class Workspace : public QTabWidget
     explicit Workspace( QWidget* parent);
     ~Workspace();
 
-    void saveProperties( KConfig* );
-    void readProperties( KConfig* );
+    void saveProperties( KConfigGroup& cfg );
+    void readProperties( const KConfigGroup& cfg );
 
     bool saveOnQuit();
 
@@ -69,7 +69,7 @@ class Workspace : public QTabWidget
 
   private:
     QList<WorkSheet *> mSheetList;
-    
+
     QString makeNameForNewSheet() const;
 };
 

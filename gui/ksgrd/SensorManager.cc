@@ -367,17 +367,17 @@ QString SensorManager::translateSensor( const QString &sensor ) const
   return out;
 }
 
-void SensorManager::readProperties( KConfig *cfg )
+void SensorManager::readProperties( const KConfigGroup& cfg )
 {
-  mHostList = cfg->readEntry( "HostList" ,QStringList());
-  mCommandList = cfg->readEntry( "CommandList",QStringList() );
+  mHostList = cfg.readEntry( "HostList" ,QStringList());
+  mCommandList = cfg.readEntry( "CommandList",QStringList() );
 }
 
 void
-SensorManager::saveProperties( KConfig *cfg )
+SensorManager::saveProperties( KConfigGroup &cfg )
 {
-  cfg->writeEntry( "HostList", mHostList );
-  cfg->writeEntry( "CommandList", mCommandList );
+  cfg.writeEntry( "HostList", mHostList );
+  cfg.writeEntry( "CommandList", mCommandList );
 }
 
 void SensorManager::disconnectClient( SensorClient *client )

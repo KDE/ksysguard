@@ -275,7 +275,7 @@ void TopLevel::disconnectHost()
 
 void TopLevel::editToolbars()
 {
-  saveMainWindowSettings( KGlobal::config().data() );
+  saveMainWindowSettings( KConfigGroup( KGlobal::config(), "MainWindow" ) );
   KEditToolbar dlg( actionCollection() );
   connect( &dlg, SIGNAL( newToolbarConfig() ), this,
            SLOT( slotNewToolbarConfig() ) );
@@ -286,7 +286,7 @@ void TopLevel::editToolbars()
 void TopLevel::slotNewToolbarConfig()
 {
   createGUI();
-  applyMainWindowSettings( KGlobal::config().data() );
+  applyMainWindowSettings( KConfigGroup( KGlobal::config(), "MainWindow" ) );
 }
 
 void TopLevel::editStyle()
@@ -335,21 +335,22 @@ bool TopLevel::queryClose()
   if ( !mWorkSpace->saveOnQuit() )
     return false;
 
-  saveProperties( KGlobal::config().data() );
+  KConfigGroup cg( KGlobal::config(), "MainWindow" );
+  saveProperties( cg );
   KGlobal::config()->sync();
 
   return true;
 }
 
-void TopLevel::readProperties( KConfig *cfg )
+void TopLevel::readProperties( const KConfigGroup& cfg )
 {
 
   /* we can ignore 'isMaximized' because we can't set the window
      maximized, so we save the coordinates instead */
-  if ( cfg->readEntry( "isMinimized" , false) == true )
+  if ( cfg.readEntry( "isMinimized" , false) == true )
     showMinimized();
 
-  mSplitterSize = cfg->readEntry( "SplitterSizeList",QList<int>() );
+  mSplitterSize = cfg.readEntry( "SplitterSizeList",QList<int>() );
   if ( mSplitterSize.isEmpty() ) {
     // start with a 30/70 ratio
     mSplitterSize.append( 10 );
@@ -364,14 +365,14 @@ void TopLevel::readProperties( KConfig *cfg )
   applyMainWindowSettings( cfg );
 }
 
-void TopLevel::saveProperties( KConfig *cfg )
+void TopLevel::saveProperties( KConfigGroup& cfg )
 {
-  cfg->writeEntry( "isMinimized", isMinimized() );
+  cfg.writeEntry( "isMinimized", isMinimized() );
 
   if(mSensorBrowser && mSensorBrowser->isVisible())
-    cfg->writeEntry( "SplitterSizeList",  mSplitter->sizes());
+    cfg.writeEntry( "SplitterSizeList",  mSplitter->sizes());
   else if(mSplitterSize.size() == 2 && mSplitterSize.value(0) != 0 && mSplitterSize.value(1) != 0)
-    cfg->writeEntry( "SplitterSizeList", mSplitterSize );
+    cfg.writeEntry( "SplitterSizeList", mSplitterSize );
 
   KSGRD::Style->saveProperties( cfg );
   KSGRD::SensorMgr->saveProperties( cfg );
@@ -532,7 +533,7 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
     topLevel->restore( 1 );
   else
   {
-    topLevel->readProperties( KGlobal::config().data() );
+    topLevel->readProperties( KConfigGroup( KGlobal::config(), "MainWindow" ) );
   }
 
   topLevel->initStatusBar();

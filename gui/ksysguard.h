@@ -42,8 +42,8 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
   public:
     TopLevel();
 
-    virtual void saveProperties( KConfig* );
-    virtual void readProperties( KConfig* );
+    virtual void saveProperties( KConfigGroup& );
+    virtual void readProperties( const KConfigGroup& );
 
     virtual void answerReceived( int id, const QList<QByteArray> & );
 
