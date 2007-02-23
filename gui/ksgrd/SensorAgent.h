@@ -24,6 +24,8 @@
 #include <QObject>
 #include <QQueue>
 
+#include <kdemacros.h>
+
 class KProcess;
 class KShellProcess;
 
