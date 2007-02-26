@@ -21,7 +21,7 @@
 #ifndef KSG_SENSORSOCKETAGENT_H
 #define KSG_SENSORSOCKETAGENT_H
 
-#include <QTcpSocket>
+#include <QtNetwork/QTcpSocket>
 
 #include "SensorAgent.h"
 
