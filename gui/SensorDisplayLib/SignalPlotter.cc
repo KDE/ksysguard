@@ -113,9 +113,9 @@ void KSignalPlotter::addSample( const QList<double>& sampleBuf )
   }
   mBeamData.prepend(sampleBuf);
   Q_ASSERT(sampleBuf.count() == mBeamColors.count());
-  if(mBeamData.size() > mSamples) {
+  if((unsigned int)mBeamData.size() > mSamples) {
     mBeamData.removeLast(); // we have too many.  Remove the last item
-    if(mBeamData.size() > mSamples)
+    if((unsigned int)mBeamData.size() > mSamples)
       mBeamData.removeLast(); // If we still have too many, then we have resized the widget.  Remove one more.  That way we will slowly resize to the new size
   }
 
@@ -694,7 +694,7 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizonta
    * When mBezierCurveOffset == 2, then we want a bezier curve that uses the first, second and third data
    *
    */
-  for (int i = 0; it != mBeamData.end() && i < mSamples; ++i) {
+  for (unsigned int i = 0; it != mBeamData.end() && i < mSamples; ++i) {
     QPen pen;
     pen.setWidth(2);
     pen.setCapStyle(Qt::FlatCap);
