@@ -57,14 +57,14 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
   setSizePolicy( sizePolicy );
 
   mShowVerticalLines = true;
-  mVerticalLinesColor = QColor("green");
+  mVerticalLinesColor = QColor("black");
   mVerticalLinesDistance = 30;
   mVerticalLinesScroll = true;
   mVerticalLinesOffset = 0;
   mHorizontalScale = 1;
 
   mShowHorizontalLines = true;
-  mHorizontalLinesColor = QColor("green");
+  mHorizontalLinesColor = QColor("black");
   mHorizontalLinesCount = 5;
 
   mShowLabels = true;
@@ -471,7 +471,7 @@ void KSignalPlotter::drawWidget(QPainter *p, uint w, uint height, int horizontal
   if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || mMaxValue < (mNiceRange*0.75 + mNiceMinValue))
     calculateNiceRange();
   QPen pen;
-  pen.setWidth(2);
+  pen.setWidth(1);
   pen.setCapStyle(Qt::RoundCap);
   p->setPen(pen);
 
@@ -489,7 +489,7 @@ void KSignalPlotter::drawWidget(QPainter *p, uint w, uint height, int horizontal
     QPainter pCache(&mBackgroundImage);
     pCache.setRenderHint(QPainter::Antialiasing, false);
     pCache.setFont( mFont );
-    
+
     drawBackground(&pCache, w, height);
 
     if(mShowThinFrame) {
@@ -499,7 +499,6 @@ void KSignalPlotter::drawWidget(QPainter *p, uint w, uint height, int horizontal
       w--;
       pCache.setClipRect( 0, 0, w, height-1 );
     }
-    pCache.setRenderHint(QPainter::Antialiasing, true);
     
     if(showTopBar) { 
       int seperatorX = w / 2;
@@ -696,7 +695,7 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizonta
    */
   for (unsigned int i = 0; it != mBeamData.end() && i < mSamples; ++i) {
     QPen pen;
-    pen.setWidth(2);
+    pen.setWidth(1);
     pen.setCapStyle(Qt::FlatCap);
 
     /**
