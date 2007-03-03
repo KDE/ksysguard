@@ -718,6 +718,11 @@ bool ProcessModel::canUserLogin(long long uid ) const
 	int canLogin = mUidCanLogin.value(uid, -1); //Returns 0 if we cannot login, 1 if we can, and the default is -1 meaning we don't know
 	if(canLogin != -1) return canLogin; //We know whether they can log in
 
+	if(uid == 65534) {
+		//nobody user
+		mUidCanLogin[uid] = 0;
+		return false;
+	}
 	//We got the default, -1, so we don't know.  Look it up
 	
 	KUser user(uid);
@@ -1013,9 +1018,9 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			if(process->uid == getuid())
 				base = 0;
 			else if(process->uid < 100 || !canUserLogin(process->uid))
-				base = 200000000 - process->uid * 10000;
+				base = 2000000000 - process->uid * 10000;
 			else
-				base = 100000000 - process->uid * 10000;
+				base = 1000000000 - process->uid * 10000;
 			double totalcpu = (process->totalUserUsage + process->totalSysUsage);
 			if(totalcpu <= 0.001 && process->isStoppedOrZombie) 
 				totalcpu = 0.001;  //stopped or zombied processes should be near the top of the list
