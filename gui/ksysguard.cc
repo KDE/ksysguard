@@ -419,7 +419,6 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
                 KGlobal::locale()->formatByteSize( mUsedApplication*1024),
                 KGlobal::locale()->formatByteSize( (mFree+mUsedTotal)*1024 ) );
       statusBar()->changeItem( s, 2 );
-      setSwapInfo( sUsed, sFree, unit );
       break;
 
     case 5:
@@ -428,6 +427,7 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
 
     case 6:
       sUsed = answer.toLong();
+      setSwapInfo( sUsed, sFree, unit );
       break;
 
     case 7: {
