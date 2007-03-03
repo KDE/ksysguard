@@ -27,11 +27,11 @@
 /* This is the official ksysguardd port assigned by IANA. */
 #define PORT_NUMBER	3112
 
-/* Timer interval for checking modules */
-#define TIMERINTERVAL	1
-
-/* Timer interval for update modules */
+/* Timer interval for running updateCommand on modiles that support it */
 #define UPDATEINTERVAL	1
+
+/* Timer interval for running checkCommand on modules that support it */
+#define TIMERINTERVAL	1
 
 extern int RunAsDaemon;
 extern int QuitApp;
