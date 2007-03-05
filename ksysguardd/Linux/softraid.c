@@ -567,7 +567,7 @@ md1 : active raid1 sda2[0] sdb2[1]
 				MyArray->NumBlocks = temp_int; /* We have to do it via a temp_int variable otherwise we'll end up with nonsence if it's not found */
 			} else if (in_devs && strncmp(current_word, "blocks", sizeof("blocks")-1)==0)
 				in_devs = 0;
-#warning in_devs can't be != 0!! (CID 3228)
+#warning in_devs cannot be != 0!! (CID 3228)
 			else if (in_devs && strncmp(current_word, "md", 2)==0) {
 				/* This has an md device as a component.  Maybe we should note this or something*/
 			} else if(sscanf(current_word, "%[^[ ][%d]%[^ ]", buffer, &harddisk_index, status) >= 2) {
