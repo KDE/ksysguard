@@ -1,7 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=System Monitor
+Name[x-test]=xxSystem Monitorxx
 Comment=An applet which monitors system information
+Comment[x-test]=xxAn applet which monitors system informationxx
 Icon=ksysguard
 X-KDE-Library=sysguard_panelapplet
 X-KDE-UniqueApplet=true

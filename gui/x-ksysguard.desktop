@@ -4,6 +4,7 @@ NotShowIn=GNOME;
 Encoding=UTF-8
 MimeType=application/x-ksysguard
 Comment=KDE System Monitor
+Comment[x-test]=xxKDE System Monitorxx
 Icon=ksysguard
 Type=MimeType
 Patterns=*.sgrd;
