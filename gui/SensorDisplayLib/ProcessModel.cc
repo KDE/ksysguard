@@ -45,7 +45,7 @@ ProcessModel::ProcessModel(QObject* parent)
 	: QAbstractItemModel(parent)
 {
 	mSimple = true;
-	mIsLocalhost = false; //this default really shouldn't matter, because setIsLocalhost should be called before setData()
+	mIsLocalhost = true; //this default really shouldn't matter, because setIsLocalhost should be called before setData()
 	mPidToProcess[0] = new Process();  //Add a fake process for process '0', the parent for init.  This lets us remove checks everywhere for init process
 	mXResPidColumn = -1;
 	mMemTotal = -1;
@@ -713,16 +713,16 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 
 bool ProcessModel::canUserLogin(long long uid ) const
 {
-	if(!mIsLocalhost) return true; //We only deal with localhost.  Just always return true for non localhost
+	if(uid == 65534) {
+		//nobody user
+		return false;
+	}
+
+	if(!mIsLocalhost) return true; //We only deal with localhost (other than 'nobody').  Just always return true for non localhost
 
 	int canLogin = mUidCanLogin.value(uid, -1); //Returns 0 if we cannot login, 1 if we can, and the default is -1 meaning we don't know
 	if(canLogin != -1) return canLogin; //We know whether they can log in
 
-	if(uid == 65534) {
-		//nobody user
-		mUidCanLogin[uid] = 0;
-		return false;
-	}
 	//We got the default, -1, so we don't know.  Look it up
 	
 	KUser user(uid);
@@ -783,7 +783,7 @@ QString ProcessModel::getStringForProcess(Process *process) const {
 QVariant ProcessModel::getUsernameForUser(long long uid) const {
 	QVariant &username = mUserUsername[uid];
 	if(!username.isValid()) {
-		if(mIsLocalhost) {
+		if(!mIsLocalhost) {
 			username = uid;
 		} else {
 			KUser user(uid);
