@@ -30,7 +30,7 @@ if(EXISTS /proc/i8k)
 ENDIF(EXISTS /proc/i8k)
 
 
-ADD_LIBRARY(libksysguardd STATIC 
+KDE4_ADD_LIBRARY(libksysguardd STATIC 
             ${LIBKSYSGUARDD_FILES})
 if(XRES_LIBRARY)
   TARGET_LINK_LIBRARIES(libksysguardd ${XRES_LIBRARY})
