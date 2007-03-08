@@ -178,7 +178,7 @@ void ProcessController::showProcessContextMenu(const QPoint &point){
 
 	QAction *kill = new QAction(mProcessContextMenu);
 	kill->setText(i18n("Kill process"));
-	kill->setIcon(KIcon("stop"));
+	kill->setIcon(KIcon("process-stop"));
 	mProcessContextMenu->addAction(kill);
 
 	QAction *result = mProcessContextMenu->exec(mUi.treeView->mapToGlobal(point));	

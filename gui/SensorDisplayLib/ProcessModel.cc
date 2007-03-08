@@ -1109,7 +1109,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		} else if (mHeadingsToType[index.column()] == HeadingCPUUsage) {
 			Process *process = reinterpret_cast< Process * > (index.internalPointer());
 			if(process->isStoppedOrZombie) {
-				return getIcon("button_cancel");
+				return getIcon("dialog-cancel");
 			}
 		}
 		return QVariant();

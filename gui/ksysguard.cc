@@ -110,26 +110,26 @@ TopLevel::TopLevel()
 
   // create actions for menu entries
   QAction *action = actionCollection()->addAction("new_worksheet");
-  action->setIcon(KIcon("tab_new"));
+  action->setIcon(KIcon("tab-new"));
   action->setText(i18n( "&New Worksheet..." ));
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( newWorkSheet() ));
   action = actionCollection()->addAction("import_worksheet");
-  action->setIcon(KIcon("fileopen") );
+  action->setIcon(KIcon("document-open") );
   action->setText(i18n( "Import Worksheet..." ));
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( importWorkSheet() ));
   mTabRemoveAction = actionCollection()->addAction( "remove_worksheet" );
-  mTabRemoveAction->setIcon( KIcon("tab_remove") );
+  mTabRemoveAction->setIcon( KIcon("tab-remove") );
   mTabRemoveAction->setText( i18n( "&Remove Worksheet" ) );
   connect(mTabRemoveAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( removeWorkSheet() ));
   mTabExportAction = actionCollection()->addAction( "export_worksheet" );
-  mTabExportAction->setIcon( KIcon("filesaveas") );
+  mTabExportAction->setIcon( KIcon("document-save-as") );
   mTabExportAction->setText( i18n( "&Export Worksheet..." ) );
   connect(mTabExportAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( exportWorkSheet() ));
 
   KStandardAction::quit( this, SLOT( close() ), actionCollection() );
 
   mMonitorRemoteAction = actionCollection()->addAction( "connect_host" );
-  mMonitorRemoteAction->setIcon( KIcon("connect_established") );
+  mMonitorRemoteAction->setIcon( KIcon("connection-established") );
   mMonitorRemoteAction->setText( i18n( "Monitor remote machine..." ) );
   connect(mMonitorRemoteAction, SIGNAL(triggered(bool)), SLOT( connectHost() ));
 
