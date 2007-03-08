@@ -8,6 +8,7 @@ set(ksysguard_LIB_SRCS
    processes_remote_p.cpp
 )
 
+
 kde4_automoc(${ksysguard_LIB_SRCS})
 
 kde4_add_library(ksysguard SHARED ${ksysguard_LIB_SRCS})
@@ -18,6 +19,8 @@ set_target_properties(ksysguard PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERS
 install(TARGETS ksysguard DESTINATION ${LIB_INSTALL_DIR} )
 
 add_subdirectory( tests )
+#add_subdirectory( widgets )
+
 
 ########### install files ###############
 
