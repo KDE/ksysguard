@@ -49,7 +49,7 @@ namespace KSysGuard
      */
     class KDE_EXPORT Processes : public QObject
     {
-    Q_OBJECT;
+    Q_OBJECT
 
     public:
         /**
