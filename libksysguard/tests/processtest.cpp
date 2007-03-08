@@ -23,15 +23,15 @@
 #include <klocale.h>
 #include <qtest_kde.h>
 
-#include "solidstats/processes.h"
-#include "solidstats/process.h"
+#include "processes.h"
+#include "process.h"
 
 #include "processtest.h"
 
 void testProcess::testProcesses() {
-	QHash<long, Solid::Process *> processes = Solid::Processes::getInstance()->getProcesses();
+	QHash<long, KSysGuard::Process *> processes = KSysGuard::Processes::getInstance()->getProcesses();
 	QSet<long> pids;
-	foreach( Solid::Process *process, processes) {
+	foreach( KSysGuard::Process *process, processes) {
 		if(process->pid == 0) continue;
 		QVERIFY(process->pid > 0);
 		QVERIFY(!process->name.isEmpty());
@@ -41,8 +41,8 @@ void testProcess::testProcesses() {
 		pids.insert(process->pid);
 	}
 
-	QHash<long, Solid::Process *> processes2 = Solid::Processes::getInstance()->getProcesses();
-	foreach( Solid::Process *process, processes) {
+	QHash<long, KSysGuard::Process *> processes2 = KSysGuard::Processes::getInstance()->getProcesses();
+	foreach( KSysGuard::Process *process, processes) {
 		if(process->pid == 0) continue;
 		QVERIFY(process->pid > 0);
 		QVERIFY(!process->name.isEmpty());
@@ -59,7 +59,7 @@ void testProcess::testProcesses() {
 }
 
 
-unsigned long testProcess::countNumChildren(Solid::Process *p) {
+unsigned long testProcess::countNumChildren(KSysGuard::Process *p) {
 	unsigned long total = p->children.size();
 	for(int i =0; i < p->children.size(); i++) {
 		total += countNumChildren(p->children[i]);
@@ -68,8 +68,8 @@ unsigned long testProcess::countNumChildren(Solid::Process *p) {
 }
 
 void testProcess::testProcessesTreeStructure() {
-	QHash<long, Solid::Process *> processes = Solid::Processes::getInstance()->getProcesses();
-	foreach( Solid::Process *process, processes) {
+	QHash<long, KSysGuard::Process *> processes = KSysGuard::Processes::getInstance()->getProcesses();
+	foreach( KSysGuard::Process *process, processes) {
 		QCOMPARE(countNumChildren(process), process->numChildren);
 
                 for(int i =0; i < process->children.size(); i++) {
@@ -82,7 +82,7 @@ void testProcess::testProcessesTreeStructure() {
 
 void testProcess::testProcessesModification() {
 	//We will modify the tree, then re-call getProcesses and make sure that it fixed everything we modified
-	QHash<long, Solid::Process *> processes = Solid::Processes::getInstance()->getProcesses();
+	QHash<long, KSysGuard::Process *> processes = KSysGuard::Processes::getInstance()->getProcesses();
 
 
 	if(!processes.contains(1) || processes[1]->numChildren < 3)
@@ -98,7 +98,7 @@ void testProcess::testProcessesModification() {
 	processes[1]->numChildren--;
 	processes[1]->children.removeAt(0);
 
-	QHash<long, Solid::Process *> processes2 = Solid::Processes::getInstance()->getProcesses();
+	QHash<long, KSysGuard::Process *> processes2 = KSysGuard::Processes::getInstance()->getProcesses();
 
 	QCOMPARE(processes, processes2);
 
@@ -108,11 +108,11 @@ void testProcess::testTime() {
 	//See how long it takes to get proccess information	
 	QTime t;
 	t.start();
-	QHash<long, Solid::Process *> processes = Solid::Processes::getInstance()->getProcesses();
+	QHash<long, KSysGuard::Process *> processes = KSysGuard::Processes::getInstance()->getProcesses();
 	kDebug() << "Time elapsed: "<< t.elapsed() <<" ms" <<  endl;
 	QVERIFY(t.elapsed() < 300); //It should take less than about 100ms.  Anything longer than 300ms even on a slow system really needs to be optimised
         t.start();
-	processes = Solid::Processes::getInstance()->getProcesses();
+	processes = KSysGuard::Processes::getInstance()->getProcesses();
 	kDebug() << "Time elapsed second time: "<< t.elapsed() <<" ms" <<  endl;
 	QVERIFY(t.elapsed() < 300); //It should take less than about 100ms.  Anything longer than 300ms even on a slow system really needs to be optimised
 

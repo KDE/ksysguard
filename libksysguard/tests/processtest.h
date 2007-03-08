@@ -20,12 +20,12 @@
 #define TESTPROCESS_H
 
 #include <QtCore/QObject>
-class Solid::Process;
+class KSysGuard::Process;
 class testProcess: public QObject
 {
     Q_OBJECT
       private:
-        unsigned long countNumChildren(Solid::Process *p);
+        unsigned long countNumChildren(KSysGuard::Process *p);
       private slots:
 	void testTime();
         void testProcesses();
