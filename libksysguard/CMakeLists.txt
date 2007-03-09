@@ -19,7 +19,7 @@ set_target_properties(ksysguard PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERS
 install(TARGETS ksysguard DESTINATION ${LIB_INSTALL_DIR} )
 
 add_subdirectory( tests )
-#add_subdirectory( widgets )
+add_subdirectory( processui )
 
 
 ########### install files ###############

@@ -38,6 +38,7 @@
 
 #include "ProcessFilter.h"
 class QAction;
+class QMenu;
 namespace Ui {
   class ProcessWidget;
 }
