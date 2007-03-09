@@ -98,10 +98,10 @@ public slots:
 	void setShowTotals(int totals);
 private slots:
 	/** Change the data for a process.  This is called from KSysGuard::Processes
-	 *  if onlyCpu is set, only the cpu information is updated.  This is for optomization reasons - the cpu percentage
-	 *  changes quite often, but if it's the only thing changed then there's no reason to repaint the whole row
+	 *  if @p onlyCpuOrMem is set, only the cpu and memory information are updated.  This is for optomization reasons - the cpu percentage
+	 *  and memory usage change quite often, but if it's the only thing changed then there's no reason to repaint the whole row
 	 */
-        void processChanged(KSysGuard::Process *process, bool onlyCpu);
+        void processChanged(KSysGuard::Process *process, bool onlyCpuOrMem);
         /** Called from KSysGuard::Processes
 	 *  This indicates we are about to insert a process in the model.  Emit the appropriate signals
 	 */

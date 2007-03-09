@@ -120,10 +120,10 @@ namespace KSysGuard
 	void setFlatMode(bool flat);
     signals:
 	/** The data for a process has changed.
-	 *  if onlyCpu is set, only the cpu information has been updated.  This is for optomization reasons - the cpu percentage
-	 *  changes quite often, but if it's the only thing changed then there's no reason to repaint the whole row
+	 *  if @p onlyCpuOrMem is set, only the cpu usage or memory information has been updated.  This is for optomization reasons - the cpu percentage
+	 *  and memory usage change quite often, but if they are the only thing changed then there's no reason to repaint the whole row
 	 */
-        void processChanged( KSysGuard::Process *process, bool onlyCpu);
+        void processChanged( KSysGuard::Process *process, bool onlyCpuOrMem);
         /**
 	 *  This indicates we are about to add a process in the model.
 	 */

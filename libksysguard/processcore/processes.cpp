@@ -132,8 +132,29 @@ bool Processes::updateProcess( Process *ps, long ppid, bool onlyReparent)
     ps->parent_pid = ppid;
 
     //Now we can actually get the process info
+    Process old_process(*ps);
     bool success = d->processesBase->updateProcessInfo(ps->pid, ps);
-    emit processChanged(ps, false);
+
+
+    if(
+       ps->name != old_process.name ||
+       ps->command != old_process.command ||
+       ps->status != old_process.status ||
+       ps->uid != old_process.uid ) {
+
+        emit processChanged(ps, false);
+    } else if(
+       ps->vmSize != old_process.vmSize ||
+       ps->vmRSS != old_process.vmRSS ||
+       ps->vmURSS != old_process.vmURSS ||
+       ps->userUsage != old_process.userUsage ||
+       ps->sysUsage != old_process.sysUsage ||
+       ps->totalUserUsage != old_process.totalUserUsage ||
+       ps->totalSysUsage != old_process.totalSysUsage ) {
+
+        emit processChanged(ps, true);
+    }
+
     return success;
 
 }

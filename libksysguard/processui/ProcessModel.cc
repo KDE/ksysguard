@@ -151,14 +151,15 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 	}
 }
 
-void ProcessModel::processChanged(KSysGuard::Process *process, bool onlyCpu)
+void ProcessModel::processChanged(KSysGuard::Process *process, bool onlyCpuOrMem)
 {
 	int row = process->tree_parent->children.indexOf(process);
 	Q_ASSERT(row != -1);  //Something has gone very wrong
-	if(!onlyCpu) {
+	if(!onlyCpuOrMem) {
 		//Only the cpu usage changed, so only update that
 		QModelIndex index = createIndex(row, HeadingCPUUsage, process);
-		emit dataChanged(index, index);
+		QModelIndex index2 = createIndex(row, HeadingSharedMemory, process);
+		emit dataChanged(index, index2);
 	} else {
 		QModelIndex startIndex = createIndex(row, 0, process);
 		QModelIndex endIndex = createIndex(row, mHeadings.count()-1, process);
