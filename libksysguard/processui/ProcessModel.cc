@@ -152,7 +152,7 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 
 void ProcessModel::processChanged(KSysGuard::Process *process, bool onlyCpu)
 {
-	int row = process->parent->children.indexOf(process);
+	int row = process->tree_parent->children.indexOf(process);
 	Q_ASSERT(row != -1);  //Something has gone very wrong
 	if(!onlyCpu) {
 		//Only the cpu usage changed, so only update that
@@ -183,8 +183,8 @@ void ProcessModel::beginRemoveRow( KSysGuard::Process *process )
 {
 	Q_ASSERT(process);
 	Q_ASSERT(process->pid > 0);
-	int row = process->parent->children.indexOf(process);
-	QModelIndex parentIndex = getQModelIndex(process->parent, 0);
+	int row = process->tree_parent->children.indexOf(process);
+	QModelIndex parentIndex = getQModelIndex(process->tree_parent, 0);
 	if(row == -1) {
 		kDebug(1215) << "A serious problem occurred in remove row." << endl;
 		return;
@@ -204,8 +204,8 @@ QModelIndex ProcessModel::getQModelIndex( KSysGuard::Process *process, int colum
 	int pid = process->pid;
 	if(pid == 0) return QModelIndex(); //pid 0 is our fake process meaning the very root.  To represent that, we return QModelIndex() which also means the top element
 	int row = 0;
-	if(process->parent) {
-		row = process->parent->children.indexOf(process);
+	if(process->tree_parent) {
+		row = process->tree_parent->children.indexOf(process);
 		Q_ASSERT(row != -1);
 	}
 	return createIndex(row, column, process);
@@ -217,7 +217,7 @@ QModelIndex ProcessModel::parent ( const QModelIndex & index ) const
 	KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
 	Q_ASSERT(process);
 
-	return getQModelIndex(process->parent,0);
+	return getQModelIndex(process->tree_parent,0);
 }
 
 QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
