@@ -140,6 +140,14 @@ namespace KSysGuard
 	 *  We have finished removing a process
 	 */
         void endRemoveProcess();
+	/**
+	 *  This indicates we are about move a process from one parent to another.
+	 */
+        void beginMoveProcess(KSysGuard::Process *process, KSysGuard::Process *new_parent);
+        /**
+	 *  We have finished moving the process
+	 */
+        void endMoveProcess();
     protected:
         Processes(ProcessesBase *processesBase);
 	~Processes();

@@ -67,6 +67,9 @@ void ProcessModel::setupProcesses() {
         connect( mProcesses, SIGNAL( endAddProcess()), this, SLOT(endInsertRow()));
 	connect( mProcesses, SIGNAL( beginRemoveProcess(KSysGuard::Process *)), this, SLOT(beginRemoveRow( KSysGuard::Process *)));
         connect( mProcesses, SIGNAL( endRemoveProcess()), this, SLOT(endRemoveRow()));
+        connect( mProcesses, SIGNAL( beginMoveProcess(KSysGuard::Process *, KSysGuard::Process *)), this, 
+			       SLOT( beginMoveProcess(KSysGuard::Process *, KSysGuard::Process *)));
+        connect( mProcesses, SIGNAL( endMoveProcess()), this, SLOT(endMoveRow()));
 
 	mPidToProcess = mProcesses->getProcesses();
 	Q_ASSERT(mPidToProcess[0]);
@@ -197,6 +200,28 @@ void ProcessModel::endRemoveRow()
 {
 	endRemoveRows();
 }
+
+
+void ProcessModel::beginMoveProcess(KSysGuard::Process *process, KSysGuard::Process *new_parent)
+{
+	emit layoutAboutToBeChanged ();
+	int current_row = process->tree_parent->children.indexOf(process);
+	int new_row = new_parent->children.count();
+	Q_ASSERT(current_row != -1);
+
+	QList<QModelIndex> fromIndexes;
+	QList<QModelIndex> toIndexes;
+        for(int i=0; i < columnCount(); i++) {
+		fromIndexes << createIndex(current_row, i, process);
+		toIndexes << createIndex(new_row, i, process);
+	}
+	changePersistentIndexList(fromIndexes, toIndexes);
+}
+void ProcessModel::endMoveRow() 
+{
+	emit layoutChanged();
+}
+
 
 QModelIndex ProcessModel::getQModelIndex( KSysGuard::Process *process, int column) const
 {

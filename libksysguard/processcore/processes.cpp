@@ -108,6 +108,7 @@ bool Processes::updateProcess( Process *ps, long ppid)
         tree_parent = parent;
 
     if(ps->tree_parent != tree_parent) {
+        emit beginMoveProcess(ps, tree_parent/*new parent*/);
         //Processes has been reparented
         Process *p = ps;
         do {
@@ -122,6 +123,7 @@ bool Processes::updateProcess( Process *ps, long ppid)
             p = p->tree_parent;
             p->numChildren++;
         } while (p->pid!= 0);
+	emit endMoveProcess();
     }
     ps->parent = parent;
     ps->parent_pid = ppid;

@@ -118,6 +118,15 @@ private slots:
 	 *  We have finished removing a process
 	 */
         void endRemoveRow();
+	/** Called from KSysGuard::Processes
+	 *  This indicates we are about to move a process in the model from one parent process to another.  Emit the appropriate signals
+	 */
+	void beginMoveProcess(KSysGuard::Process *process, KSysGuard::Process *new_parent);
+        /** Called from KSysGuard::Processes
+	 *  We have finished moving a process
+	 */
+        void endMoveRow();
+
 private:
 	/** Connects to the host */
 	void setupProcesses();
