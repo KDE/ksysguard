@@ -11,7 +11,7 @@ if(KDE4_BUILD_TESTS)
 
   kde4_add_executable(processtest RUN_UNINSTALLED processtest.cpp)
 
-  target_link_libraries(processtest ksysguard ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
+  target_link_libraries(processtest ksysguard ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY})
 
 
   ############################################

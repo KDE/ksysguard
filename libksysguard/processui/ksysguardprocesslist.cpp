@@ -152,7 +152,6 @@ void KSysGuardProcessList::setSimpleMode(int index)
 	if(simple == mSimple) return; //Optimization - don't bother changing anything if the simple mode hasn't been toggled
 	mSimple = simple;
 	mModel.setSimpleMode(mSimple);
-	
 	mUi->chkShowTotals->setVisible(!mSimple);
 }
 void KSysGuardProcessList::currentRowChanged(const QModelIndex &current)

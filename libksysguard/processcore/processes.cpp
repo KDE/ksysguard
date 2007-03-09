@@ -97,7 +97,7 @@ Processes::Processes(ProcessesBase *processesBase) : d(new Private())
     d->processesBase = processesBase;
 }
 
-bool Processes::updateProcess( Process *ps, long ppid)
+bool Processes::updateProcess( Process *ps, long ppid, bool onlyReparent)
 {
     Process *parent = d->mProcesses.value(ppid);
     Q_ASSERT(parent);  //even init has a non-null parent - the mFakeProcess
@@ -125,6 +125,9 @@ bool Processes::updateProcess( Process *ps, long ppid)
         } while (p->pid!= 0);
 	emit endMoveProcess();
     }
+    if(onlyReparent) 
+	    return true; 
+
     ps->parent = parent;
     ps->parent_pid = ppid;
 
@@ -265,6 +268,10 @@ bool Processes::flatMode()
 void Processes::setFlatMode(bool flat)
 {
     d->mFlatMode = flat;
+    foreach(Process *process, d->mProcesses.values()) {
+	if(process->pid != 0) 
+            updateProcess(process, process->parent_pid, true);
+    }
 }
 }
 #include "processes.moc"
