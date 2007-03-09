@@ -59,5 +59,6 @@ void KSysGuard::Process::clear() {
 	vmRSS = 0; 
 	vmURSS = 0; 
 	status=OtherStatus;
+	parent = tree_parent = NULL;
 }
 

@@ -101,22 +101,29 @@ bool Processes::updateProcess( Process *ps, long ppid)
 {
     Process *parent = d->mProcesses.value(ppid);
     Q_ASSERT(parent);  //even init has a non-null parent - the mFakeProcess
-    if(ps->parent != parent) {
+    Process *tree_parent;
+    if(d->mFlatMode) 
+        tree_parent = &d->mFakeProcess;
+    else 
+        tree_parent = parent;
+
+    if(ps->tree_parent != tree_parent) {
         //Processes has been reparented
         Process *p = ps;
         do {
-            p = p->parent;
+            p = p->tree_parent;
             p->numChildren--;
         } while (p->pid!= 0);
-        ps->parent->children.removeAll(ps);
-        ps->parent = parent;  //the parent has changed
-        parent->children.append(ps);
+        ps->tree_parent->children.removeAll(ps);
+        ps->tree_parent = tree_parent;  //the parent has changed
+        tree_parent->children.append(ps);
         p = ps;
         do {
-            p = p->parent;
+            p = p->tree_parent;
             p->numChildren++;
         } while (p->pid!= 0);
     }
+    ps->parent = parent;
     ps->parent_pid = ppid;
 
     //Now we can actually get the process info
@@ -131,16 +138,18 @@ bool Processes::addProcess(long pid, long ppid)
     Q_ASSERT(parent);  //even init has a non-null parent - the mFakeProcess
     //it's a new process - we need to set it up
     Process *ps = new Process(pid, ppid, parent);
-    ps->pid = pid;
-    ps->parent = parent;
+    if(d->mFlatMode)
+        ps->tree_parent = &d->mFakeProcess;
+    else
+        ps->tree_parent = parent;
 
-    emit beginAddProcess(parent);
+    emit beginAddProcess(ps->tree_parent);
 
     d->mProcesses.insert(pid, ps);
-    parent->children.append(ps);
+    ps->tree_parent->children.append(ps);
     Process *p = ps;
     do {
-        p = p->parent;
+        p = p->tree_parent;
         p->numChildren++;
     } while (p->pid!= 0);
     ps->parent_pid = ppid;
@@ -153,7 +162,6 @@ bool Processes::addProcess(long pid, long ppid)
 }
 bool Processes::updateOrAddProcess( long pid)
 {
-    
     long ppid = d->processesBase->getParentPid(pid);
 
     if(d->mToBeProcessed.contains(ppid)) {
@@ -218,10 +226,10 @@ void Processes::deleteProcess(long pid)
     emit beginRemoveProcess(process);
 
     d->mProcesses.remove(pid);
-    process->parent->children.removeAll(process);
+    process->tree_parent->children.removeAll(process);
     Process *p = process;
     do {
-      p = p->parent;
+      p = p->tree_parent;
       p->numChildren--;
     } while (p->pid!= 0);
     delete process;

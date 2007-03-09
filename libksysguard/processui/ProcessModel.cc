@@ -202,7 +202,7 @@ QModelIndex ProcessModel::getQModelIndex( KSysGuard::Process *process, int colum
 {
 	Q_ASSERT(process);
 	int pid = process->pid;
-	if(pid == 0) return QModelIndex(); //pid 0 is our fake process meaning the very root.  To represent that, we return QModelIndex() which also means the top element
+	if(pid == 0) return QModelIndex(); //pid 0 is our fake process meaning the very root (never drawn).  To represent that, we return QModelIndex() which also means the top element
 	int row = 0;
 	if(process->tree_parent) {
 		row = process->tree_parent->children.indexOf(process);
@@ -230,6 +230,11 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 	if(section < 0 || section >= mHeadings.count())
 		return QVariant(); //is this needed?
 	return mHeadings[section];
+}
+void ProcessModel::setSimpleMode(bool simple)
+{ 
+	mSimple = simple;
+	mProcesses->setFlatMode(simple);
 }
 
 bool ProcessModel::canUserLogin(long long uid ) const
