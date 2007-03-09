@@ -107,7 +107,6 @@ int ProcessModel::rowCount(const QModelIndex &parent) const
 		process = mPidToProcess[0];
 	Q_ASSERT(process);
 	int num_rows = process->children.count();
-	kDebug() << "num rows for " << process->pid << " is " << num_rows << endl;
 	return num_rows;
 }
 
@@ -128,7 +127,6 @@ bool ProcessModel::hasChildren ( const QModelIndex & parent = QModelIndex() ) co
 	Q_ASSERT(process);
 	bool has_children = !process->children.isEmpty();
 
-	kDebug() << "has children for " << process->pid << " is " << has_children << endl;
 	Q_ASSERT((rowCount(parent) > 0) == has_children);
 	return has_children;
 }
@@ -172,7 +170,6 @@ void ProcessModel::beginInsertRow( KSysGuard::Process *parent)
 {
 	Q_ASSERT(parent);
 	int row = parent->children.count();
-	kDebug() << "Row added for pid " << parent->pid << " at row " << row << endl;
 	QModelIndex parentModelIndex = getQModelIndex(parent, 0);
 
 	//Only here can we actually change the model.  First notify the view/proxy models then modify
