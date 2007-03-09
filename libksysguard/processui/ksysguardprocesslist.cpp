@@ -135,7 +135,7 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 
 
 	mUpdateTimer = new QTimer(this);
-	mUpdateTimer->setSingleShot(false);
+	mUpdateTimer->setSingleShot(true);
 	connect(mUpdateTimer, SIGNAL(timeout()), this, SLOT(updateList()));
 	mUpdateTimer->start(2000);
 
@@ -248,6 +248,7 @@ KSysGuardProcessList::updateList()
 {
 	mModel.update();
 	expandInit(); //This will expand the init process
+	mUpdateTimer->start(2000);
 }
 
 void KSysGuardProcessList::killProcess(int pid, int sig)
