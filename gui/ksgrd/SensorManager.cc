@@ -62,11 +62,12 @@ SensorManager::SensorManager()
 {
   // Fill the sensor description dictionary.
   mDict.insert( QLatin1String( "cpu" ), i18n( "CPU Load" ) );
-  mDict.insert( QLatin1String( "idle" ), i18n( "Idle Load" ) );
-  mDict.insert( QLatin1String( "sys" ), i18n( "System Load" ) );
+  mDict.insert( QLatin1String( "idle" ), i18n( "Idling" ) );
   mDict.insert( QLatin1String( "nice" ), i18n( "Nice Load" ) );
-  mDict.insert( QLatin1String( "TotalLoad" ), i18n( "Total Load" ) );
   mDict.insert( QLatin1String( "user" ), i18n( "User Load" ) );
+  mDict.insert( QLatin1String( "sys" ), i18n( "System Load" ) );
+  mDict.insert( QLatin1String( "wait" ), i18n( "Waiting" ) );
+  mDict.insert( QLatin1String( "TotalLoad" ), i18n( "Total Load" ) );
   mDict.insert( QLatin1String( "mem" ), i18n( "Memory" ) );
   mDict.insert( QLatin1String( "physical" ), i18n( "Physical Memory" ) );
   mDict.insert( QLatin1String( "swap" ), i18n( "Swap Memory" ) );

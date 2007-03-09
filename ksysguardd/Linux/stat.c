@@ -43,6 +43,7 @@ typedef struct {
 	float niceLoad;
 	float sysLoad;
 	float idleLoad;
+	float waitLoad;
 	
 	/* To calculate the loads we need to remember the tick values for each
 	* load type. */
@@ -50,6 +51,7 @@ typedef struct {
 	unsigned long niceTicks;
 	unsigned long sysTicks;
 	unsigned long idleTicks;
+	unsigned long waitTicks;
 } CPULoadInfo;
 
 typedef struct {
@@ -142,30 +144,33 @@ static int initStatDisk( char* tag, char* buf, const char* label,
 }
 	
 static void updateCPULoad( const char* line, CPULoadInfo* load ) {
-	unsigned long currUserTicks, currSysTicks, currNiceTicks, currIdleTicks;
-	unsigned long totalTicks;
+	unsigned long currUserTicks, currSysTicks, currNiceTicks;
+	unsigned long currIdleTicks, currWaitTicks, totalTicks;
 	
-	sscanf( line, "%*s %lu %lu %lu %lu", &currUserTicks, &currNiceTicks,
-		&currSysTicks, &currIdleTicks );
+	sscanf( line, "%*s %lu %lu %lu %lu %lu", &currUserTicks, &currNiceTicks,
+		&currSysTicks, &currIdleTicks, &currWaitTicks );
 	
 	totalTicks = ( currUserTicks - load->userTicks ) +
 		( currSysTicks - load->sysTicks ) +
 		( currNiceTicks - load->niceTicks ) +
-		( currIdleTicks - load->idleTicks );
+		( currIdleTicks - load->idleTicks ) +
+		( currWaitTicks - load->waitTicks );
 	
 	if ( totalTicks > 10 ) {
 		load->userLoad = ( 100.0 * ( currUserTicks - load->userTicks ) ) / totalTicks;
 		load->sysLoad = ( 100.0 * ( currSysTicks - load->sysTicks ) ) / totalTicks;
 		load->niceLoad = ( 100.0 * ( currNiceTicks - load->niceTicks ) ) / totalTicks;
-		load->idleLoad = ( 100.0 - ( load->userLoad + load->sysLoad + load->niceLoad ) );
+		load->idleLoad = ( 100 * ( currIdleTicks - load->idleTicks ) ) / totalTicks;
+		load->waitLoad = ( 100 * ( currWaitTicks - load->waitTicks ) ) / totalTicks;
 	}
 	else
-		load->userLoad = load->sysLoad = load->niceLoad = load->idleLoad = 0.0;
+		load->userLoad = load->sysLoad = load->niceLoad = load->idleLoad = load->waitLoad = 0.0;
 		
 	load->userTicks = currUserTicks;
 	load->sysTicks = currSysTicks;
 	load->niceTicks = currNiceTicks;
 	load->idleTicks = currIdleTicks;
+	load->waitTicks = currWaitTicks;
 }
 	
 static int process24Disk( char* tag, char* buf, const char* label, int idx ) {
@@ -430,9 +435,9 @@ static void process24Stat( void ) {
 
 void initStat( struct SensorModul* sm ) {
 	/* The CPU load is calculated from the values in /proc/stat. The cpu
-	* entry contains 4 counters. These counters count the number of ticks
+	* entry contains 7 counters. These counters count the number of ticks
 	* the system has spend on user processes, system processes, nice
-	* processes and idle time.
+	* processes, idle and IO-wait time, hard and soft interrupts.
 	*
 	* SMP systems will have cpu1 to cpuN lines right after the cpu info. The
 	* format is identical to cpu and reports the information for each cpu.
@@ -440,7 +445,7 @@ void initStat( struct SensorModul* sm ) {
 	*
 	* The /proc/stat file looks like this:
 	*
-	* cpu  1586 4 808 36274
+	* cpu  <user> <nice> <system> <idling> <waiting> <hardinterrupt> <softinterrupt>
 	* disk 7797 0 0 0
 	* disk_rio 6889 0 0 0
 	* disk_wio 908 0 0 0
@@ -486,6 +491,7 @@ void initStat( struct SensorModul* sm ) {
 			registerMonitor( "cpu/sys", "float", printCPUSys, printCPUSysInfo, StatSM );
 			registerMonitor( "cpu/TotalLoad", "float", printCPUTotalLoad, printCPUTotalLoadInfo, StatSM );
 			registerMonitor( "cpu/idle", "float", printCPUIdle, printCPUIdleInfo, StatSM );
+			registerMonitor( "cpu/wait", "float", printCPUWait, printCPUWaitInfo, StatSM );
 		}
 		else if ( strncmp( "cpu", tag, 3 ) == 0 ) {
 			char cmdName[ 24 ];
@@ -504,6 +510,8 @@ void initStat( struct SensorModul* sm ) {
 			registerMonitor( cmdName, "float", printCPUxTotalLoad, printCPUxTotalLoadInfo, StatSM );
 			sprintf( cmdName, "cpu%d/idle", id );
 			registerMonitor( cmdName, "float", printCPUxIdle, printCPUxIdleInfo, StatSM );
+			sprintf( cmdName, "cpu%d/wait", id );
+			registerMonitor( cmdName, "float", printCPUxWait, printCPUxWaitInfo, StatSM );
 		}
 		else if ( strcmp( "disk", tag ) == 0 ) {
 			unsigned long val;
@@ -720,6 +728,22 @@ void printCPUIdleInfo( const char* cmd ) {
 	fprintf( CurrentClient, "CPU Idle Load\t0\t100\t%%\n" );
 }
 
+void printCPUWait( const char* cmd )
+{
+	(void)cmd;
+
+	if ( Dirty )
+		process24Stat();
+
+	fprintf( CurrentClient, "%f\n", CPULoad.waitLoad );
+}
+
+void printCPUWaitInfo( const char* cmd )
+{
+	(void)cmd;
+	fprintf( CurrentClient, "CPU Wait Load\t0\t100\t%%\n" );
+}
+
 void printCPUxUser( const char* cmd ) {
 	int id;
 	
@@ -803,6 +827,25 @@ void printCPUxIdleInfo( const char* cmd ) {
 	
 	sscanf( cmd + 3, "%d", &id );
 	fprintf( CurrentClient, "CPU%d Idle Load\t0\t100\t%%\n", id );
+}
+
+void printCPUxWait( const char* cmd )
+{
+	int id;
+
+	if ( Dirty )
+		process24Stat();
+
+	sscanf( cmd + 3, "%d", &id );
+	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].waitLoad );
+}
+
+void printCPUxWaitInfo( const char* cmd )
+{
+	int id;
+
+	sscanf( cmd + 3, "%d", &id );
+	fprintf( CurrentClient, "CPU%d Wait Load\t0\t100\t%%\n", id );
 }
 
 void print24DiskTotal( const char* cmd ) {
