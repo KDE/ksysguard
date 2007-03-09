@@ -1,0 +1,12 @@
+[Global]
+PluginName=KSysGuardWidgets
+Includes=kinstance.h
+
+
+[KSysGuardProcessList]
+ToolTip=A list of processes (programs) running.
+WhatsThis=A widget for showing all the processes running along with their memory usage and other details.
+Group=KSysGuard
+ConstructorArgs=(parent)
+
+
