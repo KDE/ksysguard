@@ -704,7 +704,7 @@ void printCPUTotalLoad( const char* cmd ) {
 	if ( Dirty )
 		process24Stat();
 	
-	fprintf( CurrentClient, "%f\n", CPULoad.userLoad + CPULoad.sysLoad + CPULoad.niceLoad );
+	fprintf( CurrentClient, "%f\n", CPULoad.userLoad + CPULoad.sysLoad + CPULoad.niceLoad + CPULoad.waitLoad );
 }
 
 void printCPUTotalLoadInfo( const char* cmd ) {
@@ -802,7 +802,7 @@ void printCPUxTotalLoad( const char* cmd ) {
 		process24Stat();
 	
 	sscanf( cmd + 3, "%d", &id );
-	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].userLoad + SMPLoad[ id ].sysLoad + SMPLoad[ id ].niceLoad );
+	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].userLoad + SMPLoad[ id ].sysLoad + SMPLoad[ id ].niceLoad + SMPLoad[ id ].waitLoad );
 }
 
 void printCPUxTotalLoadInfo( const char* cmd ) {
