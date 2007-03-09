@@ -1,6 +1,5 @@
 [Global]
 PluginName=KSysGuardWidgets
-Includes=kinstance.h
 
 
 [KSysGuardProcessList]
