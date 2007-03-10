@@ -32,7 +32,7 @@
 
 class QModelIndex;
 
-class ProcessFilter : public QSortFilterProxyModel
+class KDEUI_EXPORT ProcessFilter : public QSortFilterProxyModel
 {
 	Q_OBJECT
   public:

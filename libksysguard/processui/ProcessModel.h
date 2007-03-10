@@ -42,7 +42,7 @@ namespace KSysGuard {
 
 extern KApplication* Kapp;
 
-class ProcessModel : public QAbstractItemModel
+class KDEUI_EXPORT ProcessModel : public QAbstractItemModel
 {
 	Q_OBJECT
 		
