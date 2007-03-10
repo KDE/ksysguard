@@ -73,8 +73,8 @@ void testProcess::testProcessesTreeStructure() {
 		QCOMPARE(countNumChildren(process), process->numChildren);
 
                 for(int i =0; i < process->children.size(); i++) {
-			QVERIFY(process->children[i]->parent);
-			QCOMPARE(process->children[i]->parent, process);
+			QVERIFY(process->children[i]->tree_parent);
+			QCOMPARE(process->children[i]->tree_parent, process);
 		}
 	}
 
@@ -92,7 +92,7 @@ void testProcess::testProcessesModification() {
 	QVERIFY(processes[1]->children[0]);
 	QVERIFY(processes[1]->children[1]);
 	kDebug() << processes[1]->numChildren << endl;
-	processes[1]->children[0]->parent = processes[1]->children[1];
+	processes[1]->children[0]->tree_parent = processes[1]->children[1];
 	processes[1]->children[1]->children.append(processes[1]->children[0]);
 	processes[1]->children[1]->numChildren++;
 	processes[1]->numChildren--;
