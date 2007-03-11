@@ -21,13 +21,7 @@
 
 #include <klocale.h>
 
-#include <QFile>
-#include <QDir>
-#include <QHash>
 #include <QSet>
-#include <QMutableSetIterator>
-#include <QByteArray>
-#include <QTextStream>
 
 #include <sys/param.h>
 #include <sys/sysctl.h>
