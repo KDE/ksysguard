@@ -244,7 +244,6 @@ void Processes::updateAllProcesses( )
 void Processes::deleteProcess(long pid)
 {
     Q_ASSERT(pid > 0);
-    kDebug() << "Deleting " << pid << endl;
     Process *process = d->mProcesses.value(pid);
     
     emit beginRemoveProcess(process);
