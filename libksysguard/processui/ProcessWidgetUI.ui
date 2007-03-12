@@ -30,13 +30,13 @@
      <item>
       <widget class="KLineEdit" name="txtFilter" >
        <property name="styleSheet" >
-        <string>QLineEdit { padding-right:32; }</string>
+        <string>QLineEdit { padding-right: 16; }</string>
        </property>
        <property name="urlDropsEnabled" >
         <bool>false</bool>
        </property>
        <property name="clickMessage" >
-        <string>Quick search</string>
+        <string> Quick search</string>
        </property>
        <property name="showClearButton" stdset="0" >
         <bool>true</bool>
@@ -100,7 +100,7 @@
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
      <property name="rootIsDecorated" >
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="uniformRowHeights" >
       <bool>true</bool>
@@ -112,7 +112,7 @@
       <bool>true</bool>
      </property>
      <property name="animated" >
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="allColumnsShowFocus" >
       <bool>true</bool>
