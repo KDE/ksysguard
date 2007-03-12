@@ -51,6 +51,7 @@ namespace KSysGuard
       inline bool readProcStat(long pid, Process *process);
       inline bool readProcStatm(long pid, Process *process);
       inline bool readProcCmdline(long pid, Process *process);
+      QFile mFile;
     };
 ProcessesLocal::ProcessesLocal() : d(new Private())
 {
@@ -59,15 +60,15 @@ ProcessesLocal::ProcessesLocal() : d(new Private())
 
 bool ProcessesLocal::Private::readProcStatus(long pid, Process *process)
 {
-    QFile file(QString("/proc/%1/status").arg(pid));
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    mFile.setFileName(QString("/proc/%1/status").arg(pid));
+    if(!mFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;      /* process has terminated in the meantime */
 
     process->uid = 0;
     process->gid = 0;
     process->tracerpid = 0;
 
-    QTextStream in(&file);
+    QTextStream in(&mFile);
     QString line = in.readLine();
     while (!line.isNull()) {
 	if(line.startsWith( "Name:")) {
@@ -82,31 +83,31 @@ bool ProcessesLocal::Private::readProcStatus(long pid, Process *process)
         line = in.readLine();
     }
 
-    file.close();
+    mFile.close();
     return true;
 }
 
 long ProcessesLocal::getParentPid(long pid) {
     Q_ASSERT(pid != 0);
-    QFile file(QString("/proc/%1/stat").arg(pid));
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    d->mFile.setFileName(QString("/proc/%1/stat").arg(pid));
+    if(!d->mFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return 0;      /* process has terminated in the meantime */
 
-    QTextStream in(&file);
+    QTextStream in(&d->mFile);
 
     QByteArray ignore;
     long long ppid = 0;
     in >> ignore >> ignore >> ignore >> ppid;
+    d->mFile.close();
     return ppid;
 }
 
 bool ProcessesLocal::Private::readProcStat(long pid, Process *ps)
 {
-    QFile file(QString("/proc/%1/stat").arg(pid));
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    mFile.setFileName(QString("/proc/%1/stat").arg(pid));
+    if(!mFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;      /* process has terminated in the meantime */
-
-    QTextStream in(&file);
+    QTextStream in(&mFile);
 
     QByteArray ignore;
     QString status;
@@ -122,7 +123,7 @@ bool ProcessesLocal::Private::readProcStat(long pid, Process *ps)
     ps->vmSize /= 1024; /* convert to KiB */
 
     if(in.status() != QTextStream::Ok) {
-        file.close();
+        mFile.close();
 	return false;  //something went horribly wrong
     }
 
@@ -150,48 +151,48 @@ bool ProcessesLocal::Private::readProcStat(long pid, Process *ps)
          break;
     }
 
-    file.close();
+    mFile.close();
     return true;
 }
 
 bool ProcessesLocal::Private::readProcStatm(long pid, Process *process)
 {
-    QFile file(QString("/proc/%1/statm").arg(pid));
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    mFile.setFileName(QString("/proc/%1/statm").arg(pid));
+    if(!mFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;      /* process has terminated in the meantime */
 
-    QTextStream in(&file);
+    QTextStream in(&mFile);
 
     QByteArray ignore;
     unsigned long shared;
     in >> ignore >> ignore >> shared;
     if(in.status() != QTextStream::Ok) {
-        file.close();
+        mFile.close();
         return false;  //something went horribly wrong
     }
     
     /* we use the rss - shared  to find the amount of memory just this app uses */
     process->vmURSS = process->vmRSS - (shared * sysconf(_SC_PAGESIZE) / 1024);
 
-    file.close();
+    mFile.close();
     return true;
 }
 
 
 bool ProcessesLocal::Private::readProcCmdline(long pid, Process *process)
 {
-    QFile file(QString("/proc/%1/cmdline").arg(pid));
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    mFile.setFileName(QString("/proc/%1/cmdline").arg(pid));
+    if(!mFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;      /* process has terminated in the meantime */
 
-    QTextStream in(&file);
+    QTextStream in(&mFile);
     process->command = in.readAll();
 
     //cmdline seperates parameters with the NULL character
     process->command.replace('\0', ' ');
     process->command = process->command.trimmed();
 
-    file.close();
+    mFile.close();
     return true;
 }
 bool ProcessesLocal::updateProcessInfo( long pid, Process *process)
