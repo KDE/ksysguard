@@ -55,7 +55,9 @@ namespace KSysGuard
       Process mFakeProcess; //A fake process with pid 0 just so that even init points to a parent
 
       ProcessesBase *processesBase; //The OS specific code to get the process information 
-      bool mFlatMode;
+      bool mFlatMode;     //Whether all the processes are being shown at the same level, or as a heirachy
+      QTime mLastUpdated; //This is the time we last updated.  Used to calculate cpu usage.
+      long mElapsedTimeCentiSeconds; //The number of centiseconds  (10th of a second) that passed since the last update
   };
 
   class Processes::StaticPrivate
@@ -139,6 +141,10 @@ bool Processes::updateProcess( Process *ps, long ppid, bool onlyReparent)
     Process old_process(*ps);
     bool success = d->processesBase->updateProcessInfo(ps->pid, ps);
 
+    if(old_process.userTime != 0 && d->mElapsedTimeCentiSeconds!= 0) {  //Update the user usage and sys usage
+      ps->userUsage = (ps->userTime - old_process.userTime)*100 / d->mElapsedTimeCentiSeconds;
+      ps->sysUsage = (ps->sysTime - old_process.sysTime)*100 / d->mElapsedTimeCentiSeconds;
+    }
 
     if(
        ps->name != old_process.name ||
@@ -146,7 +152,8 @@ bool Processes::updateProcess( Process *ps, long ppid, bool onlyReparent)
        ps->status != old_process.status ||
        ps->uid != old_process.uid ) {
 
-        emit processChanged(ps, false);
+       emit processChanged(ps, false);
+
     } else if(
        ps->vmSize != old_process.vmSize ||
        ps->vmRSS != old_process.vmRSS ||
@@ -156,7 +163,7 @@ bool Processes::updateProcess( Process *ps, long ppid, bool onlyReparent)
        ps->totalUserUsage != old_process.totalUserUsage ||
        ps->totalSysUsage != old_process.totalSysUsage ) {
 
-        emit processChanged(ps, true);
+       emit processChanged(ps, true);
     }
 
     return success;
@@ -214,8 +221,10 @@ void Processes::updateAllProcesses( )
 
     QSet<long> beingProcessed(d->mToBeProcessed); //keep a copy so that we can replace mProcessedLastTime with this at the end of this function
 
-    long pid;
+    d->mElapsedTimeCentiSeconds = d->mLastUpdated.restart() / 10;
+    d->mLastUpdated.start();
 
+    long pid;
     {
       QMutableSetIterator<long> i(d->mToBeProcessed);
       while( i.hasNext()) {

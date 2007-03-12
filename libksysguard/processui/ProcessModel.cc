@@ -469,8 +469,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 						"User CPU usage: %3%<br/>System CPU usage: %4%")
 						.subs(process->translatedStatus())
 						.subs(getStatusDescription(process->status))
-						.subs(process->userUsage, 0, 'f', 2)
-						.subs(process->sysUsage, 0, 'f', 2)
+						.subs(process->userUsage)
+						.subs(process->sysUsage)
 						.toString();
 
 			if(process->numChildren > 0) {
@@ -507,9 +507,9 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			else {
 				tooltip = i18n("<qt>This is the amount of real physical memory that this process is using by itself.  It does not include any swapped out memory, nor the code size of its shared libraries.  This is often the most useful figure to judge the memory use of a program.<br/><br/>");
 				if(mMemTotal != -1)
-					tooltip += i18n("Memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize(process->vmURSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), process->vmURSS*100/mMemTotal);
+					tooltip += i18n("Memory usage: %1 out of %2  (%3 %)<br/>", KGlobal::locale()->formatByteSize(process->vmURSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), process->vmURSS*100/mMemTotal);
 				else
-					tooltip += i18n("Memory usage: %1", KGlobal::locale()->formatByteSize(process->vmURSS * 1024));
+					tooltip += i18n("Memory usage: %1<br/>", KGlobal::locale()->formatByteSize(process->vmURSS * 1024));
 			}
 			if(mMemTotal != -1)
 				tooltip += i18n("RSS Memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize(process->vmRSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), process->vmRSS*100/mMemTotal);

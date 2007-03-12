@@ -54,10 +54,10 @@ namespace KSysGuard
         long long gid; ///The group id that the process is running as
         long long tracerpid; ///If this is being debugged, this is the process that is debugging it
 	QString tty; /// The name of the tty the process owns
-        long userTime; ///The time, in 100ths of a second, spent in total on user calls. -1 if not known
-        long sysTime;  ///The time, in 100ths of a second, spent in total on system calls.  -1 if not known
-        float userUsage; ///Percentage (0 to 100)
-        float sysUsage;  ///Percentage (0 to 100)
+        long long userTime; ///The time, in 100ths of a second, spent in total on user calls. -1 if not known
+        long long sysTime;  ///The time, in 100ths of a second, spent in total on system calls.  -1 if not known
+        Q_UINT8 userUsage; ///Percentage (0 to 100)
+        Q_UINT8 sysUsage;  ///Percentage (0 to 100)
         double totalUserUsage; ///Percentage (0 to 100) from the sum of itself and all its children recursively.  If there's no children, it's equal to userUsage
         double totalSysUsage; ///Percentage (0 to 100) from the sum of itself and all its children recursively. If there's no children, it's equal to sysUsage
         unsigned long numChildren; ///Number of children recursively that this process has.  From 0+
