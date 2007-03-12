@@ -94,6 +94,11 @@ public:
 	 */
 	void setIsLocalhost(bool isLocalhost);
 
+	/** The headings in the model.  The order here is the order that they are shown in.  If you change this, make sure you also change the 
+	 *  setup header function
+	 */
+	enum { HeadingName=0, HeadingUser, HeadingCPUUsage, HeadingVmSize, HeadingMemory, HeadingSharedMemory, HeadingCommand };	
+
 public slots:
 	void setShowTotals(int totals);
 private slots:
@@ -171,10 +176,6 @@ private:
 	mutable QHash<long long, int> mUidCanLogin; 
 
 
-	/** The headings in the model.  The order here is the order that they are shown in.  If you change this, make sure you also change the 
-	 *  setup header function
-	 */
-	enum { HeadingName=0, HeadingUser, HeadingCPUUsage, HeadingVmSize, HeadingMemory, HeadingSharedMemory, HeadingCommand };	
 	/** A translated list of headings (column titles) in the order we want to display them. Used in headerData() */
 	QStringList mHeadings;
 	

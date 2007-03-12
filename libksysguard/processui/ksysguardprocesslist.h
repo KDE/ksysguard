@@ -96,24 +96,12 @@ private:
 	/** The context menu when you right click on a process */
 	QMenu *mProcessContextMenu;
 	
-	/** We do not want to send out a "ps" command before we have the results from "ps?" so this is set to false until we get a result from ps?
-	 */
-	bool mReadyForPs;
-	
 	/** The amount of real physical memory being used in total, in kilobytes */
 	long mMemUsed;
 	/** The amount of free physical memory, in kilobytes */
 	long mMemFree;
 	/** The total amount of physical memory in the machine, in kilobytes */
 	long mMemTotal;
-
-	/** When we restore the settings, we remember which column to sort by here.
-	 *  Then when columns are actually added, we can set the column to sort by.
-	 */
-	int mInitialSortCol;
-	/** Same as mInitialSortCol but for the direction to sort
-	 */
-        bool mInitialSortInc;
 
 	/** Whether we are in simple mode.  Must be kept in sync with the cmbFilter and mModel.mSimple
 	 */

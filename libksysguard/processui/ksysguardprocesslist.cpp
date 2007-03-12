@@ -94,9 +94,6 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 {
 	mKillProcess = 0;
 	mSimple = true;
-	mInitialSortCol = 1;
-        mInitialSortInc = false;
-	mReadyForPs = false;
 	mMemFree = -1;
 	mMemUsed = -1;
 	mMemTotal = -1;
@@ -133,6 +130,22 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	mUi->chkShowTotals->setVisible(!mSimple);
 	setMinimumSize(sizeHint());
 
+	/*  Hide the vm size column by default since it's not very useful */
+	mUi->treeView->header()->hideSection(ProcessModel::HeadingVmSize);
+	mFilterModel.setFilterKeyColumn(0);
+
+	//Process names can have mixed case. Make the filter case insensitive.
+	mFilterModel.setFilterCaseSensitivity(Qt::CaseInsensitive);
+
+	//Logical column 0 will always be the tree bit with the process name.  We expand this automatically in code,
+	//so don't let the user change it
+	mUi->treeView->header()->setResizeMode(0, QHeaderView::ResizeToContents);
+	mUi->treeView->header()->setStretchLastSection(true);
+
+	//Sort by username by default
+	mUi->treeView->sortByColumn(ProcessModel::HeadingUser, Qt::AscendingOrder);
+	mFilterModel.sort(ProcessModel::HeadingUser, Qt::AscendingOrder);
+	mFilterModel.setDynamicSortFilter(true);
 
 	mUpdateTimer = new QTimer(this);
 	mUpdateTimer->setSingleShot(true);
@@ -246,6 +259,7 @@ void KSysGuardProcessList::resizeEvent(QResizeEvent* ev)
 void
 KSysGuardProcessList::updateList()
 {
+//kDebug() << "Ready to update the list " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 	mModel.update();
 	expandInit(); //This will expand the init process
 	mUpdateTimer->start(2000);
@@ -341,90 +355,6 @@ KSysGuardProcessList::reniceProcess(int pid, int niceValue)
 void
 KSysGuardProcessList::answerReceived(int id, const QList<QByteArray>& answer)
 {
-	/* We received something, so the sensor is probably ok. */
-	sensorError(id, false);
-	switch (id)
-	{
-	case Ps_Info_Command:
-	{
-
-		kDebug() << "PS_INFO_COMMAND: Received ps info at " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
-		/* We have received the answer to a ps? command that contains
-		 * the information about the table headers. */
-		if (answer.count() != 2)
-		{
-			kDebug (1215) << "KSysGuardProcessList::answerReceived(Ps_Info_Command)"
-				  "wrong number of lines [" <<  answer << "]" << endl;
-			sensorError(id, true);
-			return;
-		}
-		QList<QByteArray> header = answer[0].split('\t');
-		if(answer[1].count() != header.count() *2 -1) {
-			kDebug(1215) << "KSysGuardProcessList::answerReceived.  Invalid data from a client - column type and data don't match in number.  Discarding" << endl;
-			sensorError(id, true);
-			return;
-		}
-		//answer.at(1) is the column type is in the form "d\tf\tS\t" etc
-		if(!mModel.setHeader(header, answer[1])) {
-			sensorError(id,true);
-			return;
-		}
-		int vmSizeColumn = mModel.vmSizeColumn();
-		if(vmSizeColumn >=0)
-			mUi->treeView->header()->hideSection(vmSizeColumn);
-		mFilterModel.setFilterKeyColumn(0);
-		//Process names can have mixed case. Make the filter case insensitive.
-		mFilterModel.setFilterCaseSensitivity(Qt::CaseInsensitive);
-		//Logical column 0 will always be the tree bit with the process name.  We expand this automatically in code,
-		//so don't let the user change it
-		mUi->treeView->header()->setResizeMode(0, QHeaderView::ResizeToContents);
-		//set the last section to stretch to take up all the room.  We also set this again in xres_info to be sure
-		mUi->treeView->header()->setStretchLastSection(true);
-		//When we loaded the settings, we set mInitialSort* to the column and direction to sort in/
-		//Since we have just added the columns no, we should set the sort now.
-		
-		mUi->treeView->sortByColumn(mInitialSortCol, (mInitialSortInc)?Qt::AscendingOrder:Qt::DescendingOrder);
-		mFilterModel.sort(mInitialSortCol,(mInitialSortInc)?Qt::AscendingOrder:Qt::DescendingOrder);
-		mFilterModel.setDynamicSortFilter(true);
-		kDebug() << "We have added the columns and now setting the sort by col " << mInitialSortCol << endl;
-
-		kDebug() << "PS_INFO_COMMAND: We are now ready for ps.  " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
-		mReadyForPs = true;
-//		sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command);
-
-		break;
-	}
-	case Ps_Command:
-	{
-		kDebug() << "We received ps data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
-		/* We have received the answer to a ps command that contains a
-		 * list of processes with various additional information. */
-		if(!mReadyForPs) {
-			sendRequest(sensors().at(0)->hostName(), "ps", Ps_Command); //send another request - we will be ready next time, honest!
-			kDebug(1215) << "Process data arrived before we were ready for it. hmm" << endl;
-			break;
-		}
-		QList< QList<QByteArray> > data;
-		QListIterator<QByteArray> i(answer);
-		while(i.hasNext()) {
-			QByteArray row = i.next();
-			if(!row.trimmed().isEmpty())
-				data << row.split('\t');
-		}
-		if(data.isEmpty()) {
-			kDebug(1215) << "No data in the answer from 'ps'" << endl;
-			break;
-		}
-		//We are now ready to send this data to the model.  
-		if(!mModel.setData(data)) {
-			sensorError(id, true);
-			return;
-		}
-		expandInit(); //This will expand the init process
-
-//		kDebug() << "We finished with ps data." << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
-		break;
-	}
 	case Kill_Command:
 	{
 		// we should get a reply like  {"0\t3230"}  - i.e. just one string containing the error code and the pid
@@ -571,41 +501,6 @@ KSysGuardProcessList::answerReceived(int id, const QList<QByteArray>& answer)
 //			KSGRD::SensorMgr->notify(i18n("Internal communication problem."));
 			break;
 		}
-		break;
-	}
-	case XRes_Info_Command:
-	{
-		//Note: It makes things easier to just send and accept the xres info command even when in simple mode
-		kDebug() << "XRES INFO" << endl;
-		if(mXResHeadingStart != -1) break; //Already has xres info
-		if (answer.count() != 2)
-		{
-//			kDebug (1215) << "KSysGuardProcessList::answerReceived(XRes_Info_Command)"
-//				  "wrong number of lines: " <<  answer.count() <<  endl;
-//			sensorError(id, true);
-			return;
-		}
-		QList<QByteArray> header = answer.at(0).split('\t');
-		//answer[1] is the column type.  it looks like "f\tf\td"
-		if(answer[1].size() != header.count()*2-1) {
-//			kDebug(1215) << "KSysGuardProcessList::answerReceived.  Invalid data from a client - column type and data don't match in number. " << answer[1].size() << "," << header.count() << "  Discarding" << endl;
-//			sensorError(id, true);
-			return;
-		}
-		mXResHeadingStart = mUi->treeView->header()->count();
-		if(!mModel.setXResHeader(header)) {
-//			sensorError(id,true);
-			mXResHeadingStart = -1;
-			return;
-		}
-		mXResHeadingEnd = mUi->treeView->header()->count() -1;
-	        for(int i = mXResHeadingStart; i <= mXResHeadingEnd; i++) {
-	                if(mSimple)
-				mUi->treeView->header()->hideSection(i);
-			else
-				mUi->treeView->header()->showSection(i);
-		}
-		mUi->treeView->header()->setStretchLastSection(true);
 		break;
 	}
 	case MemFree_Command:
