@@ -81,8 +81,6 @@ void ProcessModel::update() {
 
 QString ProcessModel::getStatusDescription(KSysGuard::Process::ProcessStatus status) const
 {
-	        typedef enum { Running, Sleeping, DiskSleep, Zombie, Stopped, Paging, OtherStatus } ProcessStatus;
-
 	switch( status) {
 		case KSysGuard::Process::Running:
 			return i18n("- Process is doing some work");
