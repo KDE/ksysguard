@@ -189,6 +189,8 @@ private:
 	long mMemTotal; /// the total amount of physical memory in the machine.  We can used this to determine the percentage of memory an app is using
 
 	KSysGuard::Processes *mProcesses;  ///The processes instance
+
+	bool mIsChangingLayout;
 };
 
 #endif

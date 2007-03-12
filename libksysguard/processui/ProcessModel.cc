@@ -51,6 +51,7 @@ ProcessModel::ProcessModel(QObject* parent)
 	mElapsedTimeCentiSeconds = 0;
 	
 	mShowChildTotals = true;
+	mIsChangingLayout = false;
 
 	setupProcesses();
 	setupHeader();
@@ -75,7 +76,15 @@ void ProcessModel::setupProcesses() {
 }
 
 void ProcessModel::update() {
+
+	kDebug() << "update all processes: " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 	mProcesses->updateAllProcesses();
+	if(mIsChangingLayout) {
+		mIsChangingLayout = false;
+		emit layoutChanged();
+	}
+
+	kDebug() << "finished:             " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 }
 
 QString ProcessModel::getStatusDescription(KSysGuard::Process::ProcessStatus status) const
@@ -167,6 +176,12 @@ void ProcessModel::processChanged(KSysGuard::Process *process, bool onlyCpuOrMem
 void ProcessModel::beginInsertRow( KSysGuard::Process *process)
 {
 	Q_ASSERT(process);
+
+	if(mIsChangingLayout) {
+		mIsChangingLayout = false;
+		emit layoutChanged();
+	}
+
 	int row = process->tree_parent->children.count();
 	QModelIndex parentModelIndex = getQModelIndex(process->tree_parent, 0);
 
@@ -178,6 +193,11 @@ void ProcessModel::endInsertRow() {
 }
 void ProcessModel::beginRemoveRow( KSysGuard::Process *process )
 {
+	if(mIsChangingLayout) {
+		mIsChangingLayout = false;
+		emit layoutChanged();
+	}
+
 	Q_ASSERT(process);
 	Q_ASSERT(process->pid > 0);
 	int row = process->tree_parent->children.indexOf(process);
@@ -198,7 +218,10 @@ void ProcessModel::endRemoveRow()
 
 void ProcessModel::beginMoveProcess(KSysGuard::Process *process, KSysGuard::Process *new_parent)
 {
-	emit layoutAboutToBeChanged ();
+	if(!mIsChangingLayout) {
+		emit layoutAboutToBeChanged ();
+		mIsChangingLayout = true;
+	}
 	int current_row = process->tree_parent->children.indexOf(process);
 	int new_row = new_parent->children.count();
 	Q_ASSERT(current_row != -1);
@@ -213,7 +236,6 @@ void ProcessModel::beginMoveProcess(KSysGuard::Process *process, KSysGuard::Proc
 }
 void ProcessModel::endMoveRow() 
 {
-	emit layoutChanged();
 }
 
 
@@ -254,6 +276,11 @@ void ProcessModel::setSimpleMode(bool simple)
 { 
 	mSimple = simple;
 	mProcesses->setFlatMode(simple);
+	if(mIsChangingLayout) {
+		mIsChangingLayout = false;
+		emit layoutChanged();
+	}
+
 }
 
 bool ProcessModel::canUserLogin(long long uid ) const

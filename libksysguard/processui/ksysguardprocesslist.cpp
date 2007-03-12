@@ -259,7 +259,6 @@ void KSysGuardProcessList::resizeEvent(QResizeEvent* ev)
 void
 KSysGuardProcessList::updateList()
 {
-//kDebug() << "Ready to update the list " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 	mModel.update();
 	expandInit(); //This will expand the init process
 	mUpdateTimer->start(2000);
