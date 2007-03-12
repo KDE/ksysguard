@@ -72,7 +72,7 @@ public:
 	/** Return a string with the pid of the process and the name of the process.  E.g.  13343: ksyguard
 	 */
 	QString getStringForProcess(KSysGuard::Process *process) const;
-	inline KSysGuard::Process *getProcess(long long pid) { return mPidToProcess[pid]; }
+	KSysGuard::Process *getProcess(long long pid);
         
 	/** Returns whether this user can log in or not.
 	 *  @see mUidCanLogin
@@ -187,12 +187,6 @@ private:
 	long mElapsedTimeCentiSeconds; ///Time elapsed since we last update the processes. Calculated from mTime
 
 	long mMemTotal; /// the total amount of physical memory in the machine.  We can used this to determine the percentage of memory an app is using
-
-	/** For a given process id, it returns a Process structure.
-	 *  When a process is made, it will be stored here.  If the process is removed for here, it must be deleted to avoid leaking.
-	 *  @see class KSysGuard::Process
-	 */
-	QHash<long, KSysGuard::Process *> mPidToProcess; ///This is filled in from KSysGuard::Processes::getInstance()->getProcesses();
 
 	KSysGuard::Processes *mProcesses;  ///The processes instance
 };

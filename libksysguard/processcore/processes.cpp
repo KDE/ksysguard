@@ -97,6 +97,10 @@ Processes::Processes(ProcessesBase *processesBase) : d(new Private())
     d->processesBase = processesBase;
 }
 
+Process *Processes::getProcess(long pid)
+{
+	return d->mProcesses.value(pid);
+}
 bool Processes::updateProcess( Process *ps, long ppid, bool onlyReparent)
 {
     Process *parent = d->mProcesses.value(ppid);
@@ -169,7 +173,7 @@ bool Processes::addProcess(long pid, long ppid)
     else
         ps->tree_parent = parent;
 
-    emit beginAddProcess(ps->tree_parent);
+    emit beginAddProcess(ps);
 
     d->mProcesses.insert(pid, ps);
     ps->tree_parent->children.append(ps);
@@ -204,7 +208,7 @@ bool Processes::updateOrAddProcess( long pid)
 	return updateProcess(ps, ppid);
 }
 
-bool Processes::updateAllProcesses( )
+void Processes::updateAllProcesses( )
 {
     d->mToBeProcessed = d->processesBase->getAllPids();
 
@@ -233,15 +237,9 @@ bool Processes::updateAllProcesses( )
     }
     
     d->mProcessedLastTime = beingProcessed;  //update the set for next time this function is called 
-    return true;
+    return;
 }
 
-
-QHash<long, Process *> Processes::getProcesses()
-{
-    updateAllProcesses();
-    return d->mProcesses;
-}
 
 void Processes::deleteProcess(long pid)
 {

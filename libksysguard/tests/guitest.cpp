@@ -34,11 +34,10 @@ void testGuiProcess::testGUI() {
     QTime t;
     t.start();
 
-    for(int i =0; i < 100; i++) {
+    for(int i =0; i < 10; i++) {
       processlist.updateList();
-      processlist.repaint();
     }
-    kDebug() << t.elapsed() << endl;
+    kDebug() << "time taken: " << t.elapsed() << "ms" << endl;
 }
 
 QTEST_KDEMAIN(testGuiProcess, GUI)

@@ -71,12 +71,11 @@ void ProcessModel::setupProcesses() {
 			       SLOT( beginMoveProcess(KSysGuard::Process *, KSysGuard::Process *)));
         connect( mProcesses, SIGNAL( endMoveProcess()), this, SLOT(endMoveRow()));
 
-	mPidToProcess = mProcesses->getProcesses();
-	Q_ASSERT(mPidToProcess[0]);
+	update();
 }
 
 void ProcessModel::update() {
-	mPidToProcess = mProcesses->getProcesses();
+	mProcesses->updateAllProcesses();
 }
 
 QString ProcessModel::getStatusDescription(KSysGuard::Process::ProcessStatus status) const
@@ -102,7 +101,7 @@ int ProcessModel::rowCount(const QModelIndex &parent) const
 		if(parent.column() != 0) return 0;  //For a treeview we say that only the first column has children
 		process = reinterpret_cast< KSysGuard::Process * > (parent.internalPointer()); //when parent is invalid, it must be the root level which we set as 0
 	} else
-		process = mPidToProcess[0];
+		process = mProcesses->getProcess(0);
 	Q_ASSERT(process);
 	int num_rows = process->children.count();
 	return num_rows;
@@ -120,7 +119,7 @@ bool ProcessModel::hasChildren ( const QModelIndex & parent = QModelIndex() ) co
 		if(parent.column() != 0) return false;  //For a treeview we say that only the first column has children
 		process = reinterpret_cast< KSysGuard::Process * > (parent.internalPointer()); //when parent is invalid, it must be the root level which we set as 0
 	} else {
-		process = mPidToProcess[0];
+		process = mProcesses->getProcess(0);
 	}
 	Q_ASSERT(process);
 	bool has_children = !process->children.isEmpty();
@@ -138,7 +137,7 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 	if(parent.isValid()) //not valid for init, and init has ppid of 0
 		parent_process = reinterpret_cast< KSysGuard::Process * > (parent.internalPointer());
 	else
-		parent_process = mPidToProcess[0];
+		parent_process = mProcesses->getProcess(0);
 	Q_ASSERT(parent_process);
 
 	if(parent_process->children.count() > row)
@@ -165,14 +164,13 @@ void ProcessModel::processChanged(KSysGuard::Process *process, bool onlyCpuOrMem
 	}
 }
 
-void ProcessModel::beginInsertRow( KSysGuard::Process *parent)
+void ProcessModel::beginInsertRow( KSysGuard::Process *process)
 {
-	Q_ASSERT(parent);
-	int row = parent->children.count();
-	QModelIndex parentModelIndex = getQModelIndex(parent, 0);
+	Q_ASSERT(process);
+	int row = process->tree_parent->children.count();
+	QModelIndex parentModelIndex = getQModelIndex(process->tree_parent, 0);
 
 	//Only here can we actually change the model.  First notify the view/proxy models then modify
-
 	beginInsertRows(parentModelIndex, row, row);
 }
 void ProcessModel::endInsertRow() {
@@ -409,8 +407,9 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
 		QString tracer;
 		if(process->tracerpid > 0) {
-			if(mPidToProcess.contains(process->tracerpid)) { //it is possible for this to be not the case in certain race conditions
-				KSysGuard::Process *process_tracer = mPidToProcess[process->tracerpid];
+			KSysGuard::Process *process_tracer = mProcesses->getProcess(process->tracerpid);
+			if(process_tracer) { //it is possible for this to be not the case in certain race conditions
+				KSysGuard::Process *process_tracer = mProcesses->getProcess(process->tracerpid);
 				tracer = i18nc("tooltip. name,pid ","This process is being debugged by %1 (%2)", process_tracer->name, (long int)process->tracerpid);
 			}
 		}
@@ -661,6 +660,9 @@ void ProcessModel::setupHeader() {
 	endInsertColumns();
 }
 
+KSysGuard::Process *ProcessModel::getProcess(long long pid) {
+	return mProcesses->getProcess(pid);
+}
 void ProcessModel::setShowTotals(int totals)  //slot
 {
 #if 0 

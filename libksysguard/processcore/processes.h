@@ -63,14 +63,17 @@ namespace KSysGuard
 	 *  This is reference counted - once all the instances are returned, the object is deleted
 	 */
         static void returnInstance(QString host = QString::null);
-	/**
-	 *  Retrieve the list of processes.
-	 *  The key to the hash is the pid of the process.
-	 */
-	QHash<long, Process *> getProcesses();
 
 	/**
-	 *  Get information for one specific process
+	 *  Update all the process information.  After calling this, /proc or equivalent is scanned and 
+	 *  the signals processChanged, etc  are emitted.
+	 */
+        void updateAllProcesses();
+	/**
+	 *  Return information for one specific process.  call getProcess(0) to get the fake process used as the
+	 *  top most parent for all processes.
+	 *  This doesn't fetch any new information and so returns almost instantly.  Call updateAllProcesses()
+	 *  to actually fetch the process information.
 	 */
 	Process *getProcess(long pid);
 
@@ -125,9 +128,9 @@ namespace KSysGuard
 	 */
         void processChanged( KSysGuard::Process *process, bool onlyCpuOrMem);
         /**
-	 *  This indicates we are about to add a process in the model.
+	 *  This indicates we are about to add a process in the model.  The process already has the pid, ppid and tree_parent set up.
 	 */
-	void beginAddProcess( KSysGuard::Process *parent);
+	void beginAddProcess( KSysGuard::Process *process);
         /**
 	 *  We have finished inserting a process
 	 */
@@ -156,7 +159,6 @@ namespace KSysGuard
 	class StaticPrivate;
 	static StaticPrivate *d2;
     private:
-        bool updateAllProcesses();
         bool updateOrAddProcess( long pid);
         inline void deleteProcess(long pid);
         bool updateProcess( Process *process, long ppid, bool onlyReparent = false);
