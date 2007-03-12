@@ -2,8 +2,10 @@
 Encoding=UTF-8
 Name=System Monitor
 Name[el]=Επόπτης συστήματος
+Name[nds]=Systeemkieker
 Name[x-test]=xxSystem Monitorxx
 Comment=An applet which monitors system information
+Comment[nds]=En Lüttprogramm, dat de Systeeminformatschonen beluert
 Comment[x-test]=xxAn applet which monitors system informationxx
 Icon=ksysguard
 X-KDE-Library=sysguard_panelapplet

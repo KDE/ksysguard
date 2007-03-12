@@ -2,6 +2,7 @@
 Encoding=UTF-8
 Name=System Monitor
 Name[el]=Επόπτης συστήματος
+Name[nds]=Systeemkieker
 Name[x-test]=xxSystem Monitorxx
 Exec=ksysguard %U
 Icon=ksysguard

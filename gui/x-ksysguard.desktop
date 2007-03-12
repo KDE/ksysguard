@@ -5,6 +5,7 @@ Encoding=UTF-8
 MimeType=application/x-ksysguard
 Comment=KDE System Monitor
 Comment[el]=Επόπτης συστήματος του KDE
+Comment[nds]=KDE-Systeemkieker
 Comment[x-test]=xxKDE System Monitorxx
 Icon=ksysguard
 Type=MimeType
