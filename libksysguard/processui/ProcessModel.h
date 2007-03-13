@@ -183,8 +183,8 @@ private:
 	bool mShowChildTotals; ///If set to true, a parent will return the CPU usage of all its children recursively
 
 	bool mSimple; ///In simple mode, the model returns everything as flat, with no icons, no xres etc.  This is set by changing cmbFilter
-	QTime mTime; ///Time that we last updated the processes.  This is used to turn process user/sys time into user/sys %
-	long mElapsedTimeCentiSeconds; ///Time elapsed since we last update the processes. Calculated from mTime
+
+	QTime mLastUpdated; ///Time that we last updated the processes.
 
 	long mMemTotal; /// the total amount of physical memory in the machine.  We can used this to determine the percentage of memory an app is using
 

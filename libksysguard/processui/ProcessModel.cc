@@ -48,7 +48,6 @@ ProcessModel::ProcessModel(QObject* parent)
 	mSimple = true;
 	mIsLocalhost = true;
 	mMemTotal = -1;
-	mElapsedTimeCentiSeconds = 0;
 	
 	mShowChildTotals = true;
 	mIsChangingLayout = false;
@@ -76,14 +75,12 @@ void ProcessModel::setupProcesses() {
 }
 
 void ProcessModel::update() {
-
 	kDebug() << "update all processes: " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 	mProcesses->updateAllProcesses();
 	if(mIsChangingLayout) {
 		mIsChangingLayout = false;
 		emit layoutChanged();
 	}
-
 	kDebug() << "finished:             " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 }
 
@@ -393,12 +390,10 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				if(mShowChildTotals && !mSimple) total = process->totalUserUsage + process->totalSysUsage;
 				else total = process->userUsage + process->sysUsage;
 
-				if(total <= 0.001 && process->status != KSysGuard::Process::Sleeping && process->status != KSysGuard::Process::Running)
+				if(total < 1 && process->status != KSysGuard::Process::Sleeping && process->status != KSysGuard::Process::Running)
 					return process->translatedStatus();  //tell the user when the process is a zombie or stopped
-				if(total <= 0.001)
+				if(total < 1)
 					return "";
-				if(total > 100) total = 100;
-				
 
 				return QString::number(total, 'f', (total>=1)?0:1) + '%';
 			}
@@ -484,11 +479,11 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			}
 			if(process->userTime > 0) 
 				tooltip += ki18n("<br/><br/>CPU time spent running as user: %1 seconds")
-						.subs(process->userTime / 10.0, 0, 'f', 1)
+						.subs(process->userTime / 100.0, 0, 'f', 1)
 						.toString();
 			if(process->sysTime > 0) 
 				tooltip += ki18n("<br/>CPU time spent running in kernel: %1 seconds")
-						.subs(process->sysTime / 10.0, 0, 'f', 1)
+						.subs(process->sysTime / 100.0, 0, 'f', 1)
 						.toString();
 
 			if(!tracer.isEmpty())
