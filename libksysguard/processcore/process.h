@@ -56,10 +56,10 @@ namespace KSysGuard
 	QString tty; /// The name of the tty the process owns
         long long userTime; ///The time, in 100ths of a second, spent in total on user calls. -1 if not known
         long long sysTime;  ///The time, in 100ths of a second, spent in total on system calls.  -1 if not known
-        Q_UINT8 userUsage; ///Percentage (0 to 100)
-        Q_UINT8 sysUsage;  ///Percentage (0 to 100)
-        double totalUserUsage; ///Percentage (0 to 100) from the sum of itself and all its children recursively.  If there's no children, it's equal to userUsage
-        double totalSysUsage; ///Percentage (0 to 100) from the sum of itself and all its children recursively. If there's no children, it's equal to sysUsage
+        int userUsage; ///Percentage (0 to 100).  It might be more than 100% on multiple cpu core systems
+        int sysUsage;  ///Percentage (0 to 100).  It might be more than 100% on multiple cpu core systems
+        int totalUserUsage; ///Percentage (0 to 100) from the sum of itself and all its children recursively.  If there's no children, it's equal to userUsage.  It might be more than 100% on multiple cpu core systems
+        int totalSysUsage; ///Percentage (0 to 100) from the sum of itself and all its children recursively. If there's no children, it's equal to sysUsage. It might be more than 100% on multiple cpu core systems
         unsigned long numChildren; ///Number of children recursively that this process has.  From 0+
         int niceLevel;      ///Niceness (-20 to 20) of this process
         long vmSize;   ///Virtual memory size in KiloBytes, including memory used, mmap'ed files, graphics memory etc,

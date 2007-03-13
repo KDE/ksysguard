@@ -477,18 +477,18 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				tooltip += ki18n("<br/>Number of children: %1<br/>Total User CPU usage: %2%<br/>"
 						"Total System CPU usage: %3%<br/>Total CPU usage: %4%")
 						.subs(process->numChildren)
-						.subs(process->totalUserUsage, 0, 'f', 2)
-						.subs(process->totalSysUsage, 0, 'f', 2)
-						.subs(process->totalUserUsage + process->totalSysUsage, 0, 'f', 2)
+						.subs(process->totalUserUsage)
+						.subs(process->totalSysUsage)
+						.subs(process->totalUserUsage + process->totalSysUsage)
 						.toString();
 			}
 			if(process->userTime > 0) 
 				tooltip += ki18n("<br/><br/>CPU time spent running as user: %1 seconds")
-						.subs(process->userTime / 100.00, 0, 'f', 1)
+						.subs(process->userTime / 10.0, 0, 'f', 1)
 						.toString();
 			if(process->sysTime > 0) 
 				tooltip += ki18n("<br/>CPU time spent running in kernel: %1 seconds")
-						.subs(process->sysTime / 100.00, 0, 'f', 1)
+						.subs(process->sysTime / 10.0, 0, 'f', 1)
 						.toString();
 
 			if(!tracer.isEmpty())
