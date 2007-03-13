@@ -45,7 +45,7 @@ namespace KSysGuard
   class Processes::Private
   {
     public:
-      Private() { processesBase = 0;  mProcesses.insert(0, &mFakeProcess); mFlatMode = true; }
+      Private() { processesBase = 0;  mProcesses.insert(0, &mFakeProcess); mFlatMode = true; mElapsedTimeCentiSeconds = -1;}
       ~Private() {;}
 
       QSet<long> mToBeProcessed;
@@ -57,7 +57,7 @@ namespace KSysGuard
       ProcessesBase *processesBase; //The OS specific code to get the process information 
       bool mFlatMode;     //Whether all the processes are being shown at the same level, or as a heirachy
       QTime mLastUpdated; //This is the time we last updated.  Used to calculate cpu usage.
-      long mElapsedTimeCentiSeconds; //The number of centiseconds  (10th of a second) that passed since the last update
+      long mElapsedTimeCentiSeconds; //The number of centiseconds  (100ths of a second) that passed since the last update
   };
 
   class Processes::StaticPrivate
@@ -230,12 +230,19 @@ bool Processes::updateOrAddProcess( long pid)
 
 void Processes::updateAllProcesses( )
 {
+    if(d->mElapsedTimeCentiSeconds == -1) {
+        //First time update has been called
+        d->mLastUpdated.start();
+	d->mElapsedTimeCentiSeconds = 0;
+    } else {
+        if(d->mLastUpdated.elapsed() < 2000) //don't update more than once every 2 seconds
+		return;
+        d->mElapsedTimeCentiSeconds = d->mLastUpdated.restart() / 10;
+    }
+
     d->mToBeProcessed = d->processesBase->getAllPids();
 
     QSet<long> beingProcessed(d->mToBeProcessed); //keep a copy so that we can replace mProcessedLastTime with this at the end of this function
-
-    d->mElapsedTimeCentiSeconds = d->mLastUpdated.restart() / 10;
-    d->mLastUpdated.start();
 
     long pid;
     {

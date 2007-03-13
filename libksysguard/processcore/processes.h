@@ -118,7 +118,10 @@ namespace KSysGuard
 	 *  rather than the usual tree heirachy.  The signals are also emitted to reorginize the tree to/from
 	 *  flat mode.
 	 *
-	 *  It's recommended to call updateAllProcesses straight after calling this so that it reorders quickly
+	 *  This will cause a lot of beginMoveProcess etc signals to be emitted.
+	 *
+	 *  IMPORTANT: Note that this will affect all the widgets using this process host in the current process.
+	 *  This is not ideal I know.
 	 */
 	void setFlatMode(bool flat);
     signals:
