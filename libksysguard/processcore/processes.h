@@ -108,22 +108,7 @@ namespace KSysGuard
 	 */
 	bool setNiceness(long pid, int priority);
 
-	/** When the tree is in flat mode the tree_parent for all the processes is set to the fake process
-	 *  rather than the usual tree heirachy.  The signals are also emitted to reorginize the tree to/from
-	 *  flat mode.
-	 */
-	bool flatMode();
-
-	/** When the tree is in flat mode the tree_parent for all the processes is set to the fake process
-	 *  rather than the usual tree heirachy.  The signals are also emitted to reorginize the tree to/from
-	 *  flat mode.
-	 *
-	 *  This will cause a lot of beginMoveProcess etc signals to be emitted.
-	 *
-	 *  IMPORTANT: Note that this will affect all the widgets using this process host in the current process.
-	 *  This is not ideal I know.
-	 */
-	void setFlatMode(bool flat);
+	QList< Process *> getAllProcesses();
     signals:
 	/** The data for a process has changed.
 	 *  if @p onlyCpuOrMem is set, only the cpu usage or memory information has been updated.  This is for optomization reasons - the cpu percentage
@@ -166,7 +151,6 @@ namespace KSysGuard
         inline void deleteProcess(long pid);
         bool updateProcess( Process *process, long ppid, bool onlyReparent = false);
         bool addProcess(long pid, long ppid);
-
     };
     Processes::StaticPrivate *Processes::d2 = 0;
 }

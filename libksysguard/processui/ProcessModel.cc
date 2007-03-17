@@ -75,13 +75,13 @@ void ProcessModel::setupProcesses() {
 }
 
 void ProcessModel::update() {
-	kDebug() << "update all processes: " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+//	kDebug() << "update all processes: " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 	mProcesses->updateAllProcesses();
 	if(mIsChangingLayout) {
 		mIsChangingLayout = false;
 		emit layoutChanged();
 	}
-	kDebug() << "finished:             " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+//	kDebug() << "finished:             " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 }
 
 QString ProcessModel::getStatusDescription(KSysGuard::Process::ProcessStatus status) const
@@ -100,14 +100,26 @@ QString ProcessModel::getStatusDescription(KSysGuard::Process::ProcessStatus sta
 	}
 }
 
+KSysGuard::Process *ProcessModel::getProcessAtIndex(int index) const
+{
+	Q_ASSERT(mSimple);
+	return mProcesses->getAllProcesses().at(index);
+}
 int ProcessModel::rowCount(const QModelIndex &parent) const
 {
+	if(mSimple) {
+		if(parent.isValid()) return 0; //In flat mode, none of the processes have children
+		return mProcesses->getAllProcesses().count();
+	}
+
+	//Deal with the case that we are showing it as a tree
 	KSysGuard::Process *process;
 	if(parent.isValid()) {
 		if(parent.column() != 0) return 0;  //For a treeview we say that only the first column has children
 		process = reinterpret_cast< KSysGuard::Process * > (parent.internalPointer()); //when parent is invalid, it must be the root level which we set as 0
-	} else
+	} else {
 		process = mProcesses->getProcess(0);
+	}
 	Q_ASSERT(process);
 	int num_rows = process->children.count();
 	return num_rows;
@@ -120,6 +132,13 @@ int ProcessModel::columnCount ( const QModelIndex & ) const
 
 bool ProcessModel::hasChildren ( const QModelIndex & parent = QModelIndex() ) const
 {
+
+	if(mSimple) {
+		if(parent.isValid()) return 0; //In flat mode, none of the processes have children
+		return !mProcesses->getAllProcesses().isEmpty();
+	}
+
+	//Deal with the case that we are showing it as a tree
 	KSysGuard::Process *process;
 	if(parent.isValid()) {
 		if(parent.column() != 0) return false;  //For a treeview we say that only the first column has children
@@ -138,6 +157,14 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 {
 	if(row<0) return QModelIndex();
 	if(column<0 || column >= mHeadings.count() ) return QModelIndex();
+
+	if(mSimple) {
+		if( parent.isValid()) return QModelIndex();
+		if( mProcesses->getAllProcesses().count() <= row) return QModelIndex();
+		return createIndex( row, column, mProcesses->getAllProcesses().at(row));
+	}
+
+	//Deal with the case that we are showing it as a tree
 	KSysGuard::Process *parent_process = 0;
 	
 	if(parent.isValid()) //not valid for init, and init has ppid of 0
@@ -156,7 +183,7 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 
 void ProcessModel::processChanged(KSysGuard::Process *process, bool onlyCpuOrMem)
 {
-	int row = process->tree_parent->children.indexOf(process);
+	int row = process->parent->children.indexOf(process);
 	Q_ASSERT(row != -1);  //Something has gone very wrong
 	if(!onlyCpuOrMem) {
 		//Only the cpu usage changed, so only update that
@@ -179,8 +206,15 @@ void ProcessModel::beginInsertRow( KSysGuard::Process *process)
 		emit layoutChanged();
 	}
 
-	int row = process->tree_parent->children.count();
-	QModelIndex parentModelIndex = getQModelIndex(process->tree_parent, 0);
+	if(mSimple) {
+		int row = mProcesses->getAllProcesses().count();
+		beginInsertRows( QModelIndex(), row, row );
+		return;
+	}
+
+	//Deal with the case that we are showing it as a tree
+	int row = process->parent->children.count();
+	QModelIndex parentModelIndex = getQModelIndex(process->parent, 0);
 
 	//Only here can we actually change the model.  First notify the view/proxy models then modify
 	beginInsertRows(parentModelIndex, row, row);
@@ -197,15 +231,18 @@ void ProcessModel::beginRemoveRow( KSysGuard::Process *process )
 
 	Q_ASSERT(process);
 	Q_ASSERT(process->pid > 0);
-	int row = process->tree_parent->children.indexOf(process);
-	QModelIndex parentIndex = getQModelIndex(process->tree_parent, 0);
-	if(row == -1) {
-		kDebug(1215) << "A serious problem occurred in remove row." << endl;
-		return;
-	}
+	
+	if(mSimple)
+		return beginRemoveRows(QModelIndex(), process->index, process->index);
+	else  {
+		int row = process->parent->children.indexOf(process);
+		if(row == -1) {
+			kDebug(1215) << "A serious problem occurred in remove row." << endl;
+			return;
+		}
 
-	//so no more children left, we are free to delete now
-	beginRemoveRows(parentIndex, row, row);
+		return beginRemoveRows(getQModelIndex(process->parent,0), row, row);
+	}
 }
 void ProcessModel::endRemoveRow() 
 {
@@ -219,7 +256,7 @@ void ProcessModel::beginMoveProcess(KSysGuard::Process *process, KSysGuard::Proc
 		emit layoutAboutToBeChanged ();
 		mIsChangingLayout = true;
 	}
-	int current_row = process->tree_parent->children.indexOf(process);
+	int current_row = process->parent->children.indexOf(process);
 	int new_row = new_parent->children.count();
 	Q_ASSERT(current_row != -1);
 
@@ -242,10 +279,12 @@ QModelIndex ProcessModel::getQModelIndex( KSysGuard::Process *process, int colum
 	int pid = process->pid;
 	if(pid == 0) return QModelIndex(); //pid 0 is our fake process meaning the very root (never drawn).  To represent that, we return QModelIndex() which also means the top element
 	int row = 0;
-	if(process->tree_parent) {
-		row = process->tree_parent->children.indexOf(process);
-		Q_ASSERT(row != -1);
+        if(mSimple) {
+		row = process->index;
+	} else {
+		row = process->parent->children.indexOf(process);
 	}
+	Q_ASSERT(row != -1);
 	return createIndex(row, column, process);
 }
 
@@ -255,7 +294,10 @@ QModelIndex ProcessModel::parent ( const QModelIndex & index ) const
 	KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
 	Q_ASSERT(process);
 
-	return getQModelIndex(process->tree_parent,0);
+        if(mSimple)
+		return QModelIndex();
+	else 
+		return getQModelIndex(process->parent,0);
 }
 
 QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
@@ -271,12 +313,12 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 }
 void ProcessModel::setSimpleMode(bool simple)
 { 
-	mSimple = simple;
-	mProcesses->setFlatMode(simple);
-	if(mIsChangingLayout) {
-		mIsChangingLayout = false;
-		emit layoutChanged();
+	if(!mIsChangingLayout) {
+		emit layoutAboutToBeChanged ();
 	}
+	mSimple = simple;
+	mIsChangingLayout = false;
+	emit layoutChanged();
 
 }
 

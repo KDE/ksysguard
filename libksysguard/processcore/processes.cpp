@@ -45,19 +45,21 @@ namespace KSysGuard
   class Processes::Private
   {
     public:
-      Private() { processesBase = 0;  mProcesses.insert(0, &mFakeProcess); mFlatMode = true; mElapsedTimeCentiSeconds = -1;}
+      Private() { processesBase = 0;  mProcesses.insert(0, &mFakeProcess); mElapsedTimeCentiSeconds = -1; mNumProcesses=0;}
       ~Private() {;}
 
       QSet<long> mToBeProcessed;
       QSet<long> mProcessedLastTime;
 
       QHash<long, Process *> mProcesses; //This must include mFakeProcess at pid 0
+      QList<Process *> mListProcesses;   //A list of the processes.  Does not include mFakeProcesses
       Process mFakeProcess; //A fake process with pid 0 just so that even init points to a parent
 
       ProcessesBase *processesBase; //The OS specific code to get the process information 
-      bool mFlatMode;     //Whether all the processes are being shown at the same level, or as a heirachy
       QTime mLastUpdated; //This is the time we last updated.  Used to calculate cpu usage.
       long mElapsedTimeCentiSeconds; //The number of centiseconds  (100ths of a second) that passed since the last update
+
+      int mNumProcesses; //Total number of processes
   };
 
   class Processes::StaticPrivate
@@ -103,30 +105,30 @@ Process *Processes::getProcess(long pid)
 {
 	return d->mProcesses.value(pid);
 }
+	
+QList<Process *> Processes::getAllProcesses()
+{
+	return d->mListProcesses;
+}
 bool Processes::updateProcess( Process *ps, long ppid, bool onlyReparent)
 {
     Process *parent = d->mProcesses.value(ppid);
     Q_ASSERT(parent);  //even init has a non-null parent - the mFakeProcess
-    Process *tree_parent;
-    if(d->mFlatMode) 
-        tree_parent = &d->mFakeProcess;
-    else 
-        tree_parent = parent;
 
-    if(ps->tree_parent != tree_parent) {
-        emit beginMoveProcess(ps, tree_parent/*new parent*/);
+    if(ps->parent != parent) {
+        emit beginMoveProcess(ps, parent/*new parent*/);
         //Processes has been reparented
         Process *p = ps;
         do {
-            p = p->tree_parent;
+            p = p->parent;
             p->numChildren--;
         } while (p->pid!= 0);
-        ps->tree_parent->children.removeAll(ps);
-        ps->tree_parent = tree_parent;  //the parent has changed
-        tree_parent->children.append(ps);
+        ps->parent->children.removeAll(ps);
+        ps->parent = parent;  //the parent has changed
+        parent->children.append(ps);
         p = ps;
         do {
-            p = p->tree_parent;
+            p = p->parent;
             p->numChildren++;
         } while (p->pid!= 0);
 	emit endMoveProcess();
@@ -152,8 +154,7 @@ bool Processes::updateProcess( Process *ps, long ppid, bool onlyReparent)
 	    while(p->pid != 0) {
 	        p->totalUserUsage += ps->userUsage;
 	        p->totalSysUsage += ps->sysUsage;
-		if(!d->mFlatMode)
-                    emit processChanged(p, true);
+                emit processChanged(p, true);
 	        p= p->parent;
 	    }
 	}
@@ -188,18 +189,16 @@ bool Processes::addProcess(long pid, long ppid)
     Q_ASSERT(parent);  //even init has a non-null parent - the mFakeProcess
     //it's a new process - we need to set it up
     Process *ps = new Process(pid, ppid, parent);
-    if(d->mFlatMode)
-        ps->tree_parent = &d->mFakeProcess;
-    else
-        ps->tree_parent = parent;
+    ps->index = d->mNumProcesses++;
 
     emit beginAddProcess(ps);
 
     d->mProcesses.insert(pid, ps);
-    ps->tree_parent->children.append(ps);
+    d->mListProcesses.append(ps);
+    ps->parent->children.append(ps);
     Process *p = ps;
     do {
-        p = p->tree_parent;
+        p = p->parent;
         p->numChildren++;
     } while (p->pid!= 0);
     ps->parent_pid = ppid;
@@ -278,14 +277,20 @@ void Processes::deleteProcess(long pid)
     emit beginRemoveProcess(process);
 
     d->mProcesses.remove(pid);
-    process->tree_parent->children.removeAll(process);
+    d->mListProcesses.remove(process);
+    process->parent->children.removeAll(process);
     Process *p = process;
     do {
-      p = p->tree_parent;
+      p = p->parent;
       p->numChildren--;
     } while (p->pid!= 0);
-    delete process;
 
+    foreach( Process *process, d->mProcesses ) {
+	if(process->index > process->index)
+	    	process->index--;
+    }
+
+    delete process;
     emit endRemoveProcess();
 }
 
@@ -307,18 +312,5 @@ Processes::~Processes()
 
 }
 
-bool Processes::flatMode()
-{
-    return d->mFlatMode;
-}
-
-void Processes::setFlatMode(bool flat)
-{
-    d->mFlatMode = flat;
-    foreach(Process *process, d->mProcesses.values()) {
-	if(process->pid != 0) 
-            updateProcess(process, process->parent_pid, true);
-    }
-}
 }
 #include "processes.moc"

@@ -73,6 +73,9 @@ public:
 	 */
 	QString getStringForProcess(KSysGuard::Process *process) const;
 	KSysGuard::Process *getProcess(long long pid);
+
+	/** This is used from ProcessFilter to get the process at a given index when in flat mode */	
+	KSysGuard::Process *getProcessAtIndex(int index) const;
         
 	/** Returns whether this user can log in or not.
 	 *  @see mUidCanLogin
@@ -182,7 +185,7 @@ private:
 
 	bool mShowChildTotals; ///If set to true, a parent will return the CPU usage of all its children recursively
 
-	bool mSimple; ///In simple mode, the model returns everything as flat, with no icons, no xres etc.  This is set by changing cmbFilter
+	bool mSimple; ///In simple mode, the model returns everything as flat, with no icons, etc.  This is set by changing cmbFilter
 
 	QTime mLastUpdated; ///Time that we last updated the processes.
 

@@ -46,10 +46,6 @@ namespace KSysGuard
          */
         Process *parent;
 
-	/** This is used to aid in drawing the process tree.  It points to the view-based parent.  When showing the processes as a list,
-	 *  all the processes point to the fake process.
-	 */
-        Process *tree_parent;
         long long uid; ///The user id that the process is running as
         long long gid; ///The group id that the process is running as
         long long tracerpid; ///If this is being debugged, this is the process that is debugging it
@@ -72,6 +68,7 @@ namespace KSysGuard
 
 	QString translatedStatus();
 
+	int index;
   private:
         void clear();
     }; 

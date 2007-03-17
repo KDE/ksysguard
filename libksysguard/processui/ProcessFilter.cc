@@ -37,19 +37,32 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 	if( (mFilter == PROCESS_FILTER_ALL_SIMPLE || mFilter == PROCESS_FILTER_ALL_TREE) 
 			&& filterRegExp().isEmpty()) return true; //Shortcut for common case 
 	
-	KSysGuard::Process *parent_process;
 	ProcessModel *model = static_cast<ProcessModel *>(sourceModel());
-	if(source_parent.isValid()) {
-		parent_process = reinterpret_cast<KSysGuard::Process *>(source_parent.internalPointer());
+	KSysGuard::Process *parent_process;
+	const KSysGuard::Process *process;
+        if(model->isSimpleMode()) {
+		if(source_parent.isValid()) {
+			kDebug() << "Serious error with data.  In simple mode, there should be no children" << endl;
+			return true;
+		}
+		process = model->getProcessAtIndex(source_row);
 	} else {
-		parent_process = model->getProcess(0); //Get our 'special' process which should have the root init child
+		if(source_parent.isValid()) {
+			parent_process = reinterpret_cast<KSysGuard::Process *>(source_parent.internalPointer());
+		       	Q_ASSERT(parent_process);
+		} else {
+			if(!model->isSimpleMode()) {
+				parent_process = model->getProcess(0); //Get our 'special' process which should have the root init child
+		        	Q_ASSERT(parent_process);
+			}
+		}
+		if(!model->isSimpleMode() && source_row >= parent_process->children.size()) {
+			kDebug() << "Serious error with data.  Source row requested for a non existant row. Requested " << source_row << " of " << parent_process->children.size() << " for " << parent_process->pid << endl;
+			return true;
+		}
+
+		process = parent_process->children.at(source_row);
 	}
-        Q_ASSERT(parent_process);
-	if(source_row >= parent_process->children.size()) {
-		kDebug() << "Serious error with data.  Source row requested for a non existant row. Requested " << source_row << " of " << parent_process->children.size() << " for " << parent_process->pid << endl;
-		return true;
-	}
-	const KSysGuard::Process *process = parent_process->children.at(source_row);
 	Q_ASSERT(process);
 	long uid = process->uid;
 	
