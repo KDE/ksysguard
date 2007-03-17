@@ -689,7 +689,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	case Qt::FontRole: {
 		if(index.column() == HeadingCPUUsage) {
 			KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
-			if(process->status == KSysGuard::Process::Stopped || process->status != KSysGuard::Process::Zombie) {
+			if(process->userUsage == 0) {
 				QFont font;
 				font.setItalic(true);
 				return font;
