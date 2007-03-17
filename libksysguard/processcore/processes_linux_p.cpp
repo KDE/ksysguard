@@ -36,6 +36,7 @@
 #include <signal.h>
 #include <sys/resource.h>
 
+#define PROCESS_BUFFER_SIZE 1000
 
 
 
@@ -52,6 +53,7 @@ namespace KSysGuard
       inline bool readProcStatm(long pid, Process *process);
       inline bool readProcCmdline(long pid, Process *process);
       QFile mFile;
+      char mBuffer[PROCESS_BUFFER_SIZE+1]; //used as a buffer to read data into
     };
 ProcessesLocal::ProcessesLocal() : d(new Private())
 {
@@ -68,19 +70,28 @@ bool ProcessesLocal::Private::readProcStatus(long pid, Process *process)
     process->gid = 0;
     process->tracerpid = 0;
 
-    QTextStream in(&mFile);
-    QString line = in.readLine();
-    while (!line.isNull()) {
-	if(line.startsWith( "Name:")) {
-		process->name = line.section('\t', 1,1, QString::SectionSkipEmpty);
-	} else if( line.startsWith("Uid:")) {
-		process->uid = line.section('\t', 1,1, QString::SectionSkipEmpty).toLongLong();
-	} else if( line.startsWith("Gid:")) {
-		process->gid = line.section('\t', 1,1, QString::SectionSkipEmpty).toLongLong();
-	} else if( line.startsWith("TracerPid:")) {
-		process->tracerpid = line.section('\t', 1,1, QString::SectionSkipEmpty).toLongLong();
+    int size;
+    while( (size = mFile.readLine( mBuffer, sizeof(mBuffer))) > 0) {  //-1 indicates an error
+        switch( mBuffer[0]) {
+	  case 'N':
+	    if((unsigned int)size > sizeof("Name:") && qstrncmp(mBuffer, "Name:", sizeof("Name:")-1) == 0)
+                process->name = QString::fromLocal8Bit(mBuffer + sizeof("Name:")-1, size-sizeof("Name:")+1).trimmed();
+	    break;
+	  case 'U': 
+	    if((unsigned int)size > sizeof("Uid:") && qstrncmp(mBuffer, "Uid:", sizeof("Uid:")-1) == 0)
+		process->uid = atol(mBuffer + sizeof("Uid:")-1);
+	    break;
+	  case 'G':
+	    if((unsigned int)size > sizeof("Gid:") && qstrncmp(mBuffer, "Gid:", sizeof("Gid:")-1) == 0)
+		process->gid = atol(mBuffer + sizeof("Gid:")-1);
+	    break;
+	  case 'T':
+	    if((unsigned int)size > sizeof("TracerPid:") && qstrncmp(mBuffer, "TracerPid:", sizeof("TracerPid:")-1) == 0)
+		process->uid = atol(mBuffer + sizeof("TracerPid:")-1);
+	    break;
+	  default:
+	    break;
 	}
-        line = in.readLine();
     }
 
     mFile.close();
@@ -93,13 +104,26 @@ long ProcessesLocal::getParentPid(long pid) {
     if(!d->mFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return 0;      /* process has terminated in the meantime */
 
-    QTextStream in(&d->mFile);
+    int size; //amount of data read in
+    if( (size = d->mFile.readLine( d->mBuffer, sizeof(d->mBuffer))) <= 0) { //-1 indicates nothing read
+        d->mFile.close();
+        return false;
+    }
 
-    QByteArray ignore;
-    long long ppid = 0;
-    in >> ignore >> ignore >> ignore >> ppid;
     d->mFile.close();
-    return ppid;
+    int current_word = 0;
+    char *word = d->mBuffer;
+
+    while(true) {
+	    if(word[0] == ' ' ) {
+		    if(++current_word == 3)
+			    break;
+	    } else if(word[0] == 0) {
+	    	return 0; //end of data - serious problem
+	    }
+	    word++;
+    }
+    return atol(++word);
 }
 
 bool ProcessesLocal::Private::readProcStat(long pid, Process *ps)
