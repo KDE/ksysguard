@@ -29,7 +29,9 @@
 #include "processtest.h"
 
 void testProcess::testProcesses() {
-/*	QHash<long, KSysGuard::Process *> processes = KSysGuard::Processes::getInstance()->getProcesses();
+	KSysGuard::Processes *processController = KSysGuard::Processes::getInstance();
+	processController->updateAllProcesses();
+	QList<KSysGuard::Process *> processes = processController->getAllProcesses();
 	QSet<long> pids;
 	foreach( KSysGuard::Process *process, processes) {
 		if(process->pid == 0) continue;
@@ -40,9 +42,9 @@ void testProcess::testProcesses() {
 		QVERIFY(!pids.contains(process->pid));
 		pids.insert(process->pid);
 	}
-
-	QHash<long, KSysGuard::Process *> processes2 = KSysGuard::Processes::getInstance()->getProcesses();
-	foreach( KSysGuard::Process *process, processes) {
+	processController->updateAllProcesses();
+	QList<KSysGuard::Process *> processes2 = processController->getAllProcesses();
+	foreach( KSysGuard::Process *process, processes2) {
 		if(process->pid == 0) continue;
 		QVERIFY(process->pid > 0);
 		QVERIFY(!process->name.isEmpty());
@@ -56,7 +58,6 @@ void testProcess::testProcesses() {
 
 	QVERIFY(processes2.size() == processes.size());
 	QCOMPARE(processes, processes2); //Make sure calling it twice gives the same results.  The difference in time is so small that it really shouldn't have changed
-*/
 }
 
 
@@ -69,57 +70,49 @@ unsigned long testProcess::countNumChildren(KSysGuard::Process *p) {
 }
 
 void testProcess::testProcessesTreeStructure() {
-	/*
-	QHash<long, KSysGuard::Process *> processes = KSysGuard::Processes::getInstance()->getProcesses();
+	KSysGuard::Processes *processController = KSysGuard::Processes::getInstance();
+	processController->updateAllProcesses();
+	QList<KSysGuard::Process *> processes = processController->getAllProcesses();
+	
 	foreach( KSysGuard::Process *process, processes) {
 		QCOMPARE(countNumChildren(process), process->numChildren);
 
                 for(int i =0; i < process->children.size(); i++) {
-			QVERIFY(process->children[i]->tree_parent);
-			QCOMPARE(process->children[i]->tree_parent, process);
+			QVERIFY(process->children[i]->parent);
+			QCOMPARE(process->children[i]->parent, process);
 		}
 	}
-*/
+
 }
 
 void testProcess::testProcessesModification() {
 	//We will modify the tree, then re-call getProcesses and make sure that it fixed everything we modified
-	/*
-	QHash<long, KSysGuard::Process *> processes = KSysGuard::Processes::getInstance()->getProcesses();
+	KSysGuard::Processes *processController = KSysGuard::Processes::getInstance();
+	processController->updateAllProcesses();
+	KSysGuard::Process *initProcess = processController->getProcess(1);
 
-
-	if(!processes.contains(1) || processes[1]->numChildren < 3)
+	if(!initProcess || initProcess->numChildren < 3)
 		return;
 
-	QVERIFY(processes[1]);
-	QVERIFY(processes[1]->children[0]);
-	QVERIFY(processes[1]->children[1]);
-	kDebug() << processes[1]->numChildren << endl;
-	processes[1]->children[0]->tree_parent = processes[1]->children[1];
-	processes[1]->children[1]->children.append(processes[1]->children[0]);
-	processes[1]->children[1]->numChildren++;
-	processes[1]->numChildren--;
-	processes[1]->children.removeAt(0);
-
-	QHash<long, KSysGuard::Process *> processes2 = KSysGuard::Processes::getInstance()->getProcesses();
-
-	QCOMPARE(processes, processes2);
-*/
+	QVERIFY(initProcess);
+	QVERIFY(initProcess->children[0]);
+	QVERIFY(initProcess->children[1]);
+	kDebug() << initProcess->numChildren << endl;
+	initProcess->children[0]->parent = initProcess->children[1];
+	initProcess->children[1]->children.append(initProcess->children[0]);
+	initProcess->children[1]->numChildren++;
+	initProcess->numChildren--;
+	initProcess->children.removeAt(0);
 }
 
 void testProcess::testTime() {
 	//See how long it takes to get proccess information	
-	/*
+	KSysGuard::Processes *processController = KSysGuard::Processes::getInstance();
 	QTime t;
 	t.start();
-	QHash<long, KSysGuard::Process *> processes = KSysGuard::Processes::getInstance()->getProcesses();
+	processController->updateAllProcesses();
 	kDebug() << "Time elapsed: "<< t.elapsed() <<" ms" <<  endl;
 	QVERIFY(t.elapsed() < 300); //It should take less than about 100ms.  Anything longer than 300ms even on a slow system really needs to be optimised
-        t.start();
-	processes = KSysGuard::Processes::getInstance()->getProcesses();
-	kDebug() << "Time elapsed second time: "<< t.elapsed() <<" ms" <<  endl;
-	QVERIFY(t.elapsed() < 300); //It should take less than about 100ms.  Anything longer than 300ms even on a slow system really needs to be optimised
-*/
 }
 
 QTEST_KDEMAIN(testProcess, NoGUI)
