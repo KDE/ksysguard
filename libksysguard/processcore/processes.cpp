@@ -45,7 +45,7 @@ namespace KSysGuard
   class Processes::Private
   {
     public:
-      Private() { mAbstractProcesses = 0;  mProcesses.insert(0, &mFakeProcess); mElapsedTimeCentiSeconds = -1; mNumProcesses=0;}
+      Private() { mAbstractProcesses = 0;  mProcesses.insert(0, &mFakeProcess); mElapsedTimeCentiSeconds = -1; }
       ~Private() {;}
 
       QSet<long> mToBeProcessed;
@@ -58,8 +58,6 @@ namespace KSysGuard
       AbstractProcesses *mAbstractProcesses; //The OS specific code to get the process information 
       QTime mLastUpdated; //This is the time we last updated.  Used to calculate cpu usage.
       long mElapsedTimeCentiSeconds; //The number of centiseconds  (100ths of a second) that passed since the last update
-
-      int mNumProcesses; //Total number of processes
   };
 
   class Processes::StaticPrivate
@@ -189,12 +187,14 @@ bool Processes::addProcess(long pid, long ppid)
     Q_ASSERT(parent);  //even init has a non-null parent - the mFakeProcess
     //it's a new process - we need to set it up
     Process *ps = new Process(pid, ppid, parent);
-    ps->index = d->mNumProcesses++;
 
     emit beginAddProcess(ps);
 
     d->mProcesses.insert(pid, ps);
+    
+    ps->index = d->mListProcesses.count();
     d->mListProcesses.append(ps);
+
     ps->parent->children.append(ps);
     Process *p = ps;
     do {
@@ -261,6 +261,7 @@ void Processes::updateAllProcesses( )
           pid = i.next();
 	  i.remove();
           deleteProcess(pid);
+	  i.toFront();
       }
     }
     
@@ -272,8 +273,13 @@ void Processes::updateAllProcesses( )
 void Processes::deleteProcess(long pid)
 {
     Q_ASSERT(pid > 0);
+
     Process *process = d->mProcesses.value(pid);
-    
+    foreach( Process *it, process->children) {
+        d->mProcessedLastTime.remove(it->pid);
+	deleteProcess(it->pid);
+    }
+
     emit beginRemoveProcess(process);
 
     d->mProcesses.remove(pid);
@@ -285,9 +291,11 @@ void Processes::deleteProcess(long pid)
       p->numChildren--;
     } while (p->pid!= 0);
 
-    foreach( Process *process, d->mProcesses ) {
-	if(process->index > process->index)
-	    	process->index--;
+    int i=0;
+    foreach( Process *it, d->mListProcesses ) {
+	if(it->index > process->index)
+	    	it->index--;
+	Q_ASSERT(it->index == i++);
     }
 
     delete process;

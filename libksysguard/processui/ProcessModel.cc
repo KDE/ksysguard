@@ -232,9 +232,10 @@ void ProcessModel::beginRemoveRow( KSysGuard::Process *process )
 	Q_ASSERT(process);
 	Q_ASSERT(process->pid > 0);
 	
-	if(mSimple)
+	if(mSimple) {
+		kDebug() << "Removing row " << process->index  << endl;
 		return beginRemoveRows(QModelIndex(), process->index, process->index);
-	else  {
+	} else  {
 		int row = process->parent->children.indexOf(process);
 		if(row == -1) {
 			kDebug(1215) << "A serious problem occurred in remove row." << endl;
