@@ -733,23 +733,4 @@ void ProcessModel::setupHeader() {
 KSysGuard::Process *ProcessModel::getProcess(long long pid) {
 	return mProcesses->getProcess(pid);
 }
-void ProcessModel::setShowTotals(int totals)  //slot
-{
-#if 0 
-	mShowChildTotals = totals;
 
-	QModelIndex index;
-	Process *process;
-	
-	QList<KSysGuard::Process *> processes = mPidToProcess.values();
-	for(int i = 0; i < processes.size(); i++) {
-		process = processes.at(i);
-		Q_ASSERT(process);
-		if(process->numChildren > 0) {
-			int row = process->parent->children.indexOf(process);
-			index = createIndex(row, mCPUHeading, process);
-			emit dataChanged(index, index);
-		}
-	}
-#endif
-}

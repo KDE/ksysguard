@@ -102,8 +102,6 @@ public:
 	 */
 	enum { HeadingName=0, HeadingUser, HeadingCPUUsage, HeadingVmSize, HeadingMemory, HeadingSharedMemory, HeadingCommand };	
 
-public slots:
-	void setShowTotals(int totals);
 private slots:
 	/** Change the data for a process.  This is called from KSysGuard::Processes
 	 *  if @p onlyCpuOrMem is set, only the cpu and memory information are updated.  This is for optomization reasons - the cpu percentage
