@@ -144,7 +144,7 @@ bool Processes::updateProcess( Process *ps, long ppid, bool onlyReparent)
     bool success = d->processesBase->updateProcessInfo(ps->pid, ps);
 
     //Now we have the process info.  Calculate the cpu usage and total cpu usage for itself and all its parents
-    if(old_process.userTime != 0 && d->mElapsedTimeCentiSeconds!= 0) {  //Update the user usage and sys usage
+    if(old_process.userTime != -1 && d->mElapsedTimeCentiSeconds!= 0) {  //Update the user usage and sys usage
         ps->userUsage = (ps->userTime - old_process.userTime)*100 / d->mElapsedTimeCentiSeconds;
         ps->sysUsage  = (ps->sysTime - old_process.sysTime)*100 / d->mElapsedTimeCentiSeconds;
         ps->totalUserUsage = ps->userUsage;
