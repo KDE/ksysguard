@@ -734,3 +734,22 @@ KSysGuard::Process *ProcessModel::getProcess(long long pid) {
 	return mProcesses->getProcess(pid);
 }
 
+void ProcessModel::setShowTotals(bool showTotals)  //slot
+{
+        if(showTotals == mShowChildTotals) return;
+        mShowChildTotals = showTotals;
+
+        QModelIndex index;
+        foreach( KSysGuard::Process *process, mProcesses->getAllProcesses()) {
+               if(process->numChildren > 0) {
+                       int row;
+		       if(mSimple)
+		               row = process->index;
+		       else
+		               row = process->parent->children.indexOf(process);
+                       index = createIndex(row, HeadingCPUUsage, process);
+                       emit dataChanged(index, index);
+               }
+       }
+}
+

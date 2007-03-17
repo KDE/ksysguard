@@ -126,7 +126,7 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	connect(mUi->cmbFilter, SIGNAL(currentIndexChanged(int)), this, SLOT(setSimpleMode(int)));
 	connect(mUi->treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
 	connect(mUi->treeView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex & , const QModelIndex & )), this, SLOT(currentRowChanged(const QModelIndex &)));
-	connect(mUi->chkShowTotals, SIGNAL(stateChanged(int)), &mModel, SLOT(setShowTotals(int)));
+	connect(mUi->chkShowTotals, SIGNAL(toggled(bool)), &mModel, SLOT(setShowTotals(bool)));
 	mUi->chkShowTotals->setVisible(!mSimple);
 	setMinimumSize(sizeHint());
 
