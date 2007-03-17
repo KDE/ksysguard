@@ -113,7 +113,7 @@ namespace KSysGuard
 	 *  is guaranteed to never change.  Call updateAllProcesses first to actually
 	 *  update the information.
 	 */
-	QList< Process *> getAllProcesses() const;
+	const QList< Process *> &getAllProcesses() const;
     signals:
 	/** The data for a process has changed.
 	 *  if @p onlyCpuOrMem is set, only the cpu usage or memory information has been 

@@ -183,7 +183,12 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 
 void ProcessModel::processChanged(KSysGuard::Process *process, bool onlyCpuOrMem)
 {
-	int row = process->parent->children.indexOf(process);
+	int row;
+	if(mSimple)
+		row = process->index;
+	else
+		row = process->parent->children.indexOf(process);
+
 	Q_ASSERT(row != -1);  //Something has gone very wrong
 	if(!onlyCpuOrMem) {
 		//Only the cpu usage changed, so only update that
