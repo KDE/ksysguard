@@ -110,7 +110,7 @@ bool ProcessesLocal::Private::readProcStat(long pid, Process *ps)
     QTextStream in(&mFile);
 
     QByteArray ignore;
-    QString status;
+    QByteArray status;
     in >> ignore >> ignore >> status >> ignore;
     in >> ignore >> ignore >> ignore /*ttyNo*/ >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore;
     in >> ps->userTime >> ps->sysTime >> ignore >> ignore >> ignore >> ps->niceLevel >> ignore >> ignore >> ignore >> ps->vmSize >> ps->vmRSS;
@@ -127,7 +127,7 @@ bool ProcessesLocal::Private::readProcStat(long pid, Process *ps)
 	return false;  //something went horribly wrong
     }
 
-    switch( status[0].toAscii()) {
+    switch( status[0]) {
       case 'R':
         ps->status = Process::Running;
 	break;
