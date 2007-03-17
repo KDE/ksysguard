@@ -70,12 +70,12 @@ namespace KSysGuard
 	 */
         void updateAllProcesses();
 	/**
-	 *  Return information for one specific process.  call getProcess(0) to get the fake process used as the
-	 *  top most parent for all processes.
-	 *  This doesn't fetch any new information and so returns almost instantly.  Call updateAllProcesses()
-	 *  to actually fetch the process information.
+	 *  Return information for one specific process.  call getProcess(0) to get the 
+	 *  fake process used as the top most parent for all processes.
+	 *  This doesn't fetch any new information and so returns almost instantly.
+	 *  Call updateAllProcesses() to actually fetch the process information.
 	 */
-	Process *getProcess(long pid);
+	Process *getProcess(long pid) const;
 
 	/**
 	 *  Kill the specified process.  You may not have the privillage to kill the process.
@@ -108,15 +108,23 @@ namespace KSysGuard
 	 */
 	bool setNiceness(long pid, int priority);
 
-	QList< Process *> getAllProcesses();
+	/** 
+	 *  Return the internal pointer of all the processes.  The order of the processes 
+	 *  is guaranteed to never change.  Call updateAllProcesses first to actually
+	 *  update the information.
+	 */
+	QList< Process *> getAllProcesses() const;
     signals:
 	/** The data for a process has changed.
-	 *  if @p onlyCpuOrMem is set, only the cpu usage or memory information has been updated.  This is for optomization reasons - the cpu percentage
-	 *  and memory usage change quite often, but if they are the only thing changed then there's no reason to repaint the whole row
+	 *  if @p onlyCpuOrMem is set, only the cpu usage or memory information has been 
+	 *  updated.  This is for optomization reasons - the cpu percentage
+	 *  and memory usage change quite often, but if they are the only thing changed 
+	 *  then there's no reason to repaint the whole row
 	 */
         void processChanged( KSysGuard::Process *process, bool onlyCpuOrMem);
         /**
-	 *  This indicates we are about to add a process in the model.  The process already has the pid, ppid and tree_parent set up.
+	 *  This indicates we are about to add a process in the model.  
+	 *  The process already has the pid, ppid and tree_parent set up.
 	 */
 	void beginAddProcess( KSysGuard::Process *process);
         /**

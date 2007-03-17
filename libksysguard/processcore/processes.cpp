@@ -101,12 +101,12 @@ Processes::Processes(AbstractProcesses *abstractProcesses) : d(new Private())
     d->mAbstractProcesses = abstractProcesses;
 }
 
-Process *Processes::getProcess(long pid)
+Process *Processes::getProcess(long pid) const
 {
 	return d->mProcesses.value(pid);
 }
 	
-QList<Process *> Processes::getAllProcesses()
+QList<Process *> Processes::getAllProcesses() const
 {
 	return d->mListProcesses;
 }
