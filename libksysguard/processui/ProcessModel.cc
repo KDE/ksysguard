@@ -258,10 +258,13 @@ void ProcessModel::endRemoveRow()
 
 void ProcessModel::beginMoveProcess(KSysGuard::Process *process, KSysGuard::Process *new_parent)
 {
+	if(mSimple) return;  //We don't need to move processes when in simple mode
 	if(!mIsChangingLayout) {
 		emit layoutAboutToBeChanged ();
 		mIsChangingLayout = true;
 	}
+
+	//FIXME
 	int current_row = process->parent->children.indexOf(process);
 	int new_row = new_parent->children.count();
 	Q_ASSERT(current_row != -1);
@@ -319,11 +322,33 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 }
 void ProcessModel::setSimpleMode(bool simple)
 { 
+	if(mSimple == simple) return;
+
 	if(!mIsChangingLayout) {
 		emit layoutAboutToBeChanged ();
 	}
+
 	mSimple = simple;
 	mIsChangingLayout = false;
+
+	int row;
+	QList<QModelIndex> flatIndexes;
+	QList<QModelIndex> treeIndexes;
+        foreach( KSysGuard::Process *process, mProcesses->getAllProcesses()) {
+		int flatrow = process->index;
+		int treerow = process->parent->children.indexOf(process);
+		flatIndexes.clear();
+		treeIndexes.clear();
+	
+	        for(int i=0; i < columnCount(); i++) {
+			flatIndexes << createIndex(flatrow, i, process);
+			treeIndexes << createIndex(treerow, i, process);
+		}
+		if(mSimple) //change from tree mode to flat mode
+			changePersistentIndexList(treeIndexes, flatIndexes);
+		else // change from flat mode to tree mode
+			changePersistentIndexList(flatIndexes, treeIndexes);
+	}
 	emit layoutChanged();
 
 }
