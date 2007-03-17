@@ -27,7 +27,7 @@ namespace KSysGuard
     /**
      * This is used to connect to a remote host
      */
-    class ProcessesRemote : public ProcessesBase {
+    class ProcessesRemote : public AbstractProcesses {
       public:
 	ProcessesRemote(const QString &hostname);
 	virtual ~ProcessesRemote();

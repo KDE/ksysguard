@@ -26,7 +26,7 @@
 
 namespace KSysGuard
 {
-    class ProcessesBase;
+    class AbstractProcesses;
     /**
      * This class retrieves the processes currently running in an OS independant way.
      *
@@ -140,7 +140,7 @@ namespace KSysGuard
 	 */
         void endMoveProcess();
     protected:
-        Processes(ProcessesBase *processesBase);
+        Processes(AbstractProcesses *abstractProcesses);
 	~Processes();
         class Private;
         Private *d;

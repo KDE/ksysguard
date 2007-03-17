@@ -16,8 +16,8 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef PROCESSES_BASE_P_H_
-#define PROCESSES_BASE_P_H_
+#ifndef ABSTRACT_PROCESSES_P_H_
+#define ABSTRACT_PROCESSES_P_H_
 
 #include <QSet>
 
@@ -33,13 +33,13 @@ namespace KSysGuard
      *
      * @author John Tapsell <tapsell@kde.org>
      */
-    class ProcessesBase 
+    class AbstractProcesses 
     {
 
       public:
 
-	ProcessesBase() {};
-	virtual ~ProcessesBase() {};
+	AbstractProcesses() {};
+	virtual ~AbstractProcesses() {};
 	/**
 	 *  To get information about processes, this will be the first function called.
 	 */

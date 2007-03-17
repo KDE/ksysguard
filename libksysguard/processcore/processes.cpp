@@ -45,7 +45,7 @@ namespace KSysGuard
   class Processes::Private
   {
     public:
-      Private() { processesBase = 0;  mProcesses.insert(0, &mFakeProcess); mElapsedTimeCentiSeconds = -1; mNumProcesses=0;}
+      Private() { mAbstractProcesses = 0;  mProcesses.insert(0, &mFakeProcess); mElapsedTimeCentiSeconds = -1; mNumProcesses=0;}
       ~Private() {;}
 
       QSet<long> mToBeProcessed;
@@ -55,7 +55,7 @@ namespace KSysGuard
       QList<Process *> mListProcesses;   //A list of the processes.  Does not include mFakeProcesses
       Process mFakeProcess; //A fake process with pid 0 just so that even init points to a parent
 
-      ProcessesBase *processesBase; //The OS specific code to get the process information 
+      AbstractProcesses *mAbstractProcesses; //The OS specific code to get the process information 
       QTime mLastUpdated; //This is the time we last updated.  Used to calculate cpu usage.
       long mElapsedTimeCentiSeconds; //The number of centiseconds  (100ths of a second) that passed since the last update
 
@@ -96,9 +96,9 @@ Processes *Processes::getInstance(QString host) { //static
 void Processes::returnInstance(QString host) { //static
 	//Implement - we need reference counting etc
 }
-Processes::Processes(ProcessesBase *processesBase) : d(new Private())
+Processes::Processes(AbstractProcesses *abstractProcesses) : d(new Private())
 {
-    d->processesBase = processesBase;
+    d->mAbstractProcesses = abstractProcesses;
 }
 
 Process *Processes::getProcess(long pid)
@@ -141,7 +141,7 @@ bool Processes::updateProcess( Process *ps, long ppid, bool onlyReparent)
 
     //Now we can actually get the process info
     Process old_process(*ps);
-    bool success = d->processesBase->updateProcessInfo(ps->pid, ps);
+    bool success = d->mAbstractProcesses->updateProcessInfo(ps->pid, ps);
 
     //Now we have the process info.  Calculate the cpu usage and total cpu usage for itself and all its parents
     if(old_process.userTime != -1 && d->mElapsedTimeCentiSeconds!= 0) {  //Update the user usage and sys usage
@@ -204,14 +204,14 @@ bool Processes::addProcess(long pid, long ppid)
     ps->parent_pid = ppid;
 
     //Now we can actually get the process info
-    bool success = d->processesBase->updateProcessInfo(pid, ps);
+    bool success = d->mAbstractProcesses->updateProcessInfo(pid, ps);
     emit endAddProcess();
     return success;
 
 }
 bool Processes::updateOrAddProcess( long pid)
 {
-    long ppid = d->processesBase->getParentPid(pid);
+    long ppid = d->mAbstractProcesses->getParentPid(pid);
 
     if(d->mToBeProcessed.contains(ppid)) {
         //Make sure that we update the parent before we update this one.  Just makes things a bit easier.
@@ -239,7 +239,7 @@ void Processes::updateAllProcesses( )
         d->mElapsedTimeCentiSeconds = d->mLastUpdated.restart() / 10;
     }
 
-    d->mToBeProcessed = d->processesBase->getAllPids();
+    d->mToBeProcessed = d->mAbstractProcesses->getAllPids();
 
     QSet<long> beingProcessed(d->mToBeProcessed); //keep a copy so that we can replace mProcessedLastTime with this at the end of this function
 
@@ -300,11 +300,11 @@ bool Processes::killProcess(long pid) {
 }
 
 bool Processes::sendSignal(long pid, int sig) {
-    return d->processesBase->sendSignal(pid, sig);
+    return d->mAbstractProcesses->sendSignal(pid, sig);
 }
 
 bool Processes::setNiceness(long pid, int priority) {
-    return d->processesBase->setNiceness(pid, priority);
+    return d->mAbstractProcesses->setNiceness(pid, priority);
 }
 
 Processes::~Processes()

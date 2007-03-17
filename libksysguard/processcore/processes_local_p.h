@@ -30,7 +30,7 @@ namespace KSysGuard
     /**
      * This is the OS specific code to get process information for the local host.
      */
-    class ProcessesLocal : public ProcessesBase {
+    class ProcessesLocal : public AbstractProcesses {
       public:
 	ProcessesLocal();
 	virtual ~ProcessesLocal();
