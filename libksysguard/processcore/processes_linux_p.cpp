@@ -70,29 +70,39 @@ bool ProcessesLocal::Private::readProcStatus(long pid, Process *process)
     process->tracerpid = 0;
 
     int size;
+    int found = 0; //count how many fields we found
     while( (size = mFile.readLine( mBuffer, sizeof(mBuffer))) > 0) {  //-1 indicates an error
         switch( mBuffer[0]) {
 	  case 'N':
-	    if((unsigned int)size > sizeof("Name:") && qstrncmp(mBuffer, "Name:", sizeof("Name:")-1) == 0)
+	    if((unsigned int)size > sizeof("Name:") && qstrncmp(mBuffer, "Name:", sizeof("Name:")-1) == 0) {
                 process->name = QString::fromLocal8Bit(mBuffer + sizeof("Name:")-1, size-sizeof("Name:")+1).trimmed();
+	        if(++found == 4) goto finish;
+	    }
 	    break;
 	  case 'U': 
-	    if((unsigned int)size > sizeof("Uid:") && qstrncmp(mBuffer, "Uid:", sizeof("Uid:")-1) == 0)
+	    if((unsigned int)size > sizeof("Uid:") && qstrncmp(mBuffer, "Uid:", sizeof("Uid:")-1) == 0) {
 		process->uid = atol(mBuffer + sizeof("Uid:")-1);
+	        if(++found == 4) goto finish;
+	    }
 	    break;
 	  case 'G':
-	    if((unsigned int)size > sizeof("Gid:") && qstrncmp(mBuffer, "Gid:", sizeof("Gid:")-1) == 0)
+	    if((unsigned int)size > sizeof("Gid:") && qstrncmp(mBuffer, "Gid:", sizeof("Gid:")-1) == 0) {
 		process->gid = atol(mBuffer + sizeof("Gid:")-1);
+	        if(++found == 4) goto finish;
+	    }
 	    break;
 	  case 'T':
-	    if((unsigned int)size > sizeof("TracerPid:") && qstrncmp(mBuffer, "TracerPid:", sizeof("TracerPid:")-1) == 0)
+	    if((unsigned int)size > sizeof("TracerPid:") && qstrncmp(mBuffer, "TracerPid:", sizeof("TracerPid:")-1) == 0) {
 		process->uid = atol(mBuffer + sizeof("TracerPid:")-1);
+	        if(++found == 4) goto finish;
+	    }
 	    break;
 	  default:
 	    break;
 	}
     }
 
+    finish:
     mFile.close();
     return true;
 }
