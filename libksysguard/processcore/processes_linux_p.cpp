@@ -22,7 +22,6 @@
 #include <klocale.h>
 
 #include <QFile>
-#include <QDir>
 #include <QHash>
 #include <QSet>
 #include <QMutableSetIterator>
@@ -35,6 +34,8 @@
 #include <sys/types.h>
 #include <signal.h>
 #include <sys/resource.h>
+#include <dirent.h>
+
 
 #define PROCESS_BUFFER_SIZE 1000
 
@@ -45,7 +46,7 @@ namespace KSysGuard
   class ProcessesLocal::Private
   {
     public:
-      Private() {;}
+      Private() { mProcDir = opendir( "/proc" );}
       ~Private() {;}
       inline bool readProcStatus(long pid, Process *process);
       inline bool readProcStat(long pid, Process *process);
@@ -53,6 +54,7 @@ namespace KSysGuard
       inline bool readProcCmdline(long pid, Process *process);
       QFile mFile;
       char mBuffer[PROCESS_BUFFER_SIZE+1]; //used as a buffer to read data into      
+      DIR* mProcDir;
     };
 ProcessesLocal::ProcessesLocal() : d(new Private())
 {
@@ -281,19 +283,12 @@ bool ProcessesLocal::updateProcessInfo( long pid, Process *process)
 QSet<long> ProcessesLocal::getAllPids( )
 {
     QSet<long> pids;
-    QDir dir("/proc");
-    dir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-    dir.setSorting(QDir::Unsorted);
-
-    long pid;
-    bool ok;
-
-    QStringList list = dir.entryList();
-    for (int i = 0; i < list.size(); ++i) {
-        pid = list.at(i).toLong(&ok);
-        if(ok)  //we have indeed read in a number rather than some other folder
-            pids.insert(pid);
-    }
+    if(d->mProcDir==NULL) return pids; //There's not much we can do without /proc
+    struct dirent* entry;
+    rewinddir(d->mProcDir);
+    while ( ( entry = readdir( d->mProcDir ) ) )
+	    if ( entry->d_name[ 0 ] >= '0' && entry->d_name[ 0 ] <= '9' )
+		    pids.insert(atol( entry->d_name ));
     return pids;
 }
 
