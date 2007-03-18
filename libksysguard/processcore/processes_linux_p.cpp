@@ -255,7 +255,7 @@ bool ProcessesLocal::Private::readProcStatm(long pid, Process *process)
 
 bool ProcessesLocal::Private::readProcCmdline(long pid, Process *process)
 {
-    if(!process->command.isEmpty()) return true; //only parse the cmdline once
+    if(!process->command.isNull()) return true; //only parse the cmdline once
     mFile.setFileName(QString("/proc/%1/cmdline").arg(pid));
     if(!mFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;      /* process has terminated in the meantime */
