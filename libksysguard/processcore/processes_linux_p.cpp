@@ -107,7 +107,7 @@ long ProcessesLocal::getParentPid(long pid) {
     int size; //amount of data read in
     if( (size = d->mFile.readLine( d->mBuffer, sizeof(d->mBuffer))) <= 0) { //-1 indicates nothing read
         d->mFile.close();
-        return false;
+        return 0;
     }
 
     d->mFile.close();
@@ -128,17 +128,55 @@ long ProcessesLocal::getParentPid(long pid) {
 
 bool ProcessesLocal::Private::readProcStat(long pid, Process *ps)
 {
-    mFile.setFileName(QString("/proc/%1/stat").arg(pid));
-    if(!mFile.open(QIODevice::ReadOnly | QIODevice::Text))
-        return false;      /* process has terminated in the meantime */
-    QTextStream in(&mFile);
+    QString filename = QString("/proc/%1/stat").arg(pid);
+    // As an optomization, if the last file read in was stat, then we already have this info in memory
+    if(mFile.fileName() != filename) {  
+        mFile.setFileName(filename);
+        if(!mFile.open(QIODevice::ReadOnly | QIODevice::Text))
+            return false;      /* process has terminated in the meantime */
+	if( mFile.readLine( mBuffer, sizeof(mBuffer)) <= 0) { //-1 indicates nothing read
+	    mFile.close();
+	    return false;
+	}
+	mFile.close();
+    }
 
-    QByteArray ignore;
-    QByteArray status;
-    in >> ignore >> ignore >> status >> ignore;
-    in >> ignore >> ignore >> ignore /*ttyNo*/ >> ignore >> ignore >> ignore >> ignore >> ignore >> ignore;
-    in >> ps->userTime >> ps->sysTime >> ignore >> ignore >> ignore >> ps->niceLevel >> ignore >> ignore >> ignore >> ps->vmSize >> ps->vmRSS;
-
+    int current_word = 0;  //count from 0
+    char *word = mBuffer;
+    char status='\0';
+    while(current_word < 23) {
+	    if(word[0] == ' ' ) {
+		    ++current_word;
+		    switch(current_word) {
+			    case 2: //status
+                              status=word[1];  // Look at the first letter of the status.  
+			                      // We analyse this after the while loop
+			      break;
+//			    case 6: //ttyNo
+//			      break;
+			    case 13: //userTime
+			      ps->userTime = atoll(word+1);
+			      break;
+			    case 14: //sysTime
+			      ps->sysTime = atoll(word+1);
+			      break;
+			    case 18: //niceLevel
+			      ps->niceLevel = atoi(word+1);
+			      break;
+			    case 22: //vmSize
+			      ps->vmSize = atol(word+1);
+			      break;
+			    case 23: //vmRSS
+			      ps->vmRSS = atol(word+1);
+			      break;
+			    default:
+			      break;
+		    }
+	    } else if(word[0] == 0) {
+	    	return false; //end of data - serious problem
+	    }
+	    word++;
+    }
 
     /* There was a "(ps->vmRss+3) * sysconf(_SC_PAGESIZE)" here in the original ksysguard code.  I have no idea why!  After comparing it to
      *   meminfo and other tools, this means we report the RSS by 12 bytes differently compared to them.  So I'm removing the +3
@@ -146,12 +184,7 @@ bool ProcessesLocal::Private::readProcStat(long pid, Process *ps)
     ps->vmRSS = ps->vmRSS * sysconf(_SC_PAGESIZE) / 1024; /*convert to KiB*/
     ps->vmSize /= 1024; /* convert to KiB */
 
-    if(in.status() != QTextStream::Ok) {
-        mFile.close();
-	return false;  //something went horribly wrong
-    }
-
-    switch( status[0]) {
+    switch( status) {
       case 'R':
         ps->status = Process::Running;
 	break;
@@ -174,8 +207,6 @@ bool ProcessesLocal::Private::readProcStat(long pid, Process *ps)
          ps->status = Process::OtherStatus;
          break;
     }
-
-    mFile.close();
     return true;
 }
 
