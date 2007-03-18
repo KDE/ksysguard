@@ -110,9 +110,10 @@ void testProcess::testTime() {
 	KSysGuard::Processes *processController = KSysGuard::Processes::getInstance();
 	QTime t;
 	t.start();
-	processController->updateAllProcesses();
-	kDebug() << "Time elapsed: "<< t.elapsed() <<" ms" <<  endl;
-	QVERIFY(t.elapsed() < 300); //It should take less than about 100ms.  Anything longer than 300ms even on a slow system really needs to be optimised
+	for(int i =0; i < 100; i++) 
+	  processController->updateAllProcesses();
+	kDebug() << "Time elapsed: "<< t.elapsed() <<" ms, so " << t.elapsed()/100 << "ms" <<  endl;
+	QVERIFY(t.elapsed()/100 < 300); //It should take less than about 100ms.  Anything longer than 300ms even on a slow system really needs to be optimised
 }
 
 QTEST_KDEMAIN(testProcess, NoGUI)

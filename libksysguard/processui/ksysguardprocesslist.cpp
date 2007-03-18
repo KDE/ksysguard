@@ -50,6 +50,7 @@
 #include "ui_ProcessWidgetUI.h"
 #include "processes.h"
 
+#define UPDATE_INTERVAL 2000
 
 #include <kapplication.h>
 //#define DO_MODELCHECK
@@ -145,7 +146,7 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	mUpdateTimer = new QTimer(this);
 	mUpdateTimer->setSingleShot(true);
 	connect(mUpdateTimer, SIGNAL(timeout()), this, SLOT(updateList()));
-	mUpdateTimer->start(2000);
+	mUpdateTimer->start(UPDATE_INTERVAL);
 
 	//If the view resorts continually, then it can be hard to keep track of processes.  By doing it only every 3 seconds it reduces the 'jumping around'
 	QTimer *mTimer = new QTimer(this);
@@ -253,7 +254,7 @@ void KSysGuardProcessList::hideEvent ( QHideEvent * event )  //virtual protected
 void KSysGuardProcessList::showEvent ( QShowEvent * event )  //virtual protected from QWidget
 {
 	if(!mUpdateTimer->isActive()) 
-		mUpdateTimer->start(2000);
+		mUpdateTimer->start(UPDATE_INTERVAL);
 	QWidget::showEvent(event);
 }
 
@@ -261,9 +262,9 @@ void
 KSysGuardProcessList::updateList()
 {
 	if(isVisible()) {
-		mModel.update();
+		mModel.update(UPDATE_INTERVAL);
 		expandInit(); //This will expand the init process
-		mUpdateTimer->start(2000);
+		mUpdateTimer->start(UPDATE_INTERVAL);
 	}
 }
 

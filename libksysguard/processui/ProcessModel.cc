@@ -74,9 +74,9 @@ void ProcessModel::setupProcesses() {
 	update();
 }
 
-void ProcessModel::update() {
+void ProcessModel::update(int updateDurationMS) {
 //	kDebug() << "update all processes: " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
-	mProcesses->updateAllProcesses();
+	mProcesses->updateAllProcesses(updateDurationMS);
 	if(mIsChangingLayout) {
 		mIsChangingLayout = false;
 		emit layoutChanged();

@@ -66,8 +66,9 @@ public:
 	 *  The column names we show to the user are based mostly on this information, translated if known, hidden if not necessary etc */
 	void setupHeader();
 
-	/** Update data */
-	void update();
+	/** Update data.  You can pass in the time between updates to only update if there hasn't
+	 *  been an update within the last @p updateDurationMS milliseconds */
+	void update(int updateDurationMS = 0);
 	
 	/** Return a string with the pid of the process and the name of the process.  E.g.  13343: ksyguard
 	 */
