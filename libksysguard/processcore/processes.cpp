@@ -41,6 +41,7 @@
 
 namespace KSysGuard
 {
+  Processes::StaticPrivate *Processes::d2 = 0;
 
   class Processes::Private
   {
@@ -143,8 +144,8 @@ bool Processes::updateProcess( Process *ps, long ppid, bool onlyReparent)
 
     //Now we have the process info.  Calculate the cpu usage and total cpu usage for itself and all its parents
     if(old_process.userTime != -1 && d->mElapsedTimeCentiSeconds!= 0) {  //Update the user usage and sys usage
-        ps->userUsage = ((ps->userTime - old_process.userTime)*100.0 + 0.5) / d->mElapsedTimeCentiSeconds;
-        ps->sysUsage  = ((ps->sysTime - old_process.sysTime)*100.0 + 0.5) / d->mElapsedTimeCentiSeconds;
+        ps->userUsage = (int)(((ps->userTime - old_process.userTime)*100.0 + 0.5) / d->mElapsedTimeCentiSeconds);
+        ps->sysUsage  = (int)(((ps->sysTime - old_process.sysTime)*100.0 + 0.5) / d->mElapsedTimeCentiSeconds);
         ps->totalUserUsage = ps->userUsage;
 	ps->totalSysUsage = ps->sysUsage;
 	if(ps->userUsage != 0 || ps->sysUsage != 0) {
@@ -227,14 +228,14 @@ bool Processes::updateOrAddProcess( long pid)
 	return updateProcess(ps, ppid);
 }
 
-void Processes::updateAllProcesses( )
+void Processes::updateAllProcesses( long updateDurationMS )
 {
     if(d->mElapsedTimeCentiSeconds == -1) {
         //First time update has been called
         d->mLastUpdated.start();
 	d->mElapsedTimeCentiSeconds = 0;
     } else {
-        if(d->mLastUpdated.elapsed() < 2000) //don't update more than once every 2 seconds. This is a sucky way to do it
+        if(d->mLastUpdated.elapsed() < updateDurationMS) //don't update more often than the time given
 		return;
         d->mElapsedTimeCentiSeconds = d->mLastUpdated.restart() / 10;
     }

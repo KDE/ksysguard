@@ -67,8 +67,12 @@ namespace KSysGuard
 	/**
 	 *  Update all the process information.  After calling this, /proc or equivalent is scanned and 
 	 *  the signals processChanged, etc  are emitted.
+	 *
+	 *  Set updateDuration to whatever time period that you update, in milliseconds.
+	 *  For example, if you update every 2000ms, set this to 2000.  That way it won't update
+	 *  more often than needed
 	 */
-        void updateAllProcesses();
+        void updateAllProcesses(long updateDurationMS = 0);
 	/**
 	 *  Return information for one specific process.  call getProcess(0) to get the 
 	 *  fake process used as the top most parent for all processes.
@@ -160,6 +164,5 @@ namespace KSysGuard
         bool updateProcess( Process *process, long ppid, bool onlyReparent = false);
         bool addProcess(long pid, long ppid);
     };
-    Processes::StaticPrivate *Processes::d2 = 0;
 }
 #endif 
