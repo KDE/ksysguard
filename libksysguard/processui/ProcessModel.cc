@@ -60,7 +60,8 @@ ProcessModel::ProcessModel(QObject* parent)
 void ProcessModel::setupProcesses() {
 	if(mProcesses)
 		KSysGuard::Processes::returnInstance();
-	mProcesses = KSysGuard::Processes::getInstance();
+
+	mProcesses = KSysGuard::Processes::getInstance();  //For now, hard code in a local instance
 
         connect( mProcesses, SIGNAL( processChanged(KSysGuard::Process *, bool)), this, SLOT(processChanged(KSysGuard::Process *, bool)));
 	connect( mProcesses, SIGNAL( beginAddProcess(KSysGuard::Process *)), this, SLOT(beginInsertRow( KSysGuard::Process *)));
@@ -70,7 +71,6 @@ void ProcessModel::setupProcesses() {
         connect( mProcesses, SIGNAL( beginMoveProcess(KSysGuard::Process *, KSysGuard::Process *)), this, 
 			       SLOT( beginMoveProcess(KSysGuard::Process *, KSysGuard::Process *)));
         connect( mProcesses, SIGNAL( endMoveProcess()), this, SLOT(endMoveRow()));
-
 	update();
 }
 
@@ -744,10 +744,11 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	return QVariant(); //never get here, but make compilier happy
 }
 
-void ProcessModel::setIsLocalhost(bool isLocalhost)
+bool ProcessModel::isLocalhost() const
 {
-	mIsLocalhost = isLocalhost;
+	return mIsLocalhost;
 }
+
 
 void ProcessModel::setupHeader() {
 	QStringList headings;

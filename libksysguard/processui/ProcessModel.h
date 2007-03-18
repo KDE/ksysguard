@@ -95,7 +95,11 @@ public:
 
 	/** Whether this is showing the processes for the current machine
 	 */
-	void setIsLocalhost(bool isLocalhost);
+	bool isLocalhost() const;
+
+	/** Returns for process controller pointer for this model
+	 */
+	inline KSysGuard::Processes *processController() { return mProcesses;}  ///The processes instance
 
 	/** The headings in the model.  The order here is the order that they are shown in.  If you change this, make sure you also change the 
 	 *  setup header function

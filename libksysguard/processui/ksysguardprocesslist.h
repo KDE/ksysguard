@@ -97,9 +97,6 @@ private:
 	 */
 	bool mSimple;
 
-	QProcess *mKillProcess;
-	QProcess *mReniceProcess;
-
 	/** The process model.  This contains all the data on all the processes running on the system */
 	ProcessModel mModel;
 	/** The process filter.  The mModel is connected to this, and this filter model connects to the view.  This lets us
