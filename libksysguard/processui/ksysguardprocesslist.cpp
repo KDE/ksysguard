@@ -102,7 +102,7 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	mFilterModel.setSourceModel(&mModel);
 	mUi->treeView->setModel(&mFilterModel);
 #ifdef DO_MODELCHECK
-	new Modeltest(&mFilterModel, this);
+	new ModelTest(&mModel, this);
 #endif
 	mUi->treeView->setItemDelegate(new ProgressBarItemDelegate(mUi->treeView));
 
