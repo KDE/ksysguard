@@ -331,12 +331,13 @@ void ProcessModel::setSimpleMode(bool simple)
 	mSimple = simple;
 	mIsChangingLayout = false;
 
-	int row;
+	int flatrow;
+	int treerow;
 	QList<QModelIndex> flatIndexes;
 	QList<QModelIndex> treeIndexes;
         foreach( KSysGuard::Process *process, mProcesses->getAllProcesses()) {
-		int flatrow = process->index;
-		int treerow = process->parent->children.indexOf(process);
+		flatrow = process->index;
+		treerow = process->parent->children.indexOf(process);
 		flatIndexes.clear();
 		treeIndexes.clear();
 	
@@ -644,18 +645,26 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				base = 200000000 - process->uid * 10000;
 			else
 				base = 100000000 - process->uid * 10000;
-			double totalcpu = (process->totalUserUsage + process->totalSysUsage);
-			if(totalcpu <= 0.001 && process->status != KSysGuard::Process::Running && process->status != KSysGuard::Process::Sleeping) 
-				totalcpu = 0.001;  //stopped or zombied processes should be near the top of the list
+			int cpu;
+			if(mSimple || !mShowChildTotals)
+				cpu = process->userUsage + process->sysUsage;
+			else
+				cpu = process->totalUserUsage + process->totalSysUsage;
+			if(cpu == 0 && process->status != KSysGuard::Process::Running && process->status != KSysGuard::Process::Sleeping) 
+				cpu = 1;  //stopped or zombied processes should be near the top of the list
 
 			//However we can of course have lots of processes with the same user.  Next we sort by CPU.
-			return (long long)(base - (totalcpu*100) -100 + memory*100.0/mMemTotal);
+			return (long long)(base - (cpu*100) -100 + memory*100.0/mMemTotal);
 		}
 		case HeadingCPUUsage: {
-			double totalcpu = (process->totalUserUsage + process->totalSysUsage);
-			if(totalcpu <= 0.001 && process->status != KSysGuard::Process::Running && process->status != KSysGuard::Process::Sleeping) 
-				totalcpu = 1;  //stopped or zombied processes should be near the top of the list
-			return (long long)-totalcpu;
+			int cpu;
+			if(mSimple || !mShowChildTotals)
+				cpu = process->userUsage + process->sysUsage;
+			else
+				cpu = process->totalUserUsage + process->totalSysUsage;
+			if(cpu == 0 && process->status != KSysGuard::Process::Running && process->status != KSysGuard::Process::Sleeping) 
+				cpu = 1;  //stopped or zombied processes should be near the top of the list
+			return -cpu;
 		 }
 		case HeadingMemory:
 			if(process->vmURSS == -1) 
