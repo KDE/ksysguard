@@ -234,7 +234,7 @@ void Processes::updateAllProcesses( )
         d->mLastUpdated.start();
 	d->mElapsedTimeCentiSeconds = 0;
     } else {
-        if(d->mLastUpdated.elapsed() < 2000) //don't update more than once every 2 seconds
+        if(d->mLastUpdated.elapsed() < 2000) //don't update more than once every 2 seconds. This is a sucky way to do it
 		return;
         d->mElapsedTimeCentiSeconds = d->mLastUpdated.restart() / 10;
     }

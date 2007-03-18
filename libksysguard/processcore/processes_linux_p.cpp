@@ -39,7 +39,6 @@
 #define PROCESS_BUFFER_SIZE 1000
 
 
-
 namespace KSysGuard
 {
 
@@ -53,7 +52,7 @@ namespace KSysGuard
       inline bool readProcStatm(long pid, Process *process);
       inline bool readProcCmdline(long pid, Process *process);
       QFile mFile;
-      char mBuffer[PROCESS_BUFFER_SIZE+1]; //used as a buffer to read data into
+      char mBuffer[PROCESS_BUFFER_SIZE+1]; //used as a buffer to read data into      
     };
 ProcessesLocal::ProcessesLocal() : d(new Private())
 {
@@ -216,26 +215,35 @@ bool ProcessesLocal::Private::readProcStatm(long pid, Process *process)
     if(!mFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;      /* process has terminated in the meantime */
 
-    QTextStream in(&mFile);
-
-    QByteArray ignore;
-    unsigned long shared;
-    in >> ignore >> ignore >> shared;
-    if(in.status() != QTextStream::Ok) {
+    if( mFile.readLine( mBuffer, sizeof(mBuffer)) <= 0) { //-1 indicates nothing read
         mFile.close();
-        return false;  //something went horribly wrong
+        return 0;
     }
-    
+    mFile.close();
+
+    int current_word = 0;
+    char *word = mBuffer;
+
+    while(true) {
+	    if(word[0] == ' ' ) {
+		    if(++current_word == 2)
+			    break;
+	    } else if(word[0] == 0) {
+	    	return false; //end of data - serious problem
+	    }
+	    word++;
+    }
+    long shared = atol(word+1);
+
     /* we use the rss - shared  to find the amount of memory just this app uses */
     process->vmURSS = process->vmRSS - (shared * sysconf(_SC_PAGESIZE) / 1024);
-
-    mFile.close();
     return true;
 }
 
 
 bool ProcessesLocal::Private::readProcCmdline(long pid, Process *process)
 {
+    if(!process->command.isEmpty()) return true; //only parse the cmdline once
     mFile.setFileName(QString("/proc/%1/cmdline").arg(pid));
     if(!mFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;      /* process has terminated in the meantime */
