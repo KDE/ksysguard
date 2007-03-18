@@ -21,16 +21,13 @@
 
 #include <QTimer>
 
-#include <QDomElement>
-#include <QVBoxLayout>
 #include <QList>
-#include <QHBoxLayout>
-#include <QResizeEvent>
+#include <QShowEvent>
+#include <QHideEvent>
 #include <QSortFilterProxyModel>
 #include <QHeaderView>
 #include <QAction>
 #include <QMenu>
-#include <QTime>
 #include <QSet>
 
 
@@ -48,11 +45,8 @@
 
 #include <QCheckBox>
 #include <QComboBox>
-#include <QLayout>
 #include <QItemDelegate>
 #include <QPainter>
-#include <QStyleOptionViewItem>
-#include <QProgressBar>
 
 #include <kapplication.h>
 //#define DO_MODELCHECK
@@ -236,8 +230,8 @@ void KSysGuardProcessList::showOrHideColumn(QAction *action)
 }
 void KSysGuardProcessList::expandAllChildren(const QModelIndex &parent) 
 {
-	//This is called when the user expands a node.  This then expands all of its children.  This will trigger this function again
-	//recursively.
+	//This is called when the user expands a node.  This then expands all of its 
+	//children.  This will trigger this function again recursively.
 	QModelIndex sourceParent = mFilterModel.mapToSource(parent);
 	for(int i = 0; i < mModel.rowCount(sourceParent); i++) 
 		mUi->treeView->expand(mFilterModel.mapFromSource(mModel.index(i,0, sourceParent)));
@@ -250,18 +244,26 @@ void KSysGuardProcessList::expandInit()
 	mUi->treeView->expand(mFilterModel.mapFromSource(mModel.index(0,0, QModelIndex())));
 	connect(mUi->treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
 }
-
-void KSysGuardProcessList::resizeEvent(QResizeEvent* ev)
+void KSysGuardProcessList::hideEvent ( QHideEvent * event )  //virtual protected from QWidget
 {
-	QWidget::resizeEvent(ev);
+	mUpdateTimer->stop();
+	QWidget::hideEvent(event);
+}
+void KSysGuardProcessList::showEvent ( QShowEvent * event )  //virtual protected from QWidget
+{
+	if(!mUpdateTimer->isActive()) 
+		mUpdateTimer->start(2000);
+	QWidget::showEvent(event);
 }
 
 void
 KSysGuardProcessList::updateList()
 {
-	mModel.update();
-	expandInit(); //This will expand the init process
-	mUpdateTimer->start(2000);
+	if(isVisible()) {
+		mModel.update();
+		expandInit(); //This will expand the init process
+		mUpdateTimer->start(2000);
+	}
 }
 
 void KSysGuardProcessList::killProcess(int pid, int sig)

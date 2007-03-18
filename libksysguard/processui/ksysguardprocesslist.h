@@ -23,22 +23,15 @@
 #define _KSysGuardProcessList_h_
 
 #include <QWidget>
-#include <QAbstractItemModel>
-
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QResizeEvent>
-#include <QList>
-#include <QProcess>
-
-
 #include <kapplication.h>
-
 #include "ProcessModel.h"
-
 #include "ProcessFilter.h"
+
+class QShowEvent;
+class QHideEvent;
 class QAction;
 class QMenu;
+class QProcess;
 namespace Ui {
   class ProcessWidget;
 }
@@ -59,9 +52,6 @@ class KDEUI_EXPORT KSysGuardProcessList : public QWidget
 public:
 	KSysGuardProcessList(QWidget* parent);
 	virtual ~KSysGuardProcessList() { }
-
-	/* Functions for SensorDisplay*/
-	void resizeEvent(QResizeEvent*);
 
 public slots:
 
@@ -125,8 +115,10 @@ private:
 	 */
 	int mXResHeadingEnd;
 
-
 	QTimer *mUpdateTimer;
+
+	virtual void showEvent(QShowEvent*);
+	virtual void hideEvent(QHideEvent*);
 };
 
 #endif
