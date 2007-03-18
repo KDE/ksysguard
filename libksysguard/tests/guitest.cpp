@@ -29,7 +29,6 @@
 
 void testGuiProcess::testGUI() {
     KSysGuardProcessList processlist(NULL);
-    processlist.show();
 
     QTime t;
     t.start();
