@@ -38,8 +38,8 @@ namespace KSysGuard
 
       public:
 
-	AbstractProcesses() {};
-	virtual ~AbstractProcesses() {};
+	AbstractProcesses() {}
+	virtual ~AbstractProcesses() {}
 	/**
 	 *  To get information about processes, this will be the first function called.
 	 */
