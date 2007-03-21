@@ -118,7 +118,7 @@ namespace KSysGuard
 	 *  update the information.
 	 */
 	const QList< Process *> &getAllProcesses() const;
-    signals:
+    Q_SIGNALS:
 	/** The data for a process has changed.
 	 *  if @p onlyCpuOrMem is set, only the cpu usage or memory information has been 
 	 *  updated.  This is for optomization reasons - the cpu percentage
