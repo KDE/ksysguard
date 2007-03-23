@@ -33,7 +33,7 @@
 
 #ifdef HAVE_LMSENSORS
 #include <sensors/sensors.h>
-
+#define BUFFER_SIZE_LMSEN 300
 typedef struct
 {
   char* fullName;
@@ -55,7 +55,11 @@ static LMSENSOR* findMatchingSensor( const char* name )
   LMSENSOR key;
   LMSENSOR* s;
 
+  if(name == NULL || name[0] == '\0') return 0;
   key.fullName = strdup( name );
+  int end = strlen(key.fullName)-1;
+  if(key.fullName[end] == '?')
+    key.fullName[end] = '\0';
   if ( ( idx = search_ctnr( LmSensors, sensorCmp, &key ) ) < 0 ) {
     free( key.fullName );
     return 0;
@@ -67,9 +71,21 @@ static LMSENSOR* findMatchingSensor( const char* name )
   return s;
 }
 
+static const char *chipName(const sensors_chip_name *chip) {
+  static char buffer[256];
+  if (chip->bus == SENSORS_CHIP_NAME_BUS_ISA)
+    sprintf (buffer, "%s-isa-%04x", chip->prefix, chip->addr);
+  else if (chip->bus == SENSORS_CHIP_NAME_BUS_PCI)
+    sprintf (buffer, "%s-pci-%04x", chip->prefix, chip->addr);
+  else
+    sprintf (buffer, "%s-i2c-%d-%02x", chip->prefix, chip->bus, chip->addr);
+  return buffer;
+}
+
 void initLmSensors( struct SensorModul* sm )
 {
   const sensors_chip_name* scn;
+  char buffer[BUFFER_SIZE_LMSEN];
   int nr = 0;
 
   FILE* input;
@@ -92,28 +108,23 @@ void initLmSensors( struct SensorModul* sm )
     const sensors_feature_data* sfd;
     nr1 = nr2 = 0;
     while ( ( sfd = sensors_get_all_features( *scn, &nr1, &nr2 ) ) != 0 ) {
-      if ( sfd->mapping == SENSORS_NO_MAPPING ) {
+      if ( sfd->mapping == SENSORS_NO_MAPPING && sfd->mode & SENSORS_MODE_R /* readable feature */) {
         LMSENSOR* p;
         char* label;
-        char* s;
-        char* prefixEscaped, labelEscaped;
 
-        sensors_get_label( *scn, sfd->number, &label );
+        if(sensors_get_label( *scn, sfd->number, &label ) != 0)
+		continue; /*error*/
+	if(sensors_get_ignored( *scn, sfd->number) != 1 )
+		continue; /* 1 for not ignored, 0 for ignore,  <0 for error */
+	double result;
+	if(sensors_get_feature( *scn, sfd->number, &result) != 0 )
+		continue; /* Make sure this feature actually works.  0 for success, <0 for fail */
+
         p = (LMSENSOR*)malloc( sizeof( LMSENSOR ) );
 
-        prefixEscaped = escapeString( scn->prefix );
-        labelEscaped = escapeString( label );
-        p->fullName = (char*)malloc( strlen( "lmsensors/" ) +
-                                     strlen( prefixEscaped ) + 1 +
-                                     strlen( labelEscaped ) + 1 );
-        sprintf( p->fullName, "lmsensors/%s/%s", prefixEscaped, labelEscaped );
-        free( prefixEscaped );
-        free( labelEscaped );
+        snprintf( buffer, BUFFER_SIZE_LMSEN, "lmsensors/%s/%s", chipName(scn), sfd->name );
 
-        /* Make sure that name contains only proper characters. */
-        for ( s = p->fullName; *s; s++ )
-          if ( *s == ' ' )
-            *s = '_';
+	p->fullName = strndup(buffer, BUFFER_SIZE_LMSEN);	
 
         p->scn = scn;
         p->sfd = sfd;
@@ -129,6 +140,7 @@ void initLmSensors( struct SensorModul* sm )
   }
   bsort_ctnr( LmSensors, sensorCmp );
 }
+
 
 void exitLmSensors( void )
 {
@@ -159,7 +171,18 @@ void printLmSensorInfo( const char* cmd )
   }
 
   /* TODO: print real name here */
-  fprintf( CurrentClient, "Sensor Info\t0\t0\t\n" );
+  char *label;
+  if(sensors_get_label( *s->scn, s->sfd->number, &label ) != 0) {  /*error*/
+    fprintf( CurrentClient, "0\n" );
+    return;
+  }
+  if( strncmp(s->sfd->name, "temp", sizeof("temp")-1) == 0)
+    fprintf( CurrentClient, "%s\t0\t0\t°C\n", label );
+  else if( strncmp(s->sfd->name, "fan", sizeof("fan")-1) == 0)
+    fprintf( CurrentClient, "%s\t0\t0\trpm\n", label );
+  else
+    fprintf( CurrentClient, "%s\t0\t0\tV\n", label );  /* For everything else, say it's in volts. */
+
 }
 
 #else /* HAVE_LMSENSORS */
