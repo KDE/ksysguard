@@ -134,9 +134,9 @@ SensorManager::SensorManager()
     mDict.insert( QLatin1String( "disk" ) + QString::number( i ), i18n( "Disk %1", i+1 ) );
   }
 
-  for ( int i = 0; i < 6; i++) {
-    mDict.insert( QLatin1String( "fan" ) + QString::number( i ), i18n( "Fan %1", i+1 ) );
-    mDict.insert( QLatin1String( "temp" ) + QString::number( i ), i18n( "Temperature %1", i+1 ) );
+  for ( int i = 1; i < 6; i++) {
+    mDict.insert( QLatin1String( "fan" ) + QString::number( i ), i18n( "Fan %1", i ) );
+    mDict.insert( QLatin1String( "temp" ) + QString::number( i ), i18n( "Temperature %1", i ) );
   }
 
   mDict.insert( QLatin1String( "int00" ), i18n( "Total" ) );
