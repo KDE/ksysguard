@@ -121,7 +121,7 @@ void FancyPlotter::configureSettings()
     SensorModelEntry entry;
     entry.setId( i );
     entry.setHostName( sensors().at( i )->hostName() );
-    entry.setSensorName( KSGRD::SensorMgr->translateSensor( sensors().at( i )->name() ) );
+    entry.setSensorName( sensors().at( i )->name() );
     entry.setUnit( KSGRD::SensorMgr->translateUnit( sensors().at( i )->unit() ) );
     entry.setStatus( sensors().at( i )->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
     entry.setColor( mPlotter->beamColors()[ i ] );
@@ -239,7 +239,6 @@ bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
   /* To differentiate between answers from value requests and info
    * requests we add 100 to the beam index for info requests. */
   sendRequest( hostName, name + '?', mBeams + 100 );
-
   ++mBeams;
 
   return true;
@@ -249,7 +248,7 @@ bool FancyPlotter::removeSensor( uint pos )
 {
   if ( pos >= mBeams ) {
     kDebug(1215) << "FancyPlotter::removeSensor: idx out of range ("
-                  << pos << ")" << endl;
+                 << pos << ")" << endl;
     return false;
   }
 
@@ -318,7 +317,7 @@ QSize FancyPlotter::sizeHint() const
 
 void FancyPlotter::timerTick( ) //virtual
 {
-  if(!mSampleBuf.isEmpty()) {
+  if(!mSampleBuf.isEmpty() && mBeams != 0) {
     while((uint)mSampleBuf.count() < mBeams)
       mSampleBuf.append(mPlotter->lastValue(mSampleBuf.count())); //we might have sensors missing so set their values to the previously known value
     mPlotter->addSample( mSampleBuf );
@@ -329,9 +328,9 @@ void FancyPlotter::timerTick( ) //virtual
 void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
 {
   QByteArray answer;
+
   if(!answerlist.isEmpty()) answer = answerlist[0];
   if ( (uint)id < mBeams ) {
-
     //Make sure that we put the answer in the correct place.  It's index in the list should be equal to id
     
     while(id > mSampleBuf.count())

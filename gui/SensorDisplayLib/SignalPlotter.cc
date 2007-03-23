@@ -468,7 +468,7 @@ void KSignalPlotter::drawWidget(QPainter *p, uint w, uint height, int horizontal
   p->setFont( mFont );
 
   uint fontheight = p->fontMetrics().height();
-  if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || mMaxValue < (mNiceRange*0.75 + mNiceMinValue))
+  if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || mMaxValue < (mNiceRange*0.75 + mNiceMinValue) || mNiceRange == 0)
     calculateNiceRange();
   QPen pen;
   pen.setWidth(1);
@@ -660,6 +660,7 @@ void KSignalPlotter::drawVerticalLines(QPainter *p, int top, int w, int h)
 
 void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizontalScale)
 {
+  Q_ASSERT(mNiceRange != 0); if(mNiceRange == 0) mNiceRange = 1;
   double scaleFac = (h-1) / mNiceRange;
 
   int xPos = 0;
@@ -774,6 +775,7 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizonta
     float y1 = y0;
     float y2 = y0;
     float y3 = y0;
+
     int offset = 0; //Our line is 2 pixels thick.  This means that when we draw the area, we need to offset 
     double max_y=0;
     double min_y=0;
@@ -817,7 +819,6 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizonta
 	float delta_y3;
 	delta_y3 = (prev_prev_prev_datapoints[j] - mNiceMinValue)*scaleFac;
 
-	
         QPainterPath path;
 	if(mStackBeams && offset) {
 		//we don't want the lines to overdraw each other.  This isn't a great solution though :(
@@ -832,6 +833,8 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizonta
 	if(mFillBeams) {
 	  QPainterPath path2(path);
           QLinearGradient myGradient(0,(h-1+top),0,(h-1+top)/5);
+	  Q_ASSERT(mBeamColorsDark.size() >= j);
+	  Q_ASSERT(mBeamColors.size() >= j);
 	  QColor c0(mBeamColorsDark[j]);
 	  QColor c1(mBeamColors[j]);
 	  c0.setAlpha(150);
@@ -841,7 +844,7 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizonta
 
           path2.lineTo( x3,y3-offset);
 	  if(mStackBeams)
-	    path2.cubicTo( x2,y2-offset,x1,y1-offset,x0,y0-offset); //offet is set to 1 after the first beam is drawn, so we don't trample on top of the 2pt thick line
+	    path2.cubicTo( x2,y2-offset,x1,y1-offset,x0,y0-offset); //offset is set to 1 after the first beam is drawn, so we don't trample on top of the 2pt thick line
 	  else
 	    path2.lineTo(x0,y0-1);
           p->setBrush(myGradient);
@@ -849,6 +852,7 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizonta
           p->drawPath( path2 );
 	}
 	p->setBrush(Qt::NoBrush);
+	Q_ASSERT(mBeamColors.size() >= j);
 	pen.setColor(mBeamColors[j]);
 	p->setPen(pen);
         p->drawPath( path );

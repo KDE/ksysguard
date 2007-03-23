@@ -32,9 +32,9 @@
 #include <QCustomEvent>
 
 #include <kapplication.h>
-#include <kdebug.h>
 #include <kiconloader.h>
 #include <klocale.h>
+#include <kdebug.h>
 #include <kmessagebox.h>
 #include <krun.h>
 #include <kurl.h>
@@ -103,8 +103,9 @@ void SensorDisplay::timerTick()
 {
   int i = 0;
 
-  foreach( SensorProperties *s, mSensors)
+  foreach( SensorProperties *s, mSensors) {
     sendRequest( s->hostName(), s->name(), i++ );
+ }
 }
 
 bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
@@ -161,8 +162,9 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
 void SensorDisplay::sendRequest( const QString &hostName,
                                  const QString &command, int id )
 {
-  if ( !SensorMgr->sendRequest( hostName, command, (SensorClient*)this, id ) )
+  if ( !SensorMgr->sendRequest( hostName, command, (SensorClient*)this, id ) ) {
     sensorError( id, true );
+  }
 }
 
 void SensorDisplay::sensorError( int sensorId, bool err )

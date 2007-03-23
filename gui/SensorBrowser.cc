@@ -214,7 +214,7 @@ void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&an
 
   HostInfo *hostInfo = getHostInfo(hostId);
   if(!hostInfo) {
-    kDebug() << "SensorBrowserModel::answerRecieved with invalid hostId " << hostId  << endl;
+    kDebug(1215) << "SensorBrowserModel::answerRecieved with invalid hostId " << hostId  << endl;
     return;
   }  
   for ( int i = 0; i < answer.count(); ++i ) {
@@ -254,7 +254,7 @@ QModelIndex SensorBrowserModel::parent ( const QModelIndex & index ) const { //v
     return QModelIndex();
   if(mHostInfoMap.contains(index.internalId())) return QModelIndex();
   if(!mParentsTreeMap.contains(index.internalId())) {
-	  kDebug() << "Something is wrong with the model.  Doesn't contain " << index.internalId() << endl;
+	  kDebug(1215) << "Something is wrong with the model.  Doesn't contain " << index.internalId() << endl;
 	  return QModelIndex();
   }
   int parentId = mParentsTreeMap.value(index.internalId());
@@ -355,8 +355,6 @@ void SensorBrowserModel::addHost(KSGRD::SensorAgent *sensorAgent, const QString 
     mHostSensorsMap.insert(mIdCount, QHash<QString, bool>());
     mIdCount++;
   endInsertRows();
-
-  kDebug() << "Sent monitors request" << endl;
   hostInfo->sensorAgent()->sendRequest( "monitors", this, mIdCount-1 );
 }
 

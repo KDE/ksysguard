@@ -20,7 +20,6 @@
 
 #include <QClipboard>
 #include <QCursor>
-#include <q3dragobject.h>
 #include <QLayout>
 #include <QTextStream>
 #include <QGridLayout>
@@ -347,10 +346,11 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
     else if ( sensorType == "table" )
       newDisplay = new ProcessController( this, sensorDescr, &mSharedSettings);
     else {
-      kDebug(1215) << "Unkown sensor type: " <<  sensorType << endl;
+      kDebug(1215) << "Unknown sensor type: " <<  sensorType << endl;
       return 0;
     }
 
+    connect(&mTimer, SIGNAL( timeout()), newDisplay, SLOT( timerTick()));
     replaceDisplay( row, column, newDisplay );
   }
 

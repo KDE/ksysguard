@@ -119,7 +119,7 @@ class SensorInfo
                 const QString &description, const QString &type );
 
     /**
-      Returns the name of the sensor.  e.g. "cpu/free"
+      Returns the name of the sensor.  e.g. "cpu/free".  Not translated.
      */
     QString name() const;
 
