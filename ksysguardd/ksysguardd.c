@@ -532,9 +532,8 @@ static void exitModules()
 char* escapeString( char* string ) {
   int i, length;
   char* result;
-  char* endOfResult;
+  char* resultP;
   int charsToEscape = 0;
-  int lastUnescapedChar = 0;
 
   /* Count how many characters we need to escape so that we know how much memory we'll have to allocate */
   i = 0;
@@ -551,26 +550,20 @@ char* escapeString( char* string ) {
 
   /* Allocate a new string, result, with enough room for the escaped characters */
   result = (char *)malloc( length + charsToEscape + 1 );
-  endOfResult = result;
-
+  resultP = result;
   /* Fill result with an escaped version of string */
   i = 0;
   while (string[i] != '\0') {
     if( string[i] == '/' ) {
-      memcpy(endOfResult, &string[lastUnescapedChar], i-lastUnescapedChar);
-      endOfResult += i-lastUnescapedChar;
-      *endOfResult = '\\';
-      ++endOfResult;
-
-      lastUnescapedChar = i;
+      resultP[0] = '\\';
+      resultP++;
     }
-
+    resultP[0] = string[i];
+    resultP++;
+    
     ++i;
   }
-
-  /* Don't forget about the stuff after the last '/' char */
-  memcpy(endOfResult, &string[lastUnescapedChar], i-lastUnescapedChar);
-
+  resultP[0] = '\0';
   return result;
 }
 
