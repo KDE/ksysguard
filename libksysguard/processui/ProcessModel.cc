@@ -458,6 +458,10 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			return process->name;
 		case HeadingUser:
 			return getUsernameForUser(process->uid);
+		case HeadingNiceness:
+			return process->niceLevel;
+		case HeadingTty:
+			return process->tty;
 		case HeadingCPUUsage:
 			{
 				double total;
@@ -758,6 +762,8 @@ void ProcessModel::setupHeader() {
 	QStringList headings;
 	headings << i18nc("process heading", "Name");
 	headings << i18nc("process heading", "User Name");
+	headings << i18nc("process heading", "Tty");
+	headings << i18nc("process heading", "Niceness");
 	headings << i18nc("process heading", "CPU %");
 	headings << i18nc("process heading", "Virtual Size");
 	headings << i18nc("process heading", "Memory");

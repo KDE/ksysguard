@@ -102,10 +102,11 @@ public:
 	 */
 	inline KSysGuard::Processes *processController() { return mProcesses;}  ///The processes instance
 
-	/** The headings in the model.  The order here is the order that they are shown in.  If you change this, make sure you also change the 
+	/** The headings in the model.  The order here is the order that they are shown
+	 *  in.  If you change this, make sure you also change the 
 	 *  setup header function
 	 */
-	enum { HeadingName=0, HeadingUser, HeadingCPUUsage, HeadingVmSize, HeadingMemory, HeadingSharedMemory, HeadingCommand };	
+	enum { HeadingName=0, HeadingUser, HeadingTty, HeadingNiceness, HeadingCPUUsage, HeadingVmSize, HeadingMemory, HeadingSharedMemory, HeadingCommand };	
 public slots:
 	void setShowTotals(bool showTotals);
 private slots:

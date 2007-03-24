@@ -128,6 +128,8 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 
 	/*  Hide the vm size column by default since it's not very useful */
 	mUi->treeView->header()->hideSection(ProcessModel::HeadingVmSize);
+	mUi->treeView->header()->hideSection(ProcessModel::HeadingNiceness);
+	mUi->treeView->header()->hideSection(ProcessModel::HeadingTty);
 	mFilterModel.setFilterKeyColumn(0);
 
 	//Process names can have mixed case. Make the filter case insensitive.
