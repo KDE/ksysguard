@@ -72,8 +72,8 @@ typedef struct {
   /* A character description of the process status */
   char status[ 16 ];
 
-  /* The number of the tty the process owns */
-  int ttyNo;
+  /* The tty the process owns */
+  char tty[10];
 
   /**
     The nice level. The range should be -20 to 20. I'm not sure
@@ -199,14 +199,29 @@ static bool getProcess( int pid, ProcessInfo *ps )
   buf[ BUFSIZE - 1 ] = '\0';
   if ( ( fd = fopen( buf, "r" ) ) == 0 )
     return false;
-
+  int ttyNo;
   if ( fscanf( fd, "%*d %*s %c %d %*d %*d %d %*d %*u %*u %*u %*u %*u %lu %lu"
                    "%*d %*d %*d %d %*u %*u %*d %lu %lu",
-                   &status, (int*)&ps->ppid, &ps->ttyNo,
+                   &status, (int*)&ps->ppid, &ttyNo,
                    &ps->userTime, &ps->sysTime, &ps->niceLevel, &ps->vmSize,
                    &ps->vmRss) != 8 ) {
     fclose( fd );
     return false;
+  }
+  int major = ttyNo >> 8;
+  int minor = ttyNo & 0xff;
+  switch(major) {
+    case 136:
+      snprintf(ps->tty, sizeof(ps->tty)-1, "pts/%d", minor);
+      break;
+    case 4:
+      if(minor < 64)
+        snprintf(ps->tty, sizeof(ps->tty)-1, "tty/%d", minor);
+      else
+        snprintf(ps->tty, sizeof(ps->tty)-1, "ttyS/%d", minor-64);
+      break;
+    default:
+      ps->tty[0] = 0;
   }
 
   /*There was a "(ps->vmRss+3) * sysconf(_SC_PAGESIZE)" here originally.  I have no idea why!  After comparing it to
@@ -312,11 +327,11 @@ void printProcessList( const char* cmd)
       long pid;
       pid = atol( entry->d_name );
       if(getProcess( pid, &ps ))
-        fprintf( CurrentClient, "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%lu\t%s\t%ld\t%s\n",
+        fprintf( CurrentClient, "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%lu\t%s\t%ld\t%s\t%s\n",
 	     ps.name, pid, (long)ps.ppid,
              (long)ps.uid, (long)ps.gid, ps.status, ps.userTime,
              ps.sysTime, ps.niceLevel, ps.vmSize, ps.vmRss, ps.vmURss,
-             ps.userName, (long)ps.tracerpid, ps.cmdline
+             ps.userName, (long)ps.tracerpid, ps.tty, ps.cmdline
 	     );
     }
   }
@@ -392,8 +407,8 @@ void printProcessListInfo( const char* cmd )
 {
   (void)cmd;
   fprintf( CurrentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser Time\tSystem Time\tNice\tVmSize"
-                          "\tVmRss\tVmURss\tLogin\tTracerPID\tCommand\n" );
-  fprintf( CurrentClient, "s\td\td\td\td\tS\td\td\td\tD\tD\tD\ts\td\ts\n" );
+                          "\tVmRss\tVmURss\tLogin\tTracerPID\tTTY\tCommand\n" );
+  fprintf( CurrentClient, "s\td\td\td\td\tS\td\td\td\tD\tD\tD\ts\td\ts\ts\n" );
 }
 
 void printProcessCount( const char* cmd )
