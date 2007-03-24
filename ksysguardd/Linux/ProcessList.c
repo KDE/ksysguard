@@ -254,9 +254,22 @@ static bool getProcess( int pid, ProcessInfo *ps )
     return false;
 
   ps->cmdline[ 0 ] = '\0';
-  sprintf( buf, "%%%d[^\n]", (int)sizeof( ps->cmdline ) - 1 );
-  fscanf( fd, buf, ps->cmdline );
-  ps->cmdline[ sizeof( ps->cmdline ) - 1 ] = '\0';
+
+  unsigned int i =0;
+  while( (ps->cmdline[i] = fgetc(fd)) != EOF && i < sizeof(ps->cmdline)-3) {
+    if(ps->cmdline[i] == '\0')
+      ps->cmdline[i] = ' ';
+    i++;
+  }
+
+
+  if(i > 2) {
+    if(ps->cmdline[i-2] == ' ') ps->cmdline[i-2] = '\0';
+    else ps->cmdline[i-1] = '\0';
+  } else {
+    ps->cmdline[0] = '\0';
+  }
+
   validateStr( ps->cmdline );
   if ( fclose( fd ) )
     return false;
