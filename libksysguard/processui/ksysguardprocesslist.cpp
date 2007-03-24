@@ -228,6 +228,7 @@ void KSysGuardProcessList::showOrHideColumn(QAction *action)
 		mUi->treeView->hideColumn(-1-index);
 	else {
 		mUi->treeView->showColumn(index);
+		mUi->treeView->resizeColumnToContents(index);
 		mUi->treeView->resizeColumnToContents(mFilterModel.columnCount());
 	}
 		
