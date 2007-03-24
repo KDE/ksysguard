@@ -520,7 +520,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Command: %3", process->name, (long int)process->pid, process->command);
 			else
 				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3<br/>Command: %4", process->name, (long int)process->pid, (long int)process->parent_pid, process->command);
-
+			if(!process->tty.isEmpty())
+				tooltip += i18n( "<br/>Running on: %1", QString(process->tty));
 			if(!tracer.isEmpty())
 				return tooltip + "<br/>" + tracer;
 			return tooltip;
@@ -529,6 +530,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		case HeadingCommand: {
 			QString tooltip =
 				i18n("<qt>This process was run with the following command:<br/>%1", process->command);
+			if(!process->tty.isEmpty())
+				tooltip += i18n( "<br/><br/>Running on: %1", QString(process->tty));
 		        if(tracer.isEmpty()) return tooltip;
 			return tooltip + "<br/>" + tracer;
 		}
