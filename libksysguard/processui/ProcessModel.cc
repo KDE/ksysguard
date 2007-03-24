@@ -537,6 +537,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				return getTooltipForUser(process->uid, process->gid) + "<br/>" + tracer;
 			return getTooltipForUser(process->uid, process->gid);
 		}
+		case HeadingNiceness:
+			return i18n("<br/>Nice level: %1 (%2)", QString::number(process->niceLevel), process->niceLevelAsString() );
 		case HeadingCPUUsage: {
 			QString tooltip = ki18n("<qt>Process status: %1 %2<br/>"
 						"User CPU usage: %3%<br/>System CPU usage: %4%")
@@ -563,6 +565,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				tooltip += ki18n("<br/>CPU time spent running in kernel: %1 seconds")
 						.subs(process->sysTime / 100.0, 0, 'f', 1)
 						.toString();
+			if(process->niceLevel != 0)
+				tooltip += i18n("<br/>Nice level: %1 (%2)", QString::number(process->niceLevel), process->niceLevelAsString() );
 
 			if(!tracer.isEmpty())
 				return tooltip + "<br/>" + tracer;
