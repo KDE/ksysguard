@@ -163,8 +163,28 @@ bool ProcessesLocal::Private::readProcStat(long pid, Process *ps)
                               status=word[1];  // Look at the first letter of the status.  
 			                      // We analyse this after the while loop
 			      break;
-//			    case 6: //ttyNo
-//			      break;
+			    case 6: //ttyNo
+			      {
+			        int ttyNo = atoi(word+1);
+				int major = ttyNo >> 8;
+				int minor = ttyNo & 0xff;
+				switch(major) {
+				  case 136:
+				    ps->tty = QByteArray("pts/") + QByteArray::number(minor);
+				    break;
+				  case 5:
+				    ps->tty = QByteArray("tty");
+				  case 4:
+				    if(minor < 64)
+				      ps->tty = QByteArray("tty") + QByteArray::number(minor);
+				    else
+				      ps->tty = QByteArray("ttyS") + QByteArray::number(minor-64);
+				    break;
+				  default:
+				    ps->tty = QByteArray();
+				}
+			      }
+			      break;
 			    case 13: //userTime
 			      ps->userTime = atoll(word+1);
 			      break;

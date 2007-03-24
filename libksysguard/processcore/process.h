@@ -49,7 +49,7 @@ namespace KSysGuard
         long long uid; ///The user id that the process is running as
         long long gid; ///The group id that the process is running as
         long long tracerpid; ///If this is being debugged, this is the process that is debugging it
-	QString tty; /// The name of the tty the process owns
+	QByteArray tty; /// The name of the tty the process owns
         long long userTime; ///The time, in 100ths of a second, spent in total on user calls. -1 if not known
         long long sysTime;  ///The time, in 100ths of a second, spent in total on system calls.  -1 if not known
         int userUsage; ///Percentage (0 to 100).  It might be more than 100% on multiple cpu core systems
