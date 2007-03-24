@@ -66,7 +66,8 @@ namespace KSysGuard
         QList<Process *> children;  ///A list of all the direct children that the process has.  Children of children are not listed here, so note that children_pids <= numChildren
 	ProcessStatus status; ///Whether the process is running/sleeping/etc
 
-	QString translatedStatus();
+	QString translatedStatus() const;
+	QString niceLevelAsString() const;
 
 	int index;
   private:

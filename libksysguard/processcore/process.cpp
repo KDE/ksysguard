@@ -30,7 +30,15 @@ KSysGuard::Process::Process(long long _pid, long long _ppid, Process *_parent)  
 	parent = _parent;
 }
 
-QString KSysGuard::Process::translatedStatus() { 
+QString KSysGuard::Process::niceLevelAsString() const {
+	if( niceLevel == 0) return i18nc("Process Niceness", "Normal");
+	if( niceLevel > 15) return i18nc("Process Niceness", "Very low priority");
+	if( niceLevel > 0) return i18nc("Process Niceness", "Low priority");
+	if( niceLevel < -1) return i18nc("Process Niceness", "High priority");
+	if( niceLevel < -15) return i18nc("Process Niceness", "Very high priority");
+	return QString::null; //impossible;
+}
+QString KSysGuard::Process::translatedStatus() const { 
 	switch( status ) { 
 		case Running: return i18nc("process status", "running");
 		case Sleeping: return i18nc("process status", "sleeping");
