@@ -398,7 +398,7 @@ QString ProcessModel::getTooltipForUser(const KSysGuard::Process *ps) const
 		else {
 			userTooltip = "<qt>";
 			if(!user.fullName().isEmpty()) userTooltip += i18n("<b>%1</b><br/>", user.fullName());
-			userTooltip += i18n("Login Name: %1 (Uid: %2)<br/>", user.loginName(), ps->uid);
+			userTooltip += i18n("Login Name: %1 (uid: %2)<br/>", user.loginName(), ps->uid);
 			if(!user.roomNumber().isEmpty()) userTooltip += i18n("  Room Number: %1<br/>", user.roomNumber());
 			if(!user.workPhone().isEmpty()) userTooltip += i18n("  Work Phone: %1<br/>", user.workPhone());
 		}
@@ -412,9 +412,10 @@ QString ProcessModel::getTooltipForUser(const KSysGuard::Process *ps) const
 			userTooltip += i18n("Setuid User: %1<br/>", getUsernameForUser(ps->suid, true));
 		if(ps->fsuid != -1)
 			userTooltip += i18n("File System User: %1<br/>", getUsernameForUser(ps->fsuid, true));
+		userTooltip += "<br/>";
 	}
 	if(ps->gid != -1) {
-		userTooltip += i18n("<br/>Group: %1", getGroupnameForGroup(ps->gid));
+		userTooltip += i18n("Group: %1", getGroupnameForGroup(ps->gid));
 		if( (ps->gid != ps->egid && ps->egid != -1) || 
 	                   (ps->gid != ps->sgid && ps->sgid != -1) || 
 	                   (ps->gid != ps->fsgid && ps->fsgid != -1)) {
@@ -437,7 +438,7 @@ QString ProcessModel::getGroupnameForGroup(long long gid) const {
 	if(mIsLocalhost) {
 		QString groupname = KUserGroup(gid).name();
 		if(!groupname.isEmpty())
-			return i18n("%1 (Gid: %2)", groupname, QString::number(gid));
+			return i18n("%1 (gid: %2)", groupname, QString::number(gid));
 	}
 	return QString::number(gid);
 }
@@ -458,7 +459,7 @@ QString ProcessModel::getUsernameForUser(long long uid, bool withuid) const {
 	if(username.isEmpty()) 
 		return QString::number(uid);
 	if(withuid)
-		return i18n("%1 (Uid: %2)", username, (long int)uid);
+		return i18n("%1 (uid: %2)", username, (long int)uid);
 	return username;
 }
 
@@ -484,7 +485,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			if(process->uid == process->euid)
 				return getUsernameForUser(process->uid, false);
 			else
-				return getUsernameForUser(process->uid, false) + ',' + getUsernameForUser(process->euid, false);
+				return getUsernameForUser(process->uid, false) + ", " + getUsernameForUser(process->euid, false);
 		case HeadingNiceness:
 			return process->niceLevel;
 		case HeadingTty:
