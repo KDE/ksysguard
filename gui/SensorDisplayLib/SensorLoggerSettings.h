@@ -34,7 +34,7 @@ class SensorLoggerSettings : public KDialog
 
   public:
 
-    SensorLoggerSettings( QWidget *parent=0, const char *name=0 );
+    explicit SensorLoggerSettings( QWidget *parent=0, const char *name=0 );
     ~SensorLoggerSettings();
 
     QString title();

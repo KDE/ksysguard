@@ -27,10 +27,9 @@
 
 #include "KSGAppletSettings.h"
 
-KSGAppletSettings::KSGAppletSettings( QWidget *parent, const char *name )
+KSGAppletSettings::KSGAppletSettings( QWidget *parent)
     : KDialog( parent )
 {
-  setObjectName( name );
   setModal( false );
   setCaption( i18n( "System Guard Applet Settings" ) );
   setButtons( Ok|Apply|Cancel );

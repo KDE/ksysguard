@@ -39,7 +39,7 @@ class StyleSettings : public KPageDialog
   Q_OBJECT
 
   public:
-    StyleSettings( QWidget *parent = 0, const char *name = 0 );
+    explicit StyleSettings( QWidget *parent = 0);
     ~StyleSettings();
 
     void setFirstForegroundColor( const QColor &color );

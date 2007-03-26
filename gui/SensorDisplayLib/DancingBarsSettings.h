@@ -41,7 +41,7 @@ class DancingBarsSettings : public KPageDialog
   Q_OBJECT
 
   public:
-    DancingBarsSettings( QWidget* parent = 0, const char* name = 0 );
+    explicit DancingBarsSettings( QWidget* parent = 0, const char* name = 0 );
     ~DancingBarsSettings();
 
     void setTitle( const QString& title );

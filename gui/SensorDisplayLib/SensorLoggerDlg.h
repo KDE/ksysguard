@@ -34,7 +34,7 @@ class SensorLoggerDlg : public KDialog
 
   public:
 
-    SensorLoggerDlg( QWidget *parent=0, const char *name=0 );
+    explicit SensorLoggerDlg( QWidget *parent=0, const char *name=0 );
     ~SensorLoggerDlg();
 
     QString fileName() const;

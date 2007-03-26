@@ -36,11 +36,10 @@
 
 #include "StyleSettings.h"
 
-StyleSettings::StyleSettings( QWidget *parent, const char *name )
+StyleSettings::StyleSettings( QWidget *parent )
   : KPageDialog( parent )
 {
   setFaceType( Tabbed );
-  setObjectName( name );
   setModal( true );
   setCaption( i18n( "Global Style Settings" ) );
   setButtons( Help | Ok | Apply | Cancel );

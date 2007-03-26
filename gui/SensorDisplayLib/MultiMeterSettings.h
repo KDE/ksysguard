@@ -34,7 +34,7 @@ class MultiMeterSettings : public KDialog
 
   public:
 
-    MultiMeterSettings( QWidget *parent=0, const char *name=0 );
+    explicit MultiMeterSettings( QWidget *parent=0, const char *name=0 );
     ~MultiMeterSettings();
 
     QString title();

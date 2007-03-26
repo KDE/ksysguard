@@ -28,7 +28,7 @@ class QSpinBox;
 class KSGAppletSettings : public KDialog
 {
   public:
-    KSGAppletSettings( QWidget *parent = 0, const char *name = 0 );
+    explicit KSGAppletSettings( QWidget *parent = 0);
     ~KSGAppletSettings();
 
     void setNumDisplay( int );
