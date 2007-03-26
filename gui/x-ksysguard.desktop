@@ -6,6 +6,7 @@ MimeType=application/x-ksysguard
 Comment=KDE System Monitor
 Comment[csb]=Mònitor systemë
 Comment[el]=Επόπτης συστήματος του KDE
+Comment[ja]=KDE システムモニタ
 Comment[nds]=KDE-Systeemkieker
 Comment[x-test]=xxKDE System Monitorxx
 Icon=ksysguard

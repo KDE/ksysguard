@@ -3,6 +3,7 @@ Encoding=UTF-8
 Name=System Monitor
 Name[csb]=Mònitor systemë
 Name[el]=Επόπτης συστήματος
+Name[ja]=システムモニタ
 Name[nds]=Systeemkieker
 Name[x-test]=xxSystem Monitorxx
 Exec=ksysguard %U
