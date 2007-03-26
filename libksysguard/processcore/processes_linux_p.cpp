@@ -83,13 +83,13 @@ bool ProcessesLocal::Private::readProcStatus(long pid, Process *process)
 	    break;
 	  case 'U': 
 	    if((unsigned int)size > sizeof("Uid:") && qstrncmp(mBuffer, "Uid:", sizeof("Uid:")-1) == 0) {
-		sscanf(mBuffer + sizeof("Uid:"), "%d %d %d %d", &process->uid, &process->euid, &process->suid, &process->fsuid );
+		sscanf(mBuffer + sizeof("Uid:") -1, "%ld %ld %ld %ld", &process->uid, &process->euid, &process->suid, &process->fsuid );
 	        if(++found == 4) goto finish;
 	    }
 	    break;
 	  case 'G':
 	    if((unsigned int)size > sizeof("Gid:") && qstrncmp(mBuffer, "Gid:", sizeof("Gid:")-1) == 0) {
-		sscanf(mBuffer + sizeof("Gid:"), "%d %d %d %d", &process->gid, &process->egid, &process->sgid, &process->fsgid );
+		sscanf(mBuffer + sizeof("Gid:")-1, "%ld %ld %ld %ld", &process->gid, &process->egid, &process->sgid, &process->fsgid );
 	        if(++found == 4) goto finish;
 	    }
 	    break;

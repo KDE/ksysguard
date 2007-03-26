@@ -54,6 +54,8 @@ void KSysGuard::Process::clear() {
 	parent_pid = 0; 
 	uid = 0; 
 	gid = -1; 
+	suid = euid = fsuid = -1;
+	sgid = egid = fsgid = -1;
 	tracerpid = 0; 
 	userTime = -1; 
 	sysTime = -1; 
