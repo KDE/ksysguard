@@ -73,7 +73,7 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 	case PROCESS_FILTER_ALL_SIMPLE:
 		break;
         case PROCESS_FILTER_SYSTEM:
-                if( uid >= 100 && model->canUserLogin(uid)))
+                if( uid >= 100 && model->canUserLogin(uid))
 			accepted = false;
 		break;
         case PROCESS_FILTER_USER:
