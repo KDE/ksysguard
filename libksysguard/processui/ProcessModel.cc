@@ -385,36 +385,46 @@ bool ProcessModel::canUserLogin(long long uid ) const
 	return true;
 }
 
-QString ProcessModel::getTooltipForUser(long long uid, long long gid) const
+QString ProcessModel::getTooltipForUser(const KSysGuard::Process *ps) const
 {
-	QString &userTooltip = mUserTooltips[uid];
-	if(userTooltip.isEmpty()) {
-		if(!mIsLocalhost) {
-			QVariant username = getUsernameForUser(uid);
+	QString userTooltip;
+	if(!mIsLocalhost) {
+		userTooltip = "<qt>";
+		userTooltip += i18n("Login Name: %1<br/>", getUsernameForUser(ps->uid, true));
+	} else {
+		KUser user(ps->uid);
+		if(!user.isValid())
+			userTooltip = i18n("This user is not recognised for some reason");
+		else {
 			userTooltip = "<qt>";
-			userTooltip += i18n("Login Name: %1<br/>", username.toString());
-			userTooltip += i18n("User ID: %1", (long int)uid);
-		} else {
-			KUser user(uid);
-			if(!user.isValid())
-				userTooltip = i18n("This user is not recognised for some reason");
-			else {
-				userTooltip = "<qt>";
-				if(!user.fullName().isEmpty()) userTooltip += i18n("<b>%1</b><br/>", user.fullName());
-				userTooltip += i18n("Login Name: %1<br/>", user.loginName());
-				if(!user.roomNumber().isEmpty()) userTooltip += i18n("Room Number: %1<br/>", user.roomNumber());
-				if(!user.workPhone().isEmpty()) userTooltip += i18n("Work Phone: %1<br/>", user.workPhone());
-				userTooltip += i18n("User ID: %1", (long int)uid);
-			}
+			if(!user.fullName().isEmpty()) userTooltip += i18n("<b>%1</b><br/>", user.fullName());
+			userTooltip += i18n("Login Name: %1 (Uid: %2)<br/>", user.loginName(), ps->uid);
+			if(!user.roomNumber().isEmpty()) userTooltip += i18n("  Room Number: %1<br/>", user.roomNumber());
+			if(!user.workPhone().isEmpty()) userTooltip += i18n("  Work Phone: %1<br/>", user.workPhone());
 		}
 	}
-	if(gid != -1) {
-		if(!mIsLocalhost)
-			return userTooltip + i18n("<br/>Group ID: %1", (long int)gid);
-		QString groupname = KUserGroup(gid).name();
-		if(groupname.isEmpty())
-			return userTooltip + i18n("<br/>Group ID: %1", (long int)gid);
-		return userTooltip +  i18n("<br/>Group Name: %1", groupname)+ i18n("<br/>Group ID: %1", (long int)gid);
+	if( (ps->uid != ps->euid && ps->euid != -1) || 
+                   (ps->uid != ps->suid && ps->suid != -1) || 
+                   (ps->uid != ps->fsuid && ps->fsuid != -1)) {
+		if(ps->euid != -1) 
+			userTooltip += i18n("Effective User: %1<br/>", getUsernameForUser(ps->euid, true));
+		if(ps->suid != -1)
+			userTooltip += i18n("Setuid User: %1<br/>", getUsernameForUser(ps->suid, true));
+		if(ps->fsuid != -1)
+			userTooltip += i18n("File System User: %1<br/>", getUsernameForUser(ps->fsuid, true));
+	}
+	if(ps->gid != -1) {
+		userTooltip += i18n("<br/>Group: %1", getGroupnameForGroup(ps->gid));
+		if( (ps->gid != ps->egid && ps->egid != -1) || 
+	                   (ps->gid != ps->sgid && ps->sgid != -1) || 
+	                   (ps->gid != ps->fsgid && ps->fsgid != -1)) {
+			if(ps->egid != -1) 
+				userTooltip += i18n("<br/>Effective Group: %1", getGroupnameForGroup(ps->egid));
+			if(ps->sgid != -1)
+				userTooltip += i18n("<br/>Setuid Group: %1", getGroupnameForGroup(ps->sgid));
+			if(ps->fsgid != -1)
+				userTooltip += i18n("<br/>File System Group: %1", getGroupnameForGroup(ps->fsgid));
+		}
 	}
 	return userTooltip;
 }
@@ -423,18 +433,32 @@ QString ProcessModel::getStringForProcess(KSysGuard::Process *process) const {
 	return i18nc("Short description of a process. PID, name", "%1: %2", (long)(process->pid), process->name);
 }
 
-QVariant ProcessModel::getUsernameForUser(long long uid) const {
-	QVariant &username = mUserUsername[uid];
-	if(!username.isValid()) {
+QString ProcessModel::getGroupnameForGroup(long long gid) const {
+	if(mIsLocalhost) {
+		QString groupname = KUserGroup(gid).name();
+		if(!groupname.isEmpty())
+			return i18n("%1 (Gid: %2)", groupname, QString::number(gid));
+	}
+	return QString::number(gid);
+}
+
+QString ProcessModel::getUsernameForUser(long long uid, bool withuid) const {
+	QString &username = mUserUsername[uid];
+	if(username.isNull()) {
 		if(!mIsLocalhost) {
-			username = uid;
+			username = ""; //empty, but not null
 		} else {
 			KUser user(uid);
 			if(!user.isValid())
-				username = uid;
-			username = user.loginName();
+				username = "";
+			else
+				username = user.loginName();
 		}
 	}
+	if(username.isEmpty()) 
+		return QString::number(uid);
+	if(withuid)
+		return i18n("%1 (Uid: %2)", username, (long int)uid);
 	return username;
 }
 
@@ -457,7 +481,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		case HeadingName:
 			return process->name;
 		case HeadingUser:
-			return getUsernameForUser(process->uid);
+			return getUsernameForUser(process->uid, false);
 		case HeadingNiceness:
 			return process->niceLevel;
 		case HeadingTty:
@@ -537,8 +561,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		}
 		case HeadingUser: {
 			if(!tracer.isEmpty())
-				return getTooltipForUser(process->uid, process->gid) + "<br/>" + tracer;
-			return getTooltipForUser(process->uid, process->gid);
+				return getTooltipForUser(process) + "<br/>" + tracer;
+			return getTooltipForUser(process);
 		}
 		case HeadingNiceness:
 			return i18n("<br/>Nice level: %1 (%2)", QString::number(process->niceLevel), process->niceLevelAsString() );
