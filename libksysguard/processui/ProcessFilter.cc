@@ -65,6 +65,7 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 	}
 	Q_ASSERT(process);
 	long uid = process->uid;
+	long euid = process->euid;
 	
 	bool accepted = true;
 	switch(mFilter) {
@@ -72,14 +73,18 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 	case PROCESS_FILTER_ALL_SIMPLE:
 		break;
         case PROCESS_FILTER_SYSTEM:
-                if(uid >= 100 && model->canUserLogin(uid)) accepted = false;
+                if( uid >= 100 && model->canUserLogin(uid)))
+			accepted = false;
 		break;
         case PROCESS_FILTER_USER:
-		if(uid < 100 || !model->canUserLogin(uid)) accepted = false;
+		if( (uid < 100 || !model->canUserLogin(uid)) && (euid < 100 || !model->canUserLogin(euid))) 
+			accepted = false;
 		break;
         case PROCESS_FILTER_OWN:
         default:
-                if(uid != (long) getuid()) accepted = false;
+		long ownuid = getuid();
+                if(uid != ownuid && process->suid != ownuid && process->fsuid != ownuid && euid != ownuid)
+			accepted = false;
         }
 
 	if(accepted) { 

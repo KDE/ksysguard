@@ -481,7 +481,10 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		case HeadingName:
 			return process->name;
 		case HeadingUser:
-			return getUsernameForUser(process->uid, false);
+			if(process->uid == process->euid)
+				return getUsernameForUser(process->uid, false);
+			else
+				return getUsernameForUser(process->uid, false) + "/" + getUsernameForUser(process->euid, false);
 		case HeadingNiceness:
 			return process->niceLevel;
 		case HeadingTty:
