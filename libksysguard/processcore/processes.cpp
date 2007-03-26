@@ -71,7 +71,7 @@ namespace KSysGuard
   };
 
 
-Processes *Processes::getInstance(QString host) { //static
+Processes *Processes::getInstance(const QString &host) { //static
     if(!d2) {
         d2 = new StaticPrivate();
     }
@@ -92,7 +92,7 @@ Processes *Processes::getInstance(QString host) { //static
     }
 }
 
-void Processes::returnInstance(QString host) { //static
+void Processes::returnInstance(const QString &host) { //static
 	//Implement - we need reference counting etc
 }
 Processes::Processes(AbstractProcesses *abstractProcesses) : d(new Private())

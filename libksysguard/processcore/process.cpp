@@ -36,7 +36,7 @@ QString KSysGuard::Process::niceLevelAsString() const {
 	if( niceLevel > 0) return i18nc("Process Niceness", "Low priority");
 	if( niceLevel < -1) return i18nc("Process Niceness", "High priority");
 	if( niceLevel < -15) return i18nc("Process Niceness", "Very high priority");
-	return QString::null; //impossible;
+	return QString(); //impossible;
 }
 QString KSysGuard::Process::translatedStatus() const { 
 	switch( status ) { 

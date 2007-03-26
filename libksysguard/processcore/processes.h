@@ -28,7 +28,7 @@ namespace KSysGuard
 {
     class AbstractProcesses;
     /**
-     * This class retrieves the processes currently running in an OS independant way.
+     * This class retrieves the processes currently running in an OS independent way.
      *
      * To use, do something like:
      *
@@ -56,13 +56,13 @@ namespace KSysGuard
 	 *  Singleton pattern to return the instance associated with @p host.
 	 *  Leave as the default for the current machine
 	 */
-        static Processes *getInstance(QString host = QString::null);
+        static Processes *getInstance(const QString &host = QString());
 	/**
 	 *  Call when you are finished with the Processes pointer from getInstance.
 	 *  The pointer from getInstance may not be valid after calling this.
 	 *  This is reference counted - once all the instances are returned, the object is deleted
 	 */
-        static void returnInstance(QString host = QString::null);
+        static void returnInstance(const QString &host = QString());
 
 	/**
 	 *  Update all the process information.  After calling this, /proc or equivalent is scanned and 

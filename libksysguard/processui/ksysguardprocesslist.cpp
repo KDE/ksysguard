@@ -323,7 +323,7 @@ void KSysGuardProcessList::killProcess(int pid, int sig)
 	//We must use kdesu to kill the process
 	QStringList arguments;
 	if(sig != SIGTERM)
-		arguments << "kill" << ("-" + QString::number(sig)) << QString::number(pid);
+		arguments << "kill" << ('-' + QString::number(sig)) << QString::number(pid);
 	else
 		arguments << "kill" << QString::number(pid);
 

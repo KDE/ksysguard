@@ -161,7 +161,7 @@ bool ProcessesLocal::Private::readProcStat(long pid, Process *ps)
 		    switch(current_word) {
 			    case 2: //status
                               status=word[1];  // Look at the first letter of the status.  
-			                      // We analyse this after the while loop
+			                      // We analyze this after the while loop
 			      break;
 			    case 6: //ttyNo
 			      {
