@@ -26,8 +26,8 @@
 
 #include <kdemacros.h>
 
-class KProcess;
-class KShellProcess;
+class K3Process;
+class K3ShellProcess;
 
 class QString;
 
