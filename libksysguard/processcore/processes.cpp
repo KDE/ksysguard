@@ -316,6 +316,9 @@ bool Processes::setNiceness(long pid, int priority) {
     return d->mAbstractProcesses->setNiceness(pid, priority);
 }
 
+long long Processes::totalPhysicalMemory() {
+    return d->mAbstractProcesses->totalPhysicalMemory();
+}
 Processes::~Processes()
 {
 

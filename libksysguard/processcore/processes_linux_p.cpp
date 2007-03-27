@@ -83,13 +83,13 @@ bool ProcessesLocal::Private::readProcStatus(long pid, Process *process)
 	    break;
 	  case 'U': 
 	    if((unsigned int)size > sizeof("Uid:") && qstrncmp(mBuffer, "Uid:", sizeof("Uid:")-1) == 0) {
-		sscanf(mBuffer + sizeof("Uid:") -1, "%ld %ld %ld %ld", &process->uid, &process->euid, &process->suid, &process->fsuid );
+		sscanf(mBuffer + sizeof("Uid:") -1, "%Ld %Ld %Ld %Ld", &process->uid, &process->euid, &process->suid, &process->fsuid );
 	        if(++found == 4) goto finish;
 	    }
 	    break;
 	  case 'G':
 	    if((unsigned int)size > sizeof("Gid:") && qstrncmp(mBuffer, "Gid:", sizeof("Gid:")-1) == 0) {
-		sscanf(mBuffer + sizeof("Gid:")-1, "%ld %ld %ld %ld", &process->gid, &process->egid, &process->sgid, &process->fsgid );
+		sscanf(mBuffer + sizeof("Gid:")-1, "%Ld %Ld %Ld %Ld", &process->gid, &process->egid, &process->sgid, &process->fsgid );
 	        if(++found == 4) goto finish;
 	    }
 	    break;
@@ -328,6 +328,21 @@ bool ProcessesLocal::setNiceness(long pid, int priority) {
 }
 
 
+long long ProcessesLocal::totalPhysicalMemory() {
+    d->mFile.setFileName("/proc/meminfo");
+    if(!d->mFile.open(QIODevice::ReadOnly | QIODevice::Text))
+        return 0; 
+
+    int size;
+    while( (size = d->mFile.readLine( d->mBuffer, sizeof(d->mBuffer))) > 0) {  //-1 indicates an error
+        switch( d->mBuffer[0]) {
+	  case 'M':
+            if((unsigned int)size > sizeof("MemTotal:") && qstrncmp(d->mBuffer, "MemTotal:", sizeof("MemTotal:")-1) == 0)
+		    return atoll(d->mBuffer + sizeof("MemTotal:")-1);
+	}
+    }
+    return 0; // Not found.  Probably will never happen
+}
 ProcessesLocal::~ProcessesLocal()
 {
   

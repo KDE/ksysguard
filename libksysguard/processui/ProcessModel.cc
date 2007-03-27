@@ -71,6 +71,7 @@ void ProcessModel::setupProcesses() {
         connect( mProcesses, SIGNAL( beginMoveProcess(KSysGuard::Process *, KSysGuard::Process *)), this, 
 			       SLOT( beginMoveProcess(KSysGuard::Process *, KSysGuard::Process *)));
         connect( mProcesses, SIGNAL( endMoveProcess()), this, SLOT(endMoveRow()));
+	mMemTotal = mProcesses->totalPhysicalMemory();
 	update();
 }
 
@@ -521,7 +522,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		case HeadingCommand: 
 			{
 				return process->command;
-// It would be nice to embolded the process name in command, but this require that the itemdelegate to support html text
+// It would be nice to embolden the process name in command, but this requires that the itemdelegate to support html text
 //				QString command = process->command;
 //				command.replace(process->name, "<b>" + process->name + "</b>");
 //				return "<qt>" + command;

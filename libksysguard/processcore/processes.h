@@ -118,6 +118,12 @@ namespace KSysGuard
 	 *  update the information.
 	 */
 	const QList< Process *> &getAllProcesses() const;
+	/**
+	 *  Return the total amount of physical memory in KB.  This will be fairly expensive, so cache the result
+	 *  Returns 0 on error
+	 */
+	long long totalPhysicalMemory();
+
     Q_SIGNALS:
 	/** The data for a process has changed.
 	 *  if @p onlyCpuOrMem is set, only the cpu usage or memory information has been 

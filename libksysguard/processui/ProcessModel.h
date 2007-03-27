@@ -200,7 +200,7 @@ private:
 
 	QTime mLastUpdated; ///Time that we last updated the processes.
 
-	long mMemTotal; /// the total amount of physical memory in the machine.  We can used this to determine the percentage of memory an app is using
+	long long mMemTotal; /// the total amount of physical memory in kb in the machine.  We can used this to determine the percentage of memory an app is using
 
 	KSysGuard::Processes *mProcesses;  ///The processes instance
 

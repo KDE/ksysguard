@@ -39,6 +39,7 @@ namespace KSysGuard
 	virtual bool updateProcessInfo(long pid, Process *process);
 	virtual bool sendSignal(long pid, int sig);
         virtual bool setNiceness(long pid, int priority);
+	virtual long long totalPhysicalMemory();
 
       private:
 	/**

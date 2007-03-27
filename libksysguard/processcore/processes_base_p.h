@@ -27,7 +27,7 @@ namespace KSysGuard
     /**
      * This class contains the specific code to get the processes from the given host.
      *
-     * To be port this to other operating systems you need to make a processes_(osname).cpp  file
+     * To port this to other operating systems you need to make a processes_(osname).cpp  file
      * which implements all of the function below.  If you need private functions/variables etc put them in
      * the Private class.
      *
@@ -79,6 +79,12 @@ namespace KSysGuard
 	 *  @return false if you do not have permission to set the priority
 	 */
 	virtual bool setNiceness(long pid, int priority) = 0;
+
+	/**
+	 *  Return the total amount of physical memory in KB.  This will be fairly expensive, so cache the result
+	 *  Returns 0 on error
+	 */
+	virtual long long totalPhysicalMemory() = 0;
     };
 }
 #endif 

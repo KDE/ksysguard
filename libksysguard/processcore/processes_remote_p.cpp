@@ -63,6 +63,9 @@ bool ProcessesRemote::setNiceness(long pid, int priority) {
     return false;
 }
 
+long long ProcessesRemote::totalPhysicalMemory() {
+    return 0;
+}
 
 ProcessesRemote::~ProcessesRemote()
 {
