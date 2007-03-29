@@ -20,6 +20,7 @@
 #include "process.h"
 
 #include <klocale.h>
+#include <kdebug.h>
 
 #include <QSet>
 
@@ -160,6 +161,7 @@ ProcessesLocal::ProcessesLocal() : d(new Private())
 }
 
 long ProcessesLocal::getParentPid(long pid) {
+kDebug() << "ProcessesLocal::getParentPid pid: " << pid << endl;
     Q_ASSERT(pid != 0);
     long long ppid = 0;
     struct kinfo_proc p;
@@ -176,6 +178,7 @@ long ProcessesLocal::getParentPid(long pid) {
 
 bool ProcessesLocal::updateProcessInfo( long pid, Process *process)
 {
+    kDebug() << "ProcessesLocal::updateProcessInfo pid: " << pid << endl;
     struct kinfo_proc p;
     if(!d->readProc(pid, &p)) return false;
     d->readProcStat(&p, process);
@@ -208,6 +211,7 @@ QSet<long> ProcessesLocal::getAllPids( )
         pids.insert(p[num].kp_proc.p_pid);
 #endif
     free(p);
+    kDebug() << "ProcessesLocal::getAllPids: " << pids.size() << endl;
     return pids;
 }
 
@@ -225,6 +229,15 @@ bool ProcessesLocal::setNiceness(long pid, int priority) {
 	    return false;
     }
     return true;
+}
+
+long long ProcessesLocal::totalPhysicalMemory() {
+
+    size_t Total;
+    size_t len;
+    len = sizeof (Total);
+    sysctlbyname("hw.physmem", &Total, &len, NULL, 0);
+    return Total /= 1024;
 }
 
 ProcessesLocal::~ProcessesLocal()
