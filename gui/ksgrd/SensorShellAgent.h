@@ -28,7 +28,7 @@
 
 class QString;
 
-class KProcess;
+class K3Process;
 
 namespace KSGRD {
 
@@ -55,16 +55,16 @@ class SensorShellAgent : public SensorAgent
     void hostInfo( QString &shell, QString &command, int &port) const;
 
   private Q_SLOTS:
-    void msgSent( KProcess* );
-    void msgRcvd( KProcess*, char *buffer, int buflen );
-    void errMsgRcvd( KProcess*, char *buffer, int buflen );
-    void daemonExited( KProcess* );
+    void msgSent( K3Process* );
+    void msgRcvd( K3Process*, char *buffer, int buflen );
+    void errMsgRcvd( K3Process*, char *buffer, int buflen );
+    void daemonExited( K3Process* );
 
   private:
     bool writeMsg( const char *msg, int len );
     bool txReady();
     int mRetryCount;
-    QPointer<KProcess> mDaemon;
+    QPointer<K3Process> mDaemon;
     QString mShell;
     QString mCommand;
 };
