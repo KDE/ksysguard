@@ -26,9 +26,6 @@
 
 #include <kdemacros.h>
 
-class K3Process;
-class K3ShellProcess;
-
 class QString;
 
 namespace KSGRD {
