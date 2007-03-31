@@ -19,7 +19,7 @@
 */
 
 #include <kdebug.h>
-#include <k3process.h>
+#include <kprocess.h>
 
 //#include "SensorClient.h"
 #include "SensorManager.h"
@@ -45,20 +45,21 @@ SensorShellAgent::~SensorShellAgent()
 bool SensorShellAgent::start( const QString &host, const QString &shell,
                               const QString &command, int )
 {
-  mDaemon = new K3ShellProcess;
+  mDaemon = new KProcess;
+  mDaemon->setUseShell(true);
   mRetryCount=3;
   setHostName( host );
   mShell = shell;
   mCommand = command;
 
-  connect( mDaemon, SIGNAL( processExited( K3Process* ) ),
-           SLOT( daemonExited( K3Process* ) ) );
-  connect( mDaemon, SIGNAL( receivedStdout( K3Process*, char*, int ) ),
-           SLOT( msgRcvd( K3Process*, char*, int ) ) );
-  connect( mDaemon, SIGNAL( receivedStderr( K3Process*, char*, int ) ),
-           SLOT( errMsgRcvd( K3Process*, char*, int ) ) );
-  connect( mDaemon, SIGNAL( wroteStdin( K3Process* ) ),
-           SLOT( msgSent( K3Process* ) ) );
+  connect( mDaemon, SIGNAL( processExited( KProcess* ) ),
+           SLOT( daemonExited( KProcess* ) ) );
+  connect( mDaemon, SIGNAL( receivedStdout( KProcess*, char*, int ) ),
+           SLOT( msgRcvd( KProcess*, char*, int ) ) );
+  connect( mDaemon, SIGNAL( receivedStderr( KProcess*, char*, int ) ),
+           SLOT( errMsgRcvd( KProcess*, char*, int ) ) );
+  connect( mDaemon, SIGNAL( wroteStdin( KProcess* ) ),
+           SLOT( msgSent( KProcess* ) ) );
 
   QString cmd;
   if ( !command.isEmpty() )
@@ -67,7 +68,7 @@ bool SensorShellAgent::start( const QString &host, const QString &shell,
     cmd = mShell + ' ' + hostName() + " ksysguardd";
   *mDaemon << cmd;
 
-  if ( !mDaemon->start( K3Process::NotifyOnExit, K3Process::All ) ) {
+  if ( !mDaemon->start( KProcess::NotifyOnExit, KProcess::All ) ) {
     sensorManager()->hostLost( this );
     kDebug (1215) << "Command '" << cmd << "' failed"  << endl;
     return false;
@@ -84,7 +85,7 @@ void SensorShellAgent::hostInfo( QString &shell, QString &command,
   port = -1;
 }
 
-void SensorShellAgent::msgSent( K3Process* )
+void SensorShellAgent::msgSent( KProcess* )
 {
   setTransmitting( false );
 
@@ -92,7 +93,7 @@ void SensorShellAgent::msgSent( K3Process* )
   executeCommand();
 }
 
-void SensorShellAgent::msgRcvd( K3Process*, char *buffer, int buflen )
+void SensorShellAgent::msgRcvd( KProcess*, char *buffer, int buflen )
 {
   if ( !buffer || buflen == 0 )
     return;
@@ -100,7 +101,7 @@ void SensorShellAgent::msgRcvd( K3Process*, char *buffer, int buflen )
   processAnswer( buffer, buflen );
 }
 
-void SensorShellAgent::errMsgRcvd( K3Process*, char *buffer, int buflen )
+void SensorShellAgent::errMsgRcvd( KProcess*, char *buffer, int buflen )
 {
   if ( !buffer || buflen == 0 )
     return;
@@ -111,9 +112,9 @@ void SensorShellAgent::errMsgRcvd( K3Process*, char *buffer, int buflen )
                 << endl << buf << endl;
 }
 
-void SensorShellAgent::daemonExited( K3Process * )
+void SensorShellAgent::daemonExited( KProcess * )
 {
-  if ( mRetryCount-- <= 0 || !mDaemon->start( K3Process::NotifyOnExit, K3Process::All ) ) {
+  if ( mRetryCount-- <= 0 || !mDaemon->start( KProcess::NotifyOnExit, KProcess::All ) ) {
     setDaemonOnLine( false );
     sensorManager()->hostLost( this );
     sensorManager()->requestDisengage( this );
