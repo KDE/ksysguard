@@ -357,6 +357,7 @@ void KSysGuardProcessList::killProcess()
 		int res = KMessageBox::warningContinueCancelList(this, msg, selectedAsStrings,
 				                                 i18n("Kill Process"),
 								 KGuiItem(i18n("Kill")),
+								 KStandardGuiItem::cancel(),
 								 "killconfirmation");
 		if (res != KMessageBox::Continue)
 		{
