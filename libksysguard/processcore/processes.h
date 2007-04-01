@@ -19,7 +19,7 @@
 #ifndef PROCESSES_H_
 #define PROCESSES_H_
 
-#include <kdelibs_export.h>
+#include <kdemacros.h>
 
 #include "process.h"
 #include <QHash>

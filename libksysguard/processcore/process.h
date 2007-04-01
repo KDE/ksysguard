@@ -19,7 +19,7 @@
 #ifndef PROCESS_H_
 #define PROCESS_H_
 
-#include <kdelibs_export.h>
+#include <kdemacros.h>
 
 #include <QString>
 #include <QList>
