@@ -51,8 +51,7 @@
 #include <ktoggleaction.h>
 #include <ktoolbar.h>
 #include <kurl.h>
-#include <kwin.h>
-#include <kwinmodule.h>
+#include <kwm.h>
 #include <QSplitter>
 
 #include "../version.h"
@@ -183,9 +182,9 @@ void TopLevel::startSensorBrowserWidget()
 
 void TopLevel::showOnCurrentDesktop()
 {
-  KWin::setOnDesktop( winId(), KWin::currentDesktop() );
+  KWM::setOnDesktop( winId(), KWM::currentDesktop() );
   kapp->updateUserTimestamp();
-  KWin::forceActiveWindow( winId() );
+  KWM::forceActiveWindow( winId() );
 }
 
 void TopLevel::importWorkSheet( const QString &fileName )
