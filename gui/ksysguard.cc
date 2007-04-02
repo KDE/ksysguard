@@ -276,7 +276,7 @@ void TopLevel::disconnectHost()
 void TopLevel::editToolbars()
 {
   saveMainWindowSettings( KConfigGroup( KGlobal::config(), "MainWindow" ) );
-  KEditToolbar dlg( actionCollection() );
+  KEditToolBar dlg( actionCollection() );
   connect( &dlg, SIGNAL( newToolbarConfig() ), this,
            SLOT( slotNewToolbarConfig() ) );
 
