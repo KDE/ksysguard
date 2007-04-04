@@ -6,6 +6,7 @@ Name[el]=Επόπτης συστήματος
 Name[ja]=システムモニタ
 Name[nds]=Systeemkieker
 Name[x-test]=xxSystem Monitorxx
+Name[zh_TW]=系統監視器
 Exec=ksysguard %U
 Icon=ksysguard
 Type=Application

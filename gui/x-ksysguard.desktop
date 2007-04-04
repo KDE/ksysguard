@@ -9,6 +9,7 @@ Comment[el]=Επόπτης συστήματος του KDE
 Comment[ja]=KDE システムモニタ
 Comment[nds]=KDE-Systeemkieker
 Comment[x-test]=xxKDE System Monitorxx
+Comment[zh_TW]=KDE 系統監視器
 Icon=ksysguard
 Type=MimeType
 Patterns=*.sgrd;
