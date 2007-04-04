@@ -14,7 +14,7 @@
     </property>
     <layout class="QVBoxLayout" >
       <item>
-        <widget class="Q3GroupBox" name="titleFrame" >
+        <widget class="QGroupBox" name="titleFrame" >
           <property name="title" >
             <string>Title</string>
           </property>
@@ -29,7 +29,7 @@
         </widget>
       </item>
       <item>
-        <widget class="Q3GroupBox" name="colorFrame" >
+        <widget class="QGroupBox" name="colorFrame" >
           <property name="sizePolicy" >
             <sizepolicy>
               <hsizetype>5</hsizetype>

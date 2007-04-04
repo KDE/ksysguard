@@ -14,7 +14,7 @@
     </property>
     <layout class="QVBoxLayout" >
       <item>
-        <widget class="Q3GroupBox" name="fileFrame" >
+        <widget class="QGroupBox" name="fileFrame" >
           <property name="title" >
             <string>File</string>
           </property>
@@ -29,7 +29,7 @@
         </widget>
       </item>
       <item>
-        <widget class="Q3GroupBox" name="timerFrame" >
+        <widget class="QGroupBox" name="timerFrame" >
           <property name="title" >
             <string>Timer Interval</string>
           </property>
@@ -57,7 +57,7 @@
         </widget>
       </item>
       <item>
-        <widget class="Q3GroupBox" name="GroupBox1" >
+        <widget class="QGroupBox" name="GroupBox1" >
           <property name="title" >
             <string>Alarm for Minimum Value</string>
           </property>
@@ -121,7 +121,7 @@
         </widget>
       </item>
       <item>
-        <widget class="Q3GroupBox" name="GroupBox1_2" >
+        <widget class="QGroupBox" name="GroupBox1_2" >
           <property name="title" >
             <string>Alarm for Maximum Value</string>
           </property>

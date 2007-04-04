@@ -2,6 +2,7 @@
     KSysGuard, the KDE System Guard
    
     Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 2007 John Tapsell <tapsell@kde.org>
     
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -21,7 +22,6 @@
 #include <QImage>
 #include <QLabel>
 #include <QLayout>
-#include <q3listbox.h>
 #include <QPixmap>
 #include <QPushButton>
 #include <QSpinBox>
@@ -33,6 +33,7 @@
 #include <kcolorbutton.h>
 #include <kcolordialog.h>
 #include <klocale.h>
+#include <QListWidget>
 
 #include "StyleSettings.h"
 
@@ -103,9 +104,9 @@ StyleSettings::StyleSettings( QWidget *parent )
   mEditColorButton->setEnabled( false );
   layout->addWidget( mEditColorButton, 0, 1, Qt::AlignTop );
 
-  connect( mColorListBox, SIGNAL( selectionChanged( Q3ListBoxItem* ) ),
-           SLOT( selectionChanged( Q3ListBoxItem* ) ) );
-  connect( mColorListBox, SIGNAL( doubleClicked( Q3ListBoxItem* ) ),
+  connect( mColorListBox, SIGNAL( itemSelectionChanged() ),
+           SLOT( selectionChanged() ) );
+  connect( mColorListBox, SIGNAL( itemDoubleClicked( QListWidgetItem* ) ),
            SLOT( editSensorColor() ) );
   connect( mEditColorButton, SIGNAL( clicked() ),
            SLOT( editSensorColor() ) );
@@ -173,10 +174,10 @@ void StyleSettings::setSensorColors( const QList<QColor> &list )
 
   for ( int i = 0; i < list.count(); ++i ) {
     QPixmap pm( 12, 12 );
-		pm.fill( list.at( i ) );
+    pm.fill( list.at( i ) );
 
-        new QListWidgetItem( pm , i18n( "Color %1" ,  i ) , mColorListBox );
-	}
+    new QListWidgetItem( pm , i18n( "Color %1" ,  i ) , mColorListBox );
+  }
 }
 
 QList<QColor> StyleSettings::sensorColors()
@@ -206,12 +207,12 @@ void StyleSettings::editSensorColor()
     QPixmap pm( 12, 12 );
 		pm.fill( color );
     mColorListBox->item(pos)->setIcon( pm );
-	}
+  }
 }
 
-void StyleSettings::selectionChanged( QListWidgetItem *item )
+void StyleSettings::selectionChanged( )
 {
-  mEditColorButton->setEnabled( item != 0 );
+  mEditColorButton->setEnabled( !mColorListBox->selectedItems().isEmpty() );
 }
 
 #include "StyleSettings.moc"
