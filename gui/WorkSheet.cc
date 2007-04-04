@@ -28,6 +28,7 @@
 #include <QDragEnterEvent>
 #include <QFile>
 #include <QByteArray>
+#include <QApplication>
 
 #include <kdebug.h>
 #include <klocale.h>
