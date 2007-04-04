@@ -24,7 +24,7 @@
 #include <klocale.h>
 #include <ktoolinvocation.h>
 
-#include <q3buttongroup.h>
+#include <QGroupBox>
 #include <QLabel>
 #include <QLayout>
 #include <QRadioButton>
@@ -68,49 +68,47 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   mHostNameLabel->hide();
   layout->addWidget( mHostNameLabel, 0, 1 );
 
-  Q3ButtonGroup *group = new Q3ButtonGroup( 0, Qt::Vertical,
-                                          i18n( "Connection Type" ), page );
+  QGroupBox *group = new QGroupBox(i18n( "Connection Type" ), page );
   QGridLayout *groupLayout = new QGridLayout();
-  group->setExclusive ( true );
-  group->layout()->addItem( groupLayout );
+  group->setLayout(groupLayout);
   groupLayout->setSpacing( spacingHint() );
   groupLayout->setAlignment( Qt::AlignTop );
 
-  mUseSsh = new QRadioButton( i18n( "ssh" ), group );
+  mUseSsh = new QRadioButton( i18n( "ssh" ));
   mUseSsh->setEnabled( true );
   mUseSsh->setChecked( true );
   mUseSsh->setWhatsThis( i18n( "Select this to use the secure shell to login to the remote host." ) );
   groupLayout->addWidget( mUseSsh, 0, 0 );
 
-  mUseRsh = new QRadioButton( i18n( "rsh" ), group );
+  mUseRsh = new QRadioButton( i18n( "rsh" ));
   mUseRsh->setWhatsThis( i18n( "Select this to use the remote shell to login to the remote host." ) );
   groupLayout->addWidget( mUseRsh, 0, 1 );
 
-  mUseDaemon = new QRadioButton( i18n( "Daemon" ), group );
+  mUseDaemon = new QRadioButton( i18n( "Daemon" ));
   mUseDaemon->setWhatsThis( i18n( "Select this if you want to connect to a ksysguard daemon that is running on the machine you want to connect to, and is listening for client requests." ) );
   groupLayout->addWidget( mUseDaemon, 0, 2 );
 
-  mUseCustom = new QRadioButton( i18n( "Custom command" ), group );
+  mUseCustom = new QRadioButton( i18n( "Custom command" ));
   mUseCustom->setWhatsThis( i18n( "Select this to use the command you entered below to start ksysguardd on the remote host." ) );
   groupLayout->addWidget( mUseCustom, 0, 3 );
 
-  label = new QLabel( i18n( "Port:" ), group );
+  label = new QLabel( i18n( "Port:" ));
   groupLayout->addWidget( label, 1, 0 );
 
-  mPort = new QSpinBox( group );
+  mPort = new QSpinBox();
   mPort->setRange( 1, 65535 );
   mPort->setEnabled( false );
   mPort->setValue( 3112 );
   mPort->setToolTip( i18n( "Enter the port number on which the ksysguard daemon is listening for connections." ) );
   groupLayout->addWidget( mPort, 1, 2 );
 
-  label = new QLabel( i18n( "e.g.  3112" ), group );
+  label = new QLabel( i18n( "e.g.  3112" ));
   groupLayout->addWidget( label, 1, 3 );
 
-  label = new QLabel( i18n( "Command:" ), group );
+  label = new QLabel( i18n( "Command:" ) );
   groupLayout->addWidget( label, 2, 0 );
 
-  mCommands = new KComboBox( true, group );
+  mCommands = new KComboBox( true );
   mCommands->setEnabled( false );
   mCommands->setMaxCount( 20 );
   mCommands->setInsertPolicy( QComboBox::AtTop );
@@ -120,7 +118,7 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   groupLayout->addWidget( mCommands, 2, 2, 1, 2 );
   label->setBuddy( mCommands );
 
-  label = new QLabel( i18n( "e.g. ssh -l root remote.host.org ksysguardd" ), group );
+  label = new QLabel( i18n( "e.g. ssh -l root remote.host.org ksysguardd" ) );
   groupLayout->addWidget( label, 3, 2, 1, 2 );
 
   layout->addWidget( group, 1, 0, 1, 2 );
