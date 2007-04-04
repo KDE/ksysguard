@@ -29,7 +29,6 @@ class QListWidget;
 #include <qdom.h>
 #include <QString>
 #include <QStringList>
-//Added by qt3to4:
 #include <QTimerEvent>
 #include <QResizeEvent>
 

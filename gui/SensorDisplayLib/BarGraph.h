@@ -22,7 +22,6 @@
 #define KSG_BARGRAPH_H
 
 #include <QWidget>
-//Added by qt3to4:
 #include <QPaintEvent>
 
 class BarGraph : public QWidget
