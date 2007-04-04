@@ -284,7 +284,7 @@ void Processes::deleteProcess(long pid)
     emit beginRemoveProcess(process);
 
     d->mProcesses.remove(pid);
-    d->mListProcesses.remove(process);
+    d->mListProcesses.removeAll(process);
     process->parent->children.removeAll(process);
     Process *p = process;
     do {
