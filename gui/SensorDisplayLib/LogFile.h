@@ -70,7 +70,6 @@ public Q_SLOTS:
 	void applySettings();
 	void applyStyle();
 
-	void settingsFontSelection();
 	void settingsAddRule();
 	void settingsDeleteRule();
 	void settingsChangeRule();

@@ -25,8 +25,6 @@
 #include <QRegExp>
 
 #include <QFile>
-#include <q3listbox.h>
-//Added by qt3to4:
 #include <QResizeEvent>
 #include <QListWidget>
 #include <kfontdialog.h>
@@ -83,22 +81,23 @@ void LogFile::configureSettings(void)
 
 	lfs = new Ui_LogFileSettings;
 	Q_CHECK_PTR(lfs);
-  QDialog dlg;
-  lfs->setupUi(&dlg);
+	KDialog dlg;
+	dlg.setCaption( i18n("File logging settings") );
+	dlg.setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
+
+	lfs->setupUi(dlg.mainWidget());
 
 	lfs->fgColor->setColor(cgroup.color( QPalette::Text ));
 	lfs->fgColor->setText(i18n("Foreground color:"));
 	lfs->bgColor->setColor(cgroup.color( QPalette::Base ));
 	lfs->bgColor->setText(i18n("Background color:"));
-	lfs->fontButton->setFont(monitor->font());
+	lfs->fontRequester->setFont(monitor->font());
 	lfs->ruleList->addItems(filterRules);
 	lfs->title->setText(title());
 
-	connect(lfs->okButton, SIGNAL(clicked()), &dlg, SLOT(accept()));
-	connect(lfs->applyButton, SIGNAL(clicked()), this, SLOT(applySettings()));
-	connect(lfs->cancelButton, SIGNAL(clicked()), &dlg, SLOT(reject()));
+	connect(&dlg, SIGNAL(okClicked()), &dlg, SLOT(accept()));
+	connect(&dlg, SIGNAL(applyClicked()), this, SLOT(applySettings()));
 
-	connect(lfs->fontButton, SIGNAL(clicked()), this, SLOT(settingsFontSelection()));
 	connect(lfs->addButton, SIGNAL(clicked()), this, SLOT(settingsAddRule()));
 	connect(lfs->deleteButton, SIGNAL(clicked()), this, SLOT(settingsDeleteRule()));
 	connect(lfs->changeButton, SIGNAL(clicked()), this, SLOT(settingsChangeRule()));
@@ -111,15 +110,6 @@ void LogFile::configureSettings(void)
 
 	delete lfs;
 	lfs = 0;
-}
-
-void LogFile::settingsFontSelection()
-{
-	QFont tmpFont = lfs->fontButton->font();
-
-	if (KFontDialog::getFont(tmpFont) == KFontDialog::Accepted) {
-		lfs->fontButton->setFont(tmpFont);
-	}
 }
 
 void LogFile::settingsAddRule()
@@ -154,7 +144,7 @@ void LogFile::applySettings(void)
 	cgroup.setColor(QPalette::Text, lfs->fgColor->color());
 	cgroup.setColor(QPalette::Base, lfs->bgColor->color());
 	monitor->setPalette( cgroup );
-	monitor->setFont(lfs->fontButton->font());
+	monitor->setFont(lfs->fontRequester->font());
 
 	filterRules.clear();
 	for (int i = 0; i < lfs->ruleList->count(); i++)
@@ -262,9 +252,6 @@ LogFile::answerReceived(int id, const QList<QByteArray>& answer)
 			}
 
 			monitor->setCurrentRow( monitor->count() - 1 );
-			// I don't believe the call from Q3ListBox below is
-			// necessary now. Please correct if I am in error here.
-			// monitor->ensureCurrentVisible();
 
 			break;
 		}
