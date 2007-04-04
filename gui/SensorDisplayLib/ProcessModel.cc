@@ -496,7 +496,6 @@ void ProcessModel::changeProcess(long long pid)
 			}
 			default: {
 				value = newDataRow[i];
-				kDebug(1215) << "Uncaught column: " << value << endl;
 				break;
 			}
 		}
