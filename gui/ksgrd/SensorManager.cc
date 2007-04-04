@@ -18,9 +18,11 @@
 
 */
 
-#include <qapplication.h>
+#include <QApplication>
 #include <kdebug.h>
 #include <klocale.h>
+#include <QWidget>
+#include <QEvent>
 
 #include "SensorShellAgent.h"
 #include "SensorSocketAgent.h"

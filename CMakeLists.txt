@@ -1,8 +1,6 @@
 
 project(ksysguard)
 
-add_definitions (-DQT3_SUPPORT)
-
 add_subdirectory( CContLib )
 add_subdirectory( gui )
 add_subdirectory( pics )
