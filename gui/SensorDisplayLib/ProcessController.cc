@@ -18,45 +18,12 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 */
-
-#include <QTimer>
-
 #include <QDomElement>
-#include <QVBoxLayout>
-#include <QList>
-#include <QHBoxLayout>
-#include <QResizeEvent>
-#include <QSortFilterProxyModel>
-#include <QHeaderView>
-#include <QAction>
-#include <QMenu>
-#include <QTime>
-#include <QSet>
-
-
-#include <kapplication.h>
-#include <kdebug.h>
-#include <klocale.h>
-#include <kmessagebox.h>
-#include <kdialog.h>
-#include <kicon.h>
-
+#include <QTimer>
 #include <ksgrd/SensorManager.h>
 
 #include "ProcessController.moc"
 #include "ProcessController.h"
-#include "ReniceDlg.h"
-#include "SignalIDs.h"
-
-#include <QCheckBox>
-#include <QComboBox>
-#include <QLayout>
-#include <QItemDelegate>
-#include <QPainter>
-#include <QStyleOptionViewItem>
-#include <QProgressBar>
-
-#include <kapplication.h>
 //#define DO_MODELCHECK
 #ifdef DO_MODELCHECK
 #include "modeltest.h"
@@ -65,7 +32,7 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
 	mUi.setupUi(this);
-
+        QTimer::singleShot(0, mUi.ksysguardprocesslist, SLOT(setFocus()));
 	setPlotterWidget(this);
 	setMinimumSize(sizeHint());
 }
