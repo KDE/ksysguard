@@ -33,6 +33,7 @@
 #include <QItemDelegate>
 #include <QPainter>
 #include <QProcess>
+#include <QLineEdit>
 
 
 #include <signal.h> //For SIGTERM
@@ -157,6 +158,11 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 
 	expandInit(); //This will expand the init process
 }
+
+QLineEdit *KSysGuardProcessList::filterLineEdit() const {
+	return mUi->txtFilter;
+}
+
 void KSysGuardProcessList::setSimpleMode(int index)
 {  //index is the item the user selected in the combo box
 	bool simple = (index != PROCESS_FILTER_ALL_TREE);

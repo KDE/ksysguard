@@ -21,6 +21,7 @@
 #include <QDomElement>
 #include <QTimer>
 #include <ksgrd/SensorManager.h>
+#include <QLineEdit>
 
 #include "ProcessController.moc"
 #include "ProcessController.h"
@@ -32,7 +33,7 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
 	mUi.setupUi(this);
-        QTimer::singleShot(0, mUi.ksysguardprocesslist, SLOT(setFocus()));
+        QTimer::singleShot(0, mUi.ksysguardprocesslist->filterLineEdit(), SLOT(setFocus()));
 	setPlotterWidget(this);
 	setMinimumSize(sizeHint());
 }
