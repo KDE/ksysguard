@@ -73,8 +73,6 @@ public:
 
 	virtual bool addSensor(const QString&, const QString&, const QString&, const QString&);
 
-	virtual void answerReceived(int id, const QList<QByteArray>& answer) {}
-
 	virtual void sensorError(int, bool err);
 
 	void configureSettings() { }

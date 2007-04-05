@@ -57,8 +57,6 @@ FancyPlotter::FancyPlotter( QWidget* parent,
  
   setTitle(title);
 
-  setMinimumSize( sizeHint() );
-
   /* All RMB clicks to the mPlotter widget will be handled by 
    * SensorDisplay::eventFilter. */
   mPlotter->installEventFilter( this );
