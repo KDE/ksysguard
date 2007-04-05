@@ -116,7 +116,7 @@ void testProcess::testTime() {
 	QVERIFY(t.elapsed()/100 < 300); //It should take less than about 100ms.  Anything longer than 300ms even on a slow system really needs to be optimised
 }
 
-QTEST_KDEMAIN(testProcess, NoGUI)
+QTEST_KDEMAIN_CORE(testProcess)
 
 #include "processtest.moc"
 
