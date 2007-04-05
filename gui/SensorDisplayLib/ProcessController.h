@@ -71,7 +71,7 @@ public:
 	{
 	}
 
-	virtual bool addSensor(const QString&, const QString&, const QString&, const QString&){return true;}
+	virtual bool addSensor(const QString&, const QString&, const QString&, const QString&);
 
 	virtual void answerReceived(int id, const QList<QByteArray>& answer) {}
 

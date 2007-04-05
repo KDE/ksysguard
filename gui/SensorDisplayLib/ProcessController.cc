@@ -85,7 +85,7 @@ ProcessController::restoreSettings(QDomElement& element)
 	mUi.chkShowTotals->setCheckState( (showTotals)?Qt::Checked:Qt::Unchecked );
 */	
 	SensorDisplay::restoreSettings(element);
-	return (result);
+	return result;
 }
 
 bool
@@ -96,6 +96,22 @@ ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 	element.setAttribute("sensorType", sensors().at(0)->type());
 	SensorDisplay::saveSettings(doc, element);
 
-	return (true);
+	return true;
 }
+bool ProcessController::addSensor(const QString& hostName,
+                                 const QString& sensorName,
+                                 const QString& sensorType,
+                                 const QString& title)
+{
+       if (sensorType != "table")
+               return false;
 
+       registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
+       /* This just triggers the first communication. The full set of
+        * requests are send whenever the sensor reconnects (detected in
+        * sensorError(). */
+
+       sensors().at(0)->setIsOk(true); //Assume it is okay from the start
+       setSensorOk(sensors().at(0)->isOk());
+       return true;
+}
