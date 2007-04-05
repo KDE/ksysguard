@@ -33,9 +33,17 @@
 #include <ksgrd/SensorManager.h>
 
 #include "SensorBrowser.h"
+//#define SENSOR_MODEL_DO_TEST
+//uncomment the above to test the model
+#ifdef SENSOR_MODEL_DO_TEST
+#include "modeltest.h"
+#endif
 
 SensorBrowserModel::SensorBrowserModel()
 {
+#ifdef SENSOR_MODEL_DO_TEST
+  new ModelTest(this);
+#endif
   mIdCount=1;
 }
 SensorBrowserModel::~SensorBrowserModel()
@@ -71,8 +79,10 @@ QVariant SensorBrowserModel::data( const QModelIndex & index, int role) const { 
       return QString();
     }
     case Qt::DecorationRole: {
-      if(mHostInfoMap.contains(index.internalId()))
-        return KIcon("computer");
+      if(index.column() == 0 && mHostInfoMap.contains(index.internalId())) {
+        return KIcon("system");
+      } else 
+        return QIcon(); //work around for drawing bug
       break;
     }
   } //switch
@@ -86,6 +96,7 @@ QVariant SensorBrowserModel::headerData ( int section, Qt::Orientation , int rol
 }
 
 QModelIndex SensorBrowserModel::index ( int row, int column, const QModelIndex & parent) const { //virtual
+  if(column != 0) return QModelIndex();
   QList<int> ids;
   if(!parent.isValid()) {
     ids = mHostInfoMap.keys();
@@ -93,7 +104,7 @@ QModelIndex SensorBrowserModel::index ( int row, int column, const QModelIndex &
   else {
     ids = mTreeMap.value(parent.internalId());
   }
-  if( row >= ids.size() || row< 0 || column <0 || column >1) {
+  if( row >= ids.size() || row< 0) {
     return QModelIndex();
   }
   QModelIndex index = createIndex(row, column, ids[row]);
@@ -174,8 +185,9 @@ int SensorBrowserModel::makeSensor(HostInfo *hostInfo, int parentId, const QStri
     mParentsTreeMap.insert( mIdCount, parentId );
     mSensorInfoMap.insert(mIdCount, sensorInfo);
     mHostSensorsMap[hostInfo->id()].insert(sensorName, true);
+    mIdCount++;
   endInsertRows();
-  return mIdCount++;  //NOTE mIdCount is next available number. Se we use it, then increment it, but return the number of the one that we use  
+  return mIdCount-1;  //NOTE mIdCount is next available number. Se we use it, then increment it, but return the number of the one that we use  
 }
 int SensorBrowserModel::makeTreeBranch(int parentId, const QString &name) {
   QList<int> children = mTreeMap.value(parentId);
@@ -196,9 +208,10 @@ int SensorBrowserModel::makeTreeBranch(int parentId, const QString &name) {
     mParentsTreeMap.insert( mIdCount, parentId );
     mTreeMap[mIdCount];  //create with empty qlist
     mTreeNodeNames.insert(mIdCount, name);
+    mIdCount++;
   endInsertRows();
   
-  return mIdCount++;
+  return mIdCount-1;
 }
 
 void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&answer )
@@ -250,7 +263,7 @@ void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&an
 }
 
 QModelIndex SensorBrowserModel::parent ( const QModelIndex & index ) const { //virtual
-  if(!index.isValid())
+  if(!index.isValid() || index.column() != 0)
     return QModelIndex();
   if(mHostInfoMap.contains(index.internalId())) return QModelIndex();
   if(!mParentsTreeMap.contains(index.internalId())) {
@@ -271,9 +284,11 @@ QModelIndex SensorBrowserModel::parent ( const QModelIndex & index ) const { //v
 }
 int SensorBrowserModel::rowCount ( const QModelIndex & parent ) const {  //virtual
   if(!parent.isValid()) return mHostInfoMap.size();
+  if(parent.column() != 0) return 0;
   return mTreeMap.value(parent.internalId()).size();
 }
 Qt::ItemFlags SensorBrowserModel::flags ( const QModelIndex & index ) const {  //virtual
+  if(!index.isValid()) return 0;
   if(mSensorInfoMap.contains(index.internalId())) return Qt::ItemIsDragEnabled | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
   else return Qt::ItemIsEnabled;
 }
