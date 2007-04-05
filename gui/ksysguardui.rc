@@ -1,16 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="ksysguard" version="5">
-<State name="showProcessState">
-  <Disable>
-    <Action name="new_worksheet"/>
-    <Action name="import_worksheet"/>
-    <Action name="export_worksheet"/>
-    <Action name="remove_worksheet"/>
-    <Action name="connect_host"/>
-    <Action name="configure_sheet"/>
-    <Action name="configure_style"/>
-  </Disable>
-</State>
+<kpartgui name="ksysguard" version="4.0">
 <MenuBar>
   <Menu name="file"><text>&amp;File</text>
     <Action name="new_worksheet"/>
@@ -24,7 +13,6 @@
     <Action name="configure_sheet"/>
   </Menu>
   <Menu name="settings"><text>&amp;Settings</text>
-    <Action name="configure_style"/>
   </Menu>
 </MenuBar>
 <ToolBar name="mainToolBar" noMerge="1" hidden="true"><text>Main Toolbar</text>
@@ -35,7 +23,6 @@
     <Action name="connect_host"/>
     <Separator/>
     <Action name="configure_sheet"/>
-    <Action name="configure_style"/>
 </ToolBar>
 </kpartgui>
 

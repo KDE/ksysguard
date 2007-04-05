@@ -137,11 +137,6 @@ TopLevel::TopLevel()
   action->setText( i18n( "&Worksheet Properties" ) );
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( configure() ));
 
-  mColorizeAction = actionCollection()->addAction( "configure_style" );
-  mColorizeAction->setIcon( KIcon("colorize") );
-  mColorizeAction->setText( i18n( "Configure &Style..." ) );
-  connect(mColorizeAction, SIGNAL(triggered(bool)), SLOT( editStyle() ));
-
   setupGUI(ToolBar | Keys | StatusBar | Create);
 }
 
@@ -155,7 +150,6 @@ void TopLevel::currentTabChanged(int index)
   mTabRemoveAction->setVisible(!locked);
   mTabExportAction->setVisible(!locked);
   mMonitorRemoteAction->setVisible(!locked);
-  mColorizeAction->setVisible(!locked);
 
   if(!locked && !mSensorBrowser) {
     startSensorBrowserWidget();
@@ -286,11 +280,6 @@ void TopLevel::slotNewToolbarConfig()
 {
   createGUI();
   applyMainWindowSettings( KConfigGroup( KGlobal::config(), "MainWindow" ) );
-}
-
-void TopLevel::editStyle()
-{
-  KSGRD::Style->configure();
 }
 
 bool TopLevel::event( QEvent *e )

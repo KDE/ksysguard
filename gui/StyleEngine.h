@@ -26,7 +26,6 @@
 #include <QList>
 
 class KConfigGroup;
-class StyleSettings;
 namespace KSGRD {
 class StyleEngine : public QObject
 {
@@ -49,15 +48,7 @@ class StyleEngine : public QObject
     const QColor& sensorColor( int pos );
     uint numSensorColors() const;
 
-  public Q_SLOTS:
-    void configure();
-    void applyToWorksheet();
-
-  Q_SIGNALS:
-    void applyStyleToWorksheet();
-
   private:
-    void apply();
 
     QColor mFirstForegroundColor;
     QColor mSecondForegroundColor;
@@ -65,8 +56,6 @@ class StyleEngine : public QObject
     QColor mBackgroundColor;
     uint mFontSize;
     QList<QColor> mSensorColors;
-
-    StyleSettings *mSettingsDialog;
 };
 extern StyleEngine* Style;
 

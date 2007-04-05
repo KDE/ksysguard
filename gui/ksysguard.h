@@ -68,7 +68,6 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
     void disconnectHost();
     void updateStatusBar();
     void editToolbars();
-    void editStyle();
     void slotNewToolbarConfig();
     void currentTabChanged(int index);
 
@@ -86,7 +85,6 @@ class TopLevel : public KMainWindow, public KSGRD::SensorClient
     int mTimerId;
     QAction *mTabRemoveAction;
     QAction *mTabExportAction;
-    QAction *mColorizeAction;
     QAction *mMonitorRemoteAction;
     QList<int> mSplitterSize;
 };

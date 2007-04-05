@@ -51,7 +51,6 @@ set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
    Workspace.cc
    HostConnector.cc
    StyleEngine.cc
-   StyleSettings.cc
    TimerSettings.cc 
    ksysguard.cc )
 
@@ -69,7 +68,7 @@ target_link_libraries(ksysguard kdeinit_ksysguard)
 install(TARGETS ksysguard DESTINATION ${BIN_INSTALL_DIR})
 ########### next target ###############
 
-set(sysguard_panelapplet_PART_SRCS KSysGuardApplet.cc KSGAppletSettings.cc ${libsensordisplays_SRCS} StyleEngine.cc StyleSettings.cc TimerSettings.cc)
+set(sysguard_panelapplet_PART_SRCS KSysGuardApplet.cc KSGAppletSettings.cc ${libsensordisplays_SRCS} StyleEngine.cc TimerSettings.cc)
 
 kde4_automoc(${sysguard_panelapplet_PART_SRCS})
 

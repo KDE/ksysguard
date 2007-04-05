@@ -26,8 +26,6 @@
 #include <klocale.h>
 #include <QList>
 
-#include "StyleSettings.h"
-
 #include "StyleEngine.h"
 using namespace KSGRD;
 
@@ -75,18 +73,6 @@ void StyleEngine::readProperties( const KConfigGroup& cfg )
 
 void StyleEngine::saveProperties( KConfigGroup& cfg )
 {
-  cfg.writeEntry( "fgColor1", mFirstForegroundColor );
-  cfg.writeEntry( "fgColor2", mSecondForegroundColor );
-  cfg.writeEntry( "alarmColor", mAlarmColor );
-  cfg.writeEntry( "backgroundColor", mBackgroundColor );
-  cfg.writeEntry( "fontSize", mFontSize );
-
-  QStringList list;
-  QList<QColor>::Iterator it;
-  for ( it = mSensorColors.begin(); it != mSensorColors.end(); ++it )
-    list.append( (*it).name() );
-
-  cfg.writeEntry( "sensorColors", list );
 }
 
 const QColor &StyleEngine::firstForegroundColor() const
@@ -127,47 +113,6 @@ const QColor& StyleEngine::sensorColor( int pos )
 uint StyleEngine::numSensorColors() const
 {
   return mSensorColors.count();
-}
-
-void StyleEngine::configure()
-{
-  mSettingsDialog = new StyleSettings( 0 );
-
-  mSettingsDialog->setFirstForegroundColor( mFirstForegroundColor );
-	mSettingsDialog->setSecondForegroundColor( mSecondForegroundColor );
-  mSettingsDialog->setAlarmColor( mAlarmColor );
-  mSettingsDialog->setBackgroundColor( mBackgroundColor );
-  mSettingsDialog->setFontSize( mFontSize );
-  mSettingsDialog->setSensorColors( mSensorColors );
-
-  connect( mSettingsDialog, SIGNAL( applyClicked() ),
-           this, SLOT( applyToWorksheet() ) );
-
-  if ( mSettingsDialog->exec() )
-    apply();
-
-  delete mSettingsDialog;
-  mSettingsDialog = 0;
-}
-
-void StyleEngine::applyToWorksheet()
-{
-  apply();
-  emit applyStyleToWorksheet();
-}
-
-void StyleEngine::apply()
-{
-  if ( !mSettingsDialog )
-    return;
-
-  mFirstForegroundColor = mSettingsDialog->firstForegroundColor();
-  mSecondForegroundColor = mSettingsDialog->secondForegroundColor();
-  mAlarmColor = mSettingsDialog->alarmColor();
-  mBackgroundColor = mSettingsDialog->backgroundColor();
-  mFontSize = mSettingsDialog->fontSize();
-
-  mSensorColors = mSettingsDialog->sensorColors();
 }
 
 #include "StyleEngine.moc"
