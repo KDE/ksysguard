@@ -184,6 +184,17 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 
 void ProcessModel::processChanged(KSysGuard::Process *process, bool onlyCpuOrMem)
 {
+	//FIXME
+	//There seem to be lots of bugs with qtreeview.  The idea here was to only update the actual rows
+	//that need changing.  However this seems to actually repaint completely the wrong cell.  I can only
+	//blame qt for this.
+	//
+	//So instead we will not call dataChanged here.  Instead after update, we will expand the first column.
+	//For some unknown reason (another bug?) this causes all the rows to be repainted, which is
+	//good enough for us
+
+	return;
+
 	int row;
 	if(mSimple)
 		row = process->index;
@@ -206,7 +217,6 @@ void ProcessModel::processChanged(KSysGuard::Process *process, bool onlyCpuOrMem
 void ProcessModel::beginInsertRow( KSysGuard::Process *process)
 {
 	Q_ASSERT(process);
-
 	if(mIsChangingLayout) {
 		mIsChangingLayout = false;
 		emit layoutChanged();
@@ -239,7 +249,6 @@ void ProcessModel::beginRemoveRow( KSysGuard::Process *process )
 	Q_ASSERT(process->pid > 0);
 	
 	if(mSimple) {
-		kDebug() << "Removing row " << process->index  << endl;
 		return beginRemoveRows(QModelIndex(), process->index, process->index);
 	} else  {
 		int row = process->parent->children.indexOf(process);
