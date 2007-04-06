@@ -2,12 +2,14 @@
 Encoding=UTF-8
 Name=System Monitor
 Name[csb]=Mònitor systemë
+Name[de]=Systemmonitor
 Name[el]=Επόπτης συστήματος
 Name[ja]=システムモニタ
 Name[nds]=Systeemkieker
 Name[x-test]=xxSystem Monitorxx
 Name[zh_TW]=系統監視器
 Comment=An applet which monitors system information
+Comment[de]=Anwendung zur Systemüberwachung
 Comment[ja]=システムの情報を監視するアプレット
 Comment[nds]=En Lüttprogramm, dat de Systeeminformatschonen beluert
 Comment[x-test]=xxAn applet which monitors system informationxx
