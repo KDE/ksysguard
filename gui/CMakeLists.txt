@@ -79,7 +79,6 @@ install(TARGETS sysguard_panelapplet  DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 install( FILES ksysguard.desktop  DESTINATION  ${XDG_APPS_DIR} )
 install( FILES ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml default_theme.svg DESTINATION  ${DATA_INSTALL_DIR}/ksysguard )
-install( FILES x-ksysguard.desktop  DESTINATION  ${MIME_INSTALL_DIR}/application )
 install( FILES ksysguardui.rc  DESTINATION  ${DATA_INSTALL_DIR}/ksysguard )
 install( FILES ksysguardapplet.desktop  DESTINATION  ${DATA_INSTALL_DIR}/kicker/applets )
 
