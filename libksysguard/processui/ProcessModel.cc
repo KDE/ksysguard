@@ -39,7 +39,7 @@
 #include "ProcessModel.moc"
 #include "ProcessModel.h"
 
-#include "processes.h"
+#include "processcore/processes.h"
 
 
 ProcessModel::ProcessModel(QObject* parent)

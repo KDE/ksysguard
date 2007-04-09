@@ -23,8 +23,8 @@
 #include <klocale.h>
 #include <qtest_kde.h>
 
-#include "processes.h"
-#include "process.h"
+#include "processcore/processes.h"
+#include "processcore/process.h"
 
 #include "processtest.h"
 

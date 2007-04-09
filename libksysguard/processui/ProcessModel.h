@@ -34,7 +34,7 @@
 #include <QSet>
 #include <QTime>
 
-#include "process.h"
+#include "processcore/process.h"
 
 namespace KSysGuard {
 	class Processes;

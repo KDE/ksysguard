@@ -37,9 +37,6 @@
 #include <SensorDisplay.h>
 
 #include "ui_ProcessWidgetUI.h"
-#include "ProcessModel.h"
-
-#include "ProcessFilter.h"
 class QAction;
 
 extern KApplication* Kapp;

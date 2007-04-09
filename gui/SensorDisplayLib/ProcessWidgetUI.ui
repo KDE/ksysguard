@@ -37,7 +37,7 @@
   <customwidget>
    <class>KSysGuardProcessList</class>
    <extends>QWidget</extends>
-   <header>ksysguardprocesslist.h</header>
+   <header>processui/ksysguardprocesslist.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

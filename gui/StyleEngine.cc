@@ -71,7 +71,7 @@ void StyleEngine::readProperties( const KConfigGroup& cfg )
   }
 }
 
-void StyleEngine::saveProperties( KConfigGroup& cfg )
+void StyleEngine::saveProperties( KConfigGroup& )
 {
 }
 

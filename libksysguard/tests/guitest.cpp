@@ -23,7 +23,7 @@
 #include <klocale.h>
 #include <qtest_kde.h>
 
-#include "ksysguardprocesslist.h"
+#include <processui/ksysguardprocesslist.h>
 
 #include "guitest.h"
 
