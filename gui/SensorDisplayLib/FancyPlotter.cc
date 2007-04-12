@@ -18,7 +18,7 @@
 
 */
 
-#include <qdom.h>
+#include <Qt/qdom.h>
 #include <QtGui/QImage>
 #include <QtGui/QToolTip>
 

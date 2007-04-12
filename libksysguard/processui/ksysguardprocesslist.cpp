@@ -53,7 +53,6 @@
 
 #define UPDATE_INTERVAL 2000
 
-#include <kapplication.h>
 //#define DO_MODELCHECK
 #ifdef DO_MODELCHECK
 #include "modeltest.h"

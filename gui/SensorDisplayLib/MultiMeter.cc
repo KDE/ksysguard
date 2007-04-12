@@ -21,7 +21,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <qdom.h>
+#include <Qt/qdom.h>
 #include <QtGui/QLCDNumber>
 #include <QtGui/QResizeEvent>
 #include <QtGui/QToolTip>

@@ -19,7 +19,7 @@
 */
 
 #include <QCheckBox>
-#include <qdom.h>
+#include <Qt/qdom.h>
 #include <QMenu>
 #include <QSpinBox>
 
