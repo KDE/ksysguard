@@ -18,9 +18,13 @@ if(XRES_LIBRARY)
 endif(XRES_LIBRARY)
 configure_file(config-ksysguardd.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-ksysguardd.h)
 
-add_subdirectory( ${CMAKE_SYSTEM_NAME} )
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_SYSTEM_NAME} )
-
+if( ${CMAKE_SYSTEM_NAME} MATCHES "DragonFly" )
+  add_subdirectory( "FreeBSD" )
+  include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/FreeBSD )
+else( ${CMAKE_SYSTEM_NAME} MATCHES "DragonFly" )
+  add_subdirectory( ${CMAKE_SYSTEM_NAME} )
+  include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_SYSTEM_NAME} )
+endif( ${CMAKE_SYSTEM_NAME} MATCHES "DragonFly" )
 
 ########### next target ###############
 
