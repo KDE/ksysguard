@@ -212,28 +212,41 @@ updateProcess(int pid)
         ps->gid       = p.ki_pgid;
         ps->priority  = p.ki_pri.pri_user;
         ps->niceLevel = p.ki_nice;
+#elif defined(__DragonFly__) && __DragonFly_version >= 190000
+	ps->pid       = p.kp_pid;
+	ps->ppid      = p.kp_ppid;
+	ps->uid       = p.kp_uid;
+	ps->gid       = p.kp_pgid;
+	ps->priority  = p.kp_lwp.kl_tdprio;
+	ps->niceLevel = p.kp_nice;
 #else
         ps->pid       = p.kp_proc.p_pid;
         ps->ppid      = p.kp_eproc.e_ppid;
         ps->uid       = p.kp_eproc.e_ucred.cr_uid;
         ps->gid       = p.kp_eproc.e_pgid;
+#if defined(__DragonFly__)
+	ps->priority  = p.kp_thread.td_pri;
+#else
         ps->priority  = p.kp_proc.p_priority;
+#endif
         ps->niceLevel = p.kp_proc.p_nice;
 #endif
 
         /* this isn't usertime -- it's total time (??) */
 #if __FreeBSD_version >= 500015
         ps->userTime = p.ki_runtime / 10000;
-#elif __FreeBSD_version >= 300000
-#if defined(__DragonFly__)
+#elif defined(__DragonFly__)
+#if __DragonFly_version >= 190000
+	if (!getrusage(p.kp_pid, &pru))
+#else
 	if (!getrusage(p.kp_proc.p_pid, &pru))
+#endif
 	{
 		errx(1, "failed to get rusage info");
 	}
 	ps->userTime = pru.ru_utime.tv_usec / 1000; /*p_runtime / 1000*/ 
-#else
+#elif __FreeBSD_version >= 300000
         ps->userTime = p.kp_proc.p_runtime / 10000;
-#endif
 #else
 	ps->userTime = p.kp_proc.p_rtime.tv_sec*100+p.kp_proc.p_rtime.tv_usec/100;
 #endif
@@ -250,13 +263,20 @@ updateProcess(int pid)
 		ps->userLoad = 0;
 	else
 #if __FreeBSD_version >= 500015
-		ps->userLoad = 100.0 * (double) p.ki_pctcpu / fscale;
+	ps->userLoad = 100.0 * (double) p.ki_pctcpu / fscale;
 	ps->vmSize   = p.ki_size;
 	ps->vmRss    = p.ki_rssize * getpagesize();
 	strlcpy(ps->name,p.ki_comm? p.ki_comm:"????",sizeof(ps->name));
 	strcpy(ps->status,(p.ki_stat>=1)&&(p.ki_stat<=5)? statuses[p.ki_stat-1]:"????");
+#elif defined (__DragonFly__) && __DragonFly_version >= 190000
+	ps->userLoad = 100.0 * (double) p.kp_lwp.kl_pctcpu / fscale;
+	ps->vmSize   = p.kp_vm_map_size;
+	ps->vmRss    = p.kp_vm_rssize * getpagesize();
+	strlcpy(ps->name,p.kp_comm ? p.kp_comm : "????", 
+		sizeof(ps->name));
+	strcpy(ps->status,(p.kp_stat>=1)&&(p.kp_stat<=5)? statuses[p.kp_stat-1]:"????");
 #else
-		ps->userLoad = 100.0 * (double) p.kp_proc.p_pctcpu / fscale;
+	ps->userLoad = 100.0 * (double) p.kp_proc.p_pctcpu / fscale;
 	ps->vmSize   = p.kp_eproc.e_vm.vm_map.size;
 	ps->vmRss    = p.kp_eproc.e_vm.vm_rssize * getpagesize();
 #if defined (__DragonFly__)
@@ -364,6 +384,8 @@ updateProcessList(void)
 	for (num = 0; num < len / sizeof(struct kinfo_proc); num++)
 #if __FreeBSD_version >= 500015
 		updateProcess(p[num].ki_pid);
+#elif __DragonFly_version >= 190000
+		updateProcess(p[num].kp_pid);
 #else
 		updateProcess(p[num].kp_proc.p_pid);
 #endif

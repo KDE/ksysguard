@@ -28,6 +28,10 @@
 #include <sys/types.h>
 #include <sys/user.h>
 #include <sys/resource.h>
+#if defined(__DragonFly__)
+#include <sys/resourcevar.h>
+#include <err.h>
+#endif
 #include <signal.h>
 #include <unistd.h>  
 
@@ -72,10 +76,14 @@ void ProcessesLocal::Private::readProcStatus(struct kinfo_proc *p, Process *proc
     process->tracerpid = 0;
 
 
-#if __FreeBSD_version >= 500015
+#if defined(__FreeBSD__) && __FreeBSD_version >= 500015
     process->uid  = p->ki_uid;    
     process->gid  = p->ki_pgid;
     process->name = QString(p->ki_comm ? p->ki_comm : "????");
+#elif defined(__DragonFly__) && __DragonFly_version >= 190000
+    process->uid  = p->kp_uid;
+    process->gid  = p->kp_pgid;
+    process->name = QString(p->kp_comm ? p->kp_comm : "????");
 #else
     process->uid  = p->kp_eproc.e_ucred.cr_uid;
     process->gid  = p->kp_eproc.e_pgid;
@@ -85,12 +93,22 @@ void ProcessesLocal::Private::readProcStatus(struct kinfo_proc *p, Process *proc
 void ProcessesLocal::Private::readProcStat(struct kinfo_proc *p, Process *ps)
 {
     int status;
-#if __FreeBSD_version >= 500015
+    struct rusage pru;
+#if defined(__FreeBSD__) && __FreeBSD_version >= 500015
         ps->userTime  = p->ki_runtime / 10000;
         ps->niceLevel = p->ki_nice;
         ps->vmSize    = p->ki_size;
         ps->vmRSS     = p->ki_rssize * getpagesize();
         status = p->ki_stat;
+#elif defined(__DragonFly__) && __DragonFly_version >= 190000
+        if (!getrusage(p->kp_pid, &pru)) {
+            errx(1, "failed to get rusage info");
+        }
+        ps->userTime  = pru.ru_utime.tv_usec / 1000; /*p_runtime / 1000*/
+        ps->niceLevel = p->kp_nice;
+        ps->vmSize    = p->kp_vm_map_size;
+        ps->vmRSS     = p->kp_vm_rssize * getpagesize();
+        status = p->kp_stat;
 #else
         ps->userTime  = p->kp_proc.p_rtime.tv_sec*100+p->kp_proc.p_rtime.tv_usec/100;
         ps->niceLevel = p->kp_proc.p_nice;
@@ -165,8 +183,10 @@ long ProcessesLocal::getParentPid(long pid) {
     struct kinfo_proc p;
     if(d->readProc(pid, &p))
     {
-#if __FreeBSD_version >= 500015
+#if defined(__FreeBSD__) && __FreeBSD_version >= 500015
         ppid = p.ki_ppid;
+#elif defined(__DragonFly__) && __DragonFly_version >= 190000
+        ppid = p.kp_ppid;
 #else
         ppid = p.kp_eproc.e_ppid;
 #endif
@@ -202,8 +222,10 @@ QSet<long> ProcessesLocal::getAllPids( )
     sysctl(mib, 3, p, &len, NULL, 0);
 
     for (num = 0; num < len / sizeof(struct kinfo_proc); num++)
-#if __FreeBSD_version >= 500015
+#if defined(__FreeBSD__) && __FreeBSD_version >= 500015
         pids.insert(p[num].ki_pid);
+#elif defined(__DragonFly__) && __DragonFly_version >= 190000
+        pids.insert(p[num].kp_pid);
 #else
         pids.insert(p[num].kp_proc.p_pid);
 #endif
