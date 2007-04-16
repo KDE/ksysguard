@@ -24,7 +24,7 @@
 #include <QtDBus/QtDBus>
 
 #include <kapplication.h>
-#include <kmainwindow.h>
+#include <kxmlguiwindow.h>
 
 #include <ksgrd/SensorClient.h>
 
@@ -34,7 +34,7 @@ class QSplitter;
 class SensorBrowserWidget;
 class Workspace;
 
-class TopLevel : public KMainWindow, public KSGRD::SensorClient
+class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
 {
   Q_OBJECT
   Q_CLASSINFO("D-Bus Interface", "org.kde.SystemMonitor")

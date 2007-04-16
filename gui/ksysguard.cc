@@ -76,7 +76,7 @@ TopLevel* topLevel;
   TaskMan widget.
  */
 TopLevel::TopLevel()
-  : KMainWindow( 0 )
+  : KXmlGuiWindow( 0 )
 {
   QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportScriptableSlots);
   setPlainCaption( i18n( "System Monitor" ) );
@@ -293,7 +293,7 @@ bool TopLevel::event( QEvent *e )
     return true;
   }
 
-  return KMainWindow::event( e );
+  return KXmlGuiWindow::event( e );
 }
 
 void TopLevel::timerEvent( QTimerEvent* )
