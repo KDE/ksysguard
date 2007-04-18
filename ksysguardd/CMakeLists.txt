@@ -4,7 +4,7 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../CContLib/ )
 # Laurent: Verify that we install it into (kdeprefix)/etc/ and not into /etc
 # otherwise it's necessary to change it.
 # into kde 3.x it was installed into /etc/
-ADD_DEFINITIONS( -DKSYSGUARDDRCFILE=\"\\"${CMAKE_INSTALL_PREFIX}${SYSCONF_INSTALL_DIR}/ksysguarddrc\\"\" )
+ADD_DEFINITIONS( -DKSYSGUARDDRCFILE=\"\\"${SYSCONF_INSTALL_DIR}/ksysguarddrc\\"\" )
 
 ADD_DEFINITIONS(-DOSTYPE_${CMAKE_SYSTEM_NAME})
 
@@ -48,6 +48,10 @@ if( ${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" )
   message(STATUS "Adding kvm library on NetBSD")
   TARGET_LINK_LIBRARIES(ksysguardd kvm)
 endif( ${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" )
+if( ${CMAKE_SYSTEM_NAME} MATCHES "DragonFly" )
+  message(STATUS "Adding kinfo library on DragonFlyBSD")
+  TARGET_LINK_LIBRARIES(ksysguardd kinfo)
+endif( ${CMAKE_SYSTEM_NAME} MATCHES "DragonFly" )
 
 install(TARGETS ksysguardd DESTINATION ${BIN_INSTALL_DIR})
 

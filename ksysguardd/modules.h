@@ -47,7 +47,7 @@
 #include "uptime.h"
 #endif /* OSTYPE_Linux */
 
-#ifdef OSTYPE_FreeBSD
+#if defined OSTYPE_FreeBSD || OSTYPE_DragonFly
 #include <grp.h>
 #ifdef __i386__
  #include "apm.h"
@@ -133,7 +133,7 @@ struct SensorModul SensorModulList[] = {
   { "Uptime", initUptime, exitUptime, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
 #endif /* OSTYPE_Linux */
 
-#ifdef OSTYPE_FreeBSD
+#if defined OSTYPE_FreeBSD || defined OSTYPE_DragonFly
   #ifdef __i386__
     { "Apm", initApm, exitApm, updateApm, NULLVVFUNC, 0, NULLTIME },
   #endif
