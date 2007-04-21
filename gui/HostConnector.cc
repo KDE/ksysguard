@@ -29,7 +29,7 @@
 #include <QLayout>
 #include <QRadioButton>
 #include <QSpinBox>
-#include <QToolTip>
+
 #include <QGridLayout>
 #include <QLineEdit>
 

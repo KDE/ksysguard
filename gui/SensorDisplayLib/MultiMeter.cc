@@ -24,7 +24,7 @@
 #include <Qt/qdom.h>
 #include <QtGui/QLCDNumber>
 #include <QtGui/QResizeEvent>
-#include <QtGui/QToolTip>
+
 
 #include <kdebug.h>
 

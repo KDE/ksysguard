@@ -24,7 +24,7 @@
 #include <QListView>
 #include <QPushButton>
 #include <QSpinBox>
-#include <QToolTip>
+
 
 #include <kdebug.h>
 #include <klocale.h>

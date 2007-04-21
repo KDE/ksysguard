@@ -27,7 +27,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QLayout>
 #include <QtGui/QSpinBox>
-#include <QtGui/QToolTip>
+
 
 #include "WorkSheetSettings.h"
 
