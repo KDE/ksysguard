@@ -27,7 +27,7 @@ class QFile;
 class QListWidget;
 
 #include <Qt/qdom.h>
-#include <QString>
+
 #include <QStringList>
 #include <QTimerEvent>
 #include <QResizeEvent>

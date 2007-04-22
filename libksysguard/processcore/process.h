@@ -21,7 +21,7 @@
 
 #include <kdemacros.h>
 
-#include <QString>
+
 #include <QList>
 #include <klocale.h>
 

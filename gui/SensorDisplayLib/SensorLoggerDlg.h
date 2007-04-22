@@ -23,7 +23,7 @@
 
 #include <kdialog.h>
 
-#include <QString>
+
 #include <QColor>
 
 class Ui_SensorLoggerDlgWidget;

@@ -20,7 +20,7 @@
 
 #include "SensorFrame.h"
 #include <QBoxLayout>
-#include <QString>
+
 
 
 SensorFrame::SensorFrame(KSGRD::SensorDisplay* display)

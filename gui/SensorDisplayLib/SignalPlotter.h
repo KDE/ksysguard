@@ -21,7 +21,7 @@
 #ifndef KSIGNALPLOTTER_H
 #define KSIGNALPLOTTER_H
 
-#include <QString>
+
 #include <QWidget>
 #include <QResizeEvent>
 #include <QPaintEvent>

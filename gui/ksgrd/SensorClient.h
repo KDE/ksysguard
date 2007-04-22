@@ -22,7 +22,7 @@
 #ifndef KSG_SENSORCLIENT_H
 #define KSG_SENSORCLIENT_H
 
-#include <QString>
+
 #include <QStringList>
 namespace KSGRD {
 
