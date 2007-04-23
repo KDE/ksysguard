@@ -36,6 +36,16 @@
 
 #include "processcore/process.h"
 
+#ifdef Q_WS_X11
+#include <kwm.h>
+#include <netwm.h>
+#include <QtGui/QX11Info>
+#include <X11/Xatom.h>
+#include <QList>
+#include <kxerrorhandler.h>
+#endif
+
+
 namespace KSysGuard {
 	class Processes;
 }
@@ -90,7 +100,7 @@ public:
 	 */
 	bool isSimpleMode() const { return mSimple;}
 	
-	/** Set the total amount of physical memory in the machine.  We can used this to determine the percentage of memory an app is using
+	/** Set the total amount of physical memory in the machine.  We can use this to determine the percentage of memory an app is using
 	 */
 	void setTotalMemory(long memTotal) { mMemTotal = memTotal; }
 
@@ -106,10 +116,19 @@ public:
 	 *  in.  If you change this, make sure you also change the 
 	 *  setup header function
 	 */
-	enum { HeadingName=0, HeadingUser, HeadingTty, HeadingNiceness, HeadingCPUUsage, HeadingVmSize, HeadingMemory, HeadingSharedMemory, HeadingCommand };	
+	enum { HeadingName=0, HeadingUser, HeadingTty, HeadingNiceness, HeadingCPUUsage, HeadingVmSize, HeadingMemory, HeadingSharedMemory, HeadingCommand, HeadingXTitle };	
 public slots:
 	void setShowTotals(bool showTotals);
 private slots:
+
+#ifdef Q_WS_X11
+	/** When an X window is changed, this is called */
+	void windowChanged(WId wid, unsigned int properties);
+	/** When an X window is created, this is called
+	 */
+	void windowAdded(WId wid);
+#endif
+
 	/** Change the data for a process.  This is called from KSysGuard::Processes
 	 *  if @p onlyCpuOrMem is set, only the cpu and memory information are updated.  This is for optomization reasons - the cpu percentage
 	 *  and memory usage change quite often, but if it's the only thing changed then there's no reason to repaint the whole row
@@ -141,6 +160,8 @@ private slots:
         void endMoveRow();
 
 private:
+	/** On X11 system, connects to the signals emitted when windows are created/destroyed */
+	void setupWindows();
 	/** Connects to the host */
 	void setupProcesses();
         /** A mapping of running,stopped,etc  to a friendly description like 'Stopped, either by a job control signal or because it is being traced.'*/
@@ -205,6 +226,17 @@ private:
 	KSysGuard::Processes *mProcesses;  ///The processes instance
 
 	bool mIsChangingLayout;
+
+#ifdef Q_WS_X11
+	struct WindowInfo {
+		QPixmap icon;
+		WId wid;
+		NETWinInfo *netWinInfo;
+	};
+
+	QHash< long long, WindowInfo> mPidToWindowInfo;  ///Map a process pid to X window info if available
+#endif 
+
 };
 
 #endif

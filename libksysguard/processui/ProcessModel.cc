@@ -28,6 +28,16 @@
 #include <QBitmap>
 #include <QFont>
 
+#ifdef Q_WS_X11
+#include <kwm.h>
+#include <netwm.h>
+#include <QtGui/QX11Info>
+#include <X11/Xatom.h>
+#include <QList>
+#include <kxerrorhandler.h>
+#endif
+
+
 #define GET_OWN_ID
 
 #ifdef GET_OWN_ID
@@ -42,6 +52,7 @@
 #include "processcore/processes.h"
 
 
+
 ProcessModel::ProcessModel(QObject* parent)
 	: QAbstractItemModel(parent)
 {
@@ -54,8 +65,42 @@ ProcessModel::ProcessModel(QObject* parent)
 
 	setupProcesses();
 	setupHeader();
+
+	setupWindows();
+
+
 }
 
+void ProcessModel::setupWindows() {
+#ifdef Q_WS_X11
+	unsigned long props[ 2 ] = { NET::WMPid | NET::WMVisibleName | NET::WMName, 0 };
+	QList<WId>::ConstIterator it;
+	for ( it = KWM::windows().begin(); it != KWM::windows().end(); ++it ) {
+		KXErrorHandler handler;
+
+		NETWinInfo *info = new NETWinInfo( QX11Info::display(), (*it), QX11Info::appRootWindow(), props, 2 );
+
+		if(handler.error( false ) )
+			continue;  //info is invalid - window just closed or something probably
+		long long pid = info->pid();
+		if(pid <= 0) 
+			continue;
+		
+		KSysGuard::Process *process = mProcesses->getProcess(pid);
+		if(!process) continue; //shouldn't really happen.. maybe race condition etc
+
+		WindowInfo w;
+		w.icon = KWM::icon(*it, 16, 16, true);
+		w.wid = *it;
+		w.netWinInfo = info;
+		mPidToWindowInfo[pid] = w;
+	}
+
+	connect( KWM::self(), SIGNAL( windowChanged (WId, unsigned int )), this, SLOT(windowChanged(WId, unsigned int)));
+	connect( KWM::self(), SIGNAL( windowAdded (WId )), this, SLOT(windowAdded(WId)));
+//	connect( KWM::self(), SIGNAL( windowRemoved (WId )), this, SLOT(update()));
+#endif
+}
 
 void ProcessModel::setupProcesses() {
 	if(mProcesses)
@@ -75,14 +120,57 @@ void ProcessModel::setupProcesses() {
 	update();
 }
 
+#ifdef Q_WS_X11
+void ProcessModel::windowChanged(WId wid, unsigned int properties)
+{
+	if(! (properties & NET::WMVisibleName || properties & NET::WMName || properties & NET::WMIcon)) return;
+	windowAdded(wid);
+
+}
+
+void ProcessModel::windowAdded(WId wid)
+{
+	//The name changed
+	unsigned long props[ 2 ] = { NET::WMPid | NET::WMVisibleName | NET::WMName, 0 };
+	KXErrorHandler handler;
+	NETWinInfo *info = new NETWinInfo( QX11Info::display(), wid, QX11Info::appRootWindow(), props, 2 );
+	if(handler.error( false ) )
+		return;  //info is invalid - window just closed or something probably
+	long long pid = info->pid();
+        if(pid <= 0)
+                return;
+
+	WindowInfo w;
+	w.icon = KWM::icon(wid, 16, 16, true);
+	w.wid = wid;
+	w.netWinInfo = info;
+	mPidToWindowInfo[pid] = w;
+
+	KSysGuard::Process *process = mProcesses->getProcess(pid);
+        if(!process) return; //shouldn't really happen.. maybe race condition etc
+	int row;
+	if(mSimple)
+		row = process->index;
+	else
+		row = process->parent->children.indexOf(process);
+	QModelIndex index1 = createIndex(row, HeadingName, process);
+	QModelIndex index2 = createIndex(row, HeadingXTitle, process);
+	emit dataChanged(index1, index2);
+
+}
+#endif
+
 void ProcessModel::update(int updateDurationMS) {
-//	kDebug() << "update all processes: " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+	kDebug() << "update all processes: " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 	mProcesses->updateAllProcesses(updateDurationMS);
+
+	kDebug() << "now doing windows: " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+
 	if(mIsChangingLayout) {
 		mIsChangingLayout = false;
 		emit layoutChanged();
 	}
-//	kDebug() << "finished:             " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+	kDebug() << "finished:             " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 }
 
 QString ProcessModel::getStatusDescription(KSysGuard::Process::ProcessStatus status) const
@@ -536,6 +624,19 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 //				command.replace(process->name, "<b>" + process->name + "</b>");
 //				return "<qt>" + command;
 			}
+#ifdef Q_WS_X11
+		case HeadingXTitle:
+			{
+				if(!mPidToWindowInfo.contains(process->pid)) return QVariant();
+				WindowInfo w = mPidToWindowInfo.value(process->pid);
+				if(!w.netWinInfo) return QVariant();
+				const char *name = w.netWinInfo->visibleName();
+				if( !name || name[0] == 0 )
+					name = w.netWinInfo->name();
+				if(name)
+					return QString::fromUtf8(name);
+			}
+#endif
 		default:
 			return QVariant();
 		}
@@ -554,6 +655,19 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		switch(index.column()) {
 		case HeadingName: {
 			QString tooltip;
+			/***  It would be nice to be able to show the icon in the tooltip, but Qt4 won't let us put
+			 *    a picture in a tooltip :(
+			   
+			QIcon icon;
+			if(mPidToWindowInfo.contains(process->pid)) {
+				WId wid;
+				wid = mPidToWindowInfo[process->pid].wid;
+				icon = KWM::icon(wid);
+			}
+			if(icon.isValid()) {
+				tooltip = i18n("<qt><table><tr><td>%1", icon);
+			}
+			*/
 			if(process->parent_pid == 0)
 				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Command: %3", process->name, (long int)process->pid, process->command);
 			else
@@ -752,7 +866,11 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	}
 	case Qt::DecorationRole: {
 		if(index.column() == HeadingName) {
-			if(mSimple) return QVariant();
+			KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
+			if(!mPidToWindowInfo.contains(process->pid)) return QVariant();
+			WindowInfo w = mPidToWindowInfo.value(process->pid);
+			return w.icon;
+
 		} else if (index.column() == HeadingCPUUsage) {
 			KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
 			if(process->status == KSysGuard::Process::Stopped || process->status == KSysGuard::Process::Zombie) {
@@ -814,6 +932,9 @@ void ProcessModel::setupHeader() {
 	headings << i18nc("process heading", "Memory");
 	headings << i18nc("process heading", "Shared Mem");
 	headings << i18nc("process heading", "Command");
+#ifdef Q_WS_X11
+	headings << i18nc("process heading", "Title Name");
+#endif
 
 	beginInsertColumns(QModelIndex(), 0, headings.count()-1);
 		mHeadings = headings;

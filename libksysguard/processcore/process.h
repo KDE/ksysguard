@@ -25,6 +25,8 @@
 #include <QList>
 #include <klocale.h>
 
+class NETWinInfo;
+class QPixmap;
 
 namespace KSysGuard
 {
@@ -78,6 +80,7 @@ namespace KSysGuard
 	QString niceLevelAsString() const;
 
 	int index;
+
   private:
         void clear();
     }; 
