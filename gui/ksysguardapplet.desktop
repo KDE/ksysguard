@@ -1,6 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=System Monitor
+Name[csb]=Mònitor systemë
 Name[de]=Systemmonitor
 Name[el]=Επόπτης συστήματος
 Name[ja]=システムモニタ
@@ -9,6 +10,7 @@ Name[sv]=Systemövervakare
 Name[x-test]=xxSystem Monitorxx
 Name[zh_TW]=系統監視器
 Comment=An applet which monitors system information
+Comment[csb]=Aplet jaczi mònitorëje systemòwą wedowiédzã
 Comment[de]=Anwendung zur Systemüberwachung
 Comment[ja]=システムの情報を監視するアプレット
 Comment[nds]=En Lüttprogramm, dat de Systeeminformatschonen beluert
