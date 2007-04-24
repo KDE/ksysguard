@@ -153,8 +153,7 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 
 	//If the view resorts continually, then it can be hard to keep track of processes.  By doing it only every 3 seconds it reduces the 'jumping around'
 	QTimer *mTimer = new QTimer(this);
-	connect(mTimer, SIGNAL(timeout()), &mFilterModel, SLOT(resort()));
-	mTimer->setSingleShot(false);
+	connect(mTimer, SIGNAL(timeout()), &mFilterModel, SLOT(invalidate()));
 	mTimer->start(3000); 
 
 	expandInit(); //This will expand the init process
