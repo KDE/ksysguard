@@ -122,8 +122,6 @@ public slots:
 private slots:
 
 #ifdef Q_WS_X11
-	/** When the order of the windows is changed */
-	void stackingOrderChanged();
 	/** When an X window is changed, this is called */
 	void windowChanged(WId wid, unsigned int properties);
 	/** When an X window is created, this is called
@@ -237,10 +235,9 @@ private:
 		QPixmap icon;
 		WId wid;
 		NETWinInfo *netWinInfo;
-		int stackingOrder;  ///The stacking order is the order in which windows are shown.  Highest number is the topmost
 	};
 
-	QHash< long long, WindowInfo> mPidToWindowInfo;  ///Map a process pid to X window info if available
+	QMultiHash< long long, WindowInfo> mPidToWindowInfo;  ///Map a process pid to X window info if available
 	QHash< WId, long long> mWIdToPid; ///Map an X window id to a process pid
 #endif 
 

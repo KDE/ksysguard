@@ -70,12 +70,29 @@ ProcessModel::ProcessModel(QObject* parent)
 }
 
 void ProcessModel::windowRemoved(WId wid) {
+#ifdef Q_WS_X11
 	long long pid = mWIdToPid.value(wid, 0);
+	kDebug() << "Window removed" << endl;
 	if(pid <= 0) return;
 
-	mPidToWindowInfo.remove(wid);
+	kDebug() << "Window removed  pid is "  << pid << endl;
+	int count = mPidToWindowInfo.count(pid);
+	QMultiHash<long long, WindowInfo>::iterator i = mPidToWindowInfo.find(pid);
+	while (i != mPidToWindowInfo.end() && i.key() == pid) {
+		kDebug() << "window has wid "  << wid << endl;
+		if(i.value().wid == wid) {
+			kDebug() << "Found a window "  << pid << endl;
+			i = mPidToWindowInfo.erase(i);
+//			break;
+		} else
+			i++;
+	}
+	kDebug() << "Count before: " << count << " and after:" << mPidToWindowInfo.count(pid) << endl;
+	Q_ASSERT(count-1 == mPidToWindowInfo.count(pid) || count == mPidToWindowInfo.count(pid));
         KSysGuard::Process *process = mProcesses->getProcess(pid);
         if(!process) return;
+	
+	kDebug() << "updating "  << pid << endl;
 
 	int row;
 	if(mSimple)
@@ -86,55 +103,20 @@ void ProcessModel::windowRemoved(WId wid) {
 	emit dataChanged(index1, index1);
 	QModelIndex index2 = createIndex(row, HeadingXTitle, process);
 	emit dataChanged(index2, index2);
-
+#endif
 }
 
 void ProcessModel::setupWindows() {
 #ifdef Q_WS_X11
-	unsigned long props[ 2 ] = { NET::WMPid | NET::WMVisibleName | NET::WMName, 0 };
 	QList<WId>::ConstIterator it;
 	for ( it = KWM::windows().begin(); it != KWM::windows().end(); ++it ) {
-		KXErrorHandler handler;
-
-		NETWinInfo *info = new NETWinInfo( QX11Info::display(), (*it), QX11Info::appRootWindow(), props, 2 );
-
-		if(handler.error( false ) )
-			continue;  //info is invalid - window just closed or something probably
-		long long pid = info->pid();
-		if(pid <= 0) 
-			continue;
-		
-//		KSysGuard::Process *process = mProcesses->getProcess(pid);
-//		if(!process) continue; //shouldn't really happen.. maybe race condition etc
-
-		WindowInfo w;
-		w.icon = KWM::icon(*it, 16, 16, true);
-		w.wid = *it;
-		w.netWinInfo = info;
-		mPidToWindowInfo[pid] = w;
+		windowAdded(*it);
 	}
 
 	connect( KWM::self(), SIGNAL( windowChanged (WId, unsigned int )), this, SLOT(windowChanged(WId, unsigned int)));
 	connect( KWM::self(), SIGNAL( windowAdded (WId )), this, SLOT(windowAdded(WId)));
 	connect( KWM::self(), SIGNAL( windowRemoved (WId )), this, SLOT(windowRemoved(WId)));
-	connect( KWM::self(), SIGNAL( stackingOrderChanged ( )), this, SLOT(stackingOrderChanged()));
-	stackingOrderChanged();
 #endif
-}
-
-void ProcessModel::stackingOrderChanged() {
-	QList< WId > stack = KWM::stackingOrder();
-
-	int stack_num = 1;
-	foreach(WId wid, stack) {
-		long long pid = mWIdToPid.value(wid, 0);
-		if(pid != 0) {
-			if(mPidToWindowInfo[pid].stackingOrder != stack_num) {
-				mPidToWindowInfo[pid].stackingOrder = stack_num;
-			}
-			stack_num++;
-		}
-	}
 }
 
 void ProcessModel::setupProcesses() {
@@ -158,17 +140,23 @@ void ProcessModel::setupProcesses() {
 #ifdef Q_WS_X11
 void ProcessModel::windowChanged(WId wid, unsigned int properties)
 {
-	if(! (properties & NET::WMVisibleName || properties & NET::WMName || properties & NET::WMIcon)) return;
+	if(! (properties & NET::WMVisibleName || properties & NET::WMName || properties & NET::WMIcon || properties & NET::WMState)) return;
 	windowAdded(wid);
 
 }
 
 void ProcessModel::windowAdded(WId wid)
 {
+	foreach(WindowInfo w, mPidToWindowInfo.values()) {
+		if(w.wid == wid) return; //already added
+	}
 	//The name changed
-	unsigned long props[ 2 ] = { NET::WMPid | NET::WMVisibleName | NET::WMName, 0 };
 	KXErrorHandler handler;
-	NETWinInfo *info = new NETWinInfo( QX11Info::display(), wid, QX11Info::appRootWindow(), props, 2 );
+	NETWinInfo *info = new NETWinInfo( QX11Info::display(), wid, QX11Info::appRootWindow(), 
+			NET::WMPid | NET::WMVisibleName | NET::WMName | NET::WMState );
+	long unsigned state = info->state();
+	if(/*state & NET::SkipTaskbar || state & NET::SkipPager || */state & NET::Hidden) return;
+
 	if(handler.error( false ) )
 		return;  //info is invalid - window just closed or something probably
 	long long pid = info->pid();
@@ -179,7 +167,8 @@ void ProcessModel::windowAdded(WId wid)
 	w.icon = KWM::icon(wid, 16, 16, true);
 	w.wid = wid;
 	w.netWinInfo = info;
-	mPidToWindowInfo[pid] = w;
+	mPidToWindowInfo.insertMulti(pid, w);
+	mWIdToPid[wid] = pid;
 
 	KSysGuard::Process *process = mProcesses->getProcess(pid);
         if(!process) return; //shouldn't really happen.. maybe race condition etc
@@ -638,16 +627,20 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			if(process->vmURSS == -1) {
 				//If we don't have the URSS (the memory used by only the process, not the shared libraries)
 				//then return the RSS (physical memory used by the process + shared library) as the next best thing
-				return KGlobal::locale()->formatByteSize(process->vmRSS * 1024);
+				return KGlobal::locale()->formatLong(process->vmRSS) + " k";
+//				return KGlobal::locale()->formatByteSize(process->vmRSS * 1024);
 			} else {
-				return KGlobal::locale()->formatByteSize(process->vmURSS * 1024);
+				return KGlobal::locale()->formatLong(process->vmURSS) + " k";
+//				return KGlobal::locale()->formatByteSize(process->vmURSS * 1024);
 			}
 		case HeadingVmSize:
 			if(process->vmSize == 0) return QVariant(QVariant::String);
+			return KGlobal::locale()->formatLong(process->vmSize) + " k";
 			return KGlobal::locale()->formatByteSize(process->vmSize * 1024);
 		case HeadingSharedMemory:
 			if(process->vmRSS - process->vmURSS <= 0 || process->vmURSS == -1) return QVariant(QVariant::String);
-			return KGlobal::locale()->formatByteSize( (process->vmRSS-process->vmURSS) * 1024);
+			return KGlobal::locale()->formatLong(process->vmRSS - process->vmURSS) + " k";
+//			return KGlobal::locale()->formatByteSize( (process->vmRSS-process->vmURSS) * 1024);
 		case HeadingCommand: 
 			{
 				return process->command;
@@ -665,8 +658,9 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				const char *name = w.netWinInfo->visibleName();
 				if( !name || name[0] == 0 )
 					name = w.netWinInfo->name();
-				if(name)
+				if(name && name[0] != 0)
 					return QString::fromUtf8(name);
+				return QVariant();
 			}
 #endif
 		default:
@@ -792,6 +786,27 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 
 			return tooltip;
 		}
+		case HeadingXTitle: {
+			QString tooltip;
+			QList<WindowInfo> values = mPidToWindowInfo.values(process->pid);
+			if(values.isEmpty()) return QVariant(QVariant::String);
+			for(int i = 0; i< values.size(); i++) {
+				WindowInfo w = values[i];
+				if(w.netWinInfo) {
+	                                const char *name = w.netWinInfo->visibleName();
+	                                if( !name || name[0] == 0 )
+		                                name = w.netWinInfo->name();
+	        	                if(name && name[0] != 0) {
+						if( i==0 && values.size()==1)
+							return QString::fromUtf8(name);
+		                                tooltip += "<li>" + QString::fromUtf8(name) + "</li>";
+					}
+				}
+			}
+			if(!tooltip.isEmpty())
+				return "<qt><ul>" + tooltip + "</ul>";
+			return QVariant(QVariant::String);
+		}
 
 		default:
 			return QVariant(QVariant::String);
@@ -851,11 +866,9 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				cpu = process->totalUserUsage + process->totalSysUsage;
 			if(cpu == 0 && process->status != KSysGuard::Process::Running && process->status != KSysGuard::Process::Sleeping) 
 				cpu = 1;  //stopped or zombied processes should be near the top of the list
-			int stackOrder = 0;
-			if(mPidToWindowInfo.contains(process->pid))
-				stackOrder = mPidToWindowInfo.value(process->pid).stackingOrder;
+			bool hasWindow = mPidToWindowInfo.contains(process->pid);
 			//However we can of course have lots of processes with the same user.  Next we sort by CPU.
-			return (long long)(base - (cpu*100) -(stackOrder?50:0 + stackOrder*10) - memory*100/mMemTotal);
+			return (long long)(base - (cpu*100) -(hasWindow?50:0) - memory*100/mMemTotal);
 		}
 		case HeadingCPUUsage: {
 			int cpu;
