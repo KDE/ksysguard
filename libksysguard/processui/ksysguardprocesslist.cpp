@@ -66,7 +66,7 @@ class ProgressBarItemDelegate : public QItemDelegate
 	virtual void drawDisplay(QPainter *painter, const QStyleOptionViewItem &option,
 		                                 const QRect &rect, const QString &text) const
 	{
-		if(percentage > 0) {
+		if(percentage > 0 && percentage * rect.width() > 100 ) { //make sure the line will have a width of more than 1 pixel
 			QPen old = painter->pen();
 			painter->setPen(Qt::NoPen);
 			QLinearGradient  linearGrad( QPointF(rect.x(),rect.y()), QPointF(rect.x() + rect.width(), rect.y()));
