@@ -125,7 +125,7 @@ void ProcessModel::setupWindows() {
 void ProcessModel::stackingOrderChanged() {
 	QList< WId > stack = KWM::stackingOrder();
 
-	int stack_num = 0;
+	int stack_num = 1;
 	foreach(WId wid, stack) {
 		long long pid = mWIdToPid.value(wid, 0);
 		if(pid != 0) {
@@ -855,7 +855,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			if(mPidToWindowInfo.contains(process->pid))
 				stackOrder = mPidToWindowInfo.value(process->pid).stackingOrder;
 			//However we can of course have lots of processes with the same user.  Next we sort by CPU.
-			return (long long)(base - (cpu*100) -(stackOrder*10) - memory*100/mMemTotal);
+			return (long long)(base - (cpu*100) -(stackOrder?50:0 + stackOrder*10) - memory*100/mMemTotal);
 		}
 		case HeadingCPUUsage: {
 			int cpu;
