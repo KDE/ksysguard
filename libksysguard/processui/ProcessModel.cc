@@ -99,7 +99,21 @@ void ProcessModel::setupWindows() {
 	connect( KWM::self(), SIGNAL( windowChanged (WId, unsigned int )), this, SLOT(windowChanged(WId, unsigned int)));
 	connect( KWM::self(), SIGNAL( windowAdded (WId )), this, SLOT(windowAdded(WId)));
 //	connect( KWM::self(), SIGNAL( windowRemoved (WId )), this, SLOT(update()));
+	connect( KWM::self(), SIGNAL( stackingOrderChanged ( )), this, SLOT(stackingOrderChanged()));
+	stackingOrderChanged();
 #endif
+}
+
+void ProcessModel::stackingOrderChanged() {
+	QList< WId > stack = KWM::stackingOrder();
+
+	int stack_num = 0;
+	foreach(WId wid, stack) {
+		long long pid = mWIdToPid.value(wid, 0);
+		if(pid != 0) {
+			mPidToWindowInfo[pid].stackingOrder = stack_num++;
+		}
+	}
 }
 
 void ProcessModel::setupProcesses() {
@@ -154,23 +168,20 @@ void ProcessModel::windowAdded(WId wid)
 	else
 		row = process->parent->children.indexOf(process);
 	QModelIndex index1 = createIndex(row, HeadingName, process);
+	emit dataChanged(index1, index1);
 	QModelIndex index2 = createIndex(row, HeadingXTitle, process);
-	emit dataChanged(index1, index2);
-
+	emit dataChanged(index2, index2);
 }
 #endif
 
 void ProcessModel::update(int updateDurationMS) {
-	kDebug() << "update all processes: " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+//	kDebug() << "update all processes: " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 	mProcesses->updateAllProcesses(updateDurationMS);
-
-	kDebug() << "now doing windows: " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
-
 	if(mIsChangingLayout) {
 		mIsChangingLayout = false;
 		emit layoutChanged();
 	}
-	kDebug() << "finished:             " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+//	kDebug() << "finished:             " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
 }
 
 QString ProcessModel::getStatusDescription(KSysGuard::Process::ProcessStatus status) const
@@ -819,9 +830,12 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				cpu = process->totalUserUsage + process->totalSysUsage;
 			if(cpu == 0 && process->status != KSysGuard::Process::Running && process->status != KSysGuard::Process::Sleeping) 
 				cpu = 1;  //stopped or zombied processes should be near the top of the list
+			int stackOrder = 0;
+			if(mPidToWindowInfo.contains(process->pid))
+				stackOrder = mPidToWindowInfo.value(process->pid).stackingOrder;
 
 			//However we can of course have lots of processes with the same user.  Next we sort by CPU.
-			return (long long)(base - (cpu*100) -100 + memory*100.0/mMemTotal);
+			return (long long)(base - (cpu*100) -(stackOrder*10) -100 + memory*100.0/mMemTotal);
 		}
 		case HeadingCPUUsage: {
 			int cpu;

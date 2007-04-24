@@ -130,6 +130,7 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	mUi->treeView->header()->hideSection(ProcessModel::HeadingVmSize);
 	mUi->treeView->header()->hideSection(ProcessModel::HeadingNiceness);
 	mUi->treeView->header()->hideSection(ProcessModel::HeadingTty);
+	mUi->treeView->header()->hideSection(ProcessModel::HeadingCommand);
 	mFilterModel.setFilterKeyColumn(0);
 
 	//Process names can have mixed case. Make the filter case insensitive.
@@ -153,6 +154,7 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	//If the view resorts continually, then it can be hard to keep track of processes.  By doing it only every 3 seconds it reduces the 'jumping around'
 	QTimer *mTimer = new QTimer(this);
 	connect(mTimer, SIGNAL(timeout()), &mFilterModel, SLOT(resort()));
+	mTimer->setSingleShot(false);
 	mTimer->start(3000); 
 
 	expandInit(); //This will expand the init process
