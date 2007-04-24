@@ -129,6 +129,9 @@ private slots:
 	/** When an X window is created, this is called
 	 */
 	void windowAdded(WId wid);
+	/** When an X window is closed, this is called
+	 */
+	void windowRemoved(WId wid);
 #endif
 
 	/** Change the data for a process.  This is called from KSysGuard::Processes

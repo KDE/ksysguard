@@ -67,7 +67,25 @@ ProcessModel::ProcessModel(QObject* parent)
 	setupHeader();
 
 	setupWindows();
+}
 
+void ProcessModel::windowRemoved(WId wid) {
+	long long pid = mWIdToPid.value(wid, 0);
+	if(pid <= 0) return;
+
+	mPidToWindowInfo.remove(wid);
+        KSysGuard::Process *process = mProcesses->getProcess(pid);
+        if(!process) return;
+
+	int row;
+	if(mSimple)
+		row = process->index;
+	else
+		row = process->parent->children.indexOf(process);
+	QModelIndex index1 = createIndex(row, HeadingName, process);
+	emit dataChanged(index1, index1);
+	QModelIndex index2 = createIndex(row, HeadingXTitle, process);
+	emit dataChanged(index2, index2);
 
 }
 
@@ -86,8 +104,8 @@ void ProcessModel::setupWindows() {
 		if(pid <= 0) 
 			continue;
 		
-		KSysGuard::Process *process = mProcesses->getProcess(pid);
-		if(!process) continue; //shouldn't really happen.. maybe race condition etc
+//		KSysGuard::Process *process = mProcesses->getProcess(pid);
+//		if(!process) continue; //shouldn't really happen.. maybe race condition etc
 
 		WindowInfo w;
 		w.icon = KWM::icon(*it, 16, 16, true);
@@ -98,7 +116,7 @@ void ProcessModel::setupWindows() {
 
 	connect( KWM::self(), SIGNAL( windowChanged (WId, unsigned int )), this, SLOT(windowChanged(WId, unsigned int)));
 	connect( KWM::self(), SIGNAL( windowAdded (WId )), this, SLOT(windowAdded(WId)));
-//	connect( KWM::self(), SIGNAL( windowRemoved (WId )), this, SLOT(update()));
+	connect( KWM::self(), SIGNAL( windowRemoved (WId )), this, SLOT(windowRemoved(WId)));
 	connect( KWM::self(), SIGNAL( stackingOrderChanged ( )), this, SLOT(stackingOrderChanged()));
 	stackingOrderChanged();
 #endif
@@ -111,7 +129,10 @@ void ProcessModel::stackingOrderChanged() {
 	foreach(WId wid, stack) {
 		long long pid = mWIdToPid.value(wid, 0);
 		if(pid != 0) {
-			mPidToWindowInfo[pid].stackingOrder = stack_num++;
+			if(mPidToWindowInfo[pid].stackingOrder != stack_num) {
+				mPidToWindowInfo[pid].stackingOrder = stack_num;
+			}
+			stack_num++;
 		}
 	}
 }
@@ -833,9 +854,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			int stackOrder = 0;
 			if(mPidToWindowInfo.contains(process->pid))
 				stackOrder = mPidToWindowInfo.value(process->pid).stackingOrder;
-
 			//However we can of course have lots of processes with the same user.  Next we sort by CPU.
-			return (long long)(base - (cpu*100) -(stackOrder*10) -100 + memory*100.0/mMemTotal);
+			return (long long)(base - (cpu*100) -(stackOrder*10) - memory*100/mMemTotal);
 		}
 		case HeadingCPUUsage: {
 			int cpu;
