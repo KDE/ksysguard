@@ -33,6 +33,8 @@ class QAction;
 class QMenu;
 class QProcess;
 class QLineEdit;
+class QTreeView;
+class QCheckBox;
 namespace Ui {
   class ProcessWidget;
 }
@@ -55,6 +57,9 @@ public:
 	virtual ~KSysGuardProcessList() { }
 
 	QLineEdit *filterLineEdit() const;
+	QTreeView *treeView() const;
+	QCheckBox *chkShowTotals() const;
+
 public slots:
 
 	void expandAllChildren(const QModelIndex &parent);

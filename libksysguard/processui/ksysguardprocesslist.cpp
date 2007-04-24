@@ -160,6 +160,13 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	expandInit(); //This will expand the init process
 }
 
+QTreeView *KSysGuardProcessList::treeView() const {
+	return mUi->treeView;
+}
+
+QCheckBox *KSysGuardProcessList::chkShowTotals() const {
+	return mUi->chkShowTotals;
+}
 QLineEdit *KSysGuardProcessList::filterLineEdit() const {
 	return mUi->txtFilter;
 }

@@ -22,6 +22,9 @@
 #include <QTimer>
 #include <ksgrd/SensorManager.h>
 #include <QLineEdit>
+#include <QTreeView>
+#include <QCheckBox>
+#include <QHeaderView>
 
 #include "ProcessController.moc"
 #include "ProcessController.h"
@@ -65,25 +68,12 @@ ProcessController::restoreSettings(QDomElement& element)
 				element.attribute("sensorName"),
 				(element.attribute("sensorType").isEmpty() ? "table" : element.attribute("sensorType")),
 				QString());
-//	mUi.chkTreeView->setChecked(element.attribute("tree").toInt());
-//	setTreeView(element.attribute("tree").toInt());
+	mUi.ksysguardprocesslist->treeView()->header()->restoreState(element.attribute("treeViewHeader").toUtf8());
 
-//	uint filter = element.attribute("filter", "0").toUInt();
-//	mUi.cmbFilter->setCurrentIndex(filter);
-
-/*	uint col = element.attribute("sortColumn", "1").toUInt(); //Default to sorting the user column
-	bool inc = element.attribute("incrOrder", "0").toUInt();  //Default to descending order
-	mUi.treeView->sortByColumn(mInitialSortCol, (mInitialSortInc)?Qt::AscendingOrder:Qt::DescendingOrder);
-	mFilterModel.sort(col,(inc)?Qt::AscendingOrder:Qt::DescendingOrder);
-	//The above sort command won't work if we have no columns (most likely).  So we save
-	//the column to sort by until we have added the columns (from PS_INFO_COMMAND)
-	mInitialSortCol = col;
-	mInitialSortInc = inc;
-	kDebug() << "Settings mInitialSortCol to " << mInitialSortCol << endl;
 
 	bool showTotals = element.attribute("showTotals", "1").toUInt();
-	mUi.chkShowTotals->setCheckState( (showTotals)?Qt::Checked:Qt::Unchecked );
-*/	
+	mUi.ksysguardprocesslist->chkShowTotals()->setCheckState( (showTotals)?Qt::Checked:Qt::Unchecked );
+
 	SensorDisplay::restoreSettings(element);
 	return result;
 }
@@ -94,6 +84,9 @@ ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 	element.setAttribute("hostName", sensors().at(0)->hostName());
 	element.setAttribute("sensorName", sensors().at(0)->name());
 	element.setAttribute("sensorType", sensors().at(0)->type());
+	element.setAttribute("treeViewHeader", QString::fromUtf8(mUi.ksysguardprocesslist->treeView()->header()->saveState()));
+	element.setAttribute("showTotals", (mUi.ksysguardprocesslist->chkShowTotals()->checkState() == Qt::Checked)?1:0);
+
 	SensorDisplay::saveSettings(doc, element);
 
 	return true;
