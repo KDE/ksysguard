@@ -320,6 +320,7 @@ bool ProcessesLocal::sendSignal(long pid, int sig) {
     return true;
 }
 bool ProcessesLocal::setNiceness(long pid, int priority) {
+    if(pid <= 0) return false; // check the parameters
     if ( setpriority( PRIO_PROCESS, pid, priority ) ) {
 	    //set niceness failed
 	    return false;
