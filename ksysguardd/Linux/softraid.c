@@ -271,7 +271,6 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 		}
 
 		/* Versions of mdadm prior to 2.6 used "Device Size" instead of "Used Dev Size"
-		 * Also, note how the if statement takes advantage of short-circuit logic.
 		 */
 		else if ( ( sscanf(lineBuf, " Device Size : %d", &MyArray->UsedDeviceSizeKB) == 1 ) ||
 			( sscanf(lineBuf, " Used Dev Size : %d", &MyArray->UsedDeviceSizeKB) == 1 ) ) {
@@ -283,24 +282,6 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 			}
 		}
 
-/*		else if ( sscanf(lineBuf, "   Raid Devices : %d", &MyArray->NumRaidDevices) == 1 ) {
-			MyArray->NumRaidDevicesIsAlive = true;
-			if ( !MyArray->NumRaidDevicesIsRegistered ) {
-				sprintf(sensorName, "SoftRaid/%s/NumRaidDevices", MyArray->ArrayName);
-				registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-				MyArray->NumRaidDevicesIsRegistered = true;
-			}
-		}
-
-		else if ( sscanf(lineBuf, "  Total Devices : %d", &MyArray->TotalDevices) == 1 ) {
-			MyArray->TotalDevicesIsAlive = true;
-			if ( !MyArray->TotalDevicesIsRegistered ) {
-				sprintf(sensorName, "SoftRaid/%s/TotalDevices", MyArray->ArrayName);
-				registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-				MyArray->TotalDevicesIsRegistered = true;
-			}
-		}
-*/
 		else if ( sscanf(lineBuf, "Preferred Minor : %d", &MyArray->PreferredMinor) == 1 ) {
 			MyArray->PreferredMinorIsAlive = true;
 			if ( !MyArray->PreferredMinorIsRegistered ) {
@@ -309,43 +290,6 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 				MyArray->PreferredMinorIsRegistered = true;
 			}
 		}
-/*
-		else if ( sscanf(lineBuf, " Active Devices : %d", &MyArray->ActiveDevices) == 1 ) {
-			MyArray->ActiveDevicesIsAlive = true;
-			if ( !MyArray->ActiveDevicesIsRegistered ) {
-				sprintf(sensorName, "SoftRaid/%s/ActiveDevices", MyArray->ArrayName);
-				registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-				MyArray->ActiveDevicesIsRegistered = true;
-			}
-		}
-
-		else if ( sscanf(lineBuf, "Working Devices : %d", &MyArray->WorkingDevices) == 1 ) {
-			MyArray->WorkingDevicesIsAlive = true;
-			if ( !MyArray->WorkingDevicesIsRegistered ) {
-				sprintf(sensorName, "SoftRaid/%s/WorkingDevices", MyArray->ArrayName);
-				registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-				MyArray->WorkingDevicesIsRegistered = true;
-			}
-		}
-
-		else if ( sscanf(lineBuf, " Failed Devices : %d", &MyArray->FailedDevices) == 1 ) {
-			MyArray->FailedDevicesIsAlive = true;
-			if ( !MyArray->FailedDevicesIsRegistered ) {
-				sprintf(sensorName, "SoftRaid/%s/FailedDevices", MyArray->ArrayName);
-				registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-				MyArray->FailedDevicesIsRegistered = true;
-			}
-		}
-
-		else if ( sscanf(lineBuf, " Spare Devices : %d", &MyArray->SpareDevices) == 1 ) {
-			MyArray->SpareDevicesIsAlive = true;
-			if ( !MyArray->SpareDevicesIsRegistered ) {
-				sprintf(sensorName, "SoftRaid/%s/SpareDevices", MyArray->ArrayName);
-				registerMonitor(sensorName, "integer", printArrayAttribute, printArrayAttributeInfo, StatSM );
-				MyArray->SpareDevicesIsRegistered = true;
-			}
-		}
-*/
 	}
 
 	/* Note: Don't test NumBlocksIsAlive, because it hasn't been set yet */
