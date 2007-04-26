@@ -294,9 +294,9 @@ void KSysGuardProcessList::reniceProcess(const QList<long long> &pids, int niceV
 	}
 	if(unreniced_pids.isEmpty()) return; //All processes were reniced successfully
 	if(!mModel.isLocalhost()) return; //We can't use kdesu to renice non-localhost processes
-
+	
 	QStringList arguments;
-	arguments << "renice" << QString::number(niceValue);
+	arguments << "--" << "renice" << QString::number(niceValue);
 
         for (int i = 0; i < unreniced_pids.size(); ++i)
 		arguments << QString::number(unreniced_pids.at(i));
@@ -348,10 +348,9 @@ void KSysGuardProcessList::killProcess(const QList< long long> &pids, int sig)
 
 	//We must use kdesu to kill the process
 	QStringList arguments;
+	arguments << "--" << "kill";
 	if(sig != SIGTERM)
-		arguments << "kill" << ('-' + QString::number(sig));
-	else
-		arguments << "kill";
+		arguments << ('-' + QString::number(sig));
 
         for (int i = 0; i < unkilled_pids.size(); ++i)
 		arguments << QString::number(unkilled_pids.at(i));
