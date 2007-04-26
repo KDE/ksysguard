@@ -719,7 +719,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			return getTooltipForUser(process);
 		}
 		case HeadingNiceness:
-			return i18n("<br/>Nice level: %1 (%2)", process->niceLevel, process->niceLevelAsString() );
+			return i18n("Nice level: %1 (%2)", process->niceLevel, process->niceLevelAsString() );
 		case HeadingCPUUsage: {
 			QString tooltip = ki18n("<qt>Process status: %1 %2<br/>"
 						"User CPU usage: %3%<br/>System CPU usage: %4%")
