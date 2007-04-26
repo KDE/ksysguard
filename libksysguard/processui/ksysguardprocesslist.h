@@ -66,10 +66,10 @@ public slots:
 	void currentRowChanged(const QModelIndex &current);
 		
 	void killProcess();
-	void killProcess(int pid, int sig);
+	void killProcess(const QList< long long> &pids, int sig);
 
 	void reniceProcess();
-	void reniceProcess(int pid, int niceValue);
+	void reniceProcess(const QList<long long> &pids, int niceValue);
 
 	void updateList();
 private slots:

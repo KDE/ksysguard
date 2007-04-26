@@ -284,17 +284,26 @@ KSysGuardProcessList::updateList()
 	}
 }
 
-void KSysGuardProcessList::reniceProcess(int pid, int niceValue)
+void KSysGuardProcessList::reniceProcess(const QList<long long> &pids, int niceValue)
 {
-	bool success = mModel.processController()->setNiceness(pid, niceValue);
-	if(success) return;
-	if(!mModel.isLocalhost()) return; //We can't renice non-localhost processes
+	QList< long long> unreniced_pids;
+        for (int i = 0; i < pids.size(); ++i) {
+		bool success = mModel.processController()->setNiceness(pids.at(i), niceValue);
+		if(!success)
+			unreniced_pids << pids.at(i);
+	}
+	if(unreniced_pids.isEmpty()) return; //All processes were reniced successfully
+	if(!mModel.isLocalhost()) return; //We can't use kdesu to renice non-localhost processes
 
 	QStringList arguments;
-	arguments << "renice" << QString::number(niceValue) << QString::number(pid);
+	arguments << "renice" << QString::number(niceValue);
 
-	QProcess *reniceProcess = new QProcess(this);
+        for (int i = 0; i < unreniced_pids.size(); ++i)
+		arguments << QString::number(unreniced_pids.at(i));
+
+	QProcess *reniceProcess = new QProcess(NULL);
 	connect(reniceProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(reniceFailed()));
+	connect(reniceProcess, SIGNAL(finished( int, QProcess::ExitStatus) ), this, SLOT(updateList()));
 	reniceProcess->start("kdesu", arguments);
 }
 
@@ -322,26 +331,34 @@ void KSysGuardProcessList::reniceProcess()
 	Q_ASSERT(newPriority <= 19 && newPriority >= -20); 
 
 	Q_ASSERT(selectedPids.size() == selectedAsStrings.size());
-	for (int i = 0; i < selectedPids.size(); ++i)
-		reniceProcess(selectedPids.at(i), newPriority);
+	reniceProcess(selectedPids, newPriority);
 	updateList();
 }
 
-void KSysGuardProcessList::killProcess(int pid, int sig)
+void KSysGuardProcessList::killProcess(const QList< long long> &pids, int sig)
 {
-	bool success = mModel.processController()->sendSignal(pid, sig);
-	if(success) return;
-	if(!mModel.isLocalhost()) return; //We can't kill non-localhost processes
+	QList< long long> unkilled_pids;
+        for (int i = 0; i < pids.size(); ++i) {
+		bool success = mModel.processController()->sendSignal(pids.at(i), sig);
+		if(!success)
+			unkilled_pids << pids.at(i);
+	}
+	if(unkilled_pids.isEmpty()) return;
+	if(!mModel.isLocalhost()) return; //We can't use kdesu to kill non-localhost processes
 
 	//We must use kdesu to kill the process
 	QStringList arguments;
 	if(sig != SIGTERM)
-		arguments << "kill" << ('-' + QString::number(sig)) << QString::number(pid);
+		arguments << "kill" << ('-' + QString::number(sig));
 	else
-		arguments << "kill" << QString::number(pid);
+		arguments << "kill";
 
-	QProcess *killProcess = new QProcess(this);
+        for (int i = 0; i < unkilled_pids.size(); ++i)
+		arguments << QString::number(unkilled_pids.at(i));
+	
+	QProcess *killProcess = new QProcess(NULL);
 	connect(killProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(killFailed()));
+	connect(killProcess, SIGNAL(finished( int, QProcess::ExitStatus) ), this, SLOT(updateList()));
 	killProcess->start("kdesu", arguments);
 
 }
@@ -379,9 +396,7 @@ void KSysGuardProcessList::killProcess()
 	}
 
 	Q_ASSERT(selectedPids.size() == selectedAsStrings.size());
-        for (int i = 0; i < selectedPids.size(); ++i) {
-		killProcess(selectedPids.at(i), SIGTERM);
-        }
+	killProcess(selectedPids, SIGTERM);
 	updateList();
 }
 
