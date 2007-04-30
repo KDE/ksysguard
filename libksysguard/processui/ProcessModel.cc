@@ -921,6 +921,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
 			if(!mPidToWindowInfo.contains(process->pid)) return QIcon(mBlankPixmap);
 			WindowInfo w = mPidToWindowInfo.value(process->pid);
+			if(w.icon.isNull()) 
+				return QIcon(mBlankPixmap);
 			return w.icon;
 
 		} else if (index.column() == HeadingCPUUsage) {
