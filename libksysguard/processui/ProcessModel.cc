@@ -27,13 +27,17 @@
 #include <klocale.h>
 #include <QBitmap>
 #include <QFont>
+#include <QIcon>
+#include <QPixmap>
+#include <QList>
+
+#define HEADING_X_ICON_SIZE 16
 
 #ifdef Q_WS_X11
 #include <kwm.h>
 #include <netwm.h>
 #include <QtGui/QX11Info>
 #include <X11/Xatom.h>
-#include <QList>
 #include <kxerrorhandler.h>
 #endif
 
@@ -54,8 +58,9 @@
 
 
 ProcessModel::ProcessModel(QObject* parent)
-	: QAbstractItemModel(parent)
+	: QAbstractItemModel(parent), mBlankPixmap(HEADING_X_ICON_SIZE,1)
 {
+	mBlankPixmap.fill(QColor(0,0,0,0));
 	mSimple = true;
 	mIsLocalhost = true;
 	mMemTotal = -1;
@@ -164,7 +169,7 @@ void ProcessModel::windowAdded(WId wid)
                 return;
 
 	WindowInfo w;
-	w.icon = KWM::icon(wid, 16, 16, true);
+	w.icon = KWM::icon(wid, HEADING_X_ICON_SIZE, HEADING_X_ICON_SIZE, true);
 	w.wid = wid;
 	w.netWinInfo = info;
 	mPidToWindowInfo.insertMulti(pid, w);
@@ -550,7 +555,7 @@ QString ProcessModel::getTooltipForUser(const KSysGuard::Process *ps) const
 }
 
 QString ProcessModel::getStringForProcess(KSysGuard::Process *process) const {
-	return i18nc("Short description of a process. PID, name", "%1: %2", (long)(process->pid), process->name);
+	return i18nc("Short description of a process. PID, name, user", "%1: %2, owned by user %3", (long)(process->pid), process->name, getUsernameForUser(process->uid, false));
 }
 
 QString ProcessModel::getGroupnameForGroup(long long gid) const {
@@ -914,7 +919,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	case Qt::DecorationRole: {
 		if(index.column() == HeadingName) {
 			KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
-			if(!mPidToWindowInfo.contains(process->pid)) return QVariant();
+			if(!mPidToWindowInfo.contains(process->pid)) return QIcon(mBlankPixmap);
 			WindowInfo w = mPidToWindowInfo.value(process->pid);
 			return w.icon;
 

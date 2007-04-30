@@ -230,6 +230,8 @@ private:
 
 	bool mIsChangingLayout;
 
+	QPixmap mBlankPixmap; ///Used to pad out process names which don't have an icon
+
 #ifdef Q_WS_X11
 	struct WindowInfo {
 		QPixmap icon;
