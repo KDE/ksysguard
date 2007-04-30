@@ -34,7 +34,7 @@
 #define HEADING_X_ICON_SIZE 16
 
 #ifdef Q_WS_X11
-#include <kwm.h>
+#include <kwindowsystem.h>
 #include <netwm.h>
 #include <QtGui/QX11Info>
 #include <X11/Xatom.h>
@@ -114,13 +114,13 @@ void ProcessModel::windowRemoved(WId wid) {
 void ProcessModel::setupWindows() {
 #ifdef Q_WS_X11
 	QList<WId>::ConstIterator it;
-	for ( it = KWM::windows().begin(); it != KWM::windows().end(); ++it ) {
+	for ( it = KWindowSystem::windows().begin(); it != KWindowSystem::windows().end(); ++it ) {
 		windowAdded(*it);
 	}
 
-	connect( KWM::self(), SIGNAL( windowChanged (WId, unsigned int )), this, SLOT(windowChanged(WId, unsigned int)));
-	connect( KWM::self(), SIGNAL( windowAdded (WId )), this, SLOT(windowAdded(WId)));
-	connect( KWM::self(), SIGNAL( windowRemoved (WId )), this, SLOT(windowRemoved(WId)));
+	connect( KWindowSystem::self(), SIGNAL( windowChanged (WId, unsigned int )), this, SLOT(windowChanged(WId, unsigned int)));
+	connect( KWindowSystem::self(), SIGNAL( windowAdded (WId )), this, SLOT(windowAdded(WId)));
+	connect( KWindowSystem::self(), SIGNAL( windowRemoved (WId )), this, SLOT(windowRemoved(WId)));
 #endif
 }
 
@@ -169,7 +169,7 @@ void ProcessModel::windowAdded(WId wid)
                 return;
 
 	WindowInfo w;
-	w.icon = KWM::icon(wid, HEADING_X_ICON_SIZE, HEADING_X_ICON_SIZE, true);
+	w.icon = KWindowSystem::icon(wid, HEADING_X_ICON_SIZE, HEADING_X_ICON_SIZE, true);
 	w.wid = wid;
 	w.netWinInfo = info;
 	mPidToWindowInfo.insertMulti(pid, w);
@@ -693,7 +693,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			if(mPidToWindowInfo.contains(process->pid)) {
 				WId wid;
 				wid = mPidToWindowInfo[process->pid].wid;
-				icon = KWM::icon(wid);
+				icon = KWindowSystem::icon(wid);
 			}
 			if(icon.isValid()) {
 				tooltip = i18n("<qt><table><tr><td>%1", icon);

@@ -51,7 +51,7 @@
 #include <ktoggleaction.h>
 #include <ktoolbar.h>
 #include <kurl.h>
-#include <kwm.h>
+#include <kwindowsystem.h>
 #include <QSplitter>
 
 #include "../version.h"
@@ -176,9 +176,9 @@ void TopLevel::startSensorBrowserWidget()
 
 void TopLevel::showOnCurrentDesktop()
 {
-  KWM::setOnDesktop( winId(), KWM::currentDesktop() );
+  KWindowSystem::setOnDesktop( winId(), KWindowSystem::currentDesktop() );
   kapp->updateUserTimestamp();
-  KWM::forceActiveWindow( winId() );
+  KWindowSystem::forceActiveWindow( winId() );
 }
 
 void TopLevel::importWorkSheet( const QString &fileName )

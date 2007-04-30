@@ -37,7 +37,7 @@
 #include "processcore/process.h"
 
 #ifdef Q_WS_X11
-#include <kwm.h>
+#include <kwindowsystem.h>
 #include <netwm.h>
 #include <QtGui/QX11Info>
 #include <X11/Xatom.h>
