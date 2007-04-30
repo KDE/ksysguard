@@ -873,7 +873,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				cpu = 1;  //stopped or zombied processes should be near the top of the list
 			bool hasWindow = mPidToWindowInfo.contains(process->pid);
 			//However we can of course have lots of processes with the same user.  Next we sort by CPU.
-			return (long long)(base - (cpu*100) -(hasWindow?50:0) - memory*100/mMemTotal);
+			return (double)(base - (cpu*100) -(hasWindow?50:0) - memory*100.0/mMemTotal);
 		}
 		case HeadingCPUUsage: {
 			int cpu;
