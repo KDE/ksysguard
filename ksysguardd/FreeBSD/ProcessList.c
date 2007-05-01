@@ -385,7 +385,14 @@ updateProcessList(void)
 #if __FreeBSD_version >= 500015
 		updateProcess(p[num].ki_pid);
 #elif __DragonFly_version >= 190000
+	    /* Skip kernel threads with pid -1. Swapper with pid 0 also
+	     * causing problems is skipped in printProcessList() as 'kernel'
+	     * entry. */
+	    if (p[num].kp_pid >= 0)
 		updateProcess(p[num].kp_pid);
+#elif defined(__DragonFly__)
+	    if (p[num].kp_proc.p_pid >= 0)
+		updateProcess(p[num].kp_proc.p_pid);
 #else
 		updateProcess(p[num].kp_proc.p_pid);
 #endif
