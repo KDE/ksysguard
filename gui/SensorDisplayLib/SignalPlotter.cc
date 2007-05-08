@@ -87,7 +87,7 @@ void KSignalPlotter::setTranslatedUnit(const QString &unit) {
 }
 
 
-bool KSignalPlotter::addBeam( const QColor &color )
+void KSignalPlotter::addBeam( const QColor &color )
 {
   QLinkedList< QList<double> >::Iterator it;
   //When we add a new beam, go back and set the data for this beam to 0 for all the other times. This is because it makes it easier for
@@ -97,7 +97,6 @@ bool KSignalPlotter::addBeam( const QColor &color )
   }
   mBeamColors.append(color);
   mBeamColorsDark.append(color.dark(150));
-  return true;
 }
 
 void KSignalPlotter::addSample( const QList<double>& sampleBuf )
@@ -164,12 +163,8 @@ void KSignalPlotter::reorderBeams( const QList<int>& newOrder )
 }
 
 
-void KSignalPlotter::changeRange( int beam, double min, double max )
+void KSignalPlotter::changeRange( double min, double max )
 {
-  // Only the first beam affects range calculation.
-  if ( beam > 1 )
-    return;
-
   mMinValue = min;
   mMaxValue = max;
   calculateNiceRange();

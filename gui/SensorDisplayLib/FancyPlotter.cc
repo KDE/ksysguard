@@ -148,7 +148,7 @@ void FancyPlotter::applySettings() {
       mPlotter->setUseAutoRange( true );
     else {
       mPlotter->setUseAutoRange( false );
-      mPlotter->changeRange( 0, mSettingsDialog->minValue(),
+      mPlotter->changeRange( mSettingsDialog->minValue(),
                             mSettingsDialog->maxValue() );
     }
 
@@ -229,8 +229,7 @@ bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
   if ( type != "integer" && type != "float" )
     return false;
 
-  if ( !mPlotter->addBeam( color ) )
-    return false;
+  mPlotter->addBeam( color );
 
   registerSensor( new FPSensorProperties( hostName, name, type, title, color ) );
 
@@ -362,7 +361,7 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
        * display is still using the default values. If the
        * sensor has been restored we don't touch the already set
        * values. */
-      mPlotter->changeRange( id - 100, info.min(), info.max() );
+      mPlotter->changeRange( info.min(), info.max() );
       if ( info.min() == 0.0 && info.max() == 0.0 )
         mPlotter->setUseAutoRange( true );
     }
@@ -384,7 +383,7 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
     mPlotter->setUseAutoRange( true );
   else {
     mPlotter->setUseAutoRange( false );
-    mPlotter->changeRange( 0, element.attribute( "min" ).toDouble(),
+    mPlotter->changeRange( element.attribute( "min" ).toDouble(),
                            element.attribute( "max" ).toDouble() );
   }
 
