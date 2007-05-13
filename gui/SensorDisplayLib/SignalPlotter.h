@@ -125,7 +125,7 @@ class KSignalPlotter : public QWidget
      *  Note that these values are sanitised.  For example, if you
      *  set the minimum as 3, and the maximum as 97, then the graph
      *  would be drawn between 0 and 100.  The algorithm to determine
-     *  this "nice range" attempts to minimise the number of non-zero
+     *  this "nice range" attempts to minimize the number of non-zero
      *  digits.
      *
      *  Use setAutoRange instead to determine the range automatically 

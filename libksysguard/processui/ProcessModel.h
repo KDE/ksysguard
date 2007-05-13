@@ -41,7 +41,6 @@
 #include <netwm.h>
 #include <QtGui/QX11Info>
 #include <X11/Xatom.h>
-#include <QList>
 #include <kxerrorhandler.h>
 #endif
 
