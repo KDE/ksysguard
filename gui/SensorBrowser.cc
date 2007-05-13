@@ -227,7 +227,7 @@ void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&an
 
   HostInfo *hostInfo = getHostInfo(hostId);
   if(!hostInfo) {
-    kDebug(1215) << "SensorBrowserModel::answerRecieved with invalid hostId " << hostId  << endl;
+    kDebug(1215) << "SensorBrowserModel::answerReceived with invalid hostId " << hostId  << endl;
     return;
   }  
   for ( int i = 0; i < answer.count(); ++i ) {

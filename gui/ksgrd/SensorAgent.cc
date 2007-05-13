@@ -167,7 +167,7 @@ void SensorAgent::processAnswer( const char *buf, int buflen )
 		
 	if(!mAnswerBuffer.isEmpty() && mAnswerBuffer[0] == "UNKNOWN COMMAND") {
 		/* Notify client that the sensor seems to be no longer available. */
-        kDebug() << "Recieved UNKNOWN COMMAND for: " << req->request() << endl; 
+        kDebug() << "Received UNKNOWN COMMAND for: " << req->request() << endl; 
 		req->client()->sensorLost( req->id() );
 	} else {
 		// Notify client of newly arrived answer.
