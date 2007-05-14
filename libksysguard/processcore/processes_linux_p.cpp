@@ -338,8 +338,10 @@ long long ProcessesLocal::totalPhysicalMemory() {
     while( (size = d->mFile.readLine( d->mBuffer, sizeof(d->mBuffer))) > 0) {  //-1 indicates an error
         switch( d->mBuffer[0]) {
 	  case 'M':
-            if((unsigned int)size > sizeof("MemTotal:") && qstrncmp(d->mBuffer, "MemTotal:", sizeof("MemTotal:")-1) == 0)
+            if((unsigned int)size > sizeof("MemTotal:") && qstrncmp(d->mBuffer, "MemTotal:", sizeof("MemTotal:")-1) == 0) {
+		    d->mFile.close();
 		    return atoll(d->mBuffer + sizeof("MemTotal:")-1);
+            }
 	}
     }
     return 0; // Not found.  Probably will never happen
