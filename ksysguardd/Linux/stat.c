@@ -160,8 +160,8 @@ static void updateCPULoad( const char* line, CPULoadInfo* load ) {
 		load->userLoad = ( 100.0 * ( currUserTicks - load->userTicks ) ) / totalTicks;
 		load->sysLoad = ( 100.0 * ( currSysTicks - load->sysTicks ) ) / totalTicks;
 		load->niceLoad = ( 100.0 * ( currNiceTicks - load->niceTicks ) ) / totalTicks;
-		load->idleLoad = ( 100 * ( currIdleTicks - load->idleTicks ) ) / totalTicks;
-		load->waitLoad = ( 100 * ( currWaitTicks - load->waitTicks ) ) / totalTicks;
+		load->idleLoad = ( 100.0 * ( currIdleTicks - load->idleTicks ) ) / totalTicks;
+		load->waitLoad = ( 100.0 * ( currWaitTicks - load->waitTicks ) ) / totalTicks;
 	}
 	else
 		load->userLoad = load->sysLoad = load->niceLoad = load->idleLoad = load->waitLoad = 0.0;

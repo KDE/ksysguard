@@ -74,7 +74,7 @@ static void processCpuInfo( void )
             free( Clocks );
           CPUs = cpuId + 1;
           Clocks = (float*) malloc( CPUs * sizeof( float ) );
-          snprintf( cmdName, sizeof( cmdName ) - 1, "cpu%d/clock", cpuId );
+          snprintf( cmdName, sizeof( cmdName ) - 1, "cpus/%d/clock", cpuId );
           registerMonitor( cmdName, "float", printCPUxClock, printCPUxClockInfo,
                            CpuInfoSM );
         }
@@ -155,7 +155,7 @@ void printCPUxClock( const char* cmd )
   if ( Dirty )
     processCpuInfo();
 
-  sscanf( cmd + 3, "%d", &id );
+  sscanf( cmd + 5, "%d", &id );
   fprintf( CurrentClient, "%f\n", Clocks[ id ] );
 }
 
@@ -163,6 +163,6 @@ void printCPUxClockInfo( const char* cmd )
 {
   int id;
 
-  sscanf( cmd + 3, "%d", &id );
+  sscanf( cmd + 5, "%d", &id );
   fprintf( CurrentClient, "CPU%d Clock Frequency\t0\t0\tMHz\n", id );
 }
