@@ -54,9 +54,9 @@ void initLoadAvg( struct SensorModul* sm )
   } else
     LoadAvgOK = 1;
 
-  registerMonitor( "cpu/loadavg1", "float", printLoadAvg1, printLoadAvg1Info, sm );
-  registerMonitor( "cpu/loadavg5", "float", printLoadAvg5, printLoadAvg5Info, sm );
-  registerMonitor( "cpu/loadavg15", "float", printLoadAvg15, printLoadAvg15Info, sm );
+  registerMonitor( "cpu/system/loadavg1", "float", printLoadAvg1, printLoadAvg1Info, sm );
+  registerMonitor( "cpu/system/loadavg5", "float", printLoadAvg5, printLoadAvg5Info, sm );
+  registerMonitor( "cpu/system/loadavg15", "float", printLoadAvg15, printLoadAvg15Info, sm );
 }
 
 void exitLoadAvg( void )

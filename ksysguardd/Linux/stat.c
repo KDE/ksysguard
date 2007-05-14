@@ -486,12 +486,12 @@ void initStat( struct SensorModul* sm ) {
 		
 		if ( strcmp( "cpu", tag ) == 0 ) {
 			/* Total CPU load */
-			registerMonitor( "cpu/user", "float", printCPUUser, printCPUUserInfo, StatSM );
-			registerMonitor( "cpu/nice", "float", printCPUNice, printCPUNiceInfo, StatSM );
-			registerMonitor( "cpu/sys", "float", printCPUSys, printCPUSysInfo, StatSM );
-			registerMonitor( "cpu/TotalLoad", "float", printCPUTotalLoad, printCPUTotalLoadInfo, StatSM );
-			registerMonitor( "cpu/idle", "float", printCPUIdle, printCPUIdleInfo, StatSM );
-			registerMonitor( "cpu/wait", "float", printCPUWait, printCPUWaitInfo, StatSM );
+			registerMonitor( "cpu/system/user", "float", printCPUUser, printCPUUserInfo, StatSM );
+			registerMonitor( "cpu/system/nice", "float", printCPUNice, printCPUNiceInfo, StatSM );
+			registerMonitor( "cpu/system/sys", "float", printCPUSys, printCPUSysInfo, StatSM );
+			registerMonitor( "cpu/system/TotalLoad", "float", printCPUTotalLoad, printCPUTotalLoadInfo, StatSM );
+			registerMonitor( "cpu/system/idle", "float", printCPUIdle, printCPUIdleInfo, StatSM );
+			registerMonitor( "cpu/system/wait", "float", printCPUWait, printCPUWaitInfo, StatSM );
 		}
 		else if ( strncmp( "cpu", tag, 3 ) == 0 ) {
 			char cmdName[ 24 ];
@@ -500,17 +500,17 @@ void initStat( struct SensorModul* sm ) {
 			
 			sscanf( tag + 3, "%d", &id );
 			CPUCount++;
-			sprintf( cmdName, "cpu%d/user", id );
+			sprintf( cmdName, "cpu/cpu%d/user", id );
 			registerMonitor( cmdName, "float", printCPUxUser, printCPUxUserInfo, StatSM );
-			sprintf( cmdName, "cpu%d/nice", id );
+			sprintf( cmdName, "cpu/cpu%d/nice", id );
 			registerMonitor( cmdName, "float", printCPUxNice, printCPUxNiceInfo, StatSM );
-			sprintf( cmdName, "cpu%d/sys", id );
+			sprintf( cmdName, "cpu/cpu%d/sys", id );
 			registerMonitor( cmdName, "float", printCPUxSys, printCPUxSysInfo, StatSM );
-			sprintf( cmdName, "cpu%d/TotalLoad", id );
+			sprintf( cmdName, "cpu/cpu%d/TotalLoad", id );
 			registerMonitor( cmdName, "float", printCPUxTotalLoad, printCPUxTotalLoadInfo, StatSM );
-			sprintf( cmdName, "cpu%d/idle", id );
+			sprintf( cmdName, "cpu/cpu%d/idle", id );
 			registerMonitor( cmdName, "float", printCPUxIdle, printCPUxIdleInfo, StatSM );
-			sprintf( cmdName, "cpu%d/wait", id );
+			sprintf( cmdName, "cpu/cpu%d/wait", id );
 			registerMonitor( cmdName, "float", printCPUxWait, printCPUxWaitInfo, StatSM );
 		}
 		else if ( strcmp( "disk", tag ) == 0 ) {
@@ -750,14 +750,14 @@ void printCPUxUser( const char* cmd ) {
 	if ( Dirty )
 		process24Stat();
 	
-	sscanf( cmd + 3, "%d", &id );
+	sscanf( cmd + 7, "%d", &id );
 	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].userLoad );
 }
 
 void printCPUxUserInfo( const char* cmd ) {
 	int id;
 	
-	sscanf( cmd + 3, "%d", &id );
+	sscanf( cmd + 7, "%d", &id );
 	fprintf( CurrentClient, "CPU%d User Load\t0\t100\t%%\n", id );
 }
 
@@ -767,14 +767,14 @@ void printCPUxNice( const char* cmd ) {
 	if ( Dirty )
 		process24Stat();
 	
-	sscanf( cmd + 3, "%d", &id );
+	sscanf( cmd + 7, "%d", &id );
 	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].niceLoad );
 }
 
 void printCPUxNiceInfo( const char* cmd ) {
 	int id;
 	
-	sscanf( cmd + 3, "%d", &id );
+	sscanf( cmd + 7, "%d", &id );
 	fprintf( CurrentClient, "CPU%d Nice Load\t0\t100\t%%\n", id );
 }
 
@@ -784,14 +784,14 @@ void printCPUxSys( const char* cmd ) {
 	if ( Dirty )
 		process24Stat();
 	
-	sscanf( cmd + 3, "%d", &id );
+	sscanf( cmd + 7, "%d", &id );
 	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].sysLoad );
 }
 
 void printCPUxSysInfo( const char* cmd ) {
 	int id;
 	
-	sscanf( cmd + 3, "%d", &id );
+	sscanf( cmd + 7, "%d", &id );
 	fprintf( CurrentClient, "CPU%d System Load\t0\t100\t%%\n", id );
 }
 
@@ -801,14 +801,14 @@ void printCPUxTotalLoad( const char* cmd ) {
 	if ( Dirty )
 		process24Stat();
 	
-	sscanf( cmd + 3, "%d", &id );
+	sscanf( cmd + 7, "%d", &id );
 	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].userLoad + SMPLoad[ id ].sysLoad + SMPLoad[ id ].niceLoad + SMPLoad[ id ].waitLoad );
 }
 
 void printCPUxTotalLoadInfo( const char* cmd ) {
 	int id;
 	
-	sscanf( cmd + 3, "%d", &id );
+	sscanf( cmd + 7, "%d", &id );
 	fprintf( CurrentClient, "CPU%d Total Load\t0\t100\t%%\n", id );
 }
 
@@ -818,14 +818,14 @@ void printCPUxIdle( const char* cmd ) {
 	if ( Dirty )
 		process24Stat();
 	
-	sscanf( cmd + 3, "%d", &id );
+	sscanf( cmd + 7, "%d", &id );
 	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].idleLoad );
 }
 
 void printCPUxIdleInfo( const char* cmd ) {
 	int id;
 	
-	sscanf( cmd + 3, "%d", &id );
+	sscanf( cmd + 7, "%d", &id );
 	fprintf( CurrentClient, "CPU%d Idle Load\t0\t100\t%%\n", id );
 }
 
@@ -836,7 +836,7 @@ void printCPUxWait( const char* cmd )
 	if ( Dirty )
 		process24Stat();
 
-	sscanf( cmd + 3, "%d", &id );
+	sscanf( cmd + 7, "%d", &id );
 	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].waitLoad );
 }
 
@@ -844,7 +844,7 @@ void printCPUxWaitInfo( const char* cmd )
 {
 	int id;
 
-	sscanf( cmd + 3, "%d", &id );
+	sscanf( cmd + 7, "%d", &id );
 	fprintf( CurrentClient, "CPU%d Wait Load\t0\t100\t%%\n", id );
 }
 
