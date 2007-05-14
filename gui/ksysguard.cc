@@ -94,8 +94,6 @@ TopLevel::TopLevel()
            SLOT( setCaption( const QString&) ) );
   connect( mWorkSpace, SIGNAL( currentChanged( int ) ),
            SLOT( currentTabChanged( int ) ) );
-  connect( KSGRD::Style, SIGNAL( applyStyleToWorksheet() ), mWorkSpace,
-           SLOT( applyStyle() ) );
 
   /* Create the status bar. It displays some information about the
    * number of processes and the memory consumption of the local
