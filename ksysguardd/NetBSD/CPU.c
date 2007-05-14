@@ -53,13 +53,13 @@ void
 initCpuInfo(struct SensorModul* sm)
 {
 	/* Total CPU load */
-	registerMonitor("cpu/user", "integer", printCPUUser,
+	registerMonitor("cpu/system/user", "integer", printCPUUser,
 			printCPUUserInfo, sm);
-	registerMonitor("cpu/nice", "integer", printCPUNice,
+	registerMonitor("cpu/system/nice", "integer", printCPUNice,
 			printCPUNiceInfo, sm);
-	registerMonitor("cpu/sys", "integer", printCPUSys,
+	registerMonitor("cpu/system/sys", "integer", printCPUSys,
 			printCPUSysInfo, sm);
-	registerMonitor("cpu/idle", "integer", printCPUIdle,
+	registerMonitor("cpu/system/idle", "integer", printCPUIdle,
 			printCPUIdleInfo, sm);
 	kd = kvm_open(NULL, NULL, NULL, O_RDONLY, "kvm_open");
 	kvm_nlist(kd, my_nlist);

@@ -70,11 +70,11 @@ initCpuInfo(struct SensorModul* sm)
 	g_ci = malloc(sizeof(struct cpu_info) * nCPUs);
 	memset(g_ci,0,sizeof(struct cpu_info) * nCPUs);
 
-	registerMonitor("cpu/user", "integer", printCPUUser,
+	registerMonitor("cpu/system/user", "integer", printCPUUser,
 		printCPUUserInfo, sm);
-	registerMonitor("cpu/sys",  "integer", printCPUSys,
+	registerMonitor("cpu/system/sys",  "integer", printCPUSys,
 		printCPUSysInfo, sm);
-	registerMonitor("cpu/idle", "integer", printCPUIdle,
+	registerMonitor("cpu/system/idle", "integer", printCPUIdle,
 		printCPUIdleInfo, sm);
 
 	if (nCPUs > 1) for (i=0;i<nCPUs;i++){

@@ -20,10 +20,10 @@ a few recommended commands.
 The mandatory commands are 'monitors', 'test' and 'quit'.
 The recommended commands are:
 
-cpu/idle
-cpu/sys
-cpu/nice
-cpu/user
+cpu/system/idle
+cpu/system/sys
+cpu/system/nice
+cpu/system/user
 mem/swap/free
 mem/swap/used
 mem/physical/cached
