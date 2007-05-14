@@ -178,7 +178,6 @@ ProcessesLocal::ProcessesLocal() : d(new Private())
 }
 
 long ProcessesLocal::getParentPid(long pid) {
-    Q_ASSERT(pid != 0);
     long long ppid = 0;
     struct kinfo_proc p;
     if(d->readProc(pid, &p))
@@ -222,13 +221,22 @@ QSet<long> ProcessesLocal::getAllPids( )
     sysctl(mib, 3, p, &len, NULL, 0);
 
     for (num = 0; num < len / sizeof(struct kinfo_proc); num++)
+    {
 #if defined(__FreeBSD__) && __FreeBSD_version >= 500015
-        pids.insert(p[num].ki_pid);
+        long pid = p[num].ki_pid;
+        long long ppid = p[num].ki_ppid;
 #elif defined(__DragonFly__) && __DragonFly_version >= 190000
-        pids.insert(p[num].kp_pid);
+        long pid = p[num].kp_pid;
+        long long ppid = p[num].kp_ppid;
 #else
-        pids.insert(p[num].kp_proc.p_pid);
+        long pid = p[num].kp_proc.p_pid;
+        long long ppid = p[num].kp_eproc.e_ppid;
 #endif
+        //skip all process with parent id = 0 but init
+        if(ppid == 0 && pid != 1)
+            continue;
+        pids.insert(pid);
+    }
     free(p);
     return pids;
 }
