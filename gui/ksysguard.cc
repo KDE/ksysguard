@@ -303,7 +303,7 @@ void TopLevel::timerEvent( QTimerEvent* )
      * information will be received by answerReceived(). */
     KSGRD::SensorMgr->sendRequest( "localhost", "pscount",
                                    (KSGRD::SensorClient*)this, 0 );
-    KSGRD::SensorMgr->sendRequest( "localhost", "cpu/idle",
+    KSGRD::SensorMgr->sendRequest( "localhost", "cpu/system/idle",
                                    (KSGRD::SensorClient*)this, 1 );
     KSGRD::SensorMgr->sendRequest( "localhost", "mem/physical/free",
                                    (KSGRD::SensorClient*)this, 2 );

@@ -218,10 +218,10 @@ void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&an
 {
   /* An answer has the following example format:
 
-     cpu/idle integer
-     cpu/sys  integer
-     cpu/nice integer
-     cpu/user integer
+     cpu/system/idle integer
+     cpu/system/sys  integer
+     cpu/system/nice integer
+     cpu/system/user integer
      ps       table
   */
 
@@ -246,7 +246,7 @@ void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&an
 
     /* The sensor browser can display sensors in a hierachical order.
      * Sensors can be grouped into nodes by seperating the hierachical
-     * nodes through slashes in the sensor name. E. g. cpu/user is
+     * nodes through slashes in the sensor name. E. g. cpu/system/user is
      * the sensor user in the cpu node. There is no limit for the
      * depth of nodes. */
     int currentNodeId = hostId;  //Start from the host branch and work our way down the tree
