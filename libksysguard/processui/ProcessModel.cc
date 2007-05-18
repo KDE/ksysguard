@@ -162,8 +162,10 @@ void ProcessModel::windowAdded(WId wid)
 	long unsigned state = info->state();
 	if(/*state & NET::SkipTaskbar || state & NET::SkipPager || */state & NET::Hidden) return;
 
-	if(handler.error( false ) )
+	if (handler.error( false ) ) {
+		delete info;
 		return;  //info is invalid - window just closed or something probably
+        }
 	long long pid = info->pid();
         if(pid <= 0)
                 return;
