@@ -69,7 +69,7 @@ long long ProcessesRemote::totalPhysicalMemory() {
 
 ProcessesRemote::~ProcessesRemote()
 {
-  
+    delete d;
 }
 
 }
