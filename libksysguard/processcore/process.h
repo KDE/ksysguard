@@ -56,7 +56,7 @@ namespace KSysGuard
         long long gid; ///The process group id that the process is running as
         long long egid; ///The effective group id that the process is running as
         long long sgid; ///The set group id that the process is running as
-        long long fsgid; ///The filesystem group id that the process is running as
+        long long fsgid; ///The file system group id that the process is running as
 
         long long tracerpid; ///If this is being debugged, this is the process that is debugging it
 	QByteArray tty; /// The name of the tty the process owns
