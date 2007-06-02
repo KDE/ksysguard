@@ -259,6 +259,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   mView->setItemsExpandable( false );
   mView->setModel( mModel );
   pageLayout->addWidget( mView, 0, 0, 6, 1 );
+  connect(mView,SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(editSensor()));
 
   mEditButton = new QPushButton( i18n( "Set Color..." ), page );
   mEditButton->setWhatsThis( i18n( "Push this button to configure the color of the sensor in the diagram." ) );
