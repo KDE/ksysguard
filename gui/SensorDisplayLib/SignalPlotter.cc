@@ -421,6 +421,10 @@ void KSignalPlotter::resizeEvent( QResizeEvent* )
 {
   Q_ASSERT( width() > 2 );
 //  mBackgroundImage = mBackgroundImage.scaled(width(), height()); //set to null.  If it's invalid, it will be rerendered.
+  if (testAttribute(Qt::WA_PendingResizeEvent)) {
+      return; // we'll be back here again in no time
+  }
+
   updateDataBuffers();
 }
 
@@ -536,6 +540,10 @@ void KSignalPlotter::drawWidget(QPainter *p, uint w, uint height, int horizontal
 }
 void KSignalPlotter::drawBackground(QPainter *p, int w, int h)
 {
+  if (testAttribute(Qt::WA_PendingResizeEvent)) {
+    return; // lets not do this more than necessary, shall we?
+  }
+
   p->fillRect(0,0,w, h, mBackgroundColor);
 
   if(mSvgFilename.isEmpty())
