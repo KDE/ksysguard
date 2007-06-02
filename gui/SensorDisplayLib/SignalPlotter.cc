@@ -26,16 +26,17 @@
 #include <QtGui/QPixmap>
 #include <QtGui/QPainterPath>
 #include <QtGui/QPolygon>
-#include <QtSvg/QSvgRenderer>
 
 #include <kstandarddirs.h>
 #include <kdebug.h>
 #include <kglobal.h>
 #include <klocale.h>
 
+#include <plasma/lib/svg.h>
+
 #include "SignalPlotter.h"
 
-QHash<QString, QSvgRenderer *> KSignalPlotter::sSvgRenderer ;
+QHash<QString, Plasma::Svg *> KSignalPlotter::sSvgRenderer ;
 
 KSignalPlotter::KSignalPlotter( QWidget *parent)
   : QWidget( parent)
@@ -394,7 +395,13 @@ QString KSignalPlotter::svgBackground() {
 void KSignalPlotter::setSvgBackground( const QString &filename )
 {
   if(mSvgFilename == filename) return;
-  mSvgFilename = filename;
+
+  if (!filename.isEmpty() && filename[0] == '/') {
+    KStandardDirs* kstd = KGlobal::dirs();
+    mSvgFilename = kstd->findResource( "data", "ksysguard/" + filename);
+  } else {
+    mSvgFilename = filename;
+  }
   //NOTE:  We don't free the old svg renderer.  This means that it will leak if we set it to use one svg, then reset it to use another svg.  
   //The svg rendererer object will be created on demand in drawBackground
 }
@@ -549,16 +556,16 @@ void KSignalPlotter::drawBackground(QPainter *p, int w, int h)
   if(mSvgFilename.isEmpty())
     return; //nothing to draw, return
 
-  QSvgRenderer *svgRenderer;
+  Plasma::Svg *svgRenderer;
   if(!sSvgRenderer.contains(mSvgFilename)) {
-    KStandardDirs* kstd = KGlobal::dirs();
-    QString file = kstd->findResource( "data", "ksysguard/" + mSvgFilename);
-
-    svgRenderer =  new QSvgRenderer(file, this);
+    svgRenderer = new Plasma::Svg(mSvgFilename, this);
     sSvgRenderer.insert(mSvgFilename, svgRenderer);
-  } else
+  } else {
     svgRenderer = sSvgRenderer[mSvgFilename];
-  svgRenderer->render(p);
+  }
+
+  svgRenderer->resize(w, h);
+  svgRenderer->paint(p, 0, 0);
 }
 
 void KSignalPlotter::drawThinFrame(QPainter *p, int w, int h)

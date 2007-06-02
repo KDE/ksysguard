@@ -29,7 +29,10 @@
 #include <QImage>
 
 class QColor;
-class QSvgRenderer;
+namespace Plasma
+{
+    class Svg;
+} // namespace Plasma
 
 /** Draw a real time graph of data that updates continually
  * 
@@ -264,7 +267,7 @@ class KSignalPlotter : public QWidget
   private:
     /** We make the svg renderer static so that an svg renderer is shared among all of the images.  This is because a svg renderer takes up a lot of memory, so we want to 
      *  share them as much as we can */
-    static QHash<QString, QSvgRenderer *> sSvgRenderer; 
+    static QHash<QString, Plasma::Svg *> sSvgRenderer; 
     QString mSvgFilename; 
 
     QImage mBackgroundImage;  //A cache of the svg
