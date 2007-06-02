@@ -32,7 +32,7 @@
 #include <kglobal.h>
 #include <klocale.h>
 
-#include <plasma/lib/svg.h>
+#include <plasma/svg.h>
 
 #include "SignalPlotter.h"
 
