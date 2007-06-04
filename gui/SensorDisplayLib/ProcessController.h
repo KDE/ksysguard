@@ -37,7 +37,6 @@
 #include <SensorDisplay.h>
 
 #include "ui_ProcessWidgetUI.h"
-class QAction;
 
 extern KApplication* Kapp;
 

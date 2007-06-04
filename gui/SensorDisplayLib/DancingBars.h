@@ -27,9 +27,7 @@
 #include <QResizeEvent>
 #include <QVector>
 
-class KIntNumInput;
 
-class QLineEdit;
 
 class BarGraph;
 

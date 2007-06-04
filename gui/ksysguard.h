@@ -28,7 +28,6 @@
 
 #include <ksgrd/SensorClient.h>
 
-class KToggleAction;
 
 class QSplitter;
 class SensorBrowserWidget;

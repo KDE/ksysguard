@@ -28,7 +28,6 @@
 class LogSensorModel;
 class QDomElement;
 class QResizeEvent;
-class QTimerEvent;
 
 class LogSensor : public QObject, public KSGRD::SensorClient
 {

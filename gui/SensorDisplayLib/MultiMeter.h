@@ -24,7 +24,6 @@
 #include <SensorDisplay.h>
 
 class QLCDNumber;
-class QLabel;
 class QResizeEvent;
 
 class MultiMeter : public KSGRD::SensorDisplay

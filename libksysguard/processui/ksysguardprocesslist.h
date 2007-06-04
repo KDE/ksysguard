@@ -31,7 +31,6 @@ class QShowEvent;
 class QHideEvent;
 class QAction;
 class QMenu;
-class QProcess;
 class QLineEdit;
 class QTreeView;
 class QCheckBox;

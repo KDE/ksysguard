@@ -29,7 +29,6 @@ class QString;
 
 namespace KSGRD {
 
-class SensorClient;
 
 /**
   The SensorSocketAgent connects to a ksysguardd via a TCP

@@ -23,7 +23,6 @@
 
 #define MAXLINES 500
 
-class QFile;
 class QListWidget;
 
 #include <Qt/qdom.h>

@@ -25,8 +25,6 @@
 #include <QList>
 #include <klocale.h>
 
-class NETWinInfo;
-class QPixmap;
 
 namespace KSysGuard
 {
