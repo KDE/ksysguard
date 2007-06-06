@@ -37,6 +37,7 @@
 #include <QtGui/QPixmap>
 #include <QtGui/QPushButton>
 #include <QtGui/QTreeView>
+#include <QDoubleValidator>
 
 #include "FancyPlotterSettings.h"
 
@@ -97,6 +98,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   boxLayout->addWidget( label, 1, 0 );
 
   mMinValue = new KLineEdit( groupBox );
+  mMinValue->setValidator(new QDoubleValidator(mMinValue));
   mMinValue->setAlignment( Qt::AlignRight );
   mMinValue->setEnabled( false );
   mMinValue->setWhatsThis( i18n( "Enter the minimum value for the display here. If both values are 0, automatic range detection is enabled." ) );
@@ -108,6 +110,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
 
   mMaxValue = new KLineEdit( groupBox );
   mMaxValue->setAlignment( Qt::AlignRight );
+  mMaxValue->setValidator(new QDoubleValidator(mMaxValue));
   mMaxValue->setEnabled( false );
   mMaxValue->setWhatsThis( i18n( "Enter the maximum value for the display here. If both values are 0, automatic range detection is enabled." ) );
   boxLayout->addWidget( mMaxValue, 1, 4 );
