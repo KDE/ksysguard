@@ -100,7 +100,7 @@ void SensorAgent::processAnswer( const char *buf, int buflen )
       if ( !mFoundError ) {  //We found the end of the error
 	//Piece together the error from what we read now, and what we read last time processAnswer was called
 	QString error = QString::fromUtf8(buffer.constData() + startOfAnswer, i-startOfAnswer);
-        if ( error == "RECONFIGURE\n" )
+        if ( error == "RECONFIGURE" )
           emit reconfigure( this );
         else {
           /* We just received the end of an error message, so we
