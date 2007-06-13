@@ -23,7 +23,6 @@
 #include <QtGui/QMouseEvent>
 #include <QtGui/QPainter>
 #include <QtGui/QPixmap>
-#include <QStringList>
 #include <QMimeData>
 
 #include <kdebug.h>

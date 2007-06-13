@@ -27,7 +27,6 @@ class QListWidget;
 
 #include <Qt/qdom.h>
 
-#include <QStringList>
 #include <QTimerEvent>
 #include <QResizeEvent>
 

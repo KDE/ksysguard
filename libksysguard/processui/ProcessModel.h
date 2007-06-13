@@ -27,7 +27,6 @@
 #include <QPixmap>
 #include <QObject>
 #include <QAbstractItemModel>
-#include <QStringList>
 #include <QList>
 #include <QVariant>
 #include <QHash>
