@@ -18,7 +18,7 @@
 
 */
 
-#include <config.h>
+#include <config-workspace.h>
 
 #include <mntent.h>
 #include <stdio.h>

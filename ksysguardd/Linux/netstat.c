@@ -18,7 +18,7 @@
 
 */
 
-#include <config.h>
+#include <config-workspace.h>
 
 #include <arpa/inet.h>
 #include <netdb.h>

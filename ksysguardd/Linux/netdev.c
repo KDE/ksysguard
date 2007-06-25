@@ -18,7 +18,7 @@
 
 */
 
-#include <config.h>
+#include <config-workspace.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>

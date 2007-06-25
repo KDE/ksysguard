@@ -23,7 +23,7 @@
 #ifndef KSG_MODULES_H
 #define KSG_MODULES_H
 
-#include "config-ksysguardd.h"
+#include <config-ksysguardd.h>
 #include "Command.h"
 #include "conf.h"
 #include "ksysguardd.h"
@@ -47,7 +47,7 @@
 #include "uptime.h"
 #endif /* OSTYPE_Linux */
 
-#if defined OSTYPE_FreeBSD || OSTYPE_DragonFly
+#if defined(OSTYPE_FreeBSD) || defined(OSTYPE_DragonFly)
 #include <grp.h>
 #ifdef __i386__
  #include "apm.h"

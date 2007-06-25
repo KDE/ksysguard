@@ -22,7 +22,7 @@
 
 */
 
-#include <config.h>
+#include <config-workspace.h>
 #include <ctype.h>
 #include <fcntl.h>
 #include <netdb.h>

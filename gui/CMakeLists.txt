@@ -1,7 +1,7 @@
 
 add_subdirectory( ksgrd ) 
 
-include_directories( ${CMAKE_SOURCE_DIR}/workspace/kicker/libkicker ${CMAKE_CURRENT_SOURCE_DIR}/ksgrd/ ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ ${CMAKE_CURRENT_SOURCE_DIR}/../libksysguard/ ${CMAKE_SOURCE_DIR}/workspace ${CMAKE_SOURCE_DIR}/workspace/lib ${CMAKE_SOURCE_DIR}/workspace/libs)
+include_directories( ${KDEBASE_WORKSPACE_SOURCE_DIR}/kicker/libkicker ${CMAKE_CURRENT_SOURCE_DIR}/ksgrd/ ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ ${CMAKE_CURRENT_SOURCE_DIR}/../libksysguard/ ${CMAKE_SOURCE_DIR}/workspace ${KDEBASE_WORKSPACE_SOURCE_DIR}/lib ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs)
 
 
 ########### next target ###############
@@ -62,6 +62,7 @@ target_link_libraries(ksysguard kdeinit_ksysguard plasma)
 install(TARGETS ksysguard DESTINATION ${BIN_INSTALL_DIR})
 ########### next target ###############
 
+if(BUILD_KICKER)
 set(sysguard_panelapplet_PART_SRCS KSysGuardApplet.cc KSGAppletSettings.cc ${libsensordisplays_SRCS} StyleEngine.cc TimerSettings.cc)
 
 kde4_automoc(${sysguard_panelapplet_PART_SRCS})
@@ -72,6 +73,7 @@ kde4_add_plugin(sysguard_panelapplet ${sysguard_panelapplet_PART_SRCS})
 target_link_libraries(sysguard_panelapplet  ${KDE4_KIO_LIBS} ${QT_QTXML_LIBRARY} ksgrd  kickermain processui plasma)
 
 install(TARGETS sysguard_panelapplet  DESTINATION ${PLUGIN_INSTALL_DIR} )
+endif(BUILD_KICKER)
 
 
 ########### install files ###############
