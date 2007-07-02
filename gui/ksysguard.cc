@@ -438,11 +438,6 @@ void TopLevel::setSwapInfo( long used, long free, const QString & )
   statusBar()->changeItem( msg, 3 );
 }
 
-static const KCmdLineOptions options[] = {
-  { "+[worksheet]", I18N_NOOP( "Optional worksheet files to load" ), 0 },
-  KCmdLineLastOption
-};
-
 /*
  * Once upon a time...
  */
@@ -480,24 +475,27 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
   setsid();
 #endif
 
-  KAboutData aboutData( "ksysguard", I18N_NOOP( "System Monitor" ),
-                        KSYSGUARD_VERSION, Description, KAboutData::License_GPL,
-                        I18N_NOOP( "(c) 1996-2006 The KDE System Monitor Developers" ) );
-  aboutData.addAuthor( "John Tapsell", "Current Maintainer", "john.tapsell@kde.org" );
-  aboutData.addAuthor( "Chris Schlaeger", "Previous Maintainer", "cs@kde.org" );
-  aboutData.addAuthor( "Greg Martyn", 0, "greg.martyn@gmail.com" );
-  aboutData.addAuthor( "Tobias Koenig", 0, "tokoe@kde.org" );
-  aboutData.addAuthor( "Nicolas Leclercq", 0, "nicknet@planete.net" );
-  aboutData.addAuthor( "Alex Sanda", 0, "alex@darkstart.ping.at" );
-  aboutData.addAuthor( "Bernd Johannes Wuebben", 0, "wuebben@math.cornell.edu" );
-  aboutData.addAuthor( "Ralf Mueller", 0, "rlaf@bj-ig.de" );
-  aboutData.addAuthor( "Hamish Rodda", 0, "rodda@kde.org" );
-  aboutData.addAuthor( "Torsten Kasch", I18N_NOOP( "Solaris Support\n"
+  KAboutData aboutData( "ksysguard", 0, ki18n( "System Monitor" ),
+                        KSYSGUARD_VERSION, ki18n(Description), KAboutData::License_GPL,
+                        ki18n( "(c) 1996-2006 The KDE System Monitor Developers" ) );
+  aboutData.addAuthor( ki18n("John Tapsell"), ki18n("Current Maintainer"), "john.tapsell@kde.org" );
+  aboutData.addAuthor( ki18n("Chris Schlaeger"), ki18n("Previous Maintainer"), "cs@kde.org" );
+  aboutData.addAuthor( ki18n("Greg Martyn"), KLocalizedString(), "greg.martyn@gmail.com" );
+  aboutData.addAuthor( ki18n("Tobias Koenig"), KLocalizedString(), "tokoe@kde.org" );
+  aboutData.addAuthor( ki18n("Nicolas Leclercq"), KLocalizedString(), "nicknet@planete.net" );
+  aboutData.addAuthor( ki18n("Alex Sanda"), KLocalizedString(), "alex@darkstart.ping.at" );
+  aboutData.addAuthor( ki18n("Bernd Johannes Wuebben"), KLocalizedString(), "wuebben@math.cornell.edu" );
+  aboutData.addAuthor( ki18n("Ralf Mueller"), KLocalizedString(), "rlaf@bj-ig.de" );
+  aboutData.addAuthor( ki18n("Hamish Rodda"), KLocalizedString(), "rodda@kde.org" );
+  aboutData.addAuthor( ki18n("Torsten Kasch"), ki18n( "Solaris Support\n"
                        "Parts derived (by permission) from the sunos5\n"
                        "module of William LeFebvre's \"top\" utility." ),
                        "tk@Genetik.Uni-Bielefeld.DE" );
 
   KCmdLineArgs::init( argc, argv, &aboutData );
+
+  KCmdLineOptions options;
+  options.add("+[worksheet]", ki18n( "Optional worksheet files to load" ));
   KCmdLineArgs::addCmdLineOptions( options );
   // initialize KDE application
   KApplication *app = new KApplication;
