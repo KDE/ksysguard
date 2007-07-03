@@ -165,6 +165,14 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	connect(mUi->treeView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex & , const QModelIndex & )), this, SLOT(currentRowChanged(const QModelIndex &)));
 	setMinimumSize(sizeHint());
 
+        enum State {AllProcesses=0,AllProcessesInTreeForm, SystemProcesses, UserProcesses, OwnProcesses};
+
+	mUi->cmbFilter->setItemIcon(ProcessFilter::AllProcesses, KIcon("view-process-all"));
+	mUi->cmbFilter->setItemIcon(ProcessFilter::AllProcessesInTreeForm, KIcon("view-process-all-tree"));
+	mUi->cmbFilter->setItemIcon(ProcessFilter::SystemProcesses, KIcon("view-process-system"));
+	mUi->cmbFilter->setItemIcon(ProcessFilter::UserProcesses, KIcon("view-process-users"));
+	mUi->cmbFilter->setItemIcon(ProcessFilter::OwnProcesses, KIcon("view-process-own"));
+
 	/*  Hide the vm size column by default since it's not very useful */
 	mUi->treeView->header()->hideSection(ProcessModel::HeadingVmSize);
 	mUi->treeView->header()->hideSection(ProcessModel::HeadingNiceness);
