@@ -70,17 +70,20 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="maxCount" >
+        <number>10</number>
+       </property>
        <property name="sizeAdjustPolicy" >
-        <enum>QComboBox::AdjustToContents</enum>
+        <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
        </property>
        <item>
         <property name="text" >
-         <string>All Processes, Simple</string>
+         <string>All Processes</string>
         </property>
        </item>
        <item>
         <property name="text" >
-         <string>All Processes, Hierarchical</string>
+         <string>All Processes, Tree</string>
         </property>
        </item>
        <item>
