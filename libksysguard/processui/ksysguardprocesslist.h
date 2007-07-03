@@ -46,7 +46,7 @@ extern KApplication* Kapp;
  * update rate and the process filter.  The buttons are used to force
  * an immediate update and to kill a process.
  */
-class KDEUI_EXPORT KSysGuardProcessList : public QWidget
+class KDE_EXPORT KSysGuardProcessList : public QWidget
 {
 	Q_OBJECT
 	Q_PROPERTY( bool showTotalsInTree READ showTotals WRITE setShowTotals );

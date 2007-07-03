@@ -24,10 +24,11 @@
 
 #include <QSortFilterProxyModel>
 #include <QObject>
+#include <kdemacros.h>
 
 class QModelIndex;
 
-class ProcessFilter : public QSortFilterProxyModel
+class KDE_EXPORT ProcessFilter : public QSortFilterProxyModel
 {
 	Q_OBJECT
 	Q_ENUMS(State)
