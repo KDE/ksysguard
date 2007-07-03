@@ -900,28 +900,19 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		}
 		return QVariant();
 	}
-	case Qt::UserRole+2: {
-		//Return an int here to draw a percentage bar in the table
-		if(index.column() == HeadingCPUUsage) {
-			KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
-			return (int)(process->userUsage + process->sysUsage);
-		}else if(index.column() == HeadingMemory) {
-                        KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
-			long long memory = 0;
-			if(process->vmURSS != -1) memory = process->vmURSS;
-			else memory = process->vmRSS;
-			return (int)(memory*100/mMemTotal);
-		} else if(index.column() == HeadingSharedMemory) {
-                        KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
-			if(process->vmURSS == -1) return 0;
-			return (int)((process->vmRSS - process->vmURSS)*100/mMemTotal);
-		}
-		return 0;
+	case Qt::UserRole+3: {
+		return mMemTotal;
 	}
 	case Qt::DecorationRole: {
 		if(index.column() == HeadingName) {
 			KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
-			if(!mPidToWindowInfo.contains(process->pid)) return QIcon(mBlankPixmap);
+			if(!mPidToWindowInfo.contains(process->pid)) {
+				if(mSimple) //When not in tree mode, we need to pad the name column where we do not have an icon 
+					return QIcon(mBlankPixmap);
+				else  //When in tree mode, the padding looks pad, so do not pad in this case
+					return QVariant();
+			}
+
 			WindowInfo w = mPidToWindowInfo.value(process->pid);
 			if(w.icon.isNull()) 
 				return QIcon(mBlankPixmap);
@@ -1001,6 +992,10 @@ KSysGuard::Process *ProcessModel::getProcess(long long pid) {
 	return mProcesses->getProcess(pid);
 }
 
+bool ProcessModel::showTotals() const {
+	return mShowChildTotals;
+}
+
 void ProcessModel::setShowTotals(bool showTotals)  //slot
 {
         if(showTotals == mShowChildTotals) return;
@@ -1020,3 +1015,7 @@ void ProcessModel::setShowTotals(bool showTotals)  //slot
        }
 }
 
+long long ProcessModel::totalMemory() const
+{
+	return mMemTotal;
+}

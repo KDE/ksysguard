@@ -75,8 +75,8 @@ public:
 	void setupHeader();
 
 	/** Update data.  You can pass in the time between updates to only update if there hasn't
-	 *  been an update within the last @p updateDurationMS milliseconds */
-	void update(int updateDurationMS = 0);
+	 *  been an update within the last @p updateDurationMSecs milliseconds */
+	void update(int updateDurationMSecs = 0);
 	
 	/** Return a string with the pid of the process and the name of the process.  E.g.  13343: ksyguard
 	 */
@@ -98,9 +98,8 @@ public:
 	 */
 	bool isSimpleMode() const { return mSimple;}
 	
-	/** Set the total amount of physical memory in the machine.  We can use this to determine the percentage of memory an app is using
-	 */
-	void setTotalMemory(long memTotal) { mMemTotal = memTotal; }
+	/** Returns the total amount of physical memory in the machine. */
+	long long totalMemory() const;
 
 	/** Whether this is showing the processes for the current machine
 	 */
@@ -114,9 +113,13 @@ public:
 	 *  in.  If you change this, make sure you also change the 
 	 *  setup header function
 	 */
-	enum { HeadingName=0, HeadingUser, HeadingTty, HeadingNiceness, HeadingCPUUsage, HeadingVmSize, HeadingMemory, HeadingSharedMemory, HeadingCommand, HeadingXTitle };	
+	enum { HeadingName=0, HeadingUser, HeadingTty, HeadingNiceness, HeadingCPUUsage, HeadingVmSize, HeadingMemory, HeadingSharedMemory, HeadingCommand, HeadingXTitle };
+
+	bool showTotals() const;
+
 public slots:
 	void setShowTotals(bool showTotals);
+
 private slots:
 
 #ifdef Q_WS_X11

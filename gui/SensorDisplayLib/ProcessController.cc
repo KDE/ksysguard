@@ -20,7 +20,6 @@
 */
 #include <QDomElement>
 #include <QTimer>
-#include <ksgrd/SensorManager.h>
 #include <QLineEdit>
 #include <QTreeView>
 #include <QCheckBox>
@@ -72,7 +71,7 @@ ProcessController::restoreSettings(QDomElement& element)
 
 
 	bool showTotals = element.attribute("showTotals", "1").toUInt();
-	mUi.ksysguardprocesslist->chkShowTotals()->setCheckState( (showTotals)?Qt::Checked:Qt::Unchecked );
+	mUi.ksysguardprocesslist->setShowTotals(showTotals);
 
 	SensorDisplay::restoreSettings(element);
 	return result;
@@ -85,7 +84,7 @@ ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 	element.setAttribute("sensorName", sensors().at(0)->name());
 	element.setAttribute("sensorType", sensors().at(0)->type());
 	element.setAttribute("treeViewHeader", QString::fromUtf8(mUi.ksysguardprocesslist->treeView()->header()->saveState()));
-	element.setAttribute("showTotals", (mUi.ksysguardprocesslist->chkShowTotals()->checkState() == Qt::Checked)?1:0);
+	element.setAttribute("showTotals", mUi.ksysguardprocesslist->showTotals()?1:0);
 
 	SensorDisplay::saveSettings(doc, element);
 

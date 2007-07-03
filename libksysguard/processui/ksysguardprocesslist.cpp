@@ -28,7 +28,6 @@
 #include <QAction>
 #include <QMenu>
 #include <QSet>
-#include <QCheckBox>
 #include <QComboBox>
 #include <QItemDelegate>
 #include <QPainter>
@@ -51,8 +50,8 @@
 #include "ui_ProcessWidgetUI.h"
 #include "processcore/processes.h"
 
-#define UPDATE_INTERVAL 2000
 
+//Trolltech have a testing class for classes that inherit QAbstractItemModel.  If you want to run with this run-time testing enabled, put themodeltest.* files in this directory and uncomment the next line
 //#define DO_MODELCHECK
 #ifdef DO_MODELCHECK
 #include "modeltest.h"
@@ -61,17 +60,30 @@
 class ProgressBarItemDelegate : public QItemDelegate 
 {
   public:
-	ProgressBarItemDelegate(QObject *parent) : QItemDelegate(parent) {}
+	ProgressBarItemDelegate(QObject *parent) : QItemDelegate(parent), startProgressColor(0x00, 0x71, 0xBC, 100), endProgressColor(0x83, 0xDD, 0xF5, 100), totalMemory(-1) {}
   protected:
 	virtual void drawDisplay(QPainter *painter, const QStyleOptionViewItem &option,
 		                                 const QRect &rect, const QString &text) const
 	{
+/*		if(throb > 0) {
+			QPen old = painter->pen();
+			painter->setPen(Qt::NoPen);
+			QColor throbColor(255, 255-throb, 255-throb, 100);
+//			QLinearGradient linearGrad( rect.x(), rect.y(), rect.x(), rect.y() + rect.height());
+//			linearGrad.setColorAt(0, QColor(255,255,255,100));
+//			linearGrad.setColorAt(1, QColor(255, 255-throb, 255-throb, 100));
+
+			painter->fillRect( rect.x(), rect.y(), rect.width(), rect.height(), QBrush(throbColor));
+			painter->setPen( old );
+
+		}
+*/
 		if(percentage > 0 && percentage * rect.width() > 100 ) { //make sure the line will have a width of more than 1 pixel
 			QPen old = painter->pen();
 			painter->setPen(Qt::NoPen);
 			QLinearGradient  linearGrad( QPointF(rect.x(),rect.y()), QPointF(rect.x() + rect.width(), rect.y()));
-			linearGrad.setColorAt(0, QColor(0x00, 0x71, 0xBC, 100));
-			linearGrad.setColorAt(1, QColor(0x83, 0xDD, 0xF5, 100));
+			linearGrad.setColorAt(0, startProgressColor);
+			linearGrad.setColorAt(1, endProgressColor);
 			painter->fillRect( rect.x(), rect.y(), rect.width() * percentage /100 , rect.height(), QBrush(linearGrad));
 			painter->setPen( old );
 		}
@@ -80,20 +92,50 @@ class ProgressBarItemDelegate : public QItemDelegate
 	}
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 	{
-		percentage = index.data(Qt::UserRole+2).toInt(); //we have set that UserRole+2  returns a number between 1 and 100 for the percentage to draw. 0 for none.
+		QModelIndex realIndex = (reinterpret_cast< const QAbstractProxyModel *> (index.model()))->mapToSource(index);
+		KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (realIndex.internalPointer());
+		if(index.column() == ProcessModel::HeadingCPUUsage) {
+			percentage = process->userUsage + process->sysUsage;
+		} else if(index.column() == ProcessModel::HeadingMemory) {
+			long long memory = 0;
+			if(process->vmURSS != -1) 
+				memory = process->vmURSS;
+			else 
+				memory = process->vmRSS;
+			if(totalMemory == -1)
+				totalMemory = index.data(Qt::UserRole+3).toLongLong();
+
+			percentage = (int)(memory*100/totalMemory);
+		} else if(index.column() == ProcessModel::HeadingSharedMemory) {
+			if(process->vmURSS != -1) {
+				if(totalMemory == -1)
+					totalMemory = index.data(Qt::UserRole+3).toLongLong();
+				percentage = (int)((process->vmRSS - process->vmURSS)*100/totalMemory);
+			}
+		} else
+			percentage = 0;
+		if(percentage > 100) percentage = 100;
+		if(process->timeKillWasSent.isNull())
+			throb = 0;
+		else {
+			throb = process->timeKillWasSent.elapsed() % 200;
+			if(throb > 100) throb = 200 - throb;
+		}
+
 		QItemDelegate::paint(painter, option, index);
 	}
 	mutable int percentage;
+	mutable int throb;
+	QColor startProgressColor;
+	QColor endProgressColor;
+	mutable long long totalMemory;
 
 };
 
 KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	: QWidget(parent), mModel(this), mFilterModel(this), mUi(new Ui::ProcessWidget())
 {
-	mSimple = true;
-	mMemFree = -1;
-	mMemUsed = -1;
-	mMemTotal = -1;
+	mUpdateIntervalMSecs = 2000; //Set 2 seconds as the default update interval
 	mUi->setupUi(this);
 	mFilterModel.setSourceModel(&mModel);
 	mUi->treeView->setModel(&mFilterModel);
@@ -105,7 +147,7 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	mColumnContextMenu = new QMenu(mUi->treeView->header());
 	connect(mColumnContextMenu, SIGNAL(triggered(QAction*)), this, SLOT(showOrHideColumn(QAction *)));
 	mUi->treeView->header()->setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(mUi->treeView->header(), SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
+	connect(mUi->treeView->header(), SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showColumnContextMenu(const QPoint&)));
 
 	mProcessContextMenu = new QMenu(mUi->treeView);
 	mUi->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -115,15 +157,12 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	mUi->treeView->header()->setSortIndicatorShown(true);
 	mUi->treeView->header()->setCascadingSectionResizes(true);
 	mUi->treeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
-	connect(mUi->btnKillProcess, SIGNAL(clicked()), this, SLOT(killProcess()));
+	connect(mUi->btnKillProcess, SIGNAL(clicked()), this, SLOT(killSelectedProcesses()));
 	connect(mUi->txtFilter, SIGNAL(textChanged(const QString &)), &mFilterModel, SLOT(setFilterRegExp(const QString &)));
 	connect(mUi->txtFilter, SIGNAL(textChanged(const QString &)), this, SLOT(expandInit()));
-	connect(mUi->cmbFilter, SIGNAL(currentIndexChanged(int)), &mFilterModel, SLOT(setFilter(int)));
-	connect(mUi->cmbFilter, SIGNAL(currentIndexChanged(int)), this, SLOT(setSimpleMode(int)));
+	connect(mUi->cmbFilter, SIGNAL(currentIndexChanged(int)), this, SLOT(setStateInt(int)));
 	connect(mUi->treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
 	connect(mUi->treeView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex & , const QModelIndex & )), this, SLOT(currentRowChanged(const QModelIndex &)));
-	connect(mUi->chkShowTotals, SIGNAL(toggled(bool)), &mModel, SLOT(setShowTotals(bool)));
-	mUi->chkShowTotals->setVisible(!mSimple);
 	setMinimumSize(sizeHint());
 
 	/*  Hide the vm size column by default since it's not very useful */
@@ -149,7 +188,7 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	mUpdateTimer = new QTimer(this);
 	mUpdateTimer->setSingleShot(true);
 	connect(mUpdateTimer, SIGNAL(timeout()), this, SLOT(updateList()));
-	mUpdateTimer->start(UPDATE_INTERVAL);
+	mUpdateTimer->start(mUpdateIntervalMSecs);
 
 	//If the view resorts continually, then it can be hard to keep track of processes.  By doing it only every few seconds it reduces the 'jumping around'
 	QTimer *mTimer = new QTimer(this);
@@ -163,20 +202,22 @@ QTreeView *KSysGuardProcessList::treeView() const {
 	return mUi->treeView;
 }
 
-QCheckBox *KSysGuardProcessList::chkShowTotals() const {
-	return mUi->chkShowTotals;
-}
 QLineEdit *KSysGuardProcessList::filterLineEdit() const {
 	return mUi->txtFilter;
 }
 
-void KSysGuardProcessList::setSimpleMode(int index)
+ProcessFilter::State KSysGuardProcessList::state() const 
+{
+	return mFilterModel.filter();
+}
+void KSysGuardProcessList::setStateInt(int state) {
+	setState((ProcessFilter::State) state);
+}
+void KSysGuardProcessList::setState(ProcessFilter::State state)
 {  //index is the item the user selected in the combo box
-	bool simple = (index != PROCESS_FILTER_ALL_TREE);
-	if(simple == mSimple) return; //Optimization - don't bother changing anything if the simple mode hasn't been toggled
-	mSimple = simple;
-	mModel.setSimpleMode(mSimple);
-	mUi->chkShowTotals->setVisible(!mSimple);
+	mFilterModel.setFilter(state);
+	mModel.setSimpleMode( (state != ProcessFilter::AllProcessesInTreeForm) );
+	mUi->cmbFilter->setCurrentIndex( (int)state);
 }
 void KSysGuardProcessList::currentRowChanged(const QModelIndex &current)
 {
@@ -196,13 +237,13 @@ void KSysGuardProcessList::showProcessContextMenu(const QPoint &point){
 
 	QAction *result = mProcessContextMenu->exec(mUi->treeView->mapToGlobal(point));	
 	if(result == renice) {
-		reniceProcess();
+		reniceSelectedProcesses();
 	} else if(result == kill) {
-		killProcess();
+		killSelectedProcesses();
 	}
 }
 
-void KSysGuardProcessList::showContextMenu(const QPoint &point){
+void KSysGuardProcessList::showColumnContextMenu(const QPoint &point){
 	mColumnContextMenu->clear();
 	
 	{
@@ -246,6 +287,7 @@ void KSysGuardProcessList::showOrHideColumn(QAction *action)
 	}
 		
 }
+
 void KSysGuardProcessList::expandAllChildren(const QModelIndex &parent) 
 {
 	//This is called when the user expands a node.  This then expands all of its 
@@ -262,29 +304,43 @@ void KSysGuardProcessList::expandInit()
 	mUi->treeView->expand(mFilterModel.mapFromSource(mModel.index(0,0, QModelIndex())));
 	connect(mUi->treeView, SIGNAL(expanded(const QModelIndex &)), this, SLOT(expandAllChildren(const QModelIndex &)));
 }
+
 void KSysGuardProcessList::hideEvent ( QHideEvent * event )  //virtual protected from QWidget
 {
+	//Stop updating the process list if we are hidden
 	mUpdateTimer->stop();
 	QWidget::hideEvent(event);
 }
+
 void KSysGuardProcessList::showEvent ( QShowEvent * event )  //virtual protected from QWidget
 {
+	//Start updating the process list again if we are shown again
 	if(!mUpdateTimer->isActive()) 
-		mUpdateTimer->start(UPDATE_INTERVAL);
+		mUpdateTimer->start(mUpdateIntervalMSecs);
 	QWidget::showEvent(event);
 }
 
-void
-KSysGuardProcessList::updateList()
+void KSysGuardProcessList::updateList()
 {
 	if(isVisible()) {
-		mModel.update(UPDATE_INTERVAL);
+		mModel.update(mUpdateIntervalMSecs);
 		expandInit();
-		mUpdateTimer->start(UPDATE_INTERVAL);
+		mUpdateTimer->start(mUpdateIntervalMSecs);
 	}
 }
 
-void KSysGuardProcessList::reniceProcess(const QList<long long> &pids, int niceValue)
+int KSysGuardProcessList::updateIntervalMSecs() const 
+{
+	return mUpdateIntervalMSecs;
+}	
+
+void KSysGuardProcessList::setUpdateIntervalMSecs(int intervalMSecs) 
+{
+	mUpdateIntervalMSecs = intervalMSecs;
+	mUpdateTimer->setInterval(mUpdateIntervalMSecs);
+}
+
+void KSysGuardProcessList::reniceProcesses(const QList<long long> &pids, int niceValue)
 {
 	QList< long long> unreniced_pids;
         for (int i = 0; i < pids.size(); ++i) {
@@ -307,7 +363,7 @@ void KSysGuardProcessList::reniceProcess(const QList<long long> &pids, int niceV
 	reniceProcess->start("kdesu", arguments);
 }
 
-void KSysGuardProcessList::reniceProcess()
+void KSysGuardProcessList::reniceSelectedProcesses()
 {
 	QModelIndexList selectedIndexes = mUi->treeView->selectionModel()->selectedRows();
 	QStringList selectedAsStrings;
@@ -331,11 +387,11 @@ void KSysGuardProcessList::reniceProcess()
 	Q_ASSERT(newPriority <= 19 && newPriority >= -20); 
 
 	Q_ASSERT(selectedPids.size() == selectedAsStrings.size());
-	reniceProcess(selectedPids, newPriority);
+	reniceProcesses(selectedPids, newPriority);
 	updateList();
 }
 
-void KSysGuardProcessList::killProcess(const QList< long long> &pids, int sig)
+void KSysGuardProcessList::killProcesses(const QList< long long> &pids, int sig)
 {
 	QList< long long> unkilled_pids;
         for (int i = 0; i < pids.size(); ++i) {
@@ -361,13 +417,15 @@ void KSysGuardProcessList::killProcess(const QList< long long> &pids, int sig)
 	killProcess->start("kdesu", arguments);
 
 }
-void KSysGuardProcessList::killProcess()
+void KSysGuardProcessList::killSelectedProcesses()
 {
 	QModelIndexList selectedIndexes = mUi->treeView->selectionModel()->selectedRows();
 	QStringList selectedAsStrings;
 	QList< long long> selectedPids;
+	QList<KSysGuard::Process *> selectedProcesses;
 	for (int i = 0; i < selectedIndexes.size(); ++i) {
 		KSysGuard::Process *process = reinterpret_cast<KSysGuard::Process *> (mFilterModel.mapToSource(selectedIndexes.at(i)).internalPointer());
+		selectedProcesses << process;
 		selectedPids << process->pid;
 		selectedAsStrings << mModel.getStringForProcess(process);
 	}
@@ -393,40 +451,19 @@ void KSysGuardProcessList::killProcess()
 			return;
 		}
 	}
+	foreach(KSysGuard::Process *process, selectedProcesses) {
+		process->timeKillWasSent.start();
+	}
 
 	Q_ASSERT(selectedPids.size() == selectedAsStrings.size());
-	killProcess(selectedPids, SIGTERM);
+	killProcesses(selectedPids, SIGTERM);
 	updateList();
 }
 
-#if 0
-void
-KSysGuardProcessList::answerReceived(int id, const QList<QByteArray>& answer)
-{
-	case MemFree_Command:
-	case MemUsed_Command:
-		if(answer.count() != 1) {
-			kDebug(1215) << "Invalid answer from a mem free request" << endl;
-			break;
-		}
-		// We should get a reply like "235384" meaning the amount, kb, of free memory
-		if(id == MemFree_Command)
-			mMemFree = answer[0].toLong();
-		else
-			mMemUsed = answer[0].toLong();
-
-		if(mMemUsed != -1 && mMemFree != -1) {
-			mMemTotal = mMemUsed + mMemFree;
-			mModel.setTotalMemory(mMemTotal);
-		}
-		break;
-	}
-}
-#endif
 void KSysGuardProcessList::reniceFailed()
 {
 	KMessageBox::sorry(this, i18n("You do not have the permission to renice the process and there "
-                                "was a problem trying to run as root"));
+                                      "was a problem trying to run as root"));
 }
 void KSysGuardProcessList::killFailed()
 {
@@ -434,4 +471,11 @@ void KSysGuardProcessList::killFailed()
                                 "was a problem trying to run as root"));
 }
 
+bool KSysGuardProcessList::showTotals() const {
+	return mModel.showTotals();
+}
 
+void KSysGuardProcessList::setShowTotals(bool showTotals)  //slot
+{
+	mModel.setShowTotals(showTotals);
+}

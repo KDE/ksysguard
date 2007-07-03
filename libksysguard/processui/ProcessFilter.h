@@ -24,28 +24,29 @@
 
 #include <QSortFilterProxyModel>
 #include <QObject>
-#define PROCESS_FILTER_ALL_SIMPLE 0
-#define PROCESS_FILTER_ALL_TREE 1
-#define PROCESS_FILTER_SYSTEM 2
-#define PROCESS_FILTER_USER 3
-#define PROCESS_FILTER_OWN 4
 
 class QModelIndex;
 
-class KDEUI_EXPORT ProcessFilter : public QSortFilterProxyModel
+class ProcessFilter : public QSortFilterProxyModel
 {
 	Q_OBJECT
+	Q_ENUMS(State)
+
   public:
-	ProcessFilter(QObject *parent=0) : QSortFilterProxyModel(parent) {mFilter = 0;}
+	enum State {AllProcesses=0,AllProcessesInTreeForm, SystemProcesses, UserProcesses, OwnProcesses};
+	ProcessFilter(QObject *parent=0) : QSortFilterProxyModel(parent) {mFilter = AllProcesses;}
 	virtual ~ProcessFilter() {}
-	int mFilter;
 	bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
+	State filter() const {return mFilter; }
+
 
   public slots:
-	void setFilter(int index);
+	void setFilter(State index);
 	
   protected:
 	virtual bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const;
+	
+	State mFilter;
 };
 
 #endif

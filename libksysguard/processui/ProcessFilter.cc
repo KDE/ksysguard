@@ -34,7 +34,7 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 {
 	//We need the uid for this, so we have a special understanding with the model.
 	//We query the first row with Qt:UserRole, and it gives us the uid.  Nasty but works.
-	if( (mFilter == PROCESS_FILTER_ALL_SIMPLE || mFilter == PROCESS_FILTER_ALL_TREE) 
+	if( (mFilter == AllProcesses || mFilter == AllProcessesInTreeForm) 
 			&& filterRegExp().isEmpty()) return true; //Shortcut for common case 
 	
 	ProcessModel *model = static_cast<ProcessModel *>(sourceModel());
@@ -69,18 +69,18 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 	
 	bool accepted = true;
 	switch(mFilter) {
-	case PROCESS_FILTER_ALL_TREE:
-	case PROCESS_FILTER_ALL_SIMPLE:
+	case AllProcesses:
+	case AllProcessesInTreeForm:
 		break;
-        case PROCESS_FILTER_SYSTEM:
+        case SystemProcesses:
                 if( uid >= 100 && model->canUserLogin(uid))
 			accepted = false;
 		break;
-        case PROCESS_FILTER_USER:
+        case UserProcesses:
 		if( (uid < 100 || !model->canUserLogin(uid)) && (euid < 100 || !model->canUserLogin(euid))) 
 			accepted = false;
 		break;
-        case PROCESS_FILTER_OWN:
+        case OwnProcesses:
         default:
 		long ownuid = getuid();
                 if(uid != ownuid && process->suid != ownuid && process->fsuid != ownuid && euid != ownuid)
@@ -102,7 +102,7 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 	//We did not accept this row at all.  
 	
 	//If we are in flat mode, then give up now
-	if(mFilter == PROCESS_FILTER_ALL_SIMPLE)
+	if(mFilter != AllProcessesInTreeForm)
 		return false;
 
 	//one of our children might be accepted, so accept this row if our children are accepted.
@@ -127,8 +127,8 @@ bool ProcessFilter::lessThan(const QModelIndex &left, const QModelIndex &right) 
 }
 
 
-void ProcessFilter::setFilter(int index) {
-	mFilter = index; 
+void ProcessFilter::setFilter(State filter) {
+	mFilter = filter; 
 	filterChanged();//Tell the proxy view to refresh all its information
 }
 #include "ProcessFilter.moc"

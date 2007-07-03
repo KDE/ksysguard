@@ -21,8 +21,9 @@
 
 #include <kdemacros.h>
 
-
 #include <QList>
+#include <QTime>
+
 #include <klocale.h>
 
 
@@ -65,7 +66,7 @@ namespace KSysGuard
         int totalUserUsage; ///Percentage (0 to 100) from the sum of itself and all its children recursively.  If there's no children, it's equal to userUsage.  It might be more than 100% on multiple cpu core systems
         int totalSysUsage; ///Percentage (0 to 100) from the sum of itself and all its children recursively. If there's no children, it's equal to sysUsage. It might be more than 100% on multiple cpu core systems
         unsigned long numChildren; ///Number of children recursively that this process has.  From 0+
-        int niceLevel;      ///Niceness (-20 to 20) of this process
+        int niceLevel;      ///Niceness (-20 to 20) of this process.  A lower number means a higher priority.
         long vmSize;   ///Virtual memory size in KiloBytes, including memory used, mmap'ed files, graphics memory etc,
         long vmRSS;    ///Physical memory used by the process and its shared libraries.  If the process and libraries are swapped to disk, this could be as low as 0
         long vmURSS;   ///Physical memory used only by the process, and not counting the code for shared libraries. Set to -1 if unknown
@@ -73,9 +74,11 @@ namespace KSysGuard
         QString command; ///The command the process was launched with
         QList<Process *> children;  ///A list of all the direct children that the process has.  Children of children are not listed here, so note that children_pids <= numChildren
 	ProcessStatus status; ///Whether the process is running/sleeping/etc
+	QTime timeKillWasSent; /// This is usually a NULL time.  When trying to kill a process, this is the time that the kill signal was sent to the process.
 
-	QString translatedStatus() const;
-	QString niceLevelAsString() const;
+	QString translatedStatus() const;  /// Returns a translated string of the status. e.g. "Running" etc
+	QString niceLevelAsString() const; /// Returns a simple translated string of the nice priority.  e.g. "Normal", "High", etc
+
 
 	int index;
 
