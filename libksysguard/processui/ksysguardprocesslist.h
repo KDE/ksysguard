@@ -49,10 +49,10 @@ extern KApplication* Kapp;
 class KDE_EXPORT KSysGuardProcessList : public QWidget
 {
 	Q_OBJECT
-	Q_PROPERTY( bool showTotalsInTree READ showTotals WRITE setShowTotals );
-	Q_PROPERTY( ProcessFilter::State state READ state WRITE setState );
-	Q_PROPERTY( int updateIntervalMSecs READ updateIntervalMSecs WRITE setUpdateIntervalMSecs );
-	Q_ENUMS( ProcessFilter::State );
+	Q_PROPERTY( bool showTotalsInTree READ showTotals WRITE setShowTotals )
+	Q_PROPERTY( ProcessFilter::State state READ state WRITE setState )
+	Q_PROPERTY( int updateIntervalMSecs READ updateIntervalMSecs WRITE setUpdateIntervalMSecs )
+	Q_ENUMS( ProcessFilter::State )
 
 public:
 	KSysGuardProcessList(QWidget* parent);
