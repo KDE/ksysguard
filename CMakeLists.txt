@@ -1,5 +1,4 @@
 
-project(ksysguard)
 
 add_subdirectory( CContLib )
 add_subdirectory( gui )
