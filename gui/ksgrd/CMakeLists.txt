@@ -16,7 +16,7 @@ kde4_add_library(ksgrd SHARED ${ksgrd_LIB_SRCS})
 
 target_link_libraries(ksgrd  ${KDE4_KDECORE_LIBS} ${QT_QTCORE_LIBRARY} ${QT_QTNETWORK_LIBRARY} )
 
-set_target_properties(ksgrd PROPERTIES VERSION 4.0.0 SOVERSION 4 )
+set_target_properties(ksgrd PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERSION ${GENERIC_LIB_SOVERSION} )
 install(TARGETS ksgrd  DESTINATION ${LIB_INSTALL_DIR} )
 
 
