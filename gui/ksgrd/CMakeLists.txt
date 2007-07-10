@@ -10,7 +10,6 @@ set(ksgrd_LIB_SRCS
    SensorSocketAgent.cc 
 )
 
-kde4_automoc(${ksgrd_LIB_SRCS})
 
 kde4_add_library(ksgrd SHARED ${ksgrd_LIB_SRCS})
 

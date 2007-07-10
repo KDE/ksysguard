@@ -9,7 +9,6 @@ set(ksysguard_LIB_SRCS
 )
 
 
-kde4_automoc(${ksysguard_LIB_SRCS})
 
 kde4_add_library(processcore SHARED ${ksysguard_LIB_SRCS})
 

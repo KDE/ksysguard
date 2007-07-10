@@ -1,7 +1,6 @@
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../ )
 
-kde4_automoc(processtest.cpp)
 
 kde4_add_unit_test(processtest processtest.cpp)
 
@@ -10,7 +9,6 @@ target_link_libraries(processtest processcore ${KDE4_KDECORE_LIBS} ${QT_QTTEST_L
   ############################
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/.. )
 
-kde4_automoc(guitest.cpp)
 
 kde4_add_unit_test(guitest guitest.cpp)
 

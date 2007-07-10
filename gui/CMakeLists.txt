@@ -48,7 +48,6 @@ set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
    TimerSettings.cc 
    ksysguard.cc )
 
-kde4_automoc(${ksysguard_KDEINIT_SRCS})
 
 
 kde4_add_kdeinit_executable(ksysguard ${ksysguard_KDEINIT_SRCS})
@@ -65,7 +64,6 @@ install(TARGETS ksysguard DESTINATION ${BIN_INSTALL_DIR})
 if(BUILD_KICKER)
 set(sysguard_panelapplet_PART_SRCS KSysGuardApplet.cc KSGAppletSettings.cc ${libsensordisplays_SRCS} StyleEngine.cc TimerSettings.cc)
 
-kde4_automoc(${sysguard_panelapplet_PART_SRCS})
 
 kde4_add_plugin(sysguard_panelapplet ${sysguard_panelapplet_PART_SRCS})
 

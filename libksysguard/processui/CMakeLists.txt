@@ -13,7 +13,6 @@ kde4_add_ui_files( processui_LIB_SRCS
    ProcessWidgetUI.ui
 )
 
-kde4_automoc(${processui_LIB_SRCS})
 
 kde4_add_library(processui SHARED ${processui_LIB_SRCS})
 
