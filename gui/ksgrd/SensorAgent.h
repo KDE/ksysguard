@@ -21,8 +21,8 @@
 #ifndef KSG_SENSORAGENT_H
 #define KSG_SENSORAGENT_H
 
-#include <QObject>
-#include <QQueue>
+#include <QtCore/QObject>
+#include <QtCore/QQueue>
 
 #include <kdemacros.h>
 

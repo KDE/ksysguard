@@ -21,8 +21,8 @@
 
 #include <kdemacros.h>
 
-#include <QList>
-#include <QTime>
+#include <QtCore/QList>
+#include <QtCore/QTime>
 
 #include <klocale.h>
 

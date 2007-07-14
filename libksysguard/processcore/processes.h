@@ -22,7 +22,7 @@
 #include <kdemacros.h>
 
 #include "process.h"
-#include <QHash>
+#include <QtCore/QHash>
 
 namespace KSysGuard
 {

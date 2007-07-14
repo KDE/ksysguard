@@ -21,8 +21,8 @@
 #ifndef KSG_SENSORSHELLAGENT_H
 #define KSG_SENSORSHELLAGENT_H
 
-#include <QObject>
-#include <QPointer>
+#include <QtCore/QObject>
+#include <QtCore/QPointer>
 
 #include "SensorAgent.h"
 
