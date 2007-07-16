@@ -266,19 +266,19 @@ static int process26DiskIO( const char* buf ) {
 			DiskIO = ptr;
 		}
 		
-		sprintf(sensorName, "disk/%s_(%d:%d)26/total", devname, major, minor);
+		sprintf(sensorName, "disk/%s_(%d:%d)/total", devname, major, minor);
 		registerMonitor(sensorName, "float", print26DiskIO, print26DiskIOInfo,
 			StatSM);
-		sprintf(sensorName, "disk/%s_(%d:%d)26/rio", devname, major, minor);
+		sprintf(sensorName, "disk/%s_(%d:%d)/rio", devname, major, minor);
 		registerMonitor(sensorName, "float", print26DiskIO, print26DiskIOInfo,
 			StatSM);
-		sprintf(sensorName, "disk/%s_(%d:%d)26/wio", devname, major, minor);
+		sprintf(sensorName, "disk/%s_(%d:%d)/wio", devname, major, minor);
 		registerMonitor(sensorName, "float", print26DiskIO, print26DiskIOInfo,
 			StatSM);
-		sprintf(sensorName, "disk/%s_(%d:%d)26/rblk", devname, major, minor);
+		sprintf(sensorName, "disk/%s_(%d:%d)/rblk", devname, major, minor);
 		registerMonitor(sensorName, "float", print26DiskIO, print26DiskIOInfo,
 			StatSM);
-		sprintf(sensorName, "disk/%s_(%d:%d)26/wblk", devname, major, minor);
+		sprintf(sensorName, "disk/%s_(%d:%d)/wblk", devname, major, minor);
 		registerMonitor(sensorName, "float", print26DiskIO, print26DiskIOInfo,
 			StatSM);
 	}
@@ -297,15 +297,15 @@ static void cleanup26DiskList( void ) {
 			
 			/* Disk device has disappeared. We have to remove it from
 			* the list and unregister the monitors. */
-			sprintf( sensorName, "disk/%s_(%d:%d)26/total", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)/total", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)26/rio", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)/rio", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)26/wio", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)/wio", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)26/rblk", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)/rblk", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)26/wblk", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)/wblk", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
 			if ( last ) {
 				last->next = ptr->next;
@@ -359,7 +359,7 @@ void print26DiskIO( const char* cmd ) {
 	char name[ 17 ];
 	DiskIOInfo* ptr;
 	
-	sscanf( cmd, "disk/%[^_]_(%d:%d)26/%16s", devname, &major, &minor, name );
+	sscanf( cmd, "disk/%[^_]_(%d:%d)/%16s", devname, &major, &minor, name );
 	
 	if ( Dirty )
 		processDiskstats();
@@ -398,7 +398,7 @@ void print26DiskIOInfo( const char* cmd ) {
 	char name[ 17 ];
 	DiskIOInfo* ptr = DiskIO;
 	
-	sscanf( cmd, "disk/%[^_]_(%d:%d)26/%16s", devname, &major, &minor, name );
+	sscanf( cmd, "disk/%[^_]_(%d:%d)/%16s", devname, &major, &minor, name );
 	
 	while ( ptr && ( ptr->major != major || ptr->minor != minor ) )
 		ptr = ptr->next;
