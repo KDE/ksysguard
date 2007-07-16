@@ -86,7 +86,7 @@ SensorManager::SensorManager()
   mDict.insert( QLatin1String( "rio" ), i18n( "Read Accesses" ) );
   mDict.insert( QLatin1String( "wio" ), i18n( "Write Accesses" ) );
   mDict.insert( QLatin1String( "rblk" ), i18n( "Read Data" ) );
-  mDict.insert( QLatin1String( "wblk" ), i18n( "Write Data" ) );
+  mDict.insert( QLatin1String( "wblk" ), i18n( "Written Data" ) );
   mDict.insert( QLatin1String( "pageIn" ), i18n( "Pages In" ) );
   mDict.insert( QLatin1String( "pageOut" ), i18n( "Pages Out" ) );
   mDict.insert( QLatin1String( "context" ), i18n( "Context Switches" ) );
