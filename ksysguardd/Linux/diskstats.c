@@ -60,11 +60,11 @@ typedef struct DiskIOInfo
 	char* devname;
 	
 	int alive;
-	DiskLoadSample total;
-	DiskLoadSample rio;
-	DiskLoadSample wio;
-	DiskLoadSample rblk;
-	DiskLoadSample wblk;
+	DiskLoadSample total; /* Total accesses */
+	DiskLoadSample rio; /* Read Accesses */
+	DiskLoadSample wio; /* Write Accesses */
+	DiskLoadSample rblk; /* Read Data */
+	DiskLoadSample wblk; /* Write Data */
 	struct DiskIOInfo* next;
 } DiskIOInfo;
 
