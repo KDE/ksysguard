@@ -63,6 +63,10 @@ SensorManager* KSGRD::SensorMgr;
 SensorManager::SensorManager()
 {
   // Fill the sensor description dictionary.
+
+  mDict.insert( QLatin1String( "Delta" ), i18n( "Change" ) );
+  mDict.insert( QLatin1String( "Rate" ), i18n( "Rate" ) );
+ 
   mDict.insert( QLatin1String( "cpu" ), i18n( "CPU Load" ) );
   mDict.insert( QLatin1String( "idle" ), i18n( "Idling" ) );
   mDict.insert( QLatin1String( "nice" ), i18n( "Nice Load" ) );
@@ -82,11 +86,14 @@ SensorManager::SensorManager()
   mDict.insert( QLatin1String( "ps" ), i18n( "Process Controller" ) );
   mDict.insert( QLatin1String( "disk" ), i18n( "Disk Throughput" ) );
   mDict.insert( QLatin1String( "load" ), i18nc( "CPU Load", "Load" ) );
-  mDict.insert( QLatin1String( "total" ), i18n( "Total Accesses" ) );
+  mDict.insert( QLatin1String( "totalio" ), i18n( "Total Accesses" ) );
   mDict.insert( QLatin1String( "rio" ), i18n( "Read Accesses" ) );
   mDict.insert( QLatin1String( "wio" ), i18n( "Write Accesses" ) );
   mDict.insert( QLatin1String( "rblk" ), i18n( "Read Data" ) );
   mDict.insert( QLatin1String( "wblk" ), i18n( "Written Data" ) );
+  mDict.insert( QLatin1String( "rtim" ), i18n( "Milliseconds spent reading" ) );
+  mDict.insert( QLatin1String( "wtim" ), i18n( "Milliseconds spent writing" ) );
+  mDict.insert( QLatin1String( "ioqueue" ), i18n( "I/Os currently in progress" ) );
   mDict.insert( QLatin1String( "pageIn" ), i18n( "Pages In" ) );
   mDict.insert( QLatin1String( "pageOut" ), i18n( "Pages Out" ) );
   mDict.insert( QLatin1String( "context" ), i18n( "Context Switches" ) );

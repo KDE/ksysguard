@@ -31,7 +31,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-
+ 
 #include "Command.h"
 #include "ksysguardd.h"
 
@@ -60,11 +60,14 @@ typedef struct DiskIOInfo
 	char* devname;
 	
 	int alive;
-	DiskLoadSample total; /* Total accesses */
-	DiskLoadSample rio; /* Read Accesses */
-	DiskLoadSample wio; /* Write Accesses */
-	DiskLoadSample rblk; /* Read Data */
-	DiskLoadSample wblk; /* Write Data */
+	DiskLoadSample total; /* Total accesses - Fields 1+5 */
+	DiskLoadSample rio; /* Read Accesses - Field 1 - # of reads issued */
+	DiskLoadSample wio; /* Write Accesses - Field 5 - # of writes completed */
+	DiskLoadSample rblk; /* Read Data - Field 3 - # of sectors read */
+	DiskLoadSample wblk; /* Written Data - Field 7 - # of sectors written */
+	DiskLoadSample rtim; /* - Field 4 - # of milliseconds spent reading */
+	DiskLoadSample wtim; /* - Field 8 - # of milliseconds spent writing */
+	unsigned int ioqueue; /* - Field 9 - # of I/Os currently in progress */
 	struct DiskIOInfo* next;
 } DiskIOInfo;
 
@@ -184,7 +187,7 @@ static int process26DiskIO( const char* buf ) {
 	unsigned long            total,
 				rio, rmrg, rblk, rtim,
 				wio, wmrg, wblk, wtim,
-				ioprog, iotim, iotimw;
+				ioqueue, iotim, iotimw;
 	DiskIOInfo               *ptr = DiskIO;
 	DiskIOInfo               *last = 0;
 	char                     sensorName[128];
@@ -230,7 +233,7 @@ static int process26DiskIO( const char* buf ) {
 		&major, &minor, devname,
 		&rio, &rmrg, &rblk, &rtim,
 		&wio, &wmrg, &wblk, &wtim,
-		&ioprog, &iotim, &iotimw))
+		&ioqueue, &iotim, &iotimw))
 	{
 	case 7:
 		/* Partition stats entry */
@@ -268,6 +271,13 @@ static int process26DiskIO( const char* buf ) {
 			ptr->rblk.old = rblk;
 			ptr->wblk.delta = wblk - ptr->wblk.old;
 			ptr->wblk.old = wblk;
+			ptr->rtim.delta = rtim - ptr->rtim.old;
+			ptr->rtim.old = rtim;
+			ptr->wtim.delta = wtim - ptr->wtim.old;
+			ptr->wtim.old = wtim;
+			/* fyi: ipqueue doesn't have a delta */
+			ptr->ioqueue = ioqueue;
+
 			ptr->alive = 1;
 			break;
 		}
@@ -292,6 +302,13 @@ static int process26DiskIO( const char* buf ) {
 		ptr->rblk.old = rblk;
 		ptr->wblk.delta = 0;
 		ptr->wblk.old = wblk;
+		ptr->rtim.delta = 0;
+		ptr->rtim.old = rtim;
+		ptr->wtim.delta = 0;
+		ptr->wtim.old = wtim;
+		/* fyi: ipqueue doesn't have a delta */
+		ptr->ioqueue = ioqueue;
+
 		ptr->alive = 1;
 		ptr->next = 0;
 		if (last) {
@@ -303,20 +320,46 @@ static int process26DiskIO( const char* buf ) {
 			DiskIO = ptr;
 		}
 		
-		sprintf(sensorName, "disk/%s_(%d:%d)/total", devname, major, minor);
+		sprintf(sensorName, "disk/%s_(%d:%d)/Rate/totalio", devname, major, minor);
 		registerMonitor(sensorName, "float", print26DiskIO, print26DiskIOInfo,
 			StatSM);
-		sprintf(sensorName, "disk/%s_(%d:%d)/rio", devname, major, minor);
+		sprintf(sensorName, "disk/%s_(%d:%d)/Rate/rio", devname, major, minor);
 		registerMonitor(sensorName, "float", print26DiskIO, print26DiskIOInfo,
 			StatSM);
-		sprintf(sensorName, "disk/%s_(%d:%d)/wio", devname, major, minor);
+		sprintf(sensorName, "disk/%s_(%d:%d)/Rate/wio", devname, major, minor);
 		registerMonitor(sensorName, "float", print26DiskIO, print26DiskIOInfo,
 			StatSM);
-		sprintf(sensorName, "disk/%s_(%d:%d)/rblk", devname, major, minor);
+		sprintf(sensorName, "disk/%s_(%d:%d)/Rate/rblk", devname, major, minor);
 		registerMonitor(sensorName, "float", print26DiskIO, print26DiskIOInfo,
 			StatSM);
-		sprintf(sensorName, "disk/%s_(%d:%d)/wblk", devname, major, minor);
+		sprintf(sensorName, "disk/%s_(%d:%d)/Rate/wblk", devname, major, minor);
 		registerMonitor(sensorName, "float", print26DiskIO, print26DiskIOInfo,
+			StatSM);
+		
+		sprintf(sensorName, "disk/%s_(%d:%d)/Delta/totalio", devname, major, minor);
+		registerMonitor(sensorName, "integer", print26DiskIO, print26DiskIOInfo,
+			StatSM);
+		sprintf(sensorName, "disk/%s_(%d:%d)/Delta/rio", devname, major, minor);
+		registerMonitor(sensorName, "integer", print26DiskIO, print26DiskIOInfo,
+			StatSM);
+		sprintf(sensorName, "disk/%s_(%d:%d)/Delta/wio", devname, major, minor);
+		registerMonitor(sensorName, "integer", print26DiskIO, print26DiskIOInfo,
+			StatSM);
+		sprintf(sensorName, "disk/%s_(%d:%d)/Delta/rblk", devname, major, minor);
+		registerMonitor(sensorName, "integer", print26DiskIO, print26DiskIOInfo,
+			StatSM);
+		sprintf(sensorName, "disk/%s_(%d:%d)/Delta/wblk", devname, major, minor);
+		registerMonitor(sensorName, "integer", print26DiskIO, print26DiskIOInfo,
+			StatSM);
+		sprintf(sensorName, "disk/%s_(%d:%d)/Delta/rtim", devname, major, minor);
+		registerMonitor(sensorName, "integer", print26DiskIO, print26DiskIOInfo,
+			StatSM);
+		sprintf(sensorName, "disk/%s_(%d:%d)/Delta/wtim", devname, major, minor);
+		registerMonitor(sensorName, "integer", print26DiskIO, print26DiskIOInfo,
+			StatSM);
+
+		sprintf(sensorName, "disk/%s_(%d:%d)/ioqueue", devname, major, minor);
+		registerMonitor(sensorName, "integer", print26DiskIO, print26DiskIOInfo,
 			StatSM);
 	}
 	
@@ -334,16 +377,35 @@ static void cleanup26DiskList( void ) {
 			
 			/* Disk device has disappeared. We have to remove it from
 			* the list and unregister the monitors. */
-			sprintf( sensorName, "disk/%s_(%d:%d)/total", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)/Rate/totalio", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)/rio", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)/Rate/rio", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)/wio", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)/Rate/wio", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)/rblk", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)/Rate/rblk", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)/wblk", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)/Rate/wblk", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
+
+			sprintf( sensorName, "disk/%s_(%d:%d)/Delta/totalio", ptr->devname, ptr->major, ptr->minor );
+			removeMonitor( sensorName );
+			sprintf( sensorName, "disk/%s_(%d:%d)/Delta/rio", ptr->devname, ptr->major, ptr->minor );
+			removeMonitor( sensorName );
+			sprintf( sensorName, "disk/%s_(%d:%d)/Delta/wio", ptr->devname, ptr->major, ptr->minor );
+			removeMonitor( sensorName );
+			sprintf( sensorName, "disk/%s_(%d:%d)/Delta/rblk", ptr->devname, ptr->major, ptr->minor );
+			removeMonitor( sensorName );
+			sprintf( sensorName, "disk/%s_(%d:%d)/Delta/wblk", ptr->devname, ptr->major, ptr->minor );
+			removeMonitor( sensorName );
+			sprintf( sensorName, "disk/%s_(%d:%d)/Delta/rtim", ptr->devname, ptr->major, ptr->minor );
+			removeMonitor( sensorName );
+			sprintf( sensorName, "disk/%s_(%d:%d)/Delta/wtim", ptr->devname, ptr->major, ptr->minor );
+			removeMonitor( sensorName );
+
+			sprintf( sensorName, "disk/%s_(%d:%d)/ioqueue", ptr->devname, ptr->major, ptr->minor );
+			removeMonitor( sensorName );
+
 			if ( last ) {
 				last->next = ptr->next;
 				newPtr = ptr->next;
@@ -365,67 +427,100 @@ static void cleanup26DiskList( void ) {
 	}
 }
 
-static void process26Stat( void ) {
-	char format[ 32 ];
-	char buf[ 1024 ];
-	char* iostatBufP = IOStatBuf;
-
-	sprintf( format, "%%%d[^\n]\n", (int)sizeof( buf ) - 1 );
-
-	/* Process values from /proc/diskstats (Linux >= 2.6.x) */
-	while (sscanf(iostatBufP, format, buf) == 1) {
-		buf[sizeof(buf) - 1] = '\0';
-		iostatBufP += strlen(buf) + 1;  /* move IOstatBufP to next line */
-		
-		process26DiskIO(buf);
-	}
-
-	/* save exact time inverval between this and the last read of /proc/stat */
-	timeInterval = currSampling.tv_sec - lastSampling.tv_sec +
-			( currSampling.tv_usec - lastSampling.tv_usec ) / 1000000.0;
-	lastSampling = currSampling;
-	
-	cleanup26DiskList();
-
-	Dirty = 0;
-}
-
 void print26DiskIO( const char* cmd ) {
 	int major, minor;
 	char devname[DISKDEVNAMELEN];
 	char name[ 17 ];
 	DiskIOInfo* ptr;
 	
-	sscanf( cmd, "disk/%[^_]_(%d:%d)/%16s", devname, &major, &minor, name );
-	
 	if ( Dirty )
 		processDiskstats();
-	
-	ptr = DiskIO;
-	while ( ptr && ( ptr->major != major || ptr->minor != minor ) )
-		ptr = ptr->next;
-	
-	if ( !ptr ) {
-		print_error( "RECONFIGURE" );
-		fprintf( CurrentClient, "0\n" );
+
+	if(sscanf( cmd, "disk/%[^_]_(%d:%d)/Rate/%16s", devname, &major, &minor, name ) == 4) {
+		/* Show rate of change in sensor values in this interval */
+
+		ptr = DiskIO;
+		while ( ptr && ( ptr->major != major || ptr->minor != minor ) )
+			ptr = ptr->next;
 		
-		log_error( "Disk device disappeared" );
-		return;
+		if ( !ptr ) {
+			print_error( "RECONFIGURE" );
+			fprintf( CurrentClient, "0\n" );
+			
+			log_error( "Disk device disappeared" );
+			return;
+		}
+		
+		if ( strcmp( name, "total" ) == 0 )
+			fprintf( CurrentClient, "%f\n", (float)( ptr->total.delta / timeInterval ) );
+		else if ( strcmp( name, "rio" ) == 0 )
+			fprintf( CurrentClient, "%f\n", (float)( ptr->rio.delta / timeInterval ) );
+		else if ( strcmp( name, "wio" ) == 0 )
+			fprintf( CurrentClient, "%f\n", (float)( ptr->wio.delta / timeInterval ) );
+		else if ( strcmp( name, "rblk" ) == 0 )
+			fprintf( CurrentClient, "%f\n", (float)( ptr->rblk.delta / ( timeInterval * 2 ) ) );
+		else if ( strcmp( name, "wblk" ) == 0 )
+			fprintf( CurrentClient, "%f\n", (float)( ptr->wblk.delta / ( timeInterval * 2 ) ) );
+		else {
+			fprintf( CurrentClient, "0\n" );
+			log_error( "Unknown disk device property \'%s\'", name );
+		}
 	}
-	
-	if ( strcmp( name, "total" ) == 0 )
-		fprintf( CurrentClient, "%f\n", (float)( ptr->total.delta / timeInterval ) );
-	else if ( strcmp( name, "rio" ) == 0 )
-		fprintf( CurrentClient, "%f\n", (float)( ptr->rio.delta / timeInterval ) );
-	else if ( strcmp( name, "wio" ) == 0 )
-		fprintf( CurrentClient, "%f\n", (float)( ptr->wio.delta / timeInterval ) );
-	else if ( strcmp( name, "rblk" ) == 0 )
-		fprintf( CurrentClient, "%f\n", (float)( ptr->rblk.delta / ( timeInterval * 2 ) ) );
-	else if ( strcmp( name, "wblk" ) == 0 )
-		fprintf( CurrentClient, "%f\n", (float)( ptr->wblk.delta / ( timeInterval * 2 ) ) );
-	else {
-		fprintf( CurrentClient, "0\n" );
-		log_error( "Unknown disk device property \'%s\'", name );
+	else if(sscanf( cmd, "disk/%[^_]_(%d:%d)/Delta/%16s", devname, &major, &minor, name ) == 4) {
+		/* Show change in sensor values per this interval */
+		
+		ptr = DiskIO;
+		while ( ptr && ( ptr->major != major || ptr->minor != minor ) )
+			ptr = ptr->next;
+		
+		if ( !ptr ) {
+			print_error( "RECONFIGURE" );
+			fprintf( CurrentClient, "0\n" );
+			
+			log_error( "Disk device disappeared" );
+			return;
+		}
+		
+		if ( strcmp( name, "total" ) == 0 )
+			fprintf( CurrentClient, "%lu\n", ptr->total.delta );
+		else if ( strcmp( name, "rio" ) == 0 )
+			fprintf( CurrentClient, "%lu\n", ptr->rio.delta );
+		else if ( strcmp( name, "wio" ) == 0 )
+			fprintf( CurrentClient, "%lu\n", ptr->wio.delta );
+		else if ( strcmp( name, "rblk" ) == 0 )
+			fprintf( CurrentClient, "%lu\n", ptr->rblk.delta );
+		else if ( strcmp( name, "wblk" ) == 0 )
+			fprintf( CurrentClient, "%lu\n", ptr->wblk.delta );
+		else if ( strcmp( name, "rtim" ) == 0 )
+			fprintf( CurrentClient, "%lu\n", ptr->rtim.delta );
+		else if ( strcmp( name, "wtim" ) == 0 )
+			fprintf( CurrentClient, "%lu\n", ptr->wtim.delta );
+		else {
+			fprintf( CurrentClient, "0\n" );
+			log_error( "Unknown disk device property \'%s\'", name );
+		}
+	}
+	else if(sscanf( cmd, "disk/%[^_]_(%d:%d)/%16s", devname, &major, &minor, name ) == 4) {
+		/* Show raw sensor values */
+
+		ptr = DiskIO;
+		while ( ptr && ( ptr->major != major || ptr->minor != minor ) )
+			ptr = ptr->next;
+		
+		if ( !ptr ) {
+			print_error( "RECONFIGURE" );
+			fprintf( CurrentClient, "0\n" );
+			
+			log_error( "Disk device disappeared" );
+			return;
+		}
+		
+		if ( strcmp( name, "ioqueue" ) == 0 )
+			fprintf( CurrentClient, "%u\n", ptr->ioqueue );
+		else {
+			fprintf( CurrentClient, "0\n" );
+			log_error( "Unknown disk device property \'%s\'", name );
+		}
 	}
 }
 
@@ -435,7 +530,17 @@ void print26DiskIOInfo( const char* cmd ) {
 	char name[ 17 ];
 	DiskIOInfo* ptr = DiskIO;
 	
-	sscanf( cmd, "disk/%[^_]_(%d:%d)/%16s", devname, &major, &minor, name );
+	/* For now we print the same info regardless of whether it was a rate, delta, or raw monitor */
+	if(sscanf( cmd, "disk/%[^_]_(%d:%d)/Rate/%16s", devname, &major, &minor, name ) == 4) {
+	}
+	else if(sscanf( cmd, "disk/%[^_]_(%d:%d)/Delta/%16s", devname, &major, &minor, name ) == 4) {
+	}
+	else if(sscanf( cmd, "disk/%[^_]_(%d:%d)/%16s", devname, &major, &minor, name ) == 4) {
+	}
+	else {
+		fprintf( CurrentClient, "Dummy\t0\t0\t\n" );
+		log_error( "Request for unknown device property \'%s\'",	cmd );
+	}
 	
 	while ( ptr && ( ptr->major != major || ptr->minor != minor ) )
 		ptr = ptr->next;
@@ -464,99 +569,17 @@ void print26DiskIOInfo( const char* cmd ) {
 	else if ( strcmp( name, "wblk" ) == 0 )
 		fprintf( CurrentClient, "Write accesses device %s (%d:%d)\t0\t0\tkBytes/s\n",
 			devname, major, minor );
+	else if ( strcmp( name, "rtim" ) == 0 )
+		fprintf( CurrentClient, "# of milliseconds spent reading device %s (%d:%d)\t0\t0\ts\n",
+			devname, major, minor );
+	else if ( strcmp( name, "wtim" ) == 0 )
+		fprintf( CurrentClient, "# of milliseconds spent writing device %s (%d:%d)\t0\t0\ts\n",
+			devname, major, minor );
+	else if ( strcmp( name, "ioqueue" ) == 0 )
+		fprintf( CurrentClient, "# of I/Os currently in progress on device %s (%d:%d)\t0\t0\t\n",
+			devname, major, minor );
 	else {
 		fprintf( CurrentClient, "Dummy\t0\t0\t\n" );
 		log_error( "Request for unknown device property \'%s\'",	name );
 	}
-}
-
-
-void print26DiskTotal( const char* cmd ) {
-	int id;
-	
-	if ( Dirty )
-		process26Stat();
-	
-	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 0 ].delta
-							/ timeInterval ) );
-}
-
-void print26DiskTotalInfo( const char* cmd ) {
-	int id;
-	
-	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk%d Total Load\t0\t0\tkBytes/s\n", id );
-}
-
-void print26DiskRIO( const char* cmd ) {
-	int id;
-	
-	if ( Dirty )
-		process26Stat();
-	
-	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 1 ].delta
-							/ timeInterval ) );
-}
-
-void print26DiskRIOInfo( const char* cmd ) {
-	int id;
-	
-	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk%d Read\t0\t0\tkBytes/s\n", id );
-}
-
-void print26DiskWIO( const char* cmd ) {
-	int id;
-	
-	if ( Dirty )
-		process26Stat();
-	
-	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 2 ].delta
-							/ timeInterval ) );
-}
-
-void print26DiskWIOInfo( const char* cmd ) {
-	int id;
-	
-	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk%d Write\t0\t0\tkBytes/s\n", id );
-}
-
-void print26DiskRBlk( const char* cmd ) {
-	int id;
-	
-	if ( Dirty )
-		process26Stat();
-	
-	sscanf( cmd + 9, "%d", &id );
-	/* a block is 512 bytes or 1/2 kBytes */
-	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 3 ].delta / timeInterval * 2 ) );
-}
-
-void print26DiskRBlkInfo( const char* cmd ) {
-	int id;
-	
-	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk%d Read Data\t0\t0\tkBytes/s\n", id );
-}
-
-void print26DiskWBlk( const char* cmd ) {
-	int id;
-	
-	if ( Dirty )
-		process26Stat();
-	
-	sscanf( cmd + 9, "%d", &id );
-	/* a block is 512 bytes or 1/2 kBytes */
-	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 4 ].delta / timeInterval * 2 ) );
-}
-
-void print26DiskWBlkInfo( const char* cmd ) {
-	int id;
-	
-	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk%d Write Data\t0\t0\tkBytes/s\n", id );
 }
