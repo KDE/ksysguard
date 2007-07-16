@@ -160,15 +160,20 @@ void ProcessModel::windowAdded(WId wid)
 	NETWinInfo *info = new NETWinInfo( QX11Info::display(), wid, QX11Info::appRootWindow(), 
 			NET::WMPid | NET::WMVisibleName | NET::WMName | NET::WMState );
 	long unsigned state = info->state();
-	if(/*state & NET::SkipTaskbar || state & NET::SkipPager || */state & NET::Hidden) return;
+	if(/*state & NET::SkipTaskbar || state & NET::SkipPager || */state & NET::Hidden) {
+		delete info;
+		return;
+	}
 
 	if (handler.error( false ) ) {
 		delete info;
 		return;  //info is invalid - window just closed or something probably
         }
 	long long pid = info->pid();
-        if(pid <= 0)
-                return;
+	if(pid <= 0) {
+		delete info;
+		return;
+	}
 
 	WindowInfo w;
 	w.icon = KWindowSystem::icon(wid, HEADING_X_ICON_SIZE, HEADING_X_ICON_SIZE, true);
