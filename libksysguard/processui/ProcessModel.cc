@@ -927,7 +927,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
 			if(process->status == KSysGuard::Process::Stopped || process->status == KSysGuard::Process::Zombie) {
         			QPixmap pix = KIconLoader::global()->loadIcon("button_cancel", K3Icon::Small,
-			                K3Icon::SizeSmall, K3Icon::DefaultState,
+			                K3Icon::SizeSmall, K3Icon::DefaultState, QStringList(),
 				        0L, true);
 
 			}
