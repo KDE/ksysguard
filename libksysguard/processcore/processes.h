@@ -117,7 +117,7 @@ namespace KSysGuard
 	 *  is guaranteed to never change.  Call updateAllProcesses first to actually
 	 *  update the information.
 	 */
-	const QList< Process *> &getAllProcesses() const;
+	QList< Process *> getAllProcesses() const;
 	/**
 	 *  Return the total amount of physical memory in KB.  This will be fairly expensive, so cache the result
 	 *  Returns 0 on error

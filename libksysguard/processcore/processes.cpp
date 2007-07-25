@@ -105,7 +105,7 @@ Process *Processes::getProcess(long pid) const
 	return d->mProcesses.value(pid);
 }
 	
-const QList<Process *> &Processes::getAllProcesses() const
+QList<Process *> Processes::getAllProcesses() const
 {
 	return d->mListProcesses;
 }
