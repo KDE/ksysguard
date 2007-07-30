@@ -11,6 +11,7 @@ Name[ga]=Monatóir an Chórais
 Name[ja]=システムモニタ
 Name[nds]=Systeemkieker
 Name[nl]=Systeemmonitor
+Name[pa]=ਸਿਸਟਮ ਨਿਗਰਾਨ
 Name[pt]=Monitor do Sistema
 Name[pt_BR]=Monitor do Sistema
 Name[sv]=Systemövervakare
@@ -24,6 +25,7 @@ Comment[fa]=برنامکی که اطلاعات سیستم را نمایش می�
 Comment[ja]=システムの情報を監視するアプレット
 Comment[nds]=En Lüttprogramm, dat de Systeeminformatschonen beluert
 Comment[nl]=Een applet die systeeminformatie volgt
+Comment[pa]=ਇੱਕ ਐਪਲਿਟ, ਜੋ ਸਿਸਟਮ ਜਾਣਕਾਰੀ ਦੀ ਨਿਗਰਾਨੀ ਕਰਦਾ ਹੈ
 Comment[pt]=Uma 'applet' que vigia a informação do sistema
 Comment[pt_BR]=Uma 'applet' que vigia a informação do sistema
 Comment[sv]=Ett miniprogram som övervakar systeminformation
