@@ -36,7 +36,7 @@ void testGuiProcess::testGUI() {
     for(int i =0; i < 10; i++) {
       processlist.updateList();
     }
-    kDebug() << "time taken: " << t.elapsed() << "ms" << endl;
+    kDebug() << "time taken: " << t.elapsed() << "ms";
 }
 
 QTEST_KDEMAIN(testGuiProcess, GUI)

@@ -70,7 +70,7 @@ bool SensorShellAgent::start( const QString &host, const QString &shell,
 
   if ( !mDaemon->start( K3Process::NotifyOnExit, K3Process::All ) ) {
     sensorManager()->hostLost( this );
-    kDebug (1215) << "Command '" << cmd << "' failed"  << endl;
+    kDebug (1215) << "Command '" << cmd << "' failed" ;
     return false;
   }
 

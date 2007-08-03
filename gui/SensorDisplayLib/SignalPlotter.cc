@@ -105,9 +105,9 @@ void KSignalPlotter::addSample( const QList<double>& sampleBuf )
   if(mSamples < 4) {
     //It might be possible, under some race conditions, for addSample to be called before mSamples is set
     //This is just to be safe
-    kDebug(1215) << "Error - mSamples is only " << mSamples << endl;
+    kDebug(1215) << "Error - mSamples is only " << mSamples;
     updateDataBuffers();
-    kDebug(1215) << "mSamples is now " << mSamples << endl;
+    kDebug(1215) << "mSamples is now " << mSamples;
     if(mSamples < 4)
       return;
   }
@@ -136,13 +136,13 @@ void KSignalPlotter::addSample( const QList<double>& sampleBuf )
 void KSignalPlotter::reorderBeams( const QList<int>& newOrder )
 {
   if(newOrder.count() != mBeamColors.count()) {
-    kDebug(1215) << "neworder has " << newOrder.count() << " and beam colors is " << mBeamColors.count() << endl;
+    kDebug(1215) << "neworder has " << newOrder.count() << " and beam colors is " << mBeamColors.count();
     return;
   }
   QLinkedList< QList<double> >::Iterator it;
   for(it = mBeamData.begin(); it != mBeamData.end(); ++it) {
     if(newOrder.count() != (*it).count()) {
-      kDebug(1215) << "Serious problem in move sample.  beamdata[i] has " << (*it).count() << " and neworder has " << newOrder.count() << endl;
+      kDebug(1215) << "Serious problem in move sample.  beamdata[i] has " << (*it).count() << " and neworder has " << newOrder.count();
     } else {
      QList<double> newBeam;
      for(int i = 0; i < newOrder.count(); i++) {

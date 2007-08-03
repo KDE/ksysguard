@@ -67,7 +67,7 @@ ListView::addSensor(const QString& hostName, const QString& sensorName, const QS
 		return false;
 	if(sensorName.isEmpty()) return false;
 
-	kDebug() << "addSensor and sensorName is " << sensorName << endl;
+	kDebug() << "addSensor and sensorName is " << sensorName;
 	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 
 	setTitle(title);
@@ -112,7 +112,7 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
 			 * the information about the table headers. */
 			if (answer.count() != 2)
 			{
-				kDebug(1215) << "wrong number of lines" << endl;
+				kDebug(1215) << "wrong number of lines";
 				return;
 			}
 			KSGRD::SensorTokenizer headers(answer[0], '\t');
@@ -165,7 +165,7 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
 bool
 ListView::restoreSettings(QDomElement& element)
 {
-	kDebug() << "restore settings" << endl;
+	kDebug() << "restore settings";
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "listview" : element.attribute("sensorType")), element.attribute("title"));
 	
 /*	QPalette pal = monitor->palette();
@@ -186,13 +186,13 @@ ListView::restoreSettings(QDomElement& element)
 bool
 ListView::saveSettings(QDomDocument& doc, QDomElement& element)
 {
-	kDebug() << "save settings" << endl;
+	kDebug() << "save settings";
 	if(!sensors().isEmpty()) {
 		element.setAttribute("hostName", sensors().at(0)->hostName());
 		element.setAttribute("sensorName", sensors().at(0)->name());
 		element.setAttribute("sensorType", sensors().at(0)->type());
 
-		kDebug() << "sensorName is " << sensors().at(0)->name() << endl;
+		kDebug() << "sensorName is " << sensors().at(0)->name();
 
 /*	QPalette pal = monitor->palette();
 	saveColor(element, "gridColor", pal.color(QPalette::Link));

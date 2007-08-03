@@ -51,7 +51,7 @@ void testProcess::testProcesses() {
 
 		//test all the pids are unique
 		if(!pids.contains(process->pid)) {
-			kDebug() << process->pid << " not found. " << process->name << endl;
+			kDebug() << process->pid << " not found. " << process->name;
 		}
 		pids.remove(process->pid);
 	}
@@ -97,7 +97,7 @@ void testProcess::testProcessesModification() {
 	QVERIFY(initProcess);
 	QVERIFY(initProcess->children[0]);
 	QVERIFY(initProcess->children[1]);
-	kDebug() << initProcess->numChildren << endl;
+	kDebug() << initProcess->numChildren;
 	initProcess->children[0]->parent = initProcess->children[1];
 	initProcess->children[1]->children.append(initProcess->children[0]);
 	initProcess->children[1]->numChildren++;

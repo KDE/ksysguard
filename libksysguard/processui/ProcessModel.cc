@@ -77,27 +77,27 @@ ProcessModel::ProcessModel(QObject* parent)
 void ProcessModel::windowRemoved(WId wid) {
 #ifdef Q_WS_X11
 	long long pid = mWIdToPid.value(wid, 0);
-	kDebug() << "Window removed" << endl;
+	kDebug() << "Window removed";
 	if(pid <= 0) return;
 
-	kDebug() << "Window removed  pid is "  << pid << endl;
+	kDebug() << "Window removed  pid is "  << pid;
 	int count = mPidToWindowInfo.count(pid);
 	QMultiHash<long long, WindowInfo>::iterator i = mPidToWindowInfo.find(pid);
 	while (i != mPidToWindowInfo.end() && i.key() == pid) {
-		kDebug() << "window has wid "  << wid << endl;
+		kDebug() << "window has wid "  << wid;
 		if(i.value().wid == wid) {
-			kDebug() << "Found a window "  << pid << endl;
+			kDebug() << "Found a window "  << pid;
 			i = mPidToWindowInfo.erase(i);
 //			break;
 		} else
 			i++;
 	}
-	kDebug() << "Count before: " << count << " and after:" << mPidToWindowInfo.count(pid) << endl;
+	kDebug() << "Count before: " << count << " and after:" << mPidToWindowInfo.count(pid);
 	Q_ASSERT(count-1 == mPidToWindowInfo.count(pid) || count == mPidToWindowInfo.count(pid));
         KSysGuard::Process *process = mProcesses->getProcess(pid);
         if(!process) return;
 	
-	kDebug() << "updating "  << pid << endl;
+	kDebug() << "updating "  << pid;
 
 	int row;
 	if(mSimple)
@@ -197,13 +197,13 @@ void ProcessModel::windowAdded(WId wid)
 #endif
 
 void ProcessModel::update(int updateDurationMS) {
-//	kDebug() << "update all processes: " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+//	kDebug() << "update all processes: " << QTime::currentTime().toString("hh:mm:ss.zzz");
 	mProcesses->updateAllProcesses(updateDurationMS);
 	if(mIsChangingLayout) {
 		mIsChangingLayout = false;
 		emit layoutChanged();
 	}
-//	kDebug() << "finished:             " << QTime::currentTime().toString("hh:mm:ss.zzz") << endl;
+//	kDebug() << "finished:             " << QTime::currentTime().toString("hh:mm:ss.zzz");
 }
 
 QString ProcessModel::getStatusDescription(KSysGuard::Process::ProcessStatus status) const
@@ -374,7 +374,7 @@ void ProcessModel::beginRemoveRow( KSysGuard::Process *process )
 	} else  {
 		int row = process->parent->children.indexOf(process);
 		if(row == -1) {
-			kDebug(1215) << "A serious problem occurred in remove row." << endl;
+			kDebug(1215) << "A serious problem occurred in remove row.";
 			return;
 		}
 

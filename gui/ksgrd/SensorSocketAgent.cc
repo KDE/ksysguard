@@ -49,7 +49,7 @@ bool SensorSocketAgent::start( const QString &host, const QString&,
                                const QString&, int port )
 {
   if ( port <= 0 )
-    kDebug(1215) << "SensorSocketAgent::start: Invalid port " << port << endl;
+    kDebug(1215) << "SensorSocketAgent::start: Invalid port " << port;
 
   setHostName( host );
   mPort = port;

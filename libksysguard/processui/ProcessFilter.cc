@@ -42,7 +42,7 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 	const KSysGuard::Process *process;
         if(model->isSimpleMode()) {
 		if(source_parent.isValid()) {
-			kDebug() << "Serious error with data.  In simple mode, there should be no children" << endl;
+			kDebug() << "Serious error with data.  In simple mode, there should be no children";
 			return true;
 		}
 		process = model->getProcessAtIndex(source_row);
@@ -57,7 +57,7 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 			}
 		}
 		if(!model->isSimpleMode() && source_row >= parent_process->children.size()) {
-			kDebug() << "Serious error with data.  Source row requested for a non existant row. Requested " << source_row << " of " << parent_process->children.size() << " for " << parent_process->pid << endl;
+			kDebug() << "Serious error with data.  Source row requested for a non existant row. Requested " << source_row << " of " << parent_process->children.size() << " for " << parent_process->pid;
 			return true;
 		}
 

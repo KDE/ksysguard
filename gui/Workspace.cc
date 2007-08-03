@@ -61,9 +61,9 @@ void Workspace::saveProperties( KConfigGroup& cfg )
 
 void Workspace::readProperties( const KConfigGroup& cfg )
 {
-  kDebug() << "Reading from " << cfg.group() << endl;
+  kDebug() << "Reading from " << cfg.group();
   QStringList selectedSheets = cfg.readPathListEntry( "SelectedSheets" );
-  kDebug() << "Selected Sheets = " << selectedSheets << endl;
+  kDebug() << "Selected Sheets = " << selectedSheets;
 
   if ( selectedSheets.isEmpty() ) {
    /* If SelectedSheets config entry is not there, then it's
@@ -136,14 +136,14 @@ void Workspace::newWorkSheet()
 
 void Workspace::updateSheetTitle( QWidget* wdg )
 {
-  kDebug() << "update sheet title" << endl;
+  kDebug() << "update sheet title";
   if ( wdg )
     setTabText( indexOf(wdg), static_cast<WorkSheet*>( wdg )->title() );
 }
 
 bool Workspace::saveOnQuit()
 {
-  kDebug() << "In saveOnQuit()" << endl;
+  kDebug() << "In saveOnQuit()";
   for(int i = 0; i < mSheetList.size(); i++) {
       if ( mSheetList.at(i)->fileName().isEmpty() ) {
         int res = KMessageBox::warningYesNoCancel( this,

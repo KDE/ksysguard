@@ -229,7 +229,7 @@ void DancingBars::answerReceived( int id, const QList<QByteArray> &answerlist )
   if(!answerlist.isEmpty()) answer = answerlist[0];
   if ( id < 100 ) {
     if(id >= mSampleBuffer.count()) {
-      kDebug(1215) << "ERROR: DancingBars received invalid data" << endl;
+      kDebug(1215) << "ERROR: DancingBars received invalid data";
       sensorError(id, true);
       return;
     }

@@ -296,7 +296,7 @@ const QString& WorkSheet::fileName() const
 
 void WorkSheet::setTitle( const QString &title )
 {
-  kDebug() << "Set title " << title << endl;
+  kDebug() << "Set title " << title;
   mTitle = title;
   emit titleChanged(this);
 }
@@ -347,7 +347,7 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
     else if ( sensorType == "table" )
       newDisplay = new ProcessController( this, sensorDescr, &mSharedSettings);
     else {
-      kDebug(1215) << "Unknown sensor type: " <<  sensorType << endl;
+      kDebug(1215) << "Unknown sensor type: " <<  sensorType;
       return 0;
     }
 
@@ -485,7 +485,7 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
   else if ( classType == "ProcessController" )
     newDisplay = new ProcessController( 0, i18n("Dummy"), &mSharedSettings);
   else {
-    kDebug(1215) << "Unknown class " <<  classType << endl;
+    kDebug(1215) << "Unknown class " <<  classType;
     return false;
   }
 
