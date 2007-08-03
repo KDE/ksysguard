@@ -333,8 +333,8 @@ void TopLevel::readProperties( const KConfigGroup& cfg )
 
   /* we can ignore 'isMaximized' because we can't set the window
      maximized, so we save the coordinates instead */
-  if ( cfg.readEntry( "isMinimized" , false) == true )
-    showMinimized();
+//  if ( cfg.readEntry( "isMinimized" , false) == true )
+//    showMinimized();
 
   mSplitterSize = cfg.readEntry( "SplitterSizeList",QList<int>() );
   if ( mSplitterSize.isEmpty() ) {
