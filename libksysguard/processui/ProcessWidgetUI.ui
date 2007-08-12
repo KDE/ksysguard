@@ -36,7 +36,7 @@
         </sizepolicy>
        </property>
        <property name="text" >
-        <string>Kill process</string>
+        <string>Kill Process</string>
        </property>
        <property name="flat" >
         <bool>false</bool>

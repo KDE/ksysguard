@@ -235,11 +235,11 @@ void KSysGuardProcessList::showProcessContextMenu(const QPoint &point){
 	mProcessContextMenu->clear();
 
 	QAction *renice = new QAction(mProcessContextMenu);
-	renice->setText(i18n("Renice process"));
+	renice->setText(i18n("Renice Process..."));
 	mProcessContextMenu->addAction(renice);
 
 	QAction *kill = new QAction(mProcessContextMenu);
-	kill->setText(i18n("Kill process"));
+	kill->setText(i18n("Kill Process"));
 	kill->setIcon(KIcon("stop"));
 	mProcessContextMenu->addAction(kill);
 
