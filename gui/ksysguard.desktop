@@ -1,6 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=System Monitor
+Name[ar]=مراقب النظام
 Name[be]=Сістэмны назіральнік
 Name[bg]=Мониторинг на системата
 Name[csb]=Mònitor systemë
@@ -12,6 +13,7 @@ Name[he]=צג מערכת
 Name[ja]=システムモニタ
 Name[km]=កម្មវិធី​ត្រួត​​ពិនិត្យ​ប្រព័ន្ធ
 Name[nds]=Systeemkieker
+Name[ne]=प्रणाली मनिटर
 Name[nl]=Systeemmonitor
 Name[pa]=ਸਿਸਟਮ ਨਿਗਰਾਨ
 Name[pt]=Monitor do Sistema
