@@ -707,34 +707,34 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			}
 			*/
 			if(process->parent_pid == 0)
-				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Command: %3", process->name, (long int)process->pid, process->command);
+				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br />Process ID: %2<br />Command: %3</qt>", process->name, (long int)process->pid, process->command);
 			else
-				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br/>Process ID: %2<br/>Parent's ID: %3<br/>Command: %4", process->name, (long int)process->pid, (long int)process->parent_pid, process->command);
+				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br />Process ID: %2<br />Parent's ID: %3<br />Command: %4</qt>", process->name, (long int)process->pid, (long int)process->parent_pid, process->command);
 			if(!process->tty.isEmpty())
-				tooltip += i18n( "<br/>Running on: %1", QString(process->tty));
+				tooltip += i18n( "<br />Running on: %1", QString(process->tty));
 			if(!tracer.isEmpty())
-				return tooltip + "<br/>" + tracer;
+				return tooltip + "<br />" + tracer;
 			return tooltip;
 		}
 
 		case HeadingCommand: {
 			QString tooltip =
-				i18n("<qt>This process was run with the following command:<br/>%1", process->command);
+				i18n("<qt>This process was run with the following command:<br />%1</qt>", process->command);
 			if(!process->tty.isEmpty())
-				tooltip += i18n( "<br/><br/>Running on: %1", QString(process->tty));
+				tooltip += i18n( "<br /><br />Running on: %1", QString(process->tty));
 		        if(tracer.isEmpty()) return tooltip;
-			return tooltip + "<br/>" + tracer;
+			return tooltip + "<br />" + tracer;
 		}
 		case HeadingUser: {
 			if(!tracer.isEmpty())
-				return getTooltipForUser(process) + "<br/>" + tracer;
+				return getTooltipForUser(process) + "<br />" + tracer;
 			return getTooltipForUser(process);
 		}
 		case HeadingNiceness:
 			return i18n("Nice level: %1 (%2)", process->niceLevel, process->niceLevelAsString() );
 		case HeadingCPUUsage: {
-			QString tooltip = ki18n("<qt>Process status: %1 %2<br/>"
-						"User CPU usage: %3%<br/>System CPU usage: %4%")
+			QString tooltip = ki18n("<qt>Process status: %1 %2<br />"
+						"User CPU usage: %3%<br />System CPU usage: %4%</qt>")
 						.subs(process->translatedStatus())
 						.subs(getStatusDescription(process->status))
 						.subs(process->userUsage)
@@ -742,8 +742,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 						.toString();
 
 			if(process->numChildren > 0) {
-				tooltip += ki18n("<br/>Number of children: %1<br/>Total User CPU usage: %2%<br/>"
-						"Total System CPU usage: %3%<br/>Total CPU usage: %4%")
+				tooltip += ki18n("<br />Number of children: %1<br />Total User CPU usage: %2%<br />"
+						"Total System CPU usage: %3%<br />Total CPU usage: %4%")
 						.subs(process->numChildren)
 						.subs(process->totalUserUsage)
 						.subs(process->totalSysUsage)
@@ -751,35 +751,35 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 						.toString();
 			}
 			if(process->userTime > 0) 
-				tooltip += ki18n("<br/><br/>CPU time spent running as user: %1 seconds")
+				tooltip += ki18n("<br /><br />CPU time spent running as user: %1 seconds")
 						.subs(process->userTime / 100.0, 0, 'f', 1)
 						.toString();
 			if(process->sysTime > 0) 
-				tooltip += ki18n("<br/>CPU time spent running in kernel: %1 seconds")
+				tooltip += ki18n("<br />CPU time spent running in kernel: %1 seconds")
 						.subs(process->sysTime / 100.0, 0, 'f', 1)
 						.toString();
 			if(process->niceLevel != 0)
-				tooltip += i18n("<br/>Nice level: %1 (%2)", process->niceLevel, process->niceLevelAsString() );
+				tooltip += i18n("<br />Nice level: %1 (%2)", process->niceLevel, process->niceLevelAsString() );
 
 			if(!tracer.isEmpty())
-				return tooltip + "<br/>" + tracer;
+				return tooltip + "<br />" + tracer;
 			return tooltip;
 		}
 		case HeadingVmSize: {
-			QString tooltip = i18n("<qt>This is the amount of virtual memory space that the process is using, included shared libraries, graphics memory, files on disk, and so on.  This number is almost meaningless.");
+			QString tooltip = i18n("<qt>This is the amount of virtual memory space that the process is using, included shared libraries, graphics memory, files on disk, and so on.  This number is almost meaningless.</qt>");
 			return tooltip;
 		}
 		case HeadingMemory: {
 			QString tooltip;
 			if(process->vmURSS == -1)
 				//We don't have information about the URSS, so just fallback to RSS
-				tooltip = i18n("<qt>This is the amount of real physical memory that this process is using.  It does not include any swapped out memory, but does include the code size for shared libraries etc.<br/><br/>");
+				tooltip = i18n("<qt>This is the amount of real physical memory that this process is using.  It does not include any swapped out memory, but does include the code size for shared libraries etc.<br /><br /></qt>");
 			else {
-				tooltip = i18n("<qt>This is the amount of real physical memory that this process is using by itself.  It does not include any swapped out memory, nor the code size of its shared libraries.  This is often the most useful figure to judge the memory use of a program.<br/><br/>");
+				tooltip = i18n("<qt>This is the amount of real physical memory that this process is using by itself.  It does not include any swapped out memory, nor the code size of its shared libraries.  This is often the most useful figure to judge the memory use of a program.<br /><br /></qt>");
 				if(mMemTotal > 0)
-					tooltip += i18n("Memory usage: %1 out of %2  (%3 %)<br/>", KGlobal::locale()->formatByteSize(process->vmURSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), process->vmURSS*100/mMemTotal);
+					tooltip += i18n("Memory usage: %1 out of %2  (%3 %)<br />", KGlobal::locale()->formatByteSize(process->vmURSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), process->vmURSS*100/mMemTotal);
 				else
-					tooltip += i18n("Memory usage: %1<br/>", KGlobal::locale()->formatByteSize(process->vmURSS * 1024));
+					tooltip += i18n("Memory usage: %1<br />", KGlobal::locale()->formatByteSize(process->vmURSS * 1024));
 			}
 			if(mMemTotal > 0)
 				tooltip += i18n("RSS Memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize(process->vmRSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), process->vmRSS*100/mMemTotal);
@@ -789,12 +789,12 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		}
 		case HeadingSharedMemory: {
 			if(process->vmURSS == -1)
-				return i18n("<qt>Your system does not seem to have this information for us to read, sorry.");
-			QString tooltip = i18n("<qt>This is the amount of real physical memory that this process's shared libraries are using.  This memory is shared among all processes that use this library");
+				return i18n("<qt>Your system does not seem to have this information for us to read, sorry.</qt>");
+			QString tooltip = i18n("<qt>This is the amount of real physical memory that this process's shared libraries are using.  This memory is shared among all processes that use this library</qt>");
 			if(mMemTotal >0)
-				tooltip += i18n("<br/><br/>Shared library memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize((process->vmRSS - process->vmURSS) * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), (process->vmRSS-process->vmURSS)*100/mMemTotal);
+				tooltip += i18n("<br /><br />Shared library memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize((process->vmRSS - process->vmURSS) * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), (process->vmRSS-process->vmURSS)*100/mMemTotal);
 			else
-				tooltip += i18n("<br/><br/>Shared library memory usage: %1", KGlobal::locale()->formatByteSize((process->vmRSS - process->vmURSS) * 1024));
+				tooltip += i18n("<br /><br />Shared library memory usage: %1", KGlobal::locale()->formatByteSize((process->vmRSS - process->vmURSS) * 1024));
 
 			return tooltip;
 		}

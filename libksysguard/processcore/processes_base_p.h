@@ -16,8 +16,8 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef ABSTRACT_PROCESSES_P_H_
-#define ABSTRACT_PROCESSES_P_H_
+#ifndef PROCESSES_BASE_P_H
+#define PROCESSES_BASE_P_H
 
 #include <QSet>
 
@@ -87,4 +87,5 @@ namespace KSysGuard
 	virtual long long totalPhysicalMemory() = 0;
     };
 }
-#endif 
+
+#endif // PROCESSES_BASE_P_H
