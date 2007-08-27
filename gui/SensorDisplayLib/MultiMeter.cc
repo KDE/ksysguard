@@ -21,10 +21,9 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <Qt/qdom.h>
+#include <QtXml/qdom.h>
 #include <QtGui/QLCDNumber>
 #include <QtGui/QResizeEvent>
-
 
 #include <kdebug.h>
 

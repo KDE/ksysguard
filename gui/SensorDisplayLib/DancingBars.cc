@@ -19,12 +19,11 @@
 */
 
 #include <QCheckBox>
-#include <Qt/qdom.h>
+#include <QtXml/qdom.h>
 #include <QLineEdit>
 #include <QListView>
 #include <QPushButton>
 #include <QSpinBox>
-
 
 #include <kdebug.h>
 #include <klocale.h>
