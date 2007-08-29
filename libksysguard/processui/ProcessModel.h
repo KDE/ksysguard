@@ -22,7 +22,7 @@
 #ifndef PROCESSMODEL_H_
 #define PROCESSMODEL_H_
 
-#include <QAbstractItemModel>
+#include <QtCore/QAbstractItemModel>
 
 namespace KSysGuard {
 	class Processes;
