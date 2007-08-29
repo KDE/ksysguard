@@ -33,15 +33,6 @@
 
 #define HEADING_X_ICON_SIZE 16
 
-#ifdef Q_WS_X11
-#include <kwindowsystem.h>
-#include <netwm.h>
-#include <QtGui/QX11Info>
-#include <X11/Xatom.h>
-#include <kxerrorhandler.h>
-#endif
-
-
 #define GET_OWN_ID
 
 #ifdef GET_OWN_ID
@@ -51,14 +42,15 @@
 #endif
 
 #include "ProcessModel.moc"
+#include "ProcessModel_p.moc"
 #include "ProcessModel.h"
+#include "ProcessModel_p.h"
 
 #include "processcore/processes.h"
 
+extern KApplication* Kapp;
 
-
-ProcessModel::ProcessModel(QObject* parent)
-	: QAbstractItemModel(parent), mBlankPixmap(HEADING_X_ICON_SIZE,1)
+ProcessModelPrivate::ProcessModelPrivate() :  mBlankPixmap(HEADING_X_ICON_SIZE,1)
 {
 	mBlankPixmap.fill(QColor(0,0,0,0));
 	mSimple = true;
@@ -68,13 +60,28 @@ ProcessModel::ProcessModel(QObject* parent)
 	mShowChildTotals = true;
 	mIsChangingLayout = false;
 
-	setupProcesses();
-	setupHeader();
-
-	setupWindows();
 }
 
-void ProcessModel::windowRemoved(WId wid) {
+ProcessModel::ProcessModel(QObject* parent)
+	: QAbstractItemModel(parent), d(new ProcessModelPrivate)
+{
+	d->q=this;
+	d->setupProcesses();
+	setupHeader();
+	d->setupWindows();
+}
+
+ProcessModel::~ProcessModel()
+{
+    delete d;
+}
+
+KSysGuard::Processes *ProcessModel::processController() 
+{ 
+    return d->mProcesses;
+}  
+
+void ProcessModelPrivate::windowRemoved(WId wid) {
 #ifdef Q_WS_X11
 	long long pid = mWIdToPid.value(wid, 0);
 	kDebug() << "Window removed";
@@ -104,14 +111,14 @@ void ProcessModel::windowRemoved(WId wid) {
 		row = process->index;
 	else
 		row = process->parent->children.indexOf(process);
-	QModelIndex index1 = createIndex(row, HeadingName, process);
-	emit dataChanged(index1, index1);
-	QModelIndex index2 = createIndex(row, HeadingXTitle, process);
-	emit dataChanged(index2, index2);
+	QModelIndex index1 = q->createIndex(row, ProcessModel::HeadingName, process);
+	emit q->dataChanged(index1, index1);
+	QModelIndex index2 = q->createIndex(row, ProcessModel::HeadingXTitle, process);
+	emit q->dataChanged(index2, index2);
 #endif
 }
 
-void ProcessModel::setupWindows() {
+void ProcessModelPrivate::setupWindows() {
 #ifdef Q_WS_X11
 	QList<WId>::ConstIterator it;
 	for ( it = KWindowSystem::windows().begin(); it != KWindowSystem::windows().end(); ++it ) {
@@ -124,7 +131,7 @@ void ProcessModel::setupWindows() {
 #endif
 }
 
-void ProcessModel::setupProcesses() {
+void ProcessModelPrivate::setupProcesses() {
 	if(mProcesses)
 		KSysGuard::Processes::returnInstance();
 
@@ -139,18 +146,18 @@ void ProcessModel::setupProcesses() {
 			       SLOT( beginMoveProcess(KSysGuard::Process *, KSysGuard::Process *)));
         connect( mProcesses, SIGNAL( endMoveProcess()), this, SLOT(endMoveRow()));
 	mMemTotal = mProcesses->totalPhysicalMemory();
-	update();
+	q->update();
 }
 
 #ifdef Q_WS_X11
-void ProcessModel::windowChanged(WId wid, unsigned int properties)
+void ProcessModelPrivate::windowChanged(WId wid, unsigned int properties)
 {
 	if(! (properties & NET::WMVisibleName || properties & NET::WMName || properties & NET::WMIcon || properties & NET::WMState)) return;
 	windowAdded(wid);
 
 }
 
-void ProcessModel::windowAdded(WId wid)
+void ProcessModelPrivate::windowAdded(WId wid)
 {
 	foreach(WindowInfo w, mPidToWindowInfo.values()) {
 		if(w.wid == wid) return; //already added
@@ -189,24 +196,24 @@ void ProcessModel::windowAdded(WId wid)
 		row = process->index;
 	else
 		row = process->parent->children.indexOf(process);
-	QModelIndex index1 = createIndex(row, HeadingName, process);
-	emit dataChanged(index1, index1);
-	QModelIndex index2 = createIndex(row, HeadingXTitle, process);
-	emit dataChanged(index2, index2);
+	QModelIndex index1 = q->createIndex(row, ProcessModel::HeadingName, process);
+	emit q->dataChanged(index1, index1);
+	QModelIndex index2 = q->createIndex(row, ProcessModel::HeadingXTitle, process);
+	emit q->dataChanged(index2, index2);
 }
 #endif
 
 void ProcessModel::update(int updateDurationMS) {
 //	kDebug() << "update all processes: " << QTime::currentTime().toString("hh:mm:ss.zzz");
-	mProcesses->updateAllProcesses(updateDurationMS);
-	if(mIsChangingLayout) {
-		mIsChangingLayout = false;
+	d->mProcesses->updateAllProcesses(updateDurationMS);
+	if(d->mIsChangingLayout) {
+		d->mIsChangingLayout = false;
 		emit layoutChanged();
 	}
 //	kDebug() << "finished:             " << QTime::currentTime().toString("hh:mm:ss.zzz");
 }
 
-QString ProcessModel::getStatusDescription(KSysGuard::Process::ProcessStatus status) const
+QString ProcessModelPrivate::getStatusDescription(KSysGuard::Process::ProcessStatus status) const
 {
 	switch( status) {
 		case KSysGuard::Process::Running:
@@ -224,14 +231,14 @@ QString ProcessModel::getStatusDescription(KSysGuard::Process::ProcessStatus sta
 
 KSysGuard::Process *ProcessModel::getProcessAtIndex(int index) const
 {
-	Q_ASSERT(mSimple);
-	return mProcesses->getAllProcesses().at(index);
+	Q_ASSERT(d->mSimple);
+	return d->mProcesses->getAllProcesses().at(index);
 }
 int ProcessModel::rowCount(const QModelIndex &parent) const
 {
-	if(mSimple) {
+	if(d->mSimple) {
 		if(parent.isValid()) return 0; //In flat mode, none of the processes have children
-		return mProcesses->getAllProcesses().count();
+		return d->mProcesses->getAllProcesses().count();
 	}
 
 	//Deal with the case that we are showing it as a tree
@@ -240,7 +247,7 @@ int ProcessModel::rowCount(const QModelIndex &parent) const
 		if(parent.column() != 0) return 0;  //For a treeview we say that only the first column has children
 		process = reinterpret_cast< KSysGuard::Process * > (parent.internalPointer()); //when parent is invalid, it must be the root level which we set as 0
 	} else {
-		process = mProcesses->getProcess(0);
+		process = d->mProcesses->getProcess(0);
 	}
 	Q_ASSERT(process);
 	int num_rows = process->children.count();
@@ -249,15 +256,15 @@ int ProcessModel::rowCount(const QModelIndex &parent) const
 
 int ProcessModel::columnCount ( const QModelIndex & ) const
 {
-	return mHeadings.count();
+	return d->mHeadings.count();
 }
 
 bool ProcessModel::hasChildren ( const QModelIndex & parent = QModelIndex() ) const
 {
 
-	if(mSimple) {
+	if(d->mSimple) {
 		if(parent.isValid()) return 0; //In flat mode, none of the processes have children
-		return !mProcesses->getAllProcesses().isEmpty();
+		return !d->mProcesses->getAllProcesses().isEmpty();
 	}
 
 	//Deal with the case that we are showing it as a tree
@@ -266,7 +273,7 @@ bool ProcessModel::hasChildren ( const QModelIndex & parent = QModelIndex() ) co
 		if(parent.column() != 0) return false;  //For a treeview we say that only the first column has children
 		process = reinterpret_cast< KSysGuard::Process * > (parent.internalPointer()); //when parent is invalid, it must be the root level which we set as 0
 	} else {
-		process = mProcesses->getProcess(0);
+		process = d->mProcesses->getProcess(0);
 	}
 	Q_ASSERT(process);
 	bool has_children = !process->children.isEmpty();
@@ -278,12 +285,12 @@ bool ProcessModel::hasChildren ( const QModelIndex & parent = QModelIndex() ) co
 QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & parent ) const
 {
 	if(row<0) return QModelIndex();
-	if(column<0 || column >= mHeadings.count() ) return QModelIndex();
+	if(column<0 || column >= d->mHeadings.count() ) return QModelIndex();
 
-	if(mSimple) {
+	if(d->mSimple) {
 		if( parent.isValid()) return QModelIndex();
-		if( mProcesses->getAllProcesses().count() <= row) return QModelIndex();
-		return createIndex( row, column, mProcesses->getAllProcesses().at(row));
+		if( d->mProcesses->getAllProcesses().count() <= row) return QModelIndex();
+		return createIndex( row, column, d->mProcesses->getAllProcesses().at(row));
 	}
 
 	//Deal with the case that we are showing it as a tree
@@ -292,7 +299,7 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 	if(parent.isValid()) //not valid for init, and init has ppid of 0
 		parent_process = reinterpret_cast< KSysGuard::Process * > (parent.internalPointer());
 	else
-		parent_process = mProcesses->getProcess(0);
+		parent_process = d->mProcesses->getProcess(0);
 	Q_ASSERT(parent_process);
 
 	if(parent_process->children.count() > row)
@@ -303,7 +310,12 @@ QModelIndex ProcessModel::index ( int row, int column, const QModelIndex & paren
 	}
 }
 
-void ProcessModel::processChanged(KSysGuard::Process *process, bool onlyCpuOrMem)
+bool ProcessModel::isSimpleMode() const
+{
+    return d->mSimple;
+}
+
+void ProcessModelPrivate::processChanged(KSysGuard::Process *process, bool onlyCpuOrMem)
 {
 	//FIXME
 	//There seem to be lots of bugs with qtreeview.  The idea here was to only update the actual rows
@@ -325,27 +337,27 @@ void ProcessModel::processChanged(KSysGuard::Process *process, bool onlyCpuOrMem
 	Q_ASSERT(row != -1);  //Something has gone very wrong
 	if(!onlyCpuOrMem) {
 		//Only the cpu usage changed, so only update that
-		QModelIndex index = createIndex(row, HeadingCPUUsage, process);
-		QModelIndex index2 = createIndex(row, HeadingSharedMemory, process);
-		emit dataChanged(index, index2);
+		QModelIndex index = q->createIndex(row, ProcessModel::HeadingCPUUsage, process);
+		QModelIndex index2 = q->createIndex(row, ProcessModel::HeadingSharedMemory, process);
+		emit q->dataChanged(index, index2);
 	} else {
-		QModelIndex startIndex = createIndex(row, 0, process);
-		QModelIndex endIndex = createIndex(row, mHeadings.count()-1, process);
-		emit dataChanged(startIndex, endIndex);
+		QModelIndex startIndex = q->createIndex(row, 0, process);
+		QModelIndex endIndex = q->createIndex(row, mHeadings.count()-1, process);
+		emit q->dataChanged(startIndex, endIndex);
 	}
 }
 
-void ProcessModel::beginInsertRow( KSysGuard::Process *process)
+void ProcessModelPrivate::beginInsertRow( KSysGuard::Process *process)
 {
 	Q_ASSERT(process);
 	if(mIsChangingLayout) {
 		mIsChangingLayout = false;
-		emit layoutChanged();
+		emit q->layoutChanged();
 	}
 
 	if(mSimple) {
 		int row = mProcesses->getAllProcesses().count();
-		beginInsertRows( QModelIndex(), row, row );
+		q->beginInsertRows( QModelIndex(), row, row );
 		return;
 	}
 
@@ -354,23 +366,23 @@ void ProcessModel::beginInsertRow( KSysGuard::Process *process)
 	QModelIndex parentModelIndex = getQModelIndex(process->parent, 0);
 
 	//Only here can we actually change the model.  First notify the view/proxy models then modify
-	beginInsertRows(parentModelIndex, row, row);
+	q->beginInsertRows(parentModelIndex, row, row);
 }
-void ProcessModel::endInsertRow() {
-	endInsertRows();
+void ProcessModelPrivate::endInsertRow() {
+	q->endInsertRows();
 }
-void ProcessModel::beginRemoveRow( KSysGuard::Process *process )
+void ProcessModelPrivate::beginRemoveRow( KSysGuard::Process *process )
 {
 	if(mIsChangingLayout) {
 		mIsChangingLayout = false;
-		emit layoutChanged();
+		emit q->layoutChanged();
 	}
 
 	Q_ASSERT(process);
 	Q_ASSERT(process->pid > 0);
 	
 	if(mSimple) {
-		return beginRemoveRows(QModelIndex(), process->index, process->index);
+		return q->beginRemoveRows(QModelIndex(), process->index, process->index);
 	} else  {
 		int row = process->parent->children.indexOf(process);
 		if(row == -1) {
@@ -378,20 +390,20 @@ void ProcessModel::beginRemoveRow( KSysGuard::Process *process )
 			return;
 		}
 
-		return beginRemoveRows(getQModelIndex(process->parent,0), row, row);
+		return q->beginRemoveRows(getQModelIndex(process->parent,0), row, row);
 	}
 }
-void ProcessModel::endRemoveRow() 
+void ProcessModelPrivate::endRemoveRow() 
 {
-	endRemoveRows();
+	q->endRemoveRows();
 }
 
 
-void ProcessModel::beginMoveProcess(KSysGuard::Process *process, KSysGuard::Process *new_parent)
+void ProcessModelPrivate::beginMoveProcess(KSysGuard::Process *process, KSysGuard::Process *new_parent)
 {
 	if(mSimple) return;  //We don't need to move processes when in simple mode
 	if(!mIsChangingLayout) {
-		emit layoutAboutToBeChanged ();
+		emit q->layoutAboutToBeChanged ();
 		mIsChangingLayout = true;
 	}
 
@@ -402,18 +414,18 @@ void ProcessModel::beginMoveProcess(KSysGuard::Process *process, KSysGuard::Proc
 
 	QList<QModelIndex> fromIndexes;
 	QList<QModelIndex> toIndexes;
-        for(int i=0; i < columnCount(); i++) {
-		fromIndexes << createIndex(current_row, i, process);
-		toIndexes << createIndex(new_row, i, process);
+        for(int i=0; i < q->columnCount(); i++) {
+		fromIndexes << q->createIndex(current_row, i, process);
+		toIndexes << q->createIndex(new_row, i, process);
 	}
-	changePersistentIndexList(fromIndexes, toIndexes);
+	q->changePersistentIndexList(fromIndexes, toIndexes);
 }
-void ProcessModel::endMoveRow() 
+void ProcessModelPrivate::endMoveRow() 
 {
 }
 
 
-QModelIndex ProcessModel::getQModelIndex( KSysGuard::Process *process, int column) const
+QModelIndex ProcessModelPrivate::getQModelIndex( KSysGuard::Process *process, int column) const
 {
 	Q_ASSERT(process);
 	int pid = process->pid;
@@ -425,7 +437,7 @@ QModelIndex ProcessModel::getQModelIndex( KSysGuard::Process *process, int colum
 		row = process->parent->children.indexOf(process);
 	}
 	Q_ASSERT(row != -1);
-	return createIndex(row, column, process);
+	return q->createIndex(row, column, process);
 }
 
 QModelIndex ProcessModel::parent ( const QModelIndex & index ) const
@@ -434,10 +446,10 @@ QModelIndex ProcessModel::parent ( const QModelIndex & index ) const
 	KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
 	Q_ASSERT(process);
 
-        if(mSimple)
+        if(d->mSimple)
 		return QModelIndex();
 	else 
-		return getQModelIndex(process->parent,0);
+		return d->getQModelIndex(process->parent,0);
 }
 
 QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
@@ -447,26 +459,26 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 		return QVariant();
 	if(orientation != Qt::Horizontal)
 		return QVariant();
-	if(section < 0 || section >= mHeadings.count())
+	if(section < 0 || section >= d->mHeadings.count())
 		return QVariant(); //is this needed?
-	return mHeadings[section];
+	return d->mHeadings[section];
 }
 void ProcessModel::setSimpleMode(bool simple)
 { 
-	if(mSimple == simple) return;
+	if(d->mSimple == simple) return;
 
-	if(!mIsChangingLayout) {
+	if(!d->mIsChangingLayout) {
 		emit layoutAboutToBeChanged ();
 	}
 
-	mSimple = simple;
-	mIsChangingLayout = false;
+	d->mSimple = simple;
+	d->mIsChangingLayout = false;
 
 	int flatrow;
 	int treerow;
 	QList<QModelIndex> flatIndexes;
 	QList<QModelIndex> treeIndexes;
-        foreach( KSysGuard::Process *process, mProcesses->getAllProcesses()) {
+        foreach( KSysGuard::Process *process, d->mProcesses->getAllProcesses()) {
 		flatrow = process->index;
 		treerow = process->parent->children.indexOf(process);
 		flatIndexes.clear();
@@ -476,7 +488,7 @@ void ProcessModel::setSimpleMode(bool simple)
 			flatIndexes << createIndex(flatrow, i, process);
 			treeIndexes << createIndex(treerow, i, process);
 		}
-		if(mSimple) //change from tree mode to flat mode
+		if(d->mSimple) //change from tree mode to flat mode
 			changePersistentIndexList(treeIndexes, flatIndexes);
 		else // change from flat mode to tree mode
 			changePersistentIndexList(flatIndexes, treeIndexes);
@@ -492,9 +504,9 @@ bool ProcessModel::canUserLogin(long long uid ) const
 		return false;
 	}
 
-	if(!mIsLocalhost) return true; //We only deal with localhost.  Just always return true for non localhost
+	if(!d->mIsLocalhost) return true; //We only deal with localhost.  Just always return true for non localhost
 
-	int canLogin = mUidCanLogin.value(uid, -1); //Returns 0 if we cannot login, 1 if we can, and the default is -1 meaning we don't know
+	int canLogin = d->mUidCanLogin.value(uid, -1); //Returns 0 if we cannot login, 1 if we can, and the default is -1 meaning we don't know
 	if(canLogin != -1) return canLogin; //We know whether they can log in
 
 	//We got the default, -1, so we don't know.  Look it up
@@ -503,20 +515,20 @@ bool ProcessModel::canUserLogin(long long uid ) const
 	if(!user.isValid()) { 
 		//for some reason the user isn't recognised.  This might happen under certain security situations.
 		//Just return true to be safe
-		mUidCanLogin[uid] = 1;
+		d->mUidCanLogin[uid] = 1;
 		return true;
 	}
 	QString shell = user.shell();
 	if(shell == "/bin/false" )  //FIXME - add in any other shells it could be for false
 	{
-		mUidCanLogin[uid] = 0;
+		d->mUidCanLogin[uid] = 0;
 		return false;
 	}
-	mUidCanLogin[uid] = 1;
+	d->mUidCanLogin[uid] = 1;
 	return true;
 }
 
-QString ProcessModel::getTooltipForUser(const KSysGuard::Process *ps) const
+QString ProcessModelPrivate::getTooltipForUser(const KSysGuard::Process *ps) const
 {
 	QString userTooltip;
 	if(!mIsLocalhost) {
@@ -562,10 +574,10 @@ QString ProcessModel::getTooltipForUser(const KSysGuard::Process *ps) const
 }
 
 QString ProcessModel::getStringForProcess(KSysGuard::Process *process) const {
-	return i18nc("Short description of a process. PID, name, user", "%1: %2, owned by user %3", (long)(process->pid), process->name, getUsernameForUser(process->uid, false));
+	return i18nc("Short description of a process. PID, name, user", "%1: %2, owned by user %3", (long)(process->pid), process->name, d->getUsernameForUser(process->uid, false));
 }
 
-QString ProcessModel::getGroupnameForGroup(long long gid) const {
+QString ProcessModelPrivate::getGroupnameForGroup(long long gid) const {
 	if(mIsLocalhost) {
 		QString groupname = KUserGroup(gid).name();
 		if(!groupname.isEmpty())
@@ -574,7 +586,7 @@ QString ProcessModel::getGroupnameForGroup(long long gid) const {
 	return QString::number(gid);
 }
 
-QString ProcessModel::getUsernameForUser(long long uid, bool withuid) const {
+QString ProcessModelPrivate::getUsernameForUser(long long uid, bool withuid) const {
 	QString &username = mUserUsername[uid];
 	if(username.isNull()) {
 		if(!mIsLocalhost) {
@@ -602,7 +614,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	if (!index.isValid()) {
 		return QVariant();
 	}
-	if (index.column() >= mHeadings.count()) {
+	if (index.column() >= d->mHeadings.count()) {
 		return QVariant(); 
 	}
 
@@ -614,9 +626,9 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			return process->name;
 		case HeadingUser:
 			if(process->uid == process->euid)
-				return getUsernameForUser(process->uid, false);
+				return d->getUsernameForUser(process->uid, false);
 			else
-				return getUsernameForUser(process->uid, false) + ", " + getUsernameForUser(process->euid, false);
+				return d->getUsernameForUser(process->uid, false) + ", " + d->getUsernameForUser(process->euid, false);
 		case HeadingNiceness:
 			return process->niceLevel;
 		case HeadingTty:
@@ -624,7 +636,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		case HeadingCPUUsage:
 			{
 				double total;
-				if(mShowChildTotals && !mSimple) total = process->totalUserUsage + process->totalSysUsage;
+				if(d->mShowChildTotals && !d->mSimple) total = process->totalUserUsage + process->totalSysUsage;
 				else total = process->userUsage + process->sysUsage;
 
 				if(total < 1 && process->status != KSysGuard::Process::Sleeping && process->status != KSysGuard::Process::Running)
@@ -664,8 +676,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 #ifdef Q_WS_X11
 		case HeadingXTitle:
 			{
-				if(!mPidToWindowInfo.contains(process->pid)) return QVariant();
-				WindowInfo w = mPidToWindowInfo.value(process->pid);
+				if(!d->mPidToWindowInfo.contains(process->pid)) return QVariant();
+				WindowInfo w = d->mPidToWindowInfo.value(process->pid);
 				if(!w.netWinInfo) return QVariant();
 				const char *name = w.netWinInfo->visibleName();
 				if( !name || name[0] == 0 )
@@ -684,9 +696,9 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
 		QString tracer;
 		if(process->tracerpid > 0) {
-			KSysGuard::Process *process_tracer = mProcesses->getProcess(process->tracerpid);
+			KSysGuard::Process *process_tracer = d->mProcesses->getProcess(process->tracerpid);
 			if(process_tracer) { //it is possible for this to be not the case in certain race conditions
-				KSysGuard::Process *process_tracer = mProcesses->getProcess(process->tracerpid);
+				KSysGuard::Process *process_tracer = d->mProcesses->getProcess(process->tracerpid);
 				tracer = i18nc("tooltip. name,pid ","This process is being debugged by %1 (%2)", process_tracer->name, (long int)process->tracerpid);
 			}
 		}
@@ -727,8 +739,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		}
 		case HeadingUser: {
 			if(!tracer.isEmpty())
-				return getTooltipForUser(process) + "<br />" + tracer;
-			return getTooltipForUser(process);
+				return d->getTooltipForUser(process) + "<br />" + tracer;
+			return d->getTooltipForUser(process);
 		}
 		case HeadingNiceness:
 			return i18n("Nice level: %1 (%2)", process->niceLevel, process->niceLevelAsString() );
@@ -736,7 +748,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			QString tooltip = ki18n("<qt>Process status: %1 %2<br />"
 						"User CPU usage: %3%<br />System CPU usage: %4%</qt>")
 						.subs(process->translatedStatus())
-						.subs(getStatusDescription(process->status))
+						.subs(d->getStatusDescription(process->status))
 						.subs(process->userUsage)
 						.subs(process->sysUsage)
 						.toString();
@@ -776,13 +788,13 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				tooltip = i18n("<qt>This is the amount of real physical memory that this process is using.  It does not include any swapped out memory, but does include the code size for shared libraries etc.<br /><br /></qt>");
 			else {
 				tooltip = i18n("<qt>This is the amount of real physical memory that this process is using by itself.  It does not include any swapped out memory, nor the code size of its shared libraries.  This is often the most useful figure to judge the memory use of a program.<br /><br /></qt>");
-				if(mMemTotal > 0)
-					tooltip += i18n("Memory usage: %1 out of %2  (%3 %)<br />", KGlobal::locale()->formatByteSize(process->vmURSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), process->vmURSS*100/mMemTotal);
+				if(d->mMemTotal > 0)
+					tooltip += i18n("Memory usage: %1 out of %2  (%3 %)<br />", KGlobal::locale()->formatByteSize(process->vmURSS * 1024), KGlobal::locale()->formatByteSize(d->mMemTotal*1024), process->vmURSS*100/d->mMemTotal);
 				else
 					tooltip += i18n("Memory usage: %1<br />", KGlobal::locale()->formatByteSize(process->vmURSS * 1024));
 			}
-			if(mMemTotal > 0)
-				tooltip += i18n("RSS Memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize(process->vmRSS * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), process->vmRSS*100/mMemTotal);
+			if(d->mMemTotal > 0)
+				tooltip += i18n("RSS Memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize(process->vmRSS * 1024), KGlobal::locale()->formatByteSize(d->mMemTotal*1024), process->vmRSS*100/d->mMemTotal);
 			else
 				tooltip += i18n("RSS Memory usage: %1", KGlobal::locale()->formatByteSize(process->vmRSS * 1024));
 			return tooltip;
@@ -791,8 +803,8 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			if(process->vmURSS == -1)
 				return i18n("<qt>Your system does not seem to have this information for us to read, sorry.</qt>");
 			QString tooltip = i18n("<qt>This is the amount of real physical memory that this process's shared libraries are using.  This memory is shared among all processes that use this library</qt>");
-			if(mMemTotal >0)
-				tooltip += i18n("<br /><br />Shared library memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize((process->vmRSS - process->vmURSS) * 1024), KGlobal::locale()->formatByteSize(mMemTotal*1024), (process->vmRSS-process->vmURSS)*100/mMemTotal);
+			if(d->mMemTotal >0)
+				tooltip += i18n("<br /><br />Shared library memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize((process->vmRSS - process->vmURSS) * 1024), KGlobal::locale()->formatByteSize(d->mMemTotal*1024), (process->vmRSS-process->vmURSS)*100/d->mMemTotal);
 			else
 				tooltip += i18n("<br /><br />Shared library memory usage: %1", KGlobal::locale()->formatByteSize((process->vmRSS - process->vmURSS) * 1024));
 
@@ -800,7 +812,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		}
 		case HeadingXTitle: {
 			QString tooltip;
-			QList<WindowInfo> values = mPidToWindowInfo.values(process->pid);
+			QList<WindowInfo> values = d->mPidToWindowInfo.values(process->pid);
 			if(values.isEmpty()) return QVariant(QVariant::String);
 			for(int i = 0; i< values.size(); i++) {
 				WindowInfo w = values[i];
@@ -872,19 +884,19 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			else
 				base = 100000000 - process->uid * 10000;
 			int cpu;
-			if(mSimple || !mShowChildTotals)
+			if(d->mSimple || !d->mShowChildTotals)
 				cpu = process->userUsage + process->sysUsage;
 			else
 				cpu = process->totalUserUsage + process->totalSysUsage;
 			if(cpu == 0 && process->status != KSysGuard::Process::Running && process->status != KSysGuard::Process::Sleeping) 
 				cpu = 1;  //stopped or zombied processes should be near the top of the list
-			bool hasWindow = mPidToWindowInfo.contains(process->pid);
+			bool hasWindow = d->mPidToWindowInfo.contains(process->pid);
 			//However we can of course have lots of processes with the same user.  Next we sort by CPU.
-			return (double)(base - (cpu*100) -(hasWindow?50:0) - memory*100.0/mMemTotal);
+			return (double)(base - (cpu*100) -(hasWindow?50:0) - memory*100.0/d->mMemTotal);
 		}
 		case HeadingCPUUsage: {
 			int cpu;
-			if(mSimple || !mShowChildTotals)
+			if(d->mSimple || !d->mShowChildTotals)
 				cpu = process->userUsage + process->sysUsage;
 			else
 				cpu = process->totalUserUsage + process->totalSysUsage;
@@ -906,21 +918,21 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		return QVariant();
 	}
 	case Qt::UserRole+3: {
-		return mMemTotal;
+		return d->mMemTotal;
 	}
 	case Qt::DecorationRole: {
 		if(index.column() == HeadingName) {
 			KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());
-			if(!mPidToWindowInfo.contains(process->pid)) {
-				if(mSimple) //When not in tree mode, we need to pad the name column where we do not have an icon 
-					return QIcon(mBlankPixmap);
+			if(!d->mPidToWindowInfo.contains(process->pid)) {
+				if(d->mSimple) //When not in tree mode, we need to pad the name column where we do not have an icon 
+					return QIcon(d->mBlankPixmap);
 				else  //When in tree mode, the padding looks pad, so do not pad in this case
 					return QVariant();
 			}
 
-			WindowInfo w = mPidToWindowInfo.value(process->pid);
+			WindowInfo w = d->mPidToWindowInfo.value(process->pid);
 			if(w.icon.isNull()) 
-				return QIcon(mBlankPixmap);
+				return QIcon(d->mBlankPixmap);
 			return w.icon;
 
 		} else if (index.column() == HeadingCPUUsage) {
@@ -941,7 +953,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			//It's being debugged, so probably important.  Let's mark it as such
 			return QColor("yellow");
 		}
-		if(mIsLocalhost && process->uid == getuid()) { //own user
+		if(d->mIsLocalhost && process->uid == getuid()) { //own user
 			return QColor(0, 208, 214, 50);
 		}
 		if(process->uid < 100 || !canUserLogin(process->uid))
@@ -969,7 +981,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 
 bool ProcessModel::isLocalhost() const
 {
-	return mIsLocalhost;
+	return d->mIsLocalhost;
 }
 
 
@@ -989,28 +1001,28 @@ void ProcessModel::setupHeader() {
 #endif
 
 	beginInsertColumns(QModelIndex(), 0, headings.count()-1);
-		mHeadings = headings;
+		d->mHeadings = headings;
 	endInsertColumns();
 }
 
 KSysGuard::Process *ProcessModel::getProcess(long long pid) {
-	return mProcesses->getProcess(pid);
+	return d->mProcesses->getProcess(pid);
 }
 
 bool ProcessModel::showTotals() const {
-	return mShowChildTotals;
+	return d->mShowChildTotals;
 }
 
 void ProcessModel::setShowTotals(bool showTotals)  //slot
 {
-        if(showTotals == mShowChildTotals) return;
-        mShowChildTotals = showTotals;
+        if(showTotals == d->mShowChildTotals) return;
+        d->mShowChildTotals = showTotals;
 
         QModelIndex index;
-        foreach( KSysGuard::Process *process, mProcesses->getAllProcesses()) {
+        foreach( KSysGuard::Process *process, d->mProcesses->getAllProcesses()) {
                if(process->numChildren > 0) {
                        int row;
-		       if(mSimple)
+		       if(d->mSimple)
 		               row = process->index;
 		       else
 		               row = process->parent->children.indexOf(process);
@@ -1022,5 +1034,5 @@ void ProcessModel::setShowTotals(bool showTotals)  //slot
 
 long long ProcessModel::totalMemory() const
 {
-	return mMemTotal;
+	return d->mMemTotal;
 }

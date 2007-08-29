@@ -28,6 +28,7 @@
 #include <kdebug.h>
 
 #include "ProcessModel.h"
+#include "ProcessModel_p.h"
 #include "ProcessFilter.h"
 
 bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const
