@@ -99,7 +99,7 @@ public:
 
 	bool showTotals() const;
 
-public slots:
+public Q_SLOTS:
 	void setShowTotals(bool showTotals);
 
 private:
