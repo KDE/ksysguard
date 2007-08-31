@@ -39,7 +39,6 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 			&& filterRegExp().isEmpty()) return true; //Shortcut for common case 
 	
 	ProcessModel *model = static_cast<ProcessModel *>(sourceModel());
-	KSysGuard::Process *parent_process;
 	const KSysGuard::Process *process;
         if(model->isSimpleMode()) {
 		if(source_parent.isValid()) {
@@ -48,14 +47,15 @@ bool ProcessFilter::filterAcceptsRow( int source_row, const QModelIndex & source
 		}
 		process = model->getProcessAtIndex(source_row);
 	} else {
+		KSysGuard::Process *parent_process = NULL;
 		if(source_parent.isValid()) {
 			parent_process = reinterpret_cast<KSysGuard::Process *>(source_parent.internalPointer());
 		       	Q_ASSERT(parent_process);
 		} else {
-			if(!model->isSimpleMode()) {
+			//if(!model->isSimpleMode()) {
 				parent_process = model->getProcess(0); //Get our 'special' process which should have the root init child
 		        	Q_ASSERT(parent_process);
-			}
+			//}
 		}
 		if(!model->isSimpleMode() && source_row >= parent_process->children.size()) {
 			kDebug() << "Serious error with data.  Source row requested for a non existant row. Requested " << source_row << " of " << parent_process->children.size() << " for " << parent_process->pid;
