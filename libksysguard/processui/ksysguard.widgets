@@ -7,6 +7,6 @@ ToolTip=A list of processes (programs) running.
 WhatsThis=A widget for showing all the processes running along with their memory usage and other details.
 Group=KSysGuard (KDE)
 ConstructorArgs=(parent)
-IncludeFile=ksysguard/ksysguardprocesslist.h
+IncludeFile=ksysguardprocesslist.h
 
 
