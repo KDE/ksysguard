@@ -71,6 +71,10 @@ public:
 
 	/** Whether the widget will show child totals for CPU and Memory etc usage */
 	bool showTotals() const;
+
+	/** Returns a list of the processes that have been selected by the user. */
+	QList<KSysGuard::Process *> selectedProcesses() const;
+
 public Q_SLOTS:
 	/** Inform the view that the user has changed the current row */
 	void currentRowChanged(const QModelIndex &current);

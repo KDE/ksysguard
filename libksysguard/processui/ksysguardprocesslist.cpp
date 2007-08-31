@@ -406,24 +406,37 @@ void KSysGuardProcessList::reniceProcesses(const QList<long long> &pids, int nic
 	reniceProcess->start("kdesu", arguments);
 }
 
+QList<KSysGuard::Process *> KSysGuardProcessList::selectedProcesses() const
+{
+	QList<KSysGuard::Process *> processes;
+	QModelIndexList selectedIndexes = d->mUi->treeView->selectionModel()->selectedRows();
+	for(int i = 0; i < selectedIndexes.size(); ++i) {
+		KSysGuard::Process *process = reinterpret_cast<KSysGuard::Process *> (d->mFilterModel.mapToSource(selectedIndexes.at(i)).internalPointer());
+		processes << process;
+	}
+	return processes;
+
+}
+
 void KSysGuardProcessList::reniceSelectedProcesses()
 {
-	QModelIndexList selectedIndexes = d->mUi->treeView->selectionModel()->selectedRows();
+	QList<KSysGuard::Process *> processes = selectedProcesses();
 	QStringList selectedAsStrings;
 	QList< long long> selectedPids;
-	int firstPriority = 0;
-	for (int i = 0; i < selectedIndexes.size(); ++i) {
-		KSysGuard::Process *process = reinterpret_cast<KSysGuard::Process *> (d->mFilterModel.mapToSource(selectedIndexes.at(i)).internalPointer());
-		if(i==0) firstPriority = process->niceLevel;
-		selectedPids << process->pid;
-		selectedAsStrings << d->mModel.getStringForProcess(process);
-	}
 	
-	if (selectedAsStrings.isEmpty())
+	if (processes.isEmpty())
 	{
 		KMessageBox::sorry(this, i18n("You need to select a process first."));
 		return;
 	}
+
+	int firstPriority = 0;
+	foreach(KSysGuard::Process *process, processes) {
+		selectedPids << process->pid;
+		selectedAsStrings << d->mModel.getStringForProcess(process);
+	}
+	firstPriority = processes.first()->niceLevel;
+
 	ReniceDlg reniceDlg(d->mUi->treeView, firstPriority, selectedAsStrings);
 	if(reniceDlg.exec() == QDialog::Rejected) return;
 	int newPriority = reniceDlg.newPriority;
@@ -465,10 +478,9 @@ void KSysGuardProcessList::killSelectedProcesses()
 	QModelIndexList selectedIndexes = d->mUi->treeView->selectionModel()->selectedRows();
 	QStringList selectedAsStrings;
 	QList< long long> selectedPids;
-	QList<KSysGuard::Process *> selectedProcesses;
-	for (int i = 0; i < selectedIndexes.size(); ++i) {
-		KSysGuard::Process *process = reinterpret_cast<KSysGuard::Process *> (d->mFilterModel.mapToSource(selectedIndexes.at(i)).internalPointer());
-		selectedProcesses << process;
+
+	QList<KSysGuard::Process *> processes = selectedProcesses();
+	foreach(KSysGuard::Process *process, processes) {
 		selectedPids << process->pid;
 		selectedAsStrings << d->mModel.getStringForProcess(process);
 	}
@@ -494,7 +506,7 @@ void KSysGuardProcessList::killSelectedProcesses()
 			return;
 		}
 	}
-	foreach(KSysGuard::Process *process, selectedProcesses) {
+	foreach(KSysGuard::Process *process, processes) {
 		process->timeKillWasSent.start();
 	}
 
