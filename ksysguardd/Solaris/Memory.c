@@ -24,8 +24,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "config.h"
-
 /* Stop <sys/swap.h> from crapping out on 32-bit architectures. */
 
 #if !defined(_LP64) && _FILE_OFFSET_BITS == 64

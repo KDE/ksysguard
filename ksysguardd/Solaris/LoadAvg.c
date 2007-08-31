@@ -25,8 +25,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-#include "config.h"
-
 #ifdef HAVE_KSTAT
 #include <kstat.h>
 #endif

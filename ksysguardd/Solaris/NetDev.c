@@ -32,8 +32,6 @@
 #include <sys/sockio.h>
 #include <net/if.h>
 
-#include "config.h"
-
 #ifdef HAVE_KSTAT
 #include <kstat.h>
 #endif
