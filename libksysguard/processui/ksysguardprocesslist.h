@@ -22,7 +22,7 @@
 #ifndef _KSysGuardProcessList_h_
 #define _KSysGuardProcessList_h_
 
-#include <QWidget>
+#include <QtGui/QWidget>
 #include <kapplication.h>
 #include "ProcessModel.h"
 #include "ProcessFilter.h"
@@ -71,7 +71,7 @@ public:
 
 	/** Whether the widget will show child totals for CPU and Memory etc usage */
 	bool showTotals() const;
-public slots:
+public Q_SLOTS:
 	/** Inform the view that the user has changed the current row */
 	void currentRowChanged(const QModelIndex &current);
 	
@@ -102,7 +102,7 @@ public slots:
 	/** Set whether to show child totals for CPU and Memory etc usage */
 	void setShowTotals(bool showTotals);
 
-private slots:
+private Q_SLOTS:
 
 	/** Expand all the children, recursively, of the node given.  Pass an empty QModelIndex to expand all the top level children */
 	void expandAllChildren(const QModelIndex &parent);

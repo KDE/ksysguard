@@ -41,7 +41,7 @@ class KDE_EXPORT ProcessFilter : public QSortFilterProxyModel
 	State filter() const {return mFilter; }
 
 
-  public slots:
+  public Q_SLOTS:
 	void setFilter(State index);
 	
   protected:
