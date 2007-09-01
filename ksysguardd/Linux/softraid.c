@@ -219,7 +219,7 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 	/* Fork */
 	if((ChildPID = fork()) == -1)
 	{
-		perror("Couldn't fork to launch mdadm.");
+		perror("Could not fork to launch mdadm.");
 		exit(1);
 	}
 
@@ -339,7 +339,7 @@ ArrayInfo *getOrCreateArrayInfo(char *array_name, int array_name_length) {
 		MyArray = calloc(1,sizeof (ArrayInfo));
 		if (MyArray == NULL) {
 			/* Memory could not be allocated, so print an error and exit. */
-			fprintf(stderr, "Couldn't allocate memory\n");
+			fprintf(stderr, "Could not allocate memory\n");
 			exit(EXIT_FAILURE);
 		}
 		strcpy( MyArray->ArrayName, key.ArrayName );

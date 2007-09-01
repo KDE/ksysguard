@@ -61,7 +61,7 @@ void parseConfigFile( const char *filename )
   SensorList = new_ctnr();
 
   if ( ( config = fopen( filename, "r" ) ) == NULL ) {
-    log_error( "can't open config file '%s'", filename );
+    log_error( "can not open config file '%s'", filename );
 
     /**
       If we can't open a config file we have to add the
