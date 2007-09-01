@@ -624,7 +624,7 @@ void WorkSheet::resizeGrid( uint newRows, uint newColumns )
 
   /* Obviously Qt does not shrink the size of the QGridLayout
    * automatically.  So we simply force the rows and columns that
-   * are no longer used to have a strech factor of 0 and hence be
+   * are no longer used to have a stretch factor of 0 and hence be
    * invisible. */
   for ( r = newRows; r < mRows; ++r )
     mGridLayout->setRowStretch( r, 0 );
