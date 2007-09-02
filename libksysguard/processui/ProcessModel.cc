@@ -318,15 +318,9 @@ bool ProcessModel::isSimpleMode() const
 void ProcessModelPrivate::processChanged(KSysGuard::Process *process, bool onlyCpuOrMem)
 {
 	//FIXME
-	//There seem to be lots of bugs with qtreeview.  The idea here was to only update the actual rows
-	//that need changing.  However this seems to actually repaint completely the wrong cell.  I can only
-	//blame qt for this.
 	//
-	//So instead we will not call dataChanged here.  Instead after update, we will expand the first column.
-	//For some unknown reason (another bug?) this causes all the rows to be repainted, which is
-	//good enough for us
-
-	return;
+	//There is a bug with Qt in that updating a block of cells with dataChanged causes all of the cells to be repainted
+	//To work around this bug we emit dataChanged for cell, one at a time.
 
 	int row;
 	if(mSimple)
@@ -337,13 +331,15 @@ void ProcessModelPrivate::processChanged(KSysGuard::Process *process, bool onlyC
 	Q_ASSERT(row != -1);  //Something has gone very wrong
 	if(!onlyCpuOrMem) {
 		//Only the cpu usage changed, so only update that
-		QModelIndex index = q->createIndex(row, ProcessModel::HeadingCPUUsage, process);
-		QModelIndex index2 = q->createIndex(row, ProcessModel::HeadingSharedMemory, process);
-		emit q->dataChanged(index, index2);
+		for( int i = ProcessModel::HeadingCPUUsage; i<= ProcessModel::HeadingSharedMemory; ++i) {
+			QModelIndex index = q->createIndex(row, i, process);
+			emit q->dataChanged(index, index);
+		}
 	} else {
-		QModelIndex startIndex = q->createIndex(row, 0, process);
-		QModelIndex endIndex = q->createIndex(row, mHeadings.count()-1, process);
-		emit q->dataChanged(startIndex, endIndex);
+		for( int i = 0; i< mHeadings.count(); ++i) {
+			QModelIndex index = q->createIndex(row, i, process);
+			emit q->dataChanged(index, index);
+		}
 	}
 }
 

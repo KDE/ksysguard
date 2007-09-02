@@ -182,7 +182,7 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	d->mProcessContextMenu = new QMenu(d->mUi->treeView);
 	d->mUi->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(d->mUi->treeView, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showProcessContextMenu(const QPoint&)));
-	
+
 	d->mUi->treeView->header()->setClickable(true);
 	d->mUi->treeView->header()->setSortIndicatorShown(true);
 	d->mUi->treeView->header()->setCascadingSectionResizes(true);
@@ -221,7 +221,10 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	//Sort by username by default
 	d->mUi->treeView->sortByColumn(ProcessModel::HeadingUser, Qt::AscendingOrder);
 	d->mFilterModel.sort(ProcessModel::HeadingUser, Qt::AscendingOrder);
-	d->mFilterModel.setDynamicSortFilter(true);
+	
+	// Dynamic sort filter seems to require repainting the whole screen, slowing everything down drastically.
+	// When this bug is fixed we can re-enable this.
+	//d->mFilterModel.setDynamicSortFilter(true);
 
 	d->mUpdateTimer = new QTimer(this);
 	d->mUpdateTimer->setSingleShot(true);
@@ -231,7 +234,7 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	//If the view resorts continually, then it can be hard to keep track of processes.  By doing it only every few seconds it reduces the 'jumping around'
 	QTimer *mTimer = new QTimer(this);
 	connect(mTimer, SIGNAL(timeout()), &d->mFilterModel, SLOT(invalidate()));
-	mTimer->start(6000); 
+	mTimer->start(10000); 
 
 	expandInit(); //This will expand the init process
 }
@@ -367,7 +370,6 @@ void KSysGuardProcessList::updateList()
 {
 	if(isVisible()) {
 		d->mModel.update(d->mUpdateIntervalMSecs);
-		expandInit();
 		d->mUpdateTimer->start(d->mUpdateIntervalMSecs);
 	}
 }
