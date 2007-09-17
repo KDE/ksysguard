@@ -24,6 +24,7 @@ Name[sl]=Sistemski nadzornik
 Name[sv]=Systemövervakare
 Name[th]=ติดตามการทำงานของระบบ
 Name[vi]=Bộ theo dõi hệ thống
+Name[wa]=Corwaitoe do sistinme
 Name[x-test]=xxSystem Monitorxx
 Name[zh_TW]=系統監視器
 Exec=ksysguard %U
