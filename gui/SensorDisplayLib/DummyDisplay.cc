@@ -21,6 +21,7 @@
 #include <klocale.h>
 #include <ksgrd/SensorManager.h>
 #include <QMouseEvent>
+#include <QGridLayout>
 
 #include "DummyDisplay.h"
 
@@ -31,6 +32,15 @@ DummyDisplay::DummyDisplay( QWidget* parent, SharedSettings *workSheetSettings )
                     "the Sensor Browser and drop it here. A sensor display will "
                     "appear that allows you to monitor the values of the sensor "
                     "over time." ) );
+
+  QLabel *label = new QLabel(this);
+  label->setText("Drop Sensor Here");
+  label->setAlignment( Qt::AlignCenter );
+
+  QHBoxLayout *layout = new QHBoxLayout;
+  layout->addWidget(label);
+
+   this->setLayout(layout);
 }
 
 bool DummyDisplay::eventFilter( QObject* object, QEvent* event )

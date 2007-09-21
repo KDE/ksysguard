@@ -47,7 +47,6 @@
 #include "SensorLogger.h"
 #include "WorkSheet.h"
 #include "WorkSheetSettings.h"
-#include "SensorFrame.h"
 
 WorkSheet::WorkSheet( QWidget *parent )
   : QWidget( parent )
@@ -328,24 +327,33 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
       QAction *a3 = pm.addAction( i18n( "&Bar graph" ) );
       QAction *a4 = pm.addAction( i18n( "Log to a &file" ) );
       QAction *execed = pm.exec( QCursor::pos() );
-      if (execed == a1)
+      if (execed == a1) {
         newDisplay = new FancyPlotter( this, sensorDescr, &mSharedSettings );
-      else if (execed == a2)
+      }
+      else if (execed == a2) {
         newDisplay = new MultiMeter( this, sensorDescr, &mSharedSettings);
-      else if (execed == a3)
+      }
+      else if (execed == a3) {
         newDisplay = new DancingBars( this, sensorDescr, &mSharedSettings);
-      else if (execed == a4)
+      }
+      else if (execed == a4) {
         newDisplay = new SensorLogger( this, sensorDescr, &mSharedSettings);
-      else
+      }
+      else {
         return 0;
-    } else if ( sensorType == "listview" )
+      }
+    } else if ( sensorType == "listview" ) {
       newDisplay = new ListView( this, sensorDescr, &mSharedSettings);
-    else if ( sensorType == "logfile" )
+    }
+    else if ( sensorType == "logfile" ) {
       newDisplay = new LogFile( this, sensorDescr, &mSharedSettings );
-    else if ( sensorType == "sensorlogger" )
+    }
+    else if ( sensorType == "sensorlogger" ) {
       newDisplay = new SensorLogger( this, sensorDescr, &mSharedSettings );
-    else if ( sensorType == "table" )
+    }
+    else if ( sensorType == "table" ) {
       newDisplay = new ProcessController( this, sensorDescr, &mSharedSettings);
+    }
     else {
       kDebug(1215) << "Unknown sensor type: " <<  sensorType;
       return 0;
@@ -523,13 +531,10 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
     newDisplay->setDeleteNotifier( this );
   }
 
-  if(mRows == 1 && mColumns == 1) {  //if there's only item, then why bother with a frame?
-    mGridLayout->addWidget( mDisplayList[ row ][ column ], row, column );
+  mGridLayout->addWidget( mDisplayList[ row ][ column ], row, column );
+  if(mRows == 1 && mColumns == 1) {  //if there's only item, the tab's title should be the widget's title
     connect( newDisplay, SIGNAL(changeTitle(const QString&)), SLOT(setTitle(const QString&)));
     setTitle(newDisplay->title());
-  } else {
-    SensorFrame *frame = new SensorFrame(mDisplayList[ row ][ column ]);
-    mGridLayout->addWidget( frame, row, column );
   }
   if ( isVisible() ) {
     mDisplayList[ row ][ column ]->show();

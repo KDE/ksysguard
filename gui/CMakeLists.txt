@@ -40,7 +40,6 @@ kde4_add_ui_files( libsensordisplays_SRCS
 set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
    SensorBrowser.cc 
    WorkSheet.cc
-   SensorFrame.cc
    WorkSheetSettings.cc 
    Workspace.cc
    HostConnector.cc
