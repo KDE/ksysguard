@@ -27,8 +27,6 @@
 DummyDisplay::DummyDisplay( QWidget* parent, SharedSettings *workSheetSettings )
   : KSGRD::SensorDisplay( parent, i18n( "Drop Sensor Here" ), workSheetSettings )
 {
-  setMinimumSize( 16, 16 );
-
   setWhatsThis(i18n("This is an empty space in a worksheet. Drag a sensor from "
                     "the Sensor Browser and drop it here. A sensor display will "
                     "appear that allows you to monitor the values of the sensor "

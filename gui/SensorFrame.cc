@@ -25,7 +25,7 @@
 
 SensorFrame::SensorFrame(KSGRD::SensorDisplay* display)
 {
-  setAlignment(Qt::AlignHCenter);
+  setAlignment(Qt::AlignCenter);
   QHBoxLayout *layout = new QHBoxLayout;
   layout->setMargin(2);
   layout->addWidget(display);
