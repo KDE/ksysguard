@@ -63,6 +63,8 @@ class MultiMeter : public KSGRD::SensorDisplay
     QColor mAlarmDigitColor;
     QColor mBackgroundColor;
 
+    bool mIsFloat;
+
     bool mLowerLimitActive;
     double mLowerLimit;
     bool mUpperLimitActive;

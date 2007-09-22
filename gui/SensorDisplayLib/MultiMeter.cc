@@ -40,6 +40,8 @@ MultiMeter::MultiMeter(QWidget* parent, const QString& title, SharedSettings *wo
   mLowerLimit = mUpperLimit = 0;
   mLowerLimitActive = mUpperLimitActive = false;
 
+  mIsFloat = false;
+
   mNormalDigitColor = KSGRD::Style->firstForegroundColor();
   mAlarmDigitColor = KSGRD::Style->alarmColor();
 
@@ -64,6 +66,9 @@ bool MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
 {
   if (sensorType != "integer" && sensorType != "float")
     return (false);
+
+  mIsFloat = (sensorType == "float");
+  mLcd->setSmallDecimalPoint( mIsFloat );
 
   registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 
@@ -91,12 +96,24 @@ void MultiMeter::answerReceived(int id, const QList<QByteArray>& answerlist)
   else
   {
     double val = answer.toDouble();
-    int digits = (int) log10(val) + 1;
+
+    int digits = 1;
+    if (qAbs(val) >= 1) {
+      digits = (int) log10(qAbs(val)) + 1;
+    }
+    if (mIsFloat) {
+      //Show two digits after the decimal point
+      digits += 3;
+    }
+    if (val < 0) {
+      //Add a digit for the negative sign
+      digits += 1;
+    }
 
     if (mSharedSettings->isApplet)
       mLcd->setNumDigits(qMin(4,digits));
     else
-      mLcd->setNumDigits(qMin(5,digits));
+      mLcd->setNumDigits(qMin(15,digits));
 
     mLcd->display(val);
     if (mLowerLimitActive && val < mLowerLimit)
