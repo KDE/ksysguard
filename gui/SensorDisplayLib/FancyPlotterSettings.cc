@@ -195,7 +195,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   label = new QLabel( i18n( "Font size:" ), groupBox );
   boxLayout->addWidget( label, 0, 2 );
 
-  mFontSize = new KIntNumInput( 9, groupBox );
+  mFontSize = new KIntNumInput( 8, groupBox );
   mFontSize->setMinimum( 5 );
   mFontSize->setMaximum( 24 );
   boxLayout->addWidget( mFontSize, 0, 3 );
