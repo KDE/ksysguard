@@ -2,21 +2,21 @@
 <!DOCTYPE KSysGuardWorkSheet>
 <WorkSheet title="Sensor Load" interval="2" locked="1" rows="2" columns="2" >
  <host port="-1" command="ksysguardd" shell="" name="localhost" />
- <display svgBackground="widgets/plot-background" bColor="3223601" title="CPU Load" hScale="3" hCount="5" fontColor="16777215" max="100" vLines="1" hColor="0" pause="0" labels="1" autoRange="0" min="0" vDistance="30" globalUpdate="1" fontSize="11" vScroll="0" column="0" topBar="1" unit="" vColor="0" hLines="1" showUnit="1" class="FancyPlotter" row="0" >
+ <display svgBackground="widgets/plot-background" bColor="3223601" title="CPU Load" hScale="3" hCount="5" fontColor="16777215" max="100" vLines="1" hColor="0" pause="0" labels="1" autoRange="0" min="0" vDistance="30" globalUpdate="1" fontSize="8" vScroll="0" column="0" topBar="1" unit="" vColor="0" hLines="1" showUnit="1" class="FancyPlotter" row="0" >
   <beam sensorName="cpu/system/nice" sensorType="float" hostName="localhost" color="16776979" />  
   <beam sensorName="cpu/system/user" sensorType="float" hostName="localhost" color="1608191" />
   <beam sensorName="cpu/system/sys" sensorType="float" hostName="localhost" color="16743688" />
   <beam sensorName="cpu/system/wait" sensorType="float" hostName="localhost" color="16764927" />
  </display>
- <display svgBackground="widgets/plot-background" bColor="3223601" title="Load Average (1 min)" hScale="3" hCount="5" fontColor="16777215" vLines="1" hColor="0" pause="0" labels="1" autoRange="1" vDistance="30" globalUpdate="1" fontSize="11" vScroll="0" column="1" topBar="1" unit="" vColor="0" hLines="1" showUnit="1" class="FancyPlotter" row="0" >
+ <display svgBackground="widgets/plot-background" bColor="3223601" title="Load Average (1 min)" hScale="3" hCount="5" fontColor="16777215" vLines="1" hColor="0" pause="0" labels="1" autoRange="1" vDistance="30" globalUpdate="1" fontSize="8" vScroll="0" column="1" topBar="1" unit="" vColor="0" hLines="1" showUnit="1" class="FancyPlotter" row="0" >
   <beam sensorName="cpu/system/loadavg1" sensorType="float" hostName="localhost" color="1608191" />
  </display>
- <display svgBackground="widgets/plot-background" bColor="3223601" title="Physical Memory" hScale="3" hCount="5" fontColor="16777215" max="1000000" vLines="1" hColor="0" pause="0" labels="1" autoRange="0" min="0" vDistance="30" globalUpdate="1" fontSize="11" vScroll="0" column="0" topBar="1" unit="" vColor="0" hLines="1" showUnit="1" class="FancyPlotter" row="1" >
+ <display svgBackground="widgets/plot-background" bColor="3223601" title="Physical Memory" hScale="3" hCount="5" fontColor="16777215" max="1000000" vLines="1" hColor="0" pause="0" labels="1" autoRange="0" min="0" vDistance="30" globalUpdate="1" fontSize="8" vScroll="0" column="0" topBar="1" unit="" vColor="0" hLines="1" showUnit="1" class="FancyPlotter" row="1" >
   <beam sensorName="mem/physical/buf" sensorType="integer" hostName="localhost" color="16743688" />
   <beam sensorName="mem/physical/cached" sensorType="integer" hostName="localhost" color="16771600" />
   <beam sensorName="mem/physical/application" sensorType="integer" hostName="localhost" color="1608191" />
  </display>
- <display svgBackground="widgets/plot-background" bColor="3223601" title="Swap Memory" hScale="3" hCount="5" fontColor="16777215" max="1000000" vLines="1" hColor="0" pause="0" labels="1" autoRange="0" min="0" vDistance="30" globalUpdate="1" fontSize="11" vScroll="0" column="1" topBar="1" vColor="0" hLines="1" showUnit="1" class="FancyPlotter" row="1" >
+ <display svgBackground="widgets/plot-background" bColor="3223601" title="Swap Memory" hScale="3" hCount="5" fontColor="16777215" max="1000000" vLines="1" hColor="0" pause="0" labels="1" autoRange="0" min="0" vDistance="30" globalUpdate="1" fontSize="8" vScroll="0" column="1" topBar="1" vColor="0" hLines="1" showUnit="1" class="FancyPlotter" row="1" >
   <beam sensorName="mem/swap/used" sensorType="integer" hostName="localhost" color="1608191" />
  </display>
 </WorkSheet>
