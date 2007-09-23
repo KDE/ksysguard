@@ -207,19 +207,18 @@ QColor SensorDisplay::restoreColor( QDomElement &element, const QString &attr,
                                     const QColor& fallback )
 {
   bool ok;
-  uint c = element.attribute( attr ).toUInt( &ok );
+  QRgb c = (QRgb) element.attribute( attr ).toUInt( &ok );
+  
   if ( !ok )
     return fallback;
   else
-    return QColor( (c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF );
+    return QColor( qRed(c), qGreen(c), qBlue(c), qAlpha(c) );
 }
 
 void SensorDisplay::saveColor( QDomElement &element, const QString &attr,
                                const QColor &color )
 {
-  int r, g, b;
-  color.getRgb( &r, &g, &b );
-  element.setAttribute( attr, (r << 16) | (g << 8) | b );
+  element.setAttribute( attr, color.rgba() );
 }
 
 bool SensorDisplay::addSensor( const QString &hostName, const QString &name,

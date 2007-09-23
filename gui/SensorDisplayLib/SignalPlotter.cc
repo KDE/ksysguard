@@ -97,7 +97,7 @@ void KSignalPlotter::addBeam( const QColor &color )
     (*it).append(0);
   }
   mBeamColors.append(color);
-  mBeamColorsDark.append(color.dark(150));
+  mBeamColorsDark.append(color.darker(150));
 }
 
 void KSignalPlotter::addSample( const QList<double>& sampleBuf )
@@ -152,8 +152,8 @@ void KSignalPlotter::reorderBeams( const QList<int>& newOrder )
       (*it) = newBeam;
     }
   }
-  QList< QColor> newBeamColors;
-  QList< QColor> newBeamColorsDark;
+  QList< QColor > newBeamColors;
+  QList< QColor > newBeamColorsDark;
   for(int i = 0; i < newOrder.count(); i++) {
     int newIndex = newOrder[i];
     newBeamColors.append(mBeamColors.at(newIndex));
@@ -847,8 +847,8 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizonta
 	  Q_ASSERT(mBeamColors.size() >= j);
 	  QColor c0(mBeamColorsDark[j]);
 	  QColor c1(mBeamColors[j]);
-	  c0.setAlpha(150);
-	  c1.setAlpha(150);
+	  c0.setAlpha(c0.alpha() * 0.9);
+	  c1.setAlpha(c1.alpha() * 0.9);
 	  myGradient.setColorAt(0, c0);
           myGradient.setColorAt(1, c1);
 
@@ -874,7 +874,15 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizonta
 	  y1-=delta_y1;
 	  y2-=delta_y2;
 	  y3-=delta_y3;
-	  offset = 1;  //see the comment further up for int offset;
+
+	  if (h > 100) {
+	    offset = 1;  //see the comment further up for int offset;
+	  }
+	  else {
+	    //When the display is very small, we have to draw the lines on top of each other
+	    //(otherwise every pixel of inaccuracy really starts to add up)
+	    offset = 0;
+	  }
 	}
       }
       if ( mUseAutoRange && mStackBeams) {
