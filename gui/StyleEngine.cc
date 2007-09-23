@@ -37,7 +37,7 @@ StyleEngine::StyleEngine()
   mSecondForegroundColor = QColor( 0x0057ae ); // light blue
   mAlarmColor = QColor( 255, 0, 0 );
   mBackgroundColor = QColor( 0x313031 );       // almost black
-  mFontSize = 9;
+  mFontSize = 8;
 
   mSensorColors.append( QColor( 0x0057ae ) );  // soft blue
   mSensorColors.append( QColor( 0xe20800 ) );  // reddish
