@@ -164,7 +164,7 @@ void TopLevel::startSensorBrowserWidget()
   if(mSensorBrowser) return;
   kDebug() << "Creating sensor browser";
   mSensorBrowser = new SensorBrowserWidget( 0, KSGRD::SensorMgr );
-  mSplitter->insertWidget(0,mSensorBrowser);
+  mSplitter->insertWidget(2,mSensorBrowser);
   mSplitter->setSizes( mSplitterSize );
 }
 
