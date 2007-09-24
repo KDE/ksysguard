@@ -46,6 +46,7 @@ MultiMeter::MultiMeter(QWidget* parent, const QString& title, SharedSettings *wo
   mAlarmDigitColor = KSGRD::Style->alarmColor();
 
   mLcd = new QLCDNumber( this );
+  mLcd->setFrameStyle( QFrame::NoFrame );
   mLcd->setSegmentStyle( QLCDNumber::Filled );
   setDigitColor( KSGRD::Style->firstForegroundColor() );
   mLcd->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
