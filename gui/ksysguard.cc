@@ -82,6 +82,8 @@ TopLevel::TopLevel()
   setPlainCaption( i18n( "System Monitor" ) );
   mTimerId = -1;
 
+  setWindowIcon(KIcon("utilities-system-monitor"));
+
   mSplitter = new QSplitter( this );
   mSplitter->setOrientation( Qt::Horizontal );
   mSplitter->setOpaqueResize( KGlobalSettings::opaqueResize() );
