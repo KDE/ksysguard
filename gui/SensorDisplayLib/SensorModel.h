@@ -63,6 +63,7 @@ class SensorModelEntry
 
 class SensorModel : public QAbstractTableModel
 {
+  Q_OBJECT
   public:
     SensorModel( QObject *parent = 0 );
 
