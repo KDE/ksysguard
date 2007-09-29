@@ -137,6 +137,9 @@ TopLevel::TopLevel()
   action->setText( i18n( "&Worksheet Properties" ) );
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( configure() ));
 
+  if (!initialGeometrySet())
+    resize( QSize(700, 480).expandedTo(minimumSizeHint()));
+
   setupGUI(ToolBar | Keys | StatusBar | Create);
 }
 
