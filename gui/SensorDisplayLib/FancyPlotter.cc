@@ -62,6 +62,9 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   mPlotter->installEventFilter( this );
 
   setPlotterWidget( mPlotter );
+
+  //Force a resize so that mPlotter's size gets set
+  FancyPlotter::resizeEvent( 0 );
 }
 
 FancyPlotter::~FancyPlotter()
