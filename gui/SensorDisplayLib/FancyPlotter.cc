@@ -289,13 +289,13 @@ void FancyPlotter::setTooltip()
     
 
     if(sensors().at( i)->isLocalhost()) {
-      tooltip += QString( "%1%2%3 (%4)" ).arg( i != 0 ? "<br>" : "<qt>")
+      tooltip += QString( "%1%2 %3 (%4)" ).arg( i != 0 ? "<br>" : "<qt>")
             .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">"+indicatorSymbol+"</font>")
             .arg( description )
 	    .arg( lastValue );
 
     } else {
-      tooltip += QString( "%1%2%3:%4 (%5)" ).arg( i != 0 ? "<br>" : "<qt>" )
+      tooltip += QString( "%1%2 %3:%4 (%5)" ).arg( i != 0 ? "<br>" : "<qt>" )
                  .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">"+indicatorSymbol+"</font>")
                  .arg( sensors().at( i )->hostName() )
                  .arg( description )
