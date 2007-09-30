@@ -2,21 +2,21 @@
 <!DOCTYPE KSysGuardWorkSheet>
 <WorkSheet title="Sensor Load" interval="2" locked="1" rows="2" columns="2" >
  <host port="-1" command="ksysguardd" shell="" name="localhost" />
- <display svgBackground="widgets/plot-background" bColor="4281413681" title="CPU Load" hScale="3" hCount="5" fontColor="4294967295" max="100" vLines="1" hColor="4278190080" pause="0" labels="1" autoRange="0" min="0" vDistance="30" globalUpdate="1" fontSize="8" vScroll="0" column="0" topBar="1" unit="" vColor="4278190080" hLines="1" showUnit="1" class="FancyPlotter" row="0" >
+ <display svgBackground="widgets/plot-background" bColor="4281413681" title="CPU Load" hScale="3" hCount="5" fontColor="4294967295" max="100" vLines="0" hColor="838860800" pause="0" labels="1" autoRange="0" min="0" vDistance="30" globalUpdate="1" fontSize="8" vScroll="0" column="0" topBar="1" unit="" vColor="838860800" hLines="1" showUnit="1" class="FancyPlotter" row="0" >
   <beam sensorName="cpu/system/nice" sensorType="float" hostName="localhost" color="872414995" />  
   <beam sensorName="cpu/system/user" sensorType="float" hostName="localhost" color="4279798271" />
   <beam sensorName="cpu/system/sys" sensorType="float" hostName="localhost" color="4294933768" />
   <beam sensorName="cpu/system/wait" sensorType="float" hostName="localhost" color="4294955007" />
  </display>
- <display svgBackground="widgets/plot-background" bColor="4281413681" title="Load Average (1 min)" hScale="3" hCount="5" fontColor="4294967295" vLines="1" hColor="4278190080" pause="0" labels="1" autoRange="1" vDistance="30" globalUpdate="1" fontSize="8" vScroll="0" column="1" topBar="1" unit="" vColor="4278190080" hLines="1" showUnit="1" class="FancyPlotter" row="0" >
+ <display svgBackground="widgets/plot-background" bColor="4281413681" title="Load Average (1 min)" hScale="3" hCount="5" fontColor="4294967295" vLines="0" hColor="838860800" pause="0" labels="1" autoRange="1" vDistance="30" globalUpdate="1" fontSize="8" vScroll="0" column="1" topBar="1" unit="" vColor="838860800" hLines="1" showUnit="1" class="FancyPlotter" row="0" >
   <beam sensorName="cpu/system/loadavg1" sensorType="float" hostName="localhost" color="4279798271" />
  </display>
- <display svgBackground="widgets/plot-background" bColor="4281413681" title="Physical Memory" hScale="3" hCount="5" fontColor="4294967295" max="1000000" vLines="1" hColor="4278190080" pause="0" labels="1" autoRange="0" min="0" vDistance="30" globalUpdate="1" fontSize="8" vScroll="0" column="0" topBar="1" unit="" vColor="4278190080" hLines="1" showUnit="1" class="FancyPlotter" row="1" >
+ <display svgBackground="widgets/plot-background" bColor="4281413681" title="Physical Memory" hScale="3" hCount="5" fontColor="4294967295" max="1000000" vLines="0" hColor="838860800" pause="0" labels="1" autoRange="0" min="0" vDistance="30" globalUpdate="1" fontSize="8" vScroll="0" column="0" topBar="1" unit="" vColor="838860800" hLines="1" showUnit="1" class="FancyPlotter" row="1" >
   <beam sensorName="mem/physical/buf" sensorType="integer" hostName="localhost" color="4294933768" />
   <beam sensorName="mem/physical/cached" sensorType="integer" hostName="localhost" color="4294961680" />
   <beam sensorName="mem/physical/application" sensorType="integer" hostName="localhost" color="4279798271" />
  </display>
- <display svgBackground="widgets/plot-background" bColor="4281413681" title="Swap Memory" hScale="3" hCount="5" fontColor="4294967295" max="1000000" vLines="1" hColor="4278190080" pause="0" labels="1" autoRange="0" min="0" vDistance="30" globalUpdate="1" fontSize="8" vScroll="0" column="1" topBar="1" vColor="4278190080" hLines="1" showUnit="1" class="FancyPlotter" row="1" >
+ <display svgBackground="widgets/plot-background" bColor="4281413681" title="Swap Memory" hScale="3" hCount="5" fontColor="4294967295" max="1000000" vLines="0" hColor="838860800" pause="0" labels="1" autoRange="0" min="0" vDistance="30" globalUpdate="1" fontSize="8" vScroll="0" column="1" topBar="1" vColor="838860800" hLines="1" showUnit="1" class="FancyPlotter" row="1" >
   <beam sensorName="mem/swap/used" sensorType="integer" hostName="localhost" color="4279798271" />
  </display>
 </WorkSheet>
