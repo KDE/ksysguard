@@ -263,9 +263,10 @@ void FancyPlotter::setTooltip()
 {
   QString tooltip;
 
-  tooltip = "<qt><table>";
 // FIXME:  reenable (and re-code) the following line when qt 4.3 or greater comes up 
-//  tooltip += "<table><tr><td><img src=\"" + mPlotter->getSnapshotImage(500,500).name() + "\"></td><td>";
+/*	tooltip = "<qt>";  
+	tooltip += "<table><tr><td><img src=\"" + mPlotter->getSnapshotImage(500,500).name() + "\"></td><td>";
+*/
   QString description;
   QString lastValue;
   for ( uint i = 0; i < mBeams; ++i ) {

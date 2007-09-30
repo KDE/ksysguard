@@ -59,6 +59,7 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
 
   mShowVerticalLines = true;
   mVerticalLinesColor = QColor("black");
+  mVerticalLinesColor.setAlpha(127); //50% opacity
   mVerticalLinesDistance = 30;
   mVerticalLinesScroll = true;
   mVerticalLinesOffset = 0;
@@ -66,6 +67,7 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
 
   mShowHorizontalLines = true;
   mHorizontalLinesColor = QColor("black");
+  mHorizontalLinesColor.setAlpha(127); //50% opacity
   mHorizontalLinesCount = 5;
 
   mShowLabels = true;
@@ -841,14 +843,16 @@ void KSignalPlotter::drawBeams(QPainter *p, int top, int w, int h, int horizonta
         path.cubicTo( x1,y1-delta_y1,x2,y2-delta_y2,x3,y3-delta_y3 );
         
 	if(mFillBeams) {
+	  //The beams are filled with a gradient from mBeamColorsDark[j] to mBeamColors[j].
+	  //The fill's opacity is 90% of the opacity of the line
 	  QPainterPath path2(path);
           QLinearGradient myGradient(0,(h-1+top),0,(h-1+top)/5);
 	  Q_ASSERT(mBeamColorsDark.size() >= j);
 	  Q_ASSERT(mBeamColors.size() >= j);
 	  QColor c0(mBeamColorsDark[j]);
 	  QColor c1(mBeamColors[j]);
-	  c0.setAlpha(c0.alpha() * 0.9);
-	  c1.setAlpha(c1.alpha() * 0.9);
+	  c0.setAlphaF(c0.alphaF() * 0.9);
+	  c1.setAlphaF(c1.alphaF() * 0.9);
 	  myGradient.setColorAt(0, c0);
           myGradient.setColorAt(1, c1);
 
