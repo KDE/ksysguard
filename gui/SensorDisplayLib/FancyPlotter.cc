@@ -391,7 +391,7 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
   }
 
   mPlotter->setShowVerticalLines( element.attribute( "vLines", "1" ).toUInt() );
-  QColor vcolor = restoreColor( element, "vColor",KSGRD::Style->firstForegroundColor() );
+  QColor vcolor = restoreColor( element, "vColor", KSGRD::Style->firstForegroundColor() );
   mPlotter->setVerticalLinesColor( vcolor );
   mPlotter->setVerticalLinesDistance( element.attribute( "vDistance", "30" ).toUInt() );
   mPlotter->setVerticalLinesScroll( element.attribute( "vScroll", "1" ).toUInt() );
