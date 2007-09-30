@@ -947,6 +947,12 @@ QString KSignalPlotter::lastValueAsString( int i) const
   if(mBeamData.isEmpty()) return QString();
   double value = mBeamData.first()[i] / mScaleDownBy; //retrieve the newest value for this beam then scale it correct
   QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:2);
-  return QString( "%1 %2").arg(number, mUnit);
+
+  if (mUnit == "%" || mUnit == "") {
+    return QString( "%1%2" ).arg(number, mUnit);
+  }
+  else {
+    return QString( "%1 %2" ).arg(number, mUnit);
+  }
 }
 #include "SignalPlotter.moc"
