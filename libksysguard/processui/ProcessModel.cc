@@ -536,10 +536,10 @@ QString ProcessModelPrivate::getTooltipForUser(const KSysGuard::Process *ps) con
 			userTooltip = i18n("This user is not recognised for some reason");
 		else {
 			userTooltip = "<qt>";
-			if(!user.fullName().isEmpty()) userTooltip += i18n("<b>%1</b><br/>", user.fullName());
+            if(!user.property(KUser::FullName).isValid()) userTooltip += i18n("<b>%1</b><br/>", user.property(KUser::FullName).toString());
 			userTooltip += i18n("Login Name: %1 (uid: %2)<br/>", user.loginName(), ps->uid);
-			if(!user.extendedProperty("roomnumber").isValid()) userTooltip += i18n("  Room Number: %1<br/>", user.extendedProperty("roomnumber").toString());
-			if(!user.extendedProperty("workphone").isValid()) userTooltip += i18n("  Work Phone: %1<br/>", user.extendedProperty("workphone").toString());
+            if(!user.property(KUser::RoomMumber).isValid()) userTooltip += i18n("  Room Number: %1<br/>", user.extendedProperty(KUser::RoomMumber).toString());
+            if(!user.roperty(KUser::WorkPhone).isValid()) userTooltip += i18n("  Work Phone: %1<br/>", user.extendedProperty(KUser::WorkPhone).toString());
 		}
 	}
 	if( (ps->uid != ps->euid && ps->euid != -1) || 
