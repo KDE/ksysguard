@@ -25,6 +25,8 @@
 #include <QCheckBox>
 #include <QHeaderView>
 
+#include <kdebug.h>
+
 #include "ProcessController.moc"
 #include "ProcessController.h"
 //#define DO_MODELCHECK

@@ -25,6 +25,7 @@
 
 #include <QtCore/QEvent>
 #include <QtCore/QHash>
+#include <QtCore/QStringList>
 #include <QtCore/QObject>
 
 #include "SensorAgent.h"

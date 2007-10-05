@@ -23,6 +23,7 @@
 #include <klocale.h>
 #include <QWidget>
 #include <QEvent>
+#include <kconfiggroup.h>
 
 #include "SensorShellAgent.h"
 #include "SensorSocketAgent.h"

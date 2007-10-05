@@ -35,6 +35,7 @@
 #include <signal.h>
 #include <sys/resource.h>
 #include <dirent.h>
+#include <stdlib.h>
 
 
 #define PROCESS_BUFFER_SIZE 1000

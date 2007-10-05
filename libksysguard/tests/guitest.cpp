@@ -21,6 +21,7 @@
 #include <QtCore>
 
 #include <klocale.h>
+#include <kdebug.h>
 #include <qtest_kde.h>
 
 #include <processui/ksysguardprocesslist.h>

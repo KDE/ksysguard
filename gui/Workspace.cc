@@ -61,7 +61,7 @@ void Workspace::saveProperties( KConfigGroup& cfg )
 
 void Workspace::readProperties( const KConfigGroup& cfg )
 {
-  kDebug() << "Reading from " << cfg.group();
+  kDebug() << "Reading from " << cfg.name();
   QStringList selectedSheets = cfg.readPathListEntry( "SelectedSheets" );
   kDebug() << "Selected Sheets = " << selectedSheets;
 
