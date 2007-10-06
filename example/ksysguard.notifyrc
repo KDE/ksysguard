@@ -2,9 +2,11 @@
 IconName=ksysguard
 Comment=KDE System Guard
 Comment[af]=KDE Stelsel Wag
+Comment[be]=Сістэмны вартаўнік KDE
 Comment[br]=Gward Reizhiad KDE
 Comment[cy]=Gwarchodwr Cysawd KDE
 Comment[da]=KDE Systemvagt
+Comment[el]=Φρουρός συστήματος KDE
 Comment[eo]=KDE-Sistemobservilo
 Comment[et]=KDE süsteemi valvur
 Comment[eu]=KDEren sistemaren kontrola
@@ -45,6 +47,7 @@ Comment[zh_TW]=KDE 系統守衛
 
 [Event/pattern_match]
 Name=Pattern Matched
+Name[el]=Ταίριασμα μοτίβου
 Name[ja]=パターンにマッチ
 Name[km]=លំនាំ​ដែល​ផ្គូផ្គង
 Name[nb]=Mønsteret traff
@@ -60,6 +63,7 @@ Name[zh_TW]=樣式已符合
 Comment=Search pattern matched
 Comment[af]=Soek patroon opgespoor
 Comment[da]=Søgemønsteret matchede
+Comment[el]=Υπάρχει ταίριασμα στο μοτίβο αναζήτησης
 Comment[eo]=Serĉoŝablonesprimo kunvenita
 Comment[et]=Otsingu muster sobib
 Comment[eu]=bilatutako eredua bat dator
@@ -96,6 +100,7 @@ Comment[zh_TW]=搜尋樣式比對符合
 
 [Event/sensor_alarm]
 Name=Sensor Alarm
+Name[el]=Ειδοποίηση αισθητήρα
 Name[ja]=センサーアラーム
 Name[km]=សំឡេង​រោទិ៍​ឧបករណ៍​ចាប់​សញ្ញា
 Name[nb]=Følervarsling
@@ -112,6 +117,7 @@ Comment=Sensor exceeded critical limit
 Comment[af]=Sensor oorskry krities beperk
 Comment[cy]=Aethpwyd dros gyfyngder critigol y synhwyrydd
 Comment[da]=Sensor gik ud over kritisk grænse
+Comment[el]=Υπέρβαση κρίσιμου ορίου αισθητήρα
 Comment[eo]=Sentilo transiris danĝeran limon
 Comment[et]=Sensor ületas kriitilise piiri
 Comment[eu]=Sensoreak bere muga kritikoa gainditu du
