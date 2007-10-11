@@ -271,7 +271,7 @@ updateNetStatTcpUdpRaw(const char *cmd)
 	char buffer[1024];
 	uint local_addr, local_port;
 	uint remote_addr, remote_port;
-	int uid, i;
+	int uid;
 	uint state;
 	SocketInfo *socket_info;
 
@@ -367,7 +367,7 @@ updateNetStatUnix(void)
 	FILE *file;
 	char buffer[1024];
 	char path[256];
-	int ref_count, type, state, inode, i;
+	int ref_count, type, state, inode;
 	UnixInfo *unix_info;
 
 	if ((file = fopen("/proc/net/unix", "r")) == NULL) {

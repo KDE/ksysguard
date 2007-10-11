@@ -336,6 +336,8 @@ void printThermalZoneTemperature(const char *cmd) {
 
 void printThermalZoneTemperatureInfo(const char *cmd)
 {
+	(void)cmd;
+
 	fprintf(CurrentClient, "Current temperature\t0\t0\tC\n");
 }
 
@@ -434,7 +436,7 @@ void printFanState(const char *cmd) {
 
 void printFanStateInfo(const char *cmd)
 {
+	(void)cmd;
+
 	fprintf(CurrentClient, "Fan status\t0\t1\tboolean\n");
 }
-
-

@@ -80,12 +80,7 @@ static struct timeval currSampling;
 static struct SensorModul* StatSM;
 
 static DiskLoadInfo* DiskLoad = 0;
-static unsigned DiskCount = 0;
 static DiskIOInfo* DiskIO = 0;
-static unsigned long PageIn = 0;
-static unsigned long OldPageIn = 0;
-static unsigned long PageOut = 0;
-static unsigned long OldPageOut = 0;
 
 static char IOStatBuf[ DISKSTATSBUFSIZE ];	/* Buffer for /proc/diskstats */
 static int Dirty = 0;
