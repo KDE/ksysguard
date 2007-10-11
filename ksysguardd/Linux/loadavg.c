@@ -57,6 +57,11 @@ void initLoadAvg( struct SensorModul* sm )
   registerMonitor( "cpu/system/loadavg1", "float", printLoadAvg1, printLoadAvg1Info, sm );
   registerMonitor( "cpu/system/loadavg5", "float", printLoadAvg5, printLoadAvg5Info, sm );
   registerMonitor( "cpu/system/loadavg15", "float", printLoadAvg15, printLoadAvg15Info, sm );
+
+  /* Register some legacy monitors. These will be hidden from the module list. */
+  registerLegacyMonitor( "cpu/loadavg1", "float", printLoadAvg1, printLoadAvg1Info, sm );
+  registerLegacyMonitor( "cpu/loadavg5", "float", printLoadAvg5, printLoadAvg5Info, sm );
+  registerLegacyMonitor( "cpu/loadavg15", "float", printLoadAvg15, printLoadAvg15Info, sm );
 }
 
 void exitLoadAvg( void )

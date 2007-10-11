@@ -78,7 +78,34 @@ void removeCommand( const char* command );
   @ref sm is a parameter to the sensor module object that is passed by
   the initXXX method.
  */
+void registerAnyMonitor( const char* monitor, const char* type, cmdExecutor ex,
+                      cmdExecutor iq, struct SensorModul* sm, int isLegacy );
+
+/**
+  Use this function to add a new monitior with the name @ref monitor
+  from the type @ref type.
+  It will be marked as non-legacy.
+  @ref ex is a pointer to the function that is called to get a value
+  and @ref iq is a pointer to the function that returns information
+  about this monitor.
+  @ref sm is a parameter to the sensor module object that is passed by
+  the initXXX method.
+ */
 void registerMonitor( const char* monitor, const char* type, cmdExecutor ex,
+                      cmdExecutor iq, struct SensorModul* sm );
+
+/**
+  Use this function to add a new monitior with the name @ref monitor
+  from the type @ref type. This monitor will be flagged as legacy,
+  which will forbid it from being listed by the 'modules' command.
+  The command will continue to function normally otherwise.
+  @ref ex is a pointer to the function that is called to get a value
+  and @ref iq is a pointer to the function that returns information
+  about this monitor.
+  @ref sm is a parameter to the sensor module object that is passed by
+  the initXXX method.
+ */
+void registerLegacyMonitor( const char* monitor, const char* type, cmdExecutor ex,
                       cmdExecutor iq, struct SensorModul* sm );
 
 /**

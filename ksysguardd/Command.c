@@ -36,6 +36,7 @@ typedef struct {
   cmdExecutor ex;
   char* type;
   int isMonitor;
+  int isLegacy;
   struct SensorModul* sm;
 } Command;
 
@@ -139,8 +140,8 @@ void removeCommand( const char* command )
   ReconfigureFlag = 1;
 }
 
-void registerMonitor( const char* command, const char* type, cmdExecutor ex,
-                      cmdExecutor iq, struct SensorModul* sm )
+void registerAnyMonitor( const char* command, const char* type, cmdExecutor ex,
+                      cmdExecutor iq, struct SensorModul* sm, int isLegacy )
 {
   /* Monitors are similar to regular commands except that every monitor
    * registers two commands. The first is the value request command and
@@ -156,6 +157,7 @@ void registerMonitor( const char* command, const char* type, cmdExecutor ex,
   cmd->type = (char*)malloc( strlen( type ) + 1 );
   strcpy( cmd->type, type );
   cmd->isMonitor = 1;
+  cmd->isLegacy = isLegacy;
   cmd->sm = sm;
   push_ctnr( CommandList, cmd );
 
@@ -169,6 +171,22 @@ void registerMonitor( const char* command, const char* type, cmdExecutor ex,
   cmd->sm = sm;
   cmd->type = 0;
   push_ctnr( CommandList, cmd );
+}
+
+void registerMonitor( const char* command, const char* type, cmdExecutor ex,
+                      cmdExecutor iq, struct SensorModul* sm )
+{
+  int legacyFlag = 0;
+
+  registerAnyMonitor( command, type, ex, iq, sm, legacyFlag );
+}
+
+void registerLegacyMonitor( const char* command, const char* type, cmdExecutor ex,
+                      cmdExecutor iq, struct SensorModul* sm )
+{
+  int legacyFlag = 1;
+
+  registerAnyMonitor( command, type, ex, iq, sm, legacyFlag );
 }
 
 void removeMonitor( const char* command )
@@ -229,7 +247,7 @@ void printMonitors( const char *c )
   (void)c;
 
   for ( cmd = first_ctnr( CommandList ); cmd; cmd = next_ctnr( CommandList ) ) {
-    if ( cmd->isMonitor )
+    if ( cmd->isMonitor && !cmd->isLegacy )
       fprintf(CurrentClient, "%s\t%s\n", cmd->command, cmd->type);
   }
 
