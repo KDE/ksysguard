@@ -33,7 +33,8 @@
 #include <err.h>
 #endif
 #include <signal.h>
-#include <unistd.h>  
+#include <unistd.h>
+#include <stdlib.h>
 
 
 
