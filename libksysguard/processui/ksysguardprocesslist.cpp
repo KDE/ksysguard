@@ -272,7 +272,7 @@ void KSysGuardProcessList::currentRowChanged(const QModelIndex &current)
 void KSysGuardProcessList::showProcessContextMenu(const QPoint &point){
 	d->mProcessContextMenu->clear();
 
-        QModelIndexList selectedIndexes = d->mUi->treeView->selectionModel()->selectedRows();
+	QModelIndexList selectedIndexes = d->mUi->treeView->selectionModel()->selectedRows();
         int numProcesses = selectedIndexes.size();
         
         if(numProcesses == 0) return;  //No processes selected, so no context menu
@@ -280,11 +280,11 @@ void KSysGuardProcessList::showProcessContextMenu(const QPoint &point){
         KSysGuard::Process *process = reinterpret_cast<KSysGuard::Process *> (d->mFilterModel.mapToSource(selectedIndexes.at(0)).internalPointer());
 
 
-        QAction *renice;
-        QAction *kill;
-        QAction *selectParent;
-        QAction *selectTracer;
-        QAction *resume;
+        QAction *renice = 0;
+        QAction *kill = 0;
+        QAction *selectParent = 0;
+        QAction *selectTracer = 0;
+        QAction *resume = 0;
         if(numProcesses != 1 || process->status != KSysGuard::Process::Zombie) {  //If the selected process is a zombie, don't bother offering renice and kill options
 
         	renice = new QAction(d->mProcessContextMenu);
@@ -320,8 +320,10 @@ void KSysGuardProcessList::showProcessContextMenu(const QPoint &point){
         }
 
 
-	QAction *result = d->mProcessContextMenu->exec(d->mUi->treeView->mapToGlobal(point));	
-	if(result == renice) {
+	QAction *result = d->mProcessContextMenu->exec(d->mUi->treeView->mapToGlobal(point));
+	if(result == 0) {
+		//Escape was pressed. Do nothing.
+	} else if(result == renice) {
 		reniceSelectedProcesses();
 	} else if(result == kill) {
 		killSelectedProcesses();
