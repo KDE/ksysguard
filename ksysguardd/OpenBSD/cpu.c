@@ -44,16 +44,17 @@ void
 initCpuInfo(struct SensorModul* sm)
 {
 	/* Total CPU load */
-	registerMonitor("cpu/system/user", "integer", printCPUUser,
-			printCPUUserInfo, sm);
-	registerMonitor("cpu/system/nice", "integer", printCPUNice,
-			printCPUNiceInfo, sm);
-	registerMonitor("cpu/system/sys", "integer", printCPUSys,
-			printCPUSysInfo, sm);
-	registerMonitor("cpu/system/idle", "integer", printCPUIdle,
-			printCPUIdleInfo, sm);
-	registerMonitor("cpu/interrupt", "integer", printCPUInterrupt,
-			printCPUInterruptInfo, sm);
+	registerMonitor("cpu/system/user", "integer", printCPUUser, printCPUUserInfo, sm);
+	registerMonitor("cpu/system/nice", "integer", printCPUNice, printCPUNiceInfo, sm);
+	registerMonitor("cpu/system/sys", "integer", printCPUSys, printCPUSysInfo, sm);
+	registerMonitor("cpu/system/idle", "integer", printCPUIdle, printCPUIdleInfo, sm);
+	registerMonitor("cpu/interrupt", "integer", printCPUInterrupt, printCPUInterruptInfo, sm);
+
+	/* Monitor names changed from kde3 => kde4. Remain compatible with legacy requests when possible. */
+	registerLegacyMonitor("cpu/user", "integer", printCPUUser, printCPUUserInfo, sm);
+	registerLegacyMonitor("cpu/nice", "integer", printCPUNice, printCPUNiceInfo, sm);
+	registerLegacyMonitor("cpu/sys", "integer", printCPUSys, printCPUSysInfo, sm);
+	registerLegacyMonitor("cpu/idle", "integer", printCPUIdle, printCPUIdleInfo, sm);
 
 	updateCpuInfo();
 }
@@ -61,6 +62,17 @@ initCpuInfo(struct SensorModul* sm)
 void
 exitCpuInfo(void)
 {
+	removeMonitor("cpu/system/user");
+	removeMonitor("cpu/system/nice");
+	removeMonitor("cpu/system/sys");
+	removeMonitor("cpu/system/idle");
+	removeMonitor("cpu/interrupt");
+	
+	/* These were registered as legacy monitors */
+	removeMonitor("cpu/user");
+	removeMonitor("cpu/nice");
+	removeMonitor("cpu/sys");
+	removeMonitor("cpu/idle");
 }
 
 int

@@ -297,15 +297,15 @@ static void cleanup24DiskList( void ) {
 			
 			/* Disk device has disappeared. We have to remove it from
 			* the list and unregister the monitors. */
-			sprintf( sensorName, "disk/%s_(%d:%d)26/total", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)24/total", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)26/rio", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)24/rio", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)26/wio", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)24/wio", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)26/rblk", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)24/rblk", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
-			sprintf( sensorName, "disk/%s_(%d:%d)26/wblk", ptr->devname, ptr->major, ptr->minor );
+			sprintf( sensorName, "disk/%s_(%d:%d)24/wblk", ptr->devname, ptr->major, ptr->minor );
 			removeMonitor( sensorName );
 			if ( last ) {
 				last->next = ptr->next;
@@ -492,6 +492,14 @@ void initStat( struct SensorModul* sm ) {
 			registerMonitor( "cpu/system/TotalLoad", "float", printCPUTotalLoad, printCPUTotalLoadInfo, StatSM );
 			registerMonitor( "cpu/system/idle", "float", printCPUIdle, printCPUIdleInfo, StatSM );
 			registerMonitor( "cpu/system/wait", "float", printCPUWait, printCPUWaitInfo, StatSM );
+
+			/* Monitor names changed from kde3 => kde4. Remain compatible with legacy requests when possible. */
+			registerLegacyMonitor( "cpu/user", "float", printCPUUser, printCPUUserInfo, StatSM );
+			registerLegacyMonitor( "cpu/nice", "float", printCPUNice, printCPUNiceInfo, StatSM );
+			registerLegacyMonitor( "cpu/sys", "float", printCPUSys, printCPUSysInfo, StatSM );
+			registerLegacyMonitor( "cpu/TotalLoad", "float", printCPUTotalLoad, printCPUTotalLoadInfo, StatSM );
+			registerLegacyMonitor( "cpu/idle", "float", printCPUIdle, printCPUIdleInfo, StatSM );
+			registerLegacyMonitor( "cpu/wait", "float", printCPUWait, printCPUWaitInfo, StatSM );
 		}
 		else if ( strncmp( "cpu", tag, 3 ) == 0 ) {
 			char cmdName[ 24 ];
@@ -608,6 +616,19 @@ void exitStat( void ) {
 	
 	free( Intr );
 	Intr = 0;
+	
+	removeMonitor("cpu/system/user");
+	removeMonitor("cpu/system/nice");
+	removeMonitor("cpu/system/sys");
+	removeMonitor("cpu/system/idle");
+	
+	/* Todo: Dynamically registered monitors (per cpu, per disk) are not removed yet) */
+	
+	/* These were registered as legacy monitors */
+	removeMonitor("cpu/user");
+	removeMonitor("cpu/nice");
+	removeMonitor("cpu/sys");
+	removeMonitor("cpu/idle");
 }
 	
 int updateStat( void ) {
@@ -1006,7 +1027,7 @@ void print24DiskIO( const char* cmd ) {
 	char name[ 17 ];
 	DiskIOInfo* ptr;
 	
-	sscanf( cmd, "disk/%[^_]_(%d:%d)26/%16s", devname, &major, &minor, name );
+	sscanf( cmd, "disk/%[^_]_(%d:%d)/%16s", devname, &major, &minor, name );
 	
 	if ( Dirty )
 		process24Stat();
@@ -1045,7 +1066,7 @@ void print24DiskIOInfo( const char* cmd ) {
 	char name[ 17 ];
 	DiskIOInfo* ptr = DiskIO;
 	
-	sscanf( cmd, "disk/%[^_]_(%d:%d)26/%16s", devname, &major, &minor, name );
+	sscanf( cmd, "disk/%[^_]_(%d:%d)/%16s", devname, &major, &minor, name );
 	
 	while ( ptr && ( ptr->major != major || ptr->minor != minor ) )
 		ptr = ptr->next;

@@ -39,16 +39,28 @@ double loadavg15 = 0.0;
 
 void initLoadAvg( struct SensorModul* sm ) {
 #ifdef HAVE_KSTAT
-	registerMonitor( "cpu/loadavg1", "float",
-					printLoadAvg1, printLoadAvg1Info, sm );
-	registerMonitor( "cpu/loadavg5", "float",
-					printLoadAvg5, printLoadAvg5Info, sm );
-	registerMonitor( "cpu/loadavg15", "float",
-					printLoadAvg15, printLoadAvg15Info, sm );
+	registerMonitor( "cpu/system/loadavg1", "float", printLoadAvg1, printLoadAvg1Info, sm );
+	registerMonitor( "cpu/system/loadavg5", "float", printLoadAvg5, printLoadAvg5Info, sm );
+	registerMonitor( "cpu/system/loadavg15", "float", printLoadAvg15, printLoadAvg15Info, sm );
+	
+	/* Monitor names changed from kde3 => kde4. Remain compatible with legacy requests when possible. */
+	registerLegacyMonitor( "cpu/loadavg1", "float", printLoadAvg1, printLoadAvg1Info, sm );
+	registerLegacyMonitor( "cpu/loadavg5", "float", printLoadAvg5, printLoadAvg5Info, sm );
+	registerLegacyMonitor( "cpu/loadavg15", "float", printLoadAvg15, printLoadAvg15Info, sm );
 #endif
 }
 
 void exitLoadAvg( void ) {
+#ifdef HAVE_KSTAT
+	removeMonitor("cpu/system/loadavg1");
+	removeMonitor("cpu/system/loadavg5");
+	removeMonitor("cpu/system/loadavg15");
+	
+	/* These were registered as legacy monitors */
+	removeMonitor("cpu/loadavg1");
+	removeMonitor("cpu/loadavg5");
+	removeMonitor("cpu/loadavg15");
+#endif
 }
 
 int updateLoadAvg( void ) {

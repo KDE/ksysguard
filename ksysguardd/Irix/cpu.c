@@ -70,12 +70,14 @@ initCpuInfo(struct SensorModul* sm)
 	g_ci = malloc(sizeof(struct cpu_info) * nCPUs);
 	memset(g_ci,0,sizeof(struct cpu_info) * nCPUs);
 
-	registerMonitor("cpu/system/user", "integer", printCPUUser,
-		printCPUUserInfo, sm);
-	registerMonitor("cpu/system/sys",  "integer", printCPUSys,
-		printCPUSysInfo, sm);
-	registerMonitor("cpu/system/idle", "integer", printCPUIdle,
-		printCPUIdleInfo, sm);
+	registerMonitor("cpu/system/user", "integer", printCPUUser, printCPUUserInfo, sm);
+	registerMonitor("cpu/system/sys",  "integer", printCPUSys, printCPUSysInfo, sm);
+	registerMonitor("cpu/system/idle", "integer", printCPUIdle, printCPUIdleInfo, sm);
+	
+	/* Monitor names changed from kde3 => kde4. Remain compatible with legacy requests when possible. */
+	registerLegacyMonitor("cpu/user", "integer", printCPUUser, printCPUUserInfo, sm);
+	registerLegacyMonitor("cpu/sys",  "integer", printCPUSys, printCPUSysInfo, sm);
+	registerLegacyMonitor("cpu/idle", "integer", printCPUIdle, printCPUIdleInfo, sm);
 
 	if (nCPUs > 1) for (i=0;i<nCPUs;i++){
 		/* indidividual CPU load */
@@ -96,6 +98,20 @@ initCpuInfo(struct SensorModul* sm)
 void
 exitCpuInfo(void)
 {
+	removeMonitor("cpu/system/user");
+	removeMonitor("cpu/system/nice");
+	removeMonitor("cpu/system/sys");
+	removeMonitor("cpu/system/idle");
+	
+	/* Todo: Dynamically registered monitors (per cpu, per disk) are not removed yet) */
+	
+	/* These were registered as legacy monitors */
+	removeMonitor("cpu/user");
+	removeMonitor("cpu/nice");
+	removeMonitor("cpu/sys");
+	removeMonitor("cpu/idle");
+	
+
 	free(g_ci);
 }
 
