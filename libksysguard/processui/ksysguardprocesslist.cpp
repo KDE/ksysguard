@@ -333,11 +333,13 @@ void KSysGuardProcessList::showProcessContextMenu(const QPoint &point){
                 QList< long long > pidlist;
                 pidlist << process->pid;
                 killProcesses(pidlist, SIGCONT);  //Despite the function name, this sends a signal, rather than kill it.  Silly unix :)
+                updateList();
 	}
 }
 
 void KSysGuardProcessList::selectAndJumpToProcess(int pid) {
         KSysGuard::Process *process = d->mModel.getProcess(pid);
+        if(!process) return;
         QModelIndex filterIndex = d->mFilterModel.mapFromSource( d->mModel.getQModelIndex(process, 0));
         d->mUi->treeView->clearSelection();
         d->mUi->treeView->setCurrentIndex(filterIndex);
