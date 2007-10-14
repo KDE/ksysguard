@@ -135,7 +135,7 @@ class ProgressBarItemDelegate : public QItemDelegate
 struct KSysGuardProcessListPrivate {
     
 	KSysGuardProcessListPrivate(KSysGuardProcessList* q) : mModel(q), mFilterModel(q), mUi(new Ui::ProcessWidget()) {}
-    	/** The column context menu when you right click on a column.*/
+	/** The column context menu when you right click on a column.*/
 	QMenu *mColumnContextMenu;
 	
 	/** The context menu when you right click on a process */
@@ -195,7 +195,7 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	connect(d->mUi->treeView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex & , const QModelIndex & )), this, SLOT(currentRowChanged(const QModelIndex &)));
 	setMinimumSize(sizeHint());
 
-        enum State {AllProcesses=0,AllProcessesInTreeForm, SystemProcesses, UserProcesses, OwnProcesses};
+	enum State {AllProcesses=0,AllProcessesInTreeForm, SystemProcesses, UserProcesses, OwnProcesses};
 
 	d->mUi->cmbFilter->setItemIcon(ProcessFilter::AllProcesses, KIcon("view-process-all"));
 	d->mUi->cmbFilter->setItemIcon(ProcessFilter::AllProcessesInTreeForm, KIcon("view-process-all-tree"));
@@ -241,7 +241,7 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 
 KSysGuardProcessList::~KSysGuardProcessList()
 {
-    delete d;
+	delete d;
 }
 
 QTreeView *KSysGuardProcessList::treeView() const {
@@ -273,51 +273,51 @@ void KSysGuardProcessList::showProcessContextMenu(const QPoint &point){
 	d->mProcessContextMenu->clear();
 
 	QModelIndexList selectedIndexes = d->mUi->treeView->selectionModel()->selectedRows();
-        int numProcesses = selectedIndexes.size();
+	int numProcesses = selectedIndexes.size();
         
-        if(numProcesses == 0) return;  //No processes selected, so no context menu
+	if(numProcesses == 0) return;  //No processes selected, so no context menu
 
-        KSysGuard::Process *process = reinterpret_cast<KSysGuard::Process *> (d->mFilterModel.mapToSource(selectedIndexes.at(0)).internalPointer());
+	KSysGuard::Process *process = reinterpret_cast<KSysGuard::Process *> (d->mFilterModel.mapToSource(selectedIndexes.at(0)).internalPointer());
 
 
-        QAction *renice = 0;
-        QAction *kill = 0;
-        QAction *selectParent = 0;
-        QAction *selectTracer = 0;
-        QAction *resume = 0;
-        if(numProcesses != 1 || process->status != KSysGuard::Process::Zombie) {  //If the selected process is a zombie, don't bother offering renice and kill options
+	QAction *renice = 0;
+	QAction *kill = 0;
+	QAction *selectParent = 0;
+	QAction *selectTracer = 0;
+	QAction *resume = 0;
+	if(numProcesses != 1 || process->status != KSysGuard::Process::Zombie) {  //If the selected process is a zombie, don't bother offering renice and kill options
 
-        	renice = new QAction(d->mProcessContextMenu);
-        	renice->setText(i18np("Renice Process...", "Renice Processes...", numProcesses));
-        	d->mProcessContextMenu->addAction(renice);
+		renice = new QAction(d->mProcessContextMenu);
+		renice->setText(i18np("Renice Process...", "Renice Processes...", numProcesses));
+		d->mProcessContextMenu->addAction(renice);
 
-                kill = new QAction(d->mProcessContextMenu);
-        	kill->setText(i18np("Kill Process", "Kill Processes", numProcesses));
-        	kill->setIcon(KIcon("stop"));
-        	d->mProcessContextMenu->addAction(kill);
-        }
+		kill = new QAction(d->mProcessContextMenu);
+		kill->setText(i18np("Kill Process", "Kill Processes", numProcesses));
+		kill->setIcon(KIcon("stop"));
+		d->mProcessContextMenu->addAction(kill);
+	}
 
-        if(numProcesses == 1 && process->parent_pid > 1) {
-                //As a design decision, I do not show the 'Jump to parent process' option when the 
-                //parent is just 'init'.
-                selectParent = new QAction(d->mProcessContextMenu);
-        	selectParent->setText(i18n("Jump to parent process"));
-        	d->mProcessContextMenu->addAction(selectParent);
-        }
+	if(numProcesses == 1 && process->parent_pid > 1) {
+		//As a design decision, I do not show the 'Jump to parent process' option when the 
+		//parent is just 'init'.
+		selectParent = new QAction(d->mProcessContextMenu);
+		selectParent->setText(i18n("Jump to parent process"));
+		d->mProcessContextMenu->addAction(selectParent);
+	}
 
-        if(numProcesses == 1 && process->tracerpid > 0) {
-                //If the process is being debugged, offer to select it
-                selectTracer = new QAction(d->mProcessContextMenu);
-        	selectTracer->setText(i18n("Jump to process debugging this one"));
-        	d->mProcessContextMenu->addAction(selectTracer);
-        }
+	if(numProcesses == 1 && process->tracerpid > 0) {
+		//If the process is being debugged, offer to select it
+		selectTracer = new QAction(d->mProcessContextMenu);
+		selectTracer->setText(i18n("Jump to process debugging this one"));
+		d->mProcessContextMenu->addAction(selectTracer);
+	}
         
-        if(numProcesses == 1 && process->status == KSysGuard::Process::Stopped) {
-                //If the process is being debugged, offer to select it
-                resume = new QAction(d->mProcessContextMenu);
-        	resume->setText(i18n("Resume stopped process"));
-        	d->mProcessContextMenu->addAction(resume);
-        }
+	if(numProcesses == 1 && process->status == KSysGuard::Process::Stopped) {
+		//If the process is being debugged, offer to select it
+		resume = new QAction(d->mProcessContextMenu);
+		resume->setText(i18n("Resume stopped process"));
+		d->mProcessContextMenu->addAction(resume);
+	}
 
 
 	QAction *result = d->mProcessContextMenu->exec(d->mUi->treeView->mapToGlobal(point));
@@ -328,25 +328,25 @@ void KSysGuardProcessList::showProcessContextMenu(const QPoint &point){
 	} else if(result == kill) {
 		killSelectedProcesses();
 	} else if(result == selectParent) {
-                selectAndJumpToProcess(process->parent_pid);
+		selectAndJumpToProcess(process->parent_pid);
 	} else if(result == selectTracer) {
-                selectAndJumpToProcess(process->tracerpid);
+		selectAndJumpToProcess(process->tracerpid);
 	} else if(result == resume) {
-                QList< long long > pidlist;
-                pidlist << process->pid;
-                killProcesses(pidlist, SIGCONT);  //Despite the function name, this sends a signal, rather than kill it.  Silly unix :)
-                updateList();
+		QList< long long > pidlist;
+		pidlist << process->pid;
+		killProcesses(pidlist, SIGCONT);  //Despite the function name, this sends a signal, rather than kill it.  Silly unix :)
+		updateList();
 	}
 }
 
 void KSysGuardProcessList::selectAndJumpToProcess(int pid) {
-        KSysGuard::Process *process = d->mModel.getProcess(pid);
-        if(!process) return;
-        QModelIndex filterIndex = d->mFilterModel.mapFromSource( d->mModel.getQModelIndex(process, 0));
-        d->mUi->treeView->clearSelection();
-        d->mUi->treeView->setCurrentIndex(filterIndex);
-        d->mUi->treeView->scrollTo( filterIndex, QAbstractItemView::PositionAtCenter);
-        
+	KSysGuard::Process *process = d->mModel.getProcess(pid);
+	if(!process) return;
+	QModelIndex filterIndex = d->mFilterModel.mapFromSource( d->mModel.getQModelIndex(process, 0));
+	d->mUi->treeView->clearSelection();
+	d->mUi->treeView->setCurrentIndex(filterIndex);
+	d->mUi->treeView->scrollTo( filterIndex, QAbstractItemView::PositionAtCenter);
+	
 }
 
 void KSysGuardProcessList::showColumnContextMenu(const QPoint &point){
@@ -399,8 +399,9 @@ void KSysGuardProcessList::expandAllChildren(const QModelIndex &parent)
 	//This is called when the user expands a node.  This then expands all of its 
 	//children.  This will trigger this function again recursively.
 	QModelIndex sourceParent = d->mFilterModel.mapToSource(parent);
-	for(int i = 0; i < d->mModel.rowCount(sourceParent); i++) 
+	for(int i = 0; i < d->mModel.rowCount(sourceParent); i++) {
 		d->mUi->treeView->expand(d->mFilterModel.mapFromSource(d->mModel.index(i,0, sourceParent)));
+	}
 }
 
 void KSysGuardProcessList::expandInit()
@@ -421,8 +422,10 @@ void KSysGuardProcessList::hideEvent ( QHideEvent * event )  //virtual protected
 void KSysGuardProcessList::showEvent ( QShowEvent * event )  //virtual protected from QWidget
 {
 	//Start updating the process list again if we are shown again
-	if(!d->mUpdateTimer->isActive()) 
+	if(!d->mUpdateTimer->isActive()) {
 		d->mUpdateTimer->start(d->mUpdateIntervalMSecs);
+	}
+	
 	QWidget::showEvent(event);
 }
 
@@ -450,8 +453,9 @@ void KSysGuardProcessList::reniceProcesses(const QList<long long> &pids, int nic
 	QList< long long> unreniced_pids;
         for (int i = 0; i < pids.size(); ++i) {
 		bool success = d->mModel.processController()->setNiceness(pids.at(i), niceValue);
-		if(!success)
+		if(!success) {
 			unreniced_pids << pids.at(i);
+		}
 	}
 	if(unreniced_pids.isEmpty()) return; //All processes were reniced successfully
 	if(!d->mModel.isLocalhost()) return; //We can't use kdesu to renice non-localhost processes
@@ -459,8 +463,9 @@ void KSysGuardProcessList::reniceProcesses(const QList<long long> &pids, int nic
 	QStringList arguments;
 	arguments << "--" << "renice" << QString::number(niceValue);
 
-        for (int i = 0; i < unreniced_pids.size(); ++i)
+        for (int i = 0; i < unreniced_pids.size(); ++i) {
 		arguments << QString::number(unreniced_pids.at(i));
+	}
 
 	QProcess *reniceProcess = new QProcess(NULL);
 	connect(reniceProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(reniceFailed()));
@@ -514,8 +519,9 @@ void KSysGuardProcessList::killProcesses(const QList< long long> &pids, int sig)
 	QList< long long> unkilled_pids;
         for (int i = 0; i < pids.size(); ++i) {
 		bool success = d->mModel.processController()->sendSignal(pids.at(i), sig);
-		if(!success)
+		if(!success) {
 			unkilled_pids << pids.at(i);
+		}
 	}
 	if(unkilled_pids.isEmpty()) return;
 	if(!d->mModel.isLocalhost()) return; //We can't use kdesu to kill non-localhost processes
@@ -523,11 +529,13 @@ void KSysGuardProcessList::killProcesses(const QList< long long> &pids, int sig)
 	//We must use kdesu to kill the process
 	QStringList arguments;
 	arguments << "--" << "kill";
-	if(sig != SIGTERM)
+	if(sig != SIGTERM) {
 		arguments << ('-' + QString::number(sig));
+	}
 
-        for (int i = 0; i < unkilled_pids.size(); ++i)
+        for (int i = 0; i < unkilled_pids.size(); ++i) {
 		arguments << QString::number(unkilled_pids.at(i));
+	}
 	
 	QProcess *killProcess = new QProcess(NULL);
 	connect(killProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(killFailed()));
@@ -559,7 +567,7 @@ void KSysGuardProcessList::killSelectedProcesses()
 				selectedAsStrings.count());
 
 		int res = KMessageBox::warningContinueCancelList(this, msg, selectedAsStrings,
-				                                 i18n("Kill Process"),
+								 i18n("Kill Process"),
 								 KGuiItem(i18n("Kill")),
 								 KStandardGuiItem::cancel(),
 								 "killconfirmation");
@@ -580,12 +588,12 @@ void KSysGuardProcessList::killSelectedProcesses()
 void KSysGuardProcessList::reniceFailed()
 {
 	KMessageBox::sorry(this, i18n("You do not have the permission to renice the process and there "
-                                      "was a problem trying to run as root"));
+					"was a problem trying to run as root"));
 }
 void KSysGuardProcessList::killFailed()
 {
 	KMessageBox::sorry(this, i18n("You do not have the permission to kill the process and there "
-                                "was a problem trying to run as root"));
+					"was a problem trying to run as root"));
 }
 
 bool KSysGuardProcessList::showTotals() const {
