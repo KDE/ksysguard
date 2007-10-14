@@ -106,6 +106,9 @@ public Q_SLOTS:
 	/** Set whether to show child totals for CPU and Memory etc usage */
 	void setShowTotals(bool showTotals);
 
+        /** Focus on a particular process, and select it */
+        void selectAndJumpToProcess(int pid);
+
 private Q_SLOTS:
 
 	/** Expand all the children, recursively, of the node given.  Pass an empty QModelIndex to expand all the top level children */

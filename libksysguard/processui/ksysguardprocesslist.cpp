@@ -51,7 +51,7 @@
 #include "processcore/processes.h"
 
 
-//Trolltech have a testing class for classes that inherit QAbstractItemModel.  If you want to run with this run-time testing enabled, put themodeltest.* files in this directory and uncomment the next line
+//Trolltech have a testing class for classes that inherit QAbstractItemModel.  If you want to run with this run-time testing enabled, put the modeltest.* files in this directory and uncomment the next line
 //#define DO_MODELCHECK
 #ifdef DO_MODELCHECK
 #include "modeltest.h"
@@ -272,21 +272,77 @@ void KSysGuardProcessList::currentRowChanged(const QModelIndex &current)
 void KSysGuardProcessList::showProcessContextMenu(const QPoint &point){
 	d->mProcessContextMenu->clear();
 
-	QAction *renice = new QAction(d->mProcessContextMenu);
-	renice->setText(i18n("Renice Process..."));
-	d->mProcessContextMenu->addAction(renice);
+        QModelIndexList selectedIndexes = d->mUi->treeView->selectionModel()->selectedRows();
+        int numProcesses = selectedIndexes.size();
+        
+        if(numProcesses == 0) return;  //No processes selected, so no context menu
 
-	QAction *kill = new QAction(d->mProcessContextMenu);
-	kill->setText(i18n("Kill Process"));
-	kill->setIcon(KIcon("stop"));
-	d->mProcessContextMenu->addAction(kill);
+        KSysGuard::Process *process = reinterpret_cast<KSysGuard::Process *> (d->mFilterModel.mapToSource(selectedIndexes.at(0)).internalPointer());
+
+
+        QAction *renice;
+        QAction *kill;
+        QAction *selectParent;
+        QAction *selectTracer;
+        QAction *resume;
+        if(numProcesses != 1 || process->status != KSysGuard::Process::Zombie) {  //If the selected process is a zombie, don't bother offering renice and kill options
+
+        	renice = new QAction(d->mProcessContextMenu);
+        	renice->setText(i18np("Renice Process...", "Renice Processes...", numProcesses));
+        	d->mProcessContextMenu->addAction(renice);
+
+                kill = new QAction(d->mProcessContextMenu);
+        	kill->setText(i18np("Kill Process", "Kill Processes", numProcesses));
+        	kill->setIcon(KIcon("stop"));
+        	d->mProcessContextMenu->addAction(kill);
+        }
+
+        if(numProcesses == 1 && process->parent_pid > 1) {
+                //As a design decision, I do not show the 'Jump to parent process' option when the 
+                //parent is just 'init'.
+                selectParent = new QAction(d->mProcessContextMenu);
+        	selectParent->setText(i18n("Jump to parent process"));
+        	d->mProcessContextMenu->addAction(selectParent);
+        }
+
+        if(numProcesses == 1 && process->tracerpid > 0) {
+                //If the process is being debugged, offer to select it
+                selectTracer = new QAction(d->mProcessContextMenu);
+        	selectTracer->setText(i18n("Jump to process debugging this one"));
+        	d->mProcessContextMenu->addAction(selectTracer);
+        }
+        
+        if(numProcesses == 1 && process->status == KSysGuard::Process::Stopped) {
+                //If the process is being debugged, offer to select it
+                resume = new QAction(d->mProcessContextMenu);
+        	resume->setText(i18n("Resume stopped process"));
+        	d->mProcessContextMenu->addAction(resume);
+        }
+
 
 	QAction *result = d->mProcessContextMenu->exec(d->mUi->treeView->mapToGlobal(point));	
 	if(result == renice) {
 		reniceSelectedProcesses();
 	} else if(result == kill) {
 		killSelectedProcesses();
+	} else if(result == selectParent) {
+                selectAndJumpToProcess(process->parent_pid);
+	} else if(result == selectTracer) {
+                selectAndJumpToProcess(process->tracerpid);
+	} else if(result == resume) {
+                QList< long long > pidlist;
+                pidlist << process->pid;
+                killProcesses(pidlist, SIGCONT);  //Despite the function name, this sends a signal, rather than kill it.  Silly unix :)
 	}
+}
+
+void KSysGuardProcessList::selectAndJumpToProcess(int pid) {
+        KSysGuard::Process *process = d->mModel.getProcess(pid);
+        QModelIndex filterIndex = d->mFilterModel.mapFromSource( d->mModel.getQModelIndex(process, 0));
+        d->mUi->treeView->clearSelection();
+        d->mUi->treeView->setCurrentIndex(filterIndex);
+        d->mUi->treeView->scrollTo( filterIndex, QAbstractItemView::PositionAtCenter);
+        
 }
 
 void KSysGuardProcessList::showColumnContextMenu(const QPoint &point){

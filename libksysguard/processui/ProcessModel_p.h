@@ -89,11 +89,7 @@ public:
 	void setupProcesses();
         /** A mapping of running,stopped,etc  to a friendly description like 'Stopped, either by a job control signal or because it is being traced.'*/
 	QString getStatusDescription(KSysGuard::Process::ProcessStatus status) const;
-	/** This returns a QModelIndex for the given process.  It has to look up the parent for this pid, find the offset this 
-	 *  pid is from the parent, and return that.  It's not that slow, but does involve a couple of hash table lookups.
-	 */
-	QModelIndex getQModelIndex ( KSysGuard::Process *process, int column) const;
-	
+		
 	/** Return a qt markup tooltip string for a local user.  It will have their full name etc.
 	 *  This will be slow the first time, as it practically indirectly reads the whole of /etc/passwd
 	 *  But the second time will be as fast as hash lookup as we cache the result

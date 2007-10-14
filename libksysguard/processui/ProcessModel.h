@@ -83,6 +83,11 @@ public:
 	/** Returns the total amount of physical memory in the machine. */
 	long long totalMemory() const;
 
+        /** This returns a QModelIndex for the given process.  It has to look up the parent for this pid, find the offset this 
+	 *  pid is from the parent, and return that.  It's not that slow, but does involve a couple of hash table lookups.
+	 */
+	QModelIndex getQModelIndex ( KSysGuard::Process *process, int column) const;
+
 	/** Whether this is showing the processes for the current machine
 	 */
 	bool isLocalhost() const;

@@ -359,7 +359,7 @@ void ProcessModelPrivate::beginInsertRow( KSysGuard::Process *process)
 
 	//Deal with the case that we are showing it as a tree
 	int row = process->parent->children.count();
-	QModelIndex parentModelIndex = getQModelIndex(process->parent, 0);
+	QModelIndex parentModelIndex = q->getQModelIndex(process->parent, 0);
 
 	//Only here can we actually change the model.  First notify the view/proxy models then modify
 	q->beginInsertRows(parentModelIndex, row, row);
@@ -386,7 +386,7 @@ void ProcessModelPrivate::beginRemoveRow( KSysGuard::Process *process )
 			return;
 		}
 
-		return q->beginRemoveRows(getQModelIndex(process->parent,0), row, row);
+		return q->beginRemoveRows(q->getQModelIndex(process->parent,0), row, row);
 	}
 }
 void ProcessModelPrivate::endRemoveRow() 
@@ -421,19 +421,19 @@ void ProcessModelPrivate::endMoveRow()
 }
 
 
-QModelIndex ProcessModelPrivate::getQModelIndex( KSysGuard::Process *process, int column) const
+QModelIndex ProcessModel::getQModelIndex( KSysGuard::Process *process, int column) const
 {
 	Q_ASSERT(process);
 	int pid = process->pid;
 	if(pid == 0) return QModelIndex(); //pid 0 is our fake process meaning the very root (never drawn).  To represent that, we return QModelIndex() which also means the top element
 	int row = 0;
-        if(mSimple) {
+        if(d->mSimple) {
 		row = process->index;
 	} else {
 		row = process->parent->children.indexOf(process);
 	}
 	Q_ASSERT(row != -1);
-	return q->createIndex(row, column, process);
+	return createIndex(row, column, process);
 }
 
 QModelIndex ProcessModel::parent ( const QModelIndex & index ) const
@@ -445,7 +445,7 @@ QModelIndex ProcessModel::parent ( const QModelIndex & index ) const
         if(d->mSimple)
 		return QModelIndex();
 	else 
-		return d->getQModelIndex(process->parent,0);
+		return getQModelIndex(process->parent,0);
 }
 
 QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
