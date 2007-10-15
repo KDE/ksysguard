@@ -159,7 +159,7 @@ struct KSysGuardProcessListPrivate {
 	QTimer *mUpdateTimer;
 
 	/** A timer to rapidly pulse a process being killed */
-	QTimer *mPulseTimer;
+	//QTimer *mPulseTimer;
 };
 
 KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
