@@ -451,6 +451,33 @@ QModelIndex ProcessModel::parent ( const QModelIndex & index ) const
 QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
                                   int role) const
 {
+	if (role == Qt::ToolTipRole) {
+
+		switch(section) {
+		    case HeadingName:
+			return i18n("The process name");
+		    case HeadingUser:
+			return i18n("The user that owns this process");
+		    case HeadingTty:
+			return i18n("The controlling terminal that this process is running on.");
+		    case HeadingNiceness:
+			return i18n("The priority that this process is being run with.  Ranges from 19 (very nice, least priority) to -19 (top priority)");
+		    case HeadingCPUUsage:
+			return i18n("The CPU usage that this process is currently using.  This can be greater than 100% if you have more than one processor.");
+		    case HeadingVmSize:
+			return i18n("<qt>This is the amount of virtual memory space that the process is using, included shared libraries, graphics memory, files on disk, and so on.  This number is almost meaningless.</qt>");
+		    case HeadingMemory:
+			return i18n("<qt>This is the amount of real physical memory that this process is using by itself.  It does not include any swapped out memory, nor the code size of its shared libraries.  This is often the most useful figure to judge the memory use of a program.</qt>");
+		    case HeadingSharedMemory:
+			return i18n("<qt>This is the amount of real physical memory that this process's shared libraries are using.  This memory is shared among all processes that use this library</qt>");
+		    case HeadingCommand:
+			return i18n("<qt>The command that this process was launched with</qt>");
+		    case HeadingXTitle:
+			return i18n("<qt>The title of any windows that this process is showing</qt>");
+		    default:
+			return QVariant();
+		}
+	}
 	if (role != Qt::DisplayRole)
 		return QVariant();
 	if(orientation != Qt::Horizontal)
@@ -774,16 +801,12 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			return tooltip;
 		}
 		case HeadingVmSize: {
-			QString tooltip = i18n("<qt>This is the amount of virtual memory space that the process is using, included shared libraries, graphics memory, files on disk, and so on.  This number is almost meaningless.</qt>");
-			return tooltip;
+			return QVariant();
 		}
 		case HeadingMemory: {
-			QString tooltip;
-			if(process->vmURSS == -1)
+			QString tooltip = "<qt>";
+			if(process->vmURSS != -1) {
 				//We don't have information about the URSS, so just fallback to RSS
-				tooltip = i18n("<qt>This is the amount of real physical memory that this process is using.  It does not include any swapped out memory, but does include the code size for shared libraries etc.<br /><br /></qt>");
-			else {
-				tooltip = i18n("<qt>This is the amount of real physical memory that this process is using by itself.  It does not include any swapped out memory, nor the code size of its shared libraries.  This is often the most useful figure to judge the memory use of a program.<br /><br /></qt>");
 				if(d->mMemTotal > 0)
 					tooltip += i18n("Memory usage: %1 out of %2  (%3 %)<br />", KGlobal::locale()->formatByteSize(process->vmURSS * 1024), KGlobal::locale()->formatByteSize(d->mMemTotal*1024), process->vmURSS*100/d->mMemTotal);
 				else
@@ -798,11 +821,11 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 		case HeadingSharedMemory: {
 			if(process->vmURSS == -1)
 				return i18n("<qt>Your system does not seem to have this information for us to read, sorry.</qt>");
-			QString tooltip = i18n("<qt>This is the amount of real physical memory that this process's shared libraries are using.  This memory is shared among all processes that use this library</qt>");
+			QString tooltip = "<qt>";
 			if(d->mMemTotal >0)
-				tooltip += i18n("<br /><br />Shared library memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize((process->vmRSS - process->vmURSS) * 1024), KGlobal::locale()->formatByteSize(d->mMemTotal*1024), (process->vmRSS-process->vmURSS)*100/d->mMemTotal);
+				tooltip += i18n("Shared library memory usage: %1 out of %2  (%3 %)", KGlobal::locale()->formatByteSize((process->vmRSS - process->vmURSS) * 1024), KGlobal::locale()->formatByteSize(d->mMemTotal*1024), (process->vmRSS-process->vmURSS)*100/d->mMemTotal);
 			else
-				tooltip += i18n("<br /><br />Shared library memory usage: %1", KGlobal::locale()->formatByteSize((process->vmRSS - process->vmURSS) * 1024));
+				tooltip += i18n("Shared library memory usage: %1", KGlobal::locale()->formatByteSize((process->vmRSS - process->vmURSS) * 1024));
 
 			return tooltip;
 		}
