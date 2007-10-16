@@ -29,6 +29,7 @@
 #include <sys/resource.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/wait.h> /* for wait :) */
 
 #include "../../gui/SignalIDs.h"
 #include "Command.h"
@@ -41,6 +42,8 @@
 #define BUFSIZE 1024
 #define TAGSIZE 32
 #define KDEINITLEN sizeof( "kdeinit: " )
+
+#define IONICEBUFSIZE (1 * 1024)
 
 #ifndef bool
 #define bool char
@@ -83,6 +86,10 @@ typedef struct {
 
   /* The scheduling priority. */
   int priority;
+
+  /* The i/o scheduling class and priority. */
+  int ioPriorityClass;
+  int ioPriority;
 
   /**
     The total amount of virtual memory space that this process uses. This includes shared and
@@ -134,6 +141,8 @@ typedef struct {
   char userName[ 32 ];
 
 } ProcessInfo;
+
+void getIOnice( int pid, ProcessInfo *ps );
 
 static unsigned ProcessCount;
 static DIR* procDir;
@@ -311,6 +320,9 @@ static bool getProcess( int pid, ProcessInfo *ps )
   strncpy( ps->userName, uName, sizeof( ps->userName ) - 1 );
   ps->userName[ sizeof( ps->userName ) - 1 ] = '\0';
   validateStr( ps->userName );
+
+  getIOnice(pid, ps);
+
   return true;
 }
 
@@ -327,16 +339,104 @@ void printProcessList( const char* cmd)
       long pid;
       pid = atol( entry->d_name );
       if(getProcess( pid, &ps ))
-        fprintf( CurrentClient, "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%lu\t%s\t%ld\t%s\t%s\n",
+        fprintf( CurrentClient, "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%lu\t%s\t%ld\t%s\t%s\t%d\t%d\n",
 	     ps.name, pid, (long)ps.ppid,
              (long)ps.uid, (long)ps.gid, ps.status, ps.userTime,
              ps.sysTime, ps.niceLevel, ps.vmSize, ps.vmRss, ps.vmURss,
-             ps.userName, (long)ps.tracerpid, ps.tty, ps.cmdline
+             ps.userName, (long)ps.tracerpid, ps.tty, ps.cmdline, ps.ioPriorityClass, ps.ioPriority
 	     );
     }
   }
   fprintf( CurrentClient, "\n" );
   return;
+}
+
+void getIOnice( int pid, ProcessInfo *ps ) {
+	/* This is where we find out ioPriorityClass and ioPriority by forking to run ionice */
+
+	/* Initialize these to -1 in case we don't find a value for them */
+	ps->ioPriorityClass = -1;
+	ps->ioPriority = -1;
+
+	int fd[2];
+	pid_t ChildPID;
+	ssize_t nbytes;
+	
+	char pidName[11]; /* We'll assume that log(pid) < 10. Not a problem with up to 32 bit pids. */
+	char format[ 32 ];
+	char lineBuf[ 1024 ];
+	char ioniceBuf[ IONICEBUFSIZE ];	/* Buffer for ionice -p */
+	char* ioniceBufP;
+	char schedClass[ 32 ];
+
+	/* Create a pipe */
+	if(pipe(fd) == -1)
+	{
+		perror("Could not create a pipe to launch ionice.");
+		exit(1);
+	}
+
+	/* Fork */
+	if((ChildPID = fork()) == -1)
+	{
+		perror("Could not fork to launch ionice.");
+		exit(1);
+	}
+
+	/* Child will execute the program, parent will listen. */
+
+	if (ChildPID == 0) {
+	/* Child process */
+
+		/* Child will execute the program, parent will listen. */
+		/* Close stdout, duplicate the input side of pipe to stdout */
+		dup2(fd[1], 1);
+		/* Close output side of pipe */
+		close(fd[0]);
+		close(2);
+
+		snprintf( pidName, sizeof( pidName ), "%d", pid );
+		execl ("/usr/bin/ionice", "ionice", "-p", pidName, (char *)0);
+		exit(0); /* In case /usr/bin/ionice isn't found */
+		/* Child is now dead, as per our request */
+	}
+	
+	/* Parent process */
+	
+	/* Close input side of pipe */
+	close(fd[1]);
+
+	waitpid( ChildPID, 0, 0);
+	
+	/* Fill mdadmStatBuf with pipe's output */
+	nbytes = read( fd[0], ioniceBuf, IONICEBUFSIZE-1 );
+        if (nbytes >= 0)
+	   ioniceBuf[nbytes] = '\0';
+
+	/* Now parse ioniceBuf. We only want the first line. */
+	sprintf( format, "%%%d[^\n]\n", (int)sizeof( lineBuf ) - 1 );
+	ioniceBufP = ioniceBuf;
+	if (sscanf(ioniceBufP, format, lineBuf) != EOF) {
+		lineBuf[sizeof(lineBuf) - 1] = '\0';
+		
+		if ( sscanf(lineBuf, "%31s prio %d", schedClass, &ps->ioPriority) == 2 ) {
+			/* The scheduling class. 1 for real time, 2 for best-effort, 3 for idle. */
+
+			if(strncmp(schedClass, "none:", 31) == 0) {
+				/* If none, then class wasn't set. The default is best-effort. */
+				ps->ioPriorityClass = 2;
+			}
+			else if(strncmp(schedClass, "realtime:", 31) == 0) {
+				ps->ioPriorityClass = 1;
+			}
+			else if(strncmp(schedClass, "best-effort:", 31) == 0) {
+				ps->ioPriorityClass = 2;
+			}
+			else if(strncmp(schedClass, "idle:", 31) == 0) {
+				ps->ioPriorityClass = 3;
+			}
+		}
+	}
 }
 
 /*
@@ -407,8 +507,8 @@ void printProcessListInfo( const char* cmd )
 {
   (void)cmd;
   fprintf( CurrentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser Time\tSystem Time\tNice\tVmSize"
-                          "\tVmRss\tVmURss\tLogin\tTracerPID\tTTY\tCommand\n" );
-  fprintf( CurrentClient, "s\td\td\td\td\tS\td\td\td\tD\tD\tD\ts\td\ts\ts\n" );
+                          "\tVmRss\tVmURss\tLogin\tTracerPID\tTTY\tCommand\tIO Priority Class\tIO Priority\n" );
+  fprintf( CurrentClient, "s\td\td\td\td\tS\td\td\td\tD\tD\tD\ts\td\ts\ts\td\td\n" );
 }
 
 void printProcessCount( const char* cmd )
