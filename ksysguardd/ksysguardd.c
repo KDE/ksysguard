@@ -154,7 +154,11 @@ static int createLockFile()
     fseek( file, 0, SEEK_SET );
     fprintf( file, "%d\n", getpid() );
     fflush( file );
-    ftruncate( fileno( file ), ftell( file ) );
+    if (ftruncate( fileno( file ), ftell( file ) ) == -1) {
+      log_error( "Cannot set size of lockfile '%s'", LockFile );
+      fprintf( stderr, "Cannot set size of lockfile '%s'\n", LockFile );
+      return -2;
+    }
   } else {
     log_error( "Cannot create lockfile '%s'", LockFile );
     fprintf( stderr, "Cannot create lockfile '%s'\n", LockFile );
