@@ -463,6 +463,7 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 		    case HeadingNiceness:
 			return i18n("The priority that this process is being run with.  Ranges from 19 (very nice, least priority) to -19 (top priority)");
 		    case HeadingCPUUsage:
+			// xgettext: no-c-format
 			return i18n("The CPU usage that this process is currently using.  This can be greater than 100% if you have more than one processor.");
 		    case HeadingVmSize:
 			return i18n("<qt>This is the amount of virtual memory space that the process is using, included shared libraries, graphics memory, files on disk, and so on.  This number is almost meaningless.</qt>");
