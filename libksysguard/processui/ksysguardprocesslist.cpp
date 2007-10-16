@@ -301,7 +301,7 @@ void KSysGuardProcessList::showProcessContextMenu(const QPoint &point){
 		//As a design decision, I do not show the 'Jump to parent process' option when the 
 		//parent is just 'init'.
 		selectParent = new QAction(d->mProcessContextMenu);
-		selectParent->setText(i18n("Jump to parent process"));
+		selectParent->setText(i18n("Jump to Parent Process"));
 		d->mProcessContextMenu->addAction(selectParent);
 	}
 
