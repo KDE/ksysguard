@@ -214,7 +214,11 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 	char* mdadmStatBufP;
 
 	/* Create a pipe */
-	pipe(fd);
+	if(pipe(fd) == -1)
+	{
+		perror("Could not create a pipe to launch mdadm.");
+		exit(1);
+	}
 
 	/* Fork */
 	if((ChildPID = fork()) == -1)
