@@ -258,6 +258,14 @@ bool ProcessesLocal::setNiceness(long pid, int priority) {
     return true;
 }
 
+bool ProcessesLocal::setIoNiceness(long pid, int priorityClass, int priority) {
+    return false; //Not yet supported
+}
+
+bool ProcessesLocal::supportsIoNiceness() {
+    return false;
+}
+
 long long ProcessesLocal::totalPhysicalMemory() {
 
     size_t Total;

@@ -350,23 +350,16 @@ bool ProcessesLocal::Private::getIoNice(long pid, Process *process) {
 #ifdef HAVE_IONICE
   int ioprio = ioprio_get(IOPRIO_WHO_PROCESS, pid);  /* Returns from 0 to 7 for the iopriority, and -1 if there's an error */
   if(ioprio == -1) {
-	  process->ioPriority = -1;
-	  process->ioPriorityClass = -1;
+	  process->ioniceLevel = -1;
+	  process->ioPriorityClass = KSysGuard::Process::None;
 	  return false; /* Error. Just give up. */
   }
-  process->ioPriority = ioprio & 0xff;  /* Bottom few bits are the priority */
-  process->ioPriorityClass = ioprio >> IOPRIO_CLASS_SHIFT; /* Top few bits are the class */
+  process->ioniceLevel = ioprio & 0xff;  /* Bottom few bits are the priority */
+  process->ioPriorityClass = (KSysGuard::Process::IoPriorityClass)(ioprio >> IOPRIO_CLASS_SHIFT); /* Top few bits are the class */
 #else
   return false;  /* Do nothing, if we do not support this architecture */
 #endif
   return true;
-
-    KSysGuard::Process::IoPriorityClass priorityClass, int priority) {
-    if (ioprio_get(IOPRIO_WHO_PROCESS, pid, priority | priorityClass << IOPRIO_CLASS_SHIFT) == -1) {
-	    //set io niceness failed
-	    return false;
-    }
-    return true;
 }
 
 bool ProcessesLocal::updateProcessInfo( long pid, Process *process)
@@ -407,12 +400,24 @@ bool ProcessesLocal::setNiceness(long pid, int priority) {
     }
     return true;
 }
-bool ProcessesLocal::setIoNiceness(long pid, KSysGuard::Process::IoPriorityClass priorityClass, int priority) {
+bool ProcessesLocal::setIoNiceness(long pid, int priorityClass, int priority) {
+#ifdef HAVE_IONICE
     if (ioprio_set(IOPRIO_WHO_PROCESS, pid, priority | priorityClass << IOPRIO_CLASS_SHIFT) == -1) {
 	    //set io niceness failed
 	    return false;
     }
     return true;
+#else
+    return false;
+#endif
+}
+
+bool ProcessesLocal::supportsIoNiceness() {
+#ifdef HAVE_IONICE
+    return true;
+#else
+    return false;
+#endif
 }
 
 long long ProcessesLocal::totalPhysicalMemory() {

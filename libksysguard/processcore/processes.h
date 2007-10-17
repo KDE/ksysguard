@@ -120,6 +120,11 @@ namespace KSysGuard
 	 */
 	bool setIoNiceness(long pid, KSysGuard::Process::IoPriorityClass priorityClass, int priority);
 
+	/**
+	 *  Returns true if ionice is supported on this system
+	 */
+	bool supportsIoNiceness();
+
 	/** 
 	 *  Return the internal pointer of all the processes.  The order of the processes 
 	 *  is guaranteed to never change.  Call updateAllProcesses first to actually

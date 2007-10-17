@@ -37,6 +37,8 @@ namespace KSysGuard
 	virtual bool sendSignal(long pid, int sig);
         virtual bool setNiceness(long pid, int priority);
 	virtual long long totalPhysicalMemory();
+	virtual bool setIoNiceness(long pid, int priorityClass, int priority);
+	virtual bool supportsIoNiceness();
 
       private:
 	/**

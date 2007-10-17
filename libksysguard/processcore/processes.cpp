@@ -92,7 +92,7 @@ Processes *Processes::getInstance(const QString &host) { //static
     }
 }
 
-void Processes::returnInstance(const QString &host) { //static
+void Processes::returnInstance(const QString &/*host*/) { //static
 	//Implement - we need reference counting etc
 }
 Processes::Processes(AbstractProcesses *abstractProcesses) : d(new Private())
@@ -314,6 +314,14 @@ bool Processes::sendSignal(long pid, int sig) {
 
 bool Processes::setNiceness(long pid, int priority) {
     return d->mAbstractProcesses->setNiceness(pid, priority);
+}
+
+bool Processes::setIoNiceness(long pid, KSysGuard::Process::IoPriorityClass priorityClass, int priority) {
+    return d->mAbstractProcesses->setIoNiceness(pid, priorityClass, priority);
+}
+
+bool Processes::supportsIoNiceness() { 
+    return d->mAbstractProcesses->supportsIoNiceness();
 }
 
 long long Processes::totalPhysicalMemory() {

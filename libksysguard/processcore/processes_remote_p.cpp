@@ -63,6 +63,14 @@ bool ProcessesRemote::setNiceness(long pid, int priority) {
     return false;
 }
 
+bool ProcessesRemote::setIoNiceness(long pid, int priorityClass, int priority) {
+    return false; //Not yet supported
+}
+
+bool ProcessesRemote::supportsIoNiceness() {
+    return false;
+}
+
 long long ProcessesRemote::totalPhysicalMemory() {
     return 0;
 }

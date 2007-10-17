@@ -70,5 +70,7 @@ void KSysGuard::Process::clear() {
 	vmURSS = 0; 
 	status=OtherStatus;
 	parent = NULL;
+	ioPriorityClass = None;
+	ioniceLevel = -1;
 }
 

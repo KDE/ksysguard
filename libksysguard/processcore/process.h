@@ -32,8 +32,8 @@ namespace KSysGuard
 
   class KDE_EXPORT Process {
     public:
-	typedef enum { Running, Sleeping, DiskSleep, Zombie, Stopped, Paging, OtherStatus } ProcessStatus;
-	typedef enum { None, RealTime, BestEffort, Idle } IoPriorityClass;
+	enum ProcessStatus { Running, Sleeping, DiskSleep, Zombie, Stopped, Paging, OtherStatus };
+	enum IoPriorityClass { None, RealTime, BestEffort, Idle };
         Process();
         Process(long long _pid, long long _ppid, Process *_parent);
 
@@ -82,8 +82,6 @@ namespace KSysGuard
 	QString translatedStatus() const;  /// Returns a translated string of the status. e.g. "Running" etc
 	QString niceLevelAsString() const; /// Returns a simple translated string of the nice priority.  e.g. "Normal", "High", etc
         
-	
-
 	int index;  /// Each process has a parent process.  Each sibling has a unique number to identify it under that parent.  This is that number.
 
   private:

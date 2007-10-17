@@ -85,6 +85,20 @@ namespace KSysGuard
 	 *  Returns 0 on error
 	 */
 	virtual long long totalPhysicalMemory() = 0;
+
+	/**
+	 *  Set the io priority for a process.  This is from 7 (very nice, lowest io priority) to
+	 *  0 (highest priority).  The default value is determined as: io_nice = (cpu_nice + 20) / 5.
+	 *
+	 *  @return false if you do not have permission to set the priority
+	 */
+	virtual bool setIoNiceness(long pid, int priorityClass, int priority) = 0;
+
+	/**
+	 *  Returns true if ionice is supported on this system
+	 */
+	virtual bool supportsIoNiceness() = 0;
+
     };
 }
 
