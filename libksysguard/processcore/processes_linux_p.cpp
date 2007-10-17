@@ -47,7 +47,6 @@ extern int sys_ioprio_set(int, int, int);
 extern int sys_ioprio_get(int, int);
 
 #define HAVE_IONICE
-
 /* Check if this system has ionice */
 #if !defined(SYS_ioprio_get) || !defined(SYS_ioprio_set)
 /* All new kernels have SYS_ioprio_get and _set defined, but for the few that do not, here are the definitions */
@@ -64,7 +63,7 @@ extern int sys_ioprio_get(int, int);
 #define __NR_ioprio_set         1274
 #define __NR_ioprio_get         1275
 #else
-#warn "This architecture does not support IONICE.  Disabling ionice feature."
+#warning "This architecture does not support IONICE.  Disabling ionice feature."
 #undef HAVE_IONICE
 #endif
 /* Map these to SYS_ioprio_get */
