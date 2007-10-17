@@ -68,7 +68,7 @@ extern int sys_ioprio_get(int, int);
 #define __NR_ioprio_set         1274
 #define __NR_ioprio_get         1275
 #else
-#warn "This architecture does not support IONICE.  Disabling ionice feature."
+#warning "This architecture does not support IONICE.  Disabling ionice feature."
 #undef HAVE_IONICE
 #endif
 /* Map these to SYS_ioprio_get */
