@@ -50,7 +50,7 @@
 extern int sys_ioprio_set(int, int, int);
 extern int sys_ioprio_get(int, int);
 
-#define HAS_IONICE
+#define HAVE_IONICE
 
 /* Check if this system has ionice */
 #if !defined(SYS_ioprio_get) || !defined(SYS_ioprio_set)
@@ -69,7 +69,7 @@ extern int sys_ioprio_get(int, int);
 #define __NR_ioprio_get         1275
 #else
 #warn "This architecture does not support IONICE.  Disabling ionice feature."
-#undef HAS_IONICE
+#undef HAVE_IONICE
 #endif
 /* Map these to SYS_ioprio_get */
 #define SYS_ioprio_get                __NR_ioprio_get
@@ -78,13 +78,13 @@ extern int sys_ioprio_get(int, int);
 #endif /* !SYS_ioprio_get */
 
 /* Set up ionice functions */
-#ifdef HAS_IONICE
+#ifdef HAVE_IONICE
 #define IOPRIO_WHO_PROCESS 1
 #define IOPRIO_CLASS_SHIFT 13
 
 /* Expose the kernel calls to usespace via syscall
  * See man ioprio_set  and man ioprio_get   for information on these functions */
-static int iopri_set(int which, int who, int ioprio)
+static int ioprio_set(int which, int who, int ioprio)
 {
   return syscall(SYS_ioprio_set, which, who, ioprio);
 }
@@ -194,6 +194,7 @@ typedef struct {
 } ProcessInfo;
 
 void getIOnice( int pid, ProcessInfo *ps );
+void ioniceProcess( const char* cmd );
 
 static unsigned ProcessCount;
 static DIR* procDir;
@@ -403,7 +404,7 @@ void printProcessList( const char* cmd)
 }
 
 void getIOnice( int pid, ProcessInfo *ps ) {
-#ifdef HAS_IONICE
+#ifdef HAVE_IONICE
   int ioprio = ioprio_get(IOPRIO_WHO_PROCESS, pid);  /* Returns from 0 to 7 for the iopriority, and -1 if there's an error */
   if(ioprio == -1) {
 	  ps->ioPriority = -1;
@@ -416,6 +417,55 @@ void getIOnice( int pid, ProcessInfo *ps ) {
   return;  /* Do nothing, if we do not support this architectur e*/
 #endif
 }
+
+void ioniceProcess( const char* cmd )
+{
+#ifdef HAVE_IONICE
+  /* Re-ionice's a process. cmd is a string containing "ionice <pid> <class> <priority>" 
+   * where c = 1 for real time, 2 for best-effort, 3 for idle
+   * and priority is between 0 and 7, 0 being the highest priority, and ignored if c=3
+   *
+   * For more information, see:  man ionice
+   */
+  int pid = 0;
+  int class = 2;
+  int priority = 0;
+  if(sscanf( cmd, "%*s %d %d %d", &pid, &class, &priority ) < 2) {
+    fprintf( CurrentClient, "4\t%d\n", pid ); /* 4 means error in values */
+    return; /* Error with input. */
+  }
+  if(pid < 1 || class < 0 || class > 3) {
+    fprintf( CurrentClient, "4\t%d\n", pid ); /* 4 means error in values */
+    return; /* Error with input. Just ignore. */
+  }
+
+  if (ioprio_set(IOPRIO_WHO_PROCESS, pid, priority | class << IOPRIO_CLASS_SHIFT) == -1) {
+    switch ( errno ) {
+      case EINVAL:
+        fprintf( CurrentClient, "4\t%d\n", pid );
+        break;
+      case ESRCH:
+        fprintf( CurrentClient, "3\t%d\n", pid );
+        break;
+      case EPERM:
+        fprintf( CurrentClient, "2\t%d\n", pid );
+        break;
+      default: /* unknown error */
+        fprintf( CurrentClient, "1\t%d\n", pid );
+        break;
+    }
+  } else {
+    /* Successful */
+    fprintf( CurrentClient, "0\t%d\n", pid );
+  }
+  return;
+#else
+  /** should never reach here */
+  fprintf( CurrentClient, "1\t%d\n", pid );
+  return;
+#endif
+}
+ 
 
 /*
 ================================ public part =================================
@@ -431,6 +481,9 @@ void initProcessList( struct SensorModul* sm )
   if ( !RunAsDaemon ) {
     registerCommand( "kill", killProcess );
     registerCommand( "setpriority", setPriority );
+#ifdef HAVE_IONICE
+    registerCommand( "ionice", ioniceProcess );
+#endif
   }
 
 #ifdef HAVE_XRES
@@ -439,6 +492,7 @@ void initProcessList( struct SensorModul* sm )
     registerMonitor( "xres", "table", printXresList, printXresListInfo, sm);
   }
 #endif
+
   /*open /proc now in advance*/
   /* read in current process list via the /proc file system entry */
   if ( ( procDir = opendir( "/proc" ) ) == NULL ) {
@@ -511,6 +565,7 @@ void printProcessCountInfo( const char* cmd )
 
 void killProcess( const char* cmd )
 {
+  /* Sends a signal (not neccessarily kill!) to the process.  cmd is a string containing "kill <pid> <signal>" */
   int sig, pid;
 
   sscanf( cmd, "%*s %d %d", &pid, &sig );
