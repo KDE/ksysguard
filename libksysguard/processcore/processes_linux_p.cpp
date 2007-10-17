@@ -36,9 +36,62 @@
 #include <sys/resource.h>
 #include <dirent.h>
 #include <stdlib.h>
-
+//for ionice
+#include <sys/ptrace.h>
+#include <asm/unistd.h>
 
 #define PROCESS_BUFFER_SIZE 1000
+
+/* For ionice */
+extern int sys_ioprio_set(int, int, int);
+extern int sys_ioprio_get(int, int);
+
+#define HAVE_IONICE
+
+/* Check if this system has ionice */
+#if !defined(SYS_ioprio_get) || !defined(SYS_ioprio_set)
+/* All new kernels have SYS_ioprio_get and _set defined, but for the few that do not, here are the definitions */
+#if defined(__i386__)
+#define __NR_ioprio_set         289
+#define __NR_ioprio_get         290
+#elif defined(__ppc__)
+#define __NR_ioprio_set         273
+#define __NR_ioprio_get         274
+#elif defined(__x86_64__)
+#define __NR_ioprio_set         251
+#define __NR_ioprio_get         252
+#elif defined(__ia64__)
+#define __NR_ioprio_set         1274
+#define __NR_ioprio_get         1275
+#else
+#warn "This architecture does not support IONICE.  Disabling ionice feature."
+#undef HAVE_IONICE
+#endif
+/* Map these to SYS_ioprio_get */
+#define SYS_ioprio_get                __NR_ioprio_get
+#define SYS_ioprio_set                __NR_ioprio_set
+
+#endif /* !SYS_ioprio_get */
+
+/* Set up ionice functions */
+#ifdef HAVE_IONICE
+#define IOPRIO_WHO_PROCESS 1
+#define IOPRIO_CLASS_SHIFT 13
+
+/* Expose the kernel calls to usespace via syscall
+ * See man ioprio_set  and man ioprio_get   for information on these functions */
+static int ioprio_set(int which, int who, int ioprio)
+{
+  return syscall(SYS_ioprio_set, which, who, ioprio);
+}
+ 
+static int ioprio_get(int which, int who)
+{
+  return syscall(SYS_ioprio_get, which, who);
+}
+#endif
+
+
 
 
 namespace KSysGuard
@@ -328,7 +381,13 @@ bool ProcessesLocal::setNiceness(long pid, int priority) {
     }
     return true;
 }
-
+bool setIoNiceness(long pid, KSysGuard::Process::IoPriorityClass priorityClass, int priority) {
+    if (ioprio_set(IOPRIO_WHO_PROCESS, pid, priority | priorityClass << IOPRIO_CLASS_SHIFT) == -1) {
+	    //set io niceness failed
+	    return false;
+    }
+    return true;
+}
 
 long long ProcessesLocal::totalPhysicalMemory() {
     d->mFile.setFileName("/proc/meminfo");

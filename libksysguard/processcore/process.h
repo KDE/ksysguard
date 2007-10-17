@@ -33,6 +33,7 @@ namespace KSysGuard
   class KDE_EXPORT Process {
     public:
 	typedef enum { Running, Sleeping, DiskSleep, Zombie, Stopped, Paging, OtherStatus } ProcessStatus;
+	typedef enum { None, RealTime, BestEffort, Idle } IoPriorityClass;
         Process();
         Process(long long _pid, long long _ppid, Process *_parent);
 
@@ -67,6 +68,8 @@ namespace KSysGuard
         int totalSysUsage; ///Percentage (0 to 100) from the sum of itself and all its children recursively. If there's no children, it's equal to sysUsage. It might be more than 100% on multiple cpu core systems
         unsigned long numChildren; ///Number of children recursively that this process has.  From 0+
         int niceLevel;      ///Niceness (-20 to 20) of this process.  A lower number means a higher priority.
+        IoPriorityClass ioPriorityClass; /// The IO priority class.  See man ionice for detailed information.
+        int ioniceLevel;    ///IO Niceless (0 to 7) of this process.  A lower number means a higher io priority.  -1 if not known or not applicable because ioPriorityClass is Idle or None
         long vmSize;   ///Virtual memory size in KiloBytes, including memory used, mmap'ed files, graphics memory etc,
         long vmRSS;    ///Physical memory used by the process and its shared libraries.  If the process and libraries are swapped to disk, this could be as low as 0
         long vmURSS;   ///Physical memory used only by the process, and not counting the code for shared libraries. Set to -1 if unknown
@@ -78,9 +81,10 @@ namespace KSysGuard
 
 	QString translatedStatus() const;  /// Returns a translated string of the status. e.g. "Running" etc
 	QString niceLevelAsString() const; /// Returns a simple translated string of the nice priority.  e.g. "Normal", "High", etc
+        
+	
 
-
-	int index;
+	int index;  /// Each process has a parent process.  Each sibling has a unique number to identify it under that parent.  This is that number.
 
   private:
         void clear();

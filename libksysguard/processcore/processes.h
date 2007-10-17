@@ -112,6 +112,14 @@ namespace KSysGuard
 	 */
 	bool setNiceness(long pid, int priority);
 
+	/**
+	 *  Set the io priority for a process.  This is from 7 (very nice, lowest io priority) to
+	 *  0 (highest priority).  The default value is determined as: io_nice = (cpu_nice + 20) / 5.
+	 *
+	 *  @return false if you do not have permission to set the priority
+	 */
+	bool setIoNiceness(long pid, KSysGuard::Process::IoPriorityClass priorityClass, int priority);
+
 	/** 
 	 *  Return the internal pointer of all the processes.  The order of the processes 
 	 *  is guaranteed to never change.  Call updateAllProcesses first to actually
