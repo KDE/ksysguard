@@ -414,7 +414,7 @@ void getIOnice( int pid, ProcessInfo *ps ) {
   ps->ioPriority = ioprio & 0xff;  /* Bottom few bits are the priority */
   ps->ioPriorityClass = ioprio >> IOPRIO_CLASS_SHIFT; /* Top few bits are the class */
 #else
-  return;  /* Do nothing, if we do not support this architectur e*/
+  return;  /* Do nothing, if we do not support this architecture */
 #endif
 }
 
