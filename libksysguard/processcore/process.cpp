@@ -40,7 +40,7 @@ QString KSysGuard::Process::niceLevelAsString() const {
 	return QString(); //impossible;
 }
 
-QString ioniceLevelAsString() const {
+QString KSysGuard::Process::ioniceLevelAsString() const {
 	// Just some rough heuristic to map a number to how nice it is
 	if( ioniceLevel == 4) return i18nc("Process Niceness", "Normal");
 	if( ioniceLevel >= 6) return i18nc("Process Niceness", "Very low priority");
@@ -51,7 +51,7 @@ QString ioniceLevelAsString() const {
 
 }
 
-QString ioPriorityClassAsString() const {
+QString KSysGuard::Process::ioPriorityClassAsString() const {
 	switch( ioPriorityClass ) {
 		case None: return i18nc("Priority Class", "None");
 		case RealTime: return i18nc("Priority Class", "Real Time");
