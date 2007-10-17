@@ -29,7 +29,10 @@
 #include <sys/resource.h>
 #include <time.h>
 #include <unistd.h>
-#include <sys/wait.h> /* for wait :) */
+#include <sys/ptrace.h>
+#include <asm/unistd.h>
+
+
 
 #include "../../gui/SignalIDs.h"
 #include "Command.h"
@@ -43,7 +46,55 @@
 #define TAGSIZE 32
 #define KDEINITLEN sizeof( "kdeinit: " )
 
-#define IONICEBUFSIZE (1 * 1024)
+/* For ionice */
+extern int sys_ioprio_set(int, int, int);
+extern int sys_ioprio_get(int, int);
+
+#define HAS_IONICE
+
+/* Check if this system has ionice */
+#if !defined(SYS_ioprio_get) || !defined(SYS_ioprio_set)
+/* All new kernels have SYS_ioprio_get and _set defined, but for the few that do not, here are the definitions */
+#if defined(__i386__)
+#define __NR_ioprio_set         289
+#define __NR_ioprio_get         290
+#elif defined(__ppc__)
+#define __NR_ioprio_set         273
+#define __NR_ioprio_get         274
+#elif defined(__x86_64__)
+#define __NR_ioprio_set         251
+#define __NR_ioprio_get         252
+#elif defined(__ia64__)
+#define __NR_ioprio_set         1274
+#define __NR_ioprio_get         1275
+#else
+#warn "This architecture does not support IONICE.  Disabling ionice feature."
+#undef HAS_IONICE
+#endif
+/* Map these to SYS_ioprio_get */
+#define SYS_ioprio_get                __NR_ioprio_get
+#define SYS_ioprio_set                __NR_ioprio_set
+
+#endif /* !SYS_ioprio_get */
+
+/* Set up ionice functions */
+#ifdef HAS_IONICE
+#define IOPRIO_WHO_PROCESS 1
+#define IOPRIO_CLASS_SHIFT 13
+
+/* Expose the kernel calls to usespace via syscall
+ * See man ioprio_set  and man ioprio_get   for information on these functions */
+static int iopri_set(int which, int who, int ioprio)
+{
+  return syscall(SYS_ioprio_set, which, who, ioprio);
+}
+ 
+static int ioprio_get(int which, int who)
+{
+  return syscall(SYS_ioprio_get, which, who);
+}
+#endif
+
 
 #ifndef bool
 #define bool char
@@ -60,22 +111,22 @@ static int have_xres = 0;
 
 typedef struct {
 
-  /* The parent process ID */
+  /** The parent process ID */
   pid_t ppid;
 
-  /* The real user ID */
+  /** The real user ID */
   uid_t uid;
 
-  /* The real group ID */
+  /** The real group ID */
   gid_t gid;
 
-  /* The process ID of any application that is debugging this one. 0 if none */
+  /** The process ID of any application that is debugging this one. 0 if none */
   pid_t tracerpid;
 
-  /* A character description of the process status */
+  /** A character description of the process status */
   char status[ 16 ];
 
-  /* The tty the process owns */
+  /** The tty the process owns */
   char tty[10];
 
   /**
@@ -84,12 +135,12 @@ typedef struct {
    */
   int niceLevel;
 
-  /* The scheduling priority. */
+  /** The scheduling priority. */
   int priority;
 
-  /* The i/o scheduling class and priority. */
-  int ioPriorityClass;
-  int ioPriority;
+  /** The i/o scheduling class and priority. */
+  int ioPriorityClass;  /** 0 for none, 1 for realtime, 2 for best-effort, 3 for idle.  -1 for error. */
+  int ioPriority;       /** Between 0 and 7.  0 is highest priority, 7 is lowest.  -1 for error. */
 
   /**
     The total amount of virtual memory space that this process uses. This includes shared and
@@ -109,8 +160,8 @@ typedef struct {
   
   unsigned long vmRss;
 
-  /* The amount of physical memory that is used by this process, not including any memory used by any shared libraries.
-   * This is in KiB */
+  /** The amount of physical memory that is used by this process, not including any memory used by any shared libraries.
+   *  This is in KiB */
   unsigned long vmURss;
 
   /**
@@ -131,13 +182,13 @@ typedef struct {
 
   /* NOTE:  To get the user/system percentage, record the userTime and sysTime from between calls, then use the difference divided by the difference in time measure in 100th's of a second */
 
-  /* The name of the process */
+  /** The name of the process */
   char name[ 64 ];
 
-  /* The command used to start the process */
+  /** The command used to start the process */
   char cmdline[ 256 ];
 
-  /* The login name of the user that owns this process */
+  /** The login name of the user that owns this process */
   char userName[ 32 ];
 
 } ProcessInfo;
@@ -352,91 +403,18 @@ void printProcessList( const char* cmd)
 }
 
 void getIOnice( int pid, ProcessInfo *ps ) {
-	/* This is where we find out ioPriorityClass and ioPriority by forking to run ionice */
-
-	/* Initialize these to -1 in case we don't find a value for them */
-	ps->ioPriorityClass = -1;
-	ps->ioPriority = -1;
-
-	int fd[2];
-	pid_t ChildPID;
-	ssize_t nbytes;
-	
-	char pidName[11]; /* We'll assume that log(pid) < 10. Not a problem with up to 32 bit pids. */
-	char format[ 32 ];
-	char lineBuf[ 1024 ];
-	char ioniceBuf[ IONICEBUFSIZE ];	/* Buffer for ionice -p */
-	char* ioniceBufP;
-	char schedClass[ 32 ];
-
-	/* Create a pipe */
-	if(pipe(fd) == -1)
-	{
-		perror("Could not create a pipe to launch ionice.");
-		exit(1);
-	}
-
-	/* Fork */
-	if((ChildPID = fork()) == -1)
-	{
-		perror("Could not fork to launch ionice.");
-		exit(1);
-	}
-
-	/* Child will execute the program, parent will listen. */
-
-	if (ChildPID == 0) {
-	/* Child process */
-
-		/* Child will execute the program, parent will listen. */
-		/* Close stdout, duplicate the input side of pipe to stdout */
-		dup2(fd[1], 1);
-		/* Close output side of pipe */
-		close(fd[0]);
-		close(2);
-
-		snprintf( pidName, sizeof( pidName ), "%d", pid );
-		execl ("/usr/bin/ionice", "ionice", "-p", pidName, (char *)0);
-		exit(0); /* In case /usr/bin/ionice isn't found */
-		/* Child is now dead, as per our request */
-	}
-	
-	/* Parent process */
-	
-	/* Close input side of pipe */
-	close(fd[1]);
-
-	waitpid( ChildPID, 0, 0);
-	
-	/* Fill mdadmStatBuf with pipe's output */
-	nbytes = read( fd[0], ioniceBuf, IONICEBUFSIZE-1 );
-        if (nbytes >= 0)
-	   ioniceBuf[nbytes] = '\0';
-
-	/* Now parse ioniceBuf. We only want the first line. */
-	sprintf( format, "%%%d[^\n]\n", (int)sizeof( lineBuf ) - 1 );
-	ioniceBufP = ioniceBuf;
-	if (sscanf(ioniceBufP, format, lineBuf) != EOF) {
-		lineBuf[sizeof(lineBuf) - 1] = '\0';
-		
-		if ( sscanf(lineBuf, "%31s prio %d", schedClass, &ps->ioPriority) == 2 ) {
-			/* The scheduling class. 1 for real time, 2 for best-effort, 3 for idle. */
-
-			if(strncmp(schedClass, "none:", 31) == 0) {
-				/* If none, then class wasn't set. The default is best-effort. */
-				ps->ioPriorityClass = 2;
-			}
-			else if(strncmp(schedClass, "realtime:", 31) == 0) {
-				ps->ioPriorityClass = 1;
-			}
-			else if(strncmp(schedClass, "best-effort:", 31) == 0) {
-				ps->ioPriorityClass = 2;
-			}
-			else if(strncmp(schedClass, "idle:", 31) == 0) {
-				ps->ioPriorityClass = 3;
-			}
-		}
-	}
+#ifdef HAS_IONICE
+  int ioprio = ioprio_get(IOPRIO_WHO_PROCESS, pid);  /* Returns from 0 to 7 for the iopriority, and -1 if there's an error */
+  if(ioprio == -1) {
+	  ps->ioPriority = -1;
+	  ps->ioPriorityClass = -1;
+	  return; /* Error. Just give up. */
+  }
+  ps->ioPriority = ioprio & 0xff;  /* Bottom few bits are the priority */
+  ps->ioPriorityClass = ioprio >> IOPRIO_CLASS_SHIFT; /* Top few bits are the class */
+#else
+  return;  /* Do nothing, if we do not support this architectur e*/
+#endif
 }
 
 /*
