@@ -420,7 +420,6 @@ void getIOnice( int pid, ProcessInfo *ps ) {
 
 void ioniceProcess( const char* cmd )
 {
-#ifdef HAVE_IONICE
   /* Re-ionice's a process. cmd is a string containing "ionice <pid> <class> <priority>" 
    * where c = 1 for real time, 2 for best-effort, 3 for idle
    * and priority is between 0 and 7, 0 being the highest priority, and ignored if c=3
@@ -434,6 +433,8 @@ void ioniceProcess( const char* cmd )
     fprintf( CurrentClient, "4\t%d\n", pid ); /* 4 means error in values */
     return; /* Error with input. */
   }
+
+#ifdef HAVE_IONICE
   if(pid < 1 || class < 0 || class > 3) {
     fprintf( CurrentClient, "4\t%d\n", pid ); /* 4 means error in values */
     return; /* Error with input. Just ignore. */
