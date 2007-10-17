@@ -106,6 +106,7 @@ namespace KSysGuard
       inline bool readProcStat(long pid, Process *process);
       inline bool readProcStatm(long pid, Process *process);
       inline bool readProcCmdline(long pid, Process *process);
+      inline bool getIoNice(long pid, Process *process);
       QFile mFile;
       char mBuffer[PROCESS_BUFFER_SIZE+1]; //used as a buffer to read data into      
       DIR* mProcDir;
@@ -344,12 +345,37 @@ bool ProcessesLocal::Private::readProcCmdline(long pid, Process *process)
     mFile.close();
     return true;
 }
+
+bool ProcessesLocal::Private::getIoNice(long pid, Process *process) {
+#ifdef HAVE_IONICE
+  int ioprio = ioprio_get(IOPRIO_WHO_PROCESS, pid);  /* Returns from 0 to 7 for the iopriority, and -1 if there's an error */
+  if(ioprio == -1) {
+	  process->ioPriority = -1;
+	  process->ioPriorityClass = -1;
+	  return false; /* Error. Just give up. */
+  }
+  process->ioPriority = ioprio & 0xff;  /* Bottom few bits are the priority */
+  process->ioPriorityClass = ioprio >> IOPRIO_CLASS_SHIFT; /* Top few bits are the class */
+#else
+  return false;  /* Do nothing, if we do not support this architecture */
+#endif
+  return true;
+
+    KSysGuard::Process::IoPriorityClass priorityClass, int priority) {
+    if (ioprio_get(IOPRIO_WHO_PROCESS, pid, priority | priorityClass << IOPRIO_CLASS_SHIFT) == -1) {
+	    //set io niceness failed
+	    return false;
+    }
+    return true;
+}
+
 bool ProcessesLocal::updateProcessInfo( long pid, Process *process)
 {
     if(!d->readProcStat(pid, process)) return false;
     if(!d->readProcStatus(pid, process)) return false;
     if(!d->readProcStatm(pid, process)) return false;
     if(!d->readProcCmdline(pid, process)) return false;
+    if(!d->getIoNice(pid, process)) return false;
 
     return true;
 }
@@ -381,7 +407,7 @@ bool ProcessesLocal::setNiceness(long pid, int priority) {
     }
     return true;
 }
-bool setIoNiceness(long pid, KSysGuard::Process::IoPriorityClass priorityClass, int priority) {
+bool ProcessesLocal::setIoNiceness(long pid, KSysGuard::Process::IoPriorityClass priorityClass, int priority) {
     if (ioprio_set(IOPRIO_WHO_PROCESS, pid, priority | priorityClass << IOPRIO_CLASS_SHIFT) == -1) {
 	    //set io niceness failed
 	    return false;
