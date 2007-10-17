@@ -755,7 +755,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 
 		case HeadingCommand: {
 			QString tooltip =
-				i18n("<qt>This process was run with the following command:<br />%1</qt>", process->command);
+				i18n("<qt>This process was run with the following command:<br />%1", process->command);
 			if(!process->tty.isEmpty())
 				tooltip += i18n( "<br /><br />Running on: %1", QString(process->tty));
 		        if(tracer.isEmpty()) return tooltip;
@@ -766,8 +766,16 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				return d->getTooltipForUser(process) + "<br />" + tracer;
 			return d->getTooltipForUser(process);
 		}
-		case HeadingNiceness:
-			return i18n("Nice level: %1 (%2)", process->niceLevel, process->niceLevelAsString() );
+		case HeadingNiceness: {
+		        QString tooltip = i18n("<qt>Nice level: %1 (%2)", process->niceLevel, process->niceLevelAsString() );
+			if(process->ioPriorityClass != KSysGuard::Process::None) {
+				if((process->ioPriorityClass == KSysGuard::Process::RealTime || process->ioPriorityClass == KSysGuard::Process::BestEffort) && process->ioniceLevel != -1)
+					tooltip += i18n("<br/>I/O Nice level: %1 (%2)", process->ioniceLevel, process->ioniceLevelAsString() );
+				tooltip += i18n("<br/>I/O Class: %1", process->ioPriorityClassAsString() );
+			}
+		        if(tracer.isEmpty()) return tooltip;
+			return tooltip + "<br />" + tracer;
+		}	
 		case HeadingCPUUsage: {
 			QString tooltip = ki18n("<qt>Process status: %1 %2<br />"
 						"User CPU usage: %3%<br />System CPU usage: %4%</qt>")
@@ -796,6 +804,11 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 						.toString();
 			if(process->niceLevel != 0)
 				tooltip += i18n("<br />Nice level: %1 (%2)", process->niceLevel, process->niceLevelAsString() );
+			if(process->ioPriorityClass != KSysGuard::Process::None) {
+				if((process->ioPriorityClass == KSysGuard::Process::RealTime || process->ioPriorityClass == KSysGuard::Process::BestEffort) && process->ioniceLevel != -1)
+					tooltip += i18n("<br/>I/O Nice level: %1 (%2)", process->ioniceLevel, process->ioniceLevelAsString() );
+				tooltip += i18n("<br/>I/O Class: %1", process->ioPriorityClassAsString() );
+			}
 
 			if(!tracer.isEmpty())
 				return tooltip + "<br />" + tracer;
