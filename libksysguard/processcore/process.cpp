@@ -31,13 +31,36 @@ KSysGuard::Process::Process(long long _pid, long long _ppid, Process *_parent)  
 }
 
 QString KSysGuard::Process::niceLevelAsString() const {
+	// Just some rough heuristic to map a number to how nice it is
 	if( niceLevel == 0) return i18nc("Process Niceness", "Normal");
-	if( niceLevel > 15) return i18nc("Process Niceness", "Very low priority");
+	if( niceLevel >= 10) return i18nc("Process Niceness", "Very low priority");
 	if( niceLevel > 0) return i18nc("Process Niceness", "Low priority");
-	if( niceLevel < -1) return i18nc("Process Niceness", "High priority");
-	if( niceLevel < -15) return i18nc("Process Niceness", "Very high priority");
+	if( niceLevel <= -10) return i18nc("Process Niceness", "Very high priority");
+	if( niceLevel < 0) return i18nc("Process Niceness", "High priority");
 	return QString(); //impossible;
 }
+
+QString ioniceLevelAsString() const {
+	// Just some rough heuristic to map a number to how nice it is
+	if( ioniceLevel == 4) return i18nc("Process Niceness", "Normal");
+	if( ioniceLevel >= 6) return i18nc("Process Niceness", "Very low priority");
+	if( ioniceLevel > 4) return i18nc("Process Niceness", "Low priority");
+	if( ioniceLevel <= 2) return i18nc("Process Niceness", "Very high priority");
+	if( ioniceLevel < 4) return i18nc("Process Niceness", "High priority");
+	return QString(); //impossible;
+
+}
+
+QString ioPriorityClassAsString() const {
+	switch( ioPriorityClass ) {
+		case None: return i18nc("Priority Class", "None");
+		case RealTime: return i18nc("Priority Class", "Real Time");
+		case BestEffort: return i18nc("Priority Class", "Best Effort");
+		case Idle: return i18nc("Priority Class", "Idle");
+		default: return i18nc("Priority Class", "Unknown");
+	}
+}
+
 QString KSysGuard::Process::translatedStatus() const { 
 	switch( status ) { 
 		case Running: return i18nc("process status", "running");

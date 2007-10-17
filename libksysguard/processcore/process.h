@@ -81,6 +81,8 @@ namespace KSysGuard
 
 	QString translatedStatus() const;  /// Returns a translated string of the status. e.g. "Running" etc
 	QString niceLevelAsString() const; /// Returns a simple translated string of the nice priority.  e.g. "Normal", "High", etc
+	QString ioniceLevelAsString() const; /// Returns a simple translated string of the io nice priority.  e.g. "Normal", "High", etc
+	QString ioPriorityClassAsString() const; /// Returns a translated string of the io nice class.  i.e. "None", "Real Time", "Best Effort", "Idle"
         
 	int index;  /// Each process has a parent process.  Each sibling has a unique number to identify it under that parent.  This is that number.
 
