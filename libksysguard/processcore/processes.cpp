@@ -163,7 +163,11 @@ bool Processes::updateProcess( Process *ps, long ppid, bool onlyReparent)
        ps->name != old_process.name ||
        ps->command != old_process.command ||
        ps->status != old_process.status ||
-       ps->uid != old_process.uid ) {
+       ps->uid != old_process.uid || 
+       ps->tracerpid != old_process.tracerpid ||
+       ps->niceLevel != old_process.niceLevel ||
+       ps->ioniceLevel != old_process.ioniceLevel ||
+       ps->ioPriorityClass != old_process.ioPriorityClass ) {
 
        emit processChanged(ps, false);
 
