@@ -461,16 +461,16 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 		    case HeadingTty:
 			return i18n("The controlling terminal that this process is running on.");
 		    case HeadingNiceness:
-			return i18n("The priority that this process is being run with.  Ranges from 19 (very nice, least priority) to -19 (top priority)");
+			return i18n("The priority that this process is being run with. Ranges from 19 (very nice, least priority) to -19 (top priority)");
 		    case HeadingCPUUsage:
 			// xgettext: no-c-format
-			return i18n("The CPU usage that this process is currently using.  This can be greater than 100% if you have more than one processor.");
+			return i18n("The CPU usage that this process is currently using. This can be greater than 100% if you have more than one processor.");
 		    case HeadingVmSize:
-			return i18n("<qt>This is the amount of virtual memory space that the process is using, included shared libraries, graphics memory, files on disk, and so on.  This number is almost meaningless.</qt>");
+			return i18n("<qt>This is the amount of virtual memory space that the process is using, included shared libraries, graphics memory, files on disk, and so on. This number is almost meaningless.</qt>");
 		    case HeadingMemory:
-			return i18n("<qt>This is the amount of real physical memory that this process is using by itself.  It does not include any swapped out memory, nor the code size of its shared libraries.  This is often the most useful figure to judge the memory use of a program.</qt>");
+			return i18n("<qt>This is the amount of real physical memory that this process is using by itself. It does not include any swapped out memory, nor the code size of its shared libraries. This is often the most useful figure to judge the memory use of a program.</qt>");
 		    case HeadingSharedMemory:
-			return i18n("<qt>This is the amount of real physical memory that this process's shared libraries are using.  This memory is shared among all processes that use this library</qt>");
+			return i18n("<qt>This is the amount of real physical memory that this process's shared libraries are using. This memory is shared among all processes that use this library</qt>");
 		    case HeadingCommand:
 			return i18n("<qt>The command that this process was launched with</qt>");
 		    case HeadingXTitle:
