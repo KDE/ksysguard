@@ -6,6 +6,7 @@ Comment[be]=Сістэмны вартаўнік KDE
 Comment[br]=Gward Reizhiad KDE
 Comment[cy]=Gwarchodwr Cysawd KDE
 Comment[da]=KDE Systemvagt
+Comment[de]=KDE-Systemüberwachung
 Comment[el]=Φρουρός συστήματος KDE
 Comment[eo]=KDE-Sistemobservilo
 Comment[et]=KDE süsteemi valvur
@@ -47,6 +48,7 @@ Comment[zh_TW]=KDE 系統守衛
 
 [Event/pattern_match]
 Name=Pattern Matched
+Name[de]=Muster gefunden
 Name[el]=Ταίριασμα μοτίβου
 Name[et]=Sobiv muster
 Name[ja]=パターンにマッチ
@@ -64,6 +66,7 @@ Name[zh_TW]=樣式已符合
 Comment=Search pattern matched
 Comment[af]=Soek patroon opgespoor
 Comment[da]=Søgemønsteret matchede
+Comment[de]=Suchmuster gefunden
 Comment[el]=Υπάρχει ταίριασμα στο μοτίβο αναζήτησης
 Comment[eo]=Serĉoŝablonesprimo kunvenita
 Comment[et]=Otsingu muster sobib
@@ -101,6 +104,7 @@ Comment[zh_TW]=搜尋樣式比對符合
 
 [Event/sensor_alarm]
 Name=Sensor Alarm
+Name[de]=Sensor-Alarm
 Name[el]=Ειδοποίηση αισθητήρα
 Name[et]=Sensori häire
 Name[ja]=センサーアラーム
@@ -119,6 +123,7 @@ Comment=Sensor exceeded critical limit
 Comment[af]=Sensor oorskry krities beperk
 Comment[cy]=Aethpwyd dros gyfyngder critigol y synhwyrydd
 Comment[da]=Sensor gik ud over kritisk grænse
+Comment[de]=Sensor hat kritische Schwelle überschritten
 Comment[el]=Υπέρβαση κρίσιμου ορίου αισθητήρα
 Comment[eo]=Sentilo transiris danĝeran limon
 Comment[et]=Sensor ületas kriitilise piiri
