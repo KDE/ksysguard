@@ -72,7 +72,11 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   QLabel *label = new QLabel( i18n( "Minimum value:" ), groupBox );
   boxLayout->addWidget( label, 0, 0 );
 
-  mMinValue = new KDoubleSpinBox( 0, 10000, 0.5, 0, groupBox, 2 );
+  mMinValue = new QDoubleSpinBox(groupBox);
+  mMinValue->setRange(0, 10000);
+  mMinValue->setSingleStep(0.5);
+  mMinValue->setValue(0);
+  mMinValue->setDecimals(2);
   mMinValue->setWhatsThis( i18n( "Enter the minimum value for the display here. If both values are 0, automatic range detection is enabled." ) );
   boxLayout->addWidget( mMinValue, 0, 1 );
   label->setBuddy( mMinValue );
@@ -80,7 +84,11 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   label = new QLabel( i18n( "Maximum value:" ), groupBox );
   boxLayout->addWidget( label, 0, 3 );
 
-  mMaxValue = new KDoubleSpinBox( 0, 100, 0.5, 100, groupBox, 2 );
+  mMaxValue = new QDoubleSpinBox( groupBox);
+  mMaxValue->setRange(0, 100);
+  mMaxValue->setSingleStep(0.5);
+  mMaxValue->setValue(100);
+  mMaxValue->setDecimals(2);
   mMaxValue->setWhatsThis( i18n( "Enter the maximum value for the display here. If both values are 0, automatic range detection is enabled." ) );
   boxLayout->addWidget( mMaxValue, 0, 4 );
   label->setBuddy( mMaxValue );
@@ -108,7 +116,11 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   label = new QLabel( i18n( "Lower limit:" ), groupBox );
   boxLayout->addWidget( label, 0, 2 );
 
-  mLowerLimit = new KDoubleSpinBox( 0, 100, 0.5, 0, groupBox, 2 );
+  mLowerLimit = new QDoubleSpinBox(groupBox);
+  mLowerLimit->setRange(0, 100);
+  mLowerLimit->setSingleStep(0.5);
+  mLowerLimit->setValue(0);
+  mLowerLimit->setDecimals(2);
   mLowerLimit->setEnabled( false );
   boxLayout->addWidget( mLowerLimit, 0, 3 );
   label->setBuddy( mLowerLimit );
@@ -127,7 +139,10 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   label = new QLabel( i18n( "Upper limit:" ), groupBox );
   boxLayout->addWidget( label, 0, 2 );
 
-  mUpperLimit = new KDoubleSpinBox( 0, 1000, 0.5, 0, groupBox, 2 );
+  mUpperLimit = new QDoubleSpinBox( groupBox);
+  mUpperLimit->setRange(0, 1000);
+  mUpperLimit->setSingleStep(0.5);
+  mUpperLimit->setDecimals(2);
   mUpperLimit->setEnabled( false );
   boxLayout->addWidget( mUpperLimit, 0, 3 );
   label->setBuddy( mUpperLimit );

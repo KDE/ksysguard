@@ -28,7 +28,7 @@
 #include "SensorModel.h"
 
 class KColorButton;
-class KDoubleSpinBox;
+class QDoubleSpinBox;
 class KIntNumInput;
 class KLineEdit;
 
@@ -88,10 +88,10 @@ class DancingBarsSettings : public KPageDialog
     KColorButton *mForegroundColor;
     KColorButton *mAlarmColor;
     KColorButton *mBackgroundColor;
-    KDoubleSpinBox *mMinValue;
-    KDoubleSpinBox *mMaxValue;
-    KDoubleSpinBox *mLowerLimit;
-    KDoubleSpinBox *mUpperLimit;
+    QDoubleSpinBox *mMinValue;
+    QDoubleSpinBox *mMaxValue;
+    QDoubleSpinBox *mLowerLimit;
+    QDoubleSpinBox *mUpperLimit;
     KLineEdit *mTitle;
     KIntNumInput *mFontSize;
 
