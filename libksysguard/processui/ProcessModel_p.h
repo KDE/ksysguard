@@ -151,6 +151,9 @@ public:
 
 	QPixmap mBlankPixmap; ///Used to pad out process names which don't have an icon
 
+	/** When displaying memory sizes, this is the units it should be displayed in */
+	int mUnits;
+
 	ProcessModel* q;
 };
 

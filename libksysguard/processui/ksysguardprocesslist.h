@@ -123,9 +123,6 @@ private Q_SLOTS:
 	/** Display a context menu for the selected processes allowing the user to kill etc the process */
 	void showProcessContextMenu(const QPoint &point);
 	
-	/** Show or hide the column indicated by the action */
-	void showOrHideColumn(QAction *action);
-	
 	/** Handle the situation where killing a process has failed - usually due to insufficent rights */
 	void killFailed();
 	

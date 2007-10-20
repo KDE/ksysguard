@@ -59,7 +59,6 @@ ProcessModelPrivate::ProcessModelPrivate() :  mBlankPixmap(HEADING_X_ICON_SIZE,1
 	
 	mShowChildTotals = true;
 	mIsChangingLayout = false;
-
 }
 
 ProcessModel::ProcessModel(QObject* parent)
@@ -69,6 +68,7 @@ ProcessModel::ProcessModel(QObject* parent)
 	d->setupProcesses();
 	setupHeader();
 	d->setupWindows();
+	d->mUnits = UnitsKB;
 }
 
 ProcessModel::~ProcessModel()
@@ -675,20 +675,16 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			if(process->vmURSS == -1) {
 				//If we don't have the URSS (the memory used by only the process, not the shared libraries)
 				//then return the RSS (physical memory used by the process + shared library) as the next best thing
-				return KGlobal::locale()->formatLong(process->vmRSS) + " k";
-//				return KGlobal::locale()->formatByteSize(process->vmRSS * 1024);
+				return formatMemoryInfo(process->vmRSS);
 			} else {
-				return KGlobal::locale()->formatLong(process->vmURSS) + " k";
-//				return KGlobal::locale()->formatByteSize(process->vmURSS * 1024);
+				return formatMemoryInfo(process->vmURSS);
 			}
 		case HeadingVmSize:
 			if(process->vmSize == 0) return QVariant(QVariant::String);
-			return KGlobal::locale()->formatLong(process->vmSize) + " k";
-			return KGlobal::locale()->formatByteSize(process->vmSize * 1024);
+			return formatMemoryInfo(process->vmSize);
 		case HeadingSharedMemory:
 			if(process->vmRSS - process->vmURSS <= 0 || process->vmURSS == -1) return QVariant(QVariant::String);
-			return KGlobal::locale()->formatLong(process->vmRSS - process->vmURSS) + " k";
-//			return KGlobal::locale()->formatByteSize( (process->vmRSS-process->vmURSS) * 1024);
+			return formatMemoryInfo(process->vmRSS - process->vmURSS);
 		case HeadingCommand: 
 			{
 				return process->command;
@@ -723,7 +719,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			KSysGuard::Process *process_tracer = d->mProcesses->getProcess(process->tracerpid);
 			if(process_tracer) { //it is possible for this to be not the case in certain race conditions
 				KSysGuard::Process *process_tracer = d->mProcesses->getProcess(process->tracerpid);
-				tracer = i18nc("tooltip. name,pid ","This process is being debugged by %1 (%2)", process_tracer->name, (long int)process->tracerpid);
+				tracer = i18nc("tooltip. name,pid ","This process is being debugged by %1 (<numid>%2</numid>)", process_tracer->name, (long int)process->tracerpid);
 			}
 		}
 		switch(index.column()) {
@@ -743,9 +739,9 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 			}
 			*/
 			if(process->parent_pid == 0)
-				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br />Process ID: %2<br />Command: %3</qt>", process->name, (long int)process->pid, process->command);
+				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br />Process ID: <numid>%2</numid><br />Command: %3</qt>", process->name, (long int)process->pid, process->command);
 			else
-				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br />Process ID: %2<br />Parent's ID: %3<br />Command: %4</qt>", process->name, (long int)process->pid, (long int)process->parent_pid, process->command);
+				tooltip	= i18nc("name column tooltip. first item is the name","<qt><b>%1</b><br />Process ID: <numid>%2</numid><br />Parent's ID: <numid>%3</numid><br />Command: %4</qt>", process->name, (long int)process->pid, (long int)process->parent_pid, process->command);
 			if(!process->tty.isEmpty())
 				tooltip += i18n( "<br />Running on: %1", QString(process->tty));
 			if(!tracer.isEmpty())
@@ -1069,3 +1065,25 @@ long long ProcessModel::totalMemory() const
 {
 	return d->mMemTotal;
 }
+void ProcessModel::setUnits(Units units)
+{
+	d->mUnits = units;
+}
+ProcessModel::Units ProcessModel::units() const
+{
+	return (Units) d->mUnits;
+}
+
+QString ProcessModel::formatMemoryInfo(long amountInKB) const
+{
+	switch(d->mUnits) {
+	  case UnitsKB:
+		return  i18n("%1 k", amountInKB);
+	  case UnitsMB:
+		return  i18n("%1 m", (amountInKB+512)/1024);  //Round to nearest megabyte
+	  case UnitsGB:
+		return  i18n("%1 g", (amountInKB+512*1024)/(1024*1024)); //Round to nearest gigabyte
+	}
+	return "";  //error
+}
+

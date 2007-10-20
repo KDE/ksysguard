@@ -135,8 +135,6 @@ class ProgressBarItemDelegate : public QItemDelegate
 struct KSysGuardProcessListPrivate {
     
 	KSysGuardProcessListPrivate(KSysGuardProcessList* q) : mModel(q), mFilterModel(q), mUi(new Ui::ProcessWidget()) {}
-	/** The column context menu when you right click on a column.*/
-	QMenu *mColumnContextMenu;
 	
 	/** The context menu when you right click on a process */
 	QMenu *mProcessContextMenu;
@@ -174,8 +172,6 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 #endif
 	d->mUi->treeView->setItemDelegate(new ProgressBarItemDelegate(d->mUi->treeView));
 
-	d->mColumnContextMenu = new QMenu(d->mUi->treeView->header());
-	connect(d->mColumnContextMenu, SIGNAL(triggered(QAction*)), this, SLOT(showOrHideColumn(QAction *)));
 	d->mUi->treeView->header()->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(d->mUi->treeView->header(), SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showColumnContextMenu(const QPoint&)));
 
@@ -350,48 +346,94 @@ void KSysGuardProcessList::selectAndJumpToProcess(int pid) {
 }
 
 void KSysGuardProcessList::showColumnContextMenu(const QPoint &point){
-	d->mColumnContextMenu->clear();
+	QMenu *menu = new QMenu();
 	
-	{
-		int index = d->mUi->treeView->header()->logicalIndexAt(point);
-		if(index >= 0) {
-			//selected a column.  Give the option to hide it
-			QAction *action = new QAction(d->mColumnContextMenu);
-			action->setData(-index-1); //We set data to be negative (and minus 1) to hide a column, and positive to show a column
-			action->setText(i18n("Hide column '%1'", d->mFilterModel.headerData(index, Qt::Horizontal, Qt::DisplayRole).toString()));
-			d->mColumnContextMenu->addAction(action);
-			if(d->mUi->treeView->header()->sectionsHidden()) {
-				d->mColumnContextMenu->addSeparator();
-			}
+	QAction *action;
+	int index = d->mUi->treeView->header()->logicalIndexAt(point);
+	if(index >= 0) {
+		//selected a column.  Give the option to hide it
+		action = new QAction(menu);
+		action->setData(-index-1); //We set data to be negative (and minus 1) to hide a column, and positive to show a column
+		action->setText(i18n("Hide column '%1'", d->mFilterModel.headerData(index, Qt::Horizontal, Qt::DisplayRole).toString()));
+		menu->addAction(action);
+		if(d->mUi->treeView->header()->sectionsHidden()) {
+			menu->addSeparator();
 		}
 	}
+	
 
 	if(d->mUi->treeView->header()->sectionsHidden()) {
 		int num_headings = d->mFilterModel.columnCount();
 		for(int i = 0; i < num_headings; ++i) {
 			if(d->mUi->treeView->header()->isSectionHidden(i)) {
-				QAction *action = new QAction(d->mColumnContextMenu);
+				action = new QAction(menu);
 				action->setText(i18n("Show column '%1'", d->mFilterModel.headerData(i, Qt::Horizontal, Qt::DisplayRole).toString()));
 				action->setData(i); //We set data to be negative (and minus 1) to hide a column, and positive to show a column
-				d->mColumnContextMenu->addAction(action);
+				menu->addAction(action);
 			}
 		}
 	}
-	d->mColumnContextMenu->exec(d->mUi->treeView->header()->mapToGlobal(point));	
-}
+	QAction *actionKB = NULL;
+	QAction *actionMB = NULL;
+	QAction *actionGB = NULL;
 
-void KSysGuardProcessList::showOrHideColumn(QAction *action)
-{
-	int index = action->data().toInt();
+	if( index == ProcessModel::HeadingVmSize || index == ProcessModel::HeadingMemory ||  index == ProcessModel::HeadingSharedMemory) {
+		//If the user right clicks on a column that contains a memory size, show a toggle option for displaying
+		//the memory in different units.  e.g.  "2000 k" or "2 m"
+		menu->addSeparator()->setText(i18n("Display Units"));
+		QActionGroup *unitsGroup = new QActionGroup(menu);
+		actionKB = new QAction(menu);
+		actionKB->setText(i18n("KiloBytes"));
+		actionKB->setCheckable(true);
+		menu->addAction(actionKB);
+		unitsGroup->addAction(actionKB);
+		actionMB = new QAction(menu);
+		actionMB->setText(i18n("MegaBytes"));
+		actionMB->setCheckable(true);
+		menu->addAction(actionMB);
+		unitsGroup->addAction(actionMB);
+		actionGB = new QAction(menu);
+		actionGB->setText(i18n("GigaBytes"));
+		actionGB->setCheckable(true);
+		menu->addAction(actionGB);
+		unitsGroup->addAction(actionGB);
+		unitsGroup->setExclusive(true);
+		switch(d->mModel.units()) {
+		  case ProcessModel::UnitsKB:
+			actionKB->setChecked(true);
+			break;
+		  case ProcessModel::UnitsMB:
+			actionMB->setChecked(true);
+			break;
+		  case ProcessModel::UnitsGB:
+			actionGB->setChecked(true);
+			break;
+		}
+	}
+
+
+	QAction *result = menu->exec(d->mUi->treeView->header()->mapToGlobal(point));
+	if(!result) return; //Menu cancelled
+	if(result == actionKB) {
+		d->mModel.setUnits(ProcessModel::UnitsKB);
+		return;
+	} else if(result == actionMB) {
+		d->mModel.setUnits(ProcessModel::UnitsMB);
+		return;
+	} else if(result == actionGB) {
+		d->mModel.setUnits(ProcessModel::UnitsGB);
+		return;
+	}
+	int i = result->data().toInt();
 	//We set data to be negative to hide a column, and positive to show a column
-	if(index < 0)
-		d->mUi->treeView->hideColumn(-1-index);
+	if(i < 0)
+		d->mUi->treeView->hideColumn(-1-i);
 	else {
-		d->mUi->treeView->showColumn(index);
-		d->mUi->treeView->resizeColumnToContents(index);
+		d->mUi->treeView->showColumn(i);
+		d->mUi->treeView->resizeColumnToContents(i);
 		d->mUi->treeView->resizeColumnToContents(d->mFilterModel.columnCount());
 	}
-		
+	menu->deleteLater();	
 }
 
 void KSysGuardProcessList::expandAllChildren(const QModelIndex &parent) 

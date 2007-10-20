@@ -104,6 +104,15 @@ public:
 
 	bool showTotals() const;
 
+	/** When displaying memory sizes, this is the units it should be displayed in */
+	enum Units { UnitsKB, UnitsMB, UnitsGB  };
+	/** Set the units memory sizes etc should be displayed in */
+	void setUnits(Units units);
+	/** The units memory sizes etc should be displayed in */
+	Units units() const;
+	/** Take an amount in kb, and return a string in the units set by setUnits() */
+	QString formatMemoryInfo(long amountInKB) const;
+
 public Q_SLOTS:
 	void setShowTotals(bool showTotals);
 
