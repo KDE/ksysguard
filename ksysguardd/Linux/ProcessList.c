@@ -420,55 +420,6 @@ void getIOnice( int pid, ProcessInfo *ps ) {
 #endif
 }
 
-void ioniceProcess( const char* cmd )
-{
-  /* Re-ionice's a process. cmd is a string containing "ionice <pid> <class> <priority>" 
-   * where c = 1 for real time, 2 for best-effort, 3 for idle
-   * and priority is between 0 and 7, 0 being the highest priority, and ignored if c=3
-   *
-   * For more information, see:  man ionice
-   */
-  int pid = 0;
-  int class = 2;
-  int priority = 0;
-  if(sscanf( cmd, "%*s %d %d %d", &pid, &class, &priority ) < 2) {
-    fprintf( CurrentClient, "4\t%d\n", pid ); /* 4 means error in values */
-    return; /* Error with input. */
-  }
-
-#ifdef HAVE_IONICE
-  if(pid < 1 || class < 0 || class > 3) {
-    fprintf( CurrentClient, "4\t%d\n", pid ); /* 4 means error in values */
-    return; /* Error with input. Just ignore. */
-  }
-
-  if (ioprio_set(IOPRIO_WHO_PROCESS, pid, priority | class << IOPRIO_CLASS_SHIFT) == -1) {
-    switch ( errno ) {
-      case EINVAL:
-        fprintf( CurrentClient, "4\t%d\n", pid );
-        break;
-      case ESRCH:
-        fprintf( CurrentClient, "3\t%d\n", pid );
-        break;
-      case EPERM:
-        fprintf( CurrentClient, "2\t%d\n", pid );
-        break;
-      default: /* unknown error */
-        fprintf( CurrentClient, "1\t%d\n", pid );
-        break;
-    }
-  } else {
-    /* Successful */
-    fprintf( CurrentClient, "0\t%d\n", pid );
-  }
-  return;
-#else
-  /** should never reach here */
-  fprintf( CurrentClient, "1\t%d\n", pid );
-  return;
-#endif
-}
- 
 
 /*
 ================================ public part =================================
@@ -677,4 +628,53 @@ void setPriority( const char* cmd )
     }
   } else
     fprintf( CurrentClient, "0\t%d\t%d\n",pid, prio );
+}
+
+void ioniceProcess( const char* cmd )
+{
+  /* Re-ionice's a process. cmd is a string containing "ionice <pid> <class> <priority>" 
+   * where c = 1 for real time, 2 for best-effort, 3 for idle
+   * and priority is between 0 and 7, 0 being the highest priority, and ignored if c=3
+   *
+   * For more information, see:  man ionice
+   */
+  int pid = 0;
+  int class = 2;
+  int priority = 0;
+  if(sscanf( cmd, "%*s %d %d %d", &pid, &class, &priority ) < 2) {
+    fprintf( CurrentClient, "4\t%d\n", pid ); /* 4 means error in values */
+    return; /* Error with input. */
+  }
+
+#ifdef HAVE_IONICE
+  if(pid < 1 || class < 0 || class > 3) {
+    fprintf( CurrentClient, "4\t%d\n", pid ); /* 4 means error in values */
+    return; /* Error with input. Just ignore. */
+  }
+
+  if (ioprio_set(IOPRIO_WHO_PROCESS, pid, priority | class << IOPRIO_CLASS_SHIFT) == -1) {
+    switch ( errno ) {
+      case EINVAL:
+        fprintf( CurrentClient, "4\t%d\n", pid );
+        break;
+      case ESRCH:
+        fprintf( CurrentClient, "3\t%d\n", pid );
+        break;
+      case EPERM:
+        fprintf( CurrentClient, "2\t%d\n", pid );
+        break;
+      default: /* unknown error */
+        fprintf( CurrentClient, "1\t%d\n", pid );
+        break;
+    }
+  } else {
+    /* Successful */
+    fprintf( CurrentClient, "0\t%d\n", pid );
+  }
+  return;
+#else
+  /** should never reach here */
+  fprintf( CurrentClient, "1\t%d\n", pid );
+  return;
+#endif
 }
