@@ -646,3 +646,11 @@ void KSysGuardProcessList::setShowTotals(bool showTotals)  //slot
 {
 	d->mModel.setShowTotals(showTotals);
 }
+
+ProcessModel::Units KSysGuardProcessList::units() const {
+	return d->mModel.units();
+}
+
+void KSysGuardProcessList::setUnits(ProcessModel::Units unit) {
+	d->mModel.setUnits(unit);
+}

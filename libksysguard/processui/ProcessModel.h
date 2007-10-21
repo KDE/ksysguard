@@ -35,6 +35,7 @@ class ProcessModelPrivate;
 class KDE_EXPORT ProcessModel : public QAbstractItemModel
 {
 	Q_OBJECT
+	Q_ENUMS(Units)
 		
 public:
 	ProcessModel(QObject* parent = 0);

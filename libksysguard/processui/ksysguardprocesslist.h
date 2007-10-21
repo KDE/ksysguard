@@ -52,7 +52,9 @@ class KDE_EXPORT KSysGuardProcessList : public QWidget
 	Q_PROPERTY( bool showTotalsInTree READ showTotals WRITE setShowTotals )
 	Q_PROPERTY( ProcessFilter::State state READ state WRITE setState )
 	Q_PROPERTY( int updateIntervalMSecs READ updateIntervalMSecs WRITE setUpdateIntervalMSecs )
+	Q_PROPERTY( ProcessModel::Units units READ units WRITE setUnits )
 	Q_ENUMS( ProcessFilter::State )
+	Q_ENUMS( ProcessModel::Units )
 
 public:
 	KSysGuardProcessList(QWidget* parent);
@@ -71,6 +73,9 @@ public:
 
 	/** Whether the widget will show child totals for CPU and Memory etc usage */
 	bool showTotals() const;
+
+	/** The units to display memory sizes etc in.  E.g. kb/mb/gb */
+	ProcessModel::Units units() const;
 
 	/** Returns a list of the processes that have been selected by the user. */
 	QList<KSysGuard::Process *> selectedProcesses() const;
@@ -108,6 +113,9 @@ public Q_SLOTS:
 
         /** Focus on a particular process, and select it */
         void selectAndJumpToProcess(int pid);
+
+	/** The units to display memory sizes etc in. */
+	void setUnits(ProcessModel::Units unit);
 
 private Q_SLOTS:
 
