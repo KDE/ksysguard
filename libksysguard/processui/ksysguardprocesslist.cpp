@@ -134,7 +134,11 @@ class ProgressBarItemDelegate : public QItemDelegate
 
 struct KSysGuardProcessListPrivate {
     
-	KSysGuardProcessListPrivate(KSysGuardProcessList* q) : mModel(q), mFilterModel(q), mUi(new Ui::ProcessWidget()) {}
+	KSysGuardProcessListPrivate(KSysGuardProcessList* q) 
+            : mModel(q), mFilterModel(q), mUi(new Ui::ProcessWidget())
+        {}
+
+        ~KSysGuardProcessListPrivate() { delete mUi; }
 	
 	/** The context menu when you right click on a process */
 	QMenu *mProcessContextMenu;
