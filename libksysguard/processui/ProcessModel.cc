@@ -1020,6 +1020,7 @@ void ProcessModel::setupHeader() {
 	headings << i18nc("process heading", "User Name");
 	headings << i18nc("process heading", "Tty");
 	headings << i18nc("process heading", "Niceness");
+	// xgettext: no-c-format
 	headings << i18nc("process heading", "CPU %");
 	headings << i18nc("process heading", "Virtual Size");
 	headings << i18nc("process heading", "Memory");
@@ -1029,9 +1030,22 @@ void ProcessModel::setupHeader() {
 	headings << i18nc("process heading", "Title Name");
 #endif
 
-	beginInsertColumns(QModelIndex(), 0, headings.count()-1);
+	if(d->mHeadings.isEmpty()) { // If it's empty, this is the first time this has been called, so insert the headings
+		beginInsertColumns(QModelIndex(), 0, headings.count()-1);
+			d->mHeadings = headings;
+		endInsertColumns();
+	} else {
+		// This was called to retranslate the headings.  Just use the new translations and call headerDataChanged
+		Q_ASSERT(d->mHeadings.count() == headings.count());
 		d->mHeadings = headings;
-	endInsertColumns();
+		headerDataChanged(Qt::Horizontal, 0 , headings.count()-1);
+
+	}
+}
+
+void ProcessModel::retranslateUi()
+{
+	setupHeader();
 }
 
 KSysGuard::Process *ProcessModel::getProcess(long long pid) {

@@ -53,8 +53,9 @@ public:
 	
 	/* Functions for setting the model */
 
-	/** Set the untranslated heading names for the incoming data that will be sent in setData.
-	 *  The column names we show to the user are based mostly on this information, translated if known, hidden if not necessary etc */
+	/** Setup the column headings by inserting the appropriate headings into the model.
+	 *  Can be called more than once to retranslate the headings if the system language changes.
+	 */
 	void setupHeader();
 
 	/** Update data.  You can pass in the time between updates to only update if there hasn't
@@ -114,7 +115,12 @@ public:
 	/** Take an amount in kb, and return a string in the units set by setUnits() */
 	QString formatMemoryInfo(long amountInKB) const;
 
+	/** Retranslate the GUI, for when the system language changes */
+	void retranslateUi();
+
 public Q_SLOTS:
+
+	/** Whether to show the total cpu for the process plus all of its children */
 	void setShowTotals(bool showTotals);
 
 private:

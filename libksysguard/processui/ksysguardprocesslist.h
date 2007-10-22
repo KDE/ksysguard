@@ -148,6 +148,9 @@ private:
 	
 	/** Inherit QWidget::hideEvent(QShowEvent *) to disable the timer, for updates, when not visible */
 	virtual void hideEvent(QHideEvent*);
+	
+	/** Capture any change events sent to this widget.  In particular QEvent::LanguageChange */
+	virtual void changeEvent ( QEvent * event );
 };
 
 #endif
