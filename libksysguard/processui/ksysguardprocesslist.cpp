@@ -65,19 +65,7 @@ class ProgressBarItemDelegate : public QItemDelegate
 	virtual void drawDisplay(QPainter *painter, const QStyleOptionViewItem &option,
 		                                 const QRect &rect, const QString &text) const
 	{
-/*		if(throb > 0) {
-			QPen old = painter->pen();
-			painter->setPen(Qt::NoPen);
-			QColor throbColor(255, 255-throb, 255-throb, 100);
-//			QLinearGradient linearGrad( rect.x(), rect.y(), rect.x(), rect.y() + rect.height());
-//			linearGrad.setColorAt(0, QColor(255,255,255,100));
-//			linearGrad.setColorAt(1, QColor(255, 255-throb, 255-throb, 100));
-
-			painter->fillRect( rect.x(), rect.y(), rect.width(), rect.height(), QBrush(throbColor));
-			painter->setPen( old );
-
-		}
-*/
+		
 		if(percentage > 0 && percentage * rect.width() > 100 ) { //make sure the line will have a width of more than 1 pixel
 			QPen old = painter->pen();
 			painter->setPen(Qt::NoPen);
@@ -87,7 +75,7 @@ class ProgressBarItemDelegate : public QItemDelegate
 			painter->fillRect( rect.x(), rect.y(), rect.width() * percentage /100 , rect.height(), QBrush(linearGrad));
 			painter->setPen( old );
 		}
-
+		
 		QItemDelegate::drawDisplay( painter, option, rect, text);
 	}
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -114,18 +102,9 @@ class ProgressBarItemDelegate : public QItemDelegate
 			}
 		} else
 			percentage = 0;
-		if(percentage > 100) percentage = 100;
-		if(process->timeKillWasSent.isNull())
-			throb = 0;
-		else {
-			throb = process->timeKillWasSent.elapsed() % 200;
-			if(throb > 100) throb = 200 - throb;
-		}
-
 		QItemDelegate::paint(painter, option, index);
 	}
 	mutable int percentage;
-	mutable int throb;
 	QColor startProgressColor;
 	QColor endProgressColor;
 	mutable long long totalMemory;
@@ -135,10 +114,10 @@ class ProgressBarItemDelegate : public QItemDelegate
 struct KSysGuardProcessListPrivate {
     
 	KSysGuardProcessListPrivate(KSysGuardProcessList* q) 
-            : mModel(q), mFilterModel(q), mUi(new Ui::ProcessWidget())
+            : mModel(q), mFilterModel(q), mUi(new Ui::ProcessWidget()), mUpdateTimer(NULL), mProcessContextMenu(NULL)
         {}
 
-        ~KSysGuardProcessListPrivate() { delete mUi; }
+        ~KSysGuardProcessListPrivate() { delete mUi; mUi = NULL; }
 	
 	/** The context menu when you right click on a process */
 	QMenu *mProcessContextMenu;
@@ -159,9 +138,6 @@ struct KSysGuardProcessListPrivate {
 	
 	/** A timer to call updateList() every mUpdateIntervalMSecs */
 	QTimer *mUpdateTimer;
-
-	/** A timer to rapidly pulse a process being killed */
-	//QTimer *mPulseTimer;
 };
 
 KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
@@ -560,7 +536,7 @@ void KSysGuardProcessList::reniceSelectedProcesses()
 	updateList();
 }
 
-void KSysGuardProcessList::killProcesses(const QList< long long> &pids, int sig)
+bool KSysGuardProcessList::killProcesses(const QList< long long> &pids, int sig)
 {
 	QList< long long> unkilled_pids;
         for (int i = 0; i < pids.size(); ++i) {
@@ -569,8 +545,8 @@ void KSysGuardProcessList::killProcesses(const QList< long long> &pids, int sig)
 			unkilled_pids << pids.at(i);
 		}
 	}
-	if(unkilled_pids.isEmpty()) return;
-	if(!d->mModel.isLocalhost()) return; //We can't use kdesu to kill non-localhost processes
+	if(unkilled_pids.isEmpty()) return false;
+	if(!d->mModel.isLocalhost()) return false; //We can't use kdesu to kill non-localhost processes
 
 	//We must use kdesu to kill the process
 	QStringList arguments;
@@ -587,6 +563,7 @@ void KSysGuardProcessList::killProcesses(const QList< long long> &pids, int sig)
 	connect(killProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(killFailed()));
 	connect(killProcess, SIGNAL(finished( int, QProcess::ExitStatus) ), this, SLOT(updateList()));
 	killProcess->start("kdesu", arguments);
+	return true;  //assume it ran successfully :(  We cannot seem to actually check if it did.  There must be a better solution
 
 }
 void KSysGuardProcessList::killSelectedProcesses()
@@ -622,12 +599,13 @@ void KSysGuardProcessList::killSelectedProcesses()
 			return;
 		}
 	}
+
+
+	Q_ASSERT(selectedPids.size() == selectedAsStrings.size());
+	if(!killProcesses(selectedPids, SIGTERM)) return;
 	foreach(KSysGuard::Process *process, processes) {
 		process->timeKillWasSent.start();
 	}
-
-	Q_ASSERT(selectedPids.size() == selectedAsStrings.size());
-	killProcesses(selectedPids, SIGTERM);
 	updateList();
 }
 

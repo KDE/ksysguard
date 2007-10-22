@@ -90,8 +90,9 @@ public Q_SLOTS:
 	/** Send a signal to a list of given processes.
 	 *   @p pids A list of PIDs that should be sent the signal 
 	 *   @p sig  The signal to send. 
+	 *   @return Whether the kill went ahead - false if the user cancelled or it stopped for some other reason
 	 */
-	void killProcesses(const QList< long long> &pids, int sig);
+	bool killProcesses(const QList< long long> &pids, int sig);
 
 	/** Renice all the processes that the user has selected.  Pops up a dialog box to ask for the nice value and confirm */
 	void reniceSelectedProcesses();
