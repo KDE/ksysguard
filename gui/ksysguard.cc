@@ -196,13 +196,23 @@ void TopLevel::removeWorkSheet( const QString &fileName )
 
 QStringList TopLevel::listSensors( const QString &hostName )
 {
-  startSensorBrowserWidget();
+  if(!mSensorBrowser) {
+    setUpdatesEnabled(false);
+    startSensorBrowserWidget();
+    mSensorBrowser->setVisible(false);
+    setUpdatesEnabled(true);
+  }
   return mSensorBrowser->listSensors( hostName );
 }
 
 QStringList TopLevel::listHosts()
 {
-  startSensorBrowserWidget();
+  if(!mSensorBrowser) {
+    setUpdatesEnabled(false);
+    startSensorBrowserWidget();
+    mSensorBrowser->setVisible(false);
+    setUpdatesEnabled(true);
+  }
   return mSensorBrowser->listHosts();
 }
 
