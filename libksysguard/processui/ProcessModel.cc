@@ -64,6 +64,7 @@ ProcessModelPrivate::ProcessModelPrivate() :  mBlankPixmap(HEADING_X_ICON_SIZE,1
 ProcessModel::ProcessModel(QObject* parent)
 	: QAbstractItemModel(parent), d(new ProcessModelPrivate)
 {
+	KGlobal::locale()->insertCatalog("processui");  //Make sure we include the translation stuff.  This needs to be run before any i18n call here
 	d->q=this;
 	d->setupProcesses();
 	setupHeader();
