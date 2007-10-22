@@ -117,7 +117,7 @@ TopLevel::TopLevel()
   action->setText(i18n( "Import Worksheet..." ));
   connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( importWorkSheet() ));
   mTabRemoveAction = actionCollection()->addAction( "remove_worksheet" );
-  mTabRemoveAction->setIcon( KIcon("tab-remove") );
+  mTabRemoveAction->setIcon( KIcon("tab-close") );
   mTabRemoveAction->setText( i18n( "&Remove Worksheet" ) );
   connect(mTabRemoveAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( removeWorkSheet() ));
   mTabExportAction = actionCollection()->addAction( "export_worksheet" );
