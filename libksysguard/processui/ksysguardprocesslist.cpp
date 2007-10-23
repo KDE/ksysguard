@@ -455,6 +455,7 @@ void KSysGuardProcessList::changeEvent( QEvent * event )
 {
 	if (event->type() == QEvent::LanguageChange) {
 		d->mModel.retranslateUi();
+		d->mUi->retranslateUi(this);
 	}
 	QWidget::changeEvent(event);
 }
