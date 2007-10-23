@@ -173,12 +173,6 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 
 	enum State {AllProcesses=0,AllProcessesInTreeForm, SystemProcesses, UserProcesses, OwnProcesses};
 
-	d->mUi->cmbFilter->setItemIcon(ProcessFilter::AllProcesses, KIcon("view-process-all"));
-	d->mUi->cmbFilter->setItemIcon(ProcessFilter::AllProcessesInTreeForm, KIcon("view-process-all-tree"));
-	d->mUi->cmbFilter->setItemIcon(ProcessFilter::SystemProcesses, KIcon("view-process-system"));
-	d->mUi->cmbFilter->setItemIcon(ProcessFilter::UserProcesses, KIcon("view-process-users"));
-	d->mUi->cmbFilter->setItemIcon(ProcessFilter::OwnProcesses, KIcon("view-process-own"));
-
 	/*  Hide the vm size column by default since it's not very useful */
 	d->mUi->treeView->header()->hideSection(ProcessModel::HeadingVmSize);
 	d->mUi->treeView->header()->hideSection(ProcessModel::HeadingNiceness);
@@ -197,7 +191,9 @@ KSysGuardProcessList::KSysGuardProcessList(QWidget* parent)
 	//Sort by username by default
 	d->mUi->treeView->sortByColumn(ProcessModel::HeadingUser, Qt::AscendingOrder);
 	d->mFilterModel.sort(ProcessModel::HeadingUser, Qt::AscendingOrder);
-	
+
+	retranslateUi();
+
 	// Dynamic sort filter seems to require repainting the whole screen, slowing everything down drastically.
 	// When this bug is fixed we can re-enable this.
 	//d->mFilterModel.setDynamicSortFilter(true);
@@ -456,11 +452,19 @@ void KSysGuardProcessList::changeEvent( QEvent * event )
 	if (event->type() == QEvent::LanguageChange) {
 		d->mModel.retranslateUi();
 		d->mUi->retranslateUi(this);
+		retranslateUi();
 	}
 	QWidget::changeEvent(event);
 }
 
-
+void KSysGuardProcessList::retranslateUi()
+{
+	d->mUi->cmbFilter->setItemIcon(ProcessFilter::AllProcesses, KIcon("view-process-all"));
+	d->mUi->cmbFilter->setItemIcon(ProcessFilter::AllProcessesInTreeForm, KIcon("view-process-all-tree"));
+	d->mUi->cmbFilter->setItemIcon(ProcessFilter::SystemProcesses, KIcon("view-process-system"));
+	d->mUi->cmbFilter->setItemIcon(ProcessFilter::UserProcesses, KIcon("view-process-users"));
+	d->mUi->cmbFilter->setItemIcon(ProcessFilter::OwnProcesses, KIcon("view-process-own"));
+}
 
 void KSysGuardProcessList::updateList()
 {

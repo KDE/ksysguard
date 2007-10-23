@@ -151,6 +151,9 @@ private:
 	
 	/** Capture any change events sent to this widget.  In particular QEvent::LanguageChange */
 	virtual void changeEvent ( QEvent * event );
+
+	/** Retranslate the Ui as needed */
+	void retranslateUi();
 };
 
 #endif
