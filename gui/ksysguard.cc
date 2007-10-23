@@ -335,6 +335,7 @@ void TopLevel::changeEvent( QEvent * event )
 {
   if (event->type() == QEvent::LanguageChange) {
     KSGRD::SensorMgr->retranslate();
+    setPlainCaption( i18n( "System Monitor" ) );
   }
   KXmlGuiWindow::changeEvent(event);
 }
