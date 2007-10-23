@@ -12,6 +12,7 @@
   <Menu name="edit"><text>&amp;Edit</text>
     <Action name="configure_sheet"/>
   </Menu>
+  <Menu name="help"><Action name="switch_application_language"></Menu>
   <Menu name="settings"><text>&amp;Settings</text>
   </Menu>
 </MenuBar>
