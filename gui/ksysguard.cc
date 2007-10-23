@@ -79,7 +79,6 @@ TopLevel::TopLevel()
   : KXmlGuiWindow( 0 )
 {
   QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportScriptableSlots);
-  setPlainCaption( i18n( "System Monitor" ) );
   mTimerId = -1;
 
   setWindowIcon(KIcon("utilities-system-monitor"));
@@ -108,40 +107,54 @@ TopLevel::TopLevel()
   statusBar()->hide();
 
   // create actions for menu entries
-  QAction *action = actionCollection()->addAction("new_worksheet");
-  action->setIcon(KIcon("tab-new"));
-  action->setText(i18n( "&New Worksheet..." ));
-  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( newWorkSheet() ));
-  action = actionCollection()->addAction("import_worksheet");
-  action->setIcon(KIcon("document-open") );
-  action->setText(i18n( "Import Worksheet..." ));
-  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( importWorkSheet() ));
+  mNewWorksheetAction = actionCollection()->addAction("new_worksheet");
+  mNewWorksheetAction->setIcon(KIcon("tab-new"));
+  connect(mNewWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( newWorkSheet() ));
+  mInsertWorksheetAction = actionCollection()->addAction("import_worksheet");
+  mInsertWorksheetAction->setIcon(KIcon("document-open") );
+  connect(mInsertWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( importWorkSheet() ));
   mTabRemoveAction = actionCollection()->addAction( "remove_worksheet" );
   mTabRemoveAction->setIcon( KIcon("tab-close") );
-  mTabRemoveAction->setText( i18n( "&Remove Worksheet" ) );
   connect(mTabRemoveAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( removeWorkSheet() ));
   mTabExportAction = actionCollection()->addAction( "export_worksheet" );
   mTabExportAction->setIcon( KIcon("document-save-as") );
-  mTabExportAction->setText( i18n( "&Export Worksheet..." ) );
   connect(mTabExportAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( exportWorkSheet() ));
 
-  KStandardAction::quit( this, SLOT( close() ), actionCollection() );
+  mQuitAction = NULL;
 
   mMonitorRemoteAction = actionCollection()->addAction( "connect_host" );
   mMonitorRemoteAction->setIcon( KIcon("connection-established") );
-  mMonitorRemoteAction->setText( i18n( "Monitor remote machine..." ) );
   connect(mMonitorRemoteAction, SIGNAL(triggered(bool)), SLOT( connectHost() ));
 
-  action = actionCollection()->addAction( "configure_sheet" );
-  action->setIcon( KIcon("configure") );
-  action->setText( i18n( "&Worksheet Properties" ) );
-  connect(action, SIGNAL(triggered(bool)), mWorkSpace, SLOT( configure() ));
+  mConfigureSheetAction = actionCollection()->addAction( "configure_sheet" );
+  mConfigureSheetAction->setIcon( KIcon("configure") );
+  connect(mConfigureSheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( configure() ));
 
   if (!initialGeometrySet())
     resize( QSize(700, 480).expandedTo(minimumSizeHint()));
 
+  retranslateUi();
   setupGUI(ToolBar | Keys | StatusBar | Create);
 }
+
+void TopLevel::retranslateUi()
+{
+  setPlainCaption( i18n( "System Monitor" ) );
+  mNewWorksheetAction->setText(i18n( "&New Worksheet..." ));
+  mInsertWorksheetAction->setText(i18n( "Import Worksheet..." ));
+  mTabExportAction->setText( i18n( "&Export Worksheet..." ) );
+  mTabRemoveAction->setText( i18n( "&Remove Worksheet" ) );
+  mMonitorRemoteAction->setText( i18n( "Monitor remote machine..." ) );
+  mConfigureSheetAction->setText( i18n( "&Worksheet Properties" ) );
+  if(mQuitAction) {
+    KAction *tmpQuitAction = KStandardAction::quit( NULL, NULL, NULL );
+    mQuitAction->setText(tmpQuitAction->text());
+    mQuitAction->setWhatsThis(tmpQuitAction->whatsThis());
+    mQuitAction->setToolTip(tmpQuitAction->toolTip());
+  } else
+    mQuitAction = KStandardAction::quit( this, SLOT( close() ), actionCollection() );
+}
+
 
 void TopLevel::currentTabChanged(int index)
 {
@@ -335,7 +348,10 @@ void TopLevel::changeEvent( QEvent * event )
 {
   if (event->type() == QEvent::LanguageChange) {
     KSGRD::SensorMgr->retranslate();
-    setPlainCaption( i18n( "System Monitor" ) );
+    setUpdatesEnabled(false);
+    setupGUI(ToolBar | Keys | StatusBar | Create);
+    retranslateUi();
+    setUpdatesEnabled(true);
   }
   KXmlGuiWindow::changeEvent(event);
 }

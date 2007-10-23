@@ -73,6 +73,7 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
   private:
     void setSwapInfo( long, long, const QString& );
     void changeEvent( QEvent * event );
+    void retranslateUi();
 
     QDBusMessage mDBusReply;
 
@@ -86,6 +87,11 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     QAction *mTabRemoveAction;
     QAction *mTabExportAction;
     QAction *mMonitorRemoteAction;
+    QAction *mNewWorksheetAction;
+    QAction *mInsertWorksheetAction;
+    QAction *mConfigureSheetAction;
+    QAction *mQuitAction;
+
     QList<int> mSplitterSize;
 };
 
