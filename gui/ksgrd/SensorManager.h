@@ -93,6 +93,8 @@ class KDE_EXPORT SensorManager : public QObject
     void saveProperties( KConfigGroup& cfg );
 
     void disconnectClient( SensorClient *client );
+    /** Call to retranslate all the strings - for example if the language has changed */
+    void retranslate();
 
   public Q_SLOTS:
     void reconfigure( const SensorAgent *agent );

@@ -331,6 +331,14 @@ void TopLevel::timerEvent( QTimerEvent* )
   }
 }
 
+void TopLevel::changeEvent( QEvent * event ) 
+{
+  if (event->type() == QEvent::LanguageChange) {
+    KSGRD::SensorMgr->retranslate();
+  }
+  KXmlGuiWindow::changeEvent(event);
+}
+
 bool TopLevel::queryClose()
 {
   if ( !mWorkSpace->saveOnQuit() )

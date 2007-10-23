@@ -72,6 +72,7 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
 
   private:
     void setSwapInfo( long, long, const QString& );
+    void changeEvent( QEvent * event );
 
     QDBusMessage mDBusReply;
 

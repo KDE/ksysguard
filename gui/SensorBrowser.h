@@ -67,6 +67,7 @@ class SensorBrowserModel : public QAbstractItemModel, private KSGRD::SensorClien
     void disconnectHost(const QString &hostname);
     virtual Qt::ItemFlags flags ( const QModelIndex & index ) const;
     virtual QMimeData * mimeData ( const QModelIndexList & indexes ) const;
+    void retranslate();  /// Retranslate the model
   Q_SIGNALS:
     void sensorsAddedToHost(const QModelIndex &index );
   private:
@@ -106,6 +107,9 @@ class SensorBrowserWidget : public QTreeView
     void update();
 
   private:
+    void retranslateUi();
+    void changeEvent( QEvent * event );
+
     KSGRD::SensorManager* mSensorManager;
 
     QString mDragText;

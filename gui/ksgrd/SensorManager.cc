@@ -63,8 +63,12 @@ SensorManager* KSGRD::SensorMgr;
 
 SensorManager::SensorManager()
 {
+  retranslate();
+}
+void SensorManager::retranslate()
+{
   // Fill the sensor description dictionary.
-
+  mDict.clear();
   mDict.insert( QLatin1String( "Delta" ), i18n( "Change" ) );
   mDict.insert( QLatin1String( "Rate" ), i18n( "Rate" ) );
  
@@ -158,13 +162,14 @@ SensorManager::SensorManager()
   }
 
   // TODO: translated descriptions not yet implemented.
-
+  mUnits.clear();
   mUnits.insert( QLatin1String( "1/s" ), i18nc( "the unit 1 per second", "1/s" ) );
   mUnits.insert( QLatin1String( "kBytes" ), i18n( "kBytes" ) );
   mUnits.insert( QLatin1String( "min" ), i18nc( "the unit minutes", "min" ) );
   mUnits.insert( QLatin1String( "MHz" ), i18nc( "the frequency unit", "MHz" ) );
   mUnits.insert( QLatin1String( "%" ), i18nc( "a percentage", "%" ) );
 
+  mTypes.clear();
   mTypes.insert( QLatin1String( "integer" ), i18n( "Integer Value" ) );
   mTypes.insert( QLatin1String( "float" ), i18n( "Floating Point Value" ) );
   mTypes.insert( QLatin1String( "table" ), i18n( "Process Controller" ) );

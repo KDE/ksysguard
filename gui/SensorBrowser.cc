@@ -81,7 +81,7 @@ QVariant SensorBrowserModel::data( const QModelIndex & index, int role) const { 
       if(index.column() == 0 && mHostInfoMap.contains(index.internalId())) {
         return KIcon("system");
       } else 
-        return QIcon(); //work around for drawing bug
+        return QIcon();
       break;
     }
   } //switch
@@ -89,9 +89,13 @@ QVariant SensorBrowserModel::data( const QModelIndex & index, int role) const { 
 }
 
 QVariant SensorBrowserModel::headerData ( int section, Qt::Orientation , int role) const { //virtual
-	if(role != Qt::DisplayRole) return QVariant();
-	if(section==0) return i18n("Sensor Browser");
-	return QVariant();
+  if(role != Qt::DisplayRole) return QVariant();
+  if(section==0) return i18n("Sensor Browser");
+  return QVariant();
+}
+
+void  SensorBrowserModel::retranslate() {
+  emit headerDataChanged(Qt::Horizontal, 0,0);
 }
 
 QModelIndex SensorBrowserModel::index ( int row, int column, const QModelIndex & parent) const { //virtual
@@ -226,7 +230,7 @@ void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&an
 
   HostInfo *hostInfo = getHostInfo(hostId);
   if(!hostInfo) {
-    kDebug(1215) << "SensorBrowserModel::answerReceived with invalid hostId " << hostId ;
+    kDebug(1215) << "Invalid hostId " << hostId ;
     return;
   }  
   for ( int i = 0; i < answer.count(); ++i ) {
@@ -298,13 +302,23 @@ SensorBrowserWidget::SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager*
   connect( mSensorManager, SIGNAL( update() ), SLOT( update() ) );
   setModel(&mSensorBrowserModel);
 
-  this->setToolTip( i18n( "Drag sensors to empty cells of a worksheet "
-                             "or the panel applet." ) );
 //  setRootIsDecorated( false );
   setDragDropMode(QAbstractItemView::DragOnly);
 
   //setMinimumWidth( 1 );
+  retranslateUi();
+  connect( &mSensorBrowserModel, SIGNAL(sensorsAddedToHost(const QModelIndex&)), this, SLOT(expand(const QModelIndex&)));
+  update();
+}
 
+SensorBrowserWidget::~SensorBrowserWidget()
+{
+}
+
+void SensorBrowserWidget::retranslateUi() {
+  
+  this->setToolTip( i18n( "Drag sensors to empty cells of a worksheet "
+                             "or the panel applet." ) );
   this->setWhatsThis( i18n( "The sensor browser lists the connected hosts and the sensors "
                                "that they provide. Click and drag sensors into drop zones "
                                "of a worksheet or the panel applet. A display will appear "
@@ -312,12 +326,16 @@ SensorBrowserWidget::SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager*
                                "values provided by the sensor. Some sensor displays can "
                                "display values of multiple sensors. Simply drag other "
                                "sensors on to the display to add more sensors." ) );
-  connect( &mSensorBrowserModel, SIGNAL(sensorsAddedToHost(const QModelIndex&)), this, SLOT(expand(const QModelIndex&)));
-  update();
 }
 
-SensorBrowserWidget::~SensorBrowserWidget()
+void SensorBrowserWidget::changeEvent( QEvent * event ) 
 {
+  if (event->type() == QEvent::LanguageChange) {
+    retranslateUi();
+    mSensorBrowserModel.retranslate();
+    update();
+  }
+  QWidget::changeEvent(event);
 }
 
 void SensorBrowserWidget::disconnect()
