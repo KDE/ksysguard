@@ -151,6 +151,7 @@ void TopLevel::retranslateUi()
     mQuitAction->setText(tmpQuitAction->text());
     mQuitAction->setWhatsThis(tmpQuitAction->whatsThis());
     mQuitAction->setToolTip(tmpQuitAction->toolTip());
+    delete tmpQuitAction;
   } else
     mQuitAction = KStandardAction::quit( this, SLOT( close() ), actionCollection() );
 }
