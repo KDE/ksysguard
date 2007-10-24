@@ -34,8 +34,12 @@
 #include "cpuinfo.h"
 
 static int CpuInfoOK = 0;
-static float* Clocks = 0;
-static int CPUs = 0;
+static int numProcessors = 0; /* Total number of physical processors */
+static int HighNumProcessors = 0; /* Highest # number of physical processors ever seen */
+static int* ProcessorCores = 0; /* Array with one entry per processor */
+static int numCores = 0; /* Total # of cores */
+static int HighNumCores = 0; /* Highest # of cores ever seen */
+static float* Clocks = 0; /* Array with one entry per core */
 
 #define CPUINFOBUFSIZE (32 * 1024)
 static char CpuInfoBuf[ CPUINFOBUFSIZE ];
@@ -48,7 +52,14 @@ static void processCpuInfo( void )
   char tag[ 32 ];
   char value[ 256 ];
   char* cibp = CpuInfoBuf;
-  int cpuId = 0;
+
+  /* coreUniqueId is not per processor; it is a counter of the number of cores encountered
+   * by the parse thus far */
+  int coreUniqueId = 0;
+
+  /* Reset global variables */
+  numCores = 0;
+  numProcessors = 0;
 
   if ( !CpuInfoOK )
     return;
@@ -58,8 +69,10 @@ static void processCpuInfo( void )
 
   while ( sscanf( cibp, format, tag, value ) == 2 ) {
     char* p;
+
     tag[ sizeof( tag ) - 1 ] = '\0';
     value[ sizeof( value ) - 1 ] = '\0';
+
     /* remove trailing whitespaces */
     p = tag + strlen( tag ) - 1;
     /* remove trailing whitespaces */
@@ -67,20 +80,45 @@ static void processCpuInfo( void )
       *p-- = '\0';
 
     if ( strcmp( tag, "processor" ) == 0 ) {
-      if ( sscanf( value, "%d", &cpuId ) == 1 ) {
-        if ( cpuId >= CPUs ) {
+      if ( sscanf( value, "%d", &coreUniqueId ) == 1 ) {
+        if ( coreUniqueId >= HighNumCores ) {
+	  /* Found a new processor core. Maybe even a new processor. (We'll check later) */
           char cmdName[ 24 ];
-          if ( Clocks )
-            free( Clocks );
-          CPUs = cpuId + 1;
-          Clocks = (float*) malloc( CPUs * sizeof( float ) );
-          snprintf( cmdName, sizeof( cmdName ) - 1, "cpu/cpu%d/clock", cpuId );
+
+	  HighNumCores = coreUniqueId + 1;
+
+	  /* Each core has a clock speed. Allocate one per core found. */
+	  Clocks = (float*) realloc( Clocks, HighNumCores * sizeof( float ) );
+
+	  snprintf( cmdName, sizeof( cmdName ) - 1, "cpu/cpu%d/clock", coreUniqueId );
           registerMonitor( cmdName, "float", printCPUxClock, printCPUxClockInfo,
                            CpuInfoSM );
-        }
+	}
       }
-    } else if ( strcmp( tag, "cpu MHz" ) == 0 )
-      sscanf( value, "%f", &Clocks[ cpuId ] );
+    } else if ( strcmp( tag, "cpu MHz" ) == 0 ) {
+      if (HighNumCores > coreUniqueId) {
+        /* The if statement above *should* always be true, but there's no harm in being safe. */
+        sscanf( value, "%f", &Clocks[ coreUniqueId ] );
+      }
+    } else if ( strcmp( tag, "core id" ) == 0 ) {
+      /* the core id is per processor */
+      int curCore;
+      
+      if ( (sscanf( value, "%d", &curCore ) == 1) && curCore == 0 ) {
+	/* core number is back at 0. We just found a new processor. */
+	numProcessors++;
+
+	if (numProcessors > HighNumProcessors) {
+	    HighNumProcessors = numProcessors;
+	    ProcessorCores = (int*) realloc( ProcessorCores, HighNumProcessors * sizeof( int ) );
+	}
+      }
+    } else if ( strcmp( tag, "cpu cores" ) == 0 ) {
+      if (numProcessors > 0) {
+        /* numProcessors *should* be > 0, we were just making sure. */
+        sscanf( value, "%d", &ProcessorCores[ numProcessors - 1 ] );
+      }
+    }
 
     /* Move cibp to beginning of next line, if there is one. */
     cibp = strchr( cibp, '\n' );
@@ -89,6 +127,8 @@ static void processCpuInfo( void )
     else
       cibp = CpuInfoBuf + strlen( CpuInfoBuf );
   }
+
+  numCores = coreUniqueId + 1;
 
   Dirty = 0;
 }
@@ -103,6 +143,11 @@ void initCpuInfo( struct SensorModul* sm )
 
   if ( updateCpuInfo() < 0 )
     return;
+
+  registerMonitor( "system/processors", "integer", printNumCpus, printNumCpusInfo,
+                           CpuInfoSM );
+  registerMonitor( "system/cores", "integer", printNumCores, printNumCoresInfo,
+                           CpuInfoSM );
 
   processCpuInfo();
 }
@@ -165,4 +210,30 @@ void printCPUxClockInfo( const char* cmd )
 
   sscanf( cmd + 7, "%d", &id );
   fprintf( CurrentClient, "CPU%d Clock Frequency\t0\t0\tMHz\n", id );
+}
+
+void printNumCpus( const char* cmd )
+{
+  if ( Dirty )
+    processCpuInfo();
+
+  fprintf( CurrentClient, "%d\n", numProcessors );
+}
+
+void printNumCpusInfo( const char* cmd )
+{
+  fprintf( CurrentClient, "Number of physical CPUs\t0\t0\t\n" );
+}
+
+void printNumCores( const char* cmd )
+{
+  if ( Dirty )
+    processCpuInfo();
+
+  fprintf( CurrentClient, "%d\n", numCores );
+}
+
+void printNumCoresInfo( const char* cmd )
+{
+  fprintf( CurrentClient, "Total number of processor cores\t0\t0\t\n" );
 }

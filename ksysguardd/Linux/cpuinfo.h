@@ -29,4 +29,10 @@ int updateCpuInfo( void );
 void printCPUxClock( const char* );
 void printCPUxClockInfo( const char* );
 
+void printNumCpus( const char* cmd );
+void printNumCpusInfo( const char* cmd );
+
+void printNumCores( const char* cmd );
+void printNumCoresInfo( const char* cmd );
+
 #endif
