@@ -105,7 +105,7 @@ static void processCpuInfo( void )
       int curCore;
       
       if ( (sscanf( value, "%d", &curCore ) == 1) && curCore == 0 ) {
-	/* core number is back at 0. We just found a new processor. */
+	/* core id is back at 0. We just found a new processor. */
 	numProcessors++;
 
 	if (numProcessors > HighNumProcessors) {
