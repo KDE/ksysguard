@@ -62,7 +62,7 @@ void Workspace::saveProperties( KConfigGroup& cfg )
 void Workspace::readProperties( const KConfigGroup& cfg )
 {
   kDebug() << "Reading from " << cfg.name();
-  QStringList selectedSheets = cfg.readPathListEntry( "SelectedSheets" );
+  QStringList selectedSheets = cfg.readPathEntry( "SelectedSheets", QStringList() );
   kDebug() << "Selected Sheets = " << selectedSheets;
 
   if ( selectedSheets.isEmpty() ) {
