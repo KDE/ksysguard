@@ -69,11 +69,17 @@ ProcessController::restoreSettings(QDomElement& element)
 				element.attribute("sensorName"),
 				(element.attribute("sensorType").isEmpty() ? "table" : element.attribute("sensorType")),
 				QString());
-	mUi.ksysguardprocesslist->treeView()->header()->restoreState(element.attribute("treeViewHeader").toUtf8());
+	mUi.ksysguardprocesslist->treeView()->header()->restoreState(QByteArray::fromBase64(element.attribute("treeViewHeader").toLatin1()));
 
 
 	bool showTotals = element.attribute("showTotals", "1").toUInt();
 	mUi.ksysguardprocesslist->setShowTotals(showTotals);
+
+	int units = element.attribute("units", QString::number((int)ProcessModel::UnitsKB)).toUInt();
+	mUi.ksysguardprocesslist->setUnits((ProcessModel::Units)units);
+
+	int filterState = element.attribute("filterState", QString::number((int)ProcessFilter::AllProcesses)).toUInt();
+	mUi.ksysguardprocesslist->setState((ProcessFilter::State)filterState);
 
 	SensorDisplay::restoreSettings(element);
 	return result;
@@ -85,8 +91,11 @@ ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 	element.setAttribute("hostName", sensors().at(0)->hostName());
 	element.setAttribute("sensorName", sensors().at(0)->name());
 	element.setAttribute("sensorType", sensors().at(0)->type());
-	element.setAttribute("treeViewHeader", QString::fromUtf8(mUi.ksysguardprocesslist->treeView()->header()->saveState()));
+	element.setAttribute("treeViewHeader", QString::fromLatin1(mUi.ksysguardprocesslist->treeView()->header()->saveState().toBase64()));
 	element.setAttribute("showTotals", mUi.ksysguardprocesslist->showTotals()?1:0);
+	
+	element.setAttribute("units", (int)(mUi.ksysguardprocesslist->units()));
+	element.setAttribute("filterState", (int)(mUi.ksysguardprocesslist->state()));
 
 	SensorDisplay::saveSettings(doc, element);
 
