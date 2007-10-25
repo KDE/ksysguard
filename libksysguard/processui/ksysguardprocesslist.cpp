@@ -60,7 +60,7 @@
 class ProgressBarItemDelegate : public QItemDelegate 
 {
   public:
-	ProgressBarItemDelegate(QObject *parent) : QItemDelegate(parent), startProgressColor(0x00, 0x71, 0xBC, 100), endProgressColor(0x83, 0xDD, 0xF5, 100), totalMemory(-1) {}
+	ProgressBarItemDelegate(QObject *parent) : QItemDelegate(parent), startProgressColor(0x00, 0x71, 0xBC, 100), endProgressColor(0x83, 0xDD, 0xF5, 100), totalMemory(-1), numCpuCores(-1) {}
   protected:
 	virtual void drawDisplay(QPainter *painter, const QStyleOptionViewItem &option,
 		                                 const QRect &rect, const QString &text) const
