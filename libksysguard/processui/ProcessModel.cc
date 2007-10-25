@@ -86,28 +86,21 @@ KSysGuard::Processes *ProcessModel::processController()
 void ProcessModelPrivate::windowRemoved(WId wid) {
 #ifdef Q_WS_X11
 	long long pid = mWIdToPid.value(wid, 0);
-	kDebug() << "Window removed";
 	if(pid <= 0) return;
 
-	kDebug() << "Window removed  pid is "  << pid;
 	int count = mPidToWindowInfo.count(pid);
 	QMultiHash<long long, WindowInfo>::iterator i = mPidToWindowInfo.find(pid);
 	while (i != mPidToWindowInfo.end() && i.key() == pid) {
-		kDebug() << "window has wid "  << wid;
 		if(i.value().wid == wid) {
-			kDebug() << "Found a window "  << pid;
 			i = mPidToWindowInfo.erase(i);
 //			break;
 		} else
 			i++;
 	}
-	kDebug() << "Count before: " << count << " and after:" << mPidToWindowInfo.count(pid);
 	Q_ASSERT(count-1 == mPidToWindowInfo.count(pid) || count == mPidToWindowInfo.count(pid));
         KSysGuard::Process *process = mProcesses->getProcess(pid);
         if(!process) return;
 	
-	kDebug() << "updating "  << pid;
-
 	int row;
 	if(mSimple)
 		row = process->index;
