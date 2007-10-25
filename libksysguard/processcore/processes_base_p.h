@@ -99,6 +99,13 @@ namespace KSysGuard
 	 */
 	virtual bool supportsIoNiceness() = 0;
 
+	/**
+	 *  Return the number of processor cores enabled. 
+	 *  (A system can disable procesors.  Disabled processors are not counted here).
+	 *  This is fast (just a system call) */
+	virtual long numberProcessorCores() = 0;
+
+
     };
 }
 

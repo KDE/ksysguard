@@ -39,6 +39,7 @@ namespace KSysGuard
 	virtual long long totalPhysicalMemory();
 	virtual bool setIoNiceness(long pid, int priorityClass, int priority);
 	virtual bool supportsIoNiceness();
+	virtual long numberProcessorCores();
 
       private:
 	/**

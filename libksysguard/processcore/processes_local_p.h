@@ -20,6 +20,8 @@
 #define PROCESSES_LOCAL_H_
 
 #include "processes_base_p.h"
+#include <unistd.h>  //For sysconf
+
 
 #include <QSet>
 
@@ -42,6 +44,7 @@ namespace KSysGuard
 	virtual long long totalPhysicalMemory();
 	virtual bool setIoNiceness(long pid, int priorityClass, int priority);
 	virtual bool supportsIoNiceness();
+	virtual long numberProcessorCores() { return sysconf(_SC_NPROCESSORS_ONLN); } //This should work on any posix system
 
       private:
 	/**

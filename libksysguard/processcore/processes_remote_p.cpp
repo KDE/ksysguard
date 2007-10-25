@@ -74,6 +74,9 @@ bool ProcessesRemote::supportsIoNiceness() {
 long long ProcessesRemote::totalPhysicalMemory() {
     return 0;
 }
+long ProcessesRemote::numberProcessorCores() {
+    return 0;
+}
 
 ProcessesRemote::~ProcessesRemote()
 {

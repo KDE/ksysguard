@@ -331,6 +331,11 @@ bool Processes::supportsIoNiceness() {
 long long Processes::totalPhysicalMemory() {
     return d->mAbstractProcesses->totalPhysicalMemory();
 }
+
+long Processes::numberProcessorCores() {
+    return d->mAbstractProcesses->numberProcessorCores();
+}
+
 Processes::~Processes()
 {
 

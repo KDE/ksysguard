@@ -131,11 +131,19 @@ namespace KSysGuard
 	 *  update the information.
 	 */
 	QList< Process *> getAllProcesses() const;
+	
 	/**
 	 *  Return the total amount of physical memory in KB.  This will be fairly expensive, so cache the result
 	 *  Returns 0 on error
 	 */
 	long long totalPhysicalMemory();
+
+	/**
+	 *  Return the number of processor cores enabled. 
+	 *  (A system can disable procesors.  Disabled processors are not counted here).
+	 *  This is fast (just a system call) */
+	long numberProcessorCores();
+
 
     Q_SIGNALS:
 	/** The data for a process has changed.
