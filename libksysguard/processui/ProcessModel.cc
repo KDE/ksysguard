@@ -963,6 +963,10 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 	case Qt::UserRole+3: {
 		return d->mMemTotal;
 	}
+
+	case Qt::UserRole+4: {
+		return d->mNumProcessorCores;
+	}
 	case Qt::DecorationRole: {
 		if(index.column() == HeadingName) {
 			KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (index.internalPointer());

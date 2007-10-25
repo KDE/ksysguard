@@ -83,7 +83,9 @@ class ProgressBarItemDelegate : public QItemDelegate
 		QModelIndex realIndex = (reinterpret_cast< const QAbstractProxyModel *> (index.model()))->mapToSource(index);
 		KSysGuard::Process *process = reinterpret_cast< KSysGuard::Process * > (realIndex.internalPointer());
 		if(index.column() == ProcessModel::HeadingCPUUsage) {
-			percentage = process->userUsage + process->sysUsage;
+			if(numCpuCores == -1) 
+				numCpuCores = index.data(Qt::UserRole+4).toInt();
+			percentage = (process->userUsage + process->sysUsage) / numCpuCores;
 		} else if(index.column() == ProcessModel::HeadingMemory) {
 			long long memory = 0;
 			if(process->vmURSS != -1) 
@@ -108,6 +110,7 @@ class ProgressBarItemDelegate : public QItemDelegate
 	QColor startProgressColor;
 	QColor endProgressColor;
 	mutable long long totalMemory;
+	mutable int numCpuCores;
 
 };
 
