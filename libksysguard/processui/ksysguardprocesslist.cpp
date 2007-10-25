@@ -662,7 +662,7 @@ void KSysGuardProcessList::saveSettings(KConfigGroup &cg) {
 
 void KSysGuardProcessList::loadSettings(const KConfigGroup &cg) {
 	setUnits((ProcessModel::Units) cg.readEntry("units", (int)ProcessModel::UnitsKB));
-	setShowTotals(cg.readEntry("units", true));
+	setShowTotals(cg.readEntry("showTotals", true));
 	setStateInt(cg.readEntry("filterState", (int)ProcessFilter::AllProcesses));
 	setUpdateIntervalMSecs(cg.readEntry("updateIntervalMSecs", 2000));
 	d->mUi->treeView->header()->restoreState(cg.readEntry("headerState", QByteArray()));
