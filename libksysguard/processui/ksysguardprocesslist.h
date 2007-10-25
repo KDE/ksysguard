@@ -80,6 +80,11 @@ public:
 	/** Returns a list of the processes that have been selected by the user. */
 	QList<KSysGuard::Process *> selectedProcesses() const;
 
+	/** Save the current state of the widget to the given config group */
+	void saveSettings(KConfigGroup &cg);
+	/** Load the saved state of the widget from the given config group */
+	void loadSettings(const KConfigGroup &cg);
+
 public Q_SLOTS:
 	/** Inform the view that the user has changed the current row */
 	void currentRowChanged(const QModelIndex &current);

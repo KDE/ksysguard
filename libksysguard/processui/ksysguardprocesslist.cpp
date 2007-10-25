@@ -651,3 +651,19 @@ ProcessModel::Units KSysGuardProcessList::units() const {
 void KSysGuardProcessList::setUnits(ProcessModel::Units unit) {
 	d->mModel.setUnits(unit);
 }
+
+void KSysGuardProcessList::saveSettings(KConfigGroup &cg) {
+	cg.writeEntry("units", (int)(units()));
+	cg.writeEntry("showTotals", showTotals());
+	cg.writeEntry("filterState", (int)(state()));
+	cg.writeEntry("updateIntervalMSecs", updateIntervalMSecs());
+	cg.writeEntry("headerState", d->mUi->treeView->header()->saveState());
+}
+
+void KSysGuardProcessList::loadSettings(const KConfigGroup &cg) {
+	setUnits((ProcessModel::Units) cg.readEntry("units", (int)ProcessModel::UnitsKB));
+	setShowTotals(cg.readEntry("units", true));
+	setStateInt(cg.readEntry("filterState", (int)ProcessFilter::AllProcesses));
+	setUpdateIntervalMSecs(cg.readEntry("updateIntervalMSecs", 2000));
+	d->mUi->treeView->header()->restoreState(cg.readEntry("headerState", QByteArray()));
+}
