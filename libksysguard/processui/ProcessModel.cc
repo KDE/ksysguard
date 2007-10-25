@@ -448,8 +448,27 @@ QModelIndex ProcessModel::parent ( const QModelIndex & index ) const
 QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
                                   int role) const
 {
-	if (role == Qt::ToolTipRole) {
+	if(orientation != Qt::Horizontal)
+		return QVariant();
+	if(section < 0 || section >= d->mHeadings.count())
+		return QVariant(); //is this needed?
+	switch( role ) {
+	  case Qt::TextAlignmentRole: 
+	  {
+		switch(section) {
+			case HeadingMemory:
+			case HeadingSharedMemory:
+			case HeadingVmSize:
+	//			return QVariant(Qt::AlignRight);
+			case HeadingUser:
+			case HeadingCPUUsage:
+				return QVariant(Qt::AlignCenter);
 
+		}
+		return QVariant();
+	  }
+	  case Qt::ToolTipRole: 
+	  {
 		switch(section) {
 		    case HeadingName:
 			return i18n("The process name");
@@ -474,14 +493,12 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 		    default:
 			return QVariant();
 		}
+	  }
+	  case Qt::DisplayRole:
+		return d->mHeadings[section];
+	  default:
+		return QVariant();
 	}
-	if (role != Qt::DisplayRole)
-		return QVariant();
-	if(orientation != Qt::Horizontal)
-		return QVariant();
-	if(section < 0 || section >= d->mHeadings.count())
-		return QVariant(); //is this needed?
-	return d->mHeadings[section];
 }
 void ProcessModel::setSimpleMode(bool simple)
 { 
