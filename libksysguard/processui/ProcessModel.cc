@@ -56,6 +56,7 @@ ProcessModelPrivate::ProcessModelPrivate() :  mBlankPixmap(HEADING_X_ICON_SIZE,1
 	mSimple = true;
 	mIsLocalhost = true;
 	mMemTotal = -1;
+	mNumProcessorCores = 1;
 	
 	mShowChildTotals = true;
 	mIsChangingLayout = false;
@@ -147,6 +148,8 @@ void ProcessModelPrivate::setupProcesses() {
 			       SLOT( beginMoveProcess(KSysGuard::Process *, KSysGuard::Process *)));
         connect( mProcesses, SIGNAL( endMoveProcess()), this, SLOT(endMoveRow()));
 	mMemTotal = mProcesses->totalPhysicalMemory();
+	mNumProcessorCores = mProcesses->numberProcessorCores();
+	if(mNumProcessorCores < 1) mNumProcessorCores=1;  //Default to 1 if there was an error getting the number
 	q->update();
 }
 
@@ -464,8 +467,7 @@ QVariant ProcessModel::headerData(int section, Qt::Orientation orientation,
 		    case HeadingNiceness:
 			return i18n("The priority that this process is being run with. Ranges from 19 (very nice, least priority) to -19 (top priority)");
 		    case HeadingCPUUsage:
-			// xgettext: no-c-format
-			return i18n("The CPU usage that this process is currently using. This can be greater than 100% if you have more than one processor.");
+			return i18n("The current CPU usage of the process, divided by the number of processor cores in the machine.");
 		    case HeadingVmSize:
 			return i18n("<qt>This is the amount of virtual memory space that the process is using, included shared libraries, graphics memory, files on disk, and so on. This number is almost meaningless.</qt>");
 		    case HeadingMemory:
@@ -663,6 +665,7 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 				double total;
 				if(d->mShowChildTotals && !d->mSimple) total = process->totalUserUsage + process->totalSysUsage;
 				else total = process->userUsage + process->sysUsage;
+				total = total / d->mNumProcessorCores;
 
 				if(total < 1 && process->status != KSysGuard::Process::Sleeping && process->status != KSysGuard::Process::Running)
 					return process->translatedStatus();  //tell the user when the process is a zombie or stopped
@@ -778,17 +781,17 @@ QVariant ProcessModel::data(const QModelIndex &index, int role) const
 						"User CPU usage: %3%<br />System CPU usage: %4%</qt>")
 						.subs(process->translatedStatus())
 						.subs(d->getStatusDescription(process->status))
-						.subs(process->userUsage)
-						.subs(process->sysUsage)
+						.subs((float)(process->userUsage) / d->mNumProcessorCores)
+						.subs((float)(process->sysUsage) / d->mNumProcessorCores)
 						.toString();
 
 			if(process->numChildren > 0) {
 				tooltip += ki18n("<br />Number of children: %1<br />Total User CPU usage: %2%<br />"
 						"Total System CPU usage: %3%<br />Total CPU usage: %4%")
 						.subs(process->numChildren)
-						.subs(process->totalUserUsage)
-						.subs(process->totalSysUsage)
-						.subs(process->totalUserUsage + process->totalSysUsage)
+						.subs((float)(process->totalUserUsage)/ d->mNumProcessorCores)
+						.subs((float)(process->totalSysUsage) / d->mNumProcessorCores)
+						.subs((float)(process->totalUserUsage + process->totalSysUsage) / d->mNumProcessorCores)
 						.toString();
 			}
 			if(process->userTime > 0) 
