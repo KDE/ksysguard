@@ -422,6 +422,13 @@ bool ProcessesLocal::supportsIoNiceness() {
 }
 
 long long ProcessesLocal::totalPhysicalMemory() {
+    //Try to get the memory via sysconf.  Note the cast to long long to try to avoid a long overflow
+    //Should we use sysconf(_SC_PAGESIZE)  or getpagesize()  ?
+    long long memory = ((long long)sysconf(_SC_PHYS_PAGES)) * (sysconf(_SC_PAGESIZE)/1024);
+    if(memory > 0) return memory;
+
+    //This is backup code incase the above failed.  It should never fail on a linux system.
+
     d->mFile.setFileName("/proc/meminfo");
     if(!d->mFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return 0; 

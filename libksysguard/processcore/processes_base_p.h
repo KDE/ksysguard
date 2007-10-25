@@ -81,7 +81,7 @@ namespace KSysGuard
 	virtual bool setNiceness(long pid, int priority) = 0;
 
 	/**
-	 *  Return the total amount of physical memory in KB.  This will be fairly expensive, so cache the result
+	 *  Return the total amount of physical memory in KB.  This is fast (just a system call)
 	 *  Returns 0 on error
 	 */
 	virtual long long totalPhysicalMemory() = 0;
