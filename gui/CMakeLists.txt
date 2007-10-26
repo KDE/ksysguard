@@ -1,7 +1,7 @@
 
 add_subdirectory( ksgrd ) 
 
-include_directories( ${KDEBASE_WORKSPACE_SOURCE_DIR}/kicker/libkicker ${CMAKE_CURRENT_SOURCE_DIR}/ksgrd/ ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ ${CMAKE_CURRENT_SOURCE_DIR}/../libksysguard/ ${CMAKE_SOURCE_DIR}/workspace ${KDEBASE_WORKSPACE_SOURCE_DIR}/lib ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs)
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/ksgrd/ ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ ${CMAKE_SOURCE_DIR}/workspace ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs/libksysguard )
 
 
 ########### next target ###############
