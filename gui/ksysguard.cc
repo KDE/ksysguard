@@ -297,7 +297,7 @@ void TopLevel::editToolbars()
 {
   saveMainWindowSettings( KConfigGroup( KGlobal::config(), "MainWindow" ) );
   KEditToolBar dlg( actionCollection() );
-  connect( &dlg, SIGNAL( newToolbarConfig() ), this,
+  connect( &dlg, SIGNAL( newToolBarConfig() ), this,
            SLOT( slotNewToolbarConfig() ) );
 
   dlg.exec();
