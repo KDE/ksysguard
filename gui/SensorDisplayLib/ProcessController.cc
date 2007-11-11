@@ -69,7 +69,11 @@ ProcessController::restoreSettings(QDomElement& element)
 				element.attribute("sensorName"),
 				(element.attribute("sensorType").isEmpty() ? "table" : element.attribute("sensorType")),
 				QString());
-	mUi.ksysguardprocesslist->treeView()->header()->restoreState(QByteArray::fromBase64(element.attribute("treeViewHeader").toLatin1()));
+	int version = element.attribute("version", "0").toUInt();
+	if(version == PROCESSHEADERVERSION) {  //If the header has changed, the old settings are no longer valid.  Only restore if version is the same
+		mUi.ksysguardprocesslist->treeView()->header()->restoreState(QByteArray::fromBase64(element.attribute("treeViewHeader").toLatin1()));
+	}
+
 
 
 	bool showTotals = element.attribute("showTotals", "1").toUInt();
@@ -91,6 +95,8 @@ ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 	element.setAttribute("hostName", sensors().at(0)->hostName());
 	element.setAttribute("sensorName", sensors().at(0)->name());
 	element.setAttribute("sensorType", sensors().at(0)->type());
+
+	element.setAttribute("version", QString::number(PROCESSHEADERVERSION));
 	element.setAttribute("treeViewHeader", QString::fromLatin1(mUi.ksysguardprocesslist->treeView()->header()->saveState().toBase64()));
 	element.setAttribute("showTotals", mUi.ksysguardprocesslist->showTotals()?1:0);
 	
