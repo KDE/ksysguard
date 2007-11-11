@@ -4,6 +4,7 @@ Comment=KDE System Guard
 Comment[af]=KDE Stelsel Wag
 Comment[be]=Сістэмны вартаўнік KDE
 Comment[br]=Gward Reizhiad KDE
+Comment[ca]=Vigilant del sistema del KDE
 Comment[cy]=Gwarchodwr Cysawd KDE
 Comment[da]=KDE Systemvagt
 Comment[de]=KDE-Systemüberwachung
@@ -50,6 +51,7 @@ Comment[zh_TW]=KDE 系統守衛
 
 [Event/pattern_match]
 Name=Pattern Matched
+Name[ca]=S'ha trobat el patró
 Name[de]=Muster gefunden
 Name[el]=Ταίριασμα μοτίβου
 Name[et]=Sobiv muster
@@ -71,6 +73,7 @@ Name[zh_CN]=匹配的模式
 Name[zh_TW]=樣式已符合
 Comment=Search pattern matched
 Comment[af]=Soek patroon opgespoor
+Comment[ca]=S'ha trobat el patró de cerca
 Comment[da]=Søgemønsteret matchede
 Comment[de]=Suchmuster gefunden
 Comment[el]=Υπάρχει ταίριασμα στο μοτίβο αναζήτησης
