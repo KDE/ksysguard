@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
 
-    Copyright (c) 2006 John Tapsell <john.tapsell@kdemail.org>
+    Copyright (c) 2006 - 2008 John Tapsell <john.tapsell@kdemail.org>
     Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
 
     This program is free software; you can redistribute it and/or
@@ -518,7 +518,7 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
 
   KAboutData aboutData( "ksysguard", 0, ki18n( "System Monitor" ),
                         KSYSGUARD_VERSION, ki18n(Description), KAboutData::License_GPL,
-                        ki18n( "(c) 1996-2006 The KDE System Monitor Developers" ) );
+                        ki18n( "(c) 1996-2008 The KDE System Monitor Developers" ) );
   aboutData.addAuthor( ki18n("John Tapsell"), ki18n("Current Maintainer"), "john.tapsell@kde.org" );
   aboutData.addAuthor( ki18n("Chris Schlaeger"), ki18n("Previous Maintainer"), "cs@kde.org" );
   aboutData.addAuthor( ki18n("Greg Martyn"), KLocalizedString(), "greg.martyn@gmail.com" );
