@@ -100,10 +100,19 @@ TopLevel::TopLevel()
    * number of processes and the memory consumption of the local
    * host. */
   const int STATUSBAR_STRETCH=1;
-  statusBar()->insertItem( i18n( "Loading Processes Count.." ), 0, STATUSBAR_STRETCH );
-  statusBar()->insertItem( i18n( "Loading CPU Stat.." ), 1, STATUSBAR_STRETCH );
-  statusBar()->insertItem( i18n( "Loading Memory Totals.." ), 2, STATUSBAR_STRETCH );
-  statusBar()->insertItem( i18n( "Loading Swap Totals.." ), 3, STATUSBAR_STRETCH);
+
+  sbProcessCount = new QLabel();
+  statusBar()->addWidget( sbProcessCount, STATUSBAR_STRETCH );
+
+  sbCpuStat = new QLabel();
+  statusBar()->addWidget( sbCpuStat, STATUSBAR_STRETCH );
+
+  sbMemTotal = new QLabel();
+  statusBar()->addWidget( sbMemTotal, STATUSBAR_STRETCH );
+
+  sbSwapTotal = new QLabel();
+  statusBar()->addWidget( sbSwapTotal, STATUSBAR_STRETCH );
+
   statusBar()->hide();
 
   // create actions for menu entries
@@ -424,12 +433,13 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
   switch ( id ) {
     case 0:
       s = i18n( " %1 processes ", answer.toInt() );
-      statusBar()->changeItem( s, 0 );
+      sbProcessCount->setText( s );
+
       break;
 
     case 1:
       s = i18n( " CPU: %1% ", (int) (100 - answer.toFloat()) );
-      statusBar()->changeItem( s, 1 );
+      sbCpuStat->setText( s );
       break;
 
     case 2:
@@ -445,7 +455,7 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
       s = i18n( " Memory: %1 / %2 " ,
                 KGlobal::locale()->formatByteSize( mUsedApplication*1024),
                 KGlobal::locale()->formatByteSize( (mFree+mUsedTotal)*1024 ) );
-      statusBar()->changeItem( s, 2 );
+      sbMemTotal->setText( s );
       break;
 
     case 5:
@@ -476,7 +486,7 @@ void TopLevel::setSwapInfo( long used, long free, const QString & )
                 KGlobal::locale()->formatByteSize( free*1024) );
   }
 
-  statusBar()->changeItem( msg, 3 );
+  sbSwapTotal->setText( msg );
 }
 
 /*
