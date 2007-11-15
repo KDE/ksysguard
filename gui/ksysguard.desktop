@@ -1,5 +1,4 @@
 [Desktop Entry]
-Encoding=UTF-8
 Name=System Monitor
 Name[ar]=مراقب النظام
 Name[be]=Сістэмны назіральнік
@@ -41,7 +40,6 @@ Type=Application
 MimeType=application/x-ksysguard;
 X-DocPath=ksysguard/index.html
 Terminal=false
-Path=
 X-KDE-StartupNotify=true
 X-DBUS-StartupType=Multi
 Categories=Qt;KDE;System;
