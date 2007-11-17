@@ -102,6 +102,19 @@ void KSignalPlotter::addBeam( const QColor &color )
   mBeamColorsDark.append(color.darker(150));
 }
 
+QColor KSignalPlotter::beamColor( int index ) {
+  return mBeamColors[ index ];
+}
+
+void KSignalPlotter::setBeamColor( int index, QColor color ) {
+  mBeamColors[ index ] = color;
+  mBeamColorsDark[ index ] = color.darker(150);
+}
+
+int KSignalPlotter::numBeams() {
+  return mBeamColors.count();
+}
+
 void KSignalPlotter::addSample( const QList<double>& sampleBuf )
 {
   if(mSamples < 4) {
@@ -171,11 +184,6 @@ void KSignalPlotter::changeRange( double min, double max )
   mMinValue = min;
   mMaxValue = max;
   calculateNiceRange();
-}
-
-QList<QColor> &KSignalPlotter::beamColors()
-{
-  return mBeamColors;
 }
 
 void KSignalPlotter::removeBeam( uint pos )

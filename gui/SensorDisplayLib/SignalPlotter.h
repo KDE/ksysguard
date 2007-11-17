@@ -88,11 +88,14 @@ class KSignalPlotter : public QWidget
      */
     void removeBeam( uint pos );
 
-    /** Return the list of beam (the graph lines) colors, in the order
-     *  that the beams 
-     *  were added (or later reordered)
+    /** Get/set the beam (the graph lines) colors, in the order
+     *  that the beams were added (or later reordered)
      */
-    QList<QColor> &beamColors();
+    QColor beamColor( int index );
+    void setBeamColor( int index, QColor color );
+
+    /** returns the # of beams */
+    int numBeams();
 
     /** Set the title of the graph.  Drawn in the top left. */
     void setTitle( const QString &title );

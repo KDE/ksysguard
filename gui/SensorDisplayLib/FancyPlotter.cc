@@ -125,7 +125,7 @@ void FancyPlotter::configureSettings()
     entry.setSensorName( sensors().at( i )->name() );
     entry.setUnit( KSGRD::SensorMgr->translateUnit( sensors().at( i )->unit() ) );
     entry.setStatus( sensors().at( i )->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
-    entry.setColor( mPlotter->beamColors()[ i ] );
+    entry.setColor( mPlotter->beamColor( i ) );
 
     list.append( entry );
   }
@@ -197,7 +197,7 @@ void FancyPlotter::applySettings() {
     SensorModelEntry::List list = mSettingsDialog->sensors();
 
     for ( int i = 0; i < sensors().count(); ++i ) {
-          mPlotter->beamColors()[ i ] = list[ i ].color();
+          mPlotter->setBeamColor( i, list[ i ].color() );
     }
 
     mPlotter->update();
@@ -211,9 +211,9 @@ void FancyPlotter::applyStyle()
   QFont font = mPlotter->font();
   font.setPointSize(KSGRD::Style->fontSize() );
   mPlotter->setFont( font );
-  for ( int i = 0; i < mPlotter->beamColors().count() &&
+  for ( int i = 0; i < mPlotter->numBeams() &&
         (unsigned int)i < KSGRD::Style->numSensorColors(); ++i )
-    mPlotter->beamColors()[ i ] = KSGRD::Style->sensorColor( i );
+    mPlotter->setBeamColor( i, KSGRD::Style->sensorColor( i ) );
 
   mPlotter->update();
 }
@@ -290,13 +290,13 @@ void FancyPlotter::setTooltip()
 
     if(sensors().at( i)->isLocalhost()) {
       tooltip += QString( "%1%2 %3 (%4)" ).arg( i != 0 ? "<br>" : "<qt>")
-            .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">"+indicatorSymbol+"</font>")
+            .arg("<font color=\"" + mPlotter->beamColor( i ).name() + "\">"+indicatorSymbol+"</font>")
             .arg( description )
 	    .arg( lastValue );
 
     } else {
       tooltip += QString( "%1%2 %3:%4 (%5)" ).arg( i != 0 ? "<br>" : "<qt>" )
-                 .arg("<font color=\"" + mPlotter->beamColors()[ i ].name() + "\">"+indicatorSymbol+"</font>")
+                 .arg("<font color=\"" + mPlotter->beamColor( i ).name() + "\">"+indicatorSymbol+"</font>")
                  .arg( sensors().at( i )->hostName() )
                  .arg( description )
 	         .arg( lastValue );
@@ -467,7 +467,7 @@ bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element)
     beam.setAttribute( "hostName", sensors().at( i )->hostName() );
     beam.setAttribute( "sensorName", sensors().at( i )->name() );
     beam.setAttribute( "sensorType", sensors().at( i )->type() );
-    saveColor( beam, "color", mPlotter->beamColors()[ i ] );
+    saveColor( beam, "color", mPlotter->beamColor( i ) );
   }
 
   SensorDisplay::saveSettings( doc, element );
