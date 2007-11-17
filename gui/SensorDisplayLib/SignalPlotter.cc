@@ -56,6 +56,7 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
   QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   sizePolicy.setHeightForWidth(false);
   setSizePolicy( sizePolicy );
+  setAttribute( Qt::WA_OpaquePaintEvent );
 
   mShowVerticalLines = true;
   mVerticalLinesColor = QColor("black");
