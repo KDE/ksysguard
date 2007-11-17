@@ -24,11 +24,13 @@
 #include <QTreeView>
 #include <QCheckBox>
 #include <QHeaderView>
+#include <QStackedLayout>
 
 #include <kdebug.h>
 
 #include "ProcessController.moc"
 #include "ProcessController.h"
+#include "processui/ksysguardprocesslist.h"
 //#define DO_MODELCHECK
 #ifdef DO_MODELCHECK
 #include "modeltest.h"
@@ -36,10 +38,8 @@
 ProcessController::ProcessController(QWidget* parent, const QString &title, SharedSettings *workSheetSettings)
 	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
-	mUi.setupUi(this);
-        QTimer::singleShot(0, mUi.ksysguardprocesslist->filterLineEdit(), SLOT(setFocus()));
+	mProcessList = NULL;
 	setPlotterWidget(this);
-	setMinimumSize(sizeHint());
 }
 void ProcessController::resizeEvent(QResizeEvent* ev)
 {
@@ -69,58 +69,69 @@ ProcessController::restoreSettings(QDomElement& element)
 				element.attribute("sensorName"),
 				(element.attribute("sensorType").isEmpty() ? "table" : element.attribute("sensorType")),
 				QString());
+	if(!result) return false;
+
 	int version = element.attribute("version", "0").toUInt();
 	if(version == PROCESSHEADERVERSION) {  //If the header has changed, the old settings are no longer valid.  Only restore if version is the same
-		mUi.ksysguardprocesslist->treeView()->header()->restoreState(QByteArray::fromBase64(element.attribute("treeViewHeader").toLatin1()));
+		mProcessList->treeView()->header()->restoreState(QByteArray::fromBase64(element.attribute("treeViewHeader").toLatin1()));
 	}
 
-
-
 	bool showTotals = element.attribute("showTotals", "1").toUInt();
-	mUi.ksysguardprocesslist->setShowTotals(showTotals);
+	mProcessList->setShowTotals(showTotals);
+
 
 	int units = element.attribute("units", QString::number((int)ProcessModel::UnitsKB)).toUInt();
-	mUi.ksysguardprocesslist->setUnits((ProcessModel::Units)units);
+	mProcessList->setUnits((ProcessModel::Units)units);
 
 	int filterState = element.attribute("filterState", QString::number((int)ProcessFilter::AllProcesses)).toUInt();
-	mUi.ksysguardprocesslist->setState((ProcessFilter::State)filterState);
+	mProcessList->setState((ProcessFilter::State)filterState);
 
 	SensorDisplay::restoreSettings(element);
 	return result;
 }
 
-bool
-ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
+bool ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 {
+	if(!mProcessList)
+		return false;
 	element.setAttribute("hostName", sensors().at(0)->hostName());
 	element.setAttribute("sensorName", sensors().at(0)->name());
 	element.setAttribute("sensorType", sensors().at(0)->type());
 
 	element.setAttribute("version", QString::number(PROCESSHEADERVERSION));
-	element.setAttribute("treeViewHeader", QString::fromLatin1(mUi.ksysguardprocesslist->treeView()->header()->saveState().toBase64()));
-	element.setAttribute("showTotals", mUi.ksysguardprocesslist->showTotals()?1:0);
+	element.setAttribute("treeViewHeader", QString::fromLatin1(mProcessList->treeView()->header()->saveState().toBase64()));
+	element.setAttribute("showTotals", mProcessList->showTotals()?1:0);
 	
-	element.setAttribute("units", (int)(mUi.ksysguardprocesslist->units()));
-	element.setAttribute("filterState", (int)(mUi.ksysguardprocesslist->state()));
+	element.setAttribute("units", (int)(mProcessList->units()));
+	element.setAttribute("filterState", (int)(mProcessList->state()));
 
 	SensorDisplay::saveSettings(doc, element);
 
 	return true;
 }
+
 bool ProcessController::addSensor(const QString& hostName,
                                  const QString& sensorName,
                                  const QString& sensorType,
                                  const QString& title)
 {
-       if (sensorType != "table")
-               return false;
+	if (sensorType != "table")
+		return false;
 
-       registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
-       /* This just triggers the first communication. The full set of
-        * requests are send whenever the sensor reconnects (detected in
-        * sensorError(). */
 
-       sensors().at(0)->setIsOk(true); //Assume it is okay from the start
-       setSensorOk(sensors().at(0)->isOk());
-       return true;
+	QStackedLayout *layout = new QStackedLayout(this);
+	mProcessList = new KSysGuardProcessList(NULL, hostName);
+	layout->addWidget(mProcessList);
+
+        QTimer::singleShot(0, mProcessList->filterLineEdit(), SLOT(setFocus()));
+	setMinimumSize(sizeHint());
+
+	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
+	/* This just triggers the first communication. The full set of
+	* requests are send whenever the sensor reconnects (detected in
+	* sensorError(). */
+	sensors().at(0)->setIsOk(true); //Assume it is okay from the start
+	setSensorOk(sensors().at(0)->isOk());
+	return true;
 }
+
