@@ -26,7 +26,6 @@
 #include <QBitmap>
 #include <QPixmap>
 #include <QEvent>
-#include <QResizeEvent>
 #include <QMouseEvent>
 #include <QCustomEvent>
 

@@ -21,6 +21,8 @@
 #include <QtXml/qdom.h>
 #include <QtGui/QImage>
 #include <QtGui/QToolTip>
+#include <QtGui/QHBoxLayout>
+
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -43,7 +45,9 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   mSettingsDialog = 0;
   mSensorReportedMax = 0;
   mSensorReportedMin = 0;
+  QLayout *layout = new QHBoxLayout(this);
   mPlotter = new KSignalPlotter( this );
+  layout->addWidget(mPlotter);
   mPlotter->setVerticalLinesColor(KSGRD::Style->firstForegroundColor());
   mPlotter->setHorizontalLinesColor(KSGRD::Style->secondForegroundColor());
   mPlotter->setBackgroundColor(KSGRD::Style->backgroundColor());
@@ -63,8 +67,6 @@ FancyPlotter::FancyPlotter( QWidget* parent,
 
   setPlotterWidget( mPlotter );
 
-  //Force a resize so that mPlotter's size gets set
-  FancyPlotter::resizeEvent( 0 );
 }
 
 FancyPlotter::~FancyPlotter()
@@ -157,9 +159,6 @@ void FancyPlotter::applySettings() {
 
     if ( mPlotter->horizontalScale() != mSettingsDialog->horizontalScale() ) {
       mPlotter->setHorizontalScale( mSettingsDialog->horizontalScale() );
-      // Can someone think of a useful QResizeEvent to pass?
-      // It doesn't really matter anyway because it's not used.
-      emit resizeEvent( 0 );
     }
 
     mPlotter->setStackBeams( mSettingsDialog->stackBeams());
@@ -304,16 +303,6 @@ void FancyPlotter::setTooltip()
   }
 //  tooltip += "</td></tr></table>";
   mPlotter->setToolTip( tooltip );
-}
-
-void FancyPlotter::resizeEvent( QResizeEvent* )
-{
-  mPlotter->setGeometry( 0, 0, width(), height() );
-}
-
-QSize FancyPlotter::sizeHint() const
-{
-  return mPlotter->sizeHint();
 }
 
 void FancyPlotter::timerTick( ) //virtual

@@ -41,10 +41,6 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	mProcessList = NULL;
 	setPlotterWidget(this);
 }
-void ProcessController::resizeEvent(QResizeEvent* ev)
-{
-	QWidget::resizeEvent(ev);
-}
 
 void
 ProcessController::sensorError(int, bool err)

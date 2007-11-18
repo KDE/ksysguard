@@ -47,8 +47,6 @@ class DancingBars : public KSGRD::SensorDisplay
 
     void updateSamples( const QVector<double> &samples );
 
-    virtual QSize sizeHint() const;
-
     virtual void answerReceived( int id, const QList<QByteArray> &answerlist );
 
     bool restoreSettings( QDomElement& );
@@ -58,9 +56,6 @@ class DancingBars : public KSGRD::SensorDisplay
 
   public Q_SLOTS:
     virtual void applyStyle();
-
-  protected:
-    virtual void resizeEvent( QResizeEvent* );
 
   private:
     uint mBars;

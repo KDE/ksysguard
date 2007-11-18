@@ -28,7 +28,6 @@ class QListWidget;
 #include <QtXml/qdom.h>
 
 #include <QTimerEvent>
-#include <QResizeEvent>
 
 #include <SensorDisplay.h>
 
@@ -44,7 +43,6 @@ public:
 	bool addSensor(const QString& hostName, const QString& sensorName,
 				   const QString& sensorType, const QString& sensorDescr);
 	void answerReceived(int id, const QList<QByteArray>& answer);
-	void resizeEvent(QResizeEvent*);
 
 	bool restoreSettings(QDomElement& element);
 	bool saveSettings(QDomDocument& doc, QDomElement& element);

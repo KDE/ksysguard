@@ -27,7 +27,6 @@
 
 class LogSensorModel;
 class QDomElement;
-class QResizeEvent;
 
 class LogSensor : public QObject, public KSGRD::SensorClient
 {
@@ -125,7 +124,6 @@ class SensorLogger : public KSGRD::SensorDisplay
     bool editSensor( LogSensor* );
 
     virtual void answerReceived( int, const QList<QByteArray>& );
-    void resizeEvent( QResizeEvent* );
 
     bool restoreSettings( QDomElement& );
     bool saveSettings( QDomDocument&, QDomElement& );

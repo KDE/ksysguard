@@ -23,7 +23,7 @@
 
 #include <QtXml/qdom.h>
 #include <QtGui/QLCDNumber>
-#include <QtGui/QResizeEvent>
+#include <QtGui/QHBoxLayout>
 
 #include <kdebug.h>
 
@@ -44,8 +44,10 @@ MultiMeter::MultiMeter(QWidget* parent, const QString& title, SharedSettings *wo
 
   mNormalDigitColor = KSGRD::Style->firstForegroundColor();
   mAlarmDigitColor = KSGRD::Style->alarmColor();
-
+  QLayout *layout = new QHBoxLayout(this);
   mLcd = new QLCDNumber( this );
+  layout->addWidget(mLcd);
+
   mLcd->setFrameStyle( QFrame::NoFrame );
   mLcd->setSegmentStyle( QLCDNumber::Filled );
   setDigitColor( KSGRD::Style->firstForegroundColor() );
@@ -128,13 +130,6 @@ void MultiMeter::answerReceived(int id, const QList<QByteArray>& answerlist)
     else
       setDigitColor(mNormalDigitColor);
   }
-}
-
-void MultiMeter::resizeEvent( QResizeEvent *event )
-{
-  mLcd->setGeometry(0, 0, width(), height());
-
-  QWidget::resizeEvent( event );
 }
 
 bool MultiMeter::restoreSettings(QDomElement& element)

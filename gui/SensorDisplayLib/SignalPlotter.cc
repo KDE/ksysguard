@@ -435,11 +435,12 @@ void KSignalPlotter::setThinFrame( bool set)
   mShowThinFrame = set;
   mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
+
 void KSignalPlotter::resizeEvent( QResizeEvent* )
 {
   Q_ASSERT( width() > 2 );
 //  mBackgroundImage = mBackgroundImage.scaled(width(), height()); //set to null.  If it's invalid, it will be rerendered.
-  if (testAttribute(Qt::WA_PendingResizeEvent)) {
+  if (testAttribute(Qt::WA_PendingResizeEvent)) {	
       return; // we'll be back here again in no time
   }
 

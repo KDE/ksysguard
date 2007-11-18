@@ -23,7 +23,6 @@
 
 #include <SensorDisplay.h>
 #include <QList>
-#include <QResizeEvent>
 
 #include "SignalPlotter.h"
 #include "SharedSettings.h"
@@ -64,8 +63,6 @@ class FancyPlotter : public KSGRD::SensorDisplay
 
     bool removeSensor( uint pos );
 
-    virtual QSize sizeHint(void) const;
-
     virtual void setTitle( const QString &title );
 
     virtual void answerReceived( int id, const QList<QByteArray> &answerlist );
@@ -85,7 +82,6 @@ class FancyPlotter : public KSGRD::SensorDisplay
     /** When we receive a timer tick, draw the beams and request new information to update the beams*/
     virtual void timerTick( );
     virtual bool eventFilter( QObject*, QEvent* );
-    virtual void resizeEvent( QResizeEvent* );
     void setTooltip();
 
   private:

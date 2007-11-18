@@ -26,6 +26,7 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QMenu>
 #include <QtGui/QTreeView>
+#include <QtGui/QHBoxLayout>
 #include <QtXml/QDomNodeList>
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
@@ -35,6 +36,7 @@
 #include <klocale.h>
 #include <knotification.h>
 #include <ksgrd/SensorManager.h>
+#include <kdebug.h>
 #include "StyleEngine.h"
 
 #include "SensorLoggerDlg.h"
@@ -402,8 +404,12 @@ SensorLogger::SensorLogger( QWidget *parent, const QString& title, SharedSetting
   mModel->setForegroundColor( KSGRD::Style->firstForegroundColor() );
   mModel->setBackgroundColor( KSGRD::Style->backgroundColor() );
   mModel->setAlarmColor( KSGRD::Style->alarmColor() );
-
+  
+  QLayout *layout = new QHBoxLayout(this);
   mView = new LogSensorView( this );
+  layout->addWidget(mView);
+  setLayout(layout);
+
   mView->header()->setStretchLastSection( true );
   mView->setRootIsDecorated( false );
   mView->setItemsExpandable( false );
@@ -574,11 +580,6 @@ bool SensorLogger::saveSettings( QDomDocument& doc, QDomElement& element )
 void SensorLogger::answerReceived( int, const QList<QByteArray>& ) //virtual
 {
  // we do not use this, since all answers are received by the LogSensors
-}
-
-void SensorLogger::resizeEvent(QResizeEvent*)
-{
-  mView->setGeometry( 10, 20, this->width() - 20, this->height() - 30 );
 }
 
 void SensorLogger::contextMenuRequest( const QModelIndex &index, const QPoint &point )

@@ -25,8 +25,8 @@
 #include <QRegExp>
 
 #include <QFile>
-#include <QResizeEvent>
 #include <QListWidget>
+#include <QHBoxLayout>
 #include <kfontdialog.h>
 #include <kdebug.h>
 #include <klocale.h>
@@ -41,8 +41,11 @@
 LogFile::LogFile(QWidget *parent, const QString& title, SharedSettings *workSheetSettings)
 	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
+	kDebug() << "Making sensor logger";
+	QLayout *layout = new QHBoxLayout(this);
 	monitor = new QListWidget(this);
-	Q_CHECK_PTR(monitor);
+	layout->addWidget(monitor);
+	setLayout(layout);
 
 	setMinimumSize(50, 25);
 
@@ -266,8 +269,3 @@ LogFile::answerReceived(int id, const QList<QByteArray>& answer)
 	}
 }
 
-void
-LogFile::resizeEvent(QResizeEvent*)
-{
-	monitor->setGeometry(10, 20, this->width() - 20, this->height() - 30);
-}

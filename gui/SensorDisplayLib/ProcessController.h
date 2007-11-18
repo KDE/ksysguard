@@ -27,7 +27,6 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QResizeEvent>
 #include <QList>
 #include <QProcess>
 
@@ -54,8 +53,6 @@ public:
 
 	/* Functions for SensorDisplay*/
 	
-	void resizeEvent(QResizeEvent*);
-
 	bool restoreSettings(QDomElement& element);
 
 	bool saveSettings(QDomDocument& doc, QDomElement& element);

@@ -24,6 +24,7 @@
 #include <QListView>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QHBoxLayout>
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -43,7 +44,9 @@ DancingBars::DancingBars( QWidget *parent, const QString &title, SharedSettings 
   mFlags = QBitArray( 100 );
   mFlags.fill( false );
 
+  QLayout *layout = new QHBoxLayout(this);
   mPlotter = new BarGraph( this );
+  layout->addWidget(mPlotter);
 
   setMinimumSize( sizeHint() );
 
@@ -208,16 +211,6 @@ bool DancingBars::removeSensor( uint pos )
 void DancingBars::updateSamples( const QVector<double> &samples )
 {
   mPlotter->updateSamples( samples );
-}
-
-void DancingBars::resizeEvent( QResizeEvent* )
-{
-  mPlotter->setGeometry( 0, 0, width(), height() );
-}
-
-QSize DancingBars::sizeHint() const
-{
-  return mPlotter->sizeHint();
 }
 
 void DancingBars::answerReceived( int id, const QList<QByteArray> &answerlist )
