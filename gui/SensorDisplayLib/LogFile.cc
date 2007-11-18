@@ -48,9 +48,8 @@ LogFile::LogFile(QWidget *parent, const QString& title, SharedSettings *workShee
 	setLayout(layout);
 
 	setMinimumSize(50, 25);
-
-	monitor->installEventFilter( this );
-
+	monitor->setContextMenuPolicy( Qt::CustomContextMenu );
+	connect(monitor, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(showContextMenu(const QPoint &)));
 	setPlotterWidget(monitor);
 }
 

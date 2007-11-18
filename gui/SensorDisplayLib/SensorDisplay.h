@@ -207,6 +207,8 @@ class SensorDisplay : public QWidget, public SensorClient
      */
     virtual void timerTick();
 
+    void showContextMenu(const QPoint &);
+
   Q_SIGNALS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
     void changeTitle(const QString&);

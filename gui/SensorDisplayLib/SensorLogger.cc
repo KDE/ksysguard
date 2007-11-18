@@ -410,6 +410,9 @@ SensorLogger::SensorLogger( QWidget *parent, const QString& title, SharedSetting
   layout->addWidget(mView);
   setLayout(layout);
 
+  mView->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect(mView, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(showContextMenu(const QPoint &)));
+
   mView->header()->setStretchLastSection( true );
   mView->setRootIsDecorated( false );
   mView->setItemsExpandable( false );
@@ -593,20 +596,23 @@ void SensorLogger::contextMenuRequest( const QModelIndex &index, const QPoint &p
     action = pm.addAction(i18n("&Properties"));
     action->setData( 1 );
   }
-  action = pm.addAction(i18n("&Remove Display"));
-  action->setData( 2 );
+  if(!mSharedSettings->locked) {  
 
-  pm.addSeparator();
+    action = pm.addAction(i18n("&Remove Display"));
+    action->setData( 2 );
 
-  action = pm.addAction(i18n("&Remove Sensor"));
-  action->setData( 3 );
-  if ( !sensor )
-    action->setEnabled( false );
+    pm.addSeparator();
 
-  action = pm.addAction(i18n("&Edit Sensor..."));
-  action->setData( 4 );
-  if ( !sensor )
-    action->setEnabled( false );
+    action = pm.addAction(i18n("&Remove Sensor"));
+    action->setData( 3 );
+    if ( !sensor )
+      action->setEnabled( false );
+
+    action = pm.addAction(i18n("&Edit Sensor..."));
+    action->setData( 4 );
+    if ( !sensor )
+      action->setEnabled( false );
+  }
 
   if ( sensor ) {
     if ( sensor->isLogging() ) {

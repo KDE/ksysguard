@@ -106,11 +106,8 @@ void SensorDisplay::timerTick()
  }
 }
 
-bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
+void SensorDisplay::showContextMenu(const QPoint &pos)
 {
-  if ( event->type() == QEvent::MouseButtonPress &&
-     ( (QMouseEvent*)event)->button() == Qt::RightButton ) {
-
     QMenu pm;
     QAction *action = 0;
     bool menuEmpty = true;
@@ -132,8 +129,8 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
       menuEmpty = false;
     }
 
-    if(menuEmpty) return true;
-    action = pm.exec( QCursor::pos() );
+    if(menuEmpty) return;
+    action = pm.exec( mapToGlobal(pos) );
     if ( action ) {
       switch ( action->data().toInt() ) {
         case 1:
@@ -151,8 +148,16 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
           break;
       }
     }
+}
 
-    return true;
+bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
+{
+  if ( event->type() == QEvent::MouseButtonPress) {
+    QMouseEvent *e = static_cast<QMouseEvent *> (event);
+    if( e->button() == Qt::RightButton ) {
+      showContextMenu( e->pos() );
+      return true;
+    }
   } 
 
   return QWidget::eventFilter( object, event );

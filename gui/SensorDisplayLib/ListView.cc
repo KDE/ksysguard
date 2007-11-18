@@ -44,6 +44,9 @@ ListView::ListView(QWidget* parent, const QString& title, SharedSettings *workSh
 	mView->setModel(&mModel);
 	layout->addWidget(mView);
 	this->setLayout(layout);
+	
+	mView->setContextMenuPolicy( Qt::CustomContextMenu );
+	connect(mView, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(showContextMenu(const QPoint &)));
 
 	mView->setAlternatingRowColors(true);
 	mView->header()->setMovable(false);
