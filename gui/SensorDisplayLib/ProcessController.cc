@@ -116,11 +116,10 @@ bool ProcessController::addSensor(const QString& hostName,
 
 
 	QStackedLayout *layout = new QStackedLayout(this);
-	mProcessList = new KSysGuardProcessList(NULL, hostName);
+	mProcessList = new KSysGuardProcessList(this, hostName);
 	layout->addWidget(mProcessList);
 
         QTimer::singleShot(0, mProcessList->filterLineEdit(), SLOT(setFocus()));
-	setMinimumSize(sizeHint());
 
 	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 	/* This just triggers the first communication. The full set of
