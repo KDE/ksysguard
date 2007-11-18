@@ -35,65 +35,84 @@
 
 #define MON_SIZE	128
 
-#define CALC( a, b, c, d, e ) \
+#define CALC( a, b, c, d, e, f ) \
 { \
-  NetDevs[ i ].a = a - NetDevs[ i ].Old##a; \
-  NetDevs[ i ].Old##a = a; \
+  if (f){ \
+    NetDevs[ i ].a = a - NetDevs[ i ].Old##a; \
+    NetDevs[ i ].Old##a = a; \
+  } \
+  else{ \
+    NetDevs[ i ].a = a; \
+  } \
 }
 
-#define REGISTERSENSOR( a, b, c, d, e ) \
+#define REGISTERSENSOR( a, b, c, d, e, f ) \
 { \
   snprintf( mon, MON_SIZE, "network/interfaces/%s/%s", tag, b ); \
   registerMonitor( mon, "float", printNetDev##a, printNetDev##a##Info, NetDevSM ); \
 }
 
-#define UNREGISTERSENSOR( a, b, c, d, e ) \
+#define UNREGISTERSENSOR( a, b, c, d, e, f ) \
 { \
   snprintf( mon, MON_SIZE, "network/interfaces/%s/%s", NetDevs[ i ].name, b ); \
   removeMonitor( mon ); \
 }
 
-#define DEFMEMBERS( a, b, c, d, e ) \
-unsigned long long Old##a; \
-unsigned long long a; \
-unsigned long a##Scale;
+#define DEFMEMBERS( a, b, c, d, e, f ) \
+signed long long Old##a; \
+signed long long a; \
+signed long a##Scale;
 
-#define DEFVARS( a, b, c, d, e ) \
-unsigned long long a;
+#define DEFVARS( a, b, c, d, e, f ) \
+signed long long a;
 
+/* The sixth variable is 1 if the quantity variation must be provided, 0 if the absolute value must be provided */
 #define FORALL( a ) \
-  a( recBytes, "receiver/data", "Received Data", "kBytes/s", 1024 ) \
-  a( recPacks, "receiver/packets", "Received Packets", "1/s", 1 ) \
-  a( recErrs, "receiver/errors", "Receiver Errors", "1/s", 1 ) \
-  a( recDrop, "receiver/drops", "Receiver Drops", "1/s", 1 ) \
-  a( recFifo, "receiver/fifo", "Receiver FIFO Overruns", "1/s", 1 ) \
-  a( recFrame, "receiver/frame", "Receiver Frame Errors", "1/s", 1 ) \
-  a( recCompressed, "receiver/compressed", "Received Compressed Packets", "1/s", 1 ) \
-  a( recMulticast, "receiver/multicast", "Received Multicast Packets", "1/s", 1 ) \
-  a( sentBytes, "transmitter/data", "Sent Data", "kBytes/s", 1024 ) \
-  a( sentPacks, "transmitter/packets", "Sent Packets", "1/s", 1 ) \
-  a( sentErrs, "transmitter/errors", "Transmitter Errors", "1/s", 1 ) \
-  a( sentDrop, "transmitter/drops", "Transmitter Drops", "1/s", 1 ) \
-  a( sentFifo, "transmitter/fifo", "Transmitter FIFO overruns", "1/s", 1 ) \
-  a( sentColls, "transmitter/collisions", "Transmitter Collisions", "1/s", 1 ) \
-  a( sentCarrier, "transmitter/carrier", "Transmitter Carrier losses", "1/s", 1 ) \
-  a( sentCompressed, "transmitter/compressed", "Transmitter Compressed Packets", "1/s", 1 )
+  a( recBytes, "receiver/data", "Received Data", "kBytes/s", 1024, 1) \
+  a( recPacks, "receiver/packets", "Received Packets", "1/s", 1, 1 ) \
+  a( recErrs, "receiver/errors", "Receiver Errors", "1/s", 1, 1 ) \
+  a( recDrop, "receiver/drops", "Receiver Drops", "1/s", 1, 1 ) \
+  a( recFifo, "receiver/fifo", "Receiver FIFO Overruns", "1/s", 1, 1 ) \
+  a( recFrame, "receiver/frame", "Receiver Frame Errors", "1/s", 1, 1 ) \
+  a( recCompressed, "receiver/compressed", "Received Compressed Packets", "1/s", 1, 1 ) \
+  a( recMulticast, "receiver/multicast", "Received Multicast Packets", "1/s", 1, 1 ) \
+  a( sentBytes, "transmitter/data", "Sent Data", "kBytes/s", 1024, 1 ) \
+  a( sentPacks, "transmitter/packets", "Sent Packets", "1/s", 1, 1 ) \
+  a( sentErrs, "transmitter/errors", "Transmitter Errors", "1/s", 1, 1 ) \
+  a( sentDrop, "transmitter/drops", "Transmitter Drops", "1/s", 1, 1 ) \
+  a( sentFifo, "transmitter/fifo", "Transmitter FIFO overruns", "1/s", 1, 1 ) \
+  a( sentColls, "transmitter/collisions", "Transmitter Collisions", "1/s", 1, 1 ) \
+  a( sentCarrier, "transmitter/carrier", "Transmitter Carrier losses", "1/s", 1, 1 ) \
+  a( sentCompressed, "transmitter/compressed", "Transmitter Compressed Packets", "1/s", 1, 1 )
 
-#define SETZERO( a, b, c, d, e ) \
+#define FORALLWIFI( a ) \
+  a( linkQuality, "wifi/quality", "Link Quality", "", 1, 0) \
+  a( signalLevel, "wifi/signal", "Signal Level", "dBm", 1, 0) \
+  a( noiseLevel, "wifi/noise", "Noise Level", "dBm", 1, 0) \
+  a( nwid, "wifi/nwid", "Rx Invalid Nwid Packets", "1/s", 1, 1) \
+  a( RxCrypt, "wifi/crypt", "Rx Invalid Crypt Packets", "1/s", 1, 1) \
+  a( frag, "wifi/frag", "Rx Invalid Frag Packets", "1/s", 1, 1) \
+  a( retry, "wifi/retry", "Tx Excessive Retries Packets", "1/s", 1, 1) \
+  a( misc, "wifi/misc", "Invalid Misc Packets", "1/s", 1, 1) \
+  a( beacon, "wifi/beacon", "Missed Beacon", "1/s", 1, 1)
+
+#define SETZERO( a, b, c, d, e, f ) \
 a = 0;
 
-#define SETMEMBERZERO( a, b, c, d, e ) \
+#define SETMEMBERZERO( a, b, c, d, e, f ) \
 NetDevs[ i ].a = 0; \
 NetDevs[ i ].a##Scale = e;
 
-#define DECLAREFUNC( a, b, c, d, e ) \
+#define DECLAREFUNC( a, b, c, d, e, f ) \
 void printNetDev##a( const char* cmd ); \
 void printNetDev##a##Info( const char* cmd );
 
 typedef struct
 {
   FORALL( DEFMEMBERS )
+  FORALLWIFI( DEFMEMBERS )
   char name[ 32 ];
+  int isWifi;
 } NetDevInfo;
 
 /* We have observed deviations of up to 5% in the accuracy of the timer
@@ -106,6 +125,7 @@ static struct SensorModul* NetDevSM;
 
 #define NETDEVBUFSIZE 4096
 static char NetDevBuf[ NETDEVBUFSIZE ];
+static char NetDevWifiBuf[ NETDEVBUFSIZE ];
 static int NetDevCnt = 0;
 static int Dirty = 0;
 static int NetDevOk = 0;
@@ -117,15 +137,17 @@ static NetDevInfo NetDevs[ MAXNETDEVS ];
 void processNetDev( void );
 
 FORALL( DECLAREFUNC )
+FORALLWIFI( DECLAREFUNC )
 
 static int processNetDev_( void )
 {
-  int i;
+  int i, j;
   char format[ 32 ];
   char devFormat[ 16 ];
   char buf[ 1024 ];
   char tag[ 64 ];
   char* netDevBufP = NetDevBuf;
+  char* netDevWifiBufP = NetDevWifiBuf;
 
   sprintf( format, "%%%d[^\n]\n", (int)sizeof( buf ) - 1 );
   sprintf( devFormat, "%%%ds", (int)sizeof( tag ) - 1 );
@@ -147,8 +169,8 @@ static int processNetDev_( void )
         FORALL( DEFVARS );
         *pos = '\0';
         FORALL( SETZERO );
-        sscanf( buf + 7, "%llu %llu %llu %llu %llu %llu %llu %llu " 
-                "%llu %llu %llu %llu %llu %llu %llu %llu",
+        sscanf( buf + 7, "%lli %lli %lli %lli %lli %lli %lli %lli "
+                "%lli %lli %lli %lli %lli %lli %lli %lli",
                 &recBytes, &recPacks, &recErrs, &recDrop, &recFifo,
                 &recFrame, &recCompressed, &recMulticast,
                 &sentBytes, &sentPacks, &sentErrs, &sentDrop,
@@ -167,6 +189,42 @@ static int processNetDev_( void )
 
   if ( i != NetDevCnt )
     return -1;
+
+  /*Update the values for the wifi interfaces*/
+  if ( *netDevWifiBufP=='\0')  /*there is no /proc/net/wireless file*/
+    return 0;
+
+  /* skip 2 first lines */
+  for ( i = 0; i < 2; i++ ) {
+    sscanf( netDevWifiBufP, format, buf );
+    buf[ sizeof( buf ) - 1 ] = '\0';
+    netDevWifiBufP += strlen( buf ) + 1;  /* move netDevWifiBufP to next line */
+  }
+
+  for ( j = 0; sscanf( netDevWifiBufP, format, buf ) == 1; ++j ) {
+    buf[ sizeof( buf ) - 1 ] = '\0';
+    netDevWifiBufP += strlen( buf ) + 1;  /* move netDevWifiBufP to next line */
+
+    if ( sscanf( buf, devFormat, tag ) ) {
+      char* pos = strchr( tag, ':' );
+      if ( pos ) {
+        FORALLWIFI( DEFVARS );
+        *pos = '\0';
+
+       for (i = 0 ; i < NetDevCnt ; ++i){ /*find the corresponding interface*/
+           if ( strcmp(tag,NetDevs[ i ].name)==0){
+               break;
+           }
+        }
+        sscanf( buf + 12, " %lli. %lli. %lli. %lli %lli %lli %lli %lli %lli",
+                &linkQuality, &signalLevel, &noiseLevel, &nwid,
+                &RxCrypt, &frag,  &retry, &misc, &beacon );
+        signalLevel -= 256; /*the units are dBm*/
+        noiseLevel -= 256;
+        FORALLWIFI( CALC );
+      }
+    }
+  }
 
   /* save exact time inverval between this and the last read of
    * /proc/net/dev */
@@ -200,12 +258,13 @@ void processNetDev( void )
 
 void initNetDev( struct SensorModul* sm )
 {
-  int i;
+  int i, j;
   char format[ 32 ];
   char devFormat[ 16 ];
   char buf[ 1024 ];
   char tag[ 64 ];
   char* netDevBufP = NetDevBuf;
+  char* netDevWifiBufP = NetDevWifiBuf;
 
   NetDevSM = sm;
 
@@ -232,10 +291,10 @@ void initNetDev( struct SensorModul* sm )
         char mon[ MON_SIZE ];
         *pos = '\0';
         strncpy( NetDevs[ i ].name, tag, sizeof( NetDevs[ i ].name ) );
-	NetDevs[ i ].name[ sizeof( NetDevs[ i ].name )-1] = 0;
+	    NetDevs[ i ].name[ sizeof( NetDevs[ i ].name )-1] = 0;
         FORALL( REGISTERSENSOR );
-        sscanf( pos + 1, "%llu %llu %llu %llu %llu %llu %llu %llu" 
-                "%llu %llu %llu %llu %llu %llu %llu %llu",
+        sscanf( pos + 1, "%lli %lli %lli %lli %lli %lli %lli %lli"
+                "%lli %lli %lli %lli %lli %lli %lli %lli",
                 &NetDevs[ i ].recBytes, &NetDevs[ i ].recPacks,
                 &NetDevs[ i ].recErrs, &NetDevs[ i ].recDrop,
                 &NetDevs[ i ].recFifo, &NetDevs[ i ].recFrame,
@@ -250,6 +309,38 @@ void initNetDev( struct SensorModul* sm )
     }
   }
 
+  /* detect the wifi interfaces*/
+  /* skip 2 first lines */
+  for ( i = 0; i < 2; i++ ) {
+    sscanf( netDevWifiBufP, format, buf );
+    buf[ sizeof( buf ) - 1 ] = '\0';
+    netDevWifiBufP += strlen( buf ) + 1;  /* move netDevWifiBufP to next line */
+  }
+
+  for ( j = 0; sscanf( netDevWifiBufP, format, buf ) == 1; ++j ) {
+    buf[ sizeof( buf ) - 1 ] = '\0';
+    netDevWifiBufP += strlen( buf ) + 1;  /* move netDevWifiBufP to next line */
+
+    if ( sscanf( buf, devFormat, tag ) ) {
+      char * pos = strchr( tag, ':' );
+      if ( pos ) {
+        char mon[ MON_SIZE ];
+        *pos = '\0';
+       /*find and tag the corresponding NetDev as wifi enabled.
+        At the end of the loop,  i is the index of the device.
+        This variable i is used in some macro */
+       for (i = 0 ; i < NetDevCnt ; ++i){
+           if ( strcmp(tag,NetDevs[ i ].name)==0){
+               NetDevs[ i ].isWifi = 1;
+               break;
+           }
+        }
+        FORALLWIFI( REGISTERSENSOR );
+      }
+      FORALLWIFI( SETMEMBERZERO );  /* the variable i must point to the corrrect NetDevs[i]*/
+    }
+  }
+
   /* Call processNetDev to elimitate initial peek values. */
   processNetDev();
 }
@@ -261,6 +352,8 @@ void exitNetDev( void )
   for ( i = 0; i < NetDevCnt; ++i ) {
     char mon[ MON_SIZE ];
     FORALL( UNREGISTERSENSOR );
+    if (NetDevs[ i ].isWifi)
+       FORALLWIFI( UNREGISTERSENSOR );
   }
   NetDevCnt = 0;
 }
@@ -321,6 +414,20 @@ int updateNetDev( void )
   }
   OldHash = hash;
 
+  /* We read the informations about the wifi from /proc/net/wireless and store it into NetDevWifiBuf */
+  if ( ( fd = open( "/proc/net/wireless", O_RDONLY ) ) < 0 ) {
+    /* /proc/net/wireless may not exist on some machines. */
+    NetDevWifiBuf[0]='\0';
+  }
+
+  if ( ( n = read( fd, NetDevWifiBuf, NETDEVBUFSIZE - 1 ) ) == NETDEVBUFSIZE - 1 ) {
+    log_error( "Internal buffer too small to read \'/proc/net/wireless\'" );
+    close( fd );
+    return -1;
+  }
+  close( fd );
+  NetDevWifiBuf[ n ] = '\0';
+
   Dirty = 1;
 
   return 0;
@@ -334,7 +441,7 @@ void checkNetDev( void )
   initNetDev( NetDevSM );
 }
 
-#define PRINTFUNC( a, b, c, d, e ) \
+#define PRINTFUNC( a, b, c, d, e, f ) \
 void printNetDev##a( const char* cmd ) \
 { \
   int i; \
@@ -353,8 +460,11 @@ void printNetDev##a( const char* cmd ) \
  \
   for ( i = 0; i < MAXNETDEVS; ++i ) \
     if ( strcmp( NetDevs[ i ].name, dev ) == 0) { \
-      fprintf( CurrentClient, "%f\n", (float) \
-               ( NetDevs[ i ].a / ( NetDevs[ i ].a##Scale * timeInterval ) ) ); \
+      if (f) \
+         fprintf( CurrentClient, "%li\n", (long) \
+                ( NetDevs[ i ].a / ( NetDevs[ i ].a##Scale * timeInterval ) ) ); \
+      else \
+         fprintf( CurrentClient, "%li\n", (long) NetDevs[ i ].a ); \
       return; \
     } \
  \
@@ -368,3 +478,4 @@ void printNetDev##a##Info( const char* cmd ) \
 }
 
 FORALL( PRINTFUNC )
+FORALLWIFI( PRINTFUNC )
