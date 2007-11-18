@@ -58,7 +58,7 @@ public:
 
 	virtual bool hasSettingsDialog() const
 	{
-		return (true);
+		return true;
 	}
 
 public Q_SLOTS:
@@ -71,7 +71,7 @@ public Q_SLOTS:
 	void settingsRuleListSelected(int index);
 
 private:
-  Ui_LogFileSettings* lfs;
+	Ui_LogFileSettings* lfs;
 	QListWidget* monitor;
 	QStringList filterRules;
 

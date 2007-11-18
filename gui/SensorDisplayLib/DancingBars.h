@@ -24,7 +24,6 @@
 #include <SensorDisplay.h>
 
 #include <QBitArray>
-#include <QResizeEvent>
 #include <QVector>
 
 
@@ -73,3 +72,4 @@ class DancingBars : public KSGRD::SensorDisplay
 };
 
 #endif
+

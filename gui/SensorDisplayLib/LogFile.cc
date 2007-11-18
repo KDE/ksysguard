@@ -49,6 +49,8 @@ LogFile::LogFile(QWidget *parent, const QString& title, SharedSettings *workShee
 
 	setMinimumSize(50, 25);
 
+	monitor->installEventFilter( this );
+
 	setPlotterWidget(monitor);
 }
 
