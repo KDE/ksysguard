@@ -124,7 +124,7 @@ void initLmSensors( struct SensorModul* sm )
 
         snprintf( buffer, BUFFER_SIZE_LMSEN, "lmsensors/%s/%s", chipName(scn), sfd->name );
 
-	p->fullName = strndup(buffer, BUFFER_SIZE_LMSEN);	
+        p->fullName = strndup(buffer, BUFFER_SIZE_LMSEN);
 
         p->scn = scn;
         p->sfd = sfd;
