@@ -2,7 +2,7 @@
     KSysGuard, the KDE System Guard
 
 	Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-	Copyright (c) 2006 John Tapsell <john.tapsell@kdemail.net>
+	Copyright (c) 2006 John Tapsell <john.tapsell@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms version 2 of of the GNU General Public
