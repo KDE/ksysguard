@@ -31,6 +31,8 @@
 #include "ProcessController.moc"
 #include "ProcessController.h"
 #include "processui/ksysguardprocesslist.h"
+#include "processes.h"
+
 //#define DO_MODELCHECK
 #ifdef DO_MODELCHECK
 #include "modeltest.h"
@@ -39,7 +41,7 @@ ProcessController::ProcessController(QWidget* parent, const QString &title, Shar
 	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
 	mProcessList = NULL;
-	setPlotterWidget(this);
+	mProcesses = NULL;
 }
 
 void
@@ -106,6 +108,11 @@ bool ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 	return true;
 }
 
+void ProcessController::answerReceived( int id, const QList<QByteArray>& answer ) {
+	if(mProcesses)
+		mProcesses->answerReceived(id, answer);
+}
+
 bool ProcessController::addSensor(const QString& hostName,
                                  const QString& sensorName,
                                  const QString& sensorType,
@@ -119,6 +126,19 @@ bool ProcessController::addSensor(const QString& hostName,
 	mProcessList = new KSysGuardProcessList(this, hostName);
 	layout->addWidget(mProcessList);
 
+	/** To use a remote sensor, we need to drill down through the layers, to connect to the remote processes.  Then connect to its signals and slots.
+	 *  It's horrible I know :( */
+	if(!hostName.isEmpty() && hostName != "localhost") {
+		KSysGuard::Processes *processes = mProcessList->processModel()->processController();
+		mProcesses = processes;
+		if(processes) {
+			connect( processes, SIGNAL(runCommand(const QString &, int)), SLOT(runCommand(const QString &, int)));
+		}
+	}
+
+		
+	setPlotterWidget(mProcessList);
+
         QTimer::singleShot(0, mProcessList->filterLineEdit(), SLOT(setFocus()));
 
 	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
@@ -128,5 +148,9 @@ bool ProcessController::addSensor(const QString& hostName,
 	sensors().at(0)->setIsOk(true); //Assume it is okay from the start
 	setSensorOk(sensors().at(0)->isOk());
 	return true;
+}
+
+void ProcessController::runCommand(const QString &command, int id) {
+	sendRequest(sensors().at(0)->hostName(), command, id);
 }
 

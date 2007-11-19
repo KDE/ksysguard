@@ -36,6 +36,9 @@
 #include <SensorDisplay.h>
 
 class KSysGuardProcessList;
+namespace KSysGuard {
+class Processes;
+}
 /**
  * This widget implements a process list page. Besides the process
  * list which is implemented as a ProcessList, it contains two
@@ -71,8 +74,15 @@ public:
 	{
 		return false;
 	}
+
+	virtual void answerReceived(int id, const QList<QByteArray>& answer );
+
+private Q_SLOTS:
+	void runCommand(const QString &command, int id);
+
 private:
 	KSysGuardProcessList *mProcessList;
+	KSysGuard::Processes *mProcesses;
 };
 
 #endif
