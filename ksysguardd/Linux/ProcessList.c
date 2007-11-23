@@ -608,7 +608,7 @@ void killProcess( const char* cmd )
 void setPriority( const char* cmd )
 {
   int pid, prio;
-
+  /** as:  setpriority <pid> <priority> */
   sscanf( cmd, "%*s %d %d", &pid, &prio );
   if ( setpriority( PRIO_PROCESS, pid, prio ) ) {
     switch ( errno ) {
@@ -632,11 +632,15 @@ void setPriority( const char* cmd )
 
 void ioniceProcess( const char* cmd )
 {
-  /* Re-ionice's a process. cmd is a string containing "ionice <pid> <class> <priority>" 
+  /* Re-ionice's a process. cmd is a string containing:
+   *
+   * ionice <pid> <class> <priority>
+   *
    * where c = 1 for real time, 2 for best-effort, 3 for idle
    * and priority is between 0 and 7, 0 being the highest priority, and ignored if c=3
    *
    * For more information, see:  man ionice
+   *
    */
   int pid = 0;
   int class = 2;

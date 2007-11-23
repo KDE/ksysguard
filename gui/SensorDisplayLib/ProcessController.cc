@@ -71,7 +71,7 @@ ProcessController::restoreSettings(QDomElement& element)
 
 	int version = element.attribute("version", "0").toUInt();
 	if(version == PROCESSHEADERVERSION) {  //If the header has changed, the old settings are no longer valid.  Only restore if version is the same
-		mProcessList->treeView()->header()->restoreState(QByteArray::fromBase64(element.attribute("treeViewHeader").toLatin1()));
+		mProcessList->restoreHeaderState(QByteArray::fromBase64(element.attribute("treeViewHeader").toLatin1()));
 	}
 
 	bool showTotals = element.attribute("showTotals", "1").toUInt();
