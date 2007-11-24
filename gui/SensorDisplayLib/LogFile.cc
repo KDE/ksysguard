@@ -42,6 +42,8 @@ LogFile::LogFile(QWidget *parent, const QString& title, SharedSettings *workShee
 	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
 	kDebug() << "Making sensor logger";
+	logFileID= 0;
+	lfs = NULL;
 	QLayout *layout = new QHBoxLayout(this);
 	monitor = new QListWidget(this);
 	layout->addWidget(monitor);
