@@ -57,9 +57,9 @@ KSGAppletSettings::KSGAppletSettings( QWidget *parent)
 
   mSizeRatio = new QSpinBox(page );
   mSizeRatio->setValue(100);
-  mSizeRatio->setMinimum( 20 );
+  mSizeRatio->setMinimum( 10 );
   mSizeRatio->setMaximum( 500 );
-  mSizeRatio->setSingleStep(50);
+  mSizeRatio->setSingleStep(20);
   mSizeRatio->setSuffix( i18n( "%" ) );
   topLayout->addWidget( mSizeRatio, 1, 1 );
   label->setBuddy( mSizeRatio );
