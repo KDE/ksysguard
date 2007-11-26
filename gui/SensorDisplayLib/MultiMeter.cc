@@ -68,7 +68,10 @@ bool MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
           const QString& sensorType, const QString& title)
 {
   if (sensorType != "integer" && sensorType != "float")
-    return (false);
+    return false;
+
+  if(!sensors().isEmpty())
+    return false;
 
   mIsFloat = (sensorType == "float");
   mLcd->setSmallDecimalPoint( mIsFloat );
@@ -155,9 +158,11 @@ bool MultiMeter::restoreSettings(QDomElement& element)
 
 bool MultiMeter::saveSettings(QDomDocument& doc, QDomElement& element)
 {
-  element.setAttribute("hostName", sensors().at(0)->hostName());
-  element.setAttribute("sensorName", sensors().at(0)->name());
-  element.setAttribute("sensorType", sensors().at(0)->type());
+  if(!sensors().isEmpty()) {
+    element.setAttribute("hostName", sensors().at(0)->hostName());
+    element.setAttribute("sensorName", sensors().at(0)->name());
+    element.setAttribute("sensorType", sensors().at(0)->type());
+  }
   element.setAttribute("showUnit", showUnit());
   element.setAttribute("lowerLimitActive", (int) mLowerLimitActive);
   element.setAttribute("lowerLimit", (int) mLowerLimit);

@@ -407,8 +407,10 @@ void WorkSheet::applyStyle()
 
 void WorkSheet::dragEnterEvent( QDragEnterEvent *event )
 {
-  if ( event->mimeData()->hasText() )
-    event->acceptProposedAction();
+  if ( !event->mimeData()->hasText() )
+    return;
+
+  event->acceptProposedAction();
 }
 
 void WorkSheet::dropEvent( QDropEvent *event )
@@ -431,6 +433,7 @@ void WorkSheet::dropEvent( QDropEvent *event )
 
   /* Find the sensor display that is supposed to get the drop
    * event and replace or add sensor. */
+  const QPoint globalPos = mapToGlobal( event->pos() );
   for ( uint r = 0; r < mRows; ++r ) {
     for ( uint c = 0; c < mColumns; ++c ) {
       const QSize displaySize = mDisplayList[ r ][ c ]->size();
@@ -440,7 +443,6 @@ void WorkSheet::dropEvent( QDropEvent *event )
       const QRect widgetRect = QRect( mDisplayList[ r ][ c ]->mapToGlobal( QPoint( 0, 0 ) ),
                                       mDisplayList[ r ][ c ]->mapToGlobal( displayPoint ) );
 
-      const QPoint globalPos = mapToGlobal( event->pos() );
 
       if ( widgetRect.contains( globalPos ) ) {
         addDisplay( hostName, sensorName, sensorType, sensorDescr, r, c );
