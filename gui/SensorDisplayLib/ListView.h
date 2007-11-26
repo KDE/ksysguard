@@ -22,6 +22,7 @@
 
 #include <QStandardItemModel>
 #include <QList>
+#include <QByteArray>
 #include <SensorDisplay.h>
 
 class ListViewSettings;
@@ -64,6 +65,7 @@ private:
 	QStandardItemModel mModel;
 	QTreeView *mView;
 	ListViewSettings* lvs;
+	QByteArray mHeaderSettings;
 	
 	QList<ColumnType> mColumnTypes;
         ColumnType convertColumnType(const QString &type) const;

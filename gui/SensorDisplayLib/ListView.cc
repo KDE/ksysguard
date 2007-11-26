@@ -21,6 +21,7 @@
 #include <QDomElement>
 
 #include <QVBoxLayout>
+#include <QSortFilterProxyModel>
 #include <QTime>
 
 #include <kdebug.h>
@@ -39,18 +40,26 @@
 ListView::ListView(QWidget* parent, const QString& title, SharedSettings *workSheetSettings)
 	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
-	QVBoxLayout *layout = new QVBoxLayout;
-	mView = new QTreeView();
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	mView = new QTreeView(this);
+	//QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
+//	proxyModel->setSourceModel(&mModel);
 	mView->setModel(&mModel);
 	layout->addWidget(mView);
 	this->setLayout(layout);
 	
 	mView->setContextMenuPolicy( Qt::CustomContextMenu );
 	connect(mView, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(showContextMenu(const QPoint &)));
+	connect(mView, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(showContextMenu(const QPoint &)));
 
 	mView->setAlternatingRowColors(true);
-	mView->header()->setMovable(false);
+	mView->header()->setMovable(true);
 	mView->setSelectionMode( QAbstractItemView::NoSelection );
+	mView->setUniformRowHeights(true);
+	mView->setRootIsDecorated(false);
+	mView->header()->setSortIndicatorShown(true);
+	mView->header()->setClickable(true);
+	mView->setSortingEnabled(true);
 
 /*	QPalette palette;
 	palette.setColor(backgroundRole(), KSGRD::Style->backgroundColor());
@@ -133,7 +142,11 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
 			}
 			
 			mModel.setHorizontalHeaderLabels(translatedHeaders);
-
+			//If we have some header settings to restore, we can do so now
+			if(!mHeaderSettings.isEmpty()) {
+				mView->header()->restoreState(mHeaderSettings);
+				mModel.sort( mView->header()->sortIndicatorSection(), mView->header()->sortIndicatorOrder() );
+			}
 			break;
 		}
 		case 19: {
@@ -170,7 +183,11 @@ ListView::restoreSettings(QDomElement& element)
 {
 	kDebug() << "restore settings";
 	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "listview" : element.attribute("sensorType")), element.attribute("title"));
-	
+
+	//At this stage, we don't have the heading information, so we cannot setup the headers yet.
+	//Save the info, the restore later.
+	mHeaderSettings = QByteArray::fromBase64(element.attribute("treeViewHeader").toLatin1());
+
 /*	QPalette pal = monitor->palette();
 	pal.setColor(QPalette::Link, restoreColor(element, "gridColor",
                                                   KSGRD::Style->firstForegroundColor()));
@@ -203,6 +220,8 @@ ListView::saveSettings(QDomDocument& doc, QDomElement& element)
 	saveColor(element, "backgroundColor", pal.color(QPalette::Base));
 */
 	}
+	element.setAttribute("treeViewHeader", QString::fromLatin1(mView->header()->saveState().toBase64()));
+
 	SensorDisplay::saveSettings(doc, element);
 	return true;
 }
