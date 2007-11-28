@@ -36,7 +36,7 @@
 #include "Workspace.h"
 
 Workspace::Workspace( QWidget* parent)
-  : QTabWidget( parent )
+  : KTabWidget( parent )
 {
   KAcceleratorManager::setNoAccel(this);
 

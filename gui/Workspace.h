@@ -24,14 +24,14 @@
 #ifndef KSG_WORKSPACE_H
 #define KSG_WORKSPACE_H
 
-#include <QTabWidget>
+#include <KTabWidget>
 
 class KConfig;
 class KUrl;
 class QString;
 class WorkSheet;
 
-class Workspace : public QTabWidget
+class Workspace : public KTabWidget
 {
   Q_OBJECT
 
