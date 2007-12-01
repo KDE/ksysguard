@@ -46,6 +46,7 @@ class Workspace : public KTabWidget
 
     bool restoreWorkSheet( const QString &fileName, bool switchToTab = true);
     void removeWorkSheet( const QString &fileName );
+    QList<WorkSheet *> getWorkSheets() const { return mSheetList; }
 
   public Q_SLOTS:
     void newWorkSheet();

@@ -60,6 +60,7 @@
 #include "WorkSheet.h"
 #include "StyleEngine.h"
 #include "HostConnector.h"
+#include "ProcessController.h"
 
 #include "ksysguard.h"
 
@@ -143,7 +144,6 @@ TopLevel::TopLevel()
     resize( QSize(700, 480).expandedTo(minimumSizeHint()));
 
   retranslateUi();
-  setupGUI(ToolBar | Keys | StatusBar | Create);
 }
 
 void TopLevel::retranslateUi()
@@ -252,6 +252,7 @@ void TopLevel::initStatusBar()
   KToggleAction *sb = dynamic_cast<KToggleAction*>(action("options_show_statusbar"));
   if (sb)
      connect(sb, SIGNAL(toggled(bool)), this, SLOT(updateStatusBar()));
+  setupGUI(ToolBar | Keys | StatusBar | Create);
 }
 
 void TopLevel::updateStatusBar()
@@ -397,6 +398,17 @@ void TopLevel::readProperties( const KConfigGroup& cfg )
   KSGRD::Style->readProperties( cfg );
 
   mWorkSpace->readProperties( cfg );
+
+  QList<WorkSheet *> workSheets = mWorkSpace->getWorkSheets();
+  ProcessController *processController = NULL;
+  foreach(WorkSheet *sheet, workSheets) {
+    processController = sheet->getLocalProcessController();
+    if(processController != NULL) {
+      for(int i = 0; i < processController->actions().size(); i++) {
+        actionCollection()->addAction("processAction" + QString::number(i), processController->actions().at(i));
+      }
+    }
+  }
 
   applyMainWindowSettings( cfg );
 }
@@ -569,6 +581,7 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
   {
     topLevel->readProperties( KConfigGroup( KGlobal::config(), "MainWindow" ) );
   }
+
 
   topLevel->initStatusBar();
   topLevel->show();

@@ -124,6 +124,9 @@ bool ProcessController::addSensor(const QString& hostName,
 
 	QStackedLayout *layout = new QStackedLayout(this);
 	mProcessList = new KSysGuardProcessList(this, hostName);
+	kDebug() << "Number of Actions: " << mProcessList->actions().size();
+	addActions(mProcessList->actions());
+
 	layout->addWidget(mProcessList);
 
 	/** To use a remote sensor, we need to drill down through the layers, to connect to the remote processes.  Then connect to its signals and slots.
@@ -133,7 +136,9 @@ bool ProcessController::addSensor(const QString& hostName,
 		mProcesses = processes;
 		if(processes) {
 			connect( processes, SIGNAL(runCommand(const QString &, int)), SLOT(runCommand(const QString &, int)));
+
 		}
+
 	}
 
 		

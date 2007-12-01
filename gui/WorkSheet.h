@@ -33,6 +33,7 @@ class QDropEvent;
 class QGridLayout;
 class QString;
 class QStringList;
+class ProcessController;
 
 /**
   A WorkSheet contains the displays to visualize the sensor results. When
@@ -72,6 +73,7 @@ class WorkSheet : public QWidget
                                       uint rows, uint columns );
 
     void settings();
+    ProcessController *getLocalProcessController() const { return mLocalProcessController; }
 
   public Q_SLOTS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
@@ -108,6 +110,8 @@ class WorkSheet : public QWidget
     void fixTabOrder();
 
     QString currentDisplayAsXML();
+
+    ProcessController *mLocalProcessController;
 
     uint mRows;
     uint mColumns;

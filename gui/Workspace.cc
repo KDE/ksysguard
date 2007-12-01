@@ -39,7 +39,6 @@ Workspace::Workspace( QWidget* parent)
   : KTabWidget( parent )
 {
   KAcceleratorManager::setNoAccel(this);
-
   this->setWhatsThis( i18n( "This is your work space. It holds your worksheets. You need "
                                "to create a new worksheet (Menu File->New) before "
                                "you can drag sensors here." ) );

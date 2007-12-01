@@ -55,6 +55,7 @@ WorkSheet::WorkSheet( QWidget *parent )
   mRows = mColumns = 0;
   mDisplayList = 0;
   mFileName = "";
+  mLocalProcessController = NULL;
 
   setAcceptDrops( true );
 }
@@ -352,7 +353,11 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
       newDisplay = new SensorLogger( this, sensorDescr, &mSharedSettings );
     }
     else if ( sensorType == "table" ) {
-      newDisplay = new ProcessController( this, sensorDescr, &mSharedSettings);
+      if(!mLocalProcessController && (hostName.isEmpty() || hostName == "localhost")) {
+        mLocalProcessController = new ProcessController( this, sensorDescr, &mSharedSettings);
+	newDisplay = mLocalProcessController;
+      } else 
+        newDisplay = new ProcessController( this, sensorDescr, &mSharedSettings);
     }
     else {
       kDebug(1215) << "Unknown sensor type: " <<  sensorType;
@@ -492,9 +497,13 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
     newDisplay = new LogFile( 0, i18n("Dummy"), &mSharedSettings );
   else if ( classType == "SensorLogger" )
     newDisplay = new SensorLogger( 0, i18n("Dummy"), &mSharedSettings );
-  else if ( classType == "ProcessController" )
-    newDisplay = new ProcessController( 0, i18n("Dummy"), &mSharedSettings);
-  else {
+  else if ( classType == "ProcessController" ) {
+    if(!mLocalProcessController) {
+      kDebug() << "Found process controller"; 
+      mLocalProcessController = new ProcessController( 0, i18n("Dummy"), &mSharedSettings);
+      newDisplay = mLocalProcessController;
+    }
+  } else {
     kDebug(1215) << "Unknown class " <<  classType;
     return false;
   }
@@ -515,6 +524,8 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
 {
   // remove the old display && sensor frame at this location
   if ( mDisplayList[ row ][ column ] ) {
+    if(mDisplayList[ row ][ column ] == mLocalProcessController) 
+      mLocalProcessController = NULL;
     if ( qstrcmp( mDisplayList[ row ][ column ]->parent()->metaObject()->className(), "SensorFrame" ) == 0 ) {
       delete mDisplayList[ row ][ column ]->parent(); // destroys the child (display) as well
     } else {
@@ -549,6 +560,9 @@ void WorkSheet::removeDisplay( KSGRD::SensorDisplay *display )
 {
   if ( !display )
     return;
+  
+  if(display == mLocalProcessController) 
+    mLocalProcessController = NULL;
 
   for ( uint r = 0; r < mRows; ++r )
     for ( uint c = 0; c < mColumns; ++c )
