@@ -247,12 +247,11 @@ void TopLevel::initStatusBar()
    * answerReceived(). */
   KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/used?",
                                  (KSGRD::SensorClient*)this, 7 );
-  updateStatusBar();
 
   KToggleAction *sb = dynamic_cast<KToggleAction*>(action("options_show_statusbar"));
   if (sb)
      connect(sb, SIGNAL(toggled(bool)), this, SLOT(updateStatusBar()));
-  setupGUI(ToolBar | Keys | StatusBar | Create);
+  setupGUI(ToolBar | Keys | StatusBar | Save | Create);
 }
 
 void TopLevel::updateStatusBar()
@@ -410,7 +409,7 @@ void TopLevel::readProperties( const KConfigGroup& cfg )
     }
   }
 
-  applyMainWindowSettings( cfg );
+  updateStatusBar();
 }
 
 void TopLevel::saveProperties( KConfigGroup& cfg )
@@ -574,16 +573,14 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
 #endif
   topLevel = new TopLevel();
 
+  topLevel->initStatusBar();
+
   // create top-level widget
+  topLevel->readProperties( KConfigGroup( KGlobal::config(), "MainWindow" ) );
+
   if ( app->isSessionRestored() )
     topLevel->restore( 1 );
-  else
-  {
-    topLevel->readProperties( KConfigGroup( KGlobal::config(), "MainWindow" ) );
-  }
 
-
-  topLevel->initStatusBar();
   topLevel->show();
   KSGRD::SensorMgr->setBroadcaster( topLevel );
 
