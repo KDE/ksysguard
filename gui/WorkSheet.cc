@@ -482,7 +482,7 @@ bool WorkSheet::event( QEvent *e )
 bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
 {
   QString classType = element.attribute( "class" );
-  KSGRD::SensorDisplay* newDisplay;
+  KSGRD::SensorDisplay* newDisplay = 0;
 
 
   if ( classType == "FancyPlotter" )
