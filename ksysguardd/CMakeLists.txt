@@ -57,6 +57,9 @@ if( ${CMAKE_SYSTEM_NAME} MATCHES "DragonFly" )
   message(STATUS "Adding kinfo library on DragonFlyBSD")
   TARGET_LINK_LIBRARIES(ksysguardd kinfo)
 endif( ${CMAKE_SYSTEM_NAME} MATCHES "DragonFly" )
+if( ${CMAKE_SYSTEM_NAME} MATCHES "SunOS" )
+  TARGET_LINK_LIBRARIES(ksysguardd socket nsl)
+endif( ${CMAKE_SYSTEM_NAME} MATCHES "SunOS" )
 
 install(TARGETS ksysguardd DESTINATION ${BIN_INSTALL_DIR})
 
