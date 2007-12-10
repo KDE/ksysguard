@@ -439,10 +439,6 @@ void KSignalPlotter::setThinFrame( bool set)
 void KSignalPlotter::resizeEvent( QResizeEvent* )
 {
   Q_ASSERT( width() > 2 );
-//  mBackgroundImage = mBackgroundImage.scaled(width(), height()); //set to null.  If it's invalid, it will be rerendered.
-  if (testAttribute(Qt::WA_PendingResizeEvent)) {	
-      return; // we'll be back here again in no time
-  }
 
   updateDataBuffers();
 }
