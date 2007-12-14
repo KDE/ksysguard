@@ -142,6 +142,8 @@ void SensorManager::retranslate()
   mDict.insert( QLatin1String( "system" ), i18n( "System" ) );
   mDict.insert( QLatin1String( "uptime" ), i18n( "Uptime" ) );
   mDict.insert( QLatin1String( "SoftRaid" ), i18n( "Linux Soft Raid (md)" ) );
+  mDict.insert( QLatin1String( "processors" ), i18n( "Processors" ) );
+  mDict.insert( QLatin1String( "cores" ), i18n( "Cores" ) );
 
   for ( int i = 0; i < 32; i++ ) {
     mDict.insert( QLatin1String( "cpu" ) + QString::number( i ), i18n( "CPU %1", i+1 ) );
