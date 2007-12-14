@@ -34,7 +34,7 @@ DummyDisplay::DummyDisplay( QWidget* parent, SharedSettings *workSheetSettings )
                     "over time." ) );
 
   QLabel *label = new QLabel(this);
-  label->setText("Drop Sensor Here");
+  label->setText( i18n( "Drop Sensor Here" ) );
   label->setAlignment( Qt::AlignCenter );
 
   QHBoxLayout *layout = new QHBoxLayout;
