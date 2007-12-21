@@ -214,6 +214,8 @@ void printCPUxClockInfo( const char* cmd )
 
 void printNumCpus( const char* cmd )
 {
+  (void) cmd;
+	
   if ( Dirty )
     processCpuInfo();
 
@@ -222,11 +224,15 @@ void printNumCpus( const char* cmd )
 
 void printNumCpusInfo( const char* cmd )
 {
+  (void) cmd;
+  
   fprintf( CurrentClient, "Number of physical CPUs\t0\t0\t\n" );
 }
 
 void printNumCores( const char* cmd )
 {
+  (void) cmd;
+
   if ( Dirty )
     processCpuInfo();
 
@@ -235,5 +241,7 @@ void printNumCores( const char* cmd )
 
 void printNumCoresInfo( const char* cmd )
 {
+  (void) cmd;
+
   fprintf( CurrentClient, "Total number of processor cores\t0\t0\t\n" );
 }
