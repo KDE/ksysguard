@@ -25,7 +25,7 @@
 #include <string.h>
 
 #include "Command.h"
-
+#include "ccont.h"
 #include "conf.h"
 
 CONTAINER LogFileList = 0;
