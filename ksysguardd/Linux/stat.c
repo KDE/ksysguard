@@ -142,7 +142,12 @@ static int initStatDisk( char* tag, char* buf, const char* label,
 	
 	return 0;
 }
-	
+
+/**
+ * updateCPULoad
+ *
+ * Parses the total cpu status line from /proc/stat
+ */
 static void updateCPULoad( const char* line, CPULoadInfo* load ) {
 	unsigned long currUserTicks, currSysTicks, currNiceTicks;
 	unsigned long currIdleTicks, currWaitTicks, totalTicks;
