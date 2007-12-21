@@ -168,7 +168,6 @@ void TopLevel::retranslateUi()
 
 void TopLevel::currentTabChanged(int index)
 {
-  kDebug() << "Current tab changed to " << index;
   QWidget *wdg = mWorkSpace->widget(index);
   WorkSheet *sheet = (WorkSheet *)(wdg);
   Q_ASSERT(sheet);
@@ -190,7 +189,6 @@ void TopLevel::currentTabChanged(int index)
 void TopLevel::startSensorBrowserWidget()
 {
   if(mSensorBrowser) return;
-  kDebug() << "Creating sensor browser";
   mSensorBrowser = new SensorBrowserWidget( 0, KSGRD::SensorMgr );
   mSplitter->insertWidget(2,mSensorBrowser);
   mSplitter->setSizes( mSplitterSize );
