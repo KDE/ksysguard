@@ -96,7 +96,11 @@ void initDiskstats( struct SensorModul* sm ) {
 	StatSM = sm;
 	sprintf( format, "%%%d[^\n]\n", (int)sizeof( buf ) - 1 );
 
-	updateDiskstats(); /* reopens /proc/diskstats as IOStatBuf */
+	/* updateDiskstats() reopens /proc/diskstats as IOStatBuf */
+	if (updateDiskstats()) {
+		/* updateDiskstats() was unable to open file. die. */
+		return;
+	}
 
 	/* Process values from /proc/diskstats (Linux >= 2.6.x) */
 	while (sscanf(iostatBufP, format, buf) == 1) {
@@ -122,17 +126,15 @@ int updateDiskstats( void ) {
 
 	IOStatBuf[ 0 ] = '\0';
 	if ( ( fd = open( "/proc/diskstats", O_RDONLY ) ) < 0 )
-		return 0; /* failure is okay, only exists for Linux >= 2.6.x */
+		return -1; /* unable to open file. disable this module. */
 	
 	n = read( fd, IOStatBuf, DISKSTATSBUFSIZE - 1 );
+	close( fd );
 	if ( n == DISKSTATSBUFSIZE - 1 || n <= 0 ) {
-		log_error( "Internal buffer too small to read \'/proc/diskstats\'" );
-	
-		close( fd );
+		log_error( "Internal buffer too small to read \'/proc/diskstats\'" );		
 		return -1;
 	}
 	
-	close( fd );
 	IOStatBuf[ n ] = '\0';
 
 	return 0;
