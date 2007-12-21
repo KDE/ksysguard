@@ -443,7 +443,7 @@ void initProcessList( struct SensorModul* sm )
 #ifdef HAVE_XRES
   have_xres = setup_xres();
   if(have_xres) {
-    registerMonitor( "xres", "table", printXresList, printXresListInfo, sm);
+    registerLegacyMonitor( "xres", "table", printXresList, printXresListInfo, sm);
   }
 #endif
 
