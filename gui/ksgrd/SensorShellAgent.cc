@@ -19,7 +19,7 @@
 */
 
 #include <kdebug.h>
-#include <k3process.h>
+#include <kprocess.h>
 
 //#include "SensorClient.h"
 #include "SensorManager.h"
@@ -36,7 +36,7 @@ SensorShellAgent::SensorShellAgent( SensorManager *sm )
 SensorShellAgent::~SensorShellAgent()
 {
   if ( mDaemon ) {
-    mDaemon->writeStdin( "quit\n", strlen( "quit\n" ) );
+    mDaemon->write( "quit\n", sizeof( "quit\n" )-1 );
     delete mDaemon;
     mDaemon = 0;
   }
@@ -45,21 +45,19 @@ SensorShellAgent::~SensorShellAgent()
 bool SensorShellAgent::start( const QString &host, const QString &shell,
                               const QString &command, int )
 {
-  mDaemon = new K3Process;
-  mDaemon->setUseShell(true);
+  mDaemon = new KProcess();
+  mDaemon->setOutputChannelMode( KProcess::SeparateChannels );
   mRetryCount=3;
   setHostName( host );
   mShell = shell;
   mCommand = command;
 
-  connect( mDaemon, SIGNAL( processExited( K3Process* ) ),
-           SLOT( daemonExited( K3Process* ) ) );
-  connect( mDaemon, SIGNAL( receivedStdout( K3Process*, char*, int ) ),
-           SLOT( msgRcvd( K3Process*, char*, int ) ) );
-  connect( mDaemon, SIGNAL( receivedStderr( K3Process*, char*, int ) ),
-           SLOT( errMsgRcvd( K3Process*, char*, int ) ) );
-  connect( mDaemon, SIGNAL( wroteStdin( K3Process* ) ),
-           SLOT( msgSent( K3Process* ) ) );
+  connect( mDaemon, SIGNAL(  finished ( int, QProcess::ExitStatus ) ),
+           SLOT( daemonExited( int, QProcess::ExitStatus ) ) );
+  connect( mDaemon, SIGNAL( readyReadStandardOutput() ),
+           SLOT( msgRcvd() ) );
+  connect( mDaemon, SIGNAL( readyReadStandardError() ),
+           SLOT( errMsgRcvd() ) );
 
   QString cmd;
   if ( !command.isEmpty() )
@@ -67,13 +65,13 @@ bool SensorShellAgent::start( const QString &host, const QString &shell,
   else
     cmd = mShell + ' ' + hostName() + " ksysguardd";
   *mDaemon << cmd;
+  mDaemon->start();
 
-  if ( !mDaemon->start( K3Process::NotifyOnExit, K3Process::All ) ) {
+  if ( !mDaemon->waitForStarted() ) {
     sensorManager()->hostLost( this );
     kDebug (1215) << "Command '" << cmd << "' failed" ;
     return false;
   }
-
   return true;
 }
 
@@ -85,36 +83,32 @@ void SensorShellAgent::hostInfo( QString &shell, QString &command,
   port = -1;
 }
 
-void SensorShellAgent::msgSent( K3Process* )
+void SensorShellAgent::msgRcvd( )
 {
-  setTransmitting( false );
-
-	// Try to send next request if available.
-  executeCommand();
-}
-
-void SensorShellAgent::msgRcvd( K3Process*, char *buffer, int buflen )
-{
-  if ( !buffer || buflen == 0 )
+  QByteArray buffer = mDaemon->readAllStandardOutput();
+  if ( buffer.isEmpty() )
     return;
   mRetryCount = 3; //we received an answer, so reset our retry count back to 3
-  processAnswer( buffer, buflen );
+  processAnswer( buffer.constData(), buffer.size());
 }
 
-void SensorShellAgent::errMsgRcvd( K3Process*, char *buffer, int buflen )
+void SensorShellAgent::errMsgRcvd( )
 {
-  if ( !buffer || buflen == 0 )
+  QByteArray buffer = mDaemon->readAllStandardOutput();
+  if ( buffer.isEmpty() )
     return;
 
-  QString buf = QString::fromUtf8( buffer, buflen );
+  QString buf = QString::fromUtf8( buffer );
 
   kDebug(1215) << "SensorShellAgent: Warning, received text over stderr!"
                 << endl << buf << endl;
 }
 
-void SensorShellAgent::daemonExited( K3Process * )
+void SensorShellAgent::daemonExited(  int exitCode, QProcess::ExitStatus exitStatus )
 {
-  if ( mRetryCount-- <= 0 || !mDaemon->start( K3Process::NotifyOnExit, K3Process::All ) ) {
+  if ( mRetryCount-- > 0)
+    mDaemon->start();
+  else {
     setDaemonOnLine( false );
     sensorManager()->hostLost( this );
     sensorManager()->requestDisengage( this );
@@ -123,12 +117,8 @@ void SensorShellAgent::daemonExited( K3Process * )
 
 bool SensorShellAgent::writeMsg( const char *msg, int len )
 {
-  return mDaemon->writeStdin( msg, len );
-}
-
-bool SensorShellAgent::txReady()
-{
-  return !transmitting();
+  //write returns -1 on error, in which case we should return false.  true otherwise.
+  return mDaemon->write( msg, len ) != -1;
 }
 
 #include "SensorShellAgent.moc"

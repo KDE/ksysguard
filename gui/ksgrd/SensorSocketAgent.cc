@@ -71,8 +71,6 @@ void SensorSocketAgent::msgSent( )
   if ( mSocket.bytesToWrite() != 0 )
     return;
 
-  setTransmitting( false );
-
   // Try to send next request if available.
   executeCommand();
 }
@@ -122,11 +120,6 @@ void SensorSocketAgent::error( QAbstractSocket::SocketError id )
 bool SensorSocketAgent::writeMsg( const char *msg, int len )
 {
   return ( mSocket.write( msg, len ) == len );
-}
-
-bool SensorSocketAgent::txReady()
-{
-  return !transmitting();
 }
 
 #include "SensorSocketAgent.moc"

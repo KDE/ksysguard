@@ -40,7 +40,6 @@ SensorAgent::SensorAgent( SensorManager *sm )
   : mSensorManager( sm )
 {
   mDaemonOnLine = false;
-  mTransmitting = false;
   mFoundError = false;
 }
 
@@ -191,7 +190,7 @@ void SensorAgent::executeCommand()
    * command to pass to the daemon. But the command may only be sent
    * if the daemon is online and there is no other command currently
    * being sent. */
-  if ( mDaemonOnLine && txReady() && !mInputFIFO.isEmpty() ) {
+  if ( mDaemonOnLine && !mInputFIFO.isEmpty() ) {
     SensorRequest *req = mInputFIFO.dequeue();
 
 #if SA_TRACE
@@ -200,9 +199,7 @@ void SensorAgent::executeCommand()
 #endif
     // send request to daemon
     QString cmdWithNL = req->request() + '\n';
-    if ( writeMsg( cmdWithNL.toLatin1(), cmdWithNL.length() ) )
-      mTransmitting = true;
-    else
+    if ( !writeMsg( cmdWithNL.toLatin1(), cmdWithNL.length() ) )
       kDebug(1215) << "SensorAgent::writeMsg() failed";
 
     // add request to processing FIFO.
@@ -235,16 +232,6 @@ void SensorAgent::setDaemonOnLine( bool value )
 bool SensorAgent::daemonOnLine() const
 {
   return mDaemonOnLine;
-}
-
-void SensorAgent::setTransmitting( bool value )
-{
-  mTransmitting = value;
-}
-
-bool SensorAgent::transmitting() const
-{
-  return mTransmitting;
 }
 
 void SensorAgent::setHostName( const QString &hostName )

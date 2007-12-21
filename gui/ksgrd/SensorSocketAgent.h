@@ -58,7 +58,6 @@ class SensorSocketAgent : public SensorAgent
 
   private:
     bool writeMsg( const char *msg, int len );
-    bool txReady();
 
     QTcpSocket mSocket;
     int mPort;

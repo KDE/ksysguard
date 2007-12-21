@@ -85,14 +85,10 @@ class KDE_EXPORT SensorAgent : public QObject
     void setDaemonOnLine( bool value );
     bool daemonOnLine() const;
 
-    void setTransmitting( bool value );
-    bool transmitting() const;
-
     void setHostName( const QString &hostName );
 
   private:
     virtual bool writeMsg( const char *msg, int len ) = 0;
-    virtual bool txReady() = 0;
 
     bool mFoundError;
     QQueue< SensorRequest* > mInputFIFO;
@@ -104,7 +100,6 @@ class KDE_EXPORT SensorAgent : public QObject
     SensorManager *mSensorManager;
 
     bool mDaemonOnLine;
-    bool mTransmitting;
     QString mHostName;
 };
 
