@@ -26,7 +26,7 @@
 #include <sys/stat.h>
 #include <sys/swap.h>
 
-#include "config.h"
+#include "config-ksysguardd.h"
 
 #ifdef HAVE_KSTAT
 #include <kstat.h>
