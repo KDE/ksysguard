@@ -221,6 +221,7 @@ class SensorDisplay : public QWidget, public SensorClient
 
   protected:
     virtual bool eventFilter( QObject*, QEvent* );
+    virtual void changeEvent( QEvent * event );
 
     void registerSensor( SensorProperties *sp );
     void unregisterSensor( uint pos );

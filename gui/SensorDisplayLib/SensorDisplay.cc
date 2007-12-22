@@ -326,6 +326,12 @@ void SensorDisplay::setSensorOk( bool ok )
   }
 }
 
+void SensorDisplay::changeEvent( QEvent * event ) {
+  if (event->type() == QEvent::LanguageChange) {
+    setTitle(mTitle);  //retranslate
+  }
+}
+
 void SensorDisplay::setTitle( const QString &title )
 {
   mTitle = title;

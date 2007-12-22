@@ -32,7 +32,7 @@ SensorFrame::SensorFrame(KSGRD::SensorDisplay* display)
   layout->addWidget(display);
   setLayout(layout);
   connect(display, SIGNAL(translatedTitleChanged(const QString&)), SLOT(setTranslatedTitle(const QString&)));
-  setTitle(display->title());
+  setTranslatedTitle(display->translatedTitle());
   setFlat(true);
 }
 void SensorFrame::setTranslatedTitle(const QString& translatedTitle) {
