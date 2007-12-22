@@ -20,6 +20,7 @@
 
 #include <kdebug.h>
 #include <kprocess.h>
+#include <kshell.h>
 
 //#include "SensorClient.h"
 #include "SensorManager.h"
@@ -37,6 +38,7 @@ SensorShellAgent::~SensorShellAgent()
 {
   if ( mDaemon ) {
     mDaemon->write( "quit\n", sizeof( "quit\n" )-1 );
+    mDaemon->waitForFinished();
     delete mDaemon;
     mDaemon = 0;
   }
@@ -52,6 +54,8 @@ bool SensorShellAgent::start( const QString &host, const QString &shell,
   mShell = shell;
   mCommand = command;
 
+  connect( mDaemon, SIGNAL(  error ( QProcess::ProcessError  ) ),
+           SLOT( daemonError( QProcess::ProcessError ) ) );
   connect( mDaemon, SIGNAL(  finished ( int, QProcess::ExitStatus ) ),
            SLOT( daemonExited( int, QProcess::ExitStatus ) ) );
   connect( mDaemon, SIGNAL( readyReadStandardOutput() ),
@@ -59,17 +63,16 @@ bool SensorShellAgent::start( const QString &host, const QString &shell,
   connect( mDaemon, SIGNAL( readyReadStandardError() ),
            SLOT( errMsgRcvd() ) );
 
-  QString cmd;
-  if ( !command.isEmpty() )
-    cmd =  command;
+  if ( !command.isEmpty() ) {
+    *mDaemon << KShell::splitArgs(command);
+  }
   else
-    cmd = mShell + ' ' + hostName() + " ksysguardd";
-  *mDaemon << cmd;
+    *mDaemon << mShell << hostName() << "ksysguardd";
   mDaemon->start();
 
   if ( !mDaemon->waitForStarted() ) {
     sensorManager()->hostLost( this );
-    kDebug (1215) << "Command '" << cmd << "' failed" ;
+    kDebug (1215) << "Command '" << mDaemon->program() << "' failed" ;
     return false;
   }
   return true;
@@ -86,8 +89,6 @@ void SensorShellAgent::hostInfo( QString &shell, QString &command,
 void SensorShellAgent::msgRcvd( )
 {
   QByteArray buffer = mDaemon->readAllStandardOutput();
-  if ( buffer.isEmpty() )
-    return;
   mRetryCount = 3; //we received an answer, so reset our retry count back to 3
   processAnswer( buffer.constData(), buffer.size());
 }
@@ -95,9 +96,10 @@ void SensorShellAgent::msgRcvd( )
 void SensorShellAgent::errMsgRcvd( )
 {
   QByteArray buffer = mDaemon->readAllStandardOutput();
-  if ( buffer.isEmpty() )
-    return;
 
+  // Because we read the error buffer in chunks, we may not have a proper utf8 string.
+  // We should never get input over stderr anyway, so no need to worry too much about it.
+  // But if this is extended, we will need to handle this better
   QString buf = QString::fromUtf8( buffer );
 
   kDebug(1215) << "SensorShellAgent: Warning, received text over stderr!"
@@ -106,15 +108,19 @@ void SensorShellAgent::errMsgRcvd( )
 
 void SensorShellAgent::daemonExited(  int exitCode, QProcess::ExitStatus exitStatus )
 {
-  if ( mRetryCount-- > 0)
-    mDaemon->start();
-  else {
+  kDebug() << "daemon exited, exit status "  << exitStatus;
+  if ( mRetryCount--  <= 0 || (mDaemon->start(), !mDaemon->waitForStarted()) )
+  {
     setDaemonOnLine( false );
     sensorManager()->hostLost( this );
     sensorManager()->requestDisengage( this );
   }
 }
 
+void SensorShellAgent::daemonError( QProcess::ProcessError errorStatus )
+{
+  kDebug() << "Error recieved " << errorStatus;
+}
 bool SensorShellAgent::writeMsg( const char *msg, int len )
 {
   //write returns -1 on error, in which case we should return false.  true otherwise.

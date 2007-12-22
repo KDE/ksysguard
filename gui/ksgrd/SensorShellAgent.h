@@ -59,6 +59,7 @@ class SensorShellAgent : public SensorAgent
     void msgRcvd( );
     void errMsgRcvd( );
     void daemonExited(  int exitCode, QProcess::ExitStatus exitStatus );
+    void daemonError( QProcess::ProcessError errorStatus );
 
   private:
     bool writeMsg( const char *msg, int len );
