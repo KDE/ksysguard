@@ -329,7 +329,14 @@ void SensorDisplay::setSensorOk( bool ok )
 void SensorDisplay::setTitle( const QString &title )
 {
   mTitle = title;
-  emit changeTitle(title);
+  mTranslatedTitle = i18n(title.toLatin1());
+  emit titleChanged(mTitle);
+  emit translatedTitleChanged(mTranslatedTitle);
+}
+
+QString SensorDisplay::translatedTitle() const
+{
+  return mTranslatedTitle;
 }
 
 QString SensorDisplay::title() const

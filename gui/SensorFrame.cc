@@ -31,12 +31,12 @@ SensorFrame::SensorFrame(KSGRD::SensorDisplay* display)
   layout->setMargin(2);
   layout->addWidget(display);
   setLayout(layout);
-  connect(display, SIGNAL(changeTitle(const QString&)), SLOT(setTitle(const QString&)));
+  connect(display, SIGNAL(translatedTitleChanged(const QString&)), SLOT(setTranslatedTitle(const QString&)));
   setTitle(display->title());
   setFlat(true);
 }
-void SensorFrame::setTitle(const QString& title) {
-  QGroupBox::setTitle(title);
+void SensorFrame::setTranslatedTitle(const QString& translatedTitle) {
+  QGroupBox::setTitle(translatedTitle);
 }
 
 #include "SensorFrame.moc"

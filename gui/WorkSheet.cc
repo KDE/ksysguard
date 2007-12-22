@@ -119,6 +119,7 @@ bool WorkSheet::load( const QString &fileName )
   setUpdateInterval(interval);
 
   mTitle = element.attribute( "title");
+  mTranslatedTitle = i18n(mTitle.toLatin1());
   bool ok;
   mSharedSettings.locked = element.attribute( "locked" ).toUInt( &ok );
   if(!ok) mSharedSettings.locked = false;
@@ -289,19 +290,23 @@ void WorkSheet::setFileName( const QString &fileName )
   mFileName = fileName;
 }
 
-const QString& WorkSheet::fileName() const
+QString WorkSheet::fileName() const
 {
   return mFileName;
 }
 
 void WorkSheet::setTitle( const QString &title )
 {
-  kDebug() << "Set title " << title;
   mTitle = title;
+  mTranslatedTitle = i18n(mTitle.toLatin1());
   emit titleChanged(this);
 }
 
-const QString &WorkSheet::title() {
+QString WorkSheet::translatedTitle() const {
+  return mTranslatedTitle;
+}
+
+QString WorkSheet::title() const {
   return mTitle;
 }
 
@@ -376,7 +381,7 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
 void WorkSheet::settings()
 {
   WorkSheetSettings dlg( this, mSharedSettings.locked );
-  dlg.setSheetTitle( mTitle );
+  dlg.setSheetTitle( mTranslatedTitle );
   dlg.setInterval( updateInterval() );
 
   if(!mSharedSettings.locked) {
@@ -390,10 +395,12 @@ void WorkSheet::settings()
     if (!mSharedSettings.locked)
       resizeGrid( dlg.rows(), dlg.columns() );
 
-    if(mRows == 1 && mColumns ==1) {
-      mDisplayList[ 0 ][ 0 ]->setTitle(dlg.sheetTitle());
-    } else {
-      setTitle(dlg.sheetTitle());
+    if(mTranslatedTitle != dlg.sheetTitle()) { //Title has changed
+      if(mRows == 1 && mColumns ==1) {
+        mDisplayList[ 0 ][ 0 ]->setTitle(dlg.sheetTitle());
+      } else {
+        setTitle(dlg.sheetTitle());
+      }
     }
   }
 }
@@ -546,7 +553,7 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
 
   mGridLayout->addWidget( mDisplayList[ row ][ column ], row, column );
   if(mRows == 1 && mColumns == 1) {  //if there's only item, the tab's title should be the widget's title
-    connect( newDisplay, SIGNAL(changeTitle(const QString&)), SLOT(setTitle(const QString&)));
+    connect( newDisplay, SIGNAL(titleChanged(const QString&)), SLOT(setTitle(const QString&)));
     setTitle(newDisplay->title());
   }
   if ( isVisible() ) {

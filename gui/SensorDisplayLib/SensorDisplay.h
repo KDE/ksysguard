@@ -79,6 +79,11 @@ class SensorDisplay : public QWidget, public SensorClient
     QString title() const;
 
     /**
+      Returns the translated title of the display.
+     */
+    QString translatedTitle() const;
+
+    /**
       Sets the unit of the display.
      */
     void setUnit( const QString &unit );
@@ -211,7 +216,8 @@ class SensorDisplay : public QWidget, public SensorClient
 
   Q_SIGNALS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
-    void changeTitle(const QString&);
+    void titleChanged(const QString&);
+    void translatedTitleChanged(const QString&);
 
   protected:
     virtual bool eventFilter( QObject*, QEvent* );
@@ -247,6 +253,7 @@ class SensorDisplay : public QWidget, public SensorClient
     QList<SensorProperties *> mSensors;
 
     QString mTitle;
+    QString mTranslatedTitle;
     QString mUnit;
 
     QWidget* mErrorIndicator;

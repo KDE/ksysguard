@@ -60,11 +60,12 @@ class WorkSheet : public QWidget
     void paste();
 
     void setFileName( const QString &fileName );
-    const QString& fileName() const;
+    QString fileName() const;
 
     bool isLocked() const {return mSharedSettings.locked;}
 
-    const QString &title();
+    QString title() const;
+    QString translatedTitle() const;
 
     KSGRD::SensorDisplay* addDisplay( const QString &hostname,
                                       const QString &monitor,
@@ -119,6 +120,7 @@ class WorkSheet : public QWidget
     QGridLayout* mGridLayout;
     QString mFileName;
     QString mTitle;
+    QString mTranslatedTitle;
 
     SharedSettings mSharedSettings;
 
