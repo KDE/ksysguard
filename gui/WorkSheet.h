@@ -85,6 +85,8 @@ class WorkSheet : public QWidget
     void titleChanged( QWidget *sheet );
 
   protected:
+
+    virtual void changeEvent( QEvent * event );
     virtual QSize sizeHint() const;
     void dragEnterEvent( QDragEnterEvent* );
     void dropEvent( QDropEvent* );

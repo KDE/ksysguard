@@ -712,6 +712,12 @@ QString WorkSheet::currentDisplayAsXML()
   return doc.toString();
 }
 
+void WorkSheet::changeEvent( QEvent * event ) {
+  if (event->type() == QEvent::LanguageChange) {
+    setTitle(mTitle);  //retranslate
+  }
+}
+
 void WorkSheet::setUpdateInterval( unsigned int secs)
 {
   if(secs == 0)
