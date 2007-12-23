@@ -98,10 +98,10 @@ class KSignalPlotter : public QWidget
     /** returns the # of beams */
     int numBeams();
 
-    /** Set the title of the graph.  Drawn in the top left. */
-    void setTitle( const QString &title );
-    /** Get the title of the graph.  Drawn in the top left. */
-    QString title() const;
+    /** Set the translated title of the graph.  Drawn in the top left. */
+    void setTranslatedTitle( const QString &title );
+    /** Get the translated title of the graph.  Drawn in the top left. */
+    QString translatedTitle() const;
 
     /** Set the units.  Drawn on the vertical axis of the graph.
      *  Must be already translated into the local language. 
@@ -322,8 +322,8 @@ class KSignalPlotter : public QWidget
     unsigned int mSamples; //This is what mBeamData.size() should equal when full.  When we start off and have no data then mSamples will be higher.  If we resize the widget so it's smaller, then for a short while this will be smaller
     int mNewestIndex; //The index to the newest item added.  newestIndex+1   is the second newest, and so on
 
-    QString mTitle;
-    QString mUnit;
+    QString mTranslatedTitle;
+    QString mTranslatedUnit;
 
     QFont mFont;
 };

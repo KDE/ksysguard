@@ -107,6 +107,8 @@ class FancyPlotter : public KSGRD::SensorDisplay
     QList<double> mSampleBuf;
 
     FancyPlotterSettings* mSettingsDialog;
+
+    QString mUnit;
 };
 
 #endif

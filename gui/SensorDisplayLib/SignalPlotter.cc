@@ -85,10 +85,10 @@ KSignalPlotter::~KSignalPlotter()
 }
 
 QString KSignalPlotter::translatedUnit() const {
-  return mUnit;
+  return mTranslatedUnit;
 }
-void KSignalPlotter::setTranslatedUnit(const QString &unit) {
-  mUnit= unit;
+void KSignalPlotter::setTranslatedUnit(const QString &translatedUnit) {
+  mTranslatedUnit= translatedUnit;
 }
 
 
@@ -209,16 +209,16 @@ void KSignalPlotter::setScaleDownBy( double value )
 }
 double KSignalPlotter::scaleDownBy() const { return mScaleDownBy; }
 
-void KSignalPlotter::setTitle( const QString &title )
+void KSignalPlotter::setTranslatedTitle( const QString &translatedTitle )
 {
-  if(mTitle == title) return;
-  mTitle = title;
+  if(mTranslatedTitle == translatedTitle) return;
+  mTranslatedTitle = translatedTitle;
   mBackgroundImage = QImage(); //we changed a paint setting, so reset the cache
 }
 
-QString KSignalPlotter::title() const
+QString KSignalPlotter::translatedTitle() const
 {
-  return mTitle;
+  return mTranslatedTitle;
 }
 
 void KSignalPlotter::setUseAutoRange( bool value )
@@ -632,7 +632,7 @@ void KSignalPlotter::drawTopBarFrame(QPainter *p, int fullWidth, int seperatorX,
       p->setPen( Qt::NoPen);
 //      p->fillRect( 0, 0, fullWidth, height-1, QBrush(QColor(255,255,255,60)));
       p->setPen( mFontColor );
-      p->drawText(0, 1, seperatorX, height, Qt::AlignCenter, mTitle );
+      p->drawText(0, 1, seperatorX, height, Qt::AlignCenter, mTranslatedTitle );
       p->setPen( mHorizontalLinesColor );
       p->drawLine( seperatorX - 1, 1, seperatorX - 1, height-1 );
 }
@@ -929,7 +929,7 @@ void KSignalPlotter::drawAxisText(QPainter *p, int top, int h)
         value = mNiceMaxValue/mScaleDownBy - y * stepsize;
 
     QString number = KGlobal::locale()->formatNumber( value, mPrecision);
-    val = QString( "%1 %2" ).arg( number, mUnit );
+    val = QString( "%1 %2" ).arg( number, mTranslatedUnit );
     p->drawText( 6, y_coord - 3, val );
   }
 }
@@ -955,11 +955,11 @@ QString KSignalPlotter::lastValueAsString( int i) const
   double value = mBeamData.first()[i] / mScaleDownBy; //retrieve the newest value for this beam then scale it correct
   QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:2);
 
-  if (mUnit == "%" || mUnit == "") {
-    return QString( "%1%2" ).arg(number, mUnit);
+  if (mTranslatedUnit == "%" || mTranslatedUnit == "") {
+    return QString( "%1%2" ).arg(number, mTranslatedUnit);
   }
   else {
-    return QString( "%1 %2" ).arg(number, mUnit);
+    return QString( "%1 %2" ).arg(number, mTranslatedUnit);
   }
 }
 #include "SignalPlotter.moc"

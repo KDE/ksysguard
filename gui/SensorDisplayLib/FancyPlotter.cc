@@ -60,13 +60,12 @@ FancyPlotter::FancyPlotter( QWidget* parent,
 
   mPlotter->setThinFrame(!(workSheetSettings && workSheetSettings->isApplet));
  
-  setTitle(title);
-
   /* All RMB clicks to the mPlotter widget will be handled by 
    * SensorDisplay::eventFilter. */
   mPlotter->installEventFilter( this );
 
   setPlotterWidget( mPlotter );
+  mPlotter->setTranslatedTitle( translatedTitle() );
 
 }
 
@@ -75,9 +74,11 @@ FancyPlotter::~FancyPlotter()
 }
 
 void FancyPlotter::setTitle( const QString &title ) { //virtual
-  if(mPlotter)
-    mPlotter->setTitle( title );
   KSGRD::SensorDisplay::setTitle( title );
+  if(mPlotter) {
+    mPlotter->setTranslatedTitle( translatedTitle() );
+    mPlotter->setTranslatedUnit( KSGRD::SensorMgr->translateUnit( mUnit ) );
+  }
 }
 
 bool FancyPlotter::eventFilter( QObject* object, QEvent* event ) {	//virtual
@@ -291,14 +292,14 @@ void FancyPlotter::setTooltip()
     if(sensors().at( i)->isLocalhost()) {
       tooltip += QString( "%1%2 %3 (%4)" ).arg( i != 0 ? "<br>" : "<qt>")
             .arg("<font color=\"" + mPlotter->beamColor( i ).name() + "\">"+indicatorSymbol+"</font>")
-            .arg( description )
+            .arg( i18n(description.toLatin1()) )
 	    .arg( lastValue );
 
     } else {
       tooltip += QString( "%1%2 %3:%4 (%5)" ).arg( i != 0 ? "<br>" : "<qt>" )
                  .arg("<font color=\"" + mPlotter->beamColor( i ).name() + "\">"+indicatorSymbol+"</font>")
                  .arg( sensors().at( i )->hostName() )
-                 .arg( description )
+                 .arg( i18n(description.toLatin1()) )
 	         .arg( lastValue );
     }
   }
@@ -336,14 +337,14 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
     sensorError( id, false );
   } else if ( id >= 100 ) {
     KSGRD::SensorFloatInfo info( answer );
-    QString unit = info.unit();
-    if(unit.toUpper() == "KB" || unit.toUpper() == "KiB") {
+    mUnit = info.unit();
+    if(mUnit.toUpper() == "KB" || mUnit.toUpper() == "KiB") {
       if(info.max() >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
         mPlotter->setScaleDownBy(1024*1024);
-	unit = "GiB";
+	mUnit = "GiB";
       } else if(info.max() > 1024) {
         mPlotter->setScaleDownBy(1024);
-	unit = "MiB";
+	mUnit = "MiB";
       }
     }
 
@@ -361,7 +362,7 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
     }
     sensors().at( id - 100 )->setUnit( info.unit() );
 
-    mPlotter->setTranslatedUnit( KSGRD::SensorMgr->translateUnit( unit ) );
+    mPlotter->setTranslatedUnit( KSGRD::SensorMgr->translateUnit( mUnit ) );
     sensors().at( id - 100 )->setDescription( info.name() );
   }
 }
