@@ -72,7 +72,10 @@ class KDE_EXPORT SensorAgent : public QObject
 
     void disconnectClient( SensorClient *client );
 
-    const QString &hostName() const;
+    QString hostName() const;
+
+    bool daemonOnLine() const;
+    QString reasonForOffline() const;
 	
   Q_SIGNALS:
     void reconfigure( const SensorAgent* );
@@ -84,12 +87,13 @@ class KDE_EXPORT SensorAgent : public QObject
     SensorManager *sensorManager();
 
     void setDaemonOnLine( bool value );
-    bool daemonOnLine() const;
 
     void setHostName( const QString &hostName );
+    void setReasonForOffline(const QString &reasonForOffline);
 
   private:
     virtual bool writeMsg( const char *msg, int len ) = 0;
+    QString mReasonForOffline;
 
     bool mFoundError;
     QQueue< SensorRequest* > mInputFIFO;

@@ -79,12 +79,34 @@ QVariant SensorBrowserModel::data( const QModelIndex & index, int role) const { 
       return QString();
     }
     case Qt::DecorationRole: {
-      if(index.column() == 0 && mHostInfoMap.contains(index.internalId())) {
-        return KIcon("system");
+      if(index.column() == 0) {
+        HostInfo *host = getHostInfo(index.internalId());
+	KSGRD::SensorAgent *agent;
+	if(host != NULL && (agent = host->sensorAgent())) {
+	  if(agent->daemonOnLine())
+            return KIcon("system");
+	  else
+            return KIcon("dialog-warning");
+	} else
+          return QIcon();
       } else 
         return QIcon();
       break;
     }
+    case Qt::ToolTipRole: {
+      if(index.column() == 0) {
+        HostInfo *host = getHostInfo(index.internalId());
+	KSGRD::SensorAgent *agent;
+	if(host != NULL && (agent = host->sensorAgent())) {
+	  if(agent->daemonOnLine())
+            return agent->hostName();
+	  else
+            return agent->reasonForOffline();
+	}
+      }
+      break;
+    }
+
   } //switch
   return QVariant();
 }

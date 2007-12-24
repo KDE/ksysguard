@@ -22,6 +22,7 @@
 #include <kdebug.h>
 #include <kprocess.h>
 #include <kshell.h>
+#include <klocale.h>
 
 //#include "SensorClient.h"
 #include "SensorManager.h"
@@ -71,11 +72,6 @@ bool SensorShellAgent::start( const QString &host, const QString &shell,
     *mDaemon << mShell << hostName() << "ksysguardd";
   mDaemon->start();
 
-  if ( !mDaemon->waitForStarted() ) {
-    sensorManager()->hostLost( this );
-    kDebug (1215) << "Command '" << mDaemon->program() << "' failed" ;
-    return false;
-  }
   return true;
 }
 
@@ -109,6 +105,7 @@ void SensorShellAgent::errMsgRcvd( )
 
 void SensorShellAgent::daemonExited(  int exitCode, QProcess::ExitStatus exitStatus )
 {
+  Q_UNUSED(exitCode);
   kDebug() << "daemon exited, exit status "  << exitStatus;
   if ( mRetryCount--  <= 0 || (mDaemon->start(), !mDaemon->waitForStarted()) )
   {
@@ -120,7 +117,24 @@ void SensorShellAgent::daemonExited(  int exitCode, QProcess::ExitStatus exitSta
 
 void SensorShellAgent::daemonError( QProcess::ProcessError errorStatus )
 {
+  QString error;
+  switch(errorStatus) {
+    case QProcess::FailedToStart:
+      kDebug() << "failed to run" <<  mDaemon->program().join(" ");
+      error = i18n("Could not run daemon program '%1'.", mDaemon->program().join(" "));
+      break;
+    case QProcess::Crashed:
+    case QProcess::Timedout:
+    case QProcess::WriteError:
+    case QProcess::ReadError:
+    default:
+      error = i18n("The daemon program '%1' failed.", mDaemon->program().join(" "));
+  }
+  kDebug() << "error " << error;
+  setReasonForOffline(error);
   kDebug() << "Error recieved " << errorStatus;
+  setDaemonOnLine( false );
+  sensorManager()->hostLost( this );
 }
 bool SensorShellAgent::writeMsg( const char *msg, int len )
 {

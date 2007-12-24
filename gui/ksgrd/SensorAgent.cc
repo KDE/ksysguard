@@ -240,11 +240,20 @@ void SensorAgent::setHostName( const QString &hostName )
   mHostName = hostName;
 }
 
-const QString &SensorAgent::hostName() const
+QString SensorAgent::hostName() const
 {
   return mHostName;
 }
 
+QString SensorAgent::reasonForOffline() const
+{
+  return mReasonForOffline;
+}
+
+void SensorAgent::setReasonForOffline(const QString &reasonForOffline)
+{
+  mReasonForOffline = reasonForOffline;
+}
 
 SensorRequest::SensorRequest( const QString &request, SensorClient *client, int id )
   : mRequest( request ), mClient( client ), mId( id )
