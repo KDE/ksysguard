@@ -90,8 +90,10 @@ void SensorSocketAgent::msgRcvd()
 void SensorSocketAgent::connectionClosed()
 {
   setDaemonOnLine( false );
-  sensorManager()->hostLost( this );
-  sensorManager()->requestDisengage( this );
+  if(sensorManager()) {
+    sensorManager()->hostLost( this );
+    sensorManager()->disengage( this ); //delete ourselves
+  }
 }
 
 void SensorSocketAgent::error( QAbstractSocket::SocketError id )
@@ -115,7 +117,8 @@ void SensorSocketAgent::error( QAbstractSocket::SocketError id )
   }
 
   setDaemonOnLine( false );
-  sensorManager()->requestDisengage( this );
+  if(sensorManager())
+    sensorManager()->disengage( this );
 }
 
 bool SensorSocketAgent::writeMsg( const char *msg, int len )

@@ -40,6 +40,7 @@ SensorShellAgent::~SensorShellAgent()
 {
   if ( mDaemon ) {
     mDaemon->write( "quit\n", sizeof( "quit\n" )-1 );
+    mDaemon->disconnect();
     mDaemon->waitForFinished();
     delete mDaemon;
     mDaemon = 0;
@@ -110,8 +111,10 @@ void SensorShellAgent::daemonExited(  int exitCode, QProcess::ExitStatus exitSta
   if ( mRetryCount--  <= 0 || (mDaemon->start(), !mDaemon->waitForStarted()) )
   {
     setDaemonOnLine( false );
-    sensorManager()->hostLost( this );
-    sensorManager()->requestDisengage( this );
+    if(sensorManager()) {
+      sensorManager()->hostLost( this );
+      sensorManager()->disengage( this ); //delete ourselves
+    }
   }
 }
 
@@ -134,7 +137,8 @@ void SensorShellAgent::daemonError( QProcess::ProcessError errorStatus )
   setReasonForOffline(error);
   kDebug() << "Error recieved " << errorStatus;
   setDaemonOnLine( false );
-  sensorManager()->hostLost( this );
+  if(sensorManager())
+    sensorManager()->hostLost( this );
 }
 bool SensorShellAgent::writeMsg( const char *msg, int len )
 {

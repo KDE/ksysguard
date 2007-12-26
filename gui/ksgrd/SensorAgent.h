@@ -24,6 +24,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QQueue>
+#include <QtCore/QPointer>
 
 #include <kdemacros.h>
 
@@ -102,7 +103,7 @@ class KDE_EXPORT SensorAgent : public QObject
     QString mErrorBuffer;
     QByteArray mLeftOverBuffer; ///Any data read in but not terminated is copied into here, awaiting the next load of data
 
-    SensorManager *mSensorManager;
+    QPointer<SensorManager> mSensorManager;
 
     bool mDaemonOnLine;
     QString mHostName;

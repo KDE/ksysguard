@@ -37,15 +37,16 @@
 
 using namespace KSGRD;
 
-SensorAgent::SensorAgent( SensorManager *sm )
-  : mSensorManager( sm )
+SensorAgent::SensorAgent( SensorManager *sm ) : QObject(sm)
 {
+  mSensorManager = sm;
   mDaemonOnLine = false;
   mFoundError = false;
 }
 
 SensorAgent::~SensorAgent()
 {
+  kDebug() << "Deleting agent";
 }
 
 void SensorAgent::sendRequest( const QString &req, SensorClient *client, int id )

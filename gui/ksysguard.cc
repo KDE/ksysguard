@@ -78,7 +78,7 @@ TopLevel* topLevel;
   TaskMan widget.
  */
 TopLevel::TopLevel()
-  : KXmlGuiWindow( 0 )
+  : KXmlGuiWindow( NULL )
 {
   QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportScriptableSlots);
   mTimerId = -1;
@@ -561,9 +561,9 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
   // initialize KDE application
   KApplication *app = new KApplication;
 
+
   KSGRD::SensorMgr = new KSGRD::SensorManager();
   KSGRD::Style = new KSGRD::StyleEngine();
-
 
 #ifdef FORK_KSYSGUARD
   char c = 0;
@@ -581,14 +581,14 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
     topLevel->restore( 1 );
 
   topLevel->show();
-  KSGRD::SensorMgr->setBroadcaster( topLevel );
+  KSGRD::SensorMgr->setBroadcaster( topLevel );  // SensorMgr uses a QPointer for toplevel, so it is okay if topLevel is deleted first
 
   // run the application
   int result = app->exec();
 
-  delete KSGRD::Style;
-  delete KSGRD::SensorMgr;
   delete app;
+  delete KSGRD::SensorMgr;
+  delete KSGRD::Style;
 
   return result;
 }

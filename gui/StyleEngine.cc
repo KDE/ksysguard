@@ -33,7 +33,7 @@ using namespace KSGRD;
 
 StyleEngine* KSGRD::Style;
 
-StyleEngine::StyleEngine()
+StyleEngine::StyleEngine(QObject * parent) : QObject(parent)
 {
   mFirstForegroundColor = QColor( 0x0057ae );  // light blue
   mSecondForegroundColor = QColor( 0x0057ae ); // light blue

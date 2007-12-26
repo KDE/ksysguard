@@ -387,7 +387,7 @@ void SensorBrowserModel::disconnectHost(uint id)
 }
 void SensorBrowserModel::disconnectHost(const HostInfo *hostInfo)
 {
-  KSGRD::SensorMgr->requestDisengage( hostInfo->sensorAgent() );
+  KSGRD::SensorMgr->disengage( hostInfo->sensorAgent() );
 }
 void SensorBrowserModel::disconnectHost(const QString &hostname)
 {

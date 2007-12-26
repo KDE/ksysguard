@@ -33,7 +33,7 @@ class StyleEngine : public QObject
   Q_OBJECT
 
   public:
-    StyleEngine();
+    StyleEngine(QObject * parent = 0);
     ~StyleEngine();
 
     void readProperties( const KConfigGroup& cfg );

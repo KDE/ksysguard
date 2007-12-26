@@ -33,23 +33,6 @@
 
 using namespace KSGRD;
 
-class AgentEvent : public QEvent
-{
-  public:
-    AgentEvent( const SensorAgent *agent )
-      : QEvent( QEvent::User ), mAgent( agent )
-    {
-    }
-
-    const SensorAgent *agent() const
-    {
-      return mAgent;
-    }
-
-  private:
-    const SensorAgent *mAgent;
-};
-
 SensorManager::MessageEvent::MessageEvent( const QString &message )
   : QEvent( QEvent::User ), mMessage( message )
 {
@@ -62,7 +45,7 @@ QString SensorManager::MessageEvent::message() const
 
 SensorManager* KSGRD::SensorMgr;
 
-SensorManager::SensorManager()
+SensorManager::SensorManager(QObject * parent) : QObject(parent)
 {
   retranslate();
 }
@@ -178,12 +161,13 @@ void SensorManager::retranslate()
   mTypes.insert( QLatin1String( "table" ), i18n( "Process Controller" ) );
   mTypes.insert( QLatin1String( "listview" ), i18n( "Table" ) );
 
-  mBroadcaster = 0;
+  mBroadcaster = NULL;
 
 }
 
 SensorManager::~SensorManager()
 {
+  kDebug() << "Deleting manager";
 }
 
 bool SensorManager::engage( const QString &hostName, const QString &shell,
@@ -213,21 +197,12 @@ bool SensorManager::engage( const QString &hostName, const QString &shell,
   return false;
 }
 
-void SensorManager::requestDisengage( const SensorAgent *agent )
+bool SensorManager::disengage( SensorAgent *agent )
 {
-  /* When a sensor agent becomes disfunctional it calls this function
-   * to request that it is being removed from the SensorManager. It must
-   * not call disengage() directly since it would trigger ~SensorAgent()
-   * while we are still in a SensorAgent member function.
-   * So we have to post an event which is later caught by
-   * SensorManger::customEvent(). */
-  AgentEvent* event = new AgentEvent( agent );
-  qApp->postEvent( this, event );
-}
-
-bool SensorManager::disengage( const SensorAgent *agent )
-{
+  if(!agent) return false;
   const QString key = mAgents.key( const_cast<SensorAgent*>( agent ) );
+  kDebug() << "disengage ";
+  agent->deleteLater();
   if ( !key.isEmpty() ) {
     mAgents.remove( key );
 
@@ -245,7 +220,8 @@ bool SensorManager::isConnected( const QString &hostName )
 bool SensorManager::disengage( const QString &hostName )
 {
   if ( mAgents.contains( hostName ) ) {
-    mAgents.remove( hostName );
+    kDebug() << "disengage ";
+    delete mAgents.take( hostName );
 
     emit update();
     return true;
@@ -265,7 +241,7 @@ bool SensorManager::resynchronize( const QString &hostName )
   int port;
   hostInfo( hostName, shell, command, port );
 
-  disengage( hostName );
+  mAgents.remove( hostName );
 
   kDebug (1215) << "Re-synchronizing connection to " << hostName;
 
@@ -298,16 +274,6 @@ void SensorManager::setBroadcaster( QWidget *wdg )
 void SensorManager::reconfigure( const SensorAgent* )
 {
   emit update();
-}
-
-bool SensorManager::event( QEvent *event )
-{
-  if ( event->type() == QEvent::User ) {
-    disengage( static_cast<AgentEvent*>( event )->agent() );
-    return true;
-  }
-
-  return false;
 }
 
 bool SensorManager::sendRequest( const QString &hostName, const QString &req,

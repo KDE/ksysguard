@@ -28,6 +28,7 @@
 #include <QtCore/QHash>
 #include <QtCore/QStringList>
 #include <QtCore/QObject>
+#include <QtCore/QPointer>
 
 #include "SensorAgent.h"
 
@@ -59,7 +60,7 @@ class KDE_EXPORT SensorManager : public QObject
         QString mMessage;
     };
 
-    explicit SensorManager();
+    explicit SensorManager(QObject * parent = 0);
     ~SensorManager();
 
     bool engage( const QString &hostName, const QString &shell = "ssh",
@@ -67,16 +68,13 @@ class KDE_EXPORT SensorManager : public QObject
     /* Returns true if we are connected or trying to connect to the host given
      */
     bool isConnected( const QString &hostName );
-    void requestDisengage( const SensorAgent *agent );
-    bool disengage( const SensorAgent *agent );
+    bool disengage( SensorAgent *agent );
     bool disengage( const QString &hostName );
     bool resynchronize( const QString &hostName );
     void hostLost( const SensorAgent *agent );
     void notify( const QString &msg ) const;
 
     void setBroadcaster( QWidget *wdg );
-
-    virtual bool event( QEvent *event );
 
     bool sendRequest( const QString &hostName, const QString &request,
                       SensorClient *client, int id = 0 );
@@ -121,7 +119,7 @@ class KDE_EXPORT SensorManager : public QObject
     QStringList mHostList;
     QStringList mCommandList;
 
-    QWidget* mBroadcaster;
+    QPointer<QWidget> mBroadcaster;
 };
 
 KDE_EXPORT extern SensorManager* SensorMgr;
