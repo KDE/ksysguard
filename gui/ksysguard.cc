@@ -134,7 +134,7 @@ TopLevel::TopLevel()
   mQuitAction = NULL;
 
   mMonitorRemoteAction = actionCollection()->addAction( "connect_host" );
-  mMonitorRemoteAction->setIcon( KIcon("connection-established") );
+  mMonitorRemoteAction->setIcon( KIcon("network-connect") );
   connect(mMonitorRemoteAction, SIGNAL(triggered(bool)), SLOT( connectHost() ));
 
   mConfigureSheetAction = actionCollection()->addAction( "configure_sheet" );
