@@ -71,6 +71,11 @@ void SensorManager::retranslate()
   mDict.insert( QLatin1String( "used" ), i18n( "Used Memory" ) );
   mDict.insert( QLatin1String( "application" ), i18n( "Application Memory" ) );
   mDict.insert( QLatin1String( "free" ), i18n( "Free Memory" ) );
+  mDict.insert( QLatin1String( "active" ), i18n( "Active Memory" ) );
+  mDict.insert( QLatin1String( "inactive" ), i18n( "Inactive Memory" ) );
+  mDict.insert( QLatin1String( "wired" ), i18n( "Wired Memory" ) );
+  mDict.insert( QLatin1String( "execpages" ), i18n( "Exec Pages" ) );
+  mDict.insert( QLatin1String( "filepages" ), i18n( "File Pages" ) );
   mDict.insert( QLatin1String( "pscount" ), i18n( "Process Count" ) );
   mDict.insert( QLatin1String( "ps" ), i18n( "Process Controller" ) );
   mDict.insert( QLatin1String( "disk" ), i18n( "Disk Throughput" ) );
