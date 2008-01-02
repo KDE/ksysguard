@@ -145,6 +145,7 @@ void initLmSensors( struct SensorModul* sm )
             free( p->fullName );
             free( p );
           }
+          free( label );
         }
       }
     }
@@ -180,7 +181,7 @@ void initLmSensors( struct SensorModul* sm )
     while ( ( sfd = sensors_get_all_features( *scn, &nr1, &nr2 ) ) != 0 ) {
       if ( sfd->mapping == SENSORS_NO_MAPPING && sfd->mode & SENSORS_MODE_R /* readable feature */) {
         LMSENSOR* p;
-        char* label;
+        char* label=NULL;
 
         if(sensors_get_label( *scn, sfd->number, &label ) != 0)
 		continue; /*error*/
@@ -205,6 +206,7 @@ void initLmSensors( struct SensorModul* sm )
           free( p->fullName );
           free( p );
         }
+        free( label );
       }
     }
   }
