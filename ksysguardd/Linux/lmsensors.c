@@ -33,6 +33,11 @@
 
 #ifdef HAVE_LMSENSORS
 #include <sensors/sensors.h>
+
+#ifndef SENSORS_API_VERSION
+#define SENSORS_API_VERSION 0x000
+#endif
+
 #define BUFFER_SIZE_LMSEN 300
 typedef struct
 {
