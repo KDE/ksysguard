@@ -92,24 +92,9 @@ static const char *chipName(const sensors_chip_name *chip) {
 }
 
 #if SENSORS_API_VERSION & 0x400
-const char *getSensorValueType( const sensors_subfeature *sbf )
-{
-    switch (sbf->type) {
-    case SENSORS_SUBFEATURE_IN_BEEP:
-    case SENSORS_SUBFEATURE_FAN_BEEP:
-    case SENSORS_SUBFEATURE_TEMP_BEEP:
-    case SENSORS_SUBFEATURE_BEEP_ENABLE:        
-        return "bool";
-    default:
-        return "float";
-    }
-    return NULL;
-}
-
 void initLmSensors( struct SensorModul* sm )
 {
   const sensors_chip_name* scn;
-  char buffer[BUFFER_SIZE_LMSEN];
   int nr = 0;
 
   if ( sensors_init( NULL ) ) {
@@ -119,35 +104,66 @@ void initLmSensors( struct SensorModul* sm )
 
   LmSensors = new_ctnr();
   while ( ( scn = sensors_get_detected_chips( NULL, &nr ) ) != NULL ) {
-    int nr1, nr2;
+    int nr1 = 0;
     const sensors_feature* sf;
-    nr1 = 0;
+
     while ( ( sf = sensors_get_features( scn, &nr1 ) ) != 0 ) {
-      nr2 = 0;
       const sensors_subfeature *ssubf;
-      while ( ( ssubf = sensors_get_all_subfeatures( scn, sf, &nr2 ) ) != 0 ) {
-        if ( ssubf->flags & SENSORS_MODE_R /* readable feature */) {
-          LMSENSOR* p;
-
-          p = (LMSENSOR*)malloc( sizeof( LMSENSOR ) );
-
-          snprintf( buffer, BUFFER_SIZE_LMSEN, "lmsensors/%s/%s", chipName(scn), ssubf->name );
-
-          p->fullName = strndup(buffer, BUFFER_SIZE_LMSEN);
-
-          p->scn = scn;
-          p->sf = sf;
-          p->sfd = ssubf;
-          if ( search_ctnr( LmSensors, sensorCmp, p ) < 0 ) {
-            push_ctnr( LmSensors, p );
-            registerMonitor( p->fullName, getSensorValueType(ssubf), printLmSensor, printLmSensorInfo, sm );
-          } else {
-            free( p->fullName );
-            free( p );
-          }
-          free( label );
-        }
+      LMSENSOR *p;
+      char *s, *label;
+      
+      switch( sf->type )
+      {
+        case SENSORS_FEATURE_IN:
+          ssubf = sensors_get_subfeature( scn, sf,
+                                          SENSORS_SUBFEATURE_IN_INPUT );
+          break;
+    
+        case SENSORS_FEATURE_FAN:
+          ssubf = sensors_get_subfeature( scn, sf,
+                                          SENSORS_SUBFEATURE_FAN_INPUT );
+          break;
+    
+        case SENSORS_FEATURE_TEMP:
+          ssubf = sensors_get_subfeature( scn, sf,
+                                          SENSORS_SUBFEATURE_TEMP_INPUT );
+          break;
+        default:
+            ssubf = NULL;          
       }
+      
+      if ( !ssubf )
+        continue;
+
+      label = sensors_get_label( scn, sf );
+      p = (LMSENSOR*)malloc( sizeof( LMSENSOR ) );
+      p->fullName = (char*)malloc( strlen( "lmsensors/" ) +
+                                   strlen( scn->prefix ) + 1 +
+                                   strlen( label ) + 1 );
+      sprintf( p->fullName, "lmsensors/%s/%s", scn->prefix, label );
+
+      /* Make sure that name contains only proper characters. */
+      for ( s = p->fullName; *s; s++ )
+        if ( *s == ' ' )
+          *s = '_';
+
+      p->scn = scn;
+      p->sf = sf;
+      p->sfd = ssubf;
+
+      /* Note a name collision should never happen with the lm_sensors-3x code,
+         but it does in the case of k8temp, when there are 2 identical labeled
+         sensors per CPU. This are really 2 distinct sensors measuring the
+         same thing, but fullName must be unique so we just drop the second
+         sensor */
+      if ( search_ctnr( LmSensors, sensorCmp, p ) < 0 ) {
+        push_ctnr( LmSensors, p );
+        registerMonitor( p->fullName, "float", printLmSensor, printLmSensorInfo, sm );
+      } else {
+        free( p->fullName );
+        free( p );
+      }
+      free( label );
     }
   }
   bsort_ctnr( LmSensors, sensorCmp );
@@ -185,6 +201,8 @@ void initLmSensors( struct SensorModul* sm )
 
         if(sensors_get_label( *scn, sfd->number, &label ) != 0)
 		continue; /*error*/
+        else
+		free( label );
 	if(sensors_get_ignored( *scn, sfd->number) != 1 )
 		continue; /* 1 for not ignored, 0 for ignore,  <0 for error */
 	double result;
@@ -206,7 +224,6 @@ void initLmSensors( struct SensorModul* sm )
           free( p->fullName );
           free( p );
         }
-        free( label );
       }
     }
   }
