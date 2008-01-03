@@ -37,6 +37,12 @@
 #ifndef SENSORS_API_VERSION
 #define SENSORS_API_VERSION 0x000
 #endif
+#ifndef SENSORS_CHIP_NAME_BUS_PCI
+#define SENSORS_CHIP_NAME_BUS_PCI -5
+#endif
+#ifndef SENSORS_CHIP_NAME_BUS_ISA
+#define SENSORS_CHIP_NAME_BUS_ISA -1
+#endif
 
 #define BUFFER_SIZE_LMSEN 300
 typedef struct
