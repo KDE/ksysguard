@@ -83,8 +83,6 @@ TopLevel::TopLevel()
   QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportScriptableSlots);
   mTimerId = -1;
 
-  setWindowIcon(KIcon("utilities-system-monitor"));
-
   mSplitter = new QSplitter( this );
   mSplitter->setOrientation( Qt::Horizontal );
   mSplitter->setOpaqueResize( KGlobalSettings::opaqueResize() );
@@ -560,7 +558,7 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
   KCmdLineArgs::addCmdLineOptions( options );
   // initialize KDE application
   KApplication *app = new KApplication;
-
+  QApplication::setWindowIcon(KIcon("utilities-system-monitor"));
 
   KSGRD::SensorMgr = new KSGRD::SensorManager();
   KSGRD::Style = new KSGRD::StyleEngine();
