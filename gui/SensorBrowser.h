@@ -77,6 +77,7 @@ class SensorBrowserModel : public QAbstractItemModel, private KSGRD::SensorClien
 
   private:
     virtual void answerReceived( int id, const QList<QByteArray>& );
+    void removeEmptyParentTreeBranches(int hostId, int id, int parentid);
 
     int mIdCount; ///The lowest id that has not been used yet
     QMap<int, HostInfo*> mHostInfoMap; ///So each host has a number

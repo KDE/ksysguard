@@ -217,9 +217,6 @@ int SensorBrowserModel::makeSensor(HostInfo *hostInfo, int parentId, const QStri
 
 void SensorBrowserModel::removeSensor(HostInfo *hostInfo, int parentId, const QString &sensorName) {
 //sensorName is the full version.  e.g.  mem/free
-//name is the short version. e.g. free
-//sensortype is e.g. Integer
-  kDebug() << "removing " << sensorName;
   QList<int> children = mTreeMap.value(parentId);
   int idCount = -1;
   int index;
@@ -236,22 +233,54 @@ void SensorBrowserModel::removeSensor(HostInfo *hostInfo, int parentId, const QS
     return;
   }
   QModelIndex parentModelIndex;
+  int parentsParentId = -1;
   if(hostInfo->id() == parentId) {
     parentModelIndex = createIndex(mHostInfoMap.keys().indexOf(parentId), 0 , parentId);
   } else {
-    int parentsParentId = mParentsTreeMap.value(parentId);
+    parentsParentId = mParentsTreeMap.value(parentId);
     parentModelIndex = createIndex(mTreeMap.value(parentsParentId).indexOf(parentId), 0, parentId);
   }
   Q_ASSERT(parentModelIndex.isValid());
   QList<int> &parentTreemap = mTreeMap[parentId];
   beginRemoveRows( parentModelIndex, index, index );
-    kDebug() << "Now removing " << sensorName << " with idCount " << idCount << " and index " << index << " parent index " << parentModelIndex;
     parentTreemap.removeAll(idCount);
     mParentsTreeMap.remove(idCount);
     SensorInfo *sensorInfo = mSensorInfoMap.take(idCount);
     delete sensorInfo;
     mHostSensorsMap[hostInfo->id()].remove(sensorName);
   endRemoveRows();
+
+  if(parentsParentId != -1)
+    removeEmptyParentTreeBranches(hostInfo->id(), parentId, parentsParentId);
+}
+void SensorBrowserModel::removeEmptyParentTreeBranches(int hostId, int id, int parentId) {
+  if(hostId == id)
+    return;  //We don't want to remove hosts
+
+  if(!mTreeMap.value(id).isEmpty()) return; // We should have no children
+
+  QModelIndex parentModelIndex;
+  int parentsParentId = -1;
+  if(hostId == parentId) {
+    parentModelIndex = createIndex(mHostInfoMap.keys().indexOf(parentId), 0 , parentId);
+  } else {
+    parentsParentId = mParentsTreeMap.value(parentId);
+    parentModelIndex = createIndex(mTreeMap.value(parentsParentId).indexOf(parentId), 0, parentId);
+  }
+
+  int index = mTreeMap.value(parentId).indexOf(id);
+  int idCount = mTreeMap.value(parentId).at(index);
+
+  QList<int> &parentTreemap = mTreeMap[parentId];
+  beginRemoveRows( parentModelIndex, index, index );
+    parentTreemap.removeAll(idCount);
+    mParentsTreeMap.remove(idCount);
+    mTreeMap.remove(idCount);
+    mTreeNodeNames.remove(idCount);
+  endRemoveRows();
+
+  if(parentsParentId != -1)
+    removeEmptyParentTreeBranches(hostId, parentId, parentsParentId);
 }
 int SensorBrowserModel::makeTreeBranch(int parentId, const QString &name) {
   QList<int> children = mTreeMap.value(parentId);
