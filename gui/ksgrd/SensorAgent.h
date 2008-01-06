@@ -96,7 +96,6 @@ class KDE_EXPORT SensorAgent : public QObject
     virtual bool writeMsg( const char *msg, int len ) = 0;
     QString mReasonForOffline;
 
-    bool mFoundError;
     QQueue< SensorRequest* > mInputFIFO;
     QQueue< SensorRequest* > mProcessingFIFO;
     QList<QByteArray> mAnswerBuffer;  ///A single reply can be on multiple lines.  

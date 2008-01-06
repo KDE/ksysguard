@@ -61,6 +61,7 @@ class SensorBrowserModel : public QAbstractItemModel, private KSGRD::SensorClien
     bool hasSensor(int hostId, const QString &sensor) const { return mHostSensorsMap.value(hostId).contains(sensor);} 
     int makeTreeBranch(int parentId, const QString &name);
     int makeSensor(HostInfo *hostInfo, int parentId, const QString &sensorName, const QString &name, const QString &sensorType);
+    void removeSensor(HostInfo *hostInfo, int parentId, const QString &sensorName);
     void addHost(KSGRD::SensorAgent *sensorAgent, const QString &hostName);
     void clear();
     void disconnectHost(uint id);
@@ -71,8 +72,10 @@ class SensorBrowserModel : public QAbstractItemModel, private KSGRD::SensorClien
     void retranslate();  /// Retranslate the model
   Q_SIGNALS:
     void sensorsAddedToHost(const QModelIndex &index );
-  private:
+  public Q_SLOTS:
+    void update();
 
+  private:
     virtual void answerReceived( int id, const QList<QByteArray>& );
 
     int mIdCount; ///The lowest id that has not been used yet
@@ -105,7 +108,6 @@ class SensorBrowserWidget : public QTreeView
   public Q_SLOTS:
     void disconnect();
     void hostReconfigured( const QString &hostName );
-    void update();
 
   private:
     void retranslateUi();

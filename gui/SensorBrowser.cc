@@ -183,7 +183,6 @@ SensorInfo *SensorBrowserModel::getSensorInfo(QModelIndex index) const
   if(!index.isValid()) return NULL;
   return mSensorInfoMap.value(index.internalId());
 }
-
 int SensorBrowserModel::makeSensor(HostInfo *hostInfo, int parentId, const QString &sensorName, const QString &name, const QString &sensorType) {
 //sensorName is the full version.  e.g.  mem/free
 //name is the short version. e.g. free
@@ -214,6 +213,45 @@ int SensorBrowserModel::makeSensor(HostInfo *hostInfo, int parentId, const QStri
     mIdCount++;
   endInsertRows();
   return mIdCount-1;  //NOTE mIdCount is next available number. Se we use it, then increment it, but return the number of the one that we use  
+}
+
+void SensorBrowserModel::removeSensor(HostInfo *hostInfo, int parentId, const QString &sensorName) {
+//sensorName is the full version.  e.g.  mem/free
+//name is the short version. e.g. free
+//sensortype is e.g. Integer
+  kDebug() << "removing " << sensorName;
+  QList<int> children = mTreeMap.value(parentId);
+  int idCount = -1;
+  int index;
+  for(index=0; index<children.size(); index++)
+    if(mSensorInfoMap.contains(children[index])) {
+      Q_ASSERT(mSensorInfoMap.value(children[index]));
+      if(mSensorInfoMap.value(children[index])->name() == sensorName) {
+        idCount = children[index];
+	break;
+      }
+    }
+  if(idCount == -1) {
+    kDebug(1215) << "removeSensor called for sensor that doesn't exist in the tree: " << sensorName ;
+    return;
+  }
+  QModelIndex parentModelIndex;
+  if(hostInfo->id() == parentId) {
+    parentModelIndex = createIndex(mHostInfoMap.keys().indexOf(parentId), 0 , parentId);
+  } else {
+    int parentsParentId = mParentsTreeMap.value(parentId);
+    parentModelIndex = createIndex(mTreeMap.value(parentsParentId).indexOf(parentId), 0, parentId);
+  }
+  Q_ASSERT(parentModelIndex.isValid());
+  QList<int> &parentTreemap = mTreeMap[parentId];
+  beginRemoveRows( parentModelIndex, index, index );
+    kDebug() << "Now removing " << sensorName << " with idCount " << idCount << " and index " << index << " parent index " << parentModelIndex;
+    parentTreemap.removeAll(idCount);
+    mParentsTreeMap.remove(idCount);
+    SensorInfo *sensorInfo = mSensorInfoMap.take(idCount);
+    delete sensorInfo;
+    mHostSensorsMap[hostInfo->id()].remove(sensorName);
+  endRemoveRows();
 }
 int SensorBrowserModel::makeTreeBranch(int parentId, const QString &name) {
   QList<int> children = mTreeMap.value(parentId);
@@ -250,23 +288,29 @@ void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&an
      cpu/system/user integer
      ps       table
   */
-
   HostInfo *hostInfo = getHostInfo(hostId);
   if(!hostInfo) {
     kDebug(1215) << "Invalid hostId " << hostId ;
     return;
   }  
+  /* We keep a copy of the previous sensor names so that we can detect what sensors have been removed */
+  QHash<QString,bool> oldSensorNames = mHostSensorsMap.value(hostId);
   for ( int i = 0; i < answer.count(); ++i ) {
     if ( answer[ i ].isEmpty() )
-      break;
+      continue;
 
     QList<QByteArray> words = answer[ i ].split('\t');
+    if(words.size() != 2) {
+      kDebug(1215) << "Invalid data " << answer[i];
+      continue;  /* Something wrong with this line of data */
+    }
     QString sensorName = QString::fromUtf8(words[ 0 ]);
     QString sensorType = QString::fromUtf8(words[ 1 ]);
-
-    if ( hasSensor(hostId, sensorName))
-      break;
-    if(sensorName.isEmpty()) break;
+    oldSensorNames.remove(sensorName);  /* This sensor has not been removed */
+    if ( hasSensor(hostId, sensorName)) {
+      continue;
+    }
+    if(sensorName.isEmpty()) continue;
 
     if(sensorType == "string") continue;
 
@@ -285,7 +329,21 @@ void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&an
     QString name = KSGRD::SensorMgr->translateSensorPath( absolutePath[ absolutePath.size()-1] );
     makeSensor(hostInfo, currentNodeId, sensorName, name, sensorType);
   }
-  emit sensorsAddedToHost( createIndex( mHostInfoMap.keys().indexOf(hostId), 0, hostId ) )  ;
+  /* Now we have to remove sensors that were not found */
+  QHashIterator<QString, bool> it( oldSensorNames );
+  while ( it.hasNext() ) {
+    it.next();
+
+    int currentNodeId = hostId;  //Start from the host branch and work our way down the tree
+    QStringList absolutePath = it.key().split( '/' );
+    for ( int j = 0; j < absolutePath.count()-1; ++j ) {
+      // Localize the sensor name part by part.
+      QString name = KSGRD::SensorMgr->translateSensorPath( absolutePath[ j ] );
+      currentNodeId = makeTreeBranch(currentNodeId, name);
+    }
+    removeSensor(hostInfo, currentNodeId, it.key());
+  }
+  emit sensorsAddedToHost( createIndex( mHostInfoMap.keys().indexOf(hostId), 0, hostId ) );
 }
 
 QModelIndex SensorBrowserModel::parent ( const QModelIndex & index ) const { //virtual
@@ -322,8 +380,8 @@ Qt::ItemFlags SensorBrowserModel::flags ( const QModelIndex & index ) const {  /
 SensorBrowserWidget::SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager* sm )
   : QTreeView( parent ), mSensorManager( sm )
 {
-  connect( mSensorManager, SIGNAL( update() ), SLOT( update() ) );
   setModel(&mSensorBrowserModel);
+  connect( mSensorManager, SIGNAL( update() ), &mSensorBrowserModel, SLOT( update() ) );
 
 //  setRootIsDecorated( false );
   setDragDropMode(QAbstractItemView::DragOnly);
@@ -331,7 +389,14 @@ SensorBrowserWidget::SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager*
   //setMinimumWidth( 1 );
   retranslateUi();
   connect( &mSensorBrowserModel, SIGNAL(sensorsAddedToHost(const QModelIndex&)), this, SLOT(expand(const QModelIndex&)));
-  update();
+
+  KSGRD::SensorManagerIterator it( mSensorManager );
+  while ( it.hasNext() ) {
+    KSGRD::SensorAgent* sensorAgent = it.next().value();
+    QString hostName = mSensorManager->hostName( sensorAgent );
+    mSensorBrowserModel.addHost(sensorAgent, hostName);
+    kDebug() << "Adding host " << hostName;
+  }
 }
 
 SensorBrowserWidget::~SensorBrowserWidget()
@@ -356,7 +421,7 @@ void SensorBrowserWidget::changeEvent( QEvent * event )
   if (event->type() == QEvent::LanguageChange) {
     retranslateUi();
     mSensorBrowserModel.retranslate();
-    update();
+    mSensorBrowserModel.update();
   }
   QWidget::changeEvent(event);
 }
@@ -410,18 +475,19 @@ void SensorBrowserModel::addHost(KSGRD::SensorAgent *sensorAgent, const QString 
     mHostSensorsMap.insert(mIdCount, QHash<QString, bool>());
     mIdCount++;
   endInsertRows();
+  kDebug() << "Adding host " << hostName << "and sending monitors";
   hostInfo->sensorAgent()->sendRequest( "monitors", this, mIdCount-1 );
 }
 
-void SensorBrowserWidget::update()
+void SensorBrowserModel::update()
 {
-  mSensorBrowserModel.clear();
-
-  KSGRD::SensorManagerIterator it( mSensorManager );
+  kDebug() <<  "Updating";
+  QMapIterator<int, HostInfo*> it( mHostInfoMap );
   while ( it.hasNext() ) {
-    KSGRD::SensorAgent* sensorAgent = it.next().value();
-    QString hostName = mSensorManager->hostName( sensorAgent );
-    mSensorBrowserModel.addHost(sensorAgent, hostName);
+    it.next();
+    KSGRD::SensorAgent* sensorAgent = it.value()->sensorAgent();
+    int id = it.key();
+    sensorAgent->sendRequest( "monitors", this, id );
   }
 }
 QMimeData * SensorBrowserModel::mimeData ( const QModelIndexList & indexes ) const { //virtual 
