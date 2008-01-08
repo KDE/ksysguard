@@ -44,6 +44,7 @@ typedef struct {
 } DiskInfo;
 
 static CONTAINER DiskStatList = 0;
+static CONTAINER OldDiskStatList = 0;
 static struct SensorModul* DiskStatSM;
 char *getMntPnt( const char* cmd );
 
@@ -63,62 +64,87 @@ char *getMntPnt( const char* cmd )
 
 /* ----------------------------- public part ------------------------------- */
 
+static char monitor[ 1024 ];
+static void registerMonitors(const char* mntpnt) {
+    snprintf( monitor, sizeof( monitor ), "partitions%s/usedspace", mntpnt );
+    registerMonitor( monitor, "integer", printDiskStatUsed, printDiskStatUsedInfo, DiskStatSM );
+    snprintf( monitor, sizeof( monitor ), "partitions%s/freespace", mntpnt );
+    registerMonitor( monitor, "integer", printDiskStatFree, printDiskStatFreeInfo, DiskStatSM );
+    snprintf( monitor, sizeof( monitor ), "partitions%s/filllevel", mntpnt );
+    registerMonitor( monitor, "integer", printDiskStatPercent, printDiskStatPercentInfo, DiskStatSM );
+}
+static void removeMonitors(const char* mntpnt) {
+    snprintf( monitor, sizeof( monitor ), "partitions%s/usedspace", mntpnt );
+    removeMonitor( monitor );
+    snprintf( monitor, sizeof( monitor ), "partitions%s/freespace", mntpnt );
+    removeMonitor( monitor );
+    snprintf( monitor, sizeof( monitor ), "partitions%s/filllevel", mntpnt );
+    removeMonitor( monitor );
+}
+
 void initDiskStat( struct SensorModul* sm )
 {
-  char monitor[ 1024 ];
   DiskInfo* disk_info;
 
-  DiskStatList = new_ctnr();
+  DiskStatList = NULL;
+  OldDiskStatList = NULL;
   DiskStatSM = sm;
-
   if ( updateDiskStat() < 0 )
     return;
 
   registerMonitor( "partitions/list", "listview", printDiskStat, printDiskStatInfo, sm );
 
   for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
-    snprintf( monitor, sizeof( monitor ), "partitions%s/usedspace", disk_info->mntpnt );
-    registerMonitor( monitor, "integer", printDiskStatUsed, printDiskStatUsedInfo, DiskStatSM );
-    snprintf( monitor, sizeof( monitor ), "partitions%s/freespace", disk_info->mntpnt );
-    registerMonitor( monitor, "integer", printDiskStatFree, printDiskStatFreeInfo, DiskStatSM );
-    snprintf( monitor, sizeof( monitor ), "partitions%s/filllevel", disk_info->mntpnt );
-    registerMonitor( monitor, "integer", printDiskStatPercent, printDiskStatPercentInfo, DiskStatSM );
+    registerMonitors(disk_info->mntpnt);
   }
 }
 
 void exitDiskStat( void )
 {
-  char monitor[ 1024 ];
   DiskInfo* disk_info;
 
   removeMonitor( "partitions/list" );
 
   for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
-    snprintf( monitor, sizeof( monitor ), "partitions%s/usedspace", disk_info->mntpnt );
-    removeMonitor( monitor );
-    snprintf( monitor, sizeof( monitor ), "partitions%s/freespace", disk_info->mntpnt );
-    removeMonitor( monitor );
-    snprintf( monitor, sizeof( monitor ), "partitions%s/filllevel", disk_info->mntpnt );
-    removeMonitor( monitor );
+    removeMonitors(disk_info->mntpnt);
   }
 
   destr_ctnr( DiskStatList, free );
+  if(OldDiskStatList)
+    destr_ctnr( OldDiskStatList, free );
 }
 
 void checkDiskStat( void )
 {
-  struct stat mtab_info;
-  static off_t mtab_size = 0;
-
-  stat( "/etc/mtab", &mtab_info );
-  if ( !mtab_size )
-    mtab_size = mtab_info.st_size;
-
-  if ( mtab_info.st_size != mtab_size ) {
-    exitDiskStat();
-    initDiskStat( DiskStatSM );
-    mtab_size = mtab_info.st_size;
+  updateDiskStat();
+  DiskInfo* disk_info_new;
+  DiskInfo* disk_info_old;
+  int changed = 0;
+  for ( disk_info_new = first_ctnr( DiskStatList ); disk_info_new; disk_info_new = next_ctnr( DiskStatList ) ) {
+    int found = 0;
+    for ( disk_info_old = first_ctnr( OldDiskStatList ); disk_info_old; disk_info_old = next_ctnr( OldDiskStatList ) ) {
+      if(strcmp(disk_info_new->mntpnt, disk_info_old->mntpnt) == 0) {
+        free( remove_ctnr( OldDiskStatList ) );
+	found = 1;
+        continue;
+      }
+    }
+    if(!found) {
+      /* register all the devices that did not exist before*/
+      registerMonitors(disk_info_new->mntpnt);
+      changed++;
+    }
   }
+  /*Now remove all the devices that do not exist anymore*/
+  for ( disk_info_old = first_ctnr( OldDiskStatList ); disk_info_old; disk_info_old = next_ctnr( OldDiskStatList ) ) {
+    removeMonitors(disk_info_old->mntpnt);
+    changed++;
+  }
+  destr_ctnr( OldDiskStatList, free );
+  OldDiskStatList = NULL;
+  updateDiskStat();
+  if(changed)
+      print_error( "RECONFIGURE\n" ); /*Let ksysguard know that we've added a sensor*/
 }
 
 int updateDiskStat( void )
@@ -133,8 +159,12 @@ int updateDiskStat( void )
     print_error( "Cannot open \'/etc/mtab\'!\n" );
     return -1;
   }
-
-  empty_ctnr(DiskStatList);
+  if(OldDiskStatList == 0) {
+    OldDiskStatList = DiskStatList;
+    DiskStatList = new_ctnr();
+  }
+  else	  
+    empty_ctnr(DiskStatList);
 
   while ( ( mnt_info = getmntent( fh ) ) != NULL ) {
     if ( statfs( mnt_info->mnt_dir, &fs_info ) < 0 )

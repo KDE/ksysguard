@@ -85,7 +85,7 @@ typedef struct {
         int  devnum; 			/* Raid array number.  e.g. if ArrayName is "md0", then devnum=0 */
         bool ArrayActive; 		/* Whether this raid is active */
         char *level;  			/* Raid1, Raid2, etc */
-        char *pattern;			/* U or up, _ for down */
+        char *pattern;			/* U for up, _ for down */
         int  ResyncingPercent; 		/* -1 if not resyncing, otherwise between 0 to 100 */
         bool IsCurrentlyReSyncing; 	/* True if currently resyncing - */
 	Disks *first_disk;		/* A linked list of hard disks */
