@@ -46,10 +46,7 @@
 
 #include "ksysguardd.h"
 
-#ifdef OSTYPE_Linux
-#define USE_INOTIFY
-#endif
-#ifdef USE_INOTIFY
+#ifdef HAVE_SYS_INOTIFY_H
 #include <sys/inotify.h>
 #endif
    
@@ -556,7 +553,7 @@ char* escapeString( char* string ) {
   return result;
 }
 
-#ifdef USE_INOTIFY
+#ifdef HAVE_SYS_INOTIFY_H
 static void setupInotify(int *mtabfd) {
   (*mtabfd) = inotify_init ();
   if ((*mtabfd) >= 0) {
@@ -617,7 +614,7 @@ int main( int argc, char* argv[] )
     ServerSocket = 0;
   }
 
-#ifdef USE_INOTIFY
+#ifdef HAVE_SYS_INOTIFY_H
   /* Monitor mtab for changes */
   int mtabfd = 0;
   setupInotify(&mtabfd);
@@ -625,7 +622,7 @@ int main( int argc, char* argv[] )
 
   while ( !QuitApp ) {
     int highestFD = setupSelect( &fds );
-#ifdef USE_INOTIFY
+#ifdef HAVE_SYS_INOTIFY_H
     if(mtabfd >= 0)
       FD_SET( mtabfd, &fds);
     if(mtabfd > highestFD) highestFD = mtabfd;
@@ -634,7 +631,7 @@ int main( int argc, char* argv[] )
     
     int ret = select( highestFD + 1, &fds, NULL, NULL, NULL );
     if(ret >= 0) {
-#ifdef USE_INOTIFY
+#ifdef HAVE_SYS_INOTIFY_H
       if(mtabfd >= 0 && FD_ISSET(mtabfd, &fds)) {
 	close(mtabfd);
 	setupInotify(&mtabfd);
