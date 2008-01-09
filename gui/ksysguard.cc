@@ -491,7 +491,7 @@ void TopLevel::setSwapInfo( long used, long free, const QString & )
   else {
     msg = i18n( " Swap: %1 / %2 " ,
                 KGlobal::locale()->formatByteSize( used*1024 ),
-                KGlobal::locale()->formatByteSize( free*1024) );
+                KGlobal::locale()->formatByteSize( (free+used)*1024) );
   }
 
   sbSwapTotal->setText( msg );
