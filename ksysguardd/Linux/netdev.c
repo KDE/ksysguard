@@ -418,6 +418,7 @@ int updateNetDev( void )
   if ( ( fd = open( "/proc/net/wireless", O_RDONLY ) ) < 0 ) {
     /* /proc/net/wireless may not exist on some machines. */
     NetDevWifiBuf[0]='\0';
+    return -1;
   }
 
   if ( ( n = read( fd, NetDevWifiBuf, NETDEVBUFSIZE - 1 ) ) == NETDEVBUFSIZE - 1 ) {
