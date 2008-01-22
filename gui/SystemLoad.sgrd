@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE KSysGuardWorkSheet>
-<WorkSheet title="Sensor Load" interval="2" locked="1" rows="2" columns="2" >
+<WorkSheet title="System Load" interval="2" locked="1" rows="2" columns="2" >
  <host port="-1" command="ksysguardd" shell="" name="localhost" />
  <display svgBackground="widgets/plot-background" bColor="4281413681" title="CPU Load" hScale="3" hCount="5" fontColor="4294967295" max="100" vLines="0" hColor="838860800" pause="0" labels="1" autoRange="0" min="0" vDistance="30" globalUpdate="1" fontSize="8" vScroll="0" column="0" topBar="1" unit="" vColor="838860800" hLines="1" showUnit="1" class="FancyPlotter" row="0" >
   <beam sensorName="cpu/nice" sensorType="float" hostName="localhost" color="872414995" />  
