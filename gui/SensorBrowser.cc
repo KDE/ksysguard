@@ -84,7 +84,7 @@ QVariant SensorBrowserModel::data( const QModelIndex & index, int role) const { 
 	KSGRD::SensorAgent *agent;
 	if(host != NULL && (agent = host->sensorAgent())) {
 	  if(agent->daemonOnLine())
-            return KIcon("system");
+            return KIcon("computer");
 	  else
             return KIcon("dialog-warning");
 	} else
