@@ -178,29 +178,6 @@ static int createLockFile()
   return 0;
 }
 
-void signalHandler( int sig )
-{
-  switch ( sig ) {
-    case SIGQUIT:
-    case SIGTERM:
-      /* Not really anything to do here at the moment. */
-      exit( 0 );
-      break;
-  }
-}
-
-static void installSignalHandler( void )
-{
-  struct sigaction Action;
-
-  Action.sa_handler = signalHandler;
-  sigemptyset( &Action.sa_mask );
-  /* make sure that interrupted system calls are restarted. */
-  Action.sa_flags = SA_RESTART;
-  sigaction( SIGTERM, &Action, 0 );
-  sigaction( SIGQUIT, &Action, 0 );
-}
-
 static void dropPrivileges( void )
 {
   struct passwd *pwd;
@@ -236,7 +213,6 @@ void makeDaemon( void )
         _exit( 1 );
 
       dropPrivileges();
-      installSignalHandler();
       
       fd = open("/dev/null", O_RDWR, 0); 
       if (fd != -1) {
