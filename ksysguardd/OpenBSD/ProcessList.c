@@ -20,8 +20,6 @@
 
 */
 
-#include <config.h>
-
 #include <ctype.h>
 #include <dirent.h>
 #include <pwd.h>
