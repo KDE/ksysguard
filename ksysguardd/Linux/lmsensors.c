@@ -93,11 +93,11 @@ static const char *chipName(const sensors_chip_name *chip) {
   sensors_snprintf_chip_name(buffer, sizeof(buffer), chip);
 #else /* SENSORS_API_VERSION & 0x400 */
   if (chip->bus == SENSORS_CHIP_NAME_BUS_ISA)
-    sprintf (buffer, "%s-isa-%04x", chip->prefix, chip->addr);
+    snprintf (buffer, sizeof(buffer), "%s-isa-%04x", chip->prefix, chip->addr);
   else if (chip->bus == SENSORS_CHIP_NAME_BUS_PCI)
-    sprintf (buffer, "%s-pci-%04x", chip->prefix, chip->addr);
+    snprintf (buffer, sizeof(buffer), "%s-pci-%04x", chip->prefix, chip->addr);
   else
-    sprintf (buffer, "%s-i2c-%d-%02x", chip->prefix, chip->bus, chip->addr);
+    snprintf (buffer, sizeof(buffer), "%s-i2c-%d-%02x", chip->prefix, chip->bus, chip->addr);
 #endif /* SENSORS_API_VERSION & 0x400 */
   return buffer;
 }
@@ -122,27 +122,27 @@ void initLmSensors( struct SensorModul* sm )
       const sensors_subfeature *ssubf;
       LMSENSOR *p;
       char *s, *label;
-      
+
       switch( sf->type )
       {
         case SENSORS_FEATURE_IN:
           ssubf = sensors_get_subfeature( scn, sf,
                                           SENSORS_SUBFEATURE_IN_INPUT );
           break;
-    
+
         case SENSORS_FEATURE_FAN:
           ssubf = sensors_get_subfeature( scn, sf,
                                           SENSORS_SUBFEATURE_FAN_INPUT );
           break;
-    
+
         case SENSORS_FEATURE_TEMP:
           ssubf = sensors_get_subfeature( scn, sf,
                                           SENSORS_SUBFEATURE_TEMP_INPUT );
           break;
         default:
-            ssubf = NULL;          
+            ssubf = NULL;
       }
-      
+
       if ( !ssubf )
         continue;
 
@@ -151,7 +151,7 @@ void initLmSensors( struct SensorModul* sm )
       p->fullName = (char*)malloc( strlen( "lmsensors/" ) +
                                    strlen( scn->prefix ) + 1 +
                                    strlen( label ) + 1 );
-      sprintf( p->fullName, "lmsensors/%s/%s", scn->prefix, label );
+      snprintf( p->fullName, BUFFER_SIZE_LMSEN, "lmsensors/%s/%s", scn->prefix, label );
 
       /* Make sure that name contains only proper characters. */
       for ( s = p->fullName; *s; s++ )
