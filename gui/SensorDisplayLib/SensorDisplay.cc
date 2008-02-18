@@ -135,7 +135,7 @@ void SensorDisplay::showContextMenu(const QPoint &pos)
     if ( action ) {
       switch ( action->data().toInt() ) {
         case 1:
-          KRun::run(*KService::serviceByDesktopName("ksysguard"), KUrl::List(), topLevelWidget());
+          KRun::run(*KService::serviceByDesktopName("ksysguard"), KUrl::List(), window());
           break;
         case 2:
           configureSettings();
