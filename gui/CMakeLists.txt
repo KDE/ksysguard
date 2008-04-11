@@ -57,10 +57,7 @@ kde4_add_kdeinit_executable(ksysguard ${ksysguard_KDEINIT_SRCS})
 target_link_libraries(kdeinit_ksysguard processui ${KDE4_KIO_LIBS} ksgrd plasma)
 
 install(TARGETS kdeinit_ksysguard ${INSTALL_TARGETS_DEFAULT_ARGS})
-
-target_link_libraries(ksysguard kdeinit_ksysguard plasma)
-
-install(TARGETS ksysguard DESTINATION ${BIN_INSTALL_DIR})
+install(TARGETS ksysguard         ${INSTALL_TARGETS_DEFAULT_ARGS})
 ########### next target ###############
 
 if(BUILD_KICKER)
