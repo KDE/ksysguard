@@ -108,7 +108,7 @@ void SensorSocketAgent::error( QAbstractSocket::SocketError id )
                            hostName() ) );
       break;
     case QAbstractSocket::NetworkError:
-      SensorMgr->notify( i18n( "An error occurred with the network (e.g., the network cable was accidentally plugged out) for host %1",
+      SensorMgr->notify( i18n( "An error occurred with the network (e.g. the network cable was accidentally plugged out) for host %1.",
                            hostName() ) );
       break;
     default:
