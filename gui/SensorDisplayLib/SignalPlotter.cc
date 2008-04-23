@@ -567,7 +567,8 @@ void KSignalPlotter::drawBackground(QPainter *p, int w, int h)
 
   Plasma::Svg *svgRenderer;
   if(!sSvgRenderer.contains(mSvgFilename)) {
-    svgRenderer = new Plasma::Svg(mSvgFilename, this);
+    svgRenderer = new Plasma::Svg(this);
+    svgRenderer->setImagePath(mSvgFilename);
     sSvgRenderer.insert(mSvgFilename, svgRenderer);
   } else {
     svgRenderer = sSvgRenderer[mSvgFilename];
