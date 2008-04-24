@@ -254,9 +254,8 @@ bool FancyPlotter::removeSensor( uint pos )
   }
 
   mPlotter->removeBeam( pos );
-  mBeams--;
+  --mBeams;
   KSGRD::SensorDisplay::removeSensor( pos );
-
   return true;
 }
 

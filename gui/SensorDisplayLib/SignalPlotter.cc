@@ -128,8 +128,11 @@ void KSignalPlotter::addSample( const QList<double>& sampleBuf )
     if(mSamples < 4)
       return;
   }
+  if(sampleBuf.count() != mBeamColors.count()) {
+	  kDebug(1215) << "Sample data discarded - contains wrong number of beams";
+	  return;
+  }
   mBeamData.prepend(sampleBuf);
-  Q_ASSERT(sampleBuf.count() == mBeamColors.count());
   if((unsigned int)mBeamData.size() > mSamples) {
     mBeamData.removeLast(); // we have too many.  Remove the last item
     if((unsigned int)mBeamData.size() > mSamples)
@@ -191,7 +194,9 @@ void KSignalPlotter::changeRange( double min, double max )
 void KSignalPlotter::removeBeam( uint pos )
 {
   if(pos >= (uint)mBeamColors.size()) return;
+  if(pos >= (uint)mBeamColorsDark.size()) return;
   mBeamColors.removeAt( pos );
+  mBeamColorsDark.removeAt(pos);
 
   QLinkedList< QList<double> >::Iterator i;
   for(i = mBeamData.begin(); i != mBeamData.end(); ++i) {
