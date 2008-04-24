@@ -575,8 +575,9 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
   // create top-level widget
   topLevel->readProperties( KConfigGroup( KGlobal::config(), "MainWindow" ) );
 
-  if ( app->isSessionRestored() )
-    topLevel->restore( 1 );
+  //There seems to be some serious bugs with the session restore code.  Disabling
+//  if ( app->isSessionRestored() )
+//    topLevel->restore( 1 );
 
   topLevel->show();
   KSGRD::SensorMgr->setBroadcaster( topLevel );  // SensorMgr uses a QPointer for toplevel, so it is okay if topLevel is deleted first
