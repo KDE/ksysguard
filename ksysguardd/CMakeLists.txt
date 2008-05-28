@@ -67,6 +67,6 @@ if( ${CMAKE_SYSTEM_NAME} MATCHES "SunOS" )
   target_link_libraries(ksysguardd socket nsl)
 endif( ${CMAKE_SYSTEM_NAME} MATCHES "SunOS" )
 
-install(TARGETS ksysguardd DESTINATION ${BIN_INSTALL_DIR})
+install(TARGETS ksysguardd ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 endif(X11_LIBRARY AND XEXT_LIBRARY)
