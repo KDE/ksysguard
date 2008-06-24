@@ -170,6 +170,7 @@ Comment[zh_TW]=搜尋樣式比對符合
 [Event/sensor_alarm]
 Name=Sensor Alarm
 Name[ca]=Alarma dels sensors
+Name[cs]=Alarm sensoru
 Name[de]=Sensor-Alarm
 Name[el]=Ειδοποίηση αισθητήρα
 Name[eo]=Sentil-alarmo
@@ -215,6 +216,7 @@ Comment=Sensor exceeded critical limit
 Comment[af]=Sensor oorskry krities beperk
 Comment[bn]=সেনসর বিপদসীমা ছাড়িয়ে গেছে
 Comment[ca]=El sensor ha excedit el límit crític
+Comment[cs]=Sensor překročil kritickou mez
 Comment[cy]=Aethpwyd dros gyfyngder critigol y synhwyrydd
 Comment[da]=Sensor gik ud over kritisk grænse
 Comment[de]=Sensor hat kritische Schwelle überschritten
