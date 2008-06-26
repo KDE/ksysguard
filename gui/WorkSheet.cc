@@ -120,7 +120,7 @@ bool WorkSheet::load( const QString &fileName )
   setUpdateInterval(interval);
 
   mTitle = element.attribute( "title");
-  mTranslatedTitle = i18n(mTitle.toLatin1());
+  mTranslatedTitle = i18n(mTitle.toUtf8());
   bool ok;
   mSharedSettings.locked = element.attribute( "locked" ).toUInt( &ok );
   if(!ok) mSharedSettings.locked = false;
