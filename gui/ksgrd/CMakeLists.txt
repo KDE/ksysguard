@@ -21,7 +21,7 @@ install(TARGETS ksgrd ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 ########### install files ###############
 
-install(FILES SensorAgent.h SensorClient.h SensorManager.h SensorShellAgent.h SensorSocketAgent.h DESTINATION ${INCLUDE_INSTALL_DIR}/ksgrd )
+install(FILES SensorAgent.h SensorClient.h SensorManager.h SensorShellAgent.h SensorSocketAgent.h DESTINATION ${INCLUDE_INSTALL_DIR}/ksgrd COMPONENT Devel)
 
 
 
