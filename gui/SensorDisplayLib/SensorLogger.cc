@@ -322,7 +322,8 @@ bool LogSensor::limitReached() const
 
 void LogSensor::timerOff()
 {
-  killTimer( mTimerID );
+  if ( mTimerID > 0 )
+    killTimer( mTimerID );
   mTimerID = NONE;
 }
 

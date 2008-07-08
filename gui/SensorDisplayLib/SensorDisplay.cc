@@ -85,7 +85,8 @@ SensorDisplay::~SensorDisplay()
   if ( SensorMgr != 0 )
     SensorMgr->disconnectClient( this );
 
-  killTimer( mTimerId );
+  if ( mTimerId > 0 )
+    killTimer( mTimerId );
 }
 
 void SensorDisplay::registerSensor( SensorProperties *sp )
