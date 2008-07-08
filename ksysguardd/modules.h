@@ -89,7 +89,7 @@
 #include "ProcessList.h"
 #endif /* OSTYPE_OpenBSD */
 
-#ifdef OSTYPE_Solaris
+#if defined(OSTYPE_Solaris) || defined(OSTYPE_SunOS)
 #include "LoadAvg.h"
 #include "Memory.h"
 #include "NetDev.h"
@@ -173,7 +173,7 @@ struct SensorModul SensorModulList[] = {
   { "ProcessList", initProcessList, exitProcessList, updateProcessList, NULLVVFUNC, 0, NULLTIME },
 #endif /* OSTYPE_OpenBSD */
 
-#ifdef OSTYPE_Solaris
+#if defined(OSTYPE_Solaris) || defined(OSTYPE_SunOS)
   { "LoadAvg", initLoadAvg, exitLoadAvg, updateLoadAvg, NULLVVFUNC, 0, NULLTIME },
   { "Memory", initMemory, exitMemory, updateMemory, NULLVVFUNC, 0, NULLTIME },
   { "NetDev", initNetDev, exitNetDev, updateNetDev, NULLVVFUNC, 0, NULLTIME },
