@@ -51,7 +51,12 @@ if(X11_LIBRARY AND XEXT_LIBRARY)
     add_executable(ksysguardd ${ksysguardd_SRCS})
 
     add_dependencies(ksysguardd libksysguardd)
-    target_link_libraries(ksysguardd libksysguardd ${KDE4_KDEFAKES_LIBS} ${X11_LIBRARY} ${XEXT_LIBRARY})
+    target_link_libraries(ksysguardd libksysguardd ${X11_LIBRARY} ${XEXT_LIBRARY})
+
+   if( NOT ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
+      target_link_libraries(ksysguardd ${KDE4_KDEFAKES_LIBS})
+   endif( NOT ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
+
 if(XRES_LIBRARY)
   target_link_libraries(ksysguardd ${XRES_LIBRARY})
 endif(XRES_LIBRARY)
