@@ -71,7 +71,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
     label = new QLabel( i18n( "Rows:" ), group );
     groupLayout->addWidget( label, ++row_num, 0 );
 
-    mRows = new KIntNumInput( 2, group );
+    mRows = new KIntNumInput( 3, group );
     mRows->setMaximum( 42 );
     mRows->setMinimum( 1 );
     groupLayout->addWidget( mRows, row_num, 1 );
@@ -80,7 +80,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
     label = new QLabel( i18n( "Columns:" ), group );
     groupLayout->addWidget( label, ++row_num, 0 );
 
-    mColumns = new KIntNumInput( 2, group );
+    mColumns = new KIntNumInput( 1, group );
     mColumns->setMaximum( 42 );
     mColumns->setMinimum( 1 );
     groupLayout->addWidget( mColumns, 1, 1 );
@@ -91,9 +91,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
   label = new QLabel( i18n( "Update interval:" ), group );
   groupLayout->addWidget( label, ++row_num, 0 );
 
-  mInterval = new KIntNumInput( row_num, group );
-  mInterval->setMaximum( 300 );
-  mInterval->setMinimum( 1 );
+  mInterval = new KDoubleNumInput( 0.01, 1000.0, 2.0, group, 0.5, 2 );
   mInterval->setSuffix( i18n( " sec" ) );
   groupLayout->addWidget( mInterval, row_num, 1 );
   label->setBuddy( mInterval );
@@ -107,7 +105,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
 
   mSheetTitle->setFocus();
 
-  resize( QSize( 250, 230 ).expandedTo( minimumSizeHint() ) );
+//  resize( QSize( 250, 230 ).expandedTo( minimumSizeHint() ) );
 }
 
 WorkSheetSettings::~WorkSheetSettings()
@@ -134,12 +132,12 @@ int WorkSheetSettings::columns() const
   return mColumns->value();
 }
 
-void WorkSheetSettings::setInterval( int interval )
+void WorkSheetSettings::setInterval( float interval )
 {
   mInterval->setValue( interval );
 }
 
-int WorkSheetSettings::interval() const
+float WorkSheetSettings::interval() const
 {
   return mInterval->value();
 }

@@ -50,7 +50,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   setButtons( Ok | Apply | Cancel );
   setObjectName( "FancyPlotterSettings" );
   setModal( false );
-  showButtonSeparator( true );
+  showButtonSeparator( false );
 
   QFrame *page = 0;
   QGridLayout *pageLayout = 0;
@@ -72,10 +72,11 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   mTitle->setWhatsThis( i18n( "Enter the title of the display here." ) );
   pageLayout->addWidget( mTitle, 0, 1 );
   label->setBuddy( mTitle );
-
+/*
   mStackBeams = new QCheckBox( i18n("Stack the beams on top of each other"), page);
   mStackBeams->setWhatsThis( i18n("The beams are stacked on top of each other, and the area is drawn filled in. So if one beam has a value of 2 and another beam has a value of 3, the first beam will be drawn at value 2 and the other beam drawn at 2+3=5.") );
   pageLayout->addWidget( mStackBeams, 1, 0,1,2);
+  */
   pageLayout->setRowStretch( 2, 1 );
 
   // Scales page
@@ -163,23 +164,11 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   label->setBuddy( mVerticalLinesDistance );
 
   mVerticalLinesScroll = new QCheckBox( i18n( "Vertical lines scroll" ), groupBox );
-  boxLayout->addWidget( mVerticalLinesScroll, 0, 4 );
+  boxLayout->addWidget( mVerticalLinesScroll, 1, 0, 1, -1 );
 
   mShowHorizontalLines = new QCheckBox( i18n( "Horizontal lines" ), groupBox );
   mShowHorizontalLines->setWhatsThis( i18n( "Check this to enable horizontal lines if display is large enough." ) );
-  boxLayout->addWidget( mShowHorizontalLines, 1, 0 );
-
-  label = new QLabel( i18n( "Count:" ), groupBox );
-  boxLayout->addWidget( label, 1, 2 );
-
-  mHorizontalLinesCount = new KIntNumInput( 0, groupBox );
-  mHorizontalLinesCount->setMinimum( 1 );
-  mHorizontalLinesCount->setMaximum( 100 );
-  mHorizontalLinesCount->setWhatsThis( i18n( "Enter the number of horizontal lines here." ) );
-  boxLayout->addWidget( mHorizontalLinesCount , 1, 3 );
-  label->setBuddy( mHorizontalLinesCount );
-
-  boxLayout->setRowStretch( 2, 1 );
+  boxLayout->addWidget( mShowHorizontalLines, 2, 0, 1, -1 );
 
   pageLayout->addWidget( groupBox, 0, 0, 1, 2 );
 
@@ -189,23 +178,23 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   boxLayout->setSpacing( spacingHint() );
   boxLayout->setColumnStretch( 1, 1 );
 
-  mShowLabels = new QCheckBox( i18n( "Labels" ), groupBox );
-  mShowLabels->setWhatsThis( i18n( "Check this box if horizontal lines should be decorated with the values they mark." ) );
-  boxLayout->addWidget( mShowLabels, 0, 0 );
+  mShowAxis = new QCheckBox( i18n( "Show axis labels" ), groupBox );
+  mShowAxis->setWhatsThis( i18n( "Check this box if horizontal lines should be decorated with the values they mark." ) );
+  boxLayout->addWidget( mShowAxis, 0, 0, 1, -1 );
 
   label = new QLabel( i18n( "Font size:" ), groupBox );
-  boxLayout->addWidget( label, 0, 2 );
+  boxLayout->addWidget( label, 1, 0 );
 
   mFontSize = new KIntNumInput( 8, groupBox );
   mFontSize->setMinimum( 5 );
   mFontSize->setMaximum( 24 );
-  boxLayout->addWidget( mFontSize, 0, 3 );
+  boxLayout->addWidget( mFontSize, 1, 1 );
   label->setBuddy( mFontSize );
-
+/*
   mShowTopBar = new QCheckBox( i18n( "Top bar" ), groupBox );
   mShowTopBar->setWhatsThis( i18n( "Check this to active the display title bar. This is probably only useful for applet displays. The bar is only visible if the display is large enough." ) );
   boxLayout->addWidget( mShowTopBar, 1, 0 );
-
+*/
   boxLayout->setRowStretch( 2, 1 );
 
   pageLayout->addWidget( groupBox, 1, 0 );
@@ -222,27 +211,20 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   label->setBuddy( mFontColor );
 
 
-  label = new QLabel( i18n( "Vertical lines:" ), groupBox );
+  label = new QLabel( i18n( "Grid lines:" ), groupBox );
   boxLayout->addWidget( label, 1, 0 );
-  mVerticalLinesColor = new KColorButton( groupBox );
-  boxLayout->addWidget( mVerticalLinesColor, 1, 1 );
-  label->setBuddy( mVerticalLinesColor );
-
-  label = new QLabel( i18n( "Horizontal lines:" ), groupBox );
-  boxLayout->addWidget( label, 2, 0 );
-
-  mHorizontalLinesColor = new KColorButton( groupBox );
-  boxLayout->addWidget( mHorizontalLinesColor, 2, 1 );
-  label->setBuddy( mHorizontalLinesColor );
+  mGridLinesColor = new KColorButton( groupBox );
+  boxLayout->addWidget( mGridLinesColor, 1, 1 );
+  label->setBuddy( mGridLinesColor );
 
   label = new QLabel( i18n( "Background:" ), groupBox );
-  boxLayout->addWidget( label, 3, 0 );
+  boxLayout->addWidget( label, 2, 0 );
 
   mBackgroundColor = new KColorButton( groupBox );
-  boxLayout->addWidget( mBackgroundColor, 3, 1 );
+  boxLayout->addWidget( mBackgroundColor, 2, 1 );
   label->setBuddy( mBackgroundColor );
 
-  boxLayout->setRowStretch( 4, 1 );
+  boxLayout->setRowStretch( 3, 1 );
 
   pageLayout->addWidget( groupBox, 1, 1 );
 
@@ -299,14 +281,6 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   connect( mShowVerticalLines, SIGNAL( toggled( bool ) ), mVerticalLinesDistance,
            SLOT( setEnabled( bool ) ) );
   connect( mShowVerticalLines, SIGNAL( toggled( bool ) ), mVerticalLinesScroll,
-           SLOT( setEnabled( bool ) ) );
-  connect( mShowVerticalLines, SIGNAL( toggled( bool ) ), mVerticalLinesColor,
-           SLOT( setEnabled( bool ) ) );
-  connect( mShowHorizontalLines, SIGNAL( toggled( bool ) ), mHorizontalLinesCount,
-           SLOT( setEnabled( bool ) ) );
-  connect( mShowHorizontalLines, SIGNAL( toggled( bool ) ), mHorizontalLinesColor,
-           SLOT( setEnabled( bool ) ) );
-  connect( mShowHorizontalLines, SIGNAL( toggled( bool ) ), mShowLabels,
            SLOT( setEnabled( bool ) ) );
 
   connect( mEditButton, SIGNAL( clicked() ), SLOT( editSensor() ) );
@@ -400,7 +374,6 @@ void FancyPlotterSettings::setShowVerticalLines( bool value )
   mShowVerticalLines->setChecked( value );
   mVerticalLinesDistance->setEnabled(  value );
   mVerticalLinesScroll->setEnabled( value );
-  mVerticalLinesColor->setEnabled( value );
 }
 
 bool FancyPlotterSettings::showVerticalLines() const
@@ -408,14 +381,14 @@ bool FancyPlotterSettings::showVerticalLines() const
   return mShowVerticalLines->isChecked();
 }
 
-void FancyPlotterSettings::setVerticalLinesColor( const QColor &color )
+void FancyPlotterSettings::setGridLinesColor( const QColor &color )
 {
-  mVerticalLinesColor->setColor( color );
+  mGridLinesColor->setColor( color );
 }
 
-QColor FancyPlotterSettings::verticalLinesColor() const
+QColor FancyPlotterSettings::gridLinesColor() const
 {
-  return mVerticalLinesColor->color();
+  return mGridLinesColor->color();
 }
 
 void FancyPlotterSettings::setVerticalLinesDistance( int distance )
@@ -441,9 +414,6 @@ bool FancyPlotterSettings::verticalLinesScroll() const
 void FancyPlotterSettings::setShowHorizontalLines( bool value )
 {
   mShowHorizontalLines->setChecked( value );
-  mHorizontalLinesCount->setEnabled( value );
-  mHorizontalLinesColor->setEnabled( value );
-  mShowLabels->setEnabled( value );
 
 }
 
@@ -452,34 +422,14 @@ bool FancyPlotterSettings::showHorizontalLines() const
   return mShowHorizontalLines->isChecked();
 }
 
-void FancyPlotterSettings::setHorizontalLinesColor( const QColor &color )
+void FancyPlotterSettings::setShowAxis( bool value )
 {
-  mHorizontalLinesColor->setColor( color );
+  mShowAxis->setChecked( value );
 }
 
-QColor FancyPlotterSettings::horizontalLinesColor() const
+bool FancyPlotterSettings::showAxis() const
 {
-  return mHorizontalLinesColor->color();
-}
-
-void FancyPlotterSettings::setHorizontalLinesCount( int count )
-{
-  mHorizontalLinesCount->setValue( count );
-}
-
-int FancyPlotterSettings::horizontalLinesCount() const
-{
-  return mHorizontalLinesCount->value();
-}
-
-void FancyPlotterSettings::setShowLabels( bool value )
-{
-  mShowLabels->setChecked( value );
-}
-
-bool FancyPlotterSettings::showLabels() const
-{
-  return mShowLabels->isChecked();
+  return mShowAxis->isChecked();
 }
 
 void FancyPlotterSettings::setShowTopBar( bool value )

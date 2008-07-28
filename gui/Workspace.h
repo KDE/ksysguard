@@ -65,6 +65,9 @@ class Workspace : public KTabWidget
     void updateSheetTitle( QWidget* );
     void applyStyle();
 
+  private Q_SLOTS:
+    virtual void contextMenu (int, const QPoint &);
+
   Q_SIGNALS:
     void setCaption( const QString &text);
 

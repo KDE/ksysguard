@@ -35,10 +35,10 @@ StyleEngine* KSGRD::Style;
 
 StyleEngine::StyleEngine(QObject * parent) : QObject(parent)
 {
-  mFirstForegroundColor = QColor( 0x0057ae );  // light blue
-  mSecondForegroundColor = QColor( 0x0057ae ); // light blue
+  mFirstForegroundColor = QColor( 0x888888 );  // Gray
+  mSecondForegroundColor = QColor( 0x888888 ); // Gray
   mAlarmColor = QColor( 255, 0, 0 );
-  mBackgroundColor = QColor( 0x313031 );       // almost black
+  mBackgroundColor = Qt::white;       // white
   mFontSize = 8;
 
   mSensorColors.append( QColor( 0x0057ae ) );  // soft blue

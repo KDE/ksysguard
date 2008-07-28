@@ -30,11 +30,14 @@
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
 #include <kacceleratormanager.h>
+#include <kactioncollection.h>
+#include <kmenu.h>
 
 #include "WorkSheet.h"
 #include "WorkSheetSettings.h"
 
 #include "Workspace.h"
+#include "ksysguard.h"
 
 Workspace::Workspace( QWidget* parent)
   : KTabWidget( parent )
@@ -43,6 +46,7 @@ Workspace::Workspace( QWidget* parent)
   this->setWhatsThis( i18n( "This is your work space. It holds your worksheets. You need "
                                "to create a new worksheet (Menu File->New) before "
                                "you can drag sensors here." ) );
+  setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 }
 
 Workspace::~Workspace()
@@ -132,7 +136,15 @@ void Workspace::newWorkSheet()
 	     SLOT( updateSheetTitle( QWidget* )));
   }
 }
+void Workspace::contextMenu (int index, const QPoint &point) {
+  KMenu pm;
+  
+//  QAction *new_worksheet = pm.addAction( Toplevel->actionCollection()->action("new_worksheet") );
 
+ // QAction *action = pm.exec( point );
+
+
+}
 void Workspace::updateSheetTitle( QWidget* wdg )
 {
   kDebug() << "update sheet title";

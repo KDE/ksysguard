@@ -57,11 +57,11 @@ WorkSheet::WorkSheet( QWidget *parent )
   mDisplayList = 0;
   mFileName = "";
   mLocalProcessController = NULL;
-
+  setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
   setAcceptDrops( true );
 }
 
-WorkSheet::WorkSheet( uint rows, uint columns, uint interval, QWidget* parent )
+WorkSheet::WorkSheet( uint rows, uint columns, float interval, QWidget* parent )
   : QWidget( parent)
 {
   mRows = mColumns = 0;
@@ -113,9 +113,9 @@ bool WorkSheet::load( const QString &fileName )
 
   // Check for proper size.
   QDomElement element = doc.documentElement();
-  unsigned int interval = element.attribute( "interval", "2" ).toUInt();
-  if( interval  <1 || interval > 900 )  //make sure the interval is fairly sane
-    interval = 2;
+  float interval = element.attribute( "interval", "0.5" ).toFloat();
+  if( interval  <0.01 || interval > 3000 )  //make sure the interval is fairly sane
+    interval = 0.5;
 
   setUpdateInterval(interval);
 
@@ -370,6 +370,8 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
       return 0;
     }
 
+    newDisplay->applyStyle();
+
     connect(&mTimer, SIGNAL( timeout()), newDisplay, SLOT( timerTick()));
     replaceDisplay( row, column, newDisplay );
   }
@@ -418,20 +420,46 @@ void WorkSheet::applyStyle()
       mDisplayList[ r ][ c ]->applyStyle();
 }
 
-void WorkSheet::dragEnterEvent( QDragEnterEvent *event )
+void WorkSheet::dragEnterEvent( QDragEnterEvent* event) 
 {
-  if ( !event->mimeData()->hasText() )
+  if ( !event->mimeData()->hasFormat("application/x-ksysguard") )
     return;
+  event->accept();
+}
+void WorkSheet::dragMoveEvent( QDragMoveEvent *event )
+{
 
-  event->acceptProposedAction();
+  /* Find the sensor display that is supposed to get the drop
+   * event and replace or add sensor. */
+  const QPoint globalPos = mapToGlobal( event->pos() );
+  for ( uint r = 0; r < mRows; ++r ) {
+    for ( uint c = 0; c < mColumns; ++c ) {
+      const QSize displaySize = mDisplayList[ r ][ c ]->size();
+
+      const QPoint displayPoint( displaySize.width(), displaySize.height() );
+
+      const QRect widgetRect = QRect( mDisplayList[ r ][ c ]->mapToGlobal( QPoint( 0, 0 ) ),
+                                      mDisplayList[ r ][ c ]->mapToGlobal( displayPoint ) );
+
+
+      if ( widgetRect.contains( globalPos ) ) {
+        QByteArray widgetType = mDisplayList[ r ][ c ]->metaObject()->className();
+        if(widgetType == "MultiMeter" || widgetType == "ProcessController" || widgetType == "table")
+		event->ignore(widgetRect);
+	else if(widgetType != "Dumm")
+  		event->accept(widgetRect);
+        return;
+      }
+    }
+  }
 }
 
 void WorkSheet::dropEvent( QDropEvent *event )
 {
-  if ( !event->mimeData()->hasText() )
+  if ( !event->mimeData()->hasFormat("application/x-ksysguard") )
     return;
 
-  const QString dragObject = event->mimeData()->text();
+  const QString dragObject = QString::fromUtf8(event->mimeData()->data("application/x-ksysguard"));
 
   // The host name, sensor name and type are separated by a ' '.
   QStringList parts = dragObject.split( ' ');
@@ -467,7 +495,7 @@ void WorkSheet::dropEvent( QDropEvent *event )
 
 QSize WorkSheet::sizeHint() const
 {
-  return QSize( 200,150 );
+  return QSize( 800,600 );
 }
 
 bool WorkSheet::event( QEvent *e )
@@ -493,8 +521,9 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
   KSGRD::SensorDisplay* newDisplay = 0;
 
 
-  if ( classType == "FancyPlotter" )
+  if ( classType == "FancyPlotter" ) {
     newDisplay = new FancyPlotter( 0, i18n("Dummy"), &mSharedSettings );
+  }
   else if ( classType == "MultiMeter" )
     newDisplay = new MultiMeter( 0, i18n("Dummy"), &mSharedSettings );
   else if ( classType == "DancingBars" )
@@ -560,8 +589,6 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
   if ( isVisible() ) {
     mDisplayList[ row ][ column ]->show();
   }
-
-  setMinimumSize(sizeHint());
 }
 
 void WorkSheet::removeDisplay( KSGRD::SensorDisplay *display )
@@ -719,7 +746,7 @@ void WorkSheet::changeEvent( QEvent * event ) {
   }
 }
 
-void WorkSheet::setUpdateInterval( unsigned int secs)
+void WorkSheet::setUpdateInterval( float secs)
 {
   if(secs == 0)
     mTimer.stop();
@@ -728,10 +755,10 @@ void WorkSheet::setUpdateInterval( unsigned int secs)
     mTimer.start();
   }
 }
-int WorkSheet::updateInterval() const
+float WorkSheet::updateInterval() const
 {
   if(mTimer.isActive())
-    return mTimer.interval()/1000;
+    return mTimer.interval()/1000.0;
   else
     return 0;
 }

@@ -65,8 +65,8 @@ class FancyPlotterSettings : public KPageDialog
     void setFontColor( const QColor &color );
     QColor fontColor() const;
 
-    void setVerticalLinesColor( const QColor &color );
-    QColor verticalLinesColor() const;
+    void setGridLinesColor( const QColor &color );
+    QColor gridLinesColor() const;
 
     void setVerticalLinesDistance( int distance );
     int verticalLinesDistance() const;
@@ -77,14 +77,8 @@ class FancyPlotterSettings : public KPageDialog
     void setShowHorizontalLines( bool value );
     bool showHorizontalLines() const;
 
-    void setHorizontalLinesColor( const QColor &color );
-    QColor horizontalLinesColor() const;
-
-    void setHorizontalLinesCount( int count );
-    int horizontalLinesCount() const;
-
-    void setShowLabels( bool value );
-    bool showLabels() const;
+    void setShowAxis( bool value );
+    bool showAxis() const;
 
     void setShowTopBar( bool value );
     bool showTopBar() const;
@@ -114,8 +108,7 @@ class FancyPlotterSettings : public KPageDialog
     void moveDownSensor();
 
   private:
-    KColorButton *mVerticalLinesColor;
-    KColorButton *mHorizontalLinesColor;
+    KColorButton *mGridLinesColor;
     KColorButton *mBackgroundColor;
     KColorButton *mFontColor;
     KLineEdit *mMinValue;
@@ -123,14 +116,13 @@ class FancyPlotterSettings : public KPageDialog
     KLineEdit *mTitle;
     KIntNumInput *mHorizontalScale;
     KIntNumInput *mVerticalLinesDistance;
-    KIntNumInput *mHorizontalLinesCount;
     KIntNumInput *mFontSize;
 
     QCheckBox *mShowVerticalLines;
     QCheckBox *mShowHorizontalLines;
     QCheckBox *mVerticalLinesScroll;
     QCheckBox *mUseAutoRange;
-    QCheckBox *mShowLabels;
+    QCheckBox *mShowAxis;
     QCheckBox *mShowTopBar;
     QPushButton *mEditButton;
     QPushButton *mRemoveButton;

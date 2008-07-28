@@ -28,6 +28,7 @@
 #include <kdialog.h>
 
 class KLineEdit;
+class KDoubleNumInput;
 class KIntNumInput;
 
 class WorkSheetSettings : public KDialog
@@ -44,8 +45,8 @@ class WorkSheetSettings : public KDialog
     void setColumns( int columns );
     int columns() const;
 
-    void setInterval( int interval );
-    int interval() const;
+    void setInterval( float interval );
+    float interval() const;
 
     void setSheetTitle( const QString &title );
     QString sheetTitle() const;
@@ -54,7 +55,7 @@ class WorkSheetSettings : public KDialog
     KLineEdit* mSheetTitle;
 
     KIntNumInput* mColumns;
-    KIntNumInput* mInterval;
+    KDoubleNumInput* mInterval;
     KIntNumInput* mRows;
 };
 

@@ -40,8 +40,6 @@
 #include <kservice.h>
 
 #include "ksgrd/SensorManager.h"
-#include "TimerSettings.h"
-
 #include "SensorDisplay.h"
 
 #define NONE -1
@@ -213,7 +211,7 @@ QColor SensorDisplay::restoreColor( QDomElement &element, const QString &attr,
                                     const QColor& fallback )
 {
   bool ok;
-  QRgb c = (QRgb) element.attribute( attr ).toUInt( &ok );
+  QRgb c = (QRgb) element.attribute( attr ).toUInt( &ok, 0 );
   
   if ( !ok )
     return fallback;
@@ -224,7 +222,13 @@ QColor SensorDisplay::restoreColor( QDomElement &element, const QString &attr,
 void SensorDisplay::saveColor( QDomElement &element, const QString &attr,
                                const QColor &color )
 {
-  element.setAttribute( attr, color.rgba() );
+  element.setAttribute( attr, "0x" + QString::number(color.rgba(),16) );
+}
+
+void SensorDisplay::saveColorAppend( QDomElement &element, const QString &attr,
+                               const QColor &color )
+{
+  element.setAttribute( attr, element.attribute(attr) + ",0x" + QString::number(color.rgba(),16) );
 }
 
 bool SensorDisplay::addSensor( const QString &hostName, const QString &name,
@@ -468,6 +472,15 @@ void SensorProperties::setIsOk( bool value )
 bool SensorProperties::isOk() const
 {
   return mOk;
+}
+
+void SensorProperties::setRegExpName( const QString &name )
+{
+  mRegExpName = name;
+}
+QString SensorProperties::regExpName() const
+{
+  return mRegExpName;
 }
 
 #include "SensorDisplay.moc"

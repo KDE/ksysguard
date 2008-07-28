@@ -49,7 +49,7 @@ class WorkSheet : public QWidget
 
   public:
     explicit WorkSheet( QWidget* parent);
-    WorkSheet( uint rows, uint columns, uint interval, QWidget* parent);
+    WorkSheet( uint rows, uint columns, float interval, QWidget* parent);
     ~WorkSheet();
 
     bool load( const QString &fileName );
@@ -89,11 +89,12 @@ class WorkSheet : public QWidget
 
     virtual void changeEvent( QEvent * event );
     virtual QSize sizeHint() const;
-    void dragEnterEvent( QDragEnterEvent* );
+    virtual void dragMoveEvent( QDragMoveEvent* );
+    virtual void dragEnterEvent( QDragEnterEvent* );
     void dropEvent( QDropEvent* );
     bool event( QEvent* );
-    void setUpdateInterval( unsigned int interval);
-    int updateInterval() const;
+    void setUpdateInterval( float interval);
+    float updateInterval() const;
 
   private:
     void removeDisplay( KSGRD::SensorDisplay *display );

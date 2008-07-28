@@ -231,6 +231,8 @@ class SensorDisplay : public QWidget, public SensorClient
                          const QColor& fallback );
     void saveColor( QDomElement &element, const QString &attr,
                     const QColor &color );
+    void saveColorAppend( QDomElement &element, const QString &attr,
+                    const QColor &color );
 
     virtual QString additionalWhatsThis();
 
@@ -292,6 +294,9 @@ class SensorProperties
     void setIsOk( bool value );
     bool isOk() const;
 
+    void setRegExpName( const QString &name );
+    QString regExpName() const;
+
   private:
     bool mIsLocalhost;
     QString mHostName;
@@ -299,6 +304,7 @@ class SensorProperties
     QString mType;
     QString mDescription;
     QString mUnit;
+    QString mRegExpName;
 
     /* This flag indicates whether the communication to the sensor is
      * ok or not. */

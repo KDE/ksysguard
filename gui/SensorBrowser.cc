@@ -535,7 +535,7 @@ QMimeData * SensorBrowserModel::mimeData ( const QModelIndexList & indexes ) con
 	              sensor->description();
 
 
-  mimeData->setText( mDragText );
+  mimeData->setData( "application/x-ksysguard", mDragText.toUtf8() );
   return mimeData;
 }
 

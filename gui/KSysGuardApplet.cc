@@ -482,7 +482,7 @@ void KSysGuardApplet::addEmptyDisplay( QWidget **dock, uint pos )
     dock[ pos ]->show();
 }
 
-void KSysGuardApplet::setUpdateInterval( unsigned int secs)
+void KSysGuardApplet::setUpdateInterval( double secs)
 {
   if(secs == 0)
     mTimer.stop();
@@ -491,7 +491,7 @@ void KSysGuardApplet::setUpdateInterval( unsigned int secs)
     mTimer.start();
   }
 }
-int KSysGuardApplet::updateInterval() const
+double KSysGuardApplet::updateInterval() const
 {
   if(mTimer.isActive())
     return mTimer.interval();

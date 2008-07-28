@@ -60,8 +60,8 @@ class KSysGuardApplet : public KPanelApplet
     void dragEnterEvent( QDragEnterEvent* );
     void dropEvent( QDropEvent* );
     bool event( QEvent* );
-    void setUpdateInterval( unsigned int interval);
-    int updateInterval() const;
+    void setUpdateInterval( double interval);
+    double updateInterval() const;
 
   private Q_SLOTS:
     void applySettings();

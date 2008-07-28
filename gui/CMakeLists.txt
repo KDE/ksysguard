@@ -48,7 +48,6 @@ set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
    Workspace.cc
    HostConnector.cc
    StyleEngine.cc
-   TimerSettings.cc 
    ksysguard.cc )
 
 
@@ -62,7 +61,7 @@ install(TARGETS ksysguard         ${INSTALL_TARGETS_DEFAULT_ARGS})
 ########### next target ###############
 
 if(BUILD_KICKER)
-   set(sysguard_panelapplet_PART_SRCS KSysGuardApplet.cc KSGAppletSettings.cc ${libsensordisplays_SRCS} StyleEngine.cc TimerSettings.cc)
+   set(sysguard_panelapplet_PART_SRCS KSysGuardApplet.cc KSGAppletSettings.cc ${libsensordisplays_SRCS} StyleEngine.cc)
 
 
    kde4_add_plugin(sysguard_panelapplet ${sysguard_panelapplet_PART_SRCS})
@@ -72,6 +71,10 @@ if(BUILD_KICKER)
 
    install(TARGETS sysguard_panelapplet  DESTINATION ${PLUGIN_INSTALL_DIR} )
 endif(BUILD_KICKER)
+
+set(setscheduler_SRCS setscheduler.c)
+add_executable(setscheduler ${setscheduler_SRCS})
+install(TARGETS setscheduler DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 
 ########### install files ###############

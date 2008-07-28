@@ -139,9 +139,6 @@ TopLevel::TopLevel()
   mConfigureSheetAction->setIcon( KIcon("configure") );
   connect(mConfigureSheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( configure() ));
 
-  if (!initialGeometrySet())
-    resize( QSize(700, 480).expandedTo(minimumSizeHint()));
-
   retranslateUi();
 }
 
@@ -248,7 +245,7 @@ void TopLevel::initStatusBar()
   KToggleAction *sb = dynamic_cast<KToggleAction*>(action("options_show_statusbar"));
   if (sb)
      connect(sb, SIGNAL(toggled(bool)), this, SLOT(updateStatusBar()));
-  setupGUI(ToolBar | Keys | StatusBar | Save | Create);
+  setupGUI(QSize(800,600), ToolBar | Keys | StatusBar | Save | Create);
 }
 
 void TopLevel::updateStatusBar()
@@ -507,13 +504,11 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
 #ifdef FORK_KSYSGUARD
   int initpipe[ 2 ];
   pipe( initpipe );
-#endif
   /* This forking will put ksysguard in it's own session not having a
    * controlling terminal attached to it. This prevents ssh from
    * using this terminal for password requests. Thus, you
    * need a ssh with ssh-askpass support to popup an X dialog to
    * enter the password. */
-#ifdef FORK_KSYSGUARD
   pid_t pid;
   if ( ( pid = fork() ) < 0 )
     return -1;
