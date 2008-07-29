@@ -7,7 +7,7 @@ Name[bg]=Мониторинг на системата
 Name[bn_IN]=সিস্টেম নিরীক্ষণ ব্যবস্থা
 Name[ca]=Monitor del sistema
 Name[cs]=Monitor systému
-Name[csb]=Mònitor systemë
+Name[csb]=Mònitór systemë
 Name[de]=Systemmonitor
 Name[el]=Επόπτης συστήματος
 Name[eo]=Sistemstato-programo
@@ -23,6 +23,7 @@ Name[gl]=Vixiante do sistema
 Name[gu]=સિસ્ટમ દેખરેખ
 Name[he]=צג מערכת
 Name[hi]=तंत्र मॉनीटर
+Name[hr]=Nadzor sustava
 Name[hu]=Rendszermonitor
 Name[is]=Kerfiseftirlit
 Name[it]=Monitor di sistema
@@ -32,9 +33,11 @@ Name[km]=កម្មវិធី​ត្រួត​​ពិនិត្យ�
 Name[kn]=ವ್ಯವಸ್ಥೆಯ ಪ್ರದರ್ಶಕ
 Name[ko]=시스템 모니터
 Name[ku]=Temaşekerê Pergalê
+Name[lt]=Sistemos stebėtojas
 Name[lv]=Sistēmas monitors
 Name[mk]=Системски монитор
 Name[ml]=സിസ്റ്റം നിരീക്ഷകന്‍
+Name[mr]=प्रणाली मॉनिटर
 Name[nb]=Systemovervåker
 Name[nds]=Systeemkieker
 Name[ne]=प्रणाली मनिटर
@@ -91,6 +94,8 @@ Comment[kk]=Жүелік мәліметтерді бақылау апплеті
 Comment[km]=អាប់ភ្លេត​ដែល​ត្រួត​ពិនិត្យ​ព័ត៌មាន​ប្រព័ន្ធ
 Comment[ko]=시스템 정보를 감시하는 애플릿
 Comment[lv]=Aplets, kas novēro sistēmas infromāciju
+Comment[ml]=സിസ്റ്റത്തിന്റെ വിവരങ്ങള്‍ കൈകാര്യം ചെയ്യുന്ന ആപ്ലെറ്റ്
+Comment[mr]=ऍपलेट जे प्रणाली माहितीचे निरिक्षण करतो
 Comment[nb]=Et miniprogram som overvåker systeminformasjon
 Comment[nds]=En Lüttprogramm, dat de Systeeminformatschonen beluert
 Comment[ne]=एउटा एप्लेट जसले प्रणाली सूचना अनुगमन गर्दछ
