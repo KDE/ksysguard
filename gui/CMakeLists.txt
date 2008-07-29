@@ -72,9 +72,9 @@ if(BUILD_KICKER)
    install(TARGETS sysguard_panelapplet  DESTINATION ${PLUGIN_INSTALL_DIR} )
 endif(BUILD_KICKER)
 
-set(setscheduler_SRCS setscheduler.c)
-add_executable(setscheduler ${setscheduler_SRCS})
-install(TARGETS setscheduler DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+#set(setscheduler_SRCS setscheduler.c)
+#add_executable(setscheduler ${setscheduler_SRCS})
+#install(TARGETS setscheduler ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 
 ########### install files ###############
