@@ -343,7 +343,8 @@ class KSignalPlotter : public QWidget
     bool mShowHorizontalLines;
     QColor mHorizontalLinesColor;
 
-    bool mStackAndFillBeams;	/// Set to add the beam values onto each other and fill their areas
+    bool mStackBeams;	/// Set to add the beam values onto each other
+    bool mFillBeams;	/// Fill the area underneath the beams
 
     bool mShowAxis;
 

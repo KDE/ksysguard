@@ -80,7 +80,8 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
   mBackgroundColor = QColor(0,0,0);
   mAxisTextWidth = 0;
   mScrollOffset = 0;
-  mStackAndFillBeams = false;
+  mStackBeams = false;
+  mFillBeams = true;
 }
 
 KSignalPlotter::~KSignalPlotter()
@@ -743,7 +744,7 @@ void KSignalPlotter::drawBeam(QPainter *p, const QRect &boundingBox, int horizon
   float y1 = 0;
   float y2 = 0;
   for (int j =  qMin(datapoints.size(), mBeamColors.size())-1; j >=0 ; --j) {
-    if(!mStackAndFillBeams)
+    if(!mStackBeams)
       y0 = y1 = y2 = 0;
     y0 += boundingBox.bottom() - (datapoints[j] - mNiceMinValue)*scaleFac;
     y1 += boundingBox.bottom() - (prev_datapoints[j] - mNiceMinValue)*scaleFac;
@@ -754,10 +755,11 @@ void KSignalPlotter::drawBeam(QPainter *p, const QRect &boundingBox, int horizon
       y1 = (2*y1 + y2)/3;
       // We don't bother to average out y2.  This will introduce slight inaccuracies in the gradients, but they aren't really noticable.
     }
-    if(mStackAndFillBeams)
-      pen.setColor(mBeamColors[j].lighter());
-    else
-      pen.setColor(mBeamColors[j]);
+    QColor beamColor = mBeamColors[j];
+    if(mFillBeams)
+      beamColor = beamColor.lighter();
+    pen.setColor(beamColor);
+   
 
     QPainterPath path;
     path.moveTo( x1, y1);
@@ -766,13 +768,13 @@ void KSignalPlotter::drawBeam(QPainter *p, const QRect &boundingBox, int horizon
     path.cubicTo(  c1, c2, QPointF(x0, y0));
     p->setCompositionMode(QPainter::CompositionMode_SourceOver);
     p->strokePath(path, pen);
-    if(mStackAndFillBeams) {
+    if(mFillBeams) {
         path.lineTo(x0,boundingBox.bottom());
         path.lineTo(x1,boundingBox.bottom());
         path.lineTo(x1,y1);
-        p->setCompositionMode(QPainter::CompositionMode_DestinationOver);
-        p->fillPath(path, mBeamColors[j]);
-        p->setCompositionMode(QPainter::CompositionMode_SourceOver);
+	QColor fillColor = mBeamColors[j].lighter();
+	fillColor.setAlpha(10);
+        p->fillPath(path, fillColor);
     }
   }
 }
