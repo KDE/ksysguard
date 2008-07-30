@@ -559,6 +559,8 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
   // initialize KDE application
   KApplication *app = new KApplication;
   QApplication::setWindowIcon(KIcon("utilities-system-monitor"));
+  KGlobal::locale()->insertCatalog("processcore");
+  KGlobal::locale()->insertCatalog("processui");
 
   KSGRD::SensorMgr = new KSGRD::SensorManager();
   KSGRD::Style = new KSGRD::StyleEngine();
