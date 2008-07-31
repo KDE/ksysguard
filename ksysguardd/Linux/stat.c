@@ -782,9 +782,9 @@ void printCPUxUser( const char* cmd ) {
 
 void printCPUxUserInfo( const char* cmd ) {
 	int id;
-	
+
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "CPU%d User Load\t0\t100\t%%\n", id );
+	fprintf( CurrentClient, "CPU %d User Load\t0\t100\t%%\n", id );
 }
 
 void printCPUxNice( const char* cmd ) {
@@ -801,7 +801,7 @@ void printCPUxNiceInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "CPU%d Nice Load\t0\t100\t%%\n", id );
+	fprintf( CurrentClient, "CPU %d Nice Load\t0\t100\t%%\n", id );
 }
 
 void printCPUxSys( const char* cmd ) {
@@ -818,7 +818,7 @@ void printCPUxSysInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "CPU%d System Load\t0\t100\t%%\n", id );
+	fprintf( CurrentClient, "CPU %d System Load\t0\t100\t%%\n", id );
 }
 
 void printCPUxTotalLoad( const char* cmd ) {
@@ -835,7 +835,7 @@ void printCPUxTotalLoadInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "CPU%d Total Load\t0\t100\t%%\n", id );
+	fprintf( CurrentClient, "CPU %d Total Load\t0\t100\t%%\n", id );
 }
 
 void printCPUxIdle( const char* cmd ) {
@@ -852,7 +852,7 @@ void printCPUxIdleInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "CPU%d Idle Load\t0\t100\t%%\n", id );
+	fprintf( CurrentClient, "CPU %d Idle Load\t0\t100\t%%\n", id );
 }
 
 void printCPUxWait( const char* cmd )
@@ -871,7 +871,7 @@ void printCPUxWaitInfo( const char* cmd )
 	int id;
 
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "CPU%d Wait Load\t0\t100\t%%\n", id );
+	fprintf( CurrentClient, "CPU %d Wait Load\t0\t100\t%%\n", id );
 }
 
 void print24DiskTotal( const char* cmd ) {
@@ -889,7 +889,7 @@ void print24DiskTotalInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk%d Total Load\t0\t0\tkBytes/s\n", id );
+	fprintf( CurrentClient, "Disk %d Total Load\t0\t0\tKB/s\n", id );
 }
 
 void print24DiskRIO( const char* cmd ) {
@@ -907,7 +907,7 @@ void print24DiskRIOInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk%d Read\t0\t0\tkBytes/s\n", id );
+	fprintf( CurrentClient, "Disk %d Read\t0\t0\tKB/s\n", id );
 }
 
 void print24DiskWIO( const char* cmd ) {
@@ -925,7 +925,7 @@ void print24DiskWIOInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk%d Write\t0\t0\tkBytes/s\n", id );
+	fprintf( CurrentClient, "Disk %d Write\t0\t0\tKB/s\n", id );
 }
 
 void print24DiskRBlk( const char* cmd ) {
@@ -943,7 +943,7 @@ void print24DiskRBlkInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk%d Read Data\t0\t0\tkBytes/s\n", id );
+	fprintf( CurrentClient, "Disk %d Read Data\t0\t0\tKB/s\n", id );
 }
 
 void print24DiskWBlk( const char* cmd ) {
@@ -961,7 +961,7 @@ void print24DiskWBlkInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk%d Write Data\t0\t0\tkBytes/s\n", id );
+	fprintf( CurrentClient, "Disk %d Write Data\t0\t0\tKB/s\n", id );
 }
 
 void printPageIn( const char* cmd ) {
@@ -1095,10 +1095,10 @@ void print24DiskIOInfo( const char* cmd ) {
 		fprintf( CurrentClient, "Write data device %s (%d:%d)\t0\t0\t1/s\n",
 			 devname, major, minor );
 	else if ( strcmp( name, "rblk" ) == 0 )
-		fprintf( CurrentClient, "Read accesses device %s (%d:%d)\t0\t0\tkBytes/s\n",
+		fprintf( CurrentClient, "Read accesses device %s (%d:%d)\t0\t0\tKB/s\n",
 			 devname, major, minor );
 	else if ( strcmp( name, "wblk" ) == 0 )
-		fprintf( CurrentClient, "Write accesses device %s (%d:%d)\t0\t0\tkBytes/s\n",
+		fprintf( CurrentClient, "Write accesses device %s (%d:%d)\t0\t0\tKB/s\n",
 			 devname, major, minor );
 	else {
 		fprintf( CurrentClient, "Dummy\t0\t0\t\n" );

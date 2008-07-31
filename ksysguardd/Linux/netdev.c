@@ -68,7 +68,7 @@ signed long long a;
 
 /* The sixth variable is 1 if the quantity variation must be provided, 0 if the absolute value must be provided */
 #define FORALL( a ) \
-  a( recBytes, "receiver/data", "Received Data", "kBytes/s", 1024, 1) \
+  a( recBytes, "receiver/data", "Received Data", "KB/s", 1024, 1) \
   a( recPacks, "receiver/packets", "Received Packets", "1/s", 1, 1 ) \
   a( recErrs, "receiver/errors", "Receiver Errors", "1/s", 1, 1 ) \
   a( recDrop, "receiver/drops", "Receiver Drops", "1/s", 1, 1 ) \
@@ -76,7 +76,7 @@ signed long long a;
   a( recFrame, "receiver/frame", "Receiver Frame Errors", "1/s", 1, 1 ) \
   a( recCompressed, "receiver/compressed", "Received Compressed Packets", "1/s", 1, 1 ) \
   a( recMulticast, "receiver/multicast", "Received Multicast Packets", "1/s", 1, 1 ) \
-  a( sentBytes, "transmitter/data", "Sent Data", "kBytes/s", 1024, 1 ) \
+  a( sentBytes, "transmitter/data", "Sent Data", "KB/s", 1024, 1 ) \
   a( sentPacks, "transmitter/packets", "Sent Packets", "1/s", 1, 1 ) \
   a( sentErrs, "transmitter/errors", "Transmitter Errors", "1/s", 1, 1 ) \
   a( sentDrop, "transmitter/drops", "Transmitter Drops", "1/s", 1, 1 ) \
@@ -474,8 +474,18 @@ void printNetDev##a( const char* cmd ) \
  \
 void printNetDev##a##Info( const char* cmd ) \
 { \
-  (void)cmd; \
-  fprintf( CurrentClient, "%s\t0\t0\t%s\n", c, d ); \
+  int i; \
+  char* beg; \
+  char* end; \
+  char dev[ 64 ]; \
+ \
+  beg = strchr( cmd, '/' ); \
+  beg = strchr( beg + 1, '/' ); \
+  end = strchr( beg + 1, '/' ); \
+  strncpy( dev, beg + 1, end - beg - 1 ); \
+  dev[ end - beg - 1 ] = '\0'; \
+\
+  fprintf( CurrentClient, "%s %s\t0\t0\t%s\n", dev, c, d ); \
 }
 
 FORALL( PRINTFUNC )
