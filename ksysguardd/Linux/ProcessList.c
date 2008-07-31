@@ -103,13 +103,6 @@ static int ioprio_get(int which, int who)
 #define true 1
 #define false 0
 #endif
-#include "config-ksysguardd.h" /*For HAVE_XRES*/
-#ifdef HAVE_XRES
-extern int setup_xres();
-extern void xrestop_populate_client_data();
-extern void printXres(FILE *CurrentClient);
-static int have_xres = 0;
-#endif
 
 typedef struct {
 
@@ -442,13 +435,6 @@ void initProcessList( struct SensorModul* sm )
 #endif
   }
 
-#ifdef HAVE_XRES
-  have_xres = setup_xres();
-  if(have_xres) {
-    registerLegacyMonitor( "xres", "table", printXresList, printXresListInfo, sm);
-  }
-#endif
-
   /*open /proc now in advance*/
   /* read in current process list via the /proc file system entry */
   if ( ( procDir = opendir( "/proc" ) ) == NULL ) {
@@ -464,10 +450,6 @@ void exitProcessList( void )
   removeMonitor( "ps" );
   removeMonitor( "pscount" );
 
-#ifdef HAVE_XRES
-  if(have_xres) 
-    removeMonitor( "xres" );
-#endif
   if ( !RunAsDaemon ) {
     removeCommand( "kill" );
     removeCommand( "setpriority" );
@@ -475,21 +457,6 @@ void exitProcessList( void )
 
   exitPWUIDCache();
 }
-#ifdef HAVE_XRES
-void printXresListInfo( const char *cmd)
-{
-  (void)cmd;
-  fprintf(CurrentClient, "XPid\tXIdentifier\tXPxmMem\tXNumPxm\tXMemOther\n");
-  fprintf(CurrentClient, "d\ts\tD\td\tD\n");
-}
-
-void printXresList(const char*cmd)
-{
-  (void)cmd;
-  printXres(CurrentClient);
-}
-
-#endif
 
 void printProcessListInfo( const char* cmd )
 {

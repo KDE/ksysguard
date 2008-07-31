@@ -22,8 +22,6 @@
 #ifndef KSG_PROCESSLIST_H
 #define KSG_PROCESSLIST_H
 
-#include "config-ksysguardd.h" /*For HAVE_XRES*/
-
 void initProcessList( struct SensorModul* );
 void exitProcessList( void );
 
@@ -31,11 +29,6 @@ void printProcessList( const char* );
 void printProcessListInfo( const char* );
 void printProcessCount( const char* );
 void printProcessCountInfo( const char* );
-
-#ifdef HAVE_XRES
-void printXresListInfo( const char *);
-void printXresList( const char *);
-#endif
 
 void killProcess( const char* );
 void setPriority( const char* );
