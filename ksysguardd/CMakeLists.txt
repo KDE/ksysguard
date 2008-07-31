@@ -10,7 +10,6 @@ add_definitions(-DOSTYPE_${CMAKE_SYSTEM_NAME})
 
 macro_optional_find_package(Sensors)
 macro_bool_to_01(SENSORS_FOUND HAVE_LMSENSORS)
-find_library(XRES_LIBRARY XRes)
 find_library(X11_LIBRARY  X11)
 find_library(XEXT_LIBRARY Xext)
 
@@ -19,9 +18,6 @@ if(X11_LIBRARY AND XEXT_LIBRARY)
     macro_bool_to_01(SYS_INOTIFY_H_FOUND HAVE_SYS_INOTIFY_H)
 
 
-    if(XRES_LIBRARY)
-        set(HAVE_XRES 1)
-    endif(XRES_LIBRARY)
     configure_file(config-ksysguardd.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-ksysguardd.h)
 
     if( ${CMAKE_SYSTEM_NAME} MATCHES "DragonFly" )
@@ -57,9 +53,6 @@ if(X11_LIBRARY AND XEXT_LIBRARY)
       target_link_libraries(ksysguardd ${KDE4_KDEFAKES_LIBS})
    endif( NOT ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )
 
-if(XRES_LIBRARY)
-  target_link_libraries(ksysguardd ${XRES_LIBRARY})
-endif(XRES_LIBRARY)
 if( ${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" )
   message(STATUS "Adding kvm library on NetBSD")
   target_link_libraries(ksysguardd kvm)
