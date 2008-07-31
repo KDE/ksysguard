@@ -561,10 +561,10 @@ void print26DiskIOInfo( const char* cmd ) {
 		fprintf( CurrentClient, "Write data device %s (%d:%d)\t0\t0\t1/s\n",
 			devname, major, minor );
 	else if ( strcmp( name, "rblk" ) == 0 )
-		fprintf( CurrentClient, "Read accesses device %s (%d:%d)\t0\t0\tkBytes/s\n",
+		fprintf( CurrentClient, "Read accesses device %s (%d:%d)\t0\t0\tKB/s\n",
 			devname, major, minor );
 	else if ( strcmp( name, "wblk" ) == 0 )
-		fprintf( CurrentClient, "Write accesses device %s (%d:%d)\t0\t0\tkBytes/s\n",
+		fprintf( CurrentClient, "Write accesses device %s (%d:%d)\t0\t0\tKB/s\n",
 			devname, major, minor );
 	else if ( strcmp( name, "rtim" ) == 0 )
 		fprintf( CurrentClient, "# of milliseconds spent reading device %s (%d:%d)\t0\t0\ts\n",
