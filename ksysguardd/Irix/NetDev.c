@@ -271,7 +271,7 @@ void printNetDevRecBytesInfo(const char *cmd)
 		return;
 
 	if (!strncmp(retval[1], "data", 4))
-		fprintf(CurrentClient, "Received Data\t0\t0\tkBytes/s\n");
+		fprintf(CurrentClient, "Received Data\t0\t0\tKB/s\n");
 	if (!strncmp(retval[1], "packets", 7))
 		fprintf(CurrentClient, "Received Packets\t0\t0\t1/s\n");
 	if (!strncmp(retval[1], "errors", 6))
@@ -327,7 +327,7 @@ void printNetDevSentBytesInfo(const char *cmd)
 		return;
 
 	if (!strncmp(retval[1], "data", 4))
-		fprintf(CurrentClient, "Sent Data\t0\t0\tkBytes/s\n");
+		fprintf(CurrentClient, "Sent Data\t0\t0\tKB/s\n");
 	if (!strncmp(retval[1], "packets", 7))
 		fprintf(CurrentClient, "Sent Packets\t0\t0\t1/s\n");
 	if (!strncmp(retval[1], "errors", 6))
