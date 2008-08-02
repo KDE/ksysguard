@@ -865,4 +865,34 @@ void KSignalPlotter::setSmoothGraph(bool smooth)
 #endif
 }
 
+bool KSignalPlotter::stackGraph() const
+{
+  return mStackBeams;
+}
+void KSignalPlotter::setStackGraph(bool stack)
+{
+  mStackBeams = stack;
+#ifdef USE_QIMAGE
+  mScrollableImage = QImage();
+#else
+  mScrollableImage = QPixmap();
+#endif
+
+}
+
+bool KSignalPlotter::fillGraph() const
+{
+  return mFillBeams;
+}
+void KSignalPlotter::setFillGraph(bool fill)
+{
+  mFillBeams = fill;
+#ifdef USE_QIMAGE
+  mScrollableImage = QImage();
+#else
+  mScrollableImage = QPixmap();
+#endif
+
+}
+
 #include "SignalPlotter.moc"

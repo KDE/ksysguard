@@ -90,6 +90,8 @@ class KSignalPlotter : public QWidget
   Q_PROPERTY( QString svgBackground READ svgBackground WRITE setSvgBackground )
   Q_PROPERTY( int maxAxisTextWidth READ maxAxisTextWidth WRITE setMaxAxisTextWidth )
   Q_PROPERTY( bool smoothGraph READ smoothGraph WRITE setSmoothGraph )
+  Q_PROPERTY( bool stackGraph READ stackGraph WRITE setStackGraph )
+  Q_PROPERTY( bool fillGraph READ fillGraph WRITE setFillGraph )
 
   public:
     KSignalPlotter( QWidget *parent = 0);
@@ -283,6 +285,20 @@ class KSignalPlotter : public QWidget
 
     /** Set whether to smooth the graph by averaging the points using the formula:  (value*2 + last_value)/3 */
     void setSmoothGraph(bool smooth);
+
+    /** Whether to stack the beams on top of each other.  Default is false */
+    bool stackGraph() const;
+
+    /** Whether to stack the beams on top of each other.  Default is false */
+    void setStackGraph(bool stack);
+
+    /** Whether to fill the area underneath the beams. Default is true */
+    bool fillGraph() const;
+
+    /** Whether to fill the area underneath the beams. Default is true */
+    void setFillGraph(bool fill);
+
+
   
   Q_SIGNALS:
     /** When the axis has changed because we are in autorange mode, then this signal is emitted */
