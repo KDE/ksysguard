@@ -214,17 +214,16 @@ QColor SensorDisplay::restoreColor( QDomElement &element, const QString &attr,
   int color = element.attribute( attr ).toUInt( &ok, 0 );
   
   if ( !ok ) {
-    kDebug() << "Invalid color for " << attr << " = " << element.attribute(attr) << " (Not a valid number)";
+    kDebug(1215) << "Invalid color read in from worksheet for " << attr << " = " << element.attribute(attr) << " (Not a valid number)";
     return fallback;
   }
   QColor c( (color & 0xff0000) >> 16, (color & 0xff00) >> 8, (color & 0xff), (color & 0xff000000) >> 24);
   if( !c.isValid()) {
-    kDebug() << "Invalid color for " << attr << " = " << element.attribute(attr);
+    kDebug(1215) << "Invalid color read in from worksheet for " << attr << " = " << element.attribute(attr);
     return fallback;
   }
 
   if(c.alpha() == 0) c.setAlpha(255);
-  kDebug() << element.attribute(attr) << " = " << color << " = " << c;
   return c;
 }
 
