@@ -338,7 +338,7 @@ class KSignalPlotter : public QWidget
     int mScrollOffset;		///The scrollable image is, well, scrolled in a wrap-around window.  mScrollOffset determines where the left hand side of the mScrollableImage should be drawn relative to the right hand side of view.  0 <= mScrollOffset < mScrollableImage.width()
     double mMinValue;		///The minimum value (unscaled) currently being displayed
     double mMaxValue;		///The maximum value (unscaled) currently being displayed
-    int mRescaleTime;		///The number of data points passed since a value that is within 70% of the current maximum was found.  This is for scaling the graph
+    unsigned int mRescaleTime;		///The number of data points passed since a value that is within 70% of the current maximum was found.  This is for scaling the graph
 
     double mNiceMinValue;	///The minimum value rounded down to a 'nice' value
     double mNiceMaxValue;	///The maximum value rounded up to a 'nice' value.  The idea is to round the value, say, 93 to 100.

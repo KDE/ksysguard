@@ -114,6 +114,11 @@ QColor KSignalPlotter::beamColor( int index ) {
 }
 
 void KSignalPlotter::setBeamColor( int index, QColor color ) {
+  if(!color.isValid()) {
+	  kDebug(1215) << "Invalid color";
+	  return;
+  }
+
   mBeamColors[ index ] = color;
   mBeamColorsDark[ index ] = color.darker(150);
 }
@@ -321,6 +326,11 @@ bool KSignalPlotter::showVerticalLines() const
 void KSignalPlotter::setVerticalLinesColor( const QColor &color )
 {
   if(mVerticalLinesColor == color) return;
+  if(!color.isValid()) {
+	  kDebug(1215) << "Invalid color";
+	  return;
+  }
+
   mVerticalLinesColor = color;
   mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
 #ifdef USE_QIMAGE
@@ -384,6 +394,11 @@ bool KSignalPlotter::showHorizontalLines() const
 }
 void KSignalPlotter::setAxisFontColor( const QColor &color )
 {
+  if(!color.isValid()) {
+	  kDebug(1215) << "Invalid color";
+	  return;
+  }
+
   mFontColor = color;
 }
 
@@ -395,6 +410,11 @@ QColor KSignalPlotter::axisFontColor() const
 
 void KSignalPlotter::setHorizontalLinesColor( const QColor &color )
 {
+  if(!color.isValid()) {
+	  kDebug(1215) << "Invalid color";
+	  return;
+  }
+
   if(color == mHorizontalLinesColor) return;
   mHorizontalLinesColor = color;
   mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
@@ -451,6 +471,10 @@ void KSignalPlotter::setSvgBackground( const QString &filename )
 void KSignalPlotter::setBackgroundColor( const QColor &color )
 {
   if(color == mBackgroundColor) return;
+  if(!color.isValid()) {
+	  kDebug(1215) << "Invalid color";
+	  return;
+  }
   mBackgroundColor = color;
   mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
 }

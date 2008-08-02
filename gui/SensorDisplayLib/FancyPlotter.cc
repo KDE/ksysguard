@@ -555,9 +555,16 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
       QStringList colors = el.attribute("color").split(',');
       bool ok;
       foreach(QString color, colors) {
-        QRgb c = (QRgb) color.toUInt( &ok, 0 );
-	if(ok)
-          sensor->colors << QColor(c);
+        int c = color.toUInt( &ok, 0 );
+	if(ok) {
+          QColor col( (c & 0xff0000) >> 16, (c & 0xff00) >> 8, (c & 0xff), (c & 0xff000000) >> 24);
+	  if(col.isValid()) {
+            if(col.alpha() == 0) col.setAlpha(255);
+            sensor->colors << col;
+	  }
+	  else
+            sensor->colors << KSGRD::Style->sensorColor( i );
+	}
 	else
           sensor->colors << KSGRD::Style->sensorColor( i );
       }
