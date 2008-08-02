@@ -213,12 +213,20 @@ QColor SensorDisplay::restoreColor( QDomElement &element, const QString &attr,
                                     const QColor& fallback )
 {
   bool ok;
-  QRgb c = (QRgb) element.attribute( attr ).toUInt( &ok );
+  int color = element.attribute( attr ).toUInt( &ok, 0 );
   
-  if ( !ok )
+  if ( !ok ) {
+    kDebug(1215) << "Invalid color read in from worksheet for " << attr << " = " << element.attribute(attr) << " (Not a valid number)";
     return fallback;
-  else
-    return QColor( qRed(c), qGreen(c), qBlue(c), qAlpha(c) );
+  }
+  QColor c( (color & 0xff0000) >> 16, (color & 0xff00) >> 8, (color & 0xff), (color & 0xff000000) >> 24);
+  if( !c.isValid()) {
+    kDebug(1215) << "Invalid color read in from worksheet for " << attr << " = " << element.attribute(attr);
+    return fallback;
+  }
+
+  if(c.alpha() == 0) c.setAlpha(255);
+  return c;
 }
 
 void SensorDisplay::saveColor( QDomElement &element, const QString &attr,
