@@ -81,7 +81,8 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
   mAxisTextWidth = 0;
   mScrollOffset = 0;
   mStackBeams = false;
-  mFillBeams = true;
+  mFillOpacity = 20;
+  mRescaleTime = 0;
 }
 
 KSignalPlotter::~KSignalPlotter()
@@ -121,6 +122,36 @@ int KSignalPlotter::numBeams() {
   return mBeamColors.count();
 }
 
+void KSignalPlotter::recalculateMaxMinValueForSample(const QList<double>&sampleBuf, int time ) 
+{
+  if(mStackBeams) {
+    double value=0;
+    for(int i = sampleBuf.count()-1; i>= 0; i--) {
+      value += sampleBuf[i];
+    }
+    if(mMinValue > value) mMinValue = value;
+    if(mMaxValue < value) mMaxValue = value;
+    if(value > 0.7*mMaxValue)
+      mRescaleTime = time;
+  } else {
+    double value;
+    for(int i = sampleBuf.count()-1; i>= 0; i--) {
+      value = sampleBuf[i];
+      if(mMinValue > value) mMinValue = value;
+      if(mMaxValue < value) mMaxValue = value;
+      if(value > 0.7*mMaxValue)
+        mRescaleTime = time;
+    }
+  }
+}
+
+void KSignalPlotter::rescale() {
+  mMaxValue = mMinValue = 0;
+  for(int i = mBeamData.count()-1; i >= 0; i--) {
+    recalculateMaxMinValueForSample(mBeamData[i], i);
+  }
+}
+
 void KSignalPlotter::addSample( const QList<double>& sampleBuf )
 {
   if(mSamples < 4) {
@@ -141,12 +172,12 @@ void KSignalPlotter::addSample( const QList<double>& sampleBuf )
       mBeamData.removeLast(); // If we still have too many, then we have resized the widget.  Remove one more.  That way we will slowly resize to the new size
   }
 
-  for(int i = sampleBuf.count()-1; i>= 0; i--) {
-    double value = sampleBuf[i];
-
-    if(mMinValue > value) mMinValue = value;
-    if(mMaxValue < value) mMaxValue = value;
+  if(mUseAutoRange) {
+    recalculateMaxMinValueForSample(sampleBuf, 0);
+    if(mRescaleTime++ > mSamples)
+     rescale();
   }
+
   /* If the vertical lines are scrolling, increment the offset
    * so they move with the data. */
   if ( mVerticalLinesScroll ) {
@@ -640,7 +671,6 @@ void KSignalPlotter::calculateNiceRange()
     newNiceRange = 1.0;
 
   int newNiceMinValue = mMinValue;
-//  if ( mUseAutoRange ) {
     if ( mMinValue != 0.0 ) {
       double dim = pow( 10, floor( log10( fabs( mMinValue ) ) ) ) / 2;
       if ( mMinValue < 0.0 )
@@ -664,7 +694,6 @@ void KSignalPlotter::calculateNiceRange()
 	mPrecision = 1-logdim;
     }
     newNiceRange = mScaleDownBy*dim * a * (mHorizontalLinesCount+1);
-//  }
   if( mNiceMinValue == newNiceMinValue && mNiceRange == newNiceRange)
     return;  //nothing changed
   mNiceMaxValue = newNiceMinValue + newNiceRange;
@@ -757,7 +786,7 @@ void KSignalPlotter::drawBeam(QPainter *p, const QRect &boundingBox, int horizon
       // We don't bother to average out y2.  This will introduce slight inaccuracies in the gradients, but they aren't really noticable.
     }
     QColor beamColor = mBeamColors[j];
-    if(mFillBeams)
+    if(mFillOpacity)
       beamColor = beamColor.lighter();
     pen.setColor(beamColor);
    
@@ -769,12 +798,12 @@ void KSignalPlotter::drawBeam(QPainter *p, const QRect &boundingBox, int horizon
     path.cubicTo(  c1, c2, QPointF(x0, y0));
     p->setCompositionMode(QPainter::CompositionMode_SourceOver);
     p->strokePath(path, pen);
-    if(mFillBeams) {
+    if(mFillOpacity) {
         path.lineTo(x0,boundingBox.bottom());
         path.lineTo(x1,boundingBox.bottom());
         path.lineTo(x1,y1);
-	QColor fillColor = mBeamColors[j].lighter();
-	fillColor.setAlpha(20);
+	QColor fillColor = mBeamColors[j];
+	fillColor.setAlpha(mFillOpacity);
         p->fillPath(path, fillColor);
     }
   }
@@ -880,13 +909,13 @@ void KSignalPlotter::setStackGraph(bool stack)
 
 }
 
-bool KSignalPlotter::fillGraph() const
+int KSignalPlotter::fillOpacity() const
 {
-  return mFillBeams;
+  return mFillOpacity;
 }
-void KSignalPlotter::setFillGraph(bool fill)
+void KSignalPlotter::setFillOpacity(int fill)
 {
-  mFillBeams = fill;
+  mFillOpacity = fill;
 #ifdef USE_QIMAGE
   mScrollableImage = QImage();
 #else

@@ -31,8 +31,8 @@
 
 #define USE_QIMAGE
 
-
-#define SVG_SUPPORT
+// Svg support causes it to crash at the moment :(
+//#define SVG_SUPPORT
 #ifdef SVG_SUPPORT
 namespace Plasma
 {
@@ -91,7 +91,7 @@ class KSignalPlotter : public QWidget
   Q_PROPERTY( int maxAxisTextWidth READ maxAxisTextWidth WRITE setMaxAxisTextWidth )
   Q_PROPERTY( bool smoothGraph READ smoothGraph WRITE setSmoothGraph )
   Q_PROPERTY( bool stackGraph READ stackGraph WRITE setStackGraph )
-  Q_PROPERTY( bool fillGraph READ fillGraph WRITE setFillGraph )
+  Q_PROPERTY( int fillOpacity READ fillOpacity WRITE setFillOpacity )
 
   public:
     KSignalPlotter( QWidget *parent = 0);
@@ -292,11 +292,11 @@ class KSignalPlotter : public QWidget
     /** Whether to stack the beams on top of each other.  Default is false */
     void setStackGraph(bool stack);
 
-    /** Whether to fill the area underneath the beams. Default is true */
-    bool fillGraph() const;
+    /** Alpha value for filling the graph. Set to 0 to disable filling the graph, and 255 for a solid fill. Default is 20*/
+    int fillOpacity() const;
 
-    /** Whether to fill the area underneath the beams. Default is true */
-    void setFillGraph(bool fill);
+    /** Alpha value for filling the graph. Set to 0 to disable filling the graph, and 255 for a solid fill. Default is 20*/
+    void setFillOpacity(int fill);
 
 
   
@@ -319,6 +319,8 @@ class KSignalPlotter : public QWidget
     void drawHorizontalLines(QPainter *p, const QRect &boundingBox);
 
   private:
+    void recalculateMaxMinValueForSample(const QList<double>&sampleBuf, int time );
+    void rescale();
     void updateDataBuffers();
     /** We make the svg renderer static so that an svg renderer is shared among all of the images.  This is because a svg renderer takes up a lot of memory, so we want to 
      *  share them as much as we can */
@@ -336,6 +338,7 @@ class KSignalPlotter : public QWidget
     int mScrollOffset;		///The scrollable image is, well, scrolled in a wrap-around window.  mScrollOffset determines where the left hand side of the mScrollableImage should be drawn relative to the right hand side of view.  0 <= mScrollOffset < mScrollableImage.width()
     double mMinValue;		///The minimum value (unscaled) currently being displayed
     double mMaxValue;		///The maximum value (unscaled) currently being displayed
+    int mRescaleTime;		///The number of data points passed since a value that is within 70% of the current maximum was found.  This is for scaling the graph
 
     double mNiceMinValue;	///The minimum value rounded down to a 'nice' value
     double mNiceMaxValue;	///The maximum value rounded up to a 'nice' value.  The idea is to round the value, say, 93 to 100.
@@ -360,7 +363,7 @@ class KSignalPlotter : public QWidget
     QColor mHorizontalLinesColor;
 
     bool mStackBeams;	/// Set to add the beam values onto each other
-    bool mFillBeams;	/// Fill the area underneath the beams
+    int mFillOpacity;	/// Fill the area underneath the beams
 
     bool mShowAxis;
 
