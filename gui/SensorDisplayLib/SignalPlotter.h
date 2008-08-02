@@ -32,7 +32,7 @@
 #define USE_QIMAGE
 
 
-//#define SVG_SUPPORT
+#define SVG_SUPPORT
 #ifdef SVG_SUPPORT
 namespace Plasma
 {

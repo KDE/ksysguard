@@ -606,7 +606,8 @@ void KSignalPlotter::drawBackground(QPainter *p, const QRect &boundingBox)
 
   if(mSvgFilename.isEmpty())
     return; //nothing to draw, return
-/*  FIXME - reenable.  Disabled just temporarily
+
+#ifdef SVG_SUPPORT
   Plasma::Svg *svgRenderer;
   if(!sSvgRenderer.contains(mSvgFilename)) {
     svgRenderer = new Plasma::Svg(this);
@@ -618,7 +619,7 @@ void KSignalPlotter::drawBackground(QPainter *p, const QRect &boundingBox)
 
   svgRenderer->resize(boundingBox.width(), boundingBox.height());
   svgRenderer->paint(p, 0, 0);
-  */
+#endif
 }
 
 void KSignalPlotter::drawThinFrame(QPainter *p, const QRect &boundingBox)
