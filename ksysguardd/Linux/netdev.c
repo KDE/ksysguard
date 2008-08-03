@@ -366,9 +366,6 @@ int updateNetDev( void )
   Inter-|   Receive                                                 |  Transmit
   face  | bytes    packets errs drop fifo frame compressed multicast| bytes    packets errs drop fifo colls carrier compressed
       lo:275135772 1437448    0    0    0     0          0         0 275135772 1437448    0    0    0     0       0          0
-    eth0:123648812  655251    0    0    0     0          0         0 246847871  889636    0    0    0     0       0          0       Inter-|   Receive                                                |  Transmit
-  face  | bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
-      lo:275135772 1437448    0    0    0     0          0         0 275135772 1437448    0    0    0     0       0          0
     eth0:123648812  655251    0    0    0     0          0         0 246847871  889636    0    0    0     0       0          0
 	*/
 
