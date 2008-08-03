@@ -32,6 +32,7 @@
 #include <kacceleratormanager.h>
 #include <kactioncollection.h>
 #include <kmenu.h>
+#include <knewstuff2/engine.h>
 
 #include "WorkSheet.h"
 #include "WorkSheetSettings.h"
@@ -279,6 +280,12 @@ void Workspace::removeWorkSheet( const QString &fileName )
 void Workspace::getHotNewWorksheet()
 {
   kDebug() << "Get new stuff";
+  
+  KNS::Engine *engine = new KNS::Engine();
+  engine->init("ksysguard.knsrc");
+  KNS::Entry::List entries = engine->downloadDialogModal();
+  // inspect entries, if wanted
+  delete engine;
 }
 
 bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)

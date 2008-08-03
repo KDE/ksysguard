@@ -54,7 +54,6 @@
 #include <kurl.h>
 #include <kwindowsystem.h>
 #include <QSplitter>
-#include <knewstuff2/engine.h>
 
 #include "../version.h"
 #include "SensorBrowser.h"
