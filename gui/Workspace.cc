@@ -44,8 +44,8 @@ Workspace::Workspace( QWidget* parent)
   : KTabWidget( parent )
 {
   KAcceleratorManager::setNoAccel(this);
-  this->setWhatsThis( i18n( "This is your work space. It holds your worksheets. You need "
-                               "to create a new worksheet (Menu File->New) before "
+  this->setWhatsThis( i18n( "This is your work space. It holds your tabs. You need "
+                               "to create a new tab (Menu File->New) before "
                                "you can drag sensors here." ) );
   setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 }
@@ -159,8 +159,8 @@ bool Workspace::saveOnQuit()
   for(int i = 0; i < mSheetList.size(); i++) {
       if ( mSheetList.at(i)->fileName().isEmpty() ) {
         int res = KMessageBox::warningYesNoCancel( this,
-                  i18n( "The worksheet '%1' contains unsaved data.\n"
-                        "Do you want to save the worksheet?",
+                  i18n( "The tab '%1' contains unsaved data.\n"
+                        "Do you want to save the tab?",
                     tabText(indexOf( mSheetList.at(i) )) ), QString(), KStandardGuiItem::save(), KStandardGuiItem::discard() );
         if ( res == KMessageBox::Yes )
           saveWorkSheet( mSheetList.at(i) );
@@ -174,7 +174,7 @@ bool Workspace::saveOnQuit()
 
 void Workspace::importWorkSheet()
 {
-  KUrl url = KFileDialog::getOpenUrl( QString(), i18n("*.sgrd|Sensor Files (*.sgrd)"), this, i18n( "Select Worksheet to Open" ) );
+  KUrl url = KFileDialog::getOpenUrl( QString(), i18n("*.sgrd|Sensor Files (*.sgrd)"), this, i18n( "Select Tab file to Import" ) );
 
   importWorkSheet( url );
 }

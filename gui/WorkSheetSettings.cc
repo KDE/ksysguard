@@ -37,7 +37,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
 {
   setObjectName( "WorkSheetSettings" );
   setModal( true );
-  setCaption( i18n( "Worksheet Properties" ) );
+  setCaption( i18n( "Tab Properties" ) );
   setButtons( Ok | Cancel );
   showButtonSeparator( true );
 
