@@ -324,7 +324,7 @@ void SensorDisplay::setSensorOk( bool ok )
     if ( !mPlotterWdg || mPlotterWdg->isVisible())
       return;
 
-    QPixmap errorIcon = KIconLoader::global()->loadIcon( "connect_creating", KIconLoader::Desktop,
+    QPixmap errorIcon = KIconLoader::global()->loadIcon( "dialog-error", KIconLoader::Desktop,
                                              KIconLoader::SizeSmall );
 
     mErrorIndicator = new QWidget( mPlotterWdg );
