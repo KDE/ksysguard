@@ -150,7 +150,7 @@ void TopLevel::retranslateUi()
 {
   setPlainCaption( i18n( "System Monitor" ) );
   mNewWorksheetAction->setText(i18n( "&New Worksheet..." ));
-  mInsertWorksheetAction->setText(i18n( "Import Worksheet..." ));
+  mInsertWorksheetAction->setText(i18n( "Open Worksheet..." ));
   mTabExportAction->setText( i18n( "&Export Worksheet..." ) );
   mTabRemoveAction->setText( i18n( "&Remove Worksheet" ) );
   mMonitorRemoteAction->setText( i18n( "Monitor remote machine..." ) );
