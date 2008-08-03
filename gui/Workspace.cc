@@ -202,7 +202,7 @@ void Workspace::importWorkSheet( const KUrl &url )
 bool Workspace::saveWorkSheet( WorkSheet *sheet )
 {
   if ( !sheet ) {
-    KMessageBox::sorry( this, i18n( "You do not have a worksheet that could be saved." ) );
+    KMessageBox::sorry( this, i18n( "You do not have a tab that could be saved." ) );
     return false;
   }
 
@@ -223,14 +223,14 @@ void Workspace::exportWorkSheet()
 void Workspace::exportWorkSheet( WorkSheet *sheet )
 {
   if ( !sheet ) {
-    KMessageBox::sorry( this, i18n( "You do not have a worksheet that could be saved." ) );
+    KMessageBox::sorry( this, i18n( "You do not have a tab that could be saved." ) );
     return;
   }
 
   QString fileName;
   do {
     fileName = KFileDialog::getSaveFileName( tabText(indexOf( currentWidget() ))+ ".sgrd",
-		                    "*.sgrd", this, i18n("Export Work Sheet") );
+		                    "*.sgrd", this, i18n("Export Tab") );
     if ( fileName.isEmpty() )
       return;
 
@@ -248,7 +248,7 @@ void Workspace::removeWorkSheet()
     removeTab(indexOf( current ));
     mSheetList.removeAll( current );
   } else {
-    QString msg = i18n( "There are no worksheets that could be deleted." );
+    QString msg = i18n( "There are no tabs that could be deleted." );
     KMessageBox::error( this, msg );
   }
 }
@@ -279,7 +279,7 @@ void Workspace::removeWorkSheet( const QString &fileName )
 
 void Workspace::getHotNewWorksheet()
 {
-  kDebug() << "Get new stuff";
+  kDebug() << "Need to handle get new stuff";
   
   KNS::Engine engine(this);
   if(engine.init("ksysguard.knsrc"))
