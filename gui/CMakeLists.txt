@@ -60,18 +60,6 @@ install(TARGETS kdeinit_ksysguard ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(TARGETS ksysguard         ${INSTALL_TARGETS_DEFAULT_ARGS})
 ########### next target ###############
 
-if(BUILD_KICKER)
-   set(sysguard_panelapplet_PART_SRCS KSysGuardApplet.cc KSGAppletSettings.cc ${libsensordisplays_SRCS} StyleEngine.cc)
-
-
-   kde4_add_plugin(sysguard_panelapplet ${sysguard_panelapplet_PART_SRCS})
-
-
-   target_link_libraries(sysguard_panelapplet  ${KDE4_KIO_LIBS} ${QT_QTXML_LIBRARY} ksgrd  kickermain processui plasma)
-
-   install(TARGETS sysguard_panelapplet  DESTINATION ${PLUGIN_INSTALL_DIR} )
-endif(BUILD_KICKER)
-
 set(setscheduler_SRCS setscheduler.c)
 add_executable(setscheduler ${setscheduler_SRCS})
 install(TARGETS setscheduler ${INSTALL_TARGETS_DEFAULT_ARGS})
@@ -82,6 +70,5 @@ install(TARGETS setscheduler ${INSTALL_TARGETS_DEFAULT_ARGS})
 install( FILES ksysguard.desktop  DESTINATION  ${XDG_APPS_INSTALL_DIR} )
 install( FILES ProcessTable.sgrd SystemLoad.sgrd KSysGuardApplet.xml DESTINATION  ${DATA_INSTALL_DIR}/ksysguard )
 install( FILES ksysguardui.rc  DESTINATION  ${DATA_INSTALL_DIR}/ksysguard )
-install( FILES ksysguardapplet.desktop  DESTINATION  ${DATA_INSTALL_DIR}/kicker/applets )
 install( FILES ksysguard.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 
