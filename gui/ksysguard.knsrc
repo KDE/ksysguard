@@ -1,5 +1,5 @@
 [KNewStuff2]
-#ProvidersUrl=http://.../provider.xml
+ProvidersUrl=http://newstuff.kde.org/cgi-bin/hotstuff-provider?site=ksysguard
 
 # How to check? Any number of the lines below, 'ifpossible' is default
 #ChecksumPolicy=... # never/ifpossible/always
