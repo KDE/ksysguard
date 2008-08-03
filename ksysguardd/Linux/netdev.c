@@ -291,7 +291,7 @@ void initNetDev( struct SensorModul* sm )
         char mon[ MON_SIZE ];
         *pos = '\0';
         strncpy( NetDevs[ i ].name, tag, sizeof( NetDevs[ i ].name ) );
-	    NetDevs[ i ].name[ sizeof( NetDevs[ i ].name )-1] = 0;
+        NetDevs[ i ].name[ sizeof( NetDevs[ i ].name )-1] = 0;
         FORALL( REGISTERSENSOR );
         sscanf( pos + 1, "%lli %lli %lli %lli %lli %lli %lli %lli"
                 "%lli %lli %lli %lli %lli %lli %lli %lli",
