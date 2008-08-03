@@ -173,7 +173,7 @@ bool Workspace::saveOnQuit()
 
 void Workspace::importWorkSheet()
 {
-  KUrl url = KFileDialog::getOpenUrl( QString(), i18n("*.sgrd|Sensor Files"), this, i18n( "Select Worksheet to Open" ) );
+  KUrl url = KFileDialog::getOpenUrl( QString(), i18n("*.sgrd|Sensor Files (*.sgrd)"), this, i18n( "Select Worksheet to Open" ) );
 
   importWorkSheet( url );
 }
