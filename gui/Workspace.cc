@@ -281,12 +281,14 @@ void Workspace::getHotNewWorksheet()
 {
   kDebug() << "Get new stuff";
   
-  KNS::Engine *engine = new KNS::Engine();
-  engine->init("ksysguard.knsrc");
-  KNS::Entry::List entries = engine->downloadDialogModal();
-  //TODO: inspect entries here
-  qDeleteAll(entries);
-  delete engine;
+  KNS::Engine engine(this);
+  if(engine.init("ksysguard.knsrc"))
+  {
+     KNS::Entry::List entries = engine.downloadDialogModal(this);
+     //TODO: inspect entries here
+     //Don't qDeleteAll entry it's already done when engine is deleted otherwise double delete
+     //qDeleteAll(entries);
+  }
 }
 
 bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)
