@@ -276,7 +276,7 @@ void Workspace::removeWorkSheet( const QString &fileName )
   }
 }
 
-void Workspace::getNewStuff()
+void Workspace::getHotNewWorksheet()
 {
   kDebug() << "Get new stuff";
 }

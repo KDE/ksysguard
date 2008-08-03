@@ -133,9 +133,9 @@ TopLevel::TopLevel()
   mMonitorRemoteAction->setIcon( KIcon("network-connect") );
   connect(mMonitorRemoteAction, SIGNAL(triggered(bool)), SLOT( connectHost() ));
   //knewstuff2 action
-  mNewStuffAction = actionCollection()->addAction( "get_new_stuff" );
-  mNewStuffAction->setIcon( KIcon("network-server") );
-  connect(mNewStuffAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( getNewStuff() ));
+  mHotNewWorksheetAction = actionCollection()->addAction( "get_new_worksheet" );
+  mHotNewWorksheetAction->setIcon( KIcon("network-server") );
+  connect(mHotNewWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( getHotNewWorksheet() ));
 
   mQuitAction = NULL;
 
@@ -154,7 +154,7 @@ void TopLevel::retranslateUi()
   mTabExportAction->setText( i18n( "&Export Worksheet..." ) );
   mTabRemoveAction->setText( i18n( "&Remove Worksheet" ) );
   mMonitorRemoteAction->setText( i18n( "Monitor remote machine..." ) );
-  mNewStuffAction->setText( i18n( "Download new worksheets..." ) );
+  mHotNewWorksheetAction->setText( i18n( "Download new worksheets..." ) );
   mConfigureSheetAction->setText( i18n( "&Worksheet Properties" ) );
   if(mQuitAction) {
     KAction *tmpQuitAction = KStandardAction::quit( NULL, NULL, NULL );
@@ -216,9 +216,9 @@ void TopLevel::removeWorkSheet( const QString &fileName )
   mWorkSpace->removeWorkSheet( fileName );
 }
 
-void TopLevel::getNewStuff()
+void TopLevel::getHotNewWorksheet()
 {
-  mWorkSpace->getNewStuff( );
+  mWorkSpace->getHotNewWorksheet( );
 }
 
 QStringList TopLevel::listSensors( const QString &hostName )
