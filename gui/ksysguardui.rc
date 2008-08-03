@@ -4,6 +4,7 @@
   <Menu name="file"><text>&amp;File</text>
     <Action name="new_worksheet"/>
     <Action name="import_worksheet"/>
+    <Action name="get_new_stuff"/>
     <Action name="export_worksheet"/>
     <Action name="remove_worksheet"/>
     <Separator/>
@@ -19,6 +20,7 @@
 <ToolBar name="mainToolBar" noMerge="1" hidden="true"><text>Main Toolbar</text>
     <Action name="new_worksheet"/>
     <Action name="import_worksheet"/>
+    <Action name="get_new_stuff"/>
     <Action name="export_worksheet"/>
     <Separator/>
     <Action name="connect_host"/>

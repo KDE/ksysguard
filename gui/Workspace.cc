@@ -276,6 +276,11 @@ void Workspace::removeWorkSheet( const QString &fileName )
   }
 }
 
+void Workspace::getNewStuff()
+{
+  kDebug() << "Get new stuff";
+}
+
 bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)
 {
   // extract filename without path

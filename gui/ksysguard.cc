@@ -54,6 +54,7 @@
 #include <kurl.h>
 #include <kwindowsystem.h>
 #include <QSplitter>
+#include <knewstuff2/engine.h>
 
 #include "../version.h"
 #include "SensorBrowser.h"
@@ -122,18 +123,21 @@ TopLevel::TopLevel()
   mInsertWorksheetAction = actionCollection()->addAction("import_worksheet");
   mInsertWorksheetAction->setIcon(KIcon("document-open") );
   connect(mInsertWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( importWorkSheet() ));
-  mTabRemoveAction = actionCollection()->addAction( "remove_worksheet" );
-  mTabRemoveAction->setIcon( KIcon("tab-close") );
-  connect(mTabRemoveAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( removeWorkSheet() ));
   mTabExportAction = actionCollection()->addAction( "export_worksheet" );
   mTabExportAction->setIcon( KIcon("document-save-as") );
   connect(mTabExportAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( exportWorkSheet() ));
-
-  mQuitAction = NULL;
-
+  mTabRemoveAction = actionCollection()->addAction( "remove_worksheet" );
+  mTabRemoveAction->setIcon( KIcon("tab-close") );
+  connect(mTabRemoveAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( removeWorkSheet() ));
   mMonitorRemoteAction = actionCollection()->addAction( "connect_host" );
   mMonitorRemoteAction->setIcon( KIcon("network-connect") );
   connect(mMonitorRemoteAction, SIGNAL(triggered(bool)), SLOT( connectHost() ));
+  //knewstuff2 action
+  mNewStuffAction = actionCollection()->addAction( "get_new_stuff" );
+  mNewStuffAction->setIcon( KIcon("network-server") );
+  connect(mNewStuffAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( getNewStuff() ));
+
+  mQuitAction = NULL;
 
   mConfigureSheetAction = actionCollection()->addAction( "configure_sheet" );
   mConfigureSheetAction->setIcon( KIcon("configure") );
@@ -150,6 +154,7 @@ void TopLevel::retranslateUi()
   mTabExportAction->setText( i18n( "&Export Worksheet..." ) );
   mTabRemoveAction->setText( i18n( "&Remove Worksheet" ) );
   mMonitorRemoteAction->setText( i18n( "Monitor remote machine..." ) );
+  mNewStuffAction->setText( i18n( "Download new worksheets..." ) );
   mConfigureSheetAction->setText( i18n( "&Worksheet Properties" ) );
   if(mQuitAction) {
     KAction *tmpQuitAction = KStandardAction::quit( NULL, NULL, NULL );
@@ -209,6 +214,11 @@ void TopLevel::importWorkSheet( const QString &fileName )
 void TopLevel::removeWorkSheet( const QString &fileName )
 {
   mWorkSpace->removeWorkSheet( fileName );
+}
+
+void TopLevel::getNewStuff()
+{
+  mWorkSpace->getNewStuff( );
 }
 
 QStringList TopLevel::listSensors( const QString &hostName )

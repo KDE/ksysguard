@@ -58,6 +58,7 @@ class Workspace : public KTabWidget
     void exportWorkSheet( WorkSheet *sheet );
     void removeWorkSheet();
     void removeAllWorkSheets();
+    void getNewStuff();
     void cut();
     void copy();
     void paste();
