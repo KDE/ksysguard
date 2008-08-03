@@ -148,13 +148,13 @@ TopLevel::TopLevel()
 void TopLevel::retranslateUi()
 {
   setPlainCaption( i18n( "System Monitor" ) );
-  mNewWorksheetAction->setText(i18n( "&New Worksheet..." ));
-  mInsertWorksheetAction->setText(i18n( "Open Worksheet..." ));
-  mTabExportAction->setText( i18n( "&Export Worksheet..." ) );
-  mTabRemoveAction->setText( i18n( "&Remove Worksheet" ) );
-  mMonitorRemoteAction->setText( i18n( "Monitor remote machine..." ) );
-  mHotNewWorksheetAction->setText( i18n( "Download new worksheets..." ) );
-  mConfigureSheetAction->setText( i18n( "&Worksheet Properties" ) );
+  mNewWorksheetAction->setText(i18n( "&New Tab..." ));
+  mInsertWorksheetAction->setText(i18n( "Import Tab Fr&om File..." ));
+  mTabExportAction->setText( i18n( "Save Tab &As..." ) );
+  mTabRemoveAction->setText( i18n( "&Close Tab" ) );
+  mMonitorRemoteAction->setText( i18n( "Monitor &Remote Machine..." ) );
+  mHotNewWorksheetAction->setText( i18n( "&Download New Tabs..." ) );
+  mConfigureSheetAction->setText( i18n( "Tab &Properties" ) );
   if(mQuitAction) {
     KAction *tmpQuitAction = KStandardAction::quit( NULL, NULL, NULL );
     mQuitAction->setText(tmpQuitAction->text());
