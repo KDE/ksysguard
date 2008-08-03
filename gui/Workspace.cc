@@ -284,7 +284,8 @@ void Workspace::getHotNewWorksheet()
   KNS::Engine *engine = new KNS::Engine();
   engine->init("ksysguard.knsrc");
   KNS::Entry::List entries = engine->downloadDialogModal();
-  // inspect entries, if wanted
+  //TODO: inspect entries here
+  qDeleteAll(entries);
   delete engine;
 }
 
