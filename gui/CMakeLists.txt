@@ -54,7 +54,7 @@ set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
 
 kde4_add_kdeinit_executable(ksysguard ${ksysguard_KDEINIT_SRCS})
 
-target_link_libraries(kdeinit_ksysguard processui ${KDE4_KIO_LIBS} ksgrd plasma)
+target_link_libraries(kdeinit_ksysguard processui ${KDE4_KIO_LIBS} ksgrd plasma ${KDE4_KNEWSTUFF2_LIBS})
 
 install(TARGETS kdeinit_ksysguard ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(TARGETS ksysguard         ${INSTALL_TARGETS_DEFAULT_ARGS})
