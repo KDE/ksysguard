@@ -100,7 +100,7 @@ void initCommand( void )
   sigaddset( &SignalSet, SIGALRM );
 
   registerCommand( "monitors", printMonitors );
-  registerCommand( "test", printTest );
+  /* registerCommand( "test", printTest ); */
 
   if ( RunAsDaemon == 0 )
     registerCommand( "quit", exQuit );
