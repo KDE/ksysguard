@@ -123,9 +123,9 @@ void parseConfigFile( const char *filename )
       for ( token = strtok( begin, ","); token; token = strtok( NULL, "," ) )
         push_ctnr( SensorList, strdup( token ) );
     }
-	}
+  }
 
-	fclose( config );
+  fclose( config );
 }
 
 int sensorAvailable( const char *sensor )
