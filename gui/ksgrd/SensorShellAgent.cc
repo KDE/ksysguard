@@ -135,7 +135,7 @@ void SensorShellAgent::daemonError( QProcess::ProcessError errorStatus )
   }
   kDebug() << "error " << error;
   setReasonForOffline(error);
-  kDebug() << "Error recieved " << errorStatus;
+  kDebug() << "Error received " << errorStatus;
   setDaemonOnLine( false );
   if(sensorManager())
     sensorManager()->hostLost( this );

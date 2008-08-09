@@ -807,7 +807,7 @@ void KSignalPlotter::drawBeam(QPainter *p, const QRect &boundingBox, int horizon
       // Apply a weighted average just to smooth the graph out a bit
       y0 = (2*y0 + y1)/3;
       y1 = (2*y1 + y2)/3;
-      // We don't bother to average out y2.  This will introduce slight inaccuracies in the gradients, but they aren't really noticable.
+      // We don't bother to average out y2.  This will introduce slight inaccuracies in the gradients, but they aren't really noticeable.
     }
     QColor beamColor = mBeamColors[j];
     if(mFillOpacity)

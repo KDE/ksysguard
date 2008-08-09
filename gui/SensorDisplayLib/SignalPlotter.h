@@ -381,7 +381,7 @@ class KSignalPlotter : public QWidget
 
     QFont mFont;
     int mAxisTextWidth;
-    QRect mPlottingArea; /// The area in which the beams are drawn.  Saved to make update() more efficent
+    QRect mPlottingArea; /// The area in which the beams are drawn.  Saved to make update() more efficient
 
     bool mSmoothGraph; /// Whether to smooth the graph by averaging using the formula (value*2 + last_value)/3.
 };

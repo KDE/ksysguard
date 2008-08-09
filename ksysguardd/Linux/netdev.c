@@ -411,7 +411,7 @@ int updateNetDev( void )
   }
   OldHash = hash;
 
-  /* We read the informations about the wifi from /proc/net/wireless and store it into NetDevWifiBuf */
+  /* We read the information about the wifi from /proc/net/wireless and store it into NetDevWifiBuf */
   if ( ( fd = open( "/proc/net/wireless", O_RDONLY ) ) < 0 ) {
     /* /proc/net/wireless may not exist on some machines. */
     NetDevWifiBuf[0]='\0';
