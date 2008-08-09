@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=System Monitor
 Name[af]=Stelsel Monitor
-Name[ar]=مراقب النظام
+Name[ar]=شاشة النظام
 Name[be]=Сістэмны назіральнік
 Name[bg]=Мониторинг на системата
 Name[bn_IN]=সিস্টেম নিরীক্ষণ ব্যবস্থা
@@ -64,7 +64,7 @@ Name[x-test]=xxSystem Monitorxx
 Name[zh_CN]=系统监视器
 Name[zh_TW]=系統監視器
 Comment=An applet which monitors system information
-Comment[ar]=بريمج يراقب معلومات النظام
+Comment[ar]=بريمج معلومات شاشة النظام
 Comment[be]=Аплет, які адлюстроўвае звесткі пра сістэму
 Comment[bg]=Аплет за наблюдение на системата
 Comment[bn_IN]=সিস্টেমের তথ্য নিরীক্ষণকারী একটি অ্যাপ্লেট
