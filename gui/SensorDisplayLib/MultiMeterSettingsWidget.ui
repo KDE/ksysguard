@@ -68,7 +68,7 @@
        <property name="sizeType" >
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>20</width>
          <height>20</height>
@@ -127,7 +127,7 @@
        <property name="sizeType" >
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>20</width>
          <height>20</height>
@@ -173,6 +173,9 @@
        <property name="text" >
         <string>Normal digit color:</string>
        </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
        <property name="wordWrap" >
         <bool>false</bool>
        </property>
@@ -196,6 +199,9 @@
       <widget class="QLabel" name="textLabel2_2" >
        <property name="text" >
         <string>Alarm digit color:</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
        <property name="wordWrap" >
         <bool>false</bool>
@@ -221,6 +227,9 @@
        <property name="text" >
         <string>Background color:</string>
        </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
        <property name="wordWrap" >
         <bool>false</bool>
        </property>
@@ -232,6 +241,19 @@
         <string/>
        </property>
       </widget>
+     </item>
+     <item row="1" column="2" >
+      <spacer name="horizontalSpacer" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>
