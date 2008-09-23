@@ -25,7 +25,7 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QLayout>
-#include <QSpinBox>
+#include <QDoubleSpinBox>
 #include <QWhatsThis>
 
 #include "TimerSettings.h"
@@ -52,8 +52,8 @@ TimerSettings::TimerSettings( QWidget *parent, const char *name )
   mLabel = new QLabel( i18n( "Update interval:" ), page );
   layout->addWidget( mLabel, 1, 0 );
 
-  mInterval = new QSpinBox( page );
-  mInterval->setRange( 1, 300 );
+  mInterval = new QDoubleSpinBox( page );
+  mInterval->setRange( 0.1, 10000 );
   mInterval->setSingleStep( 1 );
   mInterval->setValue( 2 );
   mInterval->setSuffix( i18n( " sec" ) );

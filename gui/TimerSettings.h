@@ -30,7 +30,7 @@
 #include <kdialog.h>
 
 class QCheckBox;
-class QSpinBox;
+class QDoubleSpinBox;
 
 class KDE_EXPORT TimerSettings : public KDialog
 {
@@ -52,7 +52,7 @@ class KDE_EXPORT TimerSettings : public KDialog
   private:
     QCheckBox* mUseGlobalUpdate;
     QLabel* mLabel;
-    QSpinBox* mInterval;
+    QDoubleSpinBox* mInterval;
 };
 
 #endif
