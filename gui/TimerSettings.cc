@@ -83,12 +83,12 @@ bool TimerSettings::useGlobalUpdate() const
   return mUseGlobalUpdate->isChecked();
 }
 
-void TimerSettings::setInterval( int interval )
+void TimerSettings::setInterval( double interval )
 {
   mInterval->setValue( interval );
 }
 
-int TimerSettings::interval() const
+double TimerSettings::interval() const
 {
   return mInterval->value();
 }

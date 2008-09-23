@@ -104,12 +104,12 @@ void KSGAppletSettings::setSizeRatio( int value )
   mSizeRatio->setValue( value );
 }
 
-int KSGAppletSettings::updateInterval() const
+double KSGAppletSettings::updateInterval() const
 {
   return mInterval->value();
 }
 
-void KSGAppletSettings::setUpdateInterval( int value )
+void KSGAppletSettings::setUpdateInterval( double value )
 {
   mInterval->setValue( value );
 }

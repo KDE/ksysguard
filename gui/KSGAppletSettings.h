@@ -37,8 +37,8 @@ class KSGAppletSettings : public KDialog
     void setSizeRatio( int );
     int sizeRatio() const;
 
-    void setUpdateInterval( int );
-    int updateInterval() const;
+    void setUpdateInterval( double );
+    double updateInterval() const;
 
   private:
     QSpinBox *mInterval;

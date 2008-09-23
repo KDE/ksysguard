@@ -43,8 +43,8 @@ class KDE_EXPORT TimerSettings : public KDialog
     void setUseGlobalUpdate( bool value );
     bool useGlobalUpdate() const;
 
-    void setInterval( int interval );
-    int interval() const;
+    void setInterval( double interval );
+    double interval() const;
 
   private Q_SLOTS:
     void globalUpdateChanged( bool );
