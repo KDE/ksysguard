@@ -382,7 +382,7 @@ void FancyPlotter::timerTick( ) //virtual
 	if(sensor->beamId == beamId)
 	  continue;
 	beamId = sensor->beamId;
-        if(sensor->isOk()) {
+        if(sensor->isOk() && mPlotter->numBeams() > beamId) {
           lastValue = mPlotter->lastValueAsString(beamId);
         } else {
           lastValue = i18n("Error");
