@@ -56,7 +56,7 @@ class KDE_EXPORT SensorAgent : public QObject
                         const QString &command = "", int port = -1 ) = 0;
 
     /**
-      This function should only be used by the the SensorManager and
+      This function should only be used by the SensorManager and
       never by the SensorClients directly since the pointer returned by
       engaged is not guaranteed to be valid. Only the SensorManager knows
       whether a SensorAgent pointer is still valid or not.
