@@ -2,6 +2,7 @@
 IconName=utilities-system-monitor
 Comment=KDE System Guard
 Comment[af]=KDE Stelsel Wag
+Comment[ar]=حارس نظام كيدي
 Comment[be]=Сістэмны вартаўнік KDE
 Comment[be@latin]=Systemny vartaŭnik „KDE”
 Comment[bg]=Системна защита
@@ -78,6 +79,7 @@ Comment[zh_TW]=KDE 系統守衛
 [Event/pattern_match]
 Name=Pattern Matched
 Name[af]=Patroon gevind
+Name[ar]=تطابق النقش
 Name[be@latin]=Šablon maje adpaviednik
 Name[ca]=S'ha trobat el patró
 Name[cs]=Vzorek odpovídá
@@ -134,6 +136,7 @@ Name[zh_CN]=匹配的模式
 Name[zh_TW]=樣式已符合
 Comment=Search pattern matched
 Comment[af]=Soek patroon opgespoor
+Comment[ar]=إبحث عن نقش متطابق
 Comment[be@latin]=Šablon pošuku maje adpaviednik.
 Comment[bn]=সন্ধান করা প্যাটার্ন-এর মিল পাওয়া গেছে
 Comment[bn_IN]=সন্ধান করা প্যাটার্ন-এর মিল পাওয়া গেছে
@@ -198,6 +201,7 @@ Comment[zh_TW]=搜尋樣式比對符合
 
 [Event/sensor_alarm]
 Name=Sensor Alarm
+Name[ar]=إنذار المِجَسّ
 Name[be@latin]=Tryvožny syhnał ad sensara
 Name[ca]=Alarma dels sensors
 Name[cs]=Alarm sensoru
@@ -253,6 +257,7 @@ Name[zh_CN]=传感器警报
 Name[zh_TW]=感應器警報
 Comment=Sensor exceeded critical limit
 Comment[af]=Sensor oorskry krities beperk
+Comment[ar]=مِجَسّ تجاوز الحدود
 Comment[be@latin]=Vartaść sensara siahnuła krytyčnaj miažy.
 Comment[bn]=সেনসর বিপদসীমা ছাড়িয়ে গেছে
 Comment[bn_IN]=সেনসর বিপদসীমা ছাড়িয়ে গেছে
