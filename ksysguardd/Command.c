@@ -225,7 +225,7 @@ void executeCommand( const char* command )
 
       if ( ReconfigureFlag ) {
         ReconfigureFlag = 0;
-        print_error( "RECONFIGURE\n" );
+        print_error( "RECONFIGURE" );
       }
 
       fflush( CurrentClient );

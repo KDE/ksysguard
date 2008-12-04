@@ -106,7 +106,7 @@ The 'quit' command terminates ksysguardd.
 
 ksysguardd may support dynamic monitor sets. If a CPU is added or an
 interface disabled, monitors may be added or removed. To notify the
-front-end about this, you need to send the string "RECONFIGURE\n" over
+front-end about this, you need to send the string "RECONFIGURE" over
 stderr. This causes the front-end to request the list of monitors
 again and adapt it's layout accordingly. If ksysguardd receives a
 command it doesn't know it has to reply with "UNKNOWN

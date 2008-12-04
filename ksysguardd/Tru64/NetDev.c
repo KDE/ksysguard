@@ -242,7 +242,7 @@ int getnetdevlist( void ) {
 	close( fd );
 
 	if( (prevCount > 0) && (prevCount != NetDevCount) ) {
-		print_error( "RECONFIGURE\n" );
+		print_error( "RECONFIGURE" );
 		prevCount = NetDevCount;
 	}
 

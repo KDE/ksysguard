@@ -144,7 +144,7 @@ void checkDiskStat( void )
   OldDiskStatList = NULL;
   updateDiskStat();
   if(changed)
-      print_error( "RECONFIGURE\n" ); /*Let ksysguard know that we've added a sensor*/
+      print_error( "RECONFIGURE" ); /*Let ksysguard know that we've added a sensor*/
 }
 
 int updateDiskStat( void )

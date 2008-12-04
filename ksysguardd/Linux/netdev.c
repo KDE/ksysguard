@@ -406,7 +406,7 @@ int updateNetDev( void )
         hash = ( ( hash << 6 ) + *p ) % 390389;
 
   if ( OldHash != 0 && OldHash != hash ) {
-    print_error( "RECONFIGURE\n" );
+    print_error( "RECONFIGURE" );
     CheckSetupFlag = 1;
   }
   OldHash = hash;
