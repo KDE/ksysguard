@@ -137,14 +137,14 @@ class SensorIntegerInfo : public SensorTokenizer
       return QString::fromUtf8((*this)[ 0 ]);
     }
 
-    long min()
+    long long min()
     {
-      return (*this)[ 1 ].toLong();
+      return (*this)[ 1 ].toLongLong();
     }
 
-    long max()
+    long long max()
     {
-      return (*this)[ 2 ].toLong();
+      return (*this)[ 2 ].toLongLong();
     }
 
     QString unit()
