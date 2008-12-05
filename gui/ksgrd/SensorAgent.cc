@@ -112,12 +112,8 @@ void SensorAgent::processAnswer( const char *buf, int buflen )
       }
       if(found) {
         buffer.remove(startOfError, i-startOfError+1);
-	i = startOfAnswer;
-	if(i > 0 && buffer.constData()[i-1]== '\n') {
-		i--;
-		startOfAnswer--;
-	}
-        continue;
+	i = startOfAnswer - 1;
+	continue;
       } else {
         //We have not found the end of the escape string.  Try checking in the next packet
         mLeftOverBuffer = QByteArray(buffer.constData()+startOfAnswer, buffer.size()-startOfAnswer);
@@ -126,7 +122,7 @@ void SensorAgent::processAnswer( const char *buf, int buflen )
     }
 
     //The spec was supposed to be that it returned "\nksysguardd> " but some seem to forget the space, so we have to compensate.  Sigh 
-    if( (i==0 && buffer.size() -i >= (signed)(sizeof("ksysguardd>"  ))-1 && qstrncmp(buffer.constData()+i, "ksysguardd>",   sizeof("ksysguardd>"  )-1) == 0) ||
+    if( (i==startOfAnswer && buffer.size() -i >= (signed)(sizeof("ksysguardd>"  ))-1 && qstrncmp(buffer.constData()+i, "ksysguardd>",   sizeof("ksysguardd>"  )-1) == 0) ||
 	(buffer.size() -i >= (signed)(sizeof("\nksysguardd>"))-1 && qstrncmp(buffer.constData()+i, "\nksysguardd>", sizeof("\nksysguardd>")-1) == 0)) {
 
 	QByteArray answer(buffer.constData()+startOfAnswer, i-startOfAnswer);
