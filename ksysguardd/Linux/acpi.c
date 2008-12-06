@@ -138,6 +138,8 @@ int updateAcpiBattery( void )
     }
     close( fd );
     p = AcpiBatInfoBuf;
+    if ( p && strstr(p, "ERROR: Unable to read battery") )
+            return 0;  //If we can't read the battery, reuse the last value
     while ( ( p!= NULL ) && ( sscanf( p, "last full capacity: %d ",
                               &AcpiBatCapacity ) != 1 ) ) {
       p = strchr( p, '\n' );
