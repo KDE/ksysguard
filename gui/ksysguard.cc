@@ -438,11 +438,11 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
   if(!answerList.isEmpty()) answer = answerList[0];
   QString s;
   static QString unit;
-  static long mFree = 0;
-  static long mUsedApplication = 0;
-  static long mUsedTotal = 0;
-  static long sUsed = 0;
-  static long sFree = 0;
+  static qlonglong mFree = 0;
+  static qlonglong mUsedApplication = 0;
+  static qlonglong mUsedTotal = 0;
+  static qlonglong sUsed = 0;
+  static qlonglong sFree = 0;
 
   switch ( id ) {
     case 0:
@@ -457,15 +457,15 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
       break;
 
     case 2:
-      mFree = answer.toLong();
+      mFree = answer.toLongLong();
       break;
 
     case 3:
-      mUsedTotal = answer.toLong();
+      mUsedTotal = answer.toLongLong();
       break;
 
     case 4:
-      mUsedApplication = answer.toLong();
+      mUsedApplication = answer.toLongLong();
       s = i18n( " Memory: %1 / %2 " ,
                 KGlobal::locale()->formatByteSize( mUsedApplication*1024),
                 KGlobal::locale()->formatByteSize( (mFree+mUsedTotal)*1024 ) );
