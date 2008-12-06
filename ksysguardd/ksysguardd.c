@@ -511,7 +511,10 @@ char* escapeString( char* string ) {
   length = i;
 
   /* Allocate a new string, result, with enough room for the escaped characters */
-  result = (char *)malloc( length + charsToEscape + 1 );
+  if(! (result = (char *)malloc( length + charsToEscape + 1 )) ) {
+    print_error("Malloc failed - out of memory");
+    exit(1);
+  }
   resultP = result;
   /* Fill result with an escaped version of string */
   i = 0;

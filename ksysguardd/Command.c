@@ -114,7 +114,10 @@ void exitCommand( void )
 void registerCommand( const char* command, cmdExecutor ex )
 {
   Command* cmd = (Command*)malloc( sizeof( Command ) );
-  cmd->command = (char*)malloc( strlen( command ) + 1 );
+  if(!cmd || !(cmd->command = (char*)malloc( strlen( command ) + 1 ))) {
+    print_error("Out of memory");
+    return;
+  }
   strcpy( cmd->command, command );
   cmd->type = 0;
   cmd->ex = ex;
@@ -151,10 +154,19 @@ void registerAnyMonitor( const char* command, const char* type, cmdExecutor ex,
    * a description of the monitor, the mininum value, the maximum value
    * and the unit. */
   Command* cmd = (Command*)malloc( sizeof( Command ) );
-  cmd->command = (char*)malloc( strlen( command ) + 1 );
+  if(!cmd || !(cmd->command = (char*)malloc( strlen( command ) + 1 ))) {
+      print_error("Out of memory");
+      return;
+  }
+
   strcpy( cmd->command, command );
   cmd->ex = ex;
   cmd->type = (char*)malloc( strlen( type ) + 1 );
+  if(!cmd->type ) {
+      print_error("Out of memory");
+      return;
+  }
+
   strcpy( cmd->type, type );
   cmd->isMonitor = 1;
   cmd->isLegacy = isLegacy;
@@ -162,7 +174,17 @@ void registerAnyMonitor( const char* command, const char* type, cmdExecutor ex,
   push_ctnr( CommandList, cmd );
 
   cmd = (Command*)malloc( sizeof( Command ) );
+  if(!cmd ) {
+      print_error("Out of memory");
+      return;
+  }
+
   cmd->command = (char*)malloc( strlen( command ) + 2 );
+  if(!cmd->command ) {
+      print_error("Out of memory");
+      return;
+  }
+
   strcpy( cmd->command, command );
   cmd->command[ strlen( command ) ] = '?';
   cmd->command[ strlen( command ) + 1 ] = '\0';
@@ -195,6 +217,11 @@ void removeMonitor( const char* command )
 
   removeCommand( command );
   buf = (char*)malloc( strlen( command ) + 2 );
+  if(!buf ) {
+      print_error("Out of memory");
+      return;
+  }
+
   strcpy( buf, command );
   strcat( buf, "?" );
   removeCommand( buf );
