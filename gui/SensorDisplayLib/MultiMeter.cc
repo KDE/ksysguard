@@ -38,7 +38,7 @@ MultiMeter::MultiMeter(QWidget* parent, const QString& title, SharedSettings *wo
   : KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
   setShowUnit( true );
-  mLowerLimit = mUpperLimit = 0;
+  mLowerLimit = mUpperLimit = 0.0;
   mLowerLimitActive = mUpperLimitActive = false;
 
   mIsFloat = false;
@@ -139,9 +139,9 @@ void MultiMeter::answerReceived(int id, const QList<QByteArray>& answerlist)
 bool MultiMeter::restoreSettings(QDomElement& element)
 {
   mLowerLimitActive = element.attribute("lowerLimitActive").toInt();
-  mLowerLimit = element.attribute("lowerLimit").toLong();
+  mLowerLimit = element.attribute("lowerLimit").toDouble();
   mUpperLimitActive = element.attribute("upperLimitActive").toInt();
-  mUpperLimit = element.attribute("upperLimit").toLong();
+  mUpperLimit = element.attribute("upperLimit").toDouble();
 
   mNormalDigitColor = restoreColor(element, "normalDigitColor",
             KSGRD::Style->firstForegroundColor());
@@ -166,9 +166,9 @@ bool MultiMeter::saveSettings(QDomDocument& doc, QDomElement& element)
   }
   element.setAttribute("showUnit", showUnit());
   element.setAttribute("lowerLimitActive", (int) mLowerLimitActive);
-  element.setAttribute("lowerLimit", (int) mLowerLimit);
+  element.setAttribute("lowerLimit", mLowerLimit);
   element.setAttribute("upperLimitActive", (int) mUpperLimitActive);
-  element.setAttribute("upperLimit", (int) mUpperLimit);
+  element.setAttribute("upperLimit", mUpperLimit);
 
   saveColor(element, "normalDigitColor", mNormalDigitColor);
   saveColor(element, "mAlarmDigitColor", mAlarmDigitColor);
