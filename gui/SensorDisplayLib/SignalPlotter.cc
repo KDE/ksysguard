@@ -564,6 +564,8 @@ void KSignalPlotter::drawWidget(QPainter *p, QRect boundingBox, bool onlyDrawPlo
     boundingBox = mPlottingArea;
   }
 
+  if(boundingBox.height() <= 2 || boundingBox.width() <= 2 ) return;
+
   if(mBackgroundImage.isNull() || mBackgroundImage.height() != boundingBox.height() || mBackgroundImage.width() != boundingBox.width()) { //recreate on resize etc
 
     mBackgroundImage = QPixmap(boundingBox.width(), boundingBox.height());
