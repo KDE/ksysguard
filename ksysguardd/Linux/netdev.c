@@ -459,14 +459,14 @@ void printNetDev##a( const char* cmd ) \
   for ( i = 0; i < MAXNETDEVS; ++i ) \
     if ( strcmp( NetDevs[ i ].name, dev ) == 0) { \
       if (f) \
-         fprintf( CurrentClient, "%li\n", (long) \
+         output( "%li\n", (long) \
                 ( NetDevs[ i ].a / ( NetDevs[ i ].a##Scale * timeInterval ) ) ); \
       else \
-         fprintf( CurrentClient, "%li\n", (long) NetDevs[ i ].a ); \
+         output( "%li\n", (long) NetDevs[ i ].a ); \
       return; \
     } \
  \
-  fprintf( CurrentClient, "0\n" ); \
+  output( "0\n" ); \
 } \
  \
 void printNetDev##a##Info( const char* cmd ) \
@@ -482,7 +482,7 @@ void printNetDev##a##Info( const char* cmd ) \
   strncpy( dev, beg + 1, end - beg - 1 ); \
   dev[ end - beg - 1 ] = '\0'; \
 \
-  fprintf( CurrentClient, "%s %s\t0\t0\t%s\n", dev, c, d ); \
+  output( "%s %s\t0\t0\t%s\n", dev, c, d ); \
 }
 
 FORALL( PRINTFUNC )

@@ -63,7 +63,17 @@ void command_cleanup( void* v )
 
 int ReconfigureFlag = 0;
 int CheckSetupFlag = 0;
-
+void output( const char *fmt, ...)
+{
+  if( !CurrentClient )
+    return;
+  va_list az;
+  va_start( az, fmt);
+  if(vfprintf(CurrentClient, fmt, az) < 0) {
+    fprintf(stderr, "Error talking to client.  Exiting\n.");
+    exit(EXIT_FAILURE);
+  }
+}
 void print_error( const char *fmt, ... )
 {
   char errmsg[ 1024 ];
@@ -75,7 +85,7 @@ void print_error( const char *fmt, ... )
   va_end( az );
 
   if ( CurrentClient )
-    fprintf( CurrentClient, "\033%s\033", errmsg );
+    output( "\033%s\033", errmsg );
 }
 
 void log_error( const char *fmt, ... )
@@ -261,7 +271,7 @@ void executeCommand( const char* command )
   }
 
   if ( CurrentClient ) {
-    fprintf( CurrentClient, "UNKNOWN COMMAND\n" );
+    output( "UNKNOWN COMMAND\n" );
     fflush( CurrentClient );
   }
 }
@@ -275,7 +285,7 @@ void printMonitors( const char *c )
 
   for ( cmd = first_ctnr( CommandList ); cmd; cmd = next_ctnr( CommandList ) ) {
     if ( cmd->isMonitor && !cmd->isLegacy )
-      fprintf(CurrentClient, "%s\t%s\n", cmd->command, cmd->type);
+      output( "%s\t%s\n", cmd->command, cmd->type);
   }
 
   fflush( CurrentClient );
@@ -287,13 +297,13 @@ void printTest( const char* c )
 
   for ( cmd = first_ctnr( CommandList ); cmd; cmd = next_ctnr( CommandList ) ) {
     if ( strcmp( cmd->command, c + strlen( "test " ) ) == 0 ) {
-      fprintf( CurrentClient, "1\n" );
+      output( "1\n" );
       fflush( CurrentClient );
       return;
     }
   }
 
-  fprintf( CurrentClient, "0\n" );
+  output( "0\n" );
   fflush( CurrentClient );
 }
 

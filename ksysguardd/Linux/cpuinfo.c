@@ -201,7 +201,7 @@ void printCPUxClock( const char* cmd )
     processCpuInfo();
 
   sscanf( cmd + 7, "%d", &id );
-  fprintf( CurrentClient, "%f\n", Clocks[ id ] );
+  output( "%f\n", Clocks[ id ] );
 }
 
 void printCPUxClockInfo( const char* cmd )
@@ -209,7 +209,7 @@ void printCPUxClockInfo( const char* cmd )
   int id;
 
   sscanf( cmd + 7, "%d", &id );
-  fprintf( CurrentClient, "CPU%d Clock Frequency\t0\t0\tMHz\n", id );
+  output( "CPU%d Clock Frequency\t0\t0\tMHz\n", id );
 }
 
 void printNumCpus( const char* cmd )
@@ -219,14 +219,14 @@ void printNumCpus( const char* cmd )
   if ( Dirty )
     processCpuInfo();
 
-  fprintf( CurrentClient, "%d\n", numProcessors );
+  output( "%d\n", numProcessors );
 }
 
 void printNumCpusInfo( const char* cmd )
 {
   (void) cmd;
   
-  fprintf( CurrentClient, "Number of physical CPUs\t0\t0\t\n" );
+  output( "Number of physical CPUs\t0\t0\t\n" );
 }
 
 void printNumCores( const char* cmd )
@@ -236,12 +236,12 @@ void printNumCores( const char* cmd )
   if ( Dirty )
     processCpuInfo();
 
-  fprintf( CurrentClient, "%d\n", numCores );
+  output( "%d\n", numCores );
 }
 
 void printNumCoresInfo( const char* cmd )
 {
   (void) cmd;
 
-  fprintf( CurrentClient, "Total number of processor cores\t0\t0\t\n" );
+  output( "Total number of processor cores\t0\t0\t\n" );
 }

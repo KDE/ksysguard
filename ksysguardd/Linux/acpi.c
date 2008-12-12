@@ -196,7 +196,7 @@ void printAcpiBatFill( const char* cmd )
   int i;
 
   sscanf( cmd + 13, "%d", &i );
-  fprintf( CurrentClient, "%d\n", AcpiBatteryCharge[ i ] );
+  output( "%d\n", AcpiBatteryCharge[ i ] );
 }
 
 void printAcpiBatFillInfo( const char* cmd )
@@ -204,7 +204,7 @@ void printAcpiBatFillInfo( const char* cmd )
   int i;
 
   sscanf( cmd + 13, "%d", &i );
-  fprintf( CurrentClient, "Battery %d charge\t0\t100\t%%\n", i );
+  output( "Battery %d charge\t0\t100\t%%\n", i );
 }
 
 void printAcpiBatUsage( const char* cmd)
@@ -212,7 +212,7 @@ void printAcpiBatUsage( const char* cmd)
  int i;
  
  sscanf( cmd + 13, "%d", &i );
- fprintf(CurrentClient, "%d\n", AcpiBatteryUsage[ i ] );
+ output( "%d\n", AcpiBatteryUsage[ i ] );
 }
 
 void printAcpiBatUsageInfo( const char* cmd)
@@ -222,7 +222,7 @@ void printAcpiBatUsageInfo( const char* cmd)
 
  sscanf(cmd+13, "%d", &i);
 
- fprintf(CurrentClient, "Battery %d usage\t0\t2500\tmA\n", i );
+ output( "Battery %d usage\t0\t2500\tmA\n", i );
 }
 
 /************** ACPI Thermal *****************/
@@ -333,14 +333,14 @@ static int getCurrentTemperature(const char *cmd)
 
 void printThermalZoneTemperature(const char *cmd) {
 	int temperature = getCurrentTemperature(cmd);
-	fprintf(CurrentClient, "%d\n", temperature);
+	output( "%d\n", temperature);
 }
 
 void printThermalZoneTemperatureInfo(const char *cmd)
 {
 	(void)cmd;
 
-	fprintf(CurrentClient, "Current temperature\t0\t0\tC\n");
+	output( "Current temperature\t0\t0\tC\n");
 }
 
 /********** ACPI Fan State***************/
@@ -433,12 +433,12 @@ static int getFanState(const char *cmd)
 
 void printFanState(const char *cmd) {
 	int fan_state = getFanState(cmd);
-	fprintf(CurrentClient, "%d\n", fan_state);
+	output( "%d\n", fan_state);
 }
 
 void printFanStateInfo(const char *cmd)
 {
 	(void)cmd;
 
-	fprintf(CurrentClient, "Fan status\t0\t1\tboolean\n");
+	output( "Fan status\t0\t1\tboolean\n");
 }

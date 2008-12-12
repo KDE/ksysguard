@@ -96,37 +96,37 @@ int updateI8k( void )
 void printI8kCPUTemperature( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "%d\n", cpuTemp );
+  output( "%d\n", cpuTemp );
 }
 
 void printI8kCPUTemperatureInfo( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "CPU Temperature\t0\t0\tC\n" );
+  output( "CPU Temperature\t0\t0\tC\n" );
 }
 
 void printI8kFan0Speed( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "%d\n", fan0Speed );
+  output( "%d\n", fan0Speed );
 }
 
 void printI8kFan0SpeedInfo( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "Left fan\t0\t0\trpm\n" );
+  output( "Left fan\t0\t0\trpm\n" );
 }
 
 void printI8kFan1Speed( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "%d\n", fan1Speed );
+  output( "%d\n", fan1Speed );
 }
 
 void printI8kFan1SpeedInfo( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "Right fan\t0\t0\trpm\n" );
+  output( "Right fan\t0\t0\trpm\n" );
 }
 
 #else /* HAVE_I8K_SUPPORT */

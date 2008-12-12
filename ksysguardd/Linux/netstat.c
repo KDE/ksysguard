@@ -182,7 +182,7 @@ int get_num_sockets(FILE *netstat)
 
 void printSocketInfo(SocketInfo* socket_info)
 {
-	fprintf(CurrentClient, "%s\t%s\t%s\t%s\t%s\t%d\n",
+	output( "%s\t%s\t%s\t%s\t%s\t%d\n",
 		socket_info->local_addr,
 		socket_info->local_port,
 		socket_info->remote_addr,
@@ -415,26 +415,26 @@ printNetStat(const char* cmd)
 		updateNetStat();
 
 	if (strstr(cmd, "tcp") != NULL)
-		fprintf(CurrentClient, "%d\n", num_tcp);
+		output( "%d\n", num_tcp);
 	if (strstr(cmd, "udp") != NULL)
-		fprintf(CurrentClient, "%d\n", num_udp);
+		output( "%d\n", num_udp);
 	if (strstr(cmd, "unix") != NULL)
-		fprintf(CurrentClient, "%d\n", num_unix);
+		output( "%d\n", num_unix);
 	if (strstr(cmd, "raw") != NULL)
-		fprintf(CurrentClient, "%d\n", num_raw);
+		output( "%d\n", num_raw);
 }
 
 void
 printNetStatInfo(const char* cmd)
 {
 	if (strstr(cmd, "tcp") != NULL)
-		fprintf(CurrentClient, "Number of TCP-Sockets\t0\t0\tSockets\n");
+		output( "Number of TCP-Sockets\t0\t0\tSockets\n");
 	if (strstr(cmd, "udp") != NULL)
-		fprintf(CurrentClient, "Number of UDP-Sockets\t0\t0\tSockets\n");
+		output( "Number of UDP-Sockets\t0\t0\tSockets\n");
 	if (strstr(cmd, "unix") != NULL)
-		fprintf(CurrentClient, "Number of UnixDomain-Sockets\t0\t0\tSockets\n");
+		output( "Number of UnixDomain-Sockets\t0\t0\tSockets\n");
 	if (strstr(cmd, "raw") != NULL)
-		fprintf(CurrentClient, "Number of Raw-Sockets\t0\t0\tSockets\n");
+		output( "Number of Raw-Sockets\t0\t0\tSockets\n");
 }
 
 void
@@ -450,7 +450,7 @@ printNetStatTcpUdpRaw(const char *cmd)
 			printSocketInfo(socket_info);
 
 		if (level_ctnr(TcpSocketList) == 0)
-			fprintf(CurrentClient, "\n");
+			output( "\n");
 	}
 
 	if (strstr(cmd, "udp")) {
@@ -461,7 +461,7 @@ printNetStatTcpUdpRaw(const char *cmd)
 			printSocketInfo(socket_info);
 
 		if (level_ctnr(UdpSocketList) == 0)
-			fprintf(CurrentClient, "\n");
+			output( "\n");
 	}
 
 	if (strstr(cmd, "raw")) {
@@ -472,7 +472,7 @@ printNetStatTcpUdpRaw(const char *cmd)
 			printSocketInfo(socket_info);
 
 		if (level_ctnr(RawSocketList) == 0)
-			fprintf(CurrentClient, "\n");
+			output( "\n");
 	}
 }
 
@@ -480,7 +480,7 @@ void
 printNetStatTcpUdpRawInfo(const char *cmd)
 {
 	(void) cmd;
-	fprintf(CurrentClient, "Local Address\tPort\tForeign Address\tPort\tState\tUID\ns\ts\ts\ts\ts\td\n");
+	output( "Local Address\tPort\tForeign Address\tPort\tState\tUID\ns\ts\ts\ts\ts\td\n");
 }
 
 void printNetStatUnix(const char *cmd)
@@ -492,7 +492,7 @@ void printNetStatUnix(const char *cmd)
 		updateNetStatUnix();
 	
 	for (unix_info = first_ctnr(UnixSocketList); unix_info; unix_info = next_ctnr(UnixSocketList)) {
-		fprintf(CurrentClient, "%d\t%s\t%s\t%d\t%s\n",
+		output( "%d\t%s\t%s\t%d\t%s\n",
 			unix_info->refcount,
 			unix_info->type,
 			unix_info->state,
@@ -501,11 +501,11 @@ void printNetStatUnix(const char *cmd)
 	}
 
 	if (level_ctnr(UnixSocketList) == 0)
-		fprintf(CurrentClient, "\n");
+		output( "\n");
 }
 
 void printNetStatUnixInfo(const char *cmd)
 {
 	(void) cmd;
-	fprintf(CurrentClient, "RefCount\tType\tState\tInode\tPath\nd\ts\ts\td\ts\n");
+	output( "RefCount\tType\tState\tInode\tPath\nd\ts\ts\td\ts\n");
 }

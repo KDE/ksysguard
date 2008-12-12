@@ -107,13 +107,13 @@ void printLoadAvg1( const char* cmd )
   if ( Dirty )
     processLoadAvg();
 
-  fprintf( CurrentClient, "%f\n", LoadAvg1 );
+  output( "%f\n", LoadAvg1 );
 }
 
 void printLoadAvg1Info( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "Load average 1 min\t0\t0\t\n" );
+  output( "Load average 1 min\t0\t0\t\n" );
 }
 
 void printLoadAvg5( const char* cmd )
@@ -123,13 +123,13 @@ void printLoadAvg5( const char* cmd )
   if ( Dirty )
     processLoadAvg();
 
-  fprintf( CurrentClient, "%f\n", LoadAvg5 );
+  output( "%f\n", LoadAvg5 );
 }
 
 void printLoadAvg5Info( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "Load average 5 min\t0\t0\t\n" );
+  output( "Load average 5 min\t0\t0\t\n" );
 }
 
 void printLoadAvg15( const char* cmd )
@@ -139,11 +139,11 @@ void printLoadAvg15( const char* cmd )
   if ( Dirty )
     processLoadAvg();
 
-  fprintf( CurrentClient, "%f\n", LoadAvg15 );
+  output( "%f\n", LoadAvg15 );
 }
 
 void printLoadAvg15Info( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "Load average 15 min\t0\t0\t\n" );
+  output( "Load average 15 min\t0\t0\t\n" );
 }

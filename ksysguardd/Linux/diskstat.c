@@ -217,7 +217,7 @@ void printDiskStat( const char* cmd )
 
   (void)cmd;
   for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
-    fprintf( CurrentClient, "%s\t%ld\t%ld\t%ld\t%d\t%s\n",
+    output( "%s\t%ld\t%ld\t%ld\t%d\t%s\n",
              disk_info->device,
              disk_info->blocks,
              disk_info->bused,
@@ -226,13 +226,13 @@ void printDiskStat( const char* cmd )
              disk_info->mntpnt );
   }
 
-  fprintf( CurrentClient, "\n" );
+  output( "\n" );
 }
 
 void printDiskStatInfo( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "Device\tBlocks\tUsed\tAvailable\tUsed %%\tMount point\nM\tD\tD\tD\td\ts\n" );
+  output( "Device\tBlocks\tUsed\tAvailable\tUsed %%\tMount point\nM\tD\tD\tD\td\ts\n" );
 }
 
 void printDiskStatUsed( const char* cmd )
@@ -242,16 +242,16 @@ void printDiskStatUsed( const char* cmd )
 
   for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
     if ( !strcmp( mntpnt, disk_info->mntpnt ) )
-      fprintf( CurrentClient, "%ld\n", disk_info->bused );
+      output( "%ld\n", disk_info->bused );
   }
 
-  fprintf( CurrentClient, "\n" );
+  output( "\n" );
 }
 
 void printDiskStatUsedInfo( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "Used Blocks\t0\t-\tBlocks\n" );
+  output( "Used Blocks\t0\t-\tBlocks\n" );
 }
 
 void printDiskStatFree( const char* cmd )
@@ -261,16 +261,16 @@ void printDiskStatFree( const char* cmd )
 
   for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
     if ( !strcmp( mntpnt, disk_info->mntpnt ) )
-      fprintf( CurrentClient, "%ld\n", disk_info->bfree );
+      output( "%ld\n", disk_info->bfree );
   }
 
-  fprintf( CurrentClient, "\n" );
+  output( "\n" );
 }
 
 void printDiskStatFreeInfo( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "Free Blocks\t0\t-\tBlocks\n" );
+  output( "Free Blocks\t0\t-\tBlocks\n" );
 }
 
 void printDiskStatPercent( const char* cmd )
@@ -280,14 +280,14 @@ void printDiskStatPercent( const char* cmd )
 
   for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
     if ( !strcmp( mntpnt, disk_info->mntpnt ) )
-      fprintf( CurrentClient, "%d\n", disk_info->bused_percent );
+      output( "%d\n", disk_info->bused_percent );
   }
 
-  fprintf( CurrentClient, "\n" );
+  output( "\n" );
 }
 
 void printDiskStatPercentInfo( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "Used Blocks\t0\t100\t%%\n" );
+  output( "Used Blocks\t0\t100\t%%\n" );
 }

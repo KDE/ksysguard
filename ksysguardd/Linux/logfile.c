@@ -82,20 +82,20 @@ void printLogFile( const char* cmd )
   for ( entry = first_ctnr( LogFiles ); entry; entry = next_ctnr( LogFiles ) ) {
     if ( entry->id == id ) {
       while ( fgets( line, 1024, entry->fh ) != NULL )
-        fprintf( CurrentClient, "%s", line );
+        output( "%s", line );
 
       /* delete the EOF */
       clearerr( entry->fh );
     }
   }
 
-  fprintf( CurrentClient, "\n" );
+  output( "\n" );
 }
 
 void printLogFileInfo( const char* cmd )
 {
 	(void)cmd;
-  fprintf( CurrentClient, "LogFile\n" );
+  output( "LogFile\n" );
 }
 
 void registerLogFile( const char* cmd )
@@ -113,7 +113,7 @@ void registerLogFile( const char* cmd )
     if ( !strcmp( conf->name, name ) ) {
       if ( ( file = fopen( conf->path, "r" ) ) == NULL ) {
         print_error( "fopen()" );
-        fprintf( CurrentClient, "0\n" );
+        output( "0\n" );
         return;
       }
 
@@ -121,7 +121,7 @@ void registerLogFile( const char* cmd )
 
       if ( ( entry = (LogFileEntry*)malloc( sizeof( LogFileEntry ) ) ) == NULL ) {
         print_error( "malloc()" );
-        fprintf( CurrentClient, "0\n" );
+        output( "0\n" );
         return;
       }
 
@@ -131,14 +131,14 @@ void registerLogFile( const char* cmd )
 
       push_ctnr( LogFiles, entry );
 
-      fprintf( CurrentClient, "%lu\n", counter );
+      output( "%lu\n", counter );
       counter++;
 
       return;
     }
   }
 
-  fprintf( CurrentClient, "\n" );
+  output( "\n" );
 }
 
 void unregisterLogFile( const char* cmd )
@@ -152,12 +152,12 @@ void unregisterLogFile( const char* cmd )
     if ( entry->id == id ) {
       fclose( entry->fh );
       free( remove_ctnr( LogFiles ) );
-      fprintf( CurrentClient, "\n" );
+      output( "\n" );
       return;
     }
   }
 
-  fprintf( CurrentClient, "\n" );
+  output( "\n" );
 }
 
 void printRegistered( const char* cmd )
@@ -166,7 +166,7 @@ void printRegistered( const char* cmd )
 
   (void)cmd;
   for ( entry = first_ctnr( LogFiles ); entry; entry = next_ctnr( LogFiles ) )
-    fprintf( CurrentClient, "%s:%lu\n", entry->name, entry->id );
+    output( "%s:%lu\n", entry->name, entry->id );
 
-  fprintf( CurrentClient, "\n" );
+  output( "\n" );
 }

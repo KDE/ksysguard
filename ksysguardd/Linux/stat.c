@@ -685,13 +685,13 @@ void printCPUUser( const char* cmd ) {
 	if ( Dirty )
 		process24Stat();
 	
-	fprintf( CurrentClient, "%f\n", CPULoad.userLoad );
+	output( "%f\n", CPULoad.userLoad );
 }
 
 void printCPUUserInfo( const char* cmd ) {
 	(void)cmd;
 
-	fprintf( CurrentClient, "CPU User Load\t0\t100\t%%\n" );
+	output( "CPU User Load\t0\t100\t%%\n" );
 }
 
 void printCPUNice( const char* cmd ) {
@@ -700,13 +700,13 @@ void printCPUNice( const char* cmd ) {
 	if ( Dirty )
 		process24Stat();
 	
-	fprintf( CurrentClient, "%f\n", CPULoad.niceLoad );
+	output( "%f\n", CPULoad.niceLoad );
 }
 
 void printCPUNiceInfo( const char* cmd ) {
 	(void)cmd;
 
-	fprintf( CurrentClient, "CPU Nice Load\t0\t100\t%%\n" );
+	output( "CPU Nice Load\t0\t100\t%%\n" );
 }
 
 void printCPUSys( const char* cmd ) {
@@ -715,13 +715,13 @@ void printCPUSys( const char* cmd ) {
 	if ( Dirty )
 		process24Stat();
 	
-	fprintf( CurrentClient, "%f\n", CPULoad.sysLoad );
+	output( "%f\n", CPULoad.sysLoad );
 }
 
 void printCPUSysInfo( const char* cmd ) {
 	(void)cmd;
 
-	fprintf( CurrentClient, "CPU System Load\t0\t100\t%%\n" );
+	output( "CPU System Load\t0\t100\t%%\n" );
 }
 
 void printCPUTotalLoad( const char* cmd ) {
@@ -730,13 +730,13 @@ void printCPUTotalLoad( const char* cmd ) {
 	if ( Dirty )
 		process24Stat();
 	
-	fprintf( CurrentClient, "%f\n", CPULoad.userLoad + CPULoad.sysLoad + CPULoad.niceLoad + CPULoad.waitLoad );
+	output( "%f\n", CPULoad.userLoad + CPULoad.sysLoad + CPULoad.niceLoad + CPULoad.waitLoad );
 }
 
 void printCPUTotalLoadInfo( const char* cmd ) {
 	(void)cmd;
 
-	fprintf( CurrentClient, "CPU Total Load\t0\t100\t%%\n" );
+	output( "CPU Total Load\t0\t100\t%%\n" );
 }
 
 void printCPUIdle( const char* cmd ) {
@@ -745,13 +745,13 @@ void printCPUIdle( const char* cmd ) {
 	if ( Dirty )
 		process24Stat();
 	
-	fprintf( CurrentClient, "%f\n", CPULoad.idleLoad );
+	output( "%f\n", CPULoad.idleLoad );
 }
 
 void printCPUIdleInfo( const char* cmd ) {
 	(void)cmd;
 
-	fprintf( CurrentClient, "CPU Idle Load\t0\t100\t%%\n" );
+	output( "CPU Idle Load\t0\t100\t%%\n" );
 }
 
 void printCPUWait( const char* cmd )
@@ -761,13 +761,13 @@ void printCPUWait( const char* cmd )
 	if ( Dirty )
 		process24Stat();
 
-	fprintf( CurrentClient, "%f\n", CPULoad.waitLoad );
+	output( "%f\n", CPULoad.waitLoad );
 }
 
 void printCPUWaitInfo( const char* cmd )
 {
 	(void)cmd;
-	fprintf( CurrentClient, "CPU Wait Load\t0\t100\t%%\n" );
+	output( "CPU Wait Load\t0\t100\t%%\n" );
 }
 
 void printCPUxUser( const char* cmd ) {
@@ -777,14 +777,14 @@ void printCPUxUser( const char* cmd ) {
 		process24Stat();
 	
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].userLoad );
+	output( "%f\n", SMPLoad[ id ].userLoad );
 }
 
 void printCPUxUserInfo( const char* cmd ) {
 	int id;
 
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "CPU %d User Load\t0\t100\t%%\n", id );
+	output( "CPU %d User Load\t0\t100\t%%\n", id );
 }
 
 void printCPUxNice( const char* cmd ) {
@@ -794,14 +794,14 @@ void printCPUxNice( const char* cmd ) {
 		process24Stat();
 	
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].niceLoad );
+	output( "%f\n", SMPLoad[ id ].niceLoad );
 }
 
 void printCPUxNiceInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "CPU %d Nice Load\t0\t100\t%%\n", id );
+	output( "CPU %d Nice Load\t0\t100\t%%\n", id );
 }
 
 void printCPUxSys( const char* cmd ) {
@@ -811,14 +811,14 @@ void printCPUxSys( const char* cmd ) {
 		process24Stat();
 	
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].sysLoad );
+	output( "%f\n", SMPLoad[ id ].sysLoad );
 }
 
 void printCPUxSysInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "CPU %d System Load\t0\t100\t%%\n", id );
+	output( "CPU %d System Load\t0\t100\t%%\n", id );
 }
 
 void printCPUxTotalLoad( const char* cmd ) {
@@ -828,14 +828,14 @@ void printCPUxTotalLoad( const char* cmd ) {
 		process24Stat();
 	
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].userLoad + SMPLoad[ id ].sysLoad + SMPLoad[ id ].niceLoad + SMPLoad[ id ].waitLoad );
+	output( "%f\n", SMPLoad[ id ].userLoad + SMPLoad[ id ].sysLoad + SMPLoad[ id ].niceLoad + SMPLoad[ id ].waitLoad );
 }
 
 void printCPUxTotalLoadInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "CPU %d Total Load\t0\t100\t%%\n", id );
+	output( "CPU %d Total Load\t0\t100\t%%\n", id );
 }
 
 void printCPUxIdle( const char* cmd ) {
@@ -845,14 +845,14 @@ void printCPUxIdle( const char* cmd ) {
 		process24Stat();
 	
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].idleLoad );
+	output( "%f\n", SMPLoad[ id ].idleLoad );
 }
 
 void printCPUxIdleInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "CPU %d Idle Load\t0\t100\t%%\n", id );
+	output( "CPU %d Idle Load\t0\t100\t%%\n", id );
 }
 
 void printCPUxWait( const char* cmd )
@@ -863,7 +863,7 @@ void printCPUxWait( const char* cmd )
 		process24Stat();
 
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "%f\n", SMPLoad[ id ].waitLoad );
+	output( "%f\n", SMPLoad[ id ].waitLoad );
 }
 
 void printCPUxWaitInfo( const char* cmd )
@@ -871,7 +871,7 @@ void printCPUxWaitInfo( const char* cmd )
 	int id;
 
 	sscanf( cmd + 7, "%d", &id );
-	fprintf( CurrentClient, "CPU %d Wait Load\t0\t100\t%%\n", id );
+	output( "CPU %d Wait Load\t0\t100\t%%\n", id );
 }
 
 void print24DiskTotal( const char* cmd ) {
@@ -881,7 +881,7 @@ void print24DiskTotal( const char* cmd ) {
 		process24Stat();
 	
 	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 0 ].delta
+	output( "%f\n", (float)( DiskLoad[ id ].s[ 0 ].delta
 							/ timeInterval ) );
 }
 
@@ -889,7 +889,7 @@ void print24DiskTotalInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk %d Total Load\t0\t0\tKB/s\n", id );
+	output( "Disk %d Total Load\t0\t0\tKB/s\n", id );
 }
 
 void print24DiskRIO( const char* cmd ) {
@@ -899,7 +899,7 @@ void print24DiskRIO( const char* cmd ) {
 		process24Stat();
 	
 	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 1 ].delta
+	output( "%f\n", (float)( DiskLoad[ id ].s[ 1 ].delta
 							/ timeInterval ) );
 }
 
@@ -907,7 +907,7 @@ void print24DiskRIOInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk %d Read\t0\t0\tKB/s\n", id );
+	output( "Disk %d Read\t0\t0\tKB/s\n", id );
 }
 
 void print24DiskWIO( const char* cmd ) {
@@ -917,7 +917,7 @@ void print24DiskWIO( const char* cmd ) {
 		process24Stat();
 	
 	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 2 ].delta
+	output( "%f\n", (float)( DiskLoad[ id ].s[ 2 ].delta
 							/ timeInterval ) );
 }
 
@@ -925,7 +925,7 @@ void print24DiskWIOInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk %d Write\t0\t0\tKB/s\n", id );
+	output( "Disk %d Write\t0\t0\tKB/s\n", id );
 }
 
 void print24DiskRBlk( const char* cmd ) {
@@ -936,14 +936,14 @@ void print24DiskRBlk( const char* cmd ) {
 	
 	sscanf( cmd + 9, "%d", &id );
 	/* a block is 512 bytes or 1/2 kBytes */
-	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 3 ].delta / timeInterval * 2 ) );
+	output( "%f\n", (float)( DiskLoad[ id ].s[ 3 ].delta / timeInterval * 2 ) );
 }
 
 void print24DiskRBlkInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk %d Read Data\t0\t0\tKB/s\n", id );
+	output( "Disk %d Read Data\t0\t0\tKB/s\n", id );
 }
 
 void print24DiskWBlk( const char* cmd ) {
@@ -954,14 +954,14 @@ void print24DiskWBlk( const char* cmd ) {
 	
 	sscanf( cmd + 9, "%d", &id );
 	/* a block is 512 bytes or 1/2 kBytes */
-	fprintf( CurrentClient, "%f\n", (float)( DiskLoad[ id ].s[ 4 ].delta / timeInterval * 2 ) );
+	output( "%f\n", (float)( DiskLoad[ id ].s[ 4 ].delta / timeInterval * 2 ) );
 }
 
 void print24DiskWBlkInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 9, "%d", &id );
-	fprintf( CurrentClient, "Disk %d Write Data\t0\t0\tKB/s\n", id );
+	output( "Disk %d Write Data\t0\t0\tKB/s\n", id );
 }
 
 void printPageIn( const char* cmd ) {
@@ -970,13 +970,13 @@ void printPageIn( const char* cmd ) {
 	if ( Dirty )
 		process24Stat();
 	
-	fprintf( CurrentClient, "%f\n", (float)( PageIn / timeInterval ) );
+	output( "%f\n", (float)( PageIn / timeInterval ) );
 }
 
 void printPageInInfo( const char* cmd ) {
 	(void)cmd;
 
-	fprintf( CurrentClient, "Paged in Pages\t0\t0\t1/s\n" );
+	output( "Paged in Pages\t0\t0\t1/s\n" );
 }
 
 void printPageOut( const char* cmd ) {
@@ -985,13 +985,13 @@ void printPageOut( const char* cmd ) {
 	if ( Dirty )
 		process24Stat();
 	
-	fprintf( CurrentClient, "%f\n", (float)( PageOut / timeInterval ) );
+	output( "%f\n", (float)( PageOut / timeInterval ) );
 }
 
 void printPageOutInfo( const char* cmd ) {
 	(void)cmd;
 
-	fprintf( CurrentClient, "Paged out Pages\t0\t0\t1/s\n" );
+	output( "Paged out Pages\t0\t0\t1/s\n" );
 }
 
 void printInterruptx( const char* cmd ) {
@@ -1001,14 +1001,14 @@ void printInterruptx( const char* cmd ) {
 		process24Stat();
 	
 	sscanf( cmd + strlen( "cpu/interrupts/int" ), "%d", &id );
-	fprintf( CurrentClient, "%f\n", (float)( Intr[ id ] / timeInterval ) );
+	output( "%f\n", (float)( Intr[ id ] / timeInterval ) );
 }
 
 void printInterruptxInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + strlen( "cpu/interrupt/int" ), "%d", &id );
-	fprintf( CurrentClient, "Interrupt %d\t0\t0\t1/s\n", id );
+	output( "Interrupt %d\t0\t0\t1/s\n", id );
 }
 
 void printCtxt( const char* cmd ) {
@@ -1017,13 +1017,13 @@ void printCtxt( const char* cmd ) {
 	if ( Dirty )
 		process24Stat();
 	
-	fprintf( CurrentClient, "%f\n", (float)( Ctxt / timeInterval ) );
+	output( "%f\n", (float)( Ctxt / timeInterval ) );
 }
 
 void printCtxtInfo( const char* cmd ) {
 	(void)cmd;
 
-	fprintf( CurrentClient, "Context switches\t0\t0\t1/s\n" );
+	output( "Context switches\t0\t0\t1/s\n" );
 }
 
 void print24DiskIO( const char* cmd ) {
@@ -1043,24 +1043,24 @@ void print24DiskIO( const char* cmd ) {
 	
 	if ( !ptr ) {
 		print_error( "RECONFIGURE" );
-		fprintf( CurrentClient, "0\n" );
+		output( "0\n" );
 		
 		log_error( "Disk device disappeared" );
 		return;
 	}
 	
 	if ( strcmp( name, "total" ) == 0 )
-		fprintf( CurrentClient, "%f\n", (float)( ptr->total.delta / timeInterval ) );
+		output( "%f\n", (float)( ptr->total.delta / timeInterval ) );
 	else if ( strcmp( name, "rio" ) == 0 )
-		fprintf( CurrentClient, "%f\n", (float)( ptr->rio.delta / timeInterval ) );
+		output( "%f\n", (float)( ptr->rio.delta / timeInterval ) );
 	else if ( strcmp( name, "wio" ) == 0 )
-		fprintf( CurrentClient, "%f\n", (float)( ptr->wio.delta / timeInterval ) );
+		output( "%f\n", (float)( ptr->wio.delta / timeInterval ) );
 	else if ( strcmp( name, "rblk" ) == 0 )
-		fprintf( CurrentClient, "%f\n", (float)( ptr->rblk.delta / ( timeInterval * 2 ) ) );
+		output( "%f\n", (float)( ptr->rblk.delta / ( timeInterval * 2 ) ) );
 	else if ( strcmp( name, "wblk" ) == 0 )
-		fprintf( CurrentClient, "%f\n", (float)( ptr->wblk.delta / ( timeInterval * 2 ) ) );
+		output( "%f\n", (float)( ptr->wblk.delta / ( timeInterval * 2 ) ) );
 	else {
-		fprintf( CurrentClient, "0\n" );
+		output( "0\n" );
 		log_error( "Unknown disk device property \'%s\'", name );
 	}
 }
@@ -1078,7 +1078,7 @@ void print24DiskIOInfo( const char* cmd ) {
 	
 	if ( !ptr ) {
 		/* Disk device has disappeared. Print a dummy answer. */
-		fprintf( CurrentClient, "Dummy\t0\t0\t\n" );
+		output( "Dummy\t0\t0\t\n" );
 		return;
 	}
 	
@@ -1086,22 +1086,22 @@ void print24DiskIOInfo( const char* cmd ) {
 	name[ strlen( name ) - 1 ] = '\0';
 	
 	if ( strcmp( name, "total" ) == 0 )
-		fprintf( CurrentClient, "Total accesses device %s (%d:%d)\t0\t0\t1/s\n",
+		output( "Total accesses device %s (%d:%d)\t0\t0\t1/s\n",
 			 devname, major, minor );
 	else if ( strcmp( name, "rio" ) == 0 )
-		fprintf( CurrentClient, "Read data device %s (%d:%d)\t0\t0\t1/s\n",
+		output( "Read data device %s (%d:%d)\t0\t0\t1/s\n",
 			 devname, major, minor );
 	else if ( strcmp( name, "wio" ) == 0 )
-		fprintf( CurrentClient, "Write data device %s (%d:%d)\t0\t0\t1/s\n",
+		output( "Write data device %s (%d:%d)\t0\t0\t1/s\n",
 			 devname, major, minor );
 	else if ( strcmp( name, "rblk" ) == 0 )
-		fprintf( CurrentClient, "Read accesses device %s (%d:%d)\t0\t0\tKB/s\n",
+		output( "Read accesses device %s (%d:%d)\t0\t0\tKB/s\n",
 			 devname, major, minor );
 	else if ( strcmp( name, "wblk" ) == 0 )
-		fprintf( CurrentClient, "Write accesses device %s (%d:%d)\t0\t0\tKB/s\n",
+		output( "Write accesses device %s (%d:%d)\t0\t0\tKB/s\n",
 			 devname, major, minor );
 	else {
-		fprintf( CurrentClient, "Dummy\t0\t0\t\n" );
+		output( "Dummy\t0\t0\t\n" );
 		log_error( "Request for unknown device property \'%s\'",	name );
 	}
 }

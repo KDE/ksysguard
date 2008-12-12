@@ -108,45 +108,45 @@ void printArrayAttribute( const char* cmd ) {
 			foundArray = get_ctnr( ArrayInfos, idx );
 
 			if ( strcmp( attribute, "NumBlocks" ) == 0 )
-				fprintf( CurrentClient, "%d\n", foundArray->NumBlocks );
+				output( "%d\n", foundArray->NumBlocks );
 			else if ( strcmp( attribute, "ArraySizeKB" ) == 0 )
-				fprintf( CurrentClient, "%d\n", foundArray->ArraySizeKB );
+				output( "%d\n", foundArray->ArraySizeKB );
 			else if ( strcmp( attribute, "UsedDeviceSizeKB" ) == 0 )
-				fprintf( CurrentClient, "%d\n", foundArray->UsedDeviceSizeKB );
+				output( "%d\n", foundArray->UsedDeviceSizeKB );
 			else if ( strcmp( attribute, "NumRaidDevices" ) == 0 )
-				fprintf( CurrentClient, "%d\n", foundArray->NumRaidDevices );
+				output( "%d\n", foundArray->NumRaidDevices );
 			else if ( strcmp( attribute, "TotalDevices" ) == 0 )
-				fprintf( CurrentClient, "%d\n", foundArray->TotalDevices );
+				output( "%d\n", foundArray->TotalDevices );
 			else if ( strcmp( attribute, "PreferredMinor" ) == 0 )
-				fprintf( CurrentClient, "%d\n", foundArray->PreferredMinor );
+				output( "%d\n", foundArray->PreferredMinor );
 			else if ( strcmp( attribute, "ActiveDevices" ) == 0 )
-				fprintf( CurrentClient, "%d\n", foundArray->ActiveDevices );
+				output( "%d\n", foundArray->ActiveDevices );
 			else if ( strcmp( attribute, "WorkingDevices" ) == 0 )
-				fprintf( CurrentClient, "%d\n", foundArray->WorkingDevices );
+				output( "%d\n", foundArray->WorkingDevices );
 			else if ( strcmp( attribute, "FailedDevices" ) == 0 )
-				fprintf( CurrentClient, "%d\n", foundArray->FailedDevices );
+				output( "%d\n", foundArray->FailedDevices );
 			else if ( strcmp( attribute, "SpareDevices" ) == 0 )
-				fprintf( CurrentClient, "%d\n", foundArray->SpareDevices );
+				output( "%d\n", foundArray->SpareDevices );
 			else if( strcmp( attribute, "DeviceNumber" ) == 0 )
-				fprintf( CurrentClient, "%d\n", foundArray->devnum);
+				output( "%d\n", foundArray->devnum);
 			else if( strcmp( attribute, "ResyncingPercent" ) == 0 )
-				fprintf( CurrentClient, "%d\n", foundArray->ResyncingPercent);
+				output( "%d\n", foundArray->ResyncingPercent);
 			else if( strcmp( attribute, "RaidType" ) == 0 )
-				fprintf( CurrentClient, "%s\n", foundArray->level);
+				output( "%s\n", foundArray->level);
 			else if( strcmp( attribute, "DiskInfo" ) == 0 ) {
 				Disks *disk = foundArray->first_disk;
 				while(disk) {
-					fprintf( CurrentClient, "%s\t%d\t%c\n", disk->name, disk->index, disk->status);
+					output( "%s\t%d\t%c\n", disk->name, disk->index, disk->status);
 					disk = disk->next;
 				}
-				fprintf( CurrentClient, "\n");
+				output( "\n");
 			}
 		}
 		else {
-			fprintf( CurrentClient, "\n");
+			output( "\n");
 		}
 	} else {
-		fprintf( CurrentClient, "\n");
+		output( "\n");
 	}
 
 
@@ -163,39 +163,39 @@ void printArrayAttributeInfo( const char* cmd ) {
 			foundArray = get_ctnr( ArrayInfos, idx );
 
 			if ( strcmp( attribute, "NumBlocks?" ) == 0 )
-				fprintf( CurrentClient, "Num blocks\t0\t0\t\n" );
+				output( "Num blocks\t0\t0\t\n" );
 			else if ( strcmp( attribute, "ArraySizeKB?" ) == 0 )
-				fprintf( CurrentClient, "Array size\t0\t0\tKB\n" );
+				output( "Array size\t0\t0\tKB\n" );
 			else if ( strcmp( attribute, "UsedDeviceSizeKB?" ) == 0 )
-				fprintf( CurrentClient, "Used Device Size\t0\t0\tKB\n" );
+				output( "Used Device Size\t0\t0\tKB\n" );
 			else if ( strcmp( attribute, "NumRaidDevices?" ) == 0 )
-				fprintf( CurrentClient, "Total number of raid devices\t0\t0\t\n" );
+				output( "Total number of raid devices\t0\t0\t\n" );
 			else if ( strcmp( attribute, "TotalDevices?" ) == 0 )
-				fprintf( CurrentClient, "Total number of devices\t0\t0\t\n" );
+				output( "Total number of devices\t0\t0\t\n" );
 			else if ( strcmp( attribute, "PreferredMinor?" ) == 0 )
-				fprintf( CurrentClient, "The preferred minor\t0\t0\t\n" );
+				output( "The preferred minor\t0\t0\t\n" );
 			else if ( strcmp( attribute, "ActiveDevices?" ) == 0 )
-				fprintf( CurrentClient, "Number of active devices\t0\t%d\t\n", foundArray->TotalDevices );
+				output( "Number of active devices\t0\t%d\t\n", foundArray->TotalDevices );
 			else if ( strcmp( attribute, "WorkingDevices?" ) == 0 )
-				fprintf( CurrentClient, "Number of working devices\t0\t%d\t\n", foundArray->TotalDevices );
+				output( "Number of working devices\t0\t%d\t\n", foundArray->TotalDevices );
 			else if ( strcmp( attribute, "FailedDevices?" ) == 0 )
-				fprintf( CurrentClient, "Number of failed devices\t0\t%d\t\n", foundArray->TotalDevices );
+				output( "Number of failed devices\t0\t%d\t\n", foundArray->TotalDevices );
 			else if ( strcmp( attribute, "SpareDevices?" ) == 0 )
-				fprintf( CurrentClient, "Number of spare devices\t0\t%d\t\n", foundArray->TotalDevices );
+				output( "Number of spare devices\t0\t%d\t\n", foundArray->TotalDevices );
 			else if( strcmp( attribute, "DeviceNumber?" ) == 0 )
-				fprintf( CurrentClient, "Raid Device Number\t0\t0\t\n");
+				output( "Raid Device Number\t0\t0\t\n");
 			else if( strcmp( attribute, "ResyncingPercent?" ) == 0 )
-				fprintf( CurrentClient, "Resyncing Percentage Done. -1 if not resyncing\t-1\t100\t%%\n");
+				output( "Resyncing Percentage Done. -1 if not resyncing\t-1\t100\t%%\n");
 			else if( strcmp( attribute, "RaidType?" ) == 0 )
-				fprintf( CurrentClient, "Type of RAID array\n");
+				output( "Type of RAID array\n");
 			else if( strcmp( attribute, "DiskInfo?") == 0 )
-				fprintf( CurrentClient, "Disk Name\tIndex\tStatus\ns\td\tS\n");
+				output( "Disk Name\tIndex\tStatus\ns\td\tS\n");
 		}
 		else {
-			fprintf( CurrentClient, "\n");
+			output( "\n");
 		}
 	} else {
-		fprintf( CurrentClient, "\n");
+		output( "\n");
 	}
 }
 

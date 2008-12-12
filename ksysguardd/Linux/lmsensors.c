@@ -253,7 +253,7 @@ void printLmSensor( const char* cmd )
   LMSENSOR* s;
 
   if ( ( s = findMatchingSensor( cmd ) ) == 0 ) { /* should never happen */
-    fprintf( CurrentClient, "0\n" );
+    output( "0\n" );
     return;
   }
 #if SENSORS_API_VERSION & 0x400
@@ -261,7 +261,7 @@ void printLmSensor( const char* cmd )
 #else
   sensors_get_feature( *(s->scn), s->sfd->number, &value );
 #endif
-  fprintf( CurrentClient, "%f\n", value );
+  output( "%f\n", value );
 }
 
 void printLmSensorInfo( const char* cmd )
@@ -269,7 +269,7 @@ void printLmSensorInfo( const char* cmd )
   LMSENSOR* s;
 
   if ( ( s = findMatchingSensor( cmd ) ) == 0 ) { /* should never happen */
-    fprintf( CurrentClient, "0\n" );
+    output( "0\n" );
     return;
   }
 
@@ -281,15 +281,15 @@ void printLmSensorInfo( const char* cmd )
 #else
   if(sensors_get_label( *s->scn, s->sfd->number, &label ) != 0) {  /*error*/
 #endif
-    fprintf( CurrentClient, "0\n" );
+    output( "0\n" );
     return;
   }
   if( strncmp(s->sfd->name, "temp", sizeof("temp")-1) == 0)
-    fprintf( CurrentClient, "%s\t0\t0\t°C\n", label );
+    output( "%s\t0\t0\t°C\n", label );
   else if( strncmp(s->sfd->name, "fan", sizeof("fan")-1) == 0)
-    fprintf( CurrentClient, "%s\t0\t0\trpm\n", label );
+    output( "%s\t0\t0\trpm\n", label );
   else
-    fprintf( CurrentClient, "%s\t0\t0\tV\n", label );  /* For everything else, say it's in volts. */
+    output( "%s\t0\t0\tV\n", label );  /* For everything else, say it's in volts. */
 #if SENSORS_API_VERSION & 0x400
   free(label);
 #endif

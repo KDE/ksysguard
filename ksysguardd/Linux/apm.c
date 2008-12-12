@@ -101,13 +101,13 @@ void printApmBatFill( const char* cmd )
   if ( Dirty )
     processApm();
 
-  fprintf( CurrentClient, "%d\n", BatFill );
+  output( "%d\n", BatFill );
 }
 
 void printApmBatFillInfo( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "Battery charge\t0\t100\t%%\n" );
+  output( "Battery charge\t0\t100\t%%\n" );
 }
 
 void printApmBatTime( const char* cmd )
@@ -117,11 +117,11 @@ void printApmBatTime( const char* cmd )
   if ( Dirty )
     processApm();
 
-  fprintf( CurrentClient, "%d\n", BatTime );
+  output( "%d\n", BatTime );
 }
 
 void printApmBatTimeInfo( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "Remaining battery time\t0\t0\tmin\n" );
+  output( "Remaining battery time\t0\t0\tmin\n" );
 }

@@ -442,24 +442,24 @@ void print26DiskIO( const char* cmd ) {
 		
 		if ( !ptr ) {
 			print_error( "RECONFIGURE" );
-			fprintf( CurrentClient, "0\n" );
+			output( "0\n" );
 			
 			log_error( "Disk device disappeared" );
 			return;
 		}
 		
 		if ( strcmp( name, "total" ) == 0 )
-			fprintf( CurrentClient, "%f\n", (float)( ptr->total.delta / timeInterval ) );
+			output( "%f\n", (float)( ptr->total.delta / timeInterval ) );
 		else if ( strcmp( name, "rio" ) == 0 )
-			fprintf( CurrentClient, "%f\n", (float)( ptr->rio.delta / timeInterval ) );
+			output( "%f\n", (float)( ptr->rio.delta / timeInterval ) );
 		else if ( strcmp( name, "wio" ) == 0 )
-			fprintf( CurrentClient, "%f\n", (float)( ptr->wio.delta / timeInterval ) );
+			output( "%f\n", (float)( ptr->wio.delta / timeInterval ) );
 		else if ( strcmp( name, "rblk" ) == 0 )
-			fprintf( CurrentClient, "%f\n", (float)( ptr->rblk.delta / ( timeInterval * 2 ) ) );
+			output( "%f\n", (float)( ptr->rblk.delta / ( timeInterval * 2 ) ) );
 		else if ( strcmp( name, "wblk" ) == 0 )
-			fprintf( CurrentClient, "%f\n", (float)( ptr->wblk.delta / ( timeInterval * 2 ) ) );
+			output( "%f\n", (float)( ptr->wblk.delta / ( timeInterval * 2 ) ) );
 		else {
-			fprintf( CurrentClient, "0\n" );
+			output( "0\n" );
 			log_error( "Unknown disk device property \'%s\'", name );
 		}
 	}
@@ -472,28 +472,28 @@ void print26DiskIO( const char* cmd ) {
 		
 		if ( !ptr ) {
 			print_error( "RECONFIGURE" );
-			fprintf( CurrentClient, "0\n" );
+			output( "0\n" );
 			
 			log_error( "Disk device disappeared" );
 			return;
 		}
 		
 		if ( strcmp( name, "total" ) == 0 )
-			fprintf( CurrentClient, "%lu\n", ptr->total.delta );
+			output( "%lu\n", ptr->total.delta );
 		else if ( strcmp( name, "rio" ) == 0 )
-			fprintf( CurrentClient, "%lu\n", ptr->rio.delta );
+			output( "%lu\n", ptr->rio.delta );
 		else if ( strcmp( name, "wio" ) == 0 )
-			fprintf( CurrentClient, "%lu\n", ptr->wio.delta );
+			output( "%lu\n", ptr->wio.delta );
 		else if ( strcmp( name, "rblk" ) == 0 )
-			fprintf( CurrentClient, "%lu\n", ptr->rblk.delta );
+			output( "%lu\n", ptr->rblk.delta );
 		else if ( strcmp( name, "wblk" ) == 0 )
-			fprintf( CurrentClient, "%lu\n", ptr->wblk.delta );
+			output( "%lu\n", ptr->wblk.delta );
 		else if ( strcmp( name, "rtim" ) == 0 )
-			fprintf( CurrentClient, "%lu\n", ptr->rtim.delta );
+			output( "%lu\n", ptr->rtim.delta );
 		else if ( strcmp( name, "wtim" ) == 0 )
-			fprintf( CurrentClient, "%lu\n", ptr->wtim.delta );
+			output( "%lu\n", ptr->wtim.delta );
 		else {
-			fprintf( CurrentClient, "0\n" );
+			output( "0\n" );
 			log_error( "Unknown disk device property \'%s\'", name );
 		}
 	}
@@ -506,16 +506,16 @@ void print26DiskIO( const char* cmd ) {
 		
 		if ( !ptr ) {
 			print_error( "RECONFIGURE" );
-			fprintf( CurrentClient, "0\n" );
+			output( "0\n" );
 			
 			log_error( "Disk device disappeared" );
 			return;
 		}
 		
 		if ( strcmp( name, "ioqueue" ) == 0 )
-			fprintf( CurrentClient, "%u\n", ptr->ioqueue );
+			output( "%u\n", ptr->ioqueue );
 		else {
-			fprintf( CurrentClient, "0\n" );
+			output( "0\n" );
 			log_error( "Unknown disk device property \'%s\'", name );
 		}
 	}
@@ -535,7 +535,7 @@ void print26DiskIOInfo( const char* cmd ) {
 	else if(sscanf( cmd, "disk/%[^_]_(%d:%d)/%16s", devname, &major, &minor, name ) == 4) {
 	}
 	else {
-		fprintf( CurrentClient, "Dummy\t0\t0\t\n" );
+		output( "Dummy\t0\t0\t\n" );
 		log_error( "Request for unknown device property \'%s\'",	cmd );
 	}
 	
@@ -544,7 +544,7 @@ void print26DiskIOInfo( const char* cmd ) {
 	
 	if ( !ptr ) {
 		/* Disk device has disappeared. Print a dummy answer. */
-		fprintf( CurrentClient, "Dummy\t0\t0\t\n" );
+		output( "Dummy\t0\t0\t\n" );
 		return;
 	}
 	
@@ -552,31 +552,31 @@ void print26DiskIOInfo( const char* cmd ) {
 	name[ strlen( name ) - 1 ] = '\0';
 	
 	if ( strcmp( name, "total" ) == 0 )
-		fprintf( CurrentClient, "Total accesses device %s (%d:%d)\t0\t0\t1/s\n",
+		output( "Total accesses device %s (%d:%d)\t0\t0\t1/s\n",
 			devname, major, minor );
 	else if ( strcmp( name, "rio" ) == 0 )
-		fprintf( CurrentClient, "Read data device %s (%d:%d)\t0\t0\t1/s\n",
+		output( "Read data device %s (%d:%d)\t0\t0\t1/s\n",
 			devname, major, minor );
 	else if ( strcmp( name, "wio" ) == 0 )
-		fprintf( CurrentClient, "Write data device %s (%d:%d)\t0\t0\t1/s\n",
+		output( "Write data device %s (%d:%d)\t0\t0\t1/s\n",
 			devname, major, minor );
 	else if ( strcmp( name, "rblk" ) == 0 )
-		fprintf( CurrentClient, "Read accesses device %s (%d:%d)\t0\t0\tKB/s\n",
+		output( "Read accesses device %s (%d:%d)\t0\t0\tKB/s\n",
 			devname, major, minor );
 	else if ( strcmp( name, "wblk" ) == 0 )
-		fprintf( CurrentClient, "Write accesses device %s (%d:%d)\t0\t0\tKB/s\n",
+		output( "Write accesses device %s (%d:%d)\t0\t0\tKB/s\n",
 			devname, major, minor );
 	else if ( strcmp( name, "rtim" ) == 0 )
-		fprintf( CurrentClient, "# of milliseconds spent reading device %s (%d:%d)\t0\t0\ts\n",
+		output( "# of milliseconds spent reading device %s (%d:%d)\t0\t0\ts\n",
 			devname, major, minor );
 	else if ( strcmp( name, "wtim" ) == 0 )
-		fprintf( CurrentClient, "# of milliseconds spent writing device %s (%d:%d)\t0\t0\ts\n",
+		output( "# of milliseconds spent writing device %s (%d:%d)\t0\t0\ts\n",
 			devname, major, minor );
 	else if ( strcmp( name, "ioqueue" ) == 0 )
-		fprintf( CurrentClient, "# of I/Os currently in progress on device %s (%d:%d)\t0\t0\t\n",
+		output( "# of I/Os currently in progress on device %s (%d:%d)\t0\t0\t\n",
 			devname, major, minor );
 	else {
-		fprintf( CurrentClient, "Dummy\t0\t0\t\n" );
+		output( "Dummy\t0\t0\t\n" );
 		log_error( "Request for unknown device property \'%s\'",	name );
 	}
 }

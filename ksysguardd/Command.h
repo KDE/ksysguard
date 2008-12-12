@@ -38,6 +38,15 @@ extern int ReconfigureFlag;
 extern int CheckSetupFlag;
 
 /**
+ * Delivers the message to the front end
+ */
+void output( const char *fmt, ...)
+#ifdef __GNUC__
+    __attribute__ (  (  format (  printf, 1, 2 ) ) )
+#endif
+   ;
+
+/**
   Delivers the error message to the front end.
  */
 void print_error( const char*, ... )

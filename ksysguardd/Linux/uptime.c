@@ -85,14 +85,14 @@ void printUptime( const char* cmd ) {
 	{
 		buf[sizeof(buf) - 1] = '\0';
 		sscanf( buf, "%f", &uptime );
-		fprintf( CurrentClient, "%f\n", uptime );
+		output( "%f\n", uptime );
 	}
 }
 
 void printUptimeInfo( const char* cmd ) {
 	(void)cmd;
 	
-	fprintf( CurrentClient, "System uptime\t0\t0\ts\n" );
+	output( "System uptime\t0\t0\ts\n" );
 }
 
 static void openUptimeFile() {

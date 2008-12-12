@@ -435,7 +435,7 @@ static void handleSocketTraffic( int socketNo, const fd_set* fds )
               CurrentClient = ClientList[ i ].out;
               fflush( stdout );
               executeCommand( cmdBuf );
-              fprintf( CurrentClient, "ksysguardd> " );
+              output( "ksysguardd> " );
               fflush( CurrentClient );
             }
           }

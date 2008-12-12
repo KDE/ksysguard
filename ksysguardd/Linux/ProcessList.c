@@ -386,7 +386,7 @@ void printProcessList( const char* cmd)
       long pid;
       pid = atol( entry->d_name );
       if(getProcess( pid, &ps )) /* Print out the details of the process.  Because of a stupid bug in kde3 ksysguard, make sure cmdline and tty are not empty */
-        fprintf( CurrentClient, "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%lu\t%s\t%ld\t%s\t%s\t%d\t%d\n",
+        output( "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%lu\t%s\t%ld\t%s\t%s\t%d\t%d\n",
 	     ps.name, pid, (long)ps.ppid,
              (long)ps.uid, (long)ps.gid, ps.status, ps.userTime,
              ps.sysTime, ps.niceLevel, ps.vmSize, ps.vmRss, ps.vmURss,
@@ -396,7 +396,7 @@ void printProcessList( const char* cmd)
 	     );
     }
   }
-  fprintf( CurrentClient, "\n" );
+  output( "\n" );
   return;
 }
 
@@ -461,9 +461,9 @@ void exitProcessList( void )
 void printProcessListInfo( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "Name\tPID\tPPID\tUID\tGID\tStatus\tUser Time\tSystem Time\tNice\tVmSize"
+  output( "Name\tPID\tPPID\tUID\tGID\tStatus\tUser Time\tSystem Time\tNice\tVmSize"
                           "\tVmRss\tVmURss\tLogin\tTracerPID\tTTY\tCommand\tIO Priority Class\tIO Priority\n" );
-  fprintf( CurrentClient, "s\td\td\td\td\tS\td\td\td\tD\tD\tD\ts\td\ts\ts\td\td\n" );
+  output( "s\td\td\td\td\tS\td\td\td\tD\tD\tD\ts\td\ts\ts\td\td\n" );
 }
 
 void printProcessCount( const char* cmd )
@@ -477,13 +477,13 @@ void printProcessCount( const char* cmd )
       ProcessCount++;
 
 
-  fprintf( CurrentClient, "%d\n", ProcessCount );
+  output( "%d\n", ProcessCount );
 }
 
 void printProcessCountInfo( const char* cmd )
 {
   (void)cmd;
-  fprintf( CurrentClient, "Number of Processes\t0\t0\t\n" );
+  output( "Number of Processes\t0\t0\t\n" );
 }
 
 void killProcess( const char* cmd )
@@ -555,23 +555,23 @@ void killProcess( const char* cmd )
   if ( kill( (pid_t)pid, sig ) ) {
     switch ( errno ) {
       case EINVAL:
-        fprintf( CurrentClient, "4\t%d\n", pid );
+        output( "4\t%d\n", pid );
         break;
       case ESRCH:
-        fprintf( CurrentClient, "3\t%d\n", pid );
+        output( "3\t%d\n", pid );
         break;
       case EPERM:
 	if(vfork() == 0) {
 	  exit(0);/* Won't execute unless execve fails.  Need this for the parent process to continue */
 	}
-        fprintf( CurrentClient, "2\t%d\n", pid );
+        output( "2\t%d\n", pid );
         break;
       default: /* unknown error */
-        fprintf( CurrentClient, "1\t%d\n", pid );
+        output( "1\t%d\n", pid );
         break;
     }
   } else
-    fprintf( CurrentClient, "0\t%d\n", pid );
+    output( "0\t%d\n", pid );
 }
 
 void setPriority( const char* cmd )
@@ -582,21 +582,21 @@ void setPriority( const char* cmd )
   if ( setpriority( PRIO_PROCESS, pid, prio ) ) {
     switch ( errno ) {
       case EINVAL:
-        fprintf( CurrentClient, "4\t%d\t%d\n", pid, prio  );
+        output( "4\t%d\t%d\n", pid, prio  );
         break;
       case ESRCH:
-        fprintf( CurrentClient, "3\t%d\t%d\nn", pid, prio );
+        output( "3\t%d\t%d\nn", pid, prio );
         break;
       case EPERM:
       case EACCES:
-        fprintf( CurrentClient, "2\t%d\t%d\n", pid, prio );
+        output( "2\t%d\t%d\n", pid, prio );
         break;
       default: /* unknown error */
-        fprintf( CurrentClient, "1\t%d\t%d\n", pid, prio );
+        output( "1\t%d\t%d\n", pid, prio );
         break;
     }
   } else
-    fprintf( CurrentClient, "0\t%d\t%d\n",pid, prio );
+    output( "0\t%d\t%d\n",pid, prio );
 }
 
 void ioniceProcess( const char* cmd )
@@ -615,39 +615,39 @@ void ioniceProcess( const char* cmd )
   int class = 2;
   int priority = 0;
   if(sscanf( cmd, "%*s %d %d %d", &pid, &class, &priority ) < 2) {
-    fprintf( CurrentClient, "4\t%d\n", pid ); /* 4 means error in values */
+    output( "4\t%d\n", pid ); /* 4 means error in values */
     return; /* Error with input. */
   }
 
 #ifdef HAVE_IONICE
   if(pid < 1 || class < 0 || class > 3) {
-    fprintf( CurrentClient, "4\t%d\n", pid ); /* 4 means error in values */
+    output( "4\t%d\n", pid ); /* 4 means error in values */
     return; /* Error with input. Just ignore. */
   }
 
   if (ioprio_set(IOPRIO_WHO_PROCESS, pid, priority | class << IOPRIO_CLASS_SHIFT) == -1) {
     switch ( errno ) {
       case EINVAL:
-        fprintf( CurrentClient, "4\t%d\n", pid );
+        output( "4\t%d\n", pid );
         break;
       case ESRCH:
-        fprintf( CurrentClient, "3\t%d\n", pid );
+        output( "3\t%d\n", pid );
         break;
       case EPERM:
-        fprintf( CurrentClient, "2\t%d\n", pid );
+        output( "2\t%d\n", pid );
         break;
       default: /* unknown error */
-        fprintf( CurrentClient, "1\t%d\n", pid );
+        output( "1\t%d\n", pid );
         break;
     }
   } else {
     /* Successful */
-    fprintf( CurrentClient, "0\t%d\n", pid );
+    output( "0\t%d\n", pid );
   }
   return;
 #else
   /** should never reach here */
-  fprintf( CurrentClient, "1\t%d\n", pid );
+  output( "1\t%d\n", pid );
   return;
 #endif
 }
