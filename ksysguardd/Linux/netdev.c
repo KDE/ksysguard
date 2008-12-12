@@ -38,7 +38,10 @@
 #define CALC( a, b, c, d, e, f ) \
 { \
   if (f){ \
-    NetDevs[ i ].a = a - NetDevs[ i ].Old##a; \
+    if( NetDevs[i].oldInitialised ) \
+      NetDevs[ i ].a = a - NetDevs[ i ].Old##a; \
+    else \
+      NetDevs[ i ].a = 0; \
     NetDevs[ i ].Old##a = a; \
   } \
   else{ \
@@ -101,6 +104,7 @@ a = 0;
 
 #define SETMEMBERZERO( a, b, c, d, e, f ) \
 NetDevs[ i ].a = 0; \
+NetDevs[ i ].Old##a = 0; \
 NetDevs[ i ].a##Scale = e;
 
 #define DECLAREFUNC( a, b, c, d, e, f ) \
@@ -113,6 +117,7 @@ typedef struct
   FORALLWIFI( DEFMEMBERS )
   char name[ 32 ];
   int isWifi;
+  int oldInitialised;
 } NetDevInfo;
 
 /* We have observed deviations of up to 5% in the accuracy of the timer
@@ -182,6 +187,8 @@ static int processNetDev_( void )
           return -1;
         } else {
           FORALL( CALC );
+          if(!NetDevs[i].isWifi)
+            NetDevs[i].oldInitialised = 1;
         }
       }
     }
@@ -222,6 +229,7 @@ static int processNetDev_( void )
         signalLevel -= 256; /*the units are dBm*/
         noiseLevel -= 256;
         FORALLWIFI( CALC );
+        NetDevs[i].oldInitialised = 1;
       }
     }
   }
@@ -285,8 +293,10 @@ void initNetDev( struct SensorModul* sm )
     buf[ sizeof( buf ) - 1 ] = '\0';
     netDevBufP += strlen( buf ) + 1;  /* move netDevBufP to next line */
 
+    NetDevs[i].oldInitialised = 0;
     if ( sscanf( buf, devFormat, tag ) ) {
       char* pos = strchr( tag, ':' );
+      FORALL( SETMEMBERZERO );
       if ( pos ) {
         char mon[ MON_SIZE ];
         *pos = '\0';
@@ -295,17 +305,16 @@ void initNetDev( struct SensorModul* sm )
         FORALL( REGISTERSENSOR );
         sscanf( pos + 1, "%lli %lli %lli %lli %lli %lli %lli %lli"
                 "%lli %lli %lli %lli %lli %lli %lli %lli",
-                &NetDevs[ i ].recBytes, &NetDevs[ i ].recPacks,
-                &NetDevs[ i ].recErrs, &NetDevs[ i ].recDrop,
-                &NetDevs[ i ].recFifo, &NetDevs[ i ].recFrame,
-                &NetDevs[ i ].recCompressed, &NetDevs[ i ].recMulticast,
-                &NetDevs[ i ].sentBytes, &NetDevs[ i ].sentPacks,
-                &NetDevs[ i ].sentErrs, &NetDevs[ i ].sentDrop,
-                &NetDevs[ i ].sentFifo, &NetDevs[ i ].sentColls,
-                &NetDevs[ i ].sentCarrier, &NetDevs[ i ].sentCompressed );
+                &NetDevs[ i ].OldrecBytes, &NetDevs[ i ].OldrecPacks,
+                &NetDevs[ i ].OldrecErrs, &NetDevs[ i ].OldrecDrop,
+                &NetDevs[ i ].OldrecFifo, &NetDevs[ i ].OldrecFrame,
+                &NetDevs[ i ].OldrecCompressed, &NetDevs[ i ].OldrecMulticast,
+                &NetDevs[ i ].OldsentBytes, &NetDevs[ i ].OldsentPacks,
+                &NetDevs[ i ].OldsentErrs, &NetDevs[ i ].OldsentDrop,
+                &NetDevs[ i ].OldsentFifo, &NetDevs[ i ].OldsentColls,
+                &NetDevs[ i ].OldsentCarrier, &NetDevs[ i ].OldsentCompressed );
         NetDevCnt++;
-			}
-      FORALL( SETMEMBERZERO );
+	}
     }
   }
 
@@ -458,7 +467,10 @@ void printNetDev##a( const char* cmd ) \
  \
   for ( i = 0; i < MAXNETDEVS; ++i ) \
     if ( strcmp( NetDevs[ i ].name, dev ) == 0) { \
-      if (f) \
+      if (f && timeInterval < 0.01) \
+	 /*Time interval is very small.  Can we really get an accurate value from this? Assume not*/ \
+         output( "0\n"); \
+      else if(f) \
          output( "%li\n", (long) \
                 ( NetDevs[ i ].a / ( NetDevs[ i ].a##Scale * timeInterval ) ) ); \
       else \
