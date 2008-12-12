@@ -471,7 +471,6 @@ void printNetDev##a( const char* cmd ) \
  \
 void printNetDev##a##Info( const char* cmd ) \
 { \
-  int i; \
   char* beg; \
   char* end; \
   char dev[ 64 ]; \
