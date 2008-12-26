@@ -446,7 +446,7 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
 
   switch ( id ) {
     case 0:
-      s = i18n( " %1 processes ", answer.toInt() );
+      s = i18np( " 1 process ", " %1 processes ", answer.toInt() );
       sbProcessCount->setText( s );
 
       break;
