@@ -466,9 +466,9 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
 
     case 4:
       mUsedApplication = answer.toLongLong();
-      s = i18n( " Memory: %1 / %2 " ,
-                KGlobal::locale()->formatByteSize( mUsedApplication*1024),
-                KGlobal::locale()->formatByteSize( (mFree+mUsedTotal)*1024 ) );
+      s = i18nc( "Arguments are formatted byte sizes (used/total)", " Memory: %1 / %2 " ,
+                 KGlobal::locale()->formatByteSize( mUsedApplication*1024),
+                 KGlobal::locale()->formatByteSize( (mFree+mUsedTotal)*1024 ) );
       sbMemTotal->setText( s );
       break;
 
@@ -495,9 +495,9 @@ void TopLevel::setSwapInfo( long used, long free, const QString & )
   if ( used == 0 && free == 0 ) // no swap available
     msg = i18n( " No swap space available " );
   else {
-    msg = i18n( " Swap: %1 / %2 " ,
-                KGlobal::locale()->formatByteSize( used*1024 ),
-                KGlobal::locale()->formatByteSize( (free+used)*1024) );
+    msg = i18nc( "Arguments are formatted byte sizes (used/total)", " Swap: %1 / %2 " ,
+                 KGlobal::locale()->formatByteSize( used*1024 ),
+                 KGlobal::locale()->formatByteSize( (free+used)*1024) );
   }
 
   sbSwapTotal->setText( msg );

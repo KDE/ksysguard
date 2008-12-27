@@ -103,7 +103,7 @@ void SensorManager::retranslate()
   mDict.insert( QLatin1String( "frame" ), i18n( "Frame Errors" ) );
   mDict.insert( QLatin1String( "multicast" ), i18n( "Multicast" ) );
   mDict.insert( QLatin1String( "packets" ), i18n( "Packets" ) );
-  mDict.insert( QLatin1String( "carrier" ), i18n( "Carrier" ) );
+  mDict.insert( QLatin1String( "carrier" ), i18nc( "@item sensor description ('carrier' is a type of network signal)", "Carrier" ) );
   mDict.insert( QLatin1String( "collisions" ), i18n( "Collisions" ) );
   mDict.insert( QLatin1String( "sockets" ), i18n( "Sockets" ) );
   mDict.insert( QLatin1String( "count" ), i18n( "Total Number" ) );
