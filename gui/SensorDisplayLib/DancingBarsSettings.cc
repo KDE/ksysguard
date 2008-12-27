@@ -154,7 +154,7 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
 
   // Look page
   page = new QFrame( this );
-  addPage( page, i18n( "Look" ) );
+  addPage( page, i18nc( "@title:tab Appearance of the bar graph", "Look" ) );
   pageLayout = new QGridLayout( page );
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );

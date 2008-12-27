@@ -102,7 +102,7 @@ void SensorAgent::processAnswer( const char *buf, int buflen )
           else {
             /* We just received the end of an error message, so we
              * can display it. */
-            SensorMgr->notify( i18n( "Message from %1:\n%2" ,
+            SensorMgr->notify( i18nc( "%1 is a host name", "Message from %1:\n%2",
                                mHostName ,
                                error ) );
           }

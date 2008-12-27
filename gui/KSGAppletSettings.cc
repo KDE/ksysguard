@@ -60,7 +60,7 @@ KSGAppletSettings::KSGAppletSettings( QWidget *parent)
   mSizeRatio->setMinimum( 10 );
   mSizeRatio->setMaximum( 500 );
   mSizeRatio->setSingleStep(20);
-  mSizeRatio->setSuffix( i18n( "%" ) );
+  mSizeRatio->setSuffix( i18nc( "Number suffix in spinbox", "%" ) );
   topLayout->addWidget( mSizeRatio, 1, 1 );
   label->setBuddy( mSizeRatio );
 

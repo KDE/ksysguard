@@ -341,7 +341,7 @@ void FancyPlotter::setTooltip()
       lastValue = i18n("Error");
     }
     if(beamId != sensor->beamId && !sensor->summationName.isEmpty()) {
-      tooltip += i18n("<p><b>%1:</b><br>", sensor->summationName);
+      tooltip += i18nc("%1 is what is being shown statistics for, like 'Memory', 'Swap', etc.", "<p><b>%1:</b><br>", sensor->summationName);
       neednewline = false;
     }
     beamId = sensor->beamId;
@@ -388,7 +388,7 @@ void FancyPlotter::timerTick( ) //virtual
           lastValue = i18n("Error");
         }
 	if(sensor->maxValue != 0 && mUnit != "%")
-	  lastValue = i18n("%1 of %2", lastValue, mPlotter->valueAsString(sensor->maxValue) );
+	  lastValue = i18nc("%1 and %2 are sensor's last and maximum value", "%1 of %2", lastValue, mPlotter->valueAsString(sensor->maxValue) );
 
         static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(beamId)))->widget())->value->setText(lastValue);
       }
