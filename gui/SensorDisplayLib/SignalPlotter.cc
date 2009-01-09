@@ -615,10 +615,11 @@ void KSignalPlotter::drawWidget(QPainter *p, QRect boundingBox, bool onlyDrawPlo
   if( redraw || mScrollableImage.isNull() || mScrollableImage.height() != boundingBox.height() || mScrollableImage.width() != alignedWidth) {
 #ifdef USE_QIMAGE
     mScrollableImage = QImage(alignedWidth, boundingBox.height(),QImage::Format_ARGB32_Premultiplied);
+    mScrollableImage.fill(0);
 #else
     mScrollableImage = QPixmap(alignedWidth, boundingBox.height());
+    mScrollableImage.fill(QColormap::instance().pixel(QColor(Qt::transparent)));
 #endif
-    mScrollableImage.fill(Qt::transparent);
     Q_ASSERT(!mScrollableImage.isNull());
     redraw = true;
   }
