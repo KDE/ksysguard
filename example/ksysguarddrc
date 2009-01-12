@@ -6,10 +6,10 @@ LogFiles=messages:/var/log/messages,kern:/var/log/kern.log,daemon:/var/log/daemo
 # Sensors: the list of all accessable sensors
 #	Apm             Advanced Power Managment
 #	Acpi            Advanced Configuration and Power Interface
-#	CpuInfo         CPU-Clock informations
+#	CpuInfo         CPU-Clock information
 #	DiskStat        partition space. Data comes from mtab, getmntent() and statfs()
 #	DiskStats       disk throughput. Data comes from /etc/diskstats
-#	LmSensors       informations about motherboard and CPU
+#	LmSensors       information about motherboard and CPU
 #	LoadAvg         system load values
 #	LogFile         local logfiles
 #	Memory          physical memory and swap
