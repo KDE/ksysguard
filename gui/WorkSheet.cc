@@ -84,6 +84,12 @@ WorkSheet::WorkSheet( uint rows, uint columns, float interval, QWidget* parent )
 
 WorkSheet::~WorkSheet()
 {
+  for ( int r = 0; r < mRows; ++r ) {
+    for ( int c = 0; c < mColumns; ++c )
+      delete mDisplayList[ r ][ c ];
+    delete mDisplayList[ r ];
+  }
+  delete [] mDisplayList;
 }
 
 bool WorkSheet::load( const QString &fileName )
