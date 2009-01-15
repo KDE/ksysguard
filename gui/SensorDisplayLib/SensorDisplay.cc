@@ -85,6 +85,8 @@ SensorDisplay::~SensorDisplay()
 
   if ( mTimerId > 0 )
     killTimer( mTimerId );
+  for(int i = mSensors.size()-1; i>=0; i--)
+    unregisterSensor(i);
 }
 
 void SensorDisplay::registerSensor( SensorProperties *sp )
