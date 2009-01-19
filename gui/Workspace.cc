@@ -48,6 +48,7 @@ Workspace::Workspace( QWidget* parent)
                                "to create a new tab (Menu File->New) before "
                                "you can drag sensors here." ) );
   setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+  connect(&mDirWatch, SIGNAL(deleted(const QString&)), this, SLOT(removeWorkSheet(const QString &)));
 }
 
 Workspace::~Workspace()
@@ -266,9 +267,10 @@ void Workspace::removeAllWorkSheets()
 
 void Workspace::removeWorkSheet( const QString &fileName )
 {
+  QString baseName = fileName.right( fileName.length() - fileName.lastIndexOf( '/' ) - 1 );
   for(int i = 0; i < mSheetList.size(); i++) {
     WorkSheet *sheet = mSheetList.at(i);
-    if ( sheet->fileName() == fileName ) {
+    if ( sheet->fileName() == baseName ) {
       removeTab(indexOf( sheet ));
       mSheetList.removeAt( i );
       delete sheet;
@@ -289,6 +291,7 @@ void Workspace::getHotNewWorksheet()
         restoreWorkSheet(filename, true);
       }
     }
+
     //TODO: inspect entries here
     //Don't qDeleteAll entry it's already done when engine is deleted otherwise double delete
     //qDeleteAll(entries);
@@ -319,6 +322,9 @@ bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)
   insertTab(-1, sheet, sheet->translatedTitle() );
   if(switchToTab)
    setCurrentIndex(indexOf(sheet));
+
+  //Watch the file incase it is deleted
+  mDirWatch.addFile(fileName);
 
   return true;
 }

@@ -26,6 +26,7 @@
 #define KSG_WORKSPACE_H
 
 #include <KTabWidget>
+#include <kdirwatch.h>
 
 class KConfig;
 class KUrl;
@@ -46,7 +47,6 @@ class Workspace : public KTabWidget
     bool saveOnQuit();
 
     bool restoreWorkSheet( const QString &fileName, bool switchToTab = true);
-    void removeWorkSheet( const QString &fileName );
     QList<WorkSheet *> getWorkSheets() const { return mSheetList; }
 
   public Q_SLOTS:
@@ -57,6 +57,7 @@ class Workspace : public KTabWidget
     void exportWorkSheet();
     void exportWorkSheet( WorkSheet *sheet );
     void removeWorkSheet();
+    void removeWorkSheet( const QString &fileName );
     void removeAllWorkSheets();
     void getHotNewWorksheet();
     void cut();
@@ -76,6 +77,7 @@ class Workspace : public KTabWidget
     QList<WorkSheet *> mSheetList;
 
     QString makeNameForNewSheet() const;
+    KDirWatch mDirWatch;
 };
 
 #endif
