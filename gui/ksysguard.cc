@@ -456,11 +456,11 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
       break;
 
     case 5:
-      sFree = answer.toLong();
+      sFree = answer.toLongLong();
       break;
 
     case 6:
-      sUsed = answer.toLong();
+      sUsed = answer.toLongLong();
       setSwapInfo( sUsed, sFree, unit );
       break;
 
@@ -472,7 +472,7 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
   }
 }
 
-void TopLevel::setSwapInfo( long used, long free, const QString & )
+void TopLevel::setSwapInfo( qlonglong used, qlonglong free, const QString & )
 {
   QString msg;
   if ( used == 0 && free == 0 ) // no swap available

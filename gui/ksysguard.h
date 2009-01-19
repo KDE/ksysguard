@@ -71,7 +71,7 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     void currentTabChanged(int index);
 
   private:
-    void setSwapInfo( long, long, const QString& );
+    void setSwapInfo( qlonglong, qlonglong, const QString& );
     void changeEvent( QEvent * event );
     void retranslateUi();
 

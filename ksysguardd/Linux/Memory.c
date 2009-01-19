@@ -36,22 +36,22 @@
 static char MemInfoBuf[ MEMINFOBUFSIZE ];
 static int Dirty = 1;
 
-static unsigned long Total = 0;
-static unsigned long MFree = 0;
-static unsigned long Appl = 0;
-static unsigned long Used = 0;
-static unsigned long Buffers = 0;
-static unsigned long Cached = 0;
-static unsigned long STotal = 0;
-static unsigned long SFree = 0;
-static unsigned long SUsed = 0;
+static unsigned long long Total = 0;
+static unsigned long long MFree = 0;
+static unsigned long long Appl = 0;
+static unsigned long long Used = 0;
+static unsigned long long Buffers = 0;
+static unsigned long long Cached = 0;
+static unsigned long long STotal = 0;
+static unsigned long long SFree = 0;
+static unsigned long long SUsed = 0;
 
-static void scan_one( const char* buff, const char *key, unsigned long int* val )
+static void scan_one( const char* buff, const char *key, unsigned long long* val )
 {   
   int o;
   char *b = strstr( buff, key );
   if ( b )  
-    o = sscanf( b + strlen( key ), ": %lu", val );
+    o = sscanf( b + strlen( key ), ": %llu", val );
 }
 
 static void processMemInfo()
@@ -160,7 +160,7 @@ void printMFree( const char* cmd )
   if ( Dirty )
     processMemInfo();
 
-  output( "%ld\n", MFree );
+  output( "%llu\n", MFree );
 }
 
 void printMFreeInfo( const char* cmd )
@@ -170,7 +170,7 @@ void printMFreeInfo( const char* cmd )
   if ( Dirty )
     processMemInfo();
 
-  output( "Free Memory\t0\t%ld\tKB\n", Total );
+  output( "Free Memory\t0\t%llu\tKB\n", Total );
 }
 
 void printUsed( const char* cmd )
@@ -180,7 +180,7 @@ void printUsed( const char* cmd )
   if ( Dirty )
     processMemInfo();
 
-  output( "%ld\n", Used );
+  output( "%llu\n", Used );
 }
 
 void printUsedInfo( const char* cmd )
@@ -190,7 +190,7 @@ void printUsedInfo( const char* cmd )
   if ( Dirty )
     processMemInfo();
 
-  output( "Used Memory\t0\t%ld\tKB\n", Total );
+  output( "Used Memory\t0\t%llu\tKB\n", Total );
 }
 
 void printAppl( const char* cmd )
@@ -200,7 +200,7 @@ void printAppl( const char* cmd )
   if ( Dirty )
     processMemInfo();
 
-  output( "%ld\n", Appl );
+  output( "%llu\n", Appl );
 }
 
 void printApplInfo( const char* cmd )
@@ -210,7 +210,7 @@ void printApplInfo( const char* cmd )
   if ( Dirty )
     processMemInfo();
 
-  output( "Application Memory\t0\t%ld\tKB\n", Total );
+  output( "Application Memory\t0\t%llu\tKB\n", Total );
 }
 
 void printBuffers( const char* cmd )
@@ -220,7 +220,7 @@ void printBuffers( const char* cmd )
   if ( Dirty )
     processMemInfo();
 
-  output( "%ld\n", Buffers );
+  output( "%llu\n", Buffers );
 }
 
 void printBuffersInfo( const char* cmd )
@@ -230,7 +230,7 @@ void printBuffersInfo( const char* cmd )
   if ( Dirty )
     processMemInfo();
 
-  output( "Buffer Memory\t0\t%ld\tKB\n", Total );
+  output( "Buffer Memory\t0\t%llu\tKB\n", Total );
 }
 
 void printCached( const char* cmd )
@@ -240,7 +240,7 @@ void printCached( const char* cmd )
   if ( Dirty )
     processMemInfo();
 
-  output( "%ld\n", Cached );
+  output( "%llu\n", Cached );
 }
 
 void printCachedInfo( const char* cmd )
@@ -250,7 +250,7 @@ void printCachedInfo( const char* cmd )
   if ( Dirty )
     processMemInfo();
 
-  output( "Cached Memory\t0\t%ld\tKB\n", Total );
+  output( "Cached Memory\t0\t%llu\tKB\n", Total );
 }
 
 void printSwapUsed( const char* cmd )
@@ -260,7 +260,7 @@ void printSwapUsed( const char* cmd )
   if ( Dirty )
     processMemInfo();
 
-  output( "%ld\n", SUsed );
+  output( "%llu\n", SUsed );
 }
 
 void printSwapUsedInfo( const char* cmd )
@@ -270,7 +270,7 @@ void printSwapUsedInfo( const char* cmd )
   if ( Dirty )
     processMemInfo();
 
-  output( "Used Swap Memory\t0\t%ld\tKB\n", STotal );
+  output( "Used Swap Memory\t0\t%llu\tKB\n", STotal );
 }
 
 void printSwapFree( const char* cmd )
@@ -280,7 +280,7 @@ void printSwapFree( const char* cmd )
   if ( Dirty )
     processMemInfo();
 
-  output( "%ld\n", SFree );
+  output( "%llu\n", SFree );
 }
 
 void printSwapFreeInfo( const char* cmd )
@@ -290,5 +290,5 @@ void printSwapFreeInfo( const char* cmd )
   if ( Dirty )
     processMemInfo();
 
-  output( "Free Swap Memory\t0\t%ld\tKB\n", STotal );
+  output( "Free Swap Memory\t0\t%llu\tKB\n", STotal );
 }
