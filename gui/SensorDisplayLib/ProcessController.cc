@@ -80,6 +80,9 @@ ProcessController::restoreSettings(QDomElement& element)
 	int units = element.attribute("units", QString::number((int)ProcessModel::UnitsKB)).toUInt();
 	mProcessList->setUnits((ProcessModel::Units)units);
 
+	bool showCommandLineOptions = element.attribute("showCommandLineOptions", "0").toUInt();
+	mProcessList->processModel()->setShowCommandLineOptions(showCommandLineOptions);
+
 	int filterState = element.attribute("filterState", QString::number((int)ProcessFilter::AllProcesses)).toUInt();
 	mProcessList->setState((ProcessFilter::State)filterState);
 
@@ -100,6 +103,7 @@ bool ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 	element.setAttribute("showTotals", mProcessList->showTotals()?1:0);
 	
 	element.setAttribute("units", (int)(mProcessList->units()));
+	element.setAttribute("showCommandLineOptions", mProcessList->processModel()->isShowCommandLineOptions());
 	element.setAttribute("filterState", (int)(mProcessList->state()));
 
 	SensorDisplay::saveSettings(doc, element);
