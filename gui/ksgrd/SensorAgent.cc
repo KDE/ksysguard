@@ -45,6 +45,10 @@ SensorAgent::SensorAgent( SensorManager *sm ) : QObject(sm)
 
 SensorAgent::~SensorAgent()
 {
+  for(int i = mInputFIFO.size()-1; i >= 0; --i)
+    delete mInputFIFO.takeAt(i);
+  for(int i = mProcessingFIFO.size()-1; i >= 0; --i)
+    delete mProcessingFIFO.takeAt(i);
 }
 
 void SensorAgent::sendRequest( const QString &req, SensorClient *client, int id )
