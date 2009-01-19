@@ -19,6 +19,6 @@ CustomName=true
 
 # What to do after installation? Any number of the lines below
 # unpack the downloaded archive
-Uncompress=true 
+Uncompress=never
 
 #InstallationCommand=dbus-send ... %f ... # post-installation command

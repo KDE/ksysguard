@@ -279,15 +279,19 @@ void Workspace::removeWorkSheet( const QString &fileName )
 
 void Workspace::getHotNewWorksheet()
 {
-  kDebug() << "Need to handle get new stuff";
-  
   KNS::Engine engine(this);
   if(engine.init("ksysguard.knsrc"))
   {
-     KNS::Entry::List entries = engine.downloadDialogModal(this);
-     //TODO: inspect entries here
-     //Don't qDeleteAll entry it's already done when engine is deleted otherwise double delete
-     //qDeleteAll(entries);
+    KNS::Entry::List entries = engine.downloadDialogModal(this);
+    foreach(KNS::Entry *entry, entries) {
+      if(entry->status() == KNS::Entry::Installed && !entry->installedFiles().isEmpty()) {
+        QString filename = entry->installedFiles().first();
+        restoreWorkSheet(filename, true);
+      }
+    }
+    //TODO: inspect entries here
+    //Don't qDeleteAll entry it's already done when engine is deleted otherwise double delete
+    //qDeleteAll(entries);
   }
 }
 
