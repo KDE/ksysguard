@@ -304,12 +304,6 @@ void TopLevel::disconnectHost()
     mSensorBrowser->disconnect();
 }
 
-void TopLevel::slotNewToolbarConfig()
-{
-  createGUI();
-  applyMainWindowSettings( KConfigGroup( KGlobal::config(), "MainWindow" ) );
-}
-
 bool TopLevel::event( QEvent *e )
 {
   if ( e->type() == QEvent::User ) {
@@ -563,10 +557,13 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
 #endif
   topLevel = new TopLevel();
 
-  topLevel->initStatusBar();
 
   // create top-level widget
   topLevel->readProperties( KConfigGroup( KGlobal::config(), "MainWindow" ) );
+  // setup the statusbar, toolbar etc.
+  // Note that this comes after creating the top-level widgets whcih also 
+  // sets up the various QActions that the user may have added to the toolbar
+  topLevel->initStatusBar();
 
   //There seems to be some serious bugs with the session restore code.  Disabling
 //  if ( app->isSessionRestored() )
