@@ -50,7 +50,6 @@
 #include <kstatusbar.h>
 #include <kstandardaction.h>
 #include <ktoggleaction.h>
-#include <ktoolbar.h>
 #include <kurl.h>
 #include <kwindowsystem.h>
 #include <QSplitter>
@@ -303,16 +302,6 @@ void TopLevel::disconnectHost()
 {
   if(mSensorBrowser)
     mSensorBrowser->disconnect();
-}
-
-void TopLevel::editToolbars()
-{
-  saveMainWindowSettings( KConfigGroup( KGlobal::config(), "MainWindow" ) );
-  KEditToolBar dlg( actionCollection() );
-  connect( &dlg, SIGNAL( newToolBarConfig() ), this,
-           SLOT( slotNewToolbarConfig() ) );
-
-  dlg.exec();
 }
 
 void TopLevel::slotNewToolbarConfig()

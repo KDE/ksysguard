@@ -68,7 +68,6 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     void connectHost();
     void disconnectHost();
     void updateStatusBar();
-    void editToolbars();
     void slotNewToolbarConfig();
     void currentTabChanged(int index);
 
