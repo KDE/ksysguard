@@ -190,11 +190,6 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   mFontSize->setMaximum( 24 );
   boxLayout->addWidget( mFontSize, 1, 1 );
   label->setBuddy( mFontSize );
-/*
-  mShowTopBar = new QCheckBox( i18n( "Top bar" ), groupBox );
-  mShowTopBar->setWhatsThis( i18n( "Check this to active the display title bar. This is probably only useful for applet displays. The bar is only visible if the display is large enough." ) );
-  boxLayout->addWidget( mShowTopBar, 1, 0 );
-*/
   boxLayout->setRowStretch( 2, 1 );
 
   pageLayout->addWidget( groupBox, 1, 0 );

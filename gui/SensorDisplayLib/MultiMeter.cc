@@ -117,10 +117,7 @@ void MultiMeter::answerReceived(int id, const QList<QByteArray>& answerlist)
       digits += 1;
     }
 
-    if (mSharedSettings->isApplet)
-      mLcd->setNumDigits(qMin(4,digits));
-    else
-      mLcd->setNumDigits(qMin(15,digits));
+    mLcd->setNumDigits(qMin(15,digits));
 
     mLcd->display(val);
     if (mLowerLimitActive && val < mLowerLimit)

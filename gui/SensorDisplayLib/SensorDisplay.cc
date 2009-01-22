@@ -113,12 +113,6 @@ void SensorDisplay::showContextMenu(const QPoint &pos)
     QMenu pm;
     QAction *action = 0;
     bool menuEmpty = true;
-    if ( mSharedSettings->isApplet ) {
-      action = pm.addAction( i18n( "Launch &System Guard") );
-      action->setData( 1 );
-      pm.addSeparator();
-      menuEmpty = false;
-    }
 
     if ( hasSettingsDialog() ) {
       action = pm.addAction( i18n( "&Properties" ) );

@@ -116,7 +116,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   mPlotter->setAxisFont( font );
   mPlotter->setAxisFontColor( Qt::black );
 
-  mPlotter->setThinFrame(!(workSheetSettings && workSheetSettings->isApplet));
+  mPlotter->setThinFrame(!workSheetSettings);
  
   /* All RMB clicks to the mPlotter widget will be handled by 
    * SensorDisplay::eventFilter. */

@@ -434,11 +434,10 @@ SensorBrowserWidget::~SensorBrowserWidget()
 
 void SensorBrowserWidget::retranslateUi() {
   
-  this->setToolTip( i18n( "Drag sensors to empty cells of a worksheet "
-                             "or the panel applet." ) );
+  this->setToolTip( i18n( "Drag sensors to empty cells of a worksheet "));
   this->setWhatsThis( i18n( "The sensor browser lists the connected hosts and the sensors "
                                "that they provide. Click and drag sensors into drop zones "
-                               "of a worksheet or the panel applet. A display will appear "
+                               "of a worksheet. A display will appear "
                                "that visualizes the "
                                "values provided by the sensor. Some sensor displays can "
                                "display values of multiple sensors. Simply drag other "

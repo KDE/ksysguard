@@ -27,8 +27,7 @@
 class SharedSettings 
 {
   public:
-	SharedSettings() { isApplet = false; locked = false; modified = false; }
-	bool isApplet;
+	SharedSettings() { locked = false; modified = false; }
 	bool locked;
 	bool modified;
 };
