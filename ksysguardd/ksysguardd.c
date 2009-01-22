@@ -40,7 +40,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <errno.h>
-#include <../version.h>
 
 #include "modules.h"
 
@@ -124,13 +123,12 @@ static int processArguments( int argc, char* argv[] )
 
 static void printWelcome( FILE* out )
 {
-  fprintf( out, "ksysguardd %s\n"
+  fprintf( out, "ksysguardd 4\n"
            "(c) 1999, 2000, 2001, 2002 Chris Schlaeger <cs@kde.org>\n"
            "(c) 2001 Tobias Koenig <tokoe@kde.org>\n"
            "(c) 2006-2008 Greg Martyn <greg.martyn@gmail.com>\n"
            "This program is part of the KDE Project and licensed under\n"
-           "the GNU GPL version 2. See http://www.kde.org for details.\n", 
-           KSYSGUARD_VERSION );
+           "the GNU GPL version 2. See http://www.kde.org for details.\n");
 
   fflush( out );
 }
