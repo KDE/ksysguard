@@ -55,7 +55,6 @@ WorkSheet::WorkSheet( QWidget *parent )
   mGridLayout = 0;
   mRows = mColumns = 0;
   mDisplayList = 0;
-  mFileName = "";
   mLocalProcessController = NULL;
   setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
   setAcceptDrops( true );
@@ -68,7 +67,6 @@ WorkSheet::WorkSheet( uint rows, uint columns, float interval, QWidget* parent )
   mGridLayout = 0;
   mDisplayList = 0;
   setUpdateInterval( interval );
-  mFileName = "";
 
   createGrid( rows, columns );
 
@@ -179,7 +177,7 @@ bool WorkSheet::load( const QString &fileName )
     for ( uint c = 0; c < mColumns; ++c )
       if ( !mDisplayList[ r ][ c ] )
         replaceDisplay( r, c );
-
+  mFullFileName = fileName;
   return true;
 }
 
@@ -295,6 +293,11 @@ void WorkSheet::paste()
 void WorkSheet::setFileName( const QString &fileName )
 {
   mFileName = fileName;
+}
+
+QString WorkSheet::fullFileName() const
+{
+  return mFullFileName;
 }
 
 QString WorkSheet::fileName() const

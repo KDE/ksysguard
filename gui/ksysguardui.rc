@@ -5,6 +5,7 @@
     <Action name="new_worksheet"/>
     <Action name="import_worksheet"/>
     <Action name="get_new_worksheet"/>
+    <Action name="upload_worksheet"/>
     <Action name="export_worksheet"/>
     <Action name="remove_worksheet"/>
     <Separator/>

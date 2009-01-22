@@ -60,6 +60,7 @@ class Workspace : public KTabWidget
     void removeWorkSheet( const QString &fileName );
     void removeAllWorkSheets();
     void getHotNewWorksheet();
+    void uploadHotNewWorksheet();
     void cut();
     void copy();
     void paste();

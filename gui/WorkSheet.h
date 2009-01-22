@@ -63,6 +63,8 @@ class WorkSheet : public QWidget
     void setFileName( const QString &fileName );
     QString fileName() const;
 
+    QString fullFileName() const;
+
     bool isLocked() const {return mSharedSettings.locked;}
 
     QString title() const;
@@ -123,6 +125,7 @@ class WorkSheet : public QWidget
 
     QGridLayout* mGridLayout;
     QString mFileName;
+    QString mFullFileName;
     QString mTitle;
     QString mTranslatedTitle;
 

@@ -134,6 +134,9 @@ TopLevel::TopLevel()
   mHotNewWorksheetAction = actionCollection()->addAction( "get_new_worksheet" );
   mHotNewWorksheetAction->setIcon( KIcon("network-server") );
   connect(mHotNewWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( getHotNewWorksheet() ));
+  mHotNewWorksheetUploadAction = actionCollection()->addAction( "upload_worksheet" );
+  mHotNewWorksheetUploadAction->setIcon( KIcon("network-server") );
+  connect(mHotNewWorksheetUploadAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( uploadHotNewWorksheet() ));
 
   mQuitAction = NULL;
 
@@ -153,6 +156,8 @@ void TopLevel::retranslateUi()
   mTabRemoveAction->setText( i18n( "&Close Tab" ) );
   mMonitorRemoteAction->setText( i18n( "Monitor &Remote Machine..." ) );
   mHotNewWorksheetAction->setText( i18n( "&Download New Tabs..." ) );
+  mHotNewWorksheetUploadAction->setText( i18n( "&Upload Current Tab..." ) );
+
   mConfigureSheetAction->setText( i18n( "Tab &Properties" ) );
   if(mQuitAction) {
     KAction *tmpQuitAction = KStandardAction::quit( NULL, NULL, NULL );
@@ -173,6 +178,7 @@ void TopLevel::currentTabChanged(int index)
   bool locked = !sheet || sheet->isLocked();
   mTabRemoveAction->setVisible(!locked);
   mTabExportAction->setVisible(!locked);
+  mHotNewWorksheetUploadAction->setVisible(!locked);
   mMonitorRemoteAction->setVisible(!locked);
 
   if(!locked && !mSensorBrowser) {

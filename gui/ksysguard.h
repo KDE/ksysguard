@@ -59,6 +59,7 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     Q_SCRIPTABLE QStringList listHosts();
     Q_SCRIPTABLE QStringList listSensors( const QString &hostName );
 
+
   protected:
     virtual bool event( QEvent* );
     virtual void timerEvent( QTimerEvent* );
@@ -92,7 +93,7 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     QAction *mHotNewWorksheetAction;
     QAction *mQuitAction;
     QAction *mConfigureSheetAction;
-
+    QAction *mHotNewWorksheetUploadAction;
     QLabel *sbProcessCount;
     QLabel *sbCpuStat;
     QLabel *sbMemTotal;
