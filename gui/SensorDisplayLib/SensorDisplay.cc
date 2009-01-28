@@ -345,7 +345,11 @@ void SensorDisplay::changeEvent( QEvent * event ) {
 void SensorDisplay::setTitle( const QString &title )
 {
   mTitle = title;
-  mTranslatedTitle = i18n(title.toLatin1());
+  // Check if the string is latin1 only.  If so, try to translate
+  if(QString::fromLatin1(title.toLatin1()) == title)
+    mTranslatedTitle = i18n(title.toLatin1());
+  else
+    mTranslatedTitle = mTitle;
   emit titleChanged(mTitle);
   emit translatedTitleChanged(mTranslatedTitle);
 }
