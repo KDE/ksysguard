@@ -41,6 +41,7 @@ ProcessController::ProcessController(QWidget* parent)
 {
 	mProcessList = NULL;
 	mProcesses = NULL;
+	kDebug() << "CREATED";
 }
 
 void
@@ -137,6 +138,8 @@ bool ProcessController::addSensor(const QString& hostName,
 	mProcessList = new KSysGuardProcessList(this, hostName);
 	mProcessList->setContentsMargins(0,0,0,0);
 	addActions(mProcessList->actions());
+	connect(mProcessList, SIGNAL(updated()), this, SIGNAL(updated()));
+	kDebug() << "mProcessList is " << mProcessList;
 
 	layout->addWidget(mProcessList);
 
@@ -147,7 +150,6 @@ bool ProcessController::addSensor(const QString& hostName,
 		mProcesses = processes;
 		if(processes) {
 			connect( processes, SIGNAL(runCommand(const QString &, int)), SLOT(runCommand(const QString &, int)));
-
 		}
 
 	}

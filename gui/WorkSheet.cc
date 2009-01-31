@@ -82,8 +82,8 @@ WorkSheet::WorkSheet( uint rows, uint columns, float interval, QWidget* parent )
 
 WorkSheet::~WorkSheet()
 {
-  for ( int r = 0; r < mRows; ++r ) {
-    for ( int c = 0; c < mColumns; ++c )
+  for ( uint r = 0; r < mRows; ++r ) {
+    for ( uint c = 0; c < mColumns; ++c )
       delete mDisplayList[ r ][ c ];
     delete mDisplayList[ r ];
   }
@@ -320,18 +320,60 @@ QString WorkSheet::title() const {
   return mTitle;
 }
 
+KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, uint row, uint column)
+{
+  KSGRD::SensorDisplay* newDisplay = 0;
+  switch(displayType) {
+    case DisplayDummy: 
+      newDisplay = new DummyDisplay( this, &mSharedSettings );
+      break;
+    case DisplayFancyPlotter:
+      newDisplay = new FancyPlotter( this, NULL, &mSharedSettings );
+      break;
+    case DisplayMultiMeter:
+      newDisplay = new MultiMeter( this, NULL, &mSharedSettings);
+      break;
+    case DisplayDancingBars: 
+      newDisplay = new DancingBars( this, NULL, &mSharedSettings);
+      break;
+    case DisplaySensorLogger:
+      newDisplay = new SensorLogger( this, NULL, &mSharedSettings);
+      break;
+    case DisplayListView:
+      newDisplay = new ListView( this, NULL, &mSharedSettings);
+      break;
+    case DisplayLogFile:
+      newDisplay = new LogFile( this, NULL, &mSharedSettings );
+      break;
+    case DisplayProcessControllerRemote:
+      newDisplay = new ProcessController( this);
+      break;
+    case DisplayProcessControllerLocal:
+	Q_ASSERT(sLocalProcessController);
+	newDisplay = sLocalProcessController;
+	break;
+    default:
+      Q_ASSERT(false);
+      return NULL;
+  }
+  newDisplay->applyStyle();
+  connect(&mTimer, SIGNAL( timeout()), newDisplay, SLOT( timerTick()));
+  replaceDisplay( row, column, newDisplay );
+  return newDisplay;
+}
+
 KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
                                              const QString &sensorName,
                                              const QString &sensorType,
                                              const QString& sensorDescr,
                                              uint row, uint column )
 {
-
+  KSGRD::SensorDisplay* display = mDisplayList[ row ][ column ];
   /* If the by 'row' and 'column' specified display is a QGroupBox dummy
    * display we replace the widget. Otherwise we just try to add
    * the new sensor to an existing display. */
-  if ( mDisplayList[ row ][ column ]->metaObject()->className() == QByteArray( "DummyDisplay" ) ) {
-    KSGRD::SensorDisplay* newDisplay = 0;
+  if ( display->metaObject()->className() == QByteArray( "DummyDisplay" ) ) {
+    DisplayType displayType = DisplayDummy;
     /* If the sensor type is supported by more than one display
      * type we popup a menu so the user can select what display is
      * wanted. */
@@ -343,50 +385,41 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
       QAction *a3 = pm.addAction( i18n( "&Bar graph" ) );
       QAction *a4 = pm.addAction( i18n( "Log to a &file" ) );
       QAction *execed = pm.exec( QCursor::pos() );
-      if (execed == a1) {
-        newDisplay = new FancyPlotter( this, sensorDescr, &mSharedSettings );
-      }
-      else if (execed == a2) {
-        newDisplay = new MultiMeter( this, sensorDescr, &mSharedSettings);
-      }
-      else if (execed == a3) {
-        newDisplay = new DancingBars( this, sensorDescr, &mSharedSettings);
-      }
-      else if (execed == a4) {
-        newDisplay = new SensorLogger( this, sensorDescr, &mSharedSettings);
-      }
-      else {
+      if (execed == a1)
+  	displayType = DisplayFancyPlotter;
+      else if (execed == a2)
+	displayType = DisplayMultiMeter;
+      else if (execed == a3)
+	displayType = DisplayDancingBars;
+      else if (execed == a4)
+	displayType = DisplaySensorLogger;
+      else 
         return 0;
-      }
     } else if ( sensorType == "listview" ) {
-      newDisplay = new ListView( this, sensorDescr, &mSharedSettings);
+      displayType = DisplayListView;
     }
     else if ( sensorType == "logfile" ) {
-      newDisplay = new LogFile( this, sensorDescr, &mSharedSettings );
+      displayType = DisplayLogFile;
     }
     else if ( sensorType == "sensorlogger" ) {
-      newDisplay = new SensorLogger( this, sensorDescr, &mSharedSettings );
+      displayType = DisplaySensorLogger;
     }
     else if ( sensorType == "table" ) {
-      if(!sLocalProcessController && (hostName.isEmpty() || hostName == "localhost")) {
-	newDisplay = sLocalProcessController;
-      } else 
-        newDisplay = new ProcessController( this);
+      if(hostName.isEmpty() || hostName == "localhost")
+        displayType = DisplayProcessControllerLocal;
+      else
+        displayType = DisplayProcessControllerRemote;
     }
     else {
       kDebug(1215) << "Unknown sensor type: " <<  sensorType;
       return 0;
     }
-
-    newDisplay->applyStyle();
-
-    connect(&mTimer, SIGNAL( timeout()), newDisplay, SLOT( timerTick()));
-    replaceDisplay( row, column, newDisplay );
+    display = insertDisplay(displayType, row, column);
   }
 
-  mDisplayList[ row ][ column ]->addSensor( hostName, sensorName, sensorType, sensorDescr );
+  display->addSensor( hostName, sensorName, sensorType, sensorDescr );
 
-  return ((KSGRD::SensorDisplay*)mDisplayList[ row ][ column ] );
+  return display;
 }
 
 void WorkSheet::settings()
@@ -454,7 +487,7 @@ void WorkSheet::dragMoveEvent( QDragMoveEvent *event )
         QByteArray widgetType = mDisplayList[ r ][ c ]->metaObject()->className();
         if(widgetType == "MultiMeter" || widgetType == "ProcessController" || widgetType == "table")
 		event->ignore(widgetRect);
-	else if(widgetType != "Dumm")
+	else if(widgetType != "Dummy")
   		event->accept(widgetRect);
         return;
       }
@@ -526,36 +559,37 @@ bool WorkSheet::event( QEvent *e )
 bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
 {
   QString classType = element.attribute( "class" );
-  KSGRD::SensorDisplay* newDisplay = 0;
+  QString hostName = element.attribute( "hostName" );
+  DisplayType displayType = DisplayDummy;
+  KSGRD::SensorDisplay* newDisplay;
 
-
-  if ( classType == "FancyPlotter" ) {
-    newDisplay = new FancyPlotter( 0, i18n("Dummy"), &mSharedSettings );
-  }
+  if ( classType == "FancyPlotter" )
+    displayType = DisplayFancyPlotter;
   else if ( classType == "MultiMeter" )
-    newDisplay = new MultiMeter( 0, i18n("Dummy"), &mSharedSettings );
+    displayType = DisplayMultiMeter;
   else if ( classType == "DancingBars" )
-    newDisplay = new DancingBars( 0, i18n("Dummy"), &mSharedSettings );
+    displayType = DisplayDancingBars;
   else if ( classType == "ListView" )
-    newDisplay = new ListView( 0, i18n("Dummy"), &mSharedSettings );
+    displayType = DisplayListView;
   else if ( classType == "LogFile" )
-    newDisplay = new LogFile( 0, i18n("Dummy"), &mSharedSettings );
+    displayType = DisplayLogFile;
   else if ( classType == "SensorLogger" )
-    newDisplay = new SensorLogger( 0, i18n("Dummy"), &mSharedSettings );
+    displayType = DisplaySensorLogger;
   else if ( classType == "ProcessController" ) {
-    newDisplay = new ProcessController(0);
+    if(hostName.isEmpty() || hostName == "localhost")
+      displayType = DisplayProcessControllerLocal;
+    else
+      displayType = DisplayProcessControllerRemote;
   } else {
     kDebug(1215) << "Unknown class " <<  classType;
     return false;
   }
 
-  connect(&mTimer, SIGNAL( timeout()), newDisplay, SLOT( timerTick()));
+  newDisplay = insertDisplay(displayType, row, column);
 
   // load display specific settings
   if ( !newDisplay->restoreSettings( element ) )
     return false;
-
-  replaceDisplay( row, column, newDisplay );
 
   return true;
 }

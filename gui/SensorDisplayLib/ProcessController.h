@@ -78,6 +78,13 @@ public:
 
 	virtual void answerReceived(int id, const QList<QByteArray>& answer );
 
+	KSysGuardProcessList* processList()
+	{
+		return mProcessList;
+	}
+
+Q_SIGNALS:
+	void updated();
 private Q_SLOTS:
 	void runCommand(const QString &command, int id);
 

@@ -395,10 +395,8 @@ void TopLevel::readProperties( const KConfigGroup& cfg )
   mWorkSpace->readProperties( cfg );
 
   QList<WorkSheet *> workSheets = mWorkSpace->getWorkSheets();
-  if(sLocalProcessController != NULL) {
-    for(int i = 0; i < sLocalProcessController->actions().size(); i++) {
-      actionCollection()->addAction("processAction" + QString::number(i), sLocalProcessController->actions().at(i));
-    }
+  for(int i = 0; i < sLocalProcessController->actions().size(); i++) {
+    actionCollection()->addAction("processAction" + QString::number(i), sLocalProcessController->actions().at(i));
   }
 
   updateStatusBar();
