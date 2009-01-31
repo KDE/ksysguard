@@ -119,7 +119,7 @@ void SensorDisplay::showContextMenu(const QPoint &pos)
       action->setData( 2 );
       menuEmpty = false;
     }
-    if(!mSharedSettings->locked) {  
+    if(mSharedSettings && !mSharedSettings->locked) {  
       action = pm.addAction( i18n( "&Remove Display" ) );
       action->setData( 3 );
       menuEmpty = false;

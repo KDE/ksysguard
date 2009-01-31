@@ -36,8 +36,8 @@
 #ifdef DO_MODELCHECK
 #include "modeltest.h"
 #endif
-ProcessController::ProcessController(QWidget* parent, const QString &title, SharedSettings *workSheetSettings)
-	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
+ProcessController::ProcessController(QWidget* parent)
+	: KSGRD::SensorDisplay(parent, QString::null, NULL)
 {
 	mProcessList = NULL;
 	mProcesses = NULL;
@@ -136,7 +136,6 @@ bool ProcessController::addSensor(const QString& hostName,
 	QStackedLayout *layout = new QStackedLayout(this);
 	mProcessList = new KSysGuardProcessList(this, hostName);
 	mProcessList->setContentsMargins(0,0,0,0);
-	kDebug() << "Number of Actions: " << mProcessList->actions().size();
 	addActions(mProcessList->actions());
 
 	layout->addWidget(mProcessList);

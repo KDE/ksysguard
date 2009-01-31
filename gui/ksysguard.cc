@@ -61,10 +61,12 @@
 #include "StyleEngine.h"
 #include "HostConnector.h"
 #include "ProcessController.h"
+#include "ProcessTable.h"
 
 #include "ksysguard.h"
 
 
+ProcessController *sLocalProcessController = NULL;
 
 //Comment out to stop ksysguard from forking.  Good for debugging
 //#define FORK_KSYSGUARD
@@ -94,6 +96,8 @@ TopLevel::TopLevel()
            SLOT( setCaption( const QString&) ) );
   connect( mWorkSpace, SIGNAL( currentChanged( int ) ),
            SLOT( currentTabChanged( int ) ) );
+
+  sLocalProcessController = new ProcessController( this);
 
   /* Create the status bar. It displays some information about the
    * number of processes and the memory consumption of the local
@@ -391,13 +395,9 @@ void TopLevel::readProperties( const KConfigGroup& cfg )
   mWorkSpace->readProperties( cfg );
 
   QList<WorkSheet *> workSheets = mWorkSpace->getWorkSheets();
-  ProcessController *processController = NULL;
-  foreach(WorkSheet *sheet, workSheets) {
-    processController = sheet->getLocalProcessController();
-    if(processController != NULL) {
-      for(int i = 0; i < processController->actions().size(); i++) {
-        actionCollection()->addAction("processAction" + QString::number(i), processController->actions().at(i));
-      }
+  if(sLocalProcessController != NULL) {
+    for(int i = 0; i < sLocalProcessController->actions().size(); i++) {
+      actionCollection()->addAction("processAction" + QString::number(i), sLocalProcessController->actions().at(i));
     }
   }
 
