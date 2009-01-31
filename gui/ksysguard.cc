@@ -46,7 +46,6 @@
 #include <kmessagebox.h>
 #include <ksgrd/SensorAgent.h>
 #include <ksgrd/SensorManager.h>
-#include <kstandarddirs.h>
 #include <kstatusbar.h>
 #include <kstandardaction.h>
 #include <ktoggleaction.h>
