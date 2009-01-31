@@ -41,7 +41,6 @@ ProcessController::ProcessController(QWidget* parent)
 {
 	mProcessList = NULL;
 	mProcesses = NULL;
-	kDebug() << "CREATED";
 }
 
 void
