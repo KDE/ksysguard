@@ -264,6 +264,8 @@ void TopLevel::initStatusBar()
   if (sb)
      connect(sb, SIGNAL(toggled(bool)), this, SLOT(updateStatusBar()));
   setupGUI(QSize(800,600), ToolBar | Keys | StatusBar | Save | Create);
+
+  updateStatusBar();
 }
 
 void TopLevel::updateStatusBar()
@@ -398,8 +400,6 @@ void TopLevel::readProperties( const KConfigGroup& cfg )
   for(int i = 0; i < sLocalProcessController->actions().size(); i++) {
     actionCollection()->addAction("processAction" + QString::number(i), sLocalProcessController->actions().at(i));
   }
-
-  updateStatusBar();
 }
 
 void TopLevel::saveProperties( KConfigGroup& cfg )
