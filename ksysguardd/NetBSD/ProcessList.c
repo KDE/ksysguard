@@ -163,7 +163,7 @@ findProcessInList(int pid)
 static int
 updateProcess(int pid, struct kinfo_proc2 *p)
 {
-	static char *statuses[] = { "", "idle","run","sleep","stop","zombie","dead","onproc" };
+	static const char * const statuses[] = { "", "idle","run","sleep","stop","zombie","dead","onproc" };
 	
 	ProcessInfo* ps;
 	struct passwd* pwent;

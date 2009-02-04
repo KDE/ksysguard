@@ -172,7 +172,7 @@ findProcessInList(int pid)
 static int
 updateProcess(int pid)
 {
-	static char *statuses[] = { "idle","run","sleep","stop","zombie" };
+	static const char * const statuses[] = { "idle","run","sleep","stop","zombie" };
 	
 	ProcessInfo* ps;
 	struct passwd* pwent;

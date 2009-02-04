@@ -69,7 +69,7 @@ static time_t TcpUdpRaw_timeStamp = 0;
 static time_t Unix_timeStamp = 0;
 static time_t NetStat_timeStamp = 0;
 
-static const char *raw_type[] =
+static const char * const raw_type[] =
 {
 	"",
 	"stream",
@@ -80,7 +80,7 @@ static const char *raw_type[] =
 	"packet"
 };
 
-static const char *raw_state[] =
+static const char * const raw_state[] =
 {
 	"free",
 	"unconnected",
@@ -89,7 +89,7 @@ static const char *raw_state[] =
 	"disconnecting"
 };
 
-static const char *conn_state[] =
+static const char * const conn_state[] =
 {
 	"",
 	"established",
