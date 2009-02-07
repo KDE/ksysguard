@@ -75,12 +75,17 @@ void Workspace::readProperties( const KConfigGroup& cfg )
     * probably the first time the user has started KSysGuard. We
     * then "restore" a special default configuration. */
     selectedSheets << "ProcessTable.sgrd";
-    selectedSheets << "SystemLoad.sgrd";
+    selectedSheets << "SystemLoad2.sgrd";
   } else if(selectedSheets[0] != "ProcessTable.sgrd") {
     //We need to make sure that this is really is the process table on the first tab. No GUI way of changing this, but should make sure anyway.
     //Plus this migrates users from the kde3 setup
     selectedSheets.removeAll("ProcessTable.sgrd");
     selectedSheets.prepend( "ProcessTable.sgrd");
+  }
+
+  int oldSystemLoad = selectedSheets.indexOf("SystemLoad.sgrd");
+  if(oldSystemLoad != -1) {
+    selectedSheets.replace(oldSystemLoad, "SystemLoad2.sgrd");
   }
 
   KStandardDirs* kstd = KGlobal::dirs();

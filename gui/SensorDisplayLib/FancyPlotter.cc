@@ -511,6 +511,8 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
     mPlotter->changeRange( element.attribute( "min" ).toDouble(),
                            element.attribute( "max" ).toDouble() );
   }
+  // Do not restore the color settings from a previous version
+  int version = element.attribute("version", "0").toInt();
 
   mPlotter->setShowVerticalLines( element.attribute( "vLines", "1" ).toUInt() );
   QColor vcolor = restoreColor( element, "vColor", mPlotter->verticalLinesColor() );
@@ -518,31 +520,30 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
   mPlotter->setVerticalLinesDistance( element.attribute( "vDistance", "30" ).toUInt() );
   mPlotter->setVerticalLinesScroll( element.attribute( "vScroll", "1" ).toUInt() );
   mPlotter->setHorizontalScale( element.attribute( "hScale", "6" ).toUInt() );
-
+  
   mPlotter->setShowHorizontalLines( element.attribute( "hLines", "1" ).toUInt() );
   mPlotter->setHorizontalLinesColor( restoreColor( element, "hColor",
                                      mPlotter->horizontalLinesColor() ) );
-
+  
   QString filename = element.attribute( "svgBackground");
   if (!filename.isEmpty() && filename[0] == '/') {
     KStandardDirs* kstd = KGlobal::dirs();
     filename = kstd->findResource( "data", "ksysguard/" + filename);
   }
   mPlotter->setSvgBackground( filename );
-
-  mPlotter->setShowAxis( element.attribute( "labels", "1" ).toUInt() );
-  uint fontsize = element.attribute( "fontSize", "0").toUInt();
-  if(fontsize == 0) fontsize =  KSGRD::Style->fontSize();
-  QFont font;
-  font.setPointSize( fontsize );
-
-  mPlotter->setAxisFont( font );
-
-  mPlotter->setAxisFontColor( restoreColor( element, "fontColor", Qt::black ) );  //make the default to be the same as the vertical line color
-
-  mPlotter->setBackgroundColor( restoreColor( element, "bColor",
+  if(version >= 1) {
+    mPlotter->setShowAxis( element.attribute( "labels", "1" ).toUInt() );
+    uint fontsize = element.attribute( "fontSize", "0").toUInt();
+    if(fontsize == 0) fontsize =  KSGRD::Style->fontSize();
+    QFont font;
+    font.setPointSize( fontsize );
+  
+    mPlotter->setAxisFont( font );
+  
+    mPlotter->setAxisFontColor( restoreColor( element, "fontColor", Qt::black ) );  //make the default to be the same as the vertical line color
+    mPlotter->setBackgroundColor( restoreColor( element, "bColor",
                                    KSGRD::Style->backgroundColor() ) );
-
+  }
   QDomNodeList dnList = element.elementsByTagName( "beam" );
   for ( int i = 0; i < dnList.count(); ++i ) {
     QDomElement el = dnList.item( i ).toElement();
@@ -556,21 +557,20 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
       bool ok;
       foreach(QString color, colors) {
         int c = color.toUInt( &ok, 0 );
-	if(ok) {
+        if(ok) {
           QColor col( (c & 0xff0000) >> 16, (c & 0xff00) >> 8, (c & 0xff), (c & 0xff000000) >> 24);
-	  if(col.isValid()) {
+          if(col.isValid()) {
             if(col.alpha() == 0) col.setAlpha(255);
             sensor->colors << col;
-	  }
-	  else
-            sensor->colors << KSGRD::Style->sensorColor( i );
-	}
-	else
+          }
+          else
+           sensor->colors << KSGRD::Style->sensorColor( i );
+        }
+        else
           sensor->colors << KSGRD::Style->sensorColor( i );
       }
       mSensorsToAdd.append(sensor);
       sendRequest( sensor->hostname, "monitors", 200 );
-      
     } else
       addSensor( el.attribute( "hostName" ), el.attribute( "sensorName" ),
                ( el.attribute( "sensorType" ).isEmpty() ? "integer" :
@@ -600,8 +600,8 @@ bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element)
 
   element.setAttribute( "svgBackground", mPlotter->svgBackground() );
 
+  element.setAttribute( "version", 1 );
   element.setAttribute( "labels", mPlotter->showAxis() );
-  element.setAttribute( "fontSize", mPlotter->axisFont().pointSize() );
   saveColor ( element, "fontColor", mPlotter->axisFontColor());
 
   saveColor( element, "bColor", mPlotter->backgroundColor() );
