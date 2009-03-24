@@ -63,6 +63,7 @@ void Workspace::saveProperties( KConfigGroup& cfg )
       list.append( mSheetList.at(i)->fileName() );
 
   cfg.writePathEntry( "SelectedSheets", list );
+  cfg.writeEntry( "currentSheet", currentIndex() );
 }
 
 void Workspace::readProperties( const KConfigGroup& cfg )
@@ -96,9 +97,13 @@ void Workspace::readProperties( const KConfigGroup& cfg )
       restoreWorkSheet( filename, false);
     }
   }
-  //We know that the first tab is the process table
-  setCurrentIndex(0);
-  emit currentChanged(0);
+
+  int idx = cfg.readEntry( "currentSheet", 0 );
+  if (idx < 0 || idx > count() - 1) {
+    idx = 0;
+  }
+  setCurrentIndex(idx);
+  emit currentChanged(idx);
 }
 
 QString Workspace::makeNameForNewSheet() const
