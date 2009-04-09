@@ -126,6 +126,7 @@ void registerCommand( const char* command, cmdExecutor ex )
   Command* cmd = (Command*)malloc( sizeof( Command ) );
   if(!cmd || !(cmd->command = (char*)malloc( strlen( command ) + 1 ))) {
     print_error("Out of memory");
+    free(cmd);
     return;
   }
   strcpy( cmd->command, command );
@@ -166,6 +167,7 @@ void registerAnyMonitor( const char* command, const char* type, cmdExecutor ex,
   Command* cmd = (Command*)malloc( sizeof( Command ) );
   if(!cmd || !(cmd->command = (char*)malloc( strlen( command ) + 1 ))) {
       print_error("Out of memory");
+      free(cmd);
       return;
   }
 
@@ -174,6 +176,7 @@ void registerAnyMonitor( const char* command, const char* type, cmdExecutor ex,
   cmd->type = (char*)malloc( strlen( type ) + 1 );
   if(!cmd->type ) {
       print_error("Out of memory");
+      free(cmd);
       return;
   }
 
@@ -192,6 +195,7 @@ void registerAnyMonitor( const char* command, const char* type, cmdExecutor ex,
   cmd->command = (char*)malloc( strlen( command ) + 2 );
   if(!cmd->command ) {
       print_error("Out of memory");
+      free(cmd);
       return;
   }
 
