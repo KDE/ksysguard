@@ -555,7 +555,7 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
       sensor->summationName = el.attribute("summationName");
       QStringList colors = el.attribute("color").split(',');
       bool ok;
-      foreach(QString color, colors) {
+      foreach(const QString &color, colors) {
         int c = color.toUInt( &ok, 0 );
         if(ok) {
           QColor col( (c & 0xff0000) >> 16, (c & 0xff00) >> 8, (c & 0xff), (c & 0xff000000) >> 24);
