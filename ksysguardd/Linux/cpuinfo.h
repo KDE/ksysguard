@@ -29,6 +29,9 @@ int updateCpuInfo( void );
 void printCPUxClock( const char* );
 void printCPUxClockInfo( const char* );
 
+void printCPUClock( const char* );
+void printCPUClockInfo( const char* );
+
 void printNumCpus( const char* cmd );
 void printNumCpusInfo( const char* cmd );
 

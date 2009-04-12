@@ -150,6 +150,9 @@ void initCpuInfo( struct SensorModul* sm )
                            CpuInfoSM );
 
   processCpuInfo();
+
+  registerMonitor( "cpu/system/average_clock", "float", printCPUClock, printCPUClockInfo,
+                   CpuInfoSM );
 }
 
 void exitCpuInfo( void )
@@ -204,12 +207,35 @@ void printCPUxClock( const char* cmd )
   output( "%f\n", Clocks[ id ] );
 }
 
+void printCPUClock( const char* cmd )
+{
+  int id;
+  float clock = 0;
+  cmd = cmd; /*Silence warning*/
+
+  if ( Dirty ) {
+    processCpuInfo();
+  }
+
+  for ( id = 0; id < HighNumCores; id++ ) {
+    clock += Clocks[ id ];
+  }
+  clock /= HighNumCores;
+  output( "%f\n", clock );
+}
+
 void printCPUxClockInfo( const char* cmd )
 {
   int id;
 
   sscanf( cmd + 7, "%d", &id );
   output( "CPU%d Clock Frequency\t0\t0\tMHz\n", id );
+}
+
+void printCPUClockInfo( const char* cmd )
+{
+  cmd = cmd; /*Silence warning*/
+  output( "CPU Clock Frequency\t0\t0\tMHz\n" );
 }
 
 void printNumCpus( const char* cmd )
