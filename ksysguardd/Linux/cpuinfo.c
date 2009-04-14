@@ -151,7 +151,7 @@ void initCpuInfo( struct SensorModul* sm )
 
   processCpuInfo();
 
-  registerMonitor( "cpu/system/average_clock", "float", printCPUClock, printCPUClockInfo,
+  registerMonitor( "cpu/system/AverageClock", "float", printCPUClock, printCPUClockInfo,
                    CpuInfoSM );
 }
 
