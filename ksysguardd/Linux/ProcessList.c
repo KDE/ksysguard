@@ -134,8 +134,8 @@ typedef struct {
   int priority;
 
   /** The i/o scheduling class and priority. */
-  int ioPriorityClass;  /** 0 for none, 1 for realtime, 2 for best-effort, 3 for idle.  -1 for error. */
-  int ioPriority;       /** Between 0 and 7.  0 is highest priority, 7 is lowest.  -1 for error. */
+  int ioPriorityClass;  /**< 0 for none, 1 for realtime, 2 for best-effort, 3 for idle.  -1 for error. */
+  int ioPriority;       /**< Between 0 and 7.  0 is highest priority, 7 is lowest.  -1 for error. */
 
   /**
     The total amount of virtual memory space that this process uses. This includes shared and
