@@ -368,6 +368,8 @@ void FancyPlotter::setTooltip()
 void FancyPlotter::timerTick( ) //virtual
 {
   if(!mSampleBuf.isEmpty() && mBeams != 0) {
+    if((uint)mSampleBuf.count() > mBeams)
+        return; //ignore invalid results - can happen if a sensor is deleted
     while((uint)mSampleBuf.count() < mBeams)
       mSampleBuf.append(mPlotter->lastValue(mSampleBuf.count())); //we might have sensors missing so set their values to the previously known value
     mPlotter->addSample( mSampleBuf );
@@ -378,17 +380,17 @@ void FancyPlotter::timerTick( ) //virtual
       QString lastValue;
       int beamId = -1;
       for ( int i = 0; i < sensors().size(); ++i ) {
-	FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(i));
-	if(sensor->beamId == beamId)
-	  continue;
-	beamId = sensor->beamId;
+        FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(i));
+        if(sensor->beamId == beamId)
+          continue;
+        beamId = sensor->beamId;
         if(sensor->isOk() && mPlotter->numBeams() > beamId) {
           lastValue = mPlotter->lastValueAsString(beamId);
         } else {
           lastValue = i18n("Error");
         }
-	if(sensor->maxValue != 0 && mUnit != "%")
-	  lastValue = i18nc("%1 and %2 are sensor's last and maximum value", "%1 of %2", lastValue, mPlotter->valueAsString(sensor->maxValue) );
+        if(sensor->maxValue != 0 && mUnit != "%")
+          lastValue = i18nc("%1 and %2 are sensor's last and maximum value", "%1 of %2", lastValue, mPlotter->valueAsString(sensor->maxValue) );
 
         static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(beamId)))->widget())->value->setText(lastValue);
       }
