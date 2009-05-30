@@ -411,6 +411,8 @@ SensorBrowserWidget::SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager*
 {
   setModel(&mSensorBrowserModel);
   connect( mSensorManager, SIGNAL( update() ), &mSensorBrowserModel, SLOT( update() ) );
+  connect( mSensorManager, SIGNAL(hostAdded(KSGRD::SensorAgent*,const QString &)), &mSensorBrowserModel, SLOT( hostAdded(KSGRD::SensorAgent*,const QString &)) );
+  connect( mSensorManager, SIGNAL(hostConnectionLost(const QString &)), &mSensorBrowserModel, SLOT( hostRemoved(const QString &)) );
 
 //  setRootIsDecorated( false );
   setDragDropMode(QAbstractItemView::DragOnly);
@@ -424,7 +426,6 @@ SensorBrowserWidget::SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager*
     KSGRD::SensorAgent* sensorAgent = it.next().value();
     QString hostName = mSensorManager->hostName( sensorAgent );
     mSensorBrowserModel.addHost(sensorAgent, hostName);
-    kDebug() << "Adding host " << hostName;
   }
 }
 
@@ -484,16 +485,65 @@ void SensorBrowserModel::disconnectHost(const HostInfo *hostInfo)
 }
 void SensorBrowserModel::disconnectHost(const QString &hostname)
 {
+  HostInfo* toDelete = findHostInfoByHostName(hostname);
+  if (toDelete != NULL)
+	  disconnectHost(toDelete);
+}
+HostInfo* SensorBrowserModel::findHostInfoByHostName(const QString &hostName) const {
+	HostInfo* toReturn = NULL;
   QMapIterator<int, HostInfo*> it( mHostInfoMap );
-  while ( it.hasNext() ) {
+	while (it.hasNext() && toReturn == NULL) {
     it.next();
-    if(it.value()->hostName() == hostname) {
-      disconnectHost(it.value());
-      return;
+		if (it.value()->hostName() == hostName) {
+			toReturn = it.value();
     }
   }
+	return toReturn;
+}
+void SensorBrowserModel::hostAdded(KSGRD::SensorAgent *sensorAgent, const QString &hostName)  {
+	addHost(sensorAgent,hostName);
+	update();
 }
 
+void SensorBrowserModel::hostRemoved(const QString &hostName)  {
+	HostInfo* toRemove = findHostInfoByHostName(hostName);
+	if (toRemove != NULL)  {
+		int hostId = toRemove->id();
+		removeAllSensorUnderBranch(toRemove,hostId);
+		removeEmptyParentTreeBranches(hostId,hostId,hostId);
+
+		QModelIndex index = createIndex(mHostInfoMap.keys().indexOf(hostId), 0 , hostId);
+		beginRemoveRows(index, 0, 0);
+		delete mHostInfoMap.take(hostId);
+		mTreeMap.take(hostId);
+		mHostSensorsMap.take(hostId);
+		endRemoveRows();
+	}
+	update();
+}
+
+void SensorBrowserModel::removeAllSensorUnderBranch(HostInfo* hostInfo, int parentId)  {
+
+	QList<int> children = mTreeMap.value(parentId);
+
+	for (int i = 0; i < children.size(); i++) {
+
+		if (mTreeMap.contains(children[i]))  {
+			//well our children is not a sensor so remove what is under him
+			removeAllSensorUnderBranch(hostInfo,children[i]);
+
+		} else  {
+			//well this should be a sensor so remove it
+			if (mSensorInfoMap.contains(children[i])) {
+				SensorInfo* sensorToRemove = mSensorInfoMap.value(children[i]);
+				Q_ASSERT(sensorToRemove);
+				removeSensor(hostInfo, parentId, sensorToRemove->name());
+			}
+		}
+	}
+
+
+}
 void SensorBrowserModel::addHost(KSGRD::SensorAgent *sensorAgent, const QString &hostName)
 {
   beginInsertRows( QModelIndex() , mHostInfoMap.size(), mHostInfoMap.size() );
@@ -503,13 +553,11 @@ void SensorBrowserModel::addHost(KSGRD::SensorAgent *sensorAgent, const QString 
     mHostSensorsMap.insert(mIdCount, QHash<QString, bool>());
     mIdCount++;
   endInsertRows();
-  kDebug() << "Adding host " << hostName << "and sending monitors";
   hostInfo->sensorAgent()->sendRequest( "monitors", this, mIdCount-1 );
 }
 
 void SensorBrowserModel::update()
 {
-  kDebug() <<  "Updating";
   QMapIterator<int, HostInfo*> it( mHostInfoMap );
   while ( it.hasNext() ) {
     it.next();

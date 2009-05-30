@@ -107,12 +107,11 @@ void SensorShellAgent::errMsgRcvd( )
 void SensorShellAgent::daemonExited(  int exitCode, QProcess::ExitStatus exitStatus )
 {
   Q_UNUSED(exitCode);
-  kDebug() << "daemon exited, exit status "  << exitStatus;
+  kDebug(1215) << "daemon exited, exit status "  << exitStatus;
   if ( mRetryCount--  <= 0 || (mDaemon->start(), !mDaemon->waitForStarted()) )
   {
     setDaemonOnLine( false );
     if(sensorManager()) {
-      sensorManager()->hostLost( this );
       sensorManager()->disengage( this ); //delete ourselves
     }
   }
@@ -123,7 +122,7 @@ void SensorShellAgent::daemonError( QProcess::ProcessError errorStatus )
   QString error;
   switch(errorStatus) {
     case QProcess::FailedToStart:
-      kDebug() << "failed to run" <<  mDaemon->program().join(" ");
+      kDebug(1215) << "failed to run" <<  mDaemon->program().join(" ");
       error = i18n("Could not run daemon program '%1'.", mDaemon->program().join(" "));
       break;
     case QProcess::Crashed:
@@ -133,12 +132,11 @@ void SensorShellAgent::daemonError( QProcess::ProcessError errorStatus )
     default:
       error = i18n("The daemon program '%1' failed.", mDaemon->program().join(" "));
   }
-  kDebug() << "error " << error;
   setReasonForOffline(error);
-  kDebug() << "Error received " << errorStatus;
+  kDebug(1215) << "Error received " << error << "(" << errorStatus << ")";
   setDaemonOnLine( false );
   if(sensorManager())
-    sensorManager()->hostLost( this );
+    sensorManager()->disengage( this ); //delete ourselves
 }
 bool SensorShellAgent::writeMsg( const char *msg, int len )
 {

@@ -71,7 +71,6 @@ class KDE_EXPORT SensorManager : public QObject
     bool disengage( SensorAgent *agent );
     bool disengage( const QString &hostName );
     bool resynchronize( const QString &hostName );
-    void hostLost( const SensorAgent *agent );
     void notify( const QString &msg ) const;
 
     void setBroadcaster( QWidget *wdg );
@@ -100,6 +99,7 @@ class KDE_EXPORT SensorManager : public QObject
 
   Q_SIGNALS:
     void update();
+    void hostAdded(KSGRD::SensorAgent *sensorAgent, const QString &hostName);
     void hostConnectionLost( const QString &hostName );
 
   protected:

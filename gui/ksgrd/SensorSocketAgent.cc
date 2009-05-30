@@ -34,10 +34,11 @@ using namespace KSGRD;
 SensorSocketAgent::SensorSocketAgent( SensorManager *sm )
   : SensorAgent( sm )
 {
+
   connect( &mSocket, SIGNAL( error( QAbstractSocket::SocketError ) ), SLOT( error( QAbstractSocket::SocketError ) ) );
   connect( &mSocket, SIGNAL( bytesWritten( qint64 ) ), SLOT( msgSent( ) ) );
   connect( &mSocket, SIGNAL( readyRead() ), SLOT( msgRcvd() ) );
-  connect( &mSocket, SIGNAL( disconnected() ), SLOT( disconnected() ) );
+  connect( &mSocket, SIGNAL( disconnected() ), SLOT( connectionClosed() ) );
 }
 
 SensorSocketAgent::~SensorSocketAgent()
@@ -91,7 +92,6 @@ void SensorSocketAgent::connectionClosed()
 {
   setDaemonOnLine( false );
   if(sensorManager()) {
-    sensorManager()->hostLost( this );
     sensorManager()->disengage( this ); //delete ourselves
   }
 }
@@ -123,7 +123,9 @@ void SensorSocketAgent::error( QAbstractSocket::SocketError id )
 
 bool SensorSocketAgent::writeMsg( const char *msg, int len )
 {
-  return ( mSocket.write( msg, len ) == len );
+  int writtenLength = mSocket.write( msg, len );
+  mSocket.flush();
+  return writtenLength == len;
 }
 
 #include "SensorSocketAgent.moc"

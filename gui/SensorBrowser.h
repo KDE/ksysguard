@@ -74,10 +74,20 @@ class SensorBrowserModel : public QAbstractItemModel, private KSGRD::SensorClien
     void sensorsAddedToHost(const QModelIndex &index );
   public Q_SLOTS:
     void update();
+    void hostAdded(KSGRD::SensorAgent *sensorAgent, const QString &hostName);
+    /**
+     * Remove host from this model. The proper way this is called is with the signal in SensorManager
+     * (from disengage), otherwise
+     * if this is called directly the SensorManager container will be out of sync with ours.  Calling disconnectHost
+     * from this object will also call disengage.
+     */
+    void hostRemoved(const QString &hostName);
 
   private:
     virtual void answerReceived( int id, const QList<QByteArray>& );
     void removeEmptyParentTreeBranches(int hostId, int id, int parentid);
+    HostInfo* findHostInfoByHostName(const QString &hostName) const;
+    void removeAllSensorUnderBranch(HostInfo* hostInfo, int parentId);
 
     int mIdCount; ///The lowest id that has not been used yet
     QMap<int, HostInfo*> mHostInfoMap; ///So each host has a number

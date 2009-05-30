@@ -172,7 +172,6 @@ void SensorManager::retranslate()
 
 SensorManager::~SensorManager()
 {
-  kDebug() << "Deleting manager";
 }
 
 bool SensorManager::engage( const QString &hostName, const QString &shell,
@@ -180,6 +179,7 @@ bool SensorManager::engage( const QString &hostName, const QString &shell,
 {
   if ( !mAgents.contains( hostName ) ) {
     SensorAgent *agent = 0;
+
 
     if ( port == -1 )
       agent = new SensorShellAgent( this );
@@ -195,7 +195,7 @@ bool SensorManager::engage( const QString &hostName, const QString &shell,
     connect( agent, SIGNAL( reconfigure( const SensorAgent* ) ),
              SLOT( reconfigure( const SensorAgent* ) ) );
 
-    emit update();
+    emit hostAdded(agent,hostName);
     return true;
   }
 
@@ -206,16 +206,7 @@ bool SensorManager::disengage( SensorAgent *agent )
 {
   if(!agent) return false;
   const QString key = mAgents.key( const_cast<SensorAgent*>( agent ) );
-  kDebug() << "disengage ";
-  agent->deleteLater();
-  if ( !key.isEmpty() ) {
-    mAgents.remove( key );
-
-    emit update();
-    return true;
-  }
-
-  return false;
+  return disengage(key);
 }
 
 bool SensorManager::isConnected( const QString &hostName )
@@ -225,10 +216,9 @@ bool SensorManager::isConnected( const QString &hostName )
 bool SensorManager::disengage( const QString &hostName )
 {
   if ( mAgents.contains( hostName ) ) {
-    kDebug() << "disengage ";
-    delete mAgents.take( hostName );
+    mAgents.take( hostName )->deleteLater();
 
-    emit update();
+    emit hostConnectionLost( hostName );
     return true;
   }
 
@@ -251,13 +241,6 @@ bool SensorManager::resynchronize( const QString &hostName )
   kDebug (1215) << "Re-synchronizing connection to " << hostName;
 
   return engage( hostName, shell, command );
-}
-
-void SensorManager::hostLost( const SensorAgent *agent )
-{
-  emit hostConnectionLost( agent->hostName() );
-
-  notify( i18n( "Connection to %1 has been lost.", agent->hostName() ) );
 }
 
 void SensorManager::notify( const QString &msg ) const
