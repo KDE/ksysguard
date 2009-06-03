@@ -895,7 +895,7 @@ QString KSignalPlotter::lastValueAsString( int i) const
 QString KSignalPlotter::valueAsString( double value) const
 {
   value = value / mScaleDownBy; // scale the value.  e.g. from Bytes to KB
-  QString number = KGlobal::locale()->formatNumber( value, (value >= 100)?0:(value>=1)?1:2);
+  QString number = KGlobal::locale()->formatNumber( value, (value >= 99.5)?0:(value>=0.995)?1:2);
 
   if (mUnit == "%") {
     return number + "%";
