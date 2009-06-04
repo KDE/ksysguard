@@ -477,17 +477,22 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
     /* FIXME This doesn't check the host!  */
     if(!mSensorsToAdd.isEmpty())  {
       foreach(SensorToAdd *sensor, mSensorsToAdd) {
-	int beamId = mBeams;  //Assign the next sensor to the next available beamId
+        int beamId = mBeams;  //Assign the next sensor to the next available beamId
         for ( int i = 0; i < answerlist.count(); ++i ) {
           if ( answerlist[ i ].isEmpty() )
             continue;
           QString sensorName = QString::fromUtf8(answerlist[ i ].split('\t')[0]);
           if(sensor->name.exactMatch(sensorName)) {
             if(sensor->summationName.isEmpty())
-	      beamId = mBeams; //If summationName is not empty then reuse the previous beamId.  In this way we can have multiple sensors with the same beamId, which can then be summed together
+              beamId = mBeams; //If summationName is not empty then reuse the previous beamId.  In this way we can have multiple sensors with the same beamId, which can then be summed together
+            QColor color;
+            if(sensor->colors.isEmpty() )
+                color = sensor->colors.takeFirst();
+            else if(KSGRD::Style->numSensorColors() != 0)
+                color = KSGRD::Style->sensorColor( beamId % KSGRD::Style->numSensorColors());
             addSensor( sensor->hostname, sensorName,
                    (sensor->type.isEmpty()) ? "integer" : sensor->type
-                    , "", (sensor->colors.isEmpty()) ? QColor() : sensor->colors.takeFirst(), sensor->name.pattern(), beamId, sensor->summationName);
+                    , "", color, sensor->name.pattern(), beamId, sensor->summationName);
           }
         }
       }
