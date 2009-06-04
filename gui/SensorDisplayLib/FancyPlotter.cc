@@ -78,6 +78,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   mBeams = 0;
   mNumAccountedFor = 0;
   mSettingsDialog = 0;
+  mSensorReportedMax = mSensorReportedMin = 0;
 
   //The unicode character 0x25CF is a big filled in circle.  We would prefer to use this in the tooltip.
   //However it's maybe possible that the font used to draw the tooltip won't have it.  So we fall back to a 
@@ -406,7 +407,10 @@ void FancyPlotter::plotterAxisScaleChanged()
   QString unit = mUnit.toUpper();
   double value = mPlotter->maxValue();
   if(unit == "KB" || unit  == "KIB") {
-    if(value >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
+    if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
+      mPlotter->setScaleDownBy(1024*1024*1024);
+      mUnit = "TiB";
+    } else if(value >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
       mPlotter->setScaleDownBy(1024*1024);
       mUnit = "GiB";
     } else if(value > 1024) {
@@ -414,7 +418,10 @@ void FancyPlotter::plotterAxisScaleChanged()
       mUnit = "MiB";
     }
   } else if(unit == "KB/S" || unit == "KIB/S") {
-    if(value >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
+    if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
+      mPlotter->setScaleDownBy(1024*1024*1024);
+      mUnit = "TiB/s";
+    } else if(value >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
       mPlotter->setScaleDownBy(1024*1024);
       mUnit = "GiB/s";
     } else if(value > 1024) {
@@ -451,13 +458,11 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
   } else if ( id >= 100 && id < 200 ) {
     KSGRD::SensorFloatInfo info( answer );
     mUnit = info.unit();
-    mSensorReportedMax = info.max();
-    mSensorReportedMin = info.min();
+    mSensorReportedMax = qMax(mSensorReportedMax, info.max());
+    mSensorReportedMin = qMin(mSensorReportedMin, info.min());
 
     if ( !mPlotter->useAutoRange()) {
-      mPlotter->changeRange( info.min(), info.max() );
-      if ( info.min() == 0.0 && info.max() == 0.0 )
-        mPlotter->setUseAutoRange( true );
+      mPlotter->changeRange( mSensorReportedMin, mSensorReportedMax );
       plotterAxisScaleChanged();
     }
     FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(id - 100));
