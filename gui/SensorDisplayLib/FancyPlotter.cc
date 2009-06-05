@@ -491,7 +491,7 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
             if(sensor->summationName.isEmpty())
               beamId = mBeams; //If summationName is not empty then reuse the previous beamId.  In this way we can have multiple sensors with the same beamId, which can then be summed together
             QColor color;
-            if(sensor->colors.isEmpty() )
+            if(!sensor->colors.isEmpty() )
                 color = sensor->colors.takeFirst();
             else if(KSGRD::Style->numSensorColors() != 0)
                 color = KSGRD::Style->sensorColor( beamId % KSGRD::Style->numSensorColors());
