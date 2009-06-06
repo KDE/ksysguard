@@ -91,7 +91,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
   label = new QLabel( i18n( "Update interval:" ), group );
   groupLayout->addWidget( label, ++row_num, 0 );
 
-  mInterval = new KDoubleNumInput( 0.01, 1000.0, 2.0, group, 0.5, 2 );
+  mInterval = new KDoubleNumInput( 0.01/*minimum*/, 1000.0/*maximum*/, 0.5/*default*/, group/*parent*/, 0.5/*stepsize*/, 2/*precision*/ );
   mInterval->setSuffix( i18n( " sec" ) );
   groupLayout->addWidget( mInterval, row_num, 1 );
   label->setBuddy( mInterval );
