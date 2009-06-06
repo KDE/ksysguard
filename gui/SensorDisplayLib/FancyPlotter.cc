@@ -53,19 +53,30 @@ class SensorToAdd {
 class FancyPlotterLabel : public QWidget {
   public:
     FancyPlotterLabel(QWidget *parent) : QWidget(parent) {
-      QBoxLayout *layout = new QHBoxLayout(this);
-      label = new QLabel(this);
+      QBoxLayout *layout = new QHBoxLayout();
+      label = new QLabel();
       layout->addWidget(label);
-      value = new QLabel(this);
+      value = new QLabel();
       layout->addWidget(value);
       layout->addStretch(1);
+      setLayout(layout);
+    }
+    ~FancyPlotterLabel() {
+        delete label;
+        delete value;
     }
     void setLabel(const QString &name, const QColor &color, const QChar &indicatorSymbol) {
-      if ( kapp->layoutDirection() == Qt::RightToLeft )
-	label->setText(QString("<qt>: ") + name + " <font color=\"" + color.name() + "\">" + indicatorSymbol + "</font>");
-      else
-        label->setText(QString("<qt><font color=\"") + color.name() + "\">" + indicatorSymbol + "</font> " + name + " :");
+      labelName = name;
+      changeLabel(color, indicatorSymbol);
     }
+    void changeLabel(const QColor &color, const QChar &indicatorSymbol) {
+      if ( kapp->layoutDirection() == Qt::RightToLeft )
+        label->setText(QString("<qt>: ") + labelName + " <font color=\"" + color.name() + "\">" + indicatorSymbol + "</font>");
+      else
+        label->setText(QString("<qt><font color=\"") + color.name() + "\">" + indicatorSymbol + "</font> " + labelName + " :");
+    }
+
+    QString labelName;
     QLabel *label;
     QLabel *value;
 };
@@ -232,26 +243,49 @@ void FancyPlotter::applySettings() {
 
     mPlotter->setBackgroundColor( mSettingsDialog->backgroundColor() );
 
-    QList<int> deletedSensors = mSettingsDialog->deleted();
-    for ( int i =0; i < deletedSensors.count(); ++i) {
-      removeSensor(deletedSensors[i]);
+    QList<int> deletedBeams = mSettingsDialog->deleted();
+    for ( int i =0; i < deletedBeams.count(); ++i) {
+      removeBeam(deletedBeams[i]);
     }
     mSettingsDialog->clearDeleted(); //We have deleted them, so clear the deleted
 
-    QList<int> orderOfSensors = mSettingsDialog->order();
-    mPlotter->reorderBeams(orderOfSensors);
-    reorderSensors(orderOfSensors);
+    reorderBeams(mSettingsDialog->order());
     mSettingsDialog->resetOrder(); //We have now reordered the sensors, so reset the order
 
     SensorModelEntry::List list = mSettingsDialog->sensors();
 
     for ( int i = 0; i < sensors().count(); ++i ) {
-          mPlotter->setBeamColor( i, list[ i ].color() );
+        mPlotter->setBeamColor( i, list[ i ].color() );
+        static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(i)))->widget())->changeLabel(mPlotter->beamColor(i), mIndicatorSymbol);
     }
-    kDebug() << "Settings changed";
     mPlotter->update();
 }
+void FancyPlotter::reorderBeams(const QList<int> & orderOfBeams)
+{
+    Q_ASSERT(orderOfBeams.size() == mLabelLayout.size());
+    //Reorder the graph
+    mPlotter->reorderBeams(orderOfBeams);
+    //Reorder the labels underneath the graph
+    QList<QLayoutItem *> labelsInOldOrder;
+    while(!mLabelLayout->isEmpty())
+      labelsInOldOrder.append(mLabelLayout->takeAt(0));
 
+    for(int newIndex = 0; newIndex < orderOfBeams.count(); newIndex++) {
+      int oldIndex = orderOfBeams.at(newIndex);
+      mLabelLayout->addItem(labelsInOldOrder.at(oldIndex));
+    }
+
+    for ( int i = 0; i < sensors().count(); ++i ) {
+      FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(i));
+      for(int newIndex = 0; newIndex < orderOfBeams.count(); newIndex++) {
+        int oldIndex = orderOfBeams.at(newIndex);
+        if(oldIndex == sensor->beamId) {
+            sensor->beamId = newIndex;
+            break;
+        }
+      }
+    }
+}
 void FancyPlotter::applyStyle()
 {
   mPlotter->setVerticalLinesColor( KSGRD::Style->firstForegroundColor() );
@@ -261,10 +295,11 @@ void FancyPlotter::applyStyle()
   font.setPointSize(KSGRD::Style->fontSize() );
   mPlotter->setAxisFont( font );
   for ( int i = 0; i < mPlotter->numBeams() &&
-        (unsigned int)i < KSGRD::Style->numSensorColors(); ++i )
+        (unsigned int)i < KSGRD::Style->numSensorColors(); ++i ) {
     mPlotter->setBeamColor( i, KSGRD::Style->sensorColor( i ) );
+    static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(i)))->widget())->changeLabel(mPlotter->beamColor(i), mIndicatorSymbol);
+  }
 
-  kDebug() << "Style changed";
   mPlotter->update();
 }
 
@@ -304,20 +339,29 @@ bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
   return true;
 }
 
-bool FancyPlotter::removeSensor( uint pos )
+bool FancyPlotter::removeBeam( uint beamId )
 {
-  if ( pos >= mBeams ) {
-    kDebug(1215) << "FancyPlotter::removeSensor: idx out of range ("
-                 << pos << ")" << endl;
+  if ( beamId >= mBeams ) {
+    kDebug(1215) << "FancyPlotter::removeBeam: beamId out of range ("
+                 << beamId << ")" << endl;
     return false;
   }
 
-  mPlotter->removeBeam( pos );
+  mPlotter->removeBeam( beamId );
   --mBeams;
-  KSGRD::SensorDisplay::removeSensor( pos );
-  QWidget *label = (static_cast<QWidgetItem *>(mLabelLayout->takeAt( pos )))->widget();
+  QWidget *label = (static_cast<QWidgetItem *>(mLabelLayout->takeAt( beamId )))->widget();
   mLabelLayout->removeWidget(label);
   delete label;
+
+
+  for ( int i = sensors().count()-1; i >= 0; --i ) {
+    FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(i));
+    if(sensor->beamId > beamId)
+      sensor->beamId--;
+    else if(sensor->beamId == beamId)
+      removeSensor( i );
+      //sensor pointer is no longer after removing the sensor
+  }
 
   return true;
 }
@@ -330,6 +374,9 @@ void FancyPlotter::setTooltip()
   QString lastValue;
   bool neednewline = false;
   int beamId = -1;
+  //Note that the number of beams can be less than the number of sensors, since some sensors
+  //get added together for a beam.
+  //For the tooltip, we show all the sensors
   for ( int i = 0; i < sensors().count(); ++i ) {
     FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(i));
     description = sensor->description();
@@ -351,7 +398,7 @@ void FancyPlotter::setTooltip()
       tooltip += QString( "%1%2 %3 (%4)" ).arg( neednewline  ? "<br>" : "")
             .arg("<font color=\"" + mPlotter->beamColor( beamId ).name() + "\">"+mIndicatorSymbol+"</font>")
             .arg( i18n(description.toLatin1()) )
-	    .arg( lastValue );
+            .arg( lastValue );
 
     } else {
       tooltip += QString( "%1%2 %3:%4 (%5)" ).arg( neednewline ? "<br>" : "" )
@@ -368,9 +415,11 @@ void FancyPlotter::setTooltip()
 
 void FancyPlotter::timerTick( ) //virtual
 {
-  if(!mSampleBuf.isEmpty() && mBeams != 0) {
-    if((uint)mSampleBuf.count() > mBeams)
-        return; //ignore invalid results - can happen if a sensor is deleted
+  if(!mSampleBuf.isEmpty() && mBeams != 0) {  
+    if((uint)mSampleBuf.count() > mBeams) {
+      mSampleBuf.clear();
+      return; //ignore invalid results - can happen if a sensor is deleted
+    }
     while((uint)mSampleBuf.count() < mBeams)
       mSampleBuf.append(mPlotter->lastValue(mSampleBuf.count())); //we might have sensors missing so set their values to the previously known value
     mPlotter->addSample( mSampleBuf );

@@ -389,17 +389,6 @@ void SensorDisplay::setPlotterWidget( QWidget *wdg )
   mPlotterWdg = wdg;
 }
 
-void SensorDisplay::reorderSensors(const QList<int> &orderOfSensors)
-{
-  QList<SensorProperties *> newSensors;
-  for ( int i = 0; i < orderOfSensors.count(); ++i ) {
-    newSensors.append( mSensors.at(orderOfSensors[i] ));
-  }
-  mSensors = newSensors;
-}
-
-
-
 SensorProperties::SensorProperties()
 {
 }

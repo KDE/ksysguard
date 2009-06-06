@@ -71,7 +71,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
                     const QColor &color, const QString &regexpName = QString(), 
 		    int sumToSensor = -1, const QString &summationName = QString());
 
-    bool removeSensor( uint pos );
+    bool removeBeam( uint beamId );
 
     virtual void setTitle( const QString &title );
 
@@ -92,7 +92,10 @@ class FancyPlotter : public KSGRD::SensorDisplay
   protected:
     /** When we receive a timer tick, draw the beams and request new information to update the beams*/
     virtual void timerTick( );
+    /*! \reimp */
     virtual bool eventFilter( QObject*, QEvent* );
+    /*! \end_reimp */
+    virtual void reorderBeams(const QList<int> & orderOfBeams);
     void setTooltip();
 
   private:

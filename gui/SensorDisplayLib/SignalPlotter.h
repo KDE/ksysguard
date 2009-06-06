@@ -112,15 +112,16 @@ class KSignalPlotter : public QWidget
     /** Reorder the beams into the order given.  For example:
      * \code
      *   KSignalPlotter *s = KSignalPlotter(parent);
-     *   s->addBeam(Qt::Blue);
-     *   s->addBeam(Qt::Green);   
+     *   s->addBeam(Qt::blue);
+     *   s->addBeam(Qt::green);   
+     *   s->addBeam(Qt::red);   
      *   QList neworder;
-     *   neworder << 1 << 0;
-     *   reorderBeams( newOrder);
-     *   //Now the order is Green then Blue
+     *   neworder << 2 << 0 << 1;
+     *   s->reorderBeams( newOrder);
+     *   //Now the order is red, blue then green
      * \endcode
      */
-    void reorderBeams( const QList<int>& newOrder );
+    virtual void reorderBeams( const QList<int>& newOrder );
 
     /** Removes the beam at the specified index.  This causes the graph to be redrawn with the
      *  specified beam completely removed.
