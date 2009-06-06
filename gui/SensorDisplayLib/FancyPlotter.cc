@@ -509,10 +509,12 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
     mUnit = info.unit();
     mSensorReportedMax = qMax(mSensorReportedMax, info.max());
     mSensorReportedMin = qMin(mSensorReportedMin, info.min());
+    if(mSensorReportedMax == 0 && mSensorReportedMin)
+      mPlotter->setUseAutoRange(true); // If any of the sensors are using autorange, then the whole graph must use auto range
 
     if ( !mPlotter->useAutoRange()) {
       mPlotter->changeRange( mSensorReportedMin, mSensorReportedMax );
-      plotterAxisScaleChanged();
+      plotterAxisScaleChanged(); //Change the scale now since we know what it is. If instead we are using auto range, then plotterAxisScaleChanged will be called when the first bits of data come in
     }
     FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(id - 100));
     sensor->maxValue = info.max();
