@@ -262,7 +262,7 @@ void FancyPlotter::applySettings() {
 }
 void FancyPlotter::reorderBeams(const QList<int> & orderOfBeams)
 {
-    Q_ASSERT(orderOfBeams.size() == mLabelLayout.size());
+    //Q_ASSERT(orderOfBeams.size() == mLabelLayout.size());
     //Reorder the graph
     mPlotter->reorderBeams(orderOfBeams);
     //Reorder the labels underneath the graph
