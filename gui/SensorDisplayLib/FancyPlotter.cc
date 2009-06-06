@@ -136,6 +136,8 @@ FancyPlotter::FancyPlotter( QWidget* parent,
 
   setPlotterWidget( mPlotter );
   connect(mPlotter, SIGNAL(axisScaleChanged()), this, SLOT(plotterAxisScaleChanged()));
+  QDomElement emptyElement;
+  restoreSettings(emptyElement);
 }
 
 FancyPlotter::~FancyPlotter()
@@ -262,7 +264,7 @@ void FancyPlotter::applySettings() {
 }
 void FancyPlotter::reorderBeams(const QList<int> & orderOfBeams)
 {
-    //Q_ASSERT(orderOfBeams.size() == mLabelLayout.size());
+    //Q_ASSERT(orderOfBeams.size() == mLabelLayout.size());  Commented out because it cause compile problems in some cases??
     //Reorder the graph
     mPlotter->reorderBeams(orderOfBeams);
     //Reorder the labels underneath the graph
@@ -356,12 +358,15 @@ bool FancyPlotter::removeBeam( uint beamId )
 
   for ( int i = sensors().count()-1; i >= 0; --i ) {
     FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(i));
-    if(sensor->beamId > beamId)
+    if(sensor->beamId > (int)beamId)
       sensor->beamId--;
-    else if(sensor->beamId == beamId)
+    else if(sensor->beamId == (int)beamId)
       removeSensor( i );
       //sensor pointer is no longer after removing the sensor
+  
   }
+  //adjust the scale to take into account the removed sensor
+  plotterAxisScaleChanged();
 
   return true;
 }
@@ -577,11 +582,11 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
   // Do not restore the color settings from a previous version
   int version = element.attribute("version", "0").toInt();
 
-  mPlotter->setShowVerticalLines( element.attribute( "vLines", "1" ).toUInt() );
+  mPlotter->setShowVerticalLines( element.attribute( "vLines", "0" ).toUInt() );
   QColor vcolor = restoreColor( element, "vColor", mPlotter->verticalLinesColor() );
   mPlotter->setVerticalLinesColor( vcolor );
   mPlotter->setVerticalLinesDistance( element.attribute( "vDistance", "30" ).toUInt() );
-  mPlotter->setVerticalLinesScroll( element.attribute( "vScroll", "1" ).toUInt() );
+  mPlotter->setVerticalLinesScroll( element.attribute( "vScroll", "0" ).toUInt() );
   mPlotter->setHorizontalScale( element.attribute( "hScale", "6" ).toUInt() );
   
   mPlotter->setShowHorizontalLines( element.attribute( "hLines", "1" ).toUInt() );
@@ -716,9 +721,9 @@ FPSensorProperties::FPSensorProperties( const QString &hostName,
                                         const QString &type,
                                         const QString &description,
                                         const QColor &color,
-	       				const QString &regexpName,
-	       				int beamId_,
-	       				const QString &summationName_ )
+                                        const QString &regexpName,
+                                        int beamId_,
+                                        const QString &summationName_ )
   : KSGRD::SensorProperties( hostName, name, type, description),
     mColor( color )
 {
