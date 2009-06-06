@@ -547,9 +547,12 @@ void KSignalPlotter::drawWidget(QPainter *p, QRect boundingBox, bool onlyDrawPlo
 
     //check if there's enough room to actually show a top bar. Must be enough room for a bar at the top, plus horizontal lines each of a size with room for a scale
     if( mShowAxis && boundingBox.width() > 60 && boundingBox.height() > ( fontheight + 1 ) ) {  //if there's room to draw the labels, then draw them!
-      boundingBox.adjust(0,(p->fontMetrics().height()+1)/2, 0, -(p->fontMetrics().height()+1)/2);
-      drawAxisText(p, boundingBox);
-
+      //We want to adjust the size of plotter bit inside so that the axis text aligns nicely at the top and bottom
+      //but we don't want to sacrifice too much of the available room, so don't use it if it will take more than 20% of the available space
+      qreal offset = (p->fontMetrics().height()+1)/2;
+      drawAxisText(p, boundingBox.adjusted(0,offset,0,-offset));
+      if(offset < boundingBox.height() * 0.1)
+          boundingBox.adjust(0,offset, 0, -offset);
     }
     if( mShowAxis ) {
       if ( kapp->layoutDirection() == Qt::RightToLeft )     
