@@ -133,7 +133,6 @@ static char NetDevBuf[ NETDEVBUFSIZE ];
 static char NetDevWifiBuf[ NETDEVBUFSIZE ];
 static int NetDevCnt = 0;
 static int Dirty = 0;
-static int NetDevOk = 0;
 static long OldHash = 0;
 
 #define MAXNETDEVS 64
@@ -157,82 +156,86 @@ static int processNetDev_( void )
   sprintf( format, "%%%d[^\n]\n", (int)sizeof( buf ) - 1 );
   sprintf( devFormat, "%%%ds", (int)sizeof( tag ) - 1 );
 
-  /* skip 2 first lines */
-  for ( i = 0; i < 2; i++ ) {
-    sscanf( netDevBufP, format, buf );
-    buf[ sizeof( buf ) - 1 ] = '\0';
-    netDevBufP += strlen( buf ) + 1;  /* move netDevBufP to next line */
-  }
+  /*Update the values for the wifi interfaces if there is a /proc/net/wireless file*/
+  if (*netDevBufP != '\0') {
+		/* skip 2 first lines */
+		for (i = 0; i < 2; i++) {
+			sscanf(netDevBufP, format, buf);
+			buf[sizeof(buf) - 1] = '\0';
+			netDevBufP += strlen(buf) + 1; /* move netDevBufP to next line */
+		}
 
-  for ( i = 0; sscanf( netDevBufP, format, buf ) == 1; ++i ) {
-    buf[ sizeof( buf ) - 1 ] = '\0';
-    netDevBufP += strlen( buf ) + 1;  /* move netDevBufP to next line */
+		for (i = 0; sscanf(netDevBufP, format, buf) == 1; ++i) {
+			buf[sizeof(buf) - 1] = '\0';
+			netDevBufP += strlen(buf) + 1; /* move netDevBufP to next line */
 
-    if ( sscanf( buf, devFormat, tag ) ) {
-      char* pos = strchr( tag, ':' );
-      if ( pos ) {
-        FORALL( DEFVARS );
-        *pos = '\0';
-        FORALL( SETZERO );
-        sscanf( buf + 7, "%lli %lli %lli %lli %lli %lli %lli %lli "
-                "%lli %lli %lli %lli %lli %lli %lli %lli",
-                &recBytes, &recPacks, &recErrs, &recDrop, &recFifo,
-                &recFrame, &recCompressed, &recMulticast,
-                &sentBytes, &sentPacks, &sentErrs, &sentDrop,
-                &sentFifo, &sentColls, &sentCarrier, &sentCompressed );
+			if (sscanf(buf, devFormat, tag)) {
+				char* pos = strchr(tag, ':');
+				if (pos) {
+					FORALL( DEFVARS );
+					*pos = '\0';
+					FORALL( SETZERO );
+					sscanf(buf + 7, "%lli %lli %lli %lli %lli %lli %lli %lli "
+  					                "%lli %lli %lli %lli %lli %lli %lli %lli", 
+                                    &recBytes, &recPacks, &recErrs, &recDrop, &recFifo,
+                                    &recFrame, &recCompressed, &recMulticast,
+                                    &sentBytes, &sentPacks, &sentErrs, &sentDrop,
+                                    &sentFifo, &sentColls, &sentCarrier, &sentCompressed);
 
-        if ( i >= NetDevCnt || strcmp( NetDevs[ i ].name, tag ) != 0 ) {
-          /* The network device configuration has changed. We
-           * need to reconfigure the netdev module. */
-          return -1;
-        } else {
-          FORALL( CALC );
-          if(!NetDevs[i].isWifi)
-            NetDevs[i].oldInitialised = 1;
-        }
-      }
-    }
-  }
+					if (i >= NetDevCnt || strcmp(NetDevs[i].name, tag) != 0) {
+						/* The network device configuration has changed. We
+						 * need to reconfigure the netdev module. */
+						return -1;
+					} else {
+						FORALL( CALC );
+						if (!NetDevs[i].isWifi)
+							NetDevs[i].oldInitialised = 1;
+					}
+				}
+			}
+		}
+		if ( i != NetDevCnt )
+		   return -1;
+	}
 
-  if ( i != NetDevCnt )
-    return -1;
 
-  /*Update the values for the wifi interfaces*/
-  if ( *netDevWifiBufP=='\0')  /*there is no /proc/net/wireless file*/
-    return 0;
 
-  /* skip 2 first lines */
-  for ( i = 0; i < 2; i++ ) {
-    sscanf( netDevWifiBufP, format, buf );
-    buf[ sizeof( buf ) - 1 ] = '\0';
-    netDevWifiBufP += strlen( buf ) + 1;  /* move netDevWifiBufP to next line */
-  }
+  /*Update the values for the wifi interfaces if there is a /proc/net/wireless file*/
+  if (*netDevWifiBufP != '\0') {
 
-  for ( j = 0; sscanf( netDevWifiBufP, format, buf ) == 1; ++j ) {
-    buf[ sizeof( buf ) - 1 ] = '\0';
-    netDevWifiBufP += strlen( buf ) + 1;  /* move netDevWifiBufP to next line */
+		/* skip 2 first lines */
+		for (i = 0; i < 2; i++) {
+			sscanf(netDevWifiBufP, format, buf);
+			buf[sizeof(buf) - 1] = '\0';
+			netDevWifiBufP += strlen(buf) + 1; /* move netDevWifiBufP to next line */
+		}
 
-    if ( sscanf( buf, devFormat, tag ) ) {
-      char* pos = strchr( tag, ':' );
-      if ( pos ) {
-        FORALLWIFI( DEFVARS );
-        *pos = '\0';
+		for (j = 0; sscanf(netDevWifiBufP, format, buf) == 1; ++j) {
+			buf[sizeof(buf) - 1] = '\0';
+			netDevWifiBufP += strlen(buf) + 1; /* move netDevWifiBufP to next line */
 
-       for (i = 0 ; i < NetDevCnt ; ++i){ /*find the corresponding interface*/
-           if ( strcmp(tag,NetDevs[ i ].name)==0){
-               break;
-           }
-        }
-        sscanf( buf + 12, " %lli. %lli. %lli. %lli %lli %lli %lli %lli %lli",
-                &linkQuality, &signalLevel, &noiseLevel, &nwid,
-                &RxCrypt, &frag,  &retry, &misc, &beacon );
-        signalLevel -= 256; /*the units are dBm*/
-        noiseLevel -= 256;
-        FORALLWIFI( CALC );
-        NetDevs[i].oldInitialised = 1;
-      }
-    }
-  }
+			if (sscanf(buf, devFormat, tag)) {
+				char* pos = strchr(tag, ':');
+				if (pos) {
+					FORALLWIFI( DEFVARS );
+					*pos = '\0';
+
+					for (i = 0; i < NetDevCnt; ++i) { /*find the corresponding interface*/
+						if (strcmp(tag, NetDevs[i].name) == 0) {
+							break;
+						}
+					}
+  				    sscanf(buf + 12, " %lli. %lli. %lli. %lli %lli %lli %lli %lli %lli", 
+                           &linkQuality, &signalLevel, &noiseLevel, &nwid,
+                           &RxCrypt, &frag, &retry, &misc, &beacon);
+					signalLevel -= 256; /*the units are dBm*/
+					noiseLevel -= 256;
+					FORALLWIFI( CALC );
+					NetDevs[i].oldInitialised = 1;
+				}
+			}
+		}
+	}
 
   /* save exact time inverval between this and the last read of
    * /proc/net/dev */
@@ -383,58 +386,45 @@ int updateNetDev( void )
   long hash;
   char* p;
 
-  if ( NetDevOk < 0 )
-    return 0;
+  if ((fd = open("/proc/net/dev", O_RDONLY)) > 0) {
+    n = read(fd, NetDevBuf, NETDEVBUFSIZE - 1);
+    if (n == NETDEVBUFSIZE - 1 || n <= 0) {
+      log_error("Internal buffer too small to read \'/proc/net/dev\'");
+      close(fd);
+      return -1;
+    }
 
-  if ( ( fd = open( "/proc/net/dev", O_RDONLY ) ) < 0 ) {
-    /* /proc/net/dev may not exist on some machines. */
-    NetDevOk = -1;
-    return 0;
+    gettimeofday(&currSampling, 0);
+    close(fd);
+    NetDevBuf[n] = '\0';
+
+    /* Calculate hash over the first 7 characters of each line starting
+     * after the first newline. This will detect whether any interfaces
+     * have either appeared or disappeared. */
+    for (p = NetDevBuf, hash = 0; *p; ++p)
+      if (*p == '\n')
+        for (++p; *p && *p != ':' && *p != '|'; ++p)
+          hash = ((hash << 6) + *p) % 390389;
+
+    if (OldHash != 0 && OldHash != hash) {
+      print_error("RECONFIGURE");
+      CheckSetupFlag = 1;
+    }
+    OldHash = hash;
   }
-
-  n = read( fd, NetDevBuf, NETDEVBUFSIZE - 1 );
-  if ( n == NETDEVBUFSIZE - 1 || n <= 0) {
-    log_error( "Internal buffer too small to read \'/proc/net/dev\'" );
-    NetDevOk = -1;
-
-    close( fd );
-    return -1;
-  }
-
-  gettimeofday( &currSampling, 0 );
-  close( fd );
-  NetDevOk = 1;
-  NetDevBuf[ n ] = '\0';
-
-  /* Calculate hash over the first 7 characters of each line starting
-   * after the first newline. This will detect whether any interfaces
-   * have either appeared or disappeared. */
-  for ( p = NetDevBuf, hash = 0; *p; ++p )
-    if ( *p == '\n' )
-      for ( ++p; *p && *p != ':' && *p != '|'; ++p )
-        hash = ( ( hash << 6 ) + *p ) % 390389;
-
-  if ( OldHash != 0 && OldHash != hash ) {
-    print_error( "RECONFIGURE" );
-    CheckSetupFlag = 1;
-  }
-  OldHash = hash;
 
   /* We read the information about the wifi from /proc/net/wireless and store it into NetDevWifiBuf */
   if ( ( fd = open( "/proc/net/wireless", O_RDONLY ) ) < 0 ) {
     /* /proc/net/wireless may not exist on some machines. */
     NetDevWifiBuf[0]='\0';
-    return -1;
-  }
-
-  if ( ( n = read( fd, NetDevWifiBuf, NETDEVBUFSIZE - 1 ) ) == NETDEVBUFSIZE - 1 ) {
+  } else if ( ( n = read( fd, NetDevWifiBuf, NETDEVBUFSIZE - 1 ) ) == NETDEVBUFSIZE - 1 ) {
     log_error( "Internal buffer too small to read \'/proc/net/wireless\'" );
     close( fd );
     return -1;
+  } else {
+	close( fd );
+	NetDevWifiBuf[ n ] = '\0';
   }
-  close( fd );
-  NetDevWifiBuf[ n ] = '\0';
-
   Dirty = 1;
 
   return 0;
