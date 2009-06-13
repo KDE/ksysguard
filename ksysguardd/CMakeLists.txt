@@ -1,4 +1,4 @@
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../CContLib/ )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/CContLib/ )
 
 
 # Laurent: Verify that we install it into (kdeprefix)/etc/ and not into /etc
@@ -33,7 +33,7 @@ endif( ${CMAKE_SYSTEM_NAME} MATCHES "DragonFly" )
 ########### next target ###############
 
     set(libccont_SRCS 
-        ${CMAKE_CURRENT_SOURCE_DIR}/../CContLib/ccont.c )
+        ${CMAKE_CURRENT_SOURCE_DIR}/CContLib/ccont.c )
 
     set(ksysguardd_SRCS ${libccont_SRCS}
         Command.c 
