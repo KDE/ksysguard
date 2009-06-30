@@ -23,13 +23,13 @@
 #include <kacceleratormanager.h>
 #include <kcombobox.h>
 #include <klocale.h>
+#include <KNumInput>
 #include <ktoolinvocation.h>
 
 #include <QGroupBox>
 #include <QLabel>
 #include <QLayout>
 #include <QRadioButton>
-#include <QSpinBox>
 
 #include <QGridLayout>
 #include <QLineEdit>
@@ -96,7 +96,7 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   label = new QLabel( i18n( "Port:" ));
   groupLayout->addWidget( label, 1, 0 );
 
-  mPort = new QSpinBox();
+  mPort = new KIntSpinBox();
   mPort->setRange( 1, 65535 );
   mPort->setEnabled( false );
   mPort->setValue( 3112 );

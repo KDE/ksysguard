@@ -126,13 +126,13 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   boxLayout->setSpacing( spacingHint() );
   boxLayout->setRowStretch( 1, 1 );
 
+  label = new QLabel( i18n( "Pixels per time period:" ), groupBox );
+  boxLayout->addWidget( label, 0, 0 );
+
   mHorizontalScale = new KIntNumInput( 1, groupBox );
   mHorizontalScale->setMinimum( 1 );
   mHorizontalScale->setMaximum( 50 );
-  boxLayout->addWidget( mHorizontalScale, 0, 0 );
-
-  label = new QLabel( i18n( "pixels per time period" ), groupBox );
-  boxLayout->addWidget( label, 0, 1 );
+  boxLayout->addWidget( mHorizontalScale, 0, 1 );
 
   pageLayout->addWidget( groupBox, 1, 0 );
 

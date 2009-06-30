@@ -29,7 +29,7 @@
 class KComboBox;
 
 class QRadioButton;
-class QSpinBox;
+class KIntSpinBox;
 
 class HostConnector : public KDialog
 {
@@ -70,7 +70,7 @@ class HostConnector : public KDialog
     QRadioButton *mUseDaemon;
     QRadioButton *mUseCustom;
 
-    QSpinBox *mPort;
+    KIntSpinBox *mPort;
 };
 
 #endif
