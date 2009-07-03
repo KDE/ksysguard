@@ -20,7 +20,7 @@
 
 */
 
-#include <math.h>  //For floor, ceil, log10 etc for calcualting ranges
+#include <math.h>  //For floor, ceil, log10 etc for calculating ranges
 
 #include <QtGui/QPainter>
 #include <QtGui/QPixmap>
