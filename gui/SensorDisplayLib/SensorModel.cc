@@ -197,17 +197,18 @@ SensorModelEntry::List SensorModel::sensors() const
   return mSensors;
 }
 
-void SensorModel::setSensor( const SensorModelEntry &sensor, const QModelIndex &index )
+void SensorModel::setSensor( const SensorModelEntry &sensor, const QModelIndex &sindex )
 {
-  if ( !index.isValid() )
+  if ( !sindex.isValid() )
     return;
 
-  if ( index.row() < 0 || index.row() >= mSensors.count() )
+  int row = sindex.row();
+  if ( row < 0 || row >= mSensors.count() )
     return;
 
-  mSensors[ index.row() ] = sensor;
+  mSensors[row] = sensor;
 
-  emit dataChanged( index, index );
+  emit dataChanged( index(row,0), index(row, columnCount()-1));
 }
 
 void SensorModel::removeSensor( const QModelIndex &index )
