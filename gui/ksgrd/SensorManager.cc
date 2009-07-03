@@ -49,6 +49,10 @@ SensorManager::SensorManager(QObject * parent) : QObject(parent)
 {
   retranslate();
 }
+int SensorManager::count() const
+{
+  return mAgents.count();
+}
 void SensorManager::retranslate()
 {
   // Fill the sensor description dictionary.

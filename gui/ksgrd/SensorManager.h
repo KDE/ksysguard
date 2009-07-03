@@ -63,6 +63,9 @@ class KDE_EXPORT SensorManager : public QObject
     explicit SensorManager(QObject * parent = 0);
     ~SensorManager();
 
+    /*! Number of hosts connected to */
+    int count() const;
+
     bool engage( const QString &hostName, const QString &shell = "ssh",
                  const QString &command = "", int port = -1 );
     /* Returns true if we are connected or trying to connect to the host given
