@@ -489,12 +489,28 @@ void FancyPlotterSettings::editSensor()
 
   SensorModelEntry sensor = mModel->sensor( index );
 
+  KColorDialog dialog(this, true);
+//  connect(dialog, SIGNAL(currentColorSelected(const QColor &)), this, SLOT(setColorForSelectedItem(const QColor &)));
   QColor color = sensor.color();
-  int result = KColorDialog::getColor( color, parentWidget() );
-  if ( result == KColorDialog::Accepted ) {
+  dialog.setColor(color);
+  int result = dialog.exec();
+
+  if ( result == KColorDialog::Accepted )
+    sensor.setColor( dialog.color() );
+  //If it's not accepted, make sure we set the color back to how it was
+  mModel->setSensor( sensor, index );
+}
+
+void FancyPlotterSettings::setColorForSelectedItem(const QColor &color)
+{
+    const QModelIndex index = mView->selectionModel()->currentIndex();
+    if ( !index.isValid() )
+        return;
+
+    SensorModelEntry sensor = mModel->sensor( index );
+
     sensor.setColor( color );
     mModel->setSensor( sensor, index );
-  }
 }
 
 void FancyPlotterSettings::removeSensor()

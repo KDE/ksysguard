@@ -106,6 +106,7 @@ class FancyPlotterSettings : public KPageDialog
     void selectionChanged(const QModelIndex &newCurrent);
     void moveUpSensor();
     void moveDownSensor();
+    void setColorForSelectedItem(const QColor &color);
 
   private:
     KColorButton *mGridLinesColor;
@@ -133,7 +134,6 @@ class FancyPlotterSettings : public KPageDialog
 
     QTreeView *mView;
     SensorModel *mModel;
-
 };
 
 #endif
