@@ -490,7 +490,7 @@ void FancyPlotterSettings::editSensor()
   SensorModelEntry sensor = mModel->sensor( index );
 
   KColorDialog dialog(this, true);
-//  connect(dialog, SIGNAL(currentColorSelected(const QColor &)), this, SLOT(setColorForSelectedItem(const QColor &)));
+  connect(&dialog, SIGNAL(colorSelected(const QColor &)), this, SLOT(setColorForSelectedItem(const QColor &)));
   QColor color = sensor.color();
   dialog.setColor(color);
   int result = dialog.exec();
