@@ -235,10 +235,20 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   pageLayout->setRowStretch( 5, 1 );
 
   mView = new QTreeView( page );
-  mView->header()->setStretchLastSection( true );
+  mView->header()->setStretchLastSection( false );
   mView->setRootIsDecorated( false );
   mView->setItemsExpandable( false );
   mView->setModel( mModel );
+  mView->header()->setResizeMode(QHeaderView::ResizeToContents);
+  bool hideFirstColumn = true;
+  for(int i = 0; i < mModel->rowCount(); i++) 
+    if(mModel->data(mModel->index(i, 0)) != "localhost") {
+      hideFirstColumn = false;
+      break;
+    }
+  if(hideFirstColumn)
+    mView->hideColumn(0);
+
   pageLayout->addWidget( mView, 0, 0, 6, 1 );
   connect(mView,SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(editSensor()));
 
