@@ -23,7 +23,6 @@
 #include <QLineEdit>
 #include <QSpinBox>
 
-#include <kdebug.h>
 #include <kfiledialog.h>
 #include <kio/netaccess.h>
 #include <klocale.h>
@@ -69,7 +68,6 @@ void Workspace::saveProperties( KConfigGroup& cfg )
 void Workspace::readProperties( const KConfigGroup& cfg )
 {
   QStringList selectedSheets = cfg.readPathEntry( "SelectedSheets", QStringList() );
-  kDebug() << "Selected Sheets = " << selectedSheets;
 
   if ( selectedSheets.isEmpty() ) {
    /* If SelectedSheets config entry is not there, then it's
@@ -159,14 +157,12 @@ void Workspace::contextMenu (int index, const QPoint &point) {
 }
 void Workspace::updateSheetTitle( QWidget* wdg )
 {
-  kDebug() << "update sheet title";
   if ( wdg )
     setTabText( indexOf(wdg), static_cast<WorkSheet*>( wdg )->translatedTitle() );
 }
 
 bool Workspace::saveOnQuit()
 {
-  kDebug() << "In saveOnQuit()";
   for(int i = 0; i < mSheetList.size(); i++) {
       if ( mSheetList.at(i)->fileName().isEmpty() ) {
         int res = KMessageBox::warningYesNoCancel( this,
