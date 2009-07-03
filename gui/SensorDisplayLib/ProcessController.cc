@@ -48,11 +48,8 @@ ProcessController::sensorError(int, bool err)
 {
 	if (err == sensors().at(0)->isOk())
 	{
-		if (!err)
-		{
-		} else {
-			kDebug() << "SensorError called with an error";
-		}
+		if (err)
+			kDebug(1215) << "SensorError called with an error";
 		/* This happens only when the sensorOk status needs to be changed. */
 		sensors().at(0)->setIsOk( !err );
 	}
@@ -138,7 +135,6 @@ bool ProcessController::addSensor(const QString& hostName,
 	mProcessList->setContentsMargins(0,0,0,0);
 	addActions(mProcessList->actions());
 	connect(mProcessList, SIGNAL(updated()), this, SIGNAL(updated()));
-	kDebug() << "mProcessList is " << mProcessList;
 
 	layout->addWidget(mProcessList);
 
