@@ -95,16 +95,29 @@ void SensorManager::retranslate()
   mDict.insert( QLatin1String( "interfaces" ), i18n( "Interfaces" ) );
   mDict.insert( QLatin1String( "receiver" ), i18n( "Receiver" ) );
   mDict.insert( QLatin1String( "transmitter" ), i18n( "Transmitter" ) );
-  mDict.insert( QLatin1String( "data" ), i18n( "Data" ) );
-  mDict.insert( QLatin1String( "compressed" ), i18n( "Compressed Packets" ) );
-  mDict.insert( QLatin1String( "drops" ), i18n( "Dropped Packets" ) );
-  mDict.insert( QLatin1String( "errors" ), i18n( "Errors" ) );
-  mDict.insert( QLatin1String( "fifo" ), i18n( "FIFO Overruns" ) );
-  mDict.insert( QLatin1String( "frame" ), i18n( "Frame Errors" ) );
-  mDict.insert( QLatin1String( "multicast" ), i18n( "Multicast" ) );
-  mDict.insert( QLatin1String( "packets" ), i18n( "Packets" ) );
-  mDict.insert( QLatin1String( "carrier" ), i18nc( "@item sensor description ('carrier' is a type of network signal)", "Carrier" ) );
+
+  mDict.insert( QLatin1String( "data" ), i18n( "Data Rate" ) );
+  mDict.insert( QLatin1String( "compressed" ), i18n( "Compressed Packets Rate" ) );
+  mDict.insert( QLatin1String( "drops" ), i18n( "Dropped Packets Rate" ) );
+  mDict.insert( QLatin1String( "errors" ), i18n( "Errors Rate" ) );
+  mDict.insert( QLatin1String( "fifo" ), i18n( "FIFO Overruns Rate" ) );
+  mDict.insert( QLatin1String( "frame" ), i18n( "Frame Errors Rate" ) );
+  mDict.insert( QLatin1String( "multicast" ), i18n( "Multicast Packets Rate" ) );
+  mDict.insert( QLatin1String( "packets" ), i18n( "Packets Rate" ) );
+  mDict.insert( QLatin1String( "carrier" ), i18nc( "@item sensor description ('carrier' is a type of network signal)", "Carrier Losses Rate" ) );
   mDict.insert( QLatin1String( "collisions" ), i18n( "Collisions" ) );
+
+  mDict.insert( QLatin1String( "dataTotal" ), i18n( "Data" ) );
+  mDict.insert( QLatin1String( "compressedTotal" ), i18n( "Compressed Packets" ) );
+  mDict.insert( QLatin1String( "dropsTotal" ), i18n( "Dropped Packets" ) );
+  mDict.insert( QLatin1String( "errorsTotal" ), i18n( "Errors" ) );
+  mDict.insert( QLatin1String( "fifoTotal" ), i18n( "FIFO Overruns" ) );
+  mDict.insert( QLatin1String( "frameTotal" ), i18n( "Frame Errors" ) );
+  mDict.insert( QLatin1String( "multicastTotal" ), i18n( "Multicast Packets" ) );
+  mDict.insert( QLatin1String( "packetsTotal" ), i18n( "Packets" ) );
+  mDict.insert( QLatin1String( "carrierTotal" ), i18nc( "@item sensor description ('carrier' is a type of network signal)", "Carrier Losses" ) );
+  mDict.insert( QLatin1String( "collisionsTotal" ), i18n( "Collisions" ) );
+
   mDict.insert( QLatin1String( "sockets" ), i18n( "Sockets" ) );
   mDict.insert( QLatin1String( "count" ), i18n( "Total Number" ) );
   mDict.insert( QLatin1String( "list" ), i18n( "Table" ) );
@@ -133,6 +146,16 @@ void SensorManager::retranslate()
   mDict.insert( QLatin1String( "SoftRaid" ), i18n( "Linux Soft Raid (md)" ) );
   mDict.insert( QLatin1String( "processors" ), i18n( "Processors" ) );
   mDict.insert( QLatin1String( "cores" ), i18n( "Cores" ) );
+  mDict.insert( QLatin1String( "NumBlocks" ), i18n( "Number of Blocks" ) );
+  mDict.insert( QLatin1String( "TotalDevices" ), i18n( "Total Number of Devices" ) );
+  mDict.insert( QLatin1String( "FailedDevices" ), i18n( "Failed Devices" ) );
+  mDict.insert( QLatin1String( "SpareDevices" ), i18n( "Spare Devices" ) );
+  mDict.insert( QLatin1String( "NumRaidDevices" ), i18n( "Number of Raid Devices" ) );
+  mDict.insert( QLatin1String( "WorkingDevices" ), i18n( "Working Devices" ) );
+  mDict.insert( QLatin1String( "ActiveDevices" ), i18n( "Active Devices" ) );
+  mDict.insert( QLatin1String( "DeviceNumber" ), i18n( "Number of Devices" ) );
+  mDict.insert( QLatin1String( "ResyncingPercent" ), i18n( "Resyncing Percent" ) );
+  mDict.insert( QLatin1String( "DiskInfo" ), i18n( "Disk Information" ) );
 
   for ( int i = 0; i < 32; i++ ) {
     mDict.insert( QLatin1String( "cpu" ) + QString::number( i ), i18n( "CPU %1", i+1 ) );
