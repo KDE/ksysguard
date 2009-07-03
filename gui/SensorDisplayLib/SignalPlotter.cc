@@ -758,7 +758,7 @@ void KSignalPlotter::drawBeamToScrollableImage(int index)
   //To paint to the cache, we need a new bounding box
 
   pCache.setCompositionMode(QPainter::CompositionMode_Clear);
-  pCache.eraseRect(cacheBoundingBox);
+  pCache.fillRect(cacheBoundingBox, Qt::transparent);
 
   drawBeam(&pCache, cacheBoundingBox, mHorizontalScale, index);
 
