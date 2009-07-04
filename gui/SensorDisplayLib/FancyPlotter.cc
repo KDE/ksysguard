@@ -432,12 +432,11 @@ void FancyPlotter::timerTick( ) //virtual
     while((uint)mSampleBuf.count() < mBeams)
       mSampleBuf.append(mPlotter->lastValue(mSampleBuf.count())); //we might have sensors missing so set their values to the previously known value
     mPlotter->addSample( mSampleBuf );
-    if(QToolTip::isVisible()) {
-      setTooltip();
-      if(mPlotter->geometry().contains(mPlotter->mapFromGlobal( QCursor::pos() )))
-        QToolTip::showText(QCursor::pos(), mPlotter->toolTip(), mPlotter);
-    }
     if(isVisible()) {
+      if(QToolTip::isVisible() && mPlotter->geometry().contains(mPlotter->mapFromGlobal( QCursor::pos() ))) {
+        setTooltip();
+        QToolTip::showText(QCursor::pos(), mPlotter->toolTip(), mPlotter);
+      }
       QString lastValue;
       int beamId = -1;
       for ( int i = 0; i < sensors().size(); ++i ) {
