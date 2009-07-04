@@ -49,6 +49,7 @@ class FPSensorProperties : public KSGRD::SensorProperties
     QString summationName;
     double maxValue;
     double lastValue;
+    bool isInteger;
 
   private:
     QColor mColor;
