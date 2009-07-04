@@ -126,7 +126,7 @@ class KSignalPlotter : public QWidget
     /** Removes the beam at the specified index.  This causes the graph to be redrawn with the
      *  specified beam completely removed.
      */
-    void removeBeam( uint pos );
+    void removeBeam( uint position );
 
     /** Get the beam (the graph lines) colors, in the order
      *  that the beams were added (or later reordered)
@@ -264,11 +264,14 @@ class KSignalPlotter : public QWidget
     double lastValue( int i) const;
 
     /** Return a translated string like:   "34 %" or "100 KB" for beam i */
-    QString lastValueAsString( int i) const;
+    QString lastValueAsString( int i, int precision = -1) const;
     
-    /** Return a translated string like:   "34 %" or "100 KB" for the given value in unscaled units */
-    QString valueAsString( double value) const;
-    
+    /** Return a translated string like:   "34 %" or "100 KB" for the given value in unscaled units
+     *  If precision is -1 (the default) then if @p value is greater than 99.5, no decimal figures are shown,
+     *  otherwise if @p value is greater than 0.995, 1 decimal figure is used, otherwise 2.
+     */
+    QString valueAsString( double value, int precision = -1) const;
+
     /**  Whether to show a white line on the left and bottom of the widget, for a 3D effect */
     void setThinFrame( bool set );
     

@@ -890,15 +890,17 @@ double KSignalPlotter::lastValue( int i) const
   if(mBeamData.isEmpty() || mBeamData.first().size() <= i) return 0;
   return mBeamData.first()[i];
 }
-QString KSignalPlotter::lastValueAsString( int i) const
+QString KSignalPlotter::lastValueAsString( int i, int precision) const
 {
   if(mBeamData.isEmpty()) return QString();
-  return valueAsString(mBeamData.first()[i]); //retrieve the newest value for this beam 
+  return valueAsString(mBeamData.first()[i], precision); //retrieve the newest value for this beam 
 }
-QString KSignalPlotter::valueAsString( double value) const
+QString KSignalPlotter::valueAsString( double value, int precision) const
 {
   value = value / mScaleDownBy; // scale the value.  e.g. from Bytes to KB
-  QString number = KGlobal::locale()->formatNumber( value, (value >= 99.5)?0:(value>=0.995)?1:2);
+  if(precision == -1)
+      precision = (value >= 99.5)?0:((value>=0.995)?1:2);
+  QString number = KGlobal::locale()->formatNumber( value, precision);
 
   if (mUnit == "%") {
     return number + "%";
