@@ -385,11 +385,15 @@ void FancyPlotter::setTooltip()
   for ( int i = 0; i < sensors().count(); ++i ) {
     FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(i));
     description = sensor->description();
-    if(description.isEmpty()) {
+    if(description.isEmpty())
       description = sensor->name();
-    }
+
     if(sensor->isOk()) {
-      lastValue = mPlotter->valueAsString(sensor->lastValue);
+      lastValue = KGlobal::locale()->formatNumber( sensor->lastValue, (sensor->isInteger)?0:-1 );
+      if (mUnit == "%")
+        lastValue += "%";
+      else if( mUnit != "" )
+        lastValue += " " + mUnit;
     } else {
       lastValue = i18n("Error");
     }
@@ -440,12 +444,13 @@ void FancyPlotter::timerTick( ) //virtual
           continue;
         beamId = sensor->beamId;
         if(sensor->isOk() && mPlotter->numBeams() > beamId) {
-          lastValue = mPlotter->lastValueAsString(beamId);
+          int precision = (sensor->isInteger && mPlotter->scaleDownBy() == 1)?0:-1;
+          lastValue = mPlotter->lastValueAsString(beamId, precision);
+          if(sensor->maxValue != 0 && mUnit != "%")
+            lastValue = i18nc("%1 and %2 are sensor's last and maximum value", "%1 of %2", lastValue, mPlotter->valueAsString(sensor->maxValue, precision) );
         } else {
           lastValue = i18n("Error");
         }
-        if(sensor->maxValue != 0 && mUnit != "%")
-          lastValue = i18nc("%1 and %2 are sensor's last and maximum value", "%1 of %2", lastValue, mPlotter->valueAsString(sensor->maxValue) );
 
         static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(beamId)))->widget())->value->setText(lastValue);
       }
@@ -458,34 +463,47 @@ void FancyPlotter::timerTick( ) //virtual
 }
 void FancyPlotter::plotterAxisScaleChanged()
 {
-  QString unit = mUnit.toUpper();
-  double value = mPlotter->maxValue();
-  if(unit == "KB" || unit  == "KIB") {
-    if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
-      mPlotter->setScaleDownBy(1024*1024*1024);
-      mUnit = "TiB";
-    } else if(value >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
-      mPlotter->setScaleDownBy(1024*1024);
-      mUnit = "GiB";
-    } else if(value > 1024) {
-      mPlotter->setScaleDownBy(1024);
-      mUnit = "MiB";
+    //Prevent this being called recursively
+    disconnect(mPlotter, SIGNAL(axisScaleChanged()), this, SLOT(plotterAxisScaleChanged()));
+    QString unit = mUnit.toUpper();
+    double value = mPlotter->maxValue();
+    if(unit == "KB" || unit  == "KIB") {
+        if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
+            mPlotter->setScaleDownBy(1024*1024*1024);
+            unit = "TiB";
+        } else if(value >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
+            mPlotter->setScaleDownBy(1024*1024);
+            unit = "GiB";
+        } else if(value > 1024) {
+            mPlotter->setScaleDownBy(1024);
+            unit = "MiB";
+        } else {
+            mPlotter->setScaleDownBy(1);
+            unit = "KiB";
+        }
+    } else if(unit == "KB/S" || unit == "KIB/S") {
+        if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
+            mPlotter->setScaleDownBy(1024*1024*1024);
+            unit = "TiB/s";
+        } else if(value >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
+            mPlotter->setScaleDownBy(1024*1024);
+            unit = "GiB/s";
+        } else if(value > 1024) {
+            mPlotter->setScaleDownBy(1024);
+            unit = "MiB/s";
+        } else {
+            mPlotter->setScaleDownBy(1);
+            unit = "KiB/s";
+        }
+    } else {
+        //todo - also handle s for seconds - for uptime etc
+        mPlotter->setScaleDownBy(1);
+        unit = mUnit;
     }
-  } else if(unit == "KB/S" || unit == "KIB/S") {
-    if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
-      mPlotter->setScaleDownBy(1024*1024*1024);
-      mUnit = "TiB/s";
-    } else if(value >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
-      mPlotter->setScaleDownBy(1024*1024);
-      mUnit = "GiB/s";
-    } else if(value > 1024) {
-      mPlotter->setScaleDownBy(1024);
-      mUnit = "MiB/s";
-    }
-  }
-  mPlotter->setUnit(mUnit);
-
-
+    unit = KSGRD::SensorMgr->translateUnit( unit );
+    mPlotter->setUnit(unit);
+    //reconnect
+    connect(mPlotter, SIGNAL(axisScaleChanged()), this, SLOT(plotterAxisScaleChanged()));
 }
 void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
 {
@@ -520,12 +538,12 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
     if ( !mPlotter->useAutoRange()) {
       mPlotter->changeRange( mSensorReportedMin, mSensorReportedMax );
       plotterAxisScaleChanged(); //Change the scale now since we know what it is. If instead we are using auto range, then plotterAxisScaleChanged will be called when the first bits of data come in
-    }
+    } else
+        mPlotter->setUnit( KSGRD::SensorMgr->translateUnit( mUnit ) );
+ 
     FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(id - 100));
     sensor->maxValue = info.max();
     sensor->setUnit( info.unit() );
-
-    mPlotter->setUnit( KSGRD::SensorMgr->translateUnit( mUnit ) );
     sensor->setDescription( info.name() );
 
     QString summationName = sensor->summationName;
@@ -552,7 +570,7 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
             else if(KSGRD::Style->numSensorColors() != 0)
                 color = KSGRD::Style->sensorColor( beamId % KSGRD::Style->numSensorColors());
             addSensor( sensor->hostname, sensorName,
-                   (sensor->type.isEmpty()) ? "integer" : sensor->type
+                   (sensor->type.isEmpty()) ? "float" : sensor->type
                     , "", color, sensor->name.pattern(), beamId, sensor->summationName);
           }
         }
@@ -641,7 +659,7 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
       sendRequest( sensor->hostname, "monitors", 200 );
     } else
       addSensor( el.attribute( "hostName" ), el.attribute( "sensorName" ),
-               ( el.attribute( "sensorType" ).isEmpty() ? "integer" :
+               ( el.attribute( "sensorType" ).isEmpty() ? "float" :
                el.attribute( "sensorType" ) ), "", restoreColor( el, "color",
                KSGRD::Style->sensorColor( i ) ), QString(), mBeams, el.attribute("summationName") );
   }
@@ -732,6 +750,7 @@ FPSensorProperties::FPSensorProperties( const QString &hostName,
   summationName = summationName_;
   maxValue = 0;
   lastValue = 0;
+  isInteger = (type == "integer");
 }
 
 FPSensorProperties::~FPSensorProperties()
