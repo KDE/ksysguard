@@ -434,6 +434,8 @@ void FancyPlotter::timerTick( ) //virtual
     mPlotter->addSample( mSampleBuf );
     if(QToolTip::isVisible()) {
       setTooltip();
+      if(mPlotter->geometry().contains(mPlotter->mapFromGlobal( QCursor::pos() )))
+        QToolTip::showText(QCursor::pos(), mPlotter->toolTip(), mPlotter);
     }
     if(isVisible()) {
       QString lastValue;
