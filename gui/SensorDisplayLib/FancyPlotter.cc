@@ -390,10 +390,10 @@ void FancyPlotter::setTooltip()
 
     if(sensor->isOk()) {
       lastValue = KGlobal::locale()->formatNumber( sensor->lastValue, (sensor->isInteger)?0:-1 );
-      if (mUnit == "%")
+      if (sensor->unit() == "%")
         lastValue = i18nc("units", "%1%", lastValue);
-      else if( mUnit != "" )
-        lastValue = i18nc("units", ("%1 " + mUnit).toLatin1(), lastValue);
+      else if( sensor->unit() != "" )
+        lastValue = i18nc("units", ("%1 " + sensor->unit()).toLatin1(), lastValue);
     } else {
       lastValue = i18n("Error");
     }
@@ -444,8 +444,19 @@ void FancyPlotter::timerTick( ) //virtual
           continue;
         beamId = sensor->beamId;
         if(sensor->isOk() && mPlotter->numBeams() > beamId) {
-          int precision = (sensor->isInteger && mPlotter->scaleDownBy() == 1)?0:-1;
-          lastValue = mPlotter->lastValueAsString(beamId, precision);
+          int precision;
+          if(sensor->unit() == mUnit) {
+            precision = (sensor->isInteger && mPlotter->scaleDownBy() == 1)?0:-1;
+            lastValue = mPlotter->lastValueAsString(beamId, precision);
+          } else {
+            precision = (sensor->isInteger)?0:-1;
+            lastValue = KGlobal::locale()->formatNumber( mPlotter->lastValue(beamId), precision );
+            if (sensor->unit() == "%")
+              lastValue = i18nc("units", "%1%", lastValue);
+            else if( sensor->unit() != "" )
+              lastValue = i18nc("units", ("%1 " + sensor->unit()).toLatin1(), lastValue);
+          }
+
           if(sensor->maxValue != 0 && mUnit != "%")
             lastValue = i18nc("%1 and %2 are sensor's last and maximum value", "%1 of %2", lastValue, mPlotter->valueAsString(sensor->maxValue, precision) );
         } else {
@@ -556,7 +567,7 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
 
     FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(id - 100));
     sensor->maxValue = info.max();
-    sensor->setUnit( info.unit() );
+    sensor->setUnit( mUnit );
     sensor->setDescription( info.name() );
 
     QString summationName = sensor->summationName;
