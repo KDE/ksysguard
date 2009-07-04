@@ -28,15 +28,16 @@
 #include <QPaintEvent>
 #include <QLinkedList>
 #include <QImage>
+#include <klocalizedstring.h>
 
 #define USE_QIMAGE
 
-// Svg support causes it to crash at the moment :(
+// SVG support causes it to crash at the moment :(
 //#define SVG_SUPPORT
 #ifdef SVG_SUPPORT
 namespace Plasma
 {
-    class Svg;
+    class SVG;
 }
 #endif
 class QColor;
@@ -49,7 +50,7 @@ class QColor;
  *  *) Background can be set as a specified SVG
  *  *) The lines can be reordered
  *  *) Uses as little memory and CPU as possible
- *  *) Graph can be smoothed using the formula (value * 2 + last_value)/3.
+ *  *) Graph can be smoothed using the formula (value * 2 + last_value)/3
  *
  *  Example usage:
  *  \code
@@ -73,7 +74,7 @@ class KSignalPlotter : public QWidget
   Q_PROPERTY( double minValue READ minValue WRITE setMinValue )
   Q_PROPERTY( double maxValue READ maxValue WRITE setMaxValue )
   Q_PROPERTY( bool useAutoRange READ useAutoRange WRITE setUseAutoRange )
-  Q_PROPERTY( QString unit READ unit WRITE setUnit )
+  Q_PROPERTY( KLocalizedString unit READ unit WRITE setUnit )
   Q_PROPERTY( bool thinFrame READ thinFrame WRITE setThinFrame )
   Q_PROPERTY( double scaleDownBy READ scaleDownBy WRITE setScaleDownBy )
   Q_PROPERTY( uint horizontalScale READ horizontalScale WRITE setHorizontalScale )
@@ -141,14 +142,31 @@ class KSignalPlotter : public QWidget
     /** returns the number of beams */
     int numBeams();
 
-    /** Set the units.  Drawn on the vertical axis of the graph.
-     *  Must be already translated into the local language. 
+    /** \brief Set the axis units with a localized string.
+     *
+     * The localized string must contain a placeholder "%1" which is substituted for the value.
+     * The plural form (ki18np) can be used if the unit string changes depending on the number (for example
+     * "1 second", "2 seconds").
+     *
+     * For example:
+     *
+     * \code
+     *   KSignalPlotter plotter;
+     *   plotter.setUnit( ki18ncp("Units", "1 second", "%1 seconds") );
+     *   QString formattedString = plotter.valueAsString(3.4); //returns "3.4 seconds" 
+     * \endcode
+     *
+     * \see unit
      */
-    void setUnit( const QString &unit );
+    void setUnit( const KLocalizedString &unit );
 
-    /** Return the units used on the vertical axis of the graph.
-     */ 
-    QString unit() const;
+    /** \brief The localizable units used on the vertical axis of the graph.
+     *
+     * The returns the localizable string set with setUnit().
+     *
+     * \see setUnit
+     */
+    KLocalizedString unit() const;
 
     /** Scale all the values down by the given amount.  This is useful
      *  when the data is given in, say, kilobytes, but you set the 
@@ -251,24 +269,34 @@ class KSignalPlotter : public QWidget
      */
     QColor backgroundColor() const;
 
-    /** The filename of the svg background.  Set to empty to disable
+    /** The filename of the SVG background.  Set to empty to disable
      *  again. */
     void setSvgBackground( const QString &filename );
 
-    /** The filename of the svg background.  Set to empty to disable
+    /** The filename of the SVG background.  Set to empty to disable
      *  again. */
     QString svgBackground() const;
 
-    /** Return the last value that we have for beam i.
+    /** Return the last value that we have for the given beam index.
      *  Returns 0 if not known */
-    double lastValue( int i) const;
+    double lastValue( int index) const;
 
-    /** Return a translated string like:   "34 %" or "100 KB" for beam i */
-    QString lastValueAsString( int i, int precision = -1) const;
+    /** Return a translated string like:   "34 %" or "100 KB" for the given beam index,
+     *  using the last value set for the beam. */
+    QString lastValueAsString( int index, int precision = -1) const;
     
-    /** Return a translated string like:   "34 %" or "100 KB" for the given value in unscaled units
+    /** Return a translated string like:   "34 %" or "100 KB" for the given value in unscaled units.
      *  If precision is -1 (the default) then if @p value is greater than 99.5, no decimal figures are shown,
      *  otherwise if @p value is greater than 0.995, 1 decimal figure is used, otherwise 2.
+     *
+     * For example:
+     * \code
+     *   KSignalPlotter plotter;
+     *   plotter.setUnit( ki18ncp("Units", "1 hour", "%1 hours") );
+     *   plotter.scaleDownBy( 60 ); //The input will be in seconds, and there's 60 seconds in an hour
+     *   QString formattedString = plotter.valueAsString(150); //returns "2.5 hours" 
+     * \endcode
+     *
      */
     QString valueAsString( double value, int precision = -1) const;
 
@@ -326,18 +354,18 @@ class KSignalPlotter : public QWidget
     void recalculateMaxMinValueForSample(const QList<double>&sampleBuf, int time );
     void rescale();
     void updateDataBuffers();
-    /** We make the svg renderer static so that an svg renderer is shared among all of the images.  This is because a svg renderer takes up a lot of memory, so we want to 
+    /** We make the SVG renderer static so that an SVG renderer is shared among all of the images.  This is because a SVG renderer takes up a lot of memory, so we want to 
      *  share them as much as we can */
 #ifdef SVG_SUPPORT
-    static QHash<QString, Plasma::Svg *> sSvgRenderer;
+    static QHash<QString, Plasma::SVG *> sSvgRenderer;
 #endif
     QString mSvgFilename; 
 
-    QPixmap mBackgroundImage;	///A cache of the background of the widget. Contains the svg or just white background with lines
+    QPixmap mBackgroundImage;	///A cache of the background of the widget. Contains the SVG or just white background with lines
 #ifdef USE_QIMAGE
-    QImage mScrollableImage;	///The scrollable image for the widget.  Contains the svg lines
+    QImage mScrollableImage;	///The scrollable image for the widget.  Contains the SVG lines
 #else
-    QPixmap mScrollableImage;	///The scrollable image for the widget.  Contains the svg lines
+    QPixmap mScrollableImage;	///The scrollable image for the widget.  Contains the SVG lines
 #endif
     int mScrollOffset;		///The scrollable image is, well, scrolled in a wrap-around window.  mScrollOffset determines where the left hand side of the mScrollableImage should be drawn relative to the right hand side of view.  0 <= mScrollOffset < mScrollableImage.width()
     double mMinValue;		///The minimum value (unscaled) currently being displayed
@@ -381,7 +409,7 @@ class KSignalPlotter : public QWidget
     unsigned int mSamples; //This is what mBeamData.size() should equal when full.  When we start off and have no data then mSamples will be higher.  If we resize the widget so it's smaller, then for a short while this will be smaller
     int mNewestIndex; //The index to the newest item added.  newestIndex+1   is the second newest, and so on
 
-    QString mUnit;
+    KLocalizedString mUnit;
 
     QFont mFont;
     int mAxisTextWidth;

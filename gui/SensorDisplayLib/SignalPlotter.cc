@@ -89,11 +89,11 @@ KSignalPlotter::~KSignalPlotter()
 {
 }
 
-QString KSignalPlotter::unit() const {
+KLocalizedString KSignalPlotter::unit() const {
   return mUnit;
 }
-void KSignalPlotter::setUnit(const QString &unit) {
-  mUnit= unit;
+void KSignalPlotter::setUnit(const KLocalizedString &unit) {
+  mUnit = unit;
 }
 
 
@@ -866,7 +866,7 @@ void KSignalPlotter::drawAxisText(QPainter *p, const QRect &boundingBox)
         value = mNiceMaxValue/mScaleDownBy - y * stepsize;
 
     QString number = KGlobal::locale()->formatNumber( value, mPrecision);
-    val = QString( "%1 %2" ).arg( number, mUnit );
+    val = mUnit.subs(number).toString();
     if ( kapp->layoutDirection() == Qt::RightToLeft )
       p->drawText( boundingBox.right()-mAxisTextWidth, y_coord - 1000, mAxisTextWidth, 2000, Qt::AlignRight | Qt::AlignVCenter, val);
     else
@@ -902,13 +902,7 @@ QString KSignalPlotter::valueAsString( double value, int precision) const
       precision = (value >= 99.5)?0:((value>=0.995)?1:2);
   QString number = KGlobal::locale()->formatNumber( value, precision);
 
-  if (mUnit == "%") {
-    return number + "%";
-  } else if( mUnit == "" ) {
-    return number;
-  } else {
-    return QString( "%1 %2" ).arg(number, mUnit);
-  }
+  return mUnit.subs(number).toString();
 }
 
 bool KSignalPlotter::smoothGraph() const
@@ -956,4 +950,6 @@ void KSignalPlotter::setFillOpacity(int fill)
 
 }
 
-#include "SignalPlotter.moc"
+
+#include <SignalPlotter.moc>
+

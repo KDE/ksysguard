@@ -24,6 +24,7 @@
 
 #include <SensorDisplay.h>
 #include <QList>
+#include <klocalizedstring.h>
 
 #include "SignalPlotter.h"
 #include "SharedSettings.h"

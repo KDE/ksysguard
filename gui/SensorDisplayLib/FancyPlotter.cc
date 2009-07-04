@@ -192,7 +192,7 @@ void FancyPlotter::configureSettings()
     entry.setId( i );
     entry.setHostName( sensors().at( i )->hostName() );
     entry.setSensorName( sensors().at( i )->name() );
-    entry.setUnit( KSGRD::SensorMgr->translateUnit( sensors().at( i )->unit() ) );
+    entry.setUnit( sensors().at( i )->unit() );
     entry.setStatus( sensors().at( i )->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
     entry.setColor( mPlotter->beamColor( i ) );
 
@@ -391,9 +391,9 @@ void FancyPlotter::setTooltip()
     if(sensor->isOk()) {
       lastValue = KGlobal::locale()->formatNumber( sensor->lastValue, (sensor->isInteger)?0:-1 );
       if (mUnit == "%")
-        lastValue += "%";
+        lastValue = i18nc("units", "%1%", lastValue);
       else if( mUnit != "" )
-        lastValue += " " + mUnit;
+        lastValue = i18nc("units", ("%1 " + mUnit).toLatin1(), lastValue);
     } else {
       lastValue = i18n("Error");
     }
@@ -465,42 +465,51 @@ void FancyPlotter::plotterAxisScaleChanged()
 {
     //Prevent this being called recursively
     disconnect(mPlotter, SIGNAL(axisScaleChanged()), this, SLOT(plotterAxisScaleChanged()));
-    QString unit = mUnit.toUpper();
+    KLocalizedString unit;
     double value = mPlotter->maxValue();
-    if(unit == "KB" || unit  == "KIB") {
+    if(mUnit  == "KiB") {
         if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
             mPlotter->setScaleDownBy(1024*1024*1024);
-            unit = "TiB";
+            unit = ki18nc("units", "%1 TiB"); // the unit - terabytes
         } else if(value >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
             mPlotter->setScaleDownBy(1024*1024);
-            unit = "GiB";
+            unit = ki18nc("units", "%1 GiB"); // the unit - gigabytes
         } else if(value > 1024) {
             mPlotter->setScaleDownBy(1024);
-            unit = "MiB";
+            unit = ki18nc("units", "%1 MiB"); // the unit - megabytes
         } else {
             mPlotter->setScaleDownBy(1);
-            unit = "KiB";
+            unit = ki18nc("units", "%1 KiB"); // the unit - kilobytes
         }
-    } else if(unit == "KB/S" || unit == "KIB/S") {
+    } else if(mUnit == "KiB/s") {
         if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
             mPlotter->setScaleDownBy(1024*1024*1024);
-            unit = "TiB/s";
+            unit = ki18nc("units", "%1 TiB/s"); // the unit - terabytes per second
         } else if(value >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
             mPlotter->setScaleDownBy(1024*1024);
-            unit = "GiB/s";
+            unit = ki18nc("units", "%1 GiB/s"); // the unit - gigabytes per second
         } else if(value > 1024) {
             mPlotter->setScaleDownBy(1024);
-            unit = "MiB/s";
+            unit = ki18nc("units", "%1 MiB/s"); // the unit - megabytes per second
         } else {
             mPlotter->setScaleDownBy(1);
-            unit = "KiB/s";
+            unit = ki18nc("units", "%1 KiB/s"); // the unit - kilobytes per second
         }
-    } else {
-        //todo - also handle s for seconds - for uptime etc
+    } else if(mUnit == "%") {
         mPlotter->setScaleDownBy(1);
-        unit = mUnit;
+        unit = ki18nc("units", "%1%"); //the unit - percentage
+    } else if(mUnit.isEmpty()) {
+        unit = ki18nc("unitless - just a number", "%1");
+    } else {
+#if 0  // the strings are here purely for translation
+        NOOP_I18NC("units", "%1 1/s"); // the unit - 1 per second
+        NOOP_I18NC("units", "%1 s");  // the unit - seconds
+        NOOP_I18NC("units", "%1 MHz");  // the unit - frequency megahertz
+#endif
+        mPlotter->setScaleDownBy(1);
+        //translate any others
+        unit = ki18nc("units", ("%1 " + mUnit).toLatin1());
     }
-    unit = KSGRD::SensorMgr->translateUnit( unit );
     mPlotter->setUnit(unit);
     //reconnect
     connect(mPlotter, SIGNAL(axisScaleChanged()), this, SLOT(plotterAxisScaleChanged()));
@@ -530,17 +539,21 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
   } else if ( id >= 100 && id < 200 ) {
     KSGRD::SensorFloatInfo info( answer );
     mUnit = info.unit();
+    if(mUnit.toUpper() == "KB" || mUnit.toUpper() == "KIB")
+        mUnit = "KiB";
+    if(mUnit.toUpper() == "KB/S" || mUnit.toUpper() == "KIB/S")
+        mUnit = "KiB/s";
+
+
     mSensorReportedMax = qMax(mSensorReportedMax, info.max());
     mSensorReportedMin = qMin(mSensorReportedMin, info.min());
     if(mSensorReportedMax == 0 && mSensorReportedMin)
       mPlotter->setUseAutoRange(true); // If any of the sensors are using autorange, then the whole graph must use auto range
 
-    if ( !mPlotter->useAutoRange()) {
+    if ( !mPlotter->useAutoRange())
       mPlotter->changeRange( mSensorReportedMin, mSensorReportedMax );
-      plotterAxisScaleChanged(); //Change the scale now since we know what it is. If instead we are using auto range, then plotterAxisScaleChanged will be called when the first bits of data come in
-    } else
-        mPlotter->setUnit( KSGRD::SensorMgr->translateUnit( mUnit ) );
- 
+    plotterAxisScaleChanged(); //This sets up the axis scales and sets the unit.  It relies on mUnit already being set
+
     FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(id - 100));
     sensor->maxValue = info.max();
     sensor->setUnit( info.unit() );
