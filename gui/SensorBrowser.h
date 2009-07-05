@@ -27,6 +27,7 @@
 #include <QMap>
 #include <QHash>
 #include <ksgrd/SensorClient.h>
+#include <ksortfilterproxymodel.h>
 
 class QMouseEvent;
 
@@ -37,7 +38,6 @@ class SensorAgent;
 
 class SensorInfo;
 class HostInfo;
-
 
 class SensorBrowserModel : public QAbstractItemModel, private KSGRD::SensorClient
 {
@@ -98,28 +98,27 @@ class SensorBrowserModel : public QAbstractItemModel, private KSGRD::SensorClien
     QHash<int, SensorInfo *> mSensorInfoMap; ///Each sensor has a unique number as well.  This relates to the ID in mTreeMap
 };
 
-
-/**
- * The SensorBrowserWidget is the graphical front-end of the SensorManager. It
- * displays the currently available hosts and their sensors.
- */
-class SensorBrowserWidget : public QTreeView
+class SensorBrowserTreeWidget : public QTreeView
 {
   Q_OBJECT
 
   public:
-    SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager* sm );
-    ~SensorBrowserWidget();
+    SensorBrowserTreeWidget( QWidget* parent, KSGRD::SensorManager* sm );
+    ~SensorBrowserTreeWidget();
 
     QStringList listHosts() const 
       { return mSensorBrowserModel.listHosts(); }
     QStringList listSensors( const QString &hostName ) const 
       { return mSensorBrowserModel.listSensors(hostName); }
+    KSortFilterProxyModel & model()
+      { return mSortFilterProxyModel; }
 
   public Q_SLOTS:
     void disconnect();
     void hostReconfigured( const QString &hostName );
-
+  protected Q_SLOTS:
+    void expandItem(const QModelIndex& model_index);
+    void updateView();
   private:
     void retranslateUi();
     void changeEvent( QEvent * event );
@@ -128,6 +127,27 @@ class SensorBrowserWidget : public QTreeView
 
     QString mDragText;
     SensorBrowserModel mSensorBrowserModel;
+    KSortFilterProxyModel mSortFilterProxyModel;
+};
+
+/**
+ * The SensorBrowserWidget is the graphical front-end of the SensorManager. It
+ * displays the currently available hosts and their sensors.
+ */
+class SensorBrowserWidget : public QWidget
+{
+    Q_OBJECT
+    public:
+      SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager* sm );
+      ~SensorBrowserWidget();
+      QStringList listHosts() const 
+      { return m_treeWidget->listHosts(); }
+      QStringList listSensors( const QString &hostName ) const 
+      { return m_treeWidget->listSensors(hostName); }
+
+    private:
+      SensorBrowserTreeWidget *m_treeWidget;
+
 };
 
 class SensorInfo

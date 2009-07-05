@@ -24,6 +24,7 @@
 #include <QtGui/QMouseEvent>
 #include <QtGui/QPainter>
 #include <QtGui/QPixmap>
+#include <QtGui/QVBoxLayout>
 #include <QMimeData>
 
 #include <kdebug.h>
@@ -31,6 +32,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <ksgrd/SensorManager.h>
+#include <kfilterproxysearchline.h>
 
 #include "SensorBrowser.h"
 //#define SENSOR_MODEL_DO_TEST
@@ -48,7 +50,6 @@ SensorBrowserModel::SensorBrowserModel()
 }
 SensorBrowserModel::~SensorBrowserModel()
 {
-
   qDeleteAll( mHostInfoMap );
   mHostInfoMap.clear();
   qDeleteAll( mSensorInfoMap );
@@ -407,19 +408,38 @@ Qt::ItemFlags SensorBrowserModel::flags ( const QModelIndex & index ) const {  /
 }
 
 SensorBrowserWidget::SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager* sm )
+    : QWidget( parent )
+{
+    QVBoxLayout *layout = new QVBoxLayout;
+    m_treeWidget = new SensorBrowserTreeWidget(this, sm);
+    KFilterProxySearchLine * search_line = new KFilterProxySearchLine(this);
+    search_line->setProxy(&m_treeWidget->model());
+    layout->addWidget(search_line);
+    layout->addWidget(m_treeWidget);
+    setLayout(layout);
+}
+SensorBrowserWidget::~SensorBrowserWidget()
+{
+}
+SensorBrowserTreeWidget::SensorBrowserTreeWidget( QWidget* parent, KSGRD::SensorManager* sm )
   : QTreeView( parent ), mSensorManager( sm )
 {
-  setModel(&mSensorBrowserModel);
+  mSortFilterProxyModel.setSourceModel(&mSensorBrowserModel);
+  mSortFilterProxyModel.setShowAllChildren(true);
+  setModel(&mSortFilterProxyModel);
   connect( mSensorManager, SIGNAL( update() ), &mSensorBrowserModel, SLOT( update() ) );
   connect( mSensorManager, SIGNAL(hostAdded(KSGRD::SensorAgent*,const QString &)), &mSensorBrowserModel, SLOT( hostAdded(KSGRD::SensorAgent*,const QString &)) );
   connect( mSensorManager, SIGNAL(hostConnectionLost(const QString &)), &mSensorBrowserModel, SLOT( hostRemoved(const QString &)) );
+//  connect( mSensorManager, SIGNAL(hostAdded(KSGRD::SensorAgent*,const QString &)), SLOT(updateView()) );
+//  connect( mSensorManager, SIGNAL(hostConnectionLost(const QString &)), SLOT(updateView()) );
+  connect( &mSortFilterProxyModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)), SLOT(updateView()) );
 
-//  setRootIsDecorated( false );
   setDragDropMode(QAbstractItemView::DragOnly);
+  setUniformRowHeights(true);
 
   //setMinimumWidth( 1 );
   retranslateUi();
-  connect( &mSensorBrowserModel, SIGNAL(sensorsAddedToHost(const QModelIndex&)), this, SLOT(expand(const QModelIndex&)));
+  connect( &mSensorBrowserModel, SIGNAL(sensorsAddedToHost(const QModelIndex&)), this, SLOT(expandItem(const QModelIndex&)));
 
   KSGRD::SensorManagerIterator it( mSensorManager );
   while ( it.hasNext() ) {
@@ -427,13 +447,28 @@ SensorBrowserWidget::SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager*
     QString hostName = mSensorManager->hostName( sensorAgent );
     mSensorBrowserModel.addHost(sensorAgent, hostName);
   }
+  updateView();
 }
 
-SensorBrowserWidget::~SensorBrowserWidget()
+SensorBrowserTreeWidget::~SensorBrowserTreeWidget()
 {
 }
 
-void SensorBrowserWidget::retranslateUi() {
+void SensorBrowserTreeWidget::updateView()
+{
+    if(mSensorManager->count() == 1) {
+        setRootIsDecorated( false );
+        //expand the top level
+        for(int i = 0; i < mSortFilterProxyModel.rowCount(); i++)
+            expand(mSortFilterProxyModel.index(i,0));
+    } else
+        setRootIsDecorated( true );
+}
+void SensorBrowserTreeWidget::expandItem(const QModelIndex &model_index)
+{
+    expand(mSortFilterProxyModel.mapFromSource(model_index));
+}
+void SensorBrowserTreeWidget::retranslateUi() {
   
   this->setToolTip( i18n( "Drag sensors to empty cells of a worksheet "));
   this->setWhatsThis( i18n( "The sensor browser lists the connected hosts and the sensors "
@@ -445,7 +480,7 @@ void SensorBrowserWidget::retranslateUi() {
                                "sensors on to the display to add more sensors." ) );
 }
 
-void SensorBrowserWidget::changeEvent( QEvent * event ) 
+void SensorBrowserTreeWidget::changeEvent( QEvent * event ) 
 {
   if (event->type() == QEvent::LanguageChange) {
     retranslateUi();
@@ -455,7 +490,7 @@ void SensorBrowserWidget::changeEvent( QEvent * event )
   QWidget::changeEvent(event);
 }
 
-void SensorBrowserWidget::disconnect()
+void SensorBrowserTreeWidget::disconnect()
 {
   QModelIndexList indexlist = selectionModel()->selectedRows();
   for(int i=0; i < indexlist.size(); i++)
@@ -464,7 +499,7 @@ void SensorBrowserWidget::disconnect()
   }
 }
 
-void SensorBrowserWidget::hostReconfigured( const QString& )
+void SensorBrowserTreeWidget::hostReconfigured( const QString& )
 {
   // TODO: not yet implemented.
 }
