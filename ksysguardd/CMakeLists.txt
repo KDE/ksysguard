@@ -5,7 +5,7 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/CContLib/ )
 # Laurent: Verify that we install it into (kdeprefix)/etc/ and not into /etc
 # otherwise it's necessary to change it.
 # into kde 3.x it was installed into /etc/
-add_definitions( -DKSYSGUARDDRCFILE=\"\\"${SYSCONF_INSTALL_DIR}/ksysguarddrc\\"\" )
+add_definitions( -DKSYSGUARDDRCFILE=\"${SYSCONF_INSTALL_DIR}/ksysguarddrc\" )
 
 add_definitions(-DOSTYPE_${CMAKE_SYSTEM_NAME})
 
