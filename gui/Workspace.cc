@@ -43,9 +43,6 @@ Workspace::Workspace( QWidget* parent)
   : KTabWidget( parent )
 {
   KAcceleratorManager::setNoAccel(this);
-  this->setWhatsThis( i18n( "This is your work space. It holds your tabs. You need "
-                               "to create a new tab (Menu File->New) before "
-                               "you can drag sensors here." ) );
   setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
   connect(&mDirWatch, SIGNAL(deleted(const QString&)), this, SLOT(removeWorkSheet(const QString &)));
 }

@@ -188,12 +188,15 @@ void SensorDisplay::sensorError( int sensorId, bool err )
 
 void SensorDisplay::updateWhatsThis()
 {
-  this->setWhatsThis( i18n(
-    "<qt><p>This is a sensor display. To customize a sensor display click "
-    "the right mouse button here "
-    "and select the <i>Properties</i> entry from the popup "
-    "menu. Select <i>Remove</i> to delete the display from the worksheet."
-    "</p>%1</qt>" ,  additionalWhatsThis() ) );
+  if(mSharedSettings && mSharedSettings->locked)
+      this->setWhatsThis( i18n(
+        "<qt><p>This is a sensor display. To customize a sensor display click "
+        "the right mouse button here "
+        "and select the <i>Properties</i> entry from the popup "
+        "menu. Select <i>Remove</i> to delete the display from the worksheet."
+        "</p>%1</qt>" ,  additionalWhatsThis() ) );
+  else
+      this->setWhatsThis( additionalWhatsThis());
 }
 
 void SensorDisplay::hosts( QStringList& list )
