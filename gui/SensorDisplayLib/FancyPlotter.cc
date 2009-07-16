@@ -456,9 +456,7 @@ void FancyPlotter::timerTick( ) //virtual
             if (sensor->unit() == "%")
               lastValue = i18nc("units", "%1%", lastValue);
             else if( sensor->unit() != "" )  {
-            	qDebug() << "We are in last value";
-              //lastValue = i18nc("units", ("%1 " + sensor->unit()).toUtf8(), lastValue);
-            	lastValue = ("%1 " + sensor->unit()).arg(lastValue);
+              lastValue = i18nc("units", ("%1 " + sensor->unit()).toUtf8(), lastValue);
             }
           }
 
@@ -467,7 +465,6 @@ void FancyPlotter::timerTick( ) //virtual
         } else {
           lastValue = i18n("Error");
         }
-        qDebug() << "Sensor unit:" << sensor->unit() << ", munit:" << mUnit << ", lastValue:" << lastValue << endl;
         static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(beamId)))->widget())->value->setText(lastValue);
       }
     }
