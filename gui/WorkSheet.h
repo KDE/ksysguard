@@ -131,7 +131,7 @@ class WorkSheet : public QWidget
 
     enum DisplayType { DisplayDummy, DisplayFancyPlotter, DisplayMultiMeter, DisplayDancingBars, DisplaySensorLogger, DisplayListView, DisplayLogFile, DisplayProcessControllerRemote, DisplayProcessControllerLocal };
 
-    KSGRD::SensorDisplay* insertDisplay( DisplayType displayType, uint row, uint column);
+    KSGRD::SensorDisplay* insertDisplay( DisplayType displayType, QString displayTitle, uint row, uint column);
     /**
       This two dimensional array stores the pointers to the sensor displays
 	    or if no sensor is present at a position a pointer to a dummy widget.

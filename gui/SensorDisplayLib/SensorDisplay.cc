@@ -281,7 +281,7 @@ bool SensorDisplay::restoreSettings( QDomElement &element )
 {
   mShowUnit = element.attribute( "showUnit", "0" ).toInt();
   setUnit( element.attribute( "unit", QString() ) );
-  setTitle( element.attribute( "title", QString() ) );
+  setTitle( element.attribute( "title", title() ) );
 
   return true;
 }

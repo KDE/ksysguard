@@ -320,7 +320,7 @@ QString WorkSheet::title() const {
   return mTitle;
 }
 
-KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, uint row, uint column)
+KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, QString displayTitle, uint row, uint column)
 {
   KSGRD::SensorDisplay* newDisplay = 0;
   switch(displayType) {
@@ -328,22 +328,22 @@ KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, uint ro
       newDisplay = new DummyDisplay( this, &mSharedSettings );
       break;
     case DisplayFancyPlotter:
-      newDisplay = new FancyPlotter( this, NULL, &mSharedSettings );
+      newDisplay = new FancyPlotter( this, displayTitle, &mSharedSettings );
       break;
     case DisplayMultiMeter:
-      newDisplay = new MultiMeter( this, NULL, &mSharedSettings);
+      newDisplay = new MultiMeter( this, displayTitle, &mSharedSettings);
       break;
     case DisplayDancingBars: 
-      newDisplay = new DancingBars( this, NULL, &mSharedSettings);
+      newDisplay = new DancingBars( this, displayTitle, &mSharedSettings);
       break;
     case DisplaySensorLogger:
-      newDisplay = new SensorLogger( this, NULL, &mSharedSettings);
+      newDisplay = new SensorLogger( this, displayTitle, &mSharedSettings);
       break;
     case DisplayListView:
-      newDisplay = new ListView( this, NULL, &mSharedSettings);
+      newDisplay = new ListView( this, displayTitle, &mSharedSettings);
       break;
     case DisplayLogFile:
-      newDisplay = new LogFile( this, NULL, &mSharedSettings );
+      newDisplay = new LogFile( this, displayTitle, &mSharedSettings );
       break;
     case DisplayProcessControllerRemote:
       newDisplay = new ProcessController( this);
@@ -414,7 +414,7 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
       kDebug(1215) << "Unknown sensor type: " <<  sensorType;
       return 0;
     }
-    display = insertDisplay(displayType, row, column);
+    display = insertDisplay(displayType, sensorDescr, row, column);
   }
 
   display->addSensor( hostName, sensorName, sensorType, sensorDescr );
@@ -585,7 +585,7 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
     return false;
   }
 
-  newDisplay = insertDisplay(displayType, row, column);
+  newDisplay = insertDisplay(displayType, i18n("Dummy"), row, column);
 
   // load display specific settings
   if ( !newDisplay->restoreSettings( element ) )
