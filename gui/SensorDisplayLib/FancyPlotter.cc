@@ -393,7 +393,7 @@ void FancyPlotter::setTooltip()
       if (sensor->unit() == "%")
         lastValue = i18nc("units", "%1%", lastValue);
       else if( sensor->unit() != "" )
-        lastValue = i18nc("units", ("%1 " + sensor->unit()).toLatin1(), lastValue);
+        lastValue = i18nc("units", ("%1 " + sensor->unit()).toUtf8(), lastValue);
     } else {
       lastValue = i18n("Error");
     }
@@ -406,14 +406,14 @@ void FancyPlotter::setTooltip()
     if(sensor->isLocalhost()) {
       tooltip += QString( "%1%2 %3 (%4)" ).arg( neednewline  ? "<br>" : "")
             .arg("<font color=\"" + mPlotter->beamColor( beamId ).name() + "\">"+mIndicatorSymbol+"</font>")
-            .arg( i18n(description.toLatin1()) )
+            .arg( i18n(description.toUtf8()) )
             .arg( lastValue );
 
     } else {
       tooltip += QString( "%1%2 %3:%4 (%5)" ).arg( neednewline ? "<br>" : "" )
                  .arg("<font color=\"" + mPlotter->beamColor( beamId ).name() + "\">"+mIndicatorSymbol+"</font>")
                  .arg( sensor->hostName() )
-                 .arg( i18n(description.toLatin1()) )
+                 .arg( i18n(description.toUtf8()) )
 	         .arg( lastValue );
     }
     neednewline = true;
@@ -445,6 +445,7 @@ void FancyPlotter::timerTick( ) //virtual
           continue;
         beamId = sensor->beamId;
         if(sensor->isOk() && mPlotter->numBeams() > beamId) {
+
           int precision;
           if(sensor->unit() == mUnit) {
             precision = (sensor->isInteger && mPlotter->scaleDownBy() == 1)?0:-1;
@@ -454,8 +455,11 @@ void FancyPlotter::timerTick( ) //virtual
             lastValue = KGlobal::locale()->formatNumber( mPlotter->lastValue(beamId), precision );
             if (sensor->unit() == "%")
               lastValue = i18nc("units", "%1%", lastValue);
-            else if( sensor->unit() != "" )
-              lastValue = i18nc("units", ("%1 " + sensor->unit()).toLatin1(), lastValue);
+            else if( sensor->unit() != "" )  {
+            	qDebug() << "We are in last value";
+              //lastValue = i18nc("units", ("%1 " + sensor->unit()).toUtf8(), lastValue);
+            	lastValue = ("%1 " + sensor->unit()).arg(lastValue);
+            }
           }
 
           if(sensor->maxValue != 0 && mUnit != "%")
@@ -463,7 +467,7 @@ void FancyPlotter::timerTick( ) //virtual
         } else {
           lastValue = i18n("Error");
         }
-
+        qDebug() << "Sensor unit:" << sensor->unit() << ", munit:" << mUnit << ", lastValue:" << lastValue << endl;
         static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(beamId)))->widget())->value->setText(lastValue);
       }
     }
@@ -520,7 +524,7 @@ void FancyPlotter::plotterAxisScaleChanged()
 #endif
         mPlotter->setScaleDownBy(1);
         //translate any others
-        unit = ki18nc("units", ("%1 " + mUnit).toLatin1());
+        unit = ki18nc("units", ("%1 " + mUnit).toUtf8());
     }
     mPlotter->setUnit(unit);
     //reconnect
