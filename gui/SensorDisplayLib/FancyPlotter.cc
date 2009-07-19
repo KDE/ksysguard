@@ -89,7 +89,6 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   mBeams = 0;
   mNumAccountedFor = 0;
   mSettingsDialog = 0;
-  mSensorReportedMax = mSensorReportedMin = 0;
 
   //The unicode character 0x25CF is a big filled in circle.  We would prefer to use this in the tooltip.
   //However it's maybe possible that the font used to draw the tooltip won't have it.  So we fall back to a 
@@ -558,13 +557,11 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
         mUnit = "KiB/s";
 
 
-    mSensorReportedMax = qMax(mSensorReportedMax, info.max());
-    mSensorReportedMin = qMin(mSensorReportedMin, info.min());
-    if(mSensorReportedMax == 0 && mSensorReportedMin)
-      mPlotter->setUseAutoRange(true); // If any of the sensors are using autorange, then the whole graph must use auto range
+    /*
+     * here we do nothing with the min and max since if the autorange is false then we don't overwrite the user
+     * min and max, and if we are in autorange mode then the scale will be adjusted automatically with new value by the plotter
+     */
 
-    if ( !mPlotter->useAutoRange())
-      mPlotter->changeRange( mSensorReportedMin, mSensorReportedMax );
     plotterAxisScaleChanged(); //This sets up the axis scales and sets the unit.  It relies on mUnit already being set
 
     FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(id - 100));
