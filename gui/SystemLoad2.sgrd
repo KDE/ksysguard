@@ -2,10 +2,10 @@
 <!DOCTYPE KSysGuardWorkSheet>
 <WorkSheet title="System Load" interval="0.5" locked="1" rows="3" columns="1" >
  <host port="-1" command="ksysguardd" shell="" name="localhost" />
- <display title="CPU History" svgBackground="widgets/plot-background" autoRange="0" min="0" max="100" class="FancyPlotter" column="0" row="0" version="1">
+ <display title="CPU History" svgBackground="widgets/plot-background" autoRange="0" class="FancyPlotter" column="0" row="0" version="1">
   <beam sensorType="float" hostName="localhost" regexpSensorName="cpu/cpu.*/TotalLoad" color="0xffff8000,0xffe20800" />
  </display>
- <display title="Memory and Swap History" svgBackground="widgets/plot-background" autoRange="1" class="FancyPlotter" column="0" row="1" version="1" >
+ <display title="Memory and Swap History" svgBackground="widgets/plot-background" autoRange="0" class="FancyPlotter" column="0" row="1" version="1" >
   <beam summationName="Memory" sensorName="mem/physical/application" sensorType="integer" hostName="localhost" color="0xffc000c0" />
   <beam summationName="Swap" sensorName="mem/swap/used" sensorType="integer" hostName="localhost" color="0xff00c000" />
  </display>
