@@ -533,11 +533,12 @@ void KSignalPlotter::drawWidget(QPainter *p, QRect boundingBox, bool onlyDrawPlo
     if(boundingBox.height() <= 2 || boundingBox.width() <= 2 ) return;
     p->setFont( mFont );
     int fontheight = (p->fontMetrics().height() + p->fontMetrics().leading()/2.0);
-    mHorizontalLinesCount = qMin((int)(boundingBox.height() / fontheight)-2, 4);
+    mHorizontalLinesCount = qMax(qMin((int)(boundingBox.height() / fontheight)-2, 4), 0);
 
     if(!onlyDrawPlotter) {
-        if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || (mNiceRange != 1 && mMaxValue < (mNiceRange*0.75 + mNiceMinValue)) || mNiceRange == 0)
+        if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || (mNiceRange != 1 && mMaxValue < (mNiceRange*0.75 + mNiceMinValue)) || mNiceRange == 0) {
             calculateNiceRange();
+        }
         QPen pen;
         pen.setWidth(1);
         pen.setCapStyle(Qt::RoundCap);
@@ -694,13 +695,13 @@ void KSignalPlotter::drawThinFrame(QPainter *p, const QRect &boundingBox)
 
 void KSignalPlotter::calculateNiceRange()
 {
-    int newNiceRange = mMaxValue - mMinValue;
+    double newNiceRange = mMaxValue - mMinValue;
     /* If the range is too small we will force it to 1.0 since it
      * looks a lot nicer. */
     if ( newNiceRange < 0.000001 )
         newNiceRange = 1.0;
 
-    int newNiceMinValue = mMinValue;
+    double newNiceMinValue = mMinValue;
     if ( mMinValue != 0.0 ) {
         double dim = pow( 10, floor( log10( fabs( mMinValue ) ) ) ) / 2;
         if ( mMinValue < 0.0 )
