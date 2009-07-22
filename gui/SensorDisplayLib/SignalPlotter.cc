@@ -780,12 +780,12 @@ void KSignalPlotter::drawBeamToScrollableImage(int index)
 
 void KSignalPlotter::drawBeam(QPainter *p, const QRect &boundingBox, int horizontalScale, int index)
 {
+    if(mNiceRange == 0) return;
     QPen pen;
     pen.setWidth(2);
     pen.setCapStyle(Qt::FlatCap);
 
     double scaleFac = (boundingBox.height()-2) / mNiceRange;
-    if(mNiceRange == 0) return;
 
     if(mBeamData.size() - 1 <= index )
         return;  // Something went wrong?
