@@ -79,12 +79,9 @@ typedef struct DiskIOInfo {
 	struct DiskIOInfo* next;
 } DiskIOInfo;
 
-#define STATBUFSIZE (32 * 1024)
 #define DISKDEVNAMELEN 16
 
-static char StatBuf[ STATBUFSIZE ];
-static char VmStatBuf[ STATBUFSIZE ];
-static int Dirty = 0;
+static int StatDirty = 0;
 
 /* We have observed deviations of up to 5% in the accuracy of the timer
 * interrupts. So we try to measure the interrupt interval and use this
@@ -114,7 +111,7 @@ static int initStatDisk( char* tag, char* buf, const char* label, const char* sh
 			int idx, cmdExecutor ex, cmdExecutor iq );
 static void updateCPULoad( const char* line, CPULoadInfo* load );
 static int process24Disk( char* tag, char* buf, const char* label, int idx );
-static void process24Stat( void );
+static void processStat( void );
 static int process24DiskIO( const char* buf );
 static void cleanup24DiskList( void );
 	
@@ -333,20 +330,28 @@ static void cleanup24DiskList( void ) {
 	}
 }
 
-static void process24Stat( void ) {
+static void processStat( void ) {
 	char format[ 32 ];
 	char tagFormat[ 16 ];
 	char buf[ 1024 ];
 	char tag[ 32 ];
-	char* statBufP = StatBuf;
-	char* vmstatBufP = VmStatBuf;
 	
 	sprintf( format, "%%%d[^\n]\n", (int)sizeof( buf ) - 1 );
 	sprintf( tagFormat, "%%%ds", (int)sizeof( tag ) - 1 );
-	
-	while ( sscanf( statBufP, format, buf ) == 1 ) {
+
+	gettimeofday( &currSampling, 0 );
+	StatDirty = 0;
+
+    FILE *stat = fopen("/proc/stat", "r");
+    if(!stat) {
+		print_error( "Cannot open file \'/proc/stat\'!\n"
+				"The kernel needs to be compiled with support\n"
+				"for /proc file system enabled!\n" );
+		return;
+    }
+
+	while ( fscanf( stat, format, buf ) == 1 ) {
 		buf[ sizeof( buf ) - 1 ] = '\0';
-		statBufP += strlen( buf ) + 1;  /* move statBufP to next line */
 		sscanf( buf, tagFormat, tag );
 		
 		if ( strcmp( "cpu", tag ) == 0 ) {
@@ -403,11 +408,14 @@ static void process24Stat( void ) {
 			OldCtxt = val;
 		}
 	}
+    fclose(stat);
 	
 	/* Read Linux 2.5.x /proc/vmstat */
-	while ( sscanf( vmstatBufP, format, buf ) == 1 ) {
+    stat = fopen("/proc/vmstat", "r");
+    if(!stat)
+		return;
+	while ( fscanf( stat, format, buf ) == 1 ) {
 		buf[ sizeof( buf ) - 1 ] = '\0';
-		vmstatBufP += strlen( buf ) + 1;  /* move vmstatBufP to next line */
 		sscanf( buf, tagFormat, tag );
 		
 		if ( strcmp( "pgpgin", tag ) == 0 ) {
@@ -424,14 +432,12 @@ static void process24Stat( void ) {
 		}
 	}
 	
-	/* save exact time inverval between this and the last read of /proc/stat */
+	/* save exact time interval between this and the last read of /proc/stat */
 	timeInterval = currSampling.tv_sec - lastSampling.tv_sec +
 			( currSampling.tv_usec - lastSampling.tv_usec ) / 1000000.0;
 	lastSampling = currSampling;
 	
 	cleanup24DiskList();
-	
-	Dirty = 0;
 }
 
 /*
@@ -474,19 +480,21 @@ void initStat( struct SensorModul* sm ) {
 	char tagFormat[ 16 ];
 	char buf[ 1024 ];
 	char tag[ 32 ];
-	char* statBufP = StatBuf;
-	char* vmstatBufP = VmStatBuf;
 	
 	StatSM = sm;
 	
-	updateStat();
-	
 	sprintf( format, "%%%d[^\n]\n", (int)sizeof( buf ) - 1 );
 	sprintf( tagFormat, "%%%ds", (int)sizeof( tag ) - 1 );
-	
-	while ( sscanf( statBufP, format, buf ) == 1 ) {
+
+    FILE *stat = fopen("/proc/stat", "r");
+    if(!stat) {
+		print_error( "Cannot open file \'/proc/stat\'!\n"
+				"The kernel needs to be compiled with support\n"
+				"for /proc file system enabled!\n" );
+		return;
+    }
+	while ( fscanf( stat, format, buf ) == 1 ) {
 		buf[ sizeof( buf ) - 1 ] = '\0';
-		statBufP += strlen( buf ) + 1;  /* move statBufP to next line */
 		sscanf( buf, tagFormat, tag );
 		
 		if ( strcmp( "cpu", tag ) == 0 ) {
@@ -586,10 +594,15 @@ void initStat( struct SensorModul* sm ) {
 			registerMonitor( "cpu/context", "float", printCtxt, printCtxtInfo, StatSM );
 		}
 	}
-	
-	while ( sscanf( vmstatBufP, format, buf ) == 1 ) {
+
+	stat = fopen("/proc/vmstat", "r");
+    if(!stat) {
+		print_error( "Cannot open file \'/proc/vmstat\'\n");
+		return;
+    }
+
+	while ( fscanf( stat, format, buf ) == 1 ) {
 		buf[ sizeof( buf ) - 1 ] = '\0';
-		vmstatBufP += strlen( buf ) + 1;  /* move vmstatBufP to next line */
 		sscanf( buf, tagFormat, tag );
 		
 		if ( strcmp( "pgpgin", tag ) == 0 ) {
@@ -605,8 +618,8 @@ void initStat( struct SensorModul* sm ) {
 	if ( CPUCount > 0 )
 		SMPLoad = (CPULoadInfo*)malloc( sizeof( CPULoadInfo ) * CPUCount );
 	
-	/* Call process24Stat to eliminate initial peek values. */
-	process24Stat();
+	/* Call processStat to eliminate initial peek values. */
+	processStat();
 }
 	
 void exitStat( void ) {
@@ -635,55 +648,18 @@ void exitStat( void ) {
 	removeMonitor("cpu/sys");
 	removeMonitor("cpu/idle");
 }
-	
-int updateStat( void ) {
-	size_t n;
-	int fd;
-	
-	gettimeofday( &currSampling, 0 );
-	Dirty = 1;
-	
-	StatBuf[ 0 ] = '\0';
-	if ( ( fd = open( "/proc/stat", O_RDONLY ) ) < 0 ) {
-		print_error( "Cannot open file \'/proc/stat\'!\n"
-				"The kernel needs to be compiled with support\n"
-				"for /proc file system enabled!\n" );
 
-		return -1;
-	}
-	n = read( fd, StatBuf, STATBUFSIZE - 1 );
-	if ( n == STATBUFSIZE - 1 || n <= 0) {
-		log_error( "Internal buffer too small to read \'/proc/stat\'" );
-		
-		close( fd );
-		return -1;
-	}
-	close( fd );
-	StatBuf[ n ] = '\0';
-	
-	
-	VmStatBuf[ 0 ] = '\0';
-	if ( ( fd = open( "/proc/vmstat", O_RDONLY ) ) < 0 )
-		return 0; /* failure is okay, only exists for Linux >= 2.5.x */
-	
-	n = read( fd, VmStatBuf, STATBUFSIZE - 1 );
-	if ( n == STATBUFSIZE - 1 || n <= 0 ) {
-		log_error( "Internal buffer too small to read \'/proc/vmstat\'" );
-	
-		close( fd );
-		return -1;
-	}
-	close( fd );
-	VmStatBuf[ n ] = '\0';
-	
-	return 0;
+int updateStat( void )
+{
+    StatDirty = 1;
+    return 0;
 }
 
 void printCPUUser( const char* cmd ) {
 	(void)cmd;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	output( "%f\n", CPULoad.userLoad );
 }
@@ -697,8 +673,8 @@ void printCPUUserInfo( const char* cmd ) {
 void printCPUNice( const char* cmd ) {
 	(void)cmd;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	output( "%f\n", CPULoad.niceLoad );
 }
@@ -712,8 +688,8 @@ void printCPUNiceInfo( const char* cmd ) {
 void printCPUSys( const char* cmd ) {
 	(void)cmd;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	output( "%f\n", CPULoad.sysLoad );
 }
@@ -727,8 +703,8 @@ void printCPUSysInfo( const char* cmd ) {
 void printCPUTotalLoad( const char* cmd ) {
 	(void)cmd;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	output( "%f\n", CPULoad.userLoad + CPULoad.sysLoad + CPULoad.niceLoad + CPULoad.waitLoad );
 }
@@ -742,8 +718,8 @@ void printCPUTotalLoadInfo( const char* cmd ) {
 void printCPUIdle( const char* cmd ) {
 	(void)cmd;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	output( "%f\n", CPULoad.idleLoad );
 }
@@ -758,8 +734,8 @@ void printCPUWait( const char* cmd )
 {
 	(void)cmd;
 
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 
 	output( "%f\n", CPULoad.waitLoad );
 }
@@ -773,8 +749,8 @@ void printCPUWaitInfo( const char* cmd )
 void printCPUxUser( const char* cmd ) {
 	int id;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	sscanf( cmd + 7, "%d", &id );
 	output( "%f\n", SMPLoad[ id ].userLoad );
@@ -790,8 +766,8 @@ void printCPUxUserInfo( const char* cmd ) {
 void printCPUxNice( const char* cmd ) {
 	int id;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	sscanf( cmd + 7, "%d", &id );
 	output( "%f\n", SMPLoad[ id ].niceLoad );
@@ -807,8 +783,8 @@ void printCPUxNiceInfo( const char* cmd ) {
 void printCPUxSys( const char* cmd ) {
 	int id;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	sscanf( cmd + 7, "%d", &id );
 	output( "%f\n", SMPLoad[ id ].sysLoad );
@@ -824,8 +800,8 @@ void printCPUxSysInfo( const char* cmd ) {
 void printCPUxTotalLoad( const char* cmd ) {
 	int id;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	sscanf( cmd + 7, "%d", &id );
 	output( "%f\n", SMPLoad[ id ].userLoad + SMPLoad[ id ].sysLoad + SMPLoad[ id ].niceLoad + SMPLoad[ id ].waitLoad );
@@ -841,8 +817,8 @@ void printCPUxTotalLoadInfo( const char* cmd ) {
 void printCPUxIdle( const char* cmd ) {
 	int id;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	sscanf( cmd + 7, "%d", &id );
 	output( "%f\n", SMPLoad[ id ].idleLoad );
@@ -859,8 +835,8 @@ void printCPUxWait( const char* cmd )
 {
 	int id;
 
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 
 	sscanf( cmd + 7, "%d", &id );
 	output( "%f\n", SMPLoad[ id ].waitLoad );
@@ -877,8 +853,8 @@ void printCPUxWaitInfo( const char* cmd )
 void print24DiskTotal( const char* cmd ) {
 	int id;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	sscanf( cmd + 9, "%d", &id );
 	output( "%f\n", (float)( DiskLoad[ id ].s[ 0 ].delta
@@ -895,8 +871,8 @@ void print24DiskTotalInfo( const char* cmd ) {
 void print24DiskRIO( const char* cmd ) {
 	int id;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	sscanf( cmd + 9, "%d", &id );
 	output( "%f\n", (float)( DiskLoad[ id ].s[ 1 ].delta
@@ -913,8 +889,8 @@ void print24DiskRIOInfo( const char* cmd ) {
 void print24DiskWIO( const char* cmd ) {
 	int id;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	sscanf( cmd + 9, "%d", &id );
 	output( "%f\n", (float)( DiskLoad[ id ].s[ 2 ].delta
@@ -931,8 +907,8 @@ void print24DiskWIOInfo( const char* cmd ) {
 void print24DiskRBlk( const char* cmd ) {
 	int id;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	sscanf( cmd + 9, "%d", &id );
 	/* a block is 512 bytes or 1/2 kBytes */
@@ -949,8 +925,8 @@ void print24DiskRBlkInfo( const char* cmd ) {
 void print24DiskWBlk( const char* cmd ) {
 	int id;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	sscanf( cmd + 9, "%d", &id );
 	/* a block is 512 bytes or 1/2 kBytes */
@@ -967,8 +943,8 @@ void print24DiskWBlkInfo( const char* cmd ) {
 void printPageIn( const char* cmd ) {
 	(void)cmd;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	output( "%f\n", (float)( PageIn / timeInterval ) );
 }
@@ -982,8 +958,8 @@ void printPageInInfo( const char* cmd ) {
 void printPageOut( const char* cmd ) {
 	(void)cmd;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	output( "%f\n", (float)( PageOut / timeInterval ) );
 }
@@ -997,8 +973,8 @@ void printPageOutInfo( const char* cmd ) {
 void printInterruptx( const char* cmd ) {
 	int id;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	sscanf( cmd + strlen( "cpu/interrupts/int" ), "%d", &id );
 	output( "%f\n", (float)( Intr[ id ] / timeInterval ) );
@@ -1014,8 +990,8 @@ void printInterruptxInfo( const char* cmd ) {
 void printCtxt( const char* cmd ) {
 	(void)cmd;
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	output( "%f\n", (float)( Ctxt / timeInterval ) );
 }
@@ -1034,8 +1010,8 @@ void print24DiskIO( const char* cmd ) {
 	
 	sscanf( cmd, "disk/%[^_]_(%d:%d)/%16s", devname, &major, &minor, name );
 	
-	if ( Dirty )
-		process24Stat();
+	if ( StatDirty )
+		processStat();
 	
 	ptr = DiskIO;
 	while ( ptr && ( ptr->major != major || ptr->minor != minor ) )
