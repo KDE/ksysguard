@@ -785,6 +785,7 @@ void KSignalPlotter::drawBeam(QPainter *p, const QRect &boundingBox, int horizon
     pen.setCapStyle(Qt::FlatCap);
 
     double scaleFac = (boundingBox.height()-2) / mNiceRange;
+    if(mNiceRange == 0) return;
 
     if(mBeamData.size() - 1 <= index )
         return;  // Something went wrong?
@@ -793,7 +794,7 @@ void KSignalPlotter::drawBeam(QPainter *p, const QRect &boundingBox, int horizon
     QList<double> prev_datapoints = mBeamData[index+1];
     QList<double> prev_prev_datapoints;
     if(index +2 < mBeamData.size()) 
-        prev_prev_datapoints = mBeamData[index+2]; //used for bezier curve gradient calcuation
+        prev_prev_datapoints = mBeamData[index+2]; //used for bezier curve gradient calculation
     else
         prev_prev_datapoints = prev_datapoints;
 
