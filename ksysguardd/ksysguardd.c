@@ -205,7 +205,10 @@ void makeDaemon( void )
       break;
     case 0:
       setsid();
-      chdir( "/" );
+      if( chdir( "/" ) == -1) {
+          log_error("chdir(\"/\") failed");
+          _exit(1);
+      }
       umask( 0 );
       if ( createLockFile() < 0 )
         _exit( 1 );
