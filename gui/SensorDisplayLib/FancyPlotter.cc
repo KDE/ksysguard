@@ -544,19 +544,19 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
         /* FIXME This doesn't check the host!  */
         if (!mSensorsToAdd.isEmpty()) {
             foreach(SensorToAdd *sensor, mSensorsToAdd)  {
-                QList<QString> matchingSensorNameList;
                 for (int i = 0; i < answerlist.count() && !answerlist[i].isEmpty(); ++i) {
                     QString sensorName = QString::fromUtf8(answerlist[i].split('\t')[0]);
                     if (sensor->name.exactMatch(sensorName)) {
-                        matchingSensorNameList.append(sensorName);
+                        QColor color;
+                        if (!sensor->colors.isEmpty())
+                            color = sensor->colors.takeFirst();
+                        else if (KSGRD::Style->numSensorColors() != 0)
+                            color = KSGRD::Style->sensorColor(mBeams % KSGRD::Style->numSensorColors());
+                        addSensor(sensor->hostname, sensorName, (sensor->type.isEmpty()) ? "float" : sensor->type, color, sensor->name.pattern(), sensor->summationName);
                     }
+
                 }
-                QColor color;
-                if (!sensor->colors.isEmpty())
-                    color = sensor->colors.takeFirst();
-                else if (KSGRD::Style->numSensorColors() != 0)
-                    color = KSGRD::Style->sensorColor(mBeams % KSGRD::Style->numSensorColors());
-                addSensor(sensor->hostname, matchingSensorNameList, (sensor->type.isEmpty()) ? "float" : sensor->type, color, sensor->name.pattern(), sensor->summationName);
+
                 delete sensor;
             }
             mSensorsToAdd.clear();
