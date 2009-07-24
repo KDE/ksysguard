@@ -128,7 +128,6 @@ inline int FancyPlotter::calculateLastValueAsString(FancyPlotterSensor *& sensor
         lastValue = i18n("Error");
     }
     return precision;
-
 }
 
 #endif
