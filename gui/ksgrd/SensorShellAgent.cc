@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
     Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public
     License version 2 or at your option version 3 as published by
@@ -46,12 +46,14 @@ SensorShellAgent::~SensorShellAgent()
     mDaemon = 0;
   }
 }
-	
+
 bool SensorShellAgent::start( const QString &host, const QString &shell,
                               const QString &command, int )
 {
   mDaemon = new KProcess();
+  mDaemon->setNextOpenMode(QIODevice::Unbuffered | QIODevice::ReadWrite);
   mDaemon->setOutputChannelMode( KProcess::SeparateChannels );
+
   mRetryCount=3;
   setHostName( host );
   mShell = shell;
@@ -72,7 +74,6 @@ bool SensorShellAgent::start( const QString &host, const QString &shell,
   else
     *mDaemon << mShell << hostName() << "ksysguardd";
   mDaemon->start();
-
   return true;
 }
 

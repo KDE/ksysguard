@@ -40,6 +40,8 @@
 #include "FancyPlotterSettings.h"
 
 #include "FancyPlotter.h"
+#include "FancyPlotterSensor.h"
+#include "AggregateFancyPlotterSensor.h"
 
 class SensorToAdd {
   public:
@@ -92,7 +94,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   mSensorReportedMax = mSensorReportedMin = 0;
 
   //The unicode character 0x25CF is a big filled in circle.  We would prefer to use this in the tooltip.
-  //However it's maybe possible that the font used to draw the tooltip won't have it.  So we fall back to a 
+  //However it's maybe possible that the font used to draw the tooltip won't have it.  So we fall back to a
   //"#" instead.
   mIndicatorSymbol = '#';
   QFontMetrics fm(QToolTip::font());
@@ -101,7 +103,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
 
   QBoxLayout *layout = new QVBoxLayout(this);
   layout->setSpacing(0);
-  mPlotter = new KSignalPlotter( this );
+  mPlotter = new KSignalPlotter( sensorDataProvider, this );
   int axisTextWidth = fontMetrics().width(i18nc("Largest axis title", "99999 XXXX"));
   mPlotter->setMaxAxisTextWidth( axisTextWidth );
   mHeading = new QLabel(translatedTitle(), this);
@@ -117,7 +119,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   QBoxLayout *outerLabelLayout = new QHBoxLayout;
   outerLabelLayout->setSpacing(0);
   layout->addLayout(outerLabelLayout);
- 
+
   /* create a spacer to fill up the space up to the start of the graph */
   outerLabelLayout->addItem(new QSpacerItem(axisTextWidth, 0, QSizePolicy::Preferred));
 
@@ -129,13 +131,14 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   mPlotter->setAxisFontColor( Qt::black );
 
   mPlotter->setThinFrame(!workSheetSettings);
- 
-  /* All RMB clicks to the mPlotter widget will be handled by 
+
+  /* All RMB clicks to the mPlotter widget will be handled by
    * SensorDisplay::eventFilter. */
   mPlotter->installEventFilter( this );
 
   setPlotterWidget( mPlotter );
   connect(mPlotter, SIGNAL(axisScaleChanged()), this, SLOT(plotterAxisScaleChanged()));
+
   QDomElement emptyElement;
   restoreSettings(emptyElement);
 }
@@ -156,6 +159,7 @@ bool FancyPlotter::eventFilter( QObject* object, QEvent* event ) {	//virtual
   {
     setTooltip();
   }
+
   return SensorDisplay::eventFilter(object, event);
 }
 
@@ -187,14 +191,15 @@ void FancyPlotter::configureSettings()
   mSettingsDialog->setBackgroundColor( mPlotter->backgroundColor() );
 
   SensorModelEntry::List list;
-  for ( uint i = 0; i < mBeams; ++i ) {
+  int listSize = sensorCount();
+  for ( int i = 0; i < listSize; ++i ) {
     SensorModelEntry entry;
     entry.setId( i );
-    entry.setHostName( sensors().at( i )->hostName() );
-    entry.setSensorName( sensors().at( i )->name() );
-    entry.setUnit( sensors().at( i )->unit() );
-    entry.setStatus( sensors().at( i )->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
-    entry.setColor( mPlotter->beamColor( i ) );
+    entry.setHostName( sensor(i)->hostName() );
+    entry.setSensorName( sensor(i)->name() );
+    entry.setUnit( sensor(i)->unit() );
+    entry.setStatus( sensor(i)->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
+    entry.setColor( sensor(i)->color());
 
     list.append( entry );
   }
@@ -247,7 +252,7 @@ void FancyPlotter::applySettings() {
 
     QList<int> deletedBeams = mSettingsDialog->deleted();
     for ( int i =0; i < deletedBeams.count(); ++i) {
-      removeBeam(deletedBeams[i]);
+      removeSensor(deletedBeams[i]);
     }
     mSettingsDialog->clearDeleted(); //We have deleted them, so clear the deleted
 
@@ -256,17 +261,20 @@ void FancyPlotter::applySettings() {
 
     SensorModelEntry::List list = mSettingsDialog->sensors();
 
-    for ( int i = 0; i < sensors().count(); ++i ) {
-        mPlotter->setBeamColor( i, list[ i ].color() );
-        static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(i)))->widget())->changeLabel(mPlotter->beamColor(i), mIndicatorSymbol);
+    int listSize = sensorCount();
+    for ( int i = 0; i < listSize; ++i ) {
+    	updateSensorColor(i,list[ i ].color());
     }
     mPlotter->update();
+}
+
+void FancyPlotter::updateSensorColor(const int argIndex, QColor argColor)  {
+	sensor(argIndex)->setColor(argColor);
+    static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(argIndex)))->widget())->changeLabel(argColor, mIndicatorSymbol);
 }
 void FancyPlotter::reorderBeams(const QList<int> & orderOfBeams)
 {
     //Q_ASSERT(orderOfBeams.size() == mLabelLayout.size());  Commented out because it cause compile problems in some cases??
-    //Reorder the graph
-    mPlotter->reorderBeams(orderOfBeams);
     //Reorder the labels underneath the graph
     QList<QLayoutItem *> labelsInOldOrder;
     while(!mLabelLayout->isEmpty())
@@ -277,16 +285,10 @@ void FancyPlotter::reorderBeams(const QList<int> & orderOfBeams)
       mLabelLayout->addItem(labelsInOldOrder.at(oldIndex));
     }
 
-    for ( int i = 0; i < sensors().count(); ++i ) {
-      FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(i));
-      for(int newIndex = 0; newIndex < orderOfBeams.count(); newIndex++) {
-        int oldIndex = orderOfBeams.at(newIndex);
-        if(oldIndex == sensor->beamId) {
-            sensor->beamId = newIndex;
-            break;
-        }
-      }
-    }
+    sensorDataProvider->reorderSensor(orderOfBeams);
+
+
+
 }
 void FancyPlotter::applyStyle()
 {
@@ -296,10 +298,9 @@ void FancyPlotter::applyStyle()
   QFont font = mPlotter->axisFont();
   font.setPointSize(KSGRD::Style->fontSize() );
   mPlotter->setAxisFont( font );
-  for ( int i = 0; i < mPlotter->numBeams() &&
-        (unsigned int)i < KSGRD::Style->numSensorColors(); ++i ) {
-    mPlotter->setBeamColor( i, KSGRD::Style->sensorColor( i ) );
-    static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(i)))->widget())->changeLabel(mPlotter->beamColor(i), mIndicatorSymbol);
+  int listSize = sensorCount();
+  for ( int i = 0; i < listSize && (unsigned int)i < KSGRD::Style->numSensorColors(); ++i ) {
+	updateSensorColor(i,KSGRD::Style->sensorColor( i ));
   }
 
   mPlotter->update();
@@ -308,63 +309,67 @@ void FancyPlotter::applyStyle()
 bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
                               const QString &type, const QString &title )
 {
-  return addSensor( hostName, name, type, title,
-                    KSGRD::Style->sensorColor( mBeams ), QString(), mBeams );
+  //we can ignore the title here since we always override the title when we get the result from the info request
+  return addSensor( hostName, name, type, KSGRD::Style->sensorColor( mBeams ),"","");
 }
-
 bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
-                              const QString &type, const QString &title,
-                              const QColor &color, const QString &regexpName,
-	        	      int beamId, const QString & summationName)
+							  const QString &type, const QColor &color,
+							  const QString &regexpName, const QString &summationName)
 {
   if ( type != "integer" && type != "float" )
     return false;
 
-
-  registerSensor( new FPSensorProperties( hostName, name, type, title, color, regexpName, beamId, summationName ) );
-
-  /* To differentiate between answers from value requests and info
-   * requests we add 100 to the beam index for info requests. */
-  sendRequest( hostName, name + '?', sensors().size() - 1 + 100 );
-
-  if((int)mBeams == beamId) {
-    mPlotter->addBeam( color );
-    /* Add a label for this beam */
-    FancyPlotterLabel *label = new FancyPlotterLabel(this);
-    mLabelLayout->addWidget(label);
-    if(!summationName.isEmpty()) {
-      label->setLabel(summationName, mPlotter->beamColor(mBeams), mIndicatorSymbol);
-    }
-    ++mBeams;
-  }
-
-  return true;
+  FancyPlotterSensor* sensorToAdd = new FancyPlotterSensor(name,summationName,hostName,type,regexpName,color);
+  return addSensor(sensorToAdd);
 }
 
-bool FancyPlotter::removeBeam( uint beamId )
+bool FancyPlotter::addSensor( const QString &hostName, const QList<QString> &name,
+							  const QString &type, const QColor &color,
+							  const QString &regexpName, const QString &summationName)
 {
-  if ( beamId >= mBeams ) {
+	if ( type != "integer" && type != "float" )
+	    return false;
+	AggregateFancyPlotterSensor* sensorToAdd = new AggregateFancyPlotterSensor(name,summationName,hostName,type,regexpName,color);
+	return addSensor(sensorToAdd);
+}
+
+bool FancyPlotter::addSensor(FancyPlotterSensor* sensorToAdd)
+{
+	sensorDataProvider->addSensor(sensorToAdd);
+	/* To differentiate between answers from value requests and info
+	 * requests we add 100 to the beam index for info requests. */
+	const QList<QString> nameList = sensorToAdd->nameList();
+	foreach (QString currentName, nameList)  {
+		sendRequest(sensorToAdd->hostName(), currentName + '?', sensorCount() - 1 + 100);
+	}
+
+
+	/* Add a label for this beam */
+	FancyPlotterLabel *label = new FancyPlotterLabel(this);
+	mLabelLayout->addWidget(label);
+	if (!sensorToAdd->summationName().isEmpty()) {
+		label->setLabel(sensorToAdd->summationName(), sensorToAdd->color(), mIndicatorSymbol);
+	}
+	++mBeams;
+
+	return true;
+}
+
+bool FancyPlotter::removeSensor( uint pos )
+{
+  if ( pos >= (uint)sensorCount() ) {
     kDebug(1215) << "FancyPlotter::removeBeam: beamId out of range ("
-                 << beamId << ")" << endl;
+                 << pos << ")" << endl;
     return false;
   }
 
-  mPlotter->removeBeam( beamId );
-  --mBeams;
-  QWidget *label = (static_cast<QWidgetItem *>(mLabelLayout->takeAt( beamId )))->widget();
+
+  QWidget *label = (static_cast<QWidgetItem *>(mLabelLayout->takeAt( pos )))->widget();
   mLabelLayout->removeWidget(label);
   delete label;
 
 
-  for ( int i = sensors().count()-1; i >= 0; --i ) {
-    FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(i));
-    if(sensor->beamId > (int)beamId)
-      sensor->beamId--;
-    else if(sensor->beamId == (int)beamId)
-      removeSensor( i );
-      //sensor pointer is no longer after removing the sensor
-  
-  }
+  SensorDisplay::removeSensor(pos);
   //adjust the scale to take into account the removed sensor
   plotterAxisScaleChanged();
 
@@ -375,139 +380,104 @@ void FancyPlotter::setTooltip()
 {
   QString tooltip = "<qt><p style='white-space:pre'>";
 
-  QString description;
   QString lastValue;
   bool neednewline = false;
-  int beamId = -1;
-  //Note that the number of beams can be less than the number of sensors, since some sensors
-  //get added together for a beam.
-  //For the tooltip, we show all the sensors
-  for ( int i = 0; i < sensors().count(); ++i ) {
-    FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(i));
-    description = sensor->description();
-    if(description.isEmpty())
-      description = sensor->name();
 
-    if(sensor->isOk()) {
-      lastValue = KGlobal::locale()->formatNumber( sensor->lastValue, (sensor->isInteger)?0:-1 );
-      if (sensor->unit() == "%")
-        lastValue = i18nc("units", "%1%", lastValue);
-      else if( sensor->unit() != "" )
-        lastValue = i18nc("units", ("%1 " + sensor->unit()).toUtf8(), lastValue);
-    } else {
-      lastValue = i18n("Error");
-    }
-    if(beamId != sensor->beamId && !sensor->summationName.isEmpty()) {
-      tooltip += i18nc("%1 is what is being shown statistics for, like 'Memory', 'Swap', etc.", "<p><b>%1:</b><br>", sensor->summationName);
-      neednewline = false;
-    }
-    beamId = sensor->beamId;
+  int listSize = sensorCount();
 
-    if(sensor->isLocalhost()) {
-      tooltip += QString( "%1%2 %3 (%4)" ).arg( neednewline  ? "<br>" : "")
-            .arg("<font color=\"" + mPlotter->beamColor( beamId ).name() + "\">"+mIndicatorSymbol+"</font>")
-            .arg( i18n(description.toUtf8()) )
-            .arg( lastValue );
-
-    } else {
-      tooltip += QString( "%1%2 %3:%4 (%5)" ).arg( neednewline ? "<br>" : "" )
-                 .arg("<font color=\"" + mPlotter->beamColor( beamId ).name() + "\">"+mIndicatorSymbol+"</font>")
-                 .arg( sensor->hostName() )
-                 .arg( i18n(description.toUtf8()) )
-	         .arg( lastValue );
+  for ( int i = 0; i < listSize; ++i ) {
+    FancyPlotterSensor *currentSensor = static_cast<FancyPlotterSensor *>(sensor(i));
+    if(!currentSensor->summationName().isEmpty()) {
+          tooltip += i18nc("%1 is what is being shown statistics for, like 'Memory', 'Swap', etc.", "<p><b>%1:</b><br>", currentSensor->summationName());
+          neednewline = false;
     }
-    neednewline = true;
+
+
+	calculateLastValueAsString(currentSensor, lastValue);
+	QList<QString> currentNameList = currentSensor->nameList();
+	QList<QString> currentTitleList = currentSensor->titleList();
+	int nameListSize = currentNameList.size();
+    for (int j = 0;j < nameListSize;++j)  {
+    	QString currentName = currentNameList.at(j);
+    	QString currentTitle = "";
+    	if (j < currentTitleList.size() )
+    		currentTitle = currentTitleList.at(j);
+    	QString description = currentTitle;
+
+		if (currentTitle.isEmpty()) {
+			description = currentName;
+		}
+
+
+		if (currentSensor->isLocalHost()) {
+			tooltip += QString("%1%2 %3 (%4)").arg(neednewline ? "<br>" : "") .arg("<font color=\"" + currentSensor->color().name() + "\">" + mIndicatorSymbol + "</font>") .arg(i18n(description.toUtf8())) .arg(lastValue);
+
+		} else {
+			tooltip += QString("%1%2 %3:%4 (%5)").arg(neednewline ? "<br>" : "") .arg("<font color=\"" + currentSensor->color().name() + "\">" + mIndicatorSymbol + "</font>") .arg(currentSensor->hostName()) .arg(i18n(description.toUtf8())) .arg(
+					lastValue);
+		}
+		neednewline = true;
+	}
+
   }
-//  tooltip += "</td></tr></table>";
   mPlotter->setToolTip( tooltip );
 }
 
-void FancyPlotter::timerTick( ) //virtual
+void FancyPlotter::timerTick() //virtual
 {
-  if(!mSampleBuf.isEmpty() && mBeams != 0) {  
-    if((uint)mSampleBuf.count() > mBeams) {
-      mSampleBuf.clear();
-      return; //ignore invalid results - can happen if a sensor is deleted
-    }
-    while((uint)mSampleBuf.count() < mBeams)
-      mSampleBuf.append(mPlotter->lastValue(mSampleBuf.count())); //we might have sensors missing so set their values to the previously known value
-    mPlotter->addSample( mSampleBuf );
-    if(isVisible()) {
-      if(QToolTip::isVisible() && mPlotter->geometry().contains(mPlotter->mapFromGlobal( QCursor::pos() ))) {
-        setTooltip();
-        QToolTip::showText(QCursor::pos(), mPlotter->toolTip(), mPlotter);
-      }
-      QString lastValue;
-      int beamId = -1;
-      for ( int i = 0; i < sensors().size(); ++i ) {
-        FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(i));
-        if(sensor->beamId == beamId)
-          continue;
-        beamId = sensor->beamId;
-        if(sensor->isOk() && mPlotter->numBeams() > beamId) {
+	mPlotter->updatePlot();
 
-          int precision;
-          if(sensor->unit() == mUnit) {
-            precision = (sensor->isInteger && mPlotter->scaleDownBy() == 1)?0:-1;
-            lastValue = mPlotter->lastValueAsString(beamId, precision);
-          } else {
-            precision = (sensor->isInteger)?0:-1;
-            lastValue = KGlobal::locale()->formatNumber( mPlotter->lastValue(beamId), precision );
-            if (sensor->unit() == "%")
-              lastValue = i18nc("units", "%1%", lastValue);
-            else if( sensor->unit() != "" )  {
-              lastValue = i18nc("units", ("%1 " + sensor->unit()).toUtf8(), lastValue);
-            }
-          }
+	if (isVisible()) {
+		QString lastValue;
+		int listSize = sensorCount();
+		for (int i = 0; i < listSize; ++i) {
+			FancyPlotterSensor *currentSensor = static_cast<FancyPlotterSensor *> (sensor(i));
+			int precision = calculateLastValueAsString(currentSensor,lastValue);
+			double theoMax = currentSensor->theorethicalMaxValue();
+			if ( theoMax != 0 && currentSensor->unit() != "%")
+				lastValue = translated_LastValueString.arg(lastValue).arg(mPlotter->valueAsString(theoMax, precision));
+			static_cast<FancyPlotterLabel *> ((static_cast<QWidgetItem *> (mLabelLayout->itemAt(i)))->widget())->value->setText(lastValue);
+		}
+	}
 
-          if(sensor->maxValue != 0 && mUnit != "%")
-            lastValue = i18nc("%1 and %2 are sensor's last and maximum value", "%1 of %2", lastValue, mPlotter->valueAsString(sensor->maxValue, precision) );
-        } else {
-          lastValue = i18n("Error");
-        }
-        static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(beamId)))->widget())->value->setText(lastValue);
-      }
-    }
 
-  }
-  mSampleBuf.clear();
-
-  SensorDisplay::timerTick();
+	SensorDisplay::timerTick();
 }
+
 void FancyPlotter::plotterAxisScaleChanged()
 {
     //Prevent this being called recursively
     disconnect(mPlotter, SIGNAL(axisScaleChanged()), this, SLOT(plotterAxisScaleChanged()));
     KLocalizedString unit;
-    double value = mPlotter->maxValue();
+  double value = mPlotter->maxValue();
     if(mUnit  == "KiB") {
-        if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
-            mPlotter->setScaleDownBy(1024*1024*1024);
+    if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
+      mPlotter->setScaleDownBy(1024*1024*1024);
             unit = ki18nc("units", "%1 TiB"); // the unit - terabytes
-        } else if(value >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
-            mPlotter->setScaleDownBy(1024*1024);
+    } else if(value >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
+      mPlotter->setScaleDownBy(1024*1024);
             unit = ki18nc("units", "%1 GiB"); // the unit - gigabytes
-        } else if(value > 1024) {
-            mPlotter->setScaleDownBy(1024);
+    } else if(value > 1024) {
+      mPlotter->setScaleDownBy(1024);
             unit = ki18nc("units", "%1 MiB"); // the unit - megabytes
         } else {
             mPlotter->setScaleDownBy(1);
             unit = ki18nc("units", "%1 KiB"); // the unit - kilobytes
-        }
+    }
     } else if(mUnit == "KiB/s") {
-        if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
-            mPlotter->setScaleDownBy(1024*1024*1024);
+    if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
+      mPlotter->setScaleDownBy(1024*1024*1024);
             unit = ki18nc("units", "%1 TiB/s"); // the unit - terabytes per second
-        } else if(value >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
-            mPlotter->setScaleDownBy(1024*1024);
+    } else if(value >= 1024*1024*0.7) {  //If it's over 0.7GiB, then set the scale to gigabytes
+      mPlotter->setScaleDownBy(1024*1024);
             unit = ki18nc("units", "%1 GiB/s"); // the unit - gigabytes per second
-        } else if(value > 1024) {
-            mPlotter->setScaleDownBy(1024);
+    } else if(value > 1024) {
+      mPlotter->setScaleDownBy(1024);
             unit = ki18nc("units", "%1 MiB/s"); // the unit - megabytes per second
         } else {
             mPlotter->setScaleDownBy(1);
             unit = ki18nc("units", "%1 KiB/s"); // the unit - kilobytes per second
-        }
+    }
     } else if(mUnit == "%") {
         mPlotter->setScaleDownBy(1);
         unit = ki18nc("units", "%1%"); //the unit - percentage
@@ -522,7 +492,7 @@ void FancyPlotter::plotterAxisScaleChanged()
         mPlotter->setScaleDownBy(1);
         //translate any others
         unit = ki18nc("units", ("%1 " + mUnit).toUtf8());
-    }
+  }
     mPlotter->setUnit(unit);
     //reconnect
     connect(mPlotter, SIGNAL(axisScaleChanged()), this, SLOT(plotterAxisScaleChanged()));
@@ -530,83 +500,69 @@ void FancyPlotter::plotterAxisScaleChanged()
 void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
 {
   QByteArray answer;
-
+  int sensorListSize = sensorCount();
   if(!answerlist.isEmpty()) answer = answerlist[0];
   if ( (uint)id < 100 ) {
-    //Make sure that we put the answer in the correct place.  It's index in the list should be equal to the sensor index.  This in turn will contain the beamId
-    
-    FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(id));
-    int beamId = sensor->beamId;
-    double value = answer.toDouble();
-    while(beamId > mSampleBuf.count())
-      mSampleBuf.append(0); //we might have sensors missing so set their values to zero
-
-    if(beamId == mSampleBuf.count()) {
-      mSampleBuf.append( value );
-    } else {
-      mSampleBuf[beamId] += value; //If we get two answers for the same beamid, we should add them together.  That's how the summation works
-    }
-    sensor->lastValue = value;
-    /* We received something, so the sensor is probably ok. */
-    sensorError( id, false );
+	if (id < sensorListSize)  {
+		//Make sure that we put the answer in the correct place.  It's index in the list should be equal to the sensor index.  This in turn will contain the beamId
+		FancyPlotterSensor *currentSensor = static_cast<FancyPlotterSensor *>(sensor(id));
+		double value = answer.toDouble();
+		currentSensor->addData(value);
+		/* We received something, so the sensor is probably ok. */
+		sensorError( id, false );
+	}
   } else if ( id >= 100 && id < 200 ) {
-    KSGRD::SensorFloatInfo info( answer );
-    mUnit = info.unit();
+    int adjustedId = id - 100;
+    if (adjustedId < sensorListSize)  {
+		KSGRD::SensorFloatInfo info( answer );
+		mUnit = info.unit();
     if(mUnit.toUpper() == "KB" || mUnit.toUpper() == "KIB")
         mUnit = "KiB";
     if(mUnit.toUpper() == "KB/S" || mUnit.toUpper() == "KIB/S")
         mUnit = "KiB/s";
 
 
-    mSensorReportedMax = qMax(mSensorReportedMax, info.max());
-    mSensorReportedMin = qMin(mSensorReportedMin, info.min());
-    if(mSensorReportedMax == 0 && mSensorReportedMin)
-      mPlotter->setUseAutoRange(true); // If any of the sensors are using autorange, then the whole graph must use auto range
+		mSensorReportedMax = qMax(mSensorReportedMax, info.max());
+		mSensorReportedMin = qMin(mSensorReportedMin, info.min());
+		if(mSensorReportedMax == 0 && mSensorReportedMin)
+		  mPlotter->setUseAutoRange(true); // If any of the sensors are using autorange, then the whole graph must use auto range
 
-    if ( !mPlotter->useAutoRange())
-      mPlotter->changeRange( mSensorReportedMin, mSensorReportedMax );
-    plotterAxisScaleChanged(); //This sets up the axis scales and sets the unit.  It relies on mUnit already being set
+    if ( !mPlotter->useAutoRange())  {
+		  mPlotter->changeRange( mSensorReportedMin, mSensorReportedMax );
+		  plotterAxisScaleChanged(); //Change the scale now since we know what it is. If instead we are using auto range, then plotterAxisScaleChanged will be called when the first bits of data come in
+		}
+		FancyPlotterSensor *currentSensor = static_cast<FancyPlotterSensor *>(sensor(adjustedId));
+		currentSensor->setUnit(mUnit);
+		currentSensor->addTitle( info.name() );
+		currentSensor->putTheoreticalMaxValue(info.max());
 
-    FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(id - 100));
-    sensor->maxValue = info.max();
-    sensor->setUnit( mUnit );
-    sensor->setDescription( info.name() );
+		QString summationName = currentSensor->summationName();
 
-    QString summationName = sensor->summationName;
-    int beamId = sensor->beamId;
-
-    if(summationName.isEmpty())
-      static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(beamId)))->widget())->setLabel(info.name(), mPlotter->beamColor(id-100), mIndicatorSymbol);
-
-  } else if( id == 200) {
-    /* FIXME This doesn't check the host!  */
-    if(!mSensorsToAdd.isEmpty())  {
-      foreach(SensorToAdd *sensor, mSensorsToAdd) {
-        int beamId = mBeams;  //Assign the next sensor to the next available beamId
-        for ( int i = 0; i < answerlist.count(); ++i ) {
-          if ( answerlist[ i ].isEmpty() )
-            continue;
-          QString sensorName = QString::fromUtf8(answerlist[ i ].split('\t')[0]);
-          if(sensor->name.exactMatch(sensorName)) {
-            if(sensor->summationName.isEmpty())
-              beamId = mBeams; //If summationName is not empty then reuse the previous beamId.  In this way we can have multiple sensors with the same beamId, which can then be summed together
-            QColor color;
-            if(!sensor->colors.isEmpty() )
-                color = sensor->colors.takeFirst();
-            else if(KSGRD::Style->numSensorColors() != 0)
-                color = KSGRD::Style->sensorColor( beamId % KSGRD::Style->numSensorColors());
-            addSensor( sensor->hostname, sensorName,
-                   (sensor->type.isEmpty()) ? "float" : sensor->type
-                    , "", color, sensor->name.pattern(), beamId, sensor->summationName);
-          }
-        }
-      }
-      foreach(SensorToAdd *sensor, mSensorsToAdd) {
-        delete sensor;
-      }
-      mSensorsToAdd.clear();
+		if(summationName.isEmpty())
+		  static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(adjustedId)))->widget())->setLabel(info.name(), currentSensor->color(), mIndicatorSymbol);
     }
-  }
+  } else if (id == 200) {
+		/* FIXME This doesn't check the host!  */
+		if (!mSensorsToAdd.isEmpty()) {
+			foreach(SensorToAdd *sensor, mSensorsToAdd)  {
+				QList<QString> matchingSensorNameList;
+				for (int i = 0; i < answerlist.count() && !answerlist[i].isEmpty(); ++i) {
+					QString sensorName = QString::fromUtf8(answerlist[i].split('\t')[0]);
+					if (sensor->name.exactMatch(sensorName)) {
+						matchingSensorNameList.append(sensorName);
+					}
+				}
+				QColor color;
+				if (!sensor->colors.isEmpty())
+					color = sensor->colors.takeFirst();
+				else if (KSGRD::Style->numSensorColors() != 0)
+					color = KSGRD::Style->sensorColor(mBeams % KSGRD::Style->numSensorColors());
+				addSensor(sensor->hostname, matchingSensorNameList, (sensor->type.isEmpty()) ? "float" : sensor->type, color, sensor->name.pattern(), sensor->summationName);
+				delete sensor;
+			}
+			mSensorsToAdd.clear();
+		}
+	}
 }
 
 bool FancyPlotter::restoreSettings( QDomElement &element )
@@ -632,11 +588,11 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
   mPlotter->setVerticalLinesDistance( element.attribute( "vDistance", "30" ).toUInt() );
   mPlotter->setVerticalLinesScroll( element.attribute( "vScroll", "0" ).toUInt() );
   mPlotter->setHorizontalScale( element.attribute( "hScale", "6" ).toUInt() );
-  
+
   mPlotter->setShowHorizontalLines( element.attribute( "hLines", "1" ).toUInt() );
   mPlotter->setHorizontalLinesColor( restoreColor( element, "hColor",
                                      mPlotter->horizontalLinesColor() ) );
-  
+
   QString filename = element.attribute( "svgBackground");
   if (!filename.isEmpty() && filename[0] == '/') {
     KStandardDirs* kstd = KGlobal::dirs();
@@ -649,9 +605,9 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
     if(fontsize == 0) fontsize =  KSGRD::Style->fontSize();
     QFont font;
     font.setPointSize( fontsize );
-  
+
     mPlotter->setAxisFont( font );
-  
+
     mPlotter->setAxisFontColor( restoreColor( element, "fontColor", Qt::black ) );  //make the default to be the same as the vertical line color
     mPlotter->setBackgroundColor( restoreColor( element, "bColor",
                                    KSGRD::Style->backgroundColor() ) );
@@ -686,8 +642,8 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
     } else
       addSensor( el.attribute( "hostName" ), el.attribute( "sensorName" ),
                ( el.attribute( "sensorType" ).isEmpty() ? "float" :
-               el.attribute( "sensorType" ) ), "", restoreColor( el, "color",
-               KSGRD::Style->sensorColor( i ) ), QString(), mBeams, el.attribute("summationName") );
+               el.attribute( "sensorType" ) ), restoreColor( el, "color",
+               KSGRD::Style->sensorColor( mBeams ) ), QString(), el.attribute("summationName") );
   }
 
   SensorDisplay::restoreSettings( element );
@@ -719,31 +675,29 @@ bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element)
   saveColor( element, "bColor", mPlotter->backgroundColor() );
 
   QHash<QString,QDomElement> hash;
-  int beamId = -1;
-  for ( int i = 0; i < sensors().size(); ++i ) {
-    FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(i));
-    if(sensor->beamId == beamId)
-      continue;
-    beamId = sensor->beamId;
+  int listSize = sensorCount();
+  for ( int i = 0; i < listSize; ++i ) {
+    FancyPlotterSensor *currentSensor = static_cast<FancyPlotterSensor *>(sensor(i));
 
-    QString regExpName = sensor->regExpName();
+
+    QString regExpName = currentSensor->regexpName();
     if(!regExpName.isEmpty() && hash.contains( regExpName )) {
       QDomElement oldBeam = hash.value(regExpName);
-      saveColorAppend( oldBeam, "color", mPlotter->beamColor( beamId ) );
+      saveColorAppend( oldBeam, "color", currentSensor->color() );
     } else {
       QDomElement beam = doc.createElement( "beam" );
       element.appendChild( beam );
-      beam.setAttribute( "hostName", sensor->hostName() );
+      beam.setAttribute( "hostName", currentSensor->hostName() );
       if(regExpName.isEmpty())
-        beam.setAttribute( "sensorName", sensor->name() );
+        beam.setAttribute( "sensorName", currentSensor->name() );
       else {
-          beam.setAttribute( "regexpSensorName", sensor->regExpName() );
+          beam.setAttribute( "regexpSensorName", currentSensor->regexpName() );
           hash[regExpName] = beam;
       }
-      if(!sensor->summationName.isEmpty())
-        beam.setAttribute( "summationName", sensor->summationName);
-      beam.setAttribute( "sensorType", sensor->type() );
-      saveColor( beam, "color", mPlotter->beamColor( beamId ) );
+      if(!currentSensor->summationName().isEmpty())
+        beam.setAttribute( "summationName", currentSensor->summationName());
+      beam.setAttribute( "sensorType", currentSensor->type() );
+      saveColor( beam, "color", currentSensor->color() );
     }
   }
   SensorDisplay::saveSettings( doc, element );
@@ -756,42 +710,8 @@ bool FancyPlotter::hasSettingsDialog() const
   return true;
 }
 
-FPSensorProperties::FPSensorProperties()
-{
-}
+QString FancyPlotter::translated_LastValueString = i18nc("%1 and %2 are sensor's last and maximum value", "%1 of %2", "%1", "%2");
 
-FPSensorProperties::FPSensorProperties( const QString &hostName,
-                                        const QString &name,
-                                        const QString &type,
-                                        const QString &description,
-                                        const QColor &color,
-                                        const QString &regexpName,
-                                        int beamId_,
-                                        const QString &summationName_ )
-  : KSGRD::SensorProperties( hostName, name, type, description),
-    mColor( color )
-{
-  setRegExpName(regexpName);
-  beamId = beamId_;
-  summationName = summationName_;
-  maxValue = 0;
-  lastValue = 0;
-  isInteger = (type == "integer");
-}
-
-FPSensorProperties::~FPSensorProperties()
-{
-}
-
-void FPSensorProperties::setColor( const QColor &color )
-{
-  mColor = color;
-}
-
-QColor FPSensorProperties::color() const
-{
-  return mColor;
-}
 
 
 #include "FancyPlotter.moc"

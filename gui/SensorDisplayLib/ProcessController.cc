@@ -46,14 +46,14 @@ ProcessController::ProcessController(QWidget* parent)
 void
 ProcessController::sensorError(int, bool err)
 {
-	if (err == sensors().at(0)->isOk())
+	if (err == sensor(0)->isOk())
 	{
 		if (err)
 			kDebug(1215) << "SensorError called with an error";
 		/* This happens only when the sensorOk status needs to be changed. */
-		sensors().at(0)->setIsOk( !err );
+		sensor(0)->setIsOk( !err );
 	}
-	setSensorOk(sensors().at(0)->isOk());
+	setSensorOk(sensor(0)->isOk());
 }
 
 bool
@@ -103,14 +103,14 @@ bool ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 {
 	if(!mProcessList)
 		return false;
-	element.setAttribute("hostName", sensors().at(0)->hostName());
-	element.setAttribute("sensorName", sensors().at(0)->name());
-	element.setAttribute("sensorType", sensors().at(0)->type());
+	element.setAttribute("hostName", sensor(0)->hostName());
+	element.setAttribute("sensorName", sensor(0)->name());
+	element.setAttribute("sensorType", sensor(0)->type());
 
 	element.setAttribute("version", QString::number(PROCESSHEADERVERSION));
 	element.setAttribute("treeViewHeader", QString::fromLatin1(mProcessList->treeView()->header()->saveState().toBase64()));
 	element.setAttribute("showTotals", mProcessList->showTotals()?1:0);
-	
+
 	element.setAttribute("units", (int)(mProcessList->units()));
 	element.setAttribute("ioUnits", (int)(mProcessList->processModel()->ioUnits()));
 	element.setAttribute("ioInformation", (int)(mProcessList->processModel()->ioInformation()));
@@ -157,21 +157,21 @@ bool ProcessController::addSensor(const QString& hostName,
 
 	}
 
-		
+
 	setPlotterWidget(mProcessList);
 
-        QTimer::singleShot(0, mProcessList->filterLineEdit(), SLOT(setFocus()));
+    QTimer::singleShot(0, mProcessList->filterLineEdit(), SLOT(setFocus()));
 
-	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
+    SensorDisplay::addSensor(hostName, sensorName,sensorType, title);
 	/* This just triggers the first communication. The full set of
 	* requests are send whenever the sensor reconnects (detected in
 	* sensorError(). */
-	sensors().at(0)->setIsOk(true); //Assume it is okay from the start
-	setSensorOk(sensors().at(0)->isOk());
+	sensor(0)->setIsOk(true); //Assume it is okay from the start
+	setSensorOk(sensor(0)->isOk());
 	return true;
 }
 
 void ProcessController::runCommand(const QString &command, int id) {
-	sendRequest(sensors().at(0)->hostName(), command, id);
+	sendRequest(sensor(0)->hostName(), command, id);
 }
 

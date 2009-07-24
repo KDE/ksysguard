@@ -58,7 +58,7 @@ LogFile::LogFile(QWidget *parent, const QString& title, SharedSettings *workShee
 
 LogFile::~LogFile(void)
 {
-	sendRequest(sensors().at(0)->hostName(), QString("logfile_unregister %1" ).arg(logFileID), 43);
+	sendRequest(sensor(0)->hostName(), QString("logfile_unregister %1" ).arg(logFileID), 43);
 }
 
 bool
@@ -67,14 +67,14 @@ LogFile::addSensor(const QString& hostName, const QString& sensorName, const QSt
 	if (sensorType != "logfile")
 		return (false);
 
-	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
+	SensorDisplay::addSensor(hostName, sensorName,sensorType, title);
 
 	QString sensorID = sensorName.right(sensorName.length() - (sensorName.lastIndexOf("/") + 1));
 
-	sendRequest(sensors().at(0)->hostName(), QString("logfile_register %1" ).arg(sensorID), 42);
+	sendRequest(sensor(0)->hostName(), QString("logfile_register %1" ).arg(sensorID), 42);
 
 	if (title.isEmpty())
-		setTitle(sensors().at(0)->hostName() + ':' + sensorID);
+		setTitle(sensor(0)->hostName() + ':' + sensorID);
 	else
 		setTitle(title);
 
@@ -203,9 +203,9 @@ LogFile::restoreSettings(QDomElement& element)
 bool
 LogFile::saveSettings(QDomDocument& doc, QDomElement& element)
 {
-	element.setAttribute("hostName", sensors().at(0)->hostName());
-	element.setAttribute("sensorName", sensors().at(0)->name());
-	element.setAttribute("sensorType", sensors().at(0)->type());
+	element.setAttribute("hostName", sensor(0)->hostName());
+	element.setAttribute("sensorName", sensor(0)->name());
+	element.setAttribute("sensorType", sensor(0)->type());
 
 	element.setAttribute("font", monitor->font().toString());
 
@@ -228,8 +228,8 @@ LogFile::saveSettings(QDomDocument& doc, QDomElement& element)
 void
 LogFile::updateMonitor()
 {
-	sendRequest(sensors().at(0)->hostName(),
-				QString("%1 %2" ).arg(sensors().at(0)->name()).arg(logFileID), 19);
+	sendRequest(sensor(0)->hostName(),
+				QString("%1 %2" ).arg(sensor(0)->name()).arg(logFileID), 19);
 }
 
 void

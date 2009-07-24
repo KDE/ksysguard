@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-   
+
     Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public
     License version 2 or at your option version 3 as published by
@@ -51,31 +51,20 @@ SensorAgent::~SensorAgent()
     delete mProcessingFIFO.takeAt(i);
 }
 
-void SensorAgent::sendRequest( const QString &req, SensorClient *client, int id )
-{
-  SensorRequest *sensorreq = 0;
-  for(int i =0; i < mInputFIFO.size(); ++i) {
-    sensorreq = mInputFIFO.at(i);
-    if(id == sensorreq->id() && client == sensorreq->client() && req == sensorreq->request()) {
-      executeCommand();
-      return; //don't bother to resend the same request if we already have it in our queue to send
-    }
-  }
-  for(int i =0; i < mProcessingFIFO.size(); ++i) {
-    sensorreq = mProcessingFIFO.at(i);
-    if(id == sensorreq->id() && client == sensorreq->client() && req == sensorreq->request())
-      return; //don't bother to resend the same request if we have already sent the request to client and just waiting for an answer
-  }
-
-  /* The request is registered with the FIFO so that the answer can be
-   * routed back to the requesting client. */
-  mInputFIFO.enqueue( new SensorRequest( req, client, id ) );
+void SensorAgent::sendRequest(const QString &req, SensorClient *client, const int id) {
+	if (mDaemonOnLine) {
+		//kDebug() << "This is number of byte available:" << numberByteAvailable();
+		if (tryAndBatchRequest(req, client, id)) {
+			executeAndEnqueueRequest(new SensorRequest(req, client, id));
+		}
+		//else request was batched with another one so nothing to do
+	} else
+		mInputFIFO.enqueue(new SensorRequest(req, client, id));
 
 #if SA_TRACE
-  kDebug(1215) << "-> " << req << "(" << mInputFIFO.count() << "/"
-                << mProcessingFIFO.count() << ")" << endl;
+	kDebug(1215) << "-> " << req << "(" << mInputFIFO.count() << "/"
+	<< mProcessingFIFO.count() << ")" << endl;
 #endif
-  executeCommand();
 }
 
 void SensorAgent::processAnswer( const char *buf, int buflen )
@@ -88,7 +77,7 @@ void SensorAgent::processAnswer( const char *buf, int buflen )
 	buffer = mLeftOverBuffer + buffer; //If we have data left over from a previous processAnswer, then we have to prepend this on
 	mLeftOverBuffer.clear();
   }
-  
+
 #if SA_TRACE
   kDebug(1215) << "<- " << QString::fromUtf8(buffer, buffer.size());
 #endif
@@ -125,7 +114,7 @@ void SensorAgent::processAnswer( const char *buf, int buflen )
       }
     }
 
-    //The spec was supposed to be that it returned "\nksysguardd> " but some seem to forget the space, so we have to compensate.  Sigh 
+    //The spec was supposed to be that it returned "\nksysguardd> " but some seem to forget the space, so we have to compensate.  Sigh
     if( (i==startOfAnswer && buffer.size() -i >= (signed)(sizeof("ksysguardd>"  ))-1 && qstrncmp(buffer.constData()+i, "ksysguardd>",   sizeof("ksysguardd>"  )-1) == 0) ||
 	(buffer.size() -i >= (signed)(sizeof("\nksysguardd>"))-1 && qstrncmp(buffer.constData()+i, "\nksysguardd>", sizeof("\nksysguardd>")-1) == 0)) {
 
@@ -164,24 +153,35 @@ void SensorAgent::processAnswer( const char *buf, int buflen )
 		mAnswerBuffer.clear();
 		continue;
 	}
-		
+
 	SensorRequest *req = mProcessingFIFO.dequeue();
 	// we are now responsible for the memory of req - we must delete it!
-	if ( !req->client() ) {
+	if ( req->getClients().isEmpty() ) {
 		/* The client has disappeared before receiving the answer
 		 * to his request. */
 		delete req;
 		mAnswerBuffer.clear();
 		continue;
 	}
-		
+
+	const QList<SensorClient*> clientList = req->getClients();
+	const QList<int> listId = req->getIds();
+	const int clientListSize = clientList.size();
+
 	if(!mAnswerBuffer.isEmpty() && mAnswerBuffer[0] == "UNKNOWN COMMAND") {
 		/* Notify client that the sensor seems to be no longer available. */
-        kDebug(1215) << "Received UNKNOWN COMMAND for: " << req->request(); 
-		req->client()->sensorLost( req->id() );
+        kDebug(1215) << "Received UNKNOWN COMMAND for: " << req->request();
+        for (int j = 0;j < clientListSize;++j)  {
+        	SensorClient* currentClient = clientList.at(j);
+        	currentClient->sensorLost( listId.at(j) );
+        }
+
 	} else {
 		// Notify client of newly arrived answer.
-		req->client()->answerReceived( req->id(), mAnswerBuffer );
+		for (int j = 0; j < clientListSize; ++j) {
+			SensorClient* currentClient = clientList.at(j);
+			currentClient->answerReceived( listId.at(j), mAnswerBuffer );
+		}
 	}
 	delete req;
 	mAnswerBuffer.clear();
@@ -197,37 +197,37 @@ void SensorAgent::processAnswer( const char *buf, int buflen )
 
 void SensorAgent::executeCommand()
 {
-  /* This function is called whenever there is a chance that we have a
-   * command to pass to the daemon. But the command may only be sent
-   * if the daemon is online and there is no other command currently
-   * being sent. */
-  if ( mDaemonOnLine && !mInputFIFO.isEmpty() ) {
-    SensorRequest *req = mInputFIFO.dequeue();
-
+	/* This function is called whenever there is a chance that we have a
+	 * command to pass to the daemon. But the command may only be sent
+	 * if the daemon is online and there is no other command currently
+	 * being sent. */
+	if (mDaemonOnLine) {
+		SensorRequest *req = NULL;
+		bool shouldInsert = false;
+		while (!mInputFIFO.isEmpty()) {
+			req = mInputFIFO.dequeue();
+			const QString sRequest = req->request();
+			//since we don't batch request in the input queue there will be only one client and one id
+			shouldInsert = tryAndBatchRequest(req->request(), req->getClients().at(0), req->getIds().at(0));
+			if (shouldInsert) {
 #if SA_TRACE
-    kDebug(1215) << ">> " << req->request().toAscii() << "(" << mInputFIFO.count()
-                  << "/" << mProcessingFIFO.count() << ")" << endl;
+				kDebug(1215) << ">> " << req->request().toAscii() << "(" << mInputFIFO.count()
+				<< "/" << mProcessingFIFO.count() << ")" << endl;
 #endif
-    // send request to daemon
-    QString cmdWithNL = req->request() + '\n';
-    if ( !writeMsg( cmdWithNL.toLatin1(), cmdWithNL.length() ) )
-      kDebug(1215) << "SensorAgent::writeMsg() failed";
-
-    // add request to processing FIFO.
-    // Note that this means that mProcessingFIFO is now responsible for managing the memory for it.
-    mProcessingFIFO.enqueue( req );
-  }
+				executeAndEnqueueRequest(req);
+			} else
+				delete req;
+		}
+	}
 }
 
 void SensorAgent::disconnectClient( SensorClient *client )
 {
   for (int i = 0; i < mInputFIFO.size(); ++i)
-    if ( mInputFIFO[i]->client() == client )
-      mInputFIFO[i]->setClient(0);
+    mInputFIFO[i]->removeAllRequestWithClient(client);
   for (int i = 0; i < mProcessingFIFO.size(); ++i)
-    if ( mProcessingFIFO[i]->client() == client )
-      mProcessingFIFO[i]->setClient( 0 );
-  
+   mProcessingFIFO[i]->removeAllRequestWithClient(client);
+
 }
 
 SensorManager *SensorAgent::sensorManager()
@@ -266,42 +266,20 @@ void SensorAgent::setReasonForOffline(const QString &reasonForOffline)
 }
 
 SensorRequest::SensorRequest( const QString &request, SensorClient *client, int id )
-  : mRequest( request ), mClient( client ), mId( id )
+
 {
+	mRequest = request;
+	clientList.append(client);
+	idList.append(id);
 }
 
 SensorRequest::~SensorRequest()
 {
 }
 
-void SensorRequest::setRequest( const QString &request )
-{
-  mRequest = request;
-}
 
-QString SensorRequest::request() const
-{
-  return mRequest;
-}
 
-void SensorRequest::setClient( SensorClient *client )
-{
-  mClient = client;
-}
 
-SensorClient *SensorRequest::client()
-{
-  return mClient;
-}
 
-void SensorRequest::setId( int id )
-{
-  mId = id;
-}
-
-int SensorRequest::id()
-{
-  return mId;
-}
 
 #include "SensorAgent.moc"

@@ -3,6 +3,7 @@ add_subdirectory( ksgrd )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/ksgrd/
    ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ 
+   ${CMAKE_CURRENT_SOURCE_DIR}/sensor/
    ${CMAKE_SOURCE_DIR}/workspace
    ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs
    ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs/ksysguard
@@ -32,6 +33,13 @@ set(libsensordisplays_SRCS
    	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SignalPlotter.cc
 #   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/modeltest.cpp
 	)
+	
+set(libsensor_SRCS 
+   ${CMAKE_CURRENT_SOURCE_DIR}/sensor/BasicSensor.cc 
+   ${CMAKE_CURRENT_SOURCE_DIR}/sensor/FancyPlotterSensor.cc 
+   ${CMAKE_CURRENT_SOURCE_DIR}/sensor/SensorDataProvider.cc 
+   ${CMAKE_CURRENT_SOURCE_DIR}/sensor/AggregateFancyPlotterSensor.cc
+)
 
 kde4_add_ui_files( libsensordisplays_SRCS
    ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ListViewSettingsWidget.ui
@@ -41,7 +49,7 @@ kde4_add_ui_files( libsensordisplays_SRCS
    ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLoggerSettingsWidget.ui
 )
 
-set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
+set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS} ${libsensor_SRCS}
    SensorBrowser.cc 
    WorkSheet.cc
    WorkSheetSettings.cc 

@@ -56,7 +56,7 @@ MultiMeter::MultiMeter(QWidget* parent, const QString& title, SharedSettings *wo
 
   setBackgroundColor( KSGRD::Style->backgroundColor() );
 
-  /* All RMB clicks to the mLcd widget will be handled by 
+  /* All RMB clicks to the mLcd widget will be handled by
    * SensorDisplay::eventFilter. */
   mLcd->installEventFilter( this );
 
@@ -68,16 +68,13 @@ MultiMeter::MultiMeter(QWidget* parent, const QString& title, SharedSettings *wo
 bool MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
           const QString& sensorType, const QString& title)
 {
-  if (sensorType != "integer" && sensorType != "float")
-    return false;
-
-  if(!sensors().isEmpty())
+  if ( (sensorType != "integer" && sensorType != "float") || sensorCount() > 0)
     return false;
 
   mIsFloat = (sensorType == "float");
   mLcd->setSmallDecimalPoint( mIsFloat );
 
-  registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
+  SensorDisplay::addSensor(hostName, sensorName,sensorType, title);
 
   /* To differentiate between answers from value requests and info
    * requests we use 100 for info requests. */
@@ -122,7 +119,7 @@ void MultiMeter::answerReceived(int id, const QList<QByteArray>& answerlist)
     mLcd->display(val);
     if (mLowerLimitActive && val < mLowerLimit)
     {
-      setDigitColor(mAlarmDigitColor);  
+      setDigitColor(mAlarmDigitColor);
     }
     else if (mUpperLimitActive && val > mUpperLimit)
     {
@@ -156,10 +153,10 @@ bool MultiMeter::restoreSettings(QDomElement& element)
 
 bool MultiMeter::saveSettings(QDomDocument& doc, QDomElement& element)
 {
-  if(!sensors().isEmpty()) {
-    element.setAttribute("hostName", sensors().at(0)->hostName());
-    element.setAttribute("sensorName", sensors().at(0)->name());
-    element.setAttribute("sensorType", sensors().at(0)->type());
+  if(sensorCount() > 0) {
+    element.setAttribute("hostName", sensor(0)->hostName());
+    element.setAttribute("sensorName", sensor(0)->name());
+    element.setAttribute("sensorType", sensor(0)->type());
   }
   element.setAttribute("showUnit", showUnit());
   element.setAttribute("lowerLimitActive", (int) mLowerLimitActive);
