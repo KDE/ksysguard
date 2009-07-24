@@ -77,6 +77,12 @@ ProcessController::restoreSettings(QDomElement& element)
 	int units = element.attribute("units", QString::number((int)ProcessModel::UnitsKB)).toUInt();
 	mProcessList->setUnits((ProcessModel::Units)units);
 
+	int ioUnits = element.attribute("ioUnits", QString::number((int)ProcessModel::UnitsKB)).toUInt();
+	mProcessList->processModel()->setIoUnits((ProcessModel::Units)ioUnits);
+
+	int ioInformation = element.attribute("ioInformation", QString::number((int)ProcessModel::ActualBytesRate)).toUInt();
+	mProcessList->processModel()->setIoInformation((ProcessModel::IoInformation)ioInformation);
+
 	bool showCommandLineOptions = element.attribute("showCommandLineOptions", "0").toUInt();
 	mProcessList->processModel()->setShowCommandLineOptions(showCommandLineOptions);
 
@@ -106,6 +112,8 @@ bool ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 	element.setAttribute("showTotals", mProcessList->showTotals()?1:0);
 	
 	element.setAttribute("units", (int)(mProcessList->units()));
+	element.setAttribute("ioUnits", (int)(mProcessList->processModel()->ioUnits()));
+	element.setAttribute("ioInformation", (int)(mProcessList->processModel()->ioInformation()));
 	element.setAttribute("showCommandLineOptions", mProcessList->processModel()->isShowCommandLineOptions());
 	element.setAttribute("showTooltips", mProcessList->processModel()->isShowingTooltips());
 	element.setAttribute("normalizeCPUUsage", mProcessList->processModel()->isNormalizedCPUUsage());
