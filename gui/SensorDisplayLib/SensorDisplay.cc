@@ -171,7 +171,7 @@ void SensorDisplay::sensorError( int sensorId, bool err )
 
   if ( err == sensorDataProvider->sensor( sensorId )->isOk() ) {
     // this happens only when the sensorOk status needs to be changed.
-	  sensorDataProvider->sensor( sensorId )->setIsOk( !err );
+	  sensorDataProvider->sensor( sensorId )->setOk( !err );
   }
 
   bool ok = true;

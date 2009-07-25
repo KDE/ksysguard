@@ -32,15 +32,15 @@ public:
 	virtual ~AggregateFancyPlotterSensor();
 	virtual bool isAggregateSensor() const;
 	virtual void addData(const double argValue);
-	virtual void putTheoreticalMaxValue(double argTheorethicalMaxValue);
+	virtual void putReportedMaxValue(double argTheorethicalMaxValue);
 	virtual double lastValue(int argIndex) const;
 	double lastIndividualSensorValue(int argIndex) const;
 	virtual void removeOldestValue(int argNumberToRemove = 1);
 
 private:
-	int numDataReceived;
-	int numberOfSensor;
-	double tempAggregateValue;
+	int mNumDataReceived;
+	int mNumberOfSensor;
+	double mTempAggregateValue;
 	QList<double>* mIndividualSensorData;
 };
 

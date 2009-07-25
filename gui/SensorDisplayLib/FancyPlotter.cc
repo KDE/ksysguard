@@ -439,7 +439,7 @@ void FancyPlotter::timerTick() //virtual
         for (int i = 0; i < listSize; ++i) {
             FancyPlotterSensor *currentSensor = static_cast<FancyPlotterSensor *> (sensor(i));
             int precision = calculateLastValueAsString(currentSensor,lastValue);
-            double theoMax = currentSensor->theorethicalMaxValue();
+            double theoMax = currentSensor->reportedMaxValue();
             if ( theoMax != 0 && currentSensor->unit() != "%")
                 lastValue = translated_LastValueString.arg(lastValue).arg(mPlotter->valueAsString(theoMax, precision));
             static_cast<FancyPlotterLabel *> ((static_cast<QWidgetItem *> (mLabelLayout->itemAt(i)))->widget())->value->setText(lastValue);
@@ -539,7 +539,7 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
             FancyPlotterSensor *currentSensor = static_cast<FancyPlotterSensor *>(sensor(adjustedId));
             currentSensor->setUnit(mUnit);
             currentSensor->addTitle( info.name() );
-            currentSensor->putTheoreticalMaxValue(info.max());
+            currentSensor->putReportedMaxValue(info.max());
 
             QString summationName = currentSensor->summationName();
 

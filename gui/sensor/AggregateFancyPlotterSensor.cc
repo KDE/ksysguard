@@ -22,10 +22,10 @@
 #include "AggregateFancyPlotterSensor.h"
 
 AggregateFancyPlotterSensor::AggregateFancyPlotterSensor(QList<QString> argName, QString argSummationName, QString argHostName, QString argType, QString argRegexpName, QColor argSensorColor) : FancyPlotterSensor(argName, argSummationName,argHostName, argType, argRegexpName, argSensorColor) {
-	numberOfSensor = argName.size();
-	numDataReceived = 0;
-	tempAggregateValue = 0;
-	mIndividualSensorData = new QList<double>[numberOfSensor];
+	mNumberOfSensor = argName.size();
+	mNumDataReceived = 0;
+	mTempAggregateValue = 0;
+	mIndividualSensorData = new QList<double>[mNumberOfSensor];
 }
 
 AggregateFancyPlotterSensor::~AggregateFancyPlotterSensor() {
@@ -37,20 +37,20 @@ bool AggregateFancyPlotterSensor::isAggregateSensor() const {
 }
 
 void AggregateFancyPlotterSensor::addData(const double argValue)  {
-	if (numDataReceived < numberOfSensor)  {
-	    mIndividualSensorData[numDataReceived++].append(argValue);
-		tempAggregateValue += argValue;
+	if (mNumDataReceived < mNumberOfSensor)  {
+	    mIndividualSensorData[mNumDataReceived++].append(argValue);
+		mTempAggregateValue += argValue;
 	} else  {
-		FancyPlotterSensor::addData(tempAggregateValue);
+		FancyPlotterSensor::addData(mTempAggregateValue);
 		mIndividualSensorData[0].append(argValue);
-		numDataReceived = 1;
-		tempAggregateValue = argValue;
+		mNumDataReceived = 1;
+		mTempAggregateValue = argValue;
 	}
 }
 
-void AggregateFancyPlotterSensor::putTheoreticalMaxValue(double argTheorethicalMaxValue)
+void AggregateFancyPlotterSensor::putReportedMaxValue(double argTheorethicalMaxValue)
 {
-    FancyPlotterSensor::putTheoreticalMaxValue(theorethicalMaxValue()+argTheorethicalMaxValue);
+    FancyPlotterSensor::putReportedMaxValue(reportedMaxValue()+argTheorethicalMaxValue);
 }
 
 double AggregateFancyPlotterSensor::lastValue(int argIndex) const  {
@@ -60,7 +60,7 @@ double AggregateFancyPlotterSensor::lastValue(int argIndex) const  {
 void AggregateFancyPlotterSensor::removeOldestValue(int argNumberToRemove)  {
     FancyPlotterSensor::removeOldestValue(argNumberToRemove);
     while (argNumberToRemove-- > 0) {
-        for (int var = 0; var < numberOfSensor; ++var) {
+        for (int var = 0; var < mNumberOfSensor; ++var) {
             mIndividualSensorData[var].removeFirst();
         }
     }

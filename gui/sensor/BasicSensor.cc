@@ -39,20 +39,20 @@ void BasicSensor::init(const QString argHostName, const QString argType, const Q
 	mHostName = argHostName;
 	mType = argType;
 	mRegexpName = argRegexpName;
-	localHost = (argHostName.toLower() == "localhost" || argHostName.isEmpty());
-	ok = true;
-	integer = (mType == "integer");
+	mLocalHost = (argHostName.toLower() == "localhost" || argHostName.isEmpty());
+	mOk = true;
+	mInteger = (mType == "integer");
 }
 QString BasicSensor::name() const {
 	return mNameList.at(0);
 }
 
 bool BasicSensor::isOk() const {
-	return ok;
+	return mOk;
 }
 
-void BasicSensor::setIsOk(const bool argValue)  {
-	ok = argValue;
+void BasicSensor::setOk(bool argValue)  {
+	mOk = argValue;
 }
 
 QString BasicSensor::hostName() const {
@@ -71,7 +71,7 @@ QString BasicSensor::regexpName() const  {
 }
 
 bool BasicSensor::isLocalHost() const  {
-	return localHost;
+	return mLocalHost;
 }
 
 QString BasicSensor::type() const  {

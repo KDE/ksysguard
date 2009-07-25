@@ -27,7 +27,7 @@ SensorDataProvider::SensorDataProvider() {
 }
 
 SensorDataProvider::~SensorDataProvider() {
-	qDeleteAll(sensors);
+	qDeleteAll(mSensors);
 }
 
 

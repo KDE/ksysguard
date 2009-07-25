@@ -41,12 +41,12 @@ public:
      */
     virtual double lastValue(int argIndex) const;
 
-    void setUnit(const QString argUnit);
+    void setUnit(const QString &argUnit);
 
-    /* this is the theorethical maximum value that the sensor can have, for example as provided by ksysguardd*/
-    double theorethicalMaxValue() const;
+    /* this is the reported maximum value that the sensor can have, for example as provided by ksysguardd*/
+    double reportedMaxValue() const;
     /* this is implementation specific, for a basic sensor it simply override the previous value, i.e. a set*/
-    virtual void putTheoreticalMaxValue(double argTheorethicalMaxValue);
+    virtual void putReportedMaxValue(double argReportedMaxValue);
 
     virtual void removeOldestValue(int argNumberToRemove = 1);
 
@@ -65,9 +65,9 @@ private:
 
     void init(const QColor argSensorColor);
 
-    QColor sensorColor;
+    QColor mSensorColor;
     QString mUnit;
-    QList<double> sensorData;
+    QList<double> mSensorData;
     double mTheorethicalMaxValue;
     double mLastSeenValue;
     double mPrevSeenValue;
@@ -75,23 +75,23 @@ private:
 };
 
 inline QColor DataPointSensor::color() const {
-    return sensorColor;
+    return mSensorColor;
 }
 
 inline double DataPointSensor::data(int argIndex) const {
-    return sensorData.at(argIndex);
+    return mSensorData.at(argIndex);
 }
 
 inline int DataPointSensor::dataSize() const {
-    return sensorData.size();
+    return mSensorData.size();
 }
 
-inline double DataPointSensor::theorethicalMaxValue() const {
+inline double DataPointSensor::reportedMaxValue() const {
     return mTheorethicalMaxValue;
 }
 
 inline double DataPointSensor::lastValue() const {
-    return sensorData.last();
+    return mSensorData.last();
 }
 
 inline double DataPointSensor::lastSeenValue() const {

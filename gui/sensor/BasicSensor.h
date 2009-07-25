@@ -55,7 +55,7 @@ public:
 
 	bool isOk() const;
 
-	void setIsOk(const bool argValue);
+	void setOk(bool argValue);
 
 	/* title have to be added in the same order as the name list was provided*/
 	void addTitle(const QString argTitle);
@@ -71,14 +71,14 @@ private:
 	QString mType;
 	QString mRegexpName;
 	QList<QString> mTitleList;
-	bool integer;
-	bool ok;
-	bool localHost;
+	bool mInteger;
+	bool mOk;
+	bool mLocalHost;
 
 
 };
 
 inline bool BasicSensor::isInteger() const {
-	return integer;
+	return mInteger;
 }
 #endif /* BASICSENSOR_H_ */

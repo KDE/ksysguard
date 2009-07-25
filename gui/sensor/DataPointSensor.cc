@@ -35,32 +35,32 @@ QString DataPointSensor::unit() const  {
     return mUnit;
 }
 
-void DataPointSensor::setUnit(QString argUnit)  {
+void DataPointSensor::setUnit(const QString &argUnit)  {
     mUnit = argUnit;
 }
 
 void DataPointSensor::setColor(const QColor argColor)  {
-    sensorColor = argColor;
+    mSensorColor = argColor;
 }
 
 void DataPointSensor::removeOldestValue(int argNumberToRemove) {
     while (argNumberToRemove-- > 0)  {
-        sensorData.removeFirst();
+        mSensorData.removeFirst();
     }
 }
 
 
 double DataPointSensor::removeOneOldestValue()  {
-    return sensorData.takeFirst();
+    return mSensorData.takeFirst();
 }
 
-void DataPointSensor::putTheoreticalMaxValue(double argTheorethicalMaxValue)
+void DataPointSensor::putReportedMaxValue(double argReportedMaxValue)
 {
-   mTheorethicalMaxValue = argTheorethicalMaxValue;
+   mTheorethicalMaxValue = argReportedMaxValue;
 }
 
 void DataPointSensor::addData(double argValue)  {
-    sensorData.append(argValue);
+    mSensorData.append(argValue);
 }
 
 double DataPointSensor::lastValue(int argIndex) const {

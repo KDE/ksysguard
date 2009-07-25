@@ -51,7 +51,7 @@ ProcessController::sensorError(int, bool err)
 		if (err)
 			kDebug(1215) << "SensorError called with an error";
 		/* This happens only when the sensorOk status needs to be changed. */
-		sensor(0)->setIsOk( !err );
+		sensor(0)->setOk( !err );
 	}
 	setSensorOk(sensor(0)->isOk());
 }
@@ -166,7 +166,7 @@ bool ProcessController::addSensor(const QString& hostName,
 	/* This just triggers the first communication. The full set of
 	* requests are send whenever the sensor reconnects (detected in
 	* sensorError(). */
-	sensor(0)->setIsOk(true); //Assume it is okay from the start
+	sensor(0)->setOk(true); //Assume it is okay from the start
 	setSensorOk(sensor(0)->isOk());
 	return true;
 }

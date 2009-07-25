@@ -35,28 +35,28 @@ public:
 	BasicSensor* sensor(int argIndex);
 	BasicSensor* removeSensor(int argIndex);
 private:
-	QList<BasicSensor*> sensors;
+	QList<BasicSensor*> mSensors;
 };
 
 
 inline int SensorDataProvider::sensorCount() const  {
-	return sensors.size();
+	return mSensors.size();
 }
 
 inline void SensorDataProvider::addSensor(BasicSensor* toAdd)  {
-	sensors.append(toAdd);
+	mSensors.append(toAdd);
 }
 
 inline void SensorDataProvider::removeSensor(BasicSensor* toRemove)  {
-	sensors.removeOne(toRemove);
+	mSensors.removeOne(toRemove);
 }
 
 inline BasicSensor* SensorDataProvider::sensor(int argIndex)  {
-	return sensors.at(argIndex);
+	return mSensors.at(argIndex);
 }
 
 inline BasicSensor* SensorDataProvider::removeSensor(int argIndex)  {
-	return sensors.takeAt(argIndex);
+	return mSensors.takeAt(argIndex);
 }
 
 #endif /* SENSORDATAPROVIDER_H_ */
