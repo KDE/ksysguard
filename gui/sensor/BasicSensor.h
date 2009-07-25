@@ -56,7 +56,14 @@ public:
 	double data(int argIndex) const;
 	QString unit() const;
 	bool isOk() const;
+
+
 	double lastValue() const;
+	/* method for sensor that represent aggregate data, this will return the last value of an individual sensor.
+	 * By default it return the same as lastValue
+	 */
+	virtual double lastValue(int argIndex) const;
+
 	void setIsOk(const bool argValue);
 	void setUnit(const QString argUnit);
 	/* title have to be added in the same order as the name list was provided*/

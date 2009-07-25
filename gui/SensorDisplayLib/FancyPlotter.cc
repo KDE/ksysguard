@@ -154,14 +154,14 @@ void FancyPlotter::setTitle( const QString &title ) { //virtual
     }
 }
 
-    bool FancyPlotter::eventFilter( QObject* object, QEvent* event ) {	//virtual
-        if(event->type() == QEvent::ToolTip)
-        {
-            setTooltip();
-        }
-
-        return SensorDisplay::eventFilter(object, event);
+bool FancyPlotter::eventFilter( QObject* object, QEvent* event ) {	//virtual
+    if(event->type() == QEvent::ToolTip)
+    {
+        setTooltip();
     }
+
+    return SensorDisplay::eventFilter(object, event);
+}
 
 void FancyPlotter::configureSettings()
 {
@@ -387,17 +387,18 @@ void FancyPlotter::setTooltip()
 
     for ( int i = 0; i < listSize; ++i ) {
         FancyPlotterSensor *currentSensor = static_cast<FancyPlotterSensor *>(sensor(i));
-        if(!currentSensor->summationName().isEmpty()) {
+        if(currentSensor->isAggregateSensor()) {
             tooltip += i18nc("%1 is what is being shown statistics for, like 'Memory', 'Swap', etc.", "<p><b>%1:</b><br>", currentSensor->summationName());
             neednewline = false;
         }
 
 
-        calculateLastValueAsString(currentSensor, lastValue);
+
         QList<QString> currentNameList = currentSensor->nameList();
         QList<QString> currentTitleList = currentSensor->titleList();
         int nameListSize = currentNameList.size();
         for (int j = 0;j < nameListSize;++j)  {
+            calculateLastValueAsString(currentSensor, lastValue,j);
             QString currentName = currentNameList.at(j);
             QString currentTitle = "";
             if (j < currentTitleList.size() )

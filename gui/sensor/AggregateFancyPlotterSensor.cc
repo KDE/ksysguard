@@ -25,9 +25,11 @@ AggregateFancyPlotterSensor::AggregateFancyPlotterSensor(QList<QString> argName,
 	numberOfSensor = argName.size();
 	numDataReceived = 0;
 	tempAggregateValue = 0;
+	mIndividualSensorData = new QList<double>[numberOfSensor];
 }
 
 AggregateFancyPlotterSensor::~AggregateFancyPlotterSensor() {
+    delete [] mIndividualSensorData;
 }
 
 bool AggregateFancyPlotterSensor::isAggregateSensor() const {
@@ -36,10 +38,11 @@ bool AggregateFancyPlotterSensor::isAggregateSensor() const {
 
 void AggregateFancyPlotterSensor::addData(const double argValue)  {
 	if (numDataReceived < numberOfSensor)  {
-		++numDataReceived;
+	    mIndividualSensorData[numDataReceived++].append(argValue);
 		tempAggregateValue += argValue;
 	} else  {
 		FancyPlotterSensor::addData(tempAggregateValue);
+		mIndividualSensorData[0].append(argValue);
 		numDataReceived = 1;
 		tempAggregateValue = argValue;
 	}
@@ -48,6 +51,10 @@ void AggregateFancyPlotterSensor::addData(const double argValue)  {
 void AggregateFancyPlotterSensor::putTheoreticalMaxValue(double argTheorethicalMaxValue)
 {
 	BasicSensor::putTheoreticalMaxValue(theorethicalMaxValue()+argTheorethicalMaxValue);
+}
+
+double AggregateFancyPlotterSensor::lastValue(int argIndex) const  {
+    return mIndividualSensorData[argIndex].last();
 }
 
 

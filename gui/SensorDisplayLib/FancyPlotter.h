@@ -79,7 +79,7 @@ private:
 
     static QString translated_LastValueString;
 
-    int calculateLastValueAsString(FancyPlotterSensor *& sensor, QString & lastValue);
+    int calculateLastValueAsString(FancyPlotterSensor *& sensor, QString & lastValue, int argSensorIndex = 0);
     bool removeSensor(uint pos);
     void updateSensorColor(const int argIndex, const QColor argColor);
 
@@ -105,16 +105,16 @@ private:
     QChar mIndicatorSymbol;
 };
 
-inline int FancyPlotter::calculateLastValueAsString(FancyPlotterSensor *& sensor, QString & lastValue) {
+inline int FancyPlotter::calculateLastValueAsString(FancyPlotterSensor *& sensor, QString & lastValue, int argSensorIndex) {
     int precision = 0;
     if (sensor->isOk()) {
         if (sensor->dataSize() > 0) {
             if (sensor->unit() == mUnit) {
                 precision = (sensor->isInteger() && mPlotter->scaleDownBy() == 1) ? 0 : -1;
-                lastValue = mPlotter->valueAsString(sensor->lastValue(), precision);
+                lastValue = mPlotter->valueAsString(sensor->lastValue(argSensorIndex), precision);
             } else {
                 precision = (sensor->isInteger()) ? 0 : -1;
-                lastValue = KGlobal::locale()->formatNumber(sensor->lastValue(), precision);
+                lastValue = KGlobal::locale()->formatNumber(sensor->lastValue(argSensorIndex), precision);
                 if (sensor->unit() == "%")
                     lastValue = i18nc("units", "%1%", lastValue);
                 else if (sensor->unit() != "")

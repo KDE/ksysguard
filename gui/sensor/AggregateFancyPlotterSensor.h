@@ -22,6 +22,7 @@
 #ifndef AGGREGATEFANCYPLOTTERSENSOR_H_
 #define AGGREGATEFANCYPLOTTERSENSOR_H_
 
+#include <QtCore/QList>
 #include "FancyPlotterSensor.h"
 
 
@@ -32,11 +33,18 @@ public:
 	virtual bool isAggregateSensor() const;
 	virtual void addData(const double argValue);
 	virtual void putTheoreticalMaxValue(double argTheorethicalMaxValue);
+	virtual double lastValue(int argIndex) const;
+	double lastIndividualSensorValue(int argIndex) const;
 
 private:
 	int numDataReceived;
 	int numberOfSensor;
 	double tempAggregateValue;
+	QList<double>* mIndividualSensorData;
 };
+
+inline double AggregateFancyPlotterSensor::lastIndividualSensorValue(int argIndex) const {
+    return mIndividualSensorData[argIndex].last();
+}
 
 #endif /* AGGREGATEFANCYPLOTTERSENSOR_H_ */
