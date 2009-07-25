@@ -58,7 +58,6 @@ double AggregateFancyPlotterSensor::lastValue(int argIndex) const  {
 }
 
 void AggregateFancyPlotterSensor::removeOldestValue(int argNumberToRemove)  {
-    qDebug() << "Remove oldest value";
     FancyPlotterSensor::removeOldestValue(argNumberToRemove);
     while (argNumberToRemove-- > 0) {
         for (int var = 0; var < numberOfSensor; ++var) {
