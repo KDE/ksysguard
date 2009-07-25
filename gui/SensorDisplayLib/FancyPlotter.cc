@@ -194,12 +194,13 @@ void FancyPlotter::configureSettings()
     int listSize = sensorCount();
     for ( int i = 0; i < listSize; ++i ) {
         SensorModelEntry entry;
+        FancyPlotterSensor* currentSensor = static_cast<FancyPlotterSensor *>(sensor(i));
         entry.setId( i );
-        entry.setHostName( sensor(i)->hostName() );
-        entry.setSensorName( sensor(i)->name() );
-        entry.setUnit( sensor(i)->unit() );
-        entry.setStatus( sensor(i)->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
-        entry.setColor( sensor(i)->color());
+        entry.setHostName( currentSensor->hostName() );
+        entry.setSensorName( currentSensor->name() );
+        entry.setUnit( currentSensor->unit() );
+        entry.setStatus( currentSensor->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
+        entry.setColor( currentSensor->color());
 
         list.append( entry );
     }
@@ -269,7 +270,7 @@ void FancyPlotter::applySettings() {
 }
 
 void FancyPlotter::updateSensorColor(const int argIndex, QColor argColor)  {
-    sensor(argIndex)->setColor(argColor);
+    (static_cast<FancyPlotterSensor *>(sensor(argIndex)))->setColor(argColor);
     static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(argIndex)))->widget())->changeLabel(argColor, mIndicatorSymbol);
 }
 void FancyPlotter::reorderBeams(const QList<int> & orderOfBeams)

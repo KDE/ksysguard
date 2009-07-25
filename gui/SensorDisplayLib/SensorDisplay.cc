@@ -242,7 +242,7 @@ void SensorDisplay::saveColorAppend( QDomElement &element, const QString &attr,
 bool SensorDisplay::addSensor( const QString &hostName, const QString &name,
                                const QString &type, const QString &description )
 {
-  BasicSensor* toAdd = new BasicSensor(name,hostName,type,"",Qt::gray);
+  BasicSensor* toAdd = new BasicSensor(name,hostName,type,"");
   toAdd->addTitle(description);
   sensorDataProvider->addSensor(toAdd);
   return true;

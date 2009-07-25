@@ -32,8 +32,8 @@
  */
 class BasicSensor {
 public:
-	BasicSensor(const QString argName, const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor);
-	BasicSensor(const QList<QString> argName, const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor);
+	BasicSensor(const QString argName, const QString argHostName, const QString argType, const QString argRegexpName);
+	BasicSensor(const QList<QString> argName, const QString argHostName, const QString argType, const QString argRegexpName);
 	virtual ~BasicSensor();
 
 	/* return first name in the list*/
@@ -47,97 +47,36 @@ public:
 	QList<QString> titleList() const;
 
 	QString hostName() const;
-	QColor color() const;
+
 	QString type() const;
 	QString regexpName() const;
 	bool isInteger() const;
 	bool isLocalHost() const;
-	int dataSize() const;
-	double data(int argIndex) const;
-	QString unit() const;
+
 	bool isOk() const;
 
-
-	double lastValue() const;
-	/* method for sensor that represent aggregate data, this will return the last value of an individual sensor.
-	 * By default it return the same as lastValue
-	 */
-	virtual double lastValue(int argIndex) const;
-
 	void setIsOk(const bool argValue);
-	void setUnit(const QString argUnit);
+
 	/* title have to be added in the same order as the name list was provided*/
 	void addTitle(const QString argTitle);
-	/* this is the theorethical maximum value that the sensor can have, for example as provided by ksysguardd*/
-	double theorethicalMaxValue() const;
-	void removeOldestValue(int argNumberToRemove = 1);
 
-	/* last seen value by a client of this sensor, used to speed up drawing in some instance*/
-	double lastSeenValue() const;
-	double prevSeenValue() const;
-	void updateLastSeenValue(double argLastSeenValue);
-
-	/* this is implementation specific, for a basic sensor it simply override the previous value, i.e. a set*/
-	virtual void putTheoreticalMaxValue(double argTheorethicalMaxValue);
-
-	virtual void setColor(const QColor argColor);
-	virtual void addData(const double argValue);
 	virtual bool isAggregateSensor() const;
 
-protected:
-	double removeOneOldestValue();
 private:
-	void init(const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor);
+	void init(const QString argHostName, const QString argType, const QString argRegexpName);
 
-	QColor sensorColor;
+
 	QList<QString> mNameList;
 	QString mHostName;
 	QString mType;
 	QString mRegexpName;
 	QList<QString> mTitleList;
-	QString mUnit;
-	QList<double> sensorData;
-	double mTheorethicalMaxValue;
-	double mLastSeenValue;
-	double mPrevSeenValue;
-	bool localHost;
-	bool ok;
 	bool integer;
+	bool ok;
+	bool localHost;
+
 
 };
-
-inline QColor BasicSensor::color() const {
-	return sensorColor;
-}
-
-inline double BasicSensor::data(int argIndex) const {
-	return sensorData.at(argIndex);
-}
-
-inline int BasicSensor::dataSize() const {
-	return sensorData.size();
-}
-
-inline double BasicSensor::theorethicalMaxValue() const {
-	return mTheorethicalMaxValue;
-}
-
-inline double BasicSensor::lastValue() const {
-	return sensorData.last();
-}
-
-inline double BasicSensor::lastSeenValue() const {
-	return mLastSeenValue;
-}
-
-inline double BasicSensor::prevSeenValue() const {
-	return mPrevSeenValue;
-}
-
-inline void BasicSensor::updateLastSeenValue(double argLastSeenValue) {
-	mPrevSeenValue = mLastSeenValue;
-	mLastSeenValue = argLastSeenValue;
-}
 
 inline bool BasicSensor::isInteger() const {
 	return integer;

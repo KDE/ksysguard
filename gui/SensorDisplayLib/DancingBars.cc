@@ -33,6 +33,7 @@
 #include "StyleEngine.h"
 
 #include "BarGraph.h"
+#include "DataPointSensor.h"
 #include "DancingBarsSettings.h"
 
 #include "DancingBars.h"
@@ -87,7 +88,7 @@ void DancingBars::configureSettings()
 
   SensorModelEntry::List list;
   for ( uint i = mBars - 1; i < mBars; i-- ) {
-	BasicSensor* currentSensor = sensorDataProvider->sensor( i );
+	DataPointSensor* currentSensor = static_cast<DataPointSensor *>(sensorDataProvider->sensor( i ));
     SensorModelEntry entry;
     entry.setId( i );
     entry.setHostName( currentSensor->hostName() );
@@ -168,7 +169,9 @@ bool DancingBars::addSensor( const QString &hostName, const QString &name,
   if ( !mPlotter->addBar( title ) )
     return false;
 
-  SensorDisplay::addSensor(hostName,name,type,title);
+  DataPointSensor* sensorToAdd = new DataPointSensor(name,hostName,type,"",Qt::gray);
+  sensorToAdd->addTitle(title);
+  sensorDataProvider->addSensor(sensorToAdd);
 
   /* To differentiate between answers from value requests and info
    * requests we add 100 to the beam index for info requests. */
@@ -253,7 +256,7 @@ void DancingBars::answerReceived( int id, const QList<QByteArray> &answerlist )
         mPlotter->changeRange( info.min(), info.max() );
       }
 
-    sensorDataProvider->sensor( id - 100 )->setUnit( info.unit() );
+    (static_cast<DataPointSensor *>(sensorDataProvider->sensor( id - 100 )))->setUnit( info.unit() );
   }
 }
 

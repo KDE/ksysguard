@@ -21,38 +21,30 @@
 
 #include "BasicSensor.h"
 
-BasicSensor::BasicSensor(const QString argName, const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor) {
+BasicSensor::BasicSensor(const QString argName, const QString argHostName, const QString argType, const QString argRegexpName) {
 	mNameList.append(argName);
-	init(argHostName,argType,argRegexpName,argSensorColor);
+	init(argHostName,argType,argRegexpName);
 }
 
-BasicSensor::BasicSensor(const QList<QString> argName, const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor)  {
+BasicSensor::BasicSensor(const QList<QString> argName, const QString argHostName, const QString argType, const QString argRegexpName)  {
 	mNameList = argName;
-	init(argHostName,argType,argRegexpName,argSensorColor);
+	init(argHostName,argType,argRegexpName);
 }
 
 BasicSensor::~BasicSensor() {
 }
 
-void BasicSensor::init(const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor)
+void BasicSensor::init(const QString argHostName, const QString argType, const QString argRegexpName)
 {
 	mHostName = argHostName;
-	setColor(argSensorColor);
 	mType = argType;
 	mRegexpName = argRegexpName;
 	localHost = (argHostName.toLower() == "localhost" || argHostName.isEmpty());
-	mTheorethicalMaxValue = 0;
-	mLastSeenValue = 0;
-	mPrevSeenValue = 0;
 	ok = true;
 	integer = (mType == "integer");
 }
 QString BasicSensor::name() const {
 	return mNameList.at(0);
-}
-
-void BasicSensor::addData(double argValue)  {
-	sensorData.append(argValue);
 }
 
 bool BasicSensor::isOk() const {
@@ -82,44 +74,17 @@ bool BasicSensor::isLocalHost() const  {
 	return localHost;
 }
 
-QString BasicSensor::unit() const  {
-	return mUnit;
-}
-
-void BasicSensor::setUnit(QString argUnit)  {
-	mUnit = argUnit;
-}
-
 QString BasicSensor::type() const  {
 	return mType;
-}
-
-void BasicSensor::setColor(const QColor argColor)  {
-	sensorColor = argColor;
 }
 
 void BasicSensor::addTitle(QString argTitle)  {
 	mTitleList.append(argTitle);
 }
 
-void BasicSensor::removeOldestValue(int argNumberToRemove) {
-	while (argNumberToRemove-- > 0)  {
-		sensorData.removeFirst();
-	}
-}
-
 QList<QString> BasicSensor::titleList() const
 {
 	return mTitleList;
-}
-
-double BasicSensor::removeOneOldestValue()  {
-	return sensorData.takeFirst();
-}
-
-void BasicSensor::putTheoreticalMaxValue(double argTheorethicalMaxValue)
-{
-   mTheorethicalMaxValue = argTheorethicalMaxValue;
 }
 
 bool BasicSensor::isAggregateSensor() const {
@@ -128,9 +93,5 @@ bool BasicSensor::isAggregateSensor() const {
 
 QList<QString> BasicSensor::nameList() const  {
 	return mNameList;
-}
-
-double BasicSensor::lastValue(int argIndex) const {
-    return lastValue();
 }
 #include "BasicSensor.moc"

@@ -22,11 +22,11 @@
 #ifndef FANCYPLOTTERSENSOR_H_
 #define FANCYPLOTTERSENSOR_H_
 
-#include "BasicSensor.h"
+#include "DataPointSensor.h"
 #include <QColor>
 #include <limits.h>
 
-class FancyPlotterSensor: public BasicSensor {
+class FancyPlotterSensor: public DataPointSensor {
 public:
 	FancyPlotterSensor(const QString argName, const QString argSummationName, const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor);
 	FancyPlotterSensor(const QList<QString> argName, const QString argSummationName, const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor);

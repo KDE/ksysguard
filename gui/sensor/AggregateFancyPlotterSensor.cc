@@ -50,7 +50,7 @@ void AggregateFancyPlotterSensor::addData(const double argValue)  {
 
 void AggregateFancyPlotterSensor::putTheoreticalMaxValue(double argTheorethicalMaxValue)
 {
-	BasicSensor::putTheoreticalMaxValue(theorethicalMaxValue()+argTheorethicalMaxValue);
+    DataPointSensor::putTheoreticalMaxValue(theorethicalMaxValue()+argTheorethicalMaxValue);
 }
 
 double AggregateFancyPlotterSensor::lastValue(int argIndex) const  {
