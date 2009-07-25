@@ -429,6 +429,10 @@ void FancyPlotter::timerTick() //virtual
     mPlotter->updatePlot();
 
     if (isVisible()) {
+        if (QToolTip::isVisible() && mPlotter->geometry().contains(mPlotter->mapFromGlobal( QCursor::pos() ))) {
+            setTooltip();
+            QToolTip::showText(QCursor::pos(), mPlotter->toolTip(), mPlotter);
+        }
         QString lastValue;
         int listSize = sensorCount();
         for (int i = 0; i < listSize; ++i) {
