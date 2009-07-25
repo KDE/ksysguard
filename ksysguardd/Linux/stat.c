@@ -149,8 +149,10 @@ static void updateCPULoad( const char* line, CPULoadInfo* load ) {
 	unsigned long currUserTicks, currSysTicks, currNiceTicks;
 	unsigned long currIdleTicks, currWaitTicks, totalTicks;
 	
-	sscanf( line, "%*s %lu %lu %lu %lu %lu", &currUserTicks, &currNiceTicks,
-		&currSysTicks, &currIdleTicks, &currWaitTicks );
+	if(sscanf( line, "%*s %lu %lu %lu %lu %lu", &currUserTicks, &currNiceTicks,
+		&currSysTicks, &currIdleTicks, &currWaitTicks ) != 6) {
+        return;
+    }
 	
 	totalTicks = ( currUserTicks - load->userTicks ) +
 		( currSysTicks - load->sysTicks ) +
@@ -616,7 +618,7 @@ void initStat( struct SensorModul* sm ) {
 	}
 	
 	if ( CPUCount > 0 )
-		SMPLoad = (CPULoadInfo*)malloc( sizeof( CPULoadInfo ) * CPUCount );
+		SMPLoad = (CPULoadInfo*)calloc( CPUCount, sizeof( CPULoadInfo ) );
 	
 	/* Call processStat to eliminate initial peek values. */
 	processStat();
