@@ -50,11 +50,21 @@ void AggregateFancyPlotterSensor::addData(const double argValue)  {
 
 void AggregateFancyPlotterSensor::putTheoreticalMaxValue(double argTheorethicalMaxValue)
 {
-    DataPointSensor::putTheoreticalMaxValue(theorethicalMaxValue()+argTheorethicalMaxValue);
+    FancyPlotterSensor::putTheoreticalMaxValue(theorethicalMaxValue()+argTheorethicalMaxValue);
 }
 
 double AggregateFancyPlotterSensor::lastValue(int argIndex) const  {
     return mIndividualSensorData[argIndex].last();
+}
+
+void AggregateFancyPlotterSensor::removeOldestValue(int argNumberToRemove)  {
+    qDebug() << "Remove oldest value";
+    FancyPlotterSensor::removeOldestValue(argNumberToRemove);
+    while (argNumberToRemove-- > 0) {
+        for (int var = 0; var < numberOfSensor; ++var) {
+            mIndividualSensorData[var].removeFirst();
+        }
+    }
 }
 
 

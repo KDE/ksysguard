@@ -35,6 +35,7 @@ public:
 	virtual void putTheoreticalMaxValue(double argTheorethicalMaxValue);
 	virtual double lastValue(int argIndex) const;
 	double lastIndividualSensorValue(int argIndex) const;
+	virtual void removeOldestValue(int argNumberToRemove = 1);
 
 private:
 	int numDataReceived;

@@ -48,7 +48,7 @@ public:
     /* this is implementation specific, for a basic sensor it simply override the previous value, i.e. a set*/
     virtual void putTheoreticalMaxValue(double argTheorethicalMaxValue);
 
-    void removeOldestValue(int argNumberToRemove = 1);
+    virtual void removeOldestValue(int argNumberToRemove = 1);
 
     /* last seen value by a client of this sensor, used to speed up drawing in some instance*/
     double lastSeenValue() const;
