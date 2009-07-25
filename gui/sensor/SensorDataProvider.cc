@@ -32,8 +32,14 @@ SensorDataProvider::~SensorDataProvider() {
 
 
 
-void SensorDataProvider::reorderSensor(const QList<int> & newOrder)  {
-
+void SensorDataProvider::reorderSensor(const QList<int> & newOrder) {
+    int newOrderSize = newOrder.size();
+    if (newOrderSize <= mSensors.count()) {
+        for (int newIndex = 0; newIndex < newOrderSize; ++newIndex) {
+            int oldIndex = newOrder.at(newIndex);
+            mSensors.swap(newIndex,oldIndex);
+        }
+    }
 }
 
 
