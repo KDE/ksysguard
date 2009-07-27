@@ -43,4 +43,3 @@ void SensorDataProvider::reorderSensor(const QList<int> & newOrder) {
 }
 
 
-#include "SensorDataProvider.moc"

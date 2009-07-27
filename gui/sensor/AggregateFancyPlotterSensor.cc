@@ -69,4 +69,3 @@ void AggregateFancyPlotterSensor::removeOldestValue(int argNumberToRemove)  {
 
 
 
-#include "AggregateFancyPlotterSensor.moc"

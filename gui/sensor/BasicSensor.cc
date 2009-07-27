@@ -94,4 +94,3 @@ bool BasicSensor::isAggregateSensor() const {
 QList<QString> BasicSensor::nameList() const  {
 	return mNameList;
 }
-#include "BasicSensor.moc"
