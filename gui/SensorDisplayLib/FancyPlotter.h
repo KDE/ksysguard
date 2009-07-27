@@ -65,9 +65,7 @@ public Q_SLOTS:
 protected:
     /** When we receive a timer tick, draw the beams and request new information to update the beams*/
     virtual void timerTick();
-    /*! \reimp */
     virtual bool eventFilter(QObject*, QEvent*);
-    /*! \end_reimp */
     virtual void reorderBeams(const QList<int> & orderOfBeams);
     void setTooltip();
 
@@ -75,11 +73,15 @@ private Q_SLOTS:
     void plotterAxisScaleChanged();
     void settingsFinished();
     void applySettings();
+
 private:
-
-    static QString translated_LastValueString;
-
-    int calculateLastValueAsString(FancyPlotterSensor *& sensor, QString & lastValue, int sensorIndex = 0);
+    /** Return the last value of @p sensor as string (e.g.  "31 MiB").
+     *  If @p precisionP is not NULL, it is set the number of digits after the decimal place used.
+     *  If the sensor is actually a sum of various other sensors, sensorIndex indicates which value to show.  0 indicates to return the sum.
+     *
+     *  @see FancyPlotterSensor::lastValue()
+     */
+    QString calculateLastValueAsString(const FancyPlotterSensor * sensor, int sensorIndex = 0, int *precisionP = NULL) const;
     bool removeSensor(uint pos);
     void updateSensorColor(const int argIndex, const QColor argColor);
 
@@ -87,9 +89,9 @@ private:
     /** Number of beams we've received an answer from since asking last */
     uint mNumAccountedFor;
 
-    /** When we talk to the sensor, it tells us a range.  Record the max here.  equals 0 until we have an answer from it */
+    /** When we talk to the sensor, it tells us a range.  Record the max here.  Equals 0 until we have an answer from it */
     double mSensorReportedMax;
-    /** When we talk to the sensor, it tells us a range.  Record the min here.  equals 0 until we have an answer from it */
+    /** When we talk to the sensor, it tells us a range.  Record the min here.  Equals 0 until we have an answer from it */
     double mSensorReportedMin;
 
     /** The widget that actually draws the beams */
@@ -104,30 +106,5 @@ private:
     QBoxLayout *mLabelLayout;
     QChar mIndicatorSymbol;
 };
-
-inline int FancyPlotter::calculateLastValueAsString(FancyPlotterSensor *& sensor, QString & lastValue, int sensorIndex) {
-    int precision = 0;
-    if (sensor->isOk()) {
-        if (sensor->dataSize() > 0) {
-            if (sensor->unit() == mUnit) {
-                precision = (sensor->isInteger() && mPlotter->scaleDownBy() == 1) ? 0 : -1;
-                lastValue = mPlotter->valueAsString(sensor->lastValue(sensorIndex), precision);
-            } else {
-                precision = (sensor->isInteger()) ? 0 : -1;
-                lastValue = KGlobal::locale()->formatNumber(sensor->lastValue(sensorIndex), precision);
-                if (sensor->unit() == "%")
-                    lastValue = i18nc("units", "%1%", lastValue);
-                else if (sensor->unit() != "")
-                    lastValue = i18nc("units", ("%1 " + sensor->unit()).toUtf8(), lastValue);
-            }
-        } else {
-            lastValue = i18n("N/A");
-        }
-
-    } else {
-        lastValue = i18n("Error");
-    }
-    return precision;
-}
 
 #endif

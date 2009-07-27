@@ -36,7 +36,7 @@ public:
     QString unit() const;
 
     double lastValue() const;
-    /* method for sensor that represent aggregate data, this will return the last value of an individual sensor.
+    /* Method for sensors that represent aggregate data. This will return the last value of an individual sensor.
      * By default it return the same as lastValue
      */
     virtual double lastValue(int argIndex) const;

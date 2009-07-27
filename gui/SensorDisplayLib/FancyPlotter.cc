@@ -310,6 +310,7 @@ void FancyPlotter::applyStyle()
 bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
         const QString &type, const QString &title )
 {
+    Q_UNUSED(title);
     //we can ignore the title here since we always override the title when we get the result from the info request
     return addSensor( hostName, name, type, KSGRD::Style->sensorColor( mBeams ),"","");
 }
@@ -399,7 +400,7 @@ void FancyPlotter::setTooltip()
         QList<QString> currentTitleList = currentSensor->titleList();
         int nameListSize = currentNameList.size();
         for (int j = 0;j < nameListSize;++j)  {
-            calculateLastValueAsString(currentSensor, lastValue,j);
+            lastValue = calculateLastValueAsString(currentSensor, j);
             QString currentName = currentNameList.at(j);
             QString currentTitle = "";
             if (j < currentTitleList.size() )
@@ -427,6 +428,8 @@ void FancyPlotter::setTooltip()
 
 void FancyPlotter::timerTick() //virtual
 {
+    static const QString lastValueString = i18nc("%1 and %2 are sensor's last and maximum value", "%1 of %2", "%1", "%2");
+
     mPlotter->updatePlot();
 
     if (isVisible()) {
@@ -438,16 +441,45 @@ void FancyPlotter::timerTick() //virtual
         int listSize = sensorCount();
         for (int i = 0; i < listSize; ++i) {
             FancyPlotterSensor *currentSensor = static_cast<FancyPlotterSensor *> (sensor(i));
-            int precision = calculateLastValueAsString(currentSensor,lastValue);
-            double theoMax = currentSensor->reportedMaxValue();
-            if ( theoMax != 0 && currentSensor->unit() != "%")
-                lastValue = translated_LastValueString.arg(lastValue).arg(mPlotter->valueAsString(theoMax, precision));
+            int precision;
+            lastValue = calculateLastValueAsString(currentSensor, 0, &precision);
+            double max = currentSensor->reportedMaxValue();
+            if ( max != 0 && currentSensor->unit() != "%")
+                lastValue = lastValueString.arg(lastValue, mPlotter->valueAsString(max, precision));
             static_cast<FancyPlotterLabel *> ((static_cast<QWidgetItem *> (mLabelLayout->itemAt(i)))->widget())->value->setText(lastValue);
         }
     }
 
 
     SensorDisplay::timerTick();
+}
+
+QString FancyPlotter::calculateLastValueAsString(const FancyPlotterSensor * sensor, int sensorIndex, int *precisionP) const {
+    int precision = 0;
+    QString lastValue;
+    if (sensor->isOk()) {
+        if (sensor->dataSize() > 0) {
+            if (sensor->unit() == mUnit) {
+                precision = (sensor->isInteger() && mPlotter->scaleDownBy() == 1) ? 0 : -1;
+                lastValue = mPlotter->valueAsString(sensor->lastValue(sensorIndex), precision);
+            } else {
+                precision = (sensor->isInteger()) ? 0 : -1;
+                lastValue = KGlobal::locale()->formatNumber(sensor->lastValue(sensorIndex), precision);
+                if (sensor->unit() == "%")
+                    lastValue = i18nc("units", "%1%", lastValue);
+                else if (sensor->unit() != "")
+                    lastValue = i18nc("units", ("%1 " + sensor->unit()).toUtf8(), lastValue);
+            }
+        } else {
+            lastValue = i18n("N/A");
+        }
+
+    } else {
+        lastValue = i18n("Error");
+    }
+    if(precisionP)
+        *precisionP = precision;
+    return lastValue;
 }
 
 void FancyPlotter::plotterAxisScaleChanged()
@@ -729,7 +761,5 @@ bool FancyPlotter::hasSettingsDialog() const
 {
     return true;
 }
-
-QString FancyPlotter::translated_LastValueString = i18nc("%1 and %2 are sensor's last and maximum value", "%1 of %2", "%1", "%2");
 
 #include "FancyPlotter.moc"
