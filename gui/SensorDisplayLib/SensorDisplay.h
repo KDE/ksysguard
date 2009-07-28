@@ -26,6 +26,7 @@
 #include <QtCore/QPointer>
 #include <QtGui/QLabel>
 #include <QtGui/QWidget>
+#include <QtGui/QMenu>
 
 
 #include "../ksgrd/SensorClient.h"
@@ -218,6 +219,8 @@ class SensorDisplay : public QWidget, public SensorClient
 
     void showContextMenu(const QPoint &);
 
+
+
   Q_SIGNALS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
     void titleChanged(const QString&);
@@ -241,6 +244,13 @@ class SensorDisplay : public QWidget, public SensorClient
     void setSensorOk( bool ok );
 
     bool timerOn() const;
+
+    /**
+     * This will allow subclass to customize the context menu.  Add a separator first if new menu are added.
+     * The properties and remove display menu are installed by default, action id start at 100 for custom menus.
+    */
+   virtual void customizeContextMenu(QMenu &);
+   virtual void handleCustomizeMenuAction(int id);
 
     SharedSettings *mSharedSettings;
     SensorDataProvider* sensorDataProvider;

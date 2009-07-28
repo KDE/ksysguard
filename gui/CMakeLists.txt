@@ -39,6 +39,7 @@ set(libsensor_SRCS
    ${CMAKE_CURRENT_SOURCE_DIR}/sensor/FancyPlotterSensor.cc 
    ${CMAKE_CURRENT_SOURCE_DIR}/sensor/SensorDataProvider.cc 
    ${CMAKE_CURRENT_SOURCE_DIR}/sensor/DataPointSensor.cc 
+   ${CMAKE_CURRENT_SOURCE_DIR}/sensor/LogSensor.cc
    ${CMAKE_CURRENT_SOURCE_DIR}/sensor/AggregateFancyPlotterSensor.cc
 )
 

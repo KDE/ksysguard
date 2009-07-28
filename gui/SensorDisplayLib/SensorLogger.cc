@@ -43,6 +43,8 @@
 #include "SensorLoggerDlg.h"
 #include "SensorLoggerSettings.h"
 #include "SensorLogger.h"
+#include "LogSensor.h"
+#include "SensorDataProvider.h"
 
 #define NONE -1
 
@@ -58,26 +60,34 @@ void LogSensorView::contextMenuEvent( QContextMenuEvent *event )
   emit contextMenuRequest( index, viewport()->mapToGlobal( event->pos() ) );
 }
 
+QModelIndexList LogSensorView::selectedIndices()  {
+    return QTreeView::selectedIndexes();
+}
+
 class LogSensorModel : public QAbstractTableModel
 {
+
   public:
-    LogSensorModel( QObject *parent = 0 )
+    LogSensorModel( SensorDataProvider* sensorDataProvider, SensorLogger *parent = 0 )
       : QAbstractTableModel( parent )
     {
+        mSensorDataProvider = sensorDataProvider;
+        connect( parent, SIGNAL( changed() ), this, SIGNAL( layoutChanged() ) );
     }
 
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const
     {
       Q_UNUSED( parent );
 
-      return 5;
+      return 4;
     }
+
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const
     {
       Q_UNUSED( parent );
 
-      return mSensors.count();
+      return mSensorDataProvider->sensorCount();
     }
 
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const
@@ -85,37 +95,34 @@ class LogSensorModel : public QAbstractTableModel
       if ( !index.isValid() )
         return QVariant();
 
-      if ( index.row() >= mSensors.count() || index.row() < 0 )
+      if ( index.row() >= mSensorDataProvider->sensorCount() || index.row() < 0 )
         return QVariant();
 
-      LogSensor *sensor = mSensors[ index.row() ];
+      LogSensor *sensor = static_cast<LogSensor *>(mSensorDataProvider->sensor( index.row() ));
 
       if ( role == Qt::DisplayRole ) {
-        switch ( index.column() ) {
-          case 1:
-            return sensor->timerInterval();
-            break;
-          case 2:
-            return sensor->sensorName();
-            break;
-          case 3:
-            return sensor->hostName();
-            break;
-          case 4:
-            return sensor->fileName();
-            break;
-        }
+        switch (index.column()) {
+            case 1:
+                return sensor->name();
+                break;
+            case 2:
+                return sensor->hostName();
+                break;
+            case 3:
+                return sensor->fileName();
+                break;
+            }
       } else if ( role == Qt::DecorationRole ) {
-        static QPixmap runningPixmap = KIconLoader::global()->loadIcon( "running", KIconLoader::Small, KIconLoader::SizeSmall );
-        static QPixmap waitingPixmap = KIconLoader::global()->loadIcon( "waiting", KIconLoader::Small, KIconLoader::SizeSmall );
+          static QPixmap runningPixmap = KIconLoader::global()->loadIcon( "running", KIconLoader::Small, KIconLoader::SizeSmall );
+          static QPixmap waitingPixmap = KIconLoader::global()->loadIcon( "waiting", KIconLoader::Small, KIconLoader::SizeSmall );
 
-        if ( index.column() == 0 ) {
-          if ( sensor->isLogging() )
-            return runningPixmap;
-          else
-            return waitingPixmap;
-        }
-      } else if ( role == Qt::ForegroundRole ) {
+          if ( index.column() == 0 ) {
+            if ( sensor->isOk() )
+              return runningPixmap;
+            else
+              return waitingPixmap;
+          }
+      }else if ( role == Qt::ForegroundRole ) {
         if ( sensor->limitReached() )
           return mAlarmColor;
         else
@@ -138,15 +145,12 @@ class LogSensorModel : public QAbstractTableModel
             return i18n("Logging");
             break;
           case 1:
-            return i18n("Timer Interval");
-            break;
-          case 2:
             return i18n("Sensor Name");
             break;
-          case 3:
+          case 2:
             return i18n("Host Name");
             break;
-          case 4:
+          case 3:
             return i18n("Log File");
             break;
           default:
@@ -155,41 +159,6 @@ class LogSensorModel : public QAbstractTableModel
       }
 
       return QVariant();
-    }
-
-    void addSensor( LogSensor *sensor )
-    {
-      mSensors.append( sensor );
-
-      connect( sensor, SIGNAL( changed() ), this, SIGNAL( layoutChanged() ) );
-
-      emit layoutChanged();
-    }
-
-    void removeSensor( LogSensor *sensor )
-    {
-      delete mSensors.takeAt( mSensors.indexOf( sensor ) );
-
-      emit layoutChanged();
-    }
-
-    LogSensor* sensor( const QModelIndex &index ) const
-    {
-      if ( !index.isValid() || index.row() >= mSensors.count() || index.row() < 0 )
-        return 0;
-
-      return mSensors[ index.row() ];
-    }
-
-    void clear()
-    {
-      qDeleteAll( mSensors );
-      mSensors.clear();
-    }
-
-    const QList<LogSensor*> sensors() const
-    {
-      return mSensors;
     }
 
     void setForegroundColor( const QColor &color ) { mForegroundColor = color; }
@@ -207,202 +176,13 @@ class LogSensorModel : public QAbstractTableModel
     QColor mBackgroundColor;
     QColor mAlarmColor;
 
-    QList<LogSensor*> mSensors;
+    SensorDataProvider* mSensorDataProvider;
 };
-
-LogSensor::LogSensor( QObject *parent )
-  : QObject( parent ),
-    mTimerID( NONE ),
-    mLowerLimitActive( false ),
-    mUpperLimitActive( 0 ),
-    mLowerLimit( 0 ),
-    mUpperLimit( 0 ),
-    mLimitReached( false )
-{
-}
-
-LogSensor::~LogSensor()
-{
-}
-
-void LogSensor::setHostName( const QString& name )
-{
-  mHostName = name;
-}
-
-QString LogSensor::hostName() const
-{
-  return mHostName;
-}
-
-void LogSensor::setSensorName( const QString& name )
-{
-  mSensorName = name;
-}
-
-QString LogSensor::sensorName() const
-{
-  return mSensorName;
-}
-
-void LogSensor::setFileName( const QString& name )
-{
-  mFileName = name;
-}
-
-QString LogSensor::fileName() const
-{
-  return mFileName;
-}
-
-void LogSensor::setUpperLimitActive( bool value )
-{
-  mUpperLimitActive = value;
-}
-
-bool LogSensor::upperLimitActive() const
-{
-  return mUpperLimitActive;
-}
-
-void LogSensor::setLowerLimitActive( bool value )
-{
-  mLowerLimitActive = value;
-}
-
-bool LogSensor::lowerLimitActive() const
-{
-  return mLowerLimitActive;
-}
-
-void LogSensor::setUpperLimit( double value )
-{
-  mUpperLimit = value;
-}
-
-double LogSensor::upperLimit() const
-{
-  return mUpperLimit;
-}
-
-void LogSensor::setLowerLimit( double value )
-{
-  mLowerLimit = value;
-}
-
-double LogSensor::lowerLimit() const
-{
-  return mLowerLimit;
-}
-
-void LogSensor::setTimerInterval( int interval )
-{
-  mTimerInterval = interval;
-
-  if ( mTimerID != NONE ) {
-    timerOff();
-    timerOn();
-  }
-}
-
-int LogSensor::timerInterval() const
-{
-  return mTimerInterval;
-}
-
-bool LogSensor::isLogging() const
-{
-  return mTimerID != NONE;
-}
-
-bool LogSensor::limitReached() const
-{
-  return mLimitReached;
-}
-
-void LogSensor::timerOff()
-{
-  if ( mTimerID > 0 )
-    killTimer( mTimerID );
-  mTimerID = NONE;
-}
-
-void LogSensor::timerOn()
-{
-  mTimerID = startTimer( mTimerInterval * 1000 );
-}
-
-void LogSensor::startLogging()
-{
-  timerOn();
-}
-
-void LogSensor::stopLogging()
-{
-  timerOff();
-}
-
-void LogSensor::timerTick( )
-{
-  KSGRD::SensorMgr->sendRequest( mHostName, mSensorName, (KSGRD::SensorClient*) this, 42 );
-}
-
-void LogSensor::answerReceived( int id, const QList<QByteArray>& answer ) //virtual
-{
-  QFile mLogFile( mFileName );
-
-  if ( !mLogFile.open( QIODevice::ReadWrite | QIODevice::Append ) ) {
-    stopLogging();
-    return;
-  }
-
-  switch ( id ) {
-    case 42: {
-      QTextStream stream( &mLogFile );
-      double value = 0;
-      if ( !answer.isEmpty() )
-        value = answer[ 0 ].toDouble();
-
-      if ( mLowerLimitActive && value < mLowerLimit ) {
-        timerOff();
-        mLimitReached = true;
-
-        // send notification
-        KNotification::event( "sensor_alarm", QString( "sensor '%1' at '%2' reached lower limit" )
-                            .arg( mSensorName ).arg( mHostName), QPixmap(), 0 );
-
-        timerOn();
-      } else if ( mUpperLimitActive && value > mUpperLimit ) {
-        timerOff();
-        mLimitReached = true;
-
-        // send notification
-        KNotification::event( "sensor_alarm", QString( "sensor '%1' at '%2' reached upper limit" )
-                            .arg( mSensorName).arg( mHostName), QPixmap(), 0 );
-
-        timerOn();
-      } else {
-        mLimitReached = false;
-      }
-
-      const QDate date = QDateTime::currentDateTime().date();
-      const QTime time = QDateTime::currentDateTime().time();
-
-      stream << QString( "%1 %2 %3 %4 %5: %6\n" ).arg( date.shortMonthName( date.month() ) )
-                                                 .arg( date.day() ).arg( time.toString() )
-                                                 .arg( mHostName).arg( mSensorName ).arg( value );
-    }
-  }
-
-  emit changed();
-
-  mLogFile.close();
-}
 
 SensorLogger::SensorLogger( QWidget *parent, const QString& title, SharedSettings *workSheetSettings )
   : KSGRD::SensorDisplay( parent, title, workSheetSettings )
 {
-  mModel = new LogSensorModel( this );
+  mModel = new LogSensorModel( sensorDataProvider, this );
   mModel->setForegroundColor( KSGRD::Style->firstForegroundColor() );
   mModel->setBackgroundColor( KSGRD::Style->backgroundColor() );
   mModel->setAlarmColor( KSGRD::Style->alarmColor() );
@@ -412,6 +192,7 @@ SensorLogger::SensorLogger( QWidget *parent, const QString& title, SharedSetting
   layout->addWidget(mView);
   setLayout(layout);
 
+
   mView->setContextMenuPolicy( Qt::CustomContextMenu );
   connect(mView, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(showContextMenu(const QPoint &)));
 
@@ -420,9 +201,6 @@ SensorLogger::SensorLogger( QWidget *parent, const QString& title, SharedSetting
   mView->setItemsExpandable( false );
   mView->setModel( mModel );
   setPlotterWidget( mView );
-
-  connect( mView, SIGNAL( contextMenuRequest( const QModelIndex&, const QPoint& ) ),
-           this, SLOT( contextMenuRequest( const QModelIndex&, const QPoint& ) ) );
 
   QPalette palette = mView->palette();
   palette.setColor( QPalette::Base, KSGRD::Style->backgroundColor() );
@@ -436,31 +214,72 @@ SensorLogger::~SensorLogger(void)
 {
 }
 
-bool SensorLogger::addSensor( const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& )
+bool SensorLogger::addSensor( const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& sensorDescr )
 {
-  if ( sensorType != "integer" && sensorType != "float" )
-    return false;
+  Q_UNUSED(sensorType);
 
   SensorLoggerDlg dlg( this );
 
   if ( dlg.exec() ) {
     if ( !dlg.fileName().isEmpty() ) {
-      LogSensor *sensor = new LogSensor( mModel );
-
-      sensor->setHostName( hostName );
-      sensor->setSensorName( sensorName );
+      LogSensor *sensor = new LogSensor( sensorName,hostName);
+      sensor->addTitle(sensorDescr);
       sensor->setFileName( dlg.fileName() );
-      sensor->setTimerInterval( dlg.timerInterval() );
       sensor->setLowerLimitActive( dlg.lowerLimitActive() );
       sensor->setUpperLimitActive( dlg.upperLimitActive() );
       sensor->setLowerLimit( dlg.lowerLimit() );
       sensor->setUpperLimit( dlg.upperLimit() );
 
-      mModel->addSensor( sensor );
+      sensorDataProvider->addSensor(sensor);
+
+      emit changed();
     }
   }
 
   return true;
+}
+
+void SensorLogger::answerReceived(int id, const QList<QByteArray>& answer) {
+
+    LogSensor *currentSensor = static_cast<LogSensor *> (sensor(id));
+    QFile mLogFile(currentSensor->fileName());
+    if (mLogFile.open(QIODevice::WriteOnly | QIODevice::Append)) {
+        QTextStream stream(&mLogFile);
+        double value = 0;
+        if (!answer.isEmpty())
+            value = answer[0].toDouble();
+        bool isLimitReached = currentSensor->limitReached();
+        if (currentSensor->lowerLimitActive() && value < currentSensor->lowerLimit()) {
+            currentSensor->setLimitReached(true);
+            // send notification
+            KNotification::event("sensor_alarm", QString("sensor '%1' at '%2' reached lower limit") .arg(currentSensor->name()).arg(currentSensor->hostName()), QPixmap(), 0);
+
+
+        } else if (currentSensor->upperLimitActive() && value > currentSensor->upperLimit()) {
+            currentSensor->setLimitReached(true);
+
+            // send notification
+            KNotification::event("sensor_alarm", QString("sensor '%1' at '%2' reached upper limit") .arg(currentSensor->name()).arg(currentSensor->hostName()), QPixmap(), 0);
+
+
+        } else
+            currentSensor->setLimitReached(false);
+
+        if (isLimitReached != currentSensor->limitReached())
+            emit changed();
+
+        const QDate date = QDateTime::currentDateTime().date();
+        const QTime time = QDateTime::currentDateTime().time();
+
+        stream << QString("%1 %2 %3 %4 %5: %6\n").arg(date.shortMonthName(date.month())) .arg(date.day()).arg(time.toString()) .arg(currentSensor->hostName()).arg(currentSensor->name()).arg(value);
+        mLogFile.close();
+        currentSensor->setOk(true);
+
+
+    } else
+        currentSensor->setOk(false);
+
+
 }
 
 bool SensorLogger::editSensor( LogSensor* sensor )
@@ -468,7 +287,6 @@ bool SensorLogger::editSensor( LogSensor* sensor )
   SensorLoggerDlg dlg( this );
 
   dlg.setFileName( sensor->fileName() );
-  dlg.setTimerInterval( sensor->timerInterval() );
   dlg.setLowerLimitActive( sensor->lowerLimitActive() );
   dlg.setLowerLimit( sensor->lowerLimit() );
   dlg.setUpperLimitActive( sensor->upperLimitActive() );
@@ -477,7 +295,6 @@ bool SensorLogger::editSensor( LogSensor* sensor )
   if ( dlg.exec() ) {
     if ( !dlg.fileName().isEmpty() ) {
       sensor->setFileName( dlg.fileName() );
-      sensor->setTimerInterval( dlg.timerInterval() );
       sensor->setLowerLimitActive( dlg.lowerLimitActive() );
       sensor->setUpperLimitActive( dlg.upperLimitActive() );
       sensor->setLowerLimit( dlg.lowerLimit() );
@@ -527,23 +344,18 @@ bool SensorLogger::restoreSettings( QDomElement& element )
   mModel->setBackgroundColor( restoreColor( element, "backgroundColor", Qt::black ) );
   mModel->setAlarmColor( restoreColor( element, "alarmColor", Qt::red ) );
 
-  mModel->clear();
-
   QDomNodeList dnList = element.elementsByTagName( "logsensors" );
   for ( int i = 0; i < dnList.count(); i++ ) {
     QDomElement element = dnList.item( i ).toElement();
-    LogSensor* sensor = new LogSensor( mModel );
+    LogSensor* sensor = new LogSensor(element.attribute("sensorName"), element.attribute("hostName")  );
 
-    sensor->setHostName( element.attribute("hostName") );
-    sensor->setSensorName( element.attribute("sensorName") );
     sensor->setFileName( element.attribute("fileName") );
-    sensor->setTimerInterval( element.attribute("timerInterval").toInt() );
     sensor->setLowerLimitActive( element.attribute("lowerLimitActive").toInt() );
     sensor->setLowerLimit( element.attribute("lowerLimit").toDouble() );
     sensor->setUpperLimitActive( element.attribute("upperLimitActive").toInt() );
     sensor->setUpperLimit( element.attribute("upperLimit").toDouble() );
 
-    mModel->addSensor( sensor );
+    sensorDataProvider->addSensor(sensor);
   }
 
   SensorDisplay::restoreSettings( element );
@@ -561,14 +373,13 @@ bool SensorLogger::saveSettings( QDomDocument& doc, QDomElement& element )
   saveColor( element, "backgroundColor", mModel->backgroundColor() );
   saveColor( element, "alarmColor", mModel->alarmColor() );
 
-  const QList<LogSensor*> sensors = mModel->sensors();
-  for ( int i = 0; i < sensors.count(); ++i ) {
-    LogSensor *sensor = sensors[ i ];
+  int sensorCount = sensorDataProvider->sensorCount();
+  for ( int i = 0; i < sensorCount; ++i ) {
+    LogSensor *sensor = static_cast<LogSensor *>(sensorDataProvider->sensor(i));
     QDomElement log = doc.createElement( "logsensors" );
-    log.setAttribute("sensorName", sensor->sensorName());
+    log.setAttribute("sensorName", sensor->name());
     log.setAttribute("hostName", sensor->hostName());
     log.setAttribute("fileName", sensor->fileName());
-    log.setAttribute("timerInterval", sensor->timerInterval());
     log.setAttribute("lowerLimitActive", QString("%1").arg(sensor->lowerLimitActive()));
     log.setAttribute("lowerLimit", QString("%1").arg(sensor->lowerLimit()));
     log.setAttribute("upperLimitActive", QString("%1").arg(sensor->upperLimitActive()));
@@ -582,81 +393,34 @@ bool SensorLogger::saveSettings( QDomDocument& doc, QDomElement& element )
   return true;
 }
 
-void SensorLogger::answerReceived( int, const QList<QByteArray>& ) //virtual
-{
- // we do not use this, since all answers are received by the LogSensors
+void SensorLogger::customizeContextMenu(QMenu &pm) {
+
+    QAction *action = 0;
+
+    if (!mSharedSettings->locked && mView->selectedIndices().count() > 0) {
+        pm.addSeparator();
+        action = pm.addAction(i18n("&Remove Sensor"));
+        action->setData(100);
+
+        action = pm.addAction(i18n("&Edit Sensor..."));
+        action->setData(101);
+    }
 }
 
-void SensorLogger::contextMenuRequest( const QModelIndex &index, const QPoint &point )
-{
-  LogSensor *sensor = mModel->sensor( index );
+void SensorLogger::handleCustomizeMenuAction(int id) {
+    QModelIndexList selected = mView->selectedIndices();
+    switch (id) {
+    case 100:
+        foreach(QModelIndex mIndex,selected)  {
+            removeSensor(mIndex.row());
+        }
 
-  QMenu pm;
-
-  QAction *action = 0;
-  if (hasSettingsDialog()) {
-    action = pm.addAction(i18n("&Properties"));
-    action->setData( 1 );
-  }
-  if(!mSharedSettings->locked) {  
-
-    action = pm.addAction(i18n("&Remove Display"));
-    action->setData( 2 );
-
-    pm.addSeparator();
-
-    action = pm.addAction(i18n("&Remove Sensor"));
-    action->setData( 3 );
-    if ( !sensor )
-      action->setEnabled( false );
-
-    action = pm.addAction(i18n("&Edit Sensor..."));
-    action->setData( 4 );
-    if ( !sensor )
-      action->setEnabled( false );
-  }
-
-  if ( sensor ) {
-    if ( sensor->isLogging() ) {
-      action = pm.addAction(i18n("St&op Logging"));
-      action->setData( 6 );
-    } else {
-      action = pm.addAction(i18n("S&tart Logging"));
-      action->setData( 5 );
+        break;
+    case 101:
+        if (selected.count() > 0)
+            editSensor(static_cast<LogSensor *>(sensorDataProvider->sensor(selected.at(0).row())));
+        break;
     }
-  }
-
-  action = pm.exec( point );
-  if ( !action )
-    return;
-
-  switch (action->data().toInt())
-  {
-    case 1:
-      configureSettings();
-      break;
-    case 2: {
-      KSGRD::SensorDisplay::DeleteEvent *ev = new KSGRD::SensorDisplay::DeleteEvent( this );
-      kapp->postEvent(parent(), ev);
-      break;
-      }
-    case 3:
-      if ( sensor )
-        mModel->removeSensor( sensor );
-      break;
-    case 4:
-      if ( sensor )
-        editSensor( sensor );
-      break;
-    case 5:
-      if ( sensor )
-        sensor->startLogging();
-      break;
-    case 6:
-      if ( sensor )
-        sensor->stopLogging();
-      break;
-  }
 }
 
 #include "SensorLogger.moc"

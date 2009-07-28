@@ -104,6 +104,14 @@ void SensorDisplay::timerTick()
   }
 }
 
+void SensorDisplay::customizeContextMenu(QMenu & pm)  {
+
+}
+
+void SensorDisplay::handleCustomizeMenuAction(int id) {
+
+}
+
 void SensorDisplay::showContextMenu(const QPoint &pos)
 {
     QMenu pm;
@@ -121,22 +129,29 @@ void SensorDisplay::showContextMenu(const QPoint &pos)
       menuEmpty = false;
     }
 
+    customizeContextMenu(pm);
+
+
+
     if(menuEmpty) return;
     action = pm.exec( mapToGlobal(pos) );
     if ( action ) {
-      switch ( action->data().toInt() ) {
+      int id = action->data().toInt();
+      switch ( id ) {
         case 1:
           KRun::run(*KService::serviceByDesktopName("ksysguard"), KUrl::List(), window());
           break;
         case 2:
           configureSettings();
           break;
-        case 3: {
-            if ( mDeleteNotifier ) {
-              DeleteEvent *event = new DeleteEvent( this );
-              kapp->postEvent( mDeleteNotifier, event );
-            }
+        case 3:
+          if ( mDeleteNotifier ) {
+            DeleteEvent *event = new DeleteEvent( this );
+            kapp->postEvent( mDeleteNotifier, event );
           }
+          break;
+        default:
+          handleCustomizeMenuAction(id);
           break;
       }
     }

@@ -25,77 +25,10 @@
 #include <QtGui/QTreeView>
 
 #include <SensorDisplay.h>
+#include <LogSensor.h>
 
 class LogSensorModel;
 class QDomElement;
-
-class LogSensor : public QObject, public KSGRD::SensorClient
-{
-  Q_OBJECT
-
-  public:
-    explicit LogSensor( QObject *parent );
-    ~LogSensor();
-
-    virtual void answerReceived( int id, const QList<QByteArray>&answer );
-
-    void setHostName( const QString& name );
-    QString hostName() const;
-
-    void setSensorName( const QString& name );
-    QString sensorName() const;
-
-    void setFileName( const QString& name );
-    QString fileName() const;
-
-    void setUpperLimitActive( bool value );
-    bool upperLimitActive() const;
-
-    void setLowerLimitActive( bool value );
-    bool lowerLimitActive() const;
-
-    void setUpperLimit( double value );
-    double upperLimit() const;
-
-    void setLowerLimit( double value );
-    double lowerLimit() const;
-
-    void setTimerInterval( int interval );
-    int timerInterval() const;
-
-    bool isLogging() const;
-
-    bool limitReached() const;
-
-  public Q_SLOTS:
-    void timerOff();
-    void timerOn();
-
-    void startLogging();
-    void stopLogging();
-
-  Q_SIGNALS:
-    void changed();
-
-  protected:
-    virtual void timerTick();
-
-  private:
-    QString mSensorName;
-    QString mHostName;
-    QString mFileName;
-
-    int mTimerInterval;
-    int mTimerID;
-
-    bool mLowerLimitActive;
-    bool mUpperLimitActive;
-
-    double mLowerLimit;
-    double mUpperLimit;
-
-    bool mLimitReached;
-};
 
 class LogSensorView : public QTreeView
 {
@@ -104,11 +37,14 @@ class LogSensorView : public QTreeView
   public:
     LogSensorView( QWidget *parent = 0 );
 
+    virtual QModelIndexList selectedIndices();
+
   Q_SIGNALS:
     void contextMenuRequest( const QModelIndex &index, const QPoint &pos );
 
   protected:
     virtual void contextMenuEvent( QContextMenuEvent *event );
+
 };
 
 class SensorLogger : public KSGRD::SensorDisplay
@@ -138,7 +74,12 @@ class SensorLogger : public KSGRD::SensorDisplay
 
   public Q_SLOTS:
     void applyStyle();
-    void contextMenuRequest( const QModelIndex &index, const QPoint &pos );
+  Q_SIGNALS:
+    void changed();
+
+  protected:
+    virtual void customizeContextMenu(QMenu &);
+    virtual void handleCustomizeMenuAction(int id);
 
   private:
     LogSensorModel *mModel;
