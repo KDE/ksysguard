@@ -22,7 +22,7 @@
 #include "BasicSensor.h"
 
 BasicSensor::BasicSensor(const QString argName, const QString argHostName, const QString argType, const QString argRegexpName) {
-	mNameList.append(argName);
+    mNameList.append(argName);
 	init(argHostName,argType,argRegexpName);
 }
 
