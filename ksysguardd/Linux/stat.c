@@ -150,7 +150,7 @@ static void updateCPULoad( const char* line, CPULoadInfo* load ) {
 	unsigned long currIdleTicks, currWaitTicks, totalTicks;
 	
 	if(sscanf( line, "%*s %lu %lu %lu %lu %lu", &currUserTicks, &currNiceTicks,
-		&currSysTicks, &currIdleTicks, &currWaitTicks ) != 6) {
+		&currSysTicks, &currIdleTicks, &currWaitTicks ) != 5) {
         return;
     }
 	
