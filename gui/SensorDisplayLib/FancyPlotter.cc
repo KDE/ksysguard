@@ -602,7 +602,7 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
                 }
 
                 //if the summation name is not empty then we add an sensor name list
-                if (!isSummationNameEmpty) {
+                if (!isSummationNameEmpty && !matchingSensorNameList.isEmpty()) {
                     if (!sensor->colors.isEmpty())
                         color = sensor->colors.takeFirst();
                     else if (KSGRD::Style->numSensorColors() != 0)
