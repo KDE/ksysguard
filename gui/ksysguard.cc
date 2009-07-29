@@ -97,6 +97,7 @@ TopLevel::TopLevel()
            SLOT( currentTabChanged( int ) ) );
 
   sLocalProcessController = new ProcessController( this);
+  connect( sLocalProcessController, SIGNAL( updated() ), this, SLOT( updateProcessCount()));
 
   /* Create the status bar. It displays some information about the
    * number of processes and the memory consumption of the local
@@ -334,8 +335,6 @@ void TopLevel::timerEvent( QTimerEvent* )
   if ( statusBar()->isVisibleTo( this ) ) {
     /* Request some info about the memory status. The requested
      * information will be received by answerReceived(). */
-    KSGRD::SensorMgr->sendRequest( "localhost", "pscount",
-                                   (KSGRD::SensorClient*)this, 0 );
     KSGRD::SensorMgr->sendRequest( "localhost", "cpu/idle",
                                    (KSGRD::SensorClient*)this, 1 );
     KSGRD::SensorMgr->sendRequest( "localhost", "mem/physical/free",
@@ -351,6 +350,10 @@ void TopLevel::timerEvent( QTimerEvent* )
   }
 }
 
+void TopLevel::updateProcessCount()  {
+    QString s = i18np( " 1 process ", " %1 processes ", sLocalProcessController->processList()->numberViewingProcess() );
+    sbProcessCount->setText( s );
+}
 void TopLevel::changeEvent( QEvent * event ) 
 {
   if (event->type() == QEvent::LanguageChange) {
