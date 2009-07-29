@@ -28,8 +28,8 @@
 
 #include "SignalPlotter.h"
 #include "FancyPlotterSensor.h"
+#include "FancyPlotterSettings.h"
 
-class FancyPlotterSettings;
 class QLabel;
 class SensorToAdd;
 class FancyPlotterLabel;
@@ -105,6 +105,7 @@ private:
     QList<SensorToAdd *> mSensorsToAdd;
     QBoxLayout *mLabelLayout;
     QChar mIndicatorSymbol;
+    FancyPlotterSettings::RangeType mRangeType;
 };
 
 #endif

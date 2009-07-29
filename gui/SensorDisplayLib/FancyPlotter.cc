@@ -170,7 +170,7 @@ void FancyPlotter::configureSettings()
     mSettingsDialog = new FancyPlotterSettings( this, mSharedSettings->locked );
 
     mSettingsDialog->setTitle( title() );
-    mSettingsDialog->setUseAutoRange( mPlotter->useAutoRange() );
+    mSettingsDialog->setRangeType( mRangeType );
     mSettingsDialog->setMinValue( mPlotter->minValue() );
     mSettingsDialog->setMaxValue( mPlotter->maxValue() );
 
@@ -222,12 +222,13 @@ void FancyPlotter::settingsFinished()
 void FancyPlotter::applySettings() {
     setTitle( mSettingsDialog->title() );
 
-    if ( mSettingsDialog->useAutoRange() )
+    mRangeType = mSettingsDialog->rangeType();
+    if ( mRangeType == FancyPlotterSettings::AUTO)
         mPlotter->setUseAutoRange( true );
     else {
         mPlotter->setUseAutoRange( false );
-        mPlotter->changeRange( mSettingsDialog->minValue(),
-                mSettingsDialog->maxValue() );
+        if (mSettingsDialog->rangeType() == FancyPlotterSettings::MANUAL_USER)
+            mPlotter->changeRange( mSettingsDialog->minValue(), mSettingsDialog->maxValue() );
     }
 
     if ( mPlotter->horizontalScale() != mSettingsDialog->horizontalScale() ) {
@@ -561,13 +562,10 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
 
             mSensorReportedMax = qMax(mSensorReportedMax, info.max());
             mSensorReportedMin = qMin(mSensorReportedMin, info.min());
-            if(mSensorReportedMax == 0 && mSensorReportedMin)
-                mPlotter->setUseAutoRange(true); // If any of the sensors are using autorange, then the whole graph must use auto range
-
-            if ( !mPlotter->useAutoRange())  {
+            if (mRangeType == FancyPlotterSettings::MANUAL_KSYSGUARDD) {
                 mPlotter->changeRange( mSensorReportedMin, mSensorReportedMax );
-                plotterAxisScaleChanged(); //Change the scale now since we know what it is. If instead we are using auto range, then plotterAxisScaleChanged will be called when the first bits of data come in
             }
+            plotterAxisScaleChanged();
             FancyPlotterSensor *currentSensor = static_cast<FancyPlotterSensor *>(sensor(adjustedId));
             currentSensor->setUnit(mUnit);
             currentSensor->addTitle( info.name() );
@@ -624,12 +622,12 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
      * files as well we have to emulate the old behaviour as well. */
     double min = element.attribute( "min", "0.0" ).toDouble();
     double max = element.attribute( "max", "0.0" ).toDouble();
-    if ( element.attribute( "autoRange", min == 0.0 && max == 0.0 ? "1" : "0" ).toInt() )
+    mRangeType = FancyPlotterSettings::RangeType(element.attribute( "autoRange", min == 0.0 && max == 0.0 ? QString::number(FancyPlotterSettings::AUTO) : QString::number(FancyPlotterSettings::MANUAL_USER) ).toInt() );
+    if (mRangeType == FancyPlotterSettings::AUTO)
         mPlotter->setUseAutoRange( true );
     else {
         mPlotter->setUseAutoRange( false );
-        mPlotter->changeRange( element.attribute( "min" ).toDouble(),
-                element.attribute( "max" ).toDouble() );
+        mPlotter->changeRange( min, max);
     }
     // Do not restore the color settings from a previous version
     int version = element.attribute("version", "0").toInt();
@@ -707,7 +705,7 @@ bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element)
 {
     element.setAttribute( "min", mPlotter->minValue() );
     element.setAttribute( "max", mPlotter->maxValue() );
-    element.setAttribute( "autoRange", mPlotter->useAutoRange() );
+    element.setAttribute( "autoRange", mRangeType );
     element.setAttribute( "vLines", mPlotter->showVerticalLines() );
     saveColor( element, "vColor", mPlotter->verticalLinesColor() );
     element.setAttribute( "vDistance", mPlotter->verticalLinesDistance() );
