@@ -85,6 +85,7 @@ public:
 
 Q_SIGNALS:
 	void updated();
+	void processListChanged();
 private Q_SLOTS:
 	void runCommand(const QString &command, int id);
 

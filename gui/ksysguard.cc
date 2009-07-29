@@ -97,7 +97,7 @@ TopLevel::TopLevel()
            SLOT( currentTabChanged( int ) ) );
 
   sLocalProcessController = new ProcessController( this);
-  connect( sLocalProcessController, SIGNAL( updated() ), this, SLOT( updateProcessCount()));
+  connect( sLocalProcessController, SIGNAL( processListChanged() ), this, SLOT( updateProcessCount()));
 
   /* Create the status bar. It displays some information about the
    * number of processes and the memory consumption of the local
@@ -434,12 +434,6 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
   static qlonglong sFree = 0;
 
   switch ( id ) {
-    case 0:
-      s = i18np( " 1 process ", " %1 processes ", answer.toInt() );
-      sbProcessCount->setText( s );
-
-      break;
-
     case 1:
       s = i18n( " CPU: %1% ", (int) (100 - answer.toFloat()) );
       sbCpuStat->setText( s );
