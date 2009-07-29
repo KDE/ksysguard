@@ -351,7 +351,7 @@ void TopLevel::timerEvent( QTimerEvent* )
 }
 
 void TopLevel::updateProcessCount()  {
-    QString s = i18np( " 1 process ", " %1 processes ", sLocalProcessController->processList()->numberViewingProcess() );
+    QString s = i18np( " 1 process ", " %1 processes ", sLocalProcessController->processList()->visibleProcessesCount() );
     sbProcessCount->setText( s );
 }
 void TopLevel::changeEvent( QEvent * event ) 
