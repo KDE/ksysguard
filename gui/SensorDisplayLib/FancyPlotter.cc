@@ -223,11 +223,11 @@ void FancyPlotter::applySettings() {
     setTitle( mSettingsDialog->title() );
 
     mRangeType = mSettingsDialog->rangeType();
-    if ( mRangeType == FancyPlotterSettings::AUTO)
+    if ( mRangeType == FancyPlotterSettings::Auto)
         mPlotter->setUseAutoRange( true );
     else {
         mPlotter->setUseAutoRange( false );
-        if (mSettingsDialog->rangeType() == FancyPlotterSettings::MANUAL_USER)
+        if (mSettingsDialog->rangeType() == FancyPlotterSettings::ManualUser)
             mPlotter->changeRange( mSettingsDialog->minValue(), mSettingsDialog->maxValue() );
     }
 
@@ -562,7 +562,7 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
 
             mSensorReportedMax = qMax(mSensorReportedMax, info.max());
             mSensorReportedMin = qMin(mSensorReportedMin, info.min());
-            if (mRangeType == FancyPlotterSettings::MANUAL_KSYSGUARDD) {
+            if (mRangeType == FancyPlotterSettings::ManualReported) {
                 mPlotter->changeRange( mSensorReportedMin, mSensorReportedMax );
             }
             plotterAxisScaleChanged();
@@ -622,8 +622,8 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
      * files as well we have to emulate the old behaviour as well. */
     double min = element.attribute( "min", "0.0" ).toDouble();
     double max = element.attribute( "max", "0.0" ).toDouble();
-    mRangeType = FancyPlotterSettings::RangeType(element.attribute( "autoRange", min == 0.0 && max == 0.0 ? QString::number(FancyPlotterSettings::AUTO) : QString::number(FancyPlotterSettings::MANUAL_USER) ).toInt() );
-    if (mRangeType == FancyPlotterSettings::AUTO)
+    mRangeType = FancyPlotterSettings::RangeType(element.attribute( "autoRange", min == 0.0 && max == 0.0 ? QString::number(FancyPlotterSettings::Auto) : QString::number(FancyPlotterSettings::ManualUser) ).toInt() );
+    if (mRangeType == FancyPlotterSettings::Auto)
         mPlotter->setUseAutoRange( true );
     else {
         mPlotter->setUseAutoRange( false );

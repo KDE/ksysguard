@@ -45,7 +45,7 @@ class FancyPlotterSettings : public KPageDialog
     FancyPlotterSettings( QWidget* parent, bool locked );
     ~FancyPlotterSettings();
 
-    enum RangeType {MANUAL_KSYSGUARDD, AUTO , MANUAL_USER};
+    enum RangeType {ManualReported, Auto , ManualUser};
 
     void setTitle( const QString &title );
     QString title() const;

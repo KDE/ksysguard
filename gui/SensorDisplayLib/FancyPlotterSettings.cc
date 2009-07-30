@@ -339,17 +339,17 @@ void FancyPlotterSettings::rangeComboChanged(int index)  {
 void FancyPlotterSettings::setRangeType( FancyPlotterSettings::RangeType type )
 {
   switch (type)  {
-  case AUTO:
+  case Auto:
       mUseAutoRange->setCurrentIndex(0);
       mMinValue->setEnabled(false);
       mMaxValue->setEnabled(false);
       break;
-  case MANUAL_KSYSGUARDD:
+  case ManualReported:
       mUseAutoRange->setCurrentIndex(1);
       mMinValue->setEnabled(false);
       mMaxValue->setEnabled(false);
       break;
-  case MANUAL_USER:
+  case ManualUser:
       mUseAutoRange->setCurrentIndex(2);
       mMinValue->setEnabled(true);
       mMaxValue->setEnabled(true);
@@ -360,13 +360,13 @@ void FancyPlotterSettings::setRangeType( FancyPlotterSettings::RangeType type )
 
 FancyPlotterSettings::RangeType FancyPlotterSettings::rangeType() const
 {
-    RangeType toreturn = AUTO;
+    RangeType toreturn = Auto;
     switch (mUseAutoRange->currentIndex()) {
     case 1:
-        toreturn = MANUAL_KSYSGUARDD;
+        toreturn = ManualReported;
         break;
     case 2:
-        toreturn = MANUAL_USER;
+        toreturn = ManualUser;
         break;
     }
     return toreturn;
