@@ -61,6 +61,7 @@
 #include "HostConnector.h"
 #include "ProcessController.h"
 #include "ProcessTable.h"
+#include "processui/ksysguardprocesslist.h"
 
 #include "ksysguard.h"
 
