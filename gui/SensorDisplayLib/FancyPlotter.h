@@ -32,7 +32,6 @@
 
 class QLabel;
 class SensorToAdd;
-class FancyPlotterLabel;
 
 class FancyPlotter: public KSGRD::SensorDisplay {
 Q_OBJECT
