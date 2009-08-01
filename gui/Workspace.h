@@ -46,6 +46,7 @@ class Workspace : public KTabWidget
     bool restoreWorkSheet( const QString &fileName, bool switchToTab = true);
     QList<WorkSheet *> getWorkSheets() const { return mSheetList; }
 
+
   public Q_SLOTS:
     void newWorkSheet();
     void importWorkSheet();
@@ -64,6 +65,7 @@ class Workspace : public KTabWidget
     void configure();
     void updateSheetTitle( QWidget* );
     void applyStyle();
+    void refreshActiveWorksheet();
 
   private Q_SLOTS:
     virtual void contextMenu (int, const QPoint &);

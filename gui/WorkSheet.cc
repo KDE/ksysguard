@@ -627,6 +627,15 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
   }
 }
 
+void WorkSheet::refreshSheet()
+{
+    for (uint r = 0; r < mRows; ++r)  {
+        for (uint c = 0; c < mColumns; ++c)  {
+            mDisplayList[r][c]->timerTick();
+        }
+    }
+}
+
 void WorkSheet::removeDisplay( KSGRD::SensorDisplay *display )
 {
   if ( !display )

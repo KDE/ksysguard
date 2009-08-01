@@ -95,6 +95,7 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     QAction *mQuitAction;
     QAction *mConfigureSheetAction;
     QAction *mHotNewWorksheetUploadAction;
+    KAction *mRefreshTabAction;
     QLabel *sbProcessCount;
     QLabel *sbCpuStat;
     QLabel *sbMemTotal;

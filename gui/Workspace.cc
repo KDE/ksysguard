@@ -124,6 +124,11 @@ QString Workspace::makeNameForNewSheet() const
   return sheetName;
 }
 
+void Workspace::refreshActiveWorksheet()
+{
+    WorkSheet* currentSheet = mSheetList.at(currentIndex());
+    currentSheet->refreshSheet();
+}
 void Workspace::newWorkSheet()
 {
   /* Find a name of the form "Sheet %d" that is not yet used by any
