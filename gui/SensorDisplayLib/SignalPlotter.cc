@@ -699,6 +699,7 @@ void KSignalPlotter::drawAllBeams(QPainter *p, const QRect &boundingBox, int hor
 
 
 
+
   const double scaleFac = (boundingBox.height()-2) / mNiceRange;
   const int bottom = boundingBox.bottom();
   const float horizontalOverThree = horizontalScale/3.0;
@@ -751,7 +752,8 @@ void KSignalPlotter::drawAllBeams(QPainter *p, const QRect &boundingBox, int hor
 			if (mFillOpacity)
 				drawingColor = sensor->lighterColor();
 			pen.setColor(drawingColor);
-			p->strokePath(path, pen);
+			p->setPen(pen);
+			p->drawPath(path);
 			if (mFillOpacity) {
 				path.lineTo(x0, bottom);
 				path.lineTo(x1, bottom);
