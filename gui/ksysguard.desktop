@@ -74,6 +74,7 @@ Name[wa]=Corwaitoe do sistinme
 Name[x-test]=xxSystem Monitorxx
 Name[zh_CN]=系统监视器
 Name[zh_TW]=系統監視器
+GenericName=System Monitor
 Exec=ksysguard %U
 Icon=utilities-system-monitor
 Type=Application
