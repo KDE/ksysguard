@@ -239,6 +239,9 @@ class KSignalPlotter : public QWidget
     /** Call this method to update the graph otherwise the graph will not draw anything*/
     void updatePlot();
 
+    /** Rescale the graph, calculating a new min/max*/
+    void rescale();
+
 
   Q_SIGNALS:
     /** When the axis has changed because we are in autorange mode, then this signal is emitted */
@@ -260,7 +263,6 @@ class KSignalPlotter : public QWidget
 
   private:
     void recalculateMaxMinValueForSample(const FancyPlotterSensor* sensor, int time );
-    void rescale();
     void updateDataBuffers();
     /** We make the SVG renderer static so that an SVG renderer is shared among all of the images.  This is because a SVG renderer takes up a lot of memory, so we want to 
      *  share them as much as we can */

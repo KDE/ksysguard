@@ -374,8 +374,8 @@ bool FancyPlotter::removeSensor( uint pos )
 
 
     SensorDisplay::removeSensor(pos);
-    //adjust the scale to take into account the removed sensor
-    plotterAxisScaleChanged();
+    //rescale to take into account the removed sensor
+    mPlotter->rescale();
 
     return true;
 }
