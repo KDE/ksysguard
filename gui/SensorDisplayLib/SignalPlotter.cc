@@ -816,16 +816,6 @@ void KSignalPlotter::drawHorizontalLines(QPainter *p, const QRect &boundingBox)
   }
 }
 
-QString KSignalPlotter::valueAsString( double value, int precision) const
-{
- value = value / mScaleDownBy; // scale the value.  e.g. from Bytes to KB
-  if(precision == -1)
-      precision = (value >= 99.5)?0:((value>=0.995)?1:2);
-  QString number = KGlobal::locale()->formatNumber( value, precision);
-
-  return mUnit.subs(number).toString();
-}
-
 bool KSignalPlotter::smoothGraph() const
 {
   return mSmoothGraph;

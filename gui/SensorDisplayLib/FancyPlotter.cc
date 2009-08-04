@@ -92,6 +92,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     mNumAccountedFor = 0;
     mSettingsDialog = 0;
     mSensorReportedMax = mSensorReportedMin = 0;
+    mAllMatchingSensorUnit = false;
 
     //The unicode character 0x25CF is a big filled in circle.  We would prefer to use this in the tooltip.
     //However it's maybe possible that the font used to draw the tooltip won't have it.  So we fall back to a
@@ -442,11 +443,10 @@ void FancyPlotter::timerTick() //virtual
         int listSize = sensorCount();
         for (int i = 0; i < listSize; ++i) {
             FancyPlotterSensor *currentSensor = static_cast<FancyPlotterSensor *> (sensor(i));
-            int precision;
-            lastValue = calculateLastValueAsString(currentSensor, 0, &precision);
+            lastValue = calculateLastValueAsString(currentSensor);
             double max = currentSensor->reportedMaxValue();
             if ( max != 0 && currentSensor->unit() != "%")
-                lastValue = lastValueString.arg(lastValue, mPlotter->valueAsString(max, precision));
+                lastValue = lastValueString.arg(lastValue, calculateLastValueAsString(currentSensor,max));
             static_cast<FancyPlotterLabel *> ((static_cast<QWidgetItem *> (mLabelLayout->itemAt(i)))->widget())->value->setText(lastValue);
         }
     }
@@ -455,31 +455,43 @@ void FancyPlotter::timerTick() //virtual
     SensorDisplay::timerTick();
 }
 
-QString FancyPlotter::calculateLastValueAsString(const FancyPlotterSensor * sensor, int sensorIndex, int *precisionP) const {
-    int precision = 0;
+QString FancyPlotter::calculateLastValueAsString(const FancyPlotterSensor * sensor, int sensorIndex) const {
     QString lastValue;
     if (sensor->isOk()) {
         if (sensor->dataSize() > 0) {
-            if (sensor->unit() == mUnit) {
-                precision = (sensor->isInteger() && mPlotter->scaleDownBy() == 1) ? 0 : -1;
-                lastValue = mPlotter->valueAsString(sensor->lastValue(sensorIndex), precision);
-            } else {
-                precision = (sensor->isInteger()) ? 0 : -1;
-                lastValue = KGlobal::locale()->formatNumber(sensor->lastValue(sensorIndex), precision);
-                if (sensor->unit() == "%")
-                    lastValue = i18nc("units", "%1%", lastValue);
-                else if (sensor->unit() != "")
-                    lastValue = i18nc("units", ("%1 " + sensor->unit()).toUtf8(), lastValue);
-            }
+            lastValue = calculateLastValueAsString(sensor,sensor->lastValue(sensorIndex));
         } else {
             lastValue = i18n("N/A");
         }
-
     } else {
         lastValue = i18n("Error");
     }
-    if(precisionP)
-        *precisionP = precision;
+    return lastValue;
+}
+
+QString FancyPlotter::calculateLastValueAsString(const FancyPlotterSensor * sensor, double value) const {
+    static const QString translatedPercentage =  i18nc("units in percentage", "%1%", "%1");
+    int precision;
+    QString sensorUnit = sensor->unit();
+    double scaleDownValue = value / mPlotter->scaleDownBy();
+    //calculate the precision depending on the value
+    if (scaleDownValue >= 99.5)
+        precision = 0;
+    else if (scaleDownValue < 0.995)
+        precision = 2;
+    else
+        precision = 1;
+
+    QString lastValue = KGlobal::locale()->formatNumber(scaleDownValue, precision);
+
+    //if all the unit match use the graph units otherwise use the individual sensor's unit
+    if (mAllMatchingSensorUnit)
+        lastValue = mPlotter->unit().subs(lastValue).toString();
+    else if (sensorUnit == "%")
+        lastValue = translatedPercentage.arg(lastValue);
+    else if (sensorUnit != "")
+        lastValue = i18nc("units", ("%1 " + sensor->unit()).toUtf8(), lastValue);
+
     return lastValue;
 }
 
@@ -489,7 +501,25 @@ void FancyPlotter::plotterAxisScaleChanged()
     disconnect(mPlotter, SIGNAL(axisScaleChanged()), this, SLOT(plotterAxisScaleChanged()));
     KLocalizedString unit;
     double value = mPlotter->maxValue();
-    if(mUnit  == "KiB") {
+
+    //check if the units in the sensor matches, if one is different then set no unit
+    QString calculatedUnit = "";
+    int numSensors = sensorCount();
+    if (numSensors > 0)  {
+        int i = 1;
+        mAllMatchingSensorUnit = true;
+        FancyPlotterSensor* currentSensor = static_cast<FancyPlotterSensor *>(sensor(0));
+        calculatedUnit = currentSensor->unit();
+        while (i < numSensors)  {
+            if (calculatedUnit != (static_cast<FancyPlotterSensor *>(sensor(i++)))->unit())  {
+                calculatedUnit = "";
+                mAllMatchingSensorUnit = false;
+                break;
+            }
+        }
+    }
+
+    if(calculatedUnit  == "KiB") {
         if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
             mPlotter->setScaleDownBy(1024*1024*1024);
             unit = ki18nc("units", "%1 TiB"); // the unit - terabytes
@@ -503,7 +533,7 @@ void FancyPlotter::plotterAxisScaleChanged()
             mPlotter->setScaleDownBy(1);
             unit = ki18nc("units", "%1 KiB"); // the unit - kilobytes
         }
-    } else if(mUnit == "KiB/s") {
+    } else if(calculatedUnit == "KiB/s") {
         if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
             mPlotter->setScaleDownBy(1024*1024*1024);
             unit = ki18nc("units", "%1 TiB/s"); // the unit - terabytes per second
@@ -517,10 +547,10 @@ void FancyPlotter::plotterAxisScaleChanged()
             mPlotter->setScaleDownBy(1);
             unit = ki18nc("units", "%1 KiB/s"); // the unit - kilobytes per second
         }
-    } else if(mUnit == "%") {
+    } else if(calculatedUnit == "%") {
         mPlotter->setScaleDownBy(1);
         unit = ki18nc("units", "%1%"); //the unit - percentage
-    } else if(mUnit.isEmpty()) {
+    } else if(calculatedUnit.isEmpty()) {
         unit = ki18nc("unitless - just a number", "%1");
     } else {
 #if 0  // the strings are here purely for translation
@@ -530,7 +560,7 @@ void FancyPlotter::plotterAxisScaleChanged()
 #endif
         mPlotter->setScaleDownBy(1);
         //translate any others
-        unit = ki18nc("units", ("%1 " + mUnit).toUtf8());
+        unit = ki18nc("units", ("%1 " + calculatedUnit).toUtf8());
     }
     mPlotter->setUnit(unit);
     //reconnect
@@ -554,25 +584,24 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
         int adjustedId = id - 100;
         if (adjustedId < sensorListSize)  {
             KSGRD::SensorFloatInfo info( answer );
-            mUnit = info.unit();
-            if(mUnit.toUpper() == "KB" || mUnit.toUpper() == "KIB")
-                mUnit = "KiB";
-            if(mUnit.toUpper() == "KB/S" || mUnit.toUpper() == "KIB/S")
-                mUnit = "KiB/s";
+            QString currentUnit = info.unit();
+            if(currentUnit.toUpper() == "KB" || currentUnit.toUpper() == "KIB")
+                currentUnit = "KiB";
+            if(currentUnit.toUpper() == "KB/S" || currentUnit.toUpper() == "KIB/S")
+                currentUnit = "KiB/s";
 
             mSensorReportedMax = qMax(mSensorReportedMax, info.max());
             mSensorReportedMin = qMin(mSensorReportedMin, info.min());
             if (mRangeType == FancyPlotterSettings::ManualReported) {
                 mPlotter->changeRange( mSensorReportedMin, mSensorReportedMax );
             }
-            plotterAxisScaleChanged();
             FancyPlotterSensor *currentSensor = static_cast<FancyPlotterSensor *>(sensor(adjustedId));
-            currentSensor->setUnit(mUnit);
+            currentSensor->setUnit(currentUnit);
             currentSensor->addTitle( info.name() );
             currentSensor->putReportedMaxValue(info.max());
+            plotterAxisScaleChanged();
 
             QString summationName = currentSensor->summationName();
-
             if(summationName.isEmpty())
                 static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(adjustedId)))->widget())->setLabel(info.name(), currentSensor->color(), mIndicatorSymbol);
         }

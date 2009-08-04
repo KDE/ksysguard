@@ -54,7 +54,10 @@ void AggregateFancyPlotterSensor::putReportedMaxValue(double argTheorethicalMaxV
 }
 
 double AggregateFancyPlotterSensor::lastValue(int argIndex) const  {
-    return mIndividualSensorData[argIndex].last();
+    if (argIndex == -1)
+        return DataPointSensor::lastValue();
+    else
+        return mIndividualSensorData[argIndex].last();
 }
 
 void AggregateFancyPlotterSensor::removeOldestValue(int argNumberToRemove)  {

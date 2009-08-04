@@ -75,12 +75,12 @@ private Q_SLOTS:
 
 private:
     /** Return the last value of @p sensor as string (e.g.  "31 MiB").
-     *  If @p precisionP is not NULL, it is set the number of digits after the decimal place used.
-     *  If the sensor is actually a sum of various other sensors, sensorIndex indicates which value to show.  0 indicates to return the sum.
+     *  If the sensor is actually a sum of various other sensors, sensorIndex indicates which value to show.  -1 indicates to return the sum.
      *
      *  @see FancyPlotterSensor::lastValue()
      */
-    QString calculateLastValueAsString(const FancyPlotterSensor * sensor, int sensorIndex = 0, int *precisionP = NULL) const;
+    QString calculateLastValueAsString(const FancyPlotterSensor * sensor, int sensorIndex = -1) const;
+    QString calculateLastValueAsString(const FancyPlotterSensor * sensor, double value) const;
     bool removeSensor(uint pos);
     void updateSensorColor(const int argIndex, const QColor argColor);
 
@@ -99,12 +99,11 @@ private:
     FancyPlotterSettings* mSettingsDialog;
     QLabel *mHeading;
 
-    QString mUnit;
-
     QList<SensorToAdd *> mSensorsToAdd;
     QBoxLayout *mLabelLayout;
     QChar mIndicatorSymbol;
     FancyPlotterSettings::RangeType mRangeType;
+    bool mAllMatchingSensorUnit;
 };
 
 #endif

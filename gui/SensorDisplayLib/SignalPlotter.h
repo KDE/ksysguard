@@ -212,9 +212,6 @@ class KSignalPlotter : public QWidget
      *  again. */
     QString svgBackground() const;
 
-    /** Return a translated string like:   "34 %" or "100 KB" for the given value in unscaled units */
-    QString valueAsString( double value, int precision) const;
-
     /**  Whether to show a white line on the left and bottom of the widget, for a 3D effect */
     void setThinFrame( bool set );
 
