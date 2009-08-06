@@ -90,7 +90,6 @@ private Q_SLOTS:
 private:
 	KSysGuardProcessList *mProcessList;
 	KSysGuard::Processes *mProcesses;
-	QTime mUpdateInterval;
 };
 
 #endif
