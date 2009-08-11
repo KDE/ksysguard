@@ -32,8 +32,8 @@ public:
 	void removeSensor(BasicSensor* toRemove);
 	void reorderSensor(const QList<int> & newOrder);
 	int sensorCount() const;
-	BasicSensor* sensor(int argIndex);
-	BasicSensor* removeSensor(int argIndex);
+	BasicSensor* sensor(int index);
+	BasicSensor* removeSensor(int index);
 private:
 	QList<BasicSensor*> mSensors;
 };
@@ -51,12 +51,12 @@ inline void SensorDataProvider::removeSensor(BasicSensor* toRemove)  {
 	mSensors.removeOne(toRemove);
 }
 
-inline BasicSensor* SensorDataProvider::sensor(int argIndex)  {
-	return mSensors.at(argIndex);
+inline BasicSensor* SensorDataProvider::sensor(int index)  {
+	return mSensors.at(index);
 }
 
-inline BasicSensor* SensorDataProvider::removeSensor(int argIndex)  {
-	return mSensors.takeAt(argIndex);
+inline BasicSensor* SensorDataProvider::removeSensor(int index)  {
+	return mSensors.takeAt(index);
 }
 
 #endif /* SENSORDATAPROVIDER_H_ */
