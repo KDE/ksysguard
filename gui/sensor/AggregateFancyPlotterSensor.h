@@ -27,25 +27,25 @@
 
 
 class AggregateFancyPlotterSensor: public FancyPlotterSensor {
-public:
-	AggregateFancyPlotterSensor(QList<QString> argName, QString argSummationName, QString argHostName, QString argType, QString argRegexpName, QColor argSensorColor);
-	virtual ~AggregateFancyPlotterSensor();
-	virtual bool isAggregateSensor() const;
-	virtual void addData(const double argValue);
-	virtual void putReportedMaxValue(double argTheorethicalMaxValue);
-	virtual double lastValue(int argIndex) const;
-	double lastIndividualSensorValue(int argIndex) const;
-	virtual void removeOldestValue(int argNumberToRemove = 1);
+  public:
+    AggregateFancyPlotterSensor(const QList<QString> & name, const QString &summationName, const QString & hostName, const QString & type, const QString &regexpName, const QColor &sensorColor);
+    virtual ~AggregateFancyPlotterSensor();
+    virtual bool isAggregateSensor() const;
+    virtual void addData(double value);
+    virtual void setReportedMaxValue(double reportedMaxValue);
+    virtual double lastValue(int index) const;
+    double lastIndividualSensorValue(int index) const;
+    virtual void removeOldestValue(int numberToRemove = 1);
 
 private:
-	int mNumDataReceived;
-	int mNumberOfSensor;
-	double mTempAggregateValue;
-	QList<double>* mIndividualSensorData;
+    int mNumDataReceived;
+    int mNumberOfSensor;
+    double mTempAggregateValue;
+    QList<double>* mIndividualSensorData;
 };
 
-inline double AggregateFancyPlotterSensor::lastIndividualSensorValue(int argIndex) const {
-    return mIndividualSensorData[argIndex].last();
+inline double AggregateFancyPlotterSensor::lastIndividualSensorValue(int index) const {
+    return mIndividualSensorData[index].last();
 }
 
 #endif /* AGGREGATEFANCYPLOTTERSENSOR_H_ */

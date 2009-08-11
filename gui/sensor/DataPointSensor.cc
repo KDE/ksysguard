@@ -20,12 +20,12 @@
  */
 #include "DataPointSensor.h"
 
-DataPointSensor::DataPointSensor(const QString argName, const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor) : BasicSensor(argName, argHostName, argType, argRegexpName) {
- init(argSensorColor);
+DataPointSensor::DataPointSensor(const QString &name, const QString &hostName, const QString &type, const QString &regexpName, const QColor &sensorColor) : BasicSensor(name, hostName, type, regexpName) {
+ init(sensorColor);
 }
 
-DataPointSensor::DataPointSensor(const QList<QString> argName, const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor) : BasicSensor(argName, argHostName, argType, argRegexpName) {
- init(argSensorColor);
+DataPointSensor::DataPointSensor(const QList<QString> &name, const QString &hostName, const QString &type, const QString &regexpName, const QColor &sensorColor) : BasicSensor(name, hostName, type, regexpName) {
+ init(sensorColor);
 }
 
 DataPointSensor::~DataPointSensor() {
@@ -35,16 +35,16 @@ QString DataPointSensor::unit() const  {
     return mUnit;
 }
 
-void DataPointSensor::setUnit(const QString &argUnit)  {
-    mUnit = argUnit;
+void DataPointSensor::setUnit(const QString &unit)  {
+    mUnit = unit;
 }
 
-void DataPointSensor::setColor(const QColor argColor)  {
-    mSensorColor = argColor;
+void DataPointSensor::setColor(const QColor &color)  {
+    mSensorColor = color;
 }
 
-void DataPointSensor::removeOldestValue(int argNumberToRemove) {
-    while (argNumberToRemove-- > 0)  {
+void DataPointSensor::removeOldestValue(int numberToRemove) {
+    while (numberToRemove-- > 0)  {
         mSensorData.removeFirst();
     }
 }
@@ -54,22 +54,23 @@ double DataPointSensor::removeOneOldestValue()  {
     return mSensorData.takeFirst();
 }
 
-void DataPointSensor::putReportedMaxValue(double argReportedMaxValue)
+void DataPointSensor::setReportedMaxValue(double reportedMaxValue)
 {
-   mTheorethicalMaxValue = argReportedMaxValue;
+   mReportedMaxValue = reportedMaxValue;
 }
 
-void DataPointSensor::addData(double argValue)  {
-    mSensorData.append(argValue);
+void DataPointSensor::addData(double value)  {
+    mSensorData.append(value);
 }
 
-double DataPointSensor::lastValue(int argIndex) const {
+double DataPointSensor::lastValue(int index) const {
+    Q_UNUSED(index);
     return lastValue();
 }
 
-void DataPointSensor::init(const QColor argSensorColor)  {
-    setColor(argSensorColor);
-    mTheorethicalMaxValue = 0;
+void DataPointSensor::init(const QColor &sensorColor)  {
+    setColor(sensorColor);
+    mReportedMaxValue = 0;
     mLastSeenValue = 0;
     mPrevSeenValue = 0;
 }

@@ -21,76 +21,76 @@
 
 #include "BasicSensor.h"
 
-BasicSensor::BasicSensor(const QString argName, const QString argHostName, const QString argType, const QString argRegexpName) {
-    mNameList.append(argName);
-	init(argHostName,argType,argRegexpName);
+BasicSensor::BasicSensor(const QString &name, const QString &hostName, const QString &type, const QString &regexpName) {
+    mNameList.append(name);
+    init(hostName,type,regexpName);
 }
 
-BasicSensor::BasicSensor(const QList<QString> argName, const QString argHostName, const QString argType, const QString argRegexpName)  {
-	mNameList = argName;
-	init(argHostName,argType,argRegexpName);
+BasicSensor::BasicSensor(const QList<QString> &name, const QString &hostName, const QString &type, const QString &regexpName)  {
+    mNameList = name;
+    init(hostName,type,regexpName);
 }
 
 BasicSensor::~BasicSensor() {
 }
 
-void BasicSensor::init(const QString argHostName, const QString argType, const QString argRegexpName)
+void BasicSensor::init(const QString &hostName, const QString &type, const QString &regexpName)
 {
-	mHostName = argHostName;
-	mType = argType;
-	mRegexpName = argRegexpName;
-	mLocalHost = (argHostName.toLower() == "localhost" || argHostName.isEmpty());
-	mOk = true;
-	mInteger = (mType == "integer");
+    mHostName = hostName;
+    mType = type;
+    mRegexpName = regexpName;
+    mLocalHost = (hostName.toLower() == "localhost" || hostName.isEmpty());
+    mOk = true;
+    mInteger = (mType == "integer");
 }
 QString BasicSensor::name() const {
-	return mNameList.at(0);
+    return mNameList.at(0);
 }
 
 bool BasicSensor::isOk() const {
-	return mOk;
+    return mOk;
 }
 
-void BasicSensor::setOk(bool argValue)  {
-	mOk = argValue;
+void BasicSensor::setOk(bool value)  {
+    mOk = value;
 }
 
 QString BasicSensor::hostName() const {
-	return mHostName;
+    return mHostName;
 }
 
 QString BasicSensor::title() const {
-	if (mTitleList.size() > 0)
-			return mTitleList.at(0);
-		else
-			return "";
+    if (mTitleList.size() > 0)
+            return mTitleList.at(0);
+        else
+            return "";
 }
 
 QString BasicSensor::regexpName() const  {
-	return mRegexpName;
+    return mRegexpName;
 }
 
 bool BasicSensor::isLocalHost() const  {
-	return mLocalHost;
+    return mLocalHost;
 }
 
 QString BasicSensor::type() const  {
-	return mType;
+    return mType;
 }
 
-void BasicSensor::addTitle(QString argTitle)  {
-	mTitleList.append(argTitle);
+void BasicSensor::addTitle(const QString &title)  {
+    mTitleList.append(title);
 }
 
 QList<QString> BasicSensor::titleList() const
 {
-	return mTitleList;
+    return mTitleList;
 }
 
 bool BasicSensor::isAggregateSensor() const {
-	return false;
+    return false;
 }
 
 QList<QString> BasicSensor::nameList() const  {
-	return mNameList;
+    return mNameList;
 }

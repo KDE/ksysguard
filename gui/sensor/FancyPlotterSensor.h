@@ -24,31 +24,25 @@
 
 #include "DataPointSensor.h"
 #include <QColor>
-#include <limits.h>
 
 class FancyPlotterSensor: public DataPointSensor {
 public:
-	FancyPlotterSensor(const QString argName, const QString argSummationName, const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor);
-	FancyPlotterSensor(const QList<QString> argName, const QString argSummationName, const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor);
-	virtual ~FancyPlotterSensor();
-	virtual void setColor(const QColor argColor);
-	QString summationName() const;
-	double maxValue() const;
-	double minValue() const;
-	virtual void addData(const double argValue);
+    FancyPlotterSensor(const QString &name, const QString &summationName, const QString &hostName, const QString &type, const QString &regexpName, const QColor &sensorColor);
+    FancyPlotterSensor(const QList<QString> &name, const QString &summationName, const QString &hostName, const QString &type, const QString &regexpName, const QColor &sensorColor);
+    virtual ~FancyPlotterSensor();
+    virtual void setColor(const QColor &color);
+    QString summationName() const;
+    double maxValue() const;
+    double minValue() const;
+    virtual void addData(double value);
     QColor lighterColor() const;
-    virtual void removeOldestValue(int argNumberToRemove = 1);
+    virtual void removeOldestValue(int numberToRemove = 1);
 
 private:
-	QString mSummationName;
-	QColor mLighterColor;
-	double mMaxValue;
-	double mMinValue;
+    QString mSummationName;
+    QColor mLighterColor;
+    double mMaxValue;
+    double mMinValue;
 };
-
-inline QColor FancyPlotterSensor::lighterColor() const
-{
-       return mLighterColor;
-}
 
 #endif /* FANCYPLOTTERSENSOR_H_ */

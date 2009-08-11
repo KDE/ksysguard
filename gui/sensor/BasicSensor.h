@@ -31,54 +31,52 @@
  * BasicSensor class represent the most basic sensor required by any of our display.
  */
 class BasicSensor {
-public:
-	BasicSensor(const QString argName, const QString argHostName, const QString argType, const QString argRegexpName);
-	BasicSensor(const QList<QString> argName, const QString argHostName, const QString argType, const QString argRegexpName);
-	virtual ~BasicSensor();
+  public:
+    BasicSensor(const QString &name, const QString &hostName, const QString &type, const QString &regexpName);
+    BasicSensor(const QList<QString> &name, const QString &hostName, const QString &type, const QString &regexpName);
+    virtual ~BasicSensor();
 
-	/* return first name in the list*/
-	QString name() const;
-	/* return first title in the list*/
-	QString title() const;
+    /* return first name in the list*/
+    QString name() const;
+    /* return first title in the list*/
+    QString title() const;
 
-	/* this is the list of sensor name, sensor can be associated with multiple names, for example mem/swap/free and mem/swap/used in the case of aggregate sensor*/
-	QList<QString> nameList() const;
-	/* title list associated with the name list, name(0) goes with title(0) */
-	QList<QString> titleList() const;
+    /* this is the list of sensor name, sensor can be associated with multiple names, for example mem/swap/free and mem/swap/used in the case of aggregate sensor*/
+    QList<QString> nameList() const;
+    /* title list associated with the name list, name(0) goes with title(0) */
+    QList<QString> titleList() const;
 
-	QString hostName() const;
+    QString hostName() const;
 
-	QString type() const;
-	QString regexpName() const;
-	bool isInteger() const;
-	bool isLocalHost() const;
+    QString type() const;
+    QString regexpName() const;
+    bool isInteger() const;
+    bool isLocalHost() const;
 
-	bool isOk() const;
+    bool isOk() const;
 
-	void setOk(bool argValue);
+    void setOk(bool value);
 
-	/* title have to be added in the same order as the name list was provided*/
-	void addTitle(const QString argTitle);
+    /* titles have to be added in the same order as the name list was provided */
+    void addTitle(const QString &title);
 
-	virtual bool isAggregateSensor() const;
+    virtual bool isAggregateSensor() const;
 
 private:
-	void init(const QString argHostName, const QString argType, const QString argRegexpName);
+    void init(const QString &hostName, const QString &type, const QString &regexpName);
 
 
-	QList<QString> mNameList;
-	QString mHostName;
-	QString mType;
-	QString mRegexpName;
-	QList<QString> mTitleList;
-	bool mInteger;
-	bool mOk;
-	bool mLocalHost;
-
-
+    QList<QString> mNameList;
+    QString mHostName;
+    QString mType;
+    QString mRegexpName;
+    QList<QString> mTitleList;
+    bool mInteger;
+    bool mOk;
+    bool mLocalHost;
 };
 
 inline bool BasicSensor::isInteger() const {
-	return mInteger;
+    return mInteger;
 }
 #endif /* BASICSENSOR_H_ */

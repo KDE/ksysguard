@@ -20,17 +20,18 @@
 */
 
 #include "FancyPlotterSensor.h"
+#include <limits.h>
 
-FancyPlotterSensor::FancyPlotterSensor(const QString argName, const QString argSummationName, const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor) : DataPointSensor(argName, argHostName, argType, argRegexpName, argSensorColor) {
-	mSummationName = argSummationName;
-	setColor(argSensorColor);
+FancyPlotterSensor::FancyPlotterSensor(const QString &name, const QString &summationName, const QString &hostName, const QString &type, const QString &regexpName, const QColor &sensorColor) : DataPointSensor(name, hostName, type, regexpName, sensorColor) {
+	mSummationName = summationName;
+	setColor(sensorColor);
 	mMinValue = INT_MAX;
 	mMaxValue = INT_MIN;
 }
 
-FancyPlotterSensor::FancyPlotterSensor(const QList<QString> argName, const QString argSummationName, const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor) : DataPointSensor(argName, argHostName, argType, argRegexpName, argSensorColor)  {
-	mSummationName = argSummationName;
-	setColor(argSensorColor);
+FancyPlotterSensor::FancyPlotterSensor(const QList<QString> &name, const QString &summationName, const QString &hostName, const QString &type, const QString &regexpName, const QColor &sensorColor) : DataPointSensor(name, hostName, type, regexpName, sensorColor)  {
+	mSummationName = summationName;
+	setColor(sensorColor);
 	mMinValue = INT_MAX;
 	mMaxValue = INT_MIN;
 }
@@ -39,9 +40,9 @@ FancyPlotterSensor::FancyPlotterSensor(const QList<QString> argName, const QStri
 FancyPlotterSensor::~FancyPlotterSensor() {
 }
 
-void FancyPlotterSensor::setColor(const QColor argColor)  {
-	mLighterColor = argColor.lighter();
-	DataPointSensor::setColor(argColor);
+void FancyPlotterSensor::setColor(const QColor &color)  {
+	mLighterColor = color.lighter();
+	DataPointSensor::setColor(color);
 }
 
 QString FancyPlotterSensor::summationName() const  {
@@ -56,16 +57,16 @@ double FancyPlotterSensor::minValue() const  {
 	return mMinValue;
 }
 
-void FancyPlotterSensor::addData(double argValue) {
-    DataPointSensor::addData(argValue);
-	mMaxValue = qMax(mMaxValue,argValue);
-	mMinValue = qMin(mMinValue,argValue);
+void FancyPlotterSensor::addData(double value) {
+    DataPointSensor::addData(value);
+	mMaxValue = qMax(mMaxValue,value);
+	mMinValue = qMin(mMinValue,value);
 
 }
 
-void FancyPlotterSensor::removeOldestValue(int argNumberToRemove)  {
+void FancyPlotterSensor::removeOldestValue(int numberToRemove)  {
 	bool needRescanOfMinMax = false;
-	while (argNumberToRemove-- > 0)  {
+	while (numberToRemove-- > 0)  {
 		double removed = removeOneOldestValue();
 		if (removed == mMaxValue || removed == mMinValue)  {
 			needRescanOfMinMax = true;
@@ -83,5 +84,9 @@ void FancyPlotterSensor::removeOldestValue(int argNumberToRemove)  {
 	}
 }
 
+QColor FancyPlotterSensor::lighterColor() const
+{
+    return mLighterColor;
+}
 
-#include "FancyPlotterSensor.moc"
+

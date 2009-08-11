@@ -26,49 +26,49 @@
 
 class DataPointSensor: public BasicSensor {
 public:
-    DataPointSensor(const QString argName, const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor);
-    DataPointSensor(const QList<QString> argName, const QString argHostName, const QString argType, const QString argRegexpName, const QColor argSensorColor);
+    DataPointSensor(const QString &name, const QString &hostName, const QString &type, const QString &regexpName, const QColor &sensorColor);
+    DataPointSensor(const QList<QString> &name, const QString &hostName, const QString &type, const QString &regexpName, const QColor &sensorColor);
     virtual ~DataPointSensor();
 
     QColor color() const;
     int dataSize() const;
-    double data(int argIndex) const;
+    double data(int index) const;
     QString unit() const;
 
     double lastValue() const;
     /* Method for sensors that represent aggregate data. This will return the last value of an individual sensor.
      * By default it return the same as lastValue
      */
-    virtual double lastValue(int argIndex) const;
+    virtual double lastValue(int index) const;
 
-    void setUnit(const QString &argUnit);
+    void setUnit(const QString &unit);
 
     /* this is the reported maximum value that the sensor can have, for example as provided by ksysguardd*/
     double reportedMaxValue() const;
     /* this is implementation specific, for a basic sensor it simply override the previous value, i.e. a set*/
-    virtual void putReportedMaxValue(double argReportedMaxValue);
+    virtual void setReportedMaxValue(double reportedMaxValue);
 
-    virtual void removeOldestValue(int argNumberToRemove = 1);
+    virtual void removeOldestValue(int numberToRemove = 1);
 
     /* last seen value by a client of this sensor, used to speed up drawing in some instance*/
     double lastSeenValue() const;
     double prevSeenValue() const;
-    void updateLastSeenValue(double argLastSeenValue);
+    void updateLastSeenValue(double lastSeenValue);
 
-    virtual void setColor(const QColor argColor);
-    virtual void addData(const double argValue);
+    virtual void setColor(const QColor &color);
+    virtual void addData(double value);
 
 protected:
     double removeOneOldestValue();
 
 private:
 
-    void init(const QColor argSensorColor);
+    void init(const QColor &sensorColor);
 
     QColor mSensorColor;
     QString mUnit;
     QList<double> mSensorData;
-    double mTheorethicalMaxValue;
+    double mReportedMaxValue;
     double mLastSeenValue;
     double mPrevSeenValue;
 
@@ -78,8 +78,8 @@ inline QColor DataPointSensor::color() const {
     return mSensorColor;
 }
 
-inline double DataPointSensor::data(int argIndex) const {
-    return mSensorData.at(argIndex);
+inline double DataPointSensor::data(int index) const {
+    return mSensorData.at(index);
 }
 
 inline int DataPointSensor::dataSize() const {
@@ -87,7 +87,7 @@ inline int DataPointSensor::dataSize() const {
 }
 
 inline double DataPointSensor::reportedMaxValue() const {
-    return mTheorethicalMaxValue;
+    return mReportedMaxValue;
 }
 
 inline double DataPointSensor::lastValue() const {
@@ -102,9 +102,9 @@ inline double DataPointSensor::prevSeenValue() const {
     return mPrevSeenValue;
 }
 
-inline void DataPointSensor::updateLastSeenValue(double argLastSeenValue) {
+inline void DataPointSensor::updateLastSeenValue(double lastSeenValue) {
     mPrevSeenValue = mLastSeenValue;
-    mLastSeenValue = argLastSeenValue;
+    mLastSeenValue = lastSeenValue;
 }
 
 #endif /* DATAPOINTSENSOR_H_ */

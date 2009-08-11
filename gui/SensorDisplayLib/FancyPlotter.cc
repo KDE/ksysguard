@@ -598,7 +598,7 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
             FancyPlotterSensor *currentSensor = static_cast<FancyPlotterSensor *>(sensor(adjustedId));
             currentSensor->setUnit(currentUnit);
             currentSensor->addTitle( info.name() );
-            currentSensor->putReportedMaxValue(info.max());
+            currentSensor->setReportedMaxValue(info.max());
             plotterAxisScaleChanged();
 
             QString summationName = currentSensor->summationName();
