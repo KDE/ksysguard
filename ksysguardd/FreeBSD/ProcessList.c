@@ -33,7 +33,7 @@
 #include <sys/resourcevar.h>
 #endif
 
-#if __FreeBSD_version > 500015
+#if (__FreeBSD_version > 500015) || (__FreeBSD_kernel_version > 500015)
 #include <sys/priority.h>
 #endif
 #include <sys/sysctl.h>
@@ -203,7 +203,7 @@ updateProcess(int pid)
 	if (sysctl(mib, 4, &p, &len, NULL, 0) == -1 || !len)
 		return -1;
 
-#if __FreeBSD_version >= 500015
+#if (__FreeBSD_version > 500015) || (__FreeBSD_kernel_version > 500015)
         ps->pid       = p.ki_pid;
         ps->ppid      = p.ki_ppid;
         ps->uid       = p.ki_uid;    
@@ -231,7 +231,7 @@ updateProcess(int pid)
 #endif
 
         /* this isn't usertime -- it's total time (??) */
-#if __FreeBSD_version >= 500015
+#if (__FreeBSD_version > 500015) || (__FreeBSD_kernel_version > 500015)
         ps->userTime = p.ki_runtime / 10000;
 #elif defined(__DragonFly__)
 #if __DragonFly_version >= 190000
@@ -260,7 +260,7 @@ updateProcess(int pid)
 	if (fscale == 0)
 		ps->userLoad = 0;
 	else
-#if __FreeBSD_version >= 500015
+#if (__FreeBSD_version > 500015) || (__FreeBSD_kernel_version > 500015)
 	ps->userLoad = 100.0 * (double) p.ki_pctcpu / fscale;
 	ps->vmSize   = p.ki_size;
 	ps->vmRss    = p.ki_rssize * getpagesize();
@@ -380,7 +380,7 @@ updateProcessList(void)
         sysctl(mib, 3, p, &len, NULL, 0);
 
 	for (num = 0; num < len / sizeof(struct kinfo_proc); num++)
-#if __FreeBSD_version >= 500015
+#if (__FreeBSD_version > 500015) || (__FreeBSD_kernel_version > 500015)
 		updateProcess(p[num].ki_pid);
 #elif __DragonFly_version >= 190000
 	    /* Skip kernel threads with pid -1. Swapper with pid 0 also

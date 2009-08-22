@@ -18,6 +18,10 @@ macro_bool_to_01(SYS_INOTIFY_H_FOUND HAVE_SYS_INOTIFY_H)
 
 configure_file(config-ksysguardd.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-ksysguardd.h)
 
+if( ${CMAKE_SYSTEM_NAME} MATCHES "kFreeBSD" )
+    add_subdirectory( "FreeBSD" )
+    include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/FreeBSD )
+else( ${CMAKE_SYSTEM_NAME} MATCHES "kFreeBSD" )
 if( ${CMAKE_SYSTEM_NAME} MATCHES "DragonFly" )
     add_subdirectory( "FreeBSD" )
     include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/FreeBSD )
@@ -30,6 +34,7 @@ else( ${CMAKE_SYSTEM_NAME} MATCHES "DragonFly" )
         include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_SYSTEM_NAME} )
     endif( ${CMAKE_SYSTEM_NAME} MATCHES "SunOS" )
 endif( ${CMAKE_SYSTEM_NAME} MATCHES "DragonFly" )
+endif( ${CMAKE_SYSTEM_NAME} MATCHES "kFreeBSD" )
 
 ########### next target ###############
 
