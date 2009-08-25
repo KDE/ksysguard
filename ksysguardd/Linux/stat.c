@@ -433,6 +433,7 @@ static void processStat( void ) {
 			OldPageOut = v1;
 		}
 	}
+	fclose(stat);
 	
 	/* save exact time interval between this and the last read of /proc/stat */
 	timeInterval = currSampling.tv_sec - lastSampling.tv_sec +
@@ -440,6 +441,7 @@ static void processStat( void ) {
 	lastSampling = currSampling;
 	
 	cleanup24DiskList();
+
 }
 
 /*
