@@ -28,7 +28,6 @@
 #include <kxmlguiwindow.h>
 
 #include <ksgrd/SensorClient.h>
-#include "../../../libs/ksysguard/processui/ksysguardprocesslist.h"
 
 class QSplitter;
 class SensorBrowserWidget;
