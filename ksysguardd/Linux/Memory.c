@@ -141,7 +141,7 @@ int updateMemory( void )
 
   n = read( fd, MemInfoBuf, MEMINFOBUFSIZE - 1 );
   if ( n == MEMINFOBUFSIZE - 1 || n <= 0 ) {
-    log_error( "Internal buffer too small to read \'/proc/mem\'" );
+    log_error( "Internal buffer too small to read \'/proc/meminfo\'" );
     close( fd );
     return -1;
   }
