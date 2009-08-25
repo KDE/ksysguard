@@ -46,7 +46,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   : KPageDialog( parent ), mModel( new SensorModel( this ) )
 {
   setFaceType( Tabbed );
-  setCaption( i18n( "Signal Plotter Settings" ) );
+  setCaption( i18n( "Plotter Settings" ) );
   setButtons( Ok | Apply | Cancel );
   setObjectName( "FancyPlotterSettings" );
   setModal( false );
@@ -86,41 +86,40 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
 
-  groupBox = new QGroupBox( i18n( "Vertical Scale" ), page );
+  groupBox = new QGroupBox( i18n( "Vertical scale" ), page );
   boxLayout = new QGridLayout;
   groupBox->setLayout( boxLayout );
   boxLayout->setSpacing( spacingHint() );
   boxLayout->setColumnStretch( 2, 1 );
 
-  mUseAutoRange = new QCheckBox( i18n( "Automatic range detection" ), groupBox );
-  mUseAutoRange->setWhatsThis( i18n( "Check this box if you want the display range to adapt dynamically to the currently displayed values; if you do not check this, you have to specify the range you want in the fields below." ) );
-  boxLayout->addWidget( mUseAutoRange, 0, 0, 1, 5 );
+  mManualRange = new QCheckBox( i18n( "Specify graph range:" ), groupBox );
+  mManualRange->setWhatsThis( i18n( "Check this box if you want the display range to adapt dynamically to the currently displayed values; if you do not check this, you have to specify the range you want in the fields below." ) );
+  mManualRange->setChecked(true);
+  boxLayout->addWidget( mManualRange, 0, 0, 1, 5 );
 
-  label = new QLabel( i18n( "Minimum value:" ), groupBox );
-  boxLayout->addWidget( label, 1, 0 );
+  mMinValueLabel = new QLabel( i18n( "Minimum value:" ), groupBox );
+  boxLayout->addWidget( mMinValueLabel, 1, 0 );
 
   mMinValue = new KLineEdit( groupBox );
   mMinValue->setValidator(new QDoubleValidator(mMinValue));
   mMinValue->setAlignment( Qt::AlignRight );
-  mMinValue->setEnabled( false );
-  mMinValue->setWhatsThis( i18n( "Enter the minimum value for the display here. If both values are 0, automatic range detection is enabled." ) );
+  mMinValue->setWhatsThis( i18n( "Enter the minimum value for the display here." ) );
   boxLayout->addWidget( mMinValue, 1, 1 );
-  label->setBuddy( mMinValue );
+  mMinValueLabel->setBuddy( mMinValue );
 
-  label = new QLabel( i18n( "Maximum value:" ), groupBox );
-  boxLayout->addWidget( label, 1, 3 );
+  mMaxValueLabel = new QLabel( i18n( "Maximum value:" ), groupBox );
+  boxLayout->addWidget( mMaxValueLabel, 1, 3 );
 
   mMaxValue = new KLineEdit( groupBox );
   mMaxValue->setAlignment( Qt::AlignRight );
   mMaxValue->setValidator(new QDoubleValidator(mMaxValue));
-  mMaxValue->setEnabled( false );
-  mMaxValue->setWhatsThis( i18n( "Enter the maximum value for the display here. If both values are 0, automatic range detection is enabled." ) );
+  mMaxValue->setWhatsThis( i18n( "Enter the soft maximum value for the display here. The upper range will not be reduced below this value, but will still go above this number for values above this value." ) );
   boxLayout->addWidget( mMaxValue, 1, 4 );
-  label->setBuddy( mMaxValue );
+  mMaxValueLabel->setBuddy( mMaxValue );
 
   pageLayout->addWidget( groupBox, 0, 0 );
 
-  groupBox = new QGroupBox( i18n( "Horizontal Scale" ), page );
+  groupBox = new QGroupBox( i18n( "Horizontal scale" ), page );
   boxLayout = new QGridLayout;
   groupBox->setLayout( boxLayout );
   boxLayout->setSpacing( spacingHint() );
@@ -279,10 +278,15 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
 
   }
 
-  connect( mUseAutoRange, SIGNAL( toggled( bool ) ), mMinValue,
-           SLOT( setDisabled( bool ) ) );
-  connect( mUseAutoRange, SIGNAL( toggled( bool ) ), mMaxValue,
-           SLOT( setDisabled( bool ) ) );
+  connect( mManualRange, SIGNAL( toggled( bool ) ), mMinValue,
+           SLOT( setEnabled( bool ) ) );
+  connect( mManualRange, SIGNAL( toggled( bool ) ), mMaxValue,
+           SLOT( setEnabled( bool ) ) );
+  connect( mManualRange, SIGNAL( toggled( bool ) ), mMinValueLabel,
+           SLOT( setEnabled( bool ) ) );
+  connect( mManualRange, SIGNAL( toggled( bool ) ), mMaxValueLabel,
+           SLOT( setEnabled( bool ) ) );
+
   connect( mShowVerticalLines, SIGNAL( toggled( bool ) ), mVerticalLinesDistance,
            SLOT( setEnabled( bool ) ) );
   connect( mShowVerticalLines, SIGNAL( toggled( bool ) ), mVerticalLinesScroll,
@@ -332,16 +336,14 @@ QString FancyPlotterSettings::title() const
   return mTitle->text();
 }
 
-void FancyPlotterSettings::setUseAutoRange( bool value )
+void FancyPlotterSettings::setUseManualRange( bool value )
 {
-  mUseAutoRange->setChecked( value );
-  mMinValue->setEnabled( !value );
-  mMaxValue->setEnabled( !value );
+  mManualRange->setChecked( value );
 }
 
-bool FancyPlotterSettings::useAutoRange() const
+bool FancyPlotterSettings::useManualRange() const
 {
-  return mUseAutoRange->isChecked();
+  return mManualRange->isChecked();
 }
 
 void FancyPlotterSettings::setMinValue( double min )

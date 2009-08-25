@@ -108,6 +108,11 @@ class FancyPlotter : public KSGRD::SensorDisplay
     /** When we talk to the sensor, it tells us a range.  Record the min here.  equals 0 until we have an answer from it */
     double mSensorReportedMin;
 
+    /** If mUseManualRange is true, this is maximum value given by the user. */
+    double mSensorManualMax;
+    /** If mUseManualRange is true, this is minimum value given by the user. */
+    double mSensorManualMin;
+
     /** The widget that actually draws the beams */
     KSignalPlotter* mPlotter;
 
@@ -127,6 +132,9 @@ class FancyPlotter : public KSGRD::SensorDisplay
     QList<SensorToAdd *> mSensorsToAdd;
     QBoxLayout *mLabelLayout;
     QChar mIndicatorSymbol;
+
+    /** True if we will override the values from ksysguardd with user-specified values. */
+    bool mUseManualRange;
 };
 
 #endif

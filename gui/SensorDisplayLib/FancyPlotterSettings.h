@@ -47,8 +47,8 @@ class FancyPlotterSettings : public KPageDialog
     void setTitle( const QString &title );
     QString title() const;
 
-    void setUseAutoRange( bool value );
-    bool useAutoRange() const;
+    void setUseManualRange( bool value );
+    bool useManualRange() const;
 
     void setMinValue( double min );
     double minValue() const;
@@ -114,6 +114,8 @@ class FancyPlotterSettings : public KPageDialog
     KColorButton *mFontColor;
     KLineEdit *mMinValue;
     KLineEdit *mMaxValue;
+    QLabel *mMinValueLabel;
+    QLabel *mMaxValueLabel;
     KLineEdit *mTitle;
     KIntNumInput *mHorizontalScale;
     KIntNumInput *mVerticalLinesDistance;
@@ -122,7 +124,7 @@ class FancyPlotterSettings : public KPageDialog
     QCheckBox *mShowVerticalLines;
     QCheckBox *mShowHorizontalLines;
     QCheckBox *mVerticalLinesScroll;
-    QCheckBox *mUseAutoRange;
+    QCheckBox *mManualRange;
     QCheckBox *mShowAxis;
     QCheckBox *mShowTopBar;
     QPushButton *mEditButton;

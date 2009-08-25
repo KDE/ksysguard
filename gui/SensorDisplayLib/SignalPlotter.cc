@@ -51,6 +51,7 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
     mPrecision = 0;
     mSamples = 0;
     mMinValue = mMaxValue = 0.0;
+    mUserMinValue = mUserMaxValue = 0.0;
     mNiceMinValue = mNiceMaxValue = 0.0;
     mNiceRange = 0;
     mUseAutoRange = true;
@@ -225,8 +226,9 @@ void KSignalPlotter::reorderBeams( const QList<int>& newOrder )
 
 void KSignalPlotter::changeRange( double min, double max )
 {
-    mMinValue = min;
-    mMaxValue = max;
+    if( min == mUserMinValue && max == mUserMaxValue ) return;
+    mUserMinValue = min;
+    mUserMaxValue = max;
     calculateNiceRange();
 }
 
@@ -266,28 +268,40 @@ bool KSignalPlotter::useAutoRange() const
     return mUseAutoRange;
 }
 
-void KSignalPlotter::setMinValue( double min )
+void KSignalPlotter::setMinimumValue( double min )
 {
-    mMinValue = min;
+    if(min == mUserMinValue) return;
+    mUserMinValue = min;
     calculateNiceRange();
     //this change will be detected in paint and the image cache regenerated
 }
 
-double KSignalPlotter::minValue() const
+double KSignalPlotter::minimumValue() const
 {
-    return mMinValue;
+    return mUserMinValue;
 }
 
-void KSignalPlotter::setMaxValue( double max )
+void KSignalPlotter::setMaximumValue( double max )
 {
-    mMaxValue = max;
+    if(max == mUserMaxValue) return;
+    mUserMaxValue = max;
     calculateNiceRange();
     //this change will be detected in paint and the image cache regenerated
 }
 
-double KSignalPlotter::maxValue() const
+double KSignalPlotter::maximumValue() const
 {
-    return mMaxValue;
+    return mUserMaxValue;
+}
+
+double KSignalPlotter::currentMaximumRangeValue() const
+{
+    return mNiceMaxValue;
+}
+
+double KSignalPlotter::currentMinimumRangeValue() const
+{
+    return mNiceMinValue;
 }
 
 void KSignalPlotter::setHorizontalScale( uint scale )
@@ -536,7 +550,7 @@ void KSignalPlotter::drawWidget(QPainter *p, QRect boundingBox, bool onlyDrawPlo
     mHorizontalLinesCount = qMax(qMin((int)(boundingBox.height() / fontheight)-2, 4), 0);
 
     if(!onlyDrawPlotter) {
-        if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || (mNiceRange != 1 && mMaxValue < (mNiceRange*0.75 + mNiceMinValue)) || mNiceRange == 0) {
+        if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || (mMaxValue > mUserMaxValue && mNiceRange != 1 && mMaxValue < (mNiceRange*0.75 + mNiceMinValue)) || mNiceRange == 0) {
             calculateNiceRange();
         }
         QPen pen;
@@ -695,22 +709,29 @@ void KSignalPlotter::drawThinFrame(QPainter *p, const QRect &boundingBox)
 
 void KSignalPlotter::calculateNiceRange()
 {
-    double newNiceRange = mMaxValue - mMinValue;
+    double max = mUserMaxValue;
+    double min = mUserMinValue;
+    if( mUseAutoRange ) {
+        max = qMax(max, mMaxValue);
+        min = qMin(min, mMinValue);
+    }
+    kDebug() << "max=" << max << " user=" << mUserMaxValue << " autorange=" << mUseAutoRange;
+    double newNiceRange = max - min;
     /* If the range is too small we will force it to 1.0 since it
      * looks a lot nicer. */
     if ( newNiceRange < 0.000001 )
         newNiceRange = 1.0;
 
-    double newNiceMinValue = mMinValue;
+    double newNiceMinValue = min;
     if ( mMinValue != 0.0 ) {
-        double dim = pow( 10, floor( log10( fabs( mMinValue ) ) ) ) / 2;
-        if ( mMinValue < 0.0 )
-            newNiceMinValue = dim * floor( mMinValue / dim );
-        else
-            newNiceMinValue = dim * ceil( mMinValue / dim );
-        newNiceRange = mMaxValue - newNiceMinValue;
-        if ( newNiceRange < 0.000001 )
-            newNiceRange = 1.0;
+        double dim = pow( 10, floor( log10( fabs( min ) ) ) ) / 2;
+        if ( min < 0.0 )
+        newNiceMinValue = dim * floor( min / dim );
+      else
+        newNiceMinValue = dim * ceil( min / dim );
+      newNiceRange = max - newNiceMinValue;
+      if ( newNiceRange < 0.000001 )
+        newNiceRange = 1.0;
     }
     // Massage the range so that the grid shows some nice values.
     double step = newNiceRange / (mScaleDownBy*(mHorizontalLinesCount+1));
@@ -720,7 +741,7 @@ void KSignalPlotter::calculateNiceRange()
     if(logdim >= 0)
         mPrecision = 0;
     else if( a % 2 == 0){
-        mPrecision =-logdim;
+        mPrecision = -logdim;
     } else {
         mPrecision = 1-logdim;
     }

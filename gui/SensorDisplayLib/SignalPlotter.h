@@ -71,8 +71,8 @@ class QColor;
 class KSignalPlotter : public QWidget
 {
   Q_OBJECT
-  Q_PROPERTY( double minValue READ minValue WRITE setMinValue )
-  Q_PROPERTY( double maxValue READ maxValue WRITE setMaxValue )
+  Q_PROPERTY( double minimumValue READ minimumValue WRITE setMinimumValue )
+  Q_PROPERTY( double maximumValue READ maximumValue WRITE setMaximumValue )
   Q_PROPERTY( bool useAutoRange READ useAutoRange WRITE setUseAutoRange )
   Q_PROPERTY( KLocalizedString unit READ unit WRITE setUnit )
   Q_PROPERTY( bool thinFrame READ thinFrame WRITE setThinFrame )
@@ -196,18 +196,37 @@ class KSignalPlotter : public QWidget
      *  this "nice range" attempts to minimize the number of non-zero
      *  digits.
      *
-     *  Use setAutoRange instead to determine the range automatically 
-     *  from the data.
-     */ 
+     *  If autoRange() is true, then this range is taking as a 'hint'.
+     *  The range will never be smaller than the given range, but can grow
+     *  if there are values larger than the given range.
+     *
+     *  This is equivalent to calling 
+     *  \code
+     *    setMinimumValue(min);
+     *    setMaximumValue(max);
+     *  \endcode
+     */
     void changeRange( double min, double max );
-    /** Set the min value of the vertical axis.  @see changeRange */
-    void setMinValue( double min );
-    /** Get the min value of the vertical axis.  @see changeRange */
-    double minValue() const;
-    /** Set the max value of the vertical axis.  @see changeRange */
-    void setMaxValue( double max );
-    /** Get the max value of the vertical axis.  @see changeRange */
-    double maxValue() const;
+    /** Set the min value hint for the vertical axis.  @see changeRange() */
+    void setMinimumValue( double min );
+    /** Get the min value hint for the vertical axis.  @see changeRange() */
+    double minimumValue() const;
+    /** Set the max value hint for the vertical axis.  @see changeRange() */
+    void setMaximumValue( double max );
+    /** Get the maximum value hint for the vertical axis.  @see changeRange() */
+    double maximumValue() const;
+    /** Get the current maximum value on the y-axis.
+     *  This will never be lower than maximumValue(), and if autoRange() is true,
+     *  it will be equal or larger (due to rounding up to make it a nice number)
+     *  than the highest value being shown.
+     */
+    double currentMaximumRangeValue() const;
+    /** Get the current minimum value on the y-axis.
+     *  This will never be lower than minimumValue(), and if autoRange() is true,
+     *  it will be equal or larger (due to rounding up to make it a nice number)
+     *  than the highest value being shown.
+     */
+    double currentMinimumRangeValue() const;
 
     /** Set the number of pixels horizontally between data points */
     void setHorizontalScale( uint scale );
@@ -370,6 +389,9 @@ class KSignalPlotter : public QWidget
     int mScrollOffset;		///The scrollable image is, well, scrolled in a wrap-around window.  mScrollOffset determines where the left hand side of the mScrollableImage should be drawn relative to the right hand side of view.  0 <= mScrollOffset < mScrollableImage.width()
     double mMinValue;		///The minimum value (unscaled) currently being displayed
     double mMaxValue;		///The maximum value (unscaled) currently being displayed
+
+    double mUserMinValue;		///The minimum value (unscaled) set by changeRange().  This is the _maximum_ value that the range will start from.
+    double mUserMaxValue;		///The maximum value (unscaled) set by changeRange().  This is the _minimum_ value that the range will reach to.
     unsigned int mRescaleTime;		///The number of data points passed since a value that is within 70% of the current maximum was found.  This is for scaling the graph
 
     double mNiceMinValue;	///The minimum value rounded down to a 'nice' value

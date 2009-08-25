@@ -90,6 +90,9 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     mNumAccountedFor = 0;
     mSettingsDialog = 0;
     mSensorReportedMax = mSensorReportedMin = 0;
+    mSensorManualMax = mSensorManualMin = 0;
+    mUseManualRange = false;
+
 
     //The unicode character 0x25CF is a big filled in circle.  We would prefer to use this in the tooltip.
     //However it's maybe possible that the font used to draw the tooltip won't have it.  So we fall back to a 
@@ -104,6 +107,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     mPlotter = new KSignalPlotter( this );
     int axisTextWidth = fontMetrics().width(i18nc("Largest axis title", "99999 XXXX"));
     mPlotter->setMaxAxisTextWidth( axisTextWidth );
+    mPlotter->setUseAutoRange( true );
     mHeading = new QLabel(translatedTitle(), this);
     QFont headingFont;
     headingFont.setFamily("Sans Serif");
@@ -163,9 +167,14 @@ void FancyPlotter::configureSettings()
     mSettingsDialog = new FancyPlotterSettings( this, mSharedSettings->locked );
 
     mSettingsDialog->setTitle( title() );
-    mSettingsDialog->setUseAutoRange( mPlotter->useAutoRange() );
-    mSettingsDialog->setMinValue( mPlotter->minValue() );
-    mSettingsDialog->setMaxValue( mPlotter->maxValue() );
+    mSettingsDialog->setUseManualRange( mUseManualRange );
+    if(mUseManualRange) {
+        mSettingsDialog->setMinValue( mSensorManualMin );
+        mSettingsDialog->setMaxValue( mSensorManualMax );
+    } else {
+        mSettingsDialog->setMinValue( mSensorReportedMin );
+        mSettingsDialog->setMaxValue( mSensorReportedMax );
+    }
 
     mSettingsDialog->setHorizontalScale( mPlotter->horizontalScale() );
 
@@ -213,11 +222,14 @@ void FancyPlotter::settingsFinished()
 void FancyPlotter::applySettings() {
     setTitle( mSettingsDialog->title() );
 
-    if ( mSettingsDialog->useAutoRange() )
-        mPlotter->setUseAutoRange( true );
-    else {
-        mPlotter->setUseAutoRange( false );
+    mUseManualRange = mSettingsDialog->useManualRange();
+    if(mUseManualRange) {
+        mSensorManualMin = mSettingsDialog->minValue();
+        mSensorManualMax = mSettingsDialog->maxValue();
         mPlotter->changeRange( mSettingsDialog->minValue(), mSettingsDialog->maxValue() );
+    }
+    else {
+        mPlotter->changeRange( mSensorReportedMin, mSensorReportedMax );
     }
 
     if ( mPlotter->horizontalScale() != mSettingsDialog->horizontalScale() ) {
@@ -475,7 +487,7 @@ void FancyPlotter::plotterAxisScaleChanged()
     //Prevent this being called recursively
     disconnect(mPlotter, SIGNAL(axisScaleChanged()), this, SLOT(plotterAxisScaleChanged()));
     KLocalizedString unit;
-    double value = mPlotter->maxValue();
+    double value = mPlotter->currentMaximumRangeValue();
     if(mUnit  == "KiB") {
         if(value >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
             mPlotter->setScaleDownBy(1024*1024*1024);
@@ -552,16 +564,12 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
             mUnit = "KiB";
         if(mUnit.toUpper() == "KB/S" || mUnit.toUpper() == "KIB/S")
             mUnit = "KiB/s";
-
-
         mSensorReportedMax = qMax(mSensorReportedMax, info.max());
         mSensorReportedMin = qMin(mSensorReportedMin, info.min());
-        if(mSensorReportedMax == 0 && mSensorReportedMin)
-            mPlotter->setUseAutoRange(true); // If any of the sensors are using autorange, then the whole graph must use auto range
 
-        if ( !mPlotter->useAutoRange())
+        if ( !mUseManualRange )
             mPlotter->changeRange( mSensorReportedMin, mSensorReportedMax );
-        plotterAxisScaleChanged(); //This sets up the axis scales and sets the unit.  It relies on mUnit already being set
+        plotterAxisScaleChanged();
 
         FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(id - 100));
         sensor->maxValue = info.max();
@@ -607,18 +615,18 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
 
 bool FancyPlotter::restoreSettings( QDomElement &element )
 {
-    /* autoRange was added after KDE 2.x and was brokenly emulated by
-     * min == 0.0 and max == 0.0. Since we have to be able to read old
-     * files as well we have to emulate the old behaviour as well. */
-    double min = element.attribute( "min", "0.0" ).toDouble();
-    double max = element.attribute( "max", "0.0" ).toDouble();
-    if ( element.attribute( "autoRange", min == 0.0 && max == 0.0 ? "1" : "0" ).toInt() )
-        mPlotter->setUseAutoRange( true );
-    else {
-        mPlotter->setUseAutoRange( false );
-        mPlotter->changeRange( element.attribute( "min" ).toDouble(),
-                element.attribute( "max" ).toDouble() );
+    mUseManualRange = element.attribute( "manualRange", "0" ).toInt();
+
+    if(mUseManualRange) {
+        mSensorManualMax = element.attribute( "max" ).toDouble();
+        mSensorManualMin = element.attribute( "min" ).toDouble();
+        mPlotter->changeRange( mSensorManualMin, mSensorManualMax );
+    } else {
+        mPlotter->changeRange( mSensorReportedMin, mSensorReportedMax );
     }
+
+    mPlotter->setUseAutoRange(element.attribute( "autoRange", "1" ).toInt());
+
     // Do not restore the color settings from a previous version
     int version = element.attribute("version", "0").toInt();
 
@@ -693,9 +701,15 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
 
 bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element)
 {
-    element.setAttribute( "min", mPlotter->minValue() );
-    element.setAttribute( "max", mPlotter->maxValue() );
     element.setAttribute( "autoRange", mPlotter->useAutoRange() );
+
+    element.setAttribute( "manualRange", mUseManualRange );
+    if(mUseManualRange) {
+        element.setAttribute( "min", mSensorManualMin );
+        element.setAttribute( "max", mSensorManualMax );
+    }
+
+
     element.setAttribute( "vLines", mPlotter->showVerticalLines() );
     saveColor( element, "vColor", mPlotter->verticalLinesColor() );
     element.setAttribute( "vDistance", mPlotter->verticalLinesDistance() );
