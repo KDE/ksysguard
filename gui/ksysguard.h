@@ -28,11 +28,12 @@
 #include <kxmlguiwindow.h>
 
 #include <ksgrd/SensorClient.h>
-
+#include "../../../libs/ksysguard/processui/ksysguardprocesslist.h"
 
 class QSplitter;
 class SensorBrowserWidget;
 class Workspace;
+
 
 class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
 {
@@ -70,6 +71,7 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     void disconnectHost();
     void updateStatusBar();
     void currentTabChanged(int index);
+    void updateProcessCount();
 
   private:
     void setSwapInfo( qlonglong, qlonglong, const QString& );

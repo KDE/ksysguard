@@ -143,6 +143,7 @@ bool ProcessController::addSensor(const QString& hostName,
 	mProcessList->setContentsMargins(0,0,0,0);
 	addActions(mProcessList->actions());
 	connect(mProcessList, SIGNAL(updated()), this, SIGNAL(updated()));
+	connect(mProcessList, SIGNAL(processListChanged()), this, SIGNAL(processListChanged()));
 
 	layout->addWidget(mProcessList);
 
@@ -168,6 +169,7 @@ bool ProcessController::addSensor(const QString& hostName,
 	* sensorError(). */
 	sensors().at(0)->setIsOk(true); //Assume it is okay from the start
 	setSensorOk(sensors().at(0)->isOk());
+	emit processListChanged();
 	return true;
 }
 
