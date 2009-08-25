@@ -48,8 +48,9 @@ ProcessController::sensorError(int, bool err)
 {
 	if (err == sensors().at(0)->isOk())
 	{
-		if (err)
+		if (err)  {
 			kDebug(1215) << "SensorError called with an error";
+		}
 		/* This happens only when the sensorOk status needs to be changed. */
 		sensors().at(0)->setIsOk( !err );
 	}
