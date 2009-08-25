@@ -145,8 +145,7 @@ bool ProcessController::addSensor(const QString& hostName,
 
 	QStackedLayout *layout = new QStackedLayout(this);
 	mProcessList = new KSysGuardProcessList(this, hostName);
-	mProcessList->setUseInternalTimer(false);
-    mProcessList->setUpdateIntervalMSecs(0);
+    mProcessList->setUpdateIntervalMSecs(0); //we will call updateList() manually
 	mProcessList->setContentsMargins(0,0,0,0);
 	addActions(mProcessList->actions());
 	connect(mProcessList, SIGNAL(updated()), this, SIGNAL(updated()));
