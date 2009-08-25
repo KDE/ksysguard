@@ -41,7 +41,7 @@ class FPSensorProperties : public KSGRD::SensorProperties
     FPSensorProperties( const QString &hostName, const QString &name,
                         const QString &type, const QString &description,
                         const QColor &color, const QString &regexpName = QString(),
-		   	int beamId = -1, const QString &summationName = QString());
+                        int beamId = -1, const QString &summationName = QString());
     ~FPSensorProperties();
 
     void setColor( const QColor &color );
@@ -71,7 +71,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
     bool addSensor( const QString &hostName, const QString &name,
                     const QString &type, const QString &title,
                     const QColor &color, const QString &regexpName = QString(), 
-		    int sumToSensor = -1, const QString &summationName = QString());
+                    int sumToSensor = -1, const QString &summationName = QString());
 
     bool removeBeam( uint beamId );
 
@@ -94,9 +94,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
   protected:
     /** When we receive a timer tick, draw the beams and request new information to update the beams*/
     virtual void timerTick( );
-    /*! \reimp */
     virtual bool eventFilter( QObject*, QEvent* );
-    /*! \end_reimp */
     virtual void reorderBeams(const QList<int> & orderOfBeams);
     void setTooltip();
 
