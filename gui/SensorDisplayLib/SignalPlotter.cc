@@ -787,7 +787,6 @@ void KSignalPlotter::drawBeam(QPainter *p, const QRect &boundingBox, int horizon
     pen.setCapStyle(Qt::FlatCap);
 
     double scaleFac = (boundingBox.height()-2) / mNiceRange;
-
     if(mBeamData.size() - 1 <= index )
         return;  // Something went wrong?
 
@@ -829,7 +828,8 @@ void KSignalPlotter::drawBeam(QPainter *p, const QRect &boundingBox, int horizon
         QPointF c2( x1 + 2*horizontalScale/3.0, (2* y0 + y1)/3.0);//Control point 2 - same gradient as prev_datapoint to datapoint
         path.cubicTo(  c1, c2, QPointF(x0, y0));
         p->setCompositionMode(QPainter::CompositionMode_SourceOver);
-        p->strokePath(path, pen);
+        p->setPen(pen);
+        p->drawPath(path);
         if(mFillOpacity) {
             path.lineTo(x0,boundingBox.bottom());
             path.lineTo(x1,boundingBox.bottom());
