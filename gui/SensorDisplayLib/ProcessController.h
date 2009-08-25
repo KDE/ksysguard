@@ -61,9 +61,7 @@ public:
 
 	bool saveSettings(QDomDocument& doc, QDomElement& element);
 
-	virtual void timerTick()
-	{
-	}
+	virtual void timerTick();
 
 	virtual bool addSensor(const QString&, const QString&, const QString&, const QString&);
 
@@ -92,6 +90,7 @@ private Q_SLOTS:
 private:
 	KSysGuardProcessList *mProcessList;
 	KSysGuard::Processes *mProcesses;
+	QTime mUpdateInterval;
 };
 
 #endif

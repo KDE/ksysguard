@@ -41,6 +41,7 @@ ProcessController::ProcessController(QWidget* parent)
 {
 	mProcessList = NULL;
 	mProcesses = NULL;
+	mUpdateInterval.start();
 }
 
 void
@@ -125,6 +126,11 @@ bool ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 	return true;
 }
 
+void ProcessController::timerTick()  {
+    mProcessList->setUpdateIntervalMSecs(mUpdateInterval.restart());
+    mProcessList->updateList();
+
+}
 void ProcessController::answerReceived( int id, const QList<QByteArray>& answer ) {
 	if(mProcesses)
 		mProcesses->answerReceived(id, answer);
@@ -141,6 +147,7 @@ bool ProcessController::addSensor(const QString& hostName,
 
 	QStackedLayout *layout = new QStackedLayout(this);
 	mProcessList = new KSysGuardProcessList(this, hostName);
+	mProcessList->setUseInternalTimer(false);
 	mProcessList->setContentsMargins(0,0,0,0);
 	addActions(mProcessList->actions());
 	connect(mProcessList, SIGNAL(updated()), this, SIGNAL(updated()));
