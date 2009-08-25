@@ -247,7 +247,7 @@ bool SensorDisplay::addSensor( const QString &hostName, const QString &name,
 
 bool SensorDisplay::removeSensor( uint pos )
 {
-  if(pos >= mSensors.count())
+  if((int) pos >= mSensors.count())
     return false;
   unregisterSensor( pos );
   return true;
