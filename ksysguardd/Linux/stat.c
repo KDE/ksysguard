@@ -598,6 +598,7 @@ void initStat( struct SensorModul* sm ) {
 			registerMonitor( "cpu/context", "float", printCtxt, printCtxtInfo, StatSM );
 		}
 	}
+    fclose(stat);
 
 	stat = fopen("/proc/vmstat", "r");
     if(!stat) {
@@ -618,7 +619,7 @@ void initStat( struct SensorModul* sm ) {
 			registerMonitor( "cpu/pageOut", "float", printPageOut, printPageOutInfo, StatSM );
 		}
 	}
-	
+	fclose(stat);
 	if ( CPUCount > 0 )
 		SMPLoad = (CPULoadInfo*)calloc( CPUCount, sizeof( CPULoadInfo ) );
 	

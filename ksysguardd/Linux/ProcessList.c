@@ -282,7 +282,10 @@ static bool getProcess( int pid, ProcessInfo *ps )
 
   /*There was a "(ps->vmRss+3) * sysconf(_SC_PAGESIZE)" here originally.  I have no idea why!  After comparing it to
   meminfo and other tools, this means we report the RSS by 12 bytes different compared to them.  So I'm removing the +3
-  to be consistent.  NEXT TIME COMMENT STRANGE THINGS LIKE THAT! :-)*/
+  to be consistent.  NEXT TIME COMMENT STRANGE THINGS LIKE THAT! :-)
+  
+    Update: I think I now know why.  The kernel reserves 3kb for process information.
+  */
   ps->vmRss = ps->vmRss * sysconf(_SC_PAGESIZE) / 1024; /*convert to KiB*/
   ps->vmSize /= 1024; /* convert to KiB */
 
@@ -454,6 +457,7 @@ void exitProcessList( void )
     removeCommand( "kill" );
     removeCommand( "setpriority" );
   }
+  closeDir( procDir );
 
   exitPWUIDCache();
 }

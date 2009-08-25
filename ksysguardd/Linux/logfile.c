@@ -123,6 +123,7 @@ void registerLogFile( const char* cmd )
       if ( ( entry = (LogFileEntry*)malloc( sizeof( LogFileEntry ) ) ) == NULL ) {
         print_error( "malloc()" );
         output( "0\n" );
+        fclose(file);
         return;
       }
 

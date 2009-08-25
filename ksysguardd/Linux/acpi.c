@@ -101,6 +101,7 @@ void initAcpiBattery( struct SensorModul* sm )
 		  AcpiBatteryCharge[ AcpiBatteryNum ] = 0;
 		  AcpiBatteryNum++;
 	  }
+    closedir( d );
   }
 }
 
@@ -284,6 +285,7 @@ void initAcpiThermal(struct SensorModul *sm)
 	  registerMonitor(th_ref, "integer", printThermalZoneTemperature,
 			  printThermalZoneTemperatureInfo, sm);
   }
+  closedir( d );
 
   return;
 }
@@ -380,6 +382,7 @@ void initAcpiFan(struct SensorModul *sm)
 	  registerMonitor(th_ref, "integer", printFanState,
 			  printFanStateInfo, sm);
   }
+  closedir( d );
 
   return;
 }
