@@ -120,6 +120,7 @@ TopLevel::TopLevel()
   statusBar()->hide();
 
   // create actions for menu entries
+  mRefreshTabAction = KStandardAction::redisplay(mWorkSpace,SLOT( refreshActiveWorksheet() ),actionCollection());
   mNewWorksheetAction = actionCollection()->addAction("new_worksheet");
   mNewWorksheetAction->setIcon(KIcon("tab-new"));
   connect(mNewWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( newWorkSheet() ));
@@ -155,6 +156,7 @@ TopLevel::TopLevel()
 void TopLevel::retranslateUi()
 {
   setPlainCaption( i18n( "System Monitor" ) );
+  mRefreshTabAction->setText(i18n("&Refresh Tab"));
   mNewWorksheetAction->setText(i18n( "&New Tab..." ));
   mInsertWorksheetAction->setText(i18n( "Import Tab Fr&om File..." ));
   mTabExportAction->setText( i18n( "Save Tab &As..." ) );
