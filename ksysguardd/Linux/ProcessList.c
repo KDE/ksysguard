@@ -457,7 +457,7 @@ void exitProcessList( void )
     removeCommand( "kill" );
     removeCommand( "setpriority" );
   }
-  closeDir( procDir );
+  closedir( procDir );
 
   exitPWUIDCache();
 }
