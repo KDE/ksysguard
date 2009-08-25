@@ -715,7 +715,6 @@ void KSignalPlotter::calculateNiceRange()
         max = qMax(max, mMaxValue);
         min = qMin(min, mMinValue);
     }
-    kDebug() << "max=" << max << " user=" << mUserMaxValue << " autorange=" << mUseAutoRange;
     double newNiceRange = max - min;
     /* If the range is too small we will force it to 1.0 since it
      * looks a lot nicer. */
