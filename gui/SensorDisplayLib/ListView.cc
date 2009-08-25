@@ -37,7 +37,6 @@
 #include "ListView.h"
 #include "ListView.moc"
 #include "ListViewSettings.h"
-#include "sensor/BasicSensor.h"
 
 ListView::ListView(QWidget* parent, const QString& title, SharedSettings *workSheetSettings)
 	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
@@ -49,7 +48,7 @@ ListView::ListView(QWidget* parent, const QString& title, SharedSettings *workSh
 	mView->setModel(&mModel);
 	layout->addWidget(mView);
 	this->setLayout(layout);
-
+	
 	mView->setContextMenuPolicy( Qt::CustomContextMenu );
 	connect(mView, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(showContextMenu(const QPoint &)));
 	connect(mView, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(showContextMenu(const QPoint &)));
@@ -81,8 +80,8 @@ ListView::addSensor(const QString& hostName, const QString& sensorName, const QS
 		return false;
 	if(sensorName.isEmpty()) return false;
 
-	kDebug(1215) << "addSensor and sensorName is " << sensorName;
-	SensorDisplay::addSensor(hostName, sensorName,sensorType, title);
+	kDebug() << "addSensor and sensorName is " << sensorName;
+	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 
 	setTitle(title);
 
@@ -95,9 +94,8 @@ ListView::addSensor(const QString& hostName, const QString& sensorName, const QS
 
 void ListView::updateList()
 {
-	int listSize = sensorCount();
-	for(int i = 0; i < listSize; i++)
-		sendRequest(sensor(i)->hostName(), sensor(i)->name(), 19);
+	for(int i = 0; i < sensors().count(); i++)
+		sendRequest(sensors().at(i)->hostName(), sensors().at(i)->name(), 19);
 }
 
 ListView::ColumnType ListView::convertColumnType(const QString &type) const
@@ -143,7 +141,7 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
 			for(uint i =0 ; i < colTypes.count(); i++) {
 				mColumnTypes.append(convertColumnType(colTypes[i]));
 			}
-
+			
 			mModel.setHorizontalHeaderLabels(translatedHeaders);
 			//If we have some header settings to restore, we can do so now
 			if(!mHeaderSettings.isEmpty()) {
@@ -210,12 +208,12 @@ bool
 ListView::saveSettings(QDomDocument& doc, QDomElement& element)
 {
 	kDebug() << "save settings";
-	if(sensorCount() != 0) {
-		element.setAttribute("hostName", sensor(0)->hostName());
-		element.setAttribute("sensorName", sensor(0)->name());
-		element.setAttribute("sensorType", sensor(0)->type());
+	if(!sensors().isEmpty()) {
+		element.setAttribute("hostName", sensors().at(0)->hostName());
+		element.setAttribute("sensorName", sensors().at(0)->name());
+		element.setAttribute("sensorType", sensors().at(0)->type());
 
-		kDebug() << "sensorName is " << sensor(0)->name();
+		kDebug() << "sensorName is " << sensors().at(0)->name();
 
 /*	QPalette pal = monitor->palette();
 	saveColor(element, "gridColor", pal.color(QPalette::Link));

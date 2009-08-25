@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-
+   
     Copyright (c) 1999 - 2001 Chris Schlaeger <cs@kde.org>
-
+    
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public
     License version 2 or at your option version 3 as published by
@@ -26,20 +26,16 @@
 #include <QtCore/QPointer>
 #include <QtGui/QLabel>
 #include <QtGui/QWidget>
-#include <QtGui/QMenu>
 
-
-#include "../ksgrd/SensorClient.h"
-#include "../sensor/SensorDataProvider.h"
-#include "../sensor/BasicSensor.h"
-#include "../SharedSettings.h"
-
+#include <ksgrd/SensorClient.h>
+#include "SharedSettings.h"
 
 class QDomDocument;
 class QDomElement;
 
 namespace KSGRD {
 
+class SensorProperties;
 
 /**
   This class is the base class for all displays for sensors. A
@@ -134,7 +130,7 @@ class SensorDisplay : public QWidget, public SensorClient
       @param description A short description of the sensor.
      */
     virtual bool addSensor( const QString &hostName, const QString &name,
-                               const QString &type, const QString &description );
+                            const QString &type, const QString &description );
 
     /**
       Removes the sensor from the display, that is at the position
@@ -219,18 +215,17 @@ class SensorDisplay : public QWidget, public SensorClient
 
     void showContextMenu(const QPoint &);
 
-
-
   Q_SIGNALS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
     void titleChanged(const QString&);
     void translatedTitleChanged(const QString&);
 
   protected:
-	inline int sensorCount() const;
-	inline BasicSensor* sensor(int argIndex);
     virtual bool eventFilter( QObject*, QEvent* );
     virtual void changeEvent( QEvent * event );
+
+    void registerSensor( SensorProperties *sp );
+    void unregisterSensor( uint pos );
 
     QColor restoreColor( QDomElement &element, const QString &attr,
                          const QColor& fallback );
@@ -245,15 +240,9 @@ class SensorDisplay : public QWidget, public SensorClient
 
     bool timerOn() const;
 
-    /**
-     * This will allow subclass to customize the context menu.  Add a separator first if new menu are added.
-     * The properties and remove display menu are installed by default, action id start at 100 for custom menus.
-    */
-   virtual void customizeContextMenu(QMenu &);
-   virtual void handleCustomizeMenuAction(int id);
+    QList<SensorProperties *> &sensors();
 
     SharedSettings *mSharedSettings;
-    SensorDataProvider* sensorDataProvider;
 
   private:
     void updateWhatsThis();
@@ -264,7 +253,7 @@ class SensorDisplay : public QWidget, public SensorClient
     int mTimerId;
     int mUpdateInterval;
 
-
+    QList<SensorProperties *> mSensors;
 
     QString mTitle;
     QString mTranslatedTitle;
@@ -276,14 +265,51 @@ class SensorDisplay : public QWidget, public SensorClient
     QPointer<QObject> mDeleteNotifier;
 };
 
+class SensorProperties
+{
+  public:
+    SensorProperties();
+    SensorProperties( const QString &hostName, const QString &name,
+                      const QString &type, const QString &description );
+    ~SensorProperties();
+
+    void setHostName( const QString &hostName );
+    QString hostName() const;
+
+    bool isLocalhost() const;
+
+    void setName( const QString &name );
+    QString name() const;
+
+    void setType( const QString &type );
+    QString type() const;
+
+    void setDescription( const QString &description );
+    QString description() const;
+
+    void setUnit( const QString &unit );
+    QString unit() const;
+
+    void setIsOk( bool value );
+    bool isOk() const;
+
+    void setRegExpName( const QString &name );
+    QString regExpName() const;
+
+  private:
+    bool mIsLocalhost;
+    QString mHostName;
+    QString mName;
+    QString mType;
+    QString mDescription;
+    QString mUnit;
+    QString mRegExpName;
+
+    /* This flag indicates whether the communication to the sensor is
+     * ok or not. */
+    bool mOk;
+};
 
 }
 
-inline int KSGRD::SensorDisplay::sensorCount() const {
-	return sensorDataProvider->sensorCount();
-}
-
-inline BasicSensor* KSGRD::SensorDisplay::sensor(int argIndex)  {
-	return sensorDataProvider->sensor(argIndex);
-}
 #endif

@@ -58,7 +58,6 @@ class DancingBars : public KSGRD::SensorDisplay
     virtual void applyStyle();
 
   private:
-		void generateAndSetToolTip();
     uint mBars;
 
     BarGraph* mPlotter;

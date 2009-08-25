@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-
+   
     Copyright (c) 1999, 2000, 2001 Chris Schlaeger <cs@kde.org>
-
+    
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public
     License version 2 or at your option version 3 as published by
@@ -33,7 +33,6 @@
 #include "StyleEngine.h"
 
 #include "BarGraph.h"
-#include "DataPointSensor.h"
 #include "DancingBarsSettings.h"
 
 #include "DancingBars.h"
@@ -51,7 +50,7 @@ DancingBars::DancingBars( QWidget *parent, const QString &title, SharedSettings 
 
   setMinimumSize( sizeHint() );
 
-  /* All RMB clicks to the mPlotter widget will be handled by
+  /* All RMB clicks to the mPlotter widget will be handled by 
    * SensorDisplay::eventFilter. */
   mPlotter->installEventFilter( this );
 
@@ -88,14 +87,13 @@ void DancingBars::configureSettings()
 
   SensorModelEntry::List list;
   for ( uint i = mBars - 1; i < mBars; i-- ) {
-	DataPointSensor* currentSensor = static_cast<DataPointSensor *>(sensorDataProvider->sensor( i ));
     SensorModelEntry entry;
     entry.setId( i );
-    entry.setHostName( currentSensor->hostName() );
-    entry.setSensorName( KSGRD::SensorMgr->translateSensor( currentSensor->name() ) );
+    entry.setHostName( sensors().at( i )->hostName() );
+    entry.setSensorName( KSGRD::SensorMgr->translateSensor( sensors().at( i )->name() ) );
     entry.setLabel( mPlotter->footers[ i ] );
-    entry.setUnit( KSGRD::SensorMgr->translateUnit( currentSensor->unit() ) );
-    entry.setStatus( currentSensor->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
+    entry.setUnit( KSGRD::SensorMgr->translateUnit( sensors().at( i )->unit() ) );
+    entry.setStatus( sensors().at( i )->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
 
     list.append( entry );
   }
@@ -122,8 +120,7 @@ void DancingBars::configureSettings()
 
   list = dlg.sensors();
 
-  const int sensorListSize = sensorCount();
-  for ( int i = 0; i < sensorListSize; ++i ) {
+  for ( int i = 0; i < sensors().count(); ++i ) {
     bool found = false;
     for ( int j = 0; j < list.count(); ++j ) {
       if ( list[ j ].id() == (int)( i + delCount ) ) {
@@ -169,9 +166,7 @@ bool DancingBars::addSensor( const QString &hostName, const QString &name,
   if ( !mPlotter->addBar( title ) )
     return false;
 
-  DataPointSensor* sensorToAdd = new DataPointSensor(name,hostName,type,"",Qt::gray);
-  sensorToAdd->addTitle(title);
-  sensorDataProvider->addSensor(sensorToAdd);
+  registerSensor( new KSGRD::SensorProperties( hostName, name, type, title ) );
 
   /* To differentiate between answers from value requests and info
    * requests we add 100 to the beam index for info requests. */
@@ -179,18 +174,15 @@ bool DancingBars::addSensor( const QString &hostName, const QString &name,
   ++mBars;
   mSampleBuffer.resize( mBars );
 
-  generateAndSetToolTip();
+  QString tooltip;
+  for ( uint i = 0; i < mBars; ++i ) {
+    tooltip += QString( "%1%2:%3" ).arg( i != 0 ? "\n" : "" )
+                                   .arg( sensors().at( i )->hostName() )
+                                   .arg( sensors().at( i )->name() );
+  }
+  mPlotter->setToolTip( tooltip );
 
   return true;
-}
-
-void DancingBars::generateAndSetToolTip()
-{
-	QString tooltip;
-	for (uint i = 0; i < mBars; ++i) {
-		tooltip += QString("%1%2:%3").arg(i != 0 ? "\n" : "") .arg(sensorDataProvider->sensor(i)->hostName()) .arg(sensorDataProvider->sensor(i)->name());
-	}
-	mPlotter->setToolTip(tooltip);
 }
 
 bool DancingBars::removeSensor( uint pos )
@@ -203,10 +195,15 @@ bool DancingBars::removeSensor( uint pos )
 
   mPlotter->removeBar( pos );
   mBars--;
-
   KSGRD::SensorDisplay::removeSensor( pos );
 
-  generateAndSetToolTip();
+  QString tooltip;
+  for ( uint i = 0; i < mBars; ++i ) {
+    tooltip += QString( "%1%2:%3" ).arg( i != 0 ? "\n" : "" )
+                                   .arg( sensors().at( i )->hostName() )
+                                   .arg( sensors().at( i )->name() );
+  }
+  mPlotter->setToolTip( tooltip );
 
   return true;
 }
@@ -256,7 +253,7 @@ void DancingBars::answerReceived( int id, const QList<QByteArray> &answerlist )
         mPlotter->changeRange( info.min(), info.max() );
       }
 
-    (static_cast<DataPointSensor *>(sensorDataProvider->sensor( id - 100 )))->setUnit( info.unit() );
+    sensors().at( id - 100 )->setUnit( info.unit() );
   }
 }
 
@@ -311,12 +308,11 @@ bool DancingBars::saveSettings( QDomDocument &doc, QDomElement &element)
   element.setAttribute( "fontSize", mPlotter->fontSize );
 
   for ( uint i = 0; i < mBars; ++i ) {
-	BasicSensor* s = sensorDataProvider->sensor(i);
     QDomElement beam = doc.createElement( "beam" );
     element.appendChild( beam );
-    beam.setAttribute( "hostName", s->hostName() );
-    beam.setAttribute( "sensorName", s->name() );
-    beam.setAttribute( "sensorType", s->type() );
+    beam.setAttribute( "hostName", sensors().at( i )->hostName() );
+    beam.setAttribute( "sensorName", sensors().at( i )->name() );
+    beam.setAttribute( "sensorType", sensors().at( i )->type() );
     beam.setAttribute( "sensorDescr", mPlotter->footers[ i ] );
   }
 

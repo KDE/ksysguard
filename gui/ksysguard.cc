@@ -61,7 +61,6 @@
 #include "HostConnector.h"
 #include "ProcessController.h"
 #include "ProcessTable.h"
-#include "processui/ksysguardprocesslist.h"
 
 #include "ksysguard.h"
 
@@ -98,7 +97,6 @@ TopLevel::TopLevel()
            SLOT( currentTabChanged( int ) ) );
 
   sLocalProcessController = new ProcessController( this);
-  connect( sLocalProcessController, SIGNAL( processListChanged() ), this, SLOT( updateProcessCount()));
 
   /* Create the status bar. It displays some information about the
    * number of processes and the memory consumption of the local
@@ -120,7 +118,6 @@ TopLevel::TopLevel()
   statusBar()->hide();
 
   // create actions for menu entries
-  mRefreshTabAction = KStandardAction::redisplay(mWorkSpace,SLOT( refreshActiveWorksheet() ),actionCollection());
   mNewWorksheetAction = actionCollection()->addAction("new_worksheet");
   mNewWorksheetAction->setIcon(KIcon("tab-new"));
   connect(mNewWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( newWorkSheet() ));
@@ -156,7 +153,6 @@ TopLevel::TopLevel()
 void TopLevel::retranslateUi()
 {
   setPlainCaption( i18n( "System Monitor" ) );
-  mRefreshTabAction->setText(i18n("&Refresh Tab"));
   mNewWorksheetAction->setText(i18n( "&New Tab..." ));
   mInsertWorksheetAction->setText(i18n( "Import Tab Fr&om File..." ));
   mTabExportAction->setText( i18n( "Save Tab &As..." ) );
@@ -338,6 +334,8 @@ void TopLevel::timerEvent( QTimerEvent* )
   if ( statusBar()->isVisibleTo( this ) ) {
     /* Request some info about the memory status. The requested
      * information will be received by answerReceived(). */
+    KSGRD::SensorMgr->sendRequest( "localhost", "pscount",
+                                   (KSGRD::SensorClient*)this, 0 );
     KSGRD::SensorMgr->sendRequest( "localhost", "cpu/idle",
                                    (KSGRD::SensorClient*)this, 1 );
     KSGRD::SensorMgr->sendRequest( "localhost", "mem/physical/free",
@@ -353,10 +351,6 @@ void TopLevel::timerEvent( QTimerEvent* )
   }
 }
 
-void TopLevel::updateProcessCount()  {
-    QString s = i18np( " 1 process ", " %1 processes ", sLocalProcessController->processList()->visibleProcessesCount() );
-    sbProcessCount->setText( s );
-}
 void TopLevel::changeEvent( QEvent * event ) 
 {
   if (event->type() == QEvent::LanguageChange) {
@@ -437,6 +431,12 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
   static qlonglong sFree = 0;
 
   switch ( id ) {
+    case 0:
+      s = i18np( " 1 process ", " %1 processes ", answer.toInt() );
+      sbProcessCount->setText( s );
+
+      break;
+
     case 1:
       s = i18n( " CPU: %1% ", (int) (100 - answer.toFloat()) );
       sbCpuStat->setText( s );

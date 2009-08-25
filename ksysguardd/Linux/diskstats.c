@@ -38,10 +38,7 @@
 #include "diskstats.h"
 
 #define DISKSTATSBUFSIZE (32 * 1024)
-#define DISKDEVNAMELEN 20
-
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
+#define DISKDEVNAMELEN 16
 
 typedef struct
 {
@@ -159,7 +156,7 @@ void processDiskstats( void ) {
 		process26DiskIO(buf);
 	}
 
-	/* save exact time interval between this and the last read of /proc/stat */
+	/* save exact time inverval between this and the last read of /proc/stat */
 	timeInterval = currSampling.tv_sec - lastSampling.tv_sec +
 			( currSampling.tv_usec - lastSampling.tv_usec ) / 1000000.0;
 	lastSampling = currSampling;
@@ -229,7 +226,7 @@ static int process26DiskIO( const char* buf ) {
 		I/O completion time and the backlog that may be accumulating.
 	*/
 
-	switch (sscanf(buf, "%d %d %" TOSTRING(DISKDEVNAMELEN) "s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",
+	switch (sscanf(buf, "%d %d %s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",
 		&major, &minor, devname,
 		&rio, &rmrg, &rblk, &rtim,
 		&wio, &wmrg, &wblk, &wtim,
@@ -251,10 +248,9 @@ static int process26DiskIO( const char* buf ) {
 	
 		break;
 	default:
-		/* Something unexpected */
+		/* Something unexepected */
 		return -1;
 	}
-    devname[DISKDEVNAMELEN-1] = 0;
 	
 	last = 0;
 	ptr = DiskIO;

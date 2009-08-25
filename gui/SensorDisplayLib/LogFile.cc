@@ -58,7 +58,7 @@ LogFile::LogFile(QWidget *parent, const QString& title, SharedSettings *workShee
 
 LogFile::~LogFile(void)
 {
-	sendRequest(sensor(0)->hostName(), QString("logfile_unregister %1" ).arg(logFileID), 43);
+	sendRequest(sensors().at(0)->hostName(), QString("logfile_unregister %1" ).arg(logFileID), 43);
 }
 
 bool
@@ -67,14 +67,14 @@ LogFile::addSensor(const QString& hostName, const QString& sensorName, const QSt
 	if (sensorType != "logfile")
 		return (false);
 
-	SensorDisplay::addSensor(hostName, sensorName,sensorType, title);
+	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 
 	QString sensorID = sensorName.right(sensorName.length() - (sensorName.lastIndexOf("/") + 1));
 
-	sendRequest(sensor(0)->hostName(), QString("logfile_register %1" ).arg(sensorID), 42);
+	sendRequest(sensors().at(0)->hostName(), QString("logfile_register %1" ).arg(sensorID), 42);
 
 	if (title.isEmpty())
-		setTitle(sensor(0)->hostName() + ':' + sensorID);
+		setTitle(sensors().at(0)->hostName() + ':' + sensorID);
 	else
 		setTitle(title);
 
@@ -108,7 +108,7 @@ void LogFile::configureSettings(void)
 	connect(lfs->addButton, SIGNAL(clicked()), this, SLOT(settingsAddRule()));
 	connect(lfs->deleteButton, SIGNAL(clicked()), this, SLOT(settingsDeleteRule()));
 	connect(lfs->changeButton, SIGNAL(clicked()), this, SLOT(settingsChangeRule()));
-	connect(lfs->ruleList, SIGNAL(currentRowChanged(int)), this, SLOT(settingsRuleListSelected(int)));
+	connect(lfs->ruleList, SIGNAL(selected(int)), this, SLOT(settingsRuleListSelected(int)));
 	connect(lfs->ruleText, SIGNAL(returnPressed()), this, SLOT(settingsAddRule()));
 
 	if (dlg.exec()) {
@@ -141,8 +141,7 @@ void LogFile::settingsChangeRule()
 
 void LogFile::settingsRuleListSelected(int index)
 {
-    if (index > -1)
-        lfs->ruleText->setText(lfs->ruleList->item(index)->text());
+	lfs->ruleText->setText(lfs->ruleList->item(index)->text());
 }
 
 void LogFile::applySettings(void)
@@ -204,9 +203,9 @@ LogFile::restoreSettings(QDomElement& element)
 bool
 LogFile::saveSettings(QDomDocument& doc, QDomElement& element)
 {
-	element.setAttribute("hostName", sensor(0)->hostName());
-	element.setAttribute("sensorName", sensor(0)->name());
-	element.setAttribute("sensorType", sensor(0)->type());
+	element.setAttribute("hostName", sensors().at(0)->hostName());
+	element.setAttribute("sensorName", sensors().at(0)->name());
+	element.setAttribute("sensorType", sensors().at(0)->type());
 
 	element.setAttribute("font", monitor->font().toString());
 
@@ -229,8 +228,8 @@ LogFile::saveSettings(QDomDocument& doc, QDomElement& element)
 void
 LogFile::updateMonitor()
 {
-	sendRequest(sensor(0)->hostName(),
-				QString("%1 %2" ).arg(sensor(0)->name()).arg(logFileID), 19);
+	sendRequest(sensors().at(0)->hostName(),
+				QString("%1 %2" ).arg(sensors().at(0)->name()).arg(logFileID), 19);
 }
 
 void

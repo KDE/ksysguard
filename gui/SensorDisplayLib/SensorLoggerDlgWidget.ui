@@ -26,6 +26,34 @@
         </widget>
       </item>
       <item>
+        <widget class="QGroupBox" name="timerFrame" >
+          <property name="title" >
+            <string>Timer Interval</string>
+          </property>
+          <layout class="QHBoxLayout" >
+            <property name="margin" >
+              <number>0</number>
+            </property>
+            <item>
+              <widget class="KIntNumInput" name="m_timerInterval" >
+                <property name="value" >
+                  <number>2</number>
+                </property>
+                <property name="minimum" >
+                  <number>1</number>
+                </property>
+                <property name="maximum" >
+                  <number>99</number>
+                </property>
+                <property name="suffix" >
+                  <string> sec</string>
+                </property>
+              </widget>
+            </item>
+          </layout>
+        </widget>
+      </item>
+      <item>
         <widget class="QGroupBox" name="GroupBox1" >
           <property name="title" >
             <string>Alarm for Minimum Value</string>

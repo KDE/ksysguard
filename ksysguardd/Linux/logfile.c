@@ -59,7 +59,6 @@ void initLogFile( struct SensorModul* sm )
     if ( ( fp = fopen( entry->path, "r" ) ) != NULL ) {
       snprintf( monitor, 1024, "logfiles/%s", entry->name );
       registerMonitor( monitor, "logfile", printLogFile, printLogFileInfo, sm );
-      registerLogFile(entry->name);
       fclose( fp );
     }
   }

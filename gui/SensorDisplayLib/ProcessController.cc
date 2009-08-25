@@ -46,15 +46,14 @@ ProcessController::ProcessController(QWidget* parent)
 void
 ProcessController::sensorError(int, bool err)
 {
-	if (err == sensor(0)->isOk())
+	if (err == sensors().at(0)->isOk())
 	{
-		if (err)  {
+		if (err)
 			kDebug(1215) << "SensorError called with an error";
-		}
 		/* This happens only when the sensorOk status needs to be changed. */
-		sensor(0)->setOk( !err );
+		sensors().at(0)->setIsOk( !err );
 	}
-	setSensorOk(sensor(0)->isOk());
+	setSensorOk(sensors().at(0)->isOk());
 }
 
 bool
@@ -104,14 +103,14 @@ bool ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 {
 	if(!mProcessList)
 		return false;
-	element.setAttribute("hostName", sensor(0)->hostName());
-	element.setAttribute("sensorName", sensor(0)->name());
-	element.setAttribute("sensorType", sensor(0)->type());
+	element.setAttribute("hostName", sensors().at(0)->hostName());
+	element.setAttribute("sensorName", sensors().at(0)->name());
+	element.setAttribute("sensorType", sensors().at(0)->type());
 
 	element.setAttribute("version", QString::number(PROCESSHEADERVERSION));
 	element.setAttribute("treeViewHeader", QString::fromLatin1(mProcessList->treeView()->header()->saveState().toBase64()));
 	element.setAttribute("showTotals", mProcessList->showTotals()?1:0);
-
+	
 	element.setAttribute("units", (int)(mProcessList->units()));
 	element.setAttribute("ioUnits", (int)(mProcessList->processModel()->ioUnits()));
 	element.setAttribute("ioInformation", (int)(mProcessList->processModel()->ioInformation()));
@@ -125,10 +124,6 @@ bool ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 	return true;
 }
 
-void ProcessController::timerTick()  {
-    mProcessList->updateList();
-
-}
 void ProcessController::answerReceived( int id, const QList<QByteArray>& answer ) {
 	if(mProcesses)
 		mProcesses->answerReceived(id, answer);
@@ -145,11 +140,9 @@ bool ProcessController::addSensor(const QString& hostName,
 
 	QStackedLayout *layout = new QStackedLayout(this);
 	mProcessList = new KSysGuardProcessList(this, hostName);
-    mProcessList->setUpdateIntervalMSecs(0); //we will call updateList() manually
 	mProcessList->setContentsMargins(0,0,0,0);
 	addActions(mProcessList->actions());
 	connect(mProcessList, SIGNAL(updated()), this, SIGNAL(updated()));
-	connect(mProcessList, SIGNAL(processListChanged()), this, SIGNAL(processListChanged()));
 
 	layout->addWidget(mProcessList);
 
@@ -164,22 +157,21 @@ bool ProcessController::addSensor(const QString& hostName,
 
 	}
 
-
+		
 	setPlotterWidget(mProcessList);
 
-    QTimer::singleShot(0, mProcessList->filterLineEdit(), SLOT(setFocus()));
+        QTimer::singleShot(0, mProcessList->filterLineEdit(), SLOT(setFocus()));
 
-    SensorDisplay::addSensor(hostName, sensorName,sensorType, title);
+	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 	/* This just triggers the first communication. The full set of
 	* requests are send whenever the sensor reconnects (detected in
 	* sensorError(). */
-	sensor(0)->setOk(true); //Assume it is okay from the start
-	setSensorOk(sensor(0)->isOk());
-	emit processListChanged();
+	sensors().at(0)->setIsOk(true); //Assume it is okay from the start
+	setSensorOk(sensors().at(0)->isOk());
 	return true;
 }
 
 void ProcessController::runCommand(const QString &command, int id) {
-	sendRequest(sensor(0)->hostName(), command, id);
+	sendRequest(sensors().at(0)->hostName(), command, id);
 }
 

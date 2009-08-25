@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-
+   
     Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
-
+    
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public
     License version 2 or at your option version 3 as published by
@@ -26,9 +26,7 @@
 #include <QtCore/QQueue>
 #include <QtCore/QPointer>
 
-
 #include <kdemacros.h>
-#include <kdebug.h>
 
 class QString;
 
@@ -69,7 +67,7 @@ class KDE_EXPORT SensorAgent : public QObject
       used by the SensorAgent. So it can be any value the client suits to
       use.
      */
-    void sendRequest( const QString &req, SensorClient *client, const int id = 0 );
+    void sendRequest( const QString &req, SensorClient *client, int id = 0 );
 
     virtual void hostInfo( QString &sh, QString &cmd, int &port ) const = 0;
 
@@ -79,14 +77,13 @@ class KDE_EXPORT SensorAgent : public QObject
 
     bool daemonOnLine() const;
     QString reasonForOffline() const;
-
+	
   Q_SIGNALS:
     void reconfigure( const SensorAgent* );
 
   protected:
     void processAnswer( const char *buf, int buflen );
     void executeCommand();
-
 
     SensorManager *sensorManager();
 
@@ -96,16 +93,12 @@ class KDE_EXPORT SensorAgent : public QObject
     void setReasonForOffline(const QString &reasonForOffline);
 
   private:
-  virtual bool writeMsg( const char *msg, int len ) = 0;
-  void executeAndEnqueueRequest(SensorRequest *req);
-	/* try and take the request and aggregate it with a request already existing in the processing fifo*/
-	bool tryAndBatchRequest(const QString &req, SensorClient *client, const int id);
-
+    virtual bool writeMsg( const char *msg, int len ) = 0;
     QString mReasonForOffline;
 
     QQueue< SensorRequest* > mInputFIFO;
     QQueue< SensorRequest* > mProcessingFIFO;
-    QList<QByteArray> mAnswerBuffer;  ///A single reply can be on multiple lines.
+    QList<QByteArray> mAnswerBuffer;  ///A single reply can be on multiple lines.  
     QString mErrorBuffer;
     QByteArray mLeftOverBuffer; ///Any data read in but not terminated is copied into here, awaiting the next load of data
 
@@ -121,86 +114,24 @@ class KDE_EXPORT SensorAgent : public QObject
 class SensorRequest
 {
   public:
-    SensorRequest( const QString &request, SensorClient *client, const int id );
+    SensorRequest( const QString &request, SensorClient *client, int id );
     ~SensorRequest();
 
+    void setRequest( const QString& );
     QString request() const;
 
-    void addNewSecondaryRequest( SensorClient* argClient, const int id );
-    QList<SensorClient*> getClients() const;
-    void removeAllRequestWithClient(SensorClient* argClient);
+    void setClient( SensorClient* );
+    SensorClient *client();
 
-    QList<int> getIds() const;
+    void setId( int );
+    int id();
 
   private:
     QString mRequest;
-    QList<SensorClient*> clientList;
-    QList<int> idList;
+    SensorClient *mClient;
+    int mId;
 };
 
 }
-
-inline QList<KSGRD::SensorClient*> KSGRD::SensorRequest::getClients() const
-{
-  return clientList;
-}
-
-inline QString KSGRD::SensorRequest::request() const
-{
-  return mRequest;
-}
-
-inline QList<int> KSGRD::SensorRequest::getIds() const
-{
-  return idList;
-}
-
-inline void KSGRD::SensorRequest::addNewSecondaryRequest( SensorClient* argClient, const int id )
-{
-	clientList.append(argClient);
-	idList.append(id);
-}
-
-inline void KSGRD::SensorRequest::removeAllRequestWithClient(SensorClient* argClient)  {
-	int indexResult = clientList.indexOf(argClient);
-	while (indexResult != -1)  {
-		clientList.removeAt(indexResult);
-		idList.removeAt(indexResult);
-		indexResult = clientList.indexOf(argClient);
-	}
-}
-
-inline void KSGRD::SensorAgent::executeAndEnqueueRequest(SensorRequest *req)
-{
-
-	// send request to daemon
-	QString cmdWithNL = req->request() + '\n';
-	writeMsg( cmdWithNL.toLatin1(), cmdWithNL.length() );
-
-	// add request to processing FIFO.
-	// Note that this means that mProcessingFIFO is now responsible for managing the memory for it.
-	mProcessingFIFO.enqueue( req );
-}
-
-inline bool KSGRD::SensorAgent::tryAndBatchRequest(const QString &req, SensorClient *client, const int id)
-{
-	bool shouldInsert = true;
-	int qSize = mProcessingFIFO.size();
-	int indexId = -1;
-	SensorRequest* sensorReq = NULL;
-	//try to find a request in the processing queue that is the same request so we can batch them together
-	for (int i = 0; i < qSize && shouldInsert; ++i) {
-		sensorReq = mProcessingFIFO.at(i);
-		if (req == sensorReq->request()) {
-			shouldInsert = false;
-			indexId = sensorReq->getIds().indexOf(id,0);
-			//if the id and client are not the same batch the request otherwise do nothing since we already have this request
-			if (indexId == -1 || sensorReq->getClients().at(indexId) != client) {
-				sensorReq->addNewSecondaryRequest(client,id);
-			}
-
-		}
-	}
-	return shouldInsert;
-}
+	
 #endif

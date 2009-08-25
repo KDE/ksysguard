@@ -149,10 +149,8 @@ static void updateCPULoad( const char* line, CPULoadInfo* load ) {
 	unsigned long currUserTicks, currSysTicks, currNiceTicks;
 	unsigned long currIdleTicks, currWaitTicks, totalTicks;
 	
-	if(sscanf( line, "%*s %lu %lu %lu %lu %lu", &currUserTicks, &currNiceTicks,
-		&currSysTicks, &currIdleTicks, &currWaitTicks ) != 5) {
-        return;
-    }
+	sscanf( line, "%*s %lu %lu %lu %lu %lu", &currUserTicks, &currNiceTicks,
+		&currSysTicks, &currIdleTicks, &currWaitTicks );
 	
 	totalTicks = ( currUserTicks - load->userTicks ) +
 		( currSysTicks - load->sysTicks ) +
@@ -433,7 +431,6 @@ static void processStat( void ) {
 			OldPageOut = v1;
 		}
 	}
-	fclose(stat);
 	
 	/* save exact time interval between this and the last read of /proc/stat */
 	timeInterval = currSampling.tv_sec - lastSampling.tv_sec +
@@ -441,7 +438,6 @@ static void processStat( void ) {
 	lastSampling = currSampling;
 	
 	cleanup24DiskList();
-
 }
 
 /*
@@ -620,7 +616,7 @@ void initStat( struct SensorModul* sm ) {
 	}
 	
 	if ( CPUCount > 0 )
-		SMPLoad = (CPULoadInfo*)calloc( CPUCount, sizeof( CPULoadInfo ) );
+		SMPLoad = (CPULoadInfo*)malloc( sizeof( CPULoadInfo ) * CPUCount );
 	
 	/* Call processStat to eliminate initial peek values. */
 	processStat();

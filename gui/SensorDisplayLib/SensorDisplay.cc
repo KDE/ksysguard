@@ -24,7 +24,6 @@
 #include <QMenu>
 #include <QSpinBox>
 
-
 #include <QBitmap>
 #include <QPixmap>
 #include <QEvent>
@@ -58,11 +57,10 @@ SensorDisplay* SensorDisplay::DeleteEvent::display() const
 }
 
 SensorDisplay::SensorDisplay( QWidget *parent, const QString &title, SharedSettings *workSheetSettings)
-  : QWidget(parent)
+  : QWidget( parent )
 {
   mSharedSettings = workSheetSettings;
 
-  sensorDataProvider = new SensorDataProvider();
   mShowUnit = false;
   mTimerId = NONE;
   mErrorIndicator = 0;
@@ -87,29 +85,27 @@ SensorDisplay::~SensorDisplay()
 
   if ( mTimerId > 0 )
     killTimer( mTimerId );
-  delete sensorDataProvider;
+  for(int i = mSensors.size()-1; i>=0; i--)
+    unregisterSensor(i);
 }
 
+void SensorDisplay::registerSensor( SensorProperties *sp )
+{
+  mSensors.append( sp );
+}
+
+void SensorDisplay::unregisterSensor( uint pos )
+{
+  delete mSensors.takeAt( pos );
+}
 
 void SensorDisplay::timerTick()
 {
-  const int listSize = sensorDataProvider->sensorCount();
+  int i = 0;
 
-  for (int var = 0; var < listSize; ++var) {
-	  BasicSensor *s = sensorDataProvider->sensor(var);
-	  foreach (QString currentName, s->nameList())  {
-		  sendRequest( s->hostName(),currentName, var );
-	  }
-
-  }
-}
-
-void SensorDisplay::customizeContextMenu(QMenu & pm)  {
-
-}
-
-void SensorDisplay::handleCustomizeMenuAction(int id) {
-
+  foreach( SensorProperties *s, mSensors) {
+    sendRequest( s->hostName(), s->name(), i++ );
+ }
 }
 
 void SensorDisplay::showContextMenu(const QPoint &pos)
@@ -123,35 +119,28 @@ void SensorDisplay::showContextMenu(const QPoint &pos)
       action->setData( 2 );
       menuEmpty = false;
     }
-    if(mSharedSettings && !mSharedSettings->locked) {
+    if(mSharedSettings && !mSharedSettings->locked) {  
       action = pm.addAction( i18n( "&Remove Display" ) );
       action->setData( 3 );
       menuEmpty = false;
     }
 
-    customizeContextMenu(pm);
-
-
-
     if(menuEmpty) return;
     action = pm.exec( mapToGlobal(pos) );
     if ( action ) {
-      int id = action->data().toInt();
-      switch ( id ) {
+      switch ( action->data().toInt() ) {
         case 1:
           KRun::run(*KService::serviceByDesktopName("ksysguard"), KUrl::List(), window());
           break;
         case 2:
           configureSettings();
           break;
-        case 3:
-          if ( mDeleteNotifier ) {
-            DeleteEvent *event = new DeleteEvent( this );
-            kapp->postEvent( mDeleteNotifier, event );
+        case 3: {
+            if ( mDeleteNotifier ) {
+              DeleteEvent *event = new DeleteEvent( this );
+              kapp->postEvent( mDeleteNotifier, event );
+            }
           }
-          break;
-        default:
-          handleCustomizeMenuAction(id);
           break;
       }
     }
@@ -165,7 +154,7 @@ bool SensorDisplay::eventFilter( QObject *object, QEvent *event )
       showContextMenu( e->pos() );
       return true;
     }
-  }
+  } 
 
   return QWidget::eventFilter( object, event );
 }
@@ -179,19 +168,17 @@ void SensorDisplay::sendRequest( const QString &hostName,
 
 void SensorDisplay::sensorError( int sensorId, bool err )
 {
-
-  const int sensorListSize = sensorDataProvider->sensorCount();
-  if ( sensorId >= sensorListSize || sensorId < 0 )
+  if ( sensorId >= (int)mSensors.count() || sensorId < 0 )
     return;
 
-  if ( err == sensorDataProvider->sensor( sensorId )->isOk() ) {
+  if ( err == mSensors.at( sensorId )->isOk() ) {
     // this happens only when the sensorOk status needs to be changed.
-	  sensorDataProvider->sensor( sensorId )->setOk( !err );
+    mSensors.at( sensorId )->setIsOk( !err );
   }
 
   bool ok = true;
-  for ( int i = 0; i < sensorListSize; ++i )
-    if ( !sensorDataProvider->sensor( i )->isOk() ) {
+  for ( uint i = 0; i < (uint)mSensors.count(); ++i )
+    if ( !mSensors.at( i )->isOk() ) {
       ok = false;
       break;
     }
@@ -212,15 +199,11 @@ void SensorDisplay::updateWhatsThis()
       this->setWhatsThis( additionalWhatsThis());
 }
 
-void SensorDisplay::hosts(QStringList& list)
+void SensorDisplay::hosts( QStringList& list )
 {
-	const int listSize = sensorDataProvider->sensorCount();
-
-	for (int var = 0; var < listSize; ++var) {
-		BasicSensor *s = sensorDataProvider->sensor(var);
-		if (!list.contains(s->hostName()))
-			list.append(s->hostName());
-	}
+  foreach( SensorProperties *s, mSensors)
+    if ( !list.contains( s->hostName() ) )
+      list.append( s->hostName() );
 }
 
 QColor SensorDisplay::restoreColor( QDomElement &element, const QString &attr,
@@ -228,7 +211,7 @@ QColor SensorDisplay::restoreColor( QDomElement &element, const QString &attr,
 {
   bool ok;
   int color = element.attribute( attr ).toUInt( &ok, 0 );
-
+  
   if ( !ok ) {
     kDebug(1215) << "Invalid color read in from worksheet for " << attr << " = " << element.attribute(attr) << " (Not a valid number)";
     return fallback;
@@ -254,18 +237,19 @@ void SensorDisplay::saveColorAppend( QDomElement &element, const QString &attr,
 {
   element.setAttribute( attr, element.attribute(attr) + ",0x" + QString::number(color.rgba(),16) );
 }
+
 bool SensorDisplay::addSensor( const QString &hostName, const QString &name,
                                const QString &type, const QString &description )
 {
-  BasicSensor* toAdd = new BasicSensor(name,hostName,type,"");
-  toAdd->addTitle(description);
-  sensorDataProvider->addSensor(toAdd);
+  registerSensor( new SensorProperties( hostName, name, type, description ) );
   return true;
 }
 
 bool SensorDisplay::removeSensor( uint pos )
 {
-  delete sensorDataProvider->removeSensor(pos);
+  if(pos >= mSensors.count())
+    return false;
+  unregisterSensor( pos );
   return true;
 }
 
@@ -309,6 +293,11 @@ bool SensorDisplay::saveSettings( QDomDocument&, QDomElement &element )
   element.setAttribute( "showUnit", mShowUnit );
 
   return true;
+}
+
+QList<SensorProperties *> &SensorDisplay::sensors()
+{
+  return mSensors;
 }
 
 void SensorDisplay::rmbPressed()
@@ -405,5 +394,95 @@ void SensorDisplay::setPlotterWidget( QWidget *wdg )
   mPlotterWdg = wdg;
 }
 
+SensorProperties::SensorProperties()
+{
+}
+
+SensorProperties::SensorProperties( const QString &hostName, const QString &name,
+                                    const QString &type, const QString &description )
+  : mName( name ), mType( type ), mDescription( description )
+{
+  setHostName(hostName);
+  mOk = false;
+}
+
+SensorProperties::~SensorProperties()
+{
+}
+
+void SensorProperties::setHostName( const QString &hostName )
+{
+  mHostName = hostName;
+  mIsLocalhost = (mHostName.toLower() == "localhost" || mHostName.isEmpty());
+}
+
+bool SensorProperties::isLocalhost() const
+{
+  return mIsLocalhost;
+}
+
+QString SensorProperties::hostName() const
+{
+  return mHostName;
+}
+
+void SensorProperties::setName( const QString &name )
+{
+  mName = name;
+}
+
+QString SensorProperties::name() const
+{
+  return mName;
+}
+
+void SensorProperties::setType( const QString &type )
+{
+  mType = type;
+}
+
+QString SensorProperties::type() const
+{
+  return mType;
+}
+
+void SensorProperties::setDescription( const QString &description )
+{
+  mDescription = description;
+}
+
+QString SensorProperties::description() const
+{
+  return mDescription;
+}
+
+void SensorProperties::setUnit( const QString &unit )
+{
+  mUnit = unit;
+}
+
+QString SensorProperties::unit() const
+{
+  return mUnit;
+}
+
+void SensorProperties::setIsOk( bool value )
+{
+  mOk = value;
+}
+
+bool SensorProperties::isOk() const
+{
+  return mOk;
+}
+
+void SensorProperties::setRegExpName( const QString &name )
+{
+  mRegExpName = name;
+}
+QString SensorProperties::regExpName() const
+{
+  return mRegExpName;
+}
 
 #include "SensorDisplay.moc"

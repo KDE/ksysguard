@@ -23,7 +23,6 @@
 #define FANCYPLOTTERSETTINGS_H
 
 #include <QtCore/QList>
-#include <QtGui/QComboBox>
 
 #include <kpagedialog.h>
 
@@ -45,13 +44,11 @@ class FancyPlotterSettings : public KPageDialog
     FancyPlotterSettings( QWidget* parent, bool locked );
     ~FancyPlotterSettings();
 
-    enum RangeType {ManualReported, Auto , ManualUser};
-
     void setTitle( const QString &title );
     QString title() const;
 
-    void setRangeType( RangeType );
-    RangeType rangeType() const;
+    void setUseAutoRange( bool value );
+    bool useAutoRange() const;
 
     void setMinValue( double min );
     double minValue() const;
@@ -110,7 +107,6 @@ class FancyPlotterSettings : public KPageDialog
     void moveUpSensor();
     void moveDownSensor();
     void setColorForSelectedItem(const QColor &color);
-    void rangeComboChanged(int index);
 
   private:
     KColorButton *mGridLinesColor;
@@ -126,7 +122,7 @@ class FancyPlotterSettings : public KPageDialog
     QCheckBox *mShowVerticalLines;
     QCheckBox *mShowHorizontalLines;
     QCheckBox *mVerticalLinesScroll;
-    QComboBox *mUseAutoRange;
+    QCheckBox *mUseAutoRange;
     QCheckBox *mShowAxis;
     QCheckBox *mShowTopBar;
     QPushButton *mEditButton;

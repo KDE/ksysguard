@@ -29,10 +29,10 @@
 
 #include <ksgrd/SensorClient.h>
 
+
 class QSplitter;
 class SensorBrowserWidget;
 class Workspace;
-
 
 class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
 {
@@ -70,7 +70,6 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     void disconnectHost();
     void updateStatusBar();
     void currentTabChanged(int index);
-    void updateProcessCount();
 
   private:
     void setSwapInfo( qlonglong, qlonglong, const QString& );
@@ -95,7 +94,6 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     QAction *mQuitAction;
     QAction *mConfigureSheetAction;
     QAction *mHotNewWorksheetUploadAction;
-    KAction *mRefreshTabAction;
     QLabel *sbProcessCount;
     QLabel *sbCpuStat;
     QLabel *sbMemTotal;

@@ -52,6 +52,11 @@ QString SensorLoggerDlg::fileName() const
   return m_loggerWidget->m_fileName->url().path();
 }
 
+int SensorLoggerDlg::timerInterval() const
+{
+  return m_loggerWidget->m_timerInterval->value();
+}
+
 bool SensorLoggerDlg::lowerLimitActive() const
 {
   return m_loggerWidget->m_lowerLimitActive->isChecked();
@@ -75,6 +80,11 @@ double SensorLoggerDlg::upperLimit() const
 void SensorLoggerDlg::setFileName( const QString &url )
 {
   m_loggerWidget->m_fileName->setUrl( url );
+}
+
+void SensorLoggerDlg::setTimerInterval( int i )
+{
+  m_loggerWidget->m_timerInterval->setValue( i );
 }
 
 void SensorLoggerDlg::setLowerLimitActive( bool b )

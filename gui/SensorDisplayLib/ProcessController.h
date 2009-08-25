@@ -61,7 +61,9 @@ public:
 
 	bool saveSettings(QDomDocument& doc, QDomElement& element);
 
-	virtual void timerTick();
+	virtual void timerTick()
+	{
+	}
 
 	virtual bool addSensor(const QString&, const QString&, const QString&, const QString&);
 
@@ -83,7 +85,6 @@ public:
 
 Q_SIGNALS:
 	void updated();
-	void processListChanged();
 private Q_SLOTS:
 	void runCommand(const QString &command, int id);
 

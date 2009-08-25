@@ -171,24 +171,13 @@ int updateCpuInfo( void )
         return -1;
     }
 
-    n = 0;
-    for(;;) {
-        ssize_t len = read( fd, CpuInfoBuf + n, CPUINFOBUFSIZE - 1 - n );
-        if( len < 0 ) {
-            print_error( "Failed to read file \'/proc/cpuinfo\'!\n" );
-            CpuInfoOK = -1;
-            close( fd );
-            return -1;
-        }
-        n += len;
-        if( len == 0 ) /* reading finished */
-            break;
-        if( n == CPUINFOBUFSIZE - 1 ) {
-            log_error( "Internal buffer too small to read \'/proc/cpuinfo\'" );
-            CpuInfoOK = 0;
-            close( fd );
-            return -1;
-        }
+    n = read( fd, CpuInfoBuf, CPUINFOBUFSIZE - 1 );
+    if ( n == CPUINFOBUFSIZE - 1 || n <= 0 ) {
+        log_error( "Internal buffer too small to read \'/proc/cpuinfo\'" );
+        CpuInfoOK = 0;
+
+        close( fd );
+        return -1;
     }
 
     close( fd );

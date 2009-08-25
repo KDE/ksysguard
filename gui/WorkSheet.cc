@@ -118,7 +118,7 @@ bool WorkSheet::load( const QString &fileName )
   // Check for proper size.
   QDomElement element = doc.documentElement();
   float interval = element.attribute( "interval", "0.5" ).toFloat();
-  if( interval  < 0 || interval > 100000 )  //make sure the interval is fairly sane
+  if( interval  <0.01 || interval > 100000 )  //make sure the interval is fairly sane
     interval = 0.5;
 
   setUpdateInterval(interval);
@@ -625,15 +625,6 @@ void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* new
   if ( isVisible() ) {
     mDisplayList[ row ][ column ]->show();
   }
-}
-
-void WorkSheet::refreshSheet()
-{
-    for (uint r = 0; r < mRows; ++r)  {
-        for (uint c = 0; c < mColumns; ++c)  {
-            mDisplayList[r][c]->timerTick();
-        }
-    }
 }
 
 void WorkSheet::removeDisplay( KSGRD::SensorDisplay *display )

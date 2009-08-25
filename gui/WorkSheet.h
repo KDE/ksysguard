@@ -68,7 +68,6 @@ class WorkSheet : public QWidget
 
     QString title() const;
     QString translatedTitle() const;
-    void refreshSheet();
 
     KSGRD::SensorDisplay* addDisplay( const QString &hostname,
                                       const QString &monitor,

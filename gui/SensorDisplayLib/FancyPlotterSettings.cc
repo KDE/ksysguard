@@ -92,12 +92,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   boxLayout->setSpacing( spacingHint() );
   boxLayout->setColumnStretch( 2, 1 );
 
-
-  mUseAutoRange = new QComboBox(groupBox);
-  mUseAutoRange->addItem(i18n("Automatic range"));
-  mUseAutoRange->addItem(i18n("Manual with ksysguardd's range"));
-  mUseAutoRange->addItem(i18n("Manual with user's range"));
-  mUseAutoRange->setWhatsThis( i18n( "Choose between the three following range policy:\n\nAutomatic range: adapts dynamically to the currently displayed values\n\nManual with ksysguardd's range: uses ksysguardd's range to set the minimum and maximum value for the axis, please note that if the minimum and maximum are not given by ksysguardd you should not choose this range policy.\n\nManual with user's range: specify your own minimum and maximum range value for the axis in the fields below. Any range value provided by ksysguardd will be ignored." ) );
+  mUseAutoRange = new QCheckBox( i18n( "Automatic range detection" ), groupBox );
+  mUseAutoRange->setWhatsThis( i18n( "Check this box if you want the display range to adapt dynamically to the currently displayed values; if you do not check this, you have to specify the range you want in the fields below." ) );
   boxLayout->addWidget( mUseAutoRange, 0, 0, 1, 5 );
 
   label = new QLabel( i18n( "Minimum value:" ), groupBox );
@@ -283,7 +279,10 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
 
   }
 
-  connect( mUseAutoRange, SIGNAL( currentIndexChanged ( int ) ), this, SLOT( rangeComboChanged( int ) ) );
+  connect( mUseAutoRange, SIGNAL( toggled( bool ) ), mMinValue,
+           SLOT( setDisabled( bool ) ) );
+  connect( mUseAutoRange, SIGNAL( toggled( bool ) ), mMaxValue,
+           SLOT( setDisabled( bool ) ) );
   connect( mShowVerticalLines, SIGNAL( toggled( bool ) ), mVerticalLinesDistance,
            SLOT( setEnabled( bool ) ) );
   connect( mShowVerticalLines, SIGNAL( toggled( bool ) ), mVerticalLinesScroll,
@@ -333,43 +332,16 @@ QString FancyPlotterSettings::title() const
   return mTitle->text();
 }
 
-void FancyPlotterSettings::rangeComboChanged(int index)  {
-    setRangeType(rangeType());
-}
-void FancyPlotterSettings::setRangeType( FancyPlotterSettings::RangeType type )
+void FancyPlotterSettings::setUseAutoRange( bool value )
 {
-  switch (type)  {
-  case Auto:
-      mUseAutoRange->setCurrentIndex(0);
-      mMinValue->setEnabled(false);
-      mMaxValue->setEnabled(false);
-      break;
-  case ManualReported:
-      mUseAutoRange->setCurrentIndex(1);
-      mMinValue->setEnabled(false);
-      mMaxValue->setEnabled(false);
-      break;
-  case ManualUser:
-      mUseAutoRange->setCurrentIndex(2);
-      mMinValue->setEnabled(true);
-      mMaxValue->setEnabled(true);
-      break;
-  }
-
+  mUseAutoRange->setChecked( value );
+  mMinValue->setEnabled( !value );
+  mMaxValue->setEnabled( !value );
 }
 
-FancyPlotterSettings::RangeType FancyPlotterSettings::rangeType() const
+bool FancyPlotterSettings::useAutoRange() const
 {
-    RangeType toreturn = Auto;
-    switch (mUseAutoRange->currentIndex()) {
-    case 1:
-        toreturn = ManualReported;
-        break;
-    case 2:
-        toreturn = ManualUser;
-        break;
-    }
-    return toreturn;
+  return mUseAutoRange->isChecked();
 }
 
 void FancyPlotterSettings::setMinValue( double min )

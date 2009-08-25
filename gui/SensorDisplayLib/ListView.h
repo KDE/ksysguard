@@ -48,7 +48,7 @@ public:
 		return true;
 	}
 
-	virtual void timerTick()
+	virtual void timerTickEvent()
 	{
 		updateList();
 	}
