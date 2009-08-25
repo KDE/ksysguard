@@ -108,7 +108,7 @@ void LogFile::configureSettings(void)
 	connect(lfs->addButton, SIGNAL(clicked()), this, SLOT(settingsAddRule()));
 	connect(lfs->deleteButton, SIGNAL(clicked()), this, SLOT(settingsDeleteRule()));
 	connect(lfs->changeButton, SIGNAL(clicked()), this, SLOT(settingsChangeRule()));
-	connect(lfs->ruleList, SIGNAL(selected(int)), this, SLOT(settingsRuleListSelected(int)));
+	connect(lfs->ruleList, SIGNAL(currentRowChanged(int)), this, SLOT(settingsRuleListSelected(int)));
 	connect(lfs->ruleText, SIGNAL(returnPressed()), this, SLOT(settingsAddRule()));
 
 	if (dlg.exec()) {
@@ -141,7 +141,8 @@ void LogFile::settingsChangeRule()
 
 void LogFile::settingsRuleListSelected(int index)
 {
-	lfs->ruleText->setText(lfs->ruleList->item(index)->text());
+    if (index > -1)
+        lfs->ruleText->setText(lfs->ruleList->item(index)->text());
 }
 
 void LogFile::applySettings(void)
