@@ -49,6 +49,7 @@ class FPSensorProperties : public KSGRD::SensorProperties
     int beamId;
     QString summationName;
     double maxValue;
+    double minValue;
     double lastValue;
     bool isInteger;
 

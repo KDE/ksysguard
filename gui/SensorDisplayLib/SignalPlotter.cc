@@ -156,6 +156,7 @@ void KSignalPlotter::rescale() {
     for(int i = mBeamData.count()-1; i >= 0; i--) {
         recalculateMaxMinValueForSample(mBeamData[i], i);
     }
+    calculateNiceRange();
 }
 
 void KSignalPlotter::addSample( const QList<double>& sampleBuf )
@@ -244,6 +245,8 @@ void KSignalPlotter::removeBeam( uint pos )
         if( (uint)(*i).size() >= pos)
             (*i).removeAt(pos);
     }
+    if(mUseAutoRange)
+        rescale();
 }
 
 void KSignalPlotter::setScaleDownBy( double value )

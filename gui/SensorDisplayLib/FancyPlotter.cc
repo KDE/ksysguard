@@ -255,7 +255,7 @@ void FancyPlotter::applySettings() {
 
     QList<int> deletedBeams = mSettingsDialog->deleted();
     for ( int i =0; i < deletedBeams.count(); ++i) {
-      removeBeam(deletedBeams[i]);
+        removeBeam(deletedBeams[i]);
     }
     mSettingsDialog->clearDeleted(); //We have deleted them, so clear the deleted
 
@@ -363,15 +363,35 @@ bool FancyPlotter::removeBeam( uint beamId )
     mLabelLayout->removeWidget(label);
     delete label;
 
-
+    mSensorReportedMax = 0;
+    mSensorReportedMin = 0;
     for ( int i = sensors().count()-1; i >= 0; --i ) {
         FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(i));
-        if(sensor->beamId > (int)beamId)
-            sensor->beamId--;
-        else if(sensor->beamId == (int)beamId)
-            removeSensor( i );
-        //sensor pointer is no longer after removing the sensor
 
+        if(sensor->beamId == (int)beamId)
+            removeSensor( i );
+        else {
+            if(sensor->beamId > (int)beamId)
+                sensor->beamId--;  //sensor pointer is no longer valid after removing the sensor
+            mSensorReportedMax = qMax(mSensorReportedMax, sensor->maxValue);
+            mSensorReportedMin = qMin(mSensorReportedMin, sensor->minValue);
+        }
+    }
+    //change the plotter's range to the new maximum
+    if ( !mUseManualRange )
+        mPlotter->changeRange( mSensorReportedMin, mSensorReportedMax );
+    else
+        mPlotter->changeRange( mSensorManualMin, mSensorManualMax );
+
+    //loop through the new sensors to find the new unit
+    for ( int i = 0; i < sensors().count(); i++ ) {
+        FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(i));
+        if(i == 0)
+            mUnit = sensor->unit();
+        else if(mUnit != sensor->unit()) {
+            mUnit = "";
+            break;
+        }
     }
     //adjust the scale to take into account the removed sensor
     plotterAxisScaleChanged();
@@ -468,7 +488,7 @@ void FancyPlotter::timerTick( ) //virtual
                         }
                     }
 
-                    if(sensor->maxValue != 0 && mUnit != "%")
+                    if(sensor->maxValue != 0 && sensor->unit() != "%")
                         lastValue = i18nc("%1 and %2 are sensor's last and maximum value", "%1 of %2", lastValue, mPlotter->valueAsString(sensor->maxValue, precision) );
                 } else {
                     lastValue = i18n("Error");
@@ -559,11 +579,17 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
         sensorError( id, false );
     } else if ( id >= 100 && id < 200 ) {
         KSGRD::SensorFloatInfo info( answer );
-        mUnit = info.unit();
-        if(mUnit.toUpper() == "KB" || mUnit.toUpper() == "KIB")
-            mUnit = "KiB";
-        if(mUnit.toUpper() == "KB/S" || mUnit.toUpper() == "KIB/S")
-            mUnit = "KiB/s";
+        QString unit = info.unit();
+        if(unit.toUpper() == "KB" || unit.toUpper() == "KIB")
+            unit = "KiB";
+        if(unit.toUpper() == "KB/S" || unit.toUpper() == "KIB/S")
+            unit = "KiB/s";
+
+        if(id == 100) //if we are the first sensor, just use that sensors units as the global unit
+            mUnit = unit;
+        else if(unit != mUnit)
+            mUnit = ""; //if the units don't match, then set the units on the scale to empty, to avoid any confusion
+
         mSensorReportedMax = qMax(mSensorReportedMax, info.max());
         mSensorReportedMin = qMin(mSensorReportedMin, info.min());
 
@@ -573,7 +599,8 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
 
         FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(id - 100));
         sensor->maxValue = info.max();
-        sensor->setUnit( mUnit );
+        sensor->minValue = info.min();
+        sensor->setUnit( unit );
         sensor->setDescription( info.name() );
 
         QString summationName = sensor->summationName;
@@ -785,6 +812,7 @@ FPSensorProperties::FPSensorProperties( const QString &hostName,
     beamId = beamId_;
     summationName = summationName_;
     maxValue = 0;
+    minValue = 0;
     lastValue = 0;
     isInteger = (type == "integer");
 }
