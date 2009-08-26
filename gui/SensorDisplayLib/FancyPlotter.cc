@@ -209,7 +209,7 @@ void FancyPlotter::configureSettings()
         SensorModelEntry entry;
         entry.setId( i );
         entry.setHostName( sensor->hostName() );
-        entry.setSensorName( sensor->regExpName() );
+        entry.setSensorName( sensor->regExpName().isEmpty()?sensor->name():sensor->regExpName() );
         entry.setUnit( sensor->unit() );
         entry.setStatus( sensor->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
         entry.setColor( mPlotter->beamColor( i ) );
