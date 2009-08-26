@@ -193,13 +193,22 @@ void FancyPlotter::configureSettings()
     mSettingsDialog->setBackgroundColor( mPlotter->backgroundColor() );
 
     SensorModelEntry::List list;
-    for ( uint i = 0; i < mBeams; ++i ) {
+    for ( int i = 0; i < mBeams; ++i ) {
+        FPSensorProperties *sensor = NULL;
+        //find the first sensor for this beam, since one beam can have many sensors
+        for ( int j = 0; j < sensors().count(); ++j ) {
+            FPSensorProperties *sensor2 = static_cast<FPSensorProperties *>(sensors().at(j));
+            if(sensor2->beamId == i)
+                sensor = sensor2;
+        }
+        if(!sensor)
+            return;
         SensorModelEntry entry;
         entry.setId( i );
-        entry.setHostName( sensors().at( i )->hostName() );
-        entry.setSensorName( sensors().at( i )->name() );
-        entry.setUnit( sensors().at( i )->unit() );
-        entry.setStatus( sensors().at( i )->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
+        entry.setHostName( sensor->hostName() );
+        entry.setSensorName( sensor->regExpName() );
+        entry.setUnit( sensor->unit() );
+        entry.setStatus( sensor->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
         entry.setColor( mPlotter->beamColor( i ) );
 
         list.append( entry );
@@ -264,7 +273,7 @@ void FancyPlotter::applySettings() {
 
     SensorModelEntry::List list = mSettingsDialog->sensors();
 
-    for ( int i = 0; i < sensors().count(); ++i ) {
+    for ( int i = 0; i < list.count(); ++i ) {
         mPlotter->setBeamColor( i, list[ i ].color() );
         static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(i)))->widget())->changeLabel(mPlotter->beamColor(i), mIndicatorSymbol);
     }
@@ -561,7 +570,7 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
 
     if(!answerlist.isEmpty()) answer = answerlist[0];
     if ( (uint)id < 100 ) {
-        //Make sure that we put the answer in the correct place.  It's index in the list should be equal to the sensor index.  This in turn will contain the beamId
+        //Make sure that we put the answer in the correct place.  Its index in the list should be equal to the sensor index.  This in turn will contain the beamId
 
         FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(id));
         int beamId = sensor->beamId;
