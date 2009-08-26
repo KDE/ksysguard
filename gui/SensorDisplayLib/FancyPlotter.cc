@@ -191,9 +191,12 @@ void FancyPlotter::configureSettings()
     mSettingsDialog->setFontColor( mPlotter->axisFontColor() );
 
     mSettingsDialog->setBackgroundColor( mPlotter->backgroundColor() );
+    mSettingsDialog->setRangeUnits( mUnit );
+    mSettingsDialog->setRangeUnits( mUnit );
 
+    bool hasIntegerRange = true;
     SensorModelEntry::List list;
-    for ( int i = 0; i < mBeams; ++i ) {
+    for ( int i = 0; i < (int)mBeams; ++i ) {
         FPSensorProperties *sensor = NULL;
         //find the first sensor for this beam, since one beam can have many sensors
         for ( int j = 0; j < sensors().count(); ++j ) {
@@ -210,10 +213,12 @@ void FancyPlotter::configureSettings()
         entry.setUnit( sensor->unit() );
         entry.setStatus( sensor->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
         entry.setColor( mPlotter->beamColor( i ) );
-
+        if(!sensor->isInteger)
+            hasIntegerRange = false;
         list.append( entry );
     }
     mSettingsDialog->setSensors( list );
+    mSettingsDialog->setHasIntegerRange( hasIntegerRange );
 
     connect( mSettingsDialog, SIGNAL( applyClicked() ), this, SLOT( applySettings() ) );
     connect( mSettingsDialog, SIGNAL( okClicked() ), this, SLOT( applySettings() ) );

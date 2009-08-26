@@ -29,6 +29,7 @@
 #include <QtCore/QAbstractTableModel>
 #include <QtCore/QList>
 #include <QtGui/QCheckBox>
+#include <QtGui/QDoubleSpinBox>
 #include <QtGui/QGridLayout>
 #include <QtGui/QGroupBox>
 #include <QtGui/QHeaderView>
@@ -38,7 +39,8 @@
 #include <QtGui/QPixmap>
 #include <QtGui/QPushButton>
 #include <QtGui/QTreeView>
-#include <QDoubleValidator>
+
+#include <limits>
 
 #include "FancyPlotterSettings.h"
 
@@ -100,20 +102,22 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   mMinValueLabel = new QLabel( i18n( "Minimum value:" ), groupBox );
   boxLayout->addWidget( mMinValueLabel, 1, 0 );
 
-  mMinValue = new KLineEdit( groupBox );
-  mMinValue->setValidator(new QDoubleValidator(mMinValue));
-  mMinValue->setAlignment( Qt::AlignRight );
+  mMinValue = new QDoubleSpinBox( groupBox );
+  mMinValue->setMaximum( std::numeric_limits<long long>::max());
+  mMinValue->setMinimum( std::numeric_limits<long long>::min());
   mMinValue->setWhatsThis( i18n( "Enter the minimum value for the display here." ) );
+  mMinValue->setSingleStep(10);
   boxLayout->addWidget( mMinValue, 1, 1 );
   mMinValueLabel->setBuddy( mMinValue );
 
   mMaxValueLabel = new QLabel( i18n( "Maximum value:" ), groupBox );
   boxLayout->addWidget( mMaxValueLabel, 1, 3 );
 
-  mMaxValue = new KLineEdit( groupBox );
-  mMaxValue->setAlignment( Qt::AlignRight );
-  mMaxValue->setValidator(new QDoubleValidator(mMaxValue));
+  mMaxValue = new QDoubleSpinBox( groupBox);
+  mMaxValue->setMaximum( std::numeric_limits<long long>::max());
+  mMaxValue->setMinimum( std::numeric_limits<long long>::min());
   mMaxValue->setWhatsThis( i18n( "Enter the soft maximum value for the display here. The upper range will not be reduced below this value, but will still go above this number for values above this value." ) );
+  mMaxValue->setSingleStep(10);
   boxLayout->addWidget( mMaxValue, 1, 4 );
   mMaxValueLabel->setBuddy( mMaxValue );
 
@@ -336,6 +340,12 @@ QString FancyPlotterSettings::title() const
   return mTitle->text();
 }
 
+void FancyPlotterSettings::setRangeUnits( const QString & units )
+{
+  mMinValue->setSuffix(" " + units);
+  mMaxValue->setSuffix(" " + units);
+}
+
 void FancyPlotterSettings::setUseManualRange( bool value )
 {
   mManualRange->setChecked( value );
@@ -348,22 +358,27 @@ bool FancyPlotterSettings::useManualRange() const
 
 void FancyPlotterSettings::setMinValue( double min )
 {
-  mMinValue->setText( QString::number( min ) );
+  mMinValue->setValue( min );
 }
 
 double FancyPlotterSettings::minValue() const
 {
-  return mMinValue->text().toDouble();
+  return mMinValue->value();
 }
 
 void FancyPlotterSettings::setMaxValue( double max )
 {
-  mMaxValue->setText( QString::number( max ) );
+  mMaxValue->setValue( max );
 }
 
+void FancyPlotterSettings::setHasIntegerRange( bool hasIntegerRange )
+{
+    mMaxValue->setDecimals( hasIntegerRange?0:2 );
+    mMinValue->setDecimals( hasIntegerRange?0:2 );
+}
 double FancyPlotterSettings::maxValue() const
 {
-  return mMaxValue->text().toDouble();
+  return mMaxValue->value();
 }
 
 void FancyPlotterSettings::setHorizontalScale( int scale )

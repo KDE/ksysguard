@@ -35,6 +35,7 @@ class KLineEdit;
 class QCheckBox;
 class QPushButton;
 class QTreeView;
+class QDoubleSpinBox;
 
 class FancyPlotterSettings : public KPageDialog
 {
@@ -99,6 +100,8 @@ class FancyPlotterSettings : public KPageDialog
     void clearDeleted();
     void resetOrder();
 
+    void setRangeUnits( const QString & units );
+    void setHasIntegerRange( bool hasIntegerRange );
 
   private Q_SLOTS:
     void editSensor();
@@ -112,8 +115,8 @@ class FancyPlotterSettings : public KPageDialog
     KColorButton *mGridLinesColor;
     KColorButton *mBackgroundColor;
     KColorButton *mFontColor;
-    KLineEdit *mMinValue;
-    KLineEdit *mMaxValue;
+    QDoubleSpinBox *mMinValue;
+    QDoubleSpinBox *mMaxValue;
     QLabel *mMinValueLabel;
     QLabel *mMaxValueLabel;
     KLineEdit *mTitle;
