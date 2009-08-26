@@ -30,6 +30,7 @@
 #include <QtCore/QList>
 #include <QtGui/QCheckBox>
 #include <QtGui/QDoubleSpinBox>
+#include <QtGui/QFormLayout>
 #include <QtGui/QGridLayout>
 #include <QtGui/QGroupBox>
 #include <QtGui/QHeaderView>
@@ -124,18 +125,14 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   pageLayout->addWidget( groupBox, 0, 0 );
 
   groupBox = new QGroupBox( i18n( "Horizontal scale" ), page );
-  boxLayout = new QGridLayout;
-  groupBox->setLayout( boxLayout );
-  boxLayout->setSpacing( spacingHint() );
-  boxLayout->setRowStretch( 1, 1 );
-
-  label = new QLabel( i18n( "Pixels per time period:" ), groupBox );
-  boxLayout->addWidget( label, 0, 0 );
+  QFormLayout *formLayout = new QFormLayout(groupBox);
 
   mHorizontalScale = new KIntNumInput( 1, groupBox );
   mHorizontalScale->setMinimum( 1 );
   mHorizontalScale->setMaximum( 50 );
-  boxLayout->addWidget( mHorizontalScale, 0, 1 );
+
+  formLayout->addRow( i18n("Pixels per time period:"), mHorizontalScale );
+
 
   pageLayout->addWidget( groupBox, 1, 0 );
 
@@ -193,36 +190,19 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   mFontSize->setMaximum( 24 );
   boxLayout->addWidget( mFontSize, 1, 1 );
   label->setBuddy( mFontSize );
-  boxLayout->setRowStretch( 2, 1 );
 
   pageLayout->addWidget( groupBox, 1, 0 );
 
   groupBox = new QGroupBox( i18n( "Colors" ), page );
-  boxLayout = new QGridLayout;
-  groupBox->setLayout( boxLayout );
-  boxLayout->setSpacing( spacingHint() );
 
-  label = new QLabel( i18n( "Font:" ), groupBox );
-  boxLayout->addWidget( label, 0, 0 );
-  mFontColor = new KColorButton( groupBox );
-  boxLayout->addWidget( mFontColor, 0, 1 );
-  label->setBuddy( mFontColor );
+  mFontColor = new KColorButton;
+  mGridLinesColor = new KColorButton;
+  mBackgroundColor = new KColorButton;
 
-
-  label = new QLabel( i18n( "Grid lines:" ), groupBox );
-  boxLayout->addWidget( label, 1, 0 );
-  mGridLinesColor = new KColorButton( groupBox );
-  boxLayout->addWidget( mGridLinesColor, 1, 1 );
-  label->setBuddy( mGridLinesColor );
-
-  label = new QLabel( i18n( "Background:" ), groupBox );
-  boxLayout->addWidget( label, 2, 0 );
-
-  mBackgroundColor = new KColorButton( groupBox );
-  boxLayout->addWidget( mBackgroundColor, 2, 1 );
-  label->setBuddy( mBackgroundColor );
-
-  boxLayout->setRowStretch( 3, 1 );
+  formLayout = new QFormLayout( groupBox );
+  formLayout->addRow( i18n("Font:"), mFontColor);
+  formLayout->addRow( i18n("Grid lines:"), mGridLinesColor);
+  formLayout->addRow( i18n("Background:"), mBackgroundColor);
 
   pageLayout->addWidget( groupBox, 1, 1 );
 
