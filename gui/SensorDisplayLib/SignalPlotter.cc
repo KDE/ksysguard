@@ -715,7 +715,8 @@ void KSignalPlotter::calculateNiceRange()
     double max = mUserMaxValue;
     double min = mUserMinValue;
     if( mUseAutoRange ) {
-        max = qMax(max, mMaxValue);
+        if(mMaxValue * 0.99 > max)  //Allow max value to go very slightly over the given max, for rounding reasons
+            max = mMaxValue;
         min = qMin(min, mMinValue);
     }
     double newNiceRange = max - min;
