@@ -1,8 +1,7 @@
 /*
-    KSysGuard, the KDE System Guard
+    This file is part of the KDE project
 
-    Copyright (c) 1999 - 2002 Chris Schlaeger <cs@kde.org>
-    Copyright (c) 2006 John Tapsell <tapsell@kde.org>
+    Copyright (c) 2006 - 2009 John Tapsell <tapsell@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public
@@ -25,6 +24,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QPixmap>
 #include <QtGui/QPainterPath>
+#include <QtGui/QPaintEvent>
 
 #include <kdebug.h>
 #include <kglobal.h>
@@ -32,6 +32,7 @@
 #include <kapplication.h>
 
 #include "SignalPlotter.h"
+#include "SignalPlotter_p.h"
 
 #ifdef SVG_SUPPORT
 #include <plasma/svg.h>
@@ -46,7 +47,16 @@ QHash<QString, Plasma::Svg *> KSignalPlotter::sSvgRenderer ;
 #endif
 
 KSignalPlotter::KSignalPlotter( QWidget *parent)
-  : QWidget( parent)
+  : QWidget( parent), d(new KSignalPlotterPrivate(this))
+{
+    // Anything smaller than this does not make sense.
+    setMinimumSize( 16, 16 );
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    sizePolicy.setHeightForWidth(false);
+    setSizePolicy( sizePolicy );
+}
+
+KSignalPlotterPrivate::KSignalPlotterPrivate(KSignalPlotter * q_ptr) : q(q_ptr)
 {
     mPrecision = 0;
     mSamples = 0;
@@ -58,26 +68,16 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
     mScaleDownBy = 1;
     mShowThinFrame = true;
     mSmoothGraph = true;
-
-    // Anything smaller than this does not make sense.
-    setMinimumSize( 16, 16 );
-    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    sizePolicy.setHeightForWidth(false);
-    setSizePolicy( sizePolicy );
-
     mShowVerticalLines = true;
     mVerticalLinesColor = QColor(0xC3,0xC3,0xC3);
     mVerticalLinesDistance = 30;
     mVerticalLinesScroll = true;
     mVerticalLinesOffset = 0;
     mHorizontalScale = 1;
-
     mShowHorizontalLines = true;
     mHorizontalLinesColor = QColor(0xC3, 0xC3, 0xC3);
     mHorizontalLinesCount = 4;
-
     mShowAxis = true;
-
     mBackgroundColor = QColor(0,0,0);
     mAxisTextWidth = 0;
     mScrollOffset = 0;
@@ -91,44 +91,43 @@ KSignalPlotter::~KSignalPlotter()
 }
 
 KLocalizedString KSignalPlotter::unit() const {
-    return mUnit;
+    return d->mUnit;
 }
 void KSignalPlotter::setUnit(const KLocalizedString &unit) {
-    mUnit = unit;
+    d->mUnit = unit;
 }
-
 
 void KSignalPlotter::addBeam( const QColor &color )
 {
     QList< QList<double> >::Iterator it;
     //When we add a new beam, go back and set the data for this beam to 0 for all the other times. This is because it makes it easier for
     //moveSensors
-    for(it = mBeamData.begin(); it != mBeamData.end(); ++it) {
+    for(it = d->mBeamData.begin(); it != d->mBeamData.end(); ++it) {
         (*it).append(0);
     }
-    mBeamColors.append(color);
-    mBeamColorsDark.append(color.darker(150));
+    d->mBeamColors.append(color);
+    d->mBeamColorsDark.append(color.darker(150));
 }
 
 QColor KSignalPlotter::beamColor( int index ) {
-    return mBeamColors[ index ];
+    return d->mBeamColors[ index ];
 }
 
-void KSignalPlotter::setBeamColor( int index, QColor color ) {
+void KSignalPlotter::setBeamColor( int index, const QColor &color ) {
     if(!color.isValid()) {
         kDebug(1215) << "Invalid color";
         return;
     }
 
-    mBeamColors[ index ] = color;
-    mBeamColorsDark[ index ] = color.darker(150);
+    d->mBeamColors[ index ] = color;
+    d->mBeamColorsDark[ index ] = color.darker(150);
 }
 
 int KSignalPlotter::numBeams() {
-    return mBeamColors.count();
+    return d->mBeamColors.count();
 }
 
-void KSignalPlotter::recalculateMaxMinValueForSample(const QList<double>&sampleBuf, int time ) 
+void KSignalPlotterPrivate::recalculateMaxMinValueForSample(const QList<double>&sampleBuf, int time ) 
 {
     if(mStackBeams) {
         double value=0;
@@ -151,7 +150,7 @@ void KSignalPlotter::recalculateMaxMinValueForSample(const QList<double>&sampleB
     }
 }
 
-void KSignalPlotter::rescale() {
+void KSignalPlotterPrivate::rescale() {
     mMaxValue = mMinValue = 0;
     for(int i = mBeamData.count()-1; i >= 0; i--) {
         recalculateMaxMinValueForSample(mBeamData[i], i);
@@ -160,6 +159,11 @@ void KSignalPlotter::rescale() {
 }
 
 void KSignalPlotter::addSample( const QList<double>& sampleBuf )
+{
+    d->addSample(sampleBuf);
+    update(d->mPlottingArea);
+}
+void KSignalPlotterPrivate::addSample( const QList<double>& sampleBuf )
 {
     if(mSamples < 4) {
         //It might be possible, under some race conditions, for addSample to be called before mSamples is set
@@ -192,18 +196,17 @@ void KSignalPlotter::addSample( const QList<double>& sampleBuf )
             % mVerticalLinesDistance;
     }
     drawBeamToScrollableImage(0);
-    update(mPlottingArea);
 }
 
 void KSignalPlotter::reorderBeams( const QList<int>& newOrder )
 {
-    if(newOrder.count() != mBeamColors.count()) {
+    if(newOrder.count() != d->mBeamColors.count()) {
         return;
     }
     QList< QList<double> >::Iterator it;
-    for(it = mBeamData.begin(); it != mBeamData.end(); ++it) {
+    for(it = d->mBeamData.begin(); it != d->mBeamData.end(); ++it) {
         if(newOrder.count() != (*it).count()) {
-            kDebug(1215) << "Serious problem in move sample.  beamdata[i] has " << (*it).count() << " and neworder has " << newOrder.count();
+            kWarning(1215) << "Serious problem in move sample.  beamdata[i] has " << (*it).count() << " and neworder has " << newOrder.count();
         } else {
             QList<double> newBeam;
             for(int i = 0; i < newOrder.count(); i++) {
@@ -217,197 +220,200 @@ void KSignalPlotter::reorderBeams( const QList<int>& newOrder )
     QList< QColor > newBeamColorsDark;
     for(int i = 0; i < newOrder.count(); i++) {
         int newIndex = newOrder[i];
-        newBeamColors.append(mBeamColors.at(newIndex));
-        newBeamColorsDark.append(mBeamColorsDark.at(newIndex));
+        newBeamColors.append(d->mBeamColors.at(newIndex));
+        newBeamColorsDark.append(d->mBeamColorsDark.at(newIndex));
     }
-    mBeamColors = newBeamColors;
-    mBeamColorsDark = newBeamColorsDark;
+    d->mBeamColors = newBeamColors;
+    d->mBeamColorsDark = newBeamColorsDark;
 }
 
 
 void KSignalPlotter::changeRange( double min, double max )
 {
-    if( min == mUserMinValue && max == mUserMaxValue ) return;
-    mUserMinValue = min;
-    mUserMaxValue = max;
-    calculateNiceRange();
+    if( min == d->mUserMinValue && max == d->mUserMaxValue ) return;
+    d->mUserMinValue = min;
+    d->mUserMaxValue = max;
+    d->calculateNiceRange();
 }
 
 void KSignalPlotter::removeBeam( uint pos )
 {
-    if(pos >= (uint)mBeamColors.size()) return;
-    if(pos >= (uint)mBeamColorsDark.size()) return;
-    mBeamColors.removeAt( pos );
-    mBeamColorsDark.removeAt(pos);
+    if(pos >= (uint)d->mBeamColors.size()) return;
+    if(pos >= (uint)d->mBeamColorsDark.size()) return;
+    d->mBeamColors.removeAt( pos );
+    d->mBeamColorsDark.removeAt(pos);
 
     QList< QList<double> >::Iterator i;
-    for(i = mBeamData.begin(); i != mBeamData.end(); ++i) {
+    for(i = d->mBeamData.begin(); i != d->mBeamData.end(); ++i) {
         if( (uint)(*i).size() >= pos)
             (*i).removeAt(pos);
     }
-    if(mUseAutoRange)
-        rescale();
+    if(d->mUseAutoRange)
+        d->rescale();
 }
 
 void KSignalPlotter::setScaleDownBy( double value )
 { 
-    if(mScaleDownBy == value) return;
-    mScaleDownBy = value;
-    mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
-    calculateNiceRange();
+    if(d->mScaleDownBy == value) return;
+    d->mScaleDownBy = value;
+    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    d->calculateNiceRange();
     update();
 }
-double KSignalPlotter::scaleDownBy() const { return mScaleDownBy; }
+double KSignalPlotter::scaleDownBy() const
+{
+    return d->mScaleDownBy;
+}
 
 void KSignalPlotter::setUseAutoRange( bool value )
 {
-    mUseAutoRange = value;
-    calculateNiceRange();
+    d->mUseAutoRange = value;
+    d->calculateNiceRange();
     //this change will be detected in paint and the image cache regenerated
 }
 
 bool KSignalPlotter::useAutoRange() const
 {
-    return mUseAutoRange;
+    return d->mUseAutoRange;
 }
 
 void KSignalPlotter::setMinimumValue( double min )
 {
-    if(min == mUserMinValue) return;
-    mUserMinValue = min;
-    calculateNiceRange();
+    if(min == d->mUserMinValue) return;
+    d->mUserMinValue = min;
+    d->calculateNiceRange();
     //this change will be detected in paint and the image cache regenerated
 }
 
 double KSignalPlotter::minimumValue() const
 {
-    return mUserMinValue;
+    return d->mUserMinValue;
 }
 
 void KSignalPlotter::setMaximumValue( double max )
 {
-    if(max == mUserMaxValue) return;
-    mUserMaxValue = max;
-    calculateNiceRange();
+    if(max == d->mUserMaxValue) return;
+    d->mUserMaxValue = max;
+    d->calculateNiceRange();
     //this change will be detected in paint and the image cache regenerated
 }
 
 double KSignalPlotter::maximumValue() const
 {
-    return mUserMaxValue;
+    return d->mUserMaxValue;
 }
 
 double KSignalPlotter::currentMaximumRangeValue() const
 {
-    return mNiceMaxValue;
+    return d->mNiceMaxValue;
 }
 
 double KSignalPlotter::currentMinimumRangeValue() const
 {
-    return mNiceMinValue;
+    return d->mNiceMinValue;
 }
 
 void KSignalPlotter::setHorizontalScale( uint scale )
 {
-    if (scale == mHorizontalScale)
+    if (scale == d->mHorizontalScale)
         return;
 
-    mHorizontalScale = scale;
-    updateDataBuffers();
-    mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    d->mHorizontalScale = scale;
+    d->updateDataBuffers();
+    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
     update();
 }
 
 int KSignalPlotter::horizontalScale() const
 {
-    return mHorizontalScale;
+    return d->mHorizontalScale;
 }
 
 void KSignalPlotter::setShowVerticalLines( bool value )
 {
-    if(mShowVerticalLines == value) return;
-    mShowVerticalLines = value;
-    mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    if(d->mShowVerticalLines == value) return;
+    d->mShowVerticalLines = value;
+    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
 #ifdef USE_QIMAGE
-    mScrollableImage = QImage();
+    d->mScrollableImage = QImage();
 #else
-    mScrollableImage = QPixmap();
+    d->mScrollableImage = QPixmap();
 #endif
 }
 
 bool KSignalPlotter::showVerticalLines() const
 {
-    return mShowVerticalLines;
+    return d->mShowVerticalLines;
 }
 
 void KSignalPlotter::setVerticalLinesColor( const QColor &color )
 {
-    if(mVerticalLinesColor == color) return;
+    if(d->mVerticalLinesColor == color) return;
     if(!color.isValid()) {
-        kDebug(1215) << "Invalid color";
+        kWarning(1215) << "Invalid color";
         return;
     }
 
-    mVerticalLinesColor = color;
-    mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    d->mVerticalLinesColor = color;
+    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
 #ifdef USE_QIMAGE
-    mScrollableImage = QImage();
+    d->mScrollableImage = QImage();
 #else
-    mScrollableImage = QPixmap();
+    d->mScrollableImage = QPixmap();
 #endif
 }
 
 QColor KSignalPlotter::verticalLinesColor() const
 {
-    return mVerticalLinesColor;
+    return d->mVerticalLinesColor;
 }
 
 void KSignalPlotter::setVerticalLinesDistance( uint distance )
 {
-    if(distance == mVerticalLinesDistance) return;
-    mVerticalLinesDistance = distance;
-    mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    if(distance == d->mVerticalLinesDistance) return;
+    d->mVerticalLinesDistance = distance;
+    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
 #ifdef USE_QIMAGE
-    mScrollableImage = QImage();
+    d->mScrollableImage = QImage();
 #else
-    mScrollableImage = QPixmap();
+    d->mScrollableImage = QPixmap();
 #endif
 
 }
 
 int KSignalPlotter::verticalLinesDistance() const
 {
-    return mVerticalLinesDistance;
+    return d->mVerticalLinesDistance;
 }
 
 void KSignalPlotter::setVerticalLinesScroll( bool value )
 {
-    if(value == mVerticalLinesScroll) return;
-    mVerticalLinesScroll = value;
-    mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    if(value == d->mVerticalLinesScroll) return;
+    d->mVerticalLinesScroll = value;
+    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
 #ifdef USE_QIMAGE
-    mScrollableImage = QImage();
+    d->mScrollableImage = QImage();
 #else
-    mScrollableImage = QPixmap();
+    d->mScrollableImage = QPixmap();
 #endif
 
 }
 
 bool KSignalPlotter::verticalLinesScroll() const
 {
-    return mVerticalLinesScroll;
+    return d->mVerticalLinesScroll;
 }
 
 void KSignalPlotter::setShowHorizontalLines( bool value )
 {
-    if(value == mShowHorizontalLines) return;
-    mShowHorizontalLines = value;
-    mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    if(value == d->mShowHorizontalLines) return;
+    d->mShowHorizontalLines = value;
+    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
 }
 
 bool KSignalPlotter::showHorizontalLines() const
 {
-    return mShowHorizontalLines;
+    return d->mShowHorizontalLines;
 }
 void KSignalPlotter::setAxisFontColor( const QColor &color )
 {
@@ -416,12 +422,12 @@ void KSignalPlotter::setAxisFontColor( const QColor &color )
         return;
     }
 
-    mFontColor = color;
+    d->mFontColor = color;
 }
 
 QColor KSignalPlotter::axisFontColor() const
 {
-    return mFontColor;
+    return d->mFontColor;
 }
 
 
@@ -432,91 +438,102 @@ void KSignalPlotter::setHorizontalLinesColor( const QColor &color )
         return;
     }
 
-    if(color == mHorizontalLinesColor) return;
-    mHorizontalLinesColor = color;
-    mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    if(color == d->mHorizontalLinesColor) return;
+    d->mHorizontalLinesColor = color;
+    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
 }
 
 QColor KSignalPlotter::horizontalLinesColor() const
 {
-    return mHorizontalLinesColor;
+    return d->mHorizontalLinesColor;
 }
 
 void KSignalPlotter::setShowAxis( bool value )
 {
-    if(value == mShowAxis) return;
-    mShowAxis = value;
-    mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    if(value == d->mShowAxis) return;
+    d->mShowAxis = value;
+    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
 #ifdef USE_QIMAGE
-    mScrollableImage = QImage();
+    d->mScrollableImage = QImage();
 #else
-    mScrollableImage = QPixmap();
+    d->mScrollableImage = QPixmap();
 #endif
 }
 
 bool KSignalPlotter::showAxis() const
 {
-    return mShowAxis;
+    return d->mShowAxis;
 }
 
 void KSignalPlotter::setAxisFont( const QFont &font )
 {
-    mFont = font;
-    mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    d->mFont = font;
+    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
 #ifdef USE_QIMAGE
-    mScrollableImage = QImage();
+    d->mScrollableImage = QImage();
 #else
-    mScrollableImage = QPixmap();
+    d->mScrollableImage = QPixmap();
 #endif
 
 }
 
 QFont KSignalPlotter::axisFont() const
 {
-    return mFont;
+    return d->mFont;
 }
 QString KSignalPlotter::svgBackground() const { 
-    return mSvgFilename;
+    return d->mSvgFilename;
 }
 void KSignalPlotter::setSvgBackground( const QString &filename )
 {
-    if(mSvgFilename == filename) return;
-    mSvgFilename = filename;
-    mBackgroundImage = QPixmap();
+    if(d->mSvgFilename == filename) return;
+    d->mSvgFilename = filename;
+    d->mBackgroundImage = QPixmap();
 }
 
 void KSignalPlotter::setBackgroundColor( const QColor &color )
 {
-    if(color == mBackgroundColor) return;
+    if(color == d->mBackgroundColor) return;
     if(!color.isValid()) {
         kDebug(1215) << "Invalid color";
         return;
     }
-    mBackgroundColor = color;
-    mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    d->mBackgroundColor = color;
+    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
 }
 
 QColor KSignalPlotter::backgroundColor() const
 {
-    return mBackgroundColor;
+    return d->mBackgroundColor;
 }
 
 void KSignalPlotter::setThinFrame( bool set) 
 {
-    if(mShowThinFrame == set) return;
-    mShowThinFrame = set;
-    mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    if(d->mShowThinFrame == set) return;
+    d->mShowThinFrame = set;
+    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
 }
 bool KSignalPlotter::thinFrame() const
 {
-    return mShowThinFrame;
-}
-void KSignalPlotter::resizeEvent( QResizeEvent* )
-{
-    updateDataBuffers();
+    return d->mShowThinFrame;
 }
 
-void KSignalPlotter::updateDataBuffers()
+void KSignalPlotter::setMaxAxisTextWidth(int axisTextWidth)
+{
+    d->mAxisTextWidth = axisTextWidth;
+}
+
+int KSignalPlotter::maxAxisTextWidth() const
+{
+    return d->mAxisTextWidth;
+}
+
+void KSignalPlotter::resizeEvent( QResizeEvent* )
+{
+    d->updateDataBuffers();
+}
+
+void KSignalPlotterPrivate::updateDataBuffers()
 {
 
     /*  This is called when the widget has resized
@@ -526,12 +543,15 @@ void KSignalPlotter::updateDataBuffers()
      *  +4 for extra data points so there is
      *     1) no wasted space and
      *     2) no loss of precision when drawing the first data point. */
-    mSamples = static_cast<uint>( ( ( width() - 2 ) /
+    mSamples = static_cast<uint>( ( ( q->width() - 2 ) /
                 mHorizontalScale ) + 4.5 );
 }
 
 void KSignalPlotter::paintEvent( QPaintEvent* event)
 {
+    if (testAttribute(Qt::WA_PendingResizeEvent))
+        return; // lets not do this more than necessary, shall we?
+
     uint w = width();
     uint h = height();
     /* Do not do repaints when the widget is not yet setup properly. */
@@ -539,13 +559,13 @@ void KSignalPlotter::paintEvent( QPaintEvent* event)
         return;
     QPainter p(this);
 
-    if(event && mPlottingArea.contains(event->rect()))
-        drawWidget(&p, QRect(0,0,w, h), true);  // do not bother drawing axis text etc.
+    if(event && d->mPlottingArea.contains(event->rect()))
+        d->drawWidget(&p, QRect(0,0,w, h), true);  // do not bother drawing axis text etc.
     else
-        drawWidget(&p, QRect(0,0,w, h), false);
+        d->drawWidget(&p, QRect(0,0,w, h), false);
 }
 
-void KSignalPlotter::drawWidget(QPainter *p, QRect boundingBox, bool onlyDrawPlotter)
+void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool onlyDrawPlotter)
 {
     if(boundingBox.height() <= 2 || boundingBox.width() <= 2 ) return;
     p->setFont( mFont );
@@ -675,12 +695,8 @@ void KSignalPlotter::drawWidget(QPainter *p, QRect boundingBox, bool onlyDrawPlo
 #endif
     }
 }
-void KSignalPlotter::drawBackground(QPainter *p, const QRect &boundingBox)
+void KSignalPlotterPrivate::drawBackground(QPainter *p, const QRect &boundingBox)
 {
-    if (testAttribute(Qt::WA_PendingResizeEvent)) {
-        return; // lets not do this more than necessary, shall we?
-    }
-
     p->fillRect(boundingBox, mBackgroundColor);
 
     if(mSvgFilename.isEmpty())
@@ -701,16 +717,16 @@ void KSignalPlotter::drawBackground(QPainter *p, const QRect &boundingBox)
 #endif
 }
 
-void KSignalPlotter::drawThinFrame(QPainter *p, const QRect &boundingBox)
+void KSignalPlotterPrivate::drawThinFrame(QPainter *p, const QRect &boundingBox)
 {
     /* Draw white line along the bottom and the right side of the
      * widget to create a 3D like look. */
-    p->setPen( palette().color( QPalette::Light ) );
+    p->setPen( q->palette().color( QPalette::Light ) );
     p->drawLine( boundingBox.bottomLeft(), boundingBox.bottomRight());
     p->drawLine( boundingBox.bottomRight(), boundingBox.topRight());
 }
 
-void KSignalPlotter::calculateNiceRange()
+void KSignalPlotterPrivate::calculateNiceRange()
 {
     double max = mUserMaxValue;
     double min = mUserMinValue;
@@ -760,11 +776,11 @@ void KSignalPlotter::calculateNiceRange()
 #else
     mScrollableImage = QPixmap();
 #endif
-    emit axisScaleChanged();
+    emit q->axisScaleChanged();
 }
 
 
-void KSignalPlotter::drawVerticalLines(QPainter *p, const QRect &boundingBox, int offset)
+void KSignalPlotterPrivate::drawVerticalLines(QPainter *p, const QRect &boundingBox, int offset)
 {
     p->setPen( mVerticalLinesColor );
 
@@ -772,7 +788,7 @@ void KSignalPlotter::drawVerticalLines(QPainter *p, const QRect &boundingBox, in
         p->drawLine( x, boundingBox.top(), x, boundingBox.bottom()  );
 }
 
-void KSignalPlotter::drawBeamToScrollableImage(int index)
+void KSignalPlotterPrivate::drawBeamToScrollableImage(int index)
 {
     if(mScrollableImage.isNull())
         return;
@@ -803,7 +819,7 @@ void KSignalPlotter::drawBeamToScrollableImage(int index)
     }
 }
 
-void KSignalPlotter::drawBeam(QPainter *p, const QRect &boundingBox, int horizontalScale, int index)
+void KSignalPlotterPrivate::drawBeam(QPainter *p, const QRect &boundingBox, int horizontalScale, int index)
 {
     if(mNiceRange == 0) return;
     QPen pen;
@@ -864,18 +880,7 @@ void KSignalPlotter::drawBeam(QPainter *p, const QRect &boundingBox, int horizon
         }
     }
 }
-
-void KSignalPlotter::setMaxAxisTextWidth(int axisTextWidth)
-{
-    mAxisTextWidth = axisTextWidth;
-}
-
-int KSignalPlotter::maxAxisTextWidth() const
-{
-    return mAxisTextWidth;
-}
-
-void KSignalPlotter::drawAxisText(QPainter *p, const QRect &boundingBox)
+void KSignalPlotterPrivate::drawAxisText(QPainter *p, const QRect &boundingBox)
 {
     if(mHorizontalLinesCount < 0) return;
     double stepsize = mNiceRange/(mScaleDownBy*(mHorizontalLinesCount+1));
@@ -900,7 +905,7 @@ void KSignalPlotter::drawAxisText(QPainter *p, const QRect &boundingBox)
     }
 }
 
-void KSignalPlotter::drawHorizontalLines(QPainter *p, const QRect &boundingBox)
+void KSignalPlotterPrivate::drawHorizontalLines(QPainter *p, const QRect &boundingBox)
 {
     if(mHorizontalLinesCount <= 0) return;
     p->setPen( QPen(mHorizontalLinesColor, 0, Qt::DashLine));
@@ -913,65 +918,65 @@ void KSignalPlotter::drawHorizontalLines(QPainter *p, const QRect &boundingBox)
 
 double KSignalPlotter::lastValue( int i) const
 {
-    if(mBeamData.isEmpty() || mBeamData.first().size() <= i) return 0;
-    return mBeamData.first()[i];
+    if(d->mBeamData.isEmpty() || d->mBeamData.first().size() <= i) return 0;
+    return d->mBeamData.first().at(i);
 }
 QString KSignalPlotter::lastValueAsString( int i, int precision) const
 {
-    if(mBeamData.isEmpty()) return QString();
-    return valueAsString(mBeamData.first()[i], precision); //retrieve the newest value for this beam 
+    if(d->mBeamData.isEmpty() || d->mBeamData.first().size() <= i) return QString();
+    return valueAsString(d->mBeamData.first().at(i), precision); //retrieve the newest value for this beam 
 }
 QString KSignalPlotter::valueAsString( double value, int precision) const
 {
-    value = value / mScaleDownBy; // scale the value.  e.g. from Bytes to KB
+    value = value / d->mScaleDownBy; // scale the value.  E.g. from Bytes to KiB
     if(precision == -1)
         precision = (value >= 99.5)?0:((value>=0.995)?1:2);
     QString number = KGlobal::locale()->formatNumber( value, precision);
 
-    return mUnit.subs(number).toString();
+    return d->mUnit.subs(number).toString();
 }
 
 bool KSignalPlotter::smoothGraph() const
 {
-    return mSmoothGraph;
+    return d->mSmoothGraph;
 }
 
 void KSignalPlotter::setSmoothGraph(bool smooth)
 {
-    mSmoothGraph = smooth;
+    d->mSmoothGraph = smooth;
 #ifdef USE_QIMAGE
-    mScrollableImage = QImage();
+    d->mScrollableImage = QImage();
 #else
-    mScrollableImage = QPixmap();
+    d->mScrollableImage = QPixmap();
 #endif
 }
 
 bool KSignalPlotter::stackGraph() const
 {
-    return mStackBeams;
+    return d->mStackBeams;
 }
 void KSignalPlotter::setStackGraph(bool stack)
 {
-    mStackBeams = stack;
+    d->mStackBeams = stack;
 #ifdef USE_QIMAGE
-    mScrollableImage = QImage();
+    d->mScrollableImage = QImage();
 #else
-    mScrollableImage = QPixmap();
+    d->mScrollableImage = QPixmap();
 #endif
 
 }
 
 int KSignalPlotter::fillOpacity() const
 {
-    return mFillOpacity;
+    return d->mFillOpacity;
 }
 void KSignalPlotter::setFillOpacity(int fill)
 {
-    mFillOpacity = fill;
+    d->mFillOpacity = fill;
 #ifdef USE_QIMAGE
-    mScrollableImage = QImage();
+    d->mScrollableImage = QImage();
 #else
-    mScrollableImage = QPixmap();
+    d->mScrollableImage = QPixmap();
 #endif
 
 }
