@@ -47,11 +47,9 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
 
     virtual void answerReceived( int id, const QList<QByteArray> & );
 
-    void beATaskManager();
     void initStatusBar();
 
   public Q_SLOTS:
-     // calling ksysguard with kwin/kicker hot-key
     Q_SCRIPTABLE Q_NOREPLY void showOnCurrentDesktop();
     Q_SCRIPTABLE Q_NOREPLY void importWorkSheet( const QString &fileName );
     Q_SCRIPTABLE Q_NOREPLY void removeWorkSheet( const QString &fileName );

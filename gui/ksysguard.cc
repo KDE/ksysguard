@@ -74,10 +74,6 @@ ProcessController *sLocalProcessController = NULL;
 static const char Description[] = I18N_NOOP( "KDE System Monitor" );
 TopLevel* topLevel;
 
-/**
-  This is the constructor for the main widget. It sets up the menu and the
-  TaskMan widget.
- */
 TopLevel::TopLevel()
   : KXmlGuiWindow( NULL )
 {
