@@ -87,7 +87,6 @@ FancyPlotter::FancyPlotter( QWidget* parent,
   : KSGRD::SensorDisplay( parent, title, workSheetSettings )
 {
     mBeams = 0;
-    mNumAccountedFor = 0;
     mSettingsDialog = 0;
     mSensorReportedMax = mSensorReportedMin = 0;
     mSensorManualMax = mSensorManualMin = 0;
@@ -516,7 +515,9 @@ void FancyPlotter::sendDataToPlotter( )
 }
 void FancyPlotter::timerTick() //virtual
 {
-    sendDataToPlotter();
+    if(mNumAnswers < sensors().count())
+        sendDataToPlotter(); //we haven't received enough answers yet, but plot what we do have
+    mNumAnswers = 0;
     SensorDisplay::timerTick();
 }
 void FancyPlotter::plotterAxisScaleChanged()
@@ -595,6 +596,9 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
         sensor->lastValue = value;
         /* We received something, so the sensor is probably ok. */
         sensorError( id, false );
+
+        if(++mNumAnswers == sensors().count())
+            sendDataToPlotter(); //we have received all the answers so start plotting
     } else if ( id >= 100 && id < 200 ) {
         if( (id - 100) >= sensors().count())
             return;  //just ignore if we get a result for an invalid sensor
