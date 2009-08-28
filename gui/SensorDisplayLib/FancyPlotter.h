@@ -100,6 +100,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
     void setTooltip();
 
   private:
+    void sendDataToPlotter();
     uint mBeams;
     /** Number of beams we've received an answer from since asking last */
     uint mNumAccountedFor;

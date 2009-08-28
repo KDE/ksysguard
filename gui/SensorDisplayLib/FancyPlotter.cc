@@ -464,7 +464,7 @@ void FancyPlotter::setTooltip()
     mPlotter->setToolTip( tooltip );
 }
 
-void FancyPlotter::timerTick( ) //virtual
+void FancyPlotter::sendDataToPlotter( )
 {
     if(!mSampleBuf.isEmpty() && mBeams != 0) {  
         if((uint)mSampleBuf.count() > mBeams) {
@@ -513,7 +513,10 @@ void FancyPlotter::timerTick( ) //virtual
 
     }
     mSampleBuf.clear();
-
+}
+void FancyPlotter::timerTick() //virtual
+{
+    sendDataToPlotter();
     SensorDisplay::timerTick();
 }
 void FancyPlotter::plotterAxisScaleChanged()
@@ -576,7 +579,8 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
     if(!answerlist.isEmpty()) answer = answerlist[0];
     if ( (uint)id < 100 ) {
         //Make sure that we put the answer in the correct place.  Its index in the list should be equal to the sensor index.  This in turn will contain the beamId
-
+        if(id >= sensors().count())
+            return;  //just ignore if we get a result for an invalid sensor
         FPSensorProperties *sensor = static_cast<FPSensorProperties *>(sensors().at(id));
         int beamId = sensor->beamId;
         double value = answer.toDouble();
@@ -592,6 +596,8 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
         /* We received something, so the sensor is probably ok. */
         sensorError( id, false );
     } else if ( id >= 100 && id < 200 ) {
+        if( (id - 100) >= sensors().count())
+            return;  //just ignore if we get a result for an invalid sensor
         KSGRD::SensorFloatInfo info( answer );
         QString unit = info.unit();
         if(unit.toUpper() == "KB" || unit.toUpper() == "KIB")
@@ -646,9 +652,7 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
                     }
                 }
             }
-            foreach(SensorToAdd *sensor, mSensorsToAdd) {
-                delete sensor;
-            }
+            qDeleteAll(mSensorsToAdd);
             mSensorsToAdd.clear();
         }
     }
