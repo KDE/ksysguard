@@ -287,9 +287,15 @@ void Workspace::removeWorkSheet( const QString &fileName )
   }
 }
 
+WorkSheet *Workspace::currentWorkSheet()
+{
+    return (WorkSheet*)currentWidget();
+}
 void Workspace::uploadHotNewWorksheet()
 {
-  WorkSheet *currentWorksheet = (WorkSheet*)currentWidget();
+  WorkSheet *currentWorksheet = currentWorkSheet();
+  if(!currentWorksheet)
+      return;
 
   KMessageBox::information(this, i18n("<qt>To propose the current custom tab as a new System Monitor tab, email <br><a href=\"file:%1\">%2</a><br> to <a href=\"mailto:john.tapsell@kde.org?subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde.org</a></qt>", currentWorksheet->fullFileName().section('/',0,-2), currentWorksheet->fullFileName()), i18n("Upload custom System Monitor tab"), QString::null, KMessageBox::AllowLink);
 }
@@ -345,7 +351,7 @@ bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)
 
 void Workspace::cut()
 {
-  WorkSheet *current = (WorkSheet*)currentWidget();
+  WorkSheet *current = currentWorkSheet();
 
   if ( current )
     current->cut();
@@ -353,7 +359,7 @@ void Workspace::cut()
 
 void Workspace::copy()
 {
-  WorkSheet *current = (WorkSheet*)currentWidget();
+  WorkSheet *current = currentWorkSheet();
 
   if ( current )
     current->copy();
@@ -361,7 +367,7 @@ void Workspace::copy()
 
 void Workspace::paste()
 {
-  WorkSheet *current = (WorkSheet*)currentWidget();
+  WorkSheet *current = currentWorkSheet();
 
   if ( current )
     current->paste();
@@ -369,18 +375,17 @@ void Workspace::paste()
 
 void Workspace::configure()
 {
-  WorkSheet *current = (WorkSheet*)currentWidget();
+  WorkSheet *current = currentWorkSheet();
 
-  if ( !current )
-    return;
-
-  current->settings();
+  if ( current )
+      current->settings();
 }
 
 void Workspace::applyStyle()
 {
-  if ( currentWidget() )
-    ((WorkSheet*)currentWidget())->applyStyle();
+  WorkSheet *current = currentWorkSheet();
+  if ( current )
+    current->applyStyle();
 }
 
 #include "Workspace.moc"

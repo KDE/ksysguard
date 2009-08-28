@@ -144,7 +144,7 @@ TopLevel::TopLevel()
 
   mConfigureSheetAction = actionCollection()->addAction( "configure_sheet" );
   mConfigureSheetAction->setIcon( KIcon("configure") );
-  connect(mConfigureSheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( configure() ));
+  connect(mConfigureSheetAction, SIGNAL(triggered(bool)), SLOT( configureCurrentSheet() ));
 
   retranslateUi();
 }
@@ -172,7 +172,10 @@ void TopLevel::retranslateUi()
     mQuitAction = KStandardAction::quit( this, SLOT( close() ), actionCollection() );
 }
 
-
+void TopLevel::configureCurrentSheet() {
+  mWorkSpace->configure();
+  mRefreshTabAction->setVisible( mWorkSpace->currentWorkSheet()->updateInterval() == 0 );
+}
 void TopLevel::currentTabChanged(int index)
 {
   QWidget *wdg = mWorkSpace->widget(index);
@@ -183,6 +186,9 @@ void TopLevel::currentTabChanged(int index)
   mTabExportAction->setVisible(!locked);
   mHotNewWorksheetUploadAction->setVisible(!locked);
   mMonitorRemoteAction->setVisible(!locked);
+
+  //only show refresh option is update interval is 0 (manual)
+  mRefreshTabAction->setVisible( sheet->updateInterval() == 0 );
 
   if(!locked && !mSensorBrowser) {
     startSensorBrowserWidget();

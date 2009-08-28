@@ -77,6 +77,7 @@ class WorkSheet : public QWidget
                                       uint rows, uint columns );
 
     void settings();
+    float updateInterval() const;
 
   public Q_SLOTS:
     void showPopupMenu( KSGRD::SensorDisplay *display );
@@ -95,7 +96,6 @@ class WorkSheet : public QWidget
     void dropEvent( QDropEvent* );
     bool event( QEvent* );
     void setUpdateInterval( float interval);
-    float updateInterval() const;
 
   private:
     void removeDisplay( KSGRD::SensorDisplay *display );

@@ -69,6 +69,7 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     void updateStatusBar();
     void currentTabChanged(int index);
     void updateProcessCount();
+    void configureCurrentSheet();
 
   private:
     void setSwapInfo( qlonglong, qlonglong, const QString& );
