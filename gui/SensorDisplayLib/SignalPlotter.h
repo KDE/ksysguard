@@ -34,7 +34,7 @@ class QResizeEvent;
 class KSignalPlotterPrivate;
 
 /** \brief The KSignalPlotter widget draws a real time graph of data that updates continually
- * 
+ *
  *  Features include:
  *  *) Points are joined by a bezier curve.
  *  *) Lines are anti-aliased
@@ -50,11 +50,11 @@ class KSignalPlotterPrivate;
  *    s->addBeam(Qt::Green);
  *    QList data;
  *    data << 4.0 << 5.0;
- *    s->addSample(data); 
+ *    s->addSample(data);
  *  \endcode
  *
  *  Note that the number of horizontal lines is calculated automatically based on the axis font size, even if the axis labels are not shown.
- *  
+ *
  *  Smoothing looks very nice visually and is enabled by default.  It can be disabled with setSmoothGraph().
  *
  *  \image KSignalPlotter.png  Example KSignalPlotter with two beams
@@ -105,8 +105,8 @@ class KSignalPlotter : public QWidget
      * \code
      *   KSignalPlotter *s = KSignalPlotter(parent);
      *   s->addBeam(Qt::blue);
-     *   s->addBeam(Qt::green);   
-     *   s->addBeam(Qt::red);   
+     *   s->addBeam(Qt::green);
+     *   s->addBeam(Qt::red);
      *   QList neworder;
      *   neworder << 2 << 0 << 1;
      *   s->reorderBeams( newOrder);
@@ -144,7 +144,7 @@ class KSignalPlotter : public QWidget
      * \code
      *   KSignalPlotter plotter;
      *   plotter.setUnit( ki18ncp("Units", "1 second", "%1 seconds") );
-     *   QString formattedString = plotter.valueAsString(3.4); //returns "3.4 seconds" 
+     *   QString formattedString = plotter.valueAsString(3.4); //returns "3.4 seconds"
      * \endcode
      *
      * \see unit
@@ -160,7 +160,7 @@ class KSignalPlotter : public QWidget
     KLocalizedString unit() const;
 
     /** Scale all the values down by the given amount.  This is useful
-     *  when the data is given in, say, kilobytes, but you set the 
+     *  when the data is given in, say, kilobytes, but you set the
      *  units as megabytes.  Thus you would have to call this with @p value
      *  set to 1024.  This affects all the data already entered.
      *  Typically this is followed by calling setUnit to set
@@ -191,7 +191,7 @@ class KSignalPlotter : public QWidget
      *  The range will never be smaller than the given range, but can grow
      *  if there are values larger than the given range.
      *
-     *  This is equivalent to calling 
+     *  This is equivalent to calling
      *  \code
      *    setMinimumValue(min);
      *    setMaximumValue(max);
@@ -273,7 +273,7 @@ class KSignalPlotter : public QWidget
      *  is an SVG, to allow for translucent/transparent SVGs.
      */
     void setBackgroundColor( const QColor &color );
-    
+
     /** The color to set the background.  This is painted even if there
      *  is an SVG, to allow for translucent/transparent SVGs.
      */
@@ -294,7 +294,7 @@ class KSignalPlotter : public QWidget
     /** Return a translated string like:   "34 %" or "100 KB" for the given beam index,
      *  using the last value set for the beam. */
     QString lastValueAsString( int index, int precision = -1) const;
-    
+
     /** Return a translated string like:   "34 %" or "100 KB" for the given value in unscaled units.
      *  If precision is -1 (the default) then if @p value is greater than 99.5, no decimal figures are shown,
      *  otherwise if @p value is greater than 0.995, 1 decimal figure is used, otherwise 2.
@@ -304,7 +304,7 @@ class KSignalPlotter : public QWidget
      *   KSignalPlotter plotter;
      *   plotter.setUnit( ki18ncp("Units", "1 hour", "%1 hours") );
      *   plotter.scaleDownBy( 60 ); //The input will be in seconds, and there's 60 seconds in an hour
-     *   QString formattedString = plotter.valueAsString(150); //returns "2.5 hours" 
+     *   QString formattedString = plotter.valueAsString(150); //returns "2.5 hours"
      * \endcode
      *
      */
@@ -312,7 +312,7 @@ class KSignalPlotter : public QWidget
 
     /**  Whether to show a white line on the left and bottom of the widget, for a 3D effect */
     void setThinFrame( bool set );
-    
+
     /**  Whether to show a white line on the left and bottom of the widget, for a 3D effect */
     bool thinFrame() const;
 

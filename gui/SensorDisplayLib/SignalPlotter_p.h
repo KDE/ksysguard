@@ -51,12 +51,12 @@ struct KSignalPlotterPrivate {
     void updateDataBuffers();
 
     void addSample( const QList<double>& sampleBuf );
-    /** We make the SVG renderer static so that an SVG renderer is shared among all of the images.  This is because a SVG renderer takes up a lot of memory, so we want to 
+    /** We make the SVG renderer static so that an SVG renderer is shared among all of the images.  This is because a SVG renderer takes up a lot of memory, so we want to
      *  share them as much as we can */
 #ifdef SVG_SUPPORT
     static QHash<QString, Plasma::SVG *> sSvgRenderer;
 #endif
-    QString mSvgFilename; 
+    QString mSvgFilename;
 
     QPixmap mBackgroundImage;	///A cache of the background of the widget. Contains the SVG or just white background with lines
 #ifdef USE_QIMAGE

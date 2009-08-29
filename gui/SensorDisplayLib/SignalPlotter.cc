@@ -127,7 +127,7 @@ int KSignalPlotter::numBeams() {
     return d->mBeamColors.count();
 }
 
-void KSignalPlotterPrivate::recalculateMaxMinValueForSample(const QList<double>&sampleBuf, int time ) 
+void KSignalPlotterPrivate::recalculateMaxMinValueForSample(const QList<double>&sampleBuf, int time )
 {
     if(mStackBeams) {
         double value=0;
@@ -253,7 +253,7 @@ void KSignalPlotter::removeBeam( uint pos )
 }
 
 void KSignalPlotter::setScaleDownBy( double value )
-{ 
+{
     if(d->mScaleDownBy == value) return;
     d->mScaleDownBy = value;
     d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
@@ -481,7 +481,7 @@ QFont KSignalPlotter::axisFont() const
 {
     return d->mFont;
 }
-QString KSignalPlotter::svgBackground() const { 
+QString KSignalPlotter::svgBackground() const {
     return d->mSvgFilename;
 }
 void KSignalPlotter::setSvgBackground( const QString &filename )
@@ -507,7 +507,7 @@ QColor KSignalPlotter::backgroundColor() const
     return d->mBackgroundColor;
 }
 
-void KSignalPlotter::setThinFrame( bool set) 
+void KSignalPlotter::setThinFrame( bool set)
 {
     if(d->mShowThinFrame == set) return;
     d->mShowThinFrame = set;
@@ -593,7 +593,7 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
                 boundingBox.adjust(0,offset, 0, -offset);
         }
         if( mShowAxis ) {
-            if ( kapp->layoutDirection() == Qt::RightToLeft )     
+            if ( kapp->layoutDirection() == Qt::RightToLeft )
                 boundingBox.setRight(boundingBox.right() - mAxisTextWidth - 10);
             else
                 boundingBox.setLeft(mAxisTextWidth+10);
@@ -629,16 +629,16 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
         /* Draw scope-like grid vertical lines if it doesn't move.  If it does move, draw it in the dynamic part of the code*/
         if(!mVerticalLinesScroll && mShowVerticalLines && cacheBoundingBox.width() > 60)
             drawVerticalLines(&pCache, cacheBoundingBox);
-        if ( mShowHorizontalLines ) 
+        if ( mShowHorizontalLines )
             drawHorizontalLines(&pCache, cacheBoundingBox.adjusted(-3,0,0,0));
-    } 
+    }
     p->drawPixmap(boundingBox, mBackgroundImage);
 
     if(mShowThinFrame) {
         //We have a 'frame' in the bottom and right - so subtract them from the view
         boundingBox.adjust(0,0,-1,-1);
     }
-    if(boundingBox.height() == 0 || boundingBox.width() == 0) return; 
+    if(boundingBox.height() == 0 || boundingBox.width() == 0) return;
     p->setClipRect( boundingBox);
 
     bool redraw = false;
@@ -676,7 +676,7 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
         if(mVerticalLinesScroll && mShowVerticalLines) {
             QPainter pCache(&mScrollableImage);
             pCache.setRenderHint(QPainter::Antialiasing, true);
-            int x = mScrollOffset - (mScrollOffset % mVerticalLinesDistance) + mVerticalLinesDistance; 
+            int x = mScrollOffset - (mScrollOffset % mVerticalLinesDistance) + mVerticalLinesDistance;
             for(;x < mScrollableImage.width(); x+= mVerticalLinesDistance) {
                 pCache.setPen( mVerticalLinesColor );
                 pCache.drawLine( x + VERTICAL_LINE_OFFSET, 0, x + VERTICAL_LINE_OFFSET, mScrollableImage.height()-1);
@@ -833,7 +833,7 @@ void KSignalPlotterPrivate::drawBeam(QPainter *p, const QRect &boundingBox, int 
     QList<double> datapoints = mBeamData[index];
     QList<double> prev_datapoints = mBeamData[index+1];
     QList<double> prev_prev_datapoints;
-    if(index +2 < mBeamData.size()) 
+    if(index +2 < mBeamData.size())
         prev_prev_datapoints = mBeamData[index+2]; //used for bezier curve gradient calculation
     else
         prev_prev_datapoints = prev_datapoints;
@@ -849,7 +849,7 @@ void KSignalPlotterPrivate::drawBeam(QPainter *p, const QRect &boundingBox, int 
             y0 = y1 = y2 = 0;
         y0 += boundingBox.bottom() - (datapoints[j] - mNiceMinValue)*scaleFac;
         y1 += boundingBox.bottom() - (prev_datapoints[j] - mNiceMinValue)*scaleFac;
-        y2 += boundingBox.bottom() - (prev_prev_datapoints[j] - mNiceMinValue)*scaleFac; 
+        y2 += boundingBox.bottom() - (prev_prev_datapoints[j] - mNiceMinValue)*scaleFac;
         if(mSmoothGraph) {
             // Apply a weighted average just to smooth the graph out a bit
             y0 = (2*y0 + y1)/3;
@@ -924,7 +924,7 @@ double KSignalPlotter::lastValue( int i) const
 QString KSignalPlotter::lastValueAsString( int i, int precision) const
 {
     if(d->mBeamData.isEmpty() || d->mBeamData.first().size() <= i) return QString();
-    return valueAsString(d->mBeamData.first().at(i), precision); //retrieve the newest value for this beam 
+    return valueAsString(d->mBeamData.first().at(i), precision); //retrieve the newest value for this beam
 }
 QString KSignalPlotter::valueAsString( double value, int precision) const
 {
