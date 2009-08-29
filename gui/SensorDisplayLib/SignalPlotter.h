@@ -33,15 +33,15 @@ class QPaintEvent;
 class QResizeEvent;
 class KSignalPlotterPrivate;
 
-/** \brief The KSignalPlotter widget draws a real time graph of data that updates continually
+/** \brief The KSignalPlotter widget draws a real time graph of data that updates continually.
  *
  *  Features include:
- *  *) Points are joined by a bezier curve.
- *  *) Lines are anti-aliased
- *  *) Background can be set as a specified SVG
- *  *) The lines can be reordered
- *  *) Uses as little memory and CPU as possible
- *  *) Graph can be smoothed using the formula (value * 2 + last_value)/3
+ *  \li  Points are joined by a bezier curve.
+ *  \li Lines are anti-aliased
+ *  \li Background can be set as a specified SVG
+ *  \li The lines can be reordered
+ *  \li Uses as little memory and CPU as possible
+ *  \li Graph can be smoothed using the formula (value * 2 + last_value)/3
  *
  *  Example usage:
  *  \code
@@ -89,19 +89,25 @@ class KSignalPlotter : public QWidget
     KSignalPlotter( QWidget *parent = 0);
     virtual ~KSignalPlotter();
 
-    /** Add a new line to the graph plotter, with the specified color.
+    /** \brief Add a new line to the graph plotter, with the specified color.
+     *
      *  Note that the order you add the beams in must be the same order that
-     *  the beam data is given in. (Unless you reorder the beams)
+     *  the beam data is given in (Unless you reorder the beams).
+     *
+     *  \param color Color of beam - does not have to be unique.
      */
     void addBeam( const QColor &color );
 
-    /** Add data to the graph, and advance the graph by one time period.
+    /** \brief Add data to the graph, and advance the graph by one time period.
+     *
      *  The data must be given as a list in the same order that the beams were
-     *  added (or consequently reordered)
+     *  added (or consequently reordered).
      */
     void addSample( const QList<double> &samples );
 
-    /** Reorder the beams into the order given.  For example:
+    /** \brief Reorder the beams into the order given.
+     *
+     * For example:
      * \code
      *   KSignalPlotter *s = KSignalPlotter(parent);
      *   s->addBeam(Qt::blue);
@@ -112,25 +118,42 @@ class KSignalPlotter : public QWidget
      *   s->reorderBeams( newOrder);
      *   //Now the order is red, blue then green
      * \endcode
+     *
+     * The size of the \p newOrder list must be equal to the result of numBeams().
+     * \param newOrder New order of beams.
      */
     void reorderBeams( const QList<int>& newOrder );
 
-    /** Removes the beam at the specified index.  This causes the graph to be redrawn with the
-     *  specified beam completely removed.
+    /** \brief Removes the beam at the specified index.
+     *
+     * This causes the graph to be redrawn with the specified beam completely
+     * removed.
      */
-    void removeBeam( uint position );
+    void removeBeam( int index );
 
-    /** Get the beam (the graph lines) colors, in the order
-     *  that the beams were added (or later reordered)
+    /** \brief Get the color of the beam at the specified index.
+     *
+     * For example:
+     * \code
+     *   KSignalPlotter *s = KSignalPlotter(parent);
+     *   s->addBeam(Qt::blue);
+     *   s->addBeam(Qt::green);
+     *   s->addBeam(Qt::red);
+     *   
+     *   QColor color = s->beamColor(0);  //returns blue
+     * \endcode
+     *
+     * \sa setBeamColor()
      */
     QColor beamColor( int index );
 
-    /** Set the beam (the graph lines) colors, in the order
-     *  that the beams were added (or later reordered)
+    /** \brief Set the color of the beam at the specified index.
+     *
+     * \sa beamColor()
      */
     void setBeamColor( int index, const QColor &color );
 
-    /** returns the number of beams */
+    /** \brief Returns the number of beams. */
     int numBeams();
 
     /** \brief Set the axis units with a localized string.
@@ -147,7 +170,9 @@ class KSignalPlotter : public QWidget
      *   QString formattedString = plotter.valueAsString(3.4); //returns "3.4 seconds"
      * \endcode
      *
-     * \see unit
+     * Typically a new unit would be set when setScaleDownBy is called.
+     *
+     * \see unit(), setScaleDownBy()
      */
     void setUnit( const KLocalizedString &unit );
 
@@ -159,28 +184,43 @@ class KSignalPlotter : public QWidget
      */
     KLocalizedString unit() const;
 
-    /** Scale all the values down by the given amount.  This is useful
-     *  when the data is given in, say, kilobytes, but you set the
-     *  units as megabytes.  Thus you would have to call this with @p value
-     *  set to 1024.  This affects all the data already entered.
-     *  Typically this is followed by calling setUnit to set
-     *  the display axis units.
+    /** \brief Scale all the values down by the given amount.
+     *
+     * This is useful when the data is given in, say, kilobytes, but you set
+     * the units as megabytes.  Thus you would have to call this with @p value
+     * set to 1024.  This affects all the data already entered.
+     *
+     * Typically this is followed by calling setUnit() to set the display axis
+     * units.
      */
     void setScaleDownBy( double value );
 
-    /** Amount scaled down by.  @see setScaleDownBy */
+    /** \brief Amount scaled down by.
+     *
+     * \sa setScaleDownBy */
     double scaleDownBy() const;
 
-    /** Set the minimum and maximum values on the vertical axis
-     *  automatically from the data available.
+    /** \brief Set whether to scale the graph automatically beyond the given range.
+     *
+     * If true, set expand the range on vertical axis automatically from the
+     * data available, expanding beyond the range set by changeRange() if data
+     * values are outside of this range.
+     *
+     * The range of the vertical axis will never be less than the range given by
+     * chaneRange().
+     *
+     * \param value Whether to scale beyond the given range.
+     *
+     * \sa useAutoRange
      */
     void setUseAutoRange( bool value );
 
-    /** Whether the vertical axis range is set automatically.
+    /** \brief Whether the vertical axis range is set automatically.
      */
     bool useAutoRange() const;
 
-    /** Change the minimum and maximum values drawn on the graph.
+    /** \brief Change the minimum and maximum values drawn on the graph.
+     *
      *  Note that these values are sanitised.  For example, if you
      *  set the minimum as 3, and the maximum as 97, then the graph
      *  would be drawn between 0 and 100.  The algorithm to determine
@@ -196,108 +236,140 @@ class KSignalPlotter : public QWidget
      *    setMinimumValue(min);
      *    setMaximumValue(max);
      *  \endcode
+     *
+     *  \sa setMinimumValue(), setMaximumValue(), minimumValue(), maximumValue()
      */
     void changeRange( double min, double max );
-    /** Set the min value hint for the vertical axis.  @see changeRange() */
+
+    /** \brief Set the min value hint for the vertical axis.
+     * 
+     * \sa changeRange(), minimumValue(), setMaximumValue(), maximumValue() */
     void setMinimumValue( double min );
-    /** Get the min value hint for the vertical axis.  @see changeRange() */
+
+    /** \brief Get the min value hint for the vertical axis. 
+     *
+     * \sa changeRange(), minimumValue(), setMaximumValue(), maximumValue() */
     double minimumValue() const;
-    /** Set the max value hint for the vertical axis.  @see changeRange() */
+
+    /** \brief Set the max value hint for the vertical axis. *
+     *
+     * \sa changeRange(), minimumValue(), setMaximumValue(), maximumValue() */
     void setMaximumValue( double max );
-    /** Get the maximum value hint for the vertical axis.  @see changeRange() */
+
+    /** \brief Get the maximum value hint for the vertical axis.
+     *
+     * \sa changeRange(), minimumValue(), setMaximumValue(), maximumValue() */
     double maximumValue() const;
-    /** Get the current maximum value on the y-axis.
+
+    /** \brief Get the current maximum value on the y-axis.
+     *
      *  This will never be lower than maximumValue(), and if autoRange() is true,
      *  it will be equal or larger (due to rounding up to make it a nice number)
      *  than the highest value being shown.
      */
     double currentMaximumRangeValue() const;
-    /** Get the current minimum value on the y-axis.
+    /** \brief Get the current minimum value on the y-axis.
+     *
      *  This will never be lower than minimumValue(), and if autoRange() is true,
      *  it will be equal or larger (due to rounding up to make it a nice number)
      *  than the highest value being shown.
      */
     double currentMinimumRangeValue() const;
 
-    /** Set the number of pixels horizontally between data points */
+    /** \brief Set the number of pixels horizontally between data points. */
     void setHorizontalScale( uint scale );
-    /** The number of pixels horizontally between data points*/
+    /** \brief The number of pixels horizontally between data points. */
     int horizontalScale() const;
 
-    /** Whether to draw the vertical grid lines */
+    /** \brief Set whether to draw the vertical grid lines. */
     void setShowVerticalLines( bool value );
-    /** Whether to draw the vertical grid lines */
+    /** \brief Whether to draw the vertical grid lines. */
     bool showVerticalLines() const;
 
-    /** The color of the vertical grid lines */
+    /** \brief The color of the vertical grid lines. */
     void setVerticalLinesColor( const QColor &color );
-    /** The color of the vertical grid lines */
+    /** \brief The color of the vertical grid lines. */
     QColor verticalLinesColor() const;
 
-    /** The horizontal distance between the vertical grid lines */
+    /** \brief Set the horizontal distance between the vertical grid lines. */
     void setVerticalLinesDistance( uint distance );
-    /** The horizontal distance between the vertical grid lines */
+    /** \brief The horizontal distance between the vertical grid lines. */
     int verticalLinesDistance() const;
 
-    /** Whether the vertical lines move with the data */
+    /** \brief Set whether the vertical lines move with the data. */
     void setVerticalLinesScroll( bool value );
-    /** Whether the vertical lines move with the data */
+    /** \brief Whether the vertical lines move with the data. */
     bool verticalLinesScroll() const;
 
-    /** Whether to draw the horizontal grid lines */
+    /** \brief Set whether to draw the horizontal grid lines. */
     void setShowHorizontalLines( bool value );
-    /** Whether to draw the horizontal grid lines */
+    /** \brief Whether to draw the horizontal grid lines. */
     bool showHorizontalLines() const;
 
-    /** The color of the horizontal grid lines */
+    /** \brief Set the color of the horizontal grid lines. */
     void setHorizontalLinesColor( const QColor &color );
-    /** The color of the horizontal grid lines */
+    /** \brief The color of the horizontal grid lines. */
     QColor horizontalLinesColor() const;
 
-    /** The color of the font used for the axis */
+    /** \brief Set the color of the font used for the axis. */
     void setAxisFontColor( const QColor &color );
-    /** The color of the font used for the axis */
+    /** \brief The color of the font used for the axis. */
     QColor axisFontColor() const;
 
-    /** The font used for the axis */
+    /** \brief Set the font used for the axis */
     void setAxisFont( const QFont &font );
-    /** The font used for the axis */
+    /** \brief The font used for the axis */
     QFont axisFont() const;
 
-    /** Whether to show the vertical axis labels */
+    /** \brief Set whether to show the vertical axis labels */
     void setShowAxis( bool show );
-    /** Whether to show the vertical axis labels */
+    /** \brief Whether to show the vertical axis labels */
     bool showAxis() const;
 
-    /** The color to set the background.  This is painted even if there
-     *  is an SVG, to allow for translucent/transparent SVGs.
+    /** \brief Set the background color of the main plotting area.
+     *
+     * This is painted even if there is an SVG background image specified,
+     * to allow for translucent/transparent SVGs.
+     *
+     * This should be a solid color with no alpha component.
      */
     void setBackgroundColor( const QColor &color );
 
-    /** The color to set the background.  This is painted even if there
-     *  is an SVG, to allow for translucent/transparent SVGs.
+    /** \brief The background color.
+     *
+     * This is painted even if there is an SVG, to allow for translucent/transparent SVGs.
      */
     QColor backgroundColor() const;
 
-    /** The filename of the SVG background.  Set to empty to disable
-     *  again. */
+    /** \brief Set the filename of the SVG background.
+     *
+     * Set to empty (default) to disable again. */
     void setSvgBackground( const QString &filename );
 
-    /** The filename of the SVG background.  Set to empty to disable
-     *  again. */
+    /** \brief The filename of the SVG background. */
     QString svgBackground() const;
 
-    /** Return the last value that we have for the given beam index.
-     *  Returns 0 if not known */
+    /** \brief Return the last value that we have for the given beam index.
+     *
+     * \return last value, or 0 if not known. */
     double lastValue( int index) const;
 
-    /** Return a translated string like:   "34 %" or "100 KB" for the given beam index,
-     *  using the last value set for the beam. */
+    /** \brief Return a translated string for the last value at the given index.
+     *
+     * Returns, for example,  "34 %" or "100 KB" for the given beam index,
+     * using the last value set for the beam, using the given precision.
+     *
+     * If precision is -1 (the default) then if @p value is greater than 99.5, no decimal figures are shown,
+     * otherwise if @p value is greater than 0.995, 1 decimal figure is used, otherwise 2.
+     */
     QString lastValueAsString( int index, int precision = -1) const;
 
-    /** Return a translated string like:   "34 %" or "100 KB" for the given value in unscaled units.
-     *  If precision is -1 (the default) then if @p value is greater than 99.5, no decimal figures are shown,
-     *  otherwise if @p value is greater than 0.995, 1 decimal figure is used, otherwise 2.
+    /** \brief Return a translated string for the given value.
+     *
+     * Returns, for example, "34 %" or "100 KB" for the given value in unscaled units.
+     *
+     * If precision is -1 (the default) then if @p value is greater than 99.5, no decimal figures are shown,
+     * otherwise if @p value is greater than 0.995, 1 decimal figure is used, otherwise 2.
      *
      * For example:
      * \code
@@ -310,38 +382,45 @@ class KSignalPlotter : public QWidget
      */
     QString valueAsString( double value, int precision = -1) const;
 
-    /**  Whether to show a white line on the left and bottom of the widget, for a 3D effect */
+    /**  \brief Set whether to show a white line on the left and bottom of the widget, for a 3D effect.
+     *
+     * Default is true.*/
     void setThinFrame( bool set );
-
-    /**  Whether to show a white line on the left and bottom of the widget, for a 3D effect */
+    /**  \brief Whether to show a white line on the left and bottom of the widget, for a 3D effect. */
     bool thinFrame() const;
 
-    /** Set the distance between the left of the widget and the left of the plotting region. */
+    /** \brief Set the distance between the left of the widget and the left of the plotting region. */
     void setMaxAxisTextWidth(int maxAxisTextWidth);
-
-    /** Get the distance between the left of the widget and the left of the plotting region. */
+    /** \brief Get the distance between the left of the widget and the left of the plotting region. */
     int maxAxisTextWidth() const;
 
-    /** Whether to smooth the graph by averaging the points using the formula:  (value*2 + last_value)/3 */
+    /** \brief Set whether to smooth the graph by averaging the points.
+     *
+     * This uses the formula:  (value*2 + last_value)/3 */
+    void setSmoothGraph(bool smooth);
+    /** \brief Whether to smooth the graph by averaging the points.
+     *
+     * This uses the formula:  (value*2 + last_value)/3 */
     bool smoothGraph() const;
 
-    /** Set whether to smooth the graph by averaging the points using the formula:  (value*2 + last_value)/3 */
-    void setSmoothGraph(bool smooth);
-
-    /** Whether to stack the beams on top of each other.  Default is false */
+    /** \brief Set whether to stack the beams on top of each other.
+     *
+     * Default is false */
+    void setStackGraph(bool stack);
+    /** \brief Whether to stack the beams on top of each other.
+     *
+     * Default is false */
     bool stackGraph() const;
 
-    /** Whether to stack the beams on top of each other.  Default is false */
-    void setStackGraph(bool stack);
-
-    /** Alpha value for filling the graph. Set to 0 to disable filling the graph, and 255 for a solid fill. Default is 20*/
+    /** \brief Alpha value for filling the graph.
+     *
+     * Set to 0 to disable filling the graph, and 255 for a solid fill. Default is 20*/
+    void setFillOpacity(int fill);
+    /** \brief Alpha value for filling the graph. */
     int fillOpacity() const;
 
-    /** Alpha value for filling the graph. Set to 0 to disable filling the graph, and 255 for a solid fill. Default is 20*/
-    void setFillOpacity(int fill);
-
   Q_SIGNALS:
-    /** When the axis has changed because we are in autorange mode, then this signal is emitted */
+    /** When the axis has changed this signal is emitted. */
     void axisScaleChanged();
 
   protected:

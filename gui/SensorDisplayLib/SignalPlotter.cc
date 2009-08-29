@@ -236,17 +236,17 @@ void KSignalPlotter::changeRange( double min, double max )
     d->calculateNiceRange();
 }
 
-void KSignalPlotter::removeBeam( uint pos )
+void KSignalPlotter::removeBeam( int index )
 {
-    if(pos >= (uint)d->mBeamColors.size()) return;
-    if(pos >= (uint)d->mBeamColorsDark.size()) return;
-    d->mBeamColors.removeAt( pos );
-    d->mBeamColorsDark.removeAt(pos);
+    if(index >= d->mBeamColors.size()) return;
+    if(index >= d->mBeamColorsDark.size()) return;
+    d->mBeamColors.removeAt( index );
+    d->mBeamColorsDark.removeAt(index);
 
     QList< QList<double> >::Iterator i;
     for(i = d->mBeamData.begin(); i != d->mBeamData.end(); ++i) {
-        if( (uint)(*i).size() >= pos)
-            (*i).removeAt(pos);
+        if( (*i).size() >= index)
+            (*i).removeAt(index);
     }
     if(d->mUseAutoRange)
         d->rescale();
