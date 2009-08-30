@@ -97,10 +97,11 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     //The unicode character 0x25CF is a big filled in circle.  We would prefer to use this in the tooltip.
     //However it's maybe possible that the font used to draw the tooltip won't have it.  So we fall back to a 
     //"#" instead.
-    mIndicatorSymbol = '#';
     QFontMetrics fm(QToolTip::font());
     if(fm.inFont(QChar(0x25CF)))
         mIndicatorSymbol = QChar(0x25CF);
+    else
+        mIndicatorSymbol = '#';
 
     QBoxLayout *layout = new QVBoxLayout(this);
     layout->setSpacing(0);
