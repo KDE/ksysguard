@@ -543,8 +543,8 @@ bool WorkSheet::event( QEvent *e )
 {
   if ( e->type() == QEvent::User ) {
     // SensorDisplays send out this event if they want to be removed.
-    if ( KMessageBox::warningContinueCancel( this, i18n( "Do you really want to delete the display?" ),
-      i18n("Delete Display"), KStandardGuiItem::del() )
+    if ( KMessageBox::warningContinueCancel( this, i18n( "Remove this display?" ),
+      i18n("Remove Display"), KStandardGuiItem::del() )
          == KMessageBox::Continue ) {
       KSGRD::SensorDisplay::DeleteEvent *event = static_cast<KSGRD::SensorDisplay::DeleteEvent*>( e );
       removeDisplay( event->display() );
