@@ -91,6 +91,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     mSensorReportedMax = mSensorReportedMin = 0;
     mSensorManualMax = mSensorManualMin = 0;
     mUseManualRange = false;
+    mNumAnswers = 0;
 
 
     //The unicode character 0x25CF is a big filled in circle.  We would prefer to use this in the tooltip.
