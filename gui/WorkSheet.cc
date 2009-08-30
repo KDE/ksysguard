@@ -53,408 +53,408 @@
 WorkSheet::WorkSheet( QWidget *parent )
   : QWidget( parent )
 {
-  mGridLayout = 0;
-  mRows = mColumns = 0;
-  setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-  setAcceptDrops( true );
+    mGridLayout = 0;
+    mRows = mColumns = 0;
+    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    setAcceptDrops( true );
 }
 
-WorkSheet::WorkSheet( int rows, int columns, float interval, QWidget* parent )
-  : QWidget( parent)
+    WorkSheet::WorkSheet( int rows, int columns, float interval, QWidget* parent )
+: QWidget( parent)
 {
-  mGridLayout = 0;
-  setUpdateInterval( interval );
+    mGridLayout = 0;
+    setUpdateInterval( interval );
 
-  createGrid( rows, columns );
+    createGrid( rows, columns );
 
-  // Initialize worksheet with dummy displays.
-  for ( int i = 0; i < mRows*mColumns; i++ )
-      replaceDisplay( i );
+    // Initialize worksheet with dummy displays.
+    for ( int i = 0; i < mRows*mColumns; i++ )
+        replaceDisplay( i );
 
-  mGridLayout->activate();
+    mGridLayout->activate();
 
-  setAcceptDrops( true );
+    setAcceptDrops( true );
 }
 
 WorkSheet::~WorkSheet()
 {
-  qDeleteAll(mDisplayList);
+    qDeleteAll(mDisplayList);
 }
 
 bool WorkSheet::load( const QString &fileName )
 {
-  QFile file( fileName );
-  if ( !file.open( QIODevice::ReadOnly ) ) {
-    KMessageBox::sorry( this, i18n( "Cannot open the file %1." ,  fileName ) );
-    return false;
-  }
-
-  QDomDocument doc;
-
-  // Read in file and check for a valid XML header.
-  if ( !doc.setContent( &file) ) {
-    KMessageBox::sorry( this, i18n( "The file %1 does not contain valid XML." ,
-                          fileName ) );
-    return false;
-  }
-
-  // Check for proper document type.
-  if ( doc.doctype().name() != "KSysGuardWorkSheet" ) {
-    KMessageBox::sorry( this, i18n( "The file %1 does not contain a valid worksheet "
-                                    "definition, which must have a document type 'KSysGuardWorkSheet'.",
-                          fileName ) );
-    return false;
-  }
-
-  // Check for proper size.
-  QDomElement element = doc.documentElement();
-  float interval = element.attribute( "interval", "0.5" ).toFloat();
-  if( interval  < 0 || interval > 100000 )  //make sure the interval is fairly sane
-    interval = 0.5;
-
-  setUpdateInterval(interval);
-
-  mTitle = element.attribute( "title");
-  mTranslatedTitle = mTitle.isEmpty() ? "" : i18n(mTitle.toUtf8());
-  bool ok;
-  mSharedSettings.locked = element.attribute( "locked" ).toUInt( &ok );
-  if(!ok) mSharedSettings.locked = false;
-  
-  bool rowsOk, columnsOk;
-  int rows = element.attribute( "rows" ).toInt( &rowsOk );
-  int columns = element.attribute( "columns" ).toInt( &columnsOk );
-  if ( !( rowsOk && columnsOk ) ) {
-    KMessageBox::sorry( this, i18n("The file %1 has an invalid worksheet size.",
-                          fileName ) );
-    return false;
-  }
-
-  createGrid( rows, columns );
-
-  int i;
-  /* Load lists of hosts that are needed for the work sheet and try
-   * to establish a connection. */
-  QDomNodeList dnList = element.elementsByTagName( "host" );
-  for ( i = 0; i < dnList.count(); ++i ) {
-    QDomElement element = dnList.item( i ).toElement();
-    bool ok;
-    int port = element.attribute( "port" ).toInt( &ok );
-    if ( !ok )
-      port = -1;
-    KSGRD::SensorMgr->engage( element.attribute( "name" ),
-                              element.attribute( "shell" ),
-                              element.attribute( "command" ), port );
-  }
-  //if no hosts are specified, at least connect to localhost
-  if(dnList.count() == 0)
-    KSGRD::SensorMgr->engage( "localhost", "", "ksysguardd", -1);
-
-  // Load the displays and place them into the work sheet.
-  dnList = element.elementsByTagName( "display" );
-  for ( i = 0; i < dnList.count(); ++i ) {
-    QDomElement element = dnList.item( i ).toElement();
-    int row = element.attribute( "row" ).toInt();
-    int column = element.attribute( "column" ).toInt();
-    if ( row >= mRows || column >= mColumns) {
-      kDebug(1215) << "Row or Column out of range (" << row << ", "
-                    << column << ")" << endl;
-      return false;
+    QFile file( fileName );
+    if ( !file.open( QIODevice::ReadOnly ) ) {
+        KMessageBox::sorry( this, i18n( "Cannot open the file %1." ,  fileName ) );
+        return false;
     }
-    replaceDisplay( row * mColumns + column, element );
-  }
 
-  // Fill empty cells with dummy displays
-  for( int i = mDisplayList.count(); i < mRows * mColumns; i++)
-      replaceDisplay(i);
+    QDomDocument doc;
 
-  mFullFileName = fileName;
-  return true;
+    // Read in file and check for a valid XML header.
+    if ( !doc.setContent( &file) ) {
+        KMessageBox::sorry( this, i18n( "The file %1 does not contain valid XML." ,
+                    fileName ) );
+        return false;
+    }
+
+    // Check for proper document type.
+    if ( doc.doctype().name() != "KSysGuardWorkSheet" ) {
+        KMessageBox::sorry( this, i18n( "The file %1 does not contain a valid worksheet "
+                    "definition, which must have a document type 'KSysGuardWorkSheet'.",
+                    fileName ) );
+        return false;
+    }
+
+    // Check for proper size.
+    QDomElement element = doc.documentElement();
+    float interval = element.attribute( "interval", "0.5" ).toFloat();
+    if( interval  < 0 || interval > 100000 )  //make sure the interval is fairly sane
+        interval = 0.5;
+
+    setUpdateInterval(interval);
+
+    mTitle = element.attribute( "title");
+    mTranslatedTitle = mTitle.isEmpty() ? "" : i18n(mTitle.toUtf8());
+    bool ok;
+    mSharedSettings.locked = element.attribute( "locked" ).toUInt( &ok );
+    if(!ok) mSharedSettings.locked = false;
+
+    bool rowsOk, columnsOk;
+    int rows = element.attribute( "rows" ).toInt( &rowsOk );
+    int columns = element.attribute( "columns" ).toInt( &columnsOk );
+    if ( !( rowsOk && columnsOk ) ) {
+        KMessageBox::sorry( this, i18n("The file %1 has an invalid worksheet size.",
+                    fileName ) );
+        return false;
+    }
+
+    createGrid( rows, columns );
+
+    int i;
+    /* Load lists of hosts that are needed for the work sheet and try
+     * to establish a connection. */
+    QDomNodeList dnList = element.elementsByTagName( "host" );
+    for ( i = 0; i < dnList.count(); ++i ) {
+        QDomElement element = dnList.item( i ).toElement();
+        bool ok;
+        int port = element.attribute( "port" ).toInt( &ok );
+        if ( !ok )
+            port = -1;
+        KSGRD::SensorMgr->engage( element.attribute( "name" ),
+                element.attribute( "shell" ),
+                element.attribute( "command" ), port );
+    }
+    //if no hosts are specified, at least connect to localhost
+    if(dnList.count() == 0)
+        KSGRD::SensorMgr->engage( "localhost", "", "ksysguardd", -1);
+
+    // Load the displays and place them into the work sheet.
+    dnList = element.elementsByTagName( "display" );
+    for ( i = 0; i < dnList.count(); ++i ) {
+        QDomElement element = dnList.item( i ).toElement();
+        int row = element.attribute( "row" ).toInt();
+        int column = element.attribute( "column" ).toInt();
+        if ( row >= mRows || column >= mColumns) {
+            kDebug(1215) << "Row or Column out of range (" << row << ", "
+                << column << ")" << endl;
+            return false;
+        }
+        replaceDisplay( row * mColumns + column, element );
+    }
+
+    // Fill empty cells with dummy displays
+    for( int i = mDisplayList.count(); i < mRows * mColumns; i++)
+        replaceDisplay(i);
+
+    mFullFileName = fileName;
+    return true;
 }
 
 bool WorkSheet::save( const QString &fileName )
 {
-  return exportWorkSheet(fileName);
+    return exportWorkSheet(fileName);
 }
 
 bool WorkSheet::exportWorkSheet( const QString &fileName )
 {
-  QDomDocument doc( "KSysGuardWorkSheet" );
-  doc.appendChild( doc.createProcessingInstruction(
-                   "xml", "version=\"1.0\" encoding=\"UTF-8\"" ) );
+    QDomDocument doc( "KSysGuardWorkSheet" );
+    doc.appendChild( doc.createProcessingInstruction(
+                "xml", "version=\"1.0\" encoding=\"UTF-8\"" ) );
 
-  // save work sheet information
-  QDomElement ws = doc.createElement( "WorkSheet" );
-  doc.appendChild( ws );
-  ws.setAttribute( "title", mTitle );
-  ws.setAttribute( "locked", mSharedSettings.locked?"1":"0" );
-  ws.setAttribute( "interval", updateInterval() );
-  ws.setAttribute( "rows", mRows );
-  ws.setAttribute( "columns", mColumns );
+    // save work sheet information
+    QDomElement ws = doc.createElement( "WorkSheet" );
+    doc.appendChild( ws );
+    ws.setAttribute( "title", mTitle );
+    ws.setAttribute( "locked", mSharedSettings.locked?"1":"0" );
+    ws.setAttribute( "interval", updateInterval() );
+    ws.setAttribute( "rows", mRows );
+    ws.setAttribute( "columns", mColumns );
 
-  QStringList hosts;
-  collectHosts( hosts );
+    QStringList hosts;
+    collectHosts( hosts );
 
-  // save host information (name, shell, etc.)
-  QStringList::Iterator it;
-  for ( it = hosts.begin(); it != hosts.end(); ++it ) {
-    QString shell, command;
-    int port;
+    // save host information (name, shell, etc.)
+    QStringList::Iterator it;
+    for ( it = hosts.begin(); it != hosts.end(); ++it ) {
+        QString shell, command;
+        int port;
 
-    if ( KSGRD::SensorMgr->hostInfo( *it, shell, command, port ) ) {
-      QDomElement host = doc.createElement( "host" );
-      ws.appendChild( host );
-      host.setAttribute( "name", *it );
-      host.setAttribute( "shell", shell );
-      host.setAttribute( "command", command );
-      host.setAttribute( "port", port );
+        if ( KSGRD::SensorMgr->hostInfo( *it, shell, command, port ) ) {
+            QDomElement host = doc.createElement( "host" );
+            ws.appendChild( host );
+            host.setAttribute( "name", *it );
+            host.setAttribute( "shell", shell );
+            host.setAttribute( "command", command );
+            host.setAttribute( "port", port );
+        }
     }
-  }
 
-  for( int i = 0; i < mDisplayList.count(); i++) {
-      if ( QByteArray("DummyDisplay") != mDisplayList.at(i)->metaObject()->className()) {
-        KSGRD::SensorDisplay* display = static_cast<KSGRD::SensorDisplay*>(mDisplayList.at(i));
-        QDomElement element = doc.createElement( "display" );
-        ws.appendChild( element );
-        element.setAttribute( "row", i / mColumns  );
-        element.setAttribute( "column", i % mColumns );
-        element.setAttribute( "class", display->metaObject()->className() );
+    for( int i = 0; i < mDisplayList.count(); i++) {
+        if ( QByteArray("DummyDisplay") != mDisplayList.at(i)->metaObject()->className()) {
+            KSGRD::SensorDisplay* display = static_cast<KSGRD::SensorDisplay*>(mDisplayList.at(i));
+            QDomElement element = doc.createElement( "display" );
+            ws.appendChild( element );
+            element.setAttribute( "row", i / mColumns  );
+            element.setAttribute( "column", i % mColumns );
+            element.setAttribute( "class", display->metaObject()->className() );
 
-        display->saveSettings( doc, element );
-      }
-  }
+            display->saveSettings( doc, element );
+        }
+    }
 
-  QFile file( fileName );
-  if ( !file.open( QIODevice::WriteOnly ) ) {
-    KMessageBox::sorry( this, i18n( "Cannot save file %1" ,  fileName ) );
-    return false;
-  }
+    QFile file( fileName );
+    if ( !file.open( QIODevice::WriteOnly ) ) {
+        KMessageBox::sorry( this, i18n( "Cannot save file %1" ,  fileName ) );
+        return false;
+    }
 
-  QTextStream s( &file );
-  s.setCodec( "UTF-8" );
-  s << doc;
-  file.close();
+    QTextStream s( &file );
+    s.setCodec( "UTF-8" );
+    s << doc;
+    file.close();
 
-  return true;
+    return true;
 }
 
 void WorkSheet::cut()
 {
-  if ( !currentDisplay() || currentDisplay()->metaObject()->className() == QByteArray("DummyDisplay" ) )
-    return;
+    if ( !currentDisplay() || currentDisplay()->metaObject()->className() == QByteArray("DummyDisplay" ) )
+        return;
 
-  QClipboard* clip = QApplication::clipboard();
+    QClipboard* clip = QApplication::clipboard();
 
-  clip->setText( currentDisplayAsXML() );
+    clip->setText( currentDisplayAsXML() );
 
-  removeDisplay( currentDisplay() );
+    removeDisplay( currentDisplay() );
 }
 
 void WorkSheet::copy()
 {
-  if ( !currentDisplay() || currentDisplay()->metaObject()->className() == QByteArray( "DummyDisplay" ) )
-    return;
+    if ( !currentDisplay() || currentDisplay()->metaObject()->className() == QByteArray( "DummyDisplay" ) )
+        return;
 
-  QClipboard* clip = QApplication::clipboard();
+    QClipboard* clip = QApplication::clipboard();
 
-  clip->setText( currentDisplayAsXML() );
+    clip->setText( currentDisplayAsXML() );
 }
 
 void WorkSheet::paste()
 {
-  int index;
-  if ( !currentDisplay( &index ) )
-    return;
+    int index;
+    if ( !currentDisplay( &index ) )
+        return;
 
-  QClipboard* clip = QApplication::clipboard();
+    QClipboard* clip = QApplication::clipboard();
 
-  QDomDocument doc;
-  /* Get text from clipboard and check for a valid XML header and
-   * proper document type. */
-  if ( !doc.setContent( clip->text() ) || doc.doctype().name() != "KSysGuardDisplay" ) {
-    KMessageBox::sorry( this, i18n("The clipboard does not contain a valid display "
-                        "description." ) );
-    return;
-  }
+    QDomDocument doc;
+    /* Get text from clipboard and check for a valid XML header and
+     * proper document type. */
+    if ( !doc.setContent( clip->text() ) || doc.doctype().name() != "KSysGuardDisplay" ) {
+        KMessageBox::sorry( this, i18n("The clipboard does not contain a valid display "
+                    "description." ) );
+        return;
+    }
 
-  QDomElement element = doc.documentElement();
-  replaceDisplay( index, element );
+    QDomElement element = doc.documentElement();
+    replaceDisplay( index, element );
 }
 
 void WorkSheet::setFileName( const QString &fileName )
 {
-  mFileName = fileName;
+    mFileName = fileName;
 }
 
 QString WorkSheet::fullFileName() const
 {
-  return mFullFileName;
+    return mFullFileName;
 }
 
 QString WorkSheet::fileName() const
 {
-  return mFileName;
+    return mFileName;
 }
 
 void WorkSheet::setTitle( const QString &title )
 {
-  mTitle = title;
-  mTranslatedTitle = mTitle.isEmpty() ? "" : i18n(mTitle.toUtf8());
-  emit titleChanged(this);
+    mTitle = title;
+    mTranslatedTitle = mTitle.isEmpty() ? "" : i18n(mTitle.toUtf8());
+    emit titleChanged(this);
 }
 
 QString WorkSheet::translatedTitle() const {
-  return mTranslatedTitle;
+    return mTranslatedTitle;
 }
 
 QString WorkSheet::title() const {
-  return mTitle;
+    return mTitle;
 }
 
 KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, QString displayTitle, int index)
 {
-  KSGRD::SensorDisplay* newDisplay = 0;
-  switch(displayType) {
-    case DisplayDummy: 
-      newDisplay = new DummyDisplay( this, &mSharedSettings );
-      break;
-    case DisplayFancyPlotter:
-      newDisplay = new FancyPlotter( this, displayTitle, &mSharedSettings );
-      break;
-    case DisplayMultiMeter:
-      newDisplay = new MultiMeter( this, displayTitle, &mSharedSettings);
-      break;
-    case DisplayDancingBars: 
-      newDisplay = new DancingBars( this, displayTitle, &mSharedSettings);
-      break;
-    case DisplaySensorLogger:
-      newDisplay = new SensorLogger( this, displayTitle, &mSharedSettings);
-      break;
-    case DisplayListView:
-      newDisplay = new ListView( this, displayTitle, &mSharedSettings);
-      break;
-    case DisplayLogFile:
-      newDisplay = new LogFile( this, displayTitle, &mSharedSettings );
-      break;
-    case DisplayProcessControllerRemote:
-      newDisplay = new ProcessController( this);
-      break;
-    case DisplayProcessControllerLocal:
-	Q_ASSERT(sLocalProcessController);
-	newDisplay = sLocalProcessController;
-	break;
-    default:
-      Q_ASSERT(false);
-      return NULL;
-  }
-  newDisplay->applyStyle();
-  connect(&mTimer, SIGNAL( timeout()), newDisplay, SLOT( timerTick()));
-  replaceDisplay( index, newDisplay );
-  return newDisplay;
+    KSGRD::SensorDisplay* newDisplay = 0;
+    switch(displayType) {
+        case DisplayDummy: 
+            newDisplay = new DummyDisplay( this, &mSharedSettings );
+            break;
+        case DisplayFancyPlotter:
+            newDisplay = new FancyPlotter( this, displayTitle, &mSharedSettings );
+            break;
+        case DisplayMultiMeter:
+            newDisplay = new MultiMeter( this, displayTitle, &mSharedSettings);
+            break;
+        case DisplayDancingBars: 
+            newDisplay = new DancingBars( this, displayTitle, &mSharedSettings);
+            break;
+        case DisplaySensorLogger:
+            newDisplay = new SensorLogger( this, displayTitle, &mSharedSettings);
+            break;
+        case DisplayListView:
+            newDisplay = new ListView( this, displayTitle, &mSharedSettings);
+            break;
+        case DisplayLogFile:
+            newDisplay = new LogFile( this, displayTitle, &mSharedSettings );
+            break;
+        case DisplayProcessControllerRemote:
+            newDisplay = new ProcessController( this);
+            break;
+        case DisplayProcessControllerLocal:
+            Q_ASSERT(sLocalProcessController);
+            newDisplay = sLocalProcessController;
+            break;
+        default:
+            Q_ASSERT(false);
+            return NULL;
+    }
+    newDisplay->applyStyle();
+    connect(&mTimer, SIGNAL( timeout()), newDisplay, SLOT( timerTick()));
+    replaceDisplay( index, newDisplay );
+    return newDisplay;
 }
 
 KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
-                                             const QString &sensorName,
-                                             const QString &sensorType,
-                                             const QString& sensorDescr,
-                                             int index )
+        const QString &sensorName,
+        const QString &sensorType,
+        const QString& sensorDescr,
+        int index )
 {
-  KSGRD::SensorDisplay* display = mDisplayList.at( index);
-  /* If the by 'row' and 'column' specified display is a QGroupBox dummy
-   * display we replace the widget. Otherwise we just try to add
-   * the new sensor to an existing display. */
-  if ( display->metaObject()->className() == QByteArray( "DummyDisplay" ) ) {
-    DisplayType displayType = DisplayDummy;
-    /* If the sensor type is supported by more than one display
-     * type we popup a menu so the user can select what display is
-     * wanted. */
-    if ( sensorType == "integer" || sensorType == "float" ) {
-      KMenu pm;
-      pm.addTitle( i18n( "Select Display Type" ) );
-      QAction *a1 = pm.addAction( i18n( "&Line graph" ) );
-      QAction *a2 = pm.addAction( i18n( "&Digital display" ) );
-      QAction *a3 = pm.addAction( i18n( "&Bar graph" ) );
-      QAction *a4 = pm.addAction( i18n( "Log to a &file" ) );
-      QAction *execed = pm.exec( QCursor::pos() );
-      if (execed == a1)
-  	displayType = DisplayFancyPlotter;
-      else if (execed == a2)
-	displayType = DisplayMultiMeter;
-      else if (execed == a3)
-	displayType = DisplayDancingBars;
-      else if (execed == a4)
-	displayType = DisplaySensorLogger;
-      else 
-        return 0;
-    } else if ( sensorType == "listview" ) {
-      displayType = DisplayListView;
+    KSGRD::SensorDisplay* display = mDisplayList.at( index);
+    /* If the by 'row' and 'column' specified display is a QGroupBox dummy
+     * display we replace the widget. Otherwise we just try to add
+     * the new sensor to an existing display. */
+    if ( display->metaObject()->className() == QByteArray( "DummyDisplay" ) ) {
+        DisplayType displayType = DisplayDummy;
+        /* If the sensor type is supported by more than one display
+         * type we popup a menu so the user can select what display is
+         * wanted. */
+        if ( sensorType == "integer" || sensorType == "float" ) {
+            KMenu pm;
+            pm.addTitle( i18n( "Select Display Type" ) );
+            QAction *a1 = pm.addAction( i18n( "&Line graph" ) );
+            QAction *a2 = pm.addAction( i18n( "&Digital display" ) );
+            QAction *a3 = pm.addAction( i18n( "&Bar graph" ) );
+            QAction *a4 = pm.addAction( i18n( "Log to a &file" ) );
+            QAction *execed = pm.exec( QCursor::pos() );
+            if (execed == a1)
+                displayType = DisplayFancyPlotter;
+            else if (execed == a2)
+                displayType = DisplayMultiMeter;
+            else if (execed == a3)
+                displayType = DisplayDancingBars;
+            else if (execed == a4)
+                displayType = DisplaySensorLogger;
+            else 
+                return 0;
+        } else if ( sensorType == "listview" ) {
+            displayType = DisplayListView;
+        }
+        else if ( sensorType == "logfile" ) {
+            displayType = DisplayLogFile;
+        }
+        else if ( sensorType == "sensorlogger" ) {
+            displayType = DisplaySensorLogger;
+        }
+        else if ( sensorType == "table" ) {
+            if(hostName.isEmpty() || hostName == "localhost")
+                displayType = DisplayProcessControllerLocal;
+            else
+                displayType = DisplayProcessControllerRemote;
+        }
+        else {
+            kDebug(1215) << "Unknown sensor type: " <<  sensorType;
+            return 0;
+        }
+        display = insertDisplay(displayType, sensorDescr, index);
     }
-    else if ( sensorType == "logfile" ) {
-      displayType = DisplayLogFile;
-    }
-    else if ( sensorType == "sensorlogger" ) {
-      displayType = DisplaySensorLogger;
-    }
-    else if ( sensorType == "table" ) {
-      if(hostName.isEmpty() || hostName == "localhost")
-        displayType = DisplayProcessControllerLocal;
-      else
-        displayType = DisplayProcessControllerRemote;
-    }
-    else {
-      kDebug(1215) << "Unknown sensor type: " <<  sensorType;
-      return 0;
-    }
-    display = insertDisplay(displayType, sensorDescr, index);
-  }
 
-  display->addSensor( hostName, sensorName, sensorType, sensorDescr );
+    display->addSensor( hostName, sensorName, sensorType, sensorDescr );
 
-  return display;
+    return display;
 }
 
 void WorkSheet::settings()
 {
-  WorkSheetSettings dlg( this, mSharedSettings.locked );
-  dlg.setSheetTitle( mTranslatedTitle );
-  dlg.setInterval( updateInterval() );
+    WorkSheetSettings dlg( this, mSharedSettings.locked );
+    dlg.setSheetTitle( mTranslatedTitle );
+    dlg.setInterval( updateInterval() );
 
-  if(!mSharedSettings.locked) {
-    dlg.setRows( mRows );
-    dlg.setColumns( mColumns );
-  }
-
-  if ( dlg.exec() ) {
-    setUpdateInterval( dlg.interval() );
-
-    if (!mSharedSettings.locked)
-      resizeGrid( dlg.rows(), dlg.columns() );
-
-    if(mTranslatedTitle != dlg.sheetTitle()) { //Title has changed
-      if(mRows == 1 && mColumns == 1) {
-        mDisplayList.first()->setTitle(dlg.sheetTitle());
-      } else {
-        setTitle(dlg.sheetTitle());
-      }
+    if(!mSharedSettings.locked) {
+        dlg.setRows( mRows );
+        dlg.setColumns( mColumns );
     }
-  }
+
+    if ( dlg.exec() ) {
+        setUpdateInterval( dlg.interval() );
+
+        if (!mSharedSettings.locked)
+            resizeGrid( dlg.rows(), dlg.columns() );
+
+        if(mTranslatedTitle != dlg.sheetTitle()) { //Title has changed
+            if(mRows == 1 && mColumns == 1) {
+                mDisplayList.first()->setTitle(dlg.sheetTitle());
+            } else {
+                setTitle(dlg.sheetTitle());
+            }
+        }
+    }
 }
 
 void WorkSheet::showPopupMenu( KSGRD::SensorDisplay *display )
 {
-  display->configureSettings();
+    display->configureSettings();
 }
 
 void WorkSheet::applyStyle()
 {
-  for ( int i = 0; i < mDisplayList.count(); i++ )
-      mDisplayList[i]->applyStyle();
+    for ( int i = 0; i < mDisplayList.count(); i++ )
+        mDisplayList[i]->applyStyle();
 }
 
 void WorkSheet::dragEnterEvent( QDragEnterEvent* event) 
 {
-  if ( !event->mimeData()->hasFormat("application/x-ksysguard") )
-    return;
-  event->accept();
+    if ( !event->mimeData()->hasFormat("application/x-ksysguard") )
+        return;
+    event->accept();
 }
 void WorkSheet::dragMoveEvent( QDragMoveEvent *event )
 {
@@ -520,62 +520,62 @@ void WorkSheet::dropEvent( QDropEvent *event )
 
 QSize WorkSheet::sizeHint() const
 {
-  return QSize( 800,600 );
+    return QSize( 800,600 );
 }
 
 bool WorkSheet::event( QEvent *e )
 {
-  if ( e->type() == QEvent::User ) {
-    // SensorDisplays send out this event if they want to be removed.
-    if ( KMessageBox::warningContinueCancel( this, i18n( "Remove this display?" ),
-      i18n("Remove Display"), KStandardGuiItem::del() )
-         == KMessageBox::Continue ) {
-      KSGRD::SensorDisplay::DeleteEvent *event = static_cast<KSGRD::SensorDisplay::DeleteEvent*>( e );
-      removeDisplay( event->display() );
+    if ( e->type() == QEvent::User ) {
+        // SensorDisplays send out this event if they want to be removed.
+        if ( KMessageBox::warningContinueCancel( this, i18n( "Remove this display?" ),
+                    i18n("Remove Display"), KStandardGuiItem::del() )
+                == KMessageBox::Continue ) {
+            KSGRD::SensorDisplay::DeleteEvent *event = static_cast<KSGRD::SensorDisplay::DeleteEvent*>( e );
+            removeDisplay( event->display() );
 
-      return true;
+            return true;
+        }
     }
-  }
 
-  return QWidget::event( e );
+    return QWidget::event( e );
 }
 
 bool WorkSheet::replaceDisplay( int index, QDomElement& element )
 {
-  QString classType = element.attribute( "class" );
-  QString hostName = element.attribute( "hostName" );
-  DisplayType displayType = DisplayDummy;
-  KSGRD::SensorDisplay* newDisplay;
+    QString classType = element.attribute( "class" );
+    QString hostName = element.attribute( "hostName" );
+    DisplayType displayType = DisplayDummy;
+    KSGRD::SensorDisplay* newDisplay;
 
-  if ( classType == "FancyPlotter" )
-    displayType = DisplayFancyPlotter;
-  else if ( classType == "MultiMeter" )
-    displayType = DisplayMultiMeter;
-  else if ( classType == "DancingBars" )
-    displayType = DisplayDancingBars;
-  else if ( classType == "ListView" )
-    displayType = DisplayListView;
-  else if ( classType == "LogFile" )
-    displayType = DisplayLogFile;
-  else if ( classType == "SensorLogger" )
-    displayType = DisplaySensorLogger;
-  else if ( classType == "ProcessController" ) {
-    if(hostName.isEmpty() || hostName == "localhost")
-      displayType = DisplayProcessControllerLocal;
-    else
-      displayType = DisplayProcessControllerRemote;
-  } else {
-    kDebug(1215) << "Unknown class " <<  classType;
-    return false;
-  }
+    if ( classType == "FancyPlotter" )
+        displayType = DisplayFancyPlotter;
+    else if ( classType == "MultiMeter" )
+        displayType = DisplayMultiMeter;
+    else if ( classType == "DancingBars" )
+        displayType = DisplayDancingBars;
+    else if ( classType == "ListView" )
+        displayType = DisplayListView;
+    else if ( classType == "LogFile" )
+        displayType = DisplayLogFile;
+    else if ( classType == "SensorLogger" )
+        displayType = DisplaySensorLogger;
+    else if ( classType == "ProcessController" ) {
+        if(hostName.isEmpty() || hostName == "localhost")
+            displayType = DisplayProcessControllerLocal;
+        else
+            displayType = DisplayProcessControllerRemote;
+    } else {
+        kDebug(1215) << "Unknown class " <<  classType;
+        return false;
+    }
 
-  newDisplay = insertDisplay(displayType, i18n("Dummy"), index);
+    newDisplay = insertDisplay(displayType, i18n("Dummy"), index);
 
-  // load display specific settings
-  if ( !newDisplay->restoreSettings( element ) )
-    return false;
+    // load display specific settings
+    if ( !newDisplay->restoreSettings( element ) )
+        return false;
 
-  return true;
+    return true;
 }
 
 
@@ -624,37 +624,37 @@ void WorkSheet::refreshSheet()
 
 void WorkSheet::removeDisplay( KSGRD::SensorDisplay *display )
 {
-  if ( !display )
-    return;
-  
-  for (int i = 0; i < mDisplayList.count(); i++)
-      if ( mDisplayList[ i ] == display ) {
-        replaceDisplay( i );
+    if ( !display )
         return;
-      }
+
+    for (int i = 0; i < mDisplayList.count(); i++)
+        if ( mDisplayList[ i ] == display ) {
+            replaceDisplay( i );
+            return;
+        }
 }
 
 void WorkSheet::collectHosts( QStringList &list )
 {
-  for (int i = 0; i < mDisplayList.count(); i++)
-      if ( mDisplayList[ i ]->metaObject()->className() != QByteArray( "DummyDisplay" ) )
-        ((KSGRD::SensorDisplay*)mDisplayList[ i ])->hosts( list );
+    for (int i = 0; i < mDisplayList.count(); i++)
+        if ( mDisplayList[ i ]->metaObject()->className() != QByteArray( "DummyDisplay" ) )
+            ((KSGRD::SensorDisplay*)mDisplayList[ i ])->hosts( list );
 }
 
 void WorkSheet::createGrid( int rows, int columns )
 {
-  mRows = rows;
-  mColumns = columns;
+    mRows = rows;
+    mColumns = columns;
 
-  // create grid layout with specified dimensions
-  mGridLayout = new QGridLayout( this );
-  mGridLayout->setSpacing( 5 );
+    // create grid layout with specified dimensions
+    mGridLayout = new QGridLayout( this );
+    mGridLayout->setSpacing( 5 );
 
-  /* set stretch factors for rows and columns */
-  for ( int r = 0; r < mRows; ++r )
-    mGridLayout->setRowStretch( r, 100 );
-  for ( int c = 0; c < mColumns; ++c )
-    mGridLayout->setColumnStretch( c, 100 );
+    /* set stretch factors for rows and columns */
+    for ( int r = 0; r < mRows; ++r )
+        mGridLayout->setRowStretch( r, 100 );
+    for ( int c = 0; c < mColumns; ++c )
+        mGridLayout->setColumnStretch( c, 100 );
 }
 
 void WorkSheet::resizeGrid( int newRows, int newColumns )
@@ -736,26 +736,26 @@ QString WorkSheet::currentDisplayAsXML()
 }
 
 void WorkSheet::changeEvent( QEvent * event ) {
-  if (event->type() == QEvent::LanguageChange) {
-    setTitle(mTitle);  //retranslate
-  }
+    if (event->type() == QEvent::LanguageChange) {
+        setTitle(mTitle);  //retranslate
+    }
 }
 
 void WorkSheet::setUpdateInterval( float secs)
 {
-  if(secs == 0)
-    mTimer.stop();
-  else {
-    mTimer.setInterval(secs*1000);
-    mTimer.start();
-  }
+    if(secs == 0)
+        mTimer.stop();
+    else {
+        mTimer.setInterval(secs*1000);
+        mTimer.start();
+    }
 }
 float WorkSheet::updateInterval() const
 {
-  if(mTimer.isActive())
-    return mTimer.interval()/1000.0;
-  else
-    return 0;
+    if(mTimer.isActive())
+        return mTimer.interval()/1000.0;
+    else
+        return 0;
 }
 
 #include "WorkSheet.moc"
