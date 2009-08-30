@@ -55,25 +55,21 @@ WorkSheet::WorkSheet( QWidget *parent )
 {
   mGridLayout = 0;
   mRows = mColumns = 0;
-  mDisplayList = 0;
   setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
   setAcceptDrops( true );
 }
 
-WorkSheet::WorkSheet( uint rows, uint columns, float interval, QWidget* parent )
+WorkSheet::WorkSheet( int rows, int columns, float interval, QWidget* parent )
   : QWidget( parent)
 {
-  mRows = mColumns = 0;
   mGridLayout = 0;
-  mDisplayList = 0;
   setUpdateInterval( interval );
 
   createGrid( rows, columns );
 
   // Initialize worksheet with dummy displays.
-  for ( uint r = 0; r < mRows; ++r )
-    for ( uint c = 0; c < mColumns; ++c )
-      replaceDisplay( r, c );
+  for ( int i = 0; i < mRows*mColumns; i++ )
+      replaceDisplay( i );
 
   mGridLayout->activate();
 
@@ -82,12 +78,7 @@ WorkSheet::WorkSheet( uint rows, uint columns, float interval, QWidget* parent )
 
 WorkSheet::~WorkSheet()
 {
-  for ( uint r = 0; r < mRows; ++r ) {
-    for ( uint c = 0; c < mColumns; ++c )
-      delete mDisplayList[ r ][ c ];
-    delete mDisplayList[ r ];
-  }
-  delete [] mDisplayList;
+  qDeleteAll(mDisplayList);
 }
 
 bool WorkSheet::load( const QString &fileName )
@@ -130,8 +121,8 @@ bool WorkSheet::load( const QString &fileName )
   if(!ok) mSharedSettings.locked = false;
   
   bool rowsOk, columnsOk;
-  uint rows = element.attribute( "rows" ).toUInt( &rowsOk );
-  uint columns = element.attribute( "columns" ).toUInt( &columnsOk );
+  int rows = element.attribute( "rows" ).toInt( &rowsOk );
+  int columns = element.attribute( "columns" ).toInt( &columnsOk );
   if ( !( rowsOk && columnsOk ) ) {
     KMessageBox::sorry( this, i18n("The file %1 has an invalid worksheet size.",
                           fileName ) );
@@ -162,21 +153,20 @@ bool WorkSheet::load( const QString &fileName )
   dnList = element.elementsByTagName( "display" );
   for ( i = 0; i < dnList.count(); ++i ) {
     QDomElement element = dnList.item( i ).toElement();
-    uint row = element.attribute( "row" ).toUInt();
-    uint column = element.attribute( "column" ).toUInt();
+    int row = element.attribute( "row" ).toInt();
+    int column = element.attribute( "column" ).toInt();
     if ( row >= mRows || column >= mColumns) {
       kDebug(1215) << "Row or Column out of range (" << row << ", "
                     << column << ")" << endl;
       return false;
     }
-    replaceDisplay( row, column, element );
+    replaceDisplay( row * mColumns + column, element );
   }
 
   // Fill empty cells with dummy displays
-  for ( uint r = 0; r < mRows; ++r )
-    for ( uint c = 0; c < mColumns; ++c )
-      if ( !mDisplayList[ r ][ c ] )
-        replaceDisplay( r, c );
+  for( int i = mDisplayList.count(); i < mRows * mColumns; i++)
+      replaceDisplay(i);
+
   mFullFileName = fileName;
   return true;
 }
@@ -220,18 +210,18 @@ bool WorkSheet::exportWorkSheet( const QString &fileName )
     }
   }
 
-  for ( uint r = 0; r < mRows; ++r )
-    for (uint c = 0; c < mColumns; ++c )
-      if ( QByteArray("DummyDisplay") != mDisplayList[ r ][ c ]->metaObject()->className()) {
-        KSGRD::SensorDisplay* display = (KSGRD::SensorDisplay*)mDisplayList[ r ][ c ];
+  for( int i = 0; i < mDisplayList.count(); i++) {
+      if ( QByteArray("DummyDisplay") != mDisplayList.at(i)->metaObject()->className()) {
+        KSGRD::SensorDisplay* display = static_cast<KSGRD::SensorDisplay*>(mDisplayList.at(i));
         QDomElement element = doc.createElement( "display" );
         ws.appendChild( element );
-        element.setAttribute( "row", r );
-        element.setAttribute( "column", c );
+        element.setAttribute( "row", i / mColumns  );
+        element.setAttribute( "column", i % mColumns );
         element.setAttribute( "class", display->metaObject()->className() );
 
         display->saveSettings( doc, element );
       }
+  }
 
   QFile file( fileName );
   if ( !file.open( QIODevice::WriteOnly ) ) {
@@ -271,8 +261,8 @@ void WorkSheet::copy()
 
 void WorkSheet::paste()
 {
-  uint row, column;
-  if ( !currentDisplay( &row, &column ) )
+  int index;
+  if ( !currentDisplay( &index ) )
     return;
 
   QClipboard* clip = QApplication::clipboard();
@@ -287,7 +277,7 @@ void WorkSheet::paste()
   }
 
   QDomElement element = doc.documentElement();
-  replaceDisplay( row, column, element );
+  replaceDisplay( index, element );
 }
 
 void WorkSheet::setFileName( const QString &fileName )
@@ -320,7 +310,7 @@ QString WorkSheet::title() const {
   return mTitle;
 }
 
-KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, QString displayTitle, uint row, uint column)
+KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, QString displayTitle, int index)
 {
   KSGRD::SensorDisplay* newDisplay = 0;
   switch(displayType) {
@@ -358,7 +348,7 @@ KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, QString
   }
   newDisplay->applyStyle();
   connect(&mTimer, SIGNAL( timeout()), newDisplay, SLOT( timerTick()));
-  replaceDisplay( row, column, newDisplay );
+  replaceDisplay( index, newDisplay );
   return newDisplay;
 }
 
@@ -366,9 +356,9 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
                                              const QString &sensorName,
                                              const QString &sensorType,
                                              const QString& sensorDescr,
-                                             uint row, uint column )
+                                             int index )
 {
-  KSGRD::SensorDisplay* display = mDisplayList[ row ][ column ];
+  KSGRD::SensorDisplay* display = mDisplayList.at( index);
   /* If the by 'row' and 'column' specified display is a QGroupBox dummy
    * display we replace the widget. Otherwise we just try to add
    * the new sensor to an existing display. */
@@ -414,7 +404,7 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
       kDebug(1215) << "Unknown sensor type: " <<  sensorType;
       return 0;
     }
-    display = insertDisplay(displayType, sensorDescr, row, column);
+    display = insertDisplay(displayType, sensorDescr, index);
   }
 
   display->addSensor( hostName, sensorName, sensorType, sensorDescr );
@@ -440,8 +430,8 @@ void WorkSheet::settings()
       resizeGrid( dlg.rows(), dlg.columns() );
 
     if(mTranslatedTitle != dlg.sheetTitle()) { //Title has changed
-      if(mRows == 1 && mColumns ==1) {
-        mDisplayList[ 0 ][ 0 ]->setTitle(dlg.sheetTitle());
+      if(mRows == 1 && mColumns == 1) {
+        mDisplayList.first()->setTitle(dlg.sheetTitle());
       } else {
         setTitle(dlg.sheetTitle());
       }
@@ -456,9 +446,8 @@ void WorkSheet::showPopupMenu( KSGRD::SensorDisplay *display )
 
 void WorkSheet::applyStyle()
 {
-  for ( uint r = 0; r < mRows; ++r )
-    for (uint c = 0; c < mColumns; ++c )
-      mDisplayList[ r ][ c ]->applyStyle();
+  for ( int i = 0; i < mDisplayList.count(); i++ )
+      mDisplayList[i]->applyStyle();
 }
 
 void WorkSheet::dragEnterEvent( QDragEnterEvent* event) 
@@ -469,69 +458,64 @@ void WorkSheet::dragEnterEvent( QDragEnterEvent* event)
 }
 void WorkSheet::dragMoveEvent( QDragMoveEvent *event )
 {
+    /* Find the sensor display that is supposed to get the drop
+     * event and replace or add sensor. */
+    const QPoint globalPos = mapToGlobal( event->pos() );
+    for ( int i = 0; i < mDisplayList.count(); i++ ) {
+        const QSize displaySize = mDisplayList[i]->size();
 
-  /* Find the sensor display that is supposed to get the drop
-   * event and replace or add sensor. */
-  const QPoint globalPos = mapToGlobal( event->pos() );
-  for ( uint r = 0; r < mRows; ++r ) {
-    for ( uint c = 0; c < mColumns; ++c ) {
-      const QSize displaySize = mDisplayList[ r ][ c ]->size();
+        const QPoint displayPoint( displaySize.width(), displaySize.height() );
 
-      const QPoint displayPoint( displaySize.width(), displaySize.height() );
-
-      const QRect widgetRect = QRect( mDisplayList[ r ][ c ]->mapToGlobal( QPoint( 0, 0 ) ),
-                                      mDisplayList[ r ][ c ]->mapToGlobal( displayPoint ) );
+        const QRect widgetRect = QRect( mDisplayList[i]->mapToGlobal( QPoint( 0, 0 ) ),
+                mDisplayList[i]->mapToGlobal( displayPoint ) );
 
 
-      if ( widgetRect.contains( globalPos ) ) {
-        QByteArray widgetType = mDisplayList[ r ][ c ]->metaObject()->className();
-        if(widgetType == "MultiMeter" || widgetType == "ProcessController" || widgetType == "table")
-		event->ignore(widgetRect);
-	else if(widgetType != "Dummy")
-  		event->accept(widgetRect);
-        return;
-      }
+        if ( widgetRect.contains( globalPos ) ) {
+            QByteArray widgetType = mDisplayList[i]->metaObject()->className();
+            if(widgetType == "MultiMeter" || widgetType == "ProcessController" || widgetType == "table")
+                event->ignore(widgetRect);
+            else if(widgetType != "Dummy")
+                event->accept(widgetRect);
+            return;
+        }
     }
-  }
 }
 
 void WorkSheet::dropEvent( QDropEvent *event )
 {
-  if ( !event->mimeData()->hasFormat("application/x-ksysguard") )
-    return;
-
-  const QString dragObject = QString::fromUtf8(event->mimeData()->data("application/x-ksysguard"));
-
-  // The host name, sensor name and type are separated by a ' '.
-  QStringList parts = dragObject.split( ' ');
-
-  QString hostName = parts[ 0 ];
-  QString sensorName = parts[ 1 ];
-  QString sensorType = parts[ 2 ];
-  QString sensorDescr = parts[ 3 ];
-
-  if ( hostName.isEmpty() || sensorName.isEmpty() || sensorType.isEmpty() )
-    return;
-
-  /* Find the sensor display that is supposed to get the drop
-   * event and replace or add sensor. */
-  const QPoint globalPos = mapToGlobal( event->pos() );
-  for ( uint r = 0; r < mRows; ++r ) {
-    for ( uint c = 0; c < mColumns; ++c ) {
-      const QSize displaySize = mDisplayList[ r ][ c ]->size();
-
-      const QPoint displayPoint( displaySize.width(), displaySize.height() );
-
-      const QRect widgetRect = QRect( mDisplayList[ r ][ c ]->mapToGlobal( QPoint( 0, 0 ) ),
-                                      mDisplayList[ r ][ c ]->mapToGlobal( displayPoint ) );
-
-
-      if ( widgetRect.contains( globalPos ) ) {
-        addDisplay( hostName, sensorName, sensorType, sensorDescr, r, c );
+    if ( !event->mimeData()->hasFormat("application/x-ksysguard") )
         return;
-      }
+
+    const QString dragObject = QString::fromUtf8(event->mimeData()->data("application/x-ksysguard"));
+
+    // The host name, sensor name and type are separated by a ' '.
+    QStringList parts = dragObject.split( ' ');
+
+    QString hostName = parts[ 0 ];
+    QString sensorName = parts[ 1 ];
+    QString sensorType = parts[ 2 ];
+    QString sensorDescr = parts[ 3 ];
+
+    if ( hostName.isEmpty() || sensorName.isEmpty() || sensorType.isEmpty() )
+        return;
+
+    /* Find the sensor display that is supposed to get the drop
+     * event and replace or add sensor. */
+    const QPoint globalPos = mapToGlobal( event->pos() );
+    for ( int i = 0; i < mDisplayList.count(); i++ ) {
+        const QSize displaySize = mDisplayList[i]->size();
+
+        const QPoint displayPoint( displaySize.width(), displaySize.height() );
+
+        const QRect widgetRect = QRect( mDisplayList[i]->mapToGlobal( QPoint( 0, 0 ) ),
+                mDisplayList[i]->mapToGlobal( displayPoint ) );
+
+
+        if ( widgetRect.contains( globalPos ) ) {
+            addDisplay( hostName, sensorName, sensorType, sensorDescr, i );
+            return;
+        }
     }
-  }
 }
 
 QSize WorkSheet::sizeHint() const
@@ -556,7 +540,7 @@ bool WorkSheet::event( QEvent *e )
   return QWidget::event( e );
 }
 
-bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
+bool WorkSheet::replaceDisplay( int index, QDomElement& element )
 {
   QString classType = element.attribute( "class" );
   QString hostName = element.attribute( "hostName" );
@@ -585,7 +569,7 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
     return false;
   }
 
-  newDisplay = insertDisplay(displayType, i18n("Dummy"), row, column);
+  newDisplay = insertDisplay(displayType, i18n("Dummy"), index);
 
   // load display specific settings
   if ( !newDisplay->restoreSettings( element ) )
@@ -595,45 +579,47 @@ bool WorkSheet::replaceDisplay( uint row, uint column, QDomElement& element )
 }
 
 
-void WorkSheet::replaceDisplay( uint row, uint column, KSGRD::SensorDisplay* newDisplay )
+void WorkSheet::replaceDisplay( int index, KSGRD::SensorDisplay* newDisplay )
 {
-  // remove the old display && sensor frame at this location
-  if ( mDisplayList[ row ][ column ] && mDisplayList[ row ][ column ] != sLocalProcessController)  {
-    if ( qstrcmp( mDisplayList[ row ][ column ]->parent()->metaObject()->className(), "SensorFrame" ) == 0 ) {
-      delete mDisplayList[ row ][ column ]->parent(); // destroys the child (display) as well
+    if ( !newDisplay )
+        newDisplay = new DummyDisplay( this, &mSharedSettings );
+
+    //Fill up with NULLs
+    while( mDisplayList.count() < index )
+        replaceDisplay(mDisplayList.count());
+
+    if( mDisplayList.count() == index) {
+        mDisplayList.append(newDisplay);
     } else {
-      delete mDisplayList[ row ][ column ];
+        // remove the old display && sensor frame at this location
+        if( mDisplayList[ index ] && mDisplayList[ index ] != sLocalProcessController ) {
+            if ( qstrcmp( mDisplayList[ index ]->parent()->metaObject()->className(), "SensorFrame" ) == 0 )
+                delete mDisplayList[ index ]->parent(); // destroys the child (display) as well
+            else
+                delete mDisplayList[ index ];
+        }
+        mDisplayList[index] = newDisplay;
     }
-  }
 
-  // insert new display
-  if ( !newDisplay ) {
-    newDisplay = new DummyDisplay( this, &mSharedSettings );
-    mDisplayList[ row ][ column ] = newDisplay;
-  }  else {
-    mDisplayList[ row ][ column ] = newDisplay;
-    connect( newDisplay, SIGNAL( showPopupMenu( KSGRD::SensorDisplay* ) ),
-             SLOT( showPopupMenu( KSGRD::SensorDisplay* ) ) );
-    newDisplay->setDeleteNotifier( this );
-  }
+    if( mDisplayList[ index ]->metaObject()->className() != QByteArray( "DummyDisplay" ) ) {
+        connect( newDisplay, SIGNAL( showPopupMenu( KSGRD::SensorDisplay* ) ),
+                SLOT( showPopupMenu( KSGRD::SensorDisplay* ) ) );
+        newDisplay->setDeleteNotifier( this );
+    }
 
-  mGridLayout->addWidget( mDisplayList[ row ][ column ], row, column );
-  if(mRows == 1 && mColumns == 1) {  //if there's only item, the tab's title should be the widget's title
-    connect( newDisplay, SIGNAL(titleChanged(const QString&)), SLOT(setTitle(const QString&)));
-    setTitle(newDisplay->title());
-  }
-  if ( isVisible() ) {
-    mDisplayList[ row ][ column ]->show();
-  }
+    mGridLayout->addWidget( mDisplayList[ index ], index / mColumns, index % mColumns );
+    if(mRows == 1 && mColumns == 1) {  //if there's only item, the tab's title should be the widget's title
+        connect( newDisplay, SIGNAL(titleChanged(const QString&)), SLOT(setTitle(const QString&)));
+        setTitle(newDisplay->title());
+    }
+    if ( isVisible() )
+        mDisplayList[ index ]->show();
 }
 
 void WorkSheet::refreshSheet()
 {
-    for (uint r = 0; r < mRows; ++r)  {
-        for (uint c = 0; c < mColumns; ++c)  {
-            mDisplayList[r][c]->timerTick();
-        }
-    }
+    for (int i = 0; i < mDisplayList.count(); i++)
+        mDisplayList[i]->timerTick();
 }
 
 void WorkSheet::removeDisplay( KSGRD::SensorDisplay *display )
@@ -641,23 +627,21 @@ void WorkSheet::removeDisplay( KSGRD::SensorDisplay *display )
   if ( !display )
     return;
   
-  for ( uint r = 0; r < mRows; ++r )
-    for ( uint c = 0; c < mColumns; ++c )
-      if ( mDisplayList[ r ][ c ] == display ) {
-        replaceDisplay( r, c );
+  for (int i = 0; i < mDisplayList.count(); i++)
+      if ( mDisplayList[ i ] == display ) {
+        replaceDisplay( i );
         return;
       }
 }
 
 void WorkSheet::collectHosts( QStringList &list )
 {
-  for ( uint r = 0; r < mRows; ++r )
-    for ( uint c = 0; c < mColumns; ++c )
-      if ( mDisplayList[ r ][ c ]->metaObject()->className() != QByteArray( "DummyDisplay" ) )
-        ((KSGRD::SensorDisplay*)mDisplayList[ r ][ c ])->hosts( list );
+  for (int i = 0; i < mDisplayList.count(); i++)
+      if ( mDisplayList[ i ]->metaObject()->className() != QByteArray( "DummyDisplay" ) )
+        ((KSGRD::SensorDisplay*)mDisplayList[ i ])->hosts( list );
 }
 
-void WorkSheet::createGrid( uint rows, uint columns )
+void WorkSheet::createGrid( int rows, int columns )
 {
   mRows = rows;
   mColumns = columns;
@@ -666,120 +650,89 @@ void WorkSheet::createGrid( uint rows, uint columns )
   mGridLayout = new QGridLayout( this );
   mGridLayout->setSpacing( 5 );
 
-  mDisplayList = new KSGRD::SensorDisplay**[ mRows ];
-  for ( uint r = 0; r < mRows; ++r ) {
-    mDisplayList[ r ] = new KSGRD::SensorDisplay*[ mColumns ];
-    for ( uint c = 0; c < mColumns; ++c )
-      mDisplayList[ r ][ c ] = 0;
-  }
-
   /* set stretch factors for rows and columns */
-  for ( uint r = 0; r < mRows; ++r )
+  for ( int r = 0; r < mRows; ++r )
     mGridLayout->setRowStretch( r, 100 );
-  for ( uint c = 0; c < mColumns; ++c )
+  for ( int c = 0; c < mColumns; ++c )
     mGridLayout->setColumnStretch( c, 100 );
 }
 
-void WorkSheet::resizeGrid( uint newRows, uint newColumns )
+void WorkSheet::resizeGrid( int newRows, int newColumns )
 {
-  uint r, c;
+    /* delete any excess displays */
+    while( mDisplayList.count() > newRows * newColumns)
+        delete mDisplayList.takeLast();
 
-  /* Create new array for display pointers */
-  KSGRD::SensorDisplay*** newDisplayList = new KSGRD::SensorDisplay**[ newRows ];
-  for ( r = 0; r < newRows; ++r ) {
-    newDisplayList[ r ] = new KSGRD::SensorDisplay*[ newColumns ];
-    for ( c = 0; c < newColumns; ++c ) {
-      if ( c < mColumns && r < mRows )
-        newDisplayList[ r ][ c ] = mDisplayList[ r ][ c ];
-      else
-        newDisplayList[ r ][ c ] = 0;
+    /* remove all the items from the grid */
+    while (mGridLayout->takeAt(0) != 0) { }
+
+    /* set stretch factors for new rows and columns (if any) */
+    for ( int r = mRows; r < newRows; ++r )
+        mGridLayout->setRowStretch( r, 100 );
+    for ( int c = mColumns; c < newColumns; ++c )
+        mGridLayout->setColumnStretch( c, 100 );
+
+    /* Obviously Qt does not shrink the size of the QGridLayout
+     * automatically.  So we simply force the rows and columns that
+     * are no longer used to have a stretch factor of 0 and hence be
+     * invisible. */
+    for ( int r = newRows; r < mRows; ++r )
+        mGridLayout->setRowStretch( r, 0 );
+    for ( int c = newColumns; c < mColumns; ++c )
+        mGridLayout->setColumnStretch( c, 0 );
+
+    mRows = newRows;
+    mColumns = newColumns;
+
+    /* Readd all the items to the grid */
+    for( int r = 0; r < mRows; r++)
+        for( int c = 0; c < mColumns && mDisplayList.count() > (r*mColumns + c); c++)
+            mGridLayout->addWidget(mDisplayList[ r * mColumns + c], r, c);
+
+    /* create new displays */
+    for ( int i = mDisplayList.count(); i < mRows * mColumns; i++)
+        replaceDisplay( i );
+
+    fixTabOrder();
+
+    mGridLayout->activate();
+}
+
+KSGRD::SensorDisplay *WorkSheet::currentDisplay( int * index )
+{
+    for(int i = 0; i < mDisplayList.count(); i++) {
+        if ( mDisplayList[i]->hasFocus() ) {
+            if ( index )
+                *index = i;
+            return ( mDisplayList[i] );
+        }
     }
-  }
-
-  /* remove obsolete displays */
-  for ( r = 0; r < mRows; ++r ) {
-    for ( c = 0; c < mColumns; ++c )
-      if ( r >= newRows || c >= newColumns )
-        delete mDisplayList[ r ][ c ];
-    delete mDisplayList[ r ];
-  }
-  delete [] mDisplayList;
-
-  /* now we make the new display the regular one */
-  mDisplayList = newDisplayList;
-
-  /* create new displays */
-  for ( r = 0; r < newRows; ++r )
-    for ( c = 0; c < newColumns; ++c )
-      if ( r >= mRows || c >= mColumns )
-        replaceDisplay( r, c );
-
-  /* set stretch factors for new rows and columns (if any) */
-  for ( r = mRows; r < newRows; ++r )
-    mGridLayout->setRowStretch( r, 100 );
-  for ( c = mColumns; c < newColumns; ++c )
-    mGridLayout->setColumnStretch( c, 100 );
-
-  /* Obviously Qt does not shrink the size of the QGridLayout
-   * automatically.  So we simply force the rows and columns that
-   * are no longer used to have a stretch factor of 0 and hence be
-   * invisible. */
-  for ( r = newRows; r < mRows; ++r )
-    mGridLayout->setRowStretch( r, 0 );
-  for ( c = newColumns; c < mColumns; ++c )
-    mGridLayout->setColumnStretch( c, 0 );
-
-  mRows = newRows;
-  mColumns = newColumns;
-
-  fixTabOrder();
-
-  mGridLayout->activate();
-}
-
-KSGRD::SensorDisplay *WorkSheet::currentDisplay( uint *row, uint *column )
-{
-  for ( uint r = 0 ; r < mRows; ++r )
-    for ( uint c = 0 ; c < mColumns; ++c )
-      if ( mDisplayList[ r ][ c ]->hasFocus() ) {
-        if ( row )
-          *row = r;
-        if ( column )
-          *column = c;
-        return ( mDisplayList[ r ][ c ] );
-      }
-
-  return 0;
+    return NULL;
 }
 
 void WorkSheet::fixTabOrder()
 {
-  for ( uint r = 0; r < mRows; ++r )
-    for ( uint c = 0; c < mColumns; ++c ) {
-      if ( c + 1 < mColumns )
-        setTabOrder( mDisplayList[ r ][ c ], mDisplayList[ r ][ c + 1 ] );
-      else if ( r + 1 < mRows )
-        setTabOrder( mDisplayList[ r ][ c ], mDisplayList[ r + 1 ][ 0 ] );
-    }
+    for(int i = 0; i < mDisplayList.count()-1; i++)
+        setTabOrder(mDisplayList[i], mDisplayList[i+1]);
 }
 
 QString WorkSheet::currentDisplayAsXML()
 {
-  KSGRD::SensorDisplay* display = currentDisplay();
-  if ( !display )
-    return QString();
+    KSGRD::SensorDisplay* display = currentDisplay();
+    if ( !display )
+        return QString();
 
-  /* We create an XML description of the current display. */
-  QDomDocument doc( "KSysGuardDisplay" );
-  doc.appendChild( doc.createProcessingInstruction(
-                   "xml", "version=\"1.0\" encoding=\"UTF-8\"" ) );
+    /* We create an XML description of the current display. */
+    QDomDocument doc( "KSysGuardDisplay" );
+    doc.appendChild( doc.createProcessingInstruction(
+                "xml", "version=\"1.0\" encoding=\"UTF-8\"" ) );
 
-  QDomElement element = doc.createElement( "display" );
-  doc.appendChild( element );
-  element.setAttribute( "class", display->metaObject()->className() );
-  display->saveSettings( doc, element );
+    QDomElement element = doc.createElement( "display" );
+    doc.appendChild( element );
+    element.setAttribute( "class", display->metaObject()->className() );
+    display->saveSettings( doc, element );
 
-  return doc.toString();
+    return doc.toString();
 }
 
 void WorkSheet::changeEvent( QEvent * event ) {

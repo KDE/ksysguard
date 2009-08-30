@@ -48,7 +48,7 @@ class WorkSheet : public QWidget
 
   public:
     explicit WorkSheet( QWidget* parent);
-    WorkSheet( uint rows, uint columns, float interval, QWidget* parent);
+    WorkSheet( int rows, int columns, float interval, QWidget* parent);
     ~WorkSheet();
 
     bool load( const QString &fileName );
@@ -74,7 +74,7 @@ class WorkSheet : public QWidget
                                       const QString &monitor,
                                       const QString &sensorType,
                                       const QString &sensorDescr,
-                                      uint rows, uint columns );
+                                      int index );
 
     void settings();
     float updateInterval() const;
@@ -100,25 +100,25 @@ class WorkSheet : public QWidget
   private:
     void removeDisplay( KSGRD::SensorDisplay *display );
 
-    bool replaceDisplay( uint row, uint column, QDomElement& element );
+    bool replaceDisplay( int index, QDomElement& element );
 
-    void replaceDisplay( uint row, uint column,
+    void replaceDisplay( int index,
                          KSGRD::SensorDisplay* display = 0 );
 
     void collectHosts( QStringList &list );
 
-    void createGrid( uint rows, uint columns );
+    void createGrid( int rows, int columns );
 
-    void resizeGrid( uint rows, uint columns );
+    void resizeGrid( int rows, int columns );
 
-    KSGRD::SensorDisplay* currentDisplay( uint* row = 0, uint* column = 0 );
+    KSGRD::SensorDisplay* currentDisplay( int *index = NULL);
 
     void fixTabOrder();
 
     QString currentDisplayAsXML();
 
-    uint mRows;
-    uint mColumns;
+    int mRows;
+    int mColumns;
 
     QGridLayout* mGridLayout;
     QString mFileName;
@@ -132,13 +132,13 @@ class WorkSheet : public QWidget
 
     enum DisplayType { DisplayDummy, DisplayFancyPlotter, DisplayMultiMeter, DisplayDancingBars, DisplaySensorLogger, DisplayListView, DisplayLogFile, DisplayProcessControllerRemote, DisplayProcessControllerLocal };
 
-    KSGRD::SensorDisplay* insertDisplay( DisplayType displayType, QString displayTitle, uint row, uint column);
+    KSGRD::SensorDisplay* insertDisplay( DisplayType displayType, QString displayTitle, int index);
     /**
       This two dimensional array stores the pointers to the sensor displays
 	    or if no sensor is present at a position a pointer to a dummy widget.
   	  The size of the array corresponds to the size of the grid layout.
      */
-    KSGRD::SensorDisplay*** mDisplayList;
+    QList <KSGRD::SensorDisplay*> mDisplayList;
 };
 
 #endif
