@@ -592,12 +592,8 @@ void WorkSheet::replaceDisplay( int index, KSGRD::SensorDisplay* newDisplay )
         mDisplayList.append(newDisplay);
     } else {
         // remove the old display && sensor frame at this location
-        if( mDisplayList[ index ] && mDisplayList[ index ] != sLocalProcessController ) {
-            if ( qstrcmp( mDisplayList[ index ]->parent()->metaObject()->className(), "SensorFrame" ) == 0 )
-                delete mDisplayList[ index ]->parent(); // destroys the child (display) as well
-            else
-                delete mDisplayList[ index ];
-        }
+        if( mDisplayList[ index ] && mDisplayList[ index ] != sLocalProcessController )
+            delete mDisplayList[ index ];
         mDisplayList[index] = newDisplay;
     }
 
