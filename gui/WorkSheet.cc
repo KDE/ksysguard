@@ -462,13 +462,8 @@ void WorkSheet::dragMoveEvent( QDragMoveEvent *event )
      * event and replace or add sensor. */
     const QPoint globalPos = mapToGlobal( event->pos() );
     for ( int i = 0; i < mDisplayList.count(); i++ ) {
-        const QSize displaySize = mDisplayList[i]->size();
-
-        const QPoint displayPoint( displaySize.width(), displaySize.height() );
-
         const QRect widgetRect = QRect( mDisplayList[i]->mapToGlobal( QPoint( 0, 0 ) ),
-                mDisplayList[i]->mapToGlobal( displayPoint ) );
-
+                mDisplayList[i]->size() );
 
         if ( widgetRect.contains( globalPos ) ) {
             QByteArray widgetType = mDisplayList[i]->metaObject()->className();
