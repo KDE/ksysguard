@@ -84,6 +84,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
     virtual bool saveSettings( QDomDocument &doc, QDomElement &element );
 
     virtual bool hasSettingsDialog() const;
+    void setBeamColor(int i, const QColor &color);
 
   public Q_SLOTS:
     virtual void applyStyle();
@@ -97,6 +98,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
     virtual void timerTick( );
     virtual bool eventFilter( QObject*, QEvent* );
     virtual void reorderBeams(const QList<int> & orderOfBeams);
+    virtual void resizeEvent( QResizeEvent* );
     void setTooltip();
 
   private:
@@ -136,6 +138,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
 
     /** True if we will override the values from ksysguardd with user-specified values. */
     bool mUseManualRange;
+    QWidget *mLabelsWidget;
 };
 
 #endif

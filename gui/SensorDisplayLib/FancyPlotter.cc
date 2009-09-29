@@ -54,6 +54,7 @@ class FancyPlotterLabel : public QWidget {
   public:
     FancyPlotterLabel(QWidget *parent) : QWidget(parent) {
         QBoxLayout *layout = new QHBoxLayout();
+        layout->setContentsMargins(0,0,0,0);
         label = new QLabel();
         layout->addWidget(label);
         value = new QLabel();
@@ -92,7 +93,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     mSensorManualMax = mSensorManualMin = 0;
     mUseManualRange = false;
     mNumAnswers = 0;
-
+    mLabelsWidget = NULL;
 
     //The unicode character 0x25CF is a big filled in circle.  We would prefer to use this in the tooltip.
     //However it's maybe possible that the font used to draw the tooltip won't have it.  So we fall back to a 
@@ -119,15 +120,18 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     layout->addWidget(mPlotter);
 
     /* Create a set of labels underneath the graph. */
-    QBoxLayout *outerLabelLayout = new QHBoxLayout;
+    mLabelsWidget = new QWidget;
+    layout->addWidget(mLabelsWidget);
+    QBoxLayout *outerLabelLayout = new QHBoxLayout(mLabelsWidget);
     outerLabelLayout->setSpacing(0);
-    layout->addLayout(outerLabelLayout);
+    outerLabelLayout->setContentsMargins(0,0,0,0);
 
     /* create a spacer to fill up the space up to the start of the graph */
     outerLabelLayout->addItem(new QSpacerItem(axisTextWidth, 0, QSizePolicy::Preferred));
 
     mLabelLayout = new QHBoxLayout;
     outerLabelLayout->addLayout(mLabelLayout);
+    mLabelLayout->setContentsMargins(0,0,0,0);
     QFont font;
     font.setPointSize( KSGRD::Style->fontSize() );
     mPlotter->setAxisFont( font );
@@ -279,12 +283,25 @@ void FancyPlotter::applySettings() {
 
     SensorModelEntry::List list = mSettingsDialog->sensors();
 
-    for ( int i = 0; i < list.count(); ++i ) {
-        mPlotter->setBeamColor( i, list[ i ].color() );
-        static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(i)))->widget())->changeLabel(mPlotter->beamColor(i), mIndicatorSymbol);
-    }
+    for( int i = 0; i < list.count(); i++)
+        setBeamColor(i, list[i].color());
     mPlotter->update();
 }
+
+void FancyPlotter::resizeEvent( QResizeEvent* )
+{
+    bool showHeading = true;;
+    bool showLabels = true;;
+
+    if( height() < mLabelsWidget->sizeHint().height() + mHeading->sizeHint().height() + mPlotter->minimumHeight() )
+        showHeading = false;
+    if( height() < mLabelsWidget->sizeHint().height() + mPlotter->minimumHeight() )
+        showLabels = false;
+    mHeading->setVisible(showHeading);
+    mLabelsWidget->setVisible(showLabels);
+
+}
+
 void FancyPlotter::reorderBeams(const QList<int> & orderOfBeams)
 {
     //Q_ASSERT(orderOfBeams.size() == mLabelLayout.size());  Commented out because it cause compile problems in some cases??
@@ -321,13 +338,16 @@ void FancyPlotter::applyStyle()
     mPlotter->setAxisFont( font );
     for ( int i = 0; i < mPlotter->numBeams() &&
             (unsigned int)i < KSGRD::Style->numSensorColors(); ++i ) {
-        mPlotter->setBeamColor( i, KSGRD::Style->sensorColor( i ) );
-        static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(i)))->widget())->changeLabel(mPlotter->beamColor(i), mIndicatorSymbol);
+        setBeamColor(i, KSGRD::Style->sensorColor(i));
     }
 
     mPlotter->update();
 }
-
+void FancyPlotter::setBeamColor(int i, const QColor &color)
+{
+        mPlotter->setBeamColor( i, color );
+        static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(i)))->widget())->changeLabel(color, mIndicatorSymbol);
+}
 bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
         const QString &type, const QString &title )
 {
