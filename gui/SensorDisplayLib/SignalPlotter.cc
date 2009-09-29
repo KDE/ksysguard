@@ -569,8 +569,8 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
 {
     if(boundingBox.height() <= 2 || boundingBox.width() <= 2 ) return;
     p->setFont( mFont );
-    int fontheight = p->fontMetrics().height() + p->fontMetrics().leading();
-    mHorizontalLinesCount = qMax(qMin((int)(boundingBox.height() * 2 / fontheight)-2, 4), 0);
+    int fontheight = p->fontMetrics().height();
+    mHorizontalLinesCount = qBound(0, (int)(boundingBox.height() / fontheight)-2, 4);
 
     if(!onlyDrawPlotter) {
         if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || (mMaxValue > mUserMaxValue && mNiceRange != 1 && mMaxValue < (mNiceRange*0.75 + mNiceMinValue)) || mNiceRange == 0) {
@@ -584,11 +584,11 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
         boundingBox.setTop(p->pen().width() / 2); //The y position of the top of the graph.  Basically this is one more than the height of the top bar
 
         //check if there's enough room to actually show a top bar. Must be enough room for a bar at the top, plus horizontal lines each of a size with room for a scale
-        if( mShowAxis && boundingBox.width() > 60 && boundingBox.height() > ( fontheight + 1 ) ) {  //if there's room to draw the labels, then draw them!
+        if( mShowAxis && boundingBox.width() > 60 && boundingBox.height() > p->fontMetrics().height() ) {  //if there's room to draw the labels, then draw them!
             //We want to adjust the size of plotter bit inside so that the axis text aligns nicely at the top and bottom
             //but we don't want to sacrifice too much of the available room, so don't use it if it will take more than 20% of the available space
             qreal offset = (p->fontMetrics().height()+1)/2;
-            drawAxisText(p, boundingBox.adjusted(0,offset,0,-offset));
+            drawAxisText(p, boundingBox);
             if(offset < boundingBox.height() * 0.1)
                 boundingBox.adjust(0,offset, 0, -offset);
         }
@@ -887,9 +887,12 @@ void KSignalPlotterPrivate::drawAxisText(QPainter *p, const QRect &boundingBox)
     p->setPen(mFontColor);
     int axisTitleIndex=1;
     QString val;
-    for ( int y = 0; y < mHorizontalLinesCount +2; y++, axisTitleIndex++) {
-        int y_coord = boundingBox.top() + (y * (boundingBox.height()-1)) /(mHorizontalLinesCount+1);  //Make sure it's y*h first to avoid rounding bugs
-
+    int numItems = mHorizontalLinesCount +2;
+    int fontHeight = p->fontMetrics().height();
+    if(numItems == 2 && boundingBox.height() < fontHeight*2 )
+        numItems = 1;
+    for ( int y = 0; y < numItems; y++, axisTitleIndex++) {
+        int y_coord = boundingBox.top() + (y * (boundingBox.height()-fontHeight)) /(mHorizontalLinesCount+1);  //Make sure it's y*h first to avoid rounding bugs
         double value;
         if(y == mHorizontalLinesCount+1)
             value = mNiceMinValue; //sometimes using the formulas gives us a value very slightly off
@@ -899,9 +902,9 @@ void KSignalPlotterPrivate::drawAxisText(QPainter *p, const QRect &boundingBox)
         QString number = KGlobal::locale()->formatNumber( value, mPrecision);
         val = mUnit.subs(number).toString();
         if ( kapp->layoutDirection() == Qt::RightToLeft )
-            p->drawText( boundingBox.right()-mAxisTextWidth, y_coord - 1000, mAxisTextWidth, 2000, Qt::AlignRight | Qt::AlignVCenter, val);
+            p->drawText( boundingBox.right()-mAxisTextWidth, y_coord, mAxisTextWidth, fontHeight+1, Qt::AlignRight | Qt::AlignTop, val);
         else
-            p->drawText( boundingBox.left(), y_coord - 1000, mAxisTextWidth, 2000, Qt::AlignRight | Qt::AlignVCenter, val);
+            p->drawText( boundingBox.left(), y_coord, mAxisTextWidth, fontHeight+1, Qt::AlignRight | Qt::AlignTop, val);
     }
 }
 
