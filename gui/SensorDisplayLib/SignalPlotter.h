@@ -46,9 +46,9 @@ class KSignalPlotterPrivate;
  *  Example usage:
  *  \code
  *    KSignalPlotter *s = KSignalPlotter(parent);
- *    s->addBeam(Qt::Blue);
- *    s->addBeam(Qt::Green);
- *    QList data;
+ *    s->addBeam(Qt::blue);
+ *    s->addBeam(Qt::green);
+ *    QList<double> data;
  *    data << 4.0 << 5.0;
  *    s->addSample(data);
  *  \endcode
@@ -113,7 +113,7 @@ class KSignalPlotter : public QWidget
      *   s->addBeam(Qt::blue);
      *   s->addBeam(Qt::green);
      *   s->addBeam(Qt::red);
-     *   QList neworder;
+     *   QList<int> neworder;
      *   neworder << 2 << 0 << 1;
      *   s->reorderBeams( newOrder);
      *   //Now the order is red, blue then green
