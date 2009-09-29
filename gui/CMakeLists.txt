@@ -58,12 +58,6 @@ target_link_libraries(kdeinit_ksysguard processui ${KDE4_KIO_LIBS} ksgrd ${KDE4_
 
 install(TARGETS kdeinit_ksysguard ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(TARGETS ksysguard         ${INSTALL_TARGETS_DEFAULT_ARGS})
-########### next target ###############
-
-set(setscheduler_SRCS setscheduler.c)
-add_executable(setscheduler ${setscheduler_SRCS})
-install(TARGETS setscheduler ${INSTALL_TARGETS_DEFAULT_ARGS})
-
 
 ########### install files ###############
 
