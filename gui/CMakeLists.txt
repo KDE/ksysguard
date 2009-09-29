@@ -1,5 +1,6 @@
 
 add_subdirectory( ksgrd ) 
+add_subdirectory( tests ) 
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/ksgrd/
    ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ 
