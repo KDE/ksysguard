@@ -36,7 +36,7 @@ class KSignalPlotterPrivate;
 /** \brief The KSignalPlotter widget draws a real time graph of data that updates continually.
  *
  *  Features include:
- *  \li  Points are joined by a bezier curve.
+ *  \li Points are joined by a bezier curve.
  *  \li Lines are anti-aliased
  *  \li Background can be set as a specified SVG
  *  \li The lines can be reordered
@@ -145,7 +145,7 @@ class KSignalPlotter : public QWidget
      *
      * \sa setBeamColor()
      */
-    QColor beamColor( int index );
+    QColor beamColor( int index ) const;
 
     /** \brief Set the color of the beam at the specified index.
      *
@@ -154,7 +154,7 @@ class KSignalPlotter : public QWidget
     void setBeamColor( int index, const QColor &color );
 
     /** \brief Returns the number of beams. */
-    int numBeams();
+    int numBeams() const;
 
     /** \brief Set the axis units with a localized string.
      *
