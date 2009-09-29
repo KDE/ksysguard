@@ -109,7 +109,7 @@ void KSignalPlotter::addBeam( const QColor &color )
     d->mBeamColorsDark.append(color.darker(150));
 }
 
-QColor KSignalPlotter::beamColor( int index ) {
+QColor KSignalPlotter::beamColor( int index ) const {
     return d->mBeamColors[ index ];
 }
 
@@ -123,7 +123,7 @@ void KSignalPlotter::setBeamColor( int index, const QColor &color ) {
     d->mBeamColorsDark[ index ] = color.darker(150);
 }
 
-int KSignalPlotter::numBeams() {
+int KSignalPlotter::numBeams() const {
     return d->mBeamColors.count();
 }
 
@@ -569,8 +569,8 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
 {
     if(boundingBox.height() <= 2 || boundingBox.width() <= 2 ) return;
     p->setFont( mFont );
-    int fontheight = (p->fontMetrics().height() + p->fontMetrics().leading()/2.0);
-    mHorizontalLinesCount = qMax(qMin((int)(boundingBox.height() / fontheight)-2, 4), 0);
+    int fontheight = p->fontMetrics().height() + p->fontMetrics().leading();
+    mHorizontalLinesCount = qMax(qMin((int)(boundingBox.height() * 2 / fontheight)-2, 4), 0);
 
     if(!onlyDrawPlotter) {
         if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || (mMaxValue > mUserMaxValue && mNiceRange != 1 && mMaxValue < (mNiceRange*0.75 + mNiceMinValue)) || mNiceRange == 0) {
