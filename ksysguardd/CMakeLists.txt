@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.6.2)
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/CContLib/ )
 
 
@@ -49,7 +49,6 @@ endif( ${CMAKE_SYSTEM_NAME} MATCHES "kFreeBSD" )
 
     add_executable(ksysguardd ${ksysguardd_SRCS})
 
-    add_dependencies(ksysguardd libksysguardd)
     target_link_libraries(ksysguardd libksysguardd)
 
    if( NOT ${CMAKE_SYSTEM_NAME} MATCHES "Linux" )

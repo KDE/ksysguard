@@ -26,7 +26,7 @@ if(EXISTS /proc/i8k)
 ENDIF(EXISTS /proc/i8k)
 
 
-KDE4_ADD_LIBRARY(libksysguardd STATIC 
+ADD_LIBRARY(libksysguardd STATIC 
             ${LIBKSYSGUARDD_FILES})
 if(SENSORS_FOUND)
   TARGET_LINK_LIBRARIES(libksysguardd ${SENSORS_LIBRARIES})

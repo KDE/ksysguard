@@ -1,6 +1,6 @@
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../CContLib ${CMAKE_CURRENT_SOURCE_DIR}/../ )
 
-KDE4_ADD_LIBRARY(libksysguardd STATIC 
+ADD_LIBRARY(libksysguardd STATIC 
             apm.c
             CPU.c
             diskstat.c
