@@ -140,7 +140,7 @@ class KSignalPlotter : public QWidget
      *   s->addBeam(Qt::blue);
      *   s->addBeam(Qt::green);
      *   s->addBeam(Qt::red);
-     *   
+     *
      *   QColor color = s->beamColor(0);  //returns blue
      * \endcode
      *
@@ -243,11 +243,11 @@ class KSignalPlotter : public QWidget
     void changeRange( double min, double max );
 
     /** \brief Set the min value hint for the vertical axis.
-     * 
+     *
      * \sa changeRange(), minimumValue(), setMaximumValue(), maximumValue() */
     void setMinimumValue( double min );
 
-    /** \brief Get the min value hint for the vertical axis. 
+    /** \brief Get the min value hint for the vertical axis.
      *
      * \sa changeRange(), minimumValue(), setMaximumValue(), maximumValue() */
     double minimumValue() const;

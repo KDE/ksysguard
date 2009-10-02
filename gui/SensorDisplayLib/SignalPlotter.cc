@@ -147,7 +147,6 @@ void KSignalPlotterPrivate::recalculateMaxMinValueForSample(const QList<double>&
             if(value > 0.7*mMaxValue)
                 mRescaleTime = time;
         }
-        qDebug() << "determined to be " << mMaxValue;
     }
 }
 
@@ -178,7 +177,6 @@ void KSignalPlotterPrivate::addSample( const QList<double>& sampleBuf )
     }
 
     if(mUseAutoRange) {
-        qDebug() << "recalculating min max value";
         recalculateMaxMinValueForSample(sampleBuf, 0);
 
         if(mRescaleTime++ > mMaxSamples)
