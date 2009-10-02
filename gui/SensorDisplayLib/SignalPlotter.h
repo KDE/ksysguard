@@ -101,7 +101,8 @@ class KSignalPlotter : public QWidget
     /** \brief Add data to the graph, and advance the graph by one time period.
      *
      *  The data must be given as a list in the same order that the beams were
-     *  added (or consequently reordered).
+     *  added (or consequently reordered).  If samples.count() != numBeams(),
+     *  a warning is printed and the data discarded.
      */
     void addSample( const QList<double> &samples );
 
@@ -202,14 +203,14 @@ class KSignalPlotter : public QWidget
 
     /** \brief Set whether to scale the graph automatically beyond the given range.
      *
-     * If true, set expand the range on vertical axis automatically from the
+     * If true, the range on vertical axis is automatically expanded from the
      * data available, expanding beyond the range set by changeRange() if data
      * values are outside of this range.
      *
-     * The range of the vertical axis will never be less than the range given by
-     * chaneRange().
+     * Regardless whether this is set of not, the range of the vertical axis
+     * will never be less than the range given by maximumValue() and minimumvalue().
      *
-     * \param value Whether to scale beyond the given range.
+     * \param value Whether to scale beyond the given range. Default is true.
      *
      * \sa useAutoRange
      */
