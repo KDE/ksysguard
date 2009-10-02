@@ -118,6 +118,51 @@ void TestSignalPlotter::testReorderBeamsWithData()
     QCOMPARE(s->lastValue(1), 2.0);
     QCOMPARE(s->lastValue(2), 1.0);
 }
+void TestSignalPlotter::testMaximumRange()
+{
+    QCOMPARE(s->maximumValue(), 0.0);
+    QCOMPARE(s->minimumValue(), 0.0);
+    QCOMPARE(s->currentMaximumRangeValue(), 0.0);
+    QCOMPARE(s->currentMinimumRangeValue(), 0.0);
+    QCOMPARE(s->useAutoRange(), true);
 
+    s->addBeam(Qt::blue);
+    //Nothing should have changed yet
+    QCOMPARE(s->maximumValue(), 0.0);
+    QCOMPARE(s->minimumValue(), 0.0);
+    QCOMPARE(s->currentMaximumRangeValue(), 0.0);
+    QCOMPARE(s->currentMinimumRangeValue(), 0.0);
+
+    QList<double> data;
+    data << 1.1;
+    s->addSample(data);
+
+    QCOMPARE(s->maximumValue(), 0.0);
+    QCOMPARE(s->minimumValue(), 0.0);
+    QCOMPARE(s->currentMaximumRangeValue(), 1.25); //It gets rounded up
+    QCOMPARE(s->currentMinimumRangeValue(), 0.0);
+
+    s->setMaximumValue(1.0);
+    QCOMPARE(s->maximumValue(), 1.0);
+    QCOMPARE(s->minimumValue(), 0.0);
+    QCOMPARE(s->currentMaximumRangeValue(), 1.25); //Current value is still larger
+    QCOMPARE(s->currentMinimumRangeValue(), 0.0);
+
+    s->setMaximumValue(1.4);
+    QCOMPARE(s->maximumValue(), 1.4);
+    QCOMPARE(s->minimumValue(), 0.0);
+    QCOMPARE(s->currentMaximumRangeValue(), 1.5); //given maximum range is now the larger value
+    QCOMPARE(s->currentMinimumRangeValue(), 0.0);
+
+
+    s->addBeam(Qt::red);
+    //nothing changed by adding a beam
+    QCOMPARE(s->maximumValue(), 1.4);
+    QCOMPARE(s->minimumValue(), 0.0);
+    QCOMPARE(s->currentMaximumRangeValue(), 1.5); //given maximum range hasn't changed
+    QCOMPARE(s->currentMinimumRangeValue(), 0.0);
+
+
+}
 QTEST_KDEMAIN(TestSignalPlotter, GUI)
 

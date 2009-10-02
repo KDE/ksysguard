@@ -12,6 +12,7 @@ class TestSignalPlotter : public QObject
 
         void testReorderBeams();
         void testReorderBeamsWithData();
+        void testMaximumRange();
     private:
         KSignalPlotter *s;
 };
