@@ -59,7 +59,7 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
 KSignalPlotterPrivate::KSignalPlotterPrivate(KSignalPlotter * q_ptr) : q(q_ptr)
 {
     mPrecision = 0;
-    mSamples = 0;
+    mMaxSamples = 4; //Never keep less than 4 samples. An arbitrary number
     mMinValue = mMaxValue = 0.0;
     mUserMinValue = mUserMaxValue = 0.0;
     mNiceMinValue = mNiceMaxValue = 0.0;
@@ -147,6 +147,7 @@ void KSignalPlotterPrivate::recalculateMaxMinValueForSample(const QList<double>&
             if(value > 0.7*mMaxValue)
                 mRescaleTime = time;
         }
+        qDebug() << "determined to be " << mMaxValue;
     }
 }
 
@@ -165,28 +166,28 @@ void KSignalPlotter::addSample( const QList<double>& sampleBuf )
 }
 void KSignalPlotterPrivate::addSample( const QList<double>& sampleBuf )
 {
-    if(mSamples < 4) {
-        //It might be possible, under some race conditions, for addSample to be called before mSamples is set
-        //This is just to be safe
-        updateDataBuffers();
-        if(mSamples < 4)
-            return;
-    }
     if(sampleBuf.count() != mBeamColors.count()) {
         kDebug(1215) << "Sample data discarded - contains wrong number of beams";
         return;
     }
     mBeamData.prepend(sampleBuf);
-    if((unsigned int)mBeamData.size() > mSamples) {
+    if((unsigned int)mBeamData.size() > mMaxSamples) {
         mBeamData.removeLast(); // we have too many.  Remove the last item
-        if((unsigned int)mBeamData.size() > mSamples)
+        if((unsigned int)mBeamData.size() > mMaxSamples)
             mBeamData.removeLast(); // If we still have too many, then we have resized the widget.  Remove one more.  That way we will slowly resize to the new size
     }
 
     if(mUseAutoRange) {
+        qDebug() << "recalculating min max value";
         recalculateMaxMinValueForSample(sampleBuf, 0);
-        if(mRescaleTime++ > mSamples)
+
+        if(mRescaleTime++ > mMaxSamples)
             rescale();
+        else if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || (mMaxValue > mUserMaxValue && mNiceRange != 1 && mMaxValue < (mNiceRange*0.75 + mNiceMinValue)) || mNiceRange == 0)
+            calculateNiceRange();
+    } else {
+        if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || (mMaxValue > mUserMaxValue && mNiceRange != 1 && mMaxValue < (mNiceRange*0.75 + mNiceMinValue)) || mNiceRange == 0)
+            calculateNiceRange();
     }
 
     /* If the vertical lines are scrolling, increment the offset
@@ -542,9 +543,9 @@ void KSignalPlotterPrivate::updateDataBuffers()
      *  +0.5 to ensure rounding up
      *  +4 for extra data points so there is
      *     1) no wasted space and
-     *     2) no loss of precision when drawing the first data point. */
-    mSamples = static_cast<uint>( ( ( q->width() - 2 ) /
-                mHorizontalScale ) + 4.5 );
+     *     2) no loss of precision when drawing the first data point.
+     */
+    mMaxSamples = uint(q->width() / mHorizontalScale + 4);
 }
 
 void KSignalPlotter::paintEvent( QPaintEvent* event)
@@ -573,9 +574,6 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
     mHorizontalLinesCount = qBound(0, (int)(boundingBox.height() / fontheight)-2, 4);
 
     if(!onlyDrawPlotter) {
-        if(mMinValue < mNiceMinValue || mMaxValue > mNiceMaxValue || (mMaxValue > mUserMaxValue && mNiceRange != 1 && mMaxValue < (mNiceRange*0.75 + mNiceMinValue)) || mNiceRange == 0) {
-            calculateNiceRange();
-        }
         QPen pen;
         pen.setWidth(1);
         pen.setCapStyle(Qt::RoundCap);
