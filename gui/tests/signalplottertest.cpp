@@ -14,6 +14,87 @@ void TestSignalPlotter::cleanup()
     delete s;
 }
 
+void TestSignalPlotter::testAddRemoveBeams()
+{
+    //Just try various variations of adding and removing beams
+    QCOMPARE(s->numBeams(), 0);
+
+    s->addBeam(Qt::blue);
+    s->addBeam(Qt::red);
+    QCOMPARE(s->numBeams(), 2);
+    QVERIFY(s->beamColor(0) == Qt::blue);
+    QVERIFY(s->beamColor(1) == Qt::red);
+
+    s->removeBeam(0);
+    QCOMPARE(s->numBeams(), 1);
+    QVERIFY(s->beamColor(0) == Qt::red);
+
+    s->removeBeam(0);
+    QCOMPARE(s->numBeams(), 0);
+
+    s->addBeam(Qt::blue);
+    s->addBeam(Qt::red);
+    QCOMPARE(s->numBeams(), 2);
+    QVERIFY(s->beamColor(0) == Qt::blue);
+    QVERIFY(s->beamColor(1) == Qt::red);
+
+    s->removeBeam(1);
+    QCOMPARE(s->numBeams(), 1);
+    QVERIFY(s->beamColor(0) == Qt::blue);
+
+    s->addBeam(Qt::red);
+    QCOMPARE(s->numBeams(), 2);
+    QVERIFY(s->beamColor(0) == Qt::blue);
+    QVERIFY(s->beamColor(1) == Qt::red);
+}
+void TestSignalPlotter::testAddRemoveBeamsWithData()
+{
+    //Just try various variations of adding and removing beams,
+    //this time with data as well
+    QCOMPARE(s->numBeams(), 0);
+
+    s->addBeam(Qt::blue);
+    s->addBeam(Qt::red);
+
+    QCOMPARE(s->lastValue(0), 0.0); //unset, so should default to 0
+    QCOMPARE(s->lastValue(1), 0.0); //unset, so should default to 0
+    QCOMPARE(s->numBeams(), 2);
+    QVERIFY(s->beamColor(0) == Qt::blue);
+    QVERIFY(s->beamColor(1) == Qt::red);
+    s->addSample(QList<double>() << 1.0 << 2.0);
+    QCOMPARE(s->lastValue(0), 1.0);
+    QCOMPARE(s->lastValue(1), 2.0);
+
+    s->removeBeam(0);
+    QCOMPARE(s->numBeams(), 1);
+    QVERIFY(s->beamColor(0) == Qt::red);
+    QCOMPARE(s->lastValue(0), 2.0);
+
+    s->removeBeam(0);
+    QCOMPARE(s->numBeams(), 0);
+
+    s->addBeam(Qt::blue);
+    s->addBeam(Qt::red);
+    s->addSample(QList<double>() << 1.0 << 2.0);
+    QCOMPARE(s->numBeams(), 2);
+    QVERIFY(s->beamColor(0) == Qt::blue);
+    QVERIFY(s->beamColor(1) == Qt::red);
+    QCOMPARE(s->lastValue(0), 1.0);
+    QCOMPARE(s->lastValue(1), 2.0);
+
+    s->removeBeam(1);
+    QCOMPARE(s->numBeams(), 1);
+    QVERIFY(s->beamColor(0) == Qt::blue);
+    QCOMPARE(s->lastValue(0), 1.0);
+
+    s->addBeam(Qt::red);
+    QCOMPARE(s->numBeams(), 2);
+    QVERIFY(s->beamColor(0) == Qt::blue);
+    QVERIFY(s->beamColor(1) == Qt::red);
+    QCOMPARE(s->lastValue(0), 1.0);
+    QCOMPARE(s->lastValue(1), 0.0); //unset, so should default to 0
+}
+
 void TestSignalPlotter::testReorderBeams()
 {
     QCOMPARE(s->numBeams(), 0);
@@ -161,8 +242,6 @@ void TestSignalPlotter::testMaximumRange()
     QCOMPARE(s->minimumValue(), 0.0);
     QCOMPARE(s->currentMaximumRangeValue(), 1.5); //given maximum range hasn't changed
     QCOMPARE(s->currentMinimumRangeValue(), 0.0);
-
-
 }
 QTEST_KDEMAIN(TestSignalPlotter, GUI)
 

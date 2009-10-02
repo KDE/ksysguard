@@ -10,6 +10,8 @@ class TestSignalPlotter : public QObject
         void init();
         void cleanup();
 
+        void testAddRemoveBeams();
+        void testAddRemoveBeamsWithData();
         void testReorderBeams();
         void testReorderBeamsWithData();
         void testMaximumRange();
