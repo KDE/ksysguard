@@ -103,12 +103,12 @@ void SensorManager::retranslate()
   mDict.insert( QLatin1String( "data" ), i18n( "Data Rate" ) );
   mDict.insert( QLatin1String( "compressed" ), i18n( "Compressed Packets Rate" ) );
   mDict.insert( QLatin1String( "drops" ), i18n( "Dropped Packets Rate" ) );
-  mDict.insert( QLatin1String( "errors" ), i18n( "Errors Rate" ) );
+  mDict.insert( QLatin1String( "errors" ), i18n( "Error Rate" ) );
   mDict.insert( QLatin1String( "fifo" ), i18n( "FIFO Overruns Rate" ) );
-  mDict.insert( QLatin1String( "frame" ), i18n( "Frame Errors Rate" ) );
-  mDict.insert( QLatin1String( "multicast" ), i18n( "Multicast Packets Rate" ) );
-  mDict.insert( QLatin1String( "packets" ), i18n( "Packets Rate" ) );
-  mDict.insert( QLatin1String( "carrier" ), i18nc( "@item sensor description ('carrier' is a type of network signal)", "Carrier Losses Rate" ) );
+  mDict.insert( QLatin1String( "frame" ), i18n( "Frame Error Rate" ) );
+  mDict.insert( QLatin1String( "multicast" ), i18n( "Multicast Packet Rate" ) );
+  mDict.insert( QLatin1String( "packets" ), i18n( "Packet Rate" ) );
+  mDict.insert( QLatin1String( "carrier" ), i18nc( "@item sensor description ('carrier' is a type of network signal)", "Carrier Loss Rate" ) );
   mDict.insert( QLatin1String( "collisions" ), i18n( "Collisions" ) );
 
   mDict.insert( QLatin1String( "dataTotal" ), i18n( "Data" ) );
