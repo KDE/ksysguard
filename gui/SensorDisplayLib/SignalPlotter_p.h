@@ -50,6 +50,8 @@ struct KSignalPlotterPrivate {
     void rescale();
     void updateDataBuffers();
 
+    /** Return the given value as a string, with the given precision */
+    QString scaledValueAsString( double value, int precision) const;
     void addSample( const QList<double>& sampleBuf );
     /** We make the SVG renderer static so that an SVG renderer is shared among all of the images.  This is because a SVG renderer takes up a lot of memory, so we want to
      *  share them as much as we can */

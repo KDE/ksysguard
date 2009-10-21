@@ -68,7 +68,7 @@ KSignalPlotterPrivate::KSignalPlotterPrivate(KSignalPlotter * q_ptr) : q(q_ptr)
     mScaleDownBy = 1;
     mShowThinFrame = true;
     mSmoothGraph = true;
-    mShowVerticalLines = true;
+    mShowVerticalLines = false;
     mVerticalLinesColor = QColor(0xC3,0xC3,0xC3);
     mVerticalLinesDistance = 30;
     mVerticalLinesScroll = true;
@@ -380,7 +380,7 @@ void KSignalPlotter::setVerticalLinesDistance( uint distance )
 
 }
 
-int KSignalPlotter::verticalLinesDistance() const
+uint KSignalPlotter::verticalLinesDistance() const
 {
     return d->mVerticalLinesDistance;
 }
@@ -895,8 +895,8 @@ void KSignalPlotterPrivate::drawAxisText(QPainter *p, const QRect &boundingBox)
         else
             value = mNiceMaxValue/mScaleDownBy - y * stepsize;
 
-        QString number = KGlobal::locale()->formatNumber( value, mPrecision);
-        val = mUnit.subs(number).toString();
+        val = scaledValueAsString(value, mPrecision);
+
         if ( kapp->layoutDirection() == Qt::RightToLeft )
             p->drawText( boundingBox.right()-mAxisTextWidth, y_coord, mAxisTextWidth, fontHeight+1, Qt::AlignRight | Qt::AlignTop, val);
         else
@@ -928,11 +928,22 @@ QString KSignalPlotter::lastValueAsString( int i, int precision) const
 QString KSignalPlotter::valueAsString( double value, int precision) const
 {
     value = value / d->mScaleDownBy; // scale the value.  E.g. from Bytes to KiB
+    return d->scaledValueAsString(value, precision);
+}
+QString KSignalPlotterPrivate::scaledValueAsString( double value, int precision) const
+{
+    double absvalue = qAbs(value);
     if(precision == -1)
-        precision = (value >= 99.5)?0:((value>=0.995)?1:2);
-    QString number = KGlobal::locale()->formatNumber( value, precision);
+        precision = (absvalue >= 99.5)?0:((absvalue>=0.995)?1:2);
 
-    return d->mUnit.subs(number).toString();
+    if( absvalue < 1E6 ) {
+        if(precision == 0)
+            return mUnit.subs((long)value).toString();
+        else
+            return mUnit.subs(value, 0, 'f', precision).toString();
+    }
+    else
+        return mUnit.subs(value, 0, 'g', precision).toString();
 }
 
 bool KSignalPlotter::smoothGraph() const

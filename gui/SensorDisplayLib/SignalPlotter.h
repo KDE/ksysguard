@@ -74,7 +74,7 @@ class KSignalPlotter : public QWidget
   Q_PROPERTY( bool verticalLinesScroll READ verticalLinesScroll WRITE setVerticalLinesScroll )
   Q_PROPERTY( QColor verticalLinesColor READ verticalLinesColor WRITE setVerticalLinesColor )
   Q_PROPERTY( QColor horizontalLinesColor READ horizontalLinesColor WRITE setHorizontalLinesColor )
-  Q_PROPERTY( bool verticalLinesDistance READ verticalLinesDistance WRITE setVerticalLinesDistance )
+  Q_PROPERTY( uint verticalLinesDistance READ verticalLinesDistance WRITE setVerticalLinesDistance )
   Q_PROPERTY( QColor axisFontColor READ axisFontColor WRITE setAxisFontColor )
   Q_PROPERTY( QFont axisFont READ axisFont WRITE setAxisFont )
   Q_PROPERTY( bool showAxis READ showAxis WRITE setShowAxis )
@@ -192,7 +192,7 @@ class KSignalPlotter : public QWidget
      * set to 1024.  This affects all the data already entered.
      *
      * Typically this is followed by calling setUnit() to set the display axis
-     * units.
+     * units.  Default value is 1.
      */
     void setScaleDownBy( double value );
 
@@ -277,14 +277,18 @@ class KSignalPlotter : public QWidget
      */
     double currentMinimumRangeValue() const;
 
-    /** \brief Set the number of pixels horizontally between data points. */
+    /** \brief Set the number of pixels horizontally between data points.
+     *  Default is 1 */
     void setHorizontalScale( uint scale );
-    /** \brief The number of pixels horizontally between data points. */
+    /** \brief The number of pixels horizontally between data points.
+     *  Default is 1*/
     int horizontalScale() const;
 
-    /** \brief Set whether to draw the vertical grid lines. */
+    /** \brief Set whether to draw the vertical grid lines.
+     *  Default is false. */
     void setShowVerticalLines( bool value );
-    /** \brief Whether to draw the vertical grid lines. */
+    /** \brief Whether to draw the vertical grid lines.
+     *  Default is false. */
     bool showVerticalLines() const;
 
     /** \brief The color of the vertical grid lines. */
@@ -292,19 +296,26 @@ class KSignalPlotter : public QWidget
     /** \brief The color of the vertical grid lines. */
     QColor verticalLinesColor() const;
 
-    /** \brief Set the horizontal distance between the vertical grid lines. */
+    /** \brief Set the horizontal distance, in pixels, between the vertical grid lines.
+     *  Must be a distance of 1 or more.
+     *  Default is 30 pixels. */
     void setVerticalLinesDistance( uint distance );
-    /** \brief The horizontal distance between the vertical grid lines. */
-    int verticalLinesDistance() const;
+    /** \brief The horizontal distance, in pixels, between the vertical grid lines.
+      *  Default is 30 pixels. */
+    uint verticalLinesDistance() const;
 
-    /** \brief Set whether the vertical lines move with the data. */
+    /** \brief Set whether the vertical lines move with the data.
+     *  Default is true. This has no effect is showVerticalLines is false. */
     void setVerticalLinesScroll( bool value );
-    /** \brief Whether the vertical lines move with the data. */
+    /** \brief Whether the vertical lines move with the data.
+     *  Default is true. This has no effect is showVerticalLines is false. */
     bool verticalLinesScroll() const;
 
-    /** \brief Set whether to draw the horizontal grid lines. */
+    /** \brief Set whether to draw the horizontal grid lines.
+     *  Default is true. */
     void setShowHorizontalLines( bool value );
-    /** \brief Whether to draw the horizontal grid lines. */
+    /** \brief Whether to draw the horizontal grid lines.
+     *  Default is true. */
     bool showHorizontalLines() const;
 
     /** \brief Set the color of the horizontal grid lines. */
@@ -390,18 +401,29 @@ class KSignalPlotter : public QWidget
     /**  \brief Whether to show a white line on the left and bottom of the widget, for a 3D effect. */
     bool thinFrame() const;
 
-    /** \brief Set the distance between the left of the widget and the left of the plotting region. */
+    /** \brief Set the distance between the left of the widget and the left of the plotting region.
+     *
+     *  For example:
+     *  \code
+     *      int axisTextWidth = fontMetrics().width(i18nc("Largest axis title", "99999 XXXX"));
+     *      plotter->setAxisTextWidth(axisTextWidth);
+     *  \endcode
+     *
+     *  Default is 0 - No room is made available for the axis text.
+     */
     void setMaxAxisTextWidth(int maxAxisTextWidth);
     /** \brief Get the distance between the left of the widget and the left of the plotting region. */
     int maxAxisTextWidth() const;
 
     /** \brief Set whether to smooth the graph by averaging the points.
      *
-     * This uses the formula:  (value*2 + last_value)/3 */
+     * This uses the formula:  (value*2 + last_value)/3.
+     * Default is true. */
     void setSmoothGraph(bool smooth);
     /** \brief Whether to smooth the graph by averaging the points.
      *
-     * This uses the formula:  (value*2 + last_value)/3 */
+     * This uses the formula:  (value*2 + last_value)/3.
+     * Default is true. */
     bool smoothGraph() const;
 
     /** \brief Set whether to stack the beams on top of each other.
