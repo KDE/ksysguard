@@ -30,6 +30,7 @@
 #include <kglobal.h>
 #include <klocale.h>
 #include <kapplication.h>
+#include <math.h>
 
 #include "SignalPlotter.h"
 #include "SignalPlotter_p.h"
@@ -139,7 +140,9 @@ void KSignalPlotterPrivate::recalculateMaxMinValueForSample(const QList<double>&
     if(mStackBeams) {
         double value=0;
         for(int i = sampleBuf.count()-1; i>= 0; i--) {
-            value += sampleBuf[i];
+            double newValue = sampleBuf[i];
+            if( !isinf(newValue) && !isnan(newValue) )
+                value += newValue;
         }
         if(mMinValue > value) mMinValue = value;
         if(mMaxValue < value) mMaxValue = value;
@@ -149,10 +152,12 @@ void KSignalPlotterPrivate::recalculateMaxMinValueForSample(const QList<double>&
         double value;
         for(int i = sampleBuf.count()-1; i>= 0; i--) {
             value = sampleBuf[i];
-            if(mMinValue > value) mMinValue = value;
-            if(mMaxValue < value) mMaxValue = value;
-            if(value > 0.7*mMaxValue)
-                mRescaleTime = time;
+            if( !isinf(value) && !isnan(value) ) {
+                if(mMinValue > value) mMinValue = value;
+                if(mMaxValue < value) mMaxValue = value;
+                if(value > 0.7*mMaxValue)
+                    mRescaleTime = time;
+            }
         }
     }
 }
@@ -856,9 +861,9 @@ void KSignalPlotterPrivate::drawBeam(QPainter *p, const QRect &boundingBox, int 
     for (int j =  qMin(datapoints.size(), mBeamColors.size())-1; j >=0 ; --j) {
         if(!mStackBeams)
             y0 = y1 = y2 = 0;
-        y0 += boundingBox.bottom() - (datapoints[j] - mNiceMinValue)*scaleFac;
-        y1 += boundingBox.bottom() - (prev_datapoints[j] - mNiceMinValue)*scaleFac;
-        y2 += boundingBox.bottom() - (prev_prev_datapoints[j] - mNiceMinValue)*scaleFac;
+        y0 += qBound((qreal)boundingBox.top(), boundingBox.bottom() - (datapoints[j] - mNiceMinValue)*scaleFac, (qreal)boundingBox.bottom());
+        y1 += qBound((qreal)boundingBox.top(), boundingBox.bottom() - (prev_datapoints[j] - mNiceMinValue)*scaleFac, (qreal)boundingBox.bottom());
+        y2 += qBound((qreal)boundingBox.top(), boundingBox.bottom() - (prev_prev_datapoints[j] - mNiceMinValue)*scaleFac, (qreal)boundingBox.bottom());
         if(mSmoothGraph) {
             // Apply a weighted average just to smooth the graph out a bit
             y0 = (2*y0 + y1)/3;
@@ -869,7 +874,6 @@ void KSignalPlotterPrivate::drawBeam(QPainter *p, const QRect &boundingBox, int 
         if(mFillOpacity)
             beamColor = beamColor.lighter();
         pen.setColor(beamColor);
-
 
         QPainterPath path;
         path.moveTo( x1, y1);

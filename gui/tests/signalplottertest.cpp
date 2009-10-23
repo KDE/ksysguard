@@ -4,6 +4,7 @@
 #include <qtest_kde.h>
 #include <QtTest>
 #include <QtGui>
+#include <limits>
 
 void TestSignalPlotter::init()
 {
@@ -344,9 +345,13 @@ void TestSignalPlotter::testGettersSetters() {
     s->setScaleDownBy(0.5);
     QCOMPARE(s->scaleDownBy(), 0.5);
 
-    QCOMPARE(s->horizontalScale(), 1); //default
+    QCOMPARE(s->horizontalScale(), 6); //default
     s->setHorizontalScale(2);
     QCOMPARE(s->horizontalScale(), 2);
+    s->setHorizontalScale(1);
+    QCOMPARE(s->horizontalScale(), 1);
+    s->setHorizontalScale(0); // Ignored - invalid value
+    QCOMPARE(s->horizontalScale(), 1);
 
     QCOMPARE(s->showHorizontalLines(), true); //default
     s->setShowHorizontalLines(false);
@@ -390,6 +395,47 @@ void TestSignalPlotter::testGettersSetters() {
 
 
 }
+void TestSignalPlotter::testAddingData()
+{
+    QCOMPARE(s->useAutoRange(), true);
+    s->setGeometry(0,0,500,500);
+    //Test adding sample without any beams.  It should just ignore this
+    s->addSample(QList<double>() << 1.0 << 2.0);
+    //Test setting the beam color of a non-existant beam.  It should just ignore this too.
+    s->setBeamColor(0, Qt::blue);
 
+    //Add an empty sample.  This should just be ignored?
+    s->addSample(QList<double>());
+
+    //Okay let's be serious now
+    s->addBeam(Qt::red);
+    s->addSample(QList<double>() << 0.0);
+    s->addSample(QList<double>() << -0.0);
+    s->addSample(QList<double>() << -1.0);
+    s->addSample(QList<double>() << -1000.0);
+    s->addSample(QList<double>() << 1000.0);
+    s->addSample(QList<double>() << 300.0);
+    s->addSample(QList<double>() << 300.0);
+    s->addSample(QList<double>() << 300.0);
+    s->addSample(QList<double>() << 300.0);
+    s->addSample(QList<double>() << 300.0);
+    s->addSample(QList<double>() << 300.0);
+    s->addSample(QList<double>() << 1.0/0.0); //positive infinity.  Should be ignore for range values, not crash, and draw something reasonable
+    s->addSample(QList<double>() << -1.0/0.0); //Negative infinite.  Likewise.
+    s->addSample(QList<double>() << 300.0);
+    s->addSample(QList<double>() << 300.0);
+//    s->addSample(QList<double>() << std::numeric_limits<double>::quiet_NaN());
+
+    QCOMPARE(s->currentMinimumRangeValue(), -1000.0);
+    QCOMPARE(s->currentMaximumRangeValue(), 1000.0);
+
+    //Paint to a device, to check that the painter does not crash etc
+    QPixmap pixmap(s->size());
+    s->render(&pixmap);
+
+    // For debugging, show the widget so that we can check it visually
+    //s->show();
+    //QTest::qWait(10000);
+}
 QTEST_KDEMAIN(TestSignalPlotter, GUI)
 

@@ -19,6 +19,7 @@ class TestSignalPlotter : public QObject
         void testSetBeamColor();
         void testSetUnit();
         void testGettersSetters();
+        void testAddingData();
     private:
         KSignalPlotter *s;
 };
