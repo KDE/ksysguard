@@ -243,5 +243,131 @@ void TestSignalPlotter::testMaximumRange()
     QCOMPARE(s->currentMaximumRangeValue(), 1.5); //given maximum range hasn't changed
     QCOMPARE(s->currentMinimumRangeValue(), 0.0);
 }
+
+void TestSignalPlotter::testSetBeamColor() {
+    s->addBeam(Qt::red);
+    s->setBeamColor(0, Qt::blue);
+    QVERIFY(s->beamColor(0) == Qt::blue);
+    QCOMPARE(s->numBeams(), 1);
+
+    s->addBeam(Qt::red);
+    QVERIFY(s->beamColor(0) == Qt::blue);
+    QVERIFY(s->beamColor(1) == Qt::red);
+    QCOMPARE(s->numBeams(), 2);
+
+    s->setBeamColor(0, Qt::green);
+    QVERIFY(s->beamColor(0) == Qt::green);
+    QVERIFY(s->beamColor(1) == Qt::red);
+    QCOMPARE(s->numBeams(), 2);
+
+    s->setBeamColor(1, Qt::blue);
+    QVERIFY(s->beamColor(0) == Qt::green);
+    QVERIFY(s->beamColor(1) == Qt::blue);
+
+    s->removeBeam(0);
+    QVERIFY(s->beamColor(0) == Qt::blue);
+    s->setBeamColor(0, Qt::red);
+    QVERIFY(s->beamColor(0) == Qt::red);
+}
+
+void TestSignalPlotter::testSetUnit() {
+    s->setUnit(ki18ncp("Units", "%1 second", "%1 seconds") );
+
+    QCOMPARE(s->valueAsString(3e20,1), QString("3e+20 seconds"));
+    QCOMPARE(s->valueAsString(-3e20,1), QString("-3e+20 seconds"));
+    QCOMPARE(s->valueAsString(3.4,1), QString("3.4 seconds"));
+    QCOMPARE(s->valueAsString(-3.4,1), QString("-3.4 seconds"));
+    QCOMPARE(s->valueAsString(1), QString("1.0 seconds"));
+    QCOMPARE(s->valueAsString(-1), QString("-1.0 seconds"));
+    QCOMPARE(s->valueAsString(1,0), QString("1 second"));
+    QCOMPARE(s->valueAsString(-1,0), QString("-1 second"));
+
+    //now switch to minutes
+    s->setScaleDownBy(60);
+    s->setUnit(ki18ncp("Units", "%1 minute", "%1 minutes") );
+    QCOMPARE(s->valueAsString(3.4), QString("0.06 minutes"));
+    QCOMPARE(s->valueAsString(-3.4), QString("-0.06 minutes"));
+    QCOMPARE(s->valueAsString(60), QString("1.0 minutes"));
+    QCOMPARE(s->valueAsString(-60), QString("-1.0 minutes"));
+    QCOMPARE(s->valueAsString(60,0), QString("1 minute"));
+    QCOMPARE(s->valueAsString(-60,0), QString("-1 minute"));
+}
+
+void TestSignalPlotter::testGettersSetters() {
+    //basic test of all the getters and setters and default values
+    KLocalizedString string = ki18ncp("Units", "%1 second", "%1 seconds");
+    s->setUnit( string );
+    QVERIFY( s->unit().toString() == string.toString() );
+    s->setMaximumValue(3);
+    s->setMinimumValue(-3);
+    QCOMPARE(s->maximumValue(), 3.0);
+    QCOMPARE(s->minimumValue(), -3.0);
+
+    s->changeRange(-2,2);
+    QCOMPARE(s->maximumValue(), 2.0);
+    QCOMPARE(s->minimumValue(), -2.0);
+
+    s->setMinimumValue(-3);
+    QCOMPARE(s->useAutoRange(), true); //default
+    s->setUseAutoRange(false);
+    QCOMPARE(s->useAutoRange(), false);
+
+    QCOMPARE(s->thinFrame(), true); //default
+    s->setThinFrame(false);
+    QCOMPARE(s->thinFrame(), false);
+
+    QCOMPARE(s->scaleDownBy(), 1.0); //default
+    s->setScaleDownBy(1.2);
+    QCOMPARE(s->scaleDownBy(), 1.2);
+    s->setScaleDownBy(0.5);
+    QCOMPARE(s->scaleDownBy(), 0.5);
+
+    QCOMPARE(s->horizontalScale(), 1); //default
+    s->setHorizontalScale(2);
+    QCOMPARE(s->horizontalScale(), 2);
+
+    QCOMPARE(s->showHorizontalLines(), true); //default
+    s->setShowHorizontalLines(false);
+    QCOMPARE(s->showHorizontalLines(), false);
+
+    QCOMPARE(s->showVerticalLines(), false); //default
+    s->setShowVerticalLines(true);
+    QCOMPARE(s->showVerticalLines(), true);
+
+    QCOMPARE(s->verticalLinesScroll(), true); //default
+    s->setVerticalLinesScroll(false);
+    QCOMPARE(s->verticalLinesScroll(), false);
+
+    QCOMPARE(s->verticalLinesDistance(), (uint)30); //default
+    s->setVerticalLinesDistance(1);
+    QCOMPARE(s->verticalLinesDistance(), (uint)1);
+
+    QCOMPARE(s->showAxis(), true); //default
+    s->setShowAxis(false);
+    QCOMPARE(s->showAxis(), false);
+
+    QCOMPARE(s->maxAxisTextWidth(), 0); //default
+    s->setMaxAxisTextWidth(30);
+    QCOMPARE(s->maxAxisTextWidth(), 30);
+    s->setMaxAxisTextWidth(0);
+    QCOMPARE(s->maxAxisTextWidth(), 0);
+
+    QCOMPARE(s->smoothGraph(), true); //default
+    s->setSmoothGraph(false);
+    QCOMPARE(s->smoothGraph(), false);
+
+    QCOMPARE(s->stackGraph(), false); //default
+    s->setStackGraph(true);
+    QCOMPARE(s->stackGraph(), true);
+
+    QCOMPARE(s->fillOpacity(), 20); //default
+    s->setFillOpacity(255);
+    QCOMPARE(s->fillOpacity(), 255);
+    s->setFillOpacity(0);
+    QCOMPARE(s->fillOpacity(), 0);
+
+
+}
+
 QTEST_KDEMAIN(TestSignalPlotter, GUI)
 

@@ -15,6 +15,9 @@ class TestSignalPlotter : public QObject
         void testReorderBeams();
         void testReorderBeamsWithData();
         void testMaximumRange();
+        void testSetBeamColor();
+        void testSetUnit();
+        void testGettersSetters();
     private:
         KSignalPlotter *s;
 };
