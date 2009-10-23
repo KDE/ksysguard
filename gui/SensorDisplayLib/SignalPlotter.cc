@@ -861,15 +861,22 @@ void KSignalPlotterPrivate::drawBeam(QPainter *p, const QRect &boundingBox, int 
     for (int j =  qMin(datapoints.size(), mBeamColors.size())-1; j >=0 ; --j) {
         if(!mStackBeams)
             y0 = y1 = y2 = 0;
-        y0 += qBound((qreal)boundingBox.top(), boundingBox.bottom() - (datapoints[j] - mNiceMinValue)*scaleFac, (qreal)boundingBox.bottom());
-        y1 += qBound((qreal)boundingBox.top(), boundingBox.bottom() - (prev_datapoints[j] - mNiceMinValue)*scaleFac, (qreal)boundingBox.bottom());
-        y2 += qBound((qreal)boundingBox.top(), boundingBox.bottom() - (prev_prev_datapoints[j] - mNiceMinValue)*scaleFac, (qreal)boundingBox.bottom());
-        if(mSmoothGraph) {
+        float point0 = datapoints[j];
+        float point1 = prev_datapoints[j];
+        float point2 = prev_prev_datapoints[j];
+        if(mSmoothGraph && !isnan(point1) && !isinf(point1)) {
             // Apply a weighted average just to smooth the graph out a bit
-            y0 = (2*y0 + y1)/3;
-            y1 = (2*y1 + y2)/3;
+            // Do not try to smooth infinities or nans
+            if(!isnan(point0) && !isinf(point0))
+                point0 = (2*point0 + point1)/3;
+            if(!isnan(point2) && !isinf(point2))
+                point1 = (2*point1 + point2)/3;
             // We don't bother to average out y2.  This will introduce slight inaccuracies in the gradients, but they aren't really noticeable.
         }
+
+        y0 += qBound((qreal)boundingBox.top(), boundingBox.bottom() - (point0 - mNiceMinValue)*scaleFac, (qreal)boundingBox.bottom());
+        y1 += qBound((qreal)boundingBox.top(), boundingBox.bottom() - (point1 - mNiceMinValue)*scaleFac, (qreal)boundingBox.bottom());
+        y2 += qBound((qreal)boundingBox.top(), boundingBox.bottom() - (point2 - mNiceMinValue)*scaleFac, (qreal)boundingBox.bottom());
         QColor beamColor = mBeamColors[j];
         if(mFillOpacity)
             beamColor = beamColor.lighter();
