@@ -892,7 +892,7 @@ void KSignalPlotterPrivate::drawAxisText(QPainter *p, const QRect &boundingBox)
         int y_coord = boundingBox.top() + (y * (boundingBox.height()-fontHeight)) /(mHorizontalLinesCount+1);  //Make sure it's y*h first to avoid rounding bugs
         double value;
         if(y == mHorizontalLinesCount+1)
-            value = mNiceMinValue; //sometimes using the formulas gives us a value very slightly off
+            value = mNiceMinValue/mScaleDownBy; //sometimes using the formulas gives us a value very slightly off
         else
             value = mNiceMaxValue/mScaleDownBy - y * stepsize;
 
