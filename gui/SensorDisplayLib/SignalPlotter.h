@@ -281,10 +281,10 @@ class KSignalPlotter : public QWidget
     double currentMinimumRangeValue() const;
 
     /** \brief Set the number of pixels horizontally between data points.
-     *  Default is 1 */
+     *  Default is 6. */
     void setHorizontalScale( uint scale );
     /** \brief The number of pixels horizontally between data points.
-     *  Default is 1*/
+     *  Default is 6. */
     int horizontalScale() const;
 
     /** \brief Set whether to draw the vertical grid lines.

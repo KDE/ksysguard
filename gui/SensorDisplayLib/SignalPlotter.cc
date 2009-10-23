@@ -73,7 +73,7 @@ KSignalPlotterPrivate::KSignalPlotterPrivate(KSignalPlotter * q_ptr) : q(q_ptr)
     mVerticalLinesDistance = 30;
     mVerticalLinesScroll = true;
     mVerticalLinesOffset = 0;
-    mHorizontalScale = 1;
+    mHorizontalScale = 6;
     mShowHorizontalLines = true;
     mHorizontalLinesColor = QColor(0xC3, 0xC3, 0xC3);
     mHorizontalLinesCount = 4;
