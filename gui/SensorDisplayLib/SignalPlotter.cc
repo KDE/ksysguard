@@ -320,7 +320,7 @@ double KSignalPlotter::currentMinimumRangeValue() const
 
 void KSignalPlotter::setHorizontalScale( uint scale )
 {
-    if (scale == d->mHorizontalScale)
+    if (scale == d->mHorizontalScale || scale <= 0)
         return;
 
     d->mHorizontalScale = scale;
