@@ -40,7 +40,8 @@
 
 
 #define VERTICAL_LINE_OFFSET 1
-
+//Never store less 1000 samples if not visible.  This is kinda arbituary
+#define NUM_SAMPLES_WHEN_INVISIBLE ((uint)1000)
 
 #ifdef SVG_SUPPORT
 QHash<QString, Plasma::Svg *> KSignalPlotter::sSvgRenderer ;
@@ -59,7 +60,7 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
 KSignalPlotterPrivate::KSignalPlotterPrivate(KSignalPlotter * q_ptr) : q(q_ptr)
 {
     mPrecision = 0;
-    mMaxSamples = 4; //Never keep less than 4 samples. An arbitrary number
+    mMaxSamples = NUM_SAMPLES_WHEN_INVISIBLE;
     mMinValue = mMaxValue = 0.0;
     mUserMinValue = mUserMaxValue = 0.0;
     mNiceMinValue = mNiceMaxValue = 0.0;
@@ -549,7 +550,10 @@ void KSignalPlotterPrivate::updateDataBuffers()
      *     1) no wasted space and
      *     2) no loss of precision when drawing the first data point.
      */
-    mMaxSamples = uint(q->width() / mHorizontalScale + 4);
+    if(q->isVisible())
+        mMaxSamples = uint(q->width() / mHorizontalScale + 4);
+    else //If it's not visible, we can't rely on sensible values for width.  Store some minimum number of data points
+        mMaxSamples = qMin(q->width() / mHorizontalScale + 4, NUM_SAMPLES_WHEN_INVISIBLE);
 }
 
 void KSignalPlotter::paintEvent( QPaintEvent* event)
