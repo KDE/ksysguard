@@ -125,7 +125,7 @@ void KSignalPlotter::setBeamColor( int index, const QColor &color ) {
         kDebug(1215) << "Invalid index" << index;
         return;
     }
-    Q_ASSERT(d->mBeamColors.count() == d->mBeamColorsDark);
+    Q_ASSERT(d->mBeamColors.count() == d->mBeamColorsDark.count());
 
     d->mBeamColors[ index ] = color;
     d->mBeamColorsDark[ index ] = color.darker(150);
