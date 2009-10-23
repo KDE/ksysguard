@@ -850,6 +850,9 @@ void KSignalPlotterPrivate::drawBeam(QPainter *p, const QRect &boundingBox, int 
     float y0 = 0;
     float y1 = 0;
     float y2 = 0;
+    qreal xaxis = boundingBox.bottom();
+    if( mNiceMinValue < 0)
+       xaxis = qMax(xaxis + mNiceMinValue*scaleFac, qreal(boundingBox.top()));
     for (int j =  qMin(datapoints.size(), mBeamColors.size())-1; j >=0 ; --j) {
         if(!mStackBeams)
             y0 = y1 = y2 = 0;
@@ -877,8 +880,9 @@ void KSignalPlotterPrivate::drawBeam(QPainter *p, const QRect &boundingBox, int 
         p->setPen(pen);
         p->drawPath(path);
         if(mFillOpacity) {
-            path.lineTo(x0,boundingBox.bottom());
-            path.lineTo(x1,boundingBox.bottom());
+            p->setCompositionMode(QPainter::CompositionMode_DestinationOver);
+            path.lineTo(x0, xaxis);
+            path.lineTo(x1, xaxis);
             path.lineTo(x1,y1);
             QColor fillColor = mBeamColors[j];
             fillColor.setAlpha(mFillOpacity);
