@@ -78,7 +78,7 @@ KSignalPlotterPrivate::KSignalPlotterPrivate(KSignalPlotter * q_ptr) : q(q_ptr)
     mHorizontalLinesColor = QColor(0xC3, 0xC3, 0xC3);
     mHorizontalLinesCount = 4;
     mShowAxis = true;
-    mBackgroundColor = QColor(0,0,0);
+    mBackgroundColor = Qt::white;
     mAxisTextWidth = 0;
     mScrollOffset = 0;
     mStackBeams = false;
