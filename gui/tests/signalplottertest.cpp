@@ -244,6 +244,24 @@ void TestSignalPlotter::testMaximumRange()
     QCOMPARE(s->currentMinimumRangeValue(), 0.0);
 }
 
+void TestSignalPlotter::testNegativeMinimumRange()
+{
+    s->setMinimumValue(-1000);
+    s->setMaximumValue(4000);
+    QCOMPARE(s->minimumValue(), -1000.0);
+    QCOMPARE(s->maximumValue(),  4000.0);
+    QCOMPARE(s->currentMinimumRangeValue(), -1000.0);
+    QCOMPARE(s->currentMaximumRangeValue(), 4000.0);
+
+    s->setScaleDownBy(1024);
+    QCOMPARE(s->minimumValue(), -1000.0);
+    QCOMPARE(s->maximumValue(),  4000.0);
+    QCOMPARE(s->currentMinimumRangeValue(), -1000.0);
+    QCOMPARE(s->currentMaximumRangeValue(), 4120.0);
+
+    QCOMPARE(s->valueAsString(4096,1), QString("4.0"));
+    QCOMPARE(s->valueAsString(-4096,1), QString("-4.0"));
+}
 void TestSignalPlotter::testSetBeamColor() {
     s->addBeam(Qt::red);
     s->setBeamColor(0, Qt::blue);
@@ -271,6 +289,10 @@ void TestSignalPlotter::testSetBeamColor() {
 }
 
 void TestSignalPlotter::testSetUnit() {
+    //Test default
+    QCOMPARE(s->valueAsString(3e20,1), QString("3e+20"));
+    QCOMPARE(s->valueAsString(-3e20,1), QString("-3e+20"));
+
     s->setUnit(ki18ncp("Units", "%1 second", "%1 seconds") );
 
     QCOMPARE(s->valueAsString(3e20,1), QString("3e+20 seconds"));

@@ -167,11 +167,12 @@ class KSignalPlotter : public QWidget
      *
      * \code
      *   KSignalPlotter plotter;
-     *   plotter.setUnit( ki18ncp("Units", "1 second", "%1 seconds") );
+     *   plotter.setUnit( ki18ncp("Units", "%1 second", "%1 seconds") );
      *   QString formattedString = plotter.valueAsString(3.4); //returns "3.4 seconds"
      * \endcode
      *
      * Typically a new unit would be set when setScaleDownBy is called.
+     * Note that even the singular should use "%1 second" instead of "1 second", so that a value of -1 works correctly.
      *
      * \see unit(), setScaleDownBy()
      */
@@ -180,6 +181,8 @@ class KSignalPlotter : public QWidget
     /** \brief The localizable units used on the vertical axis of the graph.
      *
      * The returns the localizable string set with setUnit().
+     *
+     * Default is the string "%1" - i.e. to just display the number.
      *
      * \see setUnit
      */

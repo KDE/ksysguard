@@ -15,6 +15,7 @@ class TestSignalPlotter : public QObject
         void testReorderBeams();
         void testReorderBeamsWithData();
         void testMaximumRange();
+        void testNegativeMinimumRange();
         void testSetBeamColor();
         void testSetUnit();
         void testGettersSetters();

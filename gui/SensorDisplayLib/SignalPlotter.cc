@@ -84,6 +84,7 @@ KSignalPlotterPrivate::KSignalPlotterPrivate(KSignalPlotter * q_ptr) : q(q_ptr)
     mStackBeams = false;
     mFillOpacity = 20;
     mRescaleTime = 0;
+    mUnit = ki18n("%1");
 }
 
 KSignalPlotter::~KSignalPlotter()
