@@ -279,6 +279,20 @@ void TestSignalPlotter::testNonZeroRange()
     QCOMPARE(s->currentMaximumRangeValue(), 32.0);
 }
 
+void TestSignalPlotter::testNonZeroRange2()
+{
+    s->addBeam(Qt::blue);
+    s->setMinimumValue(22);
+    s->setMaximumValue(23);
+
+    QCOMPARE(s->currentMinimumRangeValue(), 22.0);
+    QCOMPARE(s->currentMaximumRangeValue(), 23.0);
+
+    s->addSample(QList<double>() << 25);
+    QCOMPARE(s->currentMinimumRangeValue(), 22.0);
+    QCOMPARE(s->currentMaximumRangeValue(), 25.0);
+
+}
 void TestSignalPlotter::testNegativeMinimumRange()
 {
     s->setMinimumValue(-1000);

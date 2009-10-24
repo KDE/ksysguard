@@ -742,25 +742,28 @@ void KSignalPlotterPrivate::calculateNiceRange()
 {
     double max = mUserMaxValue;
     double min = mUserMinValue;
+    bool minFromUser = true;
     if( mUseAutoRange ) {
         if(!isnan(mMaxValue) && mMaxValue * 0.99 > max)  //Allow max value to go very slightly over the given max, for rounding reasons
             max = mMaxValue;
-        if(!isnan(mMinValue))
-            min = qMin(min, mMinValue);
+        if(!isnan(mMinValue) && mMinValue * 0.99 < min) {
+            min = mMinValue;
+            minFromUser = false;
+        }
     }
     double newNiceRange = max - min;
     /* If the range is too small we will force it to 1.0 since it
      * looks a lot nicer. */
-    if ( newNiceRange < 0.000001 )
+    if ( newNiceRange < 0.000001 ) {
         newNiceRange = 1.0;
+        max = min+1;
+    }
 
     double newNiceMinValue = min;
-    if ( min != 0.0 ) {
+
+    if ( !minFromUser && min != 0.0) {  //If the minimum value is from data, round it down to make it a pretty number
         double dim = pow( 10, floor( log10( fabs( min ) ) ) ) / 2;
-        if ( min < 0.0 )
-            newNiceMinValue = dim * floor( min / dim );
-        else
-            newNiceMinValue = dim * ceil( min / dim );
+        newNiceMinValue = dim * floor( min / dim );
         newNiceRange = max - newNiceMinValue;
         if ( newNiceRange < 0.000001 )
             newNiceRange = 1.0;
@@ -778,6 +781,7 @@ void KSignalPlotterPrivate::calculateNiceRange()
         mPrecision = 1-logdim;
 
     newNiceRange = mScaleDownBy*dim * a * (mHorizontalLinesCount+1);
+
     if( mNiceMinValue == newNiceMinValue && mNiceRange == newNiceRange)
         return;  //nothing changed
     mNiceMaxValue = newNiceMinValue + newNiceRange;
