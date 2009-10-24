@@ -862,17 +862,24 @@ void KSignalPlotterPrivate::drawBeam(QPainter *p, const QRect &boundingBox, int 
         if(!mStackBeams)
             y0 = y1 = y2 = 0;
         float point0 = datapoints[j];
+        if( isnan(point0) )
+            continue; //Just do not draw points with nans. skip them
+
         float point1 = prev_datapoints[j];
         float point2 = prev_prev_datapoints[j];
-        if(mSmoothGraph && !isnan(point1) && !isinf(point1)) {
+
+        if(isnan(point1))
+            point1 = point0;
+        else if(mSmoothGraph && !isinf(point1)) {
             // Apply a weighted average just to smooth the graph out a bit
             // Do not try to smooth infinities or nans
-            if(!isnan(point0) && !isinf(point0))
-                point0 = (2*point0 + point1)/3;
+            point0 = (2*point0 + point1)/3;
             if(!isnan(point2) && !isinf(point2))
                 point1 = (2*point1 + point2)/3;
             // We don't bother to average out y2.  This will introduce slight inaccuracies in the gradients, but they aren't really noticeable.
         }
+        if(isnan(point2))
+            point2 = point1;
 
         y0 += qBound((qreal)boundingBox.top(), boundingBox.bottom() - (point0 - mNiceMinValue)*scaleFac, (qreal)boundingBox.bottom());
         y1 += qBound((qreal)boundingBox.top(), boundingBox.bottom() - (point1 - mNiceMinValue)*scaleFac, (qreal)boundingBox.bottom());
