@@ -63,7 +63,7 @@ KSignalPlotterPrivate::KSignalPlotterPrivate(KSignalPlotter * q_ptr) : q(q_ptr)
 {
     mPrecision = 0;
     mMaxSamples = NUM_SAMPLES_WHEN_INVISIBLE;
-    mMinValue = mMaxValue = 0.0;
+    mMinValue = mMaxValue = std::numeric_limits<double>::quiet_NaN();
     mUserMinValue = mUserMaxValue = 0.0;
     mNiceMinValue = mNiceMaxValue = 0.0;
     mNiceRange = 0;
@@ -145,8 +145,8 @@ void KSignalPlotterPrivate::recalculateMaxMinValueForSample(const QList<double>&
             if( !isinf(newValue) && !isnan(newValue) )
                 value += newValue;
         }
-        if(mMinValue > value) mMinValue = value;
-        if(mMaxValue < value) mMaxValue = value;
+        if(isnan(mMinValue) || mMinValue > value) mMinValue = value;
+        if(isnan(mMaxValue) || mMaxValue < value) mMaxValue = value;
         if(value > 0.7*mMaxValue)
             mRescaleTime = time;
     } else {
@@ -154,8 +154,8 @@ void KSignalPlotterPrivate::recalculateMaxMinValueForSample(const QList<double>&
         for(int i = sampleBuf.count()-1; i>= 0; i--) {
             value = sampleBuf[i];
             if( !isinf(value) && !isnan(value) ) {
-                if(mMinValue > value) mMinValue = value;
-                if(mMaxValue < value) mMaxValue = value;
+                if(isnan(mMinValue) || mMinValue > value) mMinValue = value;
+                if(isnan(mMaxValue) || mMaxValue < value) mMaxValue = value;
                 if(value > 0.7*mMaxValue)
                     mRescaleTime = time;
             }
@@ -164,7 +164,7 @@ void KSignalPlotterPrivate::recalculateMaxMinValueForSample(const QList<double>&
 }
 
 void KSignalPlotterPrivate::rescale() {
-    mMaxValue = mMinValue = 0;
+    mMaxValue = mMinValue = std::numeric_limits<double>::quiet_NaN();
     for(int i = mBeamData.count()-1; i >= 0; i--) {
         recalculateMaxMinValueForSample(mBeamData[i], i);
     }
@@ -743,9 +743,10 @@ void KSignalPlotterPrivate::calculateNiceRange()
     double max = mUserMaxValue;
     double min = mUserMinValue;
     if( mUseAutoRange ) {
-        if(mMaxValue * 0.99 > max)  //Allow max value to go very slightly over the given max, for rounding reasons
+        if(!isnan(mMaxValue) && mMaxValue * 0.99 > max)  //Allow max value to go very slightly over the given max, for rounding reasons
             max = mMaxValue;
-        min = qMin(min, mMinValue);
+        if(!isnan(mMinValue))
+            min = qMin(min, mMinValue);
     }
     double newNiceRange = max - min;
     /* If the range is too small we will force it to 1.0 since it
@@ -754,15 +755,15 @@ void KSignalPlotterPrivate::calculateNiceRange()
         newNiceRange = 1.0;
 
     double newNiceMinValue = min;
-    if ( mMinValue != 0.0 ) {
+    if ( min != 0.0 ) {
         double dim = pow( 10, floor( log10( fabs( min ) ) ) ) / 2;
         if ( min < 0.0 )
-        newNiceMinValue = dim * floor( min / dim );
-      else
-        newNiceMinValue = dim * ceil( min / dim );
-      newNiceRange = max - newNiceMinValue;
-      if ( newNiceRange < 0.000001 )
-        newNiceRange = 1.0;
+            newNiceMinValue = dim * floor( min / dim );
+        else
+            newNiceMinValue = dim * ceil( min / dim );
+        newNiceRange = max - newNiceMinValue;
+        if ( newNiceRange < 0.000001 )
+            newNiceRange = 1.0;
     }
     // Massage the range so that the grid shows some nice values.
     double step = newNiceRange / (mScaleDownBy*(mHorizontalLinesCount+1));
@@ -771,11 +772,11 @@ void KSignalPlotterPrivate::calculateNiceRange()
     int a = (int)ceil( step / dim );
     if(logdim >= 0)
         mPrecision = 0;
-    else if( a % 2 == 0){
+    else if( a % 2 == 0)
         mPrecision = -logdim;
-    } else {
+    else
         mPrecision = 1-logdim;
-    }
+
     newNiceRange = mScaleDownBy*dim * a * (mHorizontalLinesCount+1);
     if( mNiceMinValue == newNiceMinValue && mNiceRange == newNiceRange)
         return;  //nothing changed
