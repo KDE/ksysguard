@@ -42,6 +42,7 @@ class KSignalPlotterPrivate;
  *  \li The lines can be reordered
  *  \li Uses as little memory and CPU as possible
  *  \li Graph can be smoothed using the formula (value * 2 + last_value)/3
+ *  \li Can cope with positive/negative infinity and NaN values.
  *
  *  Example usage:
  *  \code
@@ -103,6 +104,25 @@ class KSignalPlotter : public QWidget
      *  The data must be given as a list in the same order that the beams were
      *  added (or consequently reordered).  If samples.count() != numBeams(),
      *  a warning is printed and the data discarded.
+     *
+     *  To indicate that no data is available for a given beam, set its value to
+     *  (non-signalling) NaN.
+     *
+     *  For example:
+     *
+     *  \code
+     *    KSignalPlotter *s = KSignalPlotter(parent);
+     *    s->addBeam(Qt::red);
+     *    s->addBeam(Qt::green);
+     *    s->addBeam(Qt::blue);
+     *    signalPlotter->addSample( QList<double>() << std::numeric_limits<double>::quiet_NaN() << 1.0/0 << 10.0 );
+     *  \endcode
+     *
+     *  This indicates that no data is available yet for red (so the beam will not be drawn for this section),
+     *  that's it positive infinity for green, and 10 for blue.
+     *
+     *  Infinity is handled by drawing a straight line up to the top or bottom of the display, and does not affect the range.
+     *  For the above example, the displayed range would now be 0 to 10.
      */
     void addSample( const QList<double> &samples );
 

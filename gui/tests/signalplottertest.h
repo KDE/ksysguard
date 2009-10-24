@@ -20,6 +20,7 @@ class TestSignalPlotter : public QObject
         void testSetUnit();
         void testGettersSetters();
         void testAddingData();
+        void testNonZeroRange();
     private:
         KSignalPlotter *s;
 };

@@ -31,6 +31,7 @@
 #include <klocale.h>
 #include <kapplication.h>
 #include <math.h>
+#include <limits>
 
 #include "SignalPlotter.h"
 #include "SignalPlotter_p.h"
@@ -103,10 +104,10 @@ void KSignalPlotter::setUnit(const KLocalizedString &unit) {
 void KSignalPlotter::addBeam( const QColor &color )
 {
     QList< QList<double> >::Iterator it;
-    //When we add a new beam, go back and set the data for this beam to 0 for all the other times. This is because it makes it easier for
-    //moveSensors
+    //When we add a new beam, go back and set the data for this beam to NaN for all the other times, to pad it out.
+    //This is because it makes it easier for moveSensors
     for(it = d->mBeamData.begin(); it != d->mBeamData.end(); ++it) {
-        (*it).append(0);
+        (*it).append( std::numeric_limits<double>::quiet_NaN() );
     }
     d->mBeamColors.append(color);
     d->mBeamColorsDark.append(color.darker(150));
@@ -949,16 +950,18 @@ void KSignalPlotterPrivate::drawHorizontalLines(QPainter *p, const QRect &boundi
 
 double KSignalPlotter::lastValue( int i) const
 {
-    if(d->mBeamData.isEmpty() || d->mBeamData.first().size() <= i) return 0;
+    if(d->mBeamData.isEmpty() || d->mBeamData.first().size() <= i) return std::numeric_limits<double>::quiet_NaN();
     return d->mBeamData.first().at(i);
 }
 QString KSignalPlotter::lastValueAsString( int i, int precision) const
 {
-    if(d->mBeamData.isEmpty() || d->mBeamData.first().size() <= i) return QString();
+    if(d->mBeamData.isEmpty() || d->mBeamData.first().size() <= i || isnan(d->mBeamData.first().at(i))) return QString();
     return valueAsString(d->mBeamData.first().at(i), precision); //retrieve the newest value for this beam
 }
 QString KSignalPlotter::valueAsString( double value, int precision) const
 {
+    if(isnan(value))
+        return QString();
     value = value / d->mScaleDownBy; // scale the value.  E.g. from Bytes to KiB
     return d->scaledValueAsString(value, precision);
 }
