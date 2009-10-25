@@ -458,7 +458,6 @@ void KSignalPlotter::changeEvent ( QEvent * event )
 {
     if(event->type() == QEvent::ApplicationPaletteChange || event->type() == QEvent::PaletteChange) {
         d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
-        d->mPlottingArea = QRect();
         update();
     }
 }
@@ -497,7 +496,7 @@ void KSignalPlotter::paintEvent( QPaintEvent* event)
         return;
     QPainter p(this);
 
-    if(event && d->mPlottingArea.contains(event->rect()))
+    if(event && d->mPlottingArea.contains(event->rect()) && !d->mBackgroundImage.isNull())
         d->drawWidget(&p, QRect(0,0,w, h), true);  // do not bother drawing axis text etc.
     else
         d->drawWidget(&p, QRect(0,0,w, h), false);
