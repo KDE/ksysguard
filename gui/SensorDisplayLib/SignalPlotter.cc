@@ -53,7 +53,7 @@ KSignalPlotter::KSignalPlotter( QWidget *parent)
   : QWidget( parent), d(new KSignalPlotterPrivate(this))
 {
     // Anything smaller than this does not make sense.
-    setMinimumSize( 16, 16 );
+    setMinimumSize( 4, 4 );
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     sizePolicy.setHeightForWidth(false);
     setSizePolicy( sizePolicy );
@@ -542,6 +542,7 @@ int KSignalPlotter::maxAxisTextWidth() const
 
 void KSignalPlotter::resizeEvent( QResizeEvent* )
 {
+    d->mPlottingArea = QRect();
     d->updateDataBuffers();
 }
 
@@ -596,19 +597,22 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
         boundingBox.setTop(p->pen().width() / 2); //The y position of the top of the graph.  Basically this is one more than the height of the top bar
 
         //check if there's enough room to actually show a top bar. Must be enough room for a bar at the top, plus horizontal lines each of a size with room for a scale
-        if( mShowAxis && boundingBox.width() > 60 && boundingBox.height() > p->fontMetrics().height() ) {  //if there's room to draw the labels, then draw them!
+        if( mShowAxis && boundingBox.width() > (mAxisTextWidth*1.10+2) && boundingBox.height() > p->fontMetrics().height() ) {  //if there's room to draw the labels, then draw them!
             //We want to adjust the size of plotter bit inside so that the axis text aligns nicely at the top and bottom
             //but we don't want to sacrifice too much of the available room, so don't use it if it will take more than 20% of the available space
             qreal offset = (p->fontMetrics().height()+1)/2;
             drawAxisText(p, boundingBox);
             if(offset < boundingBox.height() * 0.1)
                 boundingBox.adjust(0,offset, 0, -offset);
-        }
-        if( mShowAxis ) {
+
+            int padding = 1;
+            if(boundingBox.width() > mAxisTextWidth + 50)
+                padding = 10; //If there's plenty of room, at 10 pixels for padding the axis text, so that it looks nice
+
             if ( kapp->layoutDirection() == Qt::RightToLeft )
-                boundingBox.setRight(boundingBox.right() - mAxisTextWidth - 10);
+                boundingBox.setRight(boundingBox.right() - mAxisTextWidth - padding);
             else
-                boundingBox.setLeft(mAxisTextWidth+10);
+                boundingBox.setLeft(mAxisTextWidth+padding);
         }
 
         // Remember bounding box to pass to update, so that we only update the plotting area
@@ -620,7 +624,6 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
     if(boundingBox.height() <= 2 || boundingBox.width() <= 2 ) return;
 
     if(mBackgroundImage.isNull() || mBackgroundImage.height() != boundingBox.height() || mBackgroundImage.width() != boundingBox.width()) { //recreate on resize etc
-
         mBackgroundImage = QPixmap(boundingBox.width(), boundingBox.height());
         Q_ASSERT(!mBackgroundImage.isNull());
         QPainter pCache(&mBackgroundImage);
@@ -948,11 +951,13 @@ void KSignalPlotterPrivate::drawAxisText(QPainter *p, const QRect &boundingBox)
             value = mNiceMaxValue/mScaleDownBy - y * stepsize;
 
         val = scaledValueAsString(value, mPrecision);
+//        int textWidth = p->fontMetrics().boundingRect(val).width();
 
         if ( kapp->layoutDirection() == Qt::RightToLeft )
             p->drawText( boundingBox.right()-mAxisTextWidth, y_coord, mAxisTextWidth, fontHeight+1, Qt::AlignRight | Qt::AlignTop, val);
         else
             p->drawText( boundingBox.left(), y_coord, mAxisTextWidth, fontHeight+1, Qt::AlignRight | Qt::AlignTop, val);
+//            p->drawText( boundingBox.left() + qMax(mAxisTextWidth - textWidth, 0), y_coord, boundingBox.width(), fontHeight+1, Qt::AlignLeft | Qt::AlignTop, val);
     }
 }
 
