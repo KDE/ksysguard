@@ -85,6 +85,8 @@ KSignalPlotterPrivate::KSignalPlotterPrivate(KSignalPlotter * q_ptr) : q(q_ptr)
     mFillOpacity = 20;
     mRescaleTime = 0;
     mUnit = ki18n("%1");
+    mAxisTextOverlapsPlotter = false;
+    mActualAxisTextWidth = 0;
 }
 KSignalPlotter::~KSignalPlotter()
 {
@@ -447,7 +449,10 @@ bool KSignalPlotter::thinFrame() const
 
 void KSignalPlotter::setMaxAxisTextWidth(int axisTextWidth)
 {
+    if(d->mAxisTextWidth == axisTextWidth) return;
     d->mAxisTextWidth = axisTextWidth;
+    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    update();
 }
 
 int KSignalPlotter::maxAxisTextWidth() const
@@ -512,21 +517,14 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
         mHorizontalLinesCount = newHorizontalLinesCount;
         calculateNiceRange();
     }
+    QRect originalBoundingBox = boundingBox;
 
+    mActualAxisTextWidth = 0;
     if(!onlyDrawPlotter) {
-        QPen pen;
-        pen.setWidth(1);
-        pen.setCapStyle(Qt::RoundCap);
-        p->setPen(pen);
-
-        boundingBox.setTop(p->pen().width() / 2); //The y position of the top of the graph.  Basically this is one more than the height of the top bar
-
-        //check if there's enough room to actually show a top bar. Must be enough room for a bar at the top, plus horizontal lines each of a size with room for a scale
-        if( mShowAxis && boundingBox.width() > (mAxisTextWidth*1.10+2) && boundingBox.height() > p->fontMetrics().height() ) {  //if there's room to draw the labels, then draw them!
+        if( mShowAxis && mAxisTextWidth != 0 && boundingBox.width() > (mAxisTextWidth*1.10+2) && boundingBox.height() > p->fontMetrics().height() ) {  //if there's room to draw the labels, then draw them!
             //We want to adjust the size of plotter bit inside so that the axis text aligns nicely at the top and bottom
             //but we don't want to sacrifice too much of the available room, so don't use it if it will take more than 20% of the available space
             qreal offset = (p->fontMetrics().height()+1)/2;
-            drawAxisText(p, boundingBox);
             if(offset < boundingBox.height() * 0.1)
                 boundingBox.adjust(0,offset, 0, -offset);
 
@@ -538,6 +536,7 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
                 boundingBox.setRight(boundingBox.right() - mAxisTextWidth - padding);
             else
                 boundingBox.setLeft(mAxisTextWidth+padding);
+            mActualAxisTextWidth = mAxisTextWidth;
         }
 
         // Remember bounding box to pass to update, so that we only update the plotting area
@@ -545,7 +544,6 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
     } else {
         boundingBox = mPlottingArea;
     }
-
     if(boundingBox.height() <= 2 || boundingBox.width() <= 2 ) return;
 
     if(mBackgroundImage.isNull() || mBackgroundImage.height() != boundingBox.height() || mBackgroundImage.width() != boundingBox.width()) { //recreate on resize etc
@@ -633,6 +631,13 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
 #else
         p->drawPixmap(boundingBox.left(), boundingBox.top(), mScrollableImage, mScrollableImage.width() - widthOfSecondHalf, 0, widthOfSecondHalf, boundingBox.height());
 #endif
+    }
+
+    if(!onlyDrawPlotter || mAxisTextOverlapsPlotter) {
+        if( mShowAxis && originalBoundingBox.height() > p->fontMetrics().height() ) {  //if there's room to draw the labels, then draw them!
+            p->setClipping(false);
+            drawAxisText(p, originalBoundingBox);
+        }
     }
 }
 void KSignalPlotterPrivate::drawBackground(QPainter *p, const QRect &boundingBox)
@@ -757,17 +762,18 @@ void KSignalPlotterPrivate::drawBeamToScrollableImage(int index)
     pCache.setRenderHint(QPainter::Antialiasing, true);
     //To paint to the cache, we need a new bounding box
 
-    pCache.setCompositionMode(QPainter::CompositionMode_Clear);
+    pCache.setCompositionMode(QPainter::CompositionMode_Clear); //This makes the fill rect faster for some reason
     pCache.fillRect(cacheBoundingBox, Qt::transparent);
+    pCache.setCompositionMode(QPainter::CompositionMode_SourceOver);
 
     drawBeam(&pCache, cacheBoundingBox, mHorizontalScale, index);
 
-    pCache.setCompositionMode(QPainter::CompositionMode_SourceOver);
     if ( mVerticalLinesScroll && mShowVerticalLines ) {
         if( mScrollOffset % mVerticalLinesDistance == 0) {
             pCache.setPen( QPen(q->palette().brush(QPalette::Window), 0) );
             pCache.setCompositionMode(QPainter::CompositionMode_DestinationOver);
             pCache.drawLine( mScrollOffset+VERTICAL_LINE_OFFSET, cacheBoundingBox.top(), mScrollOffset+VERTICAL_LINE_OFFSET, cacheBoundingBox.bottom()  );
+            pCache.setCompositionMode(QPainter::CompositionMode_SourceOver);
         }
     }
 
@@ -841,18 +847,18 @@ void KSignalPlotterPrivate::drawBeam(QPainter *p, const QRect &boundingBox, int 
         path.moveTo( x1, y1);
         QPointF c1( x1 + horizontalScale/3.0, (4* y1 - y2)/3.0 );//Control point 1 - same gradient as prev_prev_datapoint to prev_datapoint
         QPointF c2( x1 + 2*horizontalScale/3.0, (2* y0 + y1)/3.0);//Control point 2 - same gradient as prev_datapoint to datapoint
-        path.cubicTo(  c1, c2, QPointF(x0, y0));
-        p->setCompositionMode(QPainter::CompositionMode_SourceOver);
+        path.cubicTo( c1, c2, QPointF(x0, y0) );
         p->setPen(pen);
         p->drawPath(path);
         if(mFillOpacity) {
-            p->setCompositionMode(QPainter::CompositionMode_DestinationOver);
             path.lineTo(x0, xaxis);
             path.lineTo(x1, xaxis);
             path.lineTo(x1,y1);
             QColor fillColor = mBeamColors[j];
             fillColor.setAlpha(mFillOpacity);
+            p->setCompositionMode(QPainter::CompositionMode_DestinationOver);
             p->fillPath(path, fillColor);
+            p->setCompositionMode(QPainter::CompositionMode_SourceOver);
         }
     }
 }
@@ -860,14 +866,17 @@ void KSignalPlotterPrivate::drawAxisText(QPainter *p, const QRect &boundingBox)
 {
     if(mHorizontalLinesCount < 0) return;
     double stepsize = mNiceRange/(mScaleDownBy*(mHorizontalLinesCount+1));
-    //TODO use QPalette::Text if it is inside the window
-    p->setPen( QPen( q->palette().brush(QPalette::WindowText), 0) );
+    if(mActualAxisTextWidth == 0) //If we are drawing completely inside the plotter area, using the Text color
+        p->setPen( QPen( q->palette().brush(QPalette::Text), 0) );
+    else
+        p->setPen( QPen( q->palette().brush(QPalette::WindowText), 0) );
     int axisTitleIndex=1;
     QString val;
     int numItems = mHorizontalLinesCount +2;
     int fontHeight = p->fontMetrics().height();
     if(numItems == 2 && boundingBox.height() < fontHeight*2 )
         numItems = 1;
+    mAxisTextOverlapsPlotter = false;
     for ( int y = 0; y < numItems; y++, axisTitleIndex++) {
         int y_coord = boundingBox.top() + (y * (boundingBox.height()-fontHeight)) /(mHorizontalLinesCount+1);  //Make sure it's y*h first to avoid rounding bugs
         double value;
@@ -877,13 +886,15 @@ void KSignalPlotterPrivate::drawAxisText(QPainter *p, const QRect &boundingBox)
             value = mNiceMaxValue/mScaleDownBy - y * stepsize;
 
         val = scaledValueAsString(value, mPrecision);
-//        int textWidth = p->fontMetrics().boundingRect(val).width();
+        QRect textBoundingRect = p->fontMetrics().boundingRect(val);
 
+        if(textBoundingRect.width() > mActualAxisTextWidth)
+            mAxisTextOverlapsPlotter = true;
+        int offset = qMax(mActualAxisTextWidth - textBoundingRect.right(), -textBoundingRect.left());
         if ( kapp->layoutDirection() == Qt::RightToLeft )
-            p->drawText( boundingBox.right()-mAxisTextWidth, y_coord, mAxisTextWidth, fontHeight+1, Qt::AlignRight | Qt::AlignTop, val);
+            p->drawText( boundingBox.left(), y_coord, boundingBox.width() - offset , fontHeight+1, Qt::AlignLeft | Qt::AlignTop, val);
         else
-            p->drawText( boundingBox.left(), y_coord, mAxisTextWidth, fontHeight+1, Qt::AlignRight | Qt::AlignTop, val);
-//            p->drawText( boundingBox.left() + qMax(mAxisTextWidth - textWidth, 0), y_coord, boundingBox.width(), fontHeight+1, Qt::AlignLeft | Qt::AlignTop, val);
+            p->drawText( boundingBox.left() + offset, y_coord, boundingBox.width() - offset, fontHeight+1, Qt::AlignLeft | Qt::AlignTop, val);
     }
 }
 

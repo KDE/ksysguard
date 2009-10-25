@@ -398,7 +398,7 @@ class KSignalPlotter : public QWidget
      *      plotter->setAxisTextWidth(axisTextWidth);
      *  \endcode
      *
-     *  Default is 0 - No room is made available for the axis text.
+     *  If this is 0, the default, then the text will be shown inside the plotting area.
      */
     void setMaxAxisTextWidth(int maxAxisTextWidth);
     /** \brief Get the distance between the left of the widget and the left of the plotting region. */

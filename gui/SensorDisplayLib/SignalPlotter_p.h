@@ -110,8 +110,10 @@ struct KSignalPlotterPrivate {
     KLocalizedString mUnit;
 
     int mAxisTextWidth;
+    int mActualAxisTextWidth; // Sometimes there just is not enough room for all the requested axisTextWidth
     QRect mPlottingArea; /// The area in which the beams are drawn.  Saved to make update() more efficient
 
     bool mSmoothGraph; /// Whether to smooth the graph by averaging using the formula (value*2 + last_value)/3.
     KSignalPlotter *q;
+    bool mAxisTextOverlapsPlotter; // Whether we need to redraw the axis text on every update
 };
