@@ -356,9 +356,15 @@ class KSignalPlotter : public QWidget
     /** \brief The font used for the axis */
     QFont axisFont() const;
 
-    /** \brief Set whether to show the vertical axis labels */
+    /** \brief Set whether to show the vertical axis labels.
+     *
+     * Default is true.
+     * \sa showAxis(), setAxisFont(), setAxisFontColor(), setMaxAxisTextWidth() */
     void setShowAxis( bool show );
-    /** \brief Whether to show the vertical axis labels */
+    /** \brief Whether to show the vertical axis labels.
+     *
+     * Default is true.
+     * \sa setShowAxis(), axisFont(), axisFontColor(), maxAxisTextWidth() */
     bool showAxis() const;
 
     /** \brief Set the background color of the main plotting area.
