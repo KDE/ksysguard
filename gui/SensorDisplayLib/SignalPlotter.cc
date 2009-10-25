@@ -586,7 +586,11 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
     if(boundingBox.height() <= 2 || boundingBox.width() <= 2 ) return;
     p->setFont( mFont );
     int fontheight = p->fontMetrics().height();
-    mHorizontalLinesCount = qBound(0, (int)(boundingBox.height() / fontheight)-2, 4);
+    int newHorizontalLinesCount = qBound(0, (int)(boundingBox.height() / fontheight)-2, 4);
+    if(newHorizontalLinesCount != mHorizontalLinesCount) {
+        mHorizontalLinesCount = newHorizontalLinesCount;
+        calculateNiceRange();
+    }
 
     if(!onlyDrawPlotter) {
         QPen pen;
