@@ -134,7 +134,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     mLabelLayout->setContentsMargins(0,0,0,0);
     QFont font;
     font.setPointSize( KSGRD::Style->fontSize() );
-    mPlotter->setAxisFont( font );
+    mPlotter->setFont( font );
 
     mPlotter->setThinFrame(!workSheetSettings);
 
@@ -190,7 +190,7 @@ void FancyPlotter::configureSettings()
 
     mSettingsDialog->setShowAxis( mPlotter->showAxis() );
 
-    mSettingsDialog->setFontSize( mPlotter->axisFont().pointSize()  );
+    mSettingsDialog->setFontSize( mPlotter->font().pointSize()  );
 
     mSettingsDialog->setRangeUnits( mUnit );
     mSettingsDialog->setRangeUnits( mUnit );
@@ -261,7 +261,7 @@ void FancyPlotter::applySettings() {
 
     QFont font;
     font.setPointSize( mSettingsDialog->fontSize() );
-    mPlotter->setAxisFont( font );
+    mPlotter->setFont( font );
 
     QList<int> deletedBeams = mSettingsDialog->deleted();
     for ( int i =0; i < deletedBeams.count(); ++i) {
@@ -321,9 +321,9 @@ void FancyPlotter::reorderBeams(const QList<int> & orderOfBeams)
 }
 void FancyPlotter::applyStyle()
 {
-    QFont font = mPlotter->axisFont();
+    QFont font = mPlotter->font();
     font.setPointSize(KSGRD::Style->fontSize() );
-    mPlotter->setAxisFont( font );
+    mPlotter->setFont( font );
     for ( int i = 0; i < mPlotter->numBeams() &&
             (unsigned int)i < KSGRD::Style->numSensorColors(); ++i ) {
         setBeamColor(i, KSGRD::Style->sensorColor(i));
@@ -708,8 +708,7 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
         if(fontsize == 0) fontsize =  KSGRD::Style->fontSize();
         QFont font;
         font.setPointSize( fontsize );
-
-        mPlotter->setAxisFont( font );
+        mPlotter->setFont( font );
     }
     QDomNodeList dnList = element.elementsByTagName( "beam" );
     for ( int i = 0; i < dnList.count(); ++i ) {

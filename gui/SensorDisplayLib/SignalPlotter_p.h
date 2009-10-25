@@ -109,7 +109,6 @@ struct KSignalPlotterPrivate {
 
     KLocalizedString mUnit;
 
-    QFont mFont;
     int mAxisTextWidth;
     QRect mPlottingArea; /// The area in which the beams are drawn.  Saved to make update() more efficient
 

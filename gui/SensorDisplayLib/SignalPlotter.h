@@ -331,11 +331,6 @@ class KSignalPlotter : public QWidget
      *  Default is true. */
     bool showHorizontalLines() const;
 
-    /** \brief Set the font used for the axis */
-    void setAxisFont( const QFont &font );
-    /** \brief The font used for the axis */
-    QFont axisFont() const;
-
     /** \brief Set whether to show the vertical axis labels.
      *
      * Default is true.

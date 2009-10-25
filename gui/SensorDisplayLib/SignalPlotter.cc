@@ -422,22 +422,6 @@ bool KSignalPlotter::showAxis() const
     return d->mShowAxis;
 }
 
-void KSignalPlotter::setAxisFont( const QFont &font )
-{
-    d->mFont = font;
-    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
-#ifdef USE_QIMAGE
-    d->mScrollableImage = QImage();
-#else
-    d->mScrollableImage = QPixmap();
-#endif
-    update();
-}
-
-QFont KSignalPlotter::axisFont() const
-{
-    return d->mFont;
-}
 QString KSignalPlotter::svgBackground() const {
     return d->mSvgFilename;
 }
@@ -522,7 +506,7 @@ void KSignalPlotter::paintEvent( QPaintEvent* event)
 void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool onlyDrawPlotter)
 {
     if(boundingBox.height() <= 2 || boundingBox.width() <= 2 ) return;
-    p->setFont( mFont );
+    p->setFont( q->font() );
     int fontheight = p->fontMetrics().height();
     int newHorizontalLinesCount = qBound(0, (int)(boundingBox.height() / fontheight)-2, 4);
     if(newHorizontalLinesCount != mHorizontalLinesCount) {
@@ -570,7 +554,7 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
         Q_ASSERT(!mBackgroundImage.isNull());
         QPainter pCache(&mBackgroundImage);
         pCache.setRenderHint(QPainter::Antialiasing, false);
-        pCache.setFont( mFont );
+        pCache.setFont( q->font() );
         //To paint to the cache, we need a new bounding box
         QRect cacheBoundingBox = QRect(0,0,boundingBox.width(), boundingBox.height());
 
