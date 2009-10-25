@@ -343,6 +343,14 @@ void TestSignalPlotter::testNegativeMinimumRange()
 
     QCOMPARE(s->valueAsString(4096,1), QString("4.0"));
     QCOMPARE(s->valueAsString(-4096,1), QString("-4.0"));
+
+    s->addBeam(Qt::red);
+    s->addSample(QList<double>() << -1024.0);
+    QCOMPARE(s->currentMinimumRangeValue(), -1024.0);
+    QCOMPARE(s->currentMaximumRangeValue(), 4096.0);
+    s->addSample(QList<double>() << -1025.0); //Scale now becomes  -3, -1.5, 0, 1.5, 3, 4.5 in KB
+    QCOMPARE(s->currentMinimumRangeValue(), -3072.0); //-3KB
+    QCOMPARE(s->currentMaximumRangeValue(), 4608.0); //4.5KB
 }
 void TestSignalPlotter::testSetBeamColor() {
     s->addBeam(Qt::red);
