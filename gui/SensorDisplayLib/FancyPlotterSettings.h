@@ -28,7 +28,6 @@
 
 #include "SensorModel.h"
 
-class KColorButton;
 class KIntNumInput;
 class KLineEdit;
 
@@ -63,12 +62,6 @@ class FancyPlotterSettings : public KPageDialog
     void setShowVerticalLines( bool value );
     bool showVerticalLines() const;
 
-    void setFontColor( const QColor &color );
-    QColor fontColor() const;
-
-    void setGridLinesColor( const QColor &color );
-    QColor gridLinesColor() const;
-
     void setVerticalLinesDistance( int distance );
     int verticalLinesDistance() const;
 
@@ -86,9 +79,6 @@ class FancyPlotterSettings : public KPageDialog
 
     void setFontSize( int size );
     int fontSize() const;
-
-    void setBackgroundColor( const QColor &color );
-    QColor backgroundColor() const;
 
     void setStackBeams( bool stack );
     bool stackBeams() const;
@@ -112,9 +102,6 @@ class FancyPlotterSettings : public KPageDialog
     void setColorForSelectedItem(const QColor &color);
 
   private:
-    KColorButton *mGridLinesColor;
-    KColorButton *mBackgroundColor;
-    KColorButton *mFontColor;
     QDoubleSpinBox *mMinValue;
     QDoubleSpinBox *mMaxValue;
     QLabel *mMinValueLabel;

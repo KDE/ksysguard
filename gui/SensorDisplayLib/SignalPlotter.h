@@ -73,13 +73,8 @@ class KSignalPlotter : public QWidget
   Q_PROPERTY( bool showHorizontalLines READ showHorizontalLines WRITE setShowHorizontalLines )
   Q_PROPERTY( bool showVerticalLines READ showVerticalLines WRITE setShowVerticalLines )
   Q_PROPERTY( bool verticalLinesScroll READ verticalLinesScroll WRITE setVerticalLinesScroll )
-  Q_PROPERTY( QColor verticalLinesColor READ verticalLinesColor WRITE setVerticalLinesColor )
-  Q_PROPERTY( QColor horizontalLinesColor READ horizontalLinesColor WRITE setHorizontalLinesColor )
   Q_PROPERTY( uint verticalLinesDistance READ verticalLinesDistance WRITE setVerticalLinesDistance )
-  Q_PROPERTY( QColor axisFontColor READ axisFontColor WRITE setAxisFontColor )
-  Q_PROPERTY( QFont axisFont READ axisFont WRITE setAxisFont )
   Q_PROPERTY( bool showAxis READ showAxis WRITE setShowAxis )
-  Q_PROPERTY( QColor backgroundColor READ backgroundColor WRITE setBackgroundColor )
   Q_PROPERTY( QString svgBackground READ svgBackground WRITE setSvgBackground )
   Q_PROPERTY( int maxAxisTextWidth READ maxAxisTextWidth WRITE setMaxAxisTextWidth )
   Q_PROPERTY( bool smoothGraph READ smoothGraph WRITE setSmoothGraph )
@@ -314,11 +309,6 @@ class KSignalPlotter : public QWidget
      *  Default is false. */
     bool showVerticalLines() const;
 
-    /** \brief The color of the vertical grid lines. */
-    void setVerticalLinesColor( const QColor &color );
-    /** \brief The color of the vertical grid lines. */
-    QColor verticalLinesColor() const;
-
     /** \brief Set the horizontal distance, in pixels, between the vertical grid lines.
      *  Must be a distance of 1 or more.
      *  Default is 30 pixels. */
@@ -341,16 +331,6 @@ class KSignalPlotter : public QWidget
      *  Default is true. */
     bool showHorizontalLines() const;
 
-    /** \brief Set the color of the horizontal grid lines. */
-    void setHorizontalLinesColor( const QColor &color );
-    /** \brief The color of the horizontal grid lines. */
-    QColor horizontalLinesColor() const;
-
-    /** \brief Set the color of the font used for the axis. */
-    void setAxisFontColor( const QColor &color );
-    /** \brief The color of the font used for the axis. */
-    QColor axisFontColor() const;
-
     /** \brief Set the font used for the axis */
     void setAxisFont( const QFont &font );
     /** \brief The font used for the axis */
@@ -366,21 +346,6 @@ class KSignalPlotter : public QWidget
      * Default is true.
      * \sa setShowAxis(), axisFont(), axisFontColor(), maxAxisTextWidth() */
     bool showAxis() const;
-
-    /** \brief Set the background color of the main plotting area.
-     *
-     * This is painted even if there is an SVG background image specified,
-     * to allow for translucent/transparent SVGs.
-     *
-     * This should be a solid color with no alpha component.
-     */
-    void setBackgroundColor( const QColor &color );
-
-    /** \brief The background color.
-     *
-     * This is painted even if there is an SVG, to allow for translucent/transparent SVGs.
-     */
-    QColor backgroundColor() const;
 
     /** \brief Set the filename of the SVG background.
      *
@@ -480,6 +445,8 @@ class KSignalPlotter : public QWidget
     virtual void resizeEvent( QResizeEvent* );
     /* Reimplemented */
     virtual void paintEvent( QPaintEvent* );
+    /* Reimplemented */
+    virtual void changeEvent ( QEvent * event );
   private:
     KSignalPlotterPrivate * const d;
     friend class KSignalPlotterPrivate;

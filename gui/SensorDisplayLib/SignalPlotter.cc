@@ -72,16 +72,13 @@ KSignalPlotterPrivate::KSignalPlotterPrivate(KSignalPlotter * q_ptr) : q(q_ptr)
     mShowThinFrame = true;
     mSmoothGraph = true;
     mShowVerticalLines = false;
-    mVerticalLinesColor = QColor(0xC3,0xC3,0xC3);
     mVerticalLinesDistance = 30;
     mVerticalLinesScroll = true;
     mVerticalLinesOffset = 0;
     mHorizontalScale = 6;
     mShowHorizontalLines = true;
-    mHorizontalLinesColor = QColor(0xC3, 0xC3, 0xC3);
     mHorizontalLinesCount = 4;
     mShowAxis = true;
-    mBackgroundColor = Qt::white;
     mAxisTextWidth = 0;
     mScrollOffset = 0;
     mStackBeams = false;
@@ -89,7 +86,6 @@ KSignalPlotterPrivate::KSignalPlotterPrivate(KSignalPlotter * q_ptr) : q(q_ptr)
     mRescaleTime = 0;
     mUnit = ki18n("%1");
 }
-
 KSignalPlotter::~KSignalPlotter()
 {
 }
@@ -351,33 +347,12 @@ void KSignalPlotter::setShowVerticalLines( bool value )
 #else
     d->mScrollableImage = QPixmap();
 #endif
+    update();
 }
 
 bool KSignalPlotter::showVerticalLines() const
 {
     return d->mShowVerticalLines;
-}
-
-void KSignalPlotter::setVerticalLinesColor( const QColor &color )
-{
-    if(d->mVerticalLinesColor == color) return;
-    if(!color.isValid()) {
-        kWarning(1215) << "Invalid color";
-        return;
-    }
-
-    d->mVerticalLinesColor = color;
-    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
-#ifdef USE_QIMAGE
-    d->mScrollableImage = QImage();
-#else
-    d->mScrollableImage = QPixmap();
-#endif
-}
-
-QColor KSignalPlotter::verticalLinesColor() const
-{
-    return d->mVerticalLinesColor;
 }
 
 void KSignalPlotter::setVerticalLinesDistance( uint distance )
@@ -390,7 +365,7 @@ void KSignalPlotter::setVerticalLinesDistance( uint distance )
 #else
     d->mScrollableImage = QPixmap();
 #endif
-
+    update();
 }
 
 uint KSignalPlotter::verticalLinesDistance() const
@@ -408,7 +383,7 @@ void KSignalPlotter::setVerticalLinesScroll( bool value )
 #else
     d->mScrollableImage = QPixmap();
 #endif
-
+    update();
 }
 
 bool KSignalPlotter::verticalLinesScroll() const
@@ -421,43 +396,12 @@ void KSignalPlotter::setShowHorizontalLines( bool value )
     if(value == d->mShowHorizontalLines) return;
     d->mShowHorizontalLines = value;
     d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    update();
 }
 
 bool KSignalPlotter::showHorizontalLines() const
 {
     return d->mShowHorizontalLines;
-}
-void KSignalPlotter::setAxisFontColor( const QColor &color )
-{
-    if(!color.isValid()) {
-        kDebug(1215) << "Invalid color";
-        return;
-    }
-
-    d->mFontColor = color;
-}
-
-QColor KSignalPlotter::axisFontColor() const
-{
-    return d->mFontColor;
-}
-
-
-void KSignalPlotter::setHorizontalLinesColor( const QColor &color )
-{
-    if(!color.isValid()) {
-        kDebug(1215) << "Invalid color";
-        return;
-    }
-
-    if(color == d->mHorizontalLinesColor) return;
-    d->mHorizontalLinesColor = color;
-    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
-}
-
-QColor KSignalPlotter::horizontalLinesColor() const
-{
-    return d->mHorizontalLinesColor;
 }
 
 void KSignalPlotter::setShowAxis( bool value )
@@ -470,6 +414,7 @@ void KSignalPlotter::setShowAxis( bool value )
 #else
     d->mScrollableImage = QPixmap();
 #endif
+    update();
 }
 
 bool KSignalPlotter::showAxis() const
@@ -486,7 +431,7 @@ void KSignalPlotter::setAxisFont( const QFont &font )
 #else
     d->mScrollableImage = QPixmap();
 #endif
-
+    update();
 }
 
 QFont KSignalPlotter::axisFont() const
@@ -501,22 +446,7 @@ void KSignalPlotter::setSvgBackground( const QString &filename )
     if(d->mSvgFilename == filename) return;
     d->mSvgFilename = filename;
     d->mBackgroundImage = QPixmap();
-}
-
-void KSignalPlotter::setBackgroundColor( const QColor &color )
-{
-    if(color == d->mBackgroundColor) return;
-    if(!color.isValid()) {
-        kDebug(1215) << "Invalid color";
-        return;
-    }
-    d->mBackgroundColor = color;
-    d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
-}
-
-QColor KSignalPlotter::backgroundColor() const
-{
-    return d->mBackgroundColor;
+    update();
 }
 
 void KSignalPlotter::setThinFrame( bool set)
@@ -524,6 +454,7 @@ void KSignalPlotter::setThinFrame( bool set)
     if(d->mShowThinFrame == set) return;
     d->mShowThinFrame = set;
     d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+    update();
 }
 bool KSignalPlotter::thinFrame() const
 {
@@ -539,7 +470,14 @@ int KSignalPlotter::maxAxisTextWidth() const
 {
     return d->mAxisTextWidth;
 }
-
+void KSignalPlotter::changeEvent ( QEvent * event )
+{
+    if(event->type() == QEvent::ApplicationPaletteChange || event->type() == QEvent::PaletteChange) {
+        d->mBackgroundImage = QPixmap(); //we changed a paint setting, so reset the cache
+        d->mPlottingArea = QRect();
+        update();
+    }
+}
 void KSignalPlotter::resizeEvent( QResizeEvent* )
 {
     d->mPlottingArea = QRect();
@@ -697,7 +635,7 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
             pCache.setRenderHint(QPainter::Antialiasing, true);
             int x = mScrollOffset - (mScrollOffset % mVerticalLinesDistance) + mVerticalLinesDistance;
             for(;x < mScrollableImage.width(); x+= mVerticalLinesDistance) {
-                pCache.setPen( mVerticalLinesColor );
+                pCache.setPen( QPen(q->palette().brush(QPalette::Window), 0) );
                 pCache.drawLine( x + VERTICAL_LINE_OFFSET, 0, x + VERTICAL_LINE_OFFSET, mScrollableImage.height()-1);
             }
         }
@@ -716,7 +654,7 @@ void KSignalPlotterPrivate::drawWidget(QPainter *p, QRect boundingBox, bool only
 }
 void KSignalPlotterPrivate::drawBackground(QPainter *p, const QRect &boundingBox)
 {
-    p->fillRect(boundingBox, mBackgroundColor);
+    p->fillRect(boundingBox, q->palette().brush(QPalette::Base));
 
     if(mSvgFilename.isEmpty())
         return; //nothing to draw, return
@@ -740,7 +678,7 @@ void KSignalPlotterPrivate::drawThinFrame(QPainter *p, const QRect &boundingBox)
 {
     /* Draw white line along the bottom and the right side of the
      * widget to create a 3D like look. */
-    p->setPen( q->palette().color( QPalette::Light ) );
+    p->setPen( QPen(q->palette().color( QPalette::Light ), 0) );
     p->drawLine( boundingBox.bottomLeft(), boundingBox.bottomRight());
     p->drawLine( boundingBox.bottomRight(), boundingBox.topRight());
 }
@@ -820,7 +758,7 @@ void KSignalPlotterPrivate::calculateNiceRange()
 
 void KSignalPlotterPrivate::drawVerticalLines(QPainter *p, const QRect &boundingBox, int offset)
 {
-    p->setPen( mVerticalLinesColor );
+    p->setPen( QPen(q->palette().brush(QPalette::Window), 0) );
 
     for ( int x = boundingBox.right() - ( (mVerticalLinesOffset + offset) % mVerticalLinesDistance); x >= boundingBox.left(); x -= mVerticalLinesDistance )
         p->drawLine( x, boundingBox.top(), x, boundingBox.bottom()  );
@@ -844,7 +782,7 @@ void KSignalPlotterPrivate::drawBeamToScrollableImage(int index)
     pCache.setCompositionMode(QPainter::CompositionMode_SourceOver);
     if ( mVerticalLinesScroll && mShowVerticalLines ) {
         if( mScrollOffset % mVerticalLinesDistance == 0) {
-            pCache.setPen( mVerticalLinesColor );
+            pCache.setPen( QPen(q->palette().brush(QPalette::Window), 0) );
             pCache.setCompositionMode(QPainter::CompositionMode_DestinationOver);
             pCache.drawLine( mScrollOffset+VERTICAL_LINE_OFFSET, cacheBoundingBox.top(), mScrollOffset+VERTICAL_LINE_OFFSET, cacheBoundingBox.bottom()  );
         }
@@ -939,7 +877,8 @@ void KSignalPlotterPrivate::drawAxisText(QPainter *p, const QRect &boundingBox)
 {
     if(mHorizontalLinesCount < 0) return;
     double stepsize = mNiceRange/(mScaleDownBy*(mHorizontalLinesCount+1));
-    p->setPen(mFontColor);
+    //TODO use QPalette::Text if it is inside the window
+    p->setPen( QPen( q->palette().brush(QPalette::WindowText), 0) );
     int axisTitleIndex=1;
     QString val;
     int numItems = mHorizontalLinesCount +2;
@@ -968,7 +907,7 @@ void KSignalPlotterPrivate::drawAxisText(QPainter *p, const QRect &boundingBox)
 void KSignalPlotterPrivate::drawHorizontalLines(QPainter *p, const QRect &boundingBox)
 {
     if(mHorizontalLinesCount <= 0) return;
-    p->setPen( QPen(mHorizontalLinesColor, 0, Qt::DashLine));
+    p->setPen( QPen(q->palette().brush(QPalette::Window), 0, Qt::DashLine));
     for ( int y = 0; y <= mHorizontalLinesCount+1; y++ ) {
         //note that the y_coord starts from 0.  so we draw from pixel number 0 to h-1.  Thus the -1 in the y_coord
         int y_coord =  boundingBox.top() + (y * (boundingBox.height()-1)) / (mHorizontalLinesCount+1);  //Make sure it's y*h first to avoid rounding bugs

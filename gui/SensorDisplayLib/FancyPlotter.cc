@@ -135,7 +135,6 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     QFont font;
     font.setPointSize( KSGRD::Style->fontSize() );
     mPlotter->setAxisFont( font );
-    mPlotter->setAxisFontColor( Qt::black );
 
     mPlotter->setThinFrame(!workSheetSettings);
 
@@ -184,7 +183,6 @@ void FancyPlotter::configureSettings()
     mSettingsDialog->setHorizontalScale( mPlotter->horizontalScale() );
 
     mSettingsDialog->setShowVerticalLines( mPlotter->showVerticalLines() );
-    mSettingsDialog->setGridLinesColor( mPlotter->verticalLinesColor() );
     mSettingsDialog->setVerticalLinesDistance( mPlotter->verticalLinesDistance() );
     mSettingsDialog->setVerticalLinesScroll( mPlotter->verticalLinesScroll() );
 
@@ -193,9 +191,7 @@ void FancyPlotter::configureSettings()
     mSettingsDialog->setShowAxis( mPlotter->showAxis() );
 
     mSettingsDialog->setFontSize( mPlotter->axisFont().pointSize()  );
-    mSettingsDialog->setFontColor( mPlotter->axisFontColor() );
 
-    mSettingsDialog->setBackgroundColor( mPlotter->backgroundColor() );
     mSettingsDialog->setRangeUnits( mUnit );
     mSettingsDialog->setRangeUnits( mUnit );
 
@@ -256,21 +252,16 @@ void FancyPlotter::applySettings() {
     }
 
     mPlotter->setShowVerticalLines( mSettingsDialog->showVerticalLines() );
-    mPlotter->setVerticalLinesColor( mSettingsDialog->gridLinesColor() );
     mPlotter->setVerticalLinesDistance( mSettingsDialog->verticalLinesDistance() );
     mPlotter->setVerticalLinesScroll( mSettingsDialog->verticalLinesScroll() );
 
     mPlotter->setShowHorizontalLines( mSettingsDialog->showHorizontalLines() );
-    mPlotter->setHorizontalLinesColor( mSettingsDialog->gridLinesColor() );
 
     mPlotter->setShowAxis( mSettingsDialog->showAxis() );
 
     QFont font;
     font.setPointSize( mSettingsDialog->fontSize() );
     mPlotter->setAxisFont( font );
-    mPlotter->setAxisFontColor( mSettingsDialog->fontColor() );
-
-    mPlotter->setBackgroundColor( mSettingsDialog->backgroundColor() );
 
     QList<int> deletedBeams = mSettingsDialog->deleted();
     for ( int i =0; i < deletedBeams.count(); ++i) {
@@ -330,9 +321,6 @@ void FancyPlotter::reorderBeams(const QList<int> & orderOfBeams)
 }
 void FancyPlotter::applyStyle()
 {
-    mPlotter->setVerticalLinesColor( KSGRD::Style->firstForegroundColor() );
-    mPlotter->setHorizontalLinesColor( KSGRD::Style->secondForegroundColor() );
-    mPlotter->setBackgroundColor( KSGRD::Style->backgroundColor() );
     QFont font = mPlotter->axisFont();
     font.setPointSize(KSGRD::Style->fontSize() );
     mPlotter->setAxisFont( font );
@@ -702,15 +690,11 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
     int version = element.attribute("version", "0").toInt();
 
     mPlotter->setShowVerticalLines( element.attribute( "vLines", "0" ).toUInt() );
-    QColor vcolor = restoreColor( element, "vColor", mPlotter->verticalLinesColor() );
-    mPlotter->setVerticalLinesColor( vcolor );
     mPlotter->setVerticalLinesDistance( element.attribute( "vDistance", "30" ).toUInt() );
     mPlotter->setVerticalLinesScroll( element.attribute( "vScroll", "0" ).toUInt() );
     mPlotter->setHorizontalScale( element.attribute( "hScale", "6" ).toUInt() );
 
     mPlotter->setShowHorizontalLines( element.attribute( "hLines", "1" ).toUInt() );
-    mPlotter->setHorizontalLinesColor( restoreColor( element, "hColor",
-                mPlotter->horizontalLinesColor() ) );
 
     QString filename = element.attribute( "svgBackground");
     if (!filename.isEmpty() && filename[0] == '/') {
@@ -726,10 +710,6 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
         font.setPointSize( fontsize );
 
         mPlotter->setAxisFont( font );
-
-        mPlotter->setAxisFontColor( restoreColor( element, "fontColor", Qt::black ) );  //make the default to be the same as the vertical line color
-        mPlotter->setBackgroundColor( restoreColor( element, "bColor",
-                    KSGRD::Style->backgroundColor() ) );
     }
     QDomNodeList dnList = element.elementsByTagName( "beam" );
     for ( int i = 0; i < dnList.count(); ++i ) {
@@ -782,22 +762,17 @@ bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element)
 
 
     element.setAttribute( "vLines", mPlotter->showVerticalLines() );
-    saveColor( element, "vColor", mPlotter->verticalLinesColor() );
     element.setAttribute( "vDistance", mPlotter->verticalLinesDistance() );
     element.setAttribute( "vScroll", mPlotter->verticalLinesScroll() );
 
     element.setAttribute( "hScale", mPlotter->horizontalScale() );
 
     element.setAttribute( "hLines", mPlotter->showHorizontalLines() );
-    saveColor( element, "hColor", mPlotter->horizontalLinesColor() );
 
     element.setAttribute( "svgBackground", mPlotter->svgBackground() );
 
     element.setAttribute( "version", 1 );
     element.setAttribute( "labels", mPlotter->showAxis() );
-    saveColor ( element, "fontColor", mPlotter->axisFontColor());
-
-    saveColor( element, "bColor", mPlotter->backgroundColor() );
 
     QHash<QString,QDomElement> hash;
     int beamId = -1;

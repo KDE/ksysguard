@@ -20,7 +20,6 @@
 */
 
 #include <kacceleratormanager.h>
-#include <kcolorbutton.h>
 #include <kcolordialog.h>
 #include <klineedit.h>
 #include <klocale.h>
@@ -186,25 +185,12 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   boxLayout->addWidget( label, 1, 0 );
 
   mFontSize = new KIntNumInput( 8, groupBox );
-  mFontSize->setMinimum( 5 );
-  mFontSize->setMaximum( 24 );
+  mFontSize->setMinimum( 1 );
+  mFontSize->setMaximum( 1000 );
   boxLayout->addWidget( mFontSize, 1, 1 );
   label->setBuddy( mFontSize );
 
   pageLayout->addWidget( groupBox, 1, 0 );
-
-  groupBox = new QGroupBox( i18n( "Colors" ), page );
-
-  mFontColor = new KColorButton;
-  mGridLinesColor = new KColorButton;
-  mBackgroundColor = new KColorButton;
-
-  formLayout = new QFormLayout( groupBox );
-  formLayout->addRow( i18n("Font:"), mFontColor);
-  formLayout->addRow( i18n("Grid lines:"), mGridLinesColor);
-  formLayout->addRow( i18n("Background:"), mBackgroundColor);
-
-  pageLayout->addWidget( groupBox, 1, 1 );
 
   pageLayout->setRowStretch( 2, 1 );
 
@@ -224,7 +210,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   mView->setModel( mModel );
   mView->header()->setResizeMode(QHeaderView::ResizeToContents);
   bool hideFirstColumn = true;
-  for(int i = 0; i < mModel->rowCount(); i++) 
+  for(int i = 0; i < mModel->rowCount(); i++)
     if(mModel->data(mModel->index(i, 0)) != "localhost") {
       hideFirstColumn = false;
       break;
@@ -383,16 +369,6 @@ bool FancyPlotterSettings::showVerticalLines() const
   return mShowVerticalLines->isChecked();
 }
 
-void FancyPlotterSettings::setGridLinesColor( const QColor &color )
-{
-  mGridLinesColor->setColor( color );
-}
-
-QColor FancyPlotterSettings::gridLinesColor() const
-{
-  return mGridLinesColor->color();
-}
-
 void FancyPlotterSettings::setVerticalLinesDistance( int distance )
 {
   mVerticalLinesDistance->setValue( distance );
@@ -453,25 +429,6 @@ int FancyPlotterSettings::fontSize() const
 {
   return mFontSize->value();
 }
-void FancyPlotterSettings::setFontColor( const QColor &color )
-{
-  mFontColor->setColor( color );
-}
-
-QColor FancyPlotterSettings::fontColor() const
-{
-  return mFontColor->color();
-}
-void FancyPlotterSettings::setBackgroundColor( const QColor &color )
-{
-  mBackgroundColor->setColor( color );
-}
-
-QColor FancyPlotterSettings::backgroundColor() const
-{
-  return mBackgroundColor->color();
-}
-
 void FancyPlotterSettings::setSensors( const SensorModelEntry::List &list )
 {
   mModel->setSensors( list );

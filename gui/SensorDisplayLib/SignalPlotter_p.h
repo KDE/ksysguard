@@ -49,6 +49,7 @@ struct KSignalPlotterPrivate {
     void recalculateMaxMinValueForSample(const QList<double>&sampleBuf, int time );
     void rescale();
     void updateDataBuffers();
+    void setupStyle();
 
     /** Return the given value as a string, with the given precision */
     QString scaledValueAsString( double value, int precision) const;
@@ -86,7 +87,6 @@ struct KSignalPlotterPrivate {
     bool mShowThinFrame;
 
     bool mShowVerticalLines;
-    QColor mVerticalLinesColor;
     uint mVerticalLinesDistance;
     bool mVerticalLinesScroll;
     uint mVerticalLinesOffset;
@@ -94,15 +94,11 @@ struct KSignalPlotterPrivate {
     int mHorizontalLinesCount;
 
     bool mShowHorizontalLines;
-    QColor mHorizontalLinesColor;
 
     bool mStackBeams;	/// Set to add the beam values onto each other
     int mFillOpacity;	/// Fill the area underneath the beams
 
     bool mShowAxis;
-
-    QColor mBackgroundColor;
-    QColor mFontColor;
 
     QList < QList<double> > mBeamData; // Every item in the linked list contains a set of data points to plot.  The first item is the newest
     QList< QColor> mBeamColors;  //These colors match up against the QList<double>  in mBeamData
