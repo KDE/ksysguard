@@ -22,6 +22,8 @@ class TestSignalPlotter : public QObject
         void testAddingData();
         void testNonZeroRange();
         void testNonZeroRange2();
+        void testNiceRangeCalculation_data();
+        void testNiceRangeCalculation();
     private:
         KSignalPlotter *s;
 };

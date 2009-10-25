@@ -751,25 +751,31 @@ void KSignalPlotterPrivate::calculateNiceRange()
             minFromUser = false;
         }
     }
-    double newNiceRange = max - min;
-    /* If the range is too small we will force it to 1.0 since it
-     * looks a lot nicer. */
-    if ( newNiceRange < 0.000001 ) {
-        newNiceRange = 1.0;
-        max = min+1;
-    }
-
-    double newNiceMinValue = min;
 
     if ( !minFromUser && min != 0.0) {  //If the minimum value is from data, round it down to make it a pretty number
         double dim = pow( 10, floor( log10( fabs( min ) ) ) ) / 2;
-        newNiceMinValue = dim * floor( min / dim );
-        newNiceRange = max - newNiceMinValue;
-        if ( newNiceRange < 0.000001 )
-            newNiceRange = 1.0;
+        min = dim * floor( min / dim );
     }
+    /* If the range is too small we will force it to 1.0 since it
+     * looks a lot nicer. */
+    if(max - min < 0.000001 )
+        max = min +1;
+
+    double range = max - min;
+
     // Massage the range so that the grid shows some nice values.
-    double step = newNiceRange / (mScaleDownBy*(mHorizontalLinesCount+1));
+    double step;
+    int number_lines_above_zero = 0;
+    int number_lines_below_zero = 0;
+    //If y=0 is visible and have at least 1 horizontal lines make sure that we have a line crossing through 0
+    bool alignToXAxis = min < 0 && max > 0 && mHorizontalLinesCount >= 1;
+    if( alignToXAxis ) {
+        number_lines_above_zero = int( mHorizontalLinesCount * max / range);
+        number_lines_below_zero = mHorizontalLinesCount - number_lines_above_zero -1; //subtract 1 line for the actual 0 line
+        step = qMax( max / (mScaleDownBy*(number_lines_above_zero+1)), -min/(mScaleDownBy*(number_lines_below_zero+1)));
+    } else
+        step = range / (mScaleDownBy*(mHorizontalLinesCount+1));
+
     int logdim = (int)floor( log10( step ) );
     double dim = pow( (double)10.0, logdim ) / 2;
     int a = (int)ceil( step / dim );
@@ -779,14 +785,22 @@ void KSignalPlotterPrivate::calculateNiceRange()
         mPrecision = -logdim;
     else
         mPrecision = 1-logdim;
+    step = dim*a;
 
-    newNiceRange = mScaleDownBy*dim * a * (mHorizontalLinesCount+1);
+    range = mScaleDownBy * step * (mHorizontalLinesCount+1);
 
-    if( mNiceMinValue == newNiceMinValue && mNiceRange == newNiceRange)
+    if( alignToXAxis ) {
+        max = mScaleDownBy * step * (number_lines_above_zero+1);
+        min = -mScaleDownBy * step * (number_lines_below_zero+1);
+    } else
+        max = min + range;
+
+    if( mNiceMinValue == min && mNiceRange == range)
         return;  //nothing changed
-    mNiceMaxValue = newNiceMinValue + newNiceRange;
-    mNiceMinValue = newNiceMinValue;
-    mNiceRange = newNiceRange;
+
+    mNiceMaxValue = max;
+    mNiceMinValue = min;
+    mNiceRange = range;
 
 #ifdef USE_QIMAGE
     mScrollableImage = QImage();

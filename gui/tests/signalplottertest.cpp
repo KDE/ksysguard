@@ -293,6 +293,39 @@ void TestSignalPlotter::testNonZeroRange2()
     QCOMPARE(s->currentMaximumRangeValue(), 25.0);
 
 }
+
+void TestSignalPlotter::testNiceRangeCalculation_data()
+{
+    QTest::addColumn<double>("min");
+    QTest::addColumn<double>("max");
+    QTest::addColumn<double>("niceMin");
+    QTest::addColumn<double>("niceMax");
+
+#define STRINGIZE(number) #number
+#define testRange(min,max,niceMin,niceMax) QTest::newRow(STRINGIZE(min) " to " STRINGIZE(max)) << double(min) << double(max) << double(niceMin) << double(niceMax)
+    testRange(-49,  199, -50, 200);  // Scale should read -50,  0,  50, 100, 150, 200
+    testRange(-50,  199, -50, 200);  // Scale should read -50,  0,  50, 100, 150, 200
+    testRange(-49,  200, -50, 200);  // Scale should read -50,  0,  50, 100, 150, 200
+    testRange(-50,  200, -50, 200);  // Scale should read -50,  0,  50, 100, 150, 200
+    testRange(-1,   199, -50, 200);  // Scale should read -50,  0,  50, 100, 150, 200
+    testRange(-99,  149, -100, 150); // Scale should read -100, 50, 0,  50,  100, 150
+    testRange(-100, 150, -100, 150); // Scale should read -100, 50, 0,  50,  100, 150
+    testRange(-1000, 1000, -1000, 1500); // Scale should read -1000, 500, 0,  500,  1000, 1500
+}
+void TestSignalPlotter::testNiceRangeCalculation()
+{
+    QFETCH(double, min);
+    QFETCH(double, max);
+    QFETCH(double, niceMin);
+    QFETCH(double, niceMax);
+
+    s->addBeam(Qt::blue);
+    s->changeRange(min, max);
+
+    QCOMPARE(s->currentMinimumRangeValue(), niceMin);
+    QCOMPARE(s->currentMaximumRangeValue(), niceMax);
+}
+
 void TestSignalPlotter::testNegativeMinimumRange()
 {
     s->setMinimumValue(-1000);
@@ -305,8 +338,8 @@ void TestSignalPlotter::testNegativeMinimumRange()
     s->setScaleDownBy(1024);
     QCOMPARE(s->minimumValue(), -1000.0);
     QCOMPARE(s->maximumValue(),  4000.0);
-    QCOMPARE(s->currentMinimumRangeValue(), -1000.0);
-    QCOMPARE(s->currentMaximumRangeValue(), 4120.0);
+    QCOMPARE(s->currentMinimumRangeValue(), -1024.0);
+    QCOMPARE(s->currentMaximumRangeValue(), 4096.0);
 
     QCOMPARE(s->valueAsString(4096,1), QString("4.0"));
     QCOMPARE(s->valueAsString(-4096,1), QString("-4.0"));
@@ -501,7 +534,7 @@ void TestSignalPlotter::testAddingData()
     s->addSample(QList<double>() << 600.0 << 100.0 << 200.0);
 
     QCOMPARE(s->currentMinimumRangeValue(), -1000.0);
-    QCOMPARE(s->currentMaximumRangeValue(), 1000.0);
+    QCOMPARE(s->currentMaximumRangeValue(), 1500.0);
 
     //Paint to a device, to check that the painter does not crash etc
     QPixmap pixmap(s->size());
