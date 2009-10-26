@@ -356,10 +356,10 @@ void TopLevel::timerEvent( QTimerEvent* )
 }
 
 void TopLevel::updateProcessCount()  {
-    QString s = i18np( " 1 process ", " %1 processes ", sLocalProcessController->processList()->visibleProcessesCount() );
+    QString s = i18np( "1 process" "\xc2\x9c" "1", "%1 processes" "\xc2\x9c" "%1", sLocalProcessController->processList()->visibleProcessesCount() );
     sbProcessCount->setText( s );
 }
-void TopLevel::changeEvent( QEvent * event ) 
+void TopLevel::changeEvent( QEvent * event )
 {
   if (event->type() == QEvent::LanguageChange) {
     KSGRD::SensorMgr->retranslate();
@@ -440,7 +440,7 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
 
   switch ( id ) {
     case 1:
-      s = i18n( " CPU: %1% ", (int) (100 - answer.toFloat()) );
+      s = i18n( "CPU: %1%\xc2\x9c%1%", (int) (100 - answer.toFloat()) );
       sbCpuStat->setText( s );
       break;
 
@@ -454,7 +454,8 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
 
     case 4:
       mUsedApplication = answer.toLongLong();
-      s = i18nc( "Arguments are formatted byte sizes (used/total)", " Memory: %1 / %2 " ,
+      //Use a multi-length string
+      s = i18nc( "Arguments are formatted byte sizes (used/total)", "Memory: %1 / %2" "\xc2\x9c" "Mem: %1 / %2" "\xc2\x9c" "Mem: %1" "\xc2\x9c" "%1",
                  KGlobal::locale()->formatByteSize( mUsedApplication*1024),
                  KGlobal::locale()->formatByteSize( (mFree+mUsedTotal)*1024 ) );
       sbMemTotal->setText( s );
@@ -483,7 +484,7 @@ void TopLevel::setSwapInfo( qlonglong used, qlonglong free, const QString & )
   if ( used == 0 && free == 0 ) // no swap available
     msg = i18n( " No swap space available " );
   else {
-    msg = i18nc( "Arguments are formatted byte sizes (used/total)", " Swap: %1 / %2 " ,
+    msg = i18nc( "Arguments are formatted byte sizes (used/total)", "Swap: %1 / %2" "\xc2\x9c" "Swap: %1" "\xc2\x9c" "%1" ,
                  KGlobal::locale()->formatByteSize( used*1024 ),
                  KGlobal::locale()->formatByteSize( (free+used)*1024) );
   }
