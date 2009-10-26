@@ -816,7 +816,7 @@ void printCPUxTotalLoadInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 7, "%d", &id );
-	output( "CPU %d Total Load\t0\t100\t%%\n", id );
+	output( "CPU %d\t0\t100\t%%\n", id );
 }
 
 void printCPUxIdle( const char* cmd ) {
