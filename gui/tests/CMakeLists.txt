@@ -18,4 +18,5 @@ target_link_libraries( signalplottertest
 target_link_libraries( ksysguarddtest
     ${KDE4_KDEUI_LIBS}
     ${QT_QTTEST_LIBRARY}
+    ${QT_QTNETWORK_LIBRARY}
 )
