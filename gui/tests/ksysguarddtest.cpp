@@ -63,7 +63,6 @@ void TestKsysguardd::testFormatting()
     //We now have a list of all the monitors
     //Query all the monitors for their information
     foreach(const QByteArray &monitor, monitors) {
-        qDebug() << "Examining" << monitor;
         QList<QByteArray> info = monitor.split('\t');
         QCOMPARE(info.count(), 2);
 
@@ -99,6 +98,34 @@ void TestKsysguardd::testFormatting()
             double max = answer[2].toDouble(&isNumber);
             QVERIFY(isNumber);
             QVERIFY(min <= max);
+        } else if(monitorType == "logfile") {
+            QCOMPARE(client->lastAnswer.count(), 1);
+            QList<QByteArray> answer = client->lastAnswer[0].split('\t');
+            QCOMPARE(answer.count(), 1);
+            QCOMPARE(answer[0], QByteArray("LogFile"));
+        } else if(monitorType == "listview" || monitorType == "table") {
+            //listview is two lines.  The first line is the column headings, the second line is the type of each column
+            QCOMPARE(client->lastAnswer.count(), 2);
+            QList<QByteArray> columnHeadings = client->lastAnswer[0].split('\t');
+            QList<QByteArray> columnTypes = client->lastAnswer[1].split('\t');
+            QCOMPARE(columnHeadings.count(), columnTypes.count());
+            //column type is well defined
+            foreach(const QByteArray &columnType, columnTypes) {
+                QCOMPARE(columnType.size(), 1);
+                switch(columnType[0]) {
+                    case 's': //string
+                    case 'S': //string to translate
+                    case 'd': //integer
+                    case 'D': //integer to display localized
+                    case 'f': //floating point number
+                    case 'M': //Disk stat - some special case
+                        break;
+                    default:
+                        QVERIFY(false);
+                }
+            }
+        } else {
+            QVERIFY(false);
         }
     }
 }
