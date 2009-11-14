@@ -46,13 +46,18 @@ class SensorClient
       been received by the sensor agent. This function must be reimplemented
       by the sensor client to receive and process this information.
      */
-    virtual void answerReceived( int, const QList<QByteArray>& ) { }
+    virtual void answerReceived( int id, const QList<QByteArray>& answer) {
+        Q_UNUSED(id);
+        Q_UNUSED(answer);
+    }
 
     /**
       In case of an unexpected fatal problem with the sensor the sensor
       agent will call this function to notify the client about it.
      */
-    virtual void sensorLost( int ) { }
+    virtual void sensorLost( int id ) {
+        Q_UNUSED(id);
+    }
 };
 
 /**
