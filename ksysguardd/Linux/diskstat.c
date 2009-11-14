@@ -251,7 +251,7 @@ void printDiskStatUsed( const char* cmd )
 void printDiskStatUsedInfo( const char* cmd )
 {
   (void)cmd;
-  output( "Used Blocks\t0\t-\tBlocks\n" );
+  output( "Used Blocks\t0\t0\tBlocks\n" );
 }
 
 void printDiskStatFree( const char* cmd )
@@ -270,7 +270,7 @@ void printDiskStatFree( const char* cmd )
 void printDiskStatFreeInfo( const char* cmd )
 {
   (void)cmd;
-  output( "Free Blocks\t0\t-\tBlocks\n" );
+  output( "Free Blocks\t0\t0\tBlocks\n" );
 }
 
 void printDiskStatPercent( const char* cmd )
