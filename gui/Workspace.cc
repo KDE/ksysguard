@@ -98,7 +98,6 @@ void Workspace::readProperties( const KConfigGroup& cfg )
     idx = 0;
   }
   setCurrentIndex(idx);
-  emit currentChanged(idx);
 }
 
 QString Workspace::makeNameForNewSheet() const
@@ -150,7 +149,8 @@ void Workspace::newWorkSheet()
 }
 void Workspace::contextMenu (int index, const QPoint &point) {
   KMenu pm;
-  
+  Q_UNUSED(index);
+  Q_UNUSED(point);
 //  QAction *new_worksheet = pm.addAction( Toplevel->actionCollection()->action("new_worksheet") );
 
  // QAction *action = pm.exec( point );
