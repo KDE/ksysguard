@@ -8,17 +8,24 @@
 #include "../ksgrd/SensorAgent.h"
 #include "../ksgrd/SensorClient.h"
 #include <QDebug>
+class SensorClientTest;
+
 class TestKsysguardd : public QObject
 {
     Q_OBJECT
     private slots:
-        void init();
-        void cleanup();
+        void initTestCase();
+        void cleanupTestCase();
 
         void testSetup();
+        void testFormatting_data();
         void testFormatting();
     private:
         KSGRD::SensorManager manager;
+        SensorClientTest *client;
+        QSignalSpy *hostConnectionLostSpy;
+        QSignalSpy *updateSpy;
+        int nextId;
 };
 
 struct SensorClientTest : public KSGRD::SensorClient
@@ -42,7 +49,6 @@ struct SensorClientTest : public KSGRD::SensorClient
         QVERIFY(!isSensorLost);
         isSensorLost = true;
     }
-
     int lastId;
     QList<QByteArray> lastAnswer;
     bool isSensorLost;
