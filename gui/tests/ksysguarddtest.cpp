@@ -104,6 +104,9 @@ void TestKsysguardd::testFormatting()
     QCOMPARE(updateSpy->count(), 0);
     QCOMPARE(hostConnectionLostSpy->count(), 0);
 
+    QList<QByteArray> columnHeadings;
+    QList<QByteArray> columnTypes;
+
     //Now check the answer that we got for the monitor information
     if(monitorType == "integer") {
         QCOMPARE(client->lastAnswer.count(), 1);
@@ -141,8 +144,8 @@ void TestKsysguardd::testFormatting()
     } else if(monitorType == "listview" || monitorType == "table") {
         //listview is two lines.  The first line is the column headings, the second line is the type of each column
         QCOMPARE(client->lastAnswer.count(), 2);
-        QList<QByteArray> columnHeadings = client->lastAnswer[0].split('\t');
-        QList<QByteArray> columnTypes = client->lastAnswer[1].split('\t');
+        columnHeadings = client->lastAnswer[0].split('\t');
+        columnTypes = client->lastAnswer[1].split('\t');
         QCOMPARE(columnHeadings.count(), columnTypes.count());
         //column type is well defined
         foreach(const QByteArray &columnType, columnTypes) {
@@ -170,7 +173,7 @@ void TestKsysguardd::testFormatting()
     QVERIFY(success);
     QTime timer;
     timer.start();
-    timeout = 100; //Wait up to 10 seconds
+    timeout = 300; //Wait up to 30 seconds
     while( !client->haveAnswer && !client->isSensorLost && timeout--)
         QTest::qWait(100);
     QVERIFY(client->haveAnswer);
@@ -195,6 +198,31 @@ void TestKsysguardd::testFormatting()
         bool isNumber;
         answer[0].toDouble(&isNumber); //(note that toDouble is in C locale, which is what we want)
         QVERIFY(isNumber);
+    } else if(monitorType == "listview" || monitorType == "table") {
+        foreach(const QByteArray &row, client->lastAnswer) {
+            QList<QByteArray> rowData = row.split('\t');
+            QCOMPARE(rowData.count(), columnHeadings.count());
+            for(int column = 0; column < columnHeadings.count(); column++) {
+                switch(columnTypes[column][0]) {
+                case 's': //string
+                case 'S': //string to translate
+                    break;
+                case 'd': //integer
+                case 'D': { //integer to display localized
+                    bool isNumber;
+                    rowData[column].toLong(&isNumber);
+                    QVERIFY(isNumber);
+                }
+                case 'f': { //floating point number
+                    bool isNumber;
+                    rowData[column].toDouble(&isNumber);
+                    QVERIFY(isNumber);
+                }
+                case 'M': //Disk stat - some special case
+                    break;
+                }
+            }
+        }
     }
 
     client->haveAnswer = false;
