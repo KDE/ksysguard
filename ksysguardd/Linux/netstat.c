@@ -202,7 +202,9 @@ initNetStat(struct SensorModul* sm)
 	
 	if ((netstat = fopen("/proc/net/tcp", "r")) != NULL) {
 		registerMonitor("network/sockets/tcp/count", "integer", printNetStat, printNetStatInfo, sm);
-		registerMonitor("network/sockets/tcp/list", "listview", printNetStatTcpUdpRaw, printNetStatTcpUdpRawInfo, sm);
+        /* This monitor takes _way_ too much time (up to a minute, or more) since it does DNS lookups
+           Hide the monitor, leaving it there for backwards compatibility */
+		registerLegacyMonitor("network/sockets/tcp/list", "listview", printNetStatTcpUdpRaw, printNetStatTcpUdpRawInfo, sm);
 		fclose(netstat);
 	}
 	if ((netstat = fopen("/proc/net/udp", "r")) != NULL) {
