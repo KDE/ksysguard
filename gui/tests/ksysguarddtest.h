@@ -25,33 +25,40 @@ class TestKsysguardd : public QObject
         SensorClientTest *client;
         QSignalSpy *hostConnectionLostSpy;
         QSignalSpy *updateSpy;
+        QSignalSpy *hostAddedSpy;
         int nextId;
 };
-
+struct Answer {
+    Answer() {
+        id = -1;
+        isSensorLost = false;
+    }
+    int id;
+    QList<QByteArray> answer;
+    bool isSensorLost;
+};
 struct SensorClientTest : public KSGRD::SensorClient
 {
     SensorClientTest() {
-        lastId = -1;
         isSensorLost = false;
         haveAnswer = false;
-        sensorLostId = -1;
     }
-    virtual void answerReceived( int id, const QList<QByteArray>& answer ) {
-       lastId = id;
-       lastAnswer = answer;
-       QVERIFY(!haveAnswer);
-       haveAnswer = true;
+    virtual void answerReceived( int id, const QList<QByteArray>& answer_ ) {
+        Answer answer;
+        answer.id = id;
+        answer.answer = answer_;
+        answers << answer;
+        haveAnswer = true;
     }
     virtual void sensorLost(int id)
     {
-        sensorLostId = id;
-        QVERIFY(!haveAnswer);
-        QVERIFY(!isSensorLost);
+        Answer answer;
+        answer.id = id;
+        answer.isSensorLost = true;
+        answers << answer;
         isSensorLost = true;
     }
-    int lastId;
-    QList<QByteArray> lastAnswer;
     bool isSensorLost;
     bool haveAnswer;
-    bool sensorLostId;
+    QList<Answer> answers;
 };

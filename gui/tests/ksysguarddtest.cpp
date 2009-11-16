@@ -2,13 +2,20 @@
 #include <QtTest>
 #include <Qt>
 
+KSGRD::SensorAgent *agent;
+
+Q_DECLARE_METATYPE(KSGRD::SensorAgent *);
+
 using namespace KSGRD;
 void TestKsysguardd::initTestCase()
 {
+    qRegisterMetaType<KSGRD::SensorAgent*>();
     QCOMPARE(manager.count(), 0);
     hostConnectionLostSpy = new QSignalSpy(&manager, SIGNAL(hostConnectionLost(const QString &)));
     updateSpy = new QSignalSpy(&manager, SIGNAL(update()));
+    hostAddedSpy = new QSignalSpy(&manager, SIGNAL(hostAdded(KSGRD::SensorAgent *, const QString &)));
     bool success = manager.engage("", "", "../../ksysguardd/ksysguardd", -1);
+    QCOMPARE(hostAddedSpy->count(), 1);
     QVERIFY(success);
     QVERIFY(manager.isConnected(""));
     QCOMPARE(hostConnectionLostSpy->count(), 0);
@@ -20,6 +27,7 @@ void TestKsysguardd::initTestCase()
 
 void TestKsysguardd::cleanupTestCase()
 {
+    QCOMPARE(hostAddedSpy->count(), 1);
     QCOMPARE(manager.count(), 1);
     manager.disengage("");
     QCOMPARE(manager.count(), 0);
@@ -51,20 +59,22 @@ void TestKsysguardd::testFormatting_data()
     QTest::addColumn<QByteArray>("monitorType");
     QTest::addColumn<QByteArray>("monitorInfoName");
 
-    bool success = manager.sendRequest("", "monitors", client, nextId++);
+    int id = nextId++;
+    bool success = manager.sendRequest("", "monitors", client, id);
     QVERIFY(success);
 
     QCOMPARE(hostConnectionLostSpy->count(), 0);
     QCOMPARE(updateSpy->count(), 0);
 
-    int timeout = 50;
+    int timeout = 300; // Wait up to 30 seconds
     while( !client->haveAnswer && !client->isSensorLost && timeout--)
-        QTest::qWait(50);
+        QTest::qWait(100);
     QVERIFY(client->haveAnswer);
     QVERIFY(!client->isSensorLost);
-    QCOMPARE(client->lastId, nextId-1);
+    QVERIFY(!client->answers[id].isSensorLost);
+    QCOMPARE(client->answers[id].id, id);
 
-    QList<QByteArray> monitors = client->lastAnswer;
+    QList<QByteArray> monitors = client->answers[id].answer;
     QVERIFY(!monitors.isEmpty());
 
     //We now have a list of all the monitors
@@ -92,14 +102,16 @@ void TestKsysguardd::testFormatting()
     if(client->haveAnswer || client->isSensorLost)
         return; //Skip rest of tests
    //qDebug() << "Sending request for " << monitorInfoName;
-    bool success = manager.sendRequest("", monitorInfoName, client, nextId++);
+    int id = nextId++;
+    bool success = manager.sendRequest("", monitorInfoName, client, id);
     QVERIFY(success);
     int timeout = 50;
     while( !client->haveAnswer && !client->isSensorLost && timeout--)
         QTest::qWait(10);
     QVERIFY(client->haveAnswer);
     QVERIFY(!client->isSensorLost);
-    QCOMPARE(client->lastId, nextId-1);
+    QVERIFY(!client->answers[id].isSensorLost);
+    QCOMPARE(client->answers[id].id, id);
 
     QCOMPARE(updateSpy->count(), 0);
     QCOMPARE(hostConnectionLostSpy->count(), 0);
@@ -109,8 +121,8 @@ void TestKsysguardd::testFormatting()
 
     //Now check the answer that we got for the monitor information
     if(monitorType == "integer") {
-        QCOMPARE(client->lastAnswer.count(), 1);
-        QList<QByteArray> answer = client->lastAnswer[0].split('\t');
+        QCOMPARE(client->answers[id].answer.count(), 1);
+        QList<QByteArray> answer = client->answers[id].answer[0].split('\t');
         QCOMPARE(answer.count(), 4); //Name, minimum value, maximum value, unit
         QVERIFY(!answer[0].isEmpty()); //Name can't be empty
         QVERIFY(!answer[1].isEmpty()); //Minimum value cannot be empty
@@ -123,8 +135,8 @@ void TestKsysguardd::testFormatting()
         QVERIFY(isNumber);
         QVERIFY(min <= max);
     } else if(monitorType == "float") {
-        QCOMPARE(client->lastAnswer.count(), 1);
-        QList<QByteArray> answer = client->lastAnswer[0].split('\t');
+        QCOMPARE(client->answers[id].answer.count(), 1);
+        QList<QByteArray> answer = client->answers[id].answer[0].split('\t');
         QCOMPARE(answer.count(), 4); //Name, minimum value, maximum value, unit
         QVERIFY(!answer[0].isEmpty()); //Name can't be empty
         QVERIFY(!answer[1].isEmpty()); //Minimum value cannot be empty
@@ -137,15 +149,15 @@ void TestKsysguardd::testFormatting()
         QVERIFY(isNumber);
         QVERIFY(min <= max);
     } else if(monitorType == "logfile") {
-        QCOMPARE(client->lastAnswer.count(), 1);
-        QList<QByteArray> answer = client->lastAnswer[0].split('\t');
+        QCOMPARE(client->answers[id].answer.count(), 1);
+        QList<QByteArray> answer = client->answers[id].answer[0].split('\t');
         QCOMPARE(answer.count(), 1);
         QCOMPARE(answer[0], QByteArray("LogFile"));
     } else if(monitorType == "listview" || monitorType == "table") {
         //listview is two lines.  The first line is the column headings, the second line is the type of each column
-        QCOMPARE(client->lastAnswer.count(), 2);
-        columnHeadings = client->lastAnswer[0].split('\t');
-        columnTypes = client->lastAnswer[1].split('\t');
+        QCOMPARE(client->answers[id].answer.count(), 2);
+        columnHeadings = client->answers[id].answer[0].split('\t');
+        columnTypes = client->answers[id].answer[1].split('\t');
         QCOMPARE(columnHeadings.count(), columnTypes.count());
         //column type is well defined
         foreach(const QByteArray &columnType, columnTypes) {
@@ -169,7 +181,8 @@ void TestKsysguardd::testFormatting()
 
     //Now read the actual data for the sensor, and check that it's valid
     client->haveAnswer = false;
-    success = manager.sendRequest("", monitorName, client, nextId++);
+    id = nextId++;
+    success = manager.sendRequest("", monitorName, client, id);
     QVERIFY(success);
     QTime timer;
     timer.start();
@@ -178,12 +191,12 @@ void TestKsysguardd::testFormatting()
         QTest::qWait(100);
     QVERIFY(client->haveAnswer);
     QVERIFY(!client->isSensorLost);
-    QCOMPARE(client->lastId, nextId-1);
+    QCOMPARE(client->answers[id].id, id);
     if(timer.elapsed() > 200)
         qDebug() << monitorName << "took" << timer.elapsed() << "ms";
 
     if(monitorType == "integer") {
-        QList<QByteArray> answer = client->lastAnswer[0].split('\t');
+        QList<QByteArray> answer = client->answers[id].answer[0].split('\t');
         QCOMPARE(answer.count(), 1); //Just the number
         QVERIFY(!answer[0].isEmpty()); //Value cannot be empty
         //Make sure the value is valid
@@ -191,7 +204,7 @@ void TestKsysguardd::testFormatting()
         answer[0].toLong(&isNumber); //(note that toLong is in C locale, which is what we want)
         QVERIFY(isNumber);
     } else if(monitorType == "float") {
-        QList<QByteArray> answer = client->lastAnswer[0].split('\t');
+        QList<QByteArray> answer = client->answers[id].answer[0].split('\t');
         QCOMPARE(answer.count(), 1); //Just the number
         QVERIFY(!answer[0].isEmpty()); //Value cannot be empty
         //Make sure the value is valid
@@ -199,7 +212,7 @@ void TestKsysguardd::testFormatting()
         answer[0].toDouble(&isNumber); //(note that toDouble is in C locale, which is what we want)
         QVERIFY(isNumber);
     } else if(monitorType == "listview" || monitorType == "table") {
-        foreach(const QByteArray &row, client->lastAnswer) {
+        foreach(const QByteArray &row, client->answers[id].answer) {
             QList<QByteArray> rowData = row.split('\t');
             QCOMPARE(rowData.count(), columnHeadings.count());
             for(int column = 0; column < columnHeadings.count(); column++) {
