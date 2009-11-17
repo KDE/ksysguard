@@ -4,7 +4,7 @@
 
 KSGRD::SensorAgent *agent;
 
-Q_DECLARE_METATYPE(KSGRD::SensorAgent *);
+Q_DECLARE_METATYPE(KSGRD::SensorAgent *)
 
 using namespace KSGRD;
 void TestKsysguardd::initTestCase()
