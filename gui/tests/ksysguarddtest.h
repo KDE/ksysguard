@@ -14,12 +14,15 @@ class TestKsysguardd : public QObject
 {
     Q_OBJECT
     private slots:
+        void init();
+        void cleanup();
         void initTestCase();
         void cleanupTestCase();
 
         void testSetup();
         void testFormatting_data();
         void testFormatting();
+        void testQueueing();
     private:
         KSGRD::SensorManager manager;
         SensorClientTest *client;

@@ -20,9 +20,14 @@ void TestKsysguardd::initTestCase()
     QVERIFY(manager.isConnected(""));
     QCOMPARE(hostConnectionLostSpy->count(), 0);
     QCOMPARE(updateSpy->count(), 0);
-
     client = new SensorClientTest;
     nextId = 0;
+}
+void TestKsysguardd::init()
+{
+}
+void TestKsysguardd::cleanup()
+{
 }
 
 void TestKsysguardd::cleanupTestCase()
@@ -237,8 +242,37 @@ void TestKsysguardd::testFormatting()
             }
         }
     }
-
     client->haveAnswer = false;
+}
+
+void TestKsysguardd::testQueueing()
+{
+    //Send lots of commands to ksysguardd, and check that they all return the right answer, in order
+
+    delete client; //Start with a new client
+    client = new SensorClientTest;
+
+    const int N = 1000;
+    for(int i = 0; i < N; i++) {
+        bool success = manager.sendRequest("", "ps", client, i);
+        QVERIFY(success);
+    }
+
+    int timeout = 300; //Wait up to 30 seconds for a single answer
+    int lastCount = 0;
+    while( client->answers.count() != N  && !client->isSensorLost && timeout--) {
+        if(client->answers.count() != lastCount) {
+            lastCount = client->answers.count();
+            timeout = 300; //reset timeout as we get new answers
+        }
+        QTest::qWait(100);
+    }
+    QCOMPARE(client->answers.count(), N);
+
+    for(int i = 0; i < N; i++) {
+        QCOMPARE(client->answers[i].id,i);
+    }
+
 }
 QTEST_MAIN(TestKsysguardd)
 
