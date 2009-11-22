@@ -245,14 +245,15 @@ void removeMonitor( const char* command )
 void executeCommand( const char* command )
 {
   Command* cmd;
-  char tokenFormat[ 64 ];
-  char token[ 64 ];
-
-  sprintf( tokenFormat, "%%%ds", (int)sizeof( token ) - 1 );
-  sscanf( command, tokenFormat, token );
+  int i = 0;
+  while(command[i] != 0 && command[i] != ' ' && command[i] != '\t' )
+      i++;
+  if( i <= 0 )
+      return; /* No command give at all */
+  int lengthOfCommand = i;
 
   for ( cmd = first_ctnr( CommandList ); cmd; cmd = next_ctnr( CommandList ) ) {
-    if ( strcmp( cmd->command, token ) == 0 ) {
+    if ( strncmp( cmd->command, command, lengthOfCommand ) == 0 && cmd->command[lengthOfCommand] == 0) {
       if ( cmd->isMonitor ) {
         if ( ( time( NULL ) - cmd->sm->time ) >= UPDATEINTERVAL ) {
           cmd->sm->time = time( NULL );
