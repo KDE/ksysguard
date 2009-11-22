@@ -90,6 +90,27 @@ class MultiLengthLabel : public QLabel {
         QString mShortText;
         QString mLongText;
 };
+
+//This label is for QLabel's that change their sizeHint frequently, to prevent them from constantly resizing
+class StableSizeLabel : public QLabel {
+  public:
+    StableSizeLabel() : QLabel() {
+    }
+    virtual QSize sizeHint() const {
+        QSize newSizeHint = QLabel::sizeHint();
+        if(mSizeHint.isEmpty() ||
+           newSizeHint.height() != mSizeHint.height() ||
+           newSizeHint.width() > mSizeHint.width() ||
+           newSizeHint.width() < 0.7 * mSizeHint.width()) {
+            mSizeHint = newSizeHint;
+            mSizeHint.setWidth(mSizeHint.width()*1.1); //Add 10% to keep it stable
+            return mSizeHint;
+        }
+        return mSizeHint;
+    }
+  private:
+    mutable QSize mSizeHint;
+};
 class FancyPlotterLabel : public QWidget {
   public:
     FancyPlotterLabel(QWidget *parent) : QWidget(parent) {
@@ -97,7 +118,7 @@ class FancyPlotterLabel : public QWidget {
         layout->setContentsMargins(0,0,0,0);
         label = new MultiLengthLabel();
         layout->addWidget(label);
-        value = new QLabel();
+        value = new StableSizeLabel();
         layout->addWidget(value);
         layout->addStretch(1);
         setLayout(layout);
@@ -571,8 +592,10 @@ void FancyPlotter::sendDataToPlotter( )
                         }
                     }
 
-                    if(sensor->maxValue != 0 && sensor->unit() != "%")
-                        lastValue = i18nc("%1 and %2 are sensor's last and maximum value", "%1 of %2", lastValue, mPlotter->valueAsString(sensor->maxValue, precision) );
+                    if(sensor->maxValue != 0 && sensor->unit() != "%") {
+                        //Use a multi length string incase we do not have enough room
+                        lastValue = i18n("%1 of %2" "\xc2\x9c" "%1", lastValue, mPlotter->valueAsString(sensor->maxValue, precision) );
+                    }
                 } else {
                     lastValue = i18n("Error");
                 }
