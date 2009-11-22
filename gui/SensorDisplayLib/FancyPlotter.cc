@@ -26,6 +26,7 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QLabel>
 #include <QtGui/QFontInfo>
+#include <QtGui/QResizeEvent>
 
 
 #include <kdebug.h>
@@ -49,38 +50,97 @@ class SensorToAdd {
     QList<QColor> colors;
     QString summationName;
 };
+//A QLabel class that has two possible strings
+class MultiLengthLabel : public QLabel {
+    public:
+        MultiLengthLabel() : QLabel() {
+            mLongWidth = 0;
+            setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+            setAlignment(Qt::AlignRight);
+        }
+        void setShortText(const QString &shortText) {
+            mShortText = shortText;
+            setText(mShortText);
+            setMinimumWidth( QLabel::sizeHint().width() );
+            resizeEvent(NULL);
+        }
+        void setLongText(const QString &longText) {
+            mLongText = longText;
+            setText(mLongText);
+            QSize size = QLabel::sizeHint();
+            mHeight = size.height();
+            mLongWidth = size.width();
+            setMaximumWidth( mLongWidth );
+            updateGeometry();
+            resizeEvent(NULL);
+        }
 
+        virtual QSize sizeHint () const {
+            return QSize( mLongWidth, mHeight );
+        }
+        virtual void resizeEvent( QResizeEvent * ) {
+            if(mLongWidth <= width())
+                setText(mLongText);
+            else
+                setText(mShortText);
+        }
+    private:
+        int mLongWidth;
+        int mHeight;
+        QString mShortText;
+        QString mLongText;
+};
 class FancyPlotterLabel : public QWidget {
   public:
     FancyPlotterLabel(QWidget *parent) : QWidget(parent) {
         QBoxLayout *layout = new QHBoxLayout();
         layout->setContentsMargins(0,0,0,0);
-        label = new QLabel();
+        label = new MultiLengthLabel();
         layout->addWidget(label);
         value = new QLabel();
         layout->addWidget(value);
         layout->addStretch(1);
         setLayout(layout);
+        preferredLabelNameWidth = 0;
     }
     ~FancyPlotterLabel() {
         delete label;
         delete value;
     }
-    void setLabel(const QString &name, const QColor &color, const QChar &indicatorSymbol) {
+    void setLabel(const QString &name, const QColor &color) {
         labelName = name;
-        changeLabel(color, indicatorSymbol);
+
+        if(indicatorSymbol.isNull()) {
+            if(label->fontMetrics().inFont(QChar(0x25CF)))
+                indicatorSymbol = QChar(0x25CF);
+            else
+                indicatorSymbol = '#';
+        }
+        changeLabel(color);
+
     }
-    void changeLabel(const QColor &color, const QChar &indicatorSymbol) {
+    void changeLabel(const QColor &_color) {
+        color = _color;
+
         if ( kapp->layoutDirection() == Qt::RightToLeft )
-            label->setText(QString("<qt>: ") + labelName + " <font color=\"" + color.name() + "\">" + indicatorSymbol + "</font>");
+            label->setLongText(QString("<qt>: ") + labelName + " <font color=\"" + color.name() + "\">" + indicatorSymbol + "</font>");
         else
-            label->setText(QString("<qt><font color=\"") + color.name() + "\">" + indicatorSymbol + "</font> " + labelName + " :");
+            label->setLongText(QString("<qt><font color=\"") + color.name() + "\">" + indicatorSymbol + "</font> " + labelName + " :");
+        label->setShortText(QString("<qt><font color=\"") + color.name() + "\">" + indicatorSymbol);
+    }
+    virtual void resizeEvent( QResizeEvent * ) {
+        changeLabel(color);
     }
 
+    int preferredLabelNameWidth;
     QString labelName;
-    QLabel *label;
+    MultiLengthLabel *label;
     QLabel *value;
+    QColor color;
+    static QChar indicatorSymbol;
 };
+
+QChar FancyPlotterLabel::indicatorSymbol;
 
 FancyPlotter::FancyPlotter( QWidget* parent,
                             const QString &title,
@@ -334,7 +394,7 @@ void FancyPlotter::applyStyle()
 void FancyPlotter::setBeamColor(int i, const QColor &color)
 {
         mPlotter->setBeamColor( i, color );
-        static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(i)))->widget())->changeLabel(color, mIndicatorSymbol);
+        static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(i)))->widget())->changeLabel(color);
 }
 bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
         const QString &type, const QString &title )
@@ -364,7 +424,7 @@ bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
         FancyPlotterLabel *label = new FancyPlotterLabel(this);
         mLabelLayout->addWidget(label);
         if(!summationName.isEmpty()) {
-            label->setLabel(summationName, mPlotter->beamColor(mBeams), mIndicatorSymbol);
+            label->setLabel(summationName, mPlotter->beamColor(mBeams));
         }
         ++mBeams;
     }
@@ -641,7 +701,7 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
         int beamId = sensor->beamId;
 
         if(summationName.isEmpty())
-            static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(beamId)))->widget())->setLabel(info.name(), mPlotter->beamColor(id-100), mIndicatorSymbol);
+            static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(beamId)))->widget())->setLabel(info.name(), mPlotter->beamColor(id-100));
 
     } else if( id == 200) {
         /* FIXME This doesn't check the host!  */
