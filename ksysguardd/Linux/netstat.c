@@ -114,14 +114,11 @@ char *get_serv_name(int port, const char *proto)
 		return (char *)"*";
 	}
 
-	memset(buffer, 0, sizeof(buffer));
-	
-	if ((service = getservbyport(ntohs(port), proto)) == NULL) {
-		snprintf(buffer, sizeof(buffer), "%d", port);
-	} else {
-		strncpy(buffer, service->s_name, sizeof(buffer));
-		buffer[sizeof(buffer) -1] = 0;
-	}
+	if ((service = getservbyport(ntohs(port), proto)) == NULL)
+		snprintf(buffer, sizeof(buffer)-1, "%d", port);
+	else
+		strncpy(buffer, service->s_name, sizeof(buffer)-1);
+    buffer[sizeof(buffer) -1] = 0;
 
 	return (char *)buffer;
 }
@@ -299,28 +296,28 @@ updateNetStatTcpUdpRaw(const char *cmd)
 		return -1;
 	}
 
-	fgets(buffer, sizeof(buffer), netstat);
-
 	while (fgets(buffer, sizeof(buffer), netstat) != NULL) {
-		if (strcmp(buffer, "")) {
-			sscanf(buffer, "%*d: %x:%x %x:%x %x %*x:%*x %*x:%*x %d",
-			&local_addr, &local_port,
-			&remote_addr, &remote_port,
-			&state,
-			&uid);
+		if (buffer[0] != 0) {
+			int matches = sscanf(buffer, "%*d: %x:%x %x:%x %x %*x:%*x %*x:%*x %d",
+                    &local_addr, &local_port,
+                    &remote_addr, &remote_port,
+                    &state,
+                    &uid);
+            if(matches != 6)
+                continue;
 
 			if ((socket_info = (SocketInfo *)malloc(sizeof(SocketInfo))) == NULL) {
 				continue;
 			}
-			strncpy(socket_info->local_addr, get_host_name(local_addr), sizeof(socket_info->local_addr));
+			strncpy(socket_info->local_addr, get_host_name(local_addr), sizeof(socket_info->local_addr)-1);
 			socket_info->local_addr[ sizeof(socket_info->local_addr)-1] = 0;
-			strncpy(socket_info->remote_addr, get_host_name(remote_addr), sizeof(socket_info->remote_addr));
+			strncpy(socket_info->remote_addr, get_host_name(remote_addr), sizeof(socket_info->remote_addr)-1);
 			socket_info->remote_addr[ sizeof(socket_info->remote_addr)-1] = 0;
 
 			if (strstr(cmd, "tcp")) {
-				strncpy(socket_info->local_port, get_serv_name(local_port, "tcp"), sizeof(socket_info->local_port));
+				strncpy(socket_info->local_port, get_serv_name(local_port, "tcp"), sizeof(socket_info->local_port)-1);
 				socket_info->local_port[sizeof(socket_info->local_port)-1] = 0;
-				strncpy(socket_info->remote_port, get_serv_name(remote_port, "tcp"), sizeof(socket_info->remote_port));
+				strncpy(socket_info->remote_port, get_serv_name(remote_port, "tcp"), sizeof(socket_info->remote_port)-1);
 				socket_info->remote_port[sizeof(socket_info->remote_port)-1] = 0;
 
 				strncpy(socket_info->state, conn_state[state], sizeof(socket_info->state));
@@ -331,12 +328,12 @@ updateNetStatTcpUdpRaw(const char *cmd)
 			}
 
 			if (strstr(cmd, "udp")) {
-				strncpy(socket_info->local_port, get_serv_name(local_port, "udp"), sizeof(socket_info->local_port));
+				strncpy(socket_info->local_port, get_serv_name(local_port, "udp"), sizeof(socket_info->local_port)-1);
 				socket_info->local_port[sizeof(socket_info->local_port)-1] = 0;
-				strncpy(socket_info->remote_port, get_serv_name(remote_port, "udp"), sizeof(socket_info->remote_port));
+				strncpy(socket_info->remote_port, get_serv_name(remote_port, "udp"), sizeof(socket_info->remote_port)-1);
 				socket_info->remote_port[sizeof(socket_info->remote_port)-1] = 0;
 				
-				strncpy(socket_info->state, conn_state[state], sizeof(socket_info->state));
+				strncpy(socket_info->state, conn_state[state], sizeof(socket_info->state)-1);
 				socket_info->state[sizeof(socket_info->state)-1] = 0;
 				
 				socket_info->uid = uid;
@@ -345,9 +342,9 @@ updateNetStatTcpUdpRaw(const char *cmd)
 			}
 
 			if (strstr(cmd, "raw")) {
-				strncpy(socket_info->local_port, get_proto_name(local_port), sizeof(socket_info->local_port));
+				strncpy(socket_info->local_port, get_proto_name(local_port), sizeof(socket_info->local_port)-1);
 				socket_info->local_port[sizeof(socket_info->local_port)-1] = 0;
-				strncpy(socket_info->remote_port, get_proto_name(remote_port), sizeof(socket_info->remote_port));
+				strncpy(socket_info->remote_port, get_proto_name(remote_port), sizeof(socket_info->remote_port)-1);
 				socket_info->remote_port[sizeof(socket_info->remote_port)-1] = 0;
 				snprintf(socket_info->state, sizeof(socket_info->state)-1, "%d", state);
 				socket_info->state[sizeof(socket_info->state)-1] = 0;
@@ -381,24 +378,28 @@ updateNetStatUnix(void)
 
 	empty_ctnr(UnixSocketList);
 
-	fgets(buffer, sizeof(buffer), file);
-
 	while (fgets(buffer, sizeof(buffer), file) != NULL) {
-		if (strcmp(buffer, "")) {
-			sscanf(buffer, "%*x: %d %*d %*d %d %d %d %255s",
-			&ref_count, &type, &state, &inode, path);
+		if(buffer[0] != 0) {
+            buffer[1023] = 0;
+			int matches = sscanf(buffer, "%*x: %d %*d %*d %d %d %d %255s",
+                                 &ref_count, &type, &state, &inode, path);
+            path[255] = 0;
+            if(matches <= 3) {
+                printf("******************* CONTINUE *************** %d", matches);
+                continue;
+            }
 
 			if ((unix_info = (UnixInfo *)malloc(sizeof(UnixInfo))) == NULL) {
 				continue;
 			}
 
 			unix_info->refcount = ref_count;
-			strncpy(unix_info->type, raw_type[type], sizeof(unix_info->type));
+			strncpy(unix_info->type, raw_type[type], sizeof(unix_info->type)-1);
 			unix_info->type[ sizeof(unix_info->type)-1] = 0;
-			strncpy(unix_info->state, raw_state[state], sizeof(unix_info->state));
+			strncpy(unix_info->state, raw_state[state], sizeof(unix_info->state)-1);
 			unix_info->state[ sizeof(unix_info->state)-1] = 0;
 			unix_info->inode = inode;
-			strncpy(unix_info->path, path, sizeof(unix_info->path));
+			strncpy(unix_info->path, path, sizeof(unix_info->path)-1);
 			unix_info->path[ sizeof(unix_info->path)-1] = 0;
 
 			push_ctnr(UnixSocketList, unix_info);
