@@ -139,7 +139,7 @@ char *get_host_name(int addr)
 		a_addr.s_addr = addr;
 		return inet_ntoa(a_addr);
 	} else {
-		strncpy(buffer, host->h_name, sizeof(buffer));
+		strncpy(buffer, host->h_name, sizeof(buffer)-1);
 		buffer[sizeof(buffer) -1] = 0;
 		return (char *)buffer;
 	}
@@ -154,14 +154,11 @@ char *get_proto_name(int number)
 		return (char *)"*";
 	}
 
-	memset(buffer, 0, sizeof(buffer));
-
-	if ((protocol = getprotobynumber(number)) == NULL) {
-		snprintf(buffer, sizeof(buffer), "%d", number);
-	} else {
-		strncpy(buffer, protocol->p_name, sizeof(buffer));
-		buffer[sizeof(buffer) -1] = 0;
-	}
+	if ((protocol = getprotobynumber(number)) == NULL)
+		snprintf(buffer, sizeof(buffer)-1, "%d", number);
+	else
+		strncpy(buffer, protocol->p_name, sizeof(buffer)-1);
+    buffer[sizeof(buffer) -1] = 0;
 
 	return (char *)buffer;
 }
@@ -170,7 +167,6 @@ int get_num_sockets(FILE *netstat)
 {
 	char line[1024];
 	int line_count = 0;
-	
 	while (fgets(line, 1024, netstat) != NULL)
 		line_count++;
 
