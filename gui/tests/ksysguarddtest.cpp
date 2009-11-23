@@ -229,7 +229,7 @@ void TestKsysguardd::testFormatting()
                 case 'D': { //integer to display localized
                     bool isNumber;
                     rowData[column].toLong(&isNumber);
-                    QVERIFY(isNumber);
+                    QVERIFY2(isNumber, (QString("Row data was ") +  row).toLatin1());
                 }
                 case 'f': { //floating point number
                     bool isNumber;
