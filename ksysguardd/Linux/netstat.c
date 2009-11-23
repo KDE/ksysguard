@@ -380,10 +380,8 @@ updateNetStatUnix(void)
 			int matches = sscanf(buffer, "%*x: %d %*d %*d %d %d %d %255s",
                                  &ref_count, &type, &state, &inode, path);
             path[255] = 0;
-            if(matches <= 3) {
-                printf("******************* CONTINUE *************** %d", matches);
+            if(matches <= 3)
                 continue;
-            }
 
 			if ((unix_info = (UnixInfo *)malloc(sizeof(UnixInfo))) == NULL) {
 				continue;
