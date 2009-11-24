@@ -109,7 +109,7 @@ typedef void (*VVFunc)( void );
 #define NULLVVFUNC ((VVFunc) 0)
 typedef int (*IVFunc)( void );
 #define NULLIVFUNC ((IVFunc) 0)
-#define NULLTIME ((time_t) 0)
+#define NULLTIME ((unsigned long long) 0)
 
 struct SensorModul SensorModulList[] = {
 #ifdef OSTYPE_Linux

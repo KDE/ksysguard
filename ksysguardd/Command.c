@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <syslog.h>
+#include <sys/time.h>
 
 #include "ccont.h"
 #include "ksysguardd.h"
@@ -254,12 +255,13 @@ void executeCommand( const char* command )
 
   for ( cmd = first_ctnr( CommandList ); cmd; cmd = next_ctnr( CommandList ) ) {
     if ( strncmp( cmd->command, command, lengthOfCommand ) == 0 && cmd->command[lengthOfCommand] == 0) {
-      if ( cmd->isMonitor ) {
-        if ( ( time( NULL ) - cmd->sm->time ) >= UPDATEINTERVAL ) {
-          cmd->sm->time = time( NULL );
-
-          if ( cmd->sm->updateCommand != NULL )
-            cmd->sm->updateCommand();
+      if ( cmd->isMonitor && cmd->sm->updateCommand != NULL) {
+        struct timeval currentTime;
+        gettimeofday(&currentTime,NULL);
+        unsigned long long timeCentiSeconds = (unsigned long long)currentTime.tv_sec * 10 + currentTime.tv_usec / 100000;
+        if ( timeCentiSeconds - cmd->sm->timeCentiSeconds >= UPDATEINTERVAL ) {
+          cmd->sm->timeCentiSeconds = timeCentiSeconds;
+          cmd->sm->updateCommand();
         }
       }
 

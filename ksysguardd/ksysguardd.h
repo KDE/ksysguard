@@ -27,11 +27,8 @@
 /* This is the official ksysguardd port assigned by IANA. */
 #define PORT_NUMBER	3112
 
-/* Timer interval for running updateCommand on modiles that support it */
+/* Timer interval in centi-seconds  (1/10th of a second) for running updateCommand on modules that support it */
 #define UPDATEINTERVAL	1
-
-/* Timer interval for running checkCommand on modules that support it */
-#define TIMERINTERVAL	1
 
 extern int RunAsDaemon;
 extern int QuitApp;
@@ -46,7 +43,7 @@ struct SensorModul {
   int (*updateCommand)( void );
   void (*checkCommand)( void );
   int available;
-  time_t time;
+  unsigned long long timeCentiSeconds;
 };
 
 char* escapeString( char* string );
