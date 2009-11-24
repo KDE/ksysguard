@@ -929,8 +929,14 @@ QString KSignalPlotter::valueAsString( double value, int precision) const
 QString KSignalPlotterPrivate::scaledValueAsString( double value, int precision) const
 {
     double absvalue = qAbs(value);
-    if(precision == -1)
-        precision = (absvalue >= 99.5)?0:((absvalue>=0.995)?1:2);
+    if(precision == -1) {
+        if(absvalue >= 99.5)
+            precision = 0;
+        else if(absvalue>=0.995 || (mScaleDownBy == 1 && mNiceMaxValue > 20))
+            precision = 1;
+        else
+            precision = 2;
+    }
 
     if( absvalue < 1E6 ) {
         if(precision == 0)
