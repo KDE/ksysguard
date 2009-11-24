@@ -408,8 +408,7 @@ updateNetStatUnix(void)
 void
 printNetStat(const char* cmd)
 {
-	if ((time(0) - NetStat_timeStamp) >= UPDATEINTERVAL)
-		updateNetStat();
+    updateNetStat();
 
 	if (strstr(cmd, "tcp") != NULL)
 		output( "%d\n", num_tcp);
@@ -440,8 +439,7 @@ printNetStatTcpUdpRaw(const char *cmd)
 	SocketInfo* socket_info;
 
 	if (strstr(cmd, "tcp")) {
-		if ((time(0) - TcpUdpRaw_timeStamp) >= UPDATEINTERVAL)
-			updateNetStatTcpUdpRaw("tcp");
+        updateNetStatTcpUdpRaw("tcp");
 
 		for (socket_info = first_ctnr(TcpSocketList); socket_info; socket_info = next_ctnr(TcpSocketList))
 			printSocketInfo(socket_info);
@@ -451,8 +449,7 @@ printNetStatTcpUdpRaw(const char *cmd)
 	}
 
 	if (strstr(cmd, "udp")) {
-		if ((time(0) - TcpUdpRaw_timeStamp) >= UPDATEINTERVAL)
-			updateNetStatTcpUdpRaw("udp");
+        updateNetStatTcpUdpRaw("udp");
 
 		for (socket_info = first_ctnr(UdpSocketList); socket_info; socket_info = next_ctnr(UdpSocketList))
 			printSocketInfo(socket_info);
@@ -462,8 +459,7 @@ printNetStatTcpUdpRaw(const char *cmd)
 	}
 
 	if (strstr(cmd, "raw")) {
-		if ((time(0) - TcpUdpRaw_timeStamp) >= UPDATEINTERVAL)
-			updateNetStatTcpUdpRaw("raw");
+        updateNetStatTcpUdpRaw("raw");
 
 		for (socket_info = first_ctnr(RawSocketList); socket_info; socket_info = next_ctnr(RawSocketList))
 			printSocketInfo(socket_info);
@@ -485,8 +481,7 @@ void printNetStatUnix(const char *cmd)
 	UnixInfo* unix_info;
 
 	(void) cmd;
-	if ((time(0) - Unix_timeStamp) >= UPDATEINTERVAL)
-		updateNetStatUnix();
+    updateNetStatUnix();
 	
 	for (unix_info = first_ctnr(UnixSocketList); unix_info; unix_info = next_ctnr(UnixSocketList)) {
 		output( "%d\t%s\t%s\t%d\t%s\n",
