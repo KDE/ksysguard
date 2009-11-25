@@ -765,7 +765,7 @@ void printCPUxUserInfo( const char* cmd ) {
 	int id;
 
 	sscanf( cmd + 7, "%d", &id );
-	output( "CPU %d User Load\t0\t100\t%%\n", id );
+	output( "CPU %d User Load\t0\t100\t%%\n", id+1 );
 }
 
 void printCPUxNice( const char* cmd ) {
@@ -782,7 +782,7 @@ void printCPUxNiceInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 7, "%d", &id );
-	output( "CPU %d Nice Load\t0\t100\t%%\n", id );
+	output( "CPU %d Nice Load\t0\t100\t%%\n", id+1 );
 }
 
 void printCPUxSys( const char* cmd ) {
@@ -799,7 +799,7 @@ void printCPUxSysInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 7, "%d", &id );
-	output( "CPU %d System Load\t0\t100\t%%\n", id );
+	output( "CPU %d System Load\t0\t100\t%%\n", id+1 );
 }
 
 void printCPUxTotalLoad( const char* cmd ) {
@@ -816,7 +816,7 @@ void printCPUxTotalLoadInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 7, "%d", &id );
-	output( "CPU %d\t0\t100\t%%\n", id );
+	output( "CPU %d\t0\t100\t%%\n", id+1 );
 }
 
 void printCPUxIdle( const char* cmd ) {
@@ -833,7 +833,7 @@ void printCPUxIdleInfo( const char* cmd ) {
 	int id;
 	
 	sscanf( cmd + 7, "%d", &id );
-	output( "CPU %d Idle Load\t0\t100\t%%\n", id );
+	output( "CPU %d Idle Load\t0\t100\t%%\n", id+1 );
 }
 
 void printCPUxWait( const char* cmd )
@@ -852,7 +852,7 @@ void printCPUxWaitInfo( const char* cmd )
 	int id;
 
 	sscanf( cmd + 7, "%d", &id );
-	output( "CPU %d Wait Load\t0\t100\t%%\n", id );
+	output( "CPU %d Wait Load\t0\t100\t%%\n", id+1 );
 }
 
 void print24DiskTotal( const char* cmd ) {
