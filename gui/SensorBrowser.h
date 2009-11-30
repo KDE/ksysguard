@@ -27,7 +27,7 @@
 #include <QMap>
 #include <QHash>
 #include <ksgrd/SensorClient.h>
-#include <ksortfilterproxymodel.h>
+#include "ksortfilterproxymodel.h"
 
 class QMouseEvent;
 
