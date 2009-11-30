@@ -43,6 +43,7 @@ kde4_add_ui_files( libsensordisplays_SRCS
 )
 
 set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
+   ksortfilterproxymodel.cpp
    SensorBrowser.cc 
    WorkSheet.cc
    WorkSheetSettings.cc 
