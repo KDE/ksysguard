@@ -147,6 +147,7 @@ bool ProcessController::addSensor(const QString& hostName,
 	mProcessList = new KSysGuardProcessList(this, hostName);
     mProcessList->setUpdateIntervalMSecs(0); //we will call updateList() manually
 	mProcessList->setContentsMargins(0,0,0,0);
+    mProcessList->setScriptingEnabled(true);
 	addActions(mProcessList->actions());
 	connect(mProcessList, SIGNAL(updated()), this, SIGNAL(updated()));
 	connect(mProcessList, SIGNAL(processListChanged()), this, SIGNAL(processListChanged()));
@@ -164,10 +165,9 @@ bool ProcessController::addSensor(const QString& hostName,
 
 	}
 
-		
 	setPlotterWidget(mProcessList);
 
-        QTimer::singleShot(0, mProcessList->filterLineEdit(), SLOT(setFocus()));
+    QTimer::singleShot(0, mProcessList->filterLineEdit(), SLOT(setFocus()));
 
 	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 	/* This just triggers the first communication. The full set of
