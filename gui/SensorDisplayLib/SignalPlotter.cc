@@ -811,7 +811,7 @@ void KSignalPlotterPrivate::drawBeam(QPainter *p, const QRect &boundingBox, int 
     float y2 = 0;
     qreal xaxis = boundingBox.bottom();
     if( mNiceMinValue < 0)
-       xaxis = qMax(xaxis + mNiceMinValue*scaleFac, qreal(boundingBox.top()));
+       xaxis = qMax(qreal(xaxis + mNiceMinValue*scaleFac), qreal(boundingBox.top()));
     for (int j =  qMin(datapoints.size(), mBeamColors.size())-1; j >=0 ; --j) {
         if(!mStackBeams)
             y0 = y1 = y2 = 0;
@@ -835,9 +835,9 @@ void KSignalPlotterPrivate::drawBeam(QPainter *p, const QRect &boundingBox, int 
         if(isnan(point2))
             point2 = point1;
 
-        y0 += qBound((qreal)boundingBox.top(), boundingBox.bottom() - (point0 - mNiceMinValue)*scaleFac, (qreal)boundingBox.bottom());
-        y1 += qBound((qreal)boundingBox.top(), boundingBox.bottom() - (point1 - mNiceMinValue)*scaleFac, (qreal)boundingBox.bottom());
-        y2 += qBound((qreal)boundingBox.top(), boundingBox.bottom() - (point2 - mNiceMinValue)*scaleFac, (qreal)boundingBox.bottom());
+        y0 += qBound((qreal)boundingBox.top(), qreal(boundingBox.bottom() - (point0 - mNiceMinValue)*scaleFac), (qreal)boundingBox.bottom());
+        y1 += qBound((qreal)boundingBox.top(), qreal(boundingBox.bottom() - (point1 - mNiceMinValue)*scaleFac), (qreal)boundingBox.bottom());
+        y2 += qBound((qreal)boundingBox.top(), qreal(boundingBox.bottom() - (point2 - mNiceMinValue)*scaleFac), (qreal)boundingBox.bottom());
         QColor beamColor = mBeamColors[j];
         if(mFillOpacity)
             beamColor = beamColor.lighter();
