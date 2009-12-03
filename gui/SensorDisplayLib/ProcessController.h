@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
 
-	Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
-	Copyright (c) 2006 John Tapsell <john.tapsell@kde.org>
+    Copyright (c) 1999, 2000 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 2006 John Tapsell <john.tapsell@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public
@@ -49,47 +49,47 @@ class Processes;
  */
 class ProcessController : public KSGRD::SensorDisplay
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	ProcessController(QWidget* parent);
-	virtual ~ProcessController() { }
+    ProcessController(QWidget* parent);
+    virtual ~ProcessController() { }
 
-	/* Functions for SensorDisplay*/
-	
-	bool restoreSettings(QDomElement& element);
+    /* Functions for SensorDisplay*/
 
-	bool saveSettings(QDomDocument& doc, QDomElement& element);
+    bool restoreSettings(QDomElement& element);
 
-	virtual void timerTick();
+    bool saveSettings(QDomDocument& doc, QDomElement& element);
 
-	virtual bool addSensor(const QString&, const QString&, const QString&, const QString&);
+    virtual void timerTick();
 
-	virtual void sensorError(int, bool err);
+    virtual bool addSensor(const QString&, const QString&, const QString&, const QString&);
 
-	void configureSettings() { }
+    virtual void sensorError(int, bool err);
 
-	virtual bool hasSettingsDialog() const
-	{
-		return false;
-	}
+    void configureSettings() { }
 
-	virtual void answerReceived(int id, const QList<QByteArray>& answer );
+    virtual bool hasSettingsDialog() const
+    {
+        return false;
+    }
 
-	KSysGuardProcessList* processList()
-	{
-		return mProcessList;
-	}
+    virtual void answerReceived(int id, const QList<QByteArray>& answer );
+
+    KSysGuardProcessList* processList()
+    {
+        return mProcessList;
+    }
 
 Q_SIGNALS:
-	void updated();
-	void processListChanged();
+    void updated();
+    void processListChanged();
 private Q_SLOTS:
-	void runCommand(const QString &command, int id);
+    void runCommand(const QString &command, int id);
 
 private:
-	KSysGuardProcessList *mProcessList;
-	KSysGuard::Processes *mProcesses;
+    KSysGuardProcessList *mProcessList;
+    KSysGuard::Processes *mProcesses;
 };
 
 #endif
