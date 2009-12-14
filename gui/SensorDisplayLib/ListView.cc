@@ -174,6 +174,7 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
 					mModel.setItem(i, j, item);
 				}
 			}
+			mModel.setRowCount(answer.count());
 			break;
 		}
 	}
