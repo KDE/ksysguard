@@ -11,9 +11,9 @@ void TestKsysguardd::initTestCase()
 {
     qRegisterMetaType<KSGRD::SensorAgent*>();
     QCOMPARE(manager.count(), 0);
-    hostConnectionLostSpy = new QSignalSpy(&manager, SIGNAL(hostConnectionLost(const QString &)));
+    hostConnectionLostSpy = new QSignalSpy(&manager, SIGNAL(hostConnectionLost(QString)));
     updateSpy = new QSignalSpy(&manager, SIGNAL(update()));
-    hostAddedSpy = new QSignalSpy(&manager, SIGNAL(hostAdded(KSGRD::SensorAgent *, const QString &)));
+    hostAddedSpy = new QSignalSpy(&manager, SIGNAL(hostAdded(KSGRD::SensorAgent*,QString)));
     bool success = manager.engage("", "", "../../ksysguardd/ksysguardd", -1);
     QCOMPARE(hostAddedSpy->count(), 1);
     QVERIFY(success);
