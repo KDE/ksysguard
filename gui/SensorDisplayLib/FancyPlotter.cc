@@ -218,8 +218,6 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     font.setPointSize( KSGRD::Style->fontSize() );
     mPlotter->setFont( font );
 
-    mPlotter->setThinFrame(!workSheetSettings);
-
     /* All RMB clicks to the mPlotter widget will be handled by 
      * SensorDisplay::eventFilter. */
     mPlotter->installEventFilter( this );
