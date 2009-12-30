@@ -424,10 +424,6 @@ void TestSignalPlotter::testGettersSetters() {
     s->setUseAutoRange(false);
     QCOMPARE(s->useAutoRange(), false);
 
-    QCOMPARE(s->thinFrame(), true); //default
-    s->setThinFrame(false);
-    QCOMPARE(s->thinFrame(), false);
-
     QCOMPARE(s->scaleDownBy(), 1.0); //default
     s->setScaleDownBy(1.2);
     QCOMPARE(s->scaleDownBy(), 1.2);
