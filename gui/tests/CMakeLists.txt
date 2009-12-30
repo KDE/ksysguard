@@ -1,5 +1,5 @@
-set( signalplottertest_SRCS signalplottertest.cpp ../SensorDisplayLib/SignalPlotter.cc)
-set( signalplotterbenchmark_SRCS signalplotterbenchmark.cpp ../SensorDisplayLib/SignalPlotter.cc)
+set( signalplottertest_SRCS signalplottertest.cpp ../../../libs/ksysguard/signalplotter/ksignalplotter.cpp)
+set( signalplotterbenchmark_SRCS signalplotterbenchmark.cpp ../../../libs/ksysguard/signalplotter/ksignalplotter.cpp)
 set( ksysguarddtest_SRCS ksysguarddtest.cpp ../ksgrd/SensorAgent.cc ../ksgrd/SensorManager.cc ../ksgrd/SensorSocketAgent.cc ../ksgrd/SensorShellAgent.cc)
 
 kde4_add_unit_test( signalplottertest

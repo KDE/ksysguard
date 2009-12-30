@@ -1,5 +1,5 @@
 #include "signalplotterbenchmark.h"
-#include "../SensorDisplayLib/SignalPlotter.h"
+#include "../../../libs/ksysguard/signalplotter/ksignalplotter.h"
 
 #include <qtest_kde.h>
 #include <QTest>

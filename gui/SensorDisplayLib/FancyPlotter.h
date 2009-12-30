@@ -26,13 +26,13 @@
 #include <QList>
 #include <klocalizedstring.h>
 
-#include "SignalPlotter.h"
 #include "SharedSettings.h"
 
 class FancyPlotterSettings;
 class QLabel;
 class SensorToAdd;
 class FancyPlotterLabel;
+class KSignalPlotter;
 
 class FPSensorProperties : public KSGRD::SensorProperties
 {

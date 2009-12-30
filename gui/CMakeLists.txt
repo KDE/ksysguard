@@ -7,6 +7,7 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/ksgrd/
    ${CMAKE_SOURCE_DIR}/workspace
    ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs
    ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs/ksysguard
+   ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs/ksysguard/signalplotter
    ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs/ksysguard/processcore )
 
 
@@ -30,7 +31,6 @@ set(libsensordisplays_SRCS
    	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLoggerSettings.cc 
    	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorModel.cc 
    	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ListViewSettings.cc 
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SignalPlotter.cc
 #   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/modeltest.cpp
 	)
 
@@ -56,7 +56,7 @@ set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
 
 kde4_add_kdeinit_executable(ksysguard ${ksysguard_KDEINIT_SRCS})
 
-target_link_libraries(kdeinit_ksysguard processui ${KDE4_KIO_LIBS} ksgrd ${KDE4_PLASMA_LIBS} ${KDE4_KNEWSTUFF2_LIBS})
+target_link_libraries(kdeinit_ksysguard processui ksignalplotter ${KDE4_KIO_LIBS} ksgrd ${KDE4_PLASMA_LIBS} ${KDE4_KNEWSTUFF2_LIBS})
 
 install(TARGETS kdeinit_ksysguard ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(TARGETS ksysguard         ${INSTALL_TARGETS_DEFAULT_ARGS})

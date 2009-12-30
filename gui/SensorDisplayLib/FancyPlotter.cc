@@ -33,6 +33,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kapplication.h>
+#include <ksignalplotter.h>
 #include <kstandarddirs.h>
 
 #include <ksgrd/SensorManager.h>
