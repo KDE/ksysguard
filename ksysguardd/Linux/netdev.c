@@ -38,9 +38,12 @@
 #define CALC( a, b, c, d, e, f ) \
 { \
   if (f){ \
-    if( NetDevs[i].oldInitialised ) \
-      NetDevs[ i ].delta##a = a - NetDevs[ i ].a; \
-    else \
+    if( NetDevs[i].oldInitialised) {\
+      if( a > NetDevs[i].a ) \
+        NetDevs[ i ].delta##a = a - NetDevs[ i ].a; \
+      else \
+        NetDevs[ i ].delta##a = a; \
+    } else \
       NetDevs[ i ].delta##a = 0; \
   } \
   NetDevs[ i ].a = a; \
@@ -67,11 +70,19 @@
 }
 
 #define DEFMEMBERS( a, b, c, d, e, f ) \
+unsigned long long delta##a; \
+unsigned long long a; \
+unsigned long a##Scale;
+
+#define DEFWIFIMEMBERS( a, b, c, d, e, f ) \
 signed long long delta##a; \
 signed long long a; \
 signed long a##Scale;
 
 #define DEFVARS( a, b, c, d, e, f) \
+unsigned long long a;
+
+#define DEFWIFIVARS( a, b, c, d, e, f) \
 signed long long a;
 
 /* The sixth variable is 1 if the quantity variation must be provided, 0 if the absolute value must be provided */
@@ -121,7 +132,7 @@ void printNetDev##a##1Info( const char* cmd ); \
 typedef struct
 {
   FORALL( DEFMEMBERS )
-  FORALLWIFI( DEFMEMBERS )
+  FORALLWIFI( DEFWIFIMEMBERS )
   char name[ 32 ];
   int isWifi;
   int oldInitialised;
@@ -182,8 +193,8 @@ static int processNetDev_( void )
 					FORALL( DEFVARS );
 					*pos = '\0';
 					FORALL( SETZERO );
-					sscanf(buf + 7, "%lli %lli %lli %lli %lli %lli %lli %lli "
-  					                "%lli %lli %lli %lli %lli %lli %lli %lli", 
+					sscanf(buf + 7, "%llu %llu %llu %llu %llu %llu %llu %llu "
+  					                "%llu %llu %llu %llu %llu %llu %llu %llu",
                                     &recBytes, &recPacks, &recErrs, &recDrop, &recFifo,
                                     &recFrame, &recCompressed, &recMulticast,
                                     &sentBytes, &sentPacks, &sentErrs, &sentDrop,
@@ -224,7 +235,7 @@ static int processNetDev_( void )
 			if (sscanf(buf, devFormat, tag)) {
 				char* pos = strchr(tag, ':');
 				if (pos) {
-					FORALLWIFI( DEFVARS );
+					FORALLWIFI( DEFWIFIVARS );
 					*pos = '\0';
 
 					for (i = 0; i < NetDevCnt; ++i) { /*find the corresponding interface*/
@@ -232,7 +243,7 @@ static int processNetDev_( void )
 							break;
 						}
 					}
-  				    sscanf(buf + 12, " %lli. %lli. %lli. %lli %lli %lli %lli %lli %lli", 
+  				    sscanf(buf + 12, " %lli. %lli. %lli. %lli %lli %lli %lli %lli %lli",
                            &linkQuality, &signalLevel, &noiseLevel, &nwid,
                            &RxCrypt, &frag, &retry, &misc, &beacon);
 					signalLevel -= 256; /*the units are dBm*/
