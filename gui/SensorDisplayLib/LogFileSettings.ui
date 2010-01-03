@@ -11,7 +11,7 @@
   </property>
   <layout class="QVBoxLayout" >
    <item>
-    <widget class="QTabWidget" name="tabWidget" >
+    <widget class="KTabWidget" name="tabWidget" >
      <property name="currentIndex" >
       <number>0</number>
      </property>
@@ -41,7 +41,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="title" />
+          <widget class="KLineEdit" name="title" />
          </item>
         </layout>
        </item>
@@ -157,7 +157,7 @@
        <item>
         <layout class="QVBoxLayout" >
          <item>
-          <widget class="QLineEdit" name="ruleText" />
+          <widget class="KLineEdit" name="ruleText" />
          </item>
          <item>
           <widget class="QListWidget" name="ruleList" />
