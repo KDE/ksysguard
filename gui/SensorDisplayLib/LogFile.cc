@@ -214,7 +214,7 @@ LogFile::saveSettings(QDomDocument& doc, QDomElement& element)
 	saveColor(element, "backgroundColor", monitor->palette().color( QPalette::Base ) );
 
 	for (QStringList::Iterator it = filterRules.begin();
-		 it != filterRules.end(); it++)
+		 it != filterRules.end(); ++it)
 	{
 		QDomElement filter = doc.createElement("filter");
 		filter.setAttribute("rule", (*it));
@@ -250,7 +250,7 @@ LogFile::answerReceived(int id, const QList<QByteArray>& answer)
 
 				monitor->addItem(s);
 
-				for (QStringList::Iterator it = filterRules.begin(); it != filterRules.end(); it++) {
+				for (QStringList::Iterator it = filterRules.begin(); it != filterRules.end(); ++it) {
 					QRegExp *expr = new QRegExp((*it).toLatin1());
 					if (expr->indexIn(s) != -1) {
 						KNotification::event("pattern_match", QString("rule '%1' matched").arg(*it),QPixmap(),this);

@@ -523,7 +523,7 @@ void FancyPlotter::setTooltip()
             lastValue = KGlobal::locale()->formatNumber( sensor->lastValue, (sensor->isInteger)?0:-1 );
             if (sensor->unit() == "%")
                 lastValue = i18nc("units", "%1%", lastValue);
-            else if( sensor->unit() != "" )
+            else if( !sensor->unit().isEmpty() )
                 lastValue = i18nc("units", ("%1 " + sensor->unit()).toUtf8(), lastValue);
         } else {
             lastValue = i18n("Error");
@@ -586,7 +586,7 @@ void FancyPlotter::sendDataToPlotter( )
                         lastValue = KGlobal::locale()->formatNumber( mPlotter->lastValue(beamId), precision );
                         if (sensor->unit() == "%")
                             lastValue = i18nc("units", "%1%", lastValue);
-                        else if( sensor->unit() != "" )  {
+                        else if( !sensor->unit().isEmpty() )  {
                             lastValue = i18nc("units", ("%1 " + sensor->unit()).toUtf8(), lastValue);
                         }
                     }

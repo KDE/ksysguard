@@ -308,8 +308,8 @@ QString FancyPlotterSettings::title() const
 
 void FancyPlotterSettings::setRangeUnits( const QString & units )
 {
-  mMinValue->setSuffix(" " + units);
-  mMaxValue->setSuffix(" " + units);
+  mMinValue->setSuffix(' ' + units);
+  mMaxValue->setSuffix(' ' + units);
 }
 
 void FancyPlotterSettings::setUseManualRange( bool value )
