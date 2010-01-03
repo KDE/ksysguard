@@ -492,7 +492,7 @@ void printProcessCountInfo( const char* cmd )
 
 void killProcess( const char* cmd )
 {
-  /* Sends a signal (not neccessarily kill!) to the process.  cmd is a string containing "kill <pid> <signal>" */
+  /* Sends a signal (not necessarily kill!) to the process.  cmd is a string containing "kill <pid> <signal>" */
   int sig, pid;
 
   sscanf( cmd, "%*s %d %d", &pid, &sig );
