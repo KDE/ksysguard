@@ -37,7 +37,7 @@
 #include "modeltest.h"
 #endif
 ProcessController::ProcessController(QWidget* parent)
-    : KSGRD::SensorDisplay(parent, QString::null, NULL)
+    : KSGRD::SensorDisplay(parent, QString(), NULL)
 {
     mProcessList = NULL;
     mProcesses = NULL;
