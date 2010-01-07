@@ -39,7 +39,7 @@
 { \
   if (f){ \
     if( NetDevs[i].oldInitialised) {\
-      if( a > NetDevs[i].a ) \
+      if( a >= NetDevs[i].a ) \
         NetDevs[ i ].delta##a = a - NetDevs[ i ].a; \
       else \
         NetDevs[ i ].delta##a = a; \
