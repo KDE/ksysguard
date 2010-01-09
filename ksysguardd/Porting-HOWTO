@@ -5,9 +5,8 @@ port and a single instance can then be used by multiple instances of
 ksysguard.
 
 This client/server design was chosen, because on some operating
-systems the back-end needs elevated permissions. Since C++ programs
-should NEVER have setgid/setuid permissions, a plain C back-end was
-needed. It also allowed for an easy network support using existing
+systems the back-end needs elevated permissions.
+It also allowed for an easy network support using existing
 security mechanisms (ssh).
 
 ksysguard sends commands and ksysguardd answers to them. Each answer
