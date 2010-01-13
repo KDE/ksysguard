@@ -56,6 +56,7 @@ class MultiLengthLabel : public QLabel {
     public:
         MultiLengthLabel() : QLabel() {
             mLongWidth = 0;
+            mHeight = 0;
             setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
             setAlignment(Qt::AlignRight);
         }
