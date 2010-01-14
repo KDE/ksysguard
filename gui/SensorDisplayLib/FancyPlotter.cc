@@ -51,90 +51,23 @@ class SensorToAdd {
     QList<QColor> colors;
     QString summationName;
 };
-//A QLabel class that has two possible strings
-class MultiLengthLabel : public QLabel {
-    public:
-        MultiLengthLabel() : QLabel() {
-            mLongWidth = 0;
-            mHeight = 0;
-            setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-            setAlignment(Qt::AlignRight);
-        }
-        void setShortText(const QString &shortText) {
-            mShortText = shortText;
-            setText(mShortText);
-            setMinimumWidth( QLabel::sizeHint().width() );
-            resizeEvent(NULL);
-        }
-        void setLongText(const QString &longText) {
-            mLongText = longText;
-            setText(mLongText);
-            QSize size = QLabel::sizeHint();
-            mHeight = size.height();
-            mLongWidth = size.width();
-            setMaximumWidth( mLongWidth );
-            updateGeometry();
-            resizeEvent(NULL);
-        }
 
-        virtual QSize sizeHint () const {
-            return QSize( mLongWidth, mHeight );
-        }
-        virtual void resizeEvent( QResizeEvent * ) {
-            if(mLongWidth <= width())
-                setText(mLongText);
-            else
-                setText(mShortText);
-        }
-    private:
-        int mLongWidth;
-        int mHeight;
-        QString mShortText;
-        QString mLongText;
-};
-
-//This label is for QLabel's that change their sizeHint frequently, to prevent them from constantly resizing
-class StableSizeLabel : public QLabel {
+class FancyPlotterLabel : public QLabel {
   public:
-    StableSizeLabel() : QLabel() {
-    }
-    virtual QSize sizeHint() const {
-        QSize newSizeHint = QLabel::sizeHint();
-        if(mSizeHint.isEmpty() ||
-           newSizeHint.height() != mSizeHint.height() ||
-           newSizeHint.width() > mSizeHint.width() ||
-           newSizeHint.width() < 0.7 * mSizeHint.width()) {
-            mSizeHint = newSizeHint;
-            mSizeHint.setWidth(mSizeHint.width()*1.1); //Add 10% to keep it stable
-            return mSizeHint;
-        }
-        return mSizeHint;
-    }
-  private:
-    mutable QSize mSizeHint;
-};
-class FancyPlotterLabel : public QWidget {
-  public:
-    FancyPlotterLabel(QWidget *parent) : QWidget(parent) {
-        QBoxLayout *layout = new QHBoxLayout();
-        layout->setContentsMargins(0,0,0,0);
-        label = new MultiLengthLabel();
-        layout->addWidget(label);
-        value = new StableSizeLabel();
-        layout->addWidget(value);
-        layout->addStretch(1);
-        setLayout(layout);
-        preferredLabelNameWidth = 0;
+    FancyPlotterLabel(QWidget *parent) : QLabel(parent) {
+        setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        longHeadingWidth = 0;
+        shortHeadingWidth = 0;
+        textMargin = 0;
+        setLayoutDirection(Qt::LeftToRight); //We do this because we organise the strings ourselves.. is this going to muck it up though for RTL languages?
     }
     ~FancyPlotterLabel() {
-        delete label;
-        delete value;
     }
     void setLabel(const QString &name, const QColor &color) {
         labelName = name;
 
         if(indicatorSymbol.isNull()) {
-            if(label->fontMetrics().inFont(QChar(0x25CF)))
+            if(fontMetrics().inFont(QChar(0x25CF)))
                 indicatorSymbol = QChar(0x25CF);
             else
                 indicatorSymbol = '#';
@@ -142,23 +75,75 @@ class FancyPlotterLabel : public QWidget {
         changeLabel(color);
 
     }
+    void setValueText(const QString &value) {
+        //value can have multiple strings, separated with the 0x9c character
+        valueText = value.split(QChar(0x9c));
+        resizeEvent(NULL);
+        update();
+    }
+    virtual void resizeEvent( QResizeEvent * ) {
+        QFontMetrics fm = fontMetrics();
+
+        if(valueText.isEmpty()) {
+            if(longHeadingWidth < width())
+                setText(longHeadingText);
+            else
+                setText(shortHeadingText);
+            return;
+        }
+        QString value = valueText.first();
+
+        int textWidth = fm.boundingRect(value).width();
+        if(textWidth + longHeadingWidth < width())
+            setBothText(longHeadingText, value);
+        else if(textWidth + shortHeadingWidth < width())
+            setBothText(shortHeadingText, value);
+        else {
+            int valueTextCount = valueText.count();
+            int i;
+            for(i = 1; i < valueTextCount; ++i) {
+                textWidth = fm.boundingRect(valueText.at(i)).width();
+                if(textWidth + shortHeadingWidth <= width()) {
+                    break;
+                }
+            }
+            if(i < valueTextCount)
+                setBothText(shortHeadingText, valueText.at(i));
+            else
+                setText(noHeadingText + valueText.last()); //This just sets the color of the text
+        }
+    }
     void changeLabel(const QColor &_color) {
         color = _color;
 
         if ( kapp->layoutDirection() == Qt::RightToLeft )
-            label->setLongText(QString("<qt>: ") + labelName + " <font color=\"" + color.name() + "\">" + indicatorSymbol + "</font>");
+            longHeadingText = QString(": ") + labelName + " <font color=\"" + color.name() + "\">" + indicatorSymbol + "</font>";
         else
-            label->setLongText(QString("<qt><font color=\"") + color.name() + "\">" + indicatorSymbol + "</font> " + labelName + " :");
-        label->setShortText(QString("<qt><font color=\"") + color.name() + "\">" + indicatorSymbol);
-    }
-    virtual void resizeEvent( QResizeEvent * ) {
-        changeLabel(color);
-    }
+            longHeadingText = QString("<qt><font color=\"") + color.name() + "\">" + indicatorSymbol + "</font> " + labelName + " :";
+        shortHeadingText = QString("<qt><font color=\"") + color.name() + "\">" + indicatorSymbol + "</font>";
+        noHeadingText = QString("<qt><font color=\"") + color.name() + "\">";
 
-    int preferredLabelNameWidth;
+        textMargin = fontMetrics().width('x') + margin()*2 + frameWidth()*2;
+        longHeadingWidth = fontMetrics().boundingRect(labelName + " :" + indicatorSymbol + " x").width() + textMargin;
+        shortHeadingWidth = fontMetrics().boundingRect(indicatorSymbol).width() + textMargin;
+        setMinimumWidth(shortHeadingWidth);
+        update();
+    }
+  private:
+    void setBothText(const QString &heading, const QString & value) {
+        if(QApplication::layoutDirection() == Qt::LeftToRight)
+            setText(heading + ' ' + value);
+        else
+            setText("<qt>" + value + ' ' + heading);
+    }
+    int textMargin;
+    QString longHeadingText;
+    QString shortHeadingText;
+    QString noHeadingText;
+    int longHeadingWidth;
+    int shortHeadingWidth;
+    QList<QString> valueText;
     QString labelName;
-    MultiLengthLabel *label;
-    QLabel *value;
     QColor color;
     static QChar indicatorSymbol;
 };
@@ -210,7 +195,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     outerLabelLayout->setContentsMargins(0,0,0,0);
 
     /* create a spacer to fill up the space up to the start of the graph */
-    outerLabelLayout->addItem(new QSpacerItem(axisTextWidth, 0, QSizePolicy::Preferred));
+    outerLabelLayout->addItem(new QSpacerItem(axisTextWidth + 10, 0, QSizePolicy::Preferred));
 
     mLabelLayout = new QHBoxLayout;
     outerLabelLayout->addLayout(mLabelLayout);
@@ -219,7 +204,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     font.setPointSize( KSGRD::Style->fontSize() );
     mPlotter->setFont( font );
 
-    /* All RMB clicks to the mPlotter widget will be handled by 
+    /* All RMB clicks to the mPlotter widget will be handled by
      * SensorDisplay::eventFilter. */
     mPlotter->installEventFilter( this );
 
@@ -599,7 +584,7 @@ void FancyPlotter::sendDataToPlotter( )
                 } else {
                     lastValue = i18n("Error");
                 }
-                static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(beamId)))->widget())->value->setText(lastValue);
+                static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(beamId)))->widget())->setValueText(lastValue);
             }
         }
 
