@@ -28,6 +28,7 @@
 #include <sys/vfs.h>
 #include <time.h>
 #include <unistd.h>
+#include <ctype.h>
 
 #include "Command.h"
 #include "ccont.h"
@@ -47,6 +48,16 @@ static CONTAINER DiskStatList = 0;
 static CONTAINER OldDiskStatList = 0;
 static struct SensorModul* DiskStatSM;
 char *getMntPnt( const char* cmd );
+
+static void sanitize(char *str)  {
+    if(str == NULL)
+        return;
+    while (*str != 0)  {
+        if(*str == '\t' || *str == '\n' || *str == '\r' || *str == ' ' || !isascii(*str) )
+            *str = '?';
+        ++str;
+    }
+}
 
 char *getMntPnt( const char* cmd )
 {
@@ -196,6 +207,7 @@ int updateDiskStat( void )
       else
         strncpy( disk_info->mntpnt, mnt_info->mnt_dir, sizeof( disk_info->mntpnt ) );
       disk_info->mntpnt[ sizeof(disk_info->mntpnt) - 1] = 0;
+      sanitize(disk_info->mntpnt);
 
       disk_info->blocks = fs_info.f_blocks;
       disk_info->bfree = fs_info.f_bfree;

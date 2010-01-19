@@ -30,8 +30,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <ctype.h>
 
- 
 #include "Command.h"
 #include "ksysguardd.h"
 
@@ -90,6 +90,16 @@ static int Dirty = 0;
 
 static void cleanup26DiskList( void );
 static int process26DiskIO( const char* buf );
+
+static void sanitize(char *str)  {
+    if(str == NULL)
+        return;
+    while (*str != 0)  {
+        if(*str == '\t' || *str == '\n' || *str == '\r' || *str == ' ' || !isascii(*str) )
+            *str = '?';
+        ++str;
+    }
+}
 
 void initDiskstats( struct SensorModul* sm ) {
 	char format[ 32 ];
@@ -154,8 +164,8 @@ void processDiskstats( void ) {
 
 	while (sscanf(iostatBufP, format, buf) == 1) {
 		buf[sizeof(buf) - 1] = '\0';
+        sanitize(buf);
 		iostatBufP += strlen(buf) + 1;  /* move IOstatBufP to next line */
-		
 		process26DiskIO(buf);
 	}
 
