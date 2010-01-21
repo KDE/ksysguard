@@ -31,7 +31,7 @@
 #include <kacceleratormanager.h>
 #include <kactioncollection.h>
 #include <kmenu.h>
-#include <knewstuff2/engine.h>
+#include <knewstuff3/downloaddialog.h>
 
 #include "WorkSheet.h"
 #include "WorkSheetSettings.h"
@@ -293,29 +293,25 @@ WorkSheet *Workspace::currentWorkSheet()
 }
 void Workspace::uploadHotNewWorksheet()
 {
-  WorkSheet *currentWorksheet = currentWorkSheet();
-  if(!currentWorksheet)
-      return;
+    WorkSheet *currentWorksheet = currentWorkSheet();
+    if(!currentWorksheet)
+        return;
 
-  KMessageBox::information(this, i18n("<qt>To propose the current custom tab as a new System Monitor tab, email <br><a href=\"file:%1\">%2</a><br> to <a href=\"mailto:john.tapsell@kde.org?subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde.org</a></qt>", currentWorksheet->fullFileName().section('/',0,-2), currentWorksheet->fullFileName()), i18n("Upload custom System Monitor tab"), QString::null, KMessageBox::AllowLink);
+    KMessageBox::information(this, i18n("<qt>To propose the current custom tab as a new System Monitor tab, email <br><a href=\"file:%1\">%2</a><br> to <a href=\"mailto:john.tapsell@kde.org?subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde.org</a></qt>", currentWorksheet->fullFileName().section('/',0,-2), currentWorksheet->fullFileName()), i18n("Upload custom System Monitor tab"), QString::null, KMessageBox::AllowLink);
 }
 void Workspace::getHotNewWorksheet()
 {
-  KNS::Engine engine(this);
-  if(engine.init("ksysguard.knsrc"))
-  {
-    KNS::Entry::List entries = engine.downloadDialogModal(this);
-    foreach(KNS::Entry *entry, entries) {
-      if(entry->status() == KNS::Entry::Installed && !entry->installedFiles().isEmpty()) {
-        QString filename = entry->installedFiles().first();
-        restoreWorkSheet(filename, true);
-      }
-    }
+    KNS3::DownloadDialog dialog("ksysguard.knsrc");
+    if( dialog.exec() == QDialog::Rejected )
+        return;
 
-    //TODO: inspect entries here
-    //Don't qDeleteAll entry it's already done when engine is deleted otherwise double delete
-    //qDeleteAll(entries);
-  }
+    KNS3::Entry::List entries = dialog.installedEntries();
+    foreach(KNS3::Entry entry, entries) {
+        if(!entry.installedFiles().isEmpty()) {
+            QString filename = entry.installedFiles().first();
+            restoreWorkSheet(filename, true);
+        }
+    }
 }
 
 bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)
