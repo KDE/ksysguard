@@ -62,7 +62,7 @@ static ClientInfo ClientList[ MAX_CLIENTS ];
 static int SocketPort = -1;
 static unsigned char BindToAllInterfaces = 0;
 static int CurrentSocket;
-static const char *LockFile = "/var/run/ksysguardd.pid";
+static const char LockFile[] = "/var/run/ksysguardd.pid";
 static const char *ConfigFile = KSYSGUARDDRCFILE;
 
 void signalHandler( int sig );
