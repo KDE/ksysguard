@@ -125,7 +125,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
       received. The flags variable is used to ensure that all samples have
       been received.
      */
-    QList<double> mSampleBuf;
+    QList<qreal> mSampleBuf;
 
     FancyPlotterSettings* mSettingsDialog;
     QLabel *mHeading;
