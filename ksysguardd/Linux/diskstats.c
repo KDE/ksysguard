@@ -85,43 +85,14 @@ static struct SensorModul* StatSM;
 static DiskLoadInfo* DiskLoad = 0;
 static DiskIOInfo* DiskIO = 0;
 
-static char IOStatBuf[ DISKSTATSBUFSIZE ];	/* Buffer for /proc/diskstats */
 static int Dirty = 0;
 
 static void cleanup26DiskList( void );
 static int process26DiskIO( const char* buf );
 
-static void sanitize(char *str)  {
-    if(str == NULL)
-        return;
-    while (*str != 0)  {
-        if(*str == '\t' || *str == '\n' || *str == '\r' || *str == ' ' || !isascii(*str) )
-            *str = '?';
-        ++str;
-    }
-}
-
 void initDiskstats( struct SensorModul* sm ) {
-	char format[ 32 ];
-	char buf[ 1024 ];
-	char* iostatBufP = IOStatBuf;
-
-	StatSM = sm;
-	sprintf( format, "%%%d[^\n]\n", (int)sizeof( buf ) - 1 );
-
-	/* updateDiskstats() reopens /proc/diskstats as IOStatBuf */
-	if (updateDiskstats()) {
-		/* updateDiskstats() was unable to open file. die. */
-		return;
-	}
-
-	/* Process values from /proc/diskstats (Linux >= 2.6.x) */
-	while (sscanf(iostatBufP, format, buf) == 1) {
-		buf[sizeof(buf) - 1] = '\0';
-		iostatBufP += strlen(buf) + 1;  /* move IOstatBufP to next line */
-		
-		process26DiskIO(buf);
-	}
+    StatSM = sm;
+    processDiskstats(); /* This causes the disks monitors to be added */
 }
 
 void exitDiskstats( void ) {
@@ -130,52 +101,31 @@ void exitDiskstats( void ) {
 }
 
 int updateDiskstats( void ) {
-	size_t n;
-	int fd;
-
-	gettimeofday( &currSampling, 0 );
-	Dirty = 1;
-
-
-	IOStatBuf[ 0 ] = '\0';
-	if ( ( fd = open( "/proc/diskstats", O_RDONLY ) ) < 0 )
-		return -1; /* unable to open file. disable this module. */
-	
-	n = read( fd, IOStatBuf, DISKSTATSBUFSIZE - 1 );
-	close( fd );
-	if ( n == DISKSTATSBUFSIZE - 1 || n <= 0 ) {
-		log_error( "Internal buffer too small to read \'/proc/diskstats\'" );		
-		return -1;
-	}
-	
-	IOStatBuf[ n ] = '\0';
-
-	return 0;
+    Dirty = 1;
+    return 0;
 }
-
 void processDiskstats( void ) {
+
+    char buf[1024];
+    FILE *file = NULL;
+
+    gettimeofday( &currSampling, 0 );
 	/* Process values from /proc/diskstats (Linux >= 2.6.x) */
+	if ( ( file = fopen( "/proc/diskstats", "r" ) ) == NULL )
+		return; /* unable to open file. disable this module. */
 
-	char* iostatBufP = IOStatBuf;
-	char format[ 32 ];
-	char buf[ 1024 ];
 
-	sprintf( format, "%%%d[^\n]\n", (int)sizeof( buf ) - 1 );
-
-	while (sscanf(iostatBufP, format, buf) == 1) {
-		buf[sizeof(buf) - 1] = '\0';
-        sanitize(buf);
-		iostatBufP += strlen(buf) + 1;  /* move IOstatBufP to next line */
+	/* Process values from /proc/diskstats (Linux >= 2.6.x) */
+	while (fgets(buf, sizeof(buf) - 1, file) != NULL) {
 		process26DiskIO(buf);
 	}
+	fclose( file );
 
 	/* save exact time interval between this and the last read of /proc/stat */
 	timeInterval = currSampling.tv_sec - lastSampling.tv_sec +
 			( currSampling.tv_usec - lastSampling.tv_usec ) / 1000000.0;
 	lastSampling = currSampling;
-	
 	cleanup26DiskList();
-	
 	Dirty = 0;
 }
 
