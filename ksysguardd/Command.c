@@ -91,6 +91,10 @@ void print_error( const char *fmt, ... )
 
 void log_error( const char *fmt, ... )
 {
+  static int maxLogs = 0;
+  if(maxLogs++ > 10)
+    return;
+
   char errmsg[ 1024 ];
   va_list az;
 
