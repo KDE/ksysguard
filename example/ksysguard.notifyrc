@@ -1,6 +1,7 @@
 [Global]
 IconName=utilities-system-monitor
 Comment=System Monitor
+Comment[de]=Systemmonitor
 Comment[el]=Επόπτης συστήματος
 Comment[es]=Monitor del sistema
 Comment[nb]=Systemovervåker
