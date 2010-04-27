@@ -376,17 +376,20 @@ int updateNetDev( void ) {
 		}
 
 		/*
-		 *  traverse the kstat chain
-		 *  to find the appropriate statistics
+		 *  find the appropriate statistics; e.g. 'kstat e1000g:0:e1000g0'
 		 */
-		if( (ksp = kstat_lookup( kctl,
-				name, 0, IfInfo[i].Name )) == NULL ) {
-			free( name );
-			return( 0 );
+		if( (ksp = kstat_lookup( kctl, name, 0, IfInfo[i].Name )) == NULL ) {
+			/*
+			 *  try module "link"; e.g. 'kstat link:0:e1000g0'
+			 */
+			if( (ksp = kstat_lookup( kctl, "link", 0, IfInfo[i].Name )) == NULL ) {
+				free( name );
+				continue;
+			}
 		}
 		if( kstat_read( kctl, ksp, NULL ) == -1 ) {
 			free( name );
-			return( 0 );
+			continue;
 		}
 		free( name );
 

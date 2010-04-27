@@ -38,6 +38,7 @@
 double loadavg1 = 0.0;
 double loadavg5 = 0.0;
 double loadavg15 = 0.0;
+double idle_load = 0.0;
 
 typedef struct {
 	int32_t		ks_instance;
@@ -60,11 +61,13 @@ void initLoadAvg( struct SensorModul* sm ) {
 	registerMonitor( "cpu/system/loadavg1", "float", printLoadAvg1, printLoadAvg1Info, sm );
 	registerMonitor( "cpu/system/loadavg5", "float", printLoadAvg5, printLoadAvg5Info, sm );
 	registerMonitor( "cpu/system/loadavg15", "float", printLoadAvg15, printLoadAvg15Info, sm );
+	registerMonitor( "cpu/system/idle", "float", printCPUIdle, printCPUIdleInfo, sm );
 	
 	/* Monitor names changed from kde3 => kde4. Remain compatible with legacy requests when possible. */
 	registerLegacyMonitor( "cpu/loadavg1", "float", printLoadAvg1, printLoadAvg1Info, sm );
 	registerLegacyMonitor( "cpu/loadavg5", "float", printLoadAvg5, printLoadAvg5Info, sm );
 	registerLegacyMonitor( "cpu/loadavg15", "float", printLoadAvg15, printLoadAvg15Info, sm );
+	registerLegacyMonitor( "cpu/idle", "float", printCPUIdle, printCPUIdleInfo, sm );
 
 	for (id=0; id<MAX_CPU_COUNT; id++) {
 		cpu_load[id].ks_instance = -1;
@@ -101,11 +104,13 @@ void exitLoadAvg( void ) {
 	removeMonitor("cpu/system/loadavg1");
 	removeMonitor("cpu/system/loadavg5");
 	removeMonitor("cpu/system/loadavg15");
+	removeMonitor("cpu/system/idle");
 	
 	/* These were registered as legacy monitors */
 	removeMonitor("cpu/loadavg1");
 	removeMonitor("cpu/loadavg5");
 	removeMonitor("cpu/loadavg15");
+	removeMonitor("cpu/idle");
 #endif
 }
 
@@ -116,6 +121,7 @@ int updateLoadAvg( void ) {
 	kstat_t			*ksp;
 	kstat_named_t		*kdata;
 	int i;
+	long nproc, id;
 
 	/*
 	 *  get a kstat handle and update the user's kstat chain
@@ -228,6 +234,14 @@ int updateLoadAvg( void ) {
 				}
 			}
 		}
+
+		nproc = sysconf(_SC_NPROCESSORS_ONLN);
+		idle_load = 0.0;
+		for (id=0; id<nproc; id++) {
+			idle_load += cpu_load[i].idle_load;
+		}
+		idle_load = idle_load / nproc;
+
 	}
 	kstat_close( kctl );
 #endif /* ! HAVE_KSTAT */
@@ -300,6 +314,14 @@ void printCPUxTotalLoadInfo( const char* cmd ) {
 
 	sscanf( cmd + 7, "%d", &id );
 	fprintf(CurrentClient, "CPU %d Total Load\t0\t100\t%%\n", id );
+}
+
+void printCPUIdle( const char* cmd ) {
+	fprintf(CurrentClient, "%f\n", idle_load );
+}
+
+void printCPUIdleInfo( const char* cmd ) {
+	fprintf(CurrentClient, "CPU Idle Load\t0\t100\t%%\n" );
 }
 
 void printCPUxIdle( const char* cmd ) {
