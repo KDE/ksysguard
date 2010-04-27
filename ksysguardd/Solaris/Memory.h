@@ -32,6 +32,7 @@ void initMemory(struct SensorModul* sm);
 void exitMemory(void);
 
 int updateMemory(void);
+int updateSwap(int upd);
 
 void printMemFree( const char *cmd );
 void printMemFreeInfo( const char *cmd );

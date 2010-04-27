@@ -35,6 +35,12 @@ void printIPackets( const char *cmd );
 void printOPacketsInfo( const char *cmd );
 void printOPackets( const char *cmd );
 
+void printRBytesInfo( const char *cmd );
+void printRBytes( const char *cmd );
+
+void printOBytesInfo( const char *cmd );
+void printOBytes( const char *cmd );
+
 void printIErrorsInfo( const char *cmd );
 void printIErrors( const char *cmd );
 

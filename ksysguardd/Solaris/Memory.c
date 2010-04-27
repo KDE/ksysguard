@@ -34,39 +34,49 @@
 #include <sys/stat.h>
 #include <sys/swap.h>
 #include <vm/anon.h>
+#include <sys/time.h>
+#include <sys/sysinfo.h>
 
 #ifdef HAVE_KSTAT
 #include <kstat.h>
+
+static uint64_t swap_resv = 0;
+static uint64_t swap_free = 0;
+static uint64_t swap_avail = 0;
+static uint64_t swap_alloc = 0;
 #endif
 
 #include "ksysguardd.h"
 #include "Command.h"
 #include "Memory.h"
 
-static int Dirty = 1;
 static t_memsize totalmem = (t_memsize) 0;
 static t_memsize freemem = (t_memsize) 0;
-static long totalswap = 0L;
-static long freeswap = 0L;
+static unsigned long usedswap = 0L;
+static unsigned long freeswap = 0L;
 static struct anoninfo am_swap;
+static struct timeval lastSampling;
 
 /*
  *  this is borrowed from top's m_sunos5 module
  *  used by permission from William LeFebvre
  */
 static int pageshift;
-static long (*p_pagetok) ();
+static unsigned long (*p_pagetok) ();
 #define pagetok(size) ((*p_pagetok)(size))
 
-long pagetok_none( long size ) {
+unsigned long
+pagetok_none( unsigned long size ) {
 	return( size );
 }
 
-long pagetok_left( long size ) {
+unsigned long
+pagetok_left( unsigned long size ) {
 	return( size << pageshift );
 }
 
-long pagetok_right( long size ) {
+unsigned long
+pagetok_right( unsigned long size ) {
 	return( size >> pageshift );
 }
 
@@ -99,28 +109,82 @@ void initMemory( struct SensorModul* sm ) {
 					printMemFree, printMemFreeInfo, sm );
 	registerMonitor( "mem/physical/used", "integer",
 					printMemUsed, printMemUsedInfo, sm );
+	registerMonitor( "mem/physical/application", "integer",
+					printMemUsed, printMemUsedInfo, sm );
 #endif
 	registerMonitor( "mem/swap/free", "integer",
 					printSwapFree, printSwapFreeInfo, sm );
 	registerMonitor( "mem/swap/used", "integer",
 					printSwapUsed, printSwapUsedInfo, sm );
+
+	gettimeofday(&lastSampling, 0);
+	updateMemory();
+	updateSwap(0);
 }
 
 void exitMemory( void ) {
 }
 
 int updateMemory( void ) {
+#ifdef HAVE_KSTAT
+	kstat_ctl_t		*kctl;
+	kstat_t			*ksp;
+	kstat_named_t		*kdata;
 
+	/*
+	 *  get a kstat handle and update the user's kstat chain
+	 */
+	if( (kctl = kstat_open()) == NULL )
+		return( 0 );
+	while( kstat_chain_update( kctl ) != 0 )
+		;
+
+	totalmem = pagetok( sysconf( _SC_PHYS_PAGES ));
+
+	/*
+	 *  traverse the kstat chain to find the appropriate statistics
+	 */
+	if( (ksp = kstat_lookup( kctl, "unix", 0, "system_pages" )) == NULL ) {
+		goto done;
+	}
+
+	if( kstat_read( kctl, ksp, NULL ) == -1 ) {
+		goto done;
+	}
+
+	/*
+	 *  lookup the data
+	 */
+	 kdata = (kstat_named_t *) kstat_data_lookup( ksp, "freemem" );
+	 if( kdata != NULL )
+		freemem = pagetok( kdata->value.ui32 );
+
+done:
+	kstat_close( kctl );
+#endif /* ! HAVE_KSTAT */
+
+	return( 0 );
+}
+
+int updateSwap( int upd ) {
 	long			swaptotal;
 	long			swapfree;
 	long			swapused;
 #ifdef HAVE_KSTAT
 	kstat_ctl_t		*kctl;
 	kstat_t			*ksp;
-	kstat_named_t		*kdata;
+	struct timeval 		sampling;
+	vminfo_t		vmi;
+
+	uint64_t _swap_resv = 0;
+	uint64_t _swap_free = 0;
+	uint64_t _swap_avail = 0;
+	uint64_t _swap_alloc = 0;
+
 #endif /* HAVE_KSTAT */
 	swaptotal = swapused = swapfree = 0L;
 
+#ifndef HAVE_KSTAT
 	/*
 	 *  Retrieve overall swap information from anonymous memory structure -
 	 *  which is the same way "swap -s" retrieves it's statistics.
@@ -135,10 +199,10 @@ int updateMemory( void ) {
 	swapused = am_swap.ani_resv;
 	swapfree = swaptotal - swapused;
 
-	totalswap = pagetok(swaptotal);
+	usedswap = pagetok(swapused);
 	freeswap = pagetok(swapfree);
 
-#ifdef HAVE_KSTAT
+#else /* HAVE_KSTAT */
 	/*
 	 *  get a kstat handle and update the user's kstat chain
 	 */
@@ -149,73 +213,91 @@ int updateMemory( void ) {
 
 	totalmem = pagetok( sysconf( _SC_PHYS_PAGES ));
 
-	/*
-	 *  traverse the kstat chain to find the appropriate statistics
-	 */
-	if( (ksp = kstat_lookup( kctl, "unix", 0, "system_pages" )) == NULL )
-		return( 0 );
-	if( kstat_read( kctl, ksp, NULL ) == -1 )
-		return( 0 );
+	if( (ksp = kstat_lookup( kctl, "unix", -1, "vminfo" )) == NULL ) {
+		goto done;
+	}
 
-	/*
-	 *  lookup the data
-	 */
-	 kdata = (kstat_named_t *) kstat_data_lookup( ksp, "freemem" );
-	 if( kdata != NULL )
-	 	freemem = pagetok( kdata->value.ui32 );
+	if( kstat_read( kctl, ksp, &vmi ) == -1 ) {
+                goto done;
+        }
 
+	_swap_resv = vmi.swap_resv - swap_resv;
+	if (_swap_resv)
+		swap_resv = vmi.swap_resv;
+
+	_swap_free = vmi.swap_free - swap_free;
+	if (_swap_free)
+		swap_free = vmi.swap_free;
+
+	_swap_avail = vmi.swap_avail - swap_avail;
+	if (_swap_avail)
+		swap_avail = vmi.swap_avail;
+
+	_swap_alloc = vmi.swap_alloc - swap_alloc;
+	if (_swap_alloc)
+		swap_alloc = vmi.swap_alloc;
+
+	if (upd) {
+		long timeInterval;
+
+		gettimeofday(&sampling, 0);
+		timeInterval = sampling.tv_sec - lastSampling.tv_sec +
+		    ( sampling.tv_usec - lastSampling.tv_usec ) / 1000000.0;
+		lastSampling = sampling;
+		timeInterval = timeInterval > 0 ? timeInterval : 1;
+
+		_swap_resv = _swap_resv / timeInterval;
+		_swap_free = _swap_free / timeInterval;
+		_swap_avail = _swap_avail / timeInterval;
+		_swap_alloc = _swap_alloc / timeInterval;
+
+		if (_swap_alloc)
+			usedswap = pagetok((unsigned long)(_swap_alloc + _swap_free - _swap_avail));
+
+		/*
+		 * Assume minfree = totalmem / 8, i.e. it has not been tuned
+		 */
+		if (_swap_avail)
+			freeswap = pagetok((unsigned long)(_swap_avail + totalmem / 8));
+	}
+done:
 	kstat_close( kctl );
 #endif /* ! HAVE_KSTAT */
 
-	Dirty = 0;
-
 	return( 0 );
 }
-
 void printMemFreeInfo( const char *cmd ) {
-	if( Dirty )
-		updateMemory();
-	fprintf(CurrentClient, "Free Memory\t0\t%ld\tKB\n", totalmem );
+	fprintf(CurrentClient, "Free Memory\t0\t%lu\tKB\n", totalmem );
 }
 
 void printMemFree( const char *cmd ) {
-	if( Dirty )
-		updateMemory();
-	fprintf(CurrentClient, "%ld\n", freemem );
+	updateMemory();
+	fprintf(CurrentClient, "%lu\n", freemem );
 }
 
 void printMemUsedInfo( const char *cmd ) {
-	if( Dirty )
-		updateMemory();
-	fprintf(CurrentClient, "Used Memory\t0\t%ld\tKB\n", totalmem );
+	fprintf(CurrentClient, "Used Memory\t0\t%lu\tKB\n", totalmem );
 }
 
 void printMemUsed( const char *cmd ) {
-	if( Dirty )
-		updateMemory();
-	fprintf(CurrentClient, "%ld\n", totalmem - freemem );
+	updateMemory();
+	fprintf(CurrentClient, "%lu\n", totalmem - freemem );
 }
 
 void printSwapFreeInfo( const char *cmd ) {
-	if( Dirty )
-		updateMemory();
-	fprintf(CurrentClient, "Free Swap\t0\t%ld\tKB\n", totalswap );
+	fprintf(CurrentClient, "Free Swap\t0\t%lu\tKB\n", freeswap );
 }
 
 void printSwapFree( const char *cmd ) {
-	if( Dirty )
-		updateMemory();
-	fprintf(CurrentClient, "%ld\n", freeswap );
+	updateSwap(1);
+	fprintf(CurrentClient, "%lu\n", freeswap );
 }
 
 void printSwapUsedInfo( const char *cmd ) {
-	if( Dirty )
-		updateMemory();
-	fprintf(CurrentClient, "Used Swap\t0\t%ld\tKB\n", totalswap );
+	fprintf(CurrentClient, "Used Swap\t0\t%lu\tKB\n", usedswap );
 }
 
 void printSwapUsed( const char *cmd ) {
-	if( Dirty )
-		updateMemory();
-	fprintf(CurrentClient, "%ld\n", totalswap - freeswap );
+	updateSwap(1);
+	fprintf(CurrentClient, "%lu\n", usedswap );
 }

@@ -31,6 +31,7 @@
 #include <sys/socket.h>
 #include <sys/sockio.h>
 #include <net/if.h>
+#include <sys/time.h>
 
 #ifdef HAVE_KSTAT
 #include <kstat.h>
@@ -99,6 +100,10 @@ typedef struct {
 	unsigned long	OLDipackets;
 	unsigned long	opackets;
 	unsigned long	OLDopackets;
+	unsigned long	rbytes;
+	unsigned long	OLDrbytes;
+	unsigned long	obytes;
+	unsigned long	OLDobytes;
 	unsigned long	ierrors;
 	unsigned long	OLDierrors;
 	unsigned long	oerrors;
@@ -121,6 +126,9 @@ typedef struct {
 static NetDevInfo IfInfo[MAXNETDEVS];
 
 static int NetDevCount;
+static float timeInterval = 0;
+static struct timeval lastSampling;
+static struct timeval currSampling;
 
 /*
  *  insertnetdev()  --  insert device name & flags into our list
@@ -255,10 +263,10 @@ void initNetDev( struct SensorModul* sm ) {
 
 	getnetdevlist();
 	for( i = 0; i < NetDevCount; i++ ) {
-		sprintf( mon, "network/%s/ipackets", IfInfo[i].Name );
+		sprintf( mon, "network/interfaces/%s/receiver/packets", IfInfo[i].Name );
 		registerMonitor( mon, "integer",
 					printIPackets, printIPacketsInfo, sm );
-		sprintf( mon, "network/%s/opackets", IfInfo[i].Name );
+		sprintf( mon, "network/interfaces/%s/transmitter/packets", IfInfo[i].Name );
 		registerMonitor( mon, "integer",
 					printOPackets, printOPacketsInfo, sm );
 		/*
@@ -269,54 +277,67 @@ void initNetDev( struct SensorModul* sm ) {
 			/*
 			 *  recv errors
 			 */
-			sprintf( mon, "network/%s/ierrors",
+			sprintf( mon, "network/interfaces/%s/receiver/errors",
 					IfInfo[i].Name );
 			registerMonitor( mon, "integer",
 					printIErrors, printIErrorsInfo, sm );
 			/*
 			 *  xmit errors
 			 */
-			sprintf( mon, "network/%s/oerrors",
+			sprintf( mon, "network/interfaces/%s/transmitter/errors",
 					IfInfo[i].Name );
 			registerMonitor( mon, "integer",
 					printOErrors, printOErrorsInfo, sm );
 			/*
 			 *  collisions
 			 */
-			sprintf( mon, "network/%s/collisions",
+			sprintf( mon, "network/interfaces/%s/transmitter/collisions",
 					IfInfo[i].Name );
 			registerMonitor( mon, "integer",
 					printCollisions, printCollisionsInfo, sm );
 			/*
 			 *  multicast xmits
 			 */
-			sprintf( mon, "network/%s/multixmt",
+			sprintf( mon, "network/interfaces/%s/transmitter/multicast",
 					IfInfo[i].Name );
 			registerMonitor( mon, "integer",
 					printMultiXmits, printMultiXmitsInfo, sm );
 			/*
 			 *  multicast recvs
 			 */
-			sprintf( mon, "network/%s/multircv",
+			sprintf( mon, "network/interfaces/%s/receiver/multicast",
 					IfInfo[i].Name );
 			registerMonitor( mon, "integer",
 					printMultiRecvs, printMultiRecvsInfo, sm );
 			/*
 			 *  broadcast xmits
 			 */
-			sprintf( mon, "network/%s/brdcstxmt",
+			sprintf( mon, "network/interfaces/%s/transmitter/broadcast",
 					IfInfo[i].Name );
 			registerMonitor( mon, "integer",
 					printBcastXmits, printBcastXmitsInfo, sm );
 			/*
 			 *  broadcast recvs
 			 */
-			sprintf( mon, "network/%s/brdcstrcv",
+			sprintf( mon, "network/interfaces/%s/receiver/broadcast",
 					IfInfo[i].Name );
 			registerMonitor( mon, "integer",
 					printBcastRecvs, printBcastRecvsInfo, sm );
+
+			/*
+			 * Transmitted/Received Data.
+			 */
+			sprintf( mon, "network/interfaces/%s/receiver/data",
+					IfInfo[i].Name );
+			registerMonitor( mon, "integer",
+					printRBytes, printRBytesInfo, sm );
+			sprintf( mon, "network/interfaces/%s/transmitter/data",
+					IfInfo[i].Name );
+			registerMonitor( mon, "integer",
+					printOBytes, printOBytesInfo, sm );
 		}
 	}
+	gettimeofday(&lastSampling, 0);
 #endif
 }
 
@@ -339,6 +360,7 @@ int updateNetDev( void ) {
 	while( kstat_chain_update( kctl ) != 0 )
 		;
 
+	gettimeofday(&currSampling, 0);
 	for( i = 0; i < NetDevCount; i++ ) {
 		char	*name;
 		char	*ptr;
@@ -416,9 +438,22 @@ int updateNetDev( void ) {
 			IfInfo[i].OLDbrdcstrcv = IfInfo[i].brdcstrcv;
 			IfInfo[i].brdcstrcv = kdata->value.ul;
 		}
+		kdata = (kstat_named_t *) kstat_data_lookup( ksp, "rbytes" );
+		if( kdata != NULL ) {
+			IfInfo[i].OLDrbytes = IfInfo[i].rbytes;
+			IfInfo[i].rbytes = kdata->value.ul;
+		}
+		kdata = (kstat_named_t *) kstat_data_lookup( ksp, "obytes" );
+		if( kdata != NULL ) {
+			IfInfo[i].OLDobytes = IfInfo[i].obytes;
+			IfInfo[i].obytes = kdata->value.ul;
+		}
 	}
 
 	kstat_close( kctl );
+	timeInterval = currSampling.tv_sec - lastSampling.tv_sec +
+	    ( currSampling.tv_usec - lastSampling.tv_usec ) / 1000000.0;
+	lastSampling = currSampling;
 #endif /* ! HAVE_KSTAT */
 
 	return( 0 );
@@ -435,6 +470,8 @@ void printIPackets( const char *cmd ) {
 	int	i;
 
 	ptr = strchr( cmdcopy, (int) '/' );
+	name = ++ptr;
+	ptr = strchr( name, (int) '/' );
 	name = ++ptr;
 	ptr = strchr( name, (int) '/' );
 	*ptr = '\0';
@@ -465,6 +502,8 @@ void printOPackets( const char *cmd ) {
 	ptr = strchr( cmdcopy, (int) '/' );
 	name = ++ptr;
 	ptr = strchr( name, (int) '/' );
+	name = ++ptr;
+	ptr = strchr( name, (int) '/' );
 	*ptr = '\0';
 
 	for( i = 0; i < NetDevCount; i++ ) {
@@ -472,6 +511,66 @@ void printOPackets( const char *cmd ) {
 				&& (strcmp( IfInfo[i].Name, name ) == 0) ) {
 			fprintf(CurrentClient, "%ld\n",
 				IfInfo[i].opackets - IfInfo[i].OLDopackets );
+			free( cmdcopy );
+			return;
+		}
+	}
+	free( cmdcopy );
+	fprintf(CurrentClient, "0\n" );
+}
+
+void printRBytesInfo( const char *cmd ) {
+	fprintf(CurrentClient, "Received Data\t0\t0\tKB/s\n" );
+}
+
+void printRBytes( const char *cmd ) {
+
+	char	*cmdcopy = strdup( cmd );
+	char	*name, *ptr;
+	int	i;
+
+	ptr = strchr( cmdcopy, (int) '/' );
+	name = ++ptr;
+	ptr = strchr( name, (int) '/' );
+	name = ++ptr;
+	ptr = strchr( name, (int) '/' );
+	*ptr = '\0';
+
+	for( i = 0; i < NetDevCount; i++ ) {
+		if( (IfInfo[i].OLDrbytes > 0)
+				&& (strcmp( IfInfo[i].Name, name ) == 0) ) {
+			long rate = ((float)(IfInfo[i].rbytes - IfInfo[i].OLDrbytes) / timeInterval) / 1024;
+			fprintf(CurrentClient, "%ld\n", rate);
+			free( cmdcopy );
+			return;
+		}
+	}
+	free( cmdcopy );
+	fprintf(CurrentClient, "0\n" );
+}
+
+void printOBytesInfo( const char *cmd ) {
+	fprintf(CurrentClient, "Transmitted Data\t0\t0\tKB/s\n" );
+}
+
+void printOBytes( const char *cmd ) {
+
+	char	*cmdcopy = strdup( cmd );
+	char	*name, *ptr;
+	int	i;
+
+	ptr = strchr( cmdcopy, (int) '/' );
+	name = ++ptr;
+	ptr = strchr( name, (int) '/' );
+	name = ++ptr;
+	ptr = strchr( name, (int) '/' );
+	*ptr = '\0';
+
+	for( i = 0; i < NetDevCount; i++ ) {
+		if( (IfInfo[i].OLDobytes > 0)
+				&& (strcmp( IfInfo[i].Name, name ) == 0) ) {
+			long rate = ((float)(IfInfo[i].obytes - IfInfo[i].OLDobytes) / timeInterval) / 1024;
+			fprintf(CurrentClient, "%ld\n", rate);
 			free( cmdcopy );
 			return;
 		}
@@ -491,6 +590,8 @@ void printIErrors( const char *cmd ) {
 	int	i;
 
 	ptr = strchr( cmdcopy, (int) '/' );
+	name = ++ptr;
+	ptr = strchr( name, (int) '/' );
 	name = ++ptr;
 	ptr = strchr( name, (int) '/' );
 	*ptr = '\0';
@@ -521,6 +622,8 @@ void printOErrors( const char *cmd ) {
 	ptr = strchr( cmdcopy, (int) '/' );
 	name = ++ptr;
 	ptr = strchr( name, (int) '/' );
+	name = ++ptr;
+	ptr = strchr( name, (int) '/' );
 	*ptr = '\0';
 
 	for( i = 0; i < NetDevCount; i++ ) {
@@ -547,6 +650,8 @@ void printCollisions( const char *cmd ) {
 	int	i;
 
 	ptr = strchr( cmdcopy, (int) '/' );
+	name = ++ptr;
+	ptr = strchr( name, (int) '/' );
 	name = ++ptr;
 	ptr = strchr( name, (int) '/' );
 	*ptr = '\0';
@@ -577,6 +682,8 @@ void printMultiXmits( const char *cmd ) {
 	ptr = strchr( cmdcopy, (int) '/' );
 	name = ++ptr;
 	ptr = strchr( name, (int) '/' );
+	name = ++ptr;
+	ptr = strchr( name, (int) '/' );
 	*ptr = '\0';
 
 	for( i = 0; i < NetDevCount; i++ ) {
@@ -603,6 +710,8 @@ void printMultiRecvs( const char *cmd ) {
 	int	i;
 
 	ptr = strchr( cmdcopy, (int) '/' );
+	name = ++ptr;
+	ptr = strchr( name, (int) '/' );
 	name = ++ptr;
 	ptr = strchr( name, (int) '/' );
 	*ptr = '\0';
@@ -633,6 +742,8 @@ void printBcastXmits( const char *cmd ) {
 	ptr = strchr( cmdcopy, (int) '/' );
 	name = ++ptr;
 	ptr = strchr( name, (int) '/' );
+	name = ++ptr;
+	ptr = strchr( name, (int) '/' );
 	*ptr = '\0';
 
 	for( i = 0; i < NetDevCount; i++ ) {
@@ -659,6 +770,8 @@ void printBcastRecvs( const char *cmd ) {
 	int	i;
 
 	ptr = strchr( cmdcopy, (int) '/' );
+	name = ++ptr;
+	ptr = strchr( name, (int) '/' );
 	name = ++ptr;
 	ptr = strchr( name, (int) '/' );
 	*ptr = '\0';

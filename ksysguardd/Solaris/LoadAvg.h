@@ -38,4 +38,15 @@ void printLoadAvg5Info( const char *cmd );
 void printLoadAvg15( const char *cmd );
 void printLoadAvg15Info( const char *cmd );
 
+void printCPUxUser( const char* cmd );
+void printCPUxUserInfo( const char* cmd );
+void printCPUxKernel( const char* cmd );
+void printCPUxKernelInfo( const char* cmd );
+void printCPUxTotalLoad( const char* cmd );
+void printCPUxTotalLoadInfo( const char* cmd );
+void printCPUxIdle( const char* cmd );
+void printCPUxIdleInfo( const char* cmd );
+void printCPUxWait( const char* cmd );
+void printCPUxWaitInfo( const char* cmd );
+
 #endif /* _LoadAvg_h_ */

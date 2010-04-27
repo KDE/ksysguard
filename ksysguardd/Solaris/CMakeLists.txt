@@ -6,3 +6,8 @@ ADD_LIBRARY(libksysguardd STATIC
             NetDev.c
             ProcessList.c)
 
+if(EXISTS /dev/kstat)
+  ADD_DEFINITIONS(-DHAVE_KSTAT)
+  FIND_LIBRARY(KSTAT_LIBRARY NAMES kstat)
+  TARGET_LINK_LIBRARIES(libksysguardd ${KSTAT_LIBRARY})
+ENDIF(EXISTS /dev/kstat)
