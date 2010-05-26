@@ -30,7 +30,6 @@ MultiMeterSettings::MultiMeterSettings( QWidget *parent, const char *name )
   setModal( true );
   setCaption( i18nc( "Multimeter is a sensor display that mimics 'digital multimeter' aparatus", "Multimeter Settings" ) );
   setButtons( Ok|Cancel );
-  showButtonSeparator( true );
 
   QWidget *mainWidget = new QWidget( this );
 

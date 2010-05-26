@@ -31,7 +31,6 @@ SensorLoggerDlg::SensorLoggerDlg( QWidget *parent, const char *name )
   setModal( true );
   setCaption( i18n( "Sensor Logger" ) );
   setButtons( Ok|Cancel );
-  showButtonSeparator( true );
 
   QWidget *main = new QWidget( this );
 

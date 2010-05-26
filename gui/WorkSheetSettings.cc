@@ -39,7 +39,6 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
   setModal( true );
   setCaption( i18n( "Tab Properties" ) );
   setButtons( Ok | Cancel );
-  showButtonSeparator( true );
 
   QWidget *page = new QWidget( this );
   setMainWidget( page );

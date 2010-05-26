@@ -44,7 +44,6 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   setButtons( Ok | Cancel );
   setObjectName( name );
   setModal( false );
-  showButtonSeparator( true );
 
   mModel->setHasLabel( true );
 
