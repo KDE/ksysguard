@@ -2,6 +2,7 @@
 IconName=utilities-system-monitor
 Comment=System Monitor
 Comment[ca]=Controlador del sistema
+Comment[ca@valencia]=Controlador del sistema
 Comment[cs]=Monitor systému
 Comment[da]=Systemovervågning
 Comment[de]=Systemmonitor
