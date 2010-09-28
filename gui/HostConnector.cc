@@ -224,7 +224,7 @@ bool HostConnector::useCustom() const
 
 void HostConnector::slotHelp()
 {
-  KToolInvocation::invokeHelp( "CONNECTINGTOOTHERHOSTS", "ksysguard/the-sensor-browser.html" );
+  KToolInvocation::invokeHelp( "connectingtootherhosts", "ksysguard" );
 }
 
 #include "HostConnector.moc"
