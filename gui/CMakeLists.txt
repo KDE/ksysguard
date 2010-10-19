@@ -63,7 +63,7 @@ install(TARGETS ksysguard         ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install( FILES ksysguard.desktop  DESTINATION  ${XDG_APPS_INSTALL_DIR} )
+install( PROGRAMS ksysguard.desktop  DESTINATION  ${XDG_APPS_INSTALL_DIR} )
 install( FILES ProcessTable.sgrd SystemLoad2.sgrd DESTINATION  ${DATA_INSTALL_DIR}/ksysguard )
 install( FILES ksysguardui.rc  DESTINATION  ${DATA_INSTALL_DIR}/ksysguard )
 install( FILES ksysguard.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
