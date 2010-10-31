@@ -2,6 +2,7 @@
 Name=System Monitor
 Name[af]=Stelsel Monitor
 Name[ar]=مراقب النظام
+Name[ast]=Monitor del sistema
 Name[be]=Сістэмны назіральнік
 Name[be@latin]=Systemny nazirańnik
 Name[bg]=Мониторинг на системата
@@ -84,6 +85,7 @@ GenericName=System Monitor
 GenericName[af]=Stelsel Monitor
 GenericName[ar]=مراقب النظام
 GenericName[as]=ব্যৱস্থাপ্ৰণালীৰ নিৰীক্ষণ ব্যৱস্থা
+GenericName[ast]=Monitor del sistema
 GenericName[be]=Сістэма
 GenericName[be@latin]=Systemny nazirańnik
 GenericName[bg]=Мониторинг на системата
