@@ -44,6 +44,7 @@ Workspace::Workspace( QWidget* parent)
 {
   KAcceleratorManager::setNoAccel(this);
   setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+  setDocumentMode(true);
   connect(&mDirWatch, SIGNAL(deleted(const QString&)), this, SLOT(removeWorkSheet(const QString &)));
 }
 
