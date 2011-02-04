@@ -122,6 +122,7 @@ void initLmSensors( struct SensorModul* sm )
       const sensors_subfeature *ssubf;
       LMSENSOR *p;
       char *s, *label;
+      char scnbuf[BUFFER_SIZE_LMSEN];
 
       switch( sf->type )
       {
@@ -147,11 +148,12 @@ void initLmSensors( struct SensorModul* sm )
         continue;
 
       label = sensors_get_label( scn, sf );
+      sensors_snprintf_chip_name(scnbuf, BUFFER_SIZE_LMSEN, scn);
       p = (LMSENSOR*)malloc( sizeof( LMSENSOR ) );
       p->fullName = (char*)malloc( strlen( "lmsensors/" ) +
-                                   strlen( scn->prefix ) + 1 +
+                                   strlen( scnbuf ) + 1 +
                                    strlen( label ) + 1 );
-      snprintf( p->fullName, BUFFER_SIZE_LMSEN, "lmsensors/%s/%s", scn->prefix, label );
+      snprintf( p->fullName, BUFFER_SIZE_LMSEN, "lmsensors/%s/%s", scnbuf, label );
 
       /* Make sure that name contains only proper characters. */
       for ( s = p->fullName; *s; s++ )
