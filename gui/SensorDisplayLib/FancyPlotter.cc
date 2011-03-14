@@ -495,6 +495,7 @@ void FancyPlotter::setTooltip()
     QString description;
     QString lastValue;
     bool neednewline = false;
+    bool showingSummationGroup = false;
     int beamId = -1;
     //Note that the number of beams can be less than the number of sensors, since some sensors
     //get added together for a beam.
@@ -514,9 +515,17 @@ void FancyPlotter::setTooltip()
         } else {
             lastValue = i18n("Error");
         }
-        if(beamId != sensor->beamId && !sensor->summationName.isEmpty()) {
-            tooltip += i18nc("%1 is what is being shown statistics for, like 'Memory', 'Swap', etc.", "<p><b>%1:</b><br>", sensor->summationName);
-            neednewline = false;
+        if (beamId != sensor->beamId) {
+            if (!sensor->summationName.isEmpty()) {
+                tooltip += i18nc("%1 is what is being shown statistics for, like 'Memory', 'Swap', etc.", "<p><b>%1:</b><br>", sensor->summationName);
+                showingSummationGroup = true;
+                neednewline = false;
+            } else if (showingSummationGroup) {
+                //When a summation group has finished, seperate the next sensor with a newline
+                showingSummationGroup = false;
+                tooltip += "<br>";
+            }
+
         }
         beamId = sensor->beamId;
 
@@ -708,8 +717,11 @@ void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
         QString summationName = sensor->summationName;
         int beamId = sensor->beamId;
 
+        Q_ASSERT(beamId < mPlotter->numBeams());
+        Q_ASSERT(beamId < mLabelLayout->count());
+
         if(summationName.isEmpty())
-            static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(beamId)))->widget())->setLabel(info.name(), mPlotter->beamColor(id-100));
+            static_cast<FancyPlotterLabel *>((static_cast<QWidgetItem *>(mLabelLayout->itemAt(beamId)))->widget())->setLabel(info.name(), mPlotter->beamColor(beamId));
 
     } else if( id == 200) {
         /* FIXME This doesn't check the host!  */
