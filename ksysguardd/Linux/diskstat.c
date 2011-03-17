@@ -24,8 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <sys/vfs.h>
+#include <sys/statvfs.h>
 #include <time.h>
 #include <unistd.h>
 #include <ctype.h>
@@ -36,12 +35,9 @@
 #include "ksysguardd.h"
 
 typedef struct {
-  char device[ 256 ];
-  char mntpnt[ 256 ];
-  long blocks;
-  long bfree;
-  long bused;
-  int bused_percent;
+    char device[ 256 ];
+    char mntpnt[ 256 ];
+    struct statvfs statvfs;
 } DiskInfo;
 
 static CONTAINER DiskStatList = 0;
@@ -61,16 +57,16 @@ static void sanitize(char *str)  {
 
 char *getMntPnt( const char* cmd )
 {
-  static char device[ 1025 ];
-  char* ptr;
+    static char device[ 1025 ];
+    char* ptr;
 
-  memset( device, 0, sizeof( device ) );
-  sscanf( cmd, "partitions%1024s", device );
+    memset( device, 0, sizeof( device ) );
+    sscanf( cmd, "partitions%1024s", device );
 
-  ptr = (char*)rindex( device, '/' );
-  *ptr = '\0';
+    ptr = (char*)rindex( device, '/' );
+    *ptr = '\0';
 
-  return (char*)device;
+    return (char*)device;
 }
 
 /* ----------------------------- public part ------------------------------- */
@@ -95,211 +91,232 @@ static void removeMonitors(const char* mntpnt) {
 
 void initDiskStat( struct SensorModul* sm )
 {
-  DiskInfo* disk_info;
+    DiskInfo* disk_info;
 
-  DiskStatList = NULL;
-  OldDiskStatList = NULL;
-  DiskStatSM = sm;
-  if ( updateDiskStat() < 0 )
-    return;
+    DiskStatList = NULL;
+    OldDiskStatList = NULL;
+    DiskStatSM = sm;
+    if ( updateDiskStat() < 0 )
+        return;
 
-  registerMonitor( "partitions/list", "listview", printDiskStat, printDiskStatInfo, sm );
+    registerMonitor( "partitions/list", "listview", printDiskStat, printDiskStatInfo, sm );
 
-  for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
-    registerMonitors(disk_info->mntpnt);
-  }
+    for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
+        registerMonitors(disk_info->mntpnt);
+    }
 }
 
 void exitDiskStat( void )
 {
-  DiskInfo* disk_info;
+    DiskInfo* disk_info;
 
-  removeMonitor( "partitions/list" );
+    removeMonitor( "partitions/list" );
 
-  for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
-    removeMonitors(disk_info->mntpnt);
-  }
+    for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
+        removeMonitors(disk_info->mntpnt);
+    }
 
-  destr_ctnr( DiskStatList, free );
-  if(OldDiskStatList)
-    destr_ctnr( OldDiskStatList, free );
+    destr_ctnr( DiskStatList, free );
+    if(OldDiskStatList)
+        destr_ctnr( OldDiskStatList, free );
 }
 
 void checkDiskStat( void )
 {
-  updateDiskStat();
-  DiskInfo* disk_info_new;
-  DiskInfo* disk_info_old;
-  int changed = 0;
-  for ( disk_info_new = first_ctnr( DiskStatList ); disk_info_new; disk_info_new = next_ctnr( DiskStatList ) ) {
-    int found = 0;
+    updateDiskStat();
+    DiskInfo* disk_info_new;
+    DiskInfo* disk_info_old;
+    int changed = 0;
+    for ( disk_info_new = first_ctnr( DiskStatList ); disk_info_new; disk_info_new = next_ctnr( DiskStatList ) ) {
+        int found = 0;
+        for ( disk_info_old = first_ctnr( OldDiskStatList ); disk_info_old; disk_info_old = next_ctnr( OldDiskStatList ) ) {
+            if(strcmp(disk_info_new->mntpnt, disk_info_old->mntpnt) == 0) {
+                free( remove_ctnr( OldDiskStatList ) );
+                found = 1;
+                continue;
+            }
+        }
+        if(!found) {
+            /* register all the devices that did not exist before*/
+            registerMonitors(disk_info_new->mntpnt);
+            changed++;
+        }
+    }
+    /*Now remove all the devices that do not exist anymore*/
     for ( disk_info_old = first_ctnr( OldDiskStatList ); disk_info_old; disk_info_old = next_ctnr( OldDiskStatList ) ) {
-      if(strcmp(disk_info_new->mntpnt, disk_info_old->mntpnt) == 0) {
-        free( remove_ctnr( OldDiskStatList ) );
-	found = 1;
-        continue;
-      }
+        removeMonitors(disk_info_old->mntpnt);
+        changed++;
     }
-    if(!found) {
-      /* register all the devices that did not exist before*/
-      registerMonitors(disk_info_new->mntpnt);
-      changed++;
-    }
-  }
-  /*Now remove all the devices that do not exist anymore*/
-  for ( disk_info_old = first_ctnr( OldDiskStatList ); disk_info_old; disk_info_old = next_ctnr( OldDiskStatList ) ) {
-    removeMonitors(disk_info_old->mntpnt);
-    changed++;
-  }
-  destr_ctnr( OldDiskStatList, free );
-  OldDiskStatList = NULL;
-  updateDiskStat();
-  if(changed)
-      print_error( "RECONFIGURE" ); /*Let ksysguard know that we've added a sensor*/
+    destr_ctnr( OldDiskStatList, free );
+    OldDiskStatList = NULL;
+    updateDiskStat();
+    if(changed)
+        print_error( "RECONFIGURE" ); /*Let ksysguard know that we've added a sensor*/
 }
 
 int updateDiskStat( void )
 {
-  DiskInfo *disk_info;
-  FILE *fh;
-  struct mntent *mnt_info;
-  float percent;
-  struct statfs fs_info;
+    DiskInfo *disk_info;
+    FILE *fh;
+    struct mntent *mnt_info;
 
-  if ( ( fh = setmntent( "/etc/mtab", "r" ) ) == NULL ) {
-    print_error( "Cannot open \'/etc/mtab\'!\n" );
-    return -1;
-  }
-  if(OldDiskStatList == 0) {
-    OldDiskStatList = DiskStatList;
-    DiskStatList = new_ctnr();
-  }
-  else	  
-    empty_ctnr(DiskStatList);
-
-  while ( ( mnt_info = getmntent( fh ) ) != NULL ) {
-    if ( statfs( mnt_info->mnt_dir, &fs_info ) < 0 )
-      continue;
-
-    if ( strcmp( mnt_info->mnt_type, "proc" ) &&
-         strcmp( mnt_info->mnt_type, "devfs" ) &&
-         strcmp( mnt_info->mnt_type, "usbfs" ) &&
-         strcmp( mnt_info->mnt_type, "sysfs" ) &&
-         strcmp( mnt_info->mnt_type, "tmpfs" ) &&
-         strcmp( mnt_info->mnt_type, "devpts" ) ) {
-      if ( fs_info.f_blocks != 0 )
-      {
-          percent = ( ( (float)fs_info.f_blocks - (float)fs_info.f_bfree ) * 100.0/
-                (float)fs_info.f_blocks );
-      }
-      else
-          percent = 0;
-
-      if ( ( disk_info = (DiskInfo *)malloc( sizeof( DiskInfo ) ) ) == NULL )
-        continue;
-
-      memset( disk_info, 0, sizeof( DiskInfo ) );
-      strncpy( disk_info->device, mnt_info->mnt_fsname, sizeof( disk_info->device ) );
-      disk_info->device[ sizeof(disk_info->device) -1] = 0;
-      
-      if ( !strcmp( mnt_info->mnt_dir, "/" ) )
-        strncpy( disk_info->mntpnt, "/root", sizeof( disk_info->mntpnt ) );
-      else
-        strncpy( disk_info->mntpnt, mnt_info->mnt_dir, sizeof( disk_info->mntpnt ) );
-      disk_info->mntpnt[ sizeof(disk_info->mntpnt) - 1] = 0;
-      sanitize(disk_info->mntpnt);
-
-      disk_info->blocks = fs_info.f_blocks;
-      disk_info->bfree = fs_info.f_bfree;
-      disk_info->bused = fs_info.f_blocks - fs_info.f_bfree;
-      disk_info->bused_percent = (int)percent;
-
-      push_ctnr( DiskStatList, disk_info );
+    if ( ( fh = setmntent( "/etc/mtab", "r" ) ) == NULL ) {
+        print_error( "Cannot open \'/etc/mtab\'!\n" );
+        return -1;
     }
-  }
+    if(OldDiskStatList == 0) {
+        OldDiskStatList = DiskStatList;
+        DiskStatList = new_ctnr();
+    } else {
+        empty_ctnr(DiskStatList);
+    }
 
-  endmntent( fh );
+    while ( ( mnt_info = getmntent( fh ) ) != NULL ) {
+        /*
+         * An entry which device name doesn't start with a '/' is
+         * either a dummy file system or a network file system.
+         * Add special handling for smbfs and cifs as is done by
+         * coreutils as well.
+         */
+        if ( (mnt_info->mnt_fsname[0] != '/') ||
+             !strcmp( mnt_info->mnt_type, "smbfs" ) ||
+             !strcmp( mnt_info->mnt_type, "cifs" ) ||
+             !strcmp( mnt_info->mnt_type, "proc" ) ||
+             !strcmp( mnt_info->mnt_type, "devfs" ) ||
+             !strcmp( mnt_info->mnt_type, "usbfs" ) ||
+             !strcmp( mnt_info->mnt_type, "sysfs" ) ||
+             !strcmp( mnt_info->mnt_type, "tmpfs" ) ||
+             !strcmp( mnt_info->mnt_type, "devpts" ) )
+            continue;  /* Skip these file systems */
 
-  return 0;
+        if ( ( disk_info = (DiskInfo *)malloc( sizeof( DiskInfo ) ) ) == NULL )
+            continue;
+
+        memset( disk_info, 0, sizeof( DiskInfo ) );
+
+        if ( statvfs( mnt_info->mnt_dir, &(disk_info->statvfs) ) < 0 )
+            continue;
+
+        strncpy( disk_info->device, mnt_info->mnt_fsname, sizeof( disk_info->device ) );
+        disk_info->device[ sizeof(disk_info->device) -1] = 0;
+
+        strncpy( disk_info->mntpnt, mnt_info->mnt_dir, sizeof( disk_info->mntpnt ) );
+        disk_info->mntpnt[ sizeof(disk_info->mntpnt) - 1] = 0;
+        sanitize(disk_info->mntpnt);
+
+        push_ctnr( DiskStatList, disk_info );
+    }
+    endmntent( fh );
+
+    return 0;
+}
+
+int calculatePercentageUsed( unsigned long totalSizeKB, unsigned long available) {
+    if (!available)
+        return 0;
+
+    unsigned long totalSizeKBdividedBy100 = (50 + totalSizeKB )/ 100;
+    if (!totalSizeKBdividedBy100)
+        return 0;
+
+    int percentageUsed = 100 - available / totalSizeKBdividedBy100; /* Percentage is 1 - available / totalSizeKB, meaning that we count root-only reserved space as "used" here */
+    /* If we have rounded down to 0%, make it 1%, like "df" does */
+    if (percentageUsed == 0)
+        return 1;
+    return percentageUsed;
 }
 
 void printDiskStat( const char* cmd )
 {
-  DiskInfo* disk_info;
+    DiskInfo* disk_info;
 
-  (void)cmd;
-  for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
-    output( "%s\t%ld\t%ld\t%ld\t%d\t%s\n",
-             disk_info->device,
-             disk_info->blocks,
-             disk_info->bused,
-             disk_info->bfree,
-             disk_info->bused_percent,
-             disk_info->mntpnt );
-  }
+    (void)cmd;
+    for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
+        /* See man statvfs(2) for meaning of fields */
+        unsigned long totalSizeKB =  disk_info->statvfs.f_blocks * (disk_info->statvfs.f_frsize/1024);
+        unsigned long usedKB = totalSizeKB - (disk_info->statvfs.f_bfree * (disk_info->statvfs.f_bsize/1024)); /* used is the total size minus free blocks including those for root only */
+        unsigned long available = disk_info->statvfs.f_bavail * (disk_info->statvfs.f_bsize/1024); /* available is only those for non-root.  So available + used != total because some are reserved for root */
+        int percentageUsed = calculatePercentageUsed(totalSizeKB, available);
+        output( "%s\t%ld\t%ld\t%ld\t%d\t%s\n",
+                disk_info->device,
+                totalSizeKB,
+                usedKB,
+                available,
+                percentageUsed,
+                disk_info->mntpnt );
+    }
 
-  output( "\n" );
+    output( "\n" );
 }
 
 void printDiskStatInfo( const char* cmd )
 {
-  (void)cmd;
-  output( "Device\tBlocks\tUsed\tAvailable\tUsed %%\tMount point\nM\tD\tD\tD\td\ts\n" );
+    (void)cmd;
+    output( "Device\tSize\tUsed\tAvailable\tUsed %%\tMount point\nM\tKB\tKB\tKB\td\ts\n" );
 }
 
 void printDiskStatUsed( const char* cmd )
 {
-  char *mntpnt = (char*)getMntPnt( cmd );
-  DiskInfo* disk_info;
+    char *mntpnt = (char*)getMntPnt( cmd );
+    DiskInfo* disk_info;
 
-  for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
-    if ( !strcmp( mntpnt, disk_info->mntpnt ) )
-      output( "%ld\n", disk_info->bused );
-  }
+    for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
+        if ( !strcmp( mntpnt, disk_info->mntpnt ) ) {
+            unsigned long totalSizeKB =  disk_info->statvfs.f_blocks * (disk_info->statvfs.f_frsize/1024);
+            unsigned long usedKB = totalSizeKB - (disk_info->statvfs.f_bfree * (disk_info->statvfs.f_bsize/1024)); /* used is the total size minus free blocks including those for root only */
+            output( "%ld\n", usedKB );
+        }
+    }
 
-  output( "\n" );
+    output( "\n" );
 }
 
 void printDiskStatUsedInfo( const char* cmd )
 {
-  (void)cmd;
-  output( "Used Blocks\t0\t0\tBlocks\n" );
+    (void)cmd;
+    output( "Used\t0\t0\tKB\n" );
 }
 
 void printDiskStatFree( const char* cmd )
 {
-  char *mntpnt = (char*)getMntPnt( cmd );
-  DiskInfo* disk_info;
+    char *mntpnt = (char*)getMntPnt( cmd );
+    DiskInfo* disk_info;
 
-  for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
-    if ( !strcmp( mntpnt, disk_info->mntpnt ) )
-      output( "%ld\n", disk_info->bfree );
-  }
-
-  output( "\n" );
+    for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
+        if ( !strcmp( mntpnt, disk_info->mntpnt ) ) {
+            unsigned long available = disk_info->statvfs.f_bavail * (disk_info->statvfs.f_bsize/1024); /* available is only those for non-root.  So available + used != total because some are reserved for root */
+            output( "%ld\n", available );
+        }
+    }
+    output( "\n" );
 }
 
 void printDiskStatFreeInfo( const char* cmd )
 {
-  (void)cmd;
-  output( "Free Blocks\t0\t0\tBlocks\n" );
+    (void)cmd;
+    output( "Available\t0\t0\tKB\n" );
 }
 
 void printDiskStatPercent( const char* cmd )
 {
-  char *mntpnt = (char*)getMntPnt( cmd );
-  DiskInfo* disk_info;
+    char *mntpnt = (char*)getMntPnt( cmd );
+    DiskInfo* disk_info;
 
-  for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
-    if ( !strcmp( mntpnt, disk_info->mntpnt ) )
-      output( "%d\n", disk_info->bused_percent );
-  }
+    for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
+        if ( !strcmp( mntpnt, disk_info->mntpnt ) ) {
+            unsigned long totalSizeKB =  disk_info->statvfs.f_blocks * (disk_info->statvfs.f_frsize/1024);
+            unsigned long available = disk_info->statvfs.f_bavail * (disk_info->statvfs.f_bsize/1024); /* available is only those for non-root.  So available + used != total because some are reserved for root */
 
-  output( "\n" );
+            int percentageUsed = calculatePercentageUsed(totalSizeKB, available);
+            output( "%d\n", percentageUsed );
+        }
+    }
+
+    output( "\n" );
 }
 
 void printDiskStatPercentInfo( const char* cmd )
 {
-  (void)cmd;
-  output( "Used Blocks\t0\t100\t%%\n" );
+    (void)cmd;
+    output( "Percentage Used\t0\t100\t%%\n" );
 }
