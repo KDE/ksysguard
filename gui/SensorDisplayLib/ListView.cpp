@@ -120,7 +120,6 @@ ListView::ColumnType ListView::convertColumnType(const QString &type) const
 void
 ListView::answerReceived(int id, const QList<QByteArray>& answer)
 {
-	float sbytes;
 	/* We received something, so the sensor is probably ok. */
 	sensorError(id, false);
 
@@ -184,22 +183,10 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
 						item->setData(QTime::fromString(records[j]), Qt::DisplayRole);
 						item->setData(QTime::fromString(records[j]), Qt::UserRole);
 						break;
-					  case KByte: {
-						int kbytes;
-						kbytes = records[j].toInt();
-						item->setData(kbytes, Qt::UserRole);
-						if(kbytes >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
-							sbytes = kbytes / float(1024*1024*1024);
-							item->setText(i18nc("units", "%1 TiB", KGlobal::locale()->formatNumber(sbytes, sbytes < 9.9 ? 1 : 0)));
-						} else if(kbytes >= 1024*1024*0.7) { //If it's over 0.7GiB, then set the scale to gigabytes
-							sbytes = kbytes / float(1024*1024);
-							item->setText(i18nc("units", "%1 GiB", KGlobal::locale()->formatNumber(sbytes, sbytes < 9.9 ? 1 : 0)));
-						} else if(kbytes > 1024) {
-							sbytes = kbytes / float(1024);
-							item->setText(i18nc("units", "%1 MiB", KGlobal::locale()->formatNumber(sbytes, sbytes < 9.9 ? 1 : 0)));
-						} else
-							item->setText(i18nc("units", "%1 KiB", kbytes));
-						break; }
+					  case KByte:
+						item->setData(records[j].toInt(), Qt::UserRole);
+						item->setText(i18nc("units in kb", "%1 K", records[j].toInt()));
+						break;
 					  case DiskStat:
 					  case Text:
 					  default:
