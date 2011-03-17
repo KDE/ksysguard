@@ -392,6 +392,7 @@ static int setupSelect( fd_set* fds )
   return highestFD;
 }
 
+#ifdef HAVE_SYS_INOTIFY_H
 static void checkModules()
 {
   struct SensorModul *entry;
@@ -400,6 +401,7 @@ static void checkModules()
     if ( entry->checkCommand != NULL && entry->available )
       entry->checkCommand();
 }
+#endif
 
 static void handleSocketTraffic( int socketNo, const fd_set* fds )
 {

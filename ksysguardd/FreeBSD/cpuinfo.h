@@ -1,8 +1,9 @@
 /*
     KSysGuard, the KDE System Guard
-   
-	Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
-    
+
+    Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
+    Copyright (c) 2010 David Naylor <naylor.b.david@gmail.com>
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -24,7 +25,7 @@
 
 struct SensorModul;
 
-void initCpuInfo(struct SensorModul* sm);
+void initCpuInfo(struct SensorModul*);
 void exitCpuInfo(void);
 
 int updateCpuInfo(void);
@@ -35,6 +36,10 @@ void printCPUNice(const char* cmd);
 void printCPUNiceInfo(const char* cmd);
 void printCPUSys(const char* cmd);
 void printCPUSysInfo(const char* cmd);
+void printCPUTotalLoad(const char* cmd);
+void printCPUTotalLoadInfo(const char* cmd);
+void printCPUIntr(const char* cmd);
+void printCPUIntrInfo(const char* cmd);
 void printCPUIdle(const char* cmd);
 void printCPUIdleInfo(const char* cmd);
 void printCPUxUser(const char* cmd);
@@ -43,7 +48,27 @@ void printCPUxNice(const char* cmd);
 void printCPUxNiceInfo(const char* cmd);
 void printCPUxSys(const char* cmd);
 void printCPUxSysInfo(const char* cmd);
+void printCPUxTotalLoad(const char* cmd);
+void printCPUxTotalLoadInfo(const char* cmd);
+void printCPUxIntr(const char* cmd);
+void printCPUxIntrInfo(const char* cmd);
 void printCPUxIdle(const char* cmd);
 void printCPUxIdleInfo(const char* cmd);
 
-#endif
+void printCPUxClock(const char* cmd);
+void printCPUxClockInfo(const char* cmd);
+void printCPUClock(const char* cmd);
+void printCPUClockInfo(const char* cmd);
+
+void printCPUxTemperature(const char* cmd);
+void printCPUxTemperatureInfo(const char* cmd);
+void printCPUTemperature(const char* cmd);
+void printCPUTemperatureInfo(const char* cmd);
+
+void printNumCpus(const char* cmd);
+void printNumCpusInfo(const char* cmd);
+
+void printNumCores(const char* cmd);
+void printNumCoresInfo(const char* cmd);
+
+#endif /* _cpuinfo_h_ */

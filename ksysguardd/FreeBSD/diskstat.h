@@ -1,8 +1,8 @@
 /*
     KSysGuard, the KDE System Guard
-	   
-	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
-    
+
+    Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public
     License as published by the Free Software Foundation; either
@@ -37,5 +37,12 @@ void printDiskStatFree(const char* cmd);
 void printDiskStatFreeInfo(const char* cmd);
 void printDiskStatPercent(const char* cmd);
 void printDiskStatPercentInfo(const char* cmd);
+
+void printDiskStatIUsed(const char* cmd);
+void printDiskStatIUsedInfo(const char* cmd);
+void printDiskStatIFree(const char* cmd);
+void printDiskStatIFreeInfo(const char* cmd);
+void printDiskStatIPercent(const char* cmd);
+void printDiskStatIPercentInfo(const char* cmd);
 
 #endif

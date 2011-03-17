@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
 
-    Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
+    Copyright (c) 2011 David Naylor <naylor.b.david@gmail.com>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of version 2 of the GNU General Public
@@ -18,18 +18,28 @@
 
 */
 
-#ifndef _netdev_h_
-#define _netdev_h_
+#ifndef _acpi_h_
+#define _acpi_h_
 
-void initNetDev(struct SensorModul* sm);
-void exitNetDev(void);
+struct SensorModul;
 
-int updateNetDev(void);
-void checkNetDev(void);
+void initACPI(struct SensorModul*);
+void exitACPI(void);
 
-void printNetDevRecBytes(const char* cmd);
-void printNetDevRecBytesInfo(const char* cmd);
-void printNetDevSentBytes(const char* cmd);
-void printNetDevSentBytesInfo(const char* cmd);
+int updateACPI(void);
 
-#endif
+void printBatCharge(const char*);
+void printBatChargeInfo(const char*);
+void printBatCapacity(const char*);
+void printBatCapacityInfo(const char*);
+void printBatRemaining(const char*);
+void printBatRemainingInfo(const char*);
+void printBatVoltage(const char*);
+void printBatVoltageInfo(const char*);
+void printBatRate(const char*);
+void printBatRateInfo(const char*);
+
+void printThermal(const char *);
+void printThermalInfo(const char *);
+
+#endif /* _acpi_h_ */

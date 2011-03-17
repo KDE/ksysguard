@@ -1,0 +1,67 @@
+2011/02/19:
+ * return "/" for root partition mount name (vs /root)
+ * include mount point in Free Space and Used Space info message
+ * fix CPU core number for info message (now "id + 1" vs "id")
+ * add inode stats (diskstat)
+
+2011/02/18:
+ * align ListView items of non text to the right
+ * fix some CMakeLists.txt
+ * fix IRQ translations
+
+2011/02/10:
+ * properly update interrupts
+ * properly setup the interrupt map
+ * display entire argument for progs
+ * convert disk blocks into KiB
+ * add support for KiB to ListView (and scaling sizes to [MGT]iB)
+
+2011/01/30:
+ * performance improvements in ProcessList:
+   * cache user names (from getpwuid)
+   * eliminate common uses of snprintf
+ * added Last PID
+ * fix compiler warnings (from -Wall)
+
+2011/01/29:
+ * feature parity with old ProcessList
+ * implemented system load (ProcessList)
+
+2011/01/28:
+ * initial rework of ProcessList
+
+2011/01/27:
+ * add ACPI thermal sensors
+ * add ACPI battery sensors
+ * handle MSI (> 255) interrupts
+ * handle missing interrupts
+
+2011/01/04:
+ * added IRQ to stat information
+ * added hardware and software interrupts to stat information
+
+2011/01/03:
+ * added Makefile to build (just) ksysguardd
+ * remove monitors in exitMemory
+ * added context switches, traps and syscalls to stat information
+ * remove more monitors in exitCpuInfo
+ * rename CPU->cpuinfo (.c .h)
+
+2010/11/09:
+ * added Active, Inactive and Wired to memory information
+ * added Swapped In and Swapped Out to swap information
+ * refractored memory and swap code
+ * removed DragonFlyBSD code from CPU.c
+
+2010/11/08:
+ * added Interrupt load (ports patch)
+ * added CPU clock freqency (per core and average)
+ * added CPU temperature (per core and average)
+ * removed ``#include <config-workspace.h>'' (not used)
+ * updated percentages (CPU.c) function to 'modern' C
+ * added per CPU load
+
+2010/11/04:
+ * added DiskStatUsed upper bound
+ * added DiskStatFree upper bound
+ * added uptime (using CLOCK_UPTIME)

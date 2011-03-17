@@ -1,12 +1,12 @@
 /*
     KSysGuard, the KDE System Guard
 
-	Copyright (c) 2001 Tobias Koenig <tokoe@kde.org>
+    Copyright (c) 2006 Greg Martyn <greg.martyn@gmail.com>
+    Copyright (c) 2010 David Naylor <naylor.b.david@gmail.com>
 
     This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public
-    License as published by the Free Software Foundation; either
-    version 2 of the License, or (at your option) any later version.
+    modify it under the terms of version 2 or later of the GNU General Public
+    License as published by the Free Software Foundation.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,19 +19,15 @@
 
 */
 
-#ifndef _logfile_h_
-#define _logfile_h_
+#ifndef _uptime_h_
+#define _uptime_h_
 
-void initLogFile(struct SensorModul* sm);
-void exitLogFile(void);
+struct SensorModul;
 
-void printLogFile(const char* cmd);
-void printLogFileInfo(const char* cmd);
+void initUptime( struct SensorModul* );
+void exitUptime( void );
 
-void registerLogFile(const char* cmd);
-void unregisterLogFile(const char* cmd);
-
-/* debug command */
-void printRegistered(const char* cmd);
+void printUptime( const char* cmd );
+void printUptimeInfo( const char* cmd );
 
 #endif

@@ -1,0 +1,50 @@
+ * acpi
+ * apm (ignored)
+ * cpuinfo
+ * CPU (cpuinfo and stats merged)
+ + diskstat
+ - diskstats
+ * loadavg
+ * logfile (ignored)
+ * memory
+ + netdev
+ - netstat
+ + ProcessList
+   * last pid
+   - thread info
+   - thread count
+   * use sysctl
+ * stats
+ * uptime
+
+ * get partition table to display KB vs Block
+ - cache MIB from sysctlbyname
+ - add size scaling to all displays
+ - refractor scaling code
+ - properly sort sizes in ListView (KB vs Block)
+ + strip out / refractor DragonFly
+ - dynamic changing of:
+   - CPU
+   - memory
+   - swap
+   - battery
+ + top:
+   * swap (IO, swap)
+   - others
+ - remove kvm (dependancy)
+ + scale time diff stats
+   * ProcessList
+ + systat:
+   + vmstat
+     * block 1
+     - block 2
+     - block 3
+     * block 4
+     * IRQ
+   - ifstat
+   - iostat
+   - icmp
+   - icmp6
+   - ip
+   - ip6
+   - others
