@@ -31,80 +31,83 @@ class QTreeView;
 
 class ListViewModel : public QStandardItemModel {
 public:
-	ListViewModel(QObject * parent = 0 ) : QStandardItemModel(parent)
-	{
-	}
+    ListViewModel(QObject * parent = 0 ) : QStandardItemModel(parent)
+    {
+    }
 
-	ListViewModel(int rows, int columns, QObject * parent = 0) : QStandardItemModel(rows, columns, parent)
-	{
-	}
+    ListViewModel(int rows, int columns, QObject * parent = 0) : QStandardItemModel(rows, columns, parent)
+    {
+    }
 
-	void addColumnAlignment( Qt::AlignmentFlag align )
-	{
-		mAlignment.append(align);
-	}
+    void addColumnAlignment( Qt::AlignmentFlag align )
+    {
+        mAlignment.append(align);
+    }
 
-	void clear()
-	{
-		QStandardItemModel::clear();
-		mAlignment.clear();
-	}
+    void clear()
+    {
+        QStandardItemModel::clear();
+        mAlignment.clear();
+    }
 
-	QVariant data(const QModelIndex &index, int role) const
-	{
-		int column = index.column();
+    QVariant data(const QModelIndex &index, int role) const
+    {
+        int column = index.column();
 
-		if ( role == Qt::TextAlignmentRole && column >= 0 && column < mAlignment.size() )
-			return mAlignment[column];
-		else
-			return QStandardItemModel::data(index, role);
-	}
+        if ( role == Qt::TextAlignmentRole && column >= 0 && column < mAlignment.size() )
+            return mAlignment[column];
+        else
+            return QStandardItemModel::data(index, role);
+    }
 
 private:
-	QList<Qt::AlignmentFlag> mAlignment;
+    QList<Qt::AlignmentFlag> mAlignment;
 };
 
 class ListView : public KSGRD::SensorDisplay
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	ListView(QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
-	~ListView() {}
+    ListView(QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
+    ~ListView() {}
 
-	bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& sensorDescr);
-	void answerReceived(int id, const QList<QByteArray>& answerlist);
-	void updateList();
+    bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& sensorDescr);
+    void answerReceived(int id, const QList<QByteArray>& answerlist);
+    void updateList();
 
-	bool restoreSettings(QDomElement& element);
-	bool saveSettings(QDomDocument& doc, QDomElement& element);
+    bool restoreSettings(QDomElement& element);
+    bool saveSettings(QDomDocument& doc, QDomElement& element);
 
-	virtual bool hasSettingsDialog() const
-	{
-		return true;
-	}
+    virtual bool hasSettingsDialog() const
+    {
+        return true;
+    }
 
-	virtual void timerTick()
-	{
-		updateList();
-	}
+    virtual void timerTick()
+    {
+        updateList();
+    }
 
-	void configureSettings();
+    void configureSettings();
 
 public Q_SLOTS:
-	void applySettings();
-	void applyStyle();
+    void applySettings();
+    void applyStyle();
+    void showColumnContextMenu(const QPoint &point);
 
 private:
 
-	typedef enum { Text, Int, Float, Time, DiskStat, KByte, Percentage } ColumnType;
+    typedef enum { Text, Int, Float, Time, DiskStat, KByte, Percentage } ColumnType;
+    typedef enum { UnitsKB, UnitsMB, UnitsGB } Units;
 
-	ListViewModel mModel;
-	QTreeView *mView;
-	ListViewSettings* lvs;
-	QByteArray mHeaderSettings;
-	
-	QList<ColumnType> mColumnTypes;
-        ColumnType convertColumnType(const QString &type) const;
+    ListViewModel mModel;
+    QTreeView *mView;
+    ListViewSettings* lvs;
+    QByteArray mHeaderSettings;
+    Units mUnits;
+
+    QList<ColumnType> mColumnTypes;
+    ColumnType convertColumnType(const QString &type) const;
 };
 
 #endif
