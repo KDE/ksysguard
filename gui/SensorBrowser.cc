@@ -543,16 +543,15 @@ void SensorBrowserModel::hostAdded(KSGRD::SensorAgent *sensorAgent, const QStrin
 void SensorBrowserModel::hostRemoved(const QString &hostName)  {
 	HostInfo* toRemove = findHostInfoByHostName(hostName);
 	if (toRemove != NULL)  {
+        beginResetModel();
 		int hostId = toRemove->id();
 		removeAllSensorUnderBranch(toRemove,hostId);
 		removeEmptyParentTreeBranches(hostId,hostId,hostId);
 
-		QModelIndex index = createIndex(mHostInfoMap.keys().indexOf(hostId), 0 , hostId);
-		beginRemoveRows(index, 0, 0);
 		delete mHostInfoMap.take(hostId);
 		mTreeMap.take(hostId);
 		mHostSensorsMap.take(hostId);
-		endRemoveRows();
+        endResetModel();
 	}
 	update();
 }
