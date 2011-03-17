@@ -96,7 +96,7 @@ public Q_SLOTS:
 
 private:
 
-	typedef enum { Text, Int, Float, Time, DiskStat, KByte } ColumnType;
+	typedef enum { Text, Int, Float, Time, DiskStat, KByte, Percentage } ColumnType;
 
 	ListViewModel mModel;
 	QTreeView *mView;

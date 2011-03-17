@@ -252,7 +252,7 @@ void printDiskStat( const char* cmd )
 void printDiskStatInfo( const char* cmd )
 {
     (void)cmd;
-    output( "Device\tSize\tUsed\tAvailable\tUsed %%\tMount point\nM\tKB\tKB\tKB\td\ts\n" );
+    output( "Device\tSize\tUsed\tAvailable\tUsed %%\tMount point\nM\tKB\tKB\tKB\t%%\ts\n" );
 }
 
 void printDiskStatUsed( const char* cmd )

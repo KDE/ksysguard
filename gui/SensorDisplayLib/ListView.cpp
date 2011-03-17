@@ -43,9 +43,10 @@ ListView::ListView(QWidget* parent, const QString& title, SharedSettings *workSh
 {
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	mView = new QTreeView(this);
-	//QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
+//	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
 //	proxyModel->setSourceModel(&mModel);
 	mView->setModel(&mModel);
+	mModel.setSortRole(Qt::UserRole);
 	layout->addWidget(mView);
 	this->setLayout(layout);
 	
@@ -110,6 +111,8 @@ ListView::ColumnType ListView::convertColumnType(const QString &type) const
     return DiskStat;
   else if ( type == "KB" )
     return KByte;
+  else if ( type == "%" )
+    return Percentage;
   else
     return Text;
 }
@@ -117,7 +120,6 @@ ListView::ColumnType ListView::convertColumnType(const QString &type) const
 void
 ListView::answerReceived(int id, const QList<QByteArray>& answer)
 {
-	unsigned long kbytes;
 	float sbytes;
 	/* We received something, so the sensor is probably ok. */
 	sensorError(id, false);
@@ -167,16 +169,25 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
 					item->setEditable(false);
 					switch( mColumnTypes[j] ) {
 					  case Int:
-						item->setData(records[j].toInt(), Qt::DisplayRole);
+						item->setData(records[j].toInt(), Qt::UserRole);
+						item->setText(records[j]);
+						break;
+					  case Percentage:
+						item->setData(records[j].toInt(), Qt::UserRole);
+						item->setText(records[j] + "%");
 						break;
 					  case Float:
 						item->setData(records[j].toFloat(), Qt::DisplayRole);
+						item->setData(records[j].toFloat(), Qt::UserRole);
 						break;
 					  case Time:
 						item->setData(QTime::fromString(records[j]), Qt::DisplayRole);
+						item->setData(QTime::fromString(records[j]), Qt::UserRole);
 						break;
-					  case KByte:
+					  case KByte: {
+						int kbytes;
 						kbytes = records[j].toInt();
+						item->setData(kbytes, Qt::UserRole);
 						if(kbytes >= 1024*1024*1024*0.7) {  //If it's over 0.7TiB, then set the scale to terabytes
 							sbytes = kbytes / float(1024*1024*1024);
 							item->setText(i18nc("units", "%1 TiB", KGlobal::locale()->formatNumber(sbytes, sbytes < 9.9 ? 1 : 0)));
@@ -188,16 +199,18 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
 							item->setText(i18nc("units", "%1 MiB", KGlobal::locale()->formatNumber(sbytes, sbytes < 9.9 ? 1 : 0)));
 						} else
 							item->setText(i18nc("units", "%1 KiB", kbytes));
-						break;
+						break; }
 					  case DiskStat:
 					  case Text:
 					  default:
 						item->setText(records[j]);
+						item->setData(records[j], Qt::UserRole);
 					}
 					mModel.setItem(i, j, item);
 				}
 			}
 			mModel.setRowCount(answer.count());
+            mModel.sort( mView->header()->sortIndicatorSection(), mView->header()->sortIndicatorOrder() );
 			break;
 		}
 	}

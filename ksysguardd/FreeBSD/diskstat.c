@@ -221,7 +221,7 @@ void printDiskStat(const char* cmd)
 
 void printDiskStatInfo(const char* cmd)
 {
-    fprintf(CurrentClient, "Device\tCapacity\tUsed\tAvailable\tUsed %%\tInodes\tUsed Inodes\tFree Inodes\tInodes %%\tMountPoint\nM\tKB\tKB\tKB\td\td\td\td\td\ts\n");
+    fprintf(CurrentClient, "Device\tCapacity\tUsed\tAvailable\tUsed %%\tInodes\tUsed Inodes\tFree Inodes\tInodes %%\tMountPoint\nM\tKB\tKB\tKB\t%%\td\td\td\t%%\ts\n");
 }
 
 void printDiskStatUsed(const char* cmd)
