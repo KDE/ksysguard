@@ -1,4 +1,4 @@
-set( ksysguarddtest_SRCS ksysguarddtest.cpp ../ksgrd/SensorAgent.cc ../ksgrd/SensorManager.cc ../ksgrd/SensorSocketAgent.cc ../ksgrd/SensorShellAgent.cc)
+set( ksysguarddtest_SRCS ksysguarddtest.cpp ../ksgrd/SensorAgent.cpp ../ksgrd/SensorManager.cpp ../ksgrd/SensorSocketAgent.cpp ../ksgrd/SensorShellAgent.cpp)
 
 kde4_add_unit_test( ksysguarddtest
     TESTNAME ksubmodule-ksysguarddtest

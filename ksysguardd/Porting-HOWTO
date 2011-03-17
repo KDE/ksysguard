@@ -114,7 +114,7 @@ COMMAND\nksysguardd> ".
 ksysguardd does not handle native language support. In order to have a
 minimum installation (only a single file) on the monitored machine,
 all translation are handled by the front-end. Please see the files
-gui/ksgrd/SensorManger.cc and gui/SensorDisplayLib/ProcessTable.cc
+gui/ksgrd/SensorManger.cpp and gui/SensorDisplayLib/ProcessTable.cpp
 if you add new strings.
 
 /**

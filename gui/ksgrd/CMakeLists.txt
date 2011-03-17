@@ -3,11 +3,11 @@
 
 ########### next target ###############
 
-set(ksgrd_LIB_SRCS 
-   SensorAgent.cc 
-   SensorManager.cc 
-   SensorShellAgent.cc 
-   SensorSocketAgent.cc 
+set(ksgrd_LIB_SRCS
+   SensorAgent.cpp
+   SensorManager.cpp
+   SensorShellAgent.cpp
+   SensorSocketAgent.cpp
 )
 
 
