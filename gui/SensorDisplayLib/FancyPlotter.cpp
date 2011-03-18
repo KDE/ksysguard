@@ -559,7 +559,7 @@ void FancyPlotter::sendDataToPlotter( )
             mSampleBuf.append(mPlotter->lastValue(mSampleBuf.count())); //we might have sensors missing so set their values to the previously known value
         mPlotter->addSample( mSampleBuf );
         if(isVisible()) {
-            if(QToolTip::isVisible() && mPlotter->geometry().contains(mPlotter->mapFromGlobal( QCursor::pos() ))) {
+            if(QToolTip::isVisible() && (qApp->topLevelAt(QCursor::pos()) == window()) && mPlotter->geometry().contains(mPlotter->mapFromGlobal( QCursor::pos() ))) {
                 setTooltip();
                 QToolTip::showText(QCursor::pos(), mPlotter->toolTip(), mPlotter);
             }
