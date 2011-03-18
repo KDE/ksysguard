@@ -414,26 +414,26 @@ static void processStat( void ) {
 	
 	/* Read Linux 2.5.x /proc/vmstat */
     stat = fopen("/proc/vmstat", "r");
-    if(!stat)
-		return;
-	while ( fscanf( stat, format, buf ) == 1 ) {
-		buf[ sizeof( buf ) - 1 ] = '\0';
-		sscanf( buf, tagFormat, tag );
-		
-		if ( strcmp( "pgpgin", tag ) == 0 ) {
-			unsigned long v1;
-			sscanf( buf + 7, "%lu", &v1 );
-			PageIn = v1 - OldPageIn;
-			OldPageIn = v1;
-		}
-		else if ( strcmp( "pgpgout", tag ) == 0 ) {
-			unsigned long v1;
-			sscanf( buf + 7, "%lu", &v1 );
-			PageOut = v1 - OldPageOut;
-			OldPageOut = v1;
-		}
-	}
-	fclose(stat);
+    if(stat) {
+        while ( fscanf( stat, format, buf ) == 1 ) {
+            buf[ sizeof( buf ) - 1 ] = '\0';
+            sscanf( buf, tagFormat, tag );
+
+            if ( strcmp( "pgpgin", tag ) == 0 ) {
+                unsigned long v1;
+                sscanf( buf + 7, "%lu", &v1 );
+                PageIn = v1 - OldPageIn;
+                OldPageIn = v1;
+            }
+            else if ( strcmp( "pgpgout", tag ) == 0 ) {
+                unsigned long v1;
+                sscanf( buf + 7, "%lu", &v1 );
+                PageOut = v1 - OldPageOut;
+                OldPageOut = v1;
+            }
+        }
+        fclose(stat);
+    }
 	
 	/* save exact time interval between this and the last read of /proc/stat */
 	timeInterval = currSampling.tv_sec - lastSampling.tv_sec +
@@ -603,23 +603,22 @@ void initStat( struct SensorModul* sm ) {
 	stat = fopen("/proc/vmstat", "r");
     if(!stat) {
 		print_error( "Cannot open file \'/proc/vmstat\'\n");
-		return;
-    }
+    } else {
+        while ( fscanf( stat, format, buf ) == 1 ) {
+            buf[ sizeof( buf ) - 1 ] = '\0';
+            sscanf( buf, tagFormat, tag );
 
-	while ( fscanf( stat, format, buf ) == 1 ) {
-		buf[ sizeof( buf ) - 1 ] = '\0';
-		sscanf( buf, tagFormat, tag );
-		
-		if ( strcmp( "pgpgin", tag ) == 0 ) {
-			sscanf( buf + 7, "%lu", &OldPageIn );
-			registerMonitor( "cpu/pageIn", "float", printPageIn, printPageInInfo, StatSM );
-		}
-		else if ( strcmp( "pgpgout", tag ) == 0 ) {
-			sscanf( buf + 7, "%lu", &OldPageOut );
-			registerMonitor( "cpu/pageOut", "float", printPageOut, printPageOutInfo, StatSM );
-		}
-	}
-	fclose(stat);
+            if ( strcmp( "pgpgin", tag ) == 0 ) {
+                sscanf( buf + 7, "%lu", &OldPageIn );
+                registerMonitor( "cpu/pageIn", "float", printPageIn, printPageInInfo, StatSM );
+            }
+            else if ( strcmp( "pgpgout", tag ) == 0 ) {
+                sscanf( buf + 7, "%lu", &OldPageOut );
+                registerMonitor( "cpu/pageOut", "float", printPageOut, printPageOutInfo, StatSM );
+            }
+        }
+        fclose(stat);
+    }
 	if ( CPUCount > 0 )
 		SMPLoad = (CPULoadInfo*)calloc( CPUCount, sizeof( CPULoadInfo ) );
 	
