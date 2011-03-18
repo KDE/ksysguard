@@ -41,11 +41,7 @@ static char AcpiBatteryNames[ ACPIBATTERYNUMMAX ][ 8 ];
 static int AcpiBatteryCharge[ ACPIBATTERYNUMMAX ];
 static int AcpiBatteryUsage[ ACPIBATTERYNUMMAX ];
 
-static int AcpiThermalZones = -1;
-static int AcpiFans = -1;
 static int AcpiBatteryOk = 1;
-static int AcpiThermalZonesOk = 1;
-static int AcpiFansOk = 1;
 /*
 ================================ public part =================================
 */
@@ -60,19 +56,13 @@ void initAcpi(struct SensorModul* sm)
 int updateAcpi( void )
 {
 	if (AcpiBatteryOk && AcpiBatteryNum > 0) updateAcpiBattery();
-	if (AcpiFansOk && AcpiFans > 0) updateAcpiFan();
-	if (AcpiThermalZonesOk && AcpiThermalZones > 0) updateAcpiThermal();
 	return 0;
 }
 
 void exitAcpi( void )
 {
   AcpiBatteryNum = -1;
-  AcpiFans = -1;
-  AcpiThermalZones = -1;
   AcpiBatteryOk = 0;
-  AcpiFansOk = 0;
-  AcpiThermalZonesOk = 0;
 }
 
 
@@ -267,19 +257,15 @@ void initAcpiThermal(struct SensorModul *sm)
 		"\' does not exist or is not readable.\n"
 	  "Load the ACPI thermal kernel module or compile it into your kernel.\n" );
 */
-	  AcpiThermalZones = -1;
-	  AcpiThermalZonesOk = 0;
 	  return;
   }
 
-  AcpiThermalZones = 0;
   while ( (de = readdir(d)) != NULL ) {
 	  if ( ( strcmp( de->d_name, "." ) == 0 )
 			  || ( strcmp( de->d_name, ".." ) == 0 ) ) {
 		  continue;
 	  }
 
-	  AcpiThermalZones++;
 	  snprintf(th_ref, sizeof(th_ref), 
 			  "acpi/thermal_zone/%s/temperature", de->d_name);
 	  registerMonitor(th_ref, "integer", printThermalZoneTemperature,
@@ -288,12 +274,6 @@ void initAcpiThermal(struct SensorModul *sm)
   closedir( d );
 
   return;
-}
-
-int updateAcpiThermal()
-{
-	/* TODO: stub */
-	return 0;
 }
 
 static int getCurrentTemperature(const char *cmd)
@@ -316,7 +296,6 @@ static int getCurrentTemperature(const char *cmd)
 		print_error( "Cannot open file \'%s\'!\n"
 		"Load the thermal ACPI kernel module or\n"
 		"compile it into your kernel.\n", th_file );
-		AcpiThermalZonesOk = 0;
 		return -1;
 	}
 
@@ -324,7 +303,6 @@ static int getCurrentTemperature(const char *cmd)
 	if ( read_bytes == sizeof(input_buf) - 1 ) {
 		log_error( "Internal buffer too small to read \'%s\'", th_file );
 		close( fd );
-		AcpiThermalZonesOk = 0;
 		return -1;
 	}
 	close(fd);
@@ -364,19 +342,15 @@ void initAcpiFan(struct SensorModul *sm)
 		"\' does not exist or is not readable.\n"
 	  "Load the ACPI thermal kernel module or compile it into your kernel.\n" );
 */
-	  AcpiFans = -1;
-	  AcpiFansOk = 0;
 	  return;
   }
 
-  AcpiFans = 0;
   while ( (de = readdir(d)) != NULL ) {
 	  if ( ( strcmp( de->d_name, "." ) == 0 )
 			  || ( strcmp( de->d_name, ".." ) == 0 ) ) {
 		  continue;
 	  }
 
-	  AcpiFans++;
 	  snprintf(th_ref, sizeof(th_ref), 
 			  "acpi/fan/%s/state", de->d_name);
 	  registerMonitor(th_ref, "integer", printFanState,
@@ -385,12 +359,6 @@ void initAcpiFan(struct SensorModul *sm)
   closedir( d );
 
   return;
-}
-
-int updateAcpiFan()
-{
-	/* TODO: stub */
-	return 0;
 }
 
 static int getFanState(const char *cmd)
@@ -404,7 +372,6 @@ static int getFanState(const char *cmd)
 	len_fan_name = extract_zone_name(&fan_name, cmd);
 	if (len_fan_name <= 0) {
 		return -1;
-		AcpiFansOk = 0;
 	}
 
 	snprintf(fan_state_file, sizeof(fan_state_file),
@@ -417,7 +384,6 @@ static int getFanState(const char *cmd)
 		"Load the fan ACPI kernel module or\n"
 		"compile it into your kernel.\n", fan_state_file );
 
-	  	AcpiFansOk = 0;
 		return -1;
 	}
 
@@ -425,7 +391,6 @@ static int getFanState(const char *cmd)
 	if ( read_bytes == sizeof(input_buf) - 1 ) {
 		log_error( "Internal buffer too small to read \'%s\'", fan_state_file );
 		close( fd );
-		AcpiFansOk = 0;
 		return -1;
 	}
 	close(fd);
