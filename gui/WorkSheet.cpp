@@ -340,7 +340,10 @@ KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, QString
             break;
         case DisplayProcessControllerLocal:
             Q_ASSERT(sLocalProcessController);
-            newDisplay = sLocalProcessController;
+            if (!sLocalProcessController->parentWidget())
+                newDisplay = sLocalProcessController;
+            else
+                newDisplay = new ProcessController(this);
             break;
         default:
             Q_ASSERT(false);
