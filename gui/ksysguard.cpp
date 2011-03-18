@@ -93,7 +93,7 @@ TopLevel::TopLevel()
   connect( mWorkSpace, SIGNAL( currentChanged( int ) ),
            SLOT( currentTabChanged( int ) ) );
 
-  sLocalProcessController = new ProcessController( this);
+  sLocalProcessController = new ProcessController( this, NULL);
   connect( sLocalProcessController, SIGNAL( processListChanged() ), this, SLOT( updateProcessCount()));
 
   /* Create the status bar. It displays some information about the

@@ -52,7 +52,7 @@ class ProcessController : public KSGRD::SensorDisplay
     Q_OBJECT
 
 public:
-    ProcessController(QWidget* parent);
+    ProcessController(QWidget* parent,  SharedSettings *workSheetSettings);
     virtual ~ProcessController() { }
 
     /* Functions for SensorDisplay*/

@@ -116,12 +116,12 @@ void SensorDisplay::showContextMenu(const QPoint &pos)
 
     if ( hasSettingsDialog() ) {
       action = pm.addAction( i18n( "&Properties" ) );
-      action->setData( 2 );
+      action->setData( 0 );
       menuEmpty = false;
     }
-    if(mSharedSettings && !mSharedSettings->locked) {  
+    if(mSharedSettings && !mSharedSettings->locked) {
       action = pm.addAction( i18n( "&Remove Display" ) );
-      action->setData( 3 );
+      action->setData( 1 );
       menuEmpty = false;
     }
 
@@ -129,13 +129,10 @@ void SensorDisplay::showContextMenu(const QPoint &pos)
     action = pm.exec( mapToGlobal(pos) );
     if ( action ) {
       switch ( action->data().toInt() ) {
-        case 1:
-          KRun::run(*KService::serviceByDesktopName("ksysguard"), KUrl::List(), window());
-          break;
-        case 2:
+        case 0:
           configureSettings();
           break;
-        case 3: {
+        case 1: {
             if ( mDeleteNotifier ) {
               DeleteEvent *event = new DeleteEvent( this );
               kapp->postEvent( mDeleteNotifier, event );

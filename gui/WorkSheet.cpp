@@ -336,14 +336,14 @@ KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, QString
             newDisplay = new LogFile( this, displayTitle, &mSharedSettings );
             break;
         case DisplayProcessControllerRemote:
-            newDisplay = new ProcessController( this);
+            newDisplay = new ProcessController(this, &mSharedSettings);
             break;
         case DisplayProcessControllerLocal:
             Q_ASSERT(sLocalProcessController);
             if (!sLocalProcessController->parentWidget())
                 newDisplay = sLocalProcessController;
             else
-                newDisplay = new ProcessController(this);
+                newDisplay = new ProcessController(this, &mSharedSettings);
             break;
         default:
             Q_ASSERT(false);

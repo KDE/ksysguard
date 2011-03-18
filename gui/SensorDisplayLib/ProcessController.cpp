@@ -36,8 +36,8 @@
 #ifdef DO_MODELCHECK
 #include "modeltest.h"
 #endif
-ProcessController::ProcessController(QWidget* parent)
-    : KSGRD::SensorDisplay(parent, QString(), NULL)
+ProcessController::ProcessController(QWidget* parent,  SharedSettings *workSheetSettings)
+    : KSGRD::SensorDisplay(parent, QString(), workSheetSettings)
 {
     mProcessList = NULL;
     mProcesses = NULL;
@@ -151,6 +151,8 @@ bool ProcessController::addSensor(const QString& hostName,
     addActions(mProcessList->actions());
     connect(mProcessList, SIGNAL(updated()), this, SIGNAL(updated()));
     connect(mProcessList, SIGNAL(processListChanged()), this, SIGNAL(processListChanged()));
+    mProcessList->setContextMenuPolicy( Qt::CustomContextMenu );
+    connect(mProcessList, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showContextMenu(QPoint)));
 
     layout->addWidget(mProcessList);
 
