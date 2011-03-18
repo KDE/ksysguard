@@ -139,22 +139,30 @@ class SensorIntegerInfo : public SensorTokenizer
 
     QString name()
     {
-      return QString::fromUtf8((*this)[ 0 ]);
+      if (count() > 0)
+          return QString::fromUtf8((*this)[ 0 ]);
+      return QString();
     }
 
     long long min()
     {
-      return (*this)[ 1 ].toLongLong();
+      if (count() > 1)
+          return (*this)[ 1 ].toLongLong();
+      return -1;
     }
 
     long long max()
     {
-      return (*this)[ 2 ].toLongLong();
+      if (count() > 2)
+          return (*this)[ 2 ].toLongLong();
+      return -1;
     }
 
     QString unit()
     {
-      return QString::fromUtf8((*this)[ 3 ]);
+      if (count() > 3)
+          return QString::fromUtf8((*this)[ 3 ]);
+      return QString();
     }
 };
 
@@ -173,22 +181,30 @@ class SensorFloatInfo : public SensorTokenizer
 
     QString name()
     {
-      return QString::fromUtf8((*this)[ 0 ]);
+      if (count() > 0)
+          return QString::fromUtf8((*this)[ 0 ]);
+      return QString();
     }
 
     double min()
     {
-      return (*this)[ 1 ].toDouble();
+      if (count() > 1)
+          return (*this)[ 1 ].toDouble();
+      return -1;
     }
 
     double max()
     {
-      return (*this)[ 2 ].toDouble();
+      if (count() > 2)
+          return (*this)[ 2 ].toDouble();
+      return -1;
     }
 
     QString unit()
     {
-      return QString::fromUtf8((*this)[ 3 ]);
+      if (count() > 3)
+          return QString::fromUtf8((*this)[ 3 ]);
+      return QString();
     }
 };
 
