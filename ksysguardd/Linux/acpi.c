@@ -1,7 +1,7 @@
 /*
     KSysGuard, the KDE System Guard
-    
-    Copyright (c) 2003 Stephan Uhlmann <su@su2.info> 
+
+    Copyright (c) 2003 Stephan Uhlmann <su@su2.info>
     Copyright (c) 2005 Sirtaj Singh Kang <taj@kde.org> -- Battery fixes and Thermal
 
     This program is free software; you can redistribute it and/or
@@ -49,7 +49,6 @@ static int AcpiBatteryOk = 1;
 void initAcpi(struct SensorModul* sm)
 {
 	initAcpiBattery(sm);
-	initAcpiFan(sm);
 	initAcpiThermal(sm);
 }
 
@@ -106,7 +105,7 @@ int updateAcpiBattery( void )
   char *p;
   int AcpiBatCapacity = 1;
   int AcpiBatRemainingCapacity = 0;
-  
+
   if ( AcpiBatteryNum <= 0 )
     return -1;
 
@@ -161,7 +160,7 @@ int updateAcpiBattery( void )
       if ( p )
         p++;
     }
-    
+
     /* get current battery usage, (current Current) */
     p = AcpiBatStateBuf;
     while ( ( p!= NULL ) && ( sscanf( p, "present rate: %d ",
@@ -169,15 +168,15 @@ int updateAcpiBattery( void )
       p = strchr( p, '\n' );
       if ( p )
         p++;
-    } 
-    
-    
+    }
+
+
     /* calculate charge rate */
     if ( AcpiBatCapacity > 0 )
       AcpiBatteryCharge[ i ] = AcpiBatRemainingCapacity * 100 / AcpiBatCapacity;
     else
       AcpiBatteryCharge[ i ] = 0;
-  } 
+  }
   AcpiBatteryOk = 1;
   return 0;
 }
@@ -201,7 +200,7 @@ void printAcpiBatFillInfo( const char* cmd )
 void printAcpiBatUsage( const char* cmd)
 {
  int i;
- 
+
  sscanf( cmd + 13, "%d", &i );
  output( "%d\n", AcpiBatteryUsage[ i ] );
 }
@@ -218,9 +217,13 @@ void printAcpiBatUsageInfo( const char* cmd)
 
 /************** ACPI Thermal *****************/
 
-#define THERMAL_ZONE_DIR "/proc/acpi/thermal_zone"
-#define TEMPERATURE_FILE "temperature"
-#define TEMPERATURE_FILE_MAXLEN 255
+#define OLD_THERMAL_ZONE_DIR "/proc/acpi/thermal_zone"
+#define OLD_TEMPERATURE_FILE "temperature"
+#define OLD_TEMPERATURE_FILE_MAXLEN 255
+
+#define OLD_FAN_DIR "/proc/acpi/fan"
+#define OLD_FAN_STATE_FILE "state"
+#define OLD_FAN_STATE_FILE_MAXLEN 255
 
 
 /*static char **zone_names = NULL;*/
@@ -246,40 +249,129 @@ static int extract_zone_name(char **startidx, const char *cmd)
 
 void initAcpiThermal(struct SensorModul *sm)
 {
-
   char th_ref[ ACPIFILENAMELENGTHMAX ];
   DIR *d = NULL;
   struct dirent *de;
 
-  d = opendir(THERMAL_ZONE_DIR);
-  if (d == NULL) {
-/*	  print_error( "Directory \'" THERMAL_ZONE_DIR
-		"\' does not exist or is not readable.\n"
-	  "Load the ACPI thermal kernel module or compile it into your kernel.\n" );
-*/
-	  return;
-  }
+  d = opendir("/sys/class/thermal/");
+  if (d != NULL) {
+      while ( (de = readdir(d)) != NULL ) {
+          if (!de->d_name || de->d_name[0] == '.')
+              continue;
+          if (strncmp( de->d_name, "thermal_zone", sizeof("thermal_zone")-1) == 0) {
+              snprintf(th_ref, sizeof(th_ref),
+                      "acpi/Thermal_Zone/%s/Temperature", de->d_name + (sizeof("thermal_zone")-1));
+              registerMonitor(th_ref, "integer", printSysThermalZoneTemperature,
+                      printThermalZoneTemperatureInfo, sm);
 
-  while ( (de = readdir(d)) != NULL ) {
-	  if ( ( strcmp( de->d_name, "." ) == 0 )
-			  || ( strcmp( de->d_name, ".." ) == 0 ) ) {
-		  continue;
-	  }
+              /*For compatibility, register a legacy sensor*/
+              int zone_number;
+              if (sscanf(de->d_name, "thermal_zone%d", &zone_number) > 0) {
+                  snprintf(th_ref, sizeof(th_ref),
+                          "acpi/thermal_zone/TZ%02d/temperature", zone_number);
+                  registerLegacyMonitor(th_ref, "integer", printSysCompatibilityThermalZoneTemperature,
+                          printThermalZoneTemperatureInfo, sm);
+              }
+          } else if (strncmp( de->d_name, "cooling_device", sizeof("cooling_device")-1) == 0) {
+              snprintf(th_ref, sizeof(th_ref),
+                      "acpi/Cooling_Device/%s/Current State", de->d_name+( sizeof("cooling_device")-1));
+              registerMonitor(th_ref, "integer", printSysFanState,
+                      printFanStateInfo, sm);
+          }
+      }
+      closedir( d );
+  } else {
+      d = opendir(OLD_THERMAL_ZONE_DIR);
+      if (d != NULL) {
+          while ( (de = readdir(d)) != NULL ) {
+              if (!de->d_name || de->d_name[0] == '.')
+                  continue;
 
-	  snprintf(th_ref, sizeof(th_ref), 
-			  "acpi/thermal_zone/%s/temperature", de->d_name);
-	  registerMonitor(th_ref, "integer", printThermalZoneTemperature,
-			  printThermalZoneTemperatureInfo, sm);
+              snprintf(th_ref, sizeof(th_ref),
+                      "acpi/thermal_zone/%s/temperature", de->d_name);
+              registerMonitor(th_ref, "integer", printThermalZoneTemperature,
+                      printThermalZoneTemperatureInfo, sm);
+          }
+          closedir( d );
+      }
+
+      d = opendir(OLD_FAN_DIR);
+      if (d != NULL) {
+          while ( (de = readdir(d)) != NULL ) {
+              if (!de->d_name || de->d_name[0] == '.')
+                  continue;
+
+              snprintf(th_ref, sizeof(th_ref),
+                      "acpi/fan/%s/state", de->d_name);
+              registerMonitor(th_ref, "integer", printFanState,
+                      printFanStateInfo, sm);
+          }
+          closedir( d );
+      }
   }
-  closedir( d );
 
   return;
+}
+
+static int getSysFileValue(const char *group, int value, const char *file) {
+    static int shownError = 0;
+    char th_file[ ACPIFILENAMELENGTHMAX ];
+    char input_buf[ 100 ];
+    snprintf(th_file, sizeof(th_file), "/sys/class/thermal/%s%d/%s",group, value, file);
+    int fd = open(th_file, O_RDONLY);
+    if (fd < 0) {
+        if (!shownError)
+            print_error( "Cannot open file \'%s\'!\n"
+                    "Load the thermal ACPI kernel module or\n"
+                    "compile it into your kernel.\n", th_file );
+        shownError = 1;
+        return -1;
+    }
+    int read_bytes = read( fd, input_buf, sizeof(input_buf) - 1 );
+    if ( read_bytes == sizeof(input_buf) - 1 ) {
+        if (!shownError)
+            log_error( "Internal buffer too small to read \'%s\'", th_file );
+        shownError = 1;
+        close( fd );
+        return -1;
+    }
+    close(fd);
+
+    int result=0;
+    sscanf(input_buf, "%d", &result);
+    return result;
+}
+
+void printSysThermalZoneTemperature(const char *cmd) {
+    int zone = 0;
+    if (sscanf(cmd, "acpi/Thermal_Zone/%d", &zone) <= 0) {
+        output("-1\n");
+        return;
+    }
+
+    output( "%d\n", getSysFileValue("thermal_zone", zone, "temp") / 1000);
+}
+void printSysCompatibilityThermalZoneTemperature(const char *cmd) {
+    int zone = 0;
+    if (sscanf(cmd, "acpi/thermal_zone/TZ%d", &zone) <= 0) {
+        output( "-1\n");
+        return;
+    }
+    output( "%d\n", getSysFileValue("thermal_zone", zone, "temp")/1000);
+}
+void printSysFanState(const char *cmd) {
+    int fan = 0;
+    if (sscanf(cmd, "acpi/Cooling_Device/%d", &fan) <= 0) {
+        output( "-1\n");
+        return;
+    }
+    output( "%d\n", getSysFileValue("cooling_device", fan, "state"));
 }
 
 static int getCurrentTemperature(const char *cmd)
 {
 	char th_file[ ACPIFILENAMELENGTHMAX ];
-	char input_buf[ TEMPERATURE_FILE_MAXLEN ];
+	char input_buf[ OLD_TEMPERATURE_FILE_MAXLEN ];
 	char *zone_name = NULL;
 	int read_bytes = 0, fd = 0, len_zone_name = 0;
 	int temperature=0;
@@ -288,7 +380,7 @@ static int getCurrentTemperature(const char *cmd)
 	if (len_zone_name <= 0) return -1;
 
 	snprintf(th_file, sizeof(th_file),
-			THERMAL_ZONE_DIR "/%.*s/" TEMPERATURE_FILE,
+			OLD_THERMAL_ZONE_DIR "/%.*s/" OLD_TEMPERATURE_FILE,
 			len_zone_name, zone_name);
 
 	fd = open(th_file, O_RDONLY);
@@ -325,46 +417,10 @@ void printThermalZoneTemperatureInfo(const char *cmd)
 
 /********** ACPI Fan State***************/
 
-#define FAN_DIR "/proc/acpi/fan"
-#define FAN_STATE_FILE "state"
-#define FAN_STATE_FILE_MAXLEN 255
-
-void initAcpiFan(struct SensorModul *sm)
-{
-
-  char th_ref[ ACPIFILENAMELENGTHMAX ];
-  DIR *d = NULL;
-  struct dirent *de;
-
-  d = opendir(FAN_DIR);
-  if (d == NULL) {
-/*	  print_error( "Directory \'" THERMAL_ZONE_DIR
-		"\' does not exist or is not readable.\n"
-	  "Load the ACPI thermal kernel module or compile it into your kernel.\n" );
-*/
-	  return;
-  }
-
-  while ( (de = readdir(d)) != NULL ) {
-	  if ( ( strcmp( de->d_name, "." ) == 0 )
-			  || ( strcmp( de->d_name, ".." ) == 0 ) ) {
-		  continue;
-	  }
-
-	  snprintf(th_ref, sizeof(th_ref), 
-			  "acpi/fan/%s/state", de->d_name);
-	  registerMonitor(th_ref, "integer", printFanState,
-			  printFanStateInfo, sm);
-  }
-  closedir( d );
-
-  return;
-}
-
 static int getFanState(const char *cmd)
 {
 	char fan_state_file[ ACPIFILENAMELENGTHMAX ];
-	char input_buf[ FAN_STATE_FILE_MAXLEN ];
+	char input_buf[ OLD_FAN_STATE_FILE_MAXLEN ];
 	char *fan_name = NULL;
 	int read_bytes = 0, fd = 0, len_fan_name = 0;
 	char fan_state[4];
@@ -375,7 +431,7 @@ static int getFanState(const char *cmd)
 	}
 
 	snprintf(fan_state_file, sizeof(fan_state_file),
-			FAN_DIR "/%.*s/" FAN_STATE_FILE,
+			OLD_FAN_DIR "/%.*s/" OLD_FAN_STATE_FILE,
 			len_fan_name, fan_name);
 
 	fd = open(fan_state_file, O_RDONLY);

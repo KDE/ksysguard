@@ -34,10 +34,13 @@ void printAcpiBatUsageInfo( const char* );
 
 void initAcpiThermal( struct SensorModul * );
 void printThermalZoneTemperature(const char *cmd);
+void printSysThermalZoneTemperature(const char *cmd);
+void printSysCompatibilityThermalZoneTemperature(const char *cmd);
 void printThermalZoneTemperatureInfo(const char *cmd);
 
 void initAcpiFan( struct SensorModul * );
 void printFanState(const char *cmd);
+void printSysFanState(const char *cmd);
 void printFanStateInfo(const char *cmd);
 
 #endif
