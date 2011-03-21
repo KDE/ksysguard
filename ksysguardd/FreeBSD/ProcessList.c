@@ -255,6 +255,10 @@ void printProcessList(const char* cmd)
         else
             load = ps->ki_runtime / 1000000.0 / scale;
 
+        if (!ps->ki_pid)
+            // XXX: TODO: add support for displaying kernel process
+            continue;
+
         fprintf(CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%ld\t%ld\t%s\t%s\n",
                name, (long)ps->ki_pid, (long)ps->ki_ppid,
                (long)ps->ki_uid, (long)ps->ki_pgid, state,
