@@ -2,6 +2,7 @@
  * Remove need for libkvm (and thus setgrp kmem, chmod g+s on ksysguardd)
  * Convert swap to sysctl based implementation
  * Add Process Spawn Count
+ * Move Process status into category
 
 2011/02/19:
  * return "/" for root partition mount name (vs /root)

@@ -43,11 +43,6 @@
 #define KILL_COMMAND "kill"
 #define SETPRIORITY_COMMAND "setpriority"
 
-#define PROC_MONITOR "ps"
-#define NPROC_MONITOR "pscount"
-#define PID_MONITOR "lastpid"
-#define SPAWN_MONITOR "procspawn"
-
 #define PROCBUF 1024
 #define STATEBUF 12
 #define NAMEBUF 24
@@ -100,10 +95,13 @@ void initProcessList(struct SensorModul *sm) {
 
     pagesize = getpagesize() / 1024;
 
-    registerMonitor(PROC_MONITOR, "table", printProcessList, printProcessListInfo, sm);
-    registerMonitor(NPROC_MONITOR, "integer", printProcessCount, printProcessCountInfo, sm);
-    registerMonitor(PID_MONITOR, "integer", printLastPID, printLastPIDInfo, sm);
-    registerMonitor(SPAWN_MONITOR, "integer", printProcSpawn, printProcSpawnInfo, sm);
+    registerMonitor("processes/ps", "table", printProcessList, printProcessListInfo, sm);
+    registerMonitor("processes/pscount", "integer", printProcessCount, printProcessCountInfo, sm);
+    registerMonitor("processes/lastpid", "integer", printLastPID, printLastPIDInfo, sm);
+    registerMonitor("processes/procspawn", "integer", printProcSpawn, printProcSpawnInfo, sm);
+
+    registerLegacyMonitor("ps", "table", printProcessList, printProcessListInfo, sm);
+    registerLegacyMonitor("processes/pscount", "integer", printProcessCount, printProcessCountInfo, sm);
 
     nproc = 0;
     updateProcessList();
@@ -113,10 +111,13 @@ void exitProcessList(void) {
     removeCommand(KILL_COMMAND);
     removeCommand(SETPRIORITY_COMMAND);
 
-    removeMonitor(PROC_MONITOR);
-    removeMonitor(NPROC_MONITOR);
-    removeMonitor(PID_MONITOR);
-    removeMonitor(SPAWN_MONITOR);
+    removeMonitor("processes/ps");
+    removeMonitor("processes/pscount");
+    removeMonitor("processes/lastpid");
+    removeMonitor("processes/procspawn");
+
+    removeMonitor("ps");
+    removeMonitor("pscount");
 
     free(cpunames);
     cpunames = NULL;

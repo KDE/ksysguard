@@ -81,10 +81,14 @@ void SensorManager::retranslate()
   mDict.insert( QLatin1String( "wired" ), i18n( "Wired Memory" ) );
   mDict.insert( QLatin1String( "execpages" ), i18n( "Exec Pages" ) );
   mDict.insert( QLatin1String( "filepages" ), i18n( "File Pages" ) );
+
+  /* Processes */
+  mDict.insert( QLatin1String( "processes" ), i18n( "Processes" ) );
   mDict.insert( QLatin1String( "pscount" ), i18n( "Process Count" ) );
   mDict.insert( QLatin1String( "ps" ), i18n( "Process Controller" ) );
   mDict.insert( QLatin1String( "lastpid" ), i18n( "Last Process ID" ) );
   mDict.insert( QLatin1String( "procspawn" ), i18n( "Process Spawn Count" ) );
+
   mDict.insert( QLatin1String( "disk" ), i18n( "Disk Throughput" ) );
   mDict.insert( QLatin1String( "load" ), i18nc( "CPU Load", "Load" ) );
   mDict.insert( QLatin1String( "totalio" ), i18n( "Total Accesses" ) );
