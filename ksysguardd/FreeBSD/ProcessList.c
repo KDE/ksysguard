@@ -42,9 +42,12 @@
 
 #define KILL_COMMAND "kill"
 #define SETPRIORITY_COMMAND "setpriority"
+
 #define PROC_MONITOR "ps"
 #define NPROC_MONITOR "pscount"
 #define PID_MONITOR "lastpid"
+#define SPAWN_MONITOR "procspawn"
+
 #define PROCBUF 1024
 #define STATEBUF 12
 #define NAMEBUF 24
@@ -61,7 +64,7 @@ static float scale;
 
 static int pagesize, smpmode;
 
-static unsigned int lastpid;
+static pid_t lastpid = 0, procspawn;
 
 static struct {
     uid_t uid;
@@ -100,6 +103,7 @@ void initProcessList(struct SensorModul *sm) {
     registerMonitor(PROC_MONITOR, "table", printProcessList, printProcessListInfo, sm);
     registerMonitor(NPROC_MONITOR, "integer", printProcessCount, printProcessCountInfo, sm);
     registerMonitor(PID_MONITOR, "integer", printLastPID, printLastPIDInfo, sm);
+    registerMonitor(SPAWN_MONITOR, "integer", printProcSpawn, printProcSpawnInfo, sm);
 
     nproc = 0;
     updateProcessList();
@@ -112,6 +116,7 @@ void exitProcessList(void) {
     removeMonitor(PROC_MONITOR);
     removeMonitor(NPROC_MONITOR);
     removeMonitor(PID_MONITOR);
+    removeMonitor(SPAWN_MONITOR);
 
     free(cpunames);
     cpunames = NULL;
@@ -120,6 +125,7 @@ void exitProcessList(void) {
 int updateProcessList(void) {
     int proc;
     int mib[3];
+    pid_t prevpid = lastpid, pid;
     size_t len;
     struct timespec update;
 
@@ -135,7 +141,7 @@ int updateProcessList(void) {
     sysctl(mib, 3, proc_buf, &len, NULL, 0);
     nproc = len / sizeof(struct kinfo_proc);
 
-    len = sizeof(unsigned int);
+    len = sizeof(lastpid);
     sysctlbyname("kern.lastpid", &lastpid, &len, NULL, 0);
 
     if (nproc > PROCBUF)
@@ -143,6 +149,24 @@ int updateProcessList(void) {
     for (proc = 0; proc < nproc; ++proc)
         sorted_proc[proc] = proc;
     qsort(sorted_proc, nproc, sizeof(int), cmp_pid);
+
+    if (lastpid >= prevpid) {
+        procspawn = lastpid - prevpid;
+        for (proc = 0; proc < prev_nproc; ++proc) {
+            pid = prev_list[prev_sorted[proc]].ki_pid;
+            if (prevpid < pid && pid <= lastpid)
+                --procspawn;
+            else if (pid > lastpid)
+                break;
+        }
+    } else {
+        procspawn = prevpid - lastpid + 1;
+        for (proc = 0; proc < prev_nproc; ++proc) {
+            pid = prev_list[prev_sorted[proc]].ki_pid;
+            if (pid <= lastpid || pid > prevpid)
+                --procspawn;
+        }
+    }
 
     scale = (update.tv_sec - last_update.tv_sec) + (update.tv_nsec - last_update.tv_nsec) / 1000000000.0;
     last_update = update;
@@ -279,6 +303,14 @@ void printProcessCount(const char *cmd) {
 
 void printProcessCountInfo(const char *cmd) {
     fprintf(CurrentClient, "Number of Processes\t1\t65535\t\n");
+}
+
+void printProcSpawn(const char *cmd) {
+    fprintf(CurrentClient, "%u\n", procspawn);
+}
+
+void printProcSpawnInfo(const char *cmd) {
+    fprintf(CurrentClient, "Number of processes spawned\t0\t0\t1/s\n");
 }
 
 void printLastPID(const char *cmd) {

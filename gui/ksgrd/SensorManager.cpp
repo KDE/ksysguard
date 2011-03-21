@@ -59,7 +59,7 @@ void SensorManager::retranslate()
   mDict.clear();
   mDict.insert( QLatin1String( "Delta" ), i18n( "Change" ) );
   mDict.insert( QLatin1String( "Rate" ), i18n( "Rate" ) );
- 
+
   mDict.insert( QLatin1String( "cpu" ), i18n( "CPU Load" ) );
   mDict.insert( QLatin1String( "idle" ), i18n( "Idling" ) );
   mDict.insert( QLatin1String( "nice" ), i18n( "Nice Load" ) );
@@ -84,6 +84,7 @@ void SensorManager::retranslate()
   mDict.insert( QLatin1String( "pscount" ), i18n( "Process Count" ) );
   mDict.insert( QLatin1String( "ps" ), i18n( "Process Controller" ) );
   mDict.insert( QLatin1String( "lastpid" ), i18n( "Last Process ID" ) );
+  mDict.insert( QLatin1String( "procspawn" ), i18n( "Process Spawn Count" ) );
   mDict.insert( QLatin1String( "disk" ), i18n( "Disk Throughput" ) );
   mDict.insert( QLatin1String( "load" ), i18nc( "CPU Load", "Load" ) );
   mDict.insert( QLatin1String( "totalio" ), i18n( "Total Accesses" ) );
