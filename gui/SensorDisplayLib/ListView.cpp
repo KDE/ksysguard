@@ -40,6 +40,51 @@
 #include "ListView.moc"
 #include "ListViewSettings.h"
 
+static QString formatByteSize(qlonglong amountInKB, int units) {
+    enum { UnitsAuto, UnitsKB, UnitsMB, UnitsGB, UnitsTB, UnitsPB };
+    static QString kString = i18n("%1 K", QString::fromLatin1("%1"));
+    static QString mString = i18n("%1 M", QString::fromLatin1("%1"));
+    static QString gString = i18n("%1 G", QString::fromLatin1("%1"));
+    static QString tString = i18n("%1 T", QString::fromLatin1("%1"));
+    static QString pString = i18n("%1 P", QString::fromLatin1("%1"));
+    double amount;
+
+    if (units == UnitsAuto) {
+        if (amountInKB < 1024.0*0.9)
+            units = UnitsKB; // amount < 0.9 MiB == KiB
+        else if (amountInKB < 1024.0*1024.0*0.9)
+            units = UnitsMB; // amount < 0.9 GiB == MiB
+        else if (amountInKB < 1024.0*1024.0*1024.0*0.9)
+            units = UnitsGB; // amount < 0.9 TiB == GiB
+        else if (amountInKB < 1024.0*1024.0*1024.0*1024.0*0.9)
+            units = UnitsTB; // amount < 0.9 PiB == TiB
+        else
+            units = UnitsPB;
+    }
+
+    switch(units) {
+      case UnitsKB:
+        return kString.arg(KGlobal::locale()->formatNumber(amountInKB, 0));
+      case UnitsMB:
+        amount = amountInKB/1024.0;
+        return mString.arg(KGlobal::locale()->formatNumber(amount, 1));
+      case UnitsGB:
+        amount = amountInKB/(1024.0*1024.0);
+        if(amount < 0.1 && amount > 0.05) amount = 0.1;
+        return gString.arg(KGlobal::locale()->formatNumber(amount, 1));
+      case UnitsTB:
+        amount = amountInKB/(1024.0*1024.0*1024.0);
+        if(amount < 0.1 && amount > 0.05) amount = 0.1;
+        return tString.arg(KGlobal::locale()->formatNumber(amount, 1));
+      case UnitsPB:
+        amount = amountInKB/(1024.0*1024.0*1024.0*1024.0);
+        if(amount < 0.1 && amount > 0.05) amount = 0.1;
+        return pString.arg(KGlobal::locale()->formatNumber(amount, 1));
+      default:
+          return "";  // error
+    }
+}
+
 ListView::ListView(QWidget* parent, const QString& title, SharedSettings *workSheetSettings)
     : KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
@@ -98,28 +143,49 @@ void ListView::showColumnContextMenu(const QPoint &point)
         }
     }*/
 
+    QAction *actionAuto = NULL;
     QAction *actionKB = NULL;
     QAction *actionMB = NULL;
     QAction *actionGB = NULL;
+    QAction *actionTB = NULL;
     if (mColumnTypes[index] == KByte) {
         menu->addSeparator()->setText(i18n("Display Units"));
         QActionGroup *unitsGroup = new QActionGroup(menu);
+        /* Automatic (human readable)*/
+        actionAuto = new QAction(menu);
+        actionAuto->setText(i18n("Mixed"));
+        actionAuto->setCheckable(true);
+        menu->addAction(actionAuto);
+        unitsGroup->addAction(actionAuto);
+        /* Kilobytes */
         actionKB = new QAction(menu);
         actionKB->setText(i18n("Kilobytes"));
         actionKB->setCheckable(true);
         menu->addAction(actionKB);
         unitsGroup->addAction(actionKB);
+        /* Megabytes */
         actionMB = new QAction(menu);
         actionMB->setText(i18n("Megabytes"));
         actionMB->setCheckable(true);
         menu->addAction(actionMB);
         unitsGroup->addAction(actionMB);
+        /* Gigabytes */
         actionGB = new QAction(menu);
         actionGB->setText(i18n("Gigabytes"));
         actionGB->setCheckable(true);
         menu->addAction(actionGB);
         unitsGroup->addAction(actionGB);
+        /* Terabytes */
+        actionTB = new QAction(menu);
+        actionTB->setText(i18n("Terabytes"));
+        actionTB->setCheckable(true);
+        menu->addAction(actionTB);
+        unitsGroup->addAction(actionTB);
+
         switch(mUnits) {
+            case UnitsAuto:
+                actionAuto->setChecked(true);
+                break;
             case UnitsKB:
                 actionKB->setChecked(true);
                 break;
@@ -129,6 +195,9 @@ void ListView::showColumnContextMenu(const QPoint &point)
             case UnitsGB:
                 actionGB->setChecked(true);
                 break;
+            case UnitsTB:
+                actionTB->setChecked(true);
+                break;
             default:
                 break;
         }
@@ -137,12 +206,16 @@ void ListView::showColumnContextMenu(const QPoint &point)
 
 
     QAction *result = menu->exec(mView->header()->mapToGlobal(point));
-    if (result == actionKB)
+    if (result == actionAuto)
+        mUnits = UnitsAuto;
+    else if (result == actionKB)
         mUnits = UnitsKB;
-    else if(result == actionMB)
+    else if (result == actionMB)
         mUnits = UnitsMB;
-    else if(result == actionGB)
+    else if (result == actionGB)
         mUnits = UnitsGB;
+    else if (result == actionTB)
+        mUnits = UnitsTB;
     delete menu;
 }
 
@@ -257,30 +330,7 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
                         break;
                       case KByte: {
                         item->setData(records[j].toInt(), Qt::UserRole);
-                        static QString kbString = i18n("%1 K", QString::fromLatin1("%1"));
-                        static QString mbString = i18n("%1 M", QString::fromLatin1("%1"));
-                        static QString gbString = i18n("%1 G", QString::fromLatin1("%1"));
-                        qlonglong amountInKB = records[j].toLongLong();
-                        double amount;
-                        QString text;
-                        switch (mUnits) {
-                            case UnitsKB:
-                                text = kbString.arg(KGlobal::locale()->formatNumber(amountInKB, 0));
-                                break;
-                            case UnitsMB:
-                                amount = amountInKB/1024.0;
-                                if(amount < 0.1) amount = 0.1;
-                                text = mbString.arg(KGlobal::locale()->formatNumber(amount, 1));
-                                break;
-                            case UnitsGB:
-                                amount = amountInKB/(1024.0*1024.0);
-                                if(amount < 0.1) amount = 0.1;
-                                text = gbString.arg(KGlobal::locale()->formatNumber(amount, 1));
-                                break;
-                            default:
-                                break;
-                        }
-                        item->setText(text);
+                        item->setText(formatByteSize(records[j].toLongLong(), mUnits));
                         break;
                       }
                       case DiskStat:
