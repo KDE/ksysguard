@@ -547,27 +547,6 @@ int main( int argc, char* argv[] )
 {
   fd_set fds;
 
-#ifdef OSTYPE_FreeBSD
-    /**
-      * If we are not root or the executable does not belong to the
-      * kmem group, ksysguardd will not be able to monitor some sensors that
-      * require access to /dev/kmem
-      */
-    struct group* grentry = NULL;
-
-    if ( geteuid() != 0 ) {
-        grentry = getgrnam( "kmem" );
-        if ( grentry == NULL )
-            fprintf( stderr, "the group kmem is missing on your system, starting in reduced sensor mode\n" );
-        else if ( getegid() != grentry->gr_gid )
-            fprintf( stderr, "ksysguardd requires permission to monitor some sensors, starting in reduced sensor mode.\n"
-                             "Start the program as user 'root', or change its group to 'kmem' and set the sgid-bit,\n"
-                             "to get full sensor support.\n" );
-
-        endgrent();
-    }
-#endif
-
   printWelcome( stdout );
 
   if ( processArguments( argc, argv ) < 0 )

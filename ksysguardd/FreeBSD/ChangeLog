@@ -1,3 +1,7 @@
+2011/03/21:
+ * Remove need for libkvm (and thus setgrp kmem, chmod g+s on ksysguardd)
+ * Convert swap to sysctl based implementation
+
 2011/02/19:
  * return "/" for root partition mount name (vs /root)
  * include mount point in Free Space and Used Space info message

@@ -1,9 +1,9 @@
 /*
     KSysGuard, the KDE System Guard
 
+    Copyright (c) 2010-2011 David Naylor <naylor.b.david@gmail.com>
     Copyright (c) 1999-2000 Hans Petter Bieker <bieker@kde.org>
     Copyright (c) 1999 Chris Schlaeger <cs@kde.org>
-    Copyright (c) 2010 David Naylor <naylor.b.david@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,10 +25,11 @@
 #include <sys/sysctl.h>
 
 #include <fcntl.h>
-#include <kvm.h>
 #include <limits.h>
 #include <stdio.h>
 #include <unistd.h>
+
+#include <vm/vm_param.h>
 
 #include "Command.h"
 #include "Memory.h"
@@ -55,7 +56,7 @@ static size_t swap_old[2];
 
 static int pagesize;
 
-static kvm_t *kd;
+void kvm_getswapinfo_sysctl(size_t *ksw_used, size_t *ksw_total);
 
 void initMemory(struct SensorModul* sm)
 {
@@ -64,11 +65,6 @@ void initMemory(struct SensorModul* sm)
     char buf[_POSIX2_LINE_MAX];
 
     pagesize = getpagesize();
-
-    if ((kd = kvm_openfiles(nlistf, memf, NULL, O_RDONLY, buf)) == NULL) {
-        log_error("kvm_openfiles()");
-        return;
-    }
 
     registerMonitor("mem/physical/active", "integer", printMActive, printMActiveInfo, sm);
     registerMonitor("mem/physical/inactive", "integer", printMInactive, printMInactiveInfo, sm);
@@ -111,13 +107,11 @@ void exitMemory(void)
 
     removeMonitor("cpu/pageIn");
     removeMonitor("cpu/pageOut");
-
-    kvm_close(kd);
 }
 
 int updateMemory(void)
 {
-    size_t len;
+    size_t len, ksw_used, ksw_total;
     int swapin, swapout;
 
 #define CONVERT(v)    ((quad_t)(v) * pagesize / 1024)
@@ -159,18 +153,12 @@ int updateMemory(void)
         swap_stats[SWAP_OUT] = CONVERT(swapout - swap_old[SWAP_OUT]);
     }
 
-    /* call CPU heavy swapmode() only for changes */
+    /* only for changes */
     if (swap_stats[SWAP_IN] > 0 || swap_stats[SWAP_OUT] > 0 || swap_old[SWAP_IN] < 0) {
-        struct kvm_swap swapary;
-        if (kvm_getswapinfo(kd, &swapary, 1, 0) < 0 || swapary.ksw_total == 0) {
-            int i;
-            for (i = 0; i < (sizeof(swap_stats) / sizeof(swap_stats[0])); ++i)
-                swap_stats[i] = 0;
-        } else {
-            swap_stats[SWAP_TOTAL] = CONVERT(swapary.ksw_total);
-            swap_stats[SWAP_USED] = CONVERT(swapary.ksw_used);
-            swap_stats[SWAP_FREE] = CONVERT(swapary.ksw_total - swapary.ksw_used);
-        }
+        kvm_getswapinfo_sysctl(&ksw_used, &ksw_total);
+        swap_stats[SWAP_TOTAL] = CONVERT(ksw_total);
+        swap_stats[SWAP_USED] = CONVERT(ksw_used);
+        swap_stats[SWAP_FREE] = CONVERT(ksw_total - ksw_used);
     }
 
     swap_old[SWAP_IN] = swapin;
@@ -302,4 +290,45 @@ void printSwapOut(const char* cmd)
 void printSwapOutInfo(const char* cmd)
 {
     fprintf(CurrentClient, "Swapped Out Memory\t0\t0\tKB/s\n");
+}
+
+/* Adapted from src/lib/libkvm/kvm_getswapinfo.c */
+#define SWI_MAXMIB 3
+
+void kvm_getswapinfo_sysctl(size_t *ksw_used, size_t *ksw_total)
+{
+    int unswdev;
+    size_t len;
+    static int soid[SWI_MAXMIB], dmmax = -1;
+    static size_t mibi = -1;
+    struct xswdev xsd;
+
+    *ksw_used = 0;
+    *ksw_total = 0;
+    if (dmmax == -1) {
+        len = sizeof(dmmax);
+        if (sysctlbyname("vm.dmmax", &dmmax, &len, NULL, 0) || len != sizeof(dmmax)) {
+            dmmax = -1;
+            return;
+        }
+    }
+
+    if (mibi == -1) {
+        mibi = SWI_MAXMIB - 1;
+        if (sysctlnametomib("vm.swap_info", soid, &mibi) == -1) {
+            mibi = -1;
+            return;
+        }
+    }
+
+    for (unswdev = 0;; unswdev++) {
+        soid[mibi] = unswdev;
+        len = sizeof(xsd);
+        if (sysctl(soid, mibi + 1, &xsd, &len, NULL, 0) || len != sizeof(xsd)) {
+            return;
+        }
+
+        *ksw_used += xsd.xsw_used;
+        *ksw_total += xsd.xsw_nblks - dmmax;
+    }
 }

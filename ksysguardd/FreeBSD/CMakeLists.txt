@@ -12,5 +12,3 @@ ADD_LIBRARY(libksysguardd STATIC
             ProcessList.c
             stat.c
             uptime.c)
-
-TARGET_LINK_LIBRARIES(libksysguardd kvm)

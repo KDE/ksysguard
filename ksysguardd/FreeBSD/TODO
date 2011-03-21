@@ -23,11 +23,8 @@
  - refractor scaling code
  - properly sort sizes in ListView (KB vs Block)
  + strip out / refractor DragonFly
- - dynamic changing of:
-   - CPU
-   - memory
-   - swap
-   - battery
+ - move all possible licenses to BSD (verify with diff for changes)
+ - dynamic changing
  + top:
    * swap (IO, swap)
    - others
