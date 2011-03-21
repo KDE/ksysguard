@@ -272,8 +272,12 @@ void processNetDev( void )
   if ( NetDevCnt == 0 )
 		return;
 
-  for ( i = 0; i < 5 && processNetDev_() < 0; ++i )
-    checkNetDev();
+  for ( i = 0; i < 5 && processNetDev_() < 0; ++i ) {
+      /* Values for other network devices are lost, but it is still better
+       * than not detecting any new devices */
+      exitNetDev();
+      initNetDev( NetDevSM );
+  }
 
   /* If 5 reconfiguration attemts failed, something is very wrong and
    * we close the netdev module for further use. */
@@ -450,10 +454,7 @@ int updateNetDev( void )
 
 void checkNetDev( void )
 {
-	/* Values for other network devices are lost, but it is still better
-	 * than not detecting any new devices. TODO: Fix after 2.1 is out. */
-  exitNetDev();
-  initNetDev( NetDevSM );
+    updateNetDev();
 }
 
 #define PRINTFUNC( a, b, c, d, e, f ) \

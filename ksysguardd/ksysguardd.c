@@ -392,7 +392,6 @@ static int setupSelect( fd_set* fds )
   return highestFD;
 }
 
-#ifdef HAVE_SYS_INOTIFY_H
 static void checkModules()
 {
   struct SensorModul *entry;
@@ -401,7 +400,6 @@ static void checkModules()
     if ( entry->checkCommand != NULL && entry->available )
       entry->checkCommand();
 }
-#endif
 
 static void handleSocketTraffic( int socketNo, const fd_set* fds )
 {
@@ -602,6 +600,10 @@ int main( int argc, char* argv[] )
   setupInotify(&mtabfd);
 #endif
 
+  struct timeval now;
+  struct timeval last;
+  gettimeofday( &last, NULL );
+
   while ( !QuitApp ) {
     int highestFD = setupSelect( &fds );
 #ifdef HAVE_SYS_INOTIFY_H
@@ -609,18 +611,23 @@ int main( int argc, char* argv[] )
       FD_SET( mtabfd, &fds);
     if(mtabfd > highestFD) highestFD = mtabfd;
 #endif
+
     /* wait for communication or timeouts */
-    
     int ret = select( highestFD + 1, &fds, NULL, NULL, NULL );
     if(ret >= 0) {
+        gettimeofday( &now, NULL );
+        if ( now.tv_sec - last.tv_sec >= 5 ) { /* 5 second intervals */
+            /* If so, update all sensors and save current time to last. */
+            checkModules();
+            last = now;
+        }
 #ifdef HAVE_SYS_INOTIFY_H
-      if(mtabfd >= 0 && FD_ISSET(mtabfd, &fds)) {
-	close(mtabfd);
-	setupInotify(&mtabfd);
-        checkModules();
-      }
+        if(mtabfd >= 0 && FD_ISSET(mtabfd, &fds)) {
+            close(mtabfd);
+            setupInotify(&mtabfd);
+        }
 #endif
-      handleSocketTraffic( ServerSocket, &fds );
+        handleSocketTraffic( ServerSocket, &fds );
     }
   }
 
