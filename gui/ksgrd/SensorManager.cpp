@@ -84,10 +84,17 @@ void SensorManager::retranslate()
 
   /* Processes */
   mDict.insert( QLatin1String( "processes" ), i18n( "Processes" ) );
-  mDict.insert( QLatin1String( "pscount" ), i18n( "Process Count" ) );
   mDict.insert( QLatin1String( "ps" ), i18n( "Process Controller" ) );
   mDict.insert( QLatin1String( "lastpid" ), i18n( "Last Process ID" ) );
   mDict.insert( QLatin1String( "procspawn" ), i18n( "Process Spawn Count" ) );
+  mDict.insert( QLatin1String( "pscount" ), i18n( "Process Count" ) );
+  mDict.insert( QLatin1String( "psidle" ), i18n( "Idle Processes Count" ) );
+  mDict.insert( QLatin1String( "psrun" ), i18n( "Running Processes Count" ) );
+  mDict.insert( QLatin1String( "pssleep" ), i18n( "Sleeping Processes Count" ) );
+  mDict.insert( QLatin1String( "psstop" ), i18n( "Stopped Processes Count" ) );
+  mDict.insert( QLatin1String( "pszombie" ), i18n( "Zombie Processes Count" ) );
+  mDict.insert( QLatin1String( "pswait" ), i18n( "Waiting Processes Count" ) );
+  mDict.insert( QLatin1String( "pslock" ), i18n( "Locked Processes Count" ) );
 
   mDict.insert( QLatin1String( "disk" ), i18n( "Disk Throughput" ) );
   mDict.insert( QLatin1String( "load" ), i18nc( "CPU Load", "Load" ) );
