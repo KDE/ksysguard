@@ -226,7 +226,7 @@ static bool getProcess( int pid, ProcessInfo *ps )
   }
   ps->uid = 0;
   ps->gid = 0;
-  ps->tracerpid = 0;
+  ps->tracerpid = -1;
   
   sprintf( format, "%%%d[^\n]\n", (int)sizeof( buf ) - 1 );
   sprintf( tagformat, "%%%ds", (int)sizeof( tag ) - 1 );
@@ -245,6 +245,8 @@ static bool getProcess( int pid, ProcessInfo *ps )
       sscanf( buf, "%*s %d %*d %*d %*d", (int*)&ps->gid );
     } else if ( strcmp( tag, "TracerPid:" ) == 0 ) {
       sscanf( buf, "%*s %d", (int*)&ps->tracerpid );
+      if (ps->tracerpid == 0)
+          ps->tracerpid = -1; // ksysguard uses -1 to indicate no tracerpid, but linux uses 0
     }
   }
 
@@ -264,6 +266,8 @@ static bool getProcess( int pid, ProcessInfo *ps )
     fclose( fd );
     return false;
   }
+  if (ps->ppid == 0) //ksysguard uses -1 to indicate no parent, but linux uses 0
+      ps->ppid = -1;
   int major = ttyNo >> 8;
   int minor = ttyNo & 0xff;
   switch(major) {
@@ -390,13 +394,13 @@ void printProcessList( const char* cmd)
       pid = atol( entry->d_name );
       if(getProcess( pid, &ps )) /* Print out the details of the process.  Because of a stupid bug in kde3 ksysguard, make sure cmdline and tty are not empty */
         output( "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%lu\t%s\t%ld\t%s\t%s\t%d\t%d\n",
-	     ps.name, pid, (long)ps.ppid,
+             ps.name, pid, (long)ps.ppid,
              (long)ps.uid, (long)ps.gid, ps.status, ps.userTime,
              ps.sysTime, ps.niceLevel, ps.vmSize, ps.vmRss, ps.vmURss,
              (ps.userName[0]==0)?" ":ps.userName, (long)ps.tracerpid,
-	     (ps.tty[0]==0)?" ":ps.tty, (ps.cmdline[0]==0)?" ":ps.cmdline, 
-	     ps.ioPriorityClass, ps.ioPriority
-	     );
+             (ps.tty[0]==0)?" ":ps.tty, (ps.cmdline[0]==0)?" ":ps.cmdline,
+             ps.ioPriorityClass, ps.ioPriority
+        );
     }
   }
   output( "\n" );
@@ -407,9 +411,9 @@ void getIOnice( int pid, ProcessInfo *ps ) {
 #ifdef HAVE_IONICE
   int ioprio = ioprio_get(IOPRIO_WHO_PROCESS, pid);  /* Returns from 0 to 7 for the iopriority, and -1 if there's an error */
   if(ioprio == -1) {
-	  ps->ioPriority = -1;
-	  ps->ioPriorityClass = -1;
-	  return; /* Error. Just give up. */
+      ps->ioPriority = -1;
+      ps->ioPriorityClass = -1;
+      return; /* Error. Just give up. */
   }
   ps->ioPriority = ioprio & 0xff;  /* Bottom few bits are the priority */
   ps->ioPriorityClass = ioprio >> IOPRIO_CLASS_SHIFT; /* Top few bits are the class */
