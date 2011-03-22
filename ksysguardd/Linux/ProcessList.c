@@ -246,7 +246,7 @@ static bool getProcess( int pid, ProcessInfo *ps )
     } else if ( strcmp( tag, "TracerPid:" ) == 0 ) {
       sscanf( buf, "%*s %d", (int*)&ps->tracerpid );
       if (ps->tracerpid == 0)
-          ps->tracerpid = -1; // ksysguard uses -1 to indicate no tracerpid, but linux uses 0
+          ps->tracerpid = -1; /* ksysguard uses -1 to indicate no tracerpid, but linux uses 0 */
     }
   }
 
@@ -266,7 +266,7 @@ static bool getProcess( int pid, ProcessInfo *ps )
     fclose( fd );
     return false;
   }
-  if (ps->ppid == 0) //ksysguard uses -1 to indicate no parent, but linux uses 0
+  if (ps->ppid == 0) /* ksysguard uses -1 to indicate no parent, but linux uses 0 */
       ps->ppid = -1;
   int major = ttyNo >> 8;
   int minor = ttyNo & 0xff;
