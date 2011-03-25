@@ -261,6 +261,8 @@ void FancyPlotter::configureSettings()
     mSettingsDialog->setRangeUnits( mUnit );
     mSettingsDialog->setRangeUnits( mUnit );
 
+    mSettingsDialog->setStackBeams( mPlotter->stackGraph() );
+
     bool hasIntegerRange = true;
     SensorModelEntry::List list;
     for ( int i = 0; i < (int)mBeams; ++i ) {
@@ -324,6 +326,7 @@ void FancyPlotter::applySettings() {
     mPlotter->setShowHorizontalLines( mSettingsDialog->showHorizontalLines() );
 
     mPlotter->setShowAxis( mSettingsDialog->showAxis() );
+    mPlotter->setStackGraph( mSettingsDialog->stackBeams() );
 
     QFont font;
     font.setPointSize( mSettingsDialog->fontSize() );
@@ -775,6 +778,7 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
     mPlotter->setHorizontalScale( element.attribute( "hScale", "6" ).toUInt() );
 
     mPlotter->setShowHorizontalLines( element.attribute( "hLines", "1" ).toUInt() );
+    mPlotter->setStackGraph( element.attribute("stacked", "0").toInt());
 
     QString filename = element.attribute( "svgBackground");
     if (!filename.isEmpty() && filename[0] == '/') {
@@ -849,6 +853,7 @@ bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element)
     element.setAttribute( "hLines", mPlotter->showHorizontalLines() );
 
     element.setAttribute( "svgBackground", mPlotter->svgBackground() );
+    element.setAttribute( "stacked", mPlotter->stackGraph() );
 
     element.setAttribute( "version", 1 );
     element.setAttribute( "labels", mPlotter->showAxis() );

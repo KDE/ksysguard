@@ -73,11 +73,11 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   mTitle->setWhatsThis( i18n( "Enter the title of the display here." ) );
   pageLayout->addWidget( mTitle, 0, 1 );
   label->setBuddy( mTitle );
-/*
+
   mStackBeams = new QCheckBox( i18n("Stack the beams on top of each other"), page);
   mStackBeams->setWhatsThis( i18n("The beams are stacked on top of each other, and the area is drawn filled in. So if one beam has a value of 2 and another beam has a value of 3, the first beam will be drawn at value 2 and the other beam drawn at 2+3=5.") );
   pageLayout->addWidget( mStackBeams, 1, 0,1,2);
-  */
+
   pageLayout->setRowStretch( 2, 1 );
 
   // Scales page
