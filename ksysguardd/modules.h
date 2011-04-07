@@ -23,6 +23,7 @@
 #ifndef KSG_MODULES_H
 #define KSG_MODULES_H
 
+#include "config-ksysguardd.h"
 #include "Command.h"
 #include "conf.h"
 #include "ksysguardd.h"
