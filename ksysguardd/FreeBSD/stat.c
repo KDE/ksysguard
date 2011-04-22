@@ -252,7 +252,7 @@ void printInterruptx(const char *cmd) {
 	int irq;
 
 	sscanf(cmd + 18, "%d", &irq);
-	if (irq > 255 - msi_offset)
+	if (irq > 255)
 		irq -= msi_offset - 1;
 	fprintf(CurrentClient, "%ld\n", intr[intr_map[irq - 1]]);
 }
@@ -261,7 +261,7 @@ void printInterruptxInfo(const char *cmd) {
 	int irq;
 
 	sscanf(cmd + 18, "%d", &irq);
-	if (irq > 255 - msi_offset)
+	if (irq > 255)
 		irq -= msi_offset - 1;
 	fprintf(CurrentClient, "%s\t0\t0\t1/s\n", intrname[intr_map[irq - 1]]);
 }
