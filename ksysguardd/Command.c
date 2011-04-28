@@ -69,11 +69,12 @@ void output( const char *fmt, ...)
   if( !CurrentClient )
     return;
   va_list az;
-  va_start( az, fmt);
+  va_start( az, fmt );
   if(vfprintf(CurrentClient, fmt, az) < 0) {
     fprintf(stderr, "Error talking to client.  Exiting\n.");
     exit(EXIT_FAILURE);
   }
+  va_end( az );
 }
 void print_error( const char *fmt, ... )
 {
