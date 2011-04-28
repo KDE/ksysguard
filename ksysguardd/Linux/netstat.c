@@ -274,16 +274,18 @@ updateNetStatTcpUdpRaw(const char *cmd)
 		snprintf(buffer, sizeof(buffer), "/proc/net/tcp");
 		empty_ctnr(TcpSocketList);
 	}
-
-	if (strstr(cmd, "udp")) {
+        else if (strstr(cmd, "udp")) {
 		snprintf(buffer, sizeof(buffer), "/proc/net/udp");
 		empty_ctnr(UdpSocketList);
 	}
-
-	if (strstr(cmd, "raw")) {
+        else if (strstr(cmd, "raw")) {
 		snprintf(buffer, sizeof(buffer), "/proc/net/raw");
 		empty_ctnr(RawSocketList);
 	}
+        else {
+		print_error("cmd needs to be [tcp|udp|raw], is %s\n", cmd);
+		return -1;
+        }
 
 	if ((netstat = fopen(buffer, "r")) == NULL) {
 		print_error("Cannot open \'%s\'!\n"
