@@ -159,6 +159,7 @@ static int createLockFile()
     if (ftruncate( fileno( file ), ftell( file ) ) == -1) {
       log_error( "Cannot set size of lockfile '%s'", LockFile );
       fprintf( stderr, "Cannot set size of lockfile '%s'\n", LockFile );
+      fclose( file );
       return -2;
     }
   } else {
