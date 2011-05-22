@@ -116,7 +116,7 @@ QString Workspace::makeNameForNewSheet() const
 
     //Check if we have any sheets with the same tab name or file name
     for(int i = 0; !found && i < mSheetList.size(); i++)
-      if ( tabText(indexOf(mSheetList.at(i))) == sheetName  || sheetName+".sgrd" == mSheetList.at(i)->fileName())
+      if ( tabText(indexOf(mSheetList.at(i))) == sheetName  || QString(sheetName+".sgrd") == mSheetList.at(i)->fileName())
         found = true;
 
   } while ( found );
@@ -239,8 +239,8 @@ void Workspace::exportWorkSheet( WorkSheet *sheet )
 
   QString fileName;
   do {
-    fileName = KFileDialog::getSaveFileName( tabText(indexOf( currentWidget() ))+ ".sgrd",
-		                    "*.sgrd", this, i18n("Export Tab") );
+    fileName = KFileDialog::getSaveFileName( QString(tabText(indexOf( currentWidget() ))+ ".sgrd"),
+		                    QLatin1String("*.sgrd"), this, i18n("Export Tab") );
     if ( fileName.isEmpty() )
       return;
 
