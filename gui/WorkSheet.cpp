@@ -68,7 +68,8 @@ WorkSheet::WorkSheet( QWidget *parent )
     createGrid( rows, columns );
 
     // Initialize worksheet with dummy displays.
-    for ( int i = 0; i < mRows*mColumns; i++ )
+    const int numberOfElement = mRows*mColumns;
+    for ( int i = 0; i < numberOfElement; i++ )
         replaceDisplay( i );
 
     mGridLayout->activate();
