@@ -333,13 +333,28 @@ static bool getProcess( int pid, ProcessInfo *ps )
 
   ps->cmdline[ 0 ] = '\0';
 
+  unsigned int processNameStartPosition = 0;
+  unsigned int firstZeroPosition = -1U;
+ 
   unsigned int i =0;
   while( (ps->cmdline[i] = fgetc(fd)) != EOF && i < sizeof(ps->cmdline)-3) {
     if(ps->cmdline[i] == '\0')
+    {
       ps->cmdline[i] = ' ';
+      if(firstZeroPosition == -1U)
+        firstZeroPosition = i;
+    }
+    if(ps->cmdline[i] == '/' && firstZeroPosition == -1U)
+      processNameStartPosition = i + 1;
     i++;
   }
 
+  if(firstZeroPosition != -1U)
+  {
+    unsigned int processNameLength = firstZeroPosition - processNameStartPosition;
+    memcpy(ps->name, ps->cmdline + processNameStartPosition, processNameLength);
+    ps->name[processNameLength] = '\0';
+  }
 
   if(i > 2) {
     if(ps->cmdline[i-2] == ' ') ps->cmdline[i-2] = '\0';
