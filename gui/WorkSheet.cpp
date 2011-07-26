@@ -36,7 +36,7 @@
 #include <kmessagebox.h>
 #include <kmenu.h>
 
-#include <SensorManager.h>
+#include <ksgrd/SensorManager.h>
 
 #include "DancingBars.h"
 #include "DummyDisplay.h"
