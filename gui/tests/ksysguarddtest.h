@@ -4,9 +4,9 @@
 
 #include <QObject>
 #include <QProcess>
-#include "../ksgrd/SensorManager.h"
-#include "../ksgrd/SensorAgent.h"
-#include "../ksgrd/SensorClient.h"
+#include "ksysguard/ksgrd/SensorManager.h"
+#include "ksysguard/ksgrd/SensorAgent.h"
+#include "ksysguard/ksgrd/SensorClient.h"
 #include <QDebug>
 class SensorClientTest;
 
