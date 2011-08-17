@@ -161,7 +161,7 @@ class LogSensorModel : public QAbstractTableModel
     {
       mSensors.append( sensor );
 
-      connect( sensor, SIGNAL( changed() ), this, SIGNAL( layoutChanged() ) );
+      connect( sensor, SIGNAL(changed()), this, SIGNAL(layoutChanged()) );
 
       emit layoutChanged();
     }
@@ -413,7 +413,7 @@ SensorLogger::SensorLogger( QWidget *parent, const QString& title, SharedSetting
   setLayout(layout);
 
   mView->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect(mView, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(showContextMenu(const QPoint &)));
+  connect(mView, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showContextMenu(QPoint)));
 
   mView->header()->setStretchLastSection( true );
   mView->setRootIsDecorated( false );
@@ -421,8 +421,8 @@ SensorLogger::SensorLogger( QWidget *parent, const QString& title, SharedSetting
   mView->setModel( mModel );
   setPlotterWidget( mView );
 
-  connect( mView, SIGNAL( contextMenuRequest( const QModelIndex&, const QPoint& ) ),
-           this, SLOT( contextMenuRequest( const QModelIndex&, const QPoint& ) ) );
+  connect( mView, SIGNAL(contextMenuRequest(QModelIndex,QPoint)),
+           this, SLOT(contextMenuRequest(QModelIndex,QPoint)) );
 
   QPalette palette = mView->palette();
   palette.setColor( QPalette::Base, KSGRD::Style->backgroundColor() );

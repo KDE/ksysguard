@@ -218,7 +218,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
     mView->hideColumn(0);
 
   pageLayout->addWidget( mView, 0, 0, 6, 1 );
-  connect(mView,SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(editSensor()));
+  connect(mView,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editSensor()));
 
   mEditButton = new QPushButton( i18n( "Set Color..." ), page );
   mEditButton->setWhatsThis( i18n( "Push this button to configure the color of the sensor in the diagram." ) );
@@ -231,37 +231,37 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
     mRemoveButton = new QPushButton( i18n( "Delete" ), page );
     mRemoveButton->setWhatsThis( i18n( "Push this button to delete the sensor." ) );
     pageLayout->addWidget( mRemoveButton, 1, 1 );
-    connect( mRemoveButton, SIGNAL( clicked() ), SLOT( removeSensor() ) );
+    connect( mRemoveButton, SIGNAL(clicked()), SLOT(removeSensor()) );
 
     mMoveUpButton = new QPushButton( i18n( "Move Up" ), page );
     mMoveUpButton->setEnabled( false );
     pageLayout->addWidget( mMoveUpButton, 2, 1 );
-    connect( mMoveUpButton, SIGNAL( clicked() ), SLOT( moveUpSensor() ) );
+    connect( mMoveUpButton, SIGNAL(clicked()), SLOT(moveUpSensor()) );
 
     mMoveDownButton = new QPushButton( i18n( "Move Down" ), page );
     mMoveDownButton->setEnabled( false );
     pageLayout->addWidget( mMoveDownButton, 3, 1 );
-    connect( mMoveDownButton, SIGNAL( clicked() ), SLOT( moveDownSensor() ) );
+    connect( mMoveDownButton, SIGNAL(clicked()), SLOT(moveDownSensor()) );
 
-    connect(mView->selectionModel(), SIGNAL(currentRowChanged( const QModelIndex &, const QModelIndex &)), this, SLOT( selectionChanged(const QModelIndex &)));
+    connect(mView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)), this, SLOT(selectionChanged(QModelIndex)));
 
   }
 
-  connect( mManualRange, SIGNAL( toggled( bool ) ), mMinValue,
-           SLOT( setEnabled( bool ) ) );
-  connect( mManualRange, SIGNAL( toggled( bool ) ), mMaxValue,
-           SLOT( setEnabled( bool ) ) );
-  connect( mManualRange, SIGNAL( toggled( bool ) ), mMinValueLabel,
-           SLOT( setEnabled( bool ) ) );
-  connect( mManualRange, SIGNAL( toggled( bool ) ), mMaxValueLabel,
-           SLOT( setEnabled( bool ) ) );
+  connect( mManualRange, SIGNAL(toggled(bool)), mMinValue,
+           SLOT(setEnabled(bool)) );
+  connect( mManualRange, SIGNAL(toggled(bool)), mMaxValue,
+           SLOT(setEnabled(bool)) );
+  connect( mManualRange, SIGNAL(toggled(bool)), mMinValueLabel,
+           SLOT(setEnabled(bool)) );
+  connect( mManualRange, SIGNAL(toggled(bool)), mMaxValueLabel,
+           SLOT(setEnabled(bool)) );
 
-  connect( mShowVerticalLines, SIGNAL( toggled( bool ) ), mVerticalLinesDistance,
-           SLOT( setEnabled( bool ) ) );
-  connect( mShowVerticalLines, SIGNAL( toggled( bool ) ), mVerticalLinesScroll,
-           SLOT( setEnabled( bool ) ) );
+  connect( mShowVerticalLines, SIGNAL(toggled(bool)), mVerticalLinesDistance,
+           SLOT(setEnabled(bool)) );
+  connect( mShowVerticalLines, SIGNAL(toggled(bool)), mVerticalLinesScroll,
+           SLOT(setEnabled(bool)) );
 
-  connect( mEditButton, SIGNAL( clicked() ), SLOT( editSensor() ) );
+  connect( mEditButton, SIGNAL(clicked()), SLOT(editSensor()) );
 
   KAcceleratorManager::manage( this );
 }
@@ -453,7 +453,7 @@ void FancyPlotterSettings::editSensor()
   SensorModelEntry sensor = mModel->sensor( index );
 
   KColorDialog dialog(this, true);
-  connect(&dialog, SIGNAL(colorSelected(const QColor &)), this, SLOT(setColorForSelectedItem(const QColor &)));
+  connect(&dialog, SIGNAL(colorSelected(QColor)), this, SLOT(setColorForSelectedItem(QColor)));
   QColor color = sensor.color();
   dialog.setColor(color);
   int result = dialog.exec();

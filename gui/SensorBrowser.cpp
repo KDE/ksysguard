@@ -428,19 +428,19 @@ SensorBrowserTreeWidget::SensorBrowserTreeWidget( QWidget* parent, KSGRD::Sensor
     mSortFilterProxyModel.setSourceModel(&mSensorBrowserModel);
     mSortFilterProxyModel.setShowAllChildren(true);
     setModel(&mSortFilterProxyModel);
-    connect( mSensorManager, SIGNAL( update() ), &mSensorBrowserModel, SLOT( update() ) );
-    connect( mSensorManager, SIGNAL(hostAdded(KSGRD::SensorAgent*,const QString &)), &mSensorBrowserModel, SLOT( hostAdded(KSGRD::SensorAgent*,const QString &)) );
-    connect( mSensorManager, SIGNAL(hostConnectionLost(const QString &)), &mSensorBrowserModel, SLOT( hostRemoved(const QString &)) );
-//  connect( mSensorManager, SIGNAL(hostAdded(KSGRD::SensorAgent*,const QString &)), SLOT(updateView()) );
-//  connect( mSensorManager, SIGNAL(hostConnectionLost(const QString &)), SLOT(updateView()) );
-    connect( &mSortFilterProxyModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)), SLOT(updateView()) );
+    connect( mSensorManager, SIGNAL(update()), &mSensorBrowserModel, SLOT(update()) );
+    connect( mSensorManager, SIGNAL(hostAdded(KSGRD::SensorAgent*,QString)), &mSensorBrowserModel, SLOT(hostAdded(KSGRD::SensorAgent*,QString)) );
+    connect( mSensorManager, SIGNAL(hostConnectionLost(QString)), &mSensorBrowserModel, SLOT(hostRemoved(QString)) );
+//  connect( mSensorManager, SIGNAL(hostAdded(KSGRD::SensorAgent*,QString)), SLOT(updateView()) );
+//  connect( mSensorManager, SIGNAL(hostConnectionLost(QString)), SLOT(updateView()) );
+    connect( &mSortFilterProxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(updateView()) );
 
     setDragDropMode(QAbstractItemView::DragOnly);
     setUniformRowHeights(true);
 
     //setMinimumWidth( 1 );
     retranslateUi();
-    connect( &mSensorBrowserModel, SIGNAL(sensorsAddedToHost(const QModelIndex&)), this, SLOT(expandItem(const QModelIndex&)));
+    connect( &mSensorBrowserModel, SIGNAL(sensorsAddedToHost(QModelIndex)), this, SLOT(expandItem(QModelIndex)));
 
     KSGRD::SensorManagerIterator it( mSensorManager );
     while ( it.hasNext() ) {

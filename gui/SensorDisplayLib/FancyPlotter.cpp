@@ -289,9 +289,9 @@ void FancyPlotter::configureSettings()
     mSettingsDialog->setSensors( list );
     mSettingsDialog->setHasIntegerRange( hasIntegerRange );
 
-    connect( mSettingsDialog, SIGNAL( applyClicked() ), this, SLOT( applySettings() ) );
-    connect( mSettingsDialog, SIGNAL( okClicked() ), this, SLOT( applySettings() ) );
-    connect( mSettingsDialog, SIGNAL( finished() ), this, SLOT( settingsFinished() ) );
+    connect( mSettingsDialog, SIGNAL(applyClicked()), this, SLOT(applySettings()) );
+    connect( mSettingsDialog, SIGNAL(okClicked()), this, SLOT(applySettings()) );
+    connect( mSettingsDialog, SIGNAL(finished()), this, SLOT(settingsFinished()) );
 
     mSettingsDialog->show();
 }

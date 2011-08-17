@@ -123,12 +123,12 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
 
   layout->addWidget( group, 1, 0, 1, 2 );
 
-  connect( mUseCustom, SIGNAL( toggled( bool ) ),
-           mCommands, SLOT( setEnabled( bool ) ) );
-  connect( mUseDaemon, SIGNAL( toggled( bool ) ),
-           mPort, SLOT( setEnabled( bool ) ) );
-  connect( mHostNames->lineEdit(),  SIGNAL( textChanged ( const QString & ) ),
-           this, SLOT(  slotHostNameChanged( const QString & ) ) );
+  connect( mUseCustom, SIGNAL(toggled(bool)),
+           mCommands, SLOT(setEnabled(bool)) );
+  connect( mUseDaemon, SIGNAL(toggled(bool)),
+           mPort, SLOT(setEnabled(bool)) );
+  connect( mHostNames->lineEdit(),  SIGNAL(textChanged(QString)),
+           this, SLOT(slotHostNameChanged(QString)) );
   enableButtonOk( !mHostNames->lineEdit()->text().isEmpty() );
   KAcceleratorManager::manage( this );
   connect(this,SIGNAL(helpClicked()),this,SLOT(slotHelp()));

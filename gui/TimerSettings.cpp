@@ -60,8 +60,8 @@ TimerSettings::TimerSettings( QWidget *parent, const char *name )
   mLabel->setBuddy( mInterval );
   mInterval->setWhatsThis( i18n( "All displays of the sheet are updated at the rate specified here." ) );
 
-  connect( mUseGlobalUpdate, SIGNAL( toggled( bool ) ),
-           SLOT( globalUpdateChanged( bool ) ) );
+  connect( mUseGlobalUpdate, SIGNAL(toggled(bool)),
+           SLOT(globalUpdateChanged(bool)) );
 
   mUseGlobalUpdate->setChecked( true );
 

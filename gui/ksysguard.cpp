@@ -88,13 +88,13 @@ TopLevel::TopLevel()
   mSensorBrowser = 0;
 
   mWorkSpace = new Workspace( mSplitter );
-  connect( mWorkSpace, SIGNAL( setCaption( const QString&) ),
-           SLOT( setCaption( const QString&) ) );
-  connect( mWorkSpace, SIGNAL( currentChanged( int ) ),
-           SLOT( currentTabChanged( int ) ) );
+  connect( mWorkSpace, SIGNAL(setCaption(QString)),
+           SLOT(setCaption(QString)) );
+  connect( mWorkSpace, SIGNAL(currentChanged(int)),
+           SLOT(currentTabChanged(int)) );
 
   sLocalProcessController = new ProcessController( this, NULL);
-  connect( sLocalProcessController, SIGNAL( processListChanged() ), this, SLOT( updateProcessCount()));
+  connect( sLocalProcessController, SIGNAL(processListChanged()), this, SLOT(updateProcessCount()));
 
   /* Create the status bar. It displays some information about the
    * number of processes and the memory consumption of the local
@@ -116,35 +116,35 @@ TopLevel::TopLevel()
   statusBar()->hide();
 
   // create actions for menu entries
-  mRefreshTabAction = KStandardAction::redisplay(mWorkSpace,SLOT( refreshActiveWorksheet() ),actionCollection());
+  mRefreshTabAction = KStandardAction::redisplay(mWorkSpace,SLOT(refreshActiveWorksheet()),actionCollection());
   mNewWorksheetAction = actionCollection()->addAction("new_worksheet");
   mNewWorksheetAction->setIcon(KIcon("tab-new"));
-  connect(mNewWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( newWorkSheet() ));
+  connect(mNewWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(newWorkSheet()));
   mInsertWorksheetAction = actionCollection()->addAction("import_worksheet");
   mInsertWorksheetAction->setIcon(KIcon("document-open") );
-  connect(mInsertWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( importWorkSheet() ));
+  connect(mInsertWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(importWorkSheet()));
   mTabExportAction = actionCollection()->addAction( "export_worksheet" );
   mTabExportAction->setIcon( KIcon("document-save-as") );
-  connect(mTabExportAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( exportWorkSheet() ));
+  connect(mTabExportAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(exportWorkSheet()));
   mTabRemoveAction = actionCollection()->addAction( "remove_worksheet" );
   mTabRemoveAction->setIcon( KIcon("tab-close") );
-  connect(mTabRemoveAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( removeWorkSheet() ));
+  connect(mTabRemoveAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(removeWorkSheet()));
   mMonitorRemoteAction = actionCollection()->addAction( "connect_host" );
   mMonitorRemoteAction->setIcon( KIcon("network-connect") );
-  connect(mMonitorRemoteAction, SIGNAL(triggered(bool)), SLOT( connectHost() ));
+  connect(mMonitorRemoteAction, SIGNAL(triggered(bool)), SLOT(connectHost()));
   //knewstuff2 action
   mHotNewWorksheetAction = actionCollection()->addAction( "get_new_worksheet" );
   mHotNewWorksheetAction->setIcon( KIcon("network-server") );
-  connect(mHotNewWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( getHotNewWorksheet() ));
+  connect(mHotNewWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(getHotNewWorksheet()));
   mHotNewWorksheetUploadAction = actionCollection()->addAction( "upload_worksheet" );
   mHotNewWorksheetUploadAction->setIcon( KIcon("network-server") );
-  connect(mHotNewWorksheetUploadAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT( uploadHotNewWorksheet() ));
+  connect(mHotNewWorksheetUploadAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(uploadHotNewWorksheet()));
 
   mQuitAction = NULL;
 
   mConfigureSheetAction = actionCollection()->addAction( "configure_sheet" );
   mConfigureSheetAction->setIcon( KIcon("configure") );
-  connect(mConfigureSheetAction, SIGNAL(triggered(bool)), SLOT( configureCurrentSheet() ));
+  connect(mConfigureSheetAction, SIGNAL(triggered(bool)), SLOT(configureCurrentSheet()));
 
   retranslateUi();
 }
@@ -169,7 +169,7 @@ void TopLevel::retranslateUi()
     mQuitAction->setToolTip(tmpQuitAction->toolTip());
     delete tmpQuitAction;
   } else
-    mQuitAction = KStandardAction::quit( this, SLOT( close() ), actionCollection() );
+    mQuitAction = KStandardAction::quit( this, SLOT(close()), actionCollection() );
 }
 
 void TopLevel::configureCurrentSheet() {

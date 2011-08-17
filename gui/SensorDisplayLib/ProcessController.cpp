@@ -162,7 +162,7 @@ bool ProcessController::addSensor(const QString& hostName,
         KSysGuard::Processes *processes = mProcessList->processModel()->processController();
         mProcesses = processes;
         if(processes) {
-            connect( processes, SIGNAL(runCommand(const QString &, int)), SLOT(runCommand(const QString &, int)));
+            connect( processes, SIGNAL(runCommand(QString,int)), SLOT(runCommand(QString,int)));
         }
 
     }

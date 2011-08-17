@@ -45,7 +45,7 @@ Workspace::Workspace( QWidget* parent)
   KAcceleratorManager::setNoAccel(this);
   setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
   setDocumentMode(true);
-  connect(&mDirWatch, SIGNAL(deleted(const QString&)), this, SLOT(removeWorkSheet(const QString &)));
+  connect(&mDirWatch, SIGNAL(deleted(QString)), this, SLOT(removeWorkSheet(QString)));
 }
 
 Workspace::~Workspace()
@@ -144,8 +144,8 @@ void Workspace::newWorkSheet()
     insertTab(-1, sheet, dlg.sheetTitle() );
     mSheetList.append( sheet );
     setCurrentIndex(indexOf( sheet ));
-    connect( sheet, SIGNAL( titleChanged( QWidget* ) ),
-	     SLOT( updateSheetTitle( QWidget* )));
+    connect( sheet, SIGNAL(titleChanged(QWidget*)),
+	     SLOT(updateSheetTitle(QWidget*)));
   }
 }
 void Workspace::contextMenu (int index, const QPoint &point) {
@@ -333,8 +333,8 @@ bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)
   }
   mSheetList.append( sheet );
 
-  connect( sheet, SIGNAL( titleChanged( QWidget* ) ),
-    SLOT( updateSheetTitle( QWidget* )));
+  connect( sheet, SIGNAL(titleChanged(QWidget*)),
+    SLOT(updateSheetTitle(QWidget*)));
 
   insertTab(-1, sheet, sheet->translatedTitle() );
   if(switchToTab)
