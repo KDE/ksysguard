@@ -356,7 +356,7 @@ void TopLevel::timerEvent( QTimerEvent* )
 }
 
 void TopLevel::updateProcessCount()  {
-    QString s = i18np( "1 process" "\xc2\x9c" "1", "%1 processes" "\xc2\x9c" "%1", sLocalProcessController->processList()->visibleProcessesCount() );
+    const QString s = i18np( "1 process" "\xc2\x9c" "1", "%1 processes" "\xc2\x9c" "%1", sLocalProcessController->processList()->visibleProcessesCount() );
     sbProcessCount->setText( s );
 }
 void TopLevel::changeEvent( QEvent * event )
