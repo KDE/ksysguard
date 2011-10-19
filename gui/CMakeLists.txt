@@ -1,9 +1,8 @@
 
 add_subdirectory( tests )
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/ksgrd/
+include_directories(
    ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/
-   ${CMAKE_SOURCE_DIR}/workspace
    ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs
    ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs/ksysguard
    ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs/ksysguard/signalplotter
