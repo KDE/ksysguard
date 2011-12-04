@@ -79,7 +79,6 @@ WorkSheet::WorkSheet( QWidget *parent )
 
 WorkSheet::~WorkSheet()
 {
-    qDeleteAll(mDisplayList);
 }
 
 bool WorkSheet::load( const QString &fileName )
