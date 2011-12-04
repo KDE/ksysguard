@@ -347,6 +347,11 @@ void LogSensor::timerTick( )
   KSGRD::SensorMgr->sendRequest( mHostName, mSensorName, (KSGRD::SensorClient*) this, 42 );
 }
 
+void LogSensor::timerEvent ( QTimerEvent * event )
+{
+  timerTick();
+}
+
 void LogSensor::answerReceived( int id, const QList<QByteArray>& answer ) //virtual
 {
   QFile mLogFile( mFileName );
