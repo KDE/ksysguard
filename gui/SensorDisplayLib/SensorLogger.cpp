@@ -412,9 +412,6 @@ SensorLogger::SensorLogger( QWidget *parent, const QString& title, SharedSetting
   layout->addWidget(mView);
   setLayout(layout);
 
-  mView->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect(mView, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showContextMenu(QPoint)));
-
   mView->header()->setStretchLastSection( true );
   mView->setRootIsDecorated( false );
   mView->setItemsExpandable( false );
