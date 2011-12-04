@@ -1,7 +1,7 @@
 # /etc/ksysguardd.conf
 
 # LogFiles: the list of all available logfiles
-LogFiles=messages:/var/log/messages,kern:/var/log/kern.log,daemon:/var/log/daemon.log
+LogFiles=messages:/var/log/messages,kern:/var/log/kern.log,daemon:/var/log/daemon.log,syslog:/var/log/syslog,auth:/var/log/auth.log
 
 # Sensors: the list of all accessible sensors
 #	Apm             Advanced Power Management
