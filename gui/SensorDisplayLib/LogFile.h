@@ -70,6 +70,7 @@ public Q_SLOTS:
 	void settingsDeleteRule();
 	void settingsChangeRule();
 	void settingsRuleListSelected(int index);
+	void settingsRuleTextChanged();
 
 private:
 	Ui_LogFileSettings* lfs;
