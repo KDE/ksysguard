@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>LogFileSettings</class>
- <widget class="QWidget" name="LogFileSettings" >
-  <property name="geometry" >
+ <widget class="QWidget" name="LogFileSettings">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,74 +10,66 @@
     <height>212</height>
    </rect>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout">
    <item>
-    <widget class="KTabWidget" name="tabWidget" >
-     <property name="currentIndex" >
+    <widget class="KTabWidget" name="tabWidget">
+     <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="textTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>418</width>
-        <height>170</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="textTab">
+      <attribute name="title">
        <string>&amp;Text</string>
       </attribute>
-      <layout class="QVBoxLayout" >
+      <layout class="QVBoxLayout">
        <item>
-        <layout class="QHBoxLayout" >
+        <layout class="QHBoxLayout">
          <item>
-          <widget class="QLabel" name="label" >
-           <property name="text" >
+          <widget class="QLabel" name="label">
+           <property name="text">
             <string>T&amp;itle:</string>
            </property>
-           <property name="buddy" >
+           <property name="buddy">
             <cstring>title</cstring>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="KLineEdit" name="title" />
+          <widget class="KLineEdit" name="title"/>
          </item>
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" >
-         <property name="margin" >
+        <layout class="QHBoxLayout">
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
-          <layout class="QVBoxLayout" >
-           <property name="margin" >
+          <layout class="QVBoxLayout">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="textLabel1" >
-             <property name="text" >
+            <widget class="QLabel" name="textLabel1">
+             <property name="text">
               <string>Foreground color:</string>
              </property>
-             <property name="alignment" >
+             <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
-             <property name="wordWrap" >
+             <property name="wordWrap">
               <bool>false</bool>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="textLabel2" >
-             <property name="text" >
+            <widget class="QLabel" name="textLabel2">
+             <property name="text">
               <string>Background color:</string>
              </property>
-             <property name="alignment" >
+             <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
-             <property name="wordWrap" >
+             <property name="wordWrap">
               <bool>false</bool>
              </property>
             </widget>
@@ -84,20 +77,20 @@
           </layout>
          </item>
          <item>
-          <layout class="QVBoxLayout" >
-           <property name="margin" >
+          <layout class="QVBoxLayout">
+           <property name="margin">
             <number>0</number>
            </property>
            <item>
-            <widget class="KColorButton" name="fgColor" >
-             <property name="text" >
+            <widget class="KColorButton" name="fgColor">
+             <property name="text">
               <string/>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="KColorButton" name="bgColor" >
-             <property name="text" >
+            <widget class="KColorButton" name="bgColor">
+             <property name="text">
               <string/>
              </property>
             </widget>
@@ -105,11 +98,11 @@
           </layout>
          </item>
          <item>
-          <spacer name="horizontalSpacer" >
-           <property name="orientation" >
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" stdset="0" >
+           <property name="sizeHint" stdset="0">
             <size>
              <width>40</width>
              <height>20</height>
@@ -120,18 +113,18 @@
         </layout>
        </item>
        <item>
-        <widget class="KFontRequester" name="fontRequester" >
-         <property name="title" >
+        <widget class="KFontRequester" name="fontRequester">
+         <property name="title">
           <string/>
          </property>
         </widget>
        </item>
        <item>
         <spacer>
-         <property name="orientation" >
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>40</height>
@@ -141,64 +134,56 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>418</width>
-        <height>170</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
        <string>Fi&amp;lter</string>
       </attribute>
-      <layout class="QHBoxLayout" >
+      <layout class="QHBoxLayout">
        <item>
-        <layout class="QVBoxLayout" >
+        <layout class="QVBoxLayout">
          <item>
-          <widget class="KLineEdit" name="ruleText" />
+          <widget class="KLineEdit" name="ruleText"/>
          </item>
          <item>
-          <widget class="QListWidget" name="ruleList" />
+          <widget class="QListWidget" name="ruleList"/>
          </item>
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" >
-         <property name="margin" >
+        <layout class="QVBoxLayout">
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
-          <widget class="QPushButton" name="addButton" >
-           <property name="text" >
+          <widget class="QPushButton" name="addButton">
+           <property name="text">
             <string>&amp;Add</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="deleteButton" >
-           <property name="text" >
+          <widget class="QPushButton" name="deleteButton">
+           <property name="text">
             <string>&amp;Delete</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="changeButton" >
-           <property name="text" >
+          <widget class="QPushButton" name="changeButton">
+           <property name="text">
             <string>&amp;Change</string>
            </property>
           </widget>
          </item>
          <item>
           <spacer>
-           <property name="orientation" >
+           <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
-           <property name="sizeType" >
+           <property name="sizeType">
             <enum>QSizePolicy::Expanding</enum>
            </property>
-           <property name="sizeHint" stdset="0" >
+           <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
              <height>20</height>
@@ -224,6 +209,17 @@
    <class>KFontRequester</class>
    <extends>QWidget</extends>
    <header>kfontrequester.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>klineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>ktabwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
