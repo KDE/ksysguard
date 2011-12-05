@@ -308,7 +308,7 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
         case 19: {
             for (int i = 0; i < answer.count(); i++) {
                 KSGRD::SensorTokenizer records(answer[i], '\t');
-                for (uint j = 0; j < records.count(); j++) {
+                for (uint j = 0; j < records.count() && j < mColumnTypes.count(); j++) {
                     QStandardItem *item = new QStandardItem();
                     item->setEditable(false);
                     switch( mColumnTypes[j] ) {
