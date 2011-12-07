@@ -408,9 +408,14 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
             return 0;
         }
         display = insertDisplay(displayType, sensorDescr, index);
-    }
+	if (!display->addSensor( hostName, sensorName, sensorType, sensorDescr )) {
+            // Failed to add sensor, so we need to remove the display that we just added
+            removeDisplay(display);
+            return 0;
+	}
 
-    display->addSensor( hostName, sensorName, sensorType, sensorDescr );
+
+    }
 
     return display;
 }
