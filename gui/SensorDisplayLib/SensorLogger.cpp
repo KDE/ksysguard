@@ -342,14 +342,10 @@ void LogSensor::stopLogging()
   timerOff();
 }
 
-void LogSensor::timerTick( )
-{
-  KSGRD::SensorMgr->sendRequest( mHostName, mSensorName, (KSGRD::SensorClient*) this, 42 );
-}
-
 void LogSensor::timerEvent ( QTimerEvent * event )
 {
-  timerTick();
+  Q_UNUSED(event);
+  KSGRD::SensorMgr->sendRequest( mHostName, mSensorName, static_cast<KSGRD::SensorClient*>(this), 42 );
 }
 
 void LogSensor::answerReceived( int id, const QList<QByteArray>& answer ) //virtual
