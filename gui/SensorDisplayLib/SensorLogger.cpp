@@ -460,6 +460,8 @@ bool SensorLogger::addSensor( const QString& hostName, const QString& sensorName
 
       mModel->addSensor( sensor );
     }
+  } else {
+    return false;  //User cancelled dialog, so don't add sensor logger
   }
 
   return true;

@@ -37,13 +37,20 @@ SensorLoggerDlg::SensorLoggerDlg( QWidget *parent, const char *name )
   m_loggerWidget = new Ui_SensorLoggerDlgWidget;
   m_loggerWidget->setupUi( main );
   m_loggerWidget->m_fileName->setMode(KFile::File|KFile::LocalOnly);
+  connect(m_loggerWidget->m_fileName, SIGNAL(textChanged(QString)), SLOT(fileNameTextChanged()));
 
   setMainWidget( main );
+  fileNameTextChanged();
 }
 
 SensorLoggerDlg::~SensorLoggerDlg()
 {
   delete m_loggerWidget;
+}
+
+void SensorLoggerDlg::fileNameTextChanged()
+{
+  enableButtonOk(m_loggerWidget->m_fileName->url().isValid() && !m_loggerWidget->m_fileName->url().isRelative());
 }
 
 QString SensorLoggerDlg::fileName() const

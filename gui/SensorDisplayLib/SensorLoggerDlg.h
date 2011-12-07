@@ -54,6 +54,9 @@ class SensorLoggerDlg : public KDialog
   private:
 
     Ui_SensorLoggerDlgWidget *m_loggerWidget;
+
+  private Q_SLOTS:
+    void fileNameTextChanged();
 };
 
 #endif // SENSORLOGGERDLG_H
