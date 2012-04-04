@@ -514,7 +514,7 @@ void FancyPlotter::setTooltip()
             if (sensor->unit() == "%")
                 lastValue = i18nc("units", "%1%", lastValue);
             else if( !sensor->unit().isEmpty() )
-                lastValue = i18nc("units", QString("%1 ").arg(sensor->unit()).toUtf8(), lastValue);
+                lastValue = i18nc("units", QString(QString("%1 ") + sensor->unit()).toUtf8(), lastValue);
         } else {
             lastValue = i18n("Error");
         }
