@@ -30,8 +30,11 @@
 #include <ksgrd/SensorClient.h>
 
 class QSplitter;
+class QAction;
+class KAction;
 class SensorBrowserWidget;
 class Workspace;
+class ProcessController;
 
 
 class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
@@ -48,6 +51,8 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     virtual void answerReceived( int id, const QList<QByteArray> & );
 
     void initStatusBar();
+    void setLocalProcessController(ProcessController * localProcessController);
+    ProcessController *localProcessController() const { return mLocalProcessController; }
 
   public Q_SLOTS:
     Q_SCRIPTABLE Q_NOREPLY void showOnCurrentDesktop();
@@ -99,6 +104,7 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     QLabel *sbCpuStat;
     QLabel *sbMemTotal;
     QLabel *sbSwapTotal;
+    ProcessController *mLocalProcessController;
 
     QList<int> mSplitterSize;
 };

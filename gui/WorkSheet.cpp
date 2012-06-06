@@ -41,11 +41,11 @@
 #include "DancingBars.h"
 #include "DummyDisplay.h"
 #include "FancyPlotter.h"
+#include "ksysguard.h"
 #include "ListView.h"
 #include "LogFile.h"
 #include "MultiMeter.h"
 #include "ProcessController.h"
-#include "ProcessTable.h"
 #include "SensorLogger.h"
 #include "WorkSheet.h"
 #include "WorkSheetSettings.h"
@@ -337,13 +337,12 @@ KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, QString
             break;
         case DisplayProcessControllerRemote:
             newDisplay = new ProcessController(this, &mSharedSettings);
+            newDisplay->setObjectName("remote process controller");
             break;
         case DisplayProcessControllerLocal:
-            Q_ASSERT(sLocalProcessController);
-            if (!sLocalProcessController->parentWidget())
-                newDisplay = sLocalProcessController;
-            else
-                newDisplay = new ProcessController(this, &mSharedSettings);
+            newDisplay = new ProcessController(this, &mSharedSettings);
+            if (!Toplevel->localProcessController())
+                Toplevel->setLocalProcessController(static_cast<ProcessController *>(newDisplay));
             break;
         default:
             Q_ASSERT(false);
@@ -595,7 +594,7 @@ void WorkSheet::replaceDisplay( int index, KSGRD::SensorDisplay* newDisplay )
         mDisplayList.append(newDisplay);
     } else {
         // remove the old display && sensor frame at this location
-        if( mDisplayList[ index ] && mDisplayList[ index ] != sLocalProcessController )
+        if( mDisplayList[ index ] && mDisplayList[ index ] != Toplevel->localProcessController() )
             delete mDisplayList[ index ];
         mDisplayList[index] = newDisplay;
     }

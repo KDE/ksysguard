@@ -60,25 +60,22 @@
 #include "StyleEngine.h"
 #include "HostConnector.h"
 #include "ProcessController.h"
-#include "ProcessTable.h"
 #include "processui/ksysguardprocesslist.h"
 
 #include "ksysguard.h"
-
-
-ProcessController *sLocalProcessController = NULL;
 
 //Comment out to stop ksysguard from forking.  Good for debugging
 //#define FORK_KSYSGUARD
 
 static const char Description[] = I18N_NOOP( "KDE System Monitor" );
-TopLevel* topLevel;
+TopLevel* Toplevel;
 
 TopLevel::TopLevel()
   : KXmlGuiWindow( NULL, Qt::WindowFlags(KDE_DEFAULT_WINDOWFLAGS) | Qt::WindowContextHelpButtonHint)
 {
   QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportScriptableSlots);
   mTimerId = -1;
+  mLocalProcessController = NULL;
 
   mSplitter = new QSplitter( this );
   mSplitter->setOrientation( Qt::Horizontal );
@@ -92,9 +89,6 @@ TopLevel::TopLevel()
            SLOT(setCaption(QString)) );
   connect( mWorkSpace, SIGNAL(currentChanged(int)),
            SLOT(currentTabChanged(int)) );
-
-  sLocalProcessController = new ProcessController( this, NULL);
-  connect( sLocalProcessController, SIGNAL(processListChanged()), this, SLOT(updateProcessCount()));
 
   /* Create the status bar. It displays some information about the
    * number of processes and the memory consumption of the local
@@ -147,6 +141,16 @@ TopLevel::TopLevel()
   connect(mConfigureSheetAction, SIGNAL(triggered(bool)), SLOT(configureCurrentSheet()));
 
   retranslateUi();
+}
+
+void TopLevel::setLocalProcessController(ProcessController * localProcessController)
+{
+  Q_ASSERT(!mLocalProcessController);
+  mLocalProcessController = localProcessController;
+  connect( mLocalProcessController, SIGNAL(processListChanged()), this, SLOT(updateProcessCount()));
+  for(int i = 0; i < mLocalProcessController->actions().size(); i++) {
+    actionCollection()->addAction("processAction" + QString::number(i), mLocalProcessController->actions().at(i));
+  }
 }
 
 void TopLevel::retranslateUi()
@@ -356,7 +360,7 @@ void TopLevel::timerEvent( QTimerEvent* )
 }
 
 void TopLevel::updateProcessCount()  {
-    const QString s = i18np( "1 process" "\xc2\x9c" "1", "%1 processes" "\xc2\x9c" "%1", sLocalProcessController->processList()->visibleProcessesCount() );
+    const QString s = i18np( "1 process" "\xc2\x9c" "1", "%1 processes" "\xc2\x9c" "%1", mLocalProcessController->processList()->visibleProcessesCount() );
     sbProcessCount->setText( s );
 }
 void TopLevel::changeEvent( QEvent * event )
@@ -402,11 +406,6 @@ void TopLevel::readProperties( const KConfigGroup& cfg )
   KSGRD::Style->readProperties( cfg );
 
   mWorkSpace->readProperties( cfg );
-
-  QList<WorkSheet *> workSheets = mWorkSpace->getWorkSheets();
-  for(int i = 0; i < sLocalProcessController->actions().size(); i++) {
-    actionCollection()->addAction("processAction" + QString::number(i), sLocalProcessController->actions().at(i));
-  }
 }
 
 void TopLevel::saveProperties( KConfigGroup& cfg )
@@ -561,22 +560,22 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
   write( initpipe[ 1 ], &c, 1 );
   close( initpipe[ 1 ] );
 #endif
-  topLevel = new TopLevel();
+  Toplevel = new TopLevel();
 
 
   // create top-level widget
-  topLevel->readProperties( KConfigGroup( KGlobal::config(), "MainWindow" ) );
+  Toplevel->readProperties( KConfigGroup( KGlobal::config(), "MainWindow" ) );
   // setup the statusbar, toolbar etc.
   // Note that this comes after creating the top-level widgets whcih also 
   // sets up the various QActions that the user may have added to the toolbar
-  topLevel->initStatusBar();
+  Toplevel->initStatusBar();
 
   //There seems to be some serious bugs with the session restore code.  Disabling
 //  if ( app->isSessionRestored() )
-//    topLevel->restore( 1 );
+//    Toplevel->restore( 1 );
 
-  topLevel->show();
-  KSGRD::SensorMgr->setBroadcaster( topLevel );  // SensorMgr uses a QPointer for toplevel, so it is okay if topLevel is deleted first
+  Toplevel->show();
+  KSGRD::SensorMgr->setBroadcaster( Toplevel );  // SensorMgr uses a QPointer for toplevel, so it is okay if Toplevel is deleted first
 
   // run the application
   int result = app->exec();
