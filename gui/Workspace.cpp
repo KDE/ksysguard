@@ -149,7 +149,7 @@ void Workspace::newWorkSheet()
   }
 }
 void Workspace::contextMenu (int index, const QPoint &point) {
-  KMenu pm;
+//  KMenu pm;
   Q_UNUSED(index);
   Q_UNUSED(point);
 //  QAction *new_worksheet = pm.addAction( Toplevel->actionCollection()->action("new_worksheet") );
