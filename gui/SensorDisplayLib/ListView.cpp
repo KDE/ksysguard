@@ -126,11 +126,11 @@ ListView::ListView(QWidget* parent, const QString& title, SharedSettings *workSh
 
 void ListView::showColumnContextMenu(const QPoint &point)
 {
-    QMenu *menu = new QMenu();
-
     int index = mView->header()->logicalIndexAt(point);
     if (index < 0 || index >= mColumnTypes.count())
         return; //Should be impossible
+
+    QMenu *menu = new QMenu();
 
     /*if(index >= 0) {
         //selected a column.  Give the option to hide it
