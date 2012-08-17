@@ -64,9 +64,9 @@ initCpuInfo(struct SensorModul* sm)
     int minfreq, maxfreq;
 
     len = sizeof(cpus);
-    // XXX: this is a guess
+    /* XXX: this is a guess */
     sysctlbyname("kern.smp.active", &cpus, &len, NULL, 0);
-    // NOTE: cpus may be 0, which implies 1
+    /* NOTE: cpus may be 0, which implies 1 */
     cpus = cpus ? cpus : 1;
 
     len = sizeof(cores);
@@ -569,7 +569,7 @@ void get_mmfreq(int id, int* minfreq, int* maxfreq)
          */
         while (1)
         {
-            // Get the first number
+            /* Get the first number */
             int number = strtol(start, &end, 10);
             if (start == end)
                 break;
@@ -581,7 +581,7 @@ void get_mmfreq(int id, int* minfreq, int* maxfreq)
                 break;
             start = end + 1;
 
-            // Skip over the next number
+            /* Skip over the next number */
             strtol(start, &end, 10);
             if (start == end || !*end)
                 break;

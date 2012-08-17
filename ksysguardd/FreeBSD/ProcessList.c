@@ -238,8 +238,8 @@ void printProcessList(const char* cmd)
             buf3[cpy + 1] = ']';
             buf3[cpy + 2] = '\0';
             name = buf3;
-            // TODO: should kernel processes be displayed?
-            //continue;
+            /* TODO: should kernel processes be displayed? */
+            /* continue; */
         } else if (ps->ki_comm != NULL)
             name = ps->ki_comm;
         else
@@ -306,7 +306,7 @@ void printProcessList(const char* cmd)
             load = ps->ki_runtime / 1000000.0 / scale;
 
         if (!ps->ki_pid)
-            // XXX: TODO: add support for displaying kernel process
+            /* XXX: TODO: add support for displaying kernel process */
             continue;
 
         fprintf(CurrentClient, "%s\t%ld\t%ld\t%ld\t%ld\t%s\t%.2f\t%.2f\t%d\t%ld\t%ld\t%s\t%s\n",
