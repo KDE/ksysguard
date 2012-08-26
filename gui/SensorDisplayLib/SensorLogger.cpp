@@ -135,19 +135,19 @@ class LogSensorModel : public QAbstractTableModel
       if ( role == Qt::DisplayRole ) {
         switch ( section ) {
           case 0:
-            return i18n("Logging");
+            return i18nc("@title:column", "Logging");
             break;
           case 1:
-            return i18n("Timer Interval");
+            return i18nc("@title:column", "Timer Interval");
             break;
           case 2:
-            return i18n("Sensor Name");
+            return i18nc("@title:column", "Sensor Name");
             break;
           case 3:
-            return i18n("Host Name");
+            return i18nc("@title:column", "Host Name");
             break;
           case 4:
-            return i18n("Log File");
+            return i18nc("@title:column", "Log File");
             break;
           default:
             return QVariant();
