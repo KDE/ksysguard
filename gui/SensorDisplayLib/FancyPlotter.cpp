@@ -180,9 +180,8 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     mPlotter->setUseAutoRange( true );
     mHeading = new QLabel(translatedTitle(), this);
     QFont headingFont;
-    headingFont.setFamily("Sans Serif");
     headingFont.setWeight(QFont::Bold);
-    headingFont.setPointSize(11);
+    headingFont.setPointSizeF(headingFont.pointSizeF() * 1.19);
     mHeading->setFont(headingFont);
     layout->addWidget(mHeading);
     layout->addWidget(mPlotter);
