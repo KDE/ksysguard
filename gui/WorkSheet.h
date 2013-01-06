@@ -74,7 +74,7 @@ class WorkSheet : public QWidget
                                       const QString &monitor,
                                       const QString &sensorType,
                                       const QString &sensorDescr,
-                                      int index );
+                                      int row, int column );
 
     void settings();
     float updateInterval() const;
@@ -100,10 +100,9 @@ class WorkSheet : public QWidget
   private:
     void removeDisplay( KSGRD::SensorDisplay *display );
 
-    bool replaceDisplay( int index, QDomElement& element );
+    bool replaceDisplay( int row, int column, QDomElement& element, int rowSpan = 1, int columnSpan = 1 );
 
-    void replaceDisplay( int index,
-                         KSGRD::SensorDisplay* display = 0 );
+    void replaceDisplay( int row, int column, KSGRD::SensorDisplay* display = 0, int rowSpan = 1, int columnSpan = 1 );
 
     void collectHosts( QStringList &list );
 
@@ -111,7 +110,7 @@ class WorkSheet : public QWidget
 
     void resizeGrid( int rows, int columns );
 
-    KSGRD::SensorDisplay* currentDisplay( int *index = NULL);
+    KSGRD::SensorDisplay* currentDisplay( int *row = NULL, int *column = NULL );
 
     void fixTabOrder();
 
@@ -132,13 +131,7 @@ class WorkSheet : public QWidget
 
     enum DisplayType { DisplayDummy, DisplayFancyPlotter, DisplayMultiMeter, DisplayDancingBars, DisplaySensorLogger, DisplayListView, DisplayLogFile, DisplayProcessControllerRemote, DisplayProcessControllerLocal };
 
-    KSGRD::SensorDisplay* insertDisplay( DisplayType displayType, QString displayTitle, int index);
-    /**
-      This two dimensional array stores the pointers to the sensor displays
-	    or if no sensor is present at a position a pointer to a dummy widget.
-  	  The size of the array corresponds to the size of the grid layout.
-     */
-    QList <KSGRD::SensorDisplay*> mDisplayList;
+    KSGRD::SensorDisplay* insertDisplay( DisplayType displayType, QString displayTitle, int row, int column, int rowSpan = 1, int columnSpan = 1);
 };
 
 #endif
