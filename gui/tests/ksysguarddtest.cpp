@@ -184,6 +184,8 @@ void TestKsysguardd::testFormatting()
                     QVERIFY(false);
             }
         }
+    } else if(monitorType == "string") {
+        // TODO Check for something in the answer?
     } else {
         QVERIFY(false);
     }
