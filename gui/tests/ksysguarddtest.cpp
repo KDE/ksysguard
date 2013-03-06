@@ -166,7 +166,6 @@ void TestKsysguardd::testFormatting()
         QCOMPARE(columnHeadings.count(), columnTypes.count());
         //column type is well defined
         foreach(const QByteArray &columnType, columnTypes) {
-            QCOMPARE(columnType.size(), 1);
             switch(columnType[0]) {
                 case 's': //string
                 case 'S': //string to translate
@@ -174,6 +173,12 @@ void TestKsysguardd::testFormatting()
                 case 'D': //integer to display localized
                 case 'f': //floating point number
                 case 'M': //Disk stat - some special case
+                case '%': //Disk stat - some special case
+                    QCOMPARE(columnType.size(), 1);
+                    break;
+                case 'K': //Disk stat - some special case
+                    QCOMPARE(columnType.size(), 2);
+                    QCOMPARE(columnType, QByteArray("KB"));
                     break;
                 default:
                     QVERIFY(false);
