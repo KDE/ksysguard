@@ -274,7 +274,7 @@ void initAcpiThermal(struct SensorModul *sm)
               }
           } else if (strncmp( de->d_name, "cooling_device", sizeof("cooling_device")-1) == 0) {
               snprintf(th_ref, sizeof(th_ref),
-                      "acpi/Cooling_Device/%s/Current State", de->d_name+( sizeof("cooling_device")-1));
+                      "acpi/Cooling_Device/%s/Current_State", de->d_name+( sizeof("cooling_device")-1));
               registerMonitor(th_ref, "integer", printSysFanState,
                       printFanStateInfo, sm);
           }
@@ -365,7 +365,7 @@ void printSysFanState(const char *cmd) {
         output( "-1\n");
         return;
     }
-    output( "%d\n", getSysFileValue("cooling_device", fan, "state"));
+    output( "%d\n", getSysFileValue("cooling_device", fan, "cur_state"));
 }
 
 static int getCurrentTemperature(const char *cmd)
