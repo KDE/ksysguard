@@ -193,7 +193,7 @@ static int processNetDev_( void )
 					FORALL( DEFVARS );
 					*pos = '\0';
 					FORALL( SETZERO );
-					sscanf(buf + 7, "%llu %llu %llu %llu %llu %llu %llu %llu "
+					sscanf(strchr(buf, ':') + 1, "%llu %llu %llu %llu %llu %llu %llu %llu "
   					                "%llu %llu %llu %llu %llu %llu %llu %llu",
                                     &recBytes, &recPacks, &recErrs, &recDrop, &recFifo,
                                     &recFrame, &recCompressed, &recMulticast,
@@ -243,8 +243,9 @@ static int processNetDev_( void )
 							break;
 						}
 					}
-  				    sscanf(buf + 12, " %lli. %lli. %lli. %lli %lli %lli %lli %lli %lli",
-                           &linkQuality, &signalLevel, &noiseLevel, &nwid,
+				    unsigned int wifiStatus;
+				    sscanf(strchr(buf, ':') + 1, " %d %lli. %lli. %lli. %lli %lli %lli %lli %lli %lli",
+                           &wifiStatus, &linkQuality, &signalLevel, &noiseLevel, &nwid,
                            &RxCrypt, &frag, &retry, &misc, &beacon);
 					signalLevel -= 256; /*the units are dBm*/
 					noiseLevel -= 256;
