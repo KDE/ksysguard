@@ -1,6 +1,6 @@
-INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../CContLib ${CMAKE_CURRENT_SOURCE_DIR}/../ )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../CContLib ${CMAKE_CURRENT_SOURCE_DIR}/../ )
 
-ADD_LIBRARY(libksysguardd STATIC 
+add_library(libksysguardd STATIC 
             cpu.c
             LoadAvg.c
             Memory.c

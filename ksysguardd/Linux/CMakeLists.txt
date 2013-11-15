@@ -1,6 +1,6 @@
-INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../CContLib ${CMAKE_CURRENT_BINARY_DIR}/.. ${CMAKE_CURRENT_SOURCE_DIR}/.. )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../CContLib ${CMAKE_CURRENT_BINARY_DIR}/.. ${CMAKE_CURRENT_SOURCE_DIR}/.. )
 
-SET(LIBKSYSGUARDD_FILES
+set(LIBKSYSGUARDD_FILES
             acpi.c
             apm.c
             cpuinfo.c
@@ -18,17 +18,17 @@ SET(LIBKSYSGUARDD_FILES
             uptime.c)
 
 if(SENSORS_FOUND)
-  SET(LIBKSYSGUARDD_FILES ${LIBKSYSGUARDD_FILES} lmsensors.c)
+  set(LIBKSYSGUARDD_FILES ${LIBKSYSGUARDD_FILES} lmsensors.c)
 endif()
 
 if(EXISTS /proc/i8k)
-  ADD_DEFINITIONS(-DHAVE_I8K_SUPPORT)
-ENDIF(EXISTS /proc/i8k)
+  add_definitions(-DHAVE_I8K_SUPPORT)
+endif()
 
 
-ADD_LIBRARY(libksysguardd STATIC 
+add_library(libksysguardd STATIC 
             ${LIBKSYSGUARDD_FILES})
 if(SENSORS_FOUND)
-  TARGET_LINK_LIBRARIES(libksysguardd ${SENSORS_LIBRARIES})
+  target_link_libraries(libksysguardd ${SENSORS_LIBRARIES})
 endif()
 
