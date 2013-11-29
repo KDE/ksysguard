@@ -11,7 +11,7 @@ add_definitions( -DKSYSGUARDDRCFILE="\\"${SYSCONF_INSTALL_DIR}/ksysguarddrc\\"" 
 
 add_definitions(-DOSTYPE_${CMAKE_SYSTEM_NAME})
 
-macro_optional_find_package(Sensors)
+find_package(Sensors)
 macro_bool_to_01(SENSORS_FOUND HAVE_LMSENSORS)
 
 check_include_files(sys/inotify.h SYS_INOTIFY_H_FOUND)
