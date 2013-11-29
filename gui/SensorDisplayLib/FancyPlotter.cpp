@@ -297,7 +297,8 @@ void FancyPlotter::configureSettings()
 
 void FancyPlotter::settingsFinished()
 {
-    mSettingsDialog->delayedDestruct();
+    mSettingsDialog->hide();
+    mSettingsDialog->deleteLater();
     mSettingsDialog = 0;
 }
 
