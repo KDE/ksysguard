@@ -91,7 +91,7 @@ void TestKsysguardd::testFormatting_data()
         QByteArray monitorInfoName = monitorName;
         monitorInfoName.append('?');
         client->haveAnswer = false;
-        QTest::newRow(monitorName) << monitorName << monitorType << monitorInfoName;
+        QTest::newRow(monitorName.constData()) << monitorName << monitorType << monitorInfoName;
     }
 
 }
@@ -236,7 +236,7 @@ void TestKsysguardd::testFormatting()
                 case 'D': { //integer to display localized
                     bool isNumber;
                     rowData[column].toLong(&isNumber);
-                    QVERIFY2(isNumber, (QString("Row data was ") +  row).toLatin1());
+                    QVERIFY2(isNumber, (QString("Row data was ") +  row).toLatin1().constData());
                 }
                 case 'f': { //floating point number
                     bool isNumber;
