@@ -51,7 +51,6 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   QFrame *page = new QFrame( this );
   addPage( page, i18n( "Range" ) );
   QGridLayout *pageLayout = new QGridLayout( page );
-  pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
 
   QGroupBox *groupBox = new QGroupBox( i18n( "Title" ), page );
@@ -101,7 +100,6 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   page = new QFrame( this );
   addPage( page, i18n( "Alarms" ) );
   pageLayout = new QGridLayout( page );
-  pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
 
   groupBox = new QGroupBox( i18n( "Alarm for Minimum Value" ), page );
@@ -155,7 +153,6 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   page = new QFrame( this );
   addPage( page, i18nc( "@title:tab Appearance of the bar graph", "Look" ) );
   pageLayout = new QGridLayout( page );
-  pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
 
   label = new QLabel( i18n( "Normal bar color:" ), page );
@@ -193,7 +190,6 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   page = new QFrame( this );
   addPage( page, i18n( "Sensors" ) );
   pageLayout = new QGridLayout( page );
-  pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
   pageLayout->setRowStretch( 2, 1 );
 

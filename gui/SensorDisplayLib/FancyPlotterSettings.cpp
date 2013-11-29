@@ -63,7 +63,6 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   page = new QFrame();
   addPage( page, i18n( "General" ) );
   pageLayout = new QGridLayout( page );
-  pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
 
   label = new QLabel( i18n( "Title:" ), page );
@@ -84,13 +83,11 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   page = new QFrame();
   addPage( page, i18n( "Scales" ) );
   pageLayout = new QGridLayout( page );
-  pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
 
   groupBox = new QGroupBox( i18n( "Vertical scale" ), page );
   boxLayout = new QGridLayout;
   groupBox->setLayout( boxLayout );
-  boxLayout->setSpacing( spacingHint() );
   boxLayout->setColumnStretch( 2, 1 );
 
   mManualRange = new QCheckBox( i18n( "Specify graph range:" ), groupBox );
@@ -138,13 +135,11 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   page = new QFrame( );
   addPage( page, i18n( "Grid" ) );
   pageLayout = new QGridLayout( page );
-  pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
 
   groupBox = new QGroupBox( i18n( "Lines" ), page );
   boxLayout = new QGridLayout;
   groupBox->setLayout( boxLayout );
-  boxLayout->setSpacing( spacingHint() );
   boxLayout->setColumnStretch( 1, 1 );
 
   mShowVerticalLines = new QCheckBox( i18n( "Vertical lines" ), groupBox );
@@ -173,7 +168,6 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   groupBox = new QGroupBox( i18n( "Text" ), page );
   boxLayout = new QGridLayout;
   groupBox->setLayout( boxLayout );
-  boxLayout->setSpacing( spacingHint() );
   boxLayout->setColumnStretch( 1, 1 );
 
   mShowAxis = new QCheckBox( i18n( "Show axis labels" ), groupBox );
@@ -197,7 +191,6 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   page = new QFrame( );
   addPage( page, i18n( "Sensors" ) );
   pageLayout = new QGridLayout( page );
-  pageLayout->setSpacing( spacingHint() );
   pageLayout->setMargin( 0 );
   pageLayout->setRowStretch( 2, 1 );
   pageLayout->setRowStretch( 5, 1 );
