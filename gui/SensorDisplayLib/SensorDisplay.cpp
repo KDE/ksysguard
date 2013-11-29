@@ -32,7 +32,7 @@
 
 #include <kapplication.h>
 #include <kiconloader.h>
-#include <klocale.h>
+#include <KLocalizedString>
 #include <kdebug.h>
 #include <kmessagebox.h>
 #include <krun.h>
@@ -346,7 +346,7 @@ void SensorDisplay::changeEvent( QEvent * event ) {
 void SensorDisplay::setTitle( const QString &title )
 {
   mTitle = title;
-  mTranslatedTitle = i18n(title.toUtf8());
+  mTranslatedTitle = i18n(title.toUtf8().constData());
   emit titleChanged(mTitle);
   emit translatedTitleChanged(mTranslatedTitle);
 }

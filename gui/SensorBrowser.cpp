@@ -29,7 +29,7 @@
 
 #include <kdebug.h>
 #include <kicon.h>
-#include <klocale.h>
+#include <KLocalizedString>
 #include <kmessagebox.h>
 #include <ksgrd/SensorManager.h>
 #include <kfilterproxysearchline.h>

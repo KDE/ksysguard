@@ -124,7 +124,7 @@ bool WorkSheet::load( const QString &fileName )
     mGridLayout->activate();
 
     mTitle = element.attribute( "title");
-    mTranslatedTitle = mTitle.isEmpty() ? "" : i18n(mTitle.toUtf8());
+    mTranslatedTitle = mTitle.isEmpty() ? "" : i18n(mTitle.toUtf8().constData());
     bool ok;
     mSharedSettings.locked = element.attribute( "locked" ).toUInt( &ok );
     if(!ok) mSharedSettings.locked = false;
@@ -301,7 +301,7 @@ QString WorkSheet::fileName() const
 void WorkSheet::setTitle( const QString &title )
 {
     mTitle = title;
-    mTranslatedTitle = mTitle.isEmpty() ? "" : i18n(mTitle.toUtf8());
+    mTranslatedTitle = mTitle.isEmpty() ? "" : i18n(mTitle.toUtf8().constData());
     emit titleChanged(this);
 }
 

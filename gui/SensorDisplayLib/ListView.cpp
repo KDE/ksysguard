@@ -29,7 +29,7 @@
 
 #include <kdebug.h>
 #include <kglobal.h>
-#include <klocale.h>
+#include <KLocalizedString>
 #include <kmessagebox.h>
 #include <ksgrd/SensorManager.h>
 #include "StyleEngine.h"
@@ -285,7 +285,7 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
             mModel.clear();
             QStringList translatedHeaders;
             for (uint i = 0; i < headers.count(); i++) {
-                translatedHeaders.append( i18nc("heading from daemon", headers[i]) );
+                translatedHeaders.append( i18nc("heading from daemon", headers[i].constData()) );
             }
 
             for(uint i =0 ; i < colTypes.count(); i++) {

@@ -21,7 +21,7 @@
 
 #include <QPixmap>
 
-#include <klocale.h>
+#include <KLocalizedString>
 
 #include "SensorModel.h"
 

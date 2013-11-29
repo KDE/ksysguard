@@ -34,7 +34,7 @@
 
 #include <kapplication.h>
 #include <kiconloader.h>
-#include <klocale.h>
+#include <KLocalizedString>
 #include <knotification.h>
 #include <ksgrd/SensorManager.h>
 #include <kdebug.h>

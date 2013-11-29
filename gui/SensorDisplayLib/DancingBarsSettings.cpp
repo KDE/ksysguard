@@ -23,7 +23,7 @@
 #include <kcolorbutton.h>
 #include <klineedit.h>
 #include <kinputdialog.h>
-#include <klocale.h>
+#include <KLocalizedString>
 #include <knuminput.h>
 
 #include <QCheckBox>

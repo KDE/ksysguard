@@ -27,7 +27,7 @@
 #include <QHBoxLayout>
 
 #include <kdebug.h>
-#include <klocale.h>
+#include <KLocalizedString>
 #include <knumvalidator.h>
 #include <ksgrd/SensorManager.h>
 #include "StyleEngine.h"

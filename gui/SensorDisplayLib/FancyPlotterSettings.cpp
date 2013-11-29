@@ -22,7 +22,7 @@
 #include <kacceleratormanager.h>
 #include <kcolordialog.h>
 #include <klineedit.h>
-#include <klocale.h>
+#include <KLocalizedString>
 #include <knuminput.h>
 
 #include <QAbstractTableModel>

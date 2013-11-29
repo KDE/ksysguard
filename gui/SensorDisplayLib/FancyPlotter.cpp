@@ -30,7 +30,7 @@
 
 
 #include <kdebug.h>
-#include <klocale.h>
+#include <KLocalizedString>
 #include <kmessagebox.h>
 #include <kapplication.h>
 #include <ksignalplotter.h>
@@ -513,7 +513,7 @@ void FancyPlotter::setTooltip()
             if (sensor->unit() == "%")
                 lastValue = i18nc("units", "%1%", lastValue);
             else if( !sensor->unit().isEmpty() )
-                lastValue = i18nc("units", QString(QString("%1 ") + sensor->unit()).toUtf8(), lastValue);
+                lastValue = i18nc("units", QString(QString("%1 ") + sensor->unit()).toUtf8().constData(), lastValue);
         } else {
             lastValue = i18n("Error");
         }
@@ -534,14 +534,14 @@ void FancyPlotter::setTooltip()
         if(sensor->isLocalhost()) {
             tooltip += QString( "%1%2 %3 (%4)" ).arg( neednewline  ? "<br>" : "")
                 .arg("<font color=\"" + mPlotter->beamColor( beamId ).name() + "\">"+mIndicatorSymbol+"</font>")
-                .arg( i18n(description.toUtf8()) )
+                .arg( i18n(description.toUtf8().constData()) )
                 .arg( lastValue );
 
         } else {
             tooltip += QString( "%1%2 %3:%4 (%5)" ).arg( neednewline ? "<br>" : "" )
                 .arg("<font color=\"" + mPlotter->beamColor( beamId ).name() + "\">"+mIndicatorSymbol+"</font>")
                 .arg( sensor->hostName() )
-                .arg( i18n(description.toUtf8()) )
+                .arg( i18n(description.toUtf8().constData()) )
                 .arg( lastValue );
         }
         neednewline = true;
@@ -584,7 +584,7 @@ void FancyPlotter::sendDataToPlotter( )
                         if (sensor->unit() == "%")
                             lastValue = i18nc("units", "%1%", lastValue);
                         else if( !sensor->unit().isEmpty() )  {
-                            lastValue = i18nc("units", QString("%1 " + sensor->unit()).toUtf8(), lastValue);
+                            lastValue = i18nc("units", QString("%1 " + sensor->unit()).toUtf8().constData(), lastValue);
                         }
                     }
 
@@ -656,7 +656,7 @@ void FancyPlotter::plotterAxisScaleChanged()
 #endif
         mPlotter->setScaleDownBy(1);
         //translate any others
-        unit = ki18nc("units", QString("%1 " + mUnit).toUtf8());
+        unit = ki18nc("units", QString("%1 " + mUnit).toUtf8().constData());
     }
     mPlotter->setUnit(unit);
     //reconnect

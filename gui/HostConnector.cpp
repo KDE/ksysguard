@@ -22,7 +22,7 @@
 #include <kapplication.h>
 #include <kacceleratormanager.h>
 #include <kcombobox.h>
-#include <klocale.h>
+#include <KLocalizedString>
 #include <KNumInput>
 #include <ktoolinvocation.h>
 

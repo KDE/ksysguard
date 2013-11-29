@@ -19,7 +19,7 @@
 
 */
 
-#include <klocale.h>
+#include <KLocalizedString>
 #include <ksgrd/SensorManager.h>
 #include <QMouseEvent>
 #include <QGridLayout>
