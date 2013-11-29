@@ -28,7 +28,6 @@
 #include <QPixmap>
 #include <QEvent>
 #include <QMouseEvent>
-#include <QCustomEvent>
 
 #include <kapplication.h>
 #include <kiconloader.h>
