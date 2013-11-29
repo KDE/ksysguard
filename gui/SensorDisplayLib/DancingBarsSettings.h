@@ -22,7 +22,7 @@
 #ifndef KSG_DANCINGBARSSETTINGS_H
 #define KSG_DANCINGBARSSETTINGS_H
 
-#include <QtCore/QList>
+#include <QList>
 
 #include <kpagedialog.h>
 

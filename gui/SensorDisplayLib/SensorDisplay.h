@@ -22,10 +22,10 @@
 #ifndef KSG_SENSORDISPLAY_H
 #define KSG_SENSORDISPLAY_H
 
-#include <QtCore/QEvent>
-#include <QtCore/QPointer>
-#include <QtGui/QLabel>
-#include <QtGui/QWidget>
+#include <QEvent>
+#include <QPointer>
+#include <QLabel>
+#include <QWidget>
 
 #include <ksgrd/SensorClient.h>
 #include "SharedSettings.h"

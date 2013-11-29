@@ -24,10 +24,10 @@
 #include <klocale.h>
 #include <knuminput.h>
 
-#include <QtGui/QGroupBox>
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtGui/QSpinBox>
+#include <QGroupBox>
+#include <QLabel>
+#include <QLayout>
+#include <QSpinBox>
 
 
 #include "WorkSheetSettings.h"

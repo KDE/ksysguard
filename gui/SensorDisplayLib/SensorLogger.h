@@ -22,7 +22,7 @@
 #ifndef SENSORLOGGER_H
 #define SENSORLOGGER_H
 
-#include <QtGui/QTreeView>
+#include <QTreeView>
 
 #include <SensorDisplay.h>
 

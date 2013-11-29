@@ -22,7 +22,7 @@
 #ifndef FANCYPLOTTERSETTINGS_H
 #define FANCYPLOTTERSETTINGS_H
 
-#include <QtCore/QList>
+#include <QList>
 
 #include <kpagedialog.h>
 

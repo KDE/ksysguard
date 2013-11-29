@@ -22,7 +22,7 @@
 #define KSG_KSYSGUARD_H
 
 #include <QEvent>
-#include <QtDBus/QtDBus>
+#include <QtDBus>
 
 #include <kapplication.h>
 #include <kxmlguiwindow.h>

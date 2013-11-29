@@ -22,9 +22,9 @@
 #ifndef SENSORMODEL_H
 #define SENSORMODEL_H
 
-#include <QtCore/QAbstractTableModel>
-#include <QtCore/QList>
-#include <QtGui/QColor>
+#include <QAbstractTableModel>
+#include <QList>
+#include <QColor>
 
 class SensorModelEntry
 {

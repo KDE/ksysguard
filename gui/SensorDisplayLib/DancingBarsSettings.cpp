@@ -26,13 +26,13 @@
 #include <klocale.h>
 #include <knuminput.h>
 
-#include <QtGui/QCheckBox>
-#include <QtGui/QGroupBox>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtGui/QPushButton>
-#include <QtGui/QTreeView>
+#include <QCheckBox>
+#include <QGroupBox>
+#include <QHeaderView>
+#include <QLabel>
+#include <QLayout>
+#include <QPushButton>
+#include <QTreeView>
 
 #include "DancingBarsSettings.h"
 

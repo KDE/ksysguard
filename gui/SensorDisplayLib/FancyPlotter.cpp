@@ -20,13 +20,13 @@
 */
 
 #include <QtXml/qdom.h>
-#include <QtGui/QImage>
-#include <QtGui/QToolTip>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QFontInfo>
-#include <QtGui/QResizeEvent>
+#include <QImage>
+#include <QToolTip>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QFontInfo>
+#include <QResizeEvent>
 
 
 #include <kdebug.h>

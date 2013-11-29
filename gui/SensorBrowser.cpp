@@ -19,12 +19,12 @@
 
 */
 
-#include <QtGui/QDrag>
-#include <QtGui/QLabel>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QPainter>
-#include <QtGui/QPixmap>
-#include <QtGui/QVBoxLayout>
+#include <QDrag>
+#include <QLabel>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPixmap>
+#include <QVBoxLayout>
 #include <QMimeData>
 
 #include <kdebug.h>

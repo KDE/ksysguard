@@ -19,18 +19,18 @@
 
 */
 
-#include <QtCore/QAbstractTableModel>
-#include <QtCore/QDate>
-#include <QtCore/QFile>
-#include <QtCore/QTextStream>
-#include <QtGui/QContextMenuEvent>
-#include <QtGui/QHeaderView>
-#include <QtGui/QMenu>
-#include <QtGui/QTreeView>
-#include <QtGui/QHBoxLayout>
-#include <QtXml/QDomNodeList>
-#include <QtXml/QDomDocument>
-#include <QtXml/QDomElement>
+#include <QAbstractTableModel>
+#include <QDate>
+#include <QFile>
+#include <QTextStream>
+#include <QContextMenuEvent>
+#include <QHeaderView>
+#include <QMenu>
+#include <QTreeView>
+#include <QHBoxLayout>
+#include <QDomNodeList>
+#include <QDomDocument>
+#include <QDomElement>
 
 #include <kapplication.h>
 #include <kiconloader.h>

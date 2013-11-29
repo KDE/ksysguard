@@ -19,7 +19,7 @@
 
 */
 
-#include <QtGui/QPixmap>
+#include <QPixmap>
 
 #include <klocale.h>
 

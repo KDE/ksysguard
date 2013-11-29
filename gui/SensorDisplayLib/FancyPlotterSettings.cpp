@@ -25,20 +25,20 @@
 #include <klocale.h>
 #include <knuminput.h>
 
-#include <QtCore/QAbstractTableModel>
-#include <QtCore/QList>
-#include <QtGui/QCheckBox>
-#include <QtGui/QDoubleSpinBox>
-#include <QtGui/QFormLayout>
-#include <QtGui/QGridLayout>
-#include <QtGui/QGroupBox>
-#include <QtGui/QHeaderView>
-#include <QtGui/QImage>
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtGui/QPixmap>
-#include <QtGui/QPushButton>
-#include <QtGui/QTreeView>
+#include <QAbstractTableModel>
+#include <QList>
+#include <QCheckBox>
+#include <QDoubleSpinBox>
+#include <QFormLayout>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QHeaderView>
+#include <QImage>
+#include <QLabel>
+#include <QLayout>
+#include <QPixmap>
+#include <QPushButton>
+#include <QTreeView>
 
 #include <limits>
 

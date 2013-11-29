@@ -23,8 +23,8 @@
 #include <stdlib.h>
 
 #include <QtXml/qdom.h>
-#include <QtGui/QLCDNumber>
-#include <QtGui/QHBoxLayout>
+#include <QLCDNumber>
+#include <QHBoxLayout>
 
 #include <kdebug.h>
 
