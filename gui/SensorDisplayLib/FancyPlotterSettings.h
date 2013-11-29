@@ -93,6 +93,10 @@ class FancyPlotterSettings : public KPageDialog
     void setRangeUnits( const QString & units );
     void setHasIntegerRange( bool hasIntegerRange );
 
+Q_SIGNALS:
+    void applyClicked();
+    void okClicked();
+
   private Q_SLOTS:
     void editSensor();
     void removeSensor();

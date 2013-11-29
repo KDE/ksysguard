@@ -290,19 +290,23 @@ void FancyPlotter::configureSettings()
 
     connect( mSettingsDialog, SIGNAL(applyClicked()), this, SLOT(applySettings()) );
     connect( mSettingsDialog, SIGNAL(okClicked()), this, SLOT(applySettings()) );
-    connect( mSettingsDialog, SIGNAL(finished()), this, SLOT(settingsFinished()) );
+    connect( mSettingsDialog, SIGNAL(finished(int)), this, SLOT(settingsFinished()) );
 
     mSettingsDialog->show();
 }
 
 void FancyPlotter::settingsFinished()
 {
+    applySettings();
     mSettingsDialog->hide();
     mSettingsDialog->deleteLater();
     mSettingsDialog = 0;
 }
 
 void FancyPlotter::applySettings() {
+    if (!mSettingsDialog) {
+        return;
+    }
     setTitle( mSettingsDialog->title() );
 
     mUseManualRange = mSettingsDialog->useManualRange();

@@ -53,6 +53,9 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   setObjectName( "FancyPlotterSettings" );
   setModal( false );
 
+  connect(buttonBox()->button(QDialogButtonBox::Ok), &QAbstractButton::clicked, this, &FancyPlotterSettings::okClicked);
+  connect(buttonBox()->button(QDialogButtonBox::Apply), &QAbstractButton::clicked, this, &FancyPlotterSettings::applyClicked);
+
   QFrame *page = 0;
   QGridLayout *pageLayout = 0;
   QGridLayout *boxLayout = 0;
