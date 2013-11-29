@@ -24,6 +24,8 @@
 #include <QSpinBox>
 
 #include <kfiledialog.h>
+#include <KGlobal>
+#include <KUrl>
 #include <kio/netaccess.h>
 #include <KLocalizedString>
 #include <kmessagebox.h>

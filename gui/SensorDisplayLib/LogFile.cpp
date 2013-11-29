@@ -18,6 +18,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 */
+#include "LogFile.h"
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -30,6 +31,7 @@
 #include <QHBoxLayout>
 #include <kfontdialog.h>
 #include <kdebug.h>
+#include <KDialog>
 #include <klocale.h>
 #include <kcolorbutton.h>
 #include <knotification.h>

@@ -29,6 +29,7 @@
 #include "SharedSettings.h"
 
 class FancyPlotterSettings;
+class QBoxLayout;
 class QLabel;
 class SensorToAdd;
 class FancyPlotterLabel;
