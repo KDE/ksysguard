@@ -40,8 +40,8 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   : KPageDialog( parent ), mModel( new SensorModel( this ) )
 {
   setFaceType( Tabbed );
-  setCaption( i18n( "Edit BarGraph Preferences" ) );
-  setButtons( Ok | Cancel );
+  setWindowTitle( i18n( "Edit BarGraph Preferences" ) );
+  setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
   setObjectName( name );
   setModal( false );
 

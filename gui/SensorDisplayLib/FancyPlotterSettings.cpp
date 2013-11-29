@@ -48,8 +48,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   : KPageDialog( parent ), mModel( new SensorModel( this ) )
 {
   setFaceType( Tabbed );
-  setCaption( i18n( "Plotter Settings" ) );
-  setButtons( Ok | Apply | Cancel );
+  setWindowTitle( i18n( "Plotter Settings" ) );
+  setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel);
   setObjectName( "FancyPlotterSettings" );
   setModal( false );
 
