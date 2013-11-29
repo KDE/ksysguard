@@ -32,7 +32,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <kaboutdata.h>
+#include <k4aboutdata.h>
 #include <kaction.h>
 #include <kactioncollection.h>
 #include <kapplication.h>
@@ -526,8 +526,8 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
   setsid();
 #endif
 
-  KAboutData aboutData( "ksysguard", 0, ki18n( "System Monitor" ),
-                        KDE_VERSION_STRING, ki18n(Description), KAboutData::License_GPL,
+  K4AboutData aboutData( "ksysguard", 0, ki18n( "System Monitor" ),
+                        KDE_VERSION_STRING, ki18n(Description), K4AboutData::License_GPL,
                         ki18n( "(c) 1996-2008 The KDE System Monitor Developers" ) );
   aboutData.addAuthor( ki18n("John Tapsell"), ki18n("Current Maintainer"), "john.tapsell@kde.org" );
   aboutData.addAuthor( ki18n("Chris Schlaeger"), ki18n("Previous Maintainer"), "cs@kde.org" );
