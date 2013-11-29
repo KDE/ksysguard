@@ -24,7 +24,7 @@
 #include <kcombobox.h>
 #include <KLocalizedString>
 #include <KNumInput>
-#include <ktoolinvocation.h>
+#include <khelpclient.h>
 
 #include <QGroupBox>
 #include <QLabel>
@@ -224,7 +224,7 @@ bool HostConnector::useCustom() const
 
 void HostConnector::slotHelp()
 {
-  KToolInvocation::invokeHelp( "connectingtootherhosts", "ksysguard" );
+  KHelpClient::invokeHelp( "connectingtootherhosts", "ksysguard" );
 }
 
 #include "HostConnector.moc"
