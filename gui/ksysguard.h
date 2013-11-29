@@ -31,7 +31,6 @@
 
 class QSplitter;
 class QAction;
-class KAction;
 class SensorBrowserWidget;
 class Workspace;
 class ProcessController;
@@ -99,7 +98,7 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     QAction *mQuitAction;
     QAction *mConfigureSheetAction;
     QAction *mHotNewWorksheetUploadAction;
-    KAction *mRefreshTabAction;
+    QAction *mRefreshTabAction;
     QLabel *sbProcessCount;
     QLabel *sbCpuStat;
     QLabel *sbMemTotal;

@@ -33,7 +33,6 @@
 #include <unistd.h>
 
 #include <k4aboutdata.h>
-#include <kaction.h>
 #include <kactioncollection.h>
 #include <kapplication.h>
 #include <kcmdlineargs.h>
@@ -167,7 +166,7 @@ void TopLevel::retranslateUi()
 
   mConfigureSheetAction->setText( i18n( "Tab &Properties" ) );
   if(mQuitAction) {
-    KAction *tmpQuitAction = KStandardAction::quit( NULL, NULL, NULL );
+    QAction *tmpQuitAction = KStandardAction::quit( NULL, NULL, NULL );
     mQuitAction->setText(tmpQuitAction->text());
     mQuitAction->setWhatsThis(tmpQuitAction->whatsThis());
     mQuitAction->setToolTip(tmpQuitAction->toolTip());
