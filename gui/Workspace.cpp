@@ -184,7 +184,7 @@ bool Workspace::saveOnQuit()
 
 void Workspace::importWorkSheet()
 {
-  KUrl url = KFileDialog::getOpenUrl( QString(), i18n("*.sgrd|Sensor Files (*.sgrd)"), this, i18n( "Select Tab File to Import" ) );
+  KUrl url = KFileDialog::getOpenUrl( QUrl(), i18n("*.sgrd|Sensor Files (*.sgrd)"), this, i18n( "Select Tab File to Import" ) );
 
   importWorkSheet( url );
 }
@@ -239,7 +239,7 @@ void Workspace::exportWorkSheet( WorkSheet *sheet )
 
   QString fileName;
   do {
-    fileName = KFileDialog::getSaveFileName( QString(tabText(indexOf( currentWidget() ))+ ".sgrd"),
+    fileName = KFileDialog::getSaveFileName( QUrl(QString(tabText(indexOf( currentWidget() ))+ ".sgrd")),
 		                    QLatin1String("*.sgrd"), this, i18n("Export Tab") );
     if ( fileName.isEmpty() )
       return;

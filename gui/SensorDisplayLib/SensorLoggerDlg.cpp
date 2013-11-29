@@ -85,7 +85,7 @@ double SensorLoggerDlg::upperLimit() const
 
 void SensorLoggerDlg::setFileName( const QString &url )
 {
-  m_loggerWidget->m_fileName->setUrl( url );
+  m_loggerWidget->m_fileName->setUrl( QUrl::fromLocalFile(url) );
 }
 
 void SensorLoggerDlg::setTimerInterval( int i )
