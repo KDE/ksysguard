@@ -117,7 +117,7 @@ void MultiMeter::answerReceived(int id, const QList<QByteArray>& answerlist)
       digits += 1;
     }
 
-    mLcd->setNumDigits(qMin(15,digits));
+    mLcd->setDigitCount(qMin(15,digits));
 
     mLcd->display(val);
     if (mLowerLimitActive && val < mLowerLimit)
