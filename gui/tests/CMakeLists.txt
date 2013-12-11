@@ -8,7 +8,7 @@ kde4_add_unit_test( ksysguarddtest
 target_link_libraries( ksysguarddtest
     Qt5::Test
     Qt5::Network
-    KF5::KConfigCore
-    KF5::KCoreAddons
-    KF5::KI18n
+    KF5::ConfigCore
+    KF5::CoreAddons
+    KF5::I18n
 )

@@ -54,7 +54,7 @@ set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
 
 kf5_add_kdeinit_executable(ksysguard ${ksysguard_KDEINIT_SRCS})
 
-target_link_libraries(kdeinit_ksysguard processui ksignalplotter KF5::ItemViews ksgrd KF5::KNewStuff)
+target_link_libraries(kdeinit_ksysguard processui ksignalplotter KF5::ItemViews ksgrd KF5::NewStuff)
 
 install(TARGETS kdeinit_ksysguard ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(TARGETS ksysguard         ${INSTALL_TARGETS_DEFAULT_ARGS})
