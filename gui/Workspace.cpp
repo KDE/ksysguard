@@ -33,7 +33,7 @@
 #include <kacceleratormanager.h>
 #include <kactioncollection.h>
 #include <kmenu.h>
-#include <knewstuff3/downloaddialog.h>
+#include <KNewStuff3/KNS3/DownloadDialog>
 
 #include "WorkSheet.h"
 #include "WorkSheetSettings.h"
