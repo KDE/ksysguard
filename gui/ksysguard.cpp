@@ -52,7 +52,7 @@
 #include <kwindowsystem.h>
 #include <QSplitter>
 
-#include <kdeversion.h>
+#include <config-workspace.h>
 #include "SensorBrowser.h"
 #include "Workspace.h"
 #include "WorkSheet.h"
@@ -526,7 +526,7 @@ extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
 #endif
 
   K4AboutData aboutData( "ksysguard", 0, ki18n( "System Monitor" ),
-                        KDE_VERSION_STRING, ki18n(Description), K4AboutData::License_GPL,
+                        WORKSPACE_VERSION_STRING, ki18n(Description), K4AboutData::License_GPL,
                         ki18n( "(c) 1996-2008 The KDE System Monitor Developers" ) );
   aboutData.addAuthor( ki18n("John Tapsell"), ki18n("Current Maintainer"), "john.tapsell@kde.org" );
   aboutData.addAuthor( ki18n("Chris Schlaeger"), ki18n("Previous Maintainer"), "cs@kde.org" );
