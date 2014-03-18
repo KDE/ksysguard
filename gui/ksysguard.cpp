@@ -493,7 +493,7 @@ void TopLevel::setSwapInfo( qlonglong used, qlonglong free, const QString & )
 /*
  * Once upon a time...
  */
-extern "C" KDE_EXPORT int kdemain( int argc, char** argv )
+extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
 {
   // initpipe is used to keep the parent process around till the child
   // has registered with dbus

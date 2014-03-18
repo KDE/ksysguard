@@ -29,7 +29,7 @@
 class QCheckBox;
 class QDoubleSpinBox;
 
-class KDE_EXPORT TimerSettings : public KDialog
+class Q_DECL_EXPORT TimerSettings : public KDialog
 {
   Q_OBJECT
 
