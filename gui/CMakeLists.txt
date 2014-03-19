@@ -2,42 +2,39 @@
 add_subdirectory( tests )
 
 include_directories(
-   ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/
-   ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs
-   ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs/ksysguard
-   ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs/ksysguard/signalplotter
-   ${KDEBASE_WORKSPACE_SOURCE_DIR}/libs/ksysguard/processcore )
+   SensorDisplayLib/
+)
 
 
 ########### next target ###############
 
 set(libsensordisplays_SRCS
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorDisplay.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/BarGraph.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/DancingBars.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/DancingBarsSettings.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/DummyDisplay.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/FancyPlotter.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/FancyPlotterSettings.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ListView.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/LogFile.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/MultiMeter.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/MultiMeterSettings.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ProcessController.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLogger.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLoggerDlg.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLoggerSettings.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorModel.cpp
-   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ListViewSettings.cpp
-#   	${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/modeltest.cpp
+   	SensorDisplayLib/SensorDisplay.cpp
+   	SensorDisplayLib/BarGraph.cpp
+   	SensorDisplayLib/DancingBars.cpp
+   	SensorDisplayLib/DancingBarsSettings.cpp
+   	SensorDisplayLib/DummyDisplay.cpp
+   	SensorDisplayLib/FancyPlotter.cpp
+   	SensorDisplayLib/FancyPlotterSettings.cpp
+   	SensorDisplayLib/ListView.cpp
+   	SensorDisplayLib/LogFile.cpp
+   	SensorDisplayLib/MultiMeter.cpp
+   	SensorDisplayLib/MultiMeterSettings.cpp
+   	SensorDisplayLib/ProcessController.cpp
+   	SensorDisplayLib/SensorLogger.cpp
+   	SensorDisplayLib/SensorLoggerDlg.cpp
+   	SensorDisplayLib/SensorLoggerSettings.cpp
+   	SensorDisplayLib/SensorModel.cpp
+   	SensorDisplayLib/ListViewSettings.cpp
+#   	SensorDisplayLib/modeltest.cpp
 	)
 
-kde4_add_ui_files( libsensordisplays_SRCS
-   ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/ListViewSettingsWidget.ui
-   ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/LogFileSettings.ui
-   ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/MultiMeterSettingsWidget.ui
-   ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLoggerDlgWidget.ui
-   ${CMAKE_CURRENT_SOURCE_DIR}/SensorDisplayLib/SensorLoggerSettingsWidget.ui
+qt5_wrap_ui( libsensordisplays_SRCS
+   SensorDisplayLib/ListViewSettingsWidget.ui
+   SensorDisplayLib/LogFileSettings.ui
+   SensorDisplayLib/MultiMeterSettingsWidget.ui
+   SensorDisplayLib/SensorLoggerDlgWidget.ui
+   SensorDisplayLib/SensorLoggerSettingsWidget.ui
 )
 
 set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
