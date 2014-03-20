@@ -1,3 +1,46 @@
+project(ksysguard)
+cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
+set(QT_MIN_VERSION "5.2.0")
+
+set(KSYSGUARD_VERSION 4.9.97)
+set(KSYSGUARD_STRING_VERSION "${KSYSGUARD_VERSION}")
+
+find_package(ECM 0.0.11 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+include(CheckIncludeFiles)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
+include(ECMAddTests)
+include(ECMInstallIcons)
+include(FeatureSummary)
+
+find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
+    Core
+    Test
+    Network
+    Widgets
+)
+find_package(KF5 CONFIG REQUIRED COMPONENTS
+    CoreAddons
+    I18n
+    ItemViews
+    NewStuff
+    Config
+    Init
+    KDE4Support #for SensorDisplay.cpp
+)
+
+find_package(Sensors)
+set_package_properties(Sensors PROPERTIES
+                       TYPE OPTIONAL
+                       PURPOSE "Allows to show sensor information")
+
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+    feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
+endif()
+
 add_subdirectory( gui )
 add_subdirectory( pics )
 add_subdirectory( example )

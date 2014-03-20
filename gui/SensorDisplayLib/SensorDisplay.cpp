@@ -28,8 +28,8 @@
 #include <QPixmap>
 #include <QEvent>
 #include <QMouseEvent>
+#include <QApplication>
 
-#include <kapplication.h>
 #include <kiconloader.h>
 #include <KLocalizedString>
 #include <kdebug.h>
@@ -134,7 +134,7 @@ void SensorDisplay::showContextMenu(const QPoint &pos)
         case 1: {
             if ( mDeleteNotifier ) {
               DeleteEvent *event = new DeleteEvent( this );
-              kapp->postEvent( mDeleteNotifier, event );
+              qApp->postEvent( mDeleteNotifier, event );
             }
           }
           break;
