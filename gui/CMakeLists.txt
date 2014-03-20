@@ -1,6 +1,3 @@
-
-add_subdirectory( tests )
-
 include_directories(
    SensorDisplayLib/
 )
