@@ -45,6 +45,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 configure_file(config-workspace.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-workspace.h)
 
 add_subdirectory( gui )
+add_subdirectory( doc )
 add_subdirectory( pics )
 add_subdirectory( example )
 
