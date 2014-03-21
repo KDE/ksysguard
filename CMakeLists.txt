@@ -21,6 +21,9 @@ find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
     Test
     Network
     Widgets
+    Script
+    WebKitWidgets
+    X11Extras
 )
 find_package(KF5 CONFIG REQUIRED COMPONENTS
     CoreAddons
@@ -29,6 +32,9 @@ find_package(KF5 CONFIG REQUIRED COMPONENTS
     NewStuff
     Config
     Init
+    IconThemes
+    SysGuard
+    Plasma
     KDE4Support #for SensorDisplay.cpp
 )
 
