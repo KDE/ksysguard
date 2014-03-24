@@ -33,10 +33,13 @@ find_package(KF5 CONFIG REQUIRED COMPONENTS
     Config
     Init
     IconThemes
-    SysGuard
     Plasma
     KDE4Support #for SensorDisplay.cpp
 )
+
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+    find_package(KF5 CONFIG REQUIRED COMPONENTS SysGuard)
+endif()
 
 find_package(Sensors)
 set_package_properties(Sensors PROPERTIES
@@ -56,4 +59,3 @@ add_subdirectory( pics )
 add_subdirectory( example )
 
 add_subdirectory( ksysguardd )
-
