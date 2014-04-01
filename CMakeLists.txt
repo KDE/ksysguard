@@ -37,18 +37,14 @@ find_package(KF5 CONFIG REQUIRED COMPONENTS
     KDE4Support #for SensorDisplay.cpp
 )
 
-if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-    find_package(KF5 CONFIG REQUIRED COMPONENTS SysGuard)
-endif()
+find_package(KF5 CONFIG REQUIRED COMPONENTS SysGuard)
 
 find_package(Sensors)
 set_package_properties(Sensors PROPERTIES
                        TYPE OPTIONAL
                        PURPOSE "Allows to show sensor information")
 
-if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-    feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
-endif()
+feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 configure_file(config-workspace.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-workspace.h)

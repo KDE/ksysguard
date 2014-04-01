@@ -1,7 +1,3 @@
-if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
-  cmake_minimum_required(VERSION 2.6.2)
-endif()
-
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/CContLib/ )
 
 # Laurent: Verify that we install it into (kdeprefix)/etc/ and not into /etc
