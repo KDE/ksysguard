@@ -18,12 +18,7 @@ include(FeatureSummary)
 
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
     Core
-    Test
-    Network
     Widgets
-    Script
-    WebKitWidgets
-    X11Extras
 )
 find_package(KF5 CONFIG REQUIRED COMPONENTS
     CoreAddons
@@ -31,9 +26,7 @@ find_package(KF5 CONFIG REQUIRED COMPONENTS
     ItemViews
     NewStuff
     Config
-    Init
     IconThemes
-    Plasma
     KDE4Support #for SensorDisplay.cpp
 )
 
