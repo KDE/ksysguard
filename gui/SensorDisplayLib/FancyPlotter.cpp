@@ -862,6 +862,7 @@ bool FancyPlotter::saveSettings( QDomDocument &doc, QDomElement &element)
 
     element.setAttribute( "version", 1 );
     element.setAttribute( "labels", mPlotter->showAxis() );
+    element.setAttribute( "fontSize", mPlotter->font().pointSize() );
 
     QHash<QString,QDomElement> hash;
     int beamId = -1;
