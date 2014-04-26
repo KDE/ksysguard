@@ -20,7 +20,7 @@ find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
     Core
     Widgets
 )
-find_package(KF5 CONFIG REQUIRED COMPONENTS
+find_package(KF5 REQUIRED COMPONENTS
     CoreAddons
     I18n
     ItemViews
@@ -30,7 +30,7 @@ find_package(KF5 CONFIG REQUIRED COMPONENTS
     KDE4Support #for SensorDisplay.cpp
 )
 
-find_package(KF5 CONFIG REQUIRED COMPONENTS SysGuard)
+find_package(KF5 REQUIRED COMPONENTS SysGuard)
 
 find_package(Sensors)
 set_package_properties(Sensors PROPERTIES
