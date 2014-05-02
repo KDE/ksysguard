@@ -1,8 +1,10 @@
 [Desktop Entry]
 Name=KSysGuard
+Name[nl]=KSysGuard
 Name[uk]=KSysGuard
 Name[x-test]=xxKSysGuardxx
 GenericName=System Monitor
+GenericName[nl]=Systeemmonitor
 GenericName[uk]=Монітор системи
 GenericName[x-test]=xxSystem Monitorxx
 Exec=ksysguard %U
