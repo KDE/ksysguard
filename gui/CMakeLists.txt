@@ -5,6 +5,8 @@ include_directories(
 
 ########### next target ###############
 
+add_definitions(-DTRANSLATION_DOMAIN=\"ksysguard\")
+
 set(libsensordisplays_SRCS
    	SensorDisplayLib/SensorDisplay.cpp
    	SensorDisplayLib/BarGraph.cpp
@@ -26,7 +28,7 @@ set(libsensordisplays_SRCS
 #   	SensorDisplayLib/modeltest.cpp
 	)
 
-qt5_wrap_ui( libsensordisplays_SRCS
+ki18n_wrap_ui( libsensordisplays_SRCS
    SensorDisplayLib/ListViewSettingsWidget.ui
    SensorDisplayLib/LogFileSettings.ui
    SensorDisplayLib/MultiMeterSettingsWidget.ui
