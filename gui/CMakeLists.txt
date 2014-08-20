@@ -49,6 +49,7 @@ set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
 
 
 kf5_add_kdeinit_executable(ksysguard ${ksysguard_KDEINIT_SRCS})
+target_compile_definitions(kdeinit_ksysguard PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(kdeinit_ksysguard
     KF5::ProcessUi

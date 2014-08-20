@@ -526,7 +526,7 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
 #endif
 
   K4AboutData aboutData( "ksysguard", 0, ki18n( "System Monitor" ),
-                        WORKSPACE_VERSION_STRING, ki18n(Description), K4AboutData::License_GPL,
+                        PROJECT_VERSION, ki18n(Description), K4AboutData::License_GPL,
                         ki18n( "(c) 1996-2008 The KDE System Monitor Developers" ) );
   aboutData.addAuthor( ki18n("John Tapsell"), ki18n("Current Maintainer"), "john.tapsell@kde.org" );
   aboutData.addAuthor( ki18n("Chris Schlaeger"), ki18n("Previous Maintainer"), "cs@kde.org" );
