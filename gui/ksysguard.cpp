@@ -541,7 +541,6 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
                        "Parts derived (by permission) from the sunos5\n"
                        "module of William LeFebvre's \"top\" utility." ),
                        "tk@Genetik.Uni-Bielefeld.DE" );
-  aboutData.setProgramIconName("utilities-system-monitor");
 
   KCmdLineArgs::init( argc, argv, &aboutData );
 
@@ -550,6 +549,7 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
   KCmdLineArgs::addCmdLineOptions( options );
   // initialize KDE application
   KApplication *app = new KApplication;
+  app->setWindowIcon(QIcon::fromTheme("utilities-system-monitor"));
 
   KSGRD::SensorMgr = new KSGRD::SensorManager();
   KSGRD::Style = new KSGRD::StyleEngine();
