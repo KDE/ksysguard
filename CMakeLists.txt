@@ -28,7 +28,7 @@ find_package(KF5 REQUIRED COMPONENTS
     NewStuff
     Config
     IconThemes
-    KDE4Support #for SensorDisplay.cpp
+    KDELibs4Support #for SensorDisplay.cpp
 )
 
 find_package(KF5 REQUIRED COMPONENTS SysGuard)
