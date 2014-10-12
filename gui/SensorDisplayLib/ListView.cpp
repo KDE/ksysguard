@@ -64,22 +64,22 @@ static QString formatByteSize(qlonglong amountInKB, int units) {
 
     switch(units) {
       case UnitsKB:
-        return kString.arg(KGlobal::locale()->formatNumber(amountInKB, 0));
+        return kString.arg(KLocale::global()->formatNumber(amountInKB, 0));
       case UnitsMB:
         amount = amountInKB/1024.0;
-        return mString.arg(KGlobal::locale()->formatNumber(amount, 1));
+        return mString.arg(KLocale::global()->formatNumber(amount, 1));
       case UnitsGB:
         amount = amountInKB/(1024.0*1024.0);
         if(amount < 0.1 && amount > 0.05) amount = 0.1;
-        return gString.arg(KGlobal::locale()->formatNumber(amount, 1));
+        return gString.arg(KLocale::global()->formatNumber(amount, 1));
       case UnitsTB:
         amount = amountInKB/(1024.0*1024.0*1024.0);
         if(amount < 0.1 && amount > 0.05) amount = 0.1;
-        return tString.arg(KGlobal::locale()->formatNumber(amount, 1));
+        return tString.arg(KLocale::global()->formatNumber(amount, 1));
       case UnitsPB:
         amount = amountInKB/(1024.0*1024.0*1024.0*1024.0);
         if(amount < 0.1 && amount > 0.05) amount = 0.1;
-        return pString.arg(KGlobal::locale()->formatNumber(amount, 1));
+        return pString.arg(KLocale::global()->formatNumber(amount, 1));
       default:
           return "";  // error
     }

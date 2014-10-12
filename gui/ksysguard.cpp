@@ -53,6 +53,7 @@
 #include <QSplitter>
 
 #include <config-workspace.h>
+#include <KFormat>
 #include "SensorBrowser.h"
 #include "Workspace.h"
 #include "WorkSheet.h"
@@ -379,9 +380,9 @@ bool TopLevel::queryClose()
   if ( !mWorkSpace->saveOnQuit() )
     return false;
 
-  KConfigGroup cg( KGlobal::config(), "MainWindow" );
+  KConfigGroup cg( KSharedConfig::openConfig(), "MainWindow" );
   saveProperties( cg );
-  KGlobal::config()->sync();
+  KSharedConfig::openConfig()->sync();
 
   return true;
 }
@@ -454,8 +455,8 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
       mUsedApplication = answer.toLongLong();
       //Use a multi-length string
       s = i18nc( "Arguments are formatted byte sizes (used/total)", "Memory: %1 / %2" "\xc2\x9c" "Mem: %1 / %2" "\xc2\x9c" "Mem: %1" "\xc2\x9c" "%1",
-                 KGlobal::locale()->formatByteSize( mUsedApplication*1024),
-                 KGlobal::locale()->formatByteSize( (mFree+mUsedTotal)*1024 ) );
+                 KFormat().formatByteSize( mUsedApplication*1024),
+                 KFormat().formatByteSize( (mFree+mUsedTotal)*1024 ) );
       sbMemTotal->setText( s );
       break;
 
@@ -483,8 +484,8 @@ void TopLevel::setSwapInfo( qlonglong used, qlonglong free, const QString & )
     msg = i18n( " No swap space available " );
   else {
     msg = i18nc( "Arguments are formatted byte sizes (used/total)", "Swap: %1 / %2" "\xc2\x9c" "Swap: %1" "\xc2\x9c" "%1" ,
-                 KGlobal::locale()->formatByteSize( used*1024 ),
-                 KGlobal::locale()->formatByteSize( (free+used)*1024) );
+                 KFormat().formatByteSize( used*1024 ),
+                 KFormat().formatByteSize( (free+used)*1024) );
   }
 
   sbSwapTotal->setText( msg );
@@ -563,7 +564,7 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
 
 
   // create top-level widget
-  Toplevel->readProperties( KConfigGroup( KGlobal::config(), "MainWindow" ) );
+  Toplevel->readProperties( KConfigGroup( KSharedConfig::openConfig(), "MainWindow" ) );
   // setup the statusbar, toolbar etc.
   // Note that this comes after creating the top-level widgets whcih also 
   // sets up the various QActions that the user may have added to the toolbar
