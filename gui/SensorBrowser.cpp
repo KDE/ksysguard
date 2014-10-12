@@ -19,11 +19,6 @@
 
 */
 
-#include <QDrag>
-#include <QLabel>
-#include <QMouseEvent>
-#include <QPainter>
-#include <QPixmap>
 #include <QVBoxLayout>
 #include <QMimeData>
 

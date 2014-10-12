@@ -22,13 +22,12 @@
 #include <QCheckBox>
 #include <QtXml/qdom.h>
 #include <QMenu>
-#include <QSpinBox>
 
-#include <QBitmap>
 #include <QPixmap>
 #include <QEvent>
 #include <QMouseEvent>
 #include <QApplication>
+#include <QBitmap>
 
 #include <kiconloader.h>
 #include <KLocalizedString>

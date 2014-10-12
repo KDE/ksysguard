@@ -30,10 +30,10 @@
 #include <QGroupBox>
 #include <QHeaderView>
 #include <QLabel>
-#include <QLayout>
 #include <QPushButton>
 #include <QTreeView>
-
+#include <QGridLayout>
+#include <QBitmap>
 #include "DancingBarsSettings.h"
 
 DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )

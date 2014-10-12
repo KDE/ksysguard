@@ -19,14 +19,11 @@
 
 */
 
-#include <QImage>
 #include <QPushButton>
-#include <QSpinBox>
 
 #include <kconfig.h>
 #include <kconfiggroup.h>
 #include <klocale.h>
-#include <QList>
 
 #include "StyleEngine.h"
 using namespace KSGRD;

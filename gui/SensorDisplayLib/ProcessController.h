@@ -24,12 +24,8 @@
 #define _ProcessController_h_
 
 #include <QWidget>
-#include <QAbstractItemModel>
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QList>
-#include <QProcess>
 
 
 #include <kapplication.h>

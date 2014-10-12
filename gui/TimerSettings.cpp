@@ -24,7 +24,6 @@
 
 #include <QCheckBox>
 #include <QLabel>
-#include <QLayout>
 #include <QDoubleSpinBox>
 #include <QWhatsThis>
 

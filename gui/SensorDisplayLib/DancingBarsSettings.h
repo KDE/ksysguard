@@ -22,7 +22,6 @@
 #ifndef KSG_DANCINGBARSSETTINGS_H
 #define KSG_DANCINGBARSSETTINGS_H
 
-#include <QList>
 
 #include <kpagedialog.h>
 

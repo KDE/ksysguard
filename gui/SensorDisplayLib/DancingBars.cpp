@@ -21,9 +21,7 @@
 
 #include <QCheckBox>
 #include <QtXml/qdom.h>
-#include <QLineEdit>
 #include <QPushButton>
-#include <QSpinBox>
 #include <QHBoxLayout>
 
 #include <kdebug.h>

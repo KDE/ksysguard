@@ -20,8 +20,6 @@
 
 */
 
-#include <QLineEdit>
-#include <QSpinBox>
 
 #include <kfiledialog.h>
 #include <KGlobal>

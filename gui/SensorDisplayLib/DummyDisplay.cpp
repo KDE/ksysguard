@@ -22,8 +22,8 @@
 #include <KLocalizedString>
 #include <ksgrd/SensorManager.h>
 #include <QMouseEvent>
-#include <QGridLayout>
-
+#include <QLabel>
+#include <QHBoxLayout>
 #include "DummyDisplay.h"
 
 DummyDisplay::DummyDisplay( QWidget* parent, SharedSettings *workSheetSettings )

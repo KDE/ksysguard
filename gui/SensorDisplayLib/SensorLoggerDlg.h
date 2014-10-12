@@ -24,7 +24,6 @@
 #include <kdialog.h>
 
 
-#include <QColor>
 
 class Ui_SensorLoggerDlgWidget;
 

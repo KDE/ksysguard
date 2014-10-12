@@ -28,7 +28,6 @@ class QListWidget;
 
 #include <QtXml/qdom.h>
 
-#include <QTimerEvent>
 
 #include <SensorDisplay.h>
 

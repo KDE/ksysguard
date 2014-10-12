@@ -26,9 +26,8 @@
 
 #include <QGroupBox>
 #include <QLabel>
-#include <QLayout>
-#include <QSpinBox>
-
+#include <QGridLayout>
+#include <QVBoxLayout>
 
 #include "WorkSheetSettings.h"
 

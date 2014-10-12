@@ -26,7 +26,6 @@
 #include <QPushButton>
 #include <QRegExp>
 
-#include <QFile>
 #include <QListWidget>
 #include <QHBoxLayout>
 #include <kfontdialog.h>

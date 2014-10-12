@@ -20,12 +20,10 @@
 */
 
 #include <QtXml/qdom.h>
-#include <QImage>
 #include <QToolTip>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QFontInfo>
 #include <QResizeEvent>
 
 

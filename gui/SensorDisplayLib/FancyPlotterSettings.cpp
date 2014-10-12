@@ -25,7 +25,6 @@
 #include <KLocalizedString>
 #include <knuminput.h>
 
-#include <QAbstractTableModel>
 #include <QList>
 #include <QCheckBox>
 #include <QDoubleSpinBox>
@@ -33,10 +32,7 @@
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QHeaderView>
-#include <QImage>
 #include <QLabel>
-#include <QLayout>
-#include <QPixmap>
 #include <QPushButton>
 #include <QTreeView>
 

@@ -24,7 +24,6 @@
 
 #include <QEvent>
 #include <QPointer>
-#include <QLabel>
 #include <QWidget>
 
 #include <ksgrd/SensorClient.h>
