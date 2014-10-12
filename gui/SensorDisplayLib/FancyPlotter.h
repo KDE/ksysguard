@@ -32,7 +32,6 @@ class FancyPlotterSettings;
 class QBoxLayout;
 class QLabel;
 class SensorToAdd;
-class FancyPlotterLabel;
 class KSignalPlotter;
 
 class FPSensorProperties : public KSGRD::SensorProperties
