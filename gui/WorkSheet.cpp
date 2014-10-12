@@ -801,4 +801,4 @@ float WorkSheet::updateInterval() const
         return 0;
 }
 
-#include "WorkSheet.moc"
+

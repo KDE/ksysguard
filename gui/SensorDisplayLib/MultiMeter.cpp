@@ -230,4 +230,4 @@ void MultiMeter::setBackgroundColor( const QColor& color )
   mLcd->setPalette( pal );
 }
 
-#include "MultiMeter.moc"
+

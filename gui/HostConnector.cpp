@@ -225,4 +225,4 @@ void HostConnector::slotHelp()
   KHelpClient::invokeHelp( "connectingtootherhosts", "ksysguard" );
 }
 
-#include "HostConnector.moc"
+

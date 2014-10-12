@@ -659,4 +659,4 @@ void SensorLogger::contextMenuRequest( const QModelIndex &index, const QPoint &p
   }
 }
 
-#include "SensorLogger.moc"
+

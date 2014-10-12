@@ -82,7 +82,7 @@ void ListViewSettings::setGridColor( const QColor &c )
   m_settingsWidget->m_gridColor->setColor( c );
 }
 
-#include "ListViewSettings.moc"
+
 
 /* vim: et sw=2 ts=2
 */

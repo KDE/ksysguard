@@ -650,4 +650,4 @@ HostInfo *SensorInfo::hostInfo() const
 
 
 
-#include "SensorBrowser.moc"
+

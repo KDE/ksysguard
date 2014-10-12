@@ -27,7 +27,7 @@
 
 #include <kdebug.h>
 
-#include "ProcessController.moc"
+
 #include "ProcessController.h"
 #include "processui/ksysguardprocesslist.h"
 #include "processcore/processes.h"

@@ -39,7 +39,7 @@
 
 #include "ui_LogFileSettings.h"
 
-#include "LogFile.moc"
+
 
 LogFile::LogFile(QWidget *parent, const QString& title, SharedSettings *workSheetSettings)
 	: KSGRD::SensorDisplay(parent, title, workSheetSettings)

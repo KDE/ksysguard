@@ -167,4 +167,4 @@ void BarGraph::paintEvent( QPaintEvent* )
   p.end();
 }
 
-#include "BarGraph.moc"
+

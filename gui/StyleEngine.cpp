@@ -117,4 +117,4 @@ uint StyleEngine::numSensorColors() const
   return mSensorColors.count();
 }
 
-#include "StyleEngine.moc"
+

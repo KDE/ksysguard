@@ -83,7 +83,7 @@ void SensorLoggerSettings::setAlarmColor( const QColor &c )
   m_settingsWidget->m_alarmColor->setColor( c );
 }
 
-#include "SensorLoggerSettings.moc"
+
 
 /* vim: et sw=2 ts=2
 */

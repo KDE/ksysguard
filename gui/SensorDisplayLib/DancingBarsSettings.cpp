@@ -377,4 +377,4 @@ void DancingBarsSettings::removeSensor()
   mModel->removeSensor( index );
 }
 
-#include "DancingBarsSettings.moc"
+

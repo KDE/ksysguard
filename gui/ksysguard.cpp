@@ -586,4 +586,4 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
   return result;
 }
 
-#include "ksysguard.moc"
+

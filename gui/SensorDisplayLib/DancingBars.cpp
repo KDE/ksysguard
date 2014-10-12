@@ -326,4 +326,4 @@ bool DancingBars::hasSettingsDialog() const
   return true;
 }
 
-#include "DancingBars.moc"
+

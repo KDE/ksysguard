@@ -476,4 +476,4 @@ QString SensorProperties::regExpName() const
   return mRegExpName;
 }
 
-#include "SensorDisplay.moc"
+

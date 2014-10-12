@@ -97,4 +97,4 @@ void TimerSettings::globalUpdateChanged( bool value )
   mLabel->setEnabled( !value );
 }
 
-#include "TimerSettings.moc"
+
