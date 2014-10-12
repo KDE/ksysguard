@@ -34,7 +34,7 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kmenu.h>
+#include <QMenu>
 
 #include <ksgrd/SensorManager.h>
 
@@ -373,8 +373,8 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
          * type we popup a menu so the user can select what display is
          * wanted. */
         if ( sensorType == "integer" || sensorType == "float" ) {
-            KMenu pm;
-            pm.addTitle( i18n( "Select Display Type" ) );
+            QMenu pm;
+            pm.addSection( i18n( "Select Display Type" ) );
             QAction *a1 = pm.addAction( i18n( "&Line graph" ) );
             QAction *a2 = pm.addAction( i18n( "&Digital display" ) );
             QAction *a3 = pm.addAction( i18n( "&Bar graph" ) );
