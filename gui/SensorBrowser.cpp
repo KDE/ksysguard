@@ -428,19 +428,19 @@ SensorBrowserTreeWidget::SensorBrowserTreeWidget( QWidget* parent, KSGRD::Sensor
     mSortFilterProxyModel.setSourceModel(&mSensorBrowserModel);
     mSortFilterProxyModel.setShowAllChildren(true);
     setModel(&mSortFilterProxyModel);
-    connect( mSensorManager, SIGNAL(update()), &mSensorBrowserModel, SLOT(update()) );
-    connect( mSensorManager, SIGNAL(hostAdded(KSGRD::SensorAgent*,QString)), &mSensorBrowserModel, SLOT(hostAdded(KSGRD::SensorAgent*,QString)) );
-    connect( mSensorManager, SIGNAL(hostConnectionLost(QString)), &mSensorBrowserModel, SLOT(hostRemoved(QString)) );
+    connect(mSensorManager, &KSGRD::SensorManager::update, &mSensorBrowserModel, &SensorBrowserModel::update);
+    connect(mSensorManager, &KSGRD::SensorManager::hostAdded, &mSensorBrowserModel, &SensorBrowserModel::hostAdded);
+    connect(mSensorManager, &KSGRD::SensorManager::hostConnectionLost, &mSensorBrowserModel, &SensorBrowserModel::hostRemoved);
 //  connect( mSensorManager, SIGNAL(hostAdded(KSGRD::SensorAgent*,QString)), SLOT(updateView()) );
 //  connect( mSensorManager, SIGNAL(hostConnectionLost(QString)), SLOT(updateView()) );
-    connect( &mSortFilterProxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(updateView()) );
+    connect(&mSortFilterProxyModel, &KSortFilterProxyModel::rowsInserted, this, &SensorBrowserTreeWidget::updateView);
 
     setDragDropMode(QAbstractItemView::DragOnly);
     setUniformRowHeights(true);
 
     //setMinimumWidth( 1 );
     retranslateUi();
-    connect( &mSensorBrowserModel, SIGNAL(sensorsAddedToHost(QModelIndex)), this, SLOT(expandItem(QModelIndex)));
+    connect(&mSensorBrowserModel, &SensorBrowserModel::sensorsAddedToHost, this, &SensorBrowserTreeWidget::expandItem);
 
     KSGRD::SensorManagerIterator it( mSensorManager );
     while ( it.hasNext() ) {

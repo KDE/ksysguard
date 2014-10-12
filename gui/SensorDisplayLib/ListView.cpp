@@ -100,7 +100,7 @@ ListView::ListView(QWidget* parent, const QString& title, SharedSettings *workSh
 
     mView->setContextMenuPolicy( Qt::CustomContextMenu );
     mView->header()->setContextMenuPolicy( Qt::CustomContextMenu );
-    connect(mView, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showContextMenu(QPoint)));
+    connect(mView, &QTreeView::customContextMenuRequested, this, &ListView::showContextMenu);
     connect(mView->header(), SIGNAL(customContextMenuRequested(QPoint)), SLOT(showColumnContextMenu(QPoint)));
 
     mView->setAlternatingRowColors(true);
@@ -400,7 +400,7 @@ ListView::configureSettings()
 {
     lvs = new ListViewSettings(this, "ListViewSettings");
     Q_CHECK_PTR(lvs);
-    connect(lvs, SIGNAL(applyClicked()), SLOT(applySettings()));
+    connect(lvs, &ListViewSettings::applyClicked, this, &ListView::applySettings);
 
 /*    QPalette pal = monitor->palette();
     lvs->setGridColor(pal.color(QPalette::Link));

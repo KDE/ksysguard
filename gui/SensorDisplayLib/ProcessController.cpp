@@ -149,10 +149,10 @@ bool ProcessController::addSensor(const QString& hostName,
     mProcessList->setContentsMargins(0,0,0,0);
     mProcessList->setScriptingEnabled(true);
     addActions(mProcessList->actions());
-    connect(mProcessList, SIGNAL(updated()), this, SIGNAL(updated()));
-    connect(mProcessList, SIGNAL(processListChanged()), this, SIGNAL(processListChanged()));
+    connect(mProcessList, &KSysGuardProcessList::updated, this, &ProcessController::updated);
+    connect(mProcessList, &KSysGuardProcessList::processListChanged, this, &ProcessController::processListChanged);
     mProcessList->setContextMenuPolicy( Qt::CustomContextMenu );
-    connect(mProcessList, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showContextMenu(QPoint)));
+    connect(mProcessList, &KSysGuardProcessList::customContextMenuRequested, this, &ProcessController::showContextMenu);
 
     layout->addWidget(mProcessList);
 
@@ -162,7 +162,7 @@ bool ProcessController::addSensor(const QString& hostName,
         KSysGuard::Processes *processes = mProcessList->processModel()->processController();
         mProcesses = processes;
         if(processes) {
-            connect( processes, SIGNAL(runCommand(QString,int)), SLOT(runCommand(QString,int)));
+            connect(processes, &KSysGuard::Processes::runCommand, this, &ProcessController::runCommand);
         }
 
     }

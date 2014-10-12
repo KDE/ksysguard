@@ -37,7 +37,7 @@ SensorLoggerDlg::SensorLoggerDlg( QWidget *parent, const char *name )
   m_loggerWidget = new Ui_SensorLoggerDlgWidget;
   m_loggerWidget->setupUi( main );
   m_loggerWidget->m_fileName->setMode(KFile::File|KFile::LocalOnly);
-  connect(m_loggerWidget->m_fileName, SIGNAL(textChanged(QString)), SLOT(fileNameTextChanged()));
+  connect(m_loggerWidget->m_fileName, &KUrlRequester::textChanged, this, &SensorLoggerDlg::fileNameTextChanged);
 
   setMainWidget( main );
   fileNameTextChanged();

@@ -209,7 +209,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     mPlotter->installEventFilter( this );
 
     setPlotterWidget( mPlotter );
-    connect(mPlotter, SIGNAL(axisScaleChanged()), this, SLOT(plotterAxisScaleChanged()));
+    connect(mPlotter, &KSignalPlotter::axisScaleChanged, this, &FancyPlotter::plotterAxisScaleChanged);
     QDomElement emptyElement;
     restoreSettings(emptyElement);
 }
@@ -289,9 +289,9 @@ void FancyPlotter::configureSettings()
     mSettingsDialog->setSensors( list );
     mSettingsDialog->setHasIntegerRange( hasIntegerRange );
 
-    connect( mSettingsDialog, SIGNAL(applyClicked()), this, SLOT(applySettings()) );
-    connect( mSettingsDialog, SIGNAL(okClicked()), this, SLOT(applySettings()) );
-    connect( mSettingsDialog, SIGNAL(finished(int)), this, SLOT(settingsFinished()) );
+    connect(mSettingsDialog, &FancyPlotterSettings::applyClicked, this, &FancyPlotter::applySettings);
+    connect(mSettingsDialog, &FancyPlotterSettings::okClicked, this, &FancyPlotter::applySettings);
+    connect(mSettingsDialog, &FancyPlotterSettings::finished, this, &FancyPlotter::settingsFinished);
 
     mSettingsDialog->show();
 }
@@ -618,7 +618,7 @@ void FancyPlotter::timerTick() //virtual
 void FancyPlotter::plotterAxisScaleChanged()
 {
     //Prevent this being called recursively
-    disconnect(mPlotter, SIGNAL(axisScaleChanged()), this, SLOT(plotterAxisScaleChanged()));
+    disconnect(mPlotter, &KSignalPlotter::axisScaleChanged, this, &FancyPlotter::plotterAxisScaleChanged);
     KLocalizedString unit;
     double value = mPlotter->currentMaximumRangeValue();
     if(mUnit  == "KiB") {
@@ -666,7 +666,7 @@ void FancyPlotter::plotterAxisScaleChanged()
     }
     mPlotter->setUnit(unit);
     //reconnect
-    connect(mPlotter, SIGNAL(axisScaleChanged()), this, SLOT(plotterAxisScaleChanged()));
+    connect(mPlotter, &KSignalPlotter::axisScaleChanged, this, &FancyPlotter::plotterAxisScaleChanged);
 }
 void FancyPlotter::answerReceived( int id, const QList<QByteArray> &answerlist )
 {

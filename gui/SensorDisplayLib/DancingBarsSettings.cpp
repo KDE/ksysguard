@@ -208,12 +208,10 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   mRemoveButton->setWhatsThis( i18n( "Push this button to delete the sensor." ) );
   pageLayout->addWidget( mRemoveButton, 1, 1 );
 
-  connect( mUseLowerLimit, SIGNAL(toggled(bool)),
-           mLowerLimit, SLOT(setEnabled(bool)) );
-  connect( mUseUpperLimit, SIGNAL(toggled(bool)),
-           mUpperLimit, SLOT(setEnabled(bool)) );
-  connect( mEditButton, SIGNAL(clicked()), SLOT(editSensor()) );
-  connect( mRemoveButton, SIGNAL(clicked()), SLOT(removeSensor()) );
+  connect(mUseLowerLimit, &QCheckBox::toggled, mLowerLimit, &QDoubleSpinBox::setEnabled);
+  connect(mUseUpperLimit, &QCheckBox::toggled, mUpperLimit, &QDoubleSpinBox::setEnabled);
+  connect(mEditButton, &QPushButton::clicked, this, &DancingBarsSettings::editSensor);
+  connect(mRemoveButton, &QPushButton::clicked, this, &DancingBarsSettings::removeSensor);
 
   KAcceleratorManager::manage( this );
 

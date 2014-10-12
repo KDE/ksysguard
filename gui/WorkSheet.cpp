@@ -352,7 +352,7 @@ KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, QString
             return NULL;
     }
     newDisplay->applyStyle();
-    connect(&mTimer, SIGNAL(timeout()), newDisplay, SLOT(timerTick()));
+    connect(&mTimer, &QTimer::timeout, newDisplay, &KSGRD::SensorDisplay::timerTick);
     replaceDisplay( row, column, newDisplay, rowSpan, columnSpan );
     return newDisplay;
 }
@@ -624,14 +624,14 @@ void WorkSheet::replaceDisplay( int row, int column, KSGRD::SensorDisplay* newDi
 
     if (newDisplay->metaObject()->className() != QByteArray("DummyDisplay"))
     {
-        connect(newDisplay, SIGNAL(showPopupMenu(KSGRD::SensorDisplay*)), SLOT(showPopupMenu(KSGRD::SensorDisplay*)));
+        connect(newDisplay, &KSGRD::SensorDisplay::showPopupMenu, this, &WorkSheet::showPopupMenu);
         newDisplay->setDeleteNotifier(this);
     }
 
     // if there's only item, the tab's title should be the widget's title
     if (row == 0 && mRows == rowSpan && column == 0 && mColumns == columnSpan)
     {
-        connect(newDisplay, SIGNAL(titleChanged(QString)), SLOT(setTitle(QString)));
+        connect(newDisplay, &KSGRD::SensorDisplay::titleChanged, this, &WorkSheet::setTitle);
         setTitle(newDisplay->title());
     }
     if (isVisible())

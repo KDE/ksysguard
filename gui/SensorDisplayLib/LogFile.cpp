@@ -54,7 +54,7 @@ LogFile::LogFile(QWidget *parent, const QString& title, SharedSettings *workShee
 
 	setMinimumSize(50, 25);
 	monitor->setContextMenuPolicy( Qt::CustomContextMenu );
-	connect(monitor, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showContextMenu(QPoint)));
+	connect(monitor, &QListWidget::customContextMenuRequested, this, &LogFile::showContextMenu);
 	setPlotterWidget(monitor);
 }
 
@@ -104,15 +104,15 @@ void LogFile::configureSettings(void)
 	lfs->ruleList->addItems(filterRules);
 	lfs->title->setText(title());
 
-	connect(&dlg, SIGNAL(okClicked()), &dlg, SLOT(accept()));
-	connect(&dlg, SIGNAL(applyClicked()), this, SLOT(applySettings()));
+	connect(&dlg, &KDialog::okClicked, &dlg, &KDialog::accept);
+	connect(&dlg, &KDialog::applyClicked, this, &LogFile::applySettings);
 
-	connect(lfs->addButton, SIGNAL(clicked()), this, SLOT(settingsAddRule()));
-	connect(lfs->deleteButton, SIGNAL(clicked()), this, SLOT(settingsDeleteRule()));
-	connect(lfs->changeButton, SIGNAL(clicked()), this, SLOT(settingsChangeRule()));
-	connect(lfs->ruleList, SIGNAL(currentRowChanged(int)), this, SLOT(settingsRuleListSelected(int)));
-	connect(lfs->ruleText, SIGNAL(returnPressed()), this, SLOT(settingsAddRule()));
-	connect(lfs->ruleText, SIGNAL(textChanged(QString)), this, SLOT(settingsRuleTextChanged()));
+	connect(lfs->addButton, &QPushButton::clicked, this, &LogFile::settingsAddRule);
+	connect(lfs->deleteButton, &QPushButton::clicked, this, &LogFile::settingsDeleteRule);
+	connect(lfs->changeButton, &QPushButton::clicked, this, &LogFile::settingsChangeRule);
+	connect(lfs->ruleList, &QListWidget::currentRowChanged, this, &LogFile::settingsRuleListSelected);
+	connect(lfs->ruleText, &KLineEdit::returnPressed, this, &LogFile::settingsAddRule);
+	connect(lfs->ruleText, &KLineEdit::textChanged, this, &LogFile::settingsRuleTextChanged);
 
 	settingsRuleListSelected(lfs->ruleList->currentRow());
 	settingsRuleTextChanged();
