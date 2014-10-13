@@ -22,13 +22,13 @@
 #ifndef KSG_WORKSHEETSETTINGS_H
 #define KSG_WORKSHEETSETTINGS_H
 
-#include <kdialog.h>
+#include <QDialog>
 
 class KLineEdit;
 class KDoubleNumInput;
 class KIntNumInput;
 
-class WorkSheetSettings : public KDialog
+class WorkSheetSettings : public QDialog
 {
   Q_OBJECT
 

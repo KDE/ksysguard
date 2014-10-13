@@ -32,6 +32,7 @@
 #include <kactioncollection.h>
 #include <kmenu.h>
 #include <KNewStuff3/KNS3/DownloadDialog>
+#include <KConfigGroup>
 
 #include "WorkSheet.h"
 #include "WorkSheetSettings.h"

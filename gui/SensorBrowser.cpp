@@ -23,7 +23,7 @@
 #include <QMimeData>
 
 #include <kdebug.h>
-#include <kicon.h>
+#include <QIcon>
 #include <KLocalizedString>
 #include <kmessagebox.h>
 #include <ksgrd/SensorManager.h>
@@ -80,9 +80,9 @@ QVariant SensorBrowserModel::data( const QModelIndex & index, int role) const { 
                 KSGRD::SensorAgent *agent;
                 if(host != NULL && (agent = host->sensorAgent())) {
                     if(agent->daemonOnLine())
-                        return KIcon("computer");
+                        return QIcon::fromTheme("computer");
                     else
-                        return KIcon("dialog-warning");
+                        return QIcon::fromTheme("dialog-warning");
                 } else
                     return QIcon();
             } else

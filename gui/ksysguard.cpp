@@ -40,7 +40,7 @@
 #include <kedittoolbar.h>
 #include <kglobal.h>
 #include <kglobalsettings.h>
-#include <kicon.h>
+#include <QIcon>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <ksgrd/SensorAgent.h>
@@ -112,32 +112,32 @@ TopLevel::TopLevel()
   // create actions for menu entries
   mRefreshTabAction = KStandardAction::redisplay(mWorkSpace,SLOT(refreshActiveWorksheet()),actionCollection());
   mNewWorksheetAction = actionCollection()->addAction("new_worksheet");
-  mNewWorksheetAction->setIcon(KIcon("tab-new"));
+  mNewWorksheetAction->setIcon(QIcon::fromTheme("tab-new"));
   connect(mNewWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(newWorkSheet()));
   mInsertWorksheetAction = actionCollection()->addAction("import_worksheet");
-  mInsertWorksheetAction->setIcon(KIcon("document-open") );
+  mInsertWorksheetAction->setIcon(QIcon::fromTheme("document-open") );
   connect(mInsertWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(importWorkSheet()));
   mTabExportAction = actionCollection()->addAction( "export_worksheet" );
-  mTabExportAction->setIcon( KIcon("document-save-as") );
+  mTabExportAction->setIcon( QIcon::fromTheme("document-save-as") );
   connect(mTabExportAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(exportWorkSheet()));
   mTabRemoveAction = actionCollection()->addAction( "remove_worksheet" );
-  mTabRemoveAction->setIcon( KIcon("tab-close") );
+  mTabRemoveAction->setIcon( QIcon::fromTheme("tab-close") );
   connect(mTabRemoveAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(removeWorkSheet()));
   mMonitorRemoteAction = actionCollection()->addAction( "connect_host" );
-  mMonitorRemoteAction->setIcon( KIcon("network-connect") );
+  mMonitorRemoteAction->setIcon( QIcon::fromTheme("network-connect") );
   connect(mMonitorRemoteAction, SIGNAL(triggered(bool)), SLOT(connectHost()));
   //knewstuff2 action
   mHotNewWorksheetAction = actionCollection()->addAction( "get_new_worksheet" );
-  mHotNewWorksheetAction->setIcon( KIcon("network-server") );
+  mHotNewWorksheetAction->setIcon( QIcon::fromTheme("network-server") );
   connect(mHotNewWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(getHotNewWorksheet()));
   mHotNewWorksheetUploadAction = actionCollection()->addAction( "upload_worksheet" );
-  mHotNewWorksheetUploadAction->setIcon( KIcon("network-server") );
+  mHotNewWorksheetUploadAction->setIcon( QIcon::fromTheme("network-server") );
   connect(mHotNewWorksheetUploadAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(uploadHotNewWorksheet()));
 
   mQuitAction = NULL;
 
   mConfigureSheetAction = actionCollection()->addAction( "configure_sheet" );
-  mConfigureSheetAction->setIcon( KIcon("configure") );
+  mConfigureSheetAction->setIcon( QIcon::fromTheme("configure") );
   connect(mConfigureSheetAction, SIGNAL(triggered(bool)), SLOT(configureCurrentSheet()));
 
   retranslateUi();

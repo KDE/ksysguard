@@ -20,7 +20,7 @@
 #include "SensorLoggerSettings.h"
 #include "ui_SensorLoggerSettingsWidget.h"
 
-#include <klocale.h>
+#include <KLocalizedString>
 
 SensorLoggerSettings::SensorLoggerSettings( QWidget *parent, const char *name )
     : KDialog( parent )

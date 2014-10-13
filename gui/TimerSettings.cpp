@@ -20,7 +20,7 @@
 */
 
 #include <kacceleratormanager.h>
-#include <klocale.h>
+#include <KLocalizedString>
 
 #include <QCheckBox>
 #include <QLabel>

@@ -28,23 +28,34 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QVBoxLayout>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
 
 #include "WorkSheetSettings.h"
 
 WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
-  : KDialog( parent )
+  : QDialog( parent )
 {
   setObjectName( "WorkSheetSettings" );
   setModal( true );
-  setCaption( i18n( "Tab Properties" ) );
-  setButtons( Ok | Cancel );
+  setWindowTitle( i18n( "Tab Properties" ) );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
   QWidget *page = new QWidget( this );
-  setMainWidget( page );
+  mainLayout->addWidget(page);
+  mainLayout->addWidget(buttonBox);
 
   QVBoxLayout *topLayout = new QVBoxLayout( page );
   topLayout->setMargin( 0 );
-  topLayout->setSpacing( spacingHint() );
+  //PORT QT5 topLayout->setSpacing( spacingHint() );
 
   QGroupBox *group = new QGroupBox( i18n( "Title" ), page );
 
