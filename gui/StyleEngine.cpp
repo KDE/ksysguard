@@ -24,7 +24,7 @@
 
 #include <kconfig.h>
 #include <kconfiggroup.h>
-#include <klocale.h>
+#include <KLocalizedString>
 
 #include "StyleEngine.h"
 using namespace KSGRD;

@@ -20,7 +20,7 @@
 #include "MultiMeterSettings.h"
 #include "ui_MultiMeterSettingsWidget.h"
 
-#include <klocale.h>
+#include <KLocalizedString>
 #include <knumvalidator.h>
 
 MultiMeterSettings::MultiMeterSettings( QWidget *parent, const char *name )

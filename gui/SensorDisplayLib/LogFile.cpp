@@ -31,7 +31,7 @@
 #include <kfontdialog.h>
 #include <kdebug.h>
 #include <KDialog>
-#include <klocale.h>
+#include <KLocalizedString>
 #include <kcolorbutton.h>
 #include <knotification.h>
 #include "StyleEngine.h"

@@ -43,7 +43,7 @@
 #include <kglobal.h>
 #include <kglobalsettings.h>
 #include <QIcon>
-#include <klocale.h>
+#include <KLocalizedString>
 #include <kmessagebox.h>
 #include <ksgrd/SensorAgent.h>
 #include <ksgrd/SensorManager.h>

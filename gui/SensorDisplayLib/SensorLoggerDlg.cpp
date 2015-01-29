@@ -21,7 +21,7 @@
 #include "ui_SensorLoggerDlgWidget.h"
 
 
-#include <klocale.h>
+#include <KLocalizedString>
 
 SensorLoggerDlg::SensorLoggerDlg( QWidget *parent, const char *name )
     : KDialog( parent )

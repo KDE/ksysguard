@@ -20,7 +20,7 @@
 #include "ListViewSettings.h"
 #include "ui_ListViewSettingsWidget.h"
 
-#include <klocale.h>
+#include <KLocalizedString>
 
 ListViewSettings::ListViewSettings( QWidget *parent, const char *name )
     : KDialog( parent )
