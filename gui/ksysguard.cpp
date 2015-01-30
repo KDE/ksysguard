@@ -37,7 +37,7 @@
 #include <k4aboutdata.h>
 #include <kactioncollection.h>
 #include <kapplication.h>
-#include <kcmdlineargs.h>
+
 #include <kdebug.h>
 #include <kedittoolbar.h>
 #include <kglobal.h>
@@ -56,6 +56,8 @@
 
 #include <config-workspace.h>
 #include <KFormat>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
 #include "SensorBrowser.h"
 #include "Workspace.h"
 #include "WorkSheet.h"
@@ -528,31 +530,35 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
   setsid();
 #endif
 
-  K4AboutData aboutData( "ksysguard", 0, ki18n( "System Monitor" ),
-                        PROJECT_VERSION, ki18n(Description), K4AboutData::License_GPL,
-                        ki18n( "(c) 1996-2008 The KDE System Monitor Developers" ) );
-  aboutData.addAuthor( ki18n("John Tapsell"), ki18n("Current Maintainer"), "john.tapsell@kde.org" );
-  aboutData.addAuthor( ki18n("Chris Schlaeger"), ki18n("Previous Maintainer"), "cs@kde.org" );
-  aboutData.addAuthor( ki18n("Greg Martyn"), KLocalizedString(), "greg.martyn@gmail.com" );
-  aboutData.addAuthor( ki18n("Tobias Koenig"), KLocalizedString(), "tokoe@kde.org" );
-  aboutData.addAuthor( ki18n("Nicolas Leclercq"), KLocalizedString(), "nicknet@planete.net" );
-  aboutData.addAuthor( ki18n("Alex Sanda"), KLocalizedString(), "alex@darkstart.ping.at" );
-  aboutData.addAuthor( ki18n("Bernd Johannes Wuebben"), KLocalizedString(), "wuebben@math.cornell.edu" );
-  aboutData.addAuthor( ki18n("Ralf Mueller"), KLocalizedString(), "rlaf@bj-ig.de" );
-  aboutData.addAuthor( ki18n("Hamish Rodda"), KLocalizedString(), "rodda@kde.org" );
-  aboutData.addAuthor( ki18n("Torsten Kasch"), ki18n( "Solaris Support\n"
+  KAboutData aboutData( "ksysguard", i18n( "System Monitor" ),
+                        PROJECT_VERSION, i18n(Description), KAboutLicense::GPL,
+                        i18n( "(c) 1996-2008 The KDE System Monitor Developers" ) );
+  aboutData.addAuthor( i18n("John Tapsell"), i18n("Current Maintainer"), "john.tapsell@kde.org" );
+  aboutData.addAuthor( i18n("Chris Schlaeger"), i18n("Previous Maintainer"), "cs@kde.org" );
+  aboutData.addAuthor( i18n("Greg Martyn"), QString(), "greg.martyn@gmail.com" );
+  aboutData.addAuthor( i18n("Tobias Koenig"), QString(), "tokoe@kde.org" );
+  aboutData.addAuthor( i18n("Nicolas Leclercq"), QString(), "nicknet@planete.net" );
+  aboutData.addAuthor( i18n("Alex Sanda"), QString(), "alex@darkstart.ping.at" );
+  aboutData.addAuthor( i18n("Bernd Johannes Wuebben"), QString(), "wuebben@math.cornell.edu" );
+  aboutData.addAuthor( i18n("Ralf Mueller"), QString(), "rlaf@bj-ig.de" );
+  aboutData.addAuthor( i18n("Hamish Rodda"), QString(), "rodda@kde.org" );
+  aboutData.addAuthor( i18n("Torsten Kasch"), i18n( "Solaris Support\n"
                        "Parts derived (by permission) from the sunos5\n"
                        "module of William LeFebvre's \"top\" utility." ),
                        "tk@Genetik.Uni-Bielefeld.DE" );
 
-  KCmdLineArgs::init( argc, argv, &aboutData );
+    QApplication app(argc, argv);
+    QCommandLineParser parser;
+    KAboutData::setApplicationData(aboutData);
+    parser.addVersionOption();
+    parser.addHelpOption();
+    parser.addPositionalArgument(QLatin1String("[worksheet]"), i18n( "Optional worksheet files to load" ));
 
-  KCmdLineOptions options;
-  options.add("+[worksheet]", ki18n( "Optional worksheet files to load" ));
-  KCmdLineArgs::addCmdLineOptions( options );
-  // initialize KDE application
-  KApplication *app = new KApplication;
-  app->setWindowIcon(QIcon::fromTheme("utilities-system-monitor"));
+    aboutData.setupCommandLine(&parser);
+    parser.process(app);
+    aboutData.processCommandLine(&parser);
+
+  app.setWindowIcon(QIcon::fromTheme("utilities-system-monitor"));
 
   KSGRD::SensorMgr = new KSGRD::SensorManager();
   KSGRD::Style = new KSGRD::StyleEngine();
@@ -580,9 +586,8 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
   KSGRD::SensorMgr->setBroadcaster( Toplevel );  // SensorMgr uses a QPointer for toplevel, so it is okay if Toplevel is deleted first
 
   // run the application
-  int result = app->exec();
+  int result = app.exec();
 
-  delete app;
   delete KSGRD::SensorMgr;
   delete KSGRD::Style;
 
