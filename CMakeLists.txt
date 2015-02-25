@@ -1,7 +1,7 @@
 project(ksysguard)
 set(PROJECT_VERSION "5.2.90")
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
-set(QT_MIN_VERSION "5.3.0")
+set(QT_MIN_VERSION "5.4.0")
 
 set(KSYSGUARD_VERSION 4.98.0)
 set(KSYSGUARD_STRING_VERSION "${KSYSGUARD_VERSION}")
