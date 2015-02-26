@@ -37,7 +37,7 @@
 #include <k4aboutdata.h>
 #include <kactioncollection.h>
 #include <kapplication.h>
-
+#include <KDBusService>
 #include <kdebug.h>
 #include <kedittoolbar.h>
 #include <kglobal.h>
@@ -533,6 +533,7 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
   KAboutData aboutData( "ksysguard", i18n( "System Monitor" ),
                         PROJECT_VERSION, i18n(Description), KAboutLicense::GPL,
                         i18n( "(c) 1996-2008 The KDE System Monitor Developers" ) );
+  aboutData.setOrganizationDomain(QByteArray("kde.org"));
   aboutData.addAuthor( i18n("John Tapsell"), i18n("Current Maintainer"), "john.tapsell@kde.org" );
   aboutData.addAuthor( i18n("Chris Schlaeger"), i18n("Previous Maintainer"), "cs@kde.org" );
   aboutData.addAuthor( i18n("Greg Martyn"), QString(), "greg.martyn@gmail.com" );
@@ -584,6 +585,9 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
 
   Toplevel->show();
   KSGRD::SensorMgr->setBroadcaster( Toplevel );  // SensorMgr uses a QPointer for toplevel, so it is okay if Toplevel is deleted first
+
+  // register to DBus
+  const KDBusService dbusService(KDBusService::Multiple);
 
   // run the application
   int result = app.exec();
