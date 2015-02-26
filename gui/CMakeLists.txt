@@ -54,6 +54,7 @@ target_compile_definitions(kdeinit_ksysguard PRIVATE -DPROJECT_VERSION="${PROJEC
 target_link_libraries(kdeinit_ksysguard
     KF5::ProcessUi
     KF5::SignalPlotter
+    KF5::DBusAddons
     KF5::ItemViews
     KF5::NewStuff
     KF5::SysGuard
