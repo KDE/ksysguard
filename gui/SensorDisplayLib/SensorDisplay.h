@@ -271,7 +271,7 @@ class SensorProperties
     SensorProperties();
     SensorProperties( const QString &hostName, const QString &name,
                       const QString &type, const QString &description );
-    ~SensorProperties();
+    virtual ~SensorProperties();
 
     void setHostName( const QString &hostName );
     QString hostName() const;
