@@ -1,7 +1,6 @@
 [Desktop Entry]
 Name=KSysGuard
 Name[ar]=حارس نظام كيدي
-Name[ast]=KSysGuard
 Name[bg]=Системна защита
 Name[br]=KSysGuard
 Name[bs]=KSysGuard
@@ -78,7 +77,6 @@ GenericName=System Monitor
 GenericName[af]=Stelsel Monitor
 GenericName[ar]=مراقب النظام
 GenericName[as]=ব্যৱস্থাপ্ৰণালীৰ নিৰীক্ষণ ব্যৱস্থা
-GenericName[ast]=Monitor del sistema
 GenericName[be]=Сістэма
 GenericName[be@latin]=Systemny nazirańnik
 GenericName[bg]=Наблюдение на системата
