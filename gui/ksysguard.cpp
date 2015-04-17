@@ -530,6 +530,8 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
   setsid();
 #endif
 
+  QApplication app(argc, argv);
+
   KAboutData aboutData( "ksysguard", i18n( "System Monitor" ),
                         PROJECT_VERSION, i18n(Description), KAboutLicense::GPL,
                         i18n( "(c) 1996-2008 The KDE System Monitor Developers" ) );
@@ -548,7 +550,6 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
                        "module of William LeFebvre's \"top\" utility." ),
                        "tk@Genetik.Uni-Bielefeld.DE" );
 
-    QApplication app(argc, argv);
     QCommandLineParser parser;
     KAboutData::setApplicationData(aboutData);
     parser.addVersionOption();
