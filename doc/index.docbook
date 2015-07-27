@@ -2,7 +2,6 @@
 <!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN"
  "dtd/kdedbx45.dtd" [
   <!ENTITY kappname "&ksysguard;">
-  <!ENTITY package "kdebase">
   <!ENTITY % addindex "IGNORE">
   <!ENTITY % English "INCLUDE" > <!-- change language only here -->
 ]>
@@ -41,8 +40,8 @@
 
 <legalnotice>&FDLNotice;</legalnotice>
 
-<date>2010-10-24</date>
-<releaseinfo>&kde; 4.5</releaseinfo>
+<date>2015-07-27</date>
+<releaseinfo>&plasma; 5.4</releaseinfo>
 
 <abstract><para>&ksysguard; is a network enabled task and system monitor
 application.</para></abstract> 
@@ -61,7 +60,7 @@ application.</para></abstract>
 <chapter id="introduction">
 <title>Introduction</title>
 
-<para>&ksysguard; is the &kde; Task  and Performance Monitor.
+<para>&ksysguard; is the &plasma; Task  and Performance Monitor.
 </para>
 <para>
 It features 
@@ -98,6 +97,7 @@ By default &ksysguard; shows two worksheets: <guilabel>Process Table</guilabel>
 and <guilabel>System Load</guilabel>. The <guilabel>Process Table</guilabel> 
 lists the running processes and lets the user control them.
 Multiple processes can be selected and controlled at once.
+
 The <guilabel>System Load</guilabel> worksheet shows graphs of system utilization: 
 <guilabel>CPU History</guilabel>, <guilabel>Memory and Swap History</guilabel>,
 and the <guilabel>Network History</guilabel>.
@@ -108,6 +108,12 @@ some system management. An experienced user or even a system administrator of a
 large computer lab has different needs. To address a wide range of users, 
 &ksysguard;
 is highly flexible.</para>
+
+<note><para>You can launch the <guilabel>Process Table</guilabel> using 
+the global shortcut <keycombo action="simul"> &Ctrl;&Esc;</keycombo> at any time. 
+The process table is displayed in a window titled <guilabel>System Activities</guilabel>.
+</para></note>
+
 </sect1>
 
 <sect1 id="process-controller">
@@ -158,6 +164,10 @@ of a program.</para></entry>
 <entry>This is approximately the amount of real physical memory that this 
 process's shared libraries are using. This memory is shared among all 
 processes that use this library</entry>
+</row>
+<row>
+<entry><guilabel>Window Title</guilabel></entry>
+<entry>The title of any window that this process is showing</entry>
 </row>
 </tbody>
 </tgroup>
@@ -254,11 +264,6 @@ processes.</para>
 click on the little box to the left of the parent and the subtree will
 collapse. Another click on that box will unfold the subtree again.</para>
 
-<note><para>You can launch the <guilabel>Process Table</guilabel> from &krunner;
-using the <guibutton>Show System Activities</guibutton> button or using 
-the global shortcut <keycombo action="simul"> &Ctrl;&Esc;</keycombo> at any time. 
-The process table is displayed in a window titled <guilabel>System Activities</guilabel>.
-</para></note>
 </sect2>
 
 </sect1>
@@ -408,7 +413,7 @@ Unfortunately the ssh does not source your <filename>.profile</filename> file,
 so your regular <envar>PATH</envar> setting will not be available.
 Instead it uses a default <envar>PATH</envar> like
 <parameter>/bin:/usr/bin</parameter>.
-Since it is very likely that &kde; is not installed in these folders you need
+Since it is very likely that &plasma; is not installed in these folders you need
 to create or update a file in your home folder. The file is called
 <filename>environment</filename> and needs to be in a hidden folder called
 <filename>.ssh</filename>. See the manual page for
@@ -437,7 +442,7 @@ and you can type <userinput>quit</userinput> to exit <application>ksysguardd</ap
 
 <note><para>For experts: <application>ksysguardd</application> is a
 very small program that is only linked against the libc. So it can
-also be used on machines that do not have a full blown &kde;
+also be used on machines that do not have a full blown &plasma;
 installed, such as servers. Many major distributions provide a separate
 <application>ksysguardd</application> package for your convenience.
 If you choose the custom command option in
@@ -463,13 +468,13 @@ frames will be grayed and the displays won't update any longer.</para>
 <chapter id="multiple-platforms">
 <title>Configuring <application>ksysguardd</application></title>
 
-<para>The graphical front-end is available on any platform that &kde; runs
+<para>The graphical front-end is available on any platform that &plasma; runs
 on. The back-end is at the moment available on the following flavors of
 &UNIX;:</para>
 
 <variablelist>
 <varlistentry>
-<term>&Linux; 2.x</term>
+<term>&Linux;</term>
 <listitem><para> For <application>ksysguardd</application> to work it
 is necessary to compile the &Linux; Kernel
 with the <filename>/proc</filename> File system enabled. This is the default
