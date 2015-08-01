@@ -1,1 +1,1 @@
-ecm_install_icons( ICONS hi16-apps-computer.png  hi16-apps-daemon.png  hi16-apps-kdeapp.png  hi16-apps-kernel.png  hi16-apps-ksysguardd.png  hi16-apps-running.png  hi16-apps-shell.png  hi16-apps-unknownapp.png  hi16-apps-waiting.png DESTINATION ${ICON_INSTALL_DIR}  )
+ecm_install_icons( ICONS 16-apps-computer.png  16-apps-daemon.png  16-apps-kdeapp.png  16-apps-kernel.png  16-apps-ksysguardd.png  16-apps-running.png  16-apps-shell.png  16-apps-unknownapp.png  16-apps-waiting.png DESTINATION ${ICON_INSTALL_DIR}  )
