@@ -346,7 +346,7 @@ void SensorDisplay::changeEvent( QEvent * event ) {
 void SensorDisplay::setTitle( const QString &title )
 {
   mTitle = title;
-  mTranslatedTitle = i18n(title.toUtf8().constData());
+  mTranslatedTitle = title.isEmpty() ? QString() : i18n(title.toUtf8().constData());
   emit titleChanged(mTitle);
   emit translatedTitleChanged(mTranslatedTitle);
 }
