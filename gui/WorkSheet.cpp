@@ -499,7 +499,7 @@ void WorkSheet::dropEvent( QDropEvent *event )
     QString hostName = parts[ 0 ];
     QString sensorName = parts[ 1 ];
     QString sensorType = parts[ 2 ];
-    QString sensorDescr = parts[ 3 ];
+    QString sensorDescr = QStringList(parts.mid( 3 )).join(' ');
 
     if ( hostName.isEmpty() || sensorName.isEmpty() || sensorType.isEmpty() )
         return;
