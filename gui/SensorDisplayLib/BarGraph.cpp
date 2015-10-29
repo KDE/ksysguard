@@ -160,7 +160,7 @@ void BarGraph::paintEvent( QPaintEvent* )
                     footers[ b ] );
         p.drawText( b * barWidth + 3, h - fm.lineSpacing() - 2,
                     barWidth - 2 * 3, fm.lineSpacing(), Qt::AlignCenter,
-                    QString( "%1" ).arg( samples[ b ] ) );
+                    QStringLiteral( "%1" ).arg( samples[ b ] ) );
       }
     }
   }

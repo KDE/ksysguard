@@ -106,8 +106,8 @@ class LogSensorModel : public QAbstractTableModel
             break;
         }
       } else if ( role == Qt::DecorationRole ) {
-        static QPixmap runningPixmap = KIconLoader::global()->loadIcon( "running", KIconLoader::Small, KIconLoader::SizeSmall );
-        static QPixmap waitingPixmap = KIconLoader::global()->loadIcon( "waiting", KIconLoader::Small, KIconLoader::SizeSmall );
+        static QPixmap runningPixmap = KIconLoader::global()->loadIcon( QStringLiteral("running"), KIconLoader::Small, KIconLoader::SizeSmall );
+        static QPixmap waitingPixmap = KIconLoader::global()->loadIcon( QStringLiteral("waiting"), KIconLoader::Small, KIconLoader::SizeSmall );
 
         if ( index.column() == 0 ) {
           if ( sensor->isLogging() )
@@ -369,7 +369,7 @@ void LogSensor::answerReceived( int id, const QList<QByteArray>& answer ) //virt
         mLimitReached = true;
 
         // send notification
-        KNotification::event( "sensor_alarm", QString( "sensor '%1' at '%2' reached lower limit" )
+        KNotification::event( QStringLiteral("sensor_alarm"), QStringLiteral( "sensor '%1' at '%2' reached lower limit" )
                             .arg( mSensorName ).arg( mHostName), QPixmap(), 0 );
 
         timerOn();
@@ -378,7 +378,7 @@ void LogSensor::answerReceived( int id, const QList<QByteArray>& answer ) //virt
         mLimitReached = true;
 
         // send notification
-        KNotification::event( "sensor_alarm", QString( "sensor '%1' at '%2' reached upper limit" )
+        KNotification::event( QStringLiteral("sensor_alarm"), QStringLiteral( "sensor '%1' at '%2' reached upper limit" )
                             .arg( mSensorName).arg( mHostName), QPixmap(), 0 );
 
         timerOn();
@@ -389,7 +389,7 @@ void LogSensor::answerReceived( int id, const QList<QByteArray>& answer ) //virt
       const QDate date = QDateTime::currentDateTime().date();
       const QTime time = QDateTime::currentDateTime().time();
 
-      stream << QString( "%1 %2 %3 %4 %5: %6\n" ).arg( date.shortMonthName( date.month() ) )
+      stream << QStringLiteral( "%1 %2 %3 %4 %5: %6\n" ).arg( date.shortMonthName( date.month() ) )
                                                  .arg( date.day() ).arg( time.toString() )
                                                  .arg( mHostName).arg( mSensorName ).arg( value );
     }
@@ -419,8 +419,8 @@ SensorLogger::SensorLogger( QWidget *parent, const QString& title, SharedSetting
   mView->setModel( mModel );
   setPlotterWidget( mView );
 
-  connect( mView, SIGNAL(contextMenuRequest(QModelIndex,QPoint)),
-           this, SLOT(contextMenuRequest(QModelIndex,QPoint)) );
+  connect( mView, &LogSensorView::contextMenuRequest,
+           this, &SensorLogger::contextMenuRequest );
 
   QPalette palette = mView->palette();
   palette.setColor( QPalette::Base, KSGRD::Style->backgroundColor() );
@@ -436,7 +436,7 @@ SensorLogger::~SensorLogger(void)
 
 bool SensorLogger::addSensor( const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& )
 {
-  if ( sensorType != "integer" && sensorType != "float" )
+  if ( sensorType != QLatin1String("integer") && sensorType != QLatin1String("float") )
     return false;
 
   SensorLoggerDlg dlg( this );
@@ -523,25 +523,25 @@ void SensorLogger::applyStyle()
 
 bool SensorLogger::restoreSettings( QDomElement& element )
 {
-  mModel->setForegroundColor( restoreColor( element, "textColor", Qt::green) );
-  mModel->setBackgroundColor( restoreColor( element, "backgroundColor", Qt::black ) );
-  mModel->setAlarmColor( restoreColor( element, "alarmColor", Qt::red ) );
+  mModel->setForegroundColor( restoreColor( element, QStringLiteral("textColor"), Qt::green) );
+  mModel->setBackgroundColor( restoreColor( element, QStringLiteral("backgroundColor"), Qt::black ) );
+  mModel->setAlarmColor( restoreColor( element, QStringLiteral("alarmColor"), Qt::red ) );
 
   mModel->clear();
 
-  QDomNodeList dnList = element.elementsByTagName( "logsensors" );
+  QDomNodeList dnList = element.elementsByTagName( QStringLiteral("logsensors") );
   for ( int i = 0; i < dnList.count(); i++ ) {
     QDomElement element = dnList.item( i ).toElement();
     LogSensor* sensor = new LogSensor( mModel );
 
-    sensor->setHostName( element.attribute("hostName") );
-    sensor->setSensorName( element.attribute("sensorName") );
-    sensor->setFileName( element.attribute("fileName") );
-    sensor->setTimerInterval( element.attribute("timerInterval").toInt() );
-    sensor->setLowerLimitActive( element.attribute("lowerLimitActive").toInt() );
-    sensor->setLowerLimit( element.attribute("lowerLimit").toDouble() );
-    sensor->setUpperLimitActive( element.attribute("upperLimitActive").toInt() );
-    sensor->setUpperLimit( element.attribute("upperLimit").toDouble() );
+    sensor->setHostName( element.attribute(QStringLiteral("hostName")) );
+    sensor->setSensorName( element.attribute(QStringLiteral("sensorName")) );
+    sensor->setFileName( element.attribute(QStringLiteral("fileName")) );
+    sensor->setTimerInterval( element.attribute(QStringLiteral("timerInterval")).toInt() );
+    sensor->setLowerLimitActive( element.attribute(QStringLiteral("lowerLimitActive")).toInt() );
+    sensor->setLowerLimit( element.attribute(QStringLiteral("lowerLimit")).toDouble() );
+    sensor->setUpperLimitActive( element.attribute(QStringLiteral("upperLimitActive")).toInt() );
+    sensor->setUpperLimit( element.attribute(QStringLiteral("upperLimit")).toDouble() );
 
     mModel->addSensor( sensor );
   }
@@ -557,22 +557,22 @@ bool SensorLogger::restoreSettings( QDomElement& element )
 
 bool SensorLogger::saveSettings( QDomDocument& doc, QDomElement& element )
 {
-  saveColor( element, "textColor", mModel->foregroundColor() );
-  saveColor( element, "backgroundColor", mModel->backgroundColor() );
-  saveColor( element, "alarmColor", mModel->alarmColor() );
+  saveColor( element, QStringLiteral("textColor"), mModel->foregroundColor() );
+  saveColor( element, QStringLiteral("backgroundColor"), mModel->backgroundColor() );
+  saveColor( element, QStringLiteral("alarmColor"), mModel->alarmColor() );
 
   const QList<LogSensor*> sensors = mModel->sensors();
   for ( int i = 0; i < sensors.count(); ++i ) {
     LogSensor *sensor = sensors[ i ];
-    QDomElement log = doc.createElement( "logsensors" );
-    log.setAttribute("sensorName", sensor->sensorName());
-    log.setAttribute("hostName", sensor->hostName());
-    log.setAttribute("fileName", sensor->fileName());
-    log.setAttribute("timerInterval", sensor->timerInterval());
-    log.setAttribute("lowerLimitActive", QString("%1").arg(sensor->lowerLimitActive()));
-    log.setAttribute("lowerLimit", QString("%1").arg(sensor->lowerLimit()));
-    log.setAttribute("upperLimitActive", QString("%1").arg(sensor->upperLimitActive()));
-    log.setAttribute("upperLimit", QString("%1").arg(sensor->upperLimit()));
+    QDomElement log = doc.createElement( QStringLiteral("logsensors") );
+    log.setAttribute(QStringLiteral("sensorName"), sensor->sensorName());
+    log.setAttribute(QStringLiteral("hostName"), sensor->hostName());
+    log.setAttribute(QStringLiteral("fileName"), sensor->fileName());
+    log.setAttribute(QStringLiteral("timerInterval"), sensor->timerInterval());
+    log.setAttribute(QStringLiteral("lowerLimitActive"), QStringLiteral("%1").arg(sensor->lowerLimitActive()));
+    log.setAttribute(QStringLiteral("lowerLimit"), QStringLiteral("%1").arg(sensor->lowerLimit()));
+    log.setAttribute(QStringLiteral("upperLimitActive"), QStringLiteral("%1").arg(sensor->upperLimitActive()));
+    log.setAttribute(QStringLiteral("upperLimit"), QStringLiteral("%1").arg(sensor->upperLimit()));
 
     element.appendChild( log );
   }

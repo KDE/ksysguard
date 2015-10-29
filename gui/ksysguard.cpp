@@ -77,7 +77,7 @@ TopLevel* Toplevel;
 TopLevel::TopLevel()
   : KXmlGuiWindow( NULL, Qt::WindowFlags(KDE_DEFAULT_WINDOWFLAGS) | Qt::WindowContextHelpButtonHint)
 {
-  QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportScriptableSlots);
+  QDBusConnection::sessionBus().registerObject(QStringLiteral("/"), this, QDBusConnection::ExportScriptableSlots);
   mTimerId = -1;
   mLocalProcessController = NULL;
 
@@ -115,34 +115,34 @@ TopLevel::TopLevel()
 
   // create actions for menu entries
   mRefreshTabAction = KStandardAction::redisplay(mWorkSpace,SLOT(refreshActiveWorksheet()),actionCollection());
-  mNewWorksheetAction = actionCollection()->addAction("new_worksheet");
-  mNewWorksheetAction->setIcon(QIcon::fromTheme("tab-new"));
-  connect(mNewWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(newWorkSheet()));
-  mInsertWorksheetAction = actionCollection()->addAction("import_worksheet");
-  mInsertWorksheetAction->setIcon(QIcon::fromTheme("document-open") );
+  mNewWorksheetAction = actionCollection()->addAction(QStringLiteral("new_worksheet"));
+  mNewWorksheetAction->setIcon(QIcon::fromTheme(QStringLiteral("tab-new")));
+  connect(mNewWorksheetAction, &QAction::triggered, mWorkSpace, &Workspace::newWorkSheet);
+  mInsertWorksheetAction = actionCollection()->addAction(QStringLiteral("import_worksheet"));
+  mInsertWorksheetAction->setIcon(QIcon::fromTheme(QStringLiteral("document-open")) );
   connect(mInsertWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(importWorkSheet()));
-  mTabExportAction = actionCollection()->addAction( "export_worksheet" );
-  mTabExportAction->setIcon( QIcon::fromTheme("document-save-as") );
+  mTabExportAction = actionCollection()->addAction( QStringLiteral("export_worksheet") );
+  mTabExportAction->setIcon( QIcon::fromTheme(QStringLiteral("document-save-as")) );
   connect(mTabExportAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(exportWorkSheet()));
-  mTabRemoveAction = actionCollection()->addAction( "remove_worksheet" );
-  mTabRemoveAction->setIcon( QIcon::fromTheme("tab-close") );
+  mTabRemoveAction = actionCollection()->addAction( QStringLiteral("remove_worksheet") );
+  mTabRemoveAction->setIcon( QIcon::fromTheme(QStringLiteral("tab-close")) );
   connect(mTabRemoveAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(removeWorkSheet()));
-  mMonitorRemoteAction = actionCollection()->addAction( "connect_host" );
-  mMonitorRemoteAction->setIcon( QIcon::fromTheme("network-connect") );
-  connect(mMonitorRemoteAction, SIGNAL(triggered(bool)), SLOT(connectHost()));
+  mMonitorRemoteAction = actionCollection()->addAction( QStringLiteral("connect_host") );
+  mMonitorRemoteAction->setIcon( QIcon::fromTheme(QStringLiteral("network-connect")) );
+  connect(mMonitorRemoteAction, &QAction::triggered, this, &TopLevel::connectHost);
   //knewstuff2 action
-  mHotNewWorksheetAction = actionCollection()->addAction( "get_new_worksheet" );
-  mHotNewWorksheetAction->setIcon( QIcon::fromTheme("network-server") );
-  connect(mHotNewWorksheetAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(getHotNewWorksheet()));
-  mHotNewWorksheetUploadAction = actionCollection()->addAction( "upload_worksheet" );
-  mHotNewWorksheetUploadAction->setIcon( QIcon::fromTheme("network-server") );
-  connect(mHotNewWorksheetUploadAction, SIGNAL(triggered(bool)), mWorkSpace, SLOT(uploadHotNewWorksheet()));
+  mHotNewWorksheetAction = actionCollection()->addAction( QStringLiteral("get_new_worksheet") );
+  mHotNewWorksheetAction->setIcon( QIcon::fromTheme(QStringLiteral("network-server")) );
+  connect(mHotNewWorksheetAction, &QAction::triggered, mWorkSpace, &Workspace::getHotNewWorksheet);
+  mHotNewWorksheetUploadAction = actionCollection()->addAction( QStringLiteral("upload_worksheet") );
+  mHotNewWorksheetUploadAction->setIcon( QIcon::fromTheme(QStringLiteral("network-server")) );
+  connect(mHotNewWorksheetUploadAction, &QAction::triggered, mWorkSpace, &Workspace::uploadHotNewWorksheet);
 
   mQuitAction = NULL;
 
-  mConfigureSheetAction = actionCollection()->addAction( "configure_sheet" );
-  mConfigureSheetAction->setIcon( QIcon::fromTheme("configure") );
-  connect(mConfigureSheetAction, SIGNAL(triggered(bool)), SLOT(configureCurrentSheet()));
+  mConfigureSheetAction = actionCollection()->addAction( QStringLiteral("configure_sheet") );
+  mConfigureSheetAction->setIcon( QIcon::fromTheme(QStringLiteral("configure")) );
+  connect(mConfigureSheetAction, &QAction::triggered, this, &TopLevel::configureCurrentSheet);
 
   retranslateUi();
 }
@@ -151,7 +151,7 @@ void TopLevel::setLocalProcessController(ProcessController * localProcessControl
 {
   Q_ASSERT(!mLocalProcessController);
   mLocalProcessController = localProcessController;
-  connect( mLocalProcessController, SIGNAL(processListChanged()), this, SLOT(updateProcessCount()));
+  connect( mLocalProcessController, &ProcessController::processListChanged, this, &TopLevel::updateProcessCount);
   for(int i = 0; i < mLocalProcessController->actions().size(); i++) {
     actionCollection()->addAction("processAction" + QString::number(i), mLocalProcessController->actions().at(i));
   }
@@ -266,16 +266,16 @@ QStringList TopLevel::listHosts()
 
 void TopLevel::initStatusBar()
 {
-  KSGRD::SensorMgr->engage( "localhost", "", "ksysguardd" );
+  KSGRD::SensorMgr->engage( QStringLiteral("localhost"), QLatin1String(""), QStringLiteral("ksysguardd") );
   /* Request info about the swap space size and the units it is
    * measured in.  The requested info will be received by
    * answerReceived(). */
-  KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/used?",
+  KSGRD::SensorMgr->sendRequest( QStringLiteral("localhost"), QStringLiteral("mem/swap/used?"),
                                  (KSGRD::SensorClient*)this, 7 );
 
   KToggleAction *sb = dynamic_cast<KToggleAction*>(action("options_show_statusbar"));
   if (sb)
-     connect(sb, SIGNAL(toggled(bool)), this, SLOT(updateStatusBar()));
+     connect(sb, &QAction::toggled, this, &TopLevel::updateStatusBar);
   setupGUI(QSize(800,600), ToolBar | Keys | StatusBar | Save | Create);
 
   updateStatusBar();
@@ -305,16 +305,16 @@ void TopLevel::connectHost()
 //  mHostList = hostConnector.hostNames();
 //  mCommandList = hostConnector.commands();
 
-  QString shell = "";
-  QString command = "";
+  QString shell = QLatin1String("");
+  QString command = QLatin1String("");
   int port = -1;
 
   /* Check which radio button is selected and set parameters
    * appropriately. */
   if ( hostConnector.useSsh() )
-    shell = "ssh";
+    shell = QStringLiteral("ssh");
   else if ( hostConnector.useRsh() )
-    shell = "rsh";
+    shell = QStringLiteral("rsh");
   else if ( hostConnector.useDaemon() )
     port = hostConnector.port();
   else
@@ -348,17 +348,17 @@ void TopLevel::timerEvent( QTimerEvent* )
   if ( statusBar()->isVisibleTo( this ) ) {
     /* Request some info about the memory status. The requested
      * information will be received by answerReceived(). */
-    KSGRD::SensorMgr->sendRequest( "localhost", "cpu/idle",
+    KSGRD::SensorMgr->sendRequest( QStringLiteral("localhost"), QStringLiteral("cpu/idle"),
                                    (KSGRD::SensorClient*)this, 1 );
-    KSGRD::SensorMgr->sendRequest( "localhost", "mem/physical/free",
+    KSGRD::SensorMgr->sendRequest( QStringLiteral("localhost"), QStringLiteral("mem/physical/free"),
                                    (KSGRD::SensorClient*)this, 2 );
-    KSGRD::SensorMgr->sendRequest( "localhost", "mem/physical/used",
+    KSGRD::SensorMgr->sendRequest( QStringLiteral("localhost"), QStringLiteral("mem/physical/used"),
                                    (KSGRD::SensorClient*)this, 3 );
-    KSGRD::SensorMgr->sendRequest( "localhost", "mem/physical/application",
+    KSGRD::SensorMgr->sendRequest( QStringLiteral("localhost"), QStringLiteral("mem/physical/application"),
                                    (KSGRD::SensorClient*)this, 4 );
-    KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/free",
+    KSGRD::SensorMgr->sendRequest( QStringLiteral("localhost"), QStringLiteral("mem/swap/free"),
                                    (KSGRD::SensorClient*)this, 5 );
-    KSGRD::SensorMgr->sendRequest( "localhost", "mem/swap/used",
+    KSGRD::SensorMgr->sendRequest( QStringLiteral("localhost"), QStringLiteral("mem/swap/used"),
                                    (KSGRD::SensorClient*)this, 6 );
   }
 }
@@ -532,35 +532,35 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
 
   QApplication app(argc, argv);
 
-  KAboutData aboutData( "ksysguard", i18n( "System Monitor" ),
+  KAboutData aboutData( QStringLiteral("ksysguard"), i18n( "System Monitor" ),
                         PROJECT_VERSION, i18n(Description), KAboutLicense::GPL,
                         i18n( "(c) 1996-2008 The KDE System Monitor Developers" ) );
   aboutData.setOrganizationDomain(QByteArray("kde.org"));
-  aboutData.addAuthor( i18n("John Tapsell"), i18n("Current Maintainer"), "john.tapsell@kde.org" );
-  aboutData.addAuthor( i18n("Chris Schlaeger"), i18n("Previous Maintainer"), "cs@kde.org" );
-  aboutData.addAuthor( i18n("Greg Martyn"), QString(), "greg.martyn@gmail.com" );
-  aboutData.addAuthor( i18n("Tobias Koenig"), QString(), "tokoe@kde.org" );
-  aboutData.addAuthor( i18n("Nicolas Leclercq"), QString(), "nicknet@planete.net" );
-  aboutData.addAuthor( i18n("Alex Sanda"), QString(), "alex@darkstart.ping.at" );
-  aboutData.addAuthor( i18n("Bernd Johannes Wuebben"), QString(), "wuebben@math.cornell.edu" );
-  aboutData.addAuthor( i18n("Ralf Mueller"), QString(), "rlaf@bj-ig.de" );
-  aboutData.addAuthor( i18n("Hamish Rodda"), QString(), "rodda@kde.org" );
+  aboutData.addAuthor( i18n("John Tapsell"), i18n("Current Maintainer"), QStringLiteral("john.tapsell@kde.org") );
+  aboutData.addAuthor( i18n("Chris Schlaeger"), i18n("Previous Maintainer"), QStringLiteral("cs@kde.org") );
+  aboutData.addAuthor( i18n("Greg Martyn"), QString(), QStringLiteral("greg.martyn@gmail.com") );
+  aboutData.addAuthor( i18n("Tobias Koenig"), QString(), QStringLiteral("tokoe@kde.org") );
+  aboutData.addAuthor( i18n("Nicolas Leclercq"), QString(), QStringLiteral("nicknet@planete.net") );
+  aboutData.addAuthor( i18n("Alex Sanda"), QString(), QStringLiteral("alex@darkstart.ping.at") );
+  aboutData.addAuthor( i18n("Bernd Johannes Wuebben"), QString(), QStringLiteral("wuebben@math.cornell.edu") );
+  aboutData.addAuthor( i18n("Ralf Mueller"), QString(), QStringLiteral("rlaf@bj-ig.de") );
+  aboutData.addAuthor( i18n("Hamish Rodda"), QString(), QStringLiteral("rodda@kde.org") );
   aboutData.addAuthor( i18n("Torsten Kasch"), i18n( "Solaris Support\n"
                        "Parts derived (by permission) from the sunos5\n"
                        "module of William LeFebvre's \"top\" utility." ),
-                       "tk@Genetik.Uni-Bielefeld.DE" );
+                       QStringLiteral("tk@Genetik.Uni-Bielefeld.DE") );
 
     QCommandLineParser parser;
     KAboutData::setApplicationData(aboutData);
     parser.addVersionOption();
     parser.addHelpOption();
-    parser.addPositionalArgument(QLatin1String("[worksheet]"), i18n( "Optional worksheet files to load" ));
+    parser.addPositionalArgument(QStringLiteral("[worksheet]"), i18n( "Optional worksheet files to load" ));
 
     aboutData.setupCommandLine(&parser);
     parser.process(app);
     aboutData.processCommandLine(&parser);
 
-  app.setWindowIcon(QIcon::fromTheme("utilities-system-monitor"));
+  app.setWindowIcon(QIcon::fromTheme(QStringLiteral("utilities-system-monitor")));
 
   KSGRD::SensorMgr = new KSGRD::SensorManager();
   KSGRD::Style = new KSGRD::StyleEngine();

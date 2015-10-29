@@ -38,7 +38,7 @@
 WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
   : QDialog( parent )
 {
-  setObjectName( "WorkSheetSettings" );
+  setObjectName( QStringLiteral("WorkSheetSettings") );
   setModal( true );
   setWindowTitle( i18n( "Tab Properties" ) );
   QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);

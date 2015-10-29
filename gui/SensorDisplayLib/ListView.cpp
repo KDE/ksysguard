@@ -82,7 +82,7 @@ static QString formatByteSize(qlonglong amountInKB, int units) {
         if(amount < 0.1 && amount > 0.05) amount = 0.1;
         return pString.arg(KLocale::global()->formatNumber(amount, 1));
       default:
-          return "";  // error
+          return QLatin1String("");  // error
     }
 }
 
@@ -102,7 +102,7 @@ ListView::ListView(QWidget* parent, const QString& title, SharedSettings *workSh
     mView->setContextMenuPolicy( Qt::CustomContextMenu );
     mView->header()->setContextMenuPolicy( Qt::CustomContextMenu );
     connect(mView, &QTreeView::customContextMenuRequested, this, &ListView::showContextMenu);
-    connect(mView->header(), SIGNAL(customContextMenuRequested(QPoint)), SLOT(showColumnContextMenu(QPoint)));
+    connect(mView->header(), &QWidget::customContextMenuRequested, this, &ListView::showColumnContextMenu);
 
     mView->setAlternatingRowColors(true);
     mView->header()->setMovable(true);
@@ -223,7 +223,7 @@ void ListView::showColumnContextMenu(const QPoint &point)
 bool
 ListView::addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& title)
 {
-    if (sensorType != "listview")
+    if (sensorType != QLatin1String("listview"))
         return false;
     if(sensorName.isEmpty())
         return false;
@@ -247,17 +247,17 @@ void ListView::updateList()
 
 ListView::ColumnType ListView::convertColumnType(const QString &type) const
 {
-    if ( type == "d" || type == "D" )
+    if ( type == QLatin1String("d") || type == QLatin1String("D") )
         return Int;
-    else if ( type == "f" || type == "F" )
+    else if ( type == QLatin1String("f") || type == QLatin1String("F") )
         return Float;
-    else if ( type == "t" )
+    else if ( type == QLatin1String("t") )
         return Time;
-    else if ( type == "M" )
+    else if ( type == QLatin1String("M") )
         return DiskStat;
-    else if ( type == "KB" )
+    else if ( type == QLatin1String("KB") )
         return KByte;
-    else if ( type == "%" )
+    else if ( type == QLatin1String("%") )
         return Percentage;
     else
         return Text;
@@ -353,12 +353,12 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
 bool
 ListView::restoreSettings(QDomElement& element)
 {
-    addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "listview" : element.attribute("sensorType")), element.attribute("title"));
+    addSensor(element.attribute(QStringLiteral("hostName")), element.attribute(QStringLiteral("sensorName")), (element.attribute(QStringLiteral("sensorType")).isEmpty() ? QStringLiteral("listview") : element.attribute(QStringLiteral("sensorType"))), element.attribute(QStringLiteral("title")));
 
     //At this stage, we don't have the heading information, so we cannot setup the headers yet.
     //Save the info, the restore later.
-    mHeaderSettings = QByteArray::fromBase64(element.attribute("treeViewHeader").toLatin1());
-    mUnits = (ListView::Units)element.attribute("units", "0").toInt();
+    mHeaderSettings = QByteArray::fromBase64(element.attribute(QStringLiteral("treeViewHeader")).toLatin1());
+    mUnits = (ListView::Units)element.attribute(QStringLiteral("units"), QStringLiteral("0")).toInt();
 
 /*    QPalette pal = monitor->palette();
     pal.setColor(QPalette::Link, restoreColor(element, "gridColor",
@@ -379,9 +379,9 @@ bool
 ListView::saveSettings(QDomDocument& doc, QDomElement& element)
 {
     if(!sensors().isEmpty()) {
-        element.setAttribute("hostName", sensors().at(0)->hostName());
-        element.setAttribute("sensorName", sensors().at(0)->name());
-        element.setAttribute("sensorType", sensors().at(0)->type());
+        element.setAttribute(QStringLiteral("hostName"), sensors().at(0)->hostName());
+        element.setAttribute(QStringLiteral("sensorName"), sensors().at(0)->name());
+        element.setAttribute(QStringLiteral("sensorType"), sensors().at(0)->type());
 
 /*    QPalette pal = monitor->palette();
     saveColor(element, "gridColor", pal.color(QPalette::Link));
@@ -389,8 +389,8 @@ ListView::saveSettings(QDomDocument& doc, QDomElement& element)
     saveColor(element, "backgroundColor", pal.color(QPalette::Base));
 */
     }
-    element.setAttribute("treeViewHeader", QString::fromLatin1(mView->header()->saveState().toBase64()));
-    element.setAttribute("units", QString::number(mUnits));
+    element.setAttribute(QStringLiteral("treeViewHeader"), QString::fromLatin1(mView->header()->saveState().toBase64()));
+    element.setAttribute(QStringLiteral("units"), QString::number(mUnits));
 
     SensorDisplay::saveSettings(doc, element);
     return true;

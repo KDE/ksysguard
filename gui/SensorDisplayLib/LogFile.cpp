@@ -59,20 +59,20 @@ LogFile::LogFile(QWidget *parent, const QString& title, SharedSettings *workShee
 
 LogFile::~LogFile(void)
 {
-	sendRequest(sensors().at(0)->hostName(), QString("logfile_unregister %1" ).arg(logFileID), 43);
+	sendRequest(sensors().at(0)->hostName(), QStringLiteral("logfile_unregister %1" ).arg(logFileID), 43);
 }
 
 bool
 LogFile::addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& title)
 {
-	if (sensorType != "logfile")
+	if (sensorType != QLatin1String("logfile"))
 		return (false);
 
 	registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
 
-	QString sensorID = sensorName.right(sensorName.length() - (sensorName.lastIndexOf("/") + 1));
+	QString sensorID = sensorName.right(sensorName.length() - (sensorName.lastIndexOf(QLatin1String("/")) + 1));
 
-	sendRequest(sensors().at(0)->hostName(), QString("logfile_register %1" ).arg(sensorID), 42);
+	sendRequest(sensors().at(0)->hostName(), QStringLiteral("logfile_register %1" ).arg(sensorID), 42);
 
 	if (title.isEmpty())
 		setTitle(sensors().at(0)->hostName() + ':' + sensorID);
@@ -133,21 +133,21 @@ void LogFile::settingsAddRule()
 {
 	if (!lfs->ruleText->text().isEmpty()) {
 		lfs->ruleList->addItem(lfs->ruleText->text());
-		lfs->ruleText->setText("");
+		lfs->ruleText->setText(QLatin1String(""));
 	}
 }
 
 void LogFile::settingsDeleteRule()
 {
 	delete lfs->ruleList->takeItem(lfs->ruleList->currentRow());
-	lfs->ruleText->setText("");
+	lfs->ruleText->setText(QLatin1String(""));
 }
 
 void LogFile::settingsChangeRule()
 {
 	if (lfs->ruleList->currentItem() && !lfs->ruleText->text().isEmpty())
 		lfs->ruleList->currentItem()->setText(lfs->ruleText->text());
-	lfs->ruleText->setText("");
+	lfs->ruleText->setText(QLatin1String(""));
 }
 
 void LogFile::settingsRuleListSelected(int index)
@@ -192,23 +192,23 @@ LogFile::restoreSettings(QDomElement& element)
 	QFont font;
 	QPalette cgroup = monitor->palette();
 
-	cgroup.setColor(QPalette::Active, QPalette::Text, restoreColor(element, "textColor", Qt::green));
-	cgroup.setColor(QPalette::Active, QPalette::Base, restoreColor(element, "backgroundColor", Qt::black));
-	cgroup.setColor(QPalette::Disabled, QPalette::Text, restoreColor(element, "textColor", Qt::green));
-	cgroup.setColor(QPalette::Disabled, QPalette::Base, restoreColor(element, "backgroundColor", Qt::black));
-	cgroup.setColor(QPalette::Inactive, QPalette::Text, restoreColor(element, "textColor", Qt::green));
-	cgroup.setColor(QPalette::Inactive, QPalette::Base, restoreColor(element, "backgroundColor", Qt::black));
+	cgroup.setColor(QPalette::Active, QPalette::Text, restoreColor(element, QStringLiteral("textColor"), Qt::green));
+	cgroup.setColor(QPalette::Active, QPalette::Base, restoreColor(element, QStringLiteral("backgroundColor"), Qt::black));
+	cgroup.setColor(QPalette::Disabled, QPalette::Text, restoreColor(element, QStringLiteral("textColor"), Qt::green));
+	cgroup.setColor(QPalette::Disabled, QPalette::Base, restoreColor(element, QStringLiteral("backgroundColor"), Qt::black));
+	cgroup.setColor(QPalette::Inactive, QPalette::Text, restoreColor(element, QStringLiteral("textColor"), Qt::green));
+	cgroup.setColor(QPalette::Inactive, QPalette::Base, restoreColor(element, QStringLiteral("backgroundColor"), Qt::black));
 	monitor->setPalette(cgroup);
 
-	addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "logfile" : element.attribute("sensorType")), element.attribute("title"));
+	addSensor(element.attribute(QStringLiteral("hostName")), element.attribute(QStringLiteral("sensorName")), (element.attribute(QStringLiteral("sensorType")).isEmpty() ? QStringLiteral("logfile") : element.attribute(QStringLiteral("sensorType"))), element.attribute(QStringLiteral("title")));
 
-	font.fromString( element.attribute( "font" ) );
+	font.fromString( element.attribute( QStringLiteral("font") ) );
 	monitor->setFont(font);
 
-	QDomNodeList dnList = element.elementsByTagName("filter");
+	QDomNodeList dnList = element.elementsByTagName(QStringLiteral("filter"));
 	for (int i = 0; i < dnList.count(); i++) {
 		QDomElement element = dnList.item(i).toElement();
-		filterRules.append(element.attribute("rule"));
+		filterRules.append(element.attribute(QStringLiteral("rule")));
 	}
 
 	SensorDisplay::restoreSettings(element);
@@ -219,20 +219,20 @@ LogFile::restoreSettings(QDomElement& element)
 bool
 LogFile::saveSettings(QDomDocument& doc, QDomElement& element)
 {
-	element.setAttribute("hostName", sensors().at(0)->hostName());
-	element.setAttribute("sensorName", sensors().at(0)->name());
-	element.setAttribute("sensorType", sensors().at(0)->type());
+	element.setAttribute(QStringLiteral("hostName"), sensors().at(0)->hostName());
+	element.setAttribute(QStringLiteral("sensorName"), sensors().at(0)->name());
+	element.setAttribute(QStringLiteral("sensorType"), sensors().at(0)->type());
 
-	element.setAttribute("font", monitor->font().toString());
+	element.setAttribute(QStringLiteral("font"), monitor->font().toString());
 
-	saveColor(element, "textColor", monitor->palette().color( QPalette::Text ) );
-	saveColor(element, "backgroundColor", monitor->palette().color( QPalette::Base ) );
+	saveColor(element, QStringLiteral("textColor"), monitor->palette().color( QPalette::Text ) );
+	saveColor(element, QStringLiteral("backgroundColor"), monitor->palette().color( QPalette::Base ) );
 
 	for (QStringList::Iterator it = filterRules.begin();
 		 it != filterRules.end(); ++it)
 	{
-		QDomElement filter = doc.createElement("filter");
-		filter.setAttribute("rule", (*it));
+		QDomElement filter = doc.createElement(QStringLiteral("filter"));
+		filter.setAttribute(QStringLiteral("rule"), (*it));
 		element.appendChild(filter);
 	}
 
@@ -245,7 +245,7 @@ void
 LogFile::updateMonitor()
 {
 	sendRequest(sensors().at(0)->hostName(),
-				QString("%1 %2" ).arg(sensors().at(0)->name()).arg(logFileID), 19);
+				QStringLiteral("%1 %2" ).arg(sensors().at(0)->name()).arg(logFileID), 19);
 }
 
 void
@@ -268,7 +268,7 @@ LogFile::answerReceived(int id, const QList<QByteArray>& answer)
 				for (QStringList::Iterator it = filterRules.begin(); it != filterRules.end(); ++it) {
 					QRegExp *expr = new QRegExp((*it).toLatin1());
 					if (expr->indexIn(s) != -1) {
-						KNotification::event("pattern_match", QString("rule '%1' matched").arg(*it),QPixmap(),this);
+						KNotification::event(QStringLiteral("pattern_match"), QStringLiteral("rule '%1' matched").arg(*it),QPixmap(),this);
 					}
 					delete expr;
 				}

@@ -156,7 +156,7 @@ void DancingBars::applyStyle()
 bool DancingBars::addSensor( const QString &hostName, const QString &name,
                              const QString &type, const QString &title )
 {
-  if ( type != "integer" && type != "float" )
+  if ( type != QLatin1String("integer") && type != QLatin1String("float") )
     return false;
 
   if ( mBars >= 32 )
@@ -175,7 +175,7 @@ bool DancingBars::addSensor( const QString &hostName, const QString &name,
 
   QString tooltip;
   for ( uint i = 0; i < mBars; ++i ) {
-    tooltip += QString( "%1%2:%3" ).arg( i != 0 ? "\n" : "" )
+    tooltip += QStringLiteral( "%1%2:%3" ).arg( i != 0 ? "\n" : "" )
                                    .arg( sensors().at( i )->hostName() )
                                    .arg( sensors().at( i )->name() );
   }
@@ -198,7 +198,7 @@ bool DancingBars::removeSensor( uint pos )
 
   QString tooltip;
   for ( uint i = 0; i < mBars; ++i ) {
-    tooltip += QString( "%1%2:%3" ).arg( i != 0 ? "\n" : "" )
+    tooltip += QStringLiteral( "%1%2:%3" ).arg( i != 0 ? "\n" : "" )
                                    .arg( sensors().at( i )->hostName() )
                                    .arg( sensors().at( i )->name() );
   }
@@ -260,29 +260,29 @@ bool DancingBars::restoreSettings( QDomElement &element )
 {
   SensorDisplay::restoreSettings( element );
 
-  mPlotter->changeRange( element.attribute( "min", "0" ).toDouble(),
-                         element.attribute( "max", "0" ).toDouble() );
+  mPlotter->changeRange( element.attribute( QStringLiteral("min"), QStringLiteral("0") ).toDouble(),
+                         element.attribute( QStringLiteral("max"), QStringLiteral("0") ).toDouble() );
 
-  mPlotter->setLimits( element.attribute( "lowlimit", "0" ).toDouble(),
-                       element.attribute( "lowlimitactive", "0" ).toInt(),
-                       element.attribute( "uplimit", "0" ).toDouble(),
-                       element.attribute( "uplimitactive", "0" ).toInt() );
+  mPlotter->setLimits( element.attribute( QStringLiteral("lowlimit"), QStringLiteral("0") ).toDouble(),
+                       element.attribute( QStringLiteral("lowlimitactive"), QStringLiteral("0") ).toInt(),
+                       element.attribute( QStringLiteral("uplimit"), QStringLiteral("0") ).toDouble(),
+                       element.attribute( QStringLiteral("uplimitactive"), QStringLiteral("0") ).toInt() );
 
-  mPlotter->normalColor = restoreColor( element, "normalColor",
+  mPlotter->normalColor = restoreColor( element, QStringLiteral("normalColor"),
                                         KSGRD::Style->firstForegroundColor() );
-  mPlotter->alarmColor = restoreColor( element, "alarmColor",
+  mPlotter->alarmColor = restoreColor( element, QStringLiteral("alarmColor"),
                                        KSGRD::Style->alarmColor() );
-  mPlotter->mBackgroundColor = restoreColor( element, "backgroundColor",
+  mPlotter->mBackgroundColor = restoreColor( element, QStringLiteral("backgroundColor"),
                                             KSGRD::Style->backgroundColor() );
-  mPlotter->fontSize = element.attribute( "fontSize", QString( "%1" ).arg(
+  mPlotter->fontSize = element.attribute( QStringLiteral("fontSize"), QStringLiteral( "%1" ).arg(
                                           KSGRD::Style->fontSize() ) ).toInt();
 
-  QDomNodeList dnList = element.elementsByTagName( "beam" );
+  QDomNodeList dnList = element.elementsByTagName( QStringLiteral("beam") );
   for ( int i = 0; i < dnList.count(); ++i ) {
     QDomElement el = dnList.item( i ).toElement();
-    addSensor( el.attribute( "hostName" ), el.attribute( "sensorName" ),
-               ( el.attribute( "sensorType" ).isEmpty() ? "integer" :
-               el.attribute( "sensorType" ) ), el.attribute( "sensorDescr" ) );
+    addSensor( el.attribute( QStringLiteral("hostName") ), el.attribute( QStringLiteral("sensorName") ),
+               ( el.attribute( QStringLiteral("sensorType") ).isEmpty() ? QStringLiteral("integer") :
+               el.attribute( QStringLiteral("sensorType") ) ), el.attribute( QStringLiteral("sensorDescr") ) );
   }
 
 
@@ -291,28 +291,28 @@ bool DancingBars::restoreSettings( QDomElement &element )
 
 bool DancingBars::saveSettings( QDomDocument &doc, QDomElement &element)
 {
-  element.setAttribute( "min", mPlotter->getMin() );
-  element.setAttribute( "max", mPlotter->getMax() );
+  element.setAttribute( QStringLiteral("min"), mPlotter->getMin() );
+  element.setAttribute( QStringLiteral("max"), mPlotter->getMax() );
   double l, u;
   bool la, ua;
   mPlotter->getLimits( l, la, u, ua );
-  element.setAttribute( "lowlimit", l );
-  element.setAttribute( "lowlimitactive", la );
-  element.setAttribute( "uplimit", u );
-  element.setAttribute( "uplimitactive", ua );
+  element.setAttribute( QStringLiteral("lowlimit"), l );
+  element.setAttribute( QStringLiteral("lowlimitactive"), la );
+  element.setAttribute( QStringLiteral("uplimit"), u );
+  element.setAttribute( QStringLiteral("uplimitactive"), ua );
 
-  saveColor( element, "normalColor", mPlotter->normalColor );
-  saveColor( element, "alarmColor", mPlotter->alarmColor );
-	saveColor( element, "backgroundColor", mPlotter->mBackgroundColor );
-  element.setAttribute( "fontSize", mPlotter->fontSize );
+  saveColor( element, QStringLiteral("normalColor"), mPlotter->normalColor );
+  saveColor( element, QStringLiteral("alarmColor"), mPlotter->alarmColor );
+	saveColor( element, QStringLiteral("backgroundColor"), mPlotter->mBackgroundColor );
+  element.setAttribute( QStringLiteral("fontSize"), mPlotter->fontSize );
 
   for ( uint i = 0; i < mBars; ++i ) {
-    QDomElement beam = doc.createElement( "beam" );
+    QDomElement beam = doc.createElement( QStringLiteral("beam") );
     element.appendChild( beam );
-    beam.setAttribute( "hostName", sensors().at( i )->hostName() );
-    beam.setAttribute( "sensorName", sensors().at( i )->name() );
-    beam.setAttribute( "sensorType", sensors().at( i )->type() );
-    beam.setAttribute( "sensorDescr", mPlotter->footers[ i ] );
+    beam.setAttribute( QStringLiteral("hostName"), sensors().at( i )->hostName() );
+    beam.setAttribute( QStringLiteral("sensorName"), sensors().at( i )->name() );
+    beam.setAttribute( QStringLiteral("sensorType"), sensors().at( i )->type() );
+    beam.setAttribute( QStringLiteral("sensorDescr"), mPlotter->footers[ i ] );
   }
 
   SensorDisplay::saveSettings( doc, element );

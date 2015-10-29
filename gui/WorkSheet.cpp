@@ -95,7 +95,7 @@ bool WorkSheet::load( const QString &fileName )
     }
 
     // Check for proper document type.
-    if ( doc.doctype().name() != "KSysGuardWorkSheet" ) {
+    if ( doc.doctype().name() != QLatin1String("KSysGuardWorkSheet") ) {
         KMessageBox::sorry( this, i18n( "The file %1 does not contain a valid worksheet "
                     "definition, which must have a document type 'KSysGuardWorkSheet'.",
                     fileName ) );
@@ -105,8 +105,8 @@ bool WorkSheet::load( const QString &fileName )
     QDomElement element = doc.documentElement();
 
     bool rowsOk, columnsOk;
-    int rows = element.attribute( "rows" ).toInt( &rowsOk );
-    int columns = element.attribute( "columns" ).toInt( &columnsOk );
+    int rows = element.attribute( QStringLiteral("rows") ).toInt( &rowsOk );
+    int columns = element.attribute( QStringLiteral("columns") ).toInt( &columnsOk );
     if ( !( rowsOk && columnsOk ) ) {
         KMessageBox::sorry( this, i18n("The file %1 has an invalid worksheet size.",
                     fileName ) );
@@ -114,7 +114,7 @@ bool WorkSheet::load( const QString &fileName )
     }
 
     // Check for proper size.
-    float interval = element.attribute( "interval", "0.5" ).toFloat();
+    float interval = element.attribute( QStringLiteral("interval"), QStringLiteral("0.5") ).toFloat();
     if( interval  < 0 || interval > 100000 )  //make sure the interval is fairly sane
         interval = 0.5;
 
@@ -124,38 +124,38 @@ bool WorkSheet::load( const QString &fileName )
 
     mGridLayout->activate();
 
-    mTitle = element.attribute( "title");
-    mTranslatedTitle = mTitle.isEmpty() ? "" : i18n(mTitle.toUtf8().constData());
+    mTitle = element.attribute( QStringLiteral("title"));
+    mTranslatedTitle = mTitle.isEmpty() ? QLatin1String("") : i18n(mTitle.toUtf8().constData());
     bool ok;
-    mSharedSettings.locked = element.attribute( "locked" ).toUInt( &ok );
+    mSharedSettings.locked = element.attribute( QStringLiteral("locked") ).toUInt( &ok );
     if(!ok) mSharedSettings.locked = false;
 
     int i;
     /* Load lists of hosts that are needed for the work sheet and try
      * to establish a connection. */
-    QDomNodeList dnList = element.elementsByTagName( "host" );
+    QDomNodeList dnList = element.elementsByTagName( QStringLiteral("host") );
     for ( i = 0; i < dnList.count(); ++i ) {
         QDomElement element = dnList.item( i ).toElement();
         bool ok;
-        int port = element.attribute( "port" ).toInt( &ok );
+        int port = element.attribute( QStringLiteral("port") ).toInt( &ok );
         if ( !ok )
             port = -1;
-        KSGRD::SensorMgr->engage( element.attribute( "name" ),
-                element.attribute( "shell" ),
-                element.attribute( "command" ), port );
+        KSGRD::SensorMgr->engage( element.attribute( QStringLiteral("name") ),
+                element.attribute( QStringLiteral("shell") ),
+                element.attribute( QStringLiteral("command") ), port );
     }
     //if no hosts are specified, at least connect to localhost
     if(dnList.count() == 0)
-        KSGRD::SensorMgr->engage( "localhost", "", "ksysguardd", -1);
+        KSGRD::SensorMgr->engage( QStringLiteral("localhost"), QLatin1String(""), QStringLiteral("ksysguardd"), -1);
 
     // Load the displays and place them into the work sheet.
-    dnList = element.elementsByTagName( "display" );
+    dnList = element.elementsByTagName( QStringLiteral("display") );
     for ( i = 0; i < dnList.count(); ++i ) {
         QDomElement element = dnList.item( i ).toElement();
-        int row = element.attribute( "row" ).toInt();
-        int column = element.attribute( "column" ).toInt();
-        int rowSpan = element.attribute( "rowSpan", "1" ).toInt();
-        int columnSpan = element.attribute( "columnSpan", "1" ).toInt();
+        int row = element.attribute( QStringLiteral("row") ).toInt();
+        int column = element.attribute( QStringLiteral("column") ).toInt();
+        int rowSpan = element.attribute( QStringLiteral("rowSpan"), QStringLiteral("1") ).toInt();
+        int columnSpan = element.attribute( QStringLiteral("columnSpan"), QStringLiteral("1") ).toInt();
         if ( row < 0 || rowSpan < 0 || (row + rowSpan - 1) >= mRows || column < 0 || columnSpan < 0 || (column + columnSpan - 1) >= mColumns) {
             kDebug(1215) << "Row or Column out of range (" << row << ", "
                 << column << ")-(" << (row + rowSpan - 1) << ", " << (column + columnSpan - 1) << ")" << endl;
@@ -175,18 +175,18 @@ bool WorkSheet::save( const QString &fileName )
 
 bool WorkSheet::exportWorkSheet( const QString &fileName )
 {
-    QDomDocument doc( "KSysGuardWorkSheet" );
+    QDomDocument doc( QStringLiteral("KSysGuardWorkSheet") );
     doc.appendChild( doc.createProcessingInstruction(
-                "xml", "version=\"1.0\" encoding=\"UTF-8\"" ) );
+                QStringLiteral("xml"), QStringLiteral("version=\"1.0\" encoding=\"UTF-8\"") ) );
 
     // save work sheet information
-    QDomElement ws = doc.createElement( "WorkSheet" );
+    QDomElement ws = doc.createElement( QStringLiteral("WorkSheet") );
     doc.appendChild( ws );
-    ws.setAttribute( "title", mTitle );
-    ws.setAttribute( "locked", mSharedSettings.locked?"1":"0" );
-    ws.setAttribute( "interval", updateInterval() );
-    ws.setAttribute( "rows", mRows );
-    ws.setAttribute( "columns", mColumns );
+    ws.setAttribute( QStringLiteral("title"), mTitle );
+    ws.setAttribute( QStringLiteral("locked"), mSharedSettings.locked?"1":"0" );
+    ws.setAttribute( QStringLiteral("interval"), updateInterval() );
+    ws.setAttribute( QStringLiteral("rows"), mRows );
+    ws.setAttribute( QStringLiteral("columns"), mColumns );
 
     QStringList hosts;
     collectHosts( hosts );
@@ -198,12 +198,12 @@ bool WorkSheet::exportWorkSheet( const QString &fileName )
         int port;
 
         if ( KSGRD::SensorMgr->hostInfo( *it, shell, command, port ) ) {
-            QDomElement host = doc.createElement( "host" );
+            QDomElement host = doc.createElement( QStringLiteral("host") );
             ws.appendChild( host );
-            host.setAttribute( "name", *it );
-            host.setAttribute( "shell", shell );
-            host.setAttribute( "command", command );
-            host.setAttribute( "port", port );
+            host.setAttribute( QStringLiteral("name"), *it );
+            host.setAttribute( QStringLiteral("shell"), shell );
+            host.setAttribute( QStringLiteral("command"), command );
+            host.setAttribute( QStringLiteral("port"), port );
         }
     }
 
@@ -215,13 +215,13 @@ bool WorkSheet::exportWorkSheet( const QString &fileName )
             int row, column, rowSpan, columnSpan;
             mGridLayout->getItemPosition(i, &row, &column, &rowSpan, &columnSpan);
 
-            QDomElement element = doc.createElement("display");
+            QDomElement element = doc.createElement(QStringLiteral("display"));
             ws.appendChild(element);
-            element.setAttribute("row", row);
-            element.setAttribute("column", column);
-            element.setAttribute("rowSpan", rowSpan);
-            element.setAttribute("columnSpan", columnSpan);
-            element.setAttribute("class", display->metaObject()->className());
+            element.setAttribute(QStringLiteral("row"), row);
+            element.setAttribute(QStringLiteral("column"), column);
+            element.setAttribute(QStringLiteral("rowSpan"), rowSpan);
+            element.setAttribute(QStringLiteral("columnSpan"), columnSpan);
+            element.setAttribute(QStringLiteral("class"), display->metaObject()->className());
 
             display->saveSettings(doc, element);
         }
@@ -274,7 +274,7 @@ void WorkSheet::paste()
     QDomDocument doc;
     /* Get text from clipboard and check for a valid XML header and
      * proper document type. */
-    if ( !doc.setContent( clip->text() ) || doc.doctype().name() != "KSysGuardDisplay" ) {
+    if ( !doc.setContent( clip->text() ) || doc.doctype().name() != QLatin1String("KSysGuardDisplay") ) {
         KMessageBox::sorry( this, i18n("The clipboard does not contain a valid display "
                     "description." ) );
         return;
@@ -302,7 +302,7 @@ QString WorkSheet::fileName() const
 void WorkSheet::setTitle( const QString &title )
 {
     mTitle = title;
-    mTranslatedTitle = mTitle.isEmpty() ? "" : i18n(mTitle.toUtf8().constData());
+    mTranslatedTitle = mTitle.isEmpty() ? QLatin1String("") : i18n(mTitle.toUtf8().constData());
     emit titleChanged(this);
 }
 
@@ -341,7 +341,7 @@ KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, QString
             break;
         case DisplayProcessControllerRemote:
             newDisplay = new ProcessController(this, &mSharedSettings);
-            newDisplay->setObjectName("remote process controller");
+            newDisplay->setObjectName(QStringLiteral("remote process controller"));
             break;
         case DisplayProcessControllerLocal:
             newDisplay = new ProcessController(this, &mSharedSettings);
@@ -373,7 +373,7 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
         /* If the sensor type is supported by more than one display
          * type we popup a menu so the user can select what display is
          * wanted. */
-        if ( sensorType == "integer" || sensorType == "float" ) {
+        if ( sensorType == QLatin1String("integer") || sensorType == QLatin1String("float") ) {
             QMenu pm;
             pm.addSection( i18n( "Select Display Type" ) );
             QAction *a1 = pm.addAction( i18n( "&Line graph" ) );
@@ -391,17 +391,17 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
                 displayType = DisplaySensorLogger;
             else 
                 return 0;
-        } else if ( sensorType == "listview" ) {
+        } else if ( sensorType == QLatin1String("listview") ) {
             displayType = DisplayListView;
         }
-        else if ( sensorType == "logfile" ) {
+        else if ( sensorType == QLatin1String("logfile") ) {
             displayType = DisplayLogFile;
         }
-        else if ( sensorType == "sensorlogger" ) {
+        else if ( sensorType == QLatin1String("sensorlogger") ) {
             displayType = DisplaySensorLogger;
         }
-        else if ( sensorType == "table" ) {
-            if(hostName.isEmpty() || hostName == "localhost")
+        else if ( sensorType == QLatin1String("table") ) {
+            if(hostName.isEmpty() || hostName == QLatin1String("localhost"))
                 displayType = DisplayProcessControllerLocal;
             else
                 displayType = DisplayProcessControllerRemote;
@@ -461,7 +461,7 @@ void WorkSheet::applyStyle()
 
 void WorkSheet::dragEnterEvent( QDragEnterEvent* event) 
 {
-    if ( !event->mimeData()->hasFormat("application/x-ksysguard") )
+    if ( !event->mimeData()->hasFormat(QStringLiteral("application/x-ksysguard")) )
         return;
     event->accept();
 }
@@ -488,10 +488,10 @@ void WorkSheet::dragMoveEvent( QDragMoveEvent *event )
 
 void WorkSheet::dropEvent( QDropEvent *event )
 {
-    if ( !event->mimeData()->hasFormat("application/x-ksysguard") )
+    if ( !event->mimeData()->hasFormat(QStringLiteral("application/x-ksysguard")) )
         return;
 
-    const QString dragObject = QString::fromUtf8(event->mimeData()->data("application/x-ksysguard"));
+    const QString dragObject = QString::fromUtf8(event->mimeData()->data(QStringLiteral("application/x-ksysguard")));
 
     // The host name, sensor name and type are separated by a ' '.
     QStringList parts = dragObject.split( ' ');
@@ -550,25 +550,25 @@ bool WorkSheet::event( QEvent *e )
 
 bool WorkSheet::replaceDisplay( int row, int column, QDomElement& element, int rowSpan, int columnSpan )
 {
-    QString classType = element.attribute( "class" );
-    QString hostName = element.attribute( "hostName" );
+    QString classType = element.attribute( QStringLiteral("class") );
+    QString hostName = element.attribute( QStringLiteral("hostName") );
     DisplayType displayType = DisplayDummy;
     KSGRD::SensorDisplay* newDisplay;
 
-    if ( classType == "FancyPlotter" )
+    if ( classType == QLatin1String("FancyPlotter") )
         displayType = DisplayFancyPlotter;
-    else if ( classType == "MultiMeter" )
+    else if ( classType == QLatin1String("MultiMeter") )
         displayType = DisplayMultiMeter;
-    else if ( classType == "DancingBars" )
+    else if ( classType == QLatin1String("DancingBars") )
         displayType = DisplayDancingBars;
-    else if ( classType == "ListView" )
+    else if ( classType == QLatin1String("ListView") )
         displayType = DisplayListView;
-    else if ( classType == "LogFile" )
+    else if ( classType == QLatin1String("LogFile") )
         displayType = DisplayLogFile;
-    else if ( classType == "SensorLogger" )
+    else if ( classType == QLatin1String("SensorLogger") )
         displayType = DisplaySensorLogger;
-    else if ( classType == "ProcessController" ) {
-        if(hostName.isEmpty() || hostName == "localhost")
+    else if ( classType == QLatin1String("ProcessController") ) {
+        if(hostName.isEmpty() || hostName == QLatin1String("localhost"))
             displayType = DisplayProcessControllerLocal;
         else
             displayType = DisplayProcessControllerRemote;
@@ -767,13 +767,13 @@ QString WorkSheet::currentDisplayAsXML()
         return QString();
 
     /* We create an XML description of the current display. */
-    QDomDocument doc( "KSysGuardDisplay" );
+    QDomDocument doc( QStringLiteral("KSysGuardDisplay") );
     doc.appendChild( doc.createProcessingInstruction(
-                "xml", "version=\"1.0\" encoding=\"UTF-8\"" ) );
+                QStringLiteral("xml"), QStringLiteral("version=\"1.0\" encoding=\"UTF-8\"") ) );
 
-    QDomElement element = doc.createElement( "display" );
+    QDomElement element = doc.createElement( QStringLiteral("display") );
     doc.appendChild( element );
-    element.setAttribute( "class", display->metaObject()->className() );
+    element.setAttribute( QStringLiteral("class"), display->metaObject()->className() );
     display->saveSettings( doc, element );
 
     return doc.toString();

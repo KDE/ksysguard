@@ -81,9 +81,9 @@ QVariant SensorBrowserModel::data( const QModelIndex & index, int role) const { 
                 KSGRD::SensorAgent *agent;
                 if(host != NULL && (agent = host->sensorAgent())) {
                     if(agent->daemonOnLine())
-                        return QIcon::fromTheme("computer");
+                        return QIcon::fromTheme(QStringLiteral("computer"));
                     else
-                        return QIcon::fromTheme("dialog-warning");
+                        return QIcon::fromTheme(QStringLiteral("dialog-warning"));
                 } else
                     return QIcon();
             } else
@@ -338,7 +338,7 @@ void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&an
         }
         if(sensorName.isEmpty()) continue;
 
-        if(sensorType == "string") continue;
+        if(sensorType == QLatin1String("string")) continue;
 
         /* The sensor browser can display sensors in a hierarchical order.
          * Sensors can be grouped into nodes by seperating the hierarchical
@@ -584,7 +584,7 @@ void SensorBrowserModel::addHost(KSGRD::SensorAgent *sensorAgent, const QString 
     mHostSensorsMap.insert(mIdCount, QHash<QString, bool>());
     mIdCount++;
     endInsertRows();
-    hostInfo->sensorAgent()->sendRequest( "monitors", this, mIdCount-1 );
+    hostInfo->sensorAgent()->sendRequest( QStringLiteral("monitors"), this, mIdCount-1 );
 }
 
 void SensorBrowserModel::update()
@@ -594,7 +594,7 @@ void SensorBrowserModel::update()
         it.next();
         KSGRD::SensorAgent* sensorAgent = it.value()->sensorAgent();
         int id = it.key();
-        sensorAgent->sendRequest( "monitors", this, id );
+        sensorAgent->sendRequest( QStringLiteral("monitors"), this, id );
     }
 }
 QMimeData * SensorBrowserModel::mimeData ( const QModelIndexList & indexes ) const { //virtual
@@ -613,7 +613,7 @@ QMimeData * SensorBrowserModel::mimeData ( const QModelIndexList & indexes ) con
         sensor->description();
 
 
-    mimeData->setData( "application/x-ksysguard", mDragText.toUtf8() );
+    mimeData->setData( QStringLiteral("application/x-ksysguard"), mDragText.toUtf8() );
     return mimeData;
 }
 

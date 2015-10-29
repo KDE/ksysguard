@@ -66,7 +66,7 @@ SensorDisplay::SensorDisplay( QWidget *parent, const QString &title, SharedSetti
   mErrorIndicator = 0;
   mPlotterWdg = 0;
 
-  this->setWhatsThis( "dummy" );
+  this->setWhatsThis( QStringLiteral("dummy") );
 
   setMinimumSize( 16, 16 );
   setSensorOk( false );
@@ -276,18 +276,18 @@ void SensorDisplay::setDeleteNotifier( QObject *object )
 
 bool SensorDisplay::restoreSettings( QDomElement &element )
 {
-  mShowUnit = element.attribute( "showUnit", "0" ).toInt();
-  setUnit( element.attribute( "unit", QString() ) );
-  setTitle( element.attribute( "title", title() ) );
+  mShowUnit = element.attribute( QStringLiteral("showUnit"), QStringLiteral("0") ).toInt();
+  setUnit( element.attribute( QStringLiteral("unit"), QString() ) );
+  setTitle( element.attribute( QStringLiteral("title"), title() ) );
 
   return true;
 }
 
 bool SensorDisplay::saveSettings( QDomDocument&, QDomElement &element )
 {
-  element.setAttribute( "title", title() );
-  element.setAttribute( "unit", unit() );
-  element.setAttribute( "showUnit", mShowUnit );
+  element.setAttribute( QStringLiteral("title"), title() );
+  element.setAttribute( QStringLiteral("unit"), unit() );
+  element.setAttribute( QStringLiteral("showUnit"), mShowUnit );
 
   return true;
 }
@@ -321,7 +321,7 @@ void SensorDisplay::setSensorOk( bool ok )
     if ( !mPlotterWdg || mPlotterWdg->isVisible())
       return;
 
-    QPixmap errorIcon = KIconLoader::global()->loadIcon( "dialog-error", KIconLoader::Desktop,
+    QPixmap errorIcon = KIconLoader::global()->loadIcon( QStringLiteral("dialog-error"), KIconLoader::Desktop,
                                              KIconLoader::SizeSmall );
 
     mErrorIndicator = new QWidget( mPlotterWdg );
@@ -405,7 +405,7 @@ SensorProperties::~SensorProperties()
 void SensorProperties::setHostName( const QString &hostName )
 {
   mHostName = hostName;
-  mIsLocalhost = (mHostName.toLower() == "localhost" || mHostName.isEmpty());
+  mIsLocalhost = (mHostName.toLower() == QLatin1String("localhost") || mHostName.isEmpty());
 }
 
 bool SensorProperties::isLocalhost() const

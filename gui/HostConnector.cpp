@@ -126,8 +126,8 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
 
   connect(mUseCustom, &QRadioButton::toggled, mCommands, &KComboBox::setEnabled);
   connect(mUseDaemon, &QRadioButton::toggled, mPort, &KIntSpinBox::setEnabled);
-  connect( mHostNames->lineEdit(),  SIGNAL(textChanged(QString)),
-           this, SLOT(slotHostNameChanged(QString)) );
+  connect( mHostNames->lineEdit(),  &QLineEdit::textChanged,
+           this, &HostConnector::slotHostNameChanged );
   enableButtonOk( !mHostNames->lineEdit()->text().isEmpty() );
   KAcceleratorManager::manage( this );
   connect(this, &HostConnector::helpClicked, this, &HostConnector::slotHelp);
@@ -223,7 +223,7 @@ bool HostConnector::useCustom() const
 
 void HostConnector::slotHelp()
 {
-  KHelpClient::invokeHelp( "connectingtootherhosts", "ksysguard" );
+  KHelpClient::invokeHelp( QStringLiteral("connectingtootherhosts"), QStringLiteral("ksysguard") );
 }
 
 

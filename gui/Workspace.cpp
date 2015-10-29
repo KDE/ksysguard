@@ -74,18 +74,18 @@ void Workspace::readProperties( const KConfigGroup& cfg )
    /* If SelectedSheets config entry is not there, then it's
     * probably the first time the user has started KSysGuard. We
     * then "restore" a special default configuration. */
-    selectedSheets << "ProcessTable.sgrd";
-    selectedSheets << "SystemLoad2.sgrd";
-  } else if(selectedSheets[0] != "ProcessTable.sgrd") {
+    selectedSheets << QStringLiteral("ProcessTable.sgrd");
+    selectedSheets << QStringLiteral("SystemLoad2.sgrd");
+  } else if(selectedSheets[0] != QLatin1String("ProcessTable.sgrd")) {
     //We need to make sure that this is really is the process table on the first tab. No GUI way of changing this, but should make sure anyway.
     //Plus this migrates users from the kde3 setup
-    selectedSheets.removeAll("ProcessTable.sgrd");
-    selectedSheets.prepend( "ProcessTable.sgrd");
+    selectedSheets.removeAll(QStringLiteral("ProcessTable.sgrd"));
+    selectedSheets.prepend( QStringLiteral("ProcessTable.sgrd"));
   }
 
-  int oldSystemLoad = selectedSheets.indexOf("SystemLoad.sgrd");
+  int oldSystemLoad = selectedSheets.indexOf(QStringLiteral("SystemLoad.sgrd"));
   if(oldSystemLoad != -1) {
-    selectedSheets.replace(oldSystemLoad, "SystemLoad2.sgrd");
+    selectedSheets.replace(oldSystemLoad, QStringLiteral("SystemLoad2.sgrd"));
   }
 
   KStandardDirs* kstd = KGlobal::dirs();
@@ -147,8 +147,8 @@ void Workspace::newWorkSheet()
     insertTab(-1, sheet, dlg.sheetTitle() );
     mSheetList.append( sheet );
     setCurrentIndex(indexOf( sheet ));
-    connect( sheet, SIGNAL(titleChanged(QWidget*)),
-	     SLOT(updateSheetTitle(QWidget*)));
+    connect( sheet, &WorkSheet::titleChanged,
+	     this, &Workspace::updateSheetTitle);
   }
 }
 void Workspace::contextMenu (int index, const QPoint &point) {
@@ -220,7 +220,7 @@ bool Workspace::saveWorkSheet( WorkSheet *sheet )
   }
 
   KStandardDirs* kstd = KGlobal::dirs();
-  QString fileName = kstd->saveLocation( "data", "ksysguard") + sheet->fileName();
+  QString fileName = kstd->saveLocation( "data", QStringLiteral("ksysguard")) + sheet->fileName();
 
   if ( !sheet->save( fileName ) ) {
     return false;
@@ -243,7 +243,7 @@ void Workspace::exportWorkSheet( WorkSheet *sheet )
   QString fileName;
   do {
     fileName = KFileDialog::getSaveFileName( QUrl(QString(tabText(indexOf( currentWidget() ))+ ".sgrd")),
-		                    QLatin1String("*.sgrd"), this, i18n("Export Tab") );
+		                    QStringLiteral("*.sgrd"), this, i18n("Export Tab") );
     if ( fileName.isEmpty() )
       return;
 
@@ -305,7 +305,7 @@ void Workspace::uploadHotNewWorksheet()
 }
 void Workspace::getHotNewWorksheet()
 {
-    KNS3::DownloadDialog dialog("ksysguard.knsrc");
+    KNS3::DownloadDialog dialog(QStringLiteral("ksysguard.knsrc"));
     if( dialog.exec() == QDialog::Rejected )
         return;
 
@@ -336,8 +336,8 @@ bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)
   }
   mSheetList.append( sheet );
 
-  connect( sheet, SIGNAL(titleChanged(QWidget*)),
-    SLOT(updateSheetTitle(QWidget*)));
+  connect( sheet, &WorkSheet::titleChanged,
+    this, &Workspace::updateSheetTitle);
 
   insertTab(-1, sheet, sheet->translatedTitle() );
   if(switchToTab)

@@ -60,40 +60,40 @@ ProcessController::sensorError(int, bool err)
 bool
 ProcessController::restoreSettings(QDomElement& element)
 {
-    bool result = addSensor(element.attribute("hostName"),
-                element.attribute("sensorName"),
-                (element.attribute("sensorType").isEmpty() ? "table" : element.attribute("sensorType")),
+    bool result = addSensor(element.attribute(QStringLiteral("hostName")),
+                element.attribute(QStringLiteral("sensorName")),
+                (element.attribute(QStringLiteral("sensorType")).isEmpty() ? QStringLiteral("table") : element.attribute(QStringLiteral("sensorType"))),
                 QString());
     if(!result) return false;
 
-    int version = element.attribute("version", "0").toUInt();
+    int version = element.attribute(QStringLiteral("version"), QStringLiteral("0")).toUInt();
     if(version == PROCESSHEADERVERSION) {  //If the header has changed, the old settings are no longer valid.  Only restore if version is the same
-        mProcessList->restoreHeaderState(QByteArray::fromBase64(element.attribute("treeViewHeader").toLatin1()));
+        mProcessList->restoreHeaderState(QByteArray::fromBase64(element.attribute(QStringLiteral("treeViewHeader")).toLatin1()));
     }
 
-    bool showTotals = element.attribute("showTotals", "1").toUInt();
+    bool showTotals = element.attribute(QStringLiteral("showTotals"), QStringLiteral("1")).toUInt();
     mProcessList->setShowTotals(showTotals);
 
 
-    int units = element.attribute("units", QString::number((int)ProcessModel::UnitsKB)).toUInt();
+    int units = element.attribute(QStringLiteral("units"), QString::number((int)ProcessModel::UnitsKB)).toUInt();
     mProcessList->setUnits((ProcessModel::Units)units);
 
-    int ioUnits = element.attribute("ioUnits", QString::number((int)ProcessModel::UnitsKB)).toUInt();
+    int ioUnits = element.attribute(QStringLiteral("ioUnits"), QString::number((int)ProcessModel::UnitsKB)).toUInt();
     mProcessList->processModel()->setIoUnits((ProcessModel::Units)ioUnits);
 
-    int ioInformation = element.attribute("ioInformation", QString::number((int)ProcessModel::ActualBytesRate)).toUInt();
+    int ioInformation = element.attribute(QStringLiteral("ioInformation"), QString::number((int)ProcessModel::ActualBytesRate)).toUInt();
     mProcessList->processModel()->setIoInformation((ProcessModel::IoInformation)ioInformation);
 
-    bool showCommandLineOptions = element.attribute("showCommandLineOptions", "0").toUInt();
+    bool showCommandLineOptions = element.attribute(QStringLiteral("showCommandLineOptions"), QStringLiteral("0")).toUInt();
     mProcessList->processModel()->setShowCommandLineOptions(showCommandLineOptions);
 
-    bool showTooltips = element.attribute("showTooltips", "1").toUInt();
+    bool showTooltips = element.attribute(QStringLiteral("showTooltips"), QStringLiteral("1")).toUInt();
     mProcessList->processModel()->setShowingTooltips(showTooltips);
 
-    bool normalizeCPUUsage = element.attribute("normalizeCPUUsage", "1").toUInt();
+    bool normalizeCPUUsage = element.attribute(QStringLiteral("normalizeCPUUsage"), QStringLiteral("1")).toUInt();
     mProcessList->processModel()->setNormalizedCPUUsage(normalizeCPUUsage);
 
-    int filterState = element.attribute("filterState", QString::number((int)ProcessFilter::AllProcesses)).toUInt();
+    int filterState = element.attribute(QStringLiteral("filterState"), QString::number((int)ProcessFilter::AllProcesses)).toUInt();
     mProcessList->setState((ProcessFilter::State)filterState);
 
     SensorDisplay::restoreSettings(element);
@@ -104,21 +104,21 @@ bool ProcessController::saveSettings(QDomDocument& doc, QDomElement& element)
 {
     if(!mProcessList)
         return false;
-    element.setAttribute("hostName", sensors().at(0)->hostName());
-    element.setAttribute("sensorName", sensors().at(0)->name());
-    element.setAttribute("sensorType", sensors().at(0)->type());
+    element.setAttribute(QStringLiteral("hostName"), sensors().at(0)->hostName());
+    element.setAttribute(QStringLiteral("sensorName"), sensors().at(0)->name());
+    element.setAttribute(QStringLiteral("sensorType"), sensors().at(0)->type());
 
-    element.setAttribute("version", QString::number(PROCESSHEADERVERSION));
-    element.setAttribute("treeViewHeader", QString::fromLatin1(mProcessList->treeView()->header()->saveState().toBase64()));
-    element.setAttribute("showTotals", mProcessList->showTotals()?1:0);
+    element.setAttribute(QStringLiteral("version"), QString::number(PROCESSHEADERVERSION));
+    element.setAttribute(QStringLiteral("treeViewHeader"), QString::fromLatin1(mProcessList->treeView()->header()->saveState().toBase64()));
+    element.setAttribute(QStringLiteral("showTotals"), mProcessList->showTotals()?1:0);
 
-    element.setAttribute("units", (int)(mProcessList->units()));
-    element.setAttribute("ioUnits", (int)(mProcessList->processModel()->ioUnits()));
-    element.setAttribute("ioInformation", (int)(mProcessList->processModel()->ioInformation()));
-    element.setAttribute("showCommandLineOptions", mProcessList->processModel()->isShowCommandLineOptions());
-    element.setAttribute("showTooltips", mProcessList->processModel()->isShowingTooltips());
-    element.setAttribute("normalizeCPUUsage", mProcessList->processModel()->isNormalizedCPUUsage());
-    element.setAttribute("filterState", (int)(mProcessList->state()));
+    element.setAttribute(QStringLiteral("units"), (int)(mProcessList->units()));
+    element.setAttribute(QStringLiteral("ioUnits"), (int)(mProcessList->processModel()->ioUnits()));
+    element.setAttribute(QStringLiteral("ioInformation"), (int)(mProcessList->processModel()->ioInformation()));
+    element.setAttribute(QStringLiteral("showCommandLineOptions"), mProcessList->processModel()->isShowCommandLineOptions());
+    element.setAttribute(QStringLiteral("showTooltips"), mProcessList->processModel()->isShowingTooltips());
+    element.setAttribute(QStringLiteral("normalizeCPUUsage"), mProcessList->processModel()->isNormalizedCPUUsage());
+    element.setAttribute(QStringLiteral("filterState"), (int)(mProcessList->state()));
 
     SensorDisplay::saveSettings(doc, element);
 
@@ -139,7 +139,7 @@ bool ProcessController::addSensor(const QString& hostName,
                                  const QString& sensorType,
                                  const QString& title)
 {
-    if (sensorType != "table")
+    if (sensorType != QLatin1String("table"))
         return false;
 
 
@@ -158,7 +158,7 @@ bool ProcessController::addSensor(const QString& hostName,
 
     /** To use a remote sensor, we need to drill down through the layers, to connect to the remote processes.  Then connect to its signals and slots.
      *  It's horrible I know :( */
-    if(!hostName.isEmpty() && hostName != "localhost") {
+    if(!hostName.isEmpty() && hostName != QLatin1String("localhost")) {
         KSysGuard::Processes *processes = mProcessList->processModel()->processController();
         mProcesses = processes;
         if(processes) {

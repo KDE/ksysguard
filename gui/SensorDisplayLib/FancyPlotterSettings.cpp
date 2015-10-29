@@ -46,7 +46,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   setFaceType( Tabbed );
   setWindowTitle( i18n( "Plotter Settings" ) );
   setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel);
-  setObjectName( "FancyPlotterSettings" );
+  setObjectName( QStringLiteral("FancyPlotterSettings") );
   setModal( false );
 
   connect(buttonBox()->button(QDialogButtonBox::Ok), &QAbstractButton::clicked, this, &FancyPlotterSettings::okClicked);
@@ -235,7 +235,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
     pageLayout->addWidget( mMoveDownButton, 3, 1 );
     connect(mMoveDownButton, &QPushButton::clicked, this, &FancyPlotterSettings::moveDownSensor);
 
-    connect(mView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)), this, SLOT(selectionChanged(QModelIndex)));
+    connect(mView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &FancyPlotterSettings::selectionChanged);
 
   }
 

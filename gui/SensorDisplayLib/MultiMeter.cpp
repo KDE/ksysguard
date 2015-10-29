@@ -69,13 +69,13 @@ MultiMeter::MultiMeter(QWidget* parent, const QString& title, SharedSettings *wo
 bool MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
           const QString& sensorType, const QString& title)
 {
-  if (sensorType != "integer" && sensorType != "float")
+  if (sensorType != QLatin1String("integer") && sensorType != QLatin1String("float"))
     return false;
 
   if(!sensors().isEmpty())
     return false;
 
-  mIsFloat = (sensorType == "float");
+  mIsFloat = (sensorType == QLatin1String("float"));
   mLcd->setSmallDecimalPoint( mIsFloat );
 
   registerSensor(new KSGRD::SensorProperties(hostName, sensorName, sensorType, title));
@@ -84,7 +84,7 @@ bool MultiMeter::addSensor(const QString& hostName, const QString& sensorName,
    * requests we use 100 for info requests. */
   sendRequest(hostName, sensorName + '?', 100);
 
-  mLcd->setToolTip( QString("%1:%2").arg(hostName).arg(sensorName));
+  mLcd->setToolTip( QStringLiteral("%1:%2").arg(hostName).arg(sensorName));
 
   return true;
 }
@@ -136,19 +136,19 @@ void MultiMeter::answerReceived(int id, const QList<QByteArray>& answerlist)
 
 bool MultiMeter::restoreSettings(QDomElement& element)
 {
-  mLowerLimitActive = element.attribute("lowerLimitActive").toInt();
-  mLowerLimit = element.attribute("lowerLimit").toDouble();
-  mUpperLimitActive = element.attribute("upperLimitActive").toInt();
-  mUpperLimit = element.attribute("upperLimit").toDouble();
+  mLowerLimitActive = element.attribute(QStringLiteral("lowerLimitActive")).toInt();
+  mLowerLimit = element.attribute(QStringLiteral("lowerLimit")).toDouble();
+  mUpperLimitActive = element.attribute(QStringLiteral("upperLimitActive")).toInt();
+  mUpperLimit = element.attribute(QStringLiteral("upperLimit")).toDouble();
 
-  mNormalDigitColor = restoreColor(element, "normalDigitColor",
+  mNormalDigitColor = restoreColor(element, QStringLiteral("normalDigitColor"),
             KSGRD::Style->firstForegroundColor());
-  mAlarmDigitColor = restoreColor(element, "mAlarmDigitColor",
+  mAlarmDigitColor = restoreColor(element, QStringLiteral("mAlarmDigitColor"),
             KSGRD::Style->alarmColor());
-  setBackgroundColor(restoreColor(element, "backgroundColor",
+  setBackgroundColor(restoreColor(element, QStringLiteral("backgroundColor"),
             KSGRD::Style->backgroundColor()));
 
-  addSensor(element.attribute("hostName"), element.attribute("sensorName"), (element.attribute("sensorType").isEmpty() ? "integer" : element.attribute("sensorType")), "");
+  addSensor(element.attribute(QStringLiteral("hostName")), element.attribute(QStringLiteral("sensorName")), (element.attribute(QStringLiteral("sensorType")).isEmpty() ? QStringLiteral("integer") : element.attribute(QStringLiteral("sensorType"))), QLatin1String(""));
 
   SensorDisplay::restoreSettings(element);
 
@@ -158,19 +158,19 @@ bool MultiMeter::restoreSettings(QDomElement& element)
 bool MultiMeter::saveSettings(QDomDocument& doc, QDomElement& element)
 {
   if(!sensors().isEmpty()) {
-    element.setAttribute("hostName", sensors().at(0)->hostName());
-    element.setAttribute("sensorName", sensors().at(0)->name());
-    element.setAttribute("sensorType", sensors().at(0)->type());
+    element.setAttribute(QStringLiteral("hostName"), sensors().at(0)->hostName());
+    element.setAttribute(QStringLiteral("sensorName"), sensors().at(0)->name());
+    element.setAttribute(QStringLiteral("sensorType"), sensors().at(0)->type());
   }
-  element.setAttribute("showUnit", showUnit());
-  element.setAttribute("lowerLimitActive", (int) mLowerLimitActive);
-  element.setAttribute("lowerLimit", mLowerLimit);
-  element.setAttribute("upperLimitActive", (int) mUpperLimitActive);
-  element.setAttribute("upperLimit", mUpperLimit);
+  element.setAttribute(QStringLiteral("showUnit"), showUnit());
+  element.setAttribute(QStringLiteral("lowerLimitActive"), (int) mLowerLimitActive);
+  element.setAttribute(QStringLiteral("lowerLimit"), mLowerLimit);
+  element.setAttribute(QStringLiteral("upperLimitActive"), (int) mUpperLimitActive);
+  element.setAttribute(QStringLiteral("upperLimit"), mUpperLimit);
 
-  saveColor(element, "normalDigitColor", mNormalDigitColor);
-  saveColor(element, "mAlarmDigitColor", mAlarmDigitColor);
-  saveColor(element, "backgroundColor", mBackgroundColor);
+  saveColor(element, QStringLiteral("normalDigitColor"), mNormalDigitColor);
+  saveColor(element, QStringLiteral("mAlarmDigitColor"), mAlarmDigitColor);
+  saveColor(element, QStringLiteral("backgroundColor"), mBackgroundColor);
 
   SensorDisplay::saveSettings(doc, element);
 
