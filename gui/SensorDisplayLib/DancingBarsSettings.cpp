@@ -22,7 +22,6 @@
 #include <kacceleratormanager.h>
 #include <kcolorbutton.h>
 #include <klineedit.h>
-#include <kinputdialog.h>
 #include <KLocalizedString>
 #include <knuminput.h>
 
@@ -34,6 +33,7 @@
 #include <QTreeView>
 #include <QGridLayout>
 #include <QBitmap>
+#include <QInputDialog>
 #include "DancingBarsSettings.h"
 
 DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
@@ -357,8 +357,8 @@ void DancingBarsSettings::editSensor()
   SensorModelEntry sensor = mModel->sensor( index );
 
   bool ok;
-  const QString name = KInputDialog::getText( i18n( "Label of Bar Graph" ),
-                                              i18n( "Enter new label:" ), sensor.label(), &ok, this );
+  const QString name = QInputDialog::getText( this, i18n( "Label of Bar Graph" ),
+                                              i18n( "Enter new label:" ), QLineEdit::Normal, sensor.label(), &ok);
   if ( ok ) {
     sensor.setLabel( name );
     mModel->setSensor( sensor, index );
