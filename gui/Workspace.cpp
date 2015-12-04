@@ -301,7 +301,7 @@ void Workspace::uploadHotNewWorksheet()
     if(!currentWorksheet)
         return;
 
-    KMessageBox::information(this, i18n("<qt>To propose the current custom tab as a new System Monitor tab, email <br><a href=\"file:%1\">%2</a><br> to <a href=\"mailto:john.tapsell@kde.org?subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde.org</a></qt>", currentWorksheet->fullFileName().section('/',0,-2), currentWorksheet->fullFileName()), i18n("Upload custom System Monitor tab"), QString::null, KMessageBox::AllowLink);
+    KMessageBox::information(this, i18n("<qt>To propose the current custom tab as a new System Monitor tab, email <br><a href=\"file:%1\">%2</a><br> to <a href=\"mailto:john.tapsell@kde.org?subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde.org</a></qt>", currentWorksheet->fullFileName().section('/',0,-2), currentWorksheet->fullFileName()), i18n("Upload custom System Monitor tab"), QString(), KMessageBox::AllowLink);
 }
 void Workspace::getHotNewWorksheet()
 {
