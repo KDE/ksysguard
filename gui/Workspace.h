@@ -24,15 +24,16 @@
 #ifndef KSG_WORKSPACE_H
 #define KSG_WORKSPACE_H
 
-#include <KTabWidget>
 #include <kdirwatch.h>
+
+#include <QTabWidget>
 
 class KConfig;
 class KUrl;
 class QString;
 class WorkSheet;
 
-class Workspace : public KTabWidget
+class Workspace : public QTabWidget
 {
   Q_OBJECT
 

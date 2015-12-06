@@ -43,7 +43,7 @@
 #include "ksysguard.h"
 
 Workspace::Workspace( QWidget* parent)
-  : KTabWidget( parent )
+  : QTabWidget( parent )
 {
   KAcceleratorManager::setNoAccel(this);
   setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
