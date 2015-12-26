@@ -35,7 +35,7 @@
               <number>0</number>
             </property>
             <item>
-              <widget class="KIntNumInput" name="m_timerInterval" >
+              <widget class="QSpinBox" name="m_timerInterval" >
                 <property name="value" >
                   <number>2</number>
                 </property>
@@ -183,17 +183,9 @@
       </item>
     </layout>
   </widget>
-    <customwidgets>
-    <customwidget>
-      <class>KIntNumInput</class>
-      <header location="global" >knuminput.h</header>
-      <container>0</container>
-    </customwidget>
-  </customwidgets>
   <includes>
     <include location="local" >kurlrequester.h</include>
     <include location="local" >klineedit.h</include>
-    <include location="local" >knuminput.h</include>
   </includes>
   <connections>
     <connection>

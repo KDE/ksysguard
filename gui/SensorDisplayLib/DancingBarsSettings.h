@@ -29,11 +29,11 @@
 
 class KColorButton;
 class QDoubleSpinBox;
-class KIntNumInput;
 class KLineEdit;
 
 class QCheckBox;
 class QPushButton;
+class QSpinBox;
 class QTreeView;
 
 class DancingBarsSettings : public KPageDialog
@@ -93,7 +93,7 @@ class DancingBarsSettings : public KPageDialog
     QDoubleSpinBox *mLowerLimit;
     QDoubleSpinBox *mUpperLimit;
     KLineEdit *mTitle;
-    KIntNumInput *mFontSize;
+    QSpinBox *mFontSize;
 
     QCheckBox *mUseLowerLimit;
     QCheckBox *mUseUpperLimit;

@@ -23,9 +23,9 @@
 #include <kcolorbutton.h>
 #include <klineedit.h>
 #include <KLocalizedString>
-#include <knuminput.h>
 
 #include <QCheckBox>
+#include <QDoubleSpinBox>
 #include <QGroupBox>
 #include <QHeaderView>
 #include <QLabel>
@@ -179,7 +179,8 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   label = new QLabel( i18n( "Font size:" ), page );
   pageLayout->addWidget( label, 3, 0 );
 
-  mFontSize = new KIntNumInput( 9, page );
+  mFontSize = new QSpinBox( page );
+  mFontSize->setValue( 9 );
   mFontSize->setWhatsThis( i18n( "This determines the size of the font used to print a label underneath the bars. Bars are automatically suppressed if text becomes too large, so it is advisable to use a small font size here." ) );
   pageLayout->addWidget( mFontSize, 3, 1 );
   label->setBuddy( mFontSize );

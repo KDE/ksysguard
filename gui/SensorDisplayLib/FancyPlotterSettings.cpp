@@ -23,7 +23,6 @@
 #include <kcolordialog.h>
 #include <klineedit.h>
 #include <KLocalizedString>
-#include <knuminput.h>
 
 #include <QList>
 #include <QCheckBox>
@@ -34,6 +33,7 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QPushButton>
+#include <QSpinBox>
 #include <QTreeView>
 
 #include <limits>
@@ -121,7 +121,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   groupBox = new QGroupBox( i18n( "Horizontal scale" ), page );
   QFormLayout *formLayout = new QFormLayout(groupBox);
 
-  mHorizontalScale = new KIntNumInput( 1, groupBox );
+  mHorizontalScale = new QSpinBox( groupBox );
+  mHorizontalScale->setValue( 1 );
   mHorizontalScale->setMinimum( 1 );
   mHorizontalScale->setMaximum( 50 );
 
@@ -148,7 +149,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   label = new QLabel( i18n( "Distance:" ), groupBox );
   boxLayout->addWidget( label, 0, 2 );
 
-  mVerticalLinesDistance = new KIntNumInput( 0, groupBox );
+  mVerticalLinesDistance = new QSpinBox( groupBox );
+  mVerticalLinesDistance->setValue( 0 );
   mVerticalLinesDistance->setMinimum( 10 );
   mVerticalLinesDistance->setMaximum( 120 );
   mVerticalLinesDistance->setWhatsThis( i18n( "Enter the distance between two vertical lines here." ) );
@@ -176,7 +178,8 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   label = new QLabel( i18n( "Font size:" ), groupBox );
   boxLayout->addWidget( label, 1, 0 );
 
-  mFontSize = new KIntNumInput( 8, groupBox );
+  mFontSize = new QSpinBox( groupBox );
+  mFontSize->setValue( 8 );
   mFontSize->setMinimum( 1 );
   mFontSize->setMaximum( 1000 );
   boxLayout->addWidget( mFontSize, 1, 1 );
@@ -244,7 +247,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   connect(mManualRange, &QCheckBox::toggled, mMinValueLabel, &QLabel::setEnabled);
   connect(mManualRange, &QCheckBox::toggled, mMaxValueLabel, &QLabel::setEnabled);
 
-  connect(mShowVerticalLines, &QCheckBox::toggled, mVerticalLinesDistance, &KIntNumInput::setEnabled);
+  connect(mShowVerticalLines, &QCheckBox::toggled, mVerticalLinesDistance, &QSpinBox::setEnabled);
   connect(mShowVerticalLines, &QCheckBox::toggled, mVerticalLinesScroll, &QCheckBox::setEnabled);
 
   connect(mEditButton, &QPushButton::clicked, this, &FancyPlotterSettings::editSensor);

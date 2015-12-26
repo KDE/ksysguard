@@ -26,9 +26,10 @@
 
 #include <QDialog>
 
+class QSpinBox;
+
 class KLineEdit;
 class KDoubleNumInput;
-class KIntNumInput;
 
 class WorkSheetSettings : public QDialog
 {
@@ -53,9 +54,9 @@ class WorkSheetSettings : public QDialog
   private:
     KLineEdit* mSheetTitle;
 
-    KIntNumInput* mColumns;
+    QSpinBox* mColumns;
     KDoubleNumInput* mInterval;
-    KIntNumInput* mRows;
+    QSpinBox* mRows;
 };
 
 #endif

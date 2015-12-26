@@ -32,6 +32,7 @@
 #include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QSpinBox>
 
 #include "WorkSheetSettings.h"
 
@@ -81,7 +82,8 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
     label = new QLabel( i18n( "Rows:" ), group );
     groupLayout->addWidget( label, ++row_num, 0 );
 
-    mRows = new KIntNumInput( 3, group );
+    mRows = new QSpinBox( group );
+    mRows->setValue( 3 );
     mRows->setMaximum( 42 );
     mRows->setMinimum( 1 );
     groupLayout->addWidget( mRows, row_num, 1 );
@@ -90,7 +92,8 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
     label = new QLabel( i18n( "Columns:" ), group );
     groupLayout->addWidget( label, ++row_num, 0 );
 
-    mColumns = new KIntNumInput( 1, group );
+    mColumns = new QSpinBox( group );
+    mColumns->setValue( 1 );
     mColumns->setMaximum( 42 );
     mColumns->setMinimum( 1 );
     groupLayout->addWidget( mColumns, 1, 1 );

@@ -28,13 +28,13 @@
 
 #include "SensorModel.h"
 
-class KIntNumInput;
 class KLineEdit;
 
 class QCheckBox;
 class QPushButton;
 class QTreeView;
 class QDoubleSpinBox;
+class QSpinBox;
 
 class FancyPlotterSettings : public KPageDialog
 {
@@ -111,9 +111,9 @@ Q_SIGNALS:
     QLabel *mMinValueLabel;
     QLabel *mMaxValueLabel;
     KLineEdit *mTitle;
-    KIntNumInput *mHorizontalScale;
-    KIntNumInput *mVerticalLinesDistance;
-    KIntNumInput *mFontSize;
+    QSpinBox *mHorizontalScale;
+    QSpinBox *mVerticalLinesDistance;
+    QSpinBox *mFontSize;
 
     QCheckBox *mShowVerticalLines;
     QCheckBox *mShowHorizontalLines;
