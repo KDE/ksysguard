@@ -337,7 +337,9 @@ static bool getProcess( int pid, ProcessInfo *ps )
   unsigned int firstZeroPosition = -1U;
  
   unsigned int i =0;
-  while( (ps->cmdline[i] = fgetc(fd)) != EOF && i < sizeof(ps->cmdline)-3) {
+  int c = EOF;
+  while( (c = fgetc(fd)) != EOF && i < sizeof(ps->cmdline)-3) {
+    ps->cmdline[i] = (char)c;
     if(ps->cmdline[i] == '\0')
     {
       ps->cmdline[i] = ' ';
