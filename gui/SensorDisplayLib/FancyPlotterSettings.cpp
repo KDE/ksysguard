@@ -20,10 +20,10 @@
 */
 
 #include <kacceleratormanager.h>
-#include <kcolordialog.h>
 #include <klineedit.h>
 #include <KLocalizedString>
 
+#include <QColorDialog>
 #include <QList>
 #include <QCheckBox>
 #include <QDoubleSpinBox>
@@ -441,14 +441,15 @@ void FancyPlotterSettings::editSensor()
 
   SensorModelEntry sensor = mModel->sensor( index );
 
-  KColorDialog dialog(this, true);
-  connect(&dialog, &KColorDialog::colorSelected, this, &FancyPlotterSettings::setColorForSelectedItem);
+  QColorDialog dialog( this );
+  dialog.setModal( true );
+  connect( &dialog, &QColorDialog::colorSelected, this, &FancyPlotterSettings::setColorForSelectedItem );
   QColor color = sensor.color();
-  dialog.setColor(color);
+  dialog.setCurrentColor( color );
   int result = dialog.exec();
 
-  if ( result == KColorDialog::Accepted )
-    sensor.setColor( dialog.color() );
+  if ( result == QColorDialog::Accepted )
+    sensor.setColor( dialog.currentColor() );
   //If it's not accepted, make sure we set the color back to how it was
   mModel->setSensor( sensor, index );
 }
