@@ -532,6 +532,8 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
 
   QApplication app(argc, argv);
 
+  KLocalizedString::setApplicationDomain("ksysguard");
+
   KAboutData aboutData( QStringLiteral("ksysguard"), i18n( "System Monitor" ),
                         PROJECT_VERSION, i18n(Description), KAboutLicense::GPL,
                         i18n( "(c) 1996-2008 The KDE System Monitor Developers" ) );
