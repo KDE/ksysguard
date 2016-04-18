@@ -21,12 +21,12 @@
 */
 
 #include <kacceleratormanager.h>
-#include <klineedit.h>
 #include <KLocalizedString>
 #include <knuminput.h>
 
 #include <QGroupBox>
 #include <QLabel>
+#include <QLineEdit>
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <KConfigGroup>
@@ -65,7 +65,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
   group->setLayout( groupLayout );
   groupLayout->setAlignment( Qt::AlignTop );
 
-  mSheetTitle = new KLineEdit( group );
+  mSheetTitle = new QLineEdit( group );
   groupLayout->addWidget( mSheetTitle, 0, 0 );
 
   topLayout->addWidget( group );

@@ -110,8 +110,8 @@ void LogFile::configureSettings(void)
 	connect(lfs->deleteButton, &QPushButton::clicked, this, &LogFile::settingsDeleteRule);
 	connect(lfs->changeButton, &QPushButton::clicked, this, &LogFile::settingsChangeRule);
 	connect(lfs->ruleList, &QListWidget::currentRowChanged, this, &LogFile::settingsRuleListSelected);
-	connect(lfs->ruleText, &KLineEdit::returnPressed, this, &LogFile::settingsAddRule);
-	connect(lfs->ruleText, &KLineEdit::textChanged, this, &LogFile::settingsRuleTextChanged);
+    connect(lfs->ruleText, &QLineEdit::returnPressed, this, &LogFile::settingsAddRule);
+    connect(lfs->ruleText, &QLineEdit::textChanged, this, &LogFile::settingsRuleTextChanged);
 
 	settingsRuleListSelected(lfs->ruleList->currentRow());
 	settingsRuleTextChanged();

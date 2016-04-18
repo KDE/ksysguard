@@ -28,7 +28,7 @@
 
 class QSpinBox;
 
-class KLineEdit;
+class QLineEdit;
 class KDoubleNumInput;
 
 class WorkSheetSettings : public QDialog
@@ -52,7 +52,7 @@ class WorkSheetSettings : public QDialog
     QString sheetTitle() const;
 
   private:
-    KLineEdit* mSheetTitle;
+    QLineEdit* mSheetTitle;
 
     QSpinBox* mColumns;
     KDoubleNumInput* mInterval;

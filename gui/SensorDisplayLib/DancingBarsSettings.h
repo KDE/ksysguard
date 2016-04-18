@@ -29,7 +29,7 @@
 
 class KColorButton;
 class QDoubleSpinBox;
-class KLineEdit;
+class QLineEdit;
 
 class QCheckBox;
 class QPushButton;
@@ -92,7 +92,7 @@ class DancingBarsSettings : public KPageDialog
     QDoubleSpinBox *mMaxValue;
     QDoubleSpinBox *mLowerLimit;
     QDoubleSpinBox *mUpperLimit;
-    KLineEdit *mTitle;
+    QLineEdit *mTitle;
     QSpinBox *mFontSize;
 
     QCheckBox *mUseLowerLimit;

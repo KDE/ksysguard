@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>434</width>
-    <height>212</height>
+    <height>214</height>
    </rect>
   </property>
   <layout class="QVBoxLayout">
@@ -28,24 +28,39 @@
            <property name="text">
             <string>T&amp;itle:</string>
            </property>
-           <property name="buddy">
-            <cstring>title</cstring>
-           </property>
           </widget>
          </item>
          <item>
-          <widget class="KLineEdit" name="title"/>
+          <widget class="QLineEdit" name="title"/>
          </item>
         </layout>
        </item>
        <item>
         <layout class="QHBoxLayout">
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
           <layout class="QVBoxLayout">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -78,7 +93,16 @@
          </item>
          <item>
           <layout class="QVBoxLayout">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -142,7 +166,7 @@
        <item>
         <layout class="QVBoxLayout">
          <item>
-          <widget class="KLineEdit" name="ruleText"/>
+          <widget class="QLineEdit" name="ruleText"/>
          </item>
          <item>
           <widget class="QListWidget" name="ruleList"/>
@@ -151,7 +175,16 @@
        </item>
        <item>
         <layout class="QVBoxLayout">
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -201,19 +234,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KColorButton</class>
-   <extends>QPushButton</extends>
-   <header>kcolorbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>KFontRequester</class>
    <extends>QWidget</extends>
    <header>kfontrequester.h</header>
   </customwidget>
   <customwidget>
-   <class>KLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
+   <class>KColorButton</class>
+   <extends>QPushButton</extends>
+   <header>kcolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -28,9 +28,8 @@
 
 #include "SensorModel.h"
 
-class KLineEdit;
-
 class QCheckBox;
+class QLineEdit;
 class QPushButton;
 class QTreeView;
 class QDoubleSpinBox;
@@ -110,7 +109,7 @@ Q_SIGNALS:
     QDoubleSpinBox *mMaxValue;
     QLabel *mMinValueLabel;
     QLabel *mMaxValueLabel;
-    KLineEdit *mTitle;
+    QLineEdit *mTitle;
     QSpinBox *mHorizontalScale;
     QSpinBox *mVerticalLinesDistance;
     QSpinBox *mFontSize;

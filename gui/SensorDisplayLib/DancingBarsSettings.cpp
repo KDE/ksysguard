@@ -21,7 +21,6 @@
 
 #include <kacceleratormanager.h>
 #include <kcolorbutton.h>
-#include <klineedit.h>
 #include <KLocalizedString>
 
 #include <QCheckBox>
@@ -29,6 +28,7 @@
 #include <QGroupBox>
 #include <QHeaderView>
 #include <QLabel>
+#include <QLineEdit>
 #include <QPushButton>
 #include <QTreeView>
 #include <QGridLayout>
@@ -57,7 +57,7 @@ DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
   QGridLayout *boxLayout = new QGridLayout;
   groupBox->setLayout( boxLayout );
 
-  mTitle = new KLineEdit( groupBox );
+  mTitle = new QLineEdit( groupBox );
   mTitle->setWhatsThis( i18n( "Enter the title of the display here." ) );
   boxLayout->addWidget( mTitle, 0, 0 );
 

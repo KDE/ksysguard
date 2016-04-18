@@ -20,10 +20,10 @@
 */
 
 #include <kacceleratormanager.h>
-#include <klineedit.h>
 #include <KLocalizedString>
 
 #include <QColorDialog>
+#include <QLineEdit>
 #include <QList>
 #include <QCheckBox>
 #include <QDoubleSpinBox>
@@ -67,7 +67,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   label = new QLabel( i18n( "Title:" ), page );
   pageLayout->addWidget( label, 0, 0 );
 
-  mTitle = new KLineEdit( page );
+  mTitle = new QLineEdit( page );
   mTitle->setWhatsThis( i18n( "Enter the title of the display here." ) );
   pageLayout->addWidget( mTitle, 0, 1 );
   label->setBuddy( mTitle );
