@@ -22,6 +22,7 @@
 */
 
 #include <QCheckBox>
+#include <QDebug>
 #include <QtXml/qdom.h>
 #include <QMenu>
 
@@ -33,7 +34,6 @@
 
 #include <kiconloader.h>
 #include <KLocalizedString>
-#include <kdebug.h>
 #include <kmessagebox.h>
 #include <krun.h>
 #include <kurl.h>
@@ -210,12 +210,12 @@ QColor SensorDisplay::restoreColor( QDomElement &element, const QString &attr,
   int color = element.attribute( attr ).toUInt( &ok, 0 );
   
   if ( !ok ) {
-    kDebug(1215) << "Invalid color read in from worksheet for " << attr << " = " << element.attribute(attr) << " (Not a valid number)";
+    qDebug() << "Invalid color read in from worksheet for " << attr << " = " << element.attribute(attr) << " (Not a valid number)";
     return fallback;
   }
   QColor c( (color & 0xff0000) >> 16, (color & 0xff00) >> 8, (color & 0xff), (color & 0xff000000) >> 24);
   if( !c.isValid()) {
-    kDebug(1215) << "Invalid color read in from worksheet for " << attr << " = " << element.attribute(attr);
+    qDebug() << "Invalid color read in from worksheet for " << attr << " = " << element.attribute(attr);
     return fallback;
   }
 

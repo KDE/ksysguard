@@ -32,7 +32,6 @@
 #include <QByteArray>
 #include <QApplication>
 
-#include <kdebug.h>
 #include <KLocalizedString>
 #include <kmessagebox.h>
 #include <QMenu>
@@ -157,7 +156,7 @@ bool WorkSheet::load( const QString &fileName )
         int rowSpan = element.attribute( QStringLiteral("rowSpan"), QStringLiteral("1") ).toInt();
         int columnSpan = element.attribute( QStringLiteral("columnSpan"), QStringLiteral("1") ).toInt();
         if ( row < 0 || rowSpan < 0 || (row + rowSpan - 1) >= mRows || column < 0 || columnSpan < 0 || (column + columnSpan - 1) >= mColumns) {
-            kDebug(1215) << "Row or Column out of range (" << row << ", "
+            qDebug() << "Row or Column out of range (" << row << ", "
                 << column << ")-(" << (row + rowSpan - 1) << ", " << (column + columnSpan - 1) << ")" << endl;
             return false;
         }
@@ -407,7 +406,7 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
                 displayType = DisplayProcessControllerRemote;
         }
         else {
-            kDebug(1215) << "Unknown sensor type: " <<  sensorType;
+            qDebug() << "Unknown sensor type: " <<  sensorType;
             return 0;
         }
         display = insertDisplay(displayType, sensorDescr, row, column);
@@ -573,7 +572,7 @@ bool WorkSheet::replaceDisplay( int row, int column, QDomElement& element, int r
         else
             displayType = DisplayProcessControllerRemote;
     } else {
-        kDebug(1215) << "Unknown class " <<  classType;
+        qDebug() << "Unknown class " <<  classType;
         return false;
     }
 

@@ -20,11 +20,11 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QVBoxLayout>
-#include <QMimeData>
-
-#include <kdebug.h>
+#include <QDebug>
 #include <QIcon>
+#include <QMimeData>
+#include <QVBoxLayout>
+
 #include <KLocalizedString>
 #include <kmessagebox.h>
 #include <ksgrd/SensorManager.h>
@@ -226,7 +226,7 @@ void SensorBrowserModel::removeSensor(HostInfo *hostInfo, int parentId, const QS
             }
         }
     if(idCount == -1) {
-        kDebug(1215) << "removeSensor called for sensor that doesn't exist in the tree: " << sensorName ;
+        qDebug() << "removeSensor called for sensor that doesn't exist in the tree: " << sensorName ;
         return;
     }
     QModelIndex parentModelIndex;
@@ -316,7 +316,7 @@ void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&an
        */
     HostInfo *hostInfo = getHostInfo(hostId);
     if(!hostInfo) {
-        kDebug(1215) << "Invalid hostId " << hostId ;
+        qDebug() << "Invalid hostId " << hostId ;
         return;
     }
     /* We keep a copy of the previous sensor names so that we can detect what sensors have been removed */
@@ -327,7 +327,7 @@ void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&an
 
         QList<QByteArray> words = answer[ i ].split('\t');
         if(words.size() != 2) {
-            kDebug(1215) << "Invalid data " << answer[i];
+            qDebug() << "Invalid data " << answer[i];
             continue;  /* Something wrong with this line of data */
         }
         QString sensorName = QString::fromUtf8(words[ 0 ]);
@@ -378,7 +378,7 @@ QModelIndex SensorBrowserModel::parent ( const QModelIndex & index ) const {
         return QModelIndex();
     if(mHostInfoMap.contains(index.internalId())) return QModelIndex();
     if(!mParentsTreeMap.contains(index.internalId())) {
-        kDebug(1215) << "Something is wrong with the model.  Doesn't contain " << index.internalId();
+        qDebug() << "Something is wrong with the model.  Doesn't contain " << index.internalId();
         return QModelIndex();
     }
     int parentId = mParentsTreeMap.value(index.internalId());

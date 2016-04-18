@@ -23,13 +23,13 @@
 #include <stdio.h>
 #include <sys/types.h>
 
+#include <QDebug>
 #include <QPushButton>
 #include <QRegExp>
 
 #include <QListWidget>
 #include <QHBoxLayout>
 #include <kfontdialog.h>
-#include <kdebug.h>
 #include <KDialog>
 #include <KLocalizedString>
 #include <kcolorbutton.h>
@@ -43,7 +43,7 @@
 LogFile::LogFile(QWidget *parent, const QString& title, SharedSettings *workSheetSettings)
 	: KSGRD::SensorDisplay(parent, title, workSheetSettings)
 {
-	kDebug() << "Making sensor logger";
+    qDebug() << "Making sensor logger";
 	logFileID= 0;
 	lfs = NULL;
 	QLayout *layout = new QHBoxLayout(this);

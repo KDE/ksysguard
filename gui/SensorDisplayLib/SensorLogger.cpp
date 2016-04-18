@@ -37,7 +37,6 @@
 #include <KLocalizedString>
 #include <knotification.h>
 #include <ksgrd/SensorManager.h>
-#include <kdebug.h>
 #include "StyleEngine.h"
 
 #include "SensorLoggerDlg.h"

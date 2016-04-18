@@ -27,7 +27,6 @@
 #include <QLCDNumber>
 #include <QHBoxLayout>
 
-#include <kdebug.h>
 
 #include <ksgrd/SensorManager.h>
 #include "StyleEngine.h"

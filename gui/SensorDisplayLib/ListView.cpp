@@ -28,7 +28,6 @@
 #include <QMenu>
 #include <QAction>
 
-#include <kdebug.h>
 #include <kglobal.h>
 #include <KLocalizedString>
 #include <kmessagebox.h>
@@ -276,7 +275,7 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
              * the information about the table headers. */
             if (answer.count() != 2)
             {
-                kWarning(1215) << "wrong number of lines";
+                qWarning() << "wrong number of lines";
                 return;
             }
             KSGRD::SensorTokenizer headers(answer[0], '\t');

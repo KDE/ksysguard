@@ -17,6 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#include <QDebug>
 #include <QDomElement>
 #include <QTimer>
 #include <QLineEdit>
@@ -24,9 +26,6 @@
 #include <QCheckBox>
 #include <QHeaderView>
 #include <QStackedLayout>
-
-#include <kdebug.h>
-
 
 #include "ProcessController.h"
 #include "processui/ksysguardprocesslist.h"
@@ -49,7 +48,7 @@ ProcessController::sensorError(int, bool err)
     if (err == sensors().at(0)->isOk())
     {
         if (err)  {
-            kDebug(1215) << "SensorError called with an error";
+            qDebug() << "SensorError called with an error";
         }
         /* This happens only when the sensorOk status needs to be changed. */
         sensors().at(0)->setIsOk( !err );

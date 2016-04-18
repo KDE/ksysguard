@@ -38,7 +38,6 @@
 #include <kactioncollection.h>
 #include <kapplication.h>
 #include <KDBusService>
-#include <kdebug.h>
 #include <kedittoolbar.h>
 #include <kglobal.h>
 #include <kglobalsettings.h>

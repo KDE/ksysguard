@@ -23,9 +23,9 @@
 #include <assert.h>
 #include <string.h>
 
+#include <QDebug>
 #include <QPainter>
 
-#include <kdebug.h>
 #include <kiconloader.h>
 
 #include "StyleEngine.h"
@@ -68,7 +68,7 @@ bool BarGraph::addBar( const QString &footer )
 bool BarGraph::removeBar( uint idx )
 {
   if ( idx >= bars ) {
-    kDebug(1215) << "BarGraph::removeBar: idx " << idx << " out of range "
+    qDebug() << "BarGraph::removeBar: idx " << idx << " out of range "
                   << bars << endl;
     return false;
   }

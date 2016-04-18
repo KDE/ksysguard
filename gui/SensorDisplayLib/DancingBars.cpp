@@ -21,11 +21,11 @@
 */
 
 #include <QCheckBox>
+#include <QDebug>
 #include <QtXml/qdom.h>
 #include <QPushButton>
 #include <QHBoxLayout>
 
-#include <kdebug.h>
 #include <KLocalizedString>
 #include <knumvalidator.h>
 #include <ksgrd/SensorManager.h>
@@ -187,7 +187,7 @@ bool DancingBars::addSensor( const QString &hostName, const QString &name,
 bool DancingBars::removeSensor( uint pos )
 {
   if ( pos >= mBars ) {
-    kDebug(1215) << "DancingBars::removeSensor: idx out of range ("
+    qDebug() << "DancingBars::removeSensor: idx out of range ("
                   << pos << ")" << endl;
     return false;
   }
@@ -220,13 +220,13 @@ void DancingBars::answerReceived( int id, const QList<QByteArray> &answerlist )
   if(!answerlist.isEmpty()) answer = answerlist[0];
   if ( id < 100 ) {
     if(id >= mSampleBuffer.count()) {
-      kDebug(1215) << "ERROR: DancingBars received invalid data";
+      qDebug() << "ERROR: DancingBars received invalid data";
       sensorError(id, true);
       return;
     }
     mSampleBuffer[ id ] = answer.toDouble();
     if ( mFlags.testBit( id ) == true ) {
-      kDebug(1215) << "ERROR: DancingBars lost sample (" << mFlags
+      qDebug() << "ERROR: DancingBars lost sample (" << mFlags
                     << ", " << mBars << ")" << endl;
       sensorError( id, true );
       return;

@@ -28,7 +28,6 @@
 #include <QResizeEvent>
 
 
-#include <kdebug.h>
 #include <KGlobal>
 #include <KLocalizedString>
 #include <kmessagebox.h>
@@ -448,7 +447,7 @@ bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
 bool FancyPlotter::removeBeam( uint beamId )
 {
     if ( beamId >= mBeams ) {
-        kDebug(1215) << "FancyPlotter::removeBeam: beamId out of range ("
+        qDebug() << "FancyPlotter::removeBeam: beamId out of range ("
             << beamId << ")" << endl;
         return false;
     }
