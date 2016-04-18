@@ -21,14 +21,14 @@
 #ifndef LISTVIEWSETTINGS_H
 #define LISTVIEWSETTINGS_H
 
-#include <kdialog.h>
+#include <QDialog>
 
-
-#include <QColor>
+class QAbstractButton;
+class QColor;
 
 class Ui_ListViewSettingsWidget;
 
-class ListViewSettings : public KDialog
+class ListViewSettings : public QDialog
 {
   Q_OBJECT
 

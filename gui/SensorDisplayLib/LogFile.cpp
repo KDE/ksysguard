@@ -18,19 +18,20 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 */
+
 #include "LogFile.h"
 
 #include <stdio.h>
 #include <sys/types.h>
 
 #include <QDebug>
+#include <QDialog>
 #include <QPushButton>
 #include <QRegExp>
-
 #include <QListWidget>
 #include <QHBoxLayout>
+
 #include <kfontdialog.h>
-#include <KDialog>
 #include <KLocalizedString>
 #include <kcolorbutton.h>
 #include <knotification.h>
@@ -89,11 +90,15 @@ void LogFile::configureSettings(void)
 
 	lfs = new Ui_LogFileSettings;
 	Q_CHECK_PTR(lfs);
-	KDialog dlg;
-	dlg.setCaption( i18n("File logging settings") );
-	dlg.setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
+    QDialog dlg;
+    dlg.setWindowTitle( i18n("File logging settings") );
+    QWidget *mainWidget = new QWidget( this );
 
-	lfs->setupUi(dlg.mainWidget());
+    lfs->setupUi(mainWidget);
+
+    QVBoxLayout *vlayout = new QVBoxLayout(this);
+    vlayout->addWidget(mainWidget);
+    dlg.setLayout(vlayout);
 
 	lfs->fgColor->setColor(cgroup.color( QPalette::Text ));
 	lfs->fgColor->setText(i18n("Foreground color:"));
@@ -103,8 +108,8 @@ void LogFile::configureSettings(void)
 	lfs->ruleList->addItems(filterRules);
 	lfs->title->setText(title());
 
-	connect(&dlg, &KDialog::okClicked, &dlg, &KDialog::accept);
-	connect(&dlg, &KDialog::applyClicked, this, &LogFile::applySettings);
+    connect(lfs->buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
+    connect(lfs->buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
 
 	connect(lfs->addButton, &QPushButton::clicked, this, &LogFile::settingsAddRule);
 	connect(lfs->deleteButton, &QPushButton::clicked, this, &LogFile::settingsDeleteRule);

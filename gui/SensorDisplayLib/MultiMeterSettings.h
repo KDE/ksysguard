@@ -21,14 +21,13 @@
 #ifndef MULTIMETERSETTINGS_H
 #define MULTIMETERSETTINGS_H
 
-#include <kdialog.h>
+#include <QDialog>
 
-
-#include <QColor>
+class QColor;
 
 class Ui_MultiMeterSettingsWidget;
 
-class MultiMeterSettings : public KDialog
+class MultiMeterSettings : public QDialog
 {
   Q_OBJECT
 

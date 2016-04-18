@@ -27,29 +27,32 @@
 #include <KNumInput>
 #include <khelpclient.h>
 
+#include <QDialogButtonBox>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLayout>
+#include <QPushButton>
 #include <QRadioButton>
-
 #include <QGridLayout>
 #include <QLineEdit>
 
 #include "HostConnector.h"
 
 HostConnector::HostConnector( QWidget *parent, const char *name )
-  : KDialog( parent )
+  : QDialog( parent )
 {
   setObjectName( name );
   setModal( true );
-  setCaption( i18n( "Connect Host" ) );
-  setButtons( Help | Ok | Cancel );
+  setWindowTitle( i18n( "Connect Host" ) );
 
   QFrame *page = new QFrame( this );
-  setMainWidget( page );
+  QVBoxLayout *vlayout = new QVBoxLayout(this);
+  mButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, this);
+  vlayout->addWidget(page);
+  vlayout->addWidget(mButtonBox);
+  setLayout(vlayout);
 
   QGridLayout *layout = new QGridLayout( page );
-  layout->setSpacing( spacingHint() );
   layout->setMargin( 0 );
   layout->setColumnStretch( 1, 1 );
 
@@ -72,7 +75,6 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   QGroupBox *group = new QGroupBox(i18n( "Connection Type" ), page );
   QGridLayout *groupLayout = new QGridLayout();
   group->setLayout(groupLayout);
-  groupLayout->setSpacing( spacingHint() );
   groupLayout->setAlignment( Qt::AlignTop );
 
   mUseSsh = new QRadioButton( i18n( "ssh" ));
@@ -124,13 +126,16 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
 
   layout->addWidget( group, 1, 0, 1, 2 );
 
+  connect(mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+  connect(mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+  connect(mButtonBox, &QDialogButtonBox::helpRequested, this, &HostConnector::slotHelp);
+
   connect(mUseCustom, &QRadioButton::toggled, mCommands, &KComboBox::setEnabled);
   connect(mUseDaemon, &QRadioButton::toggled, mPort, &KIntSpinBox::setEnabled);
   connect( mHostNames->lineEdit(),  &QLineEdit::textChanged,
            this, &HostConnector::slotHostNameChanged );
-  enableButtonOk( !mHostNames->lineEdit()->text().isEmpty() );
+  mButtonBox->button(QDialogButtonBox::Ok)->setEnabled( !mHostNames->lineEdit()->text().isEmpty() );
   KAcceleratorManager::manage( this );
-  connect(this, &HostConnector::helpClicked, this, &HostConnector::slotHelp);
 }
 
 HostConnector::~HostConnector()
@@ -139,7 +144,7 @@ HostConnector::~HostConnector()
 
 void HostConnector::slotHostNameChanged( const QString &_text )
 {
-    enableButtonOk( !_text.isEmpty() );
+    mButtonBox->button(QDialogButtonBox::Ok)->setEnabled( !_text.isEmpty() );
 }
 
 void HostConnector::setHostNames( const QStringList &list )
@@ -178,7 +183,7 @@ void HostConnector::setCurrentHostName( const QString &hostName )
     mHostNames->hide();
     mHostNameLabel->setText( hostName );
     mHostNameLabel->show();
-    enableButtonOk( true );//enable true when mHostNames is empty and hidden fix #66955
+    mButtonBox->button(QDialogButtonBox::Ok)->setEnabled( true );//enable true when mHostNames is empty and hidden fix #66955
   } else {
     mHostNameLabel->hide();
     mHostNames->show();

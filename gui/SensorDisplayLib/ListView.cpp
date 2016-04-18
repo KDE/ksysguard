@@ -400,7 +400,6 @@ ListView::configureSettings()
 {
     lvs = new ListViewSettings(this, "ListViewSettings");
     Q_CHECK_PTR(lvs);
-    connect(lvs, &ListViewSettings::applyClicked, this, &ListView::applySettings);
 
 /*    QPalette pal = monitor->palette();
     lvs->setGridColor(pal.color(QPalette::Link));

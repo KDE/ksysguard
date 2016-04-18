@@ -21,13 +21,11 @@
 #ifndef SENSORLOGGERDLG_H
 #define SENSORLOGGERDLG_H
 
-#include <kdialog.h>
-
-
+#include <QDialog>
 
 class Ui_SensorLoggerDlgWidget;
 
-class SensorLoggerDlg : public KDialog
+class SensorLoggerDlg : public QDialog
 {
   Q_OBJECT
 

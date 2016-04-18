@@ -20,16 +20,17 @@
 #include "MultiMeterSettings.h"
 #include "ui_MultiMeterSettingsWidget.h"
 
+#include <QColor>
+
 #include <KLocalizedString>
 #include <knumvalidator.h>
 
 MultiMeterSettings::MultiMeterSettings( QWidget *parent, const char *name )
-    : KDialog( parent )
+    : QDialog( parent )
 {
   setObjectName( name );
   setModal( true );
-  setCaption( i18nc( "Multimeter is a sensor display that mimics 'digital multimeter' aparatus", "Multimeter Settings" ) );
-  setButtons( Ok|Cancel );
+  setWindowTitle( i18nc( "Multimeter is a sensor display that mimics 'digital multimeter' aparatus", "Multimeter Settings" ) );
 
   QWidget *mainWidget = new QWidget( this );
 
@@ -37,10 +38,14 @@ MultiMeterSettings::MultiMeterSettings( QWidget *parent, const char *name )
   m_settingsWidget->setupUi( mainWidget );
   m_settingsWidget->m_lowerLimit->setValidator(new KDoubleValidator(m_settingsWidget->m_lowerLimit));
   m_settingsWidget->m_upperLimit->setValidator(new KDoubleValidator(m_settingsWidget->m_upperLimit));
-
   m_settingsWidget->m_title->setFocus();
 
-  setMainWidget( mainWidget );
+  connect(m_settingsWidget->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+  connect(m_settingsWidget->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+  QVBoxLayout *vlayout = new QVBoxLayout(this);
+  vlayout->addWidget(mainWidget);
+  setLayout(vlayout);
 }
 
 MultiMeterSettings::~MultiMeterSettings()

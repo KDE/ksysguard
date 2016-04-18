@@ -23,18 +23,22 @@
 #include <KLocalizedString>
 
 ListViewSettings::ListViewSettings( QWidget *parent, const char *name )
-    : KDialog( parent )
+    : QDialog( parent )
 {
   setObjectName( name );
   setModal( true );
-  setCaption( i18n( "List View Settings" ) );
-  setButtons( Ok | Apply | Cancel );
+  setWindowTitle( i18n( "List View Settings" ) );
 
   QWidget *widget = new QWidget( this );
   m_settingsWidget = new Ui_ListViewSettingsWidget;
   m_settingsWidget->setupUi( widget );
 
-  setMainWidget( widget );
+  connect(m_settingsWidget->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+  connect(m_settingsWidget->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+  QVBoxLayout *vlayout = new QVBoxLayout(this);
+  vlayout->addWidget(widget);
+  setLayout(vlayout);
 }
 
 ListViewSettings::~ListViewSettings()

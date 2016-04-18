@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>434</width>
-    <height>214</height>
+    <height>254</height>
    </rect>
   </property>
   <layout class="QVBoxLayout">
@@ -27,6 +27,9 @@
           <widget class="QLabel" name="label">
            <property name="text">
             <string>T&amp;itle:</string>
+           </property>
+           <property name="buddy">
+            <cstring>title</cstring>
            </property>
           </widget>
          </item>
@@ -228,6 +231,13 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
     </widget>
    </item>
   </layout>

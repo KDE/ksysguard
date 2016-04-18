@@ -83,7 +83,7 @@
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>Lo&amp;wer limit:</string>
+        <string>&amp;Lower limit:</string>
        </property>
        <property name="wordWrap">
         <bool>false</bool>
@@ -266,6 +266,13 @@
       </spacer>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

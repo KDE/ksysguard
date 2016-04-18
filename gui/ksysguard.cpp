@@ -57,6 +57,7 @@
 #include <KFormat>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QLabel>
 #include "SensorBrowser.h"
 #include "Workspace.h"
 #include "WorkSheet.h"

@@ -23,19 +23,23 @@
 #include <KLocalizedString>
 
 SensorLoggerSettings::SensorLoggerSettings( QWidget *parent, const char *name )
-    : KDialog( parent )
+    : QDialog( parent )
 {
   setObjectName( name );
   setModal( true );
-  setCaption( i18n( "Sensor Logger Settings" ) );
-  setButtons( Ok|Cancel );
+  setWindowTitle( i18n( "Sensor Logger Settings" ) );
 
   QWidget *widget = new QWidget( this );
 
   m_settingsWidget = new Ui_SensorLoggerSettingsWidget;
   m_settingsWidget->setupUi( widget );
 
-  setMainWidget( widget );
+  connect(m_settingsWidget->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+  connect(m_settingsWidget->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+  QVBoxLayout *vlayout = new QVBoxLayout(this);
+  vlayout->addWidget(widget);
+  setLayout(vlayout);
 }
 
 SensorLoggerSettings::~SensorLoggerSettings()

@@ -20,16 +20,14 @@
 #include "SensorLoggerDlg.h"
 #include "ui_SensorLoggerDlgWidget.h"
 
-
 #include <KLocalizedString>
 
 SensorLoggerDlg::SensorLoggerDlg( QWidget *parent, const char *name )
-    : KDialog( parent )
+    : QDialog( parent )
 {
   setObjectName( name );
   setModal( true );
-  setCaption( i18n( "Sensor Logger" ) );
-  setButtons( Ok|Cancel );
+  setWindowTitle( i18n( "Sensor Logger" ) );
 
   QWidget *main = new QWidget( this );
 
@@ -38,8 +36,14 @@ SensorLoggerDlg::SensorLoggerDlg( QWidget *parent, const char *name )
   m_loggerWidget->m_fileName->setMode(KFile::File|KFile::LocalOnly);
   connect(m_loggerWidget->m_fileName, &KUrlRequester::textChanged, this, &SensorLoggerDlg::fileNameTextChanged);
 
-  setMainWidget( main );
   fileNameTextChanged();
+
+  connect(m_loggerWidget->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+  connect(m_loggerWidget->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+  QVBoxLayout *vlayout = new QVBoxLayout(this);
+  vlayout->addWidget(main);
+  setLayout(vlayout);
 }
 
 SensorLoggerDlg::~SensorLoggerDlg()
@@ -49,7 +53,7 @@ SensorLoggerDlg::~SensorLoggerDlg()
 
 void SensorLoggerDlg::fileNameTextChanged()
 {
-  enableButtonOk(m_loggerWidget->m_fileName->url().isValid() && !m_loggerWidget->m_fileName->url().isRelative());
+  m_loggerWidget->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(m_loggerWidget->m_fileName->url().isValid() && !m_loggerWidget->m_fileName->url().isRelative());
 }
 
 QString SensorLoggerDlg::fileName() const
