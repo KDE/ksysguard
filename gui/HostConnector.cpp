@@ -23,7 +23,6 @@
 #include <kacceleratormanager.h>
 #include <kcombobox.h>
 #include <KLocalizedString>
-#include <KNumInput>
 #include <khelpclient.h>
 
 #include <QDialogButtonBox>
@@ -32,6 +31,7 @@
 #include <QLayout>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QSpinBox>
 #include <QGridLayout>
 #include <QLineEdit>
 
@@ -97,7 +97,7 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   label = new QLabel( i18n( "Port:" ));
   groupLayout->addWidget( label, 1, 0 );
 
-  mPort = new KIntSpinBox();
+  mPort = new QSpinBox();
   mPort->setRange( 1, 65535 );
   mPort->setEnabled( false );
   mPort->setValue( 3112 );
@@ -130,7 +130,7 @@ HostConnector::HostConnector( QWidget *parent, const char *name )
   connect(mButtonBox, &QDialogButtonBox::helpRequested, this, &HostConnector::slotHelp);
 
   connect(mUseCustom, &QRadioButton::toggled, mCommands, &KComboBox::setEnabled);
-  connect(mUseDaemon, &QRadioButton::toggled, mPort, &KIntSpinBox::setEnabled);
+  connect(mUseDaemon, &QRadioButton::toggled, mPort, &QSpinBox::setEnabled);
   connect( mHostNames->lineEdit(),  &QLineEdit::textChanged,
            this, &HostConnector::slotHostNameChanged );
   mButtonBox->button(QDialogButtonBox::Ok)->setEnabled( !mHostNames->lineEdit()->text().isEmpty() );

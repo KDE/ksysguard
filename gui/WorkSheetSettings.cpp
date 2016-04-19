@@ -22,8 +22,8 @@
 
 #include <kacceleratormanager.h>
 #include <KLocalizedString>
-#include <knuminput.h>
 
+#include <QDoubleSpinBox>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
@@ -104,7 +104,10 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
   label = new QLabel( i18n( "Update interval:" ), group );
   groupLayout->addWidget( label, ++row_num, 0 );
 
-  mInterval = new KDoubleNumInput( 0.00/*minimum*/, 1000.0/*maximum*/, 0.5/*default*/, group/*parent*/, 0.5/*stepsize*/, 2/*precision*/ );
+  mInterval = new QDoubleSpinBox(group);
+  mInterval->setMaximum(1000);
+  mInterval->setSingleStep(0.5);
+  mInterval->setValue(0.5);
   mInterval->setSuffix( i18n( " sec" ) );
   groupLayout->addWidget( mInterval, row_num, 1 );
   label->setBuddy( mInterval );

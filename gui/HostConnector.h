@@ -28,9 +28,9 @@
 class QDialogButtonBox;
 class QLabel;
 class QRadioButton;
+class QSpinBox;
 
 class KComboBox;
-class KIntSpinBox;
 
 class HostConnector : public QDialog
 {
@@ -73,7 +73,7 @@ class HostConnector : public QDialog
 
     QDialogButtonBox *mButtonBox;
 
-    KIntSpinBox *mPort;
+    QSpinBox *mPort;
 };
 
 #endif
