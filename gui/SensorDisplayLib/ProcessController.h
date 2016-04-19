@@ -25,12 +25,8 @@
 #ifndef _ProcessController_h_
 #define _ProcessController_h_
 
-#include <QWidget>
-
 #include <QList>
-
-
-#include <kapplication.h>
+#include <QWidget>
 
 #include <SensorDisplay.h>
 

@@ -34,9 +34,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <k4aboutdata.h>
+#include <QApplication>
+#include <KAboutData>
 #include <kactioncollection.h>
-#include <kapplication.h>
 #include <KDBusService>
 #include <kedittoolbar.h>
 #include <kglobalsettings.h>
@@ -50,6 +50,7 @@
 #include <ktoggleaction.h>
 #include <kwindowsystem.h>
 #include <QSplitter>
+#include <KUserTimestamp>
 
 #include <config-workspace.h>
 #include <KFormat>
@@ -221,7 +222,7 @@ void TopLevel::startSensorBrowserWidget()
 void TopLevel::showOnCurrentDesktop()
 {
   KWindowSystem::setOnDesktop( winId(), KWindowSystem::currentDesktop() );
-  kapp->updateUserTimestamp();
+  KUserTimestamp::updateUserTimestamp();
   KWindowSystem::forceActiveWindow( winId() );
 }
 

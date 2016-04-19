@@ -19,6 +19,7 @@
 
 */
 
+#include <QApplication>
 #include <QAbstractTableModel>
 #include <QDate>
 #include <QFile>
@@ -32,7 +33,6 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-#include <kapplication.h>
 #include <kiconloader.h>
 #include <KLocalizedString>
 #include <knotification.h>
@@ -636,7 +636,7 @@ void SensorLogger::contextMenuRequest( const QModelIndex &index, const QPoint &p
       break;
     case 2: {
       KSGRD::SensorDisplay::DeleteEvent *ev = new KSGRD::SensorDisplay::DeleteEvent( this );
-      kapp->postEvent(parent(), ev);
+      qApp->postEvent(parent(), ev);
       break;
       }
     case 3:

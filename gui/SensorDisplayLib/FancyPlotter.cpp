@@ -20,6 +20,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QApplication>
 #include <QDebug>
 #include <QtXml/qdom.h>
 #include <QToolTip>
@@ -32,7 +33,6 @@
 
 #include <KLocalizedString>
 #include <kmessagebox.h>
-#include <kapplication.h>
 #include <ksignalplotter.h>
 #include <kstandarddirs.h>
 
@@ -116,7 +116,7 @@ class FancyPlotterLabel : public QLabel {
     void changeLabel(const QColor &_color) {
         color = _color;
 
-        if ( kapp->layoutDirection() == Qt::RightToLeft )
+        if ( QApplication::layoutDirection() == Qt::RightToLeft )
             longHeadingText = QStringLiteral(": ") + labelName + " <font color=\"" + color.name() + "\">" + indicatorSymbol + "</font>";
         else
             longHeadingText = QStringLiteral("<qt><font color=\"") + color.name() + "\">" + indicatorSymbol + "</font> " + labelName + " :";

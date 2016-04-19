@@ -26,7 +26,6 @@
 #include <QEvent>
 #include <QtDBus>
 
-#include <kapplication.h>
 #include <kxmlguiwindow.h>
 
 #include <ksgrd/SensorClient.h>
