@@ -236,7 +236,6 @@
  </customwidgets>
  <includes>
   <include location="local">kurlrequester.h</include>
-  <include location="local">klineedit.h</include>
  </includes>
  <resources/>
  <connections>
