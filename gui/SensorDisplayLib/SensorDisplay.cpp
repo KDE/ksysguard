@@ -35,7 +35,6 @@
 #include <kiconloader.h>
 #include <KLocalizedString>
 #include <kmessagebox.h>
-#include <krun.h>
 #include <kservice.h>
 
 #include "ksgrd/SensorManager.h"

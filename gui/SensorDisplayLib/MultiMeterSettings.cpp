@@ -23,7 +23,6 @@
 #include <QColor>
 
 #include <KLocalizedString>
-#include <knumvalidator.h>
 
 MultiMeterSettings::MultiMeterSettings( QWidget *parent, const char *name )
     : QDialog( parent )
@@ -36,8 +35,8 @@ MultiMeterSettings::MultiMeterSettings( QWidget *parent, const char *name )
 
   m_settingsWidget = new Ui_MultiMeterSettingsWidget;
   m_settingsWidget->setupUi( mainWidget );
-  m_settingsWidget->m_lowerLimit->setValidator(new KDoubleValidator(m_settingsWidget->m_lowerLimit));
-  m_settingsWidget->m_upperLimit->setValidator(new KDoubleValidator(m_settingsWidget->m_upperLimit));
+  m_settingsWidget->m_lowerLimit->setValidator(new QDoubleValidator(m_settingsWidget->m_lowerLimit));
+  m_settingsWidget->m_upperLimit->setValidator(new QDoubleValidator(m_settingsWidget->m_upperLimit));
   m_settingsWidget->m_title->setFocus();
 
   connect(m_settingsWidget->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
