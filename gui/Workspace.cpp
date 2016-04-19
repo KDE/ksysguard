@@ -25,7 +25,6 @@
 #include <QFileDialog>
 #include <QStandardPaths>
 
-#include <kio/netaccess.h>
 #include <KLocalizedString>
 #include <kmessagebox.h>
 #include <kacceleratormanager.h>
@@ -195,19 +194,12 @@ void Workspace::importWorkSheet( const QUrl &url )
   if ( url.isEmpty() )
     return;
 
-  /* It's probably not worth the effort to make this really network
-   * transparent. Unless s/o beats me up I use this pseudo transparent
-   * code. */
-  QString tmpFile;
-  KIO::NetAccess::download( url, tmpFile, this );
-
   // Import sheet from file.
-  if ( !restoreWorkSheet( tmpFile ) )
+  if (!restoreWorkSheet(url.toLocalFile())) {
     return;
+  }
 
   mSheetList.last()->setFileName( makeNameForNewSheet() + ".sgrd");
-
-  KIO::NetAccess::removeTempFile( tmpFile );
 }
 
 bool Workspace::saveWorkSheet( WorkSheet *sheet )
