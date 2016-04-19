@@ -25,6 +25,7 @@ find_package(KF5 REQUIRED COMPONENTS
     CoreAddons
     I18n
     ItemViews
+    KIO
     NewStuff
     Notifications
     Config

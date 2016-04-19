@@ -56,6 +56,7 @@ target_link_libraries(kdeinit_ksysguard
     KF5::SignalPlotter
     KF5::DBusAddons
     KF5::ItemViews
+    KF5::KIOWidgets
     KF5::NewStuff
     KF5::Notifications
     KF5::SysGuard
