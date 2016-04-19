@@ -20,15 +20,14 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QDebug>
 #include <QDomElement>
-
 #include <QVBoxLayout>
 #include <QSortFilterProxyModel>
 #include <QTime>
 #include <QMenu>
 #include <QAction>
 
-#include <kglobal.h>
 #include <KLocalizedString>
 #include <kmessagebox.h>
 #include <ksgrd/SensorManager.h>
@@ -64,22 +63,22 @@ static QString formatByteSize(qlonglong amountInKB, int units) {
 
     switch(units) {
       case UnitsKB:
-        return kString.arg(KLocale::global()->formatNumber(amountInKB, 0));
+        return kString.arg(QLocale().toString(amountInKB));
       case UnitsMB:
         amount = amountInKB/1024.0;
-        return mString.arg(KLocale::global()->formatNumber(amount, 1));
+        return mString.arg(QLocale().toString(amount, 'g', 1));
       case UnitsGB:
         amount = amountInKB/(1024.0*1024.0);
         if(amount < 0.1 && amount > 0.05) amount = 0.1;
-        return gString.arg(KLocale::global()->formatNumber(amount, 1));
+        return gString.arg(QLocale().toString(amount, 'g', 1));
       case UnitsTB:
         amount = amountInKB/(1024.0*1024.0*1024.0);
         if(amount < 0.1 && amount > 0.05) amount = 0.1;
-        return tString.arg(KLocale::global()->formatNumber(amount, 1));
+        return tString.arg(QLocale().toString(amount, 'g', 1));
       case UnitsPB:
         amount = amountInKB/(1024.0*1024.0*1024.0*1024.0);
         if(amount < 0.1 && amount > 0.05) amount = 0.1;
-        return pString.arg(KLocale::global()->formatNumber(amount, 1));
+        return pString.arg(QLocale().toString(amount, 'g', 1));
       default:
           return QLatin1String("");  // error
     }

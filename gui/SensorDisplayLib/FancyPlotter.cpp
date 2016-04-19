@@ -20,15 +20,16 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QDebug>
 #include <QtXml/qdom.h>
 #include <QToolTip>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLocale>
 #include <QResizeEvent>
+#include <QStandardPaths>
 
-
-#include <KGlobal>
 #include <KLocalizedString>
 #include <kmessagebox.h>
 #include <kapplication.h>
@@ -513,7 +514,7 @@ void FancyPlotter::setTooltip()
             description = sensor->name();
 
         if(sensor->isOk()) {
-            lastValue = KLocale::global()->formatNumber( sensor->lastValue, (sensor->isInteger)?0:-1 );
+            lastValue = QLocale().toString( sensor->lastValue, (sensor->isInteger)?0:-1 );
             if (sensor->unit() == QLatin1String("%"))
                 lastValue = i18nc("units", "%1%", lastValue);
             else if( !sensor->unit().isEmpty() )
@@ -584,7 +585,7 @@ void FancyPlotter::sendDataToPlotter( )
                         lastValue = mPlotter->lastValueAsString(beamId, precision);
                     } else {
                         precision = (sensor->isInteger)?0:-1;
-                        lastValue = KLocale::global()->formatNumber( mPlotter->lastValue(beamId), precision );
+                        lastValue = QLocale().toString( mPlotter->lastValue(beamId), precision );
                         if (sensor->unit() == QLatin1String("%"))
                             lastValue = i18nc("units", "%1%", lastValue);
                         else if( !sensor->unit().isEmpty() )  {
@@ -785,8 +786,7 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
 
     QString filename = element.attribute( QStringLiteral("svgBackground"));
     if (!filename.isEmpty() && filename[0] == '/') {
-        KStandardDirs* kstd = KGlobal::dirs();
-        filename = kstd->findResource( "data", "ksysguard/" + filename);
+        filename = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ksysguard/" + filename);
     }
     mPlotter->setSvgBackground( filename );
     if(version >= 1) {

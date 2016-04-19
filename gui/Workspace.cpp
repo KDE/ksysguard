@@ -23,8 +23,8 @@
 */
 
 #include <QFileDialog>
+#include <QStandardPaths>
 
-#include <KGlobal>
 #include <kio/netaccess.h>
 #include <KLocalizedString>
 #include <kmessagebox.h>
@@ -87,10 +87,9 @@ void Workspace::readProperties( const KConfigGroup& cfg )
     selectedSheets.replace(oldSystemLoad, QStringLiteral("SystemLoad2.sgrd"));
   }
 
-  KStandardDirs* kstd = KGlobal::dirs();
   QString filename;
   for ( QStringList::Iterator it = selectedSheets.begin(); it != selectedSheets.end(); ++it ) {
-    filename = kstd->findResource( "data", "ksysguard/" + *it);
+    filename = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ksysguard/" + *it);
     if(!filename.isEmpty()) {
       restoreWorkSheet( filename, false);
     }
@@ -110,11 +109,10 @@ QString Workspace::makeNameForNewSheet() const
   int i = 1;
   bool found = false;
   QString sheetName;
-  KStandardDirs* kstd = KGlobal::dirs();
   do {
     sheetName = i18n( "Sheet %1" ,  i++ );
     //Check we don't have any existing files with this name
-    found = !(kstd->findResource( "data", "ksysguard/" + sheetName + ".sgrd").isEmpty());
+    found = !(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ksysguard/" + sheetName + ".sgrd").isEmpty());
 
     //Check if we have any sheets with the same tab name or file name
     for(int i = 0; !found && i < mSheetList.size(); i++)
@@ -220,8 +218,7 @@ bool Workspace::saveWorkSheet( WorkSheet *sheet )
     return false;
   }
 
-  KStandardDirs* kstd = KGlobal::dirs();
-  QString fileName = kstd->saveLocation( "data", QStringLiteral("ksysguard")) + sheet->fileName();
+  QString fileName = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QLatin1Char('/') + sheet->fileName();
 
   if ( !sheet->save( fileName ) ) {
     return false;

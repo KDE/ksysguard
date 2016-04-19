@@ -226,6 +226,10 @@ bool WorkSheet::exportWorkSheet( const QString &fileName )
         }
     }
 
+    if (!QFileInfo::exists(QFileInfo(fileName).path())) {
+        QDir().mkpath(QFileInfo(fileName).path());
+    }
+
     QFile file( fileName );
     if ( !file.open( QIODevice::WriteOnly ) ) {
         KMessageBox::sorry( this, i18n( "Cannot save file %1" ,  fileName ) );

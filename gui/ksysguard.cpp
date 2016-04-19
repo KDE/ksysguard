@@ -39,7 +39,6 @@
 #include <kapplication.h>
 #include <KDBusService>
 #include <kedittoolbar.h>
-#include <kglobal.h>
 #include <kglobalsettings.h>
 #include <QIcon>
 #include <KLocalizedString>
