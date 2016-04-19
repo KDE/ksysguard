@@ -22,15 +22,18 @@ find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
     Widgets
 )
 find_package(KF5 REQUIRED COMPONENTS
+    Config
     CoreAddons
+    DBusAddons
+    DocTools
     I18n
+    IconThemes
+    Init
     ItemViews
     KIO
     NewStuff
     Notifications
-    Config
-    IconThemes
-    KDELibs4Support #for SensorDisplay.cpp
+    WindowSystem
 )
 
 find_package(KF5 REQUIRED COMPONENTS SysGuard)

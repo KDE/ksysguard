@@ -103,12 +103,12 @@ ListView::ListView(QWidget* parent, const QString& title, SharedSettings *workSh
     connect(mView->header(), &QWidget::customContextMenuRequested, this, &ListView::showColumnContextMenu);
 
     mView->setAlternatingRowColors(true);
-    mView->header()->setMovable(true);
+    mView->header()->setSectionsMovable(true);
     mView->setSelectionMode( QAbstractItemView::NoSelection );
     mView->setUniformRowHeights(true);
     mView->setRootIsDecorated(false);
     mView->header()->setSortIndicatorShown(true);
-    mView->header()->setClickable(true);
+    mView->header()->setSectionsClickable(true);
     mView->setSortingEnabled(true);
 
 /*    QPalette palette;

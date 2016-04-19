@@ -29,7 +29,6 @@
 #include <kmessagebox.h>
 #include <kacceleratormanager.h>
 #include <kactioncollection.h>
-#include <kmenu.h>
 #include <KNewStuff3/KNS3/DownloadDialog>
 #include <KConfigGroup>
 

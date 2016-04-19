@@ -202,7 +202,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   mView->setRootIsDecorated( false );
   mView->setItemsExpandable( false );
   mView->setModel( mModel );
-  mView->header()->setResizeMode(QHeaderView::ResizeToContents);
+  mView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
   bool hideFirstColumn = true;
   for(int i = 0; i < mModel->rowCount(); i++)
     if(mModel->data(mModel->index(i, 0)) != "localhost") {

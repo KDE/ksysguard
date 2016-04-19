@@ -39,18 +39,18 @@
 #include <kactioncollection.h>
 #include <KDBusService>
 #include <kedittoolbar.h>
-#include <kglobalsettings.h>
 #include <QIcon>
 #include <KLocalizedString>
 #include <kmessagebox.h>
 #include <ksgrd/SensorAgent.h>
 #include <ksgrd/SensorManager.h>
-#include <kstatusbar.h>
 #include <kstandardaction.h>
 #include <ktoggleaction.h>
-#include <kwindowsystem.h>
 #include <QSplitter>
+#include <QStatusBar>
+#include <KSharedConfig>
 #include <KUserTimestamp>
+#include <KWindowSystem>
 
 #include <config-workspace.h>
 #include <KFormat>
@@ -82,7 +82,6 @@ TopLevel::TopLevel()
 
   mSplitter = new QSplitter( this );
   mSplitter->setOrientation( Qt::Horizontal );
-  mSplitter->setOpaqueResize( KGlobalSettings::opaqueResize() );
   setCentralWidget( mSplitter );
 
   mSensorBrowser = 0;

@@ -277,7 +277,8 @@ void SensorModel::resetOrder() {
   {
     mSensors[i].setId(i);
   }
-  reset();
+  beginResetModel();
+  endResetModel();
 }
 
 SensorModelEntry SensorModel::sensor( const QModelIndex &index ) const

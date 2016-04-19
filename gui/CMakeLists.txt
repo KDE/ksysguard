@@ -46,8 +46,6 @@ set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
    StyleEngine.cpp
    ksysguard.cpp )
 
-
-
 kf5_add_kdeinit_executable(ksysguard ${ksysguard_KDEINIT_SRCS})
 target_compile_definitions(kdeinit_ksysguard PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
@@ -62,7 +60,7 @@ target_link_libraries(kdeinit_ksysguard
     KF5::SysGuard
     KF5::I18n
     KF5::IconThemes
-    KF5::KDELibs4Support)
+    KF5::WindowSystem)
 
 install(TARGETS kdeinit_ksysguard ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(TARGETS ksysguard         ${INSTALL_TARGETS_DEFAULT_ARGS})
