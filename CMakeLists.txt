@@ -26,6 +26,7 @@ find_package(KF5 REQUIRED COMPONENTS
     I18n
     ItemViews
     NewStuff
+    Notifications
     Config
     IconThemes
     KDELibs4Support #for SensorDisplay.cpp

@@ -31,10 +31,9 @@
 #include <QListWidget>
 #include <QHBoxLayout>
 
-#include <kfontdialog.h>
 #include <KLocalizedString>
+#include <KNotification>
 #include <kcolorbutton.h>
-#include <knotification.h>
 #include "StyleEngine.h"
 
 #include "ui_LogFileSettings.h"

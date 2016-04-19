@@ -35,7 +35,7 @@
 
 #include <kiconloader.h>
 #include <KLocalizedString>
-#include <knotification.h>
+#include <KNotification>
 #include <ksgrd/SensorManager.h>
 #include "StyleEngine.h"
 
