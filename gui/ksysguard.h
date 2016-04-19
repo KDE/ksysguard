@@ -26,16 +26,17 @@
 #include <QEvent>
 #include <QtDBus>
 
-#include <kxmlguiwindow.h>
+#include <KXmlGuiWindow>
 
 #include <ksgrd/SensorClient.h>
 
-class QSplitter;
 class QAction;
+class QLabel;
+class QSplitter;
+
+class ProcessController;
 class SensorBrowserWidget;
 class Workspace;
-class ProcessController;
-
 
 class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
 {

@@ -27,6 +27,15 @@
 
 */
 
+#include "ksysguard.h"
+#include "config-workspace.h"
+#include "HostConnector.h"
+#include "ProcessController.h"
+#include "SensorBrowser.h"
+#include "StyleEngine.h"
+#include "Workspace.h"
+#include "WorkSheet.h"
+
 #include <assert.h>
 #include <ctype.h>
 #include <fcntl.h>
@@ -35,37 +44,29 @@
 #include <unistd.h>
 
 #include <QApplication>
-#include <KAboutData>
-#include <kactioncollection.h>
-#include <KDBusService>
-#include <kedittoolbar.h>
+#include <QCommandLineOption>
+#include <QCommandLineParser>
 #include <QIcon>
-#include <KLocalizedString>
-#include <kmessagebox.h>
-#include <ksgrd/SensorAgent.h>
-#include <ksgrd/SensorManager.h>
-#include <kstandardaction.h>
-#include <ktoggleaction.h>
+#include <QLabel>
 #include <QSplitter>
 #include <QStatusBar>
+
+#include <KAboutData>
+#include <KActionCollection>
+#include <KDBusService>
+#include <KEditToolBar>
+#include <KFormat>
+#include <KLocalizedString>
+#include <KMessageBox>
 #include <KSharedConfig>
+#include <KStandardAction>
+#include <KToggleAction>
 #include <KUserTimestamp>
 #include <KWindowSystem>
 
-#include <config-workspace.h>
-#include <KFormat>
-#include <QCommandLineParser>
-#include <QCommandLineOption>
-#include <QLabel>
-#include "SensorBrowser.h"
-#include "Workspace.h"
-#include "WorkSheet.h"
-#include "StyleEngine.h"
-#include "HostConnector.h"
-#include "ProcessController.h"
-#include "processui/ksysguardprocesslist.h"
-
-#include "ksysguard.h"
+#include <ksgrd/SensorAgent.h>
+#include <ksgrd/SensorManager.h>
+#include <processui/ksysguardprocesslist.h>
 
 //Comment out to stop ksysguard from forking.  Good for debugging
 //#define FORK_KSYSGUARD
@@ -534,7 +535,7 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
 
   KAboutData aboutData( QStringLiteral("ksysguard"), i18n( "System Monitor" ),
                         PROJECT_VERSION, i18n(Description), KAboutLicense::GPL,
-                        i18n( "(c) 1996-2008 The KDE System Monitor Developers" ) );
+                        i18n( "(c) 1996-2016 The KDE System Monitor Developers" ) );
   aboutData.setOrganizationDomain(QByteArray("kde.org"));
   aboutData.addAuthor( i18n("John Tapsell"), i18n("Current Maintainer"), QStringLiteral("john.tapsell@kde.org") );
   aboutData.addAuthor( i18n("Chris Schlaeger"), i18n("Previous Maintainer"), QStringLiteral("cs@kde.org") );
