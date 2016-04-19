@@ -28,7 +28,6 @@
 #include <kio/netaccess.h>
 #include <KLocalizedString>
 #include <kmessagebox.h>
-#include <kstandarddirs.h>
 #include <kacceleratormanager.h>
 #include <kactioncollection.h>
 #include <kmenu.h>

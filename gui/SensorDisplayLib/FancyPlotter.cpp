@@ -34,7 +34,6 @@
 #include <KLocalizedString>
 #include <kmessagebox.h>
 #include <ksignalplotter.h>
-#include <kstandarddirs.h>
 
 #include <ksgrd/SensorManager.h>
 #include "StyleEngine.h"
