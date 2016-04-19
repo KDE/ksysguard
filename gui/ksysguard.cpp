@@ -49,7 +49,6 @@
 #include <kstatusbar.h>
 #include <kstandardaction.h>
 #include <ktoggleaction.h>
-#include <kurl.h>
 #include <kwindowsystem.h>
 #include <QSplitter>
 
@@ -229,7 +228,7 @@ void TopLevel::showOnCurrentDesktop()
 
 void TopLevel::importWorkSheet( const QString &fileName )
 {
-  mWorkSpace->importWorkSheet( KUrl( fileName ) );
+  mWorkSpace->importWorkSheet(QUrl::fromLocalFile(fileName));
 }
 
 void TopLevel::removeWorkSheet( const QString &fileName )

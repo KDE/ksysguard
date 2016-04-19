@@ -36,7 +36,6 @@
 #include <KLocalizedString>
 #include <kmessagebox.h>
 #include <krun.h>
-#include <kurl.h>
 #include <kservice.h>
 
 #include "ksgrd/SensorManager.h"

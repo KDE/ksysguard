@@ -29,7 +29,6 @@
 #include <QTabWidget>
 
 class KConfig;
-class KUrl;
 class QString;
 class WorkSheet;
 
@@ -53,7 +52,7 @@ class Workspace : public QTabWidget
   public Q_SLOTS:
     void newWorkSheet();
     void importWorkSheet();
-    void importWorkSheet( const KUrl& );
+    void importWorkSheet( const QUrl& );
     bool saveWorkSheet( WorkSheet *sheet );
     void exportWorkSheet();
     void exportWorkSheet( WorkSheet *sheet );

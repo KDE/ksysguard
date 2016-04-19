@@ -22,10 +22,9 @@
 
 */
 
+#include <QFileDialog>
 
-#include <kfiledialog.h>
 #include <KGlobal>
-#include <KUrl>
 #include <kio/netaccess.h>
 #include <KLocalizedString>
 #include <kmessagebox.h>
@@ -187,12 +186,14 @@ bool Workspace::saveOnQuit()
 
 void Workspace::importWorkSheet()
 {
-  KUrl url = KFileDialog::getOpenUrl( QUrl(), i18n("*.sgrd|Sensor Files (*.sgrd)"), this, i18n( "Select Tab File to Import" ) );
-
+  QUrl url = QFileDialog::getOpenFileUrl(this,
+                                         i18n("Select Tab File to Import"),
+                                         QUrl(),
+                                         QStringLiteral("Sensor Files (*.sgrd)"));
   importWorkSheet( url );
 }
 
-void Workspace::importWorkSheet( const KUrl &url )
+void Workspace::importWorkSheet( const QUrl &url )
 {
   if ( url.isEmpty() )
     return;
@@ -242,8 +243,10 @@ void Workspace::exportWorkSheet( WorkSheet *sheet )
 
   QString fileName;
   do {
-    fileName = KFileDialog::getSaveFileName( QUrl(QString(tabText(indexOf( currentWidget() ))+ ".sgrd")),
-		                    QStringLiteral("*.sgrd"), this, i18n("Export Tab") );
+    fileName = QFileDialog::getSaveFileName(this,
+                                            i18n("Export Tab"),
+                                            QString(tabText(indexOf(currentWidget())) + ".sgrd"),
+                                            QStringLiteral("Sensor Files (*.sgrd)"));
     if ( fileName.isEmpty() )
       return;
 
