@@ -46,16 +46,7 @@ set_package_properties(Sensors PROPERTIES
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 configure_file(config-workspace.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-workspace.h)
 
-find_package(Qt5WebKitWidgets CONFIG)
-set_package_properties(Qt5WebKitWidgets PROPERTIES
-                       URL "git://gitorious.org/qt/qtwebkit.git"
-                       DESCRIPTION "Qt Webkit module (web browsing engine)"
-                       TYPE OPTIONAL
-                       PURPOSE "Used by the HTML-based GUI ksysguard library"
-                      )
-if(Qt5WebKitWidgets_FOUND)
-    add_subdirectory( gui )
-endif()
+add_subdirectory( gui )
 
 add_subdirectory( doc )
 add_subdirectory( pics )
