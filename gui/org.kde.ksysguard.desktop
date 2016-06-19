@@ -170,6 +170,7 @@ GenericName[zh_TW]=系統監視器
 Comment=Monitor running processes and system performance
 Comment[ca]=Controlador de processos en execució i rendiment del sistema
 Comment[ca@valencia]=Controlador de processos en execució i rendiment del sistema
+Comment[da]=Overvåg kørende processer og systemets ydelse
 Comment[de]=Laufende Prozess und Systemauslastung überwachen
 Comment[el]=Επόπτης εκτελούμενων διεργασιών και απόδοσης συστήματος
 Comment[en_GB]=Monitor running processes and system performance
