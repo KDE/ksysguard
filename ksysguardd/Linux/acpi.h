@@ -36,8 +36,11 @@ void initAcpiThermal( struct SensorModul * );
 void printThermalZoneTemperature(const char *cmd);
 void printSysThermalZoneTemperature(const char *cmd);
 void printSysCompatibilityThermalZoneTemperature(const char *cmd);
+void printSysThermalZoneTemperatureInfo(const char *cmd);
 void printThermalZoneTemperatureInfo(const char *cmd);
 
+void printCoolingDeviceStateInfo(const char *cmd);
+void printCoolingDeviceState(const char *cmd);
 void initAcpiFan( struct SensorModul * );
 void printFanState(const char *cmd);
 void printSysFanState(const char *cmd);

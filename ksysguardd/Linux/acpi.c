@@ -22,9 +22,11 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <assert.h>
 
 #include "Command.h"
 #include "ksysguardd.h"
@@ -247,6 +249,49 @@ static int extract_zone_name(char **startidx, const char *cmd)
 	return idx - *startidx;
 }
 
+void readTypeFile(const char *fileFormat, int number, char *buffer, int bufferSize)
+{
+    char filename[ ACPIFILENAMELENGTHMAX ];
+    snprintf(filename, sizeof(filename), fileFormat, number);
+
+    int typeFile = open(filename, O_RDONLY);
+    if (typeFile < 0) {
+        print_error( "Cannot open file \'%s\'!\n"
+                     "Unable to fetch ACPI type", filename);
+        snprintf(buffer, bufferSize, "unknown-%d", number);
+        return;
+    }
+
+    int readBytes = read( typeFile, buffer, bufferSize - 1 );
+    assert(readBytes > 1);
+    assert(readBytes < bufferSize);
+    buffer[readBytes-1] = '\0'; /* strip newline */
+}
+
+void registerThermalZone(int number, struct SensorModul *sm)
+{
+    char name[ ACPIFILENAMELENGTHMAX ];
+    readTypeFile("/sys/class/thermal/thermal_zone%d/type", number, name, sizeof(name));
+
+    char sensorName [ ACPIFILENAMELENGTHMAX ];
+    snprintf(sensorName, sizeof(sensorName), "acpi/Thermal_Zone/%d-%s/Temperature", number, name);
+
+    registerMonitor(sensorName, "integer", printSysThermalZoneTemperature,
+                    printSysThermalZoneTemperatureInfo, sm);
+}
+
+void registerCoolingDevice(int number, struct SensorModul *sm)
+{
+    char name[ ACPIFILENAMELENGTHMAX ];
+    readTypeFile("/sys/class/thermal/cooling_device%d/type", number, name, sizeof(name));
+
+    char sensorName [ ACPIFILENAMELENGTHMAX ];
+    snprintf(sensorName, sizeof(sensorName), "acpi/Cooling_Device/%d-%s/Activity", number, name);
+
+    registerMonitor(sensorName, "integer", printCoolingDeviceState,
+                    printCoolingDeviceStateInfo, sm);
+}
+
 void initAcpiThermal(struct SensorModul *sm)
 {
   char th_ref[ ACPIFILENAMELENGTHMAX ];
@@ -259,10 +304,8 @@ void initAcpiThermal(struct SensorModul *sm)
           if (!de->d_name || de->d_name[0] == '.')
               continue;
           if (strncmp( de->d_name, "thermal_zone", sizeof("thermal_zone")-1) == 0) {
-              snprintf(th_ref, sizeof(th_ref),
-                      "acpi/Thermal_Zone/%s/Temperature", de->d_name + (sizeof("thermal_zone")-1));
-              registerMonitor(th_ref, "integer", printSysThermalZoneTemperature,
-                      printThermalZoneTemperatureInfo, sm);
+              int number = atoi(de->d_name + (sizeof("thermal_zone")-1));
+              registerThermalZone(number, sm);
 
               /*For compatibility, register a legacy sensor*/
               int zone_number;
@@ -273,10 +316,8 @@ void initAcpiThermal(struct SensorModul *sm)
                           printThermalZoneTemperatureInfo, sm);
               }
           } else if (strncmp( de->d_name, "cooling_device", sizeof("cooling_device")-1) == 0) {
-              snprintf(th_ref, sizeof(th_ref),
-                      "acpi/Cooling_Device/%s/Current_State", de->d_name+( sizeof("cooling_device")-1));
-              registerMonitor(th_ref, "integer", printSysFanState,
-                      printFanStateInfo, sm);
+              int number = atoi(de->d_name+( sizeof("cooling_device")-1));
+              registerCoolingDevice(number, sm);
           }
       }
       closedir( d );
@@ -359,13 +400,31 @@ void printSysCompatibilityThermalZoneTemperature(const char *cmd) {
     }
     output( "%d\n", getSysFileValue("thermal_zone", zone, "temp")/1000);
 }
-void printSysFanState(const char *cmd) {
+
+void printCoolingDeviceStateInfo(const char *cmd)
+{
+    (void)cmd;
+    char name [ 200 ];
+    if (sscanf(cmd, "acpi/Cooling_Device/%199[^/]", name) > 0) {
+        output( "%s Cooling Activity\t0\t100\t%%\n",  name);
+    } else {
+        output( "Cooling Device Activity\t0\t100\t%%\n");
+    }
+}
+
+void printCoolingDeviceState(const char *cmd) {
     int fan = 0;
     if (sscanf(cmd, "acpi/Cooling_Device/%d", &fan) <= 0) {
         output( "-1\n");
         return;
     }
-    output( "%d\n", getSysFileValue("cooling_device", fan, "cur_state"));
+    int current = getSysFileValue("cooling_device", fan, "cur_state");
+    int maximum = getSysFileValue("cooling_device", fan, "max_state");
+    int state = 0;
+    if (current > 0 && maximum > 0) {
+        state = current / maximum;
+    }
+    output( "%d\n", state);
 }
 
 static int getCurrentTemperature(const char *cmd)
@@ -406,6 +465,16 @@ static int getCurrentTemperature(const char *cmd)
 void printThermalZoneTemperature(const char *cmd) {
 	int temperature = getCurrentTemperature(cmd);
 	output( "%d\n", temperature);
+}
+
+void printSysThermalZoneTemperatureInfo(const char *cmd)
+{
+    char name [ 200 ];
+    if (sscanf(cmd, "acpi/Thermal_Zone/%199[^/]", name) > 0) {
+        output( "%s temperature\t0\t0\tC\n", name);
+    } else {
+        output( "Current temperature\t0\t0\tC\n");
+    }
 }
 
 void printThermalZoneTemperatureInfo(const char *cmd)
