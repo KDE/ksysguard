@@ -375,7 +375,32 @@ void DancingBarsSettings::removeSensor()
   if ( !index.isValid() )
     return;
 
+  deletedIds.append(index.row());
   mModel->removeSensor( index );
+}
+
+/*
+ * returns a list of IDs, which have to removed from the sensors list,
+ * perform this in the same order as the IDs are stored in this list,
+ * otherwise you have to consider, that the IDs are changing each time you removeSensor is called
+ *
+ * example:
+ * Sensor indexes: [0,1,2,3,4]
+ *
+ * deletedIds can be create like this:
+ * [0] 			--> user has deleted row 0	-->	[1,2,3,4]
+ * [0,1]		--> user has deleted row 1	--> [1,3,4]
+ * [0,1,1]		--> user has deleted row 1	--> [1,4]
+ *
+ * using the deletedIds list by a simple iteration through the list
+ * [1,2,3,4]	--> removed pos 0
+ * [1,3,4]		--> removed pos 1
+ * [1,4]		--> removed pos 1
+ *
+ */
+QList<uint> DancingBarsSettings::getDeletedIds()
+{
+	return deletedIds;
 }
 
 

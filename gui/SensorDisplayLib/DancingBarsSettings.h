@@ -80,6 +80,8 @@ class DancingBarsSettings : public KPageDialog
     void setSensors( const SensorModelEntry::List &list );
     SensorModelEntry::List sensors() const;
 
+    QList<uint> getDeletedIds();
+
   private Q_SLOTS:
     void editSensor();
     void removeSensor();
@@ -99,6 +101,8 @@ class DancingBarsSettings : public KPageDialog
     QCheckBox *mUseUpperLimit;
     QPushButton *mEditButton;
     QPushButton *mRemoveButton;
+
+    QList<uint> deletedIds;
 
     QTreeView *mView;
     SensorModel *mModel;

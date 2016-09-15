@@ -84,7 +84,7 @@ void DancingBars::configureSettings()
   dlg.setFontSize( mPlotter->fontSize );
 
   SensorModelEntry::List list;
-  for ( uint i = mBars - 1; i < mBars; i-- ) {
+  for(uint i = 0; i < mBars; i++){
     SensorModelEntry entry;
     entry.setId( i );
     entry.setHostName( sensors().at( i )->hostName() );
@@ -114,29 +114,10 @@ void DancingBars::configureSettings()
   mPlotter->mBackgroundColor = dlg.backgroundColor();
   mPlotter->fontSize = dlg.fontSize();
 
-  uint delCount = 0;
+  QList<uint> deletedIds = dlg.getDeletedIds();
 
-  list = dlg.sensors();
-
-  for ( int i = 0; i < sensors().count(); ++i ) {
-    bool found = false;
-    for ( int j = 0; j < list.count(); ++j ) {
-      if ( list[ j ].id() == (int)( i + delCount ) ) {
-        mPlotter->footers[ i ] = list[ j ].label();
-        found = true;
-        if ( delCount > 0 )
-          list[ j ].setId( i );
-
-        continue;
-      }
-    }
-
-    if ( !found ) {
-      if ( removeSensor(i) ) {
-        i--;
-        delCount++;
-      }
-    }
+  for(int i = 0; i<deletedIds.count(); i++){
+	  removeSensor(deletedIds[i]);
   }
 
   repaint();
