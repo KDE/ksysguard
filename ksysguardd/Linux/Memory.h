@@ -41,5 +41,9 @@ void printSwapUsed( const char* );
 void printSwapUsedInfo( const char* );
 void printSwapFree( const char* );
 void printSwapFreeInfo( const char* );
+void printCDirty( const char* );
+void printCDirtyInfo( const char* );
+void printCWriteback( const char* );
+void printCWritebackInfo( const char* );
 
 #endif

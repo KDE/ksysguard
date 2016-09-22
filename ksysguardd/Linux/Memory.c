@@ -45,6 +45,8 @@ static unsigned long long Cached = 0;
 static unsigned long long STotal = 0;
 static unsigned long long SFree = 0;
 static unsigned long long SUsed = 0;
+static unsigned long long CDirty = 0;
+static unsigned long long CWriteback = 0;
 
 static void scan_one( const char* buff, const char *key, unsigned long long* val )
 {   
@@ -64,6 +66,8 @@ static void processMemInfo()
   scan_one( MemInfoBuf, "Slab", &Slab );
   scan_one( MemInfoBuf, "SwapTotal", &STotal );
   scan_one( MemInfoBuf, "SwapFree", &SFree );
+  scan_one( MemInfoBuf, "Dirty", &CDirty );
+  scan_one( MemInfoBuf, "Writeback", &CWriteback );
   Cached += Slab;
   Used = Total - MFree;
   Appl = ( Used - ( Buffers + Cached ) );
@@ -96,6 +100,8 @@ void initMemory( struct SensorModul* sm )
   registerMonitor( "mem/physical/cached", "integer", printCached, printCachedInfo, sm );
   registerMonitor( "mem/swap/used", "integer", printSwapUsed, printSwapUsedInfo, sm );
   registerMonitor( "mem/swap/free", "integer", printSwapFree, printSwapFreeInfo, sm );
+  registerMonitor( "mem/cache/dirty", "integer", printCDirty, printCDirtyInfo, sm);
+  registerMonitor( "mem/cache/writeback", "integer", printCWriteback, printCWritebackInfo, sm);
 }
 
 void exitMemory( void )
@@ -294,4 +300,44 @@ void printSwapFreeInfo( const char* cmd )
     processMemInfo();
 
   output( "Free Swap Memory\t0\t%llu\tKB\n", STotal );
+}
+
+void printCDirty( const char* cmd )
+{
+  (void)cmd;
+
+  if ( Dirty )
+    processMemInfo();
+
+  output( "%llu\n", CDirty );
+}
+
+void printCDirtyInfo( const char* cmd )
+{
+  (void)cmd;
+
+  if ( Dirty )
+    processMemInfo();
+
+  output( "Dirty Memory\t0\t%llu\tKB\n", CDirty);
+}
+
+void printCWriteback( const char* cmd )
+{
+  (void)cmd;
+
+  if ( Dirty )
+    processMemInfo();
+
+  output( "%llu\n", CWriteback );
+}
+
+void printCWritebackInfo( const char* cmd )
+{
+  (void)cmd;
+
+  if ( Dirty )
+    processMemInfo();
+
+  output( "Writeback Memory\t0\t%llu\tKB\n", CWriteback);
 }
