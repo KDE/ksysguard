@@ -15,7 +15,7 @@ TargetDir=ksysguard
 # How to name the files?
 # doesn't use payload file name
 
-CustomName=true 
+CustomName=true
 
 # What to do after installation? Any number of the lines below
 # unpack the downloaded archive
