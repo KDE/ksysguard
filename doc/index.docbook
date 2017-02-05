@@ -1,7 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN"
  "dtd/kdedbx45.dtd" [
-  <!ENTITY kappname "&ksysguard;">
   <!ENTITY % addindex "IGNORE">
   <!ENTITY % English "INCLUDE" > <!-- change language only here -->
 ]>
@@ -40,8 +39,8 @@
 
 <legalnotice>&FDLNotice;</legalnotice>
 
-<date>2015-07-27</date>
-<releaseinfo>&plasma; 5.4</releaseinfo>
+<date>2016-01-31</date>
+<releaseinfo>&plasma; 5.9</releaseinfo>
 
 <abstract><para>&ksysguard; is a network enabled task and system monitor
 application.</para></abstract> 
@@ -293,16 +292,7 @@ them over the already existing display.</para>
 <para>Worksheets can be configured by clicking <guimenuitem>Tab Properties</guimenuitem> 
 at the <guimenu>View</guimenu> menu. In the appearing dialog
 you can set the dimension and the update interval.</para>
-<!-- TimerSettings.cc not build in 4.4
-This update interval is
-used by all displays of the worksheet, which has the <guilabel>use update
-interval of worksheet</guilabel> set in its timer configuration dialog.</para>
--->
-<!--not in 4.4
-<para>The entry <guimenuitem>Configure Style</guimenuitem> of the
-<guimenu>Settings</guimenu> menu gives you the possibility to configure the
-global style attributes and apply them to the current active worksheet.</para>
--->
+
 <para>Displays can be configured by clicking with the right mouse button on
 them. A popup menu appear where you can select whether you want to change the
 properties of that display or remove it from the worksheet.</para>
@@ -370,6 +360,9 @@ sensor showing information about all mounted partitions</para>
 
 <sect2 id="connectingtootherhosts">
 <title>Connecting to other hosts</title>
+<!--FIXME https://techbase.kde.org/Development/Tutorials/Sensors -->
+<para>Note that the <guimenuitem>Monitor Remote Machine</guimenuitem> menu item
+is only available on custom tabs.</para>
 
 <para>To connect to a new host use <guimenuitem>Monitor Remote Machine...</guimenuitem>
 from the <guimenu>File</guimenu> menu. A dialog box will appear and allows you 
@@ -380,10 +373,8 @@ the daemon mode or a custom command can be used. Click <guibutton>OK</guibutton>
 establish the connection. Shortly afterwards the new host will appear in the
 sensor browser and you can browse the list of sensors.</para>
 
-<!--para>To disconnect from a host, select the host in the sensor browser and
-choose <guimenuitem>???</guimenuitem> from the
-context menu. If you still have sensors in use, the display
-frames will be grayed and the displays won't update any longer.</para-->
+<para>To disconnect from a host, you have to shut down it and restart
+&ksysguard; again.</para>
 
 <para>To establish a connection, a program called
 <application>ksysguardd</application>, that can be started in the following
