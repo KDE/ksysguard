@@ -524,7 +524,8 @@ void initStat( struct SensorModul* sm ) {
 			int id;
 			
 			sscanf( tag + 3, "%d", &id );
-			CPUCount++;
+			if ( CPUCount < id + 1 )
+				CPUCount = id + 1;
 			sprintf( cmdName, "cpu/cpu%d/user", id );
 			registerMonitor( cmdName, "float", printCPUxUser, printCPUxUserInfo, StatSM );
 			sprintf( cmdName, "cpu/cpu%d/nice", id );
