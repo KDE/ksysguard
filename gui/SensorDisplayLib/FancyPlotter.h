@@ -66,10 +66,10 @@ class FancyPlotter : public KSGRD::SensorDisplay
     FancyPlotter( QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
     virtual ~FancyPlotter();
 
-    void configureSettings();
+    void configureSettings() Q_DECL_OVERRIDE;
 
     bool addSensor( const QString &hostName, const QString &name,
-                    const QString &type, const QString &title );
+                    const QString &type, const QString &title ) Q_DECL_OVERRIDE;
     bool addSensor( const QString &hostName, const QString &name,
                     const QString &type, const QString &title,
                     const QColor &color, const QString &regexpName = QString(), 
@@ -77,29 +77,29 @@ class FancyPlotter : public KSGRD::SensorDisplay
 
     bool removeBeam( uint beamId );
 
-    virtual void setTitle( const QString &title );
+    void setTitle( const QString &title ) Q_DECL_OVERRIDE;
 
-    virtual void answerReceived( int id, const QList<QByteArray> &answerlist );
+    void answerReceived( int id, const QList<QByteArray> &answerlist ) Q_DECL_OVERRIDE;
 
-    virtual bool restoreSettings( QDomElement &element );
-    virtual bool saveSettings( QDomDocument &doc, QDomElement &element );
+    bool restoreSettings( QDomElement &element ) Q_DECL_OVERRIDE;
+    bool saveSettings( QDomDocument &doc, QDomElement &element ) Q_DECL_OVERRIDE;
 
-    virtual bool hasSettingsDialog() const;
+    bool hasSettingsDialog() const Q_DECL_OVERRIDE;
     void setBeamColor(int i, const QColor &color);
 
   public Q_SLOTS:
-    virtual void applyStyle();
+    void applyStyle() Q_DECL_OVERRIDE;
   private Q_SLOTS:
     void settingsFinished();
-    void applySettings();
+    void applySettings() Q_DECL_OVERRIDE;
     void plotterAxisScaleChanged();
 
   protected:
     /** When we receive a timer tick, draw the beams and request new information to update the beams*/
-    virtual void timerTick( );
-    virtual bool eventFilter( QObject*, QEvent* );
+    void timerTick( ) Q_DECL_OVERRIDE;
+    bool eventFilter( QObject*, QEvent* ) Q_DECL_OVERRIDE;
     virtual void reorderBeams(const QList<int> & orderOfBeams);
-    virtual void resizeEvent( QResizeEvent* );
+    void resizeEvent( QResizeEvent* ) Q_DECL_OVERRIDE;
     void setTooltip();
 
   private:

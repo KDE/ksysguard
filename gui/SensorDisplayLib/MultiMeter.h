@@ -39,20 +39,20 @@ class MultiMeter : public KSGRD::SensorDisplay
     }
 
     bool addSensor(const QString& hostName, const QString& sensorName,
-                   const QString& sensorType, const QString& sensorDescr);
-    void answerReceived(int id, const QList<QByteArray>& answerlist);
-    bool restoreSettings(QDomElement& element);
-    bool saveSettings(QDomDocument& doc, QDomElement& element);
+                   const QString& sensorType, const QString& sensorDescr) Q_DECL_OVERRIDE;
+    void answerReceived(int id, const QList<QByteArray>& answerlist) Q_DECL_OVERRIDE;
+    bool restoreSettings(QDomElement& element) Q_DECL_OVERRIDE;
+    bool saveSettings(QDomDocument& doc, QDomElement& element) Q_DECL_OVERRIDE;
 
-    virtual bool hasSettingsDialog() const
+    bool hasSettingsDialog() const Q_DECL_OVERRIDE
     {
       return true;
     }
 
-    void configureSettings();
+    void configureSettings() Q_DECL_OVERRIDE;
 
   public Q_SLOTS:
-    void applyStyle();
+    void applyStyle() Q_DECL_OVERRIDE;
 
   private:
     void setDigitColor(const QColor&);

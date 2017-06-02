@@ -90,12 +90,12 @@ class WorkSheet : public QWidget
 
   protected:
 
-    virtual void changeEvent( QEvent * event );
-    virtual QSize sizeHint() const;
-    virtual void dragMoveEvent( QDragMoveEvent* );
-    virtual void dragEnterEvent( QDragEnterEvent* );
-    void dropEvent( QDropEvent* );
-    bool event( QEvent* );
+    void changeEvent( QEvent * event ) Q_DECL_OVERRIDE;
+    QSize sizeHint() const Q_DECL_OVERRIDE;
+    void dragMoveEvent( QDragMoveEvent* ) Q_DECL_OVERRIDE;
+    void dragEnterEvent( QDragEnterEvent* ) Q_DECL_OVERRIDE;
+    void dropEvent( QDropEvent* ) Q_DECL_OVERRIDE;
+    bool event( QEvent* ) Q_DECL_OVERRIDE;
     void setUpdateInterval( float interval);
 
   private:

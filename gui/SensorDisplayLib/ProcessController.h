@@ -51,24 +51,24 @@ public:
 
     /* Functions for SensorDisplay*/
 
-    bool restoreSettings(QDomElement& element);
+    bool restoreSettings(QDomElement& element) Q_DECL_OVERRIDE;
 
-    bool saveSettings(QDomDocument& doc, QDomElement& element);
+    bool saveSettings(QDomDocument& doc, QDomElement& element) Q_DECL_OVERRIDE;
 
-    virtual void timerTick();
+    void timerTick() Q_DECL_OVERRIDE;
 
-    virtual bool addSensor(const QString&, const QString&, const QString&, const QString&);
+    bool addSensor(const QString&, const QString&, const QString&, const QString&) Q_DECL_OVERRIDE;
 
-    virtual void sensorError(int, bool err);
+    void sensorError(int, bool err) Q_DECL_OVERRIDE;
 
-    void configureSettings() { }
+    void configureSettings() Q_DECL_OVERRIDE { }
 
-    virtual bool hasSettingsDialog() const
+    bool hasSettingsDialog() const Q_DECL_OVERRIDE
     {
         return false;
     }
 
-    virtual void answerReceived(int id, const QList<QByteArray>& answer );
+    void answerReceived(int id, const QList<QByteArray>& answer ) Q_DECL_OVERRIDE;
 
     KSysGuardProcessList* processList()
     {

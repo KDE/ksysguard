@@ -41,29 +41,29 @@ public:
 	~LogFile(void);
 
 	bool addSensor(const QString& hostName, const QString& sensorName,
-				   const QString& sensorType, const QString& sensorDescr);
-	void answerReceived(int id, const QList<QByteArray>& answer);
+				   const QString& sensorType, const QString& sensorDescr) Q_DECL_OVERRIDE;
+	void answerReceived(int id, const QList<QByteArray>& answer) Q_DECL_OVERRIDE;
 
-	bool restoreSettings(QDomElement& element);
-	bool saveSettings(QDomDocument& doc, QDomElement& element);
+	bool restoreSettings(QDomElement& element) Q_DECL_OVERRIDE;
+	bool saveSettings(QDomDocument& doc, QDomElement& element) Q_DECL_OVERRIDE;
 
 	void updateMonitor(void);
 
-	void configureSettings(void);
+	void configureSettings(void) Q_DECL_OVERRIDE;
 
-	virtual void timerTick()
+	void timerTick() Q_DECL_OVERRIDE
 	{
 		updateMonitor();
 	}
 
-	virtual bool hasSettingsDialog() const
+	bool hasSettingsDialog() const Q_DECL_OVERRIDE
 	{
 		return true;
 	}
 
 public Q_SLOTS:
-	void applySettings();
-	void applyStyle();
+	void applySettings() Q_DECL_OVERRIDE;
+	void applyStyle() Q_DECL_OVERRIDE;
 
 	void settingsAddRule();
 	void settingsDeleteRule();

@@ -37,7 +37,7 @@ class LogSensor : public QObject, public KSGRD::SensorClient
     explicit LogSensor( QObject *parent );
     ~LogSensor();
 
-    virtual void answerReceived( int id, const QList<QByteArray>&answer );
+    void answerReceived( int id, const QList<QByteArray>&answer ) Q_DECL_OVERRIDE;
 
     void setHostName( const QString& name );
     QString hostName() const;
@@ -78,7 +78,7 @@ class LogSensor : public QObject, public KSGRD::SensorClient
     void changed();
 
   protected:
-    virtual void timerEvent ( QTimerEvent * event );
+    void timerEvent ( QTimerEvent * event ) Q_DECL_OVERRIDE;
 
   private:
     QString mSensorName;
@@ -108,7 +108,7 @@ class LogSensorView : public QTreeView
     void contextMenuRequest( const QModelIndex &index, const QPoint &pos );
 
   protected:
-    virtual void contextMenuEvent( QContextMenuEvent *event );
+    void contextMenuEvent( QContextMenuEvent *event ) Q_DECL_OVERRIDE;
 };
 
 class SensorLogger : public KSGRD::SensorDisplay
@@ -120,24 +120,24 @@ class SensorLogger : public KSGRD::SensorDisplay
     ~SensorLogger();
 
     bool addSensor( const QString& hostName, const QString& sensorName,
-                    const QString& sensorType, const QString& sensorDescr);
+                    const QString& sensorType, const QString& sensorDescr) Q_DECL_OVERRIDE;
 
     bool editSensor( LogSensor* );
 
-    virtual void answerReceived( int, const QList<QByteArray>& );
+    void answerReceived( int, const QList<QByteArray>& ) Q_DECL_OVERRIDE;
 
-    bool restoreSettings( QDomElement& );
-    bool saveSettings( QDomDocument&, QDomElement& );
+    bool restoreSettings( QDomElement& ) Q_DECL_OVERRIDE;
+    bool saveSettings( QDomDocument&, QDomElement& ) Q_DECL_OVERRIDE;
 
-    void configureSettings();
+    void configureSettings() Q_DECL_OVERRIDE;
 
-    virtual bool hasSettingsDialog() const
+    bool hasSettingsDialog() const Q_DECL_OVERRIDE
     {
       return true;
     }
 
   public Q_SLOTS:
-    void applyStyle();
+    void applyStyle() Q_DECL_OVERRIDE;
     void contextMenuRequest( const QModelIndex &index, const QPoint &pos );
 
   private:

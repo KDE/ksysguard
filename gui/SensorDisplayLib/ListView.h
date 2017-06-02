@@ -52,7 +52,7 @@ public:
         mAlignment.clear();
     }
 
-    QVariant data(const QModelIndex &index, int role) const
+    QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE
     {
         int column = index.column();
 
@@ -73,28 +73,28 @@ public:
     ListView(QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
     ~ListView() {}
 
-    bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& sensorDescr);
-    void answerReceived(int id, const QList<QByteArray>& answerlist);
+    bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& sensorDescr) Q_DECL_OVERRIDE;
+    void answerReceived(int id, const QList<QByteArray>& answerlist) Q_DECL_OVERRIDE;
     void updateList();
 
-    bool restoreSettings(QDomElement& element);
-    bool saveSettings(QDomDocument& doc, QDomElement& element);
+    bool restoreSettings(QDomElement& element) Q_DECL_OVERRIDE;
+    bool saveSettings(QDomDocument& doc, QDomElement& element) Q_DECL_OVERRIDE;
 
-    virtual bool hasSettingsDialog() const
+    bool hasSettingsDialog() const Q_DECL_OVERRIDE
     {
         return true;
     }
 
-    virtual void timerTick()
+    void timerTick() Q_DECL_OVERRIDE
     {
         updateList();
     }
 
-    void configureSettings();
+    void configureSettings() Q_DECL_OVERRIDE;
 
 public Q_SLOTS:
-    void applySettings();
-    void applyStyle();
+    void applySettings() Q_DECL_OVERRIDE;
+    void applyStyle() Q_DECL_OVERRIDE;
     void showColumnContextMenu(const QPoint &point);
 
 private:

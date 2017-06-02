@@ -70,7 +70,7 @@ class BarGraph : public QWidget
     void changeRange( double min, double max );
 
   protected:
-    virtual void paintEvent( QPaintEvent* );
+    void paintEvent( QPaintEvent* ) Q_DECL_OVERRIDE;
 
   private:
     double minValue;

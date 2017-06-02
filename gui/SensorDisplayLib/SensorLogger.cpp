@@ -65,21 +65,21 @@ class LogSensorModel : public QAbstractTableModel
     {
     }
 
-    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const Q_DECL_OVERRIDE
     {
       Q_UNUSED( parent );
 
       return 5;
     }
 
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const Q_DECL_OVERRIDE
     {
       Q_UNUSED( parent );
 
       return mSensors.count();
     }
 
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const Q_DECL_OVERRIDE
     {
       if ( !index.isValid() )
         return QVariant();
@@ -126,7 +126,7 @@ class LogSensorModel : public QAbstractTableModel
       return QVariant();
     }
 
-    virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const Q_DECL_OVERRIDE
     {
       if ( orientation == Qt::Vertical )
         return QVariant();

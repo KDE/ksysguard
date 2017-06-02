@@ -80,7 +80,7 @@ class FancyPlotterLabel : public QLabel {
         resizeEvent(NULL);
         update();
     }
-    virtual void resizeEvent( QResizeEvent * ) {
+    void resizeEvent( QResizeEvent * ) Q_DECL_OVERRIDE {
         QFontMetrics fm = fontMetrics();
 
         if(valueText.isEmpty()) {

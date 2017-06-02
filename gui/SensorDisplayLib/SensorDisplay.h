@@ -179,7 +179,7 @@ class SensorDisplay : public QWidget, public SensorClient
     /**
       Normaly you shouldn't reimplement this methode
      */
-    virtual void sensorLost( int reqId );
+    void sensorLost( int reqId ) Q_DECL_OVERRIDE;
 
     /**
      * Sets the object where the delete events will be sent to.
@@ -221,8 +221,8 @@ class SensorDisplay : public QWidget, public SensorClient
     void translatedTitleChanged(const QString&);
 
   protected:
-    virtual bool eventFilter( QObject*, QEvent* );
-    virtual void changeEvent( QEvent * event );
+    bool eventFilter( QObject*, QEvent* ) Q_DECL_OVERRIDE;
+    void changeEvent( QEvent * event ) Q_DECL_OVERRIDE;
 
     void registerSensor( SensorProperties *sp );
     void unregisterSensor( uint pos );
