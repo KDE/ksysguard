@@ -20,8 +20,11 @@
 
 #include <config-workspace.h>
 
+#define _POSIX_SOURCE /* expose old gethostbyaddr(3) call */
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -264,10 +267,10 @@ updateNetStatTcpUdpRaw(const char *cmd)
 {
 	FILE *netstat;
 	char buffer[1024];
-	uint local_addr, local_port;
-	uint remote_addr, remote_port;
+	unsigned local_addr, local_port;
+	unsigned remote_addr, remote_port;
 	int uid;
-	uint state;
+	unsigned state;
 	SocketInfo *socket_info;
 
 	if (strstr(cmd, "tcp")) {

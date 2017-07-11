@@ -20,6 +20,8 @@
 
 #include <config-workspace.h>
 
+#define _XOPEN_SOURCE /* isascii */
+
 #include <mntent.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -63,8 +65,10 @@ char *getMntPnt( const char* cmd )
     memset( device, 0, sizeof( device ) );
     sscanf( cmd, "partitions%1024s", device );
 
-    ptr = (char*)rindex( device, '/' );
-    *ptr = '\0';
+    ptr = strrchr( device, '/' );
+    if( ptr ) {
+        *ptr = '\0';
+    }
 
     return (char*)device;
 }

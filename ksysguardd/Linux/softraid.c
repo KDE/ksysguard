@@ -21,6 +21,7 @@
 #include "ksysguardd.h"
 #include "softraid.h"
 
+#define _POSIX_C_SOURCE 200809L /* strndup */
 #include <string.h> /* for strlen, strcat and strcmp */
 #include <stdio.h> /* for sprintf */
 #include <sys/types.h> /* for open */

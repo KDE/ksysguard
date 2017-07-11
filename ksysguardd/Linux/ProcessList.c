@@ -18,6 +18,9 @@
 
 */
 
+#define _BSD_SOURCE /* kill, syscall */
+#define _DEFAULT_SOURCE /* Eliminate warning from prev */
+
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
@@ -29,6 +32,7 @@
 #include <sys/resource.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/syscall.h>
 #include <sys/ptrace.h>
 #include <asm/unistd.h>
 

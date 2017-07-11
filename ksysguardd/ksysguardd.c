@@ -22,6 +22,9 @@
 
 */
 
+/* strdup, fileno, fdopen */
+#define _POSIX_C_SOURCE 200809L
+
 #include <config-workspace.h>
 #include <ctype.h>
 #include <fcntl.h>
