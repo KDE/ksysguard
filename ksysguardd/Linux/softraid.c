@@ -508,7 +508,7 @@ md1 : active raid1 sda2[0] sdb2[1]
 				MyArray->ArrayActive = true;
 			else if (strncmp(current_word, "inactive", sizeof("inactive")-1)==0)
 				MyArray->ArrayActive = false;
-			else if (MyArray->ArrayActive >=0 && MyArray->level == NULL && current_word[0] != '(' && current_word[0] != ':' /*readonly*/) {
+			else if (MyArray->ArrayActive && MyArray->level == NULL && current_word[0] != '(' && current_word[0] != ':' /*readonly*/) {
 				MyArray->level = strndup(current_word, current_word_length);
 				in_devs = 1;
 
