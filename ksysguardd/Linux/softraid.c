@@ -500,9 +500,7 @@ md1 : active raid1 sda2[0] sdb2[1]
 			}
 
 			char *eq;
-			int in_devs = 0;
 			int temp_int =0;
-			
 			
 			if (strncmp(current_word, "active", sizeof("active")-1)==0)
 				MyArray->ArrayActive = true;
@@ -510,17 +508,8 @@ md1 : active raid1 sda2[0] sdb2[1]
 				MyArray->ArrayActive = false;
 			else if (MyArray->ArrayActive && MyArray->level == NULL && current_word[0] != '(' && current_word[0] != ':' /*readonly*/) {
 				MyArray->level = strndup(current_word, current_word_length);
-				in_devs = 1;
-
 			} else if (sscanf(current_word, "%d blocks ", &temp_int) == 1 ) {
 				MyArray->NumBlocks = temp_int; /* We have to do it via a temp_int variable otherwise we'll end up with nonsence if it's not found */
-			} else if (in_devs && strncmp(current_word, "blocks", sizeof("blocks")-1)==0)
-				in_devs = 0;
-#ifdef __GNUC__
-#warning in_devs cannot be != 0!! (CID 3228)
-#endif
-			else if (in_devs && strncmp(current_word, "md", 2)==0) {
-				/* This has an md device as a component.  Maybe we should note this or something*/
 			} else if(sscanf(current_word, "%[^[ ][%d]%[^ ]", buffer, &harddisk_index, status) >= 2) {
 				/*Each device in the raid has an index.  We can find the total number of devices in the raid by 
 				  simply finding the device with the highest index + 1. */
