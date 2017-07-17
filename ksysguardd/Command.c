@@ -19,7 +19,7 @@
 
 */
 
-#define _POSIX_C_SOURCE /* sig.*set */
+#define _POSIX_C_SOURCE 200809L /* sig.*set */
 #include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
