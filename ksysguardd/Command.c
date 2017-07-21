@@ -19,7 +19,7 @@
 
 */
 
-#define _POSIX_C_SOURCE 200809L /* sig.*set */
+#define _XOPEN_SOURCE 700 /* gettimeofday, and implies POSIX.1-2008's sig.*set */
 #include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
