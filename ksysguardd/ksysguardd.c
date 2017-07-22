@@ -22,8 +22,16 @@
 
 */
 
-/* strdup, fileno, fdopen */
-#define _POSIX_C_SOURCE 200809L
+/* gettimeofday, strdup, fileno, fdopen */
+#define _XOPEN_SOURCE 700
+
+/* amazingly, this is not in POSIX, XOPEN, etc. so systems like FreeBSD
+ * that treat _XOPEN_SOURCE as a restriction on definitions will refuse
+ * to define this with _XOPEN_SOURCE defined
+ */
+#ifndef INADDR_LOOPBACK
+#define INADDR_LOOPBACK ((in_addr_t) 0x7F000001)
+#endif
 
 #include <config-workspace.h>
 #include <ctype.h>
@@ -284,7 +292,7 @@ int addClient( int client )
         return -1;
       }
       /* We use unbuffered IO */
-      fcntl( fileno( out ), F_SETFL, O_NDELAY );
+      fcntl( fileno( out ), F_SETFL, O_NONBLOCK );
       ClientList[ i ].out = out;
       printWelcome( out );
       fprintf( out, "ksysguardd> " );
@@ -324,7 +332,7 @@ int createServerSocket()
   struct sockaddr_in s_in;
   struct servent *service;
 
-  if ( ( newSocket = socket( PF_INET, SOCK_STREAM, 0 ) ) < 0 ) {
+  if ( ( newSocket = socket( AF_INET, SOCK_STREAM, 0 ) ) < 0 ) {
     log_error( "socket()" );
     return -1;
   }
