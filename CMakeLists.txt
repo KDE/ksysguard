@@ -1,5 +1,5 @@
 project(ksysguard)
-set(PROJECT_VERSION "5.10.95")
+set(PROJECT_VERSION "5.11.90")
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 set(QT_MIN_VERSION "5.4.0")
 
