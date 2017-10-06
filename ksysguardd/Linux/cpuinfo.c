@@ -56,6 +56,10 @@ static void processCpuInfo( void )
      * by the parse thus far */
     int coreUniqueId = 0;
 
+    /* Indicates whether the "cpu MHz" value of the processor in /proc/cpuinfo should be used.
+     * This is not done if parsing the frequency from cpufreq worked. */
+    int useCpuInfoFreq = 1;
+
     /* Reset global variables */
     numCores = 0;
     numProcessors = 0;
@@ -94,8 +98,24 @@ static void processCpuInfo( void )
                     registerMonitor( cmdName, "float", printCPUxClock, printCPUxClockInfo,
                             CpuInfoSM );
                 }
+
+                useCpuInfoFreq = 1;
+
+                const char freqTemplate[] = "/sys/bus/cpu/devices/cpu%d/cpufreq/scaling_cur_freq";
+                char freqName[sizeof(freqTemplate) + 3];
+                snprintf(freqName, sizeof(freqName) - 1, freqTemplate, coreUniqueId);
+                FILE *freqFd = fopen(freqName, "r");
+                if (freqFd) {
+                    unsigned long khz;
+                    if(fscanf(freqFd, "%lu\n", &khz) == 1) {
+                        Clocks[coreUniqueId] = khz / 1000.0f;
+                        useCpuInfoFreq = 0;
+                    }
+
+                    fclose(freqFd);
+                }
             }
-        } else if ( strcmp( tag, "cpu MHz" ) == 0 ) {
+        } else if ( useCpuInfoFreq && strcmp( tag, "cpu MHz" ) == 0 ) {
             if (HighNumCores > coreUniqueId) {
                 /* The if statement above *should* always be true, but there's no harm in being safe. */
                 sscanf( value, "%f", &Clocks[ coreUniqueId ] );
