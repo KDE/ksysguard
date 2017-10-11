@@ -550,9 +550,10 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
                        "Parts derived (by permission) from the sunos5\n"
                        "module of William LeFebvre's \"top\" utility." ),
                        QStringLiteral("tk@Genetik.Uni-Bielefeld.DE") );
+    KAboutData::setApplicationData(aboutData);
+    app.setWindowIcon(QIcon::fromTheme(QStringLiteral("utilities-system-monitor")));
 
     QCommandLineParser parser;
-    KAboutData::setApplicationData(aboutData);
     parser.addVersionOption();
     parser.addHelpOption();
     parser.addPositionalArgument(QStringLiteral("[worksheet]"), i18n( "Optional worksheet files to load" ));
@@ -561,7 +562,6 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
     parser.process(app);
     aboutData.processCommandLine(&parser);
 
-  app.setWindowIcon(QIcon::fromTheme(QStringLiteral("utilities-system-monitor")));
 
   KSGRD::SensorMgr = new KSGRD::SensorManager();
   KSGRD::Style = new KSGRD::StyleEngine();
