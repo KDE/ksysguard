@@ -554,14 +554,11 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
     app.setWindowIcon(QIcon::fromTheme(QStringLiteral("utilities-system-monitor")));
 
     QCommandLineParser parser;
-    parser.addVersionOption();
-    parser.addHelpOption();
+    aboutData.setupCommandLine(&parser);
     parser.addPositionalArgument(QStringLiteral("[worksheet]"), i18n( "Optional worksheet files to load" ));
 
-    aboutData.setupCommandLine(&parser);
     parser.process(app);
     aboutData.processCommandLine(&parser);
-
 
   KSGRD::SensorMgr = new KSGRD::SensorManager();
   KSGRD::Style = new KSGRD::StyleEngine();
