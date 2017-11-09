@@ -1,5 +1,6 @@
 [KNewStuff2]
-ProvidersUrl=http://newstuff.kde.org/cgi-bin/hotstuff-provider?site=ksysguard
+ProvidersUrl=https://download.kde.org/ocs/providers.xml
+Categories=System Monitor Tabs
 
 # How to check? Any number of the lines below, 'ifpossible' is default
 #ChecksumPolicy=... # never/ifpossible/always
