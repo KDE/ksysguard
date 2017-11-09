@@ -9,7 +9,7 @@
  published by the Free Software Foundation; either version 2 of
  the License or (at your option) version 3 or any later version
  accepted by the membership of KDE e.V. (or its successor approved
- by the membership of KDE e.V.), which shall act as a proxy 
+ by the membership of KDE e.V.), which shall act as a proxy
  defined in Section 14 of version 3 of the license.
 
  This program is distributed in the hope that it will be useful,
@@ -143,7 +143,7 @@ void Workspace::newWorkSheet()
     mSheetList.append( sheet );
     setCurrentIndex(indexOf( sheet ));
     connect( sheet, &WorkSheet::titleChanged,
-	     this, &Workspace::updateSheetTitle);
+         this, &Workspace::updateSheetTitle);
   }
 }
 void Workspace::contextMenu (int index, const QPoint &point) {
@@ -326,8 +326,8 @@ bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)
   QString baseName = fileName.right( fileName.length() - fileName.lastIndexOf( '/' ) - 1 );
 
   foreach( WorkSheet *sheet, mSheetList ) {
-	  if(sheet->fileName() == baseName)
-		  return false; //Don't add the same sheet twice
+      if(sheet->fileName() == baseName)
+          return false; //Don't add the same sheet twice
   }
 
   WorkSheet *sheet = new WorkSheet( 0 );
