@@ -8,7 +8,7 @@
  published by the Free Software Foundation; either version 2 of
  the License or (at your option) version 3 or any later version
  accepted by the membership of KDE e.V. (or its successor approved
- by the membership of KDE e.V.), which shall act as a proxy 
+ by the membership of KDE e.V.), which shall act as a proxy
  defined in Section 14 of version 3 of the license.
 
  This program is distributed in the hope that it will be useful,
@@ -307,7 +307,7 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
         case 19: {
             for (int i = 0; i < answer.count(); i++) {
                 KSGRD::SensorTokenizer records(answer[i], '\t');
-                for (int j = 0; j < records.count() && j < mColumnTypes.count(); j++) {
+                for (uint j = 0; j < records.count() && j < (uint)mColumnTypes.count(); j++) {
                     QStandardItem *item = new QStandardItem();
                     item->setEditable(false);
                     switch( mColumnTypes[j] ) {
