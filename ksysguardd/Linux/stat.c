@@ -521,7 +521,7 @@ void initStat( struct SensorModul* sm ) {
 		else if ( strncmp( "cpu", tag, 3 ) == 0 ) {
 			char cmdName[ 24 ];
 			/* Load for each SMP CPU */
-			int id;
+			unsigned id;
 			
 			sscanf( tag + 3, "%d", &id );
 			if ( CPUCount < id + 1 )
