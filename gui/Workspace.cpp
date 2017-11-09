@@ -30,6 +30,7 @@
 #include <kacceleratormanager.h>
 #include <kactioncollection.h>
 #include <KNewStuff3/KNS3/DownloadDialog>
+#include <KNewStuff3/KNSCore/Engine>
 #include <KConfigGroup>
 
 #include "WorkSheet.h"
@@ -290,8 +291,19 @@ void Workspace::uploadHotNewWorksheet()
     WorkSheet *currentWorksheet = currentWorkSheet();
     if(!currentWorksheet)
         return;
-
-    KMessageBox::information(this, i18n("<qt>To propose the current custom tab as a new System Monitor tab, email <br><a href=\"file:%1\">%2</a><br> to <a href=\"mailto:john.tapsell@kde.org?subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde.org</a></qt>", currentWorksheet->fullFileName().section('/',0,-2), currentWorksheet->fullFileName()), i18n("Upload custom System Monitor tab"), QString(), KMessageBox::AllowLink);
+    KNSCore::Engine engine;
+    engine.init(QStringLiteral("ksysguard.knsrc"));
+    Q_ASSERT(engine.categories().size() == 1);
+    KMessageBox::information(this,
+                             xi18nc("@info",
+                                 "<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> in the <icode>%2</icode> category.</para>"
+                                 "<para><filename>%3</filename></para>",
+                                    QStringLiteral("https://store.kde.org"),
+                                    engine.categories().at(0),
+                                    currentWorksheet->fullFileName()),
+                             i18n("Upload custom System Monitor tab"),
+                             QString(),
+                             KMessageBox::AllowLink);
 }
 void Workspace::getHotNewWorksheet()
 {
