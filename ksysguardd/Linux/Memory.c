@@ -49,11 +49,10 @@ static unsigned long long CDirty = 0;
 static unsigned long long CWriteback = 0;
 
 static void scan_one( const char* buff, const char *key, unsigned long long* val )
-{   
-  int o;
+{
   char *b = strstr( buff, key );
-  if ( b )  
-    o = sscanf( b + strlen( key ), ": %llu", val );
+  if ( b )
+    sscanf( b + strlen( key ), ": %llu", val );
 }
 
 static void processMemInfo()
