@@ -208,7 +208,7 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 	ssize_t nbytes;
 	
 	char sensorName[128];
-	char arrayDevice[ARRAYNAMELEN + 5];
+	char arrayDevice[ARRAYNAMELEN + 5 + 1];
 	char format[ 32 ];
 	char lineBuf[ 1024 ];
 	char mdadmStatBuf[ MDADMSTATBUFSIZE ];	/* Buffer for mdadm --detail */
