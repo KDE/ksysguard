@@ -224,13 +224,13 @@ QColor SensorDisplay::restoreColor( QDomElement &element, const QString &attr,
 void SensorDisplay::saveColor( QDomElement &element, const QString &attr,
                                const QColor &color )
 {
-  element.setAttribute( attr, "0x" + QString::number(color.rgba(),16) );
+  element.setAttribute( attr, QStringLiteral("0x") + QString::number(color.rgba(),16) );
 }
 
 void SensorDisplay::saveColorAppend( QDomElement &element, const QString &attr,
                                const QColor &color )
 {
-  element.setAttribute( attr, element.attribute(attr) + ",0x" + QString::number(color.rgba(),16) );
+  element.setAttribute( attr, element.attribute(attr) + QStringLiteral(",0x") + QString::number(color.rgba(),16) );
 }
 
 bool SensorDisplay::addSensor( const QString &hostName, const QString &name,

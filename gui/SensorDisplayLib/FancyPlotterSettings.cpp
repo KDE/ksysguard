@@ -205,7 +205,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   mView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
   bool hideFirstColumn = true;
   for(int i = 0; i < mModel->rowCount(); i++)
-    if(mModel->data(mModel->index(i, 0)) != "localhost") {
+    if(mModel->data(mModel->index(i, 0)) != QStringLiteral("localhost")) {
       hideFirstColumn = false;
       break;
     }
@@ -296,8 +296,8 @@ QString FancyPlotterSettings::title() const
 
 void FancyPlotterSettings::setRangeUnits( const QString & units )
 {
-  mMinValue->setSuffix(' ' + units);
-  mMaxValue->setSuffix(' ' + units);
+  mMinValue->setSuffix(QLatin1Char(' ') + units);
+  mMaxValue->setSuffix(QLatin1Char(' ') + units);
 }
 
 void FancyPlotterSettings::setUseManualRange( bool value )

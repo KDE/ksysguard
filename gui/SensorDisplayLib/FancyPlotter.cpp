@@ -69,7 +69,7 @@ class FancyPlotterLabel : public QLabel {
             if(fontMetrics().inFont(QChar(0x25CF)))
                 indicatorSymbol = QChar(0x25CF);
             else
-                indicatorSymbol = '#';
+                indicatorSymbol = QLatin1Char('#');
         }
         changeLabel(color);
 
@@ -116,14 +116,14 @@ class FancyPlotterLabel : public QLabel {
         color = _color;
 
         if ( QApplication::layoutDirection() == Qt::RightToLeft )
-            longHeadingText = QStringLiteral(": ") + labelName + " <font color=\"" + color.name() + "\">" + indicatorSymbol + "</font>";
+            longHeadingText = QStringLiteral(": ") + labelName + QStringLiteral(" <font color=\"") + color.name() + QStringLiteral("\">") + indicatorSymbol + QStringLiteral("</font>");
         else
-            longHeadingText = QStringLiteral("<qt><font color=\"") + color.name() + "\">" + indicatorSymbol + "</font> " + labelName + " :";
-        shortHeadingText = QStringLiteral("<qt><font color=\"") + color.name() + "\">" + indicatorSymbol + "</font>";
-        noHeadingText = QStringLiteral("<qt><font color=\"") + color.name() + "\">";
+            longHeadingText = QStringLiteral("<qt><font color=\"") + color.name() + QStringLiteral("\">") + indicatorSymbol + QStringLiteral("</font> ") + labelName + QStringLiteral(" :");
+        shortHeadingText = QStringLiteral("<qt><font color=\"") + color.name() + QStringLiteral("\">") + indicatorSymbol + QStringLiteral("</font>");
+        noHeadingText = QStringLiteral("<qt><font color=\"") + color.name() + QStringLiteral("\">");
 
-        textMargin = fontMetrics().width('x') + margin()*2 + frameWidth()*2;
-        longHeadingWidth = fontMetrics().boundingRect(labelName + " :" + indicatorSymbol + " x").width() + textMargin;
+        textMargin = fontMetrics().width(QLatin1Char('x')) + margin()*2 + frameWidth()*2;
+        longHeadingWidth = fontMetrics().boundingRect(labelName + QStringLiteral(" :") + indicatorSymbol + QStringLiteral(" x")).width() + textMargin;
         shortHeadingWidth = fontMetrics().boundingRect(indicatorSymbol).width() + textMargin;
         setMinimumWidth(shortHeadingWidth);
         update();
@@ -131,9 +131,9 @@ class FancyPlotterLabel : public QLabel {
   private:
     void setBothText(const QString &heading, const QString & value) {
         if(QApplication::layoutDirection() == Qt::LeftToRight)
-            setText(heading + ' ' + value);
+            setText(heading + QLatin1Char(' ') + value);
         else
-            setText("<qt>" + value + ' ' + heading);
+            setText(QStringLiteral("<qt>") + value + QLatin1Char(' ') + heading);
     }
     int textMargin;
     QString longHeadingText;
@@ -169,7 +169,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     if(fm.inFont(QChar(0x25CF)))
         mIndicatorSymbol = QChar(0x25CF);
     else
-        mIndicatorSymbol = '#';
+        mIndicatorSymbol = QLatin1Char('#');
 
     QBoxLayout *layout = new QVBoxLayout(this);
     layout->setSpacing(0);
@@ -428,7 +428,7 @@ bool FancyPlotter::addSensor( const QString &hostName, const QString &name,
 
     /* To differentiate between answers from value requests and info
      * requests we add 100 to the beam index for info requests. */
-    sendRequest( hostName, name + '?', sensors().size() - 1 + 100 );
+    sendRequest( hostName, name + QLatin1Char('?'), sensors().size() - 1 + 100 );
 
     if((int)mBeams == beamId) {
         mPlotter->addBeam( color );
@@ -517,7 +517,7 @@ void FancyPlotter::setTooltip()
             if (sensor->unit() == QLatin1String("%"))
                 lastValue = i18nc("units", "%1%", lastValue);
             else if( !sensor->unit().isEmpty() )
-                lastValue = i18nc("units", QString(QString("%1 ") + sensor->unit()).toUtf8().constData(), lastValue);
+                lastValue = i18nc("units", QString(QStringLiteral("%1 ") + sensor->unit()).toUtf8().constData(), lastValue);
         } else {
             lastValue = i18n("Error");
         }
@@ -536,14 +536,14 @@ void FancyPlotter::setTooltip()
         beamId = sensor->beamId;
 
         if(sensor->isLocalhost()) {
-            tooltip += QStringLiteral( "%1%2 %3 (%4)" ).arg( neednewline  ? "<br>" : "")
-                .arg("<font color=\"" + mPlotter->beamColor( beamId ).name() + "\">"+mIndicatorSymbol+"</font>")
+            tooltip += QStringLiteral( "%1%2 %3 (%4)" ).arg( neednewline  ? QStringLiteral("<br>") : QString())
+                .arg(QStringLiteral("<font color=\"") + mPlotter->beamColor( beamId ).name() + QStringLiteral("\">") + mIndicatorSymbol+ QStringLiteral("</font>"))
                 .arg( i18n(description.toUtf8().constData()) )
                 .arg( lastValue );
 
         } else {
-            tooltip += QStringLiteral( "%1%2 %3:%4 (%5)" ).arg( neednewline ? "<br>" : "" )
-                .arg("<font color=\"" + mPlotter->beamColor( beamId ).name() + "\">"+mIndicatorSymbol+"</font>")
+            tooltip += QStringLiteral( "%1%2 %3:%4 (%5)" ).arg( neednewline ? QStringLiteral("<br>") : QString() )
+                .arg(QStringLiteral("<font color=\"") + mPlotter->beamColor( beamId ).name() + QStringLiteral("\">") + mIndicatorSymbol+ QStringLiteral("</font>"))
                 .arg( sensor->hostName() )
                 .arg( i18n(description.toUtf8().constData()) )
                 .arg( lastValue );
@@ -588,7 +588,7 @@ void FancyPlotter::sendDataToPlotter( )
                         if (sensor->unit() == QLatin1String("%"))
                             lastValue = i18nc("units", "%1%", lastValue);
                         else if( !sensor->unit().isEmpty() )  {
-                            lastValue = i18nc("units", QString("%1 " + sensor->unit()).toUtf8().constData(), lastValue);
+                            lastValue = i18nc("units", QString(QStringLiteral("%1 ") + sensor->unit()).toUtf8().constData(), lastValue);
                         }
                     }
 
@@ -660,7 +660,7 @@ void FancyPlotter::plotterAxisScaleChanged()
 #endif
         mPlotter->setScaleDownBy(1);
         //translate any others
-        unit = ki18nc("units", QString("%1 " + mUnit).toUtf8().constData());
+        unit = ki18nc("units", QString(QStringLiteral("%1 ") + mUnit).toUtf8().constData());
     }
     mPlotter->setUnit(unit);
     //reconnect
@@ -784,8 +784,8 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
     mPlotter->setStackGraph( element.attribute(QStringLiteral("stacked"), QStringLiteral("0")).toInt());
 
     QString filename = element.attribute( QStringLiteral("svgBackground"));
-    if (!filename.isEmpty() && filename[0] == '/') {
-        filename = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "ksysguard/" + filename);
+    if (!filename.isEmpty() && filename[0] == QLatin1Char('/')) {
+        filename = QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("ksysguard/") + filename);
     }
     mPlotter->setSvgBackground( filename );
     if(version >= 1) {
@@ -805,7 +805,7 @@ bool FancyPlotter::restoreSettings( QDomElement &element )
             sensor->hostname = el.attribute( QStringLiteral("hostName") );
             sensor->type = el.attribute( QStringLiteral("sensorType") );
             sensor->summationName = el.attribute(QStringLiteral("summationName"));
-            QStringList colors = el.attribute(QStringLiteral("color")).split(',');
+            QStringList colors = el.attribute(QStringLiteral("color")).split(QLatin1Char(','));
             bool ok;
             foreach(const QString &color, colors) {
                 int c = color.toUInt( &ok, 0 );

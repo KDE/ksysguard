@@ -36,7 +36,7 @@
 #include <QInputDialog>
 #include "DancingBarsSettings.h"
 
-DancingBarsSettings::DancingBarsSettings( QWidget* parent, const char* name )
+DancingBarsSettings::DancingBarsSettings(QWidget* parent, const QString &name )
   : KPageDialog( parent ), mModel( new SensorModel( this ) )
 {
   setFaceType( Tabbed );
