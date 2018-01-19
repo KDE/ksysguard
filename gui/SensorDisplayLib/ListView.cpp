@@ -283,6 +283,7 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
             /* add the new columns */
             mModel.clear();
             QStringList translatedHeaders;
+            translatedHeaders.reserve(headers.count());
             for (uint i = 0; i < headers.count(); i++) {
                 translatedHeaders.append( i18nc("heading from daemon", headers[i].constData()) );
             }
@@ -317,7 +318,7 @@ ListView::answerReceived(int id, const QList<QByteArray>& answer)
                         break;
                       case Percentage:
                         item->setData(records[j].toInt(), Qt::UserRole);
-                        item->setText(records[j] + "%");
+                        item->setText(records[j] + QLatin1Char('%'));
                         break;
                       case Float:
                         item->setData(records[j].toFloat(), Qt::DisplayRole);
