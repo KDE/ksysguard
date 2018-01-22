@@ -77,7 +77,7 @@ class FancyPlotterLabel : public QLabel {
     void setValueText(const QString &value) {
         //value can have multiple strings, separated with the 0x9c character
         valueText = value.split(QChar(0x9c));
-        resizeEvent(NULL);
+        resizeEvent(nullptr);
         update();
     }
     void resizeEvent( QResizeEvent * ) Q_DECL_OVERRIDE {
@@ -160,7 +160,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     mSensorManualMax = mSensorManualMin = 0;
     mUseManualRange = false;
     mNumAnswers = 0;
-    mLabelsWidget = NULL;
+    mLabelsWidget = nullptr;
 
     //The unicode character 0x25CF is a big filled in circle.  We would prefer to use this in the tooltip.
     //However it's maybe possible that the font used to draw the tooltip won't have it.  So we fall back to a 
@@ -264,7 +264,7 @@ void FancyPlotter::configureSettings()
     bool hasIntegerRange = true;
     SensorModelEntry::List list;
     for ( int i = 0; i < (int)mBeams; ++i ) {
-        FPSensorProperties *sensor = NULL;
+        FPSensorProperties *sensor = nullptr;
         //find the first sensor for this beam, since one beam can have many sensors
         for ( int j = 0; j < sensors().count(); ++j ) {
             FPSensorProperties *sensor2 = static_cast<FPSensorProperties *>(sensors().at(j));

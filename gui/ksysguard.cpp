@@ -75,11 +75,11 @@ static const char Description[] = I18N_NOOP( "KDE System Monitor" );
 TopLevel* Toplevel;
 
 TopLevel::TopLevel()
-  : KXmlGuiWindow( NULL, Qt::WindowFlags(KDE_DEFAULT_WINDOWFLAGS) | Qt::WindowContextHelpButtonHint)
+  : KXmlGuiWindow( nullptr, Qt::WindowFlags(KDE_DEFAULT_WINDOWFLAGS) | Qt::WindowContextHelpButtonHint)
 {
   QDBusConnection::sessionBus().registerObject(QStringLiteral("/"), this, QDBusConnection::ExportScriptableSlots);
   mTimerId = -1;
-  mLocalProcessController = NULL;
+  mLocalProcessController = nullptr;
 
   mSplitter = new QSplitter( this );
   mSplitter->setOrientation( Qt::Horizontal );
@@ -137,7 +137,7 @@ TopLevel::TopLevel()
   mHotNewWorksheetUploadAction->setIcon( QIcon::fromTheme(QStringLiteral("network-server")) );
   connect(mHotNewWorksheetUploadAction, &QAction::triggered, mWorkSpace, &Workspace::uploadHotNewWorksheet);
 
-  mQuitAction = NULL;
+  mQuitAction = nullptr;
 
   mConfigureSheetAction = actionCollection()->addAction( QStringLiteral("configure_sheet") );
   mConfigureSheetAction->setIcon( QIcon::fromTheme(QStringLiteral("configure")) );
@@ -170,7 +170,7 @@ void TopLevel::retranslateUi()
 
   mConfigureSheetAction->setText( i18n( "Tab &Properties" ) );
   if(mQuitAction) {
-    QAction *tmpQuitAction = KStandardAction::quit( NULL, NULL, NULL );
+    QAction *tmpQuitAction = KStandardAction::quit( nullptr, nullptr, nullptr );
     mQuitAction->setText(tmpQuitAction->text());
     mQuitAction->setWhatsThis(tmpQuitAction->whatsThis());
     mQuitAction->setToolTip(tmpQuitAction->toolTip());

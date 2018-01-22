@@ -79,7 +79,7 @@ QVariant SensorBrowserModel::data( const QModelIndex & index, int role) const { 
             if(index.column() == 0) {
                 HostInfo *host = getHostInfo(index.internalId());
                 KSGRD::SensorAgent *agent;
-                if(host != NULL && (agent = host->sensorAgent())) {
+                if(host != nullptr && (agent = host->sensorAgent())) {
                     if(agent->daemonOnLine())
                         return QIcon::fromTheme(QStringLiteral("computer"));
                     else
@@ -94,7 +94,7 @@ QVariant SensorBrowserModel::data( const QModelIndex & index, int role) const { 
             if(index.column() == 0) {
                 HostInfo *host = getHostInfo(index.internalId());
                 KSGRD::SensorAgent *agent;
-                if(host != NULL && (agent = host->sensorAgent())) {
+                if(host != nullptr && (agent = host->sensorAgent())) {
                     if(agent->daemonOnLine())
                         return agent->hostName();
                     else
@@ -177,7 +177,7 @@ QStringList SensorBrowserModel::listSensors( int parentId) const
 }
 SensorInfo *SensorBrowserModel::getSensorInfo(QModelIndex index) const
 {
-    if(!index.isValid()) return NULL;
+    if(!index.isValid()) return nullptr;
     return mSensorInfoMap.value(index.internalId());
 }
 int SensorBrowserModel::makeSensor(HostInfo *hostInfo, int parentId, const QString &sensorName, const QString &name, const QString &sensorType) {
@@ -518,13 +518,13 @@ void SensorBrowserModel::disconnectHost(const HostInfo *hostInfo)
 void SensorBrowserModel::disconnectHost(const QString &hostname)
 {
     HostInfo* toDelete = findHostInfoByHostName(hostname);
-    if (toDelete != NULL)
+    if (toDelete != nullptr)
         disconnectHost(toDelete);
 }
 HostInfo* SensorBrowserModel::findHostInfoByHostName(const QString &hostName) const {
-    HostInfo* toReturn = NULL;
+    HostInfo* toReturn = nullptr;
     QMapIterator<int, HostInfo*> it( mHostInfoMap );
-    while (it.hasNext() && toReturn == NULL) {
+    while (it.hasNext() && toReturn == nullptr) {
         it.next();
         if (it.value()->hostName() == hostName) {
             toReturn = it.value();
@@ -539,7 +539,7 @@ void SensorBrowserModel::hostAdded(KSGRD::SensorAgent *sensorAgent, const QStrin
 
 void SensorBrowserModel::hostRemoved(const QString &hostName)  {
     HostInfo* toRemove = findHostInfoByHostName(hostName);
-    if (toRemove != NULL)  {
+    if (toRemove != nullptr)  {
         beginResetModel();
         int hostId = toRemove->id();
         removeAllSensorUnderBranch(toRemove,hostId);

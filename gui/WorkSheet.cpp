@@ -353,7 +353,7 @@ KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, QString
             break;
         default:
             Q_ASSERT(false);
-            return NULL;
+            return nullptr;
     }
     newDisplay->applyStyle();
     connect(&mTimer, &QTimer::timeout, newDisplay, &KSGRD::SensorDisplay::timerTick);
@@ -748,7 +748,7 @@ KSGRD::SensorDisplay *WorkSheet::currentDisplay( int * row, int * column )
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 void WorkSheet::fixTabOrder()

@@ -142,11 +142,11 @@ void ListView::showColumnContextMenu(const QPoint &point)
         }
     }*/
 
-    QAction *actionAuto = NULL;
-    QAction *actionKB = NULL;
-    QAction *actionMB = NULL;
-    QAction *actionGB = NULL;
-    QAction *actionTB = NULL;
+    QAction *actionAuto = nullptr;
+    QAction *actionKB = nullptr;
+    QAction *actionMB = nullptr;
+    QAction *actionGB = nullptr;
+    QAction *actionTB = nullptr;
     if (mColumnTypes[index] == KByte) {
         menu->addSeparator()->setText(i18n("Display Units"));
         QActionGroup *unitsGroup = new QActionGroup(menu);

@@ -38,8 +38,8 @@
 ProcessController::ProcessController(QWidget* parent,  SharedSettings *workSheetSettings)
     : KSGRD::SensorDisplay(parent, QString(), workSheetSettings)
 {
-    mProcessList = NULL;
-    mProcesses = NULL;
+    mProcessList = nullptr;
+    mProcesses = nullptr;
 }
 
 void

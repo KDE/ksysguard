@@ -45,7 +45,7 @@ LogFile::LogFile(QWidget *parent, const QString& title, SharedSettings *workShee
 {
     qDebug() << "Making sensor logger";
 	logFileID= 0;
-	lfs = NULL;
+    lfs = nullptr;
 	QLayout *layout = new QHBoxLayout(this);
 	monitor = new QListWidget(this);
 	layout->addWidget(monitor);
