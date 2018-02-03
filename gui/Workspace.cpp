@@ -139,7 +139,7 @@ void Workspace::newWorkSheet()
     WorkSheet* sheet = new WorkSheet( dlg.rows(), dlg.columns(), dlg.interval(), 0 );
     sheet->setTitle( dlg.sheetTitle() );
     sheet->setFileName( sheetName + ".sgrd" );
-    insertTab(-1, sheet, dlg.sheetTitle() );
+    insertTab(-1, sheet, dlg.sheetTitle().replace("&", "&&") );
     mSheetList.append( sheet );
     setCurrentIndex(indexOf( sheet ));
     connect( sheet, &WorkSheet::titleChanged,
@@ -341,7 +341,7 @@ bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)
   connect( sheet, &WorkSheet::titleChanged,
     this, &Workspace::updateSheetTitle);
 
-  insertTab(-1, sheet, sheet->translatedTitle() );
+  insertTab(-1, sheet, sheet->translatedTitle().replace("&", "&&") );
   if(switchToTab)
    setCurrentIndex(indexOf(sheet));
 
