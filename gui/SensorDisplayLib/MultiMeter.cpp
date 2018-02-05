@@ -23,7 +23,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <QtXml/qdom.h>
+#include <QDomElement>
 #include <QLCDNumber>
 #include <QHBoxLayout>
 

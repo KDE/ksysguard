@@ -31,6 +31,10 @@
 #include <QFile>
 #include <QByteArray>
 #include <QApplication>
+#include <QDebug>
+#include <QDir>
+#include <QFileInfo>
+#include <QMimeData>
 
 #include <KLocalizedString>
 #include <kmessagebox.h>

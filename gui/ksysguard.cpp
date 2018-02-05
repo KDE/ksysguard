@@ -46,6 +46,7 @@
 #include <QApplication>
 #include <QCommandLineOption>
 #include <QCommandLineParser>
+#include <QDBusConnection>
 #include <QIcon>
 #include <QLabel>
 #include <QSplitter>

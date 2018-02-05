@@ -22,7 +22,7 @@
 
 #include <QApplication>
 #include <QDebug>
-#include <QtXml/qdom.h>
+#include <QDomElement>
 #include <QToolTip>
 #include <QVBoxLayout>
 #include <QHBoxLayout>

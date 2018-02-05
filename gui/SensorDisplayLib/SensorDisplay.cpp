@@ -23,7 +23,7 @@
 
 #include <QCheckBox>
 #include <QDebug>
-#include <QtXml/qdom.h>
+#include <QDomElement>
 #include <QMenu>
 
 #include <QPixmap>

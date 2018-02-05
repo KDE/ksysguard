@@ -24,7 +24,7 @@
 #define KSG_KSYSGUARD_H
 
 #include <QEvent>
-#include <QtDBus>
+#include <QDBusMessage>
 
 #include <KXmlGuiWindow>
 
