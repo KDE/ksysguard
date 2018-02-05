@@ -1,2 +1,2 @@
 install( FILES ksysguarddrc  DESTINATION  ${KDE_INSTALL_FULL_SYSCONFDIR} )
-install( FILES ksysguard.notifyrc DESTINATION  ${KNOTIFYRC_INSTALL_DIR} )
+install( FILES ksysguard.notifyrc DESTINATION  ${KDE_INSTALL_KNOTIFY5RCDIR} )

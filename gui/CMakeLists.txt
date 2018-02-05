@@ -67,8 +67,8 @@ install(TARGETS ksysguard         ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install( PROGRAMS org.kde.ksysguard.desktop  DESTINATION  ${XDG_APPS_INSTALL_DIR} )
-install( FILES ProcessTable.sgrd SystemLoad2.sgrd DESTINATION  ${DATA_INSTALL_DIR}/ksysguard )
-install( FILES ksysguardui.rc  DESTINATION  ${KXMLGUI_INSTALL_DIR}/ksysguard )
-install( FILES ksysguard.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
+install( PROGRAMS org.kde.ksysguard.desktop  DESTINATION  ${KDE_INSTALL_APPDIR} )
+install( FILES ProcessTable.sgrd SystemLoad2.sgrd DESTINATION  ${KDE_INSTALL_DATADIR}/ksysguard )
+install( FILES ksysguardui.rc  DESTINATION  ${KDE_INSTALL_KXMLGUI5DIR}/ksysguard )
+install( FILES ksysguard.knsrc DESTINATION ${KDE_INSTALL_CONFDIR})
 
