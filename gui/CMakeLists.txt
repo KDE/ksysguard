@@ -62,8 +62,8 @@ target_link_libraries(kdeinit_ksysguard
     KF5::IconThemes
     KF5::WindowSystem)
 
-install(TARGETS kdeinit_ksysguard ${INSTALL_TARGETS_DEFAULT_ARGS})
-install(TARGETS ksysguard         ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS kdeinit_ksysguard ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS ksysguard         ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 

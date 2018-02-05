@@ -60,4 +60,4 @@ if( ${CMAKE_SYSTEM_NAME} MATCHES "SunOS" )
   target_link_libraries(ksysguardd socket nsl)
 endif()
 
-install(TARGETS ksysguardd ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS ksysguardd ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
