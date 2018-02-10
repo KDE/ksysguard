@@ -124,7 +124,7 @@ void LogFile::configureSettings(void)
 		applySettings();
 
 	delete lfs;
-	lfs = 0;
+    lfs = nullptr;
 }
 
 void LogFile::settingsRuleTextChanged()

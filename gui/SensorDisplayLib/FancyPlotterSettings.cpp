@@ -52,11 +52,11 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   connect(buttonBox()->button(QDialogButtonBox::Ok), &QAbstractButton::clicked, this, &FancyPlotterSettings::okClicked);
   connect(buttonBox()->button(QDialogButtonBox::Apply), &QAbstractButton::clicked, this, &FancyPlotterSettings::applyClicked);
 
-  QFrame *page = 0;
-  QGridLayout *pageLayout = 0;
-  QGridLayout *boxLayout = 0;
-  QGroupBox *groupBox = 0;
-  QLabel *label = 0;
+  QFrame *page = nullptr;
+  QGridLayout *pageLayout = nullptr;
+  QGridLayout *boxLayout = nullptr;
+  QGroupBox *groupBox = nullptr;
+  QLabel *label = nullptr;
 
   // Style page
   page = new QFrame();
@@ -219,9 +219,9 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   mEditButton->setWhatsThis( i18n( "Push this button to configure the color of the sensor in the diagram." ) );
   pageLayout->addWidget( mEditButton, 0, 1 );
 
-  mRemoveButton = 0;
-  mMoveUpButton = 0;
-  mMoveDownButton = 0;
+  mRemoveButton = nullptr;
+  mMoveUpButton = nullptr;
+  mMoveDownButton = nullptr;
   if ( !locked ) {
     mRemoveButton = new QPushButton( i18n( "Delete" ), page );
     mRemoveButton->setWhatsThis( i18n( "Push this button to delete the sensor." ) );
