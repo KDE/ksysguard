@@ -353,8 +353,8 @@ void FancyPlotter::applySettings() {
 
 void FancyPlotter::resizeEvent( QResizeEvent* )
 {
-    bool showHeading = true;;
-    bool showLabels = true;;
+    bool showHeading = true;
+    bool showLabels = true;
 
     if( height() < mLabelsWidget->sizeHint().height() + mHeading->sizeHint().height() + mPlotter->minimumHeight() )
         showHeading = false;
