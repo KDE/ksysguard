@@ -21,6 +21,7 @@
 #include "ui_MultiMeterSettingsWidget.h"
 
 #include <QColor>
+#include <QDoubleValidator>
 
 #include <KLocalizedString>
 
