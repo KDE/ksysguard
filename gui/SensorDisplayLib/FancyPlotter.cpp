@@ -594,7 +594,7 @@ void FancyPlotter::sendDataToPlotter( )
 
                     if(sensor->maxValue != 0 && sensor->unit() != QLatin1String("%")) {
                         //Use a multi length string incase we do not have enough room
-                        lastValue = i18n("%1 of %2" "\xc2\x9c" "%1", lastValue, mPlotter->valueAsString(sensor->maxValue, precision) );
+                        lastValue = i18n("%1 of %2", lastValue, mPlotter->valueAsString(sensor->maxValue, precision) ) + "\xc2\x9c" + lastValue;
                     }
                 } else {
                     lastValue = i18n("Error");
