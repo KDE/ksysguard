@@ -35,7 +35,7 @@ class LogSensor : public QObject, public KSGRD::SensorClient
 
   public:
     explicit LogSensor( QObject *parent );
-    ~LogSensor();
+    ~LogSensor() Q_DECL_OVERRIDE;
 
     void answerReceived( int id, const QList<QByteArray>&answer ) Q_DECL_OVERRIDE;
 

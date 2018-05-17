@@ -67,7 +67,7 @@ class SensorDisplay : public QWidget, public SensorClient
     /**
       Destructor.
      */
-    virtual ~SensorDisplay();
+    ~SensorDisplay() Q_DECL_OVERRIDE;
 
     /**
       Sets the title of the display.  If you override, please call this

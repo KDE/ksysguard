@@ -33,7 +33,7 @@ class SensorLoggerSettings : public QDialog
 
   public:
 
-    explicit SensorLoggerSettings( QWidget *parent=0, const char *name=0 );
+    explicit SensorLoggerSettings( QWidget *parent=nullptr, const char *name=nullptr );
     ~SensorLoggerSettings();
 
     QString title();

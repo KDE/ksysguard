@@ -64,7 +64,7 @@ class FancyPlotter : public KSGRD::SensorDisplay
 
   public:
     FancyPlotter( QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
-    virtual ~FancyPlotter();
+    ~FancyPlotter() Q_DECL_OVERRIDE;
 
     void configureSettings() Q_DECL_OVERRIDE;
 

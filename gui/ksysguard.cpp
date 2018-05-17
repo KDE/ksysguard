@@ -86,7 +86,7 @@ TopLevel::TopLevel()
   mSplitter->setOrientation( Qt::Horizontal );
   setCentralWidget( mSplitter );
 
-  mSensorBrowser = 0;
+  mSensorBrowser = nullptr;
 
   mWorkSpace = new Workspace( mSplitter );
   connect( mWorkSpace, SIGNAL(setCaption(QString)),

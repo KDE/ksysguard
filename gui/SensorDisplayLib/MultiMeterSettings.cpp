@@ -25,7 +25,7 @@
 
 #include <KLocalizedString>
 
-MultiMeterSettings::MultiMeterSettings( QWidget *parent, const char *name )
+MultiMeterSettings::MultiMeterSettings(QWidget *parent, const QString &name )
     : QDialog( parent )
 {
   setObjectName( name );

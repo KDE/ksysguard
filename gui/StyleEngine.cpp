@@ -44,7 +44,7 @@ StyleEngine::StyleEngine(QObject * parent) : QObject(parent)
   mSensorColors.append( QColor( 0xf3c300 ) );  // bright yellow
 
   uint v = 0x00ff00;
-  for ( uint i = mSensorColors.count(); i < 32; ++i ) {
+  for ( int i = mSensorColors.count(); i < 32; ++i ) {
     v = ( ( ( v + 82 ) & 0xff ) << 23 ) | ( v >> 8 );
     mSensorColors.append( QColor( v & 0xff, ( v >> 16 ) & 0xff, ( v >> 8 ) & 0xff ) );
   }

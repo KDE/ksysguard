@@ -34,7 +34,7 @@ class BarGraph : public QWidget
 
   public:
     explicit BarGraph( QWidget *parent );
-    ~BarGraph();
+    ~BarGraph() Q_DECL_OVERRIDE;
 
     bool addBar( const QString &footer );
     bool removeBar( uint idx );
@@ -76,7 +76,7 @@ class BarGraph : public QWidget
     double minValue;
     double maxValue;
     double lowerLimit;
-    double lowerLimitActive;
+    bool lowerLimitActive;
     double upperLimit;
     bool upperLimitActive;
     bool autoRange;

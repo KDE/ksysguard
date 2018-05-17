@@ -59,7 +59,7 @@ class DancingBars : public KSGRD::SensorDisplay
     void applyStyle() Q_DECL_OVERRIDE;
 
   private:
-    uint mBars;
+    int mBars;
 
     BarGraph* mPlotter;
 

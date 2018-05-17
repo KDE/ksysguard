@@ -37,7 +37,7 @@ class LogFile : public KSGRD::SensorDisplay
 	Q_OBJECT
 public:
 	LogFile(QWidget *parent, const QString& title, SharedSettings *workSheetSettings);
-	~LogFile(void);
+    ~LogFile() Q_DECL_OVERRIDE;
 
 	bool addSensor(const QString& hostName, const QString& sensorName,
 				   const QString& sensorType, const QString& sensorDescr) Q_DECL_OVERRIDE;

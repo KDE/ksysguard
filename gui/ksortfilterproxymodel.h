@@ -40,9 +40,9 @@ class KSortFilterProxyModel
   Q_OBJECT
     public:
       /*! Constructs a sorting filter model with the given parent. */
-      KSortFilterProxyModel(QObject * parent = 0);
+      explicit KSortFilterProxyModel(QObject * parent = nullptr);
       /*! Destroys this sorting filter model. */
-      ~KSortFilterProxyModel();
+      ~KSortFilterProxyModel() Q_DECL_OVERRIDE;
 
       /*! Whether to show the children of a matching parent.
        *  This is false by default. */

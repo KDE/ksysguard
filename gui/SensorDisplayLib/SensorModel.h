@@ -66,7 +66,7 @@ class SensorModel : public QAbstractTableModel
 {
   Q_OBJECT
   public:
-    SensorModel( QObject *parent = 0 );
+    explicit SensorModel( QObject *parent = nullptr );
 
     void setSensors( const SensorModelEntry::List &sensors );
     SensorModelEntry::List sensors() const;

@@ -34,7 +34,7 @@ class MultiMeter : public KSGRD::SensorDisplay
 
   public:
     MultiMeter(QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
-    virtual ~MultiMeter()
+    ~MultiMeter() Q_DECL_OVERRIDE
     {
     }
 

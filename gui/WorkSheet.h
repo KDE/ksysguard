@@ -50,7 +50,7 @@ class WorkSheet : public QWidget
   public:
     explicit WorkSheet( QWidget* parent);
     WorkSheet( int rows, int columns, float interval, QWidget* parent);
-    ~WorkSheet();
+    ~WorkSheet() Q_DECL_OVERRIDE;
 
     bool load( const QString &fileName );
     bool save( const QString &fileName );
@@ -103,7 +103,7 @@ class WorkSheet : public QWidget
 
     bool replaceDisplay( int row, int column, QDomElement& element, int rowSpan = 1, int columnSpan = 1 );
 
-    void replaceDisplay( int row, int column, KSGRD::SensorDisplay* display = 0, int rowSpan = 1, int columnSpan = 1 );
+    void replaceDisplay( int row, int column, KSGRD::SensorDisplay* display = nullptr, int rowSpan = 1, int columnSpan = 1 );
 
     void collectHosts( QStringList &list );
 
@@ -111,7 +111,7 @@ class WorkSheet : public QWidget
 
     void resizeGrid( int rows, int columns );
 
-    KSGRD::SensorDisplay* currentDisplay( int *row = NULL, int *column = NULL );
+    KSGRD::SensorDisplay* currentDisplay( int *row = nullptr, int *column = nullptr );
 
     void fixTabOrder();
 

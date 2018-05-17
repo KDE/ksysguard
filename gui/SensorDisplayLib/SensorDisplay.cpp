@@ -61,8 +61,8 @@ SensorDisplay::SensorDisplay( QWidget *parent, const QString &title, SharedSetti
 
   mShowUnit = false;
   mTimerId = NONE;
-  mErrorIndicator = 0;
-  mPlotterWdg = 0;
+  mErrorIndicator = nullptr;
+  mPlotterWdg = nullptr;
 
   this->setWhatsThis( QStringLiteral("dummy") );
 
@@ -78,7 +78,7 @@ SensorDisplay::SensorDisplay( QWidget *parent, const QString &title, SharedSetti
 
 SensorDisplay::~SensorDisplay()
 {
-  if ( SensorMgr != 0 )
+  if ( SensorMgr != nullptr )
     SensorMgr->disconnectClient( this );
 
   if ( mTimerId > 0 )
@@ -109,7 +109,7 @@ void SensorDisplay::timerTick()
 void SensorDisplay::showContextMenu(const QPoint &pos)
 {
     QMenu pm;
-    QAction *action = 0;
+    QAction *action = nullptr;
     bool menuEmpty = true;
 
     if ( hasSettingsDialog() ) {
@@ -312,7 +312,7 @@ void SensorDisplay::setSensorOk( bool ok )
 {
   if ( ok ) {
     delete mErrorIndicator;
-    mErrorIndicator = 0;
+    mErrorIndicator = nullptr;
   } else {
     if ( mErrorIndicator )
       return;

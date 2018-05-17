@@ -33,7 +33,7 @@ class MultiMeterSettings : public QDialog
 
   public:
 
-    explicit MultiMeterSettings( QWidget *parent=0, const char *name=0 );
+    explicit MultiMeterSettings( QWidget *parent=nullptr, const QString &name=QString() );
     ~MultiMeterSettings();
 
     QString title();

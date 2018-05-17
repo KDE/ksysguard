@@ -136,7 +136,7 @@ void Workspace::newWorkSheet()
   WorkSheetSettings dlg( this, false /*not locked.  New custom sheets aren't locked*/ );
   dlg.setSheetTitle( sheetName );
   if ( dlg.exec() ) {
-    WorkSheet* sheet = new WorkSheet( dlg.rows(), dlg.columns(), dlg.interval(), 0 );
+    WorkSheet* sheet = new WorkSheet( dlg.rows(), dlg.columns(), dlg.interval(), nullptr );
     sheet->setTitle( dlg.sheetTitle() );
     sheet->setFileName( sheetName + ".sgrd" );
     insertTab(-1, sheet, dlg.sheetTitle().replace("&", "&&") );
@@ -260,7 +260,7 @@ void Workspace::removeWorkSheet()
 void Workspace::removeAllWorkSheets()
 {
   WorkSheet *sheet;
-  while ( ( sheet = (WorkSheet*)currentWidget() ) != 0 ) {
+  while ( ( sheet = (WorkSheet*)currentWidget() ) != nullptr ) {
     saveWorkSheet( sheet );
     removeTab(indexOf( sheet ));
     mSheetList.removeAll( sheet );
@@ -330,7 +330,7 @@ bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)
           return false; //Don't add the same sheet twice
   }
 
-  WorkSheet *sheet = new WorkSheet( 0 );
+  WorkSheet *sheet = new WorkSheet( nullptr );
   sheet->setFileName( baseName );
   if ( !sheet->load( fileName ) ) {
     delete sheet;

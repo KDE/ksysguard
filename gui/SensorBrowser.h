@@ -45,7 +45,7 @@ class SensorBrowserModel : public QAbstractItemModel, private KSGRD::SensorClien
   Q_OBJECT
   public:
     SensorBrowserModel();
-    ~SensorBrowserModel();
+    ~SensorBrowserModel() Q_DECL_OVERRIDE;
     int columnCount( const QModelIndex &) const Q_DECL_OVERRIDE;
     QVariant data( const QModelIndex & parent, int role) const Q_DECL_OVERRIDE;
     QVariant headerData ( int section, Qt::Orientation orientation, int role) const Q_DECL_OVERRIDE;

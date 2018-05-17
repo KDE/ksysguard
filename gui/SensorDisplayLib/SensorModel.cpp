@@ -127,19 +127,14 @@ QVariant SensorModel::data( const QModelIndex &index, int role ) const
     switch ( index.column() ) {
       case 0:
         return sensor.hostName();
-        break;
       case 1:
         return sensor.sensorName();
-        break;
       case 2:
         return sensor.unit();
-        break;
       case 3:
         return sensor.status();
-        break;
       case 4:
         return sensor.label();
-        break;
     }
   } else if ( role == Qt::DecorationRole ) {
     if ( index.column() == 1 ) {
@@ -164,19 +159,14 @@ QVariant SensorModel::headerData( int section, Qt::Orientation orientation, int 
     switch ( section ) {
       case 0:
         return i18n( "Host" );
-        break;
       case 1:
         return i18n( "Sensor" );
-        break;
       case 2:
         return i18n( "Unit" );
-        break;
       case 3:
         return i18n( "Status" );
-        break;
       case 4:
         return i18n( "Label" );
-        break;
       default:
         return QVariant();
     }

@@ -22,7 +22,7 @@
 
 #include <KLocalizedString>
 
-ListViewSettings::ListViewSettings( QWidget *parent, const char *name )
+ListViewSettings::ListViewSettings(QWidget *parent, const QString &name )
     : QDialog( parent )
 {
   setObjectName( name );

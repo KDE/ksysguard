@@ -32,7 +32,7 @@ class DummyDisplay : public KSGRD::SensorDisplay
 
   public:
     DummyDisplay( QWidget* parent, SharedSettings *workSheetSettings);
-    virtual ~DummyDisplay() {}
+    ~DummyDisplay() Q_DECL_OVERRIDE {}
 
     bool eventFilter( QObject*, QEvent* ) Q_DECL_OVERRIDE;
 };

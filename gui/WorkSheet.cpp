@@ -57,7 +57,7 @@
 WorkSheet::WorkSheet( QWidget *parent )
   : QWidget( parent )
 {
-    mGridLayout = 0;
+    mGridLayout = nullptr;
     mRows = mColumns = 0;
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     setAcceptDrops( true );
@@ -66,7 +66,7 @@ WorkSheet::WorkSheet( QWidget *parent )
     WorkSheet::WorkSheet( int rows, int columns, float interval, QWidget* parent )
 : QWidget( parent)
 {
-    mGridLayout = 0;
+    mGridLayout = nullptr;
     setUpdateInterval( interval );
 
     createGrid( rows, columns );
@@ -323,7 +323,7 @@ QString WorkSheet::title() const {
 
 KSGRD::SensorDisplay* WorkSheet::insertDisplay( DisplayType displayType, QString displayTitle, int row, int column, int rowSpan, int columnSpan )
 {
-    KSGRD::SensorDisplay* newDisplay = 0;
+    KSGRD::SensorDisplay* newDisplay = nullptr;
     switch(displayType) {
         case DisplayDummy: 
             newDisplay = new DummyDisplay( this, &mSharedSettings );
@@ -397,7 +397,7 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
             else if (execed == a4)
                 displayType = DisplaySensorLogger;
             else 
-                return 0;
+                return nullptr;
         } else if ( sensorType == QLatin1String("listview") ) {
             displayType = DisplayListView;
         }
@@ -415,14 +415,14 @@ KSGRD::SensorDisplay *WorkSheet::addDisplay( const QString &hostName,
         }
         else {
             qDebug() << "Unknown sensor type: " <<  sensorType;
-            return 0;
+            return nullptr;
         }
         display = insertDisplay(displayType, sensorDescr, row, column);
     }
     if (!display->addSensor( hostName, sensorName, sensorType, sensorDescr )) {
             // Failed to add sensor, so we need to remove the display that we just added
             removeDisplay(display);
-            return 0;
+            return nullptr;
     }
 
     return display;
@@ -757,7 +757,7 @@ KSGRD::SensorDisplay *WorkSheet::currentDisplay( int * row, int * column )
 
 void WorkSheet::fixTabOrder()
 {
-    QWidget* previous = 0;
+    QWidget* previous = nullptr;
     for (int i = 0; i < mGridLayout->count(); i++)
     {
         QWidget* current = mGridLayout->itemAt(i)->widget();

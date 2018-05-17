@@ -60,7 +60,7 @@ void LogSensorView::contextMenuEvent( QContextMenuEvent *event )
 class LogSensorModel : public QAbstractTableModel
 {
   public:
-    LogSensorModel( QObject *parent = 0 )
+    LogSensorModel( QObject *parent = nullptr )
       : QAbstractTableModel( parent )
     {
     }
@@ -93,16 +93,12 @@ class LogSensorModel : public QAbstractTableModel
         switch ( index.column() ) {
           case 1:
             return sensor->timerInterval();
-            break;
           case 2:
             return sensor->sensorName();
-            break;
           case 3:
             return sensor->hostName();
-            break;
           case 4:
             return sensor->fileName();
-            break;
         }
       } else if ( role == Qt::DecorationRole ) {
         static QPixmap runningPixmap = KIconLoader::global()->loadIcon( QStringLiteral("running"), KIconLoader::Small, KIconLoader::SizeSmall );
@@ -135,19 +131,14 @@ class LogSensorModel : public QAbstractTableModel
         switch ( section ) {
           case 0:
             return i18nc("@title:column", "Logging");
-            break;
           case 1:
             return i18nc("@title:column", "Timer Interval");
-            break;
           case 2:
             return i18nc("@title:column", "Sensor Name");
-            break;
           case 3:
             return i18nc("@title:column", "Host Name");
-            break;
           case 4:
             return i18nc("@title:column", "Log File");
-            break;
           default:
             return QVariant();
         }
@@ -175,7 +166,7 @@ class LogSensorModel : public QAbstractTableModel
     LogSensor* sensor( const QModelIndex &index ) const
     {
       if ( !index.isValid() || index.row() >= mSensors.count() || index.row() < 0 )
-        return 0;
+        return nullptr;
 
       return mSensors[ index.row() ];
     }
@@ -369,7 +360,7 @@ void LogSensor::answerReceived( int id, const QList<QByteArray>& answer ) //virt
 
         // send notification
         KNotification::event( QStringLiteral("sensor_alarm"), QStringLiteral( "sensor '%1' at '%2' reached lower limit" )
-                            .arg( mSensorName ).arg( mHostName), QPixmap(), 0 );
+                            .arg( mSensorName ).arg( mHostName), QPixmap(), nullptr );
 
         timerOn();
       } else if ( mUpperLimitActive && value > mUpperLimit ) {
@@ -378,7 +369,7 @@ void LogSensor::answerReceived( int id, const QList<QByteArray>& answer ) //virt
 
         // send notification
         KNotification::event( QStringLiteral("sensor_alarm"), QStringLiteral( "sensor '%1' at '%2' reached upper limit" )
-                            .arg( mSensorName).arg( mHostName), QPixmap(), 0 );
+                            .arg( mSensorName).arg( mHostName), QPixmap(), nullptr );
 
         timerOn();
       } else {
@@ -592,7 +583,7 @@ void SensorLogger::contextMenuRequest( const QModelIndex &index, const QPoint &p
 
   QMenu pm;
 
-  QAction *action = 0;
+  QAction *action = nullptr;
   if (hasSettingsDialog()) {
     action = pm.addAction(i18n("&Properties"));
     action->setData( 1 );

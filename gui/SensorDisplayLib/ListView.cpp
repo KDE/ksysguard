@@ -357,7 +357,7 @@ ListView::restoreSettings(QDomElement& element)
     //At this stage, we don't have the heading information, so we cannot setup the headers yet.
     //Save the info, the restore later.
     mHeaderSettings = QByteArray::fromBase64(element.attribute(QStringLiteral("treeViewHeader")).toLatin1());
-    mUnits = (ListView::Units)element.attribute(QStringLiteral("units"), QStringLiteral("0")).toInt();
+    mUnits = static_cast<ListView::Units>(element.attribute(QStringLiteral("units"), QStringLiteral("0")).toInt());
 
 /*    QPalette pal = monitor->palette();
     pal.setColor(QPalette::Link, restoreColor(element, "gridColor",
@@ -411,7 +411,7 @@ ListView::configureSettings()
         applySettings();
 
     delete lvs;
-    lvs = 0;
+    lvs = nullptr;
 }
 
 void
