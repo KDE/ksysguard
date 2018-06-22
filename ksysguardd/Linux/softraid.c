@@ -215,7 +215,7 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 	char* mdadmStatBufP;
 
 	/* Create a pipe */
-	if(pipe(fd) == -1)
+	if(pipe2(fd, O_CLOEXEC) == -1)
 	{
 		perror("Could not create a pipe to launch mdadm.");
 		exit(1);
@@ -257,6 +257,9 @@ void getMdadmDetail( ArrayInfo* MyArray ) {
 	nbytes = read( fd[0], mdadmStatBuf, MDADMSTATBUFSIZE-1 );
         if (nbytes >= 0)
 	   mdadmStatBuf[nbytes] = '\0';
+
+	/* Close output side of pipe */
+	close(fd[0]);
 
 	/* Now, go through mdadmStatBuf line by line. Register monitors along the way */
 	sprintf( format, "%%%d[^\n]\n", (int)sizeof( lineBuf ) - 1 );
