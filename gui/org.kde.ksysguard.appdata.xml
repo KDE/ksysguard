@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component type="desktop-application">
+  <name>KSysGuard</name>
+  <summary>Monitor running processes and system performance</summary>
+  <icon type="stock">utilities-system-monitor</icon>
+  <id>org.kde.ksysguard</id>
+  <launchable type="desktop-id">org.kde.ksysguard.desktop</launchable>
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-2.0+</project_license>
+  <description>
+    <p>System Guard allows you to monitor information and statistics about your system.</p>
+    <p>In addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.</p>
+  </description>
+  <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?product=ksysguard</url>
+  <url type="help">https://userbase.kde.org/KSysGuard</url>
+  <url type="homepage">https://www.kde.org/applications/system/ksysguard</url>
+  <url type="donation">https://www.kde.org/donate.php?app=org.kde.ksysguard</url>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://www.kde.org/images/screenshots/ksysguard.png</image>
+    </screenshot>
+  </screenshots>
+</component>
