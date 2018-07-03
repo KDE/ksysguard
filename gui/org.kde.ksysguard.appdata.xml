@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component type="desktop-application">
   <name>KSysGuard</name>
+  <name xml:lang="ca">KSysGuard</name>
+  <name xml:lang="nl">KSysGuard</name>
+  <name xml:lang="uk">KSysGuard</name>
+  <name xml:lang="x-test">xxKSysGuardxx</name>
   <summary>Monitor running processes and system performance</summary>
+  <summary xml:lang="ca">Controlador de processos en execució i rendiment del sistema</summary>
+  <summary xml:lang="nl">Actieve processen en systeemprestaties monitoren</summary>
+  <summary xml:lang="uk">Стеження за процесами та швидкодією системи</summary>
+  <summary xml:lang="x-test">xxMonitor running processes and system performancexx</summary>
   <icon type="stock">utilities-system-monitor</icon>
   <id>org.kde.ksysguard</id>
   <launchable type="desktop-id">org.kde.ksysguard.desktop</launchable>
@@ -9,7 +17,15 @@
   <project_license>GPL-2.0+</project_license>
   <description>
     <p>System Guard allows you to monitor information and statistics about your system.</p>
+    <p xml:lang="ca">El System Guard permet controlar la informació i les estadístiues del sistema.</p>
+    <p xml:lang="nl">System Guard stelt u in staat informatie en statistieken over uw systeem te monitoren.</p>
+    <p xml:lang="uk">Засіб стеження за системою надає вам змогу стежити за відомостями та статистичними даними щодо вашої системи.</p>
+    <p xml:lang="x-test">xxSystem Guard allows you to monitor information and statistics about your system.xx</p>
     <p>In addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.</p>
+    <p xml:lang="ca">Addicionalment al monitoratge del sistema local, pot connectar-se a sistemes remots executant el dimoni del System Guard.</p>
+    <p xml:lang="nl">Naast het monitoren van het lokale systeem, kan het verbinden met systemen op afstand die de System Guard-daemon hebben geactiveerd.</p>
+    <p xml:lang="uk">Окрім стеження за локальною системою, програма здатна з'єднуватися із віддаленими системами, де запущено фонову службу стеження за системою.</p>
+    <p xml:lang="x-test">xxIn addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.xx</p>
   </description>
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?product=ksysguard</url>
   <url type="help">https://userbase.kde.org/KSysGuard</url>
