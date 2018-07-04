@@ -2,14 +2,22 @@
 <component type="desktop-application">
   <name>KSysGuard</name>
   <name xml:lang="ca">KSysGuard</name>
+  <name xml:lang="es">KSysGuard</name>
   <name xml:lang="nl">KSysGuard</name>
+  <name xml:lang="pt">KSysGuard</name>
+  <name xml:lang="sv">KDE:s systemövervakare</name>
   <name xml:lang="uk">KSysGuard</name>
   <name xml:lang="x-test">xxKSysGuardxx</name>
+  <name xml:lang="zh-CN">系统卫士</name>
   <summary>Monitor running processes and system performance</summary>
   <summary xml:lang="ca">Controlador de processos en execució i rendiment del sistema</summary>
+  <summary xml:lang="es">Monitorización de procesos en ejecución y rendimiento del sistema</summary>
   <summary xml:lang="nl">Actieve processen en systeemprestaties monitoren</summary>
+  <summary xml:lang="pt">Vigia os processos em execução e a performance do sistema</summary>
+  <summary xml:lang="sv">Övervaka processor som kör och systemprestanda</summary>
   <summary xml:lang="uk">Стеження за процесами та швидкодією системи</summary>
   <summary xml:lang="x-test">xxMonitor running processes and system performancexx</summary>
+  <summary xml:lang="zh-CN">监视运行的进程和系统效率</summary>
   <icon type="stock">utilities-system-monitor</icon>
   <id>org.kde.ksysguard</id>
   <launchable type="desktop-id">org.kde.ksysguard.desktop</launchable>
@@ -18,14 +26,22 @@
   <description>
     <p>System Guard allows you to monitor information and statistics about your system.</p>
     <p xml:lang="ca">El System Guard permet controlar la informació i les estadístiues del sistema.</p>
+    <p xml:lang="es">System Guard le permite monitorizar información y estadísticas sobre el sistema.</p>
     <p xml:lang="nl">System Guard stelt u in staat informatie en statistieken over uw systeem te monitoren.</p>
+    <p xml:lang="pt">O System Guard permite-lhe vigiar a informação e as estatísticas sobre o seu sistema.</p>
+    <p xml:lang="sv">Systemövervakaren låter dig övervaka information och statistik om systemet.</p>
     <p xml:lang="uk">Засіб стеження за системою надає вам змогу стежити за відомостями та статистичними даними щодо вашої системи.</p>
     <p xml:lang="x-test">xxSystem Guard allows you to monitor information and statistics about your system.xx</p>
+    <p xml:lang="zh-CN">系统卫士允许您监控系统的信息和统计数据。</p>
     <p>In addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.</p>
     <p xml:lang="ca">Addicionalment al monitoratge del sistema local, pot connectar-se a sistemes remots executant el dimoni del System Guard.</p>
+    <p xml:lang="es">Además de monitorizar el sistema local, puede conectarse con sistemas remotos que estén ejecutando el demonio de System Guard.</p>
     <p xml:lang="nl">Naast het monitoren van het lokale systeem, kan het verbinden met systemen op afstand die de System Guard-daemon hebben geactiveerd.</p>
+    <p xml:lang="pt">Para além de monitorizar o sistema local, poder-se-á ligar a sistema remotos que tenham o Servidor do System Guard em execução.</p>
+    <p xml:lang="sv">Förutom att övervaka det lokala systemet kan den ansluta till andra system som kör systemövervakardemonen.</p>
     <p xml:lang="uk">Окрім стеження за локальною системою, програма здатна з'єднуватися із віддаленими системами, де запущено фонову службу стеження за системою.</p>
     <p xml:lang="x-test">xxIn addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.xx</p>
+    <p xml:lang="zh-CN">除了监视本地系统外，它还可以连接到运行系统卫士守护进程的远程系统。</p>
   </description>
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?product=ksysguard</url>
   <url type="help">https://userbase.kde.org/KSysGuard</url>
