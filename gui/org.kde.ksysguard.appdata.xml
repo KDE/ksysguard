@@ -2,6 +2,8 @@
 <component type="desktop-application">
   <name>KSysGuard</name>
   <name xml:lang="ca">KSysGuard</name>
+  <name xml:lang="ca-valencia">KSysGuard</name>
+  <name xml:lang="cs">KSysGuard</name>
   <name xml:lang="es">KSysGuard</name>
   <name xml:lang="fr">KSysGuard</name>
   <name xml:lang="nl">KSysGuard</name>
@@ -14,6 +16,8 @@
   <name xml:lang="zh-CN">系统卫士</name>
   <summary>Monitor running processes and system performance</summary>
   <summary xml:lang="ca">Controlador de processos en execució i rendiment del sistema</summary>
+  <summary xml:lang="ca-valencia">Controlador de processos en execució i rendiment del sistema</summary>
+  <summary xml:lang="cs">Monitoring běžících procesů a výkonu systému</summary>
   <summary xml:lang="es">Monitorización de procesos en ejecución y rendimiento del sistema</summary>
   <summary xml:lang="fr">Surveiller les processus en cours d'exécution et les performances du système</summary>
   <summary xml:lang="nl">Actieve processen en systeemprestaties monitoren</summary>
@@ -32,6 +36,7 @@
   <description>
     <p>System Guard allows you to monitor information and statistics about your system.</p>
     <p xml:lang="ca">El System Guard permet controlar la informació i les estadístiues del sistema.</p>
+    <p xml:lang="ca-valencia">El System Guard permet controlar la informació i les estadístiues del sistema.</p>
     <p xml:lang="es">System Guard le permite monitorizar información y estadísticas sobre el sistema.</p>
     <p xml:lang="fr">System Guard vous permet de surveiller les informations et les statistiques de votre système.</p>
     <p xml:lang="nl">System Guard stelt u in staat informatie en statistieken over uw systeem te monitoren.</p>
@@ -43,6 +48,7 @@
     <p xml:lang="zh-CN">系统卫士允许您监控系统的信息和统计数据。</p>
     <p>In addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.</p>
     <p xml:lang="ca">Addicionalment al monitoratge del sistema local, pot connectar-se a sistemes remots executant el dimoni del System Guard.</p>
+    <p xml:lang="ca-valencia">Addicionalment al monitoratge del sistema local, pot connectar-se a sistemes remots executant el dimoni del System Guard.</p>
     <p xml:lang="es">Además de monitorizar el sistema local, puede conectarse con sistemas remotos que estén ejecutando el demonio de System Guard.</p>
     <p xml:lang="fr">En plus de la surveillance de votre système local, il peut se connecter à des systèmes à distance exécutant le démon System Guard.</p>
     <p xml:lang="nl">Naast het monitoren van het lokale systeem, kan het verbinden met systemen op afstand die de System Guard-daemon hebben geactiveerd.</p>
