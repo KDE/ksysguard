@@ -9,6 +9,7 @@
   <name xml:lang="fr">KSysGuard</name>
   <name xml:lang="nl">KSysGuard</name>
   <name xml:lang="nn">KSysGuard</name>
+  <name xml:lang="pl">Monitor systemu KDE</name>
   <name xml:lang="pt">KSysGuard</name>
   <name xml:lang="pt-BR">KSysGuard</name>
   <name xml:lang="sv">KDE:s systemövervakare</name>
@@ -23,6 +24,7 @@
   <summary xml:lang="fr">Surveiller les processus en cours d'exécution et les performances du système</summary>
   <summary xml:lang="nl">Actieve processen en systeemprestaties monitoren</summary>
   <summary xml:lang="nn">Overvak køyrande prosessar og systemyting</summary>
+  <summary xml:lang="pl">Monitoruje uruchomione procesy i wydajność systemu</summary>
   <summary xml:lang="pt">Vigia os processos em execução e a performance do sistema</summary>
   <summary xml:lang="pt-BR">Monitora os processos em execução e o desempenho do sistema</summary>
   <summary xml:lang="sv">Övervaka processor som kör och systemprestanda</summary>
@@ -42,6 +44,7 @@
     <p xml:lang="fr">System Guard vous permet de surveiller les informations et les statistiques de votre système.</p>
     <p xml:lang="nl">System Guard stelt u in staat informatie en statistieken over uw systeem te monitoren.</p>
     <p xml:lang="nn">Systemvakta lèt deg overvaka systeminformasjon og -statistikk.</p>
+    <p xml:lang="pl">Monitor systemu umożliwia monitorowanie informacji i statystyk o twoim systemie.</p>
     <p xml:lang="pt">O System Guard permite-lhe vigiar a informação e as estatísticas sobre o seu sistema.</p>
     <p xml:lang="sv">Systemövervakaren låter dig övervaka information och statistik om systemet.</p>
     <p xml:lang="uk">Засіб стеження за системою надає вам змогу стежити за відомостями та статистичними даними щодо вашої системи.</p>
@@ -54,6 +57,7 @@
     <p xml:lang="fr">En plus de la surveillance de votre système local, il peut se connecter à des systèmes à distance exécutant le démon System Guard.</p>
     <p xml:lang="nl">Naast het monitoren van het lokale systeem, kan het verbinden met systemen op afstand die de System Guard-daemon hebben geactiveerd.</p>
     <p xml:lang="nn">I tillegg til overvaking av eit lokalt system kan du kopla til eksterne system som køyrer systemvakttenesta.</p>
+    <p xml:lang="pl">Poza monitorowaniem lokalnego systemu, może się połączyć do zdalnych systemów mających czynną usługę monitora systemu.</p>
     <p xml:lang="pt">Para além de monitorizar o sistema local, poder-se-á ligar a sistema remotos que tenham o Servidor do System Guard em execução.</p>
     <p xml:lang="sv">Förutom att övervaka det lokala systemet kan den ansluta till andra system som kör systemövervakardemonen.</p>
     <p xml:lang="uk">Окрім стеження за локальною системою, програма здатна з'єднуватися із віддаленими системами, де запущено фонову службу стеження за системою.</p>
