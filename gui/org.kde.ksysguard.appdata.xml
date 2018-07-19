@@ -46,6 +46,7 @@
     <p xml:lang="nn">Systemvakta lèt deg overvaka systeminformasjon og -statistikk.</p>
     <p xml:lang="pl">Monitor systemu umożliwia monitorowanie informacji i statystyk o twoim systemie.</p>
     <p xml:lang="pt">O System Guard permite-lhe vigiar a informação e as estatísticas sobre o seu sistema.</p>
+    <p xml:lang="pt-BR">O System Guard permite-lhe monitorar as informações e estatísticas sobre o seu sistema.</p>
     <p xml:lang="sv">Systemövervakaren låter dig övervaka information och statistik om systemet.</p>
     <p xml:lang="uk">Засіб стеження за системою надає вам змогу стежити за відомостями та статистичними даними щодо вашої системи.</p>
     <p xml:lang="x-test">xxSystem Guard allows you to monitor information and statistics about your system.xx</p>
@@ -59,6 +60,7 @@
     <p xml:lang="nn">I tillegg til overvaking av eit lokalt system kan du kopla til eksterne system som køyrer systemvakttenesta.</p>
     <p xml:lang="pl">Poza monitorowaniem lokalnego systemu, może się połączyć do zdalnych systemów mających czynną usługę monitora systemu.</p>
     <p xml:lang="pt">Para além de monitorizar o sistema local, poder-se-á ligar a sistema remotos que tenham o Servidor do System Guard em execução.</p>
+    <p xml:lang="pt-BR">Para além de monitorizar o sistema local, ele pode se conectar a sistemas remotos que tenham o Servidor do System Guard em execução.</p>
     <p xml:lang="sv">Förutom att övervaka det lokala systemet kan den ansluta till andra system som kör systemövervakardemonen.</p>
     <p xml:lang="uk">Окрім стеження за локальною системою, програма здатна з'єднуватися із віддаленими системами, де запущено фонову службу стеження за системою.</p>
     <p xml:lang="x-test">xxIn addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.xx</p>
