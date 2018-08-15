@@ -10,6 +10,7 @@
   <name xml:lang="fi">KSysGuard</name>
   <name xml:lang="fr">KSysGuard</name>
   <name xml:lang="id">KSysGuard</name>
+  <name xml:lang="ko">KSysguard</name>
   <name xml:lang="nl">KSysGuard</name>
   <name xml:lang="nn">KSysGuard</name>
   <name xml:lang="pl">Monitor systemu KDE</name>
@@ -29,6 +30,7 @@
   <summary xml:lang="fi">Valvo käynnissä olevia prosesseja ja järjestelmän suorituskykyä</summary>
   <summary xml:lang="fr">Surveiller les processus en cours d'exécution et les performances du système</summary>
   <summary xml:lang="id">Pemantau proses yang berjalan dan kinerja sistem</summary>
+  <summary xml:lang="ko">실행 중인 프로세스와 시스템 성능 모니터링</summary>
   <summary xml:lang="nl">Actieve processen en systeemprestaties monitoren</summary>
   <summary xml:lang="nn">Overvak køyrande prosessar og systemyting</summary>
   <summary xml:lang="pl">Monitoruje uruchomione procesy i wydajność systemu</summary>
@@ -53,6 +55,7 @@
     <p xml:lang="fi">Järjestelmän valvonnalla voit valvoa järjestelmäsi tietoja ja tilastoja.</p>
     <p xml:lang="fr">System Guard vous permet de surveiller les informations et les statistiques de votre système.</p>
     <p xml:lang="id">System Guard membolehkan kamu untuk memantau informasi dan statistik tentang sistemmu.</p>
+    <p xml:lang="ko">시스템 모니터는 내 시스템 정보를 관찰하고 통계를 볼 수 있습니다.</p>
     <p xml:lang="nl">System Guard stelt u in staat informatie en statistieken over uw systeem te monitoren.</p>
     <p xml:lang="nn">Systemvakta lèt deg overvaka systeminformasjon og -statistikk.</p>
     <p xml:lang="pl">Monitor systemu umożliwia monitorowanie informacji i statystyk o twoim systemie.</p>
@@ -70,6 +73,7 @@
     <p xml:lang="fi">Paikallisen järjestelmän lisäksi voit yhdistää System Guard -palvelua tarjoaviin etäjärjestelmiin.</p>
     <p xml:lang="fr">En plus de la surveillance de votre système local, il peut se connecter à des systèmes à distance exécutant le démon System Guard.</p>
     <p xml:lang="id">Selain untuk memantau sistem lokal, ia bisa tersambung ke sistem remot yang menjalankan System Guard Daemon.</p>
+    <p xml:lang="ko">로컬 시스템뿐만 아니라 시스템 모니터 데몬이 실행 중인 다른 시스템에 연결할 수도 있습니다.</p>
     <p xml:lang="nl">Naast het monitoren van het lokale systeem, kan het verbinden met systemen op afstand die de System Guard-daemon hebben geactiveerd.</p>
     <p xml:lang="nn">I tillegg til overvaking av eit lokalt system kan du kopla til eksterne system som køyrer systemvakttenesta.</p>
     <p xml:lang="pl">Poza monitorowaniem lokalnego systemu, może się połączyć do zdalnych systemów mających czynną usługę monitora systemu.</p>
