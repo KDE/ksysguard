@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component type="desktop-application">
   <name>KSysGuard</name>
+  <name xml:lang="ar">حارس نظامك</name>
   <name xml:lang="ca">KSysGuard</name>
   <name xml:lang="ca-valencia">KSysGuard</name>
   <name xml:lang="cs">KSysGuard</name>
@@ -11,6 +12,7 @@
   <name xml:lang="fi">KSysGuard</name>
   <name xml:lang="fr">KSysGuard</name>
   <name xml:lang="id">KSysGuard</name>
+  <name xml:lang="it">Monitor di sistema</name>
   <name xml:lang="ko">KSysguard</name>
   <name xml:lang="nl">KSysGuard</name>
   <name xml:lang="nn">KSysGuard</name>
@@ -23,6 +25,7 @@
   <name xml:lang="x-test">xxKSysGuardxx</name>
   <name xml:lang="zh-CN">系统卫士</name>
   <summary>Monitor running processes and system performance</summary>
+  <summary xml:lang="ar">راقِب العمليات الجارية وأداء النظام</summary>
   <summary xml:lang="ca">Controlador de processos en execució i rendiment del sistema</summary>
   <summary xml:lang="ca-valencia">Controlador de processos en execució i rendiment del sistema</summary>
   <summary xml:lang="cs">Monitoring běžících procesů a výkonu systému</summary>
@@ -32,6 +35,7 @@
   <summary xml:lang="fi">Valvo käynnissä olevia prosesseja ja järjestelmän suorituskykyä</summary>
   <summary xml:lang="fr">Surveiller les processus en cours d'exécution et les performances du système</summary>
   <summary xml:lang="id">Pemantau proses yang berjalan dan kinerja sistem</summary>
+  <summary xml:lang="it">Controlla i processi in esecuzione e le prestazioni del sistema</summary>
   <summary xml:lang="ko">실행 중인 프로세스와 시스템 성능 모니터링</summary>
   <summary xml:lang="nl">Actieve processen en systeemprestaties monitoren</summary>
   <summary xml:lang="nn">Overvak køyrande prosessar og systemyting</summary>
@@ -50,6 +54,7 @@
   <project_license>GPL-2.0+</project_license>
   <description>
     <p>System Guard allows you to monitor information and statistics about your system.</p>
+    <p xml:lang="ar">يتيح لك «حارس نظامك» مراقبة المعلومات والإحصاءات في نظامك.</p>
     <p xml:lang="ca">El System Guard permet controlar la informació i les estadístiques del sistema.</p>
     <p xml:lang="ca-valencia">El System Guard permet controlar la informació i les estadístiques del sistema.</p>
     <p xml:lang="en-GB">System Guard allows you to monitor information and statistics about your system.</p>
@@ -58,6 +63,7 @@
     <p xml:lang="fi">Järjestelmän valvonnalla voit valvoa järjestelmäsi tietoja ja tilastoja.</p>
     <p xml:lang="fr">System Guard vous permet de surveiller les informations et les statistiques de votre système.</p>
     <p xml:lang="id">System Guard membolehkan kamu untuk memantau informasi dan statistik tentang sistemmu.</p>
+    <p xml:lang="it">Monitor di sistema ti permette di controllare le informazioni e le statistiche del tuo sistema.</p>
     <p xml:lang="ko">시스템 모니터는 내 시스템 정보를 관찰하고 통계를 볼 수 있습니다.</p>
     <p xml:lang="nl">System Guard stelt u in staat informatie en statistieken over uw systeem te monitoren.</p>
     <p xml:lang="nn">Systemvakta lèt deg overvaka systeminformasjon og -statistikk.</p>
@@ -69,6 +75,7 @@
     <p xml:lang="x-test">xxSystem Guard allows you to monitor information and statistics about your system.xx</p>
     <p xml:lang="zh-CN">系统卫士允许您监控系统的信息和统计数据。</p>
     <p>In addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.</p>
+    <p xml:lang="ar">يستطيع الحارس (إضافة إلى مراقبة النظام المحلي) الاتصال بالأنظمة البعيدة التي تشغّل «عفريت حارس النظام/System Guard Daemon».</p>
     <p xml:lang="ca">Addicionalment al monitoratge del sistema local, pot connectar-se a sistemes remots executant el dimoni del System Guard.</p>
     <p xml:lang="ca-valencia">Addicionalment al monitoratge del sistema local, pot connectar-se a sistemes remots executant el dimoni del System Guard.</p>
     <p xml:lang="en-GB">In addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.</p>
@@ -77,6 +84,7 @@
     <p xml:lang="fi">Paikallisen järjestelmän lisäksi voit yhdistää System Guard -palvelua tarjoaviin etäjärjestelmiin.</p>
     <p xml:lang="fr">En plus de la surveillance de votre système local, il peut se connecter à des systèmes à distance exécutant le démon System Guard.</p>
     <p xml:lang="id">Selain untuk memantau sistem lokal, ia bisa tersambung ke sistem remot yang menjalankan System Guard Daemon.</p>
+    <p xml:lang="it">Oltre al controllo del sistema locale può connettersi ai sistemi locali in cui è in esecuzione il demone Monitor di sistema.</p>
     <p xml:lang="ko">로컬 시스템뿐만 아니라 시스템 모니터 데몬이 실행 중인 다른 시스템에 연결할 수도 있습니다.</p>
     <p xml:lang="nl">Naast het monitoren van het lokale systeem, kan het verbinden met systemen op afstand die de System Guard-daemon hebben geactiveerd.</p>
     <p xml:lang="nn">I tillegg til overvaking av eit lokalt system kan du kopla til eksterne system som køyrer systemvakttenesta.</p>
