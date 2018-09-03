@@ -19,6 +19,7 @@
   <name xml:lang="pl">Monitor systemu KDE</name>
   <name xml:lang="pt">KSysGuard</name>
   <name xml:lang="pt-BR">KSysGuard</name>
+  <name xml:lang="ru">Системный монитор</name>
   <name xml:lang="sk">KSysGuard</name>
   <name xml:lang="sv">KDE:s systemövervakare</name>
   <name xml:lang="uk">KSysGuard</name>
@@ -42,6 +43,7 @@
   <summary xml:lang="pl">Monitoruje uruchomione procesy i wydajność systemu</summary>
   <summary xml:lang="pt">Vigia os processos em execução e a performance do sistema</summary>
   <summary xml:lang="pt-BR">Monitora os processos em execução e o desempenho do sistema</summary>
+  <summary xml:lang="ru">Просмотр списка запущенных процессов и производительности системы</summary>
   <summary xml:lang="sk">Monitoruje spustené procesy a výkon systému</summary>
   <summary xml:lang="sv">Övervaka processor som kör och systemprestanda</summary>
   <summary xml:lang="uk">Стеження за процесами та швидкодією системи</summary>
