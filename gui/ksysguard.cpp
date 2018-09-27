@@ -158,7 +158,8 @@ void TopLevel::toggleShowMenuBar()
     const QString accel = mShowMenuBarAction->shortcut().toString();
     KMessageBox::information(this, i18n("This will hide the menu bar completely."
                                         " You can show it again by typing %1.", accel),
-                             i18n("Hide menu bar"), QLatin1String("HideMenuBarWarning"));
+                             i18n("Hide menu bar"),
+                             QStringLiteral("HideMenuBarWarning"));
     menuBar()->hide();
   }
 }
