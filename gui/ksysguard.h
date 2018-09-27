@@ -76,6 +76,7 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     void currentTabChanged(int index);
     void updateProcessCount();
     void configureCurrentSheet();
+    void toggleShowMenuBar();
 
   private:
     void setSwapInfo( qlonglong, qlonglong, const QString& );
@@ -101,6 +102,7 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
     QAction *mConfigureSheetAction;
     QAction *mHotNewWorksheetUploadAction;
     QAction *mRefreshTabAction;
+    QAction *mShowMenuBarAction;
     QLabel *sbProcessCount;
     QLabel *sbCpuStat;
     QLabel *sbMemTotal;
