@@ -2,6 +2,7 @@
 <component type="desktop-application">
   <name>KSysGuard</name>
   <name xml:lang="ar">حارس نظامك</name>
+  <name xml:lang="ast">KSysGuard</name>
   <name xml:lang="ca">KSysGuard</name>
   <name xml:lang="ca-valencia">KSysGuard</name>
   <name xml:lang="cs">KSysGuard</name>
@@ -27,6 +28,7 @@
   <name xml:lang="zh-CN">系统卫士</name>
   <summary>Monitor running processes and system performance</summary>
   <summary xml:lang="ar">راقِب العمليات الجارية وأداء النظام</summary>
+  <summary xml:lang="ast">Monitor de los procesos n'execución y del rindimientu del sistema</summary>
   <summary xml:lang="ca">Controlador de processos en execució i rendiment del sistema</summary>
   <summary xml:lang="ca-valencia">Controlador de processos en execució i rendiment del sistema</summary>
   <summary xml:lang="cs">Monitoring běžících procesů a výkonu systému</summary>
