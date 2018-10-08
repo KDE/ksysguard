@@ -7,6 +7,7 @@
   <name xml:lang="ca-valencia">KSysGuard</name>
   <name xml:lang="cs">KSysGuard</name>
   <name xml:lang="da">KSysGuard</name>
+  <name xml:lang="de">KSysGuard</name>
   <name xml:lang="en-GB">KSysGuard</name>
   <name xml:lang="es">KSysGuard</name>
   <name xml:lang="eu">KSysGuard</name>
@@ -32,6 +33,7 @@
   <summary xml:lang="ca">Controlador de processos en execució i rendiment del sistema</summary>
   <summary xml:lang="ca-valencia">Controlador de processos en execució i rendiment del sistema</summary>
   <summary xml:lang="cs">Monitoring běžících procesů a výkonu systému</summary>
+  <summary xml:lang="de">Überwachung laufender Prozesse und Systemleistung</summary>
   <summary xml:lang="en-GB">Monitor running processes and system performance</summary>
   <summary xml:lang="es">Monitorización de procesos en ejecución y rendimiento del sistema</summary>
   <summary xml:lang="eu">Gainbegiratu martxan dauden prozesuak eta sistemaren jarduera</summary>
