@@ -2,7 +2,6 @@
 <component type="desktop-application">
   <name>KSysGuard</name>
   <name xml:lang="ar">حارس نظامك</name>
-  <name xml:lang="ast">KSysGuard</name>
   <name xml:lang="ca">KSysGuard</name>
   <name xml:lang="ca-valencia">KSysGuard</name>
   <name xml:lang="cs">KSysGuard</name>
@@ -29,7 +28,6 @@
   <name xml:lang="zh-CN">系统卫士</name>
   <summary>Monitor running processes and system performance</summary>
   <summary xml:lang="ar">راقِب العمليات الجارية وأداء النظام</summary>
-  <summary xml:lang="ast">Monitor de los procesos n'execución y del rindimientu del sistema</summary>
   <summary xml:lang="ca">Controlador de processos en execució i rendiment del sistema</summary>
   <summary xml:lang="ca-valencia">Controlador de processos en execució i rendiment del sistema</summary>
   <summary xml:lang="cs">Monitoring běžících procesů a výkonu systému</summary>
@@ -63,6 +61,7 @@
     <p xml:lang="ar">يتيح لك «حارس نظامك» مراقبة المعلومات والإحصاءات في نظامك.</p>
     <p xml:lang="ca">El System Guard permet controlar la informació i les estadístiques del sistema.</p>
     <p xml:lang="ca-valencia">El System Guard permet controlar la informació i les estadístiques del sistema.</p>
+    <p xml:lang="de">Mit KSysGuard können Sie Informationen und Statistiken über Ihr System überwachen</p>
     <p xml:lang="en-GB">System Guard allows you to monitor information and statistics about your system.</p>
     <p xml:lang="es">System Guard le permite monitorizar información y estadísticas sobre el sistema.</p>
     <p xml:lang="eu">System Guard-ek zure sistemari buruzko informazioa eta estatistikak gainbegiratzen uzten dizu.</p>
@@ -85,6 +84,7 @@
     <p xml:lang="ar">يستطيع الحارس (إضافة إلى مراقبة النظام المحلي) الاتصال بالأنظمة البعيدة التي تشغّل «عفريت حارس النظام/System Guard Daemon».</p>
     <p xml:lang="ca">Addicionalment al monitoratge del sistema local, pot connectar-se a sistemes remots executant el dimoni del System Guard.</p>
     <p xml:lang="ca-valencia">Addicionalment al monitoratge del sistema local, pot connectar-se a sistemes remots executant el dimoni del System Guard.</p>
+    <p xml:lang="de">KSysGuard kann zusätzlich zu lokalen Systemen auch entfernte Systeme überwachen, auf denen der KSysGuard-Dienst läuft</p>
     <p xml:lang="en-GB">In addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.</p>
     <p xml:lang="es">Además de monitorizar el sistema local, puede conectarse con sistemas remotos que estén ejecutando el demonio de System Guard.</p>
     <p xml:lang="eu">Sistema lokala gainbegiratzeaz gain, System Guard daimona darabilten urruneko sistemetara konektatu daiteke.</p>
