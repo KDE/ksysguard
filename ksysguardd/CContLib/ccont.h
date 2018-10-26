@@ -118,7 +118,7 @@ void* get_ctnr(CONTAINER ctnr, INDEX pos);
  * @param compare_func A Pointer to the function that is
  *                     called to compare all entries in the
  *                     container with the given pattern.
- * @param pattern      The pattern for coparison.
+ * @param pattern      The pattern for comparison.
  */
 INDEX search_ctnr(CONTAINER ctnr, COMPARE_FUNC compare_func, void* pattern);
 

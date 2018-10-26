@@ -527,7 +527,7 @@ void FancyPlotter::setTooltip()
                 showingSummationGroup = true;
                 neednewline = false;
             } else if (showingSummationGroup) {
-                //When a summation group has finished, seperate the next sensor with a newline
+                //When a summation group has finished, separate the next sensor with a newline
                 showingSummationGroup = false;
                 tooltip += QLatin1String("<br>");
             }

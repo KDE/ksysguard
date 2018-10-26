@@ -172,7 +172,7 @@ class SensorDisplay : public QWidget, public SensorClient
       Reimplement this method to catch error messages from the SensorManager.
 
       @param sensorId The unique id of the sensor.
-      @param mode The mode: true = error, false = everthing ok
+      @param mode The mode: true = error, false = everything ok
      */
     virtual void sensorError( int sensorId, bool mode );
 

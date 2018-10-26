@@ -341,7 +341,7 @@ void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&an
         if(sensorType == QLatin1String("string")) continue;
 
         /* The sensor browser can display sensors in a hierarchical order.
-         * Sensors can be grouped into nodes by seperating the hierarchical
+         * Sensors can be grouped into nodes by separating the hierarchical
          * nodes through slashes in the sensor name. E. g. cpu/system/user is
          * the sensor user in the cpu node. There is no limit for the
          * depth of nodes. */

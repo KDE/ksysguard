@@ -25,7 +25,7 @@
 
 /**
   getpwuid() can be fairly expensive on NIS or LDAP systems that do not
-  use chaching. This module implements a cache for uid to user name
+  use caching. This module implements a cache for uid to user name
   mappings.
  */
 void initPWUIDCache( void );
