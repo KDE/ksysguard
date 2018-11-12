@@ -397,7 +397,7 @@ void FancyPlotter::applyStyle()
     font.setPointSize(KSGRD::Style->fontSize() );
     mPlotter->setFont( font );
     for ( int i = 0; i < mPlotter->numBeams() &&
-            (unsigned int)i < KSGRD::Style->numSensorColors(); ++i ) {
+            i < KSGRD::Style->numSensorColors(); ++i ) {
         setBeamColor(i, KSGRD::Style->sensorColor(i));
     }
 

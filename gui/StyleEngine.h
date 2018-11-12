@@ -48,7 +48,7 @@ class StyleEngine : public QObject
     uint fontSize() const;
 
     const QColor& sensorColor( int pos );
-    uint numSensorColors() const;
+    int numSensorColors() const;
 
   private:
 

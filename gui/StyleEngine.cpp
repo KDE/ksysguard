@@ -110,7 +110,7 @@ const QColor& StyleEngine::sensorColor( int pos )
     return dummy;
 }
 
-uint StyleEngine::numSensorColors() const
+int StyleEngine::numSensorColors() const
 {
   return mSensorColors.count();
 }
