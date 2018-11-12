@@ -35,7 +35,7 @@ class WorkSheetSettings : public QDialog
   Q_OBJECT
 
   public:
-    WorkSheetSettings( QWidget* parent, bool locked );
+    explicit WorkSheetSettings( QWidget* parent, bool locked );
     ~WorkSheetSettings();
 
     void setRows( int rows );
