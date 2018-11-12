@@ -53,37 +53,37 @@ MultiMeterSettings::~MultiMeterSettings()
   delete m_settingsWidget;
 }
 
-QString MultiMeterSettings::title()
+QString MultiMeterSettings::title() const
 {
   return m_settingsWidget->m_title->text();
 }
 
-bool MultiMeterSettings::showUnit()
+bool MultiMeterSettings::showUnit() const
 {
   return m_settingsWidget->m_showUnit->isChecked();
 }
 
-bool MultiMeterSettings::lowerLimitActive()
+bool MultiMeterSettings::lowerLimitActive() const
 {
   return m_settingsWidget->m_lowerLimitActive->isChecked();
 }
 
-bool MultiMeterSettings::upperLimitActive()
+bool MultiMeterSettings::upperLimitActive() const
 {
   return m_settingsWidget->m_upperLimitActive->isChecked();
 }
 
-double MultiMeterSettings::lowerLimit()
+double MultiMeterSettings::lowerLimit() const
 {
   return m_settingsWidget->m_lowerLimit->text().toDouble();
 }
 
-double MultiMeterSettings::upperLimit()
+double MultiMeterSettings::upperLimit() const
 {
   return m_settingsWidget->m_upperLimit->text().toDouble();
 }
 
-QColor MultiMeterSettings::normalDigitColor()
+QColor MultiMeterSettings::normalDigitColor() const
 {
   return m_settingsWidget->m_normalDigitColor->color();
 }

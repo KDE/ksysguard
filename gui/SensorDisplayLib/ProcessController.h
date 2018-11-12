@@ -47,28 +47,28 @@ class ProcessController : public KSGRD::SensorDisplay
 
 public:
     ProcessController(QWidget* parent,  SharedSettings *workSheetSettings);
-    ~ProcessController() Q_DECL_OVERRIDE { }
+    ~ProcessController() override { }
 
     /* Functions for SensorDisplay*/
 
-    bool restoreSettings(QDomElement& element) Q_DECL_OVERRIDE;
+    bool restoreSettings(QDomElement& element) override;
 
-    bool saveSettings(QDomDocument& doc, QDomElement& element) Q_DECL_OVERRIDE;
+    bool saveSettings(QDomDocument& doc, QDomElement& element) override;
 
-    void timerTick() Q_DECL_OVERRIDE;
+    void timerTick() override;
 
-    bool addSensor(const QString&, const QString&, const QString&, const QString&) Q_DECL_OVERRIDE;
+    bool addSensor(const QString&, const QString&, const QString&, const QString&) override;
 
-    void sensorError(int, bool err) Q_DECL_OVERRIDE;
+    void sensorError(int, bool err) override;
 
-    void configureSettings() Q_DECL_OVERRIDE { }
+    void configureSettings() override { }
 
-    bool hasSettingsDialog() const Q_DECL_OVERRIDE
+    bool hasSettingsDialog() const override
     {
         return false;
     }
 
-    void answerReceived(int id, const QList<QByteArray>& answer ) Q_DECL_OVERRIDE;
+    void answerReceived(int id, const QList<QByteArray>& answer ) override;
 
     KSysGuardProcessList* processList()
     {

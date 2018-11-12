@@ -34,7 +34,7 @@ class BarGraph : public QWidget
 
   public:
     explicit BarGraph( QWidget *parent );
-    ~BarGraph() Q_DECL_OVERRIDE;
+    ~BarGraph() override;
 
     bool addBar( const QString &footer );
     bool removeBar( uint idx );
@@ -70,7 +70,7 @@ class BarGraph : public QWidget
     void changeRange( double min, double max );
 
   protected:
-    void paintEvent( QPaintEvent* ) Q_DECL_OVERRIDE;
+    void paintEvent( QPaintEvent* ) override;
 
   private:
     double minValue;

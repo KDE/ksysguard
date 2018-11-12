@@ -37,7 +37,7 @@
 
 #include "HostConnector.h"
 
-HostConnector::HostConnector( QWidget *parent, const char *name )
+HostConnector::HostConnector(QWidget *parent, const QString &name )
   : QDialog( parent )
 {
   setObjectName( name );

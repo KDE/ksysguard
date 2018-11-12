@@ -60,7 +60,7 @@ class FancyPlotterLabel : public QLabel {
         textMargin = 0;
         setLayoutDirection(Qt::LeftToRight); //We do this because we organise the strings ourselves.. is this going to muck it up though for RTL languages?
     }
-    ~FancyPlotterLabel() Q_DECL_OVERRIDE {
+    ~FancyPlotterLabel() override {
     }
     void setLabel(const QString &name, const QColor &color) {
         labelName = name;
@@ -80,7 +80,7 @@ class FancyPlotterLabel : public QLabel {
         resizeEvent(nullptr);
         update();
     }
-    void resizeEvent( QResizeEvent * ) Q_DECL_OVERRIDE {
+    void resizeEvent( QResizeEvent * ) override {
         QFontMetrics fm = fontMetrics();
 
         if(valueText.isEmpty()) {

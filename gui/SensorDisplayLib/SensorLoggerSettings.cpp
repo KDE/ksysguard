@@ -22,7 +22,7 @@
 
 #include <KLocalizedString>
 
-SensorLoggerSettings::SensorLoggerSettings( QWidget *parent, const char *name )
+SensorLoggerSettings::SensorLoggerSettings( QWidget *parent, const QString &name )
     : QDialog( parent )
 {
   setObjectName( name );
@@ -47,7 +47,7 @@ SensorLoggerSettings::~SensorLoggerSettings()
   delete m_settingsWidget;
 }
 
-QString SensorLoggerSettings::title()
+QString SensorLoggerSettings::title() const
 {
   return m_settingsWidget->m_title->text();
 }

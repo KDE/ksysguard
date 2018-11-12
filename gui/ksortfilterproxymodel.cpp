@@ -27,11 +27,10 @@
 class KSortFilterProxyModelPrivate {
     public:
         KSortFilterProxyModelPrivate() { 
-            showAllChildren = false;
         }
         ~KSortFilterProxyModelPrivate() {}
        
-        bool showAllChildren;
+        bool showAllChildren = false;
 };
 
 KSortFilterProxyModel::KSortFilterProxyModel(QObject * parent)

@@ -46,10 +46,10 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
   public:
     TopLevel();
 
-    void saveProperties( KConfigGroup& ) Q_DECL_OVERRIDE;
-    void readProperties( const KConfigGroup& ) Q_DECL_OVERRIDE;
+    void saveProperties( KConfigGroup& ) override;
+    void readProperties( const KConfigGroup& ) override;
 
-    void answerReceived( int id, const QList<QByteArray> & ) Q_DECL_OVERRIDE;
+    void answerReceived( int id, const QList<QByteArray> & ) override;
 
     void initStatusBar();
     void setLocalProcessController(ProcessController * localProcessController);
@@ -65,9 +65,9 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
 
 
   protected:
-    bool event( QEvent* ) Q_DECL_OVERRIDE;
-    void timerEvent( QTimerEvent* ) Q_DECL_OVERRIDE;
-    bool queryClose() Q_DECL_OVERRIDE;
+    bool event( QEvent* ) override;
+    void timerEvent( QTimerEvent* ) override;
+    bool queryClose() override;
 
   protected Q_SLOTS:
     void connectHost();
@@ -80,7 +80,7 @@ class TopLevel : public KXmlGuiWindow, public KSGRD::SensorClient
 
   private:
     void setSwapInfo( qlonglong, qlonglong, const QString& );
-    void changeEvent( QEvent * event ) Q_DECL_OVERRIDE;
+    void changeEvent( QEvent * event ) override;
     void retranslateUi();
 
     QDBusMessage mDBusReply;

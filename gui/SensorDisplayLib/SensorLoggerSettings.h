@@ -33,10 +33,10 @@ class SensorLoggerSettings : public QDialog
 
   public:
 
-    explicit SensorLoggerSettings( QWidget *parent=nullptr, const char *name=nullptr );
+    explicit SensorLoggerSettings(QWidget *parent=nullptr, const QString &name = {} );
     ~SensorLoggerSettings();
 
-    QString title();
+    QString title() const;
     QColor foregroundColor();
     QColor backgroundColor();
     QColor alarmColor();

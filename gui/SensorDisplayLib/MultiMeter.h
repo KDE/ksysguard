@@ -33,26 +33,26 @@ class MultiMeter : public KSGRD::SensorDisplay
   Q_OBJECT
 
   public:
-    MultiMeter(QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
-    ~MultiMeter() Q_DECL_OVERRIDE
+    explicit MultiMeter(QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
+    ~MultiMeter() override
     {
     }
 
     bool addSensor(const QString& hostName, const QString& sensorName,
-                   const QString& sensorType, const QString& sensorDescr) Q_DECL_OVERRIDE;
-    void answerReceived(int id, const QList<QByteArray>& answerlist) Q_DECL_OVERRIDE;
-    bool restoreSettings(QDomElement& element) Q_DECL_OVERRIDE;
-    bool saveSettings(QDomDocument& doc, QDomElement& element) Q_DECL_OVERRIDE;
+                   const QString& sensorType, const QString& sensorDescr) override;
+    void answerReceived(int id, const QList<QByteArray>& answerlist) override;
+    bool restoreSettings(QDomElement& element) override;
+    bool saveSettings(QDomDocument& doc, QDomElement& element) override;
 
-    bool hasSettingsDialog() const Q_DECL_OVERRIDE
+    bool hasSettingsDialog() const override
     {
       return true;
     }
 
-    void configureSettings() Q_DECL_OVERRIDE;
+    void configureSettings() override;
 
   public Q_SLOTS:
-    void applyStyle() Q_DECL_OVERRIDE;
+    void applyStyle() override;
 
   private:
     void setDigitColor(const QColor&);

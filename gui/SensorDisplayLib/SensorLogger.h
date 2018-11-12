@@ -35,9 +35,9 @@ class LogSensor : public QObject, public KSGRD::SensorClient
 
   public:
     explicit LogSensor( QObject *parent );
-    ~LogSensor() Q_DECL_OVERRIDE;
+    ~LogSensor() override;
 
-    void answerReceived( int id, const QList<QByteArray>&answer ) Q_DECL_OVERRIDE;
+    void answerReceived( int id, const QList<QByteArray>&answer ) override;
 
     void setHostName( const QString& name );
     QString hostName() const;
@@ -78,7 +78,7 @@ class LogSensor : public QObject, public KSGRD::SensorClient
     void changed();
 
   protected:
-    void timerEvent ( QTimerEvent * event ) Q_DECL_OVERRIDE;
+    void timerEvent ( QTimerEvent * event ) override;
 
   private:
     QString mSensorName;
@@ -108,7 +108,7 @@ class LogSensorView : public QTreeView
     void contextMenuRequest( const QModelIndex &index, const QPoint &pos );
 
   protected:
-    void contextMenuEvent( QContextMenuEvent *event ) Q_DECL_OVERRIDE;
+    void contextMenuEvent( QContextMenuEvent *event ) override;
 };
 
 class SensorLogger : public KSGRD::SensorDisplay
@@ -117,27 +117,27 @@ class SensorLogger : public KSGRD::SensorDisplay
 
   public:
     SensorLogger( QWidget *parent, const QString& title, SharedSettings *workSheetSettings );
-    ~SensorLogger();
+    ~SensorLogger() override;
 
     bool addSensor( const QString& hostName, const QString& sensorName,
-                    const QString& sensorType, const QString& sensorDescr) Q_DECL_OVERRIDE;
+                    const QString& sensorType, const QString& sensorDescr) override;
 
     bool editSensor( LogSensor* );
 
-    void answerReceived( int, const QList<QByteArray>& ) Q_DECL_OVERRIDE;
+    void answerReceived( int, const QList<QByteArray>& ) override;
 
-    bool restoreSettings( QDomElement& ) Q_DECL_OVERRIDE;
-    bool saveSettings( QDomDocument&, QDomElement& ) Q_DECL_OVERRIDE;
+    bool restoreSettings( QDomElement& ) override;
+    bool saveSettings( QDomDocument&, QDomElement& ) override;
 
-    void configureSettings() Q_DECL_OVERRIDE;
+    void configureSettings() override;
 
-    bool hasSettingsDialog() const Q_DECL_OVERRIDE
+    bool hasSettingsDialog() const override
     {
       return true;
     }
 
   public Q_SLOTS:
-    void applyStyle() Q_DECL_OVERRIDE;
+    void applyStyle() override;
     void contextMenuRequest( const QModelIndex &index, const QPoint &pos );
 
   private:

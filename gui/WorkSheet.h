@@ -50,7 +50,7 @@ class WorkSheet : public QWidget
   public:
     explicit WorkSheet( QWidget* parent);
     WorkSheet( int rows, int columns, float interval, QWidget* parent);
-    ~WorkSheet() Q_DECL_OVERRIDE;
+    ~WorkSheet() override;
 
     bool load( const QString &fileName );
     bool save( const QString &fileName );
@@ -90,12 +90,12 @@ class WorkSheet : public QWidget
 
   protected:
 
-    void changeEvent( QEvent * event ) Q_DECL_OVERRIDE;
-    QSize sizeHint() const Q_DECL_OVERRIDE;
-    void dragMoveEvent( QDragMoveEvent* ) Q_DECL_OVERRIDE;
-    void dragEnterEvent( QDragEnterEvent* ) Q_DECL_OVERRIDE;
-    void dropEvent( QDropEvent* ) Q_DECL_OVERRIDE;
-    bool event( QEvent* ) Q_DECL_OVERRIDE;
+    void changeEvent( QEvent * event ) override;
+    QSize sizeHint() const override;
+    void dragMoveEvent( QDragMoveEvent* ) override;
+    void dragEnterEvent( QDragEnterEvent* ) override;
+    void dropEvent( QDropEvent* ) override;
+    bool event( QEvent* ) override;
     void setUpdateInterval( float interval);
 
   private:

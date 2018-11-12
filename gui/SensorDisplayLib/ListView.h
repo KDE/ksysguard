@@ -33,11 +33,11 @@ class QTreeView;
 
 class ListViewModel : public QStandardItemModel {
 public:
-    ListViewModel(QObject * parent = 0 ) : QStandardItemModel(parent)
+    explicit ListViewModel(QObject * parent = nullptr ) : QStandardItemModel(parent)
     {
     }
 
-    ListViewModel(int rows, int columns, QObject * parent = 0) : QStandardItemModel(rows, columns, parent)
+    ListViewModel(int rows, int columns, QObject * parent = nullptr) : QStandardItemModel(rows, columns, parent)
     {
     }
 
@@ -52,7 +52,7 @@ public:
         mAlignment.clear();
     }
 
-    QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE
+    QVariant data(const QModelIndex &index, int role) const override
     {
         int column = index.column();
 
@@ -70,31 +70,31 @@ class ListView : public KSGRD::SensorDisplay
 {
     Q_OBJECT
 public:
-    ListView(QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
-    ~ListView() {}
+    explicit ListView(QWidget* parent, const QString& title, SharedSettings *workSheetSettings);
+    ~ListView() override {}
 
-    bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& sensorDescr) Q_DECL_OVERRIDE;
-    void answerReceived(int id, const QList<QByteArray>& answerlist) Q_DECL_OVERRIDE;
+    bool addSensor(const QString& hostName, const QString& sensorName, const QString& sensorType, const QString& sensorDescr) override;
+    void answerReceived(int id, const QList<QByteArray>& answerlist) override;
     void updateList();
 
-    bool restoreSettings(QDomElement& element) Q_DECL_OVERRIDE;
-    bool saveSettings(QDomDocument& doc, QDomElement& element) Q_DECL_OVERRIDE;
+    bool restoreSettings(QDomElement& element) override;
+    bool saveSettings(QDomDocument& doc, QDomElement& element) override;
 
-    bool hasSettingsDialog() const Q_DECL_OVERRIDE
+    bool hasSettingsDialog() const override
     {
         return true;
     }
 
-    void timerTick() Q_DECL_OVERRIDE
+    void timerTick() override
     {
         updateList();
     }
 
-    void configureSettings() Q_DECL_OVERRIDE;
+    void configureSettings() override;
 
 public Q_SLOTS:
-    void applySettings() Q_DECL_OVERRIDE;
-    void applyStyle() Q_DECL_OVERRIDE;
+    void applySettings() override;
+    void applyStyle() override;
     void showColumnContextMenu(const QPoint &point);
 
 private:

@@ -40,23 +40,23 @@ class DancingBars : public KSGRD::SensorDisplay
     DancingBars( QWidget *parent, const QString &title, SharedSettings *workSheetSettings );
     virtual ~DancingBars();
 
-    void configureSettings() Q_DECL_OVERRIDE;
+    void configureSettings() override;
 
     bool addSensor( const QString &hostName, const QString &name,
-                    const QString &type, const QString &title ) Q_DECL_OVERRIDE;
-    bool removeSensor( uint pos ) Q_DECL_OVERRIDE;
+                    const QString &type, const QString &title ) override;
+    bool removeSensor( uint pos ) override;
 
     void updateSamples( const QVector<double> &samples );
 
-    void answerReceived( int id, const QList<QByteArray> &answerlist ) Q_DECL_OVERRIDE;
+    void answerReceived( int id, const QList<QByteArray> &answerlist ) override;
 
-    bool restoreSettings( QDomElement& ) Q_DECL_OVERRIDE;
-    bool saveSettings( QDomDocument&, QDomElement& ) Q_DECL_OVERRIDE;
+    bool restoreSettings( QDomElement& ) override;
+    bool saveSettings( QDomDocument&, QDomElement& ) override;
 
-    bool hasSettingsDialog() const Q_DECL_OVERRIDE;
+    bool hasSettingsDialog() const override;
 
   public Q_SLOTS:
-    void applyStyle() Q_DECL_OVERRIDE;
+    void applyStyle() override;
 
   private:
     int mBars;

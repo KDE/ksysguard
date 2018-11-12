@@ -36,13 +36,13 @@ class MultiMeterSettings : public QDialog
     explicit MultiMeterSettings( QWidget *parent=nullptr, const QString &name=QString() );
     ~MultiMeterSettings();
 
-    QString title();
-    bool showUnit();
-    bool lowerLimitActive();
-    bool upperLimitActive();
-    double lowerLimit();
-    double upperLimit();
-    QColor normalDigitColor();
+    QString title() const;
+    bool showUnit() const;
+    bool lowerLimitActive() const;
+    bool upperLimitActive() const;
+    double lowerLimit() const;
+    double upperLimit() const;
+    QColor normalDigitColor() const;
     QColor alarmDigitColor();
     QColor meterBackgroundColor();
 

@@ -36,33 +36,33 @@ class LogFile : public KSGRD::SensorDisplay
 {
 	Q_OBJECT
 public:
-	LogFile(QWidget *parent, const QString& title, SharedSettings *workSheetSettings);
-    ~LogFile() Q_DECL_OVERRIDE;
+    explicit LogFile(QWidget *parent, const QString& title, SharedSettings *workSheetSettings);
+    ~LogFile() override;
 
 	bool addSensor(const QString& hostName, const QString& sensorName,
-				   const QString& sensorType, const QString& sensorDescr) Q_DECL_OVERRIDE;
-	void answerReceived(int id, const QList<QByteArray>& answer) Q_DECL_OVERRIDE;
+				   const QString& sensorType, const QString& sensorDescr) override;
+	void answerReceived(int id, const QList<QByteArray>& answer) override;
 
-	bool restoreSettings(QDomElement& element) Q_DECL_OVERRIDE;
-	bool saveSettings(QDomDocument& doc, QDomElement& element) Q_DECL_OVERRIDE;
+	bool restoreSettings(QDomElement& element) override;
+	bool saveSettings(QDomDocument& doc, QDomElement& element) override;
 
 	void updateMonitor(void);
 
-	void configureSettings(void) Q_DECL_OVERRIDE;
+	void configureSettings(void) override;
 
-	void timerTick() Q_DECL_OVERRIDE
+	void timerTick() override
 	{
 		updateMonitor();
 	}
 
-	bool hasSettingsDialog() const Q_DECL_OVERRIDE
+	bool hasSettingsDialog() const override
 	{
 		return true;
 	}
 
 public Q_SLOTS:
-	void applySettings() Q_DECL_OVERRIDE;
-	void applyStyle() Q_DECL_OVERRIDE;
+	void applySettings() override;
+	void applyStyle() override;
 
 	void settingsAddRule();
 	void settingsDeleteRule();

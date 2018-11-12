@@ -67,7 +67,7 @@ class SensorDisplay : public QWidget, public SensorClient
     /**
       Destructor.
      */
-    ~SensorDisplay() Q_DECL_OVERRIDE;
+    ~SensorDisplay() override;
 
     /**
       Sets the title of the display.  If you override, please call this
@@ -179,7 +179,7 @@ class SensorDisplay : public QWidget, public SensorClient
     /**
       Normaly you shouldn't reimplement this methode
      */
-    void sensorLost( int reqId ) Q_DECL_OVERRIDE;
+    void sensorLost( int reqId ) override;
 
     /**
      * Sets the object where the delete events will be sent to.
@@ -221,8 +221,8 @@ class SensorDisplay : public QWidget, public SensorClient
     void translatedTitleChanged(const QString&);
 
   protected:
-    bool eventFilter( QObject*, QEvent* ) Q_DECL_OVERRIDE;
-    void changeEvent( QEvent * event ) Q_DECL_OVERRIDE;
+    bool eventFilter( QObject*, QEvent* ) override;
+    void changeEvent( QEvent * event ) override;
 
     void registerSensor( SensorProperties *sp );
     void unregisterSensor( uint pos );
