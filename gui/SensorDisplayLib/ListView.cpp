@@ -398,7 +398,7 @@ ListView::saveSettings(QDomDocument& doc, QDomElement& element)
 void
 ListView::configureSettings()
 {
-    lvs = new ListViewSettings(this, "ListViewSettings");
+    lvs = new ListViewSettings(this, QStringLiteral("ListViewSettings"));
     Q_CHECK_PTR(lvs);
 
 /*    QPalette pal = monitor->palette();

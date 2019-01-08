@@ -155,7 +155,7 @@ bool DancingBars::addSensor( const QString &hostName, const QString &name,
 
   QString tooltip;
   for ( int i = 0; i < mBars; ++i ) {
-    tooltip += QStringLiteral( "%1%2:%3" ).arg( i != 0 ? QLatin1Literal("\n") : QString() )
+    tooltip += QStringLiteral( "%1%2:%3" ).arg( i != 0 ? QStringLiteral("\n") : QString() )
                                    .arg( sensors().at( i )->hostName() )
                                    .arg( sensors().at( i )->name() );
   }

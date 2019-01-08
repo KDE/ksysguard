@@ -92,8 +92,8 @@ TopLevel::TopLevel()
   mWorkSpace = new Workspace( mSplitter );
   connect( mWorkSpace, SIGNAL(setCaption(QString)),
            SLOT(setCaption(QString)) );
-  connect( mWorkSpace, SIGNAL(currentChanged(int)),
-           SLOT(currentTabChanged(int)) );
+  connect( mWorkSpace, &QTabWidget::currentChanged,
+           this, &TopLevel::currentTabChanged );
 
   /* Create the status bar. It displays some information about the
    * number of processes and the memory consumption of the local
