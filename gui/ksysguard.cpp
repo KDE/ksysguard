@@ -365,17 +365,18 @@ void TopLevel::timerEvent( QTimerEvent* )
   if ( statusBar()->isVisibleTo( this ) ) {
     /* Request some info about the memory status. The requested
      * information will be received by answerReceived(). */
-    KSGRD::SensorMgr->sendRequest( QStringLiteral("localhost"), QStringLiteral("cpu/idle"),
+    const auto localhostString = QStringLiteral("localhost");
+    KSGRD::SensorMgr->sendRequest( localhostString, QStringLiteral("cpu/idle"),
                                    (KSGRD::SensorClient*)this, 1 );
-    KSGRD::SensorMgr->sendRequest( QStringLiteral("localhost"), QStringLiteral("mem/physical/free"),
+    KSGRD::SensorMgr->sendRequest( localhostString, QStringLiteral("mem/physical/free"),
                                    (KSGRD::SensorClient*)this, 2 );
-    KSGRD::SensorMgr->sendRequest( QStringLiteral("localhost"), QStringLiteral("mem/physical/used"),
+    KSGRD::SensorMgr->sendRequest( localhostString, QStringLiteral("mem/physical/used"),
                                    (KSGRD::SensorClient*)this, 3 );
-    KSGRD::SensorMgr->sendRequest( QStringLiteral("localhost"), QStringLiteral("mem/physical/application"),
+    KSGRD::SensorMgr->sendRequest( localhostString, QStringLiteral("mem/physical/application"),
                                    (KSGRD::SensorClient*)this, 4 );
-    KSGRD::SensorMgr->sendRequest( QStringLiteral("localhost"), QStringLiteral("mem/swap/free"),
+    KSGRD::SensorMgr->sendRequest( localhostString, QStringLiteral("mem/swap/free"),
                                    (KSGRD::SensorClient*)this, 5 );
-    KSGRD::SensorMgr->sendRequest( QStringLiteral("localhost"), QStringLiteral("mem/swap/used"),
+    KSGRD::SensorMgr->sendRequest( localhostString, QStringLiteral("mem/swap/used"),
                                    (KSGRD::SensorClient*)this, 6 );
   }
 }
