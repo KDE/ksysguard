@@ -268,9 +268,7 @@ static int readCommand( int fd, char* cmdBuf, size_t len )
 
 void resetClientList( void )
 {
-  int i;
-
-  for ( i = 0; i < MAX_CLIENTS; i++ ) {
+  for (int i = 0; i < MAX_CLIENTS; i++ ) {
     ClientList[ i ].socket = -1;
     ClientList[ i ].out = 0;
   }
@@ -281,10 +279,9 @@ void resetClientList( void )
  */
 int addClient( int client )
 {
-  int i;
   FILE* out;
 
-  for ( i = 0; i < MAX_CLIENTS; i++ ) {
+  for (int i = 0; i < MAX_CLIENTS; i++ ) {
     if ( ClientList[ i ].socket == -1 ) {
       ClientList[ i ].socket = client;
       if ( ( out = fdopen( client, "w+" ) ) == NULL ) {
@@ -310,9 +307,7 @@ int addClient( int client )
  */
 int delClient( int client )
 {
-  int i;
-
-  for ( i = 0; i < MAX_CLIENTS; i++ ) {
+  for (int i = 0; i < MAX_CLIENTS; i++ ) {
     if ( ClientList[i].socket == client ) {
       fclose( ClientList[ i ].out );
       ClientList[ i ].out = 0;
@@ -356,10 +351,7 @@ int createServerSocket()
 
   memset( &s_in, 0, sizeof( struct sockaddr_in ) );
   s_in.sin_family = AF_INET;
-  if ( BindToAllInterfaces )
-      s_in.sin_addr.s_addr = htonl( INADDR_ANY );
-  else
-      s_in.sin_addr.s_addr = htonl( INADDR_LOOPBACK );
+  s_in.sin_addr.s_addr = htonl( BindToAllInterfaces ? INADDR_ANY : INADDR_LOOPBACK );
   s_in.sin_port = htons( SocketPort );
 
   if ( bind( newSocket, (struct sockaddr*)&s_in, sizeof( s_in ) ) < 0 ) {
@@ -417,8 +409,6 @@ static void handleSocketTraffic( int socketNo, const fd_set* fds )
   char cmdBuf[ CMDBUFSIZE ];
 
   if ( RunAsDaemon ) {
-    int i;
-
     if ( FD_ISSET( socketNo, fds ) ) {
       int clientsocket;
       struct sockaddr addr;
@@ -432,7 +422,7 @@ static void handleSocketTraffic( int socketNo, const fd_set* fds )
         addClient( clientsocket );
     }
 
-    for ( i = 0; i < MAX_CLIENTS; i++ ) {
+    for (int i = 0; i < MAX_CLIENTS; i++ ) {
       if ( ClientList[ i ].socket != -1 ) {
         CurrentSocket = ClientList[ i ].socket;
         if ( FD_ISSET( ClientList[ i ].socket, fds ) ) {

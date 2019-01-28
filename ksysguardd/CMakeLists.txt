@@ -45,7 +45,7 @@ endif()
         PWUIDCache.c )
 
     add_executable(ksysguardd ${ksysguardd_SRCS})
-
+    set_property(TARGET ksysguardd PROPERTY C_STANDARD 11)
     target_link_libraries(ksysguardd libksysguardd)
 
 if( ${CMAKE_SYSTEM_NAME} MATCHES "NetBSD" )

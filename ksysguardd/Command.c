@@ -51,12 +51,10 @@ void command_cleanup( void* v )
 {
   if ( v ) {
     Command* c = v;
-    if ( c->command )
-      free ( c->command );
-    if ( c->type )
-      free ( c->type );
-    free ( v );
+    free ( c->command );
+    free ( c->type );
   }
+  free ( v );
 }
 
 /*
@@ -152,8 +150,7 @@ void removeCommand( const char* command )
     if ( cmd->command && strcmp( cmd->command, command ) == 0 ) {
       remove_ctnr( CommandList );
       free( cmd->command );
-      if ( cmd->type )
-        free( cmd->type );
+      free( cmd->type );
       free( cmd );
     }
   }

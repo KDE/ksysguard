@@ -51,13 +51,11 @@ static int uidCmp( void* p1, void* p2 )
 
 void PWUIDCache_cleanup( void* c )
 {
-  if ( c ) {
-    if ( ((CachedPWUID*)c)->uName )
-      free ( ((CachedPWUID*)c)->uName );
-    free ( c );
-	}
+  if ( c )
+    free ( ((CachedPWUID*)c)->uName );
+  free ( c );
 }
-			
+
 void initPWUIDCache()
 {
   UIDCache = new_ctnr();
@@ -100,10 +98,7 @@ const char* getCachedPWUID( uid_t uid )
     entry->uid = uid;
 
     pwent = getpwuid( uid );
-    if ( pwent )
-      entry->uName = strdup( pwent->pw_name );
-    else
-      entry->uName = strdup( "?" );
+    entry->uName = strdup( pwent ? pwent->pw_name : "?" );
 
     push_ctnr( UIDCache, entry );
     bsort_ctnr( UIDCache, uidCmp );

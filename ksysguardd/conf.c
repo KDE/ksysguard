@@ -38,11 +38,9 @@ void freeConfigFile( void );
 void LogFileList_cleanup( void *ptr )
 {
   if ( ptr ) {
-    if ( ((ConfigLogFile*)ptr)->name )
       free( ((ConfigLogFile*)ptr)->name );
-
-    free( ptr );
   }
+  free( ptr );
 }
 
 void freeConfigFile( void )
