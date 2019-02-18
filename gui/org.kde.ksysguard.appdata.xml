@@ -98,7 +98,7 @@
     <p xml:lang="fi">Paikallisen järjestelmän lisäksi voit yhdistää System Guard -palvelua tarjoaviin etäjärjestelmiin.</p>
     <p xml:lang="fr">En plus de la surveillance de votre système local, il peut se connecter à des systèmes à distance exécutant le démon System Guard.</p>
     <p xml:lang="gl">Ademais de monitorizar o sistema local, pode conectarse a sistemas remotos nos que se estea a executar o «Servizo de vixiante do sistema».</p>
-    <p xml:lang="id">Selain untuk memantau sistem lokal, ia bisa tersambung ke sistem remot yang menjalankan System Guard Daemon.</p>
+    <p xml:lang="id">Selain untuk memantau sistem lokal, ia bisa terkoneksi ke sistem remot yang menjalankan System Guard Daemon.</p>
     <p xml:lang="it">Oltre al controllo del sistema locale può connettersi ai sistemi locali in cui è in esecuzione il demone Monitor di sistema.</p>
     <p xml:lang="ko">로컬 시스템뿐만 아니라 시스템 모니터 데몬이 실행 중인 다른 시스템에 연결할 수도 있습니다.</p>
     <p xml:lang="nl">Naast het monitoren van het lokale systeem, kan het verbinden met systemen op afstand die de System Guard-daemon hebben geactiveerd.</p>
