@@ -139,10 +139,10 @@ void BarGraph::paintEvent( QPaintEvent* )
       for ( int i = 0; i < barHeight && i < topVal; i += 2 ) {
         if ( ( upperLimitActive && samples[ b ] > upperLimit ) ||
              ( lowerLimitActive && samples[ b ] < lowerLimit ) )
-          p.setPen( alarmColor.light( static_cast<int>( 30 + ( 70.0 /
+          p.setPen( alarmColor.lighter( static_cast<int>( 30 + ( 70.0 /
                                       ( barHeight + 1 ) * i ) ) ) );
         else
-          p.setPen( normalColor.light( static_cast<int>( 30 + ( 70.0 /
+          p.setPen( normalColor.lighter( static_cast<int>( 30 + ( 70.0 /
                                       ( barHeight + 1 ) * i ) ) ) );
         p.drawLine( b * barWidth + 3, barHeight - i, ( b + 1 ) * barWidth - 3,
                     barHeight - i );
