@@ -190,6 +190,9 @@ typedef struct {
   /** The login name of the user that owns this process */
   char userName[ 32 ];
 
+  /** NoNewPrivileges: task can't gain higher privileges via setuid etc. */
+  int noNewPrivileges;
+
 } ProcessInfo;
 
 void getIOnice( int pid, ProcessInfo *ps );
@@ -251,6 +254,8 @@ static bool getProcess( int pid, ProcessInfo *ps )
       sscanf( buf, "%*s %d", (int*)&ps->tracerpid );
       if (ps->tracerpid == 0)
           ps->tracerpid = -1; /* ksysguard uses -1 to indicate no tracerpid, but linux uses 0 */
+    } else if ( strcmp( tag, "NoNewPrivs:" ) == 0 ) {
+      sscanf( buf, "%*s %d", &ps->noNewPrivileges );
     }
   }
 
@@ -414,13 +419,13 @@ void printProcessList( const char* cmd)
       long pid;
       pid = atol( entry->d_name );
       if(getProcess( pid, &ps )) /* Print out the details of the process.  Because of a stupid bug in kde3 ksysguard, make sure cmdline and tty are not empty */
-        output( "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%lu\t%s\t%ld\t%s\t%s\t%d\t%d\n",
+        output( "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%lu\t%s\t%ld\t%s\t%s\t%d\t%d\t%d\n",
              ps.name, pid, (long)ps.ppid,
              (long)ps.uid, (long)ps.gid, ps.status, ps.userTime,
              ps.sysTime, ps.niceLevel, ps.vmSize, ps.vmRss, ps.vmURss,
              (ps.userName[0]==0)?" ":ps.userName, (long)ps.tracerpid,
              (ps.tty[0]==0)?" ":ps.tty, (ps.cmdline[0]==0)?" ":ps.cmdline,
-             ps.ioPriorityClass, ps.ioPriority
+             ps.ioPriorityClass, ps.ioPriority, ps.noNewPrivileges
         );
     }
   }
@@ -491,8 +496,8 @@ void printProcessListInfo( const char* cmd )
 {
   (void)cmd;
   output( "Name\tPID\tPPID\tUID\tGID\tStatus\tUser Time\tSystem Time\tNice\tVmSize"
-                          "\tVmRss\tVmURss\tLogin\tTracerPID\tTTY\tCommand\tIO Priority Class\tIO Priority\n" );
-  output( "s\td\td\td\td\tS\td\td\td\tD\tD\tD\ts\td\ts\ts\td\td\n" );
+                          "\tVmRss\tVmURss\tLogin\tTracerPID\tTTY\tCommand\tIO Priority Class\tIO Priority\tNNP\n" );
+  output( "s\td\td\td\td\tS\td\td\td\tD\tD\tD\ts\td\ts\ts\td\td\td\n" );
 }
 
 void printProcessCount( const char* cmd )
