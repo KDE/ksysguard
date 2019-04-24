@@ -193,6 +193,9 @@ typedef struct {
   /** NoNewPrivileges: task can't gain higher privileges via setuid etc. */
   int noNewPrivileges;
 
+  /** cgroup: Linux process control group */
+  char cGroup[ 256 ];
+
 } ProcessInfo;
 
 void getIOnice( int pid, ProcessInfo *ps );
@@ -403,6 +406,23 @@ static bool getProcess( int pid, ProcessInfo *ps )
 
   getIOnice(pid, ps);
 
+  /* CGroups */
+  ps->cGroup[ 0 ] = '\0';
+  snprintf( buf, BUFSIZE - 1, "/proc/%d/cgroup", pid );
+  buf[ BUFSIZE - 1 ] = '\0';
+  if ( ( fd = fopen( buf, "r" ) ) != 0 )  {
+    do {
+         fgets( buf, BUFSIZE, fd );
+    } while ( !feof( fd ) && buf[0] != '0' );
+    fclose ( fd );
+
+    if ( buf[0] == '0' && buf[1] == ':' && buf[2] == ':' ) {
+      strncpy( ps->cGroup, &buf[3], sizeof( ps->cGroup ) - 1 );
+      ps->cGroup[ sizeof( ps->cGroup ) - 1 ] = '\0';
+      validateStr( ps->cGroup );
+    }
+  }
+
   return true;
 }
 
@@ -419,13 +439,13 @@ void printProcessList( const char* cmd)
       long pid;
       pid = atol( entry->d_name );
       if(getProcess( pid, &ps )) /* Print out the details of the process.  Because of a stupid bug in kde3 ksysguard, make sure cmdline and tty are not empty */
-        output( "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%lu\t%s\t%ld\t%s\t%s\t%d\t%d\t%d\n",
+        output( "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%lu\t%s\t%ld\t%s\t%s\t%d\t%d\t%d\t%s\n",
              ps.name, pid, (long)ps.ppid,
              (long)ps.uid, (long)ps.gid, ps.status, ps.userTime,
              ps.sysTime, ps.niceLevel, ps.vmSize, ps.vmRss, ps.vmURss,
              (ps.userName[0]==0)?" ":ps.userName, (long)ps.tracerpid,
              (ps.tty[0]==0)?" ":ps.tty, (ps.cmdline[0]==0)?" ":ps.cmdline,
-             ps.ioPriorityClass, ps.ioPriority, ps.noNewPrivileges
+             ps.ioPriorityClass, ps.ioPriority, ps.noNewPrivileges, ps.cGroup
         );
     }
   }
@@ -496,8 +516,8 @@ void printProcessListInfo( const char* cmd )
 {
   (void)cmd;
   output( "Name\tPID\tPPID\tUID\tGID\tStatus\tUser Time\tSystem Time\tNice\tVmSize"
-                          "\tVmRss\tVmURss\tLogin\tTracerPID\tTTY\tCommand\tIO Priority Class\tIO Priority\tNNP\n" );
-  output( "s\td\td\td\td\tS\td\td\td\tD\tD\tD\ts\td\ts\ts\td\td\td\n" );
+                          "\tVmRss\tVmURss\tLogin\tTracerPID\tTTY\tCommand\tIO Priority Class\tIO Priority\tNNP\tCGroup\n" );
+  output( "s\td\td\td\td\tS\td\td\td\tD\tD\tD\ts\td\ts\ts\td\td\td\ts\n" );
 }
 
 void printProcessCount( const char* cmd )
