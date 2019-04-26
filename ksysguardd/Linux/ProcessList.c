@@ -196,6 +196,9 @@ typedef struct {
   /** cgroup: Linux process control group */
   char cGroup[ 256 ];
 
+  /** Mandatory Access Control (SELinux or AppArmor) context */
+  char macContext[ 256 ];
+
 } ProcessInfo;
 
 void getIOnice( int pid, ProcessInfo *ps );
@@ -423,6 +426,15 @@ static bool getProcess( int pid, ProcessInfo *ps )
     }
   }
 
+  /* Mandatory Access Control (SELinux or AppArmor) context */
+  ps->macContext[ 0 ] = '\0';
+  snprintf( buf, BUFSIZE - 1, "/proc/%d/attr/current", pid );
+  if ( ( fd = fopen( buf, "r" ) ) != 0 )  {
+    if (fgets( ps->macContext, sizeof( ps->macContext ), fd ))
+      validateStr( ps->macContext );
+    fclose ( fd );
+  }
+
   return true;
 }
 
@@ -439,13 +451,13 @@ void printProcessList( const char* cmd)
       long pid;
       pid = atol( entry->d_name );
       if(getProcess( pid, &ps )) /* Print out the details of the process.  Because of a stupid bug in kde3 ksysguard, make sure cmdline and tty are not empty */
-        output( "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%lu\t%s\t%ld\t%s\t%s\t%d\t%d\t%d\t%s\n",
+        output( "%s\t%ld\t%ld\t%lu\t%lu\t%s\t%lu\t%lu\t%d\t%lu\t%lu\t%lu\t%s\t%ld\t%s\t%s\t%d\t%d\t%d\t%s\t%s\n",
              ps.name, pid, (long)ps.ppid,
              (long)ps.uid, (long)ps.gid, ps.status, ps.userTime,
              ps.sysTime, ps.niceLevel, ps.vmSize, ps.vmRss, ps.vmURss,
              (ps.userName[0]==0)?" ":ps.userName, (long)ps.tracerpid,
              (ps.tty[0]==0)?" ":ps.tty, (ps.cmdline[0]==0)?" ":ps.cmdline,
-             ps.ioPriorityClass, ps.ioPriority, ps.noNewPrivileges, ps.cGroup
+             ps.ioPriorityClass, ps.ioPriority, ps.noNewPrivileges, ps.cGroup, ps.macContext
         );
     }
   }
@@ -516,8 +528,8 @@ void printProcessListInfo( const char* cmd )
 {
   (void)cmd;
   output( "Name\tPID\tPPID\tUID\tGID\tStatus\tUser Time\tSystem Time\tNice\tVmSize"
-                          "\tVmRss\tVmURss\tLogin\tTracerPID\tTTY\tCommand\tIO Priority Class\tIO Priority\tNNP\tCGroup\n" );
-  output( "s\td\td\td\td\tS\td\td\td\tD\tD\tD\ts\td\ts\ts\td\td\td\ts\n" );
+                          "\tVmRss\tVmURss\tLogin\tTracerPID\tTTY\tCommand\tIO Priority Class\tIO Priority\tNNP\tCGroup\tMAC Context\n" );
+  output( "s\td\td\td\td\tS\td\td\td\tD\tD\tD\ts\td\ts\ts\td\td\td\ts\ts\n" );
 }
 
 void printProcessCount( const char* cmd )
