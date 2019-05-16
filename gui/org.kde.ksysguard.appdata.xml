@@ -127,4 +127,7 @@
       <image>https://www.kde.org/images/screenshots/ksysguard.png</image>
     </screenshot>
   </screenshots>
+  <releases>
+    <release version="5.15.90" date="2019-05-16"/>
+  </releases>
 </component>
