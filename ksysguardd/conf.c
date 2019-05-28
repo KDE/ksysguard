@@ -108,11 +108,18 @@ void parseConfigFile( const char *filename )
         }
         confLog->name = strdup( token );
         tmp = strchr( confLog->name, ':' );
-        *tmp = '\0';
-        confLog->path = tmp;
-        confLog->path++;
-
-        push_ctnr( LogFileList, confLog );
+        if(tmp)
+        {
+          *tmp = '\0';
+          confLog->path = tmp;
+          confLog->path++;
+          push_ctnr( LogFileList, confLog );
+        }
+        else
+        {
+          print_error("Invalid config file");
+          exit(EXIT_FAILURE);
+        }
       }
     }
 
