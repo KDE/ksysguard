@@ -23,7 +23,6 @@
 
 #include <QDialog>
 
-class QAbstractButton;
 class QColor;
 
 class Ui_ListViewSettingsWidget;
