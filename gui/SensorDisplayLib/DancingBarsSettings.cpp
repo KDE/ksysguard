@@ -32,7 +32,6 @@
 #include <QPushButton>
 #include <QTreeView>
 #include <QGridLayout>
-#include <QBitmap>
 #include <QInputDialog>
 #include "DancingBarsSettings.h"
 

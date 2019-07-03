@@ -29,7 +29,6 @@
 #include <QLineEdit>
 #include <QGridLayout>
 #include <QVBoxLayout>
-#include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QSpinBox>

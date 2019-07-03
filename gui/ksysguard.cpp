@@ -44,7 +44,6 @@
 #include <unistd.h>
 
 #include <QApplication>
-#include <QCommandLineOption>
 #include <QCommandLineParser>
 #include <QDBusConnection>
 #include <QIcon>
@@ -56,7 +55,6 @@
 #include <KAboutData>
 #include <KActionCollection>
 #include <KDBusService>
-#include <KEditToolBar>
 #include <KFormat>
 #include <KLocalizedString>
 #include <KMessageBox>
