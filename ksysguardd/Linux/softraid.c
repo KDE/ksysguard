@@ -27,6 +27,7 @@
 #include <sys/types.h> /* for open */
 #include <sys/stat.h> /* for open */
 #include <fcntl.h> /* for open */
+#define _GNU_SOURCE /* pipe2 */
 #include <unistd.h> /* for read, close, exec, fork */
 #include <stdlib.h> /* for exit */
 #include <sys/wait.h> /* for wait :) */
