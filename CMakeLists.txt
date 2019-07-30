@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(ksysguard)
-set(PROJECT_VERSION "5.16.3")
+set(PROJECT_VERSION "5.16.4")
 
 set(KSYSGUARD_VERSION 4.98.0)
 set(KSYSGUARD_STRING_VERSION "${KSYSGUARD_VERSION}")
