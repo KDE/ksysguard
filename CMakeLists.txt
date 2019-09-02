@@ -53,6 +53,21 @@ set_package_properties(Sensors PROPERTIES
                        TYPE OPTIONAL
                        PURPOSE "Allows to show sensor information")
 
+find_package(libpcap)
+set_package_properties(
+    libpcap PROPERTIES
+    TYPE RECOMMENDED
+    PURPOSE "libpcap is used for per-application network usage."
+)
+
+if (libpcap_FOUND)
+    find_package(Libcap)
+    set_package_properties(Libcap PROPERTIES
+        TYPE OPTIONAL
+        PURPOSE "Needed for setting capabilities of the per-application network plugin."
+    )
+endif()
+
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 configure_file(config-workspace.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-workspace.h)
 
@@ -63,6 +78,8 @@ add_subdirectory( pics )
 add_subdirectory( example )
 
 add_subdirectory( ksysguardd )
+
+add_subdirectory( plugins )
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
