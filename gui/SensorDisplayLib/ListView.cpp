@@ -245,13 +245,13 @@ void ListView::updateList()
 
 ListView::ColumnType ListView::convertColumnType(const QString &type) const
 {
-    if ( type == QLatin1String("d") || type == QLatin1String("D") )
+    if ( type == QLatin1String("d") || type == QLatin1Char('D') )
         return Int;
-    else if ( type == QLatin1String("f") || type == QLatin1String("F") )
+    else if ( type == QLatin1String("f") || type == QLatin1Char('F') )
         return Float;
-    else if ( type == QLatin1String("t") )
+    else if ( type == QLatin1Char('t') )
         return Time;
-    else if ( type == QLatin1String("M") )
+    else if ( type == QLatin1Char('M') )
         return DiskStat;
     else if ( type == QLatin1String("KB") )
         return KByte;

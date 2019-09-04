@@ -205,7 +205,7 @@ FancyPlotterSettings::FancyPlotterSettings( QWidget* parent, bool locked )
   mView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
   bool hideFirstColumn = true;
   for(int i = 0; i < mModel->rowCount(); i++)
-    if(mModel->data(mModel->index(i, 0)) != QStringLiteral("localhost")) {
+    if(mModel->data(mModel->index(i, 0)) != QLatin1String("localhost")) {
       hideFirstColumn = false;
       break;
     }

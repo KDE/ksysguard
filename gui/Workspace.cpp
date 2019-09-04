@@ -80,7 +80,7 @@ void Workspace::readProperties( const KConfigGroup& cfg )
     selectedSheets.prepend( QStringLiteral("ProcessTable.sgrd"));
   }
 
-  int oldSystemLoad = selectedSheets.indexOf(QStringLiteral("SystemLoad.sgrd"));
+  int oldSystemLoad = selectedSheets.indexOf(QLatin1String("SystemLoad.sgrd"));
   if(oldSystemLoad != -1) {
     selectedSheets.replace(oldSystemLoad, QStringLiteral("SystemLoad2.sgrd"));
   }
