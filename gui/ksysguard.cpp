@@ -9,7 +9,7 @@
  published by the Free Software Foundation; either version 2 of
  the License or (at your option) version 3 or any later version
  accepted by the membership of KDE e.V. (or its successor approved
- by the membership of KDE e.V.), which shall act as a proxy 
+ by the membership of KDE e.V.), which shall act as a proxy
  defined in Section 14 of version 3 of the license.
 
  This program is distributed in the hope that it will be useful,
@@ -564,6 +564,8 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
 
   QApplication app(argc, argv);
 
+  app.setAttribute(Qt::AA_UseHighDpiPixmaps, true);
+
   KLocalizedString::setApplicationDomain("ksysguard");
 
   KAboutData aboutData( QStringLiteral("ksysguard"), i18n( "System Monitor" ),
@@ -607,7 +609,7 @@ extern "C" Q_DECL_EXPORT int kdemain( int argc, char** argv )
   // create top-level widget
   Toplevel->readProperties( KConfigGroup( KSharedConfig::openConfig(), "MainWindow" ) );
   // setup the statusbar, toolbar etc.
-  // Note that this comes after creating the top-level widgets whcih also 
+  // Note that this comes after creating the top-level widgets whcih also
   // sets up the various QActions that the user may have added to the toolbar
   Toplevel->initStatusBar();
 
