@@ -22,7 +22,7 @@
 #include "Packet.h"
 
 #include <arpa/inet.h>
-#include <linux/if_ether.h>
+#include <net/ethernet.h>
 #include <netinet/ip.h>
 #include <netinet/ip6.h>
 #include <netinet/tcp.h>
@@ -42,13 +42,13 @@ Packet::Packet(const TimeStamp::MicroSeconds &timeStamp, const uint8_t *data, ui
 
     const sll_header *header = reinterpret_cast<const sll_header *>(data);
     switch (ntohs(header->sll_protocol)) {
-    case ETH_P_IP:
+    case ETHERTYPE_IP:
         m_networkProtocol = NetworkProtocolType::IPv4;
         if (sizeof(sll_header) <= dataLength) {
             parseIPv4(data + sizeof(sll_header));
         }
         break;
-    case ETH_P_IPV6:
+    case ETHERTYPE_IPV6:
         m_networkProtocol = NetworkProtocolType::IPv6;
         if (sizeof(sll_header) <= dataLength) {
             parseIPv6(data + sizeof(sll_header));

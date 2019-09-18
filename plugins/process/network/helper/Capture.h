@@ -28,8 +28,9 @@
 #include <deque>
 #include <atomic>
 
+#include "Packet.h"
+
 class pcap;
-class Packet;
 
 class Capture
 {
