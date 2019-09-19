@@ -55,7 +55,7 @@ WorkSheetSettings::WorkSheetSettings( QWidget* parent, bool locked )
   mainLayout->addWidget(buttonBox);
 
   QVBoxLayout *topLayout = new QVBoxLayout( page );
-  topLayout->setMargin( 0 );
+  topLayout->setContentsMargins( 0, 0, 0, 0 );
   //PORT QT5 topLayout->setSpacing( spacingHint() );
 
   QGroupBox *group = new QGroupBox( i18n( "Title" ), page );

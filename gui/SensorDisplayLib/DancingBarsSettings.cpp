@@ -50,7 +50,7 @@ DancingBarsSettings::DancingBarsSettings(QWidget* parent, const QString &name )
   QFrame *page = new QFrame( this );
   addPage( page, i18n( "Range" ) );
   QGridLayout *pageLayout = new QGridLayout( page );
-  pageLayout->setMargin( 0 );
+  pageLayout->setContentsMargins( 0, 0, 0, 0 );
 
   QGroupBox *groupBox = new QGroupBox( i18n( "Title" ), page );
   QGridLayout *boxLayout = new QGridLayout;
@@ -99,7 +99,7 @@ DancingBarsSettings::DancingBarsSettings(QWidget* parent, const QString &name )
   page = new QFrame( this );
   addPage( page, i18n( "Alarms" ) );
   pageLayout = new QGridLayout( page );
-  pageLayout->setMargin( 0 );
+  pageLayout->setContentsMargins( 0, 0, 0, 0 );
 
   groupBox = new QGroupBox( i18n( "Alarm for Minimum Value" ), page );
   boxLayout = new QGridLayout;
@@ -152,7 +152,7 @@ DancingBarsSettings::DancingBarsSettings(QWidget* parent, const QString &name )
   page = new QFrame( this );
   addPage( page, i18nc( "@title:tab Appearance of the bar graph", "Look" ) );
   pageLayout = new QGridLayout( page );
-  pageLayout->setMargin( 0 );
+  pageLayout->setContentsMargins( 0, 0, 0, 0 );
 
   label = new QLabel( i18n( "Normal bar color:" ), page );
   pageLayout->addWidget( label, 0, 0 );
@@ -190,7 +190,7 @@ DancingBarsSettings::DancingBarsSettings(QWidget* parent, const QString &name )
   page = new QFrame( this );
   addPage( page, i18n( "Sensors" ) );
   pageLayout = new QGridLayout( page );
-  pageLayout->setMargin( 0 );
+  pageLayout->setContentsMargins( 0, 0, 0, 0 );
   pageLayout->setRowStretch( 2, 1 );
 
   mView = new QTreeView( page );

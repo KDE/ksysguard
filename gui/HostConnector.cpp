@@ -51,7 +51,7 @@ HostConnector::HostConnector(QWidget *parent, const QString &name )
   setLayout(vlayout);
 
   QGridLayout *layout = new QGridLayout( page );
-  layout->setMargin( 0 );
+  layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setColumnStretch( 1, 1 );
 
   QLabel *label = new QLabel( i18n( "Host:" ), page );
