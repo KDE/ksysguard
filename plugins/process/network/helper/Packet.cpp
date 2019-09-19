@@ -24,6 +24,7 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <net/ethernet.h>
+#include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/ip6.h>
 #include <netinet/tcp.h>
