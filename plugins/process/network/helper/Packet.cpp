@@ -111,16 +111,16 @@ void Packet::parseIPv6(const uint8_t *data)
     const ip6_hdr *header = reinterpret_cast<const ip6_hdr *>(data);
 
     m_sourceAddress.address = {
-        header->ip6_src.s6_addr32[0],
-        header->ip6_src.s6_addr32[1],
-        header->ip6_src.s6_addr32[2],
-        header->ip6_src.s6_addr32[3]
+        uint32_t(header->ip6_src.s6_addr[0] << 24 & header->ip6_src.s6_addr[1] << 16 & header->ip6_src.s6_addr[2] << 8 & header->ip6_src.s6_addr[3]),
+        uint32_t(header->ip6_src.s6_addr[4] << 24 & header->ip6_src.s6_addr[5] << 16 & header->ip6_src.s6_addr[6] << 8 & header->ip6_src.s6_addr[7]),
+        uint32_t(header->ip6_src.s6_addr[8] << 24 & header->ip6_src.s6_addr[9] << 16 & header->ip6_src.s6_addr[10] << 8 & header->ip6_src.s6_addr[11]),
+        uint32_t(header->ip6_src.s6_addr[12] << 24 & header->ip6_src.s6_addr[13] << 16 & header->ip6_src.s6_addr[14] << 8 & header->ip6_src.s6_addr[15])
     };
     m_destinationAddress.address = {
-        header->ip6_dst.s6_addr32[0],
-        header->ip6_dst.s6_addr32[1],
-        header->ip6_dst.s6_addr32[2],
-        header->ip6_dst.s6_addr32[3]
+        uint32_t(header->ip6_dst.s6_addr[0] << 24 & header->ip6_dst.s6_addr[1] << 16 & header->ip6_dst.s6_addr[2] << 8 & header->ip6_dst.s6_addr[3]),
+        uint32_t(header->ip6_dst.s6_addr[4] << 24 & header->ip6_dst.s6_addr[5] << 16 & header->ip6_dst.s6_addr[6] << 8 & header->ip6_dst.s6_addr[7]),
+        uint32_t(header->ip6_dst.s6_addr[8] << 24 & header->ip6_dst.s6_addr[9] << 16 & header->ip6_dst.s6_addr[10] << 8 & header->ip6_dst.s6_addr[11]),
+        uint32_t(header->ip6_dst.s6_addr[12] << 24 & header->ip6_dst.s6_addr[13] << 16 & header->ip6_dst.s6_addr[14] << 8 & header->ip6_dst.s6_addr[15])
     };
 
     parseTransport(header->ip6_nxt, data + sizeof(ip6_hdr));
