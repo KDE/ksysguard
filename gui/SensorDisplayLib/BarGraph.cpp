@@ -120,7 +120,7 @@ void BarGraph::paintEvent( QPaintEvent* )
      * label does not fit no label is shown. */
     bool showLabels = true;
     for ( b = 0; b < bars; b++ )
-      if ( fm.width( footers[ b ] ) > barWidth )
+      if ( fm.boundingRect( footers[ b ] ).width() > barWidth )
         showLabels = false;
 
     int barHeight;

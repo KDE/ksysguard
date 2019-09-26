@@ -122,7 +122,7 @@ class FancyPlotterLabel : public QLabel {
         shortHeadingText = QLatin1String("<qt><font color=\"") + color.name() + QLatin1String("\">") + indicatorSymbol + QLatin1String("</font>");
         noHeadingText = QLatin1String("<qt><font color=\"") + color.name() + QLatin1String("\">");
 
-        textMargin = fontMetrics().width(QLatin1Char('x')) + margin()*2 + frameWidth()*2;
+        textMargin = fontMetrics().boundingRect(QLatin1Char('x')).width() + margin()*2 + frameWidth()*2;
         longHeadingWidth = fontMetrics().boundingRect(labelName + QLatin1String(" :") + indicatorSymbol + QLatin1String(" x")).width() + textMargin;
         shortHeadingWidth = fontMetrics().boundingRect(indicatorSymbol).width() + textMargin;
         setMinimumWidth(shortHeadingWidth);
@@ -174,7 +174,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     QBoxLayout *layout = new QVBoxLayout(this);
     layout->setSpacing(0);
     mPlotter = new KSignalPlotter( this );
-    int axisTextWidth = fontMetrics().width(i18nc("Largest axis title", "99999 XXXX"));
+    int axisTextWidth = fontMetrics().boundingRect(i18nc("Largest axis title", "99999 XXXX")).width();
     mPlotter->setMaxAxisTextWidth( axisTextWidth );
     mPlotter->setUseAutoRange( true );
     mHeading = new QLabel(translatedTitle(), this);

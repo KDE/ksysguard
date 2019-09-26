@@ -379,7 +379,7 @@ void LogSensor::answerReceived( int id, const QList<QByteArray>& answer ) //virt
       const QDate date = QDateTime::currentDateTime().date();
       const QTime time = QDateTime::currentDateTime().time();
 
-      stream << QStringLiteral( "%1 %2 %3 %4 %5: %6\n" ).arg( date.shortMonthName( date.month() ) )
+      stream << QStringLiteral( "%1 %2 %3 %4 %5: %6\n" ).arg( QLocale().monthName( date.month() ) )
                                                  .arg( date.day() ).arg( time.toString() )
                                                  .arg( mHostName).arg( mSensorName ).arg( value );
     }
