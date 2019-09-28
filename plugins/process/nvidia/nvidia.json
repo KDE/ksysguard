@@ -1,5 +1,10 @@
 {
     "KPlugin": {
-        "Description": "Stats of per-process GPU resources for Nvidia cards"
+        "Description": "Stats of per-process GPU resources for Nvidia cards",
+        "Description[ca]": "Estadístiques dels recursos de GPU per procés per a les targetes Nvidia",
+        "Description[nl]": "Statistieken van per-proces GPU-hulpbronnen voor Nvidia kaarten",
+        "Description[pt]": "Estatísticas dos recursos do GPU por processo nas placas Nvidia",
+        "Description[uk]": "Статистика ресурсів окремих процесів графічного процесора для карток NVidia",
+        "Description[x-test]": "xxStats of per-process GPU resources for Nvidia cardsxx"
     }
 }
