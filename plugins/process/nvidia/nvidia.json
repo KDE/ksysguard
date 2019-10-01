@@ -3,8 +3,10 @@
         "Description": "Stats of per-process GPU resources for Nvidia cards",
         "Description[ca]": "Estadístiques dels recursos de GPU per procés per a les targetes Nvidia",
         "Description[en_GB]": "Stats of per-process GPU resources for Nvidia cards",
+        "Description[es]": "Estadísticas de recursos de GPU por proceso para tarjetas Nvidia",
         "Description[nl]": "Statistieken van per-proces GPU-hulpbronnen voor Nvidia kaarten",
         "Description[pt]": "Estatísticas dos recursos do GPU por processo nas placas Nvidia",
+        "Description[tg]": "Омори ҳар як раванди манбаъи GPU барои кортҳои Nvidia",
         "Description[uk]": "Статистика ресурсів окремих процесів графічного процесора для карток NVidia",
         "Description[x-test]": "xxStats of per-process GPU resources for Nvidia cardsxx",
         "Description[zh_TW]": "適用於 Nvidia 卡的各處理程序 GPU 資源統計"
