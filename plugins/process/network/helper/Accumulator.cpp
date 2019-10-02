@@ -38,6 +38,8 @@ Accumulator::Accumulator(std::shared_ptr<Capture> capture, std::shared_ptr<Conne
 
 Accumulator::PidDataCounterHash Accumulator::data()
 {
+    std::lock_guard<std::mutex> lock{m_mutex};
+
     auto tmp = m_data;
 
     auto toErase = std::vector<int>{};
@@ -78,6 +80,8 @@ void Accumulator::loop()
 
 void Accumulator::addData(Packet::Direction direction, const Packet &packet, int pid)
 {
+    std::lock_guard<std::mutex> lock{m_mutex};
+
     auto itr = m_data.find(pid);
     if (itr == m_data.end()) {
         m_data.emplace(pid, InboundOutboundData{0, 0});

@@ -31,6 +31,10 @@
 
 using namespace std::string_literals;
 
+// Limit the amount of entries waiting in the queue to this size, to prevent
+// the queue from getting too full.
+static const int MaximumQueueSize = 1000;
+
 void pcapDispatchCallback(uint8_t *user, const struct pcap_pkthdr *h, const uint8_t *bytes)
 {
     reinterpret_cast<Capture *>(user)->handlePacket(h, bytes);
@@ -44,11 +48,7 @@ Capture::Capture(const std::string &interface)
 Capture::~Capture()
 {
     if (m_pcap) {
-        if (m_active) {
-            stop();
-        }
-
-        pcap_close(m_pcap);
+        stop();
     }
 }
 
@@ -68,12 +68,12 @@ bool Capture::start()
     pcap_set_promisc(m_pcap, 0);
     pcap_set_datalink(m_pcap, DLT_LINUX_SLL);
 
-    if (checkError(pcap_activate(m_pcap)))
+    if (checkError(pcap_activate(m_pcap))) {
         return false;
+    }
 
     struct bpf_program filter;
     if (checkError(pcap_compile(m_pcap, &filter, "tcp or udp", 1, PCAP_NETMASK_UNKNOWN))) {
-        pcap_freecode(&filter);
         return false;
     }
 
@@ -95,6 +95,8 @@ void Capture::stop()
     if (m_thread.joinable()) {
         m_thread.join();
     }
+    pcap_close(m_pcap);
+    m_pcap = nullptr;
 }
 
 std::string Capture::lastError() const
@@ -112,6 +114,7 @@ void Capture::reportStatistics()
     std::cout << "  " << stats.ps_drop << " dropped (full)" << std::endl;
     std::cout << "  " << stats.ps_ifdrop << " dropped (iface)" << std::endl;
     std::cout << "  " << m_packetCount << " processed" << std::endl;
+    std::cout << "  " << m_droppedPackets << " dropped (capture)" << std::endl;
 }
 
 Packet Capture::nextPacket()
@@ -162,10 +165,15 @@ void Capture::handlePacket(const struct pcap_pkthdr *header, const uint8_t *data
 {
     auto timeStamp = std::chrono::time_point_cast<TimeStamp::MicroSeconds::duration>(std::chrono::system_clock::from_time_t(header->ts.tv_sec) + std::chrono::microseconds { header->ts.tv_usec });
 
-    m_packetCount++;
     {
         std::lock_guard<std::mutex> lock { m_mutex };
-        m_queue.emplace_back(timeStamp, data, header->caplen, header->len);
+
+        m_packetCount++;
+        if (m_queue.size() < MaximumQueueSize) {
+            m_queue.emplace_back(timeStamp, data, header->caplen, header->len);
+        } else {
+            m_droppedPackets++;
+        }
     }
 
     m_condition.notify_all();

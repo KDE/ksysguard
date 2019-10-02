@@ -52,15 +52,15 @@ private:
 
     std::string m_interface;
     std::string m_error;
-    std::atomic_bool m_active;
     std::thread m_thread;
     std::mutex m_mutex;
     std::condition_variable m_condition;
     std::deque<Packet> m_queue;
 
     int m_packetCount = 0;
+    int m_droppedPackets = 0;
 
-    pcap *m_pcap;
+    pcap *m_pcap = nullptr;
 };
 
 #endif // CAPTURE_H
