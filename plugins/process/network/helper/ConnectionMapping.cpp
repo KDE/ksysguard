@@ -138,7 +138,7 @@ void ConnectionMapping::parsePid()
         dirent *fd = nullptr;
         while ((fd = readdir(dir))) {
             memset(buffer, 0, 100);
-            readlinkat(dirfd(dir), fd->d_name, buffer, 100);
+            readlinkat(dirfd(dir), fd->d_name, buffer, 99);
             auto target = std::string(buffer);
             if (target.find("socket:") == std::string::npos)
                 continue;

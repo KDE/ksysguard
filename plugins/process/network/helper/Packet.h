@@ -78,9 +78,9 @@ public:
     Address destinationAddress() const;
 
 private:
-    void parseIPv4(const uint8_t *data);
-    void parseIPv6(const uint8_t *data);
-    void parseTransport(uint8_t type, const uint8_t *data);
+    void parseIPv4(const uint8_t* data, int32_t dataLength);
+    void parseIPv6(const uint8_t* data, int32_t dataLength);
+    void parseTransport(uint8_t type, const uint8_t *data, int32_t dataLength);
 
     TimeStamp::MicroSeconds m_timeStamp;
     unsigned int m_size = 0;

@@ -24,6 +24,7 @@
 
 #include <memory>
 #include <thread>
+#include <mutex>
 #include <atomic>
 #include <unordered_map>
 
@@ -56,6 +57,7 @@ private:
 
     std::thread m_thread;
     std::atomic_bool m_running;
+    std::mutex m_mutex;
 
     PidDataCounterHash m_data;
 };
