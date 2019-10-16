@@ -83,7 +83,7 @@ void NvidiaPlugin::setup()
 
             // format at time of writing is
             // # gpu        pid  type    sm   mem   enc   dec   command
-            if (parts.count() != 9) {
+            if (parts.count() < 5) { // we only access up to the 5th element
                 continue;
             }
 
