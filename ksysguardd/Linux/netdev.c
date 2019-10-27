@@ -140,7 +140,7 @@ typedef struct
 
 /* We have observed deviations of up to 5% in the accuracy of the timer
  * interrupts. So we try to measure the interrupt interval and use this
- * value to calculate timing dependant values. */
+ * value to calculate timing dependent values. */
 static float timeInterval = 0;
 static struct timeval lastSampling;
 static struct timeval currSampling;
@@ -372,11 +372,11 @@ void initNetDev( struct SensorModul* sm )
         }
         FORALLWIFI( REGISTERSENSOR );
       }
-      FORALLWIFI( SETMEMBERZERO );  /* the variable i must point to the corrrect NetDevs[i]*/
+      FORALLWIFI( SETMEMBERZERO );  /* the variable i must point to the correct NetDevs[i]*/
     }
   }
 
-  /* Call processNetDev to elimitate initial peek values. */
+  /* Call processNetDev to eliminate initial peek values. */
   processNetDev();
 }
 

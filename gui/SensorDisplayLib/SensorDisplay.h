@@ -177,7 +177,7 @@ class SensorDisplay : public QWidget, public SensorClient
     virtual void sensorError( int sensorId, bool mode );
 
     /**
-      Normaly you shouldn't reimplement this methode
+      Normally you shouldn't reimplement this method
      */
     void sensorLost( int reqId ) override;
 

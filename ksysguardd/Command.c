@@ -166,7 +166,7 @@ void registerAnyMonitor( const char* command, const char* type, cmdExecutor ex,
    * the second is the info request command. The info request command is
    * identical to the value request but with an '?' appended. The value
    * command prints a single value. The info request command prints
-   * a description of the monitor, the mininum value, the maximum value
+   * a description of the monitor, the minimum value, the maximum value
    * and the unit. */
   Command* cmd = (Command*)malloc( sizeof( Command ) );
   if(!cmd || !(cmd->command = (char*)malloc( strlen( command ) + 1 ))) {
