@@ -422,7 +422,7 @@ void printCoolingDeviceState(const char *cmd) {
     int maximum = getSysFileValue("cooling_device", fan, "max_state");
     int state = 0;
     if (current > 0 && maximum > 0) {
-        state = current / maximum;
+        state = (current * 100) / maximum; /* state is a percentage */
     }
     output( "%d\n", state);
 }
