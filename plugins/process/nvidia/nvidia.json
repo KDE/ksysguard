@@ -9,6 +9,7 @@
         "Description[it]": "Statistiche delle risorse GPU per processo delle schede Nvidia",
         "Description[nl]": "Statistieken van per-proces GPU-hulpbronnen voor Nvidia kaarten",
         "Description[nn]": "Statistikk til prosessorspesifikke GPU-ressursar for NVIDIA-kort",
+        "Description[pl]": "Statystyka dla zasobów GPU na proces dla kart Nvidii",
         "Description[pt]": "Estatísticas dos recursos do GPU por processo nas placas Nvidia",
         "Description[pt_BR]": "Estatísticas de recursos GPU por processo para placas Nvidia",
         "Description[sv]": "Statistik över grafikprocessorresurser per process för Nvidia-kort",
