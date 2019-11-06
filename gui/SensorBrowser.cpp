@@ -22,13 +22,13 @@
 
 #include <QDebug>
 #include <QIcon>
+#include <QLineEdit>
 #include <QMimeData>
 #include <QVBoxLayout>
 
 #include <KLocalizedString>
 #include <kmessagebox.h>
 #include <ksgrd/SensorManager.h>
-#include <kfilterproxysearchline.h>
 
 #include "SensorBrowser.h"
 //#define SENSOR_MODEL_DO_TEST
@@ -410,8 +410,10 @@ SensorBrowserWidget::SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager*
 {
     QVBoxLayout *layout = new QVBoxLayout;
     m_treeWidget = new SensorBrowserTreeWidget(this, sm);
-    KFilterProxySearchLine * search_line = new KFilterProxySearchLine(this);
-    search_line->setProxy(&m_treeWidget->model());
+    QLineEdit * search_line = new QLineEdit(this);
+    connect(search_line, &QLineEdit::textChanged, this, [this](const QString &text) {
+        m_treeWidget->model().setFilterFixedString(text);
+    });
     layout->addWidget(search_line);
     layout->addWidget(m_treeWidget);
     setLayout(layout);

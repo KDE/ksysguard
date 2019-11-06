@@ -75,7 +75,7 @@ static const char Description[] = I18N_NOOP( "KDE System Monitor" );
 TopLevel* Toplevel;
 
 TopLevel::TopLevel()
-  : KXmlGuiWindow( nullptr, Qt::WindowFlags(KDE_DEFAULT_WINDOWFLAGS) | Qt::WindowContextHelpButtonHint)
+  : KXmlGuiWindow( nullptr, Qt::WindowFlags() | Qt::WindowContextHelpButtonHint)
 {
   QDBusConnection::sessionBus().registerObject(QStringLiteral("/"), this, QDBusConnection::ExportScriptableSlots);
   mTimerId = -1;
