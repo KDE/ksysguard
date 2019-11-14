@@ -1,5 +1,6 @@
 [Global]
 IconName=utilities-system-monitor
+DesktopEntry=org.kde.ksysguard
 Comment=System Monitor
 Comment[ar]=مراقب النظام
 Comment[bg]=Наблюдение на системата
