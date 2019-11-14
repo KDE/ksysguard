@@ -38,10 +38,12 @@ static int Dirty = 1;
 
 static unsigned long long Total = 0;
 static unsigned long long MFree = 0;
+static unsigned long long Available = 0;
 static unsigned long long Appl = 0;
 static unsigned long long Used = 0;
 static unsigned long long Buffers = 0;
 static unsigned long long Cached = 0;
+static unsigned long long Allocated = 0;
 static unsigned long long STotal = 0;
 static unsigned long long SFree = 0;
 static unsigned long long SUsed = 0;
@@ -60,6 +62,7 @@ static void processMemInfo()
   unsigned long long Slab = 0;
   scan_one( MemInfoBuf, "MemTotal", &Total );
   scan_one( MemInfoBuf, "MemFree", &MFree );
+  scan_one( MemInfoBuf, "MemAvailable", &Available );
   scan_one( MemInfoBuf, "Buffers", &Buffers );
   scan_one( MemInfoBuf, "Cached", &Cached );
   scan_one( MemInfoBuf, "Slab", &Slab );
@@ -70,6 +73,8 @@ static void processMemInfo()
   Cached += Slab;
   Used = Total - MFree;
   Appl = ( Used - ( Buffers + Cached ) );
+
+  Allocated = Total - Available;
 
   if ( STotal == 0 ) /* no swap activated */
     SUsed = 0;
@@ -92,11 +97,14 @@ void initMemory( struct SensorModul* sm )
   if ( updateMemory() < 0 )
     return;
 
+  registerMonitor( "mem/physical/total", "integer", printTotal, printTotalInfo, sm );
   registerMonitor( "mem/physical/free", "integer", printMFree, printMFreeInfo, sm );
+  registerMonitor( "mem/physical/available", "integer", printAvailable, printAvailableInfo, sm );
   registerMonitor( "mem/physical/used", "integer", printUsed, printUsedInfo, sm );
   registerMonitor( "mem/physical/application", "integer", printAppl, printApplInfo, sm );
   registerMonitor( "mem/physical/buf", "integer", printBuffers, printBuffersInfo, sm );
   registerMonitor( "mem/physical/cached", "integer", printCached, printCachedInfo, sm );
+  registerMonitor( "mem/physical/allocated", "integer", printAllocated, printAllocatedInfo, sm );
   registerMonitor( "mem/swap/used", "integer", printSwapUsed, printSwapUsedInfo, sm );
   registerMonitor( "mem/swap/free", "integer", printSwapFree, printSwapFreeInfo, sm );
   registerMonitor( "mem/cache/dirty", "integer", printCDirty, printCDirtyInfo, sm);
@@ -161,6 +169,26 @@ int updateMemory( void )
   return 0;
 }
 
+void printTotal( const char* cmd )
+{
+  (void)cmd;
+
+  if ( Dirty )
+      processMemInfo();
+
+  output( "%llu\n", Total );
+}
+
+void printTotalInfo( const char* cmd )
+{
+  (void)cmd;
+
+  if ( Dirty )
+      processMemInfo();
+
+  output( "Total Memory\t0\t%llu\tKB\n", Total );
+}
+
 void printMFree( const char* cmd )
 {
   (void)cmd;
@@ -179,6 +207,26 @@ void printMFreeInfo( const char* cmd )
     processMemInfo();
 
   output( "Free Memory\t0\t%llu\tKB\n", Total );
+}
+
+void printAvailable( const char* cmd )
+{
+  (void)cmd;
+
+  if ( Dirty )
+      processMemInfo();
+
+  output( "%llu\n", Available );
+}
+
+void printAvailableInfo( const char* cmd )
+{
+  (void)cmd;
+
+  if ( Dirty )
+      processMemInfo();
+
+  output( "Available Memory\t0\t%llu\tKB\n", Total );
 }
 
 void printUsed( const char* cmd )
@@ -259,6 +307,26 @@ void printCachedInfo( const char* cmd )
     processMemInfo();
 
   output( "Cached Memory\t0\t%llu\tKB\n", Total );
+}
+
+void printAllocated( const char* cmd )
+{
+  (void)cmd;
+
+  if ( Dirty )
+      processMemInfo();
+
+  output( "%llu\n", Allocated );
+}
+
+void printAllocatedInfo( const char* cmd )
+{
+  (void)cmd;
+
+  if ( Dirty )
+      processMemInfo();
+
+  output( "Allocated Memory\t0\t%llu\tKB\n", Total );
 }
 
 void printSwapUsed( const char* cmd )

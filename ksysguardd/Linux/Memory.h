@@ -27,8 +27,12 @@ void exitMemory( void );
 
 int updateMemory( void );
 
+void printTotal( const char* );
+void printTotalInfo( const char* );
 void printMFree( const char* );
 void printMFreeInfo( const char* );
+void printAvailable( const char* );
+void printAvailableInfo( const char* );
 void printUsed( const char* );
 void printUsedInfo( const char* );
 void printAppl( const char* );
@@ -37,6 +41,8 @@ void printBuffers( const char* );
 void printBuffersInfo( const char* );
 void printCached( const char* );
 void printCachedInfo( const char* );
+void printAllocated( const char* );
+void printAllocatedInfo( const char* );
 void printSwapUsed( const char* );
 void printSwapUsedInfo( const char* );
 void printSwapFree( const char* );
