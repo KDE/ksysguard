@@ -3,6 +3,7 @@
         "Description": "Per-application network usage",
         "Description[ca]": "Ús de la xarxa per aplicació",
         "Description[cs]": "Vyžití sítě jednotlivými aplikacemi",
+        "Description[da]": "Netværksforbrug pr. program",
         "Description[en_GB]": "Per-application network usage",
         "Description[es]": "Uso de red por aplicaciones",
         "Description[et]": "Võrgukasutus rakenduste kaupa",
