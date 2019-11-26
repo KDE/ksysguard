@@ -291,7 +291,7 @@ void printSyscallInfo(const char *cmd) {
 }
 
 /*
- * Taken from http://cvsweb.freebsd.org/src/usr.bin/systat/fetch.c
+ * Taken from https://svnweb.freebsd.org/base/head/usr.bin/systat/fetch.c
  */
 /*-
  * Copyright (c) 1983, 1989, 1992, 1993

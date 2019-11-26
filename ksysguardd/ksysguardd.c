@@ -138,7 +138,7 @@ static void printWelcome( FILE* out )
            "(c) 2001 Tobias Koenig <tokoe@kde.org>\n"
            "(c) 2006-2008 Greg Martyn <greg.martyn@gmail.com>\n"
            "This program is part of the KDE Project and licensed under\n"
-           "the GNU GPL version 2. See http://www.kde.org for details.\n");
+           "the GNU GPL version 2. See https://www.kde.org for details.\n");
 
   fflush( out );
 }

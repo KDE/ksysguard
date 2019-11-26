@@ -304,7 +304,7 @@ void swap_ctnr(CONTAINER rootNode, INDEX pos1, INDEX pos2)
 /* O(n log n) */
 void bsort_ctnr(CONTAINER rootNode, COMPARE_FUNC compare_func)
 {
-	/* Use mergesort adapted from http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.c */
+	/* Use mergesort adapted from https://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.c */
 	
 	CONTAINER p, q, e, tail, oldhead;
 	INDEX insize, nmerges, psize, qsize, i;
