@@ -124,7 +124,7 @@ typedef int (*IVFunc)( void );
  * 7. timeCentiSeconds - Used internally - set to NULLTIME here */
 struct SensorModul SensorModulList[] = {
 #ifdef OSTYPE_Linux
-  { "Acpi", initAcpi, exitAcpi, NULLIVFUNC, NULLVVFUNC, 0, NULLTIME },
+  { "Acpi", initAcpi, exitAcpi, updateAcpi, NULLVVFUNC, 0, NULLTIME },
   { "Apm", initApm, exitApm, updateApm, NULLVVFUNC, 0, NULLTIME },
   { "CpuInfo", initCpuInfo, exitCpuInfo, updateCpuInfo, NULLVVFUNC, 0, NULLTIME },
   { "DellLaptop", initI8k, exitI8k, updateI8k, NULLVVFUNC, 0, NULLTIME },

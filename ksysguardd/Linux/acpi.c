@@ -34,7 +34,16 @@
 #include "acpi.h"
 
 #define ACPIFILENAMELENGTHMAX 64
+#define ACPIBATTERYNUMMAX 6
+#define ACPIBATTERYINFOBUFSIZE 1024
+#define ACPIBATTERYSTATEBUFSIZE 512
 
+static int AcpiBatteryNum = 0;
+static char AcpiBatteryNames[ ACPIBATTERYNUMMAX ][ 8 ];
+static int AcpiBatteryCharge[ ACPIBATTERYNUMMAX ];
+static int AcpiBatteryUsage[ ACPIBATTERYNUMMAX ];
+
+static int AcpiBatteryOk = 1;
 /*
 ================================ public part =================================
 */
@@ -45,155 +54,168 @@ void initAcpi(struct SensorModul* sm)
 	initAcpiThermal(sm);
 }
 
+int updateAcpi( void )
+{
+	if (AcpiBatteryOk && AcpiBatteryNum > 0) updateAcpiBattery();
+	return 0;
+}
+
 void exitAcpi( void )
 {
+  AcpiBatteryNum = -1;
+  AcpiBatteryOk = 0;
 }
 
 
 /************ ACPI Battery **********/
-void registerBatteryCharge(int number, struct SensorModul *sm)
-{
-    char name[ ACPIFILENAMELENGTHMAX ];
-    readTypeFile("/sys/class/power_supply/BAT%d/type", number, name, sizeof(name));
-
-    char sensorName [ ACPIFILENAMELENGTHMAX ];
-    snprintf(sensorName, sizeof(sensorName), "acpi/Battery/%d-%s/Charge", number, name);
-
-    registerMonitor(sensorName, "integer", printSysBatteryCharge,
-                    printSysBatteryChargeInfo, sm);
-}
-
-void registerBatteryChargeDesign(int number, struct SensorModul *sm)
-{
-    char name[ ACPIFILENAMELENGTHMAX ];
-    readTypeFile("/sys/class/power_supply/BAT%d/type", number, name, sizeof(name));
-
-    char sensorName [ ACPIFILENAMELENGTHMAX ];
-    snprintf(sensorName, sizeof(sensorName), "acpi/Battery/%d-%s/ChargeDesign", number, name);
-
-    registerMonitor(sensorName, "integer", printSysBatteryChargeDesign,
-                    printSysBatteryChargeDesignInfo, sm);
-}
-
-void registerBatteryRate(int number, struct SensorModul *sm)
-{
-    char name[ ACPIFILENAMELENGTHMAX ];
-    readTypeFile("/sys/class/power_supply/BAT%d/type", number, name, sizeof(name));
-
-    char sensorName [ ACPIFILENAMELENGTHMAX ];
-    snprintf(sensorName, sizeof(sensorName), "acpi/Battery/%d-%s/Rate", number, name);
-
-    registerMonitor(sensorName, "integer", printSysBatteryRate,
-                    printSysBatteryRateInfo, sm);
-}
 
 void initAcpiBattery( struct SensorModul* sm )
 {
-    DIR *d;
-    struct dirent *de;
-    char s[ ACPIFILENAMELENGTHMAX ];
+  DIR *d;
+  struct dirent *de;
+  char s[ ACPIFILENAMELENGTHMAX ];
 
-    d = opendir("/sys/class/power_supply/");
-    if (d != NULL) {
-        while ( (de = readdir(d)) != NULL ) {
-            if (!de->d_name || de->d_name[0] == '.')
-                continue;
-            if (strncmp( de->d_name, "BAT", sizeof("BAT")-1) == 0) {
-                int number = atoi(de->d_name + (sizeof("BAT")-1));
-                registerBatteryCharge(number, sm);
-                registerBatteryChargeDesign(number, sm);
-                registerBatteryRate(number, sm);
-            }
-        }
-      closedir( d );
-    }
+  if ( ( d = opendir( "/proc/acpi/battery" ) ) == NULL ) {
+	AcpiBatteryNum = -1;
+	AcpiBatteryOk = 0;
+	return;
+  } else {
+	AcpiBatteryNum = 0;
+	AcpiBatteryOk = 1;
+    while ( ( de = readdir( d ) ) )
+      if ( ( strcmp( de->d_name, "." ) != 0 ) && ( strcmp( de->d_name, ".." ) != 0 ) ) {
+		  strncpy( AcpiBatteryNames[ AcpiBatteryNum ], de->d_name, 8 );
+		  snprintf( s, sizeof( s ), "acpi/battery/%d/batterycharge", AcpiBatteryNum );
+		  registerMonitor( s, "integer", printAcpiBatFill, printAcpiBatFillInfo, sm );
+		  snprintf( s, sizeof( s ), "acpi/battery/%d/batteryusage", AcpiBatteryNum );
+		  registerMonitor( s, "integer", printAcpiBatUsage, printAcpiBatUsageInfo, sm);
+		  AcpiBatteryCharge[ AcpiBatteryNum ] = 0;
+		  AcpiBatteryNum++;
+	  }
+    closedir( d );
+  }
 }
 
-void printSysBatteryCharge(const char *cmd)
+
+int updateAcpiBattery( void )
 {
-    int zone = 0;
-    if (sscanf(cmd, "acpi/Battery/%d", &zone) <= 0) {
-        output("-1\n");
-        return;
+  int i, fd;
+  char s[ ACPIFILENAMELENGTHMAX ];
+  size_t n;
+  char AcpiBatInfoBuf[ ACPIBATTERYINFOBUFSIZE ];
+  char AcpiBatStateBuf[ ACPIBATTERYSTATEBUFSIZE ];
+  char *p;
+  int AcpiBatCapacity = 1;
+  int AcpiBatRemainingCapacity = 0;
+
+  if ( AcpiBatteryNum <= 0 )
+    return -1;
+
+  for ( i = 0; i < AcpiBatteryNum; i++ ) {
+    /* get total capacity */
+    snprintf( s, sizeof( s ), "/proc/acpi/battery/%s/info", AcpiBatteryNames[ i ] );
+    if ( ( fd = open( s, O_RDONLY ) ) < 0 ) {
+      print_error( "Cannot open file \'%s\'!\n"
+                   "Load the battery ACPI kernel module or\n"
+                   "compile it into your kernel.\n", s );
+      AcpiBatteryOk = 0;
+      return -1;
+    }
+    if ( ( n = read( fd, AcpiBatInfoBuf, ACPIBATTERYINFOBUFSIZE - 1 ) ) ==
+         ACPIBATTERYINFOBUFSIZE - 1 ) {
+      log_error( "Internal buffer too small to read \'%s\'", s );
+      close( fd );
+      AcpiBatteryOk = 0;
+      return -1;
+    }
+    close( fd );
+    p = AcpiBatInfoBuf;
+    if ( p && strstr(p, "ERROR: Unable to read battery") )
+            return 0;  /* If we can't read the battery, reuse the last value */
+    while ( ( p!= NULL ) && ( sscanf( p, "last full capacity: %d ",
+                              &AcpiBatCapacity ) != 1 ) ) {
+      p = strchr( p, '\n' );
+      if ( p )
+        p++;
+    }
+    /* get remaining capacity */
+    snprintf( s, sizeof( s ), "/proc/acpi/battery/%s/state", AcpiBatteryNames[ i ] );
+    if ( ( fd = open( s, O_RDONLY ) ) < 0 ) {
+      print_error( "Cannot open file \'%s\'!\n"
+                   "Load the battery ACPI kernel module or\n"
+                   "compile it into your kernel.\n", s );
+      AcpiBatteryOk = 0;
+      return -1;
+    }
+    if ( ( n = read( fd, AcpiBatStateBuf, ACPIBATTERYSTATEBUFSIZE - 1 ) ) ==
+         ACPIBATTERYSTATEBUFSIZE - 1 ) {
+      log_error( "Internal buffer too small to read \'%s\'", s);
+      close( fd );
+      AcpiBatteryOk = 0;
+      return -1;
+    }
+    close( fd );
+    p = AcpiBatStateBuf;
+    while ( ( p!= NULL ) && ( sscanf( p, "remaining capacity: %d ",
+                              &AcpiBatRemainingCapacity ) != 1 ) ) {
+      p = strchr( p, '\n' );
+      if ( p )
+        p++;
     }
 
-    int charge = getSysFileValue("power_supply", "BAT", zone, "charge_now");
-    int maximum = getSysFileValue("power_supply", "BAT", zone, "charge_full");
-    int state = 0;
-    if ( maximum > 0) {
-        state = charge * 100 / maximum;
+    /* get current battery usage, (current Current) */
+    p = AcpiBatStateBuf;
+    while ( ( p!= NULL ) && ( sscanf( p, "present rate: %d ",
+                              &AcpiBatteryUsage[i] ) != 1 ) ) {
+      p = strchr( p, '\n' );
+      if ( p )
+        p++;
     }
-    if (state > 100) {
-        state = 100; /* prevent insane numbers with bad hardware */
-    } else if (state < 0) {
-        state = 0; /* prevent insane numbers with bad hardware */
-    }
-    output( "%d\n", state);
+
+
+    /* calculate charge rate */
+    if ( AcpiBatCapacity > 0 )
+      AcpiBatteryCharge[ i ] = AcpiBatRemainingCapacity * 100 / AcpiBatCapacity;
+    else
+      AcpiBatteryCharge[ i ] = 0;
+  }
+  AcpiBatteryOk = 1;
+  return 0;
 }
 
-void printSysBatteryChargeInfo(const char *cmd)
+void printAcpiBatFill( const char* cmd )
 {
-    char name [ 200 ];
-    if (sscanf(cmd, "acpi/Battery/%199[^/]", name) > 0) {
-        output( "%s charge\t0\t100\t%%\n", name);
-    } else {
-        output( "Current charge\t0\t100\t%%\n");
-    }
+  int i;
+
+  sscanf( cmd + 13, "%d", &i );
+  output( "%d\n", AcpiBatteryCharge[ i ] );
 }
 
-void printSysBatteryChargeDesign(const char *cmd)
+void printAcpiBatFillInfo( const char* cmd )
 {
-    int zone = 0;
-    if (sscanf(cmd, "acpi/Battery/%d", &zone) <= 0) {
-        output("-1\n");
-        return;
-    }
+  int i;
 
-    int charge = getSysFileValue("power_supply", "BAT", zone, "charge_now");
-    int maximum = getSysFileValue("power_supply", "BAT", zone, "charge_full_design");
-    int state = 0;
-    if (maximum > 0) {
-        state = charge * 100 / maximum;
-    }
-    if (state > 100) {
-        state = 100; /* prevent insane numbers with bad hardware */
-    } else if (state < 0) {
-        state = 0; /* prevent insane numbers with bad hardware */
-    }
-    output( "%d\n", state);
+  sscanf( cmd + 13, "%d", &i );
+  output( "Battery %d charge\t0\t100\t%%\n", i );
 }
 
-void printSysBatteryChargeDesignInfo(const char *cmd)
+void printAcpiBatUsage( const char* cmd)
 {
-    char name [ 200 ];
-    if (sscanf(cmd, "acpi/Battery/%199[^/]", name) > 0) {
-        output( "%s charge (by design)\t0\t100\t%%\n", name);
-    } else {
-        output( "Current charge (by design)\t0\t100\t%%\n");
-    }
+ int i;
+
+ sscanf( cmd + 13, "%d", &i );
+ output( "%d\n", AcpiBatteryUsage[ i ] );
 }
 
-void printSysBatteryRate(const char *cmd)
+void printAcpiBatUsageInfo( const char* cmd)
 {
-    int zone = 0;
-    if (sscanf(cmd, "acpi/Battery/%d", &zone) <= 0) {
-        output("-1\n");
-        return;
-    }
 
-    output( "%d\n", getSysFileValue("power_supply", "BAT", zone, "current_now") / 1000);
+ int i;
+
+ sscanf(cmd+13, "%d", &i);
+
+ output( "Battery %d usage\t0\t2500\tmA\n", i );
 }
-
-void printSysBatteryRateInfo(const char *cmd)
-{
-    char name [ 200 ];
-    if (sscanf(cmd, "acpi/Battery/%199[^/]", name) > 0) {
-        output( "%s rate\t0\t0\tmA\n", name);
-    } else {
-        output( "Current rate\t0\t0\tmA\n");
-    }
-}
-
 
 /************** ACPI Thermal *****************/
 
@@ -332,11 +354,11 @@ void initAcpiThermal(struct SensorModul *sm)
   return;
 }
 
-static int getSysFileValue(const char *className, const char *group, int value, const char *file) {
+static int getSysFileValue(const char *group, int value, const char *file) {
     static int shownError = 0;
     char th_file[ ACPIFILENAMELENGTHMAX ];
     char input_buf[ 100 ];
-    snprintf(th_file, sizeof(th_file), "/sys/class/%s/%s%d/%s", className, group, value, file);
+    snprintf(th_file, sizeof(th_file), "/sys/class/thermal/%s%d/%s",group, value, file);
     int fd = open(th_file, O_RDONLY);
     if (fd < 0) {
         if (!shownError)
@@ -368,7 +390,7 @@ void printSysThermalZoneTemperature(const char *cmd) {
         return;
     }
 
-    output( "%d\n", getSysFileValue("thermal", "thermal_zone", zone, "temp") / 1000);
+    output( "%d\n", getSysFileValue("thermal_zone", zone, "temp") / 1000);
 }
 void printSysCompatibilityThermalZoneTemperature(const char *cmd) {
     int zone = 0;
@@ -376,7 +398,7 @@ void printSysCompatibilityThermalZoneTemperature(const char *cmd) {
         output( "-1\n");
         return;
     }
-    output( "%d\n", getSysFileValue("thermal", "thermal_zone", zone, "temp")/1000);
+    output( "%d\n", getSysFileValue("thermal_zone", zone, "temp")/1000);
 }
 
 void printCoolingDeviceStateInfo(const char *cmd)
@@ -396,8 +418,8 @@ void printCoolingDeviceState(const char *cmd) {
         output( "-1\n");
         return;
     }
-    int current = getSysFileValue("thermal", "cooling_device", fan, "cur_state");
-    int maximum = getSysFileValue("thermal", "cooling_device", fan, "max_state");
+    int current = getSysFileValue("cooling_device", fan, "cur_state");
+    int maximum = getSysFileValue("cooling_device", fan, "max_state");
     int state = 0;
     if (current > 0 && maximum > 0) {
         state = (current * 100) / maximum; /* state is a percentage */

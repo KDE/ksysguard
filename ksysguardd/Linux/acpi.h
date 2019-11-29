@@ -23,16 +23,15 @@
 void initAcpi( struct SensorModul* );
 void exitAcpi( void );
 
-void initAcpiBattery( struct SensorModul* );
-void printSysBatteryCharge(const char *cmd);
-void printSysBatteryChargeInfo(const char *cmd);
-void printSysBatteryChargeDesign(const char *cmd);
-void printSysBatteryChargeDesignInfo(const char *cmd);
-void printSysBatteryRate(const char *cmd);
-void printSysBatteryRateInfo(const char *cmd);
+int updateAcpi( void );
 
-void readTypeFile(const char *fileFormat, int number, char *buffer, int bufferSize);
-static int getSysFileValue(const char *class, const char *group, int value, const char *file);
+void initAcpiBattery( struct SensorModul* );
+int updateAcpiBattery(void);
+void printAcpiBatFill( const char* );
+void printAcpiBatFillInfo( const char* );
+void printAcpiBatUsage( const char* );
+void printAcpiBatUsageInfo( const char* );
+
 void initAcpiThermal( struct SensorModul * );
 void printThermalZoneTemperature(const char *cmd);
 void printSysThermalZoneTemperature(const char *cmd);
