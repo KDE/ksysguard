@@ -401,7 +401,7 @@ int SensorBrowserModel::rowCount ( const QModelIndex & parent ) const {
 }
 //virtual
 Qt::ItemFlags SensorBrowserModel::flags ( const QModelIndex & index ) const {
-    if(!index.isValid()) return 0;
+    if(!index.isValid()) return Qt::NoItemFlags;
     if(mSensorInfoMap.contains(index.internalId())) return Qt::ItemIsDragEnabled | Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     else return Qt::ItemIsEnabled;
 }
