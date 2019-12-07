@@ -7,6 +7,7 @@
         "Description[et]": "Protsesside GPU kasutuse statistika Nvidia kaartide korral",
         "Description[eu]": "Nvidia txartelen GPU baliabideen estatistikak prozesuko",
         "Description[fi]": "Nvidia-korttien prosessikohtaiset GPU-resurssitilastot",
+        "Description[hu]": "GPU erőforrások folyamatonkénti statisztikái Nvidia kártyákhoz",
         "Description[id]": "Status sumberdaya GPU tiap proses untuk kartu Nvidia",
         "Description[it]": "Statistiche delle risorse GPU per processo delle schede Nvidia",
         "Description[nl]": "Statistieken van per-proces GPU-hulpbronnen voor Nvidia kaarten",
