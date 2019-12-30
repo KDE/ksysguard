@@ -161,7 +161,7 @@ bool WorkSheet::load( const QString &fileName )
         int columnSpan = element.attribute( QStringLiteral("columnSpan"), QStringLiteral("1") ).toInt();
         if ( row < 0 || rowSpan < 0 || (row + rowSpan - 1) >= mRows || column < 0 || columnSpan < 0 || (column + columnSpan - 1) >= mColumns) {
             qDebug() << "Row or Column out of range (" << row << ", "
-                << column << ")-(" << (row + rowSpan - 1) << ", " << (column + columnSpan - 1) << ")" << endl;
+                << column << ")-(" << (row + rowSpan - 1) << ", " << (column + columnSpan - 1) << ")";
             return false;
         }
         replaceDisplay( row, column, element, rowSpan, columnSpan );

@@ -69,7 +69,7 @@ bool BarGraph::removeBar( uint idx )
 {
   if ( idx >= bars ) {
     qDebug() << "BarGraph::removeBar: idx " << idx << " out of range "
-                  << bars << endl;
+                  << bars;
     return false;
   }
 

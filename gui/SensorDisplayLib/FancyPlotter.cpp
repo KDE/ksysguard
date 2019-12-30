@@ -448,7 +448,7 @@ bool FancyPlotter::removeBeam( uint beamId )
 {
     if ( beamId >= mBeams ) {
         qDebug() << "FancyPlotter::removeBeam: beamId out of range ("
-            << beamId << ")" << endl;
+            << beamId << ")";
         return false;
     }
 
