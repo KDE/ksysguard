@@ -40,7 +40,7 @@ static int numCores = 0; /* Total # of cores */
 static int HighNumCores = 0; /* Highest # of cores ever seen */
 static float* Clocks = 0; /* Array with one entry per core */
 
-#define CPUINFOBUFSIZE (32 * 1024)
+#define CPUINFOBUFSIZE (128 * 1024)
 static char CpuInfoBuf[ CPUINFOBUFSIZE ];
 static int Dirty = 0;
 static struct SensorModul *CpuInfoSM;
