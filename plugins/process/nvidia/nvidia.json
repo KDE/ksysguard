@@ -2,6 +2,7 @@
     "KPlugin": {
         "Description": "Stats of per-process GPU resources for Nvidia cards",
         "Description[ca]": "Estadístiques dels recursos de GPU per procés per a les targetes Nvidia",
+        "Description[da]": "Stats over GPU-ressourcer pr. proces for Nvidia-kort",
         "Description[en_GB]": "Stats of per-process GPU resources for Nvidia cards",
         "Description[es]": "Estadísticas de recursos de GPU por proceso para tarjetas Nvidia",
         "Description[et]": "Protsesside GPU kasutuse statistika Nvidia kaartide korral",
