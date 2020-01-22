@@ -252,7 +252,7 @@ void printCPUxClockInfo( const char* cmd )
     int id;
 
     sscanf( cmd + 7, "%d", &id );
-    output( "CPU%d Clock Frequency\t0\t0\tMHz\n", id );
+    output( "CPU %d Clock Frequency\t0\t0\tMHz\n", id+1 );
 }
 
 void printCPUClockInfo( const char* cmd )
