@@ -117,7 +117,7 @@ typedef int (*IVFunc)( void );
 /* Here we state all the available "modules" for a system.
  * 1. configName    - Just a name that it associated with it
  * 2. initCommand   - The function that will be called once when ksysguardd is started
- * 3. extiCommand   - The function that will be called once when ksysguardd is closed, if it's closed nicely
+ * 3. exitCommand   - The function that will be called once when ksysguardd is closed, if it's closed nicely
  * 4. updateCommand - The function that will be called when any of the functions for that module are called
  * 5. checkCommand  - The function that will be called periodically after 5 seconds, when any next command is issued
  * 6. available     - Used internally - set to 0 here
