@@ -40,8 +40,9 @@ static int numCores = 0; /* Total # of cores */
 static int HighNumCores = 0; /* Highest # of cores ever seen */
 static float* Clocks = 0; /* Array with one entry per core */
 
-#define CPUINFOBUFSIZE (32 * 1024)
-static char CpuInfoBuf[ CPUINFOBUFSIZE ];
+/* Enough for 4-6 virtual cores. Larger values will be tried as needed. */
+static size_t CpuInfoBufSize = 8 * 1024;
+static char* CpuInfoBuf = NULL;
 static int Dirty = 0;
 static struct SensorModul *CpuInfoSM;
 
@@ -191,9 +192,12 @@ int updateCpuInfo( void )
         return -1;
     }
 
+    if ( CpuInfoBuf == NULL ) {
+        CpuInfoBuf = malloc( CpuInfoBufSize );
+    }
     n = 0;
     for(;;) {
-        ssize_t len = read( fd, CpuInfoBuf + n, CPUINFOBUFSIZE - 1 - n );
+        ssize_t len = read( fd, CpuInfoBuf + n, CpuInfoBufSize - 1 - n );
         if( len < 0 ) {
             print_error( "Failed to read file \'/proc/cpuinfo\'!\n" );
             CpuInfoOK = -1;
@@ -203,11 +207,14 @@ int updateCpuInfo( void )
         n += len;
         if( len == 0 ) /* reading finished */
             break;
-        if( n == CPUINFOBUFSIZE - 1 ) {
-            log_error( "Internal buffer too small to read \'/proc/cpuinfo\'" );
-            CpuInfoOK = 0;
-            close( fd );
-            return -1;
+        if( n == CpuInfoBufSize - 1 ) {
+            /* The buffer was too small. Double its size and keep going. */
+            size_t new_size = CpuInfoBufSize * 2;
+            char* new_buffer = malloc( new_size );
+            memcpy( new_buffer, CpuInfoBuf, n ); /* copy read data */
+            free( CpuInfoBuf ); /* free old buffer */
+            CpuInfoBuf = new_buffer; /* remember new buffer and size */
+            CpuInfoBufSize = new_size;
         }
     }
 
