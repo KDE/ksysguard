@@ -1,6 +1,7 @@
 {
     "KPlugin": {
         "Description": "Per-application network usage",
+        "Description[ca@valencia]": "Ús de la xarxa per aplicació",
         "Description[ca]": "Ús de la xarxa per aplicació",
         "Description[cs]": "Vyžití sítě jednotlivými aplikacemi",
         "Description[da]": "Netværksforbrug pr. program",
