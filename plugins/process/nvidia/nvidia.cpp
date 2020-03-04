@@ -79,7 +79,11 @@ void NvidiaPlugin::setup()
                 }
                 continue;
             }
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
             const auto parts = line.splitRef(QLatin1Char(' '),  QString::SkipEmptyParts);
+#else
+            const auto parts = line.splitRef(QLatin1Char(' '),  Qt::SkipEmptyParts);
+#endif
 
             // format at time of writing is
             // # gpu        pid  type    sm   mem   enc   dec   command
