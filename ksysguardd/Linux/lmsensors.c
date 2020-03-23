@@ -140,6 +140,14 @@ void initLmSensors( struct SensorModul* sm )
           ssubf = sensors_get_subfeature( scn, sf,
                                           SENSORS_SUBFEATURE_TEMP_INPUT );
           break;
+
+        case SENSORS_FEATURE_POWER:
+          ssubf = sensors_get_subfeature( scn, sf,
+                                          SENSORS_SUBFEATURE_POWER_INPUT );
+          if ( !ssubf )
+              ssubf = sensors_get_subfeature( scn, sf,
+                                          SENSORS_SUBFEATURE_POWER_AVERAGE );
+          break;
         default:
             ssubf = NULL;
       }
@@ -290,6 +298,8 @@ void printLmSensorInfo( const char* cmd )
     output( "%s\t0\t0\t°C\n", label );
   else if( strncmp(s->sfd->name, "fan", sizeof("fan")-1) == 0)
     output( "%s\t0\t0\trpm\n", label );
+  else if( strncmp(s->sfd->name, "power", sizeof("power")-1) == 0)
+    output( "%s\t0\t0\tW\n", label );
   else
     output( "%s\t0\t0\tV\n", label );  /* For everything else, say it's in volts. */
 #if SENSORS_API_VERSION & 0x400
