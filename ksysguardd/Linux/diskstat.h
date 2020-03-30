@@ -36,5 +36,7 @@ void printDiskStatFree( const char* );
 void printDiskStatFreeInfo( const char* );
 void printDiskStatPercent( const char* );
 void printDiskStatPercentInfo( const char* );
+void printDiskStatTotal( const char* );
+void printDiskStatTotalInfo( const char* );
 
 #endif

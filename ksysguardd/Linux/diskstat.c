@@ -73,6 +73,28 @@ char *getMntPnt( const char* cmd )
     return (char*)device;
 }
 
+unsigned long getTotal( const char* mntpnt )
+{
+    DiskInfo* disk_info;
+
+    unsigned long total = 0;
+    int is_all = strcmp( mntpnt, "/all" ) == 0;
+
+    for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
+        if ( !strcmp( mntpnt, disk_info->mntpnt ) || is_all ) {
+            unsigned long totalSizeKB =  disk_info->statvfs.f_blocks * (disk_info->statvfs.f_frsize/1024);
+
+            if ( is_all ) {
+                total += totalSizeKB;
+            } else {
+                return totalSizeKB;
+            }
+        }
+    }
+
+    return total;
+}
+
 /* ----------------------------- public part ------------------------------- */
 
 static char monitor[ 1024 ];
@@ -83,6 +105,8 @@ static void registerMonitors(const char* mntpnt) {
     registerMonitor( monitor, "integer", printDiskStatFree, printDiskStatFreeInfo, DiskStatSM );
     snprintf( monitor, sizeof( monitor ), "partitions%s/filllevel", mntpnt );
     registerMonitor( monitor, "integer", printDiskStatPercent, printDiskStatPercentInfo, DiskStatSM );
+    snprintf( monitor, sizeof( monitor ), "partitions%s/total", mntpnt );
+    registerMonitor( monitor, "integer", printDiskStatTotal, printDiskStatTotalInfo, DiskStatSM );
 }
 static void removeMonitors(const char* mntpnt) {
     snprintf( monitor, sizeof( monitor ), "partitions%s/usedspace", mntpnt );
@@ -90,6 +114,8 @@ static void removeMonitors(const char* mntpnt) {
     snprintf( monitor, sizeof( monitor ), "partitions%s/freespace", mntpnt );
     removeMonitor( monitor );
     snprintf( monitor, sizeof( monitor ), "partitions%s/filllevel", mntpnt );
+    removeMonitor( monitor );
+    snprintf( monitor, sizeof( monitor ), "partitions%s/total", mntpnt );
     removeMonitor( monitor );
 }
 
@@ -105,6 +131,8 @@ void initDiskStat( struct SensorModul* sm )
 
     registerMonitor( "partitions/list", "listview", printDiskStat, printDiskStatInfo, sm );
 
+    registerMonitors( "/all" );
+
     for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
         registerMonitors(disk_info->mntpnt);
     }
@@ -115,6 +143,8 @@ void exitDiskStat( void )
     DiskInfo* disk_info;
 
     removeMonitor( "partitions/list" );
+
+    removeMonitors( "/all" );
 
     for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
         removeMonitors(disk_info->mntpnt);
@@ -264,12 +294,24 @@ void printDiskStatUsed( const char* cmd )
     char *mntpnt = (char*)getMntPnt( cmd );
     DiskInfo* disk_info;
 
+    unsigned long total = 0;
+    int is_all = strcmp( mntpnt, "/all" ) == 0;
+
     for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
-        if ( !strcmp( mntpnt, disk_info->mntpnt ) ) {
+        if ( !strcmp( mntpnt, disk_info->mntpnt ) || is_all ) {
             unsigned long totalSizeKB =  disk_info->statvfs.f_blocks * (disk_info->statvfs.f_frsize/1024);
             unsigned long usedKB = totalSizeKB - (disk_info->statvfs.f_bfree * (disk_info->statvfs.f_bsize/1024)); /* used is the total size minus free blocks including those for root only */
-            output( "%ld\n", usedKB );
+
+            if ( !is_all ) {
+                output( "%ld\n", usedKB );
+            } else {
+                total += usedKB;
+            }
         }
+    }
+
+    if ( is_all ) {
+        output( "%ld\n", total );
     }
 
     output( "\n" );
@@ -277,8 +319,9 @@ void printDiskStatUsed( const char* cmd )
 
 void printDiskStatUsedInfo( const char* cmd )
 {
-    (void)cmd;
-    output( "Used\t0\t0\tKB\n" );
+    char *mntpnt = getMntPnt( cmd );
+
+    output( "Used\t0\t%ld\tKB\n", getTotal( mntpnt ) );
 }
 
 void printDiskStatFree( const char* cmd )
@@ -286,19 +329,32 @@ void printDiskStatFree( const char* cmd )
     char *mntpnt = (char*)getMntPnt( cmd );
     DiskInfo* disk_info;
 
+    unsigned long total = 0;
+    int is_all = strcmp( mntpnt, "/all" ) == 0;
+
     for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
-        if ( !strcmp( mntpnt, disk_info->mntpnt ) ) {
+        if ( !strcmp( mntpnt, disk_info->mntpnt ) || is_all ) {
             unsigned long available = disk_info->statvfs.f_bavail * (disk_info->statvfs.f_bsize/1024); /* available is only those for non-root.  So available + used != total because some are reserved for root */
-            output( "%ld\n", available );
+            if ( !is_all ) {
+                output( "%ld\n", available );
+            } else {
+                total += available;
+            }
         }
     }
+
+    if ( is_all ) {
+        output( "%ld\n", total );
+    }
+
     output( "\n" );
 }
 
 void printDiskStatFreeInfo( const char* cmd )
 {
-    (void)cmd;
-    output( "Available\t0\t0\tKB\n" );
+    char *mntpnt = (char*)getMntPnt( cmd );
+
+    output( "Available\t0\t%ld\tKB\n", getTotal( mntpnt ) );
 }
 
 void printDiskStatPercent( const char* cmd )
@@ -306,14 +362,28 @@ void printDiskStatPercent( const char* cmd )
     char *mntpnt = (char*)getMntPnt( cmd );
     DiskInfo* disk_info;
 
+    unsigned long totalSize = 0;
+    unsigned long totalAvailable = 0;
+    int is_all = strcmp( mntpnt, "/all" ) == 0;
+
     for ( disk_info = first_ctnr( DiskStatList ); disk_info; disk_info = next_ctnr( DiskStatList ) ) {
-        if ( !strcmp( mntpnt, disk_info->mntpnt ) ) {
+        if ( !strcmp( mntpnt, disk_info->mntpnt ) || is_all ) {
             unsigned long totalSizeKB =  disk_info->statvfs.f_blocks * (disk_info->statvfs.f_frsize/1024);
             unsigned long available = disk_info->statvfs.f_bavail * (disk_info->statvfs.f_bsize/1024); /* available is only those for non-root.  So available + used != total because some are reserved for root */
 
-            int percentageUsed = calculatePercentageUsed(totalSizeKB, available);
-            output( "%d\n", percentageUsed );
+            if ( is_all ) {
+                totalSize += totalSizeKB;
+                totalAvailable += available;
+            } else {
+                int percentageUsed = calculatePercentageUsed(totalSizeKB, available);
+                output( "%d\n", percentageUsed );
+            }
         }
+    }
+
+    if ( is_all ) {
+        int percentageUsed = calculatePercentageUsed(totalSize, totalAvailable);
+        output( "%d\n", percentageUsed );
     }
 
     output( "\n" );
@@ -323,4 +393,17 @@ void printDiskStatPercentInfo( const char* cmd )
 {
     (void)cmd;
     output( "Percentage Used\t0\t100\t%%\n" );
+}
+
+void printDiskStatTotal( const char* cmd )
+{
+    char *mntpnt = (char*)getMntPnt( cmd );
+
+    output( "%ld\n\n", getTotal( mntpnt ) );
+}
+
+void printDiskStatTotalInfo( const char* cmd )
+{
+    (void)cmd;
+    output( "Total Size\t0\t0\tKB\n" );
 }
