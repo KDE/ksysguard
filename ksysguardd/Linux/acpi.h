@@ -28,8 +28,14 @@ void printSysBatteryCharge(const char *cmd);
 void printSysBatteryChargeInfo(const char *cmd);
 void printSysBatteryChargeDesign(const char *cmd);
 void printSysBatteryChargeDesignInfo(const char *cmd);
+void printSysBatteryEnergy(const char *cmd);
+void printSysBatteryEnergyInfo(const char *cmd);
+void printSysBatteryEnergyDesign(const char *cmd);
+void printSysBatteryEnergyDesignInfo(const char *cmd);
 void printSysBatteryRate(const char *cmd);
 void printSysBatteryRateInfo(const char *cmd);
+void printSysBatteryRatePower(const char *cmd);
+void printSysBatteryRatePowerInfo(const char *cmd);
 
 void readTypeFile(const char *fileFormat, int number, char *buffer, int bufferSize);
 static int getSysFileValue(const char *class, const char *group, int value, const char *file);
