@@ -1,0 +1,15 @@
+include(ECMAddTests)
+
+set(SOURCES
+    main.cpp
+)
+
+set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/../ksysguard_iface.xml"
+    PROPERTIES INCLUDE "../../libkstats/types.h" )
+qt5_add_dbus_interface(SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../ksysguard_iface.xml" kstatsiface)
+
+ecm_add_test(
+    ${SOURCES}
+    TEST_NAME kstatstest
+    LINK_LIBRARIES Qt5::Test kstats_core
+)

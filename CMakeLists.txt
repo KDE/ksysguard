@@ -24,6 +24,7 @@ include(FeatureSummary)
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
     Core
     Widgets
+    Test
 )
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     Config
@@ -82,6 +83,9 @@ add_subdirectory( pics )
 add_subdirectory( example )
 
 add_subdirectory( ksysguardd )
+
+add_subdirectory(kstats)
+add_subdirectory(libkstats)
 
 add_subdirectory( plugins )
 
