@@ -41,7 +41,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     WindowSystem
 )
 
-find_package(KF5 REQUIRED COMPONENTS SysGuard)
+find_package(KSysGuard REQUIRED)
 
 add_definitions(-DQT_NO_URL_CAST_FROM_STRING)
 add_definitions(-DQT_USE_QSTRINGBUILDER)

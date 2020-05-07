@@ -8,7 +8,7 @@ set_source_files_properties("ksysguard_iface.xml"
 qt5_add_dbus_adaptor(SOURCES "ksysguard_iface.xml" ksysguarddaemon.h KSysGuardDaemon)
 
 add_library(kstats_core STATIC ${SOURCES})
-target_link_libraries(kstats_core PUBLIC Qt5::Core Qt5::DBus KF5::CoreAddons PW5::SysGuardBackend )
+target_link_libraries(kstats_core PUBLIC Qt5::Core Qt5::DBus KF5::CoreAddons KSysGuard::StatsBackend )
 
 add_executable(kstats main.cpp)
 target_link_libraries(kstats kstats_core)

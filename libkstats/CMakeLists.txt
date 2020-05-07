@@ -7,7 +7,7 @@ set(ksgrdbackend_LIB_SRCS
 )
 
 add_library(ksgrdbackend ${ksgrdbackend_LIB_SRCS})
-add_library(PW5::SysGuardBackend ALIAS ksgrdbackend)
+add_library(KSysGuard::StatsBackend ALIAS ksgrdbackend)
 
 target_link_libraries(ksgrdbackend PUBLIC Qt5::Core Qt5::DBus)
 
