@@ -213,6 +213,7 @@ int updateDiskStat( void )
          * coreutils as well.
          */
         if ( (mnt_info->mnt_fsname[0] != '/') ||
+             !strncmp( mnt_info->mnt_fsname, "/dev/loop", 9 ) ||
              !strcmp( mnt_info->mnt_type, "smbfs" ) ||
              !strcmp( mnt_info->mnt_type, "cifs" ) ||
              !strcmp( mnt_info->mnt_type, "proc" ) ||

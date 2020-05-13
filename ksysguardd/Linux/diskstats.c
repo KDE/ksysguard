@@ -215,6 +215,10 @@ static int process26DiskIO( const char* buf ) {
 		return -1;
 	}
     devname[DISKDEVNAMELEN-1] = 0;
+
+    if (!strncmp(devname, "/dev/loop", 9)) {
+        return -1;
+    }
 	
 	last = 0;
 	ptr = DiskIO;
