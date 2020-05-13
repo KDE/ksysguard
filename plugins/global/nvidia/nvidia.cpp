@@ -55,45 +55,55 @@ private:
 };
 
 GPU::GPU(int index, SensorContainer *parent)
-    : SensorObject(QStringLiteral("gpu%1").arg(index), i18n("GPU %1", index), parent)
+    : SensorObject(QStringLiteral("gpu%1").arg(index), i18nc("@title", "GPU %1", index + 1), parent)
 {
+    auto displayIndex = index + 1;
+
     m_pwr = new SensorProperty(QStringLiteral("power"), this);
-    m_pwr->setName(i18n("Power"));
+    m_pwr->setName(i18nc("@title", "GPU %1 Power Usage", displayIndex));
+    m_pwr->setShortName(i18nc("@title GPU Power Usage", "Power"));
     m_pwr->setUnit(KSysGuard::utils::UnitWatt);
     m_pwr->setVariantType(QVariant::UInt);
 
     m_temp = new SensorProperty(QStringLiteral("temperature"), this);
-    m_temp->setName(i18n("Temperature"));
+    m_temp->setName(i18nc("@title", "GPU %1 Temperature", displayIndex));
+    m_temp->setShortName(i18nc("@title GPU Temperature", "Temperature"));
     m_temp->setUnit(KSysGuard::utils::UnitCelsius);
     m_temp->setVariantType(QVariant::Double);
 
     m_sm = new SensorProperty(QStringLiteral("sharedMemory"), this);
-    m_sm->setName(i18n("Shared memory"));
+    m_sm->setName(i18nc("@title", "GPU %1 Shared Memory Usage", displayIndex));
+    m_sm->setShortName(i18nc("@title GPU Shared Memory Usage", "Shared Memory"));
     m_sm->setUnit(KSysGuard::utils::UnitPercent);
     m_sm->setVariantType(QVariant::UInt);
 
     m_mem = new SensorProperty(QStringLiteral("memory"), this);
-    m_mem->setName(i18n("Memory"));
+    m_mem->setName(i18nc("@title", "GPU %1 Memory Usage", displayIndex));
+    m_mem->setShortName(i18nc("@title GPU Memory Usage", "Memory"));
     m_mem->setUnit(KSysGuard::utils::UnitPercent);
     m_mem->setVariantType(QVariant::UInt);
 
     m_enc = new SensorProperty(QStringLiteral("encoderUsage"), this);
-    m_enc->setName(i18n("Encoder"));
+    m_enc->setName(i18nc("@title", "GPU %1 Encoder Usage", displayIndex));
+    m_enc->setShortName(i18nc("@title GPU Encoder Usage", "Encoder"));
     m_enc->setUnit(KSysGuard::utils::UnitPercent);
     m_enc->setVariantType(QVariant::UInt);
 
     m_dec = new SensorProperty(QStringLiteral("decoderUsage"), this);
-    m_dec->setName(i18n("Decoder"));
+    m_dec->setName(i18nc("@title", "GPU %1 Decoder Usage", displayIndex));
+    m_dec->setShortName(i18nc("@title GPU Decoder Usage", "Decoder"));
     m_dec->setUnit(KSysGuard::utils::UnitPercent);
     m_dec->setVariantType(QVariant::UInt);
 
     m_memClock = new SensorProperty(QStringLiteral("memoryClock"), this);
-    m_memClock->setName(i18n("Memory clock"));
+    m_memClock->setName(i18nc("@title", "GPU %1 Memory Clock", displayIndex));
+    m_memClock->setName(i18nc("@title GPU Memory Clock", "Memory Clock"));
     m_memClock->setUnit(KSysGuard::utils::UnitMegaHertz);
     m_memClock->setVariantType(QVariant::UInt);
 
     m_processorClock = new SensorProperty(QStringLiteral("processorClock"), this);
-    m_processorClock->setName(i18n("Processor clock"));
+    m_processorClock->setName(i18nc("@title", "GPU %1 Processor Clock", displayIndex));
+    m_processorClock->setName(i18nc("@title GPU Processor Clock", "Processor Clock"));
     m_processorClock->setUnit(KSysGuard::utils::UnitMegaHertz);
     m_processorClock->setVariantType(QVariant::UInt);
 }
@@ -106,7 +116,7 @@ NvidiaPlugin::NvidiaPlugin(QObject *parent, const QVariantList &args)
         return;
     }
 
-    auto gpuSystem = new SensorContainer("nvidia", "Nvidia", this);
+    auto gpuSystem = new SensorContainer("nvidia", i18nc("@title NVidia GPU information", "NVidia"), this);
 
     //assuming just one GPU for now
     auto gpu0 = new GPU(0, gpuSystem);

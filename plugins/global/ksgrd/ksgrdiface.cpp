@@ -292,45 +292,45 @@ void KSGRDIface::answerReceived(int id, const QList<QByteArray> &answer)
 
 void KSGRDIface::addAggregateSensors()
 {
-    auto networkAll = new SensorObject("all", i18n("All"), m_subsystems["network"]);
+    auto networkAll = new SensorObject("all", i18nc("@title All Network Interfaces", "All"), m_subsystems["network"]);
 
-    auto sensor = new AggregateSensor(networkAll, "receivedDataRate", i18n("Received Data Rate"));
-    sensor->setShortName(i18n("Down"));
+    auto sensor = new AggregateSensor(networkAll, "receivedDataRate", i18nc("@title", "Received Data Rate"));
+    sensor->setShortName(i18nc("@title Received Data Rate", "Down"));
     sensor->setMatchSensors(QRegularExpression("[^/]*/receiver"), QStringLiteral("data"));
-    sensor->setDescription(i18n("The rate at which data is received on all interfaces."));
+    sensor->setDescription(i18nc("@info", "The rate at which data is received on all interfaces."));
     sensor->setUnit(KSysGuard::utils::UnitKiloByteRate);
 
-    sensor = new AggregateSensor(networkAll, "totalReceivedData", i18n("Total Received Data"));
-    sensor->setShortName(i18n("Total Down"));
+    sensor = new AggregateSensor(networkAll, "totalReceivedData", i18nc("@title", "Total Received Data"));
+    sensor->setShortName(i18nc("@title Total Receieved Data", "Total Down"));
     sensor->setMatchSensors(QRegularExpression("[^/]*/receiver"), QStringLiteral("dataTotal"));
-    sensor->setDescription(i18n("The total amount of data received on all interfaces."));
+    sensor->setDescription(i18nc("@info", "The total amount of data received on all interfaces."));
     sensor->setUnit(KSysGuard::utils::UnitKiloByte);
 
-    sensor = new AggregateSensor(networkAll, "sentDataRate", i18n("Sent Data Rate"));
-    sensor->setShortName(i18n("Up"));
+    sensor = new AggregateSensor(networkAll, "sentDataRate", i18nc("@title", "Sent Data Rate"));
+    sensor->setShortName(i18nc("@title Sent Data Rate", "Up"));
     sensor->setMatchSensors(QRegularExpression("[^/]*/transmitter"), QStringLiteral("data"));
-    sensor->setDescription(i18n("The rate at which data is sent on all interfaces."));
+    sensor->setDescription(i18nc("@info", "The rate at which data is sent on all interfaces."));
     sensor->setUnit(KSysGuard::utils::UnitKiloByteRate);
 
-    sensor = new AggregateSensor(networkAll, "totalSentData", i18n("Total Sent Data"));
-    sensor->setShortName(i18n("Total Up"));
+    sensor = new AggregateSensor(networkAll, "totalSentData", i18nc("@title", "Total Sent Data"));
+    sensor->setShortName(i18nc("@title Total Sent Data", "Total Up"));
     sensor->setMatchSensors(QRegularExpression("[^/]*/transmitter"), QStringLiteral("dataTotal"));
-    sensor->setDescription(i18n("The total amount of data sent on all interfaces."));
+    sensor->setDescription(i18nc("@info", "The total amount of data sent on all interfaces."));
     sensor->setUnit(KSysGuard::utils::UnitKiloByte);
 
-    auto diskAll = new SensorObject("all", i18n("all"), m_subsystems["disk"]);
-    sensor = new AggregateSensor(diskAll, "read", i18n("Disk Read Accesses"));
-    sensor->setShortName(i18n("Read"));
+    auto diskAll = new SensorObject("all", i18nc("@title All Disks", "All"), m_subsystems["disk"]);
+    sensor = new AggregateSensor(diskAll, "read", i18nc("@title", "Disk Read Accesses"));
+    sensor->setShortName(i18nc("@title Disk Read Accesses", "Read"));
     // TODO: This regex is not exhaustive as it doesn't consider things that aren't treated as sdX devices.
     //       However, we do not simply want to match disk/* as that would include duplicate devices.
     sensor->setMatchSensors(QRegularExpression("^sd[a-z]+[0-9]+_[^/]*/Rate$"), QStringLiteral("rblk"));
-    sensor->setDescription(i18n("Read accesses across all disk devices"));
+    sensor->setDescription(i18nc("@info", "Read accesses across all disk devices"));
 
-    sensor = new AggregateSensor(diskAll, "write", i18n("Disk Write Accesses"));
-    sensor->setShortName(i18n("Write"));
+    sensor = new AggregateSensor(diskAll, "write", i18nc("@title", "Disk Write Accesses"));
+    sensor->setShortName(i18nc("@title Disk Write Accesses", "Write"));
     // TODO: See above.
     sensor->setMatchSensors(QRegularExpression("^sd[a-z]+[0-9]+_[^/]*/Rate$"), QStringLiteral("wblk"));
-    sensor->setDescription(i18n("Write accesses across all disk devices"));
+    sensor->setDescription(i18nc("@info", "Write accesses across all disk devices"));
 
     auto memPhysical = m_subsystems["mem"]->object("physical");
     Q_ASSERT(memPhysical);
@@ -338,40 +338,40 @@ void KSGRDIface::addAggregateSensors()
         return;
     }
 
-    PercentageSensor *appLevel = new PercentageSensor(memPhysical, "applicationlevel", i18n("Application Memory Percentage"));
-    appLevel->setShortName(i18n("Application"));
+    PercentageSensor *appLevel = new PercentageSensor(memPhysical, "applicationlevel", i18nc("@title", "Application Memory Percentage"));
+    appLevel->setShortName(i18nc("@title Application Memory Percentage", "Application"));
     appLevel->setBaseSensor(memPhysical->sensor("application"));
-    appLevel->setDescription(i18n("Percentage of memory taken by applications."));
+    appLevel->setDescription(i18nc("@info", "Percentage of memory taken by applications."));
 
-    PercentageSensor *bufLevel = new PercentageSensor(memPhysical, "buflevel", i18n("Buffer Memory Percentage"));
-    bufLevel->setShortName(i18n("Buffer"));
+    PercentageSensor *bufLevel = new PercentageSensor(memPhysical, "buflevel", i18nc("@title", "Buffer Memory Percentage"));
+    bufLevel->setShortName(i18nc("@title Buffer Memory Percentage", "Buffer"));
     bufLevel->setBaseSensor(memPhysical->sensor("buf"));
-    bufLevel->setDescription(i18n("Percentage of memory taken by the buffer."));
+    bufLevel->setDescription(i18nc("@info", "Percentage of memory taken by the buffer."));
 
-    PercentageSensor *cacheLevel = new PercentageSensor(memPhysical, "cachelevel", i18n("Cache Memory Percentage"));
-    cacheLevel->setShortName(i18n("Cache"));
+    PercentageSensor *cacheLevel = new PercentageSensor(memPhysical, "cachelevel", i18nc("@title", "Cache Memory Percentage"));
+    cacheLevel->setShortName(i18nc("@title Cache Memory Percentage", "Cache"));
     cacheLevel->setBaseSensor(memPhysical->sensor("cached"));
-    cacheLevel->setDescription(i18n("Percentage of memory taken by the cache."));
+    cacheLevel->setDescription(i18nc("@info", "Percentage of memory taken by the cache."));
 
-    PercentageSensor *freeLevel = new PercentageSensor(memPhysical, "freelevel", i18n("Free Memory Percentage"));
-    freeLevel->setShortName(i18n("Cache"));
+    PercentageSensor *freeLevel = new PercentageSensor(memPhysical, "freelevel", i18nc("@title", "Free Memory Percentage"));
+    freeLevel->setShortName(i18nc("@title Free Memory Percentage", "Free"));
     freeLevel->setBaseSensor(memPhysical->sensor("free"));
-    freeLevel->setDescription(i18n("Percentage of free memory."));
+    freeLevel->setDescription(i18nc("@info", "Percentage of free memory."));
 
-    PercentageSensor *usedLevel = new PercentageSensor(memPhysical, "usedlevel", i18n("Used Memory Percentage"));
-    usedLevel->setShortName(i18n("Used"));
+    PercentageSensor *usedLevel = new PercentageSensor(memPhysical, "usedlevel", i18nc("@title", "Used Memory Percentage"));
+    usedLevel->setShortName(i18nc("@title Used Memory Percentage", "Used"));
     usedLevel->setBaseSensor(memPhysical->sensor("used"));
-    usedLevel->setDescription(i18n("Percentage of used memory."));
+    usedLevel->setDescription(i18nc("@info", "Percentage of used memory."));
 
-    PercentageSensor *availableLevel = new PercentageSensor(memPhysical, "availablelevel", i18n("Available Memory Percentage"));
-    availableLevel->setShortName(i18n("Available"));
+    PercentageSensor *availableLevel = new PercentageSensor(memPhysical, "availablelevel", i18nc("@title", "Available Memory Percentage"));
+    availableLevel->setShortName(i18nc("@title Available Memory Percentage", "Available"));
     availableLevel->setBaseSensor(memPhysical->sensor("available"));
-    availableLevel->setDescription(i18n("Percentage of used memory."));
+    availableLevel->setDescription(i18nc("@info", "Percentage of available memory."));
 
-    PercentageSensor *allocatedLevel = new PercentageSensor(memPhysical, "allocatedlevel", i18n("Allocated Memory Percentage"));
-    allocatedLevel->setShortName(i18n("Used"));
+    PercentageSensor *allocatedLevel = new PercentageSensor(memPhysical, "allocatedlevel", i18nc("@title", "Allocated Memory Percentage"));
+    allocatedLevel->setShortName(i18nc("@title Allocated Memory Percentage", "Used"));
     allocatedLevel->setBaseSensor(memPhysical->sensor("allocated"));
-    allocatedLevel->setDescription(i18n("Percentage of used memory."));
+    allocatedLevel->setDescription(i18nc("@info", "Percentage of allocated memory."));
 }
 
 QString KSGRDIface::shortNameFor(const QString &key)
@@ -380,15 +380,15 @@ QString KSGRDIface::shortNameFor(const QString &key)
     // So for now, we just map sensor ids to short names and return that.
 
     static QHash<QString, QString> shortNames = {
-        { QStringLiteral("cpu/system/TotalLoad"), i18n("Usage") },
-        { QStringLiteral("mem/physical/used"), i18n("Total Used") },
-        { QStringLiteral("mem/physical/cached"), i18n("Cached") },
-        { QStringLiteral("mem/physical/free"), i18n("Free") },
-        { QStringLiteral("mem/physical/available"), i18n("Avalable") },
-        { QStringLiteral("mem/physical/application"), i18n("Application") },
-        { QStringLiteral("mem/physical/buf"), i18n("Buffer") },
-        { QStringLiteral("cpu/system/processors"), i18n("Processors") },
-        { QStringLiteral("cpu/system/cores"), i18n("Cores") },
+        { QStringLiteral("cpu/system/TotalLoad"), i18nc("@title Total CPU Usage", "Usage") },
+        { QStringLiteral("mem/physical/used"), i18nc("@title Total Memory Usage", "Total Used") },
+        { QStringLiteral("mem/physical/cached"), i18nc("@title Cached Memory Usage", "Cached") },
+        { QStringLiteral("mem/physical/free"), i18nc("@title Free Memory Amount", "Free") },
+        { QStringLiteral("mem/physical/available"), i18nc("@title Available Memory Amount", "Avalable") },
+        { QStringLiteral("mem/physical/application"), i18nc("@title Application Memory Usage", "Application") },
+        { QStringLiteral("mem/physical/buf"), i18nc("@title Buffer Memory Usage", "Buffer") },
+        { QStringLiteral("cpu/system/processors"), i18nc("@title Number of Processors", "Processors") },
+        { QStringLiteral("cpu/system/cores"), i18nc("@title Number of Cores", "Cores") },
     };
 
     return shortNames.value(key, QString {});
