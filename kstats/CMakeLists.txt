@@ -18,4 +18,7 @@ install(TARGETS kstats DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 kdbusaddons_generate_dbus_service_file(kstats org.kde.kstats ${KDE_INSTALL_FULL_BINDIR})
 
 add_subdirectory(test)
-add_subdirectory(autotests)
+
+if (BUILD_TESTING)
+    add_subdirectory(autotests)
+endif()
