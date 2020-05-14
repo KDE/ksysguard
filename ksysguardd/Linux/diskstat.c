@@ -322,7 +322,7 @@ void printDiskStatUsedInfo( const char* cmd )
 {
     char *mntpnt = getMntPnt( cmd );
 
-    output( "Used\t0\t%ld\tKB\n", getTotal( mntpnt ) );
+    output( "%s Used\t0\t%ld\tKB\n", mntpnt, getTotal( mntpnt ) );
 }
 
 void printDiskStatFree( const char* cmd )
@@ -355,7 +355,7 @@ void printDiskStatFreeInfo( const char* cmd )
 {
     char *mntpnt = (char*)getMntPnt( cmd );
 
-    output( "Available\t0\t%ld\tKB\n", getTotal( mntpnt ) );
+    output( "%s Available\t0\t%ld\tKB\n", mntpnt, getTotal( mntpnt ) );
 }
 
 void printDiskStatPercent( const char* cmd )
@@ -392,19 +392,18 @@ void printDiskStatPercent( const char* cmd )
 
 void printDiskStatPercentInfo( const char* cmd )
 {
-    (void)cmd;
-    output( "Percentage Used\t0\t100\t%%\n" );
+    char *mntpnt = (char*)getMntPnt( cmd );
+    output( "%s Percentage Used\t0\t100\t%%\n", mntpnt );
 }
 
 void printDiskStatTotal( const char* cmd )
 {
     char *mntpnt = (char*)getMntPnt( cmd );
-
-    output( "%ld\n\n", getTotal( mntpnt ) );
+    output( "%s, %ld\n\n", mntpnt, getTotal( mntpnt ) );
 }
 
 void printDiskStatTotalInfo( const char* cmd )
 {
-    (void)cmd;
-    output( "Total Size\t0\t0\tKB\n" );
+    char *mntpnt = (char*)getMntPnt( cmd );
+    output( "%s Total Size\t0\t0\tKB\n", mntpnt);
 }
