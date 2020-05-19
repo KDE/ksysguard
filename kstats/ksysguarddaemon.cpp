@@ -93,21 +93,13 @@ void KSysGuardDaemon::loadProviders()
 }
 
 void KSysGuardDaemon::registerProvider(SensorPlugin *provider) {
-        m_providers.append(provider);
-        const auto containers = provider->containers();
-        for (auto container : containers) {
-            m_containers[container->id()] = container;
-            connect(container, &SensorContainer::objectAdded, this, [this](SensorObject *obj) {
-                for (auto sensor: obj->sensors()) {
-                    emit sensorAdded(sensor->path());
-                }
-            });
-            connect(container, &SensorContainer::objectRemoved, this, [this](SensorObject *obj) {
-                for (auto sensor: obj->sensors()) {
-                    emit sensorRemoved(sensor->path());
-                }
-            });
-        }
+    auto itr = std::find_if(m_providers.cbegin(), m_providers.cend(), [provider](SensorPlugin *plugin) {
+        return plugin->providerName() == provider->providerName();
+    });
+    if (itr != m_providers.cend()) {
+        return;
+    }
+
 }
 
 SensorInfoMap KSysGuardDaemon::allSensors() const
