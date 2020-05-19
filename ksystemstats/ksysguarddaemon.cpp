@@ -64,7 +64,7 @@ void KSysGuardDaemon::init()
 {
     loadProviders();
     QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportAdaptors);
-    QDBusConnection::sessionBus().registerService("org.kde.kstats");
+    QDBusConnection::sessionBus().registerService("org.kde.ksystemstats");
 }
 
 void KSysGuardDaemon::loadProviders()

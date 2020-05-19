@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 
 SensorWatcher::SensorWatcher(int &argc, char **argv)
     : QCoreApplication(argc, argv)
-    , m_iface(new OrgKdeKSysGuardDaemonInterface("org.kde.kstats",
+    , m_iface(new OrgKdeKSysGuardDaemonInterface("org.kde.ksystemstats",
           "/",
           QDBusConnection::sessionBus(),
           this))
