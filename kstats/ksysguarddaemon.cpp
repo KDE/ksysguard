@@ -122,8 +122,16 @@ SensorInfoMap KSysGuardDaemon::allSensors() const
 {
     SensorInfoMap infoMap;
     for (auto c : qAsConst(m_containers)) {
+        auto containerInfo = SensorInfo{};
+        containerInfo.name = c->name();
+        infoMap.insert(c->id(), containerInfo);
+
         const auto objects = c->objects();
         for(auto object : objects) {
+            auto objectInfo = SensorInfo{};
+            objectInfo.name = object->name();
+            infoMap.insert(object->path(), objectInfo);
+
             const auto sensors = object->sensors();
             for (auto sensor : sensors) {
                 infoMap[sensor->path()] = sensor->info();
