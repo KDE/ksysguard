@@ -295,7 +295,7 @@ void KSGRDIface::answerReceived(int id, const QList<QByteArray> &answer)
 
 void KSGRDIface::addAggregateSensors()
 {
-    auto networkAll = new SensorObject("all", i18nc("@title", "All Network Interfaces"), m_subsystems["network"]);
+    auto networkAll = new SensorObject("all", i18nc("@title All Network Interfaces", "All"), m_subsystems["network"]);
 
     auto sensor = new AggregateSensor(networkAll, "receivedDataRate", i18nc("@title", "Received Data Rate"));
     sensor->setShortName(i18nc("@title Received Data Rate", "Down"));
@@ -321,7 +321,7 @@ void KSGRDIface::addAggregateSensors()
     sensor->setDescription(i18nc("@info", "The total amount of data sent on all interfaces."));
     sensor->setUnit(KSysGuard::utils::UnitKiloByte);
 
-    auto diskAll = new SensorObject("all", i18nc("@title", "All Disks"), m_subsystems["disk"]);
+    auto diskAll = new SensorObject("all", i18nc("@title All Disks", "All"), m_subsystems["disk"]);
     sensor = new AggregateSensor(diskAll, "read", i18nc("@title", "Disk Read Accesses"));
     sensor->setShortName(i18nc("@title Disk Read Accesses", "Read"));
     // TODO: This regex is not exhaustive as it doesn't consider things that aren't treated as sdX devices.
