@@ -100,6 +100,22 @@ void KSysGuardDaemon::registerProvider(SensorPlugin *provider) {
         return;
     }
 
+
+    m_providers.append(provider);
+    const auto containers = provider->containers();
+    for (auto container : containers) {
+        m_containers[container->id()] = container;
+        connect(container, &SensorContainer::objectAdded, this, [this](SensorObject *obj) {
+            for (auto sensor: obj->sensors()) {
+                emit sensorAdded(sensor->path());
+            }
+        });
+        connect(container, &SensorContainer::objectRemoved, this, [this](SensorObject *obj) {
+            for (auto sensor: obj->sensors()) {
+                emit sensorRemoved(sensor->path());
+            }
+        });
+    }
 }
 
 SensorInfoMap KSysGuardDaemon::allSensors() const
