@@ -33,20 +33,21 @@
 KSGRDIface::KSGRDIface(QObject *parent, const QVariantList &args)
     : SensorPlugin(parent, args)
 {
-    auto registerSubsystem = [this](const QString &id, const QString &name) {
-        m_subsystems[id] = new SensorContainer(id, name, this);
-    };
-    registerSubsystem("acpi", i18nc("@title", "ACPI"));
-    registerSubsystem("cpu", i18nc("@title", "CPU"));
-    registerSubsystem("disk", i18nc("@title", "Disk Drives"));
-    registerSubsystem("lmsensors", i18nc("@title", "Sensors"));
-    registerSubsystem("mem", i18nc("@title", "Memory"));
-    registerSubsystem("network", i18nc("@title", "Network Interfaces"));
-    registerSubsystem("partitions", i18nc("@title", "Partitions"));
-    registerSubsystem("uptime", i18nc("@title", "Uptime"));
-    registerSubsystem("system", i18nc("@title", "System"));
-
     KSGRD::SensorMgr = new KSGRD::SensorManager(this);
+
+    auto registerSubsystem = [this](const QString &id) {
+        m_subsystems[id] = new SensorContainer(id, KSGRD::SensorMgr->translateSensorPath(id), this);
+    };
+    registerSubsystem("acpi");
+    registerSubsystem("cpu");
+    registerSubsystem("disk");
+    registerSubsystem("lmsensors");
+    registerSubsystem("mem");
+    registerSubsystem("network");
+    registerSubsystem("partitions");
+    registerSubsystem("uptime");
+    registerSubsystem("system");
+
     KSGRD::SensorMgr->engage(QStringLiteral("localhost"), QLatin1String(""), QStringLiteral("ksysguardd"));
     connect(KSGRD::SensorMgr, &KSGRD::SensorManager::update, this, &KSGRDIface::updateMonitorsList);
     updateMonitorsList();
@@ -135,7 +136,8 @@ void KSGRDIface::onSensorMetaDataRetrieved(int id, const QList<QByteArray> &answ
     }
     auto sensorObject = subsystem->object(objectId);
     if (!sensorObject) {
-        sensorObject = new SensorObject(objectId, displayNameFor(subsystemId, objectId), subsystem);
+        auto name = KSGRD::SensorMgr->translateSensorPath(objectId);
+        sensorObject = new SensorObject(objectId, name, subsystem);
     }
 
     auto sensor = m_sensors.value(key, nullptr);
@@ -394,28 +396,6 @@ QString KSGRDIface::shortNameFor(const QString &key)
 
     return shortNames.value(key, QString {});
 }
-
-QString KSGRDIface::displayNameFor(const QString &subsystem, const QString &key)
-{
-    // TODO See above.
-
-    static QHash<QString, QString> names = {
-        { QStringLiteral("cpu/system"), i18nc("@title", "All CPUs") },
-
-        { QStringLiteral("mem/physical"), i18nc("@title", "Physical Memory") },
-        { QStringLiteral("mem/swap"), i18nc("@title", "Swap Memory") },
-        { QStringLiteral("mem/cache"), i18nc("@title", "Cache Memory") },
-
-        { QStringLiteral("network/interfaces"), i18nc("@title", "Network Interfaces") },
-    };
-
-    if (key.startsWith("cpu")) {
-        return i18nc("@title", "CPU %1", key.mid(key.lastIndexOf(QLatin1Char('u')) + 1).toInt() + 1);
-    }
-
-    return names.value(subsystem % QStringLiteral("/") % key, key);
-}
-
 
 K_PLUGIN_FACTORY(KSGRDPluginFactory, registerPlugin<KSGRDIface>();)
 
