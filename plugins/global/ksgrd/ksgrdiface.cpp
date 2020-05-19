@@ -33,17 +33,18 @@
 KSGRDIface::KSGRDIface(QObject *parent, const QVariantList &args)
     : SensorPlugin(parent, args)
 {
-    auto registerSubsystem = [this](const QString &id) {
-        m_subsystems[id] = new SensorContainer(id, id, this); // FIXME name resolve
+    auto registerSubsystem = [this](const QString &id, const QString &name) {
+        m_subsystems[id] = new SensorContainer(id, name, this);
     };
-    registerSubsystem("acpi");
-    registerSubsystem("cpu");
-    registerSubsystem("disk");
-    registerSubsystem("lmsensors");
-    registerSubsystem("mem");
-    registerSubsystem("network");
-    registerSubsystem("partitions");
-    registerSubsystem("uptime");
+    registerSubsystem("acpi", i18nc("@title", "ACPI"));
+    registerSubsystem("cpu", i18nc("@title", "CPU"));
+    registerSubsystem("disk", i18nc("@title", "Disk Drives"));
+    registerSubsystem("lmsensors", i18nc("@title", "Sensors"));
+    registerSubsystem("mem", i18nc("@title", "Memory"));
+    registerSubsystem("network", i18nc("@title", "Network Interfaces"));
+    registerSubsystem("partitions", i18nc("@title", "Partitions"));
+    registerSubsystem("uptime", i18nc("@title", "Uptime"));
+    registerSubsystem("system", i18nc("@title", "System"));
 
     KSGRD::SensorMgr = new KSGRD::SensorManager(this);
     KSGRD::SensorMgr->engage(QStringLiteral("localhost"), QLatin1String(""), QStringLiteral("ksysguardd"));
@@ -134,7 +135,7 @@ void KSGRDIface::onSensorMetaDataRetrieved(int id, const QList<QByteArray> &answ
     }
     auto sensorObject = subsystem->object(objectId);
     if (!sensorObject) {
-        sensorObject = new SensorObject(objectId, objectId, subsystem); // FIXME i18n name for object id?
+        sensorObject = new SensorObject(objectId, displayNameFor(subsystemId, objectId), subsystem);
     }
 
     auto sensor = m_sensors.value(key, nullptr);
@@ -292,7 +293,7 @@ void KSGRDIface::answerReceived(int id, const QList<QByteArray> &answer)
 
 void KSGRDIface::addAggregateSensors()
 {
-    auto networkAll = new SensorObject("all", i18nc("@title All Network Interfaces", "All"), m_subsystems["network"]);
+    auto networkAll = new SensorObject("all", i18nc("@title", "All Network Interfaces"), m_subsystems["network"]);
 
     auto sensor = new AggregateSensor(networkAll, "receivedDataRate", i18nc("@title", "Received Data Rate"));
     sensor->setShortName(i18nc("@title Received Data Rate", "Down"));
@@ -318,7 +319,7 @@ void KSGRDIface::addAggregateSensors()
     sensor->setDescription(i18nc("@info", "The total amount of data sent on all interfaces."));
     sensor->setUnit(KSysGuard::utils::UnitKiloByte);
 
-    auto diskAll = new SensorObject("all", i18nc("@title All Disks", "All"), m_subsystems["disk"]);
+    auto diskAll = new SensorObject("all", i18nc("@title", "All Disks"), m_subsystems["disk"]);
     sensor = new AggregateSensor(diskAll, "read", i18nc("@title", "Disk Read Accesses"));
     sensor->setShortName(i18nc("@title Disk Read Accesses", "Read"));
     // TODO: This regex is not exhaustive as it doesn't consider things that aren't treated as sdX devices.
@@ -393,6 +394,28 @@ QString KSGRDIface::shortNameFor(const QString &key)
 
     return shortNames.value(key, QString {});
 }
+
+QString KSGRDIface::displayNameFor(const QString &subsystem, const QString &key)
+{
+    // TODO See above.
+
+    static QHash<QString, QString> names = {
+        { QStringLiteral("cpu/system"), i18nc("@title", "All CPUs") },
+
+        { QStringLiteral("mem/physical"), i18nc("@title", "Physical Memory") },
+        { QStringLiteral("mem/swap"), i18nc("@title", "Swap Memory") },
+        { QStringLiteral("mem/cache"), i18nc("@title", "Cache Memory") },
+
+        { QStringLiteral("network/interfaces"), i18nc("@title", "Network Interfaces") },
+    };
+
+    if (key.startsWith("cpu")) {
+        return i18nc("@title", "CPU %1", key.mid(key.lastIndexOf(QLatin1Char('u')) + 1).toInt() + 1);
+    }
+
+    return names.value(subsystem % QStringLiteral("/") % key, key);
+}
+
 
 K_PLUGIN_FACTORY(KSGRDPluginFactory, registerPlugin<KSGRDIface>();)
 

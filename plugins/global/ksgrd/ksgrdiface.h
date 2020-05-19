@@ -62,6 +62,7 @@ private:
     KSysGuard::utils::Unit unitFromString(const QString &unitString) const;
     void addAggregateSensors();
     QString shortNameFor(const QString &key);
+    QString displayNameFor(const QString &subsystem, const QString &key);
 
     //This qlist is just to have an index mapping because of KSGRD's old API
     //Could be an index in SensorInfo subclass
