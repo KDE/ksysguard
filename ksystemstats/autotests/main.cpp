@@ -150,7 +150,7 @@ void KStatsTest::changes()
 
 void KStatsTest::dbusApi()
 {
-    OrgKdeKSysGuardDaemonInterface iface("org.kde.kstats",
+    OrgKdeKSysGuardDaemonInterface iface("org.kde.ksystemstats",
         "/",
         QDBusConnection::sessionBus(),
         this);
