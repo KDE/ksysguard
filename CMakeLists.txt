@@ -84,7 +84,7 @@ add_subdirectory( example )
 
 add_subdirectory( ksysguardd )
 
-add_subdirectory(kstats)
+add_subdirectory(ksystemstats)
 add_subdirectory(libkstats)
 
 add_subdirectory( plugins )
