@@ -33,8 +33,10 @@
 KSGRDIface::KSGRDIface(QObject *parent, const QVariantList &args)
     : SensorPlugin(parent, args)
 {
+    KSGRD::SensorMgr = new KSGRD::SensorManager(this);
+
     auto registerSubsystem = [this](const QString &id) {
-        m_subsystems[id] = new SensorContainer(id, id, this); // FIXME name resolve
+        m_subsystems[id] = new SensorContainer(id, KSGRD::SensorMgr->translateSensorPath(id), this);
     };
     registerSubsystem("acpi");
     registerSubsystem("cpu");
@@ -44,8 +46,8 @@ KSGRDIface::KSGRDIface(QObject *parent, const QVariantList &args)
     registerSubsystem("network");
     registerSubsystem("partitions");
     registerSubsystem("uptime");
+    registerSubsystem("system");
 
-    KSGRD::SensorMgr = new KSGRD::SensorManager(this);
     KSGRD::SensorMgr->engage(QStringLiteral("localhost"), QLatin1String(""), QStringLiteral("ksysguardd"));
     connect(KSGRD::SensorMgr, &KSGRD::SensorManager::update, this, &KSGRDIface::updateMonitorsList);
     updateMonitorsList();
@@ -134,7 +136,8 @@ void KSGRDIface::onSensorMetaDataRetrieved(int id, const QList<QByteArray> &answ
     }
     auto sensorObject = subsystem->object(objectId);
     if (!sensorObject) {
-        sensorObject = new SensorObject(objectId, objectId, subsystem); // FIXME i18n name for object id?
+        auto name = KSGRD::SensorMgr->translateSensorPath(objectId);
+        sensorObject = new SensorObject(objectId, name, subsystem);
     }
 
     auto sensor = m_sensors.value(key, nullptr);
