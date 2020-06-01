@@ -37,7 +37,6 @@ ki18n_wrap_ui( libsensordisplays_SRCS
 )
 
 set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
-   ksortfilterproxymodel.cpp
    SensorBrowser.cpp
    WorkSheet.cpp
    WorkSheetSettings.cpp

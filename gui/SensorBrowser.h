@@ -28,7 +28,7 @@
 #include <QMap>
 #include <QHash>
 #include <ksgrd/SensorClient.h>
-#include "ksortfilterproxymodel.h"
+#include <QSortFilterProxyModel>
 
 class QMouseEvent;
 
@@ -111,7 +111,7 @@ class SensorBrowserTreeWidget : public QTreeView
       { return mSensorBrowserModel.listHosts(); }
     QStringList listSensors( const QString &hostName ) const 
       { return mSensorBrowserModel.listSensors(hostName); }
-    KSortFilterProxyModel & model()
+    QSortFilterProxyModel & model()
       { return mSortFilterProxyModel; }
 
   public Q_SLOTS:
@@ -128,7 +128,7 @@ class SensorBrowserTreeWidget : public QTreeView
 
     QString mDragText;
     SensorBrowserModel mSensorBrowserModel;
-    KSortFilterProxyModel mSortFilterProxyModel;
+    QSortFilterProxyModel mSortFilterProxyModel;
 };
 
 /**

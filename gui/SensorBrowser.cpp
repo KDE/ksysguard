@@ -424,14 +424,15 @@ SensorBrowserWidget::~SensorBrowserWidget()
 SensorBrowserTreeWidget::SensorBrowserTreeWidget( QWidget* parent, KSGRD::SensorManager* sm ) : QTreeView( parent ), mSensorManager( sm )
 {
     mSortFilterProxyModel.setSourceModel(&mSensorBrowserModel);
-    mSortFilterProxyModel.setShowAllChildren(true);
+    mSortFilterProxyModel.setRecursiveFilteringEnabled(true);
+    mSortFilterProxyModel.setFilterCaseSensitivity(Qt::CaseInsensitive);
     setModel(&mSortFilterProxyModel);
     connect(mSensorManager, &KSGRD::SensorManager::update, &mSensorBrowserModel, &SensorBrowserModel::update);
     connect(mSensorManager, &KSGRD::SensorManager::hostAdded, &mSensorBrowserModel, &SensorBrowserModel::hostAdded);
     connect(mSensorManager, &KSGRD::SensorManager::hostConnectionLost, &mSensorBrowserModel, &SensorBrowserModel::hostRemoved);
 //  connect( mSensorManager, SIGNAL(hostAdded(KSGRD::SensorAgent*,QString)), SLOT(updateView()) );
 //  connect( mSensorManager, SIGNAL(hostConnectionLost(QString)), SLOT(updateView()) );
-    connect(&mSortFilterProxyModel, &KSortFilterProxyModel::rowsInserted, this, &SensorBrowserTreeWidget::updateView);
+    connect(&mSortFilterProxyModel, &QSortFilterProxyModel::rowsInserted, this, &SensorBrowserTreeWidget::updateView);
 
     setDragDropMode(QAbstractItemView::DragOnly);
     setUniformRowHeights(true);
