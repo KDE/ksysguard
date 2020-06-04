@@ -178,6 +178,13 @@ void KSGRDIface::onSensorListRetrieved(const QList<QByteArray> &answer)
     QSet<QString> sensors;
     int count = 0;
 
+    // A list of data types not currently supported
+    static const QStringList excludedTypes = {
+        QStringLiteral("logfile"),
+        QStringLiteral("listview"),
+        QStringLiteral("table")
+    };
+
     for (const QByteArray &sens : answer) {
         const QString sensStr { QString::fromUtf8(sens) };
         const QVector<QStringRef> newSensorInfo = sensStr.splitRef('\t');
@@ -185,8 +192,8 @@ void KSGRDIface::onSensorListRetrieved(const QList<QByteArray> &answer)
             continue;
         }
         auto type = newSensorInfo.at(1);
-        if (type == QLatin1String("logfile")) {
-            continue; // logfile data type not currently supported
+        if (excludedTypes.contains(type)) {
+            continue;
         }
 
         const QString newSensor = newSensorInfo[0].toString();
