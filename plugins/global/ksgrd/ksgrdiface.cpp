@@ -387,7 +387,7 @@ QString KSGRDIface::shortNameFor(const QString &key)
         { QStringLiteral("mem/physical/used"), i18nc("@title Total Memory Usage", "Total Used") },
         { QStringLiteral("mem/physical/cached"), i18nc("@title Cached Memory Usage", "Cached") },
         { QStringLiteral("mem/physical/free"), i18nc("@title Free Memory Amount", "Free") },
-        { QStringLiteral("mem/physical/available"), i18nc("@title Available Memory Amount", "Avalable") },
+        { QStringLiteral("mem/physical/available"), i18nc("@title Available Memory Amount", "Available") },
         { QStringLiteral("mem/physical/application"), i18nc("@title Application Memory Usage", "Application") },
         { QStringLiteral("mem/physical/buf"), i18nc("@title Buffer Memory Usage", "Buffer") },
         { QStringLiteral("cpu/system/processors"), i18nc("@title Number of Processors", "Processors") },
