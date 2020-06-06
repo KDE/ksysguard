@@ -379,7 +379,7 @@ void KSGRDIface::addAggregateSensors()
     availableLevel->setDescription(i18nc("@info", "Percentage of available memory."));
 
     PercentageSensor *allocatedLevel = new PercentageSensor(memPhysical, "allocatedlevel", i18nc("@title", "Allocated Memory Percentage"));
-    allocatedLevel->setShortName(i18nc("@title Allocated Memory Percentage", "Used"));
+    allocatedLevel->setShortName(i18nc("@title Allocated Memory Percentage", "Allocated"));
     allocatedLevel->setBaseSensor(memPhysical->sensor("allocated"));
     allocatedLevel->setDescription(i18nc("@info", "Percentage of allocated memory."));
 }
