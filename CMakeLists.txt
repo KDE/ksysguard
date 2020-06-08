@@ -53,6 +53,9 @@ if (EXISTS "${CMAKE_SOURCE_DIR}/.git")
    add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x054200)
 endif()
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
 find_package(Sensors)
 set_package_properties(Sensors PROPERTIES
                        TYPE OPTIONAL
