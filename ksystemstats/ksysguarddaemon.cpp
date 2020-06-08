@@ -97,9 +97,9 @@ void KSysGuardDaemon::registerProvider(SensorPlugin *provider) {
         return plugin->providerName() == provider->providerName();
     });
     if (itr != m_providers.cend()) {
+        qWarning() << "Skipping" << provider->providerName() << "as it is already registered";
         return;
     }
-
 
     m_providers.append(provider);
     const auto containers = provider->containers();
