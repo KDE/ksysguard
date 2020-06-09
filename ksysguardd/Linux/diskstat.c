@@ -399,7 +399,7 @@ void printDiskStatPercentInfo( const char* cmd )
 void printDiskStatTotal( const char* cmd )
 {
     char *mntpnt = (char*)getMntPnt( cmd );
-    output( "%s, %ld\n\n", mntpnt, getTotal( mntpnt ) );
+    output( "%ld\n\n", getTotal( mntpnt ) );
 }
 
 void printDiskStatTotalInfo( const char* cmd )
