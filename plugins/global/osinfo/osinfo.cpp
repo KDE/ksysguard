@@ -43,6 +43,7 @@ QString upperCaseFirst(const QString &input)
 }
 
 // Helper to simplify async dbus calls.
+template <typename T>
 QDBusPendingCallWatcher *dbusCall(
     const QDBusConnection &bus,
     const QString &service,
@@ -50,13 +51,17 @@ QDBusPendingCallWatcher *dbusCall(
     const QString &interface,
     const QString &method,
     const QVariantList &arguments,
-    std::function<void(QDBusPendingCallWatcher*)> callback
+    std::function<void(const QDBusPendingReply<T>&)> callback
 )
 {
     auto message = QDBusMessage::createMethodCall(service, object, interface, method);
     message.setArguments(arguments);
     auto watcher = new QDBusPendingCallWatcher{bus.asyncCall(message)};
-    QObject::connect(watcher, &QDBusPendingCallWatcher::finished, watcher, callback);
+    QObject::connect(watcher, &QDBusPendingCallWatcher::finished, watcher, [callback](QDBusPendingCallWatcher *watcher) {
+        QDBusPendingReply<T> reply = watcher->reply();
+        callback(reply);
+        watcher->deleteLater();
+    });
     return watcher;
 }
 
@@ -145,23 +150,20 @@ void OSInfoPrivate::update()
     qtVersionProperty->setValue(QString::fromLatin1(qVersion()));
     kfVersionProperty->setValue(KCoreAddons::versionString());
 
-    dbusCall(
+    dbusCall<QVariant>(
         QDBusConnection::sessionBus(),
         QStringLiteral("org.kde.plasmashell"),
         QStringLiteral("/MainApplication"),
         QStringLiteral("org.freedesktop.DBus.Properties"),
         QStringLiteral("Get"),
         { QStringLiteral("org.qtproject.Qt.QCoreApplication"), QStringLiteral("applicationVersion") },
-        [this](QDBusPendingCallWatcher *watcher) {
-            QDBusPendingReply<QVariant> reply = watcher->reply();
+        [this](const QDBusPendingReply<QVariant> &reply) {
             if (reply.isError()) {
                 qWarning() << "Could not determine Plasma version, got: " << reply.error().message();
                 plasmaVersionProperty->setValue(i18nc("@info", "Unknown"));
             } else {
                 plasmaVersionProperty->setValue(reply.value());
             }
-
-            watcher->deleteLater();
         }
     );
 }
@@ -171,15 +173,14 @@ void LinuxPrivate::update()
     OSInfoPrivate::update();
 
     // Override some properties with values from hostnamed, if available.
-    dbusCall(
+    dbusCall<QVariantMap>(
         QDBusConnection::systemBus(),
         QStringLiteral("org.freedesktop.hostname1"),
         QStringLiteral("/org/freedesktop/hostname1"),
         QStringLiteral("org.freedesktop.DBus.Properties"),
         QStringLiteral("GetAll"),
         { QStringLiteral("org.freedesktop.hostname1") },
-        [this](QDBusPendingCallWatcher *watcher) {
-            QDBusPendingReply<QVariantMap> reply = watcher->reply();
+        [this](const QDBusPendingReply<QVariantMap> &reply) {
             if (reply.isError()) {
                 qWarning() << "Could not contact hostnamed, got: " << reply.error().message();
             } else {
