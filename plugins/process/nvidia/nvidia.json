@@ -27,7 +27,6 @@
         "Description[sv]": "Statistik över grafikprocessorresurser per process för Nvidia-kort",
         "Description[tg]": "Омори ҳар як раванди манбаъи GPU барои кортҳои Nvidia",
         "Description[uk]": "Статистика ресурсів окремих процесів графічного процесора для карток NVidia",
-        "Description[x-test]": "xxStats of per-process GPU resources for Nvidia cardsxx",
         "Description[zh_CN]": "分进程的 GPU 资源状态，仅限 NVIDIA 显卡",
         "Description[zh_TW]": "適用於 Nvidia 卡的各處理程序 GPU 資源統計"
     }
