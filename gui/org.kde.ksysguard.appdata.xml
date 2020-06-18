@@ -31,6 +31,7 @@
   <name xml:lang="sv">KDE:s systemövervakare</name>
   <name xml:lang="tg">Муҳофизати низом</name>
   <name xml:lang="uk">KSysGuard</name>
+  <name xml:lang="x-test">xxKSysGuardxx</name>
   <name xml:lang="zh-CN">系统卫士</name>
   <name xml:lang="zh-TW">KSysGuard</name>
   <summary>Monitor running processes and system performance</summary>
@@ -64,6 +65,7 @@
   <summary xml:lang="sv">Övervaka processor som kör och systemprestanda</summary>
   <summary xml:lang="tg">Равандҳои ҷорӣ ва самаранокии низомро назорат мекунад</summary>
   <summary xml:lang="uk">Стеження за процесами та швидкодією системи</summary>
+  <summary xml:lang="x-test">xxMonitor running processes and system performancexx</summary>
   <summary xml:lang="zh-CN">监视运行的进程和系统效率</summary>
   <summary xml:lang="zh-TW">監控執行程序及系統效能</summary>
   <icon type="stock">utilities-system-monitor</icon>
@@ -101,6 +103,7 @@
     <p xml:lang="sv">Systemövervakaren låter dig övervaka information och statistik om systemet.</p>
     <p xml:lang="tg">Муҳофизати низом ба шумо имкон медиҳад, то тавонед иттилоот ва омори ҷориро дар бораи низоми худ назорат намоед.</p>
     <p xml:lang="uk">Засіб стеження за системою надає вам змогу стежити за відомостями та статистичними даними щодо вашої системи.</p>
+    <p xml:lang="x-test">xxSystem Guard allows you to monitor information and statistics about your system.xx</p>
     <p xml:lang="zh-CN">系统卫士允许您监控系统的信息和统计数据。</p>
     <p xml:lang="zh-TW">「System Guard」允許您監控您系統的資訊與統計。</p>
     <p>In addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.</p>
@@ -132,6 +135,7 @@
     <p xml:lang="sv">Förutom att övervaka det lokala systemet kan den ansluta till andra system som kör systemövervakardemonen.</p>
     <p xml:lang="tg">Илова бар назораткунии низоми маҳаллӣ, он метавонад ба низомҳои дурдаст дорои "раванди дохилии муҳофизати низом" пайваст шавад.</p>
     <p xml:lang="uk">Окрім стеження за локальною системою, програма здатна з'єднуватися із віддаленими системами, де запущено фонову службу стеження за системою.</p>
+    <p xml:lang="x-test">xxIn addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.xx</p>
     <p xml:lang="zh-CN">除了监视本地系统外，它还可以连接到运行系统卫士守护进程的远程系统。</p>
     <p xml:lang="zh-TW">除了能監控本機系統之外， 還能連線到有執行「System Guard 守護程式」的遠端系統。</p>
   </description>
