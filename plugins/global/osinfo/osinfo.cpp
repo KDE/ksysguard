@@ -190,8 +190,9 @@ void LinuxPrivate::update()
                 kernelVersionProperty->setValue(kernelVersion);
                 kernelPrettyNameProperty->setValue(QString{kernelName % QLatin1Char(' ') % kernelVersion});
 
-                if (properties.contains(QStringLiteral("PrettyHostname"))) {
-                    hostnameProperty->setValue(properties.value(QStringLiteral("PrettyHostname")));
+                auto prettyHostName = properties.value(QStringLiteral("PrettyHostname"), QString{}).toString();
+                if (!prettyHostName.isEmpty()) {
+                    hostnameProperty->setValue(prettyHostName);
                 } else {
                     hostnameProperty->setValue(properties.value(QStringLiteral("Hostname"), hostnameProperty->value()));
                 }
