@@ -235,8 +235,12 @@ int updateDiskStat( void )
         strncpy( disk_info->device, mnt_info->mnt_fsname, sizeof( disk_info->device ) );
         disk_info->device[ sizeof(disk_info->device) -1] = 0;
 
-        strncpy( disk_info->mntpnt, mnt_info->mnt_dir, sizeof( disk_info->mntpnt ) );
-        disk_info->mntpnt[ sizeof(disk_info->mntpnt) - 1] = 0;
+        if ( strcmp(mnt_info->mnt_dir, "/") == 0 ) {
+            strncpy( disk_info->mntpnt, "/__root__", 9);
+        } else {
+            strncpy( disk_info->mntpnt, mnt_info->mnt_dir, sizeof( disk_info->mntpnt ) );
+            disk_info->mntpnt[ sizeof(disk_info->mntpnt) - 1] = 0;
+        }
         sanitize(disk_info->mntpnt);
 
         push_ctnr( DiskStatList, disk_info );
@@ -322,7 +326,13 @@ void printDiskStatUsedInfo( const char* cmd )
 {
     char *mntpnt = getMntPnt( cmd );
 
-    output( "%s Used\t0\t%ld\tKB\n", mntpnt, getTotal( mntpnt ) );
+    if ( strcmp( mntpnt, "/all" ) == 0 ) {
+        output( "All Partitions Used\t0\t%ld\tKB\n", getTotal( mntpnt ) );
+    } else if ( strcmp( mntpnt, "/__root__" ) == 0 ) {
+        output( "Filesystem Root Used\t0\t%ld\tKB\n", getTotal( mntpnt ) );
+    } else {
+        output( "%s Used\t0\t%ld\tKB\n", mntpnt, getTotal( mntpnt ) );
+    }
 }
 
 void printDiskStatFree( const char* cmd )
@@ -355,7 +365,13 @@ void printDiskStatFreeInfo( const char* cmd )
 {
     char *mntpnt = (char*)getMntPnt( cmd );
 
-    output( "%s Available\t0\t%ld\tKB\n", mntpnt, getTotal( mntpnt ) );
+    if ( strcmp( mntpnt, "/all" ) == 0 ) {
+        output( "All Partitions Available\t0\t%ld\tKB\n", getTotal( mntpnt ) );
+    } else if ( strcmp( mntpnt, "/__root__" ) == 0 ) {
+        output( "Filesystem Root Available\t0\t%ld\tKB\n", getTotal( mntpnt ) );
+    } else {
+        output( "%s Available\t0\t%ld\tKB\n", mntpnt, getTotal( mntpnt ) );
+    }
 }
 
 void printDiskStatPercent( const char* cmd )
@@ -393,7 +409,13 @@ void printDiskStatPercent( const char* cmd )
 void printDiskStatPercentInfo( const char* cmd )
 {
     char *mntpnt = (char*)getMntPnt( cmd );
-    output( "%s Percentage Used\t0\t100\t%%\n", mntpnt );
+    if ( strcmp( mntpnt, "/all" ) == 0 ) {
+        output( "All Partitions Percentage Used\t0\t100\t%%\n" );
+    } else if ( strcmp( mntpnt, "/__root__" ) == 0 ) {
+        output( "Filesystem Root Percentage Used\t0\t100\t%%\n" );
+    } else {
+        output( "%s Percentage Used\t0\t100\t%%\n", mntpnt );
+    }
 }
 
 void printDiskStatTotal( const char* cmd )
@@ -405,5 +427,11 @@ void printDiskStatTotal( const char* cmd )
 void printDiskStatTotalInfo( const char* cmd )
 {
     char *mntpnt = (char*)getMntPnt( cmd );
-    output( "%s Total Size\t0\t0\tKB\n", mntpnt);
+    if ( strcmp( mntpnt, "/all" ) == 0 ) {
+        output("All Partitions Total Size\t0\t100\t%%\n" );
+    } else if ( strcmp( mntpnt, "/__root__" ) == 0 ) {
+        output( "Filesystem Root Total Size\t0\t100\t%%\n" );
+    } else {
+        output( "%s Total Size\t0\t0\tKB\n", mntpnt );
+    }
 }
