@@ -428,9 +428,9 @@ void printDiskStatTotalInfo( const char* cmd )
 {
     char *mntpnt = (char*)getMntPnt( cmd );
     if ( strcmp( mntpnt, "/all" ) == 0 ) {
-        output("All Partitions Total Size\t0\t100\t%%\n" );
+        output("All Partitions Total Size\t0\t0\tKB\n" );
     } else if ( strcmp( mntpnt, "/__root__" ) == 0 ) {
-        output( "Filesystem Root Total Size\t0\t100\t%%\n" );
+        output( "Filesystem Root Total Size\t0\t0\tKB\n" );
     } else {
         output( "%s Total Size\t0\t0\tKB\n", mntpnt );
     }
