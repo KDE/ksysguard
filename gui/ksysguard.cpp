@@ -477,9 +477,9 @@ void TopLevel::answerReceived( int id, const QList<QByteArray> &answerList )
 
     case 4:
     {
+      mUsedApplication = answer.toLongLong();
       const auto used = KFormat().formatByteSize( mUsedApplication*1024);
       const auto total = KFormat().formatByteSize( (mFree+mUsedTotal)*1024 );
-      mUsedApplication = answer.toLongLong();
       //Use a multi-length string
       s = i18nc( "Arguments are formatted byte sizes (used/total)", "Memory: %1 / %2", used, total );
       s += "\xc2\x9c";
