@@ -143,7 +143,11 @@ static int process26DiskIO( const char* buf ) {
 	* - See Documentation/iostats.txt for details on the changes
 	*/
 	int                      major, minor;
-	char                     devname[DISKDEVNAMELEN];
+	/* The buffer is 1 longer, because sscanf() below will write a NUL
+	*  terminator after the length-specified string -- so asking for
+	*  %20s will write 21 bytes into the buffer with the NUL.
+	*/
+	char                     devname[DISKDEVNAMELEN+1];
 	unsigned long            total,
 				rio, rmrg, rblk, rtim,
 				wio, wmrg, wblk, wtim,
@@ -214,7 +218,7 @@ static int process26DiskIO( const char* buf ) {
 		/* Something unexpected */
 		return -1;
 	}
-    devname[DISKDEVNAMELEN-1] = 0;
+    devname[sizeof(devname)-1] = 0; /* wish I could static_assert sizeof(devname)-1 == DISKDEVNAMELEN */
 
     if (!strncmp(devname, "/dev/loop", 9)) {
         return -1;
