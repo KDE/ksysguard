@@ -494,6 +494,23 @@ bool FancyPlotter::removeBeam( uint beamId )
     return true;
 }
 
+static inline bool isPercentage(FPSensorProperties* sensor)
+{
+    return sensor->unit() == QLatin1String("%");
+}
+
+// The "useful precision" of a value; integers don't need
+// any decimal point, percentages can do with 0.1% or 99.9%,
+// and the rest should be fine with 2 digits.
+static inline int usefulPrecision(FPSensorProperties* sensor)
+{
+    if (sensor->isInteger)
+        return 0;
+    if (isPercentage(sensor))
+        return 1;
+    return 2;
+}
+
 void FancyPlotter::setTooltip()
 {
     QString tooltip = QStringLiteral("<qt><p style='white-space:pre'>");
@@ -514,8 +531,8 @@ void FancyPlotter::setTooltip()
 
         if(sensor->isOk()) {
             static_assert(std::is_same<double, decltype(sensor->lastValue)>::value, "Sensor values should be double");
-            lastValue = QLocale().toString( sensor->lastValue, 'f', (sensor->isInteger)?0:-1 );
-            if (sensor->unit() == QLatin1String("%"))
+            lastValue = QLocale().toString( sensor->lastValue, 'f', usefulPrecision(sensor) );
+            if (isPercentage(sensor))
                 lastValue = i18nc("units", "%1%", lastValue);
             else if( !sensor->unit().isEmpty() )
                 lastValue = i18nc("units", QString(QLatin1String("%1 ") + sensor->unit()).toUtf8().constData(), lastValue);
@@ -585,16 +602,16 @@ void FancyPlotter::sendDataToPlotter( )
                         lastValue = mPlotter->lastValueAsString(beamId, precision);
                     } else {
                         static_assert(std::is_same<double, decltype(mPlotter->lastValue(beamId))>::value, "Beam values should be double");
-                        precision = (sensor->isInteger)?0:-1;
+                        precision = usefulPrecision(sensor);
                         lastValue = QLocale().toString( mPlotter->lastValue(beamId), 'f', precision );
-                        if (sensor->unit() == QLatin1String("%"))
+                        if (isPercentage(sensor))
                             lastValue = i18nc("units", "%1%", lastValue);
                         else if( !sensor->unit().isEmpty() )  {
                             lastValue = i18nc("units", QString(QLatin1String("%1 ") + sensor->unit()).toUtf8().constData(), lastValue);
                         }
                     }
 
-                    if(sensor->maxValue != 0 && sensor->unit() != QLatin1String("%")) {
+                    if(sensor->maxValue != 0 && !isPercentage(sensor)) {
                         //Use a multi length string incase we do not have enough room
                         lastValue = i18n("%1 of %2", lastValue, mPlotter->valueAsString(sensor->maxValue, precision) ) + "\xc2\x9c" + lastValue;
                     }
