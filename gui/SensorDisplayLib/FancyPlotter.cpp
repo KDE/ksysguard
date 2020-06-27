@@ -42,6 +42,16 @@
 
 #include "FancyPlotter.h"
 
+// The unicode character 0x25CF is a big filled in circle.  We would prefer 
+// to use this in the tooltip (or other messages). However it's possible 
+// that the font used to draw the tooltip won't have it.  So we fall back to a 
+// "#" instead.
+static constexpr const int BLACK_CIRCLE = 0x25CF;
+static inline QChar circleCharacter(const QFontMetrics& fm)
+{
+    return fm.inFont(QChar(BLACK_CIRCLE)) ? QChar(BLACK_CIRCLE) : QLatin1Char('#');
+}
+
 class SensorToAdd {
   public:
     QRegExp name;
@@ -66,10 +76,7 @@ class FancyPlotterLabel : public QLabel {
         labelName = name;
 
         if(indicatorSymbol.isNull()) {
-            if(fontMetrics().inFont(QChar(0x25CF)))
-                indicatorSymbol = QChar(0x25CF);
-            else
-                indicatorSymbol = QLatin1Char('#');
+            indicatorSymbol = circleCharacter(fontMetrics());
         }
         changeLabel(color);
 
@@ -162,14 +169,7 @@ FancyPlotter::FancyPlotter( QWidget* parent,
     mNumAnswers = 0;
     mLabelsWidget = nullptr;
 
-    //The unicode character 0x25CF is a big filled in circle.  We would prefer to use this in the tooltip.
-    //However it's maybe possible that the font used to draw the tooltip won't have it.  So we fall back to a 
-    //"#" instead.
-    QFontMetrics fm(QToolTip::font());
-    if(fm.inFont(QChar(0x25CF)))
-        mIndicatorSymbol = QChar(0x25CF);
-    else
-        mIndicatorSymbol = QLatin1Char('#');
+    mIndicatorSymbol = circleCharacter(QFontMetrics(QToolTip::font()));
 
     QBoxLayout *layout = new QVBoxLayout(this);
     layout->setSpacing(0);
