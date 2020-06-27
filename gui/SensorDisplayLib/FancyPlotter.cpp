@@ -513,7 +513,8 @@ void FancyPlotter::setTooltip()
             description = sensor->name();
 
         if(sensor->isOk()) {
-            lastValue = QLocale().toString( sensor->lastValue, (sensor->isInteger)?0:-1 );
+            static_assert(std::is_same<double, decltype(sensor->lastValue)>::value, "Sensor values should be double");
+            lastValue = QLocale().toString( sensor->lastValue, 'f', (sensor->isInteger)?0:-1 );
             if (sensor->unit() == QLatin1String("%"))
                 lastValue = i18nc("units", "%1%", lastValue);
             else if( !sensor->unit().isEmpty() )
