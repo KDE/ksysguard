@@ -584,8 +584,9 @@ void FancyPlotter::sendDataToPlotter( )
                         precision = (sensor->isInteger && mPlotter->scaleDownBy() == 1)?0:-1;
                         lastValue = mPlotter->lastValueAsString(beamId, precision);
                     } else {
+                        static_assert(std::is_same<double, decltype(mPlotter->lastValue(beamId))>::value, "Beam values should be double");
                         precision = (sensor->isInteger)?0:-1;
-                        lastValue = QLocale().toString( mPlotter->lastValue(beamId), precision );
+                        lastValue = QLocale().toString( mPlotter->lastValue(beamId), 'f', precision );
                         if (sensor->unit() == QLatin1String("%"))
                             lastValue = i18nc("units", "%1%", lastValue);
                         else if( !sensor->unit().isEmpty() )  {
