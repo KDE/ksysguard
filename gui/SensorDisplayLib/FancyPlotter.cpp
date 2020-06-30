@@ -296,7 +296,12 @@ void FancyPlotter::configureSettings()
 
 void FancyPlotter::settingsFinished()
 {
-    applySettings();
+    if(mSettingsDialog->result() == QDialog::Accepted) {
+        // Apply and OK also connect to applySettings, but it's
+        // racy which slot is called first when OK is clicked:
+        // so do it here, too, and worst case we'll apply twice while OKing.
+        applySettings();
+    }
     mSettingsDialog->hide();
     mSettingsDialog->deleteLater();
     mSettingsDialog = nullptr;
