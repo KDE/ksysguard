@@ -37,11 +37,14 @@ class DancingBars : public KSGRD::SensorDisplay
   Q_OBJECT
 
   public:
+    enum { MaximumBars = 32 };
+
     DancingBars( QWidget *parent, const QString &title, SharedSettings *workSheetSettings );
     ~DancingBars() override;
 
     void configureSettings() override;
 
+    // Adds a sensor, up to MaximumBars (after that it fails)
     bool addSensor( const QString &hostName, const QString &name,
                     const QString &type, const QString &title ) override;
     bool removeSensor( uint pos ) override;
@@ -59,7 +62,7 @@ class DancingBars : public KSGRD::SensorDisplay
     void applyStyle() override;
 
   private:
-    int mBars;
+    unsigned int mBars;
 
     BarGraph* mPlotter;
 

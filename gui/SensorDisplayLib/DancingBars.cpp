@@ -84,7 +84,7 @@ void DancingBars::configureSettings()
   dlg.setFontSize( mPlotter->fontSize );
 
   SensorModelEntry::List list;
-  for(int i = 0; i < mBars; i++){
+  for(unsigned int i = 0; i < mBars; i++){
     SensorModelEntry entry;
     auto sensor = sensors().at( i );
     entry.setId( i );
@@ -165,7 +165,7 @@ bool DancingBars::addSensor( const QString &hostName, const QString &name,
   if ( type != QLatin1String("integer") && type != QLatin1String("float") )
     return false;
 
-  if ( mBars >= 32 )
+  if ( mBars >= MaximumBars )
     return false;
 
   if ( !mPlotter->addBar( title ) )
@@ -180,7 +180,7 @@ bool DancingBars::addSensor( const QString &hostName, const QString &name,
   mSampleBuffer.resize( mBars );
 
   QString tooltip;
-  for ( int i = 0; i < mBars; ++i ) {
+  for ( unsigned int i = 0; i < mBars; ++i ) {
     tooltip += QStringLiteral( "%1%2:%3" ).arg( i != 0 ? QStringLiteral("\n") : QString() )
                                    .arg( sensors().at( i )->hostName() )
                                    .arg( sensors().at( i )->name() );
@@ -203,7 +203,7 @@ bool DancingBars::removeSensor( uint pos )
   KSGRD::SensorDisplay::removeSensor( pos );
 
   QString tooltip;
-  for ( int i = 0; i < mBars; ++i ) {
+  for ( unsigned int i = 0; i < mBars; ++i ) {
     tooltip += QStringLiteral( "%1%2:%3" ).arg( i != 0 ? QStringLiteral("\n") : QString() )
                                    .arg( sensors().at( i )->hostName() )
                                    .arg( sensors().at( i )->name() );
@@ -240,7 +240,7 @@ void DancingBars::answerReceived( int id, const QList<QByteArray> &answerlist )
     mFlags.setBit( id, true );
 
     bool allBitsAvailable = true;
-    for ( int i = 0; i < mBars; ++i )
+    for ( unsigned int i = 0; i < mBars; ++i )
       allBitsAvailable &= mFlags.testBit( i );
 
     if ( allBitsAvailable ) {
@@ -312,7 +312,7 @@ bool DancingBars::saveSettings( QDomDocument &doc, QDomElement &element)
 	saveColor( element, QStringLiteral("backgroundColor"), mPlotter->mBackgroundColor );
   element.setAttribute( QStringLiteral("fontSize"), mPlotter->fontSize );
 
-  for ( int i = 0; i < mBars; ++i ) {
+  for ( unsigned int i = 0; i < mBars; ++i ) {
     QDomElement beam = doc.createElement( QStringLiteral("beam") );
     element.appendChild( beam );
     beam.setAttribute( QStringLiteral("hostName"), sensors().at( i )->hostName() );
