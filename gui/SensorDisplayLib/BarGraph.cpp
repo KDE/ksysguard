@@ -27,6 +27,7 @@
 #include <QPainter>
 
 #include <kiconloader.h>
+#include <formatter/Formatter.h>  // from libksysguard
 
 #include "StyleEngine.h"
 
@@ -160,7 +161,7 @@ void BarGraph::paintEvent( QPaintEvent* )
                     footers[ b ] );
         p.drawText( b * barWidth + 3, h - fm.lineSpacing() - 2,
                     barWidth - 2 * 3, fm.lineSpacing(), Qt::AlignCenter,
-                    QStringLiteral( "%1" ).arg( samples[ b ] ) );
+                    KSysGuard::Formatter::formatValue( samples[b], KSysGuard::UnitNone ) );
       }
     }
   }
