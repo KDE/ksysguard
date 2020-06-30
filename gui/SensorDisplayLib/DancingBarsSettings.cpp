@@ -83,7 +83,7 @@ DancingBarsSettings::DancingBarsSettings(QWidget* parent, const QString &name )
   boxLayout->addWidget( label, 0, 3 );
 
   mMaxValue = new QDoubleSpinBox( groupBox);
-  mMaxValue->setRange(0, 100);
+  mMaxValue->setRange(0, 10000);
   mMaxValue->setSingleStep(0.5);
   mMaxValue->setValue(100);
   mMaxValue->setDecimals(2);
