@@ -62,6 +62,9 @@ class DancingBars : public KSGRD::SensorDisplay
     void applyStyle() override;
 
   private:
+    /// Updates the tooltips after sensors have been added or removed.
+    void updateToolTip();
+
     unsigned int mBars;
 
     BarGraph* mPlotter;
