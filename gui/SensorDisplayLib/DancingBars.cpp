@@ -115,6 +115,8 @@ void DancingBars::configureSettings()
   mPlotter->mBackgroundColor = dlg.backgroundColor();
   mPlotter->fontSize = dlg.fontSize();
 
+  // Each deleted Id is relative to the length of the list
+  // at the time of deletion.
   QList<uint> deletedIds = dlg.getDeletedIds();
   for(int i = 0; i<deletedIds.count(); i++){
 	  removeSensor(deletedIds[i]);
@@ -128,6 +130,22 @@ void DancingBars::configureSettings()
       // The 100 is magic in answerReceived()
       sendRequest( sensor->hostName(), sensor->name() + QLatin1Char('?'), 100 );
   }
+
+  // The remaining entries in the dialog are the ones that haven't been
+  // deleted, so that should match the remaining sensors. The dialog does
+  // not edit units or real sensor information, but can change the label.
+  // Reset the footer labels as needed.
+  const auto remainingSensors = dlg.sensors();
+  if (remainingSensors.count() == mPlotter->footers.count())
+  {
+    for(int i = 0; i < remainingSensors.count(); ++i) {
+      const auto newLabel = remainingSensors.at(i).label();
+      if (newLabel != mPlotter->footers[ i ]) {
+        mPlotter->footers[ i ] = newLabel;
+      }
+    }
+  }
+
   repaint();
 }
 
