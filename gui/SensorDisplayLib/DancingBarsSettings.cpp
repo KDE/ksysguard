@@ -198,6 +198,7 @@ DancingBarsSettings::DancingBarsSettings(QWidget* parent, const QString &name )
   mView->setRootIsDecorated( false );
   mView->setItemsExpandable( false );
   mView->setModel( mModel );
+  mView->header()->moveSection( SensorModel::Label, 1 ); // Show the label after host (can't place it first because it's a treeview based on host)
   pageLayout->addWidget( mView, 0, 0, 3, 1);
 
   mEditButton = new QPushButton( i18n( "Edit..." ), page );
