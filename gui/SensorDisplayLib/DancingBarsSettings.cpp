@@ -114,7 +114,7 @@ DancingBarsSettings::DancingBarsSettings(QWidget* parent, const QString &name )
   boxLayout->addWidget( label, 0, 2 );
 
   mLowerLimit = new QDoubleSpinBox(groupBox);
-  mLowerLimit->setRange(0, 100);
+  mLowerLimit->setRange(0, 10000);
   mLowerLimit->setSingleStep(0.5);
   mLowerLimit->setValue(0);
   mLowerLimit->setDecimals(2);
@@ -137,7 +137,7 @@ DancingBarsSettings::DancingBarsSettings(QWidget* parent, const QString &name )
   boxLayout->addWidget( label, 0, 2 );
 
   mUpperLimit = new QDoubleSpinBox( groupBox);
-  mUpperLimit->setRange(0, 1000);
+  mUpperLimit->setRange(0, 10000);
   mUpperLimit->setSingleStep(0.5);
   mUpperLimit->setDecimals(2);
   mUpperLimit->setEnabled( false );
