@@ -86,12 +86,13 @@ void DancingBars::configureSettings()
   SensorModelEntry::List list;
   for(int i = 0; i < mBars; i++){
     SensorModelEntry entry;
+    auto sensor = sensors().at( i );
     entry.setId( i );
-    entry.setHostName( sensors().at( i )->hostName() );
-    entry.setSensorName( KSGRD::SensorMgr->translateSensor( sensors().at( i )->name() ) );
+    entry.setHostName( sensor->hostName() );
+    entry.setSensorName( KSGRD::SensorMgr->translateSensor( sensor->name() ) );
     entry.setLabel( mPlotter->footers[ i ] );
-    entry.setUnit( KSGRD::SensorMgr->translateUnit( sensors().at( i )->unit() ) );
-    entry.setStatus( sensors().at( i )->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
+    entry.setUnit( KSGRD::SensorMgr->translateUnit( sensor->unit() ) );
+    entry.setStatus( sensor->isOk() ? i18n( "OK" ) : i18n( "Error" ) );
 
     list.append( entry );
   }
@@ -115,7 +116,6 @@ void DancingBars::configureSettings()
   mPlotter->fontSize = dlg.fontSize();
 
   QList<uint> deletedIds = dlg.getDeletedIds();
-
   for(int i = 0; i<deletedIds.count(); i++){
 	  removeSensor(deletedIds[i]);
   }
