@@ -36,16 +36,11 @@
 #include "DancingBars.h"
 
 DancingBars::DancingBars( QWidget *parent, const QString &title, SharedSettings *workSheetSettings)
-  : KSGRD::SensorDisplay( parent, title, workSheetSettings)
+  : KSGRD::SensorDisplay( parent, title, workSheetSettings), mBars(0),
+  mPlotter(new BarGraph(this)), mFlags(100 /* bits */, false)
 {
-  mBars = 0;
-  mFlags = QBitArray( 100 );
-  mFlags.fill( false );
-
   QLayout *layout = new QHBoxLayout(this);
-  mPlotter = new BarGraph( this );
   layout->addWidget(mPlotter);
-
   setMinimumSize( sizeHint() );
 
   /* All RMB clicks to the mPlotter widget will be handled by 
@@ -53,7 +48,6 @@ DancingBars::DancingBars( QWidget *parent, const QString &title, SharedSettings 
   mPlotter->installEventFilter( this );
 
   setPlotterWidget( mPlotter );
-
 }
 
 DancingBars::~DancingBars()
