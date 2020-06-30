@@ -172,15 +172,7 @@ bool DancingBars::addSensor( const QString &hostName, const QString &name,
   sendRequest( hostName, name + QLatin1Char('?'), mBars + 100 );
   ++mBars;
   mSampleBuffer.resize( mBars );
-
-  QString tooltip;
-  for ( unsigned int i = 0; i < mBars; ++i ) {
-    tooltip += QStringLiteral( "%1%2:%3" ).arg( i != 0 ? QStringLiteral("\n") : QString() )
-                                   .arg( sensors().at( i )->hostName() )
-                                   .arg( sensors().at( i )->name() );
-  }
-  mPlotter->setToolTip( tooltip );
-
+  updateToolTip();
   return true;
 }
 
@@ -195,15 +187,7 @@ bool DancingBars::removeSensor( uint pos )
   mPlotter->removeBar( pos );
   mBars--;
   KSGRD::SensorDisplay::removeSensor( pos );
-
-  QString tooltip;
-  for ( unsigned int i = 0; i < mBars; ++i ) {
-    tooltip += QStringLiteral( "%1%2:%3" ).arg( i != 0 ? QStringLiteral("\n") : QString() )
-                                   .arg( sensors().at( i )->hostName() )
-                                   .arg( sensors().at( i )->name() );
-  }
-  mPlotter->setToolTip( tooltip );
-
+  updateToolTip();
   return true;
 }
 
@@ -325,4 +309,13 @@ bool DancingBars::hasSettingsDialog() const
   return true;
 }
 
-
+void DancingBars::updateToolTip()
+{
+  QString tooltip;
+  for ( unsigned int i = 0; i < mBars; ++i ) {
+    tooltip += QStringLiteral( "%1%2:%3" ).arg( i != 0 ? QStringLiteral("\n") : QString() )
+                                   .arg( sensors().at( i )->hostName() )
+                                   .arg( sensors().at( i )->name() );
+  }
+  mPlotter->setToolTip( tooltip );
+}
