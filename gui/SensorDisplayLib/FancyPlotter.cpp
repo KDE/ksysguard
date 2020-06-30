@@ -291,7 +291,7 @@ void FancyPlotter::configureSettings()
     connect(mSettingsDialog, &FancyPlotterSettings::okClicked, this, &FancyPlotter::applySettings);
     connect(mSettingsDialog, &FancyPlotterSettings::finished, this, &FancyPlotter::settingsFinished);
 
-    mSettingsDialog->open();	// open() opens the dialog modaly (ie. blocks the parent window)
+    mSettingsDialog->open();	// open() opens the dialog modally (ie. blocks the parent window)
 }
 
 void FancyPlotter::settingsFinished()
