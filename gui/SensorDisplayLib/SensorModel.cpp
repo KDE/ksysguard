@@ -125,19 +125,19 @@ QVariant SensorModel::data( const QModelIndex &index, int role ) const
 
   if ( role == Qt::DisplayRole ) {
     switch ( index.column() ) {
-      case 0:
+      case HostName:
         return sensor.hostName();
-      case 1:
+      case SensorName:
         return sensor.sensorName();
-      case 2:
+      case Unit:
         return sensor.unit();
-      case 3:
+      case Status:
         return sensor.status();
-      case 4:
+      case Label:
         return sensor.label();
     }
   } else if ( role == Qt::DecorationRole ) {
-    if ( index.column() == 1 ) {
+    if ( index.column() == SensorName ) {
       if ( sensor.color().isValid() ) {
         QPixmap pm( 12, 12 );
         pm.fill( sensor.color() );
@@ -157,15 +157,15 @@ QVariant SensorModel::headerData( int section, Qt::Orientation orientation, int 
 
   if ( role == Qt::DisplayRole ) {
     switch ( section ) {
-      case 0:
+      case HostName:
         return i18n( "Host" );
-      case 1:
+      case SensorName:
         return i18n( "Sensor" );
-      case 2:
+      case Unit:
         return i18n( "Unit" );
-      case 3:
+      case Status:
         return i18n( "Status" );
-      case 4:
+      case Label:
         return i18n( "Label" );
       default:
         return QVariant();

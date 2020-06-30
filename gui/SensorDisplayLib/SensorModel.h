@@ -66,6 +66,13 @@ class SensorModel : public QAbstractTableModel
 {
   Q_OBJECT
   public:
+    enum Columns {
+        HostName=0,
+        SensorName=1,
+        Unit=2,
+        Status=3,
+        Label=4
+    };
     explicit SensorModel( QObject *parent = nullptr );
 
     void setSensors( const SensorModelEntry::List &sensors );
