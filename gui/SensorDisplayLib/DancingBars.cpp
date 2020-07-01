@@ -120,6 +120,14 @@ void DancingBars::configureSettings()
 	  removeSensor(deletedIds[i]);
   }
 
+  // If the range has reset to "auto-range" then we need to ask for
+  // sensor info to re-calibrate. In answerReceived() there's a special-
+  // case recalibrating on sensor 0 (with id 100), so ask for that one.
+  if ( mPlotter->getMin() == 0.0 && mPlotter->getMax() == 0.0 && mBars > 0 ) {
+      const auto& sensor = sensors().at( 0 );
+      // The 100 is magic in answerReceived()
+      sendRequest( sensor->hostName(), sensor->name() + QLatin1Char('?'), 100 );
+  }
   repaint();
 }
 
