@@ -79,7 +79,6 @@ class BarGraph : public QWidget
     bool lowerLimitActive;
     double upperLimit;
     bool upperLimitActive;
-    bool autoRange;
     QVector<double> samples;
     QStringList footers;
     uint bars;
