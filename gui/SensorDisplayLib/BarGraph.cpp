@@ -131,8 +131,8 @@ void BarGraph::paintEvent( QPaintEvent* )
       barHeight = h - 2;
 
     for ( uint b = 0; b < bars; b++ ) {
-      int topVal = (int) ( (float)barHeight / maxValue *
-                           ( samples[ b ] - minValue ) );
+      int topVal = int( (maxValue == 0.0) ? 0.0 :
+                   ( (float)barHeight / maxValue * ( samples[ b ] - minValue ) ) );
       /* TODO: This widget does not handle negative values properly. */
       if ( topVal < 0 )
         topVal = 0;
