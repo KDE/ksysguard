@@ -33,7 +33,7 @@ SensorObject::SensorObject(const QString &id, const QString &name, SensorContain
     , m_name(name)
     , m_path(parent->id() + "/" + id)
 {
-    parent->addSubObject(this);
+    parent->addObject(this);
 }
 
 SensorObject::~SensorObject()
