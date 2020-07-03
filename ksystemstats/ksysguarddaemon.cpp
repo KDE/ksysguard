@@ -70,22 +70,31 @@ void KSysGuardDaemon::init()
 void KSysGuardDaemon::loadProviders()
 {
     //instantiate all plugins
-
-    QPluginLoader loader;
-    KPluginLoader::forEachPlugin(QStringLiteral("ksysguard"), [&loader, this](const QString &pluginPath) {
-        loader.setFileName(pluginPath);
-        QObject* obj = loader.instance();
-        auto factory = qobject_cast<KPluginFactory*>(obj);
-        if (!factory) {
-            qWarning() << "Failed to load ksysguard factory";
-            return;
+    const auto plugins = KPluginLoader::instantiatePlugins(QStringLiteral("ksysguard"), [this](const KPluginMetaData &metaData) {
+        auto providerName = metaData.rawData().value("providerName").toString();
+        auto itr = std::find_if(m_providers.cbegin(), m_providers.cend(), [providerName](SensorPlugin *plugin) {
+            return plugin->providerName() == providerName;
+        });
+        if (itr != m_providers.cend()) {
+            return false;
         }
-        SensorPlugin *provider = factory->create<SensorPlugin>(this);
+
+        return true;
+    }, this);
+
+    for (auto object : plugins) {
+        auto factory = qobject_cast<KPluginFactory*>(object);
+        if (!factory) {
+            qWarning() << "Plugin object" << object << "did not provide a proper KPluginFactory";
+            continue;
+        }
+        auto provider = factory->create<SensorPlugin>(this);
         if (!provider) {
-            return;
+            qWarning() << "Plugin object" << object << "did not provide a proper SensorPlugin";
+            continue;
         }
         registerProvider(provider);
-    });
+    }
 
     if (m_providers.isEmpty()) {
         qWarning() << "No plugins found";
@@ -93,14 +102,6 @@ void KSysGuardDaemon::loadProviders()
 }
 
 void KSysGuardDaemon::registerProvider(SensorPlugin *provider) {
-    auto itr = std::find_if(m_providers.cbegin(), m_providers.cend(), [provider](SensorPlugin *plugin) {
-        return plugin->providerName() == provider->providerName();
-    });
-    if (itr != m_providers.cend()) {
-        qWarning() << "Skipping" << provider->providerName() << "as it is already registered";
-        return;
-    }
-
     m_providers.append(provider);
     const auto containers = provider->containers();
     for (auto container : containers) {

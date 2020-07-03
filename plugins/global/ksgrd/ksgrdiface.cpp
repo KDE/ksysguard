@@ -404,6 +404,6 @@ QString KSGRDIface::shortNameFor(const QString &key)
     return shortNames.value(key, QString {});
 }
 
-K_PLUGIN_FACTORY(KSGRDPluginFactory, registerPlugin<KSGRDIface>();)
+K_PLUGIN_CLASS_WITH_JSON(KSGRDIface, "metadata.json")
 
 #include "ksgrdiface.moc"

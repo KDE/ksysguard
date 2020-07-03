@@ -213,6 +213,6 @@ OSInfoPlugin::OSInfoPlugin(QObject *parent, const QVariantList &args)
     d->update();
 }
 
-K_PLUGIN_FACTORY(PluginFactory, registerPlugin<OSInfoPlugin>();)
+K_PLUGIN_CLASS_WITH_JSON(OSInfoPlugin, "metadata.json")
 
 #include "osinfo.moc"

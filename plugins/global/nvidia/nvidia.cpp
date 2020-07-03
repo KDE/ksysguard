@@ -177,6 +177,6 @@ void NvidiaPlugin::gpuSubscriptionChanged(bool subscribed)
     }
 }
 
-K_PLUGIN_FACTORY(PluginFactory, registerPlugin<NvidiaPlugin>();)
+K_PLUGIN_CLASS_WITH_JSON(NvidiaPlugin, "metadata.json")
 
 #include "nvidia.moc"
