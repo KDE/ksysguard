@@ -64,7 +64,10 @@ void KSysGuardDaemon::init()
 {
     loadProviders();
     QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportAdaptors);
-    QDBusConnection::sessionBus().registerService("org.kde.ksystemstats");
+    if (!QDBusConnection::sessionBus().registerService("org.kde.ksystemstats")) {
+        qCritical() << "Unable to register DBus service org.kde.ksystemstats. Maybe it is already running?";
+        exit(1);
+    }
 }
 
 void KSysGuardDaemon::loadProviders()
