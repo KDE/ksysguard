@@ -68,7 +68,7 @@ void SensorProperty::setName(const QString &name)
     }
 
     m_name = name;
-    m_info.name = m_prefix % QLatin1Char(' ') % m_name;
+    m_info.name = m_prefix.isEmpty() ? m_name : m_prefix % QLatin1Char(' ') % m_name;
     emit sensorInfoChanged();
 }
 
@@ -89,7 +89,7 @@ void SensorProperty::setPrefix(const QString &prefix)
     }
 
     m_prefix = prefix;
-    m_info.name = prefix % QLatin1Char(' ') % m_name;
+    m_info.name = prefix.isEmpty() ? m_name : prefix % QLatin1Char(' ') % m_name;
     emit sensorInfoChanged();
 }
 
