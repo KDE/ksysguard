@@ -130,8 +130,7 @@ void KSGRDIface::onSensorMetaDataRetrieved(int id, const QList<QByteArray> &answ
     const QString propertyId = key.mid(propertyIndex + 1);
 
     auto subsystem = m_subsystems[subsystemId];
-    if (Q_UNLIKELY(!subsystem)) {
-        qDebug() << "could not find subsystem" << subsystemId;
+    if (!subsystem) {
         return;
     }
     auto sensorObject = subsystem->object(objectId);
