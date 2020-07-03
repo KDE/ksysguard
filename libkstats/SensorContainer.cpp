@@ -56,6 +56,8 @@ SensorObject *SensorContainer::object(const QString &id) const
 
 void SensorContainer::addObject(SensorObject *object)
 {
+    object->setParentContainer(this);
+
     const QString id = object->id();
     Q_ASSERT(!m_sensorObjects.contains(id));
     m_sensorObjects[id] = object;
@@ -72,6 +74,7 @@ void SensorContainer::removeObject(SensorObject *object)
         return;
     }
 
+    object->setParentContainer(nullptr);
     m_sensorObjects.remove(object->id());
     Q_EMIT objectRemoved(object);
 }

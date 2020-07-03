@@ -29,11 +29,13 @@ SensorObject::SensorObject(const QString &id, SensorContainer *parent)
 
 SensorObject::SensorObject(const QString &id, const QString &name, SensorContainer *parent)
     : QObject(parent)
+    , m_parent(parent)
     , m_id(id)
     , m_name(name)
-    , m_path(parent->id() + "/" + id)
 {
+    if (parent) {
     parent->addObject(this);
+    }
 }
 
 SensorObject::~SensorObject()
@@ -52,7 +54,16 @@ QString SensorObject::name() const
 
 QString SensorObject::path() const
 {
-    return m_path;
+    if (!m_parent) {
+        return QString{};
+    }
+
+    return m_parent->id() % QLatin1Char('/') % m_id;
+}
+
+void SensorObject::setParentContainer(SensorContainer* parent)
+{
+    m_parent = parent;
 }
 
 QList<SensorProperty *> SensorObject::sensors() const

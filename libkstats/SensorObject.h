@@ -35,13 +35,14 @@ class Q_DECL_EXPORT SensorObject : public QObject
 {
     Q_OBJECT
 public:
-    explicit SensorObject(const QString &id, const QString &name, SensorContainer *parent);
-    explicit SensorObject(const QString &id, SensorContainer *parent);
+    explicit SensorObject(const QString &id, const QString &name, SensorContainer *parent = nullptr);
+    explicit SensorObject(const QString &id, SensorContainer *parent = nullptr);
     ~SensorObject();
 
     QString id() const;
     QString name() const;
     QString path() const;
+    void setParentContainer(SensorContainer *parent);
 
     QList<SensorProperty *> sensors() const;
     SensorProperty *sensor(const QString &sensorId) const;
@@ -62,8 +63,8 @@ Q_SIGNALS:
     void aboutToBeRemoved();
 
 private:
+    SensorContainer *m_parent = nullptr;
     QString m_id;
     QString m_name;
-    QString m_path; //or keep parent refernce?
     QHash<QString, SensorProperty *> m_sensors;
 };

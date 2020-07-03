@@ -32,9 +32,9 @@ SensorProperty::SensorProperty(const QString &id, const QString &name, SensorObj
 
 SensorProperty::SensorProperty(const QString &id, const QString &name, const QVariant &initalValue, SensorObject *parent)
     : QObject(parent)
+    , m_parent(parent)
     , m_id(id)
 {
-    m_path = parent->path() + "/" + m_id;
     setName(name);
     if (initalValue.isValid()) {
         setValue(initalValue);
@@ -58,7 +58,7 @@ QString SensorProperty::id() const
 
 QString SensorProperty::path() const
 {
-    return m_path;
+    return m_parent->path() % QLatin1Char('/') % m_id;
 }
 
 void SensorProperty::setName(const QString &name)

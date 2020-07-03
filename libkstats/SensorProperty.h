@@ -112,6 +112,7 @@ Q_SIGNALS:
     void subscribedChanged(bool);
 
 private:
+    SensorObject *m_parent = nullptr;
     SensorInfo m_info;
     QString m_id;
     QString m_path;
