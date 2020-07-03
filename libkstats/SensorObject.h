@@ -40,8 +40,10 @@ public:
     ~SensorObject();
 
     QString id() const;
-    QString name() const;
     QString path() const;
+    QString name() const;
+
+    void setName(const QString &newName);
     void setParentContainer(SensorContainer *parent);
 
     QList<SensorProperty *> sensors() const;
@@ -50,6 +52,7 @@ public:
     void addProperty(SensorProperty *property);
 
     bool isSubscribed() const;
+
 Q_SIGNALS:
     /**
      * Emitted when a client subscribes to one or more of the underlying properties of this object
@@ -61,6 +64,11 @@ Q_SIGNALS:
      * The object is still valid at this point
      */
     void aboutToBeRemoved();
+
+    /**
+     * Emitted whenever the object's name changes.
+     */
+    void nameChanged();
 
 private:
     SensorContainer *m_parent = nullptr;

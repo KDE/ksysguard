@@ -61,6 +61,16 @@ QString SensorObject::path() const
     return m_parent->id() % QLatin1Char('/') % m_id;
 }
 
+void SensorObject::setName(const QString& newName)
+{
+    if (newName == m_name) {
+        return;
+    }
+
+    m_name = newName;
+    Q_EMIT nameChanged();
+}
+
 void SensorObject::setParentContainer(SensorContainer* parent)
 {
     m_parent = parent;
