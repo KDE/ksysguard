@@ -63,11 +63,12 @@ QString SensorProperty::path() const
 
 void SensorProperty::setName(const QString &name)
 {
-    if (m_info.name == name) {
+    if (m_name == name) {
         return;
     }
 
-    m_info.name = name;
+    m_name = name;
+    m_info.name = m_prefix % QLatin1Char(' ') % m_name;
     emit sensorInfoChanged();
 }
 
@@ -78,6 +79,17 @@ void SensorProperty::setShortName(const QString &name)
     }
 
     m_info.shortName = name;
+    emit sensorInfoChanged();
+}
+
+void SensorProperty::setPrefix(const QString &prefix)
+{
+    if (m_prefix == prefix) {
+        return;
+    }
+
+    m_prefix = prefix;
+    m_info.name = prefix % QLatin1Char(' ') % m_name;
     emit sensorInfoChanged();
 }
 
