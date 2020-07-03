@@ -28,11 +28,14 @@
 
 #include "NetworkDevice.h"
 #include "NetworkManagerBackend.h"
+#include "AllDevicesObject.h"
 
 class NetworkPrivate
 {
 public:
     SensorContainer *container = nullptr;
+
+    AllDevicesObject *allDevices = nullptr;
 
     NetworkBackend *backend = nullptr;
 
@@ -45,6 +48,7 @@ NetworkPlugin::NetworkPlugin(QObject *parent, const QVariantList &args)
 {
     d->container = new SensorContainer(QStringLiteral("network"), i18nc("@title", "Network Devices"), this);
 
+    d->allDevices = new AllDevicesObject(d->container);
 
     d->backend = new NetworkManagerBackend(this);
     if (!d->backend->isSupported()) {

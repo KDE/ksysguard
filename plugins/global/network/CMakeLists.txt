@@ -3,6 +3,7 @@ set(KSYSGUARD_NETWORK_PLUGIN_SOURCES
     NetworkDevice.cpp
     NetworkBackend.cpp
     NetworkManagerBackend.cpp
+    AllDevicesObject.cpp
 )
 
 add_library(ksysguard_globalplugin_network MODULE ${KSYSGUARD_NETWORK_PLUGIN_SOURCES})
