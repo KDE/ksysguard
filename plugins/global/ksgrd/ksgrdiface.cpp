@@ -43,7 +43,6 @@ KSGRDIface::KSGRDIface(QObject *parent, const QVariantList &args)
     registerSubsystem("disk");
     registerSubsystem("lmsensors");
     registerSubsystem("mem");
-    registerSubsystem("network");
     registerSubsystem("partitions");
     registerSubsystem("uptime");
     registerSubsystem("system");
@@ -301,34 +300,8 @@ void KSGRDIface::answerReceived(int id, const QList<QByteArray> &answer)
 
 void KSGRDIface::addAggregateSensors()
 {
-    auto networkAll = new SensorObject("all", i18nc("@title All Network Interfaces", "All"), m_subsystems["network"]);
-
-    auto sensor = new AggregateSensor(networkAll, "receivedDataRate", i18nc("@title", "Received Data Rate"));
-    sensor->setShortName(i18nc("@title Received Data Rate", "Down"));
-    sensor->setMatchSensors(QRegularExpression("[^/]*/receiver"), QStringLiteral("data"));
-    sensor->setDescription(i18nc("@info", "The rate at which data is received on all interfaces."));
-    sensor->setUnit(KSysGuard::utils::UnitKiloByteRate);
-
-    sensor = new AggregateSensor(networkAll, "totalReceivedData", i18nc("@title", "Total Received Data"));
-    sensor->setShortName(i18nc("@title Total Receieved Data", "Total Down"));
-    sensor->setMatchSensors(QRegularExpression("[^/]*/receiver"), QStringLiteral("dataTotal"));
-    sensor->setDescription(i18nc("@info", "The total amount of data received on all interfaces."));
-    sensor->setUnit(KSysGuard::utils::UnitKiloByte);
-
-    sensor = new AggregateSensor(networkAll, "sentDataRate", i18nc("@title", "Sent Data Rate"));
-    sensor->setShortName(i18nc("@title Sent Data Rate", "Up"));
-    sensor->setMatchSensors(QRegularExpression("[^/]*/transmitter"), QStringLiteral("data"));
-    sensor->setDescription(i18nc("@info", "The rate at which data is sent on all interfaces."));
-    sensor->setUnit(KSysGuard::utils::UnitKiloByteRate);
-
-    sensor = new AggregateSensor(networkAll, "totalSentData", i18nc("@title", "Total Sent Data"));
-    sensor->setShortName(i18nc("@title Total Sent Data", "Total Up"));
-    sensor->setMatchSensors(QRegularExpression("[^/]*/transmitter"), QStringLiteral("dataTotal"));
-    sensor->setDescription(i18nc("@info", "The total amount of data sent on all interfaces."));
-    sensor->setUnit(KSysGuard::utils::UnitKiloByte);
-
     auto diskAll = new SensorObject("all", i18nc("@title All Disks", "All"), m_subsystems["disk"]);
-    sensor = new AggregateSensor(diskAll, "read", i18nc("@title", "Disk Read Accesses"));
+    auto sensor = new AggregateSensor(diskAll, "read", i18nc("@title", "Disk Read Accesses"));
     sensor->setShortName(i18nc("@title Disk Read Accesses", "Read"));
     // TODO: This regex is not exhaustive as it doesn't consider things that aren't treated as sdX devices.
     //       However, we do not simply want to match disk/* as that would include duplicate devices.
