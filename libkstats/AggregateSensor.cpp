@@ -167,7 +167,11 @@ void AggregateSensor::addSensor(SensorProperty *sensor)
 
 void AggregateSensor::removeSensor(const QString &sensorPath)
 {
-    m_sensors.remove(sensorPath);
+    auto sensor = m_sensors.take(sensorPath);
+    sensor->disconnect(this);
+    if (isSubscribed()) {
+        sensor->unsubscribe();
+    }
 }
 
 void AggregateSensor::updateSensors()
