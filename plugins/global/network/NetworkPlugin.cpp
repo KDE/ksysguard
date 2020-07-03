@@ -43,7 +43,8 @@ NetworkPlugin::NetworkPlugin(QObject *parent, const QVariantList &args)
     : SensorPlugin(parent, args)
     , d(std::make_unique<NetworkPrivate>())
 {
-    d->container = new SensorContainer(QStringLiteral("network_new"), i18nc("@title", "Network Devices"), this);
+    d->container = new SensorContainer(QStringLiteral("network"), i18nc("@title", "Network Devices"), this);
+
 
     d->backend = new NetworkManagerBackend(this);
     if (!d->backend->isSupported()) {
