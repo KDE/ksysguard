@@ -48,6 +48,24 @@ public:
     QList<SensorObject *> objects();
     SensorObject *object(const QString &id) const;
 
+    /**
+     * Add an object to the container.
+     *
+     * It will be exposed to clients as a subitem of this container.
+     *
+     * \param object The SensorObject to add.
+     */
+    void addObject(SensorObject *object);
+
+    /**
+     * Remove an object from the container.
+     *
+     * It will no longer be available to clients.
+     *
+     * \param object The SensorObject to remove.
+     */
+    void removeObject(SensorObject *object);
+
 Q_SIGNALS:
     /**
      * Emitted when an object has been added
@@ -60,12 +78,6 @@ Q_SIGNALS:
     void objectRemoved(SensorObject *object);
 
 private:
-    /**
-     * Called from sensorObject
-     * @internal
-     */
-    void addSubObject(SensorObject *object);
-
     QString m_id;
     QString m_name;
     QHash<QString, SensorObject *> m_sensorObjects;

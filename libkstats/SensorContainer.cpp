@@ -54,15 +54,24 @@ SensorObject *SensorContainer::object(const QString &id) const
     return m_sensorObjects.value(id);
 }
 
-void SensorContainer::addSubObject(SensorObject *object)
+void SensorContainer::addObject(SensorObject *object)
 {
     const QString id = object->id();
     Q_ASSERT(!m_sensorObjects.contains(id));
     m_sensorObjects[id] = object;
-    emit objectAdded(object);
+    Q_EMIT objectAdded(object);
 
     connect(object, &SensorObject::aboutToBeRemoved, this, [this, object]() {
-        m_sensorObjects.remove(object->id());
-        emit objectRemoved(object);
+        removeObject(object);
     });
+}
+
+void SensorContainer::removeObject(SensorObject *object)
+{
+    if (!m_sensorObjects.contains(object->id())) {
+        return;
+    }
+
+    m_sensorObjects.remove(object->id());
+    Q_EMIT objectRemoved(object);
 }
