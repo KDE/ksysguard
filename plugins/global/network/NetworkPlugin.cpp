@@ -48,11 +48,7 @@ NetworkPlugin::NetworkPlugin(QObject *parent, const QVariantList &args)
     d->backend = new NetworkManagerBackend(this);
     if (!d->backend->isSupported()) {
         delete d->backend;
-        d->backend = new FileBackend(this);
-        if (!d->backend->isSupported()) {
-            qWarning() << "Unable to start backend, network information not available.";
-            return;
-        }
+        qWarning() << "Unable to start backend, network information not available.";
     }
 
     connect(d->backend, &NetworkBackend::deviceAdded, this, &NetworkPlugin::onDeviceAdded);

@@ -26,15 +26,3 @@ public:
     Q_SIGNAL void deviceAdded(NetworkDevice *device);
     Q_SIGNAL void deviceRemoved(NetworkDevice *device);
 };
-
-class FileBackend : public NetworkBackend
-{
-    Q_OBJECT
-
-public:
-    FileBackend(QObject *parent = nullptr);
-
-    bool isSupported() override;
-    void start() override;
-    void stop() override;
-};

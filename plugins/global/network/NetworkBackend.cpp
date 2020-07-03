@@ -5,22 +5,3 @@
  */
 
 #include "NetworkBackend.h"
-
-FileBackend::FileBackend(QObject* parent)
-{
-}
-
-bool FileBackend::isSupported()
-{
-    return false;
-}
-
-void FileBackend::start()
-{
-
-}
-
-void FileBackend::stop()
-{
-
-}
