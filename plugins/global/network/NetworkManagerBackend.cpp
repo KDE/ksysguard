@@ -47,6 +47,14 @@ NetworkManagerDevice::NetworkManagerDevice(const QString &id, QSharedPointer<Net
         m_totalUploadSensor->setValue(bytes);
     });
 
+    if (m_device->type() == NetworkManager::Device::Wifi) {
+        auto wifi = m_device->as<NetworkManager::WirelessDevice>();
+        connect(wifi, &NetworkManager::WirelessDevice::activeConnectionChanged, this, [this, wifi]() { updateWifi(wifi); } );
+        connect(wifi, &NetworkManager::WirelessDevice::networkAppeared, this, [this, wifi]() { updateWifi(wifi); });
+        connect(wifi, &NetworkManager::WirelessDevice::networkDisappeared, this, [this, wifi]() { updateWifi(wifi); });
+        updateWifi(wifi);
+    }
+
     update();
 }
 
@@ -75,28 +83,20 @@ void NetworkManagerDevice::update()
     } else {
         m_ipv4Sensor->setValue(QString{});
     }
-
-    if (m_device->type() == NetworkManager::Device::Wifi) {
-        updateWifi(m_device->as<NetworkManager::WirelessDevice>());
-    } else {
-        m_signalSensor->setValue(0);
-    }
 }
 
 void NetworkManagerDevice::updateWifi(NetworkManager::WirelessDevice* device)
 {
     auto activeConnectionName = device->activeConnection()->connection()->name();
     const auto networks = device->networks();
-    auto itr = std::find_if(networks.begin(), networks.end(), [this, activeConnectionName](QSharedPointer<NetworkManager::WirelessNetwork> network) {
+    std::for_each(networks.begin(), networks.end(), [this, activeConnectionName](QSharedPointer<NetworkManager::WirelessNetwork> network) {
         if (network->ssid() == activeConnectionName) {
-            return true;
+            connect(network.data(), &NetworkManager::WirelessNetwork::signalStrengthChanged, m_signalSensor, &SensorProperty::setValue, Qt::UniqueConnection);
+            m_signalSensor->setValue(network->signalStrength());
+        } else {
+            network->disconnect(m_signalSensor);
         }
-        return false;
     });
-
-    if (itr != networks.end()) {
-        m_signalSensor->setValue((*itr)->signalStrength());
-    }
 }
 
 NetworkManagerBackend::NetworkManagerBackend(QObject* parent)
