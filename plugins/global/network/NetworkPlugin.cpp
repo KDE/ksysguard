@@ -60,7 +60,6 @@ NetworkPlugin::NetworkPlugin(QObject *parent, const QVariantList &args)
 
 void NetworkPlugin::onDeviceAdded(NetworkDevice *device)
 {
-    qDebug() << device->id() << device->name() << device->path();
     d->container->addObject(device);
 }
 
