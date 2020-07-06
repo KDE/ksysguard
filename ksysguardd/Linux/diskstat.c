@@ -214,6 +214,7 @@ int updateDiskStat( void )
          */
         if ( (mnt_info->mnt_fsname[0] != '/') ||
              !strncmp( mnt_info->mnt_fsname, "/dev/loop", 9 ) ||
+             !strncmp( mnt_info->mnt_type, "fuse", 4 ) ||
              !strcmp( mnt_info->mnt_type, "smbfs" ) ||
              !strcmp( mnt_info->mnt_type, "cifs" ) ||
              !strcmp( mnt_info->mnt_type, "proc" ) ||
