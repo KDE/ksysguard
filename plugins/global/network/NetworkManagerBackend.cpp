@@ -6,7 +6,9 @@
 
 #include "NetworkManagerBackend.h"
 
+#include <QTimer>
 #include <QDebug>
+
 #include <NetworkManagerQt/Manager>
 #include <NetworkManagerQt/WirelessDevice>
 #include <NetworkManagerQt/ModemDevice>
@@ -30,22 +32,44 @@ NetworkManagerDevice::NetworkManagerDevice(const QString &id, QSharedPointer<Net
         m_totalUploadSensor->setPrefix(name());
     });
 
-    auto statistics = m_device->deviceStatistics();
-    statistics->setRefreshRateMs(2000);
-    connect(statistics.data(), &NetworkManager::DeviceStatistics::rxBytesChanged, this, [this](qulonglong bytes) {
-        auto previousValue = m_totalDownloadSensor->value().toULongLong();
-        if (previousValue > 0) {
-            m_downloadSensor->setValue(bytes - previousValue);
+    m_statistics = m_device->deviceStatistics();
+    m_statistics->setRefreshRateMs(2000);
+
+    // Unfortunately, the statistics interface does not emit change signals if
+    // no change happened. This makes the change signals rather useless for our
+    // case because we also need to know when no change happened, so that we
+    // can update rate sensors to show 0. So instead use a timer and query the
+    // statistics every 2 seconds, updating the sensors as needed.
+    m_statisticsTimer = std::make_unique<QTimer>();
+    m_statisticsTimer->setInterval(2000);
+    connect(m_statisticsTimer.get(), &QTimer::timeout, this, [this]() {
+        auto newDownload = m_statistics->rxBytes();
+        auto previousDownload = m_totalDownloadSensor->value().toULongLong();
+        if (previousDownload > 0) {
+            m_downloadSensor->setValue(newDownload - previousDownload);
         }
-        m_totalDownloadSensor->setValue(bytes);
-    });
-    connect(statistics.data(), &NetworkManager::DeviceStatistics::txBytesChanged, this, [this](qulonglong bytes) {
-        auto previousValue = m_totalUploadSensor->value().toULongLong();
-        if (previousValue > 0) {
-            m_uploadSensor->setValue(bytes - previousValue);
+        m_totalDownloadSensor->setValue(newDownload);
+
+        auto newUpload = m_statistics->txBytes();
+        auto previousUpload = m_totalUploadSensor->value().toULongLong();
+        if (previousUpload > 0) {
+            m_uploadSensor->setValue(newUpload - previousUpload);
         }
-        m_totalUploadSensor->setValue(bytes);
+        m_totalUploadSensor->setValue(newUpload);
     });
+
+    std::vector<SensorProperty*> statisticSensors{m_downloadSensor, m_totalDownloadSensor, m_uploadSensor, m_totalUploadSensor};
+    for (auto property : statisticSensors) {
+        connect(property, &SensorProperty::subscribedChanged, this, [this, statisticSensors](bool subscribed) {
+            if (subscribed && !m_statisticsTimer->isActive()) {
+                m_statisticsTimer->start();
+            } else if (std::none_of(statisticSensors.begin(), statisticSensors.end(), [](auto property) { return property->isSubscribed(); })) {
+                m_statisticsTimer->stop();
+                m_totalDownloadSensor->setValue(0);
+                m_totalUploadSensor->setValue(0);
+            }
+        });
+    }
 
     if (m_device->type() == NetworkManager::Device::Wifi) {
         auto wifi = m_device->as<NetworkManager::WirelessDevice>();

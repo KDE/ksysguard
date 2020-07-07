@@ -6,14 +6,18 @@
 
 #pragma once
 
+#include <memory>
 #include <QHash>
 
 #include "NetworkBackend.h"
 #include "NetworkDevice.h"
 
+class QTimer;
+
 namespace NetworkManager
 {
     class Device;
+    class DeviceStatistics;
     class WirelessDevice;
 }
 
@@ -29,6 +33,8 @@ private:
     void updateWifi(NetworkManager::WirelessDevice *device);
 
     QSharedPointer<NetworkManager::Device> m_device;
+    QSharedPointer<NetworkManager::DeviceStatistics> m_statistics;
+    std::unique_ptr<QTimer> m_statisticsTimer;
 };
 
 class NetworkManagerBackend : public NetworkBackend
