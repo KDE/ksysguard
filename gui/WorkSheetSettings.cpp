@@ -20,7 +20,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <kacceleratormanager.h>
+#include <KAcceleratorManager>
 #include <KLocalizedString>
 
 #include <QDoubleSpinBox>

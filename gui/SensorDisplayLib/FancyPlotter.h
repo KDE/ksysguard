@@ -25,7 +25,7 @@
 
 #include <SensorDisplay.h>
 #include <QList>
-#include <klocalizedstring.h>
+#include <KLocalizedString>
 
 #include "SharedSettings.h"
 

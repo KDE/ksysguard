@@ -19,8 +19,8 @@
 
 */
 
-#include <kacceleratormanager.h>
-#include <kcolorbutton.h>
+#include <KAcceleratorManager>
+#include <KColorButton>
 #include <KLocalizedString>
 
 #include <QCheckBox>

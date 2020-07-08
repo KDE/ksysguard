@@ -22,8 +22,8 @@
 
 #include <QPushButton>
 
-#include <kconfig.h>
-#include <kconfiggroup.h>
+#include <KConfig>
+#include <KConfigGroup>
 
 #include "StyleEngine.h"
 using namespace KSGRD;

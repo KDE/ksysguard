@@ -24,7 +24,7 @@
 
 #include <QList>
 
-#include <kpagedialog.h>
+#include <KPageDialog>
 
 #include "SensorModel.h"
 

@@ -26,7 +26,7 @@
 #include <QDebug>
 #include <QPainter>
 
-#include <kiconloader.h>
+#include <KIconLoader>
 #include <formatter/Formatter.h>  // from libksysguard
 
 #include "StyleEngine.h"

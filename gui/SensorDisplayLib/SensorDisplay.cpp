@@ -32,10 +32,10 @@
 #include <QApplication>
 #include <QBitmap>
 
-#include <kiconloader.h>
+#include <KIconLoader>
 #include <KLocalizedString>
-#include <kmessagebox.h>
-#include <kservice.h>
+#include <KMessageBox>
+#include <KService>
 
 #include "ksgrd/SensorManager.h"
 #include "SensorDisplay.h"

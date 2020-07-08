@@ -23,7 +23,7 @@
 #define KSG_DANCINGBARSSETTINGS_H
 
 
-#include <kpagedialog.h>
+#include <KPageDialog>
 
 #include "SensorModel.h"
 

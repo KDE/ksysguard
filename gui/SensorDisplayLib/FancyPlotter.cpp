@@ -32,7 +32,7 @@
 #include <QStandardPaths>
 
 #include <KLocalizedString>
-#include <kmessagebox.h>
+#include <KMessageBox>
 #include <ksignalplotter.h>
 
 #include <ksgrd/SensorManager.h>

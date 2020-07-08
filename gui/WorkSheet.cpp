@@ -37,7 +37,7 @@
 #include <QMimeData>
 
 #include <KLocalizedString>
-#include <kmessagebox.h>
+#include <KMessageBox>
 #include <QMenu>
 
 #include <ksgrd/SensorManager.h>

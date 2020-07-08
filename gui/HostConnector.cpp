@@ -20,10 +20,10 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <kacceleratormanager.h>
-#include <kcombobox.h>
+#include <KAcceleratorManager>
+#include <KComboBox>
 #include <KLocalizedString>
-#include <khelpclient.h>
+#include <KHelpClient>
 
 #include <QDialogButtonBox>
 #include <QGroupBox>

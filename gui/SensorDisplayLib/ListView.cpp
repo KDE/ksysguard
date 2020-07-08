@@ -29,7 +29,7 @@
 #include <QAction>
 
 #include <KLocalizedString>
-#include <kmessagebox.h>
+#include <KMessageBox>
 #include <ksgrd/SensorManager.h>
 #include "StyleEngine.h"
 

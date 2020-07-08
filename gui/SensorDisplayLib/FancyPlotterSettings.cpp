@@ -19,7 +19,7 @@
 
 */
 
-#include <kacceleratormanager.h>
+#include <KAcceleratorManager>
 #include <KLocalizedString>
 
 #include <QColorDialog>

@@ -33,7 +33,7 @@
 
 #include <KLocalizedString>
 #include <KNotification>
-#include <kcolorbutton.h>
+#include <KColorButton>
 #include "StyleEngine.h"
 
 #include "ui_LogFileSettings.h"

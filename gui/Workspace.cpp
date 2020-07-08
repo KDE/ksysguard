@@ -26,9 +26,9 @@
 #include <QStandardPaths>
 
 #include <KLocalizedString>
-#include <kmessagebox.h>
-#include <kacceleratormanager.h>
-#include <kactioncollection.h>
+#include <KMessageBox>
+#include <KAcceleratorManager>
+#include <KActionCollection>
 #include <KNewStuff3/KNS3/DownloadDialog>
 #include <KNewStuff3/KNSCore/Engine>
 #include <KConfigGroup>

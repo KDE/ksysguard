@@ -33,7 +33,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-#include <kiconloader.h>
+#include <KIconLoader>
 #include <KLocalizedString>
 #include <KNotification>
 #include <ksgrd/SensorManager.h>

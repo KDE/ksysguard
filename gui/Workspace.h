@@ -24,7 +24,7 @@
 #ifndef KSG_WORKSPACE_H
 #define KSG_WORKSPACE_H
 
-#include <kdirwatch.h>
+#include <KDirWatch>
 
 #include <QTabWidget>
 

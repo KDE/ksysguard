@@ -23,7 +23,7 @@
 #include <QProcess>
 #include <QStandardPaths>
 
-#include <kpluginfactory.h>
+#include <KPluginFactory>
 
 #include <KLocalizedString>
 

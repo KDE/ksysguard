@@ -27,7 +27,7 @@
 #include <QVBoxLayout>
 
 #include <KLocalizedString>
-#include <kmessagebox.h>
+#include <KMessageBox>
 #include <ksgrd/SensorManager.h>
 
 #include "SensorBrowser.h"

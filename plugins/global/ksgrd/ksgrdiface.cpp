@@ -22,7 +22,7 @@
 #include "AggregateSensor.h"
 
 #include <KLocalizedString>
-#include <kpluginfactory.h>
+#include <KPluginFactory>
 #include <ksgrd/SensorManager.h>
 
 #include <QEventLoop>
