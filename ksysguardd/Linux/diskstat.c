@@ -410,11 +410,11 @@ void printDiskStatPercentInfo( const char* cmd )
 {
     char *mntpnt = (char*)getMntPnt( cmd );
     if ( strcmp( mntpnt, "/all" ) == 0 ) {
-        output( "All Partitions Percentage Used\t0\t100\t%%\n" );
+        output( "All Partitions\t0\t100\t%%\n" );
     } else if ( strcmp( mntpnt, "/__root__" ) == 0 ) {
-        output( "Filesystem Root Percentage Used\t0\t100\t%%\n" );
+        output( "Filesystem Root\t0\t100\t%%\n" );
     } else {
-        output( "%s Percentage Used\t0\t100\t%%\n", mntpnt );
+        output( "%s\t0\t100\t%%\n", mntpnt );
     }
 }
 
