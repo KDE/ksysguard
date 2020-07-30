@@ -39,10 +39,15 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     NewStuff
     Notifications
     WindowSystem
-    NetworkManagerQt
 )
 
 find_package(KSysGuard REQUIRED)
+
+find_package(KF5NetworkManagerQt ${KF5_MIN_VERSION})
+set_package_properties(KF5NetworkManagerQt PROPERTIES
+    TYPE RECOMMENDED
+    PURPOSE "Provides an improved backend for Network statistics"
+)
 
 add_definitions(-DQT_NO_URL_CAST_FROM_STRING)
 add_definitions(-DQT_USE_QSTRINGBUILDER)

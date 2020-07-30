@@ -27,8 +27,12 @@
 #include <SensorContainer.h>
 
 #include "NetworkDevice.h"
-#include "NetworkManagerBackend.h"
+#include "NetworkBackend.h"
 #include "AllDevicesObject.h"
+
+#ifdef NETWORKMANAGER_FOUND
+#include "NetworkManagerBackend.h"
+#endif
 
 class NetworkPrivate
 {
@@ -50,8 +54,10 @@ NetworkPlugin::NetworkPlugin(QObject *parent, const QVariantList &args)
 
     d->allDevices = new AllDevicesObject(d->container);
 
+#ifdef NETWORKMANAGER_FOUND
     d->backend = new NetworkManagerBackend(this);
-    if (!d->backend->isSupported()) {
+#endif
+    if (!d->backend || !d->backend->isSupported()) {
         delete d->backend;
         qWarning() << "Unable to start backend, network information not available.";
         return;
