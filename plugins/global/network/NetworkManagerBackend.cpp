@@ -88,13 +88,8 @@ NetworkManagerDevice::~NetworkManagerDevice()
 
 void NetworkManagerDevice::update()
 {
-    if (m_device->activeConnection()) {
-        setName(m_device->activeConnection()->connection()->name());
-        m_networkSensor->setValue(name());
-    } else {
-        setName(m_device->ipInterfaceName());
-        m_networkSensor->setValue(QString{});
-    }
+    setName(m_device->activeConnection()->connection()->name());
+    m_networkSensor->setValue(name());
 
     if (m_device->ipV4Config().isValid()) {
         m_ipv4Sensor->setValue(m_device->ipV4Config().addresses().at(0).ip().toString());
@@ -177,7 +172,23 @@ void NetworkManagerBackend::onDeviceAdded(const QString& uni)
             return;
     }
 
-    auto nmDevice = new NetworkManagerDevice(device->ipInterfaceName(), device);
+    connect(device.get(), &NetworkManager::Device::activeConnectionChanged, this, [this, device, uni]() {
+        if (device->activeConnection()) {
+            onDeviceAdded(uni);
+        } else {
+            onDeviceRemoved(uni);
+        }
+    }, Qt::UniqueConnection);
+
+    if (!device->activeConnection()) {
+        return;
+    }
+
+    if (m_devices.contains(uni)) {
+        return;
+    }
+
+    auto nmDevice = new NetworkManagerDevice(device->interfaceName(), device);
     m_devices.insert(uni, nmDevice);
     Q_EMIT deviceAdded(nmDevice);
 }
