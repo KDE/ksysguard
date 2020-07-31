@@ -26,7 +26,6 @@
 class SensorPlugin;
 class SensorContainer;
 class SensorProperty;
-class Entity;
 class Client;
 class QDBusServiceWatcher;
 
