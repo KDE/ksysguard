@@ -96,6 +96,7 @@ void KSGRDIface::unsubscribe(const QString &sensorPath)
 
 void KSGRDIface::updateMonitorsList()
 {
+    m_sensorIds.clear();
     KSGRD::SensorMgr->sendRequest(QStringLiteral("localhost"), QStringLiteral("monitors"), (KSGRD::SensorClient *)this, -1);
 }
 
@@ -217,6 +218,10 @@ void KSGRDIface::onSensorListRetrieved(const QList<QByteArray> &answer)
 void KSGRDIface::onSensorUpdated(int id, const QList<QByteArray> &answer)
 {
     m_waitingFor--;
+
+    if (answer.isEmpty() || id > m_sensorIds.count()) {
+        return;
+    }
 
     const QString sensorName = m_sensorIds.at(id);
     if (sensorName.isEmpty()) {
