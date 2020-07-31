@@ -142,7 +142,7 @@ void SensorProperty::setMax(SensorProperty *other)
     });
 }
 
-void SensorProperty::setUnit(KSysGuard::utils::Unit unit)
+void SensorProperty::setUnit(KSysGuard::Unit unit)
 {
     if (m_info.unit == unit) {
         return;

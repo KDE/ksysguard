@@ -16,7 +16,7 @@ NetworkDevice::NetworkDevice(const QString &id, const QString &name)
 
     m_signalSensor = new SensorProperty(QStringLiteral("signal"), i18nc("@title", "Signal Strength"), this);
     m_signalSensor->setShortName(i18nc("@title Short of Signal Strength", "Signal"));
-    m_signalSensor->setUnit(KSysGuard::utils::UnitPercent);
+    m_signalSensor->setUnit(KSysGuard::UnitPercent);
     m_signalSensor->setMin(0);
     m_signalSensor->setMax(100);
 
@@ -28,17 +28,17 @@ NetworkDevice::NetworkDevice(const QString &id, const QString &name)
 
     m_downloadSensor = new SensorProperty(QStringLiteral("download"), i18nc("@title", "Download Rate"), this);
     m_downloadSensor->setShortName(i18nc("@title Short for Download Rate", "Download"));
-    m_downloadSensor->setUnit(KSysGuard::utils::UnitByteRate);
+    m_downloadSensor->setUnit(KSysGuard::UnitByteRate);
 
     m_uploadSensor = new SensorProperty(QStringLiteral("upload"), i18nc("@title", "Upload Rate"), this);
     m_uploadSensor->setShortName(i18nc("@title Short for Upload Rate", "Upload"));
-    m_uploadSensor->setUnit(KSysGuard::utils::UnitByteRate);
+    m_uploadSensor->setUnit(KSysGuard::UnitByteRate);
 
     m_totalDownloadSensor = new SensorProperty(QStringLiteral("totalDownload"), i18nc("@title", "Total Downloaded"), this);
     m_totalDownloadSensor->setShortName(i18nc("@title Short for Total Downloaded", "Downloaded"));
-    m_totalDownloadSensor->setUnit(KSysGuard::utils::UnitByte);
+    m_totalDownloadSensor->setUnit(KSysGuard::UnitByte);
 
     m_totalUploadSensor = new SensorProperty(QStringLiteral("totalUpload"), i18nc("@title", "Total Uploaded"), this);
     m_totalUploadSensor->setShortName(i18nc("@title Short for Total Uploaded", "Uploaded"));
-    m_totalUploadSensor->setUnit(KSysGuard::utils::UnitByte);
+    m_totalUploadSensor->setUnit(KSysGuard::UnitByte);
 }

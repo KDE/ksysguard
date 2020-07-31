@@ -246,21 +246,21 @@ void KSGRDIface::onSensorUpdated(int id, const QList<QByteArray> &answer)
     }
 }
 
-KSysGuard::utils::Unit KSGRDIface::unitFromString(const QString &unitString) const
+KSysGuard::Unit KSGRDIface::unitFromString(const QString &unitString) const
 {
     using namespace KSysGuard;
-    static const QHash<QString, utils::Unit> map({ { "%", utils::UnitPercent },
-        { "1/s", utils::UnitRate },
-        { "°C", utils::UnitCelsius },
-        { "dBm", utils::UnitDecibelMilliWatts },
-        { "KB", utils::UnitKiloByte },
-        { "KB/s", utils::UnitKiloByteRate },
-        { "MHz", utils::UnitMegaHertz },
-        { "port", utils::UnitNone },
-        { "rpm", utils::UnitRpm },
-        { "s", utils::UnitTime },
-        { "V", utils::UnitVolt } });
-    return map.value(unitString, utils::UnitNone);
+    static const QHash<QString, Unit> map({ { "%", UnitPercent },
+        { "1/s", UnitRate },
+        { "°C", UnitCelsius },
+        { "dBm", UnitDecibelMilliWatts },
+        { "KB", UnitKiloByte },
+        { "KB/s", UnitKiloByteRate },
+        { "MHz", UnitMegaHertz },
+        { "port", UnitNone },
+        { "rpm", UnitRpm },
+        { "s", UnitTime },
+        { "V", UnitVolt } });
+    return map.value(unitString, UnitNone);
 }
 
 void KSGRDIface::update()

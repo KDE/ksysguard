@@ -74,7 +74,7 @@ public:
      * For example to mark the usedSpace of a disk to be the same as the disk capacity
      */
     void setMax(SensorProperty *other);
-    void setUnit(KSysGuard::utils::Unit unit);
+    void setUnit(KSysGuard::Unit unit);
     void setVariantType(QVariant::Type type);
 
     bool isSubscribed() const;

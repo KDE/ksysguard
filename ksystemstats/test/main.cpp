@@ -29,9 +29,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
 
-#include "kstatsiface.h"
+#include <ksysguard/formatter/Formatter.h>
 
-QString unitToString(KSysGuard::utils::Unit unit);
+
+#include "kstatsiface.h"
 
 class SensorWatcher : public QCoreApplication
 {
@@ -155,76 +156,9 @@ void SensorWatcher::showSensorDetails(const SensorInfoMap &sensors)
         std::cout << "    Name:        " << qPrintable(info.name) << "\n";
         std::cout << "    Short Name:  " << qPrintable(info.shortName) << "\n";
         std::cout << "    Description: " << qPrintable(info.description) << "\n";
-        std::cout << "    Unit:        " << qPrintable(unitToString(info.unit)) << "\n";
+        std::cout << "    Unit:        " << qPrintable(KSysGuard::Formatter::symbol(info.unit)) << "\n";
         std::cout << "    Minimum:     " << info.min << "\n";
         std::cout << "    Maximum:     " << info.max << "\n";
-    }
-}
-
-QString unitToString(KSysGuard::utils::Unit unit)
-{
-    using namespace KSysGuard::utils;
-
-    switch (unit) {
-    case UnitByte:
-        return QStringLiteral("B");
-    case UnitKiloByte:
-        return QStringLiteral("KiB");
-    case UnitMegaByte:
-        return QStringLiteral("MiB");
-    case UnitGigaByte:
-        return QStringLiteral("GiB");
-    case UnitTeraByte:
-        return QStringLiteral("TiB");
-    case UnitPetaByte:
-        return QStringLiteral("PiB");
-    case UnitByteRate:
-        return QStringLiteral("B/s");
-    case UnitKiloByteRate:
-        return QStringLiteral("KiB/s");
-    case UnitMegaByteRate:
-        return QStringLiteral("MiB/s");
-    case UnitGigaByteRate:
-        return QStringLiteral("GiB/s");
-    case UnitTeraByteRate:
-        return QStringLiteral("TiB/s");
-    case UnitPetaByteRate:
-        return QStringLiteral("PiB/s");
-    case UnitHertz:
-        return QStringLiteral("Hz");
-    case UnitKiloHertz:
-        return QStringLiteral("kHz");
-    case UnitMegaHertz:
-        return QStringLiteral("MHz");
-    case UnitGigaHertz:
-        return QStringLiteral("GHz");
-    case UnitTeraHertz:
-        return QStringLiteral("THz");
-    case UnitPetaHertz:
-        return QStringLiteral("PHz");
-    case UnitPercent:
-        return QStringLiteral("%");
-    case UnitRpm:
-        return QStringLiteral("RPM");
-    case UnitCelsius:
-        return QStringLiteral("°C");
-    case UnitDecibelMilliWatts:
-        return QStringLiteral("dBm");
-    case UnitSecond:
-        return QStringLiteral("s");
-    case UnitVolt:
-        return QStringLiteral("V");
-    case UnitWatt:
-        return QStringLiteral("W");
-    case UnitRate:
-        return QStringLiteral("s⁻¹");
-    case UnitInvalid:
-        return QStringLiteral("Invalid");
-    case UnitNone:
-        return QStringLiteral("None");
-
-    default:
-        return QString();
     }
 }
 

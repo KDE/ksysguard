@@ -210,7 +210,7 @@ void AggregateSensor::delayedEmitDataChanged()
 PercentageSensor::PercentageSensor(SensorObject *provider, const QString &id, const QString &name)
     : SensorProperty(id, name, provider)
 {
-    setUnit(KSysGuard::utils::UnitPercent);
+    setUnit(KSysGuard::UnitPercent);
     setMax(100);
 }
 

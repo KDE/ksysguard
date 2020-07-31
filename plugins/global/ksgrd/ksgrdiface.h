@@ -59,7 +59,7 @@ private:
     void subscribe(const QString &sensorPath);
     void unsubscribe(const QString &sensorPath);
 
-    KSysGuard::utils::Unit unitFromString(const QString &unitString) const;
+    KSysGuard::Unit unitFromString(const QString &unitString) const;
     void addAggregateSensors();
     QString shortNameFor(const QString &key);
 

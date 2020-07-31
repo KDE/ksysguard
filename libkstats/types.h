@@ -25,72 +25,7 @@
 
 #include <QDBusArgument>
 
-namespace KSysGuard
-{
-namespace utils
-{
-
-/**
- * This enum type is used to specify metric prefixes.
- */
-enum MetricPrefix {
-    MetricPrefixAutoAdjust = -1,
-    MetricPrefixUnity = 0,
-    MetricPrefixKilo,
-    MetricPrefixMega,
-    MetricPrefixGiga,
-    MetricPrefixTera,
-    MetricPrefixPeta,
-    MetricPrefixLast = MetricPrefixPeta
-};
-
-/**
- * This enum types is used to specify units.
- */
-enum Unit {
-    UnitInvalid = -1,
-    UnitNone = 0,
-
-    // Byte size units.
-    UnitByte = 100,
-    UnitKiloByte = MetricPrefixKilo + UnitByte,
-    UnitMegaByte = MetricPrefixMega + UnitByte,
-    UnitGigaByte = MetricPrefixGiga + UnitByte,
-    UnitTeraByte = MetricPrefixTera + UnitByte,
-    UnitPetaByte = MetricPrefixPeta + UnitByte,
-
-    // Data rate units.
-    UnitByteRate = 200,
-    UnitKiloByteRate = MetricPrefixKilo + UnitByteRate,
-    UnitMegaByteRate = MetricPrefixMega + UnitByteRate,
-    UnitGigaByteRate = MetricPrefixGiga + UnitByteRate,
-    UnitTeraByteRate = MetricPrefixTera + UnitByteRate,
-    UnitPetaByteRate = MetricPrefixPeta + UnitByteRate,
-
-    // Frequency.
-    UnitHertz = 300,
-    UnitKiloHertz = MetricPrefixKilo + UnitHertz,
-    UnitMegaHertz = MetricPrefixMega + UnitHertz,
-    UnitGigaHertz = MetricPrefixGiga + UnitHertz,
-    UnitTeraHertz = MetricPrefixTera + UnitHertz,
-    UnitPetaHertz = MetricPrefixPeta + UnitHertz,
-
-    // Time units.
-    UnitBootTimestamp = 400,
-    UnitSecond,
-    UnitTime,
-
-    // Misc units.
-    UnitCelsius = 500,
-    UnitDecibelMilliWatts,
-    UnitPercent,
-    UnitRate,
-    UnitRpm,
-    UnitVolt,
-    UnitWatt,
-};
-}
-}
+#include <ksysguard/formatter/Unit.h>
 
 //Data that is static for the lifespan of the sensor
 class SensorInfo
@@ -101,7 +36,7 @@ public:
     QString shortName;
     QString description; // translated
     QVariant::Type variantType = QVariant::Invalid;
-    KSysGuard::utils::Unit unit = KSysGuard::utils::UnitInvalid; //Both a format hint and implies data type (i.e double/string)
+    KSysGuard::Unit unit = KSysGuard::UnitInvalid; //Both a format hint and implies data type (i.e double/string)
     qreal min = 0;
     qreal max = 0;
 };
@@ -151,7 +86,7 @@ inline const QDBusArgument &operator>>(const QDBusArgument &argument, SensorInfo
     argument >> t;
     s.variantType = static_cast<QVariant::Type>(t);
     argument >> t;
-    s.unit = static_cast<KSysGuard::utils::Unit>(t);
+    s.unit = static_cast<KSysGuard::Unit>(t);
     argument >> s.min;
     argument >> s.max;
     argument.endStructure();
