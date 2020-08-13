@@ -169,7 +169,7 @@ void ConnectionMapping::parseSocketFile(const char *fileName)
             localAddress.address[3] = tcpToInt(match.str(1));
         } else {
             auto ipv6 = match.str(2);
-            if (ipv6.compare(0, 24, "0000000000000000FFFF0000")) {
+            if (ipv6.compare(0, 24, "0000000000000000FFFF0000") == 0) {
                 // Some applications (like Steam) use ipv6 sockets with ipv4.
                 // This results in ipv4 addresses that end up in the tcp6 file.
                 // They seem to start with 0000000000000000FFFF0000, so if we
