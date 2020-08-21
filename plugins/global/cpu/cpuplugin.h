@@ -17,26 +17,28 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef CPU_H
-#define CPU_H
+#ifndef CPUPLUGIN_H
+#define CPUPLUGIN_H
 
-#include <SensorObject.h>
+#include <SensorPlugin.h>
 
-class CpuObject : public SensorObject {
+class CpuPluginPrivate;
+
+class CpuPlugin : public SensorPlugin
+{
+    Q_OBJECT
 public:
-    CpuObject(const QString &id, const QString &name, SensorContainer *parent);
+    CpuPlugin(QObject *parent, const QVariantList &args);
+    ~CpuPlugin() override;
 
-    virtual void update() = 0;
+    QString providerName() const override
+    {
+        return QStringLiteral("cpu");
+    }
+    void update() override;
 
-//     const int physicalId; // NOTE The combination of these two ids is not necessarily unique with hyperthreading
-//     const int coreId;
-protected: 
-    SensorProperty *m_usage;
-    SensorProperty *m_system;
-    SensorProperty *m_user;
-    SensorProperty *m_wait;
-    SensorProperty *m_frequency;
-    // TODO temperature
+private: 
+   std::unique_ptr<CpuPluginPrivate> d;
 };
 
 #endif

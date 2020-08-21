@@ -17,26 +17,38 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef CPU_H
-#define CPU_H
+#include "cpuplugin.h"
+#include "cpuplugin_p.h"
 
-#include <SensorObject.h>
+#include <KLocalizedString>
+#include <KPluginFactory>
 
-class CpuObject : public SensorObject {
-public:
-    CpuObject(const QString &id, const QString &name, SensorContainer *parent);
+#include <SensorContainer.h>
 
-    virtual void update() = 0;
+#include "linuxcpu.h"
 
-//     const int physicalId; // NOTE The combination of these two ids is not necessarily unique with hyperthreading
-//     const int coreId;
-protected: 
-    SensorProperty *m_usage;
-    SensorProperty *m_system;
-    SensorProperty *m_user;
-    SensorProperty *m_wait;
-    SensorProperty *m_frequency;
-    // TODO temperature
-};
+CpuPluginPrivate::CpuPluginPrivate(CpuPlugin *q)
+    : m_container(new SensorContainer(QStringLiteral("cpu"), i18n("CPUs"), q))
+{
+}
 
+CpuPlugin::CpuPlugin(QObject *parent, const QVariantList &args)
+    : SensorPlugin(parent, args)
+#ifdef Q_OS_LINUX
+    , d(new LinuxCpuPluginPrivate(this))
+#else
+    , d(new CpuPluginPrivate(this))
 #endif
+{
+}
+
+CpuPlugin::~CpuPlugin() = default;
+
+void CpuPlugin::update()
+{
+    d->update();
+}
+
+K_PLUGIN_CLASS_WITH_JSON(CpuPlugin, "metadata.json")
+
+#include "cpuplugin.moc"

@@ -17,26 +17,30 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef CPU_H
-#define CPU_H
+#ifndef LINUXCPU_H
+#define LINUXCPU_H
 
-#include <SensorObject.h>
+#include "cpu.h"
+#include "cpuplugin_p.h"
 
-class CpuObject : public SensorObject {
+class LinuxCpuObject : public CpuObject
+{
 public:
-    CpuObject(const QString &id, const QString &name, SensorContainer *parent);
+    LinuxCpuObject(const QString &id, const QString &name, SensorContainer *parent, double frequency);
 
-    virtual void update() = 0;
+    void setTicks(unsigned long long system, unsigned long long  user, unsigned long long wait, unsigned long long idle);
+    void update() override;
+private:
+    unsigned long long m_totalTicks;
+    unsigned long long m_systemTicks;
+    unsigned long long m_userTicks;
+    unsigned long long m_waitTicks;
+};
 
-//     const int physicalId; // NOTE The combination of these two ids is not necessarily unique with hyperthreading
-//     const int coreId;
-protected: 
-    SensorProperty *m_usage;
-    SensorProperty *m_system;
-    SensorProperty *m_user;
-    SensorProperty *m_wait;
-    SensorProperty *m_frequency;
-    // TODO temperature
+class LinuxCpuPluginPrivate : public CpuPluginPrivate {
+public:
+    LinuxCpuPluginPrivate(CpuPlugin *q);
+    void update() override;
 };
 
 #endif
