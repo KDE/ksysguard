@@ -26,8 +26,6 @@ class CpuObject : public SensorObject {
 public:
     CpuObject(const QString &id, const QString &name, SensorContainer *parent);
 
-    virtual void update() = 0;
-
 //     const int physicalId; // NOTE The combination of these two ids is not necessarily unique with hyperthreading
 //     const int coreId;
 protected: 

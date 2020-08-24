@@ -25,6 +25,7 @@
 
 #include <SensorContainer.h>
 
+#include "freebsdcpu.h"
 #include "linuxcpu.h"
 
 CpuPluginPrivate::CpuPluginPrivate(CpuPlugin *q)
@@ -34,8 +35,10 @@ CpuPluginPrivate::CpuPluginPrivate(CpuPlugin *q)
 
 CpuPlugin::CpuPlugin(QObject *parent, const QVariantList &args)
     : SensorPlugin(parent, args)
-#ifdef Q_OS_LINUX
+#if defined Q_OS_LINUX
     , d(new LinuxCpuPluginPrivate(this))
+#elif defined Q_OS_FREEBSD
+    , d(new FreeBsdCpuPluginPrivate(this))
 #else
     , d(new CpuPluginPrivate(this))
 #endif

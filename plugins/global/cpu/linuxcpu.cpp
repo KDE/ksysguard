@@ -4,8 +4,6 @@
 
 #include <KLocalizedString>
 
-#include <sensors/sensors.h>
-
 #include <SensorContainer.h>
 
 static double readCpuFreq(const QString &cpuId, const QString &attribute, bool &ok)
@@ -37,8 +35,9 @@ LinuxCpuObject::LinuxCpuObject(const QString &id, const QString &name, SensorCon
     }
 }
 
-void LinuxCpuObject::setTicks(unsigned long long system, unsigned long long user, unsigned long long wait, unsigned long long idle)
+void LinuxCpuObject::update(unsigned long long system, unsigned long long user, unsigned long long wait, unsigned long long idle)
 {
+    // First calculate usages
     unsigned long long totalTicks = system + user + wait + idle;
     unsigned long long totalDiff = totalTicks - m_totalTicks;
     auto percentage =  [totalDiff] (unsigned long long tickDiff) {
@@ -55,10 +54,8 @@ void LinuxCpuObject::setTicks(unsigned long long system, unsigned long long user
     m_systemTicks = system;
     m_userTicks = user;
     m_waitTicks = wait;
-}
 
-void LinuxCpuObject::update()
-{
+    // Second update frequencies
     if (!m_frequency) {
         return;
     }
@@ -139,9 +136,6 @@ void LinuxCpuPluginPrivate::update()
         unsigned long long user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice;
         std::sscanf(line.data(), "%*s %llu %llu %llu %llu %llu %llu %llu %llu%llu %llu",
             &user, &nice, &system, &idle, &iowait, &irq, &softirq, &steal, &guest, &guest_nice);
-        cpu->setTicks(system + irq + softirq, user + nice , iowait + steal, idle);
-    }
-    for (SensorObject *cpu : m_container->objects()) {
-        static_cast<LinuxCpuObject*>(cpu)->update();
+        cpu->update(system + irq + softirq, user + nice , iowait + steal, idle);
     }
 }

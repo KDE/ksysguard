@@ -16,7 +16,6 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
-
 #ifndef LINUXCPU_H
 #define LINUXCPU_H
 
@@ -28,8 +27,7 @@ class LinuxCpuObject : public CpuObject
 public:
     LinuxCpuObject(const QString &id, const QString &name, SensorContainer *parent, double frequency);
 
-    void setTicks(unsigned long long system, unsigned long long  user, unsigned long long wait, unsigned long long idle);
-    void update() override;
+    void update(unsigned long long system, unsigned long long  user, unsigned long long wait, unsigned long long idle);
 private:
     unsigned long long m_totalTicks;
     unsigned long long m_systemTicks;
