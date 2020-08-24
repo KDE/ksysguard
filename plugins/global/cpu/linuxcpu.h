@@ -39,6 +39,8 @@ class LinuxCpuPluginPrivate : public CpuPluginPrivate {
 public:
     LinuxCpuPluginPrivate(CpuPlugin *q);
     void update() override;
+private:
+    void addSensors();
 };
 
 #endif

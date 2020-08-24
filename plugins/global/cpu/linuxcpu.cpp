@@ -4,6 +4,8 @@
 
 #include <KLocalizedString>
 
+#include <sensors/sensors.h>
+
 #include <SensorContainer.h>
 
 static double readCpuFreq(const QString &cpuId, const QString &attribute, bool &ok)
@@ -31,7 +33,6 @@ LinuxCpuObject::LinuxCpuObject(const QString &id, const QString &name, SensorCon
         if (ok) {
             m_frequency->setMin(min);
         }
-        qDebug() << id << frequency << min << max;
     }
 }
 
@@ -67,8 +68,8 @@ void LinuxCpuObject::update(unsigned long long system, unsigned long long user, 
     }
     if (ok) {
         m_frequency->setValue(frequency);
-    }
-    // FIXME Should we fall back to reading /proc/cpuinfo again when the above fails? Could have the
+    } 
+    // FIXME Should we fall back to reading /proc/cpuinfo again when the above fails? Could have the 
     // frequency value changed even if the cpu apparently doesn't use CPUFreq?
 }
 
@@ -114,6 +115,30 @@ LinuxCpuPluginPrivate::LinuxCpuPluginPrivate(CpuPlugin *q)
     auto coreCount = new SensorProperty(QStringLiteral("coreCount"), i18nc("@title", "Number of Cores"), cores, total);
     coreCount->setShortName(i18nc("@title, Short fort 'Number of Cores'", "Cores"));
     coreCount->setDescription(i18nc("@info", "Number of CPU cores across all physical CPUS"));
+
+    addSensors();
+}
+
+
+void LinuxCpuPluginPrivate::addSensors()
+{
+#ifdef HAVE_SENSORS
+    sensors_init(nullptr);
+    int number = 0;
+    while (sensors_chip_name const *chipName = sensors_get_detected_chips(nullptr, &number)) {
+        char name[100];
+        sensors_snprintf_chip_name(name, 100, chipName);
+        qDebug() << name << chipName->prefix << "Bus(" << chipName->bus.nr << chipName->bus.type << ")" << chipName->addr << chipName->path;
+        int featureNumber = 0;
+        while (sensors_feature const * feature = sensors_get_features(chipName, &featureNumber)) {
+            qDebug() << '\t' << feature->number << sensors_get_label(chipName, feature) << feature->name << feature->type;
+            int subfeatureNumber = 0;
+            while (sensors_subfeature const * subfeature = sensors_get_all_subfeatures(chipName, feature, &subfeatureNumber)) {
+                qDebug() << "\t\t" << subfeature->number << subfeature->name << subfeature->type << subfeature->flags << subfeature->mapping;
+            }
+        }
+    }
+#endif
 }
 
 void LinuxCpuPluginPrivate::update()
