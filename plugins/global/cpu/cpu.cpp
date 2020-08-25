@@ -57,5 +57,10 @@ CpuObject::CpuObject(const QString &id, const QString &name, SensorContainer *pa
         m_frequency->setDescription(i18nc("@info", "Current frequency of the CPU"));
         m_frequency->setVariantType(QVariant::Double);
         m_frequency->setUnit(KSysGuard::Unit::UnitMegaHertz);
+
+        m_temperature = new SensorProperty(QStringLiteral("temperature"), i18nc("@title", "Current Temperature"), this);
+        m_temperature->setShortName(i18nc("@title, Short for Current Temperatur", "Temperature"));
+        m_temperature->setVariantType(QVariant::Double);
+        m_temperature->setUnit(KSysGuard::Unit::UnitCelsius);
     }
 }

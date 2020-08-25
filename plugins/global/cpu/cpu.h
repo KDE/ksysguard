@@ -34,7 +34,7 @@ protected:
     SensorProperty *m_user;
     SensorProperty *m_wait;
     SensorProperty *m_frequency;
-    // TODO temperature
+    SensorProperty *m_temperature;
 };
 
 #endif
