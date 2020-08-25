@@ -19,8 +19,14 @@
 #ifndef LINUXCPU_H
 #define LINUXCPU_H
 
+#include <QHash>
+
 #include "cpu.h"
 #include "cpuplugin_p.h"
+
+struct sensors_chip_name;
+struct sensors_feature;
+
 
 class LinuxCpuObject : public CpuObject
 {
@@ -28,11 +34,14 @@ public:
     LinuxCpuObject(const QString &id, const QString &name, SensorContainer *parent, double frequency);
 
     void update(unsigned long long system, unsigned long long  user, unsigned long long wait, unsigned long long idle);
+    void setTemperatureSensor(const sensors_chip_name * const chipName, const sensors_feature * const feature);
 private:
     unsigned long long m_totalTicks;
     unsigned long long m_systemTicks;
     unsigned long long m_userTicks;
     unsigned long long m_waitTicks;
+    const sensors_chip_name * m_sensorChipName;
+    int m_temperatureSubfeature;
 };
 
 class LinuxCpuPluginPrivate : public CpuPluginPrivate {
@@ -41,6 +50,8 @@ public:
     void update() override;
 private:
     void addSensors();
+    void addSensorsIntel(const sensors_chip_name * const chipName);
+    QMultiHash<QPair<unsigned int, unsigned int>, LinuxCpuObject * const> m_cpusBySystemIds;
 };
 
 #endif

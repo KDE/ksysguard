@@ -23,6 +23,8 @@
 
 CpuObject::CpuObject(const QString &id, const QString &name, SensorContainer *parent)
     : SensorObject(id, name, parent)
+    , m_frequency{nullptr}
+    , m_temperature{nullptr}
 {
     auto n = new SensorProperty(QStringLiteral("name"), i18nc("@title", "Name"), name, this);
     n->setVariantType(QVariant::String);
