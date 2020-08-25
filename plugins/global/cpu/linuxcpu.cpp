@@ -140,7 +140,6 @@ LinuxCpuPluginPrivate::LinuxCpuPluginPrivate(CpuPlugin *q)
         }
         const QString name = i18nc("@title", "CPU %1 Core %2").arg(physicalId + 1).arg(++numCores[physicalId]);
         auto cpu = new LinuxCpuObject(QStringLiteral("cpu%1").arg(processor), name, m_container, frequency);
-        qDebug() << physicalId << coreId << cpu->id();
         m_cpusBySystemIds.insert({physicalId, coreId}, cpu);
     }
     const int cores = m_container->objects().size();
@@ -223,7 +222,6 @@ void LinuxCpuPluginPrivate::addSensorsIntel(const sensors_chip_name * const chip
             // Naturally they share the same temperature sensor and have the same coreId.
             auto cpu_range = m_cpusBySystemIds.equal_range({physicalId, feature.key()});
             for (auto cpu_it = cpu_range.first; cpu_it != cpu_range.second; ++cpu_it) {
-                qDebug() << physicalId << feature.key() << feature.value()->name;
                 (*cpu_it)->setTemperatureSensor(chipName, feature.value());
             }
         }
