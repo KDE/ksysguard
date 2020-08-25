@@ -138,7 +138,7 @@ LinuxCpuPluginPrivate::LinuxCpuPluginPrivate(CpuPlugin *q)
                 frequency = value.toDouble();
             }
         }
-        const QString name = i18nc("@title", "CPU %1 Core %2").arg(physicalId + 1).arg(++numCores[physicalId]);
+        const QString name = i18nc("@title", "CPU %1 Core %2", physicalId + 1, ++numCores[physicalId]);
         auto cpu = new LinuxCpuObject(QStringLiteral("cpu%1").arg(processor), name, m_container, frequency);
         m_cpusBySystemIds.insert({physicalId, coreId}, cpu);
     }
