@@ -51,6 +51,7 @@ public:
 private:
     void addSensors();
     void addSensorsIntel(const sensors_chip_name * const chipName);
+    void addSensorsAmd(const sensors_chip_name * const chipName);
     QMultiHash<QPair<unsigned int, unsigned int>, LinuxCpuObject * const> m_cpusBySystemIds;
 };
 

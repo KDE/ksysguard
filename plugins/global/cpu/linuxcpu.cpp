@@ -191,6 +191,8 @@ void LinuxCpuPluginPrivate::addSensors()
         sensors_snprintf_chip_name(name, 100, chipName);
         if (qstrcmp(chipName->prefix, "coretemp") == 0) {
             addSensorsIntel(chipName);
+        } else if (qstrcmp(chipName->prefix, "k10temp") == 0) {
+            addSensorsAmd(chipName);
         }
     }
 #endif
@@ -204,7 +206,10 @@ void LinuxCpuPluginPrivate::addSensorsIntel(const sensors_chip_name * const chip
     QHash<unsigned int,  sensors_feature const *> coreFeatures;
     int physicalId = -1;
     while (sensors_feature const * feature = sensors_get_features(chipName, &featureNumber)) {
-        const char * const sensorLabel = sensors_get_label(chipName, feature);
+        if (feature->type != SENSORS_FEATURE_TEMP) {
+            continue;
+        }
+        char * sensorLabel = sensors_get_label(chipName, feature);
         unsigned int coreId;
         // First try to see if it's a core temperature because we should have more of those
         if (std::sscanf(sensorLabel, "Core %d", &coreId) != 0) {
@@ -212,6 +217,7 @@ void LinuxCpuPluginPrivate::addSensorsIntel(const sensors_chip_name * const chip
         } else {
             std::sscanf(sensorLabel, "Package id %d", &physicalId);
         }
+        free(sensorLabel);
     }
     if (physicalId == -1) {
         return;
@@ -226,10 +232,49 @@ void LinuxCpuPluginPrivate::addSensorsIntel(const sensors_chip_name * const chip
             }
         }
     }
-//             int subfeatureNumber = 0;
-//             while (sensors_subfeature const * subfeature = sensors_get_all_subfeatures(chipName, feature, &subfeatureNumber)) {
-//                 qDebug() << "\t\t" << subfeature->number << subfeature->name << subfeature->type << subfeature->flags << subfeature->mapping;
-//             }
-//         }
 #endif
 }
+
+void LinuxCpuPluginPrivate::addSensorsAmd(const sensors_chip_name * const chipName)
+{
+    // All Processors should have the Tctl pseudo temperature as temp1. Newer ones have the real die
+    // temperature Tdie as temp2. Some of those have temperatures for each core complex die (CCD) as
+    // temp3-6 or temp3-10 depending on the number of CCDS.
+    // https://www.kernel.org/doc/html/latest/hwmon/k10temp.html
+    int featureNumber = 0;
+    sensors_feature const * tctl = nullptr;
+    sensors_feature const * tdie = nullptr;
+    sensors_feature const * tccd[8] = {nullptr};
+    while (sensors_feature const * feature = sensors_get_features(chipName, &featureNumber)) {
+        const QByteArray name (feature->name);
+        if (feature->type != SENSORS_FEATURE_TEMP || !name.startsWith("temp")) {
+            continue;
+        }
+        // For temps 1 and 2 we can't just go by the number because in  kernels older than 5.7 they
+        // are the wrong way around, so we have to compare labels.
+        // https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b02c6857389da66b09e447103bdb247ccd182456
+        char * label = sensors_get_label(chipName, feature);
+        if (qstrcmp(label, "Tctl") == 0) {
+            tctl = feature;
+        }
+        else if (qstrcmp(label, "Tdie") == 0) {
+            tdie = feature;
+        } else {
+            tccd[name.mid(4).toUInt()] = feature;
+        }
+        free(label);
+    }
+    // TODO How to map CCD temperatures to cores?
+
+    auto setSingleSensor = [this, chipName] (const sensors_feature * const feature) {
+        for (auto &cpu : m_cpusBySystemIds) {
+            cpu->setTemperatureSensor(chipName, feature);
+        }
+    };
+    if (tdie) {
+        setSingleSensor(tdie);
+    } else if (tctl) {
+        setSingleSensor(tctl);
+    }
+}
+

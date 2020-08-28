@@ -60,15 +60,15 @@ void FreeBsdCpuObject::update(long system, long user, long idle)
         // according to the documentation some counters can go backwards in some circumstances
         return tickDiff > 0 ? 100.0 *  tickDiff / totalDiff : 0;
     };
-    
+
     m_system->setValue(percentage(system - m_systemTicks));
     m_user->setValue(percentage(user - m_userTicks));
     m_usage->setValue(percentage((system + user) - (m_systemTicks + m_userTicks)));
-    
+
     m_systemTicks = system;
     m_userTicks = user;
     m_totalTicks = totalTicks;
-    
+
     if (id() == QStringLiteral("all")) {
         return;
     }
