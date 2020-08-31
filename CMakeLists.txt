@@ -74,6 +74,15 @@ set_package_properties(
     PURPOSE "libpcap is used for per-application network usage."
 )
 
+find_package(NL)
+set_package_properties(NL PROPERTIES
+    TYPE RECOMMENDED
+    PURPOSE "Used for gathering socket info via the sock_diag netlink subsystem."
+)
+if(libpcap_FOUND AND NL_FOUND)
+    set(BUILD_NETWORK_PLUGIN TRUE)
+endif()
+
 if (libpcap_FOUND)
     find_package(Libcap)
     set_package_properties(Libcap PROPERTIES

@@ -8,8 +8,8 @@ set(ksgrd_network_helper_SRCS
 )
 
 add_executable(ksgrd_network_helper ${ksgrd_network_helper_SRCS})
-target_include_directories(ksgrd_network_helper PUBLIC ${PCAP_INCLUDE_DIR})
-target_link_libraries(ksgrd_network_helper ${PCAP_LIBRARY})
+target_include_directories(ksgrd_network_helper PUBLIC ${PCAP_INCLUDE_DIR} ${NL_INCLUDE_DIRS})
+target_link_libraries(ksgrd_network_helper ${PCAP_LIBRARY} ${NL_LIBRARIES})
 kde_target_enable_exceptions(ksgrd_network_helper PUBLIC)
 set_target_properties(ksgrd_network_helper PROPERTIES CXX_STANDARD 14 CXX_STANDARD_REQUIRED TRUE)
 

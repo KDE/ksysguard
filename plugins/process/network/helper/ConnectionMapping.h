@@ -26,9 +26,11 @@
 #include <unordered_set>
 #include <regex>
 
-// #include <QRegularExpression>
+#include <netlink/socket.h>
 
 #include "Packet.h"
+
+struct nl_msg;
 
 /**
  * @todo write docs
@@ -43,12 +45,13 @@ public:
 
     ConnectionMapping();
 
-    void parseProc();
-
     PacketResult pidForPacket(const Packet &packet);
 
 private:
-    bool parseSockets();
+    void getSocketInfo();
+    bool dumpSockets();
+    bool dumpSockets(int inet_family, int protocol);
+    void parseSockets();
     void parsePid();
     void parseSocketFile(const char* fileName);
 
@@ -56,9 +59,10 @@ private:
     std::unordered_map<int, int> m_inodeToPid;
     std::unordered_set<int> m_inodes;
     std::unordered_set<int> m_pids;
-
-//     QRegularExpression m_socketFileMatch;
+    std::unique_ptr<nl_sock, decltype(&nl_socket_free)> m_socket;
     std::regex m_socketFileMatch;
+
+    friend int parseInetDiagMesg(struct nl_msg *msg, void *arg);
 };
 
 #endif // CONNECTIONMAPPING_H
