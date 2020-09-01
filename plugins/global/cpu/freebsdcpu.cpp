@@ -97,7 +97,6 @@ FreeBsdCpuPluginPrivate::FreeBsdCpuPluginPrivate(CpuPlugin* q)
     for (int i = 0; i < numCpu; ++i) {
         new FreeBsdCpuObject(QStringLiteral("cpu%1").arg(i), i18nc("@title", "CPU %1", i + 1), m_container);
     }
-    // TODO parse smp sysctl kern.sched.topology_spec xml to be able show names like "CPU 1 Core 2"
 
     // Add total usage sensors
     auto total = new FreeBsdCpuObject(QStringLiteral("all"), i18nc("@title", "All"), m_container);
