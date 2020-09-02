@@ -1,5 +1,6 @@
 /*
     Copyright (c) 2019 David Edmundson <davidedmundson@kde.org>
+    Copyright (c) 2020 David Redondo <kde@david-redondo.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -32,6 +33,7 @@
 #include "SensorContainer.h"
 #include "SensorProperty.h"
 
+#include <KDBusService>
 #include <KPluginLoader>
 #include <KPluginMetaData>
 #include <KPluginFactory>
@@ -67,14 +69,16 @@ KSysGuardDaemon::~KSysGuardDaemon()
     }
 }
 
-void KSysGuardDaemon::init()
+void KSysGuardDaemon::init(ReplaceIfRunning replaceIfRunning)
 {
     loadProviders();
-    QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportAdaptors);
-    if (!QDBusConnection::sessionBus().registerService("org.kde.ksystemstats")) {
-        qCritical() << "Unable to register DBus service org.kde.ksystemstats. Maybe it is already running?";
-        exit(1);
+    KDBusService::StartupOptions options = KDBusService::Unique;
+    if (replaceIfRunning == ReplaceIfRunning::Replace) {
+        options |= KDBusService::Replace;
     }
+    auto service = new KDBusService(options , this);
+    service->setExitValue(1);
+    QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportAdaptors);
 }
 
 void KSysGuardDaemon::loadProviders()

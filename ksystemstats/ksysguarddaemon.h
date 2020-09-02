@@ -35,11 +35,15 @@ class QDBusServiceWatcher;
 class KSysGuardDaemon : public QObject, public QDBusContext
 {
     Q_OBJECT
-
 public:
+    enum class ReplaceIfRunning {
+        Replace,
+        DoNotReplace
+    };
+
     KSysGuardDaemon();
     ~KSysGuardDaemon();
-    void init();
+    void init(ReplaceIfRunning replaceIfRunning);
     SensorProperty *findSensor(const QString &path) const;
 
 public Q_SLOTS:

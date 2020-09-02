@@ -72,7 +72,7 @@ public:
 protected:
     void loadProviders() override;
 private Q_SLOTS:
-    void init();
+    void initTestCase();
     void findById();
     void update();
     void subscription();
@@ -98,9 +98,11 @@ void KStatsTest::loadProviders()
     registerProvider(m_testPlugin);
 }
 
-void KStatsTest::init()
+void KStatsTest::initTestCase()
 {
-    KSysGuardDaemon::init();
+    QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportAdaptors);
+    loadProviders();
+
 }
 
 void KStatsTest::findById()
@@ -150,7 +152,7 @@ void KStatsTest::changes()
 
 void KStatsTest::dbusApi()
 {
-    OrgKdeKSysGuardDaemonInterface iface("org.kde.ksystemstats",
+    OrgKdeKSysGuardDaemonInterface iface(QDBusConnection::sessionBus().baseService(),
         "/",
         QDBusConnection::sessionBus(),
         this);

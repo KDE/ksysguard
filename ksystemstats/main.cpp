@@ -1,5 +1,6 @@
 /*
     Copyright (c) 2019 David Edmundson <davidedmundson@kde.org>
+    Copyright (c) 2020 David Redondo <kde@david-redondo.de>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -18,6 +19,7 @@
 */
 
 #include <QCoreApplication>
+#include <QCommandLineParser>
 #include <QDebug>
 
 #include "ksysguarddaemon.h"
@@ -26,7 +28,13 @@ int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
     app.setQuitLockEnabled(false) ;
+    app.setOrganizationDomain(QStringLiteral("kde.org"));
+
+    QCommandLineParser parser;
+    parser.addOption(QCommandLineOption(QStringLiteral("replace"), QStringLiteral("Replace the running instance")));
+    parser.process(app);
+
     KSysGuardDaemon d;
-    d.init();
+    d.init(parser.isSet(QStringLiteral("replace")) ? KSysGuardDaemon::ReplaceIfRunning::Replace : KSysGuardDaemon::ReplaceIfRunning::DoNotReplace);
     app.exec();
 }
