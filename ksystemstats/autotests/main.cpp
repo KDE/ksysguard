@@ -158,7 +158,7 @@ void KStatsTest::dbusApi()
     auto pendingSensors = iface.allSensors();
     pendingSensors.waitForFinished();
     auto sensors = pendingSensors.value();
-    QVERIFY(sensors.count() == 2);
+    QVERIFY(sensors.count() == 4);
 
     // test metadata
     QCOMPARE(sensors["testContainer/testObject/property1"].name, "Some Sensor Name 1");
