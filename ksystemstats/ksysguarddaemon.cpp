@@ -60,6 +60,13 @@ KSysGuardDaemon::KSysGuardDaemon()
     timer->start();
 }
 
+KSysGuardDaemon::~KSysGuardDaemon()
+{
+    for (Client* c : m_clients) {
+        delete c;
+    }
+}
+
 void KSysGuardDaemon::init()
 {
     loadProviders();

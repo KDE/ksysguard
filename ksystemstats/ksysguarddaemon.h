@@ -38,6 +38,7 @@ class KSysGuardDaemon : public QObject, public QDBusContext
 
 public:
     KSysGuardDaemon();
+    ~KSysGuardDaemon();
     void init();
     SensorProperty *findSensor(const QString &path) const;
 
