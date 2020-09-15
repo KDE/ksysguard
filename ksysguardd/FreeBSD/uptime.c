@@ -28,10 +28,12 @@
 
 void initUptime( struct SensorModul* sm ) {
     registerMonitor( "system/uptime", "float", printUptime, printUptimeInfo, sm );
+    registerMonitor( "system/uptime/uptime", "float", printUptime, printUptimeInfo, sm );
 }
 
 void exitUptime( void ) {
     removeMonitor("system/uptime");
+    removeMonitor("system/uptime/uptime");
 }
 
 void printUptime( const char* cmd ) {

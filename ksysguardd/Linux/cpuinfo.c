@@ -157,10 +157,10 @@ void initCpuInfo( struct SensorModul* sm )
     if ( updateCpuInfo() < 0 )
         return;
 
-    registerMonitor( "system/processors", "integer", printNumCpus, printNumCpusInfo,
-            CpuInfoSM );
-    registerMonitor( "system/cores", "integer", printNumCores, printNumCoresInfo,
-            CpuInfoSM );
+    registerMonitor( "system/processors", "integer", printNumCpus, printNumCpusInfo, CpuInfoSM );
+    registerMonitor( "system/processors/processors", "integer", printNumCpus, printNumCpusInfo, CpuInfoSM );
+    registerMonitor( "system/cores", "integer", printNumCores, printNumCoresInfo, CpuInfoSM );
+    registerMonitor( "system/cores/cores", "integer", printNumCores, printNumCoresInfo, CpuInfoSM );
 
     processCpuInfo();
 

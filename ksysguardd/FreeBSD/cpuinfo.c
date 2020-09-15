@@ -76,7 +76,9 @@ initCpuInfo(struct SensorModul* sm)
 
     /* Core/process count */
     registerMonitor("system/processors", "integer", printNumCpus, printNumCpusInfo, sm);
+    registerMonitor("system/processors/processors", "integer", printNumCpus, printNumCpusInfo, sm);
     registerMonitor("system/cores", "integer", printNumCores, printNumCoresInfo, sm);
+    registerMonitor("system/cores/cores", "integer", printNumCores, printNumCoresInfo, sm);
 
     /*
      * CPU Loads

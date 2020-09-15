@@ -61,6 +61,7 @@ void initUptime( struct SensorModul* sm ) {
 	if (sscanf(uptimeBufP, format, buf) == 1) {
 		buf[sizeof(buf) - 1] = '\0';
 		registerMonitor( "system/uptime", "float", printUptime, printUptimeInfo, StatSM );
+		registerMonitor( "system/uptime/uptime", "float", printUptime, printUptimeInfo, StatSM );
 	}
 }
 
