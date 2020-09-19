@@ -26,6 +26,7 @@
   <name xml:lang="pl">Monitor systemu KDE</name>
   <name xml:lang="pt">KSysGuard</name>
   <name xml:lang="pt-BR">KSysGuard</name>
+  <name xml:lang="ro">KSysGuard</name>
   <name xml:lang="ru">Системный монитор</name>
   <name xml:lang="sk">KSysGuard</name>
   <name xml:lang="sl">KSysGuard</name>
@@ -60,6 +61,7 @@
   <summary xml:lang="pl">Monitoruje uruchomione procesy i wydajność systemu</summary>
   <summary xml:lang="pt">Vigia os processos em execução e a performance do sistema</summary>
   <summary xml:lang="pt-BR">Monitora os processos em execução e o desempenho do sistema</summary>
+  <summary xml:lang="ro">Monitorizează procesele în lucru și performanța sistemului</summary>
   <summary xml:lang="ru">Просмотр списка запущенных процессов и производительности системы</summary>
   <summary xml:lang="sk">Monitoruje spustené procesy a výkon systému</summary>
   <summary xml:lang="sl">Nadzor tekočih procesov in delovanja sistema</summary>
@@ -99,6 +101,7 @@
     <p xml:lang="pl">Monitor systemu umożliwia monitorowanie informacji i statystyk o twoim systemie.</p>
     <p xml:lang="pt">O System Guard permite-lhe vigiar a informação e as estatísticas sobre o seu sistema.</p>
     <p xml:lang="pt-BR">O System Guard permite-lhe monitorar as informações e estatísticas sobre o seu sistema.</p>
+    <p xml:lang="ro">Gardianul de Sistem permite monitorizarea informațiilor și statisticilor despre sistemul dumneavoastră.</p>
     <p xml:lang="ru">Системный монитор позволяет получать различную информацию и статистику о состоянии системы.</p>
     <p xml:lang="sk">System Guard vám umožňuje montorovať informácie a štatistiky o vašom systéme.</p>
     <p xml:lang="sl">System Guard vam omogoča spremljanje informacij in statistik o vašem sistem.</p>
@@ -132,6 +135,7 @@
     <p xml:lang="pl">Poza monitorowaniem lokalnego systemu, może się połączyć do zdalnych systemów mających czynną usługę monitora systemu.</p>
     <p xml:lang="pt">Para além de monitorizar o sistema local, poder-se-á ligar a sistema remotos que tenham o Servidor do System Guard em execução.</p>
     <p xml:lang="pt-BR">Para além de monitorizar o sistema local, ele pode se conectar a sistemas remotos que tenham o Servidor do System Guard em execução.</p>
+    <p xml:lang="ro">Pe lângă monitorizarea sistemului local, acesta se poate conecta la sisteme distante ce rulează demonul Gardian de Sistem.</p>
     <p xml:lang="ru">Приложение может отслеживать состояние не только локальной системы, но и подключаться к другим системам, на которых выполняется служба системного монитора.</p>
     <p xml:lang="sk">Okrem monitorovania lokálneho systému, sa dokáže pripojiť do vzdialených systémov pomocou System Guard Daemon.</p>
     <p xml:lang="sl">Poleg spremljanja lokalnega sistema se lahko poveže z oddaljenimi sistemi, kjer teče demon sistemskega nadzora.</p>
