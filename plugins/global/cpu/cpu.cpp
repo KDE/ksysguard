@@ -30,24 +30,28 @@ CpuObject::CpuObject(const QString &id, const QString &name, SensorContainer *pa
     n->setVariantType(QVariant::String);
 
     m_usage = new SensorProperty(QStringLiteral("usage"), i18nc("@title", "Total Usage"), this);
+    m_usage->setPrefix(name);
     m_usage->setShortName(i18nc("@title, Short for 'Total Usage'", "Usage"));
     m_usage->setUnit(KSysGuard::UnitPercent);
     m_usage->setVariantType(QVariant::Double);
     m_usage->setMax(100);
 
     m_system = new SensorProperty(QStringLiteral("system"), i18nc("@title", "System Usage"), this);
+    m_system->setPrefix(name);
     m_system->setShortName(i18nc("@title, Short for 'System Usage'", "System"));
     m_system->setUnit(KSysGuard::UnitPercent);
     m_system->setVariantType(QVariant::Double);
     m_system->setMax(100);
 
     m_user = new SensorProperty(QStringLiteral("user"), i18nc("@title", "User Usage"), this);
+    m_user->setPrefix(name);
     m_user->setShortName(i18nc("@title, Short for 'User Usage'", "User"));
     m_user->setUnit(KSysGuard::UnitPercent);
     m_user->setVariantType(QVariant::Double);
     m_user->setMax(100);
 
     m_wait = new SensorProperty(QStringLiteral("wait"), i18nc("@title", "Wait"), this);
+    m_wait->setPrefix(name);
     m_wait->setUnit(KSysGuard::UnitPercent);
     m_wait->setVariantType(QVariant::Double);
     m_wait->setMax(100);
@@ -55,12 +59,14 @@ CpuObject::CpuObject(const QString &id, const QString &name, SensorContainer *pa
     if (id != QStringLiteral("all"))
     {
         m_frequency = new SensorProperty(QStringLiteral("frequency"), i18nc("@title", "Current Frequency"), this);
+        m_frequency->setPrefix(name);
         m_frequency->setShortName(i18nc("@title, Short for 'Current Frequency'", "Frequency"));
         m_frequency->setDescription(i18nc("@info", "Current frequency of the CPU"));
         m_frequency->setVariantType(QVariant::Double);
         m_frequency->setUnit(KSysGuard::Unit::UnitMegaHertz);
 
         m_temperature = new SensorProperty(QStringLiteral("temperature"), i18nc("@title", "Current Temperature"), this);
+        m_temperature->setPrefix(name);
         m_temperature->setShortName(i18nc("@title, Short for Current Temperatur", "Temperature"));
         m_temperature->setVariantType(QVariant::Double);
         m_temperature->setUnit(KSysGuard::Unit::UnitCelsius);
