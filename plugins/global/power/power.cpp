@@ -109,13 +109,13 @@ PowerPlugin::PowerPlugin(QObject *parent, const QVariantList &args)
        new Battery(battery.as<Solid::Battery>(), battery.displayName(), m_container);
     }
 
-    connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded, [this] (const QString &udi) {
+    connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded, this, [this] (const QString &udi) {
         const Solid::Device device(udi);
         if (device.isDeviceInterface(Solid::DeviceInterface::Battery)) {
             new Battery(device.as<Solid::Battery>(), device.displayName(), m_container);
         }
     });
-    connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceRemoved, [this] (const QString &udi) {
+    connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceRemoved, this, [this] (const QString &udi) {
         const Solid::Device device(udi);
         if (device.isDeviceInterface(Solid::DeviceInterface::Battery)) {
             const auto object = m_container->object(device.as<Solid::Battery>()->serial());
