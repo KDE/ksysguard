@@ -166,9 +166,15 @@ void LinuxCpuPluginPrivate::update()
         } else  {
             continue;
         }
-        unsigned long long user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice;
-        std::sscanf(line.data(), "%*s %llu %llu %llu %llu %llu %llu %llu %llu%llu %llu",
-            &user, &nice, &system, &idle, &iowait, &irq, &softirq, &steal, &guest, &guest_nice);
+        auto values = line.split(' ');
+        unsigned long long user = values[1].toULongLong();
+        unsigned long long nice = values[2].toULongLong();
+        unsigned long long system = values[3].toULongLong();
+        unsigned long long idle = values[4].toULongLong();
+        unsigned long long iowait = values[5].toULongLong();
+        unsigned long long irq = values[6].toULongLong();
+        unsigned long long softirq = values[7].toULongLong();
+        unsigned long long steal = values[8].toULongLong();
         cpu->update(system + irq + softirq, user + nice , iowait + steal, idle);
     }
 }
