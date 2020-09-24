@@ -143,15 +143,8 @@ LinuxCpuPluginPrivate::LinuxCpuPluginPrivate(CpuPlugin *q)
         m_cpusBySystemIds.insert({physicalId, coreId}, cpu);
     }
     const int cores = m_container->objects().size();
-    // Add total usage sensors
-    auto total = new LinuxCpuObject(QStringLiteral("all"), i18nc("@title", "All"), m_container, 0);
-    auto cpuCount = new SensorProperty(QStringLiteral("cpuCount"), i18nc("@title", "Number of CPUs"), numCores.size(), total);
-    cpuCount->setShortName(i18nc("@title, Short fort 'Number of CPUs'", "CPUs"));
-    cpuCount->setDescription(i18nc("@info", "Number of physical CPUs installed in the system"));
 
-    auto coreCount = new SensorProperty(QStringLiteral("coreCount"), i18nc("@title", "Number of Cores"), cores, total);
-    coreCount->setShortName(i18nc("@title, Short fort 'Number of Cores'", "Cores"));
-    coreCount->setDescription(i18nc("@info", "Number of CPU cores across all physical CPUS"));
+    m_allCpusObject = new AllCpusObject<LinuxCpuObject>(numCores.size(), cores, m_container);
 
     addSensors();
 }
@@ -167,7 +160,7 @@ void LinuxCpuPluginPrivate::update()
         LinuxCpuObject *cpu;
         // Total values
         if (line.startsWith("cpu ")) {
-            cpu = static_cast<LinuxCpuObject*>(m_container->object(QStringLiteral("all")));
+            cpu = m_allCpusObject;
         } else if (line.startsWith("cpu")) {
             cpu = static_cast<LinuxCpuObject*>(m_container->object(line.left(line.indexOf(' '))));
         } else  {
@@ -237,6 +230,7 @@ void LinuxCpuPluginPrivate::addSensorsIntel(const sensors_chip_name * const chip
 
 void LinuxCpuPluginPrivate::addSensorsAmd(const sensors_chip_name * const chipName)
 {
+#ifdef HAVE_SENSORS
     // All Processors should have the Tctl pseudo temperature as temp1. Newer ones have the real die
     // temperature Tdie as temp2. Some of those have temperatures for each core complex die (CCD) as
     // temp3-6 or temp3-10 depending on the number of CCDS.
@@ -276,5 +270,6 @@ void LinuxCpuPluginPrivate::addSensorsAmd(const sensors_chip_name * const chipNa
     } else if (tctl) {
         setSingleSensor(tctl);
     }
+#endif
 }
 

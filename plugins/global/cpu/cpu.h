@@ -20,14 +20,14 @@
 #ifndef CPU_H
 #define CPU_H
 
+#include <KLocalizedString>
+
 #include <SensorObject.h>
 
 class CpuObject : public SensorObject {
 public:
     CpuObject(const QString &id, const QString &name, SensorContainer *parent);
 
-//     const int physicalId; // NOTE The combination of these two ids is not necessarily unique with hyperthreading
-//     const int coreId;
 protected: 
     SensorProperty *m_usage;
     SensorProperty *m_system;
@@ -37,4 +37,25 @@ protected:
     SensorProperty *m_temperature;
 };
 
+template <typename T>
+class AllCpusObject : public T {
+public:
+    AllCpusObject(unsigned int cpus, unsigned int cores, SensorContainer *parent);
+    static_assert(std::is_base_of<CpuObject, T>::value, "Base of AllCpuObject must be a CpuObject");
+};
+
+template <typename T>
+AllCpusObject<T>::AllCpusObject(unsigned int cpus, unsigned int cores, SensorContainer *parent)
+    : T(QStringLiteral("all"), i18nc("@title", "All"), parent)
+{
+    delete T::m_frequency;
+    delete T::m_temperature;
+    auto cpuCount = new SensorProperty(QStringLiteral("cpuCount"), i18nc("@title", "Number of CPUs"), cpus, this);
+    cpuCount->setShortName(i18nc("@title, Short fort 'Number of CPUs'", "CPUs"));
+    cpuCount->setDescription(i18nc("@info", "Number of physical CPUs installed in the system"));
+
+    auto coreCount = new SensorProperty(QStringLiteral("coreCount"), i18nc("@title", "Number of Cores"), cores, this);
+    coreCount->setShortName(i18nc("@title, Short fort 'Number of Cores'", "Cores"));
+    coreCount->setDescription(i18nc("@info", "Number of CPU cores across all physical CPUS"));
+}
 #endif

@@ -31,7 +31,7 @@ struct sensors_feature;
 class LinuxCpuObject : public CpuObject
 {
 public:
-    LinuxCpuObject(const QString &id, const QString &name, SensorContainer *parent, double frequency);
+    LinuxCpuObject(const QString &id, const QString &name, SensorContainer *parent, double frequency = 0);
 
     void update(unsigned long long system, unsigned long long  user, unsigned long long wait, unsigned long long idle);
     void setTemperatureSensor(const sensors_chip_name * const chipName, const sensors_feature * const feature);
@@ -53,6 +53,7 @@ private:
     void addSensorsIntel(const sensors_chip_name * const chipName);
     void addSensorsAmd(const sensors_chip_name * const chipName);
     QMultiHash<QPair<unsigned int, unsigned int>, LinuxCpuObject * const> m_cpusBySystemIds;
+    AllCpusObject<LinuxCpuObject> *m_allCpusObject;
 };
 
 #endif
