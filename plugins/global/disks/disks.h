@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2019 David Edmundson <davidedmundson@kde.org>
+    Copyright (c) 2020 David Redondo <kde@david-redondo.de>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -17,16 +17,42 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include <QCoreApplication>
-#include <QDebug>
+#ifndef DISKS_H
+#define DISKS_H
 
-#include "ksysguarddaemon.h"
+#include <QObject>
+#include <QElapsedTimer>
 
-int main(int argc, char **argv)
-{
-    QCoreApplication app(argc, argv);
-    app.setQuitLockEnabled(false) ;
-    KSysGuardDaemon d;
-    d.init();
-    app.exec();
+#include "SensorPlugin.h"
+
+namespace Solid {
+    class Device;
+    class StorageVolume;
 }
+
+class VolumeObject;
+
+class DisksPlugin : public SensorPlugin
+
+{
+    Q_OBJECT
+public:
+    DisksPlugin(QObject *parent, const QVariantList &args);
+    QString providerName() const override
+    {
+        return QStringLiteral("disks");
+    }
+    ~DisksPlugin() override;
+
+    void update() override;
+
+
+private:
+    void addDevice(const Solid::Device &device);
+    void addAggregateSensors();
+
+    QHash<QString, VolumeObject*> m_volumesByDevice;
+    QElapsedTimer m_elapsedTimer;
+};
+
+#endif

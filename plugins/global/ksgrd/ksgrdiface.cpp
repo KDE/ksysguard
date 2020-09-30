@@ -40,10 +40,8 @@ KSGRDIface::KSGRDIface(QObject *parent, const QVariantList &args)
     };
     registerSubsystem("acpi");
     registerSubsystem("cpu");
-    registerSubsystem("disk");
     registerSubsystem("lmsensors");
     registerSubsystem("mem");
-    registerSubsystem("partitions");
     registerSubsystem("uptime");
     registerSubsystem("system");
 
@@ -305,20 +303,6 @@ void KSGRDIface::answerReceived(int id, const QList<QByteArray> &answer)
 
 void KSGRDIface::addAggregateSensors()
 {
-    auto diskAll = new SensorObject("all", i18nc("@title All Disks", "All"), m_subsystems["disk"]);
-    auto sensor = new AggregateSensor(diskAll, "read", i18nc("@title", "Disk Read Accesses"));
-    sensor->setShortName(i18nc("@title Disk Read Accesses", "Read"));
-    // TODO: This regex is not exhaustive as it doesn't consider things that aren't treated as sdX devices.
-    //       However, we do not simply want to match disk/* as that would include duplicate devices.
-    sensor->setMatchSensors(QRegularExpression("^sd[a-z]+[0-9]+_[^/]*/Rate$"), QStringLiteral("rblk"));
-    sensor->setDescription(i18nc("@info", "Read accesses across all disk devices"));
-
-    sensor = new AggregateSensor(diskAll, "write", i18nc("@title", "Disk Write Accesses"));
-    sensor->setShortName(i18nc("@title Disk Write Accesses", "Write"));
-    // TODO: See above.
-    sensor->setMatchSensors(QRegularExpression("^sd[a-z]+[0-9]+_[^/]*/Rate$"), QStringLiteral("wblk"));
-    sensor->setDescription(i18nc("@info", "Write accesses across all disk devices"));
-
     auto memPhysical = m_subsystems["mem"]->object("physical");
     Q_ASSERT(memPhysical);
     if (!memPhysical) {
