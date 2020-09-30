@@ -312,12 +312,14 @@ void KSGRDIface::addAggregateSensors()
     //       However, we do not simply want to match disk/* as that would include duplicate devices.
     sensor->setMatchSensors(QRegularExpression("^sd[a-z]+[0-9]+_[^/]*/Rate$"), QStringLiteral("rblk"));
     sensor->setDescription(i18nc("@info", "Read accesses across all disk devices"));
+    sensor->setUnit(KSysGuard::UnitKiloByteRate);
 
     sensor = new AggregateSensor(diskAll, "write", i18nc("@title", "Disk Write Accesses"));
     sensor->setShortName(i18nc("@title Disk Write Accesses", "Write"));
     // TODO: See above.
     sensor->setMatchSensors(QRegularExpression("^sd[a-z]+[0-9]+_[^/]*/Rate$"), QStringLiteral("wblk"));
     sensor->setDescription(i18nc("@info", "Write accesses across all disk devices"));
+    sensor->setUnit(KSysGuard::UnitKiloByteRate);
 
     auto memPhysical = m_subsystems["mem"]->object("physical");
     Q_ASSERT(memPhysical);
