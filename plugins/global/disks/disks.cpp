@@ -1,5 +1,6 @@
 /*
     Copyright (c) 2020 David Redondo <kde@david-redondo.de>
+    Copyright (c) 2020 Harald Sitter <sitter@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -187,8 +188,9 @@ DisksPlugin::~DisksPlugin()
 void DisksPlugin::addDevice(const Solid::Device& device)
 {
     auto container = containers()[0];
+    const auto volume = device.as<Solid::StorageVolume>();
     auto access = device.as<Solid::StorageAccess>();
-    if (!access || device.as<Solid::StorageVolume>()->isIgnored()) {
+    if (!access || !volume || volume->isIgnored()) {
         return;
     }
 
