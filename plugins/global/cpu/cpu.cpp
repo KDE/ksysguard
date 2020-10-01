@@ -19,6 +19,8 @@
 
 #include "cpu.h"
 
+#include <KLocalizedString>
+
 CpuObject::CpuObject(const QString &id, const QString &name, SensorContainer *parent)
     : SensorObject(id, name, parent)
     , m_frequency{nullptr}

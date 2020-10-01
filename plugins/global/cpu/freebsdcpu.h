@@ -18,8 +18,6 @@ class FreeBsdCpuPluginPrivate : public CpuPluginPrivate {
 public:
     FreeBsdCpuPluginPrivate(CpuPlugin *q);
     void update() override;
-private:
-    AllCpusObject<FreeBsdCpuObject> *m_allCpusObject;
 };
 
 #endif
