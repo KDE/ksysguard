@@ -92,6 +92,13 @@ if (libpcap_FOUND)
     )
 endif()
 
+find_package(UDev)
+set_package_properties(
+    UDev PROPERTIES
+    TYPE RECOMMENDED
+    PURPOSE "UDev is used for finding graphics cards."
+)
+
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 configure_file(config-workspace.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-workspace.h)
 
