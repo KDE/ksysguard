@@ -59,7 +59,7 @@ void LinuxCpuPluginPrivate::update()
     stat.open(QIODevice::ReadOnly);
     QByteArray line;
     for (QByteArray line = stat.readLine(); !line.isNull(); line = stat.readLine()) {
-        auto values = line.split(' ');
+        auto values = line.simplified().split(' ');
         if (!line.startsWith("cpu")) {
             continue;
         }
