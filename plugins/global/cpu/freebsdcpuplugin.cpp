@@ -42,7 +42,6 @@ FreeBsdCpuObject::FreeBsdCpuObject(const QString &id, const QString &name, Senso
     }
     const QByteArray tjmax = QByteArrayLiteral("dev.cpu.") + id.right(1).toLocal8Bit() + QByteArrayLiteral(".coretemp.tjmax");
     int maxTemperature;
-    size_t maxTemperatureSize = sizeof(maxTemperature);
     // This is only availabel on Intel (using the coretemp driver)
     if (readSysctl(tjmax.constData(), &maxTemperature)) {
         m_temperature->setMax(maxTemperature);
