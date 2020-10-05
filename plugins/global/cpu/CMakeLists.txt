@@ -1,8 +1,8 @@
-add_library(ksysguard_plugin_cpu MODULE  cpu.cpp cpuplugin.cpp)
+add_library(ksysguard_plugin_cpu MODULE  cpu.cpp cpuplugin.cpp usagecomputer.cpp)
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    target_sources(ksysguard_plugin_cpu PRIVATE linuxcpu.cpp)
+    target_sources(ksysguard_plugin_cpu PRIVATE linuxcpu.cpp linuxcpuplugin.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
-    target_sources(ksysguard_plugin_cpu PRIVATE freebsdcpu.cpp)
+    target_sources(ksysguard_plugin_cpu PRIVATE freebsdcpuplugin.cpp)
 endif()
 
 target_link_libraries(ksysguard_plugin_cpu Qt5::Core KSysGuard::StatsBackend KF5::CoreAddons KF5::I18n)

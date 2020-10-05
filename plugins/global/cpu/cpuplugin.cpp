@@ -25,8 +25,8 @@
 
 #include <SensorContainer.h>
 
-#include "freebsdcpu.h"
-#include "linuxcpu.h"
+#include "freebsdcpuplugin.h"
+#include "linuxcpuplugin.h"
 
 CpuPluginPrivate::CpuPluginPrivate(CpuPlugin *q)
     : m_container(new SensorContainer(QStringLiteral("cpu"), i18n("CPUs"), q))

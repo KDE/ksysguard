@@ -22,19 +22,31 @@
 
 #include <SensorObject.h>
 
-class CpuObject : public SensorObject {
-public:
-    CpuObject(const QString &id, const QString &name, SensorContainer *parent);
-
-//     const int physicalId; // NOTE The combination of these two ids is not necessarily unique with hyperthreading
-//     const int coreId;
-protected: 
+class BaseCpuObject : public SensorObject {
+protected:
+    BaseCpuObject(const QString &id, const QString &name, SensorContainer *parent);
     SensorProperty *m_usage;
     SensorProperty *m_system;
     SensorProperty *m_user;
     SensorProperty *m_wait;
+};
+
+class CpuObject : public BaseCpuObject {
+public:
+    CpuObject(const QString &id, const QString &name, SensorContainer *parent);
+
+protected:
     SensorProperty *m_frequency;
     SensorProperty *m_temperature;
+};
+
+class AllCpusObject : public BaseCpuObject {
+public:
+    AllCpusObject(unsigned int cpuCount, unsigned int coreCount, SensorContainer *parent);
+
+protected:
+    SensorProperty *m_cpuCount;
+    SensorProperty *m_coreCount;
 };
 
 #endif

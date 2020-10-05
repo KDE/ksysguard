@@ -3,15 +3,22 @@
 
 #include "cpu.h"
 #include "cpuplugin_p.h"
+#include "usagecomputer.h"
 
 class FreeBsdCpuObject : public CpuObject {
 public:
     FreeBsdCpuObject(const QString &id, const QString &name, SensorContainer *parent);
     void update(long system, long user, long idle);
 private:
-    long m_totalTicks;
-    long m_systemTicks;
-    long m_userTicks;
+    UsageComputer m_usageComputer;
+};
+
+class FreeBsdAllCpusObject : public AllCpusObject {
+public:
+    using AllCpusObject::AllCpusObject;
+    void update(long system, long user, long idle);
+private:
+    UsageComputer m_usageComputer;
 };
 
 class FreeBsdCpuPluginPrivate : public CpuPluginPrivate {

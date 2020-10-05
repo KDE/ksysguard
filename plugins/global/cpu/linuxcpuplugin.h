@@ -16,20 +16,25 @@
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
+#ifndef LINUXCPUPLUGIN_H
+#define LINUXCPUPLUGIN_H
 
-#ifndef CPUPLUGIN_P_H
-#define CPUPLUGIN_P_H
+#include <QHash>
 
-class CpuPlugin;
-class SensorContainer;
+#include "cpuplugin_p.h"
 
-class CpuPluginPrivate {
+struct sensors_chip_name;
+class LinuxCpuObject;
+
+class LinuxCpuPluginPrivate : public CpuPluginPrivate {
 public:
-    CpuPluginPrivate(CpuPlugin *q);
-    virtual ~CpuPluginPrivate() =  default;
-    virtual void update() {};
-
-    SensorContainer *m_container;
+    LinuxCpuPluginPrivate(CpuPlugin *q);
+    void update() override;
+private:
+    void addSensors();
+    void addSensorsIntel(const sensors_chip_name * const chipName);
+    void addSensorsAmd(const sensors_chip_name * const chipName);
+    QMultiHash<QPair<unsigned int, unsigned int>, LinuxCpuObject * const> m_cpusBySystemIds;
 };
 
 #endif

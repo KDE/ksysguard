@@ -21,14 +21,9 @@
 
 #include <KLocalizedString>
 
-CpuObject::CpuObject(const QString &id, const QString &name, SensorContainer *parent)
+BaseCpuObject::BaseCpuObject(const QString &id, const QString &name, SensorContainer *parent)
     : SensorObject(id, name, parent)
-    , m_frequency{nullptr}
-    , m_temperature{nullptr}
 {
-    auto n = new SensorProperty(QStringLiteral("name"), i18nc("@title", "Name"), name, this);
-    n->setVariantType(QVariant::String);
-
     m_usage = new SensorProperty(QStringLiteral("usage"), i18nc("@title", "Total Usage"), this);
     m_usage->setPrefix(name);
     m_usage->setShortName(i18nc("@title, Short for 'Total Usage'", "Usage"));
@@ -56,19 +51,36 @@ CpuObject::CpuObject(const QString &id, const QString &name, SensorContainer *pa
     m_wait->setVariantType(QVariant::Double);
     m_wait->setMax(100);
 
-    if (id != QStringLiteral("all"))
-    {
-        m_frequency = new SensorProperty(QStringLiteral("frequency"), i18nc("@title", "Current Frequency"), this);
-        m_frequency->setPrefix(name);
-        m_frequency->setShortName(i18nc("@title, Short for 'Current Frequency'", "Frequency"));
-        m_frequency->setDescription(i18nc("@info", "Current frequency of the CPU"));
-        m_frequency->setVariantType(QVariant::Double);
-        m_frequency->setUnit(KSysGuard::Unit::UnitMegaHertz);
+    auto n = new SensorProperty(QStringLiteral("name"), i18nc("@title", "Name"), name, this);
+    n->setVariantType(QVariant::String);
+}
 
-        m_temperature = new SensorProperty(QStringLiteral("temperature"), i18nc("@title", "Current Temperature"), this);
-        m_temperature->setPrefix(name);
-        m_temperature->setShortName(i18nc("@title, Short for Current Temperatur", "Temperature"));
-        m_temperature->setVariantType(QVariant::Double);
-        m_temperature->setUnit(KSysGuard::Unit::UnitCelsius);
-    }
+CpuObject::CpuObject(const QString &id, const QString &name, SensorContainer *parent)
+    : BaseCpuObject(id, name, parent)
+{
+
+    m_frequency = new SensorProperty(QStringLiteral("frequency"), i18nc("@title", "Current Frequency"), this);
+    m_frequency->setPrefix(name);
+    m_frequency->setShortName(i18nc("@title, Short for 'Current Frequency'", "Frequency"));
+    m_frequency->setDescription(i18nc("@info", "Current frequency of the CPU"));
+    m_frequency->setVariantType(QVariant::Double);
+    m_frequency->setUnit(KSysGuard::Unit::UnitMegaHertz);
+
+    m_temperature = new SensorProperty(QStringLiteral("temperature"), i18nc("@title", "Current Temperature"), this);
+    m_temperature->setPrefix(name);
+    m_temperature->setShortName(i18nc("@title, Short for Current Temperatur", "Temperature"));
+    m_temperature->setVariantType(QVariant::Double);
+    m_temperature->setUnit(KSysGuard::Unit::UnitCelsius);
+}
+
+AllCpusObject::AllCpusObject(unsigned int cpuCount, unsigned int coreCount, SensorContainer *parent)
+    : BaseCpuObject(QStringLiteral("all"), i18nc("@title", "All"), parent)
+{
+    auto cpus = new SensorProperty(QStringLiteral("cpuCount"), i18nc("@title", "Number of CPUs"), cpuCount, this);
+    cpus->setShortName(i18nc("@title, Short fort 'Number of CPUs'", "CPUs"));
+    cpus->setDescription(i18nc("@info", "Number of physical CPUs installed in the system"));
+
+    auto cores = new SensorProperty(QStringLiteral("coreCount"), i18nc("@title", "Number of Cores"), coreCount, this);
+    cores->setShortName(i18nc("@title, Short fort 'Number of Cores'", "Cores"));
+    cores->setDescription(i18nc("@info", "Number of CPU cores across all physical CPUS"));
 }
