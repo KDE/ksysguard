@@ -24,29 +24,30 @@
 BaseCpuObject::BaseCpuObject(const QString &id, const QString &name, SensorContainer *parent)
     : SensorObject(id, name, parent)
 {
-    m_usage = new SensorProperty(QStringLiteral("usage"), i18nc("@title", "Total Usage"), this);
+    m_usage = new SensorProperty(QStringLiteral("usage"), i18nc("@title", "Total Load"), this);
     m_usage->setPrefix(name);
-    m_usage->setShortName(i18nc("@title, Short for 'Total Usage'", "Usage"));
+    m_usage->setShortName(i18nc("@title, Short for 'Total Load'", "Load"));
     m_usage->setUnit(KSysGuard::UnitPercent);
     m_usage->setVariantType(QVariant::Double);
     m_usage->setMax(100);
 
-    m_system = new SensorProperty(QStringLiteral("system"), i18nc("@title", "System Usage"), this);
+    m_system = new SensorProperty(QStringLiteral("system"), i18nc("@title", "System Load"), this);
     m_system->setPrefix(name);
-    m_system->setShortName(i18nc("@title, Short for 'System Usage'", "System"));
+    m_system->setShortName(i18nc("@title, Short for 'System Load'", "System"));
     m_system->setUnit(KSysGuard::UnitPercent);
     m_system->setVariantType(QVariant::Double);
     m_system->setMax(100);
 
-    m_user = new SensorProperty(QStringLiteral("user"), i18nc("@title", "User Usage"), this);
+    m_user = new SensorProperty(QStringLiteral("user"), i18nc("@title", "User Load"), this);
     m_user->setPrefix(name);
-    m_user->setShortName(i18nc("@title, Short for 'User Usage'", "User"));
+    m_user->setShortName(i18nc("@title, Short for 'User Load'", "User"));
     m_user->setUnit(KSysGuard::UnitPercent);
     m_user->setVariantType(QVariant::Double);
     m_user->setMax(100);
 
-    m_wait = new SensorProperty(QStringLiteral("wait"), i18nc("@title", "Wait"), this);
+    m_wait = new SensorProperty(QStringLiteral("wait"), i18nc("@title", "Wait Load"), this);
     m_wait->setPrefix(name);
+    m_wait->setShortName(i18nc("@title, Short for 'Wait Load'", "Wait"));
     m_wait->setUnit(KSysGuard::UnitPercent);
     m_wait->setVariantType(QVariant::Double);
     m_wait->setMax(100);
