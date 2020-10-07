@@ -13,6 +13,7 @@
 #include <libudev.h>
 
 #include "LinuxAmdGpu.h"
+#include "LinuxNvidiaGpu.h"
 
 // Vendor ID strings, as used in sysfs
 static const char *amdVendor = "0x1002";
@@ -44,21 +45,24 @@ void LinuxBackend::start()
 
         auto vendor = QByteArray(udev_device_get_sysattr_value(device, "vendor"));
 
+        auto gpuId = QStringLiteral("gpu%1").arg(gpuCounter);
+        auto gpuName = i18nc("@title %1 is GPU number", "GPU %1", gpuCounter + 1);
+
         GpuDevice *gpu = nullptr;
         if (vendor == amdVendor) {
-            gpu = new LinuxAmdGpu{QStringLiteral("gpu%1").arg(gpuCounter), i18nc("@title %1 is GPU number", "GPU %1", gpuCounter + 1), device};
-        } else if (vendor == intelVendor) {
-
+            gpu = new LinuxAmdGpu{gpuId, gpuName, device};
         } else if (vendor == nvidiaVendor) {
-
+            gpu = new LinuxNvidiaGpu{gpuCounter, gpuId, gpuName};
+        } else {
+            qDebug() << "Found unsupported GPU:" << path;
+            udev_device_unref(device);
+            continue;
         }
 
-        if (gpu) {
-            gpuCounter++;
-            gpu->initialize();
-            m_devices.append(gpu);
-            Q_EMIT deviceAdded(gpu);
-        }
+        gpuCounter++;
+        gpu->initialize();
+        m_devices.append(gpu);
+        Q_EMIT deviceAdded(gpu);
 
         udev_device_unref(device);
     }
