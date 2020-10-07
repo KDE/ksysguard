@@ -17,10 +17,49 @@ static double readCpuFreq(const QString &cpuId, const QString &attribute, bool &
     return 0;
 }
 
-LinuxCpuObject::LinuxCpuObject(const QString &id, const QString &name, SensorContainer *parent, double frequency)
-    : CpuObject(id, name, parent)
+TemperatureSensor::TemperatureSensor(const QString& id, SensorObject* parent)
+    : SensorProperty(id, parent)
     , m_sensorChipName{nullptr}
     , m_temperatureSubfeature{-1}
+{
+}
+
+void TemperatureSensor::setFeature(const sensors_chip_name *const chipName, const sensors_feature *const feature)
+{
+#ifdef HAVE_SENSORS
+    m_sensorChipName = chipName;
+    const sensors_subfeature * const temperature = sensors_get_subfeature(chipName, feature, SENSORS_SUBFEATURE_TEMP_INPUT);
+    if (temperature) {
+        m_temperatureSubfeature = temperature->number;
+    }
+    // Typically temp_emergency > temp_crit > temp_max, but not every processor has them
+    // see https://www.kernel.org/doc/html/latest/hwmon/sysfs-interface.html
+    double value;
+    for (auto subfeatureType : {SENSORS_SUBFEATURE_TEMP_EMERGENCY, SENSORS_SUBFEATURE_TEMP_CRIT, SENSORS_SUBFEATURE_TEMP_MAX}) {
+        const sensors_subfeature * const subfeature = sensors_get_subfeature(chipName, feature, subfeatureType);
+        if (subfeature && sensors_get_value(chipName, subfeature->number, &value) == 0) {
+            setMax(value);
+            break;
+        }
+    }
+#endif
+}
+
+void TemperatureSensor::update()
+{
+#ifdef HAVE_SENSORS
+    if (m_sensorChipName && m_temperatureSubfeature != -1) {
+        double value;
+        if (sensors_get_value(m_sensorChipName, m_temperatureSubfeature, &value) == 0) {
+            setValue(value);
+        }
+    }
+#endif
+}
+
+LinuxCpuObject::LinuxCpuObject(const QString &id, const QString &name, SensorContainer *parent, double frequency)
+    : CpuObject(id, name, parent)
+
 {
     m_frequency->setValue(frequency);
     bool ok;
@@ -34,25 +73,12 @@ LinuxCpuObject::LinuxCpuObject(const QString &id, const QString &name, SensorCon
     }
 }
 
-void LinuxCpuObject::setTemperatureSensor(const sensors_chip_name * const chipName, const sensors_feature * const feature)
+void LinuxCpuObject::makeSensors()
 {
-#ifdef HAVE_SENSORS
-    m_sensorChipName = chipName;
-    const sensors_subfeature * const temperature = sensors_get_subfeature(chipName, feature, SENSORS_SUBFEATURE_TEMP_INPUT);
-    if (temperature) {
-        m_temperatureSubfeature = temperature->number;
-    }
-    // Typically temp_emergency > temp_crit > temp_max, but not every processor has them  
-    // see https://www.kernel.org/doc/html/latest/hwmon/sysfs-interface.html
-    double value;
-    for (auto subfeatureType : {SENSORS_SUBFEATURE_TEMP_EMERGENCY, SENSORS_SUBFEATURE_TEMP_CRIT, SENSORS_SUBFEATURE_TEMP_MAX}) {
-        const sensors_subfeature * const subfeature = sensors_get_subfeature(chipName, feature, subfeatureType);
-        if (subfeature && sensors_get_value(chipName, subfeature->number, &value) == 0) {
-            m_temperature->setMax(value);
-            break;
-        }
-    }
-#endif
+    BaseCpuObject::makeSensors();
+    m_frequency = new SensorProperty(QStringLiteral("frequency"), this);
+    m_temperatureSensor = new TemperatureSensor(QStringLiteral("temperature"), this);
+    m_temperature = m_temperatureSensor;
 }
 
 void LinuxCpuObject::update(unsigned long long system, unsigned long long user, unsigned long long wait, unsigned long long idle)
@@ -83,14 +109,7 @@ void LinuxCpuObject::update(unsigned long long system, unsigned long long user, 
     // frequency value changed even if the cpu apparently doesn't use CPUFreq?
 
     // Third update temperature
-#ifdef HAVE_SENSORS
-    if (m_sensorChipName && m_temperatureSubfeature != -1) {
-        double value;
-        if (sensors_get_value(m_sensorChipName, m_temperatureSubfeature, &value) == 0) {
-            m_temperature->setValue(value);
-        }
-    }
-#endif
+    m_temperatureSensor->update();
 }
 
 void LinuxAllCpusObject::update(unsigned long long system, unsigned long long user, unsigned long long wait, unsigned long long idle) {
@@ -100,6 +119,11 @@ void LinuxAllCpusObject::update(unsigned long long system, unsigned long long us
     m_user->setValue(m_usageComputer.userUsage);
     m_wait->setValue(m_usageComputer.waitUsage);
     m_usage->setValue(m_usageComputer.totalUsage);
+}
+
+TemperatureSensor *LinuxCpuObject::temperatureSensor()
+{
+    return m_temperatureSensor;
 }
 
 

@@ -23,8 +23,13 @@
 #include <SensorObject.h>
 
 class BaseCpuObject : public SensorObject {
+public:
 protected:
     BaseCpuObject(const QString &id, const QString &name, SensorContainer *parent);
+
+    virtual void initialize();
+    virtual void makeSensors();
+
     SensorProperty *m_usage;
     SensorProperty *m_system;
     SensorProperty *m_user;
@@ -36,6 +41,9 @@ public:
     CpuObject(const QString &id, const QString &name, SensorContainer *parent);
 
 protected:
+    void initialize() override;
+    void makeSensors() override;
+
     SensorProperty *m_frequency;
     SensorProperty *m_temperature;
 };
@@ -45,6 +53,9 @@ public:
     AllCpusObject(unsigned int cpuCount, unsigned int coreCount, SensorContainer *parent);
 
 protected:
+    void initialize() override;
+    void makeSensors() override;
+
     SensorProperty *m_cpuCount;
     SensorProperty *m_coreCount;
 };

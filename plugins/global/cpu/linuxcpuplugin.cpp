@@ -156,7 +156,7 @@ void LinuxCpuPluginPrivate::addSensorsIntel(const sensors_chip_name * const chip
             // Naturally they share the same temperature sensor and have the same coreId.
             auto cpu_range = m_cpusBySystemIds.equal_range({physicalId, feature.key()});
             for (auto cpu_it = cpu_range.first; cpu_it != cpu_range.second; ++cpu_it) {
-                (*cpu_it)->setTemperatureSensor(chipName, feature.value());
+                (*cpu_it)->temperatureSensor()->setFeature(chipName, feature.value());
             }
         }
     }
@@ -196,7 +196,7 @@ void LinuxCpuPluginPrivate::addSensorsAmd(const sensors_chip_name * const chipNa
 
     auto setSingleSensor = [this, chipName] (const sensors_feature * const feature) {
         for (auto &cpu : m_cpusBySystemIds) {
-            cpu->setTemperatureSensor(chipName, feature);
+            cpu->temperatureSensor()->setFeature(chipName, feature);
         }
     };
     if (tdie) {
