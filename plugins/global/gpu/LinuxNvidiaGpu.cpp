@@ -41,7 +41,7 @@ void LinuxNvidiaGpu::initialize()
     }
 
     auto queryResult = s_smiProcess->query();
-    if (m_index >= queryResult.length()) {
+    if (m_index >= int(queryResult.size())) {
         qWarning() << "Could not retrieve information for NVidia GPU" << m_index;
     } else {
         auto data = queryResult.at(m_index);

@@ -37,7 +37,7 @@ public:
 
     bool isSupported() const;
 
-    QVector<GpuQueryResult> query();
+    std::vector<GpuQueryResult> query();
 
     void ref();
     void unref();
@@ -48,6 +48,7 @@ private:
     void readStatisticsData();
 
     QString m_smiPath;
+    std::vector<GpuQueryResult> m_queryResult;
     std::unique_ptr<QProcess> m_process = nullptr;
     int m_references = 0;
 };

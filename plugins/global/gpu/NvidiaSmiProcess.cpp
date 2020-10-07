@@ -19,12 +19,14 @@ bool NvidiaSmiProcess::isSupported() const
     return !m_smiPath.isEmpty();
 }
 
-QVector<NvidiaSmiProcess::GpuQueryResult> NvidiaSmiProcess::query()
+std::vector<NvidiaSmiProcess::GpuQueryResult> NvidiaSmiProcess::query()
 {
-    QVector<NvidiaSmiProcess::GpuQueryResult> result;
-
     if (!isSupported()) {
-        return result;
+        return m_queryResult;
+    }
+
+    if (!m_queryResult.empty()) {
+        return m_queryResult;
     }
 
     // Read and parse the result of "nvidia-smi query"
@@ -38,7 +40,7 @@ QVector<NvidiaSmiProcess::GpuQueryResult> NvidiaSmiProcess::query()
     queryProcess.start();
 
     int gpuCounter = 0;
-    GpuQueryResult *data = &result[0];
+    auto data = m_queryResult.end();
 
     bool readMemory = false;
     bool readMaxClocks = false;
@@ -50,13 +52,17 @@ QVector<NvidiaSmiProcess::GpuQueryResult> NvidiaSmiProcess::query()
 
         auto line = queryProcess.readLine();
         if (line.startsWith("GPU ")) {
-            // Start of GPU properties block.
-            result.append(GpuQueryResult{});
-            data = &result[gpuCounter];
+            // Start of GPU properties block. Ensure we have a new data object
+            // to write to.
+            data = m_queryResult.emplace(m_queryResult.end());
             gpuCounter++;
         }
 
         if ((readMemory || readMaxClocks) && !line.startsWith("        ")) {
+            // Memory/clock information does not have a unique prefix but should
+            // be indented more than their "headers". So if the indentation is
+            // less, we are no longer in an info block and should treat it as
+            // such.
             readMemory = false;
             readMaxClocks = false;
         }
@@ -90,7 +96,7 @@ QVector<NvidiaSmiProcess::GpuQueryResult> NvidiaSmiProcess::query()
         }
     }
 
-    return result;
+    return m_queryResult;
 }
 
 void NvidiaSmiProcess::ref()
