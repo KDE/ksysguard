@@ -34,23 +34,25 @@ QVector<NvidiaSmiProcess::GpuQueryResult> NvidiaSmiProcess::query()
 
     QProcess queryProcess;
     queryProcess.setProgram(m_smiPath);
-    queryProcess.setArguments({QStringLiteral("query")});
+    queryProcess.setArguments({QStringLiteral("--query")});
     queryProcess.start();
-    queryProcess.waitForReadyRead();
 
     int gpuCounter = 0;
-    GpuQueryResult &data = result[0];
+    GpuQueryResult *data = &result[0];
 
     bool readMemory = false;
     bool readMaxClocks = false;
 
-    while (queryProcess.canReadLine()) {
-        auto line = queryProcess.readLine();
+    while (queryProcess.waitForReadyRead()) {
+        if (!queryProcess.canReadLine()) {
+            continue;
+        }
 
+        auto line = queryProcess.readLine();
         if (line.startsWith("GPU ")) {
             // Start of GPU properties block.
             result.append(GpuQueryResult{});
-            data = result[gpuCounter];
+            data = &result[gpuCounter];
             gpuCounter++;
         }
 
@@ -60,7 +62,7 @@ QVector<NvidiaSmiProcess::GpuQueryResult> NvidiaSmiProcess::query()
         }
 
         if (line.startsWith("    Product Name")) {
-            data.name = line.mid(line.indexOf(':')).trimmed();
+            data->name = line.mid(line.indexOf(':') + 1).trimmed();
         }
 
         if (line.startsWith("    FB Memory Usage") || line.startsWith("    BAR1 Memory Usage")) {
@@ -72,19 +74,19 @@ QVector<NvidiaSmiProcess::GpuQueryResult> NvidiaSmiProcess::query()
         }
 
         if (line.startsWith("        Total") && readMemory) {
-            data.totalMemory += std::atoi(line.mid(line.indexOf(':')));
+            data->totalMemory += std::atoi(line.mid(line.indexOf(':') + 1));
         }
 
         if (line.startsWith("        GPU Shutdown Temp")) {
-            data.maxTemperature = std::atoi(line.mid(line.indexOf(':')));
+            data->maxTemperature = std::atoi(line.mid(line.indexOf(':') + 1));
         }
 
         if (line.startsWith("        Graphics") && readMaxClocks) {
-            data.maxCoreFrequency = std::atoi(line.mid(line.indexOf(':')));
+            data->maxCoreFrequency = std::atoi(line.mid(line.indexOf(':') + 1));
         }
 
         if (line.startsWith("        Memory") && readMaxClocks) {
-            data.maxMemoryFrequency = std::atoi(line.mid(line.indexOf(':')));
+            data->maxMemoryFrequency = std::atoi(line.mid(line.indexOf(':') + 1));
         }
     }
 
