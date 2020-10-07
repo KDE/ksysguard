@@ -49,7 +49,10 @@ void GpuDevice::initialize()
     m_temperatureProperty->setName(i18nc("@title", "Temperature"));
     m_temperatureProperty->setPrefix(name());
     m_temperatureProperty->setUnit(KSysGuard::UnitCelsius);
+}
 
+void GpuDevice::update()
+{
 }
 
 void GpuDevice::makeSensors()

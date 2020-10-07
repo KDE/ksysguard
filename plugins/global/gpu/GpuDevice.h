@@ -19,7 +19,7 @@ public:
     ~GpuDevice() override = default;
 
     virtual void initialize();
-    virtual void update() = 0;
+    virtual void update();
 
 protected:
     virtual void makeSensors();
