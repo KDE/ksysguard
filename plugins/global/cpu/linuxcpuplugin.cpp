@@ -63,9 +63,10 @@ LinuxCpuPluginPrivate::LinuxCpuPluginPrivate(CpuPlugin *q)
         }
         const QString name = i18nc("@title", "CPU %1 Core %2", physicalId + 1, ++numCores[physicalId]);
         auto cpu = new LinuxCpuObject(QStringLiteral("cpu%1").arg(processor), name, m_container, frequency);
+        m_cpus.push_back(cpu);
         m_cpusBySystemIds.insert({physicalId, coreId}, cpu);
     }
-    new LinuxAllCpusObject(numCores.keys().size(), numCores.size(), m_container);
+    m_allCpus = new LinuxAllCpusObject(numCores.keys().size(), numCores.size(), m_container);
 
     addSensors();
 }
@@ -94,10 +95,9 @@ void LinuxCpuPluginPrivate::update()
 
         // Total values just start with "cpu", single cpus are numbered cpu0, cpu1, ...
         if (line.startsWith("cpu ")) {
-            auto cpu  = static_cast<LinuxAllCpusObject*>(m_container->object(QStringLiteral("all")));
-            cpu->update(system + irq + softirq, user + nice , iowait + steal, idle);
+            m_allCpus->update(system + irq + softirq, user + nice , iowait + steal, idle);
         } else if (line.startsWith("cpu")) {
-            auto cpu = static_cast<LinuxCpuObject*>(m_container->object(line.left(line.indexOf(' '))));
+            auto cpu = m_cpus[std::atoi(line.mid(strlen("cpu")))];
             cpu->update(system + irq + softirq, user + nice , iowait + steal, idle);
         }
     }

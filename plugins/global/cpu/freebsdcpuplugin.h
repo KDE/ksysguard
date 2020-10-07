@@ -25,6 +25,9 @@ class FreeBsdCpuPluginPrivate : public CpuPluginPrivate {
 public:
     FreeBsdCpuPluginPrivate(CpuPlugin *q);
     void update() override;
+private:
+    FreeBsdAllCpusObject *m_allCpus;
+    QVector<FreeBsdCpuObject*> m_cpus;
 };
 
 #endif

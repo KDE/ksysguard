@@ -25,6 +25,7 @@
 
 struct sensors_chip_name;
 class LinuxCpuObject;
+class LinuxAllCpusObject;
 
 class LinuxCpuPluginPrivate : public CpuPluginPrivate {
 public:
@@ -34,6 +35,9 @@ private:
     void addSensors();
     void addSensorsIntel(const sensors_chip_name * const chipName);
     void addSensorsAmd(const sensors_chip_name * const chipName);
+
+    LinuxAllCpusObject *m_allCpus;
+    QVector<LinuxCpuObject *> m_cpus;
     QMultiHash<QPair<unsigned int, unsigned int>, LinuxCpuObject * const> m_cpusBySystemIds;
 };
 

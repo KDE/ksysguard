@@ -89,9 +89,9 @@ FreeBsdCpuPluginPrivate::FreeBsdCpuPluginPrivate(CpuPlugin* q)
     int numCpu;
     readSysctl("hw.ncpu", &numCpu);
     for (int i = 0; i < numCpu; ++i) {
-        new FreeBsdCpuObject(QStringLiteral("cpu%1").arg(i), i18nc("@title", "CPU %1", i + 1), m_container);
+        m_cpus.push_back(new FreeBsdCpuObject(QStringLiteral("cpu%1").arg(i), i18nc("@title", "CPU %1", i + 1), m_container));
     }
-    new FreeBsdAllCpusObject(numCpu, numCpu, m_container);
+    m_allCpus = new FreeBsdAllCpusObject(numCpu, numCpu, m_container);
 }
 
 void FreeBsdCpuPluginPrivate::update()
@@ -104,13 +104,13 @@ void FreeBsdCpuPluginPrivate::update()
     size_t cpTimesSize = sizeof(long) *  cp_times.size();
     if (readSysctl("kern.cp_times", cp_times.data(), cpTimesSize)) {//, &cpTimesSize, nullptr, 0) != -1) {
         for (unsigned int  i = 0; i < numCores; ++i) {
-            auto cpu = static_cast<FreeBsdCpuObject*>(m_container->object(QStringLiteral("cpu%1").arg(i)));
+            auto cpu = m_cpus[i];
             updateCpu(cpu, &cp_times[CPUSTATES * i]);
         }
     }
     // update total values
     long cp_time[CPUSTATES];
     if (readSysctl("kern.cp_time", &cp_time)) {
-        updateCpu(static_cast<FreeBsdCpuObject*>(m_container->object(QStringLiteral("all"))), cp_time);
+        updateCpu(m_allCpus, cp_time);
     }
 }
