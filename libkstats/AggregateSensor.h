@@ -54,6 +54,8 @@ public:
     void addSensor(SensorProperty *sensor);
     void removeSensor(const QString &sensorPath);
 
+    int matchCount() const;
+
 private:
     void updateSensors();
     void sensorDataChanged(SensorProperty *sensor);

@@ -174,6 +174,11 @@ void AggregateSensor::removeSensor(const QString &sensorPath)
     }
 }
 
+int AggregateSensor::matchCount() const
+{
+    return m_sensors.size();
+}
+
 void AggregateSensor::updateSensors()
 {
     if (!m_matchObjects.isValid()) {
