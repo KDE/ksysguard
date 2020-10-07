@@ -39,7 +39,6 @@ KSGRDIface::KSGRDIface(QObject *parent, const QVariantList &args)
     };
     registerSubsystem("acpi");
     registerSubsystem("lmsensors");
-    registerSubsystem("mem");
     registerSubsystem("uptime");
     registerSubsystem("system");
 
@@ -63,7 +62,6 @@ KSGRDIface::KSGRDIface(QObject *parent, const QVariantList &args)
         }
     });
     e.exec();
-    addAggregateSensors();
 }
 
 KSGRDIface::~KSGRDIface()
@@ -297,50 +295,6 @@ void KSGRDIface::answerReceived(int id, const QList<QByteArray> &answer)
         return;
     }
     onSensorUpdated(id, answer);
-}
-
-void KSGRDIface::addAggregateSensors()
-{
-    auto memPhysical = m_subsystems["mem"]->object("physical");
-    Q_ASSERT(memPhysical);
-    if (!memPhysical) {
-        return;
-    }
-
-    PercentageSensor *appLevel = new PercentageSensor(memPhysical, "applicationlevel", i18nc("@title", "Application Memory Percentage"));
-    appLevel->setShortName(i18nc("@title Application Memory Percentage", "Application"));
-    appLevel->setBaseSensor(memPhysical->sensor("application"));
-    appLevel->setDescription(i18nc("@info", "Percentage of memory taken by applications."));
-
-    PercentageSensor *bufLevel = new PercentageSensor(memPhysical, "buflevel", i18nc("@title", "Buffer Memory Percentage"));
-    bufLevel->setShortName(i18nc("@title Buffer Memory Percentage", "Buffer"));
-    bufLevel->setBaseSensor(memPhysical->sensor("buf"));
-    bufLevel->setDescription(i18nc("@info", "Percentage of memory taken by the buffer."));
-
-    PercentageSensor *cacheLevel = new PercentageSensor(memPhysical, "cachelevel", i18nc("@title", "Cache Memory Percentage"));
-    cacheLevel->setShortName(i18nc("@title Cache Memory Percentage", "Cache"));
-    cacheLevel->setBaseSensor(memPhysical->sensor("cached"));
-    cacheLevel->setDescription(i18nc("@info", "Percentage of memory taken by the cache."));
-
-    PercentageSensor *freeLevel = new PercentageSensor(memPhysical, "freelevel", i18nc("@title", "Free Memory Percentage"));
-    freeLevel->setShortName(i18nc("@title Free Memory Percentage", "Free"));
-    freeLevel->setBaseSensor(memPhysical->sensor("free"));
-    freeLevel->setDescription(i18nc("@info", "Percentage of free memory."));
-
-    PercentageSensor *usedLevel = new PercentageSensor(memPhysical, "usedlevel", i18nc("@title", "Used Memory Percentage"));
-    usedLevel->setShortName(i18nc("@title Used Memory Percentage", "Used"));
-    usedLevel->setBaseSensor(memPhysical->sensor("used"));
-    usedLevel->setDescription(i18nc("@info", "Percentage of used memory."));
-
-    PercentageSensor *availableLevel = new PercentageSensor(memPhysical, "availablelevel", i18nc("@title", "Available Memory Percentage"));
-    availableLevel->setShortName(i18nc("@title Available Memory Percentage", "Available"));
-    availableLevel->setBaseSensor(memPhysical->sensor("available"));
-    availableLevel->setDescription(i18nc("@info", "Percentage of available memory."));
-
-    PercentageSensor *allocatedLevel = new PercentageSensor(memPhysical, "allocatedlevel", i18nc("@title", "Allocated Memory Percentage"));
-    allocatedLevel->setShortName(i18nc("@title Allocated Memory Percentage", "Allocated"));
-    allocatedLevel->setBaseSensor(memPhysical->sensor("allocated"));
-    allocatedLevel->setDescription(i18nc("@info", "Percentage of allocated memory."));
 }
 
 QString KSGRDIface::shortNameFor(const QString &key)

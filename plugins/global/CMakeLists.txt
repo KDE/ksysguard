@@ -5,7 +5,8 @@ add_subdirectory(network)
 add_subdirectory(power)
 add_subdirectory(disks)
 add_subdirectory(cpu)
-
 if(UDev_FOUND)
     add_subdirectory(gpu)
 endif()
+add_subdirectory(memory)
+
