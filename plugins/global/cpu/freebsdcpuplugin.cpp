@@ -50,6 +50,10 @@ FreeBsdCpuObject::FreeBsdCpuObject(const QString &id, const QString &name, Senso
 
 void FreeBsdCpuObject::update(long system, long user, long idle)
 {
+    if (!isSubscribed()) {
+        return;
+    }
+
     // No wait usage on FreeBSD
     m_usageComputer.setTicks(system, user, 0, idle);
 
@@ -96,6 +100,10 @@ FreeBsdCpuPluginPrivate::FreeBsdCpuPluginPrivate(CpuPlugin* q)
 
 void FreeBsdCpuPluginPrivate::update()
 {
+    auto isSubscribed = [] (const SensorObject *o) {return o->isSubscribed();};
+    if (std::none_of(m_container->objects().cbegin(), m_container->objects().cend(), isSubscribed)) {
+        return;
+    }
     auto updateCpu = [] (auto *cpu, long *cp_time){
         cpu->update(cp_time[CP_SYS + CP_INTR], cp_time[CP_USER] + cp_time[CP_NICE], cp_time[CP_IDLE]);
     };

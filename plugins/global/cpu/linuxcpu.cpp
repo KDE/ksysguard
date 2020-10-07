@@ -57,6 +57,10 @@ void LinuxCpuObject::setTemperatureSensor(const sensors_chip_name * const chipNa
 
 void LinuxCpuObject::update(unsigned long long system, unsigned long long user, unsigned long long wait, unsigned long long idle)
 {
+    if (!isSubscribed()) {
+        return;
+    }
+
     // First update usages
     m_usageComputer.setTicks(system, user, wait, idle);
 

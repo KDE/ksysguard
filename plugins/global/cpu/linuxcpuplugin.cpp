@@ -73,6 +73,11 @@ LinuxCpuPluginPrivate::LinuxCpuPluginPrivate(CpuPlugin *q)
 
 void LinuxCpuPluginPrivate::update()
 {
+    auto isSubscribed = [] (const SensorObject *o) {return o->isSubscribed();};
+    if (std::none_of(m_container->objects().cbegin(), m_container->objects().cend(), isSubscribed)) {
+        return;
+    }
+
     // Parse /proc/stat to get usage values. The format is described at
     // https://www.kernel.org/doc/html/latest/filesystems/proc.html#miscellaneous-kernel-statistics-in-proc-stat
     QFile stat("/proc/stat");
