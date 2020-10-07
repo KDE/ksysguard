@@ -28,8 +28,7 @@ protected:
     SensorProperty *m_usageProperty;
     SensorProperty *m_totalVramProperty;
     SensorProperty *m_usedVramProperty;
-    SensorProperty *m_coreTemperatureProperty;
-    SensorProperty *m_memoryTemperatureProperty;
+    SensorProperty *m_temperatureProperty;
     SensorProperty *m_coreFrequencyProperty;
     SensorProperty *m_memoryFrequencyProperty;
 };

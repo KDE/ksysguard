@@ -79,7 +79,7 @@ void LinuxAmdGpu::initialize()
 
     result = udev_device_get_sysattr_value(m_device, m_coreTemperatureMaxPath.toLocal8Bit());
     if (result) {
-        m_coreTemperatureProperty->setMax(std::atoi(result) / 1000);
+        m_temperatureProperty->setMax(std::atoi(result) / 1000);
     }
 }
 
@@ -119,13 +119,11 @@ void LinuxAmdGpu::makeSensors()
     m_memoryFrequencyProperty = sensor;
     m_sysFsSensors << sensor;
 
-    sensor = new SysFsSensor(QStringLiteral("coreTemperature"), devicePath % QLatin1Char('/') % m_coreTemperatureCurrentPath, this);
+    sensor = new SysFsSensor(QStringLiteral("temperature"), devicePath % QLatin1Char('/') % m_coreTemperatureCurrentPath, this);
     sensor->setConvertFunction([](const QByteArray &input) {
         auto result = std::atoi(input);
         return result / 1000;
     });
-    m_coreTemperatureProperty = sensor;
+    m_temperatureProperty = sensor;
     m_sysFsSensors << sensor;
-
-    m_memoryTemperatureProperty = new SensorProperty(QStringLiteral("memoryTemperature"), this);
 }

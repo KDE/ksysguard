@@ -46,13 +46,10 @@ void GpuDevice::initialize()
     m_memoryFrequencyProperty->setPrefix(name());
     m_memoryFrequencyProperty->setUnit(KSysGuard::UnitMegaHertz);
 
-    m_coreTemperatureProperty->setName(i18nc("@title", "Temperature"));
-    m_coreTemperatureProperty->setPrefix(name());
-    m_coreTemperatureProperty->setUnit(KSysGuard::UnitCelsius);
+    m_temperatureProperty->setName(i18nc("@title", "Temperature"));
+    m_temperatureProperty->setPrefix(name());
+    m_temperatureProperty->setUnit(KSysGuard::UnitCelsius);
 
-    m_memoryTemperatureProperty->setName(i18nc("@title", "Memory Temperature"));
-    m_memoryTemperatureProperty->setPrefix(name());
-    m_memoryTemperatureProperty->setUnit(KSysGuard::UnitCelsius);
 }
 
 void GpuDevice::makeSensors()
@@ -63,6 +60,5 @@ void GpuDevice::makeSensors()
     m_usedVramProperty = new SensorProperty(QStringLiteral("usedVram"), this);
     m_coreFrequencyProperty = new SensorProperty(QStringLiteral("coreFrequency"), this);
     m_memoryFrequencyProperty = new SensorProperty(QStringLiteral("memoryFrequency"), this);
-    m_coreTemperatureProperty = new SensorProperty(QStringLiteral("coreTemperature"), this);
-    m_memoryTemperatureProperty = new SensorProperty(QStringLiteral("memoryTemperature"), this);
+    m_temperatureProperty = new SensorProperty(QStringLiteral("temperature"), this);
 }
