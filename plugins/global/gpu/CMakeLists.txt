@@ -7,6 +7,7 @@ set(KSYSGUARD_GPU_PLUGIN_SOURCES
     LinuxBackend.cpp
     SysFsSensor.cpp
     NvidiaSmiProcess.cpp
+    AllGpus.cpp
 )
 
 add_library(ksysguard_plugin_gpu MODULE ${KSYSGUARD_GPU_PLUGIN_SOURCES})

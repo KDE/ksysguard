@@ -26,12 +26,15 @@
 
 #include "GpuDevice.h"
 #include "LinuxBackend.h"
+#include "AllGpus.h"
 
 class GpuPlugin::Private
 {
 public:
     std::unique_ptr<SensorContainer> container;
     std::unique_ptr<GpuBackend> backend;
+
+    AllGpus *allGpus = nullptr;
 };
 
 GpuPlugin::GpuPlugin(QObject *parent, const QVariantList &args)
@@ -39,6 +42,8 @@ GpuPlugin::GpuPlugin(QObject *parent, const QVariantList &args)
     , d(std::make_unique<Private>())
 {
     d->container = std::make_unique<SensorContainer>(QStringLiteral("gpu"), i18nc("@title", "GPU"), this);
+
+    d->allGpus = new AllGpus(d->container.get());
 
 #ifdef Q_OS_LINUX
     d->backend = std::make_unique<LinuxBackend>();
