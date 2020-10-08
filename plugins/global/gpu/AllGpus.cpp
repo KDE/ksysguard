@@ -14,6 +14,7 @@ AllGpus::AllGpus(SensorContainer *parent)
     : SensorObject(QStringLiteral("all"), i18nc("@title", "All GPUs"), parent)
 {
     m_usageSensor = new AggregateSensor(this, QStringLiteral("usage"), i18nc("@title", "All GPUs Usage"));
+    m_usageSensor->setShortName(i18nc("@title Short for 'All GPUs Usage'", "Usage"));
     m_usageSensor->setMatchSensors(QRegularExpression{"^(?!all).*$"}, QStringLiteral("usage"));
     m_usageSensor->setAggregateFunction([this](const QVariant &first, const QVariant &second) {
         auto gpuCount = m_usageSensor->matchCount();
@@ -22,10 +23,12 @@ AllGpus::AllGpus(SensorContainer *parent)
     m_usageSensor->setUnit(KSysGuard::UnitPercent);
 
     m_totalVramSensor = new AggregateSensor(this, QStringLiteral("totalVram"), i18nc("@title", "All GPUs Total Memory"));
+    m_totalVramSensor->setShortName(i18nc("@title Short for 'All GPUs Total Memory'", "Total"));
     m_totalVramSensor->setMatchSensors(QRegularExpression{"^(?!all).*$"}, QStringLiteral("totalVram"));
     m_totalVramSensor->setUnit(KSysGuard::UnitByte);
 
     m_usedVramSensor = new AggregateSensor(this, QStringLiteral("usedVram"), i18nc("@title", "All GPUs Used Memory"));
+    m_usedVramSensor->setShortName(i18nc("@title Short for 'All GPUs Used Memory'", "Used"));
     m_usedVramSensor->setMatchSensors(QRegularExpression{"^(?!all).*$"}, QStringLiteral("usedVram"));
     m_usedVramSensor->setUnit(KSysGuard::UnitByte);
     m_usedVramSensor->setMax(m_totalVramSensor);
