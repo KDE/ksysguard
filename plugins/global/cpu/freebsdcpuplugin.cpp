@@ -1,5 +1,7 @@
 #include "freebsdcpuplugin.h"
 
+#include "sysctlsensor.h"
+
 #include <algorithm>
 #include <vector>
 
@@ -19,10 +21,28 @@ bool readSysctl(const char *name, T *buffer, size_t size = sizeof(T)) {
 FreeBsdCpuObject::FreeBsdCpuObject(const QString &id, const QString &name, SensorContainer *parent)
     : CpuObject(id, name, parent)
 {
+}
+
+void FreeBsdCpuObject::makeSensors()
+{
+    BaseCpuObject::makeSensors();
+
+    const QByteArray prefix = QByteArrayLiteral("dev.cpu.") + id().right(1).toLocal8Bit();
+    auto freq = new SysctlSensor<int>(QStringLiteral("frequency"), prefix + QByteArrayLiteral(".freq"), this);
+    auto temp = new SysctlSensor<int>(QStringLiteral("temperature"), prefix + QByteArrayLiteral(".freq"), this);
+    m_sysctlSensors.append({freq, temp});
+    m_frequency = freq;
+    m_temperature = temp;
+}
+
+void FreeBsdCpuObject::initialize()
+{
+    const QByteArray prefix = QByteArrayLiteral("dev.cpu.") + id().right(1).toLocal8Bit();
     // For min and max frequency we have to parse the values return by freq_levels because only
     // minimum is exposed as a single value
     size_t size;
-    const QByteArray levelsName = QByteArrayLiteral("dev.cpu.") + id.right(1).toLocal8Bit() + QByteArrayLiteral(".freq_levels");
+    const QByteArray levelsName = prefix + QByteArrayLiteral(".freq_levels");
+    // calling sysctl with nullptr writes the needed size to size
     if (sysctlbyname(levelsName, nullptr, &size, nullptr, 0) != -1) {
         QByteArray freqLevels(size, Qt::Uninitialized);
         if (sysctlbyname(levelsName, freqLevels.data(), &size, nullptr, 0) != -1) {
@@ -40,7 +60,7 @@ FreeBsdCpuObject::FreeBsdCpuObject(const QString &id, const QString &name, Senso
             m_frequency->setMax(max);
         }
     }
-    const QByteArray tjmax = QByteArrayLiteral("dev.cpu.") + id.right(1).toLocal8Bit() + QByteArrayLiteral(".coretemp.tjmax");
+    const QByteArray tjmax = prefix + QByteArrayLiteral(".coretemp.tjmax");
     int maxTemperature;
     // This is only availabel on Intel (using the coretemp driver)
     if (readSysctl(tjmax.constData(), &maxTemperature)) {
@@ -60,18 +80,9 @@ void FreeBsdCpuObject::update(long system, long user, long idle)
     m_system->setValue(m_usageComputer.systemUsage);
     m_user->setValue(m_usageComputer.userUsage);
     m_usage->setValue(m_usageComputer.totalUsage);
-
-    int frequency;
-    const QByteArray prefix = QByteArrayLiteral("dev.cpu.") + id().right(1).toLocal8Bit();
-    const QByteArray freq = prefix + QByteArrayLiteral(".freq");
-    if (readSysctl(freq.constData(), &frequency)){
-        // value is already in MHz
-        m_frequency->setValue(frequency);
-    }
-    int temperature;
-    const QByteArray temp = prefix + QByteArrayLiteral(".temperature");
-    if (readSysctl(temp.constData(), &temperature)) {
-        m_temperature->setValue(temperature);
+    
+    for (auto sensor : m_sysctlSensors) {
+        sensor->update();
     }
 }
 
