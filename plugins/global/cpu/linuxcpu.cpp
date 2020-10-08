@@ -57,17 +57,22 @@ void TemperatureSensor::update()
 #endif
 }
 
-LinuxCpuObject::LinuxCpuObject(const QString &id, const QString &name, SensorContainer *parent, double frequency)
+LinuxCpuObject::LinuxCpuObject(const QString &id, const QString &name, SensorContainer *parent)
     : CpuObject(id, name, parent)
 
 {
-    m_frequency->setValue(frequency);
+}
+
+void LinuxCpuObject::initialize(double initialFrequency)
+{
+    CpuObject::initialize();
+    m_frequency->setValue(initialFrequency);
     bool ok;
-    const double max = readCpuFreq(id, "cpuinfo_max_freq", ok);
+    const double max = readCpuFreq(id(), "cpuinfo_max_freq", ok);
     if (ok) {
         m_frequency->setMax(max);
     }
-    const double min = readCpuFreq(id, "cpuinfo_min_freq", ok);
+    const double min = readCpuFreq(id(), "cpuinfo_min_freq", ok);
     if (ok) {
         m_frequency->setMin(min);
     }

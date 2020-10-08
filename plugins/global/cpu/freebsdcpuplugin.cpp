@@ -37,6 +37,8 @@ void FreeBsdCpuObject::makeSensors()
 
 void FreeBsdCpuObject::initialize()
 {
+    CpuObject::initialize();
+
     const QByteArray prefix = QByteArrayLiteral("dev.cpu.") + id().right(1).toLocal8Bit();
     // For min and max frequency we have to parse the values return by freq_levels because only
     // minimum is exposed as a single value
@@ -80,7 +82,7 @@ void FreeBsdCpuObject::update(long system, long user, long idle)
     m_system->setValue(m_usageComputer.systemUsage);
     m_user->setValue(m_usageComputer.userUsage);
     m_usage->setValue(m_usageComputer.totalUsage);
-    
+
     for (auto sensor : m_sysctlSensors) {
         sensor->update();
     }
@@ -104,15 +106,19 @@ FreeBsdCpuPluginPrivate::FreeBsdCpuPluginPrivate(CpuPlugin* q)
     int numCpu;
     readSysctl("hw.ncpu", &numCpu);
     for (int i = 0; i < numCpu; ++i) {
-        m_cpus.push_back(new FreeBsdCpuObject(QStringLiteral("cpu%1").arg(i), i18nc("@title", "CPU %1", i + 1), m_container));
+        auto cpu = new FreeBsdCpuObject(QStringLiteral("cpu%1").arg(i), i18nc("@title", "CPU %1", i + 1), m_container);
+        cpu->initialize();
+        m_cpus.push_back(cpu);
     }
-    m_allCpus = new FreeBsdAllCpusObject(numCpu, numCpu, m_container);
+    m_allCpus = new FreeBsdAllCpusObject(m_container);
+    m_allCpus->initialize();
 }
 
 void FreeBsdCpuPluginPrivate::update()
 {
     auto isSubscribed = [] (const SensorObject *o) {return o->isSubscribed();};
-    if (std::none_of(m_container->objects().cbegin(), m_container->objects().cend(), isSubscribed)) {
+    const auto objects = m_container->objects();
+    if (std::none_of(objects.cbegin(), objects.cend(), isSubscribed)) {
         return;
     }
     auto updateCpu = [] (auto *cpu, long *cp_time){

@@ -62,11 +62,14 @@ LinuxCpuPluginPrivate::LinuxCpuPluginPrivate(CpuPlugin *q)
             }
         }
         const QString name = i18nc("@title", "CPU %1 Core %2", physicalId + 1, ++numCores[physicalId]);
-        auto cpu = new LinuxCpuObject(QStringLiteral("cpu%1").arg(processor), name, m_container, frequency);
+        auto cpu = new LinuxCpuObject(QStringLiteral("cpu%1").arg(processor), name, m_container);
+        cpu->initialize(frequency);
         m_cpus.push_back(cpu);
         m_cpusBySystemIds.insert({physicalId, coreId}, cpu);
     }
-    m_allCpus = new LinuxAllCpusObject(numCores.keys().size(), numCores.size(), m_container);
+    m_allCpus = new LinuxAllCpusObject(m_container);
+    m_allCpus->initialize();
+    m_allCpus->setCounts(numCores.keys().size(), numCores.size());
 
     addSensors();
 }
@@ -74,7 +77,8 @@ LinuxCpuPluginPrivate::LinuxCpuPluginPrivate(CpuPlugin *q)
 void LinuxCpuPluginPrivate::update()
 {
     auto isSubscribed = [] (const SensorObject *o) {return o->isSubscribed();};
-    if (std::none_of(m_container->objects().cbegin(), m_container->objects().cend(), isSubscribed)) {
+    const auto objects = m_container->objects();
+    if (std::none_of(objects.cbegin(), objects.cend(), isSubscribed)) {
         return;
     }
 

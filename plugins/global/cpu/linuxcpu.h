@@ -21,11 +21,13 @@ private:
 class LinuxCpuObject : public CpuObject
 {
 public:
-    LinuxCpuObject(const QString &id, const QString &name, SensorContainer *parent, double frequency = 0);
+    LinuxCpuObject(const QString &id, const QString &name, SensorContainer *parent);
 
     void update(unsigned long long system, unsigned long long user, unsigned long long wait, unsigned long long idle);
     TemperatureSensor* temperatureSensor();
+    void initialize(double initialFrequency);
 private:
+    void initialize() override {};
     void makeSensors() override;
     UsageComputer m_usageComputer;
     TemperatureSensor *m_temperatureSensor;

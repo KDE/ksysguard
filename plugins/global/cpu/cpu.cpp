@@ -24,8 +24,6 @@
 BaseCpuObject::BaseCpuObject(const QString &id, const QString &name, SensorContainer *parent)
     : SensorObject(id, name, parent)
 {
-    makeSensors();
-    initialize();
 }
 
 void BaseCpuObject::makeSensors()
@@ -41,6 +39,7 @@ void BaseCpuObject::makeSensors()
 
 void BaseCpuObject::initialize()
 {
+    makeSensors();
 
     m_usage->setPrefix(name());
     m_usage->setName(i18nc("@title", "Total Usage"));
@@ -104,21 +103,23 @@ void CpuObject::initialize()
 }
 
 
-AllCpusObject::AllCpusObject(unsigned int cpuCount, unsigned int coreCount, SensorContainer *parent)
+AllCpusObject::AllCpusObject(SensorContainer *parent)
     : BaseCpuObject(QStringLiteral("all"), i18nc("@title", "All"), parent)
 {
-    m_cpuCount->setValue(cpuCount);
-    m_coreCount->setValue(cpuCount);
 }
 
 void AllCpusObject::makeSensors()
 {
+    BaseCpuObject::makeSensors();
+
     m_cpuCount = new SensorProperty(QStringLiteral("cpuCount"), this);
     m_coreCount = new SensorProperty(QStringLiteral("coreCount"), this);
 }
 
 void AllCpusObject::initialize()
 {
+    BaseCpuObject::initialize();
+
     m_cpuCount->setName(i18nc("@title", "Number of CPUs"));
     m_cpuCount->setShortName(i18nc("@title, Short fort 'Number of CPUs'", "CPUs"));
     m_cpuCount->setDescription(i18nc("@info", "Number of physical CPUs installed in the system"));
@@ -126,4 +127,10 @@ void AllCpusObject::initialize()
     m_coreCount->setName(i18nc("@title", "Number of Cores"));
     m_coreCount->setShortName(i18nc("@title, Short fort 'Number of Cores'", "Cores"));
     m_coreCount->setDescription(i18nc("@info", "Number of CPU cores across all physical CPUS"));
+}
+
+void AllCpusObject::setCounts(unsigned int cpuCount, unsigned int coreCount)
+{
+    m_cpuCount->setValue(cpuCount);
+    m_coreCount->setValue(cpuCount);
 }

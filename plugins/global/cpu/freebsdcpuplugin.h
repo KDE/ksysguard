@@ -12,9 +12,9 @@ class FreeBsdCpuObject : public CpuObject {
 public:
     FreeBsdCpuObject(const QString &id, const QString &name, SensorContainer *parent);
     void update(long system, long user, long idle);
+    void initialize() override;
 private:
     void makeSensors() override;
-    void initialize() override;
     UsageComputer m_usageComputer;
     QVector<SysctlSensor<int>*> m_sysctlSensors;
 };

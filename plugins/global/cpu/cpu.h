@@ -39,9 +39,8 @@ protected:
 class CpuObject : public BaseCpuObject {
 public:
     CpuObject(const QString &id, const QString &name, SensorContainer *parent);
-
-protected:
     void initialize() override;
+protected:
     void makeSensors() override;
 
     SensorProperty *m_frequency;
@@ -50,10 +49,10 @@ protected:
 
 class AllCpusObject : public BaseCpuObject {
 public:
-    AllCpusObject(unsigned int cpuCount, unsigned int coreCount, SensorContainer *parent);
-
-protected:
+    AllCpusObject(SensorContainer *parent);
+    void setCounts(unsigned int cpuCount, unsigned int coreCount);
     void initialize() override;
+protected:
     void makeSensors() override;
 
     SensorProperty *m_cpuCount;
