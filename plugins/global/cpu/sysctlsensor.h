@@ -45,6 +45,9 @@ SysctlSensor<T>::SysctlSensor(const QString& id, const QByteArray &sysctlName, S
 template <typename T>
 void SysctlSensor<T>::update()
 {
+    if (!isSubscribed()) {
+        return;
+    }
     T value;
     size_t size = sizeof(T);
     if (sysctlbyname(m_sysctlName.constData(), &value, &size, nullptr, 0) != -1) {
