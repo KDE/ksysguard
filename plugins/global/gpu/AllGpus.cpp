@@ -28,4 +28,5 @@ AllGpus::AllGpus(SensorContainer *parent)
     m_usedVramSensor = new AggregateSensor(this, QStringLiteral("usedVram"), i18nc("@title", "All GPUs Used Memory"));
     m_usedVramSensor->setMatchSensors(QRegularExpression{"^(?!all).*$"}, QStringLiteral("usedVram"));
     m_usedVramSensor->setUnit(KSysGuard::UnitByte);
+    m_usedVramSensor->setMax(m_totalVramSensor);
 }
