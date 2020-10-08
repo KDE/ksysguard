@@ -32,6 +32,7 @@ private:
 };
 
 #ifdef Q_OS_FREEBSD
+#include <sys/types.h>
 #include <sys/sysctl.h>
 
 template <typename T>
