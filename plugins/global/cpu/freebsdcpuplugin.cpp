@@ -116,7 +116,7 @@ void FreeBsdCpuPluginPrivate::update()
         return;
     }
     auto updateCpu = [] (auto *cpu, long *cp_time){
-        cpu->update(cp_time[CP_SYS + CP_INTR], cp_time[CP_USER] + cp_time[CP_NICE], cp_time[CP_IDLE]);
+        cpu->update(cp_time[CP_SYS] + cp_time[CP_INTR], cp_time[CP_USER] + cp_time[CP_NICE], cp_time[CP_IDLE]);
     };
     unsigned int numCores = m_container->objects().count() - 1;
     std::vector<long> cp_times(numCores * CPUSTATES);
