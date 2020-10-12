@@ -139,7 +139,6 @@ void KSGRDIface::onSensorMetaDataRetrieved(int id, const QList<QByteArray> &answ
     }
 
     sensor->setName(sensorName);
-    sensor->setShortName(shortNameFor(key));
     sensor->setMin(min.toDouble());
     sensor->setMax(max.toDouble());
     sensor->setUnit(unitFromString(unit));
@@ -295,26 +294,6 @@ void KSGRDIface::answerReceived(int id, const QList<QByteArray> &answer)
         return;
     }
     onSensorUpdated(id, answer);
-}
-
-QString KSGRDIface::shortNameFor(const QString &key)
-{
-    // TODO: This is pretty ugly, but it is really hard to add this information to ksysguardd.
-    // So for now, we just map sensor ids to short names and return that.
-
-    static QHash<QString, QString> shortNames = {
-        { QStringLiteral("cpu/system/TotalLoad"), i18nc("@title Total CPU Usage", "Usage") },
-        { QStringLiteral("mem/physical/used"), i18nc("@title Total Memory Usage", "Total Used") },
-        { QStringLiteral("mem/physical/cached"), i18nc("@title Cached Memory Usage", "Cached") },
-        { QStringLiteral("mem/physical/free"), i18nc("@title Free Memory Amount", "Free") },
-        { QStringLiteral("mem/physical/available"), i18nc("@title Available Memory Amount", "Available") },
-        { QStringLiteral("mem/physical/application"), i18nc("@title Application Memory Usage", "Application") },
-        { QStringLiteral("mem/physical/buf"), i18nc("@title Buffer Memory Usage", "Buffer") },
-        { QStringLiteral("cpu/system/processors"), i18nc("@title Number of Processors", "Processors") },
-        { QStringLiteral("cpu/system/cores"), i18nc("@title Number of Cores", "Cores") },
-    };
-
-    return shortNames.value(key, QString {});
 }
 
 K_PLUGIN_CLASS_WITH_JSON(KSGRDIface, "metadata.json")

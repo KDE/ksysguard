@@ -60,7 +60,6 @@ private:
     void unsubscribe(const QString &sensorPath);
 
     KSysGuard::Unit unitFromString(const QString &unitString) const;
-    QString shortNameFor(const QString &key);
 
     //This qlist is just to have an index mapping because of KSGRD's old API
     //Could be an index in SensorInfo subclass
