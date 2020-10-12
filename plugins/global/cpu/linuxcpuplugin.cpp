@@ -169,6 +169,7 @@ void LinuxCpuPluginPrivate::addSensorsIntel(const sensors_chip_name * const chip
 
 void LinuxCpuPluginPrivate::addSensorsAmd(const sensors_chip_name * const chipName)
 {
+#ifdef HAVE_SENSORS
     // All Processors should have the Tctl pseudo temperature as temp1. Newer ones have the real die
     // temperature Tdie as temp2. Some of those have temperatures for each core complex die (CCD) as
     // temp3-6 or temp3-10 depending on the number of CCDS.
@@ -208,5 +209,5 @@ void LinuxCpuPluginPrivate::addSensorsAmd(const sensors_chip_name * const chipNa
     } else if (tctl) {
         setSingleSensor(tctl);
     }
+#endif
 }
-
