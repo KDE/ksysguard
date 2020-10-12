@@ -25,6 +25,7 @@ namespace Solid {
 class Device;
 }
 
+class Battery;
 class SensorContainer;
 
 class PowerPlugin : public SensorPlugin {
@@ -33,6 +34,7 @@ public:
     PowerPlugin(QObject *parent, const QVariantList &args);
 private:
     SensorContainer *m_container;
+    QHash<QString, Battery*> m_batteriesByUdi;
 };
 
 #endif

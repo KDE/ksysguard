@@ -105,23 +105,22 @@ PowerPlugin::PowerPlugin(QObject *parent, const QVariantList &args)
 {
     m_container = new SensorContainer("power", i18nc("@title", "Power"), this);
     const auto batteries = Solid::Device::listFromType(Solid::DeviceInterface::Battery);
-    for (const auto &battery : batteries) {
-       new Battery(battery.as<Solid::Battery>(), battery.displayName(), m_container);
+    for (const auto &device : batteries) {
+       auto battery = new Battery(device.as<Solid::Battery>(), device.displayName(), m_container);
+       m_batteriesByUdi.insert(device.udi(), battery);
     }
 
     connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded, this, [this] (const QString &udi) {
         const Solid::Device device(udi);
         if (device.isDeviceInterface(Solid::DeviceInterface::Battery)) {
-            new Battery(device.as<Solid::Battery>(), device.displayName(), m_container);
+            auto battery = new Battery(device.as<Solid::Battery>(), device.displayName(), m_container);
+            m_batteriesByUdi.insert(udi, battery);
         }
     });
     connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceRemoved, this, [this] (const QString &udi) {
-        const Solid::Device device(udi);
-        if (device.isDeviceInterface(Solid::DeviceInterface::Battery)) {
-            const auto object = m_container->object(device.as<Solid::Battery>()->serial());
-            if (object) {
-                m_container->removeObject(object);
-            }
+        if (m_batteriesByUdi.contains(udi)) {
+            m_container->removeObject(m_batteriesByUdi[udi]);
+            m_batteriesByUdi.remove(udi);
         }
     });
 }
