@@ -23,7 +23,11 @@ LinuxNvidiaGpu::LinuxNvidiaGpu(int index, const QString& id, const QString& name
 
 LinuxNvidiaGpu::~LinuxNvidiaGpu()
 {
-
+    for (auto sensor : {m_usageProperty, m_totalVramProperty, m_usedVramProperty, m_temperatureProperty, m_coreFrequencyProperty, m_memoryFrequencyProperty}) {
+        if (sensor->isSubscribed()) {
+            LinuxNvidiaGpu::s_smiProcess->unref();
+        }
+    }
 }
 
 void LinuxNvidiaGpu::initialize()
