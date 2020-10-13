@@ -148,6 +148,12 @@ void initLmSensors( struct SensorModul* sm )
               ssubf = sensors_get_subfeature( scn, sf,
                                           SENSORS_SUBFEATURE_POWER_AVERAGE );
           break;
+
+        case SENSORS_FEATURE_CURR:
+          ssubf = sensors_get_subfeature( scn, sf,
+                                          SENSORS_SUBFEATURE_CURR_INPUT );
+          break;
+
         default:
             ssubf = NULL;
       }
@@ -300,6 +306,8 @@ void printLmSensorInfo( const char* cmd )
     output( "%s\t0\t0\trpm\n", label );
   else if( strncmp(s->sfd->name, "power", sizeof("power")-1) == 0)
     output( "%s\t0\t0\tW\n", label );
+  else if( strncmp(s->sfd->name, "curr", sizeof("curr")-1) == 0)
+    output( "%s\t0\t0\tA\n", label );
   else
     output( "%s\t0\t0\tV\n", label );  /* For everything else, say it's in volts. */
 #if SENSORS_API_VERSION & 0x400
