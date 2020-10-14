@@ -19,8 +19,6 @@
 
 #include "freebsdcpuplugin.h"
 
-#include "sysctlsensor.h"
-
 #include <algorithm>
 #include <vector>
 
@@ -31,6 +29,7 @@
 #include <KLocalizedString>
 
 #include <SensorContainer.h>
+#include <SysctlSensor.h>
 
 template <typename T>
 bool readSysctl(const char *name, T *buffer, size_t size = sizeof(T)) {

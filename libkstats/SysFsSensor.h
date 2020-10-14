@@ -48,7 +48,7 @@ public:
      * This will cause the sensor to read sysfs and update the value from that.
      * It should be called periodically so values are updated properly.
      */
-    void update();
+    void update() override;
 
 private:
     QString m_path;
