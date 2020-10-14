@@ -31,16 +31,27 @@
 
 K_PLUGIN_CLASS_WITH_JSON(PowerPlugin, "metadata.json")
 
+QString idHelper(const Solid::Device battery)
+{
+    const QString serial = battery.as<Solid::Battery>()->serial();
+    if (!serial.isEmpty()) {
+        return serial;
+    }
+    return battery.udi().mid(battery.udi().lastIndexOf(QLatin1Char('/')) + 1);
+}
+
 class Battery : public SensorObject {
 public:
-    Battery(const Solid::Battery * const battery, const QString &name,  SensorContainer *parent);
+    Battery(const Solid::Device &device, const QString &name,  SensorContainer *parent);
 };
 
-Battery::Battery(const Solid::Battery * const battery, const QString &name,  SensorContainer *parent)
-    : SensorObject(battery->serial(), name, parent)
+Battery::Battery(const Solid::Device &device, const QString &name,  SensorContainer *parent)
+    : SensorObject(idHelper(device), name, parent)
 {
     auto n = new SensorProperty("name", i18nc("@title", "Name"), name, this);
     n->setVariantType(QVariant::String);
+
+    const auto * const battery = device.as<Solid::Battery>();
 
     auto designCapacity = new SensorProperty("design", i18nc("@title", "Design Capacity"), battery->energyFullDesign(), this);
     designCapacity->setShortName(i18nc("@title", "Design Capacity"));
@@ -105,15 +116,16 @@ PowerPlugin::PowerPlugin(QObject *parent, const QVariantList &args)
 {
     m_container = new SensorContainer("power", i18nc("@title", "Power"), this);
     const auto batteries = Solid::Device::listFromType(Solid::DeviceInterface::Battery);
+
     for (const auto &device : batteries) {
-       auto battery = new Battery(device.as<Solid::Battery>(), device.displayName(), m_container);
-       m_batteriesByUdi.insert(device.udi(), battery);
+        auto battery = new Battery(device, device.displayName(), m_container);
+        m_batteriesByUdi.insert(device.udi(), battery);
     }
 
     connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded, this, [this] (const QString &udi) {
         const Solid::Device device(udi);
         if (device.isDeviceInterface(Solid::DeviceInterface::Battery)) {
-            auto battery = new Battery(device.as<Solid::Battery>(), device.displayName(), m_container);
+            auto battery = new Battery(device, device.displayName(), m_container);
             m_batteriesByUdi.insert(udi, battery);
         }
     });
