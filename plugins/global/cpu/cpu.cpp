@@ -132,5 +132,5 @@ void AllCpusObject::initialize()
 void AllCpusObject::setCounts(unsigned int cpuCount, unsigned int coreCount)
 {
     m_cpuCount->setValue(cpuCount);
-    m_coreCount->setValue(cpuCount);
+    m_coreCount->setValue(coreCount);
 }
