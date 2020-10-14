@@ -26,6 +26,7 @@ template <typename T>
 class SysctlSensor : public SensorProperty {
 public:
     SysctlSensor(const QString &id, const QByteArray &sysctlName, SensorObject *parent);
+    SysctlSensor(const QString &id, const QString &name, const QByteArray &sysctlName, SensorObject *parent);
     void update();
 private:
     const QByteArray m_sysctlName;
@@ -42,13 +43,20 @@ SysctlSensor<T>::SysctlSensor(const QString& id, const QByteArray &sysctlName, S
 {
 }
 
+template<typename T>
+SysctlSensor<T>::SysctlSensor(const QString& id, const QString& name, const QByteArray& sysctlName, SensorObject* parent)
+    : SensorProperty(id, name, parent)
+    , m_sysctlName(sysctlName)
+{
+}
+
 template <typename T>
 void SysctlSensor<T>::update()
 {
     if (!isSubscribed()) {
         return;
     }
-    T value;
+    T value{};
     size_t size = sizeof(T);
     if (sysctlbyname(m_sysctlName.constData(), &value, &size, nullptr, 0) != -1) {
         setValue(value);
