@@ -23,7 +23,7 @@ else()
   )
 
   find_package(PkgConfig)
-  pkg_check_modules(NL3 libnl-3.0 libnl-genl-3.0 libnl-route-3.0)
+  pkg_check_modules(NL3 libnl-3.0)
   if(NOT NL3_FOUND)
     pkg_search_module(NL2 libnl-2.0)
   endif()
