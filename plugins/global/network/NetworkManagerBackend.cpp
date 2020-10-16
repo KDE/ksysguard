@@ -46,14 +46,16 @@ NetworkManagerDevice::NetworkManagerDevice(const QString &id, QSharedPointer<Net
         auto newDownload = m_statistics->rxBytes();
         auto previousDownload = m_totalDownloadSensor->value().toULongLong();
         if (previousDownload > 0) {
-            m_downloadSensor->setValue(newDownload - previousDownload);
+            // Our update interval is 2s, so to get bytes/sec we need to divide
+            // by 2.
+            m_downloadSensor->setValue((newDownload - previousDownload) / 2.0);
         }
         m_totalDownloadSensor->setValue(newDownload);
 
         auto newUpload = m_statistics->txBytes();
         auto previousUpload = m_totalUploadSensor->value().toULongLong();
         if (previousUpload > 0) {
-            m_uploadSensor->setValue(newUpload - previousUpload);
+            m_uploadSensor->setValue((newUpload - previousUpload) / 2.0);
         }
         m_totalUploadSensor->setValue(newUpload);
     });
