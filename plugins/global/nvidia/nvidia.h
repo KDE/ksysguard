@@ -36,8 +36,6 @@ public:
         return QStringLiteral("nvidia");
     }
 
-    void init();
-
 private:
     void gpuSubscriptionChanged(bool subscribed);
 

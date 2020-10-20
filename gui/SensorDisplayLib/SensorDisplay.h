@@ -117,11 +117,6 @@ class SensorDisplay : public QWidget, public SensorClient
     void setPlotterWidget( QWidget *plotter );
 
     /**
-      Returns the widget on which the error icon can be drawn.
-     */
-    QWidget *plotterWidget() const;
-
-    /**
       Add a sensor to the display.
 
       @param hostName The name of the host, the sensor belongs to.
@@ -238,7 +233,6 @@ class SensorDisplay : public QWidget, public SensorClient
 
     void setSensorOk( bool ok );
 
-    bool timerOn() const;
 
     QList<SensorProperties *> &sensors();
 
