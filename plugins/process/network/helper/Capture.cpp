@@ -26,7 +26,6 @@
 
 #include <pcap/pcap.h>
 
-#include "Packet.h"
 #include "TimeStamps.h"
 
 using namespace std::string_literals;

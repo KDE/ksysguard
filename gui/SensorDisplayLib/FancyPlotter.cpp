@@ -31,7 +31,6 @@
 #include <QResizeEvent>
 #include <QStandardPaths>
 
-#include <KLocalizedString>
 #include <KMessageBox>
 #include <ksignalplotter.h>
 

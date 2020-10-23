@@ -26,7 +26,6 @@
 #endif
 
 #include <QCoreApplication>
-#include <QElapsedTimer>
 #include <QUrl>
 
 #include <KIO/FileSystemFreeSpaceJob>

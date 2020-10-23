@@ -27,7 +27,6 @@
 #include <QContextMenuEvent>
 #include <QHeaderView>
 #include <QMenu>
-#include <QTreeView>
 #include <QHBoxLayout>
 #include <QDomNodeList>
 #include <QDomDocument>

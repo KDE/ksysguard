@@ -20,7 +20,6 @@
 #include "SensorContainer.h"
 
 #include "SensorObject.h"
-#include "SensorPlugin.h"
 
 SensorContainer::SensorContainer(const QString &id, const QString &name, SensorPlugin *parent)
     : QObject(parent)

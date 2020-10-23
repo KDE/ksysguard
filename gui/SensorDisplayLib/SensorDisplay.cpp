@@ -27,7 +27,6 @@
 #include <QMenu>
 
 #include <QPixmap>
-#include <QEvent>
 #include <QMouseEvent>
 #include <QApplication>
 #include <QBitmap>

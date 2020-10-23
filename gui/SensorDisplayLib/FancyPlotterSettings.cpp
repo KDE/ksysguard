@@ -24,7 +24,6 @@
 
 #include <QColorDialog>
 #include <QLineEdit>
-#include <QList>
 #include <QCheckBox>
 #include <QDoubleSpinBox>
 #include <QFormLayout>

@@ -26,7 +26,6 @@
 #include <ksgrd/SensorManager.h>
 
 #include <QEventLoop>
-#include <QTimer>
 
 // TODO instantiate multiple instances with args for which host to use
 
