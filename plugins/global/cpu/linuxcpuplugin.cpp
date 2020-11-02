@@ -69,7 +69,7 @@ LinuxCpuPluginPrivate::LinuxCpuPluginPrivate(CpuPlugin *q)
     }
     m_allCpus = new LinuxAllCpusObject(m_container);
     m_allCpus->initialize();
-    m_allCpus->setCounts(numCores.keys().size(), numCores.size());
+    m_allCpus->setCounts(numCores.keys().size(), m_cpus.size());
 
     addSensors();
 }
