@@ -228,6 +228,9 @@ SensorProperty *KSysGuardDaemon::findSensor(const QString &path) const
 void KSysGuardDaemon::onServiceDisconnected(const QString &service)
 {
     delete m_clients.take(service);
+    if (m_clients.isEmpty()) {
+        QCoreApplication::quit();
+    };
 }
 
 void KSysGuardDaemon::sendFrame()
