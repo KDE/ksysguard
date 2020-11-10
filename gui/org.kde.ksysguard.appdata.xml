@@ -30,6 +30,7 @@
   <name xml:lang="ru">Системный монитор</name>
   <name xml:lang="sk">KSysGuard</name>
   <name xml:lang="sl">KSysGuard</name>
+  <name xml:lang="sv">KDE:s systemövervakare</name>
   <name xml:lang="tg">Муҳофизати низом</name>
   <name xml:lang="uk">KSysGuard</name>
   <name xml:lang="x-test">xxKSysGuardxx</name>
@@ -64,6 +65,7 @@
   <summary xml:lang="ru">Просмотр списка запущенных процессов и производительности системы</summary>
   <summary xml:lang="sk">Monitoruje spustené procesy a výkon systému</summary>
   <summary xml:lang="sl">Nadzor tekočih procesov in delovanja sistema</summary>
+  <summary xml:lang="sv">Övervaka processor som kör och systemprestanda</summary>
   <summary xml:lang="tg">Равандҳои ҷорӣ ва самаранокии низомро назорат мекунад</summary>
   <summary xml:lang="uk">Стеження за процесами та швидкодією системи</summary>
   <summary xml:lang="x-test">xxMonitor running processes and system performancexx</summary>
@@ -103,6 +105,7 @@
     <p xml:lang="ru">Системный монитор позволяет получать различную информацию и статистику о состоянии системы.</p>
     <p xml:lang="sk">System Guard vám umožňuje montorovať informácie a štatistiky o vašom systéme.</p>
     <p xml:lang="sl">System Guard vam omogoča spremljanje informacij in statistik o vašem sistem.</p>
+    <p xml:lang="sv">Systemövervakaren låter dig övervaka information och statistik om systemet.</p>
     <p xml:lang="tg">Муҳофизати низом ба шумо имкон медиҳад, то тавонед иттилоот ва омори ҷориро дар бораи низоми худ назорат намоед.</p>
     <p xml:lang="uk">Засіб стеження за системою надає вам змогу стежити за відомостями та статистичними даними щодо вашої системи.</p>
     <p xml:lang="x-test">xxSystem Guard allows you to monitor information and statistics about your system.xx</p>
@@ -136,6 +139,7 @@
     <p xml:lang="ru">Приложение может отслеживать состояние не только локальной системы, но и подключаться к другим системам, на которых выполняется служба системного монитора.</p>
     <p xml:lang="sk">Okrem monitorovania lokálneho systému, sa dokáže pripojiť do vzdialených systémov pomocou System Guard Daemon.</p>
     <p xml:lang="sl">Poleg spremljanja lokalnega sistema se lahko poveže z oddaljenimi sistemi, kjer teče demon sistemskega nadzora.</p>
+    <p xml:lang="sv">Förutom att övervaka det lokala systemet kan den ansluta till andra system som kör systemövervakardemonen.</p>
     <p xml:lang="tg">Илова бар назораткунии низоми маҳаллӣ, он метавонад ба низомҳои дурдаст дорои "раванди дохилии муҳофизати низом" пайваст шавад.</p>
     <p xml:lang="uk">Окрім стеження за локальною системою, програма здатна з'єднуватися із віддаленими системами, де запущено фонову службу стеження за системою.</p>
     <p xml:lang="x-test">xxIn addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.xx</p>
