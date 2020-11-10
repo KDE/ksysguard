@@ -25,6 +25,7 @@
         "Description[ru]": "Статистика использования процессами ресурсов GPU для карт Nvidia",
         "Description[sk]": "Štatistiky GPU zdrojov na proces pre karty Nvidia",
         "Description[sl]": "Statistike virov GPE za kartice Nvidia po procesih",
+        "Description[sv]": "Statistik över grafikprocessorresurser per process för Nvidia-kort",
         "Description[tg]": "Омори ҳар як раванди манбаъи GPU барои кортҳои Nvidia",
         "Description[uk]": "Статистика ресурсів окремих процесів графічного процесора для карток NVidia",
         "Description[x-test]": "xxStats of per-process GPU resources for Nvidia cardsxx",
