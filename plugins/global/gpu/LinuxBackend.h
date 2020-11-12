@@ -23,6 +23,6 @@ public:
     void update() override;
 
 private:
-    udev *m_udev;
+    udev *m_udev = nullptr;
     QVector<GpuDevice*> m_devices;
 };
