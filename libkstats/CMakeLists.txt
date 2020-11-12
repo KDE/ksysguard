@@ -4,6 +4,8 @@ set(ksgrdbackend_LIB_SRCS
     SensorContainer.cpp
     SensorPlugin.cpp
     SensorProperty.cpp
+    SysFsSensor.cpp
+
 )
 
 add_library(ksgrdbackend ${ksgrdbackend_LIB_SRCS})

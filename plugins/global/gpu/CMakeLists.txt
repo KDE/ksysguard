@@ -5,7 +5,6 @@ set(KSYSGUARD_GPU_PLUGIN_SOURCES
     LinuxAmdGpu.cpp
     LinuxNvidiaGpu.cpp
     LinuxBackend.cpp
-    SysFsSensor.cpp
     NvidiaSmiProcess.cpp
     AllGpus.cpp
 )
