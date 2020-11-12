@@ -16,7 +16,6 @@ class GpuBackend : public QObject
 
 public:
     GpuBackend(QObject* parent = nullptr) : QObject(parent) { }
-    ~GpuBackend() override = default;
 
     virtual void start() = 0;
     virtual void stop() = 0;
