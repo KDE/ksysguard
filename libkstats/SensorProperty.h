@@ -96,6 +96,11 @@ public:
      */
     void setValue(const QVariant &value);
 
+    /**
+     * Updates the value of this property if possible. The default implementation does nothing.
+     */
+    virtual void update() {}
+
 Q_SIGNALS:
     /**
      * Emitted when the value changes
