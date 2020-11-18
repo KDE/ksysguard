@@ -20,6 +20,8 @@
 
 #include "ksysguarddaemon.h"
 
+#include <chrono>
+
 #include <QDBusArgument>
 #include <QDBusConnection>
 #include <QDBusMessage>
@@ -41,6 +43,8 @@
 #include "ksysguard_ifaceadaptor.h"
 #include "client.h"
 
+constexpr auto UpdateRate = std::chrono::milliseconds{500};
+
 KSysGuardDaemon::KSysGuardDaemon()
     : m_serviceWatcher(new QDBusServiceWatcher(this))
 {
@@ -57,7 +61,7 @@ KSysGuardDaemon::KSysGuardDaemon()
     connect(m_serviceWatcher, &QDBusServiceWatcher::serviceUnregistered, this, &KSysGuardDaemon::onServiceDisconnected);
 
     auto timer = new QTimer(this);
-    timer->setInterval(2000);
+    timer->setInterval(UpdateRate);
     connect(timer, &QTimer::timeout, this, &KSysGuardDaemon::sendFrame);
     timer->start();
 }
