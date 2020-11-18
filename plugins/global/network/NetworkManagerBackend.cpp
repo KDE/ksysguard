@@ -33,29 +33,31 @@ NetworkManagerDevice::NetworkManagerDevice(const QString &id, QSharedPointer<Net
     });
 
     m_statistics = m_device->deviceStatistics();
-    m_statistics->setRefreshRateMs(2000);
+
+    // We want to display speed in bytes per second, so use a fixed one-second
+    // update interval here so we are independant of the actual update rate of
+    // the daemon.
+    m_statistics->setRefreshRateMs(1000);
 
     // Unfortunately, the statistics interface does not emit change signals if
     // no change happened. This makes the change signals rather useless for our
     // case because we also need to know when no change happened, so that we
     // can update rate sensors to show 0. So instead use a timer and query the
-    // statistics every 2 seconds, updating the sensors as needed.
+    // statistics every second, updating the sensors as needed.
     m_statisticsTimer = std::make_unique<QTimer>();
-    m_statisticsTimer->setInterval(2000);
+    m_statisticsTimer->setInterval(1000);
     connect(m_statisticsTimer.get(), &QTimer::timeout, this, [this]() {
         auto newDownload = m_statistics->rxBytes();
         auto previousDownload = m_totalDownloadSensor->value().toULongLong();
         if (previousDownload > 0) {
-            // Our update interval is 2s, so to get bytes/sec we need to divide
-            // by 2.
-            m_downloadSensor->setValue((newDownload - previousDownload) / 2.0);
+            m_downloadSensor->setValue(newDownload - previousDownload);
         }
         m_totalDownloadSensor->setValue(newDownload);
 
         auto newUpload = m_statistics->txBytes();
         auto previousUpload = m_totalUploadSensor->value().toULongLong();
         if (previousUpload > 0) {
-            m_uploadSensor->setValue((newUpload - previousUpload) / 2.0);
+            m_uploadSensor->setValue(newUpload - previousUpload);
         }
         m_totalUploadSensor->setValue(newUpload);
     });
