@@ -30,7 +30,7 @@ LinuxMemoryBackend::LinuxMemoryBackend(SensorContainer *container)
 
 void LinuxMemoryBackend::update()
 {
-    if (!m_physicalObject->isSubscribed() || ! m_swapObject->isSubscribed()) {
+    if (!m_physicalObject->isSubscribed() && !m_swapObject->isSubscribed()) {
         return;
     }
 
