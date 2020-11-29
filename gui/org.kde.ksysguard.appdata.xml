@@ -116,7 +116,7 @@
     <p xml:lang="zh-TW">「System Guard」允許您監控您系統的資訊與統計。</p>
     <p>In addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.</p>
     <p xml:lang="ar">يستطيع الحارس (إضافة إلى مراقبة النظام المحلي) الاتصال بالأنظمة البعيدة التي تشغّل «عفريت حارس النظام/System Guard Daemon».</p>
-    <p xml:lang="ast">Amás de supervisar el sistema llocal, pue conectase a sistemes remotos executando'l degorriu de KSysGuard.</p>
+    <p xml:lang="ast">Amás de supervisar el sistema llocal, pue coneutase a sistemes remotos executando'l degorriu de KSysGuard.</p>
     <p xml:lang="az">Yerli sistemi izləməklə yanaşı, System Guard Xidməti ilə işləyən uzaq sistemlərə də qoşula bilər.</p>
     <p xml:lang="ca">Addicionalment al monitoratge del sistema local, pot connectar-se amb sistemes remots executant el dimoni del System Guard.</p>
     <p xml:lang="ca-valencia">A més de supervisar el sistema local, pot connectar-se a sistemes remots que estiguen executant el dimoni de System Guard.</p>
