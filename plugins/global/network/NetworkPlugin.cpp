@@ -54,11 +54,20 @@ NetworkPlugin::NetworkPlugin(QObject *parent, const QVariantList &args)
 
     d->allDevices = new AllDevicesObject(d->container);
 
+    using creationFunction = std::add_pointer_t<NetworkBackend *(NetworkPlugin *parent)>;
+    std::vector<creationFunction> backendFunctions;
 #ifdef NETWORKMANAGER_FOUND
-    d->backend = new NetworkManagerBackend(this);
+    backendFunctions.emplace_back([](NetworkPlugin *parent) -> NetworkBackend* {return new NetworkManagerBackend(parent);});
 #endif
-    if (!d->backend || !d->backend->isSupported()) {
-        delete d->backend;
+    for (auto func : backendFunctions) {
+        auto backend = func(this);
+        if (backend->isSupported()) {
+            d->backend = backend;
+            break;
+        }
+        delete backend;
+    }
+    if (!d->backend) {
         qWarning() << "Unable to start backend, network information not available.";
         return;
     }
