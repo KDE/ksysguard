@@ -26,6 +26,8 @@ public:
     void onDeviceAdded(NetworkDevice *device);
     void onDeviceRemoved(NetworkDevice *device);
 
+    void update() override;
+
 private:
     std::unique_ptr<NetworkPrivate> d;
 };

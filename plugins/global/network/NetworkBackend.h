@@ -22,6 +22,7 @@ public:
     virtual bool isSupported() = 0;
     virtual void start() = 0;
     virtual void stop() = 0;
+    virtual void update() {};
 
     Q_SIGNAL void deviceAdded(NetworkDevice *device);
     Q_SIGNAL void deviceRemoved(NetworkDevice *device);

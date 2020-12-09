@@ -16,8 +16,6 @@ public:
     NetworkDevice(const QString& id, const QString& name);
     ~NetworkDevice() override = default;
 
-    virtual void update() = 0;
-
 protected:
     SensorProperty *m_networkSensor;
     SensorProperty *m_signalSensor;

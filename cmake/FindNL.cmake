@@ -23,7 +23,7 @@ else()
   )
 
   find_package(PkgConfig)
-  pkg_check_modules(NL3 libnl-3.0)
+  pkg_check_modules(NL3 libnl-3.0 libnl-route-3.0)
   if(NOT NL3_FOUND)
     pkg_search_module(NL2 libnl-2.0)
   endif()
@@ -55,10 +55,21 @@ else()
       PATHS
         $(SEARCHPATHS)
     )
+    find_library(NLROUTE_LIBRARY
+      NAMES
+        nl-route-3 nl-route
+      PATH_SUFFIXES
+        lib64 lib
+      HINTS
+        "${NL3_libnl-route-3.0_LIBDIR}"
+        "${NL2_LIBDIR}"
+      PATHS
+        $(SEARCHPATHS)
+    )
     #
     # If we don't have all of those libraries, we can't use libnl.
     #
-    if(NL3_LIBRARY)
+    if(NL3_LIBRARY AND NLROUTE_LIBRARY)
       set(NL_LIBRARY ${NL3_LIBRARY})
       if(NL3_INCLUDE_DIR)
         # NL2 and NL3 are similar and just affect how the version is reported in
@@ -110,7 +121,7 @@ INCLUDE(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(NL DEFAULT_MSG NL_LIBRARY NL_INCLUDE_DIR)
 
 IF(NL_FOUND)
-  set(NL_LIBRARIES ${NL_LIBRARY})
+  set(NL_LIBRARIES ${NL_LIBRARY} ${NLROUTE_LIBRARY})
   set(NL_INCLUDE_DIRS ${NL_INCLUDE_DIR})
   set(HAVE_LIBNL 1)
 else()

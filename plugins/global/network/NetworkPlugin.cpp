@@ -33,6 +33,9 @@
 #ifdef NETWORKMANAGER_FOUND
 #include "NetworkManagerBackend.h"
 #endif
+#ifdef Q_OS_LINUX
+#include "RtNetlinkBackend.h"
+#endif
 
 class NetworkPrivate
 {
@@ -58,6 +61,9 @@ NetworkPlugin::NetworkPlugin(QObject *parent, const QVariantList &args)
     std::vector<creationFunction> backendFunctions;
 #ifdef NETWORKMANAGER_FOUND
     backendFunctions.emplace_back([](NetworkPlugin *parent) -> NetworkBackend* {return new NetworkManagerBackend(parent);});
+#endif
+#ifdef Q_OS_LINUX
+    backendFunctions.emplace_back([](NetworkPlugin *parent) -> NetworkBackend* {return new RtNetlinkBackend(parent);});
 #endif
     for (auto func : backendFunctions) {
         auto backend = func(this);
@@ -86,6 +92,13 @@ void NetworkPlugin::onDeviceAdded(NetworkDevice *device)
 void NetworkPlugin::onDeviceRemoved(NetworkDevice *device)
 {
     d->container->removeObject(device);
+}
+
+void NetworkPlugin::update()
+{
+    if (d->backend) {
+        d->backend->update();
+    }
 }
 
 NetworkPlugin::~NetworkPlugin() = default;

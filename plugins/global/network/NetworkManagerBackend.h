@@ -27,7 +27,7 @@ public:
     NetworkManagerDevice(const QString &id, QSharedPointer<NetworkManager::Device> device);
     ~NetworkManagerDevice() override;
 
-    void update() override;
+    void update();
 
 private:
     void updateWifi(NetworkManager::WirelessDevice *device);
