@@ -2,5 +2,4 @@
 ProvidersUrl=https://autoconfig.kde.org/ocs/providers.xml
 Categories=System Monitor Tabs
 TargetDir=ksysguard
-CustomName=true
 Uncompress=never
