@@ -32,7 +32,7 @@
         "Description[uk]": "Статистика ресурсів окремих процесів графічного процесора для карток NVidia",
         "Description[vi]": "Số liệu về các tài nguyên GPU của từng tiến trình cho các bộ xử lí NVIDIA",
         "Description[x-test]": "xxStats of per-process GPU resources for Nvidia cardsxx",
-        "Description[zh_CN]": "分进程的 GPU 资源状态，仅限 NVIDIA 显卡",
+        "Description[zh_CN]": "每个进程的 GPU 资源状态，仅限 Nvidia 显卡",
         "Description[zh_TW]": "適用於 Nvidia 卡的各處理程序 GPU 資源統計"
     }
 }

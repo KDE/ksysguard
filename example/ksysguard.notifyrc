@@ -147,7 +147,7 @@ Name[uk]=Збіг з шаблоном
 Name[vi]=Mẫu khớp
 Name[wa]=Patron ki corespondèt
 Name[x-test]=xxPattern Matchedxx
-Name[zh_CN]=匹配的模式
+Name[zh_CN]=匹配模式
 Name[zh_TW]=樣式已符合
 Comment=Search pattern matched
 Comment[af]=Soek patroon opgespoor
@@ -229,7 +229,7 @@ Comment[uk]=Збіг з шаблоном пошуку
 Comment[vi]=Mẫu tìm kiếm khớp
 Comment[wa]=Trover des patrons k' corespondèt
 Comment[x-test]=xxSearch pattern matchedxx
-Comment[zh_CN]=搜索匹配的模式
+Comment[zh_CN]=匹配的搜索模式
 Comment[zh_TW]=搜尋樣式比對符合
 
 [Event/sensor_alarm]
@@ -396,5 +396,5 @@ Comment[vi]=Cảm biến vượt quá giới hạn nguy cấp
 Comment[wa]=Li sinteu a stî pus lon kel limite critike
 Comment[xh]=Umda wokufumana ingxaki ekhoyo woluvo
 Comment[x-test]=xxSensor exceeded critical limitxx
-Comment[zh_CN]=传感器达到关键限制
+Comment[zh_CN]=传感器超出危险限制
 Comment[zh_TW]=感應器已超過限制
