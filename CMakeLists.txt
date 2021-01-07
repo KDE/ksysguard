@@ -75,14 +75,13 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         PURPOSE "Used for gathering socket info via the sock_diag netlink subsystem and for the network
             plugin when NetworkManagerQt is not available."
     )
+    find_package(libpcap)
+    set_package_properties(
+        libpcap PROPERTIES
+        TYPE RECOMMENDED
+        PURPOSE "libpcap is used for per-application network usage."
+    )
 endif()
-
-find_package(libpcap)
-set_package_properties(
-    libpcap PROPERTIES
-    TYPE RECOMMENDED
-    PURPOSE "libpcap is used for per-application network usage."
-)
 
 if(libpcap_FOUND )
     set(BUILD_NETWORK_PLUGIN TRUE)
