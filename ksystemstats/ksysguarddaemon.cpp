@@ -80,9 +80,9 @@ void KSysGuardDaemon::init(ReplaceIfRunning replaceIfRunning)
     if (replaceIfRunning == ReplaceIfRunning::Replace) {
         options |= KDBusService::Replace;
     }
+    QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportAdaptors);
     auto service = new KDBusService(options , this);
     service->setExitValue(1);
-    QDBusConnection::sessionBus().registerObject("/", this, QDBusConnection::ExportAdaptors);
 }
 
 void KSysGuardDaemon::loadProviders()
