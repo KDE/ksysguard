@@ -76,11 +76,11 @@ NetworkManagerDevice::NetworkManagerDevice(const QString &id, QSharedPointer<Net
     }
 
     if (m_device->type() == NetworkManager::Device::Wifi) {
-        auto wifi = m_device->as<NetworkManager::WirelessDevice>();
-        connect(wifi, &NetworkManager::WirelessDevice::activeConnectionChanged, this, [this, wifi]() { updateWifi(wifi); } );
-        connect(wifi, &NetworkManager::WirelessDevice::networkAppeared, this, [this, wifi]() { updateWifi(wifi); });
-        connect(wifi, &NetworkManager::WirelessDevice::networkDisappeared, this, [this, wifi]() { updateWifi(wifi); });
-        updateWifi(wifi);
+        m_wifiDevice = m_device->as<NetworkManager::WirelessDevice>();
+        connect(m_wifiDevice, &NetworkManager::WirelessDevice::activeConnectionChanged, this, &NetworkManagerDevice::updateWifi);
+        connect(m_wifiDevice, &NetworkManager::WirelessDevice::networkAppeared, this, &NetworkManagerDevice::updateWifi);
+        connect(m_wifiDevice, &NetworkManager::WirelessDevice::networkDisappeared, this, &NetworkManagerDevice::updateWifi);
+        updateWifi();
     }
 
     update();
@@ -92,6 +92,29 @@ NetworkManagerDevice::~NetworkManagerDevice()
 
 void NetworkManagerDevice::update()
 {
+    if (!m_device->activeConnection()) {
+        if (m_connected) {
+            m_connected = false;
+            if (m_statisticsTimer->isActive()) {
+                m_restoreTimer = true;
+                m_statisticsTimer->stop();
+            } else {
+                m_restoreTimer = false;
+            }
+            Q_EMIT disconnected(this);
+        }
+        return;
+    }
+
+    if (m_device->activeConnection() && !m_connected) {
+        m_connected = true;
+        if (m_restoreTimer) {
+            m_statisticsTimer->start();
+        }
+
+        Q_EMIT connected(this);
+    }
+
     setName(m_device->activeConnection()->connection()->name());
     m_networkSensor->setValue(name());
 
@@ -108,10 +131,19 @@ void NetworkManagerDevice::update()
     }
 }
 
-void NetworkManagerDevice::updateWifi(NetworkManager::WirelessDevice* device)
+bool NetworkManagerDevice::isConnected() const
 {
-    auto activeConnectionName = device->activeConnection()->connection()->name();
-    const auto networks = device->networks();
+    return m_connected;
+}
+
+void NetworkManagerDevice::updateWifi()
+{
+    if (!m_device->activeConnection()) {
+        return;
+    }
+
+    auto activeConnectionName = m_wifiDevice->activeConnection()->connection()->name();
+    const auto networks = m_wifiDevice->networks();
     std::for_each(networks.begin(), networks.end(), [this, activeConnectionName](QSharedPointer<NetworkManager::WirelessNetwork> network) {
         if (network->ssid() == activeConnectionName) {
             connect(network.data(), &NetworkManager::WirelessNetwork::signalStrengthChanged, m_signalSensor, &SensorProperty::setValue, Qt::UniqueConnection);
@@ -176,25 +208,18 @@ void NetworkManagerBackend::onDeviceAdded(const QString& uni)
             return;
     }
 
-    connect(device.get(), &NetworkManager::Device::activeConnectionChanged, this, [this, device, uni]() {
-        if (device->activeConnection()) {
-            onDeviceAdded(uni);
-        } else {
-            onDeviceRemoved(uni);
-        }
-    }, Qt::UniqueConnection);
-
-    if (!device->activeConnection()) {
-        return;
-    }
-
     if (m_devices.contains(uni)) {
         return;
     }
 
     auto nmDevice = new NetworkManagerDevice(device->interfaceName(), device);
+    connect(nmDevice, &NetworkManagerDevice::connected, this, &NetworkManagerBackend::deviceAdded);
+    connect(nmDevice, &NetworkManagerDevice::disconnected, this, &NetworkManagerBackend::deviceRemoved);
     m_devices.insert(uni, nmDevice);
-    Q_EMIT deviceAdded(nmDevice);
+
+    if (nmDevice->isConnected()) {
+        Q_EMIT deviceAdded(nmDevice);
+    }
 }
 
 void NetworkManagerBackend::onDeviceRemoved(const QString& uni)
@@ -204,7 +229,11 @@ void NetworkManagerBackend::onDeviceRemoved(const QString& uni)
     }
 
     auto device = m_devices.take(uni);
-    Q_EMIT deviceRemoved(device);
+
+    if (device->isConnected()) {
+        Q_EMIT deviceRemoved(device);
+    }
+
     delete device;
 }
 

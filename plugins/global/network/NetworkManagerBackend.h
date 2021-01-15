@@ -23,18 +23,28 @@ namespace NetworkManager
 
 class NetworkManagerDevice : public NetworkDevice
 {
+    Q_OBJECT
+
 public:
     NetworkManagerDevice(const QString &id, QSharedPointer<NetworkManager::Device> device);
     ~NetworkManagerDevice() override;
 
     void update();
 
+    bool isConnected() const;
+
+    Q_SIGNAL void connected(NetworkManagerDevice *device);
+    Q_SIGNAL void disconnected(NetworkManagerDevice *device);
+
 private:
-    void updateWifi(NetworkManager::WirelessDevice *device);
+    void updateWifi();
 
     QSharedPointer<NetworkManager::Device> m_device;
     QSharedPointer<NetworkManager::DeviceStatistics> m_statistics;
+    NetworkManager::WirelessDevice *m_wifiDevice = nullptr;
     std::unique_ptr<QTimer> m_statisticsTimer;
+    bool m_connected = false;
+    bool m_restoreTimer = false;
 };
 
 class NetworkManagerBackend : public NetworkBackend
