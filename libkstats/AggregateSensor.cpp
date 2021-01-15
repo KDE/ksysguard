@@ -98,10 +98,20 @@ QVariant AggregateSensor::value() const
     }
 
     auto it = m_sensors.constBegin();
+    while (!it.value() && it != m_sensors.constEnd()) {
+        it++;
+    }
+
+    if (it == m_sensors.constEnd()) {
+        return QVariant{};
+    }
+
     QVariant result = it.value()->value();
     it++;
     for (; it != m_sensors.constEnd(); it++) {
-        result = m_aggregateFunction(result, it.value()->value());
+        if (it.value()) {
+            result = m_aggregateFunction(result, it.value()->value());
+        }
     }
     return result;
 }
@@ -112,7 +122,9 @@ void AggregateSensor::subscribe()
     SensorProperty::subscribe();
     if (!wasSubscribed && isSubscribed()) {
         for (auto sensor : qAsConst(m_sensors)) {
-            sensor->subscribe();
+            if (sensor) {
+                sensor->subscribe();
+            }
         }
     }
 }
@@ -123,7 +135,9 @@ void AggregateSensor::unsubscribe()
     SensorProperty::unsubscribe();
     if (wasSubscribed && !isSubscribed()) {
         for (auto sensor : qAsConst(m_sensors)) {
-            sensor->unsubscribe();
+            if (sensor) {
+                sensor->unsubscribe();
+            }
         }
     }
 }
@@ -192,6 +206,16 @@ void AggregateSensor::updateSensors()
             }
         }
     }
+
+    auto itr = m_sensors.begin();
+    while (itr != m_sensors.end()) {
+        if (!itr.value()) {
+            itr = m_sensors.erase(itr);
+        } else {
+            ++itr;
+        }
+    }
+
     delayedEmitDataChanged();
 }
 

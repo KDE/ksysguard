@@ -26,6 +26,7 @@
 #include <QRegularExpression>
 #include <QVariant>
 #include <QVector>
+#include <QPointer>
 
 #include "SensorObject.h"
 #include "SensorPlugin.h"
@@ -63,7 +64,7 @@ private:
 
     QRegularExpression m_matchObjects;
     QString m_matchProperty;
-    QHash<QString, SensorProperty *> m_sensors;
+    QHash<QString, QPointer<SensorProperty>> m_sensors;
     bool m_dataChangeQueued = false;
     int m_dataCompressionDuration = 100;
     SensorContainer *m_subsystem;
