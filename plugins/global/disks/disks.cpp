@@ -192,17 +192,18 @@ void DisksPlugin::addDevice(const Solid::Device& device)
     if (!access || !volume || volume->isIgnored()) {
         return;
     }
-
     Solid::Device drive = device;
-    while (drive.isValid() && !drive.is<Solid::StorageDrive>()) {
+    // Only exlude volumes if we know that they are for sure not on a hard disk
+    while (drive.isValid()) {
+        if (drive.is<Solid::StorageDrive>()) {
+            auto type = drive.as<Solid::StorageDrive>()->driveType();
+            if (type == Solid::StorageDrive::HardDisk) {
+                break;
+            } else {
+                return;
+            }
+        }
         drive = drive.parent();
-    }
-    if (!drive.isValid()) {
-        return;
-    }
-
-    if (drive.as<Solid::StorageDrive>()->driveType() != Solid::StorageDrive::HardDisk) {
-        return;
     }
 
     if (access->filePath() != QString()) {
