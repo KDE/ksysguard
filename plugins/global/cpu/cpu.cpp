@@ -96,7 +96,7 @@ void CpuObject::initialize()
     m_frequency->setUnit(KSysGuard::Unit::UnitMegaHertz);
 
     m_temperature->setPrefix(name());
-    m_temperature->setPrefix(i18nc("@title", "Current Temperature"));
+    m_temperature->setName(i18nc("@title", "Current Temperature"));
     m_temperature->setShortName(i18nc("@title, Short for Current Temperatur", "Temperature"));
     m_temperature->setVariantType(QVariant::Double);
     m_temperature->setUnit(KSysGuard::Unit::UnitCelsius);
