@@ -3,6 +3,7 @@
   <name>KSysGuard</name>
   <name xml:lang="ar">حارس نظامك</name>
   <name xml:lang="ast">KSysGuard</name>
+  <name xml:lang="az">KSysGuard</name>
   <name xml:lang="ca">KSysGuard</name>
   <name xml:lang="ca-valencia">KSysGuard</name>
   <name xml:lang="cs">KSysGuard</name>
@@ -33,12 +34,14 @@
   <name xml:lang="sv">KDE:s systemövervakare</name>
   <name xml:lang="tg">Муҳофизати низом</name>
   <name xml:lang="uk">KSysGuard</name>
+  <name xml:lang="vi">KSysGuard</name>
   <name xml:lang="x-test">xxKSysGuardxx</name>
   <name xml:lang="zh-CN">KSysGuard</name>
   <name xml:lang="zh-TW">KSysGuard</name>
   <summary>Monitor running processes and system performance</summary>
   <summary xml:lang="ar">راقِب العمليات الجارية وأداء النظام</summary>
   <summary xml:lang="ast">Supervisa los procesos n'execución y el rindimientu del sistema</summary>
+  <summary xml:lang="az">İşləyən proseslərə və Sistemin işinə nəzarət</summary>
   <summary xml:lang="ca">Controlador de processos en execució i rendiment del sistema</summary>
   <summary xml:lang="ca-valencia">Controlador de processos en execució i rendiment del sistema</summary>
   <summary xml:lang="cs">Monitoring běžících procesů a výkonu systému</summary>
@@ -68,6 +71,7 @@
   <summary xml:lang="sv">Övervaka processor som kör och systemprestanda</summary>
   <summary xml:lang="tg">Равандҳои ҷорӣ ва самаранокии низомро назорат мекунад</summary>
   <summary xml:lang="uk">Стеження за процесами та швидкодією системи</summary>
+  <summary xml:lang="vi">Giám sát các tiến trình đang chạy và hiệu năng hệ thống</summary>
   <summary xml:lang="x-test">xxMonitor running processes and system performancexx</summary>
   <summary xml:lang="zh-CN">监控正在运行的程序进程和系统性能</summary>
   <summary xml:lang="zh-TW">監控執行程序及系統效能</summary>
@@ -80,6 +84,7 @@
     <p>System Guard allows you to monitor information and statistics about your system.</p>
     <p xml:lang="ar">يتيح لك «حارس نظامك» مراقبة المعلومات والإحصاءات في نظامك.</p>
     <p xml:lang="ast">KSysGuard permítete supervisar la información y les estadistiques tocante al sistema.</p>
+    <p xml:lang="az">System Guard, sisteminizlə bağlı məlumatları və statistikanı izləməyə imkan verir.</p>
     <p xml:lang="ca">El System Guard permet controlar la informació i les estadístiques del sistema.</p>
     <p xml:lang="ca-valencia">System Guard permet controlar la informació i les estadístiques del sistema.</p>
     <p xml:lang="da">System Guard lader dig overvåge information og statistik om dit system.</p>
@@ -108,12 +113,14 @@
     <p xml:lang="sv">Systemövervakaren låter dig övervaka information och statistik om systemet.</p>
     <p xml:lang="tg">Муҳофизати низом ба шумо имкон медиҳад, то тавонед иттилоот ва омори ҷориро дар бораи низоми худ назорат намоед.</p>
     <p xml:lang="uk">Засіб стеження за системою надає вам змогу стежити за відомостями та статистичними даними щодо вашої системи.</p>
+    <p xml:lang="vi">"Canh gác hệ thống" cho phép bạn giám sát thông tin và số liệu về hệ thống của mình.</p>
     <p xml:lang="x-test">xxSystem Guard allows you to monitor information and statistics about your system.xx</p>
     <p xml:lang="zh-CN">KSysGuard (KDE 系统监视器) 是为了监控系统信息和性能统计数据而准备的工具软件。</p>
     <p xml:lang="zh-TW">「System Guard」允許您監控您系統的資訊與統計。</p>
     <p>In addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.</p>
     <p xml:lang="ar">يستطيع الحارس (إضافة إلى مراقبة النظام المحلي) الاتصال بالأنظمة البعيدة التي تشغّل «عفريت حارس النظام/System Guard Daemon».</p>
-    <p xml:lang="ast">Amás de supervisar el sistema llocal, pue coneutase a sistemes remotos executando'l degorriu de KSysGuard.</p>
+    <p xml:lang="ast">Amás de supervisar el sistema llocal, pue conectase a sistemes remotos executando'l degorriu de KSysGuard.</p>
+    <p xml:lang="az">Yerli sistemi izləməklə yanaşı, System Guard Xidməti ilə işləyən uzaq sistemlərə də qoşula bilər.</p>
     <p xml:lang="ca">Addicionalment al monitoratge del sistema local, pot connectar-se amb sistemes remots executant el dimoni del System Guard.</p>
     <p xml:lang="ca-valencia">A més de supervisar el sistema local, pot connectar-se a sistemes remots que estiguen executant el dimoni de System Guard.</p>
     <p xml:lang="da">Udover at overvåge det lokale system, kan det overvåge eksterne systemer, som kører System Guard-dæmonen.</p>
@@ -142,6 +149,7 @@
     <p xml:lang="sv">Förutom att övervaka det lokala systemet kan den ansluta till andra system som kör systemövervakardemonen.</p>
     <p xml:lang="tg">Илова бар назораткунии низоми маҳаллӣ, он метавонад ба низомҳои дурдаст дорои "раванди дохилии муҳофизати низом" пайваст шавад.</p>
     <p xml:lang="uk">Окрім стеження за локальною системою, програма здатна з'єднуватися із віддаленими системами, де запущено фонову службу стеження за системою.</p>
+    <p xml:lang="vi">Ngoài việc giám sát hệ thống cục bộ, nó còn có thể kết nối đến các hệ thống ở xa chạy trình nền "Canh gác hệ thống".</p>
     <p xml:lang="x-test">xxIn addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.xx</p>
     <p xml:lang="zh-CN">它不但可以监视本地系统，还可以连接到正在运行系统监视器守护进程的远程系统。</p>
     <p xml:lang="zh-TW">除了能監控本機系統之外， 還能連線到有執行「System Guard 守護程式」的遠端系統。</p>
