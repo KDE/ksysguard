@@ -27,9 +27,10 @@
 
 static double readCpuFreq(const QString &cpuId, const QString &attribute, bool &ok)
 {
+    ok = false;
     QFile file(QStringLiteral("/sys/devices/system/cpu/%1/cpufreq/").arg(cpuId)  + attribute);
-    if (file.exists()) {
-        file.open(QIODevice::ReadOnly);
+    bool open = file.open(QIODevice::ReadOnly);
+    if (open) {
         // Remove trailing new line
         return file.readAll().chopped(1).toUInt(&ok) / 1000.0; // CPUFreq reports values in kHZ
     }
