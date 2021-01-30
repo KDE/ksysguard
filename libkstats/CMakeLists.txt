@@ -11,7 +11,7 @@ set(ksgrdbackend_LIB_SRCS
 add_library(ksgrdbackend ${ksgrdbackend_LIB_SRCS})
 add_library(KSysGuard::StatsBackend ALIAS ksgrdbackend)
 
-target_link_libraries(ksgrdbackend PUBLIC Qt5::Core Qt5::DBus KSysGuard::Formatter)
+target_link_libraries(ksgrdbackend PUBLIC Qt::Core Qt::DBus KSysGuard::Formatter)
 
 set_target_properties(ksgrdbackend PROPERTIES
     EXPORT_NAME SysGuardBackend

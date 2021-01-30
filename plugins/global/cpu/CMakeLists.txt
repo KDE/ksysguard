@@ -5,7 +5,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
     target_sources(ksysguard_plugin_cpu PRIVATE freebsdcpuplugin.cpp)
 endif()
 
-target_link_libraries(ksysguard_plugin_cpu Qt5::Core KSysGuard::StatsBackend KF5::CoreAddons KF5::I18n)
+target_link_libraries(ksysguard_plugin_cpu Qt::Core KSysGuard::StatsBackend KF5::CoreAddons KF5::I18n)
 
 if(SENSORS_FOUND)
     target_include_directories(ksysguard_plugin_cpu PRIVATE ${SENSORS_INCLUDE_DIR})

@@ -11,7 +11,7 @@ if (KF5NetworkManagerQt_FOUND)
 endif()
 
 add_library(ksysguard_globalplugin_network MODULE ${KSYSGUARD_NETWORK_PLUGIN_SOURCES})
-target_link_libraries(ksysguard_globalplugin_network PRIVATE Qt5::Core Qt5::Gui Qt5::DBus KSysGuard::StatsBackend KF5::CoreAddons KF5::I18n)
+target_link_libraries(ksysguard_globalplugin_network PRIVATE Qt::Core Qt::Gui Qt::DBus KSysGuard::StatsBackend KF5::CoreAddons KF5::I18n)
 
 if (KF5NetworkManagerQt_FOUND)
     target_link_libraries(ksysguard_globalplugin_network PRIVATE KF5::NetworkManagerQt)

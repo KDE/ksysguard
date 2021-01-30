@@ -11,5 +11,5 @@ qt5_add_dbus_interface(SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/../ksysguard_iface.x
 ecm_add_test(
     ${SOURCES}
     TEST_NAME ksystemstatstest
-    LINK_LIBRARIES Qt5::Test ksystemstats_core
+    LINK_LIBRARIES Qt::Test ksystemstats_core
 )
