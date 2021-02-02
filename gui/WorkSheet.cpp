@@ -241,7 +241,9 @@ bool WorkSheet::exportWorkSheet( const QString &fileName )
     }
 
     QTextStream s( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     s.setCodec( "UTF-8" );
+#endif
     s << doc;
     file.close();
 
