@@ -300,16 +300,16 @@ void DisksPlugin::update()
     The /proc/diskstats file displays the I/O statistics
     of block devices. Each line contains the following 14
     fields:
-    1 - major number
-    2 - minor mumber
-    3 - device name
-    4 - reads completed successfully
-    5 - reads merged
-    6 - sectors read
-    7 - time spent reading (ms)
-    8 - writes completed
-    9 - writes merged
-    10 - sectors written
+    - major number
+    - minor mumber
+    - device name
+    - reads completed successfully
+    - reads merged
+    - sectors read
+    - time spent reading (ms)
+    - writes completed
+    - writes merged
+    - sectors written
     [...]
     */
     for (QByteArray line = diskstats.readLine(); !line.isNull(); line = diskstats.readLine()) {
@@ -317,7 +317,7 @@ void DisksPlugin::update()
         const QString device = QStringLiteral("/dev/%1").arg(QString::fromLatin1(fields[2]));
         if (m_volumesByDevice.contains(device)) {
             // A sector as reported in diskstats is 512 Bytes, see https://stackoverflow.com/a/38136179
-            m_volumesByDevice[device]->setBytes(fields[6].toULongLong() * 512, fields[10].toULongLong() * 512, elapsed);
+            m_volumesByDevice[device]->setBytes(fields[5].toULongLong() * 512, fields[9].toULongLong() * 512, elapsed);
         }
     }
 #elif defined Q_OS_FREEBSD
