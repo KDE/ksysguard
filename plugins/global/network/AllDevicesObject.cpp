@@ -33,5 +33,5 @@ AllDevicesObject::AllDevicesObject(SensorContainer *parent)
     m_totalUploadSensor = new AggregateSensor(this, QStringLiteral("totalUpload"), i18nc("@title", "Total Uploaded"));
     m_totalUploadSensor->setShortName(i18nc("@title Short for Total Uploaded", "Uploaded"));
     m_totalUploadSensor->setUnit(KSysGuard::UnitByte);
-    m_totalUploadSensor->setMatchSensors(QRegularExpression{"^(?!all).*$"}, QStringLiteral("upload"));
+    m_totalUploadSensor->setMatchSensors(QRegularExpression{"^(?!all).*$"}, QStringLiteral("totalUpload"));
 }
