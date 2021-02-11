@@ -1,0 +1,8 @@
+[Unit]
+Description=Track hardware statistics
+PartOf=graphical-session.target
+
+[Service]
+ExecStart=@KDE_INSTALL_FULL_BINDIR@/ksystemstats
+BusName=org.kde.ksystemstats
+Slice=background.slice

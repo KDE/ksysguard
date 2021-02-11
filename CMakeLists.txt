@@ -20,6 +20,8 @@ include(KDEClangFormat)
 include(ECMAddTests)
 include(ECMInstallIcons)
 include(FeatureSummary)
+include (ECMConfiguredInstall)
+include (ECMGenerateDBusServiceFile)
 
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
     Core

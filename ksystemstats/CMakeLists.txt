@@ -15,7 +15,17 @@ target_link_libraries(ksystemstats ksystemstats_core)
 
 install(TARGETS ksystemstats DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
-kdbusaddons_generate_dbus_service_file(ksystemstats org.kde.ksystemstats ${KDE_INSTALL_FULL_BINDIR})
+ecm_generate_dbus_service_file(
+    NAME org.kde.ksystemstats
+    EXECUTABLE "${KDE_INSTALL_FULL_BINDIR}/ksystemstats"
+    SYSTEMD_SERVICE plasma-ksystemstats.service
+    DESTINATION ${KDE_INSTALL_DBUSSERVICEDIR}
+)
+
+ecm_install_configured_files(
+   INPUT plasma-ksystemstats.service.in
+   DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR}
+)
 
 add_subdirectory(test)
 
