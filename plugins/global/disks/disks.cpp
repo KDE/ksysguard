@@ -253,13 +253,13 @@ void DisksPlugin::addAggregateSensors()
     used->setMax(total->value().toULongLong());
     used->setMatchSensors(QRegularExpression("^(?!all).*$"), "used");
 
-    auto readRate = new AggregateSensor(allDisks, "readRate", i18nc("@title", "Read Rate"));
+    auto readRate = new AggregateSensor(allDisks, "read", i18nc("@title", "Read Rate"));
     readRate->setShortName(i18nc("@title Short for 'Read Rate'", "Read"));
     readRate->setUnit(KSysGuard::UnitByteRate);
     readRate->setVariantType(QVariant::Double);
     readRate->setMatchSensors(QRegularExpression("^(?!all).*$"), "read");
 
-    auto writeRate = new AggregateSensor(allDisks, "writeRate", i18nc("@title", "Write Rate"));
+    auto writeRate = new AggregateSensor(allDisks, "write", i18nc("@title", "Write Rate"));
     writeRate->setShortName(i18nc("@title Short for 'Write Rate'", "Write"));
     writeRate->setUnit(KSysGuard::UnitByteRate);
     writeRate->setVariantType(QVariant::Double);
