@@ -91,12 +91,8 @@ void NvidiaPlugin::setup()
             int sm = parts[3].toUInt();
             int mem = parts[4].toUInt();
 
-            KSysGuard::Process *process = getProcess(pid);
-            if(!process) {
-                continue; //can in race condition etc
-            }
-            m_usage->setData(process, sm);
-            m_memory->setData(process, mem);
+            m_usage->setData(pid, sm);
+            m_memory->setData(pid, mem);
         }
     });
 }

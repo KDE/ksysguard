@@ -88,13 +88,8 @@ NetworkPlugin::NetworkPlugin(QObject *parent, const QVariantList &args)
             auto bytesIn = parts.at(4).toUInt();
             auto bytesOut = parts.at(6).toUInt();
 
-            auto process = getProcess(pid);
-            if (!process) {
-                return;
-            }
-
-            m_inboundSensor->setData(process, bytesIn);
-            m_outboundSensor->setData(process, bytesOut);
+            m_inboundSensor->setData(pid, bytesIn);
+            m_outboundSensor->setData(pid, bytesOut);
         }
     });
 }
