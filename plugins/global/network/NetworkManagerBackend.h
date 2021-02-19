@@ -45,6 +45,7 @@ private:
     std::unique_ptr<QTimer> m_statisticsTimer;
     bool m_connected = false;
     bool m_restoreTimer = false;
+    uint m_initialStatisticsRate;
 };
 
 class NetworkManagerBackend : public NetworkBackend

@@ -34,6 +34,21 @@ NetworkManagerDevice::NetworkManagerDevice(const QString &id, QSharedPointer<Net
 
     m_statistics = m_device->deviceStatistics();
 
+    // We always want to have the refresh rate to be 1000ms but it's a global property. So we store
+    // the oustide rate. override any changes and restore it when we are destroyed.
+    m_initialStatisticsRate = m_statistics->refreshRateMs();
+    connect(m_statistics.get(), &NetworkManager::DeviceStatistics::refreshRateMsChanged, this, [this] (uint rate) {
+        // Unfortunately we always get a change signal even when disconnecting before the setter and
+        // connecting afterwards, so we have to do this and assume the first signal after a call is
+        // caused by it. Iniitally true because of the call below
+        static bool updatingRefreshRate = true;
+        if (!updatingRefreshRate) {
+            m_initialStatisticsRate = rate;
+            m_statistics->setRefreshRateMs(1000);
+        }
+        updatingRefreshRate = !updatingRefreshRate;
+    });
+
     // We want to display speed in bytes per second, so use a fixed one-second
     // update interval here so we are independant of the actual update rate of
     // the daemon.
@@ -88,6 +103,8 @@ NetworkManagerDevice::NetworkManagerDevice(const QString &id, QSharedPointer<Net
 
 NetworkManagerDevice::~NetworkManagerDevice()
 {
+    disconnect(m_statistics.get(), nullptr, this, nullptr);
+    m_statistics->setRefreshRateMs(m_initialStatisticsRate);
 }
 
 void NetworkManagerDevice::update()
