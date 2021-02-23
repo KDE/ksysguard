@@ -31,6 +31,14 @@
 
 #include "linuxcpu.h"
 
+struct CpuInfo
+{
+    int id = -1;
+    int cpu = -1;
+    int core = -1;
+    qreal frequency = 0.0;
+};
+
 LinuxCpuPluginPrivate::LinuxCpuPluginPrivate(CpuPlugin *q)
     : CpuPluginPrivate(q)
 {
@@ -38,10 +46,11 @@ LinuxCpuPluginPrivate::LinuxCpuPluginPrivate(CpuPlugin *q)
     QFile cpuinfo("/proc/cpuinfo");
     cpuinfo.open(QIODevice::ReadOnly);
 
-    QHash<int, int> numCores;
+    int cpuCount = 0;
+    QVector<CpuInfo> cpus;
+
     for (QByteArray line = cpuinfo.readLine(); !line.isEmpty(); line = cpuinfo.readLine()) {
-        unsigned int processor, physicalId, coreId;
-        double frequency = 0;
+        CpuInfo info;
         // Processors are divided by empty lines
         for (; line != "\n";  line = cpuinfo.readLine()) {
             // we are interested in processor number as identifier for /proc/stat, physical id (the
@@ -52,24 +61,35 @@ LinuxCpuPluginPrivate::LinuxCpuPluginPrivate(CpuPlugin *q)
             const QByteArray field = line.left(delim).trimmed();
             const QByteArray value = line.mid(delim + 1).trimmed();
             if (field == "processor") {
-                processor = value.toInt();
+                info.id = value.toInt();
             } else if (field == "physical id") {
-                physicalId = value.toInt();
+                info.cpu = value.toInt();
             } else if (field == "core id") {
-                coreId = value.toInt();
+                info.core = value.toInt();
             } else if (field == "cpu MHz") {
-                frequency = value.toDouble();
+                info.frequency = value.toDouble();
             }
         }
-        const QString name = i18nc("@title", "CPU %1 Core %2", physicalId + 1, ++numCores[physicalId]);
-        auto cpu = new LinuxCpuObject(QStringLiteral("cpu%1").arg(processor), name, m_container);
-        cpu->initialize(frequency);
-        m_cpus.push_back(cpu);
-        m_cpusBySystemIds.insert({physicalId, coreId}, cpu);
+
+        cpus.push_back(info);
+        cpuCount = std::max(cpuCount, info.cpu);
     }
+
+    QHash<int, int> numCores;
+    for (const auto &entry : qAsConst(cpus)) {
+        const QString name = cpuCount > 1
+                             ? i18nc("@title", "CPU %1 Core %2", entry.cpu + 1, ++numCores[entry.cpu])
+                             : i18nc("@title", "Core %1", ++numCores[entry.cpu]);
+
+        auto cpu = new LinuxCpuObject(QStringLiteral("cpu%1").arg(entry.id), name, m_container);
+        cpu->initialize(entry.frequency);
+        m_cpus.push_back(cpu);
+        m_cpusBySystemIds.insert({entry.cpu, entry.core}, cpu);
+    }
+
     m_allCpus = new LinuxAllCpusObject(m_container);
     m_allCpus->initialize();
-    m_allCpus->setCounts(numCores.keys().size(), m_cpus.size());
+    m_allCpus->setCounts(cpuCount, m_cpus.size());
 
     addSensors();
 }
