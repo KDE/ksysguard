@@ -58,6 +58,7 @@ void MemoryBackend::initSensors()
     m_used->setVariantType(QVariant::ULongLong);
     m_used->setMax(m_total);
     auto usedPercentage = new PercentageSensor(m_physicalObject, QStringLiteral("usedPercent"), i18nc("@title", "Used Physical Memory Percentage"));
+    usedPercentage->setShortName(m_used->info().shortName);
     usedPercentage->setBaseSensor(m_used);
 
     m_free->setName(i18nc("@title", "Free Physical Memory"));
@@ -66,6 +67,7 @@ void MemoryBackend::initSensors()
     m_free->setVariantType(QVariant::ULongLong);
     m_free->setMax(m_total);
     auto freePercentage = new PercentageSensor(m_physicalObject, QStringLiteral("freePercent"), i18nc("@title", "Free Physical Memory Percentage"));
+    freePercentage->setShortName(m_free->info().shortName);
     freePercentage->setBaseSensor(m_free);
 
     m_application->setName(i18nc("@title", "Application Memory"));
@@ -74,6 +76,7 @@ void MemoryBackend::initSensors()
     m_application->setVariantType(QVariant::ULongLong);
     m_application->setMax(m_total);
     auto applicationPercentage = new PercentageSensor(m_physicalObject, QStringLiteral("applicationPercent"), i18nc("@title", "Application Memory Percentage"));
+    applicationPercentage->setShortName(m_application->info().shortName);
     applicationPercentage->setBaseSensor(m_application);
 
     m_cache->setName(i18nc("@title", "Cache Memory"));
@@ -82,6 +85,7 @@ void MemoryBackend::initSensors()
     m_cache->setVariantType(QVariant::ULongLong);
     m_cache->setMax(m_total);
     auto cachePercentage = new PercentageSensor(m_physicalObject, QStringLiteral("cachePercent"), i18nc("@title", "Cache Memory Percentage"));
+    cachePercentage->setShortName(m_cache->info().shortName);
     cachePercentage->setBaseSensor(m_cache);
 
     m_buffer->setName(i18nc("@title", "Buffer Memory"));
@@ -91,6 +95,7 @@ void MemoryBackend::initSensors()
     m_buffer->setVariantType(QVariant::ULongLong);
     m_buffer->setMax(m_total);
     auto bufferPercentage = new PercentageSensor(m_physicalObject, QStringLiteral("bufferPercent"), i18nc("@title", "Buffer Memory Percentage"));
+    bufferPercentage->setShortName(m_buffer->info().shortName);
     bufferPercentage->setBaseSensor(m_buffer);
 
     m_swapTotal->setName(i18nc("@title", "Total Swap Memory"));
@@ -104,6 +109,7 @@ void MemoryBackend::initSensors()
     m_swapUsed->setVariantType(QVariant::ULongLong);
     m_swapUsed->setMax(m_swapTotal);
     auto usedSwapPercentage = new PercentageSensor(m_swapObject, QStringLiteral("usedPercent"), i18nc("@title", "Used Swap Memory Percentage"));
+    usedSwapPercentage->setShortName(m_swapUsed->info().shortName);
     usedSwapPercentage->setBaseSensor(m_swapUsed);
 
     m_swapFree->setName(i18nc("@title", "Free Swap Memory"));
@@ -112,5 +118,6 @@ void MemoryBackend::initSensors()
     m_swapFree->setVariantType(QVariant::ULongLong);
     m_swapFree->setMax(m_swapTotal);
     auto freeSwapPercentage = new PercentageSensor(m_swapObject, QStringLiteral("freePercent"), i18nc("@title", "Free Swap Memory Percentage"));
+    freeSwapPercentage->setShortName(m_swapFree->info().shortName);
     freeSwapPercentage->setBaseSensor(m_swapFree);
 }
