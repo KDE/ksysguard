@@ -38,7 +38,6 @@ KSGRDIface::KSGRDIface(QObject *parent, const QVariantList &args)
         m_subsystems[id] = new SensorContainer(id, KSGRD::SensorMgr->translateSensorPath(id), this);
     };
     registerSubsystem("acpi");
-    registerSubsystem("lmsensors");
     registerSubsystem("uptime");
     registerSubsystem("system");
 
