@@ -32,6 +32,11 @@
 
 #include <SensorContainer.h>
 
+#ifdef Q_OS_LINUX
+#include <sys/sysinfo.h>
+#endif
+#include <time.h>
+
 // Uppercase the first letter of each word.
 QString upperCaseFirst(const QString &input)
 {
@@ -71,6 +76,7 @@ public:
     OSInfoPrivate(OSInfoPlugin *qq);
     virtual ~OSInfoPrivate() = default;
 
+    virtual void init();
     virtual void update();
 
     OSInfoPlugin *q;
@@ -89,6 +95,7 @@ public:
     SensorProperty *osPrettyNameProperty = nullptr;
     SensorProperty *osLogoProperty = nullptr;
     SensorProperty *osUrlProperty = nullptr;
+    SensorProperty *uptimeProperty = nullptr;
 
     SensorObject *plasmaObject = nullptr;
     SensorProperty *qtVersionProperty = nullptr;
@@ -101,7 +108,7 @@ class LinuxPrivate : public OSInfoPrivate
 public:
     LinuxPrivate(OSInfoPlugin *qq) : OSInfoPrivate(qq) { }
 
-    void update() override;
+    void init() override;
 };
 
 OSInfoPrivate::OSInfoPrivate(OSInfoPlugin *qq)
@@ -123,6 +130,8 @@ OSInfoPrivate::OSInfoPrivate(OSInfoPlugin *qq)
     osPrettyNameProperty->setShortName(i18nc("@title Operating System Name and Version", "OS"));
     osLogoProperty = new SensorProperty(QStringLiteral("logo"), i18nc("@title", "Operating System Logo"), QString{}, systemObject);
     osUrlProperty = new SensorProperty(QStringLiteral("url"), i18nc("@title", "Operating System URL"), QString{}, systemObject);
+    uptimeProperty = new SensorProperty(QStringLiteral("uptime"), i18nc("@title", "Uptime new"), QString{}, systemObject);
+    uptimeProperty->setUnit(KSysGuard::UnitTime);
 
     plasmaObject = new SensorObject(QStringLiteral("plasma"), i18nc("@title", "KDE Plasma"), container);
     qtVersionProperty = new SensorProperty(QStringLiteral("qtVersion"), i18nc("@title", "Qt Version"), QString{}, plasmaObject);
@@ -132,7 +141,7 @@ OSInfoPrivate::OSInfoPrivate(OSInfoPlugin *qq)
 
 OSInfoPlugin::~OSInfoPlugin() = default;
 
-void OSInfoPrivate::update()
+void OSInfoPrivate::init()
 {
     auto kernelName = upperCaseFirst(QSysInfo::kernelType());
     kernelNameProperty->setValue(kernelName);
@@ -168,9 +177,23 @@ void OSInfoPrivate::update()
     );
 }
 
-void LinuxPrivate::update()
+void OSInfoPrivate::update()
 {
-    OSInfoPrivate::update();
+#if defined Q_OS_LINUX
+    struct sysinfo info;
+    sysinfo(&info);
+    // can't send a long over the bus
+    uptimeProperty->setValue(QVariant::fromValue<qlonglong>(info.uptime));
+#elif defined Q_OS_FREEBSD
+    timespec time;
+    clock_gettime(CLOCK_UPTIME, &time);
+    uptimeProperty->setValue(QVariant::fromValue<qlonglong>(time.tv_sec));
+#endif
+}
+
+void LinuxPrivate::init()
+{
+    OSInfoPrivate::init();
 
     // Override some properties with values from hostnamed, if available.
     dbusCall<QVariantMap>(
@@ -210,8 +233,14 @@ OSInfoPlugin::OSInfoPlugin(QObject *parent, const QVariantList &args)
 #else
     d = std::make_unique<OSInfoPrivate>(this);
 #endif
+    d->init();
+}
+
+void OSInfoPlugin::update()
+{
     d->update();
 }
+
 
 K_PLUGIN_CLASS_WITH_JSON(OSInfoPlugin, "metadata.json")
 

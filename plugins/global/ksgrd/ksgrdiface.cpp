@@ -39,8 +39,6 @@ KSGRDIface::KSGRDIface(QObject *parent, const QVariantList &args)
     };
     registerSubsystem("acpi");
     registerSubsystem("lmsensors");
-    registerSubsystem("uptime");
-    registerSubsystem("system");
 
     KSGRD::SensorMgr->engage(QStringLiteral("localhost"), QLatin1String(""), QStringLiteral("ksysguardd"));
     connect(KSGRD::SensorMgr, &KSGRD::SensorManager::update, this, &KSGRDIface::updateMonitorsList);
