@@ -32,6 +32,10 @@ class PowerPlugin : public SensorPlugin {
     Q_OBJECT
 public:
     PowerPlugin(QObject *parent, const QVariantList &args);
+    QString providerName() const override
+    {
+        return QStringLiteral("power");
+    };
 private:
     SensorContainer *m_container;
     QHash<QString, Battery*> m_batteriesByUdi;
