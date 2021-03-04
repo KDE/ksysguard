@@ -103,7 +103,7 @@ Battery::Battery(const Solid::Device &device, const QString &name,  SensorContai
     chargeRate->setShortName(i18nc("@title", "Charging  Rate"));
     chargeRate->setPrefix(name);
     chargeRate->setDescription(i18n("Power that the battery is being charged with (positive) or discharged (negative)"));
-    chargeRate->setUnit(KSysGuard::UnitPercent);
+    chargeRate->setUnit(KSysGuard::UnitWatt);
     chargeRate->setVariantType(QVariant::Double);
     connect(battery, &Solid::Battery::energyRateChanged, chargeRate, [chargeRate] (double rate) {
         chargeRate->setValue(-rate);
