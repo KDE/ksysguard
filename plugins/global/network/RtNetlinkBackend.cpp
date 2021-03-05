@@ -11,6 +11,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <array>
 
 #include <netlink/netlink.h>
 #include <netlink/route/addr.h>
