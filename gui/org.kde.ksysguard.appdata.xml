@@ -24,7 +24,7 @@
   <name xml:lang="nl">KSysGuard</name>
   <name xml:lang="nn">KSysGuard</name>
   <name xml:lang="pa">ਕੇਸਿਸ-ਗਾਰਡ</name>
-  <name xml:lang="pl">Monitor systemu KDE</name>
+  <name xml:lang="pl">Monitor systemowy KDE</name>
   <name xml:lang="pt">KSysGuard</name>
   <name xml:lang="pt-BR">KSysGuard</name>
   <name xml:lang="ro">KSysGuard</name>
@@ -139,7 +139,7 @@
     <p xml:lang="nl">Naast het monitoren van het lokale systeem, kan het verbinden met systemen op afstand die de System Guard-daemon hebben geactiveerd.</p>
     <p xml:lang="nn">I tillegg til overvaking av eit lokalt system kan du kopla til eksterne system som køyrer systemvakttenesta.</p>
     <p xml:lang="pa">ਲੋਕਲ ਸਿਸਟਮ ਦੀ ਨਿਗਰਾਨੀ ਦੇ ਨਾਲ ਨਾਲ, ਇਹ ਰਿਮੋਟ ਸਿਸਟਮਾਂ ਉੱਤੇ ਚੱਲ ਰਹੀ ਸਿਸਟਮ ਗਾਰਡ ਡੈਮਨ ਨਾਲ ਵੀ ਕਨੈਕਟ ਕਰ ਸਕਦਾ ਹੈ।</p>
-    <p xml:lang="pl">Poza monitorowaniem lokalnego systemu, może się połączyć do zdalnych systemów mających czynną usługę monitora systemu.</p>
+    <p xml:lang="pl">Poza monitorowaniem lokalnego systemu, może się połączyć do zdalnych systemów mających czynną usługę monitora systemowego.</p>
     <p xml:lang="pt">Para além de monitorizar o sistema local, poder-se-á ligar a sistema remotos que tenham o Servidor do System Guard em execução.</p>
     <p xml:lang="pt-BR">Para além de monitorizar o sistema local, ele pode se conectar a sistemas remotos que tenham o Servidor do System Guard em execução.</p>
     <p xml:lang="ro">Pe lângă monitorizarea sistemului local, acesta se poate conecta la sisteme distante ce rulează demonul Gardian de Sistem.</p>
