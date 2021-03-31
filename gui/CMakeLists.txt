@@ -36,7 +36,7 @@ ki18n_wrap_ui( libsensordisplays_SRCS
    SensorDisplayLib/SensorLoggerSettingsWidget.ui
 )
 
-set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
+set(ksysguard_SRCS ${libsensordisplays_SRCS}
    SensorBrowser.cpp
    WorkSheet.cpp
    WorkSheetSettings.cpp
@@ -45,10 +45,10 @@ set(ksysguard_KDEINIT_SRCS ${libsensordisplays_SRCS}
    StyleEngine.cpp
    ksysguard.cpp )
 
-kf5_add_kdeinit_executable(ksysguard ${ksysguard_KDEINIT_SRCS})
-target_compile_definitions(kdeinit_ksysguard PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
+add_executable(ksysguard ${ksysguard_SRCS})
+target_compile_definitions(ksysguard PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
-target_link_libraries(kdeinit_ksysguard
+target_link_libraries(ksysguard
     KSysGuard::ProcessUi
     KSysGuard::SysGuard
     KSysGuard::SignalPlotter
@@ -61,7 +61,6 @@ target_link_libraries(kdeinit_ksysguard
     KF5::IconThemes
     KF5::WindowSystem)
 
-install(TARGETS kdeinit_ksysguard ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 install(TARGETS ksysguard         ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
