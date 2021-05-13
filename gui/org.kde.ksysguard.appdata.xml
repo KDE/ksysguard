@@ -97,6 +97,7 @@
     <p xml:lang="fi">Järjestelmän valvonnalla voit valvoa järjestelmäsi tietoja ja tilastoja.</p>
     <p xml:lang="fr">System Guard vous permet de surveiller les informations et les statistiques de votre système.</p>
     <p xml:lang="gl">O «Vixiante do sistema» permítelle monitorizar a información e estatísticas sobre o sistema.</p>
+    <p xml:lang="ia">System Guard te permitte supervisionar information e statisticas re tu systema</p>
     <p xml:lang="id">System Guard membolehkan kamu untuk memantau informasi dan statistik tentang sistemmu.</p>
     <p xml:lang="it">Monitor di sistema ti permette di controllare le informazioni e le statistiche del tuo sistema.</p>
     <p xml:lang="ko">시스템 모니터는 내 시스템 정보를 관찰하고 통계를 볼 수 있습니다.</p>
@@ -133,6 +134,7 @@
     <p xml:lang="fi">Paikallisen järjestelmän lisäksi voit yhdistää System Guard -palvelua tarjoaviin etäjärjestelmiin.</p>
     <p xml:lang="fr">En plus de la surveillance de votre système local, il peut se connecter à des systèmes à distance exécutant le démon System Guard.</p>
     <p xml:lang="gl">Ademais de monitorizar o sistema local, pode conectarse a sistemas remotos nos que se estea a executar o «Servizo de vixiante do sistema».</p>
+    <p xml:lang="ia">In addition al supervisionar le systema local, illo pote conecter a systemas remote executante le Daemon de System Guard</p>
     <p xml:lang="id">Selain untuk memantau sistem lokal, ia bisa terkoneksi ke sistem remot yang menjalankan System Guard Daemon.</p>
     <p xml:lang="it">Oltre al controllo del sistema locale può connettersi ai sistemi locali in cui è in esecuzione il demone Monitor di sistema.</p>
     <p xml:lang="ko">로컬 시스템뿐만 아니라 시스템 모니터 데몬이 실행 중인 다른 시스템에 연결할 수도 있습니다.</p>
