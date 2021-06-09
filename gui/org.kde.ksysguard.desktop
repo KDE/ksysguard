@@ -224,3 +224,4 @@ StartupNotify=true
 X-DBUS-StartupType=Multi
 Categories=Qt;KDE;System;
 X-DBUS-ServiceName=org.kde.ksysguard
+StartupWMClass=ksysguard
