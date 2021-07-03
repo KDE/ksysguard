@@ -9,6 +9,7 @@
   <name xml:lang="cs">KSysGuard</name>
   <name xml:lang="da">KSysGuard</name>
   <name xml:lang="de">KSysGuard</name>
+  <name xml:lang="el">KSysGuard</name>
   <name xml:lang="en-GB">KSysGuard</name>
   <name xml:lang="es">KSysGuard</name>
   <name xml:lang="et">KSysGuard</name>
@@ -47,6 +48,7 @@
   <summary xml:lang="cs">Monitoring běžících procesů a výkonu systému</summary>
   <summary xml:lang="da">Overvåg kørende processer og systemets ydelse</summary>
   <summary xml:lang="de">Überwachung laufender Prozesse und Systemleistung</summary>
+  <summary xml:lang="el">Ελεγκτής για εκτελούμενες διεργασίες και την απόδοση του συστήματος</summary>
   <summary xml:lang="en-GB">Monitor running processes and system performance</summary>
   <summary xml:lang="es">Monitorización de procesos en ejecución y rendimiento del sistema</summary>
   <summary xml:lang="et">Töötavate protsesside ja süsteemi jõudluse jälgimine</summary>
@@ -90,6 +92,7 @@
     <p xml:lang="ca-valencia">System Guard permet controlar la informació i les estadístiques del sistema.</p>
     <p xml:lang="da">System Guard lader dig overvåge information og statistik om dit system.</p>
     <p xml:lang="de">Mit KSysGuard können Sie Informationen und Statistiken über Ihr System überwachen</p>
+    <p xml:lang="el">Το System Guard σάς επιτρέπει να ελέγχετε την πληροφόρηση και τα στατιστικά για το σύστημά σας.</p>
     <p xml:lang="en-GB">System Guard allows you to monitor information and statistics about your system.</p>
     <p xml:lang="es">System Guard le permite monitorizar información y estadísticas sobre el sistema.</p>
     <p xml:lang="et">Süsteemi jälgija võimaldab näha süsteemi kohta käivat teavet ja statistikat.</p>
@@ -127,6 +130,7 @@
     <p xml:lang="ca-valencia">A més de supervisar el sistema local, pot connectar-se a sistemes remots que estiguen executant el dimoni de System Guard.</p>
     <p xml:lang="da">Udover at overvåge det lokale system, kan det overvåge eksterne systemer, som kører System Guard-dæmonen.</p>
     <p xml:lang="de">KSysGuard kann zusätzlich zu lokalen Systemen auch entfernte Systeme überwachen, auf denen der KSysGuard-Dienst läuft</p>
+    <p xml:lang="el">Επιπλέον του ελέγχου του τοπικού συστήματος, μπορεί να συνδεθεί σε απομακρυσμένα συστήματα εκτελώντας το System Guard Daemon.</p>
     <p xml:lang="en-GB">In addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.</p>
     <p xml:lang="es">Además de monitorizar el sistema local, puede conectarse con sistemas remotos que estén ejecutando el demonio de System Guard.</p>
     <p xml:lang="et">Lisaks kohaliku süsteemi jälgimisele võib see süsteemi jälgija deemoni vahendusel ühenduda kaugsüsteemidega.</p>
