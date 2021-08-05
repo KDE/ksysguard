@@ -29,8 +29,8 @@
 #include <KMessageBox>
 #include <KAcceleratorManager>
 #include <KActionCollection>
-#include <KNewStuff3/KNS3/DownloadDialog>
 #include <KNewStuff3/KNSCore/Engine>
+#include <KNS3/QtQuickDialogWrapper>
 #include <KConfigGroup>
 
 #include "WorkSheet.h"
@@ -307,14 +307,11 @@ void Workspace::uploadHotNewWorksheet()
 }
 void Workspace::getHotNewWorksheet()
 {
-    KNS3::DownloadDialog dialog(QStringLiteral("ksysguard.knsrc"));
-    if( dialog.exec() == QDialog::Rejected )
-        return;
-
-    KNS3::Entry::List entries = dialog.installedEntries();
-    foreach(KNS3::Entry entry, entries) {
+    KNS3::QtQuickDialogWrapper dialog(QStringLiteral("ksysguard.knsrc") );
+    const QList<KNSCore::EntryInternal> entries = dialog.exec();
+    for (auto entry : entries) {
         if(!entry.installedFiles().isEmpty()) {
-            QString filename = entry.installedFiles().first();
+            const QString filename = entry.installedFiles().constFirst();
             restoreWorkSheet(filename, true);
         }
     }
