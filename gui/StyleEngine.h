@@ -35,7 +35,7 @@ class StyleEngine : public QObject
 
   public:
     explicit StyleEngine(QObject * parent = nullptr);
-    ~StyleEngine();
+    ~StyleEngine() override;
 
     void readProperties( const KConfigGroup& cfg );
     void saveProperties( KConfigGroup& cfg );

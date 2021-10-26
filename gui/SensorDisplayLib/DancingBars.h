@@ -38,7 +38,7 @@ class DancingBars : public KSGRD::SensorDisplay
 
   public:
     DancingBars( QWidget *parent, const QString &title, SharedSettings *workSheetSettings );
-    virtual ~DancingBars();
+    ~DancingBars() override;
 
     void configureSettings() override;
 

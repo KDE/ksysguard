@@ -34,7 +34,7 @@ class MultiMeterSettings : public QDialog
   public:
 
     explicit MultiMeterSettings( QWidget *parent=nullptr, const QString &name=QString() );
-    ~MultiMeterSettings();
+    ~MultiMeterSettings() override;
 
     QString title() const;
     bool showUnit() const;

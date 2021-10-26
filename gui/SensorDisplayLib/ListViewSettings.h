@@ -34,7 +34,7 @@ class ListViewSettings : public QDialog
   public:
 
     explicit ListViewSettings( QWidget *parent=nullptr, const QString &name=QString() );
-    ~ListViewSettings();
+    ~ListViewSettings() override;
 
     QString title() const;
     QColor textColor() const;

@@ -42,7 +42,7 @@ class DancingBarsSettings : public KPageDialog
 
   public:
     explicit DancingBarsSettings( QWidget* parent = nullptr, const QString &name = QString() );
-    ~DancingBarsSettings();
+    ~DancingBarsSettings() override;
 
     void setTitle( const QString& title );
     QString title() const;

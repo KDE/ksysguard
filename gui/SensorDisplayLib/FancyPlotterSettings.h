@@ -41,7 +41,7 @@ class FancyPlotterSettings : public KPageDialog
 
   public:
     explicit FancyPlotterSettings( QWidget* parent, bool locked );
-    ~FancyPlotterSettings();
+    ~FancyPlotterSettings() override;
 
     void setTitle( const QString &title );
     QString title() const;

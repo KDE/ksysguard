@@ -34,7 +34,7 @@ class SensorLoggerSettings : public QDialog
   public:
 
     explicit SensorLoggerSettings(QWidget *parent=nullptr, const QString &name = {} );
-    ~SensorLoggerSettings();
+    ~SensorLoggerSettings() override;
 
     QString title() const;
     QColor foregroundColor();

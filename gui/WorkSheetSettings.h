@@ -36,7 +36,7 @@ class WorkSheetSettings : public QDialog
 
   public:
     explicit WorkSheetSettings( QWidget* parent, bool locked );
-    ~WorkSheetSettings();
+    ~WorkSheetSettings() override;
 
     void setRows( int rows );
     int rows() const;

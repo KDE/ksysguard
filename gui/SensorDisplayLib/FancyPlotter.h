@@ -43,7 +43,7 @@ class FPSensorProperties : public KSGRD::SensorProperties
                         const QString &type, const QString &description,
                         const QColor &color, const QString &regexpName = QString(),
                         int beamId = -1, const QString &summationName = QString());
-    ~FPSensorProperties();
+    ~FPSensorProperties() override;
 
     void setColor( const QColor &color );
     QColor color() const;

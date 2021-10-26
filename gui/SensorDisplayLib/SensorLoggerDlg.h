@@ -32,7 +32,7 @@ class SensorLoggerDlg : public QDialog
   public:
 
     explicit SensorLoggerDlg( QWidget *parent=nullptr, const char *name=nullptr );
-    ~SensorLoggerDlg();
+    ~SensorLoggerDlg() override;
 
     QString fileName() const;
     int timerInterval() const;

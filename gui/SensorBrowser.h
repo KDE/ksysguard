@@ -140,7 +140,7 @@ class SensorBrowserWidget : public QWidget
     Q_OBJECT
     public:
       explicit SensorBrowserWidget( QWidget* parent, KSGRD::SensorManager* sm );
-      ~SensorBrowserWidget();
+      ~SensorBrowserWidget() override;
       QStringList listHosts() const 
       { return m_treeWidget->listHosts(); }
       QStringList listSensors( const QString &hostName ) const 

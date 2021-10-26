@@ -38,7 +38,7 @@ class Workspace : public QTabWidget
 
   public:
     explicit Workspace( QWidget* parent);
-    ~Workspace();
+    ~Workspace() override;
 
     void saveProperties( KConfigGroup& cfg );
     void readProperties( const KConfigGroup& cfg );
