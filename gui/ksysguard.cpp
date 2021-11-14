@@ -71,7 +71,6 @@
 //Comment out to stop ksysguard from forking.  Good for debugging
 //#define FORK_KSYSGUARD
 
-static const char Description[] = I18N_NOOP( "KDE System Monitor" );
 TopLevel* Toplevel;
 
 TopLevel::TopLevel()
@@ -569,7 +568,7 @@ int main( int argc, char** argv )
   KLocalizedString::setApplicationDomain("ksysguard");
 
   KAboutData aboutData( QStringLiteral("ksysguard"), i18n( "System Monitor" ),
-                        PROJECT_VERSION, i18n(Description), KAboutLicense::GPL,
+                        PROJECT_VERSION, i18n("KDE System Monitor"), KAboutLicense::GPL,
                         i18n( "(c) 1996-2016 The KDE System Monitor Developers" ) );
   aboutData.setOrganizationDomain(QByteArray("kde.org"));
   aboutData.addAuthor( i18n("John Tapsell"), i18n("Current Maintainer"), QStringLiteral("john.tapsell@kde.org") );
