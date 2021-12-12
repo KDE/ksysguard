@@ -115,7 +115,7 @@ QVariant SensorBrowserModel::headerData ( int section, Qt::Orientation , int rol
 }
 
 void  SensorBrowserModel::retranslate() {
-    emit headerDataChanged(Qt::Horizontal, 0,0);
+    Q_EMIT headerDataChanged(Qt::Horizontal, 0,0);
 }
 
 QModelIndex SensorBrowserModel::index ( int row, int column, const QModelIndex & parent) const { //virtual
@@ -369,7 +369,7 @@ void SensorBrowserModel::answerReceived( int hostId,  const QList<QByteArray>&an
         }
         removeSensor(hostInfo, currentNodeId, it.key());
     }
-    emit sensorsAddedToHost( createIndex( mHostInfoMap.keys().indexOf(hostId), 0, hostId ) );
+    Q_EMIT sensorsAddedToHost( createIndex( mHostInfoMap.keys().indexOf(hostId), 0, hostId ) );
 }
 
 //virtual

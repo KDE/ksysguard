@@ -312,7 +312,7 @@ void WorkSheet::setTitle( const QString &title )
 {
     mTitle = title;
     mTranslatedTitle = mTitle.isEmpty() ? QLatin1String("") : i18n(mTitle.toUtf8().constData());
-    emit titleChanged(this);
+    Q_EMIT titleChanged(this);
 }
 
 QString WorkSheet::translatedTitle() const {

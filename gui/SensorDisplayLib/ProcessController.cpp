@@ -176,7 +176,7 @@ bool ProcessController::addSensor(const QString& hostName,
     * sensorError(). */
     sensors().at(0)->setIsOk(true); //Assume it is okay from the start
     setSensorOk(sensors().at(0)->isOk());
-    emit processListChanged();
+    Q_EMIT processListChanged();
     return true;
 }
 

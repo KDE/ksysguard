@@ -53,7 +53,7 @@ void LogSensorView::contextMenuEvent( QContextMenuEvent *event )
 {
   const QModelIndex index = indexAt( event->pos() );
 
-  emit contextMenuRequest( index, viewport()->mapToGlobal( event->pos() ) );
+  Q_EMIT contextMenuRequest( index, viewport()->mapToGlobal( event->pos() ) );
 }
 
 class LogSensorModel : public QAbstractTableModel
@@ -152,14 +152,14 @@ class LogSensorModel : public QAbstractTableModel
 
       connect( sensor, SIGNAL(changed()), this, SIGNAL(layoutChanged()) );
 
-      emit layoutChanged();
+      Q_EMIT layoutChanged();
     }
 
     void removeSensor( LogSensor *sensor )
     {
       delete mSensors.takeAt( mSensors.indexOf( sensor ) );
 
-      emit layoutChanged();
+      Q_EMIT layoutChanged();
     }
 
     LogSensor* sensor( const QModelIndex &index ) const
@@ -384,7 +384,7 @@ void LogSensor::answerReceived( int id, const QList<QByteArray>& answer ) //virt
     }
   }
 
-  emit changed();
+  Q_EMIT changed();
 
   mLogFile.close();
 }

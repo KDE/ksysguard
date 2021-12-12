@@ -179,7 +179,7 @@ void SensorModel::setSensors( const SensorModelEntry::List &sensors )
 {
   mSensors = sensors;
 
-  emit layoutChanged();
+  Q_EMIT layoutChanged();
 }
 
 SensorModelEntry::List SensorModel::sensors() const
@@ -198,7 +198,7 @@ void SensorModel::setSensor( const SensorModelEntry &sensor, const QModelIndex &
 
   mSensors[row] = sensor;
 
-  emit dataChanged( index(row,0), index(row, columnCount()-1));
+  Q_EMIT dataChanged( index(row,0), index(row, columnCount()-1));
 }
 
 void SensorModel::removeSensor( const QModelIndex &index )
@@ -231,7 +231,7 @@ void SensorModel::moveDownSensor(const QModelIndex &sindex)
   for( int i = 0; i < columnCount(); i++)
     changePersistentIndex(index(row, i), index(row+1, i));
  
-  emit dataChanged(sindex, index(row+1, columnCount()-1));
+  Q_EMIT dataChanged(sindex, index(row+1, columnCount()-1));
 }
 void SensorModel::moveUpSensor(const QModelIndex &sindex)
 {
@@ -240,7 +240,7 @@ void SensorModel::moveUpSensor(const QModelIndex &sindex)
   mSensors.move(row, row-1);
   for( int i = 0; i < columnCount(); i++)
     changePersistentIndex(index(row, i), index(row-1, i));
-  emit dataChanged(sindex, index(row-1, columnCount()-1));
+  Q_EMIT dataChanged(sindex, index(row-1, columnCount()-1));
 }
 QList<int> SensorModel::deleted() const
 {

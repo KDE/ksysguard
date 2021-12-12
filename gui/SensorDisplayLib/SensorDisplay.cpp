@@ -296,7 +296,7 @@ QList<SensorProperties *> &SensorDisplay::sensors()
 
 void SensorDisplay::rmbPressed()
 {
-  emit showPopupMenu( this );
+  Q_EMIT showPopupMenu( this );
 }
 
 void SensorDisplay::applySettings()
@@ -344,8 +344,8 @@ void SensorDisplay::setTitle( const QString &title )
 {
   mTitle = title;
   mTranslatedTitle = title.isEmpty() ? QString() : i18n(title.toUtf8().constData());
-  emit titleChanged(mTitle);
-  emit translatedTitleChanged(mTranslatedTitle);
+  Q_EMIT titleChanged(mTitle);
+  Q_EMIT translatedTitleChanged(mTranslatedTitle);
 }
 
 QString SensorDisplay::translatedTitle() const
