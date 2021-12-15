@@ -91,7 +91,7 @@
     <p xml:lang="ast">KSysGuard permítete supervisar la información y les estadistiques tocante al sistema.</p>
     <p xml:lang="az">System Guard, sisteminizlə bağlı məlumatları və statistikanı izləməyə imkan verir.</p>
     <p xml:lang="ca">El System Guard permet controlar la informació i les estadístiques del sistema.</p>
-    <p xml:lang="ca-valencia">System Guard permet controlar la informació i les estadístiques del sistema.</p>
+    <p xml:lang="ca-valencia">El System Guard permet controlar la informació i les estadístiques del sistema.</p>
     <p xml:lang="da">System Guard lader dig overvåge information og statistik om dit system.</p>
     <p xml:lang="de">Mit KSysGuard können Sie Informationen und Statistiken über Ihr System überwachen</p>
     <p xml:lang="el">Το System Guard σάς επιτρέπει να ελέγχετε την πληροφόρηση και τα στατιστικά για το σύστημά σας.</p>
@@ -130,7 +130,7 @@
     <p xml:lang="ast">Amás de supervisar el sistema llocal, pue conectase a sistemes remotos executando'l degorriu de KSysGuard.</p>
     <p xml:lang="az">Yerli sistemi izləməklə yanaşı, System Guard Xidməti ilə işləyən uzaq sistemlərə də qoşula bilər.</p>
     <p xml:lang="ca">Addicionalment al monitoratge del sistema local, pot connectar-se amb sistemes remots executant el dimoni del System Guard.</p>
-    <p xml:lang="ca-valencia">A més de supervisar el sistema local, pot connectar-se a sistemes remots que estiguen executant el dimoni de System Guard.</p>
+    <p xml:lang="ca-valencia">Addicionalment al monitoratge del sistema local, pot connectar-se amb sistemes remots executant el dimoni del System Guard.</p>
     <p xml:lang="cs">K monitorování lokálního systému se zároveň umí připojit ke vzdáleným systémům s běžícím démonem strážce systému.</p>
     <p xml:lang="da">Udover at overvåge det lokale system, kan det overvåge eksterne systemer, som kører System Guard-dæmonen.</p>
     <p xml:lang="de">KSysGuard kann zusätzlich zu lokalen Systemen auch entfernte Systeme überwachen, auf denen der KSysGuard-Dienst läuft</p>
