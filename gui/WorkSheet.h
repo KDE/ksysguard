@@ -25,6 +25,7 @@
 
 #include <QWidget>
 #include <QTimer>
+#include <QStringList>
 
 #include <SensorDisplay.h>
 #include "SharedSettings.h"
@@ -33,8 +34,6 @@ class QDomElement;
 class QDragEnterEvent;
 class QDropEvent;
 class QGridLayout;
-class QString;
-class QStringList;
 
 /**
   A WorkSheet contains the displays to visualize the sensor results. When

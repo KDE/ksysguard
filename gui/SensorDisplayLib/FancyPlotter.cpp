@@ -30,6 +30,7 @@
 #include <QLocale>
 #include <QResizeEvent>
 #include <QStandardPaths>
+#include <QRegExp>
 
 #include <KMessageBox>
 #include <ksignalplotter.h>

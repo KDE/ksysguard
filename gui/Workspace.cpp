@@ -29,7 +29,7 @@
 #include <KMessageBox>
 #include <KAcceleratorManager>
 #include <KActionCollection>
-#include <KNewStuff3/KNSCore/Engine>
+#include <KNSCore/Engine>
 #include <KNS3/QtQuickDialogWrapper>
 #include <KConfigGroup>
 

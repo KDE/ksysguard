@@ -27,6 +27,7 @@
 #include <QTime>
 #include <QMenu>
 #include <QAction>
+#include <QActionGroup>
 
 #include <KLocalizedString>
 #include <KMessageBox>
