@@ -16,3 +16,5 @@ Dependencies:
     'frameworks/knewstuff': '@stable'
     'frameworks/knotifications': '@stable'
     'frameworks/kwindowsystem': '@stable'
+Options:
+  require-passing-tests-on: [ 'Linux', 'FreeBSD']
