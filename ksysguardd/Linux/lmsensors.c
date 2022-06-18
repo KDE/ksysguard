@@ -164,10 +164,11 @@ void initLmSensors( struct SensorModul* sm )
       label = sensors_get_label( scn, sf );
       sensors_snprintf_chip_name(scnbuf, BUFFER_SIZE_LMSEN, scn);
       p = (LMSENSOR*)malloc( sizeof( LMSENSOR ) );
-      p->fullName = (char*)malloc( strlen( "lmsensors/" ) +
-                                   strlen( scnbuf ) + 1 +
-                                   strlen( label ) + 1 );
-      snprintf( p->fullName, BUFFER_SIZE_LMSEN, "lmsensors/%s/%s", scnbuf, label );
+      const int fullNameLen = strlen( "lmsensors/" ) +
+                              strlen( scnbuf ) + 1 +
+                              strlen( label ) + 1;
+      p->fullName = (char*)malloc( fullNameLen );
+      snprintf( p->fullName, fullNameLen, "lmsensors/%s/%s", scnbuf, label );
 
       /* Make sure that name contains only proper characters. */
       for ( s = p->fullName; *s; s++ )
