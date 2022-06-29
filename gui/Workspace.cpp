@@ -307,14 +307,18 @@ void Workspace::uploadHotNewWorksheet()
 }
 void Workspace::getHotNewWorksheet()
 {
-    KNS3::QtQuickDialogWrapper dialog(QStringLiteral("ksysguard.knsrc") );
-    const QList<KNSCore::EntryInternal> entries = dialog.exec();
-    for (auto entry : entries) {
-        if(!entry.installedFiles().isEmpty()) {
-            const QString filename = entry.installedFiles().constFirst();
-            restoreWorkSheet(filename, true);
+    KNS3::QtQuickDialogWrapper *dialog = new KNS3::QtQuickDialogWrapper(QStringLiteral("ksysguard.knsrc"), this);
+    dialog->open();
+    connect(dialog, &KNS3::QtQuickDialogWrapper::closed, this, [this, dialog] {
+        const QList<KNSCore::EntryInternal> entries = dialog->changedEntries();
+        for (auto entry : entries) {
+            if(!entry.installedFiles().isEmpty()) {
+                const QString filename = entry.installedFiles().constFirst();
+                restoreWorkSheet(filename, true);
+            }
         }
-    }
+        dialog->deleteLater();
+    });
 }
 
 bool Workspace::restoreWorkSheet( const QString &fileName, bool switchToTab)
