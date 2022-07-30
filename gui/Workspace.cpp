@@ -205,7 +205,7 @@ void Workspace::importWorkSheet( const QUrl &url )
 bool Workspace::saveWorkSheet( WorkSheet *sheet )
 {
   if ( !sheet ) {
-    KMessageBox::sorry( this, i18n( "You do not have a tab that could be saved." ) );
+    KMessageBox::error( this, i18n( "You do not have a tab that could be saved." ) );
     return false;
   }
 
@@ -225,7 +225,7 @@ void Workspace::exportWorkSheet()
 void Workspace::exportWorkSheet( WorkSheet *sheet )
 {
   if ( !sheet ) {
-    KMessageBox::sorry( this, i18n( "You do not have a tab that could be saved." ) );
+    KMessageBox::error( this, i18n( "You do not have a tab that could be saved." ) );
     return;
   }
 

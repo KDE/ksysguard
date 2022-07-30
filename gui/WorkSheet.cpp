@@ -84,7 +84,7 @@ bool WorkSheet::load( const QString &fileName )
 {
     QFile file( fileName );
     if ( !file.open( QIODevice::ReadOnly ) ) {
-        KMessageBox::sorry( this, i18n( "Cannot open the file %1." ,  fileName ) );
+        KMessageBox::error( this, i18n( "Cannot open the file %1." ,  fileName ) );
         return false;
     }
 
@@ -92,14 +92,14 @@ bool WorkSheet::load( const QString &fileName )
 
     // Read in file and check for a valid XML header.
     if ( !doc.setContent( &file) ) {
-        KMessageBox::sorry( this, i18n( "The file %1 does not contain valid XML." ,
+        KMessageBox::error( this, i18n( "The file %1 does not contain valid XML." ,
                     fileName ) );
         return false;
     }
 
     // Check for proper document type.
     if ( doc.doctype().name() != QLatin1String("KSysGuardWorkSheet") ) {
-        KMessageBox::sorry( this, i18n( "The file %1 does not contain a valid worksheet "
+        KMessageBox::error( this, i18n( "The file %1 does not contain a valid worksheet "
                     "definition, which must have a document type 'KSysGuardWorkSheet'.",
                     fileName ) );
         return false;
@@ -111,7 +111,7 @@ bool WorkSheet::load( const QString &fileName )
     int rows = element.attribute( QStringLiteral("rows") ).toInt( &rowsOk );
     int columns = element.attribute( QStringLiteral("columns") ).toInt( &columnsOk );
     if ( !( rowsOk && columnsOk ) ) {
-        KMessageBox::sorry( this, i18n("The file %1 has an invalid worksheet size.",
+        KMessageBox::error( this, i18n("The file %1 has an invalid worksheet size.",
                     fileName ) );
         return false;
     }
@@ -236,7 +236,7 @@ bool WorkSheet::exportWorkSheet( const QString &fileName )
 
     QFile file( fileName );
     if ( !file.open( QIODevice::WriteOnly ) ) {
-        KMessageBox::sorry( this, i18n( "Cannot save file %1" ,  fileName ) );
+        KMessageBox::error( this, i18n( "Cannot save file %1" ,  fileName ) );
         return false;
     }
 
@@ -284,7 +284,7 @@ void WorkSheet::paste()
     /* Get text from clipboard and check for a valid XML header and
      * proper document type. */
     if ( !doc.setContent( clip->text() ) || doc.doctype().name() != QLatin1String("KSysGuardDisplay") ) {
-        KMessageBox::sorry( this, i18n("The clipboard does not contain a valid display "
+        KMessageBox::error( this, i18n("The clipboard does not contain a valid display "
                     "description." ) );
         return;
     }
