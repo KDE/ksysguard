@@ -30,7 +30,6 @@
 #include <ksgrd/SensorClient.h>
 #include <QSortFilterProxyModel>
 
-class QMouseEvent;
 
 namespace KSGRD {
 class SensorManager;
