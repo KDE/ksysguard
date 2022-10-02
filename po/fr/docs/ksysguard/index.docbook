@@ -1,0 +1,714 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN"
+ "dtd/kdedbx45.dtd" [
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % French "INCLUDE"
+> <!-- change language only here -->
+]>
+
+<book id="ksysguard" lang="&language;">
+<bookinfo>
+<title
+>Manuel utilisateur de &ksysguard;</title>
+
+<authorgroup>
+<author
+>&Chris.Schlaeger;&Chris.Schlaeger.mail; </author>
+
+<othercredit role="developer"
+>&John.Tapsell; &John.Tapsell.mail; </othercredit>
+
+<othercredit role="developer"
+>&Chris.Schlaeger;&Chris.Schlaeger.mail; </othercredit>
+
+<othercredit role="developer"
+>&Tobias.Koenig;&Tobias.Koenig.mail; </othercredit>
+
+&traducteurYvesDessertine; &traducteurPhilippeGuilbert; &traducteurRobinGuitton;&relecteurLudovicGrossard; 
+</authorgroup>
+
+<copyright>
+<year
+>2000</year>
+<holder
+>&Chris.Schlaeger;</holder>
+</copyright>
+
+<legalnotice
+>&FDLNotice;</legalnotice>
+
+<date
+>31-01-2016</date>
+<releaseinfo
+>&plasma; 5.9</releaseinfo>
+
+<abstract
+><para
+>&ksysguard; est une application de gestion de tâches avec fonctionnalités réseau et une application de surveillance système.</para
+></abstract
+> 
+
+<keywordset>
+<keyword
+>KDE</keyword>
+<keyword
+>KSysGuard</keyword>
+<keyword
+>surveillance de processus</keyword>
+<keyword
+>surveillance de performances</keyword>
+<keyword
+>surveillance du système</keyword>
+<keyword
+>top</keyword>
+<keyword
+>ps</keyword>
+</keywordset>
+</bookinfo>
+
+<chapter id="introduction">
+<title
+>Introduction</title>
+
+<para
+>&ksysguard; est en charge de la surveillance des performances et des tâches de &plasma;. </para>
+<para
+>Il présente une architecture client / serveur qui permet la surveillance aussi bien d'un hôte local que d'un hôte distant. L'interface graphique utilise ce qu'on appelle des capteurs pour recevoir les informations qu'elle affiche. Un capteur peut retourner des valeurs simples ou plus complexes, comme des tableaux. Pour chaque type d'information, un ou plusieurs modes d'affichage sont proposés. Les modes d'affichage sont organisés en feuilles de travail qui peuvent être enregistrées et chargées indépendamment les unes des autres. &ksysguard; n'est donc pas seulement un simple gestionnaire de tâches, c'est aussi un outil de contrôle très puissant pour de larges baies de serveurs.</para>
+
+</chapter>
+
+<chapter id="usingtheksysguard">
+<title
+>Utilisation de &ksysguard;</title>
+
+<sect1 id="getting-started">
+<title
+>Prise en main</title>
+
+<para
+>&ksysguard; peut être lancé à partir du &menuk;, en utilisant l'entrée <guimenuitem
+>Surveillance du système</guimenuitem
+> dans le menu <menuchoice
+><guimenu
+>Application</guimenu
+><guisubmenu
+>Système</guisubmenu
+></menuchoice
+>. Sinon, vous pouvez lancer le programme en saisissant <command
+>ksysguard</command
+> dans un terminal.</para>
+
+<para
+>La fenêtre principale de &ksysguard; se compose d'une barre de menus, d'une barre d'outils optionnelle, d'une barre d'état, et de l'espace de travail. Les feuilles de travail personnalisées afficheront aussi le navigateur de capteurs. </para>
+<!--
+<para
+>Download, Save, Import tabs</para>
+-->
+<para
+>Par défaut, &ksysguard; affiche deux feuilles de travail : la <guilabel
+>Table des processus</guilabel
+> et la <guilabel
+>Charge système</guilabel
+>. La <guilabel
+>Table des processus</guilabel
+> liste les processus en cours et permet à l'utilisateur de les contrôler. Plusieurs processus peuvent être sélectionnés et contrôlés à la fois. La <guilabel
+>Charge système</guilabel
+> affiche des graphiques de l'utilisation du système : <guilabel
+>Historique du processeur</guilabel
+>, <guilabel
+>Historique de la mémoire et de l'espace d'échange</guilabel
+> et <guilabel
+>Historique du réseau</guilabel
+>. </para>
+
+<para
+>Cette configuration par défaut est suffisante pour permettre à un utilisateur inexpérimenté de faire un peu de gestion de système. Un utilisateur expérimenté ou même un administrateur système d'un large parc d'ordinateurs a des besoins différents. Afin de répondre aux besoins d'un large public, &ksysguard; est extrêmement flexible.</para>
+
+<note
+><para
+>Vous pouvez lancer la <guilabel
+>Table des processus</guilabel
+> en utilisant le raccourci global <keycombo action="simul"
+> &Ctrl; &Echap;</keycombo
+> à n'importe quel moment. La table des processus est affichée dans une fenêtre nommée <guilabel
+>Activité du système</guilabel
+>. </para
+></note>
+
+</sect1>
+
+<sect1 id="process-controller">
+<title
+>Table des processus</title>
+
+<para
+>La table des processus vous donne une liste des processus de votre système. La liste peut être triée par colonne. Il suffit de cliquer sur l'en-tête de la colonne choisie avec le bouton gauche de la souris.  </para>
+
+<para
+>Utilisez l'aide de <guilabel
+>Qu'est-ce que c'est ?</guilabel
+> pour le titre des colonnes afin avoir des informations supplémentaires sur les valeurs affichées ici.</para>
+
+<para
+>Dans le menu contextuel d'un processus, depuis l'affichage de la liste, vous trouverez des actions supplémentaires comme régler la priorité, envoyer des signaux aux processus, afficher la fenêtre de l'application, afficher des informations détaillées sur la mémoire et terminer le processus. </para>
+
+<para
+>La liste affiche les informations suivantes pour tout processus. Remarquez que toutes ces propriétés ne sont pas disponibles sur tous les systèmes d'exploitation.</para>
+
+<table>
+<title
+>Colonnes par défaut dans la table des processus</title>
+<tgroup cols="2">
+<tbody>
+<row>
+<entry
+><guilabel
+>Nom</guilabel
+></entry>
+<entry
+>Le nom de l'exécutable qui a lancé le processus.</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Utilisateur</guilabel
+></entry>
+<entry
+>L'utilisateur propriétaire du processus</entry>
+</row>
+<row>
+<entry
+><guilabel
+>% processeur</guilabel
+></entry>
+<entry
+>L'utilisation actuelle du processeur par le processus, divisée par le nombre de cœurs du processeur de la machine.</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Mémoire</guilabel
+></entry>
+<entry
+><para
+>C'est le quantité de mémoire physique réelle que le processus utilise à lui seul et donne une approximation de la quantité de mémoire privée que le processus utilise.</para>
+<para
+>Cela n'inclut pas la mémoire partagée, ni la taille du code de ses bibliothèques partagées.</para>
+<para
+>C'est souvent l'indicateur le plus intéressant pour évaluer l'utilisation de la mémoire par un processus.</para
+></entry>
+</row>
+<row>
+<entry
+><guilabel
+>Mém. partagée</guilabel
+></entry>
+<entry
+>C'est approximativement la quantité de mémoire physique réelle que les bibliothèques partagées nécessaires à l'exécution de ce processus utilisent. Cette mémoire est partagée par tous les processus qui utilisent cette bibliothèque.</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Titre de la fenêtre</guilabel
+></entry>
+<entry
+>Le titre de toute fenêtre que ce processus affiche.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+
+<table>
+<title
+>Colonnes additionnelles de la tables des processus</title>
+<tgroup cols="2">
+<tbody>
+<row>
+<entry
+><guilabel
+>PID</guilabel
+></entry>
+<entry
+>L'identifiant unique de ce processus.</entry>
+</row>
+<row>
+<entry
+><guilabel
+>TTY</guilabel
+></entry>
+<entry
+>Le terminal de contrôle dans lequel s'exécute ce processus</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Courtoisie</guilabel
+></entry>
+<entry
+>La priorité avec laquelle s'exécute ce processus. Pour l'outil d'ordonnance normal, elle est situé entre 19 (très courtois, la priorité la moindre) et -19 (priorité maximum).</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Temps processeur</guilabel
+></entry>
+<entry
+>Le temps utilisateur et système total pendant lequel ce processus s'est exécuté, affichée au format « minute : seconde ».</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Lecture I/O</guilabel
+></entry>
+<entry
+>Le nombre d'octets lus. La <guilabel
+>Plage d'affichage</guilabel
+> et les <guilabel
+>Informations affichées</guilabel
+> peuvent être changés en utilisant le menu contextuel de l'en-tête de la colonne.</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Écriture I/O</guilabel
+></entry>
+<entry
+>Le nombre d'octets écrits. La <guilabel
+>Plage d'affichage</guilabel
+> et les <guilabel
+>Informations affichées</guilabel
+> peuvent être changés en utilisant le menu contextuel de l'en-tête de la colonne.</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Taille virtuelle</guilabel
+></entry>
+<entry
+>C'est la quantité d'espace mémoire virtuelle que le processus utilise, en prenant en compte les bibliothèques partagées, la mémoire graphique, les fichiers sur le disque et d'autres choses. Ce nombre n'a presque pas de sens. Utilisez le menu contextuel pour sélectionner la <guilabel
+>Plage d'affichage</guilabel
+>.</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Commande</guilabel
+></entry>
+<entry
+>La commande par laquelle le processus a été lancé.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+
+<para
+>Au dessus du tableau, vous trouverez trois boutons que nous allons décrire de gauche à droite.</para>
+
+<sect2 id="thekillbutton">
+<title
+>Mettre fin au processus</title>
+
+<para
+>Si vous avez sélectionné un ou plusieurs processus, vous pouvez les terminer en appuyant sur le bouton <guibutton
+>Mettre fin au processus</guibutton
+>. Un signal appelé<errorcode
+>SIGKILL</errorcode
+> est envoyé aux processus, ce qui les force à se terminer immédiatement. Si ces applications possèdent encore des données non enregistrées, ces données sont perdues. Utilisez donc ce bouton avec précaution.</para>
+</sect2>
+
+<sect2 id="the-filter-bar">
+<title
+>Barre de recherche</title>
+
+<para
+>Le filtre est montré par le texte donnée ici. Le texte peut consister en une chaîne de caractère incomplète correspondant au <guilabel
+>Nom</guilabel
+>, à la <guilabel
+>Commande</guilabel
+>, ou au <guilabel
+>Titre de la fenêtre</guilabel
+> du processus. Il peut aussi être un <guilabel
+>Utilisateur</guilabel
+> ou un numéro <guilabel
+>PID</guilabel
+>.</para>
+
+</sect2>
+
+<sect2 id="the-process-filter">
+<title
+>Filtre de processus</title>
+
+<para
+>Le filtre de processus peut être utilisé pour réduire le nombre de processus affichés dans le tableau. Vous pouvez filtrer les processus qui ne vous intéressent pas. Vous pouvez afficher <guilabel
+>Tous les processus</guilabel
+> en vue à plat ou en arborescence, seulement les <guilabel
+>Processus système</guilabel
+>, les <guilabel
+>Processus utilisateurs</guilabel
+>, <guilabel
+>Mes propres processus</guilabel
+> ou bien <guilabel
+>Seulement les programmes</guilabel
+>.</para>
+
+<para
+>L'arborescence est destinée à afficher les rapports entre les processus exécutés. Un processus qui est exécuté par un autre processus est appelé l'enfant de ce dernier processus. Une arborescence est une manière élégante d'afficher les rapports parent-enfant entre les processus. Le processus <emphasis
+>init</emphasis
+> est leur ancêtre à tous.</para>
+
+<para
+>Si vous ne vous intéressez pas aux enfants d'un processus particulier, cliquez sur la petite case à gauche du parent et la sous-arborescence disparaîtra. Un autre clic sur cette même case déploiera à nouveau la sous-arborescence.</para>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="the-workspace">
+<title
+>Espace de travail</title>
+
+<para
+>L'espace de travail est organisé en feuilles de travail. Sélectionnez <guimenuitem
+>Nouvel onglet...</guimenuitem
+> dans le menu <guimenu
+>Fichier</guimenu
+> pour créer une nouvelle feuille de travail. Une boîte de dialogue apparaîtra alors dans laquelle vous pourrez indiquer le nom, la dimension et l'intervalle de mise à jour de la feuille de travail. Pour supprimer une feuille de travail, sélectionnez <guimenuitem
+>Fermer l'onglet</guimenuitem
+> dans le menu <guimenu
+>Fichier</guimenu
+>. Toutes les modifications seront enregistrées dans le fichier de la feuille de travail. Si la feuille de travail n'a jamais été enregistrée, on vous demandera de lui donner un nom de fichier. Les feuilles de travail sont composées de cellules présentées sous forme de grille.</para>
+
+<para
+>Chaque cellule peut afficher un ou plusieurs capteurs. Vous pouvez remplir une cellule en glissant-déposant un capteur à partir du navigateur de capteurs dans une cellule. Dans les cas où il y a plus d'un mode d'affichage disponible pour le type de capteur sélectionné, un menu contextuel apparaît. Vous pouvez alors sélectionner le mode d'affichage que vous préférez utiliser. Certains modes d'affichage peuvent présenter plus d'un capteur. Ajoutez des capteurs supplémentaires à un mode d'affichage en glissant-déposant ces capteurs à partir du navigateur de capteurs dans l'affichage existant.</para>
+
+<para
+>Les feuilles de travail peuvent être configurées en cliquant sur <guimenuitem
+>Propriétés de l'onglet</guimenuitem
+>, dans le menu <guimenu
+>Affichage</guimenu
+>. Dans la boîte de dialogue qui apparaît, vous pouvez ajuster la dimension et l'intervalle de mise à jour.</para>
+
+<para
+>Les affichages peuvent être configurés en cliquant dessus avec le bouton droit de la souris. Un menu contextuel apparaît, dans lequel vous pouvez choisir de modifier les propriétés de l'affichage sélectionné ou de les supprimer de la feuille de travail.</para>
+
+<sect2 id="the-sensor-browser">
+<title
+>Navigateur de capteurs</title>
+<para
+>Le navigateur de capteurs révèle les fonctionnalités avancées de &ksysguard;. Pour les utiliser, vous devez d'abord aller dans le menu <guimenu
+>Fichier</guimenu
+> et créer une nouvelle feuille de travail. Il est affiché si une feuille de travail personnalisée est sélectionnée.</para>
+<para
+>Le navigateur de capteurs affiche les hôtes répertoriés et leurs capteurs sous forme d'arborescence. Cliquez sur les poignées de l'arborescence pour ouvrir ou fermer une sous-arborescence. Chaque capteur surveille une certaine valeur du système.</para>
+<tip
+><para
+>Après avoir configuré votre feuille de travail personnalisée, utiliser le séparateur et déplacer le vers le bord droit de la fenêtre pour masquer le navigateur de capteurs.</para
+> 
+<para
+>Si le navigateur de capteurs n'apparaît pas sur la feuille de travail personnalisée, il est probablement caché. Pour l'afficher, sélectionner le bord droit de la fenêtre et glisser le vers la gauche. </para
+></tip>
+</sect2>
+
+<sect2 id="line-graph">
+<title
+>Graphique en lignes</title>
+
+<para
+>Le graphique en ligne affiche les niveaux d'un ou plusieurs capteurs sur la durée. Dans les cas où plusieurs capteurs sont affichés en même temps, les niveaux sont affichés de différentes couleurs. Si l'affichage est suffisamment grand, une grille sera affichée afin de présenter la valeur des niveaux tracés. Comme la mise à l'échelle automatique est active par défaut, les valeurs minimales et maximales seront fixées automatiquement. Parfois, vous voudrez des valeurs minimales et maximales déterminées. Dans ce cas, vous pouvez désactiver la mise à l'échelle automatique et ajuster les valeurs dans la boîte de dialogue des propriétés.</para>
+</sect2>
+
+<sect2 id="digital-display">
+<title
+>Affichage numérique</title>
+
+<para
+>Le multimètre affiche les niveaux du capteur sous forme de valeur numérique. Dans la boîte de dialogue des propriétés, vous pouvez spécifier les valeurs minimale et maximale. Dans les cas où la limite est dépassée, l'affichage est coloré dans la couleur d'alarme.</para>
+</sect2>
+
+<sect2 id="bargraph">
+<title
+>Graphique en barres</title>
+
+<para
+>Le graphique en barres affiche les valeurs des capteurs sous forme d'histogramme. Dans la boîte de dialogue des propriétés, vous pouvez spécifier les limites inférieure et supérieure. Dans les cas où la limite est dépassée, l'affichage est coloré dans la couleur d'alarme.</para>
+</sect2>
+
+<sect2 id="sensorlogger">
+<title
+>Journaliser dans un fichier</title>
+
+<para
+>La journalisation des capteurs n'affiche aucune valeur, mais enregistre ces valeurs dans un journal avec des informations supplémentaires à propos de la date et de l'heure. Pour chaque capteur, vous pouvez spécifier les limites inférieure et supérieure dans la boîte de dialogue des propriétés. Au cas où la limite est dépassée, l'entrée dans la table des capteurs est colorée dans la couleur d'alarme.</para>
+</sect2>
+
+<sect2 id="partition-table">
+<title
+>Table des partitions</title>
+
+<para
+><guilabel
+>Utilisation de la partition</guilabel
+> possède une table spéciale de capteurs montrant des informations à propos des partitions montées.</para>
+</sect2>
+
+<sect2 id="connectingtootherhosts">
+<title
+>Connexion à d'autres hôtes</title>
+<!--FIXME https://techbase.kde.org/Development/Tutorials/Sensors -->
+<para
+>Veuillez noter que l'élément de menu <guimenuitem
+>Surveiller l'ordinateur distant</guimenuitem
+> n'est uniquement disponible dans les onglets personnalisés.</para>
+
+<para
+>Pour se connecter à un nouvel hôte, utilisez <guimenuitem
+>Se connecter à l'hôte...</guimenuitem
+> dans le menu <guimenu
+>Fichier</guimenu
+>. Une boîte de dialogue apparaît alors afin de vous permettre de saisir le nom de l'hôte auquel vous souhaitez vous connecter. Au-dessous du nom, vous pouvez choisir la méthode de connexion. Par défaut, il s'agit de <application
+>ssh</application
+>, le shell sécurisé. Le shell distant <application
+>rsh</application
+>, le mode démon ou une commande personnalisé peuvent également être utilisés. Cliquez sur <guibutton
+>Ok</guibutton
+> pour établir la connexion. Peu après, le nouvel hôte apparaît dans la liste et vous pouvez parcourir la liste de ses capteurs.</para>
+
+<para
+>Pour se déconnecter d'un hôte, vous devez l'arrêter et relancer &ksysguard;.</para>
+
+<para
+>Pour établir la connexion, un programme appelé <application
+>ksysguardd</application
+>, doit être installé sur le nouvel hôte. Ce programme peut être démarré dans les deux modes suivants :</para>
+
+<variablelist>
+<varlistentry>
+<term
+>Mode démon</term>
+<listitem>
+<para
+>Vous pouvez lancer <application
+>ksysguardd</application
+> au démarrage en mode <guilabel
+>Démon</guilabel
+> en passant <parameter
+>-d</parameter
+> comme argument. Dans ce cas, vous aurez à sélectionner le mode démon dans la boîte de dialogue de connexion de <application
+>ksysguard</application
+>. L'inconvénient de ce type de connexion est que vous ne pourrez pas terminer ou changer la courtoisie d'un processus dans la <guilabel
+>Table des processus</guilabel
+>, et les échanges de données sur le réseau ne seront pas chiffrées. Le mode démon n'est donc pas recommandé.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term
+>Mode shell</term>
+<listitem>
+<para
+>Dans ce mode, l'application <application
+>ksysguardd</application
+> est démarrée au moment de la connexion par <application
+>ksysguard</application
+>. Pour que cela soit possible, son emplacement doit être inclus dans votre variable d'environnement <envar
+>PATH</envar
+>. Malheureusement, « ssh » ne lit pas votre fichier <filename
+>.profile</filename
+>, donc votre configuration de votre variable d'environnement <envar
+>PATH</envar
+> habituelle ne sera pas disponible. Au lieu de cela, il utilise une variable <envar
+>PATH</envar
+> par défaut, du genre <parameter
+>/bin:/usr/bin</parameter
+>. Comme il est probable que &plasma; ne soit pas installé dans ces dossiers, vous aurez besoin de créer ou de mettre à jour un fichier dans votre dossier utilisateur. Ce fichier se nomme <filename
+>environment</filename
+> et doit être placé dans un dossier caché appelé <filename
+>.ssh</filename
+>. Veuillez consulter la page du manuel sur <application
+>ssh</application
+> pour plus de détails. Le fichier doit contenir une ligne analogue à celle qui suit : </para>
+
+<screen
+><userinput
+>PATH=/bin:/usr/bin:/opt/kde/bin</userinput
+>
+</screen>
+
+<para
+>en supposant que <application
+>ksysguardd</application
+> puisse être trouvé dans <filename
+>/opt/kde/bin/ksysguardd</filename
+>.</para>
+
+<tip
+><para
+>Si vous utilisez <application
+>ssh</application
+>, vous devez vous assurer que votre <filename
+>identity.pub</filename
+> est installé sur la machine distante et que la clé d'hôte de la machine distante est déjà enregistrée sur votre machine. Si vous ne configurez pas <filename
+>identity.pub</filename
+> correctement, votre mot de passe vous sera demandé chaque fois que vous démarrez ksysguard. La manière la plus simple pour vérifier que tout fonctionne est de saisir <command
+>ssh <option
+>remotehost ksysguardd</option
+></command
+> dans un terminal. Si <application
+>ksysguardd</application
+> apparaît, c'est que tout fonctionne correctement et vous pouvez alors saisir <userinput
+>quit</userinput
+> pour quitter <application
+>ksysguardd</application
+>.</para
+></tip>
+</listitem>
+</varlistentry>
+</variablelist>
+
+<note
+><para
+>Pour les experts : l'application <application
+>ksysguardd</application
+> est un tout petit programme ne dépendant que de « libc ». Il peut ainsi être utilisé sur des machines où &plasma; n'a pas été installé en totalité, comme par exemple des serveurs. Beaucoup de distributions majeures fournissent un paquet séparé de <application
+>ksysguardd</application
+> pour votre convenance. Si vous choisissez l'option de commande personnalisée dans la fenêtre de connexion à un nouvel hôte, vous devrez spécifier la commande complète pour démarrer <application
+>ksysguardd</application
+>.</para
+></note>
+
+</sect2>
+
+<!-- This was removed with revision 517573, but how to disconnect then?
+<sect2 id="disconnecting-hosts">
+<title
+>Disconnecting hosts</title>
+
+<para
+>To disconnect from a host, select the host in the sensor browser and
+choose <guimenuitem
+>Disconnect Host</guimenuitem
+> from the
+<guimenu
+>File</guimenu
+> menu. If you still have sensors in use, the display
+frames will be grayed and the displays won't update any longer.</para>
+</sect2>
+-->
+</sect1>
+
+</chapter>
+
+<chapter id="multiple-platforms">
+<title
+>Configuration de <application
+>ksysguardd</application
+></title>
+
+<para
+>L'interface graphique est disponible sur toutes les plates-formes bénéficiant de &plasma;. Cette interface est pour le moment disponible pour différentes déclinaisons d'&UNIX; :</para>
+
+<variablelist>
+<varlistentry>
+<term
+>&Linux;</term>
+<listitem
+><para
+>Pour faire fonctionner <application
+>ksysguardd</application
+>, il est nécessaire de compiler le noyau &Linux; avec le système de fichiers <filename
+>/proc</filename
+> activé. C'est la configuration par défaut la plus courante et la plupart des distributions &Linux; l'ont déjà.</para
+> </listitem>
+</varlistentry>
+<varlistentry>
+<term
+>FreeBSD</term>
+<listitem
+><para
+>Le programme <application
+>ksysguardd</application
+> doit faire partie du groupe <systemitem class="groupname"
+>kmem</systemitem
+> et son bit « setgid » doit être activé.</para
+></listitem
+> 
+</varlistentry>
+<varlistentry>
+<term
+>&Solaris;</term>
+<listitem
+><para
+>À écrire</para
+></listitem>
+</varlistentry>
+</variablelist>
+
+<para
+>La disponibilité pour d'autres plates-formes est en préparation. Votre aide serait grandement appréciée.</para>
+</chapter>
+
+<chapter id="credits-and-license">
+<title
+>Remerciements et licence</title>
+
+<para
+>&ksysguard; est actuellement développé et maintenu par &John.Tapsell; &John.Tapsell.mail;. &ksysguard; est une réécriture de <application
+>KTop</application
+>, le gestionnaire de tâches pour &kde; 1.x. Plusieurs autres personnes ont travaillé sur <application
+>KTop</application
+> :</para>
+
+<itemizedlist>
+<listitem
+><para
+>A. Sanda <email
+>alex@darkstar.ping.at</email
+></para
+></listitem>
+<listitem
+><para
+>Ralf Mueller <email
+>ralf@bj-ig.de</email
+></para
+></listitem>
+<listitem
+><para
+>&Bernd.Johannes.Wuebben; <email
+>wuebben@math.cornell.edu</email
+></para
+></listitem>
+<listitem
+><para
+>Nicolas Leclercq <email
+>nicknet@planete.net</email
+></para
+></listitem>
+</itemizedlist>
+
+<para
+>Le portage sur des plates-formes autres que &Linux; a été réalisé par :</para>
+
+<itemizedlist>
+<listitem
+><para
+>FreeBSD : Hans Petter Bieker <email
+>zerium@traad.lavvu.no</email
+></para
+></listitem>
+</itemizedlist>
+
+<para
+>Traduction française par &YvesDessertine;, &PhilippeGuilbert;, et &RobinGuitton;.</para
+><para
+>Relecture par &LudovicGrossard;.</para
+> &underFDL; &underGPL; </chapter>
+
+</book>
+<!--
+Local Variables:
+mode: sgml
+sgml-omittag: nil
+sgml-shorttag: t
+End:
+-->
+

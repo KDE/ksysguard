@@ -1,0 +1,1452 @@
+# Translation of ksysguard.po into Serbian.
+# Ljubisa Radivojevic <claw@claw.co.yu>, 2000.
+# Toplica Tanaskovic <toptan@kde.org.yu>, 2003.
+# Chusslove Illich <caslav.ilic@gmx.net>, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2014, 2016, 2017.
+# Dalibor Djuric <daliborddjuric@gmail.com>, 2009, 2010, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: ksysguard\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-06-14 02:17+0200\n"
+"PO-Revision-Date: 2017-12-03 22:53+0100\n"
+"Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
+"Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
+"Language: sr@ijekavian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+"X-Environment: kde\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Топлица Танасковић,Часлав Илић"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "toptan@kde.org.yu,caslav.ilic@gmx.net"
+
+# >> @title:window
+#: HostConnector.cpp:44
+#, kde-format
+msgid "Connect Host"
+msgstr "Повезивање домаћина"
+
+#: HostConnector.cpp:57
+#, kde-format
+msgid "Host:"
+msgstr "Домаћин:"
+
+#: HostConnector.cpp:67
+#, kde-format
+msgid "Enter the name of the host you want to connect to."
+msgstr "Име домаћина на који желите да се повежете."
+
+#: HostConnector.cpp:73
+#, kde-format
+msgid "Connection Type"
+msgstr "Тип везе"
+
+#: HostConnector.cpp:78
+#, kde-format
+msgid "ssh"
+msgstr "ССХ"
+
+#: HostConnector.cpp:81
+#, kde-format
+msgid "Select this to use the secure shell to login to the remote host."
+msgstr "Веза са удаљеним домаћином преко безбједне шкољке."
+
+#: HostConnector.cpp:84
+#, kde-format
+msgid "rsh"
+msgstr "РСХ"
+
+#: HostConnector.cpp:85
+#, kde-format
+msgid "Select this to use the remote shell to login to the remote host."
+msgstr "Веза са удаљеним домаћином преко удаљене шкољке."
+
+#: HostConnector.cpp:88
+#, kde-format
+msgid "Daemon"
+msgstr "Демон"
+
+#: HostConnector.cpp:89
+#, kde-format
+msgid ""
+"Select this if you want to connect to a ksysguard daemon that is running on "
+"the machine you want to connect to, and is listening for client requests."
+msgstr ""
+"Веза са демоном К‑систембрана на рачунару са којим желите да се повежете, а "
+"која ослушкује клијентске захтјеве."
+
+#: HostConnector.cpp:92
+#, kde-format
+msgid "Custom command"
+msgstr "Посебна наредба"
+
+#: HostConnector.cpp:93
+#, kde-format
+msgid ""
+"Select this to use the command you entered below to start ksysguardd on the "
+"remote host."
+msgstr ""
+"Демон К‑систембрана покреће се на удаљеном домаћину наредбом коју унесете "
+"испод."
+
+#: HostConnector.cpp:96
+#, kde-format
+msgid "Port:"
+msgstr "Порт:"
+
+#: HostConnector.cpp:103
+#, kde-format
+msgid ""
+"Enter the port number on which the ksysguard daemon is listening for "
+"connections."
+msgstr "Број порта на коме демон К‑систембрана ослушкује везе."
+
+#: HostConnector.cpp:106
+#, kde-format
+msgid "e.g.  3112"
+msgstr "нпр. 3112"
+
+#: HostConnector.cpp:109
+#, kde-format
+msgid "Command:"
+msgstr "Наредба:"
+
+#: HostConnector.cpp:118
+#, kde-format
+msgid "Enter the command that runs ksysguardd on the host you want to monitor."
+msgstr ""
+"Наредба за покретање демона К‑систембрана на домаћину који желите да "
+"надгледате."
+
+#: HostConnector.cpp:122
+#, kde-format
+msgid "e.g. ssh -l root remote.host.org ksysguardd"
+msgstr "нпр. „ssh -l root udaljeni.domacin.org ksysguardd“"
+
+#: ksysguard.cpp:74
+#, kde-format
+msgid "KDE System Monitor"
+msgstr "КДЕ‑ов надзорник система"
+
+#: ksysguard.cpp:157
+#, kde-format
+msgid ""
+"This will hide the menu bar completely. You can show it again by typing %1."
+msgstr ""
+
+#: ksysguard.cpp:159
+#, kde-format
+msgid "Hide menu bar"
+msgstr ""
+
+#: ksysguard.cpp:177 ksysguard.cpp:571
+#, kde-format
+msgid "System Monitor"
+msgstr ""
+"Надзорник система|/|$[својства ген 'Надзорника система'\n"
+"           дат 'Надзорнику система'\n"
+"           аку 'Надзорник система'\n"
+"]"
+
+#: ksysguard.cpp:178
+#, kde-format
+msgid "&Refresh Tab"
+msgstr "&Освјежи језичак"
+
+#: ksysguard.cpp:179
+#, kde-format
+msgid "&New Tab..."
+msgstr "&Нови језичак..."
+
+#: ksysguard.cpp:180
+#, kde-format
+msgid "Import Tab Fr&om File..."
+msgstr "Увези језичак &из фајла..."
+
+#: ksysguard.cpp:181
+#, kde-format
+msgid "Save Tab &As..."
+msgstr "Сачувај језичак &као..."
+
+#: ksysguard.cpp:182
+#, kde-format
+msgid "&Close Tab"
+msgstr "&Затвори језичак"
+
+#: ksysguard.cpp:183
+#, kde-format
+msgid "Monitor &Remote Machine..."
+msgstr "Надгледај &удаљени рачунар..."
+
+#: ksysguard.cpp:184
+#, kde-format
+msgid "&Download New Tabs..."
+msgstr "&Преузми нове језичке..."
+
+#: ksysguard.cpp:185
+#, kde-format
+msgid "&Upload Current Tab..."
+msgstr "&Отпреми текући језичак..."
+
+#: ksysguard.cpp:187
+#, kde-format
+msgid "Tab &Properties"
+msgstr "&Својства језичка"
+
+#: ksysguard.cpp:384
+#, fuzzy, kde-format
+#| msgid "1 process1"
+#| msgid_plural "%1 processes%1"
+msgid "1 process"
+msgid_plural "%1 processes"
+msgstr[0] "%1 процес%1"
+msgstr[1] "%1 процеса%1"
+msgstr[2] "%1 процеса%1"
+msgstr[3] "%1 процес%1"
+
+#: ksysguard.cpp:465
+#, fuzzy, kde-format
+#| msgid "CPU: %1%%1%"
+msgid "CPU: %1%"
+msgstr "ЦПУ: %1%%1%"
+
+#: ksysguard.cpp:465
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1%"
+msgctxt "This is the shorter version of CPU: %1%"
+msgid "%1%"
+msgstr "%1%"
+
+#: ksysguard.cpp:484
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Memory: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:486
+#, kde-format
+msgctxt ""
+"Arguments are formatted byte sizes (used/total) This should be a shorter "
+"version of the previous Memory: %1 / %2"
+msgid "Mem: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:488
+#, kde-format
+msgctxt ""
+"Arguments is formatted byte sizes (used) This should be a shorter version of "
+"the previous Mem: %1 / %2"
+msgid "Mem: %1"
+msgstr ""
+
+#: ksysguard.cpp:516
+#, kde-format
+msgid " No swap space available "
+msgstr " нема размјене "
+
+# well-spelled: раз
+#: ksysguard.cpp:520
+#, fuzzy, kde-format
+#| msgctxt "Arguments are formatted byte sizes (used/total)"
+#| msgid "Swap: %1 / %2Swap: %1%1"
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Swap: %1 / %2"
+msgstr "размена: %1/%2раз: %1%1"
+
+#: ksysguard.cpp:522
+#, fuzzy, kde-format
+#| msgid "Swap"
+msgctxt "Arguments is formatted byte sizes (used)"
+msgid "Swap: %1"
+msgstr "Размена"
+
+#: ksysguard.cpp:573
+#, kde-format
+msgid "(c) 1996-2016 The KDE System Monitor Developers"
+msgstr "© 1996–2016, програмери КДЕ‑овог надзорника система"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "John Tapsell"
+msgstr "Џон Тапсел"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Current Maintainer"
+msgstr "тренутни одржавалац"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Chris Schlaeger"
+msgstr "Крис Шлегер"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Previous Maintainer"
+msgstr "претходни одржавалац"
+
+#: ksysguard.cpp:577
+#, kde-format
+msgid "Greg Martyn"
+msgstr "Грег Мартин"
+
+#: ksysguard.cpp:578
+#, kde-format
+msgid "Tobias Koenig"
+msgstr "Тобијас Кениг"
+
+#: ksysguard.cpp:579
+#, kde-format
+msgid "Nicolas Leclercq"
+msgstr "Никола Леклерк"
+
+#: ksysguard.cpp:580
+#, kde-format
+msgid "Alex Sanda"
+msgstr "Алекс Занда"
+
+#: ksysguard.cpp:581
+#, kde-format
+msgid "Bernd Johannes Wuebben"
+msgstr "Бернд Јоханес Вибен"
+
+#: ksysguard.cpp:582
+#, kde-format
+msgid "Ralf Mueller"
+msgstr "Ралф Милер"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid "Hamish Rodda"
+msgstr "Хамиш Рода"
+
+#: ksysguard.cpp:584
+#, kde-format
+msgid "Torsten Kasch"
+msgstr "Торстен Каш"
+
+#: ksysguard.cpp:584
+#, kde-format
+msgid ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+msgstr ""
+"<html>подршка за Соларис; дијелови изведени (уз допуштење) из модула за "
+"СанОС 5 наредбе <tt>top</tt> Вилијама Лефевра.</html>"
+
+#: ksysguard.cpp:593
+#, kde-format
+msgid "Optional worksheet files to load"
+msgstr "Опциони фајлови радних листова за учитавање"
+
+# >> @title:menu
+#. i18n: ectx: Menu (file)
+#: ksysguardui.rc:4
+#, kde-format
+msgid "&File"
+msgstr "&Фајл"
+
+#. i18n: ectx: Menu (view)
+#: ksysguardui.rc:14
+#, kde-format
+msgid "&View"
+msgstr "&Приказ"
+
+# >> @title:menu
+#. i18n: ectx: Menu (settings)
+#: ksysguardui.rc:18
+#, kde-format
+msgid "&Settings"
+msgstr "&Подешавање"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ksysguardui.rc:21
+#, kde-format
+msgid "Main Toolbar"
+msgstr "Главна трака"
+
+# >> @title:tab
+#. i18n: tag WorkSheet attribute title
+#. i18n: tag display attribute title
+#: ProcessTable.sgrd:3 ProcessTable.sgrd:5
+#, kde-format
+msgid "Process Table"
+msgstr "Процеси"
+
+#: SensorBrowser.cpp:113
+#, kde-format
+msgid "Sensor Browser"
+msgstr "Прегледач сензора"
+
+#: SensorBrowser.cpp:473
+#, kde-format
+msgid "Drag sensors to empty cells of a worksheet "
+msgstr "Превуците сензоре у празне ћелије радног листа."
+
+#: SensorBrowser.cpp:474
+#, kde-format
+msgid ""
+"The sensor browser lists the connected hosts and the sensors that they "
+"provide. Click and drag sensors into drop zones of a worksheet. A display "
+"will appear that visualizes the values provided by the sensor. Some sensor "
+"displays can display values of multiple sensors. Simply drag other sensors "
+"on to the display to add more sensors."
+msgstr ""
+"Прегледач сензора набраја повезане домаћине и њихове сензоре. Одавдје "
+"превлачите сензоре у ћелије радног листа, чиме се добија визуелни приказ "
+"вриједности сензора. Неки од приказа могу давати вриједности и по неколико "
+"сензора: опет превуците сензоре на приказ да бисте додали више њих."
+
+#: SensorDisplayLib/DancingBars.cpp:94 SensorDisplayLib/FancyPlotter.cpp:281
+#, kde-format
+msgid "OK"
+msgstr "У реду"
+
+#: SensorDisplayLib/DancingBars.cpp:94 SensorDisplayLib/FancyPlotter.cpp:281
+#: SensorDisplayLib/FancyPlotter.cpp:522 SensorDisplayLib/FancyPlotter.cpp:600
+#, kde-format
+msgid "Error"
+msgstr "Грешка"
+
+# >> @title:window
+#: SensorDisplayLib/DancingBarsSettings.cpp:42
+#, kde-format
+msgid "Edit BarGraph Preferences"
+msgstr "Поставке тракастог графикона"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:51
+#, kde-format
+msgid "Range"
+msgstr "Опсег"
+
+#. i18n: ectx: property (title), widget (QGroupBox, titleFrame)
+#: SensorDisplayLib/DancingBarsSettings.cpp:55
+#: SensorDisplayLib/ListViewSettingsWidget.ui:17
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:17 WorkSheetSettings.cpp:61
+#, kde-format
+msgid "Title"
+msgstr "Наслов"
+
+#. i18n: ectx: property (whatsThis), widget (QLineEdit, m_title)
+#: SensorDisplayLib/DancingBarsSettings.cpp:60
+#: SensorDisplayLib/FancyPlotterSettings.cpp:71
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
+#, kde-format
+msgid "Enter the title of the display here."
+msgstr "Унесите наслов приказа."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:65
+#, kde-format
+msgid "Display Range"
+msgstr "Опсег приказа"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:70
+#: SensorDisplayLib/FancyPlotterSettings.cpp:97
+#, kde-format
+msgid "Minimum value:"
+msgstr "Најмања вриједност:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:78
+#, kde-format
+msgid ""
+"Enter the minimum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Унесите најмању вриједност за приказ. Ако су обије вриједности 0, опсег се "
+"открива аутоматски."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:82
+#: SensorDisplayLib/FancyPlotterSettings.cpp:108
+#, kde-format
+msgid "Maximum value:"
+msgstr "Највећа вриједност:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:90
+#, kde-format
+msgid ""
+"Enter the maximum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Унесите највећу вриједност за приказ. Ако су обије вриједности 0, опсег се "
+"открива аутоматски."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:100
+#, kde-format
+msgid "Alarms"
+msgstr "Аларми"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
+#: SensorDisplayLib/DancingBarsSettings.cpp:104
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
+#, kde-format
+msgid "Alarm for Minimum Value"
+msgstr "Аларм за најмању вриједност"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:109
+#: SensorDisplayLib/DancingBarsSettings.cpp:132
+#, kde-format
+msgid "Enable alarm"
+msgstr "Укључи аларм"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:110
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:57
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
+#, kde-format
+msgid "Enable the minimum value alarm."
+msgstr "Укључи аларм за најмању вриједност."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:113
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:125
+#, kde-format
+msgid "Lower limit:"
+msgstr "Доња граница:"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1_2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:127
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
+#, kde-format
+msgid "Alarm for Maximum Value"
+msgstr "Аларм за највећу вриједност"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:133
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:116
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
+#, kde-format
+msgid "Enable the maximum value alarm."
+msgstr "Укључи аларм за највећу вриједност."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:136
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:198
+#, kde-format
+msgid "Upper limit:"
+msgstr "Горња граница:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:153
+#, kde-format
+msgctxt "@title:tab Appearance of the bar graph"
+msgid "Look"
+msgstr "Изглед"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:157
+#, kde-format
+msgid "Normal bar color:"
+msgstr "Нормална боја траке:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:164
+#, kde-format
+msgid "Out-of-range color:"
+msgstr "Боја за ван опсега:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:171
+#: SensorDisplayLib/ListViewSettingsWidget.ui:105
+#: SensorDisplayLib/LogFile.cpp:105 SensorDisplayLib/LogFileSettings.ui:85
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:92
+#, kde-format
+msgid "Background color:"
+msgstr "Боја позадине:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:178
+#: SensorDisplayLib/FancyPlotterSettings.cpp:178
+#, kde-format
+msgid "Font size:"
+msgstr "Величина фонта:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:183
+#, kde-format
+msgid ""
+"This determines the size of the font used to print a label underneath the "
+"bars. Bars are automatically suppressed if text becomes too large, so it is "
+"advisable to use a small font size here."
+msgstr ""
+"Одређује величину фонта за испис етикета испод трака. Траке се аутоматски "
+"сузбијају ако текст постане превелик, тако да је препоручљиво задати малу "
+"величину фонта."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:191
+#: SensorDisplayLib/FancyPlotterSettings.cpp:194
+#, kde-format
+msgid "Sensors"
+msgstr "Сензори"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:203
+#, kde-format
+msgid "Edit..."
+msgstr "Уреди..."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:204
+#, kde-format
+msgid "Push this button to configure the label."
+msgstr "Кликните овдје да подесите етикету."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:207
+#: SensorDisplayLib/FancyPlotterSettings.cpp:226
+#, kde-format
+msgid "Delete"
+msgstr "Обриши"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:208
+#: SensorDisplayLib/FancyPlotterSettings.cpp:227
+#, kde-format
+msgid "Push this button to delete the sensor."
+msgstr "Кликните овдје да уклоните сензор."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:360
+#, kde-format
+msgid "Label of Bar Graph"
+msgstr "Етикета тракастог графикона"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:361
+#, kde-format
+msgid "Enter new label:"
+msgstr "Нова етикета:"
+
+#: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
+#, kde-format
+msgid "Drop Sensor Here"
+msgstr "Превуци сензор овдје"
+
+#: SensorDisplayLib/DummyDisplay.cpp:33
+#, kde-format
+msgid ""
+"This is an empty space in a worksheet. Drag a sensor from the Sensor Browser "
+"and drop it here. A sensor display will appear that allows you to monitor "
+"the values of the sensor over time."
+msgstr ""
+"Ово је празан простор радног листа. Превуците овамо сензор из прегледача "
+"сензора, када ће се појавити приказ у којем можете пратити вриједности "
+"сензора у стварном времену."
+
+#: SensorDisplayLib/FancyPlotter.cpp:177
+#, kde-format
+msgctxt "Largest axis title"
+msgid "99999 XXXX"
+msgstr "99999 XXXX"
+
+#: SensorDisplayLib/FancyPlotter.cpp:518 SensorDisplayLib/FancyPlotter.cpp:589
+#: SensorDisplayLib/FancyPlotter.cpp:652
+#, kde-format
+msgctxt "units"
+msgid "%1%"
+msgstr "%1%"
+
+# skip-rule: x-markup-k
+#: SensorDisplayLib/FancyPlotter.cpp:526
+#, kde-format
+msgctxt "%1 is what is being shown statistics for, like 'Memory', 'Swap', etc."
+msgid "<p><b>%1:</b><br>"
+msgstr "<p><b>%1:</b><br>"
+
+#: SensorDisplayLib/FancyPlotter.cpp:597
+#, fuzzy, kde-format
+#| msgid "%1 of %2%1"
+msgid "%1 of %2"
+msgstr "%1 од %2%1"
+
+#: SensorDisplayLib/FancyPlotter.cpp:625
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB"
+msgstr "%1 TiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:628
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB"
+msgstr "%1 GiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:631
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB"
+msgstr "%1 MiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:634
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB"
+msgstr "%1 KiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:639
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB/s"
+msgstr "%1 TiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:642
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB/s"
+msgstr "%1 GiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:645
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB/s"
+msgstr "%1 MiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:648
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB/s"
+msgstr "%1 KiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:654
+#, kde-format
+msgctxt "unitless - just a number"
+msgid "%1"
+msgstr "%1"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:47
+#, kde-format
+msgid "Plotter Settings"
+msgstr "Поставке цртача"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:63
+#, kde-format
+msgid "General"
+msgstr "Опште"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:67
+#, kde-format
+msgid "Title:"
+msgstr "Наслов:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:75
+#, kde-format
+msgid "Stack the beams on top of each other"
+msgstr "Слажи пречке једну над другом"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:76
+#, kde-format
+msgid ""
+"The beams are stacked on top of each other, and the area is drawn filled in. "
+"So if one beam has a value of 2 and another beam has a value of 3, the first "
+"beam will be drawn at value 2 and the other beam drawn at 2+3=5."
+msgstr ""
+"Пречке се слажу једна изнад друге, а површина се исцртава попуњено. На "
+"примјер, ако прва пречка има вриједност 2 а друга пречка 3, прва ће бити "
+"исцртана на вриједности 2 а друга на 2 + 3 = 5."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:83
+#, kde-format
+msgid "Scales"
+msgstr "Размјере"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:87
+#, kde-format
+msgid "Vertical scale"
+msgstr "Усправна размера"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:92
+#, kde-format
+msgid "Specify graph range:"
+msgstr "Опсег графикона:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:93
+#, kde-format
+msgid ""
+"Check this box if you want the display range to adapt dynamically to the "
+"currently displayed values; if you do not check this, you have to specify "
+"the range you want in the fields below."
+msgstr ""
+"Попуните ако желите да се опсег приказа динамички прилагођава тренутно "
+"приказаним вриједностима. У супротном, опсег који желите задајете пољима "
+"испод."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:103
+#, kde-format
+msgid "Enter the minimum value for the display here."
+msgstr "Унесите најмању вриједност у приказу."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:114
+#, kde-format
+msgid ""
+"Enter the soft maximum value for the display here. The upper range will not "
+"be reduced below this value, but will still go above this number for values "
+"above this value."
+msgstr ""
+"Унесите меку највећу вриједност у приказу. Горња граница опсега неће бити "
+"спуштана испод ове вриједности, али ће бити повећана при вишим вриједностима."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:121
+#, kde-format
+msgid "Horizontal scale"
+msgstr "Водоравна размјера"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:129
+#, kde-format
+msgid "Pixels per time period:"
+msgstr "Пиксела по периоду:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:136
+#, kde-format
+msgid "Grid"
+msgstr "Мрежа"
+
+# skip-rule: t-line
+#: SensorDisplayLib/FancyPlotterSettings.cpp:140
+#, kde-format
+msgid "Lines"
+msgstr "Линије"
+
+# skip-rule: t-line
+#: SensorDisplayLib/FancyPlotterSettings.cpp:145
+#, kde-format
+msgid "Vertical lines"
+msgstr "Усправне линије"
+
+# skip-rule: t-line
+#: SensorDisplayLib/FancyPlotterSettings.cpp:146
+#, kde-format
+msgid "Check this to activate the vertical lines if display is large enough."
+msgstr "Попуните за активирање усправних линија када је приказ довољно велик."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:149
+#, kde-format
+msgid "Distance:"
+msgstr "Растојање:"
+
+# skip-rule: t-line
+#: SensorDisplayLib/FancyPlotterSettings.cpp:156
+#, kde-format
+msgid "Enter the distance between two vertical lines here."
+msgstr "Растојање између двије усправне линије."
+
+# skip-rule: t-line
+#: SensorDisplayLib/FancyPlotterSettings.cpp:160
+#, kde-format
+msgid "Vertical lines scroll"
+msgstr "Клизање усправних линија"
+
+# skip-rule: t-line
+#: SensorDisplayLib/FancyPlotterSettings.cpp:163
+#, kde-format
+msgid "Horizontal lines"
+msgstr "Водоравне линије"
+
+# skip-rule: t-line
+#: SensorDisplayLib/FancyPlotterSettings.cpp:164
+#, kde-format
+msgid "Check this to enable horizontal lines if display is large enough."
+msgstr "Попуните за активирање водоравних линија када је приказ довољно велик."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:169
+#, kde-format
+msgid "Text"
+msgstr "Текст"
+
+# >> @option:check
+#: SensorDisplayLib/FancyPlotterSettings.cpp:174
+#, kde-format
+msgid "Show axis labels"
+msgstr "Етикете оса"
+
+# skip-rule: t-line
+#: SensorDisplayLib/FancyPlotterSettings.cpp:175
+#, kde-format
+msgid ""
+"Check this box if horizontal lines should be decorated with the values they "
+"mark."
+msgstr ""
+"Попуните ако желите да водоравне линије дају етикете вриједности које досежу."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:218
+#, kde-format
+msgid "Set Color..."
+msgstr "Постави боју..."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:219
+#, kde-format
+msgid "Push this button to configure the color of the sensor in the diagram."
+msgstr "Кликните овдје да задате боју сензора у дијаграму."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:231
+#, kde-format
+msgid "Move Up"
+msgstr "Помјери нагоре"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:236
+#, kde-format
+msgid "Move Down"
+msgstr "Помјери надоље"
+
+#: SensorDisplayLib/ListView.cpp:44
+#, kde-format
+msgid "%1 K"
+msgstr "%1 K"
+
+#: SensorDisplayLib/ListView.cpp:45
+#, kde-format
+msgid "%1 M"
+msgstr "%1 M"
+
+#: SensorDisplayLib/ListView.cpp:46
+#, kde-format
+msgid "%1 G"
+msgstr "%1 G"
+
+#: SensorDisplayLib/ListView.cpp:47
+#, kde-format
+msgid "%1 T"
+msgstr "%1 T"
+
+#: SensorDisplayLib/ListView.cpp:48
+#, kde-format
+msgid "%1 P"
+msgstr "%1 P"
+
+#: SensorDisplayLib/ListView.cpp:151
+#, kde-format
+msgid "Display Units"
+msgstr "Јединице приказа"
+
+# >> @item:inlist
+#: SensorDisplayLib/ListView.cpp:155
+#, kde-format
+msgid "Mixed"
+msgstr "мијешано"
+
+# >> @item:inlist
+#: SensorDisplayLib/ListView.cpp:161
+#, kde-format
+msgid "Kilobytes"
+msgstr "килобајти"
+
+# >> @item:inlist
+#: SensorDisplayLib/ListView.cpp:167
+#, kde-format
+msgid "Megabytes"
+msgstr "мегабајти"
+
+# >> @item:inlist
+#: SensorDisplayLib/ListView.cpp:173
+#, kde-format
+msgid "Gigabytes"
+msgstr "гигабајти"
+
+# >> @item:inlist
+#: SensorDisplayLib/ListView.cpp:179
+#, kde-format
+msgid "Terabytes"
+msgstr "терабајти"
+
+#: SensorDisplayLib/ListViewSettings.cpp:30
+#, kde-format
+msgid "List View Settings"
+msgstr "Поставке приказа списка"
+
+#. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:47
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:47
+#, kde-format
+msgid "Colors"
+msgstr "Боје"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:79
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
+#, kde-format
+msgid "Text color:"
+msgstr "Боја текста:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:92
+#, kde-format
+msgid "Grid color:"
+msgstr "Боја мреже:"
+
+#: SensorDisplayLib/LogFile.cpp:93
+#, kde-format
+msgid "File logging settings"
+msgstr "Поставке биљежења"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
+#, kde-format
+msgid "Foreground color:"
+msgstr "Боја исписа:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, textTab)
+#: SensorDisplayLib/LogFileSettings.ui:21
+#, kde-format
+msgid "&Text"
+msgstr "&Текст"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/LogFileSettings.ui:29
+#, kde-format
+msgid "T&itle:"
+msgstr "&Наслов:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: SensorDisplayLib/LogFileSettings.ui:166
+#, kde-format
+msgid "Fi&lter"
+msgstr "&Филтер"
+
+#. i18n: ectx: property (text), widget (QPushButton, addButton)
+#: SensorDisplayLib/LogFileSettings.ui:196
+#, kde-format
+msgid "&Add"
+msgstr "&Додај"
+
+#. i18n: ectx: property (text), widget (QPushButton, deleteButton)
+#: SensorDisplayLib/LogFileSettings.ui:203
+#, kde-format
+msgid "&Delete"
+msgstr "&Обриши"
+
+#. i18n: ectx: property (text), widget (QPushButton, changeButton)
+#: SensorDisplayLib/LogFileSettings.ui:210
+#, kde-format
+msgid "&Change"
+msgstr "&Измијени"
+
+#: SensorDisplayLib/MultiMeterSettings.cpp:33
+#, kde-format
+msgctxt ""
+"Multimeter is a sensor display that mimics 'digital multimeter' aparatus"
+msgid "Multimeter Settings"
+msgstr "Поставке мултиметра"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:26
+#, kde-format
+msgid "&Title:"
+msgstr "&Наслов:"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:43
+#, kde-format
+msgid "Enable this to append the unit to the title of the display."
+msgstr "Укључите да додате мијерну јединицу наслову приказа."
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
+#, kde-format
+msgid "&Show unit"
+msgstr "&Јединица"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
+#, kde-format
+msgid "&Enable alarm"
+msgstr "&Укључи аларм"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
+#, kde-format
+msgid "&Lower limit:"
+msgstr "&Доња граница:"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
+#, kde-format
+msgid "E&nable alarm"
+msgstr "У&кључи аларм"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
+#, kde-format
+msgid "&Upper limit:"
+msgstr "&Горња граница:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
+#, kde-format
+msgid "Nor&mal digit color:"
+msgstr "&Нормална боја цифара:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
+#, kde-format
+msgid "Alarm di&git color:"
+msgstr "Боја цифара &аларма:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
+#, kde-format
+msgid "Bac&kground color:"
+msgstr "Боја &позадине:"
+
+#: SensorDisplayLib/SensorDisplay.cpp:116 SensorDisplayLib/SensorLogger.cpp:588
+#, kde-format
+msgid "&Properties"
+msgstr "&Својства"
+
+#: SensorDisplayLib/SensorDisplay.cpp:121 SensorDisplayLib/SensorLogger.cpp:593
+#, kde-format
+msgid "&Remove Display"
+msgstr "&Уклони приказ"
+
+#: SensorDisplayLib/SensorDisplay.cpp:188
+#, kde-format
+msgid ""
+"<qt><p>This is a sensor display. To customize a sensor display click the "
+"right mouse button here and select the <i>Properties</i> entry from the "
+"popup menu. Select <i>Remove</i> to delete the display from the worksheet.</"
+"p>%1</qt>"
+msgstr ""
+"<qt><p>Ово је приказ сензора. Можете га прилагодити десним кликом овде и "
+"избором ставке <i>Својства</i> из искачућег менија. Изаберите <i>Уклони "
+"сензор</i> ако желите да уклоните приказ са радног листа.</p>%1</qt>"
+
+#: SensorDisplayLib/SensorLogger.cpp:133
+#, kde-format
+msgctxt "@title:column"
+msgid "Logging"
+msgstr "биљежење"
+
+#: SensorDisplayLib/SensorLogger.cpp:135
+#, kde-format
+msgctxt "@title:column"
+msgid "Timer Interval"
+msgstr "период одбројавача"
+
+#: SensorDisplayLib/SensorLogger.cpp:137
+#, kde-format
+msgctxt "@title:column"
+msgid "Sensor Name"
+msgstr "сензор"
+
+#: SensorDisplayLib/SensorLogger.cpp:139
+#, kde-format
+msgctxt "@title:column"
+msgid "Host Name"
+msgstr "домаћин"
+
+#: SensorDisplayLib/SensorLogger.cpp:141
+#, kde-format
+msgctxt "@title:column"
+msgid "Log File"
+msgstr "дневник"
+
+#: SensorDisplayLib/SensorLogger.cpp:419
+#: SensorDisplayLib/SensorLoggerDlg.cpp:30
+#, kde-format
+msgid "Sensor Logger"
+msgstr "Биљежник сензора"
+
+# >> @title:column
+#: SensorDisplayLib/SensorLogger.cpp:598
+#, kde-format
+msgid "&Remove Sensor"
+msgstr "&Уклони сензор"
+
+#: SensorDisplayLib/SensorLogger.cpp:603
+#, kde-format
+msgid "&Edit Sensor..."
+msgstr "&Уреди сензор..."
+
+#: SensorDisplayLib/SensorLogger.cpp:611
+#, kde-format
+msgid "St&op Logging"
+msgstr "&Заустави биљежење"
+
+#: SensorDisplayLib/SensorLogger.cpp:614
+#, kde-format
+msgid "S&tart Logging"
+msgstr "&Покрени биљежење"
+
+#. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
+#, kde-format
+msgid "File"
+msgstr "Фајл"
+
+#. i18n: ectx: property (title), widget (QGroupBox, timerFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:41
+#, kde-format
+msgctxt "@title:group"
+msgid "Timer Interval"
+msgstr "Период одбројавача"
+
+#. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
+#, kde-format
+msgid " sec"
+msgstr " сек."
+
+#: SensorDisplayLib/SensorLoggerSettings.cpp:30
+#, kde-format
+msgid "Sensor Logger Settings"
+msgstr "Поставке биљежника сензора"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
+#, kde-format
+msgid "Alarm color:"
+msgstr "Боја аларма:"
+
+# >> @title:column
+#: SensorDisplayLib/SensorModel.cpp:161
+#, kde-format
+msgid "Host"
+msgstr "домаћин"
+
+# >> @title:column
+#: SensorDisplayLib/SensorModel.cpp:163
+#, kde-format
+msgid "Sensor"
+msgstr "сензор"
+
+# >> @title:column
+#: SensorDisplayLib/SensorModel.cpp:165
+#, kde-format
+msgid "Unit"
+msgstr "јединица"
+
+# >> @title:column
+#: SensorDisplayLib/SensorModel.cpp:167
+#, kde-format
+msgid "Status"
+msgstr "стање"
+
+# >> @title:column
+#: SensorDisplayLib/SensorModel.cpp:169
+#, kde-format
+msgid "Label"
+msgstr "етикета"
+
+#. i18n: tag WorkSheet attribute title
+#: SystemLoad2.sgrd:3
+#, kde-format
+msgid "System Load"
+msgstr "Системско оптерећење"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:5
+#, kde-format
+msgid "CPU History"
+msgstr "Историјат ЦПУ‑а"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:8
+#, kde-format
+msgid "Memory and Swap History"
+msgstr "Историјат меморије и размене"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:9
+#, kde-format
+msgid "Memory"
+msgstr "Меморија"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:10
+#, kde-format
+msgid "Swap"
+msgstr "Размена"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:12
+#, kde-format
+msgid "Network History"
+msgstr "Историјат мреже"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:13
+#, kde-format
+msgid "Receiving"
+msgstr "Примање"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:14
+#, kde-format
+msgid "Sending"
+msgstr "Слање"
+
+#: WorkSheet.cpp:87
+#, kde-format
+msgid "Cannot open the file %1."
+msgstr "Не могу да отворим фајл ‘%1’."
+
+#: WorkSheet.cpp:95
+#, kde-format
+msgid "The file %1 does not contain valid XML."
+msgstr "Фајл ‘%1’ не садржи исправан ИксМЛ."
+
+#: WorkSheet.cpp:102
+#, kde-format
+msgid ""
+"The file %1 does not contain a valid worksheet definition, which must have a "
+"document type 'KSysGuardWorkSheet'."
+msgstr ""
+"Фајл ‘%1’ не садржи исправну дефиницију радног листа, која мора имати "
+"дефинисан тип документа „KSysGuardWorkSheet“."
+
+#: WorkSheet.cpp:114
+#, kde-format
+msgid "The file %1 has an invalid worksheet size."
+msgstr "Фајл ‘%1’ има неисправну величину радног листа."
+
+#: WorkSheet.cpp:239
+#, kde-format
+msgid "Cannot save file %1"
+msgstr "Не могу да сачувам фајл ‘%1’"
+
+#: WorkSheet.cpp:285
+#, kde-format
+msgid "The clipboard does not contain a valid display description."
+msgstr "Клипборд не садржи исправан опис приказа."
+
+#: WorkSheet.cpp:385
+#, kde-format
+msgid "Select Display Type"
+msgstr "Изабери тип приказа"
+
+# skip-rule: t-line
+#: WorkSheet.cpp:386
+#, kde-format
+msgid "&Line graph"
+msgstr "&Линијски графикон"
+
+#: WorkSheet.cpp:387
+#, kde-format
+msgid "&Digital display"
+msgstr "&Дигитални приказ"
+
+#: WorkSheet.cpp:388
+#, kde-format
+msgid "&Bar graph"
+msgstr "&Тракасти графикон"
+
+#: WorkSheet.cpp:389
+#, kde-format
+msgid "Log to a &file"
+msgstr "&Биљежи у фајл"
+
+#: WorkSheet.cpp:545
+#, kde-format
+msgid "Remove this display?"
+msgstr "Уклонити овај приказ?"
+
+# >> @title:window
+#: WorkSheet.cpp:546
+#, kde-format
+msgid "Remove Display"
+msgstr "Уклањање приказа"
+
+#: WorkSheet.cpp:587
+#, kde-format
+msgid "Dummy"
+msgstr "Лажни"
+
+#: WorkSheetSettings.cpp:43
+#, kde-format
+msgid "Tab Properties"
+msgstr "Својства језичка"
+
+#: WorkSheetSettings.cpp:72
+#, kde-format
+msgid "Properties"
+msgstr "Својства"
+
+#: WorkSheetSettings.cpp:81
+#, kde-format
+msgid "Rows:"
+msgstr "Врсте:"
+
+#: WorkSheetSettings.cpp:91
+#, kde-format
+msgid "Columns:"
+msgstr "Колоне:"
+
+#: WorkSheetSettings.cpp:100
+#, kde-format
+msgid "Enter the number of rows the sheet should have."
+msgstr "Број врста које лист треба да има."
+
+#: WorkSheetSettings.cpp:101
+#, kde-format
+msgid "Enter the number of columns the sheet should have."
+msgstr "Број колона које лист треба да има."
+
+#: WorkSheetSettings.cpp:103
+#, kde-format
+msgid "Update interval:"
+msgstr "Период ажурирања:"
+
+#: WorkSheetSettings.cpp:116
+#, kde-format
+msgid "All displays of the sheet are updated at the rate specified here."
+msgstr "Сви прикази листа ажурирају се учестаношћу коју наведете овдје."
+
+#: WorkSheetSettings.cpp:117
+#, kde-format
+msgid "Enter the title of the worksheet here."
+msgstr "Наслов радног листа."
+
+#: Workspace.cpp:111
+#, kde-format
+msgid "Sheet %1"
+msgstr "лист %1"
+
+#: Workspace.cpp:170
+#, kde-format
+msgid ""
+"The tab '%1' contains unsaved data.\n"
+"Do you want to save the tab?"
+msgstr ""
+"Језичак „%1“ садржи несачуване податке.\n"
+"Желите ли да га сачувате?"
+
+# >> @title:window
+#: Workspace.cpp:186
+#, kde-format
+msgid "Select Tab File to Import"
+msgstr "Увоз језичка из фајла"
+
+#: Workspace.cpp:208 Workspace.cpp:228
+#, kde-format
+msgid "You do not have a tab that could be saved."
+msgstr "Нема ниједног језичка који се може сачувати."
+
+# >> @title:window
+#: Workspace.cpp:235
+#, kde-format
+msgid "Export Tab"
+msgstr "Извоз језичка"
+
+#: Workspace.cpp:255
+#, kde-format
+msgid "There are no tabs that could be deleted."
+msgstr "Нема ниједног језичка који се може обрисати."
+
+#: Workspace.cpp:299
+#, kde-kuit-format
+msgctxt "@info"
+msgid ""
+"<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
+"in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
+msgstr ""
+"<para>Свој посебан језичак можете објавити на <link url='%1'>Радњи КДЕ‑а</"
+"link> у категорији <icode>%2</icode>.</para><para><filename>%3</filename></"
+"para>"
+
+# >> @title:window
+#: Workspace.cpp:304
+#, kde-format
+msgid "Upload custom System Monitor tab"
+msgstr "Отпремање посебног језичка надзорника система"

@@ -1,0 +1,2687 @@
+# translation of ksysguard.po to Belarusian
+# Belarusian (classic spelling) translation of ksysguard.pot
+# Copyright (C) 2002-2004 KDE Team.
+#
+# Eugene Zelenko <greendeath@mail.ru>, 2002-2004.
+# Ihar Hrachyshka <ihar.hrachyshka@gmail.com>, 2006.
+# Darafei Praliaskouski <symbol@akeeri.tk>, 2006.
+# Darafei Praliaskouski <komzpa@licei2.com>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: ksysguard\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-03-02 00:46+0000\n"
+"PO-Revision-Date: 2007-08-03 14:26+0000\n"
+"Last-Translator: Darafei Praliaskouski <komzpa@licei2.com>\n"
+"Language-Team: Belarusian <i18n@mova.org>\n"
+"Language: be\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || n%10>=5 && n%10<=9 || n"
+"%100>=11 && n%100<=14 ? 2 : 3);\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Дарафей Праляскоўскі,Андрэйчанка Анастасія,Сталярчук Іван"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "komzpa@licei2.com,bashybuzuk@tut.by,ivan.telkontar@gmail.com"
+
+#: HostConnector.cpp:44
+#, kde-format
+msgid "Connect Host"
+msgstr "Злучыцца з вузлом"
+
+#: HostConnector.cpp:57
+#, kde-format
+msgid "Host:"
+msgstr "Вузел:"
+
+#: HostConnector.cpp:67
+#, kde-format
+msgid "Enter the name of the host you want to connect to."
+msgstr "Вызначце назву вузла, з якім неабходна ўсталяваць злучэнне."
+
+#: HostConnector.cpp:73
+#, kde-format
+msgid "Connection Type"
+msgstr "Тып злучэння"
+
+#: HostConnector.cpp:78
+#, kde-format
+msgid "ssh"
+msgstr "ssh"
+
+#: HostConnector.cpp:81
+#, kde-format
+msgid "Select this to use the secure shell to login to the remote host."
+msgstr "Выберыце гэты тып для бяспечнага злучэння з аддаленым вузлом."
+
+#: HostConnector.cpp:84
+#, kde-format
+msgid "rsh"
+msgstr "rsh"
+
+#: HostConnector.cpp:85
+#, kde-format
+msgid "Select this to use the remote shell to login to the remote host."
+msgstr "Выберыце гэты тып для аддаленага злучэння з аддаленым вузлом."
+
+#: HostConnector.cpp:88
+#, kde-format
+msgid "Daemon"
+msgstr "Дэман"
+
+#: HostConnector.cpp:89
+#, kde-format
+msgid ""
+"Select this if you want to connect to a ksysguard daemon that is running on "
+"the machine you want to connect to, and is listening for client requests."
+msgstr ""
+"Выберыце гэты тып, каб злучыцца з дэманам, запушчаным на іншым камп'ютэры і "
+"які дазваляе злучэнні з боку кліентаў."
+
+#: HostConnector.cpp:92
+#, kde-format
+msgid "Custom command"
+msgstr "Асаблівая каманда"
+
+#: HostConnector.cpp:93
+#, kde-format
+msgid ""
+"Select this to use the command you entered below to start ksysguardd on the "
+"remote host."
+msgstr ""
+"Выберыце гэты тып, каб выкарыстаць наступную каманду для запуску ksysguardd "
+"на аддаленым вузле."
+
+#: HostConnector.cpp:96
+#, kde-format
+msgid "Port:"
+msgstr "Порт:"
+
+#: HostConnector.cpp:103
+#, kde-format
+msgid ""
+"Enter the port number on which the ksysguard daemon is listening for "
+"connections."
+msgstr "Вызначце нумар порту, які будзе праслухоўваць дэман ksysguard daemon."
+
+#: HostConnector.cpp:106
+#, kde-format
+msgid "e.g.  3112"
+msgstr "напр.,  3112"
+
+#: HostConnector.cpp:109
+#, kde-format
+msgid "Command:"
+msgstr "Каманда:"
+
+#: HostConnector.cpp:118
+#, kde-format
+msgid "Enter the command that runs ksysguardd on the host you want to monitor."
+msgstr ""
+"Вызначце каманду, якая запускае ksysguardd на вузле, за якім вы хочаце "
+"назіраць."
+
+#: HostConnector.cpp:122
+#, kde-format
+msgid "e.g. ssh -l root remote.host.org ksysguardd"
+msgstr "напр., ssh -l root remote.host.org ksysguardd"
+
+#: ksysguard.cpp:156
+#, kde-format
+msgid ""
+"This will hide the menu bar completely. You can show it again by typing %1."
+msgstr ""
+
+#: ksysguard.cpp:158
+#, kde-format
+msgid "Hide menu bar"
+msgstr ""
+
+#: ksysguard.cpp:176 ksysguard.cpp:570
+#, kde-format
+msgid "System Monitor"
+msgstr "Сістэмны манітор"
+
+#: ksysguard.cpp:177
+#, fuzzy, kde-format
+#| msgid "&Refresh"
+msgid "&Refresh Tab"
+msgstr "&Абнавіць"
+
+#: ksysguard.cpp:178
+#, kde-format
+msgid "&New Tab..."
+msgstr ""
+
+#: ksysguard.cpp:179
+#, kde-format
+msgid "Import Tab Fr&om File..."
+msgstr ""
+
+#: ksysguard.cpp:180
+#, kde-format
+msgid "Save Tab &As..."
+msgstr ""
+
+#: ksysguard.cpp:181
+#, kde-format
+msgid "&Close Tab"
+msgstr ""
+
+#: ksysguard.cpp:182
+#, fuzzy, kde-format
+#| msgid "Monitor remote machine..."
+msgid "Monitor &Remote Machine..."
+msgstr "Звесткі пра аддаленую машыну..."
+
+#: ksysguard.cpp:183
+#, fuzzy, kde-format
+#| msgid "&New Worksheet..."
+msgid "&Download New Tabs..."
+msgstr "&Новы працоўны аркуш..."
+
+#: ksysguard.cpp:184
+#, fuzzy, kde-format
+#| msgid "&New Worksheet..."
+msgid "&Upload Current Tab..."
+msgstr "&Новы працоўны аркуш..."
+
+#: ksysguard.cpp:186
+#, fuzzy, kde-format
+#| msgid "&Properties"
+msgid "Tab &Properties"
+msgstr "&Уласцівасці"
+
+#: ksysguard.cpp:383
+#, fuzzy, kde-format
+#| msgid " %1 processes "
+msgid "1 process"
+msgid_plural "%1 processes"
+msgstr[0] " %1 працэсаў"
+msgstr[1] " %1 працэсаў"
+msgstr[2] " %1 працэсаў"
+
+#: ksysguard.cpp:464
+#, fuzzy, kde-format
+#| msgid " CPU: %1% "
+msgid "CPU: %1%"
+msgstr " CPU: %1% "
+
+#: ksysguard.cpp:464
+#, fuzzy, kde-format
+#| msgctxt "a percentage"
+#| msgid "%"
+msgctxt "This is the shorter version of CPU: %1%"
+msgid "%1%"
+msgstr "%"
+
+#: ksysguard.cpp:483
+#, fuzzy, kde-format
+#| msgid " Memory: %1 / %2 "
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Memory: %1 / %2"
+msgstr " Памяць: %1 / %2 "
+
+#: ksysguard.cpp:485
+#, fuzzy, kde-format
+#| msgid " Memory: %1 / %2 "
+msgctxt ""
+"Arguments are formatted byte sizes (used/total) This should be a shorter "
+"version of the previous Memory: %1 / %2"
+msgid "Mem: %1 / %2"
+msgstr " Памяць: %1 / %2 "
+
+#: ksysguard.cpp:487
+#, kde-format
+msgctxt ""
+"Arguments is formatted byte sizes (used) This should be a shorter version of "
+"the previous Mem: %1 / %2"
+msgid "Mem: %1"
+msgstr ""
+
+#: ksysguard.cpp:515
+#, kde-format
+msgid " No swap space available "
+msgstr " Прастора падкачкі адсутнічае "
+
+#: ksysguard.cpp:519
+#, fuzzy, kde-format
+#| msgid " Swap: %1 / %2 "
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Swap: %1 / %2"
+msgstr " Падкачка %1 / %2 "
+
+#: ksysguard.cpp:521
+#, kde-format
+msgctxt "Arguments is formatted byte sizes (used)"
+msgid "Swap: %1"
+msgstr ""
+
+#: ksysguard.cpp:571
+#, kde-format
+msgid "KDE System Monitor"
+msgstr "Сістэмны манітор KDE"
+
+#: ksysguard.cpp:572
+#, fuzzy, kde-format
+#| msgid "(c) 1996-2006 The KDE System Monitor Developers"
+msgid "(c) 1996-2016 The KDE System Monitor Developers"
+msgstr "(c) 1996-2006, Распрацоўшчыкі KSysGuard"
+
+#: ksysguard.cpp:574
+#, kde-format
+msgid "John Tapsell"
+msgstr "Джон Тапсэл"
+
+#: ksysguard.cpp:574
+#, kde-format
+msgid "Current Maintainer"
+msgstr "Адказны за выпуск"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Chris Schlaeger"
+msgstr "Крыс Шлэгер"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Previous Maintainer"
+msgstr "Ранейшы адказны"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Greg Martyn"
+msgstr "Грэг Марцін"
+
+#: ksysguard.cpp:577
+#, kde-format
+msgid "Tobias Koenig"
+msgstr "Тобіас Кёнінг"
+
+#: ksysguard.cpp:578
+#, kde-format
+msgid "Nicolas Leclercq"
+msgstr "Нікалас Леклер"
+
+#: ksysguard.cpp:579
+#, kde-format
+msgid "Alex Sanda"
+msgstr "Алекс Санда"
+
+#: ksysguard.cpp:580
+#, kde-format
+msgid "Bernd Johannes Wuebben"
+msgstr "Бернд Джонс Уэбэн"
+
+#: ksysguard.cpp:581
+#, kde-format
+msgid "Ralf Mueller"
+msgstr "Ральф Мюллер"
+
+#: ksysguard.cpp:582
+#, kde-format
+msgid "Hamish Rodda"
+msgstr "Хаміш Родда"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid "Torsten Kasch"
+msgstr "Торстэн Каш"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+msgstr ""
+"Падтрымка Solaris\n"
+"Модулі, перанесеныя з дазволу з модулю sunos5\n"
+"службовай праграмы \"top\" аўтара William LeFebvre."
+
+#: ksysguard.cpp:592
+#, kde-format
+msgid "Optional worksheet files to load"
+msgstr "Загрузіць дадатковыя файлы працоўных аркушаў"
+
+#. i18n: ectx: Menu (file)
+#: ksysguardui.rc:5
+#, kde-format
+msgid "&File"
+msgstr "&Файл"
+
+#. i18n: ectx: Menu (view)
+#: ksysguardui.rc:15
+#, fuzzy, kde-format
+#| msgid "&File"
+msgid "&View"
+msgstr "&Файл"
+
+#. i18n: ectx: Menu (settings)
+#: ksysguardui.rc:19
+#, kde-format
+msgid "&Settings"
+msgstr "&Настаўленні"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ksysguardui.rc:22
+#, kde-format
+msgid "Main Toolbar"
+msgstr "Галоўная панель начыння"
+
+#. i18n: tag WorkSheet attribute title
+#. i18n: tag display attribute title
+#: ProcessTable.sgrd:3 ProcessTable.sgrd:5
+#, kde-format
+msgid "Process Table"
+msgstr "Табліца працэсаў"
+
+#: SensorBrowser.cpp:113
+#, kde-format
+msgid "Sensor Browser"
+msgstr "Спіс сэнсараў"
+
+#: SensorBrowser.cpp:473
+#, fuzzy, kde-format
+#| msgid "Drag sensors to empty fields in a worksheet."
+msgid "Drag sensors to empty cells of a worksheet "
+msgstr "Перацягвайце сэнсары на пустыя палі працоўнага аркушу."
+
+#: SensorBrowser.cpp:474
+#, fuzzy, kde-format
+#| msgid ""
+#| "The sensor browser lists the connected hosts and the sensors that they "
+#| "provide. Click and drag sensors into drop zones of a worksheet or the "
+#| "panel applet. A display will appear that visualizes the values provided "
+#| "by the sensor. Some sensor displays can display values of multiple "
+#| "sensors. Simply drag other sensors on to the display to add more sensors."
+msgid ""
+"The sensor browser lists the connected hosts and the sensors that they "
+"provide. Click and drag sensors into drop zones of a worksheet. A display "
+"will appear that visualizes the values provided by the sensor. Some sensor "
+"displays can display values of multiple sensors. Simply drag other sensors "
+"on to the display to add more sensors."
+msgstr ""
+"Спіс сэнсараў змяшчае вузлы, з якімі ўсталявана злучэнне, і іх сэнсары. "
+"Перацягвайце сэнсары на працоўны аркуш ці на аплет панелі. З'явіцца манітор, "
+"які будзе паказваць значэнні адпаведнага сэнсару. Некаторыя маніторы могуць "
+"паказваць значэнні некалькіх сэнсараў. Проста перацягніце іншыя сэнсары на "
+"манітор, каб дадаць яшчэ сэнсараў."
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:281
+#, kde-format
+msgid "OK"
+msgstr "Добра"
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:281
+#: SensorDisplayLib/FancyPlotter.cpp:545 SensorDisplayLib/FancyPlotter.cpp:624
+#, kde-format
+msgid "Error"
+msgstr "Памылка"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:42
+#, kde-format
+msgid "Edit BarGraph Preferences"
+msgstr "Змяніць уласцівасці графіка"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:51
+#, kde-format
+msgid "Range"
+msgstr "Дыяпазон"
+
+#. i18n: ectx: property (title), widget (QGroupBox, titleFrame)
+#: SensorDisplayLib/DancingBarsSettings.cpp:55
+#: SensorDisplayLib/ListViewSettingsWidget.ui:17
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:17 WorkSheetSettings.cpp:61
+#, kde-format
+msgid "Title"
+msgstr "Загаловак"
+
+#. i18n: ectx: property (whatsThis), widget (QLineEdit, m_title)
+#: SensorDisplayLib/DancingBarsSettings.cpp:60
+#: SensorDisplayLib/FancyPlotterSettings.cpp:70
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
+#, kde-format
+msgid "Enter the title of the display here."
+msgstr "Вызначце загаловак манітору."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:65
+#, kde-format
+msgid "Display Range"
+msgstr "Дыяпазон манітору"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:70
+#: SensorDisplayLib/FancyPlotterSettings.cpp:96
+#, kde-format
+msgid "Minimum value:"
+msgstr "Мінімальнае значэнне:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:78
+#, kde-format
+msgid ""
+"Enter the minimum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Вызначце мінімальнае значэнне манітору. Калі абодва значэнні 0, "
+"выкарыстоўваецца аўтаматычнае вызначэнне дыяпазону."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:82
+#: SensorDisplayLib/FancyPlotterSettings.cpp:107
+#, kde-format
+msgid "Maximum value:"
+msgstr "Максімальнае значэнне:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:90
+#, kde-format
+msgid ""
+"Enter the maximum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Вызначце максімальнае значэнне манітору. Калі абодва значэнні 0, "
+"выкарыстоўваецца аўтаматычнае вызначэнне дыяпазону."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:100
+#, kde-format
+msgid "Alarms"
+msgstr "Важныя паведамленні"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
+#: SensorDisplayLib/DancingBarsSettings.cpp:104
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
+#, kde-format
+msgid "Alarm for Minimum Value"
+msgstr "Паведамляць пра значэнне, меншае дазволенага значэння"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:109
+#: SensorDisplayLib/DancingBarsSettings.cpp:132
+#, kde-format
+msgid "Enable alarm"
+msgstr "Уключыць паведамленні"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:110
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:57
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
+#, kde-format
+msgid "Enable the minimum value alarm."
+msgstr "Уключыць паведамленні пра значэнне, меншае дазволенага значэння"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:113
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:125
+#, kde-format
+msgid "Lower limit:"
+msgstr "Ніжняя мяжа:"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1_2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:127
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
+#, kde-format
+msgid "Alarm for Maximum Value"
+msgstr "Паведамляць пра значэнне, большае дазволенага значэння"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:133
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:116
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
+#, kde-format
+msgid "Enable the maximum value alarm."
+msgstr "Уключыць паведамленні пра значэнне, большае дазволенага значэння"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:136
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:198
+#, kde-format
+msgid "Upper limit:"
+msgstr "Верхняя мяжа:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:153
+#, fuzzy, kde-format
+#| msgid "Look"
+msgctxt "@title:tab Appearance of the bar graph"
+msgid "Look"
+msgstr "Выгляд"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:157
+#, kde-format
+msgid "Normal bar color:"
+msgstr "Звычайны колер графіка:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:164
+#, kde-format
+msgid "Out-of-range color:"
+msgstr "Колер выхаду за дазволеныя межы:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/DancingBarsSettings.cpp:171
+#: SensorDisplayLib/ListViewSettingsWidget.ui:105
+#: SensorDisplayLib/LogFile.cpp:105 SensorDisplayLib/LogFileSettings.ui:85
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:92
+#, kde-format
+msgid "Background color:"
+msgstr "Фонавы колер:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:178
+#: SensorDisplayLib/FancyPlotterSettings.cpp:177
+#, kde-format
+msgid "Font size:"
+msgstr "Памер шрыфту:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:183
+#, kde-format
+msgid ""
+"This determines the size of the font used to print a label underneath the "
+"bars. Bars are automatically suppressed if text becomes too large, so it is "
+"advisable to use a small font size here."
+msgstr ""
+"Вызначае памер шрыфту для подпісаў пад графікамі. Графікі аўтаматычна "
+"сціскаюцца, калі тэкст занадта вялікі, таму рэкамендуецца выкарыстоўваць "
+"малы памер шрыфту."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:191
+#: SensorDisplayLib/FancyPlotterSettings.cpp:193
+#, kde-format
+msgid "Sensors"
+msgstr "Сэнсары"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:204
+#, kde-format
+msgid "Edit..."
+msgstr "Змяніць..."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:205
+#, kde-format
+msgid "Push this button to configure the label."
+msgstr "Націсніце гэтую кнопку, каб змяніць подпіс."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:208
+#: SensorDisplayLib/FancyPlotterSettings.cpp:225
+#, kde-format
+msgid "Delete"
+msgstr "Выдаліць"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:209
+#: SensorDisplayLib/FancyPlotterSettings.cpp:226
+#, kde-format
+msgid "Push this button to delete the sensor."
+msgstr "Націсніце гэтую кнопку, каб выдаліць сэнсар."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:361
+#, kde-format
+msgid "Label of Bar Graph"
+msgstr "Подпіс графіка"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:362
+#, kde-format
+msgid "Enter new label:"
+msgstr "Вызначце подпіс:"
+
+#: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
+#, kde-format
+msgid "Drop Sensor Here"
+msgstr "Дадаць сэнсар тут"
+
+#: SensorDisplayLib/DummyDisplay.cpp:33
+#, kde-format
+msgid ""
+"This is an empty space in a worksheet. Drag a sensor from the Sensor Browser "
+"and drop it here. A sensor display will appear that allows you to monitor "
+"the values of the sensor over time."
+msgstr ""
+"Гэта вольная прастора на працоўным аркушы. Перацягніце сюды сэнсар са спісу "
+"сэнсараў. Манітор сэнсару з'явіцца на аркушы, каб дазволіць назіранне за яго "
+"значэннямі."
+
+#: SensorDisplayLib/FancyPlotter.cpp:177
+#, kde-format
+msgctxt "Largest axis title"
+msgid "99999 XXXX"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:541 SensorDisplayLib/FancyPlotter.cpp:613
+#: SensorDisplayLib/FancyPlotter.cpp:676
+#, kde-format
+msgctxt "units"
+msgid "%1%"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:549
+#, kde-format
+msgctxt "%1 is what is being shown statistics for, like 'Memory', 'Swap', etc."
+msgid "<p><b>%1:</b><br>"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:621
+#, kde-format
+msgid "%1 of %2"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:649
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:652
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:655
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:658
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:663
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:666
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:669
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:672
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:678
+#, fuzzy, kde-format
+#| msgctxt "a percentage"
+#| msgid "%"
+msgctxt "unitless - just a number"
+msgid "%1"
+msgstr "%"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:46
+#, fuzzy, kde-format
+#| msgid "Signal Plotter Settings"
+msgid "Plotter Settings"
+msgstr "Настаўленні малявання сігналаў"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:62
+#, kde-format
+msgid "General"
+msgstr "Агульныя"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:66
+#, kde-format
+msgid "Title:"
+msgstr "Загаловак:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:74
+#, kde-format
+msgid "Stack the beams on top of each other"
+msgstr "Ставіць графікі адзін на адзін"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:75
+#, fuzzy, kde-format
+#| msgid ""
+#| "The beams are stacked on top of each other, and the area is drawn filled "
+#| "in. So if one beam has a value of 2 and another beam has a value of 3, "
+#| "the first beam will be draw at value 2 and the other beam drawn at 2+3=5"
+msgid ""
+"The beams are stacked on top of each other, and the area is drawn filled in. "
+"So if one beam has a value of 2 and another beam has a value of 3, the first "
+"beam will be drawn at value 2 and the other beam drawn at 2+3=5."
+msgstr ""
+"Графікі будуць пастаўлены адзін на адзін, і прастора паміж імі будзе "
+"замалявана. Напрыклад, калі адзін з графікаў будзе мець значэнне 2, а другі "
+"- 3, першы будзе намаляваны на вышыні 2, а другі на вышыні 2+3=5"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:82
+#, kde-format
+msgid "Scales"
+msgstr "Шкалы"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:86
+#, fuzzy, kde-format
+#| msgid "Vertical Scale"
+msgid "Vertical scale"
+msgstr "Вертыкальная шкала"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:91
+#, kde-format
+msgid "Specify graph range:"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:92
+#, kde-format
+msgid ""
+"Check this box if you want the display range to adapt dynamically to the "
+"currently displayed values; if you do not check this, you have to specify "
+"the range you want in the fields below."
+msgstr ""
+"Уключыце гэтую опцыю, калі хочаце, каб дыяпазон манітору вызначаўся "
+"аўтаматычна адпаведна з дадзенымі. Калі вы выключыце гэтую опцыю, вам "
+"неабходна будзе вызначыць дыяпазон самастойна."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:102
+#, fuzzy, kde-format
+#| msgid "Enter the title of the display here."
+msgid "Enter the minimum value for the display here."
+msgstr "Вызначце загаловак манітору."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:113
+#, kde-format
+msgid ""
+"Enter the soft maximum value for the display here. The upper range will not "
+"be reduced below this value, but will still go above this number for values "
+"above this value."
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:120
+#, fuzzy, kde-format
+#| msgid "Horizontal Scale"
+msgid "Horizontal scale"
+msgstr "Гарызантальная шкала"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:128
+#, fuzzy, kde-format
+#| msgid "pixels per time period"
+msgid "Pixels per time period:"
+msgstr "колькасць пікселяў за тэрмін часу"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:135
+#, kde-format
+msgid "Grid"
+msgstr "Сеціва"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:139
+#, kde-format
+msgid "Lines"
+msgstr "Лініі"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:144
+#, kde-format
+msgid "Vertical lines"
+msgstr "Вертыкальныя лініі"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:145
+#, kde-format
+msgid "Check this to activate the vertical lines if display is large enough."
+msgstr ""
+"Уключыце гэтую опцыю, каб дазволіць вертыкальныя лініі, калі графік даволі "
+"вялікі."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:148
+#, kde-format
+msgid "Distance:"
+msgstr "Адлегласць:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:155
+#, kde-format
+msgid "Enter the distance between two vertical lines here."
+msgstr "Вызначце адлегласць паміж дзвюма вертыкальнымі лініямі."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:159
+#, kde-format
+msgid "Vertical lines scroll"
+msgstr "Прамотванне вертыкальных лініяў"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:162
+#, kde-format
+msgid "Horizontal lines"
+msgstr "Гарызантальныя лініі"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:163
+#, kde-format
+msgid "Check this to enable horizontal lines if display is large enough."
+msgstr ""
+"Уключыце гэтую опцыю, каб дазволіць гарызантальныя лініі, калі графік даволі "
+"вялікі."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:168
+#, kde-format
+msgid "Text"
+msgstr "Тэкст"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:173
+#, kde-format
+msgid "Show axis labels"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:174
+#, kde-format
+msgid ""
+"Check this box if horizontal lines should be decorated with the values they "
+"mark."
+msgstr ""
+"Уключыце гэтую опцыю, калі хочаце, каб гарызантальныя лініі падпісваліся "
+"адпаведнымі значэннямі."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:217
+#, kde-format
+msgid "Set Color..."
+msgstr "Вызначыць колер..."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:218
+#, kde-format
+msgid "Push this button to configure the color of the sensor in the diagram."
+msgstr "Націсніце гэтую кнопку, каб змяніць колер сэнсару ў дыяграме."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:230
+#, kde-format
+msgid "Move Up"
+msgstr "Пасунуць угору"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:235
+#, kde-format
+msgid "Move Down"
+msgstr "Пасунуць долу"
+
+#: SensorDisplayLib/ListView.cpp:45
+#, fuzzy, kde-format
+#| msgctxt "a percentage"
+#| msgid "%"
+msgid "%1 K"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:46
+#, fuzzy, kde-format
+#| msgctxt "a percentage"
+#| msgid "%"
+msgid "%1 M"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:47
+#, fuzzy, kde-format
+#| msgctxt "a percentage"
+#| msgid "%"
+msgid "%1 G"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:48
+#, fuzzy, kde-format
+#| msgctxt "a percentage"
+#| msgid "%"
+msgid "%1 T"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:49
+#, fuzzy, kde-format
+#| msgctxt "a percentage"
+#| msgid "%"
+msgid "%1 P"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:152
+#, fuzzy, kde-format
+#| msgid "Display Range"
+msgid "Display Units"
+msgstr "Дыяпазон манітору"
+
+#: SensorDisplayLib/ListView.cpp:156
+#, kde-format
+msgid "Mixed"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:162
+#, kde-format
+msgid "Kilobytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:168
+#, kde-format
+msgid "Megabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:174
+#, kde-format
+msgid "Gigabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:180
+#, fuzzy, kde-format
+#| msgid "Temperature"
+msgid "Terabytes"
+msgstr "Тэмпература"
+
+#: SensorDisplayLib/ListViewSettings.cpp:30
+#, kde-format
+msgid "List View Settings"
+msgstr "Настаўленні выгляду спісам"
+
+#. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:47
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:47
+#, kde-format
+msgid "Colors"
+msgstr "Колеры"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:79
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
+#, kde-format
+msgid "Text color:"
+msgstr "Колер тэксту:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:92
+#, kde-format
+msgid "Grid color:"
+msgstr "Колер сеціва:"
+
+#: SensorDisplayLib/LogFile.cpp:93
+#, kde-format
+msgid "File logging settings"
+msgstr "Настаўленні файла часопісу"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
+#, kde-format
+msgid "Foreground color:"
+msgstr "Колер тэксту:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, textTab)
+#: SensorDisplayLib/LogFileSettings.ui:21
+#, kde-format
+msgid "&Text"
+msgstr "&Тэкст"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/LogFileSettings.ui:29
+#, fuzzy, kde-format
+#| msgid "Title:"
+msgid "T&itle:"
+msgstr "Загаловак:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: SensorDisplayLib/LogFileSettings.ui:166
+#, kde-format
+msgid "Fi&lter"
+msgstr "Фільтр"
+
+#. i18n: ectx: property (text), widget (QPushButton, addButton)
+#: SensorDisplayLib/LogFileSettings.ui:196
+#, kde-format
+msgid "&Add"
+msgstr "&Дадаць"
+
+#. i18n: ectx: property (text), widget (QPushButton, deleteButton)
+#: SensorDisplayLib/LogFileSettings.ui:203
+#, kde-format
+msgid "&Delete"
+msgstr "В&ыдаліць"
+
+#. i18n: ectx: property (text), widget (QPushButton, changeButton)
+#: SensorDisplayLib/LogFileSettings.ui:210
+#, kde-format
+msgid "&Change"
+msgstr "&Змяніць"
+
+#: SensorDisplayLib/MultiMeterSettings.cpp:33
+#, fuzzy, kde-format
+#| msgid "Multimeter Settings"
+msgctxt ""
+"Multimeter is a sensor display that mimics 'digital multimeter' aparatus"
+msgid "Multimeter Settings"
+msgstr "Настаўленні мультыметра"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:26
+#, fuzzy, kde-format
+#| msgid "Title:"
+msgid "&Title:"
+msgstr "Загаловак:"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:43
+#, kde-format
+msgid "Enable this to append the unit to the title of the display."
+msgstr ""
+"Уключыце гэтую опцыю, каб дадаць подпіс адзінкі вымярэння ў загаловак "
+"манітору."
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
+#, kde-format
+msgid "&Show unit"
+msgstr "&Паказваць адзінкі вымярэння"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
+#, kde-format
+msgid "&Enable alarm"
+msgstr "&Уключыць паведамленні"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
+#, fuzzy, kde-format
+#| msgid "Lower limit:"
+msgid "&Lower limit:"
+msgstr "Ніжняя мяжа:"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
+#, kde-format
+msgid "E&nable alarm"
+msgstr "У&ключыць паведамленні"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
+#, kde-format
+msgid "&Upper limit:"
+msgstr "&Верхняя мяжа:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
+#, fuzzy, kde-format
+#| msgid "Normal digit color:"
+msgid "Nor&mal digit color:"
+msgstr "Звычайны колер ліку:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
+#, fuzzy, kde-format
+#| msgid "Alarm digit color:"
+msgid "Alarm di&git color:"
+msgstr "Колер небяспечных лікаў:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
+#, fuzzy, kde-format
+#| msgid "Background color:"
+msgid "Bac&kground color:"
+msgstr "Фонавы колер:"
+
+#: SensorDisplayLib/SensorDisplay.cpp:115 SensorDisplayLib/SensorLogger.cpp:587
+#, kde-format
+msgid "&Properties"
+msgstr "&Уласцівасці"
+
+#: SensorDisplayLib/SensorDisplay.cpp:120 SensorDisplayLib/SensorLogger.cpp:592
+#, kde-format
+msgid "&Remove Display"
+msgstr "&Выдаліць манітор"
+
+#: SensorDisplayLib/SensorDisplay.cpp:187
+#, kde-format
+msgid ""
+"<qt><p>This is a sensor display. To customize a sensor display click the "
+"right mouse button here and select the <i>Properties</i> entry from the "
+"popup menu. Select <i>Remove</i> to delete the display from the worksheet.</"
+"p>%1</qt>"
+msgstr ""
+"<qt><p>Гэта манітор сэнсару. Каб змяніць настаўленні манітора сэнсара, "
+"зацісніце правую кнопку мышы ці на рамцы, ці на маніторы і выберыце элемент "
+"меню <i>Уласцівасці</i>. Выберыце <i>Выдаліць</i>, каб выдаліць манітор з "
+"працоўнага аркушу.</p>%1</qt>"
+
+#: SensorDisplayLib/SensorLogger.cpp:132
+#, fuzzy, kde-format
+#| msgid "Logging"
+msgctxt "@title:column"
+msgid "Logging"
+msgstr "Вядзенне часопісу"
+
+#: SensorDisplayLib/SensorLogger.cpp:134
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:column"
+msgid "Timer Interval"
+msgstr "Інтэрвал гадзінніка"
+
+#: SensorDisplayLib/SensorLogger.cpp:136
+#, fuzzy, kde-format
+#| msgid "Sensor Name"
+msgctxt "@title:column"
+msgid "Sensor Name"
+msgstr "Назва сэнсара"
+
+#: SensorDisplayLib/SensorLogger.cpp:138
+#, fuzzy, kde-format
+#| msgid "Host Name"
+msgctxt "@title:column"
+msgid "Host Name"
+msgstr "Вузел"
+
+#: SensorDisplayLib/SensorLogger.cpp:140
+#, fuzzy, kde-format
+#| msgid "Log File"
+msgctxt "@title:column"
+msgid "Log File"
+msgstr "Файл часопісу"
+
+#: SensorDisplayLib/SensorLogger.cpp:418
+#: SensorDisplayLib/SensorLoggerDlg.cpp:30
+#, kde-format
+msgid "Sensor Logger"
+msgstr "Часопіс сэнсараў"
+
+#: SensorDisplayLib/SensorLogger.cpp:597
+#, kde-format
+msgid "&Remove Sensor"
+msgstr "&Выдаліць сэнсар"
+
+#: SensorDisplayLib/SensorLogger.cpp:602
+#, kde-format
+msgid "&Edit Sensor..."
+msgstr "&Рэдагаваць сэнсар..."
+
+#: SensorDisplayLib/SensorLogger.cpp:610
+#, kde-format
+msgid "St&op Logging"
+msgstr "Сп&ыніць вядзенне часопісу"
+
+#: SensorDisplayLib/SensorLogger.cpp:613
+#, kde-format
+msgid "S&tart Logging"
+msgstr "&Пачаць вядзенне часопісу"
+
+#. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
+#, kde-format
+msgid "File"
+msgstr "Файл"
+
+#. i18n: ectx: property (title), widget (QGroupBox, timerFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:41
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:group"
+msgid "Timer Interval"
+msgstr "Інтэрвал гадзінніка"
+
+#. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
+#, kde-format
+msgid " sec"
+msgstr " сек"
+
+#: SensorDisplayLib/SensorLoggerSettings.cpp:30
+#, kde-format
+msgid "Sensor Logger Settings"
+msgstr "Настаўленні часопісу сэнсару"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
+#, kde-format
+msgid "Alarm color:"
+msgstr "Колер небяспекі:"
+
+#: SensorDisplayLib/SensorModel.cpp:161
+#, kde-format
+msgid "Host"
+msgstr "Вузел"
+
+#: SensorDisplayLib/SensorModel.cpp:163
+#, kde-format
+msgid "Sensor"
+msgstr "Сэнсар"
+
+#: SensorDisplayLib/SensorModel.cpp:165
+#, kde-format
+msgid "Unit"
+msgstr "Адзінка вымярэння"
+
+#: SensorDisplayLib/SensorModel.cpp:167
+#, kde-format
+msgid "Status"
+msgstr "Стан"
+
+#: SensorDisplayLib/SensorModel.cpp:169
+#, kde-format
+msgid "Label"
+msgstr "Подпіс"
+
+#. i18n: tag WorkSheet attribute title
+#: SystemLoad2.sgrd:3
+#, kde-format
+msgid "System Load"
+msgstr "Сістэма"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:5
+#, kde-format
+msgid "CPU History"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:8
+#, kde-format
+msgid "Memory and Swap History"
+msgstr ""
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:9
+#, kde-format
+msgid "Memory"
+msgstr "Памяць"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:10
+#, kde-format
+msgid "Swap"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:12
+#, fuzzy, kde-format
+#| msgid "Network"
+msgid "Network History"
+msgstr "Сетка"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:13
+#, fuzzy, kde-format
+#| msgid "Receiver"
+msgid "Receiving"
+msgstr "Прыём"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:14
+#, fuzzy, kde-format
+#| msgid "Send"
+msgid "Sending"
+msgstr "Даслаць"
+
+#: WorkSheet.cpp:87
+#, kde-format
+msgid "Cannot open the file %1."
+msgstr "Немагчыма адкрыць файл %1."
+
+#: WorkSheet.cpp:95
+#, kde-format
+msgid "The file %1 does not contain valid XML."
+msgstr "Файл %1 не змяшчае сапраўднага коду XML."
+
+#: WorkSheet.cpp:102
+#, kde-format
+msgid ""
+"The file %1 does not contain a valid worksheet definition, which must have a "
+"document type 'KSysGuardWorkSheet'."
+msgstr ""
+"Файл %1 не змяшчае сапраўднага азначэння працоўнага аркушу, які павінны мець "
+"тып 'KSysGuardWorkSheet'."
+
+#: WorkSheet.cpp:114
+#, kde-format
+msgid "The file %1 has an invalid worksheet size."
+msgstr "Файл %1 мае няправільны памер працоўнага аркушу."
+
+#: WorkSheet.cpp:239
+#, kde-format
+msgid "Cannot save file %1"
+msgstr "Немагчыма запісаць файл %1"
+
+#: WorkSheet.cpp:287
+#, kde-format
+msgid "The clipboard does not contain a valid display description."
+msgstr "Буфер абмену не змяшчае сапраўднага апісання манітору."
+
+#: WorkSheet.cpp:387
+#, kde-format
+msgid "Select Display Type"
+msgstr "Выберыце тып манітору"
+
+#: WorkSheet.cpp:388
+#, kde-format
+msgid "&Line graph"
+msgstr "Лінейны графік"
+
+#: WorkSheet.cpp:389
+#, kde-format
+msgid "&Digital display"
+msgstr "&Лічбавы дысплэй"
+
+#: WorkSheet.cpp:390
+#, kde-format
+msgid "&Bar graph"
+msgstr "&Графік"
+
+#: WorkSheet.cpp:391
+#, kde-format
+msgid "Log to a &file"
+msgstr "Файл часопісу"
+
+#: WorkSheet.cpp:547
+#, fuzzy, kde-format
+#| msgid "&Remove Display"
+msgid "Remove this display?"
+msgstr "&Выдаліць манітор"
+
+#: WorkSheet.cpp:548
+#, fuzzy, kde-format
+#| msgid "&Remove Display"
+msgid "Remove Display"
+msgstr "&Выдаліць манітор"
+
+#: WorkSheet.cpp:589
+#, kde-format
+msgid "Dummy"
+msgstr "Адладкавы"
+
+#: WorkSheetSettings.cpp:43
+#, fuzzy, kde-format
+#| msgid "Properties"
+msgid "Tab Properties"
+msgstr "Уласцівасці"
+
+#: WorkSheetSettings.cpp:72
+#, kde-format
+msgid "Properties"
+msgstr "Уласцівасці"
+
+#: WorkSheetSettings.cpp:81
+#, kde-format
+msgid "Rows:"
+msgstr "Шэрагі:"
+
+#: WorkSheetSettings.cpp:91
+#, kde-format
+msgid "Columns:"
+msgstr "Слупкі:"
+
+#: WorkSheetSettings.cpp:100
+#, kde-format
+msgid "Enter the number of rows the sheet should have."
+msgstr "Вызначце колькасць шэрагаў працоўнага аркушу."
+
+#: WorkSheetSettings.cpp:101
+#, kde-format
+msgid "Enter the number of columns the sheet should have."
+msgstr "Вызначце колькасць слупкоў працоўнага аркушу."
+
+#: WorkSheetSettings.cpp:103
+#, kde-format
+msgid "Update interval:"
+msgstr "Інтэрвал абнаўлення:"
+
+#: WorkSheetSettings.cpp:116
+#, kde-format
+msgid "All displays of the sheet are updated at the rate specified here."
+msgstr "Усе маніторы працоўнага аркушу будуць абнаўляцца з гэтай частатой."
+
+#: WorkSheetSettings.cpp:117
+#, kde-format
+msgid "Enter the title of the worksheet here."
+msgstr "Вызначце загаловак працоўнага аркушу."
+
+#: Workspace.cpp:111
+#, kde-format
+msgid "Sheet %1"
+msgstr "Аркуш %1"
+
+#: Workspace.cpp:170
+#, fuzzy, kde-format
+#| msgid ""
+#| "The worksheet '%1' contains unsaved data.\n"
+#| "Do you want to save the worksheet?"
+msgid ""
+"The tab '%1' contains unsaved data.\n"
+"Do you want to save the tab?"
+msgstr ""
+"Працоўны аркуш '%1' змяшчае незахаваныя дадзеныя.\n"
+"Вы хочаце запісаць працоўны аркуш?"
+
+#: Workspace.cpp:186
+#, kde-format
+msgid "Select Tab File to Import"
+msgstr ""
+
+#: Workspace.cpp:208 Workspace.cpp:228
+#, fuzzy, kde-format
+#| msgid "You do not have a worksheet that could be saved."
+msgid "You do not have a tab that could be saved."
+msgstr "У вас няма працоўнага аркушу, які можна захаваць."
+
+#: Workspace.cpp:235
+#, kde-format
+msgid "Export Tab"
+msgstr ""
+
+#: Workspace.cpp:255
+#, fuzzy, kde-format
+#| msgid "There are no worksheets that could be deleted."
+msgid "There are no tabs that could be deleted."
+msgstr "Няма працоўных аркушаў, якія можна выдаліць."
+
+#: Workspace.cpp:299
+#, kde-kuit-format
+msgctxt "@info"
+msgid ""
+"<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
+"in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
+msgstr ""
+
+#: Workspace.cpp:304
+#, fuzzy, kde-format
+#| msgid "System Monitor"
+msgid "Upload custom System Monitor tab"
+msgstr "Сістэмны манітор"
+
+#~ msgid "Timer Settings"
+#~ msgstr "Настаўленні гадзінніка"
+
+#~ msgid "Use update interval of worksheet"
+#~ msgstr "Выкарыстоўваць інтэрвал абнаўлення працоўнага аркушу"
+
+#, fuzzy
+#~| msgid "*.sgrd|Sensor Files"
+#~ msgid "*.sgrd|Sensor Files (*.sgrd)"
+#~ msgstr "*.sgrd|Файлы сэнсараў"
+
+#~ msgid "Lo&wer limit:"
+#~ msgstr "Ніжняя мяжа:"
+
+#, fuzzy
+#~| msgid ""
+#~| "Message from %1:\n"
+#~| "%2"
+#~ msgctxt "%1 is a host name"
+#~ msgid ""
+#~ "Message from %1:\n"
+#~ "%2"
+#~ msgstr ""
+#~ "Паведамленне ад %1:\n"
+#~ "%2"
+
+#~ msgid "Connection to %1 refused"
+#~ msgstr "Злучэнне з %1 адхілена"
+
+#~ msgid "Host %1 not found"
+#~ msgstr "Вузел %1 не знойдзены"
+
+#, fuzzy
+#~| msgid ""
+#~| "An error occurred with the network (e.g., the network cable was "
+#~| "accidentally plugged out) for host %1"
+#~ msgid ""
+#~ "An error occurred with the network (e.g. the network cable was "
+#~ "accidentally unplugged) for host %1."
+#~ msgstr ""
+#~ "Памылка здарылася з сеткай (напрыклад, быў адключаны сеткавы кабель) для "
+#~ "вузла %1."
+
+#~ msgid "Error for host %1: %2"
+#~ msgstr "Памылка вузла %1: %2"
+
+#~ msgid "Change"
+#~ msgstr "Змяніць"
+
+#~ msgid "Rate"
+#~ msgstr "Хуткасць"
+
+#~ msgid "CPU Load"
+#~ msgstr "Працэсар"
+
+#~ msgid "Idling"
+#~ msgstr "Прыпынена"
+
+#~ msgid "Nice Load"
+#~ msgstr "Прыярытэт"
+
+#~ msgid "User Load"
+#~ msgstr "Карыстальнікі"
+
+#, fuzzy
+#~| msgid "System Load"
+#~ msgctxt "@item sensor description"
+#~ msgid "System Load"
+#~ msgstr "Сістэма"
+
+#~ msgid "Waiting"
+#~ msgstr "Чаканне"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Interrupt Load"
+#~ msgstr "Перапыненні"
+
+#~ msgid "Total Load"
+#~ msgstr "Агульная загрузка"
+
+#~ msgid "Physical Memory"
+#~ msgstr "Фізічная памяць"
+
+#~ msgid "Swap Memory"
+#~ msgstr "Падкачка"
+
+#~ msgid "Cached Memory"
+#~ msgstr "Кэш"
+
+#~ msgid "Buffered Memory"
+#~ msgstr "Буферы"
+
+#~ msgid "Used Memory"
+#~ msgstr "Выкарыстаная памяць"
+
+#~ msgid "Application Memory"
+#~ msgstr "Памяць праграмы"
+
+#~ msgid "Free Memory"
+#~ msgstr "Вольная памяць"
+
+#, fuzzy
+#~| msgid "Application Memory"
+#~ msgid "Active Memory"
+#~ msgstr "Памяць праграмы"
+
+#, fuzzy
+#~| msgid "Cached Memory"
+#~ msgid "Inactive Memory"
+#~ msgstr "Кэш"
+
+#, fuzzy
+#~| msgid "Used Memory"
+#~ msgid "Wired Memory"
+#~ msgstr "Выкарыстаная памяць"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Processes"
+#~ msgstr "Колькасць працэсаў"
+
+#~ msgid "Process Controller"
+#~ msgstr "Кантролер працэсаў"
+
+#, fuzzy
+#~| msgid "System Processes"
+#~ msgid "Last Process ID"
+#~ msgstr "Сістэмныя працэсы"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Process Spawn Count"
+#~ msgstr "Колькасць працэсаў"
+
+#~ msgid "Process Count"
+#~ msgstr "Колькасць працэсаў"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Idle Processes Count"
+#~ msgstr "Колькасць працэсаў"
+
+#, fuzzy
+#~| msgid "Loading Processes Count.."
+#~ msgid "Running Processes Count"
+#~ msgstr "Загрузка колькасці працэсаў.."
+
+#, fuzzy
+#~| msgid "Loading Processes Count.."
+#~ msgid "Sleeping Processes Count"
+#~ msgstr "Загрузка колькасці працэсаў.."
+
+#, fuzzy
+#~| msgid "Loading Processes Count.."
+#~ msgid "Stopped Processes Count"
+#~ msgstr "Загрузка колькасці працэсаў.."
+
+#, fuzzy
+#~| msgid "Loading Processes Count.."
+#~ msgid "Zombie Processes Count"
+#~ msgstr "Загрузка колькасці працэсаў.."
+
+#, fuzzy
+#~| msgid "Loading Processes Count.."
+#~ msgid "Waiting Processes Count"
+#~ msgstr "Загрузка колькасці працэсаў.."
+
+#, fuzzy
+#~| msgid "Loading Processes Count.."
+#~ msgid "Locked Processes Count"
+#~ msgstr "Загрузка колькасці працэсаў.."
+
+#~ msgid "Disk Throughput"
+#~ msgstr "Дыскавы ўвод/вывад"
+
+#~ msgctxt "CPU Load"
+#~ msgid "Load"
+#~ msgstr "Загрузка"
+
+#~ msgid "Total Accesses"
+#~ msgstr "Усе аперацыі"
+
+#~ msgid "Read Accesses"
+#~ msgstr "Аперацыі чытання"
+
+#~ msgid "Write Accesses"
+#~ msgstr "Аперацыі запісу"
+
+#~ msgid "Read Data"
+#~ msgstr "Прачытана"
+
+#~ msgid "Written Data"
+#~ msgstr "Запісаныя дадзеныя"
+
+#~ msgid "Milliseconds spent reading"
+#~ msgstr "Мілісекундаў затрачана на чытанне"
+
+#~ msgid "Milliseconds spent writing"
+#~ msgstr "Мілісекундаў затрачана на запіс"
+
+#~ msgid "I/Os currently in progress"
+#~ msgstr "IO ў працэсе зараз"
+
+#~ msgid "Pages In"
+#~ msgstr "Прачытана старонак"
+
+#~ msgid "Pages Out"
+#~ msgstr "Запісана старонак"
+
+#~ msgid "Context Switches"
+#~ msgstr "Пераключэнні кантэксту"
+
+#, fuzzy
+#~| msgid "System Load"
+#~ msgid "System Calls"
+#~ msgstr "Сістэма"
+
+#~ msgid "Network"
+#~ msgstr "Сетка"
+
+#~ msgid "Interfaces"
+#~ msgstr "Інтэрфейсы"
+
+#~ msgid "Transmitter"
+#~ msgstr "Перадача"
+
+#, fuzzy
+#~| msgid "Rate"
+#~ msgid "Data Rate"
+#~ msgstr "Хуткасць"
+
+#, fuzzy
+#~| msgid "Compressed Packets"
+#~ msgid "Compressed Packets Rate"
+#~ msgstr "Сціснутыя пакеты"
+
+#, fuzzy
+#~| msgid "Dropped Packets"
+#~ msgid "Dropped Packets Rate"
+#~ msgstr "Адкінутыя пакеты"
+
+#, fuzzy
+#~| msgid "Errors"
+#~ msgid "Error Rate"
+#~ msgstr "Памылкі"
+
+#, fuzzy
+#~| msgid "FIFO Overruns"
+#~ msgid "FIFO Overruns Rate"
+#~ msgstr "Перапаўненні чаргі"
+
+#, fuzzy
+#~| msgid "Frame Errors"
+#~ msgid "Frame Error Rate"
+#~ msgstr "Памылкі фармату кадра"
+
+#, fuzzy
+#~| msgid "Multicast"
+#~ msgid "Multicast Packet Rate"
+#~ msgstr "Multicast"
+
+#, fuzzy
+#~| msgid "Packets"
+#~ msgid "Packet Rate"
+#~ msgstr "Пакеты"
+
+#, fuzzy
+#~| msgid "Carrier"
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Loss Rate"
+#~ msgstr "Асноўная"
+
+#~ msgid "Collisions"
+#~ msgstr "Калізіі"
+
+#~ msgid "Data"
+#~ msgstr "Дадзеныя"
+
+#~ msgid "Compressed Packets"
+#~ msgstr "Сціснутыя пакеты"
+
+#~ msgid "Dropped Packets"
+#~ msgstr "Адкінутыя пакеты"
+
+#~ msgid "Errors"
+#~ msgstr "Памылкі"
+
+#~ msgid "FIFO Overruns"
+#~ msgstr "Перапаўненні чаргі"
+
+#~ msgid "Frame Errors"
+#~ msgstr "Памылкі фармату кадра"
+
+#, fuzzy
+#~| msgid "Multicast"
+#~ msgid "Multicast Packets"
+#~ msgstr "Multicast"
+
+#~ msgid "Packets"
+#~ msgstr "Пакеты"
+
+#, fuzzy
+#~| msgid "Carrier"
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Losses"
+#~ msgstr "Асноўная"
+
+#~ msgid "Sockets"
+#~ msgstr "Сокеты"
+
+#~ msgid "Total Number"
+#~ msgstr "Агульная колькасць"
+
+#~ msgid "Table"
+#~ msgstr "Табліца"
+
+#~ msgid "Advanced Power Management"
+#~ msgstr "Адмысловае кіраванне сілкаваннем (APM)"
+
+#~ msgid "ACPI"
+#~ msgstr "ACPI"
+
+#~ msgid "Thermal Zone"
+#~ msgstr "Тэрмальная зона"
+
+#~ msgid "Temperature"
+#~ msgstr "Тэмпература"
+
+#, fuzzy
+#~| msgid "Temperature"
+#~ msgid "Average CPU Temperature"
+#~ msgstr "Тэмпература"
+
+#~ msgid "Fan"
+#~ msgstr "Вентылятар"
+
+#~ msgid "State"
+#~ msgstr "Стан"
+
+#~ msgid "Battery"
+#~ msgstr "Батарэя"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Capacity"
+#~ msgstr "Зарад батарэі"
+
+#~ msgid "Battery Charge"
+#~ msgstr "Зарад батарэі"
+
+#~ msgid "Battery Usage"
+#~ msgstr "Выкарыстанне батарэі"
+
+#, fuzzy
+#~| msgid "Battery Usage"
+#~ msgid "Battery Voltage"
+#~ msgstr "Выкарыстанне батарэі"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Discharge Rate"
+#~ msgstr "Зарад батарэі"
+
+#~ msgid "Remaining Time"
+#~ msgstr "Засталося часу"
+
+#~ msgid "Interrupts"
+#~ msgstr "Перапыненні"
+
+#~ msgid "Load Average (1 min)"
+#~ msgstr "Сярэдняя загрузка (1 хв)"
+
+#~ msgid "Load Average (5 min)"
+#~ msgstr "Сярэдняя загрузка (5 хв)"
+
+#~ msgid "Load Average (15 min)"
+#~ msgstr "Сярэдняя загрузка (15 хв)"
+
+#~ msgid "Clock Frequency"
+#~ msgstr "Тактавая частата"
+
+#, fuzzy
+#~| msgid "Clock Frequency"
+#~ msgid "Average Clock Frequency"
+#~ msgstr "Тактавая частата"
+
+#~ msgid "Hardware Sensors"
+#~ msgstr "Апаратныя сэнсары"
+
+#~ msgid "Partition Usage"
+#~ msgstr "Выкарыстанне дыскавых раздзелаў"
+
+#~ msgid "Used Space"
+#~ msgstr "Выкарыстаная прастора"
+
+#~ msgid "Free Space"
+#~ msgstr "Вольная прастора"
+
+#~ msgid "Fill Level"
+#~ msgstr "Узровень запаўнення"
+
+#, fuzzy
+#~| msgid "User Load"
+#~ msgid "Used Inodes"
+#~ msgstr "Карыстальнікі"
+
+#~ msgid "System"
+#~ msgstr "Сістэма"
+
+#~ msgid "Uptime"
+#~ msgstr "Час працы"
+
+#~ msgid "Linux Soft Raid (md)"
+#~ msgstr "Праграмны Raid Linux (md)"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Processors"
+#~ msgstr "Колькасць працэсаў"
+
+#, fuzzy
+#~| msgid "Colors"
+#~ msgid "Cores"
+#~ msgstr "Колеры"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Blocks"
+#~ msgstr "Колькасць манітораў:"
+
+#, fuzzy
+#~| msgid "Total Number"
+#~ msgid "Total Number of Devices"
+#~ msgstr "Агульная колькасць"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Raid Devices"
+#~ msgstr "Колькасць манітораў:"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Devices"
+#~ msgstr "Колькасць манітораў:"
+
+#~ msgid "CPU %1"
+#~ msgstr "CPU %1"
+
+#~ msgid "Disk %1"
+#~ msgstr "Дыск %1"
+
+#, fuzzy
+#~| msgid "Battery"
+#~ msgid "Battery %1"
+#~ msgstr "Батарэя"
+
+#~ msgid "Fan %1"
+#~ msgstr "Вентылятар %1"
+
+#~ msgid "Temperature %1"
+#~ msgstr "Тэмпература %1"
+
+#~ msgid "Total"
+#~ msgstr "Агулам"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Software Interrupts"
+#~ msgstr "Перапыненні"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Hardware Interrupts"
+#~ msgstr "Перапыненні"
+
+#~ msgid "Int %1"
+#~ msgstr "Int %1"
+
+#~ msgctxt "the unit 1 per second"
+#~ msgid "1/s"
+#~ msgstr "1/с"
+
+#~ msgid "kBytes"
+#~ msgstr "кб"
+
+#~ msgctxt "the unit minutes"
+#~ msgid "min"
+#~ msgstr "хв"
+
+#~ msgctxt "the frequency unit"
+#~ msgid "MHz"
+#~ msgstr "МГц"
+
+#~ msgctxt "a percentage"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgid "Integer Value"
+#~ msgstr "Цэлае значэнне"
+
+#~ msgid "Floating Point Value"
+#~ msgstr "Значэнне са зменнай кропкай"
+
+#, fuzzy
+#~| msgid " sec"
+#~ msgctxt "Units"
+#~ msgid "%1 second"
+#~ msgid_plural "%1 seconds"
+#~ msgstr[0] " сек"
+#~ msgstr[1] " сек"
+#~ msgstr[2] " сек"
+
+#~ msgid "Font:"
+#~ msgstr "Шрыфт:"
+
+#, fuzzy
+#~| msgid "Vertical lines:"
+#~ msgid "Grid lines:"
+#~ msgstr "Вертыкальныя лініі:"
+
+#~ msgid "Background:"
+#~ msgstr "Фон:"
+
+#~ msgid "Do you really want to delete the display?"
+#~ msgstr "Вы сапраўды хочаце выдаліць дысплэй?"
+
+#~ msgid "Delete Display"
+#~ msgstr "Выдаліць манітору"
+
+#~ msgid "&Edit"
+#~ msgstr "&Змяніць"
+
+#, fuzzy
+#~| msgid "Automatic range detection"
+#~ msgid "Automatic range"
+#~ msgstr "Аўтаматычнае вызначэння дыяпазону"
+
+#, fuzzy
+#~| msgid ""
+#~| "This is your work space. It holds your worksheets. You need to create a "
+#~| "new worksheet (Menu File->New) before you can drag sensors here."
+#~ msgid ""
+#~ "This is your work space. It holds your tabs. You need to create a new tab "
+#~ "(Menu File->New) before you can drag sensors here."
+#~ msgstr ""
+#~ "Гэта ваша працоўная прастора. Яна змяшчае працоўныя аркушы. Вы павінны "
+#~ "стварыць новы працоўны аркуш(меню Файл->Новы), перад тым як дадаваць "
+#~ "сэнсары."
+
+#~ msgid "Connection to %1 has been lost."
+#~ msgstr "Злучэнне з %1 згублена."
+
+#~ msgid "&Title"
+#~ msgstr "&Назва"
+
+#~ msgid "T&itle"
+#~ msgstr "Загаловак"
+
+#~ msgid "System Guard Applet Settings"
+#~ msgstr "Настаўленні аплета KSysGuard"
+
+#~ msgid "Size ratio:"
+#~ msgstr "Маштаб:"
+
+#, fuzzy
+#~| msgid "%"
+#~ msgctxt "Number suffix in spinbox"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgid "Launch &System Guard"
+#~ msgstr "&Сістэмны вартаўнік KDE"
+
+#~ msgid "Drag sensors to empty cells of a worksheet or the panel applet."
+#~ msgstr ""
+#~ "Перацягвайце сэнсары ў пустыя клеткі працоўнага аркушу ці на аплет панелі."
+
+#, fuzzy
+#~| msgid "Select Worksheet to Import"
+#~ msgid "Select Worksheet to Open"
+#~ msgstr "Выберыце працоўны аркуш для імпарту"
+
+#~ msgid "Export Work Sheet"
+#~ msgstr "Экспартаваць працоўны аркуш"
+
+#~ msgid "Worksheet Properties"
+#~ msgstr "Уласцівасці працоўнага аркушу"
+
+#~ msgid "&Signal Plotter"
+#~ msgstr "Маляванне &сігналаў"
+
+#~ msgid "&Multimeter"
+#~ msgstr "&Мультыметр"
+
+#~ msgid "&Dancing Bars"
+#~ msgstr "&Слупкі"
+
+#~ msgid ""
+#~ "The KSysGuard applet does not support displaying of this type of sensor. "
+#~ "Please choose another sensor."
+#~ msgstr ""
+#~ "Аплет KSysGuard не падтрымлівае гэты тыпу сэнсараў. Калі ласка, выберыце "
+#~ "іншы сэнсар."
+
+#~ msgid ""
+#~ "The file %1 does not contain a valid applet definition, which must have a "
+#~ "document type 'KSysGuardApplet'."
+#~ msgstr ""
+#~ "Файл %1 не змяшчае правільнага апісання аплету, які павінны мець тып "
+#~ "'KSysGuardApplet'."
+
+#~ msgid "Drag sensors from the KDE System Guard into this cell."
+#~ msgstr ""
+#~ "Перацягніце сэнсары з акна сістэмнага вартаўніка KDE ў гэтую клетку."
+
+#~ msgid "&New Worksheet..."
+#~ msgstr "&Новы працоўны аркуш..."
+
+#, fuzzy
+#~| msgid "&New Worksheet..."
+#~ msgid "Open Worksheet..."
+#~ msgstr "&Новы працоўны аркуш..."
+
+#~ msgid "&Export Worksheet..."
+#~ msgstr "&Экспартаваць працоўны аркуш..."
+
+#~ msgid "&Remove Worksheet"
+#~ msgstr "&Выдаліць працоўны аркуш"
+
+#~ msgid "&Worksheet Properties"
+#~ msgstr "Уласцівасці &працоўнага аркушу"
+
+#~ msgid "Import Worksheet..."
+#~ msgstr "Імпартаваць працоўны аркуш..."
+
+#~ msgid "Count:"
+#~ msgstr "Колькасць:"
+
+#~ msgid "Enter the number of horizontal lines here."
+#~ msgstr "Вызначце колькасць гарызантальных лініяў."
+
+#~ msgid "Labels"
+#~ msgstr "Подпісы"
+
+#~ msgid "Top bar"
+#~ msgstr "Загаловак"
+
+#~ msgid ""
+#~ "Check this to active the display title bar. This is probably only useful "
+#~ "for applet displays. The bar is only visible if the display is large "
+#~ "enough."
+#~ msgstr ""
+#~ "Уключыце гэтую опцыю, каб дазволіць паказ загалоўку. Гэтая опцыя можа "
+#~ "быць карыснай толькі для аплетаў. Загаловак бачны, толькі калі манітор "
+#~ "даволі вялікі."
+
+#~ msgid "Horizontal lines:"
+#~ msgstr "Гарызантальныя лініі:"
+
+#, fuzzy
+#~| msgid "Sensor Logger"
+#~ msgid "Sensor Load"
+#~ msgstr "Часопіс сэнсараў"
+
+#~ msgid "Loading CPU Stat.."
+#~ msgstr "Загрузка статыстыкі працэсара.."
+
+#~ msgid "Loading Memory Totals.."
+#~ msgstr "Загрузка звестак пра памяць.."
+
+#~ msgid "Loading Swap Totals.."
+#~ msgstr "Загрузка звестак пра прастору падкачкі.."
+
+#~ msgid "Form"
+#~ msgstr "Форма"
+
+#~ msgid "Show only process list of local host"
+#~ msgstr "Паказваць толькі мясцовыя працэсы"
+
+#, fuzzy
+#~| msgid "Logging"
+#~ msgctxt "process status"
+#~ msgid "paging"
+#~ msgstr "Вядзенне часопісу"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgctxt "process status"
+#~ msgid "idle"
+#~ msgstr "Загаловак"
+
+#, fuzzy
+#~| msgid "User%"
+#~ msgid "User ID: %1"
+#~ msgstr "Карыстальнік%"
+
+#, fuzzy
+#~| msgid "Sensor Name"
+#~ msgctxt "process heading"
+#~ msgid "User Name"
+#~ msgstr "Назва сэнсара"
+
+#, fuzzy
+#~| msgid "CPU%1"
+#~ msgctxt "process heading"
+#~ msgid "CPU %"
+#~ msgstr "Працэсар%1"
+
+#, fuzzy
+#~| msgid "Vertical Scale"
+#~ msgctxt "process heading"
+#~ msgid "Virtual Size"
+#~ msgstr "Вертыкальная шкала"
+
+#, fuzzy
+#~| msgid "Memory"
+#~ msgctxt "process heading"
+#~ msgid "Memory"
+#~ msgstr "Памяць"
+
+#, fuzzy
+#~| msgid "Cached Memory"
+#~ msgctxt "process heading"
+#~ msgid "Shared Mem"
+#~ msgstr "Кэш"
+
+#, fuzzy
+#~| msgid "Command"
+#~ msgctxt "process heading"
+#~ msgid "Command"
+#~ msgstr "Каманда"
+
+#, fuzzy
+#~| msgid "Name"
+#~ msgctxt "process heading"
+#~ msgid "Name"
+#~ msgstr "Назва"
+
+#, fuzzy
+#~| msgid "Swap Memory"
+#~ msgctxt "process heading"
+#~ msgid "Graphics Memory"
+#~ msgstr "Падкачка"
+
+#, fuzzy
+#~| msgid "Application Memory"
+#~ msgctxt "process heading"
+#~ msgid "Application"
+#~ msgstr "Памяць праграмы"
+
+#~ msgid "Renice Process"
+#~ msgstr "Змяніць прыярытэт працэсу"
+
+#, fuzzy
+#~| msgid "Renice Process"
+#~ msgid "Renice process"
+#~ msgstr "Змяніць прыярытэт працэсу"
+
+#, fuzzy
+#~| msgid "Kill Process"
+#~ msgid "Kill process"
+#~ msgstr "Забіць працэс"
+
+#, fuzzy
+#~| msgid "Hide Column"
+#~ msgid "Hide column '%1'"
+#~ msgstr "Схаваць слупок"
+
+#, fuzzy
+#~| msgid "Show Column"
+#~ msgid "Show column '%1'"
+#~ msgstr "Паказаць слупок"
+
+#~ msgid "%1: Running Processes"
+#~ msgstr "%1: Выконваемыя працэсы"
+
+#~ msgid "You need to select a process first."
+#~ msgstr "Спачатку вы павінны выбраць працэс."
+
+#, fuzzy
+#~| msgid ""
+#~| "_n: Do you want to kill the selected process?\n"
+#~| "Do you want to kill the %n selected processes?"
+#~ msgid "Do you want to kill the selected process?"
+#~ msgid_plural "Do you want to kill the %1 selected processes?"
+#~ msgstr[0] ""
+#~ "Вы хочаце забіць выбраны працэс?\n"
+#~ "Вы хочаце забіць %n выбраныя працэсы?\n"
+#~ "Вы хочаце забіць %n выбраных працэсаў?"
+#~ msgstr[1] ""
+#~ "Вы хочаце забіць выбраны працэс?\n"
+#~ "Вы хочаце забіць %n выбраныя працэсы?\n"
+#~ "Вы хочаце забіць %n выбраных працэсаў?"
+#~ msgstr[2] ""
+#~ "Вы хочаце забіць выбраны працэс?\n"
+#~ "Вы хочаце забіць %n выбраныя працэсы?\n"
+#~ "Вы хочаце забіць %n выбраных працэсаў?"
+
+#~ msgid "Kill Process"
+#~ msgstr "Забіць працэс"
+
+#~ msgid "Kill"
+#~ msgstr "Забіць"
+
+#~ msgid "Error while attempting to kill process %1."
+#~ msgstr "Памылка спробы забойства працэсу %1."
+
+#~ msgid "Process %1 has already disappeared."
+#~ msgstr "Працэс %1 ужо знік."
+
+#~ msgid "Invalid Signal."
+#~ msgstr "Няправільны сігнал."
+
+#, fuzzy
+#~| msgid "Error while attempting to renice process %1."
+#~ msgid "Error while attempting to renice process."
+#~ msgstr "Памылка падчас спробы змены прыярытэту працэсу %1."
+
+#, fuzzy
+#~| msgid "Insufficient permissions to renice process %1."
+#~ msgid "Insufficient permissions to renice process"
+#~ msgstr "Бракуе правоў для змены прыярытэту працэсу %1."
+
+#, fuzzy
+#~| msgid "Process %1 has already disappeared."
+#~ msgid "Process has disappeared."
+#~ msgstr "Працэс %1 ужо знік."
+
+#~ msgid "Error while attempting to renice process %1."
+#~ msgstr "Памылка падчас спробы змены прыярытэту працэсу %1."
+
+#, fuzzy
+#~| msgid "Process %1 has already disappeared."
+#~ msgid "Process %1 has disappeared."
+#~ msgstr "Працэс %1 ужо знік."
+
+#, fuzzy
+#~| msgid "All Processes"
+#~ msgid "All Processes, Simple"
+#~ msgstr "Усе працэсы"
+
+#, fuzzy
+#~| msgid "All Processes"
+#~ msgid "All Processes, Hierarchical"
+#~ msgstr "Усе працэсы"
+
+#~ msgid "User Processes"
+#~ msgstr "Працэсы карыстальніка"
+
+#~ msgid "Own Processes"
+#~ msgstr "Уласныя працэсы"
+
+#, fuzzy
+#~| msgid "Show Column"
+#~ msgid "Show &Totals"
+#~ msgstr "Паказаць слупок"
+
+#~ msgid "Global Style Settings"
+#~ msgstr "Глабальныя настаўленні стылю"
+
+#~ msgid "Display Style"
+#~ msgstr "Стыль манітору"
+
+#~ msgid "First foreground color:"
+#~ msgstr "Першы колер тэксту:"
+
+#~ msgid "Second foreground color:"
+#~ msgstr "Другі колер тэксту:"
+
+#~ msgid "Sensor Colors"
+#~ msgstr "Колеры сэнсараў"
+
+#~ msgid "Change Color..."
+#~ msgstr "Змяніць колер..."
+
+#~ msgid "Color %1"
+#~ msgstr "Колер %1"
+
+#, fuzzy
+#~| msgid "Count:"
+#~ msgid "Font"
+#~ msgstr "Колькасць:"
+
+#~ msgid "Select Font..."
+#~ msgstr "Выбраць шрыфт..."
+
+#, fuzzy
+#~| msgid "&Change"
+#~ msgid "&Cancel"
+#~ msgstr "&Змяніць"
+
+#~ msgid "Configure &Style..."
+#~ msgstr "Настаўленне &стылю..."
+
+#~ msgid "It is impossible to connect to '%1'."
+#~ msgstr "Немагчыма злучыцца з '%1'."
+
+#~ msgid "S&ensorLogger"
+#~ msgstr "&Часопіс сэнсараў"
+
+#~ msgid "Idle Load"
+#~ msgstr "Чаканне"
+
+#~ msgid ""
+#~ "_: CPU Load\n"
+#~ "Load"
+#~ msgstr "Загрузка"
+
+#~ msgid ""
+#~ "_: the unit 1 per second\n"
+#~ "1/s"
+#~ msgstr "1/с"
+
+#~ msgid ""
+#~ "_: the unit minutes\n"
+#~ "min"
+#~ msgstr "хв"
+
+#~ msgid ""
+#~ "_: the frequency unit\n"
+#~ "MHz"
+#~ msgstr "МГц"
+
+#~ msgid "Timeout at host %1"
+#~ msgstr "Тэрмін чакання для вузла %1"
+
+#~ msgid "Network failure host %1"
+#~ msgstr "Памылка сеткі для вузла %1"
+
+#~ msgid ""
+#~ "_: NAME OF TRANSLATORS\n"
+#~ "Your names"
+#~ msgstr "Eugene Zelenko, Ігар Грачышка"
+
+#~ msgid ""
+#~ "_: EMAIL OF TRANSLATORS\n"
+#~ "Your emails"
+#~ msgstr "greendeath@mail.ru, ihar.hrachyshka@gmail.com"
+
+#~ msgid "Save Current Worksheet As"
+#~ msgstr "Запісаць актыўны працоўны аркуш як"
+
+#~ msgid "Cannot find file ProcessTable.sgrd."
+#~ msgstr "Немагчыма знайсці файл ProcessTable.sgrd."
+
+#~ msgid ""
+#~ "_: process status\n"
+#~ "running"
+#~ msgstr "выконваецца"
+
+#~ msgid ""
+#~ "_: process status\n"
+#~ "sleeping"
+#~ msgstr "спіць"
+
+#~ msgid ""
+#~ "_: process status\n"
+#~ "disk sleep"
+#~ msgstr "неактыўны зварот да дыску"
+
+#~ msgid ""
+#~ "_: process status\n"
+#~ "zombie"
+#~ msgstr "зомбі"
+
+#~ msgid ""
+#~ "_: process status\n"
+#~ "stopped"
+#~ msgstr "спынены"
+
+#~ msgid ""
+#~ "_: process status\n"
+#~ "paging"
+#~ msgstr "кэшаванне"
+
+#~ msgid ""
+#~ "_: process status\n"
+#~ "idle"
+#~ msgstr "прастойвае"
+
+#~ msgid "Remove Column"
+#~ msgstr "Выдаліць слупок"
+
+#~ msgid "Add Column"
+#~ msgstr "Дадаць слупок"
+
+#~ msgid "Help on Column"
+#~ msgstr "Даведка аб слупку"
+
+#~ msgid "Nice"
+#~ msgstr "Прыярытэт"
+
+#~ msgid "Select All Processes"
+#~ msgstr "Выбраць усе працэсы"
+
+#~ msgid "Unselect All Processes"
+#~ msgstr "Зняць выбар з усіх працэсаў"
+
+#~ msgid "Select All Child Processes"
+#~ msgstr "Выбраць усе працэсы-нашчадкі"
+
+#~ msgid "Unselect All Child Processes"
+#~ msgstr "Зняць выбар з усіх працэсаў-нашчадкаў"
+
+#~ msgid "SIGABRT"
+#~ msgstr "SIGABRT"
+
+#~ msgid "SIGALRM"
+#~ msgstr "SIGALRM"
+
+#~ msgid "SIGCHLD"
+#~ msgstr "SIGCHLD"
+
+#~ msgid "SIGCONT"
+#~ msgstr "SIGCONT"
+
+#~ msgid "SIGFPE"
+#~ msgstr "SIGFPE"
+
+#~ msgid "SIGHUP"
+#~ msgstr "SIGHUP"
+
+#~ msgid "SIGILL"
+#~ msgstr "SIGILL"
+
+#~ msgid "SIGINT"
+#~ msgstr "SIGINT"
+
+#~ msgid "SIGKILL"
+#~ msgstr "SIGKILL"
+
+#~ msgid "SIGPIPE"
+#~ msgstr "SIGPIPE"
+
+#~ msgid "SIGQUIT"
+#~ msgstr "SIGQUIT"
+
+#~ msgid "SIGSEGV"
+#~ msgstr "SIGSEGV"
+
+#~ msgid "SIGSTOP"
+#~ msgstr "SIGSTOP"
+
+#~ msgid "SIGTERM"
+#~ msgstr "SIGTERM"
+
+#~ msgid "SIGTSTP"
+#~ msgstr "SIGTSTP"
+
+#~ msgid "SIGTTIN"
+#~ msgstr "SIGTTIN"
+
+#~ msgid "SIGTTOU"
+#~ msgstr "SIGTTOU"
+
+#~ msgid "SIGUSR1"
+#~ msgstr "SIGUSR1"
+
+#~ msgid "SIGUSR2"
+#~ msgstr "SIGUSR2"
+
+#~ msgid "Send Signal"
+#~ msgstr "Даслаць сігнал"
+
+#~ msgid "Renice Process..."
+#~ msgstr "Змяніць прыярытэт працэсу..."
+
+#~ msgid ""
+#~ "_n: Do you really want to send signal %1 to the selected process?\n"
+#~ "Do you really want to send signal %1 to the %n selected processes?"
+#~ msgstr ""
+#~ "Вы сапраўды хочаце даслаць сігнал %1 выбранаму працэсу?\n"
+#~ "Вы сапраўды хочаце даслаць сігнал %1 %n пазначаным працэсам?\n"
+#~ "Вы сапраўды хочаце даслаць сігнал %1 %n пазначаным працэсам?"
+
+#~ msgid "Style"
+#~ msgstr "Стыль"
+
+#~ msgid "Graph Drawing Style"
+#~ msgstr "Стыль малявання графікаў"
+
+#~ msgid "Basic polygons"
+#~ msgstr "Простыя палігоны"
+
+#~ msgid "Original - single line per data point"
+#~ msgstr "Лініі для кожнага сэнсара"
+
+#~ msgid "#"
+#~ msgstr "#"
+
+#~ msgid "&Setup Update Interval..."
+#~ msgstr "&Настаўленне інтэрвалу абнаўлення..."
+
+#~ msgid "&Continue Update"
+#~ msgstr "&Працягваць абнаўленні"
+
+#~ msgid "P&ause Update"
+#~ msgstr "Пр&ыпыніць абнаўленні"
+
+#~ msgid ""
+#~ "You are about to change the scheduling priority of\n"
+#~ "process %1. Be aware that only the Superuser (root)\n"
+#~ "can decrease the nice level of a process. The lower\n"
+#~ "the number is the higher the priority.\n"
+#~ "\n"
+#~ "Please enter the desired nice level:"
+#~ msgstr ""
+#~ "Вы змяняеце прыярытэт працэсу %1. Запомніце,\n"
+#~ "што толькі адміністратар (root) можа павялічыць\n"
+#~ " прыярытэт працэсу. Чым менш лік, тым вышэй\n"
+#~ "прыярытэт.\n"
+#~ "\n"
+#~ "Калі ласка, вызначце неабходны прыярытэт:"
+
+#~ msgid "PID"
+#~ msgstr "PID"
+
+#~ msgid "PPID"
+#~ msgstr "PPID"
+
+#~ msgid "UID"
+#~ msgstr "UID"
+
+#~ msgid "GID"
+#~ msgstr "GID"
+
+#~ msgid "VmSize"
+#~ msgstr "VmSize"
+
+#~ msgid "VmRss"
+#~ msgstr "VmRss"
+
+#~ msgid "Login"
+#~ msgstr "Імя"
+
+#~ msgid "&Tree"
+#~ msgstr "&Дрэва"
+
+#~ msgid "&Kill"
+#~ msgstr "&Забіць"
+
+#~ msgid "Do not ask again"
+#~ msgstr "Больш не пытацца"
+
+#~ msgid "Insufficient permissions to kill process %1."
+#~ msgstr "Бракуе правоў для забойства працэсу %1."
+
+#~ msgid "Invalid argument."
+#~ msgstr "Няправільны аргумент."
+
+#~ msgid "CPU"
+#~ msgstr "Працэсар"
+
+#~ msgid "Mem"
+#~ msgstr "Памяць"
+
+#~ msgid "Sensor Type"
+#~ msgstr "тып сэнсару"
+
+#~ msgid "KDE system guard"
+#~ msgstr "Сістэмны вартаўнік KDE"
+
+#~ msgid "88888 Processes"
+#~ msgstr "88888 працэсаў"
+
+#~ msgid "Memory: 88888888888 kB used, 88888888888 kB free"
+#~ msgstr "Памяць: 88888888888 кб выкарыстана, 88888888888 кб вольна"
+
+#~ msgid "Swap: 888888888 kB used, 888888888 kB free"
+#~ msgstr "Падкачка: 888888888 кб выкарыстана, 888888888 кб вольна"
+
+#~ msgid "&Import Recent Worksheet..."
+#~ msgstr "&Імпартаваць гэты працоўны аркуш..."
+
+#~ msgid "C&onnect Host..."
+#~ msgstr "&Злучыцца з вузлом..."
+
+#~ msgid "D&isconnect Host"
+#~ msgstr "Ад&лучыцца ад вузла"
+
+#~ msgid "Load Standard Sheets"
+#~ msgstr "Загрузіць стандартныя аркушы"
+
+#~ msgid "Reset All Worksheets"
+#~ msgstr "Скінуць значэнні ўсіх працоўных аркушаў"
+
+#~ msgid "Reset"
+#~ msgstr "Скінуць"
+
+#~ msgid ""
+#~ "_n: 1 Process\n"
+#~ "%n Processes"
+#~ msgstr ""
+#~ "%n працэс\n"
+#~ "%n працэсы\n"
+#~ "%n працэсаў"
+
+#~ msgid "Memory: %1 %2 used, %3 %4 free"
+#~ msgstr "Памяць: %1 %2 выкарыстана, %3 %4 вольна"
+
+#~ msgid "Swap: %1 %2 used, %3 %4 free"
+#~ msgstr "Падкачка: %1 %2 выкарыстана, %3 %4 вольна"

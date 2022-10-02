@@ -1,0 +1,2547 @@
+# translation of ksysguard.po to
+# translation of ksysguard.po to
+# translation of ksysguard.po to
+# translation of ksysguard.po to Tamil
+# Copyright (C) 2004 Free Software Foundation, Inc.
+#
+# Vasee Vaseeharan <vasee@ieee.org>, 2004.
+# Ambalam <tamilpc@ambalam.com>, 2004.
+# root <root@localhost.localdomain>, 2004.
+# Kishore G <kishore96@gmail.com>, 2021.
+msgid ""
+msgstr ""
+"Project-Id-Version: ksysguard\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-03-02 00:46+0000\n"
+"PO-Revision-Date: 2021-10-10 16:05+0530\n"
+"Last-Translator: Kishore G <kishore96@gmail.com>\n"
+"Language-Team: Tamil <kde-i18n-doc@kde.org>\n"
+"Language: ta\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 21.08.2\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "tamilpc team"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "tamilpc@ambalam.com"
+
+#: HostConnector.cpp:44
+#, kde-format
+msgid "Connect Host"
+msgstr "புரவலனை இணை"
+
+#: HostConnector.cpp:57
+#, kde-format
+msgid "Host:"
+msgstr "புரவலன்:"
+
+#: HostConnector.cpp:67
+#, kde-format
+msgid "Enter the name of the host you want to connect to."
+msgstr "தொடர்புகொள்ள வேண்டிய புரவலனின் பெயரை உள்ளிடுக."
+
+#: HostConnector.cpp:73
+#, kde-format
+msgid "Connection Type"
+msgstr "இணைப்பு வகை"
+
+#: HostConnector.cpp:78
+#, kde-format
+msgid "ssh"
+msgstr "ssh"
+
+#: HostConnector.cpp:81
+#, kde-format
+msgid "Select this to use the secure shell to login to the remote host."
+msgstr ""
+"தொலைதூர புரவலனுக்குள் நுழைய பாதுகாக்கப்பட ஷெல்களைப் பயன்படுத்துவதற்கு இதை "
+"தேர்தெடுக்கவும்."
+
+#: HostConnector.cpp:84
+#, kde-format
+msgid "rsh"
+msgstr "rsh"
+
+#: HostConnector.cpp:85
+#, kde-format
+msgid "Select this to use the remote shell to login to the remote host."
+msgstr ""
+"தொலைதூர புரவலனுக்குள் நுழைய பாதுகாக்கப்பட ஷெல்களைப் பயன்படுத்துவதற்கு இதை "
+"தேர்ந்தெடுக்கவும்."
+
+#: HostConnector.cpp:88
+#, kde-format
+msgid "Daemon"
+msgstr "டெய்மன்"
+
+#: HostConnector.cpp:89
+#, kde-format
+msgid ""
+"Select this if you want to connect to a ksysguard daemon that is running on "
+"the machine you want to connect to, and is listening for client requests."
+msgstr ""
+"இயங்கிக் கொண்டிருக்கும் கணினியில் கேஅமைப்புகார்ட் டெமான்க்கு இணைப்பதற்கும் உறுப்பினரின் "
+"கோரிக்கைகளை கவனிப்பதற்கும் இதைத் தேர்ந்தெடுக்கவும்."
+
+#: HostConnector.cpp:92
+#, kde-format
+msgid "Custom command"
+msgstr "தனிப்பயன் கட்டளை"
+
+#: HostConnector.cpp:93
+#, kde-format
+msgid ""
+"Select this to use the command you entered below to start ksysguardd on the "
+"remote host."
+msgstr ""
+"தொலைதூர புரவலரில் கேஅமைப்புகார்டை துவக்குவதற்கு நீங்கள் உள்ளிட்ட கட்டளையை பயன்படுத்த இதைத் "
+"தேர்ந்தெடுக்கவும்."
+
+#: HostConnector.cpp:96
+#, kde-format
+msgid "Port:"
+msgstr "முனையம்:"
+
+#: HostConnector.cpp:103
+#, kde-format
+msgid ""
+"Enter the port number on which the ksysguard daemon is listening for "
+"connections."
+msgstr "கேஅமைப்புகார்டு டெமான் இணைப்புகளுக்கான முனைய எண்ணை உள்ளிடவும்."
+
+#: HostConnector.cpp:106
+#, kde-format
+msgid "e.g.  3112"
+msgstr "எ.கா:  3112"
+
+#: HostConnector.cpp:109
+#, kde-format
+msgid "Command:"
+msgstr "கட்டளை:"
+
+#: HostConnector.cpp:118
+#, kde-format
+msgid "Enter the command that runs ksysguardd on the host you want to monitor."
+msgstr "புரவலனில் நீங்கள் பார்க்க விரும்பும் கேஅமைப்புகார்டு இயக்கும் கட்டளையை உள்ளிடவும்."
+
+#: HostConnector.cpp:122
+#, kde-format
+msgid "e.g. ssh -l root remote.host.org ksysguardd"
+msgstr "எ.டு ssh -l root remote.host.org கேஅமைப்புகார்டு"
+
+#: ksysguard.cpp:156
+#, kde-format
+msgid ""
+"This will hide the menu bar completely. You can show it again by typing %1."
+msgstr ""
+
+#: ksysguard.cpp:158
+#, kde-format
+msgid "Hide menu bar"
+msgstr "பட்டிப் பட்டையை மறை"
+
+#: ksysguard.cpp:176 ksysguard.cpp:570
+#, fuzzy, kde-format
+msgid "System Monitor"
+msgstr "முறைமை ஏற்றம்"
+
+#: ksysguard.cpp:177
+#, fuzzy, kde-format
+#| msgid "&Refresh"
+msgid "&Refresh Tab"
+msgstr "&புதுப்பித்தல்"
+
+#: ksysguard.cpp:178
+#, kde-format
+msgid "&New Tab..."
+msgstr ""
+
+#: ksysguard.cpp:179
+#, kde-format
+msgid "Import Tab Fr&om File..."
+msgstr ""
+
+#: ksysguard.cpp:180
+#, kde-format
+msgid "Save Tab &As..."
+msgstr ""
+
+#: ksysguard.cpp:181
+#, kde-format
+msgid "&Close Tab"
+msgstr ""
+
+#: ksysguard.cpp:182
+#, kde-format
+msgid "Monitor &Remote Machine..."
+msgstr ""
+
+#: ksysguard.cpp:183
+#, fuzzy, kde-format
+msgid "&Download New Tabs..."
+msgstr "அனைத்து வேலைத்தாள்களையும் திரும்ப அமை "
+
+#: ksysguard.cpp:184
+#, fuzzy, kde-format
+msgid "&Upload Current Tab..."
+msgstr "அனைத்து வேலைத்தாள்களையும் திரும்ப அமை "
+
+#: ksysguard.cpp:186
+#, fuzzy, kde-format
+#| msgid "&Properties"
+msgid "Tab &Properties"
+msgstr "&தன்மைகள்"
+
+#: ksysguard.cpp:383
+#, fuzzy, kde-format
+msgid "1 process"
+msgid_plural "%1 processes"
+msgstr[0] "1 செயல்பாடு"
+msgstr[1] "1 செயல்பாடு"
+
+#: ksysguard.cpp:464
+#, fuzzy, kde-format
+msgid "CPU: %1%"
+msgstr "CPU%1"
+
+#: ksysguard.cpp:464
+#, fuzzy, kde-format
+msgctxt "This is the shorter version of CPU: %1%"
+msgid "%1%"
+msgstr "%"
+
+#: ksysguard.cpp:483
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Memory: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:485
+#, kde-format
+msgctxt ""
+"Arguments are formatted byte sizes (used/total) This should be a shorter "
+"version of the previous Memory: %1 / %2"
+msgid "Mem: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:487
+#, kde-format
+msgctxt ""
+"Arguments is formatted byte sizes (used) This should be a shorter version of "
+"the previous Mem: %1 / %2"
+msgid "Mem: %1"
+msgstr ""
+
+#: ksysguard.cpp:515
+#, fuzzy, kde-format
+msgid " No swap space available "
+msgstr "இழுக்கும் இடம் இல்லை"
+
+#: ksysguard.cpp:519
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Swap: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:521
+#, kde-format
+msgctxt "Arguments is formatted byte sizes (used)"
+msgid "Swap: %1"
+msgstr ""
+
+#: ksysguard.cpp:571
+#, fuzzy, kde-format
+msgid "KDE System Monitor"
+msgstr "கேடியி கணினி காப்பு"
+
+#: ksysguard.cpp:572
+#, fuzzy, kde-format
+msgid "(c) 1996-2016 The KDE System Monitor Developers"
+msgstr "(c) 1996-2002, கீஸிஸ்கார்டு உருவாக்கிகள்"
+
+#: ksysguard.cpp:574
+#, kde-format
+msgid "John Tapsell"
+msgstr ""
+
+#: ksysguard.cpp:574
+#, kde-format
+msgid "Current Maintainer"
+msgstr ""
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Chris Schlaeger"
+msgstr ""
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Previous Maintainer"
+msgstr ""
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Greg Martyn"
+msgstr ""
+
+#: ksysguard.cpp:577
+#, kde-format
+msgid "Tobias Koenig"
+msgstr ""
+
+#: ksysguard.cpp:578
+#, kde-format
+msgid "Nicolas Leclercq"
+msgstr ""
+
+#: ksysguard.cpp:579
+#, kde-format
+msgid "Alex Sanda"
+msgstr ""
+
+#: ksysguard.cpp:580
+#, kde-format
+msgid "Bernd Johannes Wuebben"
+msgstr ""
+
+#: ksysguard.cpp:581
+#, kde-format
+msgid "Ralf Mueller"
+msgstr ""
+
+#: ksysguard.cpp:582
+#, kde-format
+msgid "Hamish Rodda"
+msgstr ""
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid "Torsten Kasch"
+msgstr ""
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+msgstr ""
+"சொலாரிஸ் ஆதரவு\n"
+"சனோஸ்சில் 5\n"
+"உள்ள மூல பாகம்(அனுமதியுடன்) வில்லியம் லிப்பெவிரெஸின்\"மேலே\"\" கூறு உபயோகம்"
+
+#: ksysguard.cpp:592
+#, kde-format
+msgid "Optional worksheet files to load"
+msgstr "ஏற்ற வேண்டிய விருப்புரிமை பணித்தாள் கோப்புகள்"
+
+#. i18n: ectx: Menu (file)
+#: ksysguardui.rc:5
+#, kde-format
+msgid "&File"
+msgstr "&கோப்பு"
+
+#. i18n: ectx: Menu (view)
+#: ksysguardui.rc:15
+#, kde-format
+msgid "&View"
+msgstr "&பார்வை"
+
+#. i18n: ectx: Menu (settings)
+#: ksysguardui.rc:19
+#, kde-format
+msgid "&Settings"
+msgstr "&அமைப்புகள்"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ksysguardui.rc:22
+#, kde-format
+msgid "Main Toolbar"
+msgstr "பிரதான கருவிப்பட்டை"
+
+#. i18n: tag WorkSheet attribute title
+#. i18n: tag display attribute title
+#: ProcessTable.sgrd:3 ProcessTable.sgrd:5
+#, kde-format
+msgid "Process Table"
+msgstr "செயல் அட்டவணை"
+
+#: SensorBrowser.cpp:113
+#, kde-format
+msgid "Sensor Browser"
+msgstr "உணரி மேலோடி"
+
+#: SensorBrowser.cpp:473
+#, fuzzy, kde-format
+#| msgid "Drag sensors to empty fields in a worksheet."
+msgid "Drag sensors to empty cells of a worksheet "
+msgstr "வேலைத்தாளிலுள்ள காலியான புலங்களுக்கு உணரிகளை இழுக்கவும்."
+
+#: SensorBrowser.cpp:474
+#, fuzzy, kde-format
+#| msgid ""
+#| "The sensor browser lists the connected hosts and the sensors that they "
+#| "provide. Click and drag sensors into drop zones of a worksheet or the "
+#| "panel applet. A display will appear that visualizes the values provided "
+#| "by the sensor. Some sensor displays can display values of multiple "
+#| "sensors. Simply drag other sensors on to the display to add more sensors."
+msgid ""
+"The sensor browser lists the connected hosts and the sensors that they "
+"provide. Click and drag sensors into drop zones of a worksheet. A display "
+"will appear that visualizes the values provided by the sensor. Some sensor "
+"displays can display values of multiple sensors. Simply drag other sensors "
+"on to the display to add more sensors."
+msgstr ""
+"உணரி உலாவியானது இணைக்கப்பட்ட புரவலன்கள் மற்றும் உணரிகளைப் பட்டியலிடுகிறது. வேலைத்தாளின் "
+"அல்லது குறுநிரலின் பகுதிகளுக்குள் உணரிகளை இழுக்கவும். உணரிகளால் தரப்பட்ட மதிப்புகளை "
+"ஒரு காட்சி தோன்றி காட்டுகிறது. சில உணரிகள் ஒன்றுக்கு மேற்பட்ட உணரிகளின் மதிப்புகளைக் "
+"காட்டும். மேலும் அதிக உணரிகளை காட்சியில் சேர்ப்பதற்கு மற்ற உணரிகளை சுலபமாக இழுத்து "
+"சேர்க்கலாம்."
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:281
+#, kde-format
+msgid "OK"
+msgstr "சரி"
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:281
+#: SensorDisplayLib/FancyPlotter.cpp:545 SensorDisplayLib/FancyPlotter.cpp:624
+#, kde-format
+msgid "Error"
+msgstr "பிழை"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:42
+#, kde-format
+msgid "Edit BarGraph Preferences"
+msgstr "பட்டிவரைப்பட விருப்பங்களைத் தொகு"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:51
+#, kde-format
+msgid "Range"
+msgstr "எல்லை"
+
+#. i18n: ectx: property (title), widget (QGroupBox, titleFrame)
+#: SensorDisplayLib/DancingBarsSettings.cpp:55
+#: SensorDisplayLib/ListViewSettingsWidget.ui:17
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:17 WorkSheetSettings.cpp:61
+#, kde-format
+msgid "Title"
+msgstr "தலைப்பு"
+
+#. i18n: ectx: property (whatsThis), widget (QLineEdit, m_title)
+#: SensorDisplayLib/DancingBarsSettings.cpp:60
+#: SensorDisplayLib/FancyPlotterSettings.cpp:70
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
+#, kde-format
+msgid "Enter the title of the display here."
+msgstr "காட்சியின் தலைப்பை இங்கு தரவும்."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:65
+#, kde-format
+msgid "Display Range"
+msgstr "எல்லையைக் காட்டு"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:70
+#: SensorDisplayLib/FancyPlotterSettings.cpp:96
+#, kde-format
+msgid "Minimum value:"
+msgstr "குறைந்தபட்ச மதிப்பு:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:78
+#, fuzzy, kde-format
+msgid ""
+"Enter the minimum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"காட்சிக்குரிய குறைந்த பட்ச மதிப்பை இங்கு தரவும். இரண்டு மதிப்புகளும் 0 என்றால் தானியங்கி "
+"எல்லை கண்டுப்பிடிப்பு செயல்படும்."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:82
+#: SensorDisplayLib/FancyPlotterSettings.cpp:107
+#, kde-format
+msgid "Maximum value:"
+msgstr "அதிகப்பட்ச மதிப்பு:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:90
+#, fuzzy, kde-format
+msgid ""
+"Enter the maximum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"காட்சிக்குரிய குறைந்த பட்ச மதிப்பை இங்கு தரவும். இரண்டு மதிப்புகளும் 0 என்றால் தானியங்கி "
+"எல்லை கண்டுப்பிடிப்பு செயல்படும்."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:100
+#, kde-format
+msgid "Alarms"
+msgstr "எச்சரிக்கைகள்"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
+#: SensorDisplayLib/DancingBarsSettings.cpp:104
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
+#, kde-format
+msgid "Alarm for Minimum Value"
+msgstr "குறைந்த மதிப்பின் எச்சரிக்கை"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:109
+#: SensorDisplayLib/DancingBarsSettings.cpp:132
+#, kde-format
+msgid "Enable alarm"
+msgstr "எச்சரிக்கையை செயல்படுத்து"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:110
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:57
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
+#, kde-format
+msgid "Enable the minimum value alarm."
+msgstr "குறைந்தபட்ச மதிப்பு எச்சரிக்கையைச் செயற்படுத்து."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:113
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:125
+#, kde-format
+msgid "Lower limit:"
+msgstr "குறைவான எல்லை:"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1_2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:127
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
+#, kde-format
+msgid "Alarm for Maximum Value"
+msgstr "அதிகப்படியான மதிப்பிற்கு எச்சரிக்கை "
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:133
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:116
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
+#, kde-format
+msgid "Enable the maximum value alarm."
+msgstr "அதிகப்பட்ச எச்சரிக்கையைச் செயற்படுத்து."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:136
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:198
+#, kde-format
+msgid "Upper limit:"
+msgstr "மேல் எல்லை:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:153
+#, fuzzy, kde-format
+#| msgid "Look"
+msgctxt "@title:tab Appearance of the bar graph"
+msgid "Look"
+msgstr "பார்வை"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:157
+#, kde-format
+msgid "Normal bar color:"
+msgstr "இயல்பு பட்டி வண்ணம்:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:164
+#, kde-format
+msgid "Out-of-range color:"
+msgstr "வரம்பிற்கு வெளிபட்ட வண்ணம்:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/DancingBarsSettings.cpp:171
+#: SensorDisplayLib/ListViewSettingsWidget.ui:105
+#: SensorDisplayLib/LogFile.cpp:105 SensorDisplayLib/LogFileSettings.ui:85
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:92
+#, kde-format
+msgid "Background color:"
+msgstr "பின்புல நிறம்:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:178
+#: SensorDisplayLib/FancyPlotterSettings.cpp:177
+#, kde-format
+msgid "Font size:"
+msgstr "எழுத்துரு அளவு:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:183
+#, kde-format
+msgid ""
+"This determines the size of the font used to print a label underneath the "
+"bars. Bars are automatically suppressed if text becomes too large, so it is "
+"advisable to use a small font size here."
+msgstr ""
+"பட்டையின் கீழ் அச்சாகும் விளக்கச்சீட்டை அச்சிட உதவும் எழுத்துருவின் அளவை உறுதி செய்கிறது. "
+"உரை பெரிதானால் பட்டிகள் தானாகவே அவற்றை சுருக்குகின்றன. ஆகவே எழுத்துரு அளவை சிறிதாக "
+"பயன்படுத்துவதே நல்லது."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:191
+#: SensorDisplayLib/FancyPlotterSettings.cpp:193
+#, kde-format
+msgid "Sensors"
+msgstr "உணரிகள்"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:204
+#, kde-format
+msgid "Edit..."
+msgstr "திருத்து..."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:205
+#, kde-format
+msgid "Push this button to configure the label."
+msgstr "விளக்கச்சீட்டை வடிவமைக்க பொத்தானை அழுத்துக."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:208
+#: SensorDisplayLib/FancyPlotterSettings.cpp:225
+#, kde-format
+msgid "Delete"
+msgstr "அகற்று"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:209
+#: SensorDisplayLib/FancyPlotterSettings.cpp:226
+#, kde-format
+msgid "Push this button to delete the sensor."
+msgstr "உணரியை நீக்க பொத்தானை அழுத்துக."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:361
+#, kde-format
+msgid "Label of Bar Graph"
+msgstr "பட்டி வரைப்படத்தின் விளக்கச்சீட்டு"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:362
+#, kde-format
+msgid "Enter new label:"
+msgstr "புது விளக்கச்சீட்டை உள்ளிடுக:"
+
+#: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
+#, kde-format
+msgid "Drop Sensor Here"
+msgstr "உணரியை இங்கே விடவும்"
+
+#: SensorDisplayLib/DummyDisplay.cpp:33
+#, kde-format
+msgid ""
+"This is an empty space in a worksheet. Drag a sensor from the Sensor Browser "
+"and drop it here. A sensor display will appear that allows you to monitor "
+"the values of the sensor over time."
+msgstr ""
+"வேலைத்தாளின் இது ஒரு காலியான இடம். உணரி உலாவியிலிருந்து ஒரு உணரியை இழுத்து இங்கு "
+"போடவும். உணரியின் கூடுதல் நேர மதிப்பை கவனிக்க ஒரு உணரி காட்சி தோன்றும்"
+
+#: SensorDisplayLib/FancyPlotter.cpp:177
+#, kde-format
+msgctxt "Largest axis title"
+msgid "99999 XXXX"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:541 SensorDisplayLib/FancyPlotter.cpp:613
+#: SensorDisplayLib/FancyPlotter.cpp:676
+#, kde-format
+msgctxt "units"
+msgid "%1%"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:549
+#, kde-format
+msgctxt "%1 is what is being shown statistics for, like 'Memory', 'Swap', etc."
+msgid "<p><b>%1:</b><br>"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:621
+#, kde-format
+msgid "%1 of %2"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:649
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:652
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:655
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:658
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:663
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:666
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:669
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:672
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:678
+#, fuzzy, kde-format
+msgctxt "unitless - just a number"
+msgid "%1"
+msgstr "%"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:46
+#, fuzzy, kde-format
+#| msgid "Signal Plotter Settings"
+msgid "Plotter Settings"
+msgstr "குறிப்பு வரைவி அமைப்புகள்"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:62
+#, kde-format
+msgid "General"
+msgstr "பொது"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:66
+#, kde-format
+msgid "Title:"
+msgstr "தலைப்பு:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:74
+#, kde-format
+msgid "Stack the beams on top of each other"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:75
+#, kde-format
+msgid ""
+"The beams are stacked on top of each other, and the area is drawn filled in. "
+"So if one beam has a value of 2 and another beam has a value of 3, the first "
+"beam will be drawn at value 2 and the other beam drawn at 2+3=5."
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:82
+#, kde-format
+msgid "Scales"
+msgstr "அளவுகோல்கள்"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:86
+#, fuzzy, kde-format
+#| msgid "Vertical Scale"
+msgid "Vertical scale"
+msgstr "மேல்கீழ் அளவுகோல் "
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:91
+#, kde-format
+msgid "Specify graph range:"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:92
+#, kde-format
+msgid ""
+"Check this box if you want the display range to adapt dynamically to the "
+"currently displayed values; if you do not check this, you have to specify "
+"the range you want in the fields below."
+msgstr ""
+"காட்சிப் பரப்பை தற்போது உள்ள மதிப்புகளுக்கு ஏற்றப்படி மாற்ற இந்தப் பெட்டியை தேர்வுச் "
+"செய்யவேண்டும். இல்லையென்றால் கீழே உள்ள புலங்களில் இருந்து தேவைப்பட்ட பரப்பை குறிப்பிடவேண்டும்"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:102
+#, fuzzy, kde-format
+#| msgid "Enter the title of the display here."
+msgid "Enter the minimum value for the display here."
+msgstr "காட்சியின் தலைப்பை இங்கு தரவும்."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:113
+#, kde-format
+msgid ""
+"Enter the soft maximum value for the display here. The upper range will not "
+"be reduced below this value, but will still go above this number for values "
+"above this value."
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:120
+#, fuzzy, kde-format
+#| msgid "Horizontal Scale"
+msgid "Horizontal scale"
+msgstr "கிடைமட்ட அளவுகோல் "
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:128
+#, fuzzy, kde-format
+msgid "Pixels per time period:"
+msgstr "படத்துணுக்குகளுக்கு ஒரு கால அவகாசம்"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:135
+#, kde-format
+msgid "Grid"
+msgstr "கட்டம்"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:139
+#, kde-format
+msgid "Lines"
+msgstr "கோடுகள்"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:144
+#, kde-format
+msgid "Vertical lines"
+msgstr "செங்குக்கோடுகள்"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:145
+#, kde-format
+msgid "Check this to activate the vertical lines if display is large enough."
+msgstr "செங்குதான கோடுகளை செயல்படுத்த அதாவது அவை தேவையான நீளமா என்பதை சோதிக்கவும்."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:148
+#, kde-format
+msgid "Distance:"
+msgstr "தொலைவு:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:155
+#, kde-format
+msgid "Enter the distance between two vertical lines here."
+msgstr "இரு செங்குத்துக் கோடுகளுக்கிடைப்பட்ட தூரத்தை இங்கு தரவும்."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:159
+#, kde-format
+msgid "Vertical lines scroll"
+msgstr "செங்குக்கோடுகளின் உருள்"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:162
+#, kde-format
+msgid "Horizontal lines"
+msgstr "கிடைமட்டக்கோடுகள்"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:163
+#, kde-format
+msgid "Check this to enable horizontal lines if display is large enough."
+msgstr "கிடைமட்டமான கோடுகளை செயல்படுத்த அதாவது அவை தேவையான நீளமா என்பதை சோதிக்கவும்."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:168
+#, kde-format
+msgid "Text"
+msgstr "உரை"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:173
+#, kde-format
+msgid "Show axis labels"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:174
+#, kde-format
+msgid ""
+"Check this box if horizontal lines should be decorated with the values they "
+"mark."
+msgstr "கிடைமட்ட கோடுகளை மதிப்புகளுடன் அலங்கரிக்க இந்த பெட்டியைத் தேர்வு செய்யவும்."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:217
+#, kde-format
+msgid "Set Color..."
+msgstr "வண்ணத்தை அமைக..."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:218
+#, kde-format
+msgid "Push this button to configure the color of the sensor in the diagram."
+msgstr "வரிப்படத்திலுள்ள உணரியின் வண்ணத்தை இந்த பொத்தானை அழுத்தி வடிவமை."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:230
+#, kde-format
+msgid "Move Up"
+msgstr "மேலே செல்"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:235
+#, kde-format
+msgid "Move Down"
+msgstr "கீழே செல்"
+
+#: SensorDisplayLib/ListView.cpp:45
+#, fuzzy, kde-format
+msgid "%1 K"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:46
+#, fuzzy, kde-format
+msgid "%1 M"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:47
+#, fuzzy, kde-format
+msgid "%1 G"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:48
+#, fuzzy, kde-format
+msgid "%1 T"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:49
+#, fuzzy, kde-format
+msgid "%1 P"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:152
+#, fuzzy, kde-format
+#| msgid "Display Range"
+msgid "Display Units"
+msgstr "எல்லையைக் காட்டு"
+
+#: SensorDisplayLib/ListView.cpp:156
+#, kde-format
+msgid "Mixed"
+msgstr "கலந்த"
+
+#: SensorDisplayLib/ListView.cpp:162
+#, kde-format
+msgid "Kilobytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:168
+#, kde-format
+msgid "Megabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:174
+#, kde-format
+msgid "Gigabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:180
+#, fuzzy, kde-format
+#| msgid "Temperature"
+msgid "Terabytes"
+msgstr "வெப்பநிலை"
+
+#: SensorDisplayLib/ListViewSettings.cpp:30
+#, kde-format
+msgid "List View Settings"
+msgstr "தோற்ற அமைப்பை பட்டியலிடுக"
+
+#. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:47
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:47
+#, kde-format
+msgid "Colors"
+msgstr "நிறங்கள்"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:79
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
+#, kde-format
+msgid "Text color:"
+msgstr "உரை வண்ணம்:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:92
+#, kde-format
+msgid "Grid color:"
+msgstr "கட்ட வண்ணம்:"
+
+#: SensorDisplayLib/LogFile.cpp:93
+#, fuzzy, kde-format
+#| msgid "Log File Settings"
+msgid "File logging settings"
+msgstr "பதிகைக் கோப்பு அமைப்புகள்"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
+#, kde-format
+msgid "Foreground color:"
+msgstr "முன்புல வண்ணம் :"
+
+#. i18n: ectx: attribute (title), widget (QWidget, textTab)
+#: SensorDisplayLib/LogFileSettings.ui:21
+#, fuzzy, kde-format
+#| msgid "Text"
+msgid "&Text"
+msgstr "உரை"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/LogFileSettings.ui:29
+#, fuzzy, kde-format
+#| msgid "Title:"
+msgid "T&itle:"
+msgstr "தலைப்பு:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: SensorDisplayLib/LogFileSettings.ui:166
+#, fuzzy, kde-format
+#| msgid "Filter"
+msgid "Fi&lter"
+msgstr "வடிகட்டி"
+
+#. i18n: ectx: property (text), widget (QPushButton, addButton)
+#: SensorDisplayLib/LogFileSettings.ui:196
+#, kde-format
+msgid "&Add"
+msgstr "&சேர்"
+
+#. i18n: ectx: property (text), widget (QPushButton, deleteButton)
+#: SensorDisplayLib/LogFileSettings.ui:203
+#, kde-format
+msgid "&Delete"
+msgstr "&அகற்று"
+
+#. i18n: ectx: property (text), widget (QPushButton, changeButton)
+#: SensorDisplayLib/LogFileSettings.ui:210
+#, kde-format
+msgid "&Change"
+msgstr "&மாற்று"
+
+#: SensorDisplayLib/MultiMeterSettings.cpp:33
+#, fuzzy, kde-format
+#| msgid "Multimeter Settings"
+msgctxt ""
+"Multimeter is a sensor display that mimics 'digital multimeter' aparatus"
+msgid "Multimeter Settings"
+msgstr "பலஅளவுகருவி அமைப்புக்கள்"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:26
+#, fuzzy, kde-format
+#| msgid "Title:"
+msgid "&Title:"
+msgstr "தலைப்பு:"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:43
+#, kde-format
+msgid "Enable this to append the unit to the title of the display."
+msgstr "காட்சியின் தலைப்போடு சேர்ப்பதற்கு இதை செயல்படுத்துக "
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
+#, kde-format
+msgid "&Show unit"
+msgstr "&உறுப்புகளை காட்டு"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
+#, kde-format
+msgid "&Enable alarm"
+msgstr "&எச்சரிக்கையைச் செயல்படுத்து"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
+#, fuzzy, kde-format
+#| msgid "Lower limit:"
+msgid "&Lower limit:"
+msgstr "குறைவான எல்லை:"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
+#, kde-format
+msgid "E&nable alarm"
+msgstr "எச்சரிக்கையை செயல்படுத்து"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
+#, fuzzy, kde-format
+#| msgid "Upper limit:"
+msgid "&Upper limit:"
+msgstr "மேல் எல்லை:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
+#, fuzzy, kde-format
+#| msgid "Normal digit color:"
+msgid "Nor&mal digit color:"
+msgstr "இயல்பான எண் வண்ணம்"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
+#, fuzzy, kde-format
+#| msgid "Alarm digit color:"
+msgid "Alarm di&git color:"
+msgstr "எச்சரிக்கை எண் வண்ணம்"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
+#, fuzzy, kde-format
+#| msgid "Background color:"
+msgid "Bac&kground color:"
+msgstr "பின்புல நிறம்:"
+
+#: SensorDisplayLib/SensorDisplay.cpp:115 SensorDisplayLib/SensorLogger.cpp:587
+#, kde-format
+msgid "&Properties"
+msgstr "&தன்மைகள்"
+
+#: SensorDisplayLib/SensorDisplay.cpp:120 SensorDisplayLib/SensorLogger.cpp:592
+#, kde-format
+msgid "&Remove Display"
+msgstr "&காட்சியகத்தை நீக்கு"
+
+#: SensorDisplayLib/SensorDisplay.cpp:187
+#, fuzzy, kde-format
+msgid ""
+"<qt><p>This is a sensor display. To customize a sensor display click the "
+"right mouse button here and select the <i>Properties</i> entry from the "
+"popup menu. Select <i>Remove</i> to delete the display from the worksheet.</"
+"p>%1</qt>"
+msgstr ""
+"<qt><p> இது ஒரு உணரிக் காட்சி. இதை தனிப்பயனாக்குவதற்கு சுட்டியின் வலது பொத்தானை "
+"கிலிக் செய்யதபடி பிரேமின் இரு புரமாக அல்லது காட்சிப்பெட்டியை தேர்வு செய்க மற்றும் <i> "
+"பண்புகளின்</i>  நுழைவை மேழெழும் பட்டியிலிநருந்து தேர்வு செய்க.வேலைத்தாளிலிருந்து "
+"காட்சியை நீக்குவதற்கு <i>நீக்கை</i>தேர்வு செய்யவும்</p>%1</qt>"
+
+#: SensorDisplayLib/SensorLogger.cpp:132
+#, fuzzy, kde-format
+#| msgid "Logging"
+msgctxt "@title:column"
+msgid "Logging"
+msgstr "குறிப்பெடுத்தல்"
+
+#: SensorDisplayLib/SensorLogger.cpp:134
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:column"
+msgid "Timer Interval"
+msgstr "கடிகார இடைவெளி"
+
+#: SensorDisplayLib/SensorLogger.cpp:136
+#, fuzzy, kde-format
+#| msgid "Sensor Name"
+msgctxt "@title:column"
+msgid "Sensor Name"
+msgstr "உணரியின் பெயர்"
+
+#: SensorDisplayLib/SensorLogger.cpp:138
+#, fuzzy, kde-format
+#| msgid "Host Name"
+msgctxt "@title:column"
+msgid "Host Name"
+msgstr "புரவலன் பெயர்"
+
+#: SensorDisplayLib/SensorLogger.cpp:140
+#, fuzzy, kde-format
+#| msgid "Log File"
+msgctxt "@title:column"
+msgid "Log File"
+msgstr "பதிகைக் கோப்பு"
+
+#: SensorDisplayLib/SensorLogger.cpp:418
+#: SensorDisplayLib/SensorLoggerDlg.cpp:30
+#, kde-format
+msgid "Sensor Logger"
+msgstr "உணரிக் குறிப்பேடு"
+
+#: SensorDisplayLib/SensorLogger.cpp:597
+#, kde-format
+msgid "&Remove Sensor"
+msgstr "உணரியை நீக்கு"
+
+#: SensorDisplayLib/SensorLogger.cpp:602
+#, kde-format
+msgid "&Edit Sensor..."
+msgstr "உணரியைத் தொகுத்து வழங்கு"
+
+#: SensorDisplayLib/SensorLogger.cpp:610
+#, kde-format
+msgid "St&op Logging"
+msgstr "குறிப்பெடுத்தலை நிறுத்து"
+
+#: SensorDisplayLib/SensorLogger.cpp:613
+#, kde-format
+msgid "S&tart Logging"
+msgstr "குறிப்பெடுத்தலை ஆரம்பி"
+
+#. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
+#, kde-format
+msgid "File"
+msgstr "கோப்பு"
+
+#. i18n: ectx: property (title), widget (QGroupBox, timerFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:41
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:group"
+msgid "Timer Interval"
+msgstr "கடிகார இடைவெளி"
+
+#. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
+#, kde-format
+msgid " sec"
+msgstr "நொடிகள்"
+
+#: SensorDisplayLib/SensorLoggerSettings.cpp:30
+#, kde-format
+msgid "Sensor Logger Settings"
+msgstr "உணரிப் பதிகையாளரின் அமைப்புகள்"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
+#, kde-format
+msgid "Alarm color:"
+msgstr "எச்சரிக்கை வண்ணம்:"
+
+#: SensorDisplayLib/SensorModel.cpp:161
+#, kde-format
+msgid "Host"
+msgstr "புரவன்"
+
+#: SensorDisplayLib/SensorModel.cpp:163
+#, kde-format
+msgid "Sensor"
+msgstr "உணரி"
+
+#: SensorDisplayLib/SensorModel.cpp:165
+#, kde-format
+msgid "Unit"
+msgstr "அலகு"
+
+#: SensorDisplayLib/SensorModel.cpp:167
+#, kde-format
+msgid "Status"
+msgstr "நிலை"
+
+#: SensorDisplayLib/SensorModel.cpp:169
+#, fuzzy, kde-format
+msgid "Label"
+msgstr "விளக்கச்சீட்டு"
+
+#. i18n: tag WorkSheet attribute title
+#: SystemLoad2.sgrd:3
+#, kde-format
+msgid "System Load"
+msgstr "கணினி பயன்பாட்டு"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:5
+#, kde-format
+msgid "CPU History"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:8
+#, kde-format
+msgid "Memory and Swap History"
+msgstr ""
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:9
+#, kde-format
+msgid "Memory"
+msgstr "நினைவகம்"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:10
+#, kde-format
+msgid "Swap"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:12
+#, kde-format
+msgid "Network History"
+msgstr "பிணைய வரலாறு"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:13
+#, kde-format
+msgid "Receiving"
+msgstr "பெறுதல்"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:14
+#, kde-format
+msgid "Sending"
+msgstr "அனுப்புதல்"
+
+#: WorkSheet.cpp:87
+#, kde-format
+msgid "Cannot open the file %1."
+msgstr "கோப்பு %1ஐ திறக்க முடியவில்லை."
+
+#: WorkSheet.cpp:95
+#, kde-format
+msgid "The file %1 does not contain valid XML."
+msgstr "கோப்பு %1இல் சரியான XMLவிவரங்கள் இல்லை."
+
+#: WorkSheet.cpp:102
+#, kde-format
+msgid ""
+"The file %1 does not contain a valid worksheet definition, which must have a "
+"document type 'KSysGuardWorkSheet'."
+msgstr ""
+"கோப்பு %1யில் சரியான எழுதும் தாள் வரையறை ஏதுமில்லை, இது 'KSysGuardWorkSheet' "
+"வகையாக இருக்கவேண்டும்."
+
+#: WorkSheet.cpp:114
+#, kde-format
+msgid "The file %1 has an invalid worksheet size."
+msgstr "கோப்பு %1 ல் செல்லுபடியாகாத வேலைத்தாள் அளவு உள்ளது."
+
+#: WorkSheet.cpp:239
+#, kde-format
+msgid "Cannot save file %1"
+msgstr "கோப்பு %1 ஐச் சேமிக்க முடியவில்லை."
+
+#: WorkSheet.cpp:287
+#, kde-format
+msgid "The clipboard does not contain a valid display description."
+msgstr "இந்த இடைநிலைப் பலகையில் தகுதியான காட்சி விவரமில்லை"
+
+#: WorkSheet.cpp:387
+#, kde-format
+msgid "Select Display Type"
+msgstr "காட்சி வகையை தேர்வு செய்"
+
+#: WorkSheet.cpp:388
+#, kde-format
+msgid "&Line graph"
+msgstr "&வரி வரைபடம்"
+
+#: WorkSheet.cpp:389
+#, kde-format
+msgid "&Digital display"
+msgstr "&டிஜிட்டல் காட்சி"
+
+#: WorkSheet.cpp:390
+#, fuzzy, kde-format
+msgid "&Bar graph"
+msgstr "&பட்டிவரைபடம்"
+
+#: WorkSheet.cpp:391
+#, fuzzy, kde-format
+msgid "Log to a &file"
+msgstr "பதிகைக் கோப்பு"
+
+#: WorkSheet.cpp:547
+#, fuzzy, kde-format
+#| msgid "&Remove Display"
+msgid "Remove this display?"
+msgstr "&காட்சியகத்தை நீக்கு"
+
+#: WorkSheet.cpp:548
+#, fuzzy, kde-format
+#| msgid "&Remove Display"
+msgid "Remove Display"
+msgstr "&காட்சியகத்தை நீக்கு"
+
+#: WorkSheet.cpp:589
+#, kde-format
+msgid "Dummy"
+msgstr "போலி"
+
+#: WorkSheetSettings.cpp:43
+#, fuzzy, kde-format
+msgid "Tab Properties"
+msgstr "&தன்மைகள்"
+
+#: WorkSheetSettings.cpp:72
+#, kde-format
+msgid "Properties"
+msgstr "பண்புகள்"
+
+#: WorkSheetSettings.cpp:81
+#, kde-format
+msgid "Rows:"
+msgstr "வரிகள்:"
+
+#: WorkSheetSettings.cpp:91
+#, kde-format
+msgid "Columns:"
+msgstr "நெடுவரிசைகள்:"
+
+#: WorkSheetSettings.cpp:100
+#, kde-format
+msgid "Enter the number of rows the sheet should have."
+msgstr "தாளின் வரிகளின் எண்ணிக்கையை உள்ளிடுக."
+
+#: WorkSheetSettings.cpp:101
+#, kde-format
+msgid "Enter the number of columns the sheet should have."
+msgstr "தாளின் வரிகளின் எண்ணிக்கையை உள்ளிடுக."
+
+#: WorkSheetSettings.cpp:103
+#, kde-format
+msgid "Update interval:"
+msgstr "இடவேளையை புதுப்பி"
+
+#: WorkSheetSettings.cpp:116
+#, kde-format
+msgid "All displays of the sheet are updated at the rate specified here."
+msgstr "தாள்களின் காட்சிகள் குறிப்பிட்ட விகிதத்தில் புதுப்பிக்கப்பட்டது."
+
+#: WorkSheetSettings.cpp:117
+#, kde-format
+msgid "Enter the title of the worksheet here."
+msgstr "வேலைத்தாளின் தலைப்பை இங்கு உள்ளிடுக."
+
+#: Workspace.cpp:111
+#, kde-format
+msgid "Sheet %1"
+msgstr "தாள் %1"
+
+#: Workspace.cpp:170
+#, fuzzy, kde-format
+#| msgid ""
+#| "The worksheet '%1' contains unsaved data.\n"
+#| "Do you want to save the worksheet?"
+msgid ""
+"The tab '%1' contains unsaved data.\n"
+"Do you want to save the tab?"
+msgstr ""
+"செய்பணித்தாள் '%1' ல் சேமிக்கபடாத தரவுகள் உள்ளன\n"
+"செய்பணித்தாளை சேமிக்க வேண்டுமா?"
+
+#: Workspace.cpp:186
+#, kde-format
+msgid "Select Tab File to Import"
+msgstr ""
+
+#: Workspace.cpp:208 Workspace.cpp:228
+#, fuzzy, kde-format
+#| msgid "You do not have a worksheet that could be saved."
+msgid "You do not have a tab that could be saved."
+msgstr "சேமிக்க கூடிய செய்பணித்தாள் எதுவும் உங்களிடம் இல்லை."
+
+#: Workspace.cpp:235
+#, kde-format
+msgid "Export Tab"
+msgstr ""
+
+#: Workspace.cpp:255
+#, fuzzy, kde-format
+#| msgid "There are no worksheets that could be deleted."
+msgid "There are no tabs that could be deleted."
+msgstr "நீக்க கூடிய வேலைத்தாள்கள் ஏதும் இல்லை."
+
+#: Workspace.cpp:299
+#, kde-kuit-format
+msgctxt "@info"
+msgid ""
+"<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
+"in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
+msgstr ""
+
+#: Workspace.cpp:304
+#, fuzzy, kde-format
+msgid "Upload custom System Monitor tab"
+msgstr "முறைமை ஏற்றம்"
+
+#~ msgid "Timer Settings"
+#~ msgstr "நேரங்காட்டி அமைப்புகள்"
+
+#~ msgid "Use update interval of worksheet"
+#~ msgstr "வேலைத்தாளின் புதுப்பித்தல் இடைவேளையை பயன்படுத்து"
+
+#, fuzzy
+#~| msgid "*.sgrd|Sensor Files"
+#~ msgid "*.sgrd|Sensor Files (*.sgrd)"
+#~ msgstr "*. sgrdI உணரி கோப்புகள்"
+
+#, fuzzy
+#~| msgid "Lower limit:"
+#~ msgid "Lo&wer limit:"
+#~ msgstr "குறைவான எல்லை:"
+
+#, fuzzy
+#~| msgid ""
+#~| "Message from %1:\n"
+#~| "%2"
+#~ msgctxt "%1 is a host name"
+#~ msgid ""
+#~ "Message from %1:\n"
+#~ "%2"
+#~ msgstr ""
+#~ "Message from %1:\n"
+#~ "%2"
+
+#~ msgid "Could not run daemon program '%1'."
+#~ msgstr "%1 மறைநிரலை இயக்க இயலவில்லை."
+
+#~ msgid "The daemon program '%1' failed."
+#~ msgstr "மறை நிரல் %1 தடைபட்டது."
+
+#~ msgid "Connection to %1 refused"
+#~ msgstr "%1 க்கான இணைப்பு மறுக்கப்பட்டது"
+
+#~ msgid "Host %1 not found"
+#~ msgstr "புரவலன் %1ஐக் காணவில்லை"
+
+#, fuzzy
+#~| msgid "&Change"
+#~ msgid "Change"
+#~ msgstr "&மாற்று"
+
+#, fuzzy
+#~| msgid "State"
+#~ msgid "Rate"
+#~ msgstr "மாநிலம்"
+
+#~ msgid "CPU Load"
+#~ msgstr "CPU ஏற்றம்"
+
+#~ msgid "Idling"
+#~ msgstr "ஐட்லிங்"
+
+#~ msgid "Nice Load"
+#~ msgstr "நல்ல ஏற்றம்"
+
+#~ msgid "User Load"
+#~ msgstr "பயனரின் ஏற்றம்"
+
+#, fuzzy
+#~| msgid "System Load"
+#~ msgctxt "@item sensor description"
+#~ msgid "System Load"
+#~ msgstr "முறைமை ஏற்றம்"
+
+#, fuzzy
+#~ msgid "Waiting"
+#~ msgstr "பக்கப்படுத்தல்"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Interrupt Load"
+#~ msgstr "குறுக்கீடுகள்"
+
+#, fuzzy
+#~ msgid "Total Load"
+#~ msgstr "மொத்த"
+
+#~ msgid "Physical Memory"
+#~ msgstr "மெய் நினைவகம்"
+
+#~ msgid "Swap Memory"
+#~ msgstr "மாற்றப்பட்ட நினைவகம்"
+
+#~ msgid "Cached Memory"
+#~ msgstr "தற்காலிக நினைவகம்"
+
+#~ msgid "Buffered Memory"
+#~ msgstr "இடையக நினைவகம்"
+
+#~ msgid "Used Memory"
+#~ msgstr "பயன்படுத்தபட்ட நினைவகம்"
+
+#~ msgid "Application Memory"
+#~ msgstr "பயன்பாட்டு நினைவகம்"
+
+#~ msgid "Free Memory"
+#~ msgstr "பயன்படுத்தபடாத நினைவகம்"
+
+#, fuzzy
+#~| msgid "Application Memory"
+#~ msgid "Active Memory"
+#~ msgstr "பயன்பாட்டு நினைவகம்"
+
+#, fuzzy
+#~| msgid "Cached Memory"
+#~ msgid "Inactive Memory"
+#~ msgstr "தற்காலிக நினைவகம்"
+
+#, fuzzy
+#~| msgid "Used Memory"
+#~ msgid "Wired Memory"
+#~ msgstr "பயன்படுத்தபட்ட நினைவகம்"
+
+#~ msgid "Exec Pages"
+#~ msgstr "செயற் பக்கங்கள்"
+
+#~ msgid "File Pages"
+#~ msgstr "கோப்பு பக்கங்கள்"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Processes"
+#~ msgstr "செயல் எண்ணிக்கை"
+
+#~ msgid "Process Controller"
+#~ msgstr "செயல் கட்டுபடுத்தி"
+
+#, fuzzy
+#~| msgid "System Processes"
+#~ msgid "Last Process ID"
+#~ msgstr "கணினியின் செயல்கள்"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Process Spawn Count"
+#~ msgstr "செயல் எண்ணிக்கை"
+
+#~ msgid "Process Count"
+#~ msgstr "செயல் எண்ணிக்கை"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Idle Processes Count"
+#~ msgstr "செயல் எண்ணிக்கை"
+
+#, fuzzy
+#~ msgid "Running Processes Count"
+#~ msgstr "செயல் எண்ணிக்கை"
+
+#, fuzzy
+#~ msgid "Sleeping Processes Count"
+#~ msgstr "செயல் எண்ணிக்கை"
+
+#, fuzzy
+#~ msgid "Stopped Processes Count"
+#~ msgstr "செயல் எண்ணிக்கை"
+
+#, fuzzy
+#~ msgid "Zombie Processes Count"
+#~ msgstr "செயல் எண்ணிக்கை"
+
+#, fuzzy
+#~ msgid "Waiting Processes Count"
+#~ msgstr "செயல் எண்ணிக்கை"
+
+#, fuzzy
+#~ msgid "Locked Processes Count"
+#~ msgstr "செயல் எண்ணிக்கை"
+
+#~ msgid "Disk Throughput"
+#~ msgstr "வட்டு வெளியேற்றவீதம்"
+
+#~ msgctxt "CPU Load"
+#~ msgid "Load"
+#~ msgstr "ஏற்றல்"
+
+#~ msgid "Total Accesses"
+#~ msgstr "மொத்த அணுகல்கள்"
+
+#~ msgid "Read Accesses"
+#~ msgstr "வாசிக்கும் அணுகல்கள்"
+
+#~ msgid "Write Accesses"
+#~ msgstr "எழுதும் அணுகல்கள்"
+
+#~ msgid "Read Data"
+#~ msgstr "தரவு வாசி"
+
+#, fuzzy
+#~| msgid "Write Data"
+#~ msgid "Written Data"
+#~ msgstr "தரவு எழுது"
+
+#~ msgid "Milliseconds spent reading"
+#~ msgstr "வாசித்தவாறே கழிந்த நொடிகள்"
+
+#~ msgid "Milliseconds spent writing"
+#~ msgstr "இயற்றியவாறே கழிந்த நொடிகள்"
+
+#~ msgid "I/Os currently in progress"
+#~ msgstr "நிகழ்விலிருக்கும் உ/வெ"
+
+#~ msgid "Pages In"
+#~ msgstr "பக்கங்கள் உள்ளே"
+
+#~ msgid "Pages Out"
+#~ msgstr "பக்கங்கள் வெளியே"
+
+#~ msgid "Context Switches"
+#~ msgstr "சூழல் நிலைமாற்றிகள்"
+
+#, fuzzy
+#~| msgid "System Load"
+#~ msgid "System Calls"
+#~ msgstr "முறைமை ஏற்றம்"
+
+#~ msgid "Network"
+#~ msgstr "வலையமைப்பு"
+
+#~ msgid "Interfaces"
+#~ msgstr "இடைமுகங்கள்"
+
+#~ msgid "Transmitter"
+#~ msgstr "அனுப்புனர்"
+
+#, fuzzy
+#~| msgid "State"
+#~ msgid "Data Rate"
+#~ msgstr "மாநிலம்"
+
+#, fuzzy
+#~| msgid "Compressed Packets"
+#~ msgid "Compressed Packets Rate"
+#~ msgstr "குறுக்கிய பொட்டலங்கள்"
+
+#, fuzzy
+#~| msgid "Dropped Packets"
+#~ msgid "Dropped Packets Rate"
+#~ msgstr "தவறிய பொட்டலங்கள்"
+
+#, fuzzy
+#~| msgid "Errors"
+#~ msgid "Error Rate"
+#~ msgstr "தவறுகள்"
+
+#, fuzzy
+#~| msgid "FIFO Overruns"
+#~ msgid "FIFO Overruns Rate"
+#~ msgstr "FIFO முன்னோடியது"
+
+#, fuzzy
+#~| msgid "Frame Errors"
+#~ msgid "Frame Error Rate"
+#~ msgstr "வடிவமைப்பு தவறுகள்"
+
+#, fuzzy
+#~| msgid "Multicast"
+#~ msgid "Multicast Packet Rate"
+#~ msgstr "பரப்பு"
+
+#, fuzzy
+#~| msgid "Packets"
+#~ msgid "Packet Rate"
+#~ msgstr "பொட்டலங்கள்"
+
+#, fuzzy
+#~| msgid "Carrier"
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Loss Rate"
+#~ msgstr "எடுத்துச் செல்லத்தக்க"
+
+#~ msgid "Collisions"
+#~ msgstr "மோதல்கள்"
+
+#~ msgid "Data"
+#~ msgstr "தரவு"
+
+#~ msgid "Compressed Packets"
+#~ msgstr "குறுக்கிய பொட்டலங்கள்"
+
+#~ msgid "Dropped Packets"
+#~ msgstr "தவறிய பொட்டலங்கள்"
+
+#~ msgid "Errors"
+#~ msgstr "தவறுகள்"
+
+#~ msgid "FIFO Overruns"
+#~ msgstr "FIFO முன்னோடியது"
+
+#~ msgid "Frame Errors"
+#~ msgstr "வடிவமைப்பு தவறுகள்"
+
+#, fuzzy
+#~| msgid "Multicast"
+#~ msgid "Multicast Packets"
+#~ msgstr "பரப்பு"
+
+#~ msgid "Packets"
+#~ msgstr "பொட்டலங்கள்"
+
+#, fuzzy
+#~| msgid "Carrier"
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Losses"
+#~ msgstr "எடுத்துச் செல்லத்தக்க"
+
+#~ msgid "Sockets"
+#~ msgstr "துளைகள்"
+
+#~ msgid "Total Number"
+#~ msgstr "மொத்த எண்ணிக்கை"
+
+#~ msgid "Table"
+#~ msgstr "மேசை"
+
+#~ msgid "Advanced Power Management"
+#~ msgstr "உயர் சக்தி மேலாண்மை"
+
+#~ msgid "ACPI"
+#~ msgstr "ACPI"
+
+#~ msgid "Thermal Zone"
+#~ msgstr "தெர்மல் ஜோன்"
+
+#~ msgid "Temperature"
+#~ msgstr "வெப்பநிலை"
+
+#, fuzzy
+#~| msgid "Temperature"
+#~ msgid "Average CPU Temperature"
+#~ msgstr "வெப்பநிலை"
+
+#~ msgid "Fan"
+#~ msgstr "விசிறி"
+
+#~ msgid "State"
+#~ msgstr "மாநிலம்"
+
+#~ msgid "Battery"
+#~ msgstr "மின்கலன்"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Capacity"
+#~ msgstr "கலத்தின் மின்னேற்றம்"
+
+#~ msgid "Battery Charge"
+#~ msgstr "கலத்தின் மின்னேற்றம்"
+
+#~ msgid "Battery Usage"
+#~ msgstr "பாட்டரி பயன்பாடு"
+
+#, fuzzy
+#~| msgid "Battery Usage"
+#~ msgid "Battery Voltage"
+#~ msgstr "பாட்டரி பயன்பாடு"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Discharge Rate"
+#~ msgstr "கலத்தின் மின்னேற்றம்"
+
+#~ msgid "Remaining Time"
+#~ msgstr "மிஞ்சியிருக்கும் நேரம்"
+
+#~ msgid "Interrupts"
+#~ msgstr "குறுக்கீடுகள்"
+
+#~ msgid "Load Average (1 min)"
+#~ msgstr "ஏற்றச் சராசரி (1 நிமி)"
+
+#~ msgid "Load Average (5 min)"
+#~ msgstr "ஏற்றச் சராசரி (5 நிமி)"
+
+#~ msgid "Load Average (15 min)"
+#~ msgstr "ஏற்றச் சராசரி (15 நிமி)"
+
+#~ msgid "Clock Frequency"
+#~ msgstr "கடிகார அதிர்வெண்"
+
+#, fuzzy
+#~| msgid "Clock Frequency"
+#~ msgid "Average Clock Frequency"
+#~ msgstr "கடிகார அதிர்வெண்"
+
+#~ msgid "Hardware Sensors"
+#~ msgstr "வன்பொருள் உணரிகள்"
+
+#~ msgid "Partition Usage"
+#~ msgstr "பிரிப்புப் பயன்பாடு"
+
+#~ msgid "Used Space"
+#~ msgstr "பயன்படுத்தப்பட்ட இடம்"
+
+#~ msgid "Free Space"
+#~ msgstr "மிஞ்சிய இடம்"
+
+#~ msgid "Fill Level"
+#~ msgstr "நிரப்பும் அளவு"
+
+#, fuzzy
+#~| msgid "User Load"
+#~ msgid "Used Inodes"
+#~ msgstr "பயனரின் ஏற்றம்"
+
+#, fuzzy
+#~ msgid "System"
+#~ msgstr "கணினி%"
+
+#~ msgid "Uptime"
+#~ msgstr "ஏற்ற நேரம்"
+
+#~ msgid "Linux Soft Raid (md)"
+#~ msgstr "லினக்ஸ் சாப்ட் ரெய்டு (md)"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Processors"
+#~ msgstr "செயல் எண்ணிக்கை"
+
+#, fuzzy
+#~| msgid "Colors"
+#~ msgid "Cores"
+#~ msgstr "நிறங்கள்"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Blocks"
+#~ msgstr "காட்சிகளின் எண்ணிக்கை:"
+
+#, fuzzy
+#~| msgid "Total Number"
+#~ msgid "Total Number of Devices"
+#~ msgstr "மொத்த எண்ணிக்கை"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Raid Devices"
+#~ msgstr "காட்சிகளின் எண்ணிக்கை:"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Devices"
+#~ msgstr "காட்சிகளின் எண்ணிக்கை:"
+
+#, fuzzy
+#~ msgid "CPU %1"
+#~ msgstr "CPU%1"
+
+#, fuzzy
+#~ msgid "Disk %1"
+#~ msgstr "வட்டு%1"
+
+#, fuzzy
+#~| msgid "Battery"
+#~ msgid "Battery %1"
+#~ msgstr "மின்கலன்"
+
+#, fuzzy
+#~ msgid "Fan %1"
+#~ msgstr "விசிறி%1"
+
+#, fuzzy
+#~ msgid "Temperature %1"
+#~ msgstr "வெப்பநிலை%1"
+
+#~ msgid "Total"
+#~ msgstr "மொத்த"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Software Interrupts"
+#~ msgstr "குறுக்கீடுகள்"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Hardware Interrupts"
+#~ msgstr "குறுக்கீடுகள்"
+
+#, fuzzy
+#~ msgid "Int %1"
+#~ msgstr "முழுவெண்%1"
+
+#~ msgctxt "the unit 1 per second"
+#~ msgid "1/s"
+#~ msgstr "1/s"
+
+#~ msgid "kBytes"
+#~ msgstr "கேபைட்ஸ்"
+
+#~ msgctxt "the unit minutes"
+#~ msgid "min"
+#~ msgstr "நிமிடங்கள்"
+
+#~ msgctxt "the frequency unit"
+#~ msgid "MHz"
+#~ msgstr "MHz"
+
+#, fuzzy
+#~ msgctxt "a percentage"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgid "Integer Value"
+#~ msgstr "முழுவெண் பெறுமதி"
+
+#~ msgid "Floating Point Value"
+#~ msgstr "மிதக்கும் புள்ளி பெறுமதி"
+
+#, fuzzy
+#~| msgid " sec"
+#~ msgctxt "Units"
+#~ msgid "%1 second"
+#~ msgid_plural "%1 seconds"
+#~ msgstr[0] "நொடிகள்"
+#~ msgstr[1] "நொடிகள்"
+
+#, fuzzy
+#~ msgid "Font:"
+#~ msgstr "எண்ணுக:"
+
+#, fuzzy
+#~| msgid "Vertical lines:"
+#~ msgid "Grid lines:"
+#~ msgstr "செங்குக்கோடுகள்:"
+
+#~ msgid "Background:"
+#~ msgstr "பின்னணி:"
+
+#, fuzzy
+#~ msgid "Do you really want to delete the display?"
+#~ msgstr "நீங்கள் முன்னிருப்பு வேலைத்தாளைத் மீட்டுஎடுக்க வேண்டுமா?"
+
+#, fuzzy
+#~ msgid "Delete Display"
+#~ msgstr "காட்சி வகையை தேர்வு செய்"
+
+#, fuzzy
+#~ msgid "&Edit"
+#~ msgstr "திருத்து..."
+
+#, fuzzy
+#~| msgid "Automatic range detection"
+#~ msgid "Automatic range"
+#~ msgstr "தானாகவே வரம்பை கண்டறிதல் "
+
+#, fuzzy
+#~| msgid ""
+#~| "This is your work space. It holds your worksheets. You need to create a "
+#~| "new worksheet (Menu File->New) before you can drag sensors here."
+#~ msgid ""
+#~ "This is your work space. It holds your tabs. You need to create a new tab "
+#~ "(Menu File->New) before you can drag sensors here."
+#~ msgstr ""
+#~ "இது உங்கள் பணியிடம். இது தங்கள் வேலைத்தாளை தாங்கும். நீங்கள் உணரியை இழுக்கும் முன்பு "
+#~ "ஒரு புதிய வேலைத்தாளை(பட்டி கோப்பு->புதிது) உருவாக்க வேண்டும்"
+
+#~ msgid "Connection to %1 has been lost."
+#~ msgstr "%1 க்கான இணைப்பு துண்டிக்கப்பட்டது."
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "&Title"
+#~ msgstr "தலைப்பு"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "T&itle"
+#~ msgstr "தலைப்பு"
+
+#, fuzzy
+#~ msgid "System Guard Applet Settings"
+#~ msgstr "கேஅமைப்புகார்ட் குறுநிரல் அமைப்புக்கள்"
+
+#~ msgid "Size ratio:"
+#~ msgstr "அளவு விகிதம்:"
+
+#, fuzzy
+#~| msgid "%"
+#~ msgctxt "Number suffix in spinbox"
+#~ msgid "%"
+#~ msgstr "%"
+
+#, fuzzy
+#~ msgid "Launch &System Guard"
+#~ msgstr "கேடியி கணினி காப்பு"
+
+#~ msgid "Drag sensors to empty cells of a worksheet or the panel applet."
+#~ msgstr "ஒரு வேலைத்தாள் அல்லது பலக குறுநிரலின் வெற்றிடமான ஷெல்களுக்கு உணரிகளை இழு."
+
+#, fuzzy
+#~ msgid "Select Worksheet to Open"
+#~ msgstr "ஏற்ற வேண்டிய செய்பணித்தாளைத் தேர்வு செய்க"
+
+#, fuzzy
+#~ msgid "Export Work Sheet"
+#~ msgstr "அனைத்து வேலைத்தாள்களையும் திரும்ப அமை "
+
+#~ msgid "Worksheet Properties"
+#~ msgstr "வேலைத்தாளின் தன்மைகள்"
+
+#~ msgid "&Signal Plotter"
+#~ msgstr "&சமிக்ஞையை திட்டமிடல்"
+
+#~ msgid "&Multimeter"
+#~ msgstr "&பலஅளவுகருவி"
+
+#~ msgid "&Dancing Bars"
+#~ msgstr "&ஆடும் பட்டிகள்"
+
+#~ msgid ""
+#~ "The KSysGuard applet does not support displaying of this type of sensor. "
+#~ "Please choose another sensor."
+#~ msgstr ""
+#~ "கேஸிஸ்கார்ட் ஆப்லெட் இவ்வகையான உணரிகளின் காட்சிகளை ஆதரிக்காது. தயவுசெய்து வேறொரு "
+#~ "உணரியைத் தேர்ந்தெடுக்கவும்."
+
+#~ msgid ""
+#~ "The file %1 does not contain a valid applet definition, which must have a "
+#~ "document type 'KSysGuardApplet'."
+#~ msgstr ""
+#~ "கோப்பு %1ல் சரியான குறுநிரல் வரையறை ஏதுமில்லை. 'கேஸிஸ்கார்டு ஆப்லெட்' என்ற ஆவண "
+#~ "வகையைக் கொண்டிருக்கவேண்டும்."
+
+#~ msgid "Drag sensors from the KDE System Guard into this cell."
+#~ msgstr "கேடியி அமைப்பு காப்பிலிருந்து உணரிகளை இழுத்து வந்து ஷெல்லில் இடவும்."
+
+#, fuzzy
+#~ msgid "&New Worksheet..."
+#~ msgstr "அனைத்து வேலைத்தாள்களையும் திரும்ப அமை "
+
+#, fuzzy
+#~ msgid "Open Worksheet..."
+#~ msgstr "அனைத்து வேலைத்தாள்களையும் திரும்ப அமை "
+
+#, fuzzy
+#~ msgid "&Export Worksheet..."
+#~ msgstr "அனைத்து வேலைத்தாள்களையும் திரும்ப அமை "
+
+#, fuzzy
+#~ msgid "&Remove Worksheet"
+#~ msgstr "அனைத்து வேலைத்தாள்களையும் திரும்ப அமை "
+
+#~ msgid "&Worksheet Properties"
+#~ msgstr "&வேலைத்தாளின் தன்மைகள்"
+
+#, fuzzy
+#~ msgid "Import Worksheet..."
+#~ msgstr "அனைத்து வேலைத்தாள்களையும் திரும்ப அமை "
+
+#~ msgid "Count:"
+#~ msgstr "எண்ணுக:"
+
+#~ msgid "Enter the number of horizontal lines here."
+#~ msgstr "கிடைக்கோடுகளின் எண்ணிக்கையை இங்கு நுழைக்கவும்."
+
+#~ msgid "Labels"
+#~ msgstr "சீட்டுகள்"
+
+#~ msgid "Top bar"
+#~ msgstr "மேல் பட்டி"
+
+#~ msgid ""
+#~ "Check this to active the display title bar. This is probably only useful "
+#~ "for applet displays. The bar is only visible if the display is large "
+#~ "enough."
+#~ msgstr ""
+#~ "காட்சி தலைப்பு பட்டை செயபடுத்த இதை அழுத்தவும்.  இது குறும்பட காட்சிகளுக்கு மட்டும் "
+#~ "பயன்படும். காட்சி நீளமாக இருந்தால் மட்டுமே பட்டை புலப்படும்."
+
+#~ msgid "Horizontal lines:"
+#~ msgstr "கிடைமட்டக்கோடுகள்:"
+
+#~| msgid "Sensor Logger"
+#~ msgid "Sensor Load"
+#~ msgstr "உணரிக் குறிப்பேடு"
+
+#~ msgid "Show only process list of local host"
+#~ msgstr "உள்ளார்ந்த புரவலனின் செயல்பட்டியலை மட்டும் காட்டு"
+
+#~ msgctxt "process status"
+#~ msgid "running"
+#~ msgstr "இயங்குகிறது"
+
+#~ msgctxt "process status"
+#~ msgid "sleeping"
+#~ msgstr "இயங்கவில்லை"
+
+#~ msgctxt "process status"
+#~ msgid "disk sleep"
+#~ msgstr "வட்டு செயலில் இல்லை"
+
+#~ msgctxt "process status"
+#~ msgid "zombie"
+#~ msgstr "ஜாம்பி"
+
+#~ msgctxt "process status"
+#~ msgid "stopped"
+#~ msgstr "நிறுத்தப்பட்டது"
+
+#~ msgctxt "process status"
+#~ msgid "paging"
+#~ msgstr "பக்கப்படுத்தல்"
+
+#~ msgctxt "process status"
+#~ msgid "idle"
+#~ msgstr "செயலற்ற"
+
+#, fuzzy
+#~ msgid "User ID: %1"
+#~ msgstr "பயனர்%"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "User Name"
+#~ msgstr "உணரியின் பெயர்"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "CPU %"
+#~ msgstr "CPU%1"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Virtual Size"
+#~ msgstr "மேல்கீழ் அளவுகோல் "
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Memory"
+#~ msgstr "நினைவகம்"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Shared Mem"
+#~ msgstr "தற்காலிக நினைவகம்"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Command"
+#~ msgstr "கட்டளை"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Name"
+#~ msgstr "பெயர்"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Graphics Memory"
+#~ msgstr "மாற்றப்பட்ட நினைவகம்"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Application"
+#~ msgstr "பயன்பாட்டு நினைவகம்"
+
+#~ msgid "Renice Process"
+#~ msgstr "ரினைஸ் செயல்"
+
+#, fuzzy
+#~ msgid "Renice process"
+#~ msgstr "ரினைஸ் செயல்"
+
+#, fuzzy
+#~ msgid "Kill process"
+#~ msgstr "செயலை நிறுத்து"
+
+#, fuzzy
+#~ msgid "Hide column '%1'"
+#~ msgstr "நெடுவரிசையை மறை"
+
+#, fuzzy
+#~ msgid "Show column '%1'"
+#~ msgstr "நெடுவரிசையைக் காட்டு"
+
+#~ msgid "%1: Running Processes"
+#~ msgstr "%1: இயங்கும் செயல்கள்"
+
+#~ msgid "You need to select a process first."
+#~ msgstr "நீங்கள் முதலில் ஒரு செயலை தேர்வு செய்ய வேண்டும்"
+
+#, fuzzy
+#~ msgid "Do you want to kill the selected process?"
+#~ msgid_plural "Do you want to kill the %1 selected processes?"
+#~ msgstr[0] "தேர்வு செய்யபட்ட செயல்களைக் நிறுத்த வேண்டுமா?"
+#~ msgstr[1] "தேர்வு செய்யபட்ட %1 செயல்களை நிறுத்த வேண்டுமா? "
+
+#~ msgid "Kill Process"
+#~ msgstr "செயலை நிறுத்து"
+
+#, fuzzy
+#~ msgid "Kill"
+#~ msgstr "&அழி"
+
+#~ msgid "Error while attempting to kill process %1."
+#~ msgstr "%1 எனும் செயலைக் கொல்வதில் தவறு."
+
+#~ msgid "Process %1 has already disappeared."
+#~ msgstr "%1 எனும் செயல் ஏற்கனவே மறைந்து விட்டது"
+
+#~ msgid "Invalid Signal."
+#~ msgstr "தவறான குறிப்பு."
+
+#, fuzzy
+#~ msgid "Error while attempting to renice process."
+#~ msgstr "%1 எனும் ரினைஸ் செயலைச் செய்யும்போது தவறு ஏற்பட்டது."
+
+#, fuzzy
+#~ msgid "Insufficient permissions to renice process"
+#~ msgstr "%1 எனும் ரினைஸ் செயலை செய்வதற்கு வேண்டிய அனுமதி இல்லை."
+
+#, fuzzy
+#~ msgid "Process has disappeared."
+#~ msgstr "%1 எனும் செயல் ஏற்கனவே மறைந்து விட்டது"
+
+#~ msgid "Error while attempting to renice process %1."
+#~ msgstr "%1 எனும் ரினைஸ் செயலைச் செய்யும்போது தவறு ஏற்பட்டது."
+
+#, fuzzy
+#~ msgid "Process %1 has disappeared."
+#~ msgstr "%1 எனும் செயல் ஏற்கனவே மறைந்து விட்டது"
+
+#, fuzzy
+#~ msgid "All Processes, Simple"
+#~ msgstr "அனைத்துச் செயல்கள்"
+
+#, fuzzy
+#~ msgid "All Processes, Hierarchical"
+#~ msgstr "அனைத்துச் செயல்கள்"
+
+#~ msgid "User Processes"
+#~ msgstr "பயனரின் செயல்கள்"
+
+#~ msgid "Own Processes"
+#~ msgstr "சொந்த செயல்கள்"
+
+#, fuzzy
+#~ msgid "Show &Totals"
+#~ msgstr "நெடுவரிசையைக் காட்டு"
+
+#~ msgid "Global Style Settings"
+#~ msgstr "உலகளாவிய பாணி அமைப்புகள்"
+
+#~ msgid "Display Style"
+#~ msgstr "காட்சி பாணி"
+
+#~ msgid "First foreground color:"
+#~ msgstr "முதல் முன்புல வண்ணம்:"
+
+#~ msgid "Second foreground color:"
+#~ msgstr "இரண்டாவது முன்புல வண்ணம்:"
+
+#~ msgid "Sensor Colors"
+#~ msgstr "உணரி வண்ணங்கள்"
+
+#~ msgid "Change Color..."
+#~ msgstr "வண்ணத்தை மாற்று..."
+
+#~ msgid "Color %1"
+#~ msgstr "வண்ணம் %1"
+
+#, fuzzy
+#~ msgid "Font"
+#~ msgstr "எண்ணுக:"
+
+#~ msgid "Select Font..."
+#~ msgstr "எழுத்துருவை தேர்வு செய்..."
+
+#, fuzzy
+#~ msgid "&Cancel"
+#~ msgstr "&மாற்று"
+
+#~ msgid "Configure &Style..."
+#~ msgstr "பாணியை &வடிவமை..."
+
+#~ msgid "Idle Load"
+#~ msgstr "பயனற்ற ஏற்றம்"
+
+#~ msgid "It is impossible to connect to '%1'."
+#~ msgstr "'%1' உடன் தொடர்பு கொள்ளல் சாத்தியமில்லை."
+
+#~ msgid "S&ensorLogger"
+#~ msgstr "உணரி குறிப்பேடு"
+
+#, fuzzy
+#~ msgid "Timeout at host %1"
+#~ msgstr "புரவலன் %1ல் வாசிப்புத் தவறு"
+
+#~ msgid "Save Current Worksheet As"
+#~ msgstr "தற்போதைய செய்பணித்தாளைச் இவ்வாறே சேமி"
+
+#~ msgid "Cannot find file ProcessTable.sgrd."
+#~ msgstr " ProcessTable.sgrd! கோப்பைக் கண்டுபிடிக்க முடியவில்லை."
+
+#~ msgid "Remove Column"
+#~ msgstr "நெடுவரிசையை நீக்கு"
+
+#~ msgid "Add Column"
+#~ msgstr "நெடுவரிசையை சேர்"
+
+#~ msgid "Help on Column"
+#~ msgstr "நெடுவரிசையில் உதவி"
+
+#~ msgid "Nice"
+#~ msgstr "நயமான"
+
+#~ msgid "Select All Processes"
+#~ msgstr "அனைத்து செயல்களை தேர்வு செய்"
+
+#~ msgid "Unselect All Processes"
+#~ msgstr "அனைத்து செயல்களை ரத்து செய்"
+
+#~ msgid "Select All Child Processes"
+#~ msgstr "அனைத்து உபச் செயல்களையும் தேர்வுசெய்"
+
+#~ msgid "Unselect All Child Processes"
+#~ msgstr "அனைத்து உபச் செயல்களையும் ரத்து செய்"
+
+#~ msgid "SIGABRT"
+#~ msgstr "SIGABRT"
+
+#~ msgid "SIGALRM"
+#~ msgstr "SIGALRM"
+
+#~ msgid "SIGCHLD"
+#~ msgstr "SIGCHLD"
+
+#~ msgid "SIGCONT"
+#~ msgstr "SIGCONT"
+
+#~ msgid "SIGFPE"
+#~ msgstr "SIGFPE"
+
+#~ msgid "SIGHUP"
+#~ msgstr "SIGHUP"
+
+#~ msgid "SIGILL"
+#~ msgstr "SIGILL"
+
+#~ msgid "SIGINT"
+#~ msgstr "SIGINT"
+
+#~ msgid "SIGKILL"
+#~ msgstr "SIGKILL"
+
+#~ msgid "SIGPIPE"
+#~ msgstr "SIGPIPE"
+
+#~ msgid "SIGQUIT"
+#~ msgstr "SIGQUIT"
+
+#~ msgid "SIGSEGV"
+#~ msgstr "SIGSEGV"
+
+#~ msgid "SIGSTOP"
+#~ msgstr "SIGSTOP"
+
+#~ msgid "SIGTERM"
+#~ msgstr "SIGTERM"
+
+#~ msgid "SIGTSTP"
+#~ msgstr "SIGTSTP"
+
+#~ msgid "SIGTTIN"
+#~ msgstr "SIGTTIN"
+
+#~ msgid "SIGTTOU"
+#~ msgstr "SIGTTOU"
+
+#~ msgid "SIGUSR1"
+#~ msgstr "SIGUSR1"
+
+#~ msgid "SIGUSR2"
+#~ msgstr "SIGUSR2"
+
+#~ msgid "Send Signal"
+#~ msgstr "குறிப்பை அனுப்பு"
+
+#~ msgid "Renice Process..."
+#~ msgstr "ரினைஸ் செயல்பாடு..."
+
+#~ msgid "Do you really want to send signal %2 to the selected process?"
+#~ msgid_plural ""
+#~ "Do you really want to send signal %2 to the %1 selected processes?"
+#~ msgstr[0] "தேர்ந்தெடுக்கப்பட்ட செயல்பாட்டில்க்கு %2 குறிப்பை அனுப்ப வேண்டுமா?"
+#~ msgstr[1] "தேர்ந்தெடுக்கப்பட்ட %1 செயல்பாடுகளுக்கு %2 குறிப்பை அனுப்ப வேண்டுமா? "
+
+#~ msgid "Style"
+#~ msgstr "பாணி"
+
+#~ msgid "Graph Drawing Style"
+#~ msgstr "வரைப்பட வரைதல் பாணி"
+
+#~ msgid "Basic polygons"
+#~ msgstr "அடிப்படை பலகோணங்கள் "
+
+#~ msgid "Original - single line per data point"
+#~ msgstr "சரியான -  தகவல் புள்ளிக்கு ஒரு வரி"
+
+#~ msgid "&Setup Update Interval..."
+#~ msgstr "&புதுப்பித்தல் இடைவெளியை அமை..."
+
+#~ msgid "&Continue Update"
+#~ msgstr "&புதுப்பித்தலை தொடருக "
+
+#~ msgid "P&ause Update"
+#~ msgstr "இடைவிட்டு இற்றைப்படுத்து"
+
+#~ msgid ""
+#~ "You are about to change the scheduling priority of\n"
+#~ "process %1. Be aware that only the Superuser (root)\n"
+#~ "can decrease the nice level of a process. The lower\n"
+#~ "the number is the higher the priority.\n"
+#~ "\n"
+#~ "Please enter the desired nice level:"
+#~ msgstr ""
+#~ "செயல் %1 ன் காலமுறைபடுத்தல் முன்னுரிமையை மாற்ற\n"
+#~ "போகிறீர்கள். உயர்ந்த பயனர் (ஆதாரம்) மட்டும் தான் நல்ல\n"
+#~ "அளவை குறைக்க முடியும். எண் குறைவாக இருந்தால்,\n"
+#~ "முன்னுரிமை பெரிதாக இருக்கும்.\n"
+#~ "\n"
+#~ "நீங்கள் விரும்பும் நல்ல அளவை இங்கே நுழைக்கவும்:"
+
+#~ msgid "PID"
+#~ msgstr "PID"
+
+#~ msgid "PPID"
+#~ msgstr "PPID"
+
+#~ msgid "UID"
+#~ msgstr "UID"
+
+#~ msgid "GID"
+#~ msgstr "GID"
+
+#~ msgid "VmSize"
+#~ msgstr "Vmஅளவு"
+
+#~ msgid "VmRss"
+#~ msgstr "VmRss"
+
+#~ msgid "Login"
+#~ msgstr "தொடங்கல்"
+
+#~ msgid "&Tree"
+#~ msgstr "&மரம்"
+
+#~ msgid "&Kill"
+#~ msgstr "&அழி"
+
+#~ msgid "Insufficient permissions to kill process %1."
+#~ msgstr "%1 எனும் செயலைக் கொல்வதற்கு வேண்டிய அனுமதி இல்லை."
+
+#~ msgid "Invalid argument."
+#~ msgstr "செல்லாத விவாதம்."
+
+#, fuzzy
+#~ msgid "CPU"
+#~ msgstr "CPU%1"
+
+#, fuzzy
+#~ msgid "Mem"
+#~ msgstr "நினைவகம்"
+
+#~ msgid "Sensor Type"
+#~ msgstr "உணரி வகை"
+
+#~ msgid "KDE system guard"
+#~ msgstr "கேடியி அமைப்பு காப்பு"
+
+#~ msgid "88888 Processes"
+#~ msgstr "88888 செயல்படுகிறது"
+
+#~ msgid "Memory: 88888888888 kB used, 88888888888 kB free"
+#~ msgstr "நினைவகம்:  8888888 கேபி பயன்படுத்தபட்டது,  8888888 கேபி காலியாக உள்ளது"
+
+#~ msgid "Swap: 888888888 kB used, 888888888 kB free"
+#~ msgstr "மாறுதல்: 8888888  கேபி பயன்படுத்தபட்டது, 8888888 கேபி காலியாக உள்ளது"
+
+#, fuzzy
+#~ msgid "&Import Recent Worksheet"
+#~ msgstr "அனைத்து வேலைத்தாள்களையும் திரும்ப அமை "
+
+#~ msgid "C&onnect Host..."
+#~ msgstr "கணினியை இணைக்கவும்..."
+
+#~ msgid "D&isconnect Host"
+#~ msgstr "கணினியின் இணைப்பை துண்டிக்கவும்"
+
+#~ msgid "Load Standard Sheets"
+#~ msgstr "நிலையான தாள்களை ஏற்று"
+
+#~ msgid "Reset All Worksheets"
+#~ msgstr "அனைத்து வேலைத்தாள்களையும் திரும்ப அமை "
+
+#~ msgid "Memory: %1 %2 used, %3 %4 free"
+#~ msgstr "நினைவகம்: %1 %2 பயன்படுத்தபட்டது, %3 %4 காலியாக உள்ளது"
+
+#~ msgid "Swap: %1 %2 used, %3 %4 free"
+#~ msgstr "இடமாற்றம்: %1 %2 பயன்படுத்தபட்டது, %3 %4 காலியாக உள்ளது"

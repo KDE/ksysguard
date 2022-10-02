@@ -1,0 +1,2071 @@
+# Traducerea ksysguard.po în Română
+# Copyright (C) 2003, 2004, 2005, 2008 Free Software Foundation, Inc.
+# Claudiu Costin <claudiuc@kde.org>, 2003, 2004, 2005.
+# Sergiu Bivol <sergiu@cip.md>, 2008, 2009, 2010, 2011, 2012, 2013, 2020, 2021, 2022.
+# Cristian Oneț <onet.cristian@gmail.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ksysguard\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-03-02 00:46+0000\n"
+"PO-Revision-Date: 2022-02-16 13:18+0000\n"
+"Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
+"Language-Team: Romanian\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2;\n"
+"X-Generator: Lokalize 21.12.2\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Claudiu Costin,Sergiu Bivol"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr ",sergiu@cip.md"
+
+#: HostConnector.cpp:44
+#, kde-format
+msgid "Connect Host"
+msgstr "Conectează la gazdă"
+
+#: HostConnector.cpp:57
+#, kde-format
+msgid "Host:"
+msgstr "Gazda:"
+
+#: HostConnector.cpp:67
+#, kde-format
+msgid "Enter the name of the host you want to connect to."
+msgstr "Introduceți numele gazdei la care doriți să vă conectați."
+
+#: HostConnector.cpp:73
+#, kde-format
+msgid "Connection Type"
+msgstr "Tip de conexiune"
+
+#: HostConnector.cpp:78
+#, kde-format
+msgid "ssh"
+msgstr "ssh"
+
+#: HostConnector.cpp:81
+#, kde-format
+msgid "Select this to use the secure shell to login to the remote host."
+msgstr ""
+"Selectați această opțiune dacă doriți să utilizați interpretorul securizat "
+"pentru a vă loga pe mașina distantă."
+
+#: HostConnector.cpp:84
+#, kde-format
+msgid "rsh"
+msgstr "rsh"
+
+#: HostConnector.cpp:85
+#, kde-format
+msgid "Select this to use the remote shell to login to the remote host."
+msgstr ""
+"Selectați această opțiune dacă doriți să utilizați interpretorul distant "
+"pentru a vă loga pe mașina distantă."
+
+#: HostConnector.cpp:88
+#, kde-format
+msgid "Daemon"
+msgstr "Demon"
+
+#: HostConnector.cpp:89
+#, kde-format
+msgid ""
+"Select this if you want to connect to a ksysguard daemon that is running on "
+"the machine you want to connect to, and is listening for client requests."
+msgstr ""
+"Selectați această opțiune dacă doriți să vă conectați la un demon \"ksysguard"
+"\" care rulează pe mașina la care doriți să vă conectați și dacă așteaptă "
+"cereri de la aplicațiile client."
+
+#: HostConnector.cpp:92
+#, kde-format
+msgid "Custom command"
+msgstr "Comandă personalizată"
+
+#: HostConnector.cpp:93
+#, kde-format
+msgid ""
+"Select this to use the command you entered below to start ksysguardd on the "
+"remote host."
+msgstr ""
+"Selectați această opțiune dacă doriți să utilizați comanda scrisă mai jos "
+"pentru a porni \"ksysguardd\" pe mașina distantă."
+
+#: HostConnector.cpp:96
+#, kde-format
+msgid "Port:"
+msgstr "Port:"
+
+#: HostConnector.cpp:103
+#, kde-format
+msgid ""
+"Enter the port number on which the ksysguard daemon is listening for "
+"connections."
+msgstr ""
+"Introduceți numele portului pe care așteaptă demonul \"ksysguard\" cereri de "
+"conectare."
+
+#: HostConnector.cpp:106
+#, kde-format
+msgid "e.g.  3112"
+msgstr "de exemplu:  3112"
+
+#: HostConnector.cpp:109
+#, kde-format
+msgid "Command:"
+msgstr "Comanda:"
+
+#: HostConnector.cpp:118
+#, kde-format
+msgid "Enter the command that runs ksysguardd on the host you want to monitor."
+msgstr ""
+"Introduceți comanda care execută \"ksysguardd\" pe mașina pe care doriți să "
+"o monitorizați."
+
+#: HostConnector.cpp:122
+#, kde-format
+msgid "e.g. ssh -l root remote.host.org ksysguardd"
+msgstr "de exemplu: ssh -l root remote.host.org ksysguardd"
+
+#: ksysguard.cpp:156
+#, kde-format
+msgid ""
+"This will hide the menu bar completely. You can show it again by typing %1."
+msgstr ""
+"Aceasta va ascunde complet bara meniului. O puteți afișa din nou tastând %1."
+
+#: ksysguard.cpp:158
+#, kde-format
+msgid "Hide menu bar"
+msgstr "Ascunde bara meniului"
+
+#: ksysguard.cpp:176 ksysguard.cpp:570
+#, kde-format
+msgid "System Monitor"
+msgstr "Monitor de sistem"
+
+#: ksysguard.cpp:177
+#, kde-format
+msgid "&Refresh Tab"
+msgstr "Împ&rospătează fila"
+
+#: ksysguard.cpp:178
+#, kde-format
+msgid "&New Tab..."
+msgstr "Filă &nouă..."
+
+#: ksysguard.cpp:179
+#, kde-format
+msgid "Import Tab Fr&om File..."
+msgstr "Import filă &din fișier..."
+
+#: ksysguard.cpp:180
+#, kde-format
+msgid "Save Tab &As..."
+msgstr "Salvare filă c&a..."
+
+#: ksysguard.cpp:181
+#, kde-format
+msgid "&Close Tab"
+msgstr "În&chide fila"
+
+#: ksysguard.cpp:182
+#, kde-format
+msgid "Monitor &Remote Machine..."
+msgstr "Monito&rizează mașina distantă..."
+
+#: ksysguard.cpp:183
+#, kde-format
+msgid "&Download New Tabs..."
+msgstr "&Descarcă file noi..."
+
+#: ksysguard.cpp:184
+#, kde-format
+msgid "&Upload Current Tab..."
+msgstr "Încarcă fila c&urentă..."
+
+#: ksysguard.cpp:186
+#, kde-format
+msgid "Tab &Properties"
+msgstr "&Proprietăți filă"
+
+#: ksysguard.cpp:383
+#, kde-format
+msgid "1 process"
+msgid_plural "%1 processes"
+msgstr[0] "1 proces"
+msgstr[1] "%1 procese"
+msgstr[2] "%1 de procese"
+
+#: ksysguard.cpp:464
+#, kde-format
+msgid "CPU: %1%"
+msgstr "Procesor: %1%%"
+
+#: ksysguard.cpp:464
+#, kde-format
+msgctxt "This is the shorter version of CPU: %1%"
+msgid "%1%"
+msgstr "%1%"
+
+#: ksysguard.cpp:483
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Memory: %1 / %2"
+msgstr "Memorie: %1 / %2"
+
+#: ksysguard.cpp:485
+#, kde-format
+msgctxt ""
+"Arguments are formatted byte sizes (used/total) This should be a shorter "
+"version of the previous Memory: %1 / %2"
+msgid "Mem: %1 / %2"
+msgstr "Mem: %1 / %2"
+
+#: ksysguard.cpp:487
+#, kde-format
+msgctxt ""
+"Arguments is formatted byte sizes (used) This should be a shorter version of "
+"the previous Mem: %1 / %2"
+msgid "Mem: %1"
+msgstr "Mem: %1"
+
+#: ksysguard.cpp:515
+#, kde-format
+msgid " No swap space available "
+msgstr " Spațiu swap indisponibil "
+
+#: ksysguard.cpp:519
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Swap: %1 / %2"
+msgstr "Swap: %1 / %2%1"
+
+#: ksysguard.cpp:521
+#, kde-format
+msgctxt "Arguments is formatted byte sizes (used)"
+msgid "Swap: %1"
+msgstr "Swap: %1"
+
+#: ksysguard.cpp:571
+#, kde-format
+msgid "KDE System Monitor"
+msgstr "Monitor sistem KDE"
+
+#: ksysguard.cpp:572
+#, kde-format
+msgid "(c) 1996-2016 The KDE System Monitor Developers"
+msgstr "(c) 1996-2016 Dezvoltatorii Monitorului de sistem KDE"
+
+#: ksysguard.cpp:574
+#, kde-format
+msgid "John Tapsell"
+msgstr "John Tapsell"
+
+#: ksysguard.cpp:574
+#, kde-format
+msgid "Current Maintainer"
+msgstr "Responsabil curent"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Chris Schlaeger"
+msgstr "Chris Schlaeger"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Previous Maintainer"
+msgstr "Responsabil anterior"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Greg Martyn"
+msgstr "Greg Martyn"
+
+#: ksysguard.cpp:577
+#, kde-format
+msgid "Tobias Koenig"
+msgstr "Tobias Koenig"
+
+#: ksysguard.cpp:578
+#, kde-format
+msgid "Nicolas Leclercq"
+msgstr "Nicolas Leclercq"
+
+#: ksysguard.cpp:579
+#, kde-format
+msgid "Alex Sanda"
+msgstr "Alex Sanda"
+
+#: ksysguard.cpp:580
+#, kde-format
+msgid "Bernd Johannes Wuebben"
+msgstr "Bernd Johannes Wuebben"
+
+#: ksysguard.cpp:581
+#, kde-format
+msgid "Ralf Mueller"
+msgstr "Ralf Mueller"
+
+#: ksysguard.cpp:582
+#, kde-format
+msgid "Hamish Rodda"
+msgstr "Hamish Rodda"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid "Torsten Kasch"
+msgstr "Torsten Kasch"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+msgstr ""
+"Suport pentru Solaris\n"
+"Părți derivate (cu permisiune) din modulul\n"
+" sunos5 al utilitarului „top”\n"
+"scris de William LeFebvre."
+
+#: ksysguard.cpp:592
+#, kde-format
+msgid "Optional worksheet files to load"
+msgstr "Foi de lucru opționale de încărcat"
+
+#. i18n: ectx: Menu (file)
+#: ksysguardui.rc:5
+#, kde-format
+msgid "&File"
+msgstr "&Fișier"
+
+#. i18n: ectx: Menu (view)
+#: ksysguardui.rc:15
+#, kde-format
+msgid "&View"
+msgstr "&Vizualizare"
+
+#. i18n: ectx: Menu (settings)
+#: ksysguardui.rc:19
+#, kde-format
+msgid "&Settings"
+msgstr "&Configurări"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ksysguardui.rc:22
+#, kde-format
+msgid "Main Toolbar"
+msgstr "Bara de unelte principală"
+
+#. i18n: tag WorkSheet attribute title
+#. i18n: tag display attribute title
+#: ProcessTable.sgrd:3 ProcessTable.sgrd:5
+#, kde-format
+msgid "Process Table"
+msgstr "Tabel de procese"
+
+#: SensorBrowser.cpp:113
+#, kde-format
+msgid "Sensor Browser"
+msgstr "Navigator de senzori"
+
+#: SensorBrowser.cpp:473
+#, kde-format
+msgid "Drag sensors to empty cells of a worksheet "
+msgstr "Trageți senzori în câmpurile goale ale unei foi de lucru "
+
+#: SensorBrowser.cpp:474
+#, kde-format
+msgid ""
+"The sensor browser lists the connected hosts and the sensors that they "
+"provide. Click and drag sensors into drop zones of a worksheet. A display "
+"will appear that visualizes the values provided by the sensor. Some sensor "
+"displays can display values of multiple sensors. Simply drag other sensors "
+"on to the display to add more sensors."
+msgstr ""
+"Navigatorul de senzori listează mașinile conectate și senzorii pe care îi "
+"oferă. Dați clic și trageți senzori în zone dintr-o foaie de lucru. Unele "
+"afișaje de senzori pot să afișeze valori pentru mai mulți senzori. Pur și "
+"simplu trageți alți senzori în afișaj pentru a adăuga mai mulți senzori."
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:281
+#, kde-format
+msgid "OK"
+msgstr "Bun"
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:281
+#: SensorDisplayLib/FancyPlotter.cpp:545 SensorDisplayLib/FancyPlotter.cpp:624
+#, kde-format
+msgid "Error"
+msgstr "Eroare"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:42
+#, kde-format
+msgid "Edit BarGraph Preferences"
+msgstr "Editează preferințe grafic de bare"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:51
+#, kde-format
+msgid "Range"
+msgstr "Domeniu"
+
+#. i18n: ectx: property (title), widget (QGroupBox, titleFrame)
+#: SensorDisplayLib/DancingBarsSettings.cpp:55
+#: SensorDisplayLib/ListViewSettingsWidget.ui:17
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:17 WorkSheetSettings.cpp:61
+#, kde-format
+msgid "Title"
+msgstr "Titlu"
+
+#. i18n: ectx: property (whatsThis), widget (QLineEdit, m_title)
+#: SensorDisplayLib/DancingBarsSettings.cpp:60
+#: SensorDisplayLib/FancyPlotterSettings.cpp:70
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
+#, kde-format
+msgid "Enter the title of the display here."
+msgstr "Introduceți aici titlul afișajului."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:65
+#, kde-format
+msgid "Display Range"
+msgstr "Domeniu afișaj"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:70
+#: SensorDisplayLib/FancyPlotterSettings.cpp:96
+#, kde-format
+msgid "Minimum value:"
+msgstr "Valoarea minimă:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:78
+#, kde-format
+msgid ""
+"Enter the minimum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Introduceți valoarea minimă pentru afișaj. Dacă ambele valori sunt 0, atunci "
+"este activată detecția automată a domeniului."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:82
+#: SensorDisplayLib/FancyPlotterSettings.cpp:107
+#, kde-format
+msgid "Maximum value:"
+msgstr "Valoarea maximă:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:90
+#, kde-format
+msgid ""
+"Enter the maximum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Introduceți valoarea maximă pentru afișaj. Dacă ambele valori sunt 0, atunci "
+"este activată detecția automată a domeniului."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:100
+#, kde-format
+msgid "Alarms"
+msgstr "Alarme"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
+#: SensorDisplayLib/DancingBarsSettings.cpp:104
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
+#, kde-format
+msgid "Alarm for Minimum Value"
+msgstr "Alarmă pentru valoarea minimă"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:109
+#: SensorDisplayLib/DancingBarsSettings.cpp:132
+#, kde-format
+msgid "Enable alarm"
+msgstr "Activează alarma"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:110
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:57
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
+#, kde-format
+msgid "Enable the minimum value alarm."
+msgstr "Activează alarma pentru valoarea minimă."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:113
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:125
+#, kde-format
+msgid "Lower limit:"
+msgstr "Limita de jos:"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1_2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:127
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
+#, kde-format
+msgid "Alarm for Maximum Value"
+msgstr "Alarmă pentru valoarea maximă"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:133
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:116
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
+#, kde-format
+msgid "Enable the maximum value alarm."
+msgstr "Activează alarma pentru valoarea maximă."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:136
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:198
+#, kde-format
+msgid "Upper limit:"
+msgstr "Limita de sus:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:153
+#, kde-format
+msgctxt "@title:tab Appearance of the bar graph"
+msgid "Look"
+msgstr "Aspect"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:157
+#, kde-format
+msgid "Normal bar color:"
+msgstr "Culoarea barei în stare normală:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:164
+#, kde-format
+msgid "Out-of-range color:"
+msgstr "Culoarea barei la depășirea domeniului:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/DancingBarsSettings.cpp:171
+#: SensorDisplayLib/ListViewSettingsWidget.ui:105
+#: SensorDisplayLib/LogFile.cpp:105 SensorDisplayLib/LogFileSettings.ui:85
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:92
+#, kde-format
+msgid "Background color:"
+msgstr "Culoare fundal:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:178
+#: SensorDisplayLib/FancyPlotterSettings.cpp:177
+#, kde-format
+msgid "Font size:"
+msgstr "Dimensiune font:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:183
+#, kde-format
+msgid ""
+"This determines the size of the font used to print a label underneath the "
+"bars. Bars are automatically suppressed if text becomes too large, so it is "
+"advisable to use a small font size here."
+msgstr ""
+"Aceasta determină dimensiunea fontului folosit la scrierea etichetei de sub "
+"bare. Barele nu mai sunt afișate dacă textul devine prea mare, astfel încât "
+"este preferabil să folosiți mărimi mici pentru font."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:191
+#: SensorDisplayLib/FancyPlotterSettings.cpp:193
+#, kde-format
+msgid "Sensors"
+msgstr "Senzori"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:204
+#, kde-format
+msgid "Edit..."
+msgstr "Modifică..."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:205
+#, kde-format
+msgid "Push this button to configure the label."
+msgstr "Apăsați pe acest buton pentru a configura eticheta."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:208
+#: SensorDisplayLib/FancyPlotterSettings.cpp:225
+#, kde-format
+msgid "Delete"
+msgstr "Șterge"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:209
+#: SensorDisplayLib/FancyPlotterSettings.cpp:226
+#, kde-format
+msgid "Push this button to delete the sensor."
+msgstr "Apăsați pe acest buton pentru a șterge senzorul."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:361
+#, kde-format
+msgid "Label of Bar Graph"
+msgstr "Etichetă grafic de bare"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:362
+#, kde-format
+msgid "Enter new label:"
+msgstr "Introduceți noua etichetă:"
+
+#: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
+#, kde-format
+msgid "Drop Sensor Here"
+msgstr "Trageți un senzor aici"
+
+#: SensorDisplayLib/DummyDisplay.cpp:33
+#, kde-format
+msgid ""
+"This is an empty space in a worksheet. Drag a sensor from the Sensor Browser "
+"and drop it here. A sensor display will appear that allows you to monitor "
+"the values of the sensor over time."
+msgstr ""
+"Acesta este un spațiu gol al subferestrei. Trageți un senzor din navigatorul "
+"de senzori și puneți-l aici. Va apărea un afișaj de senzor care vă permite "
+"să monitorizați valorile lui de-a lungul timpului."
+
+#: SensorDisplayLib/FancyPlotter.cpp:177
+#, kde-format
+msgctxt "Largest axis title"
+msgid "99999 XXXX"
+msgstr "99999 XXXX"
+
+#: SensorDisplayLib/FancyPlotter.cpp:541 SensorDisplayLib/FancyPlotter.cpp:613
+#: SensorDisplayLib/FancyPlotter.cpp:676
+#, kde-format
+msgctxt "units"
+msgid "%1%"
+msgstr "%1%"
+
+#: SensorDisplayLib/FancyPlotter.cpp:549
+#, kde-format
+msgctxt "%1 is what is being shown statistics for, like 'Memory', 'Swap', etc."
+msgid "<p><b>%1:</b><br>"
+msgstr "<p><b>%1:</b><br>"
+
+#: SensorDisplayLib/FancyPlotter.cpp:621
+#, kde-format
+msgid "%1 of %2"
+msgstr "%1 din %2"
+
+#: SensorDisplayLib/FancyPlotter.cpp:649
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB"
+msgstr "%1 TiO"
+
+#: SensorDisplayLib/FancyPlotter.cpp:652
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB"
+msgstr "%1 GiO"
+
+#: SensorDisplayLib/FancyPlotter.cpp:655
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB"
+msgstr "%1 MiO"
+
+#: SensorDisplayLib/FancyPlotter.cpp:658
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB"
+msgstr "%1 KiO"
+
+#: SensorDisplayLib/FancyPlotter.cpp:663
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB/s"
+msgstr "%1 TiO/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:666
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB/s"
+msgstr "%1 GiO/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:669
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB/s"
+msgstr "%1 MiO/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:672
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB/s"
+msgstr "%1 KiO/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:678
+#, kde-format
+msgctxt "unitless - just a number"
+msgid "%1"
+msgstr "%1"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:46
+#, kde-format
+msgid "Plotter Settings"
+msgstr "Configurări ploter"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:62
+#, kde-format
+msgid "General"
+msgstr "Generale"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:66
+#, kde-format
+msgid "Title:"
+msgstr "Titlu:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:74
+#, kde-format
+msgid "Stack the beams on top of each other"
+msgstr "Stivuiește razele unele peste altele"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:75
+#, kde-format
+msgid ""
+"The beams are stacked on top of each other, and the area is drawn filled in. "
+"So if one beam has a value of 2 and another beam has a value of 3, the first "
+"beam will be drawn at value 2 and the other beam drawn at 2+3=5."
+msgstr ""
+"Razele sunt stivuite unele peste altele iar suprafața este umplută. Deci "
+"dacă o rază are valoarea 2 și o altă rază are valoarea 3 atunci prima rază "
+"va fi desenată la valoarea 2 iar raza următoare va fi desenată la valoarea "
+"2+3=5. "
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:82
+#, kde-format
+msgid "Scales"
+msgstr "Scări"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:86
+#, kde-format
+msgid "Vertical scale"
+msgstr "Scară verticală"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:91
+#, kde-format
+msgid "Specify graph range:"
+msgstr "Precizați intervalul graficului:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:92
+#, kde-format
+msgid ""
+"Check this box if you want the display range to adapt dynamically to the "
+"currently displayed values; if you do not check this, you have to specify "
+"the range you want in the fields below."
+msgstr ""
+"Selectați această opțiune dacă doriți ca afișarea domeniului să se adapteze "
+"dinamic la valorile afișate. În caz contrar trebuie să specificați limitele "
+"domeniului în câmpurile de editare de mai jos."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:102
+#, kde-format
+msgid "Enter the minimum value for the display here."
+msgstr "Introduceți aici valoarea minimă afișată."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:113
+#, kde-format
+msgid ""
+"Enter the soft maximum value for the display here. The upper range will not "
+"be reduced below this value, but will still go above this number for values "
+"above this value."
+msgstr ""
+"Introduceți aici valoarea maximă moale pentru afișare. Intervalul superior "
+"nu va fi redus sub această valoare dar va crește peste acest număr pentru "
+"valori mai mari decât aceasta."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:120
+#, kde-format
+msgid "Horizontal scale"
+msgstr "Scară orizontală"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:128
+#, kde-format
+msgid "Pixels per time period:"
+msgstr "Pixeli per perioadă de timp:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:135
+#, kde-format
+msgid "Grid"
+msgstr "Grilă"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:139
+#, kde-format
+msgid "Lines"
+msgstr "Linii"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:144
+#, kde-format
+msgid "Vertical lines"
+msgstr "Linii verticale"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:145
+#, kde-format
+msgid "Check this to activate the vertical lines if display is large enough."
+msgstr ""
+"Selectați această opțiune pentru a activa liniile verticale dacă afișajul "
+"este suficient de larg."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:148
+#, kde-format
+msgid "Distance:"
+msgstr "Distanța:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:155
+#, kde-format
+msgid "Enter the distance between two vertical lines here."
+msgstr "Introduceți aici distanța între două linii verticale."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:159
+#, kde-format
+msgid "Vertical lines scroll"
+msgstr "Liniile verticale defilează"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:162
+#, kde-format
+msgid "Horizontal lines"
+msgstr "Linii orizontale"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:163
+#, kde-format
+msgid "Check this to enable horizontal lines if display is large enough."
+msgstr ""
+"Selectați această opțiune pentru a activa liniile orizontale dacă afișajul "
+"este suficient de larg."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:168
+#, kde-format
+msgid "Text"
+msgstr "Text"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:173
+#, kde-format
+msgid "Show axis labels"
+msgstr "Arată etichetele axelor"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:174
+#, kde-format
+msgid ""
+"Check this box if horizontal lines should be decorated with the values they "
+"mark."
+msgstr ""
+"Selectați această opțiune dacă liniile orizontale ar trebui decorate cu "
+"valorile pe care le marchează."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:217
+#, kde-format
+msgid "Set Color..."
+msgstr "Stabilire culoare..."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:218
+#, kde-format
+msgid "Push this button to configure the color of the sensor in the diagram."
+msgstr ""
+"Apăsați pe acest buton pentru a configura culoarea senzorului din diagramă."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:230
+#, kde-format
+msgid "Move Up"
+msgstr "Mută în sus"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:235
+#, kde-format
+msgid "Move Down"
+msgstr "Mută în jos"
+
+#: SensorDisplayLib/ListView.cpp:45
+#, kde-format
+msgid "%1 K"
+msgstr "%1 K"
+
+#: SensorDisplayLib/ListView.cpp:46
+#, kde-format
+msgid "%1 M"
+msgstr "%1 M"
+
+#: SensorDisplayLib/ListView.cpp:47
+#, kde-format
+msgid "%1 G"
+msgstr "%1 G"
+
+#: SensorDisplayLib/ListView.cpp:48
+#, kde-format
+msgid "%1 T"
+msgstr "%1 T"
+
+#: SensorDisplayLib/ListView.cpp:49
+#, kde-format
+msgid "%1 P"
+msgstr "%1 K"
+
+#: SensorDisplayLib/ListView.cpp:152
+#, kde-format
+msgid "Display Units"
+msgstr "Unități afișare"
+
+#: SensorDisplayLib/ListView.cpp:156
+#, kde-format
+msgid "Mixed"
+msgstr "Mixt"
+
+#: SensorDisplayLib/ListView.cpp:162
+#, kde-format
+msgid "Kilobytes"
+msgstr "Kiloocteți"
+
+#: SensorDisplayLib/ListView.cpp:168
+#, kde-format
+msgid "Megabytes"
+msgstr "Megaocteți"
+
+#: SensorDisplayLib/ListView.cpp:174
+#, kde-format
+msgid "Gigabytes"
+msgstr "Gigaocteți"
+
+#: SensorDisplayLib/ListView.cpp:180
+#, kde-format
+msgid "Terabytes"
+msgstr "Teraocteți"
+
+#: SensorDisplayLib/ListViewSettings.cpp:30
+#, kde-format
+msgid "List View Settings"
+msgstr "Configurări listă"
+
+#. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:47
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:47
+#, kde-format
+msgid "Colors"
+msgstr "Culori"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:79
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
+#, kde-format
+msgid "Text color:"
+msgstr "Culoare text:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:92
+#, kde-format
+msgid "Grid color:"
+msgstr "Culoare grilă:"
+
+#: SensorDisplayLib/LogFile.cpp:93
+#, kde-format
+msgid "File logging settings"
+msgstr "Configurări jurnalizare fișier"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
+#, kde-format
+msgid "Foreground color:"
+msgstr "Culoare text:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, textTab)
+#: SensorDisplayLib/LogFileSettings.ui:21
+#, kde-format
+msgid "&Text"
+msgstr "&Text"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/LogFileSettings.ui:29
+#, kde-format
+msgid "T&itle:"
+msgstr "T&itlu:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: SensorDisplayLib/LogFileSettings.ui:166
+#, kde-format
+msgid "Fi&lter"
+msgstr "Fi&ltru"
+
+#. i18n: ectx: property (text), widget (QPushButton, addButton)
+#: SensorDisplayLib/LogFileSettings.ui:196
+#, kde-format
+msgid "&Add"
+msgstr "&Adaugă"
+
+#. i18n: ectx: property (text), widget (QPushButton, deleteButton)
+#: SensorDisplayLib/LogFileSettings.ui:203
+#, kde-format
+msgid "&Delete"
+msgstr "Ș&terge"
+
+#. i18n: ectx: property (text), widget (QPushButton, changeButton)
+#: SensorDisplayLib/LogFileSettings.ui:210
+#, kde-format
+msgid "&Change"
+msgstr "&Modifică"
+
+#: SensorDisplayLib/MultiMeterSettings.cpp:33
+#, kde-format
+msgctxt ""
+"Multimeter is a sensor display that mimics 'digital multimeter' aparatus"
+msgid "Multimeter Settings"
+msgstr "Configurări multimetru"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:26
+#, kde-format
+msgid "&Title:"
+msgstr "&Titlu:"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:43
+#, kde-format
+msgid "Enable this to append the unit to the title of the display."
+msgstr ""
+"Activați această opțiune pentru a adăuga unitatea de măsură la titlul "
+"afișajului."
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
+#, kde-format
+msgid "&Show unit"
+msgstr "Arată &unitatea"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
+#, kde-format
+msgid "&Enable alarm"
+msgstr "Activ&ează alarma"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
+#, kde-format
+msgid "&Lower limit:"
+msgstr "&Limita de jos:"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
+#, kde-format
+msgid "E&nable alarm"
+msgstr "A&ctivează alarma"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
+#, kde-format
+msgid "&Upper limit:"
+msgstr "Limita de s&us:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
+#, kde-format
+msgid "Nor&mal digit color:"
+msgstr "Culoare normală cifre:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
+#, kde-format
+msgid "Alarm di&git color:"
+msgstr "Culoare de alarmă cifre:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
+#, kde-format
+msgid "Bac&kground color:"
+msgstr "Culoa&re fundal:"
+
+#: SensorDisplayLib/SensorDisplay.cpp:115 SensorDisplayLib/SensorLogger.cpp:587
+#, kde-format
+msgid "&Properties"
+msgstr "&Proprietăți"
+
+#: SensorDisplayLib/SensorDisplay.cpp:120 SensorDisplayLib/SensorLogger.cpp:592
+#, kde-format
+msgid "&Remove Display"
+msgstr "Ș&terge afișajul"
+
+#: SensorDisplayLib/SensorDisplay.cpp:187
+#, kde-format
+msgid ""
+"<qt><p>This is a sensor display. To customize a sensor display click the "
+"right mouse button here and select the <i>Properties</i> entry from the "
+"popup menu. Select <i>Remove</i> to delete the display from the worksheet.</"
+"p>%1</qt>"
+msgstr ""
+"<qt><p>Acesta este afișajul senzorului. Pentru a-l personaliza dați clic "
+"dreapta pe cadru sau afișaj și selectați <i>Proprietăți</i> din meniul "
+"contextual. Selectați <i>Elimină</i> pentru a șterge afișajul din foaia de "
+"lucru.</p>%1</qt>"
+
+#: SensorDisplayLib/SensorLogger.cpp:132
+#, kde-format
+msgctxt "@title:column"
+msgid "Logging"
+msgstr "Jurnalizare"
+
+#: SensorDisplayLib/SensorLogger.cpp:134
+#, kde-format
+msgctxt "@title:column"
+msgid "Timer Interval"
+msgstr "Interval cronometru"
+
+#: SensorDisplayLib/SensorLogger.cpp:136
+#, kde-format
+msgctxt "@title:column"
+msgid "Sensor Name"
+msgstr "Denumire senzor"
+
+#: SensorDisplayLib/SensorLogger.cpp:138
+#, kde-format
+msgctxt "@title:column"
+msgid "Host Name"
+msgstr "Nume gazdă"
+
+#: SensorDisplayLib/SensorLogger.cpp:140
+#, kde-format
+msgctxt "@title:column"
+msgid "Log File"
+msgstr "Fișier de jurnal"
+
+#: SensorDisplayLib/SensorLogger.cpp:418
+#: SensorDisplayLib/SensorLoggerDlg.cpp:30
+#, kde-format
+msgid "Sensor Logger"
+msgstr "Jurnal senzor"
+
+#: SensorDisplayLib/SensorLogger.cpp:597
+#, kde-format
+msgid "&Remove Sensor"
+msgstr "&Elimină senzorul"
+
+#: SensorDisplayLib/SensorLogger.cpp:602
+#, kde-format
+msgid "&Edit Sensor..."
+msgstr "&Editează senzorul..."
+
+#: SensorDisplayLib/SensorLogger.cpp:610
+#, kde-format
+msgid "St&op Logging"
+msgstr "&Oprește jurnalizarea"
+
+#: SensorDisplayLib/SensorLogger.cpp:613
+#, kde-format
+msgid "S&tart Logging"
+msgstr "&Pornește jurnalizarea"
+
+#. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
+#, kde-format
+msgid "File"
+msgstr "Fișier"
+
+#. i18n: ectx: property (title), widget (QGroupBox, timerFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:41
+#, kde-format
+msgctxt "@title:group"
+msgid "Timer Interval"
+msgstr "Interval cronometru"
+
+#. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
+#, kde-format
+msgid " sec"
+msgstr " sec"
+
+#: SensorDisplayLib/SensorLoggerSettings.cpp:30
+#, kde-format
+msgid "Sensor Logger Settings"
+msgstr "Configurări jurnal senzor"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
+#, kde-format
+msgid "Alarm color:"
+msgstr "Culoare alarmă:"
+
+#: SensorDisplayLib/SensorModel.cpp:161
+#, kde-format
+msgid "Host"
+msgstr "Gazda"
+
+#: SensorDisplayLib/SensorModel.cpp:163
+#, kde-format
+msgid "Sensor"
+msgstr "Senzor"
+
+#: SensorDisplayLib/SensorModel.cpp:165
+#, kde-format
+msgid "Unit"
+msgstr "Unitate"
+
+#: SensorDisplayLib/SensorModel.cpp:167
+#, kde-format
+msgid "Status"
+msgstr "Stare"
+
+#: SensorDisplayLib/SensorModel.cpp:169
+#, kde-format
+msgid "Label"
+msgstr "Etichetă"
+
+#. i18n: tag WorkSheet attribute title
+#: SystemLoad2.sgrd:3
+#, kde-format
+msgid "System Load"
+msgstr "Încărcare 'sistem'"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:5
+#, kde-format
+msgid "CPU History"
+msgstr "Istoric procesor"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:8
+#, kde-format
+msgid "Memory and Swap History"
+msgstr "Istoric memorie și swap"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:9
+#, kde-format
+msgid "Memory"
+msgstr "Memorie"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:10
+#, kde-format
+msgid "Swap"
+msgstr "Swap"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:12
+#, kde-format
+msgid "Network History"
+msgstr "Istoric rețea"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:13
+#, kde-format
+msgid "Receiving"
+msgstr "Primire"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:14
+#, kde-format
+msgid "Sending"
+msgstr "Trimitere"
+
+#: WorkSheet.cpp:87
+#, kde-format
+msgid "Cannot open the file %1."
+msgstr "Nu se poate deschide fișierul %1."
+
+#: WorkSheet.cpp:95
+#, kde-format
+msgid "The file %1 does not contain valid XML."
+msgstr "Fișierul %1 nu are un conținut XML valid."
+
+#: WorkSheet.cpp:102
+#, kde-format
+msgid ""
+"The file %1 does not contain a valid worksheet definition, which must have a "
+"document type 'KSysGuardWorkSheet'."
+msgstr ""
+"Fișierul %1 nu conține o definiție de subfereastră\n"
+"validă. Ea trebuie să aibă un document de tipul\n"
+"\"KSysGuardWorkSheet\"."
+
+#: WorkSheet.cpp:114
+#, kde-format
+msgid "The file %1 has an invalid worksheet size."
+msgstr "Fișierul %1 are o mărime eronată de subfereastră."
+
+#: WorkSheet.cpp:239
+#, kde-format
+msgid "Cannot save file %1"
+msgstr "Nu am putut salva fișierul %1"
+
+#: WorkSheet.cpp:287
+#, kde-format
+msgid "The clipboard does not contain a valid display description."
+msgstr "Clipboard-ul nu conține o descriere validă de afișaj."
+
+#: WorkSheet.cpp:387
+#, kde-format
+msgid "Select Display Type"
+msgstr "Alegeți tipul de afișaj"
+
+#: WorkSheet.cpp:388
+#, kde-format
+msgid "&Line graph"
+msgstr "Grafic &liniar"
+
+#: WorkSheet.cpp:389
+#, kde-format
+msgid "&Digital display"
+msgstr "Afișaj &digital"
+
+#: WorkSheet.cpp:390
+#, kde-format
+msgid "&Bar graph"
+msgstr "Grafic de &bare"
+
+#: WorkSheet.cpp:391
+#, kde-format
+msgid "Log to a &file"
+msgstr "Jurnalizare în &fișier"
+
+#: WorkSheet.cpp:547
+#, kde-format
+msgid "Remove this display?"
+msgstr "Eliminați acest afișaj?"
+
+#: WorkSheet.cpp:548
+#, kde-format
+msgid "Remove Display"
+msgstr "Elimină afișajul"
+
+#: WorkSheet.cpp:589
+#, kde-format
+msgid "Dummy"
+msgstr "Fictiv"
+
+#: WorkSheetSettings.cpp:43
+#, kde-format
+msgid "Tab Properties"
+msgstr "Proprietăți filă"
+
+#: WorkSheetSettings.cpp:72
+#, kde-format
+msgid "Properties"
+msgstr "Proprietăți"
+
+#: WorkSheetSettings.cpp:81
+#, kde-format
+msgid "Rows:"
+msgstr "Rânduri:"
+
+#: WorkSheetSettings.cpp:91
+#, kde-format
+msgid "Columns:"
+msgstr "Coloane:"
+
+#: WorkSheetSettings.cpp:100
+#, kde-format
+msgid "Enter the number of rows the sheet should have."
+msgstr "Introduceți numele de linii pe care trebuie să le aibă subfereastra."
+
+#: WorkSheetSettings.cpp:101
+#, kde-format
+msgid "Enter the number of columns the sheet should have."
+msgstr "Introduceți numele de coloane pe care trebuie să le aibă subfereastra."
+
+#: WorkSheetSettings.cpp:103
+#, kde-format
+msgid "Update interval:"
+msgstr "Interval de actualizare:"
+
+#: WorkSheetSettings.cpp:116
+#, kde-format
+msgid "All displays of the sheet are updated at the rate specified here."
+msgstr ""
+"Toate afișajele din subfereastră vor fi actualizate la rata specificată aici."
+
+#: WorkSheetSettings.cpp:117
+#, kde-format
+msgid "Enter the title of the worksheet here."
+msgstr "Introduceți aici titlul subferestrei."
+
+#: Workspace.cpp:111
+#, kde-format
+msgid "Sheet %1"
+msgstr "Pagina %1"
+
+#: Workspace.cpp:170
+#, kde-format
+msgid ""
+"The tab '%1' contains unsaved data.\n"
+"Do you want to save the tab?"
+msgstr ""
+"Fila „%1” conține date nesalvate.\n"
+"Salvați fila?"
+
+#: Workspace.cpp:186
+#, kde-format
+msgid "Select Tab File to Import"
+msgstr "Alegeți fișierul cu file de importat"
+
+#: Workspace.cpp:208 Workspace.cpp:228
+#, kde-format
+msgid "You do not have a tab that could be saved."
+msgstr "Nu aveți o filă care să poată fi salvată."
+
+#: Workspace.cpp:235
+#, kde-format
+msgid "Export Tab"
+msgstr "Exportă fila"
+
+#: Workspace.cpp:255
+#, kde-format
+msgid "There are no tabs that could be deleted."
+msgstr "Nu există file care să poată fi șterse."
+
+#: Workspace.cpp:299
+#, kde-kuit-format
+msgctxt "@info"
+msgid ""
+"<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
+"in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
+msgstr ""
+"<para>Vă puteți publica fila personalizată în <link url='%1'>Magazinul KDE</"
+"link> în categoria <icode>%2</icode>.</para><para><filename>%3</filename></"
+"para>"
+
+#: Workspace.cpp:304
+#, kde-format
+msgid "Upload custom System Monitor tab"
+msgstr "Încarcă filă personalizată pentru Monitorul de sistem"
+
+#~ msgid "Timer Settings"
+#~ msgstr "Configurări temporizator"
+
+#~ msgid "Use update interval of worksheet"
+#~ msgstr "Utilizează intervalul de actualizare al subferestrei"
+
+#~ msgctxt "Arguments are formatted byte sizes (used/total)"
+#~ msgid "Memory: %1 / %2Mem: %1 / %2Mem: %1%1"
+#~ msgstr "Memorie: %1 / %2Mem: %1 / %2Mem: %1%1"
+
+#~ msgid ""
+#~ "<qt>To propose the current custom tab as a new System Monitor tab, email "
+#~ "<br><a href=\"file:%1\">%2</a><br> to <a href=\"mailto:john.tapsell@kde."
+#~ "org?subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde."
+#~ "org</a></qt>"
+#~ msgstr ""
+#~ "<qt>Pentru a propune fila personalizată curentă ca filă a Monitorului de "
+#~ "sistem, trimiteți <br><a href=\"file:%1\">%2</a><br> către <a href="
+#~ "\"mailto:john.tapsell@kde.org?subject='System Monitor Tab'&attach='file://"
+#~ "%2'\">john.tapsell@kde.org</a></qt>"
+
+#~ msgid "*.sgrd|Sensor Files (*.sgrd)"
+#~ msgstr "*.sgrd|Fișiere senzor (*.sgrd)"
+
+#~ msgid "Lo&wer limit:"
+#~ msgstr "Limi&ta de jos:"
+
+#~ msgctxt "%1 is a host name"
+#~ msgid ""
+#~ "Message from %1:\n"
+#~ "%2"
+#~ msgstr ""
+#~ "Mesaj de la %1:\n"
+#~ "%2"
+
+#~ msgid "Could not run daemon program '%1'."
+#~ msgstr "Nu s-a putut rula demonul „%1”."
+
+#~ msgid "The daemon program '%1' failed."
+#~ msgstr "Programul-demon „%1” a eșuat."
+
+#~ msgid "Connection to %1 refused"
+#~ msgstr "Conexiunea cu \"%1\" este refuzată"
+
+#~ msgid "Host %1 not found"
+#~ msgstr "Nu am găsit gazda %1"
+
+#~ msgid ""
+#~ "An error occurred with the network (e.g. the network cable was "
+#~ "accidentally unplugged) for host %1."
+#~ msgstr ""
+#~ "A intervenit o eroare de rețea (de ex. cablul de rețea a fost deconectat "
+#~ "accidental) pentru gazda %1."
+
+#~ msgid "Error for host %1: %2"
+#~ msgstr "Eroare pentru gazda %1: %2"
+
+#~ msgid "Change"
+#~ msgstr "Modifică"
+
+#~ msgid "Rate"
+#~ msgstr "Rată"
+
+#~ msgid "CPU Load"
+#~ msgstr "Încărcare CPU"
+
+#~ msgid "Idling"
+#~ msgstr "Repaos"
+
+#~ msgid "Nice Load"
+#~ msgstr "Încărcare 'nice'"
+
+#~ msgid "User Load"
+#~ msgstr "Încărcare 'utilizator'"
+
+#~ msgctxt "@item sensor description"
+#~ msgid "System Load"
+#~ msgstr "Încărcare sistem"
+
+#~ msgid "Waiting"
+#~ msgstr "Așteptare"
+
+#~ msgid "Interrupt Load"
+#~ msgstr "Încărcare întreruperi"
+
+#~ msgid "Total Load"
+#~ msgstr "Încărcare totală"
+
+#~ msgid "Physical Memory"
+#~ msgstr "Memorie fizică"
+
+#~ msgid "Swap Memory"
+#~ msgstr "Memorie swap"
+
+#~ msgid "Cached Memory"
+#~ msgstr "Memorie cache"
+
+#~ msgid "Buffered Memory"
+#~ msgstr "Memorie tampon"
+
+#~ msgid "Used Memory"
+#~ msgstr "Memorie utilizată"
+
+#~ msgid "Application Memory"
+#~ msgstr "Memorie aplicație"
+
+#~ msgid "Free Memory"
+#~ msgstr "Memorie liberă"
+
+#~ msgid "Active Memory"
+#~ msgstr "Memorie activă"
+
+#~ msgid "Inactive Memory"
+#~ msgstr "Memorie inactivă"
+
+#~ msgid "Wired Memory"
+#~ msgstr "Memorie cablată"
+
+#~ msgid "Exec Pages"
+#~ msgstr "Pagini de execuție"
+
+#~ msgid "File Pages"
+#~ msgstr "Pagini de fișier"
+
+#~ msgid "Processes"
+#~ msgstr "Procese"
+
+#~ msgid "Process Controller"
+#~ msgstr "Controlor de procese"
+
+#~ msgid "Last Process ID"
+#~ msgstr "Ultimul identificator de proces"
+
+#~ msgid "Process Spawn Count"
+#~ msgstr "Numărul de procese create"
+
+#~ msgid "Process Count"
+#~ msgstr "Numărul de procese"
+
+#~ msgid "Idle Processes Count"
+#~ msgstr "Nr. procese inactive"
+
+#~ msgid "Running Processes Count"
+#~ msgstr "Nr. procese în execuție"
+
+#~ msgid "Sleeping Processes Count"
+#~ msgstr "Nr. procese adormite"
+
+#~ msgid "Stopped Processes Count"
+#~ msgstr "Nr. procese oprite"
+
+#~ msgid "Zombie Processes Count"
+#~ msgstr "Nr. procese zombi"
+
+#~ msgid "Waiting Processes Count"
+#~ msgstr "Nr. procese în așteptare"
+
+#~ msgid "Locked Processes Count"
+#~ msgstr "Nr. procese blocate"
+
+#~ msgid "Disk Throughput"
+#~ msgstr "Rata de transfer disc"
+
+#~ msgctxt "CPU Load"
+#~ msgid "Load"
+#~ msgstr "Încărcare 'cpu'"
+
+#~ msgid "Total Accesses"
+#~ msgstr "Total accese"
+
+#~ msgid "Read Accesses"
+#~ msgstr "Accese citire"
+
+#~ msgid "Write Accesses"
+#~ msgstr "Accese scriere"
+
+#~ msgid "Read Data"
+#~ msgstr "Citire date"
+
+#~ msgid "Written Data"
+#~ msgstr "Date scrise"
+
+#~ msgid "Milliseconds spent reading"
+#~ msgstr "Milisecunde petrecute citind"
+
+#~ msgid "Milliseconds spent writing"
+#~ msgstr "Milisecunde petrecute scriind"
+
+#~ msgid "I/Os currently in progress"
+#~ msgstr "I/E-uri în progres"
+
+#~ msgid "Pages In"
+#~ msgstr "Pagini citite"
+
+#~ msgid "Pages Out"
+#~ msgstr "Pagini scrise"
+
+#~ msgid "Context Switches"
+#~ msgstr "Comutări de context"
+
+#~ msgid "Traps"
+#~ msgstr "Capturi"
+
+#~ msgid "System Calls"
+#~ msgstr "Apeluri de sistem"
+
+#~ msgid "Network"
+#~ msgstr "Rețea"
+
+#~ msgid "Interfaces"
+#~ msgstr "Interfețe"
+
+#~ msgid "Transmitter"
+#~ msgstr "Transmițător"
+
+#~ msgid "Data Rate"
+#~ msgstr "Rata datelor"
+
+#~ msgid "Compressed Packets Rate"
+#~ msgstr "Rata pachetelor comprimate"
+
+#~ msgid "Dropped Packets Rate"
+#~ msgstr "Rata pachetelor scăpate"
+
+#~ msgid "Error Rate"
+#~ msgstr "Rata erorilor"
+
+#~ msgid "FIFO Overruns Rate"
+#~ msgstr "Rată depășire FIFO"
+
+#~ msgid "Frame Error Rate"
+#~ msgstr "Rată erori de încadrare"
+
+#~ msgid "Multicast Packet Rate"
+#~ msgstr "Rată pachete Multicast"
+
+#~ msgid "Packet Rate"
+#~ msgstr "Rata pachetelor"
+
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Loss Rate"
+#~ msgstr "Rată pierderi la purtătoare"
+
+#~ msgid "Collisions"
+#~ msgstr "Coliziuni"
+
+#~ msgid "Data"
+#~ msgstr "Date"
+
+#~ msgid "Compressed Packets"
+#~ msgstr "Pachete comprimate"
+
+#~ msgid "Dropped Packets"
+#~ msgstr "Pachete rejectate"
+
+#~ msgid "Errors"
+#~ msgstr "Erori"
+
+#~ msgid "FIFO Overruns"
+#~ msgstr "Depășire FIFO"
+
+#~ msgid "Frame Errors"
+#~ msgstr "Erori de încadrare"
+
+#~ msgid "Multicast Packets"
+#~ msgstr "Pachete Multicast"
+
+#~ msgid "Packets"
+#~ msgstr "Pachete"
+
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Losses"
+#~ msgstr "Pierderi la purtătoare"
+
+#~ msgid "Sockets"
+#~ msgstr "Socluri"
+
+#~ msgid "Total Number"
+#~ msgstr "Numărul total"
+
+#~ msgid "Table"
+#~ msgstr "Tabel"
+
+#~ msgid "Advanced Power Management"
+#~ msgstr "Control avansat de energie"
+
+#~ msgid "ACPI"
+#~ msgstr "ACPI"
+
+#~ msgid "Thermal Zone"
+#~ msgstr "Zonă termică"
+
+#~ msgid "Temperature"
+#~ msgstr "Temperatura"
+
+#~ msgid "Average CPU Temperature"
+#~ msgstr "Temperatură medie procesor"
+
+#~ msgid "Fan"
+#~ msgstr "Ventilator"
+
+#~ msgid "State"
+#~ msgstr "Stare"
+
+#~ msgid "Battery"
+#~ msgstr "Acumulator"
+
+#~ msgid "Battery Capacity"
+#~ msgstr "Capacitate acumulator"
+
+#~ msgid "Battery Charge"
+#~ msgstr "Încărcare acumulator"
+
+#~ msgid "Battery Usage"
+#~ msgstr "Utilizare baterie"
+
+#~ msgid "Battery Voltage"
+#~ msgstr "Voltaj acumulator"
+
+#~ msgid "Battery Discharge Rate"
+#~ msgstr "Rată descărcare acumulator"
+
+#~ msgid "Remaining Time"
+#~ msgstr "Timp rămas"
+
+#~ msgid "Interrupts"
+#~ msgstr "Întreruperi"
+
+#~ msgid "Load Average (1 min)"
+#~ msgstr "Încărcarea medie (1 min)"
+
+#~ msgid "Load Average (5 min)"
+#~ msgstr "Încărcarea medie (5 min)"
+
+#~ msgid "Load Average (15 min)"
+#~ msgstr "Încărcarea medie (15 min)"
+
+#~ msgid "Clock Frequency"
+#~ msgstr "Frecvență ceas"
+
+#~ msgid "Average Clock Frequency"
+#~ msgstr "Frecvență medie ceas"
+
+#~ msgid "Hardware Sensors"
+#~ msgstr "Senzori hardware"
+
+#~ msgid "Partition Usage"
+#~ msgstr "Utilizare partiție"
+
+#~ msgid "Used Space"
+#~ msgstr "Spațiu utilizat"
+
+#~ msgid "Free Space"
+#~ msgstr "Spațiu liber"
+
+#~ msgid "Fill Level"
+#~ msgstr "Grad de umplere"
+
+#~ msgid "Used Inodes"
+#~ msgstr "Inoduri utilizate"
+
+#~ msgid "Free Inodes"
+#~ msgstr "Inoduri libere"
+
+#~ msgid "Inode Level"
+#~ msgstr "Nivel inod"
+
+#~ msgid "System"
+#~ msgstr "Sistem"
+
+#~ msgid "Uptime"
+#~ msgstr "Disponibilitate"
+
+#~ msgid "Linux Soft Raid (md)"
+#~ msgstr "Linux Soft Raid (md)"
+
+#~ msgid "Processors"
+#~ msgstr "Procesoare"
+
+#~ msgid "Cores"
+#~ msgstr "Nuclee"
+
+#~ msgid "Number of Blocks"
+#~ msgstr "Numărul de blocuri"
+
+#~ msgid "Total Number of Devices"
+#~ msgstr "Numărul total de dispozitive"
+
+#~ msgid "Failed Devices"
+#~ msgstr "Dispozitive eșuate"
+
+#~ msgid "Spare Devices"
+#~ msgstr "Dispozitive de rezervă"
+
+#~ msgid "Number of Raid Devices"
+#~ msgstr "Numărul de dispozitive RAID"
+
+#~ msgid "Working Devices"
+#~ msgstr "Dispozitive în lucru"
+
+#~ msgid "Active Devices"
+#~ msgstr "Dispozitive active"
+
+#~ msgid "Number of Devices"
+#~ msgstr "Numărul de dispozitive"
+
+#~ msgid "Resyncing Percent"
+#~ msgstr "Procentaj resincronizare"
+
+#~ msgid "Disk Information"
+#~ msgstr "Informații despre disc"
+
+#~ msgid "CPU %1"
+#~ msgstr "CPU %1"
+
+#~ msgid "Disk %1"
+#~ msgstr "Disc %1"
+
+#~ msgid "Battery %1"
+#~ msgstr "Acumulator %1"
+
+#~ msgid "Fan %1"
+#~ msgstr "Ventilator %1"
+
+#~ msgid "Temperature %1"
+#~ msgstr "Temperatura %1"
+
+#~ msgid "Total"
+#~ msgstr "Total"
+
+#~ msgid "Software Interrupts"
+#~ msgstr "Întreruperi software"
+
+#~ msgid "Hardware Interrupts"
+#~ msgstr "Întreruperi echipament"
+
+#~ msgid "Int %1"
+#~ msgstr "Int %1"
+
+#~ msgctxt "the unit 1 per second"
+#~ msgid "1/s"
+#~ msgstr "1/s"
+
+#~ msgid "kBytes"
+#~ msgstr "kocteți"
+
+#~ msgctxt "the unit minutes"
+#~ msgid "min"
+#~ msgstr "min"
+
+#~ msgctxt "the frequency unit"
+#~ msgid "MHz"
+#~ msgstr "MHz"
+
+#~ msgctxt "a percentage"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgctxt "the unit milliamperes"
+#~ msgid "mA"
+#~ msgstr "mA"
+
+#~ msgctxt "the unit milliampere hours"
+#~ msgid "mAh"
+#~ msgstr "mAh"
+
+#~ msgctxt "the unit milliwatts"
+#~ msgid "mW"
+#~ msgstr "mW"
+
+#~ msgctxt "the unit milliwatt hours"
+#~ msgid "mWh"
+#~ msgstr "mWh"
+
+#~ msgctxt "the unit millivolts"
+#~ msgid "mV"
+#~ msgstr "mV"
+
+#~ msgid "Integer Value"
+#~ msgstr "Număr întreg"
+
+#~ msgid "Floating Point Value"
+#~ msgstr "Valoare în virgulă mobilă"
+
+#~ msgctxt "Units"
+#~ msgid "%1 second"
+#~ msgid_plural "%1 seconds"
+#~ msgstr[0] "%1 secundă"
+#~ msgstr[1] "%1 secunde"
+#~ msgstr[2] "%1 de secunde"
+
+#~ msgctxt "Units"
+#~ msgid "%1 minute"
+#~ msgid_plural "%1 minutes"
+#~ msgstr[0] "%1 minut"
+#~ msgstr[1] "%1 minute"
+#~ msgstr[2] "%1 de minute"
+
+#, fuzzy
+#~| msgctxt "unitless - just a number"
+#~| msgid "%1"
+#~ msgid "%1"
+#~ msgstr "%1"
+
+#~ msgid "Font:"
+#~ msgstr "Font:"
+
+#~ msgid "Grid lines:"
+#~ msgstr "Linii grilă:"
+
+#~ msgid "Background:"
+#~ msgstr "Fundal:"
+
+#~ msgid "Do you really want to delete the display?"
+#~ msgstr "Într-adevăr doriți să ștergeți afișajul?"
+
+#~ msgid "Delete Display"
+#~ msgstr "Șterge afișajul"
+
+#~ msgid "&Edit"
+#~ msgstr "&Editare"
+
+#~ msgid "Automatic range"
+#~ msgstr "Rază automată"
+
+#~ msgid "N/A"
+#~ msgstr "Indisp."
+
+#~ msgctxt "units in percentage"
+#~ msgid "%1%"
+#~ msgstr "%1%"
+
+#~ msgid ""
+#~ "This is your work space. It holds your tabs. You need to create a new tab "
+#~ "(Menu File->New) before you can drag sensors here."
+#~ msgstr ""
+#~ "Acesta este spațiul dumneavoastră de lucru. El vă poartă filele. Trebuie "
+#~ "să creați o nouă filă (meniul Fișier->Nou) înainte de a putea trage "
+#~ "senzori aici."
+
+#~ msgid "Connection to %1 has been lost."
+#~ msgstr "Am pierdut conexiunea cu \"%1\"."
+
+#~ msgid "&Title"
+#~ msgstr "&Titlu"
+
+#~ msgid "T&itle"
+#~ msgstr "T&itlu"
+
+#~ msgid "System Guard Applet Settings"
+#~ msgstr "Opțiuni miniaplicație Sistem de gardă"
+
+#~ msgid "Size ratio:"
+#~ msgstr "Raportul de aspect:"
+
+#~ msgctxt "Number suffix in spinbox"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgid "Launch &System Guard"
+#~ msgstr "Lansare &Sistem de gardă"
+
+#, fuzzy
+#~| msgid "Select Worksheet to Import"
+#~ msgid "Select Worksheet to Open"
+#~ msgstr "Selectați foaia de lucru de importat"
+
+#~ msgid "Export Work Sheet"
+#~ msgstr "Export foaie de lucru"
+
+#~ msgid "Worksheet Properties"
+#~ msgstr "Proprietăți subfereastră"
+
+#~ msgid "&Signal Plotter"
+#~ msgstr "&Ploter de semnal"
+
+#~ msgid "&Multimeter"
+#~ msgstr "&Multimetru"
+
+#~ msgid "&Dancing Bars"
+#~ msgstr "Bare &animate"
+
+#~ msgid ""
+#~ "The KSysGuard applet does not support displaying of this type of sensor. "
+#~ "Please choose another sensor."
+#~ msgstr ""
+#~ "Miniaplicația \"Sistem de monitorizare KDE\" nu suportă afișarea acestui "
+#~ "tip de senzori. Alegeți alt tip de senzor."
+
+#~ msgid ""
+#~ "The file %1 does not contain a valid applet definition, which must have a "
+#~ "document type 'KSysGuardApplet'."
+#~ msgstr ""
+#~ "Fișierul %1 nu conține o definiție validă de miniaplicație. Trebuie să "
+#~ "aibă un document de tipul \"KSysGuardApplet\"."
+
+#~ msgid "Drag sensors from the KDE System Guard into this cell."
+#~ msgstr "Trageți senzori din Sistemul de monitorizare KDE în această celulă."
+
+#~ msgid "&New Worksheet..."
+#~ msgstr "Foaie de lucru &nouă..."
+
+#, fuzzy
+#~| msgid "&New Worksheet..."
+#~ msgid "Open Worksheet..."
+#~ msgstr "Foaie de lucru &nouă..."
+
+#~ msgid "&Export Worksheet..."
+#~ msgstr "&Export foaie de luru..."
+
+#~ msgid "&Remove Worksheet"
+#~ msgstr "Eli&minare foaie de lucru"
+
+#~ msgid "&Worksheet Properties"
+#~ msgstr "Proprietăți &foaie de lucru"
+
+#~ msgid "Import Worksheet..."
+#~ msgstr "Import foaie de luru..."
+
+#~ msgid "Count:"
+#~ msgstr "Număr:"
+
+#~ msgid "Enter the number of horizontal lines here."
+#~ msgstr "Introduceți aici numărul de linii orizontale."
+
+#~ msgid "Labels"
+#~ msgstr "Etichete"
+
+#~ msgid "Top bar"
+#~ msgstr "Bara de sus"
+
+#~ msgid ""
+#~ "Check this to active the display title bar. This is probably only useful "
+#~ "for applet displays. The bar is only visible if the display is large "
+#~ "enough."
+#~ msgstr ""
+#~ "Selectați această opțiune pentru a activa bara de titlu a afișajului. "
+#~ "Acest lucru este probabil util numai pentru miniaplicații de afișare. "
+#~ "Bara este vizibilă numai dacă afișajul este suficient de larg."
+
+#~ msgid "Horizontal lines:"
+#~ msgstr "Linii orizontale:"

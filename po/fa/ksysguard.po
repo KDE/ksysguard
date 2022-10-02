@@ -1,0 +1,2221 @@
+# #-#-#-#-#  .r1140 (ksysguard)  #-#-#-#-#
+# nasim <daniarzadeh@itland.ir>, 2006.
+# Nasim Daniarzadeh <daniarzadeh@itland.ir>, 2006, 2007.
+# Maryamsadat Razavi <razavi@itland.ir>, 2006.
+# Mahdi Foladgar <foladgar@itland.ir>, 2006.
+# zahra dadkhah <dadkhah@itland.ir>, 2006.
+# Nazanin Kazemi <kazemi@itland.ir>, 2006, 2007.
+# Tahereh Dadkhahfar <dadkhahfar@itland.ir>, 2006, 2007.
+# maryamSadat Razavi <razavi@itland.ir>, 2006.
+# translation of ksysguard.po to
+# #-#-#-#-#  .mine (ksysguard)  #-#-#-#-#
+# translation of ksysguard.po to#
+# #-#-#-#-#  .r1159 (ksysguard)  #-#-#-#-#
+# translation of ksysguard.po to Persian
+# translation of ksysguard.po to#
+msgid ""
+msgstr ""
+"Project-Id-Version: ksysguard\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-03-02 00:46+0000\n"
+"PO-Revision-Date: 2007-07-18 08:29+0330\n"
+"Last-Translator: Nazanin Kazemi <kazemi@itland.ir>\n"
+"Language-Team: Persian <kde-i18n-fa@kde.org>\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"#-#-#-#-#  .r1412 (ksysguard)  #-#-#-#-#\n"
+"#-#-#-#-#  .r1338 (ksysguard)  #-#-#-#-#\n"
+"#-#-#-#-#  .r1140 (ksysguard)  #-#-#-#-#\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"#-#-#-#-#  .r1140 (ksysguard)  #-#-#-#-#\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"#-#-#-#-#  .r1140 (ksysguard)  #-#-#-#-#\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"#-#-#-#-#  .r1338 (ksysguard)  #-#-#-#-#\n"
+"#-#-#-#-#  .r1140 (ksysguard)  #-#-#-#-#\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"#-#-#-#-#  .r1140 (ksysguard)  #-#-#-#-#\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"#-#-#-#-#  .r1140 (ksysguard)  #-#-#-#-#\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"#-#-#-#-#  .r1338 (ksysguard)  #-#-#-#-#\n"
+"#-#-#-#-#  .r1140 (ksysguard)  #-#-#-#-#\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"#-#-#-#-#  .r1140 (ksysguard)  #-#-#-#-#\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"#-#-#-#-#  .r1140 (ksysguard)  #-#-#-#-#\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "نسیم دانیارزاده"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "daniarzadeh@itland.ir"
+
+#: HostConnector.cpp:44
+#, kde-format
+msgid "Connect Host"
+msgstr "اتصال به میزبان"
+
+#: HostConnector.cpp:57
+#, kde-format
+msgid "Host:"
+msgstr "میزبان:"
+
+#: HostConnector.cpp:67
+#, kde-format
+msgid "Enter the name of the host you want to connect to."
+msgstr "نام میزبانی که می‌خواهید به آن متصل شوید را وارد کنید."
+
+#: HostConnector.cpp:73
+#, kde-format
+msgid "Connection Type"
+msgstr "نوع اتصال"
+
+#: HostConnector.cpp:78
+#, kde-format
+msgid "ssh"
+msgstr "ssh"
+
+#: HostConnector.cpp:81
+#, kde-format
+msgid "Select this to use the secure shell to login to the remote host."
+msgstr " برای استفاده از پوسته امن جهت ورود به میزبان دور، این را انتخاب کنید."
+
+#: HostConnector.cpp:84
+#, kde-format
+msgid "rsh"
+msgstr "rsh"
+
+#: HostConnector.cpp:85
+#, kde-format
+msgid "Select this to use the remote shell to login to the remote host."
+msgstr " برای استفاده از پوسته دور جهت ورود به میزبان دور، این را انتخاب کنید."
+
+#: HostConnector.cpp:88
+#, kde-format
+msgid "Daemon"
+msgstr "شبح"
+
+#: HostConnector.cpp:89
+#, kde-format
+msgid ""
+"Select this if you want to connect to a ksysguard daemon that is running on "
+"the machine you want to connect to, and is listening for client requests."
+msgstr ""
+"اگر می‌خواهید به شبح ksysguard که در حال اجرا در ماشینی است که می‌خواهید به آن "
+"متصل شوید، و به درخواستهای کارخواه گوش می‌دهد، وصل شوید، این را انتخاب کنید."
+
+#: HostConnector.cpp:92
+#, kde-format
+msgid "Custom command"
+msgstr "فرمان سفارشی"
+
+#: HostConnector.cpp:93
+#, kde-format
+msgid ""
+"Select this to use the command you entered below to start ksysguardd on the "
+"remote host."
+msgstr ""
+" برای استفاده از فرمانی که در زیر وارد کرده‌اید جهت آغاز ksysguardd در میزبان "
+"دور، این را انتخاب کنید."
+
+#: HostConnector.cpp:96
+#, kde-format
+msgid "Port:"
+msgstr "درگاه:"
+
+#: HostConnector.cpp:103
+#, kde-format
+msgid ""
+"Enter the port number on which the ksysguard daemon is listening for "
+"connections."
+msgstr " عدد درگاهی که شبح ksysguard از آن به اتصالها گوش می‌دهد را وارد کنید."
+
+#: HostConnector.cpp:106
+#, kde-format
+msgid "e.g.  3112"
+msgstr "مثلاً  ۳۱۱۲"
+
+#: HostConnector.cpp:109
+#, kde-format
+msgid "Command:"
+msgstr "فرمان:"
+
+#: HostConnector.cpp:118
+#, kde-format
+msgid "Enter the command that runs ksysguardd on the host you want to monitor."
+msgstr ""
+" فرمانی که ksysguardd را روی میزبانی که می‌خواهید پایشگری کنید اجرا می‌کند، را "
+"وارد کنید."
+
+#: HostConnector.cpp:122
+#, kde-format
+msgid "e.g. ssh -l root remote.host.org ksysguardd"
+msgstr "مثلاً:  ssh -l root remote.host.org ksysguardd"
+
+#: ksysguard.cpp:156
+#, kde-format
+msgid ""
+"This will hide the menu bar completely. You can show it again by typing %1."
+msgstr ""
+
+#: ksysguard.cpp:158
+#, kde-format
+msgid "Hide menu bar"
+msgstr ""
+
+#: ksysguard.cpp:176 ksysguard.cpp:570
+#, kde-format
+msgid "System Monitor"
+msgstr "نمایشگر سیستم"
+
+#: ksysguard.cpp:177
+#, kde-format
+msgid "&Refresh Tab"
+msgstr ""
+
+#: ksysguard.cpp:178
+#, kde-format
+msgid "&New Tab..."
+msgstr ""
+
+#: ksysguard.cpp:179
+#, kde-format
+msgid "Import Tab Fr&om File..."
+msgstr ""
+
+#: ksysguard.cpp:180
+#, kde-format
+msgid "Save Tab &As..."
+msgstr ""
+
+#: ksysguard.cpp:181
+#, kde-format
+msgid "&Close Tab"
+msgstr ""
+
+#: ksysguard.cpp:182
+#, fuzzy, kde-format
+#| msgid "Monitor remote machine..."
+msgid "Monitor &Remote Machine..."
+msgstr "ماشین دور نمایشگر..."
+
+#: ksysguard.cpp:183
+#, fuzzy, kde-format
+#| msgid "&New Worksheet..."
+msgid "&Download New Tabs..."
+msgstr "کاربرگ &جدید...‌"
+
+#: ksysguard.cpp:184
+#, fuzzy, kde-format
+#| msgid "&New Worksheet..."
+msgid "&Upload Current Tab..."
+msgstr "کاربرگ &جدید...‌"
+
+#: ksysguard.cpp:186
+#, fuzzy, kde-format
+#| msgid "&Properties"
+msgid "Tab &Properties"
+msgstr "&ویژگیها‌"
+
+#: ksysguard.cpp:383
+#, fuzzy, kde-format
+#| msgid " %1 processes "
+msgid "1 process"
+msgid_plural "%1 processes"
+msgstr[0] " %1 فرایند "
+
+#: ksysguard.cpp:464
+#, fuzzy, kde-format
+#| msgid " CPU: %1% "
+msgid "CPU: %1%"
+msgstr " واحد پردازش مرکزی‌: %1٪ "
+
+#: ksysguard.cpp:464
+#, fuzzy, kde-format
+#| msgctxt "a percentage"
+#| msgid "%"
+msgctxt "This is the shorter version of CPU: %1%"
+msgid "%1%"
+msgstr "٪"
+
+#: ksysguard.cpp:483
+#, fuzzy, kde-format
+#| msgid " Memory: %1 / %2 "
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Memory: %1 / %2"
+msgstr " حافظه: %1 / %2 "
+
+#: ksysguard.cpp:485
+#, fuzzy, kde-format
+#| msgid " Memory: %1 / %2 "
+msgctxt ""
+"Arguments are formatted byte sizes (used/total) This should be a shorter "
+"version of the previous Memory: %1 / %2"
+msgid "Mem: %1 / %2"
+msgstr " حافظه: %1 / %2 "
+
+#: ksysguard.cpp:487
+#, kde-format
+msgctxt ""
+"Arguments is formatted byte sizes (used) This should be a shorter version of "
+"the previous Mem: %1 / %2"
+msgid "Mem: %1"
+msgstr ""
+
+#: ksysguard.cpp:515
+#, kde-format
+msgid " No swap space available "
+msgstr " هیچ فضای مبادله‌ای در دسترس نیست "
+
+#: ksysguard.cpp:519
+#, fuzzy, kde-format
+#| msgid " Swap: %1 / %2 "
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Swap: %1 / %2"
+msgstr " مبادله: %1 / %2 "
+
+#: ksysguard.cpp:521
+#, kde-format
+msgctxt "Arguments is formatted byte sizes (used)"
+msgid "Swap: %1"
+msgstr ""
+
+#: ksysguard.cpp:571
+#, kde-format
+msgid "KDE System Monitor"
+msgstr "نمایشگر سیستم KDE"
+
+#: ksysguard.cpp:572
+#, fuzzy, kde-format
+#| msgid "(c) 1996-2008 The KDE System Monitor Developers"
+msgid "(c) 1996-2016 The KDE System Monitor Developers"
+msgstr "(ح) ۲۰۰۸-۱۹۹۶ توسعه‌دهندگان دیده‌بانی سیستم KDE"
+
+#: ksysguard.cpp:574
+#, kde-format
+msgid "John Tapsell"
+msgstr "John Tapsell"
+
+#: ksysguard.cpp:574
+#, kde-format
+msgid "Current Maintainer"
+msgstr "نگه‌دارنده جاری"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Chris Schlaeger"
+msgstr "Chris Schlaeger"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Previous Maintainer"
+msgstr "نگه‌دارنده قبلی"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Greg Martyn"
+msgstr "Greg Martyn"
+
+#: ksysguard.cpp:577
+#, kde-format
+msgid "Tobias Koenig"
+msgstr "Tobias Koenig"
+
+#: ksysguard.cpp:578
+#, kde-format
+msgid "Nicolas Leclercq"
+msgstr "Nicolas Leclercq"
+
+#: ksysguard.cpp:579
+#, kde-format
+msgid "Alex Sanda"
+msgstr "Alex Sanda"
+
+#: ksysguard.cpp:580
+#, kde-format
+msgid "Bernd Johannes Wuebben"
+msgstr "Bernd Johannes Wuebben"
+
+#: ksysguard.cpp:581
+#, kde-format
+msgid "Ralf Mueller"
+msgstr "Ralf Mueller"
+
+#: ksysguard.cpp:582
+#, kde-format
+msgid "Hamish Rodda"
+msgstr "Hamish Rodda"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid "Torsten Kasch"
+msgstr "Torsten Kasch"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+msgstr ""
+"پشتیبانی سولاریس\n"
+"اجزای گرفته‌شده )با مجوز( از پیمانه sunos5\n"
+"مربوط به سودمندی »بالا« ویلیام لیفبور."
+
+#: ksysguard.cpp:592
+#, kde-format
+msgid "Optional worksheet files to load"
+msgstr "پرونده‌های کاربرگ اختیاری برای بارگذاری"
+
+#. i18n: ectx: Menu (file)
+#: ksysguardui.rc:5
+#, kde-format
+msgid "&File"
+msgstr "&پرونده‌"
+
+#. i18n: ectx: Menu (view)
+#: ksysguardui.rc:15
+#, fuzzy, kde-format
+#| msgid "&File"
+msgid "&View"
+msgstr "&پرونده‌"
+
+#. i18n: ectx: Menu (settings)
+#: ksysguardui.rc:19
+#, kde-format
+msgid "&Settings"
+msgstr "&تنظیمات‌"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ksysguardui.rc:22
+#, kde-format
+msgid "Main Toolbar"
+msgstr "میله ابزار اصلی"
+
+#. i18n: tag WorkSheet attribute title
+#. i18n: tag display attribute title
+#: ProcessTable.sgrd:3 ProcessTable.sgrd:5
+#, kde-format
+msgid "Process Table"
+msgstr "جدول فرایندها"
+
+#: SensorBrowser.cpp:113
+#, kde-format
+msgid "Sensor Browser"
+msgstr "مرورگر حسگر"
+
+#: SensorBrowser.cpp:473
+#, fuzzy, kde-format
+#| msgid "Drag sensors to empty cells of a worksheet or the panel applet."
+msgid "Drag sensors to empty cells of a worksheet "
+msgstr "کشیدن حسگرها به سلولهای خالی از یک کاربرگ یا برنامک تابلو."
+
+#: SensorBrowser.cpp:474
+#, fuzzy, kde-format
+#| msgid ""
+#| "The sensor browser lists the connected hosts and the sensors that they "
+#| "provide. Click and drag sensors into drop zones of a worksheet or the "
+#| "panel applet. A display will appear that visualizes the values provided "
+#| "by the sensor. Some sensor displays can display values of multiple "
+#| "sensors. Simply drag other sensors on to the display to add more sensors."
+msgid ""
+"The sensor browser lists the connected hosts and the sensors that they "
+"provide. Click and drag sensors into drop zones of a worksheet. A display "
+"will appear that visualizes the values provided by the sensor. Some sensor "
+"displays can display values of multiple sensors. Simply drag other sensors "
+"on to the display to add more sensors."
+msgstr ""
+"مرورگر حسگر، میزبانهای متصل و حسگرهایی که آنها تهیه می‌کنند را فهرست می‌کند. "
+"روی حسگرها فشار دهید و آنها را به مناطق افت یک کاربرگ یا برنامک تابلو بکشید. "
+"یک نمایش ظاهر می‌شود که مقادیر تهیه‌شده توسط حسگر را متصور سازد. برخی نمایشهای "
+"حسگر می‌توانند مقادیر حسگرهای متعدد را نمایش دهند. برای افزودن حسگرهای بیشتر، "
+"کافی است حسگرهای دیگر را به صفحه نمایش بکشید."
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:281
+#, kde-format
+msgid "OK"
+msgstr "تأیید"
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:281
+#: SensorDisplayLib/FancyPlotter.cpp:545 SensorDisplayLib/FancyPlotter.cpp:624
+#, kde-format
+msgid "Error"
+msgstr "خطا"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:42
+#, kde-format
+msgid "Edit BarGraph Preferences"
+msgstr "ویرایش تنظیمات گراف میله"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:51
+#, kde-format
+msgid "Range"
+msgstr "گستره"
+
+#. i18n: ectx: property (title), widget (QGroupBox, titleFrame)
+#: SensorDisplayLib/DancingBarsSettings.cpp:55
+#: SensorDisplayLib/ListViewSettingsWidget.ui:17
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:17 WorkSheetSettings.cpp:61
+#, kde-format
+msgid "Title"
+msgstr "عنوان"
+
+#. i18n: ectx: property (whatsThis), widget (QLineEdit, m_title)
+#: SensorDisplayLib/DancingBarsSettings.cpp:60
+#: SensorDisplayLib/FancyPlotterSettings.cpp:70
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
+#, kde-format
+msgid "Enter the title of the display here."
+msgstr " عنوان صفحه نمایش را در اینجا وارد کنید."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:65
+#, kde-format
+msgid "Display Range"
+msgstr "گستره نمایش"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:70
+#: SensorDisplayLib/FancyPlotterSettings.cpp:96
+#, kde-format
+msgid "Minimum value:"
+msgstr "مقدار کمینه:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:78
+#, kde-format
+msgid ""
+"Enter the minimum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+" مقدار کمینه برای نمایش را در اینجا وارد کنید. اگر هر دو مقدار صفر باشند، "
+"آشکارسازی خودکار گستره فعال می‌شود."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:82
+#: SensorDisplayLib/FancyPlotterSettings.cpp:107
+#, kde-format
+msgid "Maximum value:"
+msgstr " مقدار بیشینه:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:90
+#, kde-format
+msgid ""
+"Enter the maximum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+" مقدار بیشینه برای صفحه نمایش را در اینجا وارد کنید. اگر هر دو مقدار صفر "
+"باشند، آشکارسازی خودکار گستره فعال می‌شود."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:100
+#, kde-format
+msgid "Alarms"
+msgstr "هشدارها"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
+#: SensorDisplayLib/DancingBarsSettings.cpp:104
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
+#, kde-format
+msgid "Alarm for Minimum Value"
+msgstr "هشدار برای مقدار کمینه"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:109
+#: SensorDisplayLib/DancingBarsSettings.cpp:132
+#, kde-format
+msgid "Enable alarm"
+msgstr "فعال‌سازی هشدار"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:110
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:57
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
+#, kde-format
+msgid "Enable the minimum value alarm."
+msgstr "فعال‌سازی هشدار مقدار کمینه."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:113
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:125
+#, kde-format
+msgid "Lower limit:"
+msgstr "حد پایینی:"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1_2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:127
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
+#, kde-format
+msgid "Alarm for Maximum Value"
+msgstr "هشدار برای مقدار بیشینه"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:133
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:116
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
+#, kde-format
+msgid "Enable the maximum value alarm."
+msgstr "فعال‌سازی هشدار مقدار بیشینه"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:136
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:198
+#, kde-format
+msgid "Upper limit:"
+msgstr "حد بالایی:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:153
+#, fuzzy, kde-format
+#| msgid "Look"
+msgctxt "@title:tab Appearance of the bar graph"
+msgid "Look"
+msgstr "ظاهر"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:157
+#, kde-format
+msgid "Normal bar color:"
+msgstr "رنگ عادی میله:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:164
+#, kde-format
+msgid "Out-of-range color:"
+msgstr "رنگ خارج از گستره:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/DancingBarsSettings.cpp:171
+#: SensorDisplayLib/ListViewSettingsWidget.ui:105
+#: SensorDisplayLib/LogFile.cpp:105 SensorDisplayLib/LogFileSettings.ui:85
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:92
+#, kde-format
+msgid "Background color:"
+msgstr "رنگ زمینه:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:178
+#: SensorDisplayLib/FancyPlotterSettings.cpp:177
+#, kde-format
+msgid "Font size:"
+msgstr "اندازه قلم:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:183
+#, kde-format
+msgid ""
+"This determines the size of the font used to print a label underneath the "
+"bars. Bars are automatically suppressed if text becomes too large, so it is "
+"advisable to use a small font size here."
+msgstr ""
+" اندازه قلم مورد استفاده برای چاپ برچسب زیر میله‌ها را تعیین می‌کند. اگر متن "
+"خیلی بزرگ شود، میله‌ها به طور خودکار موقوف می‌شوند، پس توصیه می‌شود که در اینجا "
+"از اندازه کوچک قلم استفاده شود."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:191
+#: SensorDisplayLib/FancyPlotterSettings.cpp:193
+#, kde-format
+msgid "Sensors"
+msgstr "حسگرها"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:204
+#, kde-format
+msgid "Edit..."
+msgstr "ویرایش..."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:205
+#, kde-format
+msgid "Push this button to configure the label."
+msgstr " این دکمه را فشار دهید تا برچسب پیکربندی شود."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:208
+#: SensorDisplayLib/FancyPlotterSettings.cpp:225
+#, kde-format
+msgid "Delete"
+msgstr "حذف"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:209
+#: SensorDisplayLib/FancyPlotterSettings.cpp:226
+#, kde-format
+msgid "Push this button to delete the sensor."
+msgstr " این دکمه را فشار دهید تا حسگر حذف شود."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:361
+#, kde-format
+msgid "Label of Bar Graph"
+msgstr "برچسب گراف میله"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:362
+#, kde-format
+msgid "Enter new label:"
+msgstr "وارد کردن برچسب جدید:"
+
+#: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
+#, kde-format
+msgid "Drop Sensor Here"
+msgstr "حسگر را در اینجا رها کنید"
+
+#: SensorDisplayLib/DummyDisplay.cpp:33
+#, kde-format
+msgid ""
+"This is an empty space in a worksheet. Drag a sensor from the Sensor Browser "
+"and drop it here. A sensor display will appear that allows you to monitor "
+"the values of the sensor over time."
+msgstr ""
+" یک فضای خالی در یک کاربرگ می‌باشد. از مرورگر حسگر، یک حسگر بکشید و آن را در "
+"اینجا رها کنید. نمایش حسگر ظاهر می‌شود، که به شما اجازه می‌دهد تا مقادیر حسگر "
+"را در طی زمان پایشگری کنید."
+
+#: SensorDisplayLib/FancyPlotter.cpp:177
+#, kde-format
+msgctxt "Largest axis title"
+msgid "99999 XXXX"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:541 SensorDisplayLib/FancyPlotter.cpp:613
+#: SensorDisplayLib/FancyPlotter.cpp:676
+#, kde-format
+msgctxt "units"
+msgid "%1%"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:549
+#, kde-format
+msgctxt "%1 is what is being shown statistics for, like 'Memory', 'Swap', etc."
+msgid "<p><b>%1:</b><br>"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:621
+#, kde-format
+msgid "%1 of %2"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:649
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:652
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:655
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:658
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:663
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:666
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:669
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:672
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:678
+#, fuzzy, kde-format
+#| msgctxt "a percentage"
+#| msgid "%"
+msgctxt "unitless - just a number"
+msgid "%1"
+msgstr "٪"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:46
+#, fuzzy, kde-format
+#| msgid "Signal Plotter Settings"
+msgid "Plotter Settings"
+msgstr "تنظیمات رسام نشانک"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:62
+#, kde-format
+msgid "General"
+msgstr "عمومی"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:66
+#, kde-format
+msgid "Title:"
+msgstr "عنوان:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:74
+#, kde-format
+msgid "Stack the beams on top of each other"
+msgstr "پشته پرتوها در بالای یکدیگر"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:75
+#, fuzzy, kde-format
+msgid ""
+"The beams are stacked on top of each other, and the area is drawn filled in. "
+"So if one beam has a value of 2 and another beam has a value of 3, the first "
+"beam will be drawn at value 2 and the other beam drawn at 2+3=5."
+msgstr ""
+"پرتوها در بالای یکدیگر پشته می‌شوند، و ناحیه در آن ترسیم می شود. بنابراین اگر "
+"یک پرتو مقدار ۲ داشته و پرتو دیگر مقدار ۳، پرتو اول در مقدار ۲ ترسیم شده و "
+"بقیه پرتوها در ۲+۳+۵ ترسیم می شونذ"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:82
+#, kde-format
+msgid "Scales"
+msgstr "مقیاسها"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:86
+#, fuzzy, kde-format
+#| msgid "Vertical Scale"
+msgid "Vertical scale"
+msgstr "مقیاس عمودی"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:91
+#, kde-format
+msgid "Specify graph range:"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:92
+#, kde-format
+msgid ""
+"Check this box if you want the display range to adapt dynamically to the "
+"currently displayed values; if you do not check this, you have to specify "
+"the range you want in the fields below."
+msgstr ""
+"اگر می‌خواهید گستره نمایش را به طور پویا با مقادیری که اخیراً نمایش داده می‌شود "
+"وفق دهید، این جعبه را علامت بزنید. در صورت علامت نزدن این جعبه، باید گستره‌ای "
+"که در حوزه‌های زیر می‌خواهید را مشخص کنید."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:102
+#, fuzzy, kde-format
+#| msgid "Enter the title of the display here."
+msgid "Enter the minimum value for the display here."
+msgstr " عنوان صفحه نمایش را در اینجا وارد کنید."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:113
+#, kde-format
+msgid ""
+"Enter the soft maximum value for the display here. The upper range will not "
+"be reduced below this value, but will still go above this number for values "
+"above this value."
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:120
+#, fuzzy, kde-format
+#| msgid "Horizontal Scale"
+msgid "Horizontal scale"
+msgstr "مقیاس افقی"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:128
+#, fuzzy, kde-format
+#| msgid "pixels per time period"
+msgid "Pixels per time period:"
+msgstr "تصویردانه در هر دوره زمانی"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:135
+#, kde-format
+msgid "Grid"
+msgstr "توری"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:139
+#, kde-format
+msgid "Lines"
+msgstr "خطوط"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:144
+#, kde-format
+msgid "Vertical lines"
+msgstr "خطوط عمودی"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:145
+#, kde-format
+msgid "Check this to activate the vertical lines if display is large enough."
+msgstr ""
+"اگر صفحه نمایش به اندازه کافی بزرگ است، برای فعال‌سازی خطوط عمودی این را "
+"علامت بزنید."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:148
+#, kde-format
+msgid "Distance:"
+msgstr "فاصله:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:155
+#, kde-format
+msgid "Enter the distance between two vertical lines here."
+msgstr "فاصله بین دو خط عمودی را در اینجا وارد کنید."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:159
+#, kde-format
+msgid "Vertical lines scroll"
+msgstr "لغزش خطوط عمودی"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:162
+#, kde-format
+msgid "Horizontal lines"
+msgstr "خطوط افقی"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:163
+#, kde-format
+msgid "Check this to enable horizontal lines if display is large enough."
+msgstr ""
+"اگر نمایش به اندازه کافی بزرگ است، برای فعال‌سازی خطوط افقی این را علامت "
+"بزنید."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:168
+#, kde-format
+msgid "Text"
+msgstr "متن"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:173
+#, kde-format
+msgid "Show axis labels"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:174
+#, kde-format
+msgid ""
+"Check this box if horizontal lines should be decorated with the values they "
+"mark."
+msgstr ""
+"اگر خطوط افقی باید با مقادیری که آنها نشان می‌دهند تزئین شوند، این جعبه را "
+"علامت بزنید."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:217
+#, kde-format
+msgid "Set Color..."
+msgstr "تنظیم رنگ..."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:218
+#, kde-format
+msgid "Push this button to configure the color of the sensor in the diagram."
+msgstr "برای پیکربندی رنگ حسگر در نمودار، این دکمه را فشار دهید."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:230
+#, kde-format
+msgid "Move Up"
+msgstr "حرکت به بالا"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:235
+#, kde-format
+msgid "Move Down"
+msgstr "حرکت به پایین"
+
+#: SensorDisplayLib/ListView.cpp:45
+#, fuzzy, kde-format
+#| msgctxt "a percentage"
+#| msgid "%"
+msgid "%1 K"
+msgstr "٪"
+
+#: SensorDisplayLib/ListView.cpp:46
+#, fuzzy, kde-format
+#| msgctxt "a percentage"
+#| msgid "%"
+msgid "%1 M"
+msgstr "٪"
+
+#: SensorDisplayLib/ListView.cpp:47
+#, fuzzy, kde-format
+#| msgctxt "a percentage"
+#| msgid "%"
+msgid "%1 G"
+msgstr "٪"
+
+#: SensorDisplayLib/ListView.cpp:48
+#, fuzzy, kde-format
+#| msgctxt "a percentage"
+#| msgid "%"
+msgid "%1 T"
+msgstr "٪"
+
+#: SensorDisplayLib/ListView.cpp:49
+#, fuzzy, kde-format
+#| msgctxt "a percentage"
+#| msgid "%"
+msgid "%1 P"
+msgstr "٪"
+
+#: SensorDisplayLib/ListView.cpp:152
+#, fuzzy, kde-format
+#| msgid "Display Range"
+msgid "Display Units"
+msgstr "گستره نمایش"
+
+#: SensorDisplayLib/ListView.cpp:156
+#, kde-format
+msgid "Mixed"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:162
+#, kde-format
+msgid "Kilobytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:168
+#, kde-format
+msgid "Megabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:174
+#, kde-format
+msgid "Gigabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:180
+#, fuzzy, kde-format
+#| msgid "Temperature"
+msgid "Terabytes"
+msgstr "دما"
+
+#: SensorDisplayLib/ListViewSettings.cpp:30
+#, kde-format
+msgid "List View Settings"
+msgstr "تنظیمات نمای فهرست"
+
+#. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:47
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:47
+#, kde-format
+msgid "Colors"
+msgstr "رنگها"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:79
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
+#, kde-format
+msgid "Text color:"
+msgstr "رنگ متن:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:92
+#, kde-format
+msgid "Grid color:"
+msgstr "رنگ توری:"
+
+#: SensorDisplayLib/LogFile.cpp:93
+#, kde-format
+msgid "File logging settings"
+msgstr "تنظیمات ثبت پرونده"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
+#, kde-format
+msgid "Foreground color:"
+msgstr "رنگ پیش‌زمینه:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, textTab)
+#: SensorDisplayLib/LogFileSettings.ui:21
+#, kde-format
+msgid "&Text"
+msgstr "&متن‌"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/LogFileSettings.ui:29
+#, fuzzy, kde-format
+#| msgid "Title:"
+msgid "T&itle:"
+msgstr "عنوان:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: SensorDisplayLib/LogFileSettings.ui:166
+#, kde-format
+msgid "Fi&lter"
+msgstr "&پالایه‌"
+
+#. i18n: ectx: property (text), widget (QPushButton, addButton)
+#: SensorDisplayLib/LogFileSettings.ui:196
+#, kde-format
+msgid "&Add"
+msgstr "&افزودن‌"
+
+#. i18n: ectx: property (text), widget (QPushButton, deleteButton)
+#: SensorDisplayLib/LogFileSettings.ui:203
+#, kde-format
+msgid "&Delete"
+msgstr "&حذف‌"
+
+#. i18n: ectx: property (text), widget (QPushButton, changeButton)
+#: SensorDisplayLib/LogFileSettings.ui:210
+#, kde-format
+msgid "&Change"
+msgstr "&تغییر‌"
+
+#: SensorDisplayLib/MultiMeterSettings.cpp:33
+#, fuzzy, kde-format
+#| msgid "Multimeter Settings"
+msgctxt ""
+"Multimeter is a sensor display that mimics 'digital multimeter' aparatus"
+msgid "Multimeter Settings"
+msgstr "تنظیمات چندمتری"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:26
+#, fuzzy, kde-format
+#| msgid "Title:"
+msgid "&Title:"
+msgstr "عنوان:"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:43
+#, kde-format
+msgid "Enable this to append the unit to the title of the display."
+msgstr " برای پیوستن واحد به عنوان نمایش، این را فعال کنید."
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
+#, kde-format
+msgid "&Show unit"
+msgstr "&نمایش واحد‌"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
+#, kde-format
+msgid "&Enable alarm"
+msgstr "&فعال‌سازی هشدار‌"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
+#, fuzzy, kde-format
+#| msgid "Lower limit:"
+msgid "&Lower limit:"
+msgstr "حد پایینی:"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
+#, kde-format
+msgid "E&nable alarm"
+msgstr "&فعال‌سازی هشدار‌"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
+#, kde-format
+msgid "&Upper limit:"
+msgstr "حد &بالایی:‌"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
+#, fuzzy, kde-format
+#| msgid "Normal digit color:"
+msgid "Nor&mal digit color:"
+msgstr "رنگ رقم عادی:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
+#, fuzzy, kde-format
+#| msgid "Alarm digit color:"
+msgid "Alarm di&git color:"
+msgstr "رنگ رقم هشدار:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
+#, fuzzy, kde-format
+#| msgid "Background color:"
+msgid "Bac&kground color:"
+msgstr "رنگ زمینه:"
+
+#: SensorDisplayLib/SensorDisplay.cpp:115 SensorDisplayLib/SensorLogger.cpp:587
+#, kde-format
+msgid "&Properties"
+msgstr "&ویژگیها‌"
+
+#: SensorDisplayLib/SensorDisplay.cpp:120 SensorDisplayLib/SensorLogger.cpp:592
+#, kde-format
+msgid "&Remove Display"
+msgstr "&حذف نمایش‌"
+
+#: SensorDisplayLib/SensorDisplay.cpp:187
+#, kde-format
+msgid ""
+"<qt><p>This is a sensor display. To customize a sensor display click the "
+"right mouse button here and select the <i>Properties</i> entry from the "
+"popup menu. Select <i>Remove</i> to delete the display from the worksheet.</"
+"p>%1</qt>"
+msgstr ""
+"<qt><p>این یک نمایش حسگر است. برای سفارشی کردن نمایش یک حسگر، دکمه راست موشی "
+"را اینجا فشار دهید و مدخل <i>ویژگیها</i> را از گزینگان بالا پر انتخاب کنید. "
+"برای حذف نمایش از کاربرگ، <i>حذف</i> را انتخاب کنید.</p>%1</qt>"
+
+#: SensorDisplayLib/SensorLogger.cpp:132
+#, fuzzy, kde-format
+#| msgid "Logging"
+msgctxt "@title:column"
+msgid "Logging"
+msgstr "ثبت"
+
+#: SensorDisplayLib/SensorLogger.cpp:134
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:column"
+msgid "Timer Interval"
+msgstr "فاصله زمان‌سنج"
+
+#: SensorDisplayLib/SensorLogger.cpp:136
+#, fuzzy, kde-format
+#| msgid "Sensor Name"
+msgctxt "@title:column"
+msgid "Sensor Name"
+msgstr "نام حسگر"
+
+#: SensorDisplayLib/SensorLogger.cpp:138
+#, fuzzy, kde-format
+#| msgid "Host Name"
+msgctxt "@title:column"
+msgid "Host Name"
+msgstr "نام میزبان"
+
+#: SensorDisplayLib/SensorLogger.cpp:140
+#, fuzzy, kde-format
+#| msgid "Log File"
+msgctxt "@title:column"
+msgid "Log File"
+msgstr " ثبت پرونده"
+
+#: SensorDisplayLib/SensorLogger.cpp:418
+#: SensorDisplayLib/SensorLoggerDlg.cpp:30
+#, kde-format
+msgid "Sensor Logger"
+msgstr "واقعه‌نگار حسگر"
+
+#: SensorDisplayLib/SensorLogger.cpp:597
+#, kde-format
+msgid "&Remove Sensor"
+msgstr "&حذف حسگر‌"
+
+#: SensorDisplayLib/SensorLogger.cpp:602
+#, kde-format
+msgid "&Edit Sensor..."
+msgstr "&ویرایش حسگر...‌"
+
+#: SensorDisplayLib/SensorLogger.cpp:610
+#, kde-format
+msgid "St&op Logging"
+msgstr "&ایست ثبت‌"
+
+#: SensorDisplayLib/SensorLogger.cpp:613
+#, kde-format
+msgid "S&tart Logging"
+msgstr "&آغاز ثبت‌"
+
+#. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
+#, kde-format
+msgid "File"
+msgstr "پرونده"
+
+#. i18n: ectx: property (title), widget (QGroupBox, timerFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:41
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:group"
+msgid "Timer Interval"
+msgstr "فاصله زمان‌سنج"
+
+#. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
+#, kde-format
+msgid " sec"
+msgstr " ثانیه"
+
+#: SensorDisplayLib/SensorLoggerSettings.cpp:30
+#, kde-format
+msgid "Sensor Logger Settings"
+msgstr "تنظیمات واقعه‌نگار حسگر"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
+#, kde-format
+msgid "Alarm color:"
+msgstr "رنگ هشدار:"
+
+#: SensorDisplayLib/SensorModel.cpp:161
+#, kde-format
+msgid "Host"
+msgstr "میزبان"
+
+#: SensorDisplayLib/SensorModel.cpp:163
+#, kde-format
+msgid "Sensor"
+msgstr "حسگر"
+
+#: SensorDisplayLib/SensorModel.cpp:165
+#, kde-format
+msgid "Unit"
+msgstr "واحد"
+
+#: SensorDisplayLib/SensorModel.cpp:167
+#, kde-format
+msgid "Status"
+msgstr "وضعیت"
+
+#: SensorDisplayLib/SensorModel.cpp:169
+#, kde-format
+msgid "Label"
+msgstr "برچسب"
+
+#. i18n: tag WorkSheet attribute title
+#: SystemLoad2.sgrd:3
+#, kde-format
+msgid "System Load"
+msgstr "بار کردن سیستم"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:5
+#, kde-format
+msgid "CPU History"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:8
+#, kde-format
+msgid "Memory and Swap History"
+msgstr ""
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:9
+#, kde-format
+msgid "Memory"
+msgstr "حافظه"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:10
+#, kde-format
+msgid "Swap"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:12
+#, fuzzy, kde-format
+#| msgid "Network"
+msgid "Network History"
+msgstr "شبکه"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:13
+#, fuzzy, kde-format
+#| msgid "Receiver"
+msgid "Receiving"
+msgstr "گیرنده"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:14
+#, kde-format
+msgid "Sending"
+msgstr ""
+
+#: WorkSheet.cpp:87
+#, kde-format
+msgid "Cannot open the file %1."
+msgstr " پرونده %1 را نمی‌توان باز کرد."
+
+#: WorkSheet.cpp:95
+#, kde-format
+msgid "The file %1 does not contain valid XML."
+msgstr "پرونده  %1 حاوی XML معتبر نمی‌باشد."
+
+#: WorkSheet.cpp:102
+#, kde-format
+msgid ""
+"The file %1 does not contain a valid worksheet definition, which must have a "
+"document type 'KSysGuardWorkSheet'."
+msgstr ""
+"پرونده  %1 دارای تعریف معتبری از کاربرگ نیست که باید نوع سند  "
+"»KSysGuardWorkSheet« داشته باشد."
+
+#: WorkSheet.cpp:114
+#, kde-format
+msgid "The file %1 has an invalid worksheet size."
+msgstr " اندازه کاربرگ پرونده %1  نامعتبر است."
+
+#: WorkSheet.cpp:239
+#, kde-format
+msgid "Cannot save file %1"
+msgstr " پرونده %1 را نمی‌تون ذخیره کرد"
+
+#: WorkSheet.cpp:287
+#, kde-format
+msgid "The clipboard does not contain a valid display description."
+msgstr "تخته یادداشت حاوی توصیف نمایش معتبر نمی‌باشد."
+
+#: WorkSheet.cpp:387
+#, kde-format
+msgid "Select Display Type"
+msgstr "برگزیدن نوع نمایش"
+
+#: WorkSheet.cpp:388
+#, kde-format
+msgid "&Line graph"
+msgstr "گراف &خطی‌"
+
+#: WorkSheet.cpp:389
+#, kde-format
+msgid "&Digital display"
+msgstr "نمایش &رقمی‌"
+
+#: WorkSheet.cpp:390
+#, kde-format
+msgid "&Bar graph"
+msgstr "گراف &میله‌ای‌"
+
+#: WorkSheet.cpp:391
+#, kde-format
+msgid "Log to a &file"
+msgstr "&ثبت در یک پرونده‌"
+
+#: WorkSheet.cpp:547
+#, fuzzy, kde-format
+#| msgid "&Remove Display"
+msgid "Remove this display?"
+msgstr "&حذف نمایش‌"
+
+#: WorkSheet.cpp:548
+#, fuzzy, kde-format
+#| msgid "&Remove Display"
+msgid "Remove Display"
+msgstr "&حذف نمایش‌"
+
+#: WorkSheet.cpp:589
+#, kde-format
+msgid "Dummy"
+msgstr "ساختگی"
+
+#: WorkSheetSettings.cpp:43
+#, fuzzy, kde-format
+#| msgid "Properties"
+msgid "Tab Properties"
+msgstr "ویژگیها"
+
+#: WorkSheetSettings.cpp:72
+#, kde-format
+msgid "Properties"
+msgstr "ویژگیها"
+
+#: WorkSheetSettings.cpp:81
+#, kde-format
+msgid "Rows:"
+msgstr "سطرها:"
+
+#: WorkSheetSettings.cpp:91
+#, kde-format
+msgid "Columns:"
+msgstr "ستونها:"
+
+#: WorkSheetSettings.cpp:100
+#, kde-format
+msgid "Enter the number of rows the sheet should have."
+msgstr "تعداد سطرهایی که صفحه باید داشته باشد را وارد کنید."
+
+#: WorkSheetSettings.cpp:101
+#, kde-format
+msgid "Enter the number of columns the sheet should have."
+msgstr "تعداد ستونهایی که صفحه باید داشته باشد را وارد کنید."
+
+#: WorkSheetSettings.cpp:103
+#, kde-format
+msgid "Update interval:"
+msgstr " فاصله به‌روزرسانی:"
+
+#: WorkSheetSettings.cpp:116
+#, kde-format
+msgid "All displays of the sheet are updated at the rate specified here."
+msgstr "تمام نمایشهای صفحه به میزان مشخص‌شده در اینجا، به‌روزرسانی می‌شوند."
+
+#: WorkSheetSettings.cpp:117
+#, kde-format
+msgid "Enter the title of the worksheet here."
+msgstr "عنوان کاربرگ را در اینجا وارد کنید."
+
+#: Workspace.cpp:111
+#, kde-format
+msgid "Sheet %1"
+msgstr "صفحه %1"
+
+#: Workspace.cpp:170
+#, fuzzy, kde-format
+#| msgid ""
+#| "The worksheet '%1' contains unsaved data.\n"
+#| "Do you want to save the worksheet?"
+msgid ""
+"The tab '%1' contains unsaved data.\n"
+"Do you want to save the tab?"
+msgstr ""
+"کاربرگ »%1« داده ذخیره‌نشده دارد.\n"
+"می‌خواهید کاربرگ را ذخیره کنید؟"
+
+#: Workspace.cpp:186
+#, kde-format
+msgid "Select Tab File to Import"
+msgstr ""
+
+#: Workspace.cpp:208 Workspace.cpp:228
+#, fuzzy, kde-format
+#| msgid "You do not have a worksheet that could be saved."
+msgid "You do not have a tab that could be saved."
+msgstr "کاربرگی که بتوان آن را ذخیره کرد، ندارید."
+
+#: Workspace.cpp:235
+#, kde-format
+msgid "Export Tab"
+msgstr ""
+
+#: Workspace.cpp:255
+#, fuzzy, kde-format
+#| msgid "There are no worksheets that could be deleted."
+msgid "There are no tabs that could be deleted."
+msgstr " کاربرگی وجود ندارد که بتوان آن را حذف کرد."
+
+#: Workspace.cpp:299
+#, kde-kuit-format
+msgctxt "@info"
+msgid ""
+"<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
+"in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
+msgstr ""
+
+#: Workspace.cpp:304
+#, fuzzy, kde-format
+#| msgid "System Monitor"
+msgid "Upload custom System Monitor tab"
+msgstr "نمایشگر سیستم"
+
+#~ msgid "Timer Settings"
+#~ msgstr "تنظیمات زمان‌سنج"
+
+#~ msgid "Use update interval of worksheet"
+#~ msgstr "استفاده از فاصله به‌روزرسانی کاربرگ"
+
+#, fuzzy
+#~| msgid "*.sgrd|Sensor Files"
+#~ msgid "*.sgrd|Sensor Files (*.sgrd)"
+#~ msgstr "*.sgrd|پرونده‌های حسگر"
+
+#~ msgid "Lo&wer limit:"
+#~ msgstr "حد &پایینی:‌"
+
+#, fuzzy
+#~| msgid ""
+#~| "Message from %1:\n"
+#~| "%2"
+#~ msgctxt "%1 is a host name"
+#~ msgid ""
+#~ "Message from %1:\n"
+#~ "%2"
+#~ msgstr ""
+#~ "پیام از %1:\n"
+#~ "%2"
+
+#~ msgid "Could not run daemon program '%1'."
+#~ msgstr "ناتوان از اجرای برنامهٔ شبح «%1»."
+
+#~ msgid "The daemon program '%1' failed."
+#~ msgstr "برنامهٔ شبح «%1» ناموفق بود."
+
+#~ msgid "Connection to %1 refused"
+#~ msgstr "اتصال به %1 رد شد"
+
+#~ msgid "Host %1 not found"
+#~ msgstr "میزبان %1 یافت نشد"
+
+#, fuzzy
+#~ msgid ""
+#~ "An error occurred with the network (e.g. the network cable was "
+#~ "accidentally unplugged) for host %1."
+#~ msgstr ""
+#~ "خطایی توسط شبکه )مثال، کابل شبکه تصادفاً از از پریز برق بیرون آمد( برای "
+#~ "میزبان %1 رخ داد"
+
+#~ msgid "Error for host %1: %2"
+#~ msgstr "خطا برای میزبان %1: %2"
+
+#~ msgid "Change"
+#~ msgstr "تغییر"
+
+#~ msgid "Rate"
+#~ msgstr "نرخ"
+
+#~ msgid "CPU Load"
+#~ msgstr "بار واحد پردازش مرکزی"
+
+#~ msgid "Idling"
+#~ msgstr "بی‌کار"
+
+#~ msgid "Nice Load"
+#~ msgstr "بار دلپذیر"
+
+#~ msgid "User Load"
+#~ msgstr "بار کاربر"
+
+#, fuzzy
+#~| msgid "System Load"
+#~ msgctxt "@item sensor description"
+#~ msgid "System Load"
+#~ msgstr "بار کردن سیستم"
+
+#~ msgid "Waiting"
+#~ msgstr "در انتظار"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Interrupt Load"
+#~ msgstr "وقفه‌ها"
+
+#~ msgid "Total Load"
+#~ msgstr "کل بارگذاری"
+
+#~ msgid "Physical Memory"
+#~ msgstr "حافظه فیزیکی"
+
+#~ msgid "Swap Memory"
+#~ msgstr " حافظه مبادله"
+
+#~ msgid "Cached Memory"
+#~ msgstr "حافظه نهانگاهی"
+
+#~ msgid "Buffered Memory"
+#~ msgstr "حافظه میان‌گیر"
+
+#~ msgid "Used Memory"
+#~ msgstr "حافظه استفاده‌شده"
+
+#~ msgid "Application Memory"
+#~ msgstr "حافظه کاربرد"
+
+#~ msgid "Free Memory"
+#~ msgstr "حافظه آزاد"
+
+#  msgid "Application Memory"
+#~ msgid "Active Memory"
+#~ msgstr "حافظهٔ فعال"
+
+#~ msgid "Inactive Memory"
+#~ msgstr "حافظهٔ غیرفعال"
+
+#~ msgid "Wired Memory"
+#~ msgstr "حافظهٔ سیم‌کشی‌شده"
+
+#~ msgid "Exec Pages"
+#~ msgstr "صفحه‌های اجرایی"
+
+#~ msgid "File Pages"
+#~ msgstr "صفحه‌های پرونده‌ای"
+
+#, fuzzy
+#~| msgid "Processors"
+#~ msgid "Processes"
+#~ msgstr "پردازنده‌ها"
+
+#~ msgid "Process Controller"
+#~ msgstr "کنترل‌کننده فرآیند"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Process Spawn Count"
+#~ msgstr "شمارش فرآیند"
+
+#~ msgid "Process Count"
+#~ msgstr "شمارش فرآیند"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Idle Processes Count"
+#~ msgstr "شمارش فرآیند"
+
+#, fuzzy
+#~| msgid "Loading Processes Count.."
+#~ msgid "Running Processes Count"
+#~ msgstr "شمارش فرآیند بارگذاری..."
+
+#, fuzzy
+#~| msgid "Loading Processes Count.."
+#~ msgid "Sleeping Processes Count"
+#~ msgstr "شمارش فرآیند بارگذاری..."
+
+#, fuzzy
+#~| msgid "Loading Processes Count.."
+#~ msgid "Stopped Processes Count"
+#~ msgstr "شمارش فرآیند بارگذاری..."
+
+#, fuzzy
+#~| msgid "Loading Processes Count.."
+#~ msgid "Zombie Processes Count"
+#~ msgstr "شمارش فرآیند بارگذاری..."
+
+#, fuzzy
+#~| msgid "Loading Processes Count.."
+#~ msgid "Waiting Processes Count"
+#~ msgstr "شمارش فرآیند بارگذاری..."
+
+#, fuzzy
+#~| msgid "Loading Processes Count.."
+#~ msgid "Locked Processes Count"
+#~ msgstr "شمارش فرآیند بارگذاری..."
+
+#~ msgid "Disk Throughput"
+#~ msgstr "گذردهی دیسک"
+
+#~ msgctxt "CPU Load"
+#~ msgid "Load"
+#~ msgstr "بارگذاری"
+
+#~ msgid "Total Accesses"
+#~ msgstr "کل دستیابیها"
+
+#~ msgid "Read Accesses"
+#~ msgstr "دستیابیهای خواندن"
+
+#~ msgid "Write Accesses"
+#~ msgstr "دستیابیهای نوشتن"
+
+#~ msgid "Read Data"
+#~ msgstr "داده‌های خوانده‌شده"
+
+#~ msgid "Written Data"
+#~ msgstr "داده‌های نوشته‌شده"
+
+#~ msgid "Milliseconds spent reading"
+#~ msgstr "میلی‌ثانیه صرف خواندن شده"
+
+#~ msgid "Milliseconds spent writing"
+#~ msgstr "میلی‌ثانیه صرف نوشتن شده"
+
+#~ msgid "I/Os currently in progress"
+#~ msgstr "ورودی/خروجیهای در حال پیشرفت"
+
+#~ msgid "Pages In"
+#~ msgstr "صفحات داخل"
+
+#~ msgid "Pages Out"
+#~ msgstr "صفحات خارج"
+
+#~ msgid "Context Switches"
+#~ msgstr "تعویض متن"
+
+#, fuzzy
+#~| msgid "System Load"
+#~ msgid "System Calls"
+#~ msgstr "بار کردن سیستم"
+
+#~ msgid "Network"
+#~ msgstr "شبکه"
+
+#~ msgid "Interfaces"
+#~ msgstr "واسطها"
+
+#~ msgid "Transmitter"
+#~ msgstr "فرستنده"
+
+#, fuzzy
+#~| msgid "Rate"
+#~ msgid "Data Rate"
+#~ msgstr "نرخ"
+
+#, fuzzy
+#~| msgid "Compressed Packets"
+#~ msgid "Compressed Packets Rate"
+#~ msgstr "بسته‌های فشرده"
+
+#, fuzzy
+#~| msgid "Dropped Packets"
+#~ msgid "Dropped Packets Rate"
+#~ msgstr "بسته‌های دور ریخته"
+
+#, fuzzy
+#~| msgid "Errors"
+#~ msgid "Error Rate"
+#~ msgstr "خطاها"
+
+#, fuzzy
+#~| msgid "FIFO Overruns"
+#~ msgid "FIFO Overruns Rate"
+#~ msgstr "افزایشهای پیش‌بینی‌نشده FIFO"
+
+#, fuzzy
+#~| msgid "Frame Errors"
+#~ msgid "Frame Error Rate"
+#~ msgstr "خطاهای قابک"
+
+#, fuzzy
+#~| msgid "Multicast"
+#~ msgid "Multicast Packet Rate"
+#~ msgstr "چندپخشی"
+
+#, fuzzy
+#~| msgid "Packets"
+#~ msgid "Packet Rate"
+#~ msgstr "بسته‌ها"
+
+#, fuzzy
+#~| msgid "Carrier"
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Loss Rate"
+#~ msgstr "حامل"
+
+#~ msgid "Collisions"
+#~ msgstr "برخوردها"
+
+#~ msgid "Data"
+#~ msgstr "داده"
+
+#~ msgid "Compressed Packets"
+#~ msgstr "بسته‌های فشرده"
+
+#~ msgid "Dropped Packets"
+#~ msgstr "بسته‌های دور ریخته"
+
+#~ msgid "Errors"
+#~ msgstr "خطاها"
+
+#~ msgid "FIFO Overruns"
+#~ msgstr "افزایشهای پیش‌بینی‌نشده FIFO"
+
+#~ msgid "Frame Errors"
+#~ msgstr "خطاهای قابک"
+
+#, fuzzy
+#~| msgid "Multicast"
+#~ msgid "Multicast Packets"
+#~ msgstr "چندپخشی"
+
+#~ msgid "Packets"
+#~ msgstr "بسته‌ها"
+
+#, fuzzy
+#~| msgid "Carrier"
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Losses"
+#~ msgstr "حامل"
+
+#~ msgid "Sockets"
+#~ msgstr "سوکتها"
+
+#~ msgid "Total Number"
+#~ msgstr "عدد کل"
+
+#~ msgid "Table"
+#~ msgstr "جدول"
+
+#~ msgid "Advanced Power Management"
+#~ msgstr "مدیریت توان پیشرفته"
+
+#~ msgid "ACPI"
+#~ msgstr "ACPI"
+
+#~ msgid "Thermal Zone"
+#~ msgstr "منطقه حرارتی"
+
+#~ msgid "Temperature"
+#~ msgstr "دما"
+
+#, fuzzy
+#~| msgid "Temperature"
+#~ msgid "Average CPU Temperature"
+#~ msgstr "دما"
+
+#~ msgid "Fan"
+#~ msgstr "بادبزن"
+
+#~ msgid "State"
+#~ msgstr "وضعیت"
+
+#~ msgid "Battery"
+#~ msgstr "باتری"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Capacity"
+#~ msgstr "پر شدن باتری"
+
+#~ msgid "Battery Charge"
+#~ msgstr "پر شدن باتری"
+
+#~ msgid "Battery Usage"
+#~ msgstr "مصرف باتری"
+
+#, fuzzy
+#~| msgid "Battery Usage"
+#~ msgid "Battery Voltage"
+#~ msgstr "مصرف باتری"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Discharge Rate"
+#~ msgstr "پر شدن باتری"
+
+#~ msgid "Remaining Time"
+#~ msgstr "زمان باقی‌مانده"
+
+#~ msgid "Interrupts"
+#~ msgstr "وقفه‌ها"
+
+#~ msgid "Load Average (1 min)"
+#~ msgstr "متوسط بار )۱ دقیقه("
+
+#~ msgid "Load Average (5 min)"
+#~ msgstr "متوسط بار )۵ دقیقه("
+
+#~ msgid "Load Average (15 min)"
+#~ msgstr "متوسط بار )۱۵ دقیقه("
+
+#~ msgid "Clock Frequency"
+#~ msgstr "بسامد ساعت"
+
+#, fuzzy
+#~| msgid "Clock Frequency"
+#~ msgid "Average Clock Frequency"
+#~ msgstr "بسامد ساعت"
+
+#~ msgid "Hardware Sensors"
+#~ msgstr "حسگرهای سخت‌افزاری"
+
+#~ msgid "Partition Usage"
+#~ msgstr "مصرف افراز"
+
+#~ msgid "Used Space"
+#~ msgstr "فضای استفاده‌شده"
+
+#~ msgid "Free Space"
+#~ msgstr "فضای آزاد"
+
+#~ msgid "Fill Level"
+#~ msgstr " سطح پر کردن"
+
+#, fuzzy
+#~| msgid "User Load"
+#~ msgid "Used Inodes"
+#~ msgstr "بار کاربر"
+
+#~ msgid "System"
+#~ msgstr "سیستم"
+
+#~ msgid "Uptime"
+#~ msgstr "زمان دایر بودن"
+
+#~ msgid "Linux Soft Raid (md)"
+#~ msgstr "Raid نرم لینوکس (md)"
+
+#~ msgid "Processors"
+#~ msgstr "پردازنده‌ها"
+
+#~ msgid "Cores"
+#~ msgstr "هسته‌ها"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Blocks"
+#~ msgstr "تعداد نمایشها:"
+
+#, fuzzy
+#~| msgid "Total Number"
+#~ msgid "Total Number of Devices"
+#~ msgstr "عدد کل"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Raid Devices"
+#~ msgstr "تعداد نمایشها:"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Devices"
+#~ msgstr "تعداد نمایشها:"
+
+#~ msgid "CPU %1"
+#~ msgstr "واحد پردازش مرکزی ‌%1"
+
+#~ msgid "Disk %1"
+#~ msgstr "دیسک %1"
+
+#, fuzzy
+#~| msgid "Battery"
+#~ msgid "Battery %1"
+#~ msgstr "باتری"
+
+#~ msgid "Fan %1"
+#~ msgstr "بادبزن %1"
+
+#~ msgid "Temperature %1"
+#~ msgstr "دما %1"
+
+#~ msgid "Total"
+#~ msgstr "کل"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Software Interrupts"
+#~ msgstr "وقفه‌ها"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Hardware Interrupts"
+#~ msgstr "وقفه‌ها"
+
+#~ msgid "Int %1"
+#~ msgstr "وقفه %1"
+
+#~ msgctxt "the unit 1 per second"
+#~ msgid "1/s"
+#~ msgstr "۱/ثانیه"
+
+#~ msgid "kBytes"
+#~ msgstr "کیلوبایت"
+
+#~ msgctxt "the unit minutes"
+#~ msgid "min"
+#~ msgstr "دقیقه"
+
+#~ msgctxt "the frequency unit"
+#~ msgid "MHz"
+#~ msgstr "مگاهرتز"
+
+#~ msgctxt "a percentage"
+#~ msgid "%"
+#~ msgstr "٪"
+
+#~ msgid "Integer Value"
+#~ msgstr "مقدار صحیح"
+
+#~ msgid "Floating Point Value"
+#~ msgstr "مقدار نقطه شناور"
+
+#, fuzzy
+#~| msgid " sec"
+#~ msgctxt "Units"
+#~ msgid "%1 second"
+#~ msgid_plural "%1 seconds"
+#~ msgstr[0] " ثانیه"
+
+#~ msgid "Font:"
+#~ msgstr "قلم:"
+
+#, fuzzy
+#~| msgid "Vertical lines:"
+#~ msgid "Grid lines:"
+#~ msgstr "خطوط عمودی:"
+
+#~ msgid "Background:"
+#~ msgstr "زمینه:"
+
+#~ msgid "Do you really want to delete the display?"
+#~ msgstr "واقعاً می‌خواهید صفحه نمایش را حذف کنید؟"
+
+#~ msgid "Delete Display"
+#~ msgstr "حذف صفحه نمایش"
+
+#~ msgid "&Edit"
+#~ msgstr "&ویرایش‌"
+
+#, fuzzy
+#~| msgid "Automatic range detection"
+#~ msgid "Automatic range"
+#~ msgstr "آشکارسازی خودکار گستره"
+
+#, fuzzy
+#~| msgid ""
+#~| "This is your work space. It holds your worksheets. You need to create a "
+#~| "new worksheet (Menu File->New) before you can drag sensors here."
+#~ msgid ""
+#~ "This is your work space. It holds your tabs. You need to create a new tab "
+#~ "(Menu File->New) before you can drag sensors here."
+#~ msgstr ""
+#~ "این فضای کار شماست که کاربرگهایتان را نگه می‌دارد. قبل از این که بتوانید "
+#~ "حسگرها را به اینجا بکشانید، لازم است که یک کاربرگ جدید )پرونده گزینگان-"
+#~ "<جدید( ایجاد کنید."
+
+#~ msgid "Connection to %1 has been lost."
+#~ msgstr "اتصال به %1 از بین رفته است."
+
+#~ msgid "&Title"
+#~ msgstr "&عنوان‌"
+
+#~ msgid "T&itle"
+#~ msgstr "&عنوان‌"
+
+#~ msgid "System Guard Applet Settings"
+#~ msgstr "تنظیمات برنامک محافظ سیستم"
+
+#~ msgid "Size ratio:"
+#~ msgstr "نسبت اندازه:"
+
+#, fuzzy
+#~| msgid "%"
+#~ msgctxt "Number suffix in spinbox"
+#~ msgid "%"
+#~ msgstr "٪"
+
+#~ msgid "Launch &System Guard"
+#~ msgstr "راه‌اندازی محافظ &سیستم‌"
+
+#, fuzzy
+#~| msgid "Select Worksheet to Import"
+#~ msgid "Select Worksheet to Open"
+#~ msgstr "برگزیدن کاربرگ برای واردات"
+
+#~ msgid "Export Work Sheet"
+#~ msgstr "صادرات کاربرگ"
+
+#~ msgid "Worksheet Properties"
+#~ msgstr "ویژگیهای کاربرگ"
+
+#~ msgid "&Signal Plotter"
+#~ msgstr "رسام &نشانک‌"
+
+#~ msgid "&Multimeter"
+#~ msgstr "&چند متری‌"
+
+#~ msgid "&Dancing Bars"
+#~ msgstr "میله‌های &رقصان‌"
+
+#~ msgid ""
+#~ "The KSysGuard applet does not support displaying of this type of sensor. "
+#~ "Please choose another sensor."
+#~ msgstr ""
+#~ "برنامک KSysGuard، از نمایش این نوع حسگر پشتیبانی نمی‌کند. لطفاً، حسگر دیگری "
+#~ "انتخاب کنید."
+
+#~ msgid ""
+#~ "The file %1 does not contain a valid applet definition, which must have a "
+#~ "document type 'KSysGuardApplet'."
+#~ msgstr ""
+#~ "پرونده %1 تعریف برنامک معتبری که باید یک نوع سند »KSysGuardApplet« داشته "
+#~ "باشد، ندارد."
+
+#~ msgid "Drag sensors from the KDE System Guard into this cell."
+#~ msgstr "کشیدن حسگرها از محافظ سیستم KDE به این سلول."
+
+#~ msgid "&New Worksheet..."
+#~ msgstr "کاربرگ &جدید...‌"
+
+#, fuzzy
+#~| msgid "&New Worksheet..."
+#~ msgid "Open Worksheet..."
+#~ msgstr "کاربرگ &جدید...‌"
+
+#~ msgid "&Export Worksheet..."
+#~ msgstr "&صادرات کاربرگ...‌"
+
+#~ msgid "&Remove Worksheet"
+#~ msgstr "&حذف کاربرگ‌"
+
+#~ msgid "&Worksheet Properties"
+#~ msgstr "ویژگیهای &کاربرگ‌"
+
+#~ msgid "Import Worksheet..."
+#~ msgstr "واردات کاربرگ..."
+
+#~ msgid "Count:"
+#~ msgstr "شمارش:"
+
+#~ msgid "Enter the number of horizontal lines here."
+#~ msgstr "تعداد خطوط افقی را در اینجا وارد کنید."
+
+#~ msgid "Labels"
+#~ msgstr "برچسبها"
+
+#~ msgid "Top bar"
+#~ msgstr "میله بالا"
+
+#~ msgid ""
+#~ "Check this to active the display title bar. This is probably only useful "
+#~ "for applet displays. The bar is only visible if the display is large "
+#~ "enough."
+#~ msgstr ""
+#~ " برای فعال‌سازی نمایش میله عنوان، این را علامت بزنید. شاید فقط برای "
+#~ "نمایشهای برنامک مفید باشد. اگر صفحه نمایش به اندازه کافی بزرگ باشد، فقط "
+#~ "میله مرئی است."
+
+#~ msgid "Horizontal lines:"
+#~ msgstr "خطوط افقی:"
+
+#~ msgid "Sensor Load"
+#~ msgstr "بار حس‌گر"
+
+#~ msgid ""
+#~ "An error occurred with the network (e.g., the network cable was "
+#~ "accidentally plugged out) for host %1"
+#~ msgstr ""
+#~ "خطایی توسط شبکه )مثال، کابل شبکه تصادفاً از از پریز برق بیرون آمد( برای "
+#~ "میزبان %1 رخ داد"
+
+#~ msgid ""
+#~ "The beams are stacked on top of each other, and the area is drawn filled "
+#~ "in. So if one beam has a value of 2 and another beam has a value of 3, "
+#~ "the first beam will be draw at value 2 and the other beam drawn at 2+3=5"
+#~ msgstr ""
+#~ "پرتوها در بالای یکدیگر پشته می‌شوند، و ناحیه در آن ترسیم می شود. بنابراین "
+#~ "اگر یک پرتو مقدار ۲ داشته و پرتو دیگر مقدار ۳، پرتو اول در مقدار ۲ ترسیم "
+#~ "شده و بقیه پرتوها در ۲+۳+۵ ترسیم می شونذ"
+
+#~ msgid "Loading CPU Stat.."
+#~ msgstr "بارگذاری وضعیت واحد پردازش مرکزی..."
+
+#~ msgid "Loading Memory Totals.."
+#~ msgstr "بارگذاری کل حافظه..."
+
+#~ msgid "Loading Swap Totals.."
+#~ msgstr "بارگذاری کل مبادله..."
+
+#~ msgid "Form"
+#~ msgstr "برگه"

@@ -1,0 +1,2537 @@
+# UTF-8 test:äëïöü
+# Copyright (C) 2001, 2005 Free Software Foundation, Inc.
+# Frikkie Thirion <frix@expertron.co.za>, 2001,2002.
+# Juanita Franz <juanita.franz@vr-web.de>, 2005.
+# Kobus Venter <kabousv@therugby.co.za>, 2005.
+msgid ""
+msgstr ""
+"Project-Id-Version: ksysguard stable\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-03-02 00:46+0000\n"
+"PO-Revision-Date: 2005-11-24 09:31+0200\n"
+"Last-Translator: Kobus Venter <kabousv@therugby.co.za>\n"
+"Language-Team: AFRIKAANS <translate-discuss-af@lists.sourceforge.net>\n"
+"Language: af\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.10\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "WEB-Vertaler (http://kde.af.org.za), Juanita Franz "
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "frix@expertron.co.za, juanita.franz@vr-web.de "
+
+#: HostConnector.cpp:44
+#, kde-format
+msgid "Connect Host"
+msgstr "Konnekteer Bediener"
+
+#: HostConnector.cpp:57
+#, kde-format
+msgid "Host:"
+msgstr "Bediener:"
+
+#: HostConnector.cpp:67
+#, kde-format
+msgid "Enter the name of the host you want to connect to."
+msgstr "Invoer die naam van die bediener jy wil hê na konnekteer na."
+
+#: HostConnector.cpp:73
+#, kde-format
+msgid "Connection Type"
+msgstr "Verbinding Tipe"
+
+#: HostConnector.cpp:78
+#, kde-format
+msgid "ssh"
+msgstr "ssh"
+
+#: HostConnector.cpp:81
+#, kde-format
+msgid "Select this to use the secure shell to login to the remote host."
+msgstr ""
+"Kies hierdie na gebruik die beveilig tolk na aanteken na die afgeleë "
+"bediener."
+
+#: HostConnector.cpp:84
+#, kde-format
+msgid "rsh"
+msgstr "rsh"
+
+#: HostConnector.cpp:85
+#, kde-format
+msgid "Select this to use the remote shell to login to the remote host."
+msgstr ""
+"Kies hierdie na gebruik die afgeleë tolk na aanteken na die afgeleë bediener."
+
+#: HostConnector.cpp:88
+#, kde-format
+msgid "Daemon"
+msgstr "Bediener"
+
+#: HostConnector.cpp:89
+#, kde-format
+msgid ""
+"Select this if you want to connect to a ksysguard daemon that is running on "
+"the machine you want to connect to, and is listening for client requests."
+msgstr ""
+"Kies hierdie as jy wil hê na konnekteer na 'n ksysguard bediener wat is wat "
+"loop op die masjien jy wil hê na konnekteer na, en is luister vir kliënt "
+"versoeke."
+
+#: HostConnector.cpp:92
+#, kde-format
+msgid "Custom command"
+msgstr "Pasmaak opdrag"
+
+#: HostConnector.cpp:93
+#, kde-format
+msgid ""
+"Select this to use the command you entered below to start ksysguardd on the "
+"remote host."
+msgstr ""
+"Kies hierdie na gebruik die opdrag jy ingevoerde onder na begin ksysguardd "
+"op die afgeleë bediener."
+
+#: HostConnector.cpp:96
+#, kde-format
+msgid "Port:"
+msgstr "Poort:"
+
+#: HostConnector.cpp:103
+#, kde-format
+msgid ""
+"Enter the port number on which the ksysguard daemon is listening for "
+"connections."
+msgstr ""
+"Invoer die poort nommer op wat die ksysguard bediener is luister vir "
+"koppelinge."
+
+#: HostConnector.cpp:106
+#, kde-format
+msgid "e.g.  3112"
+msgstr "e.g.  3112"
+
+#: HostConnector.cpp:109
+#, kde-format
+msgid "Command:"
+msgstr "Opdrag:"
+
+#: HostConnector.cpp:118
+#, kde-format
+msgid "Enter the command that runs ksysguardd on the host you want to monitor."
+msgstr ""
+"Invoer die opdrag wat loop ksysguardd op die bediener jy wil hê na monitor."
+
+#: HostConnector.cpp:122
+#, kde-format
+msgid "e.g. ssh -l root remote.host.org ksysguardd"
+msgstr "e.g. ssh -l root afgeleë.bediener.org ksysguardd"
+
+#: ksysguard.cpp:156
+#, kde-format
+msgid ""
+"This will hide the menu bar completely. You can show it again by typing %1."
+msgstr ""
+
+#: ksysguard.cpp:158
+#, kde-format
+msgid "Hide menu bar"
+msgstr ""
+
+#: ksysguard.cpp:176 ksysguard.cpp:570
+#, fuzzy, kde-format
+msgid "System Monitor"
+msgstr "Stelsel Las"
+
+#: ksysguard.cpp:177
+#, fuzzy, kde-format
+#| msgid "&Refresh"
+msgid "&Refresh Tab"
+msgstr "Verfris"
+
+#: ksysguard.cpp:178
+#, kde-format
+msgid "&New Tab..."
+msgstr ""
+
+#: ksysguard.cpp:179
+#, kde-format
+msgid "Import Tab Fr&om File..."
+msgstr ""
+
+#: ksysguard.cpp:180
+#, kde-format
+msgid "Save Tab &As..."
+msgstr ""
+
+#: ksysguard.cpp:181
+#, kde-format
+msgid "&Close Tab"
+msgstr ""
+
+#: ksysguard.cpp:182
+#, kde-format
+msgid "Monitor &Remote Machine..."
+msgstr ""
+
+#: ksysguard.cpp:183
+#, fuzzy, kde-format
+#| msgid "&New Worksheet..."
+msgid "&Download New Tabs..."
+msgstr "Nuwe Werksblad"
+
+#: ksysguard.cpp:184
+#, fuzzy, kde-format
+#| msgid "&New Worksheet..."
+msgid "&Upload Current Tab..."
+msgstr "Nuwe Werksblad"
+
+#: ksysguard.cpp:186
+#, fuzzy, kde-format
+#| msgid "&Properties"
+msgid "Tab &Properties"
+msgstr "Eienskappe"
+
+#: ksysguard.cpp:383
+#, fuzzy, kde-format
+msgid "1 process"
+msgid_plural "%1 processes"
+msgstr[0] "1 Proses"
+msgstr[1] "1 Proses"
+
+#: ksysguard.cpp:464
+#, fuzzy, kde-format
+msgid "CPU: %1%"
+msgstr "CPU%1"
+
+#: ksysguard.cpp:464
+#, fuzzy, kde-format
+msgctxt "This is the shorter version of CPU: %1%"
+msgid "%1%"
+msgstr "%"
+
+#: ksysguard.cpp:483
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Memory: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:485
+#, kde-format
+msgctxt ""
+"Arguments are formatted byte sizes (used/total) This should be a shorter "
+"version of the previous Memory: %1 / %2"
+msgid "Mem: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:487
+#, kde-format
+msgctxt ""
+"Arguments is formatted byte sizes (used) This should be a shorter version of "
+"the previous Mem: %1 / %2"
+msgid "Mem: %1"
+msgstr ""
+
+#: ksysguard.cpp:515
+#, fuzzy, kde-format
+msgid " No swap space available "
+msgstr "Geen uitruil ruimte beskikbaar"
+
+#: ksysguard.cpp:519
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Swap: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:521
+#, kde-format
+msgctxt "Arguments is formatted byte sizes (used)"
+msgid "Swap: %1"
+msgstr ""
+
+#: ksysguard.cpp:571
+#, fuzzy, kde-format
+msgid "KDE System Monitor"
+msgstr "Kde Stelsel Wag"
+
+#: ksysguard.cpp:572
+#, fuzzy, kde-format
+msgid "(c) 1996-2016 The KDE System Monitor Developers"
+msgstr "(c) 1996-2002 Die Ksysguard Ontwikkelaars"
+
+#: ksysguard.cpp:574
+#, kde-format
+msgid "John Tapsell"
+msgstr ""
+
+#: ksysguard.cpp:574
+#, kde-format
+msgid "Current Maintainer"
+msgstr ""
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Chris Schlaeger"
+msgstr ""
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Previous Maintainer"
+msgstr ""
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Greg Martyn"
+msgstr ""
+
+#: ksysguard.cpp:577
+#, kde-format
+msgid "Tobias Koenig"
+msgstr ""
+
+#: ksysguard.cpp:578
+#, kde-format
+msgid "Nicolas Leclercq"
+msgstr ""
+
+#: ksysguard.cpp:579
+#, kde-format
+msgid "Alex Sanda"
+msgstr ""
+
+#: ksysguard.cpp:580
+#, kde-format
+msgid "Bernd Johannes Wuebben"
+msgstr ""
+
+#: ksysguard.cpp:581
+#, kde-format
+msgid "Ralf Mueller"
+msgstr ""
+
+#: ksysguard.cpp:582
+#, kde-format
+msgid "Hamish Rodda"
+msgstr ""
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid "Torsten Kasch"
+msgstr ""
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+msgstr ""
+"Solaris Ondersteuning\n"
+"Dele gebruik (met toestemming) van die sunos5\n"
+"module van William LeFebvre se \"top\" program."
+
+#: ksysguard.cpp:592
+#, kde-format
+msgid "Optional worksheet files to load"
+msgstr "Opsionele werkvel lêers na las"
+
+#. i18n: ectx: Menu (file)
+#: ksysguardui.rc:5
+#, fuzzy, kde-format
+msgid "&File"
+msgstr "Filter"
+
+#. i18n: ectx: Menu (view)
+#: ksysguardui.rc:15
+#, fuzzy, kde-format
+msgid "&View"
+msgstr "Filter"
+
+#. i18n: ectx: Menu (settings)
+#: ksysguardui.rc:19
+#, fuzzy, kde-format
+msgid "&Settings"
+msgstr "Tydhouer Instellings"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ksysguardui.rc:22
+#, kde-format
+msgid "Main Toolbar"
+msgstr ""
+
+#. i18n: tag WorkSheet attribute title
+#. i18n: tag display attribute title
+#: ProcessTable.sgrd:3 ProcessTable.sgrd:5
+#, kde-format
+msgid "Process Table"
+msgstr "Proses Tabel"
+
+#: SensorBrowser.cpp:113
+#, kde-format
+msgid "Sensor Browser"
+msgstr "Sensor Blaaier"
+
+#: SensorBrowser.cpp:473
+#, fuzzy, kde-format
+#| msgid "Drag sensors to empty fields in a worksheet."
+msgid "Drag sensors to empty cells of a worksheet "
+msgstr "Trek sensors na leë velde in 'n werkvel."
+
+#: SensorBrowser.cpp:474
+#, fuzzy, kde-format
+#| msgid ""
+#| "The sensor browser lists the connected hosts and the sensors that they "
+#| "provide. Click and drag sensors into drop zones of a worksheet or the "
+#| "panel applet. A display will appear that visualizes the values provided "
+#| "by the sensor. Some sensor displays can display values of multiple "
+#| "sensors. Simply drag other sensors on to the display to add more sensors."
+msgid ""
+"The sensor browser lists the connected hosts and the sensors that they "
+"provide. Click and drag sensors into drop zones of a worksheet. A display "
+"will appear that visualizes the values provided by the sensor. Some sensor "
+"displays can display values of multiple sensors. Simply drag other sensors "
+"on to the display to add more sensors."
+msgstr ""
+"Die sensor blaaier lyste Die verbind bedieners en Die sensors wat hulle "
+"verskaf. Kliek en trek sensors binnein laat val sones van 'n werkvel van Die "
+"paneel miniprogram. 'n vertoon sal verskyn wat visualiseer Die waardes "
+"verskaf deur Die sensor. Sommige sensor vertoon kan vertoon waardes van "
+"veelvuldige sensors. Eenvoudig trek ander sensors op na Die vertoon na voeg "
+"by meer sensors."
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:281
+#, kde-format
+msgid "OK"
+msgstr ""
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:281
+#: SensorDisplayLib/FancyPlotter.cpp:545 SensorDisplayLib/FancyPlotter.cpp:624
+#, fuzzy, kde-format
+msgid "Error"
+msgstr "Foute"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:42
+#, kde-format
+msgid "Edit BarGraph Preferences"
+msgstr "Redigeer Balkgrafiek Voorkeure"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:51
+#, kde-format
+msgid "Range"
+msgstr "Omvang"
+
+#. i18n: ectx: property (title), widget (QGroupBox, titleFrame)
+#: SensorDisplayLib/DancingBarsSettings.cpp:55
+#: SensorDisplayLib/ListViewSettingsWidget.ui:17
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:17 WorkSheetSettings.cpp:61
+#, kde-format
+msgid "Title"
+msgstr "Titel"
+
+#. i18n: ectx: property (whatsThis), widget (QLineEdit, m_title)
+#: SensorDisplayLib/DancingBarsSettings.cpp:60
+#: SensorDisplayLib/FancyPlotterSettings.cpp:70
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
+#, kde-format
+msgid "Enter the title of the display here."
+msgstr "Invoer die titel van die vertoon hier."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:65
+#, kde-format
+msgid "Display Range"
+msgstr "Vertoon Omvang"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:70
+#: SensorDisplayLib/FancyPlotterSettings.cpp:96
+#, kde-format
+msgid "Minimum value:"
+msgstr "Minimum waarde:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:78
+#, fuzzy, kde-format
+msgid ""
+"Enter the minimum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Invoer die minimum waarde vir die vertoon hier. As beide waardes word 0 "
+"automaties omvang verklikker is geaktiveer."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:82
+#: SensorDisplayLib/FancyPlotterSettings.cpp:107
+#, kde-format
+msgid "Maximum value:"
+msgstr "Maksimum waarde:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:90
+#, fuzzy, kde-format
+msgid ""
+"Enter the maximum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Invoer die maksimum waarde vir die vertoon hier. As beide waardes word 0 "
+"automaties omvang verklikker is geaktiveer."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:100
+#, kde-format
+msgid "Alarms"
+msgstr "Alarms"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
+#: SensorDisplayLib/DancingBarsSettings.cpp:104
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
+#, kde-format
+msgid "Alarm for Minimum Value"
+msgstr "Alarm vir Minimum Waarde"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:109
+#: SensorDisplayLib/DancingBarsSettings.cpp:132
+#, kde-format
+msgid "Enable alarm"
+msgstr "Aktiveer alarm"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:110
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:57
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
+#, kde-format
+msgid "Enable the minimum value alarm."
+msgstr "Aktiveer die minimum waarde alarm."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:113
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:125
+#, kde-format
+msgid "Lower limit:"
+msgstr "Sagter beperk:"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1_2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:127
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
+#, kde-format
+msgid "Alarm for Maximum Value"
+msgstr "Alarm vir Maksimum Waarde"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:133
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:116
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
+#, kde-format
+msgid "Enable the maximum value alarm."
+msgstr "Aktiveer die maksimum waarde alarm."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:136
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:198
+#, kde-format
+msgid "Upper limit:"
+msgstr "Boonste beperk:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:153
+#, fuzzy, kde-format
+#| msgid "Look"
+msgctxt "@title:tab Appearance of the bar graph"
+msgid "Look"
+msgstr "Kyk"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:157
+#, kde-format
+msgid "Normal bar color:"
+msgstr "Normale kolom kleur:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:164
+#, kde-format
+msgid "Out-of-range color:"
+msgstr "Out-of-range kleur:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/DancingBarsSettings.cpp:171
+#: SensorDisplayLib/ListViewSettingsWidget.ui:105
+#: SensorDisplayLib/LogFile.cpp:105 SensorDisplayLib/LogFileSettings.ui:85
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:92
+#, kde-format
+msgid "Background color:"
+msgstr "Agtergrond kleur:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:178
+#: SensorDisplayLib/FancyPlotterSettings.cpp:177
+#, kde-format
+msgid "Font size:"
+msgstr "Skrif tipe grootte:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:183
+#, kde-format
+msgid ""
+"This determines the size of the font used to print a label underneath the "
+"bars. Bars are automatically suppressed if text becomes too large, so it is "
+"advisable to use a small font size here."
+msgstr ""
+"Hierdie bepaal die grootte van die skrif tipe gebruik word na druk 'n etiket "
+"onderliggend die stawe. stawe word automaties onderdruk as teks word te "
+"groot, sodat dit is aan te beveel na gebruik 'n klein skrif tipe grootte "
+"hier."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:191
+#: SensorDisplayLib/FancyPlotterSettings.cpp:193
+#, kde-format
+msgid "Sensors"
+msgstr "Sensors"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:204
+#, kde-format
+msgid "Edit..."
+msgstr "Redigeer..."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:205
+#, kde-format
+msgid "Push this button to configure the label."
+msgstr "Stoot hierdie knoppie na konfigureer die etiket."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:208
+#: SensorDisplayLib/FancyPlotterSettings.cpp:225
+#, kde-format
+msgid "Delete"
+msgstr ""
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:209
+#: SensorDisplayLib/FancyPlotterSettings.cpp:226
+#, kde-format
+msgid "Push this button to delete the sensor."
+msgstr "Stoot hierdie knoppie na uitvee die sensor."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:361
+#, kde-format
+msgid "Label of Bar Graph"
+msgstr "Etiket van Kolom Grafiese"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:362
+#, kde-format
+msgid "Enter new label:"
+msgstr "Invoer nuwe etiket:"
+
+#: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
+#, kde-format
+msgid "Drop Sensor Here"
+msgstr "Laat val Sensor Hier"
+
+#: SensorDisplayLib/DummyDisplay.cpp:33
+#, kde-format
+msgid ""
+"This is an empty space in a worksheet. Drag a sensor from the Sensor Browser "
+"and drop it here. A sensor display will appear that allows you to monitor "
+"the values of the sensor over time."
+msgstr ""
+"Hierdie is 'n leeg spasie in 'n werkvel. Trek 'n sensor van die sensor "
+"Blaaier en laat val dit hier. 'n sensor vertoon sal verskyn wat laat toe jy "
+"na monitor die waardes van die sensor bo tyd."
+
+#: SensorDisplayLib/FancyPlotter.cpp:177
+#, kde-format
+msgctxt "Largest axis title"
+msgid "99999 XXXX"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:541 SensorDisplayLib/FancyPlotter.cpp:613
+#: SensorDisplayLib/FancyPlotter.cpp:676
+#, kde-format
+msgctxt "units"
+msgid "%1%"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:549
+#, kde-format
+msgctxt "%1 is what is being shown statistics for, like 'Memory', 'Swap', etc."
+msgid "<p><b>%1:</b><br>"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:621
+#, kde-format
+msgid "%1 of %2"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:649
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:652
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:655
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:658
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:663
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:666
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:669
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:672
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:678
+#, fuzzy, kde-format
+msgctxt "unitless - just a number"
+msgid "%1"
+msgstr "%"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:46
+#, fuzzy, kde-format
+#| msgid "Signal Plotter Settings"
+msgid "Plotter Settings"
+msgstr "Sein Plotter Instellings"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:62
+#, kde-format
+msgid "General"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:66
+#, kde-format
+msgid "Title:"
+msgstr "Titel:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:74
+#, kde-format
+msgid "Stack the beams on top of each other"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:75
+#, kde-format
+msgid ""
+"The beams are stacked on top of each other, and the area is drawn filled in. "
+"So if one beam has a value of 2 and another beam has a value of 3, the first "
+"beam will be drawn at value 2 and the other beam drawn at 2+3=5."
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:82
+#, kde-format
+msgid "Scales"
+msgstr "Skale"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:86
+#, fuzzy, kde-format
+#| msgid "Vertical Scale"
+msgid "Vertical scale"
+msgstr "Vertikaal Skaal"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:91
+#, kde-format
+msgid "Specify graph range:"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:92
+#, kde-format
+msgid ""
+"Check this box if you want the display range to adapt dynamically to the "
+"currently displayed values; if you do not check this, you have to specify "
+"the range you want in the fields below."
+msgstr ""
+"Bevestig hierdie boks as jy wil hê die vertoon omvang moet aanpas dinamies "
+"na die huidiglik vertoonde waardes; as jy nie dit wil bevestig nie, moet jy "
+"die omvang jy wil hê in die velde onder spesifiseer."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:102
+#, fuzzy, kde-format
+#| msgid "Enter the title of the display here."
+msgid "Enter the minimum value for the display here."
+msgstr "Invoer die titel van die vertoon hier."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:113
+#, kde-format
+msgid ""
+"Enter the soft maximum value for the display here. The upper range will not "
+"be reduced below this value, but will still go above this number for values "
+"above this value."
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:120
+#, fuzzy, kde-format
+#| msgid "Horizontal Scale"
+msgid "Horizontal scale"
+msgstr "Horisontaal Skaal"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:128
+#, fuzzy, kde-format
+msgid "Pixels per time period:"
+msgstr "pixel(s) per tyd periode"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:135
+#, kde-format
+msgid "Grid"
+msgstr "Rooster"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:139
+#, kde-format
+msgid "Lines"
+msgstr "Lyne"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:144
+#, kde-format
+msgid "Vertical lines"
+msgstr "Vertikaal lyne"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:145
+#, kde-format
+msgid "Check this to activate the vertical lines if display is large enough."
+msgstr ""
+"Bevestig hierdie na aktiveer die vertikaal lyne as vertoon is groot genoeg."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:148
+#, kde-format
+msgid "Distance:"
+msgstr "Afstand:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:155
+#, kde-format
+msgid "Enter the distance between two vertical lines here."
+msgstr "Invoer die afstand tussen twee vertikaal lyne hier."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:159
+#, kde-format
+msgid "Vertical lines scroll"
+msgstr "Vertikaal lyne rol"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:162
+#, kde-format
+msgid "Horizontal lines"
+msgstr "Horisontaal lyne"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:163
+#, kde-format
+msgid "Check this to enable horizontal lines if display is large enough."
+msgstr ""
+"Bevestig hierdie na aktiveer horisontaal lyne as vertoon is groot genoeg."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:168
+#, kde-format
+msgid "Text"
+msgstr "Teks"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:173
+#, kde-format
+msgid "Show axis labels"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:174
+#, kde-format
+msgid ""
+"Check this box if horizontal lines should be decorated with the values they "
+"mark."
+msgstr ""
+"Bevestig hierdie boks as horisontaal lyne moet wees versier met die waardes "
+"hulle merk."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:217
+#, kde-format
+msgid "Set Color..."
+msgstr "Stel Kleur..."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:218
+#, kde-format
+msgid "Push this button to configure the color of the sensor in the diagram."
+msgstr ""
+"Stoot hierdie knoppie na konfigureer die kleur van die sensor in die diagram."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:230
+#, kde-format
+msgid "Move Up"
+msgstr "Beweeg Op"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:235
+#, kde-format
+msgid "Move Down"
+msgstr "Beweeg Af"
+
+#: SensorDisplayLib/ListView.cpp:45
+#, fuzzy, kde-format
+msgid "%1 K"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:46
+#, fuzzy, kde-format
+msgid "%1 M"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:47
+#, fuzzy, kde-format
+msgid "%1 G"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:48
+#, fuzzy, kde-format
+msgid "%1 T"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:49
+#, fuzzy, kde-format
+msgid "%1 P"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:152
+#, fuzzy, kde-format
+#| msgid "Display Range"
+msgid "Display Units"
+msgstr "Vertoon Omvang"
+
+#: SensorDisplayLib/ListView.cpp:156
+#, kde-format
+msgid "Mixed"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:162
+#, kde-format
+msgid "Kilobytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:168
+#, kde-format
+msgid "Megabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:174
+#, kde-format
+msgid "Gigabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:180
+#, fuzzy, kde-format
+#| msgid "Temperature"
+msgid "Terabytes"
+msgstr "Temperatuur"
+
+#: SensorDisplayLib/ListViewSettings.cpp:30
+#, kde-format
+msgid "List View Settings"
+msgstr "Lys Aansig Instellings"
+
+#. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:47
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:47
+#, kde-format
+msgid "Colors"
+msgstr "Kleure"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:79
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
+#, kde-format
+msgid "Text color:"
+msgstr "Teks kleur:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:92
+#, kde-format
+msgid "Grid color:"
+msgstr "Rooster kleur:"
+
+#: SensorDisplayLib/LogFile.cpp:93
+#, fuzzy, kde-format
+#| msgid "Log File Settings"
+msgid "File logging settings"
+msgstr "Log Lêer Instellings"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
+#, kde-format
+msgid "Foreground color:"
+msgstr "Voorgrond kleur:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, textTab)
+#: SensorDisplayLib/LogFileSettings.ui:21
+#, fuzzy, kde-format
+#| msgid "Text"
+msgid "&Text"
+msgstr "Teks"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/LogFileSettings.ui:29
+#, fuzzy, kde-format
+#| msgid "Title:"
+msgid "T&itle:"
+msgstr "Titel:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: SensorDisplayLib/LogFileSettings.ui:166
+#, fuzzy, kde-format
+#| msgid "Filter"
+msgid "Fi&lter"
+msgstr "Filter"
+
+#. i18n: ectx: property (text), widget (QPushButton, addButton)
+#: SensorDisplayLib/LogFileSettings.ui:196
+#, kde-format
+msgid "&Add"
+msgstr "Voeg by"
+
+#. i18n: ectx: property (text), widget (QPushButton, deleteButton)
+#: SensorDisplayLib/LogFileSettings.ui:203
+#, kde-format
+msgid "&Delete"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QPushButton, changeButton)
+#: SensorDisplayLib/LogFileSettings.ui:210
+#, kde-format
+msgid "&Change"
+msgstr "Verander"
+
+#: SensorDisplayLib/MultiMeterSettings.cpp:33
+#, fuzzy, kde-format
+#| msgid "Multimeter Settings"
+msgctxt ""
+"Multimeter is a sensor display that mimics 'digital multimeter' aparatus"
+msgid "Multimeter Settings"
+msgstr "Multimeter Instellings"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:26
+#, fuzzy, kde-format
+#| msgid "Title:"
+msgid "&Title:"
+msgstr "Titel:"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:43
+#, kde-format
+msgid "Enable this to append the unit to the title of the display."
+msgstr ""
+"Aktiveer hierdie na voeg-agteraan-by die eenheid na die titel van die "
+"vertoon."
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
+#, kde-format
+msgid "&Show unit"
+msgstr "Vertoon eenheid"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
+#, kde-format
+msgid "&Enable alarm"
+msgstr "Aktiveer alarm"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
+#, fuzzy, kde-format
+#| msgid "Lower limit:"
+msgid "&Lower limit:"
+msgstr "Sagter beperk:"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
+#, kde-format
+msgid "E&nable alarm"
+msgstr "Aktiveer alarm"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
+#, fuzzy, kde-format
+#| msgid "Upper limit:"
+msgid "&Upper limit:"
+msgstr "Boonste beperk:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
+#, fuzzy, kde-format
+#| msgid "Normal digit color:"
+msgid "Nor&mal digit color:"
+msgstr "Normale syfer kleur:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
+#, fuzzy, kde-format
+#| msgid "Alarm digit color:"
+msgid "Alarm di&git color:"
+msgstr "Alarm syfer kleur:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
+#, fuzzy, kde-format
+#| msgid "Background color:"
+msgid "Bac&kground color:"
+msgstr "Agtergrond kleur:"
+
+#: SensorDisplayLib/SensorDisplay.cpp:115 SensorDisplayLib/SensorLogger.cpp:587
+#, kde-format
+msgid "&Properties"
+msgstr "Eienskappe"
+
+#: SensorDisplayLib/SensorDisplay.cpp:120 SensorDisplayLib/SensorLogger.cpp:592
+#, kde-format
+msgid "&Remove Display"
+msgstr "Verwyder Vertoon"
+
+#: SensorDisplayLib/SensorDisplay.cpp:187
+#, fuzzy, kde-format
+msgid ""
+"<qt><p>This is a sensor display. To customize a sensor display click the "
+"right mouse button here and select the <i>Properties</i> entry from the "
+"popup menu. Select <i>Remove</i> to delete the display from the worksheet.</"
+"p>%1</qt>"
+msgstr ""
+"<qt><p>Hierdie is 'n sensor vertoon. Na pasmaak 'n sensor vertoon kliek en "
+"hou die regterkant muis knoppie op òf die raam of die vertoon boks en kies "
+"die <i>Eienskappe</i> inskrywing van die opspring kieslys. kies <i>Verwyder</"
+"i> Na uitvee die vertoon van die werkvel.</p>%1</qt>"
+
+#: SensorDisplayLib/SensorLogger.cpp:132
+#, fuzzy, kde-format
+#| msgid "Logging"
+msgctxt "@title:column"
+msgid "Logging"
+msgstr "Afteken"
+
+#: SensorDisplayLib/SensorLogger.cpp:134
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:column"
+msgid "Timer Interval"
+msgstr "Tydhouer Interval"
+
+#: SensorDisplayLib/SensorLogger.cpp:136
+#, fuzzy, kde-format
+#| msgid "Sensor Name"
+msgctxt "@title:column"
+msgid "Sensor Name"
+msgstr "Sensor Naam"
+
+#: SensorDisplayLib/SensorLogger.cpp:138
+#, fuzzy, kde-format
+#| msgid "Host Name"
+msgctxt "@title:column"
+msgid "Host Name"
+msgstr "Bediener Naam"
+
+#: SensorDisplayLib/SensorLogger.cpp:140
+#, fuzzy, kde-format
+#| msgid "Log File"
+msgctxt "@title:column"
+msgid "Log File"
+msgstr "Log Lêer"
+
+#: SensorDisplayLib/SensorLogger.cpp:418
+#: SensorDisplayLib/SensorLoggerDlg.cpp:30
+#, kde-format
+msgid "Sensor Logger"
+msgstr "Sensor Logger"
+
+#: SensorDisplayLib/SensorLogger.cpp:597
+#, kde-format
+msgid "&Remove Sensor"
+msgstr "Verwyder Sensor"
+
+#: SensorDisplayLib/SensorLogger.cpp:602
+#, kde-format
+msgid "&Edit Sensor..."
+msgstr "Redigeer Sensor..."
+
+#: SensorDisplayLib/SensorLogger.cpp:610
+#, kde-format
+msgid "St&op Logging"
+msgstr "Stop Afteken"
+
+#: SensorDisplayLib/SensorLogger.cpp:613
+#, kde-format
+msgid "S&tart Logging"
+msgstr "Begin Afteken"
+
+#. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
+#, fuzzy, kde-format
+msgid "File"
+msgstr "Filter"
+
+#. i18n: ectx: property (title), widget (QGroupBox, timerFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:41
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:group"
+msgid "Timer Interval"
+msgstr "Tydhouer Interval"
+
+#. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
+#, kde-format
+msgid " sec"
+msgstr " sek"
+
+#: SensorDisplayLib/SensorLoggerSettings.cpp:30
+#, kde-format
+msgid "Sensor Logger Settings"
+msgstr "Sensor Logger Instellings"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
+#, kde-format
+msgid "Alarm color:"
+msgstr "Alarm kleur:"
+
+#: SensorDisplayLib/SensorModel.cpp:161
+#, kde-format
+msgid "Host"
+msgstr "Bediener"
+
+#: SensorDisplayLib/SensorModel.cpp:163
+#, kde-format
+msgid "Sensor"
+msgstr "Sensor"
+
+#: SensorDisplayLib/SensorModel.cpp:165
+#, kde-format
+msgid "Unit"
+msgstr "Eenheid"
+
+#: SensorDisplayLib/SensorModel.cpp:167
+#, kde-format
+msgid "Status"
+msgstr "Status"
+
+#: SensorDisplayLib/SensorModel.cpp:169
+#, kde-format
+msgid "Label"
+msgstr "Etiket"
+
+#. i18n: tag WorkSheet attribute title
+#: SystemLoad2.sgrd:3
+#, kde-format
+msgid "System Load"
+msgstr "Stelsel Las"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:5
+#, kde-format
+msgid "CPU History"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:8
+#, kde-format
+msgid "Memory and Swap History"
+msgstr ""
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:9
+#, kde-format
+msgid "Memory"
+msgstr "Geheue"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:10
+#, kde-format
+msgid "Swap"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:12
+#, fuzzy, kde-format
+#| msgid "Network"
+msgid "Network History"
+msgstr "Netwerk"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:13
+#, fuzzy, kde-format
+#| msgid "Receiver"
+msgid "Receiving"
+msgstr "Ontvanger"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:14
+#, fuzzy, kde-format
+#| msgid "Send"
+msgid "Sending"
+msgstr "Stuur"
+
+#: WorkSheet.cpp:87
+#, kde-format
+msgid "Cannot open the file %1."
+msgstr "Kan nie die lêer %1 oopmaak."
+
+#: WorkSheet.cpp:95
+#, kde-format
+msgid "The file %1 does not contain valid XML."
+msgstr "Die lêer %1 bevat nie die geldige Xml nie."
+
+#: WorkSheet.cpp:102
+#, kde-format
+msgid ""
+"The file %1 does not contain a valid worksheet definition, which must have a "
+"document type 'KSysGuardWorkSheet'."
+msgstr ""
+"Die lêer %1 bevat nie 'n geldige werkvel definisie nie, wat moet het 'n "
+"dokument tipe 'KSysGuardWorkSheet'."
+
+#: WorkSheet.cpp:114
+#, kde-format
+msgid "The file %1 has an invalid worksheet size."
+msgstr "Die lêer %1 het 'n ongeldige werkvel grootte."
+
+#: WorkSheet.cpp:239
+#, kde-format
+msgid "Cannot save file %1"
+msgstr "Kan nie stoor lêer %1"
+
+#: WorkSheet.cpp:287
+#, kde-format
+msgid "The clipboard does not contain a valid display description."
+msgstr "Die klipbord doen nie bevat 'n geldige vertoon beskrywing."
+
+#: WorkSheet.cpp:387
+#, kde-format
+msgid "Select Display Type"
+msgstr "Kies Vertoon Tipe"
+
+#: WorkSheet.cpp:388
+#, kde-format
+msgid "&Line graph"
+msgstr ""
+
+#: WorkSheet.cpp:389
+#, kde-format
+msgid "&Digital display"
+msgstr ""
+
+#: WorkSheet.cpp:390
+#, fuzzy, kde-format
+msgid "&Bar graph"
+msgstr "Balkgrafiek"
+
+#: WorkSheet.cpp:391
+#, fuzzy, kde-format
+msgid "Log to a &file"
+msgstr "Log Lêer"
+
+#: WorkSheet.cpp:547
+#, fuzzy, kde-format
+#| msgid "&Remove Display"
+msgid "Remove this display?"
+msgstr "Verwyder Vertoon"
+
+#: WorkSheet.cpp:548
+#, fuzzy, kde-format
+#| msgid "&Remove Display"
+msgid "Remove Display"
+msgstr "Verwyder Vertoon"
+
+#: WorkSheet.cpp:589
+#, kde-format
+msgid "Dummy"
+msgstr ""
+
+#: WorkSheetSettings.cpp:43
+#, fuzzy, kde-format
+msgid "Tab Properties"
+msgstr "Eienskappe"
+
+#: WorkSheetSettings.cpp:72
+#, fuzzy, kde-format
+msgid "Properties"
+msgstr "Eienskappe"
+
+#: WorkSheetSettings.cpp:81
+#, kde-format
+msgid "Rows:"
+msgstr "Rye:"
+
+#: WorkSheetSettings.cpp:91
+#, kde-format
+msgid "Columns:"
+msgstr "Kolomme:"
+
+#: WorkSheetSettings.cpp:100
+#, kde-format
+msgid "Enter the number of rows the sheet should have."
+msgstr "Invoer die nommer van rye die staat moet het."
+
+#: WorkSheetSettings.cpp:101
+#, kde-format
+msgid "Enter the number of columns the sheet should have."
+msgstr "Invoer die nommer van kolomme die staat moet het."
+
+#: WorkSheetSettings.cpp:103
+#, kde-format
+msgid "Update interval:"
+msgstr "Dateer op interval:"
+
+#: WorkSheetSettings.cpp:116
+#, kde-format
+msgid "All displays of the sheet are updated at the rate specified here."
+msgstr ""
+"Alle vertoon van die staat word opgedateer na die tempo gespesifiseer hier."
+
+#: WorkSheetSettings.cpp:117
+#, kde-format
+msgid "Enter the title of the worksheet here."
+msgstr "Invoer die titel van die werkvel hier."
+
+#: Workspace.cpp:111
+#, kde-format
+msgid "Sheet %1"
+msgstr "Staat %1"
+
+#: Workspace.cpp:170
+#, fuzzy, kde-format
+#| msgid ""
+#| "The worksheet '%1' contains unsaved data.\n"
+#| "Do you want to save the worksheet?"
+msgid ""
+"The tab '%1' contains unsaved data.\n"
+"Do you want to save the tab?"
+msgstr ""
+"Die werkvel '%1' bevat ongestoorde data.\n"
+"Doen jy wil hê na stoor Die werkvel?"
+
+#: Workspace.cpp:186
+#, kde-format
+msgid "Select Tab File to Import"
+msgstr ""
+
+#: Workspace.cpp:208 Workspace.cpp:228
+#, fuzzy, kde-format
+#| msgid "You do not have a worksheet that could be saved."
+msgid "You do not have a tab that could be saved."
+msgstr "Jy het nie 'n werkvel wat gestoor kon wees nie."
+
+#: Workspace.cpp:235
+#, kde-format
+msgid "Export Tab"
+msgstr ""
+
+#: Workspace.cpp:255
+#, fuzzy, kde-format
+#| msgid "There are no worksheets that could be deleted."
+msgid "There are no tabs that could be deleted."
+msgstr "Daar is geen werkvelle wat verwyder kon word nie."
+
+#: Workspace.cpp:299
+#, kde-kuit-format
+msgctxt "@info"
+msgid ""
+"<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
+"in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
+msgstr ""
+
+#: Workspace.cpp:304
+#, fuzzy, kde-format
+msgid "Upload custom System Monitor tab"
+msgstr "Stelsel Las"
+
+#~ msgid "Timer Settings"
+#~ msgstr "Tydhouer Instellings"
+
+#~ msgid "Use update interval of worksheet"
+#~ msgstr "Gebruik opdateer interval van werkvel"
+
+#, fuzzy
+#~| msgid "*.sgrd|Sensor Files"
+#~ msgid "*.sgrd|Sensor Files (*.sgrd)"
+#~ msgstr "*.sgrd|Sensor Lêers"
+
+#, fuzzy
+#~| msgid "Lower limit:"
+#~ msgid "Lo&wer limit:"
+#~ msgstr "Sagter beperk:"
+
+#, fuzzy
+#~| msgid ""
+#~| "Message from %1:\n"
+#~| "%2"
+#~ msgctxt "%1 is a host name"
+#~ msgid ""
+#~ "Message from %1:\n"
+#~ "%2"
+#~ msgstr ""
+#~ "Boodskap van %1:\n"
+#~ "%2"
+
+#~ msgid "Connection to %1 refused"
+#~ msgstr "Verbinding na %1 geweier"
+
+#~ msgid "Host %1 not found"
+#~ msgstr "Bediener %1 nie gevind"
+
+#, fuzzy
+#~| msgid "&Change"
+#~ msgid "Change"
+#~ msgstr "Verander"
+
+#, fuzzy
+#~| msgid "State"
+#~ msgid "Rate"
+#~ msgstr "Status"
+
+#~ msgid "CPU Load"
+#~ msgstr "CPU Las"
+
+#~ msgid "Nice Load"
+#~ msgstr "Oulike Las"
+
+#~ msgid "User Load"
+#~ msgstr "Gebruiker Las"
+
+#, fuzzy
+#~| msgid "System Load"
+#~ msgctxt "@item sensor description"
+#~ msgid "System Load"
+#~ msgstr "Stelsel Las"
+
+#, fuzzy
+#~ msgid "Waiting"
+#~ msgstr "uitblaai"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Interrupt Load"
+#~ msgstr "Interrupts"
+
+#, fuzzy
+#~ msgid "Total Load"
+#~ msgstr "Totaal"
+
+#~ msgid "Physical Memory"
+#~ msgstr "Fisiese Geheue"
+
+#~ msgid "Swap Memory"
+#~ msgstr "Uitruil Geheue"
+
+#~ msgid "Cached Memory"
+#~ msgstr "Gekas Geheue"
+
+#~ msgid "Buffered Memory"
+#~ msgstr "Gebufferde Geheue"
+
+#~ msgid "Used Memory"
+#~ msgstr "Gebruik word Geheue"
+
+#~ msgid "Application Memory"
+#~ msgstr "Aansoek Geheue"
+
+#~ msgid "Free Memory"
+#~ msgstr "Vry Geheue"
+
+#, fuzzy
+#~| msgid "Application Memory"
+#~ msgid "Active Memory"
+#~ msgstr "Aansoek Geheue"
+
+#, fuzzy
+#~| msgid "Cached Memory"
+#~ msgid "Inactive Memory"
+#~ msgstr "Gekas Geheue"
+
+#, fuzzy
+#~| msgid "Used Memory"
+#~ msgid "Wired Memory"
+#~ msgstr "Gebruik word Geheue"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Processes"
+#~ msgstr "Proses Tel"
+
+#~ msgid "Process Controller"
+#~ msgstr "Proses Beheerder"
+
+#, fuzzy
+#~| msgid "System Processes"
+#~ msgid "Last Process ID"
+#~ msgstr "Stelsel Prosesse"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Process Spawn Count"
+#~ msgstr "Proses Tel"
+
+#~ msgid "Process Count"
+#~ msgstr "Proses Tel"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Idle Processes Count"
+#~ msgstr "Proses Tel"
+
+#, fuzzy
+#~ msgid "Running Processes Count"
+#~ msgstr "Proses Tel"
+
+#, fuzzy
+#~ msgid "Sleeping Processes Count"
+#~ msgstr "Proses Tel"
+
+#, fuzzy
+#~ msgid "Stopped Processes Count"
+#~ msgstr "Proses Tel"
+
+#, fuzzy
+#~ msgid "Zombie Processes Count"
+#~ msgstr "Proses Tel"
+
+#, fuzzy
+#~ msgid "Waiting Processes Count"
+#~ msgstr "Proses Tel"
+
+#, fuzzy
+#~ msgid "Locked Processes Count"
+#~ msgstr "Proses Tel"
+
+#~ msgid "Disk Throughput"
+#~ msgstr "Disket Deurstuur tempo"
+
+#~ msgctxt "CPU Load"
+#~ msgid "Load"
+#~ msgstr "Las"
+
+#~ msgid "Total Accesses"
+#~ msgstr "Totaal Toegang verkry tot"
+
+#~ msgid "Read Accesses"
+#~ msgstr "Lees Toegang verkry tot"
+
+#~ msgid "Write Accesses"
+#~ msgstr "Skryf Toegang verkry tot"
+
+#~ msgid "Read Data"
+#~ msgstr "Lees Data"
+
+#, fuzzy
+#~| msgid "Write Data"
+#~ msgid "Written Data"
+#~ msgstr "Skryf Data"
+
+#~ msgid "Pages In"
+#~ msgstr "Bladsye In"
+
+#~ msgid "Pages Out"
+#~ msgstr "Bladsye Uit"
+
+#~ msgid "Context Switches"
+#~ msgstr "Konteks Skakel"
+
+#, fuzzy
+#~| msgid "System Load"
+#~ msgid "System Calls"
+#~ msgstr "Stelsel Las"
+
+#~ msgid "Network"
+#~ msgstr "Netwerk"
+
+#~ msgid "Interfaces"
+#~ msgstr "Koppelvlakke"
+
+#~ msgid "Transmitter"
+#~ msgstr "Stuurder"
+
+#, fuzzy
+#~| msgid "State"
+#~ msgid "Data Rate"
+#~ msgstr "Status"
+
+#, fuzzy
+#~| msgid "Compressed Packets"
+#~ msgid "Compressed Packets Rate"
+#~ msgstr "Saamgepersde Pakkies"
+
+#, fuzzy
+#~| msgid "Dropped Packets"
+#~ msgid "Dropped Packets Rate"
+#~ msgstr "Gegooi Pakkies"
+
+#, fuzzy
+#~| msgid "Errors"
+#~ msgid "Error Rate"
+#~ msgstr "Foute"
+
+#, fuzzy
+#~| msgid "FIFO Overruns"
+#~ msgid "FIFO Overruns Rate"
+#~ msgstr "Fifo Oorgeloop"
+
+#, fuzzy
+#~| msgid "Frame Errors"
+#~ msgid "Frame Error Rate"
+#~ msgstr "Raam Foute"
+
+#, fuzzy
+#~| msgid "Multicast"
+#~ msgid "Multicast Packet Rate"
+#~ msgstr "Multi uitsaai"
+
+#, fuzzy
+#~| msgid "Packets"
+#~ msgid "Packet Rate"
+#~ msgstr "Pakkies"
+
+#, fuzzy
+#~| msgid "Carrier"
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Loss Rate"
+#~ msgstr "Draer"
+
+#~ msgid "Collisions"
+#~ msgstr "Botsings"
+
+#~ msgid "Data"
+#~ msgstr "Data"
+
+#~ msgid "Compressed Packets"
+#~ msgstr "Saamgepersde Pakkies"
+
+#~ msgid "Dropped Packets"
+#~ msgstr "Gegooi Pakkies"
+
+#~ msgid "Errors"
+#~ msgstr "Foute"
+
+#~ msgid "FIFO Overruns"
+#~ msgstr "Fifo Oorgeloop"
+
+#~ msgid "Frame Errors"
+#~ msgstr "Raam Foute"
+
+#, fuzzy
+#~| msgid "Multicast"
+#~ msgid "Multicast Packets"
+#~ msgstr "Multi uitsaai"
+
+#~ msgid "Packets"
+#~ msgstr "Pakkies"
+
+#, fuzzy
+#~| msgid "Carrier"
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Losses"
+#~ msgstr "Draer"
+
+#~ msgid "Sockets"
+#~ msgstr "Sokets"
+
+#~ msgid "Total Number"
+#~ msgstr "Totaal Nommer"
+
+#~ msgid "Table"
+#~ msgstr "Tabel"
+
+#~ msgid "Advanced Power Management"
+#~ msgstr "Gevorderde Elektrisiteit Bestuuring"
+
+#~ msgid "ACPI"
+#~ msgstr "ACPI"
+
+#~ msgid "Thermal Zone"
+#~ msgstr "Terminaal Zone"
+
+#~ msgid "Temperature"
+#~ msgstr "Temperatuur"
+
+#, fuzzy
+#~| msgid "Temperature"
+#~ msgid "Average CPU Temperature"
+#~ msgstr "Temperatuur"
+
+#~ msgid "Fan"
+#~ msgstr "Waaier"
+
+#~ msgid "State"
+#~ msgstr "Status"
+
+#~ msgid "Battery"
+#~ msgstr "Batery"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Capacity"
+#~ msgstr "Batery Laai"
+
+#~ msgid "Battery Charge"
+#~ msgstr "Batery Laai"
+
+#~ msgid "Battery Usage"
+#~ msgstr "Batery Gebruik"
+
+#, fuzzy
+#~| msgid "Battery Usage"
+#~ msgid "Battery Voltage"
+#~ msgstr "Batery Gebruik"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Discharge Rate"
+#~ msgstr "Batery Laai"
+
+#~ msgid "Remaining Time"
+#~ msgstr "Oor Tyd"
+
+#~ msgid "Interrupts"
+#~ msgstr "Interrupts"
+
+#~ msgid "Load Average (1 min)"
+#~ msgstr "Las Gemiddelde (1 min)"
+
+#~ msgid "Load Average (5 min)"
+#~ msgstr "Las Gemiddelde (5 min)"
+
+#~ msgid "Load Average (15 min)"
+#~ msgstr "Las Gemiddelde (15 min)"
+
+#~ msgid "Clock Frequency"
+#~ msgstr "Horlosie Frekwensie"
+
+#, fuzzy
+#~| msgid "Clock Frequency"
+#~ msgid "Average Clock Frequency"
+#~ msgstr "Horlosie Frekwensie"
+
+#~ msgid "Hardware Sensors"
+#~ msgstr "Hardeware Sensors"
+
+#~ msgid "Partition Usage"
+#~ msgstr "Partisie Gebruik"
+
+#~ msgid "Used Space"
+#~ msgstr "Gebruik word Spasie"
+
+#~ msgid "Free Space"
+#~ msgstr "Vry Spasie"
+
+#~ msgid "Fill Level"
+#~ msgstr "Opvul Vlak"
+
+#, fuzzy
+#~| msgid "User Load"
+#~ msgid "Used Inodes"
+#~ msgstr "Gebruiker Las"
+
+#, fuzzy
+#~ msgid "System"
+#~ msgstr "System%"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Processors"
+#~ msgstr "Proses Tel"
+
+#, fuzzy
+#~| msgid "Colors"
+#~ msgid "Cores"
+#~ msgstr "Kleure"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Blocks"
+#~ msgstr "Nommer van vertoon:"
+
+#, fuzzy
+#~| msgid "Total Number"
+#~ msgid "Total Number of Devices"
+#~ msgstr "Totaal Nommer"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Raid Devices"
+#~ msgstr "Nommer van vertoon:"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Devices"
+#~ msgstr "Nommer van vertoon:"
+
+#, fuzzy
+#~ msgid "CPU %1"
+#~ msgstr "CPU%1"
+
+#, fuzzy
+#~ msgid "Disk %1"
+#~ msgstr "Disk%1"
+
+#, fuzzy
+#~| msgid "Battery"
+#~ msgid "Battery %1"
+#~ msgstr "Batery"
+
+#, fuzzy
+#~ msgid "Fan %1"
+#~ msgstr "Fan%1"
+
+#, fuzzy
+#~ msgid "Temperature %1"
+#~ msgstr "Temperature%1"
+
+#~ msgid "Total"
+#~ msgstr "Totaal"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Software Interrupts"
+#~ msgstr "Interrupts"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Hardware Interrupts"
+#~ msgstr "Interrupts"
+
+#, fuzzy
+#~ msgid "Int %1"
+#~ msgstr "Int%1"
+
+#~ msgctxt "the unit 1 per second"
+#~ msgid "1/s"
+#~ msgstr "1/s"
+
+#~ msgid "kBytes"
+#~ msgstr "Kgrepe"
+
+#~ msgctxt "the unit minutes"
+#~ msgid "min"
+#~ msgstr "min"
+
+#~ msgctxt "the frequency unit"
+#~ msgid "MHz"
+#~ msgstr "Mhz"
+
+#, fuzzy
+#~ msgctxt "a percentage"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgid "Integer Value"
+#~ msgstr "Heelgetal Waarde"
+
+#~ msgid "Floating Point Value"
+#~ msgstr "Wissel Punt Waarde"
+
+#, fuzzy
+#~| msgid " sec"
+#~ msgctxt "Units"
+#~ msgid "%1 second"
+#~ msgid_plural "%1 seconds"
+#~ msgstr[0] " sek"
+#~ msgstr[1] " sek"
+
+#, fuzzy
+#~ msgid "Font:"
+#~ msgstr "Tel:"
+
+#, fuzzy
+#~| msgid "Vertical lines:"
+#~ msgid "Grid lines:"
+#~ msgstr "Vertikaal lyne:"
+
+#~ msgid "Background:"
+#~ msgstr "Agtergrond:"
+
+#, fuzzy
+#~ msgid "Do you really want to delete the display?"
+#~ msgstr "Wil jy werklik die verstek werksblaaie herstel?"
+
+#, fuzzy
+#~ msgid "Delete Display"
+#~ msgstr "Kies Vertoon Tipe"
+
+#, fuzzy
+#~ msgid "&Edit"
+#~ msgstr "Redigeer..."
+
+#, fuzzy
+#~| msgid "Automatic range detection"
+#~ msgid "Automatic range"
+#~ msgstr "Automatiese omvang verklikker"
+
+#, fuzzy
+#~| msgid ""
+#~| "This is your work space. It holds your worksheets. You need to create a "
+#~| "new worksheet (Menu File->New) before you can drag sensors here."
+#~ msgid ""
+#~ "This is your work space. It holds your tabs. You need to create a new tab "
+#~ "(Menu File->New) before you can drag sensors here."
+#~ msgstr ""
+#~ "Hierdie is jou werksruimte. Dit hou jou werksblaaie. Jy het nodig om 'n "
+#~ "nuwe werkblad te maak (Kielys Lêer-Nuut) voordat jy hier sensore kan trek-"
+
+#~ msgid "Connection to %1 has been lost."
+#~ msgstr "Verbinding na %1 is verlore."
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "&Title"
+#~ msgstr "Titel"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "T&itle"
+#~ msgstr "Titel"
+
+#, fuzzy
+#~ msgid "System Guard Applet Settings"
+#~ msgstr "Ksysguard Miniprogram Instellings"
+
+#~ msgid "Size ratio:"
+#~ msgstr "Grootte verhouding:"
+
+#, fuzzy
+#~| msgid "%"
+#~ msgctxt "Number suffix in spinbox"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgid "Launch &System Guard"
+#~ msgstr "Aktiveer Stelsel Wag"
+
+#~ msgid "Drag sensors to empty cells of a worksheet or the panel applet."
+#~ msgstr ""
+#~ "Trek sensors na leeg selle van 'n werkvel of die paneel miniprogram."
+
+#, fuzzy
+#~ msgid "Select Worksheet to Open"
+#~ msgstr "Kies Werkvel na Las"
+
+#, fuzzy
+#~ msgid "Export Work Sheet"
+#~ msgstr "Voer Werksblad Uit"
+
+#~ msgid "Worksheet Properties"
+#~ msgstr "Werkvel Eienskappe"
+
+#~ msgid "&Signal Plotter"
+#~ msgstr "Sein Plotter"
+
+#~ msgid "&Multimeter"
+#~ msgstr "Multimeter"
+
+#~ msgid "&Dancing Bars"
+#~ msgstr "Dans Stawe"
+
+#~ msgid ""
+#~ "The KSysGuard applet does not support displaying of this type of sensor. "
+#~ "Please choose another sensor."
+#~ msgstr ""
+#~ "Die Ksysguard miniprogram doen nie ondersteun vertooning van hierdie tipe "
+#~ "van sensor. Asseblief kies nog 'n sensor."
+
+#~ msgid ""
+#~ "The file %1 does not contain a valid applet definition, which must have a "
+#~ "document type 'KSysGuardApplet'."
+#~ msgstr ""
+#~ "Die lêer %1 doen nie bevat 'n geldige miniprogram definisie, wat moet het "
+#~ "'n dokument tipe 'KSysGuardApplet'."
+
+#~ msgid "Drag sensors from the KDE System Guard into this cell."
+#~ msgstr "Trek sensors van die Kde Stelsel Wag binnein hierdie sel."
+
+#~ msgid "&New Worksheet..."
+#~ msgstr "Nuwe Werksblad"
+
+#, fuzzy
+#~| msgid "&New Worksheet..."
+#~ msgid "Open Worksheet..."
+#~ msgstr "Nuwe Werksblad"
+
+#~ msgid "&Export Worksheet..."
+#~ msgstr "Voer Werksblad Uit"
+
+#~ msgid "&Remove Worksheet"
+#~ msgstr "Verwyder Werksblad"
+
+#~ msgid "&Worksheet Properties"
+#~ msgstr "Werkvel Eienskappe"
+
+#, fuzzy
+#~ msgid "Import Worksheet..."
+#~ msgstr "Voer Werksblad In"
+
+#~ msgid "Count:"
+#~ msgstr "Tel:"
+
+#~ msgid "Enter the number of horizontal lines here."
+#~ msgstr "Invoer die nommer van horisontaal lyne hier."
+
+#~ msgid "Labels"
+#~ msgstr "Etikette"
+
+#~ msgid "Top bar"
+#~ msgstr "Bo kolom"
+
+#~ msgid ""
+#~ "Check this to active the display title bar. This is probably only useful "
+#~ "for applet displays. The bar is only visible if the display is large "
+#~ "enough."
+#~ msgstr ""
+#~ "Bevestig hierdie na aktief die vertoon titel kolom. hierdie is "
+#~ "waarskynlik slegs bruikbare vir miniprogram vertoon. die kolom is slegs "
+#~ "sigbare as die vertoon is groot genoeg."
+
+#~ msgid "Horizontal lines:"
+#~ msgstr "Horisontaal lyne:"
+
+#, fuzzy
+#~| msgid "Sensor Logger"
+#~ msgid "Sensor Load"
+#~ msgstr "Sensor Logger"
+
+#~ msgid "Show only process list of local host"
+#~ msgstr "Vertoon slegs proses lys van plaaslike bediener"
+
+#~ msgctxt "process status"
+#~ msgid "running"
+#~ msgstr "wat loop"
+
+#~ msgctxt "process status"
+#~ msgid "sleeping"
+#~ msgstr "slaap"
+
+#~ msgctxt "process status"
+#~ msgid "disk sleep"
+#~ msgstr "disket slaap"
+
+#~ msgctxt "process status"
+#~ msgid "zombie"
+#~ msgstr "zombie"
+
+#~ msgctxt "process status"
+#~ msgid "stopped"
+#~ msgstr "op gehou"
+
+#~ msgctxt "process status"
+#~ msgid "paging"
+#~ msgstr "uitblaai"
+
+#~ msgctxt "process status"
+#~ msgid "idle"
+#~ msgstr "luier"
+
+#, fuzzy
+#~ msgid "User ID: %1"
+#~ msgstr "User%"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "User Name"
+#~ msgstr "Sensor Naam"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "CPU %"
+#~ msgstr "CPU%1"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Virtual Size"
+#~ msgstr "Vertikaal Skaal"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Memory"
+#~ msgstr "Geheue"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Shared Mem"
+#~ msgstr "Gekas Geheue"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Command"
+#~ msgstr "Opdrag"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Name"
+#~ msgstr "Naam"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Graphics Memory"
+#~ msgstr "Uitruil Geheue"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Application"
+#~ msgstr "Aansoek Geheue"
+
+#~ msgid "Renice Process"
+#~ msgstr "Maak netjies Proses"
+
+#, fuzzy
+#~ msgid "Renice process"
+#~ msgstr "Maak netjies Proses"
+
+#, fuzzy
+#~ msgid "Kill process"
+#~ msgstr "Stop Proses"
+
+#, fuzzy
+#~ msgid "Hide column '%1'"
+#~ msgstr "Steek weg Kolom"
+
+#, fuzzy
+#~ msgid "Show column '%1'"
+#~ msgstr "Vertoon Kolom"
+
+#~ msgid "%1: Running Processes"
+#~ msgstr "%1: Wat loop Prosesse"
+
+#~ msgid "You need to select a process first."
+#~ msgstr "Jy benodig om te kies 'n proses eers."
+
+#, fuzzy
+#~ msgid "Do you want to kill the selected process?"
+#~ msgid_plural "Do you want to kill the %1 selected processes?"
+#~ msgstr[0] "Doen jy wil hê na stop die gekose proses?"
+#~ msgstr[1] "Doen jy wil hê na stop die %1 gekose prosesse?"
+
+#~ msgid "Kill Process"
+#~ msgstr "Stop Proses"
+
+#~ msgid "Kill"
+#~ msgstr "Dood"
+
+#~ msgid "Error while attempting to kill process %1."
+#~ msgstr "Fout terwyl probeer om te stop proses %1."
+
+#~ msgid "Process %1 has already disappeared."
+#~ msgstr "Proses %1 het alreeds verdwyn."
+
+#~ msgid "Invalid Signal."
+#~ msgstr "Ongeldige Sein."
+
+#, fuzzy
+#~ msgid "Error while attempting to renice process."
+#~ msgstr "Fout terwyl probeer om netjies te maak proses %1."
+
+#, fuzzy
+#~ msgid "Insufficient permissions to renice process"
+#~ msgstr "Onvoldoende regte om netjies te maak proses %1."
+
+#, fuzzy
+#~ msgid "Process has disappeared."
+#~ msgstr "Proses %1 het alreeds verdwyn."
+
+#~ msgid "Error while attempting to renice process %1."
+#~ msgstr "Fout terwyl probeer om netjies te maak proses %1."
+
+#, fuzzy
+#~ msgid "Process %1 has disappeared."
+#~ msgstr "Proses %1 het alreeds verdwyn."
+
+#, fuzzy
+#~ msgid "All Processes, Simple"
+#~ msgstr "Alle Prosesse"
+
+#, fuzzy
+#~ msgid "All Processes, Hierarchical"
+#~ msgstr "Alle Prosesse"
+
+#~ msgid "User Processes"
+#~ msgstr "Gebruiker Prosesse"
+
+#~ msgid "Own Processes"
+#~ msgstr "Eie Prosesse"
+
+#, fuzzy
+#~ msgid "Show &Totals"
+#~ msgstr "Vertoon Kolom"
+
+#~ msgid "Global Style Settings"
+#~ msgstr "Globale Styl Instellings"
+
+#~ msgid "Display Style"
+#~ msgstr "Vertoon Styl"
+
+#~ msgid "First foreground color:"
+#~ msgstr "Eerste voorgrond kleur:"
+
+#~ msgid "Second foreground color:"
+#~ msgstr "Tweede voorgrond kleur:"
+
+#~ msgid "Sensor Colors"
+#~ msgstr "Sensor Kleure"
+
+#~ msgid "Change Color..."
+#~ msgstr "Verander Kleur..."
+
+#~ msgid "Color %1"
+#~ msgstr "Kleur %1"
+
+#, fuzzy
+#~ msgid "Font"
+#~ msgstr "Tel:"
+
+#~ msgid "Select Font..."
+#~ msgstr "Kies Skrif tipe..."
+
+#, fuzzy
+#~ msgid "&Cancel"
+#~ msgstr "Verander"
+
+#~ msgid "Configure &Style..."
+#~ msgstr "Konfigureer Styl..."
+
+#~ msgid "Idle Load"
+#~ msgstr "Luier Las"
+
+#~ msgid "It is impossible to connect to '%1'."
+#~ msgstr "Dit is onmoontlik om te konnekteer na '%1'."
+
+#~ msgid "S&ensorLogger"
+#~ msgstr "Sensorlogger"
+
+#~ msgid "Timeout at host %1"
+#~ msgstr "Tyduit na werkstasie %1"
+
+#~ msgid "Network failure host %1"
+#~ msgstr "Netwerk gefaal werkstasie %1"
+
+#~ msgid "Save Current Worksheet As"
+#~ msgstr "Stoor Huidige Werkvel As"
+
+#~ msgid "Cannot find file ProcessTable.sgrd."
+#~ msgstr "Kon nie vind lêer Processtable.sgrd."
+
+#~ msgid "Remove Column"
+#~ msgstr "Verwyder Kolom"
+
+#~ msgid "Add Column"
+#~ msgstr "Voeg by Kolom"
+
+#~ msgid "Help on Column"
+#~ msgstr "Hulp op Kolom"
+
+#~ msgid "Nice"
+#~ msgstr "Oulike"
+
+#~ msgid "Select All Processes"
+#~ msgstr "Kies Alle Prosesse"
+
+#~ msgid "Unselect All Processes"
+#~ msgstr "Nie gekies Alle Prosesse"
+
+#~ msgid "Select All Child Processes"
+#~ msgstr "Kies Alle Kind Prosesse"
+
+#~ msgid "Unselect All Child Processes"
+#~ msgstr "Nie gekies Alle Kind Prosesse"
+
+#~ msgid "SIGABRT"
+#~ msgstr "Sigabrt"
+
+#~ msgid "SIGALRM"
+#~ msgstr "Sigalrm"
+
+#~ msgid "SIGCHLD"
+#~ msgstr "Sigchld"
+
+#~ msgid "SIGCONT"
+#~ msgstr "Sigcont"
+
+#~ msgid "SIGFPE"
+#~ msgstr "Sigfpe"
+
+#~ msgid "SIGHUP"
+#~ msgstr "Sighup"
+
+#~ msgid "SIGILL"
+#~ msgstr "Sigill"
+
+#~ msgid "SIGINT"
+#~ msgstr "Sigint"
+
+#~ msgid "SIGKILL"
+#~ msgstr "Sigkill"
+
+#~ msgid "SIGPIPE"
+#~ msgstr "Sigpipe"
+
+#~ msgid "SIGQUIT"
+#~ msgstr "Sigquit"
+
+#~ msgid "SIGSEGV"
+#~ msgstr "Sigsegv"
+
+#~ msgid "SIGSTOP"
+#~ msgstr "Sigstop"
+
+#~ msgid "SIGTERM"
+#~ msgstr "Sigterm"
+
+#~ msgid "SIGTSTP"
+#~ msgstr "Sigtstp"
+
+#~ msgid "SIGTTIN"
+#~ msgstr "Sigttin"
+
+#~ msgid "SIGTTOU"
+#~ msgstr "Sigttou"
+
+#~ msgid "SIGUSR1"
+#~ msgstr "Sigusr1"
+
+#~ msgid "SIGUSR2"
+#~ msgstr "Sigusr2"
+
+#~ msgid "Send Signal"
+#~ msgstr "Stuur Sein"
+
+#~ msgid "Renice Process..."
+#~ msgstr "Maak netjies Proses..."
+
+#~ msgid "Do you really want to send signal %2 to the selected process?"
+#~ msgid_plural ""
+#~ "Do you really want to send signal %2 to the %1 selected processes?"
+#~ msgstr[0] "Doen jy rerig wil hê na stuur sein %2 na die gekose proses?"
+#~ msgstr[1] "Doen jy rerig wil hê na stuur sein %2 na die %1 gekose prosesse?"
+
+#~ msgid "Style"
+#~ msgstr "Styl"
+
+#~ msgid "Graph Drawing Style"
+#~ msgstr "Grafiese Teken Styl"
+
+#~ msgid "Basic polygons"
+#~ msgstr "Basiese poligone"
+
+#~ msgid "Original - single line per data point"
+#~ msgstr "Oorspronklike - enkel lyn per data punt"
+
+#~ msgid "&Setup Update Interval..."
+#~ msgstr "Opstelling Dateer op Interval..."
+
+#~ msgid "&Continue Update"
+#~ msgstr "Gaan voort Dateer op"
+
+#~ msgid "P&ause Update"
+#~ msgstr "Pouseer Dateer op"
+
+#~ msgid ""
+#~ "You are about to change the scheduling priority of\n"
+#~ "process %1. Be aware that only the Superuser (root)\n"
+#~ "can decrease the nice level of a process. The lower\n"
+#~ "the number is the higher the priority.\n"
+#~ "\n"
+#~ "Please enter the desired nice level:"
+#~ msgstr ""
+#~ "Jy word aangaande na verander die skedulering prioriteit van\n"
+#~ "proses %1. Wees bewus wat slegs die Super gebruiker (root)\n"
+#~ "kan verklein die oulike vlak van 'n proses. die sagter\n"
+#~ "die nommer is die hoër die prioriteit.\n"
+#~ "\n"
+#~ "Asseblief invoer die verlangde oulike vlak:"
+
+#~ msgid "PID"
+#~ msgstr "Pid"
+
+#~ msgid "PPID"
+#~ msgstr "Ppid"
+
+#~ msgid "UID"
+#~ msgstr "Uid"
+
+#~ msgid "GID"
+#~ msgstr "Gid"
+
+#~ msgid "VmSize"
+#~ msgstr "Vmgrootte"
+
+#~ msgid "VmRss"
+#~ msgstr "Vmrss"
+
+#~ msgid "Login"
+#~ msgstr "Aanteken"
+
+#~ msgid "&Tree"
+#~ msgstr "Boom"
+
+#~ msgid "&Kill"
+#~ msgstr "Stop"
+
+#~ msgid "Do not ask again"
+#~ msgstr "Moet nie weer vra"
+
+#~ msgid "Insufficient permissions to kill process %1."
+#~ msgstr "Onvoldoende regte om te stop proses %1."
+
+#~ msgid "Invalid argument."
+#~ msgstr "Ongeldige argument."
+
+#~ msgid "CPU"
+#~ msgstr "CPU"
+
+#~ msgid "Mem"
+#~ msgstr "Geheue"
+
+#~ msgid "Sensor Type"
+#~ msgstr "Sensor Tipe"
+
+#~ msgid "KDE system guard"
+#~ msgstr "Kde stelsel wag"
+
+#~ msgid "88888 Processes"
+#~ msgstr "88888 Prosesse"
+
+#~ msgid "Memory: 88888888888 kB used, 88888888888 kB free"
+#~ msgstr "Geheue: 88888888888 Kb gebruik word, 88888888888 vry"
+
+#~ msgid "Swap: 888888888 kB used, 888888888 kB free"
+#~ msgstr "Uitruil: 888888888 Kb gebruik word, 888888888 Kb vry"
+
+#, fuzzy
+#~ msgid "&Import Recent Worksheet"
+#~ msgstr "Voer Onlangse Werksblad In"
+
+#~ msgid "C&onnect Host..."
+#~ msgstr "Konnekteer Bediener..."
+
+#~ msgid "D&isconnect Host"
+#~ msgstr "Ontkoppel Bediener"
+
+#~ msgid "Load Standard Sheets"
+#~ msgstr "Laai Standaard Blaaie"
+
+#~ msgid "Reset All Worksheets"
+#~ msgstr "Herstel Alle Werksblaaie"
+
+#~ msgid "Reset"
+#~ msgstr "Herstel"
+
+#~ msgid "Memory: %1 %2 used, %3 %4 free"
+#~ msgstr "Geheue: %1 %2 gebruik word, %3 %4 vry"
+
+#~ msgid "Swap: %1 %2 used, %3 %4 free"
+#~ msgstr "Uitruil: %1 %2 gebruik word, %3 %4 vry"

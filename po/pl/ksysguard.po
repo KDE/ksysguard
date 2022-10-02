@@ -1,0 +1,1963 @@
+# translation of ksysguard.po to
+# Version: $Revision: 1620121 $
+# Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+# Marcin Giedz <mgiedz@elka.pw.edu.pl>, 2002.
+# Michal Rudolf <mrudolf@kdewebdev.org>, 2003, 2004, 2005.
+# Michal Milos <krasnall@post.pl>, 2004, 2005.
+# Krzysztof Lichota <lichota@mimuw.edu.pl>, 2005, 2006, 2007.
+# Robert Gomulka <rgom@o2.pl>, 2006.
+# Marta Rybczyńska <kde-i18n@rybczynska.net>, 2007, 2008, 2009, 2010.
+# Maciej <maciekw5@gmail.com>, 2010.
+# Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>, 2011, 2012, 2014, 2015, 2016, 2017, 2018, 2019, 2021.
+msgid ""
+msgstr ""
+"Project-Id-Version: ksysguard\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-03-02 00:46+0000\n"
+"PO-Revision-Date: 2021-04-04 08:06+0200\n"
+"Last-Translator: Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>\n"
+"Language-Team: Polish <kde-i18n-doc@kde.org>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 20.12.1\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Michał Miłoś, Marcin Giedz, Maciej Warnecki, Łukasz Wojniłowicz"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr ""
+"krasnall@post.pl, mgiedz@elka.pw.edu.pl, maciekw5@gmail.com, lukasz."
+"wojnilowicz@gmail.com"
+
+#: HostConnector.cpp:44
+#, kde-format
+msgid "Connect Host"
+msgstr "Połącz z komputerem"
+
+#: HostConnector.cpp:57
+#, kde-format
+msgid "Host:"
+msgstr "Komputer:"
+
+#: HostConnector.cpp:67
+#, kde-format
+msgid "Enter the name of the host you want to connect to."
+msgstr "Wprowadź nazwę komputera, z którym chcesz się połączyć."
+
+#: HostConnector.cpp:73
+#, kde-format
+msgid "Connection Type"
+msgstr "Rodzaj połączenia"
+
+#: HostConnector.cpp:78
+#, kde-format
+msgid "ssh"
+msgstr "ssh"
+
+#: HostConnector.cpp:81
+#, kde-format
+msgid "Select this to use the secure shell to login to the remote host."
+msgstr "Zaznacz, aby używać ssh do logowania na zdalnym komputerze."
+
+#: HostConnector.cpp:84
+#, kde-format
+msgid "rsh"
+msgstr "rsh"
+
+#: HostConnector.cpp:85
+#, kde-format
+msgid "Select this to use the remote shell to login to the remote host."
+msgstr "Zaznacz, aby używać rsh do logowania na zdalnym komputerze."
+
+#: HostConnector.cpp:88
+#, kde-format
+msgid "Daemon"
+msgstr "Demon"
+
+#: HostConnector.cpp:89
+#, kde-format
+msgid ""
+"Select this if you want to connect to a ksysguard daemon that is running on "
+"the machine you want to connect to, and is listening for client requests."
+msgstr ""
+"Zaznacz, jeśli chcesz otrzymywać informacje od demona ksysguard działającego "
+"na komputerze, z którym chcesz się połączyć."
+
+#: HostConnector.cpp:92
+#, kde-format
+msgid "Custom command"
+msgstr "Polecenie użytkownika"
+
+#: HostConnector.cpp:93
+#, kde-format
+msgid ""
+"Select this to use the command you entered below to start ksysguardd on the "
+"remote host."
+msgstr ""
+"Zaznacz, aby używać polecenia wpisywanego poniżej do uruchomienia demona "
+"ksysguard na zdalnym komputerze."
+
+#: HostConnector.cpp:96
+#, kde-format
+msgid "Port:"
+msgstr "Port:"
+
+#: HostConnector.cpp:103
+#, kde-format
+msgid ""
+"Enter the port number on which the ksysguard daemon is listening for "
+"connections."
+msgstr ""
+"Wprowadź numer portu, na którym demon ksysguard oczekuje na połączenia."
+
+#: HostConnector.cpp:106
+#, kde-format
+msgid "e.g.  3112"
+msgstr "np.  3112"
+
+#: HostConnector.cpp:109
+#, kde-format
+msgid "Command:"
+msgstr "Polecenie:"
+
+#: HostConnector.cpp:118
+#, kde-format
+msgid "Enter the command that runs ksysguardd on the host you want to monitor."
+msgstr ""
+"Wprowadź polecenie, które uruchomi demona ksysguard na wybranym do "
+"monitorowania komputerze."
+
+#: HostConnector.cpp:122
+#, kde-format
+msgid "e.g. ssh -l root remote.host.org ksysguardd"
+msgstr "np.ssh -l root komputer.org ksysguardd"
+
+#: ksysguard.cpp:156
+#, kde-format
+msgid ""
+"This will hide the menu bar completely. You can show it again by typing %1."
+msgstr "Ukryje to całkowicie pasek menu. Możesz go przywrócić wpisując %1."
+
+#: ksysguard.cpp:158
+#, kde-format
+msgid "Hide menu bar"
+msgstr "Ukryj pasek menu"
+
+#: ksysguard.cpp:176 ksysguard.cpp:570
+#, kde-format
+msgid "System Monitor"
+msgstr "Monitor systemowy"
+
+#: ksysguard.cpp:177
+#, kde-format
+msgid "&Refresh Tab"
+msgstr "Odśwież ka&rtę"
+
+#: ksysguard.cpp:178
+#, kde-format
+msgid "&New Tab..."
+msgstr "&Nowa karta..."
+
+#: ksysguard.cpp:179
+#, kde-format
+msgid "Import Tab Fr&om File..."
+msgstr "Zaimportuj kartę &z pliku..."
+
+#: ksysguard.cpp:180
+#, kde-format
+msgid "Save Tab &As..."
+msgstr "Zapisz kartę j&ako..."
+
+#: ksysguard.cpp:181
+#, kde-format
+msgid "&Close Tab"
+msgstr "&Zamknij kartę"
+
+#: ksysguard.cpp:182
+#, kde-format
+msgid "Monitor &Remote Machine..."
+msgstr "Monitoruj z&dalne komputery..."
+
+#: ksysguard.cpp:183
+#, kde-format
+msgid "&Download New Tabs..."
+msgstr "&Pobierz nowe karty..."
+
+#: ksysguard.cpp:184
+#, kde-format
+msgid "&Upload Current Tab..."
+msgstr "&Wyślij nowe karty..."
+
+#: ksysguard.cpp:186
+#, kde-format
+msgid "Tab &Properties"
+msgstr "&Właściwości karty"
+
+#: ksysguard.cpp:383
+#, kde-format
+msgid "1 process"
+msgid_plural "%1 processes"
+msgstr[0] "1 process"
+msgstr[1] "%1 procesy"
+msgstr[2] "%1 procesów "
+
+#: ksysguard.cpp:464
+#, kde-format
+msgid "CPU: %1%"
+msgstr "Procesor: %1%"
+
+#: ksysguard.cpp:464
+#, kde-format
+msgctxt "This is the shorter version of CPU: %1%"
+msgid "%1%"
+msgstr "%1%"
+
+#: ksysguard.cpp:483
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Memory: %1 / %2"
+msgstr "Pamięć: %1 / %2"
+
+#: ksysguard.cpp:485
+#, kde-format
+msgctxt ""
+"Arguments are formatted byte sizes (used/total) This should be a shorter "
+"version of the previous Memory: %1 / %2"
+msgid "Mem: %1 / %2"
+msgstr "Pam.: %1 / %2"
+
+#: ksysguard.cpp:487
+#, kde-format
+msgctxt ""
+"Arguments is formatted byte sizes (used) This should be a shorter version of "
+"the previous Mem: %1 / %2"
+msgid "Mem: %1"
+msgstr "Pam.: %1"
+
+#: ksysguard.cpp:515
+#, kde-format
+msgid " No swap space available "
+msgstr " Brak wolnej pamięci wymiany "
+
+#: ksysguard.cpp:519
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Swap: %1 / %2"
+msgstr "Plik wymiany: %1 / %2"
+
+#: ksysguard.cpp:521
+#, kde-format
+msgctxt "Arguments is formatted byte sizes (used)"
+msgid "Swap: %1"
+msgstr "Plik wymiany: %1"
+
+#: ksysguard.cpp:571
+#, kde-format
+msgid "KDE System Monitor"
+msgstr "Monitor systemowy KDE "
+
+#: ksysguard.cpp:572
+#, kde-format
+msgid "(c) 1996-2016 The KDE System Monitor Developers"
+msgstr "(c) 1996-2016 Twórcy Monitora systemu KDE"
+
+#: ksysguard.cpp:574
+#, kde-format
+msgid "John Tapsell"
+msgstr "John Tapsell"
+
+#: ksysguard.cpp:574
+#, kde-format
+msgid "Current Maintainer"
+msgstr "Obecny opiekun"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Chris Schlaeger"
+msgstr "Chris Schlaeger"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Previous Maintainer"
+msgstr "Poprzedni opiekun"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Greg Martyn"
+msgstr "Greg Martyn"
+
+#: ksysguard.cpp:577
+#, kde-format
+msgid "Tobias Koenig"
+msgstr "Tobias Koenig"
+
+#: ksysguard.cpp:578
+#, kde-format
+msgid "Nicolas Leclercq"
+msgstr "Nicolas Leclercq"
+
+#: ksysguard.cpp:579
+#, kde-format
+msgid "Alex Sanda"
+msgstr "Alex Sanda"
+
+#: ksysguard.cpp:580
+#, kde-format
+msgid "Bernd Johannes Wuebben"
+msgstr "Bernd Johannes Wuebben"
+
+#: ksysguard.cpp:581
+#, kde-format
+msgid "Ralf Mueller"
+msgstr "Ralf Mueller"
+
+#: ksysguard.cpp:582
+#, kde-format
+msgid "Hamish Rodda"
+msgstr "Hamish Rodda"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid "Torsten Kasch"
+msgstr "Torsten Kasch"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+msgstr ""
+"Obsługa Solaris\n"
+"Części pochodzące (za pozwoleniem) z modułu\n"
+"sunos5 narzędzia \"top\" Williama LeFebvre'a."
+
+#: ksysguard.cpp:592
+#, kde-format
+msgid "Optional worksheet files to load"
+msgstr "Dodatkowe pliki widoków do wczytania"
+
+#. i18n: ectx: Menu (file)
+#: ksysguardui.rc:5
+#, kde-format
+msgid "&File"
+msgstr "&Plik"
+
+#. i18n: ectx: Menu (view)
+#: ksysguardui.rc:15
+#, kde-format
+msgid "&View"
+msgstr "&Widok"
+
+#. i18n: ectx: Menu (settings)
+#: ksysguardui.rc:19
+#, kde-format
+msgid "&Settings"
+msgstr "&Ustawienia"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ksysguardui.rc:22
+#, kde-format
+msgid "Main Toolbar"
+msgstr "Główny pasek narzędzi"
+
+#. i18n: tag WorkSheet attribute title
+#. i18n: tag display attribute title
+#: ProcessTable.sgrd:3 ProcessTable.sgrd:5
+#, kde-format
+msgid "Process Table"
+msgstr "Tablica procesów"
+
+#: SensorBrowser.cpp:113
+#, kde-format
+msgid "Sensor Browser"
+msgstr "Przeglądarka mierników"
+
+#: SensorBrowser.cpp:473
+#, kde-format
+msgid "Drag sensors to empty cells of a worksheet "
+msgstr "Przeciągnij mierniki na wolne pole widoku"
+
+#: SensorBrowser.cpp:474
+#, kde-format
+msgid ""
+"The sensor browser lists the connected hosts and the sensors that they "
+"provide. Click and drag sensors into drop zones of a worksheet. A display "
+"will appear that visualizes the values provided by the sensor. Some sensor "
+"displays can display values of multiple sensors. Simply drag other sensors "
+"on to the display to add more sensors."
+msgstr ""
+"Lista mierników udostępnianych przez podłączone komputery. Kliknij i "
+"przeciągnij miernik na wolne pole widoku. Pojawi się widok prezentujący dane "
+"dostarczane przez miernik. Niektóre widoki pozwalają na jednoczesne "
+"obrazowanie danych z kilku mierników. Zwyczajnie przeciągnij następne "
+"miernik, aby dodać go do widoku."
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:281
+#, kde-format
+msgid "OK"
+msgstr "OK"
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:281
+#: SensorDisplayLib/FancyPlotter.cpp:545 SensorDisplayLib/FancyPlotter.cpp:624
+#, kde-format
+msgid "Error"
+msgstr "Błąd"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:42
+#, kde-format
+msgid "Edit BarGraph Preferences"
+msgstr "Właściwości wykresu słupkowego"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:51
+#, kde-format
+msgid "Range"
+msgstr "Zakres"
+
+#. i18n: ectx: property (title), widget (QGroupBox, titleFrame)
+#: SensorDisplayLib/DancingBarsSettings.cpp:55
+#: SensorDisplayLib/ListViewSettingsWidget.ui:17
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:17 WorkSheetSettings.cpp:61
+#, kde-format
+msgid "Title"
+msgstr "Tytuł"
+
+#. i18n: ectx: property (whatsThis), widget (QLineEdit, m_title)
+#: SensorDisplayLib/DancingBarsSettings.cpp:60
+#: SensorDisplayLib/FancyPlotterSettings.cpp:70
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
+#, kde-format
+msgid "Enter the title of the display here."
+msgstr "Tu wprowadź nazwę widoku."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:65
+#, kde-format
+msgid "Display Range"
+msgstr "Zakres widoku"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:70
+#: SensorDisplayLib/FancyPlotterSettings.cpp:96
+#, kde-format
+msgid "Minimum value:"
+msgstr "Wartość minimalna:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:78
+#, kde-format
+msgid ""
+"Enter the minimum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Wprowadź minimalną wartość dla widoku. Jeżeli obie wartości są równe zero, "
+"włączany jest wybór automatyczny zakresu."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:82
+#: SensorDisplayLib/FancyPlotterSettings.cpp:107
+#, kde-format
+msgid "Maximum value:"
+msgstr "Wartość maksymalna:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:90
+#, kde-format
+msgid ""
+"Enter the maximum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Wprowadź maksymalną wartość dla widoku. Jeżeli obie wartości równają się "
+"zero, włączany jest wybór automatyczny zakresu."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:100
+#, kde-format
+msgid "Alarms"
+msgstr "Alarmy"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
+#: SensorDisplayLib/DancingBarsSettings.cpp:104
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
+#, kde-format
+msgid "Alarm for Minimum Value"
+msgstr "Alarm dla wartości minimalnej"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:109
+#: SensorDisplayLib/DancingBarsSettings.cpp:132
+#, kde-format
+msgid "Enable alarm"
+msgstr "Włącz alarm"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:110
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:57
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
+#, kde-format
+msgid "Enable the minimum value alarm."
+msgstr "Uaktywnij minimalną wartość alarmu."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:113
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:125
+#, kde-format
+msgid "Lower limit:"
+msgstr "Limit dolny:"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1_2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:127
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
+#, kde-format
+msgid "Alarm for Maximum Value"
+msgstr "Alarm dla wartości maksymalnej"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:133
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:116
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
+#, kde-format
+msgid "Enable the maximum value alarm."
+msgstr "Uaktywnij maksymalną wartość alarmu."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:136
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:198
+#, kde-format
+msgid "Upper limit:"
+msgstr "Limit górny:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:153
+#, kde-format
+msgctxt "@title:tab Appearance of the bar graph"
+msgid "Look"
+msgstr "Wygląd"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:157
+#, kde-format
+msgid "Normal bar color:"
+msgstr "Normalny kolor słupka:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:164
+#, kde-format
+msgid "Out-of-range color:"
+msgstr "Kolor poza zakresem:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/DancingBarsSettings.cpp:171
+#: SensorDisplayLib/ListViewSettingsWidget.ui:105
+#: SensorDisplayLib/LogFile.cpp:105 SensorDisplayLib/LogFileSettings.ui:85
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:92
+#, kde-format
+msgid "Background color:"
+msgstr "Kolor tła:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:178
+#: SensorDisplayLib/FancyPlotterSettings.cpp:177
+#, kde-format
+msgid "Font size:"
+msgstr "Rozmiar czcionki:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:183
+#, kde-format
+msgid ""
+"This determines the size of the font used to print a label underneath the "
+"bars. Bars are automatically suppressed if text becomes too large, so it is "
+"advisable to use a small font size here."
+msgstr ""
+"Określa rozmiar czcionki użytej w etykiecie pod spodem słupków.Słupki są "
+"automatycznie zmniejszane, jeżeli tekst etykiety jest za duży, więc wskazane "
+"jest używanie w tym przypadku małych czcionek."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:191
+#: SensorDisplayLib/FancyPlotterSettings.cpp:193
+#, kde-format
+msgid "Sensors"
+msgstr "Mierniki"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:204
+#, kde-format
+msgid "Edit..."
+msgstr "Zmień..."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:205
+#, kde-format
+msgid "Push this button to configure the label."
+msgstr "Naciśnij, aby konfigurować etykietę."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:208
+#: SensorDisplayLib/FancyPlotterSettings.cpp:225
+#, kde-format
+msgid "Delete"
+msgstr "Usuń"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:209
+#: SensorDisplayLib/FancyPlotterSettings.cpp:226
+#, kde-format
+msgid "Push this button to delete the sensor."
+msgstr "Naciśnij, aby usunąć miernik."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:361
+#, kde-format
+msgid "Label of Bar Graph"
+msgstr "Etykieta wykresu słupkowego"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:362
+#, kde-format
+msgid "Enter new label:"
+msgstr "Wprowadź nową etykietę:"
+
+#: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
+#, kde-format
+msgid "Drop Sensor Here"
+msgstr "Upuść tutaj miernik"
+
+#: SensorDisplayLib/DummyDisplay.cpp:33
+#, kde-format
+msgid ""
+"This is an empty space in a worksheet. Drag a sensor from the Sensor Browser "
+"and drop it here. A sensor display will appear that allows you to monitor "
+"the values of the sensor over time."
+msgstr ""
+"To jest wolne miejsce na widoku. Chwyć miernik z przeglądarki mierników i "
+"upuść go w tym miejscu. Pojawi się przebieg wartości otrzymywanych z tego "
+"miernika w czasie."
+
+#: SensorDisplayLib/FancyPlotter.cpp:177
+#, kde-format
+msgctxt "Largest axis title"
+msgid "99999 XXXX"
+msgstr "99999 XXXX"
+
+#: SensorDisplayLib/FancyPlotter.cpp:541 SensorDisplayLib/FancyPlotter.cpp:613
+#: SensorDisplayLib/FancyPlotter.cpp:676
+#, kde-format
+msgctxt "units"
+msgid "%1%"
+msgstr "%1%"
+
+#: SensorDisplayLib/FancyPlotter.cpp:549
+#, kde-format
+msgctxt "%1 is what is being shown statistics for, like 'Memory', 'Swap', etc."
+msgid "<p><b>%1:</b><br>"
+msgstr "<p><b>%1:</b><br>"
+
+#: SensorDisplayLib/FancyPlotter.cpp:621
+#, kde-format
+msgid "%1 of %2"
+msgstr "%1 z %2"
+
+#: SensorDisplayLib/FancyPlotter.cpp:649
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB"
+msgstr "%1 TiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:652
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB"
+msgstr "%1 GiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:655
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB"
+msgstr "%1 MiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:658
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB"
+msgstr "%1 KiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:663
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB/s"
+msgstr "%1 TiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:666
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB/s"
+msgstr "%1 GiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:669
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB/s"
+msgstr "%1 MiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:672
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB/s"
+msgstr "%1 KiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:678
+#, kde-format
+msgctxt "unitless - just a number"
+msgid "%1"
+msgstr "%1"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:46
+#, kde-format
+msgid "Plotter Settings"
+msgstr "Ustawienia wykresu"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:62
+#, kde-format
+msgid "General"
+msgstr "Ogólne"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:66
+#, kde-format
+msgid "Title:"
+msgstr "Tytuł:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:74
+#, kde-format
+msgid "Stack the beams on top of each other"
+msgstr "Nałóż przebiegi jeden na drugi"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:75
+#, kde-format
+msgid ""
+"The beams are stacked on top of each other, and the area is drawn filled in. "
+"So if one beam has a value of 2 and another beam has a value of 3, the first "
+"beam will be drawn at value 2 and the other beam drawn at 2+3=5."
+msgstr ""
+"Belki są skumulowane jedna na drugą, a obszar rysowany jest wypełniony. Tak "
+"więc, jeżeli belka ma wartość 2 i inna belka ma wartość 3, to ta pierwsza "
+"zostanie narysowana do wartości 2, a druga na niej do wartości 2+3=5."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:82
+#, kde-format
+msgid "Scales"
+msgstr "Skale"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:86
+#, kde-format
+msgid "Vertical scale"
+msgstr "Skala w pionie"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:91
+#, kde-format
+msgid "Specify graph range:"
+msgstr "Określ zakres wykresu:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:92
+#, kde-format
+msgid ""
+"Check this box if you want the display range to adapt dynamically to the "
+"currently displayed values; if you do not check this, you have to specify "
+"the range you want in the fields below."
+msgstr ""
+"Zaznacz tę opcję, jeśli chcesz, aby wielkość wykresu dostosowywała się "
+"dynamicznie do wyświetlanych na nim wartości. Jeśli nie zaznaczysz tej "
+"opcji, musisz podać zakres w poniższych polach."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:102
+#, kde-format
+msgid "Enter the minimum value for the display here."
+msgstr "Tu wprowadź minimalną wartość dla wykresu."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:113
+#, kde-format
+msgid ""
+"Enter the soft maximum value for the display here. The upper range will not "
+"be reduced below this value, but will still go above this number for values "
+"above this value."
+msgstr ""
+"Wpisz tutaj maksymalną wartość danych dla wykresu. Górna granica nie "
+"zostanie obniżona poniżej tego poziomu, ale może zostać podwyższona na "
+"wyższe wartości gdy zajdzie taka potrzeba."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:120
+#, kde-format
+msgid "Horizontal scale"
+msgstr "Skala w poziomie"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:128
+#, kde-format
+msgid "Pixels per time period:"
+msgstr "Pikseli na jednostkę czasu: "
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:135
+#, kde-format
+msgid "Grid"
+msgstr "Siatka"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:139
+#, kde-format
+msgid "Lines"
+msgstr "Linie"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:144
+#, kde-format
+msgid "Vertical lines"
+msgstr "Pionowe linie"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:145
+#, kde-format
+msgid "Check this to activate the vertical lines if display is large enough."
+msgstr ""
+"Zaznacz, jeśli chcesz włączyć linie pionowe, gdy wykres będzie za duży."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:148
+#, kde-format
+msgid "Distance:"
+msgstr "Odległość:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:155
+#, kde-format
+msgid "Enter the distance between two vertical lines here."
+msgstr "Wprowadź odległość pomiędzy dwoma pionowymi liniami."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:159
+#, kde-format
+msgid "Vertical lines scroll"
+msgstr "Pionowe linie"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:162
+#, kde-format
+msgid "Horizontal lines"
+msgstr "Poziome linie"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:163
+#, kde-format
+msgid "Check this to enable horizontal lines if display is large enough."
+msgstr ""
+"Zaznacz, jeśli chcesz włączyć linie poziome, gdy wykres będzie za duży."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:168
+#, kde-format
+msgid "Text"
+msgstr "Tekst"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:173
+#, kde-format
+msgid "Show axis labels"
+msgstr "Pokaż opisy osi"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:174
+#, kde-format
+msgid ""
+"Check this box if horizontal lines should be decorated with the values they "
+"mark."
+msgstr "Zaznacz, jeśli przy liniach poziomych ma pojawić się wartość."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:217
+#, kde-format
+msgid "Set Color..."
+msgstr "Ustaw kolor..."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:218
+#, kde-format
+msgid "Push this button to configure the color of the sensor in the diagram."
+msgstr "Naciśnij, aby zmienić kolor miernika na wykresie."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:230
+#, kde-format
+msgid "Move Up"
+msgstr "Przesuń do góry"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:235
+#, kde-format
+msgid "Move Down"
+msgstr "Przesuń w dół"
+
+#: SensorDisplayLib/ListView.cpp:45
+#, kde-format
+msgid "%1 K"
+msgstr "%1 K"
+
+#: SensorDisplayLib/ListView.cpp:46
+#, kde-format
+msgid "%1 M"
+msgstr "%1 M"
+
+#: SensorDisplayLib/ListView.cpp:47
+#, kde-format
+msgid "%1 G"
+msgstr "%1 G"
+
+#: SensorDisplayLib/ListView.cpp:48
+#, kde-format
+msgid "%1 T"
+msgstr "%1 T"
+
+#: SensorDisplayLib/ListView.cpp:49
+#, kde-format
+msgid "%1 P"
+msgstr "%1 P"
+
+#: SensorDisplayLib/ListView.cpp:152
+#, kde-format
+msgid "Display Units"
+msgstr "Wyświetl jednostki"
+
+#: SensorDisplayLib/ListView.cpp:156
+#, kde-format
+msgid "Mixed"
+msgstr "Mieszane"
+
+#: SensorDisplayLib/ListView.cpp:162
+#, kde-format
+msgid "Kilobytes"
+msgstr "Kilobajty"
+
+#: SensorDisplayLib/ListView.cpp:168
+#, kde-format
+msgid "Megabytes"
+msgstr "Megabajty"
+
+#: SensorDisplayLib/ListView.cpp:174
+#, kde-format
+msgid "Gigabytes"
+msgstr "Gigabajty"
+
+#: SensorDisplayLib/ListView.cpp:180
+#, kde-format
+msgid "Terabytes"
+msgstr "Terabajty"
+
+#: SensorDisplayLib/ListViewSettings.cpp:30
+#, kde-format
+msgid "List View Settings"
+msgstr "Ustawienia listy widoków"
+
+#. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:47
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:47
+#, kde-format
+msgid "Colors"
+msgstr "Kolory"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:79
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
+#, kde-format
+msgid "Text color:"
+msgstr "Kolor tekstu:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:92
+#, kde-format
+msgid "Grid color:"
+msgstr "Kolor siatki:"
+
+#: SensorDisplayLib/LogFile.cpp:93
+#, kde-format
+msgid "File logging settings"
+msgstr "Ustawienia pliku dziennika"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
+#, kde-format
+msgid "Foreground color:"
+msgstr "Kolor pierwszoplanowy:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, textTab)
+#: SensorDisplayLib/LogFileSettings.ui:21
+#, kde-format
+msgid "&Text"
+msgstr "&Tekst"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/LogFileSettings.ui:29
+#, kde-format
+msgid "T&itle:"
+msgstr "T&ytuł:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: SensorDisplayLib/LogFileSettings.ui:166
+#, kde-format
+msgid "Fi&lter"
+msgstr "&Filtr"
+
+#. i18n: ectx: property (text), widget (QPushButton, addButton)
+#: SensorDisplayLib/LogFileSettings.ui:196
+#, kde-format
+msgid "&Add"
+msgstr "&Dodaj"
+
+#. i18n: ectx: property (text), widget (QPushButton, deleteButton)
+#: SensorDisplayLib/LogFileSettings.ui:203
+#, kde-format
+msgid "&Delete"
+msgstr "&Usuń"
+
+#. i18n: ectx: property (text), widget (QPushButton, changeButton)
+#: SensorDisplayLib/LogFileSettings.ui:210
+#, kde-format
+msgid "&Change"
+msgstr "&Zmień"
+
+#: SensorDisplayLib/MultiMeterSettings.cpp:33
+#, kde-format
+msgctxt ""
+"Multimeter is a sensor display that mimics 'digital multimeter' aparatus"
+msgid "Multimeter Settings"
+msgstr "Ustawienia wykresu miernikowego"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:26
+#, kde-format
+msgid "&Title:"
+msgstr "&Tytuł:"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:43
+#, kde-format
+msgid "Enable this to append the unit to the title of the display."
+msgstr "Włącz, aby dodać jednostkę do tytułu wykresu."
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
+#, kde-format
+msgid "&Show unit"
+msgstr "P&okaż jednostkę"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
+#, kde-format
+msgid "&Enable alarm"
+msgstr "&Włącz alarm"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
+#, kde-format
+msgid "&Lower limit:"
+msgstr "Do&lna granica:"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
+#, kde-format
+msgid "E&nable alarm"
+msgstr "Włą&cz alarm"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
+#, kde-format
+msgid "&Upper limit:"
+msgstr "&Górna granica:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
+#, kde-format
+msgid "Nor&mal digit color:"
+msgstr "Kolor nor&malnej cyfry:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
+#, kde-format
+msgid "Alarm di&git color:"
+msgstr "Kolor cyfry &alarmu:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
+#, kde-format
+msgid "Bac&kground color:"
+msgstr "&Kolor tła:"
+
+#: SensorDisplayLib/SensorDisplay.cpp:115 SensorDisplayLib/SensorLogger.cpp:587
+#, kde-format
+msgid "&Properties"
+msgstr "&Właściwości"
+
+#: SensorDisplayLib/SensorDisplay.cpp:120 SensorDisplayLib/SensorLogger.cpp:592
+#, kde-format
+msgid "&Remove Display"
+msgstr "Us&uń wykres"
+
+#: SensorDisplayLib/SensorDisplay.cpp:187
+#, kde-format
+msgid ""
+"<qt><p>This is a sensor display. To customize a sensor display click the "
+"right mouse button here and select the <i>Properties</i> entry from the "
+"popup menu. Select <i>Remove</i> to delete the display from the worksheet.</"
+"p>%1</qt>"
+msgstr ""
+"<qt><p>To jest wyświetlacz mierników. Aby zmienić jego wygląd, kliknij "
+"prawym klawiszem myszy tutaj i wybierz <i>Właściwości</i> z menu "
+"kontekstowego. Wybierz <i>Usuń</i>, aby usunąć wyświetlacz z arkusza.</p>%1</"
+"qt>"
+
+#: SensorDisplayLib/SensorLogger.cpp:132
+#, kde-format
+msgctxt "@title:column"
+msgid "Logging"
+msgstr "Rejestracja"
+
+#: SensorDisplayLib/SensorLogger.cpp:134
+#, kde-format
+msgctxt "@title:column"
+msgid "Timer Interval"
+msgstr "Okres czasomierza"
+
+#: SensorDisplayLib/SensorLogger.cpp:136
+#, kde-format
+msgctxt "@title:column"
+msgid "Sensor Name"
+msgstr "Nazwa miernika"
+
+#: SensorDisplayLib/SensorLogger.cpp:138
+#, kde-format
+msgctxt "@title:column"
+msgid "Host Name"
+msgstr "Nazwa komputera"
+
+#: SensorDisplayLib/SensorLogger.cpp:140
+#, kde-format
+msgctxt "@title:column"
+msgid "Log File"
+msgstr "Plik dziennika"
+
+#: SensorDisplayLib/SensorLogger.cpp:418
+#: SensorDisplayLib/SensorLoggerDlg.cpp:30
+#, kde-format
+msgid "Sensor Logger"
+msgstr "Rejestrator miernika"
+
+#: SensorDisplayLib/SensorLogger.cpp:597
+#, kde-format
+msgid "&Remove Sensor"
+msgstr "Usuń mie&rnik"
+
+#: SensorDisplayLib/SensorLogger.cpp:602
+#, kde-format
+msgid "&Edit Sensor..."
+msgstr "&Edytuj miernik..."
+
+#: SensorDisplayLib/SensorLogger.cpp:610
+#, kde-format
+msgid "St&op Logging"
+msgstr "&Zakończ rejestrację"
+
+#: SensorDisplayLib/SensorLogger.cpp:613
+#, kde-format
+msgid "S&tart Logging"
+msgstr "Rozpocznij rejes&trację"
+
+#. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
+#, kde-format
+msgid "File"
+msgstr "Plik"
+
+#. i18n: ectx: property (title), widget (QGroupBox, timerFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:41
+#, kde-format
+msgctxt "@title:group"
+msgid "Timer Interval"
+msgstr "Okres czasomierza"
+
+#. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
+#, kde-format
+msgid " sec"
+msgstr " sekunda"
+
+#: SensorDisplayLib/SensorLoggerSettings.cpp:30
+#, kde-format
+msgid "Sensor Logger Settings"
+msgstr "Ustawienia rejestratora miernika"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
+#, kde-format
+msgid "Alarm color:"
+msgstr "Kolor alarmu:"
+
+#: SensorDisplayLib/SensorModel.cpp:161
+#, kde-format
+msgid "Host"
+msgstr "Komputer"
+
+#: SensorDisplayLib/SensorModel.cpp:163
+#, kde-format
+msgid "Sensor"
+msgstr "Miernik"
+
+#: SensorDisplayLib/SensorModel.cpp:165
+#, kde-format
+msgid "Unit"
+msgstr "Jednostka"
+
+#: SensorDisplayLib/SensorModel.cpp:167
+#, kde-format
+msgid "Status"
+msgstr "Stan"
+
+#: SensorDisplayLib/SensorModel.cpp:169
+#, kde-format
+msgid "Label"
+msgstr "Etykieta"
+
+#. i18n: tag WorkSheet attribute title
+#: SystemLoad2.sgrd:3
+#, kde-format
+msgid "System Load"
+msgstr "Obciążenie systemu"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:5
+#, kde-format
+msgid "CPU History"
+msgstr "Historia procesora"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:8
+#, kde-format
+msgid "Memory and Swap History"
+msgstr "Historia pamięci RAM i wymiany"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:9
+#, kde-format
+msgid "Memory"
+msgstr "Pamięć"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:10
+#, kde-format
+msgid "Swap"
+msgstr "Plik wymiany"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:12
+#, kde-format
+msgid "Network History"
+msgstr "Historia sieci"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:13
+#, kde-format
+msgid "Receiving"
+msgstr "Pobieranie"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:14
+#, kde-format
+msgid "Sending"
+msgstr "Wysyłanie"
+
+#: WorkSheet.cpp:87
+#, kde-format
+msgid "Cannot open the file %1."
+msgstr "Nie można otworzyć pliku %1."
+
+#: WorkSheet.cpp:95
+#, kde-format
+msgid "The file %1 does not contain valid XML."
+msgstr "Plik %1 zawiera niepoprawny format XML."
+
+#: WorkSheet.cpp:102
+#, kde-format
+msgid ""
+"The file %1 does not contain a valid worksheet definition, which must have a "
+"document type 'KSysGuardWorkSheet'."
+msgstr ""
+"Plik %1 nie zawiera poprawnej definicji widoku. Plik powinien być typu  "
+"'KSysGuardWorkSheet'."
+
+#: WorkSheet.cpp:114
+#, kde-format
+msgid "The file %1 has an invalid worksheet size."
+msgstr "Plik %1 zawiera niepoprawny rozmiar widoku."
+
+#: WorkSheet.cpp:239
+#, kde-format
+msgid "Cannot save file %1"
+msgstr "Nie można zapisać pliku %1"
+
+#: WorkSheet.cpp:287
+#, kde-format
+msgid "The clipboard does not contain a valid display description."
+msgstr "Schowek nie posiada poprawnego opisu dla widoku."
+
+#: WorkSheet.cpp:387
+#, kde-format
+msgid "Select Display Type"
+msgstr "Wybierz typ prezentacji danych"
+
+#: WorkSheet.cpp:388
+#, kde-format
+msgid "&Line graph"
+msgstr "Wykres &liniowy"
+
+#: WorkSheet.cpp:389
+#, kde-format
+msgid "&Digital display"
+msgstr "Wyświetlacz &cyfrowy"
+
+#: WorkSheet.cpp:390
+#, kde-format
+msgid "&Bar graph"
+msgstr "Wykres &słupkowy"
+
+#: WorkSheet.cpp:391
+#, kde-format
+msgid "Log to a &file"
+msgstr "Plik &dziennika"
+
+#: WorkSheet.cpp:547
+#, kde-format
+msgid "Remove this display?"
+msgstr "Usunąć ten wykres?"
+
+#: WorkSheet.cpp:548
+#, kde-format
+msgid "Remove Display"
+msgstr "Usuń wykres"
+
+#: WorkSheet.cpp:589
+#, kde-format
+msgid "Dummy"
+msgstr "Pusty"
+
+#: WorkSheetSettings.cpp:43
+#, kde-format
+msgid "Tab Properties"
+msgstr "Właściwości karty"
+
+#: WorkSheetSettings.cpp:72
+#, kde-format
+msgid "Properties"
+msgstr "Właściwości"
+
+#: WorkSheetSettings.cpp:81
+#, kde-format
+msgid "Rows:"
+msgstr "Wiersze:"
+
+#: WorkSheetSettings.cpp:91
+#, kde-format
+msgid "Columns:"
+msgstr "Kolumny:"
+
+#: WorkSheetSettings.cpp:100
+#, kde-format
+msgid "Enter the number of rows the sheet should have."
+msgstr "Wprowadź liczbę wierszy, które powinny znaleźć się na widoku."
+
+#: WorkSheetSettings.cpp:101
+#, kde-format
+msgid "Enter the number of columns the sheet should have."
+msgstr "Wprowadź liczbę kolumn, które powinny znaleźć się na widoku."
+
+#: WorkSheetSettings.cpp:103
+#, kde-format
+msgid "Update interval:"
+msgstr "Okres odświeżania:"
+
+#: WorkSheetSettings.cpp:116
+#, kde-format
+msgid "All displays of the sheet are updated at the rate specified here."
+msgstr ""
+"Wszystkie mierniki widoku są odświerzane z częstotliwością podaną tutaj."
+
+#: WorkSheetSettings.cpp:117
+#, kde-format
+msgid "Enter the title of the worksheet here."
+msgstr "Wprowadź w tym miejscu tytuł widoku."
+
+#: Workspace.cpp:111
+#, kde-format
+msgid "Sheet %1"
+msgstr "Widok %1"
+
+#: Workspace.cpp:170
+#, kde-format
+msgid ""
+"The tab '%1' contains unsaved data.\n"
+"Do you want to save the tab?"
+msgstr ""
+"Karta \"%1\" zawiera niezapisane dane.\n"
+"Czy chcesz je zapisać?"
+
+#: Workspace.cpp:186
+#, kde-format
+msgid "Select Tab File to Import"
+msgstr "Wybierz plik karty do wczytania"
+
+#: Workspace.cpp:208 Workspace.cpp:228
+#, kde-format
+msgid "You do not have a tab that could be saved."
+msgstr "Nie posiadasz karty, która mogłaby być zapisana."
+
+#: Workspace.cpp:235
+#, kde-format
+msgid "Export Tab"
+msgstr "Wyeksportuj kartę"
+
+#: Workspace.cpp:255
+#, kde-format
+msgid "There are no tabs that could be deleted."
+msgstr "Nie ma kart, które można być usunąć."
+
+#: Workspace.cpp:299
+#, kde-kuit-format
+msgctxt "@info"
+msgid ""
+"<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
+"in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
+msgstr ""
+"<para>Możesz opublikować własną kartę w <link url='%1'>Sklepie KDE</link> w "
+"kategorii <icode>%2</icode>.</para><para><filename>%3</filename></para>"
+
+#: Workspace.cpp:304
+#, kde-format
+msgid "Upload custom System Monitor tab"
+msgstr "Wyślij własną kartę Monitora systemowego"
+
+#~ msgid "Timer Settings"
+#~ msgstr "Ustawienia sekundnika"
+
+#~ msgid "Use update interval of worksheet"
+#~ msgstr "Użyj odstępu pomiędzy odświeżaniem widoku"
+
+#~ msgctxt "Arguments are formatted byte sizes (used/total)"
+#~ msgid "Memory: %1 / %2Mem: %1 / %2Mem: %1%1"
+#~ msgstr "Pamięć: %1 / %2Pam: %1 / %2Pam: %1%1"
+
+#~ msgid ""
+#~ "<qt>To propose the current custom tab as a new System Monitor tab, email "
+#~ "<br><a href=\"file:%1\">%2</a><br> to <a href=\"mailto:john.tapsell@kde."
+#~ "org?subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde."
+#~ "org</a></qt>"
+#~ msgstr ""
+#~ "<qt>Aby zaproponować bieżącą zakładkę jako nową zakładkę Monitora "
+#~ "systemowego, wyślij (z opisem po angielsku) <br><a href=\"file:%1\">%2</"
+#~ "a><br> do <a href=\"mailto:john.tapsell@kde.org?subject='System Monitor "
+#~ "Tab'&attach='file://%2'\">john.tapsell@kde.org</a></qt>"
+
+#~ msgid "*.sgrd|Sensor Files (*.sgrd)"
+#~ msgstr "*.sgrd|Pliki czujnika (*sgrd)"
+
+#~ msgid "Lo&wer limit:"
+#~ msgstr "Limit &dolny:"
+
+#~ msgctxt "%1 is a host name"
+#~ msgid ""
+#~ "Message from %1:\n"
+#~ "%2"
+#~ msgstr ""
+#~ "Wiadomość od %1:\n"
+#~ "%2"
+
+#~ msgid "Could not run daemon program '%1'."
+#~ msgstr "Nie można uruchomić demona '%1'."
+
+#~ msgid "The daemon program '%1' failed."
+#~ msgstr "Działanie demona '%1' zakończyło się błędem."
+
+#~ msgid "Connection to %1 refused"
+#~ msgstr "Połączenie z %1 zostało odrzucone"
+
+#~ msgid "Host %1 not found"
+#~ msgstr "Komputer %1 nie znaleziony"
+
+#~ msgid ""
+#~ "An error occurred with the network (e.g. the network cable was "
+#~ "accidentally unplugged) for host %1."
+#~ msgstr ""
+#~ "Zdarzył się błąd sieci związany z komputerem %1 (np. został przypadkowo "
+#~ "odłączony kabel sieciowy)"
+
+#~ msgid "Error for host %1: %2"
+#~ msgstr "Błąd związany z komputerem %1: %2"
+
+#~ msgid "Change"
+#~ msgstr "Zmień"
+
+#~ msgid "Rate"
+#~ msgstr "Tempo"
+
+#~ msgid "CPU Load"
+#~ msgstr "Obciążenie procesora"
+
+#~ msgid "Idling"
+#~ msgstr "Bezczynność"
+
+#~ msgid "Nice Load"
+#~ msgstr "Obciążenie przez procesy ze zmienionym priorytetem"
+
+#~ msgid "User Load"
+#~ msgstr "Obciążenie przez użytkownika"
+
+#~ msgctxt "@item sensor description"
+#~ msgid "System Load"
+#~ msgstr "Obciążenie systemu"
+
+#~ msgid "Waiting"
+#~ msgstr "Oczekiwanie"
+
+#~ msgid "Interrupt Load"
+#~ msgstr "Obciążenie przerywania"
+
+#~ msgid "Total Load"
+#~ msgstr "Całkowite obciążenie"
+
+#~ msgid "Physical Memory"
+#~ msgstr "Pamięć fizyczna"
+
+#~ msgid "Swap Memory"
+#~ msgstr "Pamięć wymiany"
+
+#~ msgid "Cached Memory"
+#~ msgstr "Pamięć podręczna"
+
+#~ msgid "Buffered Memory"
+#~ msgstr "Pamięć buforowana"
+
+#~ msgid "Used Memory"
+#~ msgstr "Pamięć użyta"
+
+#~ msgid "Application Memory"
+#~ msgstr "Pamięć programu"
+
+#~ msgid "Free Memory"
+#~ msgstr "Pamięć wolna"
+
+#~ msgid "Active Memory"
+#~ msgstr "Pamięć aktywna"
+
+#~ msgid "Inactive Memory"
+#~ msgstr "Pamięć nieaktywna"
+
+#~ msgid "Wired Memory"
+#~ msgstr "Pamięć podłączona"
+
+#~ msgid "Exec Pages"
+#~ msgstr "Strony uruchamialne"
+
+#~ msgid "File Pages"
+#~ msgstr "Strony plików"
+
+#~ msgid "Processes"
+#~ msgstr "Procesy"
+
+#~ msgid "Process Controller"
+#~ msgstr "Kontroler procesu"
+
+#~ msgid "Last Process ID"
+#~ msgstr "Ostatni ID procesu"
+
+#~ msgid "Process Spawn Count"
+#~ msgstr "Licznik rozpoczętych procesów"
+
+#~ msgid "Process Count"
+#~ msgstr "Licznik procesów"
+
+#~ msgid "Idle Processes Count"
+#~ msgstr "Licznik procesów bezczynnych"
+
+#~ msgid "Running Processes Count"
+#~ msgstr "Licznik procesów działających"
+
+#~ msgid "Sleeping Processes Count"
+#~ msgstr "Licznik procesów spoczywających"
+
+#~ msgid "Stopped Processes Count"
+#~ msgstr "Licznik procesów zatrzymanych"
+
+#~ msgid "Zombie Processes Count"
+#~ msgstr "Licznik procesów zombie"
+
+#~ msgid "Waiting Processes Count"
+#~ msgstr "Licznik procesów czekających"
+
+#~ msgid "Locked Processes Count"
+#~ msgstr "Licznik procesów zablokowanych"
+
+#~ msgid "Disk Throughput"
+#~ msgstr "Przepustowość dysku"
+
+#~ msgctxt "CPU Load"
+#~ msgid "Load"
+#~ msgstr "Obciążenie"
+
+#~ msgid "Total Accesses"
+#~ msgstr "Całkowite dostępy"
+
+#~ msgid "Read Accesses"
+#~ msgstr "Dostępy przy odczycie"
+
+#~ msgid "Write Accesses"
+#~ msgstr "Dostępy przy zapisie"
+
+#~ msgid "Read Data"
+#~ msgstr "Odczytane dane"
+
+#~ msgid "Written Data"
+#~ msgstr "Zapisane dane"
+
+#~ msgid "Milliseconds spent reading"
+#~ msgstr "Liczba milisekund spędzonych podczas odczytu"
+
+#~ msgid "Milliseconds spent writing"
+#~ msgstr "Liczba milisekund spędzonych podczas zapisu"
+
+#~ msgid "I/Os currently in progress"
+#~ msgstr "Operacje I/O w trakcie"
+
+#~ msgid "Pages In"
+#~ msgstr "Stron wejściowych"
+
+#~ msgid "Pages Out"
+#~ msgstr "Stron wyjściowych"
+
+#~ msgid "Context Switches"
+#~ msgstr "Przełączanie kontekstów"
+
+#~ msgid "Traps"
+#~ msgstr "Pułapki"
+
+#~ msgid "System Calls"
+#~ msgstr "Wywołania systemowe"
+
+#~ msgid "Network"
+#~ msgstr "Sieć"
+
+#~ msgid "Interfaces"
+#~ msgstr "Interfejsy"
+
+#~ msgid "Transmitter"
+#~ msgstr "Nadajnik"
+
+#~ msgid "Data Rate"
+#~ msgstr "Tempo"
+
+#~ msgid "Compressed Packets Rate"
+#~ msgstr "Pakiety skompresowane"
+
+#~ msgid "Dropped Packets Rate"
+#~ msgstr "Pakiety zagubione"
+
+#~ msgid "Error Rate"
+#~ msgstr "Błędy"
+
+#~ msgid "FIFO Overruns Rate"
+#~ msgstr "Błędy w FIFO"
+
+#~ msgid "Frame Error Rate"
+#~ msgstr "Błędy ramki"
+
+#~ msgid "Multicast Packet Rate"
+#~ msgstr "Rozsyłanie grupowe"
+
+#~ msgid "Packet Rate"
+#~ msgstr "Pakiety"
+
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Loss Rate"
+#~ msgstr "Poziom strat"
+
+#~ msgid "Collisions"
+#~ msgstr "Kolizje"
+
+#~ msgid "Data"
+#~ msgstr "Dane"
+
+#~ msgid "Compressed Packets"
+#~ msgstr "Pakiety skompresowane"
+
+#~ msgid "Dropped Packets"
+#~ msgstr "Pakiety zagubione"
+
+#~ msgid "Errors"
+#~ msgstr "Błędy"
+
+#~ msgid "FIFO Overruns"
+#~ msgstr "Błędy w FIFO"
+
+#~ msgid "Frame Errors"
+#~ msgstr "Błędy ramki"
+
+#~ msgid "Multicast Packets"
+#~ msgstr "Rozsyłanie grupowe"
+
+#~ msgid "Packets"
+#~ msgstr "Pakiety"
+
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Losses"
+#~ msgstr "Liczba strat"
+
+#~ msgid "Sockets"
+#~ msgstr "Gniazda"
+
+#~ msgid "Total Number"
+#~ msgstr "Całkowita liczba"
+
+#~ msgid "Table"
+#~ msgstr "Tabela"
+
+#~ msgid "Advanced Power Management"
+#~ msgstr "Zaawansowane zarządzanie energią"
+
+#~ msgid "ACPI"
+#~ msgstr "ACPI"
+
+#~ msgid "Thermal Zone"
+#~ msgstr "Parametry termiczne"
+
+#~ msgid "Temperature"
+#~ msgstr "Temperatura"
+
+#~ msgid "Average CPU Temperature"
+#~ msgstr "Przeciętna temperatura procesora"
+
+#~ msgid "Fan"
+#~ msgstr "Wentylator"
+
+#~ msgid "State"
+#~ msgstr "Stan"
+
+#~ msgid "Battery"
+#~ msgstr "Akumulator"
+
+#~ msgid "Battery Capacity"
+#~ msgstr "Pojemność baterii"
+
+#~ msgid "Battery Charge"
+#~ msgstr "Ładowanie akumulatora"
+
+#~ msgid "Battery Usage"
+#~ msgstr "Zużycie akumulatora"
+
+#~ msgid "Battery Voltage"
+#~ msgstr "Napięcie baterii"
+
+#~ msgid "Battery Discharge Rate"
+#~ msgstr "Tempo rozładowywania baterii"
+
+#~ msgid "Remaining Time"
+#~ msgstr "Pozostały czas"
+
+#~ msgid "Interrupts"
+#~ msgstr "Przerwania"
+
+#~ msgid "Load Average (1 min)"
+#~ msgstr "Obciążenie średnie (1 min)"
+
+#~ msgid "Load Average (5 min)"
+#~ msgstr "Obciążenie średnie (5 min)"
+
+#~ msgid "Load Average (15 min)"
+#~ msgstr "Obciążenie średnie (15 min)"
+
+#~ msgid "Clock Frequency"
+#~ msgstr "Częstotliwość zegara"
+
+#~ msgid "Average Clock Frequency"
+#~ msgstr "Przeciętna częstotliwość zegara"
+
+#~ msgid "Hardware Sensors"
+#~ msgstr "Czujniki sprzętowe"
+
+#~ msgid "Partition Usage"
+#~ msgstr "Wykorzystanie partycji"
+
+#~ msgid "Used Space"
+#~ msgstr "Użyta przestrzeń"
+
+#~ msgid "Free Space"
+#~ msgstr "Wolna przestrzeń"
+
+#~ msgid "Fill Level"
+#~ msgstr "Poziom wypełnienia"
+
+#~ msgid "Used Inodes"
+#~ msgstr "Użyte I-węzły"
+
+#~ msgid "Free Inodes"
+#~ msgstr "Wolne I-węzły"
+
+#~ msgid "Inode Level"
+#~ msgstr "Poziom I-węzła"
+
+#~ msgid "System"
+#~ msgstr "System"
+
+#~ msgid "Uptime"
+#~ msgstr "Czas działania"
+
+#~ msgid "Linux Soft Raid (md)"
+#~ msgstr "Programowy Raid w Linuksie (md)"
+
+#~ msgid "Processors"
+#~ msgstr "Procesory"
+
+#~ msgid "Cores"
+#~ msgstr "Rdzenie"
+
+#~ msgid "Number of Blocks"
+#~ msgstr "Liczba bloków"
+
+#~ msgid "Total Number of Devices"
+#~ msgstr "Całkowita liczba urządzeń"
+
+#~ msgid "Failed Devices"
+#~ msgstr "Urządzenia z błędami"
+
+#~ msgid "Spare Devices"
+#~ msgstr "Wolne urządzenia"
+
+#~ msgid "Number of Raid Devices"
+#~ msgstr "Liczba urządzeń RAID"
+
+#~ msgid "Working Devices"
+#~ msgstr "Działające urządzenia"
+
+#~ msgid "Active Devices"
+#~ msgstr "Aktywne urządzenia"
+
+#~ msgid "Number of Devices"
+#~ msgstr "Liczba urządzeń"
+
+#~ msgid "Resyncing Percent"
+#~ msgstr "Odświeżanie wartości procentowych"
+
+#~ msgid "Disk Information"
+#~ msgstr "Informacje o dysku"
+
+#~ msgid "CPU %1"
+#~ msgstr "Procesor %1"
+
+#~ msgid "Disk %1"
+#~ msgstr "Dysk %1"
+
+#~ msgid "Battery %1"
+#~ msgstr "Bateria %1"
+
+#~ msgid "Fan %1"
+#~ msgstr "Wentylator %1"
+
+#~ msgid "Temperature %1"
+#~ msgstr "Temperatura %1"
+
+#~ msgid "Total"
+#~ msgstr "Całkowity"
+
+#~ msgid "Software Interrupts"
+#~ msgstr "Przerwania programowe"
+
+#~ msgid "Hardware Interrupts"
+#~ msgstr "Przerwania sprzętowe"
+
+#~ msgid "Int %1"
+#~ msgstr "Przerw. %1"
+
+#~ msgctxt "the unit 1 per second"
+#~ msgid "1/s"
+#~ msgstr "1/s"
+
+#~ msgid "kBytes"
+#~ msgstr "kBajtów"
+
+#~ msgctxt "the unit minutes"
+#~ msgid "min"
+#~ msgstr "min"
+
+#~ msgctxt "the frequency unit"
+#~ msgid "MHz"
+#~ msgstr "MHz"
+
+#~ msgctxt "a percentage"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgctxt "the unit milliamperes"
+#~ msgid "mA"
+#~ msgstr "mA"
+
+#~ msgctxt "the unit milliampere hours"
+#~ msgid "mAh"
+#~ msgstr "mAh"
+
+#~ msgctxt "the unit milliwatts"
+#~ msgid "mW"
+#~ msgstr "mW"
+
+#~ msgctxt "the unit milliwatt hours"
+#~ msgid "mWh"
+#~ msgstr "mWh"
+
+#~ msgctxt "the unit millivolts"
+#~ msgid "mV"
+#~ msgstr "mV"
+
+#~ msgid "Integer Value"
+#~ msgstr "Wartość całkowita"
+
+#~ msgid "Floating Point Value"
+#~ msgstr "Wartość zmiennoprzecinkowa"
+
+#, fuzzy
+#~| msgid " sec"
+#~ msgctxt "Units"
+#~ msgid "%1 second"
+#~ msgid_plural "%1 seconds"
+#~ msgstr[0] " sekunda"
+#~ msgstr[1] " sekunda"
+#~ msgstr[2] " sekunda"
+
+#~ msgid "Do you really want to delete the display?"
+#~ msgstr "Czy na pewno chcesz usunąć widok?"
+
+#~ msgid "Delete Display"
+#~ msgstr "Usuń widok"
+
+#~ msgid ""
+#~ "This is your work space. It holds your tabs. You need to create a new tab "
+#~ "(Menu File->New) before you can drag sensors here."
+#~ msgstr ""
+#~ "To miejsce przeznaczone jest na widoki, które zawiera karty. Aby dodać "
+#~ "nowy czujnik trzeba utworzyć nową kartę. W tym celu wybierz z menu Plik-"
+#~ ">Nowy."
+
+#~ msgid "Automatic range detection"
+#~ msgstr "Automatyczny wybór zakresu"
+
+#~ msgid "Font:"
+#~ msgstr "Czcionka:"
+
+#~ msgid "Grid lines:"
+#~ msgstr "Linie siatki:"
+
+#~ msgid "Background:"
+#~ msgstr "Tło:"
+
+#~ msgid "&Edit"
+#~ msgstr "&Edytuj"
+
+#~ msgid "Connection to %1 has been lost."
+#~ msgstr "Połączenie z %1 zostało przerwane."
+
+#~ msgid "System Guard Applet Settings"
+#~ msgstr "Ustawienia apletu Strażnik systemu"
+
+#~ msgid "Size ratio:"
+#~ msgstr "Wartość stosunku:"
+
+#~ msgctxt "Number suffix in spinbox"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgid "Launch &System Guard"
+#~ msgstr "Uruchom &Strażnika systemu"
+
+#~ msgid "&Title"
+#~ msgstr "&Tytuł"
+
+#~ msgid "T&itle"
+#~ msgstr "T&ytuł"

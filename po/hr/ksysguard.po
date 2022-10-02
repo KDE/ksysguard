@@ -1,0 +1,2592 @@
+# Translation of ksysguard to Croatian
+#
+# Translators: Anđelko Iharoš <>,Dario Lah <>,Denis Lackovic <delacko@fly.srk.fer.hr>,Kresimir Kalafatic <>,sime essert <sime2@nofrx.org>,Vedran Vyroubal <vedran.vyroubal@inet.hr>,
+# DoDo <DoDoEntertainment@gmail.com>, 2009.
+# Andrej Dundovic <adundovi@gmail.com>, 2009, 2010.
+# Marko Dimjašević <marko@dimjasevic.net>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: ksysguard 0\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-03-02 00:46+0000\n"
+"PO-Revision-Date: 2011-06-27 14:02+0200\n"
+"Last-Translator: Marko Dimjašević <marko@dimjasevic.net>\n"
+"Language-Team: Croatian <kde-croatia-list@lists.sourceforge.net>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.2\n"
+"X-Environment: kde\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr ""
+"Anđelko Iharoš, Dario Lah, Denis Lackovic, Kresimir Kalafatic, Sime Essert, "
+"Vedran Vyroubal, Nenad Mikša"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr ""
+"lokalizacija@linux.hr, lokalizacija@linux.hr, lokalizacija@linux.hr, "
+"lokalizacija@linux.hr, lokalizacija@linux.hr, lokalizacija@linux.hr, "
+"DoDoEntertainment@gmail.com"
+
+#: HostConnector.cpp:44
+#, kde-format
+msgid "Connect Host"
+msgstr "Spoji se na računalo"
+
+#: HostConnector.cpp:57
+#, kde-format
+msgid "Host:"
+msgstr "Računalo:"
+
+#: HostConnector.cpp:67
+#, kde-format
+msgid "Enter the name of the host you want to connect to."
+msgstr "Unesite ime računala na koje se želite spojiti."
+
+#: HostConnector.cpp:73
+#, kde-format
+msgid "Connection Type"
+msgstr "Tip veze"
+
+#: HostConnector.cpp:78
+#, kde-format
+msgid "ssh"
+msgstr "ssh"
+
+#: HostConnector.cpp:81
+#, kde-format
+msgid "Select this to use the secure shell to login to the remote host."
+msgstr ""
+"Izaberite ovo za korištenje sigurnosne ljuske prilikom spajanja na udaljeno "
+"računalo."
+
+#: HostConnector.cpp:84
+#, kde-format
+msgid "rsh"
+msgstr "rsh"
+
+#: HostConnector.cpp:85
+#, kde-format
+msgid "Select this to use the remote shell to login to the remote host."
+msgstr "Izaberite ovo "
+
+#: HostConnector.cpp:88
+#, kde-format
+msgid "Daemon"
+msgstr "Servis"
+
+#: HostConnector.cpp:89
+#, kde-format
+msgid ""
+"Select this if you want to connect to a ksysguard daemon that is running on "
+"the machine you want to connect to, and is listening for client requests."
+msgstr ""
+"Izaberi ovo ukoliko se želite spojiti na ksysguard poslužitelj koji se "
+"izvodi na rašunaluna koje se želite spojiti."
+
+#: HostConnector.cpp:92
+#, kde-format
+msgid "Custom command"
+msgstr "Prilagođena naredba"
+
+#: HostConnector.cpp:93
+#, kde-format
+msgid ""
+"Select this to use the command you entered below to start ksysguardd on the "
+"remote host."
+msgstr ""
+"Izaberite ovo za korištenje naredbe koju ste unjeli da pokrenete ksysguardna "
+"udaljenom računalu."
+
+#: HostConnector.cpp:96
+#, kde-format
+msgid "Port:"
+msgstr "Port:"
+
+#: HostConnector.cpp:103
+#, kde-format
+msgid ""
+"Enter the port number on which the ksysguard daemon is listening for "
+"connections."
+msgstr "Unesi broj porta na kojem ksysguard servis osluškuje."
+
+#: HostConnector.cpp:106
+#, kde-format
+msgid "e.g.  3112"
+msgstr "e.g.  3112"
+
+#: HostConnector.cpp:109
+#, kde-format
+msgid "Command:"
+msgstr "Naredba:"
+
+#: HostConnector.cpp:118
+#, kde-format
+msgid "Enter the command that runs ksysguardd on the host you want to monitor."
+msgstr ""
+"Unesite naredbu koja izvodi ksysguardd na računalu koje želite promatrati. "
+
+#: HostConnector.cpp:122
+#, kde-format
+msgid "e.g. ssh -l root remote.host.org ksysguardd"
+msgstr "e.g. ssh -l root remote.host.org ksysguardd"
+
+#: ksysguard.cpp:156
+#, kde-format
+msgid ""
+"This will hide the menu bar completely. You can show it again by typing %1."
+msgstr ""
+
+#: ksysguard.cpp:158
+#, kde-format
+msgid "Hide menu bar"
+msgstr ""
+
+#: ksysguard.cpp:176 ksysguard.cpp:570
+#, kde-format
+msgid "System Monitor"
+msgstr "Nadzornik sustava"
+
+#: ksysguard.cpp:177
+#, kde-format
+msgid "&Refresh Tab"
+msgstr "&Osvježi karticu"
+
+#: ksysguard.cpp:178
+#, kde-format
+msgid "&New Tab..."
+msgstr "&Nova kartica"
+
+#: ksysguard.cpp:179
+#, kde-format
+msgid "Import Tab Fr&om File..."
+msgstr "Učitaj karticu iz &Datoteke …"
+
+#: ksysguard.cpp:180
+#, kde-format
+msgid "Save Tab &As..."
+msgstr "Spremi Karticu &Kao …"
+
+#: ksysguard.cpp:181
+#, kde-format
+msgid "&Close Tab"
+msgstr "&Zatvori karticu"
+
+#: ksysguard.cpp:182
+#, kde-format
+msgid "Monitor &Remote Machine..."
+msgstr "Nadziri udaljeno &računalo …"
+
+#: ksysguard.cpp:183
+#, kde-format
+msgid "&Download New Tabs..."
+msgstr "Sk&ini nove kartice …"
+
+#: ksysguard.cpp:184
+#, kde-format
+msgid "&Upload Current Tab..."
+msgstr "&Pošalji trenutnu karticu na Internet …"
+
+#: ksysguard.cpp:186
+#, kde-format
+msgid "Tab &Properties"
+msgstr "Svojstva kartice"
+
+#: ksysguard.cpp:383
+#, fuzzy, kde-format
+#| msgid "1 process1"
+#| msgid_plural "%1 processes%1"
+msgid "1 process"
+msgid_plural "%1 processes"
+msgstr[0] "%1 proces%1"
+msgstr[1] "%1 procesa%1"
+msgstr[2] "%1 proces%1"
+
+#: ksysguard.cpp:464
+#, fuzzy, kde-format
+#| msgid "CPU: %1%%1%"
+msgid "CPU: %1%"
+msgstr "Procesor: %1%%1%"
+
+#: ksysguard.cpp:464
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1%"
+msgctxt "This is the shorter version of CPU: %1%"
+msgid "%1%"
+msgstr "%1%"
+
+#: ksysguard.cpp:483
+#, fuzzy, kde-format
+#| msgctxt "Arguments are formatted byte sizes (used/total)"
+#| msgid " Memory: %1 / %2 "
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Memory: %1 / %2"
+msgstr " Memorija: %1 / %2 "
+
+#: ksysguard.cpp:485
+#, fuzzy, kde-format
+#| msgctxt "Arguments are formatted byte sizes (used/total)"
+#| msgid " Memory: %1 / %2 "
+msgctxt ""
+"Arguments are formatted byte sizes (used/total) This should be a shorter "
+"version of the previous Memory: %1 / %2"
+msgid "Mem: %1 / %2"
+msgstr " Memorija: %1 / %2 "
+
+#: ksysguard.cpp:487
+#, kde-format
+msgctxt ""
+"Arguments is formatted byte sizes (used) This should be a shorter version of "
+"the previous Mem: %1 / %2"
+msgid "Mem: %1"
+msgstr ""
+
+#: ksysguard.cpp:515
+#, kde-format
+msgid " No swap space available "
+msgstr " Nema dostupne zamjenske memorije "
+
+#: ksysguard.cpp:519
+#, fuzzy, kde-format
+#| msgctxt "Arguments are formatted byte sizes (used/total)"
+#| msgid "Swap: %1 / %2Swap: %1%1"
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Swap: %1 / %2"
+msgstr "Zamjenska memorija: %1 / %2Zamjenska memorija: %1%1"
+
+#: ksysguard.cpp:521
+#, kde-format
+msgctxt "Arguments is formatted byte sizes (used)"
+msgid "Swap: %1"
+msgstr ""
+
+#: ksysguard.cpp:571
+#, kde-format
+msgid "KDE System Monitor"
+msgstr "KDE nadzornik sustava"
+
+#: ksysguard.cpp:572
+#, fuzzy, kde-format
+#| msgid "(c) 1996-2008 The KDE System Monitor Developers"
+msgid "(c) 1996-2016 The KDE System Monitor Developers"
+msgstr "© 1996–2008 Razvijatelji KDE nadzornika sustava"
+
+#: ksysguard.cpp:574
+#, kde-format
+msgid "John Tapsell"
+msgstr "John Tapsell"
+
+#: ksysguard.cpp:574
+#, kde-format
+msgid "Current Maintainer"
+msgstr "Trenutni održavatelj"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Chris Schlaeger"
+msgstr "Chris Schlaeger"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Previous Maintainer"
+msgstr "Prethodni održavatelj"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Greg Martyn"
+msgstr "Greg Martyn"
+
+#: ksysguard.cpp:577
+#, kde-format
+msgid "Tobias Koenig"
+msgstr "Tobias Koenig"
+
+#: ksysguard.cpp:578
+#, kde-format
+msgid "Nicolas Leclercq"
+msgstr "Nicolas Leclercq"
+
+#: ksysguard.cpp:579
+#, kde-format
+msgid "Alex Sanda"
+msgstr "Alex Sanda"
+
+#: ksysguard.cpp:580
+#, kde-format
+msgid "Bernd Johannes Wuebben"
+msgstr "Bernd Johannes Wuebben"
+
+#: ksysguard.cpp:581
+#, kde-format
+msgid "Ralf Mueller"
+msgstr "Ralf Mueller"
+
+#: ksysguard.cpp:582
+#, kde-format
+msgid "Hamish Rodda"
+msgstr "Hamish Rodda"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid "Torsten Kasch"
+msgstr "Torsten Kasch"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+msgstr ""
+"Podrška za Solaris \n"
+"Djelovi izvedeni (uz dopuštenje) od sunos5\n"
+"modula od William LeFebvre's \"top\" alata."
+
+#: ksysguard.cpp:592
+#, kde-format
+msgid "Optional worksheet files to load"
+msgstr "Ostale datoteke s radnim listovima za učitavanje"
+
+#. i18n: ectx: Menu (file)
+#: ksysguardui.rc:5
+#, kde-format
+msgid "&File"
+msgstr "&Datoteka"
+
+#. i18n: ectx: Menu (view)
+#: ksysguardui.rc:15
+#, kde-format
+msgid "&View"
+msgstr "Pogled"
+
+#. i18n: ectx: Menu (settings)
+#: ksysguardui.rc:19
+#, kde-format
+msgid "&Settings"
+msgstr "Postavke"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ksysguardui.rc:22
+#, kde-format
+msgid "Main Toolbar"
+msgstr "Glavna alatna traka"
+
+#. i18n: tag WorkSheet attribute title
+#. i18n: tag display attribute title
+#: ProcessTable.sgrd:3 ProcessTable.sgrd:5
+#, kde-format
+msgid "Process Table"
+msgstr "Tablica procesa"
+
+#: SensorBrowser.cpp:113
+#, kde-format
+msgid "Sensor Browser"
+msgstr "Preglednik osjetila"
+
+#: SensorBrowser.cpp:473
+#, kde-format
+msgid "Drag sensors to empty cells of a worksheet "
+msgstr "Odvucite osjetila na prazna polja na radnom listu"
+
+#: SensorBrowser.cpp:474
+#, kde-format
+msgid ""
+"The sensor browser lists the connected hosts and the sensors that they "
+"provide. Click and drag sensors into drop zones of a worksheet. A display "
+"will appear that visualizes the values provided by the sensor. Some sensor "
+"displays can display values of multiple sensors. Simply drag other sensors "
+"on to the display to add more sensors."
+msgstr ""
+"Pretraživač osjetila daje popis dostupnih računala i osjetila na njima. "
+"Kliknite i odvucite osjetila na polja radnog lista ili appleta na panelu. "
+"Tada će se pojaviti prikaz osjetila koji pokazuje vrijednost tog osjetila. "
+"Neki pokazivači mogu pokazivati vrijednosti više osjetila, jednostavno "
+"odvucite druga osjetila na prikaz i ona će biti dodana istom."
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:281
+#, kde-format
+msgid "OK"
+msgstr "U redu"
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:281
+#: SensorDisplayLib/FancyPlotter.cpp:545 SensorDisplayLib/FancyPlotter.cpp:624
+#, kde-format
+msgid "Error"
+msgstr "Greške"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:42
+#, kde-format
+msgid "Edit BarGraph Preferences"
+msgstr "Uređivanje postavki trakastog pokazivača"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:51
+#, kde-format
+msgid "Range"
+msgstr "Raspon"
+
+#. i18n: ectx: property (title), widget (QGroupBox, titleFrame)
+#: SensorDisplayLib/DancingBarsSettings.cpp:55
+#: SensorDisplayLib/ListViewSettingsWidget.ui:17
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:17 WorkSheetSettings.cpp:61
+#, kde-format
+msgid "Title"
+msgstr "Naslov"
+
+#. i18n: ectx: property (whatsThis), widget (QLineEdit, m_title)
+#: SensorDisplayLib/DancingBarsSettings.cpp:60
+#: SensorDisplayLib/FancyPlotterSettings.cpp:70
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
+#, kde-format
+msgid "Enter the title of the display here."
+msgstr "Unesite naslov pokazivača."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:65
+#, kde-format
+msgid "Display Range"
+msgstr "Opseg pokazivača"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:70
+#: SensorDisplayLib/FancyPlotterSettings.cpp:96
+#, kde-format
+msgid "Minimum value:"
+msgstr "Minimalna vrijednost:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:78
+#, kde-format
+msgid ""
+"Enter the minimum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Unesite najmanju vrijednost koja će biti pokazana. Ako su obje vrijednosti "
+"0, tada će se automatski određivati opseg."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:82
+#: SensorDisplayLib/FancyPlotterSettings.cpp:107
+#, kde-format
+msgid "Maximum value:"
+msgstr "Maksimalna vrijednost"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:90
+#, kde-format
+msgid ""
+"Enter the maximum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Unesite najveću vrijednost koja će biti pokazana. Ako su obje vrijednosti 0, "
+"tada će se automatski određivati opseg."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:100
+#, kde-format
+msgid "Alarms"
+msgstr "Alarmi"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
+#: SensorDisplayLib/DancingBarsSettings.cpp:104
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
+#, kde-format
+msgid "Alarm for Minimum Value"
+msgstr "Uzbuna za minimalnu vrijednost"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:109
+#: SensorDisplayLib/DancingBarsSettings.cpp:132
+#, kde-format
+msgid "Enable alarm"
+msgstr "O&mogući uzbunu"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:110
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:57
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
+#, kde-format
+msgid "Enable the minimum value alarm."
+msgstr "Omogući uzbunu za najmanju vrijedosti"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:113
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:125
+#, kde-format
+msgid "Lower limit:"
+msgstr "Donja granica"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1_2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:127
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
+#, kde-format
+msgid "Alarm for Maximum Value"
+msgstr "Uzbuna za maksimalnu vrijednost"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:133
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:116
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
+#, kde-format
+msgid "Enable the maximum value alarm."
+msgstr "Omogući uzbunu za najveću vrijedosti"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:136
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:198
+#, kde-format
+msgid "Upper limit:"
+msgstr "Gornja granica:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:153
+#, kde-format
+msgctxt "@title:tab Appearance of the bar graph"
+msgid "Look"
+msgstr "Izgled"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:157
+#, kde-format
+msgid "Normal bar color:"
+msgstr "Obična boja trake:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:164
+#, kde-format
+msgid "Out-of-range color:"
+msgstr "Boja izvan opsega:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/DancingBarsSettings.cpp:171
+#: SensorDisplayLib/ListViewSettingsWidget.ui:105
+#: SensorDisplayLib/LogFile.cpp:105 SensorDisplayLib/LogFileSettings.ui:85
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:92
+#, kde-format
+msgid "Background color:"
+msgstr "Boja pozadine:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:178
+#: SensorDisplayLib/FancyPlotterSettings.cpp:177
+#, kde-format
+msgid "Font size:"
+msgstr "Veličina pisma:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:183
+#, kde-format
+msgid ""
+"This determines the size of the font used to print a label underneath the "
+"bars. Bars are automatically suppressed if text becomes too large, so it is "
+"advisable to use a small font size here."
+msgstr ""
+"Ovdje se određuje veličina pisma kojim će se ispisivati oznake ispod trake. "
+"Veličina trake će biti smanjena ukoliko je tekst prevelik, pa je bolje ne "
+"pretjerati s veličinom slova."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:191
+#: SensorDisplayLib/FancyPlotterSettings.cpp:193
+#, kde-format
+msgid "Sensors"
+msgstr "Osjetila"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:204
+#, kde-format
+msgid "Edit..."
+msgstr "Uredi …"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:205
+#, kde-format
+msgid "Push this button to configure the label."
+msgstr "Pritnisnite gumb za podešavanje naslova."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:208
+#: SensorDisplayLib/FancyPlotterSettings.cpp:225
+#, kde-format
+msgid "Delete"
+msgstr "Izbriši"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:209
+#: SensorDisplayLib/FancyPlotterSettings.cpp:226
+#, kde-format
+msgid "Push this button to delete the sensor."
+msgstr "Pritnisnite gumb za brisanje osjetila."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:361
+#, kde-format
+msgid "Label of Bar Graph"
+msgstr "Oznaka stupastog grafa"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:362
+#, kde-format
+msgid "Enter new label:"
+msgstr "Unesi novu oznaku"
+
+#: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
+#, kde-format
+msgid "Drop Sensor Here"
+msgstr "Ovdje ispustite osjetilo"
+
+#: SensorDisplayLib/DummyDisplay.cpp:33
+#, kde-format
+msgid ""
+"This is an empty space in a worksheet. Drag a sensor from the Sensor Browser "
+"and drop it here. A sensor display will appear that allows you to monitor "
+"the values of the sensor over time."
+msgstr ""
+"Ovo je slobodan prostor na radnom listu. Odvucite osjetilo sa preglednika "
+"osjetila i ispustite ga ovdje. Pojaviti će se prikaz osjetila pomoću kojeg "
+"možete pratiti vrijednost osjetila kroz vrijeme."
+
+#: SensorDisplayLib/FancyPlotter.cpp:177
+#, kde-format
+msgctxt "Largest axis title"
+msgid "99999 XXXX"
+msgstr "99999 XXXX"
+
+#: SensorDisplayLib/FancyPlotter.cpp:541 SensorDisplayLib/FancyPlotter.cpp:613
+#: SensorDisplayLib/FancyPlotter.cpp:676
+#, kde-format
+msgctxt "units"
+msgid "%1%"
+msgstr "%1%"
+
+#: SensorDisplayLib/FancyPlotter.cpp:549
+#, kde-format
+msgctxt "%1 is what is being shown statistics for, like 'Memory', 'Swap', etc."
+msgid "<p><b>%1:</b><br>"
+msgstr "<p><b>%1:</b><br>"
+
+#: SensorDisplayLib/FancyPlotter.cpp:621
+#, fuzzy, kde-format
+#| msgid "%1 of %2%1"
+msgid "%1 of %2"
+msgstr "%1 of %2%1"
+
+#: SensorDisplayLib/FancyPlotter.cpp:649
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB"
+msgstr "%1 TiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:652
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB"
+msgstr "%1 GiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:655
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB"
+msgstr "%1 MiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:658
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB"
+msgstr "%1 KiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:663
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB/s"
+msgstr "%1 TiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:666
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB/s"
+msgstr "%1 GiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:669
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB/s"
+msgstr "%1 MiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:672
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB/s"
+msgstr "%1 KiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:678
+#, kde-format
+msgctxt "unitless - just a number"
+msgid "%1"
+msgstr "%1"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:46
+#, kde-format
+msgid "Plotter Settings"
+msgstr "Postavke crtača"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:62
+#, kde-format
+msgid "General"
+msgstr "Opće"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:66
+#, kde-format
+msgid "Title:"
+msgstr "Naslov:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:74
+#, kde-format
+msgid "Stack the beams on top of each other"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:75
+#, kde-format
+msgid ""
+"The beams are stacked on top of each other, and the area is drawn filled in. "
+"So if one beam has a value of 2 and another beam has a value of 3, the first "
+"beam will be drawn at value 2 and the other beam drawn at 2+3=5."
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:82
+#, kde-format
+msgid "Scales"
+msgstr "Skale"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:86
+#, kde-format
+msgid "Vertical scale"
+msgstr "Okomita skala"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:91
+#, kde-format
+msgid "Specify graph range:"
+msgstr "Odredite opseg grafa:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:92
+#, kde-format
+msgid ""
+"Check this box if you want the display range to adapt dynamically to the "
+"currently displayed values; if you do not check this, you have to specify "
+"the range you want in the fields below."
+msgstr ""
+"Ovdje možete odabrati automatsko pprilagođavanje opsega prema trenutnim "
+"vrijednostima, u suprotnom, trebate unijeti granične vrijednosti u polja "
+"dolje."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:102
+#, kde-format
+msgid "Enter the minimum value for the display here."
+msgstr "Unesite najmanju vrijednost za prikaz."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:113
+#, kde-format
+msgid ""
+"Enter the soft maximum value for the display here. The upper range will not "
+"be reduced below this value, but will still go above this number for values "
+"above this value."
+msgstr ""
+"Ovdje unesite najveću vrijednost za prikaz. Gornji opseg neće biti smanjen "
+"ispod ove vrijednosti, ali će svejedno ići iznad tog broja za vrijednosti "
+"veće od te vrijednosti."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:120
+#, kde-format
+msgid "Horizontal scale"
+msgstr "Vodoravna skala"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:128
+#, kde-format
+msgid "Pixels per time period:"
+msgstr "točkica u vremenu"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:135
+#, kde-format
+msgid "Grid"
+msgstr "Mreža"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:139
+#, kde-format
+msgid "Lines"
+msgstr "Linije"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:144
+#, kde-format
+msgid "Vertical lines"
+msgstr "Uspravne linije"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:145
+#, kde-format
+msgid "Check this to activate the vertical lines if display is large enough."
+msgstr ""
+"Ovdje odaberite prikaz pomoću uspravnih linija ako je prokaz dovoljno velik."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:148
+#, kde-format
+msgid "Distance:"
+msgstr "Udaljenost:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:155
+#, kde-format
+msgid "Enter the distance between two vertical lines here."
+msgstr "Unesite razmak između dvije uspravne linije."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:159
+#, kde-format
+msgid "Vertical lines scroll"
+msgstr "Pomicanje uspravnih linija"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:162
+#, kde-format
+msgid "Horizontal lines"
+msgstr "Vodoravne linije"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:163
+#, kde-format
+msgid "Check this to enable horizontal lines if display is large enough."
+msgstr ""
+"Ovdje možete omogućiti prikaz vodoravnim trakama ako je prikaz dovoljno "
+"velik."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:168
+#, kde-format
+msgid "Text"
+msgstr "Tekst"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:173
+#, kde-format
+msgid "Show axis labels"
+msgstr "Prikaži natpise na osima"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:174
+#, kde-format
+msgid ""
+"Check this box if horizontal lines should be decorated with the values they "
+"mark."
+msgstr ""
+"Ovdje možete omogućiti hoće li vodoravne linije biti ukrašene sa "
+"vrijednostima koje pokazuju."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:217
+#, kde-format
+msgid "Set Color..."
+msgstr "Postavite &boju …"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:218
+#, kde-format
+msgid "Push this button to configure the color of the sensor in the diagram."
+msgstr "Pritisnite ovaj gumb za podešavanje boje za prikaz osjetila."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:230
+#, kde-format
+msgid "Move Up"
+msgstr "Premjesti gore"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:235
+#, kde-format
+msgid "Move Down"
+msgstr "Pomakni dolje"
+
+#: SensorDisplayLib/ListView.cpp:45
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1 KiB"
+msgid "%1 K"
+msgstr "%1 KiB"
+
+#: SensorDisplayLib/ListView.cpp:46
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1 MiB"
+msgid "%1 M"
+msgstr "%1 MiB"
+
+#: SensorDisplayLib/ListView.cpp:47
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1 GiB"
+msgid "%1 G"
+msgstr "%1 GiB"
+
+#: SensorDisplayLib/ListView.cpp:48
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1 TiB"
+msgid "%1 T"
+msgstr "%1 TiB"
+
+#: SensorDisplayLib/ListView.cpp:49
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1 KiB"
+msgid "%1 P"
+msgstr "%1 KiB"
+
+#: SensorDisplayLib/ListView.cpp:152
+#, fuzzy, kde-format
+#| msgid "Display Range"
+msgid "Display Units"
+msgstr "Opseg pokazivača"
+
+#: SensorDisplayLib/ListView.cpp:156
+#, kde-format
+msgid "Mixed"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:162
+#, kde-format
+msgid "Kilobytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:168
+#, kde-format
+msgid "Megabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:174
+#, kde-format
+msgid "Gigabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:180
+#, fuzzy, kde-format
+#| msgid "Temperature"
+msgid "Terabytes"
+msgstr "Temperatura"
+
+#: SensorDisplayLib/ListViewSettings.cpp:30
+#, kde-format
+msgid "List View Settings"
+msgstr "Postavke prikaza u obliku popisa"
+
+#. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:47
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:47
+#, kde-format
+msgid "Colors"
+msgstr "Boje"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:79
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
+#, kde-format
+msgid "Text color:"
+msgstr "Boja teksta:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:92
+#, kde-format
+msgid "Grid color:"
+msgstr "Boja mreže:"
+
+#: SensorDisplayLib/LogFile.cpp:93
+#, kde-format
+msgid "File logging settings"
+msgstr "Postavke datoteke dnevnika"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
+#, kde-format
+msgid "Foreground color:"
+msgstr "Boja prednjeg plana:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, textTab)
+#: SensorDisplayLib/LogFileSettings.ui:21
+#, kde-format
+msgid "&Text"
+msgstr "Tekst"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/LogFileSettings.ui:29
+#, kde-format
+msgid "T&itle:"
+msgstr "Naslov:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: SensorDisplayLib/LogFileSettings.ui:166
+#, kde-format
+msgid "Fi&lter"
+msgstr "Filtar"
+
+#. i18n: ectx: property (text), widget (QPushButton, addButton)
+#: SensorDisplayLib/LogFileSettings.ui:196
+#, kde-format
+msgid "&Add"
+msgstr "&Dodaj"
+
+#. i18n: ectx: property (text), widget (QPushButton, deleteButton)
+#: SensorDisplayLib/LogFileSettings.ui:203
+#, kde-format
+msgid "&Delete"
+msgstr "&Izbriši"
+
+#. i18n: ectx: property (text), widget (QPushButton, changeButton)
+#: SensorDisplayLib/LogFileSettings.ui:210
+#, kde-format
+msgid "&Change"
+msgstr "&Promjeni"
+
+#: SensorDisplayLib/MultiMeterSettings.cpp:33
+#, kde-format
+msgctxt ""
+"Multimeter is a sensor display that mimics 'digital multimeter' aparatus"
+msgid "Multimeter Settings"
+msgstr "Postavke multimetra"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:26
+#, kde-format
+msgid "&Title:"
+msgstr "Naslov:"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:43
+#, kde-format
+msgid "Enable this to append the unit to the title of the display."
+msgstr "Ovdje možete omogućiti ispis jedinice na naslovu prikaza."
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
+#, kde-format
+msgid "&Show unit"
+msgstr "P&rikaži jedinice"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
+#, kde-format
+msgid "&Enable alarm"
+msgstr "&Omogući uzbunu"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
+#, fuzzy, kde-format
+#| msgid "Lower limit:"
+msgid "&Lower limit:"
+msgstr "Donja granica"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
+#, kde-format
+msgid "E&nable alarm"
+msgstr "O&mogući uzbunu"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
+#, kde-format
+msgid "&Upper limit:"
+msgstr "Gornja granica:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
+#, fuzzy, kde-format
+#| msgid "Normal digit color:"
+msgid "Nor&mal digit color:"
+msgstr "Obična boja znamenki:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
+#, fuzzy, kde-format
+#| msgid "Alarm digit color:"
+msgid "Alarm di&git color:"
+msgstr "Boja znamenki kod alarma:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
+#, fuzzy, kde-format
+#| msgid "Background color:"
+msgid "Bac&kground color:"
+msgstr "Boja pozadine:"
+
+#: SensorDisplayLib/SensorDisplay.cpp:115 SensorDisplayLib/SensorLogger.cpp:587
+#, kde-format
+msgid "&Properties"
+msgstr "Svojstva"
+
+#: SensorDisplayLib/SensorDisplay.cpp:120 SensorDisplayLib/SensorLogger.cpp:592
+#, kde-format
+msgid "&Remove Display"
+msgstr "&Ukloni prikaz"
+
+#: SensorDisplayLib/SensorDisplay.cpp:187
+#, kde-format
+msgid ""
+"<qt><p>This is a sensor display. To customize a sensor display click the "
+"right mouse button here and select the <i>Properties</i> entry from the "
+"popup menu. Select <i>Remove</i> to delete the display from the worksheet.</"
+"p>%1</qt>"
+msgstr ""
+"<qt> <p>Ovo je prikaznik senzora. Za postavljanje prikaznika senzora "
+"kliknite desnom tipkom miša ovdje i odaberite <i>Svojstva</i> iz iskočnog "
+"izbornika. Odaberite <i>Ukloni</i> za brisanje prikaznika iz radnog lista.</"
+"p> %1</qt>"
+
+#: SensorDisplayLib/SensorLogger.cpp:132
+#, fuzzy, kde-format
+#| msgid "Logging"
+msgctxt "@title:column"
+msgid "Logging"
+msgstr "Pisanje u dnevnik"
+
+#: SensorDisplayLib/SensorLogger.cpp:134
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:column"
+msgid "Timer Interval"
+msgstr "Vremenski razmak"
+
+#: SensorDisplayLib/SensorLogger.cpp:136
+#, fuzzy, kde-format
+#| msgid "Sensor Name"
+msgctxt "@title:column"
+msgid "Sensor Name"
+msgstr "Ime osjetila"
+
+#: SensorDisplayLib/SensorLogger.cpp:138
+#, fuzzy, kde-format
+#| msgid "Host Name"
+msgctxt "@title:column"
+msgid "Host Name"
+msgstr "Ime računala"
+
+#: SensorDisplayLib/SensorLogger.cpp:140
+#, fuzzy, kde-format
+#| msgid "Log File"
+msgctxt "@title:column"
+msgid "Log File"
+msgstr "Dnevnik"
+
+#: SensorDisplayLib/SensorLogger.cpp:418
+#: SensorDisplayLib/SensorLoggerDlg.cpp:30
+#, kde-format
+msgid "Sensor Logger"
+msgstr "Dnevnik osjetila"
+
+#: SensorDisplayLib/SensorLogger.cpp:597
+#, kde-format
+msgid "&Remove Sensor"
+msgstr "&Ukloni osjetilo"
+
+#: SensorDisplayLib/SensorLogger.cpp:602
+#, kde-format
+msgid "&Edit Sensor..."
+msgstr "&Uredi osjetilo …"
+
+#: SensorDisplayLib/SensorLogger.cpp:610
+#, kde-format
+msgid "St&op Logging"
+msgstr "Prekini &zapisivanje u dnevnk"
+
+#: SensorDisplayLib/SensorLogger.cpp:613
+#, kde-format
+msgid "S&tart Logging"
+msgstr "Počni &vođenje dnevnika"
+
+#. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
+#, kde-format
+msgid "File"
+msgstr "Datoteka"
+
+#. i18n: ectx: property (title), widget (QGroupBox, timerFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:41
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:group"
+msgid "Timer Interval"
+msgstr "Vremenski razmak"
+
+#. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
+#, kde-format
+msgid " sec"
+msgstr " sek"
+
+#: SensorDisplayLib/SensorLoggerSettings.cpp:30
+#, kde-format
+msgid "Sensor Logger Settings"
+msgstr "Postavke dnevnika osjetila"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
+#, kde-format
+msgid "Alarm color:"
+msgstr "Boja alarma:"
+
+#: SensorDisplayLib/SensorModel.cpp:161
+#, kde-format
+msgid "Host"
+msgstr "Računalo"
+
+#: SensorDisplayLib/SensorModel.cpp:163
+#, kde-format
+msgid "Sensor"
+msgstr "Osjetilo"
+
+#: SensorDisplayLib/SensorModel.cpp:165
+#, kde-format
+msgid "Unit"
+msgstr "Jedinica"
+
+#: SensorDisplayLib/SensorModel.cpp:167
+#, kde-format
+msgid "Status"
+msgstr "Status"
+
+#: SensorDisplayLib/SensorModel.cpp:169
+#, kde-format
+msgid "Label"
+msgstr "Oznaka"
+
+#. i18n: tag WorkSheet attribute title
+#: SystemLoad2.sgrd:3
+#, kde-format
+msgid "System Load"
+msgstr "Opterećenje sustava"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:5
+#, kde-format
+msgid "CPU History"
+msgstr "Povijest procesora"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:8
+#, kde-format
+msgid "Memory and Swap History"
+msgstr "Povijest Memorije i Zamjenske memorije"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:9
+#, kde-format
+msgid "Memory"
+msgstr "Memorija"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:10
+#, kde-format
+msgid "Swap"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:12
+#, kde-format
+msgid "Network History"
+msgstr "Povijest Mreže"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:13
+#, fuzzy, kde-format
+#| msgid "Receiver"
+msgid "Receiving"
+msgstr "Primatelj"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:14
+#, fuzzy, kde-format
+msgid "Sending"
+msgstr "Osjetilo"
+
+#: WorkSheet.cpp:87
+#, kde-format
+msgid "Cannot open the file %1."
+msgstr "Ne mogu otvoriti datoteku %1."
+
+#: WorkSheet.cpp:95
+#, kde-format
+msgid "The file %1 does not contain valid XML."
+msgstr "Datoteka %1 ne sadrži važeći XML"
+
+#: WorkSheet.cpp:102
+#, kde-format
+msgid ""
+"The file %1 does not contain a valid worksheet definition, which must have a "
+"document type 'KSysGuardWorkSheet'."
+msgstr ""
+"Datoteka %1 ne sadrži ispravan opis radnog lista, jer on mora biti tipa "
+"''KSysGuardWorkSheet'."
+
+#: WorkSheet.cpp:114
+#, kde-format
+msgid "The file %1 has an invalid worksheet size."
+msgstr "Datoteka %1 ima neispravnu veličinu radnog lista."
+
+#: WorkSheet.cpp:239
+#, kde-format
+msgid "Cannot save file %1"
+msgstr "Ne mogu snimiti datoteku %1"
+
+#: WorkSheet.cpp:287
+#, kde-format
+msgid "The clipboard does not contain a valid display description."
+msgstr "Odlagalište ne sadrži ispravan opis prikazivača."
+
+#: WorkSheet.cpp:387
+#, kde-format
+msgid "Select Display Type"
+msgstr "Odaberite vrstu prikaza"
+
+#: WorkSheet.cpp:388
+#, kde-format
+msgid "&Line graph"
+msgstr "&Linijski graf"
+
+#: WorkSheet.cpp:389
+#, kde-format
+msgid "&Digital display"
+msgstr "&Digitalni prikaznik"
+
+#: WorkSheet.cpp:390
+#, kde-format
+msgid "&Bar graph"
+msgstr "&Stupčani graf"
+
+#: WorkSheet.cpp:391
+#, kde-format
+msgid "Log to a &file"
+msgstr "Piši u &dnevnik"
+
+#: WorkSheet.cpp:547
+#, kde-format
+msgid "Remove this display?"
+msgstr "&Ukloniti ovaj prikaz?"
+
+#: WorkSheet.cpp:548
+#, kde-format
+msgid "Remove Display"
+msgstr "&Ukloni prikaz"
+
+#: WorkSheet.cpp:589
+#, kde-format
+msgid "Dummy"
+msgstr "Prazno"
+
+#: WorkSheetSettings.cpp:43
+#, kde-format
+msgid "Tab Properties"
+msgstr "Svojstva kartice"
+
+#: WorkSheetSettings.cpp:72
+#, kde-format
+msgid "Properties"
+msgstr "Svojstva"
+
+#: WorkSheetSettings.cpp:81
+#, kde-format
+msgid "Rows:"
+msgstr "Redovi:"
+
+#: WorkSheetSettings.cpp:91
+#, kde-format
+msgid "Columns:"
+msgstr "Stupci:"
+
+#: WorkSheetSettings.cpp:100
+#, kde-format
+msgid "Enter the number of rows the sheet should have."
+msgstr "Unesite broj redova lista."
+
+#: WorkSheetSettings.cpp:101
+#, kde-format
+msgid "Enter the number of columns the sheet should have."
+msgstr "Unesite broj stupaca lista."
+
+#: WorkSheetSettings.cpp:103
+#, kde-format
+msgid "Update interval:"
+msgstr "Vrijeme obnavljanja:"
+
+#: WorkSheetSettings.cpp:116
+#, kde-format
+msgid "All displays of the sheet are updated at the rate specified here."
+msgstr "Svi prikazi na listu se obnavljaju u navedenom vremenu."
+
+#: WorkSheetSettings.cpp:117
+#, kde-format
+msgid "Enter the title of the worksheet here."
+msgstr "Ovdje unosite naslov radnog lista."
+
+#: Workspace.cpp:111
+#, kde-format
+msgid "Sheet %1"
+msgstr "List %1"
+
+#: Workspace.cpp:170
+#, kde-format
+msgid ""
+"The tab '%1' contains unsaved data.\n"
+"Do you want to save the tab?"
+msgstr ""
+"List '%1' sadrži podatke koji nisu spremljeni\n"
+"Da li želite spremiti list?"
+
+#: Workspace.cpp:186
+#, kde-format
+msgid "Select Tab File to Import"
+msgstr "Odaberite datoteku kartice za uvoz"
+
+#: Workspace.cpp:208 Workspace.cpp:228
+#, kde-format
+msgid "You do not have a tab that could be saved."
+msgstr "Ne postoji niti jedan radni list koji možete spremiti!"
+
+#: Workspace.cpp:235
+#, kde-format
+msgid "Export Tab"
+msgstr "Izvoz radnog lista"
+
+#: Workspace.cpp:255
+#, kde-format
+msgid "There are no tabs that could be deleted."
+msgstr "Ne postoji niti jedan radni list koji može biti izbrisan!"
+
+#: Workspace.cpp:299
+#, kde-kuit-format
+msgctxt "@info"
+msgid ""
+"<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
+"in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
+msgstr ""
+
+#: Workspace.cpp:304
+#, kde-format
+msgid "Upload custom System Monitor tab"
+msgstr "Pošalji korisničku karticu Nadzornika Sustava na Internet"
+
+#~ msgid "Timer Settings"
+#~ msgstr "Postavke brojača"
+
+#~ msgid "Use update interval of worksheet"
+#~ msgstr "Koristi vrijeme obnavljanja radnog lista"
+
+#~ msgctxt "Arguments are formatted byte sizes (used/total)"
+#~ msgid "Memory: %1 / %2Mem: %1 / %2Mem: %1%1"
+#~ msgstr "Memorija: %1 / %2Mem: %1 / %2Mem: %1%1"
+
+#~ msgid ""
+#~ "<qt>To propose the current custom tab as a new System Monitor tab, email "
+#~ "<br><a href=\"file:%1\">%2</a><br> to <a href=\"mailto:john.tapsell@kde."
+#~ "org?subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde."
+#~ "org</a></qt>"
+#~ msgstr ""
+#~ "<qt>Za predlaganje trenutnog korisničog radnog lista kao nove kartice "
+#~ "Nadzornika sustava, pošaljite e-poštu za <br><a href=\"file:%1\">%2</"
+#~ "a><br> na adresu <a href=\"mailto:john.tapsell@kde.org?subject='System "
+#~ "Monitor Tab'&attach='file://%2'\">john.tapsell@kde.org</a></qt>"
+
+#~ msgid "*.sgrd|Sensor Files (*.sgrd)"
+#~ msgstr "*.sgrd|Datoteke senzora (*.sgrd)"
+
+#~ msgid "Lo&wer limit:"
+#~ msgstr "Donja granica"
+
+#~ msgctxt "%1 is a host name"
+#~ msgid ""
+#~ "Message from %1:\n"
+#~ "%2"
+#~ msgstr ""
+#~ "Poruka sa %1:\n"
+#~ "%2"
+
+#~ msgid "Could not run daemon program '%1'."
+#~ msgstr "Ne mogu pokreniti program '%1'."
+
+#~ msgid "The daemon program '%1' failed."
+#~ msgstr "Program '%1' nije uspio."
+
+#~ msgid "Connection to %1 refused"
+#~ msgstr "Spajanje na %1 odbijeno"
+
+#~ msgid "Host %1 not found"
+#~ msgstr "Računalo %1 nije nađen"
+
+#~ msgid ""
+#~ "An error occurred with the network (e.g. the network cable was "
+#~ "accidentally unplugged) for host %1."
+#~ msgstr ""
+#~ "Greška s mrežom (npr. neočekivano otključenje mrežnog kabla) za domaćina "
+#~ "%1."
+
+#~ msgid "Error for host %1: %2"
+#~ msgstr "Greška za domaćina %1: %2"
+
+#~ msgid "Change"
+#~ msgstr "&Promjeni"
+
+#~ msgid "Rate"
+#~ msgstr "Brzina"
+
+#~ msgid "CPU Load"
+#~ msgstr "Opterećenje procesora"
+
+#~ msgid "Idling"
+#~ msgstr "Besposlen je"
+
+#~ msgid "Nice Load"
+#~ msgstr "Nice opterećenje"
+
+#~ msgid "User Load"
+#~ msgstr "Opterećenje sustava od strane korisnika"
+
+#~ msgctxt "@item sensor description"
+#~ msgid "System Load"
+#~ msgstr "Opterećenje sustava"
+
+#~ msgid "Waiting"
+#~ msgstr "Čeka"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Interrupt Load"
+#~ msgstr "Prekidi"
+
+#~ msgid "Total Load"
+#~ msgstr "Ukupno opterećenje"
+
+#~ msgid "Physical Memory"
+#~ msgstr "Fizička memorija"
+
+#~ msgid "Swap Memory"
+#~ msgstr "Swap memorija"
+
+#~ msgid "Cached Memory"
+#~ msgstr "Priručna memorija"
+
+#~ msgid "Buffered Memory"
+#~ msgstr "Memorija za međuspremnike"
+
+#~ msgid "Used Memory"
+#~ msgstr "Iskorištena memorija"
+
+#~ msgid "Application Memory"
+#~ msgstr "Memorija za aplikacije"
+
+#~ msgid "Free Memory"
+#~ msgstr "Slobodno memorije"
+
+#~ msgid "Active Memory"
+#~ msgstr "Aktivna memorija"
+
+#~ msgid "Inactive Memory"
+#~ msgstr "Neaktivna memorija"
+
+#~ msgid "Wired Memory"
+#~ msgstr "Iskorištena memorija"
+
+#~ msgid "Exec Pages"
+#~ msgstr "Stranice izvršnog koda"
+
+#~ msgid "File Pages"
+#~ msgstr "Stranice datoteke"
+
+#, fuzzy
+#~| msgid "Processors"
+#~ msgid "Processes"
+#~ msgstr "Procesori"
+
+#~ msgid "Process Controller"
+#~ msgstr "Upravljač procesa"
+
+#, fuzzy
+#~| msgid "System Processes"
+#~ msgid "Last Process ID"
+#~ msgstr "Sustavski procesi"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Process Spawn Count"
+#~ msgstr "Broj procesa"
+
+#~ msgid "Process Count"
+#~ msgstr "Broj procesa"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Idle Processes Count"
+#~ msgstr "Broj procesa"
+
+#, fuzzy
+#~ msgid "Running Processes Count"
+#~ msgstr "Broj procesa"
+
+#, fuzzy
+#~ msgid "Sleeping Processes Count"
+#~ msgstr "Broj procesa"
+
+#, fuzzy
+#~ msgid "Stopped Processes Count"
+#~ msgstr "Broj procesa"
+
+#, fuzzy
+#~ msgid "Zombie Processes Count"
+#~ msgstr "Broj procesa"
+
+#, fuzzy
+#~ msgid "Waiting Processes Count"
+#~ msgstr "Broj procesa"
+
+#, fuzzy
+#~ msgid "Locked Processes Count"
+#~ msgstr "Broj procesa"
+
+#~ msgid "Disk Throughput"
+#~ msgstr "Propusnost diska"
+
+#~ msgctxt "CPU Load"
+#~ msgid "Load"
+#~ msgstr "Opterećenje"
+
+#~ msgid "Total Accesses"
+#~ msgstr "Ukupno pristupa"
+
+#~ msgid "Read Accesses"
+#~ msgstr "Pristup čitanja"
+
+#~ msgid "Write Accesses"
+#~ msgstr "Pristup pisanja"
+
+#~ msgid "Read Data"
+#~ msgstr "Čitanje podataka"
+
+#~ msgid "Written Data"
+#~ msgstr "Zapisani podaci"
+
+#~ msgid "Milliseconds spent reading"
+#~ msgstr "Potrošeno milisekundi na čitanje"
+
+#~ msgid "Milliseconds spent writing"
+#~ msgstr "Potrošeno milisekundi na pisanje"
+
+#~ msgid "I/Os currently in progress"
+#~ msgstr "ulaza/izlaza trenutno"
+
+#~ msgid "Pages In"
+#~ msgstr "Dohvaćanje stranica"
+
+#~ msgid "Pages Out"
+#~ msgstr "Izbacivanje stranica"
+
+#~ msgid "Context Switches"
+#~ msgstr "Promjena konteksta"
+
+#, fuzzy
+#~| msgid "System Load"
+#~ msgid "System Calls"
+#~ msgstr "Opterećenje sustava"
+
+#~ msgid "Network"
+#~ msgstr "Mreža"
+
+#~ msgid "Interfaces"
+#~ msgstr "Sučelja"
+
+#~ msgid "Transmitter"
+#~ msgstr "Odašiljač"
+
+#~ msgid "Data Rate"
+#~ msgstr "Status"
+
+#~ msgid "Compressed Packets Rate"
+#~ msgstr "Sažeti paketi"
+
+#~ msgid "Dropped Packets Rate"
+#~ msgstr "Odbačeni paketi"
+
+#~ msgid "Error Rate"
+#~ msgstr "Učestalost greški"
+
+#~ msgid "FIFO Overruns Rate"
+#~ msgstr "FIFO prekoračenje"
+
+#~ msgid "Frame Error Rate"
+#~ msgstr "Učestalost pogrešaka okvira"
+
+#~ msgid "Multicast Packet Rate"
+#~ msgstr "Učestalost <i>multicast</i> paketa"
+
+#~ msgid "Packet Rate"
+#~ msgstr "Učestalost paketa"
+
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Loss Rate"
+#~ msgstr "Učestalost gubitka nosioca"
+
+#~ msgid "Collisions"
+#~ msgstr "Sukobi"
+
+#~ msgid "Data"
+#~ msgstr "Podatak"
+
+#~ msgid "Compressed Packets"
+#~ msgstr "Sažeti paketi"
+
+#~ msgid "Dropped Packets"
+#~ msgstr "Odbačeni paketi"
+
+#~ msgid "Errors"
+#~ msgstr "Greške"
+
+#~ msgid "FIFO Overruns"
+#~ msgstr "FIFO prekoračenje"
+
+#~ msgid "Frame Errors"
+#~ msgstr "Pogreške okvira"
+
+#~ msgid "Multicast Packets"
+#~ msgstr "Multicast Paketi"
+
+#~ msgid "Packets"
+#~ msgstr "Paketi"
+
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Losses"
+#~ msgstr "Gubici Nosioca"
+
+#~ msgid "Sockets"
+#~ msgstr "Sockets"
+
+#~ msgid "Total Number"
+#~ msgstr "Ukuban broj"
+
+#~ msgid "Table"
+#~ msgstr "Tablica"
+
+#~ msgid "Advanced Power Management"
+#~ msgstr "Napredno upravljanje energijom (Advanced Power Management)"
+
+#~ msgid "ACPI"
+#~ msgstr "ACPI"
+
+#~ msgid "Thermal Zone"
+#~ msgstr "Toplinska Zona"
+
+#~ msgid "Temperature"
+#~ msgstr "Temperatura"
+
+#, fuzzy
+#~| msgid "Temperature"
+#~ msgid "Average CPU Temperature"
+#~ msgstr "Temperatura"
+
+#~ msgid "Fan"
+#~ msgstr "Ventilator"
+
+#~ msgid "State"
+#~ msgstr "Stanje"
+
+#~ msgid "Battery"
+#~ msgstr "Baterija"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Capacity"
+#~ msgstr "Kapacitet baterije"
+
+#~ msgid "Battery Charge"
+#~ msgstr "Kapacitet baterije"
+
+#~ msgid "Battery Usage"
+#~ msgstr "Kapacitet baterije"
+
+#, fuzzy
+#~| msgid "Battery Usage"
+#~ msgid "Battery Voltage"
+#~ msgstr "Kapacitet baterije"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Discharge Rate"
+#~ msgstr "Kapacitet baterije"
+
+#~ msgid "Remaining Time"
+#~ msgstr "Preostalo vrijeme"
+
+#~ msgid "Interrupts"
+#~ msgstr "Prekidi"
+
+#~ msgid "Load Average (1 min)"
+#~ msgstr "Prosječno opterećenje (1 min)"
+
+#~ msgid "Load Average (5 min)"
+#~ msgstr "Prosječno opterećenje (5 min)"
+
+#~ msgid "Load Average (15 min)"
+#~ msgstr "Prosječno opterećenje (15 min)"
+
+#~ msgid "Clock Frequency"
+#~ msgstr "Frekvencija sustavskog sata"
+
+#, fuzzy
+#~| msgid "Clock Frequency"
+#~ msgid "Average Clock Frequency"
+#~ msgstr "Frekvencija sustavskog sata"
+
+#~ msgid "Hardware Sensors"
+#~ msgstr "Osjetila hardwarea"
+
+#~ msgid "Partition Usage"
+#~ msgstr "Iskorištenost particije"
+
+#~ msgid "Used Space"
+#~ msgstr "Iskorišten prostor"
+
+#~ msgid "Free Space"
+#~ msgstr "Slobodan prostor"
+
+#~ msgid "Fill Level"
+#~ msgstr "Nivo popunjenosti"
+
+#, fuzzy
+#~| msgid "User Load"
+#~ msgid "Used Inodes"
+#~ msgstr "Opterećenje sustava od strane korisnika"
+
+#~ msgid "System"
+#~ msgstr "Sustav"
+
+#~ msgid "Uptime"
+#~ msgstr "Vrijeme od zadnjeg paljenja"
+
+#~ msgid "Linux Soft Raid (md)"
+#~ msgstr "Linux Soft Raid (md)"
+
+#~ msgid "Processors"
+#~ msgstr "Procesori"
+
+#~ msgid "Cores"
+#~ msgstr "Jezgre"
+
+#~ msgid "Number of Blocks"
+#~ msgstr "Broj blokova"
+
+#~ msgid "Total Number of Devices"
+#~ msgstr "Ukupan broj uređaja"
+
+#~ msgid "Failed Devices"
+#~ msgstr "Neuspjeli uređaji"
+
+#~ msgid "Spare Devices"
+#~ msgstr "Pričuvni uređaji"
+
+#~ msgid "Number of Raid Devices"
+#~ msgstr "Broj uređaja u Raidu"
+
+#~ msgid "Working Devices"
+#~ msgstr "Radeći uređaji"
+
+#~ msgid "Active Devices"
+#~ msgstr "Aktivni uređaji"
+
+#~ msgid "Number of Devices"
+#~ msgstr "Broj uređaja"
+
+#~ msgid "Resyncing Percent"
+#~ msgstr "Postotak ponovne sinkronizacije"
+
+#~ msgid "Disk Information"
+#~ msgstr "Informacije o disku"
+
+#~ msgid "CPU %1"
+#~ msgstr "Procesor %1"
+
+#~ msgid "Disk %1"
+#~ msgstr "Disk %1"
+
+#, fuzzy
+#~| msgid "Battery"
+#~ msgid "Battery %1"
+#~ msgstr "Baterija"
+
+#~ msgid "Fan %1"
+#~ msgstr "Ventilator %1"
+
+#~ msgid "Temperature %1"
+#~ msgstr "Temperatura %1"
+
+#~ msgid "Total"
+#~ msgstr "Ukupno"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Software Interrupts"
+#~ msgstr "Prekidi"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Hardware Interrupts"
+#~ msgstr "Prekidi"
+
+#~ msgid "Int %1"
+#~ msgstr "Int %1"
+
+#~ msgctxt "the unit 1 per second"
+#~ msgid "1/s"
+#~ msgstr "1/s"
+
+#~ msgid "kBytes"
+#~ msgstr "kByteova"
+
+#~ msgctxt "the unit minutes"
+#~ msgid "min"
+#~ msgstr "min"
+
+#~ msgctxt "the frequency unit"
+#~ msgid "MHz"
+#~ msgstr "MHz"
+
+#~ msgctxt "a percentage"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgid "Integer Value"
+#~ msgstr "Cjelobrojna vrijednost"
+
+#~ msgid "Floating Point Value"
+#~ msgstr "Vrijednost s pomičnim zarezom (floating point)"
+
+#~ msgctxt "Units"
+#~ msgid "%1 second"
+#~ msgid_plural "%1 seconds"
+#~ msgstr[0] "%1 sekunda"
+#~ msgstr[1] "%1 sekunde"
+#~ msgstr[2] "%1 sekundi"
+
+#~ msgctxt "Units"
+#~ msgid "%1 minute"
+#~ msgid_plural "%1 minutes"
+#~ msgstr[0] "%1 minuta"
+#~ msgstr[1] "%1 minute"
+#~ msgstr[2] "%1 minuta"
+
+#~ msgid "%1"
+#~ msgstr "%1"
+
+#~ msgid "Do you really want to delete the display?"
+#~ msgstr "Želite li zaista izbrisati prikaznik?"
+
+#~ msgid "Delete Display"
+#~ msgstr "Izbriši prikaznik"
+
+#~ msgid "Automatic range"
+#~ msgstr "Automatska detekcija dometa"
+
+#~ msgid "Manual with ksysguardd's range"
+#~ msgstr "Ručno s opsegom ksysguard-a"
+
+#~ msgid "Manual with user's range"
+#~ msgstr "Ručno s korisničkim opsegom"
+
+#~ msgid ""
+#~ "Choose between the three following range policy:\n"
+#~ "\n"
+#~ "Automatic range: adapts dynamically to the currently displayed values\n"
+#~ "\n"
+#~ "Manual with ksysguardd's range: uses ksysguardd's range to set the "
+#~ "minimum and maximum value for the axis, please note that if the minimum "
+#~ "and maximum are not given by ksysguardd you should not choose this range "
+#~ "policy.\n"
+#~ "\n"
+#~ "Manual with user's range: specify your own minimum and maximum range "
+#~ "value for the axis in the fields below. Any range value provided by "
+#~ "ksysguardd will be ignored."
+#~ msgstr ""
+#~ "Odaberite između sljedeće tri politike opsega:\n"
+#~ "\n"
+#~ "Automatski opseg: dinamično se prilagođava trenutno prikazivanim "
+#~ "veličinama\n"
+#~ "\n"
+#~ "Ručno s opsegom ksysguard-a: koristi ksysguard-ov opseg za postavljanje "
+#~ "minimalne i maksimalne vrijednosti na osi, molim uzmite u obzir da ako "
+#~ "ksysguard ne da minimum i maksimum ne biste trebali koristiti ovu "
+#~ "politiku.\n"
+#~ "\n"
+#~ "Ručno s korisničkim opsegom: specifirajte svoju vlastitu minimalnu i "
+#~ "maksimalnu vrijednost na osi u donjim poljima. Sve vrijednosti koje da "
+#~ "ksysguard će biti zanemarene."
+
+#~ msgid "Font:"
+#~ msgstr "Font:"
+
+#~ msgid "Grid lines:"
+#~ msgstr "Linije mreže:"
+
+#~ msgid "Background:"
+#~ msgstr "Pozadina:"
+
+#~ msgid "N/A"
+#~ msgstr "nedostupno"
+
+#~ msgctxt "units in percentage"
+#~ msgid "%1%"
+#~ msgstr "%1%"
+
+#~ msgid "&Edit"
+#~ msgstr "Uredi …"
+
+#, fuzzy
+#~| msgid ""
+#~| "This is your work space. It holds your worksheets. You need to create a "
+#~| "new worksheet (Menu File->New) before you can drag sensors here."
+#~ msgid ""
+#~ "This is your work space. It holds your tabs. You need to create a new tab "
+#~ "(Menu File->New) before you can drag sensors here."
+#~ msgstr ""
+#~ "Ovo je vaš radni prostor, sa radnim listovima. Možete stvarati nove "
+#~ "radnelistove (izbornik datoteka/novi) prije nego što ovdje dovučete "
+#~ "osjetila."
+
+#, fuzzy
+#~ msgid "Connection to %1 has been lost."
+#~ msgstr "Izgubljena veza prema %1!"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "&Title"
+#~ msgstr "Naslov"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "T&itle"
+#~ msgstr "Naslov"
+
+#, fuzzy
+#~ msgid "System Guard Applet Settings"
+#~ msgstr "KSysguard postavke appleta"
+
+#~ msgid "Size ratio:"
+#~ msgstr "Odnos veličine:"
+
+#, fuzzy
+#~| msgid "%"
+#~ msgctxt "Number suffix in spinbox"
+#~ msgid "%"
+#~ msgstr "%"
+
+#, fuzzy
+#~ msgid "Launch &System Guard"
+#~ msgstr "KDE System Guard"
+
+#~ msgid "Drag sensors to empty cells of a worksheet or the panel applet."
+#~ msgstr ""
+#~ "Dovucite osjetila u prazna polja radnog lista ili appleta na panelu."
+
+#, fuzzy
+#~ msgid "Select Worksheet to Open"
+#~ msgstr "Odaberite radni list za učitavanje"
+
+#, fuzzy
+#~ msgid "Export Work Sheet"
+#~ msgstr "Poništi sve radne listove "
+
+#~ msgid "Worksheet Properties"
+#~ msgstr "Postavke radnog lista"
+
+#~ msgid "&Signal Plotter"
+#~ msgstr "&Crtač signala"
+
+#~ msgid "&Multimeter"
+#~ msgstr "&Multimeter"
+
+#~ msgid "&Dancing Bars"
+#~ msgstr "P&lešuće trake"
+
+#~ msgid ""
+#~ "The KSysGuard applet does not support displaying of this type of sensor. "
+#~ "Please choose another sensor."
+#~ msgstr ""
+#~ "KSysGuard ne podržava prikaz ove vrste osjetila.Molim odaberite drugo "
+#~ "osjetilo."
+
+#~ msgid ""
+#~ "The file %1 does not contain a valid applet definition, which must have a "
+#~ "document type 'KSysGuardApplet'."
+#~ msgstr ""
+#~ "Datoteka %1 ne sadrži valjan opis programa (applet-a), koji mora biti "
+#~ "tipa 'KSysGuardApplet'."
+
+#~ msgid "Drag sensors from the KDE System Guard into this cell."
+#~ msgstr "Dovucite osjetila sa KDE System Guard-a na ovo mjesto."
+
+#, fuzzy
+#~ msgid "&New Worksheet..."
+#~ msgstr "Poništi sve radne listove "
+
+#, fuzzy
+#~ msgid "Open Worksheet..."
+#~ msgstr "Poništi sve radne listove "
+
+#, fuzzy
+#~ msgid "&Export Worksheet..."
+#~ msgstr "Poništi sve radne listove "
+
+#, fuzzy
+#~ msgid "&Remove Worksheet"
+#~ msgstr "Poništi sve radne listove "
+
+#, fuzzy
+#~ msgid "&Worksheet Properties"
+#~ msgstr "Postavke radnog lista"
+
+#, fuzzy
+#~ msgid "Import Worksheet..."
+#~ msgstr "Poništi sve radne listove "
+
+#~ msgid "Count:"
+#~ msgstr "Brojač:"
+
+#~ msgid "Enter the number of horizontal lines here."
+#~ msgstr "Unesite broj vodoravnih linija."
+
+#~ msgid "Labels"
+#~ msgstr "Oznake"
+
+#~ msgid "Top bar"
+#~ msgstr "Gornja traka"
+
+#~ msgid ""
+#~ "Check this to active the display title bar. This is probably only useful "
+#~ "for applet displays. The bar is only visible if the display is large "
+#~ "enough."
+#~ msgstr ""
+#~ "Ovdje možete uključiti traku s nazivom, što je vjerojatno korisno smo kod "
+#~ "prikazivanja appleta, jer je traka vidljiva samo ako je prikaz dovoljno "
+#~ "velik."
+
+#~ msgid "Horizontal lines:"
+#~ msgstr "Vodoravne linije:"
+
+#, fuzzy
+#~| msgid "Sensor Logger"
+#~ msgid "Sensor Load"
+#~ msgstr "Dnevnik osjetila"
+
+#~ msgid "Show only process list of local host"
+#~ msgstr "Prikaži samo procese lokalnog računala"
+
+#~ msgctxt "process status"
+#~ msgid "running"
+#~ msgstr "radi"
+
+#~ msgctxt "process status"
+#~ msgid "sleeping"
+#~ msgstr "spava"
+
+#~ msgctxt "process status"
+#~ msgid "disk sleep"
+#~ msgstr "spava na disku"
+
+#~ msgctxt "process status"
+#~ msgid "zombie"
+#~ msgstr "zombi"
+
+#~ msgctxt "process status"
+#~ msgid "stopped"
+#~ msgstr "zaustavljen"
+
+#~ msgctxt "process status"
+#~ msgid "paging"
+#~ msgstr "na stranici"
+
+#~ msgctxt "process status"
+#~ msgid "idle"
+#~ msgstr "čeka"
+
+#, fuzzy
+#~ msgid "User ID: %1"
+#~ msgstr "Korisnik%"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "User Name"
+#~ msgstr "Ime osjetila"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "CPU %"
+#~ msgstr "CPU%1"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Virtual Size"
+#~ msgstr "Uspravna skala"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Memory"
+#~ msgstr "Memorija"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Shared Mem"
+#~ msgstr "Priručna memorija"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Command"
+#~ msgstr "Naredba"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Name"
+#~ msgstr "Ime"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Graphics Memory"
+#~ msgstr "Swap memorija"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Application"
+#~ msgstr "Memorija za aplikacije"
+
+#~ msgid "Renice Process"
+#~ msgstr "Renice proces"
+
+#, fuzzy
+#~ msgid "Renice process"
+#~ msgstr "Renice proces"
+
+#, fuzzy
+#~ msgid "Kill process"
+#~ msgstr "Ubij proces"
+
+#, fuzzy
+#~ msgid "Hide column '%1'"
+#~ msgstr "Sarkij stupac"
+
+#, fuzzy
+#~ msgid "Show column '%1'"
+#~ msgstr "Prikaži stupac"
+
+#~ msgid "%1: Running Processes"
+#~ msgstr "%1: pokrenutih procesa"
+
+#, fuzzy
+#~ msgid "You need to select a process first."
+#~ msgstr "Prvo morate izabrati proces!"
+
+#~ msgid "Do you want to kill the selected process?"
+#~ msgid_plural "Do you want to kill the %1 selected processes?"
+#~ msgstr[0] "Zaista želite ubiti %1. odabrani proces?"
+#~ msgstr[1] "Zaista želite ubiti %1. odabrana procesa?"
+#~ msgstr[2] "Zaista želite ubiti %1. odabranih procesa? "
+
+#~ msgid "Kill Process"
+#~ msgstr "Ubij proces"
+
+#, fuzzy
+#~ msgid "Kill"
+#~ msgstr "&Ubij"
+
+#, fuzzy
+#~ msgid "Error while attempting to kill process %1."
+#~ msgstr "Greška pri pokušaju ubijanja procesa %1!"
+
+#, fuzzy
+#~ msgid "Process %1 has already disappeared."
+#~ msgstr "Proces %1 je već nestao!"
+
+#, fuzzy
+#~ msgid "Invalid Signal."
+#~ msgstr "Neispravan signal!"
+
+#, fuzzy
+#~ msgid "Error while attempting to renice process."
+#~ msgstr "Greška pri pokušaju ubijanja procesa %1!"
+
+#, fuzzy
+#~ msgid "Insufficient permissions to renice process"
+#~ msgstr "Nedovoljne ovlasti za renice procesa %1!"
+
+#, fuzzy
+#~ msgid "Process has disappeared."
+#~ msgstr "Proces %1 je već nestao!"
+
+#, fuzzy
+#~ msgid "Error while attempting to renice process %1."
+#~ msgstr "Greška pri pokušaju ubijanja procesa %1!"
+
+#, fuzzy
+#~ msgid "Process %1 has disappeared."
+#~ msgstr "Proces %1 je već nestao!"
+
+#, fuzzy
+#~ msgid "All Processes, Simple"
+#~ msgstr "Svi procesi"
+
+#, fuzzy
+#~ msgid "All Processes, Hierarchical"
+#~ msgstr "Svi procesi"
+
+#~ msgid "User Processes"
+#~ msgstr "Korisnički procesi"
+
+#~ msgid "Own Processes"
+#~ msgstr "Vlastiti procesi"
+
+#, fuzzy
+#~ msgid "Show &Totals"
+#~ msgstr "Prikaži stupac"
+
+#~ msgid "Global Style Settings"
+#~ msgstr "Globalne postavke stila"
+
+#~ msgid "Display Style"
+#~ msgstr "Stil prikaza"
+
+#~ msgid "First foreground color:"
+#~ msgstr "Prva boja prvog plana"
+
+#~ msgid "Second foreground color:"
+#~ msgstr "Druga boja prednjeg plana:"
+
+#~ msgid "Sensor Colors"
+#~ msgstr "Boja osjetila"
+
+#~ msgid "Change Color..."
+#~ msgstr "Promjena boje..."
+
+#~ msgid "Color %1"
+#~ msgstr "Boja %1"
+
+#, fuzzy
+#~ msgid "Font"
+#~ msgstr "Brojač:"
+
+#~ msgid "Select Font..."
+#~ msgstr "Izaberi pismo"
+
+#, fuzzy
+#~ msgid "&Cancel"
+#~ msgstr "&Promjeni"
+
+#~ msgid "Configure &Style..."
+#~ msgstr "Podešavanje &stila..."
+
+#~ msgid "Idle Load"
+#~ msgstr "Neopterećenost"
+
+#, fuzzy
+#~ msgid "It is impossible to connect to '%1'."
+#~ msgstr "Nije moguće se spojiti sa '%1'!"
+
+#~ msgid "S&ensorLogger"
+#~ msgstr "Dnevnik os&jetila"
+
+#, fuzzy
+#~ msgid "Timeout at host %1"
+#~ msgstr "Pročitaj grešku na računalu %1"
+
+#~ msgid "Save Current Worksheet As"
+#~ msgstr "Snimi sadašnji radni list kao"
+
+#, fuzzy
+#~ msgid "Cannot find file ProcessTable.sgrd."
+#~ msgstr "Ne mogu pronaći datoteku ProcessTable.sgrd!"
+
+#~ msgid "Remove Column"
+#~ msgstr "Ukloni stupac"
+
+#~ msgid "Add Column"
+#~ msgstr "Dodaj stupac"
+
+#~ msgid "Help on Column"
+#~ msgstr "Pomoć o stupcu"
+
+#~ msgid "Nice"
+#~ msgstr "Nice"
+
+#~ msgid "Select All Processes"
+#~ msgstr "Označi sve procese"
+
+#~ msgid "Unselect All Processes"
+#~ msgstr "Odznači sve procese"
+
+#~ msgid "Select All Child Processes"
+#~ msgstr "Označi sve child procese"
+
+#~ msgid "Unselect All Child Processes"
+#~ msgstr "Odznači sve child procese"
+
+#~ msgid "SIGABRT"
+#~ msgstr "SIGABRT"
+
+#~ msgid "SIGALRM"
+#~ msgstr "SIGALRM"
+
+#~ msgid "SIGCHLD"
+#~ msgstr "SIGCHLD"
+
+#~ msgid "SIGCONT"
+#~ msgstr "SIGCONT"
+
+#~ msgid "SIGFPE"
+#~ msgstr "SIGFPE"
+
+#~ msgid "SIGHUP"
+#~ msgstr "SIGHUP"
+
+#~ msgid "SIGILL"
+#~ msgstr "SIGILL"
+
+#~ msgid "SIGINT"
+#~ msgstr "SIGINT"
+
+#~ msgid "SIGKILL"
+#~ msgstr "SIGKILL"
+
+#~ msgid "SIGPIPE"
+#~ msgstr "SIGPIPE"
+
+#~ msgid "SIGQUIT"
+#~ msgstr "SIGQUIT"
+
+#~ msgid "SIGSEGV"
+#~ msgstr "SIGSEGV"
+
+#~ msgid "SIGSTOP"
+#~ msgstr "SIGSTOP"
+
+#~ msgid "SIGTERM"
+#~ msgstr "SIGTERM"
+
+#~ msgid "SIGTSTP"
+#~ msgstr "SIGTSTP"
+
+#~ msgid "SIGTTIN"
+#~ msgstr "SIGTTIN"
+
+#~ msgid "SIGTTOU"
+#~ msgstr "SIGTTOU"
+
+#~ msgid "SIGUSR1"
+#~ msgstr "SIGUSR1"
+
+#~ msgid "SIGUSR2"
+#~ msgstr "SIGUSR2"
+
+#~ msgid "Send Signal"
+#~ msgstr "Pošalji signal"
+
+#~ msgid "Renice Process..."
+#~ msgstr "Renice proces"
+
+#, fuzzy
+#~ msgid "Do you really want to send signal %2 to the selected process?"
+#~ msgid_plural ""
+#~ "Do you really want to send signal %2 to the %1 selected processes?"
+#~ msgstr[0] "%"
+#~ msgstr[1] "Zaista želite poslati signal %2 do svih %1 odabranih procesa? "
+
+#~ msgid "Style"
+#~ msgstr "Stil"
+
+#~ msgid "Graph Drawing Style"
+#~ msgstr "Stil crtanja krivulje"
+
+#~ msgid "Basic polygons"
+#~ msgstr "Osnovni poligoni"
+
+#~ msgid "Original - single line per data point"
+#~ msgstr "Original - jedna crta za jednu točku"
+
+#~ msgid "&Setup Update Interval..."
+#~ msgstr "Osvježite vrijeme obnavljanja..."
+
+#~ msgid "&Continue Update"
+#~ msgstr "&Nastavi unaprjeđivanje"
+
+#~ msgid "P&ause Update"
+#~ msgstr "&Zaustavi unaprjeđivanje"
+
+#~ msgid ""
+#~ "You are about to change the scheduling priority of\n"
+#~ "process %1. Be aware that only the Superuser (root)\n"
+#~ "can decrease the nice level of a process. The lower\n"
+#~ "the number is the higher the priority.\n"
+#~ "\n"
+#~ "Please enter the desired nice level:"
+#~ msgstr ""
+#~ "Upravo ćete promjeniti raspored važnosti procesa\n"
+#~ "%1. Imajte na umu da samo administrator (root) može\n"
+#~ "smanjiti slobodu procesa. Što je niži broj, to je veći \n"
+#~ "prioritet procesa.\n"
+#~ "\n"
+#~ "Molim unesite željenu razinu procesa:"
+
+#~ msgid "PID"
+#~ msgstr "PID"
+
+#~ msgid "PPID"
+#~ msgstr "PPID"
+
+#~ msgid "UID"
+#~ msgstr "UID"
+
+#~ msgid "GID"
+#~ msgstr "GID"
+
+#~ msgid "VmSize"
+#~ msgstr "VeličinaVm"
+
+#~ msgid "VmRss"
+#~ msgstr "VmRss"
+
+#~ msgid "Login"
+#~ msgstr "Korisnička oznaka"
+
+#~ msgid "&Tree"
+#~ msgstr "S&tablo"
+
+#~ msgid "&Kill"
+#~ msgstr "&Ubij"
+
+#, fuzzy
+#~ msgid "Insufficient permissions to kill process %1."
+#~ msgstr "Nedovoljne ovlasti za ubijanje procesa %1!"
+
+#, fuzzy
+#~ msgid "Invalid argument."
+#~ msgstr "Neispravan argument!"
+
+#, fuzzy
+#~ msgid "CPU"
+#~ msgstr "CPU%1"
+
+#, fuzzy
+#~ msgid "Mem"
+#~ msgstr "Memorija"
+
+#~ msgid "Sensor Type"
+#~ msgstr "Vrsta osjetila"
+
+#, fuzzy
+#~ msgid "KDE system guard"
+#~ msgstr "KDE System Guard"
+
+#~ msgid "88888 Processes"
+#~ msgstr "88888 Procesa"
+
+#~ msgid "Memory: 88888888888 kB used, 88888888888 kB free"
+#~ msgstr "Memorija: 8888888 kB zauzeto, 8888888 kB slobodno"
+
+#~ msgid "Swap: 888888888 kB used, 888888888 kB free"
+#~ msgstr "Zamjenska memorija: 8888888 kB zauzeto, 8888888 kB slobodno"
+
+#, fuzzy
+#~ msgid "&Import Recent Worksheet"
+#~ msgstr "Poništi sve radne listove "
+
+#~ msgid "C&onnect Host..."
+#~ msgstr "&Spoji računalo..."
+
+#~ msgid "D&isconnect Host"
+#~ msgstr "O&dspoji računalo"
+
+#~ msgid "Reset All Worksheets"
+#~ msgstr "Poništi sve radne listove "
+
+#~ msgid "Memory: %1 %2 used, %3 %4 free"
+#~ msgstr "Memorija: %1 %2 zauzeto, %3 %4 slobodno"
+
+#~ msgid "Swap: %1 %2 used, %3 %4 free"
+#~ msgstr "Zamjenska memorija: %1 %2 zauzeto, %3 %4 slobodno"
