@@ -165,7 +165,7 @@ msgstr "Monitor del sistema"
 #: ksysguard.cpp:177
 #, kde-format
 msgid "&Refresh Tab"
-msgstr "&Actualitza la pestanya"
+msgstr "Act&ualitza la pestanya"
 
 #: ksysguard.cpp:178
 #, kde-format
@@ -354,7 +354,7 @@ msgstr "Fitxers dels fulls de treball opcionals a carregar"
 #: ksysguardui.rc:5
 #, kde-format
 msgid "&File"
-msgstr "&Fitxer"
+msgstr "Fi&txer"
 
 #. i18n: ectx: Menu (view)
 #: ksysguardui.rc:15
@@ -993,7 +993,7 @@ msgstr "Fi&ltre"
 #: SensorDisplayLib/LogFileSettings.ui:196
 #, kde-format
 msgid "&Add"
-msgstr "&Afig"
+msgstr "Afi&g"
 
 #. i18n: ectx: property (text), widget (QPushButton, deleteButton)
 #: SensorDisplayLib/LogFileSettings.ui:203
@@ -1315,7 +1315,7 @@ msgstr "Gràfica de &barres"
 #: WorkSheet.cpp:391
 #, kde-format
 msgid "Log to a &file"
-msgstr "Registra en un &fitxer"
+msgstr "Registra en un fi&txer"
 
 #: WorkSheet.cpp:547
 #, kde-format
