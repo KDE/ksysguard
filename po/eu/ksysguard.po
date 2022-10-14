@@ -1,15 +1,15 @@
 # Translation for ksysguard.po to Euskara/Basque (eu).
 # Copyright (C) 2004-2014 Free Software Foundation, Inc.
-# Copyright (C) 2015-2020, This file is copyright:
+# Copyright (C) 2015-2022, This file is copyright:
 # This file is distributed under the same license as the ksysguard package.
-# KDE euskaratzeko proiektuko arduraduna <xalba@euskalnet.net>.
+# KDE euskaratzeko proiektuko arduraduna <xalba@ni.eus>.
 #
 # Translators:
 # Inaki Ibarrola Atxa <etxaurre@telelina-es>
 # Juan Irigoien Garitaonandia <juanirigoien@irakasle.net>, 2004.
 # Juan Irigoien <juanirigoien@yahoo.es>, 2004.
 # Marcos  <marcos@euskalgnu.org>, 2004, 2005, 2006, 2007, 2010.
-# Iñigo Salvador Azurmendi <xalba@euskalnet.net>, 2009, 2011, 2014, 2018, 2019, 2020.
+# Iñigo Salvador Azurmendi <xalba@ni.eus>, 2009, 2011, 2014, 2018, 2019, 2020.
 # Hizkuntza Politikarako Sailburuordetza <hizpol@ej-gv.es>, 2013.
 msgid ""
 msgstr ""
