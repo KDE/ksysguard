@@ -348,7 +348,7 @@ msgstr ""
 #: ksysguard.cpp:592
 #, kde-format
 msgid "Optional worksheet files to load"
-msgstr "Fitxers dels fulls de treball opcionals a carregar"
+msgstr "Fitxers dels fulls de treball opcionals que s'han de carregar"
 
 #. i18n: ectx: Menu (file)
 #: ksysguardui.rc:5
@@ -1394,7 +1394,7 @@ msgstr ""
 #: Workspace.cpp:186
 #, kde-format
 msgid "Select Tab File to Import"
-msgstr "Seleccioneu el fitxer de pestanya que s'importarà"
+msgstr "Seleccioneu el fitxer de pestanya que s'ha d'importar"
 
 #: Workspace.cpp:208 Workspace.cpp:228
 #, kde-format
