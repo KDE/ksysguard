@@ -1095,7 +1095,7 @@ msgid ""
 "p>%1</qt>"
 msgstr ""
 "<qt><p>Esta és la pantalla d'un sensor. Per a personalitzar la pantalla d'un "
-"sensor cliqueu el botó dret del ratolí ací i seleccioneu l'entrada "
+"sensor cliqueu amb el botó dret del ratolí ací i seleccioneu l'entrada "
 "<i>Propietats</i> del menú emergent. Seleccioneu <i>Elimina</i> per a "
 "suprimir la pantalla del full de treball.</p>%1</qt>"
 
