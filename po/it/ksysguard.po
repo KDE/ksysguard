@@ -7,20 +7,21 @@
 # Dario Panico <Dareus_Persarumrex@fastwebnet.it>, 2008.
 # Luciano Montanaro <mikelima@cirulla.net>, 2008.
 # Paolo Zamponi <zapaolo@email.it>, 2016, 2017, 2018.
+# Vincenzo Reale <smart2128vr@gmail.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: ksysguard\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-03-02 00:46+0000\n"
-"PO-Revision-Date: 2018-10-14 12:01+0100\n"
-"Last-Translator: Paolo Zamponi <zapaolo@email.it>\n"
+"PO-Revision-Date: 2022-11-06 16:49+0100\n"
+"Last-Translator: Vincenzo Reale <smart2128vr@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 22.08.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -909,7 +910,7 @@ msgstr "Miste"
 #: SensorDisplayLib/ListView.cpp:162
 #, kde-format
 msgid "Kilobytes"
-msgstr "Chilobyte"
+msgstr "Kilobyte"
 
 #: SensorDisplayLib/ListView.cpp:168
 #, kde-format
