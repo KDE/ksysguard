@@ -65,6 +65,8 @@ configure_file(config-workspace.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-works
 add_subdirectory( gui )
 
 add_subdirectory( doc )
+kdoctools_install(po)
+
 add_subdirectory( pics )
 add_subdirectory( example )
 
