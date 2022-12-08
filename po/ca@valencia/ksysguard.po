@@ -389,7 +389,7 @@ msgstr "Navegador de sensors"
 #: SensorBrowser.cpp:473
 #, kde-format
 msgid "Drag sensors to empty cells of a worksheet "
-msgstr "Arrossegueu els sensors a les cel·les buides d'un full de treball "
+msgstr "Arrossegueu els sensors cap a les cel·les buides d'un full de treball "
 
 #: SensorBrowser.cpp:474
 #, kde-format
