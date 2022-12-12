@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: ksysguard\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-03-02 00:46+0000\n"
-"PO-Revision-Date: 2022-12-10 18:46+0300\n"
+"PO-Revision-Date: 2022-12-11 20:18+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 22.08.3\n"
+"X-Generator: Lokalize 22.12.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -776,8 +776,8 @@ msgid ""
 "above this value."
 msgstr ""
 "Görünen alan için yaklaşık en yüksek değeri giriniz. Tepe değeri bu değerin "
-"altına indirilmeyecek, ancak bu değerin üzerindeki sayılar için yükselmeye "
-"devam edecek."
+"altına indirilmeyecek, ancak bu değerin üzerindeki sayılar için yükselmeyi "
+"sürdürecek."
 
 #: SensorDisplayLib/FancyPlotterSettings.cpp:120
 #, kde-format
