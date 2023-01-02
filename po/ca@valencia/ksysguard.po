@@ -1418,7 +1418,7 @@ msgid ""
 "<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
 "in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
 msgstr ""
-"<para>Podeu publicar la pestanya personalitzada a la <link url='%1'>KDE "
+"<para>Podeu publicar la pestanya personalitzada en la <link url='%1'>KDE "
 "Store</link>, en la categoria <icode>%2</icode>.</para><para><filename>%3</"
 "filename></para>"
 
