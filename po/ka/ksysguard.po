@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ksysguard\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-03-02 00:46+0000\n"
-"PO-Revision-Date: 2022-09-12 20:32+0200\n"
+"PO-Revision-Date: 2023-01-12 16:45+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -31,7 +31,7 @@ msgstr "Temuri.doghonadze@gmail.com"
 #: HostConnector.cpp:44
 #, kde-format
 msgid "Connect Host"
-msgstr ""
+msgstr "ჰოსტთან მიერთება"
 
 #: HostConnector.cpp:57
 #, kde-format
@@ -41,7 +41,7 @@ msgstr "ჰოსტი:"
 #: HostConnector.cpp:67
 #, kde-format
 msgid "Enter the name of the host you want to connect to."
-msgstr ""
+msgstr "შეიყვანეთ ჰოსტის სახელი, რომელთანაც მიერთება გნებავთ."
 
 #: HostConnector.cpp:73
 #, kde-format
@@ -57,6 +57,8 @@ msgstr "ssh"
 #, kde-format
 msgid "Select this to use the secure shell to login to the remote host."
 msgstr ""
+"აირჩიეთ დაშორებულ ჰოსტზე დაცული გარსის გაშვებისას გამოყენებული მომხმარებლის "
+"სახელი."
 
 #: HostConnector.cpp:84
 #, kde-format
@@ -66,7 +68,7 @@ msgstr "rsh"
 #: HostConnector.cpp:85
 #, kde-format
 msgid "Select this to use the remote shell to login to the remote host."
-msgstr ""
+msgstr "აირჩიეთ, თუ დაშორებულ ჰოსტზე დაშორებული გარსით გნებავთ, შეხვიდეთ."
 
 #: HostConnector.cpp:88
 #, kde-format
@@ -79,11 +81,13 @@ msgid ""
 "Select this if you want to connect to a ksysguard daemon that is running on "
 "the machine you want to connect to, and is listening for client requests."
 msgstr ""
+"აირჩიეთ, თუ გნებავთ, ksysguard-ის დემონს მიერთდეთ, რომელიც სამიზნე "
+"მანქანაზეა გაშვებული და კლიენტის მოთხოვნებს უსმენს."
 
 #: HostConnector.cpp:92
 #, kde-format
 msgid "Custom command"
-msgstr ""
+msgstr "ხელით შეყვანილი ბრძანება"
 
 #: HostConnector.cpp:93
 #, kde-format
@@ -91,6 +95,8 @@ msgid ""
 "Select this to use the command you entered below to start ksysguardd on the "
 "remote host."
 msgstr ""
+"ჩართეთ, თუ გნებავთ, შეყვანილი ბრძანება დაშორებულ ჰოსტზე ksysguardd-ის "
+"გასაშვებად გამოიყენოთ."
 
 #: HostConnector.cpp:96
 #, kde-format
@@ -102,7 +108,7 @@ msgstr "პორტი:"
 msgid ""
 "Enter the port number on which the ksysguard daemon is listening for "
 "connections."
-msgstr ""
+msgstr "შეიყვანეთ პორტის ნომერი, რომელსაც ksysguard დემონი უსმენს."
 
 #: HostConnector.cpp:106
 #, kde-format
@@ -117,18 +123,18 @@ msgstr "ბრძანება:"
 #: HostConnector.cpp:118
 #, kde-format
 msgid "Enter the command that runs ksysguardd on the host you want to monitor."
-msgstr ""
+msgstr "შეიყვანეთ ბრძანება, რომელიც სამიზნე ჰოსტზე ksysguardd-ს გაუშვებს."
 
 #: HostConnector.cpp:122
 #, kde-format
 msgid "e.g. ssh -l root remote.host.org ksysguardd"
-msgstr ""
+msgstr "მაგ: ssh -l root remote.host.org ksysguardd"
 
 #: ksysguard.cpp:156
 #, kde-format
 msgid ""
 "This will hide the menu bar completely. You can show it again by typing %1."
-msgstr ""
+msgstr "ეს მენიუს ზოლს სრულად დამალავს. მისი ჩვენება %1-ზე დაწოლით შეგიძლიათ."
 
 #: ksysguard.cpp:158
 #, kde-format
@@ -153,12 +159,12 @@ msgstr "&ახალი ჩანართი..."
 #: ksysguard.cpp:179
 #, kde-format
 msgid "Import Tab Fr&om File..."
-msgstr ""
+msgstr "ჩანართის &ფაილიდან შემოტანა..."
 
 #: ksysguard.cpp:180
 #, kde-format
 msgid "Save Tab &As..."
-msgstr ""
+msgstr "ჩანართის შენახვა, &როგორც..."
 
 #: ksysguard.cpp:181
 #, kde-format
@@ -168,22 +174,22 @@ msgstr "&ჩანართის დახურვა"
 #: ksysguard.cpp:182
 #, kde-format
 msgid "Monitor &Remote Machine..."
-msgstr ""
+msgstr "&დაშორებული მანქანის მონიტორინგი..."
 
 #: ksysguard.cpp:183
 #, kde-format
 msgid "&Download New Tabs..."
-msgstr ""
+msgstr "&ახალი ჩანართების გადმოწერა..."
 
 #: ksysguard.cpp:184
 #, kde-format
 msgid "&Upload Current Tab..."
-msgstr ""
+msgstr "მიმდინარე ჩანართის &ატვირთვა..."
 
 #: ksysguard.cpp:186
 #, kde-format
 msgid "Tab &Properties"
-msgstr ""
+msgstr "ჩანართის &თვისებები"
 
 #: ksysguard.cpp:383
 #, kde-format
@@ -228,29 +234,29 @@ msgstr "მეხსიერება: %1"
 #: ksysguard.cpp:515
 #, kde-format
 msgid " No swap space available "
-msgstr ""
+msgstr " სვოპზე ადგილი აღარ დარჩა "
 
 #: ksysguard.cpp:519
 #, kde-format
 msgctxt "Arguments are formatted byte sizes (used/total)"
 msgid "Swap: %1 / %2"
-msgstr ""
+msgstr "სვოპი: %1 / %2"
 
 #: ksysguard.cpp:521
 #, kde-format
 msgctxt "Arguments is formatted byte sizes (used)"
 msgid "Swap: %1"
-msgstr ""
+msgstr "სვოპი: %1"
 
 #: ksysguard.cpp:571
 #, kde-format
 msgid "KDE System Monitor"
-msgstr ""
+msgstr "KDE -ის სისტემური მონიტორი"
 
 #: ksysguard.cpp:572
 #, kde-format
 msgid "(c) 1996-2016 The KDE System Monitor Developers"
-msgstr ""
+msgstr "(c) 1996-2016 The KDE -ის სისტემური მონიტორის ავტორები"
 
 #: ksysguard.cpp:574
 #, kde-format
@@ -319,11 +325,14 @@ msgid ""
 "Parts derived (by permission) from the sunos5\n"
 "module of William LeFebvre's \"top\" utility."
 msgstr ""
+"სოლარისის მხარდაჭერა\\\n"
+"ნაწილი უილიან ლეფებვრის 'top'(sunos5 ვერსია, კანონის დაცვით)\n"
+"პროგრამიდანაა აღებული."
 
 #: ksysguard.cpp:592
 #, kde-format
 msgid "Optional worksheet files to load"
-msgstr ""
+msgstr "არასავალდებულო ჩასატვირთი სამუშაო ფურცლები"
 
 #. i18n: ectx: Menu (file)
 #: ksysguardui.rc:5
@@ -354,7 +363,7 @@ msgstr "ხელსაწყოთა მთავარი ზოლი"
 #: ProcessTable.sgrd:3 ProcessTable.sgrd:5
 #, kde-format
 msgid "Process Table"
-msgstr ""
+msgstr "პროცესის ცხრილი"
 
 #: SensorBrowser.cpp:113
 #, kde-format
@@ -385,12 +394,12 @@ msgstr "კარგი"
 #: SensorDisplayLib/FancyPlotter.cpp:545 SensorDisplayLib/FancyPlotter.cpp:624
 #, kde-format
 msgid "Error"
-msgstr ""
+msgstr "შეცდომა"
 
 #: SensorDisplayLib/DancingBarsSettings.cpp:42
 #, kde-format
 msgid "Edit BarGraph Preferences"
-msgstr ""
+msgstr "BarGraph -ის მორგება"
 
 #: SensorDisplayLib/DancingBarsSettings.cpp:51
 #, kde-format
@@ -411,12 +420,12 @@ msgstr "სათაური"
 #: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
 #, kde-format
 msgid "Enter the title of the display here."
-msgstr ""
+msgstr "შეიყვანეთ ეკრანის სათაური."
 
 #: SensorDisplayLib/DancingBarsSettings.cpp:65
 #, kde-format
 msgid "Display Range"
-msgstr ""
+msgstr "დიაპაზონის ჩვენება"
 
 #: SensorDisplayLib/DancingBarsSettings.cpp:70
 #: SensorDisplayLib/FancyPlotterSettings.cpp:96
@@ -447,20 +456,20 @@ msgstr ""
 #: SensorDisplayLib/DancingBarsSettings.cpp:100
 #, kde-format
 msgid "Alarms"
-msgstr ""
+msgstr "მაღვიძარა"
 
 #. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
 #: SensorDisplayLib/DancingBarsSettings.cpp:104
 #: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
 #, kde-format
 msgid "Alarm for Minimum Value"
-msgstr ""
+msgstr "განგაში მინიმალური მნიშვნელობისთვის"
 
 #: SensorDisplayLib/DancingBarsSettings.cpp:109
 #: SensorDisplayLib/DancingBarsSettings.cpp:132
 #, kde-format
 msgid "Enable alarm"
-msgstr ""
+msgstr "განგაშის ჩართვა"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
 #: SensorDisplayLib/DancingBarsSettings.cpp:110
@@ -468,7 +477,7 @@ msgstr ""
 #: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
 #, kde-format
 msgid "Enable the minimum value alarm."
-msgstr ""
+msgstr "მინიმალური მნიშვნელობის განგაშის ჩართვა."
 
 #. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
 #: SensorDisplayLib/DancingBarsSettings.cpp:113
@@ -482,7 +491,7 @@ msgstr "ქვედა ლიმიტი:"
 #: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
 #, kde-format
 msgid "Alarm for Maximum Value"
-msgstr ""
+msgstr "განგაში მაქსიმალური მნიშვნელობისთვის"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
 #: SensorDisplayLib/DancingBarsSettings.cpp:133
@@ -490,7 +499,7 @@ msgstr ""
 #: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
 #, kde-format
 msgid "Enable the maximum value alarm."
-msgstr ""
+msgstr "მაქსიმალური მნიშვნელობის განგაშის ჩართვა."
 
 #. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
 #: SensorDisplayLib/DancingBarsSettings.cpp:136
@@ -508,12 +517,12 @@ msgstr "გარეგნობა"
 #: SensorDisplayLib/DancingBarsSettings.cpp:157
 #, kde-format
 msgid "Normal bar color:"
-msgstr ""
+msgstr "ნორმალური ზოლის ფერი:"
 
 #: SensorDisplayLib/DancingBarsSettings.cpp:164
 #, kde-format
 msgid "Out-of-range color:"
-msgstr ""
+msgstr "გადაცილებული ფერი:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
 #. i18n: ectx: property (text), widget (QLabel, textLabel3)
@@ -553,7 +562,7 @@ msgstr "ჩასწორება..."
 #: SensorDisplayLib/DancingBarsSettings.cpp:205
 #, kde-format
 msgid "Push this button to configure the label."
-msgstr ""
+msgstr "ჭდის მოსარგებად ამ ღილაკს დააწექით."
 
 #: SensorDisplayLib/DancingBarsSettings.cpp:208
 #: SensorDisplayLib/FancyPlotterSettings.cpp:225
@@ -565,22 +574,22 @@ msgstr "წაშლა"
 #: SensorDisplayLib/FancyPlotterSettings.cpp:226
 #, kde-format
 msgid "Push this button to delete the sensor."
-msgstr ""
+msgstr "სენსორის წასაშლელად ამ ღილაკს დააწექით."
 
 #: SensorDisplayLib/DancingBarsSettings.cpp:361
 #, kde-format
 msgid "Label of Bar Graph"
-msgstr ""
+msgstr "ზოლის გრაფიკის ჭდე"
 
 #: SensorDisplayLib/DancingBarsSettings.cpp:362
 #, kde-format
 msgid "Enter new label:"
-msgstr ""
+msgstr "შეიყვანეთ ახალი ჭდე:"
 
 #: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
 #, kde-format
 msgid "Drop Sensor Here"
-msgstr ""
+msgstr "დააგდეთ სენსორი აქ"
 
 #: SensorDisplayLib/DummyDisplay.cpp:33
 #, kde-format
@@ -671,7 +680,7 @@ msgstr "%1"
 #: SensorDisplayLib/FancyPlotterSettings.cpp:46
 #, kde-format
 msgid "Plotter Settings"
-msgstr ""
+msgstr "პლოტერის მორგება"
 
 #: SensorDisplayLib/FancyPlotterSettings.cpp:62
 #, kde-format
@@ -704,12 +713,12 @@ msgstr "გადიდება"
 #: SensorDisplayLib/FancyPlotterSettings.cpp:86
 #, kde-format
 msgid "Vertical scale"
-msgstr ""
+msgstr "ვერტიკალური მასშტაბი"
 
 #: SensorDisplayLib/FancyPlotterSettings.cpp:91
 #, kde-format
 msgid "Specify graph range:"
-msgstr ""
+msgstr "შეიყვანეთ გრაფიკის დიაპაზოი:"
 
 #: SensorDisplayLib/FancyPlotterSettings.cpp:92
 #, kde-format
@@ -722,7 +731,7 @@ msgstr ""
 #: SensorDisplayLib/FancyPlotterSettings.cpp:102
 #, kde-format
 msgid "Enter the minimum value for the display here."
-msgstr ""
+msgstr "შეიყვანეთ საჩვენებელი მინიმალური მნიშვნელობა."
 
 #: SensorDisplayLib/FancyPlotterSettings.cpp:113
 #, kde-format
@@ -735,12 +744,12 @@ msgstr ""
 #: SensorDisplayLib/FancyPlotterSettings.cpp:120
 #, kde-format
 msgid "Horizontal scale"
-msgstr ""
+msgstr "ჰორიზონტალური მასშტაბი"
 
 #: SensorDisplayLib/FancyPlotterSettings.cpp:128
 #, kde-format
 msgid "Pixels per time period:"
-msgstr ""
+msgstr "პიქსელი დროის შუალედში:"
 
 #: SensorDisplayLib/FancyPlotterSettings.cpp:135
 #, kde-format
@@ -755,7 +764,7 @@ msgstr "ხაზები"
 #: SensorDisplayLib/FancyPlotterSettings.cpp:144
 #, kde-format
 msgid "Vertical lines"
-msgstr ""
+msgstr "ვერტიკალური ხაზები"
 
 #: SensorDisplayLib/FancyPlotterSettings.cpp:145
 #, kde-format
@@ -770,17 +779,17 @@ msgstr "მანძილი:"
 #: SensorDisplayLib/FancyPlotterSettings.cpp:155
 #, kde-format
 msgid "Enter the distance between two vertical lines here."
-msgstr ""
+msgstr "შეიყვანეთ დაშორება ორ ვერტიკალურ ხაზს შორის."
 
 #: SensorDisplayLib/FancyPlotterSettings.cpp:159
 #, kde-format
 msgid "Vertical lines scroll"
-msgstr ""
+msgstr "ვერტიკალური ხაზების ჩოჩია"
 
 #: SensorDisplayLib/FancyPlotterSettings.cpp:162
 #, kde-format
 msgid "Horizontal lines"
-msgstr ""
+msgstr "ჰორიზონტალური ხაზები"
 
 #: SensorDisplayLib/FancyPlotterSettings.cpp:163
 #, kde-format
@@ -795,7 +804,7 @@ msgstr "ტექსტი"
 #: SensorDisplayLib/FancyPlotterSettings.cpp:173
 #, kde-format
 msgid "Show axis labels"
-msgstr ""
+msgstr "ღერძის ჭდეების ჩვენება"
 
 #: SensorDisplayLib/FancyPlotterSettings.cpp:174
 #, kde-format
@@ -807,7 +816,7 @@ msgstr ""
 #: SensorDisplayLib/FancyPlotterSettings.cpp:217
 #, kde-format
 msgid "Set Color..."
-msgstr ""
+msgstr "ფერის დაყენება...."
 
 #: SensorDisplayLib/FancyPlotterSettings.cpp:218
 #, kde-format
@@ -877,12 +886,12 @@ msgstr "გიგაბაიტი"
 #: SensorDisplayLib/ListView.cpp:180
 #, kde-format
 msgid "Terabytes"
-msgstr ""
+msgstr "ტერაბაიტი"
 
 #: SensorDisplayLib/ListViewSettings.cpp:30
 #, kde-format
 msgid "List View Settings"
-msgstr ""
+msgstr "ხედის პარამეტრების სია"
 
 #. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
 #: SensorDisplayLib/ListViewSettingsWidget.ui:47
@@ -896,7 +905,7 @@ msgstr "ფერები"
 #: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
 #, kde-format
 msgid "Text color:"
-msgstr ""
+msgstr "ტექსტის ფერი:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
 #: SensorDisplayLib/ListViewSettingsWidget.ui:92
@@ -907,13 +916,13 @@ msgstr "ბადის ფერი:"
 #: SensorDisplayLib/LogFile.cpp:93
 #, kde-format
 msgid "File logging settings"
-msgstr ""
+msgstr "ჟურნალის ფაილის მორგება"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
 #: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
 #, kde-format
 msgid "Foreground color:"
-msgstr ""
+msgstr "წინა პლანის ფერი:"
 
 #. i18n: ectx: attribute (title), widget (QWidget, textTab)
 #: SensorDisplayLib/LogFileSettings.ui:21
@@ -974,51 +983,51 @@ msgstr ""
 #: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
 #, kde-format
 msgid "&Show unit"
-msgstr ""
+msgstr "&ერთეულის ჩვენება"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
 #: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
 #: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
 #, kde-format
 msgid "&Enable alarm"
-msgstr ""
+msgstr "&განგაშის ჩვენება"
 
 #. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
 #: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
 #, kde-format
 msgid "&Lower limit:"
-msgstr ""
+msgstr "&ქვედა ზღვარი:"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
 #: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
 #: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
 #, kde-format
 msgid "E&nable alarm"
-msgstr ""
+msgstr "&განგაშის ჩართვა"
 
 #. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
 #: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
 #, kde-format
 msgid "&Upper limit:"
-msgstr ""
+msgstr "&ზედა ზღვარი:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
 #: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
 #, kde-format
 msgid "Nor&mal digit color:"
-msgstr ""
+msgstr "&ნორმალური ციფრის ფერი:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
 #: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
 #, kde-format
 msgid "Alarm di&git color:"
-msgstr ""
+msgstr "განგაშის &ციფრის ფერი:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
 #: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
 #, kde-format
 msgid "Bac&kground color:"
-msgstr ""
+msgstr "&ფონის ფერი:"
 
 #: SensorDisplayLib/SensorDisplay.cpp:115 SensorDisplayLib/SensorLogger.cpp:587
 #, kde-format
@@ -1028,7 +1037,7 @@ msgstr "&თვისებები"
 #: SensorDisplayLib/SensorDisplay.cpp:120 SensorDisplayLib/SensorLogger.cpp:592
 #, kde-format
 msgid "&Remove Display"
-msgstr ""
+msgstr "&ეკრანის წაშლა"
 
 #: SensorDisplayLib/SensorDisplay.cpp:187
 #, kde-format
@@ -1049,13 +1058,13 @@ msgstr "ჩაწერა"
 #, kde-format
 msgctxt "@title:column"
 msgid "Timer Interval"
-msgstr ""
+msgstr "ტაიმერის ინტერვალი"
 
 #: SensorDisplayLib/SensorLogger.cpp:136
 #, kde-format
 msgctxt "@title:column"
 msgid "Sensor Name"
-msgstr ""
+msgstr "სენსორის სახელი"
 
 #: SensorDisplayLib/SensorLogger.cpp:138
 #, kde-format
@@ -1073,27 +1082,27 @@ msgstr "ჟურნალის ფაილი"
 #: SensorDisplayLib/SensorLoggerDlg.cpp:30
 #, kde-format
 msgid "Sensor Logger"
-msgstr ""
+msgstr "სენსორის ჟურნალი"
 
 #: SensorDisplayLib/SensorLogger.cpp:597
 #, kde-format
 msgid "&Remove Sensor"
-msgstr ""
+msgstr "&სენსორის წაშლა"
 
 #: SensorDisplayLib/SensorLogger.cpp:602
 #, kde-format
 msgid "&Edit Sensor..."
-msgstr ""
+msgstr "&სენსორის ჩასწორება..."
 
 #: SensorDisplayLib/SensorLogger.cpp:610
 #, kde-format
 msgid "St&op Logging"
-msgstr ""
+msgstr "ჟურნალის &გაჩერება"
 
 #: SensorDisplayLib/SensorLogger.cpp:613
 #, kde-format
 msgid "S&tart Logging"
-msgstr ""
+msgstr "&ჟურნალის გაშვება"
 
 #. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
 #: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
@@ -1106,7 +1115,7 @@ msgstr "ფაილი"
 #, kde-format
 msgctxt "@title:group"
 msgid "Timer Interval"
-msgstr ""
+msgstr "ტაიმერის ინტერვალი"
 
 #. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
 #: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
@@ -1117,13 +1126,13 @@ msgstr " წმ"
 #: SensorDisplayLib/SensorLoggerSettings.cpp:30
 #, kde-format
 msgid "Sensor Logger Settings"
-msgstr ""
+msgstr "სენსორის ჟურნალის მორგება"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel3)
 #: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
 #, kde-format
 msgid "Alarm color:"
-msgstr ""
+msgstr "განგაშის ფერი:"
 
 #: SensorDisplayLib/SensorModel.cpp:161
 #, kde-format
@@ -1160,13 +1169,13 @@ msgstr "სისტემის დატვირთვა"
 #: SystemLoad2.sgrd:5
 #, kde-format
 msgid "CPU History"
-msgstr ""
+msgstr "CPU -ის ისტორია"
 
 #. i18n: tag display attribute title
 #: SystemLoad2.sgrd:8
 #, kde-format
 msgid "Memory and Swap History"
-msgstr ""
+msgstr "მეხსიერებისა და სვოპის ისტორია"
 
 #. i18n: tag beam attribute summationName
 #: SystemLoad2.sgrd:9
@@ -1184,7 +1193,7 @@ msgstr "სვაპი"
 #: SystemLoad2.sgrd:12
 #, kde-format
 msgid "Network History"
-msgstr ""
+msgstr "ქსელის ისტორია"
 
 #. i18n: tag beam attribute summationName
 #: SystemLoad2.sgrd:13
@@ -1201,12 +1210,12 @@ msgstr "გაგზავნა"
 #: WorkSheet.cpp:87
 #, kde-format
 msgid "Cannot open the file %1."
-msgstr ""
+msgstr "ფაილის (\"%1\") გახსნის შეცდომა."
 
 #: WorkSheet.cpp:95
 #, kde-format
 msgid "The file %1 does not contain valid XML."
-msgstr ""
+msgstr "ფაილი \"%1\" სწორ XML-ს არ შეიცავს."
 
 #: WorkSheet.cpp:102
 #, kde-format
@@ -1218,12 +1227,12 @@ msgstr ""
 #: WorkSheet.cpp:114
 #, kde-format
 msgid "The file %1 has an invalid worksheet size."
-msgstr ""
+msgstr "ფაილუს %1 სამუშაო ფურცლის ზომა არასწორია."
 
 #: WorkSheet.cpp:239
 #, kde-format
 msgid "Cannot save file %1"
-msgstr ""
+msgstr "ფაილის შენახვის შეცდომა: %1"
 
 #: WorkSheet.cpp:287
 #, kde-format
@@ -1233,37 +1242,37 @@ msgstr ""
 #: WorkSheet.cpp:387
 #, kde-format
 msgid "Select Display Type"
-msgstr ""
+msgstr "აირჩიეთ ეკრანის ტიპი"
 
 #: WorkSheet.cpp:388
 #, kde-format
 msgid "&Line graph"
-msgstr ""
+msgstr "&ხაზი გრაფიკი"
 
 #: WorkSheet.cpp:389
 #, kde-format
 msgid "&Digital display"
-msgstr ""
+msgstr "&ციფრული ჩვენება"
 
 #: WorkSheet.cpp:390
 #, kde-format
 msgid "&Bar graph"
-msgstr ""
+msgstr "&ზოლის გრაფიკი"
 
 #: WorkSheet.cpp:391
 #, kde-format
 msgid "Log to a &file"
-msgstr ""
+msgstr "&ჟურნალის ფაილში ჩაწერა"
 
 #: WorkSheet.cpp:547
 #, kde-format
 msgid "Remove this display?"
-msgstr ""
+msgstr "წავშალო ეკრანი?"
 
 #: WorkSheet.cpp:548
 #, kde-format
 msgid "Remove Display"
-msgstr ""
+msgstr "ეკრანის წაშლა"
 
 #: WorkSheet.cpp:589
 #, kde-format
@@ -1273,7 +1282,7 @@ msgstr "Dummy"
 #: WorkSheetSettings.cpp:43
 #, kde-format
 msgid "Tab Properties"
-msgstr ""
+msgstr "ჩანართის თვისებები"
 
 #: WorkSheetSettings.cpp:72
 #, kde-format
@@ -1293,12 +1302,12 @@ msgstr "სვეტი:"
 #: WorkSheetSettings.cpp:100
 #, kde-format
 msgid "Enter the number of rows the sheet should have."
-msgstr ""
+msgstr "მწკრივების რაოდენობა, რომელიც ფურცელს უნდა ჰქონდეს."
 
 #: WorkSheetSettings.cpp:101
 #, kde-format
 msgid "Enter the number of columns the sheet should have."
-msgstr ""
+msgstr "სვეტების რაოდენობა, რომელიც ფურცელს უნდა ჰქონდეს."
 
 #: WorkSheetSettings.cpp:103
 #, kde-format
@@ -1313,12 +1322,12 @@ msgstr ""
 #: WorkSheetSettings.cpp:117
 #, kde-format
 msgid "Enter the title of the worksheet here."
-msgstr ""
+msgstr "შეიყვანეთ სამუშაო ფურცლის სათაური."
 
 #: Workspace.cpp:111
 #, kde-format
 msgid "Sheet %1"
-msgstr ""
+msgstr "ფურცელი %1"
 
 #: Workspace.cpp:170
 #, kde-format
@@ -1326,26 +1335,28 @@ msgid ""
 "The tab '%1' contains unsaved data.\n"
 "Do you want to save the tab?"
 msgstr ""
+"ჩანართი '%1' შეუნახავ მონაცემებს შეიცავს.\n"
+"გნებავთ, შეინახოთ ეს ჩანართი?"
 
 #: Workspace.cpp:186
 #, kde-format
 msgid "Select Tab File to Import"
-msgstr ""
+msgstr "აირჩიეთ შემოსატანი ჩანართის ფაილი"
 
 #: Workspace.cpp:208 Workspace.cpp:228
 #, kde-format
 msgid "You do not have a tab that could be saved."
-msgstr ""
+msgstr "შესანახი ჩანართი არ გაქვთ."
 
 #: Workspace.cpp:235
 #, kde-format
 msgid "Export Tab"
-msgstr ""
+msgstr "ჩანართის გატანა"
 
 #: Workspace.cpp:255
 #, kde-format
 msgid "There are no tabs that could be deleted."
-msgstr ""
+msgstr "წასაშლელი ჩანართი არ გაქვთ."
 
 #: Workspace.cpp:299
 #, kde-kuit-format
@@ -1358,4 +1369,4 @@ msgstr ""
 #: Workspace.cpp:304
 #, kde-format
 msgid "Upload custom System Monitor tab"
-msgstr ""
+msgstr "სისტემის მონიტორის საკუთარი ჩანართის ატვირთვა"
