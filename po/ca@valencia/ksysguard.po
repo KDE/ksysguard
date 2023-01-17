@@ -1394,7 +1394,7 @@ msgstr ""
 #: Workspace.cpp:186
 #, kde-format
 msgid "Select Tab File to Import"
-msgstr "Seleccioneu el fitxer de pestanya que s'ha d'importar"
+msgstr "Seleccioneu un fitxer de pestanya que s'ha d'importar"
 
 #: Workspace.cpp:208 Workspace.cpp:228
 #, kde-format
