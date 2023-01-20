@@ -8,23 +8,23 @@ include_directories(
 add_definitions(-DTRANSLATION_DOMAIN=\"ksysguard\")
 
 set(libsensordisplays_SRCS
-   	SensorDisplayLib/SensorDisplay.cpp
-   	SensorDisplayLib/BarGraph.cpp
-   	SensorDisplayLib/DancingBars.cpp
-   	SensorDisplayLib/DancingBarsSettings.cpp
-   	SensorDisplayLib/DummyDisplay.cpp
-   	SensorDisplayLib/FancyPlotter.cpp
-   	SensorDisplayLib/FancyPlotterSettings.cpp
-   	SensorDisplayLib/ListView.cpp
-   	SensorDisplayLib/LogFile.cpp
-   	SensorDisplayLib/MultiMeter.cpp
-   	SensorDisplayLib/MultiMeterSettings.cpp
-   	SensorDisplayLib/ProcessController.cpp
-   	SensorDisplayLib/SensorLogger.cpp
-   	SensorDisplayLib/SensorLoggerDlg.cpp
-   	SensorDisplayLib/SensorLoggerSettings.cpp
-   	SensorDisplayLib/SensorModel.cpp
-   	SensorDisplayLib/ListViewSettings.cpp
+   	SensorDisplayLib/SensorDisplay.cpp SensorDisplayLib/SensorDisplay.h
+   	SensorDisplayLib/BarGraph.cpp SensorDisplayLib/BarGraph.h
+   	SensorDisplayLib/DancingBars.cpp SensorDisplayLib/DancingBars.h
+   	SensorDisplayLib/DancingBarsSettings.cpp SensorDisplayLib/DancingBarsSettings.h
+   	SensorDisplayLib/DummyDisplay.cpp SensorDisplayLib/DummyDisplay.h
+   	SensorDisplayLib/FancyPlotter.cpp SensorDisplayLib/FancyPlotter.h
+   	SensorDisplayLib/FancyPlotterSettings.cpp SensorDisplayLib/FancyPlotterSettings.h
+   	SensorDisplayLib/ListView.cpp SensorDisplayLib/ListView.h
+   	SensorDisplayLib/LogFile.cpp SensorDisplayLib/LogFile.h
+   	SensorDisplayLib/MultiMeter.cpp SensorDisplayLib/MultiMeter.h
+   	SensorDisplayLib/MultiMeterSettings.cpp SensorDisplayLib/MultiMeterSettings.h
+   	SensorDisplayLib/ProcessController.cpp SensorDisplayLib/ProcessController.h
+   	SensorDisplayLib/SensorLogger.cpp SensorDisplayLib/SensorLogger.h
+   	SensorDisplayLib/SensorLoggerDlg.cpp SensorDisplayLib/SensorLoggerDlg.h
+   	SensorDisplayLib/SensorLoggerSettings.cpp SensorDisplayLib/SensorLoggerSettings.h
+   	SensorDisplayLib/SensorModel.cpp SensorDisplayLib/SensorModel.h
+   	SensorDisplayLib/ListViewSettings.cpp SensorDisplayLib/ListViewSettings.h
 #   	SensorDisplayLib/modeltest.cpp
 	)
 
@@ -37,13 +37,13 @@ ki18n_wrap_ui( libsensordisplays_SRCS
 )
 
 set(ksysguard_SRCS ${libsensordisplays_SRCS}
-   SensorBrowser.cpp
-   WorkSheet.cpp
-   WorkSheetSettings.cpp
-   Workspace.cpp
-   HostConnector.cpp
-   StyleEngine.cpp
-   ksysguard.cpp )
+   SensorBrowser.cpp SensorBrowser.h
+   WorkSheet.cpp WorkSheet.h
+   WorkSheetSettings.cpp WorkSheetSettings.h
+   Workspace.cpp Workspace.h
+   HostConnector.cpp HostConnector.h
+   StyleEngine.cpp StyleEngine.h
+   ksysguard.cpp ksysguard.h )
 
 add_executable(ksysguard ${ksysguard_SRCS})
 target_compile_definitions(ksysguard PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
