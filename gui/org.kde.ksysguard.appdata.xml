@@ -20,6 +20,7 @@
   <name xml:lang="hu">KSysGuard</name>
   <name xml:lang="ia">KSysGuard</name>
   <name xml:lang="id">KSysGuard</name>
+  <name xml:lang="is">KDE kerfisvörður</name>
   <name xml:lang="it">Monitor di sistema</name>
   <name xml:lang="ka">KSysGuard</name>
   <name xml:lang="ko">KSysguard</name>
@@ -62,6 +63,7 @@
   <summary xml:lang="hu">Monitorozza a futó folyamatokat és a rendszer teljesítményét</summary>
   <summary xml:lang="ia">Supervision (monitor) de processos executante e  comportamento de systema</summary>
   <summary xml:lang="id">Pemantau proses yang berjalan dan kinerja sistem</summary>
+  <summary xml:lang="is">Vaktar afköst og ferli kerfisins</summary>
   <summary xml:lang="it">Controlla i processi in esecuzione e le prestazioni del sistema</summary>
   <summary xml:lang="ka">გაშვებული პროცესებისა და სისტემის წარმადობის მონიტორინგი</summary>
   <summary xml:lang="ko">실행 중인 프로세스와 시스템 성능 모니터링</summary>
