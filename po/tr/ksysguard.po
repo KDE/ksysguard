@@ -10,13 +10,13 @@
 # Serdar Soytetir <tulliana@gmail.com>, 2008, 2009, 2012.
 # Onur Küçük <onur@pardus.org.tr>, 2010, 2013.
 # Volkan Gezer <volkangezer@gmail.com>, 2013, 2014, 2017.
-# Emir SARI <emir_sari@icloud.com>, 2022.
+# Emir SARI <emir_sari@icloud.com>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: ksysguard\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-03-02 00:46+0000\n"
-"PO-Revision-Date: 2022-12-17 18:55+0300\n"
+"PO-Revision-Date: 2023-02-07 19:14+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 22.12.0\n"
+"X-Generator: Lokalize 22.12.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -656,49 +656,49 @@ msgstr "%1/%2"
 #, kde-format
 msgctxt "units"
 msgid "%1 TiB"
-msgstr "%1 TB"
+msgstr "%1 TiB"
 
 #: SensorDisplayLib/FancyPlotter.cpp:652
 #, kde-format
 msgctxt "units"
 msgid "%1 GiB"
-msgstr "%1 GB"
+msgstr "%1 GiB"
 
 #: SensorDisplayLib/FancyPlotter.cpp:655
 #, kde-format
 msgctxt "units"
 msgid "%1 MiB"
-msgstr "%1 MB"
+msgstr "%1 MiB"
 
 #: SensorDisplayLib/FancyPlotter.cpp:658
 #, kde-format
 msgctxt "units"
 msgid "%1 KiB"
-msgstr "%1 KB"
+msgstr "%1 KiB"
 
 #: SensorDisplayLib/FancyPlotter.cpp:663
 #, kde-format
 msgctxt "units"
 msgid "%1 TiB/s"
-msgstr "%1 TB/sn"
+msgstr "%1 TiB/sn"
 
 #: SensorDisplayLib/FancyPlotter.cpp:666
 #, kde-format
 msgctxt "units"
 msgid "%1 GiB/s"
-msgstr "%1 GB/sn"
+msgstr "%1 GiB/sn"
 
 #: SensorDisplayLib/FancyPlotter.cpp:669
 #, kde-format
 msgctxt "units"
 msgid "%1 MiB/s"
-msgstr "%1 MB/sn"
+msgstr "%1 MiB/sn"
 
 #: SensorDisplayLib/FancyPlotter.cpp:672
 #, kde-format
 msgctxt "units"
 msgid "%1 KiB/s"
-msgstr "%1 KB/sn"
+msgstr "%1 KiB/sn"
 
 #: SensorDisplayLib/FancyPlotter.cpp:678
 #, kde-format
@@ -1169,7 +1169,7 @@ msgstr "Sayaç Aralığı"
 #: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
 #, kde-format
 msgid " sec"
-msgstr " sn"
+msgstr " san"
 
 #: SensorDisplayLib/SensorLoggerSettings.cpp:30
 #, kde-format
