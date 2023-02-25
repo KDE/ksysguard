@@ -1,7 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN"
  "dtd/kdedbx45.dtd" [
-  <!ENTITY kappname "&ksysguard;">
   <!ENTITY % addindex "IGNORE">
   <!ENTITY % Brazilian-Portuguese "INCLUDE"
 > <!-- change language only here -->
@@ -53,9 +52,9 @@
 >&FDLNotice;</legalnotice>
 
 <date
->27/07/2015</date>
+>31/01/2016</date>
 <releaseinfo
->&plasma; 5.4</releaseinfo>
+>&plasma; 5.9</releaseinfo>
 
 <abstract
 ><para
@@ -405,23 +404,7 @@
 > no menu <guimenu
 >Ver</guimenu
 >. Na janela de aparência, você poderá definir o tamanho e o intervalo de atualização.</para>
-<!-- TimerSettings.cc not build in 4.4
-This update interval is
-used by all displays of the worksheet, which has the <guilabel
->use update
-interval of worksheet</guilabel
-> set in its timer configuration dialog.</para>
--->
-<!--not in 4.4
-<para
->The entry <guimenuitem
->Configure Style</guimenuitem
-> of the
-<guimenu
->Settings</guimenu
-> menu gives you the possibility to configure the
-global style attributes and apply them to the current active worksheet.</para>
--->
+
 <para
 >Mostradores podem ser configurados clicando com o botão direito do mouse neles. Um menu instantâneo aparece onde você pode seleciona se deseja mudar as propriedades do mostrador ou removê-lo da folha de trabalho.</para>
 
@@ -488,6 +471,11 @@ global style attributes and apply them to the current active worksheet.</para>
 <sect2 id="connectingtootherhosts">
 <title
 >Conectando a outras máquinas</title>
+<!--FIXME https://techbase.kde.org/Development/Tutorials/Sensors -->
+<para
+>Note que o item de menu <guimenuitem
+>Monitorar máquina remota</guimenuitem
+> está disponível somente em abas personalizadas.</para>
 
 <para
 >Para conectar uma nova máquina use o <guimenuitem
@@ -502,13 +490,8 @@ global style attributes and apply them to the current active worksheet.</para>
 >OK</guibutton
 > para estabelecer a conexão. Em poucos instantes a nova máquina aparecerá no navegador de sensores e você poderá navegar pela lista de sensores.</para>
 
-<!--para
->To disconnect from a host, select the host in the sensor browser and
-choose <guimenuitem
->???</guimenuitem
-> from the
-context menu. If you still have sensors in use, the display
-frames will be grayed and the displays won't update any longer.</para-->
+<para
+>Para desconectar de uma máquina, você deve desligar e reiniciar o &ksysguard; novamente.</para>
 
 <para
 >Para estabelecer uma conexão, um programa chamado <application
@@ -734,8 +717,7 @@ frames will be grayed and the displays won't update any longer.</para>
 >Tradução de Marcus Gama <email
 >marcus.gama@gmail.com</email
 ></para
-> 
-&underFDL; &underGPL; </chapter>
+> &underFDL; &underGPL; </chapter>
 
 </book>
 <!--
