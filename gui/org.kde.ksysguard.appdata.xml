@@ -3,6 +3,7 @@
   <name>KSysGuard</name>
   <name xml:lang="ar">حارس نظامك</name>
   <name xml:lang="az">KSysGuard</name>
+  <name xml:lang="be">KSysGuard</name>
   <name xml:lang="bg">KSysGuard</name>
   <name xml:lang="ca">KSysGuard</name>
   <name xml:lang="ca-valencia">KSysGuard</name>
@@ -46,6 +47,7 @@
   <summary>Monitor running processes and system performance</summary>
   <summary xml:lang="ar">راقِب العمليات الجارية وأداء النظام</summary>
   <summary xml:lang="az">İşləyən proseslərə və Sistemin işinə nəzarət</summary>
+  <summary xml:lang="be">Назіранне за запушчанымі працэсамі і прадукцыйнасцю сістэмы</summary>
   <summary xml:lang="bg">Наблюдава протичащите процеси и производителността на системата</summary>
   <summary xml:lang="ca">Controlador de processos en execució i rendiment del sistema</summary>
   <summary xml:lang="ca-valencia">Controlador de processos en execució i rendiment del sistema</summary>
@@ -95,6 +97,7 @@
     <p>System Guard allows you to monitor information and statistics about your system.</p>
     <p xml:lang="ar">يتيح لك «حارس نظامك» مراقبة المعلومات والإحصاءات في نظامك.</p>
     <p xml:lang="az">System Guard, sisteminizlə bağlı məlumatları və statistikanı izləməyə imkan verir.</p>
+    <p xml:lang="be">System Guard дае магчымасць назіраць за звесткамі і статыстыкай вашай сістэмы.</p>
     <p xml:lang="bg">System Guard ви позволява да следите информацията и статистиката за системата.</p>
     <p xml:lang="ca">El System Guard permet controlar la informació i les estadístiques del sistema.</p>
     <p xml:lang="ca-valencia">El System Guard permet controlar la informació i les estadístiques del sistema.</p>
@@ -136,6 +139,7 @@
     <p>In addition to monitoring the local system, it can connect to remote systems running the System Guard Daemon.</p>
     <p xml:lang="ar">يستطيع الحارس (إضافة إلى مراقبة النظام المحلي) الاتصال بالأنظمة البعيدة التي تشغّل «عفريت حارس النظام/System Guard Daemon».</p>
     <p xml:lang="az">Yerli sistemi izləməklə yanaşı, System Guard Xidməti ilə işləyən uzaq sistemlərə də qoşula bilər.</p>
+    <p xml:lang="be">У дадатак да назірання за лакальнай сістэмай, ён можа падлучыцца да адлеглых сістэм, у якіх працуе дэман System Guard.</p>
     <p xml:lang="bg">В допълнение към наблюдението на локалната система, той може да се свърже към отдалечени системи, изпълняващи демона на System Guard.</p>
     <p xml:lang="ca">Addicionalment al monitoratge del sistema local, pot connectar-se amb sistemes remots executant el dimoni del System Guard.</p>
     <p xml:lang="ca-valencia">De manera addicional al monitoratge del sistema local, pot connectar-se amb sistemes remots executant el dimoni del System Guard.</p>
