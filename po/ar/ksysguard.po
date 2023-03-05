@@ -256,12 +256,12 @@ msgstr "التبادل: %1"
 #: ksysguard.cpp:571
 #, kde-format
 msgid "KDE System Monitor"
-msgstr "مرقاب نظام كدي"
+msgstr "مرقاب نظام كِيدِي"
 
 #: ksysguard.cpp:572
 #, kde-format
 msgid "(c) 1996-2016 The KDE System Monitor Developers"
-msgstr "© ١٩٩٦-٢٠١٦ مطوّري «مرقاب نظام كدي»"
+msgstr "© ١٩٩٦-٢٠١٦ مطوّري «مرقاب نظام كِيدِي»"
 
 #: ksysguard.cpp:574
 #, kde-format
@@ -1393,7 +1393,7 @@ msgid ""
 "<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
 "in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
 msgstr ""
-"<para>يمكنك نشر اللسان المخصّص في <link url='%1'>متجر كدي</link> في فئة "
+"<para>يمكنك نشر اللسان المخصّص في <link url='%1'>متجر كِيدِي</link> في فئة "
 "<icode>%2</icode>.</para><para><filename>%3</filename></para>"
 
 #: Workspace.cpp:304
