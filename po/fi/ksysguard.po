@@ -1,0 +1,2055 @@
+# Finnish messages for ksysguard.
+# Copyright © 2002, 2003, 2005, 2006, 2007, 2008, 2010, 2011 This_file_is_part_of_KDE
+# This file is distributed under the same license as the kdebase package.
+# Kim Enkovaara <kim.enkovaara@iki.fi>, 2002, 2003, 2005, 2006.
+# Teemu Rytilahti <teemu.rytilahti@d5k.net>, 2003, 2008.
+# Ilpo Kantonen <ilpo@iki.fi>, 2005.
+# Mikko Ikola <ikola@iki.fi>, 2006.
+# Mikko Piippo <piippo@cc.helsinki.fi>, 2007.
+# Teemu Rytilahti <teemu.rytilahti@kde-fi.org>, 2008.
+# Tommi Nieminen <translator@legisign.org>, 2010, 2017, 2018.
+# Lasse Liehu <lasse.liehu@gmail.com>, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017.
+# Jorma Karvonen <karvonen.jorma@gmail.com>, 2011.
+#
+# KDE Finnish translation sprint participants:
+# Author: Artnay
+# Author: Lliehu
+msgid ""
+msgstr ""
+"Project-Id-Version: ksysguard\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-09-20 01:53+0000\n"
+"PO-Revision-Date: 2018-11-22 16:13+0200\n"
+"Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
+"Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-POT-Import-Date: 2012-12-01 22:22:28+0000\n"
+"X-Generator: Lokalize 2.0\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr ""
+"Kim Enkovaara, Teemu Rytilahti, Ilpo Kantonen, Tapio Kautto, Mikko Ikola, "
+"Mikko Piippo, Tommi Nieminen, Lasse Liehu, Jorma Karvonen"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr ""
+"kim.enkovaara@iki.fi, teemu.rytilahti@d5k.net, ilpo@iki.fi, eleknader@phnet."
+"fi, ikola@iki.fi, mikko.piippo@helsinki.fi, translator@legisign.org, lasse."
+"liehu@gmail.com, karvonen.jorma@gmail.com"
+
+#: HostConnector.cpp:44
+#, kde-format
+msgid "Connect Host"
+msgstr "Yhdistä koneeseen"
+
+#: HostConnector.cpp:57
+#, kde-format
+msgid "Host:"
+msgstr "Konenimi:"
+
+#: HostConnector.cpp:67
+#, kde-format
+msgid "Enter the name of the host you want to connect to."
+msgstr "Anna kone, johon haluat yhdistää."
+
+#: HostConnector.cpp:73
+#, kde-format
+msgid "Connection Type"
+msgstr "Yhteystyyppi"
+
+#: HostConnector.cpp:78
+#, kde-format
+msgid "ssh"
+msgstr "ssh"
+
+#: HostConnector.cpp:81
+#, kde-format
+msgid "Select this to use the secure shell to login to the remote host."
+msgstr ""
+"Valitse tämä kirjautuaksesi turvallisella pääteyhteydellä etäkoneeseen."
+
+#: HostConnector.cpp:84
+#, kde-format
+msgid "rsh"
+msgstr "rsh"
+
+#: HostConnector.cpp:85
+#, kde-format
+msgid "Select this to use the remote shell to login to the remote host."
+msgstr "Valitse tämä kirjautuaksesi pääteyhteydellä etäkoneeseen."
+
+#: HostConnector.cpp:88
+#, kde-format
+msgid "Daemon"
+msgstr "Taustaprosessi"
+
+#: HostConnector.cpp:89
+#, kde-format
+msgid ""
+"Select this if you want to connect to a ksysguard daemon that is running on "
+"the machine you want to connect to, and is listening for client requests."
+msgstr ""
+"Valitse tämä, jos haluat ottaa yhteyden ksysguard-taustaprosessiin, joka on "
+"käynnissä koneella, johon muodostat yhteyden."
+
+#: HostConnector.cpp:92
+#, kde-format
+msgid "Custom command"
+msgstr "Oma komento"
+
+#: HostConnector.cpp:93
+#, kde-format
+msgid ""
+"Select this to use the command you entered below to start ksysguardd on the "
+"remote host."
+msgstr ""
+"Valitse tämä käyttääksesi antamaasi komentoa käynnistämään ksysguardd "
+"etäkoneella."
+
+#: HostConnector.cpp:96
+#, kde-format
+msgid "Port:"
+msgstr "Portti:"
+
+#: HostConnector.cpp:103
+#, kde-format
+msgid ""
+"Enter the port number on which the ksysguard daemon is listening for "
+"connections."
+msgstr ""
+"Anna portin numero, jossa ksysguardd-taustaprosessi kuuntelee yhteyksiä."
+
+#: HostConnector.cpp:106
+#, kde-format
+msgid "e.g.  3112"
+msgstr "esim. 3112"
+
+#: HostConnector.cpp:109
+#, kde-format
+msgid "Command:"
+msgstr "Komento:"
+
+#: HostConnector.cpp:118
+#, kde-format
+msgid "Enter the command that runs ksysguardd on the host you want to monitor."
+msgstr "Anna komento, joka ajaa ksysguardd:n koneella, jota haluat valvoa."
+
+#: HostConnector.cpp:122
+#, kde-format
+msgid "e.g. ssh -l root remote.host.org ksysguardd"
+msgstr "esim. ssh -l root eta.kone.org ksysguardd"
+
+#: ksysguard.cpp:74
+#, kde-format
+msgid "KDE System Monitor"
+msgstr "KDE:n järjestelmänvalvonta"
+
+#: ksysguard.cpp:157
+#, kde-format
+msgid ""
+"This will hide the menu bar completely. You can show it again by typing %1."
+msgstr ""
+"Tämä piilottaa valikkorivin täysin. Saat sen uudelleen näkyviin näppäimellä "
+"%1."
+
+#: ksysguard.cpp:159
+#, kde-format
+msgid "Hide menu bar"
+msgstr "Piilota valikkorivi"
+
+# pmap: =/gen=Järjestelmän valvonnan/
+# pmap: =/elat=Järjestelmän valvonnasta/
+#: ksysguard.cpp:177 ksysguard.cpp:571
+#, kde-format
+msgid "System Monitor"
+msgstr "Järjestelmänvalvonta"
+
+#: ksysguard.cpp:178
+#, kde-format
+msgid "&Refresh Tab"
+msgstr "Päi&vitä välilehti"
+
+#: ksysguard.cpp:179
+#, kde-format
+msgid "&New Tab..."
+msgstr "&Uusi välilehti"
+
+#: ksysguard.cpp:180
+#, kde-format
+msgid "Import Tab Fr&om File..."
+msgstr "Tuo välilehti &tiedostosta…"
+
+#: ksysguard.cpp:181
+#, kde-format
+msgid "Save Tab &As..."
+msgstr "Tallenna välilehti &nimellä…"
+
+#: ksysguard.cpp:182
+#, kde-format
+msgid "&Close Tab"
+msgstr "&Sulje välilehti"
+
+#: ksysguard.cpp:183
+#, kde-format
+msgid "Monitor &Remote Machine..."
+msgstr "Valvo etä&konetta…"
+
+#: ksysguard.cpp:184
+#, kde-format
+msgid "&Download New Tabs..."
+msgstr "&Lataa uusia välilehtiä…"
+
+#: ksysguard.cpp:185
+#, kde-format
+msgid "&Upload Current Tab..."
+msgstr "L&ähetä nykyinen välilehti…"
+
+#: ksysguard.cpp:187
+#, kde-format
+msgid "Tab &Properties"
+msgstr "&Välilehden ominaisuudet"
+
+#: ksysguard.cpp:384
+#, kde-format
+msgid "1 process"
+msgid_plural "%1 processes"
+msgstr[0] "1 prosessi"
+msgstr[1] "%1 prosessia"
+
+#: ksysguard.cpp:465
+#, kde-format
+msgid "CPU: %1%"
+msgstr "Suoritin: %1 %"
+
+#: ksysguard.cpp:465
+#, kde-format
+msgctxt "This is the shorter version of CPU: %1%"
+msgid "%1%"
+msgstr "%1 %"
+
+#: ksysguard.cpp:484
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Memory: %1 / %2"
+msgstr "Muisti: %1 / %2"
+
+#: ksysguard.cpp:486
+#, kde-format
+msgctxt ""
+"Arguments are formatted byte sizes (used/total) This should be a shorter "
+"version of the previous Memory: %1 / %2"
+msgid "Mem: %1 / %2"
+msgstr "Muisti: %1 / %2"
+
+#: ksysguard.cpp:488
+#, kde-format
+msgctxt ""
+"Arguments is formatted byte sizes (used) This should be a shorter version of "
+"the previous Mem: %1 / %2"
+msgid "Mem: %1"
+msgstr "Muisti: %1"
+
+#: ksysguard.cpp:516
+#, kde-format
+msgid " No swap space available "
+msgstr "Sivutustilaa ei ole käytettävissä"
+
+#: ksysguard.cpp:520
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Swap: %1 / %2"
+msgstr "Sivutus: %1 / %2"
+
+#: ksysguard.cpp:522
+#, kde-format
+msgctxt "Arguments is formatted byte sizes (used)"
+msgid "Swap: %1"
+msgstr "Sivutus: %1"
+
+#: ksysguard.cpp:573
+#, kde-format
+msgid "(c) 1996-2016 The KDE System Monitor Developers"
+msgstr "© 1996–2016 KDE-järjestelmävalvonnan kehittäjät"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "John Tapsell"
+msgstr "John Tapsell"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Current Maintainer"
+msgstr "Nykyinen ylläpitäjä"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Chris Schlaeger"
+msgstr "Chris Schlaeger"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Previous Maintainer"
+msgstr "Edellinen ylläpitäjä"
+
+#: ksysguard.cpp:577
+#, kde-format
+msgid "Greg Martyn"
+msgstr "Greg Martyn"
+
+#: ksysguard.cpp:578
+#, kde-format
+msgid "Tobias Koenig"
+msgstr "Tobias Koenig"
+
+#: ksysguard.cpp:579
+#, kde-format
+msgid "Nicolas Leclercq"
+msgstr "Nicolas Leclercq"
+
+#: ksysguard.cpp:580
+#, kde-format
+msgid "Alex Sanda"
+msgstr "Alex Sanda"
+
+#: ksysguard.cpp:581
+#, kde-format
+msgid "Bernd Johannes Wuebben"
+msgstr "Bernd Johannes Wuebben"
+
+#: ksysguard.cpp:582
+#, kde-format
+msgid "Ralf Mueller"
+msgstr "Ralf Mueller"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid "Hamish Rodda"
+msgstr "Hamish Rodda"
+
+#: ksysguard.cpp:584
+#, kde-format
+msgid "Torsten Kasch"
+msgstr "Torsten Kasch"
+
+#: ksysguard.cpp:584
+#, kde-format
+msgid ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+msgstr ""
+"Solaris-tuki\n"
+"Wiliam LeFabvren ”top”-ohjelman sunos5-moduulista (luvalla) otetut osat."
+
+#: ksysguard.cpp:593
+#, kde-format
+msgid "Optional worksheet files to load"
+msgstr "Valinnaiset haettavat työtilatiedostot"
+
+#. i18n: ectx: Menu (file)
+#: ksysguardui.rc:5
+#, kde-format
+msgid "&File"
+msgstr "&Tiedosto"
+
+#. i18n: ectx: Menu (view)
+#: ksysguardui.rc:15
+#, kde-format
+msgid "&View"
+msgstr "&Näkymä"
+
+#. i18n: ectx: Menu (settings)
+#: ksysguardui.rc:19
+#, kde-format
+msgid "&Settings"
+msgstr "&Asetukset"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ksysguardui.rc:22
+#, kde-format
+msgid "Main Toolbar"
+msgstr "Päätyökalurivi"
+
+#. i18n: tag WorkSheet attribute title
+#. i18n: tag display attribute title
+#: ProcessTable.sgrd:3 ProcessTable.sgrd:5
+#, kde-format
+msgid "Process Table"
+msgstr "Prosessitaulu"
+
+#: SensorBrowser.cpp:113
+#, kde-format
+msgid "Sensor Browser"
+msgstr "Anturiselain"
+
+#: SensorBrowser.cpp:473
+#, kde-format
+msgid "Drag sensors to empty cells of a worksheet "
+msgstr "Vedä antureita työtilan tyhjiin soluihin "
+
+#: SensorBrowser.cpp:474
+#, kde-format
+msgid ""
+"The sensor browser lists the connected hosts and the sensors that they "
+"provide. Click and drag sensors into drop zones of a worksheet. A display "
+"will appear that visualizes the values provided by the sensor. Some sensor "
+"displays can display values of multiple sensors. Simply drag other sensors "
+"on to the display to add more sensors."
+msgstr ""
+"Anturiselain luettelee yhdistetyistä tietokoneista ja niiden tarjoamat "
+"anturit. Valitse, vedä ja pudota haluamasi anturit työtilaan. Anturinäytön "
+"arvot näytetään määrittämälläsi tavalla. Jotkin näytöt pystyvät näyttämään "
+"usean anturin tiedot yhtäaikaisesti: näihin näyttöihin voi liittää uusia "
+"antureita vetämällä ja pudottamalla."
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:280
+#, kde-format
+msgid "OK"
+msgstr "OK"
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:280
+#: SensorDisplayLib/FancyPlotter.cpp:544 SensorDisplayLib/FancyPlotter.cpp:623
+#, kde-format
+msgid "Error"
+msgstr "Virhe"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:42
+#, kde-format
+msgid "Edit BarGraph Preferences"
+msgstr "Muokkaa palkkikuvaimien asetuksia"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:51
+#, kde-format
+msgid "Range"
+msgstr "Alue"
+
+#. i18n: ectx: property (title), widget (QGroupBox, titleFrame)
+#: SensorDisplayLib/DancingBarsSettings.cpp:55
+#: SensorDisplayLib/ListViewSettingsWidget.ui:17
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:17 WorkSheetSettings.cpp:61
+#, kde-format
+msgid "Title"
+msgstr "Otsikko"
+
+#. i18n: ectx: property (whatsThis), widget (QLineEdit, m_title)
+#: SensorDisplayLib/DancingBarsSettings.cpp:60
+#: SensorDisplayLib/FancyPlotterSettings.cpp:70
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
+#, kde-format
+msgid "Enter the title of the display here."
+msgstr "Kirjoita näytön nimi tähän."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:65
+#, kde-format
+msgid "Display Range"
+msgstr "Näyttöalue"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:70
+#: SensorDisplayLib/FancyPlotterSettings.cpp:96
+#, kde-format
+msgid "Minimum value:"
+msgstr "Vähimmäisarvo:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:78
+#, kde-format
+msgid ""
+"Enter the minimum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Kirjoita tähän näytön vähimmäisarvo. Mikäli kumpikin arvo ovat 0, alue "
+"tunnistetaan automaattisesti."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:82
+#: SensorDisplayLib/FancyPlotterSettings.cpp:107
+#, kde-format
+msgid "Maximum value:"
+msgstr "Enimmäisarvo:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:90
+#, kde-format
+msgid ""
+"Enter the maximum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Kirjoita tähän näytön enimmäisarvo. Mikäli kumpikin arvo on 0, alue "
+"tunnistetaan automaattisesti."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:100
+#, kde-format
+msgid "Alarms"
+msgstr "Varoitukset"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
+#: SensorDisplayLib/DancingBarsSettings.cpp:104
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
+#, kde-format
+msgid "Alarm for Minimum Value"
+msgstr "Vähimmäisarvon varoitus"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:109
+#: SensorDisplayLib/DancingBarsSettings.cpp:132
+#, kde-format
+msgid "Enable alarm"
+msgstr "Käytä varoituksia"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:110
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:57
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
+#, kde-format
+msgid "Enable the minimum value alarm."
+msgstr "Käytä vähimmäisarvon varoitusta."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:113
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:125
+#, kde-format
+msgid "Lower limit:"
+msgstr "Alaraja:"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1_2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:127
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
+#, kde-format
+msgid "Alarm for Maximum Value"
+msgstr "Enimmäisarvon varoitus"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:133
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:116
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
+#, kde-format
+msgid "Enable the maximum value alarm."
+msgstr "Käytä enimmäisarvon varoitusta."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:136
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:198
+#, kde-format
+msgid "Upper limit:"
+msgstr "Yläraja:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:153
+#, kde-format
+msgctxt "@title:tab Appearance of the bar graph"
+msgid "Look"
+msgstr "Katso"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:157
+#, kde-format
+msgid "Normal bar color:"
+msgstr "Tavallisen palkin väri:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:164
+#, kde-format
+msgid "Out-of-range color:"
+msgstr "Raja-arvojen ulkopuolella oleva väri:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/DancingBarsSettings.cpp:171
+#: SensorDisplayLib/ListViewSettingsWidget.ui:105
+#: SensorDisplayLib/LogFile.cpp:105 SensorDisplayLib/LogFileSettings.ui:85
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:92
+#, kde-format
+msgid "Background color:"
+msgstr "Taustaväri:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:178
+#: SensorDisplayLib/FancyPlotterSettings.cpp:177
+#, kde-format
+msgid "Font size:"
+msgstr "Fonttikoko:"
+
+# TARKISTA: Tämän suomennoksen voi käsittää väärin.
+#: SensorDisplayLib/DancingBarsSettings.cpp:183
+#, kde-format
+msgid ""
+"This determines the size of the font used to print a label underneath the "
+"bars. Bars are automatically suppressed if text becomes too large, so it is "
+"advisable to use a small font size here."
+msgstr ""
+"Tässä kohdassa määritellään palkkien yläpuolella olevan otsikon fonttikoko. "
+"Mikäli otsikko on liian suuri, palkkeja pienennetään automaattisesti, joten "
+"tässä kannattaa käyttää pientä fonttikokoa."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:191
+#: SensorDisplayLib/FancyPlotterSettings.cpp:193
+#, kde-format
+msgid "Sensors"
+msgstr "Anturit"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:204
+#, kde-format
+msgid "Edit..."
+msgstr "Muokkaa…"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:205
+#, kde-format
+msgid "Push this button to configure the label."
+msgstr "Muokkaa selitettä napsauttamalla tätä painiketta."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:208
+#: SensorDisplayLib/FancyPlotterSettings.cpp:225
+#, kde-format
+msgid "Delete"
+msgstr "Poista"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:209
+#: SensorDisplayLib/FancyPlotterSettings.cpp:226
+#, kde-format
+msgid "Push this button to delete the sensor."
+msgstr "Poista anturi napsauttamalla tätä painiketta."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:361
+#, kde-format
+msgid "Label of Bar Graph"
+msgstr "Palkkikaavion selite"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:362
+#, kde-format
+msgid "Enter new label:"
+msgstr "Anna uusi selite:"
+
+#: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
+#, kde-format
+msgid "Drop Sensor Here"
+msgstr "Pudota anturi tähän"
+
+#: SensorDisplayLib/DummyDisplay.cpp:33
+#, kde-format
+msgid ""
+"This is an empty space in a worksheet. Drag a sensor from the Sensor Browser "
+"and drop it here. A sensor display will appear that allows you to monitor "
+"the values of the sensor over time."
+msgstr ""
+"Tämä on työtilan tyhjä alue. Voit vetää tähän anturin anturiselaimesta, ja "
+"anturinäyttö ilmestyy työtilaan. Anturinäytöstä voit valvoa anturin arvoja "
+"ajan kuluessa."
+
+#: SensorDisplayLib/FancyPlotter.cpp:176
+#, kde-format
+msgctxt "Largest axis title"
+msgid "99999 XXXX"
+msgstr "99999 XXXX"
+
+#: SensorDisplayLib/FancyPlotter.cpp:540 SensorDisplayLib/FancyPlotter.cpp:612
+#: SensorDisplayLib/FancyPlotter.cpp:675
+#, kde-format
+msgctxt "units"
+msgid "%1%"
+msgstr "%1 %"
+
+#: SensorDisplayLib/FancyPlotter.cpp:548
+#, kde-format
+msgctxt "%1 is what is being shown statistics for, like 'Memory', 'Swap', etc."
+msgid "<p><b>%1:</b><br>"
+msgstr "<p><b>%1:</b><br />"
+
+#: SensorDisplayLib/FancyPlotter.cpp:620
+#, kde-format
+msgid "%1 of %2"
+msgstr "%1/%2"
+
+#: SensorDisplayLib/FancyPlotter.cpp:648
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB"
+msgstr "%1 TiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:651
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB"
+msgstr "%1 GiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:654
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB"
+msgstr "%1 MiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:657
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB"
+msgstr "%1 KiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:662
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB/s"
+msgstr "%1 TiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:665
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB/s"
+msgstr "%1 GiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:668
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB/s"
+msgstr "%1 MiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:671
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB/s"
+msgstr "%1 KiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:677
+#, kde-format
+msgctxt "unitless - just a number"
+msgid "%1"
+msgstr "%1"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:46
+#, kde-format
+msgid "Plotter Settings"
+msgstr "Kaavion asetukset"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:62
+#, kde-format
+msgid "General"
+msgstr "Yleistä"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:66
+#, kde-format
+msgid "Title:"
+msgstr "Otsikko:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:74
+#, kde-format
+msgid "Stack the beams on top of each other"
+msgstr "Laita säteet pinoon toistensa päälle"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:75
+#, kde-format
+msgid ""
+"The beams are stacked on top of each other, and the area is drawn filled in. "
+"So if one beam has a value of 2 and another beam has a value of 3, the first "
+"beam will be drawn at value 2 and the other beam drawn at 2+3=5."
+msgstr ""
+"Säteet on pinottu toistensa päälle, ja alue piirretään niitä täyteen. Joten "
+"jos yhdellä säteellä on arvo 2 ja toisella säteellä on arvo 3, niin "
+"ensimmäinen säde piirretään arvolla 2 ja toinen säde piirretään arvolla "
+"2+3=5."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:82
+#, kde-format
+msgid "Scales"
+msgstr "Mittakaavat"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:86
+#, kde-format
+msgid "Vertical scale"
+msgstr "Pystymittakaava"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:91
+#, kde-format
+msgid "Specify graph range:"
+msgstr "Määritä kaavion ala:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:92
+#, kde-format
+msgid ""
+"Check this box if you want the display range to adapt dynamically to the "
+"currently displayed values; if you do not check this, you have to specify "
+"the range you want in the fields below."
+msgstr ""
+"Valitse tämä, jos haluat näyttää arvoalueen, joka dynaamisesti sovitetaan "
+"näytettäviin tietoihin. Ellei kohtaa ole valittu, arvoalue pitää määrittää "
+"alla oleviin kenttiin."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:102
+#, kde-format
+msgid "Enter the minimum value for the display here."
+msgstr "Anna näytön vähimmäisarvo tähän."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:113
+#, kde-format
+msgid ""
+"Enter the soft maximum value for the display here. The upper range will not "
+"be reduced below this value, but will still go above this number for values "
+"above this value."
+msgstr ""
+"Syötä näytön ”pehmeä” enimmäisarvo tähän. Ylärajaa ei lasketa alle tämän "
+"arvon, mutta ylemmäs sitä voidaan nostaa tätä suuremmille arvoille."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:120
+#, kde-format
+msgid "Horizontal scale"
+msgstr "Vaakamittakaava"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:128
+#, kde-format
+msgid "Pixels per time period:"
+msgstr "Kuvapistettä aikaväliä kohden:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:135
+#, kde-format
+msgid "Grid"
+msgstr "Ruudukko"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:139
+#, kde-format
+msgid "Lines"
+msgstr "Viivat"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:144
+#, kde-format
+msgid "Vertical lines"
+msgstr "Pystyviivat"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:145
+#, kde-format
+msgid "Check this to activate the vertical lines if display is large enough."
+msgstr ""
+"Valitse tämä kohta, jos haluat riittävän suurella näytöllä näyttää "
+"pystysuuntaiset viivat."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:148
+#, kde-format
+msgid "Distance:"
+msgstr "Etäisyys:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:155
+#, kde-format
+msgid "Enter the distance between two vertical lines here."
+msgstr "Määritä kahden pystysuuntaisen viivan etäisyys tässä kohdassa."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:159
+#, kde-format
+msgid "Vertical lines scroll"
+msgstr "Pystyviivojen vieritys"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:162
+#, kde-format
+msgid "Horizontal lines"
+msgstr "Vaakaviivat"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:163
+#, kde-format
+msgid "Check this to enable horizontal lines if display is large enough."
+msgstr ""
+"Valitse tämä kohta, jos haluat riittävän suurella näytöllä näyttää "
+"vaakasuuntaiset viivat."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:168
+#, kde-format
+msgid "Text"
+msgstr "Teksti"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:173
+#, kde-format
+msgid "Show axis labels"
+msgstr "Näytä akselien selitteet"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:174
+#, kde-format
+msgid ""
+"Check this box if horizontal lines should be decorated with the values they "
+"mark."
+msgstr ""
+"Valitse tämä kohta mikäli haluat, että vaakasuuntaisilla viivoilla näytetään "
+"arvot, joiden kohdalla viivat ovat."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:217
+#, kde-format
+msgid "Set Color..."
+msgstr "Aseta väri…"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:218
+#, kde-format
+msgid "Push this button to configure the color of the sensor in the diagram."
+msgstr "Napsauta tästä painikkeesta valitaksesi tunnistimen värin kaaviossa."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:230
+#, kde-format
+msgid "Move Up"
+msgstr "Siirrä ylemmäs"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:235
+#, kde-format
+msgid "Move Down"
+msgstr "Siirrä alemmas"
+
+#: SensorDisplayLib/ListView.cpp:44
+#, kde-format
+msgid "%1 K"
+msgstr "%1 K"
+
+#: SensorDisplayLib/ListView.cpp:45
+#, kde-format
+msgid "%1 M"
+msgstr "%1 M"
+
+#: SensorDisplayLib/ListView.cpp:46
+#, kde-format
+msgid "%1 G"
+msgstr "%1 G"
+
+#: SensorDisplayLib/ListView.cpp:47
+#, kde-format
+msgid "%1 T"
+msgstr "%1 T"
+
+#: SensorDisplayLib/ListView.cpp:48
+#, kde-format
+msgid "%1 P"
+msgstr "%1 P"
+
+#: SensorDisplayLib/ListView.cpp:151
+#, kde-format
+msgid "Display Units"
+msgstr "Näytä yksikössä"
+
+#: SensorDisplayLib/ListView.cpp:155
+#, kde-format
+msgid "Mixed"
+msgstr "automaattinen"
+
+#: SensorDisplayLib/ListView.cpp:161
+#, kde-format
+msgid "Kilobytes"
+msgstr "kilotavua"
+
+#: SensorDisplayLib/ListView.cpp:167
+#, kde-format
+msgid "Megabytes"
+msgstr "megatavua"
+
+#: SensorDisplayLib/ListView.cpp:173
+#, kde-format
+msgid "Gigabytes"
+msgstr "gigatavua"
+
+#: SensorDisplayLib/ListView.cpp:179
+#, kde-format
+msgid "Terabytes"
+msgstr "teratavua"
+
+#: SensorDisplayLib/ListViewSettings.cpp:30
+#, kde-format
+msgid "List View Settings"
+msgstr "Luettelonäkymän asetukset"
+
+#. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:47
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:47
+#, kde-format
+msgid "Colors"
+msgstr "Värit"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:79
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
+#, kde-format
+msgid "Text color:"
+msgstr "Tekstiväri:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:92
+#, kde-format
+msgid "Grid color:"
+msgstr "Ruudukon väri:"
+
+#: SensorDisplayLib/LogFile.cpp:93
+#, kde-format
+msgid "File logging settings"
+msgstr "Lokitiedoston asetukset"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
+#, kde-format
+msgid "Foreground color:"
+msgstr "Edustaväri:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, textTab)
+#: SensorDisplayLib/LogFileSettings.ui:21
+#, kde-format
+msgid "&Text"
+msgstr "&Teksti"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/LogFileSettings.ui:29
+#, kde-format
+msgid "T&itle:"
+msgstr "&Otsikko:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: SensorDisplayLib/LogFileSettings.ui:166
+#, kde-format
+msgid "Fi&lter"
+msgstr "&Suodatin"
+
+#. i18n: ectx: property (text), widget (QPushButton, addButton)
+#: SensorDisplayLib/LogFileSettings.ui:196
+#, kde-format
+msgid "&Add"
+msgstr "&Lisää"
+
+#. i18n: ectx: property (text), widget (QPushButton, deleteButton)
+#: SensorDisplayLib/LogFileSettings.ui:203
+#, kde-format
+msgid "&Delete"
+msgstr "&Poista"
+
+#. i18n: ectx: property (text), widget (QPushButton, changeButton)
+#: SensorDisplayLib/LogFileSettings.ui:210
+#, kde-format
+msgid "&Change"
+msgstr "&Muokkaa"
+
+#: SensorDisplayLib/MultiMeterSettings.cpp:33
+#, kde-format
+msgctxt ""
+"Multimeter is a sensor display that mimics 'digital multimeter' aparatus"
+msgid "Multimeter Settings"
+msgstr "Moninäyttömittarin asetukset"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:26
+#, kde-format
+msgid "&Title:"
+msgstr "&Otsikko:"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:43
+#, kde-format
+msgid "Enable this to append the unit to the title of the display."
+msgstr ""
+"Jos valitset tämän kohdan, näyttöjen otsikossa näytetään käytettävä yksikkö."
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
+#, kde-format
+msgid "&Show unit"
+msgstr "&Näytä yksikkö"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
+#, kde-format
+msgid "&Enable alarm"
+msgstr "&Käytä varoituksia"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
+#, kde-format
+msgid "&Lower limit:"
+msgstr "&Alaraja:"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
+#, kde-format
+msgid "E&nable alarm"
+msgstr "&Käytä varoituksia"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
+#, kde-format
+msgid "&Upper limit:"
+msgstr "&Yläraja:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
+#, kde-format
+msgid "Nor&mal digit color:"
+msgstr "&Digitaalinäytön väri:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
+#, kde-format
+msgid "Alarm di&git color:"
+msgstr "&Hälytetyn digitaalinäytön väri:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
+#, kde-format
+msgid "Bac&kground color:"
+msgstr "&Taustaväri:"
+
+#: SensorDisplayLib/SensorDisplay.cpp:115 SensorDisplayLib/SensorLogger.cpp:587
+#, kde-format
+msgid "&Properties"
+msgstr "&Ominaisuudet"
+
+#: SensorDisplayLib/SensorDisplay.cpp:120 SensorDisplayLib/SensorLogger.cpp:592
+#, kde-format
+msgid "&Remove Display"
+msgstr "&Poista näyttö"
+
+#: SensorDisplayLib/SensorDisplay.cpp:187
+#, kde-format
+msgid ""
+"<qt><p>This is a sensor display. To customize a sensor display click the "
+"right mouse button here and select the <i>Properties</i> entry from the "
+"popup menu. Select <i>Remove</i> to delete the display from the worksheet.</"
+"p>%1</qt>"
+msgstr ""
+"<qt> <p>Tämä on anturinäyttö. Muokataksesi anturinäyttöä napsauta ja pidä "
+"hiiren oikeaa painiketta pohjassa näytössä tai sen reunuksessa ja valitse "
+"<i>Ominaisuudet</i>-valinta ponnahdusvalikosta. Valitse <i>Poista</i> "
+"poistaaksesi näytön työtilasta.</p>%1</qt>"
+
+#: SensorDisplayLib/SensorLogger.cpp:132
+#, kde-format
+msgctxt "@title:column"
+msgid "Logging"
+msgstr "Siirretään lokiin"
+
+#: SensorDisplayLib/SensorLogger.cpp:134
+#, kde-format
+msgctxt "@title:column"
+msgid "Timer Interval"
+msgstr "Päivitysväli"
+
+#: SensorDisplayLib/SensorLogger.cpp:136
+#, kde-format
+msgctxt "@title:column"
+msgid "Sensor Name"
+msgstr "Anturin nimi"
+
+#: SensorDisplayLib/SensorLogger.cpp:138
+#, kde-format
+msgctxt "@title:column"
+msgid "Host Name"
+msgstr "Konenimi"
+
+#: SensorDisplayLib/SensorLogger.cpp:140
+#, kde-format
+msgctxt "@title:column"
+msgid "Log File"
+msgstr "Lokitiedosto"
+
+#: SensorDisplayLib/SensorLogger.cpp:418
+#: SensorDisplayLib/SensorLoggerDlg.cpp:30
+#, kde-format
+msgid "Sensor Logger"
+msgstr "Anturiloki"
+
+#: SensorDisplayLib/SensorLogger.cpp:597
+#, kde-format
+msgid "&Remove Sensor"
+msgstr "&Poista anturi"
+
+#: SensorDisplayLib/SensorLogger.cpp:602
+#, kde-format
+msgid "&Edit Sensor..."
+msgstr "&Muokkaa anturia…"
+
+#: SensorDisplayLib/SensorLogger.cpp:610
+#, kde-format
+msgid "St&op Logging"
+msgstr "&Lopeta lokiin kirjoitus"
+
+#: SensorDisplayLib/SensorLogger.cpp:613
+#, kde-format
+msgid "S&tart Logging"
+msgstr "&Aloita lokiin kirjoitus"
+
+#. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
+#, kde-format
+msgid "File"
+msgstr "Tiedosto"
+
+#. i18n: ectx: property (title), widget (QGroupBox, timerFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:41
+#, kde-format
+msgctxt "@title:group"
+msgid "Timer Interval"
+msgstr "Päivitysväli"
+
+#. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
+#, kde-format
+msgid " sec"
+msgstr " s"
+
+#: SensorDisplayLib/SensorLoggerSettings.cpp:30
+#, kde-format
+msgid "Sensor Logger Settings"
+msgstr "Anturilokin asetukset"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
+#, kde-format
+msgid "Alarm color:"
+msgstr "Hälytysväri:"
+
+#: SensorDisplayLib/SensorModel.cpp:161
+#, kde-format
+msgid "Host"
+msgstr "Koneennimi"
+
+#: SensorDisplayLib/SensorModel.cpp:163
+#, kde-format
+msgid "Sensor"
+msgstr "Anturi"
+
+#: SensorDisplayLib/SensorModel.cpp:165
+#, kde-format
+msgid "Unit"
+msgstr "Yksikkö"
+
+#: SensorDisplayLib/SensorModel.cpp:167
+#, kde-format
+msgid "Status"
+msgstr "Tila"
+
+#: SensorDisplayLib/SensorModel.cpp:169
+#, kde-format
+msgid "Label"
+msgstr "Otsikko"
+
+#. i18n: tag WorkSheet attribute title
+#: SystemLoad2.sgrd:3
+#, kde-format
+msgid "System Load"
+msgstr "Järjestelmän kuorma"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:5
+#, kde-format
+msgid "CPU History"
+msgstr "Suoritinhistoria"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:8
+#, kde-format
+msgid "Memory and Swap History"
+msgstr "Muistihistoria"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:9
+#, kde-format
+msgid "Memory"
+msgstr "Muisti"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:10
+#, kde-format
+msgid "Swap"
+msgstr "Sivutus"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:12
+#, kde-format
+msgid "Network History"
+msgstr "Verkkohistoria"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:13
+#, kde-format
+msgid "Receiving"
+msgstr "Vastaanottaa"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:14
+#, kde-format
+msgid "Sending"
+msgstr "Lähettää"
+
+#: WorkSheet.cpp:87
+#, kde-format
+msgid "Cannot open the file %1."
+msgstr "Tiedostoa %1 ei voitu avata."
+
+#: WorkSheet.cpp:95
+#, kde-format
+msgid "The file %1 does not contain valid XML."
+msgstr "Tiedosto %1 ei sisällä oikeaa XML:ää."
+
+#: WorkSheet.cpp:102
+#, kde-format
+msgid ""
+"The file %1 does not contain a valid worksheet definition, which must have a "
+"document type 'KSysGuardWorkSheet'."
+msgstr ""
+"Tiedosto %1 ei sisällä toimivaa työtilan määritystä. Tiedoston tulee olla "
+"tyyppiä ”KSysGuardWorkSheet”."
+
+#: WorkSheet.cpp:114
+#, kde-format
+msgid "The file %1 has an invalid worksheet size."
+msgstr "Työtilatiedoston %1 koko on virheellinen."
+
+#: WorkSheet.cpp:239
+#, kde-format
+msgid "Cannot save file %1"
+msgstr "Tiedostoa %1 ei voitu tallentaa"
+
+#: WorkSheet.cpp:287
+#, kde-format
+msgid "The clipboard does not contain a valid display description."
+msgstr "Leikepöydällä ei ole käypää näytön kuvausta."
+
+#: WorkSheet.cpp:387
+#, kde-format
+msgid "Select Display Type"
+msgstr "Valitse näyttötyyppi"
+
+#: WorkSheet.cpp:388
+#, kde-format
+msgid "&Line graph"
+msgstr "&Viivakaavio"
+
+#: WorkSheet.cpp:389
+#, kde-format
+msgid "&Digital display"
+msgstr "&Digitaalinen näyttö"
+
+#: WorkSheet.cpp:390
+#, kde-format
+msgid "&Bar graph"
+msgstr "&Palkkikaavio"
+
+#: WorkSheet.cpp:391
+#, kde-format
+msgid "Log to a &file"
+msgstr "Loki &tiedostoon"
+
+#: WorkSheet.cpp:547
+#, kde-format
+msgid "Remove this display?"
+msgstr "Poistetaanko tämä näyttö?"
+
+#: WorkSheet.cpp:548
+#, kde-format
+msgid "Remove Display"
+msgstr "Poista näyttö"
+
+#: WorkSheet.cpp:589
+#, kde-format
+msgid "Dummy"
+msgstr "Tyhjä"
+
+#: WorkSheetSettings.cpp:43
+#, kde-format
+msgid "Tab Properties"
+msgstr "Välillehden ominaisuudet"
+
+#: WorkSheetSettings.cpp:72
+#, kde-format
+msgid "Properties"
+msgstr "Ominaisuudet"
+
+#: WorkSheetSettings.cpp:81
+#, kde-format
+msgid "Rows:"
+msgstr "Rivejä:"
+
+#: WorkSheetSettings.cpp:91
+#, kde-format
+msgid "Columns:"
+msgstr "Sarakkeita:"
+
+#: WorkSheetSettings.cpp:100
+#, kde-format
+msgid "Enter the number of rows the sheet should have."
+msgstr "Anna taulukon rivien lukumäärä tähän."
+
+#: WorkSheetSettings.cpp:101
+#, kde-format
+msgid "Enter the number of columns the sheet should have."
+msgstr "Anna taulukon sarakkeiden määrä tähän."
+
+#: WorkSheetSettings.cpp:103
+#, kde-format
+msgid "Update interval:"
+msgstr "Päivitysväli:"
+
+#: WorkSheetSettings.cpp:116
+#, kde-format
+msgid "All displays of the sheet are updated at the rate specified here."
+msgstr ""
+"Kaikki työtilan näytöt päivitetään tässä kohdassa määritellyllä tiheydellä."
+
+#: WorkSheetSettings.cpp:117
+#, kde-format
+msgid "Enter the title of the worksheet here."
+msgstr "Anna työtilan nimi."
+
+#: Workspace.cpp:111
+#, kde-format
+msgid "Sheet %1"
+msgstr "Työtila %1"
+
+#: Workspace.cpp:170
+#, kde-format
+msgid ""
+"The tab '%1' contains unsaved data.\n"
+"Do you want to save the tab?"
+msgstr ""
+"Välilehti ”%1” sisältää tallentamattomia muutoksia.\n"
+"Haluatko tallentaa välilehden?"
+
+#: Workspace.cpp:186
+#, kde-format
+msgid "Select Tab File to Import"
+msgstr "Valitse tuotava välilehtitiedosto"
+
+#: Workspace.cpp:208 Workspace.cpp:228
+#, kde-format
+msgid "You do not have a tab that could be saved."
+msgstr "Ei tallennettavia välilehtiä."
+
+#: Workspace.cpp:235
+#, kde-format
+msgid "Export Tab"
+msgstr "Vie välilehti"
+
+#: Workspace.cpp:255
+#, kde-format
+msgid "There are no tabs that could be deleted."
+msgstr "Ei poistettavia välilehtiä."
+
+#: Workspace.cpp:299
+#, kde-kuit-format
+msgctxt "@info"
+msgid ""
+"<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
+"in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
+msgstr ""
+"<para>Voit julkaista mukautetun välilehtesi <link url='%1'>KDE Store</link>n "
+"<icode>%2</icode>-luokassa.</para><para><filename>%3</filename></para>"
+
+#: Workspace.cpp:304
+#, kde-format
+msgid "Upload custom System Monitor tab"
+msgstr "Lataa mukautettu järjestelmänvalvontavälilehti"
+
+#~ msgid "Timer Settings"
+#~ msgstr "Ajastuksen asetukset"
+
+#~ msgid "Use update interval of worksheet"
+#~ msgstr "Aseta työtilan päivitysväli"
+
+#~ msgctxt "Arguments are formatted byte sizes (used/total)"
+#~ msgid "Memory: %1 / %2Mem: %1 / %2Mem: %1%1"
+#~ msgstr "Muisti: %1/%2Muisti: %1/%2Muisti: %1%1"
+
+#~ msgid ""
+#~ "<qt>To propose the current custom tab as a new System Monitor tab, email "
+#~ "<br><a href=\"file:%1\">%2</a><br> to <a href=\"mailto:john.tapsell@kde."
+#~ "org?subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde."
+#~ "org</a></qt>"
+#~ msgstr ""
+#~ "<qt>Voit ehdottaa mukautettua välilehteä järjestelmänvalvontavälilehdelle "
+#~ "lähettämällä <br><a href=\"file:%1\">%2</a> sähköpostitse "
+#~ "osoitteeseen<br /> <a href=\"mailto:john.tapsell@kde.org?subject='System "
+#~ "Monitor Tab'&attach='file://%2'\"> john.tapsell@kde.org</a></qt>"
+
+#~ msgid "*.sgrd|Sensor Files (*.sgrd)"
+#~ msgstr "*.sgrd|Anturitiedostot (*.sgrd)"
+
+#~ msgid "Lo&wer limit:"
+#~ msgstr "&Alaraja:"
+
+#~ msgctxt "%1 is a host name"
+#~ msgid ""
+#~ "Message from %1:\n"
+#~ "%2"
+#~ msgstr ""
+#~ "Viesti kohteesta %1:\n"
+#~ "%2"
+
+#~ msgid "Change"
+#~ msgstr "Muokkaa"
+
+#~ msgid "Rate"
+#~ msgstr "Tahti"
+
+#~ msgid "CPU Load"
+#~ msgstr "Suoritinkuorma"
+
+#~ msgid "Idling"
+#~ msgstr "Jouten"
+
+#~ msgid "Nice Load"
+#~ msgstr "Nice-kuorma"
+
+#~ msgid "User Load"
+#~ msgstr "Käyttäjän kuorma"
+
+#~ msgctxt "@item sensor description"
+#~ msgid "System Load"
+#~ msgstr "Järjestelmän kuorma"
+
+#~ msgid "Waiting"
+#~ msgstr "Odottaa"
+
+#~ msgid "Interrupt Load"
+#~ msgstr "Keskeytyskuorma"
+
+#~ msgid "Total Load"
+#~ msgstr "Kuorma yhteensä"
+
+#~ msgid "Physical Memory"
+#~ msgstr "Fyysinen muisti"
+
+#~ msgid "Swap Memory"
+#~ msgstr "Sivutusmuisti"
+
+#~ msgid "Cached Memory"
+#~ msgstr "Välimuisti"
+
+#~ msgid "Buffered Memory"
+#~ msgstr "Puskurimuisti"
+
+#~ msgid "Used Memory"
+#~ msgstr "Käytetty muisti"
+
+#~ msgid "Application Memory"
+#~ msgstr "Sovelluksen muisti"
+
+#~ msgid "Free Memory"
+#~ msgstr "Vapaa muisti"
+
+#~ msgid "Active Memory"
+#~ msgstr "Aktiivinen muisti"
+
+#~ msgid "Inactive Memory"
+#~ msgstr "Passiivinen muisti"
+
+#~ msgid "Wired Memory"
+#~ msgstr "Käytetty muisti"
+
+#~ msgid "Exec Pages"
+#~ msgstr "Suoritussivut"
+
+#~ msgid "File Pages"
+#~ msgstr "Tiedostosivut"
+
+#~ msgid "Processes"
+#~ msgstr "Prosessit"
+
+#~ msgid "Process Controller"
+#~ msgstr "Prosessienhallinta"
+
+#~ msgid "Last Process ID"
+#~ msgstr "Viimeisin prosessin tunniste"
+
+#~ msgid "Process Spawn Count"
+#~ msgstr "Lapsiprosessien lukumäärä"
+
+#~ msgid "Process Count"
+#~ msgstr "Prosessien lukumäärä"
+
+#~ msgid "Idle Processes Count"
+#~ msgstr "Joutilaiden prosessien lukumäärä"
+
+#~ msgid "Running Processes Count"
+#~ msgstr "Käynnissä olevien prosessien lukumäärä"
+
+#~ msgid "Sleeping Processes Count"
+#~ msgstr "Nukkuvien prosessien lukumäärä"
+
+#~ msgid "Stopped Processes Count"
+#~ msgstr "Pysäytettyjen prosessien lukumäärä"
+
+#~ msgid "Zombie Processes Count"
+#~ msgstr "Zombieprosessien lukumäärä"
+
+#~ msgid "Waiting Processes Count"
+#~ msgstr "Odottavien prosessien lukumäärä"
+
+#~ msgid "Locked Processes Count"
+#~ msgstr "Lukittujen prosessien lukumäärä"
+
+#~ msgid "Disk Throughput"
+#~ msgstr "Levynopeus"
+
+#~ msgctxt "CPU Load"
+#~ msgid "Load"
+#~ msgstr "Kuorma"
+
+#~ msgid "Total Accesses"
+#~ msgstr "Hakuja yhteensä"
+
+#~ msgid "Read Accesses"
+#~ msgstr "Lukuja"
+
+#~ msgid "Write Accesses"
+#~ msgstr "Kirjoituksia"
+
+#~ msgid "Read Data"
+#~ msgstr "Dataa luettu"
+
+#~ msgid "Written Data"
+#~ msgstr "Dataa kirjoitettu"
+
+#~ msgid "Milliseconds spent reading"
+#~ msgstr "Luvun kesto (ms)"
+
+#~ msgid "Milliseconds spent writing"
+#~ msgstr "Kirjoituksen kesto (ms)"
+
+#~ msgid "I/Os currently in progress"
+#~ msgstr "Nyt käynnissä oleva siirräntä"
+
+#~ msgid "Pages In"
+#~ msgstr "Sivuja sisään"
+
+#~ msgid "Pages Out"
+#~ msgstr "Sivuja ulos"
+
+#~ msgid "Context Switches"
+#~ msgstr "Kontekstivaihtoja"
+
+#~ msgid "Traps"
+#~ msgstr "Loukut"
+
+#~ msgid "System Calls"
+#~ msgstr "Järjestelmäkutsut"
+
+#~ msgid "Network"
+#~ msgstr "Verkko"
+
+#~ msgid "Interfaces"
+#~ msgstr "Liitynnät"
+
+#~ msgid "Transmitter"
+#~ msgstr "Lähetys"
+
+#~ msgid "Data Rate"
+#~ msgstr "Datanopeus"
+
+#~ msgid "Compressed Packets Rate"
+#~ msgstr "Tiivistettyjen pakettien nopeus"
+
+#~ msgid "Dropped Packets Rate"
+#~ msgstr "Pudotettujen pakettien nopeus"
+
+#~ msgid "Error Rate"
+#~ msgstr "Virhenopeus"
+
+#~ msgid "FIFO Overruns Rate"
+#~ msgstr "FIFO-ylivuotojen nopeus"
+
+#~ msgid "Frame Error Rate"
+#~ msgstr "Kehysvirheiden nopeus"
+
+#~ msgid "Multicast Packet Rate"
+#~ msgstr "Multicast-pakettien nopeus"
+
+#~ msgid "Packet Rate"
+#~ msgstr "Pakettinopeus"
+
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Loss Rate"
+#~ msgstr "Kantoaallon katoamisnopeus"
+
+#~ msgid "Collisions"
+#~ msgstr "Törmäyksiä"
+
+#~ msgid "Data"
+#~ msgstr "Tietoa"
+
+#~ msgid "Compressed Packets"
+#~ msgstr "Pakattuja paketteja"
+
+#~ msgid "Dropped Packets"
+#~ msgstr "Pudotettuja paketteja"
+
+#~ msgid "Errors"
+#~ msgstr "Virheitä"
+
+#~ msgid "FIFO Overruns"
+#~ msgstr "FIFO-ylivuotoja"
+
+#~ msgid "Frame Errors"
+#~ msgstr "Kehysvirheitä"
+
+#~ msgid "Multicast Packets"
+#~ msgstr "Multicast-paketteja"
+
+#~ msgid "Packets"
+#~ msgstr "Paketteja"
+
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Losses"
+#~ msgstr "Kantoaallon katoamisia"
+
+#~ msgid "Sockets"
+#~ msgstr "Pistokkeita"
+
+#~ msgid "Total Number"
+#~ msgstr "Yhteensä"
+
+#~ msgid "Table"
+#~ msgstr "Taulukko"
+
+#~ msgid "Advanced Power Management"
+#~ msgstr "Edistynyt virranhallinta"
+
+#~ msgid "ACPI"
+#~ msgstr "ACPI"
+
+#~ msgid "Thermal Zone"
+#~ msgstr "Lämpötila-alue"
+
+#~ msgid "Temperature"
+#~ msgstr "Lämpötila"
+
+#~ msgid "Average CPU Temperature"
+#~ msgstr "Keskimääräinen suorittimen lämpötila"
+
+#~ msgid "Fan"
+#~ msgstr "Tuuletin"
+
+#~ msgid "State"
+#~ msgstr "Tila"
+
+#~ msgid "Battery"
+#~ msgstr "Akku"
+
+#~ msgid "Battery Capacity"
+#~ msgstr "Akun kapasiteetti"
+
+#~ msgid "Battery Charge"
+#~ msgstr "Akun varaus"
+
+#~ msgid "Battery Usage"
+#~ msgstr "Akun varaus"
+
+#~ msgid "Battery Voltage"
+#~ msgstr "Akun jännite"
+
+#~ msgid "Battery Discharge Rate"
+#~ msgstr "Akun purkautumisnopeus"
+
+#~ msgid "Remaining Time"
+#~ msgstr "Jäljellä oleva aika"
+
+#~ msgid "Interrupts"
+#~ msgstr "Keskeytykset"
+
+#~ msgid "Load Average (1 min)"
+#~ msgstr "Kuorman keskiarvo (1 min)"
+
+#~ msgid "Load Average (5 min)"
+#~ msgstr "Kuorman keskiarvo (5 min)"
+
+#~ msgid "Load Average (15 min)"
+#~ msgstr "Kuorman keskiarvo (15 min)"
+
+#~ msgid "Clock Frequency"
+#~ msgstr "Kellotaajuus"
+
+#~ msgid "Average Clock Frequency"
+#~ msgstr "Keskimääräinen kellotaajuus"
+
+#~ msgid "Hardware Sensors"
+#~ msgstr "Laiteanturit"
+
+#~ msgid "Partition Usage"
+#~ msgstr "Osioiden käyttö"
+
+#~ msgid "Used Space"
+#~ msgstr "Käytetty tila"
+
+#~ msgid "Free Space"
+#~ msgstr "Vapaa tila"
+
+#~ msgid "Fill Level"
+#~ msgstr "Täyttöaste"
+
+#~ msgid "Used Inodes"
+#~ msgstr "Käytettyjä inodeja"
+
+#~ msgid "Free Inodes"
+#~ msgstr "Vapaita inodeja"
+
+#~ msgid "Inode Level"
+#~ msgstr "Inode-taso"
+
+#~ msgid "System"
+#~ msgstr "Järjestelmä"
+
+#~ msgid "Uptime"
+#~ msgstr "Uptime"
+
+#~ msgid "Linux Soft Raid (md)"
+#~ msgstr "Linux Soft RAID (md)"
+
+#~ msgid "Processors"
+#~ msgstr "Prosessit"
+
+#~ msgid "Cores"
+#~ msgstr "Ytimiä"
+
+#~ msgid "Number of Blocks"
+#~ msgstr "Lohkojen määrä"
+
+#~ msgid "Total Number of Devices"
+#~ msgstr "Laitteita kaikkiaan"
+
+#~ msgid "Failed Devices"
+#~ msgstr "Toimimattomia laitteita"
+
+#~ msgid "Spare Devices"
+#~ msgstr "Varalaitteita"
+
+#~ msgid "Number of Raid Devices"
+#~ msgstr "RAID-laitteiden määrä"
+
+#~ msgid "Working Devices"
+#~ msgstr "Toimivia laitteita"
+
+#~ msgid "Active Devices"
+#~ msgstr "Aktiivisia laitteita"
+
+#~ msgid "Number of Devices"
+#~ msgstr "Laitteiden määrä"
+
+#~ msgid "Resyncing Percent"
+#~ msgstr "Tahdistusprosentti"
+
+#~ msgid "Disk Information"
+#~ msgstr "Levytiedot"
+
+#~ msgid "CPU %1"
+#~ msgstr "Prosessori %1"
+
+#~ msgid "Disk %1"
+#~ msgstr "Levy %1"
+
+#~ msgid "Battery %1"
+#~ msgstr "Akku %1"
+
+#~ msgid "Fan %1"
+#~ msgstr "Tuuletin %1"
+
+#~ msgid "Temperature %1"
+#~ msgstr "Lämpötila %1"
+
+#~ msgid "Total"
+#~ msgstr "Yhteensä"
+
+#~ msgid "Software Interrupts"
+#~ msgstr "Ohjelmistokeskeytykset"
+
+#~ msgid "Hardware Interrupts"
+#~ msgstr "Laitteistokeskeytykset"
+
+#~ msgid "Int %1"
+#~ msgstr "Kes %1"
+
+#~ msgctxt "the unit 1 per second"
+#~ msgid "1/s"
+#~ msgstr "Hz"
+
+#~ msgid "kBytes"
+#~ msgstr "kt"
+
+#~ msgctxt "the unit minutes"
+#~ msgid "min"
+#~ msgstr "min"
+
+#~ msgctxt "the frequency unit"
+#~ msgid "MHz"
+#~ msgstr "MHz"
+
+#~ msgctxt "a percentage"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgctxt "the unit milliamperes"
+#~ msgid "mA"
+#~ msgstr "mA"
+
+#~ msgctxt "the unit milliampere hours"
+#~ msgid "mAh"
+#~ msgstr "mAh"
+
+#~ msgctxt "the unit milliwatts"
+#~ msgid "mW"
+#~ msgstr "mW"
+
+#~ msgctxt "the unit milliwatt hours"
+#~ msgid "mWh"
+#~ msgstr "mWh"
+
+#~ msgctxt "the unit millivolts"
+#~ msgid "mV"
+#~ msgstr "mV"
+
+#~ msgid "Integer Value"
+#~ msgstr "Kokonaislukuarvo"
+
+#~ msgid "Floating Point Value"
+#~ msgstr "Liukulukuarvo"
+
+#~ msgid "Could not run daemon program '%1'."
+#~ msgstr "Taustaprosessia ’%1’ ei voitu käynnistää"
+
+#~ msgid "The daemon program '%1' failed."
+#~ msgstr "Taustaprosessi ’%1’ epäonnistui."
+
+#~ msgid "Connection to %1 refused"
+#~ msgstr "Yhteys %1 torjuttiin"
+
+#~ msgid "Host %1 not found"
+#~ msgstr "Konetta %1 ei löytynyt"
+
+#~ msgid ""
+#~ "An error occurred with the network (e.g. the network cable was "
+#~ "accidentally unplugged) for host %1."
+#~ msgstr ""
+#~ "Virhe verkkoyhteydessä (esim. verkkokaapeli irrotettu vahingossa) "
+#~ "koneeseen %1."
+
+#~ msgid "Error for host %1: %2"
+#~ msgstr "Virhe koneella %1: %2"
+
+#~ msgctxt "Units"
+#~ msgid "%1 second"
+#~ msgid_plural "%1 seconds"
+#~ msgstr[0] "%1 sekunti"
+#~ msgstr[1] "%1 sekuntia"
+
+#~ msgid "Font:"
+#~ msgstr "Kirjasin:"
+
+#~ msgid "Grid lines:"
+#~ msgstr "Hilaviivat:"
+
+#~ msgid "Background:"
+#~ msgstr "Tausta:"
+
+#~ msgid "Do you really want to delete the display?"
+#~ msgstr "Haluatko varmasti poistaa näytön?"
+
+#~ msgid "Delete Display"
+#~ msgstr "Poista näyttö"
+
+#~ msgid "&Edit"
+#~ msgstr "&Muokkaa"
+
+#~ msgid "Automatic range"
+#~ msgstr "Automaattinen lukualue"
+
+#~ msgctxt "units in percentage"
+#~ msgid "%1%"
+#~ msgstr "%1 %"
+
+#~ msgid ""
+#~ "This is your work space. It holds your tabs. You need to create a new tab "
+#~ "(Menu File->New) before you can drag sensors here."
+#~ msgstr ""
+#~ "Tämä on työtilasi, joka sisältää välilehtiä. Lisätäksesi sensoreita luo "
+#~ "uusi välilehti käyttämällä Tiedosto-valikon Uusi-valintaa ja raahaa "
+#~ "sensoreita sen jälkeen välilehdelle."
+
+#~ msgid "Connection to %1 has been lost."
+#~ msgstr "Yhteys koneeseen %1 menetettiin."
+
+#~ msgid "&Title"
+#~ msgstr "&Otsikko"
+
+#~ msgid "T&itle"
+#~ msgstr "Ots&ikko"
+
+#~ msgid "System Guard Applet Settings"
+#~ msgstr "Järjestelmän valvonnan asetukset"
+
+#~ msgid "Size ratio:"
+#~ msgstr "Koon suhde:"
+
+#~ msgctxt "Number suffix in spinbox"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgid "Launch &System Guard"
+#~ msgstr "Käynnistä &Järjestelmänvalvonta"
+
+#~ msgid "Select Worksheet to Open"
+#~ msgstr "Valitse avattava työsivu"
+
+#~ msgid "Export Work Sheet"
+#~ msgstr "&Vie työtila"
+
+#~ msgid "Worksheet Properties"
+#~ msgstr "Työtilan asetukset"
+
+#~ msgid "&Signal Plotter"
+#~ msgstr "&Signaalipiirrin"
+
+#~ msgid "&Multimeter"
+#~ msgstr "&Mittarinäyttö"
+
+#~ msgid "&Dancing Bars"
+#~ msgstr "&Tanssivat palkit"
+
+#~ msgid ""
+#~ "The KSysGuard applet does not support displaying of this type of sensor. "
+#~ "Please choose another sensor."
+#~ msgstr "KSysGuard ei tue tämän tyyppistä sensoria. Valitse toinen sensori."
+
+#~ msgid ""
+#~ "The file %1 does not contain a valid applet definition, which must have a "
+#~ "document type 'KSysGuardApplet'."
+#~ msgstr ""
+#~ "Tiedosto %1 ei sisällä toimivaa sovelmaa. Tiedoston tulee olla tyyppiä "
+#~ "KSysGuardApplet."
+
+#~ msgid "Drag sensors from the KDE System Guard into this cell."
+#~ msgstr "Pudota sensoreita KDE Järjestelmänvalvonnasta tähän soluun."
+
+#~ msgid "&New Worksheet..."
+#~ msgstr "&Uusi työsivu..."
+
+#, fuzzy
+#~| msgid "&New Worksheet..."
+#~ msgid "Open Worksheet..."
+#~ msgstr "&Uusi työsivu..."
+
+#~ msgid "&Export Worksheet..."
+#~ msgstr "&Vie työsivu..."
+
+#~ msgid "&Remove Worksheet"
+#~ msgstr "&Poista työsivu"
+
+#~ msgid "&Worksheet Properties"
+#~ msgstr "&Työtilan asetukset"
+
+#~ msgid "Import Worksheet..."
+#~ msgstr "Tuo työsivu..."
+
+#~ msgid "Count:"
+#~ msgstr "Lukumäärä:"
+
+#~ msgid "Enter the number of horizontal lines here."
+#~ msgstr "Määrittele vaakasuuntaisten viivojen määrä tässä kohdassa."
+
+#~ msgid "Labels"
+#~ msgstr "Otsikot"
+
+#~ msgid "Top bar"
+#~ msgstr "Yläpalkki"
+
+#~ msgid ""
+#~ "Check this to active the display title bar. This is probably only useful "
+#~ "for applet displays. The bar is only visible if the display is large "
+#~ "enough."
+#~ msgstr ""
+#~ "Valitse tämä kohta, mikäli haluat näyttää näytön otsikkorivin. Tämä "
+#~ "vaihtoehto on yleensä käyttökelpoinen vain sovelmilla. Otsikkorivi "
+#~ "näytetään vain, mikäli näyttö on riittävän suuri."
+
+#~ msgid "Horizontal lines:"
+#~ msgstr "Vaakaviivat:"

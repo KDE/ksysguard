@@ -1,0 +1,1981 @@
+# translation of ksysguard.po to Karakh
+#
+# Izbasarov M.I. <mambet@sci.kz>, 2005.
+# Sairan Kikkarin <sairan@computer.org>, 2005, 2006, 2007, 2008, 2009, 2010.
+# Sairan Kikkarin <sairan@computer.org>, 2010, 2011, 2012, 2013.
+msgid ""
+msgstr ""
+"Project-Id-Version: ksysguard\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-09-20 01:53+0000\n"
+"PO-Revision-Date: 2013-01-04 04:33+0600\n"
+"Last-Translator: Sairan Kikkarin <sairan@computer.org>\n"
+"Language-Team: Kazakh <kde-i18n-doc@kde.org>\n"
+"Language: kk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"\n"
+"\n"
+"\n"
+"\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Мәмбет Ізбасаров, Сайран Киккарин"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "izbasar@sci.kz,sairan@computer.org"
+
+#: HostConnector.cpp:44
+#, kde-format
+msgid "Connect Host"
+msgstr "Хостқа қосылу"
+
+#: HostConnector.cpp:57
+#, kde-format
+msgid "Host:"
+msgstr "Хост:"
+
+#: HostConnector.cpp:67
+#, kde-format
+msgid "Enter the name of the host you want to connect to."
+msgstr "Қосылатын хосттың атауын келтіріңіз."
+
+#: HostConnector.cpp:73
+#, kde-format
+msgid "Connection Type"
+msgstr "Қосылым түрі"
+
+#: HostConnector.cpp:78
+#, kde-format
+msgid "ssh"
+msgstr "ssh"
+
+#: HostConnector.cpp:81
+#, kde-format
+msgid "Select this to use the secure shell to login to the remote host."
+msgstr ""
+"Бұны қашықтағы хостқа қауіпсіз ssh протоколы арқылы қосылу үшін таңдаңыз."
+
+#: HostConnector.cpp:84
+#, kde-format
+msgid "rsh"
+msgstr "rsh"
+
+#: HostConnector.cpp:85
+#, kde-format
+msgid "Select this to use the remote shell to login to the remote host."
+msgstr "Бұны қашықтағы хостқа rsh протоколы арқылы қосылу үшін таңдаңыз."
+
+#: HostConnector.cpp:88
+#, kde-format
+msgid "Daemon"
+msgstr "Қызмет"
+
+#: HostConnector.cpp:89
+#, kde-format
+msgid ""
+"Select this if you want to connect to a ksysguard daemon that is running on "
+"the machine you want to connect to, and is listening for client requests."
+msgstr ""
+"Қосылатын компьютердегі клиенттік талаптарын қабылдайтын ksysguard қызметіне "
+"қатынау үшін осыны таңдаңыз."
+
+#: HostConnector.cpp:92
+#, kde-format
+msgid "Custom command"
+msgstr "Басқа команда"
+
+#: HostConnector.cpp:93
+#, kde-format
+msgid ""
+"Select this to use the command you entered below to start ksysguardd on the "
+"remote host."
+msgstr ""
+"Қашықтағы комьютерде ksysguard қызметі төмендегі командамен жегу үшін осыны "
+"таңдаңыз."
+
+#: HostConnector.cpp:96
+#, kde-format
+msgid "Port:"
+msgstr "Порт:"
+
+#: HostConnector.cpp:103
+#, kde-format
+msgid ""
+"Enter the port number on which the ksysguard daemon is listening for "
+"connections."
+msgstr "ksysguard қызметі қай порт арқылы қосылымдарды күтетінін келтіріңіз."
+
+#: HostConnector.cpp:106
+#, kde-format
+msgid "e.g.  3112"
+msgstr "мысалы,  3112"
+
+#: HostConnector.cpp:109
+#, kde-format
+msgid "Command:"
+msgstr "Команда:"
+
+#: HostConnector.cpp:118
+#, kde-format
+msgid "Enter the command that runs ksysguardd on the host you want to monitor."
+msgstr ""
+"Бақылауын қалаған хостта ksysguard қызметті жегетін командасын келтіріңіз."
+
+#: HostConnector.cpp:122
+#, kde-format
+msgid "e.g. ssh -l root remote.host.org ksysguardd"
+msgstr "мысалы: ssh -l root remote.host.org ksysguardd"
+
+#: ksysguard.cpp:74
+#, kde-format
+msgid "KDE System Monitor"
+msgstr "KDE жүйе бақылауышы"
+
+#: ksysguard.cpp:157
+#, kde-format
+msgid ""
+"This will hide the menu bar completely. You can show it again by typing %1."
+msgstr ""
+
+#: ksysguard.cpp:159
+#, kde-format
+msgid "Hide menu bar"
+msgstr ""
+
+#: ksysguard.cpp:177 ksysguard.cpp:571
+#, kde-format
+msgid "System Monitor"
+msgstr "Жүйені бақылау"
+
+#: ksysguard.cpp:178
+#, kde-format
+msgid "&Refresh Tab"
+msgstr "Қо&йыдыны жаңарту"
+
+#: ksysguard.cpp:179
+#, kde-format
+msgid "&New Tab..."
+msgstr "&Жаңа қойынды..."
+
+#: ksysguard.cpp:180
+#, kde-format
+msgid "Import Tab Fr&om File..."
+msgstr "Қойындыны &файлдан импорттау..."
+
+#: ksysguard.cpp:181
+#, kde-format
+msgid "Save Tab &As..."
+msgstr "Қойындыны &былай сақтау..."
+
+#: ksysguard.cpp:182
+#, kde-format
+msgid "&Close Tab"
+msgstr "Қойындыны ж&абу"
+
+#: ksysguard.cpp:183
+#, kde-format
+msgid "Monitor &Remote Machine..."
+msgstr "Қашықтағыны &бақылау..."
+
+#: ksysguard.cpp:184
+#, kde-format
+msgid "&Download New Tabs..."
+msgstr "&Жаңа қойындыларды жүктеп алу..."
+
+#: ksysguard.cpp:185
+#, kde-format
+msgid "&Upload Current Tab..."
+msgstr "Қ&олданыстағы қойындыны жүктеп беру..."
+
+#: ksysguard.cpp:187
+#, kde-format
+msgid "Tab &Properties"
+msgstr "Қойындының қ&асиеттері"
+
+#: ksysguard.cpp:384
+#, fuzzy, kde-format
+#| msgid "1 process1"
+#| msgid_plural "%1 processes%1"
+msgid "1 process"
+msgid_plural "%1 processes"
+msgstr[0] "%1 процесс%1"
+
+#: ksysguard.cpp:465
+#, fuzzy, kde-format
+#| msgid "CPU: %1%%1%"
+msgid "CPU: %1%"
+msgstr "Процессор: %1%%1%1%"
+
+#: ksysguard.cpp:465
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1%"
+msgctxt "This is the shorter version of CPU: %1%"
+msgid "%1%"
+msgstr "%1%"
+
+#: ksysguard.cpp:484
+#, fuzzy, kde-format
+#| msgctxt "Arguments are formatted byte sizes (used/total)"
+#| msgid " Memory: %1 / %2 "
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Memory: %1 / %2"
+msgstr " Жады: %1 / %2 "
+
+#: ksysguard.cpp:486
+#, fuzzy, kde-format
+#| msgctxt "Arguments are formatted byte sizes (used/total)"
+#| msgid " Memory: %1 / %2 "
+msgctxt ""
+"Arguments are formatted byte sizes (used/total) This should be a shorter "
+"version of the previous Memory: %1 / %2"
+msgid "Mem: %1 / %2"
+msgstr " Жады: %1 / %2 "
+
+#: ksysguard.cpp:488
+#, kde-format
+msgctxt ""
+"Arguments is formatted byte sizes (used) This should be a shorter version of "
+"the previous Mem: %1 / %2"
+msgid "Mem: %1"
+msgstr ""
+
+#: ksysguard.cpp:516
+#, kde-format
+msgid " No swap space available "
+msgstr " Своп орны жоқ "
+
+#: ksysguard.cpp:520
+#, fuzzy, kde-format
+#| msgctxt "Arguments are formatted byte sizes (used/total)"
+#| msgid "Swap: %1 / %2Swap: %1%1"
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Swap: %1 / %2"
+msgstr "Своп: %1 / %2Своп: %1%1"
+
+#: ksysguard.cpp:522
+#, kde-format
+msgctxt "Arguments is formatted byte sizes (used)"
+msgid "Swap: %1"
+msgstr ""
+
+#: ksysguard.cpp:573
+#, fuzzy, kde-format
+#| msgid "(c) 1996-2008 The KDE System Monitor Developers"
+msgid "(c) 1996-2016 The KDE System Monitor Developers"
+msgstr "(c) 1996-2008 KDE жүйе бақылауыштың жасаушылары"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "John Tapsell"
+msgstr "John Tapsell"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Current Maintainer"
+msgstr "Қазіргі жетілдірушісі"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Chris Schlaeger"
+msgstr "Chris Schlaeger"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Previous Maintainer"
+msgstr "Бұрынғы жетілдірушісі"
+
+#: ksysguard.cpp:577
+#, kde-format
+msgid "Greg Martyn"
+msgstr "Greg Martyn"
+
+#: ksysguard.cpp:578
+#, kde-format
+msgid "Tobias Koenig"
+msgstr "Tobias Koenig"
+
+#: ksysguard.cpp:579
+#, kde-format
+msgid "Nicolas Leclercq"
+msgstr "Nicolas Leclercq"
+
+#: ksysguard.cpp:580
+#, kde-format
+msgid "Alex Sanda"
+msgstr "Alex Sanda"
+
+#: ksysguard.cpp:581
+#, kde-format
+msgid "Bernd Johannes Wuebben"
+msgstr "Bernd Johannes Wuebben"
+
+#: ksysguard.cpp:582
+#, kde-format
+msgid "Ralf Mueller"
+msgstr "Ralf Mueller"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid "Hamish Rodda"
+msgstr "Hamish Rodda"
+
+#: ksysguard.cpp:584
+#, kde-format
+msgid "Torsten Kasch"
+msgstr "Torsten Kasch"
+
+#: ksysguard.cpp:584
+#, kde-format
+msgid ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+msgstr ""
+"Solaris қолдауы\n"
+"Коды William LeFebvre жазған \"top\"\n"
+"утилитасының sunos5 модулінен (рұқсат\n"
+"бойынша) ішінара алынған."
+
+#: ksysguard.cpp:593
+#, kde-format
+msgid "Optional worksheet files to load"
+msgstr "Қосымша көрсету өрістер файлдарын жүктеу"
+
+#. i18n: ectx: Menu (file)
+#: ksysguardui.rc:5
+#, kde-format
+msgid "&File"
+msgstr "&Файл"
+
+#. i18n: ectx: Menu (view)
+#: ksysguardui.rc:15
+#, kde-format
+msgid "&View"
+msgstr "&Көрініс"
+
+#. i18n: ectx: Menu (settings)
+#: ksysguardui.rc:19
+#, kde-format
+msgid "&Settings"
+msgstr "&Баптау"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ksysguardui.rc:22
+#, kde-format
+msgid "Main Toolbar"
+msgstr "Негізгі құралдар"
+
+#. i18n: tag WorkSheet attribute title
+#. i18n: tag display attribute title
+#: ProcessTable.sgrd:3 ProcessTable.sgrd:5
+#, kde-format
+msgid "Process Table"
+msgstr "Процестер кестесі"
+
+#: SensorBrowser.cpp:113
+#, kde-format
+msgid "Sensor Browser"
+msgstr "Сенсор шолғышы"
+
+#: SensorBrowser.cpp:473
+#, kde-format
+msgid "Drag sensors to empty cells of a worksheet "
+msgstr "Сенсорларды келесі көрсету өрісінің бос ұяшықтарына сүйреп апарыңыз "
+
+#: SensorBrowser.cpp:474
+#, kde-format
+msgid ""
+"The sensor browser lists the connected hosts and the sensors that they "
+"provide. Click and drag sensors into drop zones of a worksheet. A display "
+"will appear that visualizes the values provided by the sensor. Some sensor "
+"displays can display values of multiple sensors. Simply drag other sensors "
+"on to the display to add more sensors."
+msgstr ""
+"Сенсор шолғыштың тізімінде байланыстағы хосттар және олардағы сенсорлар "
+"көрсетіледі. Сенсорларды таңдап, оларды көрсету өрісінен сүйреп апарыңыз. "
+"Апарған орында осы сенсор қамтамасыз ететінді көрсететін дисплей пайда "
+"болады. Кейбір дисплейлер бірнеше сенсорлар бергенін көрсете алады. Олаларға "
+"бірнеше сенсорларды сүйреп апара беріңіз."
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:280
+#, kde-format
+msgid "OK"
+msgstr "ОК"
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:280
+#: SensorDisplayLib/FancyPlotter.cpp:544 SensorDisplayLib/FancyPlotter.cpp:623
+#, kde-format
+msgid "Error"
+msgstr "Қате"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:42
+#, kde-format
+msgid "Edit BarGraph Preferences"
+msgstr "Жолақты диаграмма баптауларын өзгерту"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:51
+#, kde-format
+msgid "Range"
+msgstr "Ауқымы"
+
+#. i18n: ectx: property (title), widget (QGroupBox, titleFrame)
+#: SensorDisplayLib/DancingBarsSettings.cpp:55
+#: SensorDisplayLib/ListViewSettingsWidget.ui:17
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:17 WorkSheetSettings.cpp:61
+#, kde-format
+msgid "Title"
+msgstr "Атауы"
+
+#. i18n: ectx: property (whatsThis), widget (QLineEdit, m_title)
+#: SensorDisplayLib/DancingBarsSettings.cpp:60
+#: SensorDisplayLib/FancyPlotterSettings.cpp:70
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
+#, kde-format
+msgid "Enter the title of the display here."
+msgstr "Мұнда дисплейдің атауын келтіріңіз."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:65
+#, kde-format
+msgid "Display Range"
+msgstr "Дисплей ауқымы"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:70
+#: SensorDisplayLib/FancyPlotterSettings.cpp:96
+#, kde-format
+msgid "Minimum value:"
+msgstr "Төменгі шегі:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:78
+#, kde-format
+msgid ""
+"Enter the minimum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Төменгі шегін келтіріңіз. Егер мәндердін екеуі де 0 болса, ауқым автоматты "
+"түрде таңдалады."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:82
+#: SensorDisplayLib/FancyPlotterSettings.cpp:107
+#, kde-format
+msgid "Maximum value:"
+msgstr "Жоғарғы шегі:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:90
+#, kde-format
+msgid ""
+"Enter the maximum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Жоғарғы шегін келтіріңіз. Егер мәндердін екеуі де 0 болса, ауқым автоматты "
+"түрде таңдалады."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:100
+#, kde-format
+msgid "Alarms"
+msgstr "Дабыл"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
+#: SensorDisplayLib/DancingBarsSettings.cpp:104
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
+#, kde-format
+msgid "Alarm for Minimum Value"
+msgstr "Төменгі шетке жеткендегі дабыл"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:109
+#: SensorDisplayLib/DancingBarsSettings.cpp:132
+#, kde-format
+msgid "Enable alarm"
+msgstr "Дабылды рұқсат ету"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:110
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:57
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
+#, kde-format
+msgid "Enable the minimum value alarm."
+msgstr "Төменгі шетке жетті деген дабылды рұқсат ету."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:113
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:125
+#, kde-format
+msgid "Lower limit:"
+msgstr "Төмен деңгейдің шегі:"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1_2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:127
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
+#, kde-format
+msgid "Alarm for Maximum Value"
+msgstr "Жоғарғы шетке жеткендегі дабыл"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:133
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:116
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
+#, kde-format
+msgid "Enable the maximum value alarm."
+msgstr "Жоғарғы шетке жетті деген дабылды рұқсат ету."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:136
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:198
+#, kde-format
+msgid "Upper limit:"
+msgstr "Жоғарғы деңгейдің шегі:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:153
+#, kde-format
+msgctxt "@title:tab Appearance of the bar graph"
+msgid "Look"
+msgstr "Көрінісі"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:157
+#, kde-format
+msgid "Normal bar color:"
+msgstr "Бағанның қалыпты түсі:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:164
+#, kde-format
+msgid "Out-of-range color:"
+msgstr "Шектен шыққандағы түсі:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/DancingBarsSettings.cpp:171
+#: SensorDisplayLib/ListViewSettingsWidget.ui:105
+#: SensorDisplayLib/LogFile.cpp:105 SensorDisplayLib/LogFileSettings.ui:85
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:92
+#, kde-format
+msgid "Background color:"
+msgstr "Ая түсі:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:178
+#: SensorDisplayLib/FancyPlotterSettings.cpp:177
+#, kde-format
+msgid "Font size:"
+msgstr "Қаріптің өлшемі:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:183
+#, kde-format
+msgid ""
+"This determines the size of the font used to print a label underneath the "
+"bars. Bars are automatically suppressed if text becomes too large, so it is "
+"advisable to use a small font size here."
+msgstr ""
+"Мұнда бағанның астындағы жарлығында қолданылатын қаріп өлшемін баптауға "
+"болады. Егер мәтін аса үлкен болса бағандар автоматтытүрде кішірейеді, "
+"сондықтан мұнда қаріптің кішірегін қолданған жөн."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:191
+#: SensorDisplayLib/FancyPlotterSettings.cpp:193
+#, kde-format
+msgid "Sensors"
+msgstr "Сенсорлары"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:204
+#, kde-format
+msgid "Edit..."
+msgstr "Өңдеу..."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:205
+#, kde-format
+msgid "Push this button to configure the label."
+msgstr "Жарлықты баптау үшін осы батырманы басыңыз."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:208
+#: SensorDisplayLib/FancyPlotterSettings.cpp:225
+#, kde-format
+msgid "Delete"
+msgstr "Өшіру"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:209
+#: SensorDisplayLib/FancyPlotterSettings.cpp:226
+#, kde-format
+msgid "Push this button to delete the sensor."
+msgstr "Сенсорды өшіру үшін батырманы басыңыз."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:361
+#, kde-format
+msgid "Label of Bar Graph"
+msgstr "Диаграмманың жарлығы"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:362
+#, kde-format
+msgid "Enter new label:"
+msgstr "Жаңа жарлығы:"
+
+#: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
+#, kde-format
+msgid "Drop Sensor Here"
+msgstr "Сенсорды мұнда сүйреп әкеліңіз"
+
+#: SensorDisplayLib/DummyDisplay.cpp:33
+#, kde-format
+msgid ""
+"This is an empty space in a worksheet. Drag a sensor from the Sensor Browser "
+"and drop it here. A sensor display will appear that allows you to monitor "
+"the values of the sensor over time."
+msgstr ""
+"Бұл көрсету өрісінің бос орыны. Сенсорды сенсор шолғышынан сүйреп осында "
+"әкеліңіз. Пайда болған сенсордің дисплейі оның өлшегенін бақылап отыруға "
+"мүмкіндік береді."
+
+#: SensorDisplayLib/FancyPlotter.cpp:176
+#, kde-format
+msgctxt "Largest axis title"
+msgid "99999 XXXX"
+msgstr "99999 XXXX"
+
+#: SensorDisplayLib/FancyPlotter.cpp:540 SensorDisplayLib/FancyPlotter.cpp:612
+#: SensorDisplayLib/FancyPlotter.cpp:675
+#, kde-format
+msgctxt "units"
+msgid "%1%"
+msgstr "%1%"
+
+#: SensorDisplayLib/FancyPlotter.cpp:548
+#, kde-format
+msgctxt "%1 is what is being shown statistics for, like 'Memory', 'Swap', etc."
+msgid "<p><b>%1:</b><br>"
+msgstr "<p><b>%1:</b><br>"
+
+#: SensorDisplayLib/FancyPlotter.cpp:620
+#, fuzzy, kde-format
+#| msgid "%1 of %2%1"
+msgid "%1 of %2"
+msgstr "%1 / %2%1"
+
+#: SensorDisplayLib/FancyPlotter.cpp:648
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB"
+msgstr "%1 ТиБ"
+
+#: SensorDisplayLib/FancyPlotter.cpp:651
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB"
+msgstr "%1 ГиБ"
+
+#: SensorDisplayLib/FancyPlotter.cpp:654
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB"
+msgstr "%1 МиБ"
+
+#: SensorDisplayLib/FancyPlotter.cpp:657
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB"
+msgstr "%1 КиБ"
+
+#: SensorDisplayLib/FancyPlotter.cpp:662
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB/s"
+msgstr "%1 ТиБ/с"
+
+#: SensorDisplayLib/FancyPlotter.cpp:665
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB/s"
+msgstr "%1 ГиБ/с"
+
+#: SensorDisplayLib/FancyPlotter.cpp:668
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB/s"
+msgstr "%1 МиБ/с"
+
+#: SensorDisplayLib/FancyPlotter.cpp:671
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB/s"
+msgstr "%1 КиБ/с"
+
+#: SensorDisplayLib/FancyPlotter.cpp:677
+#, kde-format
+msgctxt "unitless - just a number"
+msgid "%1"
+msgstr "%1"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:46
+#, kde-format
+msgid "Plotter Settings"
+msgstr "График параметрлері"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:62
+#, kde-format
+msgid "General"
+msgstr "Жалпы"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:66
+#, kde-format
+msgid "Title:"
+msgstr "Атауы:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:74
+#, kde-format
+msgid "Stack the beams on top of each other"
+msgstr "Шоқтары бір бірне қабатталсын"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:75
+#, kde-format
+msgid ""
+"The beams are stacked on top of each other, and the area is drawn filled in. "
+"So if one beam has a value of 2 and another beam has a value of 3, the first "
+"beam will be drawn at value 2 and the other beam drawn at 2+3=5."
+msgstr ""
+"Шоқтарын бір бірне қабаттастырып, өз түсімен бояу. Сонымен, бірінші шоқ 2-ге "
+"тең болса, ал екіншісі 3-ке тең болса, біріншісі 2 дейін, екіншісі 2+3=5 "
+"дейн қылып салынады."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:82
+#, kde-format
+msgid "Scales"
+msgstr "Масштабтары"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:86
+#, kde-format
+msgid "Vertical scale"
+msgstr "Тік масштабы"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:91
+#, kde-format
+msgid "Specify graph range:"
+msgstr "График аумағы:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:92
+#, kde-format
+msgid ""
+"Check this box if you want the display range to adapt dynamically to the "
+"currently displayed values; if you do not check this, you have to specify "
+"the range you want in the fields below."
+msgstr ""
+"Бұл белгісі қойылса, дисплей аумағы көрсетілетін мәндерге бейімделіп тұрады. "
+"Қойылмаса, төменде келтірілген аумағында қала береді."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:102
+#, kde-format
+msgid "Enter the minimum value for the display here."
+msgstr "Мұнда төменгі шегін келтіріңіз."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:113
+#, kde-format
+msgid ""
+"Enter the soft maximum value for the display here. The upper range will not "
+"be reduced below this value, but will still go above this number for values "
+"above this value."
+msgstr ""
+"Мұнда өзгермелі жоғарғы шегін келтіріңіз. График аумағының жоғарғы шеті "
+"бұдан төмендемейді, тек жоғарылай алады."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:120
+#, kde-format
+msgid "Horizontal scale"
+msgstr "Көлденең масштабы"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:128
+#, kde-format
+msgid "Pixels per time period:"
+msgstr "Пиксел/уақыт аралығы."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:135
+#, kde-format
+msgid "Grid"
+msgstr "Тор"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:139
+#, kde-format
+msgid "Lines"
+msgstr "Сызықтар"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:144
+#, kde-format
+msgid "Vertical lines"
+msgstr "Тік сызықтар"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:145
+#, kde-format
+msgid "Check this to activate the vertical lines if display is large enough."
+msgstr ""
+"Дисплейдің үлкендігі жеткілікті болса, тік сызықтарды көрсету үшін осы "
+"белгіні қойыңыз."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:148
+#, kde-format
+msgid "Distance:"
+msgstr "Аралығы:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:155
+#, kde-format
+msgid "Enter the distance between two vertical lines here."
+msgstr "Екі тік сызықтардың аралығын келтіріңіз."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:159
+#, kde-format
+msgid "Vertical lines scroll"
+msgstr "Тік сызықтарды жүгірту"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:162
+#, kde-format
+msgid "Horizontal lines"
+msgstr "Жатық сызықтар"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:163
+#, kde-format
+msgid "Check this to enable horizontal lines if display is large enough."
+msgstr ""
+"Дисплейдің үлкендігі жеткілікті болса, жатық сызықтарды көрсету үшін осы "
+"белгіні қойыңыз."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:168
+#, kde-format
+msgid "Text"
+msgstr "Мәтіні"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:173
+#, kde-format
+msgid "Show axis labels"
+msgstr "Осьтердің жазулары көрсетілсін"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:174
+#, kde-format
+msgid ""
+"Check this box if horizontal lines should be decorated with the values they "
+"mark."
+msgstr "Жатық сызықтардың белгілейтін мәнін көрсету үшін осы белгіні қойыңыз."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:217
+#, kde-format
+msgid "Set Color..."
+msgstr "Түсін таңдау..."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:218
+#, kde-format
+msgid "Push this button to configure the color of the sensor in the diagram."
+msgstr "Диаграммадағы сенсор түсін баптау үшін батырманы басыңыз."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:230
+#, kde-format
+msgid "Move Up"
+msgstr "Жоғарға"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:235
+#, kde-format
+msgid "Move Down"
+msgstr "Төменге"
+
+#: SensorDisplayLib/ListView.cpp:44
+#, kde-format
+msgid "%1 K"
+msgstr "%1 К"
+
+#: SensorDisplayLib/ListView.cpp:45
+#, kde-format
+msgid "%1 M"
+msgstr "%1 М"
+
+#: SensorDisplayLib/ListView.cpp:46
+#, kde-format
+msgid "%1 G"
+msgstr "%1 Г"
+
+#: SensorDisplayLib/ListView.cpp:47
+#, kde-format
+msgid "%1 T"
+msgstr "%1 Т"
+
+#: SensorDisplayLib/ListView.cpp:48
+#, kde-format
+msgid "%1 P"
+msgstr "%1 П"
+
+#: SensorDisplayLib/ListView.cpp:151
+#, kde-format
+msgid "Display Units"
+msgstr "Бірліктерін көрсету"
+
+#: SensorDisplayLib/ListView.cpp:155
+#, kde-format
+msgid "Mixed"
+msgstr "Аралас"
+
+#: SensorDisplayLib/ListView.cpp:161
+#, kde-format
+msgid "Kilobytes"
+msgstr "Килобайт"
+
+#: SensorDisplayLib/ListView.cpp:167
+#, kde-format
+msgid "Megabytes"
+msgstr "Мегабайт"
+
+#: SensorDisplayLib/ListView.cpp:173
+#, kde-format
+msgid "Gigabytes"
+msgstr "Гигабайт"
+
+#: SensorDisplayLib/ListView.cpp:179
+#, kde-format
+msgid "Terabytes"
+msgstr "Терабайт"
+
+#: SensorDisplayLib/ListViewSettings.cpp:30
+#, kde-format
+msgid "List View Settings"
+msgstr "Тізім көрінісін баптау"
+
+#. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:47
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:47
+#, kde-format
+msgid "Colors"
+msgstr "Түстер"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:79
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
+#, kde-format
+msgid "Text color:"
+msgstr "Мәтіннің түсі:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:92
+#, kde-format
+msgid "Grid color:"
+msgstr "Тордың түсі:"
+
+#: SensorDisplayLib/LogFile.cpp:93
+#, kde-format
+msgid "File logging settings"
+msgstr "Журнал файлын баптаулары"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
+#, kde-format
+msgid "Foreground color:"
+msgstr "Бояу түсі:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, textTab)
+#: SensorDisplayLib/LogFileSettings.ui:21
+#, kde-format
+msgid "&Text"
+msgstr "&Мәтін"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/LogFileSettings.ui:29
+#, kde-format
+msgid "T&itle:"
+msgstr "А&тауы:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: SensorDisplayLib/LogFileSettings.ui:166
+#, kde-format
+msgid "Fi&lter"
+msgstr "Сү&згі"
+
+#. i18n: ectx: property (text), widget (QPushButton, addButton)
+#: SensorDisplayLib/LogFileSettings.ui:196
+#, kde-format
+msgid "&Add"
+msgstr "&Қосу"
+
+#. i18n: ectx: property (text), widget (QPushButton, deleteButton)
+#: SensorDisplayLib/LogFileSettings.ui:203
+#, kde-format
+msgid "&Delete"
+msgstr "Ө&шіру"
+
+#. i18n: ectx: property (text), widget (QPushButton, changeButton)
+#: SensorDisplayLib/LogFileSettings.ui:210
+#, kde-format
+msgid "&Change"
+msgstr "&Өзгерту"
+
+#: SensorDisplayLib/MultiMeterSettings.cpp:33
+#, kde-format
+msgctxt ""
+"Multimeter is a sensor display that mimics 'digital multimeter' aparatus"
+msgid "Multimeter Settings"
+msgstr "Мултиметрды баптау"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:26
+#, kde-format
+msgid "&Title:"
+msgstr "&Атауы:"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:43
+#, kde-format
+msgid "Enable this to append the unit to the title of the display."
+msgstr "Өлшем бірлігін дисплей айдарына көрсету."
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
+#, kde-format
+msgid "&Show unit"
+msgstr "&Бірлікгін көрсету"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
+#, kde-format
+msgid "&Enable alarm"
+msgstr "Дабылды рұқсат &ету"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
+#, fuzzy, kde-format
+#| msgid "Lower limit:"
+msgid "&Lower limit:"
+msgstr "Төмен деңгейдің шегі:"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
+#, kde-format
+msgid "E&nable alarm"
+msgstr "Дабылды &рұқсат ету"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
+#, kde-format
+msgid "&Upper limit:"
+msgstr "&Жоғарғы деңгейдің шегі:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
+#, fuzzy, kde-format
+#| msgid "Normal digit color:"
+msgid "Nor&mal digit color:"
+msgstr "Цифрлардың қалыпты түсі:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
+#, fuzzy, kde-format
+#| msgid "Alarm digit color:"
+msgid "Alarm di&git color:"
+msgstr "Дабыл цифрларының түсі:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
+#, fuzzy, kde-format
+#| msgid "Background color:"
+msgid "Bac&kground color:"
+msgstr "Ая түсі:"
+
+#: SensorDisplayLib/SensorDisplay.cpp:115 SensorDisplayLib/SensorLogger.cpp:587
+#, kde-format
+msgid "&Properties"
+msgstr "Қ&асиеттері"
+
+#: SensorDisplayLib/SensorDisplay.cpp:120 SensorDisplayLib/SensorLogger.cpp:592
+#, kde-format
+msgid "&Remove Display"
+msgstr "Дисплейді &жою"
+
+#: SensorDisplayLib/SensorDisplay.cpp:187
+#, kde-format
+msgid ""
+"<qt><p>This is a sensor display. To customize a sensor display click the "
+"right mouse button here and select the <i>Properties</i> entry from the "
+"popup menu. Select <i>Remove</i> to delete the display from the worksheet.</"
+"p>%1</qt>"
+msgstr ""
+"<qt><p>Бұл сенсордың дисплейі. Сенсордың дисплейін баптау үшін, тышқанды "
+"дисплейдің аумағына не қоршауына меңзеп, оң батырмасын басып қалып, шыққан "
+"қалқымалы мәзірде <i>Қасиеттері</i> деген жолын таңдаңыз. Дисплейді көрсету "
+"өрісінен кетіру үшін <i>Дисплейді жою</i> дегенді таңдаңыз.</p>%1</qt>"
+
+#: SensorDisplayLib/SensorLogger.cpp:132
+#, kde-format
+msgctxt "@title:column"
+msgid "Logging"
+msgstr "Журнал"
+
+#: SensorDisplayLib/SensorLogger.cpp:134
+#, kde-format
+msgctxt "@title:column"
+msgid "Timer Interval"
+msgstr "Таймер аралығы"
+
+#: SensorDisplayLib/SensorLogger.cpp:136
+#, kde-format
+msgctxt "@title:column"
+msgid "Sensor Name"
+msgstr "Сенсор атауы"
+
+#: SensorDisplayLib/SensorLogger.cpp:138
+#, kde-format
+msgctxt "@title:column"
+msgid "Host Name"
+msgstr "Хост атауы"
+
+#: SensorDisplayLib/SensorLogger.cpp:140
+#, kde-format
+msgctxt "@title:column"
+msgid "Log File"
+msgstr "Журнал файлы"
+
+#: SensorDisplayLib/SensorLogger.cpp:418
+#: SensorDisplayLib/SensorLoggerDlg.cpp:30
+#, kde-format
+msgid "Sensor Logger"
+msgstr "Сенсор журналы"
+
+#: SensorDisplayLib/SensorLogger.cpp:597
+#, kde-format
+msgid "&Remove Sensor"
+msgstr "Сенсо&рды жою"
+
+#: SensorDisplayLib/SensorLogger.cpp:602
+#, kde-format
+msgid "&Edit Sensor..."
+msgstr "&Сенсорды өңдеу..."
+
+#: SensorDisplayLib/SensorLogger.cpp:610
+#, kde-format
+msgid "St&op Logging"
+msgstr "Жүрналдауды &аяқтау"
+
+#: SensorDisplayLib/SensorLogger.cpp:613
+#, kde-format
+msgid "S&tart Logging"
+msgstr "Журналдауды &бастау"
+
+#. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
+#, kde-format
+msgid "File"
+msgstr "Файл"
+
+#. i18n: ectx: property (title), widget (QGroupBox, timerFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:41
+#, kde-format
+msgctxt "@title:group"
+msgid "Timer Interval"
+msgstr "Таймер аралығы"
+
+#. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
+#, kde-format
+msgid " sec"
+msgstr " сек"
+
+#: SensorDisplayLib/SensorLoggerSettings.cpp:30
+#, kde-format
+msgid "Sensor Logger Settings"
+msgstr "Сенсор журналын баптау"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
+#, kde-format
+msgid "Alarm color:"
+msgstr "Дабыл түсі:"
+
+#: SensorDisplayLib/SensorModel.cpp:161
+#, kde-format
+msgid "Host"
+msgstr "Хост"
+
+#: SensorDisplayLib/SensorModel.cpp:163
+#, kde-format
+msgid "Sensor"
+msgstr "Сенсор"
+
+#: SensorDisplayLib/SensorModel.cpp:165
+#, kde-format
+msgid "Unit"
+msgstr "Өлшем бірлігі"
+
+#: SensorDisplayLib/SensorModel.cpp:167
+#, kde-format
+msgid "Status"
+msgstr "Күй-жай"
+
+#: SensorDisplayLib/SensorModel.cpp:169
+#, kde-format
+msgid "Label"
+msgstr "Жарлық"
+
+#. i18n: tag WorkSheet attribute title
+#: SystemLoad2.sgrd:3
+#, kde-format
+msgid "System Load"
+msgstr "Жүйенің жүктелісі"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:5
+#, kde-format
+msgid "CPU History"
+msgstr "Процессордың журналы"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:8
+#, kde-format
+msgid "Memory and Swap History"
+msgstr "Жады мен своп журналы"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:9
+#, kde-format
+msgid "Memory"
+msgstr "Жады"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:10
+#, kde-format
+msgid "Swap"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:12
+#, kde-format
+msgid "Network History"
+msgstr "Желі журналы"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:13
+#, fuzzy, kde-format
+#| msgid "Receiver"
+msgid "Receiving"
+msgstr "Қабылдағыш"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:14
+#, kde-format
+msgid "Sending"
+msgstr ""
+
+#: WorkSheet.cpp:87
+#, kde-format
+msgid "Cannot open the file %1."
+msgstr "Файл %1 ашылмады."
+
+#: WorkSheet.cpp:95
+#, kde-format
+msgid "The file %1 does not contain valid XML."
+msgstr "%1 деген дұрыс XML файлы емес."
+
+#: WorkSheet.cpp:102
+#, kde-format
+msgid ""
+"The file %1 does not contain a valid worksheet definition, which must have a "
+"document type 'KSysGuardWorkSheet'."
+msgstr ""
+"%1 файлында 'KSysGuardWorkSheet' деген құжаттың түріне жататын көрсету "
+"өрісінің дұрыс жазуы жоқ."
+
+#: WorkSheet.cpp:114
+#, kde-format
+msgid "The file %1 has an invalid worksheet size."
+msgstr "%1 файлындағы көрсету өрісінің өлшемі дұрыс емес."
+
+#: WorkSheet.cpp:239
+#, kde-format
+msgid "Cannot save file %1"
+msgstr "%1 файлы сақталмады"
+
+#: WorkSheet.cpp:287
+#, kde-format
+msgid "The clipboard does not contain a valid display description."
+msgstr "Алмасу буферінде жарамды дисплей сипаттамасы жоқ."
+
+#: WorkSheet.cpp:387
+#, kde-format
+msgid "Select Display Type"
+msgstr "Дисплей түрін таңдау"
+
+#: WorkSheet.cpp:388
+#, kde-format
+msgid "&Line graph"
+msgstr "&Сызықты график"
+
+#: WorkSheet.cpp:389
+#, kde-format
+msgid "&Digital display"
+msgstr "Ц&ифрлық дисплей"
+
+#: WorkSheet.cpp:390
+#, kde-format
+msgid "&Bar graph"
+msgstr "&Жолақты диаграмма"
+
+#: WorkSheet.cpp:391
+#, kde-format
+msgid "Log to a &file"
+msgstr "Ж&урналды файлға жазу"
+
+#: WorkSheet.cpp:547
+#, kde-format
+msgid "Remove this display?"
+msgstr "Бақлағыш жойылсын ба?"
+
+#: WorkSheet.cpp:548
+#, kde-format
+msgid "Remove Display"
+msgstr "Бақлағышты жою"
+
+#: WorkSheet.cpp:589
+#, kde-format
+msgid "Dummy"
+msgstr "Жай"
+
+#: WorkSheetSettings.cpp:43
+#, kde-format
+msgid "Tab Properties"
+msgstr "Қойындының касиеттері"
+
+#: WorkSheetSettings.cpp:72
+#, kde-format
+msgid "Properties"
+msgstr "Қасиеттері"
+
+#: WorkSheetSettings.cpp:81
+#, kde-format
+msgid "Rows:"
+msgstr "Жолдар:"
+
+#: WorkSheetSettings.cpp:91
+#, kde-format
+msgid "Columns:"
+msgstr "Бағандар:"
+
+#: WorkSheetSettings.cpp:100
+#, kde-format
+msgid "Enter the number of rows the sheet should have."
+msgstr "Көрсету өрісінің жол санын келтіріңіз."
+
+#: WorkSheetSettings.cpp:101
+#, kde-format
+msgid "Enter the number of columns the sheet should have."
+msgstr "Көрсету өрісінің баған санын келтіріңіз."
+
+#: WorkSheetSettings.cpp:103
+#, kde-format
+msgid "Update interval:"
+msgstr "Өлшеу аралығы:"
+
+#: WorkSheetSettings.cpp:116
+#, kde-format
+msgid "All displays of the sheet are updated at the rate specified here."
+msgstr "Барлық дисплейлер келтірілген аралықпен өлшеулерді етеді."
+
+#: WorkSheetSettings.cpp:117
+#, kde-format
+msgid "Enter the title of the worksheet here."
+msgstr "Көрсету өрісінің айдарын келтіріңіз."
+
+#: Workspace.cpp:111
+#, kde-format
+msgid "Sheet %1"
+msgstr "%1 өрісі"
+
+#: Workspace.cpp:170
+#, kde-format
+msgid ""
+"The tab '%1' contains unsaved data.\n"
+"Do you want to save the tab?"
+msgstr ""
+"'%1' қойындысында сақталмаған деректер бар.\n"
+"Сақтағыңыз келе ме?"
+
+#: Workspace.cpp:186
+#, kde-format
+msgid "Select Tab File to Import"
+msgstr "Импорттайтын қойынды файлын таңдау"
+
+#: Workspace.cpp:208 Workspace.cpp:228
+#, kde-format
+msgid "You do not have a tab that could be saved."
+msgstr "Сақтайтын қойындысы жоқ."
+
+#: Workspace.cpp:235
+#, kde-format
+msgid "Export Tab"
+msgstr "Қойындысын экспорттау"
+
+#: Workspace.cpp:255
+#, kde-format
+msgid "There are no tabs that could be deleted."
+msgstr "Өшірілетін қойындысы жоқ."
+
+#: Workspace.cpp:299
+#, kde-kuit-format
+msgctxt "@info"
+msgid ""
+"<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
+"in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
+msgstr ""
+
+#: Workspace.cpp:304
+#, kde-format
+msgid "Upload custom System Monitor tab"
+msgstr "Жүйе бақылағыш қойындыны жүктеп беру"
+
+#~ msgid "Timer Settings"
+#~ msgstr "Таймер параметрлері"
+
+#~ msgid "Use update interval of worksheet"
+#~ msgstr "Көрсету өрістің өлшеу аралығын қолдану"
+
+#~ msgctxt "Arguments are formatted byte sizes (used/total)"
+#~ msgid "Memory: %1 / %2Mem: %1 / %2Mem: %1%1"
+#~ msgstr "Жады: %1 / %2Жады: %1 / %2Жады: %1%1"
+
+#~ msgid ""
+#~ "<qt>To propose the current custom tab as a new System Monitor tab, email "
+#~ "<br><a href=\"file:%1\">%2</a><br> to <a href=\"mailto:john.tapsell@kde."
+#~ "org?subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde."
+#~ "org</a></qt>"
+#~ msgstr ""
+#~ "<qt>Қолданыстағы ыңғайланған қойындыны жаңа жүйе бақлағыш қойынды "
+#~ "ретініде ұсыну үшін <br><a href=\"file:%1\">%2</a><br> дегенді <a href="
+#~ "\"mailto:john.tapsell@kde.org?subject='System Monitor Tab'&attach='file://"
+#~ "%2'\">john.tapsell@kde.org</a> адресіне жіберіңіз</qt>"
+
+#~ msgid "*.sgrd|Sensor Files (*.sgrd)"
+#~ msgstr "*.sgrd|Сенсор файлы (*.sgrd)"
+
+#~ msgid "Lo&wer limit:"
+#~ msgstr "&Төмен деңгейдің шегі:"
+
+#~ msgctxt "%1 is a host name"
+#~ msgid ""
+#~ "Message from %1:\n"
+#~ "%2"
+#~ msgstr ""
+#~ "%1 хосттан келген хабар:\n"
+#~ "%2"
+
+#~ msgid "Could not run daemon program '%1'."
+#~ msgstr "'%1' қызмет бағларламасы жегілмеді."
+
+#~ msgid "The daemon program '%1' failed."
+#~ msgstr "'%1' қызмет бағларламаның жаңылысы."
+
+#~ msgid "Connection to %1 refused"
+#~ msgstr "%1 қосылымынан бас тартылды"
+
+#~ msgid "Host %1 not found"
+#~ msgstr "%1 хосты табылмады"
+
+#~ msgid ""
+#~ "An error occurred with the network (e.g. the network cable was "
+#~ "accidentally unplugged) for host %1."
+#~ msgstr ""
+#~ "%1 хостында желі қатесі (мысалы, желі кабелі байқамай суырылып қалды)."
+
+#~ msgid "Error for host %1: %2"
+#~ msgstr "%1 хост қатесі: %2"
+
+#~ msgid "Change"
+#~ msgstr "Өзгеріс"
+
+#~ msgid "Rate"
+#~ msgstr "Денгейі"
+
+#~ msgid "CPU Load"
+#~ msgstr "Процессордың жүктелісі"
+
+#~ msgid "Idling"
+#~ msgstr "Бос тұруы"
+
+#~ msgid "Nice Load"
+#~ msgstr "Артықшылық"
+
+#~ msgid "User Load"
+#~ msgstr "Пайдаланушы жүктелісі"
+
+#~ msgctxt "@item sensor description"
+#~ msgid "System Load"
+#~ msgstr "Жүйенің жүктелісі"
+
+#~ msgid "Waiting"
+#~ msgstr "Күту"
+
+#~ msgid "Interrupt Load"
+#~ msgstr "Жүктеуді үзу"
+
+#~ msgid "Total Load"
+#~ msgstr "Жалпы жүктелісі"
+
+#~ msgid "Physical Memory"
+#~ msgstr "Физикалық жады"
+
+#~ msgid "Swap Memory"
+#~ msgstr "Своп жады"
+
+#~ msgid "Cached Memory"
+#~ msgstr "Кэштелген жады"
+
+#~ msgid "Buffered Memory"
+#~ msgstr "Буферлік жады"
+
+#~ msgid "Used Memory"
+#~ msgstr "Қолданудағы жады"
+
+#~ msgid "Application Memory"
+#~ msgstr "Қолданбаның жады"
+
+#~ msgid "Free Memory"
+#~ msgstr "Бос жады"
+
+#~ msgid "Active Memory"
+#~ msgstr "Белсенді жады"
+
+#~ msgid "Inactive Memory"
+#~ msgstr "Белсендіксіз жады"
+
+#~ msgid "Wired Memory"
+#~ msgstr "Орнатылған жады"
+
+#~ msgid "Exec Pages"
+#~ msgstr "Орындау парақтар"
+
+#~ msgid "File Pages"
+#~ msgstr "Файл парақтар"
+
+#~ msgid "Processes"
+#~ msgstr "Процестер"
+
+#~ msgid "Process Controller"
+#~ msgstr "Процестерді басқару"
+
+#~ msgid "Last Process ID"
+#~ msgstr "Соңғы процестың ID-і"
+
+#~ msgid "Process Spawn Count"
+#~ msgstr "Туынды процестер саны"
+
+#~ msgid "Process Count"
+#~ msgstr "Процестер саны"
+
+#~ msgid "Idle Processes Count"
+#~ msgstr "Іссіз тұрған процестер саны"
+
+#~ msgid "Running Processes Count"
+#~ msgstr "Орындалып жатқан процестер саны"
+
+#~ msgid "Sleeping Processes Count"
+#~ msgstr "Қалғып тұрған процестер саны"
+
+#~ msgid "Stopped Processes Count"
+#~ msgstr "Тоқтап тұрған процестер саны"
+
+#~ msgid "Zombie Processes Count"
+#~ msgstr "Зомби процестер саны"
+
+#~ msgid "Waiting Processes Count"
+#~ msgstr "Күтіп тұрған процестер саны"
+
+#~ msgid "Locked Processes Count"
+#~ msgstr "Бұғатталған процестер саны"
+
+#~ msgid "Disk Throughput"
+#~ msgstr "Дискінің белсендігі"
+
+#~ msgctxt "CPU Load"
+#~ msgid "Load"
+#~ msgstr "Жүктелісі"
+
+#~ msgid "Total Accesses"
+#~ msgstr "Барлық әрекеттер"
+
+#~ msgid "Read Accesses"
+#~ msgstr "Оқу әрекеттері"
+
+#~ msgid "Write Accesses"
+#~ msgstr "Жазу әрекеттері"
+
+#~ msgid "Read Data"
+#~ msgstr "Оқылғаны"
+
+#~ msgid "Written Data"
+#~ msgstr "Жазылғаны"
+
+#~ msgid "Milliseconds spent reading"
+#~ msgstr "Оқу уақыты, мсек"
+
+#~ msgid "Milliseconds spent writing"
+#~ msgstr "Жазу уақыты, мсек"
+
+#~ msgid "I/Os currently in progress"
+#~ msgstr "Болып жатқан енгізу/шығару"
+
+#~ msgid "Pages In"
+#~ msgstr "Енгізу беттер"
+
+#~ msgid "Pages Out"
+#~ msgstr "Шығару беттер"
+
+#~ msgid "Context Switches"
+#~ msgstr "Контексті ауыстырушылар"
+
+#~ msgid "Traps"
+#~ msgstr "Тұзақтар"
+
+#~ msgid "System Calls"
+#~ msgstr "Жүйелік шақырулар"
+
+#~ msgid "Network"
+#~ msgstr "Желі"
+
+#~ msgid "Interfaces"
+#~ msgstr "Интерфейстер"
+
+#~ msgid "Transmitter"
+#~ msgstr "Бергіш"
+
+#~ msgid "Data Rate"
+#~ msgstr "Нүктелер жиілігі"
+
+#~ msgid "Compressed Packets Rate"
+#~ msgstr "Сығылған дестелер жиілігі"
+
+#~ msgid "Dropped Packets Rate"
+#~ msgstr "Тастаған дестелер жиілігі"
+
+#~ msgid "Error Rate"
+#~ msgstr "Қателер жиілігі"
+
+#~ msgid "FIFO Overruns Rate"
+#~ msgstr "FIFO кезектің толу жиілігі"
+
+#~ msgid "Frame Error Rate"
+#~ msgstr "Кадр қателер жиілігі"
+
+#~ msgid "Multicast Packet Rate"
+#~ msgstr "Мультикаст дестелер жиілігі"
+
+#~ msgid "Packet Rate"
+#~ msgstr "Дестелер жиілігі"
+
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Loss Rate"
+#~ msgstr "Тасушы жоғалу жиілігі"
+
+#~ msgid "Collisions"
+#~ msgstr "Қайшылықтар"
+
+#~ msgid "Data"
+#~ msgstr "Деректер"
+
+#~ msgid "Compressed Packets"
+#~ msgstr "Сығылған дестелер"
+
+#~ msgid "Dropped Packets"
+#~ msgstr "Тастаған дестелер"
+
+#~ msgid "Errors"
+#~ msgstr "Қателер"
+
+#~ msgid "FIFO Overruns"
+#~ msgstr "FIFO кезектің толуы"
+
+#~ msgid "Frame Errors"
+#~ msgstr "Кадр қателері"
+
+#~ msgid "Multicast Packets"
+#~ msgstr "Мультикаст дестелер"
+
+#~ msgid "Packets"
+#~ msgstr "Дестелер"
+
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Losses"
+#~ msgstr "Тасушы жоғалулары"
+
+#~ msgid "Sockets"
+#~ msgstr "Сокеттер"
+
+#~ msgid "Total Number"
+#~ msgstr "Жалпы саны"
+
+#~ msgid "Table"
+#~ msgstr "Кесте"
+
+#~ msgid "Advanced Power Management"
+#~ msgstr "Қуаттандыруды басқару (APM)"
+
+#~ msgid "ACPI"
+#~ msgstr "ACPI"
+
+#~ msgid "Thermal Zone"
+#~ msgstr "Қызу аймағы"
+
+#~ msgid "Temperature"
+#~ msgstr "Температура"
+
+#~ msgid "Average CPU Temperature"
+#~ msgstr "Процесордың орташа температурасы"
+
+#~ msgid "Fan"
+#~ msgstr "Желдеткіш"
+
+#~ msgid "State"
+#~ msgstr "Күйі"
+
+#~ msgid "Battery"
+#~ msgstr "Батарея"
+
+#~ msgid "Battery Capacity"
+#~ msgstr "Батареяның сыйымдылығы"
+
+#~ msgid "Battery Charge"
+#~ msgstr "Батарея толуы"
+
+#~ msgid "Battery Usage"
+#~ msgstr "Батареяның жұмсалғаны"
+
+#~ msgid "Battery Voltage"
+#~ msgstr "Батареяның кернеуі"
+
+#~ msgid "Battery Discharge Rate"
+#~ msgstr "Батарея сарқылу жылдамдығы"
+
+#~ msgid "Remaining Time"
+#~ msgstr "Қалған уақыт"
+
+#~ msgid "Interrupts"
+#~ msgstr "Үзілімдер"
+
+#~ msgid "Load Average (1 min)"
+#~ msgstr "Орташа жүктелісі (1 мин)"
+
+#~ msgid "Load Average (5 min)"
+#~ msgstr "Орташа жүктелісі (5 мин)"
+
+#~ msgid "Load Average (15 min)"
+#~ msgstr "Орташа жүктелісі (15 мин)"
+
+#~ msgid "Clock Frequency"
+#~ msgstr "Таймер жиілігі"
+
+#~ msgid "Average Clock Frequency"
+#~ msgstr "Таймердің орташа жиілігі"
+
+#~ msgid "Hardware Sensors"
+#~ msgstr "Жабдық сенсорлары"
+
+#~ msgid "Partition Usage"
+#~ msgstr "Бөлімдер қолдануы"
+
+#~ msgid "Used Space"
+#~ msgstr "Жұмсалған орын"
+
+#~ msgid "Free Space"
+#~ msgstr "Бос орын"
+
+#~ msgid "Fill Level"
+#~ msgstr "Толу деңгейі"
+
+#~ msgid "Used Inodes"
+#~ msgstr "Пайдаланған inode-тары"
+
+#~ msgid "Free Inodes"
+#~ msgstr "Бос Inode-тары"
+
+#~ msgid "Inode Level"
+#~ msgstr "Inode деңгейі"
+
+#~ msgid "System"
+#~ msgstr "Жүйе"
+
+#~ msgid "Uptime"
+#~ msgstr "Тірілік уақыты"
+
+#~ msgid "Linux Soft Raid (md)"
+#~ msgstr "Linux Soft Raid (md)"
+
+#~ msgid "Processors"
+#~ msgstr "Процессорлар"
+
+#~ msgid "Cores"
+#~ msgstr "Өзектер"
+
+#~ msgid "Number of Blocks"
+#~ msgstr "Блоктар саны"
+
+#~ msgid "Total Number of Devices"
+#~ msgstr "Жалпы құрылғылар саны"
+
+#~ msgid "Failed Devices"
+#~ msgstr "Жаңылған құрылғылар"
+
+#~ msgid "Spare Devices"
+#~ msgstr "Қосалқы құрылғылар"
+
+#~ msgid "Number of Raid Devices"
+#~ msgstr "Raid құрылғылар саны"
+
+#~ msgid "Working Devices"
+#~ msgstr "Істегі құрылғылар"
+
+#~ msgid "Active Devices"
+#~ msgstr "Белсенді құрылғылар"
+
+#~ msgid "Number of Devices"
+#~ msgstr "Құрылғылар саны"
+
+#~ msgid "Resyncing Percent"
+#~ msgstr "Қайта қадамдастыру пайызы"
+
+#~ msgid "Disk Information"
+#~ msgstr "Диск мәліметі"
+
+#~ msgid "CPU %1"
+#~ msgstr "Процессор %1"
+
+#~ msgid "Disk %1"
+#~ msgstr "Диск %1"
+
+#~ msgid "Battery %1"
+#~ msgstr "%1 батареясы"
+
+#~ msgid "Fan %1"
+#~ msgstr "Желдеткіш %1"
+
+#~ msgid "Temperature %1"
+#~ msgstr "Температура %1"
+
+#~ msgid "Total"
+#~ msgstr "Барлығы"
+
+#~ msgid "Software Interrupts"
+#~ msgstr "Бағдарламалық үзілімдер"
+
+#~ msgid "Hardware Interrupts"
+#~ msgstr "Жабдықтық үзілімдер"
+
+#~ msgid "Int %1"
+#~ msgstr "Int %1"
+
+#~ msgctxt "the unit 1 per second"
+#~ msgid "1/s"
+#~ msgstr "1/с"
+
+#~ msgid "kBytes"
+#~ msgstr "КБайт"
+
+#~ msgctxt "the unit minutes"
+#~ msgid "min"
+#~ msgstr "мин"
+
+#~ msgctxt "the frequency unit"
+#~ msgid "MHz"
+#~ msgstr "МГц"
+
+#~ msgctxt "a percentage"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgctxt "the unit milliamperes"
+#~ msgid "mA"
+#~ msgstr "мА"
+
+#~ msgctxt "the unit milliampere hours"
+#~ msgid "mAh"
+#~ msgstr "мА*сағ"
+
+#~ msgctxt "the unit milliwatts"
+#~ msgid "mW"
+#~ msgstr "мВт"
+
+#~ msgctxt "the unit milliwatt hours"
+#~ msgid "mWh"
+#~ msgstr "мВт*сағ"
+
+#~ msgctxt "the unit millivolts"
+#~ msgid "mV"
+#~ msgstr "мВ"
+
+#~ msgid "Integer Value"
+#~ msgstr "Бүтін сан"
+
+#~ msgid "Floating Point Value"
+#~ msgstr "Қалқымалы үтірлі шама"
+
+#, fuzzy
+#~| msgid " sec"
+#~ msgctxt "Units"
+#~ msgid "%1 second"
+#~ msgid_plural "%1 seconds"
+#~ msgstr[0] " сек"
+
+#, fuzzy
+#~| msgctxt "a percentage"
+#~| msgid "%"
+#~ msgid "%1"
+#~ msgstr "%"
+
+#~ msgid "Font:"
+#~ msgstr "Қаріпі:"
+
+#~ msgid "Grid lines:"
+#~ msgstr "Тор сызықтар:"
+
+#~ msgid "Background:"
+#~ msgstr "Аясы:"
+
+#~ msgid "Do you really want to delete the display?"
+#~ msgstr "Бұл дисплейді кетіруіңіз келгені рас па?"
+
+#~ msgid "Delete Display"
+#~ msgstr "Дисплейді жою"
+
+#~ msgid "&Edit"
+#~ msgstr "Өңд&еу"
+
+#, fuzzy
+#~| msgid "Automatic range detection"
+#~ msgid "Automatic range"
+#~ msgstr "Шектерді автоматты түрде орнату"
+
+#, fuzzy
+#~| msgctxt "a percentage"
+#~| msgid "%"
+#~ msgctxt "units in percentage"
+#~ msgid "%1%"
+#~ msgstr "%"
+
+#~ msgid ""
+#~ "This is your work space. It holds your tabs. You need to create a new tab "
+#~ "(Menu File->New) before you can drag sensors here."
+#~ msgstr ""
+#~ "Бұл жұмыс орныңыз. Мұнда қойындыларыңыз орналасады. Сенсоларды сүйреп "
+#~ "әкелудің алдында жаңа бір (Файл->Жаңа) қойындысын құрыңыз."
+
+#~ msgid "Connection to %1 has been lost."
+#~ msgstr "%1 қосылымы үзілген."
+
+#~ msgid "&Title"
+#~ msgstr "&Айдар"
+
+#~ msgid "T&itle"
+#~ msgstr "&Айдар"
+
+#~ msgid "System Guard Applet Settings"
+#~ msgstr "Жүйені бақылау апплетін баптау"
+
+#~ msgid "Size ratio:"
+#~ msgstr "Өлшемдер арақатынасы:"
+
+#~ msgctxt "Number suffix in spinbox"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgid "Launch &System Guard"
+#~ msgstr "&Жүйе бақылауышты жегу"

@@ -1,0 +1,2537 @@
+# Translation of ksysguard.po to Cymraeg
+# Bwrdd Gwaith yn Gymraeg.
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# www.kyfieithu.co.uk<kyfieithu@dotmon.com>, www.gyfieithu.co.uk<kyfieithu@dotmon.com>, 2003.
+# KGyfieithu <kyfieithu@dotmon.com>, 2003
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ksysguard\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-09-20 01:53+0000\n"
+"PO-Revision-Date: 2003-07-16 16:12+0100\n"
+"Last-Translator: KGyfieithu <kyfieithu@dotmon.com>\n"
+"Language-Team: Cymraeg <cy@li.org>\n"
+"Language: cy\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0.1\n"
+"\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Owain Green drwy KGyfieithu"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "kyfieithu@dotmon.com"
+
+#: HostConnector.cpp:44
+#, kde-format
+msgid "Connect Host"
+msgstr "Cysylltu Westeiwr "
+
+#: HostConnector.cpp:57
+#, kde-format
+msgid "Host:"
+msgstr "Gwesteiwr"
+
+#: HostConnector.cpp:67
+#, kde-format
+msgid "Enter the name of the host you want to connect to."
+msgstr "Rhowch enw o'r gwesteiwr rydych chi eisiau cysylltu iddo."
+
+#: HostConnector.cpp:73
+#, kde-format
+msgid "Connection Type"
+msgstr "Math Cysylltiad"
+
+#: HostConnector.cpp:78
+#, kde-format
+msgid "ssh"
+msgstr "ssh"
+
+#: HostConnector.cpp:81
+#, kde-format
+msgid "Select this to use the secure shell to login to the remote host."
+msgstr ""
+"Dewisiwch hwn i ddefnyddio'r plisgyn diogel i fewngofnodi i'r gwesteiwr "
+"pell.  "
+
+#: HostConnector.cpp:84
+#, kde-format
+msgid "rsh"
+msgstr "rsh"
+
+#: HostConnector.cpp:85
+#, kde-format
+msgid "Select this to use the remote shell to login to the remote host."
+msgstr ""
+"Dewisiwch hwn i ddefnyddio'r plisgyn pell i fewngofnodi i'r gwesteiwr pell."
+
+#: HostConnector.cpp:88
+#, kde-format
+msgid "Daemon"
+msgstr "Daemon"
+
+#: HostConnector.cpp:89
+#, kde-format
+msgid ""
+"Select this if you want to connect to a ksysguard daemon that is running on "
+"the machine you want to connect to, and is listening for client requests."
+msgstr ""
+"Dewisiwch hwn os rydych chi eisiau cysylltu i daemon ksysguard sy'n rhedeg "
+"ar y cyfrifiadur rydych chi eisiau cysylltu iddo, ac sy'n gwrando am "
+"geisiadau dibynnydd."
+
+#: HostConnector.cpp:92
+#, kde-format
+msgid "Custom command"
+msgstr "Gorchymyn Addasu"
+
+#: HostConnector.cpp:93
+#, kde-format
+msgid ""
+"Select this to use the command you entered below to start ksysguardd on the "
+"remote host."
+msgstr ""
+"Dewisiwch hyn i ddefnyddio'r gorchymyn yr ydych wedi mewnosod isod i gychwyn "
+"ksysguardd ar y gwesteiwr pell."
+
+#: HostConnector.cpp:96
+#, kde-format
+msgid "Port:"
+msgstr "Porth:"
+
+#: HostConnector.cpp:103
+#, kde-format
+msgid ""
+"Enter the port number on which the ksysguard daemon is listening for "
+"connections."
+msgstr ""
+"Mewnosodwch y rhif porth y mae'r daemon ksysguard yn gwrando arno am "
+"gysylltiadau."
+
+#: HostConnector.cpp:106
+#, kde-format
+msgid "e.g.  3112"
+msgstr "e.e. 3112"
+
+#: HostConnector.cpp:109
+#, kde-format
+msgid "Command:"
+msgstr "Gorchymyn:"
+
+#: HostConnector.cpp:118
+#, kde-format
+msgid "Enter the command that runs ksysguardd on the host you want to monitor."
+msgstr ""
+"Mewnosodwch y gorchymyn sy'n rhedeg ksysguardd ar y gwesteiwr rydych eisiau "
+"ei fonitro."
+
+#: HostConnector.cpp:122
+#, kde-format
+msgid "e.g. ssh -l root remote.host.org ksysguardd"
+msgstr "e.e. ssh -l root remote.host.org ksysguardd  "
+
+#: ksysguard.cpp:74
+#, fuzzy, kde-format
+msgid "KDE System Monitor"
+msgstr "Gwarchodwr Cysawd KDE"
+
+#: ksysguard.cpp:157
+#, kde-format
+msgid ""
+"This will hide the menu bar completely. You can show it again by typing %1."
+msgstr ""
+
+#: ksysguard.cpp:159
+#, kde-format
+msgid "Hide menu bar"
+msgstr ""
+
+#: ksysguard.cpp:177 ksysguard.cpp:571
+#, fuzzy, kde-format
+msgid "System Monitor"
+msgstr "Llwyth Cysawd"
+
+#: ksysguard.cpp:178
+#, fuzzy, kde-format
+#| msgid "&Refresh"
+msgid "&Refresh Tab"
+msgstr "&Ailfywio"
+
+#: ksysguard.cpp:179
+#, kde-format
+msgid "&New Tab..."
+msgstr ""
+
+#: ksysguard.cpp:180
+#, kde-format
+msgid "Import Tab Fr&om File..."
+msgstr ""
+
+#: ksysguard.cpp:181
+#, kde-format
+msgid "Save Tab &As..."
+msgstr ""
+
+#: ksysguard.cpp:182
+#, kde-format
+msgid "&Close Tab"
+msgstr ""
+
+#: ksysguard.cpp:183
+#, kde-format
+msgid "Monitor &Remote Machine..."
+msgstr ""
+
+#: ksysguard.cpp:184
+#, fuzzy, kde-format
+msgid "&Download New Tabs..."
+msgstr "Ailosod Pob Gweithlen"
+
+#: ksysguard.cpp:185
+#, fuzzy, kde-format
+msgid "&Upload Current Tab..."
+msgstr "Ailosod Pob Gweithlen"
+
+#: ksysguard.cpp:187
+#, fuzzy, kde-format
+#| msgid "&Properties"
+msgid "Tab &Properties"
+msgstr "&Priodweddau"
+
+#: ksysguard.cpp:384
+#, fuzzy, kde-format
+msgid "1 process"
+msgid_plural "%1 processes"
+msgstr[0] "%1 Proses"
+msgstr[1] "%1 Proses"
+
+#: ksysguard.cpp:465
+#, fuzzy, kde-format
+msgid "CPU: %1%"
+msgstr "CPU%1 "
+
+#: ksysguard.cpp:465
+#, fuzzy, kde-format
+msgctxt "This is the shorter version of CPU: %1%"
+msgid "%1%"
+msgstr "%"
+
+#: ksysguard.cpp:484
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Memory: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:486
+#, kde-format
+msgctxt ""
+"Arguments are formatted byte sizes (used/total) This should be a shorter "
+"version of the previous Memory: %1 / %2"
+msgid "Mem: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:488
+#, kde-format
+msgctxt ""
+"Arguments is formatted byte sizes (used) This should be a shorter version of "
+"the previous Mem: %1 / %2"
+msgid "Mem: %1"
+msgstr ""
+
+#: ksysguard.cpp:516
+#, kde-format
+msgid " No swap space available "
+msgstr ""
+
+#: ksysguard.cpp:520
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Swap: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:522
+#, kde-format
+msgctxt "Arguments is formatted byte sizes (used)"
+msgid "Swap: %1"
+msgstr ""
+
+#: ksysguard.cpp:573
+#, fuzzy, kde-format
+msgid "(c) 1996-2016 The KDE System Monitor Developers"
+msgstr "(h)(c) 1996-2002 Datblygwyr KSysGuard"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "John Tapsell"
+msgstr ""
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Current Maintainer"
+msgstr ""
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Chris Schlaeger"
+msgstr ""
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Previous Maintainer"
+msgstr ""
+
+#: ksysguard.cpp:577
+#, kde-format
+msgid "Greg Martyn"
+msgstr ""
+
+#: ksysguard.cpp:578
+#, kde-format
+msgid "Tobias Koenig"
+msgstr ""
+
+#: ksysguard.cpp:579
+#, kde-format
+msgid "Nicolas Leclercq"
+msgstr ""
+
+#: ksysguard.cpp:580
+#, kde-format
+msgid "Alex Sanda"
+msgstr ""
+
+#: ksysguard.cpp:581
+#, kde-format
+msgid "Bernd Johannes Wuebben"
+msgstr ""
+
+#: ksysguard.cpp:582
+#, kde-format
+msgid "Ralf Mueller"
+msgstr ""
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid "Hamish Rodda"
+msgstr ""
+
+#: ksysguard.cpp:584
+#, kde-format
+msgid "Torsten Kasch"
+msgstr ""
+
+#: ksysguard.cpp:584
+#, kde-format
+msgid ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+msgstr ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+
+#: ksysguard.cpp:593
+#, kde-format
+msgid "Optional worksheet files to load"
+msgstr "Ffeiliau gweithlenni dewisol i'w llwytho"
+
+#. i18n: ectx: Menu (file)
+#: ksysguardui.rc:5
+#, fuzzy, kde-format
+msgid "&File"
+msgstr "Hidlen"
+
+#. i18n: ectx: Menu (view)
+#: ksysguardui.rc:15
+#, fuzzy, kde-format
+msgid "&View"
+msgstr "Hidlen"
+
+#. i18n: ectx: Menu (settings)
+#: ksysguardui.rc:19
+#, fuzzy, kde-format
+msgid "&Settings"
+msgstr "Gosodiadau Cyfrifydd Amser"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ksysguardui.rc:22
+#, kde-format
+msgid "Main Toolbar"
+msgstr ""
+
+#. i18n: tag WorkSheet attribute title
+#. i18n: tag display attribute title
+#: ProcessTable.sgrd:3 ProcessTable.sgrd:5
+#, kde-format
+msgid "Process Table"
+msgstr "Tabl Prosesau"
+
+#: SensorBrowser.cpp:113
+#, kde-format
+msgid "Sensor Browser"
+msgstr "Porydd Synwyryddion"
+
+#: SensorBrowser.cpp:473
+#, fuzzy, kde-format
+msgid "Drag sensors to empty cells of a worksheet "
+msgstr "Llusgwch synwyryddion i feysydd gwag mewn gweithlen"
+
+#: SensorBrowser.cpp:474
+#, fuzzy, kde-format
+#| msgid ""
+#| "The sensor browser lists the connected hosts and the sensors that they "
+#| "provide. Click and drag sensors into drop zones of a worksheet or the "
+#| "panel applet. A display will appear that visualizes the values provided "
+#| "by the sensor. Some sensor displays can display values of multiple "
+#| "sensors. Simply drag other sensors on to the display to add more sensors."
+msgid ""
+"The sensor browser lists the connected hosts and the sensors that they "
+"provide. Click and drag sensors into drop zones of a worksheet. A display "
+"will appear that visualizes the values provided by the sensor. Some sensor "
+"displays can display values of multiple sensors. Simply drag other sensors "
+"on to the display to add more sensors."
+msgstr ""
+"Rhestra'r porwr synwyryddion y gwesteiwyr cysylltiedig a'r synwyryddion "
+"maent yn eu darparu. Cliciwch a llusgwch synwyryddion i gylchfeydd gollwng "
+"gweithlen neu'r rhaglennig panel. Ymddengys dangosiad sy'n darlunio'r "
+"gwerthoedd a ddarperir gan y synhwyrydd. Gall rai dangosiadau synhwyrydd "
+"ddangos gwerthoedd sawl synhwyrydd. Llusgwch synwyryddion eraill i'r "
+"dangosiad i ychwanegu rhagor o synwyryddion."
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:280
+#, kde-format
+msgid "OK"
+msgstr ""
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:280
+#: SensorDisplayLib/FancyPlotter.cpp:544 SensorDisplayLib/FancyPlotter.cpp:623
+#, fuzzy, kde-format
+msgid "Error"
+msgstr "Gwallau"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:42
+#, kde-format
+msgid "Edit BarGraph Preferences"
+msgstr "Golygu Hoffiannau GraffBar"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:51
+#, kde-format
+msgid "Range"
+msgstr "Amrediad"
+
+#. i18n: ectx: property (title), widget (QGroupBox, titleFrame)
+#: SensorDisplayLib/DancingBarsSettings.cpp:55
+#: SensorDisplayLib/ListViewSettingsWidget.ui:17
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:17 WorkSheetSettings.cpp:61
+#, kde-format
+msgid "Title"
+msgstr "Teitl"
+
+#. i18n: ectx: property (whatsThis), widget (QLineEdit, m_title)
+#: SensorDisplayLib/DancingBarsSettings.cpp:60
+#: SensorDisplayLib/FancyPlotterSettings.cpp:70
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
+#, kde-format
+msgid "Enter the title of the display here."
+msgstr "Rhowch deitl y dangosydd yma."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:65
+#, kde-format
+msgid "Display Range"
+msgstr "Amrediad Dangosydd"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:70
+#: SensorDisplayLib/FancyPlotterSettings.cpp:96
+#, kde-format
+msgid "Minimum value:"
+msgstr "Gwerth isaf:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:78
+#, fuzzy, kde-format
+msgid ""
+"Enter the minimum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Enter the minimum value for the display here. If both values are 0 automatic "
+"range detection is enabled."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:82
+#: SensorDisplayLib/FancyPlotterSettings.cpp:107
+#, kde-format
+msgid "Maximum value:"
+msgstr "Gwerth uchaf:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:90
+#, fuzzy, kde-format
+msgid ""
+"Enter the maximum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Rhowch gwerth uchafswm y dangosydd yma. Os yw'r ddau werth yn 0 galluogir "
+"darganfod amrediad ymysgogol."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:100
+#, kde-format
+msgid "Alarms"
+msgstr "Larymau"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
+#: SensorDisplayLib/DancingBarsSettings.cpp:104
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
+#, kde-format
+msgid "Alarm for Minimum Value"
+msgstr "Larwm Gwerth Isaf"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:109
+#: SensorDisplayLib/DancingBarsSettings.cpp:132
+#, kde-format
+msgid "Enable alarm"
+msgstr "Galluogi Larwm"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:110
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:57
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
+#, kde-format
+msgid "Enable the minimum value alarm."
+msgstr "Galluogi'r larwm gwerth isaf."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:113
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:125
+#, kde-format
+msgid "Lower limit:"
+msgstr "Terfyn is:"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1_2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:127
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
+#, kde-format
+msgid "Alarm for Maximum Value"
+msgstr "Larwm Gwerth Uchaf"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:133
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:116
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
+#, kde-format
+msgid "Enable the maximum value alarm."
+msgstr "Galluogi'r larwm gwerth uchaf."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:136
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:198
+#, kde-format
+msgid "Upper limit:"
+msgstr "Terfyn uwch:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:153
+#, fuzzy, kde-format
+#| msgid "Look"
+msgctxt "@title:tab Appearance of the bar graph"
+msgid "Look"
+msgstr "Golwg"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:157
+#, kde-format
+msgid "Normal bar color:"
+msgstr "Lliw bar arferol:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:164
+#, kde-format
+msgid "Out-of-range color:"
+msgstr "Lliw tu-allan-i'r-amrediad:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/DancingBarsSettings.cpp:171
+#: SensorDisplayLib/ListViewSettingsWidget.ui:105
+#: SensorDisplayLib/LogFile.cpp:105 SensorDisplayLib/LogFileSettings.ui:85
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:92
+#, kde-format
+msgid "Background color:"
+msgstr "Lliw cefndir:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:178
+#: SensorDisplayLib/FancyPlotterSettings.cpp:177
+#, kde-format
+msgid "Font size:"
+msgstr "Maint ffont:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:183
+#, kde-format
+msgid ""
+"This determines the size of the font used to print a label underneath the "
+"bars. Bars are automatically suppressed if text becomes too large, so it is "
+"advisable to use a small font size here."
+msgstr ""
+"Penna hwn faint y wynebfath a ddefnyddir i argraffu label o dan y bariau. Fe "
+"rwystrir bariau'n ymysgogol os ddaw testun yn rhy fawr, felly mae'n syniad "
+"da dewis maint wynebfath bach yma."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:191
+#: SensorDisplayLib/FancyPlotterSettings.cpp:193
+#, kde-format
+msgid "Sensors"
+msgstr "Synwyryddion"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:204
+#, kde-format
+msgid "Edit..."
+msgstr "Golygu..."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:205
+#, kde-format
+msgid "Push this button to configure the label."
+msgstr "Gwasgwch y botwm yma i ffurfweddu'r label."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:208
+#: SensorDisplayLib/FancyPlotterSettings.cpp:225
+#, kde-format
+msgid "Delete"
+msgstr ""
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:209
+#: SensorDisplayLib/FancyPlotterSettings.cpp:226
+#, kde-format
+msgid "Push this button to delete the sensor."
+msgstr "Gwasgwch y botwm yma i ddileu'r synhwyrydd."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:361
+#, kde-format
+msgid "Label of Bar Graph"
+msgstr "Label Graff Bar"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:362
+#, kde-format
+msgid "Enter new label:"
+msgstr "Rhowch label newydd:"
+
+#: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
+#, kde-format
+msgid "Drop Sensor Here"
+msgstr "Gollyngwch Synhwyrydd Yma"
+
+#: SensorDisplayLib/DummyDisplay.cpp:33
+#, kde-format
+msgid ""
+"This is an empty space in a worksheet. Drag a sensor from the Sensor Browser "
+"and drop it here. A sensor display will appear that allows you to monitor "
+"the values of the sensor over time."
+msgstr ""
+"Dyma le gwag mewn gweithlen. Llusgwch synhwyrydd yma o'r Porydd Synwyryddion "
+"a'i ollwng yma. Ymddengys dangosydd synhwyrydd sy'n caniatáu i chi arsylwi "
+"gwerthoedd y synhwyrydd dros amser."
+
+#: SensorDisplayLib/FancyPlotter.cpp:176
+#, kde-format
+msgctxt "Largest axis title"
+msgid "99999 XXXX"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:540 SensorDisplayLib/FancyPlotter.cpp:612
+#: SensorDisplayLib/FancyPlotter.cpp:675
+#, kde-format
+msgctxt "units"
+msgid "%1%"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:548
+#, kde-format
+msgctxt "%1 is what is being shown statistics for, like 'Memory', 'Swap', etc."
+msgid "<p><b>%1:</b><br>"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:620
+#, kde-format
+msgid "%1 of %2"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:648
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:651
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:654
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:657
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:662
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:665
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:668
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:671
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:677
+#, fuzzy, kde-format
+msgctxt "unitless - just a number"
+msgid "%1"
+msgstr "%"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:46
+#, fuzzy, kde-format
+#| msgid "Signal Plotter Settings"
+msgid "Plotter Settings"
+msgstr "Gosodiadau Plotydd Signalau"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:62
+#, kde-format
+msgid "General"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:66
+#, kde-format
+msgid "Title:"
+msgstr "Teitl:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:74
+#, kde-format
+msgid "Stack the beams on top of each other"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:75
+#, kde-format
+msgid ""
+"The beams are stacked on top of each other, and the area is drawn filled in. "
+"So if one beam has a value of 2 and another beam has a value of 3, the first "
+"beam will be drawn at value 2 and the other beam drawn at 2+3=5."
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:82
+#, kde-format
+msgid "Scales"
+msgstr "Graddfeydd"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:86
+#, fuzzy, kde-format
+#| msgid "Vertical Scale"
+msgid "Vertical scale"
+msgstr "Graddfa Fertigol"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:91
+#, kde-format
+msgid "Specify graph range:"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:92
+#, fuzzy, kde-format
+msgid ""
+"Check this box if you want the display range to adapt dynamically to the "
+"currently displayed values; if you do not check this, you have to specify "
+"the range you want in the fields below."
+msgstr ""
+"Dewiswch y blwch yma os ydych am i amrediad y dangosydd addasu'n ddynamig "
+"i'r gwerthoedd a ddangosir yn gyfredol. Os na ddewiswch hwn, bydd rhaid i "
+"chi benodi'r amrediad yr hoffech yn y meysydd isod."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:102
+#, fuzzy, kde-format
+#| msgid "Enter the title of the display here."
+msgid "Enter the minimum value for the display here."
+msgstr "Rhowch deitl y dangosydd yma."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:113
+#, kde-format
+msgid ""
+"Enter the soft maximum value for the display here. The upper range will not "
+"be reduced below this value, but will still go above this number for values "
+"above this value."
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:120
+#, fuzzy, kde-format
+#| msgid "Horizontal Scale"
+msgid "Horizontal scale"
+msgstr "Graddfa Llorweddol"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:128
+#, fuzzy, kde-format
+msgid "Pixels per time period:"
+msgstr "picsel(i) bob cyfnod amser"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:135
+#, kde-format
+msgid "Grid"
+msgstr "Grid"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:139
+#, kde-format
+msgid "Lines"
+msgstr "Llinellau"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:144
+#, kde-format
+msgid "Vertical lines"
+msgstr "Llinellau fertigol"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:145
+#, kde-format
+msgid "Check this to activate the vertical lines if display is large enough."
+msgstr ""
+"Dewiswch hwn i weithredoli'r llinellau fertigol os yw'r dangosydd digon mawr."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:148
+#, kde-format
+msgid "Distance:"
+msgstr "Pellder:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:155
+#, kde-format
+msgid "Enter the distance between two vertical lines here."
+msgstr "Rhowch y pellder rhwng dwy linell fertigol yma."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:159
+#, kde-format
+msgid "Vertical lines scroll"
+msgstr "Sgrolio llinellau fertigol"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:162
+#, kde-format
+msgid "Horizontal lines"
+msgstr "Llinellau llorweddol"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:163
+#, kde-format
+msgid "Check this to enable horizontal lines if display is large enough."
+msgstr ""
+"Dewiswch hwn i alluogi llinellau llorweddol os yw'r dangosydd digon mawr."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:168
+#, kde-format
+msgid "Text"
+msgstr "Testun"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:173
+#, kde-format
+msgid "Show axis labels"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:174
+#, kde-format
+msgid ""
+"Check this box if horizontal lines should be decorated with the values they "
+"mark."
+msgstr ""
+"Dewiswch y blwch hwn os y dylid addurno'r llinellau llorweddol â'r "
+"gwerthoedd y maent yn eu nodi."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:217
+#, kde-format
+msgid "Set Color..."
+msgstr "Gosod Lliw..."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:218
+#, kde-format
+msgid "Push this button to configure the color of the sensor in the diagram."
+msgstr "Gwasgwch y botwm yma i ffurfweddu lliw y synhwyrydd yn y ddiagram."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:230
+#, kde-format
+msgid "Move Up"
+msgstr "Symud i Fyny"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:235
+#, kde-format
+msgid "Move Down"
+msgstr "Symud i Lawr"
+
+#: SensorDisplayLib/ListView.cpp:44
+#, fuzzy, kde-format
+msgid "%1 K"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:45
+#, fuzzy, kde-format
+msgid "%1 M"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:46
+#, fuzzy, kde-format
+msgid "%1 G"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:47
+#, fuzzy, kde-format
+msgid "%1 T"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:48
+#, fuzzy, kde-format
+msgid "%1 P"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:151
+#, fuzzy, kde-format
+#| msgid "Display Range"
+msgid "Display Units"
+msgstr "Amrediad Dangosydd"
+
+#: SensorDisplayLib/ListView.cpp:155
+#, kde-format
+msgid "Mixed"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:161
+#, kde-format
+msgid "Kilobytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:167
+#, kde-format
+msgid "Megabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:173
+#, kde-format
+msgid "Gigabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:179
+#, fuzzy, kde-format
+#| msgid "Temperature"
+msgid "Terabytes"
+msgstr "Tymheredd[1]"
+
+#: SensorDisplayLib/ListViewSettings.cpp:30
+#, kde-format
+msgid "List View Settings"
+msgstr "Gosodiadau Golwg Restr"
+
+#. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:47
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:47
+#, kde-format
+msgid "Colors"
+msgstr "Lliwiau:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:79
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
+#, kde-format
+msgid "Text color:"
+msgstr "Lliw testun:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:92
+#, kde-format
+msgid "Grid color:"
+msgstr "Lliw grid:"
+
+#: SensorDisplayLib/LogFile.cpp:93
+#, fuzzy, kde-format
+#| msgid "Log File Settings"
+msgid "File logging settings"
+msgstr "Gosodiadau Ffeil Gofnod"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
+#, kde-format
+msgid "Foreground color:"
+msgstr "Lliw blaendir:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, textTab)
+#: SensorDisplayLib/LogFileSettings.ui:21
+#, fuzzy, kde-format
+#| msgid "Text"
+msgid "&Text"
+msgstr "Testun"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/LogFileSettings.ui:29
+#, fuzzy, kde-format
+#| msgid "Title:"
+msgid "T&itle:"
+msgstr "Teitl:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: SensorDisplayLib/LogFileSettings.ui:166
+#, fuzzy, kde-format
+#| msgid "Filter"
+msgid "Fi&lter"
+msgstr "Hidlen"
+
+#. i18n: ectx: property (text), widget (QPushButton, addButton)
+#: SensorDisplayLib/LogFileSettings.ui:196
+#, kde-format
+msgid "&Add"
+msgstr "&Ychwanegu"
+
+#. i18n: ectx: property (text), widget (QPushButton, deleteButton)
+#: SensorDisplayLib/LogFileSettings.ui:203
+#, kde-format
+msgid "&Delete"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QPushButton, changeButton)
+#: SensorDisplayLib/LogFileSettings.ui:210
+#, kde-format
+msgid "&Change"
+msgstr "&Newid"
+
+#: SensorDisplayLib/MultiMeterSettings.cpp:33
+#, fuzzy, kde-format
+#| msgid "Multimeter Settings"
+msgctxt ""
+"Multimeter is a sensor display that mimics 'digital multimeter' aparatus"
+msgid "Multimeter Settings"
+msgstr "Gosodiadau Amlfesurydd"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:26
+#, fuzzy, kde-format
+#| msgid "Title:"
+msgid "&Title:"
+msgstr "Teitl:"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:43
+#, kde-format
+msgid "Enable this to append the unit to the title of the display."
+msgstr "Galluogwch hwn i atodi'r uned i deitl y dangosydd."
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
+#, kde-format
+msgid "&Show unit"
+msgstr "&Dangos uned"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
+#, kde-format
+msgid "&Enable alarm"
+msgstr "&Galluogi larwm"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
+#, fuzzy, kde-format
+#| msgid "Lower limit:"
+msgid "&Lower limit:"
+msgstr "Terfyn is:"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
+#, kde-format
+msgid "E&nable alarm"
+msgstr "G&alluogi larwm"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
+#, fuzzy, kde-format
+#| msgid "Upper limit:"
+msgid "&Upper limit:"
+msgstr "Terfyn uwch:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
+#, fuzzy, kde-format
+#| msgid "Normal digit color:"
+msgid "Nor&mal digit color:"
+msgstr "Lliw digid arferol:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
+#, fuzzy, kde-format
+#| msgid "Alarm digit color:"
+msgid "Alarm di&git color:"
+msgstr "Lliw digid larwm:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
+#, fuzzy, kde-format
+#| msgid "Background color:"
+msgid "Bac&kground color:"
+msgstr "Lliw cefndir:"
+
+#: SensorDisplayLib/SensorDisplay.cpp:115 SensorDisplayLib/SensorLogger.cpp:587
+#, kde-format
+msgid "&Properties"
+msgstr "&Priodweddau"
+
+#: SensorDisplayLib/SensorDisplay.cpp:120 SensorDisplayLib/SensorLogger.cpp:592
+#, kde-format
+msgid "&Remove Display"
+msgstr "&Gwaredu Dangosydd"
+
+#: SensorDisplayLib/SensorDisplay.cpp:187
+#, fuzzy, kde-format
+msgid ""
+"<qt><p>This is a sensor display. To customize a sensor display click the "
+"right mouse button here and select the <i>Properties</i> entry from the "
+"popup menu. Select <i>Remove</i> to delete the display from the worksheet.</"
+"p>%1</qt>"
+msgstr ""
+"<qt><p>Dyma ddangosydd synhwyrydd. Cliciwch a daliwch botwm dde'r lygoden ar "
+"naill ai'r ffrâm neu'r blwch dangos, a dewiswch y gofnod <i>Briodweddau</i> "
+"o'r naidlen i addasu dangosydd synhwyrydd. Dewiswch <i>Gwaredu</i> i "
+"ddileu'r dangosydd o'r weithlen.</p>%1</qt>"
+
+#: SensorDisplayLib/SensorLogger.cpp:132
+#, fuzzy, kde-format
+#| msgid "Logging"
+msgctxt "@title:column"
+msgid "Logging"
+msgstr "Cofnodi"
+
+#: SensorDisplayLib/SensorLogger.cpp:134
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:column"
+msgid "Timer Interval"
+msgstr "Cyfnod Amserydd"
+
+#: SensorDisplayLib/SensorLogger.cpp:136
+#, fuzzy, kde-format
+#| msgid "Sensor Name"
+msgctxt "@title:column"
+msgid "Sensor Name"
+msgstr "Enw Synhwyrydd"
+
+#: SensorDisplayLib/SensorLogger.cpp:138
+#, fuzzy, kde-format
+#| msgid "Host Name"
+msgctxt "@title:column"
+msgid "Host Name"
+msgstr "Enw Gwesteiwr"
+
+#: SensorDisplayLib/SensorLogger.cpp:140
+#, fuzzy, kde-format
+#| msgid "Log File"
+msgctxt "@title:column"
+msgid "Log File"
+msgstr "Ffeil Gofnod"
+
+#: SensorDisplayLib/SensorLogger.cpp:418
+#: SensorDisplayLib/SensorLoggerDlg.cpp:30
+#, kde-format
+msgid "Sensor Logger"
+msgstr "Cofnodydd Synhwyrydd"
+
+#: SensorDisplayLib/SensorLogger.cpp:597
+#, kde-format
+msgid "&Remove Sensor"
+msgstr "&Gwaredu Synhwyrydd"
+
+#: SensorDisplayLib/SensorLogger.cpp:602
+#, kde-format
+msgid "&Edit Sensor..."
+msgstr "&Golygu Synhwyrydd"
+
+#: SensorDisplayLib/SensorLogger.cpp:610
+#, kde-format
+msgid "St&op Logging"
+msgstr "Peidi&o rhag Cofnodi"
+
+#: SensorDisplayLib/SensorLogger.cpp:613
+#, kde-format
+msgid "S&tart Logging"
+msgstr "&Dechrau Cofnodi"
+
+#. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
+#, fuzzy, kde-format
+msgid "File"
+msgstr "Hidlen"
+
+#. i18n: ectx: property (title), widget (QGroupBox, timerFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:41
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:group"
+msgid "Timer Interval"
+msgstr "Cyfnod Amserydd"
+
+#. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
+#, kde-format
+msgid " sec"
+msgstr "eil"
+
+#: SensorDisplayLib/SensorLoggerSettings.cpp:30
+#, kde-format
+msgid "Sensor Logger Settings"
+msgstr "Gosodiadau Cofnodydd Synhwyrydd"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
+#, kde-format
+msgid "Alarm color:"
+msgstr "Lliw larwm:"
+
+#: SensorDisplayLib/SensorModel.cpp:161
+#, kde-format
+msgid "Host"
+msgstr "Gwesteiwr"
+
+#: SensorDisplayLib/SensorModel.cpp:163
+#, kde-format
+msgid "Sensor"
+msgstr "Synhwyrydd"
+
+#: SensorDisplayLib/SensorModel.cpp:165
+#, kde-format
+msgid "Unit"
+msgstr "Uned"
+
+#: SensorDisplayLib/SensorModel.cpp:167
+#, kde-format
+msgid "Status"
+msgstr "Cyflwr"
+
+#: SensorDisplayLib/SensorModel.cpp:169
+#, kde-format
+msgid "Label"
+msgstr "Label"
+
+#. i18n: tag WorkSheet attribute title
+#: SystemLoad2.sgrd:3
+#, kde-format
+msgid "System Load"
+msgstr "Llwyth Cysawd"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:5
+#, kde-format
+msgid "CPU History"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:8
+#, kde-format
+msgid "Memory and Swap History"
+msgstr ""
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:9
+#, kde-format
+msgid "Memory"
+msgstr "Cof"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:10
+#, kde-format
+msgid "Swap"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:12
+#, fuzzy, kde-format
+#| msgid "Network"
+msgid "Network History"
+msgstr "Rhwydwaith"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:13
+#, fuzzy, kde-format
+#| msgid "Receiver"
+msgid "Receiving"
+msgstr "Derbynnydd"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:14
+#, fuzzy, kde-format
+#| msgid "Send"
+msgid "Sending"
+msgstr "Anfon"
+
+#: WorkSheet.cpp:87
+#, fuzzy, kde-format
+msgid "Cannot open the file %1."
+msgstr "Methu agor y ffeil %1"
+
+#: WorkSheet.cpp:95
+#, kde-format
+msgid "The file %1 does not contain valid XML."
+msgstr "Nid yw'r ffeil %1 yn cynnwys XML dilys."
+
+#: WorkSheet.cpp:102
+#, kde-format
+msgid ""
+"The file %1 does not contain a valid worksheet definition, which must have a "
+"document type 'KSysGuardWorkSheet'."
+msgstr ""
+"Nid yw'r ffeil %1 yn cynnwys diffiniad gweithlen, sydd angen biau math "
+"dogfen 'KSysGuardWorkSheet'. "
+
+#: WorkSheet.cpp:114
+#, kde-format
+msgid "The file %1 has an invalid worksheet size."
+msgstr "Mae'r ffeil %1 gyda maint gweithlen annilys."
+
+#: WorkSheet.cpp:239
+#, fuzzy, kde-format
+msgid "Cannot save file %1"
+msgstr "Methu cadw ffeil %1"
+
+#: WorkSheet.cpp:287
+#, kde-format
+msgid "The clipboard does not contain a valid display description."
+msgstr "Nid yw'r gludfwrdd yn cynnwys disgrifiad dangosydd dilys."
+
+#: WorkSheet.cpp:387
+#, kde-format
+msgid "Select Display Type"
+msgstr "Dewis Math Dangosydd"
+
+#: WorkSheet.cpp:388
+#, kde-format
+msgid "&Line graph"
+msgstr ""
+
+#: WorkSheet.cpp:389
+#, kde-format
+msgid "&Digital display"
+msgstr ""
+
+#: WorkSheet.cpp:390
+#, fuzzy, kde-format
+msgid "&Bar graph"
+msgstr "&GraffBar"
+
+#: WorkSheet.cpp:391
+#, fuzzy, kde-format
+msgid "Log to a &file"
+msgstr "Ffeil Gofnod"
+
+#: WorkSheet.cpp:547
+#, fuzzy, kde-format
+#| msgid "&Remove Display"
+msgid "Remove this display?"
+msgstr "&Gwaredu Dangosydd"
+
+#: WorkSheet.cpp:548
+#, fuzzy, kde-format
+#| msgid "&Remove Display"
+msgid "Remove Display"
+msgstr "&Gwaredu Dangosydd"
+
+#: WorkSheet.cpp:589
+#, kde-format
+msgid "Dummy"
+msgstr ""
+
+#: WorkSheetSettings.cpp:43
+#, fuzzy, kde-format
+msgid "Tab Properties"
+msgstr "&Priodweddau"
+
+#: WorkSheetSettings.cpp:72
+#, fuzzy, kde-format
+msgid "Properties"
+msgstr "&Priodweddau"
+
+#: WorkSheetSettings.cpp:81
+#, kde-format
+msgid "Rows:"
+msgstr "Rhesi:"
+
+#: WorkSheetSettings.cpp:91
+#, kde-format
+msgid "Columns:"
+msgstr "Colofnau:"
+
+#: WorkSheetSettings.cpp:100
+#, kde-format
+msgid "Enter the number of rows the sheet should have."
+msgstr "Rhowch y nifer o resi dylai bod ar y len."
+
+#: WorkSheetSettings.cpp:101
+#, kde-format
+msgid "Enter the number of columns the sheet should have."
+msgstr "Rhowch y nifer o golofnau dylai bod ar y len."
+
+#: WorkSheetSettings.cpp:103
+#, kde-format
+msgid "Update interval:"
+msgstr "Egwyl diweddaru:"
+
+#: WorkSheetSettings.cpp:116
+#, kde-format
+msgid "All displays of the sheet are updated at the rate specified here."
+msgstr ""
+"Mae pob dangosiad o'r daflen yn cael ei diweddaru ar y raddfa a welir yma. "
+
+#: WorkSheetSettings.cpp:117
+#, kde-format
+msgid "Enter the title of the worksheet here."
+msgstr "Rhowch deitl y weithlen yma."
+
+#: Workspace.cpp:111
+#, kde-format
+msgid "Sheet %1"
+msgstr "Taflen %1"
+
+#: Workspace.cpp:170
+#, fuzzy, kde-format
+#| msgid ""
+#| "The worksheet '%1' contains unsaved data.\n"
+#| "Do you want to save the worksheet?"
+msgid ""
+"The tab '%1' contains unsaved data.\n"
+"Do you want to save the tab?"
+msgstr ""
+"Mae'r waithdaflen '%1' yn cynnwys data heb ei gadw.\n"
+"Ydych chi eisiau cadw'r waithdaflen?"
+
+#: Workspace.cpp:186
+#, kde-format
+msgid "Select Tab File to Import"
+msgstr ""
+
+#: Workspace.cpp:208 Workspace.cpp:228
+#, fuzzy, kde-format
+msgid "You do not have a tab that could be saved."
+msgstr "Nid ydych chi gyda gwaithdaflen sydd yn gallu cael ei chadw!"
+
+#: Workspace.cpp:235
+#, kde-format
+msgid "Export Tab"
+msgstr ""
+
+#: Workspace.cpp:255
+#, fuzzy, kde-format
+msgid "There are no tabs that could be deleted."
+msgstr "Nid oes gwaithdaflenni sydd yn gallu cael eu dileu!"
+
+#: Workspace.cpp:299
+#, kde-kuit-format
+msgctxt "@info"
+msgid ""
+"<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
+"in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
+msgstr ""
+
+#: Workspace.cpp:304
+#, fuzzy, kde-format
+msgid "Upload custom System Monitor tab"
+msgstr "Llwyth Cysawd"
+
+#~ msgid "Timer Settings"
+#~ msgstr "Gosodiadau Cyfrifydd Amser"
+
+#~ msgid "Use update interval of worksheet"
+#~ msgstr "Defnyddio egwyl diweddaru  o weithlen"
+
+#, fuzzy
+#~| msgid "*.sgrd|Sensor Files"
+#~ msgid "*.sgrd|Sensor Files (*.sgrd)"
+#~ msgstr "*.sgrd|Ffeiliau Synhwyrydd"
+
+#, fuzzy
+#~| msgid "Lower limit:"
+#~ msgid "Lo&wer limit:"
+#~ msgstr "Terfyn is:"
+
+#, fuzzy
+#~| msgid ""
+#~| "Message from %1:\n"
+#~| "%2"
+#~ msgctxt "%1 is a host name"
+#~ msgid ""
+#~ "Message from %1:\n"
+#~ "%2"
+#~ msgstr ""
+#~ "Neges gan %1:\n"
+#~ " %2"
+
+#~ msgid "Connection to %1 refused"
+#~ msgstr "Cysylltiad i %1 wedi'i gwrthod"
+
+#~ msgid "Host %1 not found"
+#~ msgstr "Gwesteiwr %1 heb ei ganfod"
+
+#, fuzzy
+#~| msgid "&Change"
+#~ msgid "Change"
+#~ msgstr "&Newid"
+
+#, fuzzy
+#~| msgid "State"
+#~ msgid "Rate"
+#~ msgstr "Cyflwr"
+
+#~ msgid "CPU Load"
+#~ msgstr "Llwyth CPU"
+
+#~ msgid "Nice Load"
+#~ msgstr "Llwyth Neis"
+
+#~ msgid "User Load"
+#~ msgstr "Llwyth Defnyddiwr"
+
+#, fuzzy
+#~| msgid "System Load"
+#~ msgctxt "@item sensor description"
+#~ msgid "System Load"
+#~ msgstr "Llwyth Cysawd"
+
+#, fuzzy
+#~ msgid "Waiting"
+#~ msgstr "yn tudalennu"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Interrupt Load"
+#~ msgstr "Ymyriadau"
+
+#, fuzzy
+#~ msgid "Total Load"
+#~ msgstr "Cyfanswm"
+
+#~ msgid "Physical Memory"
+#~ msgstr "Cof Corfforol"
+
+#~ msgid "Swap Memory"
+#~ msgstr "Cyfnewid Cof"
+
+#~ msgid "Cached Memory"
+#~ msgstr "Cof Storfa"
+
+#~ msgid "Buffered Memory"
+#~ msgstr "Cof Byffer"
+
+#~ msgid "Used Memory"
+#~ msgstr "Cof wedi'i Ddefnyddio"
+
+#~ msgid "Application Memory"
+#~ msgstr "Cof Cymhwysiadau"
+
+#~ msgid "Free Memory"
+#~ msgstr "Cof Rhydd"
+
+#, fuzzy
+#~| msgid "Application Memory"
+#~ msgid "Active Memory"
+#~ msgstr "Cof Cymhwysiadau"
+
+#, fuzzy
+#~| msgid "Cached Memory"
+#~ msgid "Inactive Memory"
+#~ msgstr "Cof Storfa"
+
+#, fuzzy
+#~| msgid "Used Memory"
+#~ msgid "Wired Memory"
+#~ msgstr "Cof wedi'i Ddefnyddio"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Processes"
+#~ msgstr "Cyfrif Proses"
+
+#~ msgid "Process Controller"
+#~ msgstr "Rheolydd Proses"
+
+#, fuzzy
+#~| msgid "System Processes"
+#~ msgid "Last Process ID"
+#~ msgstr "Prosesau Cysawd"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Process Spawn Count"
+#~ msgstr "Cyfrif Proses"
+
+#~ msgid "Process Count"
+#~ msgstr "Cyfrif Proses"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Idle Processes Count"
+#~ msgstr "Cyfrif Proses"
+
+#, fuzzy
+#~ msgid "Running Processes Count"
+#~ msgstr "Cyfrif Proses"
+
+#, fuzzy
+#~ msgid "Sleeping Processes Count"
+#~ msgstr "Cyfrif Proses"
+
+#, fuzzy
+#~ msgid "Stopped Processes Count"
+#~ msgstr "Cyfrif Proses"
+
+#, fuzzy
+#~ msgid "Zombie Processes Count"
+#~ msgstr "Cyfrif Proses"
+
+#, fuzzy
+#~ msgid "Waiting Processes Count"
+#~ msgstr "Cyfrif Proses"
+
+#, fuzzy
+#~ msgid "Locked Processes Count"
+#~ msgstr "Cyfrif Proses"
+
+#~ msgid "Disk Throughput"
+#~ msgstr "Trwybwn Disg"
+
+#~ msgctxt "CPU Load"
+#~ msgid "Load"
+#~ msgstr "Llwyth"
+
+#~ msgid "Total Accesses"
+#~ msgstr "Cyfanswm Cyrchiadau "
+
+#~ msgid "Read Accesses"
+#~ msgstr "Cyrchiadau Darllen"
+
+#~ msgid "Write Accesses"
+#~ msgstr "Cyrchiadau Ysgrifennu"
+
+#~ msgid "Read Data"
+#~ msgstr "Data Darllen"
+
+#, fuzzy
+#~| msgid "Write Data"
+#~ msgid "Written Data"
+#~ msgstr "Data Ysgrifennu"
+
+#~ msgid "Pages In"
+#~ msgstr "Tudalenni i Mewn"
+
+#~ msgid "Pages Out"
+#~ msgstr "Tudalenni Allan"
+
+#~ msgid "Context Switches"
+#~ msgstr "Switsiadau Cyd-destun"
+
+#, fuzzy
+#~| msgid "System Load"
+#~ msgid "System Calls"
+#~ msgstr "Llwyth Cysawd"
+
+#~ msgid "Network"
+#~ msgstr "Rhwydwaith"
+
+#~ msgid "Interfaces"
+#~ msgstr "Rhyngwynebau"
+
+#~ msgid "Transmitter"
+#~ msgstr "Trosglwyddydd"
+
+#, fuzzy
+#~| msgid "State"
+#~ msgid "Data Rate"
+#~ msgstr "Cyflwr"
+
+#, fuzzy
+#~| msgid "Compressed Packets"
+#~ msgid "Compressed Packets Rate"
+#~ msgstr "Pecynnau Cywasgiedig"
+
+#, fuzzy
+#~| msgid "Dropped Packets"
+#~ msgid "Dropped Packets Rate"
+#~ msgstr "Pecynnau wedi'u Disgyn"
+
+#, fuzzy
+#~| msgid "Errors"
+#~ msgid "Error Rate"
+#~ msgstr "Gwallau"
+
+#, fuzzy
+#~| msgid "FIFO Overruns"
+#~ msgid "FIFO Overruns Rate"
+#~ msgstr "Trosrediadau FIFO"
+
+#, fuzzy
+#~| msgid "Frame Errors"
+#~ msgid "Frame Error Rate"
+#~ msgstr "Gwallau Ffram"
+
+#, fuzzy
+#~| msgid "Multicast"
+#~ msgid "Multicast Packet Rate"
+#~ msgstr "Aml-ddarllediad"
+
+#, fuzzy
+#~| msgid "Packets"
+#~ msgid "Packet Rate"
+#~ msgstr "Pecynnau"
+
+#, fuzzy
+#~| msgid "Carrier"
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Loss Rate"
+#~ msgstr "Cludydd"
+
+#~ msgid "Collisions"
+#~ msgstr "Chwalfeydd"
+
+#~ msgid "Data"
+#~ msgstr "Data"
+
+#~ msgid "Compressed Packets"
+#~ msgstr "Pecynnau Cywasgiedig"
+
+#~ msgid "Dropped Packets"
+#~ msgstr "Pecynnau wedi'u Disgyn"
+
+#~ msgid "Errors"
+#~ msgstr "Gwallau"
+
+#~ msgid "FIFO Overruns"
+#~ msgstr "Trosrediadau FIFO"
+
+#~ msgid "Frame Errors"
+#~ msgstr "Gwallau Ffram"
+
+#, fuzzy
+#~| msgid "Multicast"
+#~ msgid "Multicast Packets"
+#~ msgstr "Aml-ddarllediad"
+
+#~ msgid "Packets"
+#~ msgstr "Pecynnau"
+
+#, fuzzy
+#~| msgid "Carrier"
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Losses"
+#~ msgstr "Cludydd"
+
+#~ msgid "Sockets"
+#~ msgstr "Socedi"
+
+#~ msgid "Total Number"
+#~ msgstr "Rhif Cyfanswm "
+
+#~ msgid "Table"
+#~ msgstr "Tabl"
+
+#~ msgid "Advanced Power Management"
+#~ msgstr "Rheoli Pŵer Uwch"
+
+#~ msgid "ACPI"
+#~ msgstr "ACPI"
+
+#~ msgid "Temperature"
+#~ msgstr "Tymheredd[1]"
+
+#, fuzzy
+#~| msgid "Temperature"
+#~ msgid "Average CPU Temperature"
+#~ msgstr "Tymheredd[1]"
+
+#~ msgid "Fan"
+#~ msgstr "Gwyntyll"
+
+#~ msgid "State"
+#~ msgstr "Cyflwr"
+
+#~ msgid "Battery"
+#~ msgstr "Batri "
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Capacity"
+#~ msgstr "Ynni'r Batri"
+
+#~ msgid "Battery Charge"
+#~ msgstr "Ynni'r Batri"
+
+#, fuzzy
+#~ msgid "Battery Usage"
+#~ msgstr "Ynni'r Batri"
+
+#, fuzzy
+#~ msgid "Battery Voltage"
+#~ msgstr "Ynni'r Batri"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Discharge Rate"
+#~ msgstr "Ynni'r Batri"
+
+#~ msgid "Remaining Time"
+#~ msgstr "Amser ar ôl"
+
+#~ msgid "Interrupts"
+#~ msgstr "Ymyriadau"
+
+#~ msgid "Load Average (1 min)"
+#~ msgstr "Cyfartaledd Llwytho (1 munud)"
+
+#~ msgid "Load Average (5 min)"
+#~ msgstr "Cyfartaledd Llwytho (5 munud)"
+
+#~ msgid "Load Average (15 min)"
+#~ msgstr "Cyfartaledd Llwytho (15 munud)"
+
+#~ msgid "Clock Frequency"
+#~ msgstr "Amlder Cloc"
+
+#, fuzzy
+#~| msgid "Clock Frequency"
+#~ msgid "Average Clock Frequency"
+#~ msgstr "Amlder Cloc"
+
+#~ msgid "Hardware Sensors"
+#~ msgstr "Synhwyryddion Caledwedd"
+
+#~ msgid "Partition Usage"
+#~ msgstr "Defnydd y Rhaniadau Disg"
+
+#~ msgid "Used Space"
+#~ msgstr "Lle wedi'i Ddefnyddio"
+
+#~ msgid "Free Space"
+#~ msgstr "Lle Rhydd"
+
+#~ msgid "Fill Level"
+#~ msgstr "Lefel Llenwi"
+
+#, fuzzy
+#~| msgid "User Load"
+#~ msgid "Used Inodes"
+#~ msgstr "Llwyth Defnyddiwr"
+
+#, fuzzy
+#~ msgid "System"
+#~ msgstr "Cysawd%"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Processors"
+#~ msgstr "Cyfrif Proses"
+
+#, fuzzy
+#~| msgid "Colors"
+#~ msgid "Cores"
+#~ msgstr "Lliwiau:"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Blocks"
+#~ msgstr "Rhif o ddangosyddion:"
+
+#, fuzzy
+#~| msgid "Total Number"
+#~ msgid "Total Number of Devices"
+#~ msgstr "Rhif Cyfanswm "
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Raid Devices"
+#~ msgstr "Rhif o ddangosyddion:"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Devices"
+#~ msgstr "Rhif o ddangosyddion:"
+
+#, fuzzy
+#~ msgid "CPU %1"
+#~ msgstr "CPU%1 "
+
+#, fuzzy
+#~ msgid "Disk %1"
+#~ msgstr "Disg%1 "
+
+#, fuzzy
+#~| msgid "Battery"
+#~ msgid "Battery %1"
+#~ msgstr "Batri "
+
+#, fuzzy
+#~ msgid "Fan %1"
+#~ msgstr "Gwyntyll%1"
+
+#, fuzzy
+#~ msgid "Temperature %1"
+#~ msgstr "Tymheredd%1"
+
+#~ msgid "Total"
+#~ msgstr "Cyfanswm"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Software Interrupts"
+#~ msgstr "Ymyriadau"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Hardware Interrupts"
+#~ msgstr "Ymyriadau"
+
+#, fuzzy
+#~ msgid "Int %1"
+#~ msgstr "Int%1"
+
+#~ msgctxt "the unit 1 per second"
+#~ msgid "1/s"
+#~ msgstr "1/e"
+
+#~ msgid "kBytes"
+#~ msgstr "kBeitiau"
+
+#~ msgctxt "the unit minutes"
+#~ msgid "min"
+#~ msgstr "mun"
+
+#~ msgctxt "the frequency unit"
+#~ msgid "MHz"
+#~ msgstr "MHz"
+
+#, fuzzy
+#~ msgctxt "a percentage"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgid "Integer Value"
+#~ msgstr "Gwerth Cyfanrif"
+
+#~ msgid "Floating Point Value"
+#~ msgstr "Gwerth Pwynt Arnawf"
+
+#, fuzzy
+#~| msgid " sec"
+#~ msgctxt "Units"
+#~ msgid "%1 second"
+#~ msgid_plural "%1 seconds"
+#~ msgstr[0] "eil"
+#~ msgstr[1] "eil"
+
+#, fuzzy
+#~ msgid "Font:"
+#~ msgstr "Cyfrif:"
+
+#, fuzzy
+#~| msgid "Vertical lines:"
+#~ msgid "Grid lines:"
+#~ msgstr "Llinellau fertigol:"
+
+#~ msgid "Background:"
+#~ msgstr "Cefndir:"
+
+#, fuzzy
+#~ msgid "Do you really want to delete the display?"
+#~ msgstr "A ydych wir am adfer y gweithlenni rhagosodedig?"
+
+#, fuzzy
+#~ msgid "Delete Display"
+#~ msgstr "Dewis Math Dangosydd"
+
+#, fuzzy
+#~ msgid "&Edit"
+#~ msgstr "Golygu..."
+
+#, fuzzy
+#~| msgid "Automatic range detection"
+#~ msgid "Automatic range"
+#~ msgstr "Darganfyddiad amrediad ymysgogol"
+
+#, fuzzy
+#~| msgid ""
+#~| "This is your work space. It holds your worksheets. You need to create a "
+#~| "new worksheet (Menu File->New) before you can drag sensors here."
+#~ msgid ""
+#~ "This is your work space. It holds your tabs. You need to create a new tab "
+#~ "(Menu File->New) before you can drag sensors here."
+#~ msgstr ""
+#~ "Dyma eich gweithle.  Mae'n dal eich holl waithdaflenni.  Mae angen i chi "
+#~ "greu gwaithdaflen newydd (Dewislen Ffeil->Newydd) cyn i chi allu llusgo "
+#~ "synwyryddion yma."
+
+#, fuzzy
+#~ msgid "Connection to %1 has been lost."
+#~ msgstr "Cysylltiad i %1 wedi'i golli!"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "&Title"
+#~ msgstr "Teitl"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "T&itle"
+#~ msgstr "Teitl"
+
+#, fuzzy
+#~ msgid "System Guard Applet Settings"
+#~ msgstr "Gosodiadau Rhaglennig KSysGuard"
+
+#~ msgid "Size ratio:"
+#~ msgstr "Cyfartaledd maint:"
+
+#, fuzzy
+#~| msgid "%"
+#~ msgctxt "Number suffix in spinbox"
+#~ msgid "%"
+#~ msgstr "%"
+
+#, fuzzy
+#~ msgid "Launch &System Guard"
+#~ msgstr "Gwarchodwr Cysawd KDE"
+
+#~ msgid "Drag sensors to empty cells of a worksheet or the panel applet."
+#~ msgstr ""
+#~ "Llusgwch synwyryddion i wagio celloedd gweithlen neu'r rhaglennig panel."
+
+#, fuzzy
+#~ msgid "Select Worksheet to Open"
+#~ msgstr "Dewisiwch Gwaithdaflen i Lwytho"
+
+#, fuzzy
+#~ msgid "Export Work Sheet"
+#~ msgstr "Ailosod Pob Gweithlen"
+
+#~ msgid "Worksheet Properties"
+#~ msgstr "Priodweddau Gweithlen"
+
+#~ msgid "&Signal Plotter"
+#~ msgstr "&Plotydd Signalau"
+
+#~ msgid "&Multimeter"
+#~ msgstr "&Amlfesurydd"
+
+#~ msgid "&Dancing Bars"
+#~ msgstr "Bariau &Dawnsio"
+
+#~ msgid ""
+#~ "The KSysGuard applet does not support displaying of this type of sensor. "
+#~ "Please choose another sensor."
+#~ msgstr ""
+#~ "Nid yw'r rhaglennig KSysGuard yn cynnal dangos y math yma o synhwyrydd. "
+#~ "Dewiswch synhwyrydd arall os gwelwch yn dda."
+
+#~ msgid ""
+#~ "The file %1 does not contain a valid applet definition, which must have a "
+#~ "document type 'KSysGuardApplet'."
+#~ msgstr ""
+#~ "Nid yw'r ffeil %1 yn cynnwys diffiniad rhaglennig dilys. Rhaid bod ganddo "
+#~ "fath dogfen 'KSysGuardApplet'."
+
+#~ msgid "Drag sensors from the KDE System Guard into this cell."
+#~ msgstr "Llusgwch synwyryddion o'r Gwarchodydd Cysawd KDE i'r gell hon."
+
+#, fuzzy
+#~ msgid "&New Worksheet..."
+#~ msgstr "Ailosod Pob Gweithlen"
+
+#, fuzzy
+#~ msgid "Open Worksheet..."
+#~ msgstr "Ailosod Pob Gweithlen"
+
+#, fuzzy
+#~ msgid "&Export Worksheet..."
+#~ msgstr "Ailosod Pob Gweithlen"
+
+#, fuzzy
+#~ msgid "&Remove Worksheet"
+#~ msgstr "Ailosod Pob Gweithlen"
+
+#~ msgid "&Worksheet Properties"
+#~ msgstr "&Priodweddau Gweithlen"
+
+#, fuzzy
+#~ msgid "Import Worksheet..."
+#~ msgstr "Ailosod Pob Gweithlen"
+
+#~ msgid "Count:"
+#~ msgstr "Cyfrif:"
+
+#~ msgid "Enter the number of horizontal lines here."
+#~ msgstr "Rhowch nifer y llinellau llorweddol yma."
+
+#~ msgid "Labels"
+#~ msgstr "Labeli"
+
+#~ msgid "Top bar"
+#~ msgstr "Bar pen"
+
+#~ msgid ""
+#~ "Check this to active the display title bar. This is probably only useful "
+#~ "for applet displays. The bar is only visible if the display is large "
+#~ "enough."
+#~ msgstr ""
+#~ "Dewiswch hwn i weithredoli bar teitl y dangosydd. Mwy na thebyg  bydd hwn "
+#~ "yn ddefnyddiol ar gyfer dangosyddion rhaglennigion yn unig. Dengys y bar "
+#~ "os yw'r dangosydd ddigon mawr yn unig."
+
+#~ msgid "Horizontal lines:"
+#~ msgstr "Llinellau llorweddol:"
+
+#, fuzzy
+#~| msgid "Sensor Logger"
+#~ msgid "Sensor Load"
+#~ msgstr "Cofnodydd Synhwyrydd"
+
+#~ msgid "Show only process list of local host"
+#~ msgstr "Dangos rhestr brosesau'r gwesteiwr lleol yn unig"
+
+#~ msgctxt "process status"
+#~ msgid "running"
+#~ msgstr "yn rhedeg"
+
+#~ msgctxt "process status"
+#~ msgid "sleeping"
+#~ msgstr "yn cysgu"
+
+#~ msgctxt "process status"
+#~ msgid "disk sleep"
+#~ msgstr "cwsg ddisg"
+
+#~ msgctxt "process status"
+#~ msgid "zombie"
+#~ msgstr "sombi"
+
+#~ msgctxt "process status"
+#~ msgid "stopped"
+#~ msgstr "wedi peidio"
+
+#~ msgctxt "process status"
+#~ msgid "paging"
+#~ msgstr "yn tudalennu"
+
+#~ msgctxt "process status"
+#~ msgid "idle"
+#~ msgstr "segur"
+
+#, fuzzy
+#~ msgid "User ID: %1"
+#~ msgstr "Defnyddiwr%"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "User Name"
+#~ msgstr "Enw Synhwyrydd"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "CPU %"
+#~ msgstr "CPU%1 "
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Virtual Size"
+#~ msgstr "Graddfa Fertigol"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Memory"
+#~ msgstr "Cof"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Shared Mem"
+#~ msgstr "Cof Storfa"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Command"
+#~ msgstr "Gorchymyn"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Name"
+#~ msgstr "Enw"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Graphics Memory"
+#~ msgstr "Cyfnewid Cof"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Application"
+#~ msgstr "Cof Cymhwysiadau"
+
+#~ msgid "Renice Process"
+#~ msgstr "Ailddymunoli Proses"
+
+#, fuzzy
+#~ msgid "Renice process"
+#~ msgstr "Ailddymunoli Proses"
+
+#, fuzzy
+#~ msgid "Kill process"
+#~ msgstr "Lladd Proses"
+
+#, fuzzy
+#~ msgid "Hide column '%1'"
+#~ msgstr "Cuddio Colofn"
+
+#, fuzzy
+#~ msgid "Show column '%1'"
+#~ msgstr "Dangos Colofn"
+
+#~ msgid "%1: Running Processes"
+#~ msgstr "%1:Proses redegog"
+
+#, fuzzy
+#~ msgid "You need to select a process first."
+#~ msgstr "Mae angen i chi ddewis proses yn gyntaf!"
+
+#~ msgid "Do you want to kill the selected process?"
+#~ msgid_plural "Do you want to kill the %1 selected processes?"
+#~ msgstr[0] "A ydych am ladd y %1 proses ddewisiedig?"
+#~ msgstr[1] "A ydych am ladd y %1 proses ddewisiedig?"
+
+#~ msgid "Kill Process"
+#~ msgstr "Lladd Proses"
+
+#~ msgid "Kill"
+#~ msgstr "Lladd"
+
+#, fuzzy
+#~ msgid "Error while attempting to kill process %1."
+#~ msgstr "Gwall tra'n ceisio lladd y broses %1!"
+
+#, fuzzy
+#~ msgid "Process %1 has already disappeared."
+#~ msgstr "Mae'r broses %1 wedi diflannu'n barod!"
+
+#, fuzzy
+#~ msgid "Invalid Signal."
+#~ msgstr "Signal Annilys!"
+
+#, fuzzy
+#~ msgid "Error while attempting to renice process."
+#~ msgstr "Gwall tra'n ceisio ailddymunoli'r broses %1!"
+
+#, fuzzy
+#~ msgid "Insufficient permissions to renice process"
+#~ msgstr "Caniatadau annigonol i ailddymunoli'r broses %1!"
+
+#, fuzzy
+#~ msgid "Process has disappeared."
+#~ msgstr "Mae'r broses %1 wedi diflannu'n barod!"
+
+#, fuzzy
+#~ msgid "Error while attempting to renice process %1."
+#~ msgstr "Gwall tra'n ceisio ailddymunoli'r broses %1!"
+
+#, fuzzy
+#~ msgid "Process %1 has disappeared."
+#~ msgstr "Mae'r broses %1 wedi diflannu'n barod!"
+
+#, fuzzy
+#~ msgid "All Processes, Simple"
+#~ msgstr "Pob Proses"
+
+#, fuzzy
+#~ msgid "All Processes, Hierarchical"
+#~ msgstr "Pob Proses"
+
+#~ msgid "User Processes"
+#~ msgstr "Prosesau Defnyddiwr"
+
+#~ msgid "Own Processes"
+#~ msgstr "Prosesau eich Hunan"
+
+#, fuzzy
+#~ msgid "Show &Totals"
+#~ msgstr "Dangos Colofn"
+
+#~ msgid "Global Style Settings"
+#~ msgstr "Gosodiadau Arddull Eang"
+
+#~ msgid "Display Style"
+#~ msgstr "Dangos Arddull"
+
+#~ msgid "First foreground color:"
+#~ msgstr "Lliw blaendir cyntaf:"
+
+#~ msgid "Second foreground color:"
+#~ msgstr "Ail liw blaendir: "
+
+#~ msgid "Sensor Colors"
+#~ msgstr "Lliwiau Synhwyrydd"
+
+#~ msgid "Change Color..."
+#~ msgstr "Newid Lliw..."
+
+#~ msgid "Color %1"
+#~ msgstr "Lliw %1"
+
+#, fuzzy
+#~ msgid "Font"
+#~ msgstr "Cyfrif:"
+
+#~ msgid "Select Font..."
+#~ msgstr "Dewiswch Wynebfath..."
+
+#, fuzzy
+#~ msgid "&Cancel"
+#~ msgstr "&Newid"
+
+#~ msgid "Configure &Style..."
+#~ msgstr "Ffurfweddu &Arddull..."
+
+#~ msgid "Idle Load"
+#~ msgstr "Llwyth Gorffwys"
+
+#, fuzzy
+#~ msgid "It is impossible to connect to '%1'."
+#~ msgstr "Amhosib i gysylltu i '%1'!"
+
+#~ msgid "S&ensorLogger"
+#~ msgstr "LogyddS&ynhwyrydd"
+
+#, fuzzy
+#~ msgid "Timeout at host %1"
+#~ msgstr "Darllen gwall wrth westeiwr %1"
+
+#~ msgid "Save Current Worksheet As"
+#~ msgstr "Cadw Gwaithdaflen Ddiweddaraf Fel "
+
+#, fuzzy
+#~ msgid "Cannot find file ProcessTable.sgrd."
+#~ msgstr "Methu darganfod ffeil ProcessTable.sgrd!"
+
+#~ msgid "Remove Column"
+#~ msgstr "Gwaredu Colofn"
+
+#~ msgid "Add Column"
+#~ msgstr "Ychwanegu Colofn"
+
+#~ msgid "Help on Column"
+#~ msgstr "Cymorth ar Golofn"
+
+#~ msgid "Nice"
+#~ msgstr "Dymunol"
+
+#~ msgid "Select All Processes"
+#~ msgstr "Dewis Bob Proses"
+
+#~ msgid "Unselect All Processes"
+#~ msgstr "Datddewis Bob Proses"
+
+#~ msgid "Select All Child Processes"
+#~ msgstr "Dewis Bob Proses Blentyn"
+
+#~ msgid "Unselect All Child Processes"
+#~ msgstr "Datddewis Bob Proses Blentyn"
+
+#~ msgid "SIGABRT"
+#~ msgstr "SIGABRT"
+
+#~ msgid "SIGALRM"
+#~ msgstr "SIGALRM"
+
+#~ msgid "SIGCHLD"
+#~ msgstr "SIGCHLD"
+
+#~ msgid "SIGCONT"
+#~ msgstr "SIGCONT"
+
+#~ msgid "SIGFPE"
+#~ msgstr "SIGFPE"
+
+#~ msgid "SIGHUP"
+#~ msgstr "SIGHUP"
+
+#~ msgid "SIGILL"
+#~ msgstr "SIGILL"
+
+#~ msgid "SIGINT"
+#~ msgstr "SIGINT"
+
+#~ msgid "SIGKILL"
+#~ msgstr "SIGKILL"
+
+#~ msgid "SIGPIPE"
+#~ msgstr "SIGPIPE"
+
+#~ msgid "SIGQUIT"
+#~ msgstr "SIGQUIT"
+
+#~ msgid "SIGSEGV"
+#~ msgstr "SIGSEGV"
+
+#~ msgid "SIGSTOP"
+#~ msgstr "SIGSTOP"
+
+#~ msgid "SIGTERM"
+#~ msgstr "SIGTERM"
+
+#~ msgid "SIGTSTP"
+#~ msgstr "SIGTSTP"
+
+#~ msgid "SIGTTIN"
+#~ msgstr "SIGTTIN"
+
+#~ msgid "SIGTTOU"
+#~ msgstr "SIGTTOU"
+
+#~ msgid "SIGUSR1"
+#~ msgstr "SIGUSR1"
+
+#~ msgid "SIGUSR2"
+#~ msgstr "SIGUSR2"
+
+#~ msgid "Send Signal"
+#~ msgstr "Anfon Signal"
+
+#~ msgid "Renice Process..."
+#~ msgstr "Ail-ddymunoli Proses..."
+
+#~ msgid "Do you really want to send signal %2 to the selected process?"
+#~ msgid_plural ""
+#~ "Do you really want to send signal %2 to the %1 selected processes?"
+#~ msgstr[0] "A ydych wir am anfon y signal %2 i'r %1 proses dewisiedig?"
+#~ msgstr[1] "A ydych wir am anfon y signal %2 i'r %1 proses dewisiedig?"
+
+#~ msgid "Style"
+#~ msgstr "Arddull"
+
+#~ msgid "Graph Drawing Style"
+#~ msgstr "Arddull Ddarlunio Graff"
+
+#~ msgid "Basic polygons"
+#~ msgstr "Polygonau Sylfaenol"
+
+#~ msgid "Original - single line per data point"
+#~ msgstr "Gwreiddiol - llinell unigol i bob pwynt data"
+
+#~ msgid "&Setup Update Interval..."
+#~ msgstr "&Ffurfweddu Cyfnod Diweddaru..."
+
+#~ msgid "&Continue Update"
+#~ msgstr "&Parhau Diweddaru"
+
+#~ msgid "P&ause Update"
+#~ msgstr "S&eibio Diweddaru"
+
+#~ msgid ""
+#~ "You are about to change the scheduling priority of\n"
+#~ "process %1. Be aware that only the Superuser (root)\n"
+#~ "can decrease the nice level of a process. The lower\n"
+#~ "the number is the higher the priority.\n"
+#~ "\n"
+#~ "Please enter the desired nice level:"
+#~ msgstr ""
+#~ "Rydych ar fin newid blaenoriaeth trefnlennu \n"
+#~ " proses %1. Noder taw'r Uwchddefnyddiwr (root)\n"
+#~ " all ostwng lefel ddymunol proses yn unig. Yr isaf\n"
+#~ " yw'r rhif, yr uchaf fydd y flaenoriaeth.\n"
+#~ " \n"
+#~ " Rhowch y lefel ddymunol y dymunwch:"
+
+#~ msgid "PID"
+#~ msgstr "PID"
+
+#~ msgid "PPID"
+#~ msgstr "PPID"
+
+#~ msgid "UID"
+#~ msgstr "UID"
+
+#~ msgid "GID"
+#~ msgstr "GID"
+
+#~ msgid "VmSize"
+#~ msgstr "VmSize"
+
+#~ msgid "VmRss"
+#~ msgstr "VmRss"
+
+#~ msgid "Login"
+#~ msgstr "Mewngofnod"
+
+#~ msgid "&Tree"
+#~ msgstr "&Coeden"
+
+#~ msgid "&Kill"
+#~ msgstr "&Lladd"
+
+#~ msgid "Do not ask again"
+#~ msgstr "Peidiwch a gofyn eto"
+
+#, fuzzy
+#~ msgid "Insufficient permissions to kill process %1."
+#~ msgstr "Caniatadau annigonol i ladd y broses %1!"
+
+#~ msgid "Invalid argument."
+#~ msgstr "Ymresymiad Annilys."
+
+#~ msgid "CPU"
+#~ msgstr "CPU"
+
+#, fuzzy
+#~ msgid "Mem"
+#~ msgstr "Cof"
+
+#~ msgid "Sensor Type"
+#~ msgstr "Math Synhwyrydd"
+
+#~ msgid "KDE system guard"
+#~ msgstr "Gwarchodwr Cysawd KDE"
+
+#~ msgid "88888 Processes"
+#~ msgstr "88888 Proses"
+
+#~ msgid "Memory: 88888888888 kB used, 88888888888 kB free"
+#~ msgstr "Cof: 88888888888 kB mewn defnydd, 88888888888 kB ar gael"
+
+#~ msgid "Swap: 888888888 kB used, 888888888 kB free"
+#~ msgstr "Cyfnewidfa: 88888888888 kB mewn defnydd, 88888888888 kB ar gael"
+
+#, fuzzy
+#~ msgid "&Import Recent Worksheet"
+#~ msgstr "Ailosod Pob Gweithlen"
+
+#~ msgid "C&onnect Host..."
+#~ msgstr "C&ysylltu Gwesteiwr..."
+
+#~ msgid "D&isconnect Host"
+#~ msgstr "&Datgysylltu Gwesteiwr"
+
+#~ msgid "Reset All Worksheets"
+#~ msgstr "Ailosod Pob Gweithlen"
+
+#~ msgid "Reset"
+#~ msgstr "Ailosod"
+
+#~ msgid "Memory: %1 %2 used, %3 %4 free"
+#~ msgstr "Cof: %1 %2 mewn defnydd, %3 %4 ar gael"
+
+#~ msgid "Swap: %1 %2 used, %3 %4 free"
+#~ msgstr "Cyfnewidfa: %1 %2 mewn defnydd, %3 %4 ar gael"

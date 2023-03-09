@@ -1,0 +1,2528 @@
+# translation of ksysguard.po to
+# translation of ksysguard.po to Xhosa
+# K Desktop Environment - kdebase
+# Copyright (C) 2001 translate.org.za
+# Antoinette Dekeni <antoinette@transalate.org.za>, 2001.
+# Lwandle Mgidlana <lwandle@translate.org.za>, 2002
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ksysguard\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-09-20 01:53+0000\n"
+"PO-Revision-Date: 2002-11-04 09:24SAST\n"
+"Last-Translator: Lwandle Mgidlana <lwandle@translate.org.za>\n"
+"Language-Team: Xhosa <xhosa@translate.org.za>\n"
+"Language: xh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0beta2\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Lwandle Mgidlana"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "lwandle@translate.org.za"
+
+#: HostConnector.cpp:44
+#, kde-format
+msgid "Connect Host"
+msgstr "Dibanisa Inginginya"
+
+#: HostConnector.cpp:57
+#, kde-format
+msgid "Host:"
+msgstr "Inginginya:"
+
+#: HostConnector.cpp:67
+#, kde-format
+msgid "Enter the name of the host you want to connect to."
+msgstr "Ngenisa igama yenginginya ofuna ukuzidibanisa nayo."
+
+#: HostConnector.cpp:73
+#, kde-format
+msgid "Connection Type"
+msgstr "Udidi Lodibaniso"
+
+#: HostConnector.cpp:78
+#, fuzzy, kde-format
+msgid "ssh"
+msgstr "&ssh"
+
+#: HostConnector.cpp:81
+#, kde-format
+msgid "Select this to use the secure shell to login to the remote host."
+msgstr ""
+"Khetha oku xa ufuna ukusebenzisa iqokobhe elikhuselweyo xa ufaka igama "
+"elithile kwi nginginya yobekelo kude."
+
+#: HostConnector.cpp:84
+#, fuzzy, kde-format
+msgid "rsh"
+msgstr "&rsh"
+
+#: HostConnector.cpp:85
+#, kde-format
+msgid "Select this to use the remote shell to login to the remote host."
+msgstr ""
+"Khetha oku xa ufuna ukusebenzisa iqokobhe elibekelwe kude xa ufaka igama "
+"elithile kwi nginginya yobekelo kude."
+
+#: HostConnector.cpp:88
+#, kde-format
+msgid "Daemon"
+msgstr "Daemon"
+
+#: HostConnector.cpp:89
+#, kde-format
+msgid ""
+"Select this if you want to connect to a ksysguard daemon that is running on "
+"the machine you want to connect to, and is listening for client requests."
+msgstr ""
+"khetha oku xa ufuna ukudibanisa ku kysguard daemon ebalekayo kumashini ofuna "
+"ukuzidibanisa nawo, imamela izicelo ezisuka kubaxasi."
+
+#: HostConnector.cpp:92
+#, fuzzy, kde-format
+msgid "Custom command"
+msgstr "I&siko lomyalelo"
+
+#: HostConnector.cpp:93
+#, kde-format
+msgid ""
+"Select this to use the command you entered below to start ksysguardd on the "
+"remote host."
+msgstr ""
+"Khetha oku xa ufuna ukusebenzisa umyalelo owufake ngasezantsi ukuqala i "
+"ksysquard kwinginginya yobekelo kude."
+
+#: HostConnector.cpp:96
+#, kde-format
+msgid "Port:"
+msgstr "Izibuko:"
+
+#: HostConnector.cpp:103
+#, kde-format
+msgid ""
+"Enter the port number on which the ksysguard daemon is listening for "
+"connections."
+msgstr "Faka inani lesibuko apho i ksysguard daemon imamele udibaniso."
+
+#: HostConnector.cpp:106
+#, kde-format
+msgid "e.g.  3112"
+msgstr "umzekelo.  3112"
+
+#: HostConnector.cpp:109
+#, kde-format
+msgid "Command:"
+msgstr "Umyalelo:"
+
+#: HostConnector.cpp:118
+#, kde-format
+msgid "Enter the command that runs ksysguardd on the host you want to monitor."
+msgstr "Faka umyalelo owenza i ksysguardd kwinginginya ofuna ukuyijonga."
+
+#: HostConnector.cpp:122
+#, kde-format
+msgid "e.g. ssh -l root remote.host.org ksysguardd"
+msgstr "umzekelo. ssh -I root remote.host.org.ksysguarddd"
+
+#: ksysguard.cpp:74
+#, fuzzy, kde-format
+msgid "KDE System Monitor"
+msgstr "KDE Indlela yokulawula"
+
+#: ksysguard.cpp:157
+#, kde-format
+msgid ""
+"This will hide the menu bar completely. You can show it again by typing %1."
+msgstr ""
+
+#: ksysguard.cpp:159
+#, kde-format
+msgid "Hide menu bar"
+msgstr ""
+
+#: ksysguard.cpp:177 ksysguard.cpp:571
+#, fuzzy, kde-format
+msgid "System Monitor"
+msgstr "Ulayisho lwendlela"
+
+#: ksysguard.cpp:178
+#, fuzzy, kde-format
+#| msgid "&Refresh"
+msgid "&Refresh Tab"
+msgstr "&Hlaziya"
+
+#: ksysguard.cpp:179
+#, kde-format
+msgid "&New Tab..."
+msgstr ""
+
+#: ksysguard.cpp:180
+#, kde-format
+msgid "Import Tab Fr&om File..."
+msgstr ""
+
+#: ksysguard.cpp:181
+#, kde-format
+msgid "Save Tab &As..."
+msgstr ""
+
+#: ksysguard.cpp:182
+#, kde-format
+msgid "&Close Tab"
+msgstr ""
+
+#: ksysguard.cpp:183
+#, kde-format
+msgid "Monitor &Remote Machine..."
+msgstr ""
+
+#: ksysguard.cpp:184
+#, fuzzy, kde-format
+msgid "&Download New Tabs..."
+msgstr "Cwangcisa Onke Amakhasi okusebenza"
+
+#: ksysguard.cpp:185
+#, fuzzy, kde-format
+msgid "&Upload Current Tab..."
+msgstr "Cwangcisa Onke Amakhasi okusebenza"
+
+#: ksysguard.cpp:187
+#, fuzzy, kde-format
+#| msgid "&Properties"
+msgid "Tab &Properties"
+msgstr "&Iimpahla"
+
+#: ksysguard.cpp:384
+#, fuzzy, kde-format
+msgid "1 process"
+msgid_plural "%1 processes"
+msgstr[0] "1 Inkqubo"
+msgstr[1] "1 Inkqubo"
+
+#: ksysguard.cpp:465
+#, fuzzy, kde-format
+msgid "CPU: %1%"
+msgstr "CPU%1"
+
+#: ksysguard.cpp:465
+#, fuzzy, kde-format
+msgctxt "This is the shorter version of CPU: %1%"
+msgid "%1%"
+msgstr "%"
+
+#: ksysguard.cpp:484
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Memory: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:486
+#, kde-format
+msgctxt ""
+"Arguments are formatted byte sizes (used/total) This should be a shorter "
+"version of the previous Memory: %1 / %2"
+msgid "Mem: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:488
+#, kde-format
+msgctxt ""
+"Arguments is formatted byte sizes (used) This should be a shorter version of "
+"the previous Mem: %1 / %2"
+msgid "Mem: %1"
+msgstr ""
+
+#: ksysguard.cpp:516
+#, kde-format
+msgid " No swap space available "
+msgstr ""
+
+#: ksysguard.cpp:520
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Swap: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:522
+#, kde-format
+msgctxt "Arguments is formatted byte sizes (used)"
+msgid "Swap: %1"
+msgstr ""
+
+#: ksysguard.cpp:573
+#, fuzzy, kde-format
+msgid "(c) 1996-2016 The KDE System Monitor Developers"
+msgstr "(c) 1996-2002, Ababhekisi phambili be KSysGuard"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "John Tapsell"
+msgstr ""
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Current Maintainer"
+msgstr ""
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Chris Schlaeger"
+msgstr ""
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Previous Maintainer"
+msgstr ""
+
+#: ksysguard.cpp:577
+#, kde-format
+msgid "Greg Martyn"
+msgstr ""
+
+#: ksysguard.cpp:578
+#, kde-format
+msgid "Tobias Koenig"
+msgstr ""
+
+#: ksysguard.cpp:579
+#, kde-format
+msgid "Nicolas Leclercq"
+msgstr ""
+
+#: ksysguard.cpp:580
+#, kde-format
+msgid "Alex Sanda"
+msgstr ""
+
+#: ksysguard.cpp:581
+#, kde-format
+msgid "Bernd Johannes Wuebben"
+msgstr ""
+
+#: ksysguard.cpp:582
+#, kde-format
+msgid "Ralf Mueller"
+msgstr ""
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid "Hamish Rodda"
+msgstr ""
+
+#: ksysguard.cpp:584
+#, kde-format
+msgid "Torsten Kasch"
+msgstr ""
+
+#: ksysguard.cpp:584
+#, kde-format
+msgid ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+msgstr ""
+
+#: ksysguard.cpp:593
+#, kde-format
+msgid "Optional worksheet files to load"
+msgstr "Iifayile ezizodwa zekhasi lokusebenza ukulayisha"
+
+#. i18n: ectx: Menu (file)
+#: ksysguardui.rc:5
+#, fuzzy, kde-format
+msgid "&File"
+msgstr "Icebo lokucoca ulwelo"
+
+#. i18n: ectx: Menu (view)
+#: ksysguardui.rc:15
+#, fuzzy, kde-format
+msgid "&View"
+msgstr "Icebo lokucoca ulwelo"
+
+#. i18n: ectx: Menu (settings)
+#: ksysguardui.rc:19
+#, fuzzy, kde-format
+msgid "&Settings"
+msgstr "Izicwangciso Zemitha Ezininzi"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ksysguardui.rc:22
+#, kde-format
+msgid "Main Toolbar"
+msgstr ""
+
+#. i18n: tag WorkSheet attribute title
+#. i18n: tag display attribute title
+#: ProcessTable.sgrd:3 ProcessTable.sgrd:5
+#, kde-format
+msgid "Process Table"
+msgstr "Itafile yenkqubela"
+
+#: SensorBrowser.cpp:113
+#, kde-format
+msgid "Sensor Browser"
+msgstr "Umkhangeli wencwadi zomenzi woluvo"
+
+#: SensorBrowser.cpp:473
+#, fuzzy, kde-format
+msgid "Drag sensors to empty cells of a worksheet "
+msgstr "Rhuqa abenzi boluvo ukwenza ingabinanto imihlaba kwikhasi lomsebenzi"
+
+#: SensorBrowser.cpp:474
+#, fuzzy, kde-format
+#| msgid ""
+#| "The sensor browser lists the connected hosts and the sensors that they "
+#| "provide. Click and drag sensors into drop zones of a worksheet or the "
+#| "panel applet. A display will appear that visualizes the values provided "
+#| "by the sensor. Some sensor displays can display values of multiple "
+#| "sensors. Simply drag other sensors on to the display to add more sensors."
+msgid ""
+"The sensor browser lists the connected hosts and the sensors that they "
+"provide. Click and drag sensors into drop zones of a worksheet. A display "
+"will appear that visualizes the values provided by the sensor. Some sensor "
+"displays can display values of multiple sensors. Simply drag other sensors "
+"on to the display to add more sensors."
+msgstr ""
+"Umkhangeli zincwadi womenzi woluvo udwelisa iinginginya ezidityanisiweyo "
+"kunye nabenzi boluvo ababanikezelayo. Nqakraza kwaye utsale abenzi boluvo "
+"kwimimandla yokuyeka yekhasi lomsebenzi okanye iqela le applet. Umboniso "
+"uzakuvela obonisa amaxabiso anikeziweyo ngu menzi woluvo. Ezinye iziboniso "
+"zaomenzi woluvo zingabonisa amaxabiso abenzi boluvo abaninzi. Tsala "
+"ngokulula abanye abenzi boluvo kumbonisoukudibanisa abenzi boluvo abaninzi."
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:280
+#, kde-format
+msgid "OK"
+msgstr ""
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:280
+#: SensorDisplayLib/FancyPlotter.cpp:544 SensorDisplayLib/FancyPlotter.cpp:623
+#, fuzzy, kde-format
+msgid "Error"
+msgstr "Iimposiso"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:42
+#, kde-format
+msgid "Edit BarGraph Preferences"
+msgstr "Hlela izikhetho zebar yomzobo"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:51
+#, kde-format
+msgid "Range"
+msgstr "Umqolo"
+
+#. i18n: ectx: property (title), widget (QGroupBox, titleFrame)
+#: SensorDisplayLib/DancingBarsSettings.cpp:55
+#: SensorDisplayLib/ListViewSettingsWidget.ui:17
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:17 WorkSheetSettings.cpp:61
+#, kde-format
+msgid "Title"
+msgstr "Iwonga"
+
+#. i18n: ectx: property (whatsThis), widget (QLineEdit, m_title)
+#: SensorDisplayLib/DancingBarsSettings.cpp:60
+#: SensorDisplayLib/FancyPlotterSettings.cpp:70
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
+#, kde-format
+msgid "Enter the title of the display here."
+msgstr "Ngenisa iwonga lomboniso apha."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:65
+#, kde-format
+msgid "Display Range"
+msgstr "Bonisa Umqolo"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:70
+#: SensorDisplayLib/FancyPlotterSettings.cpp:96
+#, kde-format
+msgid "Minimum value:"
+msgstr "Ixabiso elona elipantsi:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:78
+#, fuzzy, kde-format
+msgid ""
+"Enter the minimum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Ngenisa ixabiso elincinane lomboniso apha. Ukuba amaxabiso omabini angu 0 "
+"ulungiso oluzenzekelayo lobhaqo luyenziwa."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:82
+#: SensorDisplayLib/FancyPlotterSettings.cpp:107
+#, kde-format
+msgid "Maximum value:"
+msgstr "Ixabiso elikhulu:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:90
+#, fuzzy, kde-format
+msgid ""
+"Enter the maximum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"Ngenisa ixabiso elikhulu lomboniso apha. Ukuba amaxabiso omabini angu 0 "
+"ulungiso oluzenzekelayo lobhaqo luyenziwa."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:100
+#, kde-format
+msgid "Alarms"
+msgstr "ii Alarm"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
+#: SensorDisplayLib/DancingBarsSettings.cpp:104
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
+#, kde-format
+msgid "Alarm for Minimum Value"
+msgstr "Alarm Yexabiso Elincinane"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:109
+#: SensorDisplayLib/DancingBarsSettings.cpp:132
+#, fuzzy, kde-format
+msgid "Enable alarm"
+msgstr "Ye&nza alarm"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:110
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:57
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
+#, kde-format
+msgid "Enable the minimum value alarm."
+msgstr "Yenza i alarm yexabiso elincinane."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:113
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:125
+#, kde-format
+msgid "Lower limit:"
+msgstr "Umda osezantsi:"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1_2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:127
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
+#, kde-format
+msgid "Alarm for Maximum Value"
+msgstr "Alarm Yexabiso Elikhulu"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:133
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:116
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
+#, kde-format
+msgid "Enable the maximum value alarm."
+msgstr "Yenza i alarm yexabiso elikhulu"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:136
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:198
+#, kde-format
+msgid "Upper limit:"
+msgstr "Umda ophezulu:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:153
+#, fuzzy, kde-format
+#| msgid "Look"
+msgctxt "@title:tab Appearance of the bar graph"
+msgid "Look"
+msgstr "Jonga"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:157
+#, kde-format
+msgid "Normal bar color:"
+msgstr "Umbala oqhelekileyo we bar:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:164
+#, kde-format
+msgid "Out-of-range color:"
+msgstr "Umbala woku-ngaphandlek-komqolo:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/DancingBarsSettings.cpp:171
+#: SensorDisplayLib/ListViewSettingsWidget.ui:105
+#: SensorDisplayLib/LogFile.cpp:105 SensorDisplayLib/LogFileSettings.ui:85
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:92
+#, kde-format
+msgid "Background color:"
+msgstr "Umbala Wesiqalo:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:178
+#: SensorDisplayLib/FancyPlotterSettings.cpp:177
+#, kde-format
+msgid "Font size:"
+msgstr "Ubungakanani bomgca:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:183
+#, kde-format
+msgid ""
+"This determines the size of the font used to print a label underneath the "
+"bars. Bars are automatically suppressed if text becomes too large, so it is "
+"advisable to use a small font size here."
+msgstr ""
+"Oku kugqiba ubungakanani bomgca osetyenziswayo ukushicilela umbhalo "
+"ongaphantsi kweebar. ii Bar zicinezelwa ngokuzenzekelayo ukuba okubhaliweyo "
+"kuba kukhulu kakhulu, ngoko kuyacetyiswa ukuba kusetyenziswe ubungakanani "
+"obuncinane bomgca apha."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:191
+#: SensorDisplayLib/FancyPlotterSettings.cpp:193
+#, kde-format
+msgid "Sensors"
+msgstr "Abeenzi boluvo"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:204
+#, fuzzy, kde-format
+msgid "Edit..."
+msgstr "&Hlela..."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:205
+#, kde-format
+msgid "Push this button to configure the label."
+msgstr "Tyhiliza eli qhosha ukuqwalasela umbhalo."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:208
+#: SensorDisplayLib/FancyPlotterSettings.cpp:225
+#, kde-format
+msgid "Delete"
+msgstr ""
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:209
+#: SensorDisplayLib/FancyPlotterSettings.cpp:226
+#, kde-format
+msgid "Push this button to delete the sensor."
+msgstr "Tyhiliza eli qhosha ukucima umenzi woluvo."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:361
+#, kde-format
+msgid "Label of Bar Graph"
+msgstr "Uphawu Lomzobo we Bar"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:362
+#, kde-format
+msgid "Enter new label:"
+msgstr "Ngenisa uphawu olutsha:"
+
+#: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
+#, kde-format
+msgid "Drop Sensor Here"
+msgstr "Yeka Umenzi woluvo Apha"
+
+#: SensorDisplayLib/DummyDisplay.cpp:33
+#, kde-format
+msgid ""
+"This is an empty space in a worksheet. Drag a sensor from the Sensor Browser "
+"and drop it here. A sensor display will appear that allows you to monitor "
+"the values of the sensor over time."
+msgstr ""
+"Esi sisithuba esingenanto sekhasi lomsebenzi. Tsala Umkhangeli zincwadi "
+"Womenzi woluvo kwaye umyeke apha. Umboniso womenzi woluvo uzakuvela "
+"ozakukuvumela ukuba uphathe amaxabiso wexesha elongezelelweyo lomenzi woluvo."
+
+#: SensorDisplayLib/FancyPlotter.cpp:176
+#, kde-format
+msgctxt "Largest axis title"
+msgid "99999 XXXX"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:540 SensorDisplayLib/FancyPlotter.cpp:612
+#: SensorDisplayLib/FancyPlotter.cpp:675
+#, kde-format
+msgctxt "units"
+msgid "%1%"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:548
+#, kde-format
+msgctxt "%1 is what is being shown statistics for, like 'Memory', 'Swap', etc."
+msgid "<p><b>%1:</b><br>"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:620
+#, kde-format
+msgid "%1 of %2"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:648
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:651
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:654
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:657
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:662
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:665
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:668
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:671
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB/s"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotter.cpp:677
+#, fuzzy, kde-format
+msgctxt "unitless - just a number"
+msgid "%1"
+msgstr "%"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:46
+#, fuzzy, kde-format
+#| msgid "Signal Plotter Settings"
+msgid "Plotter Settings"
+msgstr "Izicwangciso ezinophawu lomenzi weyelenqe"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:62
+#, kde-format
+msgid "General"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:66
+#, fuzzy, kde-format
+msgid "Title:"
+msgstr "Iwonga"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:74
+#, kde-format
+msgid "Stack the beams on top of each other"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:75
+#, kde-format
+msgid ""
+"The beams are stacked on top of each other, and the area is drawn filled in. "
+"So if one beam has a value of 2 and another beam has a value of 3, the first "
+"beam will be drawn at value 2 and the other beam drawn at 2+3=5."
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:82
+#, kde-format
+msgid "Scales"
+msgstr "Izikali"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:86
+#, fuzzy, kde-format
+#| msgid "Vertical Scale"
+msgid "Vertical scale"
+msgstr "Isikali esithe nkqo"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:91
+#, kde-format
+msgid "Specify graph range:"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:92
+#, fuzzy, kde-format
+msgid ""
+"Check this box if you want the display range to adapt dynamically to the "
+"currently displayed values; if you do not check this, you have to specify "
+"the range you want in the fields below."
+msgstr ""
+"Khangela le bhokisi ukuba ufuna ukubonisa ulungiso ukwenza ngonyanzelo "
+"kumaxabiso aboniswe ngoku. Ukuba awukhangeli oku, kufuneka ukhankanye "
+"ulungiso olufunayo kwimihlaba engezantsi."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:102
+#, fuzzy, kde-format
+#| msgid "Enter the title of the display here."
+msgid "Enter the minimum value for the display here."
+msgstr "Ngenisa iwonga lomboniso apha."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:113
+#, kde-format
+msgid ""
+"Enter the soft maximum value for the display here. The upper range will not "
+"be reduced below this value, but will still go above this number for values "
+"above this value."
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:120
+#, fuzzy, kde-format
+#| msgid "Horizontal Scale"
+msgid "Horizontal scale"
+msgstr "Isikali esithe tye"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:128
+#, fuzzy, kde-format
+msgid "Pixels per time period:"
+msgstr "pixel(s) ngexesha lethuba ngalinye"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:135
+#, kde-format
+msgid "Grid"
+msgstr "Iindibaniso ezinamandla zombane"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:139
+#, kde-format
+msgid "Lines"
+msgstr "Iilayini"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:144
+#, kde-format
+msgid "Vertical lines"
+msgstr "Iilayini ezithe nkqo"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:145
+#, kde-format
+msgid "Check this to activate the vertical lines if display is large enough."
+msgstr ""
+"Khangela oku ukwenza iilayini ezithe nkqo ukuba umboniso mkhulu ngokwaneleyo."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:148
+#, kde-format
+msgid "Distance:"
+msgstr "Umgama:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:155
+#, kde-format
+msgid "Enter the distance between two vertical lines here."
+msgstr "Ngenisa umgama phakathi kwelayini ezimbini ezithe nkqo apha."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:159
+#, kde-format
+msgid "Vertical lines scroll"
+msgstr "Urolo lwelayini ezithe nkqo"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:162
+#, kde-format
+msgid "Horizontal lines"
+msgstr "Iilayini ezithe tye"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:163
+#, kde-format
+msgid "Check this to enable horizontal lines if display is large enough."
+msgstr ""
+"Khangela oku ukwenza iilayini ezithe tye ukuba umboniso mkhulu ngokwaneleyo."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:168
+#, kde-format
+msgid "Text"
+msgstr "Okubhaliweyo"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:173
+#, kde-format
+msgid "Show axis labels"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:174
+#, kde-format
+msgid ""
+"Check this box if horizontal lines should be decorated with the values they "
+"mark."
+msgstr ""
+"Khangela le bhokisi ukuba iilayini ezithe tye zinokuhonjiswa ngamaxabiso "
+"eziwaphawulayo."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:217
+#, fuzzy, kde-format
+msgid "Set Color..."
+msgstr "&Cwangcisa Umbala..."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:218
+#, kde-format
+msgid "Push this button to configure the color of the sensor in the diagram."
+msgstr "Tyhiliza eli qhosha ukuqwalasela umbala womenzi woluvo kule nkqubela."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:230
+#, fuzzy, kde-format
+msgid "Move Up"
+msgstr "Nyukela &Ngasentla"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:235
+#, fuzzy, kde-format
+msgid "Move Down"
+msgstr "Nyukela &Ngezantsi"
+
+#: SensorDisplayLib/ListView.cpp:44
+#, fuzzy, kde-format
+msgid "%1 K"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:45
+#, fuzzy, kde-format
+msgid "%1 M"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:46
+#, fuzzy, kde-format
+msgid "%1 G"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:47
+#, fuzzy, kde-format
+msgid "%1 T"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:48
+#, fuzzy, kde-format
+msgid "%1 P"
+msgstr "%"
+
+#: SensorDisplayLib/ListView.cpp:151
+#, fuzzy, kde-format
+#| msgid "Display Range"
+msgid "Display Units"
+msgstr "Bonisa Umqolo"
+
+#: SensorDisplayLib/ListView.cpp:155
+#, kde-format
+msgid "Mixed"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:161
+#, kde-format
+msgid "Kilobytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:167
+#, kde-format
+msgid "Megabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:173
+#, kde-format
+msgid "Gigabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:179
+#, fuzzy, kde-format
+msgid "Terabytes"
+msgstr "Ubushushu%1"
+
+#: SensorDisplayLib/ListViewSettings.cpp:30
+#, fuzzy, kde-format
+msgid "List View Settings"
+msgstr "Izicwangciso zemboniselo yoluhlu"
+
+#. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:47
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:47
+#, kde-format
+msgid "Colors"
+msgstr "Imibala"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:79
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
+#, kde-format
+msgid "Text color:"
+msgstr "Umbala wokubhaliweyo:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:92
+#, kde-format
+msgid "Grid color:"
+msgstr "Umbala wodibaniso lombane:"
+
+#: SensorDisplayLib/LogFile.cpp:93
+#, fuzzy, kde-format
+#| msgid "Log File Settings"
+msgid "File logging settings"
+msgstr "Izicwangciso Zomgcini Xesha"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
+#, kde-format
+msgid "Foreground color:"
+msgstr "Umbala wombukeli wemboniselo okufutshane:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, textTab)
+#: SensorDisplayLib/LogFileSettings.ui:21
+#, fuzzy, kde-format
+#| msgid "Text"
+msgid "&Text"
+msgstr "Okubhaliweyo"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/LogFileSettings.ui:29
+#, fuzzy, kde-format
+msgid "T&itle:"
+msgstr "Iwonga"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: SensorDisplayLib/LogFileSettings.ui:166
+#, fuzzy, kde-format
+#| msgid "Filter"
+msgid "Fi&lter"
+msgstr "Icebo lokucoca ulwelo"
+
+#. i18n: ectx: property (text), widget (QPushButton, addButton)
+#: SensorDisplayLib/LogFileSettings.ui:196
+#, kde-format
+msgid "&Add"
+msgstr "&Dibanisa"
+
+#. i18n: ectx: property (text), widget (QPushButton, deleteButton)
+#: SensorDisplayLib/LogFileSettings.ui:203
+#, kde-format
+msgid "&Delete"
+msgstr ""
+
+#. i18n: ectx: property (text), widget (QPushButton, changeButton)
+#: SensorDisplayLib/LogFileSettings.ui:210
+#, kde-format
+msgid "&Change"
+msgstr "&Tshintsha"
+
+#: SensorDisplayLib/MultiMeterSettings.cpp:33
+#, fuzzy, kde-format
+#| msgid "Multimeter Settings"
+msgctxt ""
+"Multimeter is a sensor display that mimics 'digital multimeter' aparatus"
+msgid "Multimeter Settings"
+msgstr "Izicwangciso Zemitha Ezininzi"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:26
+#, fuzzy, kde-format
+msgid "&Title:"
+msgstr "Iwonga"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:43
+#, kde-format
+msgid "Enable this to append the unit to the title of the display."
+msgstr "Yenza oku ukufakelela umnqongo kwiwonga lomboniso."
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
+#, kde-format
+msgid "&Show unit"
+msgstr "&Bonisa umnqongo"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
+#, kde-format
+msgid "&Enable alarm"
+msgstr "&Yenza i alarm"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
+#, fuzzy, kde-format
+#| msgid "Lower limit:"
+msgid "&Lower limit:"
+msgstr "Umda osezantsi:"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
+#, kde-format
+msgid "E&nable alarm"
+msgstr "Ye&nza alarm"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
+#, fuzzy, kde-format
+#| msgid "Upper limit:"
+msgid "&Upper limit:"
+msgstr "Umda ophezulu:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
+#, fuzzy, kde-format
+#| msgid "Normal digit color:"
+msgid "Nor&mal digit color:"
+msgstr "Umbala oqhelekileyo wesuntswana:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
+#, fuzzy, kde-format
+#| msgid "Alarm digit color:"
+msgid "Alarm di&git color:"
+msgstr "Umbala wesuntswana le alarm:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
+#, fuzzy, kde-format
+#| msgid "Background color:"
+msgid "Bac&kground color:"
+msgstr "Umbala Wesiqalo:"
+
+#: SensorDisplayLib/SensorDisplay.cpp:115 SensorDisplayLib/SensorLogger.cpp:587
+#, kde-format
+msgid "&Properties"
+msgstr "&Iimpahla"
+
+#: SensorDisplayLib/SensorDisplay.cpp:120 SensorDisplayLib/SensorLogger.cpp:592
+#, kde-format
+msgid "&Remove Display"
+msgstr "&Susa umboniso"
+
+#: SensorDisplayLib/SensorDisplay.cpp:187
+#, fuzzy, kde-format
+msgid ""
+"<qt><p>This is a sensor display. To customize a sensor display click the "
+"right mouse button here and select the <i>Properties</i> entry from the "
+"popup menu. Select <i>Remove</i> to delete the display from the worksheet.</"
+"p>%1</qt>"
+msgstr ""
+"<qt><p>Lena ngumbonisi womenzi woluvo. Xa ufuna ukwenza ngokusesikweni "
+"umbonisis womenzi nqakraza ubambe i qosha lasekunene kwi mouse esakhiweni "
+"okanye kwibkhokisis yokubonisa ukhethe i <i>Impahla</i>ungeno olusuka kwi "
+"popup menu. Khetha <i>Susa</i>ukucima ubonisa olusuka kwiphepha lomsebenzi.</"
+"p>%1</qt>"
+
+#: SensorDisplayLib/SensorLogger.cpp:132
+#, fuzzy, kde-format
+#| msgid "Logging"
+msgctxt "@title:column"
+msgid "Logging"
+msgstr "Iyafaka"
+
+#: SensorDisplayLib/SensorLogger.cpp:134
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:column"
+msgid "Timer Interval"
+msgstr "Ithuba lokuphumla lomgcini xesha"
+
+#: SensorDisplayLib/SensorLogger.cpp:136
+#, fuzzy, kde-format
+msgctxt "@title:column"
+msgid "Sensor Name"
+msgstr "Igama lomenzi woluvo"
+
+#: SensorDisplayLib/SensorLogger.cpp:138
+#, fuzzy, kde-format
+msgctxt "@title:column"
+msgid "Host Name"
+msgstr "IgamaLenginginya"
+
+#: SensorDisplayLib/SensorLogger.cpp:140
+#, fuzzy, kde-format
+msgctxt "@title:column"
+msgid "Log File"
+msgstr "Ifayile ye log"
+
+#: SensorDisplayLib/SensorLogger.cpp:418
+#: SensorDisplayLib/SensorLoggerDlg.cpp:30
+#, kde-format
+msgid "Sensor Logger"
+msgstr "Umfaki womenzi woluvo"
+
+#: SensorDisplayLib/SensorLogger.cpp:597
+#, kde-format
+msgid "&Remove Sensor"
+msgstr "&Susa umenzi woluvo"
+
+#: SensorDisplayLib/SensorLogger.cpp:602
+#, fuzzy, kde-format
+msgid "&Edit Sensor..."
+msgstr "&Hlela umenzi woluvo"
+
+#: SensorDisplayLib/SensorLogger.cpp:610
+#, kde-format
+msgid "St&op Logging"
+msgstr "Ye&ka ufako"
+
+#: SensorDisplayLib/SensorLogger.cpp:613
+#, kde-format
+msgid "S&tart Logging"
+msgstr "Qa&la ufako"
+
+#. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
+#, fuzzy, kde-format
+msgid "File"
+msgstr "Icebo lokucoca ulwelo"
+
+#. i18n: ectx: property (title), widget (QGroupBox, timerFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:41
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:group"
+msgid "Timer Interval"
+msgstr "Ithuba lokuphumla lomgcini xesha"
+
+#. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
+#, kde-format
+msgid " sec"
+msgstr " sec"
+
+#: SensorDisplayLib/SensorLoggerSettings.cpp:30
+#, kde-format
+msgid "Sensor Logger Settings"
+msgstr "Izicwangciso Zomfaki Womenzi woluvo"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
+#, kde-format
+msgid "Alarm color:"
+msgstr "Umbala we alarm:"
+
+#: SensorDisplayLib/SensorModel.cpp:161
+#, kde-format
+msgid "Host"
+msgstr "Inginginya"
+
+#: SensorDisplayLib/SensorModel.cpp:163
+#, kde-format
+msgid "Sensor"
+msgstr "Umenzi woluvo"
+
+#: SensorDisplayLib/SensorModel.cpp:165
+#, kde-format
+msgid "Unit"
+msgstr "Umnqongo"
+
+#: SensorDisplayLib/SensorModel.cpp:167
+#, kde-format
+msgid "Status"
+msgstr "Indawo engatsintshiyo"
+
+#: SensorDisplayLib/SensorModel.cpp:169
+#, kde-format
+msgid "Label"
+msgstr "Umbhalo"
+
+#. i18n: tag WorkSheet attribute title
+#: SystemLoad2.sgrd:3
+#, kde-format
+msgid "System Load"
+msgstr "Ulayisho lwendlela"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:5
+#, kde-format
+msgid "CPU History"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:8
+#, kde-format
+msgid "Memory and Swap History"
+msgstr ""
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:9
+#, kde-format
+msgid "Memory"
+msgstr "Inkumbulo"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:10
+#, kde-format
+msgid "Swap"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:12
+#, fuzzy, kde-format
+#| msgid "Network"
+msgid "Network History"
+msgstr "Umsebenzi womnatha"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:13
+#, fuzzy, kde-format
+#| msgid "Receiver"
+msgid "Receiving"
+msgstr "Umamakeli"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:14
+#, fuzzy, kde-format
+msgid "Sending"
+msgstr "Umenzi woluvo"
+
+#: WorkSheet.cpp:87
+#, fuzzy, kde-format
+msgid "Cannot open the file %1."
+msgstr "Ayinakuvula ifayile %1"
+
+#: WorkSheet.cpp:95
+#, kde-format
+msgid "The file %1 does not contain valid XML."
+msgstr "Ifayile %1 ayiqulathanga XML esebenzayo."
+
+#: WorkSheet.cpp:102
+#, kde-format
+msgid ""
+"The file %1 does not contain a valid worksheet definition, which must have a "
+"document type 'KSysGuardWorkSheet'."
+msgstr ""
+"Ifayile %1 ayiqulathanga inkcazelo yekhasi lomsebenzi elisebenzayo, "
+"ekufuneka ibenodidi loxwebhu'KSsGuardWorkSheet'."
+
+#: WorkSheet.cpp:114
+#, kde-format
+msgid "The file %1 has an invalid worksheet size."
+msgstr "Ifayile %1 inobungakanani bekhasi lomsebenzi elingasebenziyo."
+
+#: WorkSheet.cpp:239
+#, fuzzy, kde-format
+msgid "Cannot save file %1"
+msgstr "Ayinakuyigcina ifayile %1"
+
+#: WorkSheet.cpp:287
+#, kde-format
+msgid "The clipboard does not contain a valid display description."
+msgstr "Ibhodi eqhotyoshwayo ayiqulathanga nkcazelo yambonisousebenzayo."
+
+#: WorkSheet.cpp:387
+#, kde-format
+msgid "Select Display Type"
+msgstr "Khetha Udidi Lomboniso"
+
+#: WorkSheet.cpp:388
+#, kde-format
+msgid "&Line graph"
+msgstr ""
+
+#: WorkSheet.cpp:389
+#, kde-format
+msgid "&Digital display"
+msgstr ""
+
+#: WorkSheet.cpp:390
+#, fuzzy, kde-format
+msgid "&Bar graph"
+msgstr "&Ibar yomzobo"
+
+#: WorkSheet.cpp:391
+#, fuzzy, kde-format
+msgid "Log to a &file"
+msgstr "Ifayile ye log"
+
+#: WorkSheet.cpp:547
+#, fuzzy, kde-format
+#| msgid "&Remove Display"
+msgid "Remove this display?"
+msgstr "&Susa umboniso"
+
+#: WorkSheet.cpp:548
+#, fuzzy, kde-format
+#| msgid "&Remove Display"
+msgid "Remove Display"
+msgstr "&Susa umboniso"
+
+#: WorkSheet.cpp:589
+#, kde-format
+msgid "Dummy"
+msgstr ""
+
+#: WorkSheetSettings.cpp:43
+#, fuzzy, kde-format
+msgid "Tab Properties"
+msgstr "&Iimpahla"
+
+#: WorkSheetSettings.cpp:72
+#, fuzzy, kde-format
+msgid "Properties"
+msgstr "&Iimpahla"
+
+#: WorkSheetSettings.cpp:81
+#, kde-format
+msgid "Rows:"
+msgstr "Imiqolo:"
+
+#: WorkSheetSettings.cpp:91
+#, kde-format
+msgid "Columns:"
+msgstr "Imihlathi:"
+
+#: WorkSheetSettings.cpp:100
+#, kde-format
+msgid "Enter the number of rows the sheet should have."
+msgstr "Ngenisa inani lemiqolo ikhasi elinokuba nalo."
+
+#: WorkSheetSettings.cpp:101
+#, kde-format
+msgid "Enter the number of columns the sheet should have."
+msgstr "Ngenisa inani lwemihlathi ikhai elimokuba nalo."
+
+#: WorkSheetSettings.cpp:103
+#, kde-format
+msgid "Update interval:"
+msgstr "Lenze ligqibeke ixesha lokuphumla:"
+
+#: WorkSheetSettings.cpp:116
+#, kde-format
+msgid "All displays of the sheet are updated at the rate specified here."
+msgstr "zonke iziboniso zekhasi zigqityiwe kumyinge okhankanyiweyo apha."
+
+#: WorkSheetSettings.cpp:117
+#, kde-format
+msgid "Enter the title of the worksheet here."
+msgstr "Ngenisa iwonga lekhasi lokusebenza apha."
+
+#: Workspace.cpp:111
+#, kde-format
+msgid "Sheet %1"
+msgstr "Ikhasi %1"
+
+#: Workspace.cpp:170
+#, fuzzy, kde-format
+#| msgid ""
+#| "The worksheet '%1' contains unsaved data.\n"
+#| "Do you want to save the worksheet?"
+msgid ""
+"The tab '%1' contains unsaved data.\n"
+"Do you want to save the tab?"
+msgstr ""
+"Ikhasi lomsebenzi '%1' liqulathe idata engagcinwanga\n"
+"Ufuna ukugcina ikhasi lomsebenzi?"
+
+#: Workspace.cpp:186
+#, kde-format
+msgid "Select Tab File to Import"
+msgstr ""
+
+#: Workspace.cpp:208 Workspace.cpp:228
+#, fuzzy, kde-format
+msgid "You do not have a tab that could be saved."
+msgstr "Awunakhasi lamsebeniz elizakugcinwa!"
+
+#: Workspace.cpp:235
+#, kde-format
+msgid "Export Tab"
+msgstr ""
+
+#: Workspace.cpp:255
+#, fuzzy, kde-format
+msgid "There are no tabs that could be deleted."
+msgstr "Akukho makhasi omsebenzi azakucinywa!"
+
+#: Workspace.cpp:299
+#, kde-kuit-format
+msgctxt "@info"
+msgid ""
+"<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
+"in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
+msgstr ""
+
+#: Workspace.cpp:304
+#, fuzzy, kde-format
+msgid "Upload custom System Monitor tab"
+msgstr "Ulayisho lwendlela"
+
+#~ msgid "Timer Settings"
+#~ msgstr "Izicwangciso Zemitha Ezininzi"
+
+#, fuzzy
+#~ msgid "Use update interval of worksheet"
+#~ msgstr "&Sebenzisa eligqityiweyo ithuba lokuphumla lwephepha lokusebenza"
+
+#, fuzzy
+#~| msgid "*.sgrd|Sensor Files"
+#~ msgid "*.sgrd|Sensor Files (*.sgrd)"
+#~ msgstr "*.sgrd|Sensor Files"
+
+#, fuzzy
+#~| msgid "Lower limit:"
+#~ msgid "Lo&wer limit:"
+#~ msgstr "Umda osezantsi:"
+
+#, fuzzy
+#~| msgid ""
+#~| "Message from %1:\n"
+#~| "%2"
+#~ msgctxt "%1 is a host name"
+#~ msgid ""
+#~ "Message from %1:\n"
+#~ "%2"
+#~ msgstr ""
+#~ "Umyalezo osuka %1:\n"
+#~ "%2"
+
+#~ msgid "Connection to %1 refused"
+#~ msgstr "Udibaniso ku %1 akuvunyelwanga"
+
+#~ msgid "Host %1 not found"
+#~ msgstr "Inginginya %1 ayifumanekanga"
+
+#, fuzzy
+#~| msgid "&Change"
+#~ msgid "Change"
+#~ msgstr "&Tshintsha"
+
+#, fuzzy
+#~ msgid "Rate"
+#~ msgstr "Indawo engatsintshiyo"
+
+#, fuzzy
+#~ msgid "CPU Load"
+#~ msgstr "Umsebenzisi Wolayisho"
+
+#~ msgid "Nice Load"
+#~ msgstr "Mnandi Layisha"
+
+#~ msgid "User Load"
+#~ msgstr "Umsebenzisi Wolayisho"
+
+#, fuzzy
+#~| msgid "System Load"
+#~ msgctxt "@item sensor description"
+#~ msgid "System Load"
+#~ msgstr "Ulayisho lwendlela"
+
+#, fuzzy
+#~ msgid "Waiting"
+#~ msgstr "yenza amaphepha"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Interrupt Load"
+#~ msgstr "Iyaroxisa"
+
+#, fuzzy
+#~ msgid "Total Load"
+#~ msgstr "Iyonke"
+
+#~ msgid "Physical Memory"
+#~ msgstr "Inkumbulo Ebonakalayo"
+
+#~ msgid "Swap Memory"
+#~ msgstr "Tshintsha Inkumbulo"
+
+#~ msgid "Cached Memory"
+#~ msgstr "Inkumbulo Egcinwe Kwindawo Efihlakeleyo"
+
+#~ msgid "Buffered Memory"
+#~ msgstr "Inkumbulo Yesixhobo Senkumbulo"
+
+#~ msgid "Used Memory"
+#~ msgstr "Inkumbulo Esetyenzisiweyo"
+
+#~ msgid "Application Memory"
+#~ msgstr "Isicelo Sokumbulo"
+
+#~ msgid "Free Memory"
+#~ msgstr "Inkumbulo Ekhululekileyo"
+
+#, fuzzy
+#~| msgid "Application Memory"
+#~ msgid "Active Memory"
+#~ msgstr "Isicelo Sokumbulo"
+
+#, fuzzy
+#~| msgid "Cached Memory"
+#~ msgid "Inactive Memory"
+#~ msgstr "Inkumbulo Egcinwe Kwindawo Efihlakeleyo"
+
+#, fuzzy
+#~| msgid "Used Memory"
+#~ msgid "Wired Memory"
+#~ msgstr "Inkumbulo Esetyenzisiweyo"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Processes"
+#~ msgstr "Imibalo Yenkqubela"
+
+#~ msgid "Process Controller"
+#~ msgstr "Umlawuli Wenkqubela"
+
+#, fuzzy
+#~| msgid "System Processes"
+#~ msgid "Last Process ID"
+#~ msgstr "Iinkqubela Zendlela yokusebenza"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Process Spawn Count"
+#~ msgstr "Imibalo Yenkqubela"
+
+#~ msgid "Process Count"
+#~ msgstr "Imibalo Yenkqubela"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Idle Processes Count"
+#~ msgstr "Imibalo Yenkqubela"
+
+#, fuzzy
+#~ msgid "Running Processes Count"
+#~ msgstr "Imibalo Yenkqubela"
+
+#, fuzzy
+#~ msgid "Sleeping Processes Count"
+#~ msgstr "Imibalo Yenkqubela"
+
+#, fuzzy
+#~ msgid "Stopped Processes Count"
+#~ msgstr "Imibalo Yenkqubela"
+
+#, fuzzy
+#~ msgid "Zombie Processes Count"
+#~ msgstr "Imibalo Yenkqubela"
+
+#, fuzzy
+#~ msgid "Waiting Processes Count"
+#~ msgstr "Imibalo Yenkqubela"
+
+#, fuzzy
+#~ msgid "Locked Processes Count"
+#~ msgstr "Imibalo Yenkqubela"
+
+#~ msgid "Disk Throughput"
+#~ msgstr "Idiski Throughput"
+
+#~ msgctxt "CPU Load"
+#~ msgid "Load"
+#~ msgstr "Layisha"
+
+#~ msgid "Total Accesses"
+#~ msgstr "Lonke Ufumaniso"
+
+#~ msgid "Read Accesses"
+#~ msgstr "Funda Ufumaniso"
+
+#~ msgid "Write Accesses"
+#~ msgstr "Bala Ufumaniso"
+
+#~ msgid "Read Data"
+#~ msgstr "Funda Idata"
+
+#, fuzzy
+#~| msgid "Write Data"
+#~ msgid "Written Data"
+#~ msgstr "Bala Idata"
+
+#~ msgid "Pages In"
+#~ msgstr "Amaphepha Ngaphakathi"
+
+#~ msgid "Pages Out"
+#~ msgstr "Amaphepha Phandle"
+
+#~ msgid "Context Switches"
+#~ msgstr "Intsingiselo Yezilayiti Zicimi"
+
+#, fuzzy
+#~| msgid "System Load"
+#~ msgid "System Calls"
+#~ msgstr "Ulayisho lwendlela"
+
+#~ msgid "Network"
+#~ msgstr "Umsebenzi womnatha"
+
+#~ msgid "Interfaces"
+#~ msgstr "Iinjongano"
+
+#~ msgid "Transmitter"
+#~ msgstr "Umsasazi"
+
+#, fuzzy
+#~ msgid "Data Rate"
+#~ msgstr "Indawo engatsintshiyo"
+
+#, fuzzy
+#~| msgid "Compressed Packets"
+#~ msgid "Compressed Packets Rate"
+#~ msgstr "i Packet Edityaniswe kunye"
+
+#, fuzzy
+#~| msgid "Dropped Packets"
+#~ msgid "Dropped Packets Rate"
+#~ msgstr "i Packet Ewisiweyo"
+
+#, fuzzy
+#~| msgid "Errors"
+#~ msgid "Error Rate"
+#~ msgstr "Iimposiso"
+
+#, fuzzy
+#~| msgid "FIFO Overruns"
+#~ msgid "FIFO Overruns Rate"
+#~ msgstr "FIFO Ubaleko ngaphezulu"
+
+#, fuzzy
+#~| msgid "Frame Errors"
+#~ msgid "Frame Error Rate"
+#~ msgstr "Impazamo Zesakhelo"
+
+#, fuzzy
+#~| msgid "Multicast"
+#~ msgid "Multicast Packet Rate"
+#~ msgstr "Usasazo oluninzi"
+
+#, fuzzy
+#~| msgid "Packets"
+#~ msgid "Packet Rate"
+#~ msgstr "i Packets"
+
+#, fuzzy
+#~| msgid "Carrier"
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Loss Rate"
+#~ msgstr "Ophatisiweyo"
+
+#~ msgid "Collisions"
+#~ msgstr "Unqubano"
+
+#~ msgid "Data"
+#~ msgstr "Data"
+
+#~ msgid "Compressed Packets"
+#~ msgstr "i Packet Edityaniswe kunye"
+
+#~ msgid "Dropped Packets"
+#~ msgstr "i Packet Ewisiweyo"
+
+#~ msgid "Errors"
+#~ msgstr "Iimposiso"
+
+#~ msgid "FIFO Overruns"
+#~ msgstr "FIFO Ubaleko ngaphezulu"
+
+#~ msgid "Frame Errors"
+#~ msgstr "Impazamo Zesakhelo"
+
+#, fuzzy
+#~| msgid "Multicast"
+#~ msgid "Multicast Packets"
+#~ msgstr "Usasazo oluninzi"
+
+#~ msgid "Packets"
+#~ msgstr "i Packets"
+
+#, fuzzy
+#~| msgid "Carrier"
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Losses"
+#~ msgstr "Ophatisiweyo"
+
+#~ msgid "Sockets"
+#~ msgstr "Izikaliu"
+
+#~ msgid "Total Number"
+#~ msgstr "Inani Elipheleleyo"
+
+#~ msgid "Table"
+#~ msgstr "Indlela yokwenza imigca"
+
+#~ msgid "Advanced Power Management"
+#~ msgstr "Amandla Abheka phambili Ophatho"
+
+#, fuzzy
+#~ msgid "Temperature"
+#~ msgstr "Ubushushu%1"
+
+#, fuzzy
+#~ msgid "Average CPU Temperature"
+#~ msgstr "Ubushushu%1"
+
+#, fuzzy
+#~ msgid "Fan"
+#~ msgstr "i Fan%1"
+
+#, fuzzy
+#~ msgid "State"
+#~ msgstr "Indawo engatsintshiyo"
+
+#, fuzzy
+#~ msgid "Battery"
+#~ msgstr "Uchargo lwe Battery"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Capacity"
+#~ msgstr "Uchargo lwe Battery"
+
+#~ msgid "Battery Charge"
+#~ msgstr "Uchargo lwe Battery"
+
+#, fuzzy
+#~ msgid "Battery Usage"
+#~ msgstr "Uchargo lwe Battery"
+
+#, fuzzy
+#~ msgid "Battery Voltage"
+#~ msgstr "Uchargo lwe Battery"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Discharge Rate"
+#~ msgstr "Uchargo lwe Battery"
+
+#~ msgid "Remaining Time"
+#~ msgstr "Ixesha Elishiyekileyo"
+
+#~ msgid "Interrupts"
+#~ msgstr "Iyaroxisa"
+
+#~ msgid "Load Average (1 min)"
+#~ msgstr "Layisha Umdilili (1 min)"
+
+#~ msgid "Load Average (5 min)"
+#~ msgstr "Layisha Umdlilili (imizuzu emihlanu)"
+
+#~ msgid "Load Average (15 min)"
+#~ msgstr "Layisha Umdlilili (imizuzu elishumi elinesihlanu)"
+
+#~ msgid "Clock Frequency"
+#~ msgstr "Uqukuqelo lweklok"
+
+#, fuzzy
+#~| msgid "Clock Frequency"
+#~ msgid "Average Clock Frequency"
+#~ msgstr "Uqukuqelo lweklok"
+
+#~ msgid "Hardware Sensors"
+#~ msgstr "Abenzi boluvo Bempahla yentsimbi"
+
+#~ msgid "Partition Usage"
+#~ msgstr "Tlula Usebenziso"
+
+#~ msgid "Used Space"
+#~ msgstr "Isithuba Esisebenzisiweyo"
+
+#~ msgid "Free Space"
+#~ msgstr "Isithuba Esingenanto"
+
+#~ msgid "Fill Level"
+#~ msgstr "Gcwalisa Umphakamo"
+
+#, fuzzy
+#~| msgid "User Load"
+#~ msgid "Used Inodes"
+#~ msgstr "Umsebenzisi Wolayisho"
+
+#, fuzzy
+#~ msgid "System"
+#~ msgstr "Indlela yokusebenza%"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Processors"
+#~ msgstr "Imibalo Yenkqubela"
+
+#, fuzzy
+#~| msgid "Colors"
+#~ msgid "Cores"
+#~ msgstr "Imibala"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Blocks"
+#~ msgstr "Inani lemiboniso:"
+
+#, fuzzy
+#~| msgid "Total Number"
+#~ msgid "Total Number of Devices"
+#~ msgstr "Inani Elipheleleyo"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Raid Devices"
+#~ msgstr "Inani lemiboniso:"
+
+#, fuzzy
+#~| msgid "Number of displays:"
+#~ msgid "Number of Devices"
+#~ msgstr "Inani lemiboniso:"
+
+#, fuzzy
+#~ msgid "CPU %1"
+#~ msgstr "CPU%1"
+
+#, fuzzy
+#~ msgid "Disk %1"
+#~ msgstr "i Disk%1"
+
+#, fuzzy
+#~ msgid "Battery %1"
+#~ msgstr "Uchargo lwe Battery"
+
+#, fuzzy
+#~ msgid "Fan %1"
+#~ msgstr "i Fan%1"
+
+#, fuzzy
+#~ msgid "Temperature %1"
+#~ msgstr "Ubushushu%1"
+
+#~ msgid "Total"
+#~ msgstr "Iyonke"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Software Interrupts"
+#~ msgstr "Iyaroxisa"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Hardware Interrupts"
+#~ msgstr "Iyaroxisa"
+
+#, fuzzy
+#~ msgid "Int %1"
+#~ msgstr "Int%1"
+
+#~ msgctxt "the unit 1 per second"
+#~ msgid "1/s"
+#~ msgstr "1/s"
+
+#~ msgid "kBytes"
+#~ msgstr "kBytes"
+
+#~ msgctxt "the unit minutes"
+#~ msgid "min"
+#~ msgstr "ncinane"
+
+#~ msgctxt "the frequency unit"
+#~ msgid "MHz"
+#~ msgstr "i MHz"
+
+#, fuzzy
+#~ msgctxt "a percentage"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgid "Integer Value"
+#~ msgstr "Inani elipheleleyo Lexabiso"
+
+#~ msgid "Floating Point Value"
+#~ msgstr "Ixabiso Lencopho Yokudada"
+
+#, fuzzy
+#~| msgid " sec"
+#~ msgctxt "Units"
+#~ msgid "%1 second"
+#~ msgid_plural "%1 seconds"
+#~ msgstr[0] " sec"
+#~ msgstr[1] " sec"
+
+#, fuzzy
+#~ msgid "Font:"
+#~ msgstr "Bala:"
+
+#, fuzzy
+#~ msgid "Grid lines:"
+#~ msgstr "Iilayini ezithe nkqo"
+
+#, fuzzy
+#~ msgid "Background:"
+#~ msgstr "Isiqalo"
+
+#, fuzzy
+#~ msgid "Do you really want to delete the display?"
+#~ msgstr "Ufuna ngenene ukubuyisela kwakhona lamakhasi omsebenzi okwendalo?"
+
+#, fuzzy
+#~ msgid "Delete Display"
+#~ msgstr "Khetha Udidi Lomboniso"
+
+#, fuzzy
+#~ msgid "&Edit"
+#~ msgstr "&Hlela..."
+
+#, fuzzy
+#~ msgid "Automatic range"
+#~ msgstr "Ubhaqo lomqolo ozenzekelayo"
+
+#, fuzzy
+#~| msgid ""
+#~| "This is your work space. It holds your worksheets. You need to create a "
+#~| "new worksheet (Menu File->New) before you can drag sensors here."
+#~ msgid ""
+#~ "This is your work space. It holds your tabs. You need to create a new tab "
+#~ "(Menu File->New) before you can drag sensors here."
+#~ msgstr ""
+#~ "Esisisithuba sakho somsebenzi. Ibamba amakhasi wakho okusebenza. Ufuna "
+#~ "ukwenza elitsha ikhasi lomsebenzi (Ifayile ye Menu->Entsha) phambi kokuba "
+#~ "utsale abenzi boluvo apha."
+
+#, fuzzy
+#~ msgid "Connection to %1 has been lost."
+#~ msgstr "Udibaniso ku %1 kulahlekile!"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "&Title"
+#~ msgstr "Iwonga"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "T&itle"
+#~ msgstr "Iwonga"
+
+#, fuzzy
+#~ msgid "System Guard Applet Settings"
+#~ msgstr "Izicwangciso ze KSsguard Applet"
+
+#~ msgid "Size ratio:"
+#~ msgstr "Ulwahlulo lobungakanani:"
+
+#, fuzzy
+#~| msgid "%"
+#~ msgctxt "Number suffix in spinbox"
+#~ msgid "%"
+#~ msgstr "%"
+
+#, fuzzy
+#~ msgid "Launch &System Guard"
+#~ msgstr "KDE Indlela yokulawula"
+
+#~ msgid "Drag sensors to empty cells of a worksheet or the panel applet."
+#~ msgstr ""
+#~ "Rhuqa abenzi boluvo ukwenza zingabinanto iiseli zekhasi okanye iqela "
+#~ "lenjongo ye applet."
+
+#, fuzzy
+#~ msgid "Select Worksheet to Open"
+#~ msgstr "Khetha Ikhasi lokusebenza Elizakulayishwa"
+
+#, fuzzy
+#~ msgid "Export Work Sheet"
+#~ msgstr "&Gcina ikhasi Lomsebenzi Langoku Njnge"
+
+#~ msgid "Worksheet Properties"
+#~ msgstr "Izicwangciso Zekhasi lokusebenza"
+
+#~ msgid "&Signal Plotter"
+#~ msgstr "&Umenzi weyelenqe onephawu"
+
+#~ msgid "&Multimeter"
+#~ msgstr "&Imitha ezininzi"
+
+#~ msgid "&Dancing Bars"
+#~ msgstr "&Iibar Ezidanisayos"
+
+#~ msgid ""
+#~ "The KSysGuard applet does not support displaying of this type of sensor. "
+#~ "Please choose another sensor."
+#~ msgstr ""
+#~ "I KSysGuard applet ayikuxhasi ukuboniswa kolu didi lomenzi woluvo. Nceda "
+#~ "khetha omnye umenzi woluvo."
+
+#~ msgid ""
+#~ "The file %1 does not contain a valid applet definition, which must have a "
+#~ "document type 'KSysGuardApplet'."
+#~ msgstr ""
+#~ "Ifayile %1 ayiqulathanga nkcazelo isebenzayo ye applet, ekufuneka "
+#~ "ibenodidi lwexwebhu 'KSysGuardApplet'."
+
+#~ msgid "Drag sensors from the KDE System Guard into this cell."
+#~ msgstr "Tsala abenzi boluvo kwi KDE yendlela yolawulo iye kule seli."
+
+#, fuzzy
+#~ msgid "&New Worksheet..."
+#~ msgstr "Cwangcisa Onke Amakhasi okusebenza"
+
+#, fuzzy
+#~ msgid "Open Worksheet..."
+#~ msgstr "Cwangcisa Onke Amakhasi okusebenza"
+
+#, fuzzy
+#~ msgid "&Export Worksheet..."
+#~ msgstr "&Gcina ikhasi Lomsebenzi Langoku Njnge"
+
+#, fuzzy
+#~ msgid "&Remove Worksheet"
+#~ msgstr "Cwangcisa Onke Amakhasi okusebenza"
+
+#, fuzzy
+#~ msgid "&Worksheet Properties"
+#~ msgstr "Izicwangciso Zekhasi lokusebenza"
+
+#, fuzzy
+#~ msgid "Import Worksheet..."
+#~ msgstr "Cwangcisa Onke Amakhasi okusebenza"
+
+#~ msgid "Count:"
+#~ msgstr "Bala:"
+
+#~ msgid "Enter the number of horizontal lines here."
+#~ msgstr "Ngenisa inani lee layini ezithe tye apha."
+
+#~ msgid "Labels"
+#~ msgstr "Imibhalo"
+
+#~ msgid "Top bar"
+#~ msgstr "Ibar ephezulu"
+
+#~ msgid ""
+#~ "Check this to active the display title bar. This is probably only useful "
+#~ "for applet displays. The bar is only visible if the display is large "
+#~ "enough."
+#~ msgstr ""
+#~ "Khangela oku kwibar esebenzayo yomboniso wewonga. Oku kuluncedo kakhulu "
+#~ "kwimiboniso ye applet. Ibar ibonakala kuphela xa umboniso umkhulu "
+#~ "ngokwaneleyo."
+
+#, fuzzy
+#~ msgid "Horizontal lines:"
+#~ msgstr "Iilayini ezithe tye"
+
+#, fuzzy
+#~| msgid "Sensor Logger"
+#~ msgid "Sensor Load"
+#~ msgstr "Umfaki womenzi woluvo"
+
+#~ msgid "Show only process list of local host"
+#~ msgstr "Bonisa kuphela uluhlu lwenkqubela yenginginya yobulali"
+
+#~ msgctxt "process status"
+#~ msgid "running"
+#~ msgstr "iyasebenza"
+
+#~ msgctxt "process status"
+#~ msgid "sleeping"
+#~ msgstr "iyalala"
+
+#~ msgctxt "process status"
+#~ msgid "disk sleep"
+#~ msgstr "ukulala kwe diski"
+
+#~ msgctxt "process status"
+#~ msgid "zombie"
+#~ msgstr "isiporho"
+
+#~ msgctxt "process status"
+#~ msgid "stopped"
+#~ msgstr "imisiwe"
+
+#~ msgctxt "process status"
+#~ msgid "paging"
+#~ msgstr "yenza amaphepha"
+
+#~ msgctxt "process status"
+#~ msgid "idle"
+#~ msgstr "engavalwa sithuba"
+
+#, fuzzy
+#~ msgid "User ID: %1"
+#~ msgstr "Umsebenzisi%"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "User Name"
+#~ msgstr "Igama lomenzi woluvo"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "CPU %"
+#~ msgstr "CPU%1"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Virtual Size"
+#~ msgstr "Isikali esithe nkqo"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Memory"
+#~ msgstr "Inkumbulo"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Shared Mem"
+#~ msgstr "Inkumbulo Egcinwe Kwindawo Efihlakeleyo"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Command"
+#~ msgstr "Umyalelo"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Name"
+#~ msgstr "Igama"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Graphics Memory"
+#~ msgstr "Tshintsha Inkumbulo"
+
+#, fuzzy
+#~ msgctxt "process heading"
+#~ msgid "Application"
+#~ msgstr "Isicelo Sokumbulo"
+
+#~ msgid "Renice Process"
+#~ msgstr "Inkqubela ye Renice"
+
+#, fuzzy
+#~ msgid "Renice process"
+#~ msgstr "Inkqubela ye Renice"
+
+#, fuzzy
+#~ msgid "Kill process"
+#~ msgstr "Bulala Inkqubo"
+
+#, fuzzy
+#~ msgid "Hide column '%1'"
+#~ msgstr "Fihla Umhlathi"
+
+#, fuzzy
+#~ msgid "Show column '%1'"
+#~ msgstr "Bonisa Imiqolo"
+
+#~ msgid "%1: Running Processes"
+#~ msgstr "%1: Iinkqubela ezisebenzayo"
+
+#, fuzzy
+#~ msgid "You need to select a process first."
+#~ msgstr "Kufuneka ukhethe inkqubela kuqala!"
+
+#, fuzzy
+#~ msgid "Do you want to kill the selected process?"
+#~ msgid_plural "Do you want to kill the %1 selected processes?"
+#~ msgstr[0] "Ufuna ukubulala ekhethiweyo inkqubela?"
+#~ msgstr[1] "Ufuna ukubulala %1 ekhethiweyo inkqubela?"
+
+#~ msgid "Kill Process"
+#~ msgstr "Bulala Inkqubo"
+
+#, fuzzy
+#~ msgid "Kill"
+#~ msgstr "&Bulala"
+
+#, fuzzy
+#~ msgid "Error while attempting to kill process %1."
+#~ msgstr "Imposiso ngexesha uzama ukubulala %1!"
+
+#, fuzzy
+#~ msgid "Process %1 has already disappeared."
+#~ msgstr "Inkqubela %1 sele ilahlekile!"
+
+#, fuzzy
+#~ msgid "Invalid Signal."
+#~ msgstr "Uphawu olungasebenziyo!"
+
+#, fuzzy
+#~ msgid "Error while attempting to renice process."
+#~ msgstr "Imposiso ngexesha uzama ukubulala %1!"
+
+#, fuzzy
+#~ msgid "Insufficient permissions to renice process"
+#~ msgstr "Iimvume ezingonelanga ukubulala inkqubela %1!"
+
+#, fuzzy
+#~ msgid "Process has disappeared."
+#~ msgstr "Inkqubela %1 sele ilahlekile!"
+
+#, fuzzy
+#~ msgid "Error while attempting to renice process %1."
+#~ msgstr "Imposiso ngexesha uzama ukubulala %1!"
+
+#, fuzzy
+#~ msgid "Process %1 has disappeared."
+#~ msgstr "Inkqubela %1 sele ilahlekile!"
+
+#, fuzzy
+#~ msgid "All Processes, Simple"
+#~ msgstr "Zonke Iindela"
+
+#, fuzzy
+#~ msgid "All Processes, Hierarchical"
+#~ msgstr "Zonke Iindela"
+
+#~ msgid "User Processes"
+#~ msgstr "Iinkqubela Zomsebenzisi"
+
+#~ msgid "Own Processes"
+#~ msgstr "Inkqubela Zobunini bakho"
+
+#, fuzzy
+#~ msgid "Show &Totals"
+#~ msgstr "Bonisa Imiqolo"
+
+#~ msgid "Global Style Settings"
+#~ msgstr "Uhlobo Lwezicwangcisi Zasehlabathini"
+
+#~ msgid "Display Style"
+#~ msgstr "Bonisa Uhlobo"
+
+#, fuzzy
+#~ msgid "First foreground color:"
+#~ msgstr "Umbala wombukeli wemboniselo okufutshane:"
+
+#, fuzzy
+#~ msgid "Second foreground color:"
+#~ msgstr "Umbala wombukeli wemboniselo okufutshane:"
+
+#~ msgid "Sensor Colors"
+#~ msgstr "Abenzi Boluvo"
+
+#~ msgid "Change Color..."
+#~ msgstr "Tshintsha Umbala..."
+
+#~ msgid "Color %1"
+#~ msgstr "Imibala %1"
+
+#, fuzzy
+#~ msgid "Font"
+#~ msgstr "Bala:"
+
+#~ msgid "Select Font..."
+#~ msgstr "Khetha Ubungakanani begama..."
+
+#, fuzzy
+#~ msgid "&Cancel"
+#~ msgstr "&Tshintsha"
+
+#~ msgid "Configure &Style..."
+#~ msgstr "Qwalasela &Uhlobo..."
+
+#~ msgid "Idle Load"
+#~ msgstr "Ulayisho Lwendlela"
+
+#, fuzzy
+#~ msgid "It is impossible to connect to '%1'."
+#~ msgstr "Akwenzeki ukudibanisa ku '%1'!"
+
+#~ msgid "S&ensorLogger"
+#~ msgstr "Umfaki wo&menzi woluvo"
+
+#, fuzzy
+#~ msgid "Timeout at host %1"
+#~ msgstr "Impazamo yokufunda ku inginginya %1"
+
+#~ msgid "Save Current Worksheet As"
+#~ msgstr "Gcina Ikhasi lomsebenzi Langoku Njenge"
+
+#, fuzzy
+#~ msgid "Cannot find file ProcessTable.sgrd."
+#~ msgstr "Ayinakufumana itafile yenkqubela.srgd!"
+
+#~ msgid "Remove Column"
+#~ msgstr "Susa Umhlathi"
+
+#~ msgid "Add Column"
+#~ msgstr "Dibanisa umhlathi"
+
+#~ msgid "Help on Column"
+#~ msgstr "Uncedo kumhlathi"
+
+#~ msgid "Nice"
+#~ msgstr "Mnandi"
+
+#~ msgid "Select All Processes"
+#~ msgstr "Khetha Zonke Iinkqubela"
+
+#~ msgid "Unselect All Processes"
+#~ msgstr "Sukukhetha Zonke Iinkqubela"
+
+#~ msgid "Select All Child Processes"
+#~ msgstr "Khetha Zonke Iinkqubela Zomntwana"
+
+#~ msgid "Unselect All Child Processes"
+#~ msgstr "Sukukhetha Zonke Iikqubela"
+
+#~ msgid "SIGABRT"
+#~ msgstr "SIGABRT"
+
+#~ msgid "SIGALRM"
+#~ msgstr "SIGALRM"
+
+#~ msgid "SIGCHLD"
+#~ msgstr "SIGCHLD"
+
+#~ msgid "SIGCONT"
+#~ msgstr "SIGCONT"
+
+#~ msgid "SIGFPE"
+#~ msgstr "SIGFPE"
+
+#~ msgid "SIGHUP"
+#~ msgstr "SIGHUP"
+
+#~ msgid "SIGILL"
+#~ msgstr "SIGILL"
+
+#~ msgid "SIGINT"
+#~ msgstr "SIGINT"
+
+#~ msgid "SIGKILL"
+#~ msgstr "SIGKILL"
+
+#~ msgid "SIGPIPE"
+#~ msgstr "SIGPIPE"
+
+#~ msgid "SIGQUIT"
+#~ msgstr "SIGQUIT"
+
+#~ msgid "SIGSEGV"
+#~ msgstr "SIGSEGV"
+
+#~ msgid "SIGSTOP"
+#~ msgstr "SIGSTOP"
+
+#~ msgid "SIGTERM"
+#~ msgstr "SIGTERM"
+
+#~ msgid "SIGTSTP"
+#~ msgstr "SIGTSTP"
+
+#~ msgid "SIGTTIN"
+#~ msgstr "SIGTTIN"
+
+#~ msgid "SIGTTOU"
+#~ msgstr "SIGTTOU"
+
+#~ msgid "SIGUSR1"
+#~ msgstr "SIGUSR1"
+
+#~ msgid "SIGUSR2"
+#~ msgstr "SIGUSR2"
+
+#~ msgid "Send Signal"
+#~ msgstr "Thumela uphawu"
+
+#~ msgid "Renice Process..."
+#~ msgstr "Inkqubela ye Renice..."
+
+#~ msgid "Do you really want to send signal %2 to the selected process?"
+#~ msgid_plural ""
+#~ "Do you really want to send signal %2 to the %1 selected processes?"
+#~ msgstr[0] "Ufuna ngokwenene ukuthumela uphawu %2 kwinkqubela ekhetiweyo? "
+#~ msgstr[1] ""
+#~ "Ungaba uyafuna ukuthumela uphawu %2 kwi %1 kwinkqubela ekhetiweyo?"
+
+#~ msgid "Style"
+#~ msgstr "Uhlobo"
+
+#~ msgid "Graph Drawing Style"
+#~ msgstr "Uhlobo Lokuzoba Igrafu"
+
+#~ msgid "Basic polygons"
+#~ msgstr "Iilayini ezininzi Ezingundoqo"
+
+#~ msgid "Original - single line per data point"
+#~ msgstr "Eyoqobo - ilayini eyodwa yencopho yedata nganye"
+
+#~ msgid "&Setup Update Interval..."
+#~ msgstr "&Cwangcisa Ugqibo Lwesithuba sokuphumla..."
+
+#~ msgid "&Continue Update"
+#~ msgstr "&Qubeka Gqiba"
+
+#~ msgid "P&ause Update"
+#~ msgstr "Y&ima Gqiba"
+
+#~ msgid ""
+#~ "You are about to change the scheduling priority of\n"
+#~ "process %1. Be aware that only the Superuser (root)\n"
+#~ "can decrease the nice level of a process. The lower\n"
+#~ "the number is the higher the priority.\n"
+#~ "\n"
+#~ "Please enter the desired nice level:"
+#~ msgstr ""
+#~ "Umalunga nokutshintsha okuphambili kocwangciso\n"
+#~ "lwenkqubela %1. Lindela ukuba ngumsebenzisi kuphela ophezulu (ingcambu)\n"
+#~ "enganciphisa umphakamo omnandi wenkqubela. Okuye lisezantsi\n"
+#~ "inani kokuye buphezulu ubuphambili.\n"
+#~ "\n"
+#~ "Nceda ngenisa umphakamo omnandi ofunekayo:"
+
+#~ msgid "PID"
+#~ msgstr "PID"
+
+#~ msgid "PPID"
+#~ msgstr "PPID"
+
+#~ msgid "UID"
+#~ msgstr "UID"
+
+#~ msgid "GID"
+#~ msgstr "GID"
+
+#~ msgid "VmSize"
+#~ msgstr "VmSize"
+
+#~ msgid "VmRss"
+#~ msgstr "VmRss"
+
+#~ msgid "Login"
+#~ msgstr "Igama elithile"
+
+#~ msgid "&Tree"
+#~ msgstr "&Umthi"
+
+#~ msgid "&Kill"
+#~ msgstr "&Bulala"
+
+#, fuzzy
+#~ msgid "Insufficient permissions to kill process %1."
+#~ msgstr "Iimvume ezingonelanga ukubulala inkqubela %1!"
+
+#, fuzzy
+#~ msgid "Invalid argument."
+#~ msgstr "Uphawu olungasebenziyo!"
+
+#, fuzzy
+#~ msgid "CPU"
+#~ msgstr "CPU%1"
+
+#, fuzzy
+#~ msgid "Mem"
+#~ msgstr "Inkumbulo"
+
+#~ msgid "Sensor Type"
+#~ msgstr "Udidi lomenzi woluvo"
+
+#, fuzzy
+#~ msgid "KDE system guard"
+#~ msgstr "KDE Indlela yokulawula"
+
+#~ msgid "88888 Processes"
+#~ msgstr "88888 Iinkqubekeko"
+
+#, fuzzy
+#~ msgid "Memory: 88888888888 kB used, 88888888888 kB free"
+#~ msgstr "Inkumbulo: 8888888 kB isetyenzisiwe, 8888888 kB ekhululekileyo"
+
+#, fuzzy
+#~ msgid "Swap: 888888888 kB used, 888888888 kB free"
+#~ msgstr "Tshintshisa 8888888 kB isetyenzisiwe, 8888888 kB ikhululekile"
+
+#, fuzzy
+#~ msgid "&Import Recent Worksheet"
+#~ msgstr "&Gcina ikhasi Lomsebenzi Langoku Njnge"
+
+#~ msgid "C&onnect Host..."
+#~ msgstr "Diba&nisa inginginya..."
+
+#~ msgid "D&isconnect Host"
+#~ msgstr "Suku&dibanisa inginginya"
+
+#~ msgid "Reset All Worksheets"
+#~ msgstr "Cwangcisa Onke Amakhasi okusebenza"
+
+#~ msgid "Memory: %1 %2 used, %3 %4 free"
+#~ msgstr "Inkumbulo: %1 %2 isetyenzisiwe, %3 %4 ikhululekile"
+
+#~ msgid "Swap: %1 %2 used, %3 %4 free"
+#~ msgstr "Tshintshisa: %1 %2 isetyenzisiwe, %3 %4 ikhululekile"

@@ -1,0 +1,1928 @@
+# translation of ksysguard.po to Khmer
+# Khoem Sokhem <khoemsokhem@khmeros.info>, 2005, 2006, 2007, 2008, 2009, 2010.
+# Auk Piseth <piseth_dv@khmeros.info>, 2007, 2008.
+# Eng Vannak <evannak@khmeros.info>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: ksysguard\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-09-20 01:53+0000\n"
+"PO-Revision-Date: 2010-06-08 14:04+0700\n"
+"Last-Translator: Khoem Sokhem <khoemsokhem@khmeros.info>\n"
+"Language-Team: Khmer <support@khmeros.info>\n"
+"Language: km\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: KBabel 1.11.4\n"
+"X-Language: km-CM\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "ខឹម សុខែម, ម៉ន ម៉េត, សេង សុត្ថា"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "khoemsokhem@khmeros.info,​​mornmet@khmeros.info,sutha@khmeros.info"
+
+#: HostConnector.cpp:44
+#, kde-format
+msgid "Connect Host"
+msgstr "ត​ភ្ជាប់​ទៅ​ម៉ាស៊ីន"
+
+#: HostConnector.cpp:57
+#, kde-format
+msgid "Host:"
+msgstr "ម៉ាស៊ីន ៖"
+
+#: HostConnector.cpp:67
+#, kde-format
+msgid "Enter the name of the host you want to connect to."
+msgstr "បញ្ចូល​ឈ្មោះ​ម៉ាស៊ីន​ដែល​អ្នក​ចង់​តភ្ជាប់​ទៅកាន់ ។"
+
+#: HostConnector.cpp:73
+#, kde-format
+msgid "Connection Type"
+msgstr "ប្រភេទ​នៃ​ការ​ត​ភ្ជាប់"
+
+#: HostConnector.cpp:78
+#, kde-format
+msgid "ssh"
+msgstr "ssh"
+
+#: HostConnector.cpp:81
+#, kde-format
+msgid "Select this to use the secure shell to login to the remote host."
+msgstr "ជ្រើស​វា​​នេះ​ដើម្បី​ប្រើ​សែល​មាន​សុវត្ថិភាព ចូល​ទៅ​កាន់​ម៉ាស៊ីន​ឆ្ងាយ ។"
+
+#: HostConnector.cpp:84
+#, kde-format
+msgid "rsh"
+msgstr "rsh"
+
+#: HostConnector.cpp:85
+#, kde-format
+msgid "Select this to use the remote shell to login to the remote host."
+msgstr "ជ្រើស​វា​នេះ​ដើម្បី​ប្រើ​សែល​ពី​ចម្ងាយ​ដើម្បី​ចូល​ទៅ​កាន់​ម៉ាស៊ីន​ឆ្ងាយ ។"
+
+#: HostConnector.cpp:88
+#, kde-format
+msgid "Daemon"
+msgstr "ដេមិន"
+
+#: HostConnector.cpp:89
+#, kde-format
+msgid ""
+"Select this if you want to connect to a ksysguard daemon that is running on "
+"the machine you want to connect to, and is listening for client requests."
+msgstr ""
+"ជ្រើស​វា​នេះ បើ​អ្នក​ចង់​តភ្ជាប់​ទៅ​ដេមិន ksysguard ដែល​កំពុង​រត់​នៅ​លើ​ម៉ាស៊ីន ដែល​អ្នក​ចង់​តភ្ជាប់ និង​កំពុង​"
+"ស្ដាប់​សំណើ​របស់​ម៉ាស៊ីន​ភ្ញៀវ ។"
+
+#: HostConnector.cpp:92
+#, kde-format
+msgid "Custom command"
+msgstr "ពាក្យ​បញ្ជា​ផ្ទាល់​ខ្លួន"
+
+#: HostConnector.cpp:93
+#, kde-format
+msgid ""
+"Select this to use the command you entered below to start ksysguardd on the "
+"remote host."
+msgstr ""
+"ជ្រើស​វា​នេះ ដើម្បី​ប្រើ​ពាក្យ​បញ្ជា​ដែល​អ្នក​បាន​បញ្ចូល​ខាង​ក្រោម ដើម្បី​ចាប់​ផ្តើម ksysguardd នៅ​លើ​ម៉ាស៊ីន​"
+"ឆ្ងាយ ។"
+
+#: HostConnector.cpp:96
+#, kde-format
+msgid "Port:"
+msgstr "ច្រក ៖"
+
+#: HostConnector.cpp:103
+#, kde-format
+msgid ""
+"Enter the port number on which the ksysguard daemon is listening for "
+"connections."
+msgstr "បញ្ចូល​លេខ​ច្រក​ដែល​ដេមិន ksysguard កំពុងស្ដាប់​ការ​តភ្ជាប់ ។"
+
+#: HostConnector.cpp:106
+#, kde-format
+msgid "e.g.  3112"
+msgstr "ឧ˙.  3112"
+
+#: HostConnector.cpp:109
+#, kde-format
+msgid "Command:"
+msgstr "ពាក្យ​បញ្ជា ៖"
+
+#: HostConnector.cpp:118
+#, kde-format
+msgid "Enter the command that runs ksysguardd on the host you want to monitor."
+msgstr "បញ្ចូល​ពាក្យ​បញ្ជា​ដែល​រត់ ksysguardd លើ​ម៉ាស៊ីន​ដែល​អ្នក​ចង់ត្រួត​ពិនិត្យ ។"
+
+#: HostConnector.cpp:122
+#, kde-format
+msgid "e.g. ssh -l root remote.host.org ksysguardd"
+msgstr "ឧ. ssh -l root remote.host.org ksysguardd"
+
+#: ksysguard.cpp:74
+#, kde-format
+msgid "KDE System Monitor"
+msgstr "អ្នក​ត្រួត​ពិនិត្យ​ប្រព័ន្ធ​របស់ KDE"
+
+#: ksysguard.cpp:157
+#, kde-format
+msgid ""
+"This will hide the menu bar completely. You can show it again by typing %1."
+msgstr ""
+
+#: ksysguard.cpp:159
+#, kde-format
+msgid "Hide menu bar"
+msgstr ""
+
+#: ksysguard.cpp:177 ksysguard.cpp:571
+#, kde-format
+msgid "System Monitor"
+msgstr "អ្នក​ត្រួត​ពិនិត្យ​ប្រព័ន្ធ​​"
+
+#: ksysguard.cpp:178
+#, kde-format
+msgid "&Refresh Tab"
+msgstr "ធ្វើ​ឲ្យ​ផ្ទាំង​ស្រស់"
+
+#: ksysguard.cpp:179
+#, kde-format
+msgid "&New Tab..."
+msgstr "ផ្ទាំង​ថ្មី..."
+
+#: ksysguard.cpp:180
+#, kde-format
+msgid "Import Tab Fr&om File..."
+msgstr "នាំចូល​ផ្ទាំង​ពី​ឯកសារ..."
+
+#: ksysguard.cpp:181
+#, kde-format
+msgid "Save Tab &As..."
+msgstr "រក្សា​ផ្ទាំង​ទុកជា..."
+
+#: ksysguard.cpp:182
+#, kde-format
+msgid "&Close Tab"
+msgstr "បិទ​ផ្ទាំង"
+
+#: ksysguard.cpp:183
+#, kde-format
+msgid "Monitor &Remote Machine..."
+msgstr "ត្រួតពិនិត្យ​ម៉ាស៊ីន​ពី​ចម្ងាយ..."
+
+#: ksysguard.cpp:184
+#, kde-format
+msgid "&Download New Tabs..."
+msgstr "ទាញ​យក​ផ្ទាំង​ថ្មី..."
+
+#: ksysguard.cpp:185
+#, kde-format
+msgid "&Upload Current Tab..."
+msgstr "ផ្ទុក​ឡើង​ផ្ទាំង​បច្ចុប្បន្ន..."
+
+#: ksysguard.cpp:187
+#, kde-format
+msgid "Tab &Properties"
+msgstr "លក្ខណៈ​សម្បត្តិ​ផ្ទាំង"
+
+#: ksysguard.cpp:384
+#, fuzzy, kde-format
+#| msgid "1 process1"
+#| msgid_plural "%1 processes%1"
+msgid "1 process"
+msgid_plural "%1 processes"
+msgstr[0] "%1 ដំណើរការ %1"
+
+#: ksysguard.cpp:465
+#, fuzzy, kde-format
+#| msgid "CPU: %1%%1%"
+msgid "CPU: %1%"
+msgstr "ស៊ីភូយូ ៖ %1%%1%"
+
+#: ksysguard.cpp:465
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1%"
+msgctxt "This is the shorter version of CPU: %1%"
+msgid "%1%"
+msgstr "%1%"
+
+#: ksysguard.cpp:484
+#, kde-format
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Memory: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:486
+#, kde-format
+msgctxt ""
+"Arguments are formatted byte sizes (used/total) This should be a shorter "
+"version of the previous Memory: %1 / %2"
+msgid "Mem: %1 / %2"
+msgstr ""
+
+#: ksysguard.cpp:488
+#, kde-format
+msgctxt ""
+"Arguments is formatted byte sizes (used) This should be a shorter version of "
+"the previous Mem: %1 / %2"
+msgid "Mem: %1"
+msgstr ""
+
+#: ksysguard.cpp:516
+#, kde-format
+msgid " No swap space available "
+msgstr " គ្មាន​ទំហំ​ស្វប​ដែល​អាច​ប្រើ​បាន​ "
+
+#: ksysguard.cpp:520
+#, fuzzy, kde-format
+#| msgctxt "Arguments are formatted byte sizes (used/total)"
+#| msgid "Swap: %1 / %2Swap: %1%1"
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Swap: %1 / %2"
+msgstr "ស្វប ៖ %1 / %2Swap: %1%1"
+
+#: ksysguard.cpp:522
+#, kde-format
+msgctxt "Arguments is formatted byte sizes (used)"
+msgid "Swap: %1"
+msgstr ""
+
+#: ksysguard.cpp:573
+#, fuzzy, kde-format
+#| msgid "(c) 1996-2008 The KDE System Monitor Developers"
+msgid "(c) 1996-2016 The KDE System Monitor Developers"
+msgstr "រក្សា​សិទ្ធិ​ឆ្នាំ ១៩៩៦-២០០២ ដោយ​អ្នក​​អភិវឌ្ឍន៍​ការ​ត្រួត​ពិនិត្យ​ប្រព័ន្ធ KDE"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "John Tapsell"
+msgstr "John Tapsell"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Current Maintainer"
+msgstr "អ្នក​ថែទាំ​បច្ចុប្បន្ន​"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Chris Schlaeger"
+msgstr "Chris Schlaeger"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Previous Maintainer"
+msgstr "អ្នក​ថែទាំ​ពី​មុន"
+
+#: ksysguard.cpp:577
+#, kde-format
+msgid "Greg Martyn"
+msgstr "Greg Martyn"
+
+#: ksysguard.cpp:578
+#, kde-format
+msgid "Tobias Koenig"
+msgstr "Tobias Koenig"
+
+#: ksysguard.cpp:579
+#, kde-format
+msgid "Nicolas Leclercq"
+msgstr "Nicolas Leclercq"
+
+#: ksysguard.cpp:580
+#, kde-format
+msgid "Alex Sanda"
+msgstr "Alex Sanda"
+
+#: ksysguard.cpp:581
+#, kde-format
+msgid "Bernd Johannes Wuebben"
+msgstr "Bernd Johannes Wuebben"
+
+#: ksysguard.cpp:582
+#, kde-format
+msgid "Ralf Mueller"
+msgstr "Ralf Mueller"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid "Hamish Rodda"
+msgstr "Hamish Rodda"
+
+#: ksysguard.cpp:584
+#, kde-format
+msgid "Torsten Kasch"
+msgstr "Torsten Kasch"
+
+#: ksysguard.cpp:584
+#, kde-format
+msgid ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+msgstr ""
+"ការ​គាំទ្រ Solaris\n"
+"ផ្នែក​ដែល​បាន​ទទួល (ដោយ​មាន​ការ​អនុញ្ញាត) ពី​ម៉ូឌុល sunos5\n"
+"នៃ​ឧបករណ៍​ប្រើប្រាស់ \"កំពូល\" របស់ William LeFebvre ។"
+
+#: ksysguard.cpp:593
+#, kde-format
+msgid "Optional worksheet files to load"
+msgstr "ឯកសារ​សន្លឹក​កិច្ចការ​ស្រេចចិត្ត​ដែល​ត្រូវ​ផ្ទុក"
+
+#  i18n: file ./SensorDisplayLib/LogFileSettings.ui line 199
+#. i18n: ectx: Menu (file)
+#: ksysguardui.rc:5
+#, kde-format
+msgid "&File"
+msgstr "ឯកសារ​"
+
+#  i18n: file ./SensorDisplayLib/LogFileSettings.ui line 199
+#. i18n: ectx: Menu (view)
+#: ksysguardui.rc:15
+#, kde-format
+msgid "&View"
+msgstr "មើល​"
+
+#. i18n: ectx: Menu (settings)
+#: ksysguardui.rc:19
+#, kde-format
+msgid "&Settings"
+msgstr "ការ​កំណត់​"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ksysguardui.rc:22
+#, kde-format
+msgid "Main Toolbar"
+msgstr "របារ​ឧបករណ៍​មេ"
+
+#. i18n: tag WorkSheet attribute title
+#. i18n: tag display attribute title
+#: ProcessTable.sgrd:3 ProcessTable.sgrd:5
+#, kde-format
+msgid "Process Table"
+msgstr "តារាង​ដំណើរការ"
+
+#: SensorBrowser.cpp:113
+#, kde-format
+msgid "Sensor Browser"
+msgstr "កម្មវិធី​រុករក​ឧបករណ៍​ចាប់​សញ្ញា"
+
+#: SensorBrowser.cpp:473
+#, kde-format
+msgid "Drag sensors to empty cells of a worksheet "
+msgstr "អូស​ឧបករណ៍​ចាប់សញ្ញា​ទៅក្រឡា​ទទេ​របស់​សន្លឹក​ការងារ"
+
+#: SensorBrowser.cpp:474
+#, kde-format
+msgid ""
+"The sensor browser lists the connected hosts and the sensors that they "
+"provide. Click and drag sensors into drop zones of a worksheet. A display "
+"will appear that visualizes the values provided by the sensor. Some sensor "
+"displays can display values of multiple sensors. Simply drag other sensors "
+"on to the display to add more sensors."
+msgstr ""
+"កម្មវិធី​រុករក​ឧបករណ៍​ចាប់សញ្ញា​រាយ​ម៉ាស៊ីន និង​ឧបករណ៍​ចាប់សញ្ញា​ដែល​បានតភ្ជាប់​ដែល​ពួកវា​ផ្ដល់​ឲ្យ ។ ចុច និង​អូស​"
+"ឧបករណ៍​ចាប់សញ្ញា​​ទៅ​ក្នុង​តំបន់​ទម្លាក់​របស់​សន្លឹកការងារ ។ ការ​បង្ហាញ​នឹង​លិចឡើង​ដែល​បង្កើត​បានជា​តម្លៃ​និម្មិត​"
+"ដែលបានផ្ដល់​ដោយ​ឧបករណ៍​ចាប់សញ្ញា ។ ការ​បង្ហាញ​ឧបករណ៍​ចាប់សញ្ញា​មួយ​ចំនួន​​អាច​បង្ហាញ​តម្លៃ​របស់​ឧបករណ៍​"
+"ចាប់សញ្ញា​ជា​ច្រើន ។ អូស​ឧបករណ៍​ចាប់សញ្ញា​​ធម្មតា​ទៅ​ក្នុងកា​របង្ហាញ ដើម្បី​បង្ហាញ​ឧបករណ៍​ចាប់សញ្ញា​ជា​"
+"ច្រើន ។"
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:280
+#, kde-format
+msgid "OK"
+msgstr "យល់ព្រម​"
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:280
+#: SensorDisplayLib/FancyPlotter.cpp:544 SensorDisplayLib/FancyPlotter.cpp:623
+#, kde-format
+msgid "Error"
+msgstr "កំហុស"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:42
+#, kde-format
+msgid "Edit BarGraph Preferences"
+msgstr "កែសម្រួល​ចំណូល​ចិត្ត​​នៃ​ BarGraph"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:51
+#, kde-format
+msgid "Range"
+msgstr "ជួរ"
+
+#  i18n: file ./SensorDisplayLib/MultiMeterSettingsWidget.ui line 25
+#. i18n: ectx: property (title), widget (QGroupBox, titleFrame)
+#: SensorDisplayLib/DancingBarsSettings.cpp:55
+#: SensorDisplayLib/ListViewSettingsWidget.ui:17
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:17 WorkSheetSettings.cpp:61
+#, kde-format
+msgid "Title"
+msgstr "ចំណង​ជើង"
+
+#  i18n: file ./SensorDisplayLib/MultiMeterSettingsWidget.ui line 36
+#. i18n: ectx: property (whatsThis), widget (QLineEdit, m_title)
+#: SensorDisplayLib/DancingBarsSettings.cpp:60
+#: SensorDisplayLib/FancyPlotterSettings.cpp:70
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
+#, kde-format
+msgid "Enter the title of the display here."
+msgstr "បញ្ចូល​ចំណង​ជើង​នៃ​ការ​បង្ហាញ​ទី​នេះ ។"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:65
+#, kde-format
+msgid "Display Range"
+msgstr "ជួរ​បង្ហាញ"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:70
+#: SensorDisplayLib/FancyPlotterSettings.cpp:96
+#, kde-format
+msgid "Minimum value:"
+msgstr "តម្លៃ​អប្បបរមា ៖"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:78
+#, kde-format
+msgid ""
+"Enter the minimum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"បញ្ចូល​តម្លៃ​អប្បបរមា​សម្រាប់​ការ​បង្ហាញ​នៅ​ទីនេះ ។ ប្រសិន​បើ​តម្លៃ​ទាំង​ពីរ​ស្មើ 0 នោះ​ការ​រក​ជួរ​ដោយ​ស្វ័យ​"
+"ប្រវត្តិ​នឹង​ត្រូវ​បាន​អនុញ្ញាត ។"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:82
+#: SensorDisplayLib/FancyPlotterSettings.cpp:107
+#, kde-format
+msgid "Maximum value:"
+msgstr "តម្លៃ​អតិបរមា ៖"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:90
+#, kde-format
+msgid ""
+"Enter the maximum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"បញ្ចូល​តម្លៃ​អតិបរមា​សម្រាប់​ការ​បង្ហាញ​នៅ​ទីនេះ ។ ប្រសិន​បើ​តម្លៃ​ទាំង​ពីរ​ស្មើ 0 នោះ​ការ​រក​ជួរ​ដោយ​ស្វ័យ​"
+"ប្រវត្តិ​នឹង​ត្រូវ​បាន​អនុញ្ញាត ។"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:100
+#, kde-format
+msgid "Alarms"
+msgstr "ការ​ព្រមាន"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
+#: SensorDisplayLib/DancingBarsSettings.cpp:104
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
+#, kde-format
+msgid "Alarm for Minimum Value"
+msgstr "ការ​ព្រមាន​សម្រាប់​តម្លៃ​អប្បបរមា"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:109
+#: SensorDisplayLib/DancingBarsSettings.cpp:132
+#, kde-format
+msgid "Enable alarm"
+msgstr "អនុញ្ញាត​ឲ្យ​មាន​ការ​ព្រមាន"
+
+#  i18n: file ./SensorDisplayLib/SensorLoggerDlgWidget.ui line 92
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:110
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:57
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
+#, kde-format
+msgid "Enable the minimum value alarm."
+msgstr "អនុញ្ញាត​ឲ្យ​មាន​ការ​ព្រមាន​នៃ​តម្លៃ​អប្បបរមា ។"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:113
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:125
+#, kde-format
+msgid "Lower limit:"
+msgstr "ព្រំដែន​ក្រោម ៖"
+
+#  i18n: file ./SensorDisplayLib/SensorLoggerDlgWidget.ui line 144
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1_2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:127
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
+#, kde-format
+msgid "Alarm for Maximum Value"
+msgstr "ការ​ព្រមាន​សម្រាប់​តម្លៃ​អតិបរមា"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:133
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:116
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
+#, kde-format
+msgid "Enable the maximum value alarm."
+msgstr "អនុញ្ញាត​ឲ្យ​មាន​ការ​ព្រមាន​តម្លៃ​អតិបរមា ។"
+
+#  i18n: file ./SensorDisplayLib/SensorLoggerDlgWidget.ui line 186
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:136
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:198
+#, kde-format
+msgid "Upper limit:"
+msgstr "ព្រំដែន​លើ ៖"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:153
+#, kde-format
+msgctxt "@title:tab Appearance of the bar graph"
+msgid "Look"
+msgstr "មើល"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:157
+#, kde-format
+msgid "Normal bar color:"
+msgstr "ពណ៌​របារ​ធម្មតា ៖"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:164
+#, kde-format
+msgid "Out-of-range color:"
+msgstr "ពណ៌​នៅ​ក្រៅ​ជួរ ៖"
+
+#  i18n: file ./SensorDisplayLib/MultiMeterSettingsWidget.ui line 241
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/DancingBarsSettings.cpp:171
+#: SensorDisplayLib/ListViewSettingsWidget.ui:105
+#: SensorDisplayLib/LogFile.cpp:105 SensorDisplayLib/LogFileSettings.ui:85
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:92
+#, kde-format
+msgid "Background color:"
+msgstr "ពណ៌​ផ្ទៃ​ខាង​ក្រោយ ៖"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:178
+#: SensorDisplayLib/FancyPlotterSettings.cpp:177
+#, kde-format
+msgid "Font size:"
+msgstr "ទំហំ​ពុម្ព​អក្សរ ៖"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:183
+#, kde-format
+msgid ""
+"This determines the size of the font used to print a label underneath the "
+"bars. Bars are automatically suppressed if text becomes too large, so it is "
+"advisable to use a small font size here."
+msgstr ""
+"វា​នេះ​កំណត់​ទំហំ​របស់​ពុម្ព​អក្សរ​ដែល​បាន​ប្រើ ដើម្បី​បោះពុម្ព​ស្លាក​ក្រោម​របារ ។ របារ​ត្រូវ​បាន​បង្ហាប់​ដោយ​ស្វ័យ​"
+"ប្រវត្តិ បើ​អត្ថបទ​ធំ​ពេក ដូច្នេះ​សូម​ប្រើ​ទំហំ​ពុម្ព​អក្សរ​តូច​នៅ​ទីនេះ​ប្រសើរ​ជាង ។"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:191
+#: SensorDisplayLib/FancyPlotterSettings.cpp:193
+#, kde-format
+msgid "Sensors"
+msgstr "ឧបករណ៍​ចាប់​សញ្ញា"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:204
+#, kde-format
+msgid "Edit..."
+msgstr "កែ​សម្រួល..."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:205
+#, kde-format
+msgid "Push this button to configure the label."
+msgstr "ចុច​ប៊ូតុង​នេះ ដើម្បី​កំណត់​រចនាសម្ព័ន្ធ​ស្លាក ។"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:208
+#: SensorDisplayLib/FancyPlotterSettings.cpp:225
+#, kde-format
+msgid "Delete"
+msgstr "លុប​"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:209
+#: SensorDisplayLib/FancyPlotterSettings.cpp:226
+#, kde-format
+msgid "Push this button to delete the sensor."
+msgstr "ចុច​ប៊ូតុង​នេះ ដើម្បី​លុប​ឧបករណ៍​ចាប់​សញ្ញា ។"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:361
+#, kde-format
+msgid "Label of Bar Graph"
+msgstr "ស្លាក​របស់​របារ​ក្រាហ្វិក"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:362
+#, kde-format
+msgid "Enter new label:"
+msgstr "បញ្ចូល​ស្លាក​ថ្មី ៖"
+
+#: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
+#, kde-format
+msgid "Drop Sensor Here"
+msgstr "ទម្លាក់​ឧបករណ៍​ចាប់​សញ្ញា​នៅ​ទីនេះ"
+
+#: SensorDisplayLib/DummyDisplay.cpp:33
+#, kde-format
+msgid ""
+"This is an empty space in a worksheet. Drag a sensor from the Sensor Browser "
+"and drop it here. A sensor display will appear that allows you to monitor "
+"the values of the sensor over time."
+msgstr ""
+"នេះ​គឺ​ជា​ចន្លោះ​ទទេ​មួយ​ក្នុង​សន្លឹក​កិច្ចការ ។ អូស​ឧបករណ៍​ចាប់​សញ្ញា​មួយ​ពី​កម្មវិធី​រុករក​ឧបករណ៍​ចាប់​សញ្ញា និង​"
+"ទម្លាក់​វា​នៅ​ទីនេះ ។ ការ​បង្ហាញ​របស់​ឧបករណ៍​ចាប់​សញ្ញា​នឹង​លេច​ឡើង ដែល​វា​អនុញ្ញាត​ឲ្យ​អ្នក​ត្រួត​ពិនិត្យ​តម្លៃ​"
+"របស់​ឧបករណ៍​ចាប់​សញ្ញា​លើស​ម៉ោង ។"
+
+#: SensorDisplayLib/FancyPlotter.cpp:176
+#, kde-format
+msgctxt "Largest axis title"
+msgid "99999 XXXX"
+msgstr "99999 XXXX"
+
+#: SensorDisplayLib/FancyPlotter.cpp:540 SensorDisplayLib/FancyPlotter.cpp:612
+#: SensorDisplayLib/FancyPlotter.cpp:675
+#, kde-format
+msgctxt "units"
+msgid "%1%"
+msgstr "%1%"
+
+#: SensorDisplayLib/FancyPlotter.cpp:548
+#, kde-format
+msgctxt "%1 is what is being shown statistics for, like 'Memory', 'Swap', etc."
+msgid "<p><b>%1:</b><br>"
+msgstr "<p><b>%1 ៖</b><br>"
+
+#: SensorDisplayLib/FancyPlotter.cpp:620
+#, fuzzy, kde-format
+#| msgid "%1 of %2%1"
+msgid "%1 of %2"
+msgstr "%1 នៃ %2%1"
+
+#: SensorDisplayLib/FancyPlotter.cpp:648
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB"
+msgstr "%1 តេរ៉ាបៃ"
+
+#: SensorDisplayLib/FancyPlotter.cpp:651
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB"
+msgstr "%1 ជីកាបៃ"
+
+#: SensorDisplayLib/FancyPlotter.cpp:654
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB"
+msgstr "%1 មេកាបៃ"
+
+#: SensorDisplayLib/FancyPlotter.cpp:657
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB"
+msgstr "%1 គីឡូបៃ"
+
+#: SensorDisplayLib/FancyPlotter.cpp:662
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB/s"
+msgstr "%1 តេរ៉ាបៃ/វិ."
+
+#: SensorDisplayLib/FancyPlotter.cpp:665
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB/s"
+msgstr "%1 ជីកាប៊ីត/វិ."
+
+#: SensorDisplayLib/FancyPlotter.cpp:668
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB/s"
+msgstr "%1 មេកាប៊ីត/វិ."
+
+#: SensorDisplayLib/FancyPlotter.cpp:671
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB/s"
+msgstr "%1 គីឡូប៊ីត/វិ."
+
+#: SensorDisplayLib/FancyPlotter.cpp:677
+#, kde-format
+msgctxt "unitless - just a number"
+msgid "%1"
+msgstr "%1"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:46
+#, kde-format
+msgid "Plotter Settings"
+msgstr "ការ​កំណត់​ឧបករណ៍​គូស​សញ្ញា"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:62
+#, kde-format
+msgid "General"
+msgstr "ទូទៅ​"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:66
+#, kde-format
+msgid "Title:"
+msgstr "ចំណង​ជើង ៖"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:74
+#, kde-format
+msgid "Stack the beams on top of each other"
+msgstr "ជង់​ធ្នឹម​នៅ​ខាង​លើ​​គ្នា"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:75
+#, kde-format
+msgid ""
+"The beams are stacked on top of each other, and the area is drawn filled in. "
+"So if one beam has a value of 2 and another beam has a value of 3, the first "
+"beam will be drawn at value 2 and the other beam drawn at 2+3=5."
+msgstr ""
+"ធ្នឹម​ត្រូវ​បាន​ដាក់​ជង់​នៅ​ខាង​លើ​នីមួយ​ៗ​ ​ហើយ​​ផ្ទៃ​​ត្រូវ​បាន​​គូរ​នៅ​ក្នុង​ ។ ​បើ​ធ្នឹម​មួយ​​មាន​តម្លៃ​ ២ និង​ធ្នឹម​ផ្សេង​ទៀត​"
+"មាន​តម្លៃ 3 ធ្នឹម​ដំបូង​នឹង​ត្រូវ​បាន​​គូរ​នៅ​តម្លៃ​ ២ និង​ធ្នឹម​ដែល​គូរ​ផ្សេង​ទៀត​​ ២+៣=៥."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:82
+#, kde-format
+msgid "Scales"
+msgstr "មាត្រ​ដ្ឋាន"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:86
+#, kde-format
+msgid "Vertical scale"
+msgstr "មាត្រដ្ឋាន​បញ្ឈរ"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:91
+#, kde-format
+msgid "Specify graph range:"
+msgstr "បញ្ជាក់​ជួរ​ក្រាហ្វ​នៅ​ទីនេះ ៖"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:92
+#, kde-format
+msgid ""
+"Check this box if you want the display range to adapt dynamically to the "
+"currently displayed values; if you do not check this, you have to specify "
+"the range you want in the fields below."
+msgstr ""
+"ធីក​ប្រអប់​នេះ ប្រសិន​បើ​អ្នក​ចង់​បង្ហាញ​ជួរ​ដែល​ត្រូវ​សម្រួល​ជា​ថាម​វន្ត​ទៅ​តម្លៃ​ដែល​បាន​បង្ហាញ​បច្ចុប្បន្ន​នេះ បើ​"
+"អ្នក​មិន​ធីក​ប្រអប់​នេះ​ទេ អ្នក​ត្រូវ​តែ​បញ្ជាក់​ជួរ​ដែល​អ្នក​ចង់​បាន​ក្នុង​វាល​ខាង​ក្រោម ។"
+
+#  i18n: file ./SensorDisplayLib/MultiMeterSettingsWidget.ui line 36
+#: SensorDisplayLib/FancyPlotterSettings.cpp:102
+#, kde-format
+msgid "Enter the minimum value for the display here."
+msgstr "បញ្ចូល​តម្លៃ​អប្បបរមា​សម្រាប់​ការ​បង្ហាញ​នៅ​ទីនេះ ។"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:113
+#, kde-format
+msgid ""
+"Enter the soft maximum value for the display here. The upper range will not "
+"be reduced below this value, but will still go above this number for values "
+"above this value."
+msgstr ""
+"បញ្ចូល​តម្លៃ​អតិបរមា​សម្រាប់កា​របង្ហាញ​នៅ​ទីនេះ ។ ជួរ​ខ្ពស់​នឹង​មិន​ត្រូវ​បាន​ថត​ខាង​ក្រោម​តម្លៃ​នេះ​ទេ ប៉ុន្តែ​នឹង​"
+"ទៅ​ខា​ងលើ​លេខ​នេះ សម្រាប់តម្លៃ​ខាង​លើ​តម្លៃ​នេះ ។"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:120
+#, kde-format
+msgid "Horizontal scale"
+msgstr "មាត្រដ្ឋាន​ផ្តេក"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:128
+#, kde-format
+msgid "Pixels per time period:"
+msgstr "ភីកសែល​ក្នុង​មួយ​រយៈពេល ៖"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:135
+#, kde-format
+msgid "Grid"
+msgstr "ក្រឡា​ចត្រង្គ"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:139
+#, kde-format
+msgid "Lines"
+msgstr "បន្ទាត់"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:144
+#, kde-format
+msgid "Vertical lines"
+msgstr "បន្ទាត់​បញ្ឈរ"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:145
+#, kde-format
+msgid "Check this to activate the vertical lines if display is large enough."
+msgstr "ធីក​កន្លែង​នេះ ដើម្បី​ធ្វើ​ឲ្យ​បន្ទាត់​បញ្ឈរ​សកម្ម បើ​ការ​បង្ហាញ​ធំ​ល្មម ។"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:148
+#, kde-format
+msgid "Distance:"
+msgstr "ចម្ងាយ ៖"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:155
+#, kde-format
+msgid "Enter the distance between two vertical lines here."
+msgstr "បញ្ចូល​ចម្ងាយ​រវាង​បន្ទាត់​បញ្ឈរ​ទាំង​ពីរ​នៅ​ទីនេះ ។"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:159
+#, kde-format
+msgid "Vertical lines scroll"
+msgstr "រមូរ​បន្ទាត់​បញ្ឈរ"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:162
+#, kde-format
+msgid "Horizontal lines"
+msgstr "បន្ទាត់​ផ្តេក"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:163
+#, kde-format
+msgid "Check this to enable horizontal lines if display is large enough."
+msgstr "ធីក​វា ដើម្បី​អាច​ប្រើ​បន្ទាត់​ផ្តេក បើ​ការ​បង្ហាញ​គឺ​ធំ​គ្រប់​គ្រាន់ ។"
+
+#  i18n: file ./SensorDisplayLib/LogFileSettings.ui line 35
+#: SensorDisplayLib/FancyPlotterSettings.cpp:168
+#, kde-format
+msgid "Text"
+msgstr "អត្ថបទ"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:173
+#, kde-format
+msgid "Show axis labels"
+msgstr "បង្ហាញ​ស្លាក​អ័ក្ស"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:174
+#, kde-format
+msgid ""
+"Check this box if horizontal lines should be decorated with the values they "
+"mark."
+msgstr "ធីក​ប្រអប់​នេះ បើ​​បន្ទាត់​ផ្ដេក​គួរ​ត្រូវ​បាន​តុបតែង​ដោយ​តម្លៃ​ដែល​ពួក​វា​សម្គាល់ ។"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:217
+#, kde-format
+msgid "Set Color..."
+msgstr "កំណត់​ពណ៌..."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:218
+#, kde-format
+msgid "Push this button to configure the color of the sensor in the diagram."
+msgstr "ចុច​ប៊ូតុង​នេះ ដើម្បី​កំណត់​រចនាសម្ព័ន្ធ​ពណ៌​របស់​ឧបករណ៍​ចាប់​សញ្ញា​ក្នុង​ដ្យាក្រាម ។"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:230
+#, kde-format
+msgid "Move Up"
+msgstr "ផ្លាស់ទី​ឡើង​លើ"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:235
+#, kde-format
+msgid "Move Down"
+msgstr "ផ្លាស់ទី​ចុះ​ក្រោម"
+
+#: SensorDisplayLib/ListView.cpp:44
+#, kde-format
+msgid "%1 K"
+msgstr "%1 គីឡូបៃ​"
+
+#: SensorDisplayLib/ListView.cpp:45
+#, kde-format
+msgid "%1 M"
+msgstr "%1 មេកាបៃ​​"
+
+#: SensorDisplayLib/ListView.cpp:46
+#, kde-format
+msgid "%1 G"
+msgstr "%1 ជីកាបៃ"
+
+#: SensorDisplayLib/ListView.cpp:47
+#, kde-format
+msgid "%1 T"
+msgstr "%1 តេរ៉ាបៃ​"
+
+#: SensorDisplayLib/ListView.cpp:48
+#, kde-format
+msgid "%1 P"
+msgstr "%1 ប៉េតាបៃ"
+
+#: SensorDisplayLib/ListView.cpp:151
+#, kde-format
+msgid "Display Units"
+msgstr "បង្ហាញ​ឯ​កត្តា"
+
+#: SensorDisplayLib/ListView.cpp:155
+#, kde-format
+msgid "Mixed"
+msgstr "ដែល​លាយ"
+
+#: SensorDisplayLib/ListView.cpp:161
+#, kde-format
+msgid "Kilobytes"
+msgstr "គីឡូបៃ"
+
+#: SensorDisplayLib/ListView.cpp:167
+#, kde-format
+msgid "Megabytes"
+msgstr "មេកាបៃ"
+
+#: SensorDisplayLib/ListView.cpp:173
+#, kde-format
+msgid "Gigabytes"
+msgstr "ជីកាបៃ"
+
+#: SensorDisplayLib/ListView.cpp:179
+#, kde-format
+msgid "Terabytes"
+msgstr "តេរ៉ាបៃ"
+
+#: SensorDisplayLib/ListViewSettings.cpp:30
+#, kde-format
+msgid "List View Settings"
+msgstr "កំណត់​ទិដ្ឋភាព​បញ្ជី"
+
+#  i18n: file ./SensorDisplayLib/MultiMeterSettingsWidget.ui line 206
+#. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:47
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:47
+#, kde-format
+msgid "Colors"
+msgstr "ពណ៌"
+
+#  i18n: file ./SensorDisplayLib/ListViewSettingsWidget.ui line 82
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:79
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
+#, kde-format
+msgid "Text color:"
+msgstr "ពណ៌​អត្ថបទ ៖"
+
+#  i18n: file ./SensorDisplayLib/ListViewSettingsWidget.ui line 90
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:92
+#, kde-format
+msgid "Grid color:"
+msgstr "ពណ៌​ក្រឡា​ចត្រង្គ ៖"
+
+#  i18n: file ./SensorDisplayLib/LogFileSettings.ui line 17
+#: SensorDisplayLib/LogFile.cpp:93
+#, kde-format
+msgid "File logging settings"
+msgstr "ការ​កំណត់​ឯកសារ​កំណត់​ហេតុ"
+
+#  i18n: file ./SensorDisplayLib/LogFileSettings.ui line 94
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
+#, kde-format
+msgid "Foreground color:"
+msgstr "ពណ៌​ផ្ទៃ​ខាង​មុខ ៖"
+
+#  i18n: file ./SensorDisplayLib/LogFileSettings.ui line 35
+#. i18n: ectx: attribute (title), widget (QWidget, textTab)
+#: SensorDisplayLib/LogFileSettings.ui:21
+#, kde-format
+msgid "&Text"
+msgstr "អត្ថបទ"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/LogFileSettings.ui:29
+#, kde-format
+msgid "T&itle:"
+msgstr "ចំណង​ជើង ៖"
+
+#  i18n: file ./SensorDisplayLib/LogFileSettings.ui line 199
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: SensorDisplayLib/LogFileSettings.ui:166
+#, kde-format
+msgid "Fi&lter"
+msgstr "តម្រង"
+
+#  i18n: file ./SensorDisplayLib/LogFileSettings.ui line 238
+#. i18n: ectx: property (text), widget (QPushButton, addButton)
+#: SensorDisplayLib/LogFileSettings.ui:196
+#, kde-format
+msgid "&Add"
+msgstr "បន្ថែម"
+
+#. i18n: ectx: property (text), widget (QPushButton, deleteButton)
+#: SensorDisplayLib/LogFileSettings.ui:203
+#, kde-format
+msgid "&Delete"
+msgstr "លុប​"
+
+#  i18n: file ./SensorDisplayLib/LogFileSettings.ui line 254
+#. i18n: ectx: property (text), widget (QPushButton, changeButton)
+#: SensorDisplayLib/LogFileSettings.ui:210
+#, kde-format
+msgid "&Change"
+msgstr "ផ្លាស់​ប្តូរ"
+
+#: SensorDisplayLib/MultiMeterSettings.cpp:33
+#, kde-format
+msgctxt ""
+"Multimeter is a sensor display that mimics 'digital multimeter' aparatus"
+msgid "Multimeter Settings"
+msgstr "ការ​កំណត់​ឧបករណ៍​ស្ទង់"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:26
+#, kde-format
+msgid "&Title:"
+msgstr "ចំណង​ជើង ៖"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:43
+#, kde-format
+msgid "Enable this to append the unit to the title of the display."
+msgstr "អនុញ្ញាត​វា ដើម្បី​បន្ថែម​ឯកតា​ទៅ​ខាង​ចុង​ចំណង​ជើង​នៃ​ការ​បង្ហាញ ។"
+
+#  i18n: file ./SensorDisplayLib/MultiMeterSettingsWidget.ui line 44
+#. i18n: ectx: property (text), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
+#, kde-format
+msgid "&Show unit"
+msgstr "បង្ហាញ​ឯកតា"
+
+#  i18n: file ./SensorDisplayLib/SensorLoggerDlgWidget.ui line 89
+#. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
+#, kde-format
+msgid "&Enable alarm"
+msgstr "អនុញ្ញាត​ការ​ព្រមាន"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
+#, fuzzy, kde-format
+#| msgid "Lower limit:"
+msgid "&Lower limit:"
+msgstr "ព្រំដែន​ក្រោម ៖"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
+#, kde-format
+msgid "E&nable alarm"
+msgstr "អនុញ្ញាត​ការ​ព្រមាន"
+
+#  i18n: file ./SensorDisplayLib/SensorLoggerDlgWidget.ui line 186
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
+#, kde-format
+msgid "&Upper limit:"
+msgstr "ព្រំដែន​លើ ៖"
+
+#  i18n: file ./SensorDisplayLib/MultiMeterSettingsWidget.ui line 225
+#. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
+#, fuzzy, kde-format
+#| msgid "Normal digit color:"
+msgid "Nor&mal digit color:"
+msgstr "ពណ៌​លេខ​ធម្មតា ៖"
+
+#  i18n: file ./SensorDisplayLib/MultiMeterSettingsWidget.ui line 233
+#. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
+#, fuzzy, kde-format
+#| msgid "Alarm digit color:"
+msgid "Alarm di&git color:"
+msgstr "ពណ៌​លេខ​ការ​ព្រមាន ៖"
+
+#  i18n: file ./SensorDisplayLib/MultiMeterSettingsWidget.ui line 241
+#. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
+#, fuzzy, kde-format
+#| msgid "Background color:"
+msgid "Bac&kground color:"
+msgstr "ពណ៌​ផ្ទៃ​ខាង​ក្រោយ ៖"
+
+#: SensorDisplayLib/SensorDisplay.cpp:115 SensorDisplayLib/SensorLogger.cpp:587
+#, kde-format
+msgid "&Properties"
+msgstr "លក្ខណៈ​សម្បត្តិ"
+
+#: SensorDisplayLib/SensorDisplay.cpp:120 SensorDisplayLib/SensorLogger.cpp:592
+#, kde-format
+msgid "&Remove Display"
+msgstr "យក​ការ​បង្ហាញ​ចេញ"
+
+#: SensorDisplayLib/SensorDisplay.cpp:187
+#, kde-format
+msgid ""
+"<qt><p>This is a sensor display. To customize a sensor display click the "
+"right mouse button here and select the <i>Properties</i> entry from the "
+"popup menu. Select <i>Remove</i> to delete the display from the worksheet.</"
+"p>%1</qt>"
+msgstr ""
+"<qt><p>នេះ​គឺ​ជាការ​បង្ហាញ​ឧបករណ៍​ចាប់​សញ្ញា ។ ដើម្បី​ប្ដូរ​ការ​បង្ហាញ​ឧបករណ៍​ចាប់​សញ្ញា​តាម​បំណង ចុច ហើយ​​"
+"សង្កត់​ប៊ូតុង​កណ្ដុរ​ខាង​ស្ដាំ​នៅ​លើ​ស៊ុម ឬ​ប្រអប់​បង្ហាញ និង​ជ្រើស​ធាតុ <i> លក្ខណៈ​សម្បត្តិ</i> ពី​ម៉ឺនុយ​លេច​ឡើង ។ "
+"ជ្រើស <i>យក​ចេញ</i> ដើម្បី​លុប​ការ​បង្ហាញ​ពី​សន្លឹក​កិច្ចការ ។</p>%1</qt>"
+
+#: SensorDisplayLib/SensorLogger.cpp:132
+#, fuzzy, kde-format
+#| msgid "Logging"
+msgctxt "@title:column"
+msgid "Logging"
+msgstr "ការ​ចូល"
+
+#  i18n: file ./SensorDisplayLib/SensorLoggerDlgWidget.ui line 48
+#: SensorDisplayLib/SensorLogger.cpp:134
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:column"
+msgid "Timer Interval"
+msgstr "ចន្លោះ​ពេល​ឧបករណ៍​កំណត់​ពេល​វេលា"
+
+#: SensorDisplayLib/SensorLogger.cpp:136
+#, fuzzy, kde-format
+#| msgid "Sensor Name"
+msgctxt "@title:column"
+msgid "Sensor Name"
+msgstr "ឈ្មោះ​ឧបករណ៍​ចាប់​សញ្ញា"
+
+#: SensorDisplayLib/SensorLogger.cpp:138
+#, fuzzy, kde-format
+#| msgid "Host Name"
+msgctxt "@title:column"
+msgid "Host Name"
+msgstr "ឈ្មោះ​ម៉ាស៊ីន"
+
+#: SensorDisplayLib/SensorLogger.cpp:140
+#, fuzzy, kde-format
+#| msgid "Log File"
+msgctxt "@title:column"
+msgid "Log File"
+msgstr "ឯកសារ​កំណត់​ហេតុ"
+
+#: SensorDisplayLib/SensorLogger.cpp:418
+#: SensorDisplayLib/SensorLoggerDlg.cpp:30
+#, kde-format
+msgid "Sensor Logger"
+msgstr "ឧបករណ៍​ចុះ​កំណត់​ហេតុ ឧបករណ៍​ចាប់​សញ្ញា"
+
+#: SensorDisplayLib/SensorLogger.cpp:597
+#, kde-format
+msgid "&Remove Sensor"
+msgstr "យក​ឧបករណ៍​ចាប់​សញ្ញា​ចេញ"
+
+#: SensorDisplayLib/SensorLogger.cpp:602
+#, kde-format
+msgid "&Edit Sensor..."
+msgstr "កែ​សម្រួល​ឧបករណ៍​ចាប់​សញ្ញា..."
+
+#: SensorDisplayLib/SensorLogger.cpp:610
+#, kde-format
+msgid "St&op Logging"
+msgstr "បញ្ឈប់​ការ​ចូល"
+
+#: SensorDisplayLib/SensorLogger.cpp:613
+#, kde-format
+msgid "S&tart Logging"
+msgstr "ចាប់ផ្តើម​ចូល"
+
+#  i18n: file ./SensorDisplayLib/LogFileSettings.ui line 199
+#. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
+#, kde-format
+msgid "File"
+msgstr "ឯកសារ"
+
+#  i18n: file ./SensorDisplayLib/SensorLoggerDlgWidget.ui line 48
+#. i18n: ectx: property (title), widget (QGroupBox, timerFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:41
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:group"
+msgid "Timer Interval"
+msgstr "ចន្លោះ​ពេល​ឧបករណ៍​កំណត់​ពេល​វេលា"
+
+#  i18n: file ./SensorDisplayLib/SensorLoggerDlgWidget.ui line 68
+#. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
+#, kde-format
+msgid " sec"
+msgstr " វិ."
+
+#: SensorDisplayLib/SensorLoggerSettings.cpp:30
+#, kde-format
+msgid "Sensor Logger Settings"
+msgstr "ការ​កំណត់​ឧបករណ៍​ចុះ​កំណត់​ហេតុ ឧបករណ៍​ចាប់​សញ្ញា"
+
+#  i18n: file ./SensorDisplayLib/SensorLoggerSettingsWidget.ui line 107
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
+#, kde-format
+msgid "Alarm color:"
+msgstr "ពណ៌​ការ​ព្រមាន ៖"
+
+#: SensorDisplayLib/SensorModel.cpp:161
+#, kde-format
+msgid "Host"
+msgstr "ម៉ាស៊ីន"
+
+#: SensorDisplayLib/SensorModel.cpp:163
+#, kde-format
+msgid "Sensor"
+msgstr "ឧបករណ៍​ចាប់​សញ្ញា"
+
+#: SensorDisplayLib/SensorModel.cpp:165
+#, kde-format
+msgid "Unit"
+msgstr "ឯកតា"
+
+#: SensorDisplayLib/SensorModel.cpp:167
+#, kde-format
+msgid "Status"
+msgstr "ស្ថានភាព"
+
+#: SensorDisplayLib/SensorModel.cpp:169
+#, kde-format
+msgid "Label"
+msgstr "ស្លាក"
+
+#. i18n: tag WorkSheet attribute title
+#: SystemLoad2.sgrd:3
+#, kde-format
+msgid "System Load"
+msgstr "ការ​ផ្ទុក​ប្រព័ន្ធ"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:5
+#, kde-format
+msgid "CPU History"
+msgstr "ប្រវត្តិ​ស៊ីភីយូ"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:8
+#, kde-format
+msgid "Memory and Swap History"
+msgstr "សតិ និង​ប្រវត្តិ​ស្វប"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:9
+#, kde-format
+msgid "Memory"
+msgstr "សតិ"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:10
+#, kde-format
+msgid "Swap"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:12
+#, kde-format
+msgid "Network History"
+msgstr "ប្រវត្តិ​បណ្ដាញ"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:13
+#, fuzzy, kde-format
+#| msgid "Receiver"
+msgid "Receiving"
+msgstr "ឧបករណ៍​ទទួល"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:14
+#, kde-format
+msgid "Sending"
+msgstr ""
+
+#: WorkSheet.cpp:87
+#, kde-format
+msgid "Cannot open the file %1."
+msgstr "មិន​អាច​បើក​ឯកសារ %1 ។"
+
+#: WorkSheet.cpp:95
+#, kde-format
+msgid "The file %1 does not contain valid XML."
+msgstr "ឯកសារ %1 គ្មាន XML ត្រឹម​ត្រូវ ។"
+
+#: WorkSheet.cpp:102
+#, kde-format
+msgid ""
+"The file %1 does not contain a valid worksheet definition, which must have a "
+"document type 'KSysGuardWorkSheet'."
+msgstr ""
+"ឯកសារ %1 គ្មាន​ការ​កំណត់​សន្លឹក​កិច្ចការ​ត្រឹម​ត្រូវ ដែល​វា​នីមួយៗ​ត្រូវ​មាន​ប្រភេទ "
+"'KSysGuardWorkSheet' ។"
+
+#: WorkSheet.cpp:114
+#, kde-format
+msgid "The file %1 has an invalid worksheet size."
+msgstr "ឯកសារ %1 មាន​ទំហំ​សន្លឹក​កិច្ចការ​មិន​ត្រឹម​ត្រូវ ។"
+
+#: WorkSheet.cpp:239
+#, kde-format
+msgid "Cannot save file %1"
+msgstr "មិន​អាច​រក្សា​ទុក​ឯកសារ %1"
+
+#: WorkSheet.cpp:287
+#, kde-format
+msgid "The clipboard does not contain a valid display description."
+msgstr "ក្តារ​តម្បៀត​ខ្ទាស់​គ្មាន​ការ​ពិពណ៌នា​បង្ហាញ​ត្រឹម​ត្រូវ ។"
+
+#: WorkSheet.cpp:387
+#, kde-format
+msgid "Select Display Type"
+msgstr "ជ្រើស​ប្រភេទ​បង្ហាញ"
+
+#: WorkSheet.cpp:388
+#, kde-format
+msgid "&Line graph"
+msgstr "ក្រាប​បន្ទាត់"
+
+#: WorkSheet.cpp:389
+#, kde-format
+msgid "&Digital display"
+msgstr "បង្ហាញ​ជា​ឌីជីថល​"
+
+#: WorkSheet.cpp:390
+#, kde-format
+msgid "&Bar graph"
+msgstr "ក្រាប​របារ"
+
+#: WorkSheet.cpp:391
+#, kde-format
+msgid "Log to a &file"
+msgstr "ចុះ​កំណត់​ហេតុ​ទៅ​ឯកសារ"
+
+#: WorkSheet.cpp:547
+#, kde-format
+msgid "Remove this display?"
+msgstr "យក​ការ​បង្ហាញ​ចេញ ?"
+
+#: WorkSheet.cpp:548
+#, kde-format
+msgid "Remove Display"
+msgstr "យក​ការ​បង្ហាញ​ចេញ ?"
+
+#: WorkSheet.cpp:589
+#, kde-format
+msgid "Dummy"
+msgstr "ដំបូង"
+
+#: WorkSheetSettings.cpp:43
+#, kde-format
+msgid "Tab Properties"
+msgstr "លក្ខណៈសម្បត្តិ​ផ្ទាំង"
+
+#: WorkSheetSettings.cpp:72
+#, kde-format
+msgid "Properties"
+msgstr "លក្ខណៈ​សម្បត្តិ"
+
+#: WorkSheetSettings.cpp:81
+#, kde-format
+msgid "Rows:"
+msgstr "ជួរ​ដេក ៖"
+
+#: WorkSheetSettings.cpp:91
+#, kde-format
+msgid "Columns:"
+msgstr "ជួរ​ឈរ ៖"
+
+#: WorkSheetSettings.cpp:100
+#, kde-format
+msgid "Enter the number of rows the sheet should have."
+msgstr "បញ្ចូល​ចំនួន​ជួរ​ដេក​ដែល​សន្លឹក​គួរ​តែ​មាន ។"
+
+#: WorkSheetSettings.cpp:101
+#, kde-format
+msgid "Enter the number of columns the sheet should have."
+msgstr "បញ្ចូល​ចំនួន​ជួរ​ឈរ​ដែល​សន្លឹក​គួរ​តែ​មាន ។"
+
+#: WorkSheetSettings.cpp:103
+#, kde-format
+msgid "Update interval:"
+msgstr "ចន្លោះ​ពេល​ធ្វើ​បច្ចុប្បន្នភាព ៖"
+
+#: WorkSheetSettings.cpp:116
+#, kde-format
+msgid "All displays of the sheet are updated at the rate specified here."
+msgstr "ការ​បង្ហាញ​ទាំងអស់​របស់​សន្លឹក​ត្រូវ​បាន​ធ្វើ​បច្ចុប្បន្នភាព​​ត្រង់​អត្រា​ដែល​បាន​បញ្ជាក់​នៅ​ទីនេះ ។"
+
+#: WorkSheetSettings.cpp:117
+#, kde-format
+msgid "Enter the title of the worksheet here."
+msgstr "បញ្ចូល​ចំណង​ជើង​របស់​សន្លឹក​កិច្ចការ​នៅ​ទីនេះ ។"
+
+#: Workspace.cpp:111
+#, kde-format
+msgid "Sheet %1"
+msgstr "សន្លឹក %1"
+
+#: Workspace.cpp:170
+#, kde-format
+msgid ""
+"The tab '%1' contains unsaved data.\n"
+"Do you want to save the tab?"
+msgstr ""
+"ផ្ទាំង '%1' មាន​ទិន្នន័យ​ដែល​មិន​បាន​រក្សាទុក ។\n"
+"តើ​អ្នក​ចង់​រក្សាទុក​ផ្ទាំង​នេះ​ឬ ?"
+
+#: Workspace.cpp:186
+#, kde-format
+msgid "Select Tab File to Import"
+msgstr "ជ្រើស​ឯកសារ​ផ្ទាំង​​ត្រូវ​នាំចូល"
+
+#: Workspace.cpp:208 Workspace.cpp:228
+#, kde-format
+msgid "You do not have a tab that could be saved."
+msgstr "អ្នក​មិនមាន​ផ្ទាំង​ដែល​អាច​ត្រូវ​បាន​រក្សាទុក​បានទេ ។"
+
+#: Workspace.cpp:235
+#, kde-format
+msgid "Export Tab"
+msgstr "នាំចេញ​ផ្ទាំង"
+
+#: Workspace.cpp:255
+#, kde-format
+msgid "There are no tabs that could be deleted."
+msgstr "មិនមាន​ផ្ទាំង​ដែល​​អាច​ត្រូវ​បាន​លុប​ទេ ។"
+
+#: Workspace.cpp:299
+#, kde-kuit-format
+msgctxt "@info"
+msgid ""
+"<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
+"in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
+msgstr ""
+
+#: Workspace.cpp:304
+#, kde-format
+msgid "Upload custom System Monitor tab"
+msgstr "ផ្ទុកឡើង​ផ្ទាំង​កម្មវិធី​ត្រួតពិនិត្យ​ប្រព័ន្ធ​ផ្ទាល់ខ្លួន"
+
+#~ msgid "Timer Settings"
+#~ msgstr "ការ​កំណត់​ឧបករណ៍​កំណត់​ពេល​វេលា"
+
+#~ msgid "Use update interval of worksheet"
+#~ msgstr "ប្រើ​ចន្លោះ​ពេល​ធ្វើ​​បច្ចុប្បន្នភាព​​សន្លឹក​កិច្ចការ"
+
+#~ msgctxt "Arguments are formatted byte sizes (used/total)"
+#~ msgid "Memory: %1 / %2Mem: %1 / %2Mem: %1%1"
+#~ msgstr "សតិ ៖ %1 / %2Mem: %1 / %2Mem: %1%1"
+
+#~ msgid ""
+#~ "<qt>To propose the current custom tab as a new System Monitor tab, email "
+#~ "<br><a href=\"file:%1\">%2</a><br> to <a href=\"mailto:john.tapsell@kde."
+#~ "org?subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde."
+#~ "org</a></qt>"
+#~ msgstr ""
+#~ "<qt>ដើម្បី​ស្នើ​ផ្ទាំង​ផ្ទាល់ខ្លួន​បច្ចុប្បន្ន​ជា​ផ្ទាំង​កម្មវិធី​ត្រួតពិនិត្យ​ប្រព័ន្ធថ្មី អ៊ីមែល <br><a href="
+#~ "\"file:%1\">%2</a><br> ទៅកាន់ <a href=\"mailto:john.tapsell@kde.org?"
+#~ "subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde.org</"
+#~ "a></qt>"
+
+#~ msgid "*.sgrd|Sensor Files (*.sgrd)"
+#~ msgstr "*.sgrd|Sensor Files (*.sgrd)"
+
+#~ msgid "Lo&wer limit:"
+#~ msgstr "ព្រំដែន​ក្រោម ៖"
+
+#~ msgctxt "%1 is a host name"
+#~ msgid ""
+#~ "Message from %1:\n"
+#~ "%2"
+#~ msgstr ""
+#~ "សារ​ពី %1 ៖\n"
+#~ "%2"
+
+#~ msgid "Could not run daemon program '%1'."
+#~ msgstr "មិនអាច​រត់​កម្មវិធី​ដេមិន '%1' បានឡើយ ។"
+
+#~ msgid "The daemon program '%1' failed."
+#~ msgstr "កម្មវិធី​ដេមិន '%1' បាន​បរាជ័យ ។"
+
+#~ msgid "Connection to %1 refused"
+#~ msgstr "ការ​ត​ភ្ជាប់​ទៅ​កាន់ %1 ត្រូវ​បាន​បដិសេធ"
+
+#~ msgid "Host %1 not found"
+#~ msgstr "រក​មិន​ឃើញ​ម៉ាស៊ីន %1"
+
+#~ msgid ""
+#~ "An error occurred with the network (e.g. the network cable was "
+#~ "accidentally unplugged) for host %1."
+#~ msgstr "កំហុស​មួយ​​បាន​កើត​ឡើង​លើ​បណ្តាញ (ឧ. ខ្សែ​បណ្តាញ​ដែល​មាន​បញ្ហា​ត្រូវ​បាន​ដក​ចេញ) សម្រាប់​ %1 ។"
+
+#~ msgid "Error for host %1: %2"
+#~ msgstr "កំហុស​ម៉ាស៊ីន​ %1៖ %2"
+
+#  i18n: file ./SensorDisplayLib/LogFileSettings.ui line 254
+#~ msgid "Change"
+#~ msgstr "ផ្លាស់ប្តូរ"
+
+#~ msgid "Rate"
+#~ msgstr "អត្រា​"
+
+#~ msgid "CPU Load"
+#~ msgstr "ការ​ផ្ទុក CPU"
+
+#~ msgid "Idling"
+#~ msgstr "ទំនេរ"
+
+#~ msgid "Nice Load"
+#~ msgstr "ការ​ផ្ទុក Nice"
+
+#~ msgid "User Load"
+#~ msgstr "ការ​ផ្ទុក​អ្នក​ប្រើ"
+
+#~ msgctxt "@item sensor description"
+#~ msgid "System Load"
+#~ msgstr "ការ​ផ្ទុក​ប្រព័ន្ធ"
+
+#~ msgid "Waiting"
+#~ msgstr "រង់ចាំ​"
+
+#~ msgid "Interrupt Load"
+#~ msgstr "ផ្អាក​ផ្ទុក​"
+
+#~ msgid "Total Load"
+#~ msgstr "ផ្ទុក​សរុប​"
+
+#~ msgid "Physical Memory"
+#~ msgstr "សតិ​ពិត"
+
+#~ msgid "Swap Memory"
+#~ msgstr "សតិ​ស្វប"
+
+#~ msgid "Cached Memory"
+#~ msgstr "សតិ​ឃ្លាំង​សម្ងាត់"
+
+#~ msgid "Buffered Memory"
+#~ msgstr "សតិ​បណ្ដោះ​អាសន្ន"
+
+#~ msgid "Used Memory"
+#~ msgstr "សតិ​បាន​ប្រើ"
+
+#~ msgid "Application Memory"
+#~ msgstr "សតិ​របស់​កម្មវិធី"
+
+#~ msgid "Free Memory"
+#~ msgstr "សតិ​ទំនេរ"
+
+#~ msgid "Active Memory"
+#~ msgstr "សតិ​សកម្ម"
+
+#~ msgid "Inactive Memory"
+#~ msgstr "សតិ​អសកម្ម"
+
+#~ msgid "Wired Memory"
+#~ msgstr "សតិ​មាន​ខ្សែ"
+
+#~ msgid "Exec Pages"
+#~ msgstr "ទំព័រ​ប្រតិបត្តិ"
+
+#~ msgid "File Pages"
+#~ msgstr "ទំព័រ​ឯកសារ"
+
+#~ msgid "Processes"
+#~ msgstr "​ដំណើរការ"
+
+#~ msgid "Process Controller"
+#~ msgstr "ឧបករណ៍​បញ្ជា​ដំណើរការ​"
+
+#~ msgid "Last Process ID"
+#~ msgstr "លេខ​សម្គាល់​ដំណើរការ​ចុង​ក្រោយ"
+
+#~ msgid "Process Spawn Count"
+#~ msgstr "ចំនួន​បង្កើត​ដំណើរការ​"
+
+#~ msgid "Process Count"
+#~ msgstr "ចំនួន​ដំណើរ​ការ"
+
+#~ msgid "Idle Processes Count"
+#~ msgstr "ចំនួន​ដំណើរ​ការ​ទំនេរ​"
+
+#~ msgid "Running Processes Count"
+#~ msgstr "ចំនួន​ដំណើរ​ការដែល​កំពុង​ដំណើរការ​"
+
+#~ msgid "Sleeping Processes Count"
+#~ msgstr "ចំនួន​ដំណើរ​ការ​ដែល​​ផ្អាក​ដំណើរ​ការ​"
+
+#~ msgid "Stopped Processes Count"
+#~ msgstr "ចំនួន​ដំណើរ​ការ​​ដែល​បញ្ឈប់​"
+
+#~ msgid "Zombie Processes Count"
+#~ msgstr "ចំនួន​ដំណើរ​ការ​ដែល​ខូច​"
+
+#~ msgid "Waiting Processes Count"
+#~ msgstr "ចំនួន​ដំណើរ​ការ​ដែល​រង់ចាំ"
+
+#~ msgid "Locked Processes Count"
+#~ msgstr "ចំនួន​ដំណើរ​ការ​ដែល​ជាប់​សោ​"
+
+#~ msgid "Disk Throughput"
+#~ msgstr "អត្រា​ផ្ទេរ​ទិន្នន័យ​របស់​ថាស"
+
+#~ msgctxt "CPU Load"
+#~ msgid "Load"
+#~ msgstr "ផ្ទុក"
+
+#~ msgid "Total Accesses"
+#~ msgstr "ការ​ចូល​ដំណើរ​ការ​សរុប"
+
+#~ msgid "Read Accesses"
+#~ msgstr "ការ​ចូល​ដំណើរ​ការ​អាន"
+
+#~ msgid "Write Accesses"
+#~ msgstr "ការ​ចូល​ដំណើរការ​សរសេរ"
+
+#~ msgid "Read Data"
+#~ msgstr "អាន​ទិន្នន័យ"
+
+#~ msgid "Written Data"
+#~ msgstr "សរសេរ​ទិន្នន័យ"
+
+#~ msgid "Milliseconds spent reading"
+#~ msgstr "ការ​អាន​ចំណាយ​ពេល​​គិត​ជា​មីលីវិនាទី"
+
+#~ msgid "Milliseconds spent writing"
+#~ msgstr "ការ​សរសេរ​ចំណាយ​ពេល​គិត​ជា​មីលីវិនាទី​"
+
+#~ msgid "I/Os currently in progress"
+#~ msgstr "I/Os បច្ចុប្បន្ន​ស្ថិត​ក្នុង​វឌ្ឍនភាព"
+
+#~ msgid "Pages In"
+#~ msgstr "ទំព័រ​ក្នុង"
+
+#~ msgid "Pages Out"
+#~ msgstr "ទំព័រ​ក្រៅ"
+
+#~ msgid "Context Switches"
+#~ msgstr "ការ​ប្តូរ​បរិបទ"
+
+#~ msgid "Traps"
+#~ msgstr "ថេរ"
+
+#~ msgid "System Calls"
+#~ msgstr "ហៅ​ប្រព័ន្ធ"
+
+#~ msgid "Network"
+#~ msgstr "បណ្តាញ"
+
+#~ msgid "Interfaces"
+#~ msgstr "ចំណុច​ប្រទាក់"
+
+#~ msgid "Transmitter"
+#~ msgstr "ឧបករណ៍​បញ្ជូន"
+
+#~ msgid "Data Rate"
+#~ msgstr "អត្រា​ទិន្នន័យ​"
+
+#~ msgid "Compressed Packets Rate"
+#~ msgstr "អត្រា​កញ្ចប់​ព័ត៌មាន​ដែលបានបង្ហាប់"
+
+#~ msgid "Dropped Packets Rate"
+#~ msgstr "អត្រា​កញ្ចប់​ព័ត៌មាន​ដែល​បាន​ទម្លាក់"
+
+#~ msgid "Error Rate"
+#~ msgstr "អត្រា​កំហុស"
+
+#~ msgid "FIFO Overruns Rate"
+#~ msgstr "អត្រា​រត់​លើស FIFO"
+
+#~ msgid "Frame Error Rate"
+#~ msgstr "អត្រា​កំហុស​ស៊ុម"
+
+#~ msgid "Multicast Packet Rate"
+#~ msgstr "អត្រា​កញ្ចប់ព័ត៌មាន​ម៉ាល់ធីខាស់"
+
+#~ msgid "Packet Rate"
+#~ msgstr "អត្រា​កញ្ចប់​ព័ត៌មាន"
+
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Loss Rate"
+#~ msgstr "អត្រា​បាត់​វត្ថុ​ដឹក​ជញ្ជូន"
+
+#~ msgid "Collisions"
+#~ msgstr "ការ​ប៉ះទង្គិច"
+
+#~ msgid "Data"
+#~ msgstr "ទិន្នន័យ"
+
+#~ msgid "Compressed Packets"
+#~ msgstr "កញ្ចប់​ព័ត៌មាន​ដែល​បាន​បង្ហាប់"
+
+#~ msgid "Dropped Packets"
+#~ msgstr "កញ្ចប់​ព័ត៌មាន​ដែល​បាន​ទម្លាក់"
+
+#~ msgid "Errors"
+#~ msgstr "កំហុស"
+
+#~ msgid "FIFO Overruns"
+#~ msgstr "FIFO រត់​លើស​កំណត់"
+
+#~ msgid "Frame Errors"
+#~ msgstr "កំហុស​ស៊ុម"
+
+#~ msgid "Multicast Packets"
+#~ msgstr "កញ្ចប់​ព័ត៌មាន Multicast"
+
+#~ msgid "Packets"
+#~ msgstr "កញ្ចប់​ព័ត៌មាន"
+
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Losses"
+#~ msgstr "បាត់​វត្ថុ​ដឹក​ជញ្ជូន"
+
+#~ msgid "Sockets"
+#~ msgstr "រន្ធ"
+
+#~ msgid "Total Number"
+#~ msgstr "ចំនួន​សរុប"
+
+#~ msgid "Table"
+#~ msgstr "តារាង"
+
+#~ msgid "Advanced Power Management"
+#~ msgstr "ការ​គ្រប់​គ្រង​ថាមពល​កម្រិត​ខ្ពស់"
+
+#~ msgid "ACPI"
+#~ msgstr "ACPI"
+
+#~ msgid "Thermal Zone"
+#~ msgstr "តំបន់​ក្តៅ"
+
+#~ msgid "Temperature"
+#~ msgstr "សីតុណ្ហភាព"
+
+#~ msgid "Average CPU Temperature"
+#~ msgstr "សីតុណ្ហភាព​ស៊ីភីយូ​មធ្យម​"
+
+#~ msgid "Fan"
+#~ msgstr "កង្ហារ"
+
+#~ msgid "State"
+#~ msgstr "សភាព"
+
+#~ msgid "Battery"
+#~ msgstr "ថ្ម"
+
+#~ msgid "Battery Capacity"
+#~ msgstr "ការ​បញ្ចូល​ថ្ម​"
+
+#~ msgid "Battery Charge"
+#~ msgstr "ការ​បញ្ចូល​ថ្ម"
+
+#~ msgid "Battery Usage"
+#~ msgstr "ការ​ប្រើប្រាស់​ថ្ម"
+
+#~ msgid "Battery Voltage"
+#~ msgstr "កំលាំង​​វ៉ុល​​​របស់​ថ្ម"
+
+#~ msgid "Battery Discharge Rate"
+#~ msgstr "អត្រា​ផ្ទេរ​​ថ្ម"
+
+#~ msgid "Remaining Time"
+#~ msgstr "ពេល​វេលា​នៅ​សល់"
+
+#~ msgid "Interrupts"
+#~ msgstr "ផ្អាក"
+
+#~ msgid "Load Average (1 min)"
+#~ msgstr "មធ្យម​នៃ​ការ​ផ្ទុក (១ នាទី)"
+
+#~ msgid "Load Average (5 min)"
+#~ msgstr "មធ្យម​នៃ​ការ​ផ្ទុក (៥ នាទី)"
+
+#~ msgid "Load Average (15 min)"
+#~ msgstr "មធ្យម​នៃ​ការ​ផ្ទុក (១៥ នាទី)"
+
+#~ msgid "Clock Frequency"
+#~ msgstr "ប្រេកង់​ម៉ោង"
+
+#~ msgid "Average Clock Frequency"
+#~ msgstr "ប្រេកង់​ម៉ោង​មធ្យម"
+
+#~ msgid "Hardware Sensors"
+#~ msgstr "ឧបករណ៍​ចាប់​សញ្ញា​ផ្នែក​រឹង"
+
+#~ msgid "Partition Usage"
+#~ msgstr "ការ​ប្រើ​ប្រាស់​ភាគ"
+
+#~ msgid "Used Space"
+#~ msgstr "ទំហំ​ដែល​បាន​ប្រើ"
+
+#~ msgid "Free Space"
+#~ msgstr "ទំហំ​ទំនេរ"
+
+#~ msgid "Fill Level"
+#~ msgstr "កម្រិត​បំពេញ"
+
+#~ msgid "Used Inodes"
+#~ msgstr "Inodes ដែល​ប្រើ​"
+
+#~ msgid "Free Inodes"
+#~ msgstr "Inodes ទទេ"
+
+#~ msgid "Inode Level"
+#~ msgstr "កម្រិត​របស់ Inode"
+
+#~ msgid "System"
+#~ msgstr "ប្រព័ន្ធ​"
+
+#~ msgid "Uptime"
+#~ msgstr "អស់​ពេល​"
+
+#~ msgid "Linux Soft Raid (md)"
+#~ msgstr "លីនុច​ Soft Raid (md)"
+
+#~ msgid "Processors"
+#~ msgstr "ប្រព័ន្ធ​ដំណើរការ"
+
+#  i18n: file ./SensorDisplayLib/MultiMeterSettingsWidget.ui line 206
+#~ msgid "Cores"
+#~ msgstr "ស្នូល"
+
+#~ msgid "Number of Blocks"
+#~ msgstr "ចំនួន​ប្លុក"
+
+#~ msgid "Total Number of Devices"
+#~ msgstr "ចំនួន​ឧបករណ៍​សរុប"
+
+#~ msgid "Failed Devices"
+#~ msgstr "ឧបករណ៍​ដែល​បរាជ័យ"
+
+#~ msgid "Spare Devices"
+#~ msgstr "ឧបករណ៍​ទំនេរ"
+
+#~ msgid "Number of Raid Devices"
+#~ msgstr "ចំនួន​ឧបករណ៍ Raid"
+
+#~ msgid "Working Devices"
+#~ msgstr "ឧបករណ៍​ធ្វើការ"
+
+#~ msgid "Active Devices"
+#~ msgstr "ឧបករណ៍​សកម្ម"
+
+#~ msgid "Number of Devices"
+#~ msgstr "ចំនួន​ឧបករណ៍"
+
+#~ msgid "Resyncing Percent"
+#~ msgstr "ភាគរយ​ធ្វើសមកាលកម្ម"
+
+#~ msgid "Disk Information"
+#~ msgstr "ព័ត៌មាន​ថាស"
+
+#~ msgid "CPU %1"
+#~ msgstr "CPU%1"
+
+#~ msgid "Disk %1"
+#~ msgstr "ថាស%1"
+
+#~ msgid "Battery %1"
+#~ msgstr "ថ្ម %1"
+
+#~ msgid "Fan %1"
+#~ msgstr "កង្ហា%1"
+
+#~ msgid "Temperature %1"
+#~ msgstr "សីតុណ្ហភាព %1"
+
+#~ msgid "Total"
+#~ msgstr "សរុប"
+
+#~ msgid "Software Interrupts"
+#~ msgstr "ផ្អាក​​ផ្នែក​ទន់"
+
+#~ msgid "Hardware Interrupts"
+#~ msgstr "ផ្អាក​ផ្នែក​រឹង​"
+
+#~ msgid "Int %1"
+#~ msgstr "Int %1"
+
+#~ msgctxt "the unit 1 per second"
+#~ msgid "1/s"
+#~ msgstr "1/វិ."
+
+#~ msgid "kBytes"
+#~ msgstr "គីឡូបៃ"
+
+#~ msgctxt "the unit minutes"
+#~ msgid "min"
+#~ msgstr "នាទី"
+
+#~ msgctxt "the frequency unit"
+#~ msgid "MHz"
+#~ msgstr "MHz"
+
+#~ msgctxt "a percentage"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgctxt "the unit milliamperes"
+#~ msgid "mA"
+#~ msgstr "mA"
+
+#~ msgctxt "the unit milliampere hours"
+#~ msgid "mAh"
+#~ msgstr "mAh"
+
+#~ msgctxt "the unit milliwatts"
+#~ msgid "mW"
+#~ msgstr "mW"
+
+#~ msgctxt "the unit milliwatt hours"
+#~ msgid "mWh"
+#~ msgstr "mWh"
+
+#~ msgctxt "the unit millivolts"
+#~ msgid "mV"
+#~ msgstr "mV"
+
+#~ msgid "Integer Value"
+#~ msgstr "តម្លៃ​ចំនួន​គត់"
+
+#~ msgid "Floating Point Value"
+#~ msgstr "តម្លៃ​ទសភាគ"

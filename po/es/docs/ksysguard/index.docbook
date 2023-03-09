@@ -1,0 +1,760 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN"
+ "dtd/kdedbx45.dtd" [
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % Spanish "INCLUDE"
+> <!-- change language only here -->
+]>
+
+<book id="ksysguard" lang="&language;">
+<bookinfo>
+<title
+>Manual de &ksysguard;</title>
+
+<authorgroup>
+<author
+>&Chris.Schlaeger;&Chris.Schlaeger.mail; </author>
+
+<othercredit role="developer"
+>&John.Tapsell; &John.Tapsell.mail; </othercredit>
+
+<othercredit role="developer"
+>&Chris.Schlaeger;&Chris.Schlaeger.mail; </othercredit>
+
+<othercredit role="developer"
+>&Tobias.Koenig;&Tobias.Koenig.mail; </othercredit>
+
+<othercredit role="translator"
+> <firstname
+>Rocío</firstname
+> <surname
+>Gallego</surname
+> <affiliation
+><address
+><email
+>traducciones@rociogallego.com</email
+></address
+></affiliation
+> <contrib
+>Traducción</contrib
+> </othercredit
+><othercredit role="translator"
+><firstname
+>Pablo</firstname
+><surname
+>de Vicente</surname
+><affiliation
+><address
+><email
+>pvicentea@nexo.es</email
+></address
+></affiliation
+><contrib
+>Traductor</contrib
+></othercredit
+> <othercredit role="translator"
+><firstname
+>Marcos</firstname
+><surname
+>Fouces Lago</surname
+><affiliation
+><address
+><email
+>mfouces@yahoo.es</email
+></address
+></affiliation
+><contrib
+>Traductor</contrib
+></othercredit
+> 
+</authorgroup>
+
+<copyright>
+<year
+>2000</year>
+<holder
+>&Chris.Schlaeger;</holder>
+</copyright>
+
+<legalnotice
+>&FDLNotice;</legalnotice>
+
+<date
+>2016-01-31</date>
+<releaseinfo
+>&plasma; 5.9</releaseinfo>
+
+<abstract
+><para
+>&ksysguard; es un administrador de tareas orientado a la red y una aplicación de monitorización del sistema.</para
+></abstract
+> 
+
+<keywordset>
+<keyword
+>KDE</keyword>
+<keyword
+>KSysGuard</keyword>
+<keyword
+>monitor de proceso</keyword>
+<keyword
+>monitor de rendimiento</keyword>
+<keyword
+>monitor del sistema</keyword>
+<keyword
+>top</keyword>
+<keyword
+>ps</keyword>
+</keywordset>
+</bookinfo>
+
+<chapter id="introduction">
+<title
+>Introducción</title>
+
+<para
+>&ksysguard; es el monitor de tareas y rendimiento de &plasma;. </para>
+<para
+>Se caracteriza por una arquitectura cliente-servidor que permite la monitorización de máquinas remotas y locales. El interfaz gráfico utiliza los llamados sensores para obtener la información que muestra. Un sensor puede devolver valores simples o información más compleja como tablas. Para cada tipo de información se proporcionan una o más pantallas. Las pantallas están organizadas en hojas de trabajo que pueden guardarse y cargarse independientemente unas de otras. De modo que &ksysguard; no es solo un simple administrador de tareas sino también una herramienta muy poderosa para controlar grandes granjas de servidores.</para>
+
+</chapter>
+
+<chapter id="usingtheksysguard">
+<title
+>Usando &ksysguard;</title>
+
+<sect1 id="getting-started">
+<title
+>Iniciándose</title>
+
+<para
+>&ksysguard; puede iniciarse desde el lanzador de aplicaciones, usando la entrada <guimenuitem
+>Monitor del sistema</guimenuitem
+> en el menú <menuchoice
+><guimenu
+>Aplicaciones</guimenu
+><guisubmenu
+>Sistema</guisubmenu
+></menuchoice
+>. También puede arrancarlo introduciendo <command
+>ksysguard</command
+> en un terminal.</para>
+
+<para
+>La ventana principal de &ksysguard; consiste en una barra de menú, una barra de herramientas opcional, una barra de estado, y el espacio de trabajo. Hojas de trabajo personalizadas también pueden mostrar el navegador de sensores. </para>
+<!--
+<para
+>Download, Save, Import tabs</para>
+-->
+<para
+>De forma predeterminada &ksysguard; muestra dos hojas de trabajo: <guilabel
+>Tabla de procesos</guilabel
+> y <guilabel
+>Carga del sistema</guilabel
+>. La <guilabel
+>Tabla de procesos</guilabel
+> lista los procesos en ejecución y permite al usuario controlarlos. Se pueden seleccionar y controlar varios procesos a la vez. La hoja de trabajo <guilabel
+>Carga del sistema</guilabel
+> muestra gráficos del uso del sistema: <guilabel
+>Historial de la CPU</guilabel
+>, <guilabel
+>Historial de memoria y de intercambio</guilabel
+> e <guilabel
+>Historial de la red</guilabel
+>. </para>
+
+<para
+>Esta configuración predeterminada es suficiente para que un usuario inexperto pueda hacer algo de administración de sistema. Un usuario experimentado o incluso un administrador de sistema de un ordenador grande tienen diferentes necesidades. Para poder atender las necesidades de un rango mayor de usuarios, &ksysguard; es altamente flexible.</para>
+
+<note
+><para
+>Puede lanzar la <guilabel
+>Tabla de procesos</guilabel
+> usando el acceso rápido de teclado <keycombo action="simul"
+> &Ctrl;&Esc;</keycombo
+> en cualquier momento. La tabla de procesos se muestra en una ventana con el título <guilabel
+>Actividades del sistema</guilabel
+>. </para
+></note>
+
+</sect1>
+
+<sect1 id="process-controller">
+<title
+>Tabla de procesos</title>
+
+<para
+>La tabla de procesos le ofrece una lista de los procesos en su sistema. La lista se puede ordenar por cada columna. Simplemente pulse el botón izquierdo del ratón en la cabeza de la columna. </para>
+
+<para
+>Use la ayuda <guilabel
+>¿Qué es esto?</guilabel
+> de los títulos de las columnas para obtener información adicional sobre los valores que muestran.</para>
+
+<para
+>En el menú de contexto de un proceso de la lista puede encontrar acciones adicionales, como cambiar su prioridad, enviar señales al proceso, cambiar a la ventana de la aplicación, mostrar información detallada de la memoria y matar el proceso.</para>
+
+<para
+>La lista muestra la siguiente información acerca de cada proceso. Por favor, tenga en cuenta que no todas las propiedades están disponibles en cada sistema operativo.</para>
+
+<table>
+<title
+>Columnas predeterminadas de la tabla de procesos</title>
+<tgroup cols="2">
+<tbody>
+<row>
+<entry
+><guilabel
+>Nombre</guilabel
+></entry>
+<entry
+>El nombre del ejecutable que inició el proceso</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Nombre de usuario</guilabel
+></entry>
+<entry
+>El usuario que posee este proceso</entry>
+</row>
+<row>
+<entry
+><guilabel
+>% de CPU</guilabel
+></entry>
+<entry
+>El uso actual total de CPU del proceso, dividido por la cantidad de núcleos de procesador de la máquina.</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Memoria</guilabel
+></entry>
+<entry
+><para
+>Esta es la cantidad de memoria física real que este proceso usa por sí mismo y se aproxima al uso de memoria privada del proceso.</para>
+<para
+>No incluye ninguna memoria intercambiada, ni el tamaño del código de sus bibliotecas compartidas.</para>
+<para
+>Esta suele ser la cifra más útil para juzgar el uso de memoria de un programa.</para
+></entry>
+</row>
+<row>
+<entry
+><guilabel
+>Memoria compartida</guilabel
+></entry>
+<entry
+>Esta es la cantidad aproximada de memoria física real que están usando las bibliotecas compartidas de este proceso. Esta memoria está compartida entre todos los procesos que usan esta biblioteca</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Título de la ventana</guilabel
+></entry>
+<entry
+>El título de cualquier ventana que muestre este proceso.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+
+<table>
+<title
+>Columnas adicionales de la tabla de procesos</title>
+<tgroup cols="2">
+<tbody>
+<row>
+<entry
+><guilabel
+>PID</guilabel
+></entry>
+<entry
+>El <abbrev
+>ID</abbrev
+> de proceso único que identifica a este proceso.</entry>
+</row>
+<row>
+<entry
+><guilabel
+>TTY</guilabel
+></entry>
+<entry
+>El terminal de control en el que se está ejecutando este proceso</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Prioridad de ejecución</guilabel
+></entry>
+<entry
+>La prioridad con la que se ha comenzado a ejecutar este proceso. Para el planificador normal, varía entre 19 (baja prioridad) y -19 (máxima prioridad)</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Tiempo de CPU</guilabel
+></entry>
+<entry
+>El tiempo total del usuario y del sistema durante el que se ha estado ejecutando este proceso, en el formato minutos:segundos.</entry>
+</row>
+<row>
+<entry
+><guilabel
+>E/S leídos</guilabel
+></entry>
+<entry
+>El número de bytes leídos. Las <guilabel
+>Unidades a usar</guilabel
+> y la <guilabel
+>Información mostrada</guilabel
+> se pueden cambiar usando el menú de contexto de la cabecera de esta columna.</entry>
+</row>
+<row>
+<entry
+><guilabel
+>E/S escritos</guilabel
+></entry>
+<entry
+>El número de bytes escritos. Las <guilabel
+>Unidades a usar</guilabel
+> y la <guilabel
+>Información mostrada</guilabel
+> se pueden cambiar usando el menú de contexto de la cabecera de esta columna.</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Tamaño virtual</guilabel
+></entry>
+<entry
+>Esta es la cantidad de espacio de memoria virtual que está usando el proceso, incluidas las bibliotecas compartidas, la memoria gráfica, los archivos en disco y demás. Este número casi no tiene sentido. Use el menú de contexto para seleccionar las <guilabel
+>Unidades a usar</guilabel
+>.</entry>
+</row>
+<row>
+<entry
+><guilabel
+>Orden</guilabel
+></entry>
+<entry
+>La orden con la que se ha lanzado este proceso</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+
+<para
+>En la parte superior de la tabla encontrará tres controles que se describirán a continuación de izquierda a derecha.</para>
+
+<sect2 id="thekillbutton">
+<title
+>Finalizar proceso</title>
+
+<para
+>Si ha seleccionado uno o más procesos puede pulsar el botón <guibutton
+>Terminar proceso</guibutton
+> para matarlos a todos. Una señal denominada <errorcode
+>SIGKILL</errorcode
+> se envía a los procesos para terminarlos inmediatamente. Si estas aplicaciones todavía tienen datos sin guardar, se perderán. Por ello, debe usar este botón con precaución.</para>
+</sect2>
+
+<sect2 id="the-filter-bar">
+<title
+>Barra de filtrado</title>
+
+<para
+>Puede filtrar los procesos que se muestran introduciendo texto aquí. El texto puede ser una cadena parcial que coincida con el <guilabel
+>Nombre</guilabel
+>, la <guilabel
+>Orden</guilabel
+> o el <guilabel
+>Título de la ventana</guilabel
+> de un proceso. También puede ser un <guilabel
+>Nombre de usuario</guilabel
+> o un número de <abbrev
+>ID</abbrev
+> de un proceso.</para>
+
+</sect2>
+
+<sect2 id="the-process-filter">
+<title
+>Filtro de procesos</title>
+
+<para
+>El filtro de procesos se puede usar para reducir el número de procesos que se muestra en la tabla. Puede excluir todos los procesos que no le resulten interesantes. En la actualidad, puede mostrar <guilabel
+>Todos los procesos</guilabel
+> en formato plano o en vista de árbol, solo los <guilabel
+>Procesos del sistema</guilabel
+>, solo los <guilabel
+>Procesos de usuario</guilabel
+>, solo sus <guilabel
+>Procesos propios</guilabel
+> o <guilabel
+>Solo programas</guilabel
+>.</para>
+
+<para
+>La vista de árbol se ha diseñado para mostrar las relaciones entre los procesos en ejecución. Un proceso que es iniciado por otro proceso se denomina proceso hijo. Un árbol es un modo elegante de mostrar esta relación de parentesco. El proceso <emphasis
+>init</emphasis
+> es el ancestro de todos los procesos.</para>
+
+<para
+>Si no está interesado en los hijos de un cierto proceso puede pulsar sobre una pequeña caja a la izquierda del padre y el árbol se contraerá. Otra pulsación hará que se despliegue de nuevo.</para>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="the-workspace">
+<title
+>Espacio de trabajo</title>
+
+<para
+>El espacio de trabajo está organizado en hojas de trabajo. Seleccione <guimenuitem
+>Nueva pestaña...</guimenuitem
+> en el menú <guimenu
+>Archivo</guimenu
+> para crear una hoja de trabajo nueva. Aparecerá un diálogo en el que puede definir el nombre, las dimensiones y el tiempo de actualización de la hoja. Para eliminar la hoja de trabajo, seleccione <guimenuitem
+>Cerrar pestaña</guimenuitem
+> en el menú <guimenu
+>Archivo</guimenu
+>. Cualquier modificación se guardará en el archivo de la hoja de trabajo. En caso de que la hoja de trabajo nunca se haya guardado se le solicitará un nombre de archivo. Las hojas de trabajo están formadas por celdas organizadas a modo de cuadrícula.</para>
+
+<para
+>Cada celda se puede llenar con una pantalla para uno o más sensores. Puede llenar una celda arrastrando un sensor desde el navegador de sensores y soltándolo sobre la celda. Si hay más de un tipo de pantalla disponible para ese tipo de sensor, aparecerá un menú emergente. Puede entonces seleccionar qué pantalla prefiere usar. Ciertos tipos de pantallas pueden mostrar más de un sensor. Añada más sensores a las pantallas arrastrándolos desde el navegador de sensores y soltándolos sobre la pantalla ya existente.</para>
+
+<para
+>Puede configurar las hojas de trabajo pulsando <guimenuitem
+>Propiedades de la pestaña</guimenuitem
+> en el menú <guimenu
+>Ver</guimenu
+>. En el diálogo que se muestra puede definir sus dimensiones y el intervalo de actualización.</para>
+
+<para
+>Las pantallas se pueden configurar pulsando con el botón derecho del ratón sobre ellas. Aparecerá un menú emergente dónde podrá seleccionar si desea cambiar las propiedades de la pantalla o eliminarla de la hoja de trabajo.</para>
+
+<sect2 id="the-sensor-browser">
+<title
+>Navegador de sensores</title>
+<para
+>El navegador de sensores es una funcionalidad avanzada de &ksysguard;. Para utilizarla primero tiene que ir al menú <guimenu
+>Archivo</guimenu
+> y crear una hoja nueva. Se muestra cuando se selecciona una hoja personalizada.</para>
+<para
+>El navegador de sensores muestra los máquinas registradas y sus sensores en forma de árbol. Pulse sobre los manejadores de los árboles para abrir o cerrar una rama. Cada sensor monitoriza un valor del sistema determinado.</para>
+<tip
+><para
+>Tras configurar la hoja de trabajo según sus preferencias, use el divisor para moverla hacia el borde derecho de la ventana con el objeto de ocultar el explorador de sensores.</para
+> 
+<para
+>Si el explorador de sensores no aparece en una hoja de trabajo personalizada, es probable que esté oculto. Para volver a mostrarlo, seleccione el borde derecho de la ventana y arrástrelo hacia la izquierda.</para
+></tip>
+</sect2>
+
+<sect2 id="line-graph">
+<title
+>Gráfico de líneas</title>
+
+<para
+>El gráfico de líneas imprime muestras de uno o más sensores a lo largo del tiempo. En caso de que se muestren varios sensores los valores se apilarán con diferentes colores. Si la pantalla es suficientemente grande se mostrará una rejilla para indicar el intervalo de las muestras en la gráfica. De manera predeterminada el modo de rango automático está activo, de modo que los valores máximos o mínimos se configurarán automáticamente. Algunas veces deseará valores mínimos y máximos fijos, en este caso puede desactivar el modo de rango automático y establecer los valores en el diálogo de propiedades.</para>
+</sect2>
+
+<sect2 id="digital-display">
+<title
+>Pantalla digital</title>
+
+<para
+>El multímetro muestra los valores de los sensores como un dispositivo digital. En el diálogo de propiedades puede especificar los límites inferiores y superiores. En caso de que el intervalo se exceda la pantalla se teñirá del color de la alarma.</para>
+</sect2>
+
+<sect2 id="bargraph">
+<title
+>Gráfica de barras</title>
+
+<para
+>La gráfica de barras muestra los valores del sensor como un histograma oscilante. En el diálogo de propiedades puede especificar los valores mínimo y máximo del rango y un límite superior e inferior. En caso de que el rango se exceda la pantalla se teñirá del color de la alarma.</para>
+</sect2>
+
+<sect2 id="sensorlogger">
+<title
+>Registrar en un archivo</title>
+
+<para
+>El registrador de sensores no muestra ningún valor, sino que los archiva en un archivo con información adicional de la fecha y hora. Para cada sensor puede especificar un límite superior y uno inferior en el diálogo de propiedades. En caso de que el rango se exceda la entrada de la tabla de sensores se coloreará con el color de la alarma.</para>
+</sect2>
+
+<sect2 id="partition-table">
+<title
+>Tabla de particiones</title>
+
+<para
+>El <guilabel
+>Uso de particiones</guilabel
+> contiene un sensor especial en forma de tabla que muestra información sobre todas las particiones montadas.</para>
+</sect2>
+
+<sect2 id="connectingtootherhosts">
+<title
+>Conectarse a otras máquinas</title>
+<!--FIXME https://techbase.kde.org/Development/Tutorials/Sensors -->
+<para
+>Observe que el menú <guimenuitem
+>Monitor de máquina remota</guimenuitem
+> solo está disponible en las pestañas personalizadas.</para>
+
+<para
+>Para conectarse a una máquina nueva use <guimenuitem
+>Monitor de máquina remota...</guimenuitem
+> en el menú <guimenu
+>Archivo</guimenu
+>. Se mostrará un diálogo que le permitirá introducir el nombre de la máquina a la que se va a conectar. Debajo del nombre puede elegir el método de conexión. El método predeterminado es <application
+>ssh</application
+>, el intérprete seguro. También puede usar <application
+>rsh</application
+>, el intérprete remoto, el modo de demonio o una orden personalizada. Pulse <guibutton
+>Aceptar</guibutton
+> para realizar la conexión. En breve se mostrará la nueva máquina en el explorador de sensores y podrá navegar por la lista de sensores.</para>
+
+<para
+>Para desconectarse de una máquina debe apagarla y reiniciar &ksysguard;.</para>
+
+<para
+>Para establecer una conexión, un programa denominado <application
+>ksysguardd</application
+>, que debe ser iniciado en los siguientes dos modos, debe estar instalado en la nueva máquina.</para>
+
+<variablelist>
+<varlistentry>
+<term
+>Modo demonio</term>
+<listitem>
+<para
+>Puede iniciar <application
+>ksysguardd</application
+> en el momento del arranque en modo <guilabel
+>Demonio</guilabel
+> añadiendo <parameter
+>-d</parameter
+> como argumento. En este caso tiene que seleccionar el modo demonio en el diálogo de conexión de <application
+>ksysguard</application
+>. Una desventaja de este tipo de conexión es que no podrá matar o cambiar la prioridad de ejecución de los procesos en la <guilabel
+>Tabla de procesos</guilabel
+> y que el intercambio de datos a través de la red no estará cifrado. Por todo ello, el modo demonio no está recomendado.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term
+>Modo intérprete</term>
+<listitem>
+<para
+>En este modo <application
+>ksysguardd</application
+> se inicia en el momento de la conexión por <application
+>ksysguard</application
+>. Para hacer posible esto el programa necesita estar incluido en su variable <envar
+>PATH</envar
+>. Desafortunadamente ssh no ejecuta en el inicio su archivo <filename
+>.profile</filename
+>, de modo que la configuración habitual de su <envar
+>PATH</envar
+> no estará disponible. En su lugar utiliza una ruta predeterminada como <parameter
+>/bin:/usr/bin</parameter
+>. Como probablemente &plasma; no está instalado en esos directorios, necesita crear o actualizar un archivo en su directorio principal. El archivo se llama <filename
+>environment</filename
+> y necesita estar en un directorio oculto llamado <filename
+>.ssh</filename
+>. Lea la página de manual de <application
+>ssh</application
+> para obtener más detalles. El archivo necesita contener una línea como la siguiente:</para>
+
+<screen
+><userinput
+>PATH=/bin:/usr/bin:/opt/kde/bin</userinput
+>
+</screen>
+
+<para
+>asumiendo que <application
+>ksysguardd</application
+> puede encontrarse en <filename
+>/opt/kde/bin/ksysguardd</filename
+>.</para>
+
+<tip
+><para
+>Cuando use <application
+>ssh</application
+> debería asegurarse de que tiene instalado su <filename
+>identity.pub</filename
+> en la máquina remota y que la clave de la máquina remota está registrada ya en su máquina. Sino configura <filename
+>identity.pub</filename
+> correctamente, se le pedirá la contraseña cada vez que inicie ksysguard. El modo más sencillo es introducir <command
+>ssh <option
+>remotehost ksysguardd</option
+></command
+> en un intérprete de órdenes. Si <application
+>ksysguardd</application
+> le envía un mensaje de bienvenida estará todo correcto y podrá introducir <userinput
+>quit</userinput
+> para salir de <application
+>ksysguardd</application
+>.</para
+></tip>
+</listitem>
+</varlistentry>
+</variablelist>
+
+<note
+><para
+>Para expertos: <application
+>ksysguardd</application
+> es un programa muy pequeño que solo está enlazado con libc. De modo que también se pueda utilizar en máquinas que no dispongan de &plasma; completo, como los servidores. La mayor parte de las distribuciones proporcionan un paquete de <application
+>ksysguard</application
+> separado para su comodidad.Si elije la opción de orden personalizada en el conector de la máquina necesitará especificar la orden completa para iniciar <application
+>ksysguardd</application
+>.</para
+></note>
+
+</sect2>
+
+<!-- This was removed with revision 517573, but how to disconnect then?
+<sect2 id="disconnecting-hosts">
+<title
+>Disconnecting hosts</title>
+
+<para
+>To disconnect from a host, select the host in the sensor browser and
+choose <guimenuitem
+>Disconnect Host</guimenuitem
+> from the
+<guimenu
+>File</guimenu
+> menu. If you still have sensors in use, the display
+frames will be grayed and the displays won't update any longer.</para>
+</sect2>
+-->
+</sect1>
+
+</chapter>
+
+<chapter id="multiple-platforms">
+<title
+>Configuración de <application
+>ksysguardd</application
+></title>
+
+<para
+>El interfaz gráfico está disponible en cualquier plataforma en la que se ejecute &plasma;. El motor, está por el momento disponible en los siguientes tipos de &UNIX;:</para>
+
+<variablelist>
+<varlistentry>
+<term
+>&Linux;</term>
+<listitem
+><para
+>Para que <application
+>ksysguardd</application
+> funcione es necesario compilar el núcleo de &Linux; con el sistema de archivos <filename
+>/proc</filename
+> activado. Esta es la configuración predeterminada y la mayoría de las distribuciones de &Linux; disponen ya de ella.</para
+> </listitem>
+</varlistentry>
+<varlistentry>
+<term
+>FreeBSD</term>
+<listitem
+><para
+>El programa <application
+>ksysguard</application
+>  necesita ser propiedad del grupo <systemitem class="groupname"
+>kmem</systemitem
+> y necesita activar el bit setgid.</para
+></listitem
+> 
+</varlistentry>
+<varlistentry>
+<term
+>&Solaris;</term>
+<listitem
+><para
+>Por escribir.</para
+></listitem>
+</varlistentry>
+</variablelist>
+
+<para
+>Estamos desarrollando la implementación para otras plataformas. Agradeceríamos mucho su ayuda.</para>
+</chapter>
+
+<chapter id="credits-and-license">
+<title
+>Créditos y licencia</title>
+
+<para
+>&ksysguard; está actualmente desarrollado y mantenido por &John.Tapsell; &John.Tapsell.mail;. &ksysguard; es una reescritura de <application
+>KTop</application
+>, el administrador de tareas de KDE 1.x. Varias personas más han trabajado en <application
+>KTop</application
+>:</para>
+
+<itemizedlist>
+<listitem
+><para
+>A. Sanda <email
+>alex@darkstar.ping.at</email
+>.</para
+></listitem>
+<listitem
+><para
+>Ralf Mueller <email
+>ralf@bj-ig.de</email
+>-</para
+></listitem>
+<listitem
+><para
+>&Bernd.Johannes.Wuebben; <email
+>wuebben@math.cornell.edu</email
+>.</para
+></listitem>
+<listitem
+><para
+>Nicolas Leclercq <email
+>nicknet@planete.net</email
+>.</para
+></listitem>
+</itemizedlist>
+
+<para
+>El portado a otras plataformas distintas de &Linux; fue hecho por:</para>
+
+<itemizedlist>
+<listitem
+><para
+>FreeBSD: Hans Petter Bieker <email
+>zerium@traad.lavvu.no</email
+>.</para
+></listitem>
+</itemizedlist>
+
+<para
+>Traducido por Rocío Gallego <email
+>traducciones@rociogallego.com</email
+>, Pablo de Vicente <email
+>pvicentea@nexo.es</email
+> y Marcos Fouces Lago <email
+>mfouces@yahoo.es</email
+>.</para
+> &underFDL; &underGPL; </chapter>
+
+</book>
+<!--
+Local Variables:
+mode: sgml
+sgml-omittag: nil
+sgml-shorttag: t
+End:
+-->
+

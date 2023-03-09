@@ -1,0 +1,1971 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Danishka Navin <danishka@gmail.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: ksysguard\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-09-20 01:53+0000\n"
+"PO-Revision-Date: 2009-12-23 08:57+0530\n"
+"Last-Translator: Danishka Navin <danishka@gmail.com>\n"
+"Language-Team: Sinhala <danishka@gmail.com>\n"
+"Language: si\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 0.3\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "ඩනිෂ්ක නවින්"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "danishka@gmail.com"
+
+#: HostConnector.cpp:44
+#, kde-format
+msgid "Connect Host"
+msgstr "ධාරකයට සම්බන්ධ වන්න"
+
+#: HostConnector.cpp:57
+#, kde-format
+msgid "Host:"
+msgstr "ධාරකය:"
+
+#: HostConnector.cpp:67
+#, kde-format
+msgid "Enter the name of the host you want to connect to."
+msgstr "ඔබට සම්බන්ඳ වීමට ඇවැසි ධාරකයේ නාමය ඇතුළත් කරන්න."
+
+#: HostConnector.cpp:73
+#, kde-format
+msgid "Connection Type"
+msgstr "සම්බන්ධතා වර්‍ගය"
+
+#: HostConnector.cpp:78
+#, kde-format
+msgid "ssh"
+msgstr "ssh"
+
+#: HostConnector.cpp:81
+#, kde-format
+msgid "Select this to use the secure shell to login to the remote host."
+msgstr "දුරස්ථ ධාරකයට පිවිසීම සඳහා ආරක්‍ෂිත ශෙලය භාවිත කිරීමට මෙය තෝරන්න."
+
+#: HostConnector.cpp:84
+#, kde-format
+msgid "rsh"
+msgstr "rsh"
+
+#: HostConnector.cpp:85
+#, kde-format
+msgid "Select this to use the remote shell to login to the remote host."
+msgstr "දුරස්ථ ධාරකයට පිවිසීම සඳහා දුරස්ථ ශෙලය භාවිත කිරීමට මෙය තෝරන්න."
+
+#: HostConnector.cpp:88
+#, kde-format
+msgid "Daemon"
+msgstr "විභුද්ධකයා"
+
+#: HostConnector.cpp:89
+#, kde-format
+msgid ""
+"Select this if you want to connect to a ksysguard daemon that is running on "
+"the machine you want to connect to, and is listening for client requests."
+msgstr ""
+"ඔබට සම්බන්ධ වීමට ඇවැසි යන්ත්‍රයේ ksysguard ඩීමනය සම්බන්ධ කරගැනීමට හා සේවාලාභී ඉල්ලීම් වලට "
+"සවන්දීමට මෙය තෝරන්න."
+
+#: HostConnector.cpp:92
+#, kde-format
+msgid "Custom command"
+msgstr "රිසිකළ විධානය"
+
+#: HostConnector.cpp:93
+#, kde-format
+msgid ""
+"Select this to use the command you entered below to start ksysguardd on the "
+"remote host."
+msgstr "දුරස්ථ ධාරකයේ ksysguardd ආරම්භ කිරීමට ඇවැසි විධානය භාවිත කිරීමට මෙය ක්ලික් කරන්න."
+
+#: HostConnector.cpp:96
+#, kde-format
+msgid "Port:"
+msgstr "පොර්ට්:"
+
+#: HostConnector.cpp:103
+#, kde-format
+msgid ""
+"Enter the port number on which the ksysguard daemon is listening for "
+"connections."
+msgstr "ksysguard ඩීමනය විසින් සම්බන්ධතා සඳහා සවන්දෙන පෝර්ට් අංකය ඇතුළත් කරන්න."
+
+#: HostConnector.cpp:106
+#, kde-format
+msgid "e.g.  3112"
+msgstr "උදා.  3112"
+
+#: HostConnector.cpp:109
+#, kde-format
+msgid "Command:"
+msgstr "විධානය:"
+
+#: HostConnector.cpp:118
+#, kde-format
+msgid "Enter the command that runs ksysguardd on the host you want to monitor."
+msgstr "ඔබට ksysguardd ක්‍රියාකරන නිරීක්‍ෂණය කිරීමට ඇවැසි ධාරකයේ විධානය ඇතුළත් කරන්න/"
+
+#: HostConnector.cpp:122
+#, kde-format
+msgid "e.g. ssh -l root remote.host.org ksysguardd"
+msgstr "e.g. ssh -l root remote.host.org ksysguardd"
+
+#: ksysguard.cpp:74
+#, kde-format
+msgid "KDE System Monitor"
+msgstr "KDE පද්ධති නිරීක්‍ෂකය"
+
+#: ksysguard.cpp:157
+#, kde-format
+msgid ""
+"This will hide the menu bar completely. You can show it again by typing %1."
+msgstr ""
+
+#: ksysguard.cpp:159
+#, kde-format
+msgid "Hide menu bar"
+msgstr ""
+
+#: ksysguard.cpp:177 ksysguard.cpp:571
+#, kde-format
+msgid "System Monitor"
+msgstr "පද්ධති නිරීක්‍ෂකය"
+
+#: ksysguard.cpp:178
+#, kde-format
+msgid "&Refresh Tab"
+msgstr "නැවුම් කිරීමේ ටැබය (&R)"
+
+#: ksysguard.cpp:179
+#, kde-format
+msgid "&New Tab..."
+msgstr "නව ටැබය (&N)"
+
+#: ksysguard.cpp:180
+#, kde-format
+msgid "Import Tab Fr&om File..."
+msgstr "ගොනුවකින් ටැබ ආයාත කරන්න (&o)"
+
+#: ksysguard.cpp:181
+#, kde-format
+msgid "Save Tab &As..."
+msgstr "ටැබය සුරකින අයුර... (&A)"
+
+#: ksysguard.cpp:182
+#, kde-format
+msgid "&Close Tab"
+msgstr "ටැබය වසන්න (&C)"
+
+#: ksysguard.cpp:183
+#, kde-format
+msgid "Monitor &Remote Machine..."
+msgstr "දුරස්ථ යන්ත්‍රය නිරීක්‍ෂණය කරන්න (&R)"
+
+#: ksysguard.cpp:184
+#, kde-format
+msgid "&Download New Tabs..."
+msgstr "නම ටැබ බාන්න (&D)"
+
+#: ksysguard.cpp:185
+#, kde-format
+msgid "&Upload Current Tab..."
+msgstr "වත්මන් ටැබය අපගත කරන්න (&U)"
+
+#: ksysguard.cpp:187
+#, kde-format
+msgid "Tab &Properties"
+msgstr "ටැබ් වත්කම් (&P)"
+
+#: ksysguard.cpp:384
+#, fuzzy, kde-format
+#| msgid "1 process1"
+#| msgid_plural "%1 processes%1"
+msgid "1 process"
+msgid_plural "%1 processes"
+msgstr[0] "සකසන 1"
+msgstr[1] " සකසන %1 ක්"
+
+#: ksysguard.cpp:465
+#, fuzzy, kde-format
+#| msgid "CPU: %1%%1%"
+msgid "CPU: %1%"
+msgstr "CPU: %1%%1%"
+
+#: ksysguard.cpp:465
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1%"
+msgctxt "This is the shorter version of CPU: %1%"
+msgid "%1%"
+msgstr "%1%"
+
+#: ksysguard.cpp:484
+#, fuzzy, kde-format
+#| msgctxt "Arguments are formatted byte sizes (used/total)"
+#| msgid " Memory: %1 / %2 "
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Memory: %1 / %2"
+msgstr " මතකය: %1 / %2 "
+
+#: ksysguard.cpp:486
+#, fuzzy, kde-format
+#| msgctxt "Arguments are formatted byte sizes (used/total)"
+#| msgid " Memory: %1 / %2 "
+msgctxt ""
+"Arguments are formatted byte sizes (used/total) This should be a shorter "
+"version of the previous Memory: %1 / %2"
+msgid "Mem: %1 / %2"
+msgstr " මතකය: %1 / %2 "
+
+#: ksysguard.cpp:488
+#, kde-format
+msgctxt ""
+"Arguments is formatted byte sizes (used) This should be a shorter version of "
+"the previous Mem: %1 / %2"
+msgid "Mem: %1"
+msgstr ""
+
+#: ksysguard.cpp:516
+#, kde-format
+msgid " No swap space available "
+msgstr " swap ඉඩ නොමැත"
+
+#: ksysguard.cpp:520
+#, fuzzy, kde-format
+#| msgctxt "Arguments are formatted byte sizes (used/total)"
+#| msgid "Swap: %1 / %2Swap: %1%1"
+msgctxt "Arguments are formatted byte sizes (used/total)"
+msgid "Swap: %1 / %2"
+msgstr "ස්වැප්: %1 / %2 "
+
+#: ksysguard.cpp:522
+#, kde-format
+msgctxt "Arguments is formatted byte sizes (used)"
+msgid "Swap: %1"
+msgstr ""
+
+#: ksysguard.cpp:573
+#, fuzzy, kde-format
+#| msgid "(c) 1996-2008 The KDE System Monitor Developers"
+msgid "(c) 1996-2016 The KDE System Monitor Developers"
+msgstr "(c) 1996-2008 KDE පද්ධති නිරීක්‍ෂකය සංවර්‍ධකයින්"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "John Tapsell"
+msgstr "John Tapsell"
+
+#: ksysguard.cpp:575
+#, kde-format
+msgid "Current Maintainer"
+msgstr "දැනට නඩත්තු කරන්නා"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Chris Schlaeger"
+msgstr "Chris Schlaeger"
+
+#: ksysguard.cpp:576
+#, kde-format
+msgid "Previous Maintainer"
+msgstr "මීට පෙර නඩත්තුකරු"
+
+#: ksysguard.cpp:577
+#, kde-format
+msgid "Greg Martyn"
+msgstr "Greg Martyn"
+
+#: ksysguard.cpp:578
+#, kde-format
+msgid "Tobias Koenig"
+msgstr "Tobias Koenig"
+
+#: ksysguard.cpp:579
+#, kde-format
+msgid "Nicolas Leclercq"
+msgstr "Nicolas Leclercq"
+
+#: ksysguard.cpp:580
+#, kde-format
+msgid "Alex Sanda"
+msgstr "Alex Sanda"
+
+#: ksysguard.cpp:581
+#, kde-format
+msgid "Bernd Johannes Wuebben"
+msgstr "Bernd Johannes Wuebben"
+
+#: ksysguard.cpp:582
+#, kde-format
+msgid "Ralf Mueller"
+msgstr "Ralf Mueller"
+
+#: ksysguard.cpp:583
+#, kde-format
+msgid "Hamish Rodda"
+msgstr "Hamish Rodda"
+
+#: ksysguard.cpp:584
+#, kde-format
+msgid "Torsten Kasch"
+msgstr "Torsten Kasch"
+
+#: ksysguard.cpp:584
+#, kde-format
+msgid ""
+"Solaris Support\n"
+"Parts derived (by permission) from the sunos5\n"
+"module of William LeFebvre's \"top\" utility."
+msgstr ""
+"Solaris සහාය\n"
+"කොටස්  sunos5 විසින් (බලතල මගින්) William LeFebvre ගේ  \n"
+"\"ඉහළ\" උපාංගයේ මොඩියුලය මගින් සපයයි."
+
+#: ksysguard.cpp:593
+#, kde-format
+msgid "Optional worksheet files to load"
+msgstr "පූරණය සඳහා විකල්ප වැඩපත් ගොනු"
+
+#. i18n: ectx: Menu (file)
+#: ksysguardui.rc:5
+#, kde-format
+msgid "&File"
+msgstr "ගොනුව (&F)"
+
+#. i18n: ectx: Menu (view)
+#: ksysguardui.rc:15
+#, kde-format
+msgid "&View"
+msgstr "දසුන (&V)"
+
+#. i18n: ectx: Menu (settings)
+#: ksysguardui.rc:19
+#, kde-format
+msgid "&Settings"
+msgstr "සැකසුම් (&S)"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: ksysguardui.rc:22
+#, kde-format
+msgid "Main Toolbar"
+msgstr "ප්‍රධාන මෙවලම් තීරුව"
+
+#. i18n: tag WorkSheet attribute title
+#. i18n: tag display attribute title
+#: ProcessTable.sgrd:3 ProcessTable.sgrd:5
+#, kde-format
+msgid "Process Table"
+msgstr "සැකසුම් වගුව"
+
+#: SensorBrowser.cpp:113
+#, kde-format
+msgid "Sensor Browser"
+msgstr "සංවේදකය ගවේශකය"
+
+#: SensorBrowser.cpp:473
+#, kde-format
+msgid "Drag sensors to empty cells of a worksheet "
+msgstr "සංවේදක වැඩපත්‍රයේ හිස් කොටුවලට ඇදදමන්න"
+
+#: SensorBrowser.cpp:474
+#, kde-format
+msgid ""
+"The sensor browser lists the connected hosts and the sensors that they "
+"provide. Click and drag sensors into drop zones of a worksheet. A display "
+"will appear that visualizes the values provided by the sensor. Some sensor "
+"displays can display values of multiple sensors. Simply drag other sensors "
+"on to the display to add more sensors."
+msgstr ""
+"සංවේදක ගවේශකය සම්බන්ධ වී ඇති ධාරක හා ඒවා සපයන සංවේදකයන් ලැයිස්තුගත කරයි. වැඩපත්‍රයේ ඇදුම් "
+"ස්ථානට සංවේදක ක්ලික් කර ඇද දමන්න, දර්ශකයන් පැමින එම සංවේදකය සපයන අගයන් දක්වනු ඇත, ඇතැම් "
+"සංවේදකයන්ට සංවෙදක කිහිපයක අගයන් පෙන්විය හැක. සරලව දර්ශකය වෙත වෙනත් සංවේදකයන් ඇද "
+"දැමීමෙන් ඒවා එක් කල හැක."
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:280
+#, kde-format
+msgid "OK"
+msgstr "හරි"
+
+#: SensorDisplayLib/DancingBars.cpp:95 SensorDisplayLib/FancyPlotter.cpp:280
+#: SensorDisplayLib/FancyPlotter.cpp:544 SensorDisplayLib/FancyPlotter.cpp:623
+#, kde-format
+msgid "Error"
+msgstr "දෝෂය"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:42
+#, kde-format
+msgid "Edit BarGraph Preferences"
+msgstr "තීරුප්‍රස්ථාර අභිප්‍රේත සකසන්"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:51
+#, kde-format
+msgid "Range"
+msgstr "පරාසය"
+
+#. i18n: ectx: property (title), widget (QGroupBox, titleFrame)
+#: SensorDisplayLib/DancingBarsSettings.cpp:55
+#: SensorDisplayLib/ListViewSettingsWidget.ui:17
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:17 WorkSheetSettings.cpp:61
+#, kde-format
+msgid "Title"
+msgstr "සිරස්තලය"
+
+#. i18n: ectx: property (whatsThis), widget (QLineEdit, m_title)
+#: SensorDisplayLib/DancingBarsSettings.cpp:60
+#: SensorDisplayLib/FancyPlotterSettings.cpp:70
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:36
+#, kde-format
+msgid "Enter the title of the display here."
+msgstr "සංදර්ශකයේ සිරස්තලය මෙහි ඇතුළත් කරන්න."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:65
+#, kde-format
+msgid "Display Range"
+msgstr "දර්ශනය පරාසය"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:70
+#: SensorDisplayLib/FancyPlotterSettings.cpp:96
+#, kde-format
+msgid "Minimum value:"
+msgstr "අවම අගය:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:78
+#, kde-format
+msgid ""
+"Enter the minimum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"දර්ශකය සඳහා අවම අගය මෙහි සඳහන් කරන්න. අගයන් දෙකම 0 නම්, ස්වයංක්‍රීය පරාස හඳුනාගැනීම සක්‍රීය "
+"කරන්න."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:82
+#: SensorDisplayLib/FancyPlotterSettings.cpp:107
+#, kde-format
+msgid "Maximum value:"
+msgstr "උපරිම අගය:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:90
+#, kde-format
+msgid ""
+"Enter the maximum value for the display here. If both values are 0, "
+"automatic range detection is enabled."
+msgstr ""
+"දර්ශකය සඳහා උපරිම අගය මෙහි සඳහන් කරන්න. අගයන් දෙකම 0 නම්, ස්වයංක්‍රීය පරාස හඳුනාගැනීම සක්‍"
+"රීය කරන්න."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:100
+#, kde-format
+msgid "Alarms"
+msgstr "හැගවීම"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1)
+#: SensorDisplayLib/DancingBarsSettings.cpp:104
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:78
+#, kde-format
+msgid "Alarm for Minimum Value"
+msgstr "අවම අගය සඳහා හැගවීම"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:109
+#: SensorDisplayLib/DancingBarsSettings.cpp:132
+#, kde-format
+msgid "Enable alarm"
+msgstr "හැගවීම සක්‍රීය කරන්න"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:110
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:57
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:96
+#, kde-format
+msgid "Enable the minimum value alarm."
+msgstr "අවම අගය හැගවීම සක්‍රීය කරන්න."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:113
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:125
+#, kde-format
+msgid "Lower limit:"
+msgstr "අවම සීමාව:"
+
+#. i18n: ectx: property (title), widget (QGroupBox, GroupBox1_2)
+#: SensorDisplayLib/DancingBarsSettings.cpp:127
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:151
+#, kde-format
+msgid "Alarm for Maximum Value"
+msgstr "උපරිම අගය සඳහා හැගවීම"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/DancingBarsSettings.cpp:133
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:116
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:169
+#, kde-format
+msgid "Enable the maximum value alarm."
+msgstr "උපරිම අගය හැගවීම සක්‍රීය කරන්න."
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/DancingBarsSettings.cpp:136
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:198
+#, kde-format
+msgid "Upper limit:"
+msgstr "උපරිම සීමාව:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:153
+#, kde-format
+msgctxt "@title:tab Appearance of the bar graph"
+msgid "Look"
+msgstr "අගුල"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:157
+#, kde-format
+msgid "Normal bar color:"
+msgstr "සාමාන්‍ය තීරු වර්‍ණය:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:164
+#, kde-format
+msgid "Out-of-range color:"
+msgstr "පරාසයෙන් පිට වර්‍ණ:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/DancingBarsSettings.cpp:171
+#: SensorDisplayLib/ListViewSettingsWidget.ui:105
+#: SensorDisplayLib/LogFile.cpp:105 SensorDisplayLib/LogFileSettings.ui:85
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:92
+#, kde-format
+msgid "Background color:"
+msgstr "පසුබිම් වර්‍ණය:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:178
+#: SensorDisplayLib/FancyPlotterSettings.cpp:177
+#, kde-format
+msgid "Font size:"
+msgstr "අකුරු ප්‍රමාණය:"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:183
+#, kde-format
+msgid ""
+"This determines the size of the font used to print a label underneath the "
+"bars. Bars are automatically suppressed if text becomes too large, so it is "
+"advisable to use a small font size here."
+msgstr ""
+"තීරු යට මුද්‍රණය කරන ලේබයට භාවිත කරන අකුරු මෙහිදී නිවේශනය කරයි.  පෙළ බොහෝ විශාල නම් තීරු "
+"ස්වයංක්‍රීයව වැළකේ. එම නිසා කුඩා අකුරු භාවිත කිරීම නිර්දේශිතයි."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:191
+#: SensorDisplayLib/FancyPlotterSettings.cpp:193
+#, kde-format
+msgid "Sensors"
+msgstr "සංවේදක"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:204
+#, kde-format
+msgid "Edit..."
+msgstr "සැකසුම..."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:205
+#, kde-format
+msgid "Push this button to configure the label."
+msgstr "ලේබලය සැකසීමට මෙම බොත්තම ඔබන්න."
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:208
+#: SensorDisplayLib/FancyPlotterSettings.cpp:225
+#, kde-format
+msgid "Delete"
+msgstr "මකන්න"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:209
+#: SensorDisplayLib/FancyPlotterSettings.cpp:226
+#, kde-format
+msgid "Push this button to delete the sensor."
+msgstr "සංවේදකය මකාදැමීමට මෙම බොත්තම ඔබන්න"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:361
+#, kde-format
+msgid "Label of Bar Graph"
+msgstr "තීර ප්‍රස්ථාරයේ ලේබලය"
+
+#: SensorDisplayLib/DancingBarsSettings.cpp:362
+#, kde-format
+msgid "Enter new label:"
+msgstr "නව ලේබලය ඇතුළත් කරන්න:"
+
+#: SensorDisplayLib/DummyDisplay.cpp:31 SensorDisplayLib/DummyDisplay.cpp:39
+#, kde-format
+msgid "Drop Sensor Here"
+msgstr "සංවේදකය මෙහ හෙළන්න"
+
+#: SensorDisplayLib/DummyDisplay.cpp:33
+#, kde-format
+msgid ""
+"This is an empty space in a worksheet. Drag a sensor from the Sensor Browser "
+"and drop it here. A sensor display will appear that allows you to monitor "
+"the values of the sensor over time."
+msgstr ""
+"මෙය වැඩපත්‍රයේ හිස් ඉඩකි. සංවේදක ගවේශකයෙන් සංවේදකයක් තෝරා මෙයට ඇද දමන්න සංවේදකයේ "
+"අගයන් නිරීක්‍ෂණය කිරීමට සංවේදක දර්ශකයක් ලැබෙනු ඇත."
+
+#: SensorDisplayLib/FancyPlotter.cpp:176
+#, kde-format
+msgctxt "Largest axis title"
+msgid "99999 XXXX"
+msgstr "99999 XXXX"
+
+#: SensorDisplayLib/FancyPlotter.cpp:540 SensorDisplayLib/FancyPlotter.cpp:612
+#: SensorDisplayLib/FancyPlotter.cpp:675
+#, kde-format
+msgctxt "units"
+msgid "%1%"
+msgstr "%1%"
+
+#: SensorDisplayLib/FancyPlotter.cpp:548
+#, kde-format
+msgctxt "%1 is what is being shown statistics for, like 'Memory', 'Swap', etc."
+msgid "<p><b>%1:</b><br>"
+msgstr "<p><b>%1:</b><br>"
+
+#: SensorDisplayLib/FancyPlotter.cpp:620
+#, fuzzy, kde-format
+#| msgid "%1 of %2%1"
+msgid "%1 of %2"
+msgstr "%1 of %2%1"
+
+#: SensorDisplayLib/FancyPlotter.cpp:648
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB"
+msgstr "%1 TiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:651
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB"
+msgstr "%1 GiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:654
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB"
+msgstr "%1 MiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:657
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB"
+msgstr "%1 KiB"
+
+#: SensorDisplayLib/FancyPlotter.cpp:662
+#, kde-format
+msgctxt "units"
+msgid "%1 TiB/s"
+msgstr "%1 TiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:665
+#, kde-format
+msgctxt "units"
+msgid "%1 GiB/s"
+msgstr "%1 GiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:668
+#, kde-format
+msgctxt "units"
+msgid "%1 MiB/s"
+msgstr "%1 MiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:671
+#, kde-format
+msgctxt "units"
+msgid "%1 KiB/s"
+msgstr "%1 KiB/s"
+
+#: SensorDisplayLib/FancyPlotter.cpp:677
+#, kde-format
+msgctxt "unitless - just a number"
+msgid "%1"
+msgstr "%1"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:46
+#, kde-format
+msgid "Plotter Settings"
+msgstr "ලකුණුකිරීම් සැකසුම්"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:62
+#, kde-format
+msgid "General"
+msgstr "සාමාන්‍ය"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:66
+#, kde-format
+msgid "Title:"
+msgstr "සිරස්තලය:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:74
+#, kde-format
+msgid "Stack the beams on top of each other"
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:75
+#, kde-format
+msgid ""
+"The beams are stacked on top of each other, and the area is drawn filled in. "
+"So if one beam has a value of 2 and another beam has a value of 3, the first "
+"beam will be drawn at value 2 and the other beam drawn at 2+3=5."
+msgstr ""
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:82
+#, kde-format
+msgid "Scales"
+msgstr "පරිමාණ"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:86
+#, kde-format
+msgid "Vertical scale"
+msgstr "සිරස් පරිමාණය"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:91
+#, kde-format
+msgid "Specify graph range:"
+msgstr "ප්‍රස්ථාර පරාසය සඳහන් කරන්න:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:92
+#, kde-format
+msgid ""
+"Check this box if you want the display range to adapt dynamically to the "
+"currently displayed values; if you do not check this, you have to specify "
+"the range you want in the fields below."
+msgstr ""
+"ගතිකව ඔබේ දර්ශක පරාසය දැනට පවතින දර්ක අගයන් වලට සැකසීමට ඇවැසි නම් මෙම කොටුව සලකුණු "
+"කරන්න; මෙය සලකුණු නොකරයි නම් ඔබට එම පරාසය පහත ක්‍ෂේත්‍ර වල ඇතුළත් කිරීමට සිදුවේ."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:102
+#, kde-format
+msgid "Enter the minimum value for the display here."
+msgstr "දර්ශකය සඳහා උපරිම අගය මෙහි ඇතුළත් කරන්න."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:113
+#, kde-format
+msgid ""
+"Enter the soft maximum value for the display here. The upper range will not "
+"be reduced below this value, but will still go above this number for values "
+"above this value."
+msgstr ""
+"දර්ශකය සඳහා උපරිම මෘදු අගය මෙහි ඇතුළත් කරන්න ඉහළ අගය මෙම අගයට වඩා අඩු නොවේ, නමුත් මෙම "
+"අගය ඉක්මවන අගයන් ඉහළින්ම තැබෙනු ඇත."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:120
+#, kde-format
+msgid "Horizontal scale"
+msgstr "තිරස් පරිමාණය"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:128
+#, kde-format
+msgid "Pixels per time period:"
+msgstr "කාලසීමාවක් සඳහා පික්සෙල:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:135
+#, kde-format
+msgid "Grid"
+msgstr "දැල"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:139
+#, kde-format
+msgid "Lines"
+msgstr "පේළිය"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:144
+#, kde-format
+msgid "Vertical lines"
+msgstr "සිරස් පේළි"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:145
+#, kde-format
+msgid "Check this to activate the vertical lines if display is large enough."
+msgstr "දර්ශකය ප්‍රමාණවත් නම් සිරස් රේඛා සක්‍රීය කිරීමට මෙය සලකුණු කරන්න."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:148
+#, kde-format
+msgid "Distance:"
+msgstr "පරතරය:"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:155
+#, kde-format
+msgid "Enter the distance between two vertical lines here."
+msgstr "සිරස් රේඛා දෙකක් අතර දුර මෙහි ඇතුළත් කරන්න."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:159
+#, kde-format
+msgid "Vertical lines scroll"
+msgstr "සිරස් රේඛා ස්ක්‍රෝල්"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:162
+#, kde-format
+msgid "Horizontal lines"
+msgstr "තිරස් පේළි"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:163
+#, kde-format
+msgid "Check this to enable horizontal lines if display is large enough."
+msgstr "දර්ශකය ප්‍රමාණවත් නම් තිරස් රේඛා සක්‍රීය කිරීමට මෙය සලකුණු කරන්න."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:168
+#, kde-format
+msgid "Text"
+msgstr "පෙළ"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:173
+#, kde-format
+msgid "Show axis labels"
+msgstr "අක්‍ෂයේ ලේබල පෙන්වන්න"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:174
+#, kde-format
+msgid ""
+"Check this box if horizontal lines should be decorated with the values they "
+"mark."
+msgstr "තිරස් රේඛා ඒවා සාදන අගයන් සමඟ අලංකාර වියයුතු නම් මෙම කොටුව සලකුණු කරන්න."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:217
+#, kde-format
+msgid "Set Color..."
+msgstr "වර්‍ණය සකසන්න..."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:218
+#, kde-format
+msgid "Push this button to configure the color of the sensor in the diagram."
+msgstr "ප්‍රස්ථාරය තුළ සංවේදකයේ වර්‍ණය සැකසීමට මෙම බොත්තම ඔබන්න."
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:230
+#, kde-format
+msgid "Move Up"
+msgstr "ඉහළට ගෙනයන්න"
+
+#: SensorDisplayLib/FancyPlotterSettings.cpp:235
+#, kde-format
+msgid "Move Down"
+msgstr "පහළට ගෙනයන්න"
+
+#: SensorDisplayLib/ListView.cpp:44
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1 KiB"
+msgid "%1 K"
+msgstr "%1 KiB"
+
+#: SensorDisplayLib/ListView.cpp:45
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1 MiB"
+msgid "%1 M"
+msgstr "%1 MiB"
+
+#: SensorDisplayLib/ListView.cpp:46
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1 GiB"
+msgid "%1 G"
+msgstr "%1 GiB"
+
+#: SensorDisplayLib/ListView.cpp:47
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1 TiB"
+msgid "%1 T"
+msgstr "%1 TiB"
+
+#: SensorDisplayLib/ListView.cpp:48
+#, fuzzy, kde-format
+#| msgctxt "units"
+#| msgid "%1 KiB"
+msgid "%1 P"
+msgstr "%1 KiB"
+
+#: SensorDisplayLib/ListView.cpp:151
+#, fuzzy, kde-format
+#| msgid "Display Range"
+msgid "Display Units"
+msgstr "දර්ශනය පරාසය"
+
+#: SensorDisplayLib/ListView.cpp:155
+#, kde-format
+msgid "Mixed"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:161
+#, kde-format
+msgid "Kilobytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:167
+#, kde-format
+msgid "Megabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:173
+#, kde-format
+msgid "Gigabytes"
+msgstr ""
+
+#: SensorDisplayLib/ListView.cpp:179
+#, fuzzy, kde-format
+#| msgid "Temperature"
+msgid "Terabytes"
+msgstr "උෂ්ණත්වය"
+
+#: SensorDisplayLib/ListViewSettings.cpp:30
+#, kde-format
+msgid "List View Settings"
+msgstr "ලැයිස්තුව දසුන් සැකසුම්"
+
+#. i18n: ectx: property (title), widget (QGroupBox, colorFrame)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:47
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:47
+#, kde-format
+msgid "Colors"
+msgstr "වර්ණ"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:79
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:79
+#, kde-format
+msgid "Text color:"
+msgstr "පෙළ වර්‍ණය:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2)
+#: SensorDisplayLib/ListViewSettingsWidget.ui:92
+#, kde-format
+msgid "Grid color:"
+msgstr "දැල වර්‍ණය"
+
+#: SensorDisplayLib/LogFile.cpp:93
+#, kde-format
+msgid "File logging settings"
+msgstr "ගොනු වාර්ථාකාරක සැකසුම්"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1)
+#: SensorDisplayLib/LogFile.cpp:103 SensorDisplayLib/LogFileSettings.ui:72
+#, kde-format
+msgid "Foreground color:"
+msgstr "ඉදිරිපස වර්‍ණය:"
+
+#. i18n: ectx: attribute (title), widget (QWidget, textTab)
+#: SensorDisplayLib/LogFileSettings.ui:21
+#, kde-format
+msgid "&Text"
+msgstr "පෙළ (&T)"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/LogFileSettings.ui:29
+#, kde-format
+msgid "T&itle:"
+msgstr "සිරස්තලය (&i):"
+
+#. i18n: ectx: attribute (title), widget (QWidget, tab_2)
+#: SensorDisplayLib/LogFileSettings.ui:166
+#, kde-format
+msgid "Fi&lter"
+msgstr "පෙරහණ (&l)"
+
+#. i18n: ectx: property (text), widget (QPushButton, addButton)
+#: SensorDisplayLib/LogFileSettings.ui:196
+#, kde-format
+msgid "&Add"
+msgstr "එක් කරන්න (&A)"
+
+#. i18n: ectx: property (text), widget (QPushButton, deleteButton)
+#: SensorDisplayLib/LogFileSettings.ui:203
+#, kde-format
+msgid "&Delete"
+msgstr "මකන්න (&D)"
+
+#. i18n: ectx: property (text), widget (QPushButton, changeButton)
+#: SensorDisplayLib/LogFileSettings.ui:210
+#, kde-format
+msgid "&Change"
+msgstr "වෙනස් කරන්න (&C)"
+
+#: SensorDisplayLib/MultiMeterSettings.cpp:33
+#, kde-format
+msgctxt ""
+"Multimeter is a sensor display that mimics 'digital multimeter' aparatus"
+msgid "Multimeter Settings"
+msgstr "බහුමාන සැකසුම්"
+
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:26
+#, kde-format
+msgid "&Title:"
+msgstr "සිරස්තලය (&T):"
+
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:43
+#, fuzzy, kde-format
+msgid "Enable this to append the unit to the title of the display."
+msgstr "දර්ශකයේ මාතෘකාවට ඒකකය බලපැවැත්වීමට මෙය සක්‍රීය කරන්න."
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_showUnit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:46
+#, kde-format
+msgid "&Show unit"
+msgstr "ඒකකය පෙන්වන්න (&S)"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_lowerLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:60
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:99
+#, kde-format
+msgid "&Enable alarm"
+msgstr "හැගවීම සක්‍රීය කරන්න (&E)"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblLowerLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:86
+#, fuzzy, kde-format
+#| msgid "Lower limit:"
+msgid "&Lower limit:"
+msgstr "අවම සීමාව:"
+
+#. i18n: ectx: property (text), widget (QCheckBox, m_upperLimitActive)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:119
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:172
+#, kde-format
+msgid "E&nable alarm"
+msgstr "හැගවීම සක්‍රීය කරන්න (&n)"
+
+#. i18n: ectx: property (text), widget (QLabel, m_lblUpperLimit)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:145
+#, kde-format
+msgid "&Upper limit:"
+msgstr "ඉහළ සීමාව (&U):"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:175
+#, fuzzy, kde-format
+#| msgid "Normal digit color:"
+msgid "Nor&mal digit color:"
+msgstr "සාමාන්‍ය අංක වර්‍ගය:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel2_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:205
+#, fuzzy, kde-format
+#| msgid "Alarm digit color:"
+msgid "Alarm di&git color:"
+msgstr "එලාම් අංක වර්‍ණය:"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
+#: SensorDisplayLib/MultiMeterSettingsWidget.ui:235
+#, fuzzy, kde-format
+#| msgid "Background color:"
+msgid "Bac&kground color:"
+msgstr "පසුබිම් වර්‍ණය:"
+
+#: SensorDisplayLib/SensorDisplay.cpp:115 SensorDisplayLib/SensorLogger.cpp:587
+#, kde-format
+msgid "&Properties"
+msgstr "වත්කම් (&P)"
+
+#: SensorDisplayLib/SensorDisplay.cpp:120 SensorDisplayLib/SensorLogger.cpp:592
+#, kde-format
+msgid "&Remove Display"
+msgstr "සංදර්ශනය ඉවත් කරන්න (&R)"
+
+#: SensorDisplayLib/SensorDisplay.cpp:187
+#, kde-format
+msgid ""
+"<qt><p>This is a sensor display. To customize a sensor display click the "
+"right mouse button here and select the <i>Properties</i> entry from the "
+"popup menu. Select <i>Remove</i> to delete the display from the worksheet.</"
+"p>%1</qt>"
+msgstr ""
+"<qt><p>මෙය සංවේදක දර්ශකයකි. මෙය රුචි පරිදි සැකසීමට, එය මත දකුණු ක්ලික් කර ලැබෙන පොප්-අප් "
+"මෙනුව තුළින් <i>වත්කම්</i> ඇතුළත් කිරීම තෝරන්න. දර්ශකය වැඩපත්‍රයෙන් ඉවත් කිරීමට  <i>ඉවත් කරන්න</"
+"i> සලකුණු කරන්න.</p>%1</qt>"
+
+#: SensorDisplayLib/SensorLogger.cpp:132
+#, fuzzy, kde-format
+#| msgid "Logging"
+msgctxt "@title:column"
+msgid "Logging"
+msgstr "පිවිසෙමින්"
+
+#: SensorDisplayLib/SensorLogger.cpp:134
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:column"
+msgid "Timer Interval"
+msgstr "වේලාතැබීම් කාල පරතරය"
+
+#: SensorDisplayLib/SensorLogger.cpp:136
+#, fuzzy, kde-format
+#| msgid "Sensor Name"
+msgctxt "@title:column"
+msgid "Sensor Name"
+msgstr "සංවේදක නාමය"
+
+#: SensorDisplayLib/SensorLogger.cpp:138
+#, fuzzy, kde-format
+#| msgid "Host Name"
+msgctxt "@title:column"
+msgid "Host Name"
+msgstr "ධාරක මානය"
+
+#: SensorDisplayLib/SensorLogger.cpp:140
+#, fuzzy, kde-format
+#| msgid "Log File"
+msgctxt "@title:column"
+msgid "Log File"
+msgstr "සටහන් ගොනුව"
+
+#: SensorDisplayLib/SensorLogger.cpp:418
+#: SensorDisplayLib/SensorLoggerDlg.cpp:30
+#, kde-format
+msgid "Sensor Logger"
+msgstr "සංවේදක ලඝුව"
+
+#: SensorDisplayLib/SensorLogger.cpp:597
+#, kde-format
+msgid "&Remove Sensor"
+msgstr "සංවේදකය ඉවත් කරන්න (&R)"
+
+#: SensorDisplayLib/SensorLogger.cpp:602
+#, kde-format
+msgid "&Edit Sensor..."
+msgstr "සංවේදකය සකසන්න... (&E)"
+
+#: SensorDisplayLib/SensorLogger.cpp:610
+#, fuzzy, kde-format
+#| msgid "Logging"
+msgid "St&op Logging"
+msgstr "වාර්‍ථා කිරීම නවතමින් (&t)"
+
+#: SensorDisplayLib/SensorLogger.cpp:613
+#, fuzzy, kde-format
+#| msgid "Logging"
+msgid "S&tart Logging"
+msgstr "වාර්‍ථා කිරීම අරඹමින් (&t)"
+
+#. i18n: ectx: property (title), widget (QGroupBox, fileFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:17
+#, kde-format
+msgid "File"
+msgstr "ගොනුව"
+
+#. i18n: ectx: property (title), widget (QGroupBox, timerFrame)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:41
+#, fuzzy, kde-format
+#| msgid "Timer Interval"
+msgctxt "@title:group"
+msgid "Timer Interval"
+msgstr "වේලාතැබීම් කාල පරතරය"
+
+#. i18n: ectx: property (suffix), widget (QSpinBox, m_timerInterval)
+#: SensorDisplayLib/SensorLoggerDlgWidget.ui:59 WorkSheetSettings.cpp:110
+#, kde-format
+msgid " sec"
+msgstr "තත්"
+
+#: SensorDisplayLib/SensorLoggerSettings.cpp:30
+#, kde-format
+msgid "Sensor Logger Settings"
+msgstr "සංවේදක වාර්‍ථාකාරක සැකසුම්"
+
+#. i18n: ectx: property (text), widget (QLabel, textLabel3)
+#: SensorDisplayLib/SensorLoggerSettingsWidget.ui:105
+#, kde-format
+msgid "Alarm color:"
+msgstr "එලාම් වර්‍ණය:"
+
+#: SensorDisplayLib/SensorModel.cpp:161
+#, kde-format
+msgid "Host"
+msgstr "ධාරකය"
+
+#: SensorDisplayLib/SensorModel.cpp:163
+#, kde-format
+msgid "Sensor"
+msgstr "සංවේදකය"
+
+#: SensorDisplayLib/SensorModel.cpp:165
+#, kde-format
+msgid "Unit"
+msgstr "එකකය"
+
+#: SensorDisplayLib/SensorModel.cpp:167
+#, kde-format
+msgid "Status"
+msgstr "තත්ත්වය"
+
+#: SensorDisplayLib/SensorModel.cpp:169
+#, kde-format
+msgid "Label"
+msgstr "ලේබලය"
+
+#. i18n: tag WorkSheet attribute title
+#: SystemLoad2.sgrd:3
+#, kde-format
+msgid "System Load"
+msgstr "පද්ධතී භාරය"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:5
+#, kde-format
+msgid "CPU History"
+msgstr "CPU අතීතය"
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:8
+#, kde-format
+msgid "Memory and Swap History"
+msgstr "මතකය සහ Swap අතීතය"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:9
+#, kde-format
+msgid "Memory"
+msgstr "මතකය"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:10
+#, kde-format
+msgid "Swap"
+msgstr ""
+
+#. i18n: tag display attribute title
+#: SystemLoad2.sgrd:12
+#, kde-format
+msgid "Network History"
+msgstr "ජාල අතීතය"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:13
+#, fuzzy, kde-format
+#| msgid "Receiver"
+msgid "Receiving"
+msgstr "ලබන්නා"
+
+#. i18n: tag beam attribute summationName
+#: SystemLoad2.sgrd:14
+#, kde-format
+msgid "Sending"
+msgstr ""
+
+#: WorkSheet.cpp:87
+#, kde-format
+msgid "Cannot open the file %1."
+msgstr "%1 ගොනුව විවෘත කළ නොහැක."
+
+#: WorkSheet.cpp:95
+#, kde-format
+msgid "The file %1 does not contain valid XML."
+msgstr "%1 ගොනුච සතුව වලංගු XML නොපවතී."
+
+#: WorkSheet.cpp:102
+#, kde-format
+msgid ""
+"The file %1 does not contain a valid worksheet definition, which must have a "
+"document type 'KSysGuardWorkSheet'."
+msgstr ""
+"%1 ගොනුව සතුව වලංගු වැඩපත්‍ර සඳහනක් අඩංගු නොවේ.එහි වර්‍ගය 'KSysGuardWorkSheet' විය යුතුයි."
+
+#: WorkSheet.cpp:114
+#, kde-format
+msgid "The file %1 has an invalid worksheet size."
+msgstr "%1 ගොනුව සතුව වලංගු නොවන වැඩපත්‍ර ප්‍රමාණයක් පවතී."
+
+#: WorkSheet.cpp:239
+#, kde-format
+msgid "Cannot save file %1"
+msgstr "%1 ගොනුව සුරකිය නොහැක"
+
+#: WorkSheet.cpp:287
+#, kde-format
+msgid "The clipboard does not contain a valid display description."
+msgstr "ක්ලිප් පුවරුව සතුව වලංගු දර්ශක විස්තරයක් නොපවතී."
+
+#: WorkSheet.cpp:387
+#, kde-format
+msgid "Select Display Type"
+msgstr "දර්ශක වර්‍ගය තෝරන්න"
+
+#: WorkSheet.cpp:388
+#, kde-format
+msgid "&Line graph"
+msgstr "රේඛා ප්‍රස්ථාරය (&L)"
+
+#: WorkSheet.cpp:389
+#, kde-format
+msgid "&Digital display"
+msgstr "අංකිත දර්ශකය (&D)"
+
+#: WorkSheet.cpp:390
+#, kde-format
+msgid "&Bar graph"
+msgstr "තීරු ප්‍රස්ථාරය (&B)"
+
+#: WorkSheet.cpp:391
+#, kde-format
+msgid "Log to a &file"
+msgstr "ගොනුවකට වාර්‍ථා කරන්න (&f)"
+
+#: WorkSheet.cpp:547
+#, kde-format
+msgid "Remove this display?"
+msgstr "මෙම දර්ශකය ඉවත් කරන්නද"
+
+#: WorkSheet.cpp:548
+#, kde-format
+msgid "Remove Display"
+msgstr "දර්ශකය ඉවත් කරන්න"
+
+#: WorkSheet.cpp:589
+#, kde-format
+msgid "Dummy"
+msgstr "ව්‍යාජ"
+
+#: WorkSheetSettings.cpp:43
+#, kde-format
+msgid "Tab Properties"
+msgstr "ටැබ් වත්කම්"
+
+#: WorkSheetSettings.cpp:72
+#, kde-format
+msgid "Properties"
+msgstr "වත්කම්"
+
+#: WorkSheetSettings.cpp:81
+#, kde-format
+msgid "Rows:"
+msgstr "පේළි:"
+
+#: WorkSheetSettings.cpp:91
+#, kde-format
+msgid "Columns:"
+msgstr "තීරු:"
+
+#: WorkSheetSettings.cpp:100
+#, kde-format
+msgid "Enter the number of rows the sheet should have."
+msgstr "පත්‍රය සතුව තිබිය යුතු පේළි ගණන මෙහි ඇතුළත් කරන්න"
+
+#: WorkSheetSettings.cpp:101
+#, kde-format
+msgid "Enter the number of columns the sheet should have."
+msgstr "පත්‍රය සතුව තිබිය යුතු තීරු ගණන මෙහි ඇතුළත් කරන්න"
+
+#: WorkSheetSettings.cpp:103
+#, kde-format
+msgid "Update interval:"
+msgstr "යාවත්කාලීන කාල පරතරය:"
+
+#: WorkSheetSettings.cpp:116
+#, kde-format
+msgid "All displays of the sheet are updated at the rate specified here."
+msgstr "පත්‍රයේ සියලු යාවත්කාලීන අගයන් මෙහි දර්ශනය වේ."
+
+#: WorkSheetSettings.cpp:117
+#, kde-format
+msgid "Enter the title of the worksheet here."
+msgstr "වැඩපත්‍රයේ මාතෘකාව මෙහි ඇතුළත් කරන්න"
+
+#: Workspace.cpp:111
+#, kde-format
+msgid "Sheet %1"
+msgstr "%1 කොලය"
+
+#: Workspace.cpp:170
+#, kde-format
+msgid ""
+"The tab '%1' contains unsaved data.\n"
+"Do you want to save the tab?"
+msgstr ""
+"'%1' ටැබය සතුව නොසුරැකුනු දත්ත පවතී.\n"
+"ඔබට ටැබය සුරැකීමට අවශ්‍යද?"
+
+#: Workspace.cpp:186
+#, kde-format
+msgid "Select Tab File to Import"
+msgstr "ආයාත කළයුතු ටැබ් ගොනු තෝරන්න"
+
+#: Workspace.cpp:208 Workspace.cpp:228
+#, kde-format
+msgid "You do not have a tab that could be saved."
+msgstr "සුරැකීමට හැකි ටැබයක් නොමැත"
+
+#: Workspace.cpp:235
+#, kde-format
+msgid "Export Tab"
+msgstr "ටැබ් නිර්යාත කරන්න"
+
+#: Workspace.cpp:255
+#, kde-format
+msgid "There are no tabs that could be deleted."
+msgstr "මකාදැමිය හැකි ටැබයක් නොමැත."
+
+#: Workspace.cpp:299
+#, kde-kuit-format
+msgctxt "@info"
+msgid ""
+"<para>You can publish your custom tab on the <link url='%1'>KDE Store</link> "
+"in the <icode>%2</icode> category.</para><para><filename>%3</filename></para>"
+msgstr ""
+
+#: Workspace.cpp:304
+#, kde-format
+msgid "Upload custom System Monitor tab"
+msgstr "රිසිකළ පද්ධති නිරීක්‍ෂක ටැබය අපගත කරන්න"
+
+#~ msgid "Timer Settings"
+#~ msgstr "කාලගණකය සැකසුම්"
+
+#~ msgid "Use update interval of worksheet"
+#~ msgstr "වැඩපත්‍රය සඳහා යාවත්කාලීන කාල පරතරය භාවිත කරන්න"
+
+#~ msgctxt "Arguments are formatted byte sizes (used/total)"
+#~ msgid "Memory: %1 / %2Mem: %1 / %2Mem: %1%1"
+#~ msgstr "මතකය: %1 / %2Mem: %1 / %2Mem: %1%1"
+
+#~ msgid ""
+#~ "<qt>To propose the current custom tab as a new System Monitor tab, email "
+#~ "<br><a href=\"file:%1\">%2</a><br> to <a href=\"mailto:john.tapsell@kde."
+#~ "org?subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde."
+#~ "org</a></qt>"
+#~ msgstr ""
+#~ "<qt>වත්මන් රුචි ටැබය නව පද්ධති නිරීක්‍ෂක ටැබයක් ලෙස යෝජනා කිරීම, දන්වන්න <br><a href="
+#~ "\"file:%1\">%2</a><br> වෙත <a href=\"mailto:john.tapsell@kde.org?"
+#~ "subject='System Monitor Tab'&attach='file://%2'\">john.tapsell@kde.org</"
+#~ "a></qt>"
+
+#~ msgid "*.sgrd|Sensor Files (*.sgrd)"
+#~ msgstr "*.sgrd|Sensor ගොනු (*.sgrd)"
+
+#~ msgid "Lo&wer limit:"
+#~ msgstr "පහළ සීමාව (&w):"
+
+#~ msgctxt "%1 is a host name"
+#~ msgid ""
+#~ "Message from %1:\n"
+#~ "%2"
+#~ msgstr ""
+#~ "%1 න් පණිවුඩයක්:\n"
+#~ "%2"
+
+#~ msgid "Could not run daemon program '%1'."
+#~ msgstr "'%1' වැඩසටහන් ඩීමනය ක්‍රියාත්මක කල නොහැක."
+
+#~ msgid "The daemon program '%1' failed."
+#~ msgstr "'%1' ඩීමන වැඩසටහන අසාර්ථකයි"
+
+#~ msgid "Connection to %1 refused"
+#~ msgstr "%1 වෙත සම්බන්ධය ප්‍රතික්‍ෂේප විය"
+
+#~ msgid "Host %1 not found"
+#~ msgstr "%1 ධාරකය හමු නොවිනි"
+
+#~ msgid ""
+#~ "An error occurred with the network (e.g. the network cable was "
+#~ "accidentally unplugged) for host %1."
+#~ msgstr "%1 ධාරකය සමඟ ජාලයේ දෝශයක් ඇතිවිය (උදා. ජාල රැහැන අනපේක්‍ෂිතව ගැලවිනි)."
+
+#~ msgid "Error for host %1: %2"
+#~ msgstr "%1 ධාරකය සඳහා දෝෂයකි: %2"
+
+#~ msgid "Change"
+#~ msgstr "වෙනස් කරන්න"
+
+#~ msgid "Rate"
+#~ msgstr "අගය"
+
+#~ msgid "CPU Load"
+#~ msgstr "CPU භාරය"
+
+#~ msgid "Idling"
+#~ msgstr "නිශ්චල කරමින්"
+
+#~ msgid "Nice Load"
+#~ msgstr "සුදුසු භාරය"
+
+#~ msgid "User Load"
+#~ msgstr "පරිශීලක භාරය"
+
+#~ msgctxt "@item sensor description"
+#~ msgid "System Load"
+#~ msgstr "පද්ධතී භාරය"
+
+#~ msgid "Waiting"
+#~ msgstr "රැදි සිටිමින්"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Interrupt Load"
+#~ msgstr "අතුරුබිඳුම්"
+
+#~ msgid "Total Load"
+#~ msgstr "මුළු භාරය"
+
+#~ msgid "Physical Memory"
+#~ msgstr "භෞතික මතකය"
+
+#~ msgid "Swap Memory"
+#~ msgstr "ස්වැප් මතකය"
+
+#~ msgid "Cached Memory"
+#~ msgstr "කැච් මතකය"
+
+#~ msgid "Buffered Memory"
+#~ msgstr "ගබඩා කළ මතකය"
+
+#~ msgid "Used Memory"
+#~ msgstr "භාවිත කළ මතකය"
+
+#~ msgid "Application Memory"
+#~ msgstr "යෙදුම් මතකය"
+
+#~ msgid "Free Memory"
+#~ msgstr "නිදහස් මතකය"
+
+#~ msgid "Active Memory"
+#~ msgstr "සක්‍රීය මතකය"
+
+#~ msgid "Inactive Memory"
+#~ msgstr "අක්‍රීය මතකය"
+
+#~ msgid "Wired Memory"
+#~ msgstr "රැහැන් මතකය"
+
+#~ msgid "Exec Pages"
+#~ msgstr "Exec පිටු"
+
+#~ msgid "File Pages"
+#~ msgstr "ගොනු පිටු"
+
+#, fuzzy
+#~| msgid "Processors"
+#~ msgid "Processes"
+#~ msgstr "සකසන"
+
+#~ msgid "Process Controller"
+#~ msgstr "සැකසුම් පාලකය"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Process Spawn Count"
+#~ msgstr "සැකසුම් ගණන"
+
+#~ msgid "Process Count"
+#~ msgstr "සැකසුම් ගණන"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Idle Processes Count"
+#~ msgstr "සැකසුම් ගණන"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Running Processes Count"
+#~ msgstr "සැකසුම් ගණන"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Sleeping Processes Count"
+#~ msgstr "සැකසුම් ගණන"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Stopped Processes Count"
+#~ msgstr "සැකසුම් ගණන"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Zombie Processes Count"
+#~ msgstr "සැකසුම් ගණන"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Waiting Processes Count"
+#~ msgstr "සැකසුම් ගණන"
+
+#, fuzzy
+#~| msgid "Process Count"
+#~ msgid "Locked Processes Count"
+#~ msgstr "සැකසුම් ගණන"
+
+#, fuzzy
+#~ msgid "Disk Throughput"
+#~ msgstr "තැටි අතරින් යාම"
+
+#~ msgctxt "CPU Load"
+#~ msgid "Load"
+#~ msgstr "භාරය"
+
+#~ msgid "Total Accesses"
+#~ msgstr "සියලු ප්‍රවේශ"
+
+#~ msgid "Read Accesses"
+#~ msgstr "කියවිමේ ප්‍රවේශ"
+
+#~ msgid "Write Accesses"
+#~ msgstr "ලිවීමේ ප්‍රවේශ"
+
+#~ msgid "Read Data"
+#~ msgstr "කියවූ දත්ත"
+
+#~ msgid "Written Data"
+#~ msgstr "ලියු දත්ත"
+
+#~ msgid "Milliseconds spent reading"
+#~ msgstr "කියවීමට ගත කළ මිලිතත්පර"
+
+#~ msgid "Milliseconds spent writing"
+#~ msgstr "ලිවිමට ගත කළ මිලිතත්පර"
+
+#~ msgid "I/Os currently in progress"
+#~ msgstr "දැනට I/O ප්‍රගතිය"
+
+#~ msgid "Pages In"
+#~ msgstr "ඇතුළත පිටු"
+
+#~ msgid "Pages Out"
+#~ msgstr "පිටත පිටු"
+
+#~ msgid "Context Switches"
+#~ msgstr "සන්දර්භ හුවමාරුව"
+
+#, fuzzy
+#~| msgid "System Load"
+#~ msgid "System Calls"
+#~ msgstr "පද්ධතී භාරය"
+
+#~ msgid "Network"
+#~ msgstr "ජාලය"
+
+#~ msgid "Interfaces"
+#~ msgstr "අතුරුමුහුණත"
+
+#~ msgid "Transmitter"
+#~ msgstr "සම්ප්‍රේෂකය"
+
+#~ msgid "Data Rate"
+#~ msgstr "දත්ත අගය"
+
+#~ msgid "Compressed Packets Rate"
+#~ msgstr "සම්පීඩිත ඇසුරුම් අගය"
+
+#~ msgid "Dropped Packets Rate"
+#~ msgstr "මගහැරුණු ඇසුරුම් අගය"
+
+#~ msgid "Error Rate"
+#~ msgstr "දෝෂ අගය"
+
+#~ msgid "FIFO Overruns Rate"
+#~ msgstr "FIFO කාලය ඉක්මවීම් අගය"
+
+#~ msgid "Frame Error Rate"
+#~ msgstr "රාමුව දෝෂ අගය"
+
+#~ msgid "Multicast Packet Rate"
+#~ msgstr "බහුවිකාශනය පැකට්ටු අගය "
+
+#~ msgid "Packet Rate"
+#~ msgstr "ඇසුරුම් අගය"
+
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Loss Rate"
+#~ msgstr "වාහකයා මඟහැරීමේ අගය"
+
+#~ msgid "Collisions"
+#~ msgstr "ගැටීම"
+
+#~ msgid "Data"
+#~ msgstr "දත්ත"
+
+#~ msgid "Compressed Packets"
+#~ msgstr "සම්පීඩිත ඇසුරුම්"
+
+#~ msgid "Dropped Packets"
+#~ msgstr "මගහැරුණු ඇසුරුම්"
+
+#~ msgid "Errors"
+#~ msgstr "දෝෂ"
+
+#~ msgid "FIFO Overruns"
+#~ msgstr "FIFO කාලය ඉක්මවීම"
+
+#~ msgid "Frame Errors"
+#~ msgstr "රාමුව දෝෂ"
+
+#~ msgid "Multicast Packets"
+#~ msgstr "බහුවිකාශනය ඇසුරුම්"
+
+#~ msgid "Packets"
+#~ msgstr "ඇසුරුම්"
+
+#~ msgctxt "@item sensor description ('carrier' is a type of network signal)"
+#~ msgid "Carrier Losses"
+#~ msgstr "වාහකයා මඟහැරීම්"
+
+#~ msgid "Sockets"
+#~ msgstr "සංඝට්ටන"
+
+#~ msgid "Total Number"
+#~ msgstr "මුලු එකතුව"
+
+#~ msgid "Table"
+#~ msgstr "වගුව"
+
+#~ msgid "Advanced Power Management"
+#~ msgstr "උසස් ශක්ති පරිපාලනය"
+
+#~ msgid "ACPI"
+#~ msgstr "ACPI"
+
+#~ msgid "Thermal Zone"
+#~ msgstr "තාප කලාපය"
+
+#~ msgid "Temperature"
+#~ msgstr "උෂ්ණත්වය"
+
+#, fuzzy
+#~| msgid "Temperature"
+#~ msgid "Average CPU Temperature"
+#~ msgstr "උෂ්ණත්වය"
+
+#~ msgid "Fan"
+#~ msgstr "පංකාව"
+
+#~ msgid "State"
+#~ msgstr "තත්ත්වය"
+
+#~ msgid "Battery"
+#~ msgstr "බැටරිය"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Capacity"
+#~ msgstr "බැටරි අරෝපණය"
+
+#~ msgid "Battery Charge"
+#~ msgstr "බැටරි අරෝපණය"
+
+#~ msgid "Battery Usage"
+#~ msgstr "බැටරි භාවිතය"
+
+#, fuzzy
+#~| msgid "Battery Usage"
+#~ msgid "Battery Voltage"
+#~ msgstr "බැටරි භාවිතය"
+
+#, fuzzy
+#~| msgid "Battery Charge"
+#~ msgid "Battery Discharge Rate"
+#~ msgstr "බැටරි අරෝපණය"
+
+#~ msgid "Remaining Time"
+#~ msgstr "ඉතිරි වේලාව"
+
+#~ msgid "Interrupts"
+#~ msgstr "අතුරුබිඳුම්"
+
+#~ msgid "Load Average (1 min)"
+#~ msgstr "භාරයේ සාමාන්‍යය (මිනිත්තු 1)"
+
+#~ msgid "Load Average (5 min)"
+#~ msgstr "භාරයේ සාමාන්‍යය (මිනිත්තු 5)"
+
+#~ msgid "Load Average (15 min)"
+#~ msgstr "භාරයේ සාමාන්‍යය (මිනිත්තු 15)"
+
+#~ msgid "Clock Frequency"
+#~ msgstr "ඔරලෝසුව සංඛ්‍යාතය"
+
+#, fuzzy
+#~| msgid "Clock Frequency"
+#~ msgid "Average Clock Frequency"
+#~ msgstr "ඔරලෝසුව සංඛ්‍යාතය"
+
+#~ msgid "Hardware Sensors"
+#~ msgstr "දෘඩාංග සංවේදක"
+
+#~ msgid "Partition Usage"
+#~ msgstr "තැටි කොටස් භාවිතය"
+
+#~ msgid "Used Space"
+#~ msgstr "භාවිත කළ ඉඩ"
+
+#~ msgid "Free Space"
+#~ msgstr "නිදහස් ඉඩ"
+
+#~ msgid "Fill Level"
+#~ msgstr "පිරවුම මට්ටම"
+
+#, fuzzy
+#~| msgid "User Load"
+#~ msgid "Used Inodes"
+#~ msgstr "පරිශීලක භාරය"
+
+#~ msgid "System"
+#~ msgstr "පද්ධතිය"
+
+#~ msgid "Uptime"
+#~ msgstr "ක්‍රියා කාලය"
+
+#~ msgid "Linux Soft Raid (md)"
+#~ msgstr "Linux මෘදු රේඩ (md)"
+
+#~ msgid "Processors"
+#~ msgstr "සකසන"
+
+#~ msgid "Cores"
+#~ msgstr "කෝර්"
+
+#~ msgid "Number of Blocks"
+#~ msgstr "කොටස් ගණන"
+
+#~ msgid "Total Number of Devices"
+#~ msgstr "මුලු උපකරණ එකතුව"
+
+#~ msgid "Failed Devices"
+#~ msgstr "අසාර්ථක උපකරණ"
+
+#~ msgid "Spare Devices"
+#~ msgstr "අමතර උපකරණ"
+
+#~ msgid "Number of Raid Devices"
+#~ msgstr "රේඩ් උපකරණ ගණන"
+
+#~ msgid "Working Devices"
+#~ msgstr "ක්‍රියාකරන උපකරණ"
+
+#~ msgid "Active Devices"
+#~ msgstr "සක්‍රීය උපකරණ"
+
+#~ msgid "Number of Devices"
+#~ msgstr "උපකරණ ගණන"
+
+#~ msgid "Resyncing Percent"
+#~ msgstr "නැවත සම්මුහුර්ත කිරීමේ ප්‍රතිශතය"
+
+#~ msgid "Disk Information"
+#~ msgstr "තැටි තොරතුරු"
+
+#~ msgid "CPU %1"
+#~ msgstr "CPU %1"
+
+#~ msgid "Disk %1"
+#~ msgstr "%1Labels %1"
+
+#, fuzzy
+#~| msgid "Battery"
+#~ msgid "Battery %1"
+#~ msgstr "බැටරිය"
+
+#~ msgid "Fan %1"
+#~ msgstr "පංකාව %1"
+
+#~ msgid "Temperature %1"
+#~ msgstr "නිරීක්‍ෂකය %1"
+
+#~ msgid "Total"
+#~ msgstr "එකතුව"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Software Interrupts"
+#~ msgstr "අතුරුබිඳුම්"
+
+#, fuzzy
+#~| msgid "Interrupts"
+#~ msgid "Hardware Interrupts"
+#~ msgstr "අතුරුබිඳුම්"
+
+#~ msgid "Int %1"
+#~ msgstr "Int %1"
+
+#~ msgctxt "the unit 1 per second"
+#~ msgid "1/s"
+#~ msgstr "1/s"
+
+#~ msgid "kBytes"
+#~ msgstr "kBytes"
+
+#~ msgctxt "the unit minutes"
+#~ msgid "min"
+#~ msgstr "min"
+
+#~ msgctxt "the frequency unit"
+#~ msgid "MHz"
+#~ msgstr "MHz"
+
+#~ msgctxt "a percentage"
+#~ msgid "%"
+#~ msgstr "%"
+
+#~ msgid "Integer Value"
+#~ msgstr "පූර්ණාංක අගය"
+
+#~ msgid "Floating Point Value"
+#~ msgstr "වෙනස් වන ලක්ෂ්‍ය අගය"
+
+#~ msgctxt "Units"
+#~ msgid "%1 second"
+#~ msgid_plural "%1 seconds"
+#~ msgstr[0] "%1 තත්පර"
+#~ msgstr[1] "%1 තත්පර"
+
+#~ msgctxt "Units"
+#~ msgid "%1 minute"
+#~ msgid_plural "%1 minutes"
+#~ msgstr[0] "%1 මිනිත්තුව"
+#~ msgstr[1] "%1 මිනිත්තු"
+
+#~ msgid "%1"
+#~ msgstr "%1"
+
+#~ msgid "Font:"
+#~ msgstr "අකුරු:"
+
+#~ msgid "Grid lines:"
+#~ msgstr "දැල් පේළි:"
+
+#~ msgid "Background:"
+#~ msgstr "පසුබිම:"
+
+#~ msgid "&Edit"
+#~ msgstr "සැකසුම (&E)"
+
+#, fuzzy
+#~| msgid "Automatic range detection"
+#~ msgid "Automatic range"
+#~ msgstr "ස්වයංක්‍රීය පරාස හැදිනීම"
+
+#, fuzzy
+#~| msgctxt "a percentage"
+#~| msgid "%"
+#~ msgctxt "units in percentage"
+#~ msgid "%1%"
+#~ msgstr "%"
+
+#~ msgid ""
+#~ "This is your work space. It holds your tabs. You need to create a new tab "
+#~ "(Menu File->New) before you can drag sensors here."
+#~ msgstr ""
+#~ "This is your work space. It holds your tabs. You need to create a new tab "
+#~ "(Menu File->New) before you can drag sensors here."
+
+#~ msgid "Connection to %1 has been lost."
+#~ msgstr "Connection to %1 has been lost."
+
+#~ msgid "&Title"
+#~ msgstr "සිරස්තලය (&T)"
+
+#~ msgid "T&itle"
+#~ msgstr "සිරස්තලය (&i)"
