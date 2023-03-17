@@ -879,7 +879,7 @@ msgstr "%1 ت"
 #: SensorDisplayLib/ListView.cpp:49
 #, kde-format
 msgid "%1 P"
-msgstr "%1 پ"
+msgstr "%1 ب"
 
 #: SensorDisplayLib/ListView.cpp:152
 #, kde-format
